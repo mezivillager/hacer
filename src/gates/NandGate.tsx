@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { Group } from 'three'
 import { ThreeEvent } from '@react-three/fiber'
 import { Html } from '@react-three/drei'
+import { circuitActions } from '@/store/circuitStore'
 
 interface NandGateProps {
   id: string
@@ -68,6 +69,26 @@ export function NandGate({
     }
   }
   
+  const getWorldPosition = (localOffset: [number, number, number]) => ({
+    x: position[0] + localOffset[0],
+    y: position[1] + localOffset[1],
+    z: position[2] + localOffset[2],
+  })
+  
+  const handlePinPointerMove = (localOffset: [number, number, number]) => (e: ThreeEvent<PointerEvent>) => {
+    if (isWiring) {
+      e.stopPropagation()
+      // Update wire preview to snap to pin position when hovering
+      const worldPos = getWorldPosition(localOffset)
+      circuitActions.updateWirePreviewPosition(worldPos)
+    }
+  }
+  
+  const handlePinPointerOut = () => {
+    // Clear preview position when leaving pin (will use ground plane position instead)
+    // The ground plane handler will set it back
+  }
+  
   const handlePinClick = (pinId: string, pinType: 'input' | 'output', localOffset: [number, number, number], isConnected: boolean) => (e: ThreeEvent<MouseEvent>) => {
     e.stopPropagation()
     
@@ -78,11 +99,7 @@ export function NandGate({
     }
     
     // Normal click = wiring
-    const worldPos = {
-      x: position[0] + localOffset[0],
-      y: position[1] + localOffset[1],
-      z: position[2] + localOffset[2],
-    }
+    const worldPos = getWorldPosition(localOffset)
     onPinClick?.(id, pinId, pinType, worldPos)
   }
   
@@ -112,8 +129,12 @@ export function NandGate({
       <mesh
         position={[-0.7, 0.2, 0]}
         onClick={handlePinClick(`${id}-in-0`, 'input', [-0.7, 0.2, 0], inputAConnected)}
+        onPointerMove={handlePinPointerMove([-0.7, 0.2, 0])}
         onPointerOver={() => setHoveredPin('inputA')}
-        onPointerOut={() => setHoveredPin(null)}
+        onPointerOut={() => {
+          setHoveredPin(null)
+          handlePinPointerOut()
+        }}
       >
         <sphereGeometry args={[isWiring && hoveredPin === 'inputA' ? 0.13 : 0.1, 16, 16]} />
         <meshStandardMaterial
@@ -129,8 +150,12 @@ export function NandGate({
       <mesh
         position={[-0.7, -0.2, 0]}
         onClick={handlePinClick(`${id}-in-1`, 'input', [-0.7, -0.2, 0], inputBConnected)}
+        onPointerMove={handlePinPointerMove([-0.7, -0.2, 0])}
         onPointerOver={() => setHoveredPin('inputB')}
-        onPointerOut={() => setHoveredPin(null)}
+        onPointerOut={() => {
+          setHoveredPin(null)
+          handlePinPointerOut()
+        }}
       >
         <sphereGeometry args={[isWiring && hoveredPin === 'inputB' ? 0.13 : 0.1, 16, 16]} />
         <meshStandardMaterial
@@ -146,8 +171,12 @@ export function NandGate({
       <mesh 
         position={[0.7, 0, 0]}
         onClick={handlePinClick(`${id}-out-0`, 'output', [0.7, 0, 0], outputConnected)}
+        onPointerMove={handlePinPointerMove([0.7, 0, 0])}
         onPointerOver={() => setHoveredPin('output')}
-        onPointerOut={() => setHoveredPin(null)}
+        onPointerOut={() => {
+          setHoveredPin(null)
+          handlePinPointerOut()
+        }}
       >
         <sphereGeometry args={[isWiring && hoveredPin === 'output' ? 0.13 : 0.1, 16, 16]} />
         <meshStandardMaterial

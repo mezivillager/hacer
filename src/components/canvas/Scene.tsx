@@ -22,13 +22,23 @@ function GroundPlaneWithPreview() {
       const z = snapToGrid(e.point.z)
       setCursorPos({ x, y: 0.4, z })
     } else if (isWiring) {
-      // Track cursor for wire preview (don't snap for smoother preview)
-      setCursorPos({ x: e.point.x, y: 0.4, z: e.point.z })
+      // Only update if we're not hovering over a pin (pins will update it themselves)
+      // This gives priority to pin positions for precise snapping
+      // Update wire preview with actual 3D intersection point from ground plane
+      circuitActions.updateWirePreviewPosition({ 
+        x: e.point.x, 
+        y: e.point.y, 
+        z: e.point.z 
+      })
+      setCursorPos({ x: e.point.x, y: e.point.y, z: e.point.z })
     }
   }
   
   const handlePointerLeave = () => {
     setCursorPos(null)
+    if (isWiring) {
+      circuitActions.updateWirePreviewPosition(null)
+    }
   }
   
   const handleClick = (e: ThreeEvent<MouseEvent>) => {
@@ -91,10 +101,10 @@ function GroundPlaneWithPreview() {
       )}
       
       {/* Wire preview - follows cursor during wiring */}
-      {isWiring && circuit.wiringFrom && cursorPos && (
+      {isWiring && circuit.wiringFrom && circuit.wiringFrom.previewEndPosition && (
         <Wire3D
           start={circuit.wiringFrom.fromPosition}
-          end={cursorPos}
+          end={circuit.wiringFrom.previewEndPosition}
           isPreview
         />
       )}

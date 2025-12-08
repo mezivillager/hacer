@@ -42,6 +42,7 @@ export interface WiringState {
   fromPinId: string
   fromPinType: 'input' | 'output'
   fromPosition: { x: number; y: number; z: number }
+  previewEndPosition: { x: number; y: number; z: number } | null
 }
 
 export interface CircuitState {
@@ -194,8 +195,16 @@ export const circuitActions = {
       fromPinId: pinId,
       fromPinType: pinType,
       fromPosition: position,
+      previewEndPosition: null,
     }
     circuitStore.placementMode = null
+  },
+  
+  // Update wire preview end position
+  updateWirePreviewPosition: (position: { x: number; y: number; z: number } | null) => {
+    if (circuitStore.wiringFrom) {
+      circuitStore.wiringFrom.previewEndPosition = position
+    }
   },
   
   cancelWiring: () => {
