@@ -1,0 +1,80 @@
+.app-layout {
+  height: 100vh;
+  width: 100vw;
+}
+
+.app-sider {
+  background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%) !important;
+  border-right: 1px solid #2a2a4a;
+  overflow: hidden;
+}
+
+.sider-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 16px;
+}
+
+.sider-header {
+  text-align: center;
+  padding-bottom: 8px;
+}
+
+.sider-section {
+  padding: 8px 0;
+}
+
+.sider-footer {
+  margin-top: auto;
+  padding-top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #2a2a4a;
+}
+
+.app-content {
+  position: relative;
+  background: #1a1a2e;
+  overflow: hidden;
+}
+
+.help-overlay {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  padding: 8px 16px;
+  border-radius: 20px;
+  backdrop-filter: blur(4px);
+  pointer-events: none;
+}
+
+/* Canvas interaction cursors */
+.app-content canvas {
+  cursor: grab;
+}
+
+.app-content canvas:active {
+  cursor: grabbing;
+}
+
+/* Placement mode cursor */
+.app-content.placing canvas {
+  cursor: crosshair;
+}
+
+.app-content.placing canvas:active {
+  cursor: crosshair;
+}
+
+/* Wiring mode cursor */
+.app-content.wiring canvas {
+  cursor: crosshair;
+}
+
+.app-content.wiring canvas:active {
+  cursor: crosshair;
+}
