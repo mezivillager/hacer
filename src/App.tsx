@@ -147,7 +147,7 @@ function App() {
               <Text strong style={{ color: '#fff', marginBottom: 8, display: 'block' }}>
                 Add Gates
               </Text>
-              <Space direction="vertical" style={{ width: '100%' }}>
+              <Space orientation="vertical" style={{ width: '100%' }}>
                 <Button
                   type={circuit.placementMode === 'NAND' ? 'default' : 'primary'}
                   icon={circuit.placementMode === 'NAND' ? <CloseOutlined /> : <PlusOutlined />}
@@ -176,7 +176,7 @@ function App() {
               <Text strong style={{ color: '#fff', marginBottom: 8, display: 'block' }}>
                 Controls
               </Text>
-              <Space direction="vertical" style={{ width: '100%' }}>
+              <Space orientation="vertical" style={{ width: '100%' }}>
                 <Button
                   icon={circuit.simulationRunning ? <PauseCircleOutlined /> : <PlayCircleOutlined />}
                   onClick={handleToggleSimulation}
@@ -214,7 +214,7 @@ function App() {
               <Text strong style={{ color: '#fff', marginBottom: 8, display: 'block' }}>
                 Circuit Info
               </Text>
-              <Space direction="vertical" size={2}>
+              <Space orientation="vertical" size={2}>
                 <Text type="secondary">Gates: {circuit.gates.length}</Text>
                 <Text type="secondary">Wires: {circuit.wires.length}</Text>
                 <Text type="secondary">
