@@ -7,6 +7,7 @@ import { circuitActions } from '@/store/circuitStore'
 interface NandGateProps {
   id: string
   position?: [number, number, number]
+  rotation?: [number, number, number]
   selected?: boolean
   inputA?: boolean
   inputB?: boolean
@@ -27,6 +28,7 @@ function nandLogic(a: boolean, b: boolean): boolean {
 export function NandGate({
   id,
   position = [0, 0, 0],
+  rotation = [0, 0, 0],
   selected = false,
   inputA = false,
   inputB = false,
@@ -69,17 +71,27 @@ export function NandGate({
     }
   }
   
-  const getWorldPosition = (localOffset: [number, number, number]) => ({
-    x: position[0] + localOffset[0],
-    y: position[1] + localOffset[1],
-    z: position[2] + localOffset[2],
-  })
+  const getWorldPosition = (localOffset: [number, number, number], eventPoint?: { x: number; y: number; z: number }) => {
+    // If we have the event's world point, use it directly (already transformed)
+    if (eventPoint) {
+      return eventPoint
+    }
+    
+    // Otherwise calculate from local offset and rotation
+    // For now, simple addition (will work if rotation is 0,0,0)
+    // TODO: Apply rotation transformation if needed
+    return {
+      x: position[0] + localOffset[0],
+      y: position[1] + localOffset[1],
+      z: position[2] + localOffset[2],
+    }
+  }
   
   const handlePinPointerMove = (localOffset: [number, number, number]) => (e: ThreeEvent<PointerEvent>) => {
     if (isWiring) {
       e.stopPropagation()
-      // Update wire preview to snap to pin position when hovering
-      const worldPos = getWorldPosition(localOffset)
+      // Use event point if available, otherwise calculate
+      const worldPos = getWorldPosition(localOffset, e.point ? { x: e.point.x, y: e.point.y, z: e.point.z } : undefined)
       circuitActions.updateWirePreviewPosition(worldPos)
     }
   }
@@ -98,13 +110,13 @@ export function NandGate({
       return
     }
     
-    // Normal click = wiring
-    const worldPos = getWorldPosition(localOffset)
+    // Normal click = wiring - use event point if available (accounts for rotation)
+    const worldPos = getWorldPosition(localOffset, e.point ? { x: e.point.x, y: e.point.y, z: e.point.z } : undefined)
     onPinClick?.(id, pinId, pinType, worldPos)
   }
   
   return (
-    <group ref={groupRef} position={position}>
+    <group ref={groupRef} position={position} rotation={rotation}>
       {/* Main body - box shape representing the gate */}
       <mesh
         onClick={handleClick}

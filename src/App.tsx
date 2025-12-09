@@ -23,17 +23,44 @@ function App() {
   const isPlacing = circuit.placementMode !== null
   const isWiring = circuit.wiringFrom !== null
   
-  // Handle Escape key to cancel placement or wiring
+  // Handle keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't handle keyboard shortcuts when typing in inputs or when in placement/wiring mode
+      if (isPlacing || isWiring) {
+        if (e.key === 'Escape') {
+          if (isPlacing) circuitActions.cancelPlacement()
+          if (isWiring) circuitActions.cancelWiring()
+        }
+        return
+      }
+      
+      // Escape key
       if (e.key === 'Escape') {
-        if (isPlacing) circuitActions.cancelPlacement()
-        if (isWiring) circuitActions.cancelWiring()
+        circuitActions.selectGate(null)
+        return
+      }
+      
+      // Arrow keys for rotating selected gate (left/right only)
+      if (!circuit.selectedGateId) return
+      
+      const rotationStep = Math.PI / 4 // 45 degrees
+      
+      switch (e.key) {
+        case 'ArrowLeft':
+          e.preventDefault()
+          circuitActions.rotateGate(circuit.selectedGateId, 'y', rotationStep)
+          break
+        case 'ArrowRight':
+          e.preventDefault()
+          circuitActions.rotateGate(circuit.selectedGateId, 'y', -rotationStep)
+          break
       }
     }
+    
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [isPlacing, isWiring])
+  }, [isPlacing, isWiring, circuit.selectedGateId])
   
   // Helper to check if a pin is connected
   const isPinConnected = (gateId: string, pinId: string) => {
@@ -234,6 +261,7 @@ function App() {
                 key={gate.id}
                 id={gate.id}
                 position={[gate.position.x, gate.position.y, gate.position.z]}
+                rotation={[gate.rotation.x, gate.rotation.y, gate.rotation.z]}
                 selected={gate.selected}
                 inputA={gate.inputs[0]?.value ?? false}
                 inputB={gate.inputs[1]?.value ?? false}
@@ -255,7 +283,7 @@ function App() {
                 ? '📍 Click anywhere on the grid to place the gate • Press Esc to cancel'
                 : isWiring
                 ? '🔗 Click on another pin to connect • Click empty space or Esc to cancel'
-                : '🖱️ Click pin: Wire • Shift+click input: Toggle value • Click body: Select • Scroll: Zoom'
+                : '🖱️ Click pin: Wire • Shift+click input: Toggle • Click body: Select • Left/Right arrows: Rotate gate • Scroll: Zoom'
               }
             </Text>
           </div>

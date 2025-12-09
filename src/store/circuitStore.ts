@@ -1,4 +1,5 @@
 import { proxy, useSnapshot, subscribe } from 'valtio'
+import { Vector3, Euler } from 'three'
 
 // Gate logic functions
 const gateLogic: Record<GateInstance['type'], (inputs: boolean[]) => boolean> = {
@@ -124,6 +125,24 @@ export const circuitActions = {
     const gate = circuitStore.gates.find(g => g.id === gateId)
     if (gate) {
       gate.position = position
+    }
+  },
+  
+  updateGateRotation: (gateId: string, rotation: { x: number; y: number; z: number }) => {
+    const gate = circuitStore.gates.find(g => g.id === gateId)
+    if (gate) {
+      gate.rotation = rotation
+    }
+  },
+  
+  rotateGate: (gateId: string, axis: 'x' | 'y' | 'z', angle: number) => {
+    const gate = circuitStore.gates.find(g => g.id === gateId)
+    if (gate) {
+      const current = gate.rotation
+      gate.rotation = {
+        ...current,
+        [axis]: (current[axis] + angle) % (Math.PI * 2)
+      }
     }
   },
   
@@ -253,33 +272,37 @@ export const circuitActions = {
     circuitStore.wiringFrom = null
   },
   
-  // Get pin world position helper
+  // Get pin world position helper (accounts for gate rotation)
   getPinWorldPosition: (gateId: string, pinId: string): { x: number; y: number; z: number } | null => {
     const gate = circuitStore.gates.find(g => g.id === gateId)
     if (!gate) return null
     
-    // Find which pin it is
+    // Find which pin it is and get local offset
     const inputIndex = gate.inputs.findIndex(p => p.id === pinId)
     const outputIndex = gate.outputs.findIndex(p => p.id === pinId)
     
+    let localOffset: Vector3
     if (inputIndex !== -1) {
       // Input pins are on the left side
       const yOffset = inputIndex === 0 ? 0.2 : -0.2
-      return {
-        x: gate.position.x - 0.7,
-        y: gate.position.y + yOffset,
-        z: gate.position.z,
-      }
+      localOffset = new Vector3(-0.7, yOffset, 0)
     } else if (outputIndex !== -1) {
       // Output pin is on the right side
-      return {
-        x: gate.position.x + 0.7,
-        y: gate.position.y,
-        z: gate.position.z,
-      }
+      localOffset = new Vector3(0.7, 0, 0)
+    } else {
+      return null
     }
     
-    return null
+    // Apply rotation
+    const euler = new Euler(gate.rotation.x, gate.rotation.y, gate.rotation.z, 'XYZ')
+    localOffset.applyEuler(euler)
+    
+    // Add to gate position
+    return {
+      x: gate.position.x + localOffset.x,
+      y: gate.position.y + localOffset.y,
+      z: gate.position.z + localOffset.z,
+    }
   },
   
   // Simulation tick - propagate signals through circuit
