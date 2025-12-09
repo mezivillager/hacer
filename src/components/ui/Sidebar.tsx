@@ -66,7 +66,7 @@ export function Sidebar() {
           <Text strong style={styles.sectionTitle}>
             Add Gates
           </Text>
-          <Space direction="vertical" style={styles.fullWidth}>
+          <Space orientation="vertical" style={styles.fullWidth}>
             <Button
               type={circuit.placementMode === 'NAND' ? 'default' : 'primary'}
               icon={circuit.placementMode === 'NAND' ? <CloseOutlined /> : <PlusOutlined />}
@@ -95,7 +95,7 @@ export function Sidebar() {
           <Text strong style={styles.sectionTitle}>
             Controls
           </Text>
-          <Space direction="vertical" style={styles.fullWidth}>
+          <Space orientation="vertical" style={styles.fullWidth}>
             <Button
               icon={circuit.simulationRunning ? <PauseCircleOutlined /> : <PlayCircleOutlined />}
               onClick={handleToggleSimulation}
@@ -133,7 +133,7 @@ export function Sidebar() {
           <Text strong style={styles.sectionTitle}>
             Circuit Info
           </Text>
-          <Space direction="vertical" size={2}>
+          <Space orientation="vertical" size={2}>
             <Text type="secondary">Gates: {circuit.gates.length}</Text>
             <Text type="secondary">Wires: {circuit.wires.length}</Text>
             <Text type="secondary">
