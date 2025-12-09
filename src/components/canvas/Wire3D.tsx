@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { Vector3, CatmullRomCurve3 } from 'three'
+import { colors, materials } from '@/theme'
 
 interface Wire3DProps {
   start: { x: number; y: number; z: number } | null
@@ -12,7 +13,7 @@ interface Wire3DProps {
 export function Wire3D({ 
   start, 
   end, 
-  color = '#888888',
+  color = colors.gate.wireStub,
   isActive = false,
   isPreview = false 
 }: Wire3DProps) {
@@ -45,7 +46,11 @@ export function Wire3D({
     return isPreview ? 0.03 : 0.025
   }, [isPreview])
   
-  const wireColor = isActive ? '#00ff88' : isPreview ? '#4a9eff' : color
+  const wireColor = isActive 
+    ? colors.wire.active 
+    : isPreview 
+      ? colors.wire.preview 
+      : color
   const emissiveIntensity = isActive ? 0.5 : isPreview ? 0.3 : 0
   
   // Guard against undefined positions - return null AFTER hooks
@@ -60,12 +65,11 @@ export function Wire3D({
         color={wireColor}
         emissive={wireColor}
         emissiveIntensity={emissiveIntensity}
-        metalness={0.8}
-        roughness={0.2}
+        metalness={materials.pin.metalness}
+        roughness={materials.pin.roughness}
         transparent={isPreview}
         opacity={isPreview ? 0.7 : 1}
       />
     </mesh>
   )
 }
-

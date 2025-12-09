@@ -3,6 +3,7 @@ import { OrbitControls, Grid, Environment } from '@react-three/drei'
 import { Suspense, useState } from 'react'
 import { circuitActions, useCircuitStore } from '@/store/circuitStore'
 import { Wire3D } from './Wire3D'
+import { colors } from '@/theme'
 
 interface SceneProps {
   children?: React.ReactNode
@@ -22,9 +23,6 @@ function GroundPlaneWithPreview() {
       const z = snapToGrid(e.point.z)
       setCursorPos({ x, y: 0.4, z })
     } else if (isWiring) {
-      // Only update if we're not hovering over a pin (pins will update it themselves)
-      // This gives priority to pin positions for precise snapping
-      // Update wire preview with actual 3D intersection point from ground plane
       circuitActions.updateWirePreviewPosition({ 
         x: e.point.x, 
         y: e.point.y, 
@@ -49,12 +47,10 @@ function GroundPlaneWithPreview() {
       circuitActions.placeGate({ x, y: 0.4, z })
       setCursorPos(null)
     } else if (isWiring) {
-      // Cancel wiring when clicking on empty space
       e.stopPropagation()
       circuitActions.cancelWiring()
       setCursorPos(null)
     } else {
-      // Deselect when clicking on empty space
       circuitActions.selectGate(null)
     }
   }
@@ -74,24 +70,21 @@ function GroundPlaneWithPreview() {
         <meshBasicMaterial transparent opacity={0} />
       </mesh>
       
-      {/* Placement preview ring - follows cursor */}
+      {/* Placement preview ring */}
       {isPlacing && cursorPos && (
         <group position={[cursorPos.x, 0.02, cursorPos.z]}>
-          {/* Outer ring */}
           <mesh rotation={[-Math.PI / 2, 0, 0]}>
             <ringGeometry args={[0.5, 0.55, 32]} />
-            <meshBasicMaterial color="#4a9eff" transparent opacity={0.8} />
+            <meshBasicMaterial color={colors.primary} transparent opacity={0.8} />
           </mesh>
-          {/* Inner crosshair */}
           <mesh rotation={[-Math.PI / 2, 0, 0]}>
             <ringGeometry args={[0.05, 0.08, 16]} />
-            <meshBasicMaterial color="#4a9eff" transparent opacity={0.9} />
+            <meshBasicMaterial color={colors.primary} transparent opacity={0.9} />
           </mesh>
-          {/* Ghost gate preview */}
           <mesh position={[0, 0.4, 0]}>
             <boxGeometry args={[1.2, 0.8, 0.4]} />
             <meshStandardMaterial
-              color="#4a9eff"
+              color={colors.primary}
               transparent
               opacity={0.3}
               wireframe
@@ -100,7 +93,7 @@ function GroundPlaneWithPreview() {
         </group>
       )}
       
-      {/* Wire preview - follows cursor during wiring */}
+      {/* Wire preview during wiring */}
       {isWiring && circuit.wiringFrom && circuit.wiringFrom.previewEndPosition && (
         <Wire3D
           start={circuit.wiringFrom.fromPosition}
@@ -120,32 +113,25 @@ function SceneContent({ children }: SceneProps) {
   
   return (
     <>
-      {/* Lighting */}
       <ambientLight intensity={0.5} />
       <directionalLight position={[10, 10, 5]} intensity={1} castShadow />
-      
-      {/* Environment for realistic reflections */}
       <Environment preset="city" />
-      
-      {/* Ground plane with cursor-following preview */}
       <GroundPlaneWithPreview />
       
-      {/* Grid helper for spatial reference */}
       <Grid
         args={[20, 20]}
         cellSize={0.5}
         cellThickness={0.5}
-        cellColor={isInteracting ? '#4a9eff' : '#6f6f6f'}
+        cellColor={isInteracting ? colors.grid.active : colors.grid.cell}
         sectionSize={2}
         sectionThickness={1}
-        sectionColor={isInteracting ? '#4a9eff' : '#9d4b4b'}
+        sectionColor={isInteracting ? colors.grid.active : colors.grid.section}
         fadeDistance={30}
         fadeStrength={1}
         followCamera={false}
         infiniteGrid
       />
       
-      {/* Camera controls - disable rotation during placement/wiring for easier clicking */}
       <OrbitControls
         makeDefault
         enableDamping
@@ -156,18 +142,19 @@ function SceneContent({ children }: SceneProps) {
         enableRotate={!isInteracting}
       />
       
-      {/* Scene children (gates, wires, etc.) */}
       {children}
     </>
   )
 }
+
+const canvasStyle = { background: colors.background.main }
 
 export function Scene({ children }: SceneProps) {
   return (
     <Canvas
       shadows
       camera={{ position: [5, 5, 5], fov: 50 }}
-      style={{ background: '#1a1a2e' }}
+      style={canvasStyle}
     >
       <Suspense fallback={null}>
         <SceneContent>{children}</SceneContent>
@@ -175,4 +162,3 @@ export function Scene({ children }: SceneProps) {
     </Canvas>
   )
 }
-

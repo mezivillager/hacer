@@ -1,62 +1,10 @@
 import { proxy, useSnapshot, subscribe } from 'valtio'
 import { Vector3, Euler } from 'three'
+import type { CircuitState, GateInstance, GateType, Pin, Wire } from './types'
+import { gateLogic } from '@/simulation/gateLogic'
 
-// Gate logic functions
-const gateLogic: Record<GateInstance['type'], (inputs: boolean[]) => boolean> = {
-  NAND: (inputs) => !(inputs[0] && inputs[1]),
-  AND: (inputs) => inputs[0] && inputs[1],
-  OR: (inputs) => inputs[0] || inputs[1],
-  NOT: (inputs) => !inputs[0],
-  NOR: (inputs) => !(inputs[0] || inputs[1]),
-  XOR: (inputs) => inputs[0] !== inputs[1],
-  XNOR: (inputs) => inputs[0] === inputs[1],
-}
-
-// Types for the circuit simulation
-export interface Pin {
-  id: string
-  name: string
-  type: 'input' | 'output'
-  value: boolean
-}
-
-export interface Wire {
-  id: string
-  fromGateId: string
-  fromPinId: string
-  toGateId: string
-  toPinId: string
-}
-
-export interface GateInstance {
-  id: string
-  type: 'NAND' | 'AND' | 'OR' | 'NOT' | 'NOR' | 'XOR' | 'XNOR'
-  position: { x: number; y: number; z: number }
-  rotation: { x: number; y: number; z: number }
-  inputs: Pin[]
-  outputs: Pin[]
-  selected: boolean
-}
-
-export interface WiringState {
-  fromGateId: string
-  fromPinId: string
-  fromPinType: 'input' | 'output'
-  fromPosition: { x: number; y: number; z: number }
-  previewEndPosition: { x: number; y: number; z: number } | null
-}
-
-export interface CircuitState {
-  gates: GateInstance[]
-  wires: Wire[]
-  selectedGateId: string | null
-  simulationRunning: boolean
-  simulationSpeed: number // ms per tick
-  // Placement mode
-  placementMode: GateInstance['type'] | null
-  // Wiring mode
-  wiringFrom: WiringState | null
-}
+// Re-export types for convenience
+export type { CircuitState, GateInstance, GateType, Pin, Wire, WiringState } from './types'
 
 // Initial state
 export const circuitStore = proxy<CircuitState>({
@@ -71,7 +19,8 @@ export const circuitStore = proxy<CircuitState>({
 
 // Actions
 export const circuitActions = {
-  addGate: (type: GateInstance['type'], position: { x: number; y: number; z: number }) => {
+  // Gate actions
+  addGate: (type: GateType, position: { x: number; y: number; z: number }) => {
     const id = `gate-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
     
     const inputCount = type === 'NOT' ? 1 : 2
@@ -145,7 +94,8 @@ export const circuitActions = {
       }
     }
   },
-  
+
+  // Wire actions
   addWire: (fromGateId: string, fromPinId: string, toGateId: string, toPinId: string) => {
     const wire: Wire = {
       id: `wire-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
@@ -174,7 +124,8 @@ export const circuitActions = {
       }
     }
   },
-  
+
+  // Simulation actions
   toggleSimulation: () => {
     circuitStore.simulationRunning = !circuitStore.simulationRunning
   },
@@ -189,9 +140,9 @@ export const circuitActions = {
     circuitStore.selectedGateId = null
     circuitStore.placementMode = null
   },
-  
+
   // Placement mode actions
-  startPlacement: (type: GateInstance['type']) => {
+  startPlacement: (type: GateType) => {
     circuitStore.placementMode = type
     circuitStore.selectedGateId = null
   },
@@ -206,7 +157,7 @@ export const circuitActions = {
       circuitStore.placementMode = null
     }
   },
-  
+
   // Wiring mode actions
   startWiring: (gateId: string, pinId: string, pinType: 'input' | 'output', position: { x: number; y: number; z: number }) => {
     circuitStore.wiringFrom = {
@@ -219,7 +170,6 @@ export const circuitActions = {
     circuitStore.placementMode = null
   },
   
-  // Update wire preview end position
   updateWirePreviewPosition: (position: { x: number; y: number; z: number } | null) => {
     if (circuitStore.wiringFrom) {
       circuitStore.wiringFrom.previewEndPosition = position
@@ -272,32 +222,27 @@ export const circuitActions = {
     circuitStore.wiringFrom = null
   },
   
-  // Get pin world position helper (accounts for gate rotation)
+  // Helper to get pin world position (accounts for gate rotation)
   getPinWorldPosition: (gateId: string, pinId: string): { x: number; y: number; z: number } | null => {
     const gate = circuitStore.gates.find(g => g.id === gateId)
     if (!gate) return null
     
-    // Find which pin it is and get local offset
     const inputIndex = gate.inputs.findIndex(p => p.id === pinId)
     const outputIndex = gate.outputs.findIndex(p => p.id === pinId)
     
     let localOffset: Vector3
     if (inputIndex !== -1) {
-      // Input pins are on the left side
       const yOffset = inputIndex === 0 ? 0.2 : -0.2
       localOffset = new Vector3(-0.7, yOffset, 0)
     } else if (outputIndex !== -1) {
-      // Output pin is on the right side
       localOffset = new Vector3(0.7, 0, 0)
     } else {
       return null
     }
     
-    // Apply rotation
     const euler = new Euler(gate.rotation.x, gate.rotation.y, gate.rotation.z, 'XYZ')
     localOffset.applyEuler(euler)
     
-    // Add to gate position
     return {
       x: gate.position.x + localOffset.x,
       y: gate.position.y + localOffset.y,
@@ -339,11 +284,9 @@ export const circuitActions = {
 // Simulation loop
 let simulationInterval: ReturnType<typeof setInterval> | null = null
 
-// Subscribe to simulation state changes
 subscribe(circuitStore, () => {
   if (circuitStore.simulationRunning) {
     if (!simulationInterval) {
-      // Start simulation loop
       simulationInterval = setInterval(() => {
         circuitActions.simulationTick()
       }, circuitStore.simulationSpeed)
@@ -358,4 +301,3 @@ subscribe(circuitStore, () => {
 
 // Hook for reading state reactively
 export const useCircuitStore = () => useSnapshot(circuitStore)
-

@@ -1,0 +1,1382 @@
+# Nand2Fun LLM Development Guide
+
+**PURPOSE**: Ensure AI-generated code doesn't break existing functionality as the codebase scales.
+**SCOPE**: React Three Fiber 3D components, Valtio state, Ant Design UI, testing patterns.
+**REQUIREMENT**: Follow these patterns for ALL code changes - test coverage is mandatory.
+
+---
+
+## 🚨 NON-NEGOTIABLE RULES
+
+### ALWAYS
+✅ Write tests BEFORE or WITH new features (unit, component, or E2E)
+✅ Run existing tests before committing (`npm test`)
+✅ Use TypeScript with strict types (no `any`, no missing interfaces)
+✅ Call hooks only at the top level (never in loops, conditions, or callbacks)
+✅ Keep components under 200 lines (split if larger)
+✅ Import from `antd` directly for UI components
+✅ Use Valtio `proxy()` for shared state, `useSnapshot()` to read
+✅ Memoize 3D components with `memo()` and geometries with `useMemo()`
+✅ Dispose Three.js resources on unmount (geometries, materials, textures)
+✅ Handle loading and error states explicitly
+✅ Keep gate logic pure and testable (no side effects)
+✅ Extract complex logic into custom hooks (separation of concerns)
+
+### NEVER
+❌ Skip tests for "simple" changes (simple changes cause regressions)
+❌ Call hooks conditionally or in loops/callbacks (violates Rules of Hooks)
+❌ Create components over 300 lines (split immediately)
+❌ Mix business logic with UI rendering (extract to hooks)
+❌ Modify existing function signatures without updating all callers
+❌ Use `console.log()` for user feedback (use Ant Design Message/Notification)
+❌ Create new 3D geometries inside render loops
+❌ Mutate Valtio state outside of action functions
+❌ Import Three.js objects you don't dispose
+❌ Add features without considering how they'll be tested
+❌ Break existing E2E test flows
+❌ Use inline object/function literals in JSX props (causes unnecessary re-renders)
+
+---
+
+## ⚛️ React Best Practices
+
+### Component Size and Structure
+
+**Component Line Limits:**
+- **Target**: Keep components under **200 lines** of code
+- **Maximum**: Components should never exceed **300 lines** - split immediately if they do
+- **Ideal**: Aim for **100-150 lines** for optimal readability and maintainability
+
+**When to Split a Component:**
+```typescript
+// ❌ TOO LARGE - 300+ lines, multiple responsibilities
+export const App = () => {
+  // 50 lines of hooks
+  // 50 lines of handlers
+  // 100 lines of JSX layout
+  // 100 lines of JSX sidebar
+  // 50 lines of JSX canvas
+};
+
+// ✅ CORRECT - Split into focused components
+export const App = () => {
+  return (
+    <Layout>
+      <Sidebar />
+      <CanvasArea />
+    </Layout>
+  );
+};
+
+// Sidebar.tsx - ~100 lines
+// CanvasArea.tsx - ~80 lines
+// App.tsx - ~50 lines
+```
+
+**Single Responsibility Principle:**
+- Each component should do ONE thing well
+- If a component handles multiple concerns (state, rendering, business logic), extract them
+
+```typescript
+// ❌ WRONG - Component does too much
+export const GateEditor = ({ gateId }) => {
+  const [gate, setGate] = useState(null);
+  const [loading, setLoading] = useState(false);
+  
+  useEffect(() => {
+    fetchGate(gateId).then(setGate);
+  }, [gateId]);
+  
+  const handleSave = async () => { /* ... */ };
+  const handleDelete = async () => { /* ... */ };
+  
+  // 200+ lines of JSX for editing, validation, preview...
+};
+
+// ✅ CORRECT - Extract hooks and sub-components
+export const GateEditor = ({ gateId }) => {
+  const { gate, loading, saveGate, deleteGate } = useGate(gateId);
+  
+  if (loading) return <GateEditorSkeleton />;
+  
+  return (
+    <>
+      <GateEditorForm gate={gate} onSave={saveGate} />
+      <GatePreview gate={gate} />
+      <GateEditorActions onDelete={deleteGate} />
+    </>
+  );
+};
+```
+
+### Hooks Best Practices
+
+**Rules of Hooks (Non-Negotiable):**
+```typescript
+// ✅ CORRECT - Hooks at top level, same order
+function Component({ id }) {
+  const [state, setState] = useState(null); // Always first
+  const snap = useSnapshot(store);           // Then other hooks
+  const memoized = useMemo(() => ..., []);   // Then memoization
+  
+  useEffect(() => { ... }, [id]);            // Effects last
+  
+  // Early returns AFTER all hooks
+  if (!state) return null;
+  
+  return <div>...</div>;
+}
+
+// ❌ WRONG - Hooks in conditions
+function BadComponent({ id }) {
+  if (!id) return null; // ❌ Early return before hooks
+  
+  const [state, setState] = useState(null); // ❌ Hook after condition
+}
+
+// ❌ WRONG - Hooks in loops or callbacks
+function BadComponent({ items }) {
+  return items.map(item => {
+    const [state, setState] = useState(null); // ❌ Hook in map
+    return <div>...</div>;
+  });
+}
+```
+
+**Custom Hooks for Reusable Logic:**
+```typescript
+// ✅ CORRECT - Extract complex logic into custom hooks
+// hooks/useGatePlacement.ts
+export const useGatePlacement = (gateType: string) => {
+  const [isPlacing, setIsPlacing] = useState(false);
+  const [previewPos, setPreviewPos] = useState<[number, number, number] | null>(null);
+  
+  const startPlacement = useCallback(() => {
+    setIsPlacing(true);
+    circuitActions.startPlacement(gateType);
+  }, [gateType]);
+  
+  const cancelPlacement = useCallback(() => {
+    setIsPlacing(false);
+    circuitActions.cancelPlacement();
+  }, []);
+  
+  const placeGate = useCallback((position: [number, number, number]) => {
+    circuitActions.placeGate(gateType, position);
+    setIsPlacing(false);
+  }, [gateType]);
+  
+  return { isPlacing, previewPos, startPlacement, cancelPlacement, placeGate };
+};
+
+// Component uses clean hook interface
+export const GatePlacer = ({ gateType }) => {
+  const { isPlacing, startPlacement, cancelPlacement } = useGatePlacement(gateType);
+  // Component is now simple and focused
+};
+```
+
+**useEffect Dependency Arrays:**
+```typescript
+// ✅ CORRECT - All dependencies included
+useEffect(() => {
+  const timer = setInterval(() => {
+    if (circuit.selectedGateId) {
+      circuitActions.updateGate(circuit.selectedGateId);
+    }
+  }, 1000);
+  
+  return () => clearInterval(timer);
+}, [circuit.selectedGateId]); // All dependencies listed
+
+// ❌ WRONG - Missing dependencies
+useEffect(() => {
+  fetchData(circuit.selectedGateId, circuit.isSimulating);
+  // Missing circuit.isSimulating in deps
+}, [circuit.selectedGateId]); // ❌ Incomplete deps
+```
+
+**useCallback and useMemo Guidelines:**
+```typescript
+// ✅ CORRECT - Memoize expensive computations and stable callbacks
+const ExpensiveComponent = ({ gates, selectedId }) => {
+  // Memoize expensive computation
+  const sortedGates = useMemo(() => {
+    return gates.sort((a, b) => a.position.y - b.position.y);
+  }, [gates]);
+  
+  // Memoize callback passed to child (prevents re-renders)
+  const handleGateClick = useCallback((id: string) => {
+    circuitActions.selectGate(id);
+  }, []);
+  
+  // Memoize callback with dependencies
+  const handlePinClick = useCallback((gateId: string, pinId: string) => {
+    if (selectedId === gateId) {
+      circuitActions.togglePin(gateId, pinId);
+    }
+  }, [selectedId]);
+  
+  return <GateList gates={sortedGates} onGateClick={handleGateClick} />;
+};
+
+// ❌ WRONG - Don't memoize trivial computations
+const SimpleComponent = ({ count }) => {
+  // This is too simple to memoize
+  const doubled = useMemo(() => count * 2, [count]); // ❌ Unnecessary
+  return <div>{doubled}</div>;
+  
+  // Just do this:
+  // return <div>{count * 2}</div>;
+};
+```
+
+### Component Composition and Props
+
+**Props Destructuring:**
+```typescript
+// ✅ CORRECT - Destructure props with defaults
+interface GateProps {
+  id: string;
+  position?: [number, number, number];
+  selected?: boolean;
+  onClick?: () => void;
+}
+
+export const Gate = ({ 
+  id, 
+  position = [0, 0, 0],  // Default values
+  selected = false,
+  onClick 
+}: GateProps) => {
+  // Component body
+};
+
+// ❌ WRONG - Accessing props directly
+export const BadGate = (props: GateProps) => {
+  return <div onClick={props.onClick}>{props.id}</div>; // Verbose
+};
+```
+
+**Component Composition:**
+```typescript
+// ✅ CORRECT - Compose components instead of one large component
+export const CircuitCanvas = () => {
+  return (
+    <Canvas>
+      <Scene />
+      <Gates />
+      <Wires />
+      <Grid />
+    </Canvas>
+  );
+};
+
+// ✅ CORRECT - Use children prop for flexible composition
+interface CardProps {
+  title: string;
+  children: React.ReactNode;
+}
+
+export const Card = ({ title, children }: CardProps) => {
+  return (
+    <Card>
+      <CardHeader>{title}</CardHeader>
+      <CardBody>{children}</CardBody>
+    </Card>
+  );
+};
+
+// Usage:
+<Card title="Gates">
+  <GateList />
+  <AddGateButton />
+</Card>
+```
+
+### File Organization
+
+**File Naming Conventions:**
+- **Components**: PascalCase - `GateEditor.tsx`, `WireRenderer.tsx`
+- **Hooks**: camelCase starting with "use" - `useGatePlacement.ts`, `useCircuitState.ts`
+- **Utilities**: camelCase - `gateLogic.ts`, `simulationEngine.ts`
+- **Types**: camelCase - `circuit.ts`, `gate.ts` (or co-located with component)
+- **Tests**: Same name + `.test.ts` or `.spec.ts` - `GateEditor.test.tsx`
+
+**File Co-location:**
+```
+✅ CORRECT - Keep related files together
+components/
+  GateEditor/
+    GateEditor.tsx
+    GateEditor.test.tsx
+    GateEditor.css
+    index.ts                    # Re-export component
+    types.ts                    # Component-specific types
+
+hooks/
+  useGatePlacement.ts
+  useGatePlacement.test.ts
+
+❌ WRONG - Separating related files
+components/
+  GateEditor.tsx
+  GateEditor.test.tsx          # In separate tests/ folder
+  GateEditor.css               # In separate styles/ folder
+```
+
+**Barrel Exports (index.ts):**
+```typescript
+// ✅ CORRECT - Use index.ts for clean imports
+// components/gates/index.ts
+export { NandGate } from './NandGate';
+export { AndGate } from './AndGate';
+export { OrGate } from './OrGate';
+export type { GateProps, GateType } from './types';
+
+// Usage:
+import { NandGate, AndGate, type GateProps } from '@/components/gates';
+
+// ❌ WRONG - Direct imports from multiple files
+import { NandGate } from '@/components/gates/NandGate';
+import { AndGate } from '@/components/gates/AndGate';
+import { OrGate } from '@/components/gates/OrGate';
+```
+
+### State Management Patterns
+
+**Local vs Global State:**
+```typescript
+// ✅ CORRECT - Use local state for component-specific UI
+const GateEditor = () => {
+  const [isExpanded, setIsExpanded] = useState(false); // Local UI state
+  const [editorValue, setEditorValue] = useState('');  // Local form state
+  
+  // Use Valtio for shared state
+  const circuit = useSnapshot(circuitStore);
+  
+  return (
+    <Collapse expanded={isExpanded} onChange={setIsExpanded}>
+      <TextArea value={editorValue} onChange={e => setEditorValue(e.target.value)} />
+    </Collapse>
+  );
+};
+
+// ❌ WRONG - Don't put UI state in global store
+// circuitStore.isEditorExpanded = true; // ❌ UI state in global store
+```
+
+**Separating Logic from UI:**
+```typescript
+// ✅ CORRECT - Extract business logic to hooks
+// hooks/useWiring.ts
+export const useWiring = () => {
+  const circuit = useSnapshot(circuitStore);
+  const isWiring = circuit.wiringFrom !== null;
+  
+  const startWiring = useCallback((gateId: string, pinId: string, pinType: 'input' | 'output') => {
+    circuitActions.startWiring(gateId, pinId, pinType);
+  }, []);
+  
+  const completeWiring = useCallback((gateId: string, pinId: string) => {
+    circuitActions.completeWiring(gateId, pinId);
+  }, []);
+  
+  return { isWiring, startWiring, completeWiring };
+};
+
+// Component focuses on rendering
+export const WiringCanvas = () => {
+  const { isWiring, startWiring, completeWiring } = useWiring();
+  
+  return <Canvas onPinClick={isWiring ? completeWiring : startWiring} />;
+};
+```
+
+### TypeScript with React
+
+**Component Props Types:**
+```typescript
+// ✅ CORRECT - Explicit interface, exported for reuse
+export interface GateProps {
+  id: string;
+  position: [number, number, number];
+  selected?: boolean;
+  onClick?: (id: string) => void;
+  children?: React.ReactNode;
+}
+
+export const Gate: React.FC<GateProps> = ({ id, position, selected, onClick, children }) => {
+  // Component implementation
+};
+
+// ✅ ALSO CORRECT - Function component with typed props
+export function Gate({ id, position, selected, onClick, children }: GateProps) {
+  // Component implementation
+}
+
+// ❌ WRONG - No types or inline types
+export const Gate = ({ id, position, selected, onClick }) => { // ❌ No types
+  // ...
+};
+
+export const Gate: React.FC<{ id: string }> = ({ id }) => { // ❌ Inline types, not reusable
+  // ...
+};
+```
+
+**Event Handler Types:**
+```typescript
+// ✅ CORRECT - Typed event handlers
+interface GateProps {
+  onPinClick: (gateId: string, pinId: string, event: React.MouseEvent) => void;
+  onKeyDown?: (event: React.KeyboardEvent<HTMLDivElement>) => void;
+}
+
+export const Gate = ({ onPinClick, onKeyDown }: GateProps) => {
+  const handleClick = (e: React.MouseEvent) => {
+    onPinClick('gate-1', 'pin-1', e);
+  };
+  
+  return <div onClick={handleClick} onKeyDown={onKeyDown}>...</div>;
+};
+```
+
+### Performance Optimization
+
+**React.memo for Expensive Components:**
+```typescript
+// ✅ CORRECT - Memoize components that re-render frequently
+export const Gate3D = memo<Gate3DProps>(({ id, position, selected, onClick }) => {
+  // Expensive 3D rendering
+  return <mesh>...</mesh>;
+}, (prevProps, nextProps) => {
+  // Custom comparison if needed
+  return prevProps.id === nextProps.id && 
+         prevProps.selected === nextProps.selected;
+});
+
+// ❌ WRONG - Memoizing everything (premature optimization)
+export const SimpleLabel = memo(({ text }: { text: string }) => {
+  return <span>{text}</span>; // Too simple, memoization overhead not worth it
+});
+```
+
+**Lazy Loading for Routes/Features:**
+```typescript
+// ✅ CORRECT - Lazy load heavy components
+const ComplexChipEditor = lazy(() => import('./ComplexChipEditor'));
+
+export const App = () => {
+  return (
+    <Suspense fallback={<ChipEditorSkeleton />}>
+      <ComplexChipEditor />
+    </Suspense>
+  );
+};
+```
+
+---
+
+## 🧪 Testing Strategy
+
+### Test Type Selection Matrix
+
+| What to Test | Test Type | Tool | Priority |
+|--------------|-----------|------|----------|
+| Gate logic (NAND, OR, etc.) | Unit | Vitest | Critical |
+| Simulation engine | Unit | Vitest | Critical |
+| Valtio state mutations | Unit | Vitest | Critical |
+| UI button clicks, forms | Component | RTL + Vitest | High |
+| 3D component props | Component | RTL + Vitest | Medium |
+| Add gate → wire → simulate | E2E | Playwright | Critical |
+| Complex circuit workflows | E2E | Playwright | High |
+
+### Unit Tests (Vitest)
+
+```typescript
+// ✅ CORRECT - Pure function, easy to test
+// src/simulation/gateLogic.ts
+export const nandGate = (a: boolean, b: boolean): boolean => !(a && b);
+
+// src/simulation/gateLogic.test.ts
+import { describe, it, expect } from 'vitest';
+import { nandGate } from './gateLogic';
+
+describe('nandGate', () => {
+  it('returns true when both inputs are false', () => {
+    expect(nandGate(false, false)).toBe(true);
+  });
+  it('returns true when one input is false', () => {
+    expect(nandGate(true, false)).toBe(true);
+    expect(nandGate(false, true)).toBe(true);
+  });
+  it('returns false only when both inputs are true', () => {
+    expect(nandGate(true, true)).toBe(false);
+  });
+});
+```
+
+```typescript
+// ✅ CORRECT - Testing Valtio store actions
+// src/store/circuitStore.test.ts
+import { describe, it, expect, beforeEach } from 'vitest';
+import { circuitStore, circuitActions } from './circuitStore';
+
+describe('circuitStore', () => {
+  beforeEach(() => {
+    circuitActions.clearCircuit();
+  });
+
+  it('adds a gate with correct default values', () => {
+    circuitActions.addGate('nand', [0, 0, 0]);
+    expect(circuitStore.gates).toHaveLength(1);
+    expect(circuitStore.gates[0].type).toBe('nand');
+  });
+
+  it('removes wire when gate is deleted', () => {
+    circuitActions.addGate('nand', [0, 0, 0]);
+    circuitActions.addGate('nand', [2, 0, 0]);
+    const gate1 = circuitStore.gates[0].id;
+    const gate2 = circuitStore.gates[1].id;
+    
+    circuitActions.addWire(gate1, 'output', gate2, 'inputA');
+    expect(circuitStore.wires).toHaveLength(1);
+    
+    circuitActions.removeGate(gate1);
+    expect(circuitStore.wires).toHaveLength(0);
+  });
+});
+```
+
+### Component Tests (React Testing Library)
+
+```typescript
+// ✅ CORRECT - Testing UI interactions
+// src/components/Sidebar.test.tsx
+import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import { Sidebar } from './Sidebar';
+
+describe('Sidebar', () => {
+  it('starts placement mode when gate button clicked', () => {
+    const onStartPlacement = vi.fn();
+    render(<Sidebar onStartPlacement={onStartPlacement} />);
+    
+    fireEvent.click(screen.getByText('NAND'));
+    expect(onStartPlacement).toHaveBeenCalledWith('nand');
+  });
+});
+```
+
+### E2E Tests (Playwright)
+
+```typescript
+// ✅ CORRECT - Testing complete user workflow
+// e2e/circuit-building.spec.ts
+import { test, expect } from '@playwright/test';
+
+test.describe('Circuit Building', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('http://localhost:5173');
+  });
+
+  test('can add a NAND gate to the canvas', async ({ page }) => {
+    // Click NAND button in sidebar
+    await page.click('button:has-text("NAND")');
+    
+    // Click on canvas to place gate
+    await page.click('canvas', { position: { x: 400, y: 300 } });
+    
+    // Verify gate was added (check store or visual indicator)
+    await expect(page.locator('[data-testid="gate-count"]')).toHaveText('1');
+  });
+
+  test('can wire two gates together', async ({ page }) => {
+    // Add first gate
+    await page.click('button:has-text("NAND")');
+    await page.click('canvas', { position: { x: 300, y: 300 } });
+    
+    // Add second gate
+    await page.click('button:has-text("NAND")');
+    await page.click('canvas', { position: { x: 500, y: 300 } });
+    
+    // Start wiring from output pin
+    await page.click('[data-testid="gate-0-output"]');
+    
+    // Complete wire to input pin
+    await page.click('[data-testid="gate-1-inputA"]');
+    
+    // Verify wire exists
+    await expect(page.locator('[data-testid="wire-count"]')).toHaveText('1');
+  });
+
+  test('simulation propagates signals through wires', async ({ page }) => {
+    // Setup circuit...
+    // Toggle input
+    await page.keyboard.down('Shift');
+    await page.click('[data-testid="gate-0-inputA"]');
+    await page.keyboard.up('Shift');
+    
+    // Start simulation
+    await page.click('button:has-text("Start")');
+    
+    // Verify output changed
+    await expect(page.locator('[data-testid="gate-1-output"]')).toHaveClass(/active/);
+  });
+});
+```
+
+### Playwright Configuration
+
+```typescript
+// playwright.config.ts
+import { defineConfig } from '@playwright/test';
+
+export default defineConfig({
+  testDir: './e2e',
+  fullyParallel: true,
+  forbidOnly: !!process.env.CI,
+  retries: process.env.CI ? 2 : 0,
+  workers: process.env.CI ? 1 : undefined,
+  reporter: 'html',
+  use: {
+    baseURL: 'http://localhost:5173',
+    trace: 'on-first-retry',
+    screenshot: 'only-on-failure',
+  },
+  webServer: {
+    command: 'npm run dev',
+    url: 'http://localhost:5173',
+    reuseExistingServer: !process.env.CI,
+  },
+});
+```
+
+### Test Coverage Requirements
+
+- **Gate Logic**: 100% coverage (pure functions, easy to test)
+- **Store Actions**: 90%+ coverage (state mutations are critical)
+- **UI Components**: 80%+ coverage (user interactions)
+- **E2E Critical Paths**: Must cover: add gate, wire gates, run simulation
+
+---
+
+## 🎮 React Three Fiber Patterns
+
+### Component Structure
+
+```typescript
+// ✅ CORRECT - Memoized 3D component with proper cleanup
+import { memo, useMemo, useRef } from 'react';
+import { useFrame } from '@react-three/fiber';
+import * as THREE from 'three';
+
+interface Gate3DProps {
+  id: string;
+  position: [number, number, number];
+  rotation?: number;
+  selected?: boolean;
+  onClick?: () => void;
+}
+
+export const Gate3D = memo<Gate3DProps>(({ 
+  id, 
+  position, 
+  rotation = 0,
+  selected,
+  onClick 
+}) => {
+  const meshRef = useRef<THREE.Mesh>(null);
+  
+  // ✅ Memoize geometry - never recreate on re-render
+  const geometry = useMemo(() => new THREE.BoxGeometry(1, 0.5, 0.8), []);
+  
+  // ✅ Memoize material with dependencies
+  const material = useMemo(
+    () => new THREE.MeshStandardMaterial({ 
+      color: selected ? '#4a9eff' : '#333333' 
+    }),
+    [selected]
+  );
+
+  return (
+    <group position={position} rotation={[0, rotation, 0]}>
+      <mesh
+        ref={meshRef}
+        geometry={geometry}
+        material={material}
+        onClick={onClick}
+      />
+    </group>
+  );
+});
+
+Gate3D.displayName = 'Gate3D';
+```
+
+### Resource Cleanup Pattern
+
+```typescript
+// ✅ CORRECT - Dispose resources on unmount
+import { useEffect, useMemo } from 'react';
+import * as THREE from 'three';
+
+export const CustomMesh = () => {
+  const geometry = useMemo(() => new THREE.BufferGeometry(), []);
+  const material = useMemo(() => new THREE.MeshStandardMaterial(), []);
+
+  useEffect(() => {
+    return () => {
+      geometry.dispose();
+      material.dispose();
+    };
+  }, [geometry, material]);
+
+  return <mesh geometry={geometry} material={material} />;
+};
+```
+
+### Event Handling in 3D
+
+```typescript
+// ✅ CORRECT - Handle 3D events with proper typing
+import { ThreeEvent } from '@react-three/fiber';
+
+const handleClick = (e: ThreeEvent<MouseEvent>) => {
+  e.stopPropagation(); // Prevent event bubbling through 3D objects
+  const worldPosition = e.point; // THREE.Vector3
+  onSelect(id, worldPosition);
+};
+
+const handlePointerOver = (e: ThreeEvent<PointerEvent>) => {
+  e.stopPropagation();
+  document.body.style.cursor = 'pointer';
+};
+```
+
+### Performance: Instancing for Many Gates
+
+```typescript
+// ✅ CORRECT - Use instancing when rendering 50+ similar objects
+import { useRef, useMemo } from 'react';
+import { InstancedMesh, Object3D, Color } from 'three';
+
+interface InstancedGatesProps {
+  positions: [number, number, number][];
+  colors: string[];
+}
+
+export const InstancedGates = ({ positions, colors }: InstancedGatesProps) => {
+  const meshRef = useRef<InstancedMesh>(null);
+  const tempObject = useMemo(() => new Object3D(), []);
+  const tempColor = useMemo(() => new Color(), []);
+
+  useEffect(() => {
+    if (!meshRef.current) return;
+    
+    positions.forEach((pos, i) => {
+      tempObject.position.set(...pos);
+      tempObject.updateMatrix();
+      meshRef.current!.setMatrixAt(i, tempObject.matrix);
+      meshRef.current!.setColorAt(i, tempColor.set(colors[i]));
+    });
+    
+    meshRef.current.instanceMatrix.needsUpdate = true;
+    if (meshRef.current.instanceColor) {
+      meshRef.current.instanceColor.needsUpdate = true;
+    }
+  }, [positions, colors]);
+
+  return (
+    <instancedMesh ref={meshRef} args={[undefined, undefined, positions.length]}>
+      <boxGeometry args={[1, 0.5, 0.8]} />
+      <meshStandardMaterial />
+    </instancedMesh>
+  );
+};
+```
+
+### Testing R3F Components
+
+```typescript
+// ✅ Mock WebGL for component tests
+// src/test/setup.ts
+import { vi } from 'vitest';
+
+// Mock canvas and WebGL
+HTMLCanvasElement.prototype.getContext = vi.fn(() => ({
+  // Minimal WebGL mock
+}));
+
+// For testing R3F components, test the logic, not the rendering
+// Extract business logic into hooks that can be tested independently
+```
+
+---
+
+## 📦 Valtio State Management
+
+### Store Organization
+
+```typescript
+// ✅ CORRECT - Organized store with typed actions
+// src/store/circuitStore.ts
+import { proxy } from 'valtio';
+
+// Types
+export interface Gate {
+  id: string;
+  type: 'nand' | 'and' | 'or' | 'not' | 'nor' | 'xor';
+  position: [number, number, number];
+  rotation: number;
+  inputs: Record<string, boolean>;
+}
+
+export interface Wire {
+  id: string;
+  from: { gateId: string; pinId: string };
+  to: { gateId: string; pinId: string };
+}
+
+interface CircuitState {
+  gates: Gate[];
+  wires: Wire[];
+  selectedGateId: string | null;
+  isSimulating: boolean;
+}
+
+// State
+export const circuitStore = proxy<CircuitState>({
+  gates: [],
+  wires: [],
+  selectedGateId: null,
+  isSimulating: false,
+});
+
+// Actions - ALL mutations happen here
+export const circuitActions = {
+  addGate: (type: Gate['type'], position: [number, number, number]) => {
+    const gate: Gate = {
+      id: `gate-${Date.now()}`,
+      type,
+      position,
+      rotation: 0,
+      inputs: { inputA: false, inputB: false },
+    };
+    circuitStore.gates.push(gate);
+    return gate.id;
+  },
+
+  removeGate: (id: string) => {
+    // Remove associated wires first
+    circuitStore.wires = circuitStore.wires.filter(
+      w => w.from.gateId !== id && w.to.gateId !== id
+    );
+    circuitStore.gates = circuitStore.gates.filter(g => g.id !== id);
+  },
+
+  // ... more actions
+};
+```
+
+### Reading State in Components
+
+```typescript
+// ✅ CORRECT - Use useSnapshot for reactive reads
+import { useSnapshot } from 'valtio';
+import { circuitStore, circuitActions } from '@/store/circuitStore';
+
+export const GateList = () => {
+  const { gates, selectedGateId } = useSnapshot(circuitStore);
+  
+  return (
+    <>
+      {gates.map(gate => (
+        <Gate3D
+          key={gate.id}
+          {...gate}
+          selected={gate.id === selectedGateId}
+          onClick={() => circuitActions.selectGate(gate.id)}
+        />
+      ))}
+    </>
+  );
+};
+
+// ❌ WRONG - Direct store access won't trigger re-renders
+export const BadGateList = () => {
+  // This won't update when gates change!
+  return circuitStore.gates.map(gate => <Gate3D key={gate.id} {...gate} />);
+};
+```
+
+### Testing Valtio Stores
+
+```typescript
+// ✅ CORRECT - Test actions directly
+import { circuitStore, circuitActions } from './circuitStore';
+
+describe('circuitActions', () => {
+  beforeEach(() => {
+    // Reset store state
+    circuitStore.gates = [];
+    circuitStore.wires = [];
+    circuitStore.selectedGateId = null;
+  });
+
+  it('addGate creates gate with unique id', () => {
+    const id1 = circuitActions.addGate('nand', [0, 0, 0]);
+    const id2 = circuitActions.addGate('nand', [1, 0, 0]);
+    
+    expect(id1).not.toBe(id2);
+    expect(circuitStore.gates).toHaveLength(2);
+  });
+});
+```
+
+### Common Pitfalls
+
+```typescript
+// ❌ WRONG - Mutating outside actions
+const BadComponent = () => {
+  const snap = useSnapshot(circuitStore);
+  
+  const handleClick = () => {
+    // Don't do this! Mutations should be in circuitActions
+    circuitStore.gates.push({ ... });
+  };
+};
+
+// ❌ WRONG - Mutating snapshot (it's readonly)
+const AnotherBadComponent = () => {
+  const snap = useSnapshot(circuitStore);
+  snap.gates.push({ ... }); // TypeScript error + runtime error
+};
+
+// ✅ CORRECT - Use actions for mutations
+const GoodComponent = () => {
+  const handleClick = () => {
+    circuitActions.addGate('nand', [0, 0, 0]);
+  };
+};
+```
+
+---
+
+## 🎨 Ant Design Usage
+
+### Import Pattern
+
+```typescript
+// ✅ CORRECT - Direct antd import
+import { Button, Card, Space, Slider, Switch, Typography, message } from 'antd';
+const { Text, Title } = Typography;
+
+// ❌ WRONG - No wrapper library exists in this project
+import { Button } from '@duro/components';
+```
+
+### Component Selection Matrix
+
+| UI Need | Primary Choice | Alternative | Never Use |
+|---------|---------------|-------------|-----------|
+| **Sidebar panels** | Card | Collapse | custom divs |
+| **Gate buttons** | Button | - | custom buttons |
+| **Simulation controls** | Switch, Slider | - | html inputs |
+| **Tooltips** | Tooltip | Popover | title attr |
+| **Feedback** | message, notification | Alert | console.log |
+| **Layout** | Space, Flex | Layout | manual CSS |
+| **Lists** | List | Table | div loops |
+
+### Styling Pattern
+
+```typescript
+// ✅ CORRECT - Use Ant Design's style props
+<Card 
+  styles={{ 
+    body: { padding: 12 },
+    header: { borderBottom: 'none' }
+  }}
+>
+  <Space direction="vertical" size="small">
+    <Button type="primary" block>Add NAND Gate</Button>
+  </Space>
+</Card>
+
+// ❌ WRONG - Inline styles with hardcoded values
+<div style={{ padding: '12px', backgroundColor: '#f0f0f0' }}>
+```
+
+---
+
+## 📁 File Organization
+
+### Naming Conventions
+
+- **Components**: PascalCase - `GateEditor.tsx`, `WireRenderer.tsx`
+- **Hooks**: camelCase with "use" prefix - `useGatePlacement.ts`, `useCircuitState.ts`
+- **Utilities**: camelCase - `gateLogic.ts`, `simulationEngine.ts`
+- **Types**: camelCase - `circuit.ts`, `gate.ts` (or co-located with component)
+- **Tests**: Component name + `.test.tsx` - `GateEditor.test.tsx`
+- **Folders**: PascalCase for feature folders - `components/GateEditor/`
+
+### Current Structure
+
+```
+nand2fun/
+├── src/
+│   ├── components/
+│   │   ├── canvas/          # 3D scene components
+│   │   │   ├── Scene.tsx
+│   │   │   └── Wire3D.tsx
+│   │   └── ui/              # Ant Design UI components
+│   │       └── Sidebar.tsx
+│   ├── gates/               # Gate 3D components
+│   │   ├── NandGate.tsx
+│   │   ├── AndGate.tsx
+│   │   └── index.ts
+│   ├── simulation/          # Pure logic (no React)
+│   │   ├── gateLogic.ts
+│   │   ├── gateLogic.test.ts
+│   │   └── simulationEngine.ts
+│   ├── store/               # Valtio state
+│   │   ├── circuitStore.ts
+│   │   └── circuitStore.test.ts
+│   ├── types/               # Shared TypeScript types
+│   │   └── circuit.ts
+│   ├── App.tsx
+│   └── main.tsx
+├── e2e/                     # Playwright tests
+│   ├── circuit-building.spec.ts
+│   └── simulation.spec.ts
+├── playwright.config.ts
+└── vite.config.ts
+```
+
+### Scaling Guidelines
+
+As the project grows to support complex chips and full computer simulation:
+
+```
+nand2fun/
+├── src/
+│   ├── components/
+│   │   ├── canvas/
+│   │   └── ui/
+│   ├── gates/               # Basic gates (NAND, AND, OR, etc.)
+│   ├── chips/               # NEW: Composite chips (Mux, DMux, ALU)
+│   │   ├── Mux.tsx
+│   │   ├── ALU.tsx
+│   │   └── index.ts
+│   ├── computer/            # NEW: Full computer components
+│   │   ├── CPU.tsx
+│   │   ├── Memory.tsx
+│   │   └── index.ts
+│   ├── simulation/
+│   │   ├── gateLogic.ts
+│   │   ├── chipLogic.ts     # NEW: Chip-level simulation
+│   │   └── computerLogic.ts # NEW: Full computer simulation
+│   ├── store/
+│   │   ├── circuitStore.ts
+│   │   ├── chipStore.ts     # NEW: If chips need separate state
+│   │   └── index.ts
+│   └── ...
+```
+
+### Where to Put New Features
+
+| Feature Type | Location | Example |
+|--------------|----------|---------|
+| New basic gate | `src/gates/` | XorGate.tsx |
+| Gate logic function | `src/simulation/gateLogic.ts` | `xorGate()` |
+| Composite chip | `src/chips/` | Mux.tsx |
+| Chip logic | `src/simulation/chipLogic.ts` | `muxLogic()` |
+| New UI panel | `src/components/ui/` | ChipLibrary.tsx |
+| 3D helper | `src/components/canvas/` | PinConnector.tsx |
+| Shared types | `src/types/` | chip.ts |
+
+---
+
+## ⚡ Performance Patterns
+
+### R3F Optimizations
+
+```typescript
+// ✅ Disable auto-clear for complex scenes
+<Canvas gl={{ antialias: true, autoClear: false }}>
+
+// ✅ Use frameloop="demand" for static scenes
+<Canvas frameloop="demand">
+
+// ✅ Limit re-renders with invalidation
+import { invalidate } from '@react-three/fiber';
+// Only call invalidate() when something actually changes
+```
+
+### Large Circuit Handling (100+ Gates)
+
+1. **Instancing**: Use `InstancedMesh` for identical gates
+2. **Level of Detail**: Simplify distant gates
+3. **Frustum Culling**: Enable by default in R3F
+4. **Debounce Updates**: Batch rapid state changes
+
+```typescript
+// ✅ Debounce rapid simulation updates
+import { useDebouncedCallback } from 'use-debounce';
+
+const debouncedUpdate = useDebouncedCallback(
+  (gates) => circuitActions.updateAllGates(gates),
+  16 // ~60fps
+);
+```
+
+### Performance Testing
+
+```typescript
+// e2e/performance.spec.ts
+test('renders 100 gates without frame drops', async ({ page }) => {
+  // Add 100 gates programmatically
+  for (let i = 0; i < 100; i++) {
+    await page.evaluate((i) => {
+      window.circuitActions.addGate('nand', [i % 10, 0, Math.floor(i / 10)]);
+    }, i);
+  }
+  
+  // Measure frame rate
+  const fps = await page.evaluate(() => {
+    return new Promise(resolve => {
+      let frames = 0;
+      const start = performance.now();
+      const count = () => {
+        frames++;
+        if (performance.now() - start < 1000) {
+          requestAnimationFrame(count);
+        } else {
+          resolve(frames);
+        }
+      };
+      requestAnimationFrame(count);
+    });
+  });
+  
+  expect(fps).toBeGreaterThan(30);
+});
+```
+
+---
+
+## 🤖 AI Modification Guidelines
+
+### Before Modifying Existing Code
+
+1. **Read the existing tests** - Understand what behavior is expected
+2. **Run tests first** - Ensure they pass before changes
+3. **Understand callers** - Search for all usages of functions you modify
+4. **Preserve signatures** - Don't change function parameters without updating callers
+
+### Safe Modification Pattern
+
+```typescript
+// ❌ DANGEROUS - Changing function signature
+// Before
+export const addGate = (type: string, position: [number, number, number]) => { ... };
+
+// After - This breaks all callers!
+export const addGate = (config: GateConfig) => { ... };
+
+// ✅ SAFE - Backward compatible change
+// Add new function, deprecate old one
+export const addGate = (type: string, position: [number, number, number]) => {
+  return addGateWithConfig({ type, position, rotation: 0 });
+};
+
+export const addGateWithConfig = (config: GateConfig) => { ... };
+```
+
+### Adding New Features
+
+1. **Add tests first** (or with the feature)
+2. **Create new files** rather than bloating existing ones
+3. **Export from index.ts** for clean imports
+4. **Follow existing patterns** - look at similar code
+
+```typescript
+// ✅ CORRECT - New gate follows existing pattern
+// src/gates/XorGate.tsx
+import { memo } from 'react';
+import { BaseGate, BaseGateProps } from './BaseGate';
+
+export const XorGate = memo<BaseGateProps>((props) => {
+  return <BaseGate {...props} gateType="xor" />;
+});
+
+// src/gates/index.ts
+export { NandGate } from './NandGate';
+export { XorGate } from './XorGate'; // Add export
+```
+
+### Test Requirements for AI Changes
+
+| Change Type | Required Tests |
+|-------------|----------------|
+| New gate type | Unit test for logic + E2E test for wiring |
+| Store action | Unit test for mutation |
+| UI component | Component test for interactions |
+| Bug fix | Regression test that would have caught the bug |
+| Refactor | Existing tests must still pass |
+
+---
+
+## ✅ Code Review Checklist
+
+Before submitting ANY code change, verify:
+
+```typescript
+interface CodeReviewCriteria {
+  react: {
+    □ Hooks called only at top level (no conditionals/loops)?
+    □ Component under 200 lines (split if larger)?
+    □ Complex logic extracted to custom hooks?
+    □ Props properly typed with interfaces?
+    □ No inline object/function literals in JSX props?
+    □ useCallback/useMemo used appropriately (not overused)?
+    □ useEffect dependencies complete and correct?
+  };
+  testing: {
+    □ All existing tests pass (`npm test`)?
+    □ New tests added for new functionality?
+    □ Edge cases covered?
+    □ E2E test updated if user workflow changed?
+  };
+  types: {
+    □ No `any` types?
+    □ All props/params typed?
+    □ Interfaces defined for complex objects?
+    □ Event handlers properly typed?
+  };
+  performance: {
+    □ 3D geometries memoized?
+    □ Callbacks stabilized with useCallback?
+    □ No new objects created in render loops?
+    □ React.memo used for expensive components?
+  };
+  state: {
+    □ Mutations only in circuitActions?
+    □ useSnapshot used for reads?
+    □ No direct store mutation in components?
+    □ Local UI state not in global store?
+  };
+  regressions: {
+    □ Existing functionality still works?
+    □ No function signatures changed without updating callers?
+    □ Wire/gate interactions still work?
+    □ Simulation still propagates correctly?
+  };
+}
+```
+
+---
+
+## 🚫 Anti-Patterns to Avoid
+
+```typescript
+// ❌ ANTI-PATTERN: Modifying state directly
+const BadComponent = () => {
+  circuitStore.gates.push(newGate); // Will cause bugs
+};
+
+// ✅ CORRECT: Use actions
+const GoodComponent = () => {
+  circuitActions.addGate('nand', [0, 0, 0]);
+};
+
+// ❌ ANTI-PATTERN: Creating geometry in render
+const BadGate = ({ selected }) => {
+  // Creates new BoxGeometry EVERY render!
+  return <mesh geometry={new THREE.BoxGeometry(1, 1, 1)} />;
+};
+
+// ✅ CORRECT: Memoize geometry
+const GoodGate = ({ selected }) => {
+  const geometry = useMemo(() => new THREE.BoxGeometry(1, 1, 1), []);
+  return <mesh geometry={geometry} />;
+};
+
+// ❌ ANTI-PATTERN: Skipping tests
+// "It's just a small change, I'll test manually"
+
+// ✅ CORRECT: Always add tests
+it('small change works correctly', () => {
+  expect(smallChange()).toBe(expectedResult);
+});
+
+// ❌ ANTI-PATTERN: Hooks in conditions
+const BadComponent = ({ show }) => {
+  if (!show) return null; // ❌ Early return before hooks
+  const [state, setState] = useState(null); // ❌ Violates Rules of Hooks
+};
+
+// ✅ CORRECT: All hooks before any returns
+const GoodComponent = ({ show }) => {
+  const [state, setState] = useState(null);
+  if (!show) return null; // ✅ Early return after hooks
+};
+
+// ❌ ANTI-PATTERN: Inline functions/objects in JSX (causes re-renders)
+<GateComponent 
+  onClick={() => handleClick(id)}  // ❌ New function every render
+  style={{ color: 'blue' }}        // ❌ New object every render
+/>
+
+// ✅ CORRECT: Memoize callbacks, extract style objects
+const handleClick = useCallback(() => handleClick(id), [id]);
+const style = useMemo(() => ({ color: 'blue' }), []);
+<GateComponent onClick={handleClick} style={style} />
+```
+
+---
+
+## 📚 Quick References
+
+### NPM Scripts
+```bash
+npm run dev          # Start dev server
+npm test             # Run Vitest unit/component tests
+npm run test:e2e     # Run Playwright E2E tests
+npm run test:coverage # Generate coverage report
+```
+
+### External Resources
+- React Three Fiber: https://docs.pmnd.rs/react-three-fiber
+- Drei (R3F helpers): https://github.com/pmndrs/drei
+- Valtio: https://github.com/pmndrs/valtio
+- Ant Design: https://ant.design/components/overview
+- Playwright: https://playwright.dev/docs/intro
+- Vitest: https://vitest.dev/guide/
+
+### Debug Helpers
+```typescript
+// Log store state changes
+import { subscribe } from 'valtio';
+subscribe(circuitStore, () => console.log('State:', circuitStore));
+
+// Inspect 3D scene
+// In browser console with React DevTools + R3F
+window.__THREE_DEVTOOLS__ // Three.js inspector
+```
+
+---
+
+## 🎯 Review as Sr. Staff Engineer
+
+When reviewing generated code, ask:
+
+1. **Regression Risk**: Could this break existing wire/gate/simulation behavior?
+2. **Test Coverage**: Are there tests that would catch future breaks?
+3. **Performance**: Will this scale to 100+ gates?
+4. **Maintainability**: Will this be easy to modify in 6 months?
+5. **Consistency**: Does this follow existing patterns in the codebase?
+
+If any answer is concerning, add tests or refactor before merging.
+

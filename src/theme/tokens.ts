@@ -1,0 +1,90 @@
+// Centralized color tokens for the application
+// All colors should be defined here and imported where needed
+
+export const colors = {
+  // Primary brand color
+  primary: '#4a9eff',
+
+  // Gate body colors
+  gate: {
+    body: '#3a4a5a',
+    bodyHover: '#5a6a7a',
+    bodySelected: '#4a9eff',
+    label: '#1a1a2e',
+    wireStub: '#888888',
+    negationBubble: '#ffffff',
+  },
+
+  // Pin state colors
+  pin: {
+    active: '#00ff88',
+    inactive: '#ff4444',
+    disconnected: '#555555',
+  },
+
+  // Wire colors
+  wire: {
+    active: '#00ff88',
+    inactive: '#ff4444',
+    preview: '#4a9eff',
+  },
+
+  // Background colors
+  background: {
+    main: '#1a1a2e',
+    sidebarStart: '#1a1a2e',
+    sidebarEnd: '#16213e',
+  },
+
+  // Border colors
+  border: {
+    default: '#2a2a4a',
+  },
+
+  // Grid colors
+  grid: {
+    cell: '#6f6f6f',
+    section: '#9d4b4b',
+    active: '#4a9eff',
+  },
+
+  // Text colors
+  text: {
+    primary: '#ffffff',
+    secondary: 'rgba(255, 255, 255, 0.65)',
+  },
+
+  // Overlay colors
+  overlay: {
+    background: 'rgba(0, 0, 0, 0.7)',
+    labelBackground: 'rgba(0, 0, 0, 0.8)',
+  },
+} as const
+
+// Semantic tokens for common use cases
+export const semanticColors = {
+  success: colors.pin.active,
+  error: colors.pin.inactive,
+  info: colors.primary,
+} as const
+
+// Material properties for 3D objects
+export const materials = {
+  gate: {
+    metalness: 0.3,
+    roughness: 0.7,
+  },
+  pin: {
+    metalness: 0.8,
+    roughness: 0.2,
+  },
+  wireStub: {
+    metalness: 0.9,
+    roughness: 0.1,
+  },
+} as const
+
+// Type exports for type safety
+export type ColorTokens = typeof colors
+export type SemanticColors = typeof semanticColors
+export type MaterialTokens = typeof materials

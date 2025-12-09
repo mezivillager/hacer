@@ -3,6 +3,7 @@ import { Group } from 'three'
 import { ThreeEvent } from '@react-three/fiber'
 import { Html } from '@react-three/drei'
 import { circuitActions } from '@/store/circuitStore'
+import { colors, materials } from '@/theme'
 
 interface NandGateProps {
   id: string
@@ -46,18 +47,22 @@ export function NandGate({
   
   const output = nandLogic(inputA, inputB)
   
-  // Colors
-  const bodyColor = selected ? '#4a9eff' : hovered ? '#5a6a7a' : '#3a4a5a'
+  // Gate body color based on state
+  const bodyColor = selected 
+    ? colors.gate.bodySelected 
+    : hovered 
+      ? colors.gate.bodyHover 
+      : colors.gate.body
   
   // Pin colors based on connection status and value
   const getPinColor = (value: boolean, connected: boolean, pinName: string, isOutput: boolean = false) => {
-    if (isWiring && hoveredPin === pinName) return '#4a9eff'
+    if (isWiring && hoveredPin === pinName) return colors.primary
     // Outputs always show their calculated value
-    if (isOutput) return value ? '#00ff88' : '#ff4444'
+    if (isOutput) return value ? colors.pin.active : colors.pin.inactive
     // Connected inputs show wire value
-    if (connected) return value ? '#00ff88' : '#ff4444'
+    if (connected) return value ? colors.pin.active : colors.pin.inactive
     // Unconnected inputs: show value if set (true=green), otherwise dim grey
-    return value ? '#00ff88' : '#555555'
+    return value ? colors.pin.active : colors.pin.disconnected
   }
   
   const inputAColor = getPinColor(inputA, inputAConnected, 'inputA', false)
@@ -72,14 +77,9 @@ export function NandGate({
   }
   
   const getWorldPosition = (localOffset: [number, number, number], eventPoint?: { x: number; y: number; z: number }) => {
-    // If we have the event's world point, use it directly (already transformed)
     if (eventPoint) {
       return eventPoint
     }
-    
-    // Otherwise calculate from local offset and rotation
-    // For now, simple addition (will work if rotation is 0,0,0)
-    // TODO: Apply rotation transformation if needed
     return {
       x: position[0] + localOffset[0],
       y: position[1] + localOffset[1],
@@ -90,34 +90,41 @@ export function NandGate({
   const handlePinPointerMove = (localOffset: [number, number, number]) => (e: ThreeEvent<PointerEvent>) => {
     if (isWiring) {
       e.stopPropagation()
-      // Use event point if available, otherwise calculate
       const worldPos = getWorldPosition(localOffset, e.point ? { x: e.point.x, y: e.point.y, z: e.point.z } : undefined)
       circuitActions.updateWirePreviewPosition(worldPos)
     }
   }
   
   const handlePinPointerOut = () => {
-    // Clear preview position when leaving pin (will use ground plane position instead)
-    // The ground plane handler will set it back
+    // Clear preview position when leaving pin
   }
   
   const handlePinClick = (pinId: string, pinType: 'input' | 'output', localOffset: [number, number, number], isConnected: boolean) => (e: ThreeEvent<MouseEvent>) => {
     e.stopPropagation()
     
-    // Shift + click on unconnected input = toggle value
     if (e.shiftKey && pinType === 'input' && !isConnected) {
       onInputToggle?.(id, pinId)
       return
     }
     
-    // Normal click = wiring - use event point if available (accounts for rotation)
     const worldPos = getWorldPosition(localOffset, e.point ? { x: e.point.x, y: e.point.y, z: e.point.z } : undefined)
     onPinClick?.(id, pinId, pinType, worldPos)
   }
   
+  // Label overlay styles
+  const labelStyle = {
+    background: colors.overlay.labelBackground,
+    color: colors.text.primary,
+    padding: '4px 8px',
+    borderRadius: '4px',
+    fontSize: '12px',
+    whiteSpace: 'nowrap' as const,
+    fontFamily: 'monospace',
+  }
+  
   return (
     <group ref={groupRef} position={position} rotation={rotation}>
-      {/* Main body - box shape representing the gate */}
+      {/* Main body */}
       <mesh
         onClick={handleClick}
         onPointerOver={() => setHovered(true)}
@@ -126,18 +133,18 @@ export function NandGate({
         <boxGeometry args={[1.2, 0.8, 0.4]} />
         <meshStandardMaterial
           color={bodyColor}
-          metalness={0.3}
-          roughness={0.7}
+          metalness={materials.gate.metalness}
+          roughness={materials.gate.roughness}
         />
       </mesh>
       
       {/* NAND label on top */}
       <mesh position={[0, 0.41, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[0.8, 0.3]} />
-        <meshBasicMaterial color="#1a1a2e" />
+        <meshBasicMaterial color={colors.gate.label} />
       </mesh>
       
-      {/* Input A pin (left side, top) */}
+      {/* Input A pin */}
       <mesh
         position={[-0.7, 0.2, 0]}
         onClick={handlePinClick(`${id}-in-0`, 'input', [-0.7, 0.2, 0], inputAConnected)}
@@ -153,12 +160,12 @@ export function NandGate({
           color={inputAColor}
           emissive={inputAColor}
           emissiveIntensity={inputAConnected && inputA ? 0.5 : hoveredPin === 'inputA' ? 0.3 : 0.1}
-          metalness={0.8}
-          roughness={0.2}
+          metalness={materials.pin.metalness}
+          roughness={materials.pin.roughness}
         />
       </mesh>
       
-      {/* Input B pin (left side, bottom) */}
+      {/* Input B pin */}
       <mesh
         position={[-0.7, -0.2, 0]}
         onClick={handlePinClick(`${id}-in-1`, 'input', [-0.7, -0.2, 0], inputBConnected)}
@@ -174,12 +181,12 @@ export function NandGate({
           color={inputBColor}
           emissive={inputBColor}
           emissiveIntensity={inputBConnected && inputB ? 0.5 : hoveredPin === 'inputB' ? 0.3 : 0.1}
-          metalness={0.8}
-          roughness={0.2}
+          metalness={materials.pin.metalness}
+          roughness={materials.pin.roughness}
         />
       </mesh>
       
-      {/* Output pin (right side) with bubble (NAND indicator) */}
+      {/* Output pin */}
       <mesh 
         position={[0.7, 0, 0]}
         onClick={handlePinClick(`${id}-out-0`, 'output', [0.7, 0, 0], outputConnected)}
@@ -195,43 +202,47 @@ export function NandGate({
           color={outputColor}
           emissive={outputColor}
           emissiveIntensity={output ? 0.5 : hoveredPin === 'output' ? 0.3 : 0.1}
-          metalness={0.8}
-          roughness={0.2}
+          metalness={materials.pin.metalness}
+          roughness={materials.pin.roughness}
         />
       </mesh>
       
-      {/* Negation bubble (small circle indicating NAND) */}
+      {/* Negation bubble */}
       <mesh position={[0.55, 0, 0]}>
         <ringGeometry args={[0.06, 0.08, 16]} />
-        <meshBasicMaterial color="#ffffff" />
+        <meshBasicMaterial color={colors.gate.negationBubble} />
       </mesh>
       
       {/* Wire stubs */}
       <mesh position={[-0.85, 0.2, 0]} rotation={[0, 0, Math.PI / 2]}>
         <cylinderGeometry args={[0.02, 0.02, 0.2, 8]} />
-        <meshStandardMaterial color="#888888" metalness={0.9} roughness={0.1} />
+        <meshStandardMaterial 
+          color={colors.gate.wireStub} 
+          metalness={materials.wireStub.metalness} 
+          roughness={materials.wireStub.roughness} 
+        />
       </mesh>
       <mesh position={[-0.85, -0.2, 0]} rotation={[0, 0, Math.PI / 2]}>
         <cylinderGeometry args={[0.02, 0.02, 0.2, 8]} />
-        <meshStandardMaterial color="#888888" metalness={0.9} roughness={0.1} />
+        <meshStandardMaterial 
+          color={colors.gate.wireStub} 
+          metalness={materials.wireStub.metalness} 
+          roughness={materials.wireStub.roughness} 
+        />
       </mesh>
       <mesh position={[0.85, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
         <cylinderGeometry args={[0.02, 0.02, 0.2, 8]} />
-        <meshStandardMaterial color="#888888" metalness={0.9} roughness={0.1} />
+        <meshStandardMaterial 
+          color={colors.gate.wireStub} 
+          metalness={materials.wireStub.metalness} 
+          roughness={materials.wireStub.roughness} 
+        />
       </mesh>
       
       {/* HTML label overlay */}
       {(hovered || selected) && (
         <Html position={[0, 0.7, 0]} center>
-          <div style={{
-            background: 'rgba(0, 0, 0, 0.8)',
-            color: 'white',
-            padding: '4px 8px',
-            borderRadius: '4px',
-            fontSize: '12px',
-            whiteSpace: 'nowrap',
-            fontFamily: 'monospace',
-          }}>
+          <div style={labelStyle}>
             NAND: {inputA ? '1' : '0'} ∧ {inputB ? '1' : '0'} → {output ? '1' : '0'}
           </div>
         </Html>
