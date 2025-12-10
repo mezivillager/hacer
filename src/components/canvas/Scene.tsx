@@ -1,9 +1,12 @@
-import { Canvas, ThreeEvent } from '@react-three/fiber'
+import { Canvas, ThreeEvent, useFrame, useThree } from '@react-three/fiber'
+import { useEffect, useRef } from 'react'
 import { OrbitControls, Grid, Environment } from '@react-three/drei'
 import { Suspense, useState } from 'react'
 import { circuitActions, useCircuitStore } from '@/store/circuitStore'
 import { Wire3D } from './Wire3D'
 import { colors } from '@/theme'
+import { Vector3 } from 'three'
+import '@/types/testingGlobals' // Import for Window augmentation side-effect
 
 interface SceneProps {
   children?: React.ReactNode
@@ -149,14 +152,55 @@ function SceneContent({ children }: SceneProps) {
 
 const canvasStyle = { background: colors.background.main }
 
+function SceneReadyBridge() {
+  const { camera, gl } = useThree()
+  const readyRef = useRef(false)
+
+  useEffect(() => {
+    return () => {
+      if (typeof window !== 'undefined') {
+        delete window.__SCENE_READY__
+        delete window.__SCENE_HELPERS__
+      }
+    }
+  }, [])
+
+  useFrame(() => {
+    if (readyRef.current) return
+    readyRef.current = true
+
+    if (typeof window === 'undefined') return
+    const domRect = gl.domElement.getBoundingClientRect()
+
+    window.__SCENE_READY__ = true
+    window.__SCENE_HELPERS__ = {
+      projectToScreen: (position: { x: number; y: number; z: number }) => {
+        const vec = new Vector3(position.x, position.y, position.z)
+        vec.project(camera)
+        return {
+          x: ((vec.x + 1) / 2) * domRect.width + domRect.left,
+          y: ((-vec.y + 1) / 2) * domRect.height + domRect.top,
+        }
+      },
+      canvasRect: () => gl.domElement.getBoundingClientRect(),
+    }
+
+    window.dispatchEvent(new Event('scene-ready'))
+  })
+
+  return null
+}
+
 export function Scene({ children }: SceneProps) {
   return (
     <Canvas
       shadows
       camera={{ position: [5, 5, 5], fov: 50 }}
       style={canvasStyle}
+      data-testid="scene-canvas"
     >
       <Suspense fallback={null}>
+        <SceneReadyBridge />
         <SceneContent>{children}</SceneContent>
       </Suspense>
     </Canvas>

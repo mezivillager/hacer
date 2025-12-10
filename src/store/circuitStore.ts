@@ -6,6 +6,7 @@ import { placementActions } from './actions/placementActions/placementActions'
 import { wiringActions } from './actions/wiringActions/wiringActions'
 import { getPinWorldPosition } from './actions/pinHelpers/pinHelpers'
 import type { CircuitState } from './types'
+import '@/types/testingGlobals' // Import for Window augmentation side-effect
 
 // Re-export types for convenience
 export type { CircuitState, GateInstance, GateType, Pin, Wire, WiringState } from './types'
@@ -60,8 +61,6 @@ export const useCircuitStore = () => useSnapshot(circuitStore)
 
 // Expose store and actions for E2E testing
 if (typeof window !== 'undefined') {
-  ;(window as unknown as { __CIRCUIT_STORE__: CircuitState }).
-    __CIRCUIT_STORE__ = circuitStore
-  ;(window as unknown as { __CIRCUIT_ACTIONS__: typeof circuitActions }).
-    __CIRCUIT_ACTIONS__ = circuitActions
+  window.__CIRCUIT_STORE__ = circuitStore
+  window.__CIRCUIT_ACTIONS__ = circuitActions
 }
