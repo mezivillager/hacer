@@ -57,3 +57,11 @@ subscribe(circuitStore, () => {
 
 // Hook for reading state reactively
 export const useCircuitStore = () => useSnapshot(circuitStore)
+
+// Expose store and actions for E2E testing
+if (typeof window !== 'undefined') {
+  ;(window as unknown as { __CIRCUIT_STORE__: CircuitState }).
+    __CIRCUIT_STORE__ = circuitStore
+  ;(window as unknown as { __CIRCUIT_ACTIONS__: typeof circuitActions }).
+    __CIRCUIT_ACTIONS__ = circuitActions
+}

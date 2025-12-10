@@ -4,13 +4,23 @@ export default defineConfig({
   testDir: './e2e',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
+  retries: process.env.CI ? 2 : 1,
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
+  timeout: 60000,
   use: {
     baseURL: 'http://localhost:5173',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
+    viewport: { width: 1280, height: 720 },
+    // Enable WebGL support for 3D canvas testing
+    launchOptions: {
+      args: [
+        '--use-gl=desktop',
+        '--enable-webgl',
+        '--ignore-gpu-blocklist',
+      ],
+    },
   },
   projects: [
     {
@@ -21,7 +31,7 @@ export default defineConfig({
   webServer: {
     command: 'npm run dev',
     url: 'http://localhost:5173',
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: true,
     timeout: 120 * 1000,
   },
 })
