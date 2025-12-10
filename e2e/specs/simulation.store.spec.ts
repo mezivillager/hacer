@@ -2,7 +2,7 @@
  * Simulation (store-driven)
  */
 
-import { test } from '../fixtures'
+import { storeTest as test } from '../fixtures'
 import { simulationTwoGateScenario } from '../scenarios'
 import {
   addGateViaStore,

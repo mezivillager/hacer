@@ -3,7 +3,7 @@
  * Mirrors the UI-driven spec by consuming the same scenario descriptor.
  */
 
-import { test, expect } from '../fixtures'
+import { storeTest as test, storeExpect as expect } from '../fixtures'
 import { TIMEOUTS } from '../config/constants'
 import { nand3Scenario } from '../scenarios'
 import {

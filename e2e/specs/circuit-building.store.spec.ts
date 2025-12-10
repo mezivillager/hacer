@@ -2,7 +2,7 @@
  * Circuit Building (store-driven)
  */
 
-import { test, expect } from '../fixtures'
+import { storeTest as test, storeExpect as expect } from '../fixtures'
 import { UI_SELECTORS } from '../selectors'
 import {
   addGateViaStore,
