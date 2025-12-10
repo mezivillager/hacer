@@ -57,3 +57,36 @@ export interface NandScenario {
     }
   }
 }
+
+/**
+ * Basic circuit building scenario descriptor
+ */
+export interface CircuitBuildScenario {
+  name: string
+  placements: GatePlacement[]
+  wire: WirePlan
+}
+
+/**
+ * Simulation scenario descriptor for 2+ gates
+ */
+export interface SimulationScenario {
+  name: string
+  placements: GatePlacement[]
+  wires: WirePlan[]
+  toggles: TogglePlan[]
+  expectations: {
+    gates: number
+    wires: number
+    outputs: Array<{
+      gateIndex: number
+      outputIndex: number
+      value: boolean
+    }>
+    inputs?: Array<{
+      gateIndex: number
+      inputIndex: number
+      value: boolean
+    }>
+  }
+}

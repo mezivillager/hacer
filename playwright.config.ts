@@ -1,5 +1,10 @@
 import { defineConfig, devices } from '@playwright/test'
 
+// Avoid Node warning: NO_COLOR ignored when FORCE_COLOR is set
+if (process.env.FORCE_COLOR && process.env.NO_COLOR) {
+  delete process.env.NO_COLOR
+}
+
 export default defineConfig({
   testDir: './e2e',
   fullyParallel: true,

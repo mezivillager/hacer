@@ -10,7 +10,7 @@ import { TIMEOUTS } from '../../config/constants'
 /**
  * Wait until the store has at least the expected number of gates
  */
-export async function ensureGates(page: Page, count: number, timeout = TIMEOUTS.store): Promise<void> {
+export async function ensureGates(page: Page, count: number, timeout: number = TIMEOUTS.store): Promise<void> {
   await page.waitForFunction(
     (expected) => {
       const gates = window.__CIRCUIT_STORE__?.gates ?? []
@@ -24,7 +24,7 @@ export async function ensureGates(page: Page, count: number, timeout = TIMEOUTS.
 /**
  * Wait until the store has at least the expected number of wires
  */
-export async function ensureWires(page: Page, count: number, timeout = TIMEOUTS.store): Promise<void> {
+export async function ensureWires(page: Page, count: number, timeout: number = TIMEOUTS.store): Promise<void> {
   await page.waitForFunction(
     (expected) => {
       const wires = window.__CIRCUIT_STORE__?.wires ?? []
@@ -41,7 +41,7 @@ export async function ensureWires(page: Page, count: number, timeout = TIMEOUTS.
 export async function ensureSimulationState(
   page: Page,
   running: boolean,
-  timeout = TIMEOUTS.store
+  timeout: number = TIMEOUTS.store
 ): Promise<void> {
   await page.waitForFunction(
     (expectedRunning) => {

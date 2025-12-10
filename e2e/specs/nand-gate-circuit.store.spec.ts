@@ -15,7 +15,8 @@ import {
 } from '../helpers/actions'
 import { expectGateCount, expectWireCount, expectNandOutputs } from '../helpers/assertions'
 
-test.describe('NAND Gate Circuit (store-driven)', () => {
+// Tag for filtering: @store
+test.describe('NAND Gate Circuit (store-driven) @store', () => {
   test('builds circuit and simulates via store interactions', async ({ page }) => {
     const { placements, wires, toggles, expectations } = nand3Scenario
 

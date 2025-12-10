@@ -18,7 +18,8 @@ import {
 import { ensureGates } from '../helpers/waits'
 import { expectGateCount, expectWireCount, expectNandOutputs } from '../helpers/assertions'
 
-test.describe('NAND Gate Circuit (UI-driven)', () => {
+// Tag for filtering: @ui
+test.describe('NAND Gate Circuit (UI-driven) @ui', () => {
   test('builds circuit and simulates via UI interactions', async ({ page }) => {
     const { placements, wires, toggles, expectations } = nand3Scenario
 

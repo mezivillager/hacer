@@ -8,6 +8,7 @@
 import { Page } from '@playwright/test'
 import { clickPin } from './canvas.actions'
 import { ensureWires } from '../waits'
+import { TIMEOUTS } from '../../config/constants'
 
 export interface WireSpec {
   fromGateId: string
@@ -83,13 +84,14 @@ export async function connectWiresViaUI(
     toGate: number
     toPin: string
   }>,
-  gateIds: string[]
+  gateIds: string[],
+  timeout: number = TIMEOUTS.store
 ): Promise<void> {
   for (const [idx, wire] of wires.entries()) {
     const from = gateIds[wire.fromGate]
     const to = gateIds[wire.toGate]
     await clickPin(page, from, `${from}-${wire.fromPin}`)
     await clickPin(page, to, `${to}-${wire.toPin}`)
-    await ensureWires(page, idx + 1)
+    await ensureWires(page, idx + 1, timeout)
   }
 }
