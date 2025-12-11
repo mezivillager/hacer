@@ -92,3 +92,60 @@
 .app-content.wiring canvas:active {
   cursor: crosshair;
 }
+
+/* Gate Selector Grid */
+.gate-selector-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.gate-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 8px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.gate-icon:hover {
+  background: rgba(74, 158, 255, 0.1);
+  border-color: var(--color-primary);
+  transform: translateY(-1px);
+}
+
+.gate-icon:active {
+  transform: translateY(0);
+}
+
+.gate-icon.active {
+  background: rgba(74, 158, 255, 0.2);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 12px rgba(74, 158, 255, 0.3);
+}
+
+.gate-icon-label {
+  margin-top: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.65);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.gate-icon.active .gate-icon-label {
+  color: var(--color-primary);
+}
+
+.placement-hint {
+  display: block;
+  margin-top: 8px;
+  text-align: center;
+}

@@ -8,8 +8,8 @@ vi.mock('./Scene', () => ({
   Scene: ({ children }: { children: React.ReactNode }) => <div data-testid="scene">{children}</div>,
 }))
 
-vi.mock('@/gates/NandGate', () => ({
-  NandGate: () => <div data-testid="nand-gate">NandGate</div>,
+vi.mock('@/gates', () => ({
+  GateRenderer: () => <div data-testid="gate-renderer">GateRenderer</div>,
 }))
 
 vi.mock('./Wire3D', () => ({

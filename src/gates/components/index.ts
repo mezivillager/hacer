@@ -1,0 +1,4 @@
+export { NandGate } from './NandGate'
+export { AndGate } from './AndGate'
+export { OrGate } from './OrGate'
+export { NotGate } from './NotGate'

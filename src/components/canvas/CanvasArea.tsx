@@ -1,6 +1,6 @@
 import { Layout, Typography } from 'antd'
 import { Scene } from './Scene'
-import { NandGate } from '@/gates/NandGate'
+import { GateRenderer } from '@/gates'
 import { Wire3D } from './Wire3D'
 import { circuitActions, useCircuitStore } from '@/store/circuitStore'
 
@@ -55,7 +55,7 @@ export function CanvasArea() {
 
   const getHelpText = () => {
     if (isPlacing) {
-      return '📍 Click anywhere on the grid to place the gate • Press Esc to cancel'
+      return `📍 Click anywhere on the grid to place the ${circuit.placementMode} gate • Press Esc to cancel`
     }
     if (isWiring) {
       return '🔗 Click on another pin to connect • Click empty space or Esc to cancel'
@@ -77,20 +77,13 @@ export function CanvasArea() {
           return <Wire3D key={wire.id} start={fromPos} end={toPos} isActive={outputValue} />
         })}
 
-        {/* Render all gates */}
+        {/* Render all gates using GateRenderer */}
         {circuit.gates.map(gate => (
-          <NandGate
+          <GateRenderer
             key={gate.id}
-            id={gate.id}
-            position={[gate.position.x, gate.position.y, gate.position.z]}
-            rotation={[gate.rotation.x, gate.rotation.y, gate.rotation.z]}
-            selected={gate.selected}
-            inputA={gate.inputs[0]?.value ?? false}
-            inputB={gate.inputs[1]?.value ?? false}
-            inputAConnected={isPinConnected(gate.id, `${gate.id}-in-0`)}
-            inputBConnected={isPinConnected(gate.id, `${gate.id}-in-1`)}
-            outputConnected={isPinConnected(gate.id, `${gate.id}-out-0`)}
+            gate={gate}
             isWiring={isWiring}
+            isPinConnected={isPinConnected}
             onClick={() => !isWiring && circuitActions.selectGate(gate.id)}
             onPinClick={handlePinClick}
             onInputToggle={handleInputToggle}

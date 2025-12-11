@@ -1,34 +1,44 @@
 import { memo, useRef, useState, useMemo, useCallback } from 'react'
-import { Group } from 'three'
+import { Group, Shape, ExtrudeGeometry } from 'three'
 import { ThreeEvent } from '@react-three/fiber'
+import { Text } from '@react-three/drei'
 import { circuitActions } from '@/store/circuitStore'
 import { colors, materials } from '@/theme'
-import { GatePin } from './GatePin'
-import { WireStub } from './WireStub'
-import { GateLabel } from './GateLabel'
+import { GatePin, WireStub, BaseGateLabel } from '../common'
+import type { TwoInputGateProps } from '../types'
 
-interface NandGateProps {
-  id: string
-  position?: [number, number, number]
-  rotation?: [number, number, number]
-  selected?: boolean
-  inputA?: boolean
-  inputB?: boolean
-  inputAConnected?: boolean
-  inputBConnected?: boolean
-  outputConnected?: boolean
-  isWiring?: boolean
-  onClick?: () => void
-  onPinClick?: (gateId: string, pinId: string, pinType: 'input' | 'output', worldPosition: { x: number; y: number; z: number }) => void
-  onInputToggle?: (gateId: string, pinId: string) => void
+// OR gate logic
+function orLogic(a: boolean, b: boolean): boolean {
+  return a || b
 }
 
-// NAND gate logic
-function nandLogic(a: boolean, b: boolean): boolean {
-  return !(a && b)
+// OR gate specific color (blue tint)
+const OR_BODY_COLOR = '#3d4a6a'
+const OR_BODY_HOVER = '#4d5a8a'
+const OR_BODY_SELECTED = '#4a9eff'
+
+// Create OR gate shield shape
+function createOrGateGeometry() {
+  const shape = new Shape()
+  // Shield/rocket shape - curved back, pointed front
+  shape.moveTo(-0.5, 0.4)     // Top left
+  shape.quadraticCurveTo(-0.3, 0, -0.5, -0.4) // Curved left side (concave)
+  shape.lineTo(0.3, -0.4)     // Bottom edge
+  shape.quadraticCurveTo(0.6, 0, 0.3, 0.4)    // Pointed right side
+  shape.lineTo(-0.5, 0.4)     // Back to top
+
+  const extrudeSettings = {
+    depth: 0.4,
+    bevelEnabled: false,
+  }
+
+  return new ExtrudeGeometry(shape, extrudeSettings)
 }
 
-function NandGateComponent({
+// Memoize the geometry to avoid recreating it
+const orGateGeometry = createOrGateGeometry()
+
+function OrGateComponent({
   id,
   position = [0, 0, 0],
   rotation = [0, 0, 0],
@@ -42,16 +52,16 @@ function NandGateComponent({
   onClick,
   onPinClick,
   onInputToggle,
-}: NandGateProps) {
+}: TwoInputGateProps) {
   const groupRef = useRef<Group>(null)
   const [hovered, setHovered] = useState(false)
   const [hoveredPin, setHoveredPin] = useState<string | null>(null)
 
-  const output = useMemo(() => nandLogic(inputA, inputB), [inputA, inputB])
+  const output = useMemo(() => orLogic(inputA, inputB), [inputA, inputB])
 
-  // Gate body color based on state
+  // Gate body color based on state - blue tinted for OR
   const bodyColor = useMemo(
-    () => (selected ? colors.gate.bodySelected : hovered ? colors.gate.bodyHover : colors.gate.body),
+    () => (selected ? OR_BODY_SELECTED : hovered ? OR_BODY_HOVER : OR_BODY_COLOR),
     [selected, hovered]
   )
 
@@ -134,23 +144,34 @@ function NandGateComponent({
 
   return (
     <group ref={groupRef} position={position} rotation={rotation}>
-      {/* Main body */}
-      <mesh onClick={handleClick} onPointerOver={() => setHovered(true)} onPointerOut={() => setHovered(false)}>
-        <boxGeometry args={[1.2, 0.8, 0.4]} />
+      {/* Main body - shield/rocket shape */}
+      <mesh 
+        geometry={orGateGeometry}
+        position={[0, 0, -0.2]}
+        onClick={handleClick} 
+        onPointerOver={() => setHovered(true)} 
+        onPointerOut={() => setHovered(false)}
+      >
         <meshStandardMaterial color={bodyColor} metalness={materials.gate.metalness} roughness={materials.gate.roughness} />
       </mesh>
 
-      {/* NAND label on top */}
-      <mesh position={[0, 0.41, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[0.8, 0.3]} />
-        <meshBasicMaterial color={colors.gate.label} />
-      </mesh>
+      {/* OR text label on front face */}
+      <Text
+        position={[-0.1, 0, 0.21]}
+        fontSize={0.28}
+        color="#ffffff"
+        anchorX="center"
+        anchorY="middle"
+        font={undefined}
+      >
+        OR
+      </Text>
 
       {/* Input A pin */}
       <GatePin
         id={id}
         pinId={`${id}-in-0`}
-        position={[-0.7, 0.2, 0]}
+        position={[-0.55, 0.2, 0]}
         color={inputAColor}
         isWiring={isWiring}
         isHovered={hoveredPin === 'inputA'}
@@ -167,7 +188,7 @@ function NandGateComponent({
       <GatePin
         id={id}
         pinId={`${id}-in-1`}
-        position={[-0.7, -0.2, 0]}
+        position={[-0.55, -0.2, 0]}
         color={inputBColor}
         isWiring={isWiring}
         isHovered={hoveredPin === 'inputB'}
@@ -180,11 +201,11 @@ function NandGateComponent({
         onPointerOut={handlePinOut}
       />
 
-      {/* Output pin */}
+      {/* Output pin - touching the pointed tip of the body */}
       <GatePin
         id={id}
         pinId={`${id}-out-0`}
-        position={[0.7, 0, 0]}
+        position={[0.55, 0, 0]}
         color={outputColor}
         isWiring={isWiring}
         isHovered={hoveredPin === 'output'}
@@ -197,22 +218,16 @@ function NandGateComponent({
         onPointerOut={handlePinOut}
       />
 
-      {/* Negation bubble */}
-      <mesh position={[0.55, 0, 0]}>
-        <ringGeometry args={[0.06, 0.08, 16]} />
-        <meshBasicMaterial color={colors.gate.negationBubble} />
-      </mesh>
-
       {/* Wire stubs */}
-      <WireStub position={[-0.85, 0.2, 0]} />
-      <WireStub position={[-0.85, -0.2, 0]} />
-      <WireStub position={[0.85, 0, 0]} />
+      <WireStub position={[-0.7, 0.2, 0]} />
+      <WireStub position={[-0.7, -0.2, 0]} />
+      <WireStub position={[0.7, 0, 0]} />
 
       {/* HTML label overlay */}
-      <GateLabel inputA={inputA} inputB={inputB} output={output} visible={hovered || selected} />
+      <BaseGateLabel gateType="OR" inputs={[inputA, inputB]} output={output} visible={hovered || selected} />
     </group>
   )
 }
 
-export const NandGate = memo(NandGateComponent)
-NandGate.displayName = 'NandGate'
+export const OrGate = memo(OrGateComponent)
+OrGate.displayName = 'OrGate'

@@ -1,15 +1,14 @@
 import { Layout, Button, Space, Typography, Tooltip, Divider } from 'antd'
 import {
-  PlusOutlined,
   DeleteOutlined,
   PlayCircleOutlined,
   PauseCircleOutlined,
   ClearOutlined,
   SettingOutlined,
-  CloseOutlined,
 } from '@ant-design/icons'
 import { circuitActions, useCircuitStore } from '@/store/circuitStore'
 import { colors } from '@/theme'
+import { GateSelector } from './GateSelector'
 
 const { Sider } = Layout
 const { Title, Text } = Typography
@@ -27,14 +26,6 @@ const styles = {
 export function Sidebar() {
   const circuit = useCircuitStore()
   const isPlacing = circuit.placementMode !== null
-
-  const handleAddNandGate = () => {
-    if (isPlacing) {
-      circuitActions.cancelPlacement()
-    } else {
-      circuitActions.startPlacement('NAND')
-    }
-  }
 
   const handleDeleteSelected = () => {
     if (circuit.selectedGateId) {
@@ -64,29 +55,14 @@ export function Sidebar() {
 
         <div className="sider-section">
           <Text strong style={styles.sectionTitle}>
-            Add Gates
+            Elementary Gates
           </Text>
-          <Space orientation="vertical" style={styles.fullWidth}>
-            <Button
-              type={circuit.placementMode === 'NAND' ? 'default' : 'primary'}
-              icon={circuit.placementMode === 'NAND' ? <CloseOutlined /> : <PlusOutlined />}
-              onClick={handleAddNandGate}
-              block
-              danger={circuit.placementMode === 'NAND'}
-            >
-              {circuit.placementMode === 'NAND' ? 'Cancel Placement' : 'Add NAND Gate'}
-            </Button>
-            {isPlacing && (
-              <Text style={styles.hint}>
-                Click on the grid to place the gate
-              </Text>
-            )}
-            {!isPlacing && (
-              <Text type="secondary" style={styles.smallText}>
-                More gates coming soon: AND, OR, NOT, XOR...
-              </Text>
-            )}
-          </Space>
+          <GateSelector />
+          {isPlacing && (
+            <Text style={styles.hint} className="placement-hint">
+              Click on the grid to place the {circuit.placementMode} gate
+            </Text>
+          )}
         </div>
 
         <Divider style={styles.divider} />
@@ -95,7 +71,7 @@ export function Sidebar() {
           <Text strong style={styles.sectionTitle}>
             Controls
           </Text>
-          <Space orientation="vertical" style={styles.fullWidth}>
+          <Space direction="vertical" style={styles.fullWidth}>
             <Button
               icon={circuit.simulationRunning ? <PauseCircleOutlined /> : <PlayCircleOutlined />}
               onClick={handleToggleSimulation}
@@ -133,7 +109,7 @@ export function Sidebar() {
           <Text strong style={styles.sectionTitle}>
             Circuit Info
           </Text>
-          <Space orientation="vertical" size={2}>
+          <Space direction="vertical" size={2}>
             <Text type="secondary">Gates: {circuit.gates.length}</Text>
             <Text type="secondary">Wires: {circuit.wires.length}</Text>
             <Text type="secondary">

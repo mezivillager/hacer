@@ -29,36 +29,41 @@ describe('Sidebar', () => {
     expect(screen.getByText('Logic Gate Simulator')).toBeInTheDocument()
   })
 
-  it('renders Add NAND Gate button', () => {
+  it('renders Elementary Gates section with gate icons', () => {
     render(<Sidebar />)
-    expect(screen.getByText('Add NAND Gate')).toBeInTheDocument()
+    expect(screen.getByText('Elementary Gates')).toBeInTheDocument()
+    // Check for gate labels in the selector grid
+    expect(screen.getByText('NAND')).toBeInTheDocument()
+    expect(screen.getByText('AND')).toBeInTheDocument()
+    expect(screen.getByText('OR')).toBeInTheDocument()
+    expect(screen.getByText('NOT')).toBeInTheDocument()
   })
 
-  it('calls startPlacement when Add NAND Gate button is clicked', () => {
+  it('calls startPlacement when a gate icon is clicked', () => {
     const startPlacementSpy = vi.spyOn(circuitActions, 'startPlacement')
     render(<Sidebar />)
 
-    const button = screen.getByText('Add NAND Gate')
-    fireEvent.click(button)
+    const nandIcon = screen.getByText('NAND').closest('.gate-icon')
+    fireEvent.click(nandIcon!)
 
     expect(startPlacementSpy).toHaveBeenCalledWith('NAND')
   })
 
-  it('shows Cancel Placement button when in placement mode', () => {
+  it('shows active state on gate icon when in placement mode', () => {
     circuitStore.placementMode = 'NAND'
     render(<Sidebar />)
 
-    expect(screen.getByText('Cancel Placement')).toBeInTheDocument()
-    expect(screen.queryByText('Add NAND Gate')).not.toBeInTheDocument()
+    const nandIcon = screen.getByText('NAND').closest('.gate-icon')
+    expect(nandIcon).toHaveClass('active')
   })
 
-  it('calls cancelPlacement when Cancel Placement button is clicked', () => {
+  it('calls cancelPlacement when active gate icon is clicked again', () => {
     const cancelPlacementSpy = vi.spyOn(circuitActions, 'cancelPlacement')
     circuitStore.placementMode = 'NAND'
     render(<Sidebar />)
 
-    const button = screen.getByText('Cancel Placement')
-    fireEvent.click(button)
+    const nandIcon = screen.getByText('NAND').closest('.gate-icon')
+    fireEvent.click(nandIcon!)
 
     expect(cancelPlacementSpy).toHaveBeenCalled()
   })
@@ -150,5 +155,25 @@ describe('Sidebar', () => {
 
     expect(screen.getByText(/Gates: 2/)).toBeInTheDocument()
     expect(screen.getByText(/Wires: 1/)).toBeInTheDocument()
+  })
+
+  it('can switch between different gate types for placement', () => {
+    const startPlacementSpy = vi.spyOn(circuitActions, 'startPlacement')
+    render(<Sidebar />)
+
+    // Click AND gate
+    const andIcon = screen.getByText('AND').closest('.gate-icon')
+    fireEvent.click(andIcon!)
+    expect(startPlacementSpy).toHaveBeenCalledWith('AND')
+
+    // Click OR gate
+    const orIcon = screen.getByText('OR').closest('.gate-icon')
+    fireEvent.click(orIcon!)
+    expect(startPlacementSpy).toHaveBeenCalledWith('OR')
+
+    // Click NOT gate
+    const notIcon = screen.getByText('NOT').closest('.gate-icon')
+    fireEvent.click(notIcon!)
+    expect(startPlacementSpy).toHaveBeenCalledWith('NOT')
   })
 })
