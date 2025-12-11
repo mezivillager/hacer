@@ -22,14 +22,14 @@ const { placements } = circuitBuildScenario
 // Tag for filtering: @store
 test.describe('Circuit Building (store) @store', () => {
   test('can add a NAND gate to the canvas', async ({ page }) => {
-    await addGateViaStore(page, placements[0].position)
+    await addGateViaStore(page, 'NAND', placements[0].position)
     await expectGateCount(page, 1)
     await expectStoreGateCount(page, 1)
   })
 
   test('can wire two gates together', async ({ page }) => {
-    const gate1 = await addGateViaStore(page, placements[0].position)
-    const gate2 = await addGateViaStore(page, placements[1].position)
+    const gate1 = await addGateViaStore(page, 'NAND', placements[0].position)
+    const gate2 = await addGateViaStore(page, 'NAND', placements[1].position)
     await expectGateCount(page, 2)
 
     await page.evaluate(({ g1, g2 }) => {
@@ -43,7 +43,7 @@ test.describe('Circuit Building (store) @store', () => {
   })
 
   test('can delete a gate', async ({ page }) => {
-    const gate = await addGateViaStore(page, placements[0].position)
+    const gate = await addGateViaStore(page, 'NAND', placements[0].position)
     await expectGateCount(page, 1)
 
     if (gate?.id) {
@@ -59,8 +59,8 @@ test.describe('Circuit Building (store) @store', () => {
   })
 
   test('can clear all gates', async ({ page }) => {
-    await addGateViaStore(page, placements[0].position)
-    await addGateViaStore(page, placements[1].position)
+    await addGateViaStore(page, 'NAND', placements[0].position)
+    await addGateViaStore(page, 'NAND', placements[1].position)
     await expectGateCount(page, 2)
 
     const clearButton = page.locator(UI_SELECTORS.buttons.clearAll)
@@ -73,8 +73,8 @@ test.describe('Circuit Building (store) @store', () => {
   })
 
   test('wires are removed when gate is deleted', async ({ page }) => {
-    const gate1 = await addGateViaStore(page, placements[0].position)
-    const gate2 = await addGateViaStore(page, placements[1].position)
+    const gate1 = await addGateViaStore(page, 'NAND', placements[0].position)
+    const gate2 = await addGateViaStore(page, 'NAND', placements[1].position)
 
     await page.evaluate(
       ({ g1, g2 }) => {

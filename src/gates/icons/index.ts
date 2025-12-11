@@ -3,11 +3,13 @@ import { NandIcon } from './NandIcon'
 import { AndIcon } from './AndIcon'
 import { OrIcon } from './OrIcon'
 import { NotIcon } from './NotIcon'
+import { XorIcon } from './XorIcon'
 
 export { NandIcon } from './NandIcon'
 export { AndIcon } from './AndIcon'
 export { OrIcon } from './OrIcon'
 export { NotIcon } from './NotIcon'
+export { XorIcon } from './XorIcon'
 
 // Map gate types to their icon components
 export const gateIcons: Record<string, React.ComponentType<{ size?: number; color?: string }>> = {
@@ -15,6 +17,7 @@ export const gateIcons: Record<string, React.ComponentType<{ size?: number; colo
   AND: AndIcon,
   OR: OrIcon,
   NOT: NotIcon,
+  XOR: XorIcon,
 }
 
 // Get icon component for a gate type

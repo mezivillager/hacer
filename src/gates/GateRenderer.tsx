@@ -1,6 +1,6 @@
 import { memo } from 'react'
 import type { GateInstance, GateType } from '@/store/types'
-import { NandGate, AndGate, OrGate, NotGate } from './components'
+import { NandGate, AndGate, OrGate, NotGate, XorGate } from './components'
 
 // Use a readonly-compatible type for gate props from valtio snapshot
 interface ReadonlyGate {
@@ -89,6 +89,18 @@ function GateRendererComponent({
           {...commonProps}
           input={gate.inputs[0]?.value ?? false}
           inputConnected={isPinConnected(gate.id, `${gate.id}-in-0`)}
+          outputConnected={isPinConnected(gate.id, `${gate.id}-out-0`)}
+        />
+      )
+
+    case 'XOR':
+      return (
+        <XorGate
+          {...commonProps}
+          inputA={gate.inputs[0]?.value ?? false}
+          inputB={gate.inputs[1]?.value ?? false}
+          inputAConnected={isPinConnected(gate.id, `${gate.id}-in-0`)}
+          inputBConnected={isPinConnected(gate.id, `${gate.id}-in-1`)}
           outputConnected={isPinConnected(gate.id, `${gate.id}-out-0`)}
         />
       )

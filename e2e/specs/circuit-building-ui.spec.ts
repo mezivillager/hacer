@@ -20,7 +20,10 @@ const { placements, wire } = circuitBuildScenario
 // Tag for filtering: @ui
 test.describe('Circuit Building (UI) @ui', () => {
   test('can add a NAND gate via UI', async ({ page }) => {
-    await addGateViaUI(page, { position: placements[0].position })
+    await addGateViaUI(page, { 
+      type: 'NAND',
+      position: placements[0].position 
+    })
     await ensureGates(page, 1)
     await expectGateCount(page, 1)
   })
@@ -29,6 +32,7 @@ test.describe('Circuit Building (UI) @ui', () => {
     // Place gates with appropriate rotations for wiring
     for (const placement of placements) {
       await addGateViaUI(page, { 
+        type: 'NAND', // Default to NAND for backward compatibility
         position: placement.position,
         rotate: placement.rotate
       })
@@ -43,7 +47,10 @@ test.describe('Circuit Building (UI) @ui', () => {
 
   test('supports delete and clear flows', async ({ page }) => {
     for (const placement of placements) {
-      await addGateViaUI(page, { position: placement.position })
+      await addGateViaUI(page, { 
+        type: 'NAND',
+        position: placement.position 
+      })
     }
     await ensureGates(page, 2)
 

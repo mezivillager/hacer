@@ -10,12 +10,34 @@ export const UI_SELECTORS = {
   canvas: 'canvas',
 
   buttons: {
+    // Legacy button (may not exist anymore, but keeping for compatibility)
     addNandGate: 'button:has-text("Add NAND Gate")',
     cancelPlacement: 'button:has-text("Cancel Placement")',
     runSimulation: 'button:has-text("Run Simulation")',
     pauseSimulation: 'button:has-text("Pause Simulation")',
     deleteSelected: 'button:has-text("Delete Selected")',
     clearAll: 'button:has-text("Clear All")',
+  },
+
+  // Gate selector grid
+  gateSelector: {
+    grid: '.gate-selector-grid',
+    nandIcon: '.gate-icon:has-text("NAND")',
+    andIcon: '.gate-icon:has-text("AND")',
+    orIcon: '.gate-icon:has-text("OR")',
+    notIcon: '.gate-icon:has-text("NOT")',
+    xorIcon: '.gate-icon:has-text("XOR")',
+    // Helper to get icon by gate type
+    getIcon: (gateType: 'NAND' | 'AND' | 'OR' | 'NOT' | 'XOR') => {
+      const map = {
+        NAND: '.gate-icon:has-text("NAND")',
+        AND: '.gate-icon:has-text("AND")',
+        OR: '.gate-icon:has-text("OR")',
+        NOT: '.gate-icon:has-text("NOT")',
+        XOR: '.gate-icon:has-text("XOR")',
+      }
+      return map[gateType]
+    },
   },
 
   status: {

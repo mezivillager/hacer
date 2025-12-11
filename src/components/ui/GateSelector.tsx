@@ -5,7 +5,7 @@ import { getGateIcon } from '@/gates/icons'
 import { colors } from '@/theme'
 
 // Elementary gates to show in the selector
-const ELEMENTARY_GATES: GateType[] = ['NAND', 'AND', 'OR', 'NOT']
+const ELEMENTARY_GATES: GateType[] = ['NAND', 'AND', 'OR', 'NOT', 'XOR']
 
 // Gate descriptions for tooltips
 const gateDescriptions: Record<GateType, string> = {

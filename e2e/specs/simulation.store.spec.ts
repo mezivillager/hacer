@@ -25,7 +25,7 @@ const { placements, toggles, expectations } = simulationTwoGateScenario
 // Tag for filtering: @store
 test.describe('Simulation (store) @store', () => {
   test('can start and stop simulation', async ({ page }) => {
-    await addGateViaStore(page, placements[0].position)
+    await addGateViaStore(page, 'NAND', placements[0].position)
     await expectGateCount(page, 1)
 
     await startSimulationViaUI(page)
@@ -47,8 +47,8 @@ test.describe('Simulation (store) @store', () => {
 
   test('simulation propagates signals through wires', async ({ page }) => {
     // Place gates
-    const gate1 = await addGateViaStore(page, placements[0].position)
-    const gate2 = await addGateViaStore(page, placements[1].position)
+    const gate1 = await addGateViaStore(page, 'NAND', placements[0].position)
+    const gate2 = await addGateViaStore(page, 'NAND', placements[1].position)
 
     // Wire gate1 output to gate2 input
     await page.evaluate(({ g1, g2 }) => {
