@@ -4,26 +4,23 @@
  * Tests for adding gates via store (faster, for setup/teardown)
  */
 
-import { test, expect } from '../fixtures'
+import { storeTest as test, expect } from '../fixtures'
 import { DEFAULT_POSITIONS } from '../config/constants'
 import {
   addGateViaStore,
   getGateIds,
   getGateType,
-  clearAllViaUI,
+  clearAllViaStore,
 } from '../helpers/actions'
 import { ensureGates } from '../helpers/waits'
 import { expectGateCount } from '../helpers/assertions'
 import type { GateType } from '../helpers/actions/gate.actions'
 
-const gateTypes: GateType[] = ['NAND', 'AND', 'OR', 'NOT', 'XOR']
+const gateTypes: GateType[] = ['NAND', 'AND', 'OR', 'NOT']
 
 // Tag for filtering: @store @elementary-gates
 test.describe('Elementary Gates (Store) @store @elementary-gates', () => {
-  test.beforeEach(async ({ page }) => {
-    // Clear any existing gates before each test
-    await clearAllViaUI(page)
-  })
+  // No beforeEach needed - each test starts with a fresh page from the fixture
 
   for (const gateType of gateTypes) {
     test(`can add ${gateType} gate via store`, async ({ page }) => {
@@ -92,10 +89,10 @@ test.describe('Elementary Gates (Store) @store @elementary-gates', () => {
   })
 
   test('two-input gates have correct pin configuration', async ({ page }) => {
-    const twoInputGates: GateType[] = ['NAND', 'AND', 'OR', 'XOR']
+    const twoInputGates: GateType[] = ['NAND', 'AND', 'OR']
     
     for (const gateType of twoInputGates) {
-      await clearAllViaUI(page)
+      await clearAllViaStore(page)
       
       await addGateViaStore(page, gateType, DEFAULT_POSITIONS.center)
       

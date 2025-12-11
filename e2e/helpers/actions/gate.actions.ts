@@ -134,6 +134,15 @@ export async function clearAllViaUI(page: Page): Promise<void> {
 }
 
 /**
+ * Clear all gates via store (fast, no UI dependency)
+ */
+export async function clearAllViaStore(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    window.__CIRCUIT_ACTIONS__?.clearCircuit()
+  })
+}
+
+/**
  * Get all gate IDs from the store
  */
 export async function getGateIds(page: Page): Promise<string[]> {
