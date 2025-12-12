@@ -19,36 +19,31 @@ import {
 
 /**
  * Render budgets per operation.
- * If an operation exceeds these counts, it indicates a performance regression.
- * Adjust these values as optimizations are made.
- */
-/**
- * Render budgets per operation.
  * These values are based on observed behavior plus a small margin.
  * If an operation exceeds these counts, it indicates a performance regression.
  * 
- * Current observed baseline (as of implementation):
- * - addGate: CanvasArea=1, GroundPlaneWithPreview=2
- * - selectGate: CanvasArea=1, GroundPlaneWithPreview=2
- * - addWire: CanvasArea=1, GroundPlaneWithPreview=1
- * - toggleInput: CanvasArea=1, GroundPlaneWithPreview=1
+ * Current observed baseline (as of optimization):
+ * - GroundPlane: Static component that renders only once (budget=1)
+ * - PlacementPreview: Re-renders when placement state changes
+ * - WirePreview: Re-renders when wiring state changes
+ * - CanvasArea: Re-renders on gate/wire changes
  */
 const RENDER_BUDGETS = {
   addGate: {
     CanvasArea: 2,
-    GroundPlaneWithPreview: 3,
+    GroundPlane: 1,
   },
   selectGate: {
     CanvasArea: 2,
-    GroundPlaneWithPreview: 3,
+    GroundPlane: 1,
   },
   addWire: {
     CanvasArea: 2,
-    GroundPlaneWithPreview: 2,
+    GroundPlane: 1,
   },
   toggleInput: {
     CanvasArea: 2,
-    GroundPlaneWithPreview: 2,
+    GroundPlane: 1,
   },
 }
 

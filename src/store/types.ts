@@ -45,6 +45,7 @@ export interface CircuitState {
   simulationRunning: boolean
   simulationSpeed: number // ms per tick
   placementMode: GateType | null
+  placementPreviewPosition: Position | null
   wiringFrom: WiringState | null
 }
 
@@ -75,6 +76,7 @@ export interface PlacementActions {
   startPlacement: (type: GateType) => void
   cancelPlacement: () => void
   placeGate: (position: Position) => void
+  updatePlacementPreviewPosition: (position: Position | null) => void
 }
 
 export interface WiringActions {

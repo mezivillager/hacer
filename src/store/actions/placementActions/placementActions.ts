@@ -19,6 +19,7 @@ export const createPlacementActions = (set: SetState, get: GetState): PlacementA
   cancelPlacement: () => {
     set((state) => {
       state.placementMode = null
+      state.placementPreviewPosition = null
     }, false, 'cancelPlacement')
   },
 
@@ -33,11 +34,18 @@ export const createPlacementActions = (set: SetState, get: GetState): PlacementA
     set((state) => {
       // Add the new gate
       state.gates.push(newGate)
-      // Clear placement mode
+      // Clear placement mode and preview position
       state.placementMode = null
+      state.placementPreviewPosition = null
       // Deselect all gates and select the new one
       state.gates.forEach((g) => { g.selected = g.id === newGate.id })
       state.selectedGateId = newGate.id
     }, false, 'placeGate')
+  },
+
+  updatePlacementPreviewPosition: (position: Position | null) => {
+    set((state) => {
+      state.placementPreviewPosition = position
+    }, false, 'updatePlacementPreviewPosition')
   },
 })

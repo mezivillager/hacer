@@ -22,6 +22,7 @@ const initialState = {
   simulationRunning: false,
   simulationSpeed: 100,
   placementMode: null as import('./types').GateType | null,
+  placementPreviewPosition: null as import('./types').Position | null,
   wiringFrom: null as import('./types').WiringState | null,
 }
 
@@ -115,6 +116,7 @@ export const circuitActions = {
   startPlacement: (...args: Parameters<CircuitStore['startPlacement']>) => useCircuitStore.getState().startPlacement(...args),
   cancelPlacement: () => useCircuitStore.getState().cancelPlacement(),
   placeGate: (...args: Parameters<CircuitStore['placeGate']>) => useCircuitStore.getState().placeGate(...args),
+  updatePlacementPreviewPosition: (...args: Parameters<CircuitStore['updatePlacementPreviewPosition']>) => useCircuitStore.getState().updatePlacementPreviewPosition(...args),
   // Wiring actions
   startWiring: (...args: Parameters<CircuitStore['startWiring']>) => useCircuitStore.getState().startWiring(...args),
   updateWirePreviewPosition: (...args: Parameters<CircuitStore['updateWirePreviewPosition']>) => useCircuitStore.getState().updateWirePreviewPosition(...args),
