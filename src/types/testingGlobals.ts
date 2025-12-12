@@ -57,6 +57,20 @@ export interface CircuitActionsAPI {
   removeGate: (gateId: string) => void
 }
 
+export interface RenderTrackerStats {
+  count: number
+  lastRenderTime: number
+  reasons: string[]
+}
+
+export interface RenderTrackerSnapshot {
+  stats: Record<string, RenderTrackerStats>
+  totalRenders: number
+  lastUpdateTime: number
+  isStable: boolean
+  reset: () => void
+}
+
 // Augment the global Window interface
 declare global {
   interface Window {
@@ -64,5 +78,6 @@ declare global {
     __SCENE_HELPERS__?: SceneHelpers
     __CIRCUIT_STORE__?: CircuitStoreSnapshot
     __CIRCUIT_ACTIONS__?: CircuitActionsAPI
+    __RENDER_TRACKER__?: RenderTrackerSnapshot
   }
 }

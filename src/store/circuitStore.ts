@@ -9,6 +9,7 @@ import { createWiringActions } from './actions/wiringActions/wiringActions'
 import { createPinHelpers } from './actions/pinHelpers/pinHelpers'
 import type { CircuitStore } from './types'
 import '@/types/testingGlobals' // Import for Window augmentation side-effect
+import '@/utils/renderTracking' // Initialize render tracking
 
 // Re-export types for convenience
 export type { CircuitState, GateInstance, GateType, Pin, Wire, WiringState } from './types'
@@ -125,11 +126,12 @@ export const circuitActions = {
 
 // Expose store and actions for E2E testing
 if (typeof window !== 'undefined') {
-  // Initial exposure
+  // Expose the Zustand getState function directly - this allows E2E tests
+  // to always access the current state, similar to how Valtio proxy worked
   window.__CIRCUIT_STORE__ = useCircuitStore.getState()
   window.__CIRCUIT_ACTIONS__ = circuitActions
-
-  // Keep store synced for E2E tests
+  
+  // Keep window.__CIRCUIT_STORE__ in sync with store changes
   useCircuitStore.subscribe((state) => {
     window.__CIRCUIT_STORE__ = state
   })

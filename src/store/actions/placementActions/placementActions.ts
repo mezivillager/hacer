@@ -1,4 +1,5 @@
 import type { PlacementActions, GateType, Position, CircuitStore } from '../../types'
+import { createGateInstance } from '../gateActions/gateActions'
 
 type SetState = (
   fn: (state: CircuitStore) => void,
@@ -22,13 +23,21 @@ export const createPlacementActions = (set: SetState, get: GetState): PlacementA
   },
 
   placeGate: (position: Position) => {
-    const state = get()
-    if (state.placementMode) {
-      // Call addGate action from the store
-      state.addGate(state.placementMode, position)
-      set((s) => {
-        s.placementMode = null
-      }, false, 'placeGate')
-    }
+    const currentState = get()
+    if (!currentState.placementMode) return
+    
+    // Create gate instance outside of set() to avoid issues with Immer
+    const newGate = createGateInstance(currentState.placementMode, position)
+    
+    // Single atomic state update - add gate, clear placement, select new gate
+    set((state) => {
+      // Add the new gate
+      state.gates.push(newGate)
+      // Clear placement mode
+      state.placementMode = null
+      // Deselect all gates and select the new one
+      state.gates.forEach((g) => { g.selected = g.id === newGate.id })
+      state.selectedGateId = newGate.id
+    }, false, 'placeGate')
   },
 })

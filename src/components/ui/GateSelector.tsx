@@ -44,6 +44,7 @@ export function GateSelector() {
           <Tooltip key={type} title={gateDescriptions[type]} placement="right">
             <div
               className={`gate-icon ${isActive ? 'active' : ''}`}
+              data-gate-type={type}
               onClick={() => handleGateSelect(type)}
               role="button"
               tabIndex={0}

@@ -18,6 +18,10 @@ describe('pinHelpers', () => {
     })
   })
 
+  // Pin position constants from pinHelpers.ts - must match gate component geometry
+  const INPUT_PIN_X = -0.6
+  const OUTPUT_PIN_X = 0.84
+
   describe('getPinWorldPosition', () => {
     it('returns input pin world position for first input', () => {
       const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
@@ -25,7 +29,7 @@ describe('pinHelpers', () => {
       const position = getState().getPinWorldPosition(gate.id, gate.inputs[0].id)
       
       expect(position).not.toBeNull()
-      expect(position?.x).toBeCloseTo(-0.7, 1)
+      expect(position?.x).toBeCloseTo(INPUT_PIN_X, 1)
       expect(position?.y).toBeCloseTo(0.2, 1)
       expect(position?.z).toBe(0)
     })
@@ -36,7 +40,7 @@ describe('pinHelpers', () => {
       const position = getState().getPinWorldPosition(gate.id, gate.inputs[1].id)
       
       expect(position).not.toBeNull()
-      expect(position?.x).toBeCloseTo(-0.7, 1)
+      expect(position?.x).toBeCloseTo(INPUT_PIN_X, 1)
       expect(position?.y).toBeCloseTo(-0.2, 1)
       expect(position?.z).toBe(0)
     })
@@ -47,7 +51,7 @@ describe('pinHelpers', () => {
       const position = getState().getPinWorldPosition(gate.id, gate.outputs[0].id)
       
       expect(position).not.toBeNull()
-      expect(position?.x).toBeCloseTo(0.7, 1)
+      expect(position?.x).toBeCloseTo(OUTPUT_PIN_X, 1)
       expect(position?.y).toBe(0)
       expect(position?.z).toBe(0)
     })
@@ -58,7 +62,7 @@ describe('pinHelpers', () => {
       const position = getState().getPinWorldPosition(gate.id, gate.outputs[0].id)
       
       expect(position).not.toBeNull()
-      expect(position?.x).toBeCloseTo(5.7, 1)
+      expect(position?.x).toBeCloseTo(5 + OUTPUT_PIN_X, 1)
       expect(position?.y).toBeCloseTo(10, 1)
       expect(position?.z).toBeCloseTo(15, 1)
     })
@@ -71,7 +75,7 @@ describe('pinHelpers', () => {
       
       expect(position).not.toBeNull()
       // After 180° rotation, output should be on the opposite side
-      expect(position?.x).toBeCloseTo(-0.7, 1)
+      expect(position?.x).toBeCloseTo(-OUTPUT_PIN_X, 1)
     })
 
     it('returns null if gate does not exist', () => {

@@ -1,7 +1,7 @@
 import type { GateActions, GateInstance, GateType, Pin, Position, CircuitStore } from '../../types'
 
-// Helper to create a gate instance
-function createGate(type: GateType, position: Position): GateInstance {
+// Helper to create a gate instance - exported for use in atomic placement actions
+export function createGateInstance(type: GateType, position: Position): GateInstance {
   const id = `gate-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`
 
   const inputCount = type === 'NOT' ? 1 : 2
@@ -40,7 +40,7 @@ type SetState = (
 
 export const createGateActions = (set: SetState): GateActions => ({
   addGate: (type: GateType, position: Position) => {
-    const gate = createGate(type, position)
+    const gate = createGateInstance(type, position)
     set((state) => {
       state.gates.push(gate)
     }, false, 'addGate')

@@ -2,30 +2,30 @@ import { Canvas, ThreeEvent, useFrame, useThree } from '@react-three/fiber'
 import { useEffect, useRef } from 'react'
 import { OrbitControls, Grid, Environment } from '@react-three/drei'
 import { Suspense, useState } from 'react'
-import { useCircuitStore } from '@/store/circuitStore'
+import { useCircuitStore, circuitActions } from '@/store/circuitStore'
 import { Wire3D } from './Wire3D'
 import { colors } from '@/theme'
 import { Vector3 } from 'three'
+import { trackRender } from '@/utils/renderTracking'
 import '@/types/testingGlobals' // Import for Window augmentation side-effect
+
+// Get actions once - stable references that don't cause re-renders
+const { updateWirePreviewPosition, placeGate, cancelWiring, selectGate: selectGateAction } = circuitActions
 
 interface SceneProps {
   children?: React.ReactNode
 }
 
 function GroundPlaneWithPreview() {
-  // Use selectors for granular subscriptions
+  // Use selectors for granular subscriptions - only data, not actions
   const placementMode = useCircuitStore((s) => s.placementMode)
   const wiringFrom = useCircuitStore((s) => s.wiringFrom)
-
-  // Get actions from store
-  const updateWirePreviewPosition = useCircuitStore((s) => s.updateWirePreviewPosition)
-  const placeGate = useCircuitStore((s) => s.placeGate)
-  const cancelWiring = useCircuitStore((s) => s.cancelWiring)
-  const selectGate = useCircuitStore((s) => s.selectGate)
 
   const isPlacing = placementMode !== null
   const isWiring = wiringFrom !== null
   const [cursorPos, setCursorPos] = useState<{ x: number; y: number; z: number } | null>(null)
+  
+  trackRender('GroundPlaneWithPreview', `placing:${isPlacing},wiring:${isWiring}`)
   
   const snapToGrid = (value: number) => Math.round(value * 2) / 2
   
@@ -63,7 +63,7 @@ function GroundPlaneWithPreview() {
       cancelWiring()
       setCursorPos(null)
     } else {
-      selectGate(null)
+      selectGateAction(null)
     }
   }
   
@@ -182,11 +182,12 @@ function SceneReadyBridge() {
     readyRef.current = true
 
     if (typeof window === 'undefined') return
-    const domRect = gl.domElement.getBoundingClientRect()
 
     window.__SCENE_READY__ = true
     window.__SCENE_HELPERS__ = {
       projectToScreen: (position: { x: number; y: number; z: number }) => {
+        // Get fresh domRect on each call to handle window resizes
+        const domRect = gl.domElement.getBoundingClientRect()
         const vec = new Vector3(position.x, position.y, position.z)
         vec.project(camera)
         return {

@@ -3,6 +3,10 @@ import type { PinHelpers, Position, CircuitStore, GateInstance } from '../../typ
 
 type GetState = () => CircuitStore
 
+// Pin position constants - must match gate component geometry (NandGate.tsx etc.)
+const INPUT_PIN_X = -0.6   // From NandGate: BODY_LEFT - PIN_RADIUS
+const OUTPUT_PIN_X = 0.84  // From NandGate: BUBBLE_RIGHT + PIN_RADIUS
+
 // Helper to get pin world position (accounts for gate rotation)
 function computePinWorldPosition(
   gates: GateInstance[],
@@ -18,9 +22,9 @@ function computePinWorldPosition(
   let localOffset: Vector3
   if (inputIndex !== -1) {
     const yOffset = inputIndex === 0 ? 0.2 : -0.2
-    localOffset = new Vector3(-0.7, yOffset, 0)
+    localOffset = new Vector3(INPUT_PIN_X, yOffset, 0)
   } else if (outputIndex !== -1) {
-    localOffset = new Vector3(0.7, 0, 0)
+    localOffset = new Vector3(OUTPUT_PIN_X, 0, 0)
   } else {
     return null
   }

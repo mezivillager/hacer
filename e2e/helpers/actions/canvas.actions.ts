@@ -8,6 +8,7 @@
 import { Page } from '@playwright/test'
 import { TIMEOUTS } from '../../config/constants'
 import type { Position3D } from '../../config/constants'
+import { waitForSceneStable } from '../waits/render.waits'
 
 /**
  * Project a 3D world position to 2D screen coordinates
@@ -45,6 +46,11 @@ export async function clickPin(
   pinId: string,
   opts: { withShift?: boolean } = {}
 ): Promise<void> {
+  // Wait for scene to stabilize after state changes
+  await waitForSceneStable(page, TIMEOUTS.store)
+  // Additional small wait for Three.js render cycle to complete
+  await page.waitForTimeout(50)
+  
   const pinPos = await page.evaluate(
     ({ gateId, pinId }) => {
       return window.__CIRCUIT_ACTIONS__?.getPinWorldPosition(gateId, pinId) ?? null

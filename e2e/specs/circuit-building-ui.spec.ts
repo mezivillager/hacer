@@ -12,7 +12,7 @@ import {
   deleteSelectedViaUI,
   clearAllViaUI,
 } from '../helpers/actions'
-import { ensureGates } from '../helpers/waits'
+import { ensureGates, waitForSceneStable } from '../helpers/waits'
 import { expectGateCount, expectWireCount } from '../helpers/assertions'
 
 const { placements, wire } = circuitBuildScenario
@@ -32,13 +32,16 @@ test.describe('Circuit Building (UI) @ui', () => {
     // Place gates with appropriate rotations for wiring
     for (const placement of placements) {
       await addGateViaUI(page, { 
-        type: 'NAND', // Default to NAND for backward compatibility
+        type: 'NAND',
         position: placement.position,
         rotate: placement.rotate
       })
     }
     await ensureGates(page, 2)
     await expectGateCount(page, 2)
+
+    // Wait for scene to stabilize after placements
+    await waitForSceneStable(page)
 
     const gateIds = await getGateIds(page)
     await connectWiresViaUI(page, [wire], gateIds)
@@ -47,9 +50,9 @@ test.describe('Circuit Building (UI) @ui', () => {
 
   test('supports delete and clear flows', async ({ page }) => {
     for (const placement of placements) {
-      await addGateViaUI(page, { 
+      await addGateViaUI(page, {
         type: 'NAND',
-        position: placement.position 
+        position: placement.position
       })
     }
     await ensureGates(page, 2)

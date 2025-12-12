@@ -8,7 +8,7 @@
 import { Page } from '@playwright/test'
 import { UI_SELECTORS } from '../../selectors'
 import type { Position3D } from '../../config/constants'
-import { clickWorldPosition, rotateAtPosition } from './canvas.actions'
+import { clickWorldPosition } from './canvas.actions'
 
 export type GateType = 'NAND' | 'AND' | 'OR' | 'NOT' | 'XOR'
 
@@ -77,11 +77,17 @@ export async function addGateViaUI(
   // Wait for placement mode to be active (check for hint text or active state)
   await page.waitForSelector('.gate-icon.active', { state: 'visible' })
   
-  // Click on the canvas to place the gate
+  // Click on the canvas to place the gate (gate is auto-selected after placement)
   await clickWorldPosition(page, options.position)
 
+  // Rotate if needed - gate is already selected, just press arrow keys directly
   if (options.rotate) {
-    await rotateAtPosition(page, options.position, options.rotate.direction, options.rotate.times)
+    const key = options.rotate.direction === 'left' ? 'ArrowLeft' : 'ArrowRight'
+    for (let i = 0; i < options.rotate.times; i++) {
+      await page.keyboard.press(key)
+    }
+    // Wait for rotation animation
+    await page.waitForTimeout(100)
   }
 }
 
@@ -96,9 +102,9 @@ export async function addNandGateViaUI(
 }
 
 /**
- * Select a gate via store
+ * Select a gate via store (pass null to deselect)
  */
-export async function selectGate(page: Page, gateId: string): Promise<void> {
+export async function selectGate(page: Page, gateId: string | null): Promise<void> {
   await page.evaluate(
     ({ gateId }) => {
       window.__CIRCUIT_ACTIONS__?.selectGate(gateId)
@@ -128,9 +134,14 @@ export async function deleteSelectedViaUI(page: Page): Promise<void> {
 
 /**
  * Clear all gates via UI (click Clear All button)
+ * Does nothing if the button is disabled (no gates to clear)
  */
 export async function clearAllViaUI(page: Page): Promise<void> {
-  await page.click(UI_SELECTORS.buttons.clearAll)
+  const button = page.locator(UI_SELECTORS.buttons.clearAll)
+  const isDisabled = await button.isDisabled()
+  if (!isDisabled) {
+    await button.click()
+  }
 }
 
 /**

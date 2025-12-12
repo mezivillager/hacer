@@ -19,24 +19,17 @@ export const UI_SELECTORS = {
     clearAll: 'button:has-text("Clear All")',
   },
 
-  // Gate selector grid
+  // Gate selector grid - use data-gate-type attribute for precise selection
   gateSelector: {
     grid: '.gate-selector-grid',
-    nandIcon: '.gate-icon:has-text("NAND")',
-    andIcon: '.gate-icon:has-text("AND")',
-    orIcon: '.gate-icon:has-text("OR")',
-    notIcon: '.gate-icon:has-text("NOT")',
-    xorIcon: '.gate-icon:has-text("XOR")',
+    nandIcon: '.gate-icon[data-gate-type="NAND"]',
+    andIcon: '.gate-icon[data-gate-type="AND"]',
+    orIcon: '.gate-icon[data-gate-type="OR"]',
+    notIcon: '.gate-icon[data-gate-type="NOT"]',
+    xorIcon: '.gate-icon[data-gate-type="XOR"]',
     // Helper to get icon by gate type
     getIcon: (gateType: 'NAND' | 'AND' | 'OR' | 'NOT' | 'XOR') => {
-      const map = {
-        NAND: '.gate-icon:has-text("NAND")',
-        AND: '.gate-icon:has-text("AND")',
-        OR: '.gate-icon:has-text("OR")',
-        NOT: '.gate-icon:has-text("NOT")',
-        XOR: '.gate-icon:has-text("XOR")',
-      }
-      return map[gateType]
+      return `.gate-icon[data-gate-type="${gateType}"]`
     },
   },
 
