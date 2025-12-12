@@ -1,11 +1,9 @@
-import { memo } from 'react'
-
 interface XorIconProps {
   size?: number
   color?: string
 }
 
-function XorIconComponent({ size = 32, color = 'currentColor' }: XorIconProps) {
+export function XorIcon({ size = 32, color = 'currentColor' }: XorIconProps) {
   return (
     <svg
       width={size}
@@ -41,6 +39,4 @@ function XorIconComponent({ size = 32, color = 'currentColor' }: XorIconProps) {
     </svg>
   )
 }
-
-export const XorIcon = memo(XorIconComponent)
 XorIcon.displayName = 'XorIcon'

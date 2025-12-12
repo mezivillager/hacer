@@ -1,11 +1,9 @@
-import { memo } from 'react'
-
 interface NandIconProps {
   size?: number
   color?: string
 }
 
-function NandIconComponent({ size = 32, color = 'currentColor' }: NandIconProps) {
+export function NandIcon({ size = 32, color = 'currentColor' }: NandIconProps) {
   return (
     <svg
       width={size}
@@ -35,6 +33,4 @@ function NandIconComponent({ size = 32, color = 'currentColor' }: NandIconProps)
     </svg>
   )
 }
-
-export const NandIcon = memo(NandIconComponent)
 NandIcon.displayName = 'NandIcon'

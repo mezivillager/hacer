@@ -1,11 +1,9 @@
-import { memo } from 'react'
-
 interface NotIconProps {
   size?: number
   color?: string
 }
 
-function NotIconComponent({ size = 32, color = 'currentColor' }: NotIconProps) {
+export function NotIcon({ size = 32, color = 'currentColor' }: NotIconProps) {
   return (
     <svg
       width={size}
@@ -34,6 +32,4 @@ function NotIconComponent({ size = 32, color = 'currentColor' }: NotIconProps) {
     </svg>
   )
 }
-
-export const NotIcon = memo(NotIconComponent)
 NotIcon.displayName = 'NotIcon'

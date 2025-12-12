@@ -1,11 +1,9 @@
-import { memo } from 'react'
-
 interface AndIconProps {
   size?: number
   color?: string
 }
 
-function AndIconComponent({ size = 32, color = 'currentColor' }: AndIconProps) {
+export function AndIcon({ size = 32, color = 'currentColor' }: AndIconProps) {
   return (
     <svg
       width={size}
@@ -32,6 +30,4 @@ function AndIconComponent({ size = 32, color = 'currentColor' }: AndIconProps) {
     </svg>
   )
 }
-
-export const AndIcon = memo(AndIconComponent)
 AndIcon.displayName = 'AndIcon'

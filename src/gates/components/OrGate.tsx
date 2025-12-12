@@ -1,4 +1,4 @@
-import { memo, useRef, useState, useMemo, useCallback } from 'react'
+import { useRef, useState } from 'react'
 import { Group, Shape, ExtrudeGeometry } from 'three'
 import { ThreeEvent } from '@react-three/fiber'
 import { Text } from '@react-three/drei'
@@ -38,7 +38,7 @@ function createOrGateGeometry() {
 // Memoize the geometry to avoid recreating it
 const orGateGeometry = createOrGateGeometry()
 
-function OrGateComponent({
+export function OrGate({
   id,
   position = [0, 0, 0],
   rotation = [0, 0, 0],
@@ -57,90 +57,72 @@ function OrGateComponent({
   const [hovered, setHovered] = useState(false)
   const [hoveredPin, setHoveredPin] = useState<string | null>(null)
 
-  const output = useMemo(() => orLogic(inputA, inputB), [inputA, inputB])
+  const output = orLogic(inputA, inputB)
 
   // Gate body color based on state - blue tinted for OR
-  const bodyColor = useMemo(
-    () => (selected ? OR_BODY_SELECTED : hovered ? OR_BODY_HOVER : OR_BODY_COLOR),
-    [selected, hovered]
-  )
+  const bodyColor = selected ? OR_BODY_SELECTED : hovered ? OR_BODY_HOVER : OR_BODY_COLOR
 
   // Pin colors based on connection status and value
-  const getPinColor = useCallback(
-    (value: boolean, connected: boolean, pinName: string, isOutput: boolean = false) => {
-      if (isWiring && hoveredPin === pinName) return colors.primary
-      if (isOutput) return value ? colors.pin.active : colors.pin.inactive
-      if (connected) return value ? colors.pin.active : colors.pin.inactive
-      return value ? colors.pin.active : colors.pin.disconnected
-    },
-    [isWiring, hoveredPin]
-  )
+  const getPinColor = (value: boolean, connected: boolean, pinName: string, isOutput: boolean = false) => {
+    if (isWiring && hoveredPin === pinName) return colors.primary
+    if (isOutput) return value ? colors.pin.active : colors.pin.inactive
+    if (connected) return value ? colors.pin.active : colors.pin.inactive
+    return value ? colors.pin.active : colors.pin.disconnected
+  }
 
-  const inputAColor = useMemo(() => getPinColor(inputA, inputAConnected, 'inputA', false), [inputA, inputAConnected, getPinColor])
-  const inputBColor = useMemo(() => getPinColor(inputB, inputBConnected, 'inputB', false), [inputB, inputBConnected, getPinColor])
-  const outputColor = useMemo(() => getPinColor(output, outputConnected, 'output', true), [output, outputConnected, getPinColor])
+  const inputAColor = getPinColor(inputA, inputAConnected, 'inputA', false)
+  const inputBColor = getPinColor(inputB, inputBConnected, 'inputB', false)
+  const outputColor = getPinColor(output, outputConnected, 'output', true)
 
-  const handleClick = useCallback(
-    (e: ThreeEvent<MouseEvent>) => {
+  const handleClick = (e: ThreeEvent<MouseEvent>) => {
+    e.stopPropagation()
+    if (!isWiring) {
+      onClick?.()
+    }
+  }
+
+  const getWorldPosition = (localOffset: [number, number, number], eventPoint?: { x: number; y: number; z: number }) => {
+    if (eventPoint) {
+      return eventPoint
+    }
+    return {
+      x: position[0] + localOffset[0],
+      y: position[1] + localOffset[1],
+      z: position[2] + localOffset[2],
+    }
+  }
+
+  const handlePinPointerMove = (localOffset: [number, number, number]) => (e: ThreeEvent<PointerEvent>) => {
+    if (isWiring) {
       e.stopPropagation()
-      if (!isWiring) {
-        onClick?.()
-      }
-    },
-    [isWiring, onClick]
-  )
-
-  const getWorldPosition = useCallback(
-    (localOffset: [number, number, number], eventPoint?: { x: number; y: number; z: number }) => {
-      if (eventPoint) {
-        return eventPoint
-      }
-      return {
-        x: position[0] + localOffset[0],
-        y: position[1] + localOffset[1],
-        z: position[2] + localOffset[2],
-      }
-    },
-    [position]
-  )
-
-  const handlePinPointerMove = useCallback(
-    (localOffset: [number, number, number]) => (e: ThreeEvent<PointerEvent>) => {
-      if (isWiring) {
-        e.stopPropagation()
-        const worldPos = getWorldPosition(localOffset, e.point ? { x: e.point.x, y: e.point.y, z: e.point.z } : undefined)
-        circuitActions.updateWirePreviewPosition(worldPos)
-      }
-    },
-    [isWiring, getWorldPosition]
-  )
-
-  const handlePinPointerOut = useCallback(() => {
-    // Clear preview position when leaving pin
-  }, [])
-
-  const handlePinClick = useCallback(
-    (pinId: string, pinType: 'input' | 'output', localOffset: [number, number, number], isConnected: boolean) => (e: ThreeEvent<MouseEvent>) => {
-      e.stopPropagation()
-
-      if (e.shiftKey && pinType === 'input' && !isConnected) {
-        onInputToggle?.(id, pinId)
-        return
-      }
-
       const worldPos = getWorldPosition(localOffset, e.point ? { x: e.point.x, y: e.point.y, z: e.point.z } : undefined)
-      onPinClick?.(id, pinId, pinType, worldPos)
-    },
-    [id, onInputToggle, onPinClick, getWorldPosition]
-  )
+      circuitActions.updateWirePreviewPosition(worldPos)
+    }
+  }
 
-  const handleInputAHover = useCallback(() => setHoveredPin('inputA'), [])
-  const handleInputBHover = useCallback(() => setHoveredPin('inputB'), [])
-  const handleOutputHover = useCallback(() => setHoveredPin('output'), [])
-  const handlePinOut = useCallback(() => {
+  const handlePinPointerOut = () => {
+    // Clear preview position when leaving pin
+  }
+
+  const handlePinClick = (pinId: string, pinType: 'input' | 'output', localOffset: [number, number, number], isConnected: boolean) => (e: ThreeEvent<MouseEvent>) => {
+    e.stopPropagation()
+
+    if (e.shiftKey && pinType === 'input' && !isConnected) {
+      onInputToggle?.(id, pinId)
+      return
+    }
+
+    const worldPos = getWorldPosition(localOffset, e.point ? { x: e.point.x, y: e.point.y, z: e.point.z } : undefined)
+    onPinClick?.(id, pinId, pinType, worldPos)
+  }
+
+  const handleInputAHover = () => setHoveredPin('inputA')
+  const handleInputBHover = () => setHoveredPin('inputB')
+  const handleOutputHover = () => setHoveredPin('output')
+  const handlePinOut = () => {
     setHoveredPin(null)
     handlePinPointerOut()
-  }, [handlePinPointerOut])
+  }
 
   return (
     <group ref={groupRef} position={position} rotation={rotation}>
@@ -228,6 +210,4 @@ function OrGateComponent({
     </group>
   )
 }
-
-export const OrGate = memo(OrGateComponent)
 OrGate.displayName = 'OrGate'

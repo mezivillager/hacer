@@ -1,4 +1,3 @@
-import { memo } from 'react'
 import { OrbitControls } from '@react-three/drei'
 
 interface SceneOrbitControlsProps {
@@ -7,9 +6,9 @@ interface SceneOrbitControlsProps {
 
 /**
  * OrbitControls component - only re-renders when isInteracting changes.
- * Memoized to prevent unnecessary re-renders.
+ * Optimized automatically by React Compiler.
  */
-export const SceneOrbitControls = memo(function SceneOrbitControls({ isInteracting }: SceneOrbitControlsProps) {
+export function SceneOrbitControls({ isInteracting }: SceneOrbitControlsProps) {
   return (
     <OrbitControls
       makeDefault
@@ -21,5 +20,4 @@ export const SceneOrbitControls = memo(function SceneOrbitControls({ isInteracti
       enableRotate={!isInteracting}
     />
   )
-}, (prevProps, nextProps) => prevProps.isInteracting === nextProps.isInteracting)
-
+}

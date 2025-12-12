@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { Vector3, CatmullRomCurve3 } from 'three'
 import { colors, materials } from '@/theme'
 
@@ -17,34 +16,28 @@ export function Wire3D({
   isActive = false,
   isPreview = false 
 }: Wire3DProps) {
-  // Create safe values for hooks (hooks must always be called)
-  const safeStart = start ?? { x: 0, y: 0, z: 0 }
-  const safeEnd = end ?? { x: 0, y: 0, z: 0 }
+  // Guard against undefined positions
+  if (!start || !end) return null
   
-  const curve = useMemo(() => {
-    const startVec = new Vector3(safeStart.x, safeStart.y, safeStart.z)
-    const endVec = new Vector3(safeEnd.x, safeEnd.y, safeEnd.z)
-    
-    // Calculate control points for a nice curve
-    const midY = Math.max(safeStart.y, safeEnd.y) + 0.3
-    const midX = (safeStart.x + safeEnd.x) / 2
-    const midZ = (safeStart.z + safeEnd.z) / 2
-    
-    // Create a smooth curve with control points
-    const points = [
-      startVec,
-      new Vector3(safeStart.x + 0.3, safeStart.y, safeStart.z),
-      new Vector3(midX, midY, midZ),
-      new Vector3(safeEnd.x - 0.3, safeEnd.y, safeEnd.z),
-      endVec,
-    ]
-    
-    return new CatmullRomCurve3(points)
-  }, [safeStart.x, safeStart.y, safeStart.z, safeEnd.x, safeEnd.y, safeEnd.z])
+  const startVec = new Vector3(start.x, start.y, start.z)
+  const endVec = new Vector3(end.x, end.y, end.z)
   
-  const tubeRadius = useMemo(() => {
-    return isPreview ? 0.03 : 0.025
-  }, [isPreview])
+  // Calculate control points for a nice curve
+  const midY = Math.max(start.y, end.y) + 0.3
+  const midX = (start.x + end.x) / 2
+  const midZ = (start.z + end.z) / 2
+  
+  // Create a smooth curve with control points
+  const points = [
+    startVec,
+    new Vector3(start.x + 0.3, start.y, start.z),
+    new Vector3(midX, midY, midZ),
+    new Vector3(end.x - 0.3, end.y, end.z),
+    endVec,
+  ]
+  
+  const curve = new CatmullRomCurve3(points)
+  const tubeRadius = isPreview ? 0.03 : 0.025
   
   const wireColor = isActive 
     ? colors.wire.active 
@@ -52,9 +45,6 @@ export function Wire3D({
       ? colors.wire.preview 
       : color
   const emissiveIntensity = isActive ? 0.5 : isPreview ? 0.3 : 0
-  
-  // Guard against undefined positions - return null AFTER hooks
-  if (!start || !end) return null
   
   return (
     <mesh>

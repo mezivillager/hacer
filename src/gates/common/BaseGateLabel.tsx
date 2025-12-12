@@ -1,4 +1,3 @@
-import { memo } from 'react'
 import { Html } from '@react-three/drei'
 import { colors } from '@/theme'
 import type { GateType } from '@/store/types'
@@ -42,7 +41,7 @@ function formatLabel(gateType: GateType, inputs: boolean[], output: boolean): st
   return `${gateType}: ${inputStr} → ${output ? '1' : '0'}`
 }
 
-function BaseGateLabelComponent({ gateType, inputs, output, visible }: BaseGateLabelProps) {
+export function BaseGateLabel({ gateType, inputs, output, visible }: BaseGateLabelProps) {
   if (!visible) return null
 
   return (
@@ -53,6 +52,4 @@ function BaseGateLabelComponent({ gateType, inputs, output, visible }: BaseGateL
     </Html>
   )
 }
-
-export const BaseGateLabel = memo(BaseGateLabelComponent)
 BaseGateLabel.displayName = 'BaseGateLabel'

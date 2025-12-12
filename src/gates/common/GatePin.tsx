@@ -1,4 +1,3 @@
-import { memo } from 'react'
 import { ThreeEvent } from '@react-three/fiber'
 import { materials } from '@/theme'
 
@@ -18,7 +17,7 @@ interface GatePinProps {
   onPointerOut: () => void
 }
 
-function GatePinComponent({
+export function GatePin({
   pinId,
   position,
   color,
@@ -54,6 +53,4 @@ function GatePinComponent({
     </mesh>
   )
 }
-
-export const GatePin = memo(GatePinComponent)
 GatePin.displayName = 'GatePin'

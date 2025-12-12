@@ -1,11 +1,9 @@
-import { memo } from 'react'
-
 interface OrIconProps {
   size?: number
   color?: string
 }
 
-function OrIconComponent({ size = 32, color = 'currentColor' }: OrIconProps) {
+export function OrIcon({ size = 32, color = 'currentColor' }: OrIconProps) {
   return (
     <svg
       width={size}
@@ -32,6 +30,4 @@ function OrIconComponent({ size = 32, color = 'currentColor' }: OrIconProps) {
     </svg>
   )
 }
-
-export const OrIcon = memo(OrIconComponent)
 OrIcon.displayName = 'OrIcon'

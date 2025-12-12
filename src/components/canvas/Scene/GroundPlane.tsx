@@ -1,5 +1,4 @@
 import { ThreeEvent } from '@react-three/fiber'
-import { memo } from 'react'
 import { useCircuitStore, circuitActions } from '@/store/circuitStore'
 import { trackRender } from '@/utils/renderTracking'
 import { snapToGrid } from './utils'
@@ -15,9 +14,9 @@ const {
 /**
  * Static ground plane for interactions - renders only once.
  * Uses getState() in event handlers to avoid store subscriptions.
- * Wrapped in memo to prevent re-renders from parent.
+ * Optimized automatically by React Compiler.
  */
-export const GroundPlane = memo(function GroundPlane() {
+export function GroundPlane() {
   trackRender('GroundPlane', 'static')
   
   const handlePointerMove = (e: ThreeEvent<PointerEvent>) => {
@@ -82,5 +81,4 @@ export const GroundPlane = memo(function GroundPlane() {
       <meshBasicMaterial transparent opacity={0} />
     </mesh>
   )
-})
-
+}

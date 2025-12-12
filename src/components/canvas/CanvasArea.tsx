@@ -1,4 +1,3 @@
-import { useCallback, useMemo } from 'react'
 import { Layout, Typography } from 'antd'
 import { Scene } from './Scene'
 import { GateRenderer } from '@/gates'
@@ -25,17 +24,17 @@ export function CanvasArea() {
   const isPlacing = placementMode !== null
   const isWiring = wiringFrom !== null
 
-  // Memoized helper to check if a pin is connected
-  const isPinConnected = useCallback((gateId: string, pinId: string) => {
+  // Helper to check if a pin is connected
+  const isPinConnected = (gateId: string, pinId: string) => {
     return wires.some(
       w =>
         (w.fromGateId === gateId && w.fromPinId === pinId) ||
         (w.toGateId === gateId && w.toPinId === pinId)
     )
-  }, [wires])
+  }
 
-  // Handle pin clicks for wiring - memoized to prevent child re-renders
-  const handlePinClick = useCallback((
+  // Handle pin clicks for wiring
+  const handlePinClick = (
     gateId: string,
     pinId: string,
     pinType: 'input' | 'output',
@@ -48,10 +47,10 @@ export function CanvasArea() {
     } else {
       startWiring(gateId, pinId, pinType, worldPosition)
     }
-  }, [])
+  }
 
-  // Handle input toggle - memoized
-  const handleInputToggle = useCallback((gateId: string, pinId: string) => {
+  // Handle input toggle
+  const handleInputToggle = (gateId: string, pinId: string) => {
     const currentGates = useCircuitStore.getState().gates
     const gate = currentGates.find(g => g.id === gateId)
     if (gate) {
@@ -60,18 +59,18 @@ export function CanvasArea() {
         setInputValue(gateId, pinId, !pin.value)
       }
     }
-  }, [])
+  }
 
-  // Handle gate selection - memoized
-  const handleGateClick = useCallback((gateId: string) => {
+  // Handle gate selection
+  const handleGateClick = (gateId: string) => {
     const currentWiringFrom = useCircuitStore.getState().wiringFrom
     if (!currentWiringFrom) {
       selectGate(gateId)
     }
-  }, [])
+  }
 
   // Help text based on current mode
-  const helpText = useMemo(() => {
+  const helpText = (() => {
     if (isPlacing) {
       return `📍 Click anywhere on the grid to place the ${placementMode} gate • Press Esc to cancel`
     }
@@ -79,7 +78,7 @@ export function CanvasArea() {
       return '🔗 Click on another pin to connect • Click empty space or Esc to cancel'
     }
     return '🖱️ Click pin: Wire • Shift+click input: Toggle • Click body: Select • Left/Right arrows: Rotate gate • Scroll: Zoom'
-  }, [isPlacing, isWiring, placementMode])
+  })()
 
   return (
     <Content className={`app-content ${isPlacing ? 'placing' : ''} ${isWiring ? 'wiring' : ''}`}>

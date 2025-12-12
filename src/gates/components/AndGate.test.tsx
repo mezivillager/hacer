@@ -3,15 +3,13 @@ import { AndGate } from './AndGate'
 
 // Note: Full 3D component testing is complex. This test focuses on:
 // 1. Component exports correctly
-// 2. Memo is applied
-// 3. DisplayName is set
+// 2. DisplayName is set
+// Note: Memoization is now handled automatically by React Compiler
 
 describe('AndGate', () => {
-  it('is memoized component', () => {
-    // Check that AndGate is wrapped with memo
-    expect(AndGate.displayName).toBe('AndGate')
-    // memo adds $$typeof property
-    expect(AndGate).toHaveProperty('$$typeof')
+  it('exports a valid component', () => {
+    expect(AndGate).toBeDefined()
+    expect(typeof AndGate).toBe('function')
   })
 
   it('has displayName for debugging', () => {

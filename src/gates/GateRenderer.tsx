@@ -1,4 +1,3 @@
-import { memo } from 'react'
 import type { GateInstance, GateType } from '@/store/types'
 import { NandGate, AndGate, OrGate, NotGate, XorGate } from './components'
 
@@ -27,7 +26,7 @@ interface GateRendererProps {
   onInputToggle: (gateId: string, pinId: string) => void
 }
 
-function GateRendererComponent({
+export function GateRenderer({
   gate,
   isWiring,
   isPinConnected,
@@ -119,6 +118,4 @@ function GateRendererComponent({
       )
   }
 }
-
-export const GateRenderer = memo(GateRendererComponent)
 GateRenderer.displayName = 'GateRenderer'

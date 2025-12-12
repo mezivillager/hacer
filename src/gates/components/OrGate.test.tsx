@@ -3,15 +3,13 @@ import { OrGate } from './OrGate'
 
 // Note: Full 3D component testing is complex. This test focuses on:
 // 1. Component exports correctly
-// 2. Memo is applied
-// 3. DisplayName is set
+// 2. DisplayName is set
+// Note: Memoization is now handled automatically by React Compiler
 
 describe('OrGate', () => {
-  it('is memoized component', () => {
-    // Check that OrGate is wrapped with memo
-    expect(OrGate.displayName).toBe('OrGate')
-    // memo adds $$typeof property
-    expect(OrGate).toHaveProperty('$$typeof')
+  it('exports a valid component', () => {
+    expect(OrGate).toBeDefined()
+    expect(typeof OrGate).toBe('function')
   })
 
   it('has displayName for debugging', () => {

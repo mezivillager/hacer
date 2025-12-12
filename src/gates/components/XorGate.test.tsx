@@ -3,15 +3,13 @@ import { XorGate } from './XorGate'
 
 // Note: Full 3D component testing is complex. This test focuses on:
 // 1. Component exports correctly
-// 2. Memo is applied
-// 3. DisplayName is set
+// 2. DisplayName is set
+// Note: Memoization is now handled automatically by React Compiler
 
 describe('XorGate', () => {
-  it('is memoized component', () => {
-    // Check that XorGate is wrapped with memo
-    expect(XorGate.displayName).toBe('XorGate')
-    // memo adds $$typeof property
-    expect(XorGate).toHaveProperty('$$typeof')
+  it('exports a valid component', () => {
+    expect(XorGate).toBeDefined()
+    expect(typeof XorGate).toBe('function')
   })
 
   it('has displayName for debugging', () => {

@@ -1,4 +1,3 @@
-import { memo } from 'react'
 import { Grid } from '@react-three/drei'
 import { colors } from '@/theme'
 
@@ -6,7 +5,7 @@ import { colors } from '@/theme'
  * Grid component - static, never re-renders.
  * Always uses default colors regardless of interaction state.
  */
-export const SceneGrid = memo(function SceneGrid() {
+export function SceneGrid() {
   return (
     <Grid
       args={[20, 20]}
@@ -22,5 +21,4 @@ export const SceneGrid = memo(function SceneGrid() {
       infiniteGrid
     />
   )
-})
-
+}

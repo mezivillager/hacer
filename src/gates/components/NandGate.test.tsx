@@ -3,15 +3,13 @@ import { NandGate } from './NandGate'
 
 // Note: Full 3D component testing is complex. This test focuses on:
 // 1. Component exports correctly
-// 2. Memo is applied
-// 3. DisplayName is set
+// 2. DisplayName is set
+// Note: Memoization is now handled automatically by React Compiler
 
 describe('NandGate', () => {
-  it('is memoized component', () => {
-    // Check that NandGate is wrapped with memo
-    expect(NandGate.displayName).toBe('NandGate')
-    // memo adds $$typeof property
-    expect(NandGate).toHaveProperty('$$typeof')
+  it('exports a valid component', () => {
+    expect(NandGate).toBeDefined()
+    expect(typeof NandGate).toBe('function')
   })
 
   it('has displayName for debugging', () => {

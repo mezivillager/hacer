@@ -1,11 +1,10 @@
-import { memo } from 'react'
 import { colors, materials } from '@/theme'
 
 interface WireStubProps {
   position: [number, number, number]
 }
 
-function WireStubComponent({ position }: WireStubProps) {
+export function WireStub({ position }: WireStubProps) {
   return (
     <mesh position={position} rotation={[0, 0, Math.PI / 2]}>
       <cylinderGeometry args={[0.02, 0.02, 0.2, 8]} />
@@ -17,6 +16,4 @@ function WireStubComponent({ position }: WireStubProps) {
     </mesh>
   )
 }
-
-export const WireStub = memo(WireStubComponent)
 WireStub.displayName = 'WireStub'

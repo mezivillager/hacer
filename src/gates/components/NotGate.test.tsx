@@ -3,15 +3,13 @@ import { NotGate } from './NotGate'
 
 // Note: Full 3D component testing is complex. This test focuses on:
 // 1. Component exports correctly
-// 2. Memo is applied
-// 3. DisplayName is set
+// 2. DisplayName is set
+// Note: Memoization is now handled automatically by React Compiler
 
 describe('NotGate', () => {
-  it('is memoized component', () => {
-    // Check that NotGate is wrapped with memo
-    expect(NotGate.displayName).toBe('NotGate')
-    // memo adds $$typeof property
-    expect(NotGate).toHaveProperty('$$typeof')
+  it('exports a valid component', () => {
+    expect(NotGate).toBeDefined()
+    expect(typeof NotGate).toBe('function')
   })
 
   it('has displayName for debugging', () => {
