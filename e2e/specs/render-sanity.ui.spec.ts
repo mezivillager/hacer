@@ -1,10 +1,10 @@
 /**
- * Render Sanity Check Tests
+ * Render Sanity Check Tests (UI-driven)
  * 
  * These tests verify that common operations don't cause excessive re-renders.
  * Run these tests to catch render performance regressions.
  * 
- * Tag for filtering: @render @performance
+ * Tag for filtering: @render @performance @ui
  */
 
 import { test, expect } from '../fixtures'
@@ -52,7 +52,7 @@ const RENDER_BUDGETS = {
   },
 }
 
-test.describe('Render Sanity Check @render @performance', () => {
+test.describe('Render Sanity Check (UI) @render @performance @ui', () => {
   test.beforeEach(async ({ page }) => {
     // Wait for initial scene to be ready and stable
     await page.waitForFunction(() => window.__SCENE_READY__ === true, { timeout: 10000 })
