@@ -1,13 +1,15 @@
 import { Vector3, Euler } from 'three'
-import { circuitStore } from '../../circuitStore'
-import type { GateInstance } from '../../types'
+import type { PinHelpers, Position, CircuitStore, GateInstance } from '../../types'
+
+type GetState = () => CircuitStore
 
 // Helper to get pin world position (accounts for gate rotation)
-export function getPinWorldPosition(
+function computePinWorldPosition(
+  gates: GateInstance[],
   gateId: string,
   pinId: string
-): { x: number; y: number; z: number } | null {
-  const gate = circuitStore.gates.find((g: GateInstance) => g.id === gateId)
+): Position | null {
+  const gate = gates.find((g) => g.id === gateId)
   if (!gate) return null
 
   const inputIndex = gate.inputs.findIndex((p) => p.id === pinId)
@@ -32,3 +34,10 @@ export function getPinWorldPosition(
     z: gate.position.z + localOffset.z,
   }
 }
+
+export const createPinHelpers = (get: GetState): PinHelpers => ({
+  getPinWorldPosition: (gateId: string, pinId: string) => {
+    const state = get()
+    return computePinWorldPosition(state.gates, gateId, pinId)
+  },
+})

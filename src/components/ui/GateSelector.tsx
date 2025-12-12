@@ -1,5 +1,5 @@
 import { Tooltip } from 'antd'
-import { circuitActions, useCircuitStore } from '@/store/circuitStore'
+import { useCircuitStore } from '@/store/circuitStore'
 import type { GateType } from '@/store/types'
 import { getGateIcon } from '@/gates/icons'
 import { colors } from '@/theme'
@@ -19,15 +19,18 @@ const gateDescriptions: Record<GateType, string> = {
 }
 
 export function GateSelector() {
-  const circuit = useCircuitStore()
+  // Use selectors for granular subscriptions
+  const placementMode = useCircuitStore((s) => s.placementMode)
+  const startPlacement = useCircuitStore((s) => s.startPlacement)
+  const cancelPlacement = useCircuitStore((s) => s.cancelPlacement)
 
   const handleGateSelect = (type: GateType) => {
-    if (circuit.placementMode === type) {
+    if (placementMode === type) {
       // If already placing this type, cancel placement
-      circuitActions.cancelPlacement()
+      cancelPlacement()
     } else {
       // Start placement for this gate type
-      circuitActions.startPlacement(type)
+      startPlacement(type)
     }
   }
 
@@ -35,7 +38,7 @@ export function GateSelector() {
     <div className="gate-selector-grid">
       {ELEMENTARY_GATES.map(type => {
         const IconComponent = getGateIcon(type)
-        const isActive = circuit.placementMode === type
+        const isActive = placementMode === type
 
         return (
           <Tooltip key={type} title={gateDescriptions[type]} placement="right">

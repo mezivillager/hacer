@@ -1,25 +1,24 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { Sidebar } from './Sidebar'
-import { circuitActions, circuitStore } from '@/store/circuitStore'
+import { useCircuitStore } from '@/store/circuitStore'
 
-// Mock useCircuitStore to return store snapshot
-vi.mock('@/store/circuitStore', async () => {
-  const actual = await vi.importActual('@/store/circuitStore')
-  return {
-    ...actual,
-    useCircuitStore: () => circuitStore,
-  }
-})
+// Get a reference to the actual store's setState and getState for resetting and checking
+const actualSetState = useCircuitStore.setState
+const actualGetState = useCircuitStore.getState
 
 describe('Sidebar', () => {
   beforeEach(() => {
-    // Reset store state
-    circuitStore.gates = []
-    circuitStore.wires = []
-    circuitStore.selectedGateId = null
-    circuitStore.simulationRunning = false
-    circuitStore.placementMode = null
+    // Reset store state using the actual setState
+    actualSetState({
+      gates: [],
+      wires: [],
+      selectedGateId: null,
+      simulationRunning: false,
+      simulationSpeed: 100,
+      placementMode: null,
+      wiringFrom: null,
+    })
     vi.clearAllMocks()
   })
 
@@ -40,17 +39,17 @@ describe('Sidebar', () => {
   })
 
   it('calls startPlacement when a gate icon is clicked', () => {
-    const startPlacementSpy = vi.spyOn(circuitActions, 'startPlacement')
     render(<Sidebar />)
 
     const nandIcon = screen.getByText('NAND').closest('.gate-icon')
     fireEvent.click(nandIcon!)
 
-    expect(startPlacementSpy).toHaveBeenCalledWith('NAND')
+    // Verify state change instead of spy
+    expect(actualGetState().placementMode).toBe('NAND')
   })
 
   it('shows active state on gate icon when in placement mode', () => {
-    circuitStore.placementMode = 'NAND'
+    actualSetState({ placementMode: 'NAND' })
     render(<Sidebar />)
 
     const nandIcon = screen.getByText('NAND').closest('.gate-icon')
@@ -58,14 +57,14 @@ describe('Sidebar', () => {
   })
 
   it('calls cancelPlacement when active gate icon is clicked again', () => {
-    const cancelPlacementSpy = vi.spyOn(circuitActions, 'cancelPlacement')
-    circuitStore.placementMode = 'NAND'
+    actualSetState({ placementMode: 'NAND' })
     render(<Sidebar />)
 
     const nandIcon = screen.getByText('NAND').closest('.gate-icon')
     fireEvent.click(nandIcon!)
 
-    expect(cancelPlacementSpy).toHaveBeenCalled()
+    // Verify state change instead of spy
+    expect(actualGetState().placementMode).toBe(null)
   })
 
   it('renders simulation controls', () => {
@@ -76,17 +75,18 @@ describe('Sidebar', () => {
   })
 
   it('calls toggleSimulation when Run Simulation button is clicked', () => {
-    const toggleSimulationSpy = vi.spyOn(circuitActions, 'toggleSimulation')
     render(<Sidebar />)
+    expect(actualGetState().simulationRunning).toBe(false)
 
     const button = screen.getByText('Run Simulation')
     fireEvent.click(button)
 
-    expect(toggleSimulationSpy).toHaveBeenCalled()
+    // Verify state change instead of spy
+    expect(actualGetState().simulationRunning).toBe(true)
   })
 
   it('shows Pause Simulation when simulation is running', () => {
-    circuitStore.simulationRunning = true
+    actualSetState({ simulationRunning: true })
     render(<Sidebar />)
 
     expect(screen.getByText('Pause Simulation')).toBeInTheDocument()
@@ -101,7 +101,7 @@ describe('Sidebar', () => {
   })
 
   it('enables Delete Selected when gate is selected', () => {
-    circuitStore.selectedGateId = 'gate-1'
+    actualSetState({ selectedGateId: 'gate-1' })
     render(<Sidebar />)
 
     const button = screen.getByText('Delete Selected').closest('button')
@@ -109,14 +109,18 @@ describe('Sidebar', () => {
   })
 
   it('calls removeGate when Delete Selected is clicked', () => {
-    const removeGateSpy = vi.spyOn(circuitActions, 'removeGate')
-    circuitStore.selectedGateId = 'gate-1'
+    // Add a gate to the store first
+    actualSetState({ 
+      selectedGateId: 'gate-1',
+      gates: [{ id: 'gate-1', type: 'NAND', position: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, inputs: [], outputs: [], selected: true }]
+    })
     render(<Sidebar />)
 
     const button = screen.getByText('Delete Selected')
     fireEvent.click(button)
 
-    expect(removeGateSpy).toHaveBeenCalledWith('gate-1')
+    // Verify state change - gate should be removed
+    expect(actualGetState().gates).toHaveLength(0)
   })
 
   it('disables Clear All when no gates exist', () => {
@@ -127,7 +131,9 @@ describe('Sidebar', () => {
   })
 
   it('enables Clear All when gates exist', () => {
-    circuitStore.gates = [{ id: 'gate-1', type: 'NAND', position: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, inputs: [], outputs: [], selected: false }]
+    actualSetState({
+      gates: [{ id: 'gate-1', type: 'NAND', position: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, inputs: [], outputs: [], selected: false }]
+    })
     render(<Sidebar />)
 
     const button = screen.getByText('Clear All').closest('button')
@@ -135,22 +141,28 @@ describe('Sidebar', () => {
   })
 
   it('calls clearCircuit when Clear All is clicked', () => {
-    const clearCircuitSpy = vi.spyOn(circuitActions, 'clearCircuit')
-    circuitStore.gates = [{ id: 'gate-1', type: 'NAND', position: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, inputs: [], outputs: [], selected: false }]
+    actualSetState({
+      gates: [{ id: 'gate-1', type: 'NAND', position: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, inputs: [], outputs: [], selected: false }],
+      wires: [{ id: 'wire-1', fromGateId: 'gate-1', fromPinId: 'pin-1', toGateId: 'gate-2', toPinId: 'pin-2' }]
+    })
     render(<Sidebar />)
 
     const button = screen.getByText('Clear All')
     fireEvent.click(button)
 
-    expect(clearCircuitSpy).toHaveBeenCalled()
+    // Verify state change
+    expect(actualGetState().gates).toHaveLength(0)
+    expect(actualGetState().wires).toHaveLength(0)
   })
 
   it('displays circuit info', () => {
-    circuitStore.gates = [
-      { id: 'gate-1', type: 'NAND', position: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, inputs: [], outputs: [], selected: false },
-      { id: 'gate-2', type: 'NAND', position: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, inputs: [], outputs: [], selected: false },
-    ]
-    circuitStore.wires = [{ id: 'wire-1', fromGateId: 'gate-1', fromPinId: 'pin-1', toGateId: 'gate-2', toPinId: 'pin-2' }]
+    actualSetState({
+      gates: [
+        { id: 'gate-1', type: 'NAND', position: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, inputs: [], outputs: [], selected: false },
+        { id: 'gate-2', type: 'NAND', position: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, inputs: [], outputs: [], selected: false },
+      ],
+      wires: [{ id: 'wire-1', fromGateId: 'gate-1', fromPinId: 'pin-1', toGateId: 'gate-2', toPinId: 'pin-2' }]
+    })
     render(<Sidebar />)
 
     expect(screen.getByText(/Gates: 2/)).toBeInTheDocument()
@@ -158,22 +170,21 @@ describe('Sidebar', () => {
   })
 
   it('can switch between different gate types for placement', () => {
-    const startPlacementSpy = vi.spyOn(circuitActions, 'startPlacement')
     render(<Sidebar />)
 
     // Click AND gate
     const andIcon = screen.getByText('AND').closest('.gate-icon')
     fireEvent.click(andIcon!)
-    expect(startPlacementSpy).toHaveBeenCalledWith('AND')
+    expect(actualGetState().placementMode).toBe('AND')
 
     // Click OR gate
     const orIcon = screen.getByText('OR').closest('.gate-icon')
     fireEvent.click(orIcon!)
-    expect(startPlacementSpy).toHaveBeenCalledWith('OR')
+    expect(actualGetState().placementMode).toBe('OR')
 
     // Click NOT gate
     const notIcon = screen.getByText('NOT').closest('.gate-icon')
     fireEvent.click(notIcon!)
-    expect(startPlacementSpy).toHaveBeenCalledWith('NOT')
+    expect(actualGetState().placementMode).toBe('NOT')
   })
 })

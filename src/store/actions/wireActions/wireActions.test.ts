@@ -1,39 +1,47 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { circuitStore } from '../../circuitStore'
-import { wireActions } from './wireActions'
-import { gateActions } from '../gateActions/gateActions'
+import { useCircuitStore } from '../../circuitStore'
+
+// Helper to get store state
+const getState = () => useCircuitStore.getState()
 
 describe('wireActions', () => {
   beforeEach(() => {
     // Reset store state before each test
-    circuitStore.gates = []
-    circuitStore.wires = []
+    useCircuitStore.setState({
+      gates: [],
+      wires: [],
+      selectedGateId: null,
+      simulationRunning: false,
+      simulationSpeed: 100,
+      placementMode: null,
+      wiringFrom: null,
+    })
   })
 
   describe('addWire', () => {
     it('adds a wire between two gates', () => {
-      const gate1 = gateActions.addGate('NAND', { x: 0, y: 0, z: 0 })
-      const gate2 = gateActions.addGate('NAND', { x: 2, y: 0, z: 0 })
+      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 0 })
       
-      const wire = wireActions.addWire(
+      const wire = getState().addWire(
         gate1.id, gate1.outputs[0].id,
         gate2.id, gate2.inputs[0].id
       )
       
-      expect(circuitStore.wires).toHaveLength(1)
+      expect(getState().wires).toHaveLength(1)
       expect(wire.fromGateId).toBe(gate1.id)
       expect(wire.toGateId).toBe(gate2.id)
     })
 
     it('creates wire with unique id', () => {
-      const gate1 = gateActions.addGate('NAND', { x: 0, y: 0, z: 0 })
-      const gate2 = gateActions.addGate('NAND', { x: 2, y: 0, z: 0 })
+      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 0 })
       
-      const wire1 = wireActions.addWire(
+      const wire1 = getState().addWire(
         gate1.id, gate1.outputs[0].id,
         gate2.id, gate2.inputs[0].id
       )
-      const wire2 = wireActions.addWire(
+      const wire2 = getState().addWire(
         gate1.id, gate1.outputs[0].id,
         gate2.id, gate2.inputs[1].id
       )
@@ -44,54 +52,54 @@ describe('wireActions', () => {
 
   describe('removeWire', () => {
     it('removes wire from store', () => {
-      const gate1 = gateActions.addGate('NAND', { x: 0, y: 0, z: 0 })
-      const gate2 = gateActions.addGate('NAND', { x: 2, y: 0, z: 0 })
+      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 0 })
       
-      const wire = wireActions.addWire(
+      const wire = getState().addWire(
         gate1.id, gate1.outputs[0].id,
         gate2.id, gate2.inputs[0].id
       )
-      expect(circuitStore.wires).toHaveLength(1)
+      expect(getState().wires).toHaveLength(1)
       
-      wireActions.removeWire(wire.id)
-      expect(circuitStore.wires).toHaveLength(0)
+      getState().removeWire(wire.id)
+      expect(getState().wires).toHaveLength(0)
     })
 
     it('does nothing if wire does not exist', () => {
-      const gate1 = gateActions.addGate('NAND', { x: 0, y: 0, z: 0 })
-      const gate2 = gateActions.addGate('NAND', { x: 2, y: 0, z: 0 })
+      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 0 })
       
-      wireActions.addWire(
+      getState().addWire(
         gate1.id, gate1.outputs[0].id,
         gate2.id, gate2.inputs[0].id
       )
-      expect(circuitStore.wires).toHaveLength(1)
+      expect(getState().wires).toHaveLength(1)
       
-      wireActions.removeWire('non-existent-id')
-      expect(circuitStore.wires).toHaveLength(1)
+      getState().removeWire('non-existent-id')
+      expect(getState().wires).toHaveLength(1)
     })
   })
 
   describe('setInputValue', () => {
     it('sets input pin value', () => {
-      const gate = gateActions.addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
       
-      wireActions.setInputValue(gate.id, gate.inputs[0].id, true)
+      getState().setInputValue(gate.id, gate.inputs[0].id, true)
       
-      expect(circuitStore.gates[0].inputs[0].value).toBe(true)
+      expect(getState().gates[0].inputs[0].value).toBe(true)
     })
 
     it('does nothing if gate does not exist', () => {
-      wireActions.setInputValue('non-existent-id', 'pin-id', true)
+      getState().setInputValue('non-existent-id', 'pin-id', true)
       // Should not throw
     })
 
     it('does nothing if pin does not exist', () => {
-      const gate = gateActions.addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
       
-      wireActions.setInputValue(gate.id, 'non-existent-pin', true)
+      getState().setInputValue(gate.id, 'non-existent-pin', true)
       
-      expect(circuitStore.gates[0].inputs[0].value).toBe(false)
+      expect(getState().gates[0].inputs[0].value).toBe(false)
     })
   })
 })

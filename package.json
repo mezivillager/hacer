@@ -25,7 +25,8 @@
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "three": "^0.181.2",
-    "valtio": "^2.2.0"
+    "zustand": "^5.0.2",
+    "immer": "^10.1.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

@@ -6,7 +6,7 @@ import {
   ClearOutlined,
   SettingOutlined,
 } from '@ant-design/icons'
-import { circuitActions, useCircuitStore } from '@/store/circuitStore'
+import { useCircuitStore } from '@/store/circuitStore'
 import { colors } from '@/theme'
 import { GateSelector } from './GateSelector'
 
@@ -24,21 +24,24 @@ const styles = {
 }
 
 export function Sidebar() {
-  const circuit = useCircuitStore()
-  const isPlacing = circuit.placementMode !== null
+  // Use selectors for granular subscriptions
+  const placementMode = useCircuitStore((s) => s.placementMode)
+  const selectedGateId = useCircuitStore((s) => s.selectedGateId)
+  const simulationRunning = useCircuitStore((s) => s.simulationRunning)
+  const gatesCount = useCircuitStore((s) => s.gates.length)
+  const wiresCount = useCircuitStore((s) => s.wires.length)
+
+  // Get actions from store
+  const removeGate = useCircuitStore((s) => s.removeGate)
+  const clearCircuit = useCircuitStore((s) => s.clearCircuit)
+  const toggleSimulation = useCircuitStore((s) => s.toggleSimulation)
+
+  const isPlacing = placementMode !== null
 
   const handleDeleteSelected = () => {
-    if (circuit.selectedGateId) {
-      circuitActions.removeGate(circuit.selectedGateId)
+    if (selectedGateId) {
+      removeGate(selectedGateId)
     }
-  }
-
-  const handleClearCircuit = () => {
-    circuitActions.clearCircuit()
-  }
-
-  const handleToggleSimulation = () => {
-    circuitActions.toggleSimulation()
   }
 
   return (
@@ -60,7 +63,7 @@ export function Sidebar() {
           <GateSelector />
           {isPlacing && (
             <Text style={styles.hint} className="placement-hint">
-              Click on the grid to place the {circuit.placementMode} gate
+              Click on the grid to place the {placementMode} gate
             </Text>
           )}
         </div>
@@ -73,17 +76,17 @@ export function Sidebar() {
           </Text>
           <Space direction="vertical" style={styles.fullWidth}>
             <Button
-              icon={circuit.simulationRunning ? <PauseCircleOutlined /> : <PlayCircleOutlined />}
-              onClick={handleToggleSimulation}
+              icon={simulationRunning ? <PauseCircleOutlined /> : <PlayCircleOutlined />}
+              onClick={toggleSimulation}
               block
             >
-              {circuit.simulationRunning ? 'Pause Simulation' : 'Run Simulation'}
+              {simulationRunning ? 'Pause Simulation' : 'Run Simulation'}
             </Button>
             <Tooltip title="Remove the selected gate">
               <Button
                 icon={<DeleteOutlined />}
                 onClick={handleDeleteSelected}
-                disabled={!circuit.selectedGateId}
+                disabled={!selectedGateId}
                 block
                 danger
               >
@@ -93,8 +96,8 @@ export function Sidebar() {
             <Tooltip title="Remove all gates and wires">
               <Button
                 icon={<ClearOutlined />}
-                onClick={handleClearCircuit}
-                disabled={circuit.gates.length === 0}
+                onClick={clearCircuit}
+                disabled={gatesCount === 0}
                 block
               >
                 Clear All
@@ -110,10 +113,10 @@ export function Sidebar() {
             Circuit Info
           </Text>
           <Space direction="vertical" size={2}>
-            <Text type="secondary">Gates: {circuit.gates.length}</Text>
-            <Text type="secondary">Wires: {circuit.wires.length}</Text>
+            <Text type="secondary">Gates: {gatesCount}</Text>
+            <Text type="secondary">Wires: {wiresCount}</Text>
             <Text type="secondary">
-              Status: {circuit.simulationRunning ? '▶ Running' : '⏸ Paused'}
+              Status: {simulationRunning ? '▶ Running' : '⏸ Paused'}
             </Text>
           </Space>
         </div>

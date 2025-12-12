@@ -1,21 +1,34 @@
-import { circuitStore } from '../../circuitStore'
-import type { GateType } from '../../types'
-import { gateActions } from '../gateActions/gateActions'
+import type { PlacementActions, GateType, Position, CircuitStore } from '../../types'
 
-export const placementActions = {
+type SetState = (
+  fn: (state: CircuitStore) => void,
+  replace?: false,
+  actionName?: string
+) => void
+type GetState = () => CircuitStore
+
+export const createPlacementActions = (set: SetState, get: GetState): PlacementActions => ({
   startPlacement: (type: GateType) => {
-    circuitStore.placementMode = type
-    circuitStore.selectedGateId = null
+    set((state) => {
+      state.placementMode = type
+      state.selectedGateId = null
+    }, false, 'startPlacement')
   },
 
   cancelPlacement: () => {
-    circuitStore.placementMode = null
+    set((state) => {
+      state.placementMode = null
+    }, false, 'cancelPlacement')
   },
 
-  placeGate: (position: { x: number; y: number; z: number }) => {
-    if (circuitStore.placementMode) {
-      gateActions.addGate(circuitStore.placementMode, position)
-      circuitStore.placementMode = null
+  placeGate: (position: Position) => {
+    const state = get()
+    if (state.placementMode) {
+      // Call addGate action from the store
+      state.addGate(state.placementMode, position)
+      set((s) => {
+        s.placementMode = null
+      }, false, 'placeGate')
     }
   },
-}
+})

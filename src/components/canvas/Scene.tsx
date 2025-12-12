@@ -2,7 +2,7 @@ import { Canvas, ThreeEvent, useFrame, useThree } from '@react-three/fiber'
 import { useEffect, useRef } from 'react'
 import { OrbitControls, Grid, Environment } from '@react-three/drei'
 import { Suspense, useState } from 'react'
-import { circuitActions, useCircuitStore } from '@/store/circuitStore'
+import { useCircuitStore } from '@/store/circuitStore'
 import { Wire3D } from './Wire3D'
 import { colors } from '@/theme'
 import { Vector3 } from 'three'
@@ -13,9 +13,18 @@ interface SceneProps {
 }
 
 function GroundPlaneWithPreview() {
-  const circuit = useCircuitStore()
-  const isPlacing = circuit.placementMode !== null
-  const isWiring = circuit.wiringFrom !== null
+  // Use selectors for granular subscriptions
+  const placementMode = useCircuitStore((s) => s.placementMode)
+  const wiringFrom = useCircuitStore((s) => s.wiringFrom)
+
+  // Get actions from store
+  const updateWirePreviewPosition = useCircuitStore((s) => s.updateWirePreviewPosition)
+  const placeGate = useCircuitStore((s) => s.placeGate)
+  const cancelWiring = useCircuitStore((s) => s.cancelWiring)
+  const selectGate = useCircuitStore((s) => s.selectGate)
+
+  const isPlacing = placementMode !== null
+  const isWiring = wiringFrom !== null
   const [cursorPos, setCursorPos] = useState<{ x: number; y: number; z: number } | null>(null)
   
   const snapToGrid = (value: number) => Math.round(value * 2) / 2
@@ -26,7 +35,7 @@ function GroundPlaneWithPreview() {
       const z = snapToGrid(e.point.z)
       setCursorPos({ x, y: 0.4, z })
     } else if (isWiring) {
-      circuitActions.updateWirePreviewPosition({ 
+      updateWirePreviewPosition({ 
         x: e.point.x, 
         y: e.point.y, 
         z: e.point.z 
@@ -38,7 +47,7 @@ function GroundPlaneWithPreview() {
   const handlePointerLeave = () => {
     setCursorPos(null)
     if (isWiring) {
-      circuitActions.updateWirePreviewPosition(null)
+      updateWirePreviewPosition(null)
     }
   }
   
@@ -47,14 +56,14 @@ function GroundPlaneWithPreview() {
       e.stopPropagation()
       const x = snapToGrid(e.point.x)
       const z = snapToGrid(e.point.z)
-      circuitActions.placeGate({ x, y: 0.4, z })
+      placeGate({ x, y: 0.4, z })
       setCursorPos(null)
     } else if (isWiring) {
       e.stopPropagation()
-      circuitActions.cancelWiring()
+      cancelWiring()
       setCursorPos(null)
     } else {
-      circuitActions.selectGate(null)
+      selectGate(null)
     }
   }
   
@@ -97,10 +106,10 @@ function GroundPlaneWithPreview() {
       )}
       
       {/* Wire preview during wiring */}
-      {isWiring && circuit.wiringFrom && circuit.wiringFrom.previewEndPosition && (
+      {isWiring && wiringFrom && wiringFrom.previewEndPosition && (
         <Wire3D
-          start={circuit.wiringFrom.fromPosition}
-          end={circuit.wiringFrom.previewEndPosition}
+          start={wiringFrom.fromPosition}
+          end={wiringFrom.previewEndPosition}
           isPreview
         />
       )}
@@ -109,9 +118,12 @@ function GroundPlaneWithPreview() {
 }
 
 function SceneContent({ children }: SceneProps) {
-  const circuit = useCircuitStore()
-  const isPlacing = circuit.placementMode !== null
-  const isWiring = circuit.wiringFrom !== null
+  // Use selectors for granular subscriptions
+  const placementMode = useCircuitStore((s) => s.placementMode)
+  const wiringFrom = useCircuitStore((s) => s.wiringFrom)
+
+  const isPlacing = placementMode !== null
+  const isWiring = wiringFrom !== null
   const isInteracting = isPlacing || isWiring
   
   return (

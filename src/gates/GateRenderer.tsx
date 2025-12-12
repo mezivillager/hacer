@@ -2,7 +2,7 @@ import { memo } from 'react'
 import type { GateInstance, GateType } from '@/store/types'
 import { NandGate, AndGate, OrGate, NotGate, XorGate } from './components'
 
-// Use a readonly-compatible type for gate props from valtio snapshot
+// Use a readonly-compatible type for gate props from store snapshot
 interface ReadonlyGate {
   readonly id: string
   readonly type: GateType

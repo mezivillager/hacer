@@ -1,5 +1,8 @@
 // Types for the circuit simulation
 
+export type Position = { x: number; y: number; z: number }
+export type Rotation = { x: number; y: number; z: number }
+
 export interface Pin {
   id: string
   name: string
@@ -20,8 +23,8 @@ export type GateType = 'NAND' | 'AND' | 'OR' | 'NOT' | 'NOR' | 'XOR' | 'XNOR'
 export interface GateInstance {
   id: string
   type: GateType
-  position: { x: number; y: number; z: number }
-  rotation: { x: number; y: number; z: number }
+  position: Position
+  rotation: Rotation
   inputs: Pin[]
   outputs: Pin[]
   selected: boolean
@@ -31,8 +34,8 @@ export interface WiringState {
   fromGateId: string
   fromPinId: string
   fromPinType: 'input' | 'output'
-  fromPosition: { x: number; y: number; z: number }
-  previewEndPosition: { x: number; y: number; z: number } | null
+  fromPosition: Position
+  previewEndPosition: Position | null
 }
 
 export interface CircuitState {
@@ -44,3 +47,46 @@ export interface CircuitState {
   placementMode: GateType | null
   wiringFrom: WiringState | null
 }
+
+// Action types for the Zustand store
+export interface GateActions {
+  addGate: (type: GateType, position: Position) => GateInstance
+  removeGate: (gateId: string) => void
+  selectGate: (gateId: string | null) => void
+  updateGatePosition: (gateId: string, position: Position) => void
+  updateGateRotation: (gateId: string, rotation: Rotation) => void
+  rotateGate: (gateId: string, axis: 'x' | 'y' | 'z', angle: number) => void
+}
+
+export interface WireActions {
+  addWire: (fromGateId: string, fromPinId: string, toGateId: string, toPinId: string) => Wire
+  removeWire: (wireId: string) => void
+  setInputValue: (gateId: string, pinId: string, value: boolean) => void
+}
+
+export interface SimulationActions {
+  toggleSimulation: () => void
+  setSimulationSpeed: (speed: number) => void
+  clearCircuit: () => void
+  simulationTick: () => void
+}
+
+export interface PlacementActions {
+  startPlacement: (type: GateType) => void
+  cancelPlacement: () => void
+  placeGate: (position: Position) => void
+}
+
+export interface WiringActions {
+  startWiring: (gateId: string, pinId: string, pinType: 'input' | 'output', position: Position) => void
+  updateWirePreviewPosition: (position: Position | null) => void
+  cancelWiring: () => void
+  completeWiring: (toGateId: string, toPinId: string, toPinType: 'input' | 'output') => void
+}
+
+export interface PinHelpers {
+  getPinWorldPosition: (gateId: string, pinId: string) => Position | null
+}
+
+// Combined store type
+export interface CircuitStore extends CircuitState, GateActions, WireActions, SimulationActions, PlacementActions, WiringActions, PinHelpers {}

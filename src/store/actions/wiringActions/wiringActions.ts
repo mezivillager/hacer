@@ -1,54 +1,71 @@
 import { message } from 'antd'
-import { circuitStore } from '../../circuitStore'
-import { wireActions } from '../wireActions/wireActions'
+import type { WiringActions, Position, CircuitStore } from '../../types'
 
-export const wiringActions = {
+type SetState = (
+  fn: (state: CircuitStore) => void,
+  replace?: false,
+  actionName?: string
+) => void
+type GetState = () => CircuitStore
+
+export const createWiringActions = (set: SetState, get: GetState): WiringActions => ({
   startWiring: (
     gateId: string,
     pinId: string,
     pinType: 'input' | 'output',
-    position: { x: number; y: number; z: number }
+    position: Position
   ) => {
-    circuitStore.wiringFrom = {
-      fromGateId: gateId,
-      fromPinId: pinId,
-      fromPinType: pinType,
-      fromPosition: position,
-      previewEndPosition: null,
-    }
-    circuitStore.placementMode = null
+    set((state) => {
+      state.wiringFrom = {
+        fromGateId: gateId,
+        fromPinId: pinId,
+        fromPinType: pinType,
+        fromPosition: position,
+        previewEndPosition: null,
+      }
+      state.placementMode = null
+    }, false, 'startWiring')
   },
 
-  updateWirePreviewPosition: (position: { x: number; y: number; z: number } | null) => {
-    if (circuitStore.wiringFrom) {
-      circuitStore.wiringFrom.previewEndPosition = position
-    }
+  updateWirePreviewPosition: (position: Position | null) => {
+    set((state) => {
+      if (state.wiringFrom) {
+        state.wiringFrom.previewEndPosition = position
+      }
+    }, false, 'updateWirePreviewPosition')
   },
 
   cancelWiring: () => {
-    circuitStore.wiringFrom = null
+    set((state) => {
+      state.wiringFrom = null
+    }, false, 'cancelWiring')
   },
 
   completeWiring: (toGateId: string, toPinId: string, toPinType: 'input' | 'output') => {
-    const from = circuitStore.wiringFrom
+    const state = get()
+    const from = state.wiringFrom
     if (!from) return
 
     // Validate: must connect output to input (or vice versa)
     if (from.fromPinType === toPinType) {
       message.warning('Cannot connect same pin types')
-      circuitStore.wiringFrom = null
+      set((s) => {
+        s.wiringFrom = null
+      }, false, 'completeWiring/invalidPinType')
       return
     }
 
     // Validate: cannot connect to same gate
     if (from.fromGateId === toGateId) {
       message.warning('Cannot connect gate to itself')
-      circuitStore.wiringFrom = null
+      set((s) => {
+        s.wiringFrom = null
+      }, false, 'completeWiring/sameGate')
       return
     }
 
     // Check if wire already exists
-    const exists = circuitStore.wires.some(
+    const exists = state.wires.some(
       (w) =>
         (w.fromGateId === from.fromGateId &&
           w.fromPinId === from.fromPinId &&
@@ -62,17 +79,21 @@ export const wiringActions = {
 
     if (exists) {
       message.warning('Wire already exists')
-      circuitStore.wiringFrom = null
+      set((s) => {
+        s.wiringFrom = null
+      }, false, 'completeWiring/wireExists')
       return
     }
 
     // Normalize: always store as output -> input
     if (from.fromPinType === 'output') {
-      wireActions.addWire(from.fromGateId, from.fromPinId, toGateId, toPinId)
+      state.addWire(from.fromGateId, from.fromPinId, toGateId, toPinId)
     } else {
-      wireActions.addWire(toGateId, toPinId, from.fromGateId, from.fromPinId)
+      state.addWire(toGateId, toPinId, from.fromGateId, from.fromPinId)
     }
 
-    circuitStore.wiringFrom = null
+    set((s) => {
+      s.wiringFrom = null
+    }, false, 'completeWiring')
   },
-}
+})

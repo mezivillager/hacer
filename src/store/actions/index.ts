@@ -1,7 +1,7 @@
-// Barrel export all actions
-export { gateActions } from './gateActions/gateActions'
-export { wireActions } from './wireActions/wireActions'
-export { simulationActions } from './simulationActions/simulationActions'
-export { placementActions } from './placementActions/placementActions'
-export { wiringActions } from './wiringActions/wiringActions'
-export { getPinWorldPosition } from './pinHelpers/pinHelpers'
+// Barrel export all action slice creators
+export { createGateActions } from './gateActions/gateActions'
+export { createWireActions } from './wireActions/wireActions'
+export { createSimulationActions } from './simulationActions/simulationActions'
+export { createPlacementActions } from './placementActions/placementActions'
+export { createWiringActions } from './wiringActions/wiringActions'
+export { createPinHelpers } from './pinHelpers/pinHelpers'

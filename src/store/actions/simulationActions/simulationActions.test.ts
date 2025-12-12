@@ -1,109 +1,116 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { circuitStore } from '../../circuitStore'
-import { simulationActions } from './simulationActions'
-import { gateActions } from '../gateActions/gateActions'
-import { wireActions } from '../wireActions/wireActions'
+import { useCircuitStore } from '../../circuitStore'
+
+// Helper to get store state
+const getState = () => useCircuitStore.getState()
 
 describe('simulationActions', () => {
   beforeEach(() => {
     // Reset store state before each test
-    circuitStore.gates = []
-    circuitStore.wires = []
-    circuitStore.simulationRunning = false
-    circuitStore.simulationSpeed = 100
-    circuitStore.selectedGateId = null
-    circuitStore.placementMode = null
+    useCircuitStore.setState({
+      gates: [],
+      wires: [],
+      selectedGateId: null,
+      simulationRunning: false,
+      simulationSpeed: 100,
+      placementMode: null,
+      wiringFrom: null,
+    })
   })
 
   describe('toggleSimulation', () => {
     it('toggles simulation running state', () => {
-      expect(circuitStore.simulationRunning).toBe(false)
+      expect(getState().simulationRunning).toBe(false)
       
-      simulationActions.toggleSimulation()
-      expect(circuitStore.simulationRunning).toBe(true)
+      getState().toggleSimulation()
+      expect(getState().simulationRunning).toBe(true)
       
-      simulationActions.toggleSimulation()
-      expect(circuitStore.simulationRunning).toBe(false)
+      getState().toggleSimulation()
+      expect(getState().simulationRunning).toBe(false)
     })
   })
 
   describe('setSimulationSpeed', () => {
     it('sets simulation speed', () => {
-      simulationActions.setSimulationSpeed(200)
+      getState().setSimulationSpeed(200)
       
-      expect(circuitStore.simulationSpeed).toBe(200)
+      expect(getState().simulationSpeed).toBe(200)
     })
   })
 
   describe('clearCircuit', () => {
     it('clears all gates and wires', () => {
-      const gate1 = gateActions.addGate('NAND', { x: 0, y: 0, z: 0 })
-      const gate2 = gateActions.addGate('NAND', { x: 2, y: 0, z: 0 })
-      wireActions.addWire(
+      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 0 })
+      getState().addWire(
         gate1.id, gate1.outputs[0].id,
         gate2.id, gate2.inputs[0].id
       )
-      gateActions.selectGate(gate1.id)
+      getState().selectGate(gate1.id)
       
-      simulationActions.clearCircuit()
+      getState().clearCircuit()
       
-      expect(circuitStore.gates).toHaveLength(0)
-      expect(circuitStore.wires).toHaveLength(0)
-      expect(circuitStore.selectedGateId).toBe(null)
+      expect(getState().gates).toHaveLength(0)
+      expect(getState().wires).toHaveLength(0)
+      expect(getState().selectedGateId).toBe(null)
     })
 
     it('clears placement mode', () => {
-      circuitStore.placementMode = 'NAND'
+      useCircuitStore.setState({ placementMode: 'NAND' })
       
-      simulationActions.clearCircuit()
+      getState().clearCircuit()
       
-      expect(circuitStore.placementMode).toBe(null)
+      expect(getState().placementMode).toBe(null)
     })
   })
 
   describe('simulationTick', () => {
     it('propagates output values through wires to inputs', () => {
-      const gate1 = gateActions.addGate('NAND', { x: 0, y: 0, z: 0 })
-      const gate2 = gateActions.addGate('NAND', { x: 2, y: 0, z: 0 })
+      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 0 })
       
-      wireActions.addWire(
+      getState().addWire(
         gate1.id, gate1.outputs[0].id,
         gate2.id, gate2.inputs[0].id
       )
       
       // Set gate1 inputs to true, true -> NAND output should be false
-      wireActions.setInputValue(gate1.id, gate1.inputs[0].id, true)
-      wireActions.setInputValue(gate1.id, gate1.inputs[1].id, true)
+      getState().setInputValue(gate1.id, gate1.inputs[0].id, true)
+      getState().setInputValue(gate1.id, gate1.inputs[1].id, true)
       
-      // Manually set gate1 output (simulating gate logic)
-      gate1.outputs[0].value = false
+      // Run tick to calculate gate1 output
+      getState().simulationTick()
       
-      simulationActions.simulationTick()
+      // Gate1 output should now be false (NAND(true, true) = false)
+      expect(getState().gates[0].outputs[0].value).toBe(false)
+      
+      // Run another tick to propagate to gate2
+      getState().simulationTick()
       
       // Gate2 input should receive gate1 output value
-      expect(gate2.inputs[0].value).toBe(false)
+      expect(getState().gates[1].inputs[0].value).toBe(false)
     })
 
     it('calculates new output values for all gates', () => {
-      const gate = gateActions.addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
       
       // Set both inputs to true -> NAND output should be false
-      wireActions.setInputValue(gate.id, gate.inputs[0].id, true)
-      wireActions.setInputValue(gate.id, gate.inputs[1].id, true)
+      getState().setInputValue(gate.id, gate.inputs[0].id, true)
+      getState().setInputValue(gate.id, gate.inputs[1].id, true)
       
-      simulationActions.simulationTick()
+      getState().simulationTick()
       
       // Gate output should be calculated (NAND(true, true) = false)
-      expect(gate.outputs[0].value).toBe(false)
+      expect(getState().gates[0].outputs[0].value).toBe(false)
     })
 
     it('handles gates with no wires', () => {
-      const gate = gateActions.addGate('NAND', { x: 0, y: 0, z: 0 })
+      getState().addGate('NAND', { x: 0, y: 0, z: 0 })
       
-      simulationActions.simulationTick()
+      getState().simulationTick()
       
       // Should not throw, output should be calculated based on inputs
-      expect(gate.outputs[0].value).toBeDefined()
+      expect(getState().gates[0].outputs[0].value).toBeDefined()
     })
   })
 })

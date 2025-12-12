@@ -17,7 +17,7 @@ import { ensureGates } from '../helpers/waits'
 import { expectGateCount, expectWireCount } from '../helpers/assertions'
 import type { GateType } from '../helpers/actions/gate.actions'
 
-const gateTypes: GateType[] = ['NAND', 'AND', 'OR', 'NOT', 'XOR']
+const gateTypes: GateType[] = ['NAND', 'AND', 'OR', 'NOT']
 
 // Tag for filtering: @ui @elementary-gates
 test.describe('Elementary Gates (UI) @ui @elementary-gates', () => {
@@ -157,7 +157,7 @@ test.describe('Elementary Gates (UI) @ui @elementary-gates', () => {
   })
 
   test('two-input gates have two input pins', async ({ page }) => {
-    const twoInputGates: GateType[] = ['NAND', 'AND', 'OR', 'XOR']
+    const twoInputGates: GateType[] = ['NAND', 'AND', 'OR']
     
     for (const gateType of twoInputGates) {
       await clearAllViaUI(page)

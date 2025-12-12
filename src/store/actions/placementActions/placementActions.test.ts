@@ -1,60 +1,67 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { circuitStore } from '../../circuitStore'
-import { placementActions } from './placementActions'
-import { gateActions } from '../gateActions/gateActions'
+import { useCircuitStore } from '../../circuitStore'
+
+// Helper to get store state
+const getState = () => useCircuitStore.getState()
 
 describe('placementActions', () => {
   beforeEach(() => {
     // Reset store state before each test
-    circuitStore.gates = []
-    circuitStore.selectedGateId = null
-    circuitStore.placementMode = null
+    useCircuitStore.setState({
+      gates: [],
+      wires: [],
+      selectedGateId: null,
+      simulationRunning: false,
+      simulationSpeed: 100,
+      placementMode: null,
+      wiringFrom: null,
+    })
   })
 
   describe('startPlacement', () => {
     it('sets placement mode', () => {
-      placementActions.startPlacement('NAND')
+      getState().startPlacement('NAND')
       
-      expect(circuitStore.placementMode).toBe('NAND')
+      expect(getState().placementMode).toBe('NAND')
     })
 
     it('clears selected gate', () => {
-      const gate = gateActions.addGate('NAND', { x: 0, y: 0, z: 0 })
-      gateActions.selectGate(gate.id)
+      const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      getState().selectGate(gate.id)
       
-      placementActions.startPlacement('AND')
+      getState().startPlacement('AND')
       
-      expect(circuitStore.selectedGateId).toBe(null)
+      expect(getState().selectedGateId).toBe(null)
     })
   })
 
   describe('cancelPlacement', () => {
     it('clears placement mode', () => {
-      placementActions.startPlacement('NAND')
-      expect(circuitStore.placementMode).toBe('NAND')
+      getState().startPlacement('NAND')
+      expect(getState().placementMode).toBe('NAND')
       
-      placementActions.cancelPlacement()
+      getState().cancelPlacement()
       
-      expect(circuitStore.placementMode).toBe(null)
+      expect(getState().placementMode).toBe(null)
     })
   })
 
   describe('placeGate', () => {
     it('places gate at position and clears placement mode', () => {
-      placementActions.startPlacement('NAND')
+      getState().startPlacement('NAND')
       
-      placementActions.placeGate({ x: 1, y: 2, z: 3 })
+      getState().placeGate({ x: 1, y: 2, z: 3 })
       
-      expect(circuitStore.gates).toHaveLength(1)
-      expect(circuitStore.gates[0].position).toEqual({ x: 1, y: 2, z: 3 })
-      expect(circuitStore.gates[0].type).toBe('NAND')
-      expect(circuitStore.placementMode).toBe(null)
+      expect(getState().gates).toHaveLength(1)
+      expect(getState().gates[0].position).toEqual({ x: 1, y: 2, z: 3 })
+      expect(getState().gates[0].type).toBe('NAND')
+      expect(getState().placementMode).toBe(null)
     })
 
     it('does nothing if not in placement mode', () => {
-      placementActions.placeGate({ x: 1, y: 2, z: 3 })
+      getState().placeGate({ x: 1, y: 2, z: 3 })
       
-      expect(circuitStore.gates).toHaveLength(0)
+      expect(getState().gates).toHaveLength(0)
     })
   })
 })

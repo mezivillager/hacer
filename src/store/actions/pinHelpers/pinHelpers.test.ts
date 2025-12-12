@@ -1,19 +1,28 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { circuitStore } from '../../circuitStore'
-import { getPinWorldPosition } from './pinHelpers'
-import { gateActions } from '../gateActions/gateActions'
+import { useCircuitStore } from '../../circuitStore'
+
+// Helper to get store state
+const getState = () => useCircuitStore.getState()
 
 describe('pinHelpers', () => {
   beforeEach(() => {
     // Reset store state before each test
-    circuitStore.gates = []
+    useCircuitStore.setState({
+      gates: [],
+      wires: [],
+      selectedGateId: null,
+      simulationRunning: false,
+      simulationSpeed: 100,
+      placementMode: null,
+      wiringFrom: null,
+    })
   })
 
   describe('getPinWorldPosition', () => {
     it('returns input pin world position for first input', () => {
-      const gate = gateActions.addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
       
-      const position = getPinWorldPosition(gate.id, gate.inputs[0].id)
+      const position = getState().getPinWorldPosition(gate.id, gate.inputs[0].id)
       
       expect(position).not.toBeNull()
       expect(position?.x).toBeCloseTo(-0.7, 1)
@@ -22,9 +31,9 @@ describe('pinHelpers', () => {
     })
 
     it('returns input pin world position for second input', () => {
-      const gate = gateActions.addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
       
-      const position = getPinWorldPosition(gate.id, gate.inputs[1].id)
+      const position = getState().getPinWorldPosition(gate.id, gate.inputs[1].id)
       
       expect(position).not.toBeNull()
       expect(position?.x).toBeCloseTo(-0.7, 1)
@@ -33,9 +42,9 @@ describe('pinHelpers', () => {
     })
 
     it('returns output pin world position', () => {
-      const gate = gateActions.addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
       
-      const position = getPinWorldPosition(gate.id, gate.outputs[0].id)
+      const position = getState().getPinWorldPosition(gate.id, gate.outputs[0].id)
       
       expect(position).not.toBeNull()
       expect(position?.x).toBeCloseTo(0.7, 1)
@@ -44,9 +53,9 @@ describe('pinHelpers', () => {
     })
 
     it('accounts for gate position', () => {
-      const gate = gateActions.addGate('NAND', { x: 5, y: 10, z: 15 })
+      const gate = getState().addGate('NAND', { x: 5, y: 10, z: 15 })
       
-      const position = getPinWorldPosition(gate.id, gate.outputs[0].id)
+      const position = getState().getPinWorldPosition(gate.id, gate.outputs[0].id)
       
       expect(position).not.toBeNull()
       expect(position?.x).toBeCloseTo(5.7, 1)
@@ -55,10 +64,10 @@ describe('pinHelpers', () => {
     })
 
     it('accounts for gate rotation', () => {
-      const gate = gateActions.addGate('NAND', { x: 0, y: 0, z: 0 })
-      gateActions.rotateGate(gate.id, 'y', Math.PI)
+      const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      getState().rotateGate(gate.id, 'y', Math.PI)
       
-      const position = getPinWorldPosition(gate.id, gate.outputs[0].id)
+      const position = getState().getPinWorldPosition(gate.id, gate.outputs[0].id)
       
       expect(position).not.toBeNull()
       // After 180° rotation, output should be on the opposite side
@@ -66,15 +75,15 @@ describe('pinHelpers', () => {
     })
 
     it('returns null if gate does not exist', () => {
-      const position = getPinWorldPosition('non-existent-id', 'pin-id')
+      const position = getState().getPinWorldPosition('non-existent-id', 'pin-id')
       
       expect(position).toBeNull()
     })
 
     it('returns null if pin does not exist', () => {
-      const gate = gateActions.addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
       
-      const position = getPinWorldPosition(gate.id, 'non-existent-pin')
+      const position = getState().getPinWorldPosition(gate.id, 'non-existent-pin')
       
       expect(position).toBeNull()
     })
