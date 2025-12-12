@@ -14,6 +14,7 @@
 ✅ Use TypeScript with strict types (no `any`, no missing interfaces)
 ✅ Call hooks only at the top level (never in loops, conditions, or callbacks)
 ✅ Keep components under 200 lines (split if larger)
+✅ **One component per file** - each React component gets its own file
 ✅ Import from `antd` directly for UI components
 ✅ Use Valtio `proxy()` for shared state, `useSnapshot()` to read
 ✅ Memoize 3D components with `memo()` and geometries with `useMemo()`
@@ -26,6 +27,7 @@
 ❌ Skip tests for "simple" changes (simple changes cause regressions)
 ❌ Call hooks conditionally or in loops/callbacks (violates Rules of Hooks)
 ❌ Create components over 300 lines (split immediately)
+❌ **Put multiple components in one file** - one component per file, use folders for related components
 ❌ Mix business logic with UI rendering (extract to hooks)
 ❌ Modify existing function signatures without updating all callers
 ❌ Use `console.log()` for user feedback (use Ant Design Message/Notification)
@@ -296,6 +298,45 @@ export const Card = ({ title, children }: CardProps) => {
 
 ### File Organization
 
+**One Component Per File Rule:**
+- Each React component must be in its own file
+- When components are related, organize them in a folder
+- Use barrel exports (`index.ts`) to re-export the main component for clean imports
+- Extract shared types, utilities, and constants to separate files within the same folder
+
+```typescript
+// ❌ WRONG - Multiple components in one file
+// Scene.tsx (279 lines, 8 components!)
+export function Scene() { ... }
+function SceneContent() { ... }
+function GroundPlane() { ... }
+function PlacementPreview() { ... }
+// ... 4 more components
+
+// ✅ CORRECT - One component per file, folder for related components
+// Scene/Scene.tsx
+export function Scene() { ... }
+
+// Scene/SceneContent.tsx
+export function SceneContent() { ... }
+
+// Scene/GroundPlane.tsx
+export function GroundPlane() { ... }
+
+// Scene/PlacementPreview.tsx
+export function PlacementPreview() { ... }
+
+// Scene/index.ts (barrel export)
+export { Scene } from './Scene';
+export type { SceneProps } from './types';
+
+// Scene/types.ts (shared types)
+export interface SceneProps { ... }
+
+// Scene/utils.ts (shared utilities)
+export const snapToGrid = (value: number) => ...;
+```
+
 **File Naming Conventions:**
 - **Components**: PascalCase - `GateEditor.tsx`, `WireRenderer.tsx`
 - **Hooks**: camelCase starting with "use" - `useGatePlacement.ts`, `useCircuitState.ts`
@@ -305,18 +346,32 @@ export const Card = ({ title, children }: CardProps) => {
 
 **File Co-location:**
 ```
-✅ CORRECT - Keep related files together
+✅ CORRECT - Keep related files together, one component per file
 components/
+  Scene/                       # Folder for related Scene components
+    Scene.tsx                  # Main Scene component (one component)
+    SceneContent.tsx           # Separate component file
+    GroundPlane.tsx            # Separate component file
+    PlacementPreview.tsx       # Separate component file
+    SceneGrid.tsx              # Separate component file
+    types.ts                   # Shared types
+    utils.ts                   # Shared utilities
+    index.ts                   # Barrel export (exports Scene)
   GateEditor/
-    GateEditor.tsx
-    GateEditor.test.tsx
-    GateEditor.css
-    index.ts                    # Re-export component
-    types.ts                    # Component-specific types
+    GateEditor.tsx             # Main component (one component)
+    GateEditor.test.tsx        # Test file
+    GateEditor.css             # Styles
+    index.ts                   # Re-export component
+    types.ts                   # Component-specific types
 
 hooks/
-  useGatePlacement.ts
-  useGatePlacement.test.ts
+  useGatePlacement.ts          # One hook per file
+  useGatePlacement.test.ts     # Test file
+
+❌ WRONG - Multiple components in one file
+components/
+  Scene.tsx                    # Contains 8 components! Too many!
+    Scene, SceneContent, GroundPlane, PlacementPreview, etc.
 
 ❌ WRONG - Separating related files
 components/
