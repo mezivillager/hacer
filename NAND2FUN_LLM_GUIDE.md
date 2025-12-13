@@ -1335,7 +1335,7 @@ interface CodeReviewCriteria {
   };
   state: {
     □ Mutations only in circuitActions?
-    □ useSnapshot used for reads?
+    □ Zustand selectors used for reads?
     □ No direct store mutation in components?
     □ Local UI state not in global store?
   };

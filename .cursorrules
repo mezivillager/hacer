@@ -1,0 +1,160 @@
+# .cursorrules
+
+## Project: Nand2Fun
+
+## ⚠️ IMPORTANT: Phase Tracking
+
+**Last Updated:** 2025-12-13  
+**Current Phase:** Phase 0 (Complete) → Phase 0.5 (In Progress)  
+**Next Phase:** Phase 0.5: Nand2Tetris Foundation
+
+### Phase Status Indicators
+- ✅ **Current/Active** - Rules and patterns currently in use
+- 🔄 **Next Phase** - Rules for the immediate next phase (ready to implement)
+- ⏸️ **Future Phase** - Rules for later phases (not yet applicable)
+
+### Maintenance Guidelines
+- **Update this file when:** Starting a new phase, architecture changes, or stack updates
+- **Check phase status in:** `docs/roadmap/implementation.md` (Implementation Checklist)
+- **Phase completion:** Mark completed phases in implementation.md, then update this file
+- **AI Agents:** Always check the "Current Phase" section first, then look for phase-specific rules
+
+## Stack
+- React 19 with React Compiler (NO manual memoization)
+- TypeScript 5.9 strict mode
+- Zustand for state (NOT Valtio)
+- React Three Fiber for 3D
+- Vitest + Playwright for testing
+- fast-check for property-based testing (Phase 3.5+)
+- Zod for schema validation (Phase 5+)
+
+## Critical Rules
+
+### State Management
+- Read state: `useCircuitStore(state => state.property)`
+- Mutate state: `circuitActions.methodName()`
+- NEVER mutate store directly
+- NEVER use Valtio patterns (proxy, useSnapshot)
+- Use branded types (GateId, WireId, PinId, CircuitId) from Phase 5+
+
+### React Compiler
+- NO manual useMemo, useCallback, React.memo
+- React Compiler handles memoization automatically
+- Don't mutate during render
+- Keep renders pure
+
+### Architecture Layers
+
+**✅ Current (Phase 0-4):**
+- **UI Layer** (`src/components/`): React UI components
+  - Canvas (3D), UI (Ant Design), gates, theme
+- **Store Layer** (`src/store/`): Zustand state management
+  - Actions organized by domain (gateActions, wireActions, etc.)
+- **Simulation Layer** (`src/simulation/`): Pure gate logic (migrates to core/ in Phase 5)
+
+**🔄 Next (Phase 0.5):**
+- **HDL Support** (`src/core/hdl/`): HDL parser and generator
+- **Testing Infrastructure** (`src/core/testing/nand2tetris/`): Test script execution
+
+**⏸️ Future (Phase 5+):**
+- **Core Layer** (`src/core/`): Pure logic, ZERO React/browser dependencies
+  - Gates, simulation, HDL, serialization, events, types
+  - Use branded types for all IDs (GateId, WireId, etc.)
+  - Zod schemas for all data validation
+- **API Layer** (`src/api/`): Public programmatic interface (Phase 5+)
+  - All human actions must have programmatic equivalents
+  - Stable, versioned interface for AI agents
+- **Plugin Layer** (`src/plugins/`): Extensible renderers and analyzers (Phase 6+)
+  - 3D renderer, data view, analyzers, HDL, test engine
+  - Security sandboxing required
+
+### File Organization
+- One component per file (max 200 lines)
+- Co-locate tests with implementation
+- Use barrel exports (index.ts)
+- Separate pure logic from UI (core/ vs components/)
+
+### Testing Standards
+
+**✅ Current (Phase 0):**
+- **Unit tests**: All `src/simulation/` functions (90%+ coverage)
+- **E2E tests**: User workflows with Playwright
+
+**🔄 Next (Phase 0.5):**
+- **Curriculum tests**: Nand2tetris test script execution (.tst/.cmp)
+
+**⏸️ Future:**
+- **Property-based tests**: Gate logic invariants with fast-check (Phase 3.5+)
+- **Integration tests**: Cross-layer functionality (Phase 8+)
+- **Unit tests**: All `src/core/` functions (90%+ coverage) - after Phase 5 migration
+
+### Adding a New Gate
+
+**✅ Current (Phase 0-4):**
+1. Add gate logic to `src/simulation/gateLogic.ts`
+2. Add unit tests to `src/simulation/gateLogic.test.ts`
+3. Create component in `src/gates/components/`
+4. Create icon in `src/gates/icons/`
+5. Export from barrel files
+
+**⏸️ Future (Phase 5+):**
+1. Add to GateType in `src/core/gates/types.ts`
+2. Add definition in `src/core/gates/registry.ts`
+3. Create renderer in `src/components/gates/` (or plugin)
+4. Add tests (truth table + visual + property-based)
+
+### HDL & File Formats
+
+**🔄 Next (Phase 0.5):**
+- Support .hdl, .tst, .cmp file formats
+- HDL parser in `src/core/hdl/`
+- Test engine in `src/core/testing/nand2tetris/`
+- Use Zod schemas for file format validation
+
+**⏸️ Future:**
+- Additional formats: .hack, .vm, .jack (Phase 10+)
+
+### Software Stack
+
+**⏸️ Future (Phase 10+):**
+- Assembler: `src/core/software/assembler/`
+- VM: `src/core/software/vm/`
+- Compiler: `src/core/software/compiler/`
+- All software stack code in `src/core/` (pure logic)
+
+### Plugin Development
+
+**⏸️ Future (Phase 6+):**
+- Plugins implement interfaces from `src/plugins/types.ts`
+- Security sandboxing required
+- Register in plugin registry
+- Document in plugin API docs
+
+### AI Agent Integration
+
+**⏸️ Future (Phase 7+):**
+- All actions must be accessible via `src/api/`
+- Create/update `.ai/context.yaml` and `llms.txt` files
+- Ensure AI parity: human actions = programmatic actions
+- Document in TypeDoc with AI-callable markers
+
+### Backend & Monorepo
+
+**⏸️ Future (Phase 12+):**
+- Monorepo structure with Turborepo
+- Backend: NestJS + GraphQL + PostgreSQL
+- Shared packages for core logic
+- Frontend and API as separate apps
+
+### Performance Guidelines
+- Simulation: <16ms for 1000 gates, 60fps target
+- Memory: <100MB for 10K gate circuits
+- Use Web Workers for simulation (Phase 9+)
+- Incremental evaluation for large circuits
+
+### Code Quality
+- TypeScript strict mode (no `any`)
+- ESLint with React Compiler plugin
+- 90%+ test coverage for new code
+- Property-based tests for invariants
+- Performance budgets enforced

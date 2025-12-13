@@ -200,7 +200,7 @@ See `docs/ADDING_GATES.md` for detailed instructions.
 
 ## 0.6 Create Repository Map Documentation
 
-Create `docs/REPO_MAP.md` to help AI agents and developers understand the codebase structure:
+Create `REPO_MAP.md` (at repository root) to help AI agents and developers understand the codebase structure:
 
 ```markdown
 # Nand2Fun Repository Map
@@ -235,7 +235,7 @@ src/
 | Remove manual memoization | 2h | ESLint plugin | - | No manual useMemo/useCallback/React.memo |
 | Create .cursorrules | 1h | - | - | File exists and is active |
 | Update README.md | 1h | - | - | Tech stack accurately described |
-| Create docs/REPO_MAP.md | 1h | - | - | Directory structure documented |
+| Create REPO_MAP.md | 1h | - | - | Directory structure documented |
 
 **Total Estimated Effort:** ~7.5 hours  
 **Performance Budget:** <100ms lint time, <50MB bundle size

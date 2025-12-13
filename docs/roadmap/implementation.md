@@ -225,7 +225,7 @@ Testing:      Comprehensive test suite + visual regression
 - [x] Add React Compiler ESLint plugin
 - [x] Create .cursorrules file
 - [x] Update README.md with correct stack info
-- [x] Create docs/REPO_MAP.md
+- [x] Create REPO_MAP.md
 
 ### Phase 0.5: Nand2Tetris Foundation 🔄
 - [ ] HDL Parser/Generator implementation
