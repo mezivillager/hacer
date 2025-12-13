@@ -253,4 +253,4 @@ src/
 ---
 
 **Part of:** [Comprehensive Development Roadmap](../../README.md)  
-**Next:** [Phase 0.5: Nand2Tetris Foundation](phase-0.5-nand2tetris-foundation.md)
+**Next:** [Phase 0.25: UI/UX Improvements & Grid-Based Circuit Design](phase-0.25-ui-improvements.md)

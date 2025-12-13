@@ -3,7 +3,7 @@
 **Part of:** [Comprehensive Development Roadmap](../../README.md)  
 **Priority:** 🔴 CRITICAL - Blocks All Subsequent Phases  
 **Timeline:** Weeks 2-4  
-**Dependencies:** Phase 0 complete
+**Dependencies:** Phase 0.25 complete (grid-based system improves UX before core features)
 
 ---
 

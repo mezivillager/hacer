@@ -5,8 +5,8 @@ This document helps AI agents and developers understand the codebase structure a
 ## ⚠️ IMPORTANT: Phase Tracking & Maintenance
 
 **Last Updated:** 2025-12-13  
-**Current Phase:** Phase 0 (Complete) → Phase 0.5 (In Progress)  
-**Next Phase:** Phase 0.5: Nand2Tetris Foundation
+**Current Phase:** Phase 0 (Complete) → Phase 0.25 (In Progress)  
+**Next Phase:** Phase 0.25: UI/UX Improvements & Grid-Based Circuit Design
 
 ### Phase Status Indicators
 - ✅ **Current/Active** - Structure and files currently in use

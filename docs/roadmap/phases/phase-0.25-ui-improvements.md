@@ -1,0 +1,522 @@
+# Phase 0.25: UI/UX Improvements & Grid-Based Circuit Design (Week 1.5)
+
+**Part of:** [Comprehensive Development Roadmap](../../README.md)  
+**Priority:** 🟠 HIGH - Improves User Experience Before Core Features  
+**Timeline:** Week 1.5 (between Phase 0 and Phase 0.5)  
+**Dependencies:** Phase 0 complete
+
+---
+
+## Overview
+
+This phase improves the user experience of gate placement, movement, rotation, and wiring by implementing a professional grid-based circuit design system. It also optimizes E2E test performance and organization.
+
+**Exit Criteria:**
+- Gates snap to grid centers only
+- Rotation limited to 90-degree increments
+- Gates cannot be placed in adjacent grid cells (spacing enforced)
+- Wires follow grid lines (straight lines, 90-degree turns)
+- Wire stubs removed when wires are connected
+- Wires can be selected and deleted
+- E2E tests organized with sensible naming
+- E2E tests optimized (scene loaded once, reused across tests)
+- Performance: <2s for E2E test suite execution
+
+---
+
+## 0.25.1 Grid-Based Gate Placement
+
+**Problem:** Gates can be placed anywhere, making wiring difficult and wires can pass through gates.
+
+**Solution:** Implement grid-based placement system.
+
+### Grid System Design
+
+```typescript
+// src/utils/grid.ts
+export const GRID_SIZE = 2.0; // Grid cell size in world units
+export const MIN_GATE_SPACING = 1; // Minimum cells between gates (prevents adjacent placement)
+
+export interface GridPosition {
+  row: number;
+  col: number;
+}
+
+export function worldToGrid(worldPos: Position): GridPosition {
+  return {
+    row: Math.round(worldPos.z / GRID_SIZE),
+    col: Math.round(worldPos.x / GRID_SIZE),
+  };
+}
+
+export function gridToWorld(gridPos: GridPosition): Position {
+  return {
+    x: gridPos.col * GRID_SIZE,
+    y: 0, // Gates always on ground plane
+    z: gridPos.row * GRID_SIZE,
+  };
+}
+
+export function snapToGrid(worldPos: Position): Position {
+  return gridToWorld(worldToGrid(worldPos));
+}
+
+export function canPlaceGateAt(gridPos: GridPosition, existingGates: GateInstance[]): boolean {
+  // Check minimum spacing from all existing gates
+  for (const gate of existingGates) {
+    const gateGrid = worldToGrid(gate.position);
+    const rowDiff = Math.abs(gateGrid.row - gridPos.row);
+    const colDiff = Math.abs(gateGrid.col - gridPos.col);
+    
+    // Cannot place in same cell or adjacent cells
+    if (rowDiff <= MIN_GATE_SPACING && colDiff <= MIN_GATE_SPACING) {
+      return false;
+    }
+  }
+  return true;
+}
+```
+
+### Implementation Tasks
+
+1. **Create grid utilities** (`src/utils/grid.ts`)
+   - Grid position conversion functions
+   - Snap-to-grid logic
+   - Placement validation (spacing checks)
+
+2. **Update placement actions** (`src/store/actions/placementActions/placementActions.ts`)
+   - Snap placement preview to grid
+   - Validate placement (check spacing)
+   - Update `placeGate` to enforce grid snapping
+
+3. **Update placement preview** (`src/components/canvas/Scene/PlacementPreview.tsx`)
+   - Show grid-aligned preview
+   - Visual feedback for invalid placement locations
+
+4. **Implement gate dragging** (`src/components/canvas/Scene/` or gate components)
+   - Add drag handlers to gate components
+   - Visual feedback during drag (highlight, preview position)
+   - Snap dragged gates to grid in real-time
+   - Validate new position before allowing move (spacing checks)
+   - Update gate position on drag end
+
+5. **Update gate movement actions** (`src/store/actions/gateActions/gateActions.ts`)
+   - Ensure `updateGatePosition` snaps to grid
+   - Validate position before updating (spacing checks)
+   - Handle wire position updates when gate moves
+
+---
+
+## 0.25.2 Gate Dragging and Movement
+
+**Problem:** Gates cannot be moved after placement, making circuit layout adjustments difficult.
+
+**Solution:** Implement drag-and-drop gate movement with grid snapping.
+
+### Drag System Design
+
+```typescript
+// src/hooks/useGateDrag.ts
+export function useGateDrag(gateId: string) {
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState<Position | null>(null);
+  
+  const handleDragStart = (event: ThreeEvent<PointerEvent>) => {
+    event.stopPropagation();
+    setIsDragging(true);
+    setDragStart(event.point);
+  };
+  
+  const handleDrag = (event: ThreeEvent<PointerEvent>) => {
+    if (!isDragging || !dragStart) return;
+    
+    const currentPos = event.point;
+    const delta = {
+      x: currentPos.x - dragStart.x,
+      y: currentPos.y - dragStart.y,
+      z: currentPos.z - dragStart.z,
+    };
+    
+    // Calculate new position
+    const gate = useCircuitStore.getState().gates.find(g => g.id === gateId);
+    if (!gate) return;
+    
+    const newWorldPos = {
+      x: gate.position.x + delta.x,
+      y: gate.position.y,
+      z: gate.position.z + delta.z,
+    };
+    
+    // Snap to grid
+    const snappedPos = snapToGrid(newWorldPos);
+    
+    // Update preview position (visual feedback)
+    circuitActions.updatePlacementPreviewPosition(snappedPos);
+  };
+  
+  const handleDragEnd = () => {
+    if (!isDragging) return;
+    
+    const previewPos = useCircuitStore.getState().placementPreviewPosition;
+    if (previewPos) {
+      // Validate and move gate
+      const gridPos = worldToGrid(previewPos);
+      if (canPlaceGateAt(gridPos, useCircuitStore.getState().gates.filter(g => g.id !== gateId))) {
+        circuitActions.updateGatePosition(gateId, previewPos);
+      }
+    }
+    
+    setIsDragging(false);
+    setDragStart(null);
+    circuitActions.updatePlacementPreviewPosition(null);
+  };
+  
+  return {
+    isDragging,
+    onPointerDown: handleDragStart,
+    onPointerMove: handleDrag,
+    onPointerUp: handleDragEnd,
+  };
+}
+```
+
+### Implementation Tasks
+
+1. **Create drag hook** (`src/hooks/useGateDrag.ts`)
+   - Handle drag start, move, end events
+   - Grid snapping during drag
+   - Position validation
+
+2. **Update gate components** (`src/gates/components/*.tsx`)
+   - Add drag handlers to gate mesh
+   - Visual feedback during drag (opacity, highlight)
+   - Prevent drag when in placement mode
+
+3. **Update GateRenderer** (`src/gates/GateRenderer.tsx`)
+   - Integrate drag functionality
+   - Handle drag state
+
+4. **Update wire positions** (`src/store/actions/wireActions/wireActions.ts`)
+   - Recalculate wire positions when gate moves
+   - Update wire preview during drag
+
+---
+
+## 0.25.3 90-Degree Rotation System
+
+**Problem:** Continuous rotation makes pin alignment unpredictable, wires can't align properly.
+
+**Solution:** Limit rotation to 90-degree increments, ensure pins face grid sides.
+
+### Rotation System Design
+
+```typescript
+// src/utils/rotation.ts
+export type RotationAngle = 0 | 90 | 180 | 270; // Degrees
+
+export function normalizeRotation(angle: number): RotationAngle {
+  const normalized = ((angle % 360) + 360) % 360;
+  // Snap to nearest 90-degree increment
+  return Math.round(normalized / 90) * 90 as RotationAngle;
+}
+
+export function rotationToRadians(angle: RotationAngle): number {
+  return (angle * Math.PI) / 180;
+}
+
+// Calculate pin positions based on rotation
+export function getPinWorldPosition(
+  gatePosition: Position,
+  pinLocalPosition: Position,
+  rotation: RotationAngle
+): Position {
+  const radians = rotationToRadians(rotation);
+  const cos = Math.cos(radians);
+  const sin = Math.sin(radians);
+  
+  // Rotate pin position around gate center
+  const rotatedX = pinLocalPosition.x * cos - pinLocalPosition.z * sin;
+  const rotatedZ = pinLocalPosition.x * sin + pinLocalPosition.z * cos;
+  
+  return {
+    x: gatePosition.x + rotatedX,
+    y: gatePosition.y + pinLocalPosition.y,
+    z: gatePosition.z + rotatedZ,
+  };
+}
+```
+
+### Implementation Tasks
+
+1. **Create rotation utilities** (`src/utils/rotation.ts`)
+   - 90-degree rotation normalization
+   - Pin position calculation based on rotation
+
+2. **Update gate rotation** (`src/store/actions/gateActions/gateActions.ts`)
+   - Replace continuous rotation with 90-degree increments
+   - Update `rotateGate` to snap to 90-degree angles
+
+3. **Update keyboard shortcuts** (`src/hooks/useKeyboardShortcuts.ts`)
+   - Arrow keys rotate in 90-degree increments
+   - Visual feedback for rotation
+
+4. **Update gate components**
+   - Ensure pins align to grid sides at 0°, 90°, 180°, 270°
+   - Update pin position calculations
+
+---
+
+## 0.25.4 Grid-Aligned Wire Routing
+
+**Problem:** Curved wires can pass through gates, look unprofessional, and make connections unclear.
+
+**Solution:** Implement grid-aligned wire routing with straight lines and 90-degree turns.
+
+### Wire Routing Algorithm
+
+```typescript
+// src/utils/wireRouting.ts
+export interface WireSegment {
+  start: Position;
+  end: Position;
+  type: 'horizontal' | 'vertical';
+}
+
+export interface WirePath {
+  segments: WireSegment[];
+  totalLength: number;
+}
+
+export function calculateWirePath(
+  start: Position,
+  end: Position,
+  gridSize: number
+): WirePath {
+  // Snap start and end to grid
+  const startGrid = worldToGrid(snapToGrid(start));
+  const endGrid = worldToGrid(snapToGrid(end));
+  
+  // Simple L-shaped routing (prefer horizontal-first)
+  const segments: WireSegment[] = [];
+  
+  // Horizontal segment
+  if (startGrid.col !== endGrid.col) {
+    segments.push({
+      start: gridToWorld(startGrid),
+      end: { ...gridToWorld(endGrid), z: gridToWorld(startGrid).z },
+      type: 'horizontal',
+    });
+  }
+  
+  // Vertical segment
+  if (startGrid.row !== endGrid.row) {
+    segments.push({
+      start: segments.length > 0 ? segments[segments.length - 1].end : gridToWorld(startGrid),
+      end: gridToWorld(endGrid),
+      type: 'vertical',
+    });
+  }
+  
+  return {
+    segments,
+    totalLength: segments.reduce((sum, seg) => {
+      const dx = seg.end.x - seg.start.x;
+      const dz = seg.end.z - seg.start.z;
+      return sum + Math.sqrt(dx * dx + dz * dz);
+    }, 0),
+  };
+}
+```
+
+### Implementation Tasks
+
+1. **Create wire routing utilities** (`src/utils/wireRouting.ts`)
+   - Grid-aligned path calculation
+   - L-shaped routing algorithm
+   - Path optimization (shortest path)
+
+2. **Update Wire3D component** (`src/components/canvas/Wire3D.tsx`)
+   - Replace curved wire (CatmullRomCurve3) with grid-aligned segments
+   - Render multiple straight segments for L-shaped paths
+   - Visual style: straight lines, 90-degree corners
+
+3. **Update wire preview** (`src/components/canvas/Scene/WirePreview.tsx`)
+   - Show grid-aligned preview path
+   - Snap preview to grid as user moves mouse
+
+---
+
+## 0.25.5 Wire Stub Removal
+
+**Problem:** Wire stubs remain visible even when pins are connected, creating visual clutter.
+
+**Solution:** Conditionally render wire stubs only when pins are not connected.
+
+### Implementation Tasks
+
+1. **Update gate components** (`src/gates/components/*.tsx`)
+   - Conditionally render `WireStub` components
+   - Only show stubs when `isConnected === false`
+   - Remove stubs for both input and output pins when connected
+
+2. **Update GateRenderer** (`src/gates/GateRenderer.tsx`)
+   - Pass connection status to gate components
+   - Ensure stub visibility logic is consistent
+
+---
+
+## 0.25.6 Wire Selection and Deletion
+
+**Problem:** Users cannot select or delete wires, making it impossible to undo connections.
+
+**Solution:** Implement wire selection and deletion functionality.
+
+### Implementation Tasks
+
+1. **Add wire selection state** (`src/store/types.ts`)
+   ```typescript
+   export interface CircuitState {
+     // ... existing fields
+     selectedWireId: string | null;
+   }
+   ```
+
+2. **Add wire selection actions** (`src/store/actions/wireActions/wireActions.ts`)
+   ```typescript
+   selectWire: (wireId: string | null) => void;
+   ```
+
+3. **Update Wire3D component** (`src/components/canvas/Wire3D.tsx`)
+   - Add click handler for wire selection
+   - Visual feedback for selected wires
+   - Support keyboard deletion (Delete/Backspace keys)
+
+4. **Update keyboard shortcuts** (`src/hooks/useKeyboardShortcuts.ts`)
+   - Delete key removes selected wire
+   - Wire selection via click
+
+5. **Update UI** (`src/components/ui/Sidebar.tsx`)
+   - Show selected wire info
+   - Delete button for selected wire
+
+---
+
+## 0.25.7 E2E Test Organization and Optimization
+
+**Problem:** E2E tests are slow (wait for scene in each test) and naming/organization is inconsistent.
+
+**Solution:** Reorganize tests with consistent naming and optimize by reusing scene.
+
+### Test Organization Structure
+
+```
+e2e/specs/
+├── ui/
+│   ├── gate-placement.ui.spec.ts      # Gate placement tests
+│   ├── gate-movement.ui.spec.ts       # Gate movement and rotation tests
+│   ├── wire-connection.ui.spec.ts     # Wire connection tests
+│   ├── wire-selection.ui.spec.ts      # Wire selection and deletion tests
+│   └── circuit-building.ui.spec.ts    # End-to-end circuit building
+├── store/
+│   ├── gate-actions.store.spec.ts     # Gate action tests
+│   ├── wire-actions.store.spec.ts     # Wire action tests
+│   └── simulation.store.spec.ts       # Simulation tests
+└── integration/
+    └── full-circuit.integration.spec.ts # Full circuit workflows
+```
+
+### Test Optimization Strategy
+
+1. **Scene Reuse Pattern**
+   ```typescript
+   // e2e/helpers/scene.ts
+   export async function setupScene(page: Page) {
+     // Load scene once
+     await page.goto('/');
+     await waitForSceneReady(page);
+     return page;
+   }
+   
+   export async function resetScene(page: Page) {
+     // Use clear button instead of reloading
+     await clearAllViaUI(page);
+     await waitForSceneStable(page);
+   }
+   ```
+
+2. **Test Structure**
+   ```typescript
+   test.describe('Gate Placement @ui', () => {
+     test.beforeAll(async ({ browser }) => {
+       // Load scene once for all tests in this suite
+       const page = await browser.newPage();
+       await setupScene(page);
+       // Store page for reuse
+     });
+     
+     test.afterEach(async ({ page }) => {
+       // Reset scene between tests (faster than reload)
+       await resetScene(page);
+     });
+     
+     test('can place gate on grid', async ({ page }) => {
+       // Test implementation
+     });
+   });
+   ```
+
+### Implementation Tasks
+
+1. **Reorganize test files**
+   - Group by feature (placement, wiring, movement)
+   - Consistent naming: `{feature}.{type}.spec.ts`
+   - Separate UI, store, and integration tests
+
+2. **Create scene management helpers** (`e2e/helpers/scene.ts`)
+   - `setupScene()` - Load scene once
+   - `resetScene()` - Clear and reset
+   - `waitForSceneReady()` - Wait for 3D scene initialization
+
+3. **Update test structure**
+   - Use `beforeAll` to load scene once per suite
+   - Use `afterEach` to reset scene (faster than reload)
+   - Remove redundant `waitForSceneStable` calls
+
+4. **Update existing tests**
+   - Rename files to match new structure
+   - Refactor to use scene reuse pattern
+   - Group related tests together
+
+---
+
+## Phase 0.25 Checklist & Exit Criteria
+
+| Task | Effort | Dependencies | Exit Criteria |
+|------|--------|--------------|---------------|
+| Grid-based placement system | 4h | - | Gates snap to grid, spacing enforced |
+| Gate dragging and movement | 4h | Grid system | Gates can be dragged, snap to grid |
+| 90-degree rotation system | 2h | Grid system | Rotation limited to 90° increments |
+| Grid-aligned wire routing | 4h | Grid system | Wires follow grid lines, 90° turns |
+| Wire stub removal | 1h | - | Stubs hidden when pins connected |
+| Wire selection and deletion | 3h | - | Wires can be selected and deleted |
+| E2E test reorganization | 2h | - | Tests organized, consistent naming |
+| E2E test optimization | 3h | Test reorganization | Scene loaded once, tests <2s total |
+
+**Total Estimated Effort:** ~23 hours  
+**Performance Budget:** <2s E2E test suite, 60fps with 100+ gates
+
+---
+
+## Risk Mitigation
+
+**Grid System Complexity:** Start with simple L-shaped routing, optimize later if needed.
+
+**Test Performance:** Monitor test execution time, optimize scene loading if still slow.
+
+**User Experience:** Test grid-based system with users to ensure it feels natural.
+
+---
+
+**Part of:** [Comprehensive Development Roadmap](../../README.md)  
+**Previous:** [Phase 0: Critical Fixes](phase-0-critical-fixes.md)  
+**Next:** [Phase 0.5: Nand2Tetris Foundation](phase-0.5-nand2tetris-foundation.md)

@@ -176,6 +176,7 @@ This roadmap has been broken down into focused, manageable sections:
 
 ### Phase Documents
 - **[Phase 0: Critical Fixes](phases/phase-0-critical-fixes.md)** - Foundation fixes and documentation updates
+- **[Phase 0.25: UI/UX Improvements](phases/phase-0.25-ui-improvements.md)** - Grid-based circuit design and E2E test optimization
 - **[Phase 0.5: Nand2Tetris Foundation](phases/phase-0.5-nand2tetris-foundation.md)** - Essential nand2tetris gaps
 - **[Phase 1.5: Design System & Visual Consistency](phases/phase-1.5-design-system.md)** - Design foundation, tokens, Figma integration
 - **[Phase 2.5: Developer Tooling & DX](phases/phase-2.5-developer-tooling.md)** - Storybook, CI/CD, commit hooks, DX tools
@@ -209,6 +210,7 @@ This roadmap has been broken down into focused, manageable sections:
 | Phase | Timeline | Priority | Key Deliverables |
 |-------|----------|----------|------------------|
 | [0](phases/phase-0-critical-fixes.md) | Week 1 | 🔴 CRITICAL | Documentation fixes, tooling setup |
+| [0.25](phases/phase-0.25-ui-improvements.md) | Week 1.5 | 🟠 HIGH | Grid-based placement, wire routing, E2E optimization |
 | [0.5](phases/phase-0.5-nand2tetris-foundation.md) | Weeks 2-4 | 🔴 CRITICAL | HDL parser, sequential logic, file formats |
 | [1.5](phases/phase-1.5-design-system.md) | Weeks 5-7 | 🟠 HIGH | Design system foundation, tokens, Figma integration |
 | [2.5](phases/phase-2.5-developer-tooling.md) | Weeks 8-10 | 🟠 HIGH | Storybook, CI/CD, commit hooks, DX tools |
@@ -239,6 +241,10 @@ This roadmap has been broken down into focused, manageable sections:
 
 ## Key Dependencies & Prerequisites
 
+- **Phase 0 must complete before Phase 0.25** - Foundation fixes needed before UI improvements
+- **Phase 0.25 must complete before Phase 0.5** - Grid-based system improves UX before core features
+- **Phase 0 must complete before Phase 0.25** - Foundation fixes needed before UI improvements
+- **Phase 0.25 must complete before Phase 0.5** - Grid-based system improves UX before core features
 - **Phase 0.5 must complete before Phase 1** - Nand2tetris gaps are architectural prerequisites
 - **Phase 1 must complete before Phase 2** - Core architecture needed for plugin system
 - **Phase 2 must complete before Phase 3** - Plugin system needed for AI agents

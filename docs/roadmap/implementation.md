@@ -227,6 +227,14 @@ Testing:      Comprehensive test suite + visual regression
 - [x] Update README.md with correct stack info
 - [x] Create REPO_MAP.md
 
+### Phase 0.25: UI/UX Improvements & Grid-Based Circuit Design 🔄
+- [ ] Grid-based gate placement system
+- [ ] 90-degree rotation system
+- [ ] Grid-aligned wire routing
+- [ ] Wire stub removal when connected
+- [ ] Wire selection and deletion
+- [ ] E2E test reorganization and optimization
+
 ### Phase 0.5: Nand2Tetris Foundation 🔄
 - [ ] HDL Parser/Generator implementation
 - [ ] Test script engine (.tst/.cmp support)
