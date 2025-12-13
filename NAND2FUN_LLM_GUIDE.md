@@ -1,8 +1,22 @@
-# Nand2Fun LLM Development Guide
+# Nand2Fun Development Guide
 
-**PURPOSE**: Ensure AI-generated code doesn't break existing functionality as the codebase scales.
-**SCOPE**: React Three Fiber 3D components, Zustand state, Ant Design UI, testing patterns.
+**PURPOSE**: Ensure AI-generated code doesn't break existing functionality as the codebase scales.  
+**SCOPE**: React Three Fiber 3D components, Zustand state, Ant Design UI, testing patterns.  
 **REQUIREMENT**: Follow these patterns for ALL code changes - test coverage is mandatory.
+
+> **📚 Related Documentation:**
+> - [`.cursorrules`](.cursorrules) - **Start here!** Project rules, phase tracking, and architecture guidelines
+> - [`REPO_MAP.md`](REPO_MAP.md) - Repository structure, directory organization, and file locations
+> - [`docs/roadmap/`](docs/roadmap/) - Development roadmap, phases, and implementation plans
+
+## Document Relationship
+
+This guide provides **detailed patterns and examples** for development. For quick reference:
+- **Quick rules & phase status**: See [`.cursorrules`](.cursorrules)
+- **Where to put files**: See [`REPO_MAP.md`](REPO_MAP.md)
+- **Detailed examples & patterns**: This document
+
+All three documents are kept in sync and should be consulted together.
 
 ---
 
@@ -152,23 +166,25 @@ export const useGatePlacement = (gateType: string) => {
   const [isPlacing, setIsPlacing] = useState(false);
   const [previewPos, setPreviewPos] = useState<[number, number, number] | null>(null);
   
-  const startPlacement = useCallback(() => {
+  // React Compiler automatically memoizes these functions
+  const startPlacement = () => {
     setIsPlacing(true);
     circuitActions.startPlacement(gateType);
-  }, [gateType]);
+  };
   
-  const cancelPlacement = useCallback(() => {
+  const cancelPlacement = () => {
     setIsPlacing(false);
     circuitActions.cancelPlacement();
-  }, []);
+  };
   
-  const placeGate = useCallback((position: [number, number, number]) => {
+  const placeGate = (position: [number, number, number]) => {
     circuitActions.placeGate(gateType, position);
     setIsPlacing(false);
-  }, [gateType]);
+  };
   
   return { isPlacing, previewPos, startPlacement, cancelPlacement, placeGate };
 };
+```
 
 // Component uses clean hook interface
 export const GatePlacer = ({ gateType }) => {
@@ -197,40 +213,40 @@ useEffect(() => {
 }, [circuit.selectedGateId]); // ❌ Incomplete deps
 ```
 
-**useCallback and useMemo Guidelines:**
+**React Compiler Handles Memoization:**
 ```typescript
-// ✅ CORRECT - Memoize expensive computations and stable callbacks
+// ✅ CORRECT - React Compiler automatically memoizes
 const ExpensiveComponent = ({ gates, selectedId }) => {
-  // Memoize expensive computation
-  const sortedGates = useMemo(() => {
-    return gates.sort((a, b) => a.position.y - b.position.y);
-  }, [gates]);
+  // React Compiler automatically memoizes expensive computations
+  const sortedGates = gates.sort((a, b) => a.position.y - b.position.y);
   
-  // Memoize callback passed to child (prevents re-renders)
-  const handleGateClick = useCallback((id: string) => {
+  // React Compiler automatically memoizes callbacks
+  const handleGateClick = (id: string) => {
     circuitActions.selectGate(id);
-  }, []);
+  };
   
-  // Memoize callback with dependencies
-  const handlePinClick = useCallback((gateId: string, pinId: string) => {
+  // React Compiler tracks dependencies automatically
+  const handlePinClick = (gateId: string, pinId: string) => {
     if (selectedId === gateId) {
       circuitActions.togglePin(gateId, pinId);
     }
-  }, [selectedId]);
+  };
   
   return <GateList gates={sortedGates} onGateClick={handleGateClick} />;
 };
 
-// ❌ WRONG - Don't memoize trivial computations
-const SimpleComponent = ({ count }) => {
-  // This is too simple to memoize
-  const doubled = useMemo(() => count * 2, [count]); // ❌ Unnecessary
-  return <div>{doubled}</div>;
+// ❌ WRONG - Don't manually memoize (React Compiler handles it)
+const BadComponent = ({ count }) => {
+  // ❌ Don't use useMemo/useCallback - React Compiler does this automatically
+  const doubled = useMemo(() => count * 2, [count]); // Unnecessary!
+  const handleClick = useCallback(() => {}, []); // Unnecessary!
   
-  // Just do this:
-  // return <div>{count * 2}</div>;
+  // ✅ CORRECT - Just write normal code
+  return <div>{count * 2}</div>;
 };
 ```
+
+> **⚠️ Important:** With React Compiler, you should NOT use `useMemo`, `useCallback`, or `React.memo` manually. The compiler handles all memoization automatically. See [`.cursorrules`](.cursorrules) for details.
 
 ### Component Composition and Props
 
@@ -498,23 +514,22 @@ export const Gate = ({ onPinClick, onKeyDown }: GateProps) => {
 
 ### Performance Optimization
 
-**React.memo for Expensive Components:**
+**React Compiler Handles Component Memoization:**
 ```typescript
-// ✅ CORRECT - Memoize components that re-render frequently
-export const Gate3D = memo<Gate3DProps>(({ id, position, selected, onClick }) => {
-  // Expensive 3D rendering
+// ✅ CORRECT - React Compiler automatically optimizes components
+export const Gate3D = ({ id, position, selected, onClick }: Gate3DProps) => {
+  // Expensive 3D rendering - React Compiler optimizes automatically
   return <mesh>...</mesh>;
-}, (prevProps, nextProps) => {
-  // Custom comparison if needed
-  return prevProps.id === nextProps.id && 
-         prevProps.selected === nextProps.selected;
-});
+};
 
-// ❌ WRONG - Memoizing everything (premature optimization)
-export const SimpleLabel = memo(({ text }: { text: string }) => {
-  return <span>{text}</span>; // Too simple, memoization overhead not worth it
+// ❌ WRONG - Don't manually use React.memo
+export const BadGate3D = memo<Gate3DProps>(({ id, position, selected, onClick }) => {
+  // React Compiler already handles this - manual memo is unnecessary
+  return <mesh>...</mesh>;
 });
 ```
+
+> **⚠️ Important:** React Compiler automatically memoizes components. Do NOT use `React.memo` manually. See [`.cursorrules`](.cursorrules) for React Compiler rules.
 
 **Lazy Loading for Routes/Features:**
 ```typescript
@@ -721,8 +736,10 @@ export default defineConfig({
 ### Component Structure
 
 ```typescript
-// ✅ CORRECT - Memoized 3D component with proper cleanup
-import { memo, useMemo, useRef } from 'react';
+// ✅ CORRECT - 3D component with proper cleanup
+// Note: Three.js objects (geometry, materials) are external objects, not React state
+// useMemo is acceptable here ONLY for Three.js objects to prevent recreation
+import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
@@ -734,19 +751,20 @@ interface Gate3DProps {
   onClick?: () => void;
 }
 
-export const Gate3D = memo<Gate3DProps>(({ 
+export const Gate3D = ({ 
   id, 
   position, 
   rotation = 0,
   selected,
   onClick 
-}) => {
+}: Gate3DProps) => {
   const meshRef = useRef<THREE.Mesh>(null);
   
-  // ✅ Memoize geometry - never recreate on re-render
+  // ✅ Exception: useMemo for Three.js objects (external, not React state)
+  // React Compiler doesn't handle external object creation, so manual memoization is needed
   const geometry = useMemo(() => new THREE.BoxGeometry(1, 0.5, 0.8), []);
   
-  // ✅ Memoize material with dependencies
+  // ✅ Exception: Material depends on props, useMemo prevents recreation
   const material = useMemo(
     () => new THREE.MeshStandardMaterial({ 
       color: selected ? '#4a9eff' : '#333333' 
@@ -764,19 +782,21 @@ export const Gate3D = memo<Gate3DProps>(({
       />
     </group>
   );
-});
-
-Gate3D.displayName = 'Gate3D';
+};
 ```
+
+> **⚠️ Important:** `useMemo` for Three.js objects is an exception. For React components and callbacks, React Compiler handles memoization automatically. Do NOT use `useMemo`/`useCallback` for React code.
 
 ### Resource Cleanup Pattern
 
 ```typescript
-// ✅ CORRECT - Dispose resources on unmount
+// ✅ CORRECT - Dispose Three.js resources on unmount
+// Exception: useMemo for Three.js objects (external objects, not React state)
 import { useEffect, useMemo } from 'react';
 import * as THREE from 'three';
 
 export const CustomMesh = () => {
+  // Exception: useMemo for Three.js objects to prevent recreation
   const geometry = useMemo(() => new THREE.BufferGeometry(), []);
   const material = useMemo(() => new THREE.MeshStandardMaterial(), []);
 
@@ -790,6 +810,8 @@ export const CustomMesh = () => {
   return <mesh geometry={geometry} material={material} />;
 };
 ```
+
+> **⚠️ Note:** `useMemo` for Three.js objects is acceptable because they're external objects. For React components, props, and callbacks, React Compiler handles memoization automatically.
 
 ### Event Handling in 3D
 
@@ -1084,6 +1106,8 @@ import { Button } from '@duro/components';
 
 ## 📁 File Organization
 
+> **📚 For detailed repository structure, see [`REPO_MAP.md`](REPO_MAP.md)**
+
 ### Naming Conventions
 
 - **Components**: PascalCase - `GateEditor.tsx`, `WireRenderer.tsx`
@@ -1093,80 +1117,17 @@ import { Button } from '@duro/components';
 - **Tests**: Component name + `.test.tsx` - `GateEditor.test.tsx`
 - **Folders**: PascalCase for feature folders - `components/GateEditor/`
 
-### Current Structure
-
-```
-nand2fun/
-├── src/
-│   ├── components/
-│   │   ├── canvas/          # 3D scene components
-│   │   │   ├── Scene.tsx
-│   │   │   └── Wire3D.tsx
-│   │   └── ui/              # Ant Design UI components
-│   │       └── Sidebar.tsx
-│   ├── gates/               # Gate 3D components
-│   │   ├── NandGate.tsx
-│   │   ├── AndGate.tsx
-│   │   └── index.ts
-│   ├── simulation/          # Pure logic (no React)
-│   │   ├── gateLogic.ts
-│   │   ├── gateLogic.test.ts
-│   │   └── simulationEngine.ts
-│   ├── store/               # Zustand state
-│   │   ├── circuitStore.ts
-│   │   └── circuitStore.test.ts
-│   ├── types/               # Shared TypeScript types
-│   │   └── circuit.ts
-│   ├── App.tsx
-│   └── main.tsx
-├── e2e/                     # Playwright tests
-│   ├── circuit-building.spec.ts
-│   └── simulation.spec.ts
-├── playwright.config.ts
-└── vite.config.ts
-```
-
-### Scaling Guidelines
-
-As the project grows to support complex chips and full computer simulation:
-
-```
-nand2fun/
-├── src/
-│   ├── components/
-│   │   ├── canvas/
-│   │   └── ui/
-│   ├── gates/               # Basic gates (NAND, AND, OR, etc.)
-│   ├── chips/               # NEW: Composite chips (Mux, DMux, ALU)
-│   │   ├── Mux.tsx
-│   │   ├── ALU.tsx
-│   │   └── index.ts
-│   ├── computer/            # NEW: Full computer components
-│   │   ├── CPU.tsx
-│   │   ├── Memory.tsx
-│   │   └── index.ts
-│   ├── simulation/
-│   │   ├── gateLogic.ts
-│   │   ├── chipLogic.ts     # NEW: Chip-level simulation
-│   │   └── computerLogic.ts # NEW: Full computer simulation
-│   ├── store/
-│   │   ├── circuitStore.ts
-│   │   ├── chipStore.ts     # NEW: If chips need separate state
-│   │   └── index.ts
-│   └── ...
-```
-
-### Where to Put New Features
+### Quick Reference: Where to Put New Features
 
 | Feature Type | Location | Example |
 |--------------|----------|---------|
-| New basic gate | `src/gates/` | XorGate.tsx |
+| New basic gate | `src/gates/components/` | XorGate.tsx |
 | Gate logic function | `src/simulation/gateLogic.ts` | `xorGate()` |
-| Composite chip | `src/chips/` | Mux.tsx |
-| Chip logic | `src/simulation/chipLogic.ts` | `muxLogic()` |
 | New UI panel | `src/components/ui/` | ChipLibrary.tsx |
 | 3D helper | `src/components/canvas/` | PinConnector.tsx |
 | Shared types | `src/types/` | chip.ts |
+
+> **📚 For complete directory structure, current vs. future phases, and architecture evolution, see [`REPO_MAP.md`](REPO_MAP.md)**
 
 ---
 
@@ -1312,7 +1273,7 @@ interface CodeReviewCriteria {
     □ Complex logic extracted to custom hooks?
     □ Props properly typed with interfaces?
     □ No inline object/function literals in JSX props?
-    □ useCallback/useMemo used appropriately (not overused)?
+    □ React Compiler handles memoization (no manual useMemo/useCallback for React code)?
     □ useEffect dependencies complete and correct?
   };
   testing: {
@@ -1328,10 +1289,10 @@ interface CodeReviewCriteria {
     □ Event handlers properly typed?
   };
   performance: {
-    □ 3D geometries memoized?
-    □ Callbacks stabilized with useCallback?
+    □ Three.js objects memoized (exception: external objects)?
+    □ React Compiler handles component/callback memoization?
     □ No new objects created in render loops?
-    □ React.memo used for expensive components?
+    □ React Compiler optimizes components automatically?
   };
   state: {
     □ Mutations only in circuitActions?
@@ -1363,14 +1324,15 @@ const GoodComponent = () => {
   circuitActions.addGate('nand', [0, 0, 0]);
 };
 
-// ❌ ANTI-PATTERN: Creating geometry in render
+// ❌ ANTI-PATTERN: Creating Three.js objects in render
 const BadGate = ({ selected }) => {
   // Creates new BoxGeometry EVERY render!
   return <mesh geometry={new THREE.BoxGeometry(1, 1, 1)} />;
 };
 
-// ✅ CORRECT: Memoize geometry
+// ✅ CORRECT: Memoize Three.js objects (exception for external objects)
 const GoodGate = ({ selected }) => {
+  // Exception: useMemo for Three.js objects (external, not React state)
   const geometry = useMemo(() => new THREE.BoxGeometry(1, 1, 1), []);
   return <mesh geometry={geometry} />;
 };
@@ -1395,16 +1357,20 @@ const GoodComponent = ({ show }) => {
   if (!show) return null; // ✅ Early return after hooks
 };
 
-// ❌ ANTI-PATTERN: Inline functions/objects in JSX (causes re-renders)
+// ❌ ANTI-PATTERN: Inline functions/objects in JSX
+// Note: React Compiler handles this automatically, but it's still cleaner to extract
 <GateComponent 
-  onClick={() => handleClick(id)}  // ❌ New function every render
-  style={{ color: 'blue' }}        // ❌ New object every render
+  onClick={() => handleClick(id)}  // React Compiler optimizes, but less readable
+  style={{ color: 'blue' }}        // React Compiler optimizes, but less readable
 />
 
-// ✅ CORRECT: Memoize callbacks, extract style objects
-const handleClick = useCallback(() => handleClick(id), [id]);
-const style = useMemo(() => ({ color: 'blue' }), []);
+// ✅ CORRECT: Extract for readability (React Compiler optimizes automatically)
+const handleClick = () => handleClick(id);
+const style = { color: 'blue' };
 <GateComponent onClick={handleClick} style={style} />
+```
+
+> **⚠️ Note:** React Compiler automatically optimizes inline functions/objects, but extracting them improves code readability. Do NOT use `useCallback`/`useMemo` for this - React Compiler handles it.
 ```
 
 ---

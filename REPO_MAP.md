@@ -364,7 +364,17 @@ See [Implementation Guide](implementation.md#technology-stack-evolution) for det
 
 ## Related Documentation
 
-- [NAND2FUN_LLM_GUIDE.md](../../NAND2FUN_LLM_GUIDE.md) - Comprehensive development guide
-- [Roadmap](../roadmap/README.md) - Project roadmap and phases
-- [Phase 0 Critical Fixes](../roadmap/phases/phase-0-critical-fixes.md) - Current phase documentation
+- [`.cursorrules`](../.cursorrules) - **Start here!** Project rules, phase tracking, and quick reference
+- [`NAND2FUN_LLM_GUIDE.md`](../NAND2FUN_LLM_GUIDE.md) - Detailed development patterns, examples, and best practices
+- [`docs/roadmap/`](../roadmap/README.md) - Project roadmap and phases
+- [`docs/roadmap/phases/phase-0-critical-fixes.md`](../roadmap/phases/phase-0-critical-fixes.md) - Current phase documentation
+
+## Document Relationship
+
+This document focuses on **repository structure and file organization**. For:
+- **Quick rules & phase status**: See [`.cursorrules`](../.cursorrules)
+- **Detailed patterns & examples**: See [`NAND2FUN_LLM_GUIDE.md`](../NAND2FUN_LLM_GUIDE.md)
+- **Where files go**: This document
+
+All three documents are kept in sync and should be consulted together.
 - [.cursorrules](../../.cursorrules) - Project rules and guidelines
