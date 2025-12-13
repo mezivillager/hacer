@@ -129,7 +129,7 @@ export const circuitActions = {
 // Expose store and actions for E2E testing
 if (typeof window !== 'undefined') {
   // Expose the Zustand getState function directly - this allows E2E tests
-  // to always access the current state, similar to how Valtio proxy worked
+  // to always access the current state
   window.__CIRCUIT_STORE__ = useCircuitStore.getState()
   window.__CIRCUIT_ACTIONS__ = circuitActions
   

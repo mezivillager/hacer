@@ -1,7 +1,7 @@
 # Nand2Fun LLM Development Guide
 
 **PURPOSE**: Ensure AI-generated code doesn't break existing functionality as the codebase scales.
-**SCOPE**: React Three Fiber 3D components, Valtio state, Ant Design UI, testing patterns.
+**SCOPE**: React Three Fiber 3D components, Zustand state, Ant Design UI, testing patterns.
 **REQUIREMENT**: Follow these patterns for ALL code changes - test coverage is mandatory.
 
 ---
@@ -16,8 +16,8 @@
 ✅ Keep components under 200 lines (split if larger)
 ✅ **One component per file** - each React component gets its own file
 ✅ Import from `antd` directly for UI components
-✅ Use Valtio `proxy()` for shared state, `useSnapshot()` to read
-✅ Memoize 3D components with `memo()` and geometries with `useMemo()`
+✅ Use Zustand `create()` for shared state, selectors for granular subscriptions
+✅ Let React Compiler handle memoization automatically
 ✅ Dispose Three.js resources on unmount (geometries, materials, textures)
 ✅ Handle loading and error states explicitly
 ✅ Keep gate logic pure and testable (no side effects)
@@ -32,7 +32,7 @@
 ❌ Modify existing function signatures without updating all callers
 ❌ Use `console.log()` for user feedback (use Ant Design Message/Notification)
 ❌ Create new 3D geometries inside render loops
-❌ Mutate Valtio state outside of action functions
+❌ Mutate Zustand state outside of action functions
 ❌ Import Three.js objects you don't dispose
 ❌ Add features without considering how they'll be tested
 ❌ Break existing E2E test flows
@@ -118,8 +118,7 @@ export const GateEditor = ({ gateId }) => {
 // ✅ CORRECT - Hooks at top level, same order
 function Component({ id }) {
   const [state, setState] = useState(null); // Always first
-  const snap = useSnapshot(store);           // Then other hooks
-  const memoized = useMemo(() => ..., []);   // Then memoization
+  const gates = useCircuitStore((s) => s.gates); // Zustand selectors
   
   useEffect(() => { ... }, [id]);            // Effects last
   
@@ -407,8 +406,9 @@ const GateEditor = () => {
   const [isExpanded, setIsExpanded] = useState(false); // Local UI state
   const [editorValue, setEditorValue] = useState('');  // Local form state
   
-  // Use Valtio for shared state
-  const circuit = useSnapshot(circuitStore);
+  // Use Zustand selectors for shared state
+  const gates = useCircuitStore((s) => s.gates);
+  const selectedGateId = useCircuitStore((s) => s.selectedGateId);
   
   return (
     <Collapse expanded={isExpanded} onChange={setIsExpanded}>
@@ -418,7 +418,6 @@ const GateEditor = () => {
 };
 
 // ❌ WRONG - Don't put UI state in global store
-// circuitStore.isEditorExpanded = true; // ❌ UI state in global store
 ```
 
 **Separating Logic from UI:**
@@ -426,16 +425,16 @@ const GateEditor = () => {
 // ✅ CORRECT - Extract business logic to hooks
 // hooks/useWiring.ts
 export const useWiring = () => {
-  const circuit = useSnapshot(circuitStore);
-  const isWiring = circuit.wiringFrom !== null;
+  const wiringFrom = useCircuitStore((s) => s.wiringFrom);
+  const isWiring = wiringFrom !== null;
   
-  const startWiring = useCallback((gateId: string, pinId: string, pinType: 'input' | 'output') => {
+  const startWiring = (gateId: string, pinId: string, pinType: 'input' | 'output') => {
     circuitActions.startWiring(gateId, pinId, pinType);
-  }, []);
+  };
   
-  const completeWiring = useCallback((gateId: string, pinId: string) => {
+  const completeWiring = (gateId: string, pinId: string) => {
     circuitActions.completeWiring(gateId, pinId);
-  }, []);
+  };
   
   return { isWiring, startWiring, completeWiring };
 };
@@ -541,7 +540,7 @@ export const App = () => {
 |--------------|-----------|------|----------|
 | Gate logic (NAND, OR, etc.) | Unit | Vitest | Critical |
 | Simulation engine | Unit | Vitest | Critical |
-| Valtio state mutations | Unit | Vitest | Critical |
+| Zustand state mutations | Unit | Vitest | Critical |
 | UI button clicks, forms | Component | RTL + Vitest | High |
 | 3D component props | Component | RTL + Vitest | Medium |
 | Add gate → wire → simulate | E2E | Playwright | Critical |
@@ -573,7 +572,7 @@ describe('nandGate', () => {
 ```
 
 ```typescript
-// ✅ CORRECT - Testing Valtio store actions
+// ✅ CORRECT - Testing Zustand store actions
 // src/store/circuitStore.test.ts
 import { describe, it, expect, beforeEach } from 'vitest';
 import { circuitStore, circuitActions } from './circuitStore';
@@ -870,14 +869,15 @@ HTMLCanvasElement.prototype.getContext = vi.fn(() => ({
 
 ---
 
-## 📦 Valtio State Management
+## 📦 Zustand State Management
 
 ### Store Organization
 
 ```typescript
 // ✅ CORRECT - Organized store with typed actions
 // src/store/circuitStore.ts
-import { proxy } from 'valtio';
+import { create } from 'zustand';
+import { immer } from 'zustand/middleware/immer';
 
 // Types
 export interface Gate {
@@ -885,13 +885,16 @@ export interface Gate {
   type: 'nand' | 'and' | 'or' | 'not' | 'nor' | 'xor';
   position: [number, number, number];
   rotation: number;
-  inputs: Record<string, boolean>;
+  inputs: { id: string; value: boolean }[];
+  outputs: { id: string; value: boolean }[];
 }
 
 export interface Wire {
   id: string;
-  from: { gateId: string; pinId: string };
-  to: { gateId: string; pinId: string };
+  fromGateId: string;
+  fromPinId: string;
+  toGateId: string;
+  toPinId: string;
 }
 
 interface CircuitState {
@@ -901,34 +904,40 @@ interface CircuitState {
   isSimulating: boolean;
 }
 
-// State
-export const circuitStore = proxy<CircuitState>({
-  gates: [],
-  wires: [],
-  selectedGateId: null,
-  isSimulating: false,
-});
+// Store with immer for immutable updates
+export const useCircuitStore = create<CircuitState>()(
+  immer((set) => ({
+    gates: [],
+    wires: [],
+    selectedGateId: null,
+    isSimulating: false,
+  }))
+);
 
-// Actions - ALL mutations happen here
+// Actions - separate from store for stable references
 export const circuitActions = {
   addGate: (type: Gate['type'], position: [number, number, number]) => {
-    const gate: Gate = {
-      id: `gate-${Date.now()}`,
-      type,
-      position,
-      rotation: 0,
-      inputs: { inputA: false, inputB: false },
-    };
-    circuitStore.gates.push(gate);
-    return gate.id;
+    useCircuitStore.setState((state) => {
+      const gate: Gate = {
+        id: `gate-${Date.now()}`,
+        type,
+        position,
+        rotation: 0,
+        inputs: [{ id: 'in-0', value: false }],
+        outputs: [{ id: 'out-0', value: false }],
+      };
+      state.gates.push(gate);
+    });
   },
 
   removeGate: (id: string) => {
-    // Remove associated wires first
-    circuitStore.wires = circuitStore.wires.filter(
-      w => w.from.gateId !== id && w.to.gateId !== id
-    );
-    circuitStore.gates = circuitStore.gates.filter(g => g.id !== id);
+    useCircuitStore.setState((state) => {
+      // Remove associated wires first
+      state.wires = state.wires.filter(
+        w => w.fromGateId !== id && w.toGateId !== id
+      );
+      state.gates = state.gates.filter(g => g.id !== id);
+    });
   },
 
   // ... more actions
@@ -938,12 +947,13 @@ export const circuitActions = {
 ### Reading State in Components
 
 ```typescript
-// ✅ CORRECT - Use useSnapshot for reactive reads
-import { useSnapshot } from 'valtio';
-import { circuitStore, circuitActions } from '@/store/circuitStore';
+// ✅ CORRECT - Use selectors for granular subscriptions
+import { useCircuitStore, circuitActions } from '@/store/circuitStore';
 
 export const GateList = () => {
-  const { gates, selectedGateId } = useSnapshot(circuitStore);
+  // Subscribe only to what you need
+  const gates = useCircuitStore((s) => s.gates);
+  const selectedGateId = useCircuitStore((s) => s.selectedGateId);
   
   return (
     <>
@@ -959,33 +969,36 @@ export const GateList = () => {
   );
 };
 
-// ❌ WRONG - Direct store access won't trigger re-renders
+// ❌ WRONG - Subscribing to entire store causes unnecessary re-renders
 export const BadGateList = () => {
-  // This won't update when gates change!
-  return circuitStore.gates.map(gate => <Gate3D key={gate.id} {...gate} />);
+  const store = useCircuitStore(); // Subscribes to everything!
+  return store.gates.map(gate => <Gate3D key={gate.id} {...gate} />);
 };
 ```
 
-### Testing Valtio Stores
+### Testing Zustand Stores
 
 ```typescript
 // ✅ CORRECT - Test actions directly
-import { circuitStore, circuitActions } from './circuitStore';
+import { useCircuitStore, circuitActions } from './circuitStore';
 
 describe('circuitActions', () => {
   beforeEach(() => {
     // Reset store state
-    circuitStore.gates = [];
-    circuitStore.wires = [];
-    circuitStore.selectedGateId = null;
+    useCircuitStore.setState({
+      gates: [],
+      wires: [],
+      selectedGateId: null,
+    });
   });
 
   it('addGate creates gate with unique id', () => {
-    const id1 = circuitActions.addGate('nand', [0, 0, 0]);
-    const id2 = circuitActions.addGate('nand', [1, 0, 0]);
+    circuitActions.addGate('nand', [0, 0, 0]);
+    circuitActions.addGate('nand', [1, 0, 0]);
     
-    expect(id1).not.toBe(id2);
-    expect(circuitStore.gates).toHaveLength(2);
+    const { gates } = useCircuitStore.getState();
+    expect(gates).toHaveLength(2);
+    expect(gates[0].id).not.toBe(gates[1].id);
   });
 });
 ```
@@ -993,27 +1006,31 @@ describe('circuitActions', () => {
 ### Common Pitfalls
 
 ```typescript
-// ❌ WRONG - Mutating outside actions
+// ❌ WRONG - Mutating state directly
 const BadComponent = () => {
-  const snap = useSnapshot(circuitStore);
+  const gates = useCircuitStore((s) => s.gates);
   
   const handleClick = () => {
-    // Don't do this! Mutations should be in circuitActions
-    circuitStore.gates.push({ ... });
+    // Don't do this! Use circuitActions
+    gates.push({ ... }); // Won't trigger re-render
   };
 };
 
-// ❌ WRONG - Mutating snapshot (it's readonly)
+// ❌ WRONG - Subscribing to entire store
 const AnotherBadComponent = () => {
-  const snap = useSnapshot(circuitStore);
-  snap.gates.push({ ... }); // TypeScript error + runtime error
+  const store = useCircuitStore(); // Re-renders on ANY change
+  return <div>{store.gates.length}</div>;
 };
 
-// ✅ CORRECT - Use actions for mutations
+// ✅ CORRECT - Use actions for mutations, selectors for reads
 const GoodComponent = () => {
+  const gateCount = useCircuitStore((s) => s.gates.length);
+  
   const handleClick = () => {
     circuitActions.addGate('nand', [0, 0, 0]);
   };
+  
+  return <div onClick={handleClick}>{gateCount}</div>;
 };
 ```
 
@@ -1095,7 +1112,7 @@ nand2fun/
 │   │   ├── gateLogic.ts
 │   │   ├── gateLogic.test.ts
 │   │   └── simulationEngine.ts
-│   ├── store/               # Valtio state
+│   ├── store/               # Zustand state
 │   │   ├── circuitStore.ts
 │   │   └── circuitStore.test.ts
 │   ├── types/               # Shared TypeScript types
@@ -1405,7 +1422,7 @@ npm run test:coverage # Generate coverage report
 ### External Resources
 - React Three Fiber: https://docs.pmnd.rs/react-three-fiber
 - Drei (R3F helpers): https://github.com/pmndrs/drei
-- Valtio: https://github.com/pmndrs/valtio
+- Zustand: https://github.com/pmndrs/zustand
 - Ant Design: https://ant.design/components/overview
 - Playwright: https://playwright.dev/docs/intro
 - Vitest: https://vitest.dev/guide/
@@ -1413,8 +1430,11 @@ npm run test:coverage # Generate coverage report
 ### Debug Helpers
 ```typescript
 // Log store state changes
-import { subscribe } from 'valtio';
-subscribe(circuitStore, () => console.log('State:', circuitStore));
+useCircuitStore.subscribe((state) => console.log('State:', state));
+
+// Access store in browser console
+window.__CIRCUIT_STORE__   // Current state
+window.__CIRCUIT_ACTIONS__ // Actions
 
 // Inspect 3D scene
 // In browser console with React DevTools + R3F
