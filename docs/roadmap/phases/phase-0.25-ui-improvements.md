@@ -13,6 +13,7 @@ This phase improves the user experience of gate placement, movement, rotation, a
 
 **Exit Criteria:**
 - Gates snap to grid centers only
+- Gates lie flat with names facing upward
 - Rotation limited to 90-degree increments
 - Gates cannot be placed in adjacent grid cells (spacing enforced)
 - Wires follow grid lines (straight lines, 90-degree turns)
@@ -106,7 +107,170 @@ export function canPlaceGateAt(gridPos: GridPosition, existingGates: GateInstanc
 
 ---
 
-## 0.25.2 Gate Dragging and Movement
+## 0.25.2 Flat Gate Orientation
+
+**Problem:** Gates are currently oriented sideways (standing up), making gate names hard to read, causing pin overlap when multiple inputs/outputs exist, and making wiring more complex.
+
+**Solution:** Rotate gates to lie flat on the grid with names facing upward. This ensures names are always visible, prevents pin overlap, simplifies wiring, and improves overall circuit clarity.
+
+### Orientation Change Design
+
+**Current State:**
+- Gates are "standing" with body oriented: width (X), height (Y), depth (Z)
+- Text labels on front face (Z+ direction)
+- Pins positioned along X axis (left/right sides)
+- Input pins have Y offsets (0.2, -0.2) for vertical spacing
+
+**New State:**
+- Gates lie flat on grid (rotated 90° around X axis)
+- Text labels on top face (Y+ direction, always visible from above)
+- Pins positioned on edges (inputs on one side, output on opposite side)
+- No vertical pin overlap - all pins visible from top view
+
+### Gate Rotation
+
+```typescript
+// Default rotation for all gates
+const DEFAULT_GATE_ROTATION = {
+  x: Math.PI / 2,  // 90° rotation around X axis (lay flat)
+  y: 0,            // No Y rotation (can be rotated later)
+  z: 0             // No Z rotation
+}
+
+// In createGateInstance (src/store/actions/gateActions/gateActions.ts)
+return {
+  id,
+  type,
+  position,
+  rotation: DEFAULT_GATE_ROTATION,  // Changed from { x: 0, y: 0, z: 0 }
+  inputs,
+  outputs,
+  selected: false,
+}
+```
+
+### Pin Position Updates
+
+**New Pin Layout:**
+- **Input pins:** Positioned on left edge (negative X) when gate is at 0° rotation
+  - Input A: `[-INPUT_PIN_X, 0, INPUT_OFFSET_Z]` (front)
+  - Input B: `[-INPUT_PIN_X, 0, -INPUT_OFFSET_Z]` (back) for two-input gates
+  - Input: `[-INPUT_PIN_X, 0, 0]` (center) for single-input gates
+  
+- **Output pin:** Positioned on right edge (positive X) when gate is at 0° rotation
+  - Output: `[OUTPUT_PIN_X, 0, 0]` (center)
+
+**Coordinate System (after flat rotation):**
+- X axis: Left/Right (inputs left, output right)
+- Y axis: Up/Down (text on top, gate body below)
+- Z axis: Front/Back (for pin spacing on two-input gates)
+
+### Text Label Positioning
+
+```typescript
+// Text should be on top face (Y+), centered
+<Text
+  position={[0, BODY_HEIGHT / 2 + 0.01, 0]}  // On top, slightly above body
+  rotation={[-Math.PI / 2, 0, 0]}            // Rotate to face upward
+  fontSize={0.2}
+  color="#ffffff"
+  anchorX="center"
+  anchorY="middle"
+>
+  {gateType}
+</Text>
+```
+
+### Implementation Tasks
+
+1. **Update default gate rotation** (`src/store/actions/gateActions/gateActions.ts`)
+   - Change `createGateInstance` default rotation from `{ x: 0, y: 0, z: 0 }` to `{ x: Math.PI / 2, y: 0, z: 0 }`
+   - This makes all new gates lie flat by default
+
+2. **Update gate component rotations** (`src/gates/components/*.tsx`)
+   - Gate group rotation comes from store: `rotation={[gate.rotation.x, gate.rotation.y, gate.rotation.z]}`
+   - Default rotation is now `{ x: Math.PI / 2, y: 0, z: 0 }` (stored in gate instance)
+   - User rotation (arrow keys) modifies Y component: `{ x: Math.PI / 2, y: userRotation, z: 0 }`
+   - No changes needed to GateRenderer - it already passes rotation from store
+   - Update all gate components: NandGate, AndGate, OrGate, NotGate, XorGate (verify they use rotation prop correctly)
+
+3. **Reposition text labels** (`src/gates/components/*.tsx`)
+   - Move text from front face (Z+) to top face (Y+)
+   - Position: `[0, BODY_HEIGHT / 2 + 0.01, 0]`
+   - Rotate text: `rotation={[-Math.PI / 2, 0, 0]}` to face upward
+   - Ensure text is always readable from top-down view
+
+4. **Reposition pins** (`src/gates/components/*.tsx`)
+   - **Two-input gates (NAND, AND, OR, XOR):**
+     - Input A: `[-INPUT_PIN_X, 0, INPUT_SPACING]` (left side, front)
+     - Input B: `[-INPUT_PIN_X, 0, -INPUT_SPACING]` (left side, back)
+     - Output: `[OUTPUT_PIN_X, 0, 0]` (right side, center)
+   
+   - **Single-input gate (NOT):**
+     - Input: `[-INPUT_PIN_X, 0, 0]` (left side, center)
+     - Output: `[OUTPUT_PIN_X, 0, 0]` (right side, center)
+
+5. **Update pin position calculations** (`src/store/actions/pinHelpers/pinHelpers.ts`)
+   - Update `INPUT_PIN_X` and `OUTPUT_PIN_X` constants to match new positions
+   - Update Y offsets to Z offsets for two-input gates
+   - Ensure pin positions account for base rotation (90° around X)
+   - Test that `getPinWorldPosition` correctly calculates positions after rotation
+
+6. **Update wire stub positions** (`src/gates/components/*.tsx`)
+   - Reposition wire stubs to match new pin positions
+   - Ensure stubs extend from pins in correct direction (away from gate body)
+
+7. **Update gate Y position** (`src/components/canvas/Scene/GroundPlane.tsx`, `src/store/actions/placementActions/placementActions.ts`)
+   - Gates should be positioned at `y: 0` (on grid plane) when flat
+   - Update placement preview Y position to `0` instead of `0.4`
+   - Ensure gates sit flush on grid
+
+8. **Update existing gate instances** (Migration)
+   - Existing gates in store may have `rotation: { x: 0, y: 0, z: 0 }`
+   - Consider migration: update all existing gates to new default rotation
+   - Or: handle both orientations gracefully (not recommended - adds complexity)
+
+9. **Update tests** (`src/store/actions/gateActions/gateActions.test.ts`, `src/store/actions/pinHelpers/pinHelpers.test.ts`)
+   - Update tests to expect new default rotation
+   - Update pin position tests to match new coordinates
+   - Verify pin positions are correct after rotation
+
+10. **Visual verification**
+    - Ensure all gate types render correctly when flat
+    - Verify text labels are readable from top view
+    - Verify pins don't overlap and are all visible
+    - Verify wires can connect to pins correctly
+
+### Coordinate System Reference
+
+**After flat rotation (90° around X axis):**
+- Original X → New X (left/right)
+- Original Y → New Z (front/back)  
+- Original Z → New Y (up/down, inverted)
+
+**Pin positions in local space (before group rotation):**
+- Input pins: Negative X (left side)
+- Output pins: Positive X (right side)
+- Two-input spacing: Z axis (front/back)
+
+### Benefits
+
+1. **Always-visible names:** Gate labels face upward, always readable from top-down view
+2. **No pin overlap:** Pins are spaced along Z axis (front/back) instead of Y axis (up/down)
+3. **Clearer wiring:** All pins visible from top view, easier to see connections
+4. **Simpler rotation:** Rotation around Y axis now changes which side pins face (N/S/E/W)
+5. **Better circuit view:** Top-down view shows complete circuit layout clearly
+
+### Rotation Behavior
+
+- **Default rotation:** All new gates have `{ x: Math.PI / 2, y: 0, z: 0 }` stored in gate instance
+- **User rotation:** Arrow keys modify Y component (0°, 90°, 180°, 270°) to change which side pins face
+- **Final rotation:** Applied directly to gate group: `[gate.rotation.x, gate.rotation.y, gate.rotation.z]`
+- **Rotation axis:** Y rotation (when flat) rotates gate around vertical axis, changing pin orientation (N/S/E/W)
+
+---
+
+## 0.25.3 Gate Dragging and Movement
 
 **Problem:** Gates cannot be moved after placement, making circuit layout adjustments difficult.
 
@@ -201,7 +365,7 @@ export function useGateDrag(gateId: string) {
 
 ---
 
-## 0.25.3 90-Degree Rotation System
+## 0.25.4 90-Degree Rotation System
 
 **Problem:** Continuous rotation makes pin alignment unpredictable, wires can't align properly.
 
@@ -265,7 +429,7 @@ export function getPinWorldPosition(
 
 ---
 
-## 0.25.4 Grid-Aligned Wire Routing
+## 0.25.5 Grid-Aligned Wire Routing
 
 **Problem:** Curved wires can pass through gates, look unprofessional, and make connections unclear.
 
@@ -345,7 +509,7 @@ export function calculateWirePath(
 
 ---
 
-## 0.25.5 Wire Stub Removal
+## 0.25.6 Wire Stub Removal
 
 **Problem:** Wire stubs remain visible even when pins are connected, creating visual clutter.
 
@@ -364,7 +528,7 @@ export function calculateWirePath(
 
 ---
 
-## 0.25.6 Wire Selection and Deletion
+## 0.25.7 Wire Selection and Deletion
 
 **Problem:** Users cannot select or delete wires, making it impossible to undo connections.
 
@@ -400,7 +564,7 @@ export function calculateWirePath(
 
 ---
 
-## 0.25.7 E2E Test Organization and Optimization
+## 0.25.8 E2E Test Organization and Optimization
 
 **Problem:** E2E tests are slow (wait for scene in each test) and naming/organization is inconsistent.
 
@@ -493,15 +657,16 @@ e2e/specs/
 | Task | Effort | Dependencies | Exit Criteria |
 |------|--------|--------------|---------------|
 | 0.25.1 Grid-based placement system | 4h | - | Gates snap to grid, spacing enforced, visual feedback ✅ |
-| 0.25.2 Gate dragging and movement | 4h | Grid system | Gates can be dragged, snap to grid |
-| 0.25.3 90-degree rotation system | 2h | Grid system | Rotation limited to 90° increments |
-| 0.25.4 Grid-aligned wire routing | 4h | Grid system | Wires follow grid lines, 90° turns |
-| 0.25.5 Wire stub removal | 1h | - | Stubs hidden when pins connected |
-| 0.25.6 Wire selection and deletion | 3h | - | Wires can be selected and deleted |
-| 0.25.7 E2E test reorganization | 2h | - | Tests organized, consistent naming |
-| 0.25.7 E2E test optimization | 3h | Test reorganization | Scene loaded once, tests <2s total |
+| 0.25.2 Flat gate orientation | 6h | Grid system | Gates lie flat, names face up, pins don't overlap |
+| 0.25.3 Gate dragging and movement | 4h | Grid system, Flat orientation | Gates can be dragged, snap to grid |
+| 0.25.4 90-degree rotation system | 2h | Grid system, Flat orientation | Rotation limited to 90° increments |
+| 0.25.5 Grid-aligned wire routing | 4h | Grid system, Flat orientation | Wires follow grid lines, 90° turns |
+| 0.25.6 Wire stub removal | 1h | - | Stubs hidden when pins connected |
+| 0.25.7 Wire selection and deletion | 3h | - | Wires can be selected and deleted |
+| 0.25.8 E2E test reorganization | 2h | - | Tests organized, consistent naming |
+| 0.25.8 E2E test optimization | 3h | Test reorganization | Scene loaded once, tests <2s total |
 
-**Total Estimated Effort:** ~23 hours  
+**Total Estimated Effort:** ~29 hours  
 **Performance Budget:** <2s E2E test suite, 60fps with 100+ gates
 
 ---
