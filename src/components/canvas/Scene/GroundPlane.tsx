@@ -1,7 +1,7 @@
 import { ThreeEvent } from '@react-three/fiber'
 import { useCircuitStore, circuitActions } from '@/store/circuitStore'
 import { trackRender } from '@/utils/renderTracking'
-import { snapToGrid } from './utils'
+import { snapToGrid } from '@/utils/grid'
 
 const { 
   updateWirePreviewPosition, 
@@ -25,9 +25,8 @@ export function GroundPlane() {
     const isWiring = state.wiringFrom !== null
     
     if (isPlacing) {
-      const x = snapToGrid(e.point.x)
-      const z = snapToGrid(e.point.z)
-      updatePlacementPreviewPosition({ x, y: 0.4, z })
+      const snappedPos = snapToGrid({ x: e.point.x, y: 0.4, z: e.point.z })
+      updatePlacementPreviewPosition(snappedPos)
     } else if (isWiring) {
       updateWirePreviewPosition({ 
         x: e.point.x, 
@@ -57,9 +56,8 @@ export function GroundPlane() {
     
     if (isPlacing) {
       e.stopPropagation()
-      const x = snapToGrid(e.point.x)
-      const z = snapToGrid(e.point.z)
-      placeGate({ x, y: 0.4, z })
+      const snappedPos = snapToGrid({ x: e.point.x, y: 0.4, z: e.point.z })
+      placeGate(snappedPos)
     } else if (isWiring) {
       e.stopPropagation()
       cancelWiring()

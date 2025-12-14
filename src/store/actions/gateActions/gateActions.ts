@@ -1,4 +1,5 @@
 import type { GateActions, GateInstance, GateType, Pin, Position, CircuitStore } from '../../types'
+import { snapToGrid } from '@/utils/grid'
 
 // Helper to create a gate instance - exported for use in atomic placement actions
 export function createGateInstance(type: GateType, position: Position): GateInstance {
@@ -70,10 +71,12 @@ export const createGateActions = (set: SetState): GateActions => ({
   },
 
   updateGatePosition: (gateId: string, position: Position) => {
+    // Snap position to grid before updating
+    const snappedPosition = snapToGrid(position)
     set((state) => {
       const gate = state.gates.find((g) => g.id === gateId)
       if (gate) {
-        gate.position = position
+        gate.position = snappedPosition
       }
     }, false, 'updateGatePosition')
   },

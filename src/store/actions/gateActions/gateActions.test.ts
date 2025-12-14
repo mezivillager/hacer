@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { useCircuitStore } from '../../circuitStore'
+import { GRID_SIZE } from '@/utils/grid'
 
 // Helper to get store state
 const getState = () => useCircuitStore.getState()
@@ -131,17 +132,56 @@ describe('gateActions', () => {
     it('updates gate position', () => {
       const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
       
-      getState().updateGatePosition(gate.id, { x: 5, y: 10, z: 15 })
+      getState().updateGatePosition(gate.id, { x: GRID_SIZE * 2, y: 0, z: GRID_SIZE * 3 })
       
-      expect(getState().gates[0].position).toEqual({ x: 5, y: 10, z: 15 })
+      expect(getState().gates[0].position).toEqual({ x: GRID_SIZE * 2, y: 0, z: GRID_SIZE * 3 })
     })
 
     it('does nothing if gate does not exist', () => {
       getState().addGate('NAND', { x: 0, y: 0, z: 0 })
       
-      getState().updateGatePosition('non-existent-id', { x: 5, y: 10, z: 15 })
+      getState().updateGatePosition('non-existent-id', { x: GRID_SIZE * 2, y: 0, z: GRID_SIZE * 2 })
       
       expect(getState().gates[0].position).toEqual({ x: 0, y: 0, z: 0 })
+    })
+
+    describe('grid snapping', () => {
+      it('snaps position to grid center', () => {
+        const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+        
+        // Position slightly off grid should snap to grid center
+        getState().updateGatePosition(gate.id, { x: 0.9, y: 0, z: 0.9 })
+        
+        expect(getState().gates[0].position).toEqual({ x: 0, y: 0, z: 0 })
+      })
+
+      it('snaps to nearest grid cell', () => {
+        const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+        
+        // Position between grid cells should snap to nearest
+        getState().updateGatePosition(gate.id, { x: 1.1, y: 0, z: 1.1 })
+        
+        expect(getState().gates[0].position).toEqual({ x: 2, y: 0, z: 2 })
+      })
+
+      it('handles positions that are not on grid', () => {
+        const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+        
+        // Various off-grid positions should all snap correctly
+        getState().updateGatePosition(gate.id, { x: 2.9, y: 0, z: 2.9 })
+        expect(getState().gates[0].position).toEqual({ x: 2, y: 0, z: 2 })
+        
+        getState().updateGatePosition(gate.id, { x: 3.1, y: 0, z: 3.1 })
+        expect(getState().gates[0].position).toEqual({ x: 4, y: 0, z: 4 })
+        
+        // -1.1 / 2.0 = -0.55, rounds to -1, so grid position is -1, world is -2
+        getState().updateGatePosition(gate.id, { x: -1.1, y: 0, z: -1.1 })
+        expect(getState().gates[0].position).toEqual({ x: -2, y: 0, z: -2 })
+        
+        // -0.4 / 2.0 = -0.2, rounds to 0 (normalized from -0), so grid position is 0, world is 0
+        getState().updateGatePosition(gate.id, { x: -0.4, y: 0, z: -0.4 })
+        expect(getState().gates[0].position).toEqual({ x: 0, y: 0, z: 0 })
+      })
     })
   })
 

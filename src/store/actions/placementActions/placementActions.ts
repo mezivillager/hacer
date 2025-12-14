@@ -1,5 +1,6 @@
 import type { PlacementActions, GateType, Position, CircuitStore } from '../../types'
 import { createGateInstance } from '../gateActions/gateActions'
+import { snapToGrid, worldToGrid, canPlaceGateAt } from '@/utils/grid'
 
 type SetState = (
   fn: (state: CircuitStore) => void,
@@ -27,8 +28,18 @@ export const createPlacementActions = (set: SetState, get: GetState): PlacementA
     const currentState = get()
     if (!currentState.placementMode) return
     
+    // Snap position to grid
+    const snappedPosition = snapToGrid(position)
+    
+    // Convert to grid position and validate placement
+    const gridPos = worldToGrid(snappedPosition)
+    if (!canPlaceGateAt(gridPos, currentState.gates)) {
+      // Invalid placement - do nothing
+      return
+    }
+    
     // Create gate instance outside of set() to avoid issues with Immer
-    const newGate = createGateInstance(currentState.placementMode, position)
+    const newGate = createGateInstance(currentState.placementMode, snappedPosition)
     
     // Single atomic state update - add gate, clear placement, select new gate
     set((state) => {

@@ -4,6 +4,7 @@ import { GateRenderer } from '@/gates'
 import { Wire3D } from './Wire3D'
 import { useCircuitStore, circuitActions } from '@/store/circuitStore'
 import { trackRender } from '@/utils/renderTracking'
+import { worldToGrid, canPlaceGateAt } from '@/utils/grid'
 
 const { Content } = Layout
 const { Text } = Typography
@@ -17,12 +18,19 @@ export function CanvasArea() {
   const wires = useCircuitStore((s) => s.wires)
   const placementMode = useCircuitStore((s) => s.placementMode)
   const wiringFrom = useCircuitStore((s) => s.wiringFrom)
+  const placementPreviewPosition = useCircuitStore((s) => s.placementPreviewPosition)
   
   // Track renders with reason
   trackRender('CanvasArea', `gates:${gates.length},wires:${wires.length},placing:${!!placementMode},wiring:${!!wiringFrom}`)
 
   const isPlacing = placementMode !== null
   const isWiring = wiringFrom !== null
+  
+  // Check if current preview position is invalid
+  const isPlacementInvalid = isPlacing && placementPreviewPosition !== null && (() => {
+    const gridPos = worldToGrid(placementPreviewPosition)
+    return !canPlaceGateAt(gridPos, gates)
+  })()
 
   // Helper to check if a pin is connected
   const isPinConnected = (gateId: string, pinId: string) => {
@@ -81,7 +89,7 @@ export function CanvasArea() {
   })()
 
   return (
-    <Content className={`app-content ${isPlacing ? 'placing' : ''} ${isWiring ? 'wiring' : ''}`}>
+    <Content className={`app-content ${isPlacing ? 'placing' : ''} ${isPlacing && isPlacementInvalid ? 'placing-invalid' : ''} ${isWiring ? 'wiring' : ''}`}>
       <Scene>
         {/* Render all wires */}
         {wires.map(wire => {

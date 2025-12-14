@@ -93,6 +93,11 @@
   cursor: crosshair;
 }
 
+.app-content.placing.placing-invalid canvas,
+.app-content.placing.placing-invalid canvas:active {
+  cursor: not-allowed;
+}
+
 /* Gate Selector Grid */
 .gate-selector-grid {
   display: grid;
