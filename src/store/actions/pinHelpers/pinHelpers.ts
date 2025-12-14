@@ -21,6 +21,7 @@ function computePinWorldPosition(
 
   let localOffset: Vector3
   if (inputIndex !== -1) {
+    // For two-input gates: spacing along Y axis (horizontal in world space after 90° X rotation)
     const yOffset = inputIndex === 0 ? 0.2 : -0.2
     localOffset = new Vector3(INPUT_PIN_X, yOffset, 0)
   } else if (outputIndex !== -1) {

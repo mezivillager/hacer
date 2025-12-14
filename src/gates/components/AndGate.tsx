@@ -123,9 +123,12 @@ export function AndGate({
         <meshStandardMaterial color={bodyColor} metalness={materials.gate.metalness} roughness={materials.gate.roughness} />
       </mesh>
 
-      {/* AND text label on front face */}
+      {/* AND text label on top face - flat on horizontal surface */}
+      {/* drei Text is billboarded (faces camera). Position on Z- face (becomes top after gate 90° X rotation).
+          For flat text on horizontal surface, rotate 180° around X to make text lie flat. */}
       <Text
-        position={[0, 0, BODY_DEPTH / 2 + 0.01]}
+        position={[0, 0, -BODY_DEPTH / 2 - 0.01]}
+        rotation={[Math.PI, 0, 0]}
         fontSize={0.25}
         color="#ffffff"
         anchorX="center"
@@ -135,7 +138,7 @@ export function AndGate({
         AND
       </Text>
 
-      {/* Input A pin - just touching left edge of body */}
+      {/* Input A pin - left side, top (horizontal arrangement) */}
       <GatePin
         id={id}
         pinId={`${id}-in-0`}
@@ -152,7 +155,7 @@ export function AndGate({
         onPointerOut={handlePinOut}
       />
 
-      {/* Input B pin - just touching left edge of body */}
+      {/* Input B pin - left side, bottom (horizontal arrangement) */}
       <GatePin
         id={id}
         pinId={`${id}-in-1`}

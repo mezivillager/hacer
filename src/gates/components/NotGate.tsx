@@ -144,9 +144,12 @@ export function NotGate({
         <meshStandardMaterial color={bodyColor} metalness={materials.gate.metalness} roughness={materials.gate.roughness} />
       </mesh>
 
-      {/* NOT text label on front face */}
+      {/* NOT text label on top face - flat on horizontal surface */}
+      {/* drei Text is billboarded (faces camera). Position on Z- face (becomes top after gate 90° X rotation).
+          For flat text on horizontal surface, rotate 180° around X to make text lie flat. */}
       <Text
-        position={[-0.1, 0, 0.21]}
+        position={[0, 0, -0.21]}
+        rotation={[Math.PI, 0, 0]}
         fontSize={0.22}
         color="#ffffff"
         anchorX="center"

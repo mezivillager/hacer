@@ -30,8 +30,10 @@ describe('pinHelpers', () => {
       
       expect(position).not.toBeNull()
       expect(position?.x).toBeCloseTo(INPUT_PIN_X, 1)
-      expect(position?.y).toBeCloseTo(0.2, 1)
-      expect(position?.z).toBe(0)
+      // After 90° X rotation: local Y offset (0.2) becomes world Z
+      // Local position [INPUT_PIN_X, 0.2, 0] → World [INPUT_PIN_X, 0, 0.2]
+      expect(position?.y).toBeCloseTo(0, 1)
+      expect(position?.z).toBeCloseTo(0.2, 1)
     })
 
     it('returns input pin world position for second input', () => {
@@ -41,8 +43,10 @@ describe('pinHelpers', () => {
       
       expect(position).not.toBeNull()
       expect(position?.x).toBeCloseTo(INPUT_PIN_X, 1)
-      expect(position?.y).toBeCloseTo(-0.2, 1)
-      expect(position?.z).toBe(0)
+      // After 90° X rotation: local Y offset (-0.2) becomes world Z
+      // Local position [INPUT_PIN_X, -0.2, 0] → World [INPUT_PIN_X, 0, -0.2]
+      expect(position?.y).toBeCloseTo(0, 1)
+      expect(position?.z).toBeCloseTo(-0.2, 1)
     })
 
     it('returns output pin world position', () => {
@@ -62,9 +66,11 @@ describe('pinHelpers', () => {
       const position = getState().getPinWorldPosition(gate.id, gate.outputs[0].id)
       
       expect(position).not.toBeNull()
+      // Gate position is added to rotated pin position
+      // Output pin is at local [OUTPUT_PIN_X, 0, 0], after 90° X rotation: world [OUTPUT_PIN_X, 0, 0]
       expect(position?.x).toBeCloseTo(5 + OUTPUT_PIN_X, 1)
-      expect(position?.y).toBeCloseTo(10, 1)
-      expect(position?.z).toBeCloseTo(15, 1)
+      expect(position?.y).toBeCloseTo(10, 1) // Gate Y + pin Y (0 after rotation)
+      expect(position?.z).toBeCloseTo(15, 1) // Gate Z + pin Z (0 after rotation)
     })
 
     it('accounts for gate rotation', () => {

@@ -62,6 +62,14 @@ describe('gateActions', () => {
       
       expect(gate.selected).toBe(false)
     })
+
+    it('initializes gate with flat orientation (90° around X axis)', () => {
+      const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      
+      expect(gate.rotation.x).toBeCloseTo(Math.PI / 2)
+      expect(gate.rotation.y).toBe(0)
+      expect(gate.rotation.z).toBe(0)
+    })
   })
 
   describe('removeGate', () => {

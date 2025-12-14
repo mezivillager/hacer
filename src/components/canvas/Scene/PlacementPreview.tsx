@@ -30,16 +30,18 @@ export function PlacementPreview() {
   const previewColor = semanticColors.success
   
   return (
-    <group position={[previewPosition.x, 0.02, previewPosition.z]}>
-      <mesh rotation={[-Math.PI / 2, 0, 0]}>
+    <group position={[previewPosition.x, 0.2, previewPosition.z]} rotation={[Math.PI / 2, 0, 0]}>
+      {/* Preview rings - flat relative to parent (which is rotated 90° X) */}
+      <mesh rotation={[0, 0, 0]}>
         <ringGeometry args={[0.5, 0.55, 32]} />
         <meshBasicMaterial color={previewColor} transparent opacity={0.8} />
       </mesh>
-      <mesh rotation={[-Math.PI / 2, 0, 0]}>
+      <mesh rotation={[0, 0, 0]}>
         <ringGeometry args={[0.05, 0.08, 16]} />
         <meshBasicMaterial color={previewColor} transparent opacity={0.9} />
       </mesh>
-      <mesh position={[0, 0.4, 0]}>
+      {/* Preview gate outline */}
+      <mesh position={[0, 0, 0]}>
         <boxGeometry args={[1.2, 0.8, 0.4]} />
         <meshStandardMaterial
           color={previewColor}

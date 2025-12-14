@@ -34,6 +34,8 @@ export function useKeyboardShortcuts() {
       }
 
       // Arrow keys for rotating selected gate
+      // With gates rotated 90° around X, local Z maps to world -Y
+      // To rotate around world Y (vertical), rotate around local Z with inverted angle
       if (!selectedGateId) return
 
       const rotationStep = Math.PI / 4 // 45 degrees
@@ -41,11 +43,13 @@ export function useKeyboardShortcuts() {
       switch (e.key) {
         case 'ArrowLeft':
           e.preventDefault()
-          rotateGate(selectedGateId, 'y', rotationStep)
+          // Rotate around local Z (world -Y), so use negative angle to rotate around world +Y
+          rotateGate(selectedGateId, 'z', -rotationStep)
           break
         case 'ArrowRight':
           e.preventDefault()
-          rotateGate(selectedGateId, 'y', -rotationStep)
+          // Rotate around local Z (world -Y), so use positive angle to rotate around world -Y
+          rotateGate(selectedGateId, 'z', rotationStep)
           break
       }
     }

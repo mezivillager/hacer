@@ -15,7 +15,7 @@ export function Scene({ children }: SceneProps) {
   return (
     <Canvas
       shadows
-      camera={{ position: [5, 5, 5], fov: 50 }}
+      camera={{ position: [0, 6, 6], fov: 50 }}
       style={canvasStyle}
       data-testid="scene-canvas"
     >

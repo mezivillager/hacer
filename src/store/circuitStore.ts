@@ -26,6 +26,19 @@ const initialState = {
   wiringFrom: null as import('./types').WiringState | null,
 }
 
+// Migration: Update existing gates to flat orientation (Phase 0.25.2)
+// This function updates gates with old rotation (x: 0) to new flat orientation (x: Math.PI / 2)
+function migrateGatesToFlatOrientation(state: CircuitStore) {
+  for (const gate of state.gates) {
+    // If gate has old rotation (x: 0), update to new default (x: Math.PI / 2)
+    if (Math.abs(gate.rotation.x) < 0.001) { // Check for ~0 (accounting for floating point)
+      gate.rotation.x = Math.PI / 2
+      // Preserve any user Y rotation
+      // Z rotation should remain 0
+    }
+  }
+}
+
 // Create the Zustand store with Immer, devtools, and subscribeWithSelector middleware
 export const useCircuitStore = create<CircuitStore>()(
   devtools(
@@ -46,6 +59,19 @@ export const useCircuitStore = create<CircuitStore>()(
     { name: 'CircuitStore' }
   )
 )
+
+// Run migration once on store initialization if there are existing gates
+// This handles cases where gates exist in persisted state or were created before migration
+// Migration runs lazily - only when gates are accessed and have old rotation
+if (typeof window !== 'undefined') {
+  // Check and migrate on first access
+  const state = useCircuitStore.getState()
+  if (state.gates.length > 0) {
+    useCircuitStore.setState((draft) => {
+      migrateGatesToFlatOrientation(draft)
+    })
+  }
+}
 
 // Simulation loop subscription
 let simulationInterval: ReturnType<typeof setInterval> | null = null

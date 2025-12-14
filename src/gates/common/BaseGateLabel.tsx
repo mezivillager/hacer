@@ -44,8 +44,14 @@ function formatLabel(gateType: GateType, inputs: boolean[], output: boolean): st
 export function BaseGateLabel({ gateType, inputs, output, visible }: BaseGateLabelProps) {
   if (!visible) return null
 
+  // Position label above the flat gate's top face
+  // Gate is rotated 90° around X, so top face is at local Z+ = BODY_DEPTH/2 = 0.2
+  // After rotation: local [0, 0, 0.5] → world [0, -0.5, 0] in Y
+  // But we want it above, so use local [0, 0, -0.5] → world [0, 0.5, 0] in Y
+  // Actually, Html is billboarded and positions relative to parent, so we position
+  // at local [0, 0, -0.5] which becomes world Y+ (above the gate)
   return (
-    <Html position={[0, 0.7, 0]} center>
+    <Html position={[0, 0, -0.5]} center>
       <div style={labelStyle}>
         {formatLabel(gateType, inputs, output)}
       </div>

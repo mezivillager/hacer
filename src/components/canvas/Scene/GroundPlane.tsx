@@ -25,7 +25,9 @@ export function GroundPlane() {
     const isWiring = state.wiringFrom !== null
     
     if (isPlacing) {
-      const snappedPos = snapToGrid({ x: e.point.x, y: 0.4, z: e.point.z })
+      // Gates are rotated 90° around X, so body extends from -BODY_DEPTH/2 to +BODY_DEPTH/2 in world Y
+      // Place at y = BODY_DEPTH/2 = 0.2 so gate bottom sits on grid (y = 0)
+      const snappedPos = snapToGrid({ x: e.point.x, y: 0.2, z: e.point.z })
       updatePlacementPreviewPosition(snappedPos)
     } else if (isWiring) {
       updateWirePreviewPosition({ 
@@ -56,7 +58,9 @@ export function GroundPlane() {
     
     if (isPlacing) {
       e.stopPropagation()
-      const snappedPos = snapToGrid({ x: e.point.x, y: 0.4, z: e.point.z })
+      // Gates are rotated 90° around X, so body extends from -BODY_DEPTH/2 to +BODY_DEPTH/2 in world Y
+      // Place at y = BODY_DEPTH/2 = 0.2 so gate bottom sits on grid (y = 0)
+      const snappedPos = snapToGrid({ x: e.point.x, y: 0.2, z: e.point.z })
       placeGate(snappedPos)
     } else if (isWiring) {
       e.stopPropagation()
