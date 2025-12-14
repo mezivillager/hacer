@@ -228,12 +228,13 @@ Testing:      Comprehensive test suite + visual regression
 - [x] Create REPO_MAP.md
 
 ### Phase 0.25: UI/UX Improvements & Grid-Based Circuit Design 🔄
-- [ ] Grid-based gate placement system
-- [ ] 90-degree rotation system
-- [ ] Grid-aligned wire routing
-- [ ] Wire stub removal when connected
-- [ ] Wire selection and deletion
-- [ ] E2E test reorganization and optimization
+- [x] 0.25.1 Grid-based gate placement system ✅
+- [ ] 0.25.2 Gate dragging and movement
+- [ ] 0.25.3 90-degree rotation system
+- [ ] 0.25.4 Grid-aligned wire routing
+- [ ] 0.25.5 Wire stub removal when connected
+- [ ] 0.25.6 Wire selection and deletion
+- [ ] 0.25.7 E2E test reorganization and optimization
 
 ### Phase 0.5: Nand2Tetris Foundation 🔄
 - [ ] HDL Parser/Generator implementation

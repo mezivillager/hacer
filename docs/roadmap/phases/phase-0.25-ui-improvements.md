@@ -91,19 +91,18 @@ export function canPlaceGateAt(gridPos: GridPosition, existingGates: GateInstanc
 
 3. **Update placement preview** (`src/components/canvas/Scene/PlacementPreview.tsx`)
    - Show grid-aligned preview
-   - Visual feedback for invalid placement locations
+   - Visual feedback for invalid placement locations (no preview shown, cursor changes to not-allowed)
 
-4. **Implement gate dragging** (`src/components/canvas/Scene/` or gate components)
-   - Add drag handlers to gate components
-   - Visual feedback during drag (highlight, preview position)
-   - Snap dragged gates to grid in real-time
-   - Validate new position before allowing move (spacing checks)
-   - Update gate position on drag end
-
-5. **Update gate movement actions** (`src/store/actions/gateActions/gateActions.ts`)
+4. **Update gate movement actions** (`src/store/actions/gateActions/gateActions.ts`)
    - Ensure `updateGatePosition` snaps to grid
-   - Validate position before updating (spacing checks)
-   - Handle wire position updates when gate moves
+   - Note: Validation and wire position updates will be added in Phase 0.25.2 (gate dragging)
+
+5. **Update visual grid** (`src/components/canvas/Scene/SceneGrid.tsx`)
+   - Match visual grid cell size to logical grid (GRID_SIZE = 2.0)
+   - Ensure grid aligns with gate placement positions
+
+6. **Update cursor feedback** (`src/components/canvas/CanvasArea.tsx`, `src/App.css`)
+   - Show `not-allowed` cursor when hovering over invalid placement positions
 
 ---
 
@@ -493,14 +492,14 @@ e2e/specs/
 
 | Task | Effort | Dependencies | Exit Criteria |
 |------|--------|--------------|---------------|
-| Grid-based placement system | 4h | - | Gates snap to grid, spacing enforced |
-| Gate dragging and movement | 4h | Grid system | Gates can be dragged, snap to grid |
-| 90-degree rotation system | 2h | Grid system | Rotation limited to 90° increments |
-| Grid-aligned wire routing | 4h | Grid system | Wires follow grid lines, 90° turns |
-| Wire stub removal | 1h | - | Stubs hidden when pins connected |
-| Wire selection and deletion | 3h | - | Wires can be selected and deleted |
-| E2E test reorganization | 2h | - | Tests organized, consistent naming |
-| E2E test optimization | 3h | Test reorganization | Scene loaded once, tests <2s total |
+| 0.25.1 Grid-based placement system | 4h | - | Gates snap to grid, spacing enforced, visual feedback ✅ |
+| 0.25.2 Gate dragging and movement | 4h | Grid system | Gates can be dragged, snap to grid |
+| 0.25.3 90-degree rotation system | 2h | Grid system | Rotation limited to 90° increments |
+| 0.25.4 Grid-aligned wire routing | 4h | Grid system | Wires follow grid lines, 90° turns |
+| 0.25.5 Wire stub removal | 1h | - | Stubs hidden when pins connected |
+| 0.25.6 Wire selection and deletion | 3h | - | Wires can be selected and deleted |
+| 0.25.7 E2E test reorganization | 2h | - | Tests organized, consistent naming |
+| 0.25.7 E2E test optimization | 3h | Test reorganization | Scene loaded once, tests <2s total |
 
 **Total Estimated Effort:** ~23 hours  
 **Performance Budget:** <2s E2E test suite, 60fps with 100+ gates
