@@ -71,7 +71,7 @@ export function snapToGrid(worldPos: Position): Position {
 
 /**
  * Check if a gate can be placed at the given grid position.
- * Validates minimum spacing from all existing gates.
+ * Validates minimum spacing from all existing gates and prevents placement on section lines.
  * 
  * @param gridPos - Grid position to check
  * @param existingGates - Array of existing gate instances
@@ -83,6 +83,17 @@ export function canPlaceGateAt(
   existingGates: GateInstance[],
   excludeGateId?: string
 ): boolean {
+  // Prevent placement on section lines
+  // Section lines appear every GRID_SIZE * 2 units (4.0 units)
+  // In grid coordinates, this means sections are every 2 cells
+  // Section lines occur when either row OR col is even (0, 2, 4, 6, ...)
+  // Section intersections occur when both row AND col are even
+  // We allow placement only in the interior of sections (both row and col must be odd)
+  const isOnSectionLine = (gridPos.row % 2 === 0) || (gridPos.col % 2 === 0)
+  if (isOnSectionLine) {
+    return false
+  }
+
   // Check minimum spacing from all existing gates
   for (const gate of existingGates) {
     // Skip excluded gate (useful when dragging an existing gate)
