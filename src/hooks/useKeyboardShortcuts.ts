@@ -38,7 +38,7 @@ export function useKeyboardShortcuts() {
       // To rotate around world Y (vertical), rotate around local Z with inverted angle
       if (!selectedGateId) return
 
-      const rotationStep = Math.PI / 4 // 45 degrees
+      const rotationStep = Math.PI / 2 // 90 degrees
 
       switch (e.key) {
         case 'ArrowLeft':

@@ -168,10 +168,11 @@ return {
 ### Text Label Positioning
 
 ```typescript
-// Text should be on top face (Y+), centered
+// Text positioned on Z- face (becomes top after 90° X rotation), with 180° rotation for flat appearance
+// drei/Text is billboarded, so this combination makes text appear flat on horizontal surface
 <Text
-  position={[0, BODY_HEIGHT / 2 + 0.01, 0]}  // On top, slightly above body
-  rotation={[-Math.PI / 2, 0, 0]}            // Rotate to face upward
+  position={[0, 0, -BODY_DEPTH / 2 - 0.01]}  // Z- face in local space (becomes top after gate rotation)
+  rotation={[Math.PI, 0, 0]}                 // 180° around X to make text lie flat
   fontSize={0.2}
   color="#ffffff"
   anchorX="center"
@@ -195,51 +196,66 @@ return {
    - Update all gate components: NandGate, AndGate, OrGate, NotGate, XorGate (verify they use rotation prop correctly)
 
 3. **Reposition text labels** (`src/gates/components/*.tsx`)
-   - Move text from front face (Z+) to top face (Y+)
-   - Position: `[0, BODY_HEIGHT / 2 + 0.01, 0]`
-   - Rotate text: `rotation={[-Math.PI / 2, 0, 0]}` to face upward
+   - Move text to Z- face (becomes top after 90° X rotation)
+   - Position: `[0, 0, -BODY_DEPTH / 2 - 0.01]`
+   - Rotate text: `rotation={[Math.PI, 0, 0]}` (180° around X) to make text lie flat
+   - drei/Text is billboarded, so this combination makes text appear flat on horizontal surface
    - Ensure text is always readable from top-down view
 
 4. **Reposition pins** (`src/gates/components/*.tsx`)
    - **Two-input gates (NAND, AND, OR, XOR):**
-     - Input A: `[-INPUT_PIN_X, 0, INPUT_SPACING]` (left side, front)
-     - Input B: `[-INPUT_PIN_X, 0, -INPUT_SPACING]` (left side, back)
+     - Keep Y offsets in local space (they become horizontal after 90° X rotation)
+     - Input A: `[INPUT_PIN_X, 0.2, 0]` (left side, top in local, becomes front in world)
+     - Input B: `[INPUT_PIN_X, -0.2, 0]` (left side, bottom in local, becomes back in world)
      - Output: `[OUTPUT_PIN_X, 0, 0]` (right side, center)
    
    - **Single-input gate (NOT):**
-     - Input: `[-INPUT_PIN_X, 0, 0]` (left side, center)
-     - Output: `[OUTPUT_PIN_X, 0, 0]` (right side, center)
+     - Input: `[INPUT_PIN_X, 0, 0]` (left side, center) - unchanged
+     - Output: `[OUTPUT_PIN_X, 0, 0]` (right side, center) - unchanged
 
 5. **Update pin position calculations** (`src/store/actions/pinHelpers/pinHelpers.ts`)
-   - Update `INPUT_PIN_X` and `OUTPUT_PIN_X` constants to match new positions
-   - Update Y offsets to Z offsets for two-input gates
+   - Keep `INPUT_PIN_X` and `OUTPUT_PIN_X` constants (X positions unchanged)
+   - Keep Y offsets in local space (they become horizontal/Z in world after 90° X rotation)
    - Ensure pin positions account for base rotation (90° around X)
+   - Euler rotation transforms local Y offsets to world Z offsets (horizontal)
    - Test that `getPinWorldPosition` correctly calculates positions after rotation
 
 6. **Update wire stub positions** (`src/gates/components/*.tsx`)
    - Reposition wire stubs to match new pin positions
    - Ensure stubs extend from pins in correct direction (away from gate body)
 
-7. **Update gate Y position** (`src/components/canvas/Scene/GroundPlane.tsx`, `src/store/actions/placementActions/placementActions.ts`)
-   - Gates should be positioned at `y: 0` (on grid plane) when flat
-   - Update placement preview Y position to `0` instead of `0.4`
+7. **Update gate Y position** (`src/components/canvas/Scene/GroundPlane.tsx`, `src/components/canvas/Scene/PlacementPreview.tsx`)
+   - Gates are rotated 90° around X, so body extends from -BODY_DEPTH/2 to +BODY_DEPTH/2 in world Y
+   - Place gates at `y: 0.2` (BODY_DEPTH/2) so gate bottom sits on grid at y=0
+   - Update placement preview Y position to `0.2` and add rotation `[Math.PI / 2, 0, 0]`
    - Ensure gates sit flush on grid
 
-8. **Update existing gate instances** (Migration)
-   - Existing gates in store may have `rotation: { x: 0, y: 0, z: 0 }`
-   - Consider migration: update all existing gates to new default rotation
-   - Or: handle both orientations gracefully (not recommended - adds complexity)
+8. **Update keyboard rotation** (`src/hooks/useKeyboardShortcuts.ts`)
+   - With gates rotated 90° around X, local Y no longer corresponds to world Y (vertical)
+   - Rotate around local Z axis to achieve world Y rotation (vertical)
+   - Change rotation step from 45° to 90° for cleaner alignment
+   - ArrowLeft: `rotateGate(selectedGateId, 'z', -Math.PI / 2)`
+   - ArrowRight: `rotateGate(selectedGateId, 'z', Math.PI / 2)`
 
-9. **Update tests** (`src/store/actions/gateActions/gateActions.test.ts`, `src/store/actions/pinHelpers/pinHelpers.test.ts`)
-   - Update tests to expect new default rotation
-   - Update pin position tests to match new coordinates
-   - Verify pin positions are correct after rotation
+9. **Update camera position** (`src/components/canvas/Scene/Scene.tsx`)
+   - Set initial camera position to `[0, 6, 6]` for better grid visibility
+   - Grid lines appear horizontal/vertical on initial load
+   - Improves initial visibility of gates, pins, and text
 
-10. **Visual verification**
+10. **Update base gate label** (`src/gates/common/BaseGateLabel.tsx`)
+    - Adjust Html position to `[0, 0, -0.5]` for correct overlay placement with flat gates
+
+11. **Update tests** (`src/store/actions/gateActions/gateActions.test.ts`, `src/store/actions/pinHelpers/pinHelpers.test.ts`)
+    - Update tests to expect new default rotation `{ x: Math.PI / 2, y: 0, z: 0 }`
+    - Update pin position tests: local Y offsets become world Z offsets after rotation
+    - Verify pin positions are correct after rotation
+
+12. **Visual verification**
     - Ensure all gate types render correctly when flat
-    - Verify text labels are readable from top view
-    - Verify pins don't overlap and are all visible
+    - Verify text labels are readable from top view (flat on horizontal surface)
+    - Verify pins don't overlap and are all visible (arranged horizontally)
     - Verify wires can connect to pins correctly
+    - Verify keyboard rotation works (90° steps, around vertical axis)
 
 ### Coordinate System Reference
 
@@ -264,9 +280,10 @@ return {
 ### Rotation Behavior
 
 - **Default rotation:** All new gates have `{ x: Math.PI / 2, y: 0, z: 0 }` stored in gate instance
-- **User rotation:** Arrow keys modify Y component (0°, 90°, 180°, 270°) to change which side pins face
+- **User rotation:** Arrow keys rotate around local Z axis (which corresponds to world Y/vertical after 90° X rotation)
+- **Rotation step:** 90° increments (`Math.PI / 2`) for clean alignment
 - **Final rotation:** Applied directly to gate group: `[gate.rotation.x, gate.rotation.y, gate.rotation.z]`
-- **Rotation axis:** Y rotation (when flat) rotates gate around vertical axis, changing pin orientation (N/S/E/W)
+- **Rotation axis:** Z rotation (local) achieves world Y rotation (vertical), changing pin orientation (N/S/E/W)
 
 ---
 
@@ -657,7 +674,7 @@ e2e/specs/
 | Task | Effort | Dependencies | Exit Criteria |
 |------|--------|--------------|---------------|
 | 0.25.1 Grid-based placement system | 4h | - | Gates snap to grid, spacing enforced, visual feedback ✅ |
-| 0.25.2 Flat gate orientation | 6h | Grid system | Gates lie flat, names face up, pins don't overlap |
+| 0.25.2 Flat gate orientation | 6h | Grid system | Gates lie flat, names face up, pins don't overlap ✅ |
 | 0.25.3 Gate dragging and movement | 4h | Grid system, Flat orientation | Gates can be dragged, snap to grid |
 | 0.25.4 90-degree rotation system | 2h | Grid system, Flat orientation | Rotation limited to 90° increments |
 | 0.25.5 Grid-aligned wire routing | 4h | Grid system, Flat orientation | Wires follow grid lines, 90° turns |
