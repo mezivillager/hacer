@@ -5,8 +5,8 @@ This document helps AI agents and developers understand the codebase structure a
 ## ⚠️ IMPORTANT: Phase Tracking & Maintenance
 
 **Last Updated:** 2025-12-13  
-**Current Phase:** Phase 0 (Complete) → Phase 0.25 (In Progress)  
-**Next Phase:** Phase 0.25: UI/UX Improvements & Grid-Based Circuit Design
+**Current Phase:** Phase 0.25 (In Progress) - 0.25.1 ✅, 0.25.2 ✅  
+**Next Phase:** Phase 0.25.3: Gate Dragging and Movement
 
 ### Phase Status Indicators
 - ✅ **Current/Active** - Structure and files currently in use
@@ -35,25 +35,26 @@ This document helps AI agents and developers understand the codebase structure a
 
 ## Directory Structure
 
-### Current Structure (Phase 0)
+### Current Structure (Phase 0.25)
 
 ```
 src/
 ├── components/        # React UI components
 │   ├── canvas/       # React Three Fiber 3D components
-│   │   └── Scene/    # 3D scene components (Scene, GroundPlane, etc.)
+│   │   └── Scene/    # 3D scene components (Scene, SceneGrid, GroundPlane, PlacementPreview)
 │   └── ui/           # Ant Design based UI components (Sidebar, GateSelector)
 ├── gates/            # Gate components and logic
-│   ├── components/   # Individual gate components (NandGate, AndGate, etc.)
-│   ├── common/       # Shared gate components (BaseGateLabel, GatePin, etc.)
+│   ├── components/   # Individual gate components (NandGate, AndGate, etc.) - flat orientation
+│   ├── common/       # Shared gate components (BaseGateLabel, GatePin, WireStub, etc.)
 │   └── icons/        # Gate icon components
 ├── simulation/       # Circuit simulation engine (pure logic)
 ├── store/           # Zustand state management
-│   └── actions/     # State mutation actions (gateActions, wireActions, etc.)
-├── hooks/           # Custom React hooks
-├── theme/           # Theme system (ThemeProvider, tokens)
+│   └── actions/     # State mutation actions (gateActions, wireActions, placementActions, etc.)
+├── hooks/           # Custom React hooks (useKeyboardShortcuts - 90° rotation)
+├── theme/           # Theme system (ThemeProvider, tokens - grid colors)
 ├── types/           # Shared TypeScript types
 ├── utils/           # Utility functions
+│   └── grid.ts      # Grid system (GRID_SIZE, worldToGrid, snapToGrid, canPlaceGateAt)
 ├── test/            # Test setup and utilities
 ├── App.tsx          # Main application component
 └── main.tsx         # React entry point
@@ -173,14 +174,31 @@ nand2fun/
 
 ## Key Files by Phase
 
-### ✅ Phase 0 (Current - Active)
+### ✅ Phase 0.25 (Current - Active)
+- `src/utils/grid.ts` - Grid system utilities (GRID_SIZE, worldToGrid, snapToGrid, canPlaceGateAt)
+  - Grid-based placement with section line validation
+  - Gates can only be placed in section interiors (odd row/col)
+- `src/components/canvas/Scene/SceneGrid.tsx` - Visual grid component (section lines every 4.0 units)
+- `src/components/canvas/Scene/PlacementPreview.tsx` - Grid-aligned placement preview
+- `src/components/canvas/Scene/GroundPlane.tsx` - Grid snapping for placement
+- `src/store/actions/placementActions/` - Grid-based placement actions
 - `src/store/circuitStore.ts` - Main Zustand store
 - `src/store/actions/` - State mutation actions
 - `src/simulation/gateLogic.ts` - Gate logic functions
 - `src/components/canvas/Scene/` - 3D scene components
 - `src/components/ui/` - Ant Design UI components
+- `src/gates/components/` - Gate components with flat orientation (90° X rotation, text on top)
+- `src/hooks/useKeyboardShortcuts.ts` - 90° rotation increments (Z axis for world Y rotation)
+- `src/theme/tokens.ts` - Grid colors (uniform blue-tinted color for cell and section lines)
 
-### 🔄 Phase 0.5: Nand2Tetris Foundation (Next)
+### 🔄 Phase 0.25.3-0.25.8 (Next - In Progress)
+- `src/hooks/useGateDrag.ts` - Gate dragging functionality (0.25.3)
+- Grid-aligned wire routing system (0.25.5)
+- Wire stub removal when connected (0.25.6)
+- Wire selection and deletion (0.25.7)
+- E2E test reorganization and optimization (0.25.8)
+
+### 🔄 Phase 0.5: Nand2Tetris Foundation (After 0.25)
 - `src/core/hdl/parser.ts` - HDL parser for .hdl files
 - `src/core/testing/nand2tetris/` - Test script execution (.tst/.cmp)
 - Sequential logic support (DFF, Register, RAM)
@@ -222,12 +240,21 @@ nand2fun/
 
 ## Architecture Evolution
 
-### ✅ Phase 0-4: Current Architecture (Active)
+### ✅ Phase 0.25: Current Architecture (Active)
 - **State Management**: Zustand with Immer middleware
 - **3D Rendering**: React Three Fiber with Drei helpers
 - **UI Framework**: Ant Design components
 - **Testing**: Vitest (unit) + Playwright (E2E)
 - **Logic Separation**: Pure logic in `src/simulation/`, state mutations in `src/store/actions/`
+- **Grid System**: Grid-based placement with section line validation (`src/utils/grid.ts`)
+  - GRID_SIZE = 2.0 units per cell
+  - Section lines every 4.0 units (GRID_SIZE * 2)
+  - Gates can only be placed in section interiors (odd row/col positions)
+  - Minimum spacing: 1 cell between gates
+- **Gate Orientation**: Flat gates (90° X rotation) with text on top surface
+  - Default rotation: `{ x: Math.PI / 2, y: 0, z: 0 }`
+  - Keyboard rotation: 90° increments around Z axis (local) for world Y rotation
+  - Camera position: `[0, 6, 6]` for optimal initial view
 
 ### 🔄 Phase 0.5: Nand2Tetris Foundation (Next)
 - **HDL Support**: Parser and generator for .hdl files
@@ -275,21 +302,29 @@ nand2fun/
 
 ## Import Patterns
 
-### ✅ Phase 0-4 (Current - Active)
+### ✅ Phase 0.25 (Current - Active)
 ```typescript
 // State management
 import { useCircuitStore } from '@/store/circuitStore';
 import { circuitActions } from '@/store/actions';
 
+// Grid utilities
+import { snapToGrid, worldToGrid, canPlaceGateAt, GRID_SIZE } from '@/utils/grid';
+
 // Components
 import { Scene } from '@/components/canvas/Scene';
+import { SceneGrid } from '@/components/canvas/Scene/SceneGrid';
+import { PlacementPreview } from '@/components/canvas/Scene/PlacementPreview';
 import { Sidebar } from '@/components/ui/Sidebar';
 
-// Gates
+// Gates (flat orientation)
 import { NandGate } from '@/gates/components';
 
 // Simulation
 import { nandGate } from '@/simulation/gateLogic';
+
+// Hooks
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'; // 90° rotation
 ```
 
 ### ⏸️ Phase 5+ (Future - Not Yet Active)
@@ -313,10 +348,13 @@ import { Scene } from '@/components/canvas/Scene';
 
 ## Adding New Features
 
-### Adding a New Gate (Phase 0-4)
+### Adding a New Gate (Phase 0.25)
 1. Add gate logic function to `src/simulation/gateLogic.ts`
 2. Add unit tests to `src/simulation/gateLogic.test.ts`
 3. Create gate component in `src/gates/components/`
+   - Use flat orientation: default rotation `{ x: Math.PI / 2, y: 0, z: 0 }`
+   - Position text on Z- face with 180° X rotation for flat appearance
+   - Position pins with Y offsets (become horizontal after gate rotation)
 4. Create gate icon in `src/gates/icons/`
 5. Export from `src/gates/components/index.ts`
 6. Add to gate selector in `src/components/ui/GateSelector.tsx`
@@ -344,12 +382,18 @@ import { Scene } from '@/components/canvas/Scene';
 
 ## Testing Structure
 
-### ✅ Current (Phase 0 - Active)
+### ✅ Current (Phase 0.25 - Active)
 - **Unit Tests**: Co-located with source files (`.test.ts` or `.test.tsx`)
+  - Grid utilities tests: `src/utils/grid.test.ts` (section line validation)
+  - Gate action tests: Updated for flat orientation
+  - Pin helper tests: Updated for Y offsets becoming horizontal
 - **E2E Tests**: Located in `e2e/specs/` directory
 - **Test Setup**: `src/test/setup.ts` - Global test configuration
 
-### 🔄 Phase 0.5 (Next)
+### 🔄 Phase 0.25.8 (Next)
+- **E2E Test Optimization**: Scene reuse, test reorganization
+
+### 🔄 Phase 0.5 (After 0.25)
 - **Curriculum Tests**: Nand2tetris test script execution
 
 ### ⏸️ Phase 3.5+ (Enhanced Testing - Future)
@@ -367,7 +411,8 @@ See [Implementation Guide](implementation.md#technology-stack-evolution) for det
 - [`.cursorrules`](../.cursorrules) - **Start here!** Project rules, phase tracking, and quick reference
 - [`NAND2FUN_LLM_GUIDE.md`](../NAND2FUN_LLM_GUIDE.md) - Detailed development patterns, examples, and best practices
 - [`docs/roadmap/`](../roadmap/README.md) - Project roadmap and phases
-- [`docs/roadmap/phases/phase-0-critical-fixes.md`](../roadmap/phases/phase-0-critical-fixes.md) - Current phase documentation
+- [`docs/roadmap/phases/phase-0-critical-fixes.md`](../roadmap/phases/phase-0-critical-fixes.md) - Phase 0 documentation
+- [`docs/roadmap/phases/phase-0.25-ui-improvements.md`](../roadmap/phases/phase-0.25-ui-improvements.md) - Current phase documentation
 
 ## Document Relationship
 
