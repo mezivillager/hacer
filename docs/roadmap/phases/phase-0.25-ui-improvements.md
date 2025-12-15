@@ -53,18 +53,40 @@ export function worldToGrid(worldPos: Position): GridPosition {
 export function gridToWorld(gridPos: GridPosition): Position {
   return {
     x: gridPos.col * GRID_SIZE,
-    y: 0, // Gates always on ground plane
+    y: 0, // Base Y (snapToGrid preserves original Y, so gates at y: 0.2 for flat orientation)
     z: gridPos.row * GRID_SIZE,
   };
 }
 
 export function snapToGrid(worldPos: Position): Position {
-  return gridToWorld(worldToGrid(worldPos));
+  const snapped = gridToWorld(worldToGrid(worldPos));
+  // Preserve Y coordinate so gates can be positioned above the grid (y: 0.2 for flat gates)
+  return {
+    ...snapped,
+    y: worldPos.y,
+  };
 }
 
-export function canPlaceGateAt(gridPos: GridPosition, existingGates: GateInstance[]): boolean {
+export function canPlaceGateAt(
+  gridPos: GridPosition,
+  existingGates: GateInstance[],
+  excludeGateId?: string
+): boolean {
+  // Prevent placement on section lines
+  // Section lines occur when either row OR col is even
+  // Gates can only be placed in section interiors (both row and col must be odd)
+  const isOnSectionLine = (gridPos.row % 2 === 0) || (gridPos.col % 2 === 0);
+  if (isOnSectionLine) {
+    return false;
+  }
+
   // Check minimum spacing from all existing gates
   for (const gate of existingGates) {
+    // Skip excluded gate (useful when dragging an existing gate)
+    if (excludeGateId && gate.id === excludeGateId) {
+      continue;
+    }
+
     const gateGrid = worldToGrid(gate.position);
     const rowDiff = Math.abs(gateGrid.row - gridPos.row);
     const colDiff = Math.abs(gateGrid.col - gridPos.col);
@@ -323,11 +345,11 @@ export function useGateDrag(gateId: string) {
     
     const newWorldPos = {
       x: gate.position.x + delta.x,
-      y: gate.position.y,
+      y: gate.position.y, // Preserve Y (0.2 for flat gates - BODY_DEPTH/2)
       z: gate.position.z + delta.z,
     };
     
-    // Snap to grid
+    // Snap to grid (preserves Y coordinate)
     const snappedPos = snapToGrid(newWorldPos);
     
     // Update preview position (visual feedback)
@@ -341,7 +363,8 @@ export function useGateDrag(gateId: string) {
     if (previewPos) {
       // Validate and move gate
       const gridPos = worldToGrid(previewPos);
-      if (canPlaceGateAt(gridPos, useCircuitStore.getState().gates.filter(g => g.id !== gateId))) {
+      // Exclude the gate being dragged from validation
+      if (canPlaceGateAt(gridPos, useCircuitStore.getState().gates.filter(g => g.id !== gateId), gateId)) {
         circuitActions.updateGatePosition(gateId, previewPos);
       }
     }
@@ -364,13 +387,15 @@ export function useGateDrag(gateId: string) {
 
 1. **Create drag hook** (`src/hooks/useGateDrag.ts`)
    - Handle drag start, move, end events
-   - Grid snapping during drag
-   - Position validation
+   - Grid snapping during drag (preserves Y = 0.2 for flat gates)
+   - Position validation (respects section line restrictions)
+   - Exclude dragged gate from spacing validation
 
 2. **Update gate components** (`src/gates/components/*.tsx`)
    - Add drag handlers to gate mesh
    - Visual feedback during drag (opacity, highlight)
    - Prevent drag when in placement mode
+   - Ensure drag preserves flat orientation (Y = 0.2)
 
 3. **Update GateRenderer** (`src/gates/GateRenderer.tsx`)
    - Integrate drag functionality
@@ -379,70 +404,32 @@ export function useGateDrag(gateId: string) {
 4. **Update wire positions** (`src/store/actions/wireActions/wireActions.ts`)
    - Recalculate wire positions when gate moves
    - Update wire preview during drag
+   - Account for flat gate positions (Y = 0.2) in wire calculations
 
 ---
 
 ## 0.25.4 90-Degree Rotation System
 
-**Problem:** Continuous rotation makes pin alignment unpredictable, wires can't align properly.
+**Status:** ✅ **Already Implemented in Phase 0.25.2**
 
-**Solution:** Limit rotation to 90-degree increments, ensure pins face grid sides.
+**Implementation:** 90-degree rotation is already implemented as part of flat gate orientation.
 
-### Rotation System Design
+### Current Implementation
 
-```typescript
-// src/utils/rotation.ts
-export type RotationAngle = 0 | 90 | 180 | 270; // Degrees
+- **Rotation step:** 90° increments (`Math.PI / 2`) - already implemented
+- **Rotation axis:** Z axis (local) for world Y rotation (vertical) - already implemented
+- **Keyboard shortcuts:** Arrow keys rotate in 90° increments - already implemented in `useKeyboardShortcuts.ts`
+- **Pin position calculation:** Handled by `pinHelpers.ts` which accounts for gate rotation (90° X base + user Z rotation)
 
-export function normalizeRotation(angle: number): RotationAngle {
-  const normalized = ((angle % 360) + 360) % 360;
-  // Snap to nearest 90-degree increment
-  return Math.round(normalized / 90) * 90 as RotationAngle;
-}
+### Notes
 
-export function rotationToRadians(angle: RotationAngle): number {
-  return (angle * Math.PI) / 180;
-}
-
-// Calculate pin positions based on rotation
-export function getPinWorldPosition(
-  gatePosition: Position,
-  pinLocalPosition: Position,
-  rotation: RotationAngle
-): Position {
-  const radians = rotationToRadians(rotation);
-  const cos = Math.cos(radians);
-  const sin = Math.sin(radians);
-  
-  // Rotate pin position around gate center
-  const rotatedX = pinLocalPosition.x * cos - pinLocalPosition.z * sin;
-  const rotatedZ = pinLocalPosition.x * sin + pinLocalPosition.z * cos;
-  
-  return {
-    x: gatePosition.x + rotatedX,
-    y: gatePosition.y + pinLocalPosition.y,
-    z: gatePosition.z + rotatedZ,
-  };
-}
-```
-
-### Implementation Tasks
-
-1. **Create rotation utilities** (`src/utils/rotation.ts`)
-   - 90-degree rotation normalization
-   - Pin position calculation based on rotation
-
-2. **Update gate rotation** (`src/store/actions/gateActions/gateActions.ts`)
-   - Replace continuous rotation with 90-degree increments
-   - Update `rotateGate` to snap to 90-degree angles
-
-3. **Update keyboard shortcuts** (`src/hooks/useKeyboardShortcuts.ts`)
-   - Arrow keys rotate in 90-degree increments
-   - Visual feedback for rotation
-
-4. **Update gate components**
-   - Ensure pins align to grid sides at 0°, 90°, 180°, 270°
-   - Update pin position calculations
+- No separate rotation utilities needed - rotation is handled directly in:
+  - `src/hooks/useKeyboardShortcuts.ts` - 90° rotation step
+  - `src/store/actions/gateActions/gateActions.ts` - `rotateGate` function
+  - `src/store/actions/pinHelpers/pinHelpers.ts` - Pin position calculation with Euler rotation
+- Gates rotate around vertical axis (world Y) via local Z rotation
+- Rotation ensures pins align to grid sides (N/S/E/W) at 0°, 90°, 180°, 270°
+- All rotation logic accounts for flat gate orientation (90° X base rotation)
 
 ---
 
@@ -479,11 +466,16 @@ export function calculateWirePath(
   // Simple L-shaped routing (prefer horizontal-first)
   const segments: WireSegment[] = [];
   
+  // Get world positions (preserve Y from original positions for flat gates at y: 0.2)
+  const startWorld = gridToWorld(startGrid);
+  const endWorld = gridToWorld(endGrid);
+  const wireY = Math.max(start.y, end.y); // Use higher Y or fixed height above gates
+  
   // Horizontal segment
   if (startGrid.col !== endGrid.col) {
     segments.push({
-      start: gridToWorld(startGrid),
-      end: { ...gridToWorld(endGrid), z: gridToWorld(startGrid).z },
+      start: { ...startWorld, y: wireY },
+      end: { ...endWorld, z: startWorld.z, y: wireY },
       type: 'horizontal',
     });
   }
@@ -491,8 +483,8 @@ export function calculateWirePath(
   // Vertical segment
   if (startGrid.row !== endGrid.row) {
     segments.push({
-      start: segments.length > 0 ? segments[segments.length - 1].end : gridToWorld(startGrid),
-      end: gridToWorld(endGrid),
+      start: segments.length > 0 ? segments[segments.length - 1].end : { ...startWorld, y: wireY },
+      end: { ...endWorld, y: wireY },
       type: 'vertical',
     });
   }
@@ -514,15 +506,18 @@ export function calculateWirePath(
    - Grid-aligned path calculation
    - L-shaped routing algorithm
    - Path optimization (shortest path)
+   - Account for flat gate Y position (0.2) - wires should be above gates
 
 2. **Update Wire3D component** (`src/components/canvas/Wire3D.tsx`)
    - Replace curved wire (CatmullRomCurve3) with grid-aligned segments
    - Render multiple straight segments for L-shaped paths
    - Visual style: straight lines, 90-degree corners
+   - Position wires above flat gates (y > 0.2) to avoid intersection
 
 3. **Update wire preview** (`src/components/canvas/Scene/WirePreview.tsx`)
    - Show grid-aligned preview path
    - Snap preview to grid as user moves mouse
+   - Position preview above gates (y > 0.2)
 
 ---
 
@@ -538,10 +533,12 @@ export function calculateWirePath(
    - Conditionally render `WireStub` components
    - Only show stubs when `isConnected === false`
    - Remove stubs for both input and output pins when connected
+   - Wire stubs positioned correctly for flat gates (Y offsets in local space)
 
 2. **Update GateRenderer** (`src/gates/GateRenderer.tsx`)
    - Pass connection status to gate components
    - Ensure stub visibility logic is consistent
+   - Account for flat gate orientation when calculating stub positions
 
 ---
 
@@ -570,6 +567,7 @@ export function calculateWirePath(
    - Add click handler for wire selection
    - Visual feedback for selected wires
    - Support keyboard deletion (Delete/Backspace keys)
+   - Account for flat gate positions (Y = 0.2) when rendering wires
 
 4. **Update keyboard shortcuts** (`src/hooks/useKeyboardShortcuts.ts`)
    - Delete key removes selected wire
@@ -675,8 +673,8 @@ e2e/specs/
 |------|--------|--------------|---------------|
 | 0.25.1 Grid-based placement system | 4h | - | Gates snap to grid, spacing enforced, visual feedback ✅ |
 | 0.25.2 Flat gate orientation | 6h | Grid system | Gates lie flat, names face up, pins don't overlap ✅ |
-| 0.25.3 Gate dragging and movement | 4h | Grid system, Flat orientation | Gates can be dragged, snap to grid |
-| 0.25.4 90-degree rotation system | 2h | Grid system, Flat orientation | Rotation limited to 90° increments |
+| 0.25.3 Gate dragging and movement | 4h | Grid system, Flat orientation | Gates can be dragged, snap to grid, respect section lines |
+| 0.25.4 90-degree rotation system | 2h | Grid system, Flat orientation | Rotation limited to 90° increments ✅ (Already implemented in 0.25.2) |
 | 0.25.5 Grid-aligned wire routing | 4h | Grid system, Flat orientation | Wires follow grid lines, 90° turns |
 | 0.25.6 Wire stub removal | 1h | - | Stubs hidden when pins connected |
 | 0.25.7 Wire selection and deletion | 3h | - | Wires can be selected and deleted |
