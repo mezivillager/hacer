@@ -1,5 +1,4 @@
 import { Environment } from '@react-three/drei'
-import { useCircuitStore } from '@/store/circuitStore'
 import { GroundPlane } from './GroundPlane'
 import { PlacementPreview } from './PlacementPreview'
 import { WirePreview } from './WirePreview'
@@ -12,14 +11,6 @@ import type { SceneProps } from './types'
  * Orchestrates all scene components
  */
 export function SceneContent({ children }: SceneProps) {
-  // Use selectors for granular subscriptions
-  const placementMode = useCircuitStore((s) => s.placementMode)
-  const wiringFrom = useCircuitStore((s) => s.wiringFrom)
-
-  const isPlacing = placementMode !== null
-  const isWiring = wiringFrom !== null
-  const isInteracting = isPlacing || isWiring
-  
   return (
     <>
       <ambientLight intensity={0.5} />
@@ -29,7 +20,7 @@ export function SceneContent({ children }: SceneProps) {
       <PlacementPreview />
       <WirePreview />
       <SceneGrid />
-      <SceneOrbitControls isInteracting={isInteracting} />
+      <SceneOrbitControls />
       {children}
     </>
   )

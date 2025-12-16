@@ -55,8 +55,44 @@ export const createPlacementActions = (set: SetState, get: GetState): PlacementA
   },
 
   updatePlacementPreviewPosition: (position: Position | null) => {
+    // Check if position actually changed to avoid unnecessary re-renders
+    const currentState = get()
+    const currentPos = currentState.placementPreviewPosition
+    
+    // If both are null, no change
+    if (!position && !currentPos) return
+    
+    // If one is null and the other isn't, there's a change
+    if (!position || !currentPos) {
+      set((state) => {
+        state.placementPreviewPosition = position
+      }, false, 'updatePlacementPreviewPosition')
+      return
+    }
+    
+    // Compare positions - only update if actually different (within small epsilon for floating point)
+    const epsilon = 0.001
+    const xChanged = Math.abs(position.x - currentPos.x) > epsilon
+    const yChanged = Math.abs(position.y - currentPos.y) > epsilon
+    const zChanged = Math.abs(position.z - currentPos.z) > epsilon
+    
+    if (xChanged || yChanged || zChanged) {
+      set((state) => {
+        state.placementPreviewPosition = position
+      }, false, 'updatePlacementPreviewPosition')
+    }
+    // If positions are the same, don't update (prevents unnecessary re-renders)
+  },
+
+  setDragActive: (active: boolean) => {
     set((state) => {
-      state.placementPreviewPosition = position
-    }, false, 'updatePlacementPreviewPosition')
+      state.isDragActive = active
+    }, false, 'setDragActive')
+  },
+
+  setHoveredGate: (gateId: string | null) => {
+    set((state) => {
+      state.hoveredGateId = gateId
+    }, false, 'setHoveredGate')
   },
 })

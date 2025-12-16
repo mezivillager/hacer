@@ -24,6 +24,8 @@ const initialState = {
   placementMode: null as import('./types').GateType | null,
   placementPreviewPosition: null as import('./types').Position | null,
   wiringFrom: null as import('./types').WiringState | null,
+  isDragActive: false,
+  hoveredGateId: null as string | null,
 }
 
 // Create the Zustand store with Immer, devtools, and subscribeWithSelector middleware
@@ -117,6 +119,12 @@ export const circuitActions = {
   cancelPlacement: () => useCircuitStore.getState().cancelPlacement(),
   placeGate: (...args: Parameters<CircuitStore['placeGate']>) => useCircuitStore.getState().placeGate(...args),
   updatePlacementPreviewPosition: (...args: Parameters<CircuitStore['updatePlacementPreviewPosition']>) => useCircuitStore.getState().updatePlacementPreviewPosition(...args),
+  setDragActive: (...args: Parameters<CircuitStore['setDragActive']>): void => {
+    useCircuitStore.getState().setDragActive(...args)
+  },
+  setHoveredGate: (...args: Parameters<CircuitStore['setHoveredGate']>): void => {
+    useCircuitStore.getState().setHoveredGate(...args)
+  },
   // Wiring actions
   startWiring: (...args: Parameters<CircuitStore['startWiring']>) => useCircuitStore.getState().startWiring(...args),
   updateWirePreviewPosition: (...args: Parameters<CircuitStore['updateWirePreviewPosition']>) => useCircuitStore.getState().updateWirePreviewPosition(...args),

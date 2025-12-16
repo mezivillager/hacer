@@ -19,7 +19,7 @@ export async function waitForSceneReady(page: Page, timeout = TIMEOUTS.scene): P
  */
 export async function waitForWebGL(page: Page, timeout = TIMEOUTS.scene): Promise<void> {
   await page.waitForFunction(() => {
-    const canvas = document.querySelector('canvas') as HTMLCanvasElement | null
+    const canvas = document.querySelector('canvas')
     return !!canvas && (canvas.getContext('webgl') || canvas.getContext('webgl2'))
   }, { timeout })
 }

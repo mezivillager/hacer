@@ -4,24 +4,38 @@ import { trackRender } from '@/utils/renderTracking'
 import { worldToGrid, canPlaceGateAt } from '@/utils/grid'
 
 /**
- * Placement preview - only renders when placementMode is active and position is valid.
- * Subscribes to placementMode and placementPreviewPosition.
+ * Placement preview - renders when placementMode is active or during drag, and position is valid.
+ * Subscribes to placementMode, placementPreviewPosition, and selectedGateId.
  * Shows preview only for valid positions (no preview for invalid positions).
  */
 export function PlacementPreview() {
   const placementMode = useCircuitStore((s) => s.placementMode)
   const previewPosition = useCircuitStore((s) => s.placementPreviewPosition)
-  const gates = useCircuitStore((s) => s.gates)
+  const isDragActive = useCircuitStore((s) => s.isDragActive)
+  const selectedGateId = useCircuitStore((s) => s.selectedGateId)
   
-  const isActive = placementMode !== null && previewPosition !== null
+  // Active during placement mode OR during active drag (preview set, no placement mode, and drag is active)
+  const isPlacing = placementMode !== null && previewPosition !== null
+  const isDragging = placementMode === null && previewPosition !== null && isDragActive
+  const isActive = isPlacing || isDragging
   
-  trackRender('PlacementPreview', `active:${isActive}`)
+  trackRender('PlacementPreview', `active:${isActive},placing:${isPlacing},dragging:${isDragging}`)
   
   if (!isActive || !previewPosition) return null
   
+  // Get gates only when needed for validation (avoid subscribing to gates array to reduce re-renders)
+  // eslint-disable-next-line react-compiler/react-compiler -- getState() is valid for reading without subscribing
+  const gates = useCircuitStore.getState().gates
+  
   // Calculate validity: convert to grid position and check spacing
   const gridPos = worldToGrid(previewPosition)
-  const isValid = canPlaceGateAt(gridPos, gates)
+  // For drag, exclude the dragged gate (selected gate) from validation
+  // For placement, validate against all gates
+  const gatesForValidation = isDragging && selectedGateId 
+    ? gates.filter(g => g.id !== selectedGateId)
+    : gates
+  const excludeGateId = isDragging && selectedGateId ? selectedGateId : undefined
+  const isValid = canPlaceGateAt(gridPos, gatesForValidation, excludeGateId)
   
   // Only show preview for valid positions
   if (!isValid) return null

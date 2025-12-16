@@ -12,7 +12,7 @@ export default defineConfig([
     files: ['**/*.{ts,tsx}'],
     extends: [
       js.configs.recommended,
-      tseslint.configs.recommended,
+      ...tseslint.configs.recommended,
       reactHooks.configs.flat.recommended,
       reactRefresh.configs.vite,
     ],
@@ -25,6 +25,29 @@ export default defineConfig([
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
+    },
+  },
+  // Type-checked rules for both source and e2e files
+  {
+    files: ['src/**/*.{ts,tsx}', 'e2e/**/*.ts'],
+    ignores: ['**/*.d.ts'], // Skip declaration files (they're included in tsconfig but don't need linting)
+    extends: [
+      ...tseslint.configs.recommendedTypeChecked,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.app.json', './tsconfig.e2e.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+    rules: {
+      // Enable TypeScript type checking in ESLint
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      '@typescript-eslint/no-unsafe-assignment': 'off', // Too strict for now
+      '@typescript-eslint/no-unsafe-member-access': 'off', // Too strict for now
+      '@typescript-eslint/no-unsafe-call': 'off', // Too strict for now
+      '@typescript-eslint/no-unsafe-return': 'error', // Catch unsafe returns
+      '@typescript-eslint/unbound-method': 'off', // Too strict - React Compiler handles this
     },
   },
 ])

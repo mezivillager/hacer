@@ -1,5 +1,6 @@
 import type { GateActions, GateInstance, GateType, Pin, Position, CircuitStore } from '../../types'
 import { snapToGrid } from '@/utils/grid'
+import { useCircuitStore } from '../../circuitStore'
 
 // Helper to create a gate instance - exported for use in atomic placement actions
 export function createGateInstance(type: GateType, position: Position): GateInstance {
@@ -62,7 +63,19 @@ export const createGateActions = (set: SetState): GateActions => ({
   },
 
   selectGate: (gateId: string | null) => {
+    // Check if selection actually changed before mutating (avoids unnecessary array reference changes)
+    const currentState = useCircuitStore.getState()
+    if (currentState.selectedGateId === gateId) {
+      // Selection hasn't changed - check if gates are already in correct state
+      const allCorrect = currentState.gates.every((g) => g.selected === (g.id === gateId))
+      if (allCorrect) {
+        // Nothing to update - early return to avoid Immer mutation
+        return
+      }
+    }
+    
     set((state) => {
+      // Update selection state
       state.gates.forEach((g) => {
         g.selected = g.id === gateId
       })

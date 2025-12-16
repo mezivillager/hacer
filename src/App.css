@@ -79,11 +79,7 @@
 
 /* Canvas cursor states */
 .app-content canvas {
-  cursor: grab;
-}
-
-.app-content canvas:active {
-  cursor: grabbing;
+  cursor: default;
 }
 
 .app-content.placing canvas,
@@ -95,6 +91,15 @@
 
 .app-content.placing.placing-invalid canvas,
 .app-content.placing.placing-invalid canvas:active {
+  cursor: not-allowed;
+}
+
+/* Dragging cursor states - only show when actively dragging (pointer down) */
+.app-content.dragging canvas {
+  cursor: grabbing;
+}
+
+.app-content.dragging.dragging-invalid canvas {
   cursor: not-allowed;
 }
 

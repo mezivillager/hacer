@@ -6,6 +6,7 @@ export function useKeyboardShortcuts() {
   const placementMode = useCircuitStore((s) => s.placementMode)
   const wiringFrom = useCircuitStore((s) => s.wiringFrom)
   const selectedGateId = useCircuitStore((s) => s.selectedGateId)
+  const placementPreviewPosition = useCircuitStore((s) => s.placementPreviewPosition)
 
   // Get actions from store
   const cancelPlacement = useCircuitStore((s) => s.cancelPlacement)
@@ -15,6 +16,8 @@ export function useKeyboardShortcuts() {
 
   const isPlacing = placementMode !== null
   const isWiring = wiringFrom !== null
+  // Detect dragging: preview position set but not in placement mode
+  const isDragging = placementPreviewPosition !== null && placementMode === null
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -36,7 +39,8 @@ export function useKeyboardShortcuts() {
       // Arrow keys for rotating selected gate
       // With gates rotated 90° around X, local Z maps to world -Y
       // To rotate around world Y (vertical), rotate around local Z with inverted angle
-      if (!selectedGateId) return
+      // Disable rotation during drag
+      if (!selectedGateId || isDragging) return
 
       const rotationStep = Math.PI / 2 // 90 degrees
 
@@ -56,5 +60,5 @@ export function useKeyboardShortcuts() {
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [isPlacing, isWiring, selectedGateId, cancelPlacement, cancelWiring, selectGate, rotateGate])
+  }, [isPlacing, isWiring, isDragging, selectedGateId, cancelPlacement, cancelWiring, selectGate, rotateGate])
 }

@@ -47,6 +47,8 @@ export interface CircuitState {
   placementMode: GateType | null
   placementPreviewPosition: Position | null
   wiringFrom: WiringState | null
+  isDragActive: boolean
+  hoveredGateId: string | null
 }
 
 // Action types for the Zustand store
@@ -77,6 +79,8 @@ export interface PlacementActions {
   cancelPlacement: () => void
   placeGate: (position: Position) => void
   updatePlacementPreviewPosition: (position: Position | null) => void
+  setDragActive: (active: boolean) => void
+  setHoveredGate: (gateId: string | null) => void
 }
 
 export interface WiringActions {

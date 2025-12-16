@@ -2,8 +2,9 @@ import { useRef, useState } from 'react'
 import { Group, Shape, ExtrudeGeometry } from 'three'
 import { ThreeEvent } from '@react-three/fiber'
 import { Text } from '@react-three/drei'
-import { circuitActions } from '@/store/circuitStore'
+import { circuitActions, useCircuitStore } from '@/store/circuitStore'
 import { colors, materials } from '@/theme'
+import { useGateDrag } from '@/hooks/useGateDrag'
 import { GatePin, WireStub, BaseGateLabel } from '../common'
 import type { TwoInputGateProps } from '../types'
 
@@ -57,6 +58,14 @@ export function OrGate({
   const [hovered, setHovered] = useState(false)
   const [hoveredPin, setHoveredPin] = useState<string | null>(null)
 
+  // Drag functionality - use getState() to avoid subscriptions that cause re-renders
+  // eslint-disable-next-line react-compiler/react-compiler -- getState() is valid for reading without subscribing
+  const state = useCircuitStore.getState()
+  const isPlacing = state.placementMode !== null
+  const isWiringMode = state.wiringFrom !== null
+  const canDrag = !isPlacing && !isWiringMode
+  const { isDragging, shouldAllowClick, onPointerDown, onPointerMove, onPointerUp, onPointerLeave } = useGateDrag(id)
+
   const output = orLogic(inputA, inputB)
 
   // Gate body color based on state - blue tinted for OR
@@ -76,9 +85,13 @@ export function OrGate({
 
   const handleClick = (e: ThreeEvent<MouseEvent>) => {
     e.stopPropagation()
-    if (!isWiring) {
-      onClick?.()
-    }
+    // Check if click should be allowed (may need to wait for drag handlers to complete)
+    // Use a small delay to ensure drag state has been updated
+    setTimeout(() => {
+      if (!isWiring && shouldAllowClick()) {
+        onClick?.()
+      }
+    }, 10)
   }
 
   const getWorldPosition = (localOffset: [number, number, number], eventPoint?: { x: number; y: number; z: number }) => {
@@ -127,14 +140,34 @@ export function OrGate({
   return (
     <group ref={groupRef} position={position} rotation={rotation}>
       {/* Main body - shield/rocket shape */}
-      <mesh 
+      <mesh
         geometry={orGateGeometry}
         position={[0, 0, -0.2]}
-        onClick={handleClick} 
-        onPointerOver={() => setHovered(true)} 
-        onPointerOut={() => setHovered(false)}
+        onClick={handleClick}
+        onPointerOver={() => {
+          setHovered(true)
+          circuitActions.setHoveredGate(id)
+        }} 
+        onPointerOut={() => {
+          setHovered(false)
+          circuitActions.setHoveredGate(null)
+          // Don't cancel drag on pointer out - pointer capture handles this
+          // Only call onPointerLeave if we're not dragging
+          if (canDrag && !isDragging) {
+            onPointerLeave()
+          }
+        }}
+        onPointerDown={canDrag ? onPointerDown : undefined}
+        onPointerMove={canDrag ? onPointerMove : undefined}
+        onPointerUp={canDrag ? onPointerUp : undefined}
       >
-        <meshStandardMaterial color={bodyColor} metalness={materials.gate.metalness} roughness={materials.gate.roughness} />
+        <meshStandardMaterial 
+          color={bodyColor} 
+          metalness={materials.gate.metalness} 
+          roughness={materials.gate.roughness}
+          transparent={isDragging}
+          opacity={isDragging ? 0.7 : 1}
+        />
       </mesh>
 
       {/* OR text label on top face - flat on horizontal surface */}
