@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { Vector3 } from 'three'
-import '@/types/testingGlobals' // Import for Window augmentation side-effect
+import '../../../../e2e/types/globals' // Import for Window augmentation side-effect
 
 /**
  * SceneReadyBridge - Sets up window globals for E2E testing

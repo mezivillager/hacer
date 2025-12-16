@@ -1,11 +1,11 @@
 import { useRef, useState } from 'react'
 import { Group } from 'three'
-import { ThreeEvent } from '@react-three/fiber'
 import { Text } from '@react-three/drei'
 import { circuitActions, useCircuitStore } from '@/store/circuitStore'
-import { colors, materials } from '@/theme'
+import { materials } from '@/theme'
 import { useGateDrag } from '@/hooks/useGateDrag'
 import { GatePin, WireStub, BaseGateLabel } from '../common'
+import { getPinColor, getWorldPosition, createGateClickHandler, createPinPointerMoveHandler, createPinClickHandler, handlePinPointerOut } from '../handlers/gateHandlers'
 import type { TwoInputGateProps } from '../types'
 
 // NAND gate logic
@@ -66,62 +66,19 @@ export function NandGate({
   const bodyColor = selected ? NAND_BODY_SELECTED : hovered ? NAND_BODY_HOVER : NAND_BODY_COLOR
 
   // Pin colors based on connection status and value
-  const getPinColor = (value: boolean, connected: boolean, pinName: string, isOutput: boolean = false) => {
-    if (isWiring && hoveredPin === pinName) return colors.primary
-    if (isOutput) return value ? colors.pin.active : colors.pin.inactive
-    if (connected) return value ? colors.pin.active : colors.pin.inactive
-    return value ? colors.pin.active : colors.pin.disconnected
+  const inputAColor = getPinColor(inputA, inputAConnected, 'inputA', false, isWiring, hoveredPin)
+  const inputBColor = getPinColor(inputB, inputBConnected, 'inputB', false, isWiring, hoveredPin)
+  const outputColor = getPinColor(output, outputConnected, 'output', true, isWiring, hoveredPin)
+
+  // Create world position helper with gate position
+  const worldPositionHelper = (localOffset: [number, number, number], eventPoint?: { x: number; y: number; z: number }) => {
+    return getWorldPosition(position, localOffset, eventPoint)
   }
 
-  const inputAColor = getPinColor(inputA, inputAConnected, 'inputA', false)
-  const inputBColor = getPinColor(inputB, inputBConnected, 'inputB', false)
-  const outputColor = getPinColor(output, outputConnected, 'output', true)
-
-  const handleClick = (e: ThreeEvent<MouseEvent>) => {
-    e.stopPropagation()
-    // Check if click should be allowed (may need to wait for drag handlers to complete)
-    // Use a small delay to ensure drag state has been updated
-    setTimeout(() => {
-      if (!isWiring && shouldAllowClick()) {
-        onClick?.()
-      }
-    }, 10)
-  }
-
-  const getWorldPosition = (localOffset: [number, number, number], eventPoint?: { x: number; y: number; z: number }) => {
-    if (eventPoint) {
-      return eventPoint
-    }
-    return {
-      x: position[0] + localOffset[0],
-      y: position[1] + localOffset[1],
-      z: position[2] + localOffset[2],
-    }
-  }
-
-  const handlePinPointerMove = (localOffset: [number, number, number]) => (e: ThreeEvent<PointerEvent>) => {
-    if (isWiring) {
-      e.stopPropagation()
-      const worldPos = getWorldPosition(localOffset, e.point ? { x: e.point.x, y: e.point.y, z: e.point.z } : undefined)
-      circuitActions.updateWirePreviewPosition(worldPos)
-    }
-  }
-
-  const handlePinPointerOut = () => {
-    // Clear preview position when leaving pin
-  }
-
-  const handlePinClick = (pinId: string, pinType: 'input' | 'output', localOffset: [number, number, number], isConnected: boolean) => (e: ThreeEvent<MouseEvent>) => {
-    e.stopPropagation()
-
-    if (e.shiftKey && pinType === 'input' && !isConnected) {
-      onInputToggle?.(id, pinId)
-      return
-    }
-
-    const worldPos = getWorldPosition(localOffset, e.point ? { x: e.point.x, y: e.point.y, z: e.point.z } : undefined)
-    onPinClick?.(id, pinId, pinType, worldPos)
-  }
+  // Create handlers using factory functions
+  const handleClick = createGateClickHandler(isWiring, shouldAllowClick, onClick)
+  const handlePinPointerMove = createPinPointerMoveHandler(isWiring, worldPositionHelper, circuitActions.updateWirePreviewPosition)
+  const handlePinClick = createPinClickHandler(id, worldPositionHelper, onInputToggle, onPinClick)
 
   const handleInputAHover = () => setHoveredPin('inputA')
   const handleInputBHover = () => setHoveredPin('inputB')

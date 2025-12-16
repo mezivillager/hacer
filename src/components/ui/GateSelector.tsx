@@ -3,6 +3,7 @@ import { useCircuitStore } from '@/store/circuitStore'
 import type { GateType } from '@/store/types'
 import { getGateIcon } from '@/gates/icons'
 import { colors } from '@/theme'
+import { handleGateSelect } from './handlers/uiHandlers'
 
 // Elementary gates to show in the selector
 const ELEMENTARY_GATES: GateType[] = ['NAND', 'AND', 'OR', 'NOT', 'XOR']
@@ -24,16 +25,6 @@ export function GateSelector() {
   const startPlacement = useCircuitStore((s) => s.startPlacement)
   const cancelPlacement = useCircuitStore((s) => s.cancelPlacement)
 
-  const handleGateSelect = (type: GateType) => {
-    if (placementMode === type) {
-      // If already placing this type, cancel placement
-      cancelPlacement()
-    } else {
-      // Start placement for this gate type
-      startPlacement(type)
-    }
-  }
-
   return (
     <div className="gate-selector-grid">
       {ELEMENTARY_GATES.map(type => {
@@ -45,12 +36,12 @@ export function GateSelector() {
             <div
               className={`gate-icon ${isActive ? 'active' : ''}`}
               data-gate-type={type}
-              onClick={() => handleGateSelect(type)}
+              onClick={() => handleGateSelect(type, placementMode, startPlacement, cancelPlacement)}
               role="button"
               tabIndex={0}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
-                  handleGateSelect(type)
+                  handleGateSelect(type, placementMode, startPlacement, cancelPlacement)
                 }
               }}
             >

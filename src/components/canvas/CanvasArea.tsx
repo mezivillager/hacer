@@ -5,56 +5,13 @@ import { Wire3D } from './Wire3D'
 import { useCircuitStore, circuitActions } from '@/store/circuitStore'
 import { trackRender } from '@/utils/renderTracking'
 import { worldToGrid, canPlaceGateAt } from '@/utils/grid'
+import { isPinConnected, handlePinClick, handleInputToggle, handleGateClick } from './handlers/canvasHandlers'
 
 const { Content } = Layout
 const { Text } = Typography
 
 // Get actions once - these are stable references that don't change
-const { completeWiring, startWiring, setInputValue, selectGate, getPinWorldPosition } = circuitActions
-
-// Create stable function references outside component to avoid recreating on every render
-// These functions use getState() internally to avoid stale closures
-const isPinConnected = (gateId: string, pinId: string) => {
-  const wires = useCircuitStore.getState().wires
-  return wires.some(
-    w =>
-      (w.fromGateId === gateId && w.fromPinId === pinId) ||
-      (w.toGateId === gateId && w.toPinId === pinId)
-  )
-}
-
-const handlePinClick = (
-  gateId: string,
-  pinId: string,
-  pinType: 'input' | 'output',
-  worldPosition: { x: number; y: number; z: number }
-) => {
-  // Get current wiring state from store to avoid stale closure
-  const currentWiringFrom = useCircuitStore.getState().wiringFrom
-  if (currentWiringFrom) {
-    completeWiring(gateId, pinId, pinType)
-  } else {
-    startWiring(gateId, pinId, pinType, worldPosition)
-  }
-}
-
-const handleInputToggle = (gateId: string, pinId: string) => {
-  const currentGates = useCircuitStore.getState().gates
-  const gate = currentGates.find(g => g.id === gateId)
-  if (gate) {
-    const pin = gate.inputs.find(p => p.id === pinId)
-    if (pin) {
-      setInputValue(gateId, pinId, !pin.value)
-    }
-  }
-}
-
-const handleGateClick = (gateId: string) => {
-  const currentWiringFrom = useCircuitStore.getState().wiringFrom
-  if (!currentWiringFrom) {
-    selectGate(gateId)
-  }
-}
+const { getPinWorldPosition } = circuitActions
 
 export function CanvasArea() {
   // Use individual selectors - Zustand's shallow comparison works better with individual subscriptions

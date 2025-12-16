@@ -50,4 +50,13 @@ export default defineConfig([
       '@typescript-eslint/unbound-method': 'off', // Too strict - React Compiler handles this
     },
   },
+  // Test files - allow unsafe arguments for test mocks
+  // Note: We use Vector3 in createMockThreeEvent, but still need type assertions for nativeEvent
+  // since we can't create full native event objects in tests
+  {
+    files: ['**/*.test.{ts,tsx}', 'src/test/**/*.ts'],
+    rules: {
+      '@typescript-eslint/no-unsafe-argument': 'off', // Test mocks require type assertions for nativeEvent
+    },
+  },
 ])

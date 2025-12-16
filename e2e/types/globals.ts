@@ -3,9 +3,11 @@
  *
  * This file defines the window globals exposed for E2E testing
  * and augments the global Window interface so TypeScript recognizes them.
+ *
+ * This file is imported in production code for the side-effect of Window augmentation.
  */
 
-import type { GateType } from '../store/types'
+import type { GateType } from '../../src/store/types'
 
 export interface SceneHelpers {
   projectToScreen: (position: { x: number; y: number; z: number }) => { x: number; y: number }

@@ -9,6 +9,7 @@ import {
 import { useCircuitStore } from '@/store/circuitStore'
 import { colors } from '@/theme'
 import { GateSelector } from './GateSelector'
+import { handleDeleteSelected } from './handlers/uiHandlers'
 
 const { Sider } = Layout
 const { Title, Text } = Typography
@@ -37,12 +38,6 @@ export function Sidebar() {
   const toggleSimulation = useCircuitStore((s) => s.toggleSimulation)
 
   const isPlacing = placementMode !== null
-
-  const handleDeleteSelected = () => {
-    if (selectedGateId) {
-      removeGate(selectedGateId)
-    }
-  }
 
   return (
     <Sider width={260} className="app-sider">
@@ -85,7 +80,7 @@ export function Sidebar() {
             <Tooltip title="Remove the selected gate">
               <Button
                 icon={<DeleteOutlined />}
-                onClick={handleDeleteSelected}
+                onClick={() => handleDeleteSelected(selectedGateId, removeGate)}
                 disabled={!selectedGateId}
                 block
                 danger

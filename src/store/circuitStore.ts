@@ -8,7 +8,7 @@ import { createPlacementActions } from './actions/placementActions/placementActi
 import { createWiringActions } from './actions/wiringActions/wiringActions'
 import { createPinHelpers } from './actions/pinHelpers/pinHelpers'
 import type { CircuitStore } from './types'
-import '@/types/testingGlobals' // Import for Window augmentation side-effect
+import '../../e2e/types/globals' // Import for Window augmentation side-effect
 import '@/utils/renderTracking' // Initialize render tracking
 
 // Re-export types for convenience

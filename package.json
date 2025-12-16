@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "lint": "npm run typecheck && eslint .",
+    "lint:eslint": "eslint .",
     "preview": "vite preview",
     "test": "vitest",
     "test:run": "vitest run",
@@ -14,7 +16,8 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --grep @ui",
     "test:e2e:store": "playwright test --grep @store",
-    "test:e2e:headed": "playwright test --headed"
+    "test:e2e:headed": "playwright test --headed",
+    "prepare": "husky install || true"
   },
   "dependencies": {
     "@ant-design/icons": "^6.1.0",
