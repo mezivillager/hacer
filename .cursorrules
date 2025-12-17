@@ -28,6 +28,36 @@
 - fast-check for property-based testing (Phase 3.5+)
 - Zod for schema validation (Phase 5+)
 
+## TDD Workflow (MANDATORY)
+
+📖 **Full guide:** `docs/testing/` (see README.md)
+
+**Red-Green-Refactor Cycle:**
+1. **RED** - Write failing test(s) that define expected behavior
+2. **GREEN** - Write minimal code to make tests pass
+3. **REFACTOR** - Clean up while keeping tests green
+
+**For every feature or bug fix:**
+1. STOP - Do NOT write implementation code first
+2. Write test file (`.test.ts`/`.test.tsx`) defining the behavior
+3. Run tests to confirm they FAIL (Red phase)
+4. Write minimal implementation to pass (Green phase)
+5. Refactor if needed while tests pass
+
+**AI Agent TDD Protocol:**
+- When asked to implement a feature, FIRST create the test file
+- Create test file BEFORE implementation file
+- Run tests to show failure before writing implementation
+- NEVER generate implementation without corresponding test
+- If implementation exists without test, write test FIRST then verify it fails with broken code
+
+**TDD by Layer:**
+- **Pure logic** (`simulation/`, `store/actions/`): Unit test → implement → property test
+- **Components** (`gates/`, `components/`): RTL test → implement → visual test
+- **Workflows**: E2E Playwright test → implement features
+
+**Templates:** See `docs/testing/templates/`
+
 ## Critical Rules
 
 ### State Management
@@ -76,7 +106,7 @@
 
 ### Testing Standards
 
-📖 **Full guide:** `docs/testing-standards.md`
+📖 **Full guide:** `docs/testing/` (see README.md)
 
 **Core Principles:**
 - Each test has ONE reason to fail
@@ -88,8 +118,20 @@
 
 **✅ Current (Phase 0):**
 - **Unit tests**: All `src/simulation/` functions (90%+ coverage)
-- **E2E tests**: User workflows with Playwright
+- **E2E tests**: Playwright with paired Store/UI tests (see below)
 - **Mutation testing**: `npm run stryker` to verify test quality
+
+**E2E Test Strategy (IMPORTANT for AI Agents):**
+- **Store tests (`@store`)**: FAST, use direct store actions, no scene waits
+  - Run: `npm run test:e2e:store`
+  - Preferred for TDD and AI agent workflows
+  - Always run before committing
+- **UI tests (`@ui`)**: SLOW, use UI interactions, wait for scene ready
+  - Run: `npm run test:e2e:ui` (manual/CI only)
+  - Run on CI scheduled (twice weekly), not on every commit
+- **Pairing rule**: Every feature needs BOTH store AND ui spec files
+  - Share scenario files in `e2e/scenarios/`
+  - Example: `feature.store.spec.ts` + `feature.ui.spec.ts`
 
 **🔄 Next (Phase 0.5):**
 - **Curriculum tests**: Nand2tetris test script execution (.tst/.cmp)
@@ -172,11 +214,20 @@
 - Incremental evaluation for large circuits
 
 ### Code Quality
+
+📖 **TypeScript guide:** `docs/typescript-guidelines.md`
+
 - TypeScript strict mode (no `any`)
 - ESLint with React Compiler plugin
 - 90%+ test coverage for new code
 - Property-based tests for invariants
 - Performance budgets enforced
+
+**Type Assertion Rules:**
+- NEVER use `as unknown as Type` (double assertions)
+- Use type guards instead of assertions
+- `as const` is fine for literal types
+- Create type-safe helpers for test mocks
 
 ### Documentation Standards
 - All exported functions MUST have JSDoc comments

@@ -1,0 +1,39 @@
+name: E2E UI Tests (Slow)
+
+# UI tests are slow - run only on schedule and manual trigger
+on:
+  schedule:
+    - cron: '0 4 * * 3' # Wednesday 4am UTC
+    - cron: '0 4 * * 6' # Saturday 4am UTC
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  e2e-ui:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run UI E2E tests
+        run: npm run test:e2e:ui
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-ui-results
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7

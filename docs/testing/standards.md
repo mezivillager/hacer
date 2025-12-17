@@ -1,6 +1,121 @@
 # Testing Standards
 
+> **See also:** [structure.md](./structure.md) for file organization, [templates/](./templates/) for test templates
+
 This document defines testing standards for AI-generated and human-written tests to ensure test quality and reliability.
+
+---
+
+## TDD Workflow (MANDATORY)
+
+This project follows **Test-Driven Development**. All new features and bug fixes MUST follow the Red-Green-Refactor cycle.
+
+### The Red-Green-Refactor Cycle
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  1. RED: Write a failing test that defines the behavior     │
+│     ↓                                                       │
+│  2. GREEN: Write minimal code to make the test pass         │
+│     ↓                                                       │
+│  3. REFACTOR: Clean up code while keeping tests green       │
+│     ↓                                                       │
+│  (repeat)                                                   │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### TDD Step-by-Step
+
+1. **Understand the requirement** - What behavior should the code exhibit?
+2. **Write a test** - Create a test that describes the expected behavior
+3. **Run the test** - Verify it FAILS (this confirms the test is valid)
+4. **Write minimal code** - Just enough to make the test pass
+5. **Run the test** - Verify it PASSES
+6. **Refactor** - Improve code quality while keeping tests green
+7. **Repeat** - Add more tests for additional behaviors
+
+### TDD by Code Layer
+
+#### Pure Logic (`src/simulation/`, `src/store/actions/`)
+
+```typescript
+// 1. Write the test FIRST
+describe('calculateGateOutput', () => {
+  it('returns true for NAND when both inputs are false', () => {
+    expect(calculateGateOutput('NAND', [false, false])).toBe(true);
+  });
+});
+
+// 2. Run test - it FAILS (function doesn't exist)
+// 3. Write minimal implementation
+// 4. Run test - it PASSES
+// 5. Add more test cases, repeat
+```
+
+#### React Components (`src/gates/`, `src/components/`)
+
+```typescript
+// 1. Write RTL test describing user-visible behavior
+describe('GateSelector', () => {
+  it('displays NAND gate option', () => {
+    render(<GateSelector />);
+    expect(screen.getByText('NAND')).toBeInTheDocument();
+  });
+
+  it('calls onSelect when gate is clicked', async () => {
+    const onSelect = vi.fn();
+    render(<GateSelector onSelect={onSelect} />);
+    await userEvent.click(screen.getByText('NAND'));
+    expect(onSelect).toHaveBeenCalledWith('NAND');
+  });
+});
+
+// 2. Run test - it FAILS
+// 3. Create minimal component to pass
+// 4. Run test - it PASSES
+```
+
+#### E2E Workflows (`e2e/`)
+
+```typescript
+// 1. Write Playwright test describing user workflow
+test('user can add a NAND gate to the canvas', async ({ page }) => {
+  await page.goto('/');
+  await page.click('[data-testid="gate-nand"]');
+  await page.click('[data-testid="canvas"]');
+  await expect(page.locator('[data-testid="gate"]')).toHaveCount(1);
+});
+
+// 2. Run test - it FAILS
+// 3. Implement the feature
+// 4. Run test - it PASSES
+```
+
+### Verifying the Red Phase
+
+**Critical**: Always verify your test fails before writing implementation. A test that passes immediately may be:
+- Testing the wrong thing
+- Not testing anything meaningful
+- Already implemented (test after the fact)
+
+```bash
+# Run specific test to see it fail
+npm test -- --run path/to/file.test.ts
+
+# Temporarily break existing code to verify test catches it
+```
+
+### Common TDD Mistakes to Avoid
+
+| Mistake | Problem | Solution |
+|---------|---------|----------|
+| Writing implementation first | Test just verifies existing code | Always write test first |
+| Test passes immediately | Test doesn't test anything | Verify red phase |
+| Testing implementation details | Brittle tests | Test behavior/outcomes |
+| Skipping refactor phase | Code quality degrades | Refactor after each green |
+| Writing too many tests at once | Lose focus | One test at a time |
+
+---
 
 ## Core Principles
 
@@ -148,10 +263,121 @@ open reports/mutation/html/index.html
 
 ---
 
+## E2E Test Strategy (Playwright)
+
+E2E tests come in **pairs**: Store tests (fast) and UI tests (slow).
+
+### Store vs UI Tests
+
+| Aspect | Store Tests (`@store`) | UI Tests (`@ui`) |
+|--------|------------------------|------------------|
+| Speed | FAST (no render waits) | SLOW (waits for scene) |
+| Actions | Direct store calls | UI interactions |
+| When to run | Every commit, TDD | Manual, CI (2x/week) |
+| AI agents | Preferred | After store tests pass |
+| File suffix | `.store.spec.ts` | `.ui.spec.ts` |
+
+### File Structure
+
+```
+e2e/
+├── scenarios/           # Shared test data (used by both store & UI)
+│   ├── circuitBuilding.ts
+│   ├── simulation.ts
+│   └── types.ts
+├── specs/
+│   ├── circuit-building.store.spec.ts  # FAST
+│   ├── circuit-building.ui.spec.ts     # SLOW (paired)
+│   ├── simulation.store.spec.ts        # FAST
+│   └── simulation.ui.spec.ts           # SLOW (paired)
+```
+
+### Scenario Files
+
+Both store and UI tests import the same scenario:
+
+```typescript
+// e2e/scenarios/featureName.ts
+export const featureScenario = {
+  placements: [
+    { label: 'g1', position: { x: 0, y: 0, z: 0 } },
+    { label: 'g2', position: { x: 2, y: 0, z: 0 } },
+  ],
+  wire: { fromGate: 0, fromPin: 'out-0', toGate: 1, toPin: 'in-0' },
+};
+```
+
+### Store Test Pattern (FAST)
+
+```typescript
+// e2e/specs/feature.store.spec.ts
+import { featureScenario } from '../scenarios';
+
+test.describe('Feature @store', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/');
+    // NO waitForSceneStable - keep it fast
+  });
+
+  test('updates state correctly', async ({ page }) => {
+    const { placements } = featureScenario;
+    await page.evaluate((pos) => {
+      window.__STORE__.getState().actions.addGate('NAND', pos);
+    }, placements[0].position);
+
+    const count = await page.evaluate(() =>
+      Object.keys(window.__STORE__.getState().gates).length
+    );
+    expect(count).toBe(1);
+  });
+});
+```
+
+### UI Test Pattern (SLOW)
+
+```typescript
+// e2e/specs/feature.ui.spec.ts
+import { featureScenario } from '../scenarios';
+import { addGateViaUI } from '../helpers/actions';
+import { waitForSceneStable } from '../helpers/waits';
+
+test.describe('Feature @ui', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/');
+    await waitForSceneStable(page); // Required for UI tests
+  });
+
+  test('user can add gate via UI', async ({ page }) => {
+    const { placements } = featureScenario;
+    await addGateViaUI(page, {
+      type: 'NAND',
+      position: placements[0].position,
+    });
+    await expectGateCount(page, 1);
+  });
+});
+```
+
+### Running E2E Tests
+
+```bash
+# TDD workflow (fast, run often)
+npm run test:e2e:store
+
+# Full validation (slow, run manually or CI)
+npm run test:e2e:ui
+
+# All tests
+npm run test:e2e
+```
+
+---
+
 ## Test Structure
 
 ### File Organization
 - Co-locate tests with implementation: `Component.tsx` → `Component.test.tsx`
+- E2E tests in pairs: `feature.store.spec.ts` + `feature.ui.spec.ts`
 - Use descriptive describe blocks for grouping
 - Order: setup → happy path → edge cases → error cases
 

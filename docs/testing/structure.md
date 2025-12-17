@@ -1,5 +1,11 @@
 # Testing Structure
 
+> **See also:** [standards.md](./standards.md) for TDD workflow, [templates/](./templates/) for test templates
+
+---
+
+# Testing Structure
+
 This document describes the organization of test utilities, types, and infrastructure in the codebase.
 
 ## Overview

@@ -1,1 +1,2 @@
 npm run lint
+./scripts/check-test-files.sh
