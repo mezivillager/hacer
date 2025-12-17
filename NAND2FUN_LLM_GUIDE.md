@@ -26,6 +26,7 @@ All three documents are kept in sync and should be consulted together.
 ✅ Write tests BEFORE or WITH new features (unit, component, or E2E)
 ✅ Run existing tests before committing (`npm test`)
 ✅ Use TypeScript with strict types (no `any`, no missing interfaces)
+✅ Add JSDoc comments to all exported functions with `@param` and `@returns`
 ✅ Call hooks only at the top level (never in loops, conditions, or callbacks)
 ✅ Keep components under 200 lines (split if larger)
 ✅ **One component per file** - each React component gets its own file
@@ -1421,3 +1422,8 @@ When reviewing generated code, ask:
 
 If any answer is concerning, add tests or refactor before merging.
 
+---
+
+## 🤖 AI Agent Notes
+
+- Use shell commands (`cat`, `echo`) to edit dotfiles (`.cursorrules`, `.env`, etc.) - file tools often fail on them

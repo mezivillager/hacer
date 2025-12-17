@@ -13,6 +13,12 @@ export const colors = {
     label: '#1a1a2e',
     wireStub: '#888888',
     negationBubble: '#ffffff',
+    // Per-gate type colors
+    and: { body: '#2d5a3d', hover: '#3d7a4d' },
+    nand: { body: '#5a3d6a', hover: '#7a4d8a' },
+    or: { body: '#3d4a6a', hover: '#4d5a8a' },
+    xor: { body: '#2d6a5a', hover: '#3d8a7a' },
+    not: { body: '#6a4a3d', hover: '#8a5a4d' },
   },
 
   // Pin state colors

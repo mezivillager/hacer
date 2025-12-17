@@ -31,3 +31,13 @@ export interface SingleInputGateProps extends BaseGateProps {
   inputConnected?: boolean
   outputConnected?: boolean
 }
+
+// Pin configuration for BaseGate component
+export interface PinConfig {
+  pinId: string
+  position: [number, number, number]
+  value: boolean
+  connected: boolean
+  pinType: 'input' | 'output'
+  pinName: string // 'inputA', 'inputB', 'input', 'output'
+}
