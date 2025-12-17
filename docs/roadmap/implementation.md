@@ -230,8 +230,8 @@ Testing:      Comprehensive test suite + visual regression
 ### Phase 0.25: UI/UX Improvements & Grid-Based Circuit Design 🔄
 - [x] 0.25.1 Grid-based gate placement system ✅
 - [x] 0.25.2 Flat gate orientation (names facing up) ✅
-- [ ] 0.25.3 Gate dragging and movement
-- [ ] 0.25.4 90-degree rotation system
+- [x] 0.25.3 Gate dragging and movement ✅
+- [x] 0.25.4 90-degree rotation system ✅ (implemented in 0.25.2)
 - [ ] 0.25.5 Grid-aligned wire routing
 - [ ] 0.25.6 Wire stub removal when connected
 - [ ] 0.25.7 Wire selection and deletion

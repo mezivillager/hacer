@@ -238,3 +238,8 @@
 
 ### AI Agent Notes
 - Use shell commands (cat, echo) to edit dotfiles (.cursorrules, .env, etc.) - file tools often fail on them
+- **Update REPO_MAP.md** when doing significant refactoring:
+  - Moving/renaming directories or files
+  - Creating new directories
+  - Changing architecture or file organization
+  - Completing phase milestones

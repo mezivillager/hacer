@@ -4,9 +4,9 @@ This document helps AI agents and developers understand the codebase structure a
 
 ## ⚠️ IMPORTANT: Phase Tracking & Maintenance
 
-**Last Updated:** 2025-12-13  
-**Current Phase:** Phase 0.25 (In Progress) - 0.25.1 ✅, 0.25.2 ✅  
-**Next Phase:** Phase 0.25.3: Gate Dragging and Movement
+**Last Updated:** 2025-12-17  
+**Current Phase:** Phase 0.25 (In Progress) - 0.25.1 ✅, 0.25.2 ✅, 0.25.3 ✅, 0.25.4 ✅  
+**Next Phase:** Phase 0.25.5: Grid-Aligned Wire Routing
 
 ### Phase Status Indicators
 - ✅ **Current/Active** - Structure and files currently in use
@@ -41,23 +41,47 @@ This document helps AI agents and developers understand the codebase structure a
 src/
 ├── components/        # React UI components
 │   ├── canvas/       # React Three Fiber 3D components
-│   │   └── Scene/    # 3D scene components (Scene, SceneGrid, GroundPlane, PlacementPreview)
+│   │   ├── Scene/    # 3D scene components (Scene, SceneGrid, GroundPlane, PlacementPreview)
+│   │   └── handlers/ # Canvas event handlers
 │   └── ui/           # Ant Design based UI components (Sidebar, GateSelector)
+│       └── handlers/ # UI event handlers
 ├── gates/            # Gate components and logic
 │   ├── components/   # Individual gate components (NandGate, AndGate, etc.) - flat orientation
-│   ├── common/       # Shared gate components (BaseGateLabel, GatePin, WireStub, etc.)
-│   └── icons/        # Gate icon components
+│   ├── common/       # Shared gate components (BaseGate, BaseGateLabel, GatePin, WireStub)
+│   ├── config/       # Gate configuration (common.ts - dimensions, pin positions)
+│   ├── handlers/     # Gate event handlers
+│   ├── icons/        # Gate icon components
+│   └── types.ts      # Gate type definitions
 ├── simulation/       # Circuit simulation engine (pure logic)
 ├── store/           # Zustand state management
 │   └── actions/     # State mutation actions (gateActions, wireActions, placementActions, etc.)
-├── hooks/           # Custom React hooks (useKeyboardShortcuts - 90° rotation)
+│       └── pinHelpers/ # Pin position calculation helpers
+├── hooks/           # Custom React hooks (useKeyboardShortcuts, useGateDrag)
 ├── theme/           # Theme system (ThemeProvider, tokens - grid colors)
 ├── types/           # Shared TypeScript types
 ├── utils/           # Utility functions
 │   └── grid.ts      # Grid system (GRID_SIZE, worldToGrid, snapToGrid, canPlaceGateAt)
-├── test/            # Test setup and utilities
+├── test/            # Test setup and utilities (testUtils.ts - createMockStore, etc.)
 ├── App.tsx          # Main application component
 └── main.tsx         # React entry point
+
+docs/
+├── testing/          # Testing documentation (consolidated)
+│   ├── README.md     # Testing docs index
+│   ├── standards.md  # TDD workflow, test quality, mutation testing
+│   ├── structure.md  # Test file organization
+│   └── templates/    # TDD templates for unit, component, E2E tests
+├── typescript-guidelines.md  # TypeScript best practices
+└── roadmap/          # Project roadmap and phases
+
+scripts/
+└── check-test-files.sh  # Pre-commit TDD verification script
+
+.github/
+├── PULL_REQUEST_TEMPLATE.md  # PR template with TDD checklist
+└── workflows/
+    ├── mutation.yml  # Stryker mutation testing (PRs + weekly)
+    └── e2e-ui.yml    # Slow UI E2E tests (scheduled twice weekly)
 ```
 
 ### 🔄 Next Phase Structure (Phase 0.5 - Starting Soon)
@@ -191,12 +215,15 @@ nand2fun/
 - `src/hooks/useKeyboardShortcuts.ts` - 90° rotation increments (Z axis for world Y rotation)
 - `src/theme/tokens.ts` - Grid colors (uniform blue-tinted color for cell and section lines)
 
-### 🔄 Phase 0.25.3-0.25.8 (Next - In Progress)
-- `src/hooks/useGateDrag.ts` - Gate dragging functionality (0.25.3)
+### 🔄 Phase 0.25.5-0.25.8 (Next - In Progress)
 - Grid-aligned wire routing system (0.25.5)
 - Wire stub removal when connected (0.25.6)
 - Wire selection and deletion (0.25.7)
 - E2E test reorganization and optimization (0.25.8)
+
+### ✅ Phase 0.25.3-0.25.4 (Completed)
+- `src/hooks/useGateDrag.ts` - Gate dragging with grid snapping (0.25.3) ✅
+- 90-degree rotation system (0.25.4) ✅ - implemented in 0.25.2
 
 ### 🔄 Phase 0.5: Nand2Tetris Foundation (After 0.25)
 - `src/core/hdl/parser.ts` - HDL parser for .hdl files
@@ -388,7 +415,13 @@ import { Scene } from '@/components/canvas/Scene';
   - Gate action tests: Updated for flat orientation
   - Pin helper tests: Updated for Y offsets becoming horizontal
 - **E2E Tests**: Located in `e2e/specs/` directory
+  - **Store tests** (`@store`): Fast, use direct store actions - run before every commit
+  - **UI tests** (`@ui`): Slow, use UI interactions - run manually or CI (twice weekly)
+  - Store and UI tests come in pairs, sharing scenarios from `e2e/scenarios/`
+- **Mutation Testing**: Stryker for test quality verification (`npm run stryker`)
 - **Test Setup**: `src/test/setup.ts` - Global test configuration
+- **TDD Templates**: `docs/testing/templates/` - Copy-paste templates for new tests
+- **Testing Standards**: `docs/testing/standards.md` - TDD workflow documentation
 
 ### 🔄 Phase 0.25.8 (Next)
 - **E2E Test Optimization**: Scene reuse, test reorganization
@@ -410,16 +443,18 @@ See [Implementation Guide](implementation.md#technology-stack-evolution) for det
 
 - [`.cursorrules`](../.cursorrules) - **Start here!** Project rules, phase tracking, and quick reference
 - [`NAND2FUN_LLM_GUIDE.md`](../NAND2FUN_LLM_GUIDE.md) - Detailed development patterns, examples, and best practices
-- [`docs/roadmap/`](../roadmap/README.md) - Project roadmap and phases
-- [`docs/roadmap/phases/phase-0-critical-fixes.md`](../roadmap/phases/phase-0-critical-fixes.md) - Phase 0 documentation
-- [`docs/roadmap/phases/phase-0.25-ui-improvements.md`](../roadmap/phases/phase-0.25-ui-improvements.md) - Current phase documentation
+- [`docs/testing/`](./docs/testing/) - Testing standards, TDD workflow, templates
+- [`docs/typescript-guidelines.md`](./docs/typescript-guidelines.md) - TypeScript best practices
+- [`docs/roadmap/`](./docs/roadmap/README.md) - Project roadmap and phases
+- [`docs/roadmap/phases/phase-0.25-ui-improvements.md`](./docs/roadmap/phases/phase-0.25-ui-improvements.md) - Current phase documentation
 
 ## Document Relationship
 
 This document focuses on **repository structure and file organization**. For:
-- **Quick rules & phase status**: See [`.cursorrules`](../.cursorrules)
-- **Detailed patterns & examples**: See [`NAND2FUN_LLM_GUIDE.md`](../NAND2FUN_LLM_GUIDE.md)
+- **Quick rules & phase status**: See [`.cursorrules`](./.cursorrules)
+- **Detailed patterns & examples**: See [`NAND2FUN_LLM_GUIDE.md`](./NAND2FUN_LLM_GUIDE.md)
+- **Testing standards & TDD**: See [`docs/testing/`](./docs/testing/)
+- **TypeScript guidelines**: See [`docs/typescript-guidelines.md`](./docs/typescript-guidelines.md)
 - **Where files go**: This document
 
-All three documents are kept in sync and should be consulted together.
-- [.cursorrules](../../.cursorrules) - Project rules and guidelines
+All documents are kept in sync and should be consulted together.
