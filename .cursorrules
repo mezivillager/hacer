@@ -76,9 +76,20 @@
 
 ### Testing Standards
 
+📖 **Full guide:** `docs/testing-standards.md`
+
+**Core Principles:**
+- Each test has ONE reason to fail
+- Test behavior, not implementation
+- Descriptive test names (readable as sentences)
+- No logic in tests (no if/loops)
+- Include edge cases (null, empty, boundaries)
+- Use mutation testing to verify test quality
+
 **✅ Current (Phase 0):**
 - **Unit tests**: All `src/simulation/` functions (90%+ coverage)
 - **E2E tests**: User workflows with Playwright
+- **Mutation testing**: `npm run stryker` to verify test quality
 
 **🔄 Next (Phase 0.5):**
 - **Curriculum tests**: Nand2tetris test script execution (.tst/.cmp)
@@ -87,6 +98,14 @@
 - **Property-based tests**: Gate logic invariants with fast-check (Phase 3.5+)
 - **Integration tests**: Cross-layer functionality (Phase 8+)
 - **Unit tests**: All `src/core/` functions (90%+ coverage) - after Phase 5 migration
+
+**AI Test Generation Checklist:**
+- [ ] Descriptive name explaining behavior
+- [ ] Meaningful assertions (not just `toBeDefined()`)
+- [ ] Edge cases covered
+- [ ] Error cases tested
+- [ ] No implementation details tested
+- [ ] Mocks are minimal and at boundaries
 
 ### Adding a New Gate
 

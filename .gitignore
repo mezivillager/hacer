@@ -27,3 +27,5 @@ playwright-report
 test-results
 brainstorm
 .temp
+# stryker temp files
+.stryker-tmp
