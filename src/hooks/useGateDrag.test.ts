@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
 import { useGateDrag } from './useGateDrag'
 import { useCircuitStore } from '@/store/circuitStore'
+import { createMockThreeEvent } from '@/test/testUtils'
 
 // Helper to get store state
 const getState = () => useCircuitStore.getState()
@@ -14,19 +15,16 @@ const mockCanvas = {
   tagName: 'CANVAS',
 } as unknown as HTMLElement
 
-// Mock ThreeEvent
-const createMockEvent = (point: { x: number; y: number; z: number }) => ({
-  point,
-  stopPropagation: vi.fn(),
-  nativeEvent: {
-    target: mockCanvas,
-    pointerId: 1,
-  },
-} as { 
-  point: { x: number; y: number; z: number }
-  stopPropagation: () => void
-  nativeEvent: { target: HTMLElement; pointerId: number }
-})
+// Helper to create mock events with canvas target
+const createMockEvent = (point: { x: number; y: number; z: number }) => {
+  return createMockThreeEvent<PointerEvent>(point, {
+    nativeEvent: {
+      target: mockCanvas,
+      pointerId: 1,
+    } as unknown as PointerEvent,
+    stopPropagation: vi.fn(),
+  })
+}
 
 describe('useGateDrag', () => {
   beforeEach(() => {
