@@ -71,6 +71,8 @@ describe('SceneOrbitControls', () => {
         fromPinType: 'output',
         fromPosition: { x: 0, y: 0, z: 0 },
         previewEndPosition: null,
+        destinationGateId: null,
+        destinationPinId: null,
       },
     })
     const { getByTestId } = render(<SceneOrbitControls />)

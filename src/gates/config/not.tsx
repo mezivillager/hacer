@@ -31,7 +31,7 @@ export const NOT_DIMENSIONS = {
   triangleTip: 0.4,
   depth: COMMON_DIMENSIONS.BODY_DEPTH,
   pinRadius: COMMON_DIMENSIONS.PIN_RADIUS,
-  bubbleRadius: 0.1,
+  bubbleRadius: COMMON_DIMENSIONS.BUBBLE_RADIUS, // Use common bubble radius for consistency with NAND gates
 } as const
 
 /**

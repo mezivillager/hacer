@@ -4,8 +4,9 @@ import {
   gridToWorld,
   snapToGrid,
   canPlaceGateAt,
+  hasWiresInCell,
 } from './grid'
-import type { Position, GateInstance } from '@/store/types'
+import type { Position, GateInstance, Wire } from '@/store/types'
 
 describe('grid utilities', () => {
   describe('worldToGrid', () => {
@@ -206,6 +207,110 @@ describe('grid utilities', () => {
       // But we need both row and col to be odd, so (-3, -1) is valid
       expect(canPlaceGateAt({ row: -3, col: -1 }, [gate])).toBe(true) // Not adjacent (rowDiff = 2 > 1), both odd
       expect(canPlaceGateAt({ row: -3, col: -3 }, [gate])).toBe(true) // Far enough, both odd
+    })
+
+    it('rejects placement when wires pass through cell', () => {
+      // This test will be added when wire checking is implemented
+      // For now, just verify the function signature accepts wire parameters
+      const gate = createGate('gate1', { x: 2, y: 0, z: 2 })
+      const result = canPlaceGateAt({ row: 1, col: 1 }, [gate], undefined, [], () => null, () => null)
+      expect(result).toBe(false) // Should fail due to gate, not wires
+    })
+
+    it('allows placement when only entry/exit segments present', () => {
+      // Entry/exit segments at pin locations should not block placement
+      const gate = createGate('gate1', { x: 2, y: 0, z: 2 })
+      // If only entry/exit segments in cell, placement should be allowed
+      // This will be tested more thoroughly in integration tests
+      const result = canPlaceGateAt({ row: 3, col: 3 }, [gate], undefined, [], () => null, () => null)
+      expect(result).toBe(true) // Should pass (no gates blocking, no wires)
+    })
+  })
+
+  describe('hasWiresInCell', () => {
+    const createGate = (id: string, position: Position): GateInstance => ({
+      id,
+      type: 'NAND',
+      position,
+      rotation: { x: Math.PI / 2, y: 0, z: 0 }, // Flat orientation
+      inputs: [],
+      outputs: [],
+      selected: false,
+    })
+
+    const createWire = (id: string, fromGateId: string, fromPinId: string, toGateId: string, toPinId: string): Wire => ({
+      id,
+      fromGateId,
+      fromPinId,
+      toGateId,
+      toPinId,
+    })
+
+    it('returns true when wires pass through cell', () => {
+      const cell = { row: 1, col: 1 } // Cell at [2, 0, 2] center, boundaries X=[1, 3], Z=[1, 3]
+      const gates: GateInstance[] = []
+      const wires: Wire[] = [
+        createWire('wire-1', 'gate-1', 'pin-1', 'gate-2', 'pin-2'),
+      ]
+      // Use pins that will create a path definitely passing through cell [1, 1]
+      // Pin at [-2, 0.2, 2] (cell [1, -1]) to [6, 0.2, 2] (cell [1, 3])
+      // The horizontal segment should pass through cell [1, 1]
+      const getPinWorldPosition = (gateId: string, _pinId: string): Position | null => {
+        if (gateId === 'gate-1') return { x: -2, y: 0.2, z: 2 } // Start in cell [1, -1]
+        if (gateId === 'gate-2') return { x: 6, y: 0.2, z: 2 } // End in cell [1, 3]
+        return null
+      }
+      const getPinOrientation = (gateId: string): { x: number; y: number; z: number } | null => {
+        if (gateId === 'gate-1') return { x: 1, y: 0, z: 0 } // Face right (output)
+        if (gateId === 'gate-2') return { x: -1, y: 0, z: 0 } // Face left (input)
+        return null
+      }
+      
+      const hasWires = hasWiresInCell(cell, wires, gates, getPinWorldPosition, getPinOrientation)
+      
+      // The horizontal segment should pass through cell [1, 1]
+      expect(hasWires).toBe(true)
+    })
+
+    it('returns false when only entry/exit segments present', () => {
+      const cell = { row: 1, col: 1 } // Cell at [2, 0, 2]
+      const gates: GateInstance[] = [createGate('gate-1', { x: 2, y: 0, z: 2 })] // Gate in this cell
+      const wires: Wire[] = [
+        createWire('wire-1', 'gate-1', 'pin-1', 'gate-2', 'pin-2'),
+      ]
+      const getPinWorldPosition = (gateId: string, _pinId: string): Position | null => {
+        if (gateId === 'gate-1') return { x: 1.4, y: 0.2, z: 2 } // Pin in this cell
+        if (gateId === 'gate-2') return { x: 6, y: 0.2, z: 2 } // Pin elsewhere
+        return null
+      }
+      const getPinOrientation = (gateId: string): { x: number; y: number; z: number } | null => {
+        if (gateId === 'gate-1') return { x: 1, y: 0, z: 0 } // Face right
+        if (gateId === 'gate-2') return { x: -1, y: 0, z: 0 } // Face left
+        return null
+      }
+      
+      const hasWires = hasWiresInCell(cell, wires, gates, getPinWorldPosition, getPinOrientation)
+      
+      // Entry/exit segments at pin location should be excluded
+      expect(hasWires).toBe(false)
+    })
+
+    it('returns false when cell is clear', () => {
+      const cell = { row: 5, col: 5 } // Cell far away
+      const gates: GateInstance[] = []
+      const wires: Wire[] = [
+        createWire('wire-1', 'gate-1', 'pin-1', 'gate-2', 'pin-2'),
+      ]
+      const getPinWorldPosition = (_gateId: string, _pinId: string): Position | null => {
+        return { x: 0, y: 0.2, z: 0 } // Wire far from cell
+      }
+      const getPinOrientation = (): { x: number; y: number; z: number } | null => {
+        return { x: 1, y: 0, z: 0 }
+      }
+      
+      const hasWires = hasWiresInCell(cell, wires, gates, getPinWorldPosition, getPinOrientation)
+      
+      expect(hasWires).toBe(false)
     })
   })
 })

@@ -4,6 +4,7 @@ import { PlacementPreview } from './PlacementPreview'
 import { WirePreview } from './WirePreview'
 import { SceneGrid } from './SceneGrid'
 import { SceneOrbitControls } from './SceneOrbitControls'
+import { SceneAxes } from './SceneAxes'
 import type { SceneProps } from './types'
 
 /**
@@ -16,6 +17,7 @@ export function SceneContent({ children }: SceneProps) {
       <ambientLight intensity={0.5} />
       <directionalLight position={[10, 10, 5]} intensity={1} castShadow />
       <Environment preset="city" />
+      <SceneAxes />
       <GroundPlane />
       <PlacementPreview />
       <WirePreview />

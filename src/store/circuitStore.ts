@@ -128,10 +128,14 @@ export const circuitActions = {
   // Wiring actions
   startWiring: (...args: Parameters<CircuitStore['startWiring']>) => useCircuitStore.getState().startWiring(...args),
   updateWirePreviewPosition: (...args: Parameters<CircuitStore['updateWirePreviewPosition']>) => useCircuitStore.getState().updateWirePreviewPosition(...args),
+  setDestinationPin: (...args: Parameters<CircuitStore['setDestinationPin']>): void => {
+    useCircuitStore.getState().setDestinationPin(...args)
+  },
   cancelWiring: () => useCircuitStore.getState().cancelWiring(),
   completeWiring: (...args: Parameters<CircuitStore['completeWiring']>) => useCircuitStore.getState().completeWiring(...args),
   // Helper functions
-  getPinWorldPosition: (...args: Parameters<CircuitStore['getPinWorldPosition']>) => useCircuitStore.getState().getPinWorldPosition(...args),
+  getPinWorldPosition: (...args: Parameters<CircuitStore['getPinWorldPosition']>): ReturnType<CircuitStore['getPinWorldPosition']> => useCircuitStore.getState().getPinWorldPosition(...args),
+  getPinOrientation: (...args: Parameters<CircuitStore['getPinOrientation']>): ReturnType<CircuitStore['getPinOrientation']> => useCircuitStore.getState().getPinOrientation(...args),
 }
 
 // Expose store and actions for E2E testing

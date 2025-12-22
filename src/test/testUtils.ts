@@ -68,6 +68,7 @@ export function createMockStore(partial: Partial<CircuitState> = {}): CircuitSto
     cancelWiring: () => {},
     completeWiring: () => {},
     getPinWorldPosition: () => null,
+    getPinOrientation: () => null,
   } satisfies CircuitStore
 }
 

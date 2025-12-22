@@ -51,6 +51,14 @@
 - NEVER generate implementation without corresponding test
 - If implementation exists without test, write test FIRST then verify it fails with broken code
 
+**AI Agent Completion Checklist:**
+- [ ] All tests written and passing (RED → GREEN → REFACTOR)
+- [ ] **Linting passes: `npm run lint` exits with code 0** ⚠️ MANDATORY
+- [ ] No TypeScript errors (`npm run typecheck`)
+- [ ] Code follows project conventions (see Code Quality section)
+- [ ] JSDoc comments added for exported functions
+- [ ] No unused variables or imports
+
 **TDD by Layer:**
 - **Pure logic** (`simulation/`, `store/actions/`): Unit test → implement → property test
 - **Components** (`gates/`, `components/`): RTL test → implement → visual test
@@ -228,6 +236,18 @@
 - Use type guards instead of assertions
 - `as const` is fine for literal types
 - Create type-safe helpers for test mocks
+
+**Linting Requirements (MANDATORY for AI Agents):**
+- **ALWAYS run `npm run lint` before considering code complete**
+- **NEVER mark code as complete if linting errors exist**
+- Fix all linting errors (errors and warnings) before completion
+- Common issues to check:
+  - Unsafe return types from `page.evaluate()` in E2E tests (add explicit return type annotations)
+  - Unused variables (prefix with `_` or remove)
+  - Unused imports (remove)
+  - Type safety issues (add proper type assertions)
+- Linting must pass: `npm run lint` should exit with code 0
+- If linting fails, fix errors immediately - do not proceed with other tasks
 
 ### Documentation Standards
 - All exported functions MUST have JSDoc comments

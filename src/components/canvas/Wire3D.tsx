@@ -1,9 +1,18 @@
-import { Vector3, CatmullRomCurve3 } from 'three'
-import { colors, materials } from '@/theme'
+import { Line } from '@react-three/drei'
+import { colors } from '@/theme'
+import type { WireSegment, WirePath } from '@/utils/wiringScheme/types'
+import type { GateInstance } from '@/store/types'
 
 interface Wire3DProps {
   start: { x: number; y: number; z: number } | null
   end: { x: number; y: number; z: number } | null
+  startOrientation?: { x: number; y: number; z: number } | null
+  endOrientation?: { x: number; y: number; z: number } | null
+  gates?: GateInstance[] // Gates to avoid in routing
+  sourceGateId?: string // Source gate ID (to exclude from avoidance for entry/exit segments)
+  destinationGateId?: string // Destination gate ID (to exclude from avoidance for entry/exit segments)
+  existingWires?: Array<{ id: string; segments: WireSegment[] }> | WireSegment[] // Not used in new scheme, kept for compatibility
+  precomputedPath?: WirePath // Pre-calculated path (required - no fallback)
   color?: string
   isActive?: boolean
   isPreview?: boolean
@@ -11,55 +20,58 @@ interface Wire3DProps {
 
 export function Wire3D({ 
   start, 
-  end, 
-  color = colors.gate.wireStub,
+  end,
+  startOrientation,
+  endOrientation,
+  gates: _gates = [],
+  sourceGateId,
+  destinationGateId,
+  existingWires: _existingWires = [], // Not used in new scheme
+  precomputedPath,
+  color: _color = colors.gate.wireStub,
   isActive = false,
   isPreview = false 
 }: Wire3DProps) {
   // Guard against undefined positions
   if (!start || !end) return null
   
-  const startVec = new Vector3(start.x, start.y, start.z)
-  const endVec = new Vector3(end.x, end.y, end.z)
+  // Precomputed path is required - no fallback calculation
+  if (!precomputedPath) {
+    const errorMsg = `Wire3D: precomputedPath is required but not provided. Start: ${JSON.stringify(start)}, End: ${JSON.stringify(end)}`
+    console.error(errorMsg)
+    console.error('Wire3D props:', { start, end, startOrientation, endOrientation, sourceGateId, destinationGateId })
+    throw new Error(errorMsg)
+  }
   
-  // Calculate control points for a nice curve
-  const midY = Math.max(start.y, end.y) + 0.3
-  const midX = (start.x + end.x) / 2
-  const midZ = (start.z + end.z) / 2
+  const pathSegments: WireSegment[] = precomputedPath.segments
   
-  // Create a smooth curve with control points
-  const points = [
-    startVec,
-    new Vector3(start.x + 0.3, start.y, start.z),
-    new Vector3(midX, midY, midZ),
-    new Vector3(end.x - 0.3, end.y, end.z),
-    endVec,
-  ]
-  
-  const curve = new CatmullRomCurve3(points)
-  const tubeRadius = isPreview ? 0.03 : 0.025
-  
+  // Wire color - use reddish copper for default and preview (same color)
   const wireColor = isActive 
     ? colors.wire.active 
-    : isPreview 
-      ? colors.wire.preview 
-      : color
-  const emissiveIntensity = isActive ? 0.5 : isPreview ? 0.3 : 0
+    : colors.wire.default // Always use copper for non-active wires (default and preview)
   
+  // Render segments as lines (no thickness, elegant look like grid lines)
   return (
-    <mesh>
-      <tubeGeometry 
-        args={[curve, 32, tubeRadius, 8, false]} 
-      />
-      <meshStandardMaterial
-        color={wireColor}
-        emissive={wireColor}
-        emissiveIntensity={emissiveIntensity}
-        metalness={materials.pin.metalness}
-        roughness={materials.pin.roughness}
-        transparent={isPreview}
-        opacity={isPreview ? 0.7 : 1}
-      />
-    </mesh>
+    <>
+      {pathSegments.map((segment, index) => {
+        {
+          // Regular segments: simple straight line
+          const points: Array<[number, number, number]> = [
+            [segment.start.x, segment.start.y, segment.start.z],
+            [segment.end.x, segment.end.y, segment.end.z],
+          ]
+          return (
+            <Line
+              key={`segment-${index}`}
+              points={points}
+              color={wireColor}
+              lineWidth={1}
+              transparent
+              opacity={isPreview ? 0.7 : 1}
+            />
+          )
+        }
+      })}
+    </>
   )
 }

@@ -3,7 +3,7 @@ import { useCircuitStore, circuitActions } from '@/store/circuitStore'
 import { snapToGrid, worldToGrid, canPlaceGateAt } from '@/utils/grid'
 
 const {
-  updateWirePreviewPosition,
+  updateWirePreviewPosition: updateWirePreviewPositionOriginal,
   updatePlacementPreviewPosition,
   updateGatePosition,
   setDragActive,
@@ -11,6 +11,11 @@ const {
   cancelWiring,
   selectGate: selectGateAction,
 } = circuitActions
+
+// Note: Debouncing removed for wire preview to ensure cursor alignment
+// Wire preview calculations are now fast enough without debouncing
+// const updateWirePreviewPosition = debounce(updateWirePreviewPositionOriginal, 16)
+const updateWirePreviewPosition = updateWirePreviewPositionOriginal
 
 /**
  * Handle pointer move on ground plane - update preview positions for placing, wiring, or dragging
@@ -35,11 +40,14 @@ export function handlePointerMove(e: ThreeEvent<PointerEvent>): void {
     const snappedPos = snapToGrid({ x: e.point.x, y: 0.2, z: e.point.z })
     updatePlacementPreviewPosition(snappedPos)
   } else if (isWiring) {
-    updateWirePreviewPosition({
+    // Wires are at WIRE_HEIGHT (0.2) above ground plane
+    const previewPos = {
       x: e.point.x,
-      y: e.point.y,
+      y: 0.2, // Wire height matches pin center Y coordinate
       z: e.point.z,
-    })
+    }
+    console.debug('[groundPlaneHandlers] Wiring - updating preview position (debounced)', previewPos)
+    updateWirePreviewPosition(previewPos)
   }
 }
 
@@ -55,7 +63,9 @@ export function handlePointerLeave(): void {
     updatePlacementPreviewPosition(null)
   }
   if (isWiring) {
-    updateWirePreviewPosition(null)
+    // Cancel debounce and immediately clear preview
+    console.debug('[groundPlaneHandlers] Wiring - clearing preview (pointer leave)')
+    updateWirePreviewPositionOriginal(null)
   }
 }
 

@@ -1,6 +1,7 @@
 import type { PlacementActions, GateType, Position, CircuitStore } from '../../types'
 import { createGateInstance } from '../gateActions/gateActions'
 import { snapToGrid, worldToGrid, canPlaceGateAt } from '@/utils/grid'
+import { useCircuitStore } from '../../circuitStore'
 
 type SetState = (
   fn: (state: CircuitStore) => void,
@@ -32,9 +33,18 @@ export const createPlacementActions = (set: SetState, get: GetState): PlacementA
     const snappedPosition = snapToGrid(position)
     
     // Convert to grid position and validate placement
+    // Check for gate spacing AND wire paths
     const gridPos = worldToGrid(snappedPosition)
-    if (!canPlaceGateAt(gridPos, currentState.gates)) {
-      // Invalid placement - do nothing
+    const circuitActions = useCircuitStore.getState()
+    if (!canPlaceGateAt(
+      gridPos,
+      currentState.gates,
+      undefined, // excludeGateId (not applicable for new placements)
+      currentState.wires.length > 0 ? currentState.wires : undefined,
+      circuitActions.getPinWorldPosition,
+      circuitActions.getPinOrientation
+    )) {
+      // Invalid placement (would overlap gate or block wire path) - do nothing
       return
     }
     

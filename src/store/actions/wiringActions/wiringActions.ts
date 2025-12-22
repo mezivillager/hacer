@@ -15,6 +15,12 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
     pinType: 'input' | 'output',
     position: Position
   ) => {
+    console.debug('[wiringActions] startWiring', {
+      gateId,
+      pinId,
+      pinType,
+      position,
+    })
     set((state) => {
       state.wiringFrom = {
         fromGateId: gateId,
@@ -22,29 +28,55 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
         fromPinType: pinType,
         fromPosition: position,
         previewEndPosition: null,
+        destinationGateId: null,
+        destinationPinId: null,
       }
       state.placementMode = null
     }, false, 'startWiring')
   },
 
   updateWirePreviewPosition: (position: Position | null) => {
+    console.debug('[wiringActions] updateWirePreviewPosition', {
+      position,
+      hasWiringFrom: !!get().wiringFrom,
+    })
     set((state) => {
       if (state.wiringFrom) {
         state.wiringFrom.previewEndPosition = position
+        // Note: destination pin is cleared by BaseGate's handlePinOut, not here
+        // We don't clear it here because position can be null temporarily during transitions
       }
     }, false, 'updateWirePreviewPosition')
   },
+  
+  setDestinationPin: (gateId: string | null, pinId: string | null) => {
+    set((state) => {
+      if (state.wiringFrom) {
+        state.wiringFrom.destinationGateId = gateId
+        state.wiringFrom.destinationPinId = pinId
+      }
+    }, false, 'setDestinationPin')
+  },
 
   cancelWiring: () => {
+    console.debug('[wiringActions] cancelWiring')
     set((state) => {
       state.wiringFrom = null
     }, false, 'cancelWiring')
   },
 
   completeWiring: (toGateId: string, toPinId: string, toPinType: 'input' | 'output') => {
+    console.debug('[wiringActions] completeWiring', {
+      toGateId,
+      toPinId,
+      toPinType,
+    })
     const state = get()
     const from = state.wiringFrom
-    if (!from) return
+    if (!from) {
+      console.warn('[wiringActions] completeWiring - no wiringFrom state')
+      return
+    }
 
     // Validate: must connect output to input (or vice versa)
     if (from.fromPinType === toPinType) {
@@ -87,8 +119,16 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
 
     // Normalize: always store as output -> input
     if (from.fromPinType === 'output') {
+      console.debug('[wiringActions] Adding wire', {
+        from: { gateId: from.fromGateId, pinId: from.fromPinId },
+        to: { gateId: toGateId, pinId: toPinId },
+      })
       state.addWire(from.fromGateId, from.fromPinId, toGateId, toPinId)
     } else {
+      console.debug('[wiringActions] Adding wire (reversed)', {
+        from: { gateId: toGateId, pinId: toPinId },
+        to: { gateId: from.fromGateId, pinId: from.fromPinId },
+      })
       state.addWire(toGateId, toPinId, from.fromGateId, from.fromPinId)
     }
 

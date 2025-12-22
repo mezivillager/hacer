@@ -92,7 +92,7 @@ describe('groundPlaneHandlers', () => {
 
       handlePointerMove(mockEvent)
 
-      expect(circuitActions.updateWirePreviewPosition).toHaveBeenCalledWith({ x: 1, y: 2, z: 3 })
+      expect(circuitActions.updateWirePreviewPosition).toHaveBeenCalledWith({ x: 1, y: 0.2, z: 3 })
     })
 
     it('does nothing when not placing, wiring, or dragging', () => {

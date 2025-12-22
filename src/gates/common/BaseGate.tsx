@@ -65,11 +65,14 @@ export function BaseGate(props: BaseGateComponentProps) {
   const [hovered, setHovered] = useState(false)
   const [hoveredPin, setHoveredPin] = useState<string | null>(null)
 
+  // Subscribe to wiring state to reactively hide stubs during wiring
+  const wiringFrom = useCircuitStore((s) => s.wiringFrom)
+  
   // Drag functionality - use getState() to avoid subscriptions that cause re-renders
   // eslint-disable-next-line react-compiler/react-compiler -- getState() is valid for reading without subscribing
   const state = useCircuitStore.getState()
   const isPlacing = state.placementMode !== null
-  const isWiringMode = state.wiringFrom !== null
+  const isWiringMode = wiringFrom !== null
   const canDrag = !isPlacing && !isWiringMode
   const { isDragging, shouldAllowClick, onPointerDown, onPointerMove, onPointerUp, onPointerLeave } = useGateDrag(id)
 
@@ -87,9 +90,25 @@ export function BaseGate(props: BaseGateComponentProps) {
   const handlePinClick = createPinClickHandler(id, worldPositionHelper, onInputToggle, onPinClick)
 
   // Create pin hover handlers
-  const createPinHoverHandler = (pinName: string) => () => setHoveredPin(pinName)
+  const createPinHoverHandler = (pinName: string, pinId: string) => () => {
+    console.debug('[BaseGate] Pin hover', { pinName, pinId, isWiringMode, gateId: id })
+    setHoveredPin(pinName) // Local state for visual highlighting (uses pinName)
+    // Update store with destination pin when hovering during wiring
+    if (isWiringMode) {
+      console.debug('[BaseGate] Setting destination pin', { gateId: id, pinId })
+      circuitActions.setDestinationPin(id, pinId)
+    } else {
+      console.debug('[BaseGate] Not in wiring mode, skipping setDestinationPin')
+    }
+  }
   const handlePinOut = () => {
+    console.debug('[BaseGate] Pin out', { isWiringMode })
     setHoveredPin(null)
+    // Clear destination pin in store when pointer leaves pin
+    if (isWiringMode) {
+      console.debug('[BaseGate] Clearing destination pin')
+      circuitActions.setDestinationPin(null, null)
+    }
     handlePinPointerOut()
   }
 
@@ -175,22 +194,54 @@ export function BaseGate(props: BaseGateComponentProps) {
             position={pinConfig.position}
             color={pinColor}
             isWiring={isWiring}
-            isHovered={hoveredPin === pinName}
+            isHovered={hoveredPin === pinConfig.pinId}
             isConnected={pinConnected}
             value={pinValue}
             pinType={pinConfig.pinType}
             onPinClick={handlePinClick}
             onPointerMove={handlePinPointerMove}
-            onPointerOver={createPinHoverHandler(pinName)}
+            onPointerOver={createPinHoverHandler(pinName, pinConfig.pinId)}
             onPointerOut={handlePinOut}
           />
         )
       })}
 
-      {/* Wire stubs - rendered from configuration */}
-      {wireStubPositions.map((stubPosition, index) => (
-        <WireStub key={`stub-${index}`} position={stubPosition} />
-      ))}
+      {/* Wire stubs - rendered from configuration, only when pins are not connected */}
+      {/* Also hide stub if this pin is currently being wired (even during preview) */}
+      {wireStubPositions
+        .map((stubPosition, index) => {
+          // Map stub position index to corresponding pin config
+          // Order should match: [inputA, inputB, output] for two-input gates
+          // or [input, output] for single-input gates
+          const pinConfig = pinConfigs[index]
+          if (!pinConfig) {
+            return null
+          }
+          
+          const isConnected = pinConfig.connected ?? false
+          
+          // Check if this pin is currently being wired (hide stub during wiring/preview)
+          // Compare both gate ID and pin ID to determine if this pin is the source of wiring
+          const isBeingWired = wiringFrom !== null && 
+            wiringFrom.fromGateId === id &&
+            wiringFrom.fromPinId === pinConfig.pinId
+          
+          const shouldHide = isConnected || isBeingWired
+          
+          if (shouldHide) {
+            return null
+          }
+          
+          return {
+            position: stubPosition,
+            index,
+            pinId: pinConfig.pinId,
+          }
+        })
+        .filter((item): item is NonNullable<typeof item> => item !== null)
+        .map(({ position, index, pinId }) => (
+          <WireStub key={`stub-${pinId}-${index}`} position={position} />
+        ))}
 
       {/* HTML label overlay */}
       <BaseGateLabel gateType={gateType} inputs={inputs} output={output} visible={hovered || selected} />

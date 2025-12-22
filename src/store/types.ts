@@ -36,6 +36,8 @@ export interface WiringState {
   fromPinType: 'input' | 'output'
   fromPosition: Position
   previewEndPosition: Position | null
+  destinationGateId: string | null
+  destinationPinId: string | null
 }
 
 export interface CircuitState {
@@ -86,12 +88,14 @@ export interface PlacementActions {
 export interface WiringActions {
   startWiring: (gateId: string, pinId: string, pinType: 'input' | 'output', position: Position) => void
   updateWirePreviewPosition: (position: Position | null) => void
+  setDestinationPin: (gateId: string | null, pinId: string | null) => void
   cancelWiring: () => void
   completeWiring: (toGateId: string, toPinId: string, toPinType: 'input' | 'output') => void
 }
 
 export interface PinHelpers {
   getPinWorldPosition: (gateId: string, pinId: string) => Position | null
+  getPinOrientation: (gateId: string, pinId: string) => { x: number; y: number; z: number } | null
 }
 
 // Combined store type

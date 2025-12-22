@@ -157,7 +157,10 @@ export async function clearAllViaStore(page: Page): Promise<void> {
  * Get all gate IDs from the store
  */
 export async function getGateIds(page: Page): Promise<string[]> {
-  return page.evaluate(() => window.__CIRCUIT_STORE__?.gates.map((g) => g.id) ?? [])
+  return page.evaluate((): string[] => {
+    const store = window.__CIRCUIT_STORE__ as { gates: Array<{ id: string }> } | undefined
+    return store?.gates.map((g) => g.id) ?? []
+  })
 }
 
 /**

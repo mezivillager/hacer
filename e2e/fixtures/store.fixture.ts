@@ -27,6 +27,8 @@ export const test = base.extend<{ setupComplete: void }>({
     async ({ page }, use) => {
       await page.goto('/')
       await page.waitForSelector(UI_SELECTORS.appTitle, { timeout: TIMEOUTS.selector })
+      // Wait for store to be available (required for store tests)
+      await page.waitForFunction(() => window.__CIRCUIT_STORE__ !== undefined, { timeout: TIMEOUTS.store })
       // Skip scene ready wait - store tests don't need 3D scene
       await use()
     },

@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render } from '@testing-library/react'
+import '@testing-library/jest-dom/vitest'
 import { BaseGate } from './BaseGate'
 import type { PinConfig } from '../types'
 import type { GateType } from '@/store/types'
@@ -39,6 +40,12 @@ vi.mock('@react-three/fiber', () => ({
     camera: {},
     gl: { domElement: {} },
   })),
+}))
+
+vi.mock('./WireStub', () => ({
+  WireStub: ({ position }: { position: [number, number, number] }) => (
+    <div data-testid={`wire-stub-${position[0]}-${position[1]}-${position[2]}`}>WireStub</div>
+  ),
 }))
 
 describe('BaseGate', () => {
@@ -107,5 +114,166 @@ describe('BaseGate', () => {
     }
     const { container } = render(<BaseGate {...props} />)
     expect(container).toBeTruthy()
+  })
+
+  describe('Wire Stub Visibility', () => {
+    it('hides input stub when input pin is connected', () => {
+      const props = {
+        ...defaultProps,
+        pinConfigs: [
+          {
+            ...defaultProps.pinConfigs[0],
+            connected: true, // input connected
+          },
+          defaultProps.pinConfigs[1], // output not connected
+        ],
+        wireStubPositions: [[-0.75, 0.2, 0], [0.75, 0, 0]] as [number, number, number][], // input stub, output stub
+      }
+      const { queryByTestId } = render(<BaseGate {...props} />)
+      // Input stub should not be rendered when input is connected
+      expect(queryByTestId('wire-stub--0.75-0.2-0')).not.toBeInTheDocument()
+      // Output stub should be rendered when output is not connected
+      expect(queryByTestId('wire-stub-0.75-0-0')).toBeInTheDocument()
+    })
+
+    it('hides output stub when output pin is connected', () => {
+      const props = {
+        ...defaultProps,
+        pinConfigs: [
+          defaultProps.pinConfigs[0], // input not connected
+          {
+            ...defaultProps.pinConfigs[1],
+            connected: true, // output connected
+          },
+        ],
+        wireStubPositions: [[-0.75, 0.2, 0], [0.75, 0, 0]] as [number, number, number][], // input stub, output stub
+      }
+      const { queryByTestId } = render(<BaseGate {...props} />)
+      // Input stub should be rendered when input is not connected
+      expect(queryByTestId('wire-stub--0.75-0.2-0')).toBeInTheDocument()
+      // Output stub should not be rendered when output is connected
+      expect(queryByTestId('wire-stub-0.75-0-0')).not.toBeInTheDocument()
+    })
+
+    it('shows input stub when input pin is not connected', () => {
+      const props = {
+        ...defaultProps,
+        pinConfigs: [
+          {
+            ...defaultProps.pinConfigs[0],
+            connected: false, // input not connected
+          },
+          defaultProps.pinConfigs[1],
+        ],
+        wireStubPositions: [[-0.75, 0.2, 0], [0.75, 0, 0]] as [number, number, number][],
+      }
+      const { queryByTestId } = render(<BaseGate {...props} />)
+      // Input stub should be rendered when input is not connected
+      expect(queryByTestId('wire-stub--0.75-0.2-0')).toBeInTheDocument()
+    })
+
+    it('shows output stub when output pin is not connected', () => {
+      const props = {
+        ...defaultProps,
+        pinConfigs: [
+          defaultProps.pinConfigs[0],
+          {
+            ...defaultProps.pinConfigs[1],
+            connected: false, // output not connected
+          },
+        ],
+        wireStubPositions: [[-0.75, 0.2, 0], [0.75, 0, 0]] as [number, number, number][],
+      }
+      const { queryByTestId } = render(<BaseGate {...props} />)
+      // Output stub should be rendered when output is not connected
+      expect(queryByTestId('wire-stub-0.75-0-0')).toBeInTheDocument()
+    })
+
+    it('hides all stubs when all pins are connected', () => {
+      const props = {
+        ...defaultProps,
+        pinConfigs: [
+          {
+            ...defaultProps.pinConfigs[0],
+            connected: true, // input connected
+          },
+          {
+            ...defaultProps.pinConfigs[1],
+            connected: true, // output connected
+          },
+        ],
+        wireStubPositions: [[-0.75, 0.2, 0], [0.75, 0, 0]] as [number, number, number][],
+      }
+      const { queryByTestId } = render(<BaseGate {...props} />)
+      // All stubs should be hidden when all pins are connected
+      expect(queryByTestId('wire-stub--0.75-0.2-0')).not.toBeInTheDocument()
+      expect(queryByTestId('wire-stub-0.75-0-0')).not.toBeInTheDocument()
+    })
+
+    it('shows all stubs when no pins are connected', () => {
+      const props = {
+        ...defaultProps,
+        pinConfigs: [
+          {
+            ...defaultProps.pinConfigs[0],
+            connected: false, // input not connected
+          },
+          {
+            ...defaultProps.pinConfigs[1],
+            connected: false, // output not connected
+          },
+        ],
+        wireStubPositions: [[-0.75, 0.2, 0], [0.75, 0, 0]] as [number, number, number][],
+      }
+      const { queryByTestId } = render(<BaseGate {...props} />)
+      // All stubs should be visible when no pins are connected
+      expect(queryByTestId('wire-stub--0.75-0.2-0')).toBeInTheDocument()
+      expect(queryByTestId('wire-stub-0.75-0-0')).toBeInTheDocument()
+    })
+
+    it('handles two-input gates with multiple stubs correctly', () => {
+      // Test for gates with inputA, inputB, and output
+      const twoInputProps = {
+        ...defaultProps,
+        pinConfigs: [
+          {
+            pinId: 'gate-1-in-0',
+            position: [-0.6, 0.2, 0] as [number, number, number],
+            value: false,
+            connected: true, // inputA connected
+            pinType: 'input' as const,
+            pinName: 'inputA',
+          },
+          {
+            pinId: 'gate-1-in-1',
+            position: [-0.6, -0.2, 0] as [number, number, number],
+            value: false,
+            connected: false, // inputB not connected
+            pinType: 'input' as const,
+            pinName: 'inputB',
+          },
+          {
+            pinId: 'gate-1-out-0',
+            position: [0.6, 0, 0] as [number, number, number],
+            value: false,
+            connected: false, // output not connected
+            pinType: 'output' as const,
+            pinName: 'output',
+          },
+        ] as PinConfig[],
+        wireStubPositions: [
+          [-0.75, 0.2, 0], // inputA stub
+          [-0.75, -0.2, 0], // inputB stub
+          [0.75, 0, 0], // output stub
+        ] as [number, number, number][],
+      }
+      const { queryByTestId } = render(<BaseGate {...twoInputProps} />)
+      // inputA stub should be hidden (connected)
+      expect(queryByTestId('wire-stub--0.75-0.2-0')).not.toBeInTheDocument()
+      // inputB stub should be visible (not connected)
+      expect(queryByTestId('wire-stub--0.75--0.2-0')).toBeInTheDocument()
+      // output stub should be visible (not connected)
+      expect(queryByTestId('wire-stub-0.75-0-0')).toBeInTheDocument()
+    })
   })
 })

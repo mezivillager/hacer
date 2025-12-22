@@ -1,11 +1,14 @@
-import { Layout, Typography } from 'antd'
+import { Layout, Typography, message } from 'antd'
 import { Scene } from './Scene'
 import { GateRenderer } from '@/gates'
 import { Wire3D } from './Wire3D'
 import { useCircuitStore, circuitActions } from '@/store/circuitStore'
 import { trackRender } from '@/utils/renderTracking'
 import { worldToGrid, canPlaceGateAt } from '@/utils/grid'
-import { isPinConnected, handlePinClick, handleInputToggle, handleGateClick } from './handlers/canvasHandlers'
+import { handlePinClick, handleInputToggle, handleGateClick } from './handlers/canvasHandlers'
+// Wire crossing resolution deferred - new wiring scheme routes along section lines
+import type { WireSegment } from '@/utils/wiringScheme/types'
+import { calculateWirePath } from '@/utils/wiringScheme/core'
 
 const { Content } = Layout
 const { Text } = Typography
@@ -17,12 +20,22 @@ export function CanvasArea() {
   // Use individual selectors - Zustand's shallow comparison works better with individual subscriptions
   // For arrays, we need to be careful - but individual selectors are more stable
   const gates = useCircuitStore((s) => s.gates)
-  const wires = useCircuitStore((s) => s.wires)
+  const wires = useCircuitStore((s) => s.wires) // Subscribe to wires to trigger re-render when wires change
   const placementMode = useCircuitStore((s) => s.placementMode)
   const wiringFrom = useCircuitStore((s) => s.wiringFrom)
   const placementPreviewPosition = useCircuitStore((s) => s.placementPreviewPosition)
   const isDragActive = useCircuitStore((s) => s.isDragActive)
   // Note: selectedGateId is read via getState() in isDragInvalid calculation to avoid subscription
+  
+  // Create a reactive isPinConnected function that will trigger re-renders when wires change
+  // This ensures gates re-render when their pin connection status changes
+  const isPinConnectedReactive = (gateId: string, pinId: string): boolean => {
+    return wires.some(
+      w =>
+        (w.fromGateId === gateId && w.fromPinId === pinId) ||
+        (w.toGateId === gateId && w.toPinId === pinId)
+    )
+  }
   
   // Track renders with reason
   trackRender('CanvasArea', `gates:${gates.length},wires:${wires.length},placing:${!!placementMode},wiring:${!!wiringFrom}`)
@@ -34,7 +47,14 @@ export function CanvasArea() {
   // Check if current preview position is invalid for placement
   const isPlacementInvalid = isPlacing && placementPreviewPosition !== null && (() => {
     const gridPos = worldToGrid(placementPreviewPosition)
-    return !canPlaceGateAt(gridPos, gates)
+    return !canPlaceGateAt(
+      gridPos,
+      gates,
+      undefined,
+      wires,
+      circuitActions.getPinWorldPosition,
+      circuitActions.getPinOrientation
+    )
   })()
 
   // Check if current drag position is invalid
@@ -45,7 +65,14 @@ export function CanvasArea() {
     if (!currentSelectedGateId) return false
     const gridPos = worldToGrid(placementPreviewPosition)
     const otherGates = gates.filter(g => g.id !== currentSelectedGateId)
-    return !canPlaceGateAt(gridPos, otherGates, currentSelectedGateId)
+    return !canPlaceGateAt(
+      gridPos,
+      otherGates,
+      currentSelectedGateId,
+      wires,
+      circuitActions.getPinWorldPosition,
+      circuitActions.getPinOrientation
+    )
   })()
 
   // Help text based on current mode
@@ -59,19 +86,110 @@ export function CanvasArea() {
     return '🖱️ Click pin: Wire • Shift+click input: Toggle • Click body: Select • Drag body: Move • Left/Right arrows: Rotate gate • Scroll: Zoom'
   })()
 
+  // Calculate wire paths iteratively to avoid overlaps
+  // Each wire must see segments from all previously calculated wires
+  const wirePaths: Array<{
+    wire: typeof wires[0]
+    fromPos: ReturnType<typeof getPinWorldPosition>
+    toPos: ReturnType<typeof getPinWorldPosition>
+    fromOrientation: ReturnType<typeof circuitActions.getPinOrientation>
+    toOrientation: ReturnType<typeof circuitActions.getPinOrientation>
+    path: ReturnType<typeof calculateWirePath>
+    segments: WireSegment[]
+  }> = []
+  
+  // Accumulate all segments from previously calculated wires (not used in new scheme, but kept for compatibility)
+  const allExistingSegments: WireSegment[] = []
+  
+  for (const wire of wires) {
+    const fromPos = getPinWorldPosition(wire.fromGateId, wire.fromPinId)
+    const toPos = getPinWorldPosition(wire.toGateId, wire.toPinId)
+    if (!fromPos || !toPos) continue
+
+    const fromOrientation = circuitActions.getPinOrientation(wire.fromGateId, wire.fromPinId)
+    const toOrientation = circuitActions.getPinOrientation(wire.toGateId, wire.toPinId)
+    
+    if (!fromOrientation || !toOrientation) continue
+    
+    // Calculate path for this wire using simplified wiring scheme
+    // Note: New scheme doesn't use existing wire segments for avoidance (wires naturally avoid gates)
+    let path
+    try {
+      path = calculateWirePath(
+        fromPos,
+        { type: 'pin', pin: toPos, orientation: { direction: toOrientation } },
+        { direction: fromOrientation },
+        gates,
+        {
+          sourceGateId: wire.fromGateId,
+          destinationGateId: wire.toGateId
+        }
+      )
+    } catch (error) {
+      // Log error details to console for debugging
+      console.error('[CanvasArea] Pathfinding error for existing wire:', error)
+      console.error('[CanvasArea] Wire context:', {
+        wireId: wire.id,
+        fromGateId: wire.fromGateId,
+        fromPinId: wire.fromPinId,
+        toGateId: wire.toGateId,
+        toPinId: wire.toPinId,
+      })
+      
+      // Show user-friendly error notification
+      message.error(`Unable to render wire path for ${wire.fromGateId} → ${wire.toGateId}. The wire will not be displayed.`)
+      
+      // Continue to next wire (don't render this one)
+      continue
+    }
+    
+    // Collect ALL segments (including entry/exit) for next wires to avoid
+    const allSegments = path.segments
+    allExistingSegments.push(...allSegments)
+    
+    wirePaths.push({
+      wire,
+      fromPos,
+      toPos,
+      fromOrientation,
+      toOrientation,
+      path,
+      segments: allSegments, // Include ALL segments for overlap checking
+    })
+  }
+
+  // Wire crossing resolution deferred - new wiring scheme routes along section lines
+  // Wires naturally avoid gates, and crossings are less likely with section-line routing
+  // If crossings occur, they will be handled in a future update
+  const pathsWithElevation = wirePaths // No elevation needed for now
+
   return (
     <Content className={`app-content ${isPlacing ? 'placing' : ''} ${isPlacing && isPlacementInvalid ? 'placing-invalid' : ''} ${isWiring ? 'wiring' : ''} ${isDragActive ? 'dragging' : ''} ${isDragInvalid ? 'dragging-invalid' : ''}`}>
       <Scene>
         {/* Render all wires */}
-        {wires.map(wire => {
-          const fromPos = getPinWorldPosition(wire.fromGateId, wire.fromPinId)
-          const toPos = getPinWorldPosition(wire.toGateId, wire.toPinId)
-          if (!fromPos || !toPos) return null
-
+        {pathsWithElevation.map((wirePath) => {
+          const { wire, fromPos, toPos, fromOrientation, toOrientation, path } = wirePath
+          
           const fromGate = gates.find(g => g.id === wire.fromGateId)
           const outputValue = fromGate?.outputs.find(p => p.id === wire.fromPinId)?.value ?? false
 
-          return <Wire3D key={wire.id} start={fromPos} end={toPos} isActive={outputValue} />
+          // Use the pre-calculated path (already avoids overlaps with previous wires)
+          // Wire3D will use this path directly
+          return (
+            <Wire3D
+              key={wire.id}
+              start={fromPos}
+              end={toPos}
+              startOrientation={fromOrientation}
+              endOrientation={toOrientation}
+              gates={gates}
+              sourceGateId={wire.fromGateId}
+              destinationGateId={wire.toGateId}
+              existingWires={[]} // Path already calculated with overlap avoidance
+              precomputedPath={path} // Pass pre-calculated path
+              isActive={outputValue}
+            />
+          )
         })}
 
         {/* Render all gates using GateRenderer */}
@@ -80,7 +198,7 @@ export function CanvasArea() {
             key={gate.id}
             gate={gate}
             isWiring={isWiring}
-            isPinConnected={isPinConnected}
+            isPinConnected={isPinConnectedReactive}
             onClick={() => handleGateClick(gate.id)}
             onPinClick={handlePinClick}
             onInputToggle={handleInputToggle}

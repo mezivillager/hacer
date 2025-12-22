@@ -28,11 +28,12 @@ export const colors = {
     disconnected: '#555555',
   },
 
-  // Wire colors
+  // Wire colors - reddish copper tones
   wire: {
     active: '#00ff88',
     inactive: '#ff4444',
-    preview: '#4a9eff',
+    preview: '#cd7f32', // Reddish copper (same as default)
+    default: '#cd7f32', // Reddish copper color
   },
 
   // Background colors
@@ -47,10 +48,10 @@ export const colors = {
     default: '#2a2a4a',
   },
 
-  // Grid colors
+  // Grid colors - grayish tones for contrast with copper wires
   grid: {
-    cell: '#6f6f6f',
-    section: '#9d4b4b',
+    cell: '#666666', // Grayish
+    section: '#555555', // Slightly darker gray
     active: '#4a9eff',
   },
 
