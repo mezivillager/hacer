@@ -62,6 +62,7 @@ export function useKeyboardShortcuts() {
       // With gates rotated 90° around X, local Z maps to world -Y
       // To rotate around world Y (vertical), rotate around local Z with inverted angle
       // Disable rotation during drag
+      // If no gate is selected, let SceneKeyboardPan handle arrow keys for camera panning
       if (!selectedGateId || isDragging) return
 
       const rotationStep = Math.PI / 2 // 90 degrees

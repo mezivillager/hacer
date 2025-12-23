@@ -228,5 +228,122 @@ describe('useKeyboardShortcuts', () => {
       expect(updatedGate?.rotation.z).not.toBe(originalRotationZ)
     })
   })
+
+  describe('Arrow key handling', () => {
+    it('does not rotate gate when ArrowLeft is pressed and no gate is selected', () => {
+      const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      // Don't select the gate
+      
+      renderHook(() => useKeyboardShortcuts())
+      
+      const originalRotationZ = gate.rotation.z
+      
+      const event = new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true })
+      const preventDefaultSpy = vi.spyOn(event, 'preventDefault')
+      
+      act(() => {
+        window.dispatchEvent(event)
+      })
+      
+      // Should not prevent default (let SceneKeyboardPan handle it)
+      expect(preventDefaultSpy).not.toHaveBeenCalled()
+      
+      // Gate rotation should not change
+      const updatedGate = getState().gates.find(g => g.id === gate.id)
+      expect(updatedGate?.rotation.z).toBe(originalRotationZ)
+    })
+
+    it('does not rotate gate when ArrowRight is pressed and no gate is selected', () => {
+      const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      // Don't select the gate
+      
+      renderHook(() => useKeyboardShortcuts())
+      
+      const originalRotationZ = gate.rotation.z
+      
+      const event = new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true })
+      const preventDefaultSpy = vi.spyOn(event, 'preventDefault')
+      
+      act(() => {
+        window.dispatchEvent(event)
+      })
+      
+      // Should not prevent default (let SceneKeyboardPan handle it)
+      expect(preventDefaultSpy).not.toHaveBeenCalled()
+      
+      // Gate rotation should not change
+      const updatedGate = getState().gates.find(g => g.id === gate.id)
+      expect(updatedGate?.rotation.z).toBe(originalRotationZ)
+    })
+
+    it('rotates gate when ArrowLeft is pressed and gate is selected', () => {
+      const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      getState().selectGate(gate.id)
+      
+      renderHook(() => useKeyboardShortcuts())
+      
+      const originalRotationZ = gate.rotation.z
+      
+      const event = new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true })
+      const preventDefaultSpy = vi.spyOn(event, 'preventDefault')
+      
+      act(() => {
+        window.dispatchEvent(event)
+      })
+      
+      expect(preventDefaultSpy).toHaveBeenCalled()
+      
+      // Gate rotation should change
+      const updatedGate = getState().gates.find(g => g.id === gate.id)
+      expect(updatedGate?.rotation.z).not.toBe(originalRotationZ)
+    })
+
+    it('rotates gate when ArrowRight is pressed and gate is selected', () => {
+      const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      getState().selectGate(gate.id)
+      
+      renderHook(() => useKeyboardShortcuts())
+      
+      const originalRotationZ = gate.rotation.z
+      
+      const event = new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true })
+      const preventDefaultSpy = vi.spyOn(event, 'preventDefault')
+      
+      act(() => {
+        window.dispatchEvent(event)
+      })
+      
+      expect(preventDefaultSpy).toHaveBeenCalled()
+      
+      // Gate rotation should change
+      const updatedGate = getState().gates.find(g => g.id === gate.id)
+      expect(updatedGate?.rotation.z).not.toBe(originalRotationZ)
+    })
+
+    it('does not rotate gate when arrow key is pressed during dragging', () => {
+      const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      getState().selectGate(gate.id)
+      // Set preview position to simulate dragging
+      getState().updatePlacementPreviewPosition({ x: 2, y: 0, z: 2 })
+      
+      renderHook(() => useKeyboardShortcuts())
+      
+      const originalRotationZ = gate.rotation.z
+      
+      const event = new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true })
+      const preventDefaultSpy = vi.spyOn(event, 'preventDefault')
+      
+      act(() => {
+        window.dispatchEvent(event)
+      })
+      
+      // Should not prevent default or rotate during drag
+      expect(preventDefaultSpy).not.toHaveBeenCalled()
+      
+      // Gate rotation should not change
+      const updatedGate = getState().gates.find(g => g.id === gate.id)
+      expect(updatedGate?.rotation.z).toBe(originalRotationZ)
+    })
+  })
 })
 

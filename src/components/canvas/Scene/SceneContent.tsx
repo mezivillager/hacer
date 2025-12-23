@@ -4,6 +4,7 @@ import { PlacementPreview } from './PlacementPreview'
 import { WirePreview } from './WirePreview'
 import { SceneGrid } from './SceneGrid'
 import { SceneOrbitControls } from './SceneOrbitControls'
+import { SceneKeyboardPan } from './SceneKeyboardPan'
 import { SceneAxes } from './SceneAxes'
 import type { SceneProps } from './types'
 
@@ -23,6 +24,7 @@ export function SceneContent({ children }: SceneProps) {
       <WirePreview />
       <SceneGrid />
       <SceneOrbitControls />
+      <SceneKeyboardPan />
       {children}
     </>
   )
