@@ -81,6 +81,9 @@ describe('groundPlaneHandlers', () => {
             fromPinType: 'output',
             fromPosition: { x: 0, y: 0, z: 0 },
             previewEndPosition: null,
+            destinationGateId: null,
+            destinationPinId: null,
+            segments: null,
           } as WiringState,
           isDragActive: false,
           placementPreviewPosition: null,
@@ -139,6 +142,9 @@ describe('groundPlaneHandlers', () => {
             fromPinType: 'output',
             fromPosition: { x: 0, y: 0, z: 0 },
             previewEndPosition: null,
+            destinationGateId: null,
+            destinationPinId: null,
+            segments: null,
           } as WiringState,
         })
       )
@@ -158,6 +164,9 @@ describe('groundPlaneHandlers', () => {
             fromPinType: 'output',
             fromPosition: { x: 0, y: 0, z: 0 },
             previewEndPosition: null,
+            destinationGateId: null,
+            destinationPinId: null,
+            segments: null,
           } as WiringState,
         })
       )
@@ -202,6 +211,9 @@ describe('groundPlaneHandlers', () => {
             fromPinType: 'output',
             fromPosition: { x: 0, y: 0, z: 0 },
             previewEndPosition: null,
+            destinationGateId: null,
+            destinationPinId: null,
+            segments: null,
           } as WiringState,
           placementPreviewPosition: null,
           selectedGateId: null,

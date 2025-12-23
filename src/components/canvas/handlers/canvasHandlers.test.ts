@@ -24,7 +24,7 @@ describe('canvasHandlers', () => {
 
   describe('isPinConnected', () => {
     it('returns true when pin is connected as source', () => {
-      const wire: Wire = { id: 'wire-1', fromGateId: 'gate-1', fromPinId: 'pin-1', toGateId: 'gate-2', toPinId: 'pin-2' }
+      const wire: Wire = { id: 'wire-1', fromGateId: 'gate-1', fromPinId: 'pin-1', toGateId: 'gate-2', toPinId: 'pin-2', segments: [] }
       vi.mocked(useCircuitStore.getState).mockReturnValue(
         createMockStore({ wires: [wire] })
       )
@@ -33,7 +33,7 @@ describe('canvasHandlers', () => {
     })
 
     it('returns true when pin is connected as target', () => {
-      const wire: Wire = { id: 'wire-1', fromGateId: 'gate-1', fromPinId: 'pin-1', toGateId: 'gate-2', toPinId: 'pin-2' }
+      const wire: Wire = { id: 'wire-1', fromGateId: 'gate-1', fromPinId: 'pin-1', toGateId: 'gate-2', toPinId: 'pin-2', segments: [] }
       vi.mocked(useCircuitStore.getState).mockReturnValue(
         createMockStore({ wires: [wire] })
       )
@@ -42,7 +42,7 @@ describe('canvasHandlers', () => {
     })
 
     it('returns false when pin is not connected', () => {
-      const wire: Wire = { id: 'wire-1', fromGateId: 'gate-1', fromPinId: 'pin-1', toGateId: 'gate-2', toPinId: 'pin-2' }
+      const wire: Wire = { id: 'wire-1', fromGateId: 'gate-1', fromPinId: 'pin-1', toGateId: 'gate-2', toPinId: 'pin-2', segments: [] }
       vi.mocked(useCircuitStore.getState).mockReturnValue(
         createMockStore({ wires: [wire] })
       )
@@ -67,6 +67,9 @@ describe('canvasHandlers', () => {
         fromPinType: 'output',
         fromPosition: { x: 0, y: 0, z: 0 },
         previewEndPosition: null,
+        destinationGateId: null,
+        destinationPinId: null,
+        segments: null,
       }
       vi.mocked(useCircuitStore.getState).mockReturnValue(
         createMockStore({ wiringFrom })
@@ -164,6 +167,9 @@ describe('canvasHandlers', () => {
         fromPinType: 'output',
         fromPosition: { x: 0, y: 0, z: 0 },
         previewEndPosition: null,
+        destinationGateId: null,
+        destinationPinId: null,
+        segments: null,
       }
       vi.mocked(useCircuitStore.getState).mockReturnValue(
         createMockStore({ wiringFrom })

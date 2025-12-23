@@ -48,7 +48,8 @@ export interface CircuitActionsAPI {
     fromGateId: string,
     fromPinId: string,
     toGateId: string,
-    toPinId: string
+    toPinId: string,
+    segments: Array<{ start: { x: number; y: number; z: number }; end: { x: number; y: number; z: number }; type: string }>
   ) => void
   setInputValue: (gateId: string, pinId: string, value: boolean) => void
   toggleSimulation: () => void

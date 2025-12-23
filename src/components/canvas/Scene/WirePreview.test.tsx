@@ -88,6 +88,7 @@ describe('WirePreview', () => {
         previewEndPosition: null,
         destinationGateId: null,
         destinationPinId: null,
+        segments: null,
       },
     })
     const { container } = render(<WirePreview />)
@@ -104,6 +105,7 @@ describe('WirePreview', () => {
         previewEndPosition: { x: 2, y: 0.2, z: 2 },
         destinationGateId: null,
         destinationPinId: null,
+        segments: null,
       },
       gates: [],
     })
@@ -125,6 +127,7 @@ describe('WirePreview', () => {
         previewEndPosition,
         destinationGateId: null,
         destinationPinId: null,
+        segments: null,
       },
       gates: [],
     })
@@ -160,6 +163,7 @@ describe('WirePreview', () => {
         previewEndPosition: { x: 2, y: 0.2, z: 2 },
         destinationGateId: null,
         destinationPinId: null,
+        segments: null,
       },
       gates: [],
     })

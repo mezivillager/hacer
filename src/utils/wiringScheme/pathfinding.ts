@@ -7,6 +7,7 @@
 
 import type { Position, WireSegment } from './types'
 import { SECTION_SIZE, WIRE_HEIGHT } from './types'
+import { wouldOverlapWithExisting, segmentsOverlap } from './overlap'
 
 /**
  * Calculate distance between two positions (Manhattan distance for pathfinding).
@@ -190,7 +191,7 @@ export function checkCanReachDirectly(current: Position, end: Position): boolean
  * @param end - End position
  * @returns Wire segment
  */
-function createSegment(start: Position, end: Position): WireSegment {
+export function createSegment(start: Position, end: Position): WireSegment {
   const isHorizontal = Math.abs(start.z - end.z) < 0.001
   
   return {
@@ -201,6 +202,50 @@ function createSegment(start: Position, end: Position): WireSegment {
 }
 
 /**
+ * Check if moving to a corner would backtrack along the path.
+ * 
+ * We're backtracking if the segment from previous to current overlaps
+ * with the segment from current to next corner. This means we'd be going
+ * back along the same path we just took.
+ * 
+ * @param previous - Previous position (null if at start)
+ * @param current - Current position
+ * @param nextCorner - Potential next corner to move to
+ * @returns True if moving to nextCorner would backtrack
+ */
+function wouldBacktrack(
+  previous: Position | null,
+  current: Position,
+  nextCorner: Position
+): boolean {
+  // Can't backtrack if we're at the start (no previous position)
+  if (previous === null) {
+    return false
+  }
+  
+  // Create segment from previous to current
+  const previousSegment = createSegment(previous, current)
+  
+  // Halve the previous segment (stop at midpoint) to avoid endpoint touch detection
+  // This way, segments that only touch at the connection point won't be detected as backtracking
+  const halvedPreviousSegment: WireSegment = {
+    start: previousSegment.start,
+    end: {
+      x: (previousSegment.start.x + previousSegment.end.x) / 2,
+      y: previousSegment.start.y,
+      z: (previousSegment.start.z + previousSegment.end.z) / 2,
+    },
+    type: previousSegment.type,
+  }
+  
+  // Create segment from current to next corner
+  const nextSegment = createSegment(current, nextCorner)
+  
+  // If these segments overlap, we're backtracking
+  return segmentsOverlap(halvedPreviousSegment, nextSegment)
+}
+
+/**
  * Find path along section lines from start to end using greedy algorithm.
  * 
  * @param start - Start position (must be on a section line)
@@ -208,9 +253,14 @@ function createSegment(start: Position, end: Position): WireSegment {
  * @returns Array of segments forming the path
  * @throws Error if pathfinding fails (cannot make progress or exceeds max iterations)
  */
-export function findPathAlongSectionLines(start: Position, end: Position): WireSegment[] {
+export function findPathAlongSectionLines(
+  start: Position,
+  end: Position,
+  existingSegments: WireSegment[] = []
+): WireSegment[] {
   const path: WireSegment[] = []
   let current: Position = { ...start }
+  let previous: Position | null = null
   const maxIterations = 1000
   let iteration = 0
   
@@ -252,14 +302,23 @@ export function findPathAlongSectionLines(start: Position, end: Position): WireS
       // Destination is on the same section line and closer than any corner
       // Move directly to destination
       const directSegment = createSegment(current, routingEnd)
-      path.push(directSegment)
+      if (!wouldOverlapWithExisting(directSegment, existingSegments)) {
+        path.push(directSegment)
+        current = routingEnd
+      } else {
+        throw new Error(
+          `Pathfinding failed: direct segment would overlap with existing wires. ` +
+          `Start: ${JSON.stringify(start)}, End: ${JSON.stringify(end)}, ` +
+          `Current: ${JSON.stringify(current)}, RoutingEnd: ${JSON.stringify(routingEnd)}`
+        )
+      }
       break
     }
     
     // Destination is beyond - need to move to next corner
     // Get reachable section corners
     const corners = getReachableCorners(current)
-    
+
     if (corners.length === 0) {
       throw new Error(
         `Pathfinding failed: no reachable corners from current position. ` +
@@ -270,33 +329,54 @@ export function findPathAlongSectionLines(start: Position, end: Position): WireS
       )
     }
     
+    // Filter out corners that would create overlapping segments with existing wires
+    // and corners that would take us back to where we came from
+    const backTrackedCorners: Position[] = []
+    const overlappingCorners: Position[] = []
+    const eligibleCorners = corners.filter(corner => {
+      // Skip if moving to this corner would backtrack
+      if (wouldBacktrack(previous, current, corner)) {
+        backTrackedCorners.push(corner)
+        return false
+      }
+      
+      const potentialSegment = createSegment(current, corner)
+      const overlaps = wouldOverlapWithExisting(potentialSegment, existingSegments)
+      if (overlaps) {
+        overlappingCorners.push(corner)
+      }
+      return !overlaps
+    })
+    
+    console.debug('[pathfinding] findPathAlongSectionLines', { current, corners, eligibleCorners, backTrackedCorners, overlappingCorners })
+
+    // If all corners are blocked by existing wires, throw error
+    if (eligibleCorners.length === 0) {
+      throw new Error(
+        `Pathfinding failed: all routing corners are blocked by existing wires. ` +
+        `Please reposition gates to allow non-overlapping wiring. ` +
+        `Start: ${JSON.stringify(start)}, End: ${JSON.stringify(end)}, ` +
+        `Current: ${JSON.stringify(current)}, RoutingEnd: ${JSON.stringify(routingEnd)}, ` +
+        `Blocked corners: ${JSON.stringify(corners)}`
+      )
+    }
+
     // Filter corners that reduce distance to routingEnd
-    const closerCorners = corners.filter(corner => {
+    let closerCorners = eligibleCorners.filter(corner => {
       const cornerDistance = manhattanDistance(corner, routingEnd)
       return cornerDistance < currentDistance - 0.001 // Allow small epsilon for floating point
     })
-    
     if (closerCorners.length === 0) {
-      // Cannot make progress with corners - this should not happen with section line routing
-      // All cases should be handled by checkCanReachDirectly (for direct paths) or
-      // getReachableCorners (for paths through corners)
-      throw new Error(
-        `Pathfinding failed: no progress possible toward destination. ` +
-        `The algorithm cannot find any routing corners that reduce the distance to the destination. ` +
-        `This may indicate the destination is unreachable or there is a routing conflict. ` +
-        `Start: ${JSON.stringify(start)}, End: ${JSON.stringify(end)}, ` +
-        `Current: ${JSON.stringify(current)}, RoutingEnd: ${JSON.stringify(routingEnd)}, ` +
-        `Reachable corners: ${JSON.stringify(corners)}, ` +
-        `Current distance: ${currentDistance}`
-      )
+      // No closer corners found, using all non-overlapping corners
+      closerCorners = eligibleCorners
     }
     
-    // Find nearest corner that gets us closer
+    // Find nearest corner that gets us closer (from non-overlapping corners)
     let nearestCorner = closerCorners[0]
-    let nearestDistance = manhattanDistance(closerCorners[0], current)
+    let nearestDistance = manhattanDistance(closerCorners[0], routingEnd)
     
     for (const corner of closerCorners) {
-      const dist = manhattanDistance(corner, current)
+      const dist = manhattanDistance(corner, routingEnd)
       if (dist < nearestDistance) {
         nearestDistance = dist
         nearestCorner = corner
@@ -306,6 +386,7 @@ export function findPathAlongSectionLines(start: Position, end: Position): WireS
     // Create segment from current to nearest corner
     const segment = createSegment(current, nearestCorner)
     path.push(segment)
+    previous = current
     current = nearestCorner
   }
   

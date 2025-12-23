@@ -1,4 +1,5 @@
 import type { WireActions, Wire, CircuitStore } from '../../types'
+import type { WireSegment } from '@/utils/wiringScheme/types'
 
 type SetState = (
   fn: (state: CircuitStore) => void,
@@ -7,13 +8,14 @@ type SetState = (
 ) => void
 
 export const createWireActions = (set: SetState): WireActions => ({
-  addWire: (fromGateId: string, fromPinId: string, toGateId: string, toPinId: string) => {
+  addWire: (fromGateId: string, fromPinId: string, toGateId: string, toPinId: string, segments: WireSegment[]) => {
     const wire: Wire = {
       id: `wire-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
       fromGateId,
       fromPinId,
       toGateId,
       toPinId,
+      segments, // Store segments when wire is created
     }
     set((state) => {
       state.wires.push(wire)

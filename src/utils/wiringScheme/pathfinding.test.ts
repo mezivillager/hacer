@@ -17,7 +17,7 @@ describe('WiringScheme Pathfinding Module', () => {
       const start = createPosition(0, WIRE_HEIGHT, 0)
       const end = createPosition(8, WIRE_HEIGHT, 0)
 
-      const path = findPathAlongSectionLines(start, end)
+      const path = findPathAlongSectionLines(start, end, [])
 
       expect(path.length).toBeGreaterThan(0)
       // Path should start at start position
@@ -33,7 +33,7 @@ describe('WiringScheme Pathfinding Module', () => {
       const start = createPosition(0, WIRE_HEIGHT, 0)
       const end = createPosition(0, WIRE_HEIGHT, 8)
 
-      const path = findPathAlongSectionLines(start, end)
+      const path = findPathAlongSectionLines(start, end, [])
 
       expect(path.length).toBeGreaterThan(0)
       expect(path[0].start.x).toBeCloseTo(start.x, 3)
@@ -47,7 +47,7 @@ describe('WiringScheme Pathfinding Module', () => {
       const start = createPosition(0, WIRE_HEIGHT, 0)
       const end = createPosition(4, WIRE_HEIGHT, 4)
 
-      const path = findPathAlongSectionLines(start, end)
+      const path = findPathAlongSectionLines(start, end, [])
 
       expect(path.length).toBeGreaterThan(0)
       // Should go through corner at (0, 0) -> (4, 0) -> (4, 4) or (0, 0) -> (0, 4) -> (4, 4)
@@ -62,7 +62,7 @@ describe('WiringScheme Pathfinding Module', () => {
       const start = createPosition(0, WIRE_HEIGHT, 0)
       const end = createPosition(12, WIRE_HEIGHT, 12)
 
-      const path = findPathAlongSectionLines(start, end)
+      const path = findPathAlongSectionLines(start, end, [])
 
       expect(path.length).toBeGreaterThan(0)
       // Should route through section corners
@@ -77,7 +77,7 @@ describe('WiringScheme Pathfinding Module', () => {
       const start = createPosition(0, WIRE_HEIGHT, 0)
       const end = createPosition(8, WIRE_HEIGHT, 8)
 
-      const path = findPathAlongSectionLines(start, end)
+      const path = findPathAlongSectionLines(start, end, [])
 
       for (const segment of path) {
         expect(['horizontal', 'vertical']).toContain(segment.type)
@@ -98,7 +98,7 @@ describe('WiringScheme Pathfinding Module', () => {
       const start = createPosition(0, WIRE_HEIGHT, 0)
       const end = createPosition(8, WIRE_HEIGHT, 8)
 
-      const path = findPathAlongSectionLines(start, end)
+      const path = findPathAlongSectionLines(start, end, [])
 
       for (const segment of path) {
         // Start and end positions should be on section lines
@@ -120,7 +120,7 @@ describe('WiringScheme Pathfinding Module', () => {
       const start = createPosition(0, WIRE_HEIGHT, 0)
       const end = createPosition(8, WIRE_HEIGHT, 8)
 
-      const path = findPathAlongSectionLines(start, end)
+      const path = findPathAlongSectionLines(start, end, [])
 
       for (let i = 0; i < path.length - 1; i++) {
         const current = path[i]
@@ -136,7 +136,7 @@ describe('WiringScheme Pathfinding Module', () => {
       const start = createPosition(0, WIRE_HEIGHT, 0)
       const end = createPosition(8, WIRE_HEIGHT, 8)
 
-      const path = findPathAlongSectionLines(start, end)
+      const path = findPathAlongSectionLines(start, end, [])
 
       for (const segment of path) {
         expect(segment.start.y).toBe(WIRE_HEIGHT)
@@ -148,7 +148,7 @@ describe('WiringScheme Pathfinding Module', () => {
       const start = createPosition(4, WIRE_HEIGHT, 4)
       const end = createPosition(4, WIRE_HEIGHT, 4)
 
-      const path = findPathAlongSectionLines(start, end)
+      const path = findPathAlongSectionLines(start, end, [])
 
       expect(path.length).toBe(0)
     })
@@ -157,7 +157,7 @@ describe('WiringScheme Pathfinding Module', () => {
       const start = createPosition(4, WIRE_HEIGHT, 4)
       const end = createPosition(4.0001, WIRE_HEIGHT, 4.0001)
 
-      const path = findPathAlongSectionLines(start, end)
+      const path = findPathAlongSectionLines(start, end, [])
 
       expect(path.length).toBe(0)
     })
@@ -175,7 +175,7 @@ describe('WiringScheme Pathfinding Module', () => {
       const start = createPosition(0, WIRE_HEIGHT, 0)
       const end = createPosition(4, WIRE_HEIGHT, 4)
 
-      const path = findPathAlongSectionLines(start, end)
+      const path = findPathAlongSectionLines(start, end, [])
 
       // Should move to a corner first (either (4,0) or (0,4))
       // Then move to end
@@ -196,7 +196,7 @@ describe('WiringScheme Pathfinding Module', () => {
       const start = createPosition(-4, WIRE_HEIGHT, -4)
       const end = createPosition(0, WIRE_HEIGHT, 0)
 
-      const path = findPathAlongSectionLines(start, end)
+      const path = findPathAlongSectionLines(start, end, [])
 
       expect(path.length).toBeGreaterThan(0)
       expect(path[0].start.x).toBeCloseTo(start.x, 3)
@@ -210,7 +210,7 @@ describe('WiringScheme Pathfinding Module', () => {
       const start = createPosition(-4, WIRE_HEIGHT, 0)
       const end = createPosition(4, WIRE_HEIGHT, 0)
 
-      const path = findPathAlongSectionLines(start, end)
+      const path = findPathAlongSectionLines(start, end, [])
 
       expect(path.length).toBeGreaterThan(0)
       // Should route through origin (0, 0)
@@ -791,7 +791,7 @@ describe('WiringScheme Pathfinding Module', () => {
       const start = createPosition(0, WIRE_HEIGHT, 0)
       const end = createPosition(0.0001, WIRE_HEIGHT, 0.0001)
       
-      const path = findPathAlongSectionLines(start, end)
+      const path = findPathAlongSectionLines(start, end, [])
       expect(path.length).toBe(0)
     })
     
@@ -799,7 +799,7 @@ describe('WiringScheme Pathfinding Module', () => {
       const start = createPosition(0, WIRE_HEIGHT, 0)
       const end = createPosition(0, WIRE_HEIGHT, SECTION_SIZE)
       
-      const path = findPathAlongSectionLines(start, end)
+      const path = findPathAlongSectionLines(start, end, [])
       // Should route through a corner, not directly
       expect(path.length).toBeGreaterThan(0)
     })
@@ -808,7 +808,7 @@ describe('WiringScheme Pathfinding Module', () => {
       const start = createPosition(0, WIRE_HEIGHT, 0)
       const end = createPosition(40, WIRE_HEIGHT, 40) // 10 section cells away
       
-      const path = findPathAlongSectionLines(start, end)
+      const path = findPathAlongSectionLines(start, end, [])
       
       expect(path.length).toBeGreaterThan(0)
       expect(path[0].start.x).toBeCloseTo(start.x, 3)
@@ -822,7 +822,7 @@ describe('WiringScheme Pathfinding Module', () => {
       const start = createPosition(0, WIRE_HEIGHT, 0)
       const end = createPosition(20, WIRE_HEIGHT, 20)
       
-      const path = findPathAlongSectionLines(start, end)
+      const path = findPathAlongSectionLines(start, end, [])
       
       // Should route through multiple corners
       expect(path.length).toBeGreaterThan(2)
@@ -840,7 +840,7 @@ describe('WiringScheme Pathfinding Module', () => {
       const start = createPosition(0, WIRE_HEIGHT, 0)
       const end = createPosition(12, WIRE_HEIGHT, 12)
       
-      const path = findPathAlongSectionLines(start, end)
+      const path = findPathAlongSectionLines(start, end, [])
       
       let currentPos = start
       for (const segment of path) {

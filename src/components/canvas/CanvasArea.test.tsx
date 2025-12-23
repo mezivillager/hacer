@@ -62,6 +62,7 @@ describe('CanvasArea', () => {
         previewEndPosition: null,
         destinationGateId: null,
         destinationPinId: null,
+        segments: null,
       }
     })
     const { container } = render(<CanvasArea />)
@@ -86,6 +87,7 @@ describe('CanvasArea', () => {
         previewEndPosition: null,
         destinationGateId: null,
         destinationPinId: null,
+        segments: null,
       }
     })
     const { container } = render(<CanvasArea />)

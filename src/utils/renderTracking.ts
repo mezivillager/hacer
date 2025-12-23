@@ -50,6 +50,7 @@ function updateStability() {
  * Track a component render
  */
 export function trackRender(componentName: string, reason?: string): void {
+  return;
   if (!tracker.stats[componentName]) {
     tracker.stats[componentName] = {
       count: 0,

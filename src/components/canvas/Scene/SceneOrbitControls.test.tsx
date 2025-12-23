@@ -73,6 +73,7 @@ describe('SceneOrbitControls', () => {
         previewEndPosition: null,
         destinationGateId: null,
         destinationPinId: null,
+        segments: null,
       },
     })
     const { getByTestId } = render(<SceneOrbitControls />)

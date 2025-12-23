@@ -1,5 +1,6 @@
 import { message } from 'antd'
 import type { WiringActions, Position, CircuitStore } from '../../types'
+import type { WireSegment } from '@/utils/wiringScheme/types'
 
 type SetState = (
   fn: (state: CircuitStore) => void,
@@ -30,6 +31,7 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
         previewEndPosition: null,
         destinationGateId: null,
         destinationPinId: null,
+        segments: null,
       }
       state.placementMode = null
     }, false, 'startWiring')
@@ -54,6 +56,8 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
       if (state.wiringFrom) {
         state.wiringFrom.destinationGateId = gateId
         state.wiringFrom.destinationPinId = pinId
+        // Clear segments when destination changes - WirePreview will recalculate and store them
+        state.wiringFrom.segments = null
       }
     }, false, 'setDestinationPin')
   },
@@ -117,19 +121,32 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
       return
     }
 
+    // Use stored segments from WirePreview (calculated during preview when destination pin was set)
+    const wireSegments: WireSegment[] | null = from.segments
+
+    if (!wireSegments) {
+      // This shouldn't happen in normal flow - segments should be calculated and stored by WirePreview
+      message.error('Wire path not available. Please try connecting again.')
+      set((s) => {
+        s.wiringFrom = null
+      }, false, 'completeWiring/noSegments')
+      return
+    }
+
     // Normalize: always store as output -> input
     if (from.fromPinType === 'output') {
       console.debug('[wiringActions] Adding wire', {
         from: { gateId: from.fromGateId, pinId: from.fromPinId },
         to: { gateId: toGateId, pinId: toPinId },
       })
-      state.addWire(from.fromGateId, from.fromPinId, toGateId, toPinId)
+      state.addWire(from.fromGateId, from.fromPinId, toGateId, toPinId, wireSegments)
     } else {
       console.debug('[wiringActions] Adding wire (reversed)', {
         from: { gateId: toGateId, pinId: toPinId },
         to: { gateId: from.fromGateId, pinId: from.fromPinId },
       })
-      state.addWire(toGateId, toPinId, from.fromGateId, from.fromPinId)
+      // For reversed wires, segments are already normalized as output -> input from WirePreview calculation
+      state.addWire(toGateId, toPinId, from.fromGateId, from.fromPinId, wireSegments)
     }
 
     set((s) => {

@@ -51,3 +51,10 @@ export async function ensureSimulationState(
     { timeout }
   )
 }
+
+/**
+ * Wait for the circuit store to be initialized and ready
+ */
+export async function waitForStoreUpdate(page: Page, timeout: number = TIMEOUTS.store): Promise<void> {
+  await page.waitForFunction(() => window.__CIRCUIT_STORE__ !== undefined, { timeout })
+}

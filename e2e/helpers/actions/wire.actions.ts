@@ -19,15 +19,22 @@ export interface WireSpec {
 
 /**
  * Add a wire via store (fast, reliable for setup)
+ * Note: For e2e tests, segments are calculated by the store's completeWiring action.
+ * This helper should not be used directly - use UI interactions instead.
+ * If segments need to be calculated, they should be done in the page context.
  */
 export async function addWireViaStore(page: Page, wire: WireSpec): Promise<void> {
   await page.evaluate(
     ({ wire }) => {
+      // Calculate segments in page context (requires wiring scheme utils)
+      // For now, pass empty array - segments should be calculated via completeWiring
+      // This is a fallback for tests that need direct wire creation
       window.__CIRCUIT_ACTIONS__?.addWire(
         wire.fromGateId,
         wire.fromPinId,
         wire.toGateId,
-        wire.toPinId
+        wire.toPinId,
+        [] // Empty segments - will be calculated on render if needed
       )
     },
     { wire }
@@ -52,7 +59,7 @@ export async function addWiresViaStore(
       wires.forEach((w) => {
         const from = gateIds[w.fromGate]
         const to = gateIds[w.toGate]
-        window.__CIRCUIT_ACTIONS__?.addWire(from, `${from}-${w.fromPin}`, to, `${to}-${w.toPin}`)
+        window.__CIRCUIT_ACTIONS__?.addWire(from, `${from}-${w.fromPin}`, to, `${to}-${w.toPin}`, [])
       })
     },
     { wires, gateIds }

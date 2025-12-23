@@ -1,6 +1,7 @@
 import { ThreeEvent } from '@react-three/fiber'
 import { useCircuitStore, circuitActions } from '@/store/circuitStore'
 import { snapToGrid, worldToGrid, canPlaceGateAt } from '@/utils/grid'
+import { debounce } from '@/utils/debounce'
 
 const {
   updateWirePreviewPosition: updateWirePreviewPositionOriginal,
@@ -12,10 +13,11 @@ const {
   selectGate: selectGateAction,
 } = circuitActions
 
-// Note: Debouncing removed for wire preview to ensure cursor alignment
-// Wire preview calculations are now fast enough without debouncing
-// const updateWirePreviewPosition = debounce(updateWirePreviewPositionOriginal, 16)
-const updateWirePreviewPosition = updateWirePreviewPositionOriginal
+// Debounce wire preview updates to reduce calculation frequency (100ms delay)
+const updateWirePreviewPosition = debounce(
+  updateWirePreviewPositionOriginal as (...args: unknown[]) => void,
+  50
+) as typeof updateWirePreviewPositionOriginal
 
 /**
  * Handle pointer move on ground plane - update preview positions for placing, wiring, or dragging
@@ -46,7 +48,6 @@ export function handlePointerMove(e: ThreeEvent<PointerEvent>): void {
       y: 0.2, // Wire height matches pin center Y coordinate
       z: e.point.z,
     }
-    console.debug('[groundPlaneHandlers] Wiring - updating preview position (debounced)', previewPos)
     updateWirePreviewPosition(previewPos)
   }
 }

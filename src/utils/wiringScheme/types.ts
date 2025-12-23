@@ -61,6 +61,7 @@ export interface WirePathOptions {
   sourceGateId?: string
   destinationGateId?: string
   checkExistingWires?: boolean
+  existingSegments?: WireSegment[] // Existing wire segments to avoid overlapping with
 }
 
 /**

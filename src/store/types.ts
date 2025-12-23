@@ -10,12 +10,15 @@ export interface Pin {
   value: boolean
 }
 
+import type { WireSegment } from '@/utils/wiringScheme/types'
+
 export interface Wire {
   id: string
   fromGateId: string
   fromPinId: string
   toGateId: string
   toPinId: string
+  segments: WireSegment[] // Path segments for this wire (calculated when wire is created)
 }
 
 export type GateType = 'NAND' | 'AND' | 'OR' | 'NOT' | 'NOR' | 'XOR' | 'XNOR'
@@ -38,6 +41,7 @@ export interface WiringState {
   previewEndPosition: Position | null
   destinationGateId: string | null
   destinationPinId: string | null
+  segments: WireSegment[] | null // Calculated path segments (stored when destination pin is set, used when completing wire)
 }
 
 export interface CircuitState {
@@ -64,7 +68,7 @@ export interface GateActions {
 }
 
 export interface WireActions {
-  addWire: (fromGateId: string, fromPinId: string, toGateId: string, toPinId: string) => Wire
+  addWire: (fromGateId: string, fromPinId: string, toGateId: string, toPinId: string, segments: WireSegment[]) => Wire
   removeWire: (wireId: string) => void
   setInputValue: (gateId: string, pinId: string, value: boolean) => void
 }
