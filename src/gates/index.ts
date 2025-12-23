@@ -5,7 +5,7 @@ export { NandGate, AndGate, OrGate, NotGate } from './components'
 export { GateRenderer } from './GateRenderer'
 
 // Common components
-export { GatePin, WireStub, BaseGateLabel } from './common'
+export { GatePin, WireStub } from './common'
 
 // Types
 export type { BaseGateProps, TwoInputGateProps, SingleInputGateProps } from './types'

@@ -4,7 +4,7 @@ import { Text } from '@react-three/drei'
 import { circuitActions, useCircuitStore } from '@/store/circuitStore'
 import { materials } from '@/theme'
 import { useGateDrag } from '@/hooks/useGateDrag'
-import { GatePin, WireStub, BaseGateLabel } from './index'
+import { GatePin, WireStub } from './index'
 import { getPinColor, getWorldPosition, createGateClickHandler, createPinPointerMoveHandler, createPinClickHandler, handlePinPointerOut } from '../handlers/gateHandlers'
 import type { GateType } from '@/store/types'
 import type { PinConfig } from '../types'
@@ -42,12 +42,10 @@ export function BaseGate(props: BaseGateComponentProps) {
     rotation,
     selected,
     isWiring,
-    gateType,
+    // gateType, output, inputs - no longer used after removing BaseGateLabel
     bodyColor,
     bodyHoverColor,
     bodySelectedColor,
-    output,
-    inputs,
     pinConfigs,
     wireStubPositions,
     bodyGeometry,
@@ -242,9 +240,6 @@ export function BaseGate(props: BaseGateComponentProps) {
         .map(({ position, index, pinId }) => (
           <WireStub key={`stub-${pinId}-${index}`} position={position} />
         ))}
-
-      {/* HTML label overlay */}
-      <BaseGateLabel gateType={gateType} inputs={inputs} output={output} visible={hovered || selected} />
     </group>
   )
 }
