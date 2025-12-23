@@ -13,6 +13,7 @@ export function useKeyboardShortcuts() {
   const cancelWiring = useCircuitStore((s) => s.cancelWiring)
   const selectGate = useCircuitStore((s) => s.selectGate)
   const rotateGate = useCircuitStore((s) => s.rotateGate)
+  const removeGate = useCircuitStore((s) => s.removeGate)
 
   const isPlacing = placementMode !== null
   const isWiring = wiringFrom !== null
@@ -33,6 +34,27 @@ export function useKeyboardShortcuts() {
       // Escape key - deselect
       if (e.key === 'Escape') {
         selectGate(null)
+        return
+      }
+
+      // Delete/Backspace key - delete selected gate
+      if (e.key === 'Delete' || e.key === 'Backspace') {
+        // Only delete if a gate is selected and not during drag
+        if (selectedGateId && !isDragging) {
+          // Check if user is typing in an input field (for future-proofing)
+          const target = e.target as HTMLElement
+          const isInputField =
+            target.tagName === 'INPUT' ||
+            target.tagName === 'TEXTAREA' ||
+            target.isContentEditable
+          
+          if (!isInputField) {
+            e.preventDefault()
+            removeGate(selectedGateId)
+            // Clear selection after deletion
+            selectGate(null)
+          }
+        }
         return
       }
 
@@ -60,5 +82,5 @@ export function useKeyboardShortcuts() {
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [isPlacing, isWiring, isDragging, selectedGateId, cancelPlacement, cancelWiring, selectGate, rotateGate])
+  }, [isPlacing, isWiring, isDragging, selectedGateId, cancelPlacement, cancelWiring, selectGate, rotateGate, removeGate])
 }

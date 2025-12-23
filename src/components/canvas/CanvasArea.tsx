@@ -82,7 +82,7 @@ export function CanvasArea() {
     if (isWiring) {
       return '🔗 Click on another pin to connect • Click empty space or Esc to cancel'
     }
-    return '🖱️ Click pin: Wire • Shift+click input: Toggle • Click body: Select • Drag body: Move • Left/Right arrows: Rotate gate • Scroll: Zoom'
+    return '🖱️ Click pin: Wire • Shift+click input: Toggle • Click body: Select • Drag body: Move • Left/Right arrows: Rotate gate • Delete: Remove gate • Scroll: Zoom'
   })()
 
   // Use stored wire segments - no need to recalculate
