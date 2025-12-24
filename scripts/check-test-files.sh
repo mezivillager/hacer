@@ -22,8 +22,9 @@ for file in $STAGED_FILES; do
 
   # Determine expected test file path
   dir=$(dirname "$file")
-  base=$(basename "$file" | sed 's/\.\(ts\|tsx\)$//')
   ext="${file##*.}"
+  # Use basename with extension to remove it, then add .test.extension
+  base=$(basename "$file" ".$ext")
   
   test_file="$dir/$base.test.$ext"
   
@@ -42,7 +43,7 @@ if [ ${#MISSING_TESTS[@]} -gt 0 ]; then
   done
   echo ""
   echo "   Remember: Write tests FIRST (Red), then implement (Green)."
-   echo "   See: docs/testing/"
+  echo "   See: docs/testing/"
   echo ""
 fi
 
