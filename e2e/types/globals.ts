@@ -8,6 +8,7 @@
  */
 
 import type { GateType } from '../../src/store/types'
+import type { WireSegment } from '../../src/utils/wiringScheme/types'
 
 export interface SceneHelpers {
   projectToScreen: (position: { x: number; y: number; z: number }) => { x: number; y: number }
@@ -49,7 +50,7 @@ export interface CircuitActionsAPI {
     fromPinId: string,
     toGateId: string,
     toPinId: string,
-    segments: Array<{ start: { x: number; y: number; z: number }; end: { x: number; y: number; z: number }; type: string }>
+    segments: WireSegment[]
   ) => void
   setInputValue: (gateId: string, pinId: string, value: boolean) => void
   toggleSimulation: () => void

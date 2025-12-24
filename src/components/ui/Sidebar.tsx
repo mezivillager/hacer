@@ -1,4 +1,4 @@
-import { Layout, Button, Space, Typography, Tooltip, Divider } from 'antd'
+import { Layout, Button, Space, Typography, Tooltip, Divider, Switch } from 'antd'
 import {
   DeleteOutlined,
   PlayCircleOutlined,
@@ -36,6 +36,8 @@ export function Sidebar() {
   const removeGate = useCircuitStore((s) => s.removeGate)
   const clearCircuit = useCircuitStore((s) => s.clearCircuit)
   const toggleSimulation = useCircuitStore((s) => s.toggleSimulation)
+  const toggleAxes = useCircuitStore((s) => s.toggleAxes)
+  const showAxes = useCircuitStore((s) => s.showAxes)
 
   const isPlacing = placementMode !== null
 
@@ -77,6 +79,10 @@ export function Sidebar() {
             >
               {simulationRunning ? 'Pause Simulation' : 'Run Simulation'}
             </Button>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Text type="secondary">Show Axes</Text>
+              <Switch checked={showAxes} onChange={toggleAxes} />
+            </div>
             <Tooltip title="Remove the selected gate">
               <Button
                 icon={<DeleteOutlined />}

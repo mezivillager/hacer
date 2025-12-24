@@ -10,7 +10,6 @@ import { WIRE_HEIGHT } from './types'
 import { calculateExitSegment, calculateEntrySegment } from './segments'
 import { findPathAlongSectionLines } from './pathfinding'
 import { SECTION_SIZE } from './types'
-import { segmentsOverlap } from './overlap'
 
 
 /**
@@ -102,211 +101,109 @@ function calculateTotalLength(segments: Array<{ start: Position; end: Position }
 }
 
 const TOLERANCE = 0.001
-const BACKTRACKING_TOLERANCE = 500 * TOLERANCE
 
 /**
- * Trim overlapping portion from the end of a segment (for last path segment).
- * Removes the overlapping range from the end of the segment.
+ * Check if a segment is a routing segment (horizontal or vertical).
+ * Entry and exit segments are not routing segments.
  * 
- * @param segment - Segment to trim from end
- * @param overlapStart - Start of overlapping range
- * @param overlapEnd - End of overlapping range
- * @param isHorizontal - Whether segment is horizontal (trim X) or vertical (trim Z)
- * @returns Trimmed segment, or null if entire segment is removed
+ * @param segment - Segment to check
+ * @returns True if segment is horizontal or vertical
  */
-function trimSegmentFromEnd(
-  segment: WireSegment,
-  overlapStart: number,
-  overlapEnd: number,
-  isHorizontal: boolean
-): WireSegment | null {
-  const coord = isHorizontal ? 'x' : 'z'
-  const segStart = segment.start[coord]
-  const segEnd = segment.end[coord]
-  
-  // Normalize overlap range
-  const overlapMin = Math.min(overlapStart, overlapEnd)
-  const overlapMax = Math.max(overlapStart, overlapEnd)
-  
-  // Trim from end: keep the part before the overlap
-  let newEnd: number
-  if (segStart < segEnd) {
-    // Segment goes in positive direction - trim end to overlap start
-    newEnd = overlapMin
-  } else {
-    // Segment goes in negative direction - trim end to overlap max
-    newEnd = overlapMax
-  }
-  
-  // Check if trimmed segment has zero or negative length
-  if (Math.abs(newEnd - segStart) < TOLERANCE) {
-    return null
-  }
-  
-  // Create trimmed segment
-  const trimmed: WireSegment = {
-    ...segment,
-    end: { ...segment.end, [coord]: newEnd },
-  }
-  
-  return trimmed
+function isRoutingSegment(segment: WireSegment): boolean {
+  return segment.type === 'horizontal' || segment.type === 'vertical'
 }
 
 /**
- * Trim overlapping portion from the start of a segment (for first routing segment).
- * Removes the overlapping range from the start of the segment.
- * 
- * @param segment - Segment to trim from start
- * @param overlapStart - Start of overlapping range
- * @param overlapEnd - End of overlapping range
- * @param isHorizontal - Whether segment is horizontal (trim X) or vertical (trim Z)
- * @returns Trimmed segment, or null if entire segment is removed
- */
-function trimSegmentFromStart(
-  segment: WireSegment,
-  overlapStart: number,
-  overlapEnd: number,
-  isHorizontal: boolean
-): WireSegment | null {
-  const coord = isHorizontal ? 'x' : 'z'
-  const segStart = segment.start[coord]
-  const segEnd = segment.end[coord]
-  
-  // Normalize overlap range
-  const overlapMin = Math.min(overlapStart, overlapEnd)
-  const overlapMax = Math.max(overlapStart, overlapEnd)
-  
-  // Trim from start: keep the part after the overlap
-  let newStart: number
-  if (segStart < segEnd) {
-    // Segment goes in positive direction - trim start to overlap end
-    newStart = overlapMax
-  } else {
-    // Segment goes in negative direction - trim start to overlap min
-    newStart = overlapMin
-  }
-  
-  // Check if trimmed segment has zero or negative length
-  if (Math.abs(segEnd - newStart) < TOLERANCE) {
-    return null
-  }
-  
-  // Create trimmed segment
-  const trimmed: WireSegment = {
-    ...segment,
-    start: { ...segment.start, [coord]: newStart },
-  }
-  
-  return trimmed
-}
-
-/**
- * Calculate overlapping range between two segments on the same line.
+ * Check if two segments are of the same routing type.
  * 
  * @param seg1 - First segment
  * @param seg2 - Second segment
- * @param isHorizontal - Whether segments are horizontal (check X) or vertical (check Z)
- * @returns Object with overlap start and end, or null if no overlap
+ * @returns True if both are horizontal or both are vertical
  */
-function calculateOverlapRange(
-  seg1: WireSegment,
-  seg2: WireSegment,
-  isHorizontal: boolean
-): { start: number; end: number } | null {
-  const coord = isHorizontal ? 'x' : 'z'
-  const seg1Start = seg1.start[coord]
-  const seg1End = seg1.end[coord]
-  const seg2Start = seg2.start[coord]
-  const seg2End = seg2.end[coord]
-  
-  const seg1Min = Math.min(seg1Start, seg1End)
-  const seg1Max = Math.max(seg1Start, seg1End)
-  const seg2Min = Math.min(seg2Start, seg2End)
-  const seg2Max = Math.max(seg2Start, seg2End)
-  
-  // Calculate overlap range
-  const overlapStart = Math.max(seg1Min, seg2Min)
-  const overlapEnd = Math.min(seg1Max, seg2Max)
-  
-  // Check if there's actual overlap
-  if (overlapEnd - overlapStart < TOLERANCE) {
-    return null
+function areSameRoutingType(seg1: WireSegment, seg2: WireSegment): boolean {
+  // Both must be routing segments
+  if (!isRoutingSegment(seg1) || !isRoutingSegment(seg2)) {
+    return false
   }
   
-  return { start: overlapStart, end: overlapEnd }
+  // Check if both are horizontal or both are vertical
+  const seg1IsHorizontal = seg1.type === 'horizontal' || Math.abs(seg1.start.z - seg1.end.z) < TOLERANCE
+  const seg2IsHorizontal = seg2.type === 'horizontal' || Math.abs(seg2.start.z - seg2.end.z) < TOLERANCE
+  
+  return seg1IsHorizontal === seg2IsHorizontal
 }
 
 /**
- * Remove overlapping portions from last path segment and first routing segment.
- * Specifically checks the last segment from lastPath and first segment from routingPath.
- * Trims the overlapping portion from both segments instead of removing them entirely.
+ * Combine adjacent segments of the same type (horizontal or vertical) into single segments.
+ * This removes backtracking and overlapping segments by creating combined segments from
+ * the start of the first segment to the end of the last segment.
  * 
- * @param lastPathSegments - Segments from the existing path
- * @param routingPath - Routing segments from findPathAlongSectionLines
- * @returns Object with trimmed path segments and routing segments
+ * Entry and exit segments are preserved as-is and never combined.
+ * 
+ * @param segments - Array of wire segments
+ * @returns Array of combined segments
+ * 
+ * @internal Exported for testing only
  */
-function trimOverlappingSegments(
-  lastPathSegments: WireSegment[],
-  routingPath: WireSegment[]
-): { trimmedPathSegments: WireSegment[], trimmedRoutingPath: WireSegment[] } {
-  // Copy arrays to avoid mutating originals
-  const trimmedPathSegments = [...lastPathSegments]
-  const trimmedRoutingPath = [...routingPath]
-  
-  // Check if we have segments to compare
-  if (trimmedPathSegments.length === 0 || trimmedRoutingPath.length === 0) {
-    return { trimmedPathSegments, trimmedRoutingPath }
+export function combineAdjacentSegments(segments: WireSegment[]): WireSegment[] {
+  if (segments.length === 0) {
+    return []
   }
   
-  const lastPathSeg = trimmedPathSegments[trimmedPathSegments.length - 1]
-  const firstRoutingSeg = trimmedRoutingPath[0]
-  
-  // Check if segments overlap using segmentsOverlap
-  if (!segmentsOverlap(lastPathSeg, firstRoutingSeg)) {
-    // No overlap - return as-is
-    return { trimmedPathSegments, trimmedRoutingPath }
+  if (segments.length === 1) {
+    return [...segments]
   }
   
-  // Determine if segments are horizontal or vertical
-  const isHorizontal = Math.abs(lastPathSeg.start.z - lastPathSeg.end.z) < TOLERANCE
+  const result: WireSegment[] = []
+  let currentGroup: WireSegment[] = [segments[0]]
   
-  // Calculate overlapping range
-  const overlapRange = calculateOverlapRange(lastPathSeg, firstRoutingSeg, isHorizontal)
-  if (!overlapRange) {
-    // No overlap range found - return as-is
-    return { trimmedPathSegments, trimmedRoutingPath }
+  for (let i = 1; i < segments.length; i++) {
+    const currentSegment = segments[i]
+    const lastGroupSegment = currentGroup[currentGroup.length - 1]
+    
+    // Check if we can combine: same routing type (routing algorithm ensures segments are adjacent)
+    if (areSameRoutingType(lastGroupSegment, currentSegment)) {
+      // Add to current group for combination
+      currentGroup.push(currentSegment)
+    } else {
+      // Cannot combine - finalize current group and start new one
+      if (currentGroup.length > 1) {
+        // Combine the group: from first start to last end
+        const firstSegment = currentGroup[0]
+        const lastSegment = currentGroup[currentGroup.length - 1]
+        
+        result.push({
+          start: firstSegment.start,
+          end: lastSegment.end,
+          type: firstSegment.type, // Preserve type (horizontal or vertical)
+        })
+      } else {
+        // Single segment - add as-is
+        result.push(currentGroup[0])
+      }
+      
+      // Start new group with current segment
+      currentGroup = [currentSegment]
+    }
   }
   
-  // Trim last path segment from its end (remove overlapping portion at end)
-  const trimmedLastPathSeg = trimSegmentFromEnd(
-    lastPathSeg,
-    overlapRange.start,
-    overlapRange.end,
-    isHorizontal
-  )
-  
-  // Trim first routing segment from its start (remove overlapping portion at start)
-  const trimmedFirstRoutingSeg = trimSegmentFromStart(
-    firstRoutingSeg,
-    overlapRange.start,
-    overlapRange.end,
-    isHorizontal
-  )
-  
-  // Replace segments with trimmed versions (or remove if null)
-  if (trimmedLastPathSeg === null) {
-    trimmedPathSegments.pop()
+  // Finalize the last group
+  if (currentGroup.length > 1) {
+    // Combine the group: from first start to last end
+    const firstSegment = currentGroup[0]
+    const lastSegment = currentGroup[currentGroup.length - 1]
+    
+    result.push({
+      start: firstSegment.start,
+      end: lastSegment.end,
+      type: firstSegment.type, // Preserve type (horizontal or vertical)
+    })
   } else {
-    trimmedPathSegments[trimmedPathSegments.length - 1] = trimmedLastPathSeg
+    // Single segment - add as-is
+    result.push(currentGroup[0])
   }
   
-  if (trimmedFirstRoutingSeg === null) {
-    trimmedRoutingPath.shift()
-  } else {
-    trimmedRoutingPath[0] = trimmedFirstRoutingSeg
-  }
-  
-  return { trimmedPathSegments, trimmedRoutingPath }
+  return result
 }
 
 /**
@@ -365,50 +262,6 @@ function distance2D(a: Position, b: Position): number {
 }
 
 /**
- * Check if extending to destination would cause backtracking.
- * 
- * @param lastPathEnd - End position of the last calculated path
- * @param lastSegment - Last segment from the path
- * @param destinationPoint - Destination point to check
- * @returns True if backtracking would occur
- */
-export function wouldBacktrack(
-  lastPathEnd: Position,
-  lastSegment: WireSegment,
-  destinationPoint: Position
-): boolean {
-  const isLastHorizontal = lastSegment.type === 'horizontal'
-  
-  if (isLastHorizontal) {
-    // Check if going backward on horizontal line
-    const lastDir = lastSegment.end.x > lastSegment.start.x ? 1 : -1
-    const deltaX = destinationPoint.x - lastPathEnd.x
-    
-    // Check if going backward (opposite direction)
-    if (lastDir > 0 && deltaX < -BACKTRACKING_TOLERANCE) {
-      return true // Going backwards (was going right, now going left)
-    }
-    if (lastDir < 0 && deltaX > BACKTRACKING_TOLERANCE) {
-      return true // Going backwards (was going left, now going right)
-    }
-  } else {
-    // Check if going backward on vertical line
-    const lastDir = lastSegment.end.z > lastSegment.start.z ? 1 : -1
-    const deltaZ = destinationPoint.z - lastPathEnd.z
-    
-    // Check if going backward (opposite direction)
-    if (lastDir > 0 && deltaZ < -BACKTRACKING_TOLERANCE) {
-      return true // Going backwards (was going forward, now going back)
-    }
-    if (lastDir < 0 && deltaZ > BACKTRACKING_TOLERANCE) {
-      return true // Going backwards (was going back, now going forward)
-    }
-  }
-  
-  return false // No backtracking
-}
-
-/**
  * Check if path can be extended from last path end to new destination.
  * Validates distance and backtracking checks.
  * 
@@ -420,7 +273,7 @@ export function wouldBacktrack(
  */
 export function canExtendPath(
   lastPathEnd: Position,
-  lastSegment: WireSegment,
+  _lastSegment: WireSegment,
   newDestination: DestinationType,
   _options: WirePathOptions = {}
 ): boolean {
@@ -437,14 +290,9 @@ export function canExtendPath(
   
   // Check if distance between lastPathEnd and destinationPoint is <= SECTION_SIZE
   const distance = distance2D(lastPathEnd, destinationPoint)
-  if (distance > SECTION_SIZE + TOLERANCE) {
-    console.log('[CAN_EXTEND_PATH] Distance too large - cannot extend', { distance, SECTION_SIZE, lastPathEnd, destinationPoint })
+  if (distance > 2 * SECTION_SIZE + TOLERANCE) {
+    console.log('[ ⚠️ CAN_EXTEND_PATH] Distance too large - cannot extend', { distance, SECTION_SIZE, lastPathEnd, destinationPoint })
     return false // Distance exceeds SECTION_SIZE
-  }
-  
-  // Check if not going backward
-  if (wouldBacktrack(lastPathEnd, lastSegment, destinationPoint)) {
-    return false // Backtracking detected
   }
   
   // All checks passed - extension is valid
@@ -466,6 +314,11 @@ export function extendPathFromEnd(
   newDestination: DestinationType,
   options: WirePathOptions = {}
 ): WirePath {
+  console.debug('[extendPathFromEnd] Extending path from end', {
+    lastPath,
+    newDestination,
+    options,
+  })
   if (lastPath.segments.length === 0) {
     throw new Error('Cannot extend empty path')
   }
@@ -494,29 +347,31 @@ export function extendPathFromEnd(
       lastPath.segments[lastPath.segments.length - 1] = lastSegment
     }
   }
+
+  console.debug('[extendPathFromEnd] Routing path', {
+    routingPath,
+  })
   
-  // Trim overlapping portions from last path segment and first routing segment
-  // This prevents outlier segments that stick out from the main path
-  const { trimmedPathSegments, trimmedRoutingPath } = trimOverlappingSegments(
-    lastPath.segments,
-    routingPath
-  )
+  // Concatenate lastPath.segments with routingPath
+  const allSegments = [...lastPath.segments, ...routingPath]
   
-  // Build final extension segments: trimmed routing path + entry segment (if any)
-  const extensionSegments: WireSegment[] = [...trimmedRoutingPath]
-  
-  // Combine trimmed path segments with extension segments
-  const allSegments = [...trimmedPathSegments, ...extensionSegments]
+  // Combine adjacent segments of the same type
+  // This automatically removes backtracking and overlapping segments
+  const combinedSegments = combineAdjacentSegments(allSegments)
 
   // Add entry segment at the end of the path
   if (entrySegment) {
-    allSegments.push(entrySegment)
+    combinedSegments.push(entrySegment)
   }
 
-  const totalLength = calculateTotalLength(allSegments)
+  const totalLength = calculateTotalLength(combinedSegments)
+  
+  console.debug('[extendPathFromEnd] All segments', {
+    combinedSegments
+  })
   
   return {
-    segments: allSegments,
+    segments: combinedSegments,
     totalLength,
   }
 }

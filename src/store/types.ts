@@ -55,6 +55,7 @@ export interface CircuitState {
   wiringFrom: WiringState | null
   isDragActive: boolean
   hoveredGateId: string | null
+  showAxes: boolean
 }
 
 // Action types for the Zustand store
@@ -102,5 +103,9 @@ export interface PinHelpers {
   getPinOrientation: (gateId: string, pinId: string) => { x: number; y: number; z: number } | null
 }
 
+export interface ViewActions {
+  toggleAxes: () => void
+}
+
 // Combined store type
-export interface CircuitStore extends CircuitState, GateActions, WireActions, SimulationActions, PlacementActions, WiringActions, PinHelpers {}
+export interface CircuitStore extends CircuitState, GateActions, WireActions, SimulationActions, PlacementActions, WiringActions, PinHelpers, ViewActions {}

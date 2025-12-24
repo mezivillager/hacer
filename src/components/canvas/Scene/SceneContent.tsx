@@ -1,4 +1,5 @@
 import { Environment } from '@react-three/drei'
+import { useCircuitStore } from '@/store/circuitStore'
 import { GroundPlane } from './GroundPlane'
 import { PlacementPreview } from './PlacementPreview'
 import { WirePreview } from './WirePreview'
@@ -13,12 +14,14 @@ import type { SceneProps } from './types'
  * Orchestrates all scene components
  */
 export function SceneContent({ children }: SceneProps) {
+  const showAxes = useCircuitStore((s) => s.showAxes)
+
   return (
     <>
       <ambientLight intensity={0.5} />
       <directionalLight position={[10, 10, 5]} intensity={1} castShadow />
       <Environment preset="city" />
-      <SceneAxes />
+      {showAxes && <SceneAxes />}
       <GroundPlane />
       <PlacementPreview />
       <WirePreview />

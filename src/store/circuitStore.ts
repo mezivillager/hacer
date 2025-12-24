@@ -7,6 +7,7 @@ import { createSimulationActions } from './actions/simulationActions/simulationA
 import { createPlacementActions } from './actions/placementActions/placementActions'
 import { createWiringActions } from './actions/wiringActions/wiringActions'
 import { createPinHelpers } from './actions/pinHelpers/pinHelpers'
+import { createViewActions } from './actions/viewActions/viewActions'
 import type { CircuitStore } from './types'
 import '../../e2e/types/globals' // Import for Window augmentation side-effect
 import '@/utils/renderTracking' // Initialize render tracking
@@ -26,6 +27,7 @@ const initialState = {
   wiringFrom: null as import('./types').WiringState | null,
   isDragActive: false,
   hoveredGateId: null as string | null,
+  showAxes: false,
 }
 
 // Create the Zustand store with Immer, devtools, and subscribeWithSelector middleware
@@ -43,6 +45,7 @@ export const useCircuitStore = create<CircuitStore>()(
         ...createPlacementActions(set, get),
         ...createWiringActions(set, get),
         ...createPinHelpers(get),
+        ...createViewActions(set),
       }))
     ),
     { name: 'CircuitStore' }
@@ -136,6 +139,8 @@ export const circuitActions = {
   // Helper functions
   getPinWorldPosition: (...args: Parameters<CircuitStore['getPinWorldPosition']>): ReturnType<CircuitStore['getPinWorldPosition']> => useCircuitStore.getState().getPinWorldPosition(...args),
   getPinOrientation: (...args: Parameters<CircuitStore['getPinOrientation']>): ReturnType<CircuitStore['getPinOrientation']> => useCircuitStore.getState().getPinOrientation(...args),
+  // View actions
+  toggleAxes: () => useCircuitStore.getState().toggleAxes(),
 }
 
 // Expose store and actions for E2E testing

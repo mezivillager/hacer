@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest'
 import type { Position } from '@/store/types'
-import type { PinOrientation } from './types'
+import type { PinOrientation, WireSegment } from './types'
 import { WIRE_HEIGHT, SECTION_SIZE } from './types'
-import { calculateWirePath, arePointsOnSameSectionLine } from './core'
+import { calculateWirePath, arePointsOnSameSectionLine, combineAdjacentSegments } from './core'
 
 describe('WiringScheme Core Module', () => {
   const createPosition = (x: number, y: number, z: number): Position => ({ x, y, z })
@@ -344,6 +344,211 @@ describe('WiringScheme Core Module', () => {
         expect(Math.abs(current.end.x - next.start.x)).toBeLessThan(0.01)
         expect(Math.abs(current.end.z - next.start.z)).toBeLessThan(0.01)
       }
+    })
+  })
+
+  describe('combineAdjacentSegments', () => {
+    const createSegment = (
+      startX: number,
+      startZ: number,
+      endX: number,
+      endZ: number,
+      type: WireSegment['type'] = 'horizontal'
+    ): WireSegment => ({
+      start: { x: startX, y: WIRE_HEIGHT, z: startZ },
+      end: { x: endX, y: WIRE_HEIGHT, z: endZ },
+      type,
+    })
+
+    it('returns empty array for empty input', () => {
+      expect(combineAdjacentSegments([])).toEqual([])
+    })
+
+    it('returns single segment as-is', () => {
+      const segment = createSegment(0, 0, 4, 0, 'horizontal')
+      const result = combineAdjacentSegments([segment])
+      expect(result).toHaveLength(1)
+      expect(result[0]).toEqual(segment)
+    })
+
+    it('combines two adjacent horizontal segments', () => {
+      const seg1 = createSegment(0, 0, 4, 0, 'horizontal')
+      const seg2 = createSegment(4, 0, 8, 0, 'horizontal')
+      const result = combineAdjacentSegments([seg1, seg2])
+      
+      expect(result).toHaveLength(1)
+      expect(result[0].start).toEqual(seg1.start)
+      expect(result[0].end).toEqual(seg2.end)
+      expect(result[0].type).toBe('horizontal')
+    })
+
+    it('combines three adjacent horizontal segments', () => {
+      const seg1 = createSegment(0, 0, 4, 0, 'horizontal')
+      const seg2 = createSegment(4, 0, 8, 0, 'horizontal')
+      const seg3 = createSegment(8, 0, 12, 0, 'horizontal')
+      const result = combineAdjacentSegments([seg1, seg2, seg3])
+      
+      expect(result).toHaveLength(1)
+      expect(result[0].start).toEqual(seg1.start)
+      expect(result[0].end).toEqual(seg3.end)
+      expect(result[0].type).toBe('horizontal')
+    })
+
+    it('combines two adjacent vertical segments', () => {
+      const seg1 = createSegment(0, 0, 0, 4, 'vertical')
+      const seg2 = createSegment(0, 4, 0, 8, 'vertical')
+      const result = combineAdjacentSegments([seg1, seg2])
+      
+      expect(result).toHaveLength(1)
+      expect(result[0].start).toEqual(seg1.start)
+      expect(result[0].end).toEqual(seg2.end)
+      expect(result[0].type).toBe('vertical')
+    })
+
+    it('combines multiple adjacent vertical segments', () => {
+      const seg1 = createSegment(0, 0, 0, 4, 'vertical')
+      const seg2 = createSegment(0, 4, 0, 8, 'vertical')
+      const seg3 = createSegment(0, 8, 0, 12, 'vertical')
+      const result = combineAdjacentSegments([seg1, seg2, seg3])
+      
+      expect(result).toHaveLength(1)
+      expect(result[0].start).toEqual(seg1.start)
+      expect(result[0].end).toEqual(seg3.end)
+      expect(result[0].type).toBe('vertical')
+    })
+
+    it('keeps non-adjacent segments separate (different types prevent combination)', () => {
+      const seg1 = createSegment(0, 0, 4, 0, 'horizontal')
+      const seg2 = createSegment(4, 0, 4, 4, 'vertical') // Adjacent but different type
+      const seg3 = createSegment(4, 4, 8, 4, 'horizontal') // Adjacent to seg2 but different type
+      const result = combineAdjacentSegments([seg1, seg2, seg3])
+      
+      expect(result).toHaveLength(3)
+      expect(result[0]).toEqual(seg1)
+      expect(result[1]).toEqual(seg2)
+      expect(result[2]).toEqual(seg3)
+    })
+
+    it('keeps mixed types separate', () => {
+      const seg1 = createSegment(0, 0, 4, 0, 'horizontal')
+      const seg2 = createSegment(4, 0, 4, 4, 'vertical') // Adjacent but different type
+      const result = combineAdjacentSegments([seg1, seg2])
+      
+      expect(result).toHaveLength(2)
+      expect(result[0]).toEqual(seg1)
+      expect(result[1]).toEqual(seg2)
+    })
+
+    it('preserves entry segments without combining', () => {
+      const seg1 = createSegment(0, 0, 4, 0, 'horizontal')
+      const entrySeg: WireSegment = {
+        start: { x: 4, y: WIRE_HEIGHT, z: 0 },
+        end: { x: 5, y: WIRE_HEIGHT, z: 0 },
+        type: 'entry',
+      }
+      const result = combineAdjacentSegments([seg1, entrySeg])
+      
+      expect(result).toHaveLength(2)
+      expect(result[0]).toEqual(seg1)
+      expect(result[1]).toEqual(entrySeg)
+    })
+
+    it('preserves exit segments without combining', () => {
+      const exitSeg: WireSegment = {
+        start: { x: 0, y: WIRE_HEIGHT, z: 0 },
+        end: { x: 4, y: WIRE_HEIGHT, z: 0 },
+        type: 'exit',
+      }
+      const seg1 = createSegment(4, 0, 8, 0, 'horizontal')
+      const result = combineAdjacentSegments([exitSeg, seg1])
+      
+      expect(result).toHaveLength(2)
+      expect(result[0]).toEqual(exitSeg)
+      expect(result[1]).toEqual(seg1)
+    })
+
+    it('removes backtracking by combining overlapping segments', () => {
+      // Segments that go forward then backward on the same line
+      const seg1 = createSegment(0, 0, 8, 0, 'horizontal')
+      const seg2 = createSegment(8, 0, 4, 0, 'horizontal') // Backtracks
+      const seg3 = createSegment(4, 0, 12, 0, 'horizontal') // Continues forward
+      const result = combineAdjacentSegments([seg1, seg2, seg3])
+      
+      // Should combine into single segment from start of seg1 to end of seg3
+      expect(result).toHaveLength(1)
+      expect(result[0].start).toEqual(seg1.start)
+      expect(result[0].end).toEqual(seg3.end)
+      expect(result[0].type).toBe('horizontal')
+    })
+
+    it('handles multiple groups of combinable segments', () => {
+      // Group 1: horizontal segments
+      const seg1 = createSegment(0, 0, 4, 0, 'horizontal')
+      const seg2 = createSegment(4, 0, 8, 0, 'horizontal')
+      
+      // Transition: vertical segment (not adjacent to next group)
+      const seg3 = createSegment(8, 0, 8, 4, 'vertical')
+      
+      // Group 2: horizontal segments (on different line, not adjacent to seg3)
+      const seg4 = createSegment(12, 4, 16, 4, 'horizontal')
+      const seg5 = createSegment(16, 4, 20, 4, 'horizontal')
+      
+      const result = combineAdjacentSegments([seg1, seg2, seg3, seg4, seg5])
+      
+      expect(result).toHaveLength(3)
+      // First group combined
+      expect(result[0].start).toEqual(seg1.start)
+      expect(result[0].end).toEqual(seg2.end)
+      expect(result[0].type).toBe('horizontal')
+      // Transition segment unchanged
+      expect(result[1]).toEqual(seg3)
+      // Second group combined
+      expect(result[2].start).toEqual(seg4.start)
+      expect(result[2].end).toEqual(seg5.end)
+      expect(result[2].type).toBe('horizontal')
+    })
+
+    it('handles segments with negative coordinates', () => {
+      const seg1 = createSegment(-4, 0, 0, 0, 'horizontal')
+      const seg2 = createSegment(0, 0, 4, 0, 'horizontal')
+      const result = combineAdjacentSegments([seg1, seg2])
+      
+      expect(result).toHaveLength(1)
+      expect(result[0].start).toEqual(seg1.start)
+      expect(result[0].end).toEqual(seg2.end)
+    })
+
+    it('handles segments going in negative direction', () => {
+      const seg1 = createSegment(8, 0, 4, 0, 'horizontal') // Right to left
+      const seg2 = createSegment(4, 0, 0, 0, 'horizontal') // Right to left
+      const result = combineAdjacentSegments([seg1, seg2])
+      
+      expect(result).toHaveLength(1)
+      expect(result[0].start).toEqual(seg1.start)
+      expect(result[0].end).toEqual(seg2.end)
+    })
+
+    it('handles vertical segments going in negative direction', () => {
+      const seg1 = createSegment(0, 8, 0, 4, 'vertical') // Forward to back
+      const seg2 = createSegment(0, 4, 0, 0, 'vertical') // Forward to back
+      const result = combineAdjacentSegments([seg1, seg2])
+      
+      expect(result).toHaveLength(1)
+      expect(result[0].start).toEqual(seg1.start)
+      expect(result[0].end).toEqual(seg2.end)
+    })
+
+    it('handles tolerance for adjacent check', () => {
+      const seg1 = createSegment(0, 0, 4, 0, 'horizontal')
+      const seg2: WireSegment = {
+        start: { x: 4.0001, y: WIRE_HEIGHT, z: 0.0001 }, // Within tolerance
+        end: { x: 8, y: WIRE_HEIGHT, z: 0 },
+        type: 'horizontal',
+      }
+      const result = combineAdjacentSegments([seg1, seg2])
+      
+      // Should still combine despite small floating point differences
+      expect(result).toHaveLength(1)
     })
   })
 })

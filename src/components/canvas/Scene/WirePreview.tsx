@@ -107,15 +107,8 @@ export function WirePreview() {
   const dz = previewEnd.z - wiringFrom.fromPosition.z
   const distance = Math.sqrt(dx * dx + dy * dy + dz * dz)
   
-  console.debug('[WirePreview] Distance check', {
-    distance,
-    start: wiringFrom.fromPosition,
-    end: previewEnd,
-    willRender: distance >= 0.001,
-  })
   
   if (distance < 0.001) {
-    console.debug('[WirePreview] Skipping render - positions too close', { distance })
     return null // Don't render if positions are essentially the same
   }
   
@@ -134,16 +127,7 @@ export function WirePreview() {
   let destinationPin: { gateId: string; pinId: string; pinCenter: { x: number; y: number; z: number }; orientation: { x: number; y: number; z: number } } | null = null
   
   // Use destination pin from store if available (set when pin is hovered via onPointerOver)
-  console.debug('[WirePreview] Checking destination pin', {
-    destinationGateId: wiringFrom.destinationGateId,
-    destinationPinId: wiringFrom.destinationPinId,
-    hasBoth: !!(wiringFrom.destinationGateId && wiringFrom.destinationPinId),
-  })
   if (wiringFrom.destinationGateId && wiringFrom.destinationPinId) {
-    console.debug('[WirePreview] Destination pin found', {
-      destinationGateId: wiringFrom.destinationGateId,
-      destinationPinId: wiringFrom.destinationPinId,
-    })
     // TypeScript narrows these to string after the null check
     const destinationGateId: string = wiringFrom.destinationGateId
     const destinationPinId: string = wiringFrom.destinationPinId
@@ -197,9 +181,6 @@ export function WirePreview() {
     
     if (hasReachedPin && lastCalculatedPathRef.current) {
       // Already reached pin - use previous path as-is, no extension or recalculation needed
-      console.debug('[WirePreview] Already reached pin - using previous path', {
-        lastSegmentType: lastSegment?.type,
-      })
       previewPath = lastCalculatedPathRef.current
       shouldCalculateWirePath = false
     } else {
@@ -213,14 +194,6 @@ export function WirePreview() {
         canExtendPath(lastPathEnd, lastSegment, currentDestination, {
           existingSegments: allExistingSegments,
         })
-
-      console.debug('[WirePreview] Can extend:', {
-        canExtend,
-        lastPathEnd,
-        lastSegment,
-        currentDestination,
-        existingSegments: allExistingSegments,
-      })
       
       if (canExtend && lastCalculatedPathRef.current) {
         // Try to extend from last path
@@ -235,14 +208,15 @@ export function WirePreview() {
           shouldCalculateWirePath = false // Extension succeeded, don't recalculate
         } catch (extensionError) {
           // Extension failed (backtracking/overlap/invalid) - will recalculate from scratch
-          console.debug('[WirePreview] Extension failed, recalculating:', extensionError)
           shouldCalculateWirePath = true
+          console.debug('[ 🔥 WirePreview ] Extension failed, recalculating:', extensionError)
         }
       }
     }
     
     // Calculate wire path from scratch if needed
     if (shouldCalculateWirePath) {
+      console.debug('[ 🔥 WirePreview ] Recalculating:')
       previewPath = destinationPin
         ? calculateWirePath(
             wiringFrom.fromPosition,
