@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react'
 import { useCircuitStore, circuitActions } from '@/store/circuitStore'
 import { Wire3D } from '../Wire3D'
 import { trackRender } from '@/utils/renderTracking'
-import { calculateWirePath, canExtendPath, extendPathFromEnd } from '@/utils/wiringScheme/core'
+import { calculateWirePath, canExtendPath, extendPathFromEnd } from '@/utils/wiringScheme'
 import { colors } from '@/theme'
 import type { WireSegment, WirePath, DestinationType, Position } from '@/utils/wiringScheme/types'
 

@@ -7,5 +7,6 @@
 export * from './types'
 export * from './segments'
 export * from './pathfinding'
+export * from './extension'
 export * from './core'
 

@@ -2,7 +2,9 @@ import { describe, it, expect } from 'vitest'
 import type { Position } from '@/store/types'
 import type { PinOrientation, WireSegment } from './types'
 import { WIRE_HEIGHT, SECTION_SIZE } from './types'
-import { calculateWirePath, arePointsOnSameSectionLine, combineAdjacentSegments } from './core'
+import { calculateWirePath } from './core'
+import { arePointsOnSameSectionLine } from './pathfinding'
+import { combineAdjacentSegments } from './segments'
 
 describe('WiringScheme Core Module', () => {
   const createPosition = (x: number, y: number, z: number): Position => ({ x, y, z })

@@ -1,7 +1,7 @@
 import type { GateActions, GateInstance, GateType, Pin, Position, CircuitStore } from '../../types'
 import { snapToGrid } from '@/utils/grid'
 import { useCircuitStore } from '../../circuitStore'
-import { calculateWirePathFromConnection } from '@/utils/wiringScheme/core'
+import { calculateWirePathFromConnection } from '@/utils/wiringScheme'
 import type { WireSegment } from '@/utils/wiringScheme/types'
 
 // Helper to create a gate instance - exported for use in atomic placement actions

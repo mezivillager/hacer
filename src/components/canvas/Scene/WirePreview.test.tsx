@@ -3,7 +3,7 @@ import { render } from '@testing-library/react'
 import { message } from 'antd'
 import { WirePreview } from './WirePreview'
 import { useCircuitStore } from '@/store/circuitStore'
-import { calculateWirePath } from '@/utils/wiringScheme/core'
+import { calculateWirePath } from '@/utils/wiringScheme'
 
 // Mock antd message
 vi.mock('antd', async () => {

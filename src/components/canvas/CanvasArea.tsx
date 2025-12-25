@@ -7,7 +7,7 @@ import { trackRender } from '@/utils/renderTracking'
 import { worldToGrid, canPlaceGateAt } from '@/utils/grid'
 import { handlePinClick, handleInputToggle, handleGateClick } from './handlers/canvasHandlers'
 // Wire crossing resolution deferred - new wiring scheme routes along section lines
-import { calculateWirePath } from '@/utils/wiringScheme/core'
+import { calculateWirePath } from '@/utils/wiringScheme'
 
 const { Content } = Layout
 const { Text } = Typography

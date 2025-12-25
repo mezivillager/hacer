@@ -1,5 +1,5 @@
 import type { Position, GateInstance, Wire } from '@/store/types'
-import { calculateWirePath } from './wiringScheme/core'
+import { calculateWirePath } from './wiringScheme'
 import type { WireSegment as GridAlignedSegment } from './wiringScheme/types'
 
 /**

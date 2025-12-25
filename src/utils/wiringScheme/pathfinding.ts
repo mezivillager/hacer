@@ -35,6 +35,37 @@ export function isOnSectionLine(pos: Position, axis: 'x' | 'z'): boolean {
   return Math.abs(coord - snapped) < 0.001
 }
 
+const TOLERANCE = 0.001
+
+/**
+ * Check if two positions are on the same section line.
+ * 
+ * @param pos1 - First position
+ * @param pos2 - Second position
+ * @returns True if both positions are on the same section line (horizontal or vertical)
+ * 
+ * @internal Exported for testing only
+ */
+export function arePointsOnSameSectionLine(pos1: Position, pos2: Position): boolean {
+  // Check if both are on the same horizontal line (same z coordinate, on a section line)
+  const pos1OnHorizontal = isOnSectionLine(pos1, 'z')
+  const pos2OnHorizontal = isOnSectionLine(pos2, 'z')
+  
+  if (pos1OnHorizontal && pos2OnHorizontal && Math.abs(pos1.z - pos2.z) < TOLERANCE) {
+    return true // Both on same horizontal line
+  }
+  
+  // Check if both are on the same vertical line (same x coordinate, on a section line)
+  const pos1OnVertical = isOnSectionLine(pos1, 'x')
+  const pos2OnVertical = isOnSectionLine(pos2, 'x')
+  
+  if (pos1OnVertical && pos2OnVertical && Math.abs(pos1.x - pos2.x) < TOLERANCE) {
+    return true // Both on same vertical line
+  }
+  
+  return false
+}
+
 /**
  * Get section corners reachable from current position.
  * 
