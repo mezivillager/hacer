@@ -178,8 +178,9 @@ export function WirePreview() {
     // If we've already reached a pin (last segment is entry segment), use previous path
     // This avoids redundant extension attempts and recalculations
     const hasReachedPin = lastSegment?.type === 'entry'
+    const isOnPin = currentDestination.type === 'pin'
     
-    if (hasReachedPin && lastCalculatedPathRef.current) {
+    if (hasReachedPin && isOnPin && lastCalculatedPathRef.current) {
       // Already reached pin - use previous path as-is, no extension or recalculation needed
       previewPath = lastCalculatedPathRef.current
       shouldCalculateWirePath = false
