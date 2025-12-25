@@ -39,7 +39,7 @@ export const useCircuitStore = create<CircuitStore>()(
         ...initialState,
 
         // Spread all action slices
-        ...createGateActions(set),
+        ...createGateActions(set, get),
         ...createWireActions(set),
         ...createSimulationActions(set),
         ...createPlacementActions(set, get),
@@ -108,10 +108,12 @@ export const circuitActions = {
   updateGatePosition: (...args: Parameters<CircuitStore['updateGatePosition']>) => useCircuitStore.getState().updateGatePosition(...args),
   updateGateRotation: (...args: Parameters<CircuitStore['updateGateRotation']>) => useCircuitStore.getState().updateGateRotation(...args),
   rotateGate: (...args: Parameters<CircuitStore['rotateGate']>) => useCircuitStore.getState().rotateGate(...args),
+  recalculateWiresForGate: (...args: Parameters<CircuitStore['recalculateWiresForGate']>) => useCircuitStore.getState().recalculateWiresForGate(...args),
   // Wire actions
   addWire: (...args: Parameters<CircuitStore['addWire']>) => useCircuitStore.getState().addWire(...args),
   removeWire: (...args: Parameters<CircuitStore['removeWire']>) => useCircuitStore.getState().removeWire(...args),
   setInputValue: (...args: Parameters<CircuitStore['setInputValue']>) => useCircuitStore.getState().setInputValue(...args),
+  updateWireSegments: (...args: Parameters<CircuitStore['updateWireSegments']>) => useCircuitStore.getState().updateWireSegments(...args),
   // Simulation actions
   toggleSimulation: () => useCircuitStore.getState().toggleSimulation(),
   setSimulationSpeed: (...args: Parameters<CircuitStore['setSimulationSpeed']>) => useCircuitStore.getState().setSimulationSpeed(...args),

@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { useCircuitStore } from '../../circuitStore'
+import type { WireSegment } from '@/utils/wiringScheme/types'
 
 // Helper to get store state
 const getState = () => useCircuitStore.getState()
@@ -25,7 +26,8 @@ describe('wireActions', () => {
       
       const wire = getState().addWire(
         gate1.id, gate1.outputs[0].id,
-        gate2.id, gate2.inputs[0].id
+        gate2.id, gate2.inputs[0].id,
+        []
       )
       
       expect(getState().wires).toHaveLength(1)
@@ -39,11 +41,13 @@ describe('wireActions', () => {
       
       const wire1 = getState().addWire(
         gate1.id, gate1.outputs[0].id,
-        gate2.id, gate2.inputs[0].id
+        gate2.id, gate2.inputs[0].id,
+        []
       )
       const wire2 = getState().addWire(
         gate1.id, gate1.outputs[0].id,
-        gate2.id, gate2.inputs[1].id
+        gate2.id, gate2.inputs[1].id,
+        []
       )
       
       expect(wire1.id).not.toBe(wire2.id)
@@ -57,7 +61,8 @@ describe('wireActions', () => {
       
       const wire = getState().addWire(
         gate1.id, gate1.outputs[0].id,
-        gate2.id, gate2.inputs[0].id
+        gate2.id, gate2.inputs[0].id,
+        []
       )
       expect(getState().wires).toHaveLength(1)
       
@@ -71,7 +76,8 @@ describe('wireActions', () => {
       
       getState().addWire(
         gate1.id, gate1.outputs[0].id,
-        gate2.id, gate2.inputs[0].id
+        gate2.id, gate2.inputs[0].id,
+        []
       )
       expect(getState().wires).toHaveLength(1)
       
@@ -100,6 +106,38 @@ describe('wireActions', () => {
       getState().setInputValue(gate.id, 'non-existent-pin', true)
       
       expect(getState().gates[0].inputs[0].value).toBe(false)
+    })
+  })
+
+  describe('updateWireSegments', () => {
+    it('updates wire segments', () => {
+      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 0 })
+      
+      const wire = getState().addWire(
+        gate1.id, gate1.outputs[0].id,
+        gate2.id, gate2.inputs[0].id,
+        [{ start: { x: 0, y: 0, z: 0 }, end: { x: 1, y: 0, z: 0 }, type: 'horizontal' }]
+      )
+      
+      const newSegments: WireSegment[] = [
+        { start: { x: 0, y: 0, z: 0 }, end: { x: 2, y: 0, z: 0 }, type: 'horizontal' },
+        { start: { x: 2, y: 0, z: 0 }, end: { x: 2, y: 0, z: 1 }, type: 'vertical' },
+      ]
+      
+      getState().updateWireSegments(wire.id, newSegments)
+      
+      expect(getState().wires[0].segments).toEqual(newSegments)
+    })
+
+    it('does nothing if wire does not exist', () => {
+      const newSegments: WireSegment[] = [
+        { start: { x: 0, y: 0, z: 0 }, end: { x: 1, y: 0, z: 0 }, type: 'horizontal' },
+      ]
+      
+      getState().updateWireSegments('non-existent-id', newSegments)
+      // Should not throw
+      expect(getState().wires).toHaveLength(0)
     })
   })
 })

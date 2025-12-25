@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { useCircuitStore } from '../../circuitStore'
 import { GRID_SIZE } from '@/utils/grid'
+import type { WireSegment } from '@/utils/wiringScheme/types'
 
 // Helper to get store state
 const getState = () => useCircuitStore.getState()
@@ -87,7 +88,8 @@ describe('gateActions', () => {
       
       getState().addWire(
         gate1.id, gate1.outputs[0].id,
-        gate2.id, gate2.inputs[0].id
+        gate2.id, gate2.inputs[0].id,
+        []
       )
       expect(getState().wires).toHaveLength(1)
       
@@ -151,6 +153,88 @@ describe('gateActions', () => {
       getState().updateGatePosition('non-existent-id', { x: GRID_SIZE * 2, y: 0, z: GRID_SIZE * 2 })
       
       expect(getState().gates[0].position).toEqual({ x: 0, y: 0, z: 0 })
+    })
+
+    it('recalculates wires attached to moved gate', () => {
+      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('NAND', { x: GRID_SIZE * 2, y: 0, z: 0 })
+      
+      // Create wire with initial segments
+      const initialSegments: WireSegment[] = [
+        { start: { x: 0.84, y: 0.2, z: 0 }, end: { x: 4, y: 0.2, z: 0 }, type: 'exit' },
+        { start: { x: 4, y: 0.2, z: 0 }, end: { x: 4, y: 0.2, z: 0 }, type: 'horizontal' },
+        { start: { x: 4, y: 0.2, z: 0 }, end: { x: 2.6, y: 0.2, z: 0 }, type: 'entry' },
+      ]
+      const wire = getState().addWire(
+        gate1.id, gate1.outputs[0].id,
+        gate2.id, gate2.inputs[0].id,
+        initialSegments
+      )
+      
+      // Store initial segments
+      const originalSegments = [...wire.segments]
+      
+      // Move gate1 to a new position
+      getState().updateGatePosition(gate1.id, { x: GRID_SIZE * 4, y: 0, z: GRID_SIZE * 2 })
+      
+      // Wire segments should be recalculated (different from original)
+      const updatedWire = getState().wires.find((w) => w.id === wire.id)
+      expect(updatedWire).toBeDefined()
+      expect(updatedWire!.segments).not.toEqual(originalSegments)
+      expect(updatedWire!.segments.length).toBeGreaterThan(0)
+    })
+
+    it('recalculates multiple wires attached to moved gate', () => {
+      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('NAND', { x: GRID_SIZE * 2, y: 0, z: 0 })
+      const gate3 = getState().addGate('NAND', { x: GRID_SIZE * 4, y: 0, z: 0 })
+      
+      // Create two wires from gate1
+      const wire1 = getState().addWire(
+        gate1.id, gate1.outputs[0].id,
+        gate2.id, gate2.inputs[0].id,
+        [{ start: { x: 0, y: 0, z: 0 }, end: { x: 1, y: 0, z: 0 }, type: 'horizontal' }]
+      )
+      const wire2 = getState().addWire(
+        gate1.id, gate1.outputs[0].id,
+        gate3.id, gate3.inputs[0].id,
+        [{ start: { x: 0, y: 0, z: 0 }, end: { x: 1, y: 0, z: 0 }, type: 'horizontal' }]
+      )
+      
+      const originalSegments1 = [...wire1.segments]
+      const originalSegments2 = [...wire2.segments]
+      
+      // Move gate1
+      getState().updateGatePosition(gate1.id, { x: GRID_SIZE * 6, y: 0, z: GRID_SIZE * 2 })
+      
+      // Both wires should be recalculated
+      const updatedWire1 = getState().wires.find((w) => w.id === wire1.id)
+      const updatedWire2 = getState().wires.find((w) => w.id === wire2.id)
+      
+      expect(updatedWire1!.segments).not.toEqual(originalSegments1)
+      expect(updatedWire2!.segments).not.toEqual(originalSegments2)
+    })
+
+    it('does not recalculate wires not attached to moved gate', () => {
+      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('NAND', { x: GRID_SIZE * 2, y: 0, z: 0 })
+      const gate3 = getState().addGate('NAND', { x: GRID_SIZE * 4, y: 0, z: 0 })
+      
+      // Create wire between gate2 and gate3 (not connected to gate1)
+      const wire = getState().addWire(
+        gate2.id, gate2.outputs[0].id,
+        gate3.id, gate3.inputs[0].id,
+        [{ start: { x: 0, y: 0, z: 0 }, end: { x: 1, y: 0, z: 0 }, type: 'horizontal' }]
+      )
+      
+      const originalSegments = [...wire.segments]
+      
+      // Move gate1 (not connected to wire)
+      getState().updateGatePosition(gate1.id, { x: GRID_SIZE * 6, y: 0, z: GRID_SIZE * 2 })
+      
+      // Wire segments should remain unchanged
+      const updatedWire = getState().wires.find((w) => w.id === wire.id)
+      expect(updatedWire!.segments).toEqual(originalSegments)
     })
 
     describe('grid snapping', () => {
@@ -219,6 +303,73 @@ describe('gateActions', () => {
       getState().rotateGate(gate.id, 'y', Math.PI / 4)
       
       expect(getState().gates[0].rotation.y).toBeCloseTo(Math.PI / 2)
+    })
+  })
+
+  describe('recalculateWiresForGate', () => {
+    it('recalculates wires connected to gate', () => {
+      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('NAND', { x: GRID_SIZE * 2, y: 0, z: 0 })
+      
+      const wire = getState().addWire(
+        gate1.id, gate1.outputs[0].id,
+        gate2.id, gate2.inputs[0].id,
+        [{ start: { x: 0, y: 0, z: 0 }, end: { x: 1, y: 0, z: 0 }, type: 'horizontal' }]
+      )
+      
+      const originalSegments = [...wire.segments]
+      
+      // Move gate using updateGatePosition (which triggers recalculation automatically)
+      // But we want to test recalculateWiresForGate directly, so we'll use setState
+      useCircuitStore.setState((state) => {
+        const gate = state.gates.find((g) => g.id === gate1.id)
+        if (gate) {
+          gate.position = { x: GRID_SIZE * 4, y: 0, z: GRID_SIZE * 2 }
+        }
+      })
+      
+      // Recalculate wires
+      getState().recalculateWiresForGate(gate1.id)
+      
+      const updatedWire = getState().wires.find((w) => w.id === wire.id)
+      expect(updatedWire).toBeDefined()
+      expect(updatedWire!.segments).not.toEqual(originalSegments)
+      expect(updatedWire!.segments.length).toBeGreaterThan(0)
+    })
+
+    it('handles gate with no wires', () => {
+      const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      
+      // Should not throw
+      getState().recalculateWiresForGate(gate.id)
+    })
+
+    it('handles wire where gate is destination', () => {
+      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('NAND', { x: GRID_SIZE * 2, y: 0, z: 0 })
+      
+      // Wire from gate1 to gate2
+      const wire = getState().addWire(
+        gate1.id, gate1.outputs[0].id,
+        gate2.id, gate2.inputs[0].id,
+        [{ start: { x: 0, y: 0, z: 0 }, end: { x: 1, y: 0, z: 0 }, type: 'horizontal' }]
+      )
+      
+      const originalSegments = [...wire.segments]
+      
+      // Move gate2 (destination gate) using setState
+      useCircuitStore.setState((state) => {
+        const gate = state.gates.find((g) => g.id === gate2.id)
+        if (gate) {
+          gate.position = { x: GRID_SIZE * 6, y: 0, z: GRID_SIZE * 2 }
+        }
+      })
+      
+      // Recalculate wires for gate2
+      getState().recalculateWiresForGate(gate2.id)
+      
+      const updatedWire = getState().wires.find((w) => w.id === wire.id)
+      expect(updatedWire!.segments).not.toEqual(originalSegments)
     })
   })
 })

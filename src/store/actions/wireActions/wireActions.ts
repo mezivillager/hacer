@@ -43,4 +43,13 @@ export const createWireActions = (set: SetState): WireActions => ({
       }
     }, false, 'setInputValue')
   },
+
+  updateWireSegments: (wireId: string, segments: WireSegment[]) => {
+    set((state) => {
+      const wire = state.wires.find((w) => w.id === wireId)
+      if (wire) {
+        wire.segments = segments
+      }
+    }, false, 'updateWireSegments')
+  },
 })

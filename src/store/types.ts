@@ -66,12 +66,14 @@ export interface GateActions {
   updateGatePosition: (gateId: string, position: Position) => void
   updateGateRotation: (gateId: string, rotation: Rotation) => void
   rotateGate: (gateId: string, axis: 'x' | 'y' | 'z', angle: number) => void
+  recalculateWiresForGate: (gateId: string) => void
 }
 
 export interface WireActions {
   addWire: (fromGateId: string, fromPinId: string, toGateId: string, toPinId: string, segments: WireSegment[]) => Wire
   removeWire: (wireId: string) => void
   setInputValue: (gateId: string, pinId: string, value: boolean) => void
+  updateWireSegments: (wireId: string, segments: WireSegment[]) => void
 }
 
 export interface SimulationActions {

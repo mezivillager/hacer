@@ -377,6 +377,95 @@ export function extendPathFromEnd(
 }
 
 /**
+ * Options for calculating wire path from wire connection information.
+ */
+export interface CalculateWirePathFromConnectionOptions {
+  /** Array of all gate instances in the circuit */
+  gates: GateInstance[]
+  /** Function to get pin world position */
+  getPinWorldPosition: (gateId: string, pinId: string) => Position | null
+  /** Function to get pin orientation */
+  getPinOrientation: (gateId: string, pinId: string) => { x: number; y: number; z: number } | null
+  /** Existing wire segments to avoid overlapping with */
+  existingSegments?: WireSegment[]
+}
+
+/**
+ * Calculate wire path from wire connection information (gate IDs and pin IDs).
+ * Handles determining output/input pins, getting positions/orientations, and calling calculateWirePath.
+ * 
+ * @param fromGateId - Source gate ID
+ * @param fromPinId - Source pin ID
+ * @param toGateId - Destination gate ID
+ * @param toPinId - Destination pin ID
+ * @param options - Options including gates, pin helpers, and existing segments
+ * @returns Complete wire path, or null if pins/gates not found or positions unavailable
+ * @throws Error if path calculation fails
+ */
+export function calculateWirePathFromConnection(
+  fromGateId: string,
+  fromPinId: string,
+  toGateId: string,
+  toPinId: string,
+  options: CalculateWirePathFromConnectionOptions
+): WirePath | null {
+  const { gates, getPinWorldPosition, getPinOrientation, existingSegments = [] } = options
+
+  // Find gates
+  const fromGate = gates.find((g) => g.id === fromGateId)
+  const toGate = gates.find((g) => g.id === toGateId)
+
+  if (!fromGate || !toGate) {
+    return null
+  }
+
+  // Find pins
+  const fromPin = fromGate.outputs.find((p) => p.id === fromPinId) || fromGate.inputs.find((p) => p.id === fromPinId)
+  const toPin = toGate.outputs.find((p) => p.id === toPinId) || toGate.inputs.find((p) => p.id === toPinId)
+
+  if (!fromPin || !toPin) {
+    return null
+  }
+
+  // Determine output and input pins (wires are always output -> input)
+  const isFromOutput = fromPin.type === 'output'
+  const outputGateId = isFromOutput ? fromGateId : toGateId
+  const outputPinId = isFromOutput ? fromPinId : toPinId
+  const inputGateId = isFromOutput ? toGateId : fromGateId
+  const inputPinId = isFromOutput ? toPinId : fromPinId
+
+  // Get pin positions and orientations
+  const outputPinPos = getPinWorldPosition(outputGateId, outputPinId)
+  const inputPinPos = getPinWorldPosition(inputGateId, inputPinId)
+  const outputPinOrientation = getPinOrientation(outputGateId, outputPinId)
+  const inputPinOrientation = getPinOrientation(inputGateId, inputPinId)
+
+  if (!outputPinPos || !inputPinPos || !outputPinOrientation || !inputPinOrientation) {
+    return null
+  }
+
+  // Construct destination
+  const destination: DestinationType = {
+    type: 'pin',
+    pin: inputPinPos,
+    orientation: { direction: inputPinOrientation },
+  }
+
+  // Calculate path
+  return calculateWirePath(
+    outputPinPos,
+    destination,
+    { direction: outputPinOrientation },
+    gates,
+    {
+      sourceGateId: outputGateId,
+      destinationGateId: inputGateId,
+      existingSegments,
+    }
+  )
+}
+
+/**
  * Calculate wire path from start pin to destination.
  * 
  * @param startPin - Start pin center position

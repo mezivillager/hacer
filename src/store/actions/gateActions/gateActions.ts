@@ -1,6 +1,8 @@
 import type { GateActions, GateInstance, GateType, Pin, Position, CircuitStore } from '../../types'
 import { snapToGrid } from '@/utils/grid'
 import { useCircuitStore } from '../../circuitStore'
+import { calculateWirePathFromConnection } from '@/utils/wiringScheme/core'
+import type { WireSegment } from '@/utils/wiringScheme/types'
 
 // Helper to create a gate instance - exported for use in atomic placement actions
 export function createGateInstance(type: GateType, position: Position): GateInstance {
@@ -39,8 +41,9 @@ type SetState = (
   replace?: false,
   actionName?: string
 ) => void
+type GetState = () => CircuitStore
 
-export const createGateActions = (set: SetState): GateActions => ({
+export const createGateActions = (set: SetState, get: GetState): GateActions => ({
   addGate: (type: GateType, position: Position) => {
     const gate = createGateInstance(type, position)
     set((state) => {
@@ -92,6 +95,11 @@ export const createGateActions = (set: SetState): GateActions => ({
         gate.position = snappedPosition
       }
     }, false, 'updateGatePosition')
+    
+    // Recalculate wires attached to this gate after position update
+    // Use getState() to access the updated state and call the action
+    const updatedState = get()
+    updatedState.recalculateWiresForGate(gateId)
   },
 
   updateGateRotation: (gateId: string, rotation: Position) => {
@@ -114,5 +122,63 @@ export const createGateActions = (set: SetState): GateActions => ({
         }
       }
     }, false, 'rotateGate')
+  },
+
+  recalculateWiresForGate: (gateId: string) => {
+    const state = get()
+    const { gates, wires } = state
+    const getPinWorldPosition = state.getPinWorldPosition
+    const getPinOrientation = state.getPinOrientation
+    const updateWireSegments = state.updateWireSegments
+
+    // Find all wires connected to this gate
+    const connectedWires = wires.filter(
+      (w) => w.fromGateId === gateId || w.toGateId === gateId
+    )
+
+    if (connectedWires.length === 0) {
+      return // No wires to recalculate
+    }
+
+    // Collect existing segments from other wires (for overlap avoidance)
+    const allOtherWireSegments: WireSegment[] = []
+    for (const wire of wires) {
+      if (!connectedWires.some((cw) => cw.id === wire.id)) {
+        // This wire is not being recalculated, include its segments
+        if (wire.segments && wire.segments.length > 0) {
+          allOtherWireSegments.push(...wire.segments)
+        }
+      }
+    }
+
+    // Recalculate each connected wire
+    for (const wire of connectedWires) {
+      try {
+        // Use helper function to calculate path from wire connection info
+        const newPath = calculateWirePathFromConnection(
+          wire.fromGateId,
+          wire.fromPinId,
+          wire.toGateId,
+          wire.toPinId,
+          {
+            gates,
+            getPinWorldPosition,
+            getPinOrientation,
+            existingSegments: allOtherWireSegments,
+          }
+        )
+
+        if (!newPath) {
+          console.warn(`[recalculateWiresForGate] Failed to calculate path for wire ${wire.id} - pins or gates not found`)
+          continue
+        }
+
+        // Update wire segments
+        updateWireSegments(wire.id, newPath.segments)
+      } catch (error) {
+        console.error(`[recalculateWiresForGate] Failed to recalculate wire ${wire.id}:`, error)
+        // Keep old segments on error
+      }
+    }
   },
 })
