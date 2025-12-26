@@ -110,6 +110,11 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
         gate.rotation = rotation
       }
     }, false, 'updateGateRotation')
+
+    // Recalculate wires attached to this gate after rotation update
+    // Use getState() to access the updated state and call the action
+    const updatedState = get()
+    updatedState.recalculateWiresForGate(gateId)
   },
 
   rotateGate: (gateId: string, axis: 'x' | 'y' | 'z', angle: number) => {
@@ -123,6 +128,11 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
         }
       }
     }, false, 'rotateGate')
+
+    // Recalculate wires attached to this gate after rotation update
+    // Use getState() to access the updated state and call the action
+    const updatedState = get()
+    updatedState.recalculateWiresForGate(gateId)
   },
 
   recalculateWiresForGate: (gateId: string) => {

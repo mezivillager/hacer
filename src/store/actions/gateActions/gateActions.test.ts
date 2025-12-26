@@ -294,6 +294,27 @@ describe('gateActions', () => {
 
       expect(getState().gates[0].rotation).toEqual({ x: 0, y: Math.PI / 2, z: 0 })
     })
+
+    it('recalculates wires when rotation changes', () => {
+      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('NAND', { x: GRID_SIZE * 2, y: 0, z: 0 })
+
+      const wire = getState().addWire(
+        gate1.id, gate1.outputs[0].id,
+        gate2.id, gate2.inputs[0].id,
+        [{ start: { x: 0, y: 0, z: 0 }, end: { x: 1, y: 0, z: 0 }, type: 'horizontal' }]
+      )
+
+      const originalSegments = [...wire.segments]
+
+      // Update rotation - should trigger wire recalculation
+      getState().updateGateRotation(gate1.id, { x: Math.PI / 2, y: 0, z: Math.PI / 2 })
+
+      const updatedWire = getState().wires.find((w) => w.id === wire.id)
+      expect(updatedWire).toBeDefined()
+      expect(updatedWire!.segments).not.toEqual(originalSegments)
+      expect(updatedWire!.segments.length).toBeGreaterThan(0)
+    })
   })
 
   describe('rotateGate', () => {
@@ -312,6 +333,27 @@ describe('gateActions', () => {
       getState().rotateGate(gate.id, 'y', Math.PI / 4)
 
       expect(getState().gates[0].rotation.y).toBeCloseTo(Math.PI / 2)
+    })
+
+    it('recalculates wires when gate rotates', () => {
+      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('NAND', { x: GRID_SIZE * 2, y: 0, z: 0 })
+
+      const wire = getState().addWire(
+        gate1.id, gate1.outputs[0].id,
+        gate2.id, gate2.inputs[0].id,
+        [{ start: { x: 0, y: 0, z: 0 }, end: { x: 1, y: 0, z: 0 }, type: 'horizontal' }]
+      )
+
+      const originalSegments = [...wire.segments]
+
+      // Rotate gate - should trigger wire recalculation
+      getState().rotateGate(gate1.id, 'z', Math.PI / 2)
+
+      const updatedWire = getState().wires.find((w) => w.id === wire.id)
+      expect(updatedWire).toBeDefined()
+      expect(updatedWire!.segments).not.toEqual(originalSegments)
+      expect(updatedWire!.segments.length).toBeGreaterThan(0)
     })
   })
 
