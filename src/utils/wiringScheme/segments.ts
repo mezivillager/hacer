@@ -4,9 +4,11 @@
  * This module provides functions for:
  * - Creating entry/exit segments (pin ↔ section line)
  * - Manipulating and analyzing wire segments (combining, length calculation)
+ * - Collecting segments from wire arrays
  */
 
 import type { Position, PinOrientation, WireSegment } from './types'
+import type { Wire } from '@/store/types'
 import { SECTION_SIZE, WIRE_HEIGHT } from './types'
 
 const TOLERANCE = 0.001
@@ -239,4 +241,43 @@ export function combineAdjacentSegments(segments: WireSegment[]): WireSegment[] 
   }
   
   return result
+}
+
+/**
+ * Collect all wire segments from an array of wires.
+ * Optionally filters wires before collecting segments.
+ * 
+ * @param wires - Array of wires to collect segments from
+ * @param filterFn - Optional function to filter which wires to include
+ * @returns Array of all wire segments from the filtered wires
+ * 
+ * @example
+ * // Collect all segments from all wires
+ * const allSegments = collectWireSegments(wires)
+ * 
+ * @example
+ * // Collect segments from wires excluding specific ones
+ * const otherSegments = collectWireSegments(wires, (wire) => 
+ *   !connectedWires.some(cw => cw.id === wire.id)
+ * )
+ */
+export function collectWireSegments(
+  wires: Wire[],
+  filterFn?: (wire: Wire) => boolean
+): WireSegment[] {
+  const segments: WireSegment[] = []
+  
+  for (const wire of wires) {
+    // Apply filter if provided
+    if (filterFn && !filterFn(wire)) {
+      continue
+    }
+    
+    // Collect segments from this wire if they exist
+    if (wire.segments && wire.segments.length > 0) {
+      segments.push(...wire.segments)
+    }
+  }
+  
+  return segments
 }

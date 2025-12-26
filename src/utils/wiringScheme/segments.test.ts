@@ -1,8 +1,9 @@
 import { describe, it, expect } from 'vitest'
 import type { Position } from '@/store/types'
-import type { PinOrientation } from './types'
+import type { PinOrientation, WireSegment } from './types'
 import { SECTION_SIZE, WIRE_HEIGHT } from './types'
-import { calculateExitSegment, calculateEntrySegment } from './segments'
+import { calculateExitSegment, calculateEntrySegment, collectWireSegments } from './segments'
+import type { Wire } from '@/store/types'
 
 describe('WiringScheme Segments Module', () => {
   const createPosition = (x: number, y: number, z: number): Position => ({ x, y, z })
@@ -233,6 +234,79 @@ describe('WiringScheme Segments Module', () => {
       // Should still create valid segments
       expect(exitSegment.end.x).toBe(4.0) // Should go to next section line (8.0) or stay at 4.0?
       expect(entrySegment.start.x).toBeDefined()
+    })
+  })
+
+  describe('collectWireSegments', () => {
+    const createWireSegment = (start: Position, end: Position, type: WireSegment['type'] = 'horizontal'): WireSegment => ({
+      start,
+      end,
+      type,
+    })
+
+    const createWire = (id: string, segments: WireSegment[]): Wire => ({
+      id,
+      fromGateId: `gate-${id}`,
+      fromPinId: `pin-${id}`,
+      toGateId: `gate-to-${id}`,
+      toPinId: `pin-to-${id}`,
+      segments,
+    })
+
+    it('collects segments from all wires', () => {
+      const segment1 = createWireSegment({ x: 0, y: 0.2, z: 0 }, { x: 4, y: 0.2, z: 0 })
+      const segment2 = createWireSegment({ x: 4, y: 0.2, z: 0 }, { x: 8, y: 0.2, z: 0 })
+      const segment3 = createWireSegment({ x: 0, y: 0.2, z: 4 }, { x: 0, y: 0.2, z: 8 }, 'vertical')
+
+      const wire1 = createWire('wire-1', [segment1, segment2])
+      const wire2 = createWire('wire-2', [segment3])
+
+      const wires: Wire[] = [wire1, wire2]
+      const collected = collectWireSegments(wires)
+
+      expect(collected).toHaveLength(3)
+      expect(collected).toContainEqual(segment1)
+      expect(collected).toContainEqual(segment2)
+      expect(collected).toContainEqual(segment3)
+    })
+
+    it('returns empty array when no wires provided', () => {
+      const collected = collectWireSegments([])
+      expect(collected).toEqual([])
+    })
+
+    it('skips wires with no segments', () => {
+      const wire1 = createWire('wire-1', [])
+      const wire2 = createWire('wire-2', [createWireSegment({ x: 0, y: 0.2, z: 0 }, { x: 4, y: 0.2, z: 0 })])
+
+      const wires: Wire[] = [wire1, wire2]
+      const collected = collectWireSegments(wires)
+
+      expect(collected).toHaveLength(1)
+      expect(collected[0]).toEqual(wire2.segments[0])
+    })
+
+    it('filters wires when filterFn is provided', () => {
+      const segment1 = createWireSegment({ x: 0, y: 0.2, z: 0 }, { x: 4, y: 0.2, z: 0 })
+      const segment2 = createWireSegment({ x: 4, y: 0.2, z: 0 }, { x: 8, y: 0.2, z: 0 })
+
+      const wire1 = createWire('wire-1', [segment1])
+      const wire2 = createWire('wire-2', [segment2])
+
+      const wires: Wire[] = [wire1, wire2]
+      const collected = collectWireSegments(wires, (wire) => wire.id === 'wire-1')
+
+      expect(collected).toHaveLength(1)
+      expect(collected[0]).toEqual(segment1)
+    })
+
+    it('returns empty array when filterFn excludes all wires', () => {
+      const wire1 = createWire('wire-1', [createWireSegment({ x: 0, y: 0.2, z: 0 }, { x: 4, y: 0.2, z: 0 })])
+
+      const wires: Wire[] = [wire1]
+      const collected = collectWireSegments(wires, () => false)
+
+      expect(collected).toEqual([])
     })
   })
 })

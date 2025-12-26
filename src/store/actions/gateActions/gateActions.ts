@@ -2,7 +2,7 @@ import type { GateActions, GateInstance, GateType, Pin, Position, CircuitStore }
 import { snapToGrid } from '@/utils/grid'
 import { useCircuitStore } from '../../circuitStore'
 import { calculateWirePathFromConnection } from '@/utils/wiringScheme'
-import type { WireSegment } from '@/utils/wiringScheme/types'
+import { collectWireSegments } from '@/utils/wiringScheme/segments'
 
 // Helper to create a gate instance - exported for use in atomic placement actions
 export function createGateInstance(type: GateType, position: Position): GateInstance {
@@ -141,15 +141,9 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
     }
 
     // Collect existing segments from other wires (for overlap avoidance)
-    const allOtherWireSegments: WireSegment[] = []
-    for (const wire of wires) {
-      if (!connectedWires.some((cw) => cw.id === wire.id)) {
-        // This wire is not being recalculated, include its segments
-        if (wire.segments && wire.segments.length > 0) {
-          allOtherWireSegments.push(...wire.segments)
-        }
-      }
-    }
+    const allOtherWireSegments = collectWireSegments(wires, (wire) => 
+      !connectedWires.some((cw) => cw.id === wire.id)
+    )
 
     // Recalculate each connected wire
     for (const wire of connectedWires) {
