@@ -245,7 +245,7 @@ describe('Wire Segment Overlap Detection', () => {
       ]
       const potential = createHorizontalSegment(4, 4, 8) // Touches first at 4 and second at 8 - is overlap
       expect(wouldOverlapWithExisting(potential, existing)).toBe(true)
-      
+
       const overlapping = createHorizontalSegment(2, 4, 6) // Overlaps with first
       expect(wouldOverlapWithExisting(overlapping, existing)).toBe(true)
     })

@@ -13,7 +13,7 @@ interface UseStoreWirePreviewSegmentsParams {
  * Hook to store/persist calculated path segments back to wiringFrom state.
  * Normalizes segments (reverse if needed for input->output) and stores them
  * in wiringFrom.segments for use when completing the wire.
- * 
+ *
  * @param params - Parameters including path, wiringFrom, and fromPinType
  */
 export function useStoreWirePreviewSegments({

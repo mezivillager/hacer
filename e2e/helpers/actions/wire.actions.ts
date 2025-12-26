@@ -99,7 +99,7 @@ export async function connectWiresViaUI(
     const to = gateIds[wire.toGate]
     const fromPinId = `${from}-${wire.fromPin}`
     const toPinId = `${to}-${wire.toPin}`
-    
+
     await clickPin(page, from, fromPinId)
     await clickPin(page, to, toPinId)
     await ensureWires(page, idx + 1, timeout)

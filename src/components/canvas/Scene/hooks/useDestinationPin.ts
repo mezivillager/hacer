@@ -9,10 +9,10 @@ export interface DestinationPinResult {
 /**
  * Hook to resolve destination pin information from wiring state.
  * Returns a DestinationType for path calculation along with destination gate ID if available.
- * 
+ *
  * @param wiringFrom - Current wiring state (can be null)
  * @returns Object with destination and destinationGateId, or null if no destination
- * 
+ *
  * @example
  * const result = useDestinationPin(wiringFrom)
  * if (result?.destination.type === 'pin') {

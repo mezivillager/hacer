@@ -50,7 +50,7 @@ export async function clickPin(
   await waitForSceneStable(page, TIMEOUTS.store)
   // Additional small wait for Three.js render cycle to complete
   await page.waitForTimeout(50)
-  
+
   const pinPos = await page.evaluate(
     ({ gateId, pinId }) => {
       return window.__CIRCUIT_ACTIONS__?.getPinWorldPosition(gateId, pinId) ?? null

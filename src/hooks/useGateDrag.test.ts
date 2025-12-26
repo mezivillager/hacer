@@ -44,38 +44,38 @@ describe('useGateDrag', () => {
   describe('drag start', () => {
     it('sets dragging state when drag starts', () => {
       const gate = getState().addGate('NAND', { x: 2, y: 0.2, z: 2 })
-      
+
       const { result } = renderHook(() => useGateDrag(gate.id))
-      
+
       expect(result.current.isDragging).toBe(false)
-      
+
       act(() => {
         result.current.onPointerDown(createMockEvent({ x: 2, y: 0.2, z: 2 }))
       })
-      
+
       expect(result.current.isDragging).toBe(true)
     })
 
     it('does not start drag if gate does not exist', () => {
       const { result } = renderHook(() => useGateDrag('non-existent-id'))
-      
+
       act(() => {
         result.current.onPointerDown(createMockEvent({ x: 0, y: 0, z: 0 }))
       })
-      
+
       expect(result.current.isDragging).toBe(false)
     })
 
     it('stops propagation on drag start', () => {
       const gate = getState().addGate('NAND', { x: 2, y: 0.2, z: 2 })
       const { result } = renderHook(() => useGateDrag(gate.id))
-      
+
       const mockEvent = createMockEvent({ x: 2, y: 0.2, z: 2 })
-      
+
       act(() => {
         result.current.onPointerDown(mockEvent)
       })
-      
+
       expect(mockEvent.stopPropagation).toHaveBeenCalled()
     })
   })
@@ -84,15 +84,15 @@ describe('useGateDrag', () => {
     it('updates preview position during drag', () => {
       const gate = getState().addGate('NAND', { x: 2, y: 0.2, z: 2 })
       const { result } = renderHook(() => useGateDrag(gate.id))
-      
+
       act(() => {
         result.current.onPointerDown(createMockEvent({ x: 2, y: 0.2, z: 2 }))
       })
-      
+
       act(() => {
         result.current.onPointerMove(createMockEvent({ x: 4, y: 0.2, z: 4 }))
       })
-      
+
       const previewPos = getState().placementPreviewPosition
       expect(previewPos).not.toBeNull()
       // Should snap to grid
@@ -104,15 +104,15 @@ describe('useGateDrag', () => {
     it('preserves Y coordinate during drag', () => {
       const gate = getState().addGate('NAND', { x: 2, y: 0.2, z: 2 })
       const { result } = renderHook(() => useGateDrag(gate.id))
-      
+
       act(() => {
         result.current.onPointerDown(createMockEvent({ x: 2, y: 0.5, z: 2 }))
       })
-      
+
       act(() => {
         result.current.onPointerMove(createMockEvent({ x: 4, y: 1.0, z: 4 }))
       })
-      
+
       const previewPos = getState().placementPreviewPosition
       expect(previewPos?.y).toBe(0.2) // Y preserved from gate position, not event
     })
@@ -120,18 +120,18 @@ describe('useGateDrag', () => {
     it('cancels drag if gate is deleted during drag', () => {
       const gate = getState().addGate('NAND', { x: 2, y: 0.2, z: 2 })
       const { result } = renderHook(() => useGateDrag(gate.id))
-      
+
       act(() => {
         result.current.onPointerDown(createMockEvent({ x: 2, y: 0.2, z: 2 }))
       })
-      
+
       // Delete gate
       getState().removeGate(gate.id)
-      
+
       act(() => {
         result.current.onPointerMove(createMockEvent({ x: 4, y: 0.2, z: 4 }))
       })
-      
+
       expect(result.current.isDragging).toBe(false)
       expect(getState().placementPreviewPosition).toBeNull()
     })
@@ -141,20 +141,20 @@ describe('useGateDrag', () => {
     it('updates gate position on valid drag end', () => {
       const gate = getState().addGate('NAND', { x: 2, y: 0.2, z: 2 })
       const { result } = renderHook(() => useGateDrag(gate.id))
-      
+
       act(() => {
         result.current.onPointerDown(createMockEvent({ x: 2, y: 0.2, z: 2 }))
       })
-      
+
       // Move beyond threshold
       act(() => {
         result.current.onPointerMove(createMockEvent({ x: 6, y: 0.2, z: 6 }))
       })
-      
+
       act(() => {
         result.current.onPointerUp()
       })
-      
+
       const updatedGate = getState().gates.find(g => g.id === gate.id)
       expect(updatedGate?.position.x).toBeCloseTo(6, 1)
       expect(updatedGate?.position.z).toBeCloseTo(6, 1)
@@ -165,20 +165,20 @@ describe('useGateDrag', () => {
       const gate = getState().addGate('NAND', { x: 2, y: 0.2, z: 2 })
       const originalPos = { ...gate.position }
       const { result } = renderHook(() => useGateDrag(gate.id))
-      
+
       act(() => {
         result.current.onPointerDown(createMockEvent({ x: 2, y: 0.2, z: 2 }))
       })
-      
+
       // Move very little (below 0.1 threshold)
       act(() => {
         result.current.onPointerMove(createMockEvent({ x: 2.05, y: 0.2, z: 2.05 }))
       })
-      
+
       act(() => {
         result.current.onPointerUp()
       })
-      
+
       const updatedGate = getState().gates.find(g => g.id === gate.id)
       expect(updatedGate?.position).toEqual(originalPos) // Position unchanged
       expect(result.current.isDragging).toBe(false)
@@ -189,20 +189,20 @@ describe('useGateDrag', () => {
       getState().addGate('AND', { x: 6, y: 0.2, z: 6 })
       const originalPos = { ...gate1.position }
       const { result } = renderHook(() => useGateDrag(gate1.id))
-      
+
       act(() => {
         result.current.onPointerDown(createMockEvent({ x: 2, y: 0.2, z: 2 }))
       })
-      
+
       // Try to drag to same position as gate2 (invalid - too close)
       act(() => {
         result.current.onPointerMove(createMockEvent({ x: 6, y: 0.2, z: 6 }))
       })
-      
+
       act(() => {
         result.current.onPointerUp()
       })
-      
+
       const updatedGate = getState().gates.find(g => g.id === gate1.id)
       expect(updatedGate?.position).toEqual(originalPos) // Position unchanged
     })
@@ -210,20 +210,20 @@ describe('useGateDrag', () => {
     it('excludes dragged gate from validation', () => {
       const gate = getState().addGate('NAND', { x: 2, y: 0.2, z: 2 })
       const { result } = renderHook(() => useGateDrag(gate.id))
-      
+
       act(() => {
         result.current.onPointerDown(createMockEvent({ x: 2, y: 0.2, z: 2 }))
       })
-      
+
       // Drag to same position (should be valid since we exclude the gate itself)
       act(() => {
         result.current.onPointerMove(createMockEvent({ x: 2, y: 0.2, z: 2 }))
       })
-      
+
       act(() => {
         result.current.onPointerUp()
       })
-      
+
       // Should succeed (gate can stay in same position)
       const updatedGate = getState().gates.find(g => g.id === gate.id)
       expect(updatedGate).toBeDefined()
@@ -232,21 +232,21 @@ describe('useGateDrag', () => {
     it('clears preview position on drag end', () => {
       const gate = getState().addGate('NAND', { x: 2, y: 0.2, z: 2 })
       const { result } = renderHook(() => useGateDrag(gate.id))
-      
+
       act(() => {
         result.current.onPointerDown(createMockEvent({ x: 2, y: 0.2, z: 2 }))
       })
-      
+
       act(() => {
         result.current.onPointerMove(createMockEvent({ x: 6, y: 0.2, z: 6 }))
       })
-      
+
       expect(getState().placementPreviewPosition).not.toBeNull()
-      
+
       act(() => {
         result.current.onPointerUp()
       })
-      
+
       expect(getState().placementPreviewPosition).toBeNull()
     })
   })
@@ -255,17 +255,17 @@ describe('useGateDrag', () => {
     it('cancels drag on pointer leave', () => {
       const gate = getState().addGate('NAND', { x: 2, y: 0.2, z: 2 })
       const { result } = renderHook(() => useGateDrag(gate.id))
-      
+
       act(() => {
         result.current.onPointerDown(createMockEvent({ x: 2, y: 0.2, z: 2 }))
       })
-      
+
       expect(result.current.isDragging).toBe(true)
-      
+
       act(() => {
         result.current.onPointerLeave()
       })
-      
+
       expect(result.current.isDragging).toBe(false)
       expect(getState().placementPreviewPosition).toBeNull()
     })
@@ -273,17 +273,17 @@ describe('useGateDrag', () => {
     it('cancels drag if gate is deleted', () => {
       const gate = getState().addGate('NAND', { x: 2, y: 0.2, z: 2 })
       const { result } = renderHook(() => useGateDrag(gate.id))
-      
+
       act(() => {
         result.current.onPointerDown(createMockEvent({ x: 2, y: 0.2, z: 2 }))
       })
-      
+
       getState().removeGate(gate.id)
-      
+
       act(() => {
         result.current.onPointerMove(createMockEvent({ x: 4, y: 0.2, z: 4 }))
       })
-      
+
       expect(result.current.isDragging).toBe(false)
       expect(getState().placementPreviewPosition).toBeNull()
     })
@@ -293,16 +293,16 @@ describe('useGateDrag', () => {
     it('snaps position to grid during drag', () => {
       const gate = getState().addGate('NAND', { x: 2, y: 0.2, z: 2 })
       const { result } = renderHook(() => useGateDrag(gate.id))
-      
+
       act(() => {
         result.current.onPointerDown(createMockEvent({ x: 2, y: 0.2, z: 2 }))
       })
-      
+
       // Move to position that should snap to grid
       act(() => {
         result.current.onPointerMove(createMockEvent({ x: 2.9, y: 0.2, z: 3.1 }))
       })
-      
+
       const previewPos = getState().placementPreviewPosition
       // Starting at (2, 0.2, 2), moving to (2.9, 0.2, 3.1)
       // Delta: (0.9, 0, 1.1), new pos: (2.9, 0.2, 3.1)

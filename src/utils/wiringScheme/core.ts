@@ -1,6 +1,6 @@
 /**
  * Core Wire Path Calculation
- * 
+ *
  * Main entry points for calculating wire paths.
  * Orchestrates segment creation, pathfinding, and path assembly.
  */
@@ -27,7 +27,7 @@ export interface CalculateWirePathFromConnectionOptions {
 /**
  * Calculate wire path from wire connection information (gate IDs and pin IDs).
  * Handles determining output/input pins, getting positions/orientations, and calling calculateWirePath.
- * 
+ *
  * @param fromGateId - Source gate ID
  * @param fromPinId - Source pin ID
  * @param toGateId - Destination gate ID
@@ -101,7 +101,7 @@ export function calculateWirePathFromConnection(
 
 /**
  * Calculate wire path from start pin to destination.
- * 
+ *
  * @param startPin - Start pin center position
  * @param destination - Destination (pin or cursor)
  * @param startOrientation - Start pin orientation
@@ -120,10 +120,10 @@ export function calculateWirePath(
   try {
     // Step 1: Calculate exit segment (pin center → section line)
     const exitSegment = calculateExitSegment(startPin, startOrientation)
-    
+
     let entrySegment: ReturnType<typeof calculateEntrySegment> | null = null
     let routingEnd: Position
-    
+
     if (destination.type === 'pin') {
       // Step 2: Calculate entry segment (section line → pin center)
       entrySegment = calculateEntrySegment(destination.pin, destination.orientation)
@@ -133,19 +133,19 @@ export function calculateWirePath(
       routingEnd = snapCursorToSectionBoundary(destination.pos)
       // No entry segment for cursor destinations
     }
-    
+
     // Step 4: Route from exit segment end to routing end using greedy algorithm
     const existingSegments = options.existingSegments || []
     const routingPath = findPathAlongSectionLines(exitSegment.end, routingEnd, existingSegments)
-    
+
     // Step 5: Assemble complete path
     const allSegments = [exitSegment, ...routingPath]
     if (entrySegment) {
       allSegments.push(entrySegment)
     }
-    
+
     const totalLength = calculateTotalLength(allSegments)
-    
+
     return {
       segments: allSegments,
       totalLength,
@@ -159,10 +159,10 @@ export function calculateWirePath(
       gatesCount: gates.length,
       options,
     }
-    
+
     console.error('[calculateWirePath] Path calculation failed:', error)
     console.error('[calculateWirePath] Diagnostic info:', JSON.stringify(diagnosticInfo, null, 2))
-    
+
     // Re-throw with additional context
     throw new Error(
       `Wire path calculation failed: ${error instanceof Error ? error.message : String(error)}. ` +

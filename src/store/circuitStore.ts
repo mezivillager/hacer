@@ -151,7 +151,7 @@ if (typeof window !== 'undefined') {
   // to always access the current state
   window.__CIRCUIT_STORE__ = useCircuitStore.getState()
   window.__CIRCUIT_ACTIONS__ = circuitActions
-  
+
   // Keep window.__CIRCUIT_STORE__ in sync with store changes
   useCircuitStore.subscribe((state) => {
     window.__CIRCUIT_STORE__ = state

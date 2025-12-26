@@ -104,13 +104,13 @@ describe('grid utilities', () => {
       expect(canPlaceGateAt({ row: 2, col: 2 }, [])).toBe(false) // Section intersection (both even)
       expect(canPlaceGateAt({ row: 4, col: 4 }, [])).toBe(false) // Section intersection (both even)
       expect(canPlaceGateAt({ row: -2, col: -2 }, [])).toBe(false) // Section intersection (both even)
-      
+
       // Section lines (one even, one odd)
       expect(canPlaceGateAt({ row: 0, col: 1 }, [])).toBe(false) // Even row, odd col - section line
       expect(canPlaceGateAt({ row: 1, col: 0 }, [])).toBe(false) // Odd row, even col - section line
       expect(canPlaceGateAt({ row: 2, col: 1 }, [])).toBe(false) // Even row, odd col - section line
       expect(canPlaceGateAt({ row: 1, col: 2 }, [])).toBe(false) // Odd row, even col - section line
-      
+
       // Valid positions (not on section lines - both must be odd)
       expect(canPlaceGateAt({ row: 1, col: 1 }, [])).toBe(true) // Both odd
       expect(canPlaceGateAt({ row: 3, col: 1 }, [])).toBe(true) // Both odd
@@ -134,15 +134,15 @@ describe('grid utilities', () => {
     it('prevents placement in adjacent cells (spacing = 1)', () => {
       // Gate at valid position (not on section line)
       const gate = createGate('gate1', { x: 2, y: 0, z: 0 }) // grid (0, 1)
-      
+
       // Same row, adjacent column
       expect(canPlaceGateAt({ row: 0, col: 0 }, [gate])).toBe(false) // Adjacent, but also on section line
       expect(canPlaceGateAt({ row: 0, col: 2 }, [gate])).toBe(false)
-      
+
       // Same column, adjacent row
       expect(canPlaceGateAt({ row: 1, col: 1 }, [gate])).toBe(false)
       expect(canPlaceGateAt({ row: -1, col: 1 }, [gate])).toBe(false)
-      
+
       // Diagonal adjacent
       expect(canPlaceGateAt({ row: 1, col: 0 }, [gate])).toBe(false)
       expect(canPlaceGateAt({ row: 1, col: 2 }, [gate])).toBe(false)
@@ -151,12 +151,12 @@ describe('grid utilities', () => {
     it('allows placement when spacing > 1', () => {
       // Gate at valid position (both odd)
       const gate = createGate('gate1', { x: 2, y: 0, z: 2 }) // grid (1, 1)
-      
+
       // Two cells away (use positions where both row and col are odd)
       expect(canPlaceGateAt({ row: 1, col: 5 }, [gate])).toBe(true) // 4 cells away, both odd
       expect(canPlaceGateAt({ row: 5, col: 1 }, [gate])).toBe(true) // 4 cells away, both odd
       expect(canPlaceGateAt({ row: 3, col: 3 }, [gate])).toBe(true) // 2 cells away, both odd
-      
+
       // Mixed: one axis > 1, other = 1 (should allow, but both must be odd)
       expect(canPlaceGateAt({ row: 3, col: 1 }, [gate])).toBe(true) // rowDiff=2 > 1, both odd
       expect(canPlaceGateAt({ row: 1, col: 3 }, [gate])).toBe(true) // colDiff=2 > 1, both odd
@@ -167,13 +167,13 @@ describe('grid utilities', () => {
       const gate1 = createGate('gate1', { x: 2, y: 0, z: 2 }) // grid (1, 1)
       // Place gate2 far enough away so it doesn't interfere
       const gate2 = createGate('gate2', { x: 6, y: 0, z: 6 }) // grid (3, 3)
-      
+
       // Cannot place at gate1's position normally
       expect(canPlaceGateAt({ row: 1, col: 1 }, [gate1, gate2])).toBe(false)
-      
+
       // Can place at gate1's position if excluding gate1 (useful for dragging)
       expect(canPlaceGateAt({ row: 1, col: 1 }, [gate1, gate2], 'gate1')).toBe(true)
-      
+
       // Still cannot place at gate2's position even when excluding gate1
       expect(canPlaceGateAt({ row: 3, col: 3 }, [gate1, gate2], 'gate1')).toBe(false)
     })
@@ -185,12 +185,12 @@ describe('grid utilities', () => {
         createGate('gate2', { x: 6, y: 0, z: 2 }), // grid (1, 3)
         createGate('gate3', { x: 2, y: 0, z: 6 }), // grid (3, 1)
       ]
-      
+
       // Cannot place near any gate (must be odd positions, but adjacent)
       expect(canPlaceGateAt({ row: 1, col: 3 }, gates)).toBe(false) // Adjacent to gate2
       expect(canPlaceGateAt({ row: 3, col: 1 }, gates)).toBe(false) // Adjacent to gate3
       expect(canPlaceGateAt({ row: 1, col: 1 }, gates)).toBe(false) // Same as gate1
-      
+
       // Can place far from all gates (use positions where both row and col are odd and far from all gates)
       expect(canPlaceGateAt({ row: 5, col: 5 }, gates)).toBe(true) // Far enough, both odd
       expect(canPlaceGateAt({ row: -1, col: -1 }, gates)).toBe(true) // Far enough, both odd
@@ -199,7 +199,7 @@ describe('grid utilities', () => {
     it('handles negative grid positions', () => {
       // Use valid position (both odd)
       const gate = createGate('gate1', { x: -2, y: 0, z: -2 }) // grid (-1, -1)
-      
+
       expect(canPlaceGateAt({ row: -1, col: -1 }, [gate])).toBe(false) // Same cell
       // Adjacent means both rowDiff <= 1 AND colDiff <= 1
       // Position (-3, -1): rowDiff = 2, colDiff = 0
@@ -265,9 +265,9 @@ describe('grid utilities', () => {
         if (gateId === 'gate-2') return { x: -1, y: 0, z: 0 } // Face left (input)
         return null
       }
-      
+
       const hasWires = hasWiresInCell(cell, wires, gates, getPinWorldPosition, getPinOrientation)
-      
+
       // The horizontal segment should pass through cell [1, 1]
       expect(hasWires).toBe(true)
     })
@@ -288,9 +288,9 @@ describe('grid utilities', () => {
         if (gateId === 'gate-2') return { x: -1, y: 0, z: 0 } // Face left
         return null
       }
-      
+
       const hasWires = hasWiresInCell(cell, wires, gates, getPinWorldPosition, getPinOrientation)
-      
+
       // Entry/exit segments at pin location should be excluded
       expect(hasWires).toBe(false)
     })
@@ -307,9 +307,9 @@ describe('grid utilities', () => {
       const getPinOrientation = (): { x: number; y: number; z: number } | null => {
         return { x: 1, y: 0, z: 0 }
       }
-      
+
       const hasWires = hasWiresInCell(cell, wires, gates, getPinWorldPosition, getPinOrientation)
-      
+
       expect(hasWires).toBe(false)
     })
   })

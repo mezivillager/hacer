@@ -12,7 +12,7 @@ import { useStoreWirePreviewSegments } from './hooks/useStoreWirePreviewSegments
  * Wire preview - only renders when wiring is active.
  * Subscribes to wiringFrom state.
  * Uses grid-aligned routing with real-time updates.
- * 
+ *
  * Note: Existing wire segments are read from the store (wire.segments) - no recalculation needed.
  * Only the preview wire path is calculated here for rendering.
  */

@@ -65,7 +65,7 @@ export function BaseGate(props: BaseGateComponentProps) {
 
   // Subscribe to wiring state to reactively hide stubs during wiring
   const wiringFrom = useCircuitStore((s) => s.wiringFrom)
-  
+
   // Drag functionality - use getState() to avoid subscriptions that cause re-renders
   // eslint-disable-next-line react-compiler/react-compiler -- getState() is valid for reading without subscribing
   const state = useCircuitStore.getState()
@@ -174,7 +174,7 @@ export function BaseGate(props: BaseGateComponentProps) {
         const pinConnected: boolean = pinConfig.connected
         const pinName: string = pinConfig.pinName
         const isOutput: boolean = pinConfig.pinType === 'output'
-        
+
         const pinColor = getPinColor(
           pinValue,
           pinConnected,
@@ -215,21 +215,21 @@ export function BaseGate(props: BaseGateComponentProps) {
           if (!pinConfig) {
             return null
           }
-          
+
           const isConnected = pinConfig.connected ?? false
-          
+
           // Check if this pin is currently being wired (hide stub during wiring/preview)
           // Compare both gate ID and pin ID to determine if this pin is the source of wiring
-          const isBeingWired = wiringFrom !== null && 
+          const isBeingWired = wiringFrom !== null &&
             wiringFrom.fromGateId === id &&
             wiringFrom.fromPinId === pinConfig.pinId
-          
+
           const shouldHide = isConnected || isBeingWired
-          
+
           if (shouldHide) {
             return null
           }
-          
+
           return {
             position: stubPosition,
             index,

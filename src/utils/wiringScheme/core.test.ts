@@ -204,12 +204,12 @@ describe('WiringScheme Core Module', () => {
 
       expect(path.segments.length).toBeGreaterThan(0)
       expect(path.totalLength).toBeGreaterThan(0)
-      
+
       // First segment should be exit segment
       expect(path.segments[0].type).toBe('exit')
       expect(path.segments[0].start.x).toBeCloseTo(startPin.x, 1)
       expect(path.segments[0].start.z).toBeCloseTo(startPin.z, 1)
-      
+
       // Last segment should be entry segment
       const lastSegment = path.segments[path.segments.length - 1]
       expect(lastSegment.type).toBe('entry')
@@ -232,7 +232,7 @@ describe('WiringScheme Core Module', () => {
       )
 
       expect(path.segments.length).toBeGreaterThan(2) // Should have exit, routing, and entry segments
-      
+
       // Check that segments connect properly
       for (let i = 0; i < path.segments.length - 1; i++) {
         const current = path.segments[i]
@@ -310,7 +310,7 @@ describe('WiringScheme Core Module', () => {
 
       const entrySegment = path.segments[path.segments.length - 1]
       expect(entrySegment.type).toBe('entry')
-      
+
       // Helper function to check if coordinate is on section line (same logic as isOnSectionLine)
       const isCoordOnSectionLine = (coord: number): boolean => {
         const snapped = Math.round(coord / SECTION_SIZE) * SECTION_SIZE
@@ -338,7 +338,7 @@ describe('WiringScheme Core Module', () => {
       )
 
       expect(path.segments.length).toBeGreaterThan(0)
-      
+
       // Check that segments connect properly
       for (let i = 0; i < path.segments.length - 1; i++) {
         const current = path.segments[i]
@@ -377,7 +377,7 @@ describe('WiringScheme Core Module', () => {
       const seg1 = createSegment(0, 0, 4, 0, 'horizontal')
       const seg2 = createSegment(4, 0, 8, 0, 'horizontal')
       const result = combineAdjacentSegments([seg1, seg2])
-      
+
       expect(result).toHaveLength(1)
       expect(result[0].start).toEqual(seg1.start)
       expect(result[0].end).toEqual(seg2.end)
@@ -389,7 +389,7 @@ describe('WiringScheme Core Module', () => {
       const seg2 = createSegment(4, 0, 8, 0, 'horizontal')
       const seg3 = createSegment(8, 0, 12, 0, 'horizontal')
       const result = combineAdjacentSegments([seg1, seg2, seg3])
-      
+
       expect(result).toHaveLength(1)
       expect(result[0].start).toEqual(seg1.start)
       expect(result[0].end).toEqual(seg3.end)
@@ -400,7 +400,7 @@ describe('WiringScheme Core Module', () => {
       const seg1 = createSegment(0, 0, 0, 4, 'vertical')
       const seg2 = createSegment(0, 4, 0, 8, 'vertical')
       const result = combineAdjacentSegments([seg1, seg2])
-      
+
       expect(result).toHaveLength(1)
       expect(result[0].start).toEqual(seg1.start)
       expect(result[0].end).toEqual(seg2.end)
@@ -412,7 +412,7 @@ describe('WiringScheme Core Module', () => {
       const seg2 = createSegment(0, 4, 0, 8, 'vertical')
       const seg3 = createSegment(0, 8, 0, 12, 'vertical')
       const result = combineAdjacentSegments([seg1, seg2, seg3])
-      
+
       expect(result).toHaveLength(1)
       expect(result[0].start).toEqual(seg1.start)
       expect(result[0].end).toEqual(seg3.end)
@@ -424,7 +424,7 @@ describe('WiringScheme Core Module', () => {
       const seg2 = createSegment(4, 0, 4, 4, 'vertical') // Adjacent but different type
       const seg3 = createSegment(4, 4, 8, 4, 'horizontal') // Adjacent to seg2 but different type
       const result = combineAdjacentSegments([seg1, seg2, seg3])
-      
+
       expect(result).toHaveLength(3)
       expect(result[0]).toEqual(seg1)
       expect(result[1]).toEqual(seg2)
@@ -435,7 +435,7 @@ describe('WiringScheme Core Module', () => {
       const seg1 = createSegment(0, 0, 4, 0, 'horizontal')
       const seg2 = createSegment(4, 0, 4, 4, 'vertical') // Adjacent but different type
       const result = combineAdjacentSegments([seg1, seg2])
-      
+
       expect(result).toHaveLength(2)
       expect(result[0]).toEqual(seg1)
       expect(result[1]).toEqual(seg2)
@@ -449,7 +449,7 @@ describe('WiringScheme Core Module', () => {
         type: 'entry',
       }
       const result = combineAdjacentSegments([seg1, entrySeg])
-      
+
       expect(result).toHaveLength(2)
       expect(result[0]).toEqual(seg1)
       expect(result[1]).toEqual(entrySeg)
@@ -463,7 +463,7 @@ describe('WiringScheme Core Module', () => {
       }
       const seg1 = createSegment(4, 0, 8, 0, 'horizontal')
       const result = combineAdjacentSegments([exitSeg, seg1])
-      
+
       expect(result).toHaveLength(2)
       expect(result[0]).toEqual(exitSeg)
       expect(result[1]).toEqual(seg1)
@@ -475,7 +475,7 @@ describe('WiringScheme Core Module', () => {
       const seg2 = createSegment(8, 0, 4, 0, 'horizontal') // Backtracks
       const seg3 = createSegment(4, 0, 12, 0, 'horizontal') // Continues forward
       const result = combineAdjacentSegments([seg1, seg2, seg3])
-      
+
       // Should combine into single segment from start of seg1 to end of seg3
       expect(result).toHaveLength(1)
       expect(result[0].start).toEqual(seg1.start)
@@ -487,16 +487,16 @@ describe('WiringScheme Core Module', () => {
       // Group 1: horizontal segments
       const seg1 = createSegment(0, 0, 4, 0, 'horizontal')
       const seg2 = createSegment(4, 0, 8, 0, 'horizontal')
-      
+
       // Transition: vertical segment (not adjacent to next group)
       const seg3 = createSegment(8, 0, 8, 4, 'vertical')
-      
+
       // Group 2: horizontal segments (on different line, not adjacent to seg3)
       const seg4 = createSegment(12, 4, 16, 4, 'horizontal')
       const seg5 = createSegment(16, 4, 20, 4, 'horizontal')
-      
+
       const result = combineAdjacentSegments([seg1, seg2, seg3, seg4, seg5])
-      
+
       expect(result).toHaveLength(3)
       // First group combined
       expect(result[0].start).toEqual(seg1.start)
@@ -514,7 +514,7 @@ describe('WiringScheme Core Module', () => {
       const seg1 = createSegment(-4, 0, 0, 0, 'horizontal')
       const seg2 = createSegment(0, 0, 4, 0, 'horizontal')
       const result = combineAdjacentSegments([seg1, seg2])
-      
+
       expect(result).toHaveLength(1)
       expect(result[0].start).toEqual(seg1.start)
       expect(result[0].end).toEqual(seg2.end)
@@ -524,7 +524,7 @@ describe('WiringScheme Core Module', () => {
       const seg1 = createSegment(8, 0, 4, 0, 'horizontal') // Right to left
       const seg2 = createSegment(4, 0, 0, 0, 'horizontal') // Right to left
       const result = combineAdjacentSegments([seg1, seg2])
-      
+
       expect(result).toHaveLength(1)
       expect(result[0].start).toEqual(seg1.start)
       expect(result[0].end).toEqual(seg2.end)
@@ -534,7 +534,7 @@ describe('WiringScheme Core Module', () => {
       const seg1 = createSegment(0, 8, 0, 4, 'vertical') // Forward to back
       const seg2 = createSegment(0, 4, 0, 0, 'vertical') // Forward to back
       const result = combineAdjacentSegments([seg1, seg2])
-      
+
       expect(result).toHaveLength(1)
       expect(result[0].start).toEqual(seg1.start)
       expect(result[0].end).toEqual(seg2.end)
@@ -548,7 +548,7 @@ describe('WiringScheme Core Module', () => {
         type: 'horizontal',
       }
       const result = combineAdjacentSegments([seg1, seg2])
-      
+
       // Should still combine despite small floating point differences
       expect(result).toHaveLength(1)
     })

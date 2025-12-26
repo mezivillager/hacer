@@ -8,7 +8,7 @@ import { handlePointerMove, handlePointerLeave, handleClick, handlePointerUp } f
  */
 export function GroundPlane() {
   trackRender('GroundPlane', 'static')
-  
+
   return (
     <mesh
       rotation={[-Math.PI / 2, 0, 0]}

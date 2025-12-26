@@ -34,7 +34,7 @@ export function useGateDrag(gateId: string) {
 
   const handleDragStart = (event: ThreeEvent<PointerEvent>) => {
     event.stopPropagation()
-    
+
     const gate = useCircuitStore.getState().gates.find((g) => g.id === gateId)
     if (!gate) return
 
@@ -42,7 +42,7 @@ export function useGateDrag(gateId: string) {
     const canvasElement = getCanvasElement(event)
     canvasElementRef.current = canvasElement
     pointerIdRef.current = event.nativeEvent.pointerId
-    
+
     // Capture pointer on the canvas element to track movement outside the mesh
     if (canvasElement && canvasElement.setPointerCapture) {
       canvasElement.setPointerCapture(event.nativeEvent.pointerId)
@@ -54,7 +54,7 @@ export function useGateDrag(gateId: string) {
     hasMovedRef.current = false
     didDragRef.current = false
     allowNextClickRef.current = false // Prevent click during drag
-    
+
     // Don't set drag state yet - wait until we've moved beyond threshold
     // This prevents preview from showing on simple clicks
     setIsDragging(false)
@@ -74,7 +74,7 @@ export function useGateDrag(gateId: string) {
 
     // Check if we've moved beyond threshold
     const distance = Math.sqrt(delta.x * delta.x + delta.z * delta.z)
-    
+
     // Only activate drag state after moving beyond threshold
     if (distance > DRAG_THRESHOLD) {
       if (!isDragging) {
@@ -84,15 +84,15 @@ export function useGateDrag(gateId: string) {
           handleDragCancel()
           return
         }
-        
+
         // Ensure the gate being dragged is selected (needed for validation)
         // Only do this once when drag actually starts, not on every pointer down
         circuitActions.selectGate(gateId)
-        
+
         setIsDragging(true)
         circuitActions.setDragActive(true)
       }
-      
+
       hasMovedRef.current = true
       didDragRef.current = true
 
@@ -158,7 +158,7 @@ export function useGateDrag(gateId: string) {
 
     const gridPos = worldToGrid(previewPos)
     const otherGates = useCircuitStore.getState().gates.filter((g) => g.id !== gateId)
-    
+
     if (canPlaceGateAt(gridPos, otherGates, gateId)) {
       // Valid position - update gate
       circuitActions.updateGatePosition(gateId, previewPos)
@@ -178,7 +178,7 @@ export function useGateDrag(gateId: string) {
   const handleDragCancel = () => {
     // Set drag active to false first
     circuitActions.setDragActive(false)
-    
+
     // Release pointer capture from canvas element
     const canvasElement = canvasElementRef.current
     if (canvasElement && pointerIdRef.current !== null && canvasElement.releasePointerCapture) {
@@ -186,7 +186,7 @@ export function useGateDrag(gateId: string) {
     }
     pointerIdRef.current = null
     canvasElementRef.current = null
-    
+
     // Clean up all state and refs
     setIsDragging(false)
     dragStartRef.current = null

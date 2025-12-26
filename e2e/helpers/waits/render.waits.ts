@@ -1,6 +1,6 @@
 /**
  * Render Wait Helpers
- * 
+ *
  * Wait utilities for scene stability and render tracking.
  */
 
@@ -90,7 +90,7 @@ export async function waitForSceneReadyAndStable(
     () => window.__SCENE_READY__ === true,
     { timeout }
   )
-  
+
   // Then wait for renders to stabilize
   await waitForSceneStable(page, timeout)
 }

@@ -1,7 +1,7 @@
 /**
  * Simplified Wiring Scheme (Store-level)
  * Fast store tests for the new simplified wiring scheme that routes wires along section lines
- * 
+ *
  * Note: Store tests verify wire creation in the store state only.
  * Wire path calculation and rendering are tested in unit tests and UI tests.
  */
@@ -26,7 +26,7 @@ storeTest.describe('Simplified Wiring Scheme (Store) @store', () => {
       toGateId: gate2.id,
       toPinId: `${gate2.id}-in-0`,
     })
-    
+
     // Verify wire exists in store immediately
     await ensureWires(page, 1)
     await expectWireCount(page, 1)
@@ -92,7 +92,7 @@ storeTest.describe('Simplified Wiring Scheme (Store) @store', () => {
       toGateId: gate2.id,
       toPinId: `${gate2.id}-in-0`,
     })
-    
+
     await ensureWires(page, 1)
     await expectWireCount(page, 1)
   })
@@ -110,7 +110,7 @@ storeTest.describe('Simplified Wiring Scheme (Store) @store', () => {
       toGateId: gate2.id,
       toPinId: `${gate2.id}-in-0`,
     })
-    
+
     await ensureWires(page, 1)
     await expectWireCount(page, 1)
   })

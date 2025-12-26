@@ -1,6 +1,6 @@
 /**
  * Simplified Wiring Scheme
- * 
+ *
  * Barrel exports for the simplified wiring scheme module.
  */
 

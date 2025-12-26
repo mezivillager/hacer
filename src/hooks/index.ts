@@ -1,6 +1,6 @@
 /**
  * Shared React hooks
- * 
+ *
  * Hooks that are reusable across multiple components.
  */
 

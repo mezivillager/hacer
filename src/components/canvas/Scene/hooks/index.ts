@@ -1,6 +1,6 @@
 /**
  * WirePreview hooks
- * 
+ *
  * Hooks specific to the WirePreview component.
  */
 

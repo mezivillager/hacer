@@ -74,7 +74,7 @@ test.describe('Simplified Wiring Scheme (UI) @ui', () => {
     ], gateIds)
 
     await ensureWires(page, 1)
-    
+
     // Verify wire is rendered in the scene
     // (Would need to check for wire mesh elements in the DOM/3D scene)
     await expectWireCount(page, 1)

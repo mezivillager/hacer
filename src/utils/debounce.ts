@@ -1,6 +1,6 @@
 /**
  * Debounce function - delays execution until after wait time has passed since last call.
- * 
+ *
  * @param func - Function to debounce
  * @param wait - Wait time in milliseconds
  * @returns Debounced function

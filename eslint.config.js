@@ -21,6 +21,7 @@ export default defineConfig([
     },
     rules: {
       'react-compiler/react-compiler': 'error',
+      'no-trailing-spaces': 'error', // Auto-fix trailing whitespace
     },
     languageOptions: {
       ecmaVersion: 2020,

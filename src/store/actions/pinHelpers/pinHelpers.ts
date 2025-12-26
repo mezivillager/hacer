@@ -10,16 +10,16 @@ const OUTPUT_PIN_X_WITH_BUBBLE = 0.84  // BUBBLE_RIGHT + PIN_RADIUS = 0.74 + 0.1
 
 /**
  * Calculates the world-space orientation (direction) of a pin.
- * 
+ *
  * Input pins face left (negative X) in local space; output pins face right (positive X).
  * After applying gate rotation, this direction is transformed to world space.
  * The orientation is used to determine the direction wire entry/exit segments should extend from pin centers.
- * 
+ *
  * @param gates - Array of all gate instances in the circuit
  * @param gateId - ID of the gate containing the pin
  * @param pinId - ID of the pin to get orientation for
  * @returns Normalized direction vector in world space, or null if gate/pin not found
- * 
+ *
  * @example
  * ```ts
  * const orientation = computePinOrientation(gates, 'gate-1', 'gate-1-out-0')
@@ -44,7 +44,7 @@ function computePinOrientation(
   // In local space:
   // - Input pins are on the left side and face left (negative X direction) - wires come TO them
   // - Output pins are on the right side and face right (positive X direction) - wires exit FROM them
-  const localDirection = isInput 
+  const localDirection = isInput
     ? new Vector3(-1, 0, 0) // Input pins face left
     : new Vector3(1, 0, 0)  // Output pins face right
 
@@ -61,16 +61,16 @@ function computePinOrientation(
 
 /**
  * Calculates the world-space position of a pin center.
- * 
+ *
  * Accounts for gate position and rotation. Pins are positioned relative to
  * the gate body in local space, then transformed to world space using the
  * gate's position and rotation.
- * 
+ *
  * @param gates - Array of all gate instances in the circuit
  * @param gateId - ID of the gate containing the pin
  * @param pinId - ID of the pin to get position for
  * @returns Pin center position in world space, or null if gate/pin not found
- * 
+ *
  * @example
  * ```ts
  * const position = computePinWorldPosition(gates, 'gate-1', 'gate-1-out-0')
@@ -94,10 +94,10 @@ function computePinWorldPosition(
     // Single-input gates (NOT): input at Y=0, X position depends on gate geometry
     // Two-input gates: inputs at Y=0.2 and Y=-0.2, X position is standard
     const isSingleInputGate = gate.type === 'NOT'
-    
+
     let inputPinX: number
     let yOffset: number
-    
+
     if (isSingleInputGate) {
       // NOT gate: triangle left edge is at -0.4, pin is at -0.5 (triangleLeft - pinRadius)
       // Using NOT_DIMENSIONS.triangleLeft = -0.4, PIN_RADIUS = 0.1
@@ -108,7 +108,7 @@ function computePinWorldPosition(
       inputPinX = INPUT_PIN_X // -0.6 (BODY_LEFT - PIN_RADIUS)
       yOffset = inputIndex === 0 ? 0.2 : -0.2 // First input at Y=0.2, second at Y=-0.2
     }
-    
+
     localOffset = new Vector3(inputPinX, yOffset, 0)
   } else if (outputIndex !== -1) {
     // Determine output pin X based on gate type (bubble gates use different position)

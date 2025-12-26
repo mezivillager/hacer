@@ -12,10 +12,10 @@ export function SceneOrbitControls() {
   const placementMode = useCircuitStore((state): GateType | null => state.placementMode)
   const wiringFrom = useCircuitStore((state): WiringState | null => state.wiringFrom)
   const hoveredGateId = useCircuitStore((state): string | null => state.hoveredGateId)
-  
+
   // Disable orbital controls when any interaction is active or when hovering over a gate
   const isInteracting = isDragActive || placementMode !== null || wiringFrom !== null || hoveredGateId !== null
-  
+
   return (
     <OrbitControls
       makeDefault

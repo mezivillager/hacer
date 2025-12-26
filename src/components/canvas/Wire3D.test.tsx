@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render } from '@testing-library/react'
 import { Wire3D } from './Wire3D'
 
@@ -21,6 +21,14 @@ vi.mock('@react-three/fiber', () => ({
 describe('Wire3D', () => {
   const validStart = { x: 0, y: 0, z: 0 }
   const validEnd = { x: 1, y: 1, z: 1 }
+
+  beforeEach(() => {
+    vi.spyOn(console, 'error').mockImplementation(() => {})
+  })
+
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
 
   it('returns null when start is null', () => {
     const { container } = render(<Wire3D start={null} end={validEnd} />)
@@ -68,5 +76,39 @@ describe('Wire3D', () => {
       <Wire3D start={validStart} end={validEnd} color="#ff0000" />
     )
     expect(container.innerHTML).toContain('mesh')
+  })
+
+  describe('error handling', () => {
+    it('returns null instead of throwing when precomputedPath is missing', () => {
+      // Should not throw - should return null gracefully
+      const { container } = render(
+        <Wire3D
+          start={validStart}
+          end={validEnd}
+          precomputedPath={undefined}
+        />
+      )
+      expect(container.firstChild).toBeNull()
+    })
+
+    it('logs error when precomputedPath is missing', () => {
+      const consoleErrorSpy = vi.spyOn(console, 'error')
+
+      render(
+        <Wire3D
+          start={validStart}
+          end={validEnd}
+          precomputedPath={undefined}
+        />
+      )
+
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        expect.stringContaining('[Wire3D] precomputedPath is required'),
+        expect.objectContaining({
+          start: validStart,
+          end: validEnd,
+        })
+      )
+    })
   })
 })

@@ -69,14 +69,14 @@ export async function addGateViaUI(
   options: GatePlacementOptions
 ): Promise<void> {
   const gateType = options.type || 'NAND' // Default to NAND for backward compatibility
-  
+
   // Click the gate icon in the selector grid
   const gateIconSelector = UI_SELECTORS.gateSelector.getIcon(gateType)
   await page.click(gateIconSelector)
-  
+
   // Wait for placement mode to be active (check for hint text or active state)
   await page.waitForSelector('.gate-icon.active', { state: 'visible' })
-  
+
   // Click on the canvas to place the gate (gate is auto-selected after placement)
   await clickWorldPosition(page, options.position)
 

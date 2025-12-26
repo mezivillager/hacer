@@ -19,7 +19,7 @@ describe('WiringScheme Segments Module', () => {
       expect(segment.start.x).toBeCloseTo(pinCenter.x, 3)
       expect(segment.start.y).toBe(WIRE_HEIGHT)
       expect(segment.start.z).toBeCloseTo(pinCenter.z, 3)
-      
+
       // Should extend to next section line in positive X direction (4.0)
       expect(segment.end.x).toBe(4.0)
       expect(segment.end.y).toBe(WIRE_HEIGHT)
@@ -49,7 +49,7 @@ describe('WiringScheme Segments Module', () => {
       expect(segment.start.x).toBeCloseTo(pinCenter.x, 3)
       expect(segment.start.y).toBe(WIRE_HEIGHT)
       expect(segment.start.z).toBeCloseTo(pinCenter.z, 3)
-      
+
       // Should extend to next section line in positive Z direction (4.0)
       expect(segment.end.x).toBeCloseTo(pinCenter.x, 3)
       expect(segment.end.y).toBe(WIRE_HEIGHT)
@@ -126,7 +126,7 @@ describe('WiringScheme Segments Module', () => {
       expect(segment.end.x).toBeCloseTo(pinCenter.x, 3)
       expect(segment.end.y).toBe(WIRE_HEIGHT)
       expect(segment.end.z).toBeCloseTo(pinCenter.z, 3)
-      
+
       // Should start from section line in same direction pin faces (to the right, 8.0)
       expect(segment.start.x).toBe(8.0)
       expect(segment.start.y).toBe(WIRE_HEIGHT)
@@ -156,7 +156,7 @@ describe('WiringScheme Segments Module', () => {
       expect(segment.end.x).toBeCloseTo(pinCenter.x, 3)
       expect(segment.end.y).toBe(WIRE_HEIGHT)
       expect(segment.end.z).toBeCloseTo(pinCenter.z, 3)
-      
+
       // Should start from section line in same direction pin faces (forward, 8.0)
       expect(segment.start.x).toBeCloseTo(pinCenter.x, 3)
       expect(segment.start.y).toBe(WIRE_HEIGHT)
@@ -218,7 +218,7 @@ describe('WiringScheme Segments Module', () => {
       // Exit segment should end on a section line
       const exitEndXRemainder = Math.abs(exitSegment.end.x % SECTION_SIZE)
       expect(exitEndXRemainder < 0.001 || Math.abs(exitEndXRemainder - SECTION_SIZE) < 0.001).toBe(true)
-      
+
       // Entry segment should start on a section line
       const entryStartXRemainder = Math.abs(entrySegment.start.x % SECTION_SIZE)
       expect(entryStartXRemainder < 0.001 || Math.abs(entryStartXRemainder - SECTION_SIZE) < 0.001).toBe(true)

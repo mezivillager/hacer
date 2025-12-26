@@ -1,9 +1,9 @@
 /**
  * Render Sanity Check Tests (UI-driven)
- * 
+ *
  * These tests verify that common operations don't cause excessive re-renders.
  * Run these tests to catch render performance regressions.
- * 
+ *
  * Tag for filtering: @render @performance @ui
  */
 
@@ -21,7 +21,7 @@ import {
  * Render budgets per operation.
  * These values are based on observed behavior plus a small margin.
  * If an operation exceeds these counts, it indicates a performance regression.
- * 
+ *
  * Current observed baseline (as of optimization):
  * - GroundPlane: Static component that renders only once (budget=1)
  * - PlacementPreview: Re-renders when placement state changes
@@ -57,15 +57,15 @@ test.describe('Render Sanity Check (UI) @render @performance @ui', () => {
   test('addGate stays within render budget', async ({ page }) => {
     // Reset stats before the operation
     await resetRenderStats(page)
-    
+
     // Perform the operation
     await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.center)
     await ensureGates(page, 1)
     await waitForSceneStable(page)
-    
+
     // Check render counts
     const counts = await getComponentRenderCounts(page)
-    
+
     for (const [component, budget] of Object.entries(RENDER_BUDGETS.addGate)) {
       const actual = counts[component] ?? 0
       expect(
@@ -80,17 +80,17 @@ test.describe('Render Sanity Check (UI) @render @performance @ui', () => {
     const gate = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.center)
     await ensureGates(page, 1)
     await waitForSceneStable(page)
-    
+
     // Reset stats before the operation
     await resetRenderStats(page)
-    
+
     // Perform the operation
     await selectGate(page, gate!.id)
     await waitForSceneStable(page)
-    
+
     // Check render counts
     const counts = await getComponentRenderCounts(page)
-    
+
     for (const [component, budget] of Object.entries(RENDER_BUDGETS.selectGate)) {
       const actual = counts[component] ?? 0
       expect(
@@ -106,10 +106,10 @@ test.describe('Render Sanity Check (UI) @render @performance @ui', () => {
     const gate2 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.right)
     await ensureGates(page, 2)
     await waitForSceneStable(page)
-    
+
     // Reset stats before the operation
     await resetRenderStats(page)
-    
+
     // Perform the operation - wire output of gate1 to input of gate2
     await addWireViaStore(page, {
       fromGateId: gate1!.id,
@@ -119,10 +119,10 @@ test.describe('Render Sanity Check (UI) @render @performance @ui', () => {
     })
     await ensureWires(page, 1)
     await waitForSceneStable(page)
-    
+
     // Check render counts
     const counts = await getComponentRenderCounts(page)
-    
+
     for (const [component, budget] of Object.entries(RENDER_BUDGETS.addWire)) {
       const actual = counts[component] ?? 0
       expect(
@@ -137,10 +137,10 @@ test.describe('Render Sanity Check (UI) @render @performance @ui', () => {
     const gate = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.center)
     await ensureGates(page, 1)
     await waitForSceneStable(page)
-    
+
     // Reset stats before the operation
     await resetRenderStats(page)
-    
+
     // Perform the operation
     await page.evaluate(
       ({ gateId, pinId }) => {
@@ -149,10 +149,10 @@ test.describe('Render Sanity Check (UI) @render @performance @ui', () => {
       { gateId: gate!.id, pinId: gate!.inputs[0].id }
     )
     await waitForSceneStable(page)
-    
+
     // Check render counts
     const counts = await getComponentRenderCounts(page)
-    
+
     for (const [component, budget] of Object.entries(RENDER_BUDGETS.toggleInput)) {
       const actual = counts[component] ?? 0
       expect(
@@ -165,9 +165,9 @@ test.describe('Render Sanity Check (UI) @render @performance @ui', () => {
   test('logs current render stats (for tuning budgets)', async ({ page }) => {
     // This test is for development - it logs render counts to help tune budgets
     // It always passes but provides useful diagnostic output
-    
+
     console.log('\n--- Render Budget Diagnostics ---\n')
-    
+
     // Test addGate
     await resetRenderStats(page)
     await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.center)
@@ -175,20 +175,20 @@ test.describe('Render Sanity Check (UI) @render @performance @ui', () => {
     await waitForSceneStable(page)
     let counts = await getComponentRenderCounts(page)
     console.log('addGate renders:', counts)
-    
+
     // Test selectGate (deselect then reselect)
     await resetRenderStats(page)
     await selectGate(page, null)
     await waitForSceneStable(page)
     counts = await getComponentRenderCounts(page)
     console.log('deselectGate renders:', counts)
-    
+
     // Test addWire
     const gate1 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.left)
     const gate2 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.right)
     await ensureGates(page, 3)
     await waitForSceneStable(page)
-    
+
     await resetRenderStats(page)
     await addWireViaStore(page, {
       fromGateId: gate1!.id,
@@ -200,7 +200,7 @@ test.describe('Render Sanity Check (UI) @render @performance @ui', () => {
     await waitForSceneStable(page)
     counts = await getComponentRenderCounts(page)
     console.log('addWire renders:', counts)
-    
+
     console.log('\n--- End Diagnostics ---\n')
   })
 })

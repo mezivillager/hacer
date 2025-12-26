@@ -6,9 +6,9 @@ import type { Wire } from '@/store/types'
 /**
  * Hook to collect all existing wire segments from the store.
  * Subscribes to wires and collects segments from wire.segments.
- * 
+ *
  * @returns Array of all wire segments from all wires in the store
- * 
+ *
  * @example
  * const existingSegments = useExistingSegments()
  * // Use segments for pathfinding collision detection

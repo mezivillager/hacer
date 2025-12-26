@@ -18,8 +18,8 @@ interface Wire3DProps {
   isPreview?: boolean
 }
 
-export function Wire3D({ 
-  start, 
+export function Wire3D({
+  start,
   end,
   startOrientation,
   endOrientation,
@@ -30,26 +30,34 @@ export function Wire3D({
   precomputedPath,
   color: _color = colors.gate.wireStub,
   isActive = false,
-  isPreview = false 
+  isPreview = false
 }: Wire3DProps) {
   // Guard against undefined positions
   if (!start || !end) return null
-  
+
   // Precomputed path is required - no fallback calculation
   if (!precomputedPath) {
-    const errorMsg = `Wire3D: precomputedPath is required but not provided. Start: ${JSON.stringify(start)}, End: ${JSON.stringify(end)}`
-    console.error(errorMsg)
-    console.error('Wire3D props:', { start, end, startOrientation, endOrientation, sourceGateId, destinationGateId })
-    throw new Error(errorMsg)
+    // Defensive measure: if precomputedPath is missing, it's a bug in path calculation
+    // Return null instead of throwing to prevent component crash
+    // The error should be handled upstream where the path is calculated
+    console.error('[Wire3D] precomputedPath is required but not provided', {
+      start,
+      end,
+      startOrientation,
+      endOrientation,
+      sourceGateId,
+      destinationGateId,
+    })
+    return null
   }
-  
+
   const pathSegments: WireSegment[] = precomputedPath.segments
-  
+
   // Wire color - use reddish copper for default and preview (same color)
-  const wireColor = isActive 
-    ? colors.wire.active 
+  const wireColor = isActive
+    ? colors.wire.active
     : colors.wire.default // Always use copper for non-active wires (default and preview)
-  
+
   // Render segments as lines (no thickness, elegant look like grid lines)
   return (
     <>

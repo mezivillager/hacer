@@ -50,7 +50,7 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
       }
     }, false, 'updateWirePreviewPosition')
   },
-  
+
   setDestinationPin: (gateId: string | null, pinId: string | null) => {
     set((state) => {
       if (state.wiringFrom) {
@@ -78,6 +78,7 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
     const state = get()
     const from = state.wiringFrom
     if (!from) {
+      message.warning('No active wiring operation')
       console.warn('[wiringActions] completeWiring - no wiringFrom state')
       return
     }

@@ -35,14 +35,14 @@ export interface GridPosition {
 /**
  * Convert world coordinates to grid coordinates.
  * Uses Math.round() to snap to nearest grid cell.
- * 
+ *
  * @param worldPos - World position (x, y, z)
  * @returns Grid position (row, col) where row = z, col = x
  */
 export function worldToGrid(worldPos: Position): GridPosition {
   // Normalize -0 to 0 to avoid negative zero issues
   const normalizeZero = (n: number): number => (n === 0 ? 0 : n)
-  
+
   return {
     row: normalizeZero(Math.round(worldPos.z / GRID_SIZE)),
     col: normalizeZero(Math.round(worldPos.x / GRID_SIZE)),
@@ -52,7 +52,7 @@ export function worldToGrid(worldPos: Position): GridPosition {
 /**
  * Convert grid coordinates to world coordinates.
  * Gates are always placed on the ground plane (y = 0).
- * 
+ *
  * @param gridPos - Grid position (row, col)
  * @returns World position with y = 0
  */
@@ -67,7 +67,7 @@ export function gridToWorld(gridPos: GridPosition): Position {
 /**
  * Snap a world position to the nearest grid center.
  * Preserves the Y coordinate from the input position.
- * 
+ *
  * @param worldPos - World position to snap
  * @returns Snapped world position at grid center (with original Y preserved)
  */
@@ -84,7 +84,7 @@ export function snapToGrid(worldPos: Position): Position {
  * Check if a gate can be placed at the given grid position.
  * Validates minimum spacing from all existing gates, prevents placement on section lines,
  * and checks for wires passing through the cell.
- * 
+ *
  * @param gridPos - Grid position to check
  * @param existingGates - Array of existing gate instances
  * @param excludeGateId - Optional gate ID to exclude from validation (useful for dragging)
@@ -142,7 +142,7 @@ export function canPlaceGateAt(
 
 /**
  * Check if a position is within a grid cell's bounds.
- * 
+ *
  * @param position - World position to check
  * @param cell - Grid cell (row, col)
  * @returns True if position is within cell bounds
@@ -153,7 +153,7 @@ export function isPositionInCell(position: Position, cell: GridCell): boolean {
   const cellMaxX = cellCenter.x + GRID_SIZE / 2
   const cellMinZ = cellCenter.z - GRID_SIZE / 2
   const cellMaxZ = cellCenter.z + GRID_SIZE / 2
-  
+
   return (
     position.x >= cellMinX &&
     position.x <= cellMaxX &&
@@ -164,7 +164,7 @@ export function isPositionInCell(position: Position, cell: GridCell): boolean {
 
 /**
  * Check if a wire segment intersects a grid cell.
- * 
+ *
  * @param segment - Wire segment to check
  * @param cell - Grid cell
  * @returns True if segment intersects cell
@@ -175,13 +175,13 @@ function segmentIntersectsCell(segment: GridAlignedSegment, cell: GridCell): boo
   const cellMaxX = cellCenter.x + GRID_SIZE / 2
   const cellMinZ = cellCenter.z - GRID_SIZE / 2
   const cellMaxZ = cellCenter.z + GRID_SIZE / 2
-  
+
   // Check if segment passes through cell bounds
   const segMinX = Math.min(segment.start.x, segment.end.x)
   const segMaxX = Math.max(segment.start.x, segment.end.x)
   const segMinZ = Math.min(segment.start.z, segment.end.z)
   const segMaxZ = Math.max(segment.start.z, segment.end.z)
-  
+
   // Segment intersects if it overlaps with cell bounds
   return (
     segMaxX >= cellMinX &&
@@ -194,7 +194,7 @@ function segmentIntersectsCell(segment: GridAlignedSegment, cell: GridCell): boo
 /**
  * Get wire segments passing through a grid cell.
  * Excludes entry/exit segments at pin locations.
- * 
+ *
  * @param cell - Grid cell to check
  * @param segments - All wire segments to check
  * @param pinLocations - Optional array of pin locations in the cell (to exclude entry/exit segments)
@@ -210,7 +210,7 @@ function getWireSegmentsInCell(
     if (!segmentIntersectsCell(segment, cell)) {
       return false
     }
-    
+
     // Exclude entry/exit segments at pin locations
     if (pinLocations && (segment.type === 'entry' || segment.type === 'exit')) {
       // Check if segment start or end is at a pin location in this cell
@@ -230,7 +230,7 @@ function getWireSegmentsInCell(
         return false // Exclude this segment
       }
     }
-    
+
     return true
   })
 }
@@ -238,7 +238,7 @@ function getWireSegmentsInCell(
 /**
  * Check if a grid cell has wire segments passing through it.
  * Excludes entry/exit segments at pin locations.
- * 
+ *
  * @param cell - Grid cell to check
  * @param wires - Array of wire instances
  * @param gates - Array of gate instances (for calculating wire paths and pin locations)
@@ -254,20 +254,20 @@ export function hasWiresInCell(
   getPinOrientation: (gateId: string, pinId: string) => { x: number; y: number; z: number } | null
 ): boolean {
   if (wires.length === 0) return false
-  
+
   // Collect all wire segments
   const allSegments: GridAlignedSegment[] = []
   const pinLocations: Array<{ gateId: string; pinId: string; position: Position }> = []
-  
+
   for (const wire of wires) {
     const fromPos = getPinWorldPosition(wire.fromGateId, wire.fromPinId)
     const toPos = getPinWorldPosition(wire.toGateId, wire.toPinId)
     if (!fromPos || !toPos) continue
-    
+
     const fromOrientation = getPinOrientation(wire.fromGateId, wire.fromPinId)
     const toOrientation = getPinOrientation(wire.toGateId, wire.toPinId)
     if (!fromOrientation || !toOrientation) continue
-    
+
     // Calculate path for this wire
     const path = calculateWirePath(
       fromPos,
@@ -276,9 +276,9 @@ export function hasWiresInCell(
       gates,
       {}
     )
-    
+
     allSegments.push(...path.segments)
-    
+
     // Collect pin locations for this wire (only pins in the target cell)
     const fromInCell = isPositionInCell(fromPos, cell)
     const toInCell = isPositionInCell(toPos, cell)
@@ -289,7 +289,7 @@ export function hasWiresInCell(
       pinLocations.push({ gateId: wire.toGateId, pinId: wire.toPinId, position: toPos })
     }
   }
-  
+
   // Check if any segments pass through the cell (excluding entry/exit at pins)
   const segmentsInCell = getWireSegmentsInCell(cell, allSegments, pinLocations)
   return segmentsInCell.length > 0

@@ -1,6 +1,6 @@
 /**
  * Render Tracking Utility
- * 
+ *
  * Tracks component re-renders to identify unnecessary updates
  * and provide stable waiting conditions for E2E tests.
  */
@@ -33,11 +33,11 @@ let stabilityCheckTimer: ReturnType<typeof setTimeout> | null = null
 function updateStability() {
   tracker.isStable = false
   tracker.lastUpdateTime = Date.now()
-  
+
   if (stabilityCheckTimer) {
     clearTimeout(stabilityCheckTimer)
   }
-  
+
   stabilityCheckTimer = setTimeout(() => {
     tracker.isStable = true
     if (typeof window !== 'undefined' && window.__RENDER_TRACKER__) {
@@ -58,7 +58,7 @@ export function trackRender(componentName: string, reason?: string): void {
       reasons: [],
     }
   }
-  
+
   const stats = tracker.stats[componentName]
   stats.count++
   stats.lastRenderTime = Date.now()
@@ -69,10 +69,10 @@ export function trackRender(componentName: string, reason?: string): void {
       stats.reasons.shift()
     }
   }
-  
+
   tracker.totalRenders++
   updateStability()
-  
+
   // Update window object for E2E tests
   if (typeof window !== 'undefined') {
     window.__RENDER_TRACKER__ = {
@@ -83,7 +83,7 @@ export function trackRender(componentName: string, reason?: string): void {
       reset: resetRenderStats,
     }
   }
-  
+
   // Development logging
   if (import.meta.env.DEV) {
     const reasonStr = reason ? ` (${reason})` : ''
@@ -120,7 +120,7 @@ export function resetRenderStats(): void {
   tracker.totalRenders = 0
   tracker.lastUpdateTime = 0
   tracker.isStable = true
-  
+
   if (typeof window !== 'undefined') {
     window.__RENDER_TRACKER__ = {
       stats: {},
@@ -150,7 +150,7 @@ if (typeof window !== 'undefined') {
     isStable: false, // Start as not stable
     reset: resetRenderStats,
   }
-  
+
   // Set initial stability after a delay (allows first render cycle to complete)
   setTimeout(() => {
     if (tracker.totalRenders === 0) {

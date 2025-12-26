@@ -110,7 +110,7 @@ describe('Sidebar', () => {
 
   it('calls removeGate when Delete Selected is clicked', () => {
     // Add a gate to the store first
-    actualSetState({ 
+    actualSetState({
       selectedGateId: 'gate-1',
       gates: [{ id: 'gate-1', type: 'NAND', position: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, inputs: [], outputs: [], selected: true }]
     })

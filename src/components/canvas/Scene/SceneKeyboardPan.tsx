@@ -14,7 +14,7 @@ const PAN_STEP = 1.0
  */
 export function SceneKeyboardPan() {
   const { camera, controls } = useThree()
-  
+
   // Subscribe to store state
   const selectedGateId = useCircuitStore((s) => s.selectedGateId)
   const placementMode = useCircuitStore((s) => s.placementMode)
@@ -35,7 +35,7 @@ export function SceneKeyboardPan() {
         target.tagName === 'INPUT' ||
         target.tagName === 'TEXTAREA' ||
         target.isContentEditable
-      
+
       if (isInputField) return
 
       // Check if controls are available

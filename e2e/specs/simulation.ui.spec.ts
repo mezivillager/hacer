@@ -43,7 +43,7 @@ test.describe('Simulation (UI) @ui', () => {
   test('simulation propagates signals through wires via UI', async ({ page }) => {
     // Place gates via UI with appropriate rotations
     for (const placement of placements) {
-      await addGateViaUI(page, { 
+      await addGateViaUI(page, {
         position: placement.position,
         rotate: placement.rotate
       })

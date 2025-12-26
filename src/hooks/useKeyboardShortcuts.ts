@@ -47,7 +47,7 @@ export function useKeyboardShortcuts() {
             target.tagName === 'INPUT' ||
             target.tagName === 'TEXTAREA' ||
             target.isContentEditable
-          
+
           if (!isInputField) {
             e.preventDefault()
             removeGate(selectedGateId)

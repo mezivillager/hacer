@@ -20,9 +20,9 @@ const { placements, wire } = circuitBuildScenario
 // Tag for filtering: @ui
 test.describe('Circuit Building (UI) @ui', () => {
   test('can add a NAND gate via UI', async ({ page }) => {
-    await addGateViaUI(page, { 
+    await addGateViaUI(page, {
       type: 'NAND',
-      position: placements[0].position 
+      position: placements[0].position
     })
     await ensureGates(page, 1)
     await expectGateCount(page, 1)
@@ -31,7 +31,7 @@ test.describe('Circuit Building (UI) @ui', () => {
   test('can wire two gates via UI', async ({ page }) => {
     // Place gates with appropriate rotations for wiring
     for (const placement of placements) {
-      await addGateViaUI(page, { 
+      await addGateViaUI(page, {
         type: 'NAND',
         position: placement.position,
         rotate: placement.rotate

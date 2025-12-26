@@ -1,6 +1,6 @@
 /**
  * Simplified Wiring Scheme Types
- * 
+ *
  * This module defines types for the simplified wiring scheme where wires
  * follow section lines (every 4.0 units) using a simple greedy pathfinding algorithm.
  */
@@ -50,7 +50,7 @@ export interface WirePath {
 /**
  * Destination type for wire path calculation.
  */
-export type DestinationType = 
+export type DestinationType =
   | { type: 'pin', pin: Position, orientation: PinOrientation }
   | { type: 'cursor', pos: Position }
 

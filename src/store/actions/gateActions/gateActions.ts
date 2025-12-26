@@ -1,3 +1,4 @@
+import { message } from 'antd'
 import type { GateActions, GateInstance, GateType, Pin, Position, CircuitStore } from '../../types'
 import { snapToGrid } from '@/utils/grid'
 import { useCircuitStore } from '../../circuitStore'
@@ -76,7 +77,7 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
         return
       }
     }
-    
+
     set((state) => {
       // Update selection state
       state.gates.forEach((g) => {
@@ -95,7 +96,7 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
         gate.position = snappedPosition
       }
     }, false, 'updateGatePosition')
-    
+
     // Recalculate wires attached to this gate after position update
     // Use getState() to access the updated state and call the action
     const updatedState = get()
@@ -130,6 +131,7 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
     const getPinWorldPosition = state.getPinWorldPosition
     const getPinOrientation = state.getPinOrientation
     const updateWireSegments = state.updateWireSegments
+    const removeWire = state.removeWire
 
     // Find all wires connected to this gate
     const connectedWires = wires.filter(
@@ -141,7 +143,7 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
     }
 
     // Collect existing segments from other wires (for overlap avoidance)
-    const allOtherWireSegments = collectWireSegments(wires, (wire) => 
+    const allOtherWireSegments = collectWireSegments(wires, (wire) =>
       !connectedWires.some((cw) => cw.id === wire.id)
     )
 
@@ -163,15 +165,35 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
         )
 
         if (!newPath) {
-          console.warn(`[recalculateWiresForGate] Failed to calculate path for wire ${wire.id} - pins or gates not found`)
+          // Path calculation failed - remove disconnected wire
+          message.error('Unable to recalculate wire path. Wire has been disconnected.')
+          console.error(`[recalculateWiresForGate] Failed to calculate path for wire ${wire.id} - pins or gates not found`, {
+            wireId: wire.id,
+            fromGateId: wire.fromGateId,
+            fromPinId: wire.fromPinId,
+            toGateId: wire.toGateId,
+            toPinId: wire.toPinId,
+            gateId,
+          })
+          removeWire(wire.id)
           continue
         }
 
         // Update wire segments
         updateWireSegments(wire.id, newPath.segments)
       } catch (error) {
+        // Exception occurred - remove disconnected wire
+        message.error('Failed to recalculate wire. Wire has been disconnected.')
         console.error(`[recalculateWiresForGate] Failed to recalculate wire ${wire.id}:`, error)
-        // Keep old segments on error
+        console.error(`[recalculateWiresForGate] Wire context:`, {
+          wireId: wire.id,
+          fromGateId: wire.fromGateId,
+          fromPinId: wire.fromPinId,
+          toGateId: wire.toGateId,
+          toPinId: wire.toPinId,
+          gateId,
+        })
+        removeWire(wire.id)
       }
     }
   },

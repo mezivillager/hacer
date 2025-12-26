@@ -25,7 +25,7 @@ export function CanvasArea() {
   const placementPreviewPosition = useCircuitStore((s) => s.placementPreviewPosition)
   const isDragActive = useCircuitStore((s) => s.isDragActive)
   // Note: selectedGateId is read via getState() in isDragInvalid calculation to avoid subscription
-  
+
   // Create a reactive isPinConnected function that will trigger re-renders when wires change
   // This ensures gates re-render when their pin connection status changes
   const isPinConnectedReactive = (gateId: string, pinId: string): boolean => {
@@ -35,14 +35,14 @@ export function CanvasArea() {
         (w.toGateId === gateId && w.toPinId === pinId)
     )
   }
-  
+
   // Track renders with reason
   trackRender('CanvasArea', `gates:${gates.length},wires:${wires.length},placing:${!!placementMode},wiring:${!!wiringFrom}`)
 
   const isPlacing = placementMode !== null
   const isWiring = wiringFrom !== null
   const isDragging = isDragActive && placementPreviewPosition !== null && placementMode === null
-  
+
   // Check if current preview position is invalid for placement
   const isPlacementInvalid = isPlacing && placementPreviewPosition !== null && (() => {
     const gridPos = worldToGrid(placementPreviewPosition)
@@ -94,7 +94,7 @@ export function CanvasArea() {
     toOrientation: ReturnType<typeof circuitActions.getPinOrientation>
     path: ReturnType<typeof calculateWirePath>
   }> = []
-  
+
   for (const wire of wires) {
     const fromPos = getPinWorldPosition(wire.fromGateId, wire.fromPinId)
     const toPos = getPinWorldPosition(wire.toGateId, wire.toPinId)
@@ -102,9 +102,9 @@ export function CanvasArea() {
 
     const fromOrientation = circuitActions.getPinOrientation(wire.fromGateId, wire.fromPinId)
     const toOrientation = circuitActions.getPinOrientation(wire.toGateId, wire.toPinId)
-    
+
     if (!fromOrientation || !toOrientation) continue
-    
+
     // Use stored segments from wire (calculated when wire was created)
     // Reconstruct WirePath object for Wire3D component
     const path = {
@@ -116,7 +116,7 @@ export function CanvasArea() {
         return sum + Math.sqrt(dx * dx + dy * dy + dz * dz)
       }, 0),
     }
-    
+
     wirePaths.push({
       wire,
       fromPos,
@@ -138,7 +138,7 @@ export function CanvasArea() {
         {/* Render all wires */}
         {pathsWithElevation.map((wirePath) => {
           const { wire, fromPos, toPos, fromOrientation, toOrientation, path } = wirePath
-          
+
           const fromGate = gates.find(g => g.id === wire.fromGateId)
           const outputValue = fromGate?.outputs.find(p => p.id === wire.fromPinId)?.value ?? false
 

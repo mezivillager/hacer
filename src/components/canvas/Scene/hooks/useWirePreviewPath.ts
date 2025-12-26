@@ -21,7 +21,7 @@ interface UseWirePreviewPathResult {
 /**
  * Hook to calculate wire preview path with incremental extension support.
  * Manages path state and handles extension vs recalculation decisions.
- * 
+ *
  * @param params - Parameters for path calculation
  * @returns Path calculation result with path and error state
  */
@@ -39,10 +39,10 @@ export function useWirePreviewPath({
   const lastPathEndRef = useRef<Position | null>(null)
   const lastDestinationRef = useRef<{ type: 'cursor' | 'pin', data: Position } | null>(null)
   const lastSegmentRef = useRef<WireSegment | null>(null)
-  
+
   // Track previous wiring source to detect changes
   const prevWiringSourceRef = useRef<{ gateId: string; pinId: string } | null>(null)
-  
+
   // Reset path state when wiring starts or is canceled
   useEffect(() => {
     if (!wiringFrom) {
@@ -54,11 +54,11 @@ export function useWirePreviewPath({
       prevWiringSourceRef.current = null
       return
     }
-    
+
     // Check if wiring source changed (new wiring started)
     const currentFromGateId = wiringFrom.fromGateId
     const currentFromPinId = wiringFrom.fromPinId
-    
+
     if (prevWiringSourceRef.current) {
       if (prevWiringSourceRef.current.gateId !== currentFromGateId || prevWiringSourceRef.current.pinId !== currentFromPinId) {
         // New wiring started - clear all path state
@@ -68,7 +68,7 @@ export function useWirePreviewPath({
         lastSegmentRef.current = null
       }
     }
-    
+
     prevWiringSourceRef.current = { gateId: currentFromGateId, pinId: currentFromPinId }
   }, [wiringFrom])
 
@@ -88,19 +88,19 @@ export function useWirePreviewPath({
     const hasLastPathEnd = lastPathEndRef.current !== null
     const lastPathEnd = lastPathEndRef.current
     const lastSegment = lastSegmentRef.current
-    
+
     // If we've already reached a pin (last segment is entry segment), use previous path
     // This avoids redundant extension attempts and recalculations
     const hasReachedPin = lastSegment?.type === 'entry'
     const isOnPin = destination.type === 'pin'
-    
+
     if (hasReachedPin && isOnPin && lastCalculatedPathRef.current) {
       // Already reached pin - use previous path as-is, no extension or recalculation needed
       previewPath = lastCalculatedPathRef.current
       shouldCalculateWirePath = false
     } else {
       // Check if we can extend (don't check for destination type change)
-      const canExtend = 
+      const canExtend =
         hasLastPath &&
         hasLastSegment &&
         hasLastPathEnd &&
@@ -109,7 +109,7 @@ export function useWirePreviewPath({
         canExtendPath(lastPathEnd, lastSegment, destination, {
           existingSegments,
         })
-      
+
       if (canExtend && lastCalculatedPathRef.current) {
         // Try to extend from last path
         try {
@@ -128,7 +128,7 @@ export function useWirePreviewPath({
         }
       }
     }
-    
+
     // Calculate wire path from scratch if needed
     if (shouldCalculateWirePath) {
       console.debug('[ 🔥 WirePreview ] Recalculating:')
@@ -144,12 +144,12 @@ export function useWirePreviewPath({
         }
       )
     }
-    
+
     // Update path state refs (previewPath is guaranteed to be assigned at this point)
     if (!previewPath) {
       throw new Error('previewPath must be assigned')
     }
-    
+
     if (previewPath.segments.length > 0) {
       const lastSeg = previewPath.segments[previewPath.segments.length - 1]
       lastCalculatedPathRef.current = previewPath

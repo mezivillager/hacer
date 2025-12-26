@@ -144,7 +144,7 @@ describe('WirePreview', () => {
   it('handles pathfinding errors gracefully', async () => {
     // Import circuitActions to access the mocked cancelWiring
     const { circuitActions } = await import('@/store/circuitStore')
-    
+
     // Mock calculateWirePath to throw an error
     const pathfindingError = new Error('Pathfinding failed: no progress possible')
     vi.mocked(calculateWirePath).mockImplementation(() => {
