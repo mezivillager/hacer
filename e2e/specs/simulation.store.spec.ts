@@ -53,7 +53,7 @@ test.describe('Simulation (store) @store', () => {
     // Wire gate1 output to gate2 input
     await page.evaluate(({ g1, g2 }) => {
       if (g1 && g2) {
-        window.__CIRCUIT_ACTIONS__?.addWire(g1.id, g1.outputs[0].id, g2.id, g2.inputs[0].id)
+        window.__CIRCUIT_ACTIONS__?.addWire(g1.id, g1.outputs[0].id, g2.id, g2.inputs[0].id, [])
       }
     }, { g1: gate1, g2: gate2 })
 

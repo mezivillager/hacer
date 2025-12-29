@@ -3,6 +3,8 @@ import { message } from 'antd'
 import { useCircuitStore } from '../../circuitStore'
 import { GRID_SIZE } from '@/utils/grid'
 import type { WireSegment } from '@/utils/wiringScheme/types'
+import { calculateWirePathFromConnection } from '@/utils/wiringScheme'
+import { collectWireSegments } from '@/utils/wiringScheme/segments'
 
 // Mock Ant Design message
 vi.mock('antd', () => ({
@@ -549,6 +551,138 @@ describe('gateActions', () => {
       useCircuitStore.setState((state) => {
         state.getPinWorldPosition = originalGetPinWorldPosition
       })
+    })
+  })
+
+  describe('recalculateWiresForGate', () => {
+    it('reproduces bug: arc segments lost after moving gate (recalculation)', () => {
+      // BUG REPRODUCTION TEST: This test should FAIL to prove the bug exists
+      // The bug: When a gate with a crossing wire is moved/rotated, recalculation loses the arc segments
+      //
+      // Setup: Use exact gate positions from manual testing that create crossings
+      // - Gate A: x=-2, z=2, output pin facing +x (right) - default rotation
+      // - Gate B: x=-2, z=-6, output pin facing -z (down) - needs rotation
+      // - Gate C: x=-6, z=-2, output pin facing +x (right) - default rotation
+      // - Gate D: x=6, z=-2, output pin facing +x (right) initially, then rotate to -z
+      const gateA = getState().addGate('AND', { x: -2, y: 0, z: 2 })
+      const gateB = getState().addGate('AND', { x: -2, y: 0, z: -6 })
+      const gateC = getState().addGate('AND', { x: -6, y: 0, z: -2 })
+      const gateD = getState().addGate('AND', { x: 6, y: 0, z: -2 })
+
+      // Rotate Gate B so output pin faces -z (down/backward)
+      getState().updateGateRotation(gateB.id, { x: Math.PI / 2, y: Math.PI / 2, z: 0 })
+
+      // Create first wire A->B using pathfinding
+      getState().startWiring(gateA.id, gateA.outputs[0].id, 'output', { x: -1.3, y: 0, z: 2 })
+      const state = getState()
+      const pathAB = calculateWirePathFromConnection(
+        gateA.id, gateA.outputs[0].id,
+        gateB.id, gateB.inputs[0].id,
+        {
+          gates: state.gates,
+          getPinWorldPosition: state.getPinWorldPosition,
+          getPinOrientation: state.getPinOrientation,
+          existingSegments: [],
+        }
+      )
+      if (!pathAB) throw new Error('Failed to calculate path for wire A->B')
+      useCircuitStore.setState((s) => {
+        if (s.wiringFrom) s.wiringFrom.segments = pathAB.segments
+      })
+      getState().completeWiring(gateB.id, gateB.inputs[0].id, 'input')
+      expect(getState().wires).toHaveLength(1)
+
+      // Create second wire C->D using pathfinding
+      getState().startWiring(gateC.id, gateC.outputs[0].id, 'output', { x: -5.3, y: 0, z: -2 })
+      const state2 = getState()
+      const existingSegments = collectWireSegments(state2.wires)
+      const pathCD = calculateWirePathFromConnection(
+        gateC.id, gateC.outputs[0].id,
+        gateD.id, gateD.inputs[0].id,
+        {
+          gates: state2.gates,
+          getPinWorldPosition: state2.getPinWorldPosition,
+          getPinOrientation: state2.getPinOrientation,
+          existingSegments,
+        }
+      )
+      if (!pathCD) throw new Error('Failed to calculate path for wire C->D')
+      useCircuitStore.setState((s) => {
+        if (s.wiringFrom) s.wiringFrom.segments = pathCD.segments
+      })
+      getState().completeWiring(gateD.id, gateD.inputs[0].id, 'input')
+      expect(getState().wires).toHaveLength(2)
+
+      // Verify wires exist and check for crossings
+      const wireAB = getState().wires.find((w) => w.fromGateId === gateA.id)
+      const wireCD = getState().wires.find((w) => w.fromGateId === gateC.id)
+      expect(wireAB).toBeDefined()
+      expect(wireCD).toBeDefined()
+
+      // Check if wires actually cross by examining segments
+      // Wire A->B should have horizontal segments, Wire C->D should have vertical segments
+      // They cross if there's a horizontal segment at some z and a vertical segment at some x
+      // that intersect
+      const abHorizontalSegments = wireAB?.segments.filter((s) =>
+        s.type === 'horizontal'
+      ) || []
+      const cdVerticalSegments = wireCD?.segments.filter((s) =>
+        s.type === 'vertical'
+      ) || []
+      const abVerticalSegments = wireAB?.segments.filter((s) =>
+        s.type === 'vertical'
+      ) || []
+      const cdHorizontalSegments = wireCD?.segments.filter((s) =>
+        s.type === 'horizontal'
+      ) || []
+
+      console.log('Wire A->B segments:', JSON.stringify(wireAB?.segments.map((s) => ({ type: s.type, start: { x: Math.round(s.start.x * 10) / 10, z: Math.round(s.start.z * 10) / 10 }, end: { x: Math.round(s.end.x * 10) / 10, z: Math.round(s.end.z * 10) / 10 } })), null, 2))
+      console.log('Wire A->B horizontal segments:', abHorizontalSegments.length, 'vertical:', abVerticalSegments.length)
+      console.log('Wire C->D horizontal segments:', cdHorizontalSegments.length, 'vertical:', cdVerticalSegments.length)
+      console.log('Wire CD segments (first 20):', JSON.stringify(wireCD?.segments.slice(0, 20).map((s) => ({ type: s.type, start: { x: Math.round(s.start.x * 10) / 10, z: Math.round(s.start.z * 10) / 10 }, end: { x: Math.round(s.end.x * 10) / 10, z: Math.round(s.end.z * 10) / 10 } })), null, 2))
+
+      // Check if segments actually cross (simplified check: look for perpendicular segments that intersect)
+      // For a proper check, we'd need to use findSegmentCrossing, but for now just check if we have
+      // both horizontal and vertical segments that could potentially cross
+      const hasPotentialCrossing = abHorizontalSegments.length > 0 && cdVerticalSegments.length > 0
+
+      const hasArcBefore = wireCD?.segments.some((s) => s.type === 'arc')
+      console.log('Initial wire C->D - has arc before move/rotate:', hasArcBefore)
+      console.log('Has potential crossing (horizontal + vertical segments):', hasPotentialCrossing)
+
+      // BUG: If wires cross, arcs should exist
+      // This assertion should FAIL to reproduce the bug - arcs are not created even when crossing exists
+      if (hasPotentialCrossing) {
+        expect(hasArcBefore).toBe(true) // BUG: This fails - arcs are not created even when crossing exists
+      }
+
+      // BUG REPRODUCTION: Move Gate C to x=-10, z=-2 (as per manual test)
+      getState().updateGatePosition(gateC.id, { x: -10, y: 0, z: -2 })
+      getState().recalculateWiresForGate(gateC.id)
+
+      const wireCDAfter = getState().wires.find((w) => w.fromGateId === gateC.id)
+      const hasArcAfter = wireCDAfter?.segments.some((s) => s.type === 'arc')
+      console.log('After moving Gate C - has arc:', hasArcAfter)
+
+      // BUG: If crossing exists, arcs should exist after recalculation too
+      if (hasPotentialCrossing) {
+        expect(hasArcAfter).toBe(true) // BUG: This fails - arcs are not created/maintained after recalculation
+      }
+
+      // Now test rotation scenario: Rotate Gate D so output pin faces -z
+      getState().updateGatePosition(gateC.id, { x: -6, y: 0, z: -2 })
+      getState().recalculateWiresForGate(gateC.id)
+      getState().updateGateRotation(gateD.id, { x: Math.PI / 2, y: Math.PI / 2, z: 0 })
+      getState().recalculateWiresForGate(gateD.id)
+
+      const wireCDAfterRotate = getState().wires.find((w) => w.fromGateId === gateC.id)
+      const hasArcAfterRotate = wireCDAfterRotate?.segments.some((s) => s.type === 'arc')
+      console.log('After rotating Gate D - has arc:', hasArcAfterRotate)
+
+      // BUG: If crossing exists, arcs should exist after rotation too
+      if (hasPotentialCrossing) {
+        expect(hasArcAfterRotate).toBe(true) // BUG: This fails - arcs are not created/maintained after rotation
+      }
     })
   })
 })

@@ -55,7 +55,7 @@ export default defineConfig([
   // Note: We use Vector3 in createMockThreeEvent, but still need type assertions for nativeEvent
   // since we can't create full native event objects in tests
   {
-    files: ['**/*.test.{ts,tsx}', 'src/test/**/*.ts'],
+    files: ['**/*.test.{ts,tsx}', '**/*.spec.{ts,tsx}', 'src/test/**/*.ts'],
     rules: {
       '@typescript-eslint/no-unsafe-argument': 'off', // Test mocks require type assertions for nativeEvent
     },

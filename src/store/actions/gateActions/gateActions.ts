@@ -4,6 +4,7 @@ import { snapToGrid } from '@/utils/grid'
 import { useCircuitStore } from '../../circuitStore'
 import { calculateWirePathFromConnection } from '@/utils/wiringScheme'
 import { collectWireSegments } from '@/utils/wiringScheme/segments'
+import { resolveCrossings } from '@/utils/wiringScheme/crossing'
 
 // Helper to create a gate instance - exported for use in atomic placement actions
 export function createGateInstance(type: GateType, position: Position): GateInstance {
@@ -137,7 +138,7 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
 
   recalculateWiresForGate: (gateId: string) => {
     const state = get()
-    const { gates, wires } = state
+    const { wires } = state
     const getPinWorldPosition = state.getPinWorldPosition
     const getPinOrientation = state.getPinOrientation
     const updateWireSegments = state.updateWireSegments
@@ -152,14 +153,28 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
       return // No wires to recalculate
     }
 
-    // Collect existing segments from other wires (for overlap avoidance)
-    const allOtherWireSegments = collectWireSegments(wires, (wire) =>
-      !connectedWires.some((cw) => cw.id === wire.id)
-    )
-
     // Recalculate each connected wire
+    // IMPORTANT: Process wires in order, and for each wire:
+    // 1. Get fresh state (includes any wires updated in previous iterations)
+    // 2. Calculate new path using fresh segments from other wires
+    // 3. Resolve crossings using fresh wires (which may include arcs from previous iterations)
+    // 4. Update wire segments
+    // This ensures that when multiple wires are recalculated, each sees the latest state
     for (const wire of connectedWires) {
       try {
+        // Get fresh state for each iteration to see updated wires from previous iterations
+        // This is critical: if wire1 was updated with arcs in a previous iteration,
+        // wire2 should see wire1's updated segments (including arcs) when calculating its path
+        const freshState = get()
+        const freshGates = freshState.gates
+        const freshWires = freshState.wires
+
+        // Collect existing segments from other wires (for overlap avoidance in pathfinding)
+        // Exclude the wire being recalculated
+        // Note: This includes arc segments, but segmentsOverlap correctly excludes them
+        // (arc segments are not on section lines, so they don't cause overlap)
+        const allOtherWireSegments = collectWireSegments(freshWires, (w) => w.id !== wire.id)
+
         // Use helper function to calculate path from wire connection info
         const newPath = calculateWirePathFromConnection(
           wire.fromGateId,
@@ -167,7 +182,7 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
           wire.toGateId,
           wire.toPinId,
           {
-            gates,
+            gates: freshGates,
             getPinWorldPosition,
             getPinOrientation,
             existingSegments: allOtherWireSegments,
@@ -189,8 +204,25 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
           continue
         }
 
+        // Resolve crossings: recalculated wire hops over all other existing wires
+        // Get all other wires (excluding the wire being recalculated)
+        // IMPORTANT: Use freshWires which includes any wires updated in previous loop iterations
+        // This ensures crossing detection sees the latest state of all wires
+        const allOtherWires = freshWires.filter((w) => w.id !== wire.id)
+        let resolvedSegments = newPath.segments
+
+        try {
+          resolvedSegments = resolveCrossings(newPath.segments, allOtherWires)
+        } catch (error) {
+          // Crossing resolution failed - log warning but don't fail wire recalculation
+          // The wire will be created without crossing resolution (user can manually rewire if needed)
+          const errorMessage = error instanceof Error ? error.message : 'Failed to resolve wire crossings'
+          console.warn(`[recalculateWiresForGate] Failed to resolve crossings for wire ${wire.id}: ${errorMessage}`)
+          // Continue with unresolved segments - wire will still be updated
+        }
+
         // Update wire segments
-        updateWireSegments(wire.id, newPath.segments)
+        updateWireSegments(wire.id, resolvedSegments)
       } catch (error) {
         // Exception occurred - remove disconnected wire
         message.error('Failed to recalculate wire. Wire has been disconnected.')

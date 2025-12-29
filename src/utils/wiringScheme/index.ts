@@ -9,4 +9,5 @@ export * from './segments'
 export * from './pathfinding'
 export * from './extension'
 export * from './core'
+export * from './crossing'
 

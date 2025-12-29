@@ -23,6 +23,15 @@ export const SECTION_SIZE = 4.0
 export const WIRE_HEIGHT = 0.2
 
 /**
+ * Wire crossing resolution constants.
+ */
+export const MIN_CUT_DISTANCE = 0.05 // Minimum distance from segment end for a cut point
+export const HOP_ARC_HEIGHT_OFFSET = 0.15 // How much the arc peaks above WIRE_HEIGHT
+export const HOP_HEIGHT = WIRE_HEIGHT + HOP_ARC_HEIGHT_OFFSET // Peak height of arc (0.35)
+// For a semi-circular arc, radius = half the arc height (vertical rise)
+export const HOP_RADIUS = HOP_ARC_HEIGHT_OFFSET / 2 // Radius of the hop arc (0.075)
+
+/**
  * Pin orientation: direction the pin faces (for entry/exit segment alignment).
  */
 export interface PinOrientation {
@@ -31,12 +40,15 @@ export interface PinOrientation {
 
 /**
  * A segment of a section-line-aligned wire path.
- * Simplified types: only horizontal, vertical, entry, and exit segments.
+ * Simplified types: horizontal, vertical, entry, exit, and arc segments.
  */
 export interface WireSegment {
   start: Position
   end: Position
-  type: 'horizontal' | 'vertical' | 'entry' | 'exit'
+  type: 'horizontal' | 'vertical' | 'entry' | 'exit' | 'arc'
+  // For arc segments, add arc metadata:
+  arcCenter?: Position // Center point of arc (at base height)
+  arcRadius?: number // Radius of arc
 }
 
 /**
