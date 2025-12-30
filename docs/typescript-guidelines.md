@@ -1,6 +1,6 @@
 # TypeScript Guidelines
 
-> This document defines TypeScript best practices for the Nand2Fun project.
+> This document defines TypeScript best practices for the HACER project.
 
 ---
 

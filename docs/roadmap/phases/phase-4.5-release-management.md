@@ -175,20 +175,20 @@ module.exports = {
       {
         assets: [
           {
-            path: 'dist/nand2fun-web.zip',
-            label: 'Nand2Fun Web App (ZIP)',
+            path: 'dist/hacer-web.zip',
+            label: 'HACER Web App (ZIP)',
           },
           {
-            path: 'dist/nand2fun-desktop.AppImage',
-            label: 'Nand2Fun Linux Desktop App',
+            path: 'dist/hacer-desktop.AppImage',
+            label: 'HACER Linux Desktop App',
           },
           {
-            path: 'dist/nand2fun-desktop.dmg',
-            label: 'Nand2Fun macOS Desktop App',
+            path: 'dist/hacer-desktop.dmg',
+            label: 'HACER macOS Desktop App',
           },
           {
-            path: 'dist/nand2fun-desktop.exe',
-            label: 'Nand2Fun Windows Desktop App',
+            path: 'dist/hacer-desktop.exe',
+            label: 'HACER Windows Desktop App',
           },
         ],
 
@@ -207,7 +207,7 @@ module.exports = {
 
 The release is available on:
 - [GitHub release]({{releaseUrl}})
-- [NPM package](https://www.npmjs.com/package/nand2fun/v/${nextRelease.version})
+- [NPM package](https://www.npmjs.com/package/hacer/v/${nextRelease.version})
 
 Your **[semantic-release](https://github.com/semantic-release/semantic-release)** bot 📦🚀`,
 
@@ -232,13 +232,13 @@ If you need help, check the [semantic-release documentation](https://github.com/
             notifyOnSuccess: true,
             notifyOnFail: false,
             onSuccessTemplate: {
-              text: '🚀 Nand2Fun v${nextRelease.version} has been released!',
+              text: '🚀 HACER v${nextRelease.version} has been released!',
               blocks: [
                 {
                   type: 'header',
                   text: {
                     type: 'plain_text',
-                    text: '🚀 New Nand2Fun Release'
+                    text: '🚀 New HACER Release'
                   }
                 },
                 {
@@ -278,7 +278,7 @@ If you need help, check the [semantic-release documentation](https://github.com/
                         type: 'plain_text',
                         text: 'Download'
                       },
-                      url: 'https://github.com/nand2fun/nand2fun/releases/tag/v${nextRelease.version}'
+                      url: 'https://github.com/hacer/hacer/releases/tag/v${nextRelease.version}'
                     }
                   ]
                 }
@@ -646,7 +646,7 @@ export class ChangelogGenerator {
       links: {
         release: `https://github.com/${this.git.repository}/releases/tag/v${releaseInfo.version}`,
         compare: `https://github.com/${this.git.repository}/compare/${fromRef}...${toRef}`,
-        npm: `https://www.npmjs.com/package/nand2fun/v/${releaseInfo.version}`,
+        npm: `https://www.npmjs.com/package/hacer/v/${releaseInfo.version}`,
       },
     };
   }
@@ -1057,12 +1057,12 @@ jobs:
 
           # Package web app
           cd apps/website/.next
-          zip -r ../../../dist/nand2fun-web.zip .
+          zip -r ../../../dist/hacer-web.zip .
 
           # Package desktop apps (assuming built)
-          # cp path/to/linux/app.AppImage dist/nand2fun-desktop.AppImage
-          # cp path/to/macos/app.dmg dist/nand2fun-desktop.dmg
-          # cp path/to/windows/app.exe dist/nand2fun-desktop.exe
+          # cp path/to/linux/app.AppImage dist/hacer-desktop.AppImage
+          # cp path/to/macos/app.dmg dist/hacer-desktop.dmg
+          # cp path/to/windows/app.exe dist/hacer-desktop.exe
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
@@ -1719,7 +1719,7 @@ export class ReleaseApprovalWorkflow {
   private async notifyReviewer(reviewer: Reviewer, approval: ReleaseApproval): Promise<void> {
     const notification = {
       title: `Release Approval Required: ${approval.version}`,
-      body: `Please review the ${approval.releaseType} release of Nand2Fun v${approval.version}`,
+      body: `Please review the ${approval.releaseType} release of HACER v${approval.version}`,
       actionUrl: `/admin/releases/${approval.id}`,
       priority: approval.releaseType === 'major' ? 'high' : 'normal',
     };
@@ -1730,19 +1730,19 @@ export class ReleaseApprovalWorkflow {
 
   // Placeholder methods (would be implemented with actual user/team data)
   private async getMaintainers(): Promise<Reviewer[]> {
-    return [{ id: 'maintainer1', name: 'John Doe', email: 'john@nand2fun.com', role: 'maintainer' }];
+    return [{ id: 'maintainer1', name: 'John Doe', email: 'john@hacer.com', role: 'maintainer' }];
   }
 
   private async getQAReviewers(): Promise<Reviewer[]> {
-    return [{ id: 'qa1', name: 'Jane Smith', email: 'jane@nand2fun.com', role: 'qa' }];
+    return [{ id: 'qa1', name: 'Jane Smith', email: 'jane@hacer.com', role: 'qa' }];
   }
 
   private async getProductReviewers(): Promise<Reviewer[]> {
-    return [{ id: 'product1', name: 'Bob Johnson', email: 'bob@nand2fun.com', role: 'product' }];
+    return [{ id: 'product1', name: 'Bob Johnson', email: 'bob@hacer.com', role: 'product' }];
   }
 
   private async getSecurityReviewers(): Promise<Reviewer[]> {
-    return [{ id: 'security1', name: 'Alice Brown', email: 'alice@nand2fun.com', role: 'security' }];
+    return [{ id: 'security1', name: 'Alice Brown', email: 'alice@hacer.com', role: 'security' }];
   }
 
   private async sendNotification(reviewer: Reviewer, notification: any): Promise<void> {

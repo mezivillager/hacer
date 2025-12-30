@@ -9,7 +9,7 @@
 
 ## Overview
 
-This phase optimizes Nand2Fun for mobile devices and touch interactions, ensuring the circuit design experience works seamlessly on phones and tablets. It implements touch gestures, responsive layouts, and mobile-specific optimizations while maintaining full functionality.
+This phase optimizes HACER for mobile devices and touch interactions, ensuring the circuit design experience works seamlessly on phones and tablets. It implements touch gestures, responsive layouts, and mobile-specific optimizations while maintaining full functionality.
 
 **Exit Criteria:**
 - Circuit design fully functional on mobile devices

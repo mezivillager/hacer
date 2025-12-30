@@ -1,4 +1,4 @@
-# Nand2Fun Repository Map
+# HACER Repository Map
 
 This document helps AI agents and developers understand the codebase structure and navigate the repository effectively across all development phases.
 
@@ -177,7 +177,7 @@ src/
 ### Monorepo Structure (Phase 12+)
 
 ```
-nand2fun/
+hacer/
 ├── apps/
 │   ├── web/                 # Frontend React app
 │   │   └── src/            # (current src/ structure)
@@ -442,7 +442,7 @@ See [Implementation Guide](implementation.md#technology-stack-evolution) for det
 ## Related Documentation
 
 - [`.cursorrules`](../.cursorrules) - **Start here!** Project rules, phase tracking, and quick reference
-- [`NAND2FUN_LLM_GUIDE.md`](../NAND2FUN_LLM_GUIDE.md) - Detailed development patterns, examples, and best practices
+- [`HACER_LLM_GUIDE.md`](../HACER_LLM_GUIDE.md) - Detailed development patterns, examples, and best practices
 - [`docs/testing/`](./docs/testing/) - Testing standards, TDD workflow, templates
 - [`docs/typescript-guidelines.md`](./docs/typescript-guidelines.md) - TypeScript best practices
 - [`docs/roadmap/`](./docs/roadmap/README.md) - Project roadmap and phases
@@ -452,7 +452,7 @@ See [Implementation Guide](implementation.md#technology-stack-evolution) for det
 
 This document focuses on **repository structure and file organization**. For:
 - **Quick rules & phase status**: See [`.cursorrules`](./.cursorrules)
-- **Detailed patterns & examples**: See [`NAND2FUN_LLM_GUIDE.md`](./NAND2FUN_LLM_GUIDE.md)
+- **Detailed patterns & examples**: See [`HACER_LLM_GUIDE.md`](./HACER_LLM_GUIDE.md)
 - **Testing standards & TDD**: See [`docs/testing/`](./docs/testing/)
 - **TypeScript guidelines**: See [`docs/typescript-guidelines.md`](./docs/typescript-guidelines.md)
 - **Where files go**: This document

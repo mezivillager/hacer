@@ -1,4 +1,4 @@
-# Nand2Fun: Vision & Architecture
+# HACER: Vision & Architecture
 
 **Part of:** [Comprehensive Development Roadmap](../README.md)  
 **Focus:** Vision Statement, Architecture Principles, and Technical Architecture
@@ -7,7 +7,7 @@
 
 ## Vision Statement
 
-Nand2Fun will enable users and AI agents to:
+HACER will enable users and AI agents to:
 
 ### Core Capabilities
 - **Build complete computers from NAND gates** - Follow the nand2tetris curriculum to construct a working computer from first principles
@@ -83,7 +83,7 @@ NAND GATE → BASIC GATES → SEQUENTIAL LOGIC → COMPUTER ARCHITECTURE → SOF
 - **File Format Support:** Native .hack, .vm file handling
 
 ### Software Stack Expansion
-Beyond hardware, Nand2Fun must support the complete software stack with both built-in implementations and user-extensible APIs:
+Beyond hardware, HACER must support the complete software stack with both built-in implementations and user-extensible APIs:
 
 - **Assembler API:** Custom instruction sets and assembly languages
 - **VM API:** Alternative execution models and stack architectures
@@ -110,7 +110,7 @@ Beyond hardware, Nand2Fun must support the complete software stack with both bui
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    NAND2FUN ARCHITECTURE PRINCIPLES                 │
+│                    HACER ARCHITECTURE PRINCIPLES                 │
 ├─────────────────────────────────────────────────────────────────────┤
 │                                                                     │
 │  1. CORE INDEPENDENCE                                               │
@@ -213,7 +213,7 @@ Essential for testing and debugging:
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                              NAND2FUN ARCHITECTURE                           │
+│                              HACER ARCHITECTURE                           │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │  ┌─────────────────────────────────────────────────────────────────────┐    │

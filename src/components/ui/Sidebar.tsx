@@ -46,7 +46,7 @@ export function Sidebar() {
       <div className="sider-content">
         <div className="sider-header">
           <Title level={4} style={styles.title}>
-            🔌 Nand2Fun
+            🔌 HACER
           </Title>
           <Text type="secondary">Logic Gate Simulator</Text>
         </div>

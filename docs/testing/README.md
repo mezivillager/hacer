@@ -1,6 +1,6 @@
 # Testing Documentation
 
-This folder contains all testing-related documentation for the Nand2Fun project.
+This folder contains all testing-related documentation for the HACER project.
 
 ## Quick Links
 

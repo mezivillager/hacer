@@ -24,7 +24,7 @@ describe('Sidebar', () => {
 
   it('renders sidebar with title', () => {
     render(<Sidebar />)
-    expect(screen.getByText('🔌 Nand2Fun')).toBeInTheDocument()
+    expect(screen.getByText('🔌 HACER')).toBeInTheDocument()
     expect(screen.getByText('Logic Gate Simulator')).toBeInTheDocument()
   })
 

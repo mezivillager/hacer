@@ -9,7 +9,7 @@
 
 ## Overview
 
-This **foundation phase** establishes Nand2Fun's design system as the visual and interaction foundation for all development. It replaces ad-hoc component styling with a consistent, scalable visual foundation that enables AI-assisted design workflows and ensures all UI components follow unified design principles from the earliest development stages.
+This **foundation phase** establishes HACER's design system as the visual and interaction foundation for all development. It replaces ad-hoc component styling with a consistent, scalable visual foundation that enables AI-assisted design workflows and ensures all UI components follow unified design principles from the earliest development stages.
 
 **Exit Criteria:**
 - Complete design system foundation with tokens, components, and patterns established
@@ -247,7 +247,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   const setTheme = (newTheme: Theme) => {
     setThemeState(newTheme);
-    localStorage.setItem('nand2fun-theme', newTheme);
+    localStorage.setItem('hacer-theme', newTheme);
 
     // Update resolved theme
     updateResolvedTheme(newTheme);
@@ -270,7 +270,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     // Load saved theme
-    const savedTheme = localStorage.getItem('nand2fun-theme') as Theme;
+    const savedTheme = localStorage.getItem('hacer-theme') as Theme;
     if (savedTheme) {
       setThemeState(savedTheme);
       updateResolvedTheme(savedTheme);
@@ -613,7 +613,7 @@ ${component.description}
 ## Usage
 
 \`\`\`tsx
-import { ${componentName} } from '@nand2fun/design-system';
+import { ${componentName} } from '@hacer/design-system';
 
 function MyComponent() {
   return <${componentName} variant="primary">Click me</${componentName}>;
@@ -667,7 +667,7 @@ ${this.generateColorPalette(theme.colors)}
 
 #### Usage
 \`\`\`tsx
-import { ThemeProvider, useTheme } from '@nand2fun/design-system';
+import { ThemeProvider, useTheme } from '@hacer/design-system';
 
 function App() {
   return (

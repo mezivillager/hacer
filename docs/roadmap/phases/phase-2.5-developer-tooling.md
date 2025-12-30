@@ -68,9 +68,9 @@ const config: StorybookConfig = {
       // Custom Vite config for Storybook
       optimizeDeps: {
         include: [
-          '@nand2fun/core',
-          '@nand2fun/design-system',
-          '@nand2fun/hooks',
+          '@hacer/core',
+          '@hacer/design-system',
+          '@hacer/hooks',
         ],
       },
       define: {

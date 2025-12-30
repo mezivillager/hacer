@@ -10,10 +10,10 @@
 
 ## Overview
 
-This phase establishes Nand2Fun's public presence with a professional website and comprehensive documentation platform. The website serves as the primary marketing and onboarding hub, while the integrated documentation system provides guides, tutorials, API references, and interactive examples. Both grow alongside the application development and are accessible from the main app.
+This phase establishes HACER's public presence with a professional website and comprehensive documentation platform. The website serves as the primary marketing and onboarding hub, while the integrated documentation system provides guides, tutorials, API references, and interactive examples. Both grow alongside the application development and are accessible from the main app.
 
 **Exit Criteria:**
-- Professional public website deployed and accessible at nand2fun.com
+- Professional public website deployed and accessible at hacer.com
 - Complete documentation system with guides, tutorials, and API references
 - Integrated navigation between website, docs, and application
 - SEO optimized with Lighthouse scores >90
@@ -24,14 +24,14 @@ This phase establishes Nand2Fun's public presence with a professional website an
 
 ## 19.1 Public Website Architecture
 
-**Requirements:** Modern, professional website that converts visitors to users while effectively communicating Nand2Fun's educational value proposition.
+**Requirements:** Modern, professional website that converts visitors to users while effectively communicating HACER's educational value proposition.
 
 ### Next.js 15 Website Implementation
 
 ```typescript
 // apps/website/package.json
 {
-  "name": "@nand2fun/website",
+  "name": "@hacer/website",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -47,8 +47,8 @@ This phase establishes Nand2Fun's public presence with a professional website an
     "next": "15.0.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",
-    "@nand2fun/ui": "workspace:*",
-    "@nand2fun/docs": "workspace:*",
+    "@hacer/ui": "workspace:*",
+    "@hacer/docs": "workspace:*",
     "framer-motion": "^11.0.0",
     "lucide-react": "^0.344.0",
     "clsx": "^2.1.0",
@@ -101,7 +101,7 @@ const nextConfig = {
     },
   },
   images: {
-    domains: ['avatars.githubusercontent.com', 'nand2fun.com'],
+    domains: ['avatars.githubusercontent.com', 'hacer.com'],
     formats: ['image/webp', 'image/avif'],
     minimumCacheTTL: 31536000, // 1 year
   },
@@ -290,7 +290,7 @@ export function Header({ variant }: HeaderProps) {
             <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-lg">N</span>
             </div>
-            <span className="font-bold text-xl">Nand2Fun</span>
+            <span className="font-bold text-xl">HACER</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -316,12 +316,12 @@ export function Header({ variant }: HeaderProps) {
             {/* Social Links */}
             <div className="hidden sm:flex items-center space-x-2">
               <Button variant="ghost" size="sm" asChild>
-                <a href="https://github.com/nand2fun/nand2fun" target="_blank" rel="noopener noreferrer">
+                <a href="https://github.com/hacer/hacer" target="_blank" rel="noopener noreferrer">
                   <Github className="h-4 w-4" />
                 </a>
               </Button>
               <Button variant="ghost" size="sm" asChild>
-                <a href="https://discord.gg/nand2fun" target="_blank" rel="noopener noreferrer">
+                <a href="https://discord.gg/hacer" target="_blank" rel="noopener noreferrer">
                   <Discord className="h-4 w-4" />
                 </a>
               </Button>
@@ -370,12 +370,12 @@ export function Header({ variant }: HeaderProps) {
                 {/* Mobile Social Links */}
                 <div className="flex space-x-2 px-3 py-2">
                   <Button variant="ghost" size="sm" asChild>
-                    <a href="https://github.com/nand2fun/nand2fun" target="_blank" rel="noopener noreferrer">
+                    <a href="https://github.com/hacer/hacer" target="_blank" rel="noopener noreferrer">
                       <Github className="h-4 w-4" />
                     </a>
                   </Button>
                   <Button variant="ghost" size="sm" asChild>
-                    <a href="https://discord.gg/nand2fun" target="_blank" rel="noopener noreferrer">
+                    <a href="https://discord.gg/hacer" target="_blank" rel="noopener noreferrer">
                       <Discord className="h-4 w-4" />
                     </a>
                   </Button>
@@ -582,7 +582,7 @@ export function FeaturesSection() {
             Everything You Need to Build Computers
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Nand2Fun provides the complete toolkit for learning computer science through hands-on building.
+            HACER provides the complete toolkit for learning computer science through hands-on building.
           </p>
         </motion.div>
 
@@ -657,7 +657,7 @@ export function FeaturesSection() {
           </p>
           <Button size="lg" asChild>
             <Link href="/app">
-              Launch Nand2Fun
+              Launch HACER
             </Link>
           </Button>
         </motion.div>
@@ -671,14 +671,14 @@ export function FeaturesSection() {
 
 ## 19.2 Integrated Documentation System
 
-**Requirements:** Comprehensive documentation that serves both developers building on Nand2Fun and learners using the platform, with seamless integration between website and docs.
+**Requirements:** Comprehensive documentation that serves both developers building on HACER and learners using the platform, with seamless integration between website and docs.
 
 ### Nextra Documentation Setup
 
 ```typescript
 // packages/docs/package.json
 {
-  "name": "@nand2fun/docs",
+  "name": "@hacer/docs",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -698,7 +698,7 @@ export function FeaturesSection() {
     "react-dom": "19.0.0",
     "nextra": "^3.0.0",
     "nextra-theme-docs": "^3.0.0",
-    "@nand2fun/ui": "workspace:*",
+    "@hacer/ui": "workspace:*",
     "react-markdown": "^9.0.0",
     "remark-gfm": "^4.0.0",
     "remark-validate-links": "^13.0.0",
@@ -728,14 +728,14 @@ import { ThemeToggle } from './components/ThemeToggle';
 const config: DocsThemeConfig = {
   logo: <Logo />,
   project: {
-    link: 'https://github.com/nand2fun/nand2fun',
+    link: 'https://github.com/hacer/hacer',
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
         <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
       </svg>
     ),
   },
-  docsRepositoryBase: 'https://github.com/nand2fun/nand2fun/blob/main/docs',
+  docsRepositoryBase: 'https://github.com/hacer/hacer/blob/main/docs',
   footer: {
     component: Footer,
   },
@@ -780,7 +780,7 @@ const config: DocsThemeConfig = {
   head: (
     <>
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <meta name="description" content="Comprehensive documentation for Nand2Fun - Build computers from first principles" />
+      <meta name="description" content="Comprehensive documentation for HACER - Build computers from first principles" />
       <meta name="keywords" content="documentation, nand2tetris, circuit design, computer science, API, guides, tutorials" />
       <link rel="icon" href="/favicon.ico" />
       <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
@@ -788,18 +788,18 @@ const config: DocsThemeConfig = {
     </>
   ),
   useNextSeoProps: () => ({
-    titleTemplate: '%s – Nand2Fun Documentation',
+    titleTemplate: '%s – HACER Documentation',
     openGraph: {
       type: 'website',
       locale: 'en_US',
-      url: 'https://nand2fun.com/docs',
-      siteName: 'Nand2Fun Documentation',
+      url: 'https://hacer.com/docs',
+      siteName: 'HACER Documentation',
       images: [
         {
-          url: 'https://nand2fun.com/og-docs.png',
+          url: 'https://hacer.com/og-docs.png',
           width: 1200,
           height: 630,
-          alt: 'Nand2Fun Documentation',
+          alt: 'HACER Documentation',
         },
       ],
     },
@@ -807,7 +807,7 @@ const config: DocsThemeConfig = {
   banner: {
     key: 'beta-banner',
     text: (
-      <a href="https://github.com/nand2fun/nand2fun/discussions" target="_blank" rel="noopener noreferrer">
+      <a href="https://github.com/hacer/hacer/discussions" target="_blank" rel="noopener noreferrer">
         💬 Help us improve our documentation →
       </a>
     ),
@@ -912,7 +912,7 @@ docs/
 
 import { useState, useEffect } from 'react';
 import { Sandpack } from '@codesandbox/sandpack-react';
-import { Button } from '@nand2fun/ui';
+import { Button } from '@hacer/ui';
 import { Play, Copy, Check } from 'lucide-react';
 import { useToast } from '@/hooks/useToast';
 
@@ -957,8 +957,8 @@ export function InteractiveExample({
   };
 
   const defaultDependencies = {
-    '@nand2fun/core': 'latest',
-    '@nand2fun/ui': 'latest',
+    '@hacer/core': 'latest',
+    '@hacer/ui': 'latest',
     'react': '^18.0.0',
     'react-dom': '^18.0.0',
   };

@@ -1,8 +1,8 @@
-# Nand2Fun: Comprehensive Development Roadmap
+# HACER: Comprehensive Development Roadmap
 
 **Document Version:** 4.0 - Enhanced Order, Scalability & Best Practices
 **Date:** December 13, 2025
-**Project:** Nand2Fun - Complete First-Principles Computing Platform
+**Project:** HACER - Complete First-Principles Computing Platform
 **Inspiration:** nand2tetris + Beyond (NAND → Silicon → Software Stack)
 
 ---
@@ -13,7 +13,7 @@ This enhanced roadmap addresses critical gaps in the original document by establ
 
 ### Vision Statement
 
-Nand2Fun will enable users and AI agents to:
+HACER will enable users and AI agents to:
 - Build complete computers from NAND gates (nand2tetris curriculum)
 - Design custom hardware architectures beyond nand2tetris
 - Develop software that runs on custom hardware
@@ -35,7 +35,7 @@ NAND GATE → BASIC GATES → SEQUENTIAL LOGIC → COMPUTER ARCHITECTURE → SOF
 
 **Nand2Tetris Compatibility:** Critical gaps identified that prevent curriculum completion - these must be addressed as **Phase 0.5** before core architecture work.
 
-**Software Stack Expansion:** Beyond hardware, Nand2Fun must support the complete software stack (Assembler → VM → Compiler → High-Level Language) with both built-in implementations and user-extensible APIs.
+**Software Stack Expansion:** Beyond hardware, HACER must support the complete software stack (Assembler → VM → Compiler → High-Level Language) with both built-in implementations and user-extensible APIs.
 
 **Dual Artifact Strategy:**
 - **Built-in Artifacts:** Official nand2tetris implementations available as references
@@ -45,7 +45,7 @@ NAND GATE → BASIC GATES → SEQUENTIAL LOGIC → COMPUTER ARCHITECTURE → SOF
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    NAND2FUN ARCHITECTURE PRINCIPLES                 │
+│                    HACER ARCHITECTURE PRINCIPLES                 │
 ├─────────────────────────────────────────────────────────────────────┤
 │                                                                     │
 │  1. CORE INDEPENDENCE                                               │
@@ -82,7 +82,7 @@ NAND GATE → BASIC GATES → SEQUENTIAL LOGIC → COMPUTER ARCHITECTURE → SOF
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                              NAND2FUN ARCHITECTURE                           │
+│                              HACER ARCHITECTURE                           │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │  ┌─────────────────────────────────────────────────────────────────────┐    │

@@ -9,7 +9,7 @@
 
 ## Overview
 
-This phase implements comprehensive accessibility (WCAG 2.1 AA compliance) and internationalization support, expanding Nand2Fun's reach to global users with disabilities. It transforms the platform from English-only to supporting multiple languages while ensuring all interactive elements are fully accessible.
+This phase implements comprehensive accessibility (WCAG 2.1 AA compliance) and internationalization support, expanding HACER's reach to global users with disabilities. It transforms the platform from English-only to supporting multiple languages while ensuring all interactive elements are fully accessible.
 
 **Exit Criteria:**
 - WCAG 2.1 AA compliance achieved with automated testing
@@ -579,7 +579,7 @@ i18n
     // Language detection
     detection: {
       order: ['localStorage', 'navigator', 'htmlTag'],
-      lookupLocalStorage: 'nand2fun-language',
+      lookupLocalStorage: 'hacer-language',
       caches: ['localStorage'],
     },
 
@@ -609,7 +609,7 @@ export function useTranslation(namespace?: string) {
   const changeLanguage = useCallback(async (language: string) => {
     try {
       await i18n.changeLanguage(language);
-      localStorage.setItem('nand2fun-language', language);
+      localStorage.setItem('hacer-language', language);
 
       // Announce language change for screen readers
       const announcement = document.createElement('div');

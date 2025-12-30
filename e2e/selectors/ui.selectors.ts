@@ -6,7 +6,7 @@
  */
 
 export const UI_SELECTORS = {
-  appTitle: 'text=Nand2Fun',
+  appTitle: 'text=HACER',
   canvas: 'canvas',
 
   buttons: {

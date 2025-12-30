@@ -9,7 +9,7 @@
 
 ## Overview
 
-This phase adds multi-user collaboration, cloud persistence, and offline-first architecture to transform Nand2Fun into a production platform. It implements real-time collaboration with operational transforms and comprehensive user management.
+This phase adds multi-user collaboration, cloud persistence, and offline-first architecture to transform HACER into a production platform. It implements real-time collaboration with operational transforms and comprehensive user management.
 
 **Exit Criteria:**
 - Multi-user real-time collaboration functional

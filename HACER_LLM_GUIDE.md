@@ -1,4 +1,4 @@
-# Nand2Fun Development Guide
+# HACER Development Guide
 
 **PURPOSE**: Ensure AI-generated code doesn't break existing functionality as the codebase scales.  
 **SCOPE**: React Three Fiber 3D components, Zustand state, Ant Design UI, testing patterns.  

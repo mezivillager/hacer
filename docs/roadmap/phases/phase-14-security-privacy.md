@@ -65,7 +65,7 @@ export class CSPManager {
       "data:",
       "blob:",
       "https://avatars.githubusercontent.com",
-      "https://*.nand2fun.com",
+      "https://*.hacer.com",
     ],
     'font-src': [
       "'self'",
@@ -73,15 +73,15 @@ export class CSPManager {
     ],
     'connect-src': [
       "'self'",
-      "https://api.nand2fun.com",
+      "https://api.hacer.com",
       "https://*.sentry.io",
       "https://*.google-analytics.com",
-      "wss://api.nand2fun.com",
+      "wss://api.hacer.com",
     ],
     'media-src': [
       "'self'",
       "blob:",
-      "https://*.nand2fun.com",
+      "https://*.hacer.com",
     ],
     'object-src': ["'none'"],
     'frame-src': ["'none'"], // No iframes allowed
@@ -225,7 +225,7 @@ test.describe('Content Security Policy E2E', () => {
     // Check that legitimate scripts execute
     const result = await page.evaluate(() => {
       // This should work with proper nonce
-      return window.nand2fun?.version;
+      return window.hacer?.version;
     });
 
     expect(result).toBeTruthy();
@@ -539,10 +539,10 @@ jobs:
 // src/privacy/data-controller.ts
 export class DataController {
   private static readonly STORAGE_KEYS = {
-    USER_PREFERENCES: 'nand2fun_user_prefs',
-    ANALYTICS_CONSENT: 'nand2fun_analytics_consent',
-    CIRCUIT_DATA: 'nand2fun_circuits',
-    USER_ID: 'nand2fun_user_id',
+    USER_PREFERENCES: 'hacer_user_prefs',
+    ANALYTICS_CONSENT: 'hacer_analytics_consent',
+    CIRCUIT_DATA: 'hacer_circuits',
+    USER_ID: 'hacer_user_id',
   };
 
   // Data minimization - only collect what's necessary
@@ -741,7 +741,7 @@ export class DataController {
   private static async clearIndexedDB(): Promise<void> {
     const databases = await indexedDB.databases?.() || [];
     for (const db of databases) {
-      if (db.name?.includes('nand2fun')) {
+      if (db.name?.includes('hacer')) {
         indexedDB.deleteDatabase(db.name);
       }
     }

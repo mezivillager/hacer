@@ -99,7 +99,7 @@ export default defineConfig(({ mode }) => ({
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
         runtimeCaching: [
           {
-            urlPattern: /^https:\/\/api\.nand2fun\.com\/.*/i,
+            urlPattern: /^https:\/\/api\.hacer\.com\/.*/i,
             handler: 'NetworkFirst',
             options: {
               cacheName: 'api-cache',
@@ -328,7 +328,7 @@ export function initErrorTracking(): void {
       new BrowserTracing({
         tracePropagationTargets: [
           'localhost',
-          /^https:\/\/api\.nand2fun\.com\//,
+          /^https:\/\/api\.hacer\.com\//,
         ],
       }),
       new Sentry.Replay({
@@ -1012,14 +1012,14 @@ jobs:
         if: success()
         run: |
           curl -X POST -H 'Content-type: application/json' \
-            --data '{"text":"🚀 Nand2Fun deployed successfully to ${{ steps.deploy.outputs.url }}"}' \
+            --data '{"text":"🚀 HACER deployed successfully to ${{ steps.deploy.outputs.url }}"}' \
             ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Notify deployment failure
         if: failure()
         run: |
           curl -X POST -H 'Content-type: application/json' \
-            --data '{"text":"❌ Nand2Fun deployment failed"}' \
+            --data '{"text":"❌ HACER deployment failed"}' \
             ${{ secrets.SLACK_WEBHOOK_URL }}
 ```
 

@@ -1,4 +1,4 @@
-# Nand2Fun
+# HACER
 
 A 3D logic gate simulator built with React, inspired by [nand2tetris](https://www.nand2tetris.org/). Build complex circuits from basic logic gates, starting with the humble NAND gate.
 

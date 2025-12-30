@@ -22,7 +22,7 @@ This phase addresses critical documentation and tooling issues that must be reso
 
 ## 0.1 Fix Documentation Truth Debt
 
-**Problem:** `NAND2FUN_LLM_GUIDE.md` references Valtio patterns but the codebase uses Zustand.
+**Problem:** `HACER_LLM_GUIDE.md` references Valtio patterns but the codebase uses Zustand.
 
 | Documentation Says | Actual Codebase |
 |-------------------|-----------------|
@@ -117,7 +117,7 @@ Audit the codebase and remove all manual memoization since React Compiler handle
 ```markdown
 # .cursorrules
 
-## Project: Nand2Fun
+## Project: HACER
 
 ## Stack
 - React 19 with React Compiler (NO manual memoization)
@@ -203,7 +203,7 @@ See `docs/ADDING_GATES.md` for detailed instructions.
 Create `REPO_MAP.md` (at repository root) to help AI agents and developers understand the codebase structure:
 
 ```markdown
-# Nand2Fun Repository Map
+# HACER Repository Map
 
 ## Directory Structure
 
@@ -230,7 +230,7 @@ src/
 
 | Task | Effort | Dependencies | Performance Budget | Exit Criteria |
 |------|--------|--------------|-------------------|---------------|
-| Fix NAND2FUN_LLM_GUIDE.md | 2h | - | - | All Valtio references removed |
+| Fix HACER_LLM_GUIDE.md | 2h | - | - | All Valtio references removed |
 | Install eslint-plugin-react-compiler | 30m | - | <100ms lint time | ESLint passes without manual memoization |
 | Remove manual memoization | 2h | ESLint plugin | - | No manual useMemo/useCallback/React.memo |
 | Create .cursorrules | 1h | - | - | File exists and is active |

@@ -9,7 +9,7 @@
 
 ## Overview
 
-This phase enhances the multi-user collaboration system with advanced features like voice/video communication, team workspaces, advanced conflict resolution, and real-time collaboration analytics. It transforms Nand2Fun from a solo design tool into a powerful collaborative platform for circuit development teams.
+This phase enhances the multi-user collaboration system with advanced features like voice/video communication, team workspaces, advanced conflict resolution, and real-time collaboration analytics. It transforms HACER from a solo design tool into a powerful collaborative platform for circuit development teams.
 
 **Exit Criteria:**
 - Real-time voice/video collaboration functional

@@ -10,7 +10,7 @@
 
 ## Overview
 
-This phase implements a comprehensive authentication and identity management system for Nand2Fun. After thorough research and evaluation of available solutions, Better Auth was selected as the primary authentication provider due to its balance of features, cost, and maintenance requirements. The implementation includes social login, multi-factor authentication, enterprise features, and seamless integration with the existing application architecture.
+This phase implements a comprehensive authentication and identity management system for HACER. After thorough research and evaluation of available solutions, Better Auth was selected as the primary authentication provider due to its balance of features, cost, and maintenance requirements. The implementation includes social login, multi-factor authentication, enterprise features, and seamless integration with the existing application architecture.
 
 **Exit Criteria:**
 - Secure authentication system with social login (GitHub, Google, Discord)
@@ -23,7 +23,7 @@ This phase implements a comprehensive authentication and identity management sys
 
 ## 22.1 Authentication Research & Solution Selection
 
-**Requirements:** Evaluate authentication solutions to find the optimal balance of features, cost, maintenance, and scalability for Nand2Fun's needs.
+**Requirements:** Evaluate authentication solutions to find the optimal balance of features, cost, maintenance, and scalability for HACER's needs.
 
 ### Authentication Solution Comparison
 
@@ -273,7 +273,7 @@ export const auth = betterAuth({
 
     // TOTP (Time-based One-Time Password)
     totp: {
-      issuer: 'Nand2Fun',
+      issuer: 'HACER',
       // Custom QR code generation
       generateQRCode: async (uri) => {
         // Generate QR code for TOTP setup
@@ -335,7 +335,7 @@ export const auth = betterAuth({
 
     // Session cookie configuration
     sessionCookie: {
-      name: 'nand2fun-session',
+      name: 'hacer-session',
       maxAge: 60 * 60 * 24 * 7, // 7 days
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -375,11 +375,11 @@ export const auth = betterAuth({
     // Cross-subdomain cookie support
     crossSubDomainCookies: {
       enabled: true,
-      domain: process.env.NODE_ENV === 'production' ? '.nand2fun.com' : undefined,
+      domain: process.env.NODE_ENV === 'production' ? '.hacer.com' : undefined,
     },
 
     // Custom cookie prefix
-    cookiePrefix: 'nand2fun',
+    cookiePrefix: 'hacer',
 
     // Custom cookie options
     defaultCookieOptions: {
@@ -645,7 +645,7 @@ export function SignInForm() {
     <div className="w-full max-w-md space-y-6">
           <div className="text-center">
         <h1 className="text-2xl font-bold">Welcome back</h1>
-        <p className="text-muted-foreground">Sign in to your Nand2Fun account</p>
+        <p className="text-muted-foreground">Sign in to your HACER account</p>
           </div>
 
       {error && (
@@ -1092,7 +1092,7 @@ export function MFASetup({ user, onComplete }: MFASetupProps) {
 ```typescript
 // apps/api/src/routes/auth.ts
 import { Router } from 'express';
-import { auth } from '@nand2fun/auth';
+import { auth } from '@hacer/auth';
 import { rateLimit } from 'express-rate-limit';
 
 const router = Router();

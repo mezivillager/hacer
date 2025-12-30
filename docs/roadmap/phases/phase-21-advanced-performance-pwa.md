@@ -9,7 +9,7 @@
 
 ## Overview
 
-This phase transforms Nand2Fun into a Progressive Web App (PWA) with advanced performance optimizations, offline functionality, and service worker caching. It achieves sub-second loading times and enables the application to work offline for extended periods.
+This phase transforms HACER into a Progressive Web App (PWA) with advanced performance optimizations, offline functionality, and service worker caching. It achieves sub-second loading times and enables the application to work offline for extended periods.
 
 **Exit Criteria:**
 - Progressive Web App fully installable and functional
@@ -29,8 +29,8 @@ This phase transforms Nand2Fun into a Progressive Web App (PWA) with advanced pe
 ```typescript
 // public/manifest.json
 {
-  "name": "Nand2Fun - Digital Circuit Design",
-  "short_name": "Nand2Fun",
+  "name": "HACER - Digital Circuit Design",
+  "short_name": "HACER",
   "description": "Build complete computers from NAND gates - Learn computer science through interactive circuit design",
   "start_url": "/",
   "scope": "/",
@@ -130,7 +130,7 @@ This phase transforms Nand2Fun into a Progressive Web App (PWA) with advanced pe
   "related_applications": [
     {
       "platform": "webapp",
-      "url": "https://nand2fun.com/manifest.json"
+      "url": "https://hacer.com/manifest.json"
     }
   ],
 
@@ -143,10 +143,10 @@ This phase transforms Nand2Fun into a Progressive Web App (PWA) with advanced pe
 ```typescript
 // public/sw.js
 const CACHE_VERSION = 'v2.1.0';
-const STATIC_CACHE = `nand2fun-static-${CACHE_VERSION}`;
-const DYNAMIC_CACHE = `nand2fun-dynamic-${CACHE_VERSION}`;
-const API_CACHE = `nand2fun-api-${CACHE_VERSION}`;
-const CIRCUIT_CACHE = `nand2fun-circuits-${CACHE_VERSION}`;
+const STATIC_CACHE = `hacer-static-${CACHE_VERSION}`;
+const DYNAMIC_CACHE = `hacer-dynamic-${CACHE_VERSION}`;
+const API_CACHE = `hacer-api-${CACHE_VERSION}`;
+const CIRCUIT_CACHE = `hacer-circuits-${CACHE_VERSION}`;
 
 // Critical resources that must be cached immediately
 const CRITICAL_RESOURCES = [
@@ -360,7 +360,7 @@ self.addEventListener('sync', (event) => {
 });
 
 async function queueForSync(request) {
-  const db = await openIndexedDB('nand2fun-sync', 1);
+  const db = await openIndexedDB('hacer-sync', 1);
   const store = db.transaction('requests', 'readwrite').objectStore('requests');
 
   await store.add({
@@ -373,7 +373,7 @@ async function queueForSync(request) {
 }
 
 async function processQueuedRequests() {
-  const db = await openIndexedDB('nand2fun-sync', 1);
+  const db = await openIndexedDB('hacer-sync', 1);
   const store = db.transaction('requests', 'readonly').objectStore('requests');
   const requests = await store.getAll();
 
@@ -547,7 +547,7 @@ export function PWAInstallPrompt() {
 
       {isInstallable && (
         <div className="install-banner">
-          <p>Install Nand2Fun for the best experience!</p>
+          <p>Install HACER for the best experience!</p>
           <button onClick={install}>Install</button>
         </div>
       )}
@@ -852,7 +852,7 @@ class ResourceOptimizer {
     <link rel="preload" href="/static/js/bundle.js" as="script" crossorigin>
     <link rel="preload" href="/static/css/main.css" as="style">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="dns-prefetch" href="//api.nand2fun.com">
+    <link rel="dns-prefetch" href="//api.hacer.com">
     `;
 
     // Insert before closing head tag
