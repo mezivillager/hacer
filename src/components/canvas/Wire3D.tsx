@@ -62,9 +62,10 @@ export function Wire3D({
   /**
    * Generate points along a semi-circular arc.
    * Arc starts and ends at WIRE_HEIGHT, peaks at HOP_HEIGHT in the middle.
+   * Uses proper parametric equations for a perfect semi-circle.
    */
   const generateArcPoints = (segment: WireSegment): Array<[number, number, number]> => {
-    if (segment.type !== 'arc' || !segment.arcCenter) {
+    if (segment.type !== 'arc' || !segment.arcCenter || segment.arcRadius === undefined) {
       // Fallback to straight line if arc metadata missing
       return [
         [segment.start.x, segment.start.y, segment.start.z],
@@ -73,35 +74,41 @@ export function Wire3D({
     }
 
     const center = segment.arcCenter
+    const radius = segment.arcRadius
     const points: Array<[number, number, number]> = []
 
     // Determine arc orientation from start/end points
     const isHorizontal = Math.abs(segment.start.z - segment.end.z) < 0.001
 
     // Generate points along the semi-circle using parametric equations
-    // For a semi-circle that curves upward, we vary the parameter t from 0 to π
+    // For a perfect semi-circle, we use parametric equations where:
+    // - t goes from 0 to π (semi-circle)
+    // - x/z follows a circular path: center ± radius * cos(π - t)
+    // - y follows a sinusoidal path: WIRE_HEIGHT + (HOP_HEIGHT - WIRE_HEIGHT) * sin(t)
     const numPoints = 30 // Number of points for smooth curve
     for (let i = 0; i <= numPoints; i++) {
       const t = (i / numPoints) * Math.PI // t goes from 0 to π
 
-      // Parametric equations for semi-circle:
-      // x or z varies along the arc, y peaks at HOP_HEIGHT in the middle
+      // Parametric equations for perfect semi-circle:
+      // At t=0: x/z = center - radius, y = WIRE_HEIGHT
+      // At t=π/2: x/z = center, y = HOP_HEIGHT (peak)
+      // At t=π: x/z = center + radius, y = WIRE_HEIGHT
       let x: number
       let z: number
       const y = WIRE_HEIGHT + (HOP_HEIGHT - WIRE_HEIGHT) * Math.sin(t)
 
       if (isHorizontal) {
-        // Horizontal arc: x varies, z is constant
-        const startX = segment.start.x
-        const endX = segment.end.x
-        x = startX + (endX - startX) * (i / numPoints)
+        // Horizontal arc: x varies in a circle, z is constant
+        // x(t) = center.x + radius * cos(π - t)
+        // This gives: x(0) = center.x - radius, x(π) = center.x + radius
+        x = center.x + radius * Math.cos(Math.PI - t)
         z = center.z
       } else {
-        // Vertical arc: z varies, x is constant
+        // Vertical arc: z varies in a circle, x is constant
+        // z(t) = center.z + radius * cos(π - t)
+        // This gives: z(0) = center.z - radius, z(π) = center.z + radius
         x = center.x
-        const startZ = segment.start.z
-        const endZ = segment.end.z
-        z = startZ + (endZ - startZ) * (i / numPoints)
+        z = center.z + radius * Math.cos(Math.PI - t)
       }
 
       points.push([x, y, z])

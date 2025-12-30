@@ -3,7 +3,7 @@ import type { GateActions, GateInstance, GateType, Pin, Position, CircuitStore }
 import { snapToGrid } from '@/utils/grid'
 import { useCircuitStore } from '../../circuitStore'
 import { calculateWirePathFromConnection } from '@/utils/wiringScheme'
-import { collectWireSegments } from '@/utils/wiringScheme/segments'
+import { collectWireSegments, combineAdjacentSegments } from '@/utils/wiringScheme/segments'
 import { resolveCrossings } from '@/utils/wiringScheme/crossing'
 
 // Helper to create a gate instance - exported for use in atomic placement actions
@@ -221,8 +221,13 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
           // Continue with unresolved segments - wire will still be updated
         }
 
+        // Combine adjacent segments of the same type after resolving crossings
+        // This ensures segments are properly merged, similar to how extension works
+        // This is important because resolveCrossings may create segments that should be combined
+        const combinedSegments = combineAdjacentSegments(resolvedSegments)
+
         // Update wire segments
-        updateWireSegments(wire.id, resolvedSegments)
+        updateWireSegments(wire.id, combinedSegments)
       } catch (error) {
         // Exception occurred - remove disconnected wire
         message.error('Failed to recalculate wire. Wire has been disconnected.')
