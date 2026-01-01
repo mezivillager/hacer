@@ -7,18 +7,40 @@ describe('uiHandlers', () => {
   })
 
   describe('handleDeleteSelected', () => {
-    it('calls removeGate when gate is selected', () => {
+    it('calls removeWire when wire is selected', () => {
       const removeGate = vi.fn()
-      handleDeleteSelected('gate-1', removeGate)
+      const removeWire = vi.fn()
+      handleDeleteSelected(null, 'wire-1', removeGate, removeWire)
 
-      expect(removeGate).toHaveBeenCalledWith('gate-1')
+      expect(removeWire).toHaveBeenCalledWith('wire-1')
+      expect(removeGate).not.toHaveBeenCalled()
     })
 
-    it('does nothing when no gate is selected', () => {
+    it('calls removeGate when gate is selected and no wire is selected', () => {
       const removeGate = vi.fn()
-      handleDeleteSelected(null, removeGate)
+      const removeWire = vi.fn()
+      handleDeleteSelected('gate-1', null, removeGate, removeWire)
+
+      expect(removeGate).toHaveBeenCalledWith('gate-1')
+      expect(removeWire).not.toHaveBeenCalled()
+    })
+
+    it('prioritizes wire deletion over gate deletion when both are selected', () => {
+      const removeGate = vi.fn()
+      const removeWire = vi.fn()
+      handleDeleteSelected('gate-1', 'wire-1', removeGate, removeWire)
+
+      expect(removeWire).toHaveBeenCalledWith('wire-1')
+      expect(removeGate).not.toHaveBeenCalled()
+    })
+
+    it('does nothing when nothing is selected', () => {
+      const removeGate = vi.fn()
+      const removeWire = vi.fn()
+      handleDeleteSelected(null, null, removeGate, removeWire)
 
       expect(removeGate).not.toHaveBeenCalled()
+      expect(removeWire).not.toHaveBeenCalled()
     })
   })
 

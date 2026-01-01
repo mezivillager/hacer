@@ -24,6 +24,7 @@ describe('gateActions', () => {
       gates: [],
       wires: [],
       selectedGateId: null,
+      selectedWireId: null,
       simulationRunning: false,
       simulationSpeed: 100,
       placementMode: null,
@@ -146,6 +147,116 @@ describe('gateActions', () => {
 
       expect(getState().selectedGateId).toBe(null)
       expect(getState().gates[0].selected).toBe(false)
+    })
+
+    it('deselects wire when selecting gate', () => {
+      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 0 })
+      const wire = getState().addWire(
+        gate1.id, gate1.outputs[0].id,
+        gate2.id, gate2.inputs[0].id,
+        []
+      )
+
+      getState().selectWire(wire.id)
+      expect(getState().selectedWireId).toBe(wire.id)
+
+      getState().selectGate(gate1.id)
+
+      expect(getState().selectedGateId).toBe(gate1.id)
+      expect(getState().selectedWireId).toBe(null)
+    })
+  })
+
+  describe('selectWire', () => {
+    it('selects a wire by id', () => {
+      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 0 })
+      const wire = getState().addWire(
+        gate1.id, gate1.outputs[0].id,
+        gate2.id, gate2.inputs[0].id,
+        []
+      )
+
+      getState().selectWire(wire.id)
+
+      expect(getState().selectedWireId).toBe(wire.id)
+    })
+
+    it('deselects previously selected wire', () => {
+      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 0 })
+      const gate3 = getState().addGate('NAND', { x: 4, y: 0, z: 0 })
+      const wire1 = getState().addWire(
+        gate1.id, gate1.outputs[0].id,
+        gate2.id, gate2.inputs[0].id,
+        []
+      )
+      const wire2 = getState().addWire(
+        gate2.id, gate2.outputs[0].id,
+        gate3.id, gate3.inputs[0].id,
+        []
+      )
+
+      getState().selectWire(wire1.id)
+      getState().selectWire(wire2.id)
+
+      expect(getState().selectedWireId).toBe(wire2.id)
+    })
+
+    it('clears selection when null is passed', () => {
+      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 0 })
+      const wire = getState().addWire(
+        gate1.id, gate1.outputs[0].id,
+        gate2.id, gate2.inputs[0].id,
+        []
+      )
+      getState().selectWire(wire.id)
+
+      getState().selectWire(null)
+
+      expect(getState().selectedWireId).toBe(null)
+    })
+
+    it('deselects gate when selecting wire', () => {
+      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 0 })
+      const wire = getState().addWire(
+        gate1.id, gate1.outputs[0].id,
+        gate2.id, gate2.inputs[0].id,
+        []
+      )
+
+      getState().selectGate(gate1.id)
+      expect(getState().selectedGateId).toBe(gate1.id)
+      expect(getState().gates[0].selected).toBe(true)
+
+      getState().selectWire(wire.id)
+
+      expect(getState().selectedWireId).toBe(wire.id)
+      expect(getState().selectedGateId).toBe(null)
+      expect(getState().gates[0].selected).toBe(false)
+    })
+
+    it('does nothing if selection unchanged', () => {
+      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 0 })
+      const wire = getState().addWire(
+        gate1.id, gate1.outputs[0].id,
+        gate2.id, gate2.inputs[0].id,
+        []
+      )
+
+      getState().selectWire(wire.id)
+      const state1 = getState()
+
+      getState().selectWire(wire.id)
+      const state2 = getState()
+
+      // Should not cause unnecessary re-renders (state reference check would be in Immer)
+      expect(state1.selectedWireId).toBe(wire.id)
+      expect(state2.selectedWireId).toBe(wire.id)
     })
   })
 

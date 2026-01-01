@@ -24,6 +24,7 @@ export function CanvasArea() {
   const wiringFrom = useCircuitStore((s) => s.wiringFrom)
   const placementPreviewPosition = useCircuitStore((s) => s.placementPreviewPosition)
   const isDragActive = useCircuitStore((s) => s.isDragActive)
+  const selectedWireId = useCircuitStore((s) => s.selectedWireId)
   // Note: selectedGateId is read via getState() in isDragInvalid calculation to avoid subscription
 
   // Create a reactive isPinConnected function that will trigger re-renders when wires change
@@ -82,7 +83,7 @@ export function CanvasArea() {
     if (isWiring) {
       return '🔗 Click on another pin to connect • Click empty space or Esc to cancel'
     }
-    return '🖱️ Click pin: Wire • Shift+click input: Toggle • Click body: Select • Drag body: Move • Left/Right arrows: Rotate gate (when selected) or pan view (when none selected) • Delete: Remove gate • Scroll: Zoom'
+    return '🖱️ Click pin: Wire • Shift+click input: Toggle • Click body: Select gate • Click wire: Select wire • Drag body: Move • Left/Right arrows: Rotate gate (when selected) or pan view (when none selected) • Delete: Remove selected gate/wire • Scroll: Zoom'
   })()
 
   // Use stored wire segments - no need to recalculate
@@ -157,6 +158,7 @@ export function CanvasArea() {
               existingWires={[]} // Path already calculated with overlap avoidance
               precomputedPath={path} // Pass pre-calculated path
               isActive={outputValue}
+              isSelected={wire.id === selectedWireId}
             />
           )
         })}

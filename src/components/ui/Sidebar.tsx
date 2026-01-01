@@ -28,12 +28,14 @@ export function Sidebar() {
   // Use selectors for granular subscriptions
   const placementMode = useCircuitStore((s) => s.placementMode)
   const selectedGateId = useCircuitStore((s) => s.selectedGateId)
+  const selectedWireId = useCircuitStore((s) => s.selectedWireId)
   const simulationRunning = useCircuitStore((s) => s.simulationRunning)
   const gatesCount = useCircuitStore((s) => s.gates.length)
   const wiresCount = useCircuitStore((s) => s.wires.length)
 
   // Get actions from store
   const removeGate = useCircuitStore((s) => s.removeGate)
+  const removeWire = useCircuitStore((s) => s.removeWire)
   const clearCircuit = useCircuitStore((s) => s.clearCircuit)
   const toggleSimulation = useCircuitStore((s) => s.toggleSimulation)
   const toggleAxes = useCircuitStore((s) => s.toggleAxes)
@@ -83,11 +85,11 @@ export function Sidebar() {
               <Text type="secondary">Show Axes</Text>
               <Switch checked={showAxes} onChange={toggleAxes} />
             </div>
-            <Tooltip title="Remove the selected gate">
+            <Tooltip title="Remove the selected gate or wire">
               <Button
                 icon={<DeleteOutlined />}
-                onClick={() => handleDeleteSelected(selectedGateId, removeGate)}
-                disabled={!selectedGateId}
+                onClick={() => handleDeleteSelected(selectedGateId, selectedWireId, removeGate, removeWire)}
+                disabled={!selectedGateId && !selectedWireId}
                 block
                 danger
               >

@@ -48,6 +48,7 @@ export interface CircuitState {
   gates: GateInstance[]
   wires: Wire[]
   selectedGateId: string | null
+  selectedWireId: string | null
   simulationRunning: boolean
   simulationSpeed: number // ms per tick
   placementMode: GateType | null
@@ -63,6 +64,7 @@ export interface GateActions {
   addGate: (type: GateType, position: Position) => GateInstance
   removeGate: (gateId: string) => void
   selectGate: (gateId: string | null) => void
+  selectWire: (wireId: string | null) => void
   updateGatePosition: (gateId: string, position: Position) => void
   updateGateRotation: (gateId: string, rotation: Rotation) => void
   rotateGate: (gateId: string, axis: 'x' | 'y' | 'z', angle: number) => void

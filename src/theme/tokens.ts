@@ -34,6 +34,7 @@ export const colors = {
     inactive: '#ff4444',
     preview: '#cd7f32', // Reddish copper (same as default)
     default: '#cd7f32', // Reddish copper color
+    selected: '#4a9eff', // Primary blue (same as gate selection)
   },
 
   // Background colors

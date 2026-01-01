@@ -85,7 +85,29 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
         g.selected = g.id === gateId
       })
       state.selectedGateId = gateId
+      // Deselect wire when selecting gate (mutually exclusive)
+      state.selectedWireId = null
     }, false, 'selectGate')
+  },
+
+  selectWire: (wireId: string | null) => {
+    // Check if selection actually changed before mutating (avoids unnecessary array reference changes)
+    const currentState = useCircuitStore.getState()
+    if (currentState.selectedWireId === wireId) {
+      // Selection hasn't changed - nothing to update
+      return
+    }
+
+    set((state) => {
+      state.selectedWireId = wireId
+      // Deselect gate when selecting wire (mutually exclusive)
+      if (wireId !== null) {
+        state.selectedGateId = null
+        state.gates.forEach((g) => {
+          g.selected = false
+        })
+      }
+    }, false, 'selectWire')
   },
 
   updateGatePosition: (gateId: string, position: Position) => {

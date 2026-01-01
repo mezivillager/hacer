@@ -2,6 +2,7 @@ import { ThreeEvent } from '@react-three/fiber'
 import { useCircuitStore, circuitActions } from '@/store/circuitStore'
 import { snapToGrid, worldToGrid, canPlaceGateAt } from '@/utils/grid'
 import { debounce } from '@/utils/debounce'
+import { handleWireClick } from './wireHandlers'
 
 const {
   updateWirePreviewPosition: updateWirePreviewPositionOriginal,
@@ -95,7 +96,12 @@ export function handleClick(e: ThreeEvent<MouseEvent>): void {
     e.stopPropagation()
     // Don't do anything here - let the drag hook handle it
   } else {
-    selectGateAction(null)
+    // Check for wire click before deselecting gate
+    const wireId = handleWireClick(e)
+    if (!wireId) {
+      // No wire clicked - deselect gate
+      selectGateAction(null)
+    }
   }
 }
 

@@ -17,6 +17,7 @@ interface Wire3DProps {
   color?: string
   isActive?: boolean
   isPreview?: boolean
+  isSelected?: boolean
 }
 
 export function Wire3D({
@@ -31,7 +32,8 @@ export function Wire3D({
   precomputedPath,
   color: _color = colors.gate.wireStub,
   isActive = false,
-  isPreview = false
+  isPreview = false,
+  isSelected = false
 }: Wire3DProps) {
   // Guard against undefined positions
   if (!start || !end) return null
@@ -54,10 +56,12 @@ export function Wire3D({
 
   const pathSegments: WireSegment[] = precomputedPath.segments
 
-  // Wire color - use reddish copper for default and preview (same color)
-  const wireColor = isActive
-    ? colors.wire.active
-    : colors.wire.default // Always use copper for non-active wires (default and preview)
+  // Wire color - use selected color if selected, otherwise use active/inactive based on signal
+  const wireColor = isSelected
+    ? colors.wire.selected
+    : isActive
+      ? colors.wire.active
+      : colors.wire.default // Always use copper for non-active wires (default and preview)
 
   /**
    * Generate points along a semi-circular arc.
@@ -139,7 +143,7 @@ export function Wire3D({
             key={`segment-${index}`}
             points={points}
             color={wireColor}
-            lineWidth={1}
+            lineWidth={isSelected ? 3 : 1}
             transparent
             opacity={isPreview ? 0.7 : 1}
           />

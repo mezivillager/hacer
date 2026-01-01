@@ -6,14 +6,17 @@ export function useKeyboardShortcuts() {
   const placementMode = useCircuitStore((s) => s.placementMode)
   const wiringFrom = useCircuitStore((s) => s.wiringFrom)
   const selectedGateId = useCircuitStore((s) => s.selectedGateId)
+  const selectedWireId = useCircuitStore((s) => s.selectedWireId)
   const placementPreviewPosition = useCircuitStore((s) => s.placementPreviewPosition)
 
   // Get actions from store
   const cancelPlacement = useCircuitStore((s) => s.cancelPlacement)
   const cancelWiring = useCircuitStore((s) => s.cancelWiring)
   const selectGate = useCircuitStore((s) => s.selectGate)
+  const selectWire = useCircuitStore((s) => s.selectWire)
   const rotateGate = useCircuitStore((s) => s.rotateGate)
   const removeGate = useCircuitStore((s) => s.removeGate)
+  const removeWire = useCircuitStore((s) => s.removeWire)
 
   const isPlacing = placementMode !== null
   const isWiring = wiringFrom !== null
@@ -31,29 +34,40 @@ export function useKeyboardShortcuts() {
         return
       }
 
-      // Escape key - deselect
+      // Escape key - deselect gate or wire
       if (e.key === 'Escape') {
-        selectGate(null)
+        if (selectedWireId) {
+          selectWire(null)
+        } else {
+          selectGate(null)
+        }
         return
       }
 
-      // Delete/Backspace key - delete selected gate
+      // Delete/Backspace key - delete selected wire or gate
       if (e.key === 'Delete' || e.key === 'Backspace') {
-        // Only delete if a gate is selected and not during drag
-        if (selectedGateId && !isDragging) {
-          // Check if user is typing in an input field (for future-proofing)
-          const target = e.target as HTMLElement
-          const isInputField =
-            target.tagName === 'INPUT' ||
-            target.tagName === 'TEXTAREA' ||
-            target.isContentEditable
+        // Check if user is typing in an input field (for future-proofing)
+        const target = e.target as HTMLElement
+        const isInputField =
+          target.tagName === 'INPUT' ||
+          target.tagName === 'TEXTAREA' ||
+          target.isContentEditable
 
-          if (!isInputField) {
-            e.preventDefault()
-            removeGate(selectedGateId)
-            // Clear selection after deletion
-            selectGate(null)
-          }
+        if (isInputField) {
+          return
+        }
+
+        // Delete wire if selected, otherwise delete gate if selected
+        if (selectedWireId && !isDragging) {
+          e.preventDefault()
+          removeWire(selectedWireId)
+          // Clear selection after deletion
+          selectWire(null)
+        } else if (selectedGateId && !isDragging) {
+          e.preventDefault()
+          removeGate(selectedGateId)
+          // Clear selection after deletion
+          selectGate(null)
         }
         return
       }
@@ -83,5 +97,5 @@ export function useKeyboardShortcuts() {
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [isPlacing, isWiring, isDragging, selectedGateId, cancelPlacement, cancelWiring, selectGate, rotateGate, removeGate])
+  }, [isPlacing, isWiring, isDragging, selectedGateId, selectedWireId, cancelPlacement, cancelWiring, selectGate, selectWire, rotateGate, removeGate, removeWire])
 }

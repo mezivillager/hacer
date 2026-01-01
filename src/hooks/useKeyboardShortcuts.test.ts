@@ -13,6 +13,7 @@ describe('useKeyboardShortcuts', () => {
       gates: [],
       wires: [],
       selectedGateId: null,
+      selectedWireId: null,
       simulationRunning: false,
       simulationSpeed: 100,
       placementMode: null,
@@ -162,6 +163,112 @@ describe('useKeyboardShortcuts', () => {
 
       expect(getState().gates).toHaveLength(1)
       expect(getState().wires).toHaveLength(0)
+    })
+
+    it('deletes selected wire when Delete key is pressed', () => {
+      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 2 })
+      const wire = getState().addWire(
+        gate1.id,
+        gate1.outputs[0].id,
+        gate2.id,
+        gate2.inputs[0].id,
+        []
+      )
+      getState().selectWire(wire.id)
+
+      renderHook(() => useKeyboardShortcuts())
+
+      const event = new KeyboardEvent('keydown', { key: 'Delete', bubbles: true })
+      const preventDefaultSpy = vi.spyOn(event, 'preventDefault')
+
+      act(() => {
+        window.dispatchEvent(event)
+      })
+
+      expect(getState().wires).toHaveLength(0)
+      expect(getState().selectedWireId).toBeNull()
+      expect(preventDefaultSpy).toHaveBeenCalled()
+    })
+
+    it('deletes selected wire when Backspace key is pressed', () => {
+      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 2 })
+      const wire = getState().addWire(
+        gate1.id,
+        gate1.outputs[0].id,
+        gate2.id,
+        gate2.inputs[0].id,
+        []
+      )
+      getState().selectWire(wire.id)
+
+      renderHook(() => useKeyboardShortcuts())
+
+      const event = new KeyboardEvent('keydown', { key: 'Backspace', bubbles: true })
+      const preventDefaultSpy = vi.spyOn(event, 'preventDefault')
+
+      act(() => {
+        window.dispatchEvent(event)
+      })
+
+      expect(getState().wires).toHaveLength(0)
+      expect(getState().selectedWireId).toBeNull()
+      expect(preventDefaultSpy).toHaveBeenCalled()
+    })
+
+    it('prioritizes wire deletion over gate deletion when both are selected', () => {
+      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 2 })
+      const wire = getState().addWire(
+        gate1.id,
+        gate1.outputs[0].id,
+        gate2.id,
+        gate2.inputs[0].id,
+        []
+      )
+      getState().selectGate(gate1.id)
+      getState().selectWire(wire.id) // This should deselect gate, but test both selected scenario
+
+      // Manually set both (for testing edge case)
+      useCircuitStore.setState({ selectedGateId: gate1.id, selectedWireId: wire.id })
+
+      renderHook(() => useKeyboardShortcuts())
+
+      const event = new KeyboardEvent('keydown', { key: 'Delete', bubbles: true })
+      act(() => {
+        window.dispatchEvent(event)
+      })
+
+      // Wire should be deleted (wire takes precedence)
+      expect(getState().wires).toHaveLength(0)
+      expect(getState().selectedWireId).toBeNull()
+      // Gate should remain
+      expect(getState().gates).toHaveLength(2)
+    })
+  })
+
+  describe('Escape key handling', () => {
+    it('deselects wire when Escape key is pressed with wire selected', () => {
+      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 2 })
+      const wire = getState().addWire(
+        gate1.id,
+        gate1.outputs[0].id,
+        gate2.id,
+        gate2.inputs[0].id,
+        []
+      )
+      getState().selectWire(wire.id)
+
+      renderHook(() => useKeyboardShortcuts())
+
+      const event = new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })
+      act(() => {
+        window.dispatchEvent(event)
+      })
+
+      expect(getState().selectedWireId).toBeNull()
     })
   })
 

@@ -1,13 +1,17 @@
 import type { GateType } from '@/store/types'
 
 /**
- * Handle delete selected gate action
+ * Handle delete selected gate or wire action
  */
 export function handleDeleteSelected(
   selectedGateId: string | null,
-  removeGate: (gateId: string) => void
+  selectedWireId: string | null,
+  removeGate: (gateId: string) => void,
+  removeWire: (wireId: string) => void
 ): void {
-  if (selectedGateId) {
+  if (selectedWireId) {
+    removeWire(selectedWireId)
+  } else if (selectedGateId) {
     removeGate(selectedGateId)
   }
 }
