@@ -50,7 +50,7 @@ export function Sidebar() {
           <Title level={4} style={styles.title}>
             🔌 HACER
           </Title>
-          <Text type="secondary">Logic Gate Simulator</Text>
+          <Text type="secondary">Hardware Architecture & Constraints Explorer/Researcher</Text>
         </div>
 
         <Divider style={styles.divider} />

@@ -67,6 +67,10 @@ export function Wire3D({
    * Generate points along a semi-circular arc.
    * Arc starts and ends at WIRE_HEIGHT, peaks at HOP_HEIGHT in the middle.
    * Uses proper parametric equations for a perfect semi-circle.
+   *
+   * IMPORTANT: The first and last points are forced to match segment.start and segment.end
+   * exactly to ensure the arc connects properly to the cut points, eliminating gaps
+   * where the original segment might show through.
    */
   const generateArcPoints = (segment: WireSegment): Array<[number, number, number]> => {
     if (segment.type !== 'arc' || !segment.arcCenter || segment.arcRadius === undefined) {
@@ -84,39 +88,64 @@ export function Wire3D({
     // Determine arc orientation from start/end points
     const isHorizontal = Math.abs(segment.start.z - segment.end.z) < 0.001
 
-    // Generate points along the semi-circle using parametric equations
+    // CRITICAL: Force first point to match segment.start exactly
+    // This ensures the arc connects exactly to the cut point, eliminating gaps
+    points.push([segment.start.x, segment.start.y, segment.start.z])
+
+    // Calculate the actual offsets from center for start and end
+    // This accounts for segment direction and boundary adjustments
+    const startOffset = isHorizontal
+      ? segment.start.x - center.x
+      : segment.start.z - center.z
+    const endOffset = isHorizontal
+      ? segment.end.x - center.x
+      : segment.end.z - center.z
+
+    // For a semi-circular arc, determine the starting angle based on direction
+    // The arc should span exactly π radians
+    // If going from negative to positive offset: start at π, end at 0
+    // If going from positive to negative offset: start at 0, end at π
+    const isIncreasing = startOffset < endOffset
+    const startAngle = isIncreasing ? Math.PI : 0
+    const endAngle = isIncreasing ? 0 : Math.PI
+
+    // Generate intermediate points along the semi-circle using parametric equations
     // For a perfect semi-circle, we use parametric equations where:
     // - t goes from 0 to π (semi-circle)
-    // - x/z follows a circular path: center ± radius * cos(π - t)
+    // - angle interpolates from startAngle to endAngle
     // - y follows a sinusoidal path: WIRE_HEIGHT + (HOP_HEIGHT - WIRE_HEIGHT) * sin(t)
     const numPoints = 30 // Number of points for smooth curve
-    for (let i = 0; i <= numPoints; i++) {
+    // Generate intermediate points (skip first and last)
+    for (let i = 1; i < numPoints; i++) {
       const t = (i / numPoints) * Math.PI // t goes from 0 to π
 
-      // Parametric equations for perfect semi-circle:
-      // At t=0: x/z = center - radius, y = WIRE_HEIGHT
-      // At t=π/2: x/z = center, y = HOP_HEIGHT (peak)
-      // At t=π: x/z = center + radius, y = WIRE_HEIGHT
+      // Interpolate angle from startAngle to endAngle
+      const angle = startAngle + (endAngle - startAngle) * (t / Math.PI)
+
+      // Calculate position on circle at this angle
+      // Use the actual radius (which may differ slightly from HOP_RADIUS due to boundary adjustments)
+      const offset = radius * Math.cos(angle)
+
       let x: number
       let z: number
       const y = WIRE_HEIGHT + (HOP_HEIGHT - WIRE_HEIGHT) * Math.sin(t)
 
       if (isHorizontal) {
         // Horizontal arc: x varies in a circle, z is constant
-        // x(t) = center.x + radius * cos(π - t)
-        // This gives: x(0) = center.x - radius, x(π) = center.x + radius
-        x = center.x + radius * Math.cos(Math.PI - t)
+        x = center.x + offset
         z = center.z
       } else {
         // Vertical arc: z varies in a circle, x is constant
-        // z(t) = center.z + radius * cos(π - t)
-        // This gives: z(0) = center.z - radius, z(π) = center.z + radius
         x = center.x
-        z = center.z + radius * Math.cos(Math.PI - t)
+        z = center.z + offset
       }
 
       points.push([x, y, z])
     }
+
+    // CRITICAL: Force last point to match segment.end exactly
+    // This ensures the arc connects exactly to the cut point, eliminating gaps
+    points.push([segment.end.x, segment.end.y, segment.end.z])
 
     return points
   }
