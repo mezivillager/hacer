@@ -10,7 +10,6 @@ import {
   resolveCrossings,
   getSegmentInfo,
   calculateIdealCutPoints,
-  clampCutPointsToSegment,
   createBeforeSegment,
   createAfterSegment,
   type Crossing,
@@ -541,95 +540,6 @@ describe('Wire Crossing Detection and Resolution', () => {
 
       expect(cutPoints.cutStart.y).toBe(WIRE_HEIGHT)
       expect(cutPoints.cutEnd.y).toBe(WIRE_HEIGHT)
-    })
-  })
-
-  describe('clampCutPointsToSegment', () => {
-    it('returns cut points unchanged when they fit within segment', () => {
-      const segment: WireSegment = {
-        start: createPosition(0, WIRE_HEIGHT, 4),
-        end: createPosition(8, WIRE_HEIGHT, 4),
-        type: 'horizontal',
-      }
-      const segmentInfo = getSegmentInfo(segment)
-      const intersection = createPosition(4, WIRE_HEIGHT, 4)
-      const idealCutPoints = calculateIdealCutPoints(intersection, segmentInfo)
-
-      const clamped = clampCutPointsToSegment(idealCutPoints, intersection, segmentInfo, segment)
-
-      expect(clamped).not.toBeNull()
-      expect(clamped!.cutStart.x).toBeCloseTo(idealCutPoints.cutStart.x, 3)
-      expect(clamped!.cutEnd.x).toBeCloseTo(idealCutPoints.cutEnd.x, 3)
-    })
-
-    it('clamps cut points when intersection is near segment start', () => {
-      const segment: WireSegment = {
-        start: createPosition(0, WIRE_HEIGHT, 4),
-        end: createPosition(8, WIRE_HEIGHT, 4),
-        type: 'horizontal',
-      }
-      const segmentInfo = getSegmentInfo(segment)
-      const intersection = createPosition(0.1, WIRE_HEIGHT, 4)
-      const idealCutPoints = calculateIdealCutPoints(intersection, segmentInfo)
-
-      const clamped = clampCutPointsToSegment(idealCutPoints, intersection, segmentInfo, segment)
-
-      expect(clamped).not.toBeNull()
-      // cutStart should be clamped to segment start
-      expect(clamped!.cutStart.x).toBeGreaterThanOrEqual(segmentInfo.minCoord)
-      expect(clamped!.cutEnd.x).toBeLessThanOrEqual(segmentInfo.maxCoord)
-    })
-
-    it('returns null when segment is too short for arc', () => {
-      const segment: WireSegment = {
-        start: createPosition(0, WIRE_HEIGHT, 4),
-        end: createPosition(0.05, WIRE_HEIGHT, 4), // Very short
-        type: 'horizontal',
-      }
-      const segmentInfo = getSegmentInfo(segment)
-      const intersection = createPosition(0.025, WIRE_HEIGHT, 4)
-      const idealCutPoints = calculateIdealCutPoints(intersection, segmentInfo)
-
-      const clamped = clampCutPointsToSegment(idealCutPoints, intersection, segmentInfo, segment)
-
-      expect(clamped).toBeNull()
-    })
-
-    it('clamps vertical segment cut points correctly', () => {
-      const segment: WireSegment = {
-        start: createPosition(4, WIRE_HEIGHT, 0),
-        end: createPosition(4, WIRE_HEIGHT, 8),
-        type: 'vertical',
-      }
-      const segmentInfo = getSegmentInfo(segment)
-      const intersection = createPosition(4, WIRE_HEIGHT, 4)
-      const idealCutPoints = calculateIdealCutPoints(intersection, segmentInfo)
-
-      const clamped = clampCutPointsToSegment(idealCutPoints, intersection, segmentInfo, segment)
-
-      expect(clamped).not.toBeNull()
-      expect(clamped!.cutStart.z).toBeGreaterThanOrEqual(segmentInfo.minCoord)
-      expect(clamped!.cutEnd.z).toBeLessThanOrEqual(segmentInfo.maxCoord)
-    })
-
-    it('ensures cut points maintain correct order after clamping', () => {
-      const segment: WireSegment = {
-        start: createPosition(0, WIRE_HEIGHT, 4),
-        end: createPosition(8, WIRE_HEIGHT, 4),
-        type: 'horizontal',
-      }
-      const segmentInfo = getSegmentInfo(segment)
-      const intersection = createPosition(4, WIRE_HEIGHT, 4)
-      const idealCutPoints = calculateIdealCutPoints(intersection, segmentInfo)
-
-      const clamped = clampCutPointsToSegment(idealCutPoints, intersection, segmentInfo, segment)
-
-      expect(clamped).not.toBeNull()
-      if (segmentInfo.isIncreasing) {
-        expect(clamped!.cutStart.x).toBeLessThanOrEqual(clamped!.cutEnd.x)
-      } else {
-        expect(clamped!.cutStart.x).toBeGreaterThanOrEqual(clamped!.cutEnd.x)
-      }
     })
   })
 

@@ -250,7 +250,7 @@ export function getSegmentInfo(segment: WireSegment): SegmentInfo {
     const maxCoord = Math.max(segment.start.x, segment.end.x)
     const length = Math.abs(segment.end.x - segment.start.x)
 
-    return {
+  return {
       isHorizontal: true,
       isIncreasing,
       minCoord,
@@ -307,9 +307,9 @@ export function calculateIdealCutPoints(
           y: WIRE_HEIGHT,
           z: intersection.z,
         },
-      }
-    } else {
-      // Decreasing horizontal segment: cutStart should be higher x, cutEnd should be lower x
+        }
+      } else {
+        // Decreasing horizontal segment: cutStart should be higher x, cutEnd should be lower x
       return {
         cutStart: {
           x: intersection.x + HOP_RADIUS,
@@ -321,11 +321,11 @@ export function calculateIdealCutPoints(
           y: WIRE_HEIGHT,
           z: intersection.z,
         },
+        }
       }
-    }
-  } else {
+    } else {
     if (segmentInfo.isIncreasing) {
-      // Increasing vertical segment: cutStart should be lower z, cutEnd should be higher z
+        // Increasing vertical segment: cutStart should be lower z, cutEnd should be higher z
       return {
         cutStart: {
           x: intersection.x,
@@ -337,9 +337,9 @@ export function calculateIdealCutPoints(
           y: WIRE_HEIGHT,
           z: intersection.z + HOP_RADIUS,
         },
-      }
-    } else {
-      // Decreasing vertical segment: cutStart should be higher z, cutEnd should be lower z
+        }
+      } else {
+        // Decreasing vertical segment: cutStart should be higher z, cutEnd should be lower z
       return {
         cutStart: {
           x: intersection.x,
@@ -354,211 +354,6 @@ export function calculateIdealCutPoints(
       }
     }
   }
-}
-
-/**
- * Clamp cut points to segment bounds and adjust if needed.
- * Returns null if segment is too short to fit an arc.
- *
- * @param idealCutPoints - Ideal cut points (may be outside segment bounds)
- * @param intersection - Intersection point
- * @param segmentInfo - Segment information
- * @param segment - Original segment
- * @returns Clamped cut points, or null if segment too short
- */
-export function clampCutPointsToSegment(
-  idealCutPoints: CutPoints,
-  intersection: Position,
-  segmentInfo: SegmentInfo,
-  _segment: WireSegment
-): CutPoints | null {
-  // Check if segment is long enough for arc
-  if (segmentInfo.length < 2 * HOP_RADIUS) {
-    return null
-  }
-
-  let cutStart: Position
-  let cutEnd: Position
-
-  if (segmentInfo.isHorizontal) {
-    // Calculate ideal positions centered on intersection
-    const idealStart = intersection.x - HOP_RADIUS
-    const idealEnd = intersection.x + HOP_RADIUS
-
-    if (segmentInfo.isIncreasing) {
-      // Increasing horizontal segment
-      if (idealStart < segmentInfo.minCoord) {
-        // Intersection too close to start
-        cutStart = {
-          x: segmentInfo.minCoord,
-          y: WIRE_HEIGHT,
-          z: intersection.z,
-        }
-        cutEnd = {
-          x: Math.min(segmentInfo.maxCoord, idealEnd),
-          y: WIRE_HEIGHT,
-          z: intersection.z,
-        }
-      } else if (idealEnd > segmentInfo.maxCoord) {
-        // Intersection too close to end
-        cutStart = {
-          x: Math.max(segmentInfo.minCoord, idealStart),
-          y: WIRE_HEIGHT,
-          z: intersection.z,
-        }
-        cutEnd = {
-          x: segmentInfo.maxCoord,
-          y: WIRE_HEIGHT,
-          z: intersection.z,
-        }
-      } else {
-        // Can center on intersection
-        cutStart = idealCutPoints.cutStart
-        cutEnd = idealCutPoints.cutEnd
-      }
-    } else {
-      // Decreasing horizontal segment
-      if (idealStart > segmentInfo.maxCoord) {
-        // Intersection too close to start (which is at maxX for decreasing)
-        cutStart = {
-          x: segmentInfo.maxCoord,
-          y: WIRE_HEIGHT,
-          z: intersection.z,
-        }
-        cutEnd = {
-          x: Math.max(segmentInfo.minCoord, idealEnd),
-          y: WIRE_HEIGHT,
-          z: intersection.z,
-        }
-      } else if (idealEnd < segmentInfo.minCoord) {
-        // Intersection too close to end (which is at minX for decreasing)
-        cutStart = {
-          x: Math.min(segmentInfo.maxCoord, idealStart),
-          y: WIRE_HEIGHT,
-          z: intersection.z,
-        }
-        cutEnd = {
-          x: segmentInfo.minCoord,
-          y: WIRE_HEIGHT,
-          z: intersection.z,
-        }
-      } else {
-        // Can center on intersection
-        cutStart = idealCutPoints.cutStart
-        cutEnd = idealCutPoints.cutEnd
-      }
-    }
-
-    // Verify cut points are in correct order
-    const cutLength = Math.abs(cutEnd.x - cutStart.x)
-    if (cutLength < TOLERANCE) {
-      return null
-    }
-    const cutPointsInOrder = segmentInfo.isIncreasing
-      ? cutStart.x <= cutEnd.x
-      : cutStart.x >= cutEnd.x
-    if (!cutPointsInOrder) {
-      // Swap if needed
-      const temp = cutStart.x
-      cutStart.x = cutEnd.x
-      cutEnd.x = temp
-    }
-
-    // Check minimum cut length
-    if (cutLength < HOP_RADIUS) {
-      return null
-    }
-  } else {
-    // Vertical segment
-    const idealStart = intersection.z - HOP_RADIUS
-    const idealEnd = intersection.z + HOP_RADIUS
-
-    if (segmentInfo.isIncreasing) {
-      // Increasing vertical segment
-      if (idealStart < segmentInfo.minCoord) {
-        // Intersection too close to start
-        cutStart = {
-          x: intersection.x,
-          y: WIRE_HEIGHT,
-          z: segmentInfo.minCoord,
-        }
-        cutEnd = {
-          x: intersection.x,
-          y: WIRE_HEIGHT,
-          z: Math.min(segmentInfo.maxCoord, idealEnd),
-        }
-      } else if (idealEnd > segmentInfo.maxCoord) {
-        // Intersection too close to end
-        cutStart = {
-          x: intersection.x,
-          y: WIRE_HEIGHT,
-          z: Math.max(segmentInfo.minCoord, idealStart),
-        }
-        cutEnd = {
-          x: intersection.x,
-          y: WIRE_HEIGHT,
-          z: segmentInfo.maxCoord,
-        }
-      } else {
-        // Can center on intersection
-        cutStart = idealCutPoints.cutStart
-        cutEnd = idealCutPoints.cutEnd
-      }
-    } else {
-      // Decreasing vertical segment
-      if (idealStart > segmentInfo.maxCoord) {
-        // Intersection too close to start (which is at maxZ for decreasing)
-        cutStart = {
-          x: intersection.x,
-          y: WIRE_HEIGHT,
-          z: segmentInfo.maxCoord,
-        }
-        cutEnd = {
-          x: intersection.x,
-          y: WIRE_HEIGHT,
-          z: Math.max(segmentInfo.minCoord, idealEnd),
-        }
-      } else if (idealEnd < segmentInfo.minCoord) {
-        // Intersection too close to end (which is at minZ for decreasing)
-        cutStart = {
-          x: intersection.x,
-          y: WIRE_HEIGHT,
-          z: Math.min(segmentInfo.maxCoord, idealStart),
-        }
-        cutEnd = {
-          x: intersection.x,
-          y: WIRE_HEIGHT,
-          z: segmentInfo.minCoord,
-        }
-      } else {
-        // Can center on intersection
-        cutStart = idealCutPoints.cutStart
-        cutEnd = idealCutPoints.cutEnd
-      }
-    }
-
-    // Verify cut points are in correct order
-    const cutLength = Math.abs(cutEnd.z - cutStart.z)
-    if (cutLength < TOLERANCE) {
-      return null
-    }
-    const cutPointsInOrder = segmentInfo.isIncreasing
-      ? cutStart.z <= cutEnd.z
-      : cutStart.z >= cutEnd.z
-    if (!cutPointsInOrder) {
-      // Swap if needed
-      const temp = cutStart.z
-      cutStart.z = cutEnd.z
-      cutEnd.z = temp
-    }
-
-    // Check minimum cut length
-    if (cutLength < HOP_RADIUS) {
-      return null
-    }
-  }
-
-  return { cutStart, cutEnd }
 }
 
 /**
@@ -653,12 +448,11 @@ export function createAfterSegment(
 /**
  * Generate a semi-circular arc segment that hops over a crossed wire.
  *
- * The arc center is at the intersection point. Cut points should ideally be
- * HOP_RADIUS distance from the intersection, but may be adjusted when the
- * intersection is near segment boundaries to fit within the segment.
+ * The arc center is at the intersection point. Cut points are exactly
+ * HOP_RADIUS distance from the intersection.
  *
- * @param cutStart - Start point of the arc (within segment bounds)
- * @param cutEnd - End point of the arc (within segment bounds)
+ * @param cutStart - Start point of the arc (exactly HOP_RADIUS from intersection)
+ * @param cutEnd - End point of the arc (exactly HOP_RADIUS from intersection)
  * @param intersectionPoint - Point where wires intersect (arc center)
  * @returns WireSegment with type 'arc' representing the hop
  */
@@ -669,8 +463,6 @@ export function generateHopArc(
 ): WireSegment {
   // Arc center is at intersection point at base height
   // The arc will curve upward from this center
-  // Note: When intersection is at segment boundary, cut points may not be exactly
-  // HOP_RADIUS from intersection, but the arc will still visually pass over it
   const arcCenter: Position = {
     x: intersectionPoint.x,
     y: WIRE_HEIGHT, // Arc center at base height, arc curves upward
@@ -678,7 +470,7 @@ export function generateHopArc(
   }
 
   // Calculate actual arc radius based on cut points
-  // This ensures the arc is a proper semi-circle even when cut points are adjusted
+  // Cut points are always exactly HOP_RADIUS from intersection
   const cutStartDist = Math.sqrt(
     Math.pow(cutStart.x - intersectionPoint.x, 2) +
     Math.pow(cutStart.z - intersectionPoint.z, 2)
@@ -688,8 +480,7 @@ export function generateHopArc(
     Math.pow(cutEnd.z - intersectionPoint.z, 2)
   )
 
-  // Use the average distance as the radius (should be approximately HOP_RADIUS)
-  // This handles cases where cut points are adjusted due to boundary constraints
+  // Use the average distance as the radius (should be exactly HOP_RADIUS)
   const arcRadius = (cutStartDist + cutEndDist) / 2
 
   return {
@@ -736,17 +527,14 @@ export function replaceSegmentWithHop(
   for (const crossing of sortedCrossings) {
     const intersection = crossing.intersectionPoint
 
-    // Calculate ideal cut points
-    const idealCutPoints = calculateIdealCutPoints(intersection, segmentInfo)
-
-    // Clamp cut points to segment bounds
-    const clampedCutPoints = clampCutPointsToSegment(idealCutPoints, intersection, segmentInfo, segment)
-    if (!clampedCutPoints) {
-      // Segment too short for arc, skip this crossing
+    // Safety check: skip if segment is too short for arc (should never happen in practice)
+    if (segmentInfo.length < 2 * HOP_RADIUS) {
       continue
     }
 
-    const { cutStart, cutEnd } = clampedCutPoints
+    // Calculate ideal cut points
+    const idealCutPoints = calculateIdealCutPoints(intersection, segmentInfo)
+    const { cutStart, cutEnd } = idealCutPoints
 
     // Create before segment if there's a gap
     const beforeSegment = createBeforeSegment(currentStart, cutStart, segmentInfo, segment)
