@@ -224,6 +224,433 @@ export function detectCrossings(
 }
 
 /**
+ * Information about a wire segment's orientation and bounds.
+ */
+export interface SegmentInfo {
+  isHorizontal: boolean
+  isIncreasing: boolean
+  minCoord: number
+  maxCoord: number
+  length: number
+}
+
+/**
+ * Extract segment information (orientation, direction, bounds, length).
+ * Computes all segment properties once to avoid redundant calculations.
+ *
+ * @param segment - Wire segment to analyze
+ * @returns Segment information
+ */
+export function getSegmentInfo(segment: WireSegment): SegmentInfo {
+  const isHorizontal = Math.abs(segment.start.z - segment.end.z) < TOLERANCE
+
+  if (isHorizontal) {
+    const isIncreasing = segment.start.x < segment.end.x
+    const minCoord = Math.min(segment.start.x, segment.end.x)
+    const maxCoord = Math.max(segment.start.x, segment.end.x)
+    const length = Math.abs(segment.end.x - segment.start.x)
+
+    return {
+      isHorizontal: true,
+      isIncreasing,
+      minCoord,
+      maxCoord,
+      length,
+    }
+  } else {
+    const isIncreasing = segment.start.z < segment.end.z
+    const minCoord = Math.min(segment.start.z, segment.end.z)
+    const maxCoord = Math.max(segment.start.z, segment.end.z)
+    const length = Math.abs(segment.end.z - segment.start.z)
+
+    return {
+      isHorizontal: false,
+      isIncreasing,
+      minCoord,
+      maxCoord,
+      length,
+    }
+  }
+}
+
+/**
+ * Ideal cut points for a hop arc, calculated based on intersection and segment direction.
+ */
+export interface CutPoints {
+  cutStart: Position
+  cutEnd: Position
+}
+
+/**
+ * Calculate ideal cut points for a hop arc at an intersection.
+ * Cut points are positioned HOP_RADIUS distance from the intersection,
+ * respecting the segment's direction (increasing/decreasing).
+ *
+ * @param intersection - Point where wires intersect
+ * @param segmentInfo - Segment orientation and direction information
+ * @returns Ideal cut points (may need clamping to segment bounds)
+ */
+export function calculateIdealCutPoints(
+  intersection: Position,
+  segmentInfo: SegmentInfo
+): CutPoints {
+  if (segmentInfo.isHorizontal) {
+    if (segmentInfo.isIncreasing) {
+      return {
+        cutStart: {
+          x: intersection.x - HOP_RADIUS,
+          y: WIRE_HEIGHT,
+          z: intersection.z,
+        },
+        cutEnd: {
+          x: intersection.x + HOP_RADIUS,
+          y: WIRE_HEIGHT,
+          z: intersection.z,
+        },
+      }
+    } else {
+      // Decreasing horizontal segment: cutStart should be higher x, cutEnd should be lower x
+      return {
+        cutStart: {
+          x: intersection.x + HOP_RADIUS,
+          y: WIRE_HEIGHT,
+          z: intersection.z,
+        },
+        cutEnd: {
+          x: intersection.x - HOP_RADIUS,
+          y: WIRE_HEIGHT,
+          z: intersection.z,
+        },
+      }
+    }
+  } else {
+    if (segmentInfo.isIncreasing) {
+      // Increasing vertical segment: cutStart should be lower z, cutEnd should be higher z
+      return {
+        cutStart: {
+          x: intersection.x,
+          y: WIRE_HEIGHT,
+          z: intersection.z - HOP_RADIUS,
+        },
+        cutEnd: {
+          x: intersection.x,
+          y: WIRE_HEIGHT,
+          z: intersection.z + HOP_RADIUS,
+        },
+      }
+    } else {
+      // Decreasing vertical segment: cutStart should be higher z, cutEnd should be lower z
+      return {
+        cutStart: {
+          x: intersection.x,
+          y: WIRE_HEIGHT,
+          z: intersection.z + HOP_RADIUS,
+        },
+        cutEnd: {
+          x: intersection.x,
+          y: WIRE_HEIGHT,
+          z: intersection.z - HOP_RADIUS,
+        },
+      }
+    }
+  }
+}
+
+/**
+ * Clamp cut points to segment bounds and adjust if needed.
+ * Returns null if segment is too short to fit an arc.
+ *
+ * @param idealCutPoints - Ideal cut points (may be outside segment bounds)
+ * @param intersection - Intersection point
+ * @param segmentInfo - Segment information
+ * @param segment - Original segment
+ * @returns Clamped cut points, or null if segment too short
+ */
+export function clampCutPointsToSegment(
+  idealCutPoints: CutPoints,
+  intersection: Position,
+  segmentInfo: SegmentInfo,
+  _segment: WireSegment
+): CutPoints | null {
+  // Check if segment is long enough for arc
+  if (segmentInfo.length < 2 * HOP_RADIUS) {
+    return null
+  }
+
+  let cutStart: Position
+  let cutEnd: Position
+
+  if (segmentInfo.isHorizontal) {
+    // Calculate ideal positions centered on intersection
+    const idealStart = intersection.x - HOP_RADIUS
+    const idealEnd = intersection.x + HOP_RADIUS
+
+    if (segmentInfo.isIncreasing) {
+      // Increasing horizontal segment
+      if (idealStart < segmentInfo.minCoord) {
+        // Intersection too close to start
+        cutStart = {
+          x: segmentInfo.minCoord,
+          y: WIRE_HEIGHT,
+          z: intersection.z,
+        }
+        cutEnd = {
+          x: Math.min(segmentInfo.maxCoord, idealEnd),
+          y: WIRE_HEIGHT,
+          z: intersection.z,
+        }
+      } else if (idealEnd > segmentInfo.maxCoord) {
+        // Intersection too close to end
+        cutStart = {
+          x: Math.max(segmentInfo.minCoord, idealStart),
+          y: WIRE_HEIGHT,
+          z: intersection.z,
+        }
+        cutEnd = {
+          x: segmentInfo.maxCoord,
+          y: WIRE_HEIGHT,
+          z: intersection.z,
+        }
+      } else {
+        // Can center on intersection
+        cutStart = idealCutPoints.cutStart
+        cutEnd = idealCutPoints.cutEnd
+      }
+    } else {
+      // Decreasing horizontal segment
+      if (idealStart > segmentInfo.maxCoord) {
+        // Intersection too close to start (which is at maxX for decreasing)
+        cutStart = {
+          x: segmentInfo.maxCoord,
+          y: WIRE_HEIGHT,
+          z: intersection.z,
+        }
+        cutEnd = {
+          x: Math.max(segmentInfo.minCoord, idealEnd),
+          y: WIRE_HEIGHT,
+          z: intersection.z,
+        }
+      } else if (idealEnd < segmentInfo.minCoord) {
+        // Intersection too close to end (which is at minX for decreasing)
+        cutStart = {
+          x: Math.min(segmentInfo.maxCoord, idealStart),
+          y: WIRE_HEIGHT,
+          z: intersection.z,
+        }
+        cutEnd = {
+          x: segmentInfo.minCoord,
+          y: WIRE_HEIGHT,
+          z: intersection.z,
+        }
+      } else {
+        // Can center on intersection
+        cutStart = idealCutPoints.cutStart
+        cutEnd = idealCutPoints.cutEnd
+      }
+    }
+
+    // Verify cut points are in correct order
+    const cutLength = Math.abs(cutEnd.x - cutStart.x)
+    if (cutLength < TOLERANCE) {
+      return null
+    }
+    const cutPointsInOrder = segmentInfo.isIncreasing
+      ? cutStart.x <= cutEnd.x
+      : cutStart.x >= cutEnd.x
+    if (!cutPointsInOrder) {
+      // Swap if needed
+      const temp = cutStart.x
+      cutStart.x = cutEnd.x
+      cutEnd.x = temp
+    }
+
+    // Check minimum cut length
+    if (cutLength < HOP_RADIUS) {
+      return null
+    }
+  } else {
+    // Vertical segment
+    const idealStart = intersection.z - HOP_RADIUS
+    const idealEnd = intersection.z + HOP_RADIUS
+
+    if (segmentInfo.isIncreasing) {
+      // Increasing vertical segment
+      if (idealStart < segmentInfo.minCoord) {
+        // Intersection too close to start
+        cutStart = {
+          x: intersection.x,
+          y: WIRE_HEIGHT,
+          z: segmentInfo.minCoord,
+        }
+        cutEnd = {
+          x: intersection.x,
+          y: WIRE_HEIGHT,
+          z: Math.min(segmentInfo.maxCoord, idealEnd),
+        }
+      } else if (idealEnd > segmentInfo.maxCoord) {
+        // Intersection too close to end
+        cutStart = {
+          x: intersection.x,
+          y: WIRE_HEIGHT,
+          z: Math.max(segmentInfo.minCoord, idealStart),
+        }
+        cutEnd = {
+          x: intersection.x,
+          y: WIRE_HEIGHT,
+          z: segmentInfo.maxCoord,
+        }
+      } else {
+        // Can center on intersection
+        cutStart = idealCutPoints.cutStart
+        cutEnd = idealCutPoints.cutEnd
+      }
+    } else {
+      // Decreasing vertical segment
+      if (idealStart > segmentInfo.maxCoord) {
+        // Intersection too close to start (which is at maxZ for decreasing)
+        cutStart = {
+          x: intersection.x,
+          y: WIRE_HEIGHT,
+          z: segmentInfo.maxCoord,
+        }
+        cutEnd = {
+          x: intersection.x,
+          y: WIRE_HEIGHT,
+          z: Math.max(segmentInfo.minCoord, idealEnd),
+        }
+      } else if (idealEnd < segmentInfo.minCoord) {
+        // Intersection too close to end (which is at minZ for decreasing)
+        cutStart = {
+          x: intersection.x,
+          y: WIRE_HEIGHT,
+          z: Math.min(segmentInfo.maxCoord, idealStart),
+        }
+        cutEnd = {
+          x: intersection.x,
+          y: WIRE_HEIGHT,
+          z: segmentInfo.minCoord,
+        }
+      } else {
+        // Can center on intersection
+        cutStart = idealCutPoints.cutStart
+        cutEnd = idealCutPoints.cutEnd
+      }
+    }
+
+    // Verify cut points are in correct order
+    const cutLength = Math.abs(cutEnd.z - cutStart.z)
+    if (cutLength < TOLERANCE) {
+      return null
+    }
+    const cutPointsInOrder = segmentInfo.isIncreasing
+      ? cutStart.z <= cutEnd.z
+      : cutStart.z >= cutEnd.z
+    if (!cutPointsInOrder) {
+      // Swap if needed
+      const temp = cutStart.z
+      cutStart.z = cutEnd.z
+      cutEnd.z = temp
+    }
+
+    // Check minimum cut length
+    if (cutLength < HOP_RADIUS) {
+      return null
+    }
+  }
+
+  return { cutStart, cutEnd }
+}
+
+/**
+ * Create a segment from current position to cut start, if there's a meaningful gap.
+ * Returns null if positions are too close or cut start is behind current start.
+ *
+ * @param currentStart - Current position along segment
+ * @param cutStart - Cut start position
+ * @param segmentInfo - Segment information
+ * @param segment - Original segment
+ * @returns Segment from currentStart to cutStart, or null
+ */
+export function createBeforeSegment(
+  currentStart: Position,
+  cutStart: Position,
+  segmentInfo: SegmentInfo,
+  segment: WireSegment
+): WireSegment | null {
+  const distance = segmentInfo.isHorizontal
+    ? Math.abs(currentStart.x - cutStart.x)
+    : Math.abs(currentStart.z - cutStart.z)
+
+  if (distance <= TOLERANCE) {
+    return null
+  }
+
+  // Verify cutStart is ahead of currentStart (not behind)
+  const isAhead = segmentInfo.isHorizontal
+    ? (segmentInfo.isIncreasing ? cutStart.x > currentStart.x : cutStart.x < currentStart.x)
+    : (segmentInfo.isIncreasing ? cutStart.z > currentStart.z : cutStart.z < currentStart.z)
+
+  if (!isAhead) {
+    return null
+  }
+
+  return {
+    start: { ...currentStart },
+    end: { ...cutStart },
+    type: segment.type,
+  }
+}
+
+/**
+ * Create a segment from cut end to segment end, if there's a meaningful gap.
+ * Returns null if positions are too close or cut end has passed segment end.
+ *
+ * @param cutEnd - Cut end position
+ * @param segmentEnd - Original segment end position
+ * @param segmentInfo - Segment information
+ * @param segment - Original segment
+ * @returns Segment from cutEnd to segmentEnd, or null
+ */
+export function createAfterSegment(
+  cutEnd: Position,
+  segmentEnd: Position,
+  segmentInfo: SegmentInfo,
+  segment: WireSegment
+): WireSegment | null {
+  const distance = segmentInfo.isHorizontal
+    ? Math.abs(cutEnd.x - segmentEnd.x)
+    : Math.abs(cutEnd.z - segmentEnd.z)
+
+  if (distance <= TOLERANCE) {
+    return null
+  }
+
+  // Check if cut end has passed segment end
+  const hasPassedEnd = segmentInfo.isHorizontal
+    ? (segmentInfo.isIncreasing ? cutEnd.x > segmentEnd.x : cutEnd.x < segmentEnd.x)
+    : (segmentInfo.isIncreasing ? cutEnd.z > segmentEnd.z : cutEnd.z < segmentEnd.z)
+
+  if (hasPassedEnd) {
+    return null
+  }
+
+  // Verify we're moving in the right direction
+  const isAhead = segmentInfo.isHorizontal
+    ? (segmentInfo.isIncreasing ? segmentEnd.x > cutEnd.x : segmentEnd.x < cutEnd.x)
+    : (segmentInfo.isIncreasing ? segmentEnd.z > cutEnd.z : segmentEnd.z < cutEnd.z)
+
+  if (!isAhead) {
+    return null
+  }
+
+  return {
+    start: { ...cutEnd },
+    end: { ...segmentEnd },
+    type: segment.type,
+  }
+}
+
+/**
  * Generate a semi-circular arc segment that hops over a crossed wire.
  *
  * The arc center is at the intersection point. Cut points should ideally be
@@ -293,7 +720,7 @@ export function replaceSegmentWithHop(
 
   const result: WireSegment[] = []
   let currentStart = segment.start
-  const isHorizontal = Math.abs(segment.start.z - segment.end.z) < TOLERANCE
+  const segmentInfo = getSegmentInfo(segment)
 
   // Sort crossings by position along segment
   const sortedCrossings = [...crossings].sort((a, b) => {
@@ -309,495 +736,22 @@ export function replaceSegmentWithHop(
   for (const crossing of sortedCrossings) {
     const intersection = crossing.intersectionPoint
 
-    console.log(`[replaceSegmentWithHop] Processing crossing`, {
-      segment: { start: segment.start, end: segment.end, type: segment.type },
-      intersection: { x: intersection.x, z: intersection.z },
-      currentStart: { x: currentStart.x, z: currentStart.z },
-    })
-
-    // Calculate ideal cut points: intersection ± HOP_RADIUS
-    // These points must be exactly HOP_RADIUS from the intersection
-    // CRITICAL: For vertical segments, we must respect segment direction
-    // - Increasing segment (start.z < end.z): cutStart should be lower z, cutEnd should be higher z
-    // - Decreasing segment (start.z > end.z): cutStart should be higher z, cutEnd should be lower z
-    let idealCutStart: Position
-    let idealCutEnd: Position
-
-    if (isHorizontal) {
-      const isIncreasing = segment.start.x < segment.end.x
-      if (isIncreasing) {
-        idealCutStart = {
-          x: intersection.x - HOP_RADIUS,
-          y: WIRE_HEIGHT,
-          z: intersection.z,
-        }
-        idealCutEnd = {
-          x: intersection.x + HOP_RADIUS,
-          y: WIRE_HEIGHT,
-          z: intersection.z,
-        }
-      } else {
-        // Decreasing horizontal segment: cutStart should be higher x, cutEnd should be lower x
-        idealCutStart = {
-          x: intersection.x + HOP_RADIUS,
-          y: WIRE_HEIGHT,
-          z: intersection.z,
-        }
-        idealCutEnd = {
-          x: intersection.x - HOP_RADIUS,
-          y: WIRE_HEIGHT,
-          z: intersection.z,
-        }
-      }
-    } else {
-      const isIncreasing = segment.start.z < segment.end.z
-      if (isIncreasing) {
-        // Increasing vertical segment: cutStart should be lower z, cutEnd should be higher z
-        idealCutStart = {
-          x: intersection.x,
-          y: WIRE_HEIGHT,
-          z: intersection.z - HOP_RADIUS,
-        }
-        idealCutEnd = {
-          x: intersection.x,
-          y: WIRE_HEIGHT,
-          z: intersection.z + HOP_RADIUS,
-        }
-      } else {
-        // Decreasing vertical segment: cutStart should be higher z, cutEnd should be lower z
-        idealCutStart = {
-          x: intersection.x,
-          y: WIRE_HEIGHT,
-          z: intersection.z + HOP_RADIUS,
-        }
-        idealCutEnd = {
-          x: intersection.x,
-          y: WIRE_HEIGHT,
-          z: intersection.z - HOP_RADIUS,
-        }
-      }
-    }
+    // Calculate ideal cut points
+    const idealCutPoints = calculateIdealCutPoints(intersection, segmentInfo)
 
     // Clamp cut points to segment bounds
-    let cutStart: Position
-    let cutEnd: Position
-
-    if (isHorizontal) {
-      const isIncreasing = segment.start.x < segment.end.x
-      const segmentMinX = Math.min(segment.start.x, segment.end.x)
-      const segmentMaxX = Math.max(segment.start.x, segment.end.x)
-
-      // Clamp to segment bounds - ideal cut points already respect direction
-      cutStart = {
-        x: Math.max(segmentMinX, Math.min(segmentMaxX, idealCutStart.x)),
-        y: WIRE_HEIGHT,
-        z: intersection.z,
-      }
-      cutEnd = {
-        x: Math.max(segmentMinX, Math.min(segmentMaxX, idealCutEnd.x)),
-        y: WIRE_HEIGHT,
-        z: intersection.z,
-      }
-
-      // Verify cut points are in correct order (should already be correct)
-      const cutPointsInOrder = isIncreasing
-        ? cutStart.x <= cutEnd.x
-        : cutStart.x >= cutEnd.x
-
-      if (!cutPointsInOrder) {
-        console.error(`[replaceSegmentWithHop] ERROR: Cut points in wrong order after clamping for horizontal segment!`, {
-          isIncreasing,
-          cutStart: cutStart.x,
-          cutEnd: cutEnd.x,
-          idealCutStart: idealCutStart.x,
-          idealCutEnd: idealCutEnd.x,
-        })
-        // Auto-correct by swapping
-        const temp = cutStart.x
-        cutStart.x = cutEnd.x
-        cutEnd.x = temp
-        console.warn(`[replaceSegmentWithHop] Auto-corrected by swapping cut points`)
-      }
-    } else {
-      // For vertical segments, determine direction first
-      const isIncreasing = segment.start.z < segment.end.z
-      const segmentStartZ = isIncreasing ? segment.start.z : segment.end.z
-      const segmentEndZ = isIncreasing ? segment.end.z : segment.start.z
-
-      // Calculate cut points respecting direction
-      // Clamp to segment bounds - ideal cut points already respect direction
-      const clampedCutStartZ = Math.max(segmentStartZ, Math.min(segmentEndZ, idealCutStart.z))
-      const clampedCutEndZ = Math.max(segmentStartZ, Math.min(segmentEndZ, idealCutEnd.z))
-
-      cutStart = {
-        x: intersection.x,
-        y: WIRE_HEIGHT,
-        z: clampedCutStartZ,
-      }
-      cutEnd = {
-        x: intersection.x,
-        y: WIRE_HEIGHT,
-        z: clampedCutEndZ,
-      }
-
-      // Verify cut points are in correct order (should already be correct after direction-aware calculation)
-      // This is just a safety check - we shouldn't need to swap if ideal cut points were calculated correctly
-      const cutPointsInOrder = isIncreasing
-        ? cutStart.z <= cutEnd.z
-        : cutStart.z >= cutEnd.z
-
-      if (!cutPointsInOrder) {
-        console.error(`[replaceSegmentWithHop] ERROR: Cut points in wrong order after clamping!`, {
-          isIncreasing,
-          cutStart: cutStart.z,
-          cutEnd: cutEnd.z,
-          idealCutStart: idealCutStart.z,
-          idealCutEnd: idealCutEnd.z,
-        })
-        // Auto-correct by swapping
-        const temp = cutStart.z
-        cutStart.z = cutEnd.z
-        cutEnd.z = temp
-        console.warn(`[replaceSegmentWithHop] Auto-corrected by swapping cut points`)
-      }
-    }
-
-    // Verify cut points are still HOP_RADIUS from intersection after clamping
-    // If clamping occurred, we need to adjust the arc to fit within the segment
-    const cutStartDist = isHorizontal
-      ? Math.abs(cutStart.x - intersection.x)
-      : Math.abs(cutStart.z - intersection.z)
-    const cutEndDist = isHorizontal
-      ? Math.abs(cutEnd.x - intersection.x)
-      : Math.abs(cutEnd.z - intersection.z)
-
-    // Check if cut points are valid (must be HOP_RADIUS from intersection)
-    const cutStartValid = Math.abs(cutStartDist - HOP_RADIUS) < TOLERANCE
-    const cutEndValid = Math.abs(cutEndDist - HOP_RADIUS) < TOLERANCE
-
-    // If clamping occurred, adjust cut points to fit within segment
-    // The key insight: even if intersection is at segment boundary, we can still create an arc
-    // by adjusting the cut points to fit within the segment bounds
-    if (!cutStartValid || !cutEndValid) {
-      // Calculate segment length and bounds
-      const segmentLength = isHorizontal
-        ? Math.abs(segment.end.x - segment.start.x)
-        : Math.abs(segment.end.z - segment.start.z)
-
-      // Need at least 2 * HOP_RADIUS for a proper arc
-      if (segmentLength < 2 * HOP_RADIUS) {
-          console.warn(
-          `[replaceSegmentWithHop] Skipping crossing: segment too short for arc. ` +
-          `Segment length: ${segmentLength.toFixed(3)}, minimum required: ${(2 * HOP_RADIUS).toFixed(3)}. ` +
-          `Segment: ${JSON.stringify({ start: segment.start, end: segment.end })}, ` +
-          `Intersection: ${JSON.stringify(intersection)}`
-          )
-          continue
-    }
-
-      // Adjust cut points to fit within segment
-      // When intersection is at/near boundary, we'll create an arc that fits within the segment
-      // The arc center remains at the intersection, but cut points are adjusted
-      if (isHorizontal) {
-        const isIncreasing = segment.start.x < segment.end.x
-        const segmentMinX = Math.min(segment.start.x, segment.end.x)
-        const segmentMaxX = Math.max(segment.start.x, segment.end.x)
-
-        // Try to center arc on intersection first
-        const idealStart = intersection.x - HOP_RADIUS
-        const idealEnd = intersection.x + HOP_RADIUS
-
-        if (isIncreasing) {
-          // Increasing horizontal segment
-          if (idealStart < segmentMinX) {
-            // Intersection too close to start - place cutStart at segment start
-            cutStart.x = segmentMinX
-            cutEnd.x = Math.min(segmentMaxX, idealEnd)
-          } else if (idealEnd > segmentMaxX) {
-            // Intersection too close to end
-            const desiredStart = idealStart
-            if (desiredStart >= segmentMinX) {
-              cutStart.x = desiredStart
-              cutEnd.x = Math.min(segmentMaxX, idealEnd)
-            } else {
-              cutStart.x = segmentMinX
-              cutEnd.x = Math.min(segmentMaxX, idealEnd)
-            }
-          } else {
-            // Can center on intersection
-            cutStart.x = idealStart
-            cutEnd.x = idealEnd
-          }
-        } else {
-          // Decreasing horizontal segment
-          if (idealStart > segmentMaxX) {
-            // Intersection too close to start (which is at maxX for decreasing)
-            cutStart.x = segmentMaxX
-            cutEnd.x = Math.max(segmentMinX, idealEnd)
-          } else if (idealEnd < segmentMinX) {
-            // Intersection too close to end (which is at minX for decreasing)
-            const desiredStart = idealStart
-            if (desiredStart <= segmentMaxX) {
-              cutStart.x = desiredStart
-              cutEnd.x = Math.max(segmentMinX, idealEnd)
-            } else {
-              cutStart.x = segmentMaxX
-              cutEnd.x = Math.max(segmentMinX, idealEnd)
-            }
-          } else {
-            // Can center on intersection
-            cutStart.x = idealStart
-            cutEnd.x = idealEnd
-          }
-        }
-      } else {
-        // For vertical segments, determine direction first
-        const isIncreasing = segment.start.z < segment.end.z
-        const segmentStartZ = isIncreasing ? segment.start.z : segment.end.z
-        const segmentEndZ = isIncreasing ? segment.end.z : segment.start.z
-
-        // Try to center arc on intersection first
-        // For increasing segments: idealStart < intersection < idealEnd
-        // For decreasing segments: idealStart > intersection > idealEnd
-        const idealStart = isIncreasing
-          ? intersection.z - HOP_RADIUS
-          : intersection.z + HOP_RADIUS
-        const idealEnd = isIncreasing
-          ? intersection.z + HOP_RADIUS
-          : intersection.z - HOP_RADIUS
-
-        if (isIncreasing) {
-          // Increasing vertical segment
-          if (idealStart < segmentStartZ) {
-            // Intersection too close to start - place cutStart at segment start
-            cutStart.z = segmentStartZ
-            cutEnd.z = Math.min(segmentEndZ, idealEnd)
-          } else if (idealEnd > segmentEndZ) {
-            // Intersection too close to end
-            const desiredStart = idealStart
-            if (desiredStart >= segmentStartZ) {
-              cutStart.z = desiredStart
-              cutEnd.z = Math.min(segmentEndZ, idealEnd)
-            } else {
-              cutStart.z = segmentStartZ
-              cutEnd.z = Math.min(segmentEndZ, idealEnd)
-            }
-          } else {
-            // Can center on intersection
-            cutStart.z = idealStart
-            cutEnd.z = idealEnd
-          }
-        } else {
-          // Decreasing vertical segment
-          if (idealStart > segmentEndZ) {
-            // Intersection too close to start (which is at maxZ for decreasing)
-            cutStart.z = segmentEndZ
-            cutEnd.z = Math.max(segmentStartZ, idealEnd)
-          } else if (idealEnd < segmentStartZ) {
-            // Intersection too close to end (which is at minZ for decreasing)
-            const desiredStart = idealStart
-            if (desiredStart <= segmentEndZ) {
-              cutStart.z = desiredStart
-              cutEnd.z = Math.max(segmentStartZ, idealEnd)
-            } else {
-              cutStart.z = segmentEndZ
-              cutEnd.z = Math.max(segmentStartZ, idealEnd)
-            }
-          } else {
-            // Can center on intersection
-            cutStart.z = idealStart
-            cutEnd.z = idealEnd
-          }
-        }
-      }
-
-      // Verify adjusted cut points span at least a reasonable distance
-      const adjustedCutLength = isHorizontal
-        ? Math.abs(cutEnd.x - cutStart.x)
-        : Math.abs(cutEnd.z - cutStart.z)
-
-      // Validate cut points are in correct order relative to segment direction
-      if (isHorizontal) {
-        const isIncreasing = segment.start.x < segment.end.x
-        const cutPointsInOrder = isIncreasing
-          ? cutStart.x <= cutEnd.x
-          : cutStart.x >= cutEnd.x
-
-        if (!cutPointsInOrder) {
-          console.error(`[replaceSegmentWithHop] ERROR: Cut points in wrong order for horizontal segment!`, {
-            segmentStart: segment.start.x,
-            segmentEnd: segment.end.x,
-            cutStart: cutStart.x,
-            cutEnd: cutEnd.x,
-            isIncreasing,
-            direction: isIncreasing ? 'increasing' : 'decreasing',
-          })
-          // Auto-correct by swapping
-          const temp = cutStart.x
-          cutStart.x = cutEnd.x
-          cutEnd.x = temp
-          console.warn(`[replaceSegmentWithHop] Auto-corrected by swapping cut points`)
-        }
-      } else {
-        const isIncreasing = segment.start.z < segment.end.z
-        const cutPointsInOrder = isIncreasing
-          ? cutStart.z <= cutEnd.z
-          : cutStart.z >= cutEnd.z
-
-        if (!cutPointsInOrder) {
-          console.error(`[replaceSegmentWithHop] ERROR: Cut points in wrong order for vertical segment!`, {
-            segmentStart: segment.start.z,
-            segmentEnd: segment.end.z,
-            cutStart: cutStart.z,
-            cutEnd: cutEnd.z,
-            isIncreasing,
-            direction: isIncreasing ? 'increasing' : 'decreasing',
-          })
-          // Auto-correct by swapping
-          const temp = cutStart.z
-          cutStart.z = cutEnd.z
-          cutEnd.z = temp
-          console.warn(`[replaceSegmentWithHop] Auto-corrected by swapping cut points`)
-        }
-      }
-
-      // If intersection is exactly at segment boundary, we might have very short cut length
-      // But we should still create the arc if the segment is long enough overall
-      // Check if we have at least HOP_RADIUS span (half of ideal 2*HOP_RADIUS)
-      if (adjustedCutLength < HOP_RADIUS) {
-          console.warn(
-          `[replaceSegmentWithHop] Skipping crossing: cannot fit arc within segment. ` +
-          `Cut length: ${adjustedCutLength.toFixed(3)}, minimum: ${HOP_RADIUS.toFixed(3)}. ` +
-          `Segment: ${JSON.stringify({ start: segment.start, end: segment.end })}, ` +
-          `Intersection: ${JSON.stringify(intersection)}`
-          )
-          continue
-        }
-      }
-
-    console.log(`[replaceSegmentWithHop] Cut points calculated`, {
-      idealCutStart: { x: idealCutStart.x, z: idealCutStart.z },
-      idealCutEnd: { x: idealCutEnd.x, z: idealCutEnd.z },
-      cutStart: { x: cutStart.x, y: cutStart.y, z: cutStart.z },
-      cutEnd: { x: cutEnd.x, y: cutEnd.y, z: cutEnd.z },
-      segmentStart: { x: segment.start.x, y: segment.start.y, z: segment.start.z },
-      segmentEnd: { x: segment.end.x, y: segment.end.y, z: segment.end.z },
-      isHorizontal,
-      cutStartDist: isHorizontal
-        ? Math.abs(cutStart.x - intersection.x)
-        : Math.abs(cutStart.z - intersection.z),
-      cutEndDist: isHorizontal
-        ? Math.abs(cutEnd.x - intersection.x)
-        : Math.abs(cutEnd.z - intersection.z),
-      cutLength: isHorizontal
-        ? Math.abs(cutEnd.x - cutStart.x)
-        : Math.abs(cutEnd.z - cutStart.z),
-      segmentLength: isHorizontal
-        ? Math.abs(segment.end.x - segment.start.x)
-        : Math.abs(segment.end.z - segment.start.z),
-    })
-
-    // Verify cut points don't overlap
-    const cutLength = isHorizontal
-      ? Math.abs(cutEnd.x - cutStart.x)
-      : Math.abs(cutEnd.z - cutStart.z)
-
-    if (cutLength < TOLERANCE) {
-      console.warn(
-        `[replaceSegmentWithHop] Skipping crossing: cut points overlap. ` +
-        `Cut length: ${cutLength.toFixed(3)}. ` +
-        `Segment: ${JSON.stringify({ start: segment.start, end: segment.end })}, ` +
-        `Cut points: ${JSON.stringify({ cutStart, cutEnd })}`
-      )
+    const clampedCutPoints = clampCutPointsToSegment(idealCutPoints, intersection, segmentInfo, segment)
+    if (!clampedCutPoints) {
+      // Segment too short for arc, skip this crossing
       continue
     }
 
-    // Add segment from current start to cut start (if there's a gap)
-    // Ensure no gaps or overlaps by checking distance
-    const distanceToCutStart = isHorizontal
-      ? Math.abs(currentStart.x - cutStart.x)
-      : Math.abs(currentStart.z - cutStart.z)
+    const { cutStart, cutEnd } = clampedCutPoints
 
-    if (distanceToCutStart > TOLERANCE) {
-      // Verify cutStart is ahead of currentStart (not behind)
-      const isAhead = isHorizontal
-        ? (segment.start.x < segment.end.x ? cutStart.x > currentStart.x : cutStart.x < currentStart.x)
-        : (segment.start.z < segment.end.z ? cutStart.z > currentStart.z : cutStart.z < currentStart.z)
-
-      if (isAhead) {
-      // Ensure before segment ends exactly at cutStart, not beyond it
-      // Use the exact cutStart reference to avoid floating point issues
-      // CRITICAL: Use exact coordinates to prevent any overlap with arc region
-      const beforeSegment = {
-        start: {
-          x: currentStart.x,
-          y: currentStart.y,
-          z: currentStart.z
-        },
-        end: {
-          x: cutStart.x,  // Exact cutStart.x - must not exceed this
-          y: cutStart.y,
-          z: cutStart.z   // Exact cutStart.z - must not exceed this
-        },
-        type: segment.type,
-      }
-
-      // Verify the segment doesn't extend beyond cutStart
-      // Use direction-aware validation
-      if (isHorizontal) {
-        const isIncreasing = segment.start.x < segment.end.x
-        const segEndX = beforeSegment.end.x
-        const cutStartX = cutStart.x
-        const extendsBeyond = isIncreasing
-          ? segEndX > cutStartX + TOLERANCE
-          : segEndX < cutStartX - TOLERANCE
-
-        if (Math.abs(segEndX - cutStartX) > TOLERANCE || extendsBeyond) {
-          console.error(`[replaceSegmentWithHop] ERROR: Before segment end exceeds cutStart!`, {
-            segEndX,
-            cutStartX,
-            isIncreasing,
-            segmentDirection: isIncreasing ? 'increasing' : 'decreasing',
-          })
-          beforeSegment.end.x = cutStart.x
-        }
-      } else {
-        const isIncreasing = segment.start.z < segment.end.z
-        const segEndZ = beforeSegment.end.z
-        const cutStartZ = cutStart.z
-        const extendsBeyond = isIncreasing
-          ? segEndZ > cutStartZ + TOLERANCE
-          : segEndZ < cutStartZ - TOLERANCE
-
-        if (Math.abs(segEndZ - cutStartZ) > TOLERANCE || extendsBeyond) {
-          console.error(`[replaceSegmentWithHop] ERROR: Before segment end exceeds cutStart!`, {
-            segEndZ,
-            cutStartZ,
-            isIncreasing,
-            segmentDirection: isIncreasing ? 'increasing' : 'decreasing',
-          })
-          beforeSegment.end.z = cutStart.z
-        }
-      }
-      console.log(`[replaceSegmentWithHop] Adding before segment`, {
-        beforeSegment: { start: beforeSegment.start, end: beforeSegment.end, type: beforeSegment.type },
-        cutStart: { x: cutStart.x, y: cutStart.y, z: cutStart.z },
-        endsMatch: isHorizontal
-          ? Math.abs(beforeSegment.end.x - cutStart.x) < TOLERANCE
-          : Math.abs(beforeSegment.end.z - cutStart.z) < TOLERANCE,
-      })
+    // Create before segment if there's a gap
+    const beforeSegment = createBeforeSegment(currentStart, cutStart, segmentInfo, segment)
+    if (beforeSegment) {
       result.push(beforeSegment)
-      } else {
-        // Cut start is behind current start - this shouldn't happen with proper sorting
-        console.warn(
-          `[replaceSegmentWithHop] Cut start is behind current start, skipping segment. ` +
-          `Current start: ${JSON.stringify(currentStart)}, Cut start: ${JSON.stringify(cutStart)}`
-        )
-        continue
-      }
-    } else if (distanceToCutStart > 0) {
-      // Very close but not exact - snap to cutStart to avoid tiny gaps
-      currentStart = cutStart
     }
 
     // Get crossed segment to generate arc
@@ -818,492 +772,18 @@ export function replaceSegmentWithHop(
       )
     }
 
-    // Generate arc - this will validate that cut points are HOP_RADIUS from intersection
+    // Generate arc
     const arc = generateHopArc(cutStart, cutEnd, intersection)
-    console.log(`[replaceSegmentWithHop] Generated arc`, {
-      arcStart: { x: arc.start.x, z: arc.start.z },
-      arcEnd: { x: arc.end.x, z: arc.end.z },
-      cutStart: { x: cutStart.x, z: cutStart.z },
-      cutEnd: { x: cutEnd.x, z: cutEnd.z },
-      arcCenter: arc.arcCenter ? { x: arc.arcCenter.x, z: arc.arcCenter.z } : null,
-      arcRadius: arc.arcRadius,
-    })
     result.push(arc)
 
     // Update currentStart to arc end for next iteration
-    // Ensure exact match to avoid gaps
     currentStart = { ...cutEnd }
   }
 
-  // Add final segment from last cut end (or original start if no crossings processed) to segment end
-  // But only if currentStart hasn't already passed segment.end (which can happen if cutEnd extended beyond segment)
-  const distanceToEnd = isHorizontal
-    ? Math.abs(currentStart.x - segment.end.x)
-    : Math.abs(currentStart.z - segment.end.z)
-
-  // Check if we've already passed the segment end
-  const hasPassedEnd = isHorizontal
-    ? (segment.start.x < segment.end.x ? currentStart.x > segment.end.x : currentStart.x < segment.end.x)
-    : (segment.start.z < segment.end.z ? currentStart.z > segment.end.z : currentStart.z < segment.end.z)
-
-  if (!hasPassedEnd && distanceToEnd > TOLERANCE) {
-    // Verify we're moving in the right direction
-    const isAhead = isHorizontal
-      ? (segment.start.x < segment.end.x ? segment.end.x > currentStart.x : segment.end.x < currentStart.x)
-      : (segment.start.z < segment.end.z ? segment.end.z > currentStart.z : segment.end.z < currentStart.z)
-
-    if (isAhead) {
-    // Ensure after segment starts exactly at currentStart (which should be cutEnd), not before it
-    // Use the exact currentStart reference to avoid floating point issues
-    // CRITICAL: Use exact coordinates to prevent any overlap with arc region
-    const afterSegment = {
-      start: {
-        x: currentStart.x,  // Exact cutEnd.x - must not be less than this
-        y: currentStart.y,
-        z: currentStart.z   // Exact cutEnd.z - must not be less than this
-      },
-      end: {
-        x: segment.end.x,
-        y: segment.end.y,
-        z: segment.end.z
-      },
-      type: segment.type,
-    }
-
-    // Verify the segment doesn't start before cutEnd
-    // Use direction-aware validation
-    if (isHorizontal) {
-      const isIncreasing = segment.start.x < segment.end.x
-      const segStartX = afterSegment.start.x
-      const cutEndX = currentStart.x // Should be cutEnd
-      const startsBefore = isIncreasing
-        ? segStartX < cutEndX - TOLERANCE
-        : segStartX > cutEndX + TOLERANCE
-
-      if (Math.abs(segStartX - cutEndX) > TOLERANCE || startsBefore) {
-        console.error(`[replaceSegmentWithHop] ERROR: After segment start is before cutEnd!`, {
-          segStartX,
-          cutEndX,
-          isIncreasing,
-          segmentDirection: isIncreasing ? 'increasing' : 'decreasing',
-        })
-        afterSegment.start.x = cutEndX
-      }
-    } else {
-      const isIncreasing = segment.start.z < segment.end.z
-      const segStartZ = afterSegment.start.z
-      const cutEndZ = currentStart.z // Should be cutEnd
-      const startsBefore = isIncreasing
-        ? segStartZ < cutEndZ - TOLERANCE
-        : segStartZ > cutEndZ + TOLERANCE
-
-      if (Math.abs(segStartZ - cutEndZ) > TOLERANCE || startsBefore) {
-        console.error(`[replaceSegmentWithHop] ERROR: After segment start is before cutEnd!`, {
-          segStartZ,
-          cutEndZ,
-          isIncreasing,
-          segmentDirection: isIncreasing ? 'increasing' : 'decreasing',
-        })
-        afterSegment.start.z = cutEndZ
-      }
-    }
-    console.log(`[replaceSegmentWithHop] Adding after segment`, {
-      afterSegment: { start: afterSegment.start, end: afterSegment.end, type: afterSegment.type },
-      currentStart: { x: currentStart.x, y: currentStart.y, z: currentStart.z },
-      hasPassedEnd,
-      distanceToEnd,
-      startsMatch: isHorizontal
-        ? Math.abs(afterSegment.start.x - currentStart.x) < TOLERANCE
-        : Math.abs(afterSegment.start.z - currentStart.z) < TOLERANCE,
-    })
+  // Add final segment from last cut end to segment end
+  const afterSegment = createAfterSegment(currentStart, segment.end, segmentInfo, segment)
+  if (afterSegment) {
     result.push(afterSegment)
-    }
-  }
-
-  console.log(`[replaceSegmentWithHop] Final result`, {
-    originalSegment: {
-      start: { x: segment.start.x, y: segment.start.y, z: segment.start.z },
-      end: { x: segment.end.x, y: segment.end.y, z: segment.end.z },
-      type: segment.type
-    },
-    resultSegments: result.map((s) => ({
-      start: { x: s.start.x, y: s.start.y, z: s.start.z },
-      end: { x: s.end.x, y: s.end.y, z: s.end.z },
-      type: s.type,
-      isArc: s.type === 'arc',
-    })),
-    resultCount: result.length,
-    // Verify segments connect properly
-    segmentsConnect: result.length > 1 ? result.slice(0, -1).every((seg, i) => {
-      const next = result[i + 1]
-      const dx = Math.abs(seg.end.x - next.start.x)
-      const dz = Math.abs(seg.end.z - next.start.z)
-      return dx < TOLERANCE && dz < TOLERANCE
-    }) : true,
-  })
-
-  // Verify the original segment is not in the result
-  const originalSegmentInResult = result.some(
-    (s) =>
-      Math.abs(s.start.x - segment.start.x) < TOLERANCE &&
-      Math.abs(s.start.z - segment.start.z) < TOLERANCE &&
-      Math.abs(s.end.x - segment.end.x) < TOLERANCE &&
-      Math.abs(s.end.z - segment.end.z) < TOLERANCE &&
-      s.type === segment.type &&
-      s.type !== 'arc'
-  )
-
-  if (originalSegmentInResult) {
-    console.error(`[replaceSegmentWithHop] ERROR: Original segment found in result!`, {
-      originalSegment: { start: segment.start, end: segment.end, type: segment.type },
-      resultSegments: result,
-    })
-  }
-
-  // Verify that the cut region (cutStart to cutEnd) is covered by the arc, not by before/after segments
-  // Check for actual overlaps (not just touching at endpoints)
-  // NOTE: "before" and "after" segments should touch the arc at endpoints - this is correct behavior
-  const arcSegments = result.filter((s) => s.type === 'arc')
-  const nonArcSegments = result.filter((s) => s.type !== 'arc')
-
-  for (const arc of arcSegments) {
-    // Check if any non-arc segment overlaps with the arc's region
-    for (const seg of nonArcSegments) {
-      // Skip overlap check if this is a legitimate before/after segment that should touch the arc
-      // Before segments should end at arc.start, after segments should start at arc.end
-      const segIsHorizontal = Math.abs(seg.start.z - seg.end.z) < TOLERANCE
-      const arcIsHorizontal = Math.abs(arc.start.z - arc.end.z) < TOLERANCE
-
-      // Only check overlap if segments are on the same line (same orientation)
-      if (segIsHorizontal !== arcIsHorizontal) {
-        continue // Different orientations, can't overlap
-      }
-
-      // Check if this is a before/after segment, but also verify it doesn't extend into arc region
-      const segMinX = Math.min(seg.start.x, seg.end.x)
-      const segMaxX = Math.max(seg.start.x, seg.end.x)
-      const segMinZ = Math.min(seg.start.z, seg.end.z)
-      const segMaxZ = Math.max(seg.start.z, seg.end.z)
-      const arcMinX = Math.min(arc.start.x, arc.end.x)
-      const arcMaxX = Math.max(arc.start.x, arc.end.x)
-      const arcMinZ = Math.min(arc.start.z, arc.end.z)
-      const arcMaxZ = Math.max(arc.start.z, arc.end.z)
-
-      if (segIsHorizontal) {
-        // Horizontal segment
-        // Check if this is a before segment: ends at arc start
-        const beforeSegmentEndsAtArcStart = Math.abs(seg.end.x - arc.start.x) < TOLERANCE &&
-                                            Math.abs(seg.end.z - arc.start.z) < TOLERANCE &&
-                                            Math.abs(seg.start.z - arc.start.z) < TOLERANCE
-        // Check if this is an after segment: starts at arc end
-        const afterSegmentStartsAtArcEnd = Math.abs(seg.start.x - arc.end.x) < TOLERANCE &&
-                                          Math.abs(seg.start.z - arc.end.z) < TOLERANCE &&
-                                          Math.abs(seg.end.z - arc.end.z) < TOLERANCE
-
-        if (beforeSegmentEndsAtArcStart) {
-          // Before segment should end exactly at arc start - verify it doesn't extend beyond
-          // Use a stricter check: segment end should be <= arc start (with tolerance)
-          if (segMaxX > arcMinX + TOLERANCE) {
-            // Segment extends into arc region - trim it
-            seg.end.x = arc.start.x
-            seg.end.y = arc.start.y
-            seg.end.z = arc.start.z
-            console.warn(`[replaceSegmentWithHop] Fixed: Before segment extended into arc region, trimmed to arc start`, {
-              originalEnd: { x: seg.end.x, z: seg.end.z },
-              newEnd: { x: arc.start.x, z: arc.start.z },
-              segMaxX,
-              arcMinX,
-            })
-          } else {
-            // Legitimate before segment - skip overlap check
-            continue
-          }
-        } else if (afterSegmentStartsAtArcEnd) {
-          // After segment should start exactly at arc end - verify it doesn't extend before
-          // Use a stricter check: segment start should be >= arc end (with tolerance)
-          if (segMinX < arcMaxX - TOLERANCE) {
-            // Segment extends into arc region - trim it
-            seg.start.x = arc.end.x
-            seg.start.y = arc.end.y
-            seg.start.z = arc.end.z
-            console.warn(`[replaceSegmentWithHop] Fixed: After segment extended into arc region, trimmed to arc end`, {
-              originalStart: { x: seg.start.x, z: seg.start.z },
-              newStart: { x: arc.end.x, z: arc.end.z },
-              segMinX,
-              arcMaxX,
-            })
-          } else {
-            // Legitimate after segment - skip overlap check
-            continue
-          }
-        }
-      } else {
-        // Vertical segment
-        // Determine direction for both segment and arc
-        const segIsIncreasing = seg.start.z < seg.end.z
-        const arcIsIncreasing = arc.start.z < arc.end.z
-
-        // Check if this is a before segment: ends at arc start
-        // For vertical segments, we need to check direction matches
-        const beforeSegmentEndsAtArcStart = Math.abs(seg.end.z - arc.start.z) < TOLERANCE &&
-                                            Math.abs(seg.end.x - arc.start.x) < TOLERANCE &&
-                                            Math.abs(seg.start.x - arc.start.x) < TOLERANCE &&
-                                            segIsIncreasing === arcIsIncreasing
-        // Check if this is an after segment: starts at arc end
-        const afterSegmentStartsAtArcEnd = Math.abs(seg.start.z - arc.end.z) < TOLERANCE &&
-                                          Math.abs(seg.start.x - arc.end.x) < TOLERANCE &&
-                                          Math.abs(seg.end.x - arc.end.x) < TOLERANCE &&
-                                          segIsIncreasing === arcIsIncreasing
-
-        if (beforeSegmentEndsAtArcStart) {
-          // Before segment should end exactly at arc start - verify it doesn't extend beyond
-          // Use direction-aware check
-          const extendsBeyond = segIsIncreasing
-            ? segMaxZ > arcMinZ + TOLERANCE
-            : segMinZ < arcMaxZ - TOLERANCE
-
-          if (extendsBeyond) {
-            // Segment extends into arc region - trim it
-            seg.end.z = arc.start.z
-            seg.end.y = arc.start.y
-            seg.end.x = arc.start.x
-            console.warn(`[replaceSegmentWithHop] Fixed: Before segment extended into arc region, trimmed to arc start`, {
-              originalEnd: { x: seg.end.x, z: seg.end.z },
-              newEnd: { x: arc.start.x, z: arc.start.z },
-              segMaxZ,
-              arcMinZ,
-              segIsIncreasing,
-              arcIsIncreasing,
-            })
-          } else {
-            // Legitimate before segment - skip overlap check
-            continue
-          }
-        } else if (afterSegmentStartsAtArcEnd) {
-          // After segment should start exactly at arc end - verify it doesn't extend before
-          // Use direction-aware check
-          const extendsBefore = segIsIncreasing
-            ? segMinZ < arcMaxZ - TOLERANCE
-            : segMaxZ > arcMinZ + TOLERANCE
-
-          if (extendsBefore) {
-            // Segment extends into arc region - trim it
-            seg.start.z = arc.end.z
-            seg.start.y = arc.end.y
-            seg.start.x = arc.end.x
-            console.warn(`[replaceSegmentWithHop] Fixed: After segment extended into arc region, trimmed to arc end`, {
-              originalStart: { x: seg.start.x, z: seg.start.z },
-              newStart: { x: arc.end.x, z: arc.end.z },
-              segMinZ,
-              arcMaxZ,
-              segIsIncreasing,
-              arcIsIncreasing,
-            })
-          } else {
-            // Legitimate after segment - skip overlap check
-            continue
-          }
-        }
-      }
-
-      const isHorizontal = segIsHorizontal
-      if (isHorizontal) {
-        // Horizontal segment - check if it overlaps with arc's x range
-        const segMinX = Math.min(seg.start.x, seg.end.x)
-        const segMaxX = Math.max(seg.start.x, seg.end.x)
-        const arcMinX = Math.min(arc.start.x, arc.end.x)
-        const arcMaxX = Math.max(arc.start.x, arc.end.x)
-
-        // Check if segments are on the same line
-        if (Math.abs(seg.start.z - arc.start.z) < TOLERANCE) {
-          // Check for actual overlap (not just touching at endpoints)
-          // Overlap means the segments share some interior points, not just endpoints
-          // A segment touches the arc if:
-          // - "before" segment: segMaxX == arcMinX (segment ends at arc start)
-          // - "after" segment: segMinX == arcMaxX (segment starts at arc end)
-          const segEndsAtArcStart = Math.abs(segMaxX - arcMinX) < TOLERANCE
-          const segStartsAtArcEnd = Math.abs(segMinX - arcMaxX) < TOLERANCE
-
-          // Only flag as overlap if there's actual interior overlap, not just endpoint touches
-          // Interior overlap means the segment extends into the arc's region beyond just touching
-          const hasInteriorOverlap = (segMinX < arcMinX && segMaxX > arcMinX + TOLERANCE) ||
-                                     (segMinX < arcMaxX - TOLERANCE && segMaxX > arcMaxX) ||
-                                     (segMinX >= arcMinX + TOLERANCE && segMaxX <= arcMaxX - TOLERANCE)
-
-          // Allow touching at endpoints (this is correct behavior)
-          const isTouchingOnly = (segEndsAtArcStart && segMaxX <= arcMinX + TOLERANCE) ||
-                                 (segStartsAtArcEnd && segMinX >= arcMaxX - TOLERANCE)
-
-          if (hasInteriorOverlap && !isTouchingOnly) {
-            console.error(`[replaceSegmentWithHop] ERROR: Non-arc segment overlaps with arc region!`, {
-              segment: { start: seg.start, end: seg.end, type: seg.type },
-              arc: { start: arc.start, end: arc.end },
-              overlapRange: { seg: { min: segMinX, max: segMaxX }, arc: { min: arcMinX, max: arcMaxX } },
-              segEndsAtArcStart,
-              segStartsAtArcEnd,
-              hasInteriorOverlap,
-              isTouchingOnly,
-            })
-
-            // Fix: Clamp the segment to not overlap with arc region
-            // If segment extends into arc region, trim it
-            if (segMinX < arcMinX && segMaxX > arcMinX + TOLERANCE) {
-              // Segment starts before arc and extends into it - trim to arc start
-              const newEndX = arcMinX
-              const newLength = Math.abs(newEndX - seg.start.x)
-              if (newLength > TOLERANCE) {
-                seg.end.x = newEndX
-                seg.end.y = arc.start.y
-                seg.end.z = arc.start.z
-                console.log(`[replaceSegmentWithHop] Fixed: Trimmed segment end to arc start`, {
-                  originalEnd: { x: seg.end.x, z: seg.end.z },
-                  newEnd: { x: newEndX, z: arc.start.z },
-                  newLength,
-                })
-              } else {
-                // Segment would be too short after trimming - remove it
-                const index = result.indexOf(seg)
-                if (index >= 0) {
-                  result.splice(index, 1)
-                  console.log(`[replaceSegmentWithHop] Fixed: Removed segment (would be too short after trimming)`, {
-                    removedSegment: seg,
-                  })
-                }
-              }
-            } else if (segMinX < arcMaxX - TOLERANCE && segMaxX > arcMaxX) {
-              // Segment extends beyond arc end - trim to arc end
-              const newStartX = arcMaxX
-              const newLength = Math.abs(seg.end.x - newStartX)
-              if (newLength > TOLERANCE) {
-                seg.start.x = newStartX
-                seg.start.y = arc.end.y
-                seg.start.z = arc.end.z
-                console.log(`[replaceSegmentWithHop] Fixed: Trimmed segment start to arc end`, {
-                  originalStart: { x: seg.start.x, z: seg.start.z },
-                  newStart: { x: newStartX, z: arc.end.z },
-                  newLength,
-                })
-              } else {
-                // Segment would be too short after trimming - remove it
-                const index = result.indexOf(seg)
-                if (index >= 0) {
-                  result.splice(index, 1)
-                  console.log(`[replaceSegmentWithHop] Fixed: Removed segment (would be too short after trimming)`, {
-                    removedSegment: seg,
-                  })
-                }
-              }
-            } else if (segMinX >= arcMinX + TOLERANCE && segMaxX <= arcMaxX - TOLERANCE) {
-              // Segment is completely within arc region - this shouldn't happen, remove it
-              const index = result.indexOf(seg)
-              if (index >= 0) {
-                result.splice(index, 1)
-                console.log(`[replaceSegmentWithHop] Fixed: Removed segment completely within arc region`, {
-                  removedSegment: seg,
-                })
-              }
-            }
-          }
-        }
-      } else {
-        // Vertical segment - check if it overlaps with arc's z range
-        const segMinZ = Math.min(seg.start.z, seg.end.z)
-        const segMaxZ = Math.max(seg.start.z, seg.end.z)
-        const arcMinZ = Math.min(arc.start.z, arc.end.z)
-        const arcMaxZ = Math.max(arc.start.z, arc.end.z)
-
-        // Check if segments are on the same line
-        if (Math.abs(seg.start.x - arc.start.x) < TOLERANCE) {
-          // Check for actual overlap (not just touching at endpoints)
-          // A segment touches the arc if:
-          // - "before" segment: segMaxZ == arcMinZ (segment ends at arc start)
-          // - "after" segment: segMinZ == arcMaxZ (segment starts at arc end)
-          const segEndsAtArcStart = Math.abs(segMaxZ - arcMinZ) < TOLERANCE
-          const segStartsAtArcEnd = Math.abs(segMinZ - arcMaxZ) < TOLERANCE
-
-          // Only flag as overlap if there's actual interior overlap, not just endpoint touches
-          // Interior overlap means the segment extends into the arc's region beyond just touching
-          const hasInteriorOverlap = (segMinZ < arcMinZ && segMaxZ > arcMinZ + TOLERANCE) ||
-                                     (segMinZ < arcMaxZ - TOLERANCE && segMaxZ > arcMaxZ) ||
-                                     (segMinZ >= arcMinZ + TOLERANCE && segMaxZ <= arcMaxZ - TOLERANCE)
-
-          // Allow touching at endpoints (this is correct behavior)
-          const isTouchingOnly = (segEndsAtArcStart && segMaxZ <= arcMinZ + TOLERANCE) ||
-                                 (segStartsAtArcEnd && segMinZ >= arcMaxZ - TOLERANCE)
-
-          if (hasInteriorOverlap && !isTouchingOnly) {
-            console.error(`[replaceSegmentWithHop] ERROR: Non-arc segment overlaps with arc region!`, {
-              segment: { start: seg.start, end: seg.end, type: seg.type },
-              arc: { start: arc.start, end: arc.end },
-              overlapRange: { seg: { min: segMinZ, max: segMaxZ }, arc: { min: arcMinZ, max: arcMaxZ } },
-              segEndsAtArcStart,
-              segStartsAtArcEnd,
-              hasInteriorOverlap,
-              isTouchingOnly,
-            })
-
-            // Fix: Clamp the segment to not overlap with arc region
-            // If segment extends into arc region, trim it
-            if (segMinZ < arcMinZ && segMaxZ > arcMinZ + TOLERANCE) {
-              // Segment starts before arc and extends into it - trim to arc start
-              const newEndZ = arcMinZ
-              const newLength = Math.abs(newEndZ - seg.start.z)
-              if (newLength > TOLERANCE) {
-                seg.end.z = newEndZ
-                seg.end.y = arc.start.y
-                seg.end.x = arc.start.x
-                console.log(`[replaceSegmentWithHop] Fixed: Trimmed segment end to arc start`, {
-                  originalEnd: { x: seg.end.x, z: seg.end.z },
-                  newEnd: { x: arc.start.x, z: newEndZ },
-                  newLength,
-                })
-              } else {
-                // Segment would be too short after trimming - remove it
-                const index = result.indexOf(seg)
-                if (index >= 0) {
-                  result.splice(index, 1)
-                  console.log(`[replaceSegmentWithHop] Fixed: Removed segment (would be too short after trimming)`, {
-                    removedSegment: seg,
-                  })
-                }
-              }
-            } else if (segMinZ < arcMaxZ - TOLERANCE && segMaxZ > arcMaxZ) {
-              // Segment extends beyond arc end - trim to arc end
-              const newStartZ = arcMaxZ
-              const newLength = Math.abs(seg.end.z - newStartZ)
-              if (newLength > TOLERANCE) {
-                seg.start.z = newStartZ
-                seg.start.y = arc.end.y
-                seg.start.x = arc.end.x
-                console.log(`[replaceSegmentWithHop] Fixed: Trimmed segment start to arc end`, {
-                  originalStart: { x: seg.start.x, z: seg.start.z },
-                  newStart: { x: arc.end.x, z: newStartZ },
-                  newLength,
-                })
-              } else {
-                // Segment would be too short after trimming - remove it
-                const index = result.indexOf(seg)
-                if (index >= 0) {
-                  result.splice(index, 1)
-                  console.log(`[replaceSegmentWithHop] Fixed: Removed segment (would be too short after trimming)`, {
-                    removedSegment: seg,
-                  })
-                }
-              }
-            } else if (segMinZ >= arcMinZ + TOLERANCE && segMaxZ <= arcMaxZ - TOLERANCE) {
-              // Segment is completely within arc region - this shouldn't happen, remove it
-              const index = result.indexOf(seg)
-              if (index >= 0) {
-                result.splice(index, 1)
-                console.log(`[replaceSegmentWithHop] Fixed: Removed segment completely within arc region`, {
-                  removedSegment: seg,
-                })
-              }
-            }
-          }
-        }
-      }
-    }
   }
 
   return result.length > 0 ? result : [segment]
