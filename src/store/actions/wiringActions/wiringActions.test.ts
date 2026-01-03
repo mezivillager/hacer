@@ -272,7 +272,7 @@ describe('wiringActions', () => {
       expect(hasArcSegment).toBe(true)
     })
 
-    it('handles crossing resolution errors gracefully', () => {
+    it('handles very short segments gracefully by skipping arc creation', () => {
       const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
       const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 0 })
 
@@ -291,14 +291,14 @@ describe('wiringActions', () => {
       getState().completeWiring(gate2.id, gate2.inputs[0].id, 'input')
       expect(getState().wires).toHaveLength(1)
 
-      // Try to create second wire with very short segment that would cause crossing resolution to fail
+      // Create second wire with very short segment - arc creation is skipped but wire is still created
       getState().startWiring(
         gate2.id, gate2.outputs[0].id, 'output',
         { x: 2.7, y: 0, z: 0 }
       )
       useCircuitStore.setState((state) => {
         if (state.wiringFrom) {
-          // Very short segment that crosses - should trigger error in crossing resolution
+          // Very short segment that crosses - arc is skipped but wire is created
           state.wiringFrom.segments = [
             { start: { x: 4, y: 0.2, z: 3.99 }, end: { x: 4, y: 0.2, z: 4.01 }, type: 'vertical' },
           ]
@@ -306,9 +306,12 @@ describe('wiringActions', () => {
       })
       getState().completeWiring(gate1.id, gate1.inputs[0].id, 'input')
 
-      // Wire should not be created due to crossing resolution error
-      expect(getState().wires).toHaveLength(1)
-      expect(message.error).toHaveBeenCalled()
+      // Wire should be created (arc is skipped for short segments)
+      expect(getState().wires).toHaveLength(2)
+      // The second wire should have no arc (too short)
+      const secondWire = getState().wires[1]
+      const hasArc = secondWire.segments.some((s) => s.type === 'arc')
+      expect(hasArc).toBe(false)
     })
   })
 })

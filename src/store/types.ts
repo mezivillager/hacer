@@ -19,6 +19,7 @@ export interface Wire {
   toGateId: string
   toPinId: string
   segments: WireSegment[] // Path segments for this wire (calculated when wire is created)
+  crossesWireIds: string[] // IDs of wires this wire crosses over (for efficient crossing invalidation)
 }
 
 export type GateType = 'NAND' | 'AND' | 'OR' | 'NOT' | 'NOR' | 'XOR' | 'XNOR'
@@ -72,10 +73,10 @@ export interface GateActions {
 }
 
 export interface WireActions {
-  addWire: (fromGateId: string, fromPinId: string, toGateId: string, toPinId: string, segments: WireSegment[]) => Wire
+  addWire: (fromGateId: string, fromPinId: string, toGateId: string, toPinId: string, segments: WireSegment[], crossesWireIds?: string[]) => Wire
   removeWire: (wireId: string) => void
   setInputValue: (gateId: string, pinId: string, value: boolean) => void
-  updateWireSegments: (wireId: string, segments: WireSegment[]) => void
+  updateWireSegments: (wireId: string, segments: WireSegment[], crossesWireIds?: string[]) => void
 }
 
 export interface SimulationActions {

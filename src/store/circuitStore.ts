@@ -41,7 +41,7 @@ export const useCircuitStore = create<CircuitStore>()(
 
         // Spread all action slices
         ...createGateActions(set, get),
-        ...createWireActions(set),
+        ...createWireActions(set, get),
         ...createSimulationActions(set),
         ...createPlacementActions(set, get),
         ...createWiringActions(set, get),

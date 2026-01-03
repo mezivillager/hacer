@@ -4,7 +4,7 @@ import { snapToGrid } from '@/utils/grid'
 import { useCircuitStore } from '../../circuitStore'
 import { calculateWirePathFromConnection } from '@/utils/wiringScheme'
 import { collectWireSegments, combineAdjacentSegments } from '@/utils/wiringScheme/segments'
-import { resolveCrossings } from '@/utils/wiringScheme/crossing'
+import { resolveCrossings, removeOrphanedArcs } from '@/utils/wiringScheme/crossing'
 
 // Helper to create a gate instance - exported for use in atomic placement actions
 export function createGateInstance(type: GateType, position: Position): GateInstance {
@@ -232,9 +232,12 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
         // This ensures crossing detection sees the latest state of all wires
         const allOtherWires = freshWires.filter((w) => w.id !== wire.id)
         let resolvedSegments = newPath.segments
+        let crossedWireIds: string[] = []
 
         try {
-          resolvedSegments = resolveCrossings(newPath.segments, allOtherWires)
+          const result = resolveCrossings(newPath.segments, allOtherWires)
+          resolvedSegments = result.segments
+          crossedWireIds = result.crossedWireIds
         } catch (error) {
           // Crossing resolution failed - log warning but don't fail wire recalculation
           // The wire will be created without crossing resolution (user can manually rewire if needed)
@@ -248,8 +251,8 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
         // This is important because resolveCrossings may create segments that should be combined
         const combinedSegments = combineAdjacentSegments(resolvedSegments)
 
-        // Update wire segments
-        updateWireSegments(wire.id, combinedSegments)
+        // Update wire segments with new crossed wire IDs
+        updateWireSegments(wire.id, combinedSegments, crossedWireIds)
       } catch (error) {
         // Exception occurred - remove disconnected wire
         message.error('Failed to recalculate wire. Wire has been disconnected.')
@@ -263,6 +266,43 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
           gateId,
         })
         removeWire(wire.id)
+      }
+    }
+
+    // After recalculating connected wires, check other wires for orphaned arcs
+    // Wires that aren't connected to this gate may have arcs that are no longer needed
+    // because the gate movement changed the paths of connected wires
+    const updatedState = get()
+    const allWires = updatedState.wires
+
+    // Find wires that crossed over any of the connected wires (which were just recalculated)
+    const connectedWireIds = connectedWires.map((w) => w.id)
+    const wiresWithAffectedCrossings = allWires.filter(
+      (w) =>
+        w.fromGateId !== gateId &&
+        w.toGateId !== gateId &&
+        (w.crossesWireIds ?? []).some((id) => connectedWireIds.includes(id))
+    )
+
+    // Get recalculated wires for geometric check against specific wires
+    const recalculatedWires = allWires.filter((w) => connectedWireIds.includes(w.id))
+
+    for (const wire of wiresWithAffectedCrossings) {
+      if (!wire.segments || wire.segments.length === 0) {
+        continue
+      }
+
+      // Pass recalculated wires for geometric check against specific wires only
+      const updatedSegments = removeOrphanedArcs(wire.segments, undefined, recalculatedWires)
+
+      if (updatedSegments !== null) {
+        // Recalculate crossesWireIds from remaining arcs
+        const remainingCrossedIds = updatedSegments
+          .filter((s) => s.type === 'arc' && s.crossedWireId)
+          .map((s) => s.crossedWireId!)
+
+        // Update the wire segments
+        updateWireSegments(wire.id, updatedSegments, remainingCrossedIds)
       }
     }
   },

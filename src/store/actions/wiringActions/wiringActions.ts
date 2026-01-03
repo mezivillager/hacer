@@ -137,8 +137,11 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
 
     // Resolve crossings: newer wire hops over older wires
     let resolvedSegments: WireSegment[]
+    let crossedWireIds: string[] = []
     try {
-      resolvedSegments = resolveCrossings(wireSegments, state.wires)
+      const result = resolveCrossings(wireSegments, state.wires)
+      resolvedSegments = result.segments
+      crossedWireIds = result.crossedWireIds
     } catch (error) {
       // Crossing resolution failed - show error and cancel wiring
       const errorMessage = error instanceof Error ? error.message : 'Failed to resolve wire crossings'
@@ -155,14 +158,14 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
         from: { gateId: from.fromGateId, pinId: from.fromPinId },
         to: { gateId: toGateId, pinId: toPinId },
       })
-      state.addWire(from.fromGateId, from.fromPinId, toGateId, toPinId, resolvedSegments)
+      state.addWire(from.fromGateId, from.fromPinId, toGateId, toPinId, resolvedSegments, crossedWireIds)
     } else {
       console.debug('[wiringActions] Adding wire (reversed)', {
         from: { gateId: toGateId, pinId: toPinId },
         to: { gateId: from.fromGateId, pinId: from.fromPinId },
       })
       // For reversed wires, segments are already normalized as output -> input from WirePreview calculation
-      state.addWire(toGateId, toPinId, from.fromGateId, from.fromPinId, resolvedSegments)
+      state.addWire(toGateId, toPinId, from.fromGateId, from.fromPinId, resolvedSegments, crossedWireIds)
     }
 
     set((s) => {

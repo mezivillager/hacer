@@ -9,6 +9,7 @@ import type { WireSegment, Position } from './types'
 import type { Wire } from '@/store/types'
 import { WIRE_HEIGHT, HOP_RADIUS } from './types'
 import { areSegmentsOnSameSectionLine } from './overlap'
+import { combineAdjacentSegments } from './segments'
 
 const TOLERANCE = 0.001
 
@@ -454,12 +455,14 @@ export function createAfterSegment(
  * @param cutStart - Start point of the arc (exactly HOP_RADIUS from intersection)
  * @param cutEnd - End point of the arc (exactly HOP_RADIUS from intersection)
  * @param intersectionPoint - Point where wires intersect (arc center)
+ * @param crossedWireId - ID of the wire this arc hops over
  * @returns WireSegment with type 'arc' representing the hop
  */
 export function generateHopArc(
   cutStart: Position,
   cutEnd: Position,
-  intersectionPoint: Position
+  intersectionPoint: Position,
+  crossedWireId: string
 ): WireSegment {
   // Arc center is at intersection point at base height
   // The arc will curve upward from this center
@@ -489,6 +492,7 @@ export function generateHopArc(
     type: 'arc',
     arcCenter,
     arcRadius,
+    crossedWireId,
   }
 }
 
@@ -561,7 +565,7 @@ export function replaceSegmentWithHop(
     }
 
     // Generate arc
-    const arc = generateHopArc(cutStart, cutEnd, intersection)
+    const arc = generateHopArc(cutStart, cutEnd, intersection, crossing.existingWireId)
     result.push(arc)
 
     // Update currentStart to arc end for next iteration
@@ -578,16 +582,24 @@ export function replaceSegmentWithHop(
 }
 
 /**
+ * Result of resolving crossings, including both segments and crossed wire IDs.
+ */
+export interface CrossingResolutionResult {
+  segments: WireSegment[]
+  crossedWireIds: string[]
+}
+
+/**
  * Resolve all crossings in new wire segments by replacing affected segments with hops.
  *
  * @param newWireSegments - Segments of the new wire being created
  * @param existingWires - Array of existing wires in the circuit
- * @returns Modified segments with arcs replacing crossing segments
+ * @returns Object containing modified segments with arcs and array of crossed wire IDs
  */
 export function resolveCrossings(
   newWireSegments: WireSegment[],
   existingWires: Wire[]
-): WireSegment[] {
+): CrossingResolutionResult {
   console.log('[resolveCrossings] Starting resolution', {
     newWireSegmentsCount: newWireSegments.length,
     existingWiresCount: existingWires.length,
@@ -602,7 +614,7 @@ export function resolveCrossings(
 
   if (allCrossings.length === 0) {
     console.log('[resolveCrossings] No crossings found, returning original segments')
-    return newWireSegments
+    return { segments: newWireSegments, crossedWireIds: [] }
   }
 
   // Sort crossings by segment index first, so we process segments in order
@@ -622,6 +634,12 @@ export function resolveCrossings(
       Math.abs(b.intersectionPoint.z - segB.start.z)
     return distA - distB
   })
+
+  // Collect unique crossed wire IDs
+  const crossedWireIds = new Set<string>()
+  for (const crossing of allCrossings) {
+    crossedWireIds.add(crossing.existingWireId)
+  }
 
   // Group crossings by segment index, and deduplicate crossings at the same intersection point
   // This prevents creating duplicate hops when multiple segments cross at the same point
@@ -857,8 +875,146 @@ export function resolveCrossings(
   console.log('[resolveCrossings] Finished resolution', {
     finalSegmentsCount: result.length,
     hasArcs: result.some((s) => s.type === 'arc'),
+    crossedWireIds: Array.from(crossedWireIds),
   })
 
-  return result
+  return { segments: result, crossedWireIds: Array.from(crossedWireIds) }
+}
+
+/**
+ * Check if an arc segment still crosses a specific wire.
+ * An arc is needed if its center point (the original intersection) still intersects
+ * a perpendicular segment in the given wire.
+ *
+ * @param arc - Arc segment to check
+ * @param wire - Wire to check against
+ * @returns True if arc still crosses the wire, false otherwise
+ */
+export function isArcStillNeededForWire(arc: WireSegment, wire: Wire): boolean {
+  if (arc.type !== 'arc' || !arc.arcCenter) {
+    return false
+  }
+
+  const arcCenter = arc.arcCenter
+
+  // Determine if the arc was for a horizontal or vertical segment
+  // The arc start/end are on the same line, so we check which coordinate changes
+  const arcIsHorizontal = Math.abs(arc.start.z - arc.end.z) < TOLERANCE
+
+  // Check segments of the specific wire for a crossing at the arc center
+  for (const segment of wire.segments) {
+    // Skip entry/exit segments and arc segments (only check routing segments)
+    if (segment.type === 'entry' || segment.type === 'exit' || segment.type === 'arc') {
+      continue
+    }
+
+    const segmentIsHorizontal = Math.abs(segment.start.z - segment.end.z) < TOLERANCE
+
+    // Must be perpendicular (one horizontal, one vertical)
+    if (arcIsHorizontal === segmentIsHorizontal) {
+      continue
+    }
+
+    // Check if segment contains the arc center point
+    const segmentMinX = Math.min(segment.start.x, segment.end.x)
+    const segmentMaxX = Math.max(segment.start.x, segment.end.x)
+    const segmentMinZ = Math.min(segment.start.z, segment.end.z)
+    const segmentMaxZ = Math.max(segment.start.z, segment.end.z)
+
+    const isOnSegment = segmentIsHorizontal
+      ? arcCenter.x >= segmentMinX - TOLERANCE &&
+        arcCenter.x <= segmentMaxX + TOLERANCE &&
+        Math.abs(arcCenter.z - segment.start.z) < TOLERANCE
+      : arcCenter.z >= segmentMinZ - TOLERANCE &&
+        arcCenter.z <= segmentMaxZ + TOLERANCE &&
+        Math.abs(arcCenter.x - segment.start.x) < TOLERANCE
+
+    if (isOnSegment) {
+      return true
+    }
+  }
+
+  return false
+}
+
+/**
+ * Remove orphaned arcs from wire segments and replace them with smooth segments.
+ * Orphaned arcs are arcs that no longer cross any existing wire.
+ *
+ * @param segments - Array of wire segments (may contain arcs)
+ * @param removedWireId - Optional: ID of wire that was removed (for direct ID matching)
+ * @param recalculatedWires - Optional: Array of wires that were recalculated (for geometric check)
+ * @returns Updated segments with orphaned arcs replaced, or null if no changes were made
+ */
+export function removeOrphanedArcs(
+  segments: WireSegment[],
+  removedWireId?: string,
+  recalculatedWires?: Wire[]
+): WireSegment[] | null {
+  let hasChanges = false
+  const result: WireSegment[] = []
+
+  for (let i = 0; i < segments.length; i++) {
+    const segment = segments[i]
+
+    if (segment.type === 'arc') {
+      let stillNeeded = false
+
+      if (removedWireId !== undefined) {
+        // Direct ID matching: arc is orphaned if it crossed the removed wire
+        stillNeeded = segment.crossedWireId !== removedWireId
+      } else if (recalculatedWires !== undefined) {
+        // Geometric check: find the wire this arc crosses and check only that wire
+        if (segment.crossedWireId) {
+          const crossedWire = recalculatedWires.find((w) => w.id === segment.crossedWireId)
+          if (crossedWire) {
+            // Check if arc still crosses this specific wire's segments
+            stillNeeded = isArcStillNeededForWire(segment, crossedWire)
+          } else {
+            // Crossed wire not in recalculated list, so arc is still needed
+            // (it crosses a wire that wasn't recalculated)
+            stillNeeded = true
+          }
+        } else {
+          // Legacy arc without crossedWireId - keep it to be safe
+          stillNeeded = true
+        }
+      } else {
+        // No parameters provided - keep all arcs (shouldn't happen in practice)
+        stillNeeded = true
+      }
+
+      if (!stillNeeded) {
+        // Replace arc with smooth segment
+        const isHorizontal = Math.abs(segment.start.z - segment.end.z) < TOLERANCE
+        const smoothSegment: WireSegment = {
+          start: { ...segment.start },
+          end: { ...segment.end },
+          type: isHorizontal ? 'horizontal' : 'vertical',
+        }
+        result.push(smoothSegment)
+        hasChanges = true
+      } else {
+        // Keep the arc
+        result.push(segment)
+      }
+    } else {
+      // Keep non-arc segments as-is
+      result.push(segment)
+    }
+  }
+
+  if (!hasChanges) {
+    return null
+  }
+
+  // Combine adjacent segments of the same type after removing arcs
+  // This merges the smooth segments that replaced arcs with their neighbors
+  const combined = combineAdjacentSegments(result)
+
+  // Check if combining actually changed anything (e.g., if we replaced an arc with a segment
+  // that can be combined with neighbors, the combined result may be different)
+  // For now, always return the combined result if we made any changes
+  return combined
 }
 

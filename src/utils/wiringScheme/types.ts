@@ -49,6 +49,7 @@ export interface WireSegment {
   // For arc segments, add arc metadata:
   arcCenter?: Position // Center point of arc (at base height)
   arcRadius?: number // Radius of arc
+  crossedWireId?: string // ID of wire this arc hops over
 }
 
 /**

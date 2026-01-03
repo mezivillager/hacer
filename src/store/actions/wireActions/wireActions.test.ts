@@ -84,6 +84,75 @@ describe('wireActions', () => {
       getState().removeWire('non-existent-id')
       expect(getState().wires).toHaveLength(1)
     })
+
+    it('removes orphaned arcs from wires that crossed over the removed wire', () => {
+      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 0 })
+      const gate3 = getState().addGate('NAND', { x: 4, y: 0, z: 0 })
+      const gate4 = getState().addGate('NAND', { x: 6, y: 0, z: 0 })
+
+      // Wire B: created first, no arcs (vertical segment)
+      const wireB = getState().addWire(
+        gate1.id, gate1.outputs[0].id,
+        gate2.id, gate2.inputs[0].id,
+        [{ start: { x: 5, y: 0.2, z: 0 }, end: { x: 5, y: 0.2, z: 10 }, type: 'vertical' }],
+        []
+      )
+
+      // Wire A: created second, has arc hopping over Wire B
+      const arcCenter = { x: 5, y: 0.2, z: 5 }
+      const wireA = getState().addWire(
+        gate3.id, gate3.outputs[0].id,
+        gate4.id, gate4.inputs[0].id,
+        [
+          { start: { x: 0, y: 0.2, z: 5 }, end: { x: 4.9, y: 0.2, z: 5 }, type: 'horizontal' },
+          { start: { x: 4.9, y: 0.2, z: 5 }, end: { x: 5.1, y: 0.2, z: 5 }, type: 'arc', arcCenter, arcRadius: 0.1, crossedWireId: wireB.id },
+          { start: { x: 5.1, y: 0.2, z: 5 }, end: { x: 10, y: 0.2, z: 5 }, type: 'horizontal' },
+        ],
+        [wireB.id] // Wire A crosses over Wire B
+      )
+
+      expect(getState().wires).toHaveLength(2)
+
+      // Verify Wire A has an arc before removal
+      const wireABefore = getState().wires.find((w) => w.id === wireA.id)!
+      expect(wireABefore.segments.some((s) => s.type === 'arc')).toBe(true)
+      expect(wireABefore.crossesWireIds).toContain(wireB.id)
+
+      // Remove Wire B (the wire WITHOUT the arc)
+      getState().removeWire(wireB.id)
+
+      expect(getState().wires).toHaveLength(1)
+
+      // Wire A's arc should be removed and replaced with smooth segment
+      const wireAAfter = getState().wires.find((w) => w.id === wireA.id)!
+      expect(wireAAfter.segments.some((s) => s.type === 'arc')).toBe(false)
+      expect(wireAAfter.crossesWireIds).not.toContain(wireB.id)
+    })
+
+    it('handles wires with undefined crossesWireIds gracefully', () => {
+      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 0 })
+
+      // Create a wire and manually set crossesWireIds to undefined to simulate legacy data
+      const wire = getState().addWire(
+        gate1.id, gate1.outputs[0].id,
+        gate2.id, gate2.inputs[0].id,
+        []
+      )
+
+      // Simulate legacy wire without crossesWireIds
+      useCircuitStore.setState((state) => {
+        const w = state.wires.find((w) => w.id === wire.id)
+        if (w) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (w as any).crossesWireIds = undefined
+        }
+      })
+
+      // Removing a non-existent wire should not throw even with undefined crossesWireIds
+      expect(() => getState().removeWire('some-other-wire-id')).not.toThrow()
+    })
   })
 
   describe('setInputValue', () => {

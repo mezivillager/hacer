@@ -12,6 +12,8 @@ import {
   calculateIdealCutPoints,
   createBeforeSegment,
   createAfterSegment,
+  isArcStillNeededForWire,
+  removeOrphanedArcs,
   type Crossing,
 } from './crossing'
 
@@ -125,6 +127,7 @@ describe('Wire Crossing Detection and Resolution', () => {
           fromPinId: 'pin-1',
           toGateId: 'gate-2',
           toPinId: 'pin-2',
+          crossesWireIds: [],
           segments: [
             {
               start: createPosition(4, WIRE_HEIGHT, 0),
@@ -159,6 +162,7 @@ describe('Wire Crossing Detection and Resolution', () => {
           fromPinId: 'pin-1',
           toGateId: 'gate-2',
           toPinId: 'pin-2',
+          crossesWireIds: [],
           segments: [
             {
               start: createPosition(0, WIRE_HEIGHT, 8),
@@ -198,6 +202,7 @@ describe('Wire Crossing Detection and Resolution', () => {
           fromPinId: 'pin-1',
           toGateId: 'gate-2',
           toPinId: 'pin-2',
+          crossesWireIds: [],
           segments: [
             {
               start: createPosition(6, WIRE_HEIGHT, 0),
@@ -230,6 +235,7 @@ describe('Wire Crossing Detection and Resolution', () => {
           fromPinId: 'pin-1',
           toGateId: 'gate-2',
           toPinId: 'pin-2',
+          crossesWireIds: [],
           segments: [
             {
               start: createPosition(4, WIRE_HEIGHT, 2),
@@ -266,6 +272,7 @@ describe('Wire Crossing Detection and Resolution', () => {
           fromPinId: 'pin-1',
           toGateId: 'gate-2',
           toPinId: 'pin-2',
+          crossesWireIds: [],
           segments: [
             {
               start: createPosition(4, WIRE_HEIGHT, 0),
@@ -295,9 +302,10 @@ describe('Wire Crossing Detection and Resolution', () => {
       const cutStart = createPosition(intersectionPoint.x - HOP_RADIUS, WIRE_HEIGHT, intersectionPoint.z)
       const cutEnd = createPosition(intersectionPoint.x + HOP_RADIUS, WIRE_HEIGHT, intersectionPoint.z)
 
-      const arc = generateHopArc(cutStart, cutEnd, intersectionPoint)
+      const arc = generateHopArc(cutStart, cutEnd, intersectionPoint, 'wire-test-1')
 
       expect(arc.type).toBe('arc')
+      expect(arc.crossedWireId).toBe('wire-test-1')
       expect(arc.arcCenter).toEqual({
         x: intersectionPoint.x,
         y: WIRE_HEIGHT,
@@ -316,9 +324,10 @@ describe('Wire Crossing Detection and Resolution', () => {
       const cutStart = createPosition(intersectionPoint.x, WIRE_HEIGHT, intersectionPoint.z - HOP_RADIUS)
       const cutEnd = createPosition(intersectionPoint.x, WIRE_HEIGHT, intersectionPoint.z + HOP_RADIUS)
 
-      const arc = generateHopArc(cutStart, cutEnd, intersectionPoint)
+      const arc = generateHopArc(cutStart, cutEnd, intersectionPoint, 'wire-test-1')
 
       expect(arc.type).toBe('arc')
+      expect(arc.crossedWireId).toBe('wire-test-1')
       expect(arc.arcCenter).toEqual({
         x: intersectionPoint.x,
         y: WIRE_HEIGHT,
@@ -339,9 +348,10 @@ describe('Wire Crossing Detection and Resolution', () => {
       const cutEnd = createPosition(intersectionPoint.x + HOP_RADIUS, WIRE_HEIGHT, intersectionPoint.z)
 
       // Should not throw - arc radius is calculated dynamically
-      const arc = generateHopArc(cutStart, cutEnd, intersectionPoint)
+      const arc = generateHopArc(cutStart, cutEnd, intersectionPoint, 'wire-test-1')
 
       expect(arc.type).toBe('arc')
+      expect(arc.crossedWireId).toBe('wire-test-1')
       expect(arc.arcCenter).toEqual({
         x: intersectionPoint.x,
         y: WIRE_HEIGHT,
@@ -357,7 +367,7 @@ describe('Wire Crossing Detection and Resolution', () => {
       const cutStart = createPosition(intersectionPoint.x - HOP_RADIUS, WIRE_HEIGHT, intersectionPoint.z)
       const cutEnd = createPosition(intersectionPoint.x + HOP_RADIUS, WIRE_HEIGHT, intersectionPoint.z)
 
-      const arc = generateHopArc(cutStart, cutEnd, intersectionPoint)
+      const arc = generateHopArc(cutStart, cutEnd, intersectionPoint, 'wire-test-1')
 
       const span = Math.abs(arc.end.x - arc.start.x)
       expect(span).toBeCloseTo(2 * HOP_RADIUS, 3)
@@ -368,7 +378,7 @@ describe('Wire Crossing Detection and Resolution', () => {
       const cutStart = createPosition(intersectionPoint.x, WIRE_HEIGHT, intersectionPoint.z - HOP_RADIUS)
       const cutEnd = createPosition(intersectionPoint.x, WIRE_HEIGHT, intersectionPoint.z + HOP_RADIUS)
 
-      const arc = generateHopArc(cutStart, cutEnd, intersectionPoint)
+      const arc = generateHopArc(cutStart, cutEnd, intersectionPoint, 'wire-test-1')
 
       const span = Math.abs(arc.end.z - arc.start.z)
       expect(span).toBeCloseTo(2 * HOP_RADIUS, 3)
@@ -699,6 +709,7 @@ describe('Wire Crossing Detection and Resolution', () => {
           fromPinId: 'pin-1',
           toGateId: 'gate-2',
           toPinId: 'pin-2',
+          crossesWireIds: [],
           segments: [
             {
               start: createPosition(4, WIRE_HEIGHT, 0),
@@ -738,6 +749,7 @@ describe('Wire Crossing Detection and Resolution', () => {
           fromPinId: 'pin-1',
           toGateId: 'gate-2',
           toPinId: 'pin-2',
+          crossesWireIds: [],
           segments: [
             {
               start: createPosition(0.025, WIRE_HEIGHT, 0),
@@ -796,6 +808,7 @@ describe('Wire Crossing Detection and Resolution', () => {
           fromPinId: 'pin-1',
           toGateId: 'gate-2',
           toPinId: 'pin-2',
+          crossesWireIds: [],
           segments: [
             {
               start: createPosition(4, WIRE_HEIGHT, 0),
@@ -838,6 +851,7 @@ describe('Wire Crossing Detection and Resolution', () => {
           fromPinId: 'pin-1',
           toGateId: 'gate-2',
           toPinId: 'pin-2',
+          crossesWireIds: [],
           segments: [
             {
               start: createPosition(4, WIRE_HEIGHT, 0),
@@ -852,6 +866,7 @@ describe('Wire Crossing Detection and Resolution', () => {
           fromPinId: 'pin-1',
           toGateId: 'gate-4',
           toPinId: 'pin-2',
+          crossesWireIds: [],
           segments: [
             {
               start: createPosition(8, WIRE_HEIGHT, 0),
@@ -889,6 +904,7 @@ describe('Wire Crossing Detection and Resolution', () => {
           fromPinId: 'pin-1',
           toGateId: 'gate-2',
           toPinId: 'pin-2',
+          crossesWireIds: [],
           segments: [
             {
               start: createPosition(4, WIRE_HEIGHT, 0),
@@ -932,6 +948,7 @@ describe('Wire Crossing Detection and Resolution', () => {
           fromPinId: 'pin-1',
           toGateId: 'gate-2',
           toPinId: 'pin-2',
+          crossesWireIds: [],
           segments: [
             {
               start: createPosition(4, WIRE_HEIGHT, 0),
@@ -989,6 +1006,7 @@ describe('Wire Crossing Detection and Resolution', () => {
           fromPinId: 'pin-1',
           toGateId: 'gate-2',
           toPinId: 'pin-2',
+          crossesWireIds: [],
           segments: [
             {
               start: createPosition(0.1, WIRE_HEIGHT, 0),
@@ -1026,6 +1044,7 @@ describe('Wire Crossing Detection and Resolution', () => {
           fromPinId: 'pin-1',
           toGateId: 'gate-2',
           toPinId: 'pin-2',
+          crossesWireIds: [],
           segments: [
             {
               start: createPosition(7.9, WIRE_HEIGHT, 0),
@@ -1063,6 +1082,7 @@ describe('Wire Crossing Detection and Resolution', () => {
           fromPinId: 'pin-1',
           toGateId: 'gate-2',
           toPinId: 'pin-2',
+          crossesWireIds: [],
           segments: [
             {
               start: createPosition(4, WIRE_HEIGHT, 0),
@@ -1104,6 +1124,7 @@ describe('Wire Crossing Detection and Resolution', () => {
           fromPinId: 'pin-1',
           toGateId: 'gate-2',
           toPinId: 'pin-2',
+          crossesWireIds: [],
           segments: [
             {
               start: createPosition(HOP_RADIUS, WIRE_HEIGHT, 0),
@@ -1146,6 +1167,7 @@ describe('Wire Crossing Detection and Resolution', () => {
           fromPinId: 'pin-1',
           toGateId: 'gate-2',
           toPinId: 'pin-2',
+          crossesWireIds: [],
           segments: [
             {
               start: createPosition(4, WIRE_HEIGHT, 0),
@@ -1160,6 +1182,7 @@ describe('Wire Crossing Detection and Resolution', () => {
           fromPinId: 'pin-1',
           toGateId: 'gate-4',
           toPinId: 'pin-2',
+          crossesWireIds: [],
           segments: [
             {
               start: createPosition(8, WIRE_HEIGHT, 0),
@@ -1197,7 +1220,8 @@ describe('Wire Crossing Detection and Resolution', () => {
 
       const result = resolveCrossings(newWireSegments, existingWires)
 
-      expect(result).toEqual(newWireSegments)
+      expect(result.segments).toEqual(newWireSegments)
+      expect(result.crossedWireIds).toEqual([])
     })
 
     it('resolves crossings across multiple segments', () => {
@@ -1220,6 +1244,7 @@ describe('Wire Crossing Detection and Resolution', () => {
           fromPinId: 'pin-1',
           toGateId: 'gate-2',
           toPinId: 'pin-2',
+          crossesWireIds: [],
           segments: [
             {
               start: createPosition(4, WIRE_HEIGHT, 0),
@@ -1234,6 +1259,7 @@ describe('Wire Crossing Detection and Resolution', () => {
           fromPinId: 'pin-1',
           toGateId: 'gate-4',
           toPinId: 'pin-2',
+          crossesWireIds: [],
           segments: [
             {
               start: createPosition(8, WIRE_HEIGHT, 6),
@@ -1247,9 +1273,11 @@ describe('Wire Crossing Detection and Resolution', () => {
       const result = resolveCrossings(newWireSegments, existingWires)
 
       // Should have arcs for both crossings
-      const arcSegments = result.filter((s) => s.type === 'arc')
+      const arcSegments = result.segments.filter((s) => s.type === 'arc')
       expect(arcSegments.length).toBeGreaterThan(0)
-      expect(result.length).toBeGreaterThan(newWireSegments.length)
+      expect(result.segments.length).toBeGreaterThan(newWireSegments.length)
+      expect(result.crossedWireIds).toContain('wire-1')
+      expect(result.crossedWireIds).toContain('wire-2')
     })
 
     it('handles multiple crossings on same segment correctly', () => {
@@ -1267,6 +1295,7 @@ describe('Wire Crossing Detection and Resolution', () => {
           fromPinId: 'pin-1',
           toGateId: 'gate-2',
           toPinId: 'pin-2',
+          crossesWireIds: [],
           segments: [
             {
               start: createPosition(4, WIRE_HEIGHT, 0),
@@ -1281,6 +1310,7 @@ describe('Wire Crossing Detection and Resolution', () => {
           fromPinId: 'pin-1',
           toGateId: 'gate-4',
           toPinId: 'pin-2',
+          crossesWireIds: [],
           segments: [
             {
               start: createPosition(8, WIRE_HEIGHT, 0),
@@ -1295,6 +1325,7 @@ describe('Wire Crossing Detection and Resolution', () => {
           fromPinId: 'pin-1',
           toGateId: 'gate-6',
           toPinId: 'pin-2',
+          crossesWireIds: [],
           segments: [
             {
               start: createPosition(12, WIRE_HEIGHT, 0),
@@ -1308,16 +1339,19 @@ describe('Wire Crossing Detection and Resolution', () => {
       const result = resolveCrossings(newWireSegments, existingWires)
 
       // Should have 3 arcs
-      const arcSegments = result.filter((s) => s.type === 'arc')
+      const arcSegments = result.segments.filter((s) => s.type === 'arc')
       expect(arcSegments.length).toBe(3)
 
       // Verify all segments connect properly
-      for (let i = 0; i < result.length - 1; i++) {
-        const current = result[i]
-        const next = result[i + 1]
+      for (let i = 0; i < result.segments.length - 1; i++) {
+        const current = result.segments[i]
+        const next = result.segments[i + 1]
         expect(current.end.x).toBeCloseTo(next.start.x, 3)
         expect(current.end.z).toBeCloseTo(next.start.z, 3)
       }
+
+      // Should reference all 3 crossed wires
+      expect(result.crossedWireIds).toHaveLength(3)
     })
 
     it('maintains arc validity after path recalculation', () => {
@@ -1336,6 +1370,7 @@ describe('Wire Crossing Detection and Resolution', () => {
           fromPinId: 'pin-1',
           toGateId: 'gate-2',
           toPinId: 'pin-2',
+          crossesWireIds: [],
           segments: [
             {
               start: createPosition(4, WIRE_HEIGHT, 0),
@@ -1348,7 +1383,7 @@ describe('Wire Crossing Detection and Resolution', () => {
 
       // First resolution
       const result1 = resolveCrossings(newWireSegments, existingWires)
-      const arc1 = result1.find((s) => s.type === 'arc')
+      const arc1 = result1.segments.find((s) => s.type === 'arc')
       expect(arc1).toBeDefined()
 
       // Verify arc is valid
@@ -1371,7 +1406,7 @@ describe('Wire Crossing Detection and Resolution', () => {
 
       // Second resolution should still work
       const result2 = resolveCrossings(newWireSegments2, existingWires)
-      const arc2 = result2.find((s) => s.type === 'arc')
+      const arc2 = result2.segments.find((s) => s.type === 'arc')
       expect(arc2).toBeDefined()
     })
 
@@ -1395,6 +1430,7 @@ describe('Wire Crossing Detection and Resolution', () => {
           fromPinId: 'pin-1',
           toGateId: 'gate-2',
           toPinId: 'pin-2',
+          crossesWireIds: [],
           segments: [
             {
               start: createPosition(4, WIRE_HEIGHT, 0),
@@ -1408,11 +1444,292 @@ describe('Wire Crossing Detection and Resolution', () => {
       const result = resolveCrossings(newWireSegments, existingWires)
 
       // Should handle boundary crossing correctly (may deduplicate or handle separately)
-      expect(result.length).toBeGreaterThan(0)
+      expect(result.segments.length).toBeGreaterThan(0)
       // Verify no duplicate arcs at boundary
-      const arcSegments = result.filter((s) => s.type === 'arc')
+      const arcSegments = result.segments.filter((s) => s.type === 'arc')
       // Should have at most 1 arc (deduplicated at boundary)
       expect(arcSegments.length).toBeLessThanOrEqual(1)
+    })
+  })
+
+  describe('isArcStillNeededForWire', () => {
+    it('returns true when arc still crosses the wire', () => {
+      // Create an arc that hops over a horizontal segment
+      const arcCenter: Position = createPosition(4, WIRE_HEIGHT, 4)
+      const arc: WireSegment = {
+        start: createPosition(4 - HOP_RADIUS, WIRE_HEIGHT, 4),
+        end: createPosition(4 + HOP_RADIUS, WIRE_HEIGHT, 4),
+        type: 'arc',
+        arcCenter,
+        arcRadius: HOP_RADIUS,
+      }
+
+      // Create an existing wire with a horizontal segment that the arc crosses
+      const existingWire: Wire = {
+        id: 'wire-1',
+        fromGateId: 'gate-1',
+        fromPinId: 'pin-1',
+        toGateId: 'gate-2',
+        toPinId: 'pin-2',
+        crossesWireIds: [],
+        segments: [
+          {
+            start: createPosition(4, WIRE_HEIGHT, 0),
+            end: createPosition(4, WIRE_HEIGHT, 8),
+            type: 'vertical',
+          },
+        ],
+      }
+
+      const result = isArcStillNeededForWire(arc, existingWire)
+      expect(result).toBe(true)
+    })
+
+    it('returns false when arc no longer crosses the wire', () => {
+      // Create an arc
+      const arcCenter: Position = createPosition(4, WIRE_HEIGHT, 4)
+      const arc: WireSegment = {
+        start: createPosition(4 - HOP_RADIUS, WIRE_HEIGHT, 4),
+        end: createPosition(4 + HOP_RADIUS, WIRE_HEIGHT, 4),
+        type: 'arc',
+        arcCenter,
+        arcRadius: HOP_RADIUS,
+      }
+
+      // Create an existing wire that does NOT cross the arc
+      const existingWire: Wire = {
+        id: 'wire-1',
+        fromGateId: 'gate-1',
+        fromPinId: 'pin-1',
+        toGateId: 'gate-2',
+        toPinId: 'pin-2',
+        crossesWireIds: [],
+        segments: [
+          {
+            start: createPosition(0, WIRE_HEIGHT, 0),
+            end: createPosition(0, WIRE_HEIGHT, 8),
+            type: 'vertical',
+          },
+        ],
+      }
+
+      const result = isArcStillNeededForWire(arc, existingWire)
+      expect(result).toBe(false)
+    })
+
+    it('ignores arc segments when checking for crossings', () => {
+      // Arc should only check against horizontal/vertical segments, not other arcs
+      const arcCenter: Position = createPosition(4, WIRE_HEIGHT, 4)
+      const arc: WireSegment = {
+        start: createPosition(4 - HOP_RADIUS, WIRE_HEIGHT, 4),
+        end: createPosition(4 + HOP_RADIUS, WIRE_HEIGHT, 4),
+        type: 'arc',
+        arcCenter,
+        arcRadius: HOP_RADIUS,
+      }
+
+      // Existing wire only has arc segments (no actual crossing)
+      const existingWire: Wire = {
+        id: 'wire-1',
+        fromGateId: 'gate-1',
+        fromPinId: 'pin-1',
+        toGateId: 'gate-2',
+        toPinId: 'pin-2',
+        crossesWireIds: [],
+        segments: [
+          {
+            start: createPosition(4 - HOP_RADIUS, WIRE_HEIGHT, 4),
+            end: createPosition(4 + HOP_RADIUS, WIRE_HEIGHT, 4),
+            type: 'arc',
+            arcCenter,
+            arcRadius: HOP_RADIUS,
+          },
+        ],
+      }
+
+      const result = isArcStillNeededForWire(arc, existingWire)
+      expect(result).toBe(false)
+    })
+  })
+
+  describe('removeOrphanedArcs', () => {
+    it('removes orphaned arc and replaces with smooth segment', () => {
+      const arcCenter: Position = createPosition(4, WIRE_HEIGHT, 4)
+      const arc: WireSegment = {
+        start: createPosition(4 - HOP_RADIUS, WIRE_HEIGHT, 4),
+        end: createPosition(4 + HOP_RADIUS, WIRE_HEIGHT, 4),
+        type: 'arc',
+        arcCenter,
+        arcRadius: HOP_RADIUS,
+        crossedWireId: 'wire-removed',
+      }
+
+      const segments: WireSegment[] = [
+        {
+          start: createPosition(0, WIRE_HEIGHT, 4),
+          end: createPosition(4 - HOP_RADIUS, WIRE_HEIGHT, 4),
+          type: 'horizontal',
+        },
+        arc,
+        {
+          start: createPosition(4 + HOP_RADIUS, WIRE_HEIGHT, 4),
+          end: createPosition(8, WIRE_HEIGHT, 4),
+          type: 'horizontal',
+        },
+      ]
+
+      // Wire was removed, so arc is orphaned (direct ID matching)
+      const result = removeOrphanedArcs(segments, 'wire-removed')
+
+      expect(result).not.toBeNull()
+      expect(result!.length).toBe(1)
+      expect(result![0].type).toBe('horizontal')
+      expect(result![0].start).toEqual(segments[0].start)
+      expect(result![0].end).toEqual(segments[2].end)
+    })
+
+    it('keeps arc that still crosses a wire', () => {
+      const arcCenter: Position = createPosition(4, WIRE_HEIGHT, 4)
+      const arc: WireSegment = {
+        start: createPosition(4 - HOP_RADIUS, WIRE_HEIGHT, 4),
+        end: createPosition(4 + HOP_RADIUS, WIRE_HEIGHT, 4),
+        type: 'arc',
+        arcCenter,
+        arcRadius: HOP_RADIUS,
+        crossedWireId: 'wire-1',
+      }
+
+      const segments: WireSegment[] = [
+        {
+          start: createPosition(0, WIRE_HEIGHT, 4),
+          end: createPosition(4 - HOP_RADIUS, WIRE_HEIGHT, 4),
+          type: 'horizontal',
+        },
+        arc,
+        {
+          start: createPosition(4 + HOP_RADIUS, WIRE_HEIGHT, 4),
+          end: createPosition(8, WIRE_HEIGHT, 4),
+          type: 'horizontal',
+        },
+      ]
+
+      // Wire exists that the arc crosses - pass it in recalculatedWires for geometric check
+      const existingWire: Wire = {
+        id: 'wire-1',
+        fromGateId: 'gate-1',
+        fromPinId: 'pin-1',
+        toGateId: 'gate-2',
+        toPinId: 'pin-2',
+        crossesWireIds: [],
+        segments: [
+          {
+            start: createPosition(4, WIRE_HEIGHT, 0),
+            end: createPosition(4, WIRE_HEIGHT, 8),
+            type: 'vertical',
+          },
+        ],
+      }
+
+      const result = removeOrphanedArcs(segments, undefined, [existingWire])
+
+      // When arc is still needed, no changes are made, so function returns null
+      expect(result).toBeNull()
+    })
+
+    it('combines adjacent segments after removing arc', () => {
+      const arcCenter: Position = createPosition(4, WIRE_HEIGHT, 4)
+      const arc: WireSegment = {
+        start: createPosition(4 - HOP_RADIUS, WIRE_HEIGHT, 4),
+        end: createPosition(4 + HOP_RADIUS, WIRE_HEIGHT, 4),
+        type: 'arc',
+        arcCenter,
+        arcRadius: HOP_RADIUS,
+        crossedWireId: 'wire-removed',
+      }
+
+      const segments: WireSegment[] = [
+        {
+          start: createPosition(0, WIRE_HEIGHT, 4),
+          end: createPosition(4 - HOP_RADIUS, WIRE_HEIGHT, 4),
+          type: 'horizontal',
+        },
+        arc,
+        {
+          start: createPosition(4 + HOP_RADIUS, WIRE_HEIGHT, 4),
+          end: createPosition(8, WIRE_HEIGHT, 4),
+          type: 'horizontal',
+        },
+      ]
+
+      const result = removeOrphanedArcs(segments, 'wire-removed')
+
+      // Should combine the two horizontal segments into one
+      expect(result).not.toBeNull()
+      expect(result!.length).toBe(1)
+      expect(result![0].type).toBe('horizontal')
+    })
+
+    it('returns null when no arcs are orphaned', () => {
+      const segments: WireSegment[] = [
+        {
+          start: createPosition(0, WIRE_HEIGHT, 4),
+          end: createPosition(8, WIRE_HEIGHT, 4),
+          type: 'horizontal',
+        },
+      ]
+
+      const result = removeOrphanedArcs(segments)
+      expect(result).toBeNull()
+    })
+
+    it('handles multiple orphaned arcs', () => {
+      const arc1Center: Position = createPosition(4, WIRE_HEIGHT, 4)
+      const arc1: WireSegment = {
+        start: createPosition(4 - HOP_RADIUS, WIRE_HEIGHT, 4),
+        end: createPosition(4 + HOP_RADIUS, WIRE_HEIGHT, 4),
+        type: 'arc',
+        arcCenter: arc1Center,
+        arcRadius: HOP_RADIUS,
+        crossedWireId: 'wire-removed',
+      }
+
+      const arc2Center: Position = createPosition(12, WIRE_HEIGHT, 4)
+      const arc2: WireSegment = {
+        start: createPosition(12 - HOP_RADIUS, WIRE_HEIGHT, 4),
+        end: createPosition(12 + HOP_RADIUS, WIRE_HEIGHT, 4),
+        type: 'arc',
+        arcCenter: arc2Center,
+        arcRadius: HOP_RADIUS,
+        crossedWireId: 'wire-removed',
+      }
+
+      const segments: WireSegment[] = [
+        {
+          start: createPosition(0, WIRE_HEIGHT, 4),
+          end: createPosition(4 - HOP_RADIUS, WIRE_HEIGHT, 4),
+          type: 'horizontal',
+        },
+        arc1,
+        {
+          start: createPosition(4 + HOP_RADIUS, WIRE_HEIGHT, 4),
+          end: createPosition(12 - HOP_RADIUS, WIRE_HEIGHT, 4),
+          type: 'horizontal',
+        },
+        arc2,
+        {
+          start: createPosition(12 + HOP_RADIUS, WIRE_HEIGHT, 4),
+          end: createPosition(16, WIRE_HEIGHT, 4),
+          type: 'horizontal',
+        },
+      ]
+
+      const result = removeOrphanedArcs(segments, 'wire-removed')
+
+      expect(result).not.toBeNull()
+      expect(result!.length).toBe(1)
+      expect(result![0].type).toBe('horizontal')
+      expect(result![0].start).toEqual(segments[0].start)
+      expect(result![0].end).toEqual(segments[4].end)
     })
   })
 })
