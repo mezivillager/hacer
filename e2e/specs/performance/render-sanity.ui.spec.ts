@@ -7,15 +7,15 @@
  * Tag for filtering: @render @performance @ui
  */
 
-import { test, expect } from '../fixtures'
-import { DEFAULT_POSITIONS } from '../config/constants'
-import { addGateViaStore, selectGate, addWireViaStore } from '../helpers/actions'
-import { ensureGates, ensureWires } from '../helpers/waits'
+import { test, expect } from '../../fixtures'
+import { DEFAULT_POSITIONS } from '../../config/constants'
+import { addGateViaStore, selectGate, addWireViaStore } from '../../helpers/actions'
+import { ensureGates, ensureWires } from '../../helpers/waits'
 import {
   resetRenderStats,
   getComponentRenderCounts,
   waitForSceneStable,
-} from '../helpers/waits/render.waits'
+} from '../../helpers/waits/render.waits'
 
 /**
  * Render budgets per operation.
@@ -47,10 +47,12 @@ const RENDER_BUDGETS = {
   },
 }
 
-test.describe('Render Sanity Check (UI) @render @performance @ui', () => {
+test.describe('Render Sanity Check @render @performance @ui', () => {
   test.beforeEach(async ({ page }) => {
     // Wait for initial scene to be ready and stable
-    await page.waitForFunction(() => window.__SCENE_READY__ === true, { timeout: 10000 })
+    await page.waitForFunction(() => window.__SCENE_READY__ === true, {
+      timeout: 10000,
+    })
     await waitForSceneStable(page)
   })
 
@@ -91,7 +93,9 @@ test.describe('Render Sanity Check (UI) @render @performance @ui', () => {
     // Check render counts
     const counts = await getComponentRenderCounts(page)
 
-    for (const [component, budget] of Object.entries(RENDER_BUDGETS.selectGate)) {
+    for (const [component, budget] of Object.entries(
+      RENDER_BUDGETS.selectGate
+    )) {
       const actual = counts[component] ?? 0
       expect(
         actual,
@@ -143,7 +147,7 @@ test.describe('Render Sanity Check (UI) @render @performance @ui', () => {
 
     // Perform the operation
     await page.evaluate(
-      ({ gateId, pinId }) => {
+      ({ gateId, pinId }: { gateId: string; pinId: string }) => {
         window.__CIRCUIT_ACTIONS__?.setInputValue(gateId, pinId, true)
       },
       { gateId: gate!.id, pinId: gate!.inputs[0].id }
@@ -153,7 +157,9 @@ test.describe('Render Sanity Check (UI) @render @performance @ui', () => {
     // Check render counts
     const counts = await getComponentRenderCounts(page)
 
-    for (const [component, budget] of Object.entries(RENDER_BUDGETS.toggleInput)) {
+    for (const [component, budget] of Object.entries(
+      RENDER_BUDGETS.toggleInput
+    )) {
       const actual = counts[component] ?? 0
       expect(
         actual,
@@ -204,3 +210,4 @@ test.describe('Render Sanity Check (UI) @render @performance @ui', () => {
     console.log('\n--- End Diagnostics ---\n')
   })
 })
+

@@ -59,6 +59,9 @@ export interface CircuitActionsAPI {
   getPinWorldPosition: (gateId: string, pinId: string) => { x: number; y: number; z: number } | null
   selectGate: (gateId: string | null) => void
   removeGate: (gateId: string) => void
+  rotateGate: (gateId: string, axis: 'x' | 'y' | 'z', angle: number) => void
+  updateGatePosition: (gateId: string, position: { x: number; y: number; z: number }) => void
+  removeWire: (wireId: string) => void
 }
 
 export interface RenderTrackerStats {

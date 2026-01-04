@@ -1,18 +1,20 @@
 /**
- * Three-Gate NAND Circuit Scenario
+ * Three-Gate Circuit Scenario
  *
- * A standard test scenario with 3 NAND gates wired together
+ * A standard test scenario with 3 gates wired together
  * for verifying circuit building and simulation.
+ * Gate types are parameterized - defaults to NAND for backward compatibility.
  */
 
+import { GATE_Y } from '../config/constants'
 import type { NandScenario } from './types'
 
-export const nand3Scenario: NandScenario = {
-  name: 'three-gate nand circuit',
+export const threeGateScenario: NandScenario = {
+  name: 'three-gate circuit',
   placements: [
-    { label: 'g1', position: { x: -2, y: 0.4, z: 0 } },
-    { label: 'g2', position: { x: -2, y: 0.4, z: 2 } },
-    { label: 'g3', position: { x: 2, y: 0.4, z: 1 }, rotate: { direction: 'left', times: 2 } },
+    { label: 'g1', position: { x: -1, y: GATE_Y, z: -1 } },
+    { label: 'g2', position: { x: -1, y: GATE_Y, z: 3 } },
+    { label: 'g3', position: { x: 3, y: GATE_Y, z: 1 }, rotate: { direction: 'left', times: 2 } },
   ],
   wires: [
     { fromGate: 0, fromPin: 'out-0', toGate: 2, toPin: 'in-0' },
@@ -34,3 +36,6 @@ export const nand3Scenario: NandScenario = {
     },
   },
 }
+
+// Backward compatibility alias
+export const nand3Scenario = threeGateScenario

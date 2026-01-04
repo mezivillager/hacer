@@ -1,5 +1,7 @@
 /**
  * Scenarios Barrel Export
+ *
+ * All scenarios are gate-agnostic - gate types can be parameterized in tests.
  */
 
 export * from './types'
