@@ -55,6 +55,14 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
   },
 
   removeGate: (gateId: string) => {
+    // Get state before removal to collect wire IDs
+    const state = get()
+    const wiresToRemove = state.wires.filter(
+      (w) => w.fromGateId === gateId || w.toGateId === gateId
+    )
+    const removedWireIds = wiresToRemove.map((w) => w.id)
+
+    // Remove gate and wires
     set((state) => {
       const index = state.gates.findIndex((g) => g.id === gateId)
       if (index !== -1) {
@@ -65,6 +73,52 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
         )
       }
     }, false, 'removeGate')
+
+    // After removal, find affected wires and smooth out orphaned arcs
+    if (removedWireIds.length > 0) {
+      const updatedState = get()
+
+      // For each removed wire, find wires that had arcs over it
+      for (const removedWireId of removedWireIds) {
+        const affectedWireIds = updatedState.wires
+          .filter((w) => (w.crossesWireIds ?? []).includes(removedWireId))
+          .map((w) => w.id)
+
+        // For each affected wire, remove orphaned arcs
+        for (const affectedWireId of affectedWireIds) {
+          const affectedWire = updatedState.wires.find((w) => w.id === affectedWireId)
+          if (!affectedWire || !affectedWire.segments) {
+            continue
+          }
+
+          // Remove orphaned arcs using direct ID matching
+          const updatedSegments = removeOrphanedArcs(affectedWire.segments, removedWireId)
+
+          if (updatedSegments !== null) {
+            // Recalculate crossesWireIds from remaining arcs
+            const remainingCrossedIds = updatedSegments
+              .filter((s) => s.type === 'arc' && s.crossedWireId)
+              .map((s) => s.crossedWireId!)
+
+            set((state) => {
+              const wire = state.wires.find((w) => w.id === affectedWireId)
+              if (wire) {
+                wire.segments = updatedSegments
+                wire.crossesWireIds = remainingCrossedIds
+              }
+            }, false, 'removeGate/updateAffectedWire')
+          } else {
+            // No segments changed, but still need to remove the deleted wire from crossesWireIds
+            set((state) => {
+              const wire = state.wires.find((w) => w.id === affectedWireId)
+              if (wire) {
+                wire.crossesWireIds = (wire.crossesWireIds ?? []).filter((id) => id !== removedWireId)
+              }
+            }, false, 'removeGate/updateCrossesWireIds')
+          }
+        }
+      }
+    }
   },
 
   selectGate: (gateId: string | null) => {

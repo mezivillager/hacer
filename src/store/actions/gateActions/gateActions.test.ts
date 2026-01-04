@@ -116,6 +116,53 @@ describe('gateActions', () => {
       getState().removeGate('non-existent-id')
       expect(getState().gates).toHaveLength(1)
     })
+
+    it('removes orphaned arcs from wires that crossed over the deleted gate\'s wires', () => {
+      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 0 })
+      const gate3 = getState().addGate('NAND', { x: 4, y: 0, z: 0 })
+      const gate4 = getState().addGate('NAND', { x: 6, y: 0, z: 0 })
+
+      // Wire B: connected to gate1 and gate2 (will be deleted when gate1 is removed)
+      const wireB = getState().addWire(
+        gate1.id, gate1.outputs[0].id,
+        gate2.id, gate2.inputs[0].id,
+        [{ start: { x: 5, y: 0.2, z: 0 }, end: { x: 5, y: 0.2, z: 10 }, type: 'vertical' }],
+        []
+      )
+
+      // Wire A: has arc hopping over Wire B
+      const arcCenter = { x: 5, y: 0.2, z: 5 }
+      const wireA = getState().addWire(
+        gate3.id, gate3.outputs[0].id,
+        gate4.id, gate4.inputs[0].id,
+        [
+          { start: { x: 0, y: 0.2, z: 5 }, end: { x: 4.9, y: 0.2, z: 5 }, type: 'horizontal' },
+          { start: { x: 4.9, y: 0.2, z: 5 }, end: { x: 5.1, y: 0.2, z: 5 }, type: 'arc', arcCenter, arcRadius: 0.1, crossedWireId: wireB.id },
+          { start: { x: 5.1, y: 0.2, z: 5 }, end: { x: 10, y: 0.2, z: 5 }, type: 'horizontal' },
+        ],
+        [wireB.id] // Wire A crosses over Wire B
+      )
+
+      expect(getState().wires).toHaveLength(2)
+      expect(getState().gates).toHaveLength(4)
+
+      // Verify Wire A has an arc before gate deletion
+      const wireABefore = getState().wires.find((w) => w.id === wireA.id)!
+      expect(wireABefore.segments.some((s) => s.type === 'arc')).toBe(true)
+      expect(wireABefore.crossesWireIds).toContain(wireB.id)
+
+      // Remove gate1 (which will remove Wire B)
+      getState().removeGate(gate1.id)
+
+      expect(getState().gates).toHaveLength(3)
+      expect(getState().wires).toHaveLength(1)
+
+      // Wire A's arc should be removed and replaced with smooth segment
+      const wireAAfter = getState().wires.find((w) => w.id === wireA.id)!
+      expect(wireAAfter.segments.some((s) => s.type === 'arc')).toBe(false)
+      expect(wireAAfter.crossesWireIds).not.toContain(wireB.id)
+    })
   })
 
   describe('selectGate', () => {
