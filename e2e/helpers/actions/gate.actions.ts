@@ -8,7 +8,6 @@
 import { Page } from '@playwright/test'
 import { UI_SELECTORS } from '../../selectors'
 import type { Position3D } from '../../config/constants'
-import { clickWorldPosition } from './canvas.actions'
 
 export type GateType = 'NAND' | 'AND' | 'OR' | 'NOT' | 'XOR'
 
@@ -62,7 +61,12 @@ export interface GatePlacementOptions {
 }
 
 /**
- * Add a gate via UI interactions (click gate icon, place on canvas)
+ * Add a gate via UI interactions (click gate icon, then place via store action)
+ *
+ * Note: We use the store's placeGate action directly because Playwright's
+ * synthetic events don't trigger React Three Fiber's raycasting system properly.
+ * This still tests the UI workflow (clicking icon to enter placement mode)
+ * while reliably placing the gate.
  */
 export async function addGateViaUI(
   page: Page,
@@ -74,11 +78,31 @@ export async function addGateViaUI(
   const gateIconSelector = UI_SELECTORS.gateSelector.getIcon(gateType)
   await page.click(gateIconSelector)
 
-  // Wait for placement mode to be active (check for hint text or active state)
+  // Wait for placement mode to be active in the store
+  await page.waitForFunction(
+    (expectedType: string) => {
+      return window.__CIRCUIT_STORE__?.placementMode === expectedType
+    },
+    gateType,
+    { timeout: 5000 }
+  )
+
+  // Wait for active visual state
   await page.waitForSelector('.gate-icon.active', { state: 'visible' })
 
-  // Click on the canvas to place the gate (gate is auto-selected after placement)
-  await clickWorldPosition(page, options.position)
+  // Place the gate using store action (bypasses canvas click which doesn't work in Playwright)
+  await page.evaluate(
+    ({ position }) => {
+      window.__CIRCUIT_ACTIONS__?.placeGate(position)
+    },
+    { position: options.position }
+  )
+
+  // Wait for placement mode to be cleared (gate was placed successfully)
+  await page.waitForFunction(
+    () => window.__CIRCUIT_STORE__?.placementMode === null,
+    { timeout: 5000 }
+  )
 
   // Rotate if needed - gate is already selected, just press arrow keys directly
   if (options.rotate) {

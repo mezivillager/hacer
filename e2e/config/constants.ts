@@ -25,19 +25,23 @@ export const GATE_Y = 0.2
  * Default positions for gate placement in tests.
  * All positions use odd grid coordinates (section interiors)
  * to comply with grid placement rules.
+ *
+ * Grid conversion: row = Math.round(z / GRID_SIZE), col = Math.round(x / GRID_SIZE)
+ * Valid positions require both row and col to be odd.
+ * Examples: {x: 2, z: 2} → {row: 1, col: 1} ✓, {x: -2, z: -2} → {row: -1, col: -1} ✓
  */
 export const DEFAULT_POSITIONS = {
-  center: { x: 1, y: GATE_Y, z: 1 },
-  left: { x: -1, y: GATE_Y, z: 1 },
-  right: { x: 3, y: GATE_Y, z: 1 },
-  farLeft: { x: -3, y: GATE_Y, z: 1 },
-  farRight: { x: 5, y: GATE_Y, z: 1 },
-  top: { x: 1, y: GATE_Y, z: -1 },
-  bottom: { x: 1, y: GATE_Y, z: 3 },
-  topLeft: { x: -1, y: GATE_Y, z: -1 },
-  topRight: { x: 3, y: GATE_Y, z: -1 },
-  bottomLeft: { x: -1, y: GATE_Y, z: 3 },
-  bottomRight: { x: 3, y: GATE_Y, z: 3 },
+  center: { x: 2, y: GATE_Y, z: 2 }, // {row: 1, col: 1}
+  left: { x: -2, y: GATE_Y, z: 2 }, // {row: 1, col: -1}
+  right: { x: 6, y: GATE_Y, z: 2 }, // {row: 1, col: 3}
+  farLeft: { x: -6, y: GATE_Y, z: 2 }, // {row: 1, col: -3}
+  farRight: { x: 10, y: GATE_Y, z: 2 }, // {row: 1, col: 5}
+  top: { x: 2, y: GATE_Y, z: -2 }, // {row: -1, col: 1}
+  bottom: { x: 2, y: GATE_Y, z: 6 }, // {row: 3, col: 1}
+  topLeft: { x: -2, y: GATE_Y, z: -2 }, // {row: -1, col: -1}
+  topRight: { x: 6, y: GATE_Y, z: -2 }, // {row: -1, col: 3}
+  bottomLeft: { x: -2, y: GATE_Y, z: 6 }, // {row: 3, col: -1}
+  bottomRight: { x: 6, y: GATE_Y, z: 6 }, // {row: 3, col: 3}
 } as const
 
 export type Position3D = { x: number; y: number; z: number }

@@ -17,6 +17,11 @@ export async function projectToScreen(
   page: Page,
   position: Position3D
 ): Promise<{ x: number; y: number }> {
+  // Ensure scene helpers are available
+  await page.waitForFunction(() => window.__SCENE_HELPERS__?.projectToScreen !== undefined, {
+    timeout: TIMEOUTS.scene,
+  })
+
   const point = await page.evaluate(
     ({ position }) => {
       const helper = window.__SCENE_HELPERS__
@@ -34,7 +39,27 @@ export async function projectToScreen(
  */
 export async function clickWorldPosition(page: Page, position: Position3D): Promise<void> {
   const pt = await projectToScreen(page, position)
-  await page.mouse.click(pt.x, pt.y)
+
+  // Get the canvas bounding rect
+  const canvasRect = await page.evaluate((): { left: number; top: number } | null => {
+    const canvas = document.querySelector('canvas')
+    if (!canvas) return null
+    const rect = canvas.getBoundingClientRect()
+    return { left: rect.left, top: rect.top }
+  })
+  if (!canvasRect) throw new Error('Canvas not found')
+
+  // Calculate position relative to canvas
+  const relX = pt.x - canvasRect.left
+  const relY = pt.y - canvasRect.top
+
+  // Use Playwright's locator click with explicit position
+  // This sends proper pointer events that R3F should handle
+  const canvas = page.locator('canvas')
+  await canvas.click({ position: { x: relX, y: relY } })
+
+  // Small delay to allow event to propagate
+  await page.waitForTimeout(100)
 }
 
 /**

@@ -6,7 +6,7 @@
  * Tag: @ui @simulation
  */
 
-import { test } from '../../fixtures'
+import { uiTest as test } from '../../fixtures'
 import { DEFAULT_POSITIONS, ALL_GATE_TYPES } from '../../config/constants'
 import {
   addGateViaUI,

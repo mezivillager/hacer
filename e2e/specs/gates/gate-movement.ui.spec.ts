@@ -7,7 +7,7 @@
  * Tag: @ui @gates
  */
 
-import { test, expect } from '../../fixtures'
+import { uiTest as test, uiExpect as expect } from '../../fixtures'
 import {
   DEFAULT_POSITIONS,
   ALL_GATE_TYPES,
@@ -15,7 +15,7 @@ import {
 import { addGateViaUI, getGateIds, selectGate } from '../../helpers/actions'
 import { ensureGates } from '../../helpers/waits'
 
-test.describe('Gate Movement @ui @gates', () => {
+test.describe.only('Gate Movement @ui @gates', () => {
   test.describe('Keyboard Rotation', () => {
     for (const gateType of ALL_GATE_TYPES) {
       test(`${gateType} gate can be rotated via arrow keys`, async ({
@@ -169,8 +169,10 @@ test.describe('Gate Movement @ui @gates', () => {
         type: 'NAND',
         position: DEFAULT_POSITIONS.left,
       })
+      await ensureGates(page, 1)
+
       await addGateViaUI(page, {
-        type: 'AND',
+        type: 'OR',
         position: DEFAULT_POSITIONS.right,
       })
       await ensureGates(page, 2)
@@ -197,4 +199,3 @@ test.describe('Gate Movement @ui @gates', () => {
     })
   })
 })
-

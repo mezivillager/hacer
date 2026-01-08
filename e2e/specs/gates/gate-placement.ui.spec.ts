@@ -7,7 +7,7 @@
  * Tag: @ui @gates
  */
 
-import { test, expect } from '../../fixtures'
+import { uiTest as test, uiExpect as expect } from '../../fixtures'
 import {
   DEFAULT_POSITIONS,
   GATE_Y,

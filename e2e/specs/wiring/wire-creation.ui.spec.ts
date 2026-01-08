@@ -7,7 +7,7 @@
  * Tag: @ui @wiring
  */
 
-import { test } from '../../fixtures'
+import { uiTest as test } from '../../fixtures'
 import { DEFAULT_POSITIONS, type GateType } from '../../config/constants'
 import {
   addGateViaUI,

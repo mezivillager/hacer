@@ -38,6 +38,7 @@ export interface CircuitStoreSnapshot {
   wires: CircuitWire[]
   simulationRunning?: boolean
   selectedGateId?: string | null
+  placementMode?: GateType | null
 }
 
 export interface CircuitActionsAPI {
@@ -62,6 +63,10 @@ export interface CircuitActionsAPI {
   rotateGate: (gateId: string, axis: 'x' | 'y' | 'z', angle: number) => void
   updateGatePosition: (gateId: string, position: { x: number; y: number; z: number }) => void
   removeWire: (wireId: string) => void
+  // Placement actions
+  startPlacement: (type: GateType) => void
+  cancelPlacement: () => void
+  placeGate: (position: { x: number; y: number; z: number }) => void
 }
 
 export interface RenderTrackerStats {

@@ -17,11 +17,7 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --grep @ui",
     "test:e2e:store": "playwright test --grep @store",
-    "test:e2e:headed": "playwright test --headed",
-    "test:e2e:gates": "playwright test e2e/specs/gates",
-    "test:e2e:wiring": "playwright test e2e/specs/wiring",
-    "test:e2e:simulation": "playwright test e2e/specs/simulation",
-    "test:e2e:performance": "playwright test e2e/specs/performance",
+    "test:e2e:headed": "playwright test --headed --grep @ui --workers 1",
     "prepare": "husky install || true"
   },
   "dependencies": {
