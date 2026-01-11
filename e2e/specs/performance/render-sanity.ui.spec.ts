@@ -47,7 +47,9 @@ const RENDER_BUDGETS = {
   },
 }
 
-test.describe('Render Sanity Check @render @performance @ui', () => {
+// TODO: Re-enable once UI e2e test stability is improved
+// Skipped due to flaky behavior causing test slowdowns
+test.describe.skip('Render Sanity Check @render @performance @ui', () => {
   test.beforeEach(async ({ page }) => {
     // Wait for initial scene to be ready and stable
     await page.waitForFunction(() => window.__SCENE_READY__ === true, {

@@ -27,7 +27,10 @@ export async function waitForSceneStable(
     )
   } catch {
     // Fallback: if timeout waiting for stability, just wait a bit
-    await page.waitForTimeout(200)
+    // But only if page is still open
+    if (!page.isClosed()) {
+      await page.waitForTimeout(200)
+    }
   }
 }
 

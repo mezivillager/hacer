@@ -72,6 +72,13 @@ export const test = base.extend<UIFixtures, UIWorkerFixtures>({
   // Test-scoped: Provide page alias with automatic cleanup
   page: [
     async ({ sharedPage }, use) => {
+      // Check if page is closed (shouldn't happen, but handle gracefully)
+      if (sharedPage.isClosed()) {
+        throw new Error(
+          'Worker-scoped page was closed. This may indicate a previous test crashed or timed out.'
+        )
+      }
+
       // Use the worker-scoped page directly
       await use(sharedPage)
 

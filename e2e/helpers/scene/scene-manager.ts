@@ -13,18 +13,38 @@ import { TIMEOUTS } from '../../config/constants'
  * Much faster than reloading the page for each test.
  */
 export async function clearScene(page: Page): Promise<void> {
-  await page.evaluate(() => {
-    window.__CIRCUIT_ACTIONS__?.clearCircuit()
-  })
+  // Check if page is still open
+  if (page.isClosed()) {
+    return // Can't clear if page is closed
+  }
 
-  // Wait for state to settle
-  await page.waitForFunction(
-    () => {
-      const store = window.__CIRCUIT_STORE__
-      return store?.gates.length === 0 && store?.wires.length === 0
-    },
-    { timeout: TIMEOUTS.store }
-  )
+  try {
+    await page.evaluate(() => {
+      // Cancel any active wiring first
+      window.__CIRCUIT_ACTIONS__?.cancelWiring()
+      // Then clear the circuit
+      window.__CIRCUIT_ACTIONS__?.clearCircuit()
+    })
+
+    // Wait for state to settle
+    await page.waitForFunction(
+      () => {
+        const store = window.__CIRCUIT_STORE__
+        return (
+          store?.gates.length === 0 &&
+          store?.wires.length === 0 &&
+          store?.wiringFrom === null
+        )
+      },
+      { timeout: TIMEOUTS.store }
+    )
+  } catch (error) {
+    // If page was closed during cleanup, that's okay - just return
+    if (page.isClosed()) {
+      return
+    }
+    throw error
+  }
 }
 
 /**

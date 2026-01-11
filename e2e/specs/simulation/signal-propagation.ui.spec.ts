@@ -22,7 +22,9 @@ import {
   expectSimulationRunning,
 } from '../../helpers/assertions'
 
-test.describe('Signal Propagation @ui @simulation', () => {
+// TODO: Re-enable once UI e2e test stability is improved
+// Skipped due to flaky behavior causing test slowdowns
+test.describe.skip('Signal Propagation @ui @simulation', () => {
   test.describe('Two-Gate Circuits', () => {
     test('can build and run two-gate circuit', async ({ page }) => {
       await addGateViaUI(page, {

@@ -8,7 +8,6 @@
 import { Page } from '@playwright/test'
 import { TIMEOUTS } from '../../config/constants'
 import type { Position3D } from '../../config/constants'
-import { waitForSceneStable } from '../waits/render.waits'
 
 /**
  * Project a 3D world position to 2D screen coordinates
@@ -71,10 +70,16 @@ export async function clickPin(
   pinId: string,
   opts: { withShift?: boolean } = {}
 ): Promise<void> {
-  // Wait for scene to stabilize after state changes
-  await waitForSceneStable(page, TIMEOUTS.store)
-  // Additional small wait for Three.js render cycle to complete
-  await page.waitForTimeout(50)
+  // Small wait for Three.js render cycle to complete
+  // Removed waitForSceneStable as it was causing timeouts with worker-scoped pages
+  if (!page.isClosed()) {
+    await page.waitForTimeout(50)
+  }
+
+  // Check if page is still open before proceeding
+  if (page.isClosed()) {
+    throw new Error('Page is closed, cannot click pin')
+  }
 
   const pinPos = await page.evaluate(
     ({ gateId, pinId }) => {
@@ -84,7 +89,18 @@ export async function clickPin(
   )
 
   if (!pinPos) throw new Error(`Pin position not found for ${gateId}:${pinId}`)
+
+  // Check again before projecting
+  if (page.isClosed()) {
+    throw new Error('Page closed while getting pin position')
+  }
+
   const pt = await projectToScreen(page, pinPos)
+
+  // Final check before clicking
+  if (page.isClosed()) {
+    throw new Error('Page closed before clicking pin')
+  }
 
   if (opts.withShift) await page.keyboard.down('Shift')
   await page.mouse.click(pt.x, pt.y)

@@ -15,7 +15,7 @@ import {
 import { addGateViaUI, getGateIds, selectGate } from '../../helpers/actions'
 import { ensureGates } from '../../helpers/waits'
 
-test.describe.only('Gate Movement @ui @gates', () => {
+test.describe('Gate Movement @ui @gates', () => {
   test.describe('Keyboard Rotation', () => {
     for (const gateType of ALL_GATE_TYPES) {
       test(`${gateType} gate can be rotated via arrow keys`, async ({

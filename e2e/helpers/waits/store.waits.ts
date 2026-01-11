@@ -29,8 +29,18 @@ export async function ensureGates(page: Page, count: number, timeout: number = T
  * Wait until the store has at least the expected number of wires
  */
 export async function ensureWires(page: Page, count: number, timeout: number = TIMEOUTS.store): Promise<void> {
+  // Check if page is still open
+  if (page.isClosed()) {
+    throw new Error('Page is closed, cannot ensure wires')
+  }
+
   // First ensure the store is initialized
   await waitForStoreUpdate(page, timeout)
+
+  // Check again before waiting for wires
+  if (page.isClosed()) {
+    throw new Error('Page was closed while waiting for store update')
+  }
 
   // Then wait for the expected number of wires
   await page.waitForFunction(

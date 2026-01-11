@@ -142,11 +142,13 @@ describe('wireActions', () => {
       )
 
       // Simulate legacy wire without crossesWireIds
+      // Using Partial to allow undefined for legacy compatibility test
       useCircuitStore.setState((state) => {
         const w = state.wires.find((w) => w.id === wire.id)
         if (w) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (w as any).crossesWireIds = undefined
+          // Simulate legacy wire data where crossesWireIds might be undefined
+          // The removeWire function handles this with (w.crossesWireIds ?? [])
+          ;(w as Partial<Pick<typeof w, 'crossesWireIds'>>).crossesWireIds = undefined
         }
       })
 

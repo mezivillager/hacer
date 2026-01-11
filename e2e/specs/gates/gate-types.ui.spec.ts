@@ -13,6 +13,7 @@ import {
   ALL_GATE_TYPES,
   TWO_INPUT_GATES,
   SINGLE_INPUT_GATES,
+  type GateType,
 } from '../../config/constants'
 import {
   addGateViaUI,

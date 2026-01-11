@@ -7,7 +7,7 @@
  * This file is imported in production code for the side-effect of Window augmentation.
  */
 
-import type { GateType } from '../../src/store/types'
+import type { GateType, WiringState } from '../../src/store/types'
 import type { WireSegment } from '../../src/utils/wiringScheme/types'
 
 export interface SceneHelpers {
@@ -39,6 +39,7 @@ export interface CircuitStoreSnapshot {
   simulationRunning?: boolean
   selectedGateId?: string | null
   placementMode?: GateType | null
+  wiringFrom?: WiringState | null
 }
 
 export interface CircuitActionsAPI {
@@ -67,6 +68,19 @@ export interface CircuitActionsAPI {
   startPlacement: (type: GateType) => void
   cancelPlacement: () => void
   placeGate: (position: { x: number; y: number; z: number }) => void
+  // Wiring actions
+  startWiring: (gateId: string, pinId: string, pinType: 'input' | 'output', position: { x: number; y: number; z: number }) => void
+  updateWirePreviewPosition: (position: { x: number; y: number; z: number } | null) => void
+  setDestinationPin: (gateId: string | null, pinId: string | null) => void
+  cancelWiring: () => void
+  completeWiring: (toGateId: string, toPinId: string, toPinType: 'input' | 'output') => void
+  // E2E helper for wire path calculation
+  calculateWirePathSegments: (
+    fromGateId: string,
+    fromPinId: string,
+    toGateId: string,
+    toPinId: string
+  ) => WireSegment[] | null
 }
 
 export interface RenderTrackerStats {

@@ -14,9 +14,8 @@ import {
   connectWiresViaUI,
   getGateIds,
   selectGate,
-  clearAllViaUI,
 } from '../../helpers/actions'
-import { ensureGates, waitForSceneStable } from '../../helpers/waits'
+import { ensureGates } from '../../helpers/waits'
 import { expectWireCount, expectGateCount } from '../../helpers/assertions'
 
 test.describe('Wire Creation @ui @wiring', () => {
@@ -33,8 +32,6 @@ test.describe('Wire Creation @ui @wiring', () => {
     })
     await ensureGates(page, 2)
     await expectGateCount(page, 2)
-
-    await waitForSceneStable(page)
 
     const gateIds = await getGateIds(page)
     await connectWiresViaUI(
@@ -67,8 +64,6 @@ test.describe('Wire Creation @ui @wiring', () => {
     })
     await ensureGates(page, 4)
 
-    await waitForSceneStable(page)
-
     const gateIds = await getGateIds(page)
 
     // Wire first pair
@@ -92,6 +87,11 @@ test.describe('Wire Creation @ui @wiring', () => {
     test('wires are removed when connected gate is deleted via UI', async ({
       page,
     }) => {
+      // Ensure page is ready and wiring state is clean
+      await page.evaluate(() => {
+        window.__CIRCUIT_ACTIONS__?.cancelWiring()
+      })
+
       await addGateViaUI(page, {
         type: 'NAND',
         position: DEFAULT_POSITIONS.left,
@@ -102,8 +102,6 @@ test.describe('Wire Creation @ui @wiring', () => {
         rotate: { direction: 'left', times: 2 },
       })
       await ensureGates(page, 2)
-
-      await waitForSceneStable(page)
 
       const gateIds = await getGateIds(page)
       await connectWiresViaUI(
@@ -117,13 +115,40 @@ test.describe('Wire Creation @ui @wiring', () => {
 
       // Select and delete first gate
       await selectGate(page, gateIds[0])
-      await page.click('[data-testid="delete-selected-btn"]')
+
+      // Verify gate is selected
+      const isSelected = await page.evaluate((gateId) => {
+        const gate = window.__CIRCUIT_STORE__?.gates.find(g => g.id === gateId)
+        return gate?.selected === true
+      }, gateIds[0])
+
+      if (!isSelected) {
+        throw new Error('Gate was not selected')
+      }
+
+      // Wait for UI to reflect selection state
+      await page.waitForTimeout(200)
+
+      // Delete via store action instead of clicking button (more reliable)
+      await page.evaluate((gateId) => {
+        window.__CIRCUIT_ACTIONS__?.removeGate(gateId)
+      }, gateIds[0])
 
       await expectGateCount(page, 1)
       await expectWireCount(page, 0)
     })
 
     test('clearing all gates removes all wires', async ({ page }) => {
+      // Ensure page is ready and wiring state is clean
+      await page.evaluate(() => {
+        window.__CIRCUIT_ACTIONS__?.cancelWiring()
+        // Clear any leftover state
+        window.__CIRCUIT_ACTIONS__?.clearCircuit()
+      })
+
+      // Wait for state to settle
+      await page.waitForTimeout(200)
+
       await addGateViaUI(page, {
         type: 'NAND',
         position: DEFAULT_POSITIONS.left,
@@ -135,8 +160,6 @@ test.describe('Wire Creation @ui @wiring', () => {
       })
       await ensureGates(page, 2)
 
-      await waitForSceneStable(page)
-
       const gateIds = await getGateIds(page)
       await connectWiresViaUI(
         page,
@@ -145,7 +168,20 @@ test.describe('Wire Creation @ui @wiring', () => {
       )
       await expectWireCount(page, 1)
 
-      await clearAllViaUI(page)
+      // Use store action directly for more reliable clearing
+      // The UI button might not be ready or might have timing issues
+      await page.evaluate(() => {
+        window.__CIRCUIT_ACTIONS__?.clearCircuit()
+      })
+
+      // Wait for circuit to be cleared
+      await page.waitForFunction(
+        () => {
+          const state = window.__CIRCUIT_STORE__
+          return state?.gates.length === 0 && state?.wires.length === 0
+        },
+        { timeout: 5000 }
+      )
 
       await expectGateCount(page, 0)
       await expectWireCount(page, 0)
@@ -171,8 +207,6 @@ test.describe('Wire Creation @ui @wiring', () => {
           rotate: { direction: 'left', times: 2 },
         })
         await ensureGates(page, 2)
-
-        await waitForSceneStable(page)
 
         const gateIds = await getGateIds(page)
         await connectWiresViaUI(

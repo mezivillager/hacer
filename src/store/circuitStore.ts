@@ -8,6 +8,9 @@ import { createPlacementActions } from './actions/placementActions/placementActi
 import { createWiringActions } from './actions/wiringActions/wiringActions'
 import { createPinHelpers } from './actions/pinHelpers/pinHelpers'
 import { createViewActions } from './actions/viewActions/viewActions'
+import { calculateWirePathFromConnection } from '@/utils/wiringScheme'
+import { collectWireSegments } from '@/utils/wiringScheme/segments'
+import type { WireSegment } from '@/utils/wiringScheme/types'
 import type { CircuitStore } from './types'
 import '../../e2e/types/globals' // Import for Window augmentation side-effect
 import '@/utils/renderTracking' // Initialize render tracking
@@ -143,6 +146,41 @@ export const circuitActions = {
   // Helper functions
   getPinWorldPosition: (...args: Parameters<CircuitStore['getPinWorldPosition']>): ReturnType<CircuitStore['getPinWorldPosition']> => useCircuitStore.getState().getPinWorldPosition(...args),
   getPinOrientation: (...args: Parameters<CircuitStore['getPinOrientation']>): ReturnType<CircuitStore['getPinOrientation']> => useCircuitStore.getState().getPinOrientation(...args),
+  // E2E helper: Calculate and store wire path segments manually (bypasses WirePreview component)
+  calculateWirePathSegments: (
+    fromGateId: string,
+    fromPinId: string,
+    toGateId: string,
+    toPinId: string
+  ): WireSegment[] | null => {
+    const state = useCircuitStore.getState()
+    const existingSegments = collectWireSegments(state.wires)
+    const path = calculateWirePathFromConnection(
+      fromGateId,
+      fromPinId,
+      toGateId,
+      toPinId,
+      {
+        gates: state.gates,
+        getPinWorldPosition: state.getPinWorldPosition,
+        getPinOrientation: state.getPinOrientation,
+        existingSegments,
+      }
+    )
+
+    const segments = path?.segments ?? null
+
+    // Store segments directly in wiringFrom state if wiring is active
+    if (segments && segments.length > 0) {
+      useCircuitStore.setState((s) => {
+        if (s.wiringFrom) {
+          s.wiringFrom.segments = segments
+        }
+      }, false, 'calculateWirePathSegments')
+    }
+
+    return segments
+  },
   // View actions
   toggleAxes: () => useCircuitStore.getState().toggleAxes(),
 }
@@ -151,6 +189,9 @@ export const circuitActions = {
 if (typeof window !== 'undefined') {
   // Expose the Zustand getState function directly - this allows E2E tests
   // to always access the current state
+  // Expose store and actions for E2E testing
+  // Note: The full CircuitStore is assigned, but TypeScript sees it as CircuitStoreSnapshot
+  // This is safe because E2E tests only access the state properties, not action methods
   window.__CIRCUIT_STORE__ = useCircuitStore.getState()
   window.__CIRCUIT_ACTIONS__ = circuitActions
 

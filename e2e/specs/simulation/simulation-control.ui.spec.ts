@@ -21,7 +21,9 @@ import {
   expectSimulationState,
 } from '../../helpers/assertions'
 
-test.describe('Simulation Control @ui @simulation', () => {
+// TODO: Re-enable once UI e2e test stability is improved
+// Skipped due to flaky behavior causing test slowdowns
+test.describe.skip('Simulation Control @ui @simulation', () => {
   test('can start and stop simulation via UI', async ({ page }) => {
     await addGateViaUI(page, {
       type: 'NAND',

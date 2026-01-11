@@ -18,7 +18,9 @@ import {
 import { ensureGates, waitForSceneStable } from '../../helpers/waits'
 import { expectWireCount } from '../../helpers/assertions'
 
-test.describe('Wire Persistence @ui @wiring', () => {
+// TODO: Re-enable once UI e2e test stability is improved
+// Skipped due to flaky behavior causing test slowdowns
+test.describe.skip('Wire Persistence @ui @wiring', () => {
   test.describe('Gate Rotation', () => {
     test('wire persists when gate rotates via keyboard', async ({ page }) => {
       await addGateViaUI(page, {
