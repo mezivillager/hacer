@@ -1,5 +1,7 @@
-# Phase 0.25: UI/UX Improvements & Grid-Based Circuit Design (Week 1.5)
+# Phase 0.25: UI/UX Improvements & Grid-Based Circuit Design (Week 1.5) ✅
 
+**Status:** ✅ **COMPLETED**  
+**Completed:** 2025-12-17  
 **Part of:** [Comprehensive Development Roadmap](../../README.md)  
 **Priority:** 🟠 HIGH - Improves User Experience Before Core Features  
 **Timeline:** Week 1.5 (between Phase 0 and Phase 0.5)  
@@ -1047,13 +1049,13 @@ e2e/specs/
 |------|--------|--------------|---------------|
 | 0.25.1 Grid-based placement system | 4h | - | Gates snap to grid, spacing enforced, visual feedback ✅ |
 | 0.25.2 Flat gate orientation | 6h | Grid system | Gates lie flat, names face up, pins don't overlap ✅ |
-| 0.25.3 Gate dragging and movement | 4h | Grid system, Flat orientation | Gates can be dragged, snap to grid, respect section lines |
+| 0.25.3 Gate dragging and movement | 4h | Grid system, Flat orientation | Gates can be dragged, snap to grid, respect section lines ✅ |
 | 0.25.4 90-degree rotation system | 2h | Grid system, Flat orientation | Rotation limited to 90° increments ✅ (Already implemented in 0.25.2) |
-| 0.25.5 Grid-aligned wire routing | 8h | Grid system, Flat orientation | Orthogonal routing, gate avoidance, crossing resolution, dynamic recalculation |
-| 0.25.6 Wire stub removal | 1h | - | Stubs hidden when pins connected |
-| 0.25.7 Wire selection and deletion | 3h | - | Wires can be selected and deleted |
-| 0.25.8 E2E test reorganization | 2h | - | Tests organized, consistent naming |
-| 0.25.8 E2E test optimization | 3h | Test reorganization | Scene loaded once, tests <2s total |
+| 0.25.5 Grid-aligned wire routing | 8h | Grid system, Flat orientation | Orthogonal routing, gate avoidance, crossing resolution, dynamic recalculation ✅ |
+| 0.25.6 Wire stub removal | 1h | - | Stubs hidden when pins connected ✅ |
+| 0.25.7 Wire selection and deletion | 3h | - | Wires can be selected and deleted ✅ |
+| 0.25.8 E2E test reorganization | 2h | - | Tests organized, consistent naming ✅ |
+| 0.25.8 E2E test optimization | 3h | Test reorganization | Scene loaded once, tests <2s total ✅ |
 
 **Total Estimated Effort:** ~29 hours  
 **Performance Budget:** <2s E2E test suite, 60fps with 100+ gates

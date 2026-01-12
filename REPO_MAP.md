@@ -5,8 +5,8 @@ This document helps AI agents and developers understand the codebase structure a
 ## ⚠️ IMPORTANT: Phase Tracking & Maintenance
 
 **Last Updated:** 2025-12-17  
-**Current Phase:** Phase 0.25 (In Progress) - 0.25.1 ✅, 0.25.2 ✅, 0.25.3 ✅, 0.25.4 ✅  
-**Next Phase:** Phase 0.25.5: Grid-Aligned Wire Routing
+**Current Phase:** Phase 0.25 (Complete) ✅ → Phase 0.5 (In Progress)  
+**Next Phase:** Phase 0.5: Nand2Tetris Foundation
 
 ### Phase Status Indicators
 - ✅ **Current/Active** - Structure and files currently in use
@@ -35,7 +35,7 @@ This document helps AI agents and developers understand the codebase structure a
 
 ## Directory Structure
 
-### Current Structure (Phase 0.25)
+### Current Structure (Phase 0.25 - Complete, Phase 0.5 - In Progress)
 
 ```
 src/
@@ -215,17 +215,17 @@ hacer/
 - `src/hooks/useKeyboardShortcuts.ts` - 90° rotation increments (Z axis for world Y rotation)
 - `src/theme/tokens.ts` - Grid colors (uniform blue-tinted color for cell and section lines)
 
-### 🔄 Phase 0.25.5-0.25.8 (Next - In Progress)
-- Grid-aligned wire routing system (0.25.5)
-- Wire stub removal when connected (0.25.6)
-- Wire selection and deletion (0.25.7)
-- E2E test reorganization and optimization (0.25.8)
+### ✅ Phase 0.25 (Completed)
+- 0.25.1 Grid-based gate placement system ✅
+- 0.25.2 Flat gate orientation (names facing up) ✅
+- 0.25.3 Gate dragging and movement ✅
+- 0.25.4 90-degree rotation system ✅
+- 0.25.5 Grid-aligned wire routing ✅
+- 0.25.6 Wire stub removal when connected ✅
+- 0.25.7 Wire selection and deletion ✅
+- 0.25.8 E2E test reorganization and optimization ✅
 
-### ✅ Phase 0.25.3-0.25.4 (Completed)
-- `src/hooks/useGateDrag.ts` - Gate dragging with grid snapping (0.25.3) ✅
-- 90-degree rotation system (0.25.4) ✅ - implemented in 0.25.2
-
-### 🔄 Phase 0.5: Nand2Tetris Foundation (After 0.25)
+### 🔄 Phase 0.5: Nand2Tetris Foundation (In Progress)
 - `src/core/hdl/parser.ts` - HDL parser for .hdl files
 - `src/core/testing/nand2tetris/` - Test script execution (.tst/.cmp)
 - Sequential logic support (DFF, Register, RAM)
@@ -409,7 +409,7 @@ import { Scene } from '@/components/canvas/Scene';
 
 ## Testing Structure
 
-### ✅ Current (Phase 0.25 - Active)
+### ✅ Current (Phase 0.25 - Complete, Phase 0.5 - In Progress)
 - **Unit Tests**: Co-located with source files (`.test.ts` or `.test.tsx`)
   - Grid utilities tests: `src/utils/grid.test.ts` (section line validation)
   - Gate action tests: Updated for flat orientation
@@ -418,15 +418,13 @@ import { Scene } from '@/components/canvas/Scene';
   - **Store tests** (`@store`): Fast, use direct store actions - run before every commit
   - **UI tests** (`@ui`): Slow, use UI interactions - run manually or CI (twice weekly)
   - Store and UI tests come in pairs, sharing scenarios from `e2e/scenarios/`
+  - **E2E Test Optimization**: Scene reuse, test reorganization ✅ (Phase 0.25.8)
 - **Mutation Testing**: Stryker for test quality verification (`npm run stryker`)
 - **Test Setup**: `src/test/setup.ts` - Global test configuration
 - **TDD Templates**: `docs/testing/templates/` - Copy-paste templates for new tests
 - **Testing Standards**: `docs/testing/standards.md` - TDD workflow documentation
 
-### 🔄 Phase 0.25.8 (Next)
-- **E2E Test Optimization**: Scene reuse, test reorganization
-
-### 🔄 Phase 0.5 (After 0.25)
+### 🔄 Phase 0.5 (In Progress)
 - **Curriculum Tests**: Nand2tetris test script execution
 
 ### ⏸️ Phase 3.5+ (Enhanced Testing - Future)
@@ -446,7 +444,8 @@ See [Implementation Guide](implementation.md#technology-stack-evolution) for det
 - [`docs/testing/`](./docs/testing/) - Testing standards, TDD workflow, templates
 - [`docs/typescript-guidelines.md`](./docs/typescript-guidelines.md) - TypeScript best practices
 - [`docs/roadmap/`](./docs/roadmap/README.md) - Project roadmap and phases
-- [`docs/roadmap/phases/phase-0.25-ui-improvements.md`](./docs/roadmap/phases/phase-0.25-ui-improvements.md) - Current phase documentation
+- [`docs/roadmap/phases/phase-0.25-ui-improvements.md`](./docs/roadmap/phases/phase-0.25-ui-improvements.md) - Phase 0.25 documentation (completed)
+- [`docs/roadmap/phases/phase-0.5-nand2tetris-foundation.md`](./docs/roadmap/phases/phase-0.5-nand2tetris-foundation.md) - Current phase documentation
 
 ## Document Relationship
 
