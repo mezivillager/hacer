@@ -98,7 +98,7 @@ describe('wireHandlers', () => {
       expect(mockSelectWire).not.toHaveBeenCalled()
     })
 
-    it('selects wire when wire found near click point', () => {
+    it('selects wire when found near click point', () => {
       mockFindNearestWire.mockReturnValue('wire-1')
       ;(useCircuitStore.getState as ReturnType<typeof vi.fn>).mockReturnValue({
         placementMode: null,
@@ -143,4 +143,3 @@ describe('wireHandlers', () => {
     })
   })
 })
-

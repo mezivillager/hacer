@@ -145,10 +145,8 @@ describe('useKeyboardShortcuts', () => {
 
       // Create wire between gates
       getState().addWire(
-        gate1.id,
-        gate1.outputs[0].id,
-        gate2.id,
-        gate2.inputs[0].id,
+        { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
+        { type: 'gate', entityId: gate2.id, pinId: gate2.inputs[0].id },
         []
       )
 
@@ -169,10 +167,8 @@ describe('useKeyboardShortcuts', () => {
       const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
       const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 2 })
       const wire = getState().addWire(
-        gate1.id,
-        gate1.outputs[0].id,
-        gate2.id,
-        gate2.inputs[0].id,
+        { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
+        { type: 'gate', entityId: gate2.id, pinId: gate2.inputs[0].id },
         []
       )
       getState().selectWire(wire.id)
@@ -195,10 +191,8 @@ describe('useKeyboardShortcuts', () => {
       const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
       const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 2 })
       const wire = getState().addWire(
-        gate1.id,
-        gate1.outputs[0].id,
-        gate2.id,
-        gate2.inputs[0].id,
+        { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
+        { type: 'gate', entityId: gate2.id, pinId: gate2.inputs[0].id },
         []
       )
       getState().selectWire(wire.id)
@@ -221,10 +215,8 @@ describe('useKeyboardShortcuts', () => {
       const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
       const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 2 })
       const wire = getState().addWire(
-        gate1.id,
-        gate1.outputs[0].id,
-        gate2.id,
-        gate2.inputs[0].id,
+        { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
+        { type: 'gate', entityId: gate2.id, pinId: gate2.inputs[0].id },
         []
       )
       getState().selectGate(gate1.id)
@@ -253,10 +245,8 @@ describe('useKeyboardShortcuts', () => {
       const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
       const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 2 })
       const wire = getState().addWire(
-        gate1.id,
-        gate1.outputs[0].id,
-        gate2.id,
-        gate2.inputs[0].id,
+        { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
+        { type: 'gate', entityId: gate2.id, pinId: gate2.inputs[0].id },
         []
       )
       getState().selectWire(wire.id)

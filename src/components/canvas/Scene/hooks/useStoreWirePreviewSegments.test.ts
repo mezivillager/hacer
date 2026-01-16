@@ -34,6 +34,8 @@ describe('useStoreWirePreviewSegments', () => {
       previewEndPosition: { x: 4, y: 0, z: 0 },
       destinationGateId: 'gate-2',
       destinationPinId: 'pin-2',
+      destinationNodeId: null,
+      destinationNodeType: null,
       segments: null,
     }
 
@@ -96,6 +98,8 @@ describe('useStoreWirePreviewSegments', () => {
       previewEndPosition: { x: 4, y: 0, z: 0 },
       destinationGateId: 'gate-2',
       destinationPinId: 'pin-2',
+      destinationNodeId: null,
+      destinationNodeType: null,
       segments: null,
     }
 
@@ -144,6 +148,8 @@ describe('useStoreWirePreviewSegments', () => {
       previewEndPosition: { x: 8, y: 0, z: 0 },
       destinationGateId: 'gate-2',
       destinationPinId: 'pin-2',
+      destinationNodeId: null,
+      destinationNodeType: null,
       segments: null,
     }
 
@@ -189,6 +195,8 @@ describe('useStoreWirePreviewSegments', () => {
       previewEndPosition: { x: 4, y: 0, z: 0 },
       destinationGateId: null,
       destinationPinId: null,
+      destinationNodeId: null,
+      destinationNodeType: null,
       segments: null,
     }
 
@@ -204,6 +212,54 @@ describe('useStoreWirePreviewSegments', () => {
 
     // Should not store when destination is not set
     expect(getState().wiringFrom?.segments).toBeNull()
+  })
+
+  it('stores segments when node destination is set (gate output to output node)', async () => {
+    const segments: WireSegment[] = [
+      {
+        start: { x: 0.7, y: 0.2, z: 0 },
+        end: { x: 7.6, y: 0.2, z: 0 },
+        type: 'horizontal',
+      },
+    ]
+
+    const path: WirePath = {
+      segments,
+      totalLength: 6.9,
+    }
+
+    const wiringFrom: WiringState = {
+      fromGateId: 'gate-1',
+      fromPinId: 'pin-1',
+      fromPinType: 'output',
+      fromPosition: { x: 0.7, y: 0.2, z: 0 },
+      previewEndPosition: { x: 7.6, y: 0.2, z: 0 },
+      destinationGateId: null,
+      destinationPinId: null,
+      destinationNodeId: 'output-node-1',
+      destinationNodeType: 'output',
+      segments: null,
+      source: { type: 'gate', gateId: 'gate-1', pinId: 'pin-1', pinType: 'output' },
+    }
+
+    useCircuitStore.setState({ wiringFrom })
+
+    renderHook(() =>
+      useStoreWirePreviewSegments({
+        path,
+        wiringFrom,
+        fromPinType: 'output',
+      })
+    )
+
+    // Wait for useEffect to run
+    await waitFor(() => {
+      const stored = getState().wiringFrom?.segments
+      expect(stored).toBeDefined()
+      expect(stored).toHaveLength(1)
+      expect(stored?.[0].start).toEqual({ x: 0.7, y: 0.2, z: 0 })
+      expect(stored?.[0].end).toEqual({ x: 7.6, y: 0.2, z: 0 })
+    })
   })
 
   it('does not update store if segments have not changed', async () => {
@@ -228,6 +284,8 @@ describe('useStoreWirePreviewSegments', () => {
       previewEndPosition: { x: 4, y: 0, z: 0 },
       destinationGateId: 'gate-2',
       destinationPinId: 'pin-2',
+      destinationNodeId: null,
+      destinationNodeType: null,
       segments: null,
     }
 

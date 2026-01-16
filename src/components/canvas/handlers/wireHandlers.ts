@@ -42,6 +42,3 @@ export function handleWireClick(e: ThreeEvent<MouseEvent>): string | null {
 
   return null
 }
-
-
-

@@ -45,7 +45,11 @@ describe('useExistingSegments', () => {
     const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
     const gate2 = getState().addGate('NAND', { x: 8, y: 0, z: 0 })
 
-    getState().addWire(gate1.id, `${gate1.id}-out-0`, gate2.id, `${gate2.id}-in-0`, [segment1, segment2])
+    getState().addWire(
+      { type: 'gate', entityId: gate1.id, pinId: `${gate1.id}-out-0` },
+      { type: 'gate', entityId: gate2.id, pinId: `${gate2.id}-in-0` },
+      [segment1, segment2]
+    )
 
     const { result } = renderHook(() => useExistingSegments())
 
@@ -67,7 +71,11 @@ describe('useExistingSegments', () => {
 
     const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
     const gate2 = getState().addGate('NAND', { x: 4, y: 0, z: 0 })
-    getState().addWire(gate1.id, `${gate1.id}-out-0`, gate2.id, `${gate2.id}-in-0`, [segment])
+    getState().addWire(
+      { type: 'gate', entityId: gate1.id, pinId: `${gate1.id}-out-0` },
+      { type: 'gate', entityId: gate2.id, pinId: `${gate2.id}-in-0` },
+      [segment]
+    )
 
     rerender()
 

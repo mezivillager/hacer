@@ -1,183 +1,231 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { isPinConnected, handlePinClick, handleInputToggle, handleGateClick } from './canvasHandlers'
-import { useCircuitStore, circuitActions } from '@/store/circuitStore'
-import type { Wire, WiringState } from '@/store/types'
-import { createMockStore } from '@/test/testUtils'
+/**
+ * Canvas Handlers Tests
+ *
+ * Tests for canvas interaction handlers including node click handling.
+ */
 
-// Mock dependencies
-vi.mock('@/store/circuitStore', () => ({
-  useCircuitStore: {
-    getState: vi.fn(),
-  },
-  circuitActions: {
-    completeWiring: vi.fn(),
-    startWiring: vi.fn(),
-    setInputValue: vi.fn(),
-    selectGate: vi.fn(),
-  },
-}))
+import { describe, it, expect, beforeEach } from 'vitest'
+import { useCircuitStore } from '@/store/circuitStore'
+import {
+  handleNodeClick,
+  handleInputNodeToggle,
+  handleGateClick,
+  handleNodePinClick,
+  handlePinClick,
+} from './canvasHandlers'
 
-describe('canvasHandlers', () => {
+// Helper to get store state
+const getState = () => useCircuitStore.getState()
+
+describe('Canvas Handlers', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
-  })
-
-  describe('isPinConnected', () => {
-    it('returns true when pin is connected as source', () => {
-      const wire: Wire = { id: 'wire-1', fromGateId: 'gate-1', fromPinId: 'pin-1', toGateId: 'gate-2', toPinId: 'pin-2', segments: [] }
-      vi.mocked(useCircuitStore.getState).mockReturnValue(
-        createMockStore({ wires: [wire] })
-      )
-
-      expect(isPinConnected('gate-1', 'pin-1')).toBe(true)
-    })
-
-    it('returns true when pin is connected as target', () => {
-      const wire: Wire = { id: 'wire-1', fromGateId: 'gate-1', fromPinId: 'pin-1', toGateId: 'gate-2', toPinId: 'pin-2', segments: [] }
-      vi.mocked(useCircuitStore.getState).mockReturnValue(
-        createMockStore({ wires: [wire] })
-      )
-
-      expect(isPinConnected('gate-2', 'pin-2')).toBe(true)
-    })
-
-    it('returns false when pin is not connected', () => {
-      const wire: Wire = { id: 'wire-1', fromGateId: 'gate-1', fromPinId: 'pin-1', toGateId: 'gate-2', toPinId: 'pin-2', segments: [] }
-      vi.mocked(useCircuitStore.getState).mockReturnValue(
-        createMockStore({ wires: [wire] })
-      )
-
-      expect(isPinConnected('gate-1', 'pin-2')).toBe(false)
-    })
-
-    it('returns false when no wires exist', () => {
-      vi.mocked(useCircuitStore.getState).mockReturnValue(
-        createMockStore({ wires: [] })
-      )
-
-      expect(isPinConnected('gate-1', 'pin-1')).toBe(false)
+    // Reset store state before each test
+    useCircuitStore.setState({
+      gates: [],
+      wires: [],
+      selectedGateId: null,
+      selectedWireId: null,
+      wiringFrom: null,
+      inputNodes: [],
+      outputNodes: [],
+      constantNodes: [],
+      selectedNodeId: null,
+      selectedNodeType: null,
     })
   })
 
-  describe('handlePinClick', () => {
-    it('completes wiring when wiring is active', () => {
-      const wiringFrom: WiringState = {
-        fromGateId: 'gate-1',
-        fromPinId: 'pin-1',
-        fromPinType: 'output',
-        fromPosition: { x: 0, y: 0, z: 0 },
-        previewEndPosition: null,
-        destinationGateId: null,
-        destinationPinId: null,
-        segments: null,
-      }
-      vi.mocked(useCircuitStore.getState).mockReturnValue(
-        createMockStore({ wiringFrom })
-      )
+  describe('handleNodeClick', () => {
+    it('selects a node when not wiring', () => {
+      handleNodeClick('node-1', 'input')
 
-      handlePinClick('gate-2', 'pin-2', 'input', { x: 1, y: 2, z: 3 })
-
-      expect(circuitActions.completeWiring).toHaveBeenCalledWith('gate-2', 'pin-2', 'input')
-      expect(circuitActions.startWiring).not.toHaveBeenCalled()
+      expect(getState().selectedNodeId).toBe('node-1')
+      expect(getState().selectedNodeType).toBe('input')
     })
 
-    it('starts wiring when wiring is not active', () => {
-      vi.mocked(useCircuitStore.getState).mockReturnValue(
-        createMockStore({ wiringFrom: null })
-      )
+    it('selects output nodes', () => {
+      handleNodeClick('out-1', 'output')
 
-      handlePinClick('gate-1', 'pin-1', 'output', { x: 1, y: 2, z: 3 })
+      expect(getState().selectedNodeId).toBe('out-1')
+      expect(getState().selectedNodeType).toBe('output')
+    })
 
-      expect(circuitActions.startWiring).toHaveBeenCalledWith('gate-1', 'pin-1', 'output', { x: 1, y: 2, z: 3 })
-      expect(circuitActions.completeWiring).not.toHaveBeenCalled()
+    it('selects constant nodes', () => {
+      handleNodeClick('const-1', 'constant')
+
+      expect(getState().selectedNodeId).toBe('const-1')
+      expect(getState().selectedNodeType).toBe('constant')
+    })
+
+    it('does not select when wiring is active', () => {
+      // Set up wiring state
+      const gate = getState().addGate('NAND', { x: 2, y: 0.2, z: 2 })
+      getState().startWiring(gate.id, gate.outputs[0].id, 'output', { x: 0.5, y: 0.2, z: 0 })
+
+      handleNodeClick('node-1', 'input')
+
+      expect(getState().selectedNodeId).toBe(null)
+    })
+
+    it('clears gate selection when selecting a node', () => {
+      const gate = getState().addGate('NAND', { x: 2, y: 0.2, z: 2 })
+      getState().selectGate(gate.id)
+      expect(getState().selectedGateId).toBe(gate.id)
+
+      handleNodeClick('node-1', 'input')
+
+      expect(getState().selectedGateId).toBe(null)
+      expect(getState().selectedNodeId).toBe('node-1')
     })
   })
 
-  describe('handleInputToggle', () => {
-    it('toggles input value when gate and pin exist', () => {
-      vi.mocked(useCircuitStore.getState).mockReturnValue(
-        createMockStore({
-          gates: [
-            {
-              id: 'gate-1',
-              type: 'NAND',
-              position: { x: 0, y: 0, z: 0 },
-              rotation: { x: 0, y: 0, z: 0 },
-              inputs: [{ id: 'pin-1', name: 'A', type: 'input', value: false }],
-              outputs: [],
-              selected: false,
-            },
-          ],
-        })
-      )
+  describe('handleInputNodeToggle', () => {
+    it('toggles input node value from false to true', () => {
+      const node = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
+      expect(node.value).toBe(false)
 
-      handleInputToggle('gate-1', 'pin-1')
+      handleInputNodeToggle(node.id)
 
-      expect(circuitActions.setInputValue).toHaveBeenCalledWith('gate-1', 'pin-1', true)
+      const updated = getState().inputNodes.find(n => n.id === node.id)
+      expect(updated?.value).toBe(true)
     })
 
-    it('does nothing when gate does not exist', () => {
-      vi.mocked(useCircuitStore.getState).mockReturnValue(
-        createMockStore({ gates: [] })
-      )
+    it('toggles input node value from true to false', () => {
+      const node = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
+      getState().updateInputNodeValue(node.id, true)
 
-      handleInputToggle('gate-1', 'pin-1')
+      handleInputNodeToggle(node.id)
 
-      expect(circuitActions.setInputValue).not.toHaveBeenCalled()
+      const updated = getState().inputNodes.find(n => n.id === node.id)
+      expect(updated?.value).toBe(false)
     })
 
-    it('does nothing when pin does not exist', () => {
-      vi.mocked(useCircuitStore.getState).mockReturnValue(
-        createMockStore({
-          gates: [
-            {
-              id: 'gate-1',
-              type: 'NAND',
-              position: { x: 0, y: 0, z: 0 },
-              rotation: { x: 0, y: 0, z: 0 },
-              inputs: [{ id: 'pin-2', name: 'B', type: 'input', value: false }],
-              outputs: [],
-              selected: false,
-            },
-          ],
-        })
-      )
+    it('does nothing for non-existent node', () => {
+      handleInputNodeToggle('non-existent')
 
-      handleInputToggle('gate-1', 'pin-1')
-
-      expect(circuitActions.setInputValue).not.toHaveBeenCalled()
+      // Should not throw, just do nothing
+      expect(getState().inputNodes).toHaveLength(0)
     })
   })
 
   describe('handleGateClick', () => {
-    it('selects gate when not wiring', () => {
-      vi.mocked(useCircuitStore.getState).mockReturnValue(
-        createMockStore({ wiringFrom: null })
-      )
+    it('selects a gate when not wiring', () => {
+      const gate = getState().addGate('NAND', { x: 2, y: 0.2, z: 2 })
 
-      handleGateClick('gate-1')
+      handleGateClick(gate.id)
 
-      expect(circuitActions.selectGate).toHaveBeenCalledWith('gate-1')
+      expect(getState().selectedGateId).toBe(gate.id)
     })
 
-    it('does not select gate when wiring', () => {
-      const wiringFrom: WiringState = {
-        fromGateId: 'gate-1',
-        fromPinId: 'pin-1',
-        fromPinType: 'output',
-        fromPosition: { x: 0, y: 0, z: 0 },
-        previewEndPosition: null,
-        destinationGateId: null,
-        destinationPinId: null,
-        segments: null,
-      }
-      vi.mocked(useCircuitStore.getState).mockReturnValue(
-        createMockStore({ wiringFrom })
-      )
+    it('does not select when wiring is active', () => {
+      const gate1 = getState().addGate('NAND', { x: 2, y: 0.2, z: 2 })
+      const gate2 = getState().addGate('AND', { x: 6, y: 0.2, z: 2 })
+      getState().startWiring(gate1.id, gate1.outputs[0].id, 'output', { x: 0.5, y: 0.2, z: 0 })
 
-      handleGateClick('gate-1')
+      handleGateClick(gate2.id)
 
-      expect(circuitActions.selectGate).not.toHaveBeenCalled()
+      expect(getState().selectedGateId).toBe(null)
+    })
+  })
+
+  describe('handleNodePinClick', () => {
+    it('starts wiring from input node pin', () => {
+      const inputNode = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
+
+      handleNodePinClick(inputNode.id, 'input', { x: 0.5, y: 0.2, z: 0 })
+
+      const wiringFrom = getState().wiringFrom
+      expect(wiringFrom).not.toBe(null)
+      expect(wiringFrom?.source?.type).toBe('input')
+      expect(wiringFrom?.source?.nodeId).toBe(inputNode.id)
+    })
+
+    it('starts wiring from constant node pin', () => {
+      const constNode = getState().addConstantNode(true, { x: 0, y: 0, z: 0 })
+
+      handleNodePinClick(constNode.id, 'constant', { x: 0.5, y: 0.2, z: 0 })
+
+      const wiringFrom = getState().wiringFrom
+      expect(wiringFrom).not.toBe(null)
+      expect(wiringFrom?.source?.type).toBe('constant')
+    })
+
+    it('does not start wiring from output node pin', () => {
+      const outputNode = getState().addOutputNode('out', { x: 8, y: 0, z: 0 })
+
+      handleNodePinClick(outputNode.id, 'output', { x: 7.5, y: 0.2, z: 0 })
+
+      // Output nodes cannot be wire sources
+      expect(getState().wiringFrom).toBe(null)
+    })
+
+    it('completes wiring to output node pin', () => {
+      const inputNode = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
+      const outputNode = getState().addOutputNode('out', { x: 8, y: 0, z: 0 })
+
+      // Start wiring from input node
+      handleNodePinClick(inputNode.id, 'input', { x: 0.5, y: 0.2, z: 0 })
+      expect(getState().wiringFrom).not.toBe(null)
+
+      // Set segments (normally done by WirePreview)
+      useCircuitStore.setState((state) => {
+        if (state.wiringFrom) {
+          state.wiringFrom.segments = [
+            { start: { x: 0.5, y: 0.2, z: 0 }, end: { x: 7.5, y: 0.2, z: 0 }, type: 'horizontal' },
+          ]
+        }
+      })
+
+      // Complete wiring to output node
+      handleNodePinClick(outputNode.id, 'output', { x: 7.5, y: 0.2, z: 0 })
+
+      expect(getState().wiringFrom).toBe(null)
+      expect(getState().wires).toHaveLength(1)
+    })
+
+    it('does not complete wiring to input node pin', () => {
+      const inputNode1 = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
+      const inputNode2 = getState().addInputNode('b', { x: 0, y: 0, z: 4 })
+
+      // Start wiring from input node
+      handleNodePinClick(inputNode1.id, 'input', { x: 0.5, y: 0.2, z: 0 })
+      expect(getState().wiringFrom).not.toBe(null)
+
+      // Try to complete wiring to another input node - should not work
+      handleNodePinClick(inputNode2.id, 'input', { x: 0.5, y: 0.2, z: 4 })
+
+      // Wiring should still be active (not completed)
+      expect(getState().wiringFrom).not.toBe(null)
+      expect(getState().wires).toHaveLength(0)
+    })
+
+    it('completes wiring from gate output to output node pin', () => {
+      const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const outputNode = getState().addOutputNode('out', { x: 8, y: 0, z: 0 })
+
+      // Start wiring from gate output pin
+      handlePinClick(gate.id, gate.outputs[0].id, 'output', { x: 0.7, y: 0.2, z: 0 })
+      expect(getState().wiringFrom).not.toBe(null)
+
+      // Set segments (normally done by WirePreview)
+      useCircuitStore.setState((state) => {
+        if (state.wiringFrom) {
+          state.wiringFrom.segments = [
+            { start: { x: 0.7, y: 0.2, z: 0 }, end: { x: 7.5, y: 0.2, z: 0 }, type: 'horizontal' },
+          ]
+        }
+      })
+
+      // Complete wiring to output node pin
+      handleNodePinClick(outputNode.id, 'output', { x: 7.5, y: 0.2, z: 0 })
+
+      expect(getState().wiringFrom).toBe(null)
+      expect(getState().wires).toHaveLength(1)
+      const wire = getState().wires[0]
+      expect(wire.from.type).toBe('gate')
+      expect(wire.from.entityId).toBe(gate.id)
+      expect(wire.from.pinId).toBe(gate.outputs[0].id)
+      expect(wire.to.type).toBe('output')
+      expect(wire.to.entityId).toBe(outputNode.id)
     })
   })
 })

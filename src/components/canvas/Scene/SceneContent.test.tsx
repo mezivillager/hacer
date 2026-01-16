@@ -24,6 +24,10 @@ vi.mock('./SceneOrbitControls', () => ({
   SceneOrbitControls: () => <div data-testid="scene-orbit-controls">SceneOrbitControls</div>,
 }))
 
+vi.mock('./SceneKeyboardPan', () => ({
+  SceneKeyboardPan: () => <div data-testid="scene-keyboard-pan">SceneKeyboardPan</div>,
+}))
+
 vi.mock('@react-three/drei', () => ({
   Environment: () => <div data-testid="environment">Environment</div>,
 }))

@@ -7,7 +7,7 @@
  * This file is imported in production code for the side-effect of Window augmentation.
  */
 
-import type { GateType, WiringState } from '../../src/store/types'
+import type { GateType, WiringState, NodeType, WireEndpointType } from '../../src/store/types'
 import type { WireSegment } from '../../src/utils/wiringScheme/types'
 
 export interface SceneHelpers {
@@ -25,12 +25,26 @@ export interface CircuitStoreGate {
   selected?: boolean
 }
 
+/**
+ * Wire endpoint representing a connection point.
+ * Mirrors the WireEndpoint type from store/types.ts.
+ */
+export interface E2EWireEndpoint {
+  type: WireEndpointType
+  entityId: string
+  pinId?: string
+}
+
+/**
+ * Unified wire structure using WireEndpoint format.
+ */
 export interface CircuitWire {
   id: string
-  fromGateId: string
-  fromPinId: string
-  toGateId: string
-  toPinId: string
+  signalId?: string
+  from: E2EWireEndpoint
+  to: E2EWireEndpoint
+  segments?: WireSegment[]
+  crossesWireIds?: string[]
 }
 
 export interface CircuitStoreSnapshot {
@@ -47,13 +61,14 @@ export interface CircuitActionsAPI {
     type: GateType,
     position: { x: number; y: number; z: number }
   ) => { id: string; inputs: Array<{ id: string }>; outputs: Array<{ id: string }> }
+  // Unified wire API using WireEndpoint format
   addWire: (
-    fromGateId: string,
-    fromPinId: string,
-    toGateId: string,
-    toPinId: string,
-    segments: WireSegment[]
-  ) => void
+    from: E2EWireEndpoint,
+    to: E2EWireEndpoint,
+    segments: WireSegment[],
+    crossesWireIds?: string[],
+    signalId?: string
+  ) => CircuitWire
   setInputValue: (gateId: string, pinId: string, value: boolean) => void
   toggleSimulation: () => void
   clearCircuit: () => void
@@ -74,6 +89,20 @@ export interface CircuitActionsAPI {
   setDestinationPin: (gateId: string | null, pinId: string | null) => void
   cancelWiring: () => void
   completeWiring: (toGateId: string, toPinId: string, toPinType: 'input' | 'output') => void
+  // Node-based wiring actions
+  startWiringFromNode: (nodeId: string, nodeType: NodeType, position: { x: number; y: number; z: number }) => void
+  completeWiringToNode: (nodeId: string, nodeType: NodeType) => void
+  // Node management actions
+  addInputNode: (name: string, position: { x: number; y: number; z: number }, width?: number) => { id: string; name: string; value: boolean }
+  addOutputNode: (name: string, position: { x: number; y: number; z: number }, width?: number) => { id: string; name: string; value: boolean }
+  addConstantNode: (value: boolean, position: { x: number; y: number; z: number }) => { id: string; value: boolean }
+  removeInputNode: (nodeId: string) => void
+  removeOutputNode: (nodeId: string) => void
+  removeConstantNode: (nodeId: string) => void
+  updateInputNodeValue: (nodeId: string, value: boolean) => void
+  // Junction management actions
+  addJunction: (signalId: string, position: { x: number; y: number; z: number }) => { id: string; signalId: string }
+  removeJunction: (junctionId: string) => void
   // E2E helper for wire path calculation
   calculateWirePathSegments: (
     fromGateId: string,

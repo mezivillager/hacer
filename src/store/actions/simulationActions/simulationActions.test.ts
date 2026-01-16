@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { useCircuitStore } from '../../circuitStore'
+import { getSignalSourceValue } from './simulationActions'
 
 // Helper to get store state
 const getState = () => useCircuitStore.getState()
@@ -11,10 +12,19 @@ describe('simulationActions', () => {
       gates: [],
       wires: [],
       selectedGateId: null,
+      selectedWireId: null,
       simulationRunning: false,
       simulationSpeed: 100,
       placementMode: null,
       wiringFrom: null,
+      // Node state fields
+      inputNodes: [],
+      outputNodes: [],
+      constantNodes: [],
+      junctions: [],
+      nodePlacementMode: null,
+      selectedNodeId: null,
+      selectedNodeType: null,
     })
   })
 
@@ -43,8 +53,9 @@ describe('simulationActions', () => {
       const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
       const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 0 })
       getState().addWire(
-        gate1.id, gate1.outputs[0].id,
-        gate2.id, gate2.inputs[0].id
+        { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
+        { type: 'gate', entityId: gate2.id, pinId: gate2.inputs[0].id },
+        []
       )
       getState().selectGate(gate1.id)
 
@@ -62,6 +73,40 @@ describe('simulationActions', () => {
 
       expect(getState().placementMode).toBe(null)
     })
+
+    it('clears all nodes and junctions', () => {
+      // Add some nodes
+      getState().addInputNode('a', { x: 0, y: 0, z: 0 })
+      getState().addOutputNode('out', { x: 10, y: 0, z: 0 })
+      getState().addConstantNode(true, { x: -2, y: 0, z: 0 })
+
+      // Verify they exist
+      expect(getState().inputNodes).toHaveLength(1)
+      expect(getState().outputNodes).toHaveLength(1)
+      expect(getState().constantNodes).toHaveLength(1)
+
+      getState().clearCircuit()
+
+      expect(getState().inputNodes).toHaveLength(0)
+      expect(getState().outputNodes).toHaveLength(0)
+      expect(getState().constantNodes).toHaveLength(0)
+      expect(getState().junctions).toHaveLength(0)
+      expect(getState().wires).toHaveLength(0)
+    })
+
+    it('clears node selection and node placement mode', () => {
+      useCircuitStore.setState({
+        selectedNodeId: 'some-node',
+        selectedNodeType: 'input',
+        nodePlacementMode: 'INPUT',
+      })
+
+      getState().clearCircuit()
+
+      expect(getState().selectedNodeId).toBe(null)
+      expect(getState().selectedNodeType).toBe(null)
+      expect(getState().nodePlacementMode).toBe(null)
+    })
   })
 
   describe('simulationTick', () => {
@@ -70,8 +115,9 @@ describe('simulationActions', () => {
       const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 0 })
 
       getState().addWire(
-        gate1.id, gate1.outputs[0].id,
-        gate2.id, gate2.inputs[0].id
+        { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
+        { type: 'gate', entityId: gate2.id, pinId: gate2.inputs[0].id },
+        []
       )
 
       // Set gate1 inputs to true, true -> NAND output should be false
@@ -111,6 +157,409 @@ describe('simulationActions', () => {
 
       // Should not throw, output should be calculated based on inputs
       expect(getState().gates[0].outputs[0].value).toBeDefined()
+    })
+  })
+
+  describe('getSignalSourceValue', () => {
+    it('returns input node value for input source type', () => {
+      const inputNode = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
+      getState().updateInputNodeValue(inputNode.id, true)
+
+      const value = getSignalSourceValue(
+        { type: 'input', entityId: inputNode.id },
+        getState()
+      )
+
+      expect(value).toBe(true)
+    })
+
+    it('returns false for non-existent input node', () => {
+      const value = getSignalSourceValue(
+        { type: 'input', entityId: 'non-existent' },
+        getState()
+      )
+
+      expect(value).toBe(false)
+    })
+
+    it('returns constant node value for constant source type', () => {
+      const constNode = getState().addConstantNode(true, { x: 0, y: 0, z: 0 })
+
+      const value = getSignalSourceValue(
+        { type: 'constant', entityId: constNode.id },
+        getState()
+      )
+
+      expect(value).toBe(true)
+    })
+
+    it('returns false constant node value', () => {
+      const constNode = getState().addConstantNode(false, { x: 0, y: 0, z: 0 })
+
+      const value = getSignalSourceValue(
+        { type: 'constant', entityId: constNode.id },
+        getState()
+      )
+
+      expect(value).toBe(false)
+    })
+
+    it('returns gate output value for gate source type', () => {
+      const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      // Set inputs to false, false -> NAND output should be true
+      getState().simulationTick()
+
+      const value = getSignalSourceValue(
+        { type: 'gate', entityId: gate.id, pinId: gate.outputs[0].id },
+        getState()
+      )
+
+      expect(value).toBe(true) // NAND(false, false) = true
+    })
+
+    it('returns false for non-existent gate', () => {
+      const value = getSignalSourceValue(
+        { type: 'gate', entityId: 'non-existent', pinId: 'pin-1' },
+        getState()
+      )
+
+      expect(value).toBe(false)
+    })
+
+    it('returns false for output source type (invalid)', () => {
+      const outputNode = getState().addOutputNode('out', { x: 0, y: 0, z: 0 })
+
+      const value = getSignalSourceValue(
+        { type: 'output', entityId: outputNode.id },
+        getState()
+      )
+
+      expect(value).toBe(false)
+    })
+
+    it('returns false and does not infinitely recurse on junction cycle', () => {
+      // Create two junctions that feed each other (malformed circuit)
+      const junction1 = getState().addJunction('sig-a', { x: 0, y: 0, z: 0 })
+      const junction2 = getState().addJunction('sig-a', { x: 4, y: 0, z: 0 })
+
+      // Junction1 -> Junction2
+      getState().addWire(
+        { type: 'junction', entityId: junction1.id },
+        { type: 'junction', entityId: junction2.id },
+        [],
+        [],
+        'sig-a'
+      )
+
+      // Junction2 -> Junction1 (creates a cycle)
+      getState().addWire(
+        { type: 'junction', entityId: junction2.id },
+        { type: 'junction', entityId: junction1.id },
+        [],
+        [],
+        'sig-a'
+      )
+
+      // Should not throw or hang, should return false
+      const value = getSignalSourceValue(
+        { type: 'junction', entityId: junction1.id },
+        getState()
+      )
+
+      expect(value).toBe(false)
+    })
+
+    it('handles deeply nested junctions correctly', () => {
+      // Create a chain of junctions: input -> j1 -> j2 -> j3 -> gate
+      const inputNode = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
+      const j1 = getState().addJunction('sig-a', { x: 2, y: 0, z: 0 })
+      const j2 = getState().addJunction('sig-a', { x: 4, y: 0, z: 0 })
+      const j3 = getState().addJunction('sig-a', { x: 6, y: 0, z: 0 })
+
+      // Wire the chain
+      getState().addWire({ type: 'input', entityId: inputNode.id }, { type: 'junction', entityId: j1.id }, [], [], 'sig-a')
+      getState().addWire({ type: 'junction', entityId: j1.id }, { type: 'junction', entityId: j2.id }, [], [], 'sig-a')
+      getState().addWire({ type: 'junction', entityId: j2.id }, { type: 'junction', entityId: j3.id }, [], [], 'sig-a')
+
+      // Set input to true
+      getState().updateInputNodeValue(inputNode.id, true)
+
+      // Reading from j3 should trace back through the chain to input
+      const value = getSignalSourceValue(
+        { type: 'junction', entityId: j3.id },
+        getState()
+      )
+
+      expect(value).toBe(true)
+    })
+  })
+
+  describe('simulationTick with wires', () => {
+    it('propagates input node value to gate input via wire', () => {
+      // Create input node and gate
+      const inputNode = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
+      const gate = getState().addGate('NOT', { x: 4, y: 0.2, z: 0 })
+
+      // Create wire from input to gate input
+      getState().addWire(
+        { type: 'input', entityId: inputNode.id },
+        { type: 'gate', entityId: gate.id, pinId: gate.inputs[0].id },
+        [],
+        [],
+        'signal-a'
+      )
+
+      // Set input node to true
+      getState().updateInputNodeValue(inputNode.id, true)
+
+      // Run simulation tick
+      getState().simulationTick()
+
+      // Gate input should receive the input node value
+      expect(getState().gates[0].inputs[0].value).toBe(true)
+      // NOT gate output should be false (NOT(true) = false)
+      expect(getState().gates[0].outputs[0].value).toBe(false)
+    })
+
+    it('propagates constant node value to gate input via wire', () => {
+      // Create constant node (true) and gate
+      const constNode = getState().addConstantNode(true, { x: 0, y: 0, z: 0 })
+      const gate = getState().addGate('NOT', { x: 4, y: 0.2, z: 0 })
+
+      // Create wire from constant to gate input
+      getState().addWire(
+        { type: 'constant', entityId: constNode.id },
+        { type: 'gate', entityId: gate.id, pinId: gate.inputs[0].id },
+        [],
+        [],
+        'signal-const'
+      )
+
+      // Run simulation tick
+      getState().simulationTick()
+
+      // Gate input should receive the constant value
+      expect(getState().gates[0].inputs[0].value).toBe(true)
+      // NOT gate output should be false
+      expect(getState().gates[0].outputs[0].value).toBe(false)
+    })
+
+    it('propagates false constant to gate input', () => {
+      const constNode = getState().addConstantNode(false, { x: 0, y: 0, z: 0 })
+      const gate = getState().addGate('NOT', { x: 4, y: 0.2, z: 0 })
+
+      getState().addWire(
+        { type: 'constant', entityId: constNode.id },
+        { type: 'gate', entityId: gate.id, pinId: gate.inputs[0].id },
+        [],
+        [],
+        'signal-const'
+      )
+
+      getState().simulationTick()
+
+      expect(getState().gates[0].inputs[0].value).toBe(false)
+      // NOT gate output should be true (NOT(false) = true)
+      expect(getState().gates[0].outputs[0].value).toBe(true)
+    })
+
+    it('propagates gate output to output node via wire', () => {
+      // Create gate and output node
+      const gate = getState().addGate('NOT', { x: 0, y: 0.2, z: 0 })
+      const outputNode = getState().addOutputNode('out', { x: 4, y: 0, z: 0 })
+
+      // Create wire from gate output to output node
+      getState().addWire(
+        { type: 'gate', entityId: gate.id, pinId: gate.outputs[0].id },
+        { type: 'output', entityId: outputNode.id },
+        [],
+        [],
+        'signal-out'
+      )
+
+      // Gate input is false by default, NOT(false) = true
+      getState().simulationTick()
+
+      // Output node should receive the gate output value
+      expect(getState().outputNodes[0].value).toBe(true)
+    })
+
+    it('propagates input through gate to output node', () => {
+      // Create input -> gate -> output chain
+      const inputNode = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
+      const gate = getState().addGate('NOT', { x: 4, y: 0.2, z: 0 })
+      const outputNode = getState().addOutputNode('out', { x: 8, y: 0, z: 0 })
+
+      // Wire input to gate
+      getState().addWire(
+        { type: 'input', entityId: inputNode.id },
+        { type: 'gate', entityId: gate.id, pinId: gate.inputs[0].id },
+        [],
+        [],
+        'signal-a'
+      )
+
+      // Wire gate output to output node
+      getState().addWire(
+        { type: 'gate', entityId: gate.id, pinId: gate.outputs[0].id },
+        { type: 'output', entityId: outputNode.id },
+        [],
+        [],
+        'signal-out'
+      )
+
+      // Set input to true
+      getState().updateInputNodeValue(inputNode.id, true)
+
+      // Run simulation - should propagate through
+      getState().simulationTick()
+
+      // Input = true, NOT(true) = false, output should be false
+      expect(getState().gates[0].inputs[0].value).toBe(true)
+      expect(getState().gates[0].outputs[0].value).toBe(false)
+      expect(getState().outputNodes[0].value).toBe(false)
+    })
+
+    it('propagates through junction for fan-out', () => {
+      // Create input node
+      const inputNode = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
+
+      // Create junction
+      const junction = getState().addJunction('signal-a', { x: 2, y: 0, z: 0 })
+
+      // Create two gates
+      const gate1 = getState().addGate('NOT', { x: 4, y: 0.2, z: -2 })
+      const gate2 = getState().addGate('NOT', { x: 4, y: 0.2, z: 2 })
+
+      // Wire input to junction
+      getState().addWire(
+        { type: 'input', entityId: inputNode.id },
+        { type: 'junction', entityId: junction.id },
+        [],
+        [],
+        'signal-a'
+      )
+
+      // Wire junction to both gates (fan-out)
+      getState().addWire(
+        { type: 'junction', entityId: junction.id },
+        { type: 'gate', entityId: gate1.id, pinId: gate1.inputs[0].id },
+        [],
+        [],
+        'signal-a'
+      )
+      getState().addWire(
+        { type: 'junction', entityId: junction.id },
+        { type: 'gate', entityId: gate2.id, pinId: gate2.inputs[0].id },
+        [],
+        [],
+        'signal-a'
+      )
+
+      // Set input to true
+      getState().updateInputNodeValue(inputNode.id, true)
+
+      // Run simulation
+      getState().simulationTick()
+
+      // Both gates should receive true from junction
+      expect(getState().gates[0].inputs[0].value).toBe(true)
+      expect(getState().gates[1].inputs[0].value).toBe(true)
+
+      // Both NOT gates output false
+      expect(getState().gates[0].outputs[0].value).toBe(false)
+      expect(getState().gates[1].outputs[0].value).toBe(false)
+    })
+
+    it('handles junction value when source is false', () => {
+      const inputNode = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
+      const junction = getState().addJunction('signal-a', { x: 2, y: 0, z: 0 })
+      const gate = getState().addGate('NOT', { x: 4, y: 0.2, z: 0 })
+
+      getState().addWire(
+        { type: 'input', entityId: inputNode.id },
+        { type: 'junction', entityId: junction.id },
+        [],
+        [],
+        'signal-a'
+      )
+
+      getState().addWire(
+        { type: 'junction', entityId: junction.id },
+        { type: 'gate', entityId: gate.id, pinId: gate.inputs[0].id },
+        [],
+        [],
+        'signal-a'
+      )
+
+      // Input is false by default
+      getState().simulationTick()
+
+      expect(getState().gates[0].inputs[0].value).toBe(false)
+      expect(getState().gates[0].outputs[0].value).toBe(true) // NOT(false) = true
+    })
+
+    it('simulates XOR circuit with input nodes', () => {
+      // XOR(a, b) = OR(AND(a, NOT(b)), AND(NOT(a), b))
+
+      const inputA = getState().addInputNode('a', { x: 0, y: 0, z: -2 })
+      const inputB = getState().addInputNode('b', { x: 0, y: 0, z: 2 })
+      const outputNode = getState().addOutputNode('out', { x: 20, y: 0, z: 0 })
+
+      // Create NOT gates
+      const notA = getState().addGate('NOT', { x: 4, y: 0.2, z: -4 })
+      const notB = getState().addGate('NOT', { x: 4, y: 0.2, z: 4 })
+
+      // Create AND gates
+      const and1 = getState().addGate('AND', { x: 8, y: 0.2, z: -2 }) // a AND NOT(b)
+      const and2 = getState().addGate('AND', { x: 8, y: 0.2, z: 2 })  // NOT(a) AND b
+
+      // Create OR gate
+      const orGate = getState().addGate('OR', { x: 12, y: 0.2, z: 0 })
+
+      // Wire inputs to NOT gates
+      getState().addWire({ type: 'input', entityId: inputA.id }, { type: 'gate', entityId: notA.id, pinId: notA.inputs[0].id }, [], [], 'sig-a-not')
+      getState().addWire({ type: 'input', entityId: inputB.id }, { type: 'gate', entityId: notB.id, pinId: notB.inputs[0].id }, [], [], 'sig-b-not')
+
+      // Wire to AND1: a, NOT(b)
+      getState().addWire({ type: 'input', entityId: inputA.id }, { type: 'gate', entityId: and1.id, pinId: and1.inputs[0].id }, [], [], 'sig-a-and1')
+      getState().addWire({ type: 'gate', entityId: notB.id, pinId: notB.outputs[0].id }, { type: 'gate', entityId: and1.id, pinId: and1.inputs[1].id }, [])
+
+      // Wire to AND2: NOT(a), b
+      getState().addWire({ type: 'gate', entityId: notA.id, pinId: notA.outputs[0].id }, { type: 'gate', entityId: and2.id, pinId: and2.inputs[0].id }, [])
+      getState().addWire({ type: 'input', entityId: inputB.id }, { type: 'gate', entityId: and2.id, pinId: and2.inputs[1].id }, [], [], 'sig-b-and2')
+
+      // Wire ANDs to OR
+      getState().addWire({ type: 'gate', entityId: and1.id, pinId: and1.outputs[0].id }, { type: 'gate', entityId: orGate.id, pinId: orGate.inputs[0].id }, [])
+      getState().addWire({ type: 'gate', entityId: and2.id, pinId: and2.outputs[0].id }, { type: 'gate', entityId: orGate.id, pinId: orGate.inputs[1].id }, [])
+
+      // Wire OR to output
+      getState().addWire({ type: 'gate', entityId: orGate.id, pinId: orGate.outputs[0].id }, { type: 'output', entityId: outputNode.id }, [], [], 'sig-out')
+
+      // Test XOR truth table
+      // a=0, b=0 -> 0
+      getState().updateInputNodeValue(inputA.id, false)
+      getState().updateInputNodeValue(inputB.id, false)
+      for (let i = 0; i < 5; i++) getState().simulationTick()
+      expect(getState().outputNodes[0].value).toBe(false)
+
+      // a=0, b=1 -> 1
+      getState().updateInputNodeValue(inputA.id, false)
+      getState().updateInputNodeValue(inputB.id, true)
+      for (let i = 0; i < 5; i++) getState().simulationTick()
+      expect(getState().outputNodes[0].value).toBe(true)
+
+      // a=1, b=0 -> 1
+      getState().updateInputNodeValue(inputA.id, true)
+      getState().updateInputNodeValue(inputB.id, false)
+      for (let i = 0; i < 5; i++) getState().simulationTick()
+      expect(getState().outputNodes[0].value).toBe(true)
+
+      // a=1, b=1 -> 0
+      getState().updateInputNodeValue(inputA.id, true)
+      getState().updateInputNodeValue(inputB.id, true)
+      for (let i = 0; i < 5; i++) getState().simulationTick()
+      expect(getState().outputNodes[0].value).toBe(false)
     })
   })
 })

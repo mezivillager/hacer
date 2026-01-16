@@ -1,78 +1,186 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+/**
+ * UI Handlers Tests
+ *
+ * Tests for UI interaction handlers including delete functionality.
+ */
+
+import { describe, it, expect, vi } from 'vitest'
 import { handleDeleteSelected, handleGateSelect } from './uiHandlers'
 
-describe('uiHandlers', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-  })
-
+describe('UI Handlers', () => {
   describe('handleDeleteSelected', () => {
-    it('calls removeWire when wire is selected', () => {
-      const removeGate = vi.fn()
-      const removeWire = vi.fn()
-      handleDeleteSelected(null, 'wire-1', removeGate, removeWire)
+    it('deletes selected wire first (highest priority)', () => {
+      const mockRemoveWire = vi.fn()
+      const mockRemoveGate = vi.fn()
+      const mockRemoveInputNode = vi.fn()
+      const mockRemoveOutputNode = vi.fn()
+      const mockRemoveConstantNode = vi.fn()
 
-      expect(removeWire).toHaveBeenCalledWith('wire-1')
-      expect(removeGate).not.toHaveBeenCalled()
+      handleDeleteSelected(
+        'gate-1',      // selectedGateId
+        'wire-1',      // selectedWireId
+        'node-1',      // selectedNodeId
+        'input',       // selectedNodeType
+        mockRemoveGate,
+        mockRemoveWire,
+        mockRemoveInputNode,
+        mockRemoveOutputNode,
+        mockRemoveConstantNode
+      )
+
+      expect(mockRemoveWire).toHaveBeenCalledWith('wire-1')
+      expect(mockRemoveGate).not.toHaveBeenCalled()
+      expect(mockRemoveInputNode).not.toHaveBeenCalled()
     })
 
-    it('calls removeGate when gate is selected and no wire is selected', () => {
-      const removeGate = vi.fn()
-      const removeWire = vi.fn()
-      handleDeleteSelected('gate-1', null, removeGate, removeWire)
+    it('deletes selected gate when no wire is selected', () => {
+      const mockRemoveWire = vi.fn()
+      const mockRemoveGate = vi.fn()
+      const mockRemoveInputNode = vi.fn()
+      const mockRemoveOutputNode = vi.fn()
+      const mockRemoveConstantNode = vi.fn()
 
-      expect(removeGate).toHaveBeenCalledWith('gate-1')
-      expect(removeWire).not.toHaveBeenCalled()
+      handleDeleteSelected(
+        'gate-1',
+        null,          // no wire selected
+        'node-1',
+        'input',
+        mockRemoveGate,
+        mockRemoveWire,
+        mockRemoveInputNode,
+        mockRemoveOutputNode,
+        mockRemoveConstantNode
+      )
+
+      expect(mockRemoveGate).toHaveBeenCalledWith('gate-1')
+      expect(mockRemoveWire).not.toHaveBeenCalled()
+      expect(mockRemoveInputNode).not.toHaveBeenCalled()
     })
 
-    it('prioritizes wire deletion over gate deletion when both are selected', () => {
-      const removeGate = vi.fn()
-      const removeWire = vi.fn()
-      handleDeleteSelected('gate-1', 'wire-1', removeGate, removeWire)
+    it('deletes selected input node when no wire or gate is selected', () => {
+      const mockRemoveWire = vi.fn()
+      const mockRemoveGate = vi.fn()
+      const mockRemoveInputNode = vi.fn()
+      const mockRemoveOutputNode = vi.fn()
+      const mockRemoveConstantNode = vi.fn()
 
-      expect(removeWire).toHaveBeenCalledWith('wire-1')
-      expect(removeGate).not.toHaveBeenCalled()
+      handleDeleteSelected(
+        null,
+        null,
+        'input-1',
+        'input',
+        mockRemoveGate,
+        mockRemoveWire,
+        mockRemoveInputNode,
+        mockRemoveOutputNode,
+        mockRemoveConstantNode
+      )
+
+      expect(mockRemoveInputNode).toHaveBeenCalledWith('input-1')
+      expect(mockRemoveGate).not.toHaveBeenCalled()
+      expect(mockRemoveWire).not.toHaveBeenCalled()
+    })
+
+    it('deletes selected output node', () => {
+      const mockRemoveWire = vi.fn()
+      const mockRemoveGate = vi.fn()
+      const mockRemoveInputNode = vi.fn()
+      const mockRemoveOutputNode = vi.fn()
+      const mockRemoveConstantNode = vi.fn()
+
+      handleDeleteSelected(
+        null,
+        null,
+        'output-1',
+        'output',
+        mockRemoveGate,
+        mockRemoveWire,
+        mockRemoveInputNode,
+        mockRemoveOutputNode,
+        mockRemoveConstantNode
+      )
+
+      expect(mockRemoveOutputNode).toHaveBeenCalledWith('output-1')
+    })
+
+    it('deletes selected constant node', () => {
+      const mockRemoveWire = vi.fn()
+      const mockRemoveGate = vi.fn()
+      const mockRemoveInputNode = vi.fn()
+      const mockRemoveOutputNode = vi.fn()
+      const mockRemoveConstantNode = vi.fn()
+
+      handleDeleteSelected(
+        null,
+        null,
+        'const-1',
+        'constant',
+        mockRemoveGate,
+        mockRemoveWire,
+        mockRemoveInputNode,
+        mockRemoveOutputNode,
+        mockRemoveConstantNode
+      )
+
+      expect(mockRemoveConstantNode).toHaveBeenCalledWith('const-1')
     })
 
     it('does nothing when nothing is selected', () => {
-      const removeGate = vi.fn()
-      const removeWire = vi.fn()
-      handleDeleteSelected(null, null, removeGate, removeWire)
+      const mockRemoveWire = vi.fn()
+      const mockRemoveGate = vi.fn()
+      const mockRemoveInputNode = vi.fn()
+      const mockRemoveOutputNode = vi.fn()
+      const mockRemoveConstantNode = vi.fn()
 
-      expect(removeGate).not.toHaveBeenCalled()
-      expect(removeWire).not.toHaveBeenCalled()
+      handleDeleteSelected(
+        null,
+        null,
+        null,
+        null,
+        mockRemoveGate,
+        mockRemoveWire,
+        mockRemoveInputNode,
+        mockRemoveOutputNode,
+        mockRemoveConstantNode
+      )
+
+      expect(mockRemoveWire).not.toHaveBeenCalled()
+      expect(mockRemoveGate).not.toHaveBeenCalled()
+      expect(mockRemoveInputNode).not.toHaveBeenCalled()
+      expect(mockRemoveOutputNode).not.toHaveBeenCalled()
+      expect(mockRemoveConstantNode).not.toHaveBeenCalled()
     })
   })
 
   describe('handleGateSelect', () => {
-    it('cancels placement when same gate type is already being placed', () => {
-      const startPlacement = vi.fn()
-      const cancelPlacement = vi.fn()
+    it('starts placement when clicking a different gate type', () => {
+      const mockStartPlacement = vi.fn()
+      const mockCancelPlacement = vi.fn()
 
-      handleGateSelect('NAND', 'NAND', startPlacement, cancelPlacement)
+      handleGateSelect('NAND', null, mockStartPlacement, mockCancelPlacement)
 
-      expect(cancelPlacement).toHaveBeenCalled()
-      expect(startPlacement).not.toHaveBeenCalled()
+      expect(mockStartPlacement).toHaveBeenCalledWith('NAND')
+      expect(mockCancelPlacement).not.toHaveBeenCalled()
     })
 
-    it('starts placement when different gate type is selected', () => {
-      const startPlacement = vi.fn()
-      const cancelPlacement = vi.fn()
+    it('cancels placement when clicking the same gate type', () => {
+      const mockStartPlacement = vi.fn()
+      const mockCancelPlacement = vi.fn()
 
-      handleGateSelect('AND', 'NAND', startPlacement, cancelPlacement)
+      handleGateSelect('NAND', 'NAND', mockStartPlacement, mockCancelPlacement)
 
-      expect(startPlacement).toHaveBeenCalledWith('AND')
-      expect(cancelPlacement).not.toHaveBeenCalled()
+      expect(mockCancelPlacement).toHaveBeenCalled()
+      expect(mockStartPlacement).not.toHaveBeenCalled()
     })
 
-    it('starts placement when no gate type is currently being placed', () => {
-      const startPlacement = vi.fn()
-      const cancelPlacement = vi.fn()
+    it('starts placement with different type when already placing', () => {
+      const mockStartPlacement = vi.fn()
+      const mockCancelPlacement = vi.fn()
 
-      handleGateSelect('OR', null, startPlacement, cancelPlacement)
+      handleGateSelect('AND', 'NAND', mockStartPlacement, mockCancelPlacement)
 
-      expect(startPlacement).toHaveBeenCalledWith('OR')
-      expect(cancelPlacement).not.toHaveBeenCalled()
+      expect(mockStartPlacement).toHaveBeenCalledWith('AND')
+      expect(mockCancelPlacement).not.toHaveBeenCalled()
     })
   })
 })

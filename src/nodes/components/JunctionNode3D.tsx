@@ -1,0 +1,39 @@
+// JunctionNode3D - Visual representation of a wire branch point
+import { colors, materials } from '@/theme'
+import { JUNCTION_CONFIG } from '../config'
+import type { Position } from '@/store/types'
+
+interface JunctionNode3DProps {
+  /** Unique identifier for the junction */
+  id: string
+  /** Position in 3D space */
+  position: Position
+  /** Current signal value passing through the junction */
+  value: boolean
+}
+
+/**
+ * JunctionNode3D renders a small sphere at wire branch points.
+ * The sphere color reflects the current signal value.
+ *
+ * @param props - Junction node properties
+ * @returns React Three Fiber mesh element
+ */
+export function JunctionNode3D({ id: _id, position, value }: JunctionNode3DProps) {
+  // Color based on signal value
+  const color = value ? colors.pin.active : colors.pin.inactive
+
+  return (
+    <mesh position={[position.x, position.y, position.z]}>
+      <sphereGeometry args={[JUNCTION_CONFIG.radius, JUNCTION_CONFIG.segments, JUNCTION_CONFIG.segments]} />
+      <meshStandardMaterial
+        color={color}
+        emissive={color}
+        emissiveIntensity={value ? 0.5 : 0.2}
+        metalness={materials.pin.metalness}
+        roughness={materials.pin.roughness}
+      />
+    </mesh>
+  )
+}
+JunctionNode3D.displayName = 'JunctionNode3D'

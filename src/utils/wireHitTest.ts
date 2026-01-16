@@ -158,6 +158,3 @@ export function findNearestWire(
 
   return nearestWireId
 }
-
-
-

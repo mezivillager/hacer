@@ -38,12 +38,18 @@ export function useStoreWirePreviewSegments({
     }
 
     const pathData = calculatedPathRef.current
-    if (pathData && wiringFrom?.destinationGateId && wiringFrom?.destinationPinId) {
-      // Normalize segments: always store as output -> input
+    // Store segments when destination is set (either gate pin or node)
+    const hasGateDestination = wiringFrom?.destinationGateId && wiringFrom?.destinationPinId
+    const hasNodeDestination = wiringFrom?.destinationNodeId && wiringFrom?.destinationNodeType
+    const hasDestination = hasGateDestination || hasNodeDestination
+
+    if (pathData && hasDestination) {
+      // Normalize segments: always store as output -> input (or source -> destination)
       let segmentsToStore = pathData.segments
 
       // If wiring from input to output, we need to reverse segments
-      if (pathData.fromPinType !== 'output') {
+      // For node destinations, segments are already in the correct direction
+      if (hasGateDestination && pathData.fromPinType !== 'output') {
         segmentsToStore = pathData.segments.map(seg => ({
           ...seg,
           start: seg.end,

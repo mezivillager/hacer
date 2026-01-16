@@ -25,14 +25,16 @@ describe('wireActions', () => {
       const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 0 })
 
       const wire = getState().addWire(
-        gate1.id, gate1.outputs[0].id,
-        gate2.id, gate2.inputs[0].id,
+        { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
+        { type: 'gate', entityId: gate2.id, pinId: gate2.inputs[0].id },
         []
       )
 
       expect(getState().wires).toHaveLength(1)
-      expect(wire.fromGateId).toBe(gate1.id)
-      expect(wire.toGateId).toBe(gate2.id)
+      expect(wire.from.type).toBe('gate')
+      expect(wire.from.entityId).toBe(gate1.id)
+      expect(wire.to.type).toBe('gate')
+      expect(wire.to.entityId).toBe(gate2.id)
     })
 
     it('creates wire with unique id', () => {
@@ -40,17 +42,32 @@ describe('wireActions', () => {
       const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 0 })
 
       const wire1 = getState().addWire(
-        gate1.id, gate1.outputs[0].id,
-        gate2.id, gate2.inputs[0].id,
+        { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
+        { type: 'gate', entityId: gate2.id, pinId: gate2.inputs[0].id },
         []
       )
       const wire2 = getState().addWire(
-        gate1.id, gate1.outputs[0].id,
-        gate2.id, gate2.inputs[1].id,
+        { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
+        { type: 'gate', entityId: gate2.id, pinId: gate2.inputs[1].id },
         []
       )
 
       expect(wire1.id).not.toBe(wire2.id)
+    })
+
+    it('creates wire with signal ID when provided', () => {
+      const inputNode = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
+      const outputNode = getState().addOutputNode('out', { x: 4, y: 0, z: 0 })
+
+      const wire = getState().addWire(
+        { type: 'input', entityId: inputNode.id },
+        { type: 'output', entityId: outputNode.id },
+        [],
+        [],
+        'sig-test'
+      )
+
+      expect(wire.signalId).toBe('sig-test')
     })
   })
 
@@ -60,8 +77,8 @@ describe('wireActions', () => {
       const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 0 })
 
       const wire = getState().addWire(
-        gate1.id, gate1.outputs[0].id,
-        gate2.id, gate2.inputs[0].id,
+        { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
+        { type: 'gate', entityId: gate2.id, pinId: gate2.inputs[0].id },
         []
       )
       expect(getState().wires).toHaveLength(1)
@@ -75,8 +92,8 @@ describe('wireActions', () => {
       const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 0 })
 
       getState().addWire(
-        gate1.id, gate1.outputs[0].id,
-        gate2.id, gate2.inputs[0].id,
+        { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
+        { type: 'gate', entityId: gate2.id, pinId: gate2.inputs[0].id },
         []
       )
       expect(getState().wires).toHaveLength(1)
@@ -93,8 +110,8 @@ describe('wireActions', () => {
 
       // Wire B: created first, no arcs (vertical segment)
       const wireB = getState().addWire(
-        gate1.id, gate1.outputs[0].id,
-        gate2.id, gate2.inputs[0].id,
+        { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
+        { type: 'gate', entityId: gate2.id, pinId: gate2.inputs[0].id },
         [{ start: { x: 5, y: 0.2, z: 0 }, end: { x: 5, y: 0.2, z: 10 }, type: 'vertical' }],
         []
       )
@@ -102,8 +119,8 @@ describe('wireActions', () => {
       // Wire A: created second, has arc hopping over Wire B
       const arcCenter = { x: 5, y: 0.2, z: 5 }
       const wireA = getState().addWire(
-        gate3.id, gate3.outputs[0].id,
-        gate4.id, gate4.inputs[0].id,
+        { type: 'gate', entityId: gate3.id, pinId: gate3.outputs[0].id },
+        { type: 'gate', entityId: gate4.id, pinId: gate4.inputs[0].id },
         [
           { start: { x: 0, y: 0.2, z: 5 }, end: { x: 4.9, y: 0.2, z: 5 }, type: 'horizontal' },
           { start: { x: 4.9, y: 0.2, z: 5 }, end: { x: 5.1, y: 0.2, z: 5 }, type: 'arc', arcCenter, arcRadius: 0.1, crossedWireId: wireB.id },
@@ -136,8 +153,8 @@ describe('wireActions', () => {
 
       // Create a wire and manually set crossesWireIds to undefined to simulate legacy data
       const wire = getState().addWire(
-        gate1.id, gate1.outputs[0].id,
-        gate2.id, gate2.inputs[0].id,
+        { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
+        { type: 'gate', entityId: gate2.id, pinId: gate2.inputs[0].id },
         []
       )
 
@@ -186,8 +203,8 @@ describe('wireActions', () => {
       const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 0 })
 
       const wire = getState().addWire(
-        gate1.id, gate1.outputs[0].id,
-        gate2.id, gate2.inputs[0].id,
+        { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
+        { type: 'gate', entityId: gate2.id, pinId: gate2.inputs[0].id },
         [{ start: { x: 0, y: 0, z: 0 }, end: { x: 1, y: 0, z: 0 }, type: 'horizontal' }]
       )
 

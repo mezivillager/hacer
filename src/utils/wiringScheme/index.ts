@@ -10,4 +10,5 @@ export * from './pathfinding'
 export * from './extension'
 export * from './core'
 export * from './crossing'
+export * from './branching'
 

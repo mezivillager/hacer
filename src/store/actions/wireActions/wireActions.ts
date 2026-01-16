@@ -1,4 +1,4 @@
-import type { WireActions, Wire, CircuitStore } from '../../types'
+import type { WireActions, Wire, WireEndpoint, CircuitStore } from '../../types'
 import type { WireSegment } from '@/utils/wiringScheme/types'
 import { removeOrphanedArcs } from '@/utils/wiringScheme/crossing'
 
@@ -11,15 +11,20 @@ type SetState = (
 type GetState = () => CircuitStore
 
 export const createWireActions = (set: SetState, get: GetState): WireActions => ({
-  addWire: (fromGateId: string, fromPinId: string, toGateId: string, toPinId: string, segments: WireSegment[], crossesWireIds: string[] = []) => {
+  addWire: (
+    from: WireEndpoint,
+    to: WireEndpoint,
+    segments: WireSegment[],
+    crossesWireIds: string[] = [],
+    signalId?: string
+  ) => {
     const wire: Wire = {
       id: `wire-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
-      fromGateId,
-      fromPinId,
-      toGateId,
-      toPinId,
-      segments, // Store segments when wire is created
-      crossesWireIds, // Store IDs of wires this wire crosses over
+      from,
+      to,
+      segments,
+      crossesWireIds,
+      ...(signalId && { signalId }),
     }
     set((state) => {
       state.wires.push(wire)

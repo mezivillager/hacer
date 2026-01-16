@@ -2,35 +2,33 @@ import { Line } from '@react-three/drei'
 import { colors } from '@/theme'
 import type { WireSegment, WirePath } from '@/utils/wiringScheme/types'
 import { WIRE_HEIGHT, HOP_HEIGHT } from '@/utils/wiringScheme/types'
-import type { GateInstance } from '@/store/types'
 
 interface Wire3DProps {
+  /** Start position (for validation only - actual path uses segments) */
   start: { x: number; y: number; z: number } | null
+  /** End position (for validation only - actual path uses segments) */
   end: { x: number; y: number; z: number } | null
-  startOrientation?: { x: number; y: number; z: number } | null
-  endOrientation?: { x: number; y: number; z: number } | null
-  gates?: GateInstance[] // Gates to avoid in routing
-  sourceGateId?: string // Source gate ID (to exclude from avoidance for entry/exit segments)
-  destinationGateId?: string // Destination gate ID (to exclude from avoidance for entry/exit segments)
-  existingWires?: Array<{ id: string; segments: WireSegment[] }> | WireSegment[] // Not used in new scheme, kept for compatibility
-  precomputedPath?: WirePath // Pre-calculated path (required - no fallback)
-  color?: string
+  /** Pre-calculated path with segments (required) */
+  precomputedPath?: WirePath
+  /** Whether the wire is carrying an active (high) signal */
   isActive?: boolean
+  /** Whether the wire is being previewed during wiring operation */
   isPreview?: boolean
+  /** Whether the wire is selected */
   isSelected?: boolean
 }
 
+/**
+ * Wire3D renders a wire as a series of line segments.
+ * Supports arc segments for wire crossings (hops).
+ *
+ * @param props - Wire properties
+ * @returns React Three Fiber element or null if invalid
+ */
 export function Wire3D({
   start,
   end,
-  startOrientation,
-  endOrientation,
-  gates: _gates = [],
-  sourceGateId,
-  destinationGateId,
-  existingWires: _existingWires = [], // Not used in new scheme
   precomputedPath,
-  color: _color = colors.gate.wireStub,
   isActive = false,
   isPreview = false,
   isSelected = false
@@ -42,14 +40,9 @@ export function Wire3D({
   if (!precomputedPath) {
     // Defensive measure: if precomputedPath is missing, it's a bug in path calculation
     // Return null instead of throwing to prevent component crash
-    // The error should be handled upstream where the path is calculated
     console.error('[Wire3D] precomputedPath is required but not provided', {
       start,
       end,
-      startOrientation,
-      endOrientation,
-      sourceGateId,
-      destinationGateId,
     })
     return null
   }

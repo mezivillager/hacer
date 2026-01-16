@@ -16,6 +16,7 @@ describe('placementActions', () => {
       simulationSpeed: 100,
       placementMode: null,
       wiringFrom: null,
+      nodePlacementMode: null,
     })
   })
 
@@ -34,6 +35,14 @@ describe('placementActions', () => {
       getState().startPlacement('AND')
 
       expect(getState().selectedGateId).toBe(null)
+    })
+
+    it('clears nodePlacementMode when starting gate placement', () => {
+      useCircuitStore.setState({ nodePlacementMode: 'INPUT' })
+
+      getState().startPlacement('NAND')
+
+      expect(getState().nodePlacementMode).toBe(null)
     })
   })
 

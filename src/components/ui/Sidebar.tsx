@@ -9,6 +9,7 @@ import {
 import { useCircuitStore } from '@/store/circuitStore'
 import { colors } from '@/theme'
 import { GateSelector } from './GateSelector'
+import { NodeSelector } from './NodeSelector'
 import { handleDeleteSelected } from './handlers/uiHandlers'
 
 const { Sider } = Layout
@@ -27,21 +28,33 @@ const styles = {
 export function Sidebar() {
   // Use selectors for granular subscriptions
   const placementMode = useCircuitStore((s) => s.placementMode)
+  const nodePlacementMode = useCircuitStore((s) => s.nodePlacementMode)
   const selectedGateId = useCircuitStore((s) => s.selectedGateId)
   const selectedWireId = useCircuitStore((s) => s.selectedWireId)
+  const selectedNodeId = useCircuitStore((s) => s.selectedNodeId)
   const simulationRunning = useCircuitStore((s) => s.simulationRunning)
   const gatesCount = useCircuitStore((s) => s.gates.length)
   const wiresCount = useCircuitStore((s) => s.wires.length)
+  const inputNodesCount = useCircuitStore((s) => s.inputNodes.length)
+  const outputNodesCount = useCircuitStore((s) => s.outputNodes.length)
+  const constantNodesCount = useCircuitStore((s) => s.constantNodes.length)
+
+  const selectedNodeType = useCircuitStore((s) => s.selectedNodeType)
 
   // Get actions from store
   const removeGate = useCircuitStore((s) => s.removeGate)
   const removeWire = useCircuitStore((s) => s.removeWire)
+  const removeInputNode = useCircuitStore((s) => s.removeInputNode)
+  const removeOutputNode = useCircuitStore((s) => s.removeOutputNode)
+  const removeConstantNode = useCircuitStore((s) => s.removeConstantNode)
   const clearCircuit = useCircuitStore((s) => s.clearCircuit)
   const toggleSimulation = useCircuitStore((s) => s.toggleSimulation)
   const toggleAxes = useCircuitStore((s) => s.toggleAxes)
   const showAxes = useCircuitStore((s) => s.showAxes)
 
   const isPlacing = placementMode !== null
+  const isPlacingNode = nodePlacementMode !== null
+  const hasSelection = selectedGateId !== null || selectedWireId !== null || selectedNodeId !== null
 
   return (
     <Sider width={260} className="app-sider">
@@ -71,6 +84,20 @@ export function Sidebar() {
 
         <div className="sider-section">
           <Text strong style={styles.sectionTitle}>
+            Circuit I/O
+          </Text>
+          <NodeSelector />
+          {isPlacingNode && (
+            <Text style={styles.hint} className="placement-hint">
+              Click on the grid to place the node
+            </Text>
+          )}
+        </div>
+
+        <Divider style={styles.divider} />
+
+        <div className="sider-section">
+          <Text strong style={styles.sectionTitle}>
             Controls
           </Text>
           <Space direction="vertical" style={styles.fullWidth}>
@@ -85,11 +112,21 @@ export function Sidebar() {
               <Text type="secondary">Show Axes</Text>
               <Switch checked={showAxes} onChange={toggleAxes} />
             </div>
-            <Tooltip title="Remove the selected gate or wire">
+            <Tooltip title="Remove the selected gate, wire, or node">
               <Button
                 icon={<DeleteOutlined />}
-                onClick={() => handleDeleteSelected(selectedGateId, selectedWireId, removeGate, removeWire)}
-                disabled={!selectedGateId && !selectedWireId}
+                onClick={() => handleDeleteSelected(
+                  selectedGateId,
+                  selectedWireId,
+                  selectedNodeId,
+                  selectedNodeType,
+                  removeGate,
+                  removeWire,
+                  removeInputNode,
+                  removeOutputNode,
+                  removeConstantNode
+                )}
+                disabled={!hasSelection}
                 block
                 danger
               >
@@ -118,6 +155,9 @@ export function Sidebar() {
           <Space direction="vertical" size={2}>
             <Text type="secondary">Gates: {gatesCount}</Text>
             <Text type="secondary">Wires: {wiresCount}</Text>
+            <Text type="secondary">Inputs: {inputNodesCount}</Text>
+            <Text type="secondary">Outputs: {outputNodesCount}</Text>
+            <Text type="secondary">Constants: {constantNodesCount}</Text>
             <Text type="secondary">
               Status: {simulationRunning ? '▶ Running' : '⏸ Paused'}
             </Text>

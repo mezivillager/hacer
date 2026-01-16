@@ -207,7 +207,11 @@ describe('pinHelpers', () => {
       const toPinPos = getState().getPinWorldPosition(gate2.id, gate2.inputs[0].id)
 
       // Create wire
-      const wire = getState().addWire(gate1.id, gate1.outputs[0].id, gate2.id, gate2.inputs[0].id)
+      const wire = getState().addWire(
+        { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
+        { type: 'gate', entityId: gate2.id, pinId: gate2.inputs[0].id },
+        []
+      )
 
       // Wire positions should match pin centers exactly
       // This is an integration test - wires use getPinWorldPosition
@@ -218,10 +222,12 @@ describe('pinHelpers', () => {
       const wires = getState().wires
       const createdWire = wires.find(w => w.id === wire.id)
       expect(createdWire).toBeDefined()
-      expect(createdWire?.fromGateId).toBe(gate1.id)
-      expect(createdWire?.fromPinId).toBe(gate1.outputs[0].id)
-      expect(createdWire?.toGateId).toBe(gate2.id)
-      expect(createdWire?.toPinId).toBe(gate2.inputs[0].id)
+      expect(createdWire?.from.type).toBe('gate')
+      expect(createdWire?.from.entityId).toBe(gate1.id)
+      expect(createdWire?.from.pinId).toBe(gate1.outputs[0].id)
+      expect(createdWire?.to.type).toBe('gate')
+      expect(createdWire?.to.entityId).toBe(gate2.id)
+      expect(createdWire?.to.pinId).toBe(gate2.inputs[0].id)
     })
   })
 })

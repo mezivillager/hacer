@@ -10,8 +10,10 @@ const {
   updateGatePosition,
   setDragActive,
   placeGate,
+  placeNode,
   cancelWiring,
   selectGate: selectGateAction,
+  deselectNode,
 } = circuitActions
 
 // Debounce wire preview updates to reduce calculation frequency (100ms delay)
@@ -25,14 +27,14 @@ const updateWirePreviewPosition = debounce(
  */
 export function handlePointerMove(e: ThreeEvent<PointerEvent>): void {
   const state = useCircuitStore.getState()
-  const isPlacing = state.placementMode !== null
+  const isPlacingGate = state.placementMode !== null
+  const isPlacingNode = state.nodePlacementMode !== null
   const isWiring = state.wiringFrom !== null
   // Only handle drag if drag is actually active (pointer down + moving)
   const isDragging = state.isDragActive && state.placementPreviewPosition !== null && state.placementMode === null && state.selectedGateId !== null
 
-  if (isPlacing) {
-    // Gates are rotated 90° around X, so body extends from -BODY_DEPTH/2 to +BODY_DEPTH/2 in world Y
-    // Place at y = BODY_DEPTH/2 = 0.2 so gate bottom sits on grid (y = 0)
+  if (isPlacingGate || isPlacingNode) {
+    // Gates/Nodes are placed at y = 0.2 so their bottom sits on grid (y = 0)
     const snappedPos = snapToGrid({ x: e.point.x, y: 0.2, z: e.point.z })
     updatePlacementPreviewPosition(snappedPos)
   } else if (isDragging) {
@@ -58,10 +60,11 @@ export function handlePointerMove(e: ThreeEvent<PointerEvent>): void {
  */
 export function handlePointerLeave(): void {
   const state = useCircuitStore.getState()
-  const isPlacing = state.placementMode !== null
+  const isPlacingGate = state.placementMode !== null
+  const isPlacingNode = state.nodePlacementMode !== null
   const isWiring = state.wiringFrom !== null
 
-  if (isPlacing) {
+  if (isPlacingGate || isPlacingNode) {
     updatePlacementPreviewPosition(null)
   }
   if (isWiring) {
@@ -72,20 +75,26 @@ export function handlePointerLeave(): void {
 }
 
 /**
- * Handle click on ground plane - place gate, cancel wiring, or deselect gate
+ * Handle click on ground plane - place gate/node, cancel wiring, or deselect gate/node
  */
 export function handleClick(e: ThreeEvent<MouseEvent>): void {
   const state = useCircuitStore.getState()
-  const isPlacing = state.placementMode !== null
+  const isPlacingGate = state.placementMode !== null
+  const isPlacingNode = state.nodePlacementMode !== null
   const isWiring = state.wiringFrom !== null
   const isDragging = state.placementPreviewPosition !== null && state.placementMode === null && state.selectedGateId !== null
 
-  if (isPlacing) {
+  if (isPlacingGate) {
     e.stopPropagation()
     // Gates are rotated 90° around X, so body extends from -BODY_DEPTH/2 to +BODY_DEPTH/2 in world Y
     // Place at y = BODY_DEPTH/2 = 0.2 so gate bottom sits on grid (y = 0)
     const snappedPos = snapToGrid({ x: e.point.x, y: 0.2, z: e.point.z })
     placeGate(snappedPos)
+  } else if (isPlacingNode) {
+    e.stopPropagation()
+    // Nodes are also placed at y = 0.2
+    const snappedPos = snapToGrid({ x: e.point.x, y: 0.2, z: e.point.z })
+    placeNode(snappedPos)
   } else if (isWiring) {
     e.stopPropagation()
     cancelWiring()
@@ -96,11 +105,12 @@ export function handleClick(e: ThreeEvent<MouseEvent>): void {
     e.stopPropagation()
     // Don't do anything here - let the drag hook handle it
   } else {
-    // Check for wire click before deselecting gate
+    // Check for wire click before deselecting gate/node
     const wireId = handleWireClick(e)
     if (!wireId) {
-      // No wire clicked - deselect gate
+      // No wire clicked - deselect gate and node
       selectGateAction(null)
+      deselectNode()
     }
   }
 }

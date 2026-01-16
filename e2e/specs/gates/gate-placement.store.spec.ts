@@ -156,19 +156,26 @@ test.describe('Gate Placement @store @gates', () => {
       expect(gate).not.toBeNull()
       expect(gate?.id).toBeDefined()
 
-      const position = await page.evaluate(
-        (gateId: string): { x: number; z: number } | null => {
+      const gridPosition = await page.evaluate(
+        (gateId: string): { row: number; col: number } | null => {
           const gate = window.__CIRCUIT_STORE__?.gates.find(
             (g) => g.id === gateId
           )
-          return gate ? { x: gate.position.x, z: gate.position.z } : null
+          if (!gate) return null
+          // Convert world coordinates to grid coordinates
+          // row = Math.round(z / GRID_SIZE), col = Math.round(x / GRID_SIZE)
+          const GRID_SIZE = 2.0
+          return {
+            row: Math.round(gate.position.z / GRID_SIZE),
+            col: Math.round(gate.position.x / GRID_SIZE),
+          }
         },
         gate!.id
       )
 
       // Verify coordinates are at odd grid positions
-      expect(position?.x).toBe(1) // Odd
-      expect(position?.z).toBe(1) // Odd
+      expect(gridPosition?.row).toBe(1) // Odd
+      expect(gridPosition?.col).toBe(1) // Odd
     })
   })
 

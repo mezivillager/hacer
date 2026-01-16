@@ -12,17 +12,103 @@ export interface Pin {
 
 import type { WireSegment } from '@/utils/wiringScheme/types'
 
+// =============================================================================
+// HDL Support: Circuit I/O Nodes
+// =============================================================================
+
+/**
+ * Circuit input node - represents an external input pin of the chip.
+ * In HDL: `IN a, b;` declares input nodes named 'a' and 'b'.
+ */
+export interface InputNode {
+  id: string
+  name: string           // e.g., 'a', 'b', 'sel'
+  position: Position
+  rotation: Rotation
+  value: boolean         // current input value
+  width: number          // bus width (1 for single bit, 16 for 16-bit bus)
+}
+
+/**
+ * Circuit output node - represents an external output pin of the chip.
+ * In HDL: `OUT out;` declares an output node named 'out'.
+ */
+export interface OutputNode {
+  id: string
+  name: string           // e.g., 'out'
+  position: Position
+  rotation: Rotation
+  value: boolean         // current output value (computed from circuit)
+  width: number          // bus width (1 for single bit)
+}
+
+/**
+ * Constant value node - represents 'true' or 'false' constants.
+ * In HDL: `a=true` or `a=false` wires a constant to a gate input.
+ */
+export interface ConstantNode {
+  id: string
+  value: boolean         // true or false
+  position: Position
+  rotation: Rotation
+}
+
+// =============================================================================
+// Wire System (Unified)
+// =============================================================================
+
+/**
+ * Type of entity that can be a wire endpoint.
+ */
+export type WireEndpointType = 'gate' | 'input' | 'output' | 'constant' | 'junction'
+
+/**
+ * Represents a connection point for a wire.
+ * Can be a gate pin, circuit input/output node, constant, or junction.
+ */
+export interface WireEndpoint {
+  /** Type of the endpoint entity */
+  type: WireEndpointType
+  /** ID of the entity (gate ID, input node ID, etc.) */
+  entityId: string
+  /** Pin ID for gates; undefined for other types */
+  pinId?: string
+}
+
+/**
+ * Junction node - visual branch point where a signal wire splits.
+ * Used for fan-out where one signal source feeds multiple destinations.
+ */
+export interface JunctionNode {
+  id: string
+  position: Position
+  signalId: string       // Which signal this junction belongs to
+}
+
+/**
+ * Unified wire type supporting all connection types.
+ * Uses WireEndpoint for flexible connections between gates, nodes, and junctions.
+ */
 export interface Wire {
   id: string
-  fromGateId: string
-  fromPinId: string
-  toGateId: string
-  toPinId: string
-  segments: WireSegment[] // Path segments for this wire (calculated when wire is created)
-  crossesWireIds: string[] // IDs of wires this wire crosses over (for efficient crossing invalidation)
+  signalId?: string      // Optional reference to logical signal (for HDL-style grouping)
+  from: WireEndpoint     // Source endpoint (gate output, input node, constant, junction)
+  to: WireEndpoint       // Destination endpoint (gate input, output node, junction)
+  segments: WireSegment[]
+  crossesWireIds: string[]
 }
 
 export type GateType = 'NAND' | 'AND' | 'OR' | 'NOT' | 'NOR' | 'XOR' | 'XNOR'
+
+/**
+ * Node placement type for UI node placement mode.
+ */
+export type NodePlacementType = 'INPUT' | 'OUTPUT' | 'CONSTANT_TRUE' | 'CONSTANT_FALSE'
+
+/**
+ * Node type discriminator for selection state.
+ */
+export type NodeType = 'input' | 'output' | 'constant'
 
 export interface GateInstance {
   id: string
@@ -34,7 +120,26 @@ export interface GateInstance {
   selected: boolean
 }
 
+/**
+ * Source of a wire being created.
+ * Can be a gate pin or a node (input, output, constant).
+ */
+export type WiringSource =
+  | { type: 'gate'; gateId: string; pinId: string; pinType: 'input' | 'output' }
+  | { type: 'input'; nodeId: string }
+  | { type: 'output'; nodeId: string }
+  | { type: 'constant'; nodeId: string }
+
+/**
+ * Destination of a wire being created.
+ * Can be a gate pin or a node (output node for input wires).
+ */
+export type WiringDestination =
+  | { type: 'gate'; gateId: string; pinId: string }
+  | { type: 'output'; nodeId: string }
+
 export interface WiringState {
+  // Legacy gate-based wiring (for backward compatibility)
   fromGateId: string
   fromPinId: string
   fromPinType: 'input' | 'output'
@@ -42,7 +147,14 @@ export interface WiringState {
   previewEndPosition: Position | null
   destinationGateId: string | null
   destinationPinId: string | null
+  // Node destination tracking (for wiring to output nodes)
+  destinationNodeId: string | null
+  destinationNodeType: NodeType | null
   segments: WireSegment[] | null // Calculated path segments (stored when destination pin is set, used when completing wire)
+
+  // Extended node-based wiring
+  source?: WiringSource
+  destination?: WiringDestination
 }
 
 export interface CircuitState {
@@ -58,6 +170,17 @@ export interface CircuitState {
   isDragActive: boolean
   hoveredGateId: string | null
   showAxes: boolean
+
+  // HDL Support: Circuit I/O nodes and junctions
+  inputNodes: InputNode[]
+  outputNodes: OutputNode[]
+  constantNodes: ConstantNode[]
+  junctions: JunctionNode[]
+
+  // Node placement and selection
+  nodePlacementMode: NodePlacementType | null
+  selectedNodeId: string | null
+  selectedNodeType: NodeType | null
 }
 
 // Action types for the Zustand store
@@ -73,7 +196,13 @@ export interface GateActions {
 }
 
 export interface WireActions {
-  addWire: (fromGateId: string, fromPinId: string, toGateId: string, toPinId: string, segments: WireSegment[], crossesWireIds?: string[]) => Wire
+  addWire: (
+    from: WireEndpoint,
+    to: WireEndpoint,
+    segments: WireSegment[],
+    crossesWireIds?: string[],
+    signalId?: string
+  ) => Wire
   removeWire: (wireId: string) => void
   setInputValue: (gateId: string, pinId: string, value: boolean) => void
   updateWireSegments: (wireId: string, segments: WireSegment[], crossesWireIds?: string[]) => void
@@ -95,12 +224,28 @@ export interface PlacementActions {
   setHoveredGate: (gateId: string | null) => void
 }
 
+/**
+ * Actions for placing circuit I/O nodes on the canvas.
+ */
+export interface NodePlacementActions {
+  startNodePlacement: (type: NodePlacementType) => void
+  cancelNodePlacement: () => void
+  placeNode: (position: Position) => void
+  selectNode: (nodeId: string, nodeType: NodeType) => void
+  deselectNode: () => void
+}
+
 export interface WiringActions {
   startWiring: (gateId: string, pinId: string, pinType: 'input' | 'output', position: Position) => void
   updateWirePreviewPosition: (position: Position | null) => void
   setDestinationPin: (gateId: string | null, pinId: string | null) => void
+  setDestinationNode: (nodeId: string | null, nodeType: NodeType | null) => void
   cancelWiring: () => void
   completeWiring: (toGateId: string, toPinId: string, toPinType: 'input' | 'output') => void
+  // Node-based wiring (for HDL support)
+  startWiringFromNode: (nodeId: string, nodeType: NodeType, position: Position) => void
+  completeWiringFromNodeToGate: (toGateId: string, toPinId: string, toPinType: 'input' | 'output') => void
+  completeWiringToNode: (nodeId: string, nodeType: NodeType) => void
 }
 
 export interface PinHelpers {
@@ -112,5 +257,33 @@ export interface ViewActions {
   toggleAxes: () => void
 }
 
+// =============================================================================
+// HDL Support: Node and Junction Actions
+// =============================================================================
+
+/**
+ * Actions for managing circuit I/O nodes (input, output, constant).
+ */
+export interface NodeActions {
+  addInputNode: (name: string, position: Position, width?: number) => InputNode
+  addOutputNode: (name: string, position: Position, width?: number) => OutputNode
+  addConstantNode: (value: boolean, position: Position) => ConstantNode
+  removeInputNode: (nodeId: string) => void
+  removeOutputNode: (nodeId: string) => void
+  removeConstantNode: (nodeId: string) => void
+  updateInputNodeValue: (nodeId: string, value: boolean) => void
+  updateInputNodePosition: (nodeId: string, position: Position) => void
+  updateOutputNodePosition: (nodeId: string, position: Position) => void
+}
+
+/**
+ * Actions for managing junctions (signal branch points).
+ */
+export interface JunctionActions {
+  addJunction: (signalId: string, position: Position) => JunctionNode
+  removeJunction: (junctionId: string) => void
+  updateJunctionPosition: (junctionId: string, position: Position) => void
+}
+
 // Combined store type
-export interface CircuitStore extends CircuitState, GateActions, WireActions, SimulationActions, PlacementActions, WiringActions, PinHelpers, ViewActions {}
+export interface CircuitStore extends CircuitState, GateActions, WireActions, SimulationActions, PlacementActions, NodePlacementActions, WiringActions, PinHelpers, ViewActions, NodeActions, JunctionActions {}

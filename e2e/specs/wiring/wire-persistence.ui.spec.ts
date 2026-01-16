@@ -57,7 +57,7 @@ test.describe.skip('Wire Persistence @ui @wiring', () => {
         (gate2Id: string): boolean => {
           const state = window.__CIRCUIT_STORE__
           const wire = state?.wires[0]
-          return wire?.toGateId === gate2Id
+          return wire?.to.entityId === gate2Id
         },
         gateIds[1]
       )

@@ -240,10 +240,10 @@ describe('grid utilities', () => {
 
     const createWire = (id: string, fromGateId: string, fromPinId: string, toGateId: string, toPinId: string): Wire => ({
       id,
-      fromGateId,
-      fromPinId,
-      toGateId,
-      toPinId,
+      from: { type: 'gate', entityId: fromGateId, pinId: fromPinId },
+      to: { type: 'gate', entityId: toGateId, pinId: toPinId },
+      segments: [],
+      crossesWireIds: [],
     })
 
     it('returns true when wires pass through cell', () => {

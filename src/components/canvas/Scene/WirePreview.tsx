@@ -2,7 +2,6 @@ import { message } from 'antd'
 import { useCircuitStore, circuitActions } from '@/store/circuitStore'
 import { Wire3D } from '../Wire3D'
 import { trackRender } from '@/utils/renderTracking'
-import { colors } from '@/theme'
 import { useExistingSegments } from '@/hooks/useExistingSegments'
 import { useDestinationPin } from './hooks/useDestinationPin'
 import { useWirePreviewPath } from './hooks/useWirePreviewPath'
@@ -23,8 +22,16 @@ export function WirePreview() {
   // All hooks must be called at the top level (Rules of Hooks)
   const existingSegments = useExistingSegments()
   const destinationResult = useDestinationPin(wiringFrom)
+
+  // Determine start orientation based on source type
+  // For node sources (input/constant), use default orientation pointing right
+  // For gate sources, get orientation from pin
   const startOrientation = wiringFrom
-    ? circuitActions.getPinOrientation(wiringFrom.fromGateId, wiringFrom.fromPinId)
+    ? (wiringFrom.source && (wiringFrom.source.type === 'input' || wiringFrom.source.type === 'constant'))
+      ? { x: 1, y: 0, z: 0 } // Default orientation for nodes (pointing right)
+      : (wiringFrom.fromGateId && wiringFrom.fromPinId
+          ? circuitActions.getPinOrientation(wiringFrom.fromGateId, wiringFrom.fromPinId)
+          : null)
     : null
 
   // Prepare path calculation parameters (null if not available)
@@ -113,12 +120,8 @@ export function WirePreview() {
     <Wire3D
       start={{ x: firstSegment.start.x, y: firstSegment.start.y, z: firstSegment.start.z }}
       end={{ x: lastSegment.end.x, y: lastSegment.end.y, z: lastSegment.end.z }}
-      startOrientation={startOrientation}
-      endOrientation={null}
-      sourceGateId={wiringFrom.fromGateId}
       precomputedPath={previewPath}
       isPreview
-      color={colors.wire.default}
     />
   )
 }

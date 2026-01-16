@@ -34,27 +34,27 @@ test.describe('Wire Creation @store @wiring', () => {
 
       const wire = await page.evaluate((): {
         id: string
-        fromGateId: string
-        toGateId: string
-        fromPinId: string
-        toPinId: string
+        from: { type: string; entityId: string; pinId?: string }
+        to: { type: string; entityId: string; pinId?: string }
         segments?: unknown[]
       } | null => {
         const state = window.__CIRCUIT_STORE__
         const wire = state?.wires[0]
         if (!wire) return null
         return {
-          ...wire,
-          segments: (wire as { segments?: unknown[] }).segments,
+          id: wire.id,
+          from: wire.from,
+          to: wire.to,
+          segments: wire.segments,
         }
       })
 
       expect(wire).not.toBeNull()
       expect(wire?.id).toBeDefined()
-      expect(wire?.fromGateId).toBe(gate1.id)
-      expect(wire?.toGateId).toBe(gate2.id)
-      expect(wire?.fromPinId).toBe(`${gate1.id}-out-0`)
-      expect(wire?.toPinId).toBe(`${gate2.id}-in-0`)
+      expect(wire?.from.entityId).toBe(gate1.id)
+      expect(wire?.to.entityId).toBe(gate2.id)
+      expect(wire?.from.pinId).toBe(`${gate1.id}-out-0`)
+      expect(wire?.to.pinId).toBe(`${gate2.id}-in-0`)
       expect(wire?.segments).toBeDefined()
       expect(Array.isArray(wire?.segments)).toBe(true)
     })
@@ -147,18 +147,18 @@ test.describe('Wire Creation @store @wiring', () => {
 
       // Verify both wires exist with correct connections
       const wires = await page.evaluate((): Array<{
-        fromGateId: string
-        toGateId: string
+        from: { entityId: string }
+        to: { entityId: string }
       }> => {
         const state = window.__CIRCUIT_STORE__
-        return state?.wires ?? []
+        return (state?.wires ?? []).map(w => ({ from: w.from, to: w.to }))
       })
 
       expect(wires).toHaveLength(2)
-      expect(wires[0].fromGateId).toBe(gate1.id)
-      expect(wires[0].toGateId).toBe(gate2.id)
-      expect(wires[1].fromGateId).toBe(gate3.id)
-      expect(wires[1].toGateId).toBe(gate4.id)
+      expect(wires[0].from.entityId).toBe(gate1.id)
+      expect(wires[0].to.entityId).toBe(gate2.id)
+      expect(wires[1].from.entityId).toBe(gate3.id)
+      expect(wires[1].to.entityId).toBe(gate4.id)
     })
   })
 
@@ -179,8 +179,8 @@ test.describe('Wire Creation @store @wiring', () => {
         const outputPin = gate.outputs[0]
         const isConnected = state.wires.some(
           (w) =>
-            (w.fromGateId === gate.id && w.fromPinId === outputPin.id) ||
-            (w.toGateId === gate.id && w.toPinId === outputPin.id)
+            (w.from.type === 'gate' && w.from.entityId === gate.id && w.from.pinId === outputPin.id) ||
+            (w.to.type === 'gate' && w.to.entityId === gate.id && w.to.pinId === outputPin.id)
         )
         return { pinId: outputPin.id, isConnected }
       })
@@ -216,8 +216,8 @@ test.describe('Wire Creation @store @wiring', () => {
         const outputPin = gate.outputs[0]
         const isConnected = state.wires.some(
           (w) =>
-            (w.fromGateId === gate.id && w.fromPinId === outputPin.id) ||
-            (w.toGateId === gate.id && w.toPinId === outputPin.id)
+            (w.from.type === 'gate' && w.from.entityId === gate.id && w.from.pinId === outputPin.id) ||
+            (w.to.type === 'gate' && w.to.entityId === gate.id && w.to.pinId === outputPin.id)
         )
         return { pinId: outputPin.id, isConnected }
       })
@@ -268,8 +268,8 @@ test.describe('Wire Creation @store @wiring', () => {
         const outputPin = gate.outputs[0]
         const isConnected = state.wires.some(
           (w) =>
-            (w.fromGateId === gate.id && w.fromPinId === outputPin.id) ||
-            (w.toGateId === gate.id && w.toPinId === outputPin.id)
+            (w.from.type === 'gate' && w.from.entityId === gate.id && w.from.pinId === outputPin.id) ||
+            (w.to.type === 'gate' && w.to.entityId === gate.id && w.to.pinId === outputPin.id)
         )
         return { pinId: outputPin.id, isConnected }
       })

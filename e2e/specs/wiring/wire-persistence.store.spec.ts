@@ -51,7 +51,7 @@ test.describe('Wire Persistence @store @wiring', () => {
         (gate2Id: string): boolean => {
           const state = window.__CIRCUIT_STORE__
           const wire = state?.wires[0]
-          return wire?.toGateId === gate2Id
+          return wire?.to.entityId === gate2Id
         },
         gate2.id
       )
@@ -96,7 +96,7 @@ test.describe('Wire Persistence @store @wiring', () => {
         (gate1Id: string): boolean => {
           const state = window.__CIRCUIT_STORE__
           const wire = state?.wires[0]
-          return wire?.fromGateId === gate1Id
+          return wire?.from.entityId === gate1Id
         },
         gate1.id
       )
@@ -137,7 +137,7 @@ test.describe('Wire Persistence @store @wiring', () => {
         (gate2Id: string): boolean => {
           const state = window.__CIRCUIT_STORE__
           const wire = state?.wires[0]
-          return wire?.toGateId === gate2Id
+          return wire?.to.entityId === gate2Id
         },
         gate2.id
       )
@@ -170,19 +170,19 @@ test.describe('Wire Persistence @store @wiring', () => {
       // Verify wire still exists and connects correctly
       const wireConnections = await page.evaluate(
         ({ g1Id: _g1Id, g2Id: _g2Id }: { g1Id: string; g2Id: string }): {
-          fromGateId: string
-          toGateId: string
+          fromEntityId: string
+          toEntityId: string
         } | null => {
           const state = window.__CIRCUIT_STORE__
           const wire = state?.wires[0]
           if (!wire) return null
-          return { fromGateId: wire.fromGateId, toGateId: wire.toGateId }
+          return { fromEntityId: wire.from.entityId, toEntityId: wire.to.entityId }
         },
         { g1Id: gate1.id, g2Id: gate2.id }
       )
 
-      expect(wireConnections?.fromGateId).toBe(gate1.id)
-      expect(wireConnections?.toGateId).toBe(gate2.id)
+      expect(wireConnections?.fromEntityId).toBe(gate1.id)
+      expect(wireConnections?.toEntityId).toBe(gate2.id)
       await expectWireCount(page, 1)
     })
   })
@@ -225,16 +225,16 @@ test.describe('Wire Persistence @store @wiring', () => {
 
       // Verify wire connections
       const wire = await page.evaluate((): {
-        fromGateId: string
-        toGateId: string
+        fromEntityId: string
+        toEntityId: string
       } | null => {
         const state = window.__CIRCUIT_STORE__
         const w = state?.wires[0]
-        return w ? { fromGateId: w.fromGateId, toGateId: w.toGateId } : null
+        return w ? { fromEntityId: w.from.entityId, toEntityId: w.to.entityId } : null
       })
 
-      expect(wire?.fromGateId).toBe(gate1.id)
-      expect(wire?.toGateId).toBe(gate2.id)
+      expect(wire?.fromEntityId).toBe(gate1.id)
+      expect(wire?.toEntityId).toBe(gate2.id)
     })
   })
 })

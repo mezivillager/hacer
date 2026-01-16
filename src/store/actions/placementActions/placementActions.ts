@@ -15,6 +15,8 @@ export const createPlacementActions = (set: SetState, get: GetState): PlacementA
     set((state) => {
       state.placementMode = type
       state.selectedGateId = null
+      // Cancel node placement if active
+      state.nodePlacementMode = null
     }, false, 'startPlacement')
   },
 

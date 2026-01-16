@@ -6,18 +6,26 @@ import type { PinConfig } from '../types'
 import type { GateType } from '@/store/types'
 
 // Mock dependencies
-vi.mock('@/store/circuitStore', () => ({
-  useCircuitStore: {
-    getState: vi.fn(() => ({
-      placementMode: null,
-      wiringFrom: null,
-    })),
-  },
-  circuitActions: {
-    setHoveredGate: vi.fn(),
-    updateWirePreviewPosition: vi.fn(),
-  },
-}))
+vi.mock('@/store/circuitStore', () => {
+  const mockState = {
+    placementMode: null,
+    wiringFrom: null,
+    wires: [],
+    gates: [],
+  }
+  // Create a function that supports selector pattern and also has getState
+  const useCircuitStore = Object.assign(
+    <T,>(selector: (state: typeof mockState) => T): T => selector(mockState),
+    { getState: () => mockState }
+  )
+  return {
+    useCircuitStore,
+    circuitActions: {
+      setHoveredGate: vi.fn(),
+      updateWirePreviewPosition: vi.fn(),
+    },
+  }
+})
 
 vi.mock('@/hooks/useGateDrag', () => ({
   useGateDrag: vi.fn(() => ({

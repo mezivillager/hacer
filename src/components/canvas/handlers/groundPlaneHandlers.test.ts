@@ -16,8 +16,10 @@ vi.mock('@/store/circuitStore', () => ({
     updateGatePosition: vi.fn(),
     setDragActive: vi.fn(),
     placeGate: vi.fn(),
+    placeNode: vi.fn(),
     cancelWiring: vi.fn(),
     selectGate: vi.fn(),
+    deselectNode: vi.fn(),
   },
 }))
 
@@ -25,6 +27,11 @@ vi.mock('@/utils/grid', () => ({
   snapToGrid: vi.fn((pos: { x: number; y: number; z: number }) => ({ x: Math.round(pos.x), y: pos.y, z: Math.round(pos.z) })),
   worldToGrid: vi.fn((pos: { x: number; y: number; z: number }) => ({ x: Math.round(pos.x), y: Math.round(pos.y), z: Math.round(pos.z) })),
   canPlaceGateAt: vi.fn(() => true),
+}))
+
+// Mock debounce to execute immediately for testing
+vi.mock('@/utils/debounce', () => ({
+  debounce: <T extends (...args: unknown[]) => unknown>(fn: T) => fn,
 }))
 
 describe('groundPlaneHandlers', () => {

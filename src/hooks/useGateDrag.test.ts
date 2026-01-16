@@ -33,24 +33,42 @@ describe('useGateDrag', () => {
       gates: [],
       wires: [],
       selectedGateId: null,
+      selectedWireId: null,
       simulationRunning: false,
       simulationSpeed: 100,
       placementMode: null,
       placementPreviewPosition: null,
       wiringFrom: null,
+      // Node state fields
+      inputNodes: [],
+      outputNodes: [],
+      constantNodes: [],
+      junctions: [],
+      signalWires: [],
+      nodePlacementMode: null,
+      selectedNodeId: null,
+      selectedNodeType: null,
     })
   })
 
   describe('drag start', () => {
-    it('sets dragging state when drag starts', () => {
+    it('sets dragging state after movement exceeds threshold', () => {
       const gate = getState().addGate('NAND', { x: 2, y: 0.2, z: 2 })
 
       const { result } = renderHook(() => useGateDrag(gate.id))
 
       expect(result.current.isDragging).toBe(false)
 
+      // Pointer down does not set isDragging - waits for movement
       act(() => {
         result.current.onPointerDown(createMockEvent({ x: 2, y: 0.2, z: 2 }))
+      })
+
+      expect(result.current.isDragging).toBe(false)
+
+      // Move beyond threshold to trigger drag state
+      act(() => {
+        result.current.onPointerMove(createMockEvent({ x: 2.5, y: 0.2, z: 2.5 }))
       })
 
       expect(result.current.isDragging).toBe(true)
@@ -256,8 +274,12 @@ describe('useGateDrag', () => {
       const gate = getState().addGate('NAND', { x: 2, y: 0.2, z: 2 })
       const { result } = renderHook(() => useGateDrag(gate.id))
 
+      // Start dragging with pointer down and move beyond threshold
       act(() => {
         result.current.onPointerDown(createMockEvent({ x: 2, y: 0.2, z: 2 }))
+      })
+      act(() => {
+        result.current.onPointerMove(createMockEvent({ x: 2.5, y: 0.2, z: 2.5 }))
       })
 
       expect(result.current.isDragging).toBe(true)

@@ -10,6 +10,10 @@ import { clickPin } from './canvas.actions'
 import { ensureWires } from '../waits'
 import { TIMEOUTS } from '../../config/constants'
 
+/**
+ * Wire specification for gate-to-gate wires.
+ * Uses gate/pin IDs which are converted to WireEndpoints internally.
+ */
 export interface WireSpec {
   fromGateId: string
   fromPinId: string
@@ -22,27 +26,25 @@ export interface WireSpec {
  * Note: For e2e tests, segments are calculated by the store's completeWiring action.
  * This helper should not be used directly - use UI interactions instead.
  * If segments need to be calculated, they should be done in the page context.
+ *
+ * Uses unified WireEndpoint format internally.
  */
 export async function addWireViaStore(page: Page, wire: WireSpec): Promise<void> {
   await page.evaluate(
     ({ wire }) => {
-      // Calculate segments in page context (requires wiring scheme utils)
-      // For now, pass empty array - segments should be calculated via completeWiring
-      // This is a fallback for tests that need direct wire creation
-      window.__CIRCUIT_ACTIONS__?.addWire(
-        wire.fromGateId,
-        wire.fromPinId,
-        wire.toGateId,
-        wire.toPinId,
-        [] // Empty segments - will be calculated on render if needed
-      )
+      // Convert WireSpec to WireEndpoint format for unified API
+      const fromEndpoint = { type: 'gate' as const, entityId: wire.fromGateId, pinId: wire.fromPinId }
+      const toEndpoint = { type: 'gate' as const, entityId: wire.toGateId, pinId: wire.toPinId }
+      // Empty segments - will be calculated on render if needed
+      window.__CIRCUIT_ACTIONS__?.addWire(fromEndpoint, toEndpoint, [])
     },
     { wire }
   )
 }
 
 /**
- * Add multiple wires via store using gate indices and pin names
+ * Add multiple wires via store using gate indices and pin names.
+ * Uses unified WireEndpoint format internally.
  */
 export async function addWiresViaStore(
   page: Page,
@@ -57,9 +59,12 @@ export async function addWiresViaStore(
   await page.evaluate(
     ({ wires, gateIds }) => {
       wires.forEach((w) => {
-        const from = gateIds[w.fromGate]
-        const to = gateIds[w.toGate]
-        window.__CIRCUIT_ACTIONS__?.addWire(from, `${from}-${w.fromPin}`, to, `${to}-${w.toPin}`, [])
+        const fromGateId = gateIds[w.fromGate]
+        const toGateId = gateIds[w.toGate]
+        // Convert to WireEndpoint format
+        const fromEndpoint = { type: 'gate' as const, entityId: fromGateId, pinId: `${fromGateId}-${w.fromPin}` }
+        const toEndpoint = { type: 'gate' as const, entityId: toGateId, pinId: `${toGateId}-${w.toPin}` }
+        window.__CIRCUIT_ACTIONS__?.addWire(fromEndpoint, toEndpoint, [])
       })
     },
     { wires, gateIds }

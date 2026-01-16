@@ -260,12 +260,21 @@ export function hasWiresInCell(
   const pinLocations: Array<{ gateId: string; pinId: string; position: Position }> = []
 
   for (const wire of wires) {
-    const fromPos = getPinWorldPosition(wire.fromGateId, wire.fromPinId)
-    const toPos = getPinWorldPosition(wire.toGateId, wire.toPinId)
+    // Only process gate-to-gate wires (skip wires with node endpoints)
+    if (wire.from.type !== 'gate' || wire.to.type !== 'gate') continue
+    if (!wire.from.pinId || !wire.to.pinId) continue
+
+    const fromGateId = wire.from.entityId
+    const fromPinId = wire.from.pinId
+    const toGateId = wire.to.entityId
+    const toPinId = wire.to.pinId
+
+    const fromPos = getPinWorldPosition(fromGateId, fromPinId)
+    const toPos = getPinWorldPosition(toGateId, toPinId)
     if (!fromPos || !toPos) continue
 
-    const fromOrientation = getPinOrientation(wire.fromGateId, wire.fromPinId)
-    const toOrientation = getPinOrientation(wire.toGateId, wire.toPinId)
+    const fromOrientation = getPinOrientation(fromGateId, fromPinId)
+    const toOrientation = getPinOrientation(toGateId, toPinId)
     if (!fromOrientation || !toOrientation) continue
 
     // Calculate path for this wire
@@ -283,10 +292,10 @@ export function hasWiresInCell(
     const fromInCell = isPositionInCell(fromPos, cell)
     const toInCell = isPositionInCell(toPos, cell)
     if (fromInCell) {
-      pinLocations.push({ gateId: wire.fromGateId, pinId: wire.fromPinId, position: fromPos })
+      pinLocations.push({ gateId: fromGateId, pinId: fromPinId, position: fromPos })
     }
     if (toInCell) {
-      pinLocations.push({ gateId: wire.toGateId, pinId: wire.toPinId, position: toPos })
+      pinLocations.push({ gateId: toGateId, pinId: toPinId, position: toPos })
     }
   }
 

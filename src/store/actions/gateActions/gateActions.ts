@@ -58,7 +58,9 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
     // Get state before removal to collect wire IDs
     const state = get()
     const wiresToRemove = state.wires.filter(
-      (w) => w.fromGateId === gateId || w.toGateId === gateId
+      (w) =>
+        (w.from.type === 'gate' && w.from.entityId === gateId) ||
+        (w.to.type === 'gate' && w.to.entityId === gateId)
     )
     const removedWireIds = wiresToRemove.map((w) => w.id)
 
@@ -67,9 +69,11 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
       const index = state.gates.findIndex((g) => g.id === gateId)
       if (index !== -1) {
         state.gates.splice(index, 1)
-        // Remove associated wires
+        // Remove associated wires (where gate is source or destination)
         state.wires = state.wires.filter(
-          (w) => w.fromGateId !== gateId && w.toGateId !== gateId
+          (w) =>
+            !(w.from.type === 'gate' && w.from.entityId === gateId) &&
+            !(w.to.type === 'gate' && w.to.entityId === gateId)
         )
       }
     }, false, 'removeGate')
@@ -148,15 +152,22 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
     // Check if selection actually changed before mutating (avoids unnecessary array reference changes)
     const currentState = useCircuitStore.getState()
     if (currentState.selectedWireId === wireId) {
-      // Selection hasn't changed - nothing to update
+      // Toggle off if clicking the same wire
+      if (wireId !== null) {
+        set((state) => {
+          state.selectedWireId = null
+        }, false, 'deselectWire')
+      }
       return
     }
 
     set((state) => {
       state.selectedWireId = wireId
-      // Deselect gate when selecting wire (mutually exclusive)
+      // Deselect gate and node when selecting wire (mutually exclusive)
       if (wireId !== null) {
         state.selectedGateId = null
+        state.selectedNodeId = null
+        state.selectedNodeType = null
         state.gates.forEach((g) => {
           g.selected = false
         })
@@ -220,9 +231,13 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
     const updateWireSegments = state.updateWireSegments
     const removeWire = state.removeWire
 
-    // Find all wires connected to this gate
+    // Find all gate-to-gate wires connected to this gate
+    // Only wires where both endpoints are gates can be recalculated this way
     const connectedWires = wires.filter(
-      (w) => w.fromGateId === gateId || w.toGateId === gateId
+      (w) =>
+        w.from.type === 'gate' &&
+        w.to.type === 'gate' &&
+        (w.from.entityId === gateId || w.to.entityId === gateId)
     )
 
     if (connectedWires.length === 0) {
@@ -245,6 +260,12 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
         const freshGates = freshState.gates
         const freshWires = freshState.wires
 
+        // Extract gate and pin IDs from endpoints
+        const fromGateId = wire.from.entityId
+        const fromPinId = wire.from.pinId!
+        const toGateId = wire.to.entityId
+        const toPinId = wire.to.pinId!
+
         // Collect existing segments from other wires (for overlap avoidance in pathfinding)
         // Exclude the wire being recalculated
         // Note: This includes arc segments, but segmentsOverlap correctly excludes them
@@ -253,10 +274,10 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
 
         // Use helper function to calculate path from wire connection info
         const newPath = calculateWirePathFromConnection(
-          wire.fromGateId,
-          wire.fromPinId,
-          wire.toGateId,
-          wire.toPinId,
+          fromGateId,
+          fromPinId,
+          toGateId,
+          toPinId,
           {
             gates: freshGates,
             getPinWorldPosition,
@@ -270,10 +291,10 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
           message.error('Unable to recalculate wire path. Wire has been disconnected.')
           console.error(`[recalculateWiresForGate] Failed to calculate path for wire ${wire.id} - pins or gates not found`, {
             wireId: wire.id,
-            fromGateId: wire.fromGateId,
-            fromPinId: wire.fromPinId,
-            toGateId: wire.toGateId,
-            toPinId: wire.toPinId,
+            fromGateId,
+            fromPinId,
+            toGateId,
+            toPinId,
             gateId,
           })
           removeWire(wire.id)
@@ -313,10 +334,8 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
         console.error(`[recalculateWiresForGate] Failed to recalculate wire ${wire.id}:`, error)
         console.error(`[recalculateWiresForGate] Wire context:`, {
           wireId: wire.id,
-          fromGateId: wire.fromGateId,
-          fromPinId: wire.fromPinId,
-          toGateId: wire.toGateId,
-          toPinId: wire.toPinId,
+          from: wire.from,
+          to: wire.to,
           gateId,
         })
         removeWire(wire.id)
@@ -333,8 +352,8 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
     const connectedWireIds = connectedWires.map((w) => w.id)
     const wiresWithAffectedCrossings = allWires.filter(
       (w) =>
-        w.fromGateId !== gateId &&
-        w.toGateId !== gateId &&
+        !(w.from.type === 'gate' && w.from.entityId === gateId) &&
+        !(w.to.type === 'gate' && w.to.entityId === gateId) &&
         (w.crossesWireIds ?? []).some((id) => connectedWireIds.includes(id))
     )
 

@@ -15,8 +15,8 @@ export interface StoreState {
   }>
   wires: Array<{
     id: string
-    fromGateId: string
-    toGateId: string
+    from: { type: string; entityId: string; pinId?: string }
+    to: { type: string; entityId: string; pinId?: string }
   }>
   simulationRunning: boolean
 }

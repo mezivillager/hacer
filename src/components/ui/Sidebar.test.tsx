@@ -14,10 +14,20 @@ describe('Sidebar', () => {
       gates: [],
       wires: [],
       selectedGateId: null,
+      selectedWireId: null,
       simulationRunning: false,
       simulationSpeed: 100,
       placementMode: null,
       wiringFrom: null,
+      // Node state fields
+      inputNodes: [],
+      outputNodes: [],
+      constantNodes: [],
+      junctions: [],
+      signalWires: [],
+      nodePlacementMode: null,
+      selectedNodeId: null,
+      selectedNodeType: null,
     })
     vi.clearAllMocks()
   })
@@ -25,7 +35,7 @@ describe('Sidebar', () => {
   it('renders sidebar with title', () => {
     render(<Sidebar />)
     expect(screen.getByText('🔌 HACER')).toBeInTheDocument()
-    expect(screen.getByText('Logic Gate Simulator')).toBeInTheDocument()
+    expect(screen.getByText('Hardware Architecture & Constraints Explorer/Researcher')).toBeInTheDocument()
   })
 
   it('renders Elementary Gates section with gate icons', () => {

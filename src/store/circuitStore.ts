@@ -8,6 +8,9 @@ import { createPlacementActions } from './actions/placementActions/placementActi
 import { createWiringActions } from './actions/wiringActions/wiringActions'
 import { createPinHelpers } from './actions/pinHelpers/pinHelpers'
 import { createViewActions } from './actions/viewActions/viewActions'
+import { createNodeActions } from './actions/nodeActions/nodeActions'
+import { createJunctionActions } from './actions/signalActions/signalActions'
+import { createNodePlacementActions } from './actions/nodePlacementActions/nodePlacementActions'
 import { calculateWirePathFromConnection } from '@/utils/wiringScheme'
 import { collectWireSegments } from '@/utils/wiringScheme/segments'
 import type { WireSegment } from '@/utils/wiringScheme/types'
@@ -32,6 +35,15 @@ const initialState = {
   isDragActive: false,
   hoveredGateId: null as string | null,
   showAxes: false,
+  // HDL Support: Circuit I/O nodes and junctions
+  inputNodes: [] as import('./types').InputNode[],
+  outputNodes: [] as import('./types').OutputNode[],
+  constantNodes: [] as import('./types').ConstantNode[],
+  junctions: [] as import('./types').JunctionNode[],
+  // Node placement and selection
+  nodePlacementMode: null as import('./types').NodePlacementType | null,
+  selectedNodeId: null as string | null,
+  selectedNodeType: null as import('./types').NodeType | null,
 }
 
 // Create the Zustand store with Immer, devtools, and subscribeWithSelector middleware
@@ -50,6 +62,9 @@ export const useCircuitStore = create<CircuitStore>()(
         ...createWiringActions(set, get),
         ...createPinHelpers(get),
         ...createViewActions(set),
+        ...createNodeActions(set, get),
+        ...createJunctionActions(set, get),
+        ...createNodePlacementActions(set, get),
       }))
     ),
     { name: 'CircuitStore' }
@@ -141,8 +156,14 @@ export const circuitActions = {
   setDestinationPin: (...args: Parameters<CircuitStore['setDestinationPin']>): void => {
     useCircuitStore.getState().setDestinationPin(...args)
   },
+  setDestinationNode: (...args: Parameters<CircuitStore['setDestinationNode']>): void => {
+    useCircuitStore.getState().setDestinationNode(...args)
+  },
   cancelWiring: () => useCircuitStore.getState().cancelWiring(),
   completeWiring: (...args: Parameters<CircuitStore['completeWiring']>) => useCircuitStore.getState().completeWiring(...args),
+  startWiringFromNode: (...args: Parameters<CircuitStore['startWiringFromNode']>) => useCircuitStore.getState().startWiringFromNode(...args),
+  completeWiringFromNodeToGate: (...args: Parameters<CircuitStore['completeWiringFromNodeToGate']>) => useCircuitStore.getState().completeWiringFromNodeToGate(...args),
+  completeWiringToNode: (...args: Parameters<CircuitStore['completeWiringToNode']>) => useCircuitStore.getState().completeWiringToNode(...args),
   // Helper functions
   getPinWorldPosition: (...args: Parameters<CircuitStore['getPinWorldPosition']>): ReturnType<CircuitStore['getPinWorldPosition']> => useCircuitStore.getState().getPinWorldPosition(...args),
   getPinOrientation: (...args: Parameters<CircuitStore['getPinOrientation']>): ReturnType<CircuitStore['getPinOrientation']> => useCircuitStore.getState().getPinOrientation(...args),
@@ -183,6 +204,24 @@ export const circuitActions = {
   },
   // View actions
   toggleAxes: () => useCircuitStore.getState().toggleAxes(),
+  // Node placement actions
+  startNodePlacement: (...args: Parameters<CircuitStore['startNodePlacement']>) => useCircuitStore.getState().startNodePlacement(...args),
+  cancelNodePlacement: () => useCircuitStore.getState().cancelNodePlacement(),
+  placeNode: (...args: Parameters<CircuitStore['placeNode']>) => useCircuitStore.getState().placeNode(...args),
+  selectNode: (...args: Parameters<CircuitStore['selectNode']>) => useCircuitStore.getState().selectNode(...args),
+  deselectNode: () => useCircuitStore.getState().deselectNode(),
+  // Node CRUD actions (already in store, adding to circuitActions for convenience)
+  addInputNode: (...args: Parameters<CircuitStore['addInputNode']>) => useCircuitStore.getState().addInputNode(...args),
+  addOutputNode: (...args: Parameters<CircuitStore['addOutputNode']>) => useCircuitStore.getState().addOutputNode(...args),
+  addConstantNode: (...args: Parameters<CircuitStore['addConstantNode']>) => useCircuitStore.getState().addConstantNode(...args),
+  removeInputNode: (...args: Parameters<CircuitStore['removeInputNode']>) => useCircuitStore.getState().removeInputNode(...args),
+  removeOutputNode: (...args: Parameters<CircuitStore['removeOutputNode']>) => useCircuitStore.getState().removeOutputNode(...args),
+  removeConstantNode: (...args: Parameters<CircuitStore['removeConstantNode']>) => useCircuitStore.getState().removeConstantNode(...args),
+  updateInputNodeValue: (...args: Parameters<CircuitStore['updateInputNodeValue']>) => useCircuitStore.getState().updateInputNodeValue(...args),
+  // Junction actions
+  addJunction: (...args: Parameters<CircuitStore['addJunction']>) => useCircuitStore.getState().addJunction(...args),
+  removeJunction: (...args: Parameters<CircuitStore['removeJunction']>) => useCircuitStore.getState().removeJunction(...args),
+  updateJunctionPosition: (...args: Parameters<CircuitStore['updateJunctionPosition']>) => useCircuitStore.getState().updateJunctionPosition(...args),
 }
 
 // Expose store and actions for E2E testing
