@@ -486,11 +486,7 @@ test.describe('Node Wiring @store @wiring @nodes', () => {
         { nodeId: outputNode!.id }
       )
 
-      // Wait for WirePreview to calculate segments (it should detect the node destination)
-      // In a real scenario, WirePreview would calculate segments automatically
-      // For E2E, we'll wait a reasonable time and then complete the wiring
-      // If segments aren't calculated, completeWiringToNode will show an error message
-      await page.waitForTimeout(1000)
+      await page.waitForTimeout(100)
 
       // Complete wiring to output node
       // Note: This will work if WirePreview calculated segments, or fail gracefully if not
@@ -596,16 +592,17 @@ test.describe('Node Wiring @store @wiring @nodes', () => {
       await page.waitForTimeout(100)
 
       await page.evaluate(() => {
-        const state = window.__CIRCUIT_STORE__
-        if (state?.wiringFrom) {
-          state.wiringFrom.segments = [
-            {
-              start: { x: 0.7, y: 0.2, z: 0 },
-              end: { x: 7.4, y: 0.2, z: 0 },
-              type: 'horizontal',
-            },
-          ]
-        }
+        window.__CIRCUIT_STORE_SET_STATE__?.((draft) => {
+          if (draft.wiringFrom) {
+            draft.wiringFrom.segments = [
+              {
+                start: { x: 0.7, y: 0.2, z: 0 },
+                end: { x: 7.4, y: 0.2, z: 0 },
+                type: 'horizontal',
+              },
+            ]
+          }
+        })
       })
 
       await page.evaluate(

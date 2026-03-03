@@ -4,7 +4,7 @@
  * Tests for placing junction nodes on wires and wiring from junctions.
  */
 
-import { test, expect } from '@playwright/test'
+import { storeTest as test, storeExpect as expect } from '../../fixtures'
 import { ensureGates, ensureWires } from '../../helpers/waits'
 import { addGateViaStore } from '../../helpers/actions/gate.actions'
 
@@ -157,21 +157,18 @@ test.describe('Junction Placement @store @wiring @junctions', () => {
       }
     )
 
-    // Wait for segments to be calculated
-    await page.waitForTimeout(500)
-
-    // Set segments manually (normally done by WirePreview)
     await page.evaluate(({ sectionSize, wireHeight }) => {
-      const state = window.__CIRCUIT_STORE__
-      if (state?.wiringFrom) {
-        state.wiringFrom.segments = [
-          {
-            start: { x: sectionSize, y: wireHeight, z: -sectionSize },
-            end: { x: 11.5, y: wireHeight, z: -sectionSize },
-            type: 'horizontal',
-          },
-        ]
-      }
+      window.__CIRCUIT_STORE_SET_STATE__?.((draft) => {
+        if (draft.wiringFrom) {
+          draft.wiringFrom.segments = [
+            {
+              start: { x: sectionSize, y: wireHeight, z: -sectionSize },
+              end: { x: 11.5, y: wireHeight, z: -sectionSize },
+              type: 'horizontal',
+            },
+          ]
+        }
+      })
     }, { sectionSize: SECTION_SIZE, wireHeight: WIRE_HEIGHT })
 
     // Complete wiring to gate3
@@ -276,19 +273,20 @@ test.describe('Junction Placement @store @wiring @junctions', () => {
       }
     )
 
-    await page.waitForTimeout(500)
+
 
     await page.evaluate(({ sectionSize, wireHeight }) => {
-      const state = window.__CIRCUIT_STORE__
-      if (state?.wiringFrom) {
-        state.wiringFrom.segments = [
-          {
-            start: { x: sectionSize, y: wireHeight, z: -sectionSize },
-            end: { x: 11.5, y: wireHeight, z: -sectionSize },
-            type: 'horizontal',
-          },
-        ]
-      }
+      window.__CIRCUIT_STORE_SET_STATE__?.((draft) => {
+        if (draft.wiringFrom) {
+          draft.wiringFrom.segments = [
+            {
+              start: { x: sectionSize, y: wireHeight, z: -sectionSize },
+              end: { x: 11.5, y: wireHeight, z: -sectionSize },
+              type: 'horizontal',
+            },
+          ]
+        }
+      })
     }, { sectionSize: SECTION_SIZE, wireHeight: WIRE_HEIGHT })
 
     await page.evaluate(
@@ -465,19 +463,20 @@ test.describe('Junction Placement @store @wiring @junctions', () => {
       }
     )
 
-    await page.waitForTimeout(500)
+
 
     await page.evaluate(({ sectionSize, wireHeight }) => {
-      const state = window.__CIRCUIT_STORE__
-      if (state?.wiringFrom) {
-        state.wiringFrom.segments = [
-          {
-            start: { x: sectionSize, y: wireHeight, z: -sectionSize },
-            end: { x: 11.5, y: wireHeight, z: -sectionSize },
-            type: 'horizontal',
-          },
-        ]
-      }
+      window.__CIRCUIT_STORE_SET_STATE__?.((draft) => {
+        if (draft.wiringFrom) {
+          draft.wiringFrom.segments = [
+            {
+              start: { x: sectionSize, y: wireHeight, z: -sectionSize },
+              end: { x: 11.5, y: wireHeight, z: -sectionSize },
+              type: 'horizontal',
+            },
+          ]
+        }
+      })
     }, { sectionSize: SECTION_SIZE, wireHeight: WIRE_HEIGHT })
 
     await page.evaluate(
@@ -503,19 +502,20 @@ test.describe('Junction Placement @store @wiring @junctions', () => {
       }
     )
 
-    await page.waitForTimeout(500)
+
 
     await page.evaluate(({ sectionSize, wireHeight }) => {
-      const state = window.__CIRCUIT_STORE__
-      if (state?.wiringFrom) {
-        state.wiringFrom.segments = [
-          {
-            start: { x: sectionSize, y: wireHeight, z: -sectionSize },
-            end: { x: 11.5, y: wireHeight, z: 4 },
-            type: 'horizontal',
-          },
-        ]
-      }
+      window.__CIRCUIT_STORE_SET_STATE__?.((draft) => {
+        if (draft.wiringFrom) {
+          draft.wiringFrom.segments = [
+            {
+              start: { x: sectionSize, y: wireHeight, z: -sectionSize },
+              end: { x: 11.5, y: wireHeight, z: 4 },
+              type: 'horizontal',
+            },
+          ]
+        }
+      })
     }, { sectionSize: SECTION_SIZE, wireHeight: WIRE_HEIGHT })
 
     await page.evaluate(
@@ -608,24 +608,25 @@ test.describe('Junction Placement @store @wiring @junctions', () => {
       }
     )
 
-    await page.waitForTimeout(500)
+
 
     await page.evaluate(({ sectionSize, wireHeight }) => {
-      const state = window.__CIRCUIT_STORE__
-      if (state?.wiringFrom) {
-        state.wiringFrom.segments = [
-          {
-            start: { x: sectionSize, y: wireHeight, z: -sectionSize },
-            end: { x: sectionSize, y: wireHeight, z: -2 * sectionSize },
-            type: 'vertical',
-          },
-          {
-            start: { x: sectionSize, y: wireHeight, z: -2 * sectionSize },
-            end: { x: 2 * sectionSize, y: wireHeight, z: -2 * sectionSize },
-            type: 'horizontal',
-          },
-        ]
-      }
+      window.__CIRCUIT_STORE_SET_STATE__?.((draft) => {
+        if (draft.wiringFrom) {
+          draft.wiringFrom.segments = [
+            {
+              start: { x: sectionSize, y: wireHeight, z: -sectionSize },
+              end: { x: sectionSize, y: wireHeight, z: -2 * sectionSize },
+              type: 'vertical',
+            },
+            {
+              start: { x: sectionSize, y: wireHeight, z: -2 * sectionSize },
+              end: { x: 2 * sectionSize, y: wireHeight, z: -2 * sectionSize },
+              type: 'horizontal',
+            },
+          ]
+        }
+      })
     }, { sectionSize: SECTION_SIZE, wireHeight: WIRE_HEIGHT })
 
     await page.evaluate(
@@ -675,19 +676,20 @@ test.describe('Junction Placement @store @wiring @junctions', () => {
       }
     )
 
-    await page.waitForTimeout(500)
+
 
     await page.evaluate(({ sectionSize, wireHeight }) => {
-      const state = window.__CIRCUIT_STORE__
-      if (state?.wiringFrom) {
-        state.wiringFrom.segments = [
-          {
-            start: { x: sectionSize, y: wireHeight, z: -2 * sectionSize },
-            end: { x: 2 * sectionSize, y: wireHeight, z: 4 },
-            type: 'horizontal',
-          },
-        ]
-      }
+      window.__CIRCUIT_STORE_SET_STATE__?.((draft) => {
+        if (draft.wiringFrom) {
+          draft.wiringFrom.segments = [
+            {
+              start: { x: sectionSize, y: wireHeight, z: -2 * sectionSize },
+              end: { x: 2 * sectionSize, y: wireHeight, z: 4 },
+              type: 'horizontal',
+            },
+          ]
+        }
+      })
     }, { sectionSize: SECTION_SIZE, wireHeight: WIRE_HEIGHT })
 
     await page.evaluate(

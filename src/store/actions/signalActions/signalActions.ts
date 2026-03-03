@@ -56,20 +56,27 @@ export const createJunctionActions = (set: SetState, _get: GetState): JunctionAc
       const junction = state.junctions.find((j) => j.id === junctionId)
       if (!junction) return
 
-      // Remove branch wires (all wires except the original at wireIds[0])
-      const branchWireIds = junction.wireIds.slice(1)
-      state.wires = state.wires.filter((w) => !branchWireIds.includes(w.id))
+      const wireIdsToRemove =
+        junction.wireIds.length > 0
+          ? junction.wireIds.slice(1)
+          : state.wires
+              .filter(
+                (w) =>
+                  (w.from.type === 'junction' && w.from.entityId === junctionId) ||
+                  (w.to.type === 'junction' && w.to.entityId === junctionId)
+              )
+              .map((w) => w.id)
 
-      // Remove junction ID from remaining wires' junction references
+      state.wires = state.wires.filter((w) => !wireIdsToRemove.includes(w.id))
+
       for (const remainingJunction of state.junctions) {
         if (remainingJunction.id !== junctionId) {
           remainingJunction.wireIds = remainingJunction.wireIds.filter(
-            (id) => !branchWireIds.includes(id)
+            (id) => !wireIdsToRemove.includes(id)
           )
         }
       }
 
-      // Remove the junction itself
       const index = state.junctions.findIndex((j) => j.id === junctionId)
       if (index !== -1) {
         state.junctions.splice(index, 1)

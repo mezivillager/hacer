@@ -247,6 +247,9 @@ if (typeof window !== 'undefined') {
   // This is safe because E2E tests only access the state properties, not action methods
   window.__CIRCUIT_STORE__ = useCircuitStore.getState()
   window.__CIRCUIT_ACTIONS__ = circuitActions
+  window.__CIRCUIT_STORE_SET_STATE__ = (fn: (draft: CircuitStore) => void) => {
+    useCircuitStore.setState(fn)
+  }
 
   // Keep window.__CIRCUIT_STORE__ in sync with store changes
   useCircuitStore.subscribe((state) => {

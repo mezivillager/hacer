@@ -150,6 +150,7 @@ declare global {
     __SCENE_HELPERS__?: SceneHelpers
     __CIRCUIT_STORE__?: CircuitStoreSnapshot
     __CIRCUIT_ACTIONS__?: CircuitActionsAPI
+    __CIRCUIT_STORE_SET_STATE__?: (fn: (draft: CircuitStoreSnapshot) => void) => void
     __RENDER_TRACKER__?: RenderTrackerSnapshot
   }
 }
