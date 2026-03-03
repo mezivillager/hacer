@@ -26,7 +26,17 @@ vi.mock('@/utils/wireHitTest', () => ({
   },
 }))
 
+// Mock Ant Design message (prevents React DOM rendering in Node/CI)
+vi.mock('antd', () => ({
+  message: {
+    warning: vi.fn(),
+    error: vi.fn(),
+    info: vi.fn(),
+  },
+}))
+
 import { handleWireClick } from './wireHandlers'
+import { message } from 'antd'
 import { useCircuitStore } from '@/store/circuitStore'
 import type { ThreeEvent } from '@react-three/fiber'
 
@@ -196,6 +206,9 @@ describe('wireHandlers', () => {
       const result = handleWireClick(mockEvent)
       expect(result).toBe('wire-1')
       expect(mockPlaceJunctionOnWire).toHaveBeenCalled()
+      expect(message.warning).toHaveBeenCalledWith(
+        'Junction can only be placed at wire corners (section line intersections). Please click on a corner where segments meet.'
+      )
     })
 
     it('selects wire when not in junction placement mode', () => {
