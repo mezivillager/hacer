@@ -246,11 +246,10 @@ describe('WiringScheme Segments Module', () => {
 
     const createWire = (id: string, segments: WireSegment[]): Wire => ({
       id,
-      fromGateId: `gate-${id}`,
-      fromPinId: `pin-${id}`,
-      toGateId: `gate-to-${id}`,
-      toPinId: `pin-to-${id}`,
+      from: { type: 'gate', entityId: `gate-${id}`, pinId: `pin-${id}` },
+      to: { type: 'gate', entityId: `gate-to-${id}`, pinId: `pin-to-${id}` },
       segments,
+      crossesWireIds: [],
     })
 
     it('collects segments from all wires', () => {

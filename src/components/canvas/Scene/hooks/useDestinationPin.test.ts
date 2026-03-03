@@ -48,7 +48,9 @@ describe('useDestinationPin', () => {
 
     expect(result).not.toBe(null)
     expect(result?.destination.type).toBe('cursor')
-    expect(result?.destination.pos).toEqual({ x: 5, y: 0.2, z: 0 })
+    if (result?.destination.type === 'cursor') {
+      expect(result.destination.pos).toEqual({ x: 5, y: 0.2, z: 0 })
+    }
   })
 
   it('returns node pin destination when output node is set as destination', () => {
@@ -75,16 +77,18 @@ describe('useDestinationPin', () => {
 
     expect(result).not.toBe(null)
     expect(result?.destination.type).toBe('pin')
-    // Output node pin is on left side
-    // bodyHalfWidth = 0.3, pinRadius = 0.1, so pinOffset = 0.4
-    // Pin position = node.x + (-0.4) = 8 - 0.4 = 7.6
-    expect(result?.destination.pin.x).toBeCloseTo(7.6, 1)
-    expect(result?.destination.pin.y).toBe(0)
-    expect(result?.destination.pin.z).toBe(0)
-    // Orientation should point left
-    expect(result?.destination.orientation.direction.x).toBe(-1)
-    expect(result?.destination.orientation.direction.y).toBe(0)
-    expect(result?.destination.orientation.direction.z).toBe(0)
+    if (result?.destination.type === 'pin') {
+      // Output node pin is on left side
+      // bodyHalfWidth = 0.3, pinRadius = 0.1, so pinOffset = 0.4
+      // Pin position = node.x + (-0.4) = 8 - 0.4 = 7.6
+      expect(result.destination.pin.x).toBeCloseTo(7.6, 1)
+      expect(result.destination.pin.y).toBe(0)
+      expect(result.destination.pin.z).toBe(0)
+      // Orientation should point left
+      expect(result.destination.orientation.direction.x).toBe(-1)
+      expect(result.destination.orientation.direction.y).toBe(0)
+      expect(result.destination.orientation.direction.z).toBe(0)
+    }
     expect(result?.destinationGateId).toBeUndefined()
   })
 

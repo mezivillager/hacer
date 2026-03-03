@@ -123,11 +123,8 @@ describe('Wire Crossing Detection and Resolution', () => {
       const existingWires: Wire[] = [
         {
           id: 'wire-1',
-          fromGateId: 'gate-1',
-          fromPinId: 'pin-1',
-          toGateId: 'gate-2',
-          toPinId: 'pin-2',
-          crossesWireIds: [],
+          from: { type: 'gate', entityId: 'gate-1', pinId: 'pin-1' },
+          to: { type: 'gate', entityId: 'gate-2', pinId: 'pin-2' },
           segments: [
             {
               start: createPosition(4, WIRE_HEIGHT, 0),
@@ -135,6 +132,7 @@ describe('Wire Crossing Detection and Resolution', () => {
               type: 'vertical',
             },
           ],
+          crossesWireIds: [],
         },
       ]
 
@@ -158,11 +156,8 @@ describe('Wire Crossing Detection and Resolution', () => {
       const existingWires: Wire[] = [
         {
           id: 'wire-1',
-          fromGateId: 'gate-1',
-          fromPinId: 'pin-1',
-          toGateId: 'gate-2',
-          toPinId: 'pin-2',
-          crossesWireIds: [],
+          from: { type: 'gate', entityId: 'gate-1', pinId: 'pin-1' },
+          to: { type: 'gate', entityId: 'gate-2', pinId: 'pin-2' },
           segments: [
             {
               start: createPosition(0, WIRE_HEIGHT, 8),
@@ -170,6 +165,7 @@ describe('Wire Crossing Detection and Resolution', () => {
               type: 'horizontal',
             },
           ],
+          crossesWireIds: [],
         },
       ]
 
@@ -198,11 +194,8 @@ describe('Wire Crossing Detection and Resolution', () => {
       const existingWires: Wire[] = [
         {
           id: 'wire-1',
-          fromGateId: 'gate-1',
-          fromPinId: 'pin-1',
-          toGateId: 'gate-2',
-          toPinId: 'pin-2',
-          crossesWireIds: [],
+          from: { type: 'gate', entityId: 'gate-1', pinId: 'pin-1' },
+          to: { type: 'gate', entityId: 'gate-2', pinId: 'pin-2' },
           segments: [
             {
               start: createPosition(6, WIRE_HEIGHT, 0),
@@ -210,6 +203,7 @@ describe('Wire Crossing Detection and Resolution', () => {
               type: 'vertical',
             },
           ],
+          crossesWireIds: [],
         },
       ]
 
@@ -231,11 +225,8 @@ describe('Wire Crossing Detection and Resolution', () => {
       const existingWires: Wire[] = [
         {
           id: 'wire-1',
-          fromGateId: 'gate-1',
-          fromPinId: 'pin-1',
-          toGateId: 'gate-2',
-          toPinId: 'pin-2',
-          crossesWireIds: [],
+          from: { type: 'gate', entityId: 'gate-1', pinId: 'pin-1' },
+          to: { type: 'gate', entityId: 'gate-2', pinId: 'pin-2' },
           segments: [
             {
               start: createPosition(4, WIRE_HEIGHT, 2),
@@ -245,6 +236,7 @@ describe('Wire Crossing Detection and Resolution', () => {
               arcRadius: HOP_RADIUS,
             },
           ],
+          crossesWireIds: [],
         },
       ]
 
@@ -268,11 +260,8 @@ describe('Wire Crossing Detection and Resolution', () => {
       const existingWires: Wire[] = [
         {
           id: 'wire-1',
-          fromGateId: 'gate-1',
-          fromPinId: 'pin-1',
-          toGateId: 'gate-2',
-          toPinId: 'pin-2',
-          crossesWireIds: [],
+          from: { type: 'gate', entityId: 'gate-1', pinId: 'pin-1' },
+          to: { type: 'gate', entityId: 'gate-2', pinId: 'pin-2' },
           segments: [
             {
               start: createPosition(4, WIRE_HEIGHT, 0),
@@ -285,6 +274,7 @@ describe('Wire Crossing Detection and Resolution', () => {
               type: 'horizontal',
             },
           ],
+          crossesWireIds: [],
         },
       ]
 
@@ -705,18 +695,16 @@ describe('Wire Crossing Detection and Resolution', () => {
       const existingWires: Wire[] = [
         {
           id: 'wire-1',
-          fromGateId: 'gate-1',
-          fromPinId: 'pin-1',
-          toGateId: 'gate-2',
-          toPinId: 'pin-2',
-          crossesWireIds: [],
+          from: { type: 'gate', entityId: 'gate-1', pinId: 'pin-1' },
+          to: { type: 'gate', entityId: 'gate-2', pinId: 'pin-2' },
           segments: [
             {
               start: createPosition(4, WIRE_HEIGHT, 0),
               end: createPosition(4, WIRE_HEIGHT, 8),
-              type: 'vertical',
-            },
-          ],
+            type: 'vertical',
+          },
+        ],
+        crossesWireIds: [],
         },
       ]
 
@@ -745,11 +733,8 @@ describe('Wire Crossing Detection and Resolution', () => {
       const existingWires: Wire[] = [
         {
           id: 'wire-1',
-          fromGateId: 'gate-1',
-          fromPinId: 'pin-1',
-          toGateId: 'gate-2',
-          toPinId: 'pin-2',
-          crossesWireIds: [],
+          from: { type: 'gate', entityId: 'gate-1', pinId: 'pin-1' },
+          to: { type: 'gate', entityId: 'gate-2', pinId: 'pin-2' },
           segments: [
             {
               start: createPosition(0.025, WIRE_HEIGHT, 0),
@@ -757,6 +742,7 @@ describe('Wire Crossing Detection and Resolution', () => {
               type: 'vertical',
             },
           ],
+        crossesWireIds: [],
         },
       ]
 
@@ -804,11 +790,8 @@ describe('Wire Crossing Detection and Resolution', () => {
       const existingWires: Wire[] = [
         {
           id: 'wire-1',
-          fromGateId: 'gate-1',
-          fromPinId: 'pin-1',
-          toGateId: 'gate-2',
-          toPinId: 'pin-2',
-          crossesWireIds: [],
+          from: { type: 'gate', entityId: 'gate-1', pinId: 'pin-1' },
+          to: { type: 'gate', entityId: 'gate-2', pinId: 'pin-2' },
           segments: [
             {
               start: createPosition(4, WIRE_HEIGHT, 0),
@@ -816,6 +799,7 @@ describe('Wire Crossing Detection and Resolution', () => {
               type: 'vertical',
             },
           ],
+        crossesWireIds: [],
         },
       ]
 
@@ -847,11 +831,8 @@ describe('Wire Crossing Detection and Resolution', () => {
       const existingWires: Wire[] = [
         {
           id: 'wire-1',
-          fromGateId: 'gate-1',
-          fromPinId: 'pin-1',
-          toGateId: 'gate-2',
-          toPinId: 'pin-2',
-          crossesWireIds: [],
+          from: { type: 'gate', entityId: 'gate-1', pinId: 'pin-1' },
+          to: { type: 'gate', entityId: 'gate-2', pinId: 'pin-2' },
           segments: [
             {
               start: createPosition(4, WIRE_HEIGHT, 0),
@@ -859,14 +840,12 @@ describe('Wire Crossing Detection and Resolution', () => {
               type: 'vertical',
             },
           ],
+        crossesWireIds: [],
         },
         {
           id: 'wire-2',
-          fromGateId: 'gate-3',
-          fromPinId: 'pin-1',
-          toGateId: 'gate-4',
-          toPinId: 'pin-2',
-          crossesWireIds: [],
+          from: { type: 'gate', entityId: 'gate-3', pinId: 'pin-1' },
+          to: { type: 'gate', entityId: 'gate-4', pinId: 'pin-2' },
           segments: [
             {
               start: createPosition(8, WIRE_HEIGHT, 0),
@@ -874,6 +853,7 @@ describe('Wire Crossing Detection and Resolution', () => {
               type: 'vertical',
             },
           ],
+          crossesWireIds: [],
         },
       ]
 
@@ -900,18 +880,16 @@ describe('Wire Crossing Detection and Resolution', () => {
       const existingWires: Wire[] = [
         {
           id: 'wire-1',
-          fromGateId: 'gate-1',
-          fromPinId: 'pin-1',
-          toGateId: 'gate-2',
-          toPinId: 'pin-2',
-          crossesWireIds: [],
+          from: { type: 'gate', entityId: 'gate-1', pinId: 'pin-1' },
+          to: { type: 'gate', entityId: 'gate-2', pinId: 'pin-2' },
           segments: [
             {
               start: createPosition(4, WIRE_HEIGHT, 0),
               end: createPosition(4, WIRE_HEIGHT, 8),
-              type: 'vertical',
-            },
-          ],
+            type: 'vertical',
+          },
+        ],
+        crossesWireIds: [],
         },
       ]
 
@@ -944,18 +922,16 @@ describe('Wire Crossing Detection and Resolution', () => {
       const existingWires: Wire[] = [
         {
           id: 'wire-1',
-          fromGateId: 'gate-1',
-          fromPinId: 'pin-1',
-          toGateId: 'gate-2',
-          toPinId: 'pin-2',
-          crossesWireIds: [],
+          from: { type: 'gate', entityId: 'gate-1', pinId: 'pin-1' },
+          to: { type: 'gate', entityId: 'gate-2', pinId: 'pin-2' },
           segments: [
             {
               start: createPosition(4, WIRE_HEIGHT, 0),
               end: createPosition(4, WIRE_HEIGHT, 8),
-              type: 'vertical',
-            },
-          ],
+            type: 'vertical',
+          },
+        ],
+        crossesWireIds: [],
         },
       ]
 
@@ -1002,11 +978,8 @@ describe('Wire Crossing Detection and Resolution', () => {
       const existingWires: Wire[] = [
         {
           id: 'wire-1',
-          fromGateId: 'gate-1',
-          fromPinId: 'pin-1',
-          toGateId: 'gate-2',
-          toPinId: 'pin-2',
-          crossesWireIds: [],
+          from: { type: 'gate', entityId: 'gate-1', pinId: 'pin-1' },
+          to: { type: 'gate', entityId: 'gate-2', pinId: 'pin-2' },
           segments: [
             {
               start: createPosition(0.1, WIRE_HEIGHT, 0),
@@ -1014,6 +987,7 @@ describe('Wire Crossing Detection and Resolution', () => {
               type: 'vertical',
             },
           ],
+        crossesWireIds: [],
         },
       ]
 
@@ -1040,11 +1014,8 @@ describe('Wire Crossing Detection and Resolution', () => {
       const existingWires: Wire[] = [
         {
           id: 'wire-1',
-          fromGateId: 'gate-1',
-          fromPinId: 'pin-1',
-          toGateId: 'gate-2',
-          toPinId: 'pin-2',
-          crossesWireIds: [],
+          from: { type: 'gate', entityId: 'gate-1', pinId: 'pin-1' },
+          to: { type: 'gate', entityId: 'gate-2', pinId: 'pin-2' },
           segments: [
             {
               start: createPosition(7.9, WIRE_HEIGHT, 0),
@@ -1052,6 +1023,7 @@ describe('Wire Crossing Detection and Resolution', () => {
               type: 'vertical',
             },
           ],
+        crossesWireIds: [],
         },
       ]
 
@@ -1078,18 +1050,16 @@ describe('Wire Crossing Detection and Resolution', () => {
       const existingWires: Wire[] = [
         {
           id: 'wire-1',
-          fromGateId: 'gate-1',
-          fromPinId: 'pin-1',
-          toGateId: 'gate-2',
-          toPinId: 'pin-2',
-          crossesWireIds: [],
+          from: { type: 'gate', entityId: 'gate-1', pinId: 'pin-1' },
+          to: { type: 'gate', entityId: 'gate-2', pinId: 'pin-2' },
           segments: [
             {
               start: createPosition(4, WIRE_HEIGHT, 0),
               end: createPosition(4, WIRE_HEIGHT, 8),
-              type: 'vertical',
-            },
-          ],
+            type: 'vertical',
+          },
+        ],
+        crossesWireIds: [],
         },
       ]
 
@@ -1120,18 +1090,16 @@ describe('Wire Crossing Detection and Resolution', () => {
       const existingWires: Wire[] = [
         {
           id: 'wire-1',
-          fromGateId: 'gate-1',
-          fromPinId: 'pin-1',
-          toGateId: 'gate-2',
-          toPinId: 'pin-2',
-          crossesWireIds: [],
+          from: { type: 'gate', entityId: 'gate-1', pinId: 'pin-1' },
+          to: { type: 'gate', entityId: 'gate-2', pinId: 'pin-2' },
           segments: [
             {
               start: createPosition(HOP_RADIUS, WIRE_HEIGHT, 0),
               end: createPosition(HOP_RADIUS, WIRE_HEIGHT, 8),
-              type: 'vertical',
-            },
-          ],
+            type: 'vertical',
+          },
+        ],
+        crossesWireIds: [],
         },
       ]
 
@@ -1163,11 +1131,8 @@ describe('Wire Crossing Detection and Resolution', () => {
       const existingWires: Wire[] = [
         {
           id: 'wire-1',
-          fromGateId: 'gate-1',
-          fromPinId: 'pin-1',
-          toGateId: 'gate-2',
-          toPinId: 'pin-2',
-          crossesWireIds: [],
+          from: { type: 'gate', entityId: 'gate-1', pinId: 'pin-1' },
+          to: { type: 'gate', entityId: 'gate-2', pinId: 'pin-2' },
           segments: [
             {
               start: createPosition(4, WIRE_HEIGHT, 0),
@@ -1175,14 +1140,12 @@ describe('Wire Crossing Detection and Resolution', () => {
               type: 'vertical',
             },
           ],
+        crossesWireIds: [],
         },
         {
           id: 'wire-2',
-          fromGateId: 'gate-3',
-          fromPinId: 'pin-1',
-          toGateId: 'gate-4',
-          toPinId: 'pin-2',
-          crossesWireIds: [],
+          from: { type: 'gate', entityId: 'gate-3', pinId: 'pin-1' },
+          to: { type: 'gate', entityId: 'gate-4', pinId: 'pin-2' },
           segments: [
             {
               start: createPosition(8, WIRE_HEIGHT, 0),
@@ -1190,6 +1153,7 @@ describe('Wire Crossing Detection and Resolution', () => {
               type: 'vertical',
             },
           ],
+          crossesWireIds: [],
         },
       ]
 
@@ -1240,11 +1204,8 @@ describe('Wire Crossing Detection and Resolution', () => {
       const existingWires: Wire[] = [
         {
           id: 'wire-1',
-          fromGateId: 'gate-1',
-          fromPinId: 'pin-1',
-          toGateId: 'gate-2',
-          toPinId: 'pin-2',
-          crossesWireIds: [],
+          from: { type: 'gate', entityId: 'gate-1', pinId: 'pin-1' },
+          to: { type: 'gate', entityId: 'gate-2', pinId: 'pin-2' },
           segments: [
             {
               start: createPosition(4, WIRE_HEIGHT, 0),
@@ -1252,14 +1213,12 @@ describe('Wire Crossing Detection and Resolution', () => {
               type: 'vertical',
             },
           ],
+        crossesWireIds: [],
         },
         {
           id: 'wire-2',
-          fromGateId: 'gate-3',
-          fromPinId: 'pin-1',
-          toGateId: 'gate-4',
-          toPinId: 'pin-2',
-          crossesWireIds: [],
+          from: { type: 'gate', entityId: 'gate-3', pinId: 'pin-1' },
+          to: { type: 'gate', entityId: 'gate-4', pinId: 'pin-2' },
           segments: [
             {
               start: createPosition(8, WIRE_HEIGHT, 6),
@@ -1267,6 +1226,7 @@ describe('Wire Crossing Detection and Resolution', () => {
               type: 'horizontal',
             },
           ],
+          crossesWireIds: [],
         },
       ]
 
@@ -1291,11 +1251,8 @@ describe('Wire Crossing Detection and Resolution', () => {
       const existingWires: Wire[] = [
         {
           id: 'wire-1',
-          fromGateId: 'gate-1',
-          fromPinId: 'pin-1',
-          toGateId: 'gate-2',
-          toPinId: 'pin-2',
-          crossesWireIds: [],
+          from: { type: 'gate', entityId: 'gate-1', pinId: 'pin-1' },
+          to: { type: 'gate', entityId: 'gate-2', pinId: 'pin-2' },
           segments: [
             {
               start: createPosition(4, WIRE_HEIGHT, 0),
@@ -1303,14 +1260,12 @@ describe('Wire Crossing Detection and Resolution', () => {
               type: 'vertical',
             },
           ],
+        crossesWireIds: [],
         },
         {
           id: 'wire-2',
-          fromGateId: 'gate-3',
-          fromPinId: 'pin-1',
-          toGateId: 'gate-4',
-          toPinId: 'pin-2',
-          crossesWireIds: [],
+          from: { type: 'gate', entityId: 'gate-3', pinId: 'pin-1' },
+          to: { type: 'gate', entityId: 'gate-4', pinId: 'pin-2' },
           segments: [
             {
               start: createPosition(8, WIRE_HEIGHT, 0),
@@ -1318,14 +1273,12 @@ describe('Wire Crossing Detection and Resolution', () => {
               type: 'vertical',
             },
           ],
+        crossesWireIds: [],
         },
         {
           id: 'wire-3',
-          fromGateId: 'gate-5',
-          fromPinId: 'pin-1',
-          toGateId: 'gate-6',
-          toPinId: 'pin-2',
-          crossesWireIds: [],
+          from: { type: 'gate', entityId: 'gate-5', pinId: 'pin-1' },
+          to: { type: 'gate', entityId: 'gate-6', pinId: 'pin-2' },
           segments: [
             {
               start: createPosition(12, WIRE_HEIGHT, 0),
@@ -1333,6 +1286,7 @@ describe('Wire Crossing Detection and Resolution', () => {
               type: 'vertical',
             },
           ],
+        crossesWireIds: [],
         },
       ]
 
@@ -1366,11 +1320,8 @@ describe('Wire Crossing Detection and Resolution', () => {
       const existingWires: Wire[] = [
         {
           id: 'wire-1',
-          fromGateId: 'gate-1',
-          fromPinId: 'pin-1',
-          toGateId: 'gate-2',
-          toPinId: 'pin-2',
-          crossesWireIds: [],
+          from: { type: 'gate', entityId: 'gate-1', pinId: 'pin-1' },
+          to: { type: 'gate', entityId: 'gate-2', pinId: 'pin-2' },
           segments: [
             {
               start: createPosition(4, WIRE_HEIGHT, 0),
@@ -1378,6 +1329,7 @@ describe('Wire Crossing Detection and Resolution', () => {
               type: 'vertical',
             },
           ],
+        crossesWireIds: [],
         },
       ]
 
@@ -1426,11 +1378,8 @@ describe('Wire Crossing Detection and Resolution', () => {
       const existingWires: Wire[] = [
         {
           id: 'wire-1',
-          fromGateId: 'gate-1',
-          fromPinId: 'pin-1',
-          toGateId: 'gate-2',
-          toPinId: 'pin-2',
-          crossesWireIds: [],
+          from: { type: 'gate', entityId: 'gate-1', pinId: 'pin-1' },
+          to: { type: 'gate', entityId: 'gate-2', pinId: 'pin-2' },
           segments: [
             {
               start: createPosition(4, WIRE_HEIGHT, 0),
@@ -1438,6 +1387,7 @@ describe('Wire Crossing Detection and Resolution', () => {
               type: 'vertical',
             },
           ],
+        crossesWireIds: [],
         },
       ]
 
@@ -1467,11 +1417,8 @@ describe('Wire Crossing Detection and Resolution', () => {
       // Create an existing wire with a horizontal segment that the arc crosses
       const existingWire: Wire = {
         id: 'wire-1',
-        fromGateId: 'gate-1',
-        fromPinId: 'pin-1',
-        toGateId: 'gate-2',
-        toPinId: 'pin-2',
-        crossesWireIds: [],
+        from: { type: 'gate', entityId: 'gate-1', pinId: 'pin-1' },
+        to: { type: 'gate', entityId: 'gate-2', pinId: 'pin-2' },
         segments: [
           {
             start: createPosition(4, WIRE_HEIGHT, 0),
@@ -1479,6 +1426,7 @@ describe('Wire Crossing Detection and Resolution', () => {
             type: 'vertical',
           },
         ],
+        crossesWireIds: [],
       }
 
       const result = isArcStillNeededForWire(arc, existingWire)
@@ -1499,11 +1447,8 @@ describe('Wire Crossing Detection and Resolution', () => {
       // Create an existing wire that does NOT cross the arc
       const existingWire: Wire = {
         id: 'wire-1',
-        fromGateId: 'gate-1',
-        fromPinId: 'pin-1',
-        toGateId: 'gate-2',
-        toPinId: 'pin-2',
-        crossesWireIds: [],
+        from: { type: 'gate', entityId: 'gate-1', pinId: 'pin-1' },
+        to: { type: 'gate', entityId: 'gate-2', pinId: 'pin-2' },
         segments: [
           {
             start: createPosition(0, WIRE_HEIGHT, 0),
@@ -1511,6 +1456,7 @@ describe('Wire Crossing Detection and Resolution', () => {
             type: 'vertical',
           },
         ],
+        crossesWireIds: [],
       }
 
       const result = isArcStillNeededForWire(arc, existingWire)
@@ -1531,11 +1477,8 @@ describe('Wire Crossing Detection and Resolution', () => {
       // Existing wire only has arc segments (no actual crossing)
       const existingWire: Wire = {
         id: 'wire-1',
-        fromGateId: 'gate-1',
-        fromPinId: 'pin-1',
-        toGateId: 'gate-2',
-        toPinId: 'pin-2',
-        crossesWireIds: [],
+        from: { type: 'gate', entityId: 'gate-1', pinId: 'pin-1' },
+        to: { type: 'gate', entityId: 'gate-2', pinId: 'pin-2' },
         segments: [
           {
             start: createPosition(4 - HOP_RADIUS, WIRE_HEIGHT, 4),
@@ -1545,6 +1488,7 @@ describe('Wire Crossing Detection and Resolution', () => {
             arcRadius: HOP_RADIUS,
           },
         ],
+        crossesWireIds: [],
       }
 
       const result = isArcStillNeededForWire(arc, existingWire)
@@ -1616,11 +1560,8 @@ describe('Wire Crossing Detection and Resolution', () => {
       // Wire exists that the arc crosses - pass it in recalculatedWires for geometric check
       const existingWire: Wire = {
         id: 'wire-1',
-        fromGateId: 'gate-1',
-        fromPinId: 'pin-1',
-        toGateId: 'gate-2',
-        toPinId: 'pin-2',
-        crossesWireIds: [],
+        from: { type: 'gate', entityId: 'gate-1', pinId: 'pin-1' },
+        to: { type: 'gate', entityId: 'gate-2', pinId: 'pin-2' },
         segments: [
           {
             start: createPosition(4, WIRE_HEIGHT, 0),
@@ -1628,6 +1569,7 @@ describe('Wire Crossing Detection and Resolution', () => {
             type: 'vertical',
           },
         ],
+        crossesWireIds: [],
       }
 
       const result = removeOrphanedArcs(segments, undefined, [existingWire])

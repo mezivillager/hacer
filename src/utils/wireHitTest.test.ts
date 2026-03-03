@@ -13,10 +13,8 @@ describe('wireHitTest', () => {
     it('returns null when point is too far from any wire', () => {
       const wire: Wire = {
         id: 'wire-1',
-        fromGateId: 'gate-1',
-        fromPinId: 'pin-1',
-        toGateId: 'gate-2',
-        toPinId: 'pin-2',
+        from: { type: 'gate', entityId: 'gate-1', pinId: 'pin-1' },
+        to: { type: 'gate', entityId: 'gate-2', pinId: 'pin-2' },
         segments: [
           {
             start: { x: 0, y: WIRE_HEIGHT, z: 0 },
@@ -24,6 +22,7 @@ describe('wireHitTest', () => {
             type: 'horizontal',
           },
         ],
+        crossesWireIds: [],
       }
 
       const result = findNearestWire({ x: 10, y: WIRE_HEIGHT, z: 10 }, [wire], 0.5)
@@ -33,10 +32,8 @@ describe('wireHitTest', () => {
     it('finds wire with horizontal segment near point', () => {
       const wire: Wire = {
         id: 'wire-1',
-        fromGateId: 'gate-1',
-        fromPinId: 'pin-1',
-        toGateId: 'gate-2',
-        toPinId: 'pin-2',
+        from: { type: 'gate', entityId: 'gate-1', pinId: 'pin-1' },
+        to: { type: 'gate', entityId: 'gate-2', pinId: 'pin-2' },
         segments: [
           {
             start: { x: 0, y: WIRE_HEIGHT, z: 0 },
@@ -44,6 +41,7 @@ describe('wireHitTest', () => {
             type: 'horizontal',
           },
         ],
+        crossesWireIds: [],
       }
 
       const result = findNearestWire({ x: 2, y: WIRE_HEIGHT, z: 0.3 }, [wire], 0.5)
@@ -53,10 +51,8 @@ describe('wireHitTest', () => {
     it('finds wire with vertical segment near point', () => {
       const wire: Wire = {
         id: 'wire-1',
-        fromGateId: 'gate-1',
-        fromPinId: 'pin-1',
-        toGateId: 'gate-2',
-        toPinId: 'pin-2',
+        from: { type: 'gate', entityId: 'gate-1', pinId: 'pin-1' },
+        to: { type: 'gate', entityId: 'gate-2', pinId: 'pin-2' },
         segments: [
           {
             start: { x: 0, y: WIRE_HEIGHT, z: 0 },
@@ -64,6 +60,7 @@ describe('wireHitTest', () => {
             type: 'vertical',
           },
         ],
+        crossesWireIds: [],
       }
 
       const result = findNearestWire({ x: 0.3, y: WIRE_HEIGHT, z: 2 }, [wire], 0.5)
@@ -73,10 +70,8 @@ describe('wireHitTest', () => {
     it('finds wire with entry segment near point', () => {
       const wire: Wire = {
         id: 'wire-1',
-        fromGateId: 'gate-1',
-        fromPinId: 'pin-1',
-        toGateId: 'gate-2',
-        toPinId: 'pin-2',
+        from: { type: 'gate', entityId: 'gate-1', pinId: 'pin-1' },
+        to: { type: 'gate', entityId: 'gate-2', pinId: 'pin-2' },
         segments: [
           {
             start: { x: 0.5, y: WIRE_HEIGHT, z: 0 },
@@ -84,6 +79,7 @@ describe('wireHitTest', () => {
             type: 'entry',
           },
         ],
+        crossesWireIds: [],
       }
 
       const result = findNearestWire({ x: 1.2, y: WIRE_HEIGHT, z: 0.3 }, [wire], 0.5)
@@ -93,10 +89,8 @@ describe('wireHitTest', () => {
     it('finds wire with exit segment near point', () => {
       const wire: Wire = {
         id: 'wire-1',
-        fromGateId: 'gate-1',
-        fromPinId: 'pin-1',
-        toGateId: 'gate-2',
-        toPinId: 'pin-2',
+        from: { type: 'gate', entityId: 'gate-1', pinId: 'pin-1' },
+        to: { type: 'gate', entityId: 'gate-2', pinId: 'pin-2' },
         segments: [
           {
             start: { x: 0, y: WIRE_HEIGHT, z: 0 },
@@ -104,6 +98,7 @@ describe('wireHitTest', () => {
             type: 'exit',
           },
         ],
+        crossesWireIds: [],
       }
 
       const result = findNearestWire({ x: 1, y: WIRE_HEIGHT, z: 0.3 }, [wire], 0.5)
@@ -113,10 +108,8 @@ describe('wireHitTest', () => {
     it('finds wire with arc segment near point', () => {
       const wire: Wire = {
         id: 'wire-1',
-        fromGateId: 'gate-1',
-        fromPinId: 'pin-1',
-        toGateId: 'gate-2',
-        toPinId: 'pin-2',
+        from: { type: 'gate', entityId: 'gate-1', pinId: 'pin-1' },
+        to: { type: 'gate', entityId: 'gate-2', pinId: 'pin-2' },
         segments: [
           {
             start: { x: 2, y: WIRE_HEIGHT, z: 0 },
@@ -126,6 +119,7 @@ describe('wireHitTest', () => {
             arcRadius: HOP_RADIUS,
           },
         ],
+        crossesWireIds: [],
       }
 
       // Point near the arc midpoint (should be at HOP_HEIGHT)
@@ -136,10 +130,8 @@ describe('wireHitTest', () => {
     it('returns nearest wire when multiple wires are near point', () => {
       const wire1: Wire = {
         id: 'wire-1',
-        fromGateId: 'gate-1',
-        fromPinId: 'pin-1',
-        toGateId: 'gate-2',
-        toPinId: 'pin-2',
+        from: { type: 'gate', entityId: 'gate-1', pinId: 'pin-1' },
+        to: { type: 'gate', entityId: 'gate-2', pinId: 'pin-2' },
         segments: [
           {
             start: { x: 0, y: WIRE_HEIGHT, z: 0 },
@@ -147,14 +139,13 @@ describe('wireHitTest', () => {
             type: 'horizontal',
           },
         ],
+        crossesWireIds: [],
       }
 
       const wire2: Wire = {
         id: 'wire-2',
-        fromGateId: 'gate-2',
-        fromPinId: 'pin-1',
-        toGateId: 'gate-3',
-        toPinId: 'pin-2',
+        from: { type: 'gate', entityId: 'gate-2', pinId: 'pin-1' },
+        to: { type: 'gate', entityId: 'gate-3', pinId: 'pin-2' },
         segments: [
           {
             start: { x: 2, y: WIRE_HEIGHT, z: 0 },
@@ -162,6 +153,7 @@ describe('wireHitTest', () => {
             type: 'vertical',
           },
         ],
+        crossesWireIds: [],
       }
 
       // Point closer to wire2
@@ -172,10 +164,8 @@ describe('wireHitTest', () => {
     it('handles wire with multiple segments', () => {
       const wire: Wire = {
         id: 'wire-1',
-        fromGateId: 'gate-1',
-        fromPinId: 'pin-1',
-        toGateId: 'gate-2',
-        toPinId: 'pin-2',
+        from: { type: 'gate', entityId: 'gate-1', pinId: 'pin-1' },
+        to: { type: 'gate', entityId: 'gate-2', pinId: 'pin-2' },
         segments: [
           {
             start: { x: 0, y: WIRE_HEIGHT, z: 0 },
@@ -188,6 +178,7 @@ describe('wireHitTest', () => {
             type: 'vertical',
           },
         ],
+        crossesWireIds: [],
       }
 
       // Point near second segment
@@ -198,10 +189,8 @@ describe('wireHitTest', () => {
     it('respects threshold distance', () => {
       const wire: Wire = {
         id: 'wire-1',
-        fromGateId: 'gate-1',
-        fromPinId: 'pin-1',
-        toGateId: 'gate-2',
-        toPinId: 'pin-2',
+        from: { type: 'gate', entityId: 'gate-1', pinId: 'pin-1' },
+        to: { type: 'gate', entityId: 'gate-2', pinId: 'pin-2' },
         segments: [
           {
             start: { x: 0, y: WIRE_HEIGHT, z: 0 },
@@ -209,6 +198,7 @@ describe('wireHitTest', () => {
             type: 'horizontal',
           },
         ],
+        crossesWireIds: [],
       }
 
       // Point just outside threshold
@@ -219,10 +209,8 @@ describe('wireHitTest', () => {
     it('handles point at different Y coordinate (height)', () => {
       const wire: Wire = {
         id: 'wire-1',
-        fromGateId: 'gate-1',
-        fromPinId: 'pin-1',
-        toGateId: 'gate-2',
-        toPinId: 'pin-2',
+        from: { type: 'gate', entityId: 'gate-1', pinId: 'pin-1' },
+        to: { type: 'gate', entityId: 'gate-2', pinId: 'pin-2' },
         segments: [
           {
             start: { x: 0, y: WIRE_HEIGHT, z: 0 },
@@ -230,6 +218,7 @@ describe('wireHitTest', () => {
             type: 'horizontal',
           },
         ],
+        crossesWireIds: [],
       }
 
       // Point at ground level but close horizontally

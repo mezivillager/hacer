@@ -62,8 +62,8 @@ export function trackRender(componentName: string, reason?: string): void {
   const stats = tracker.stats[componentName]
   stats.count++
   stats.lastRenderTime = Date.now()
-  if (reason) {
-    stats.reasons.push(reason)
+  if (reason !== undefined) {
+    stats.reasons.push(reason as string)
     // Keep only last 10 reasons
     if (stats.reasons.length > 10) {
       stats.reasons.shift()

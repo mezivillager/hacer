@@ -325,7 +325,11 @@ describe('wireActions', () => {
 
       // Verify wiring is active
       expect(getState().wiringFrom).not.toBe(null)
-      expect(getState().wiringFrom?.destination?.originalWireId).toBe(wire1.id)
+      const dest = getState().wiringFrom!.destination
+      expect(dest?.type).toBe('junction')
+      if (dest?.type === 'junction') {
+        expect(dest.originalWireId).toBe(wire1.id)
+      }
 
       // Delete the original wire while wiring is active
       getState().removeWire(wire1.id)

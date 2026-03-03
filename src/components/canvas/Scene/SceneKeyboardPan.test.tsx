@@ -181,6 +181,8 @@ describe('SceneKeyboardPan', () => {
         previewEndPosition: null,
         destinationGateId: null,
         destinationPinId: null,
+        destinationNodeId: null,
+        destinationNodeType: null,
         segments: null,
       },
     })

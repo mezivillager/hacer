@@ -35,6 +35,8 @@ describe('useWirePreviewPath', () => {
     previewEndPosition: { x: 4, y: 0.2, z: 0 },
     destinationGateId: null,
     destinationPinId: null,
+    destinationNodeId: null,
+    destinationNodeType: null,
     segments: null,
   })
 

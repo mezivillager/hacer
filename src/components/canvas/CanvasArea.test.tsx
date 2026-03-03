@@ -62,6 +62,8 @@ describe('CanvasArea', () => {
         previewEndPosition: null,
         destinationGateId: null,
         destinationPinId: null,
+        destinationNodeId: null,
+        destinationNodeType: null,
         segments: null,
       }
     })
@@ -87,6 +89,8 @@ describe('CanvasArea', () => {
         previewEndPosition: null,
         destinationGateId: null,
         destinationPinId: null,
+        destinationNodeId: null,
+        destinationNodeType: null,
         segments: null,
       }
     })

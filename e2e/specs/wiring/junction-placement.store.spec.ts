@@ -5,7 +5,7 @@
  */
 
 import { test, expect } from '@playwright/test'
-import { ensureGates, ensureWires } from '../../helpers/assertions/store.assertions'
+import { ensureGates, ensureWires } from '../../helpers/waits'
 import { addGateViaStore } from '../../helpers/actions/gate.actions'
 
 const SECTION_SIZE = 4.0
@@ -56,10 +56,11 @@ test.describe('Junction Placement @store @wiring @junctions', () => {
     })
 
     expect(wireId).toBeDefined()
+    if (typeof wireId !== 'string') throw new Error('wireId is required')
 
     // Place junction at corner where vertical meets horizontal
     const junction = await page.evaluate(
-      ({ wireId, sectionSize, wireHeight }) => {
+      ({ wireId, sectionSize, wireHeight }: { wireId: string; sectionSize: number; wireHeight: number }) => {
         return window.__CIRCUIT_ACTIONS__?.placeJunctionOnWire(
           { x: sectionSize, y: wireHeight, z: -sectionSize },
           wireId
@@ -128,17 +129,18 @@ test.describe('Junction Placement @store @wiring @junctions', () => {
     const wireId = await page.evaluate(() => {
       return window.__CIRCUIT_STORE__?.wires[0]?.id
     })
+    expect(wireId).toBeDefined()
 
     // Place junction at corner where vertical meets horizontal
     const junction = await page.evaluate(
-      ({ wireId, sectionSize, wireHeight }) => {
+      ({ wireId, sectionSize, wireHeight }: { wireId: string; sectionSize: number; wireHeight: number }) => {
         return window.__CIRCUIT_ACTIONS__?.placeJunctionOnWire(
           { x: sectionSize, y: wireHeight, z: -sectionSize },
           wireId
         )
       },
       {
-        wireId,
+        wireId: wireId!,
         sectionSize: SECTION_SIZE,
         wireHeight: WIRE_HEIGHT,
       }
@@ -205,7 +207,7 @@ test.describe('Junction Placement @store @wiring @junctions', () => {
     // Verify junction tracks both wires
     const updatedJunction = await page.evaluate((junctionId: string): { wireIds: string[] } | null => {
       const state = window.__CIRCUIT_STORE__
-      const j = state?.junctions.find((junction) => junction.id === junctionId)
+      const j = state?.junctions?.find((junction: { id: string; wireIds: string[] }) => junction.id === junctionId)
       if (!j) return null
       return { wireIds: j.wireIds }
     }, junction!.id)
@@ -218,6 +220,10 @@ test.describe('Junction Placement @store @wiring @junctions', () => {
     const gate1 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.center)
     const gate2 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.right)
     const gate3 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.farRight)
+
+    if (!gate1 || !gate2 || !gate3) {
+      throw new Error('Failed to create gates')
+    }
 
     // Create original wire with exit + vertical + horizontal + entry segments
     await page.evaluate(
@@ -243,17 +249,18 @@ test.describe('Junction Placement @store @wiring @junctions', () => {
     const wireId = await page.evaluate(() => {
       return window.__CIRCUIT_STORE__?.wires[0]?.id
     })
+    expect(wireId).toBeDefined()
 
     // Place junction at corner where vertical meets horizontal
     const junction = await page.evaluate(
-      ({ wireId, sectionSize, wireHeight }) => {
+      ({ wireId, sectionSize, wireHeight }: { wireId: string; sectionSize: number; wireHeight: number }) => {
         return window.__CIRCUIT_ACTIONS__?.placeJunctionOnWire(
           { x: sectionSize, y: wireHeight, z: -sectionSize },
           wireId
         )
       },
       {
-        wireId,
+        wireId: wireId!,
         sectionSize: SECTION_SIZE,
         wireHeight: WIRE_HEIGHT,
       }
@@ -297,9 +304,13 @@ test.describe('Junction Placement @store @wiring @junctions', () => {
     await ensureWires(page, 2)
 
     // Delete original wire
-    await page.evaluate((wireId: string) => {
-      window.__CIRCUIT_ACTIONS__?.removeWire(wireId)
-    }, wireId)
+    expect(wireId).toBeDefined()
+    await page.evaluate(
+      (wid: string) => {
+        window.__CIRCUIT_ACTIONS__?.removeWire(wid)
+      },
+      wireId as string
+    )
 
     // Junction should be removed (only one wire remains)
     const junctionCount = await page.evaluate((): number => {
@@ -351,10 +362,11 @@ test.describe('Junction Placement @store @wiring @junctions', () => {
     const wireId = await page.evaluate(() => {
       return window.__CIRCUIT_STORE__?.wires[0]?.id
     })
+    expect(wireId).toBeDefined()
 
     // Try to place junction in middle of vertical segment (not at corner) - should throw error
     const error = await page.evaluate(
-      ({ wireId, sectionSize, wireHeight }) => {
+      ({ wireId, sectionSize, wireHeight }: { wireId: string; sectionSize: number; wireHeight: number }) => {
         try {
           window.__CIRCUIT_ACTIONS__?.placeJunctionOnWire(
             { x: sectionSize, y: wireHeight, z: -sectionSize / 2 },
@@ -366,7 +378,7 @@ test.describe('Junction Placement @store @wiring @junctions', () => {
         }
       },
       {
-        wireId,
+        wireId: wireId!,
         sectionSize: SECTION_SIZE,
         wireHeight: WIRE_HEIGHT,
       }
@@ -425,17 +437,18 @@ test.describe('Junction Placement @store @wiring @junctions', () => {
     const wireId = await page.evaluate(() => {
       return window.__CIRCUIT_STORE__?.wires[0]?.id
     })
+    expect(wireId).toBeDefined()
 
     // Place junction at corner where vertical meets horizontal
     const junction = await page.evaluate(
-      ({ wireId, sectionSize, wireHeight }) => {
+      ({ wireId, sectionSize, wireHeight }: { wireId: string; sectionSize: number; wireHeight: number }) => {
         return window.__CIRCUIT_ACTIONS__?.placeJunctionOnWire(
           { x: sectionSize, y: wireHeight, z: -sectionSize },
           wireId
         )
       },
       {
-        wireId,
+        wireId: wireId!,
         sectionSize: SECTION_SIZE,
         wireHeight: WIRE_HEIGHT,
       }
@@ -520,7 +533,7 @@ test.describe('Junction Placement @store @wiring @junctions', () => {
     // Verify junction tracks all wires
     const updatedJunction = await page.evaluate((junctionId: string): { wireIds: string[] } | null => {
       const state = window.__CIRCUIT_STORE__
-      const j = state?.junctions.find((junction) => junction.id === junctionId)
+      const j = state?.junctions?.find((junction: { id: string; wireIds: string[] }) => junction.id === junctionId)
       if (!j) return null
       return { wireIds: j.wireIds }
     }, junction!.id)
@@ -567,17 +580,18 @@ test.describe('Junction Placement @store @wiring @junctions', () => {
     const wireId = await page.evaluate(() => {
       return window.__CIRCUIT_STORE__?.wires[0]?.id
     })
+    expect(wireId).toBeDefined()
 
     // Place first junction at corner where vertical meets horizontal
     const junction1 = await page.evaluate(
-      ({ wireId, sectionSize, wireHeight }) => {
+      ({ wireId, sectionSize, wireHeight }: { wireId: string; sectionSize: number; wireHeight: number }) => {
         return window.__CIRCUIT_ACTIONS__?.placeJunctionOnWire(
           { x: sectionSize, y: wireHeight, z: -sectionSize },
           wireId
         )
       },
       {
-        wireId,
+        wireId: wireId!,
         sectionSize: SECTION_SIZE,
         wireHeight: WIRE_HEIGHT,
       }

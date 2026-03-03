@@ -338,7 +338,9 @@ describe('wiringActions', () => {
       const wiringFrom = getState().wiringFrom
       expect(wiringFrom).not.toBe(null)
       expect(wiringFrom?.source?.type).toBe('input')
-      expect(wiringFrom?.source?.nodeId).toBe('input-a')
+      if (wiringFrom?.source?.type === 'input') {
+        expect(wiringFrom.source.nodeId).toBe('input-a')
+      }
     })
 
     it('sets wiringFrom state for constant node', () => {
@@ -476,6 +478,8 @@ describe('wiringActions', () => {
           previewEndPosition: null,
           destinationGateId: null,
           destinationPinId: null,
+          destinationNodeId: null,
+          destinationNodeType: null,
           segments: null,
           // source is undefined
         },
@@ -660,10 +664,14 @@ describe('wiringActions', () => {
       const wiringFrom = getState().wiringFrom
       expect(wiringFrom).not.toBe(null)
       expect(wiringFrom?.source?.type).toBe('junction')
-      expect(wiringFrom?.source?.junctionId).toBe(junction.id)
+      if (wiringFrom?.source?.type === 'junction') {
+        expect(wiringFrom.source.junctionId).toBe(junction.id)
+      }
       expect(wiringFrom?.destination?.type).toBe('junction')
-      expect(wiringFrom?.destination?.originalWireId).toBe(wire.id)
-      expect(wiringFrom?.destination?.sharedSegments).toBeDefined()
+      if (wiringFrom?.destination?.type === 'junction') {
+        expect(wiringFrom.destination.originalWireId).toBe(wire.id)
+        expect(wiringFrom.destination.sharedSegments).toBeDefined()
+      }
     })
 
     it('warns when junction not found', () => {
@@ -761,7 +769,9 @@ describe('wiringActions', () => {
       expect(wiringFrom).not.toBe(null)
       expect(wiringFrom?.fromGateId).toBe(gate1.id) // Should trace back to gate1
       expect(wiringFrom?.source?.type).toBe('junction')
-      expect(wiringFrom?.source?.junctionId).toBe(junction2.id)
+      if (wiringFrom?.source?.type === 'junction') {
+        expect(wiringFrom.source.junctionId).toBe(junction2.id)
+      }
     })
   })
 

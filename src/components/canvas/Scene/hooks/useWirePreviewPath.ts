@@ -123,8 +123,9 @@ export function useWirePreviewPath({
     }
 
     if (shouldCalculateWirePath) {
-      if (wiringFrom?.source?.type === 'junction') {
-        const junction = junctions.find((j) => j.id === wiringFrom.source.junctionId)
+      const src = wiringFrom.source
+      if (src?.type === 'junction') {
+        const junction = junctions.find((j) => j.id === src.junctionId)
         if (junction) {
           const sourceWireId = wiringFrom.destination?.type === 'junction'
             ? wiringFrom.destination.originalWireId
@@ -142,10 +143,11 @@ export function useWirePreviewPath({
             }
           )
         } else {
+          const direction = startOrientation ?? { x: 1, y: 0, z: 0 }
           previewPath = calculateWirePath(
             fromPosition,
             destination,
-            { direction: startOrientation },
+            { direction },
             allGates,
             {
               sourceGateId: wiringFrom.fromGateId,
@@ -155,10 +157,11 @@ export function useWirePreviewPath({
           )
         }
       } else {
+        const direction = startOrientation ?? { x: 1, y: 0, z: 0 }
         previewPath = calculateWirePath(
           fromPosition,
           destination,
-          { direction: startOrientation },
+          { direction },
           allGates,
           {
             sourceGateId: wiringFrom.fromGateId,

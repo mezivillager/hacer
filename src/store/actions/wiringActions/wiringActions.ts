@@ -624,7 +624,10 @@ function completeJunctionWiring(
       return
     }
 
-    const junction = state.junctions.find((j) => j.id === from.source!.junctionId)
+    const src = from.source
+    const junction = src?.type === 'junction'
+      ? state.junctions.find((j) => j.id === src.junctionId)
+      : undefined
     if (junction) {
       const junctionPos = junction.position
       const junctionToSharedEnd = Math.sqrt(
@@ -663,7 +666,10 @@ function completeJunctionWiring(
   const signalId = originalWire.signalId || `sig-${originalWire.from.entityId}`
   const newWire = get().addWire(fromEndpoint, toEndpoint, resolvedSegments, crossedWireIds, signalId)
 
-  const junction = state.junctions.find((j) => j.id === from.source!.junctionId)
+  const src = from.source
+  const junction = src?.type === 'junction'
+    ? state.junctions.find((j) => j.id === src.junctionId)
+    : undefined
   if (junction) {
     set((s) => {
       const updatedJunction = s.junctions.find((j) => j.id === junction.id)

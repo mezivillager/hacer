@@ -13,7 +13,7 @@ import type {
   OutputNode,
   ConstantNode,
   JunctionNode,
-  SignalWire,
+  Wire,
   WireEndpoint,
 } from './types'
 
@@ -94,6 +94,7 @@ describe('Circuit Node Types', () => {
         id: 'junction-1',
         position: { x: 4, y: 0.2, z: 4 },
         signalId: 'sig-a',
+        wireIds: [],
       }
 
       expect(junction.signalId).toBe('sig-a')
@@ -154,10 +155,10 @@ describe('Wire Endpoint Types', () => {
   })
 })
 
-describe('SignalWire Type', () => {
-  describe('SignalWire', () => {
+describe('Wire Type', () => {
+  describe('Wire with signalId', () => {
     it('represents a signal-based wire connection', () => {
-      const wire: SignalWire = {
+      const wire: Wire = {
         id: 'wire-1',
         signalId: 'sig-a',
         from: { type: 'input', entityId: 'input-a' },
@@ -172,7 +173,7 @@ describe('SignalWire Type', () => {
     })
 
     it('supports wire from junction to destination (for fan-out)', () => {
-      const branchWire: SignalWire = {
+      const branchWire: Wire = {
         id: 'wire-branch-1',
         signalId: 'sig-a',
         from: { type: 'junction', entityId: 'junction-1' },
@@ -185,7 +186,7 @@ describe('SignalWire Type', () => {
     })
 
     it('supports wire from source to junction', () => {
-      const trunkWire: SignalWire = {
+      const trunkWire: Wire = {
         id: 'wire-trunk-1',
         signalId: 'sig-a',
         from: { type: 'input', entityId: 'input-a' },

@@ -47,9 +47,17 @@ export interface CircuitWire {
   crossesWireIds?: string[]
 }
 
+export interface CircuitStoreJunction {
+  id: string
+  wireIds: string[]
+  position: { x: number; y: number; z: number }
+  signalId: string
+}
+
 export interface CircuitStoreSnapshot {
   gates: CircuitStoreGate[]
   wires: CircuitWire[]
+  junctions?: CircuitStoreJunction[]
   simulationRunning?: boolean
   selectedGateId?: string | null
   placementMode?: GateType | null
@@ -87,6 +95,7 @@ export interface CircuitActionsAPI {
   startWiring: (gateId: string, pinId: string, pinType: 'input' | 'output', position: { x: number; y: number; z: number }) => void
   updateWirePreviewPosition: (position: { x: number; y: number; z: number } | null) => void
   setDestinationPin: (gateId: string | null, pinId: string | null) => void
+  setDestinationNode: (nodeId: string | null, nodeType: NodeType | null) => void
   cancelWiring: () => void
   completeWiring: (toGateId: string, toPinId: string, toPinType: 'input' | 'output') => void
   // Node-based wiring actions

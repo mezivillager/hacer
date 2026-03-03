@@ -24,7 +24,6 @@ describe('Sidebar', () => {
       outputNodes: [],
       constantNodes: [],
       junctions: [],
-      signalWires: [],
       nodePlacementMode: null,
       selectedNodeId: null,
       selectedNodeType: null,
@@ -153,7 +152,7 @@ describe('Sidebar', () => {
   it('calls clearCircuit when Clear All is clicked', () => {
     actualSetState({
       gates: [{ id: 'gate-1', type: 'NAND', position: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, inputs: [], outputs: [], selected: false }],
-      wires: [{ id: 'wire-1', fromGateId: 'gate-1', fromPinId: 'pin-1', toGateId: 'gate-2', toPinId: 'pin-2' }]
+      wires: [{ id: 'wire-1', from: { type: 'gate', entityId: 'gate-1', pinId: 'pin-1' }, to: { type: 'gate', entityId: 'gate-2', pinId: 'pin-2' }, segments: [], crossesWireIds: [] }]
     })
     render(<Sidebar />)
 
@@ -171,7 +170,7 @@ describe('Sidebar', () => {
         { id: 'gate-1', type: 'NAND', position: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, inputs: [], outputs: [], selected: false },
         { id: 'gate-2', type: 'NAND', position: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, inputs: [], outputs: [], selected: false },
       ],
-      wires: [{ id: 'wire-1', fromGateId: 'gate-1', fromPinId: 'pin-1', toGateId: 'gate-2', toPinId: 'pin-2' }]
+      wires: [{ id: 'wire-1', from: { type: 'gate', entityId: 'gate-1', pinId: 'pin-1' }, to: { type: 'gate', entityId: 'gate-2', pinId: 'pin-2' }, segments: [], crossesWireIds: [] }]
     })
     render(<Sidebar />)
 

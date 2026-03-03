@@ -44,6 +44,8 @@ export function createMockStore(partial: Partial<CircuitState> = {}): CircuitSto
     nodePlacementMode: null,
     selectedNodeId: null,
     selectedNodeType: null,
+    junctionPlacementMode: null,
+    junctionPreviewPosition: null,
   }
 
   // Merge provided partial state with defaults
@@ -109,6 +111,7 @@ export function createMockStore(partial: Partial<CircuitState> = {}): CircuitSto
     startJunctionPlacement: () => {},
     cancelJunctionPlacement: () => {},
     placeJunctionOnWire: () => ({ id: '', signalId: '', position: { x: 0, y: 0, z: 0 }, wireIds: [] }),
+    updateJunctionPreviewPosition: () => {},
     // Node placement actions
     startNodePlacement: () => {},
     cancelNodePlacement: () => {},

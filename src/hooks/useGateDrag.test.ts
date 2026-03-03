@@ -44,7 +44,6 @@ describe('useGateDrag', () => {
       outputNodes: [],
       constantNodes: [],
       junctions: [],
-      signalWires: [],
       nodePlacementMode: null,
       selectedNodeId: null,
       selectedNodeType: null,

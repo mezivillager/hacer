@@ -6,9 +6,10 @@ const originalGetContext = HTMLCanvasElement.prototype.getContext
 // Mock WebGL context for Three.js unit tests
 // Note: This only affects Vitest unit tests, not Playwright E2E tests
 HTMLCanvasElement.prototype.getContext = function (
+  this: HTMLCanvasElement,
   type: string,
   ...args: unknown[]
-) {
+): RenderingContext | null {
   if (type === 'webgl' || type === 'webgl2') {
     // Return a partial mock of WebGLRenderingContext for testing
     // The mock implements only the methods needed by Three.js tests
@@ -84,7 +85,7 @@ HTMLCanvasElement.prototype.getContext = function (
       getSupportedExtensions: () => [],
       drawingBufferWidth: 300,
       drawingBufferHeight: 150,
-    } as RenderingContext
+    } as unknown as RenderingContext
   }
-  return originalGetContext.apply(this, [type, ...args] as Parameters<typeof originalGetContext>)
-}
+  return originalGetContext.apply(this, [type, ...args] as Parameters<typeof originalGetContext>) as RenderingContext | null
+} as unknown as typeof HTMLCanvasElement.prototype.getContext

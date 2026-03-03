@@ -108,7 +108,7 @@ export function calculateWirePath(
   startPin: Position,
   destination: DestinationType,
   startOrientation: PinOrientation,
-  gates: GateInstance[],
+  _gates: GateInstance[],
   options: WirePathOptions = {}
 ): WirePath {
   try {
@@ -168,7 +168,7 @@ export interface JunctionWirePathOptions extends WirePathOptions {
 export function calculateWirePathFromJunction(
   junctionPosition: Position,
   destination: DestinationType,
-  gates: GateInstance[],
+  _gates: GateInstance[],
   options: JunctionWirePathOptions = {}
 ): WirePath {
   try {
