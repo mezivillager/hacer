@@ -45,7 +45,6 @@ export function calculateWirePathFromConnection(
 ): WirePath | null {
   const { gates, getPinWorldPosition, getPinOrientation, existingSegments = [] } = options
 
-  // Find gates
   const fromGate = gates.find((g) => g.id === fromGateId)
   const toGate = gates.find((g) => g.id === toGateId)
 
@@ -53,7 +52,6 @@ export function calculateWirePathFromConnection(
     return null
   }
 
-  // Find pins
   const fromPin = fromGate.outputs.find((p) => p.id === fromPinId) || fromGate.inputs.find((p) => p.id === fromPinId)
   const toPin = toGate.outputs.find((p) => p.id === toPinId) || toGate.inputs.find((p) => p.id === toPinId)
 
@@ -61,14 +59,12 @@ export function calculateWirePathFromConnection(
     return null
   }
 
-  // Determine output and input pins (wires are always output -> input)
   const isFromOutput = fromPin.type === 'output'
   const outputGateId = isFromOutput ? fromGateId : toGateId
   const outputPinId = isFromOutput ? fromPinId : toPinId
   const inputGateId = isFromOutput ? toGateId : fromGateId
   const inputPinId = isFromOutput ? toPinId : fromPinId
 
-  // Get pin positions and orientations
   const outputPinPos = getPinWorldPosition(outputGateId, outputPinId)
   const inputPinPos = getPinWorldPosition(inputGateId, inputPinId)
   const outputPinOrientation = getPinOrientation(outputGateId, outputPinId)
@@ -78,14 +74,12 @@ export function calculateWirePathFromConnection(
     return null
   }
 
-  // Construct destination
   const destination: DestinationType = {
     type: 'pin',
     pin: inputPinPos,
     orientation: { direction: inputPinOrientation },
   }
 
-  // Calculate path
   return calculateWirePath(
     outputPinPos,
     destination,
@@ -118,27 +112,21 @@ export function calculateWirePath(
   options: WirePathOptions = {}
 ): WirePath {
   try {
-    // Step 1: Calculate exit segment (pin center → section line)
     const exitSegment = calculateExitSegment(startPin, startOrientation)
 
     let entrySegment: ReturnType<typeof calculateEntrySegment> | null = null
     let routingEnd: Position
 
     if (destination.type === 'pin') {
-      // Step 2: Calculate entry segment (section line → pin center)
       entrySegment = calculateEntrySegment(destination.pin, destination.orientation)
-      routingEnd = entrySegment.start // Entry segment starts at section line
+      routingEnd = entrySegment.start
     } else {
-      // Step 3: For cursor destination, snap to nearest section boundary
       routingEnd = snapCursorToSectionBoundary(destination.pos)
-      // No entry segment for cursor destinations
     }
 
-    // Step 4: Route from exit segment end to routing end using greedy algorithm
     const existingSegments = options.existingSegments || []
     const routingPath = findPathAlongSectionLines(exitSegment.end, routingEnd, existingSegments)
 
-    // Step 5: Assemble complete path
     const allSegments = [exitSegment, ...routingPath]
     if (entrySegment) {
       allSegments.push(entrySegment)
@@ -151,22 +139,94 @@ export function calculateWirePath(
       totalLength,
     }
   } catch (error) {
-    // Log diagnostic information
-    const diagnosticInfo = {
-      startPin,
-      destination,
-      startOrientation,
-      gatesCount: gates.length,
-      options,
+    throw new Error(
+      `Wire path calculation failed: ${error instanceof Error ? error.message : String(error)}.`
+    )
+  }
+}
+
+/**
+ * Options specific to junction path calculation.
+ */
+export interface JunctionWirePathOptions extends WirePathOptions {
+  /** Segments of the source wire (junction's parent wire) to exclude from overlap detection */
+  sourceWireSegments?: import('./types').WireSegment[]
+}
+
+/**
+ * Calculate wire path from a junction position to destination.
+ * Junction is already on a section line (at a corner), so we skip exit segment calculation
+ * and route directly from the junction position.
+ *
+ * @param junctionPosition - Junction position (already on section line)
+ * @param destination - Destination (pin or cursor)
+ * @param gates - Array of gates (for compatibility, not used in simplified scheme)
+ * @param options - Path calculation options including optional source wire segments to exclude
+ * @returns Complete wire path
+ * @throws Error if path calculation fails at any step
+ */
+export function calculateWirePathFromJunction(
+  junctionPosition: Position,
+  destination: DestinationType,
+  gates: GateInstance[],
+  options: JunctionWirePathOptions = {}
+): WirePath {
+  try {
+    let entrySegment: ReturnType<typeof calculateEntrySegment> | null = null
+    let routingEnd: Position
+
+    if (destination.type === 'pin') {
+      entrySegment = calculateEntrySegment(destination.pin, destination.orientation)
+      routingEnd = entrySegment.start
+    } else {
+      routingEnd = snapCursorToSectionBoundary(destination.pos)
     }
 
-    console.error('[calculateWirePath] Path calculation failed:', error)
-    console.error('[calculateWirePath] Diagnostic info:', JSON.stringify(diagnosticInfo, null, 2))
+    // Exclude the source wire's segments that touch the junction position
+    // to allow branching without self-overlap detection
+    const allExistingSegments = options.existingSegments || []
+    const sourceWireSegments = options.sourceWireSegments || []
+    const TOLERANCE = 0.001
 
-    // Re-throw with additional context
+    const existingSegments = allExistingSegments.filter((seg) => {
+      // Check if this segment belongs to the source wire by reference equality
+      const isSourceSegment = sourceWireSegments.some((srcSeg) =>
+        Math.abs(srcSeg.start.x - seg.start.x) < TOLERANCE &&
+        Math.abs(srcSeg.start.z - seg.start.z) < TOLERANCE &&
+        Math.abs(srcSeg.end.x - seg.end.x) < TOLERANCE &&
+        Math.abs(srcSeg.end.z - seg.end.z) < TOLERANCE
+      )
+      if (!isSourceSegment) return true
+
+      // For source wire segments, only exclude those touching the junction
+      const distToStart = Math.sqrt(
+        (junctionPosition.x - seg.start.x) ** 2 +
+        (junctionPosition.y - seg.start.y) ** 2 +
+        (junctionPosition.z - seg.start.z) ** 2
+      )
+      const distToEnd = Math.sqrt(
+        (junctionPosition.x - seg.end.x) ** 2 +
+        (junctionPosition.y - seg.end.y) ** 2 +
+        (junctionPosition.z - seg.end.z) ** 2
+      )
+      return distToStart > TOLERANCE && distToEnd > TOLERANCE
+    })
+    const routingPath = findPathAlongSectionLines(junctionPosition, routingEnd, existingSegments)
+
+    const allSegments = [...routingPath]
+    if (entrySegment) {
+      allSegments.push(entrySegment)
+    }
+
+    const totalLength = calculateTotalLength(allSegments)
+
+    return {
+      segments: allSegments,
+      totalLength,
+    }
+  } catch (error) {
     throw new Error(
-      `Wire path calculation failed: ${error instanceof Error ? error.message : String(error)}. ` +
-      `See console for diagnostic information.`
+      `Wire path calculation from junction failed: ${error instanceof Error ? error.message : String(error)}.`
     )
   }
 }

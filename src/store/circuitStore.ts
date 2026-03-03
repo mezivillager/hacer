@@ -11,6 +11,7 @@ import { createViewActions } from './actions/viewActions/viewActions'
 import { createNodeActions } from './actions/nodeActions/nodeActions'
 import { createJunctionActions } from './actions/signalActions/signalActions'
 import { createNodePlacementActions } from './actions/nodePlacementActions/nodePlacementActions'
+import { createJunctionPlacementActions } from './actions/junctionPlacementActions/junctionPlacementActions'
 import { calculateWirePathFromConnection } from '@/utils/wiringScheme'
 import { collectWireSegments } from '@/utils/wiringScheme/segments'
 import type { WireSegment } from '@/utils/wiringScheme/types'
@@ -44,6 +45,9 @@ const initialState = {
   nodePlacementMode: null as import('./types').NodePlacementType | null,
   selectedNodeId: null as string | null,
   selectedNodeType: null as import('./types').NodeType | null,
+  // Junction placement
+  junctionPlacementMode: null as boolean | null,
+  junctionPreviewPosition: null as import('./types').Position | null,
 }
 
 // Create the Zustand store with Immer, devtools, and subscribeWithSelector middleware
@@ -65,6 +69,7 @@ export const useCircuitStore = create<CircuitStore>()(
         ...createNodeActions(set, get),
         ...createJunctionActions(set, get),
         ...createNodePlacementActions(set, get),
+        ...createJunctionPlacementActions(set, get),
       }))
     ),
     { name: 'CircuitStore' }
@@ -222,6 +227,15 @@ export const circuitActions = {
   addJunction: (...args: Parameters<CircuitStore['addJunction']>) => useCircuitStore.getState().addJunction(...args),
   removeJunction: (...args: Parameters<CircuitStore['removeJunction']>) => useCircuitStore.getState().removeJunction(...args),
   updateJunctionPosition: (...args: Parameters<CircuitStore['updateJunctionPosition']>) => useCircuitStore.getState().updateJunctionPosition(...args),
+  // Junction placement actions
+  startJunctionPlacement: () => useCircuitStore.getState().startJunctionPlacement(),
+  cancelJunctionPlacement: () => useCircuitStore.getState().cancelJunctionPlacement(),
+  placeJunctionOnWire: (...args: Parameters<CircuitStore['placeJunctionOnWire']>) => useCircuitStore.getState().placeJunctionOnWire(...args),
+  updateJunctionPreviewPosition: (...args: Parameters<CircuitStore['updateJunctionPreviewPosition']>) => useCircuitStore.getState().updateJunctionPreviewPosition(...args),
+  // Junction wiring actions
+  startWiringFromJunction: (...args: Parameters<CircuitStore['startWiringFromJunction']>) => useCircuitStore.getState().startWiringFromJunction(...args),
+  completeWiringFromJunction: (...args: Parameters<CircuitStore['completeWiringFromJunction']>) => useCircuitStore.getState().completeWiringFromJunction(...args),
+  completeWiringFromJunctionToNode: (...args: Parameters<CircuitStore['completeWiringFromJunctionToNode']>) => useCircuitStore.getState().completeWiringFromJunctionToNode(...args),
 }
 
 // Expose store and actions for E2E testing

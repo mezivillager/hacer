@@ -173,15 +173,8 @@ describe('WirePreview', () => {
     // Should return null (no rendering)
     expect(container.firstChild).toBeNull()
 
-    // Should log error to console
+    // Should log error to console (from useWirePreviewPath hook)
     expect(consoleErrorSpy).toHaveBeenCalledWith('[WirePreview] Pathfinding error:', pathfindingError)
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      '[WirePreview] Wiring context:',
-      expect.objectContaining({
-        fromGateId: 'gate-1',
-        fromPinId: 'pin-1',
-      })
-    )
 
     // Should show error notification
     expect(message.error).toHaveBeenCalledWith('Unable to create wire path. Please try a different connection.')

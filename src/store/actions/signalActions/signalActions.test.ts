@@ -56,76 +56,168 @@ describe('Junction Actions', () => {
       expect(state.junctions).toHaveLength(0)
     })
 
-    it('removes wires connected to the deleted junction', () => {
+    it('removes branch wires tracked in junction wireIds', () => {
       const store = useCircuitStore.getState()
 
-      // Create junction
-      const junction = store.addJunction('sig-a', { x: 4, y: 0.2, z: 4 })
-
-      // Create wires: input -> junction -> gate
-      store.addWire(
+      // Create original wire and two branch wires
+      const originalWire = store.addWire(
         { type: 'input', entityId: 'input-a' },
-        { type: 'junction', entityId: junction.id },
-        [],
-        [],
-        'sig-a'
-      )
-      store.addWire(
-        { type: 'junction', entityId: junction.id },
         { type: 'gate', entityId: 'gate-1', pinId: 'in' },
         [],
         [],
         'sig-a'
       )
-      store.addWire(
-        { type: 'junction', entityId: junction.id },
+      const branchWire1 = store.addWire(
+        { type: 'input', entityId: 'input-a' },
         { type: 'gate', entityId: 'gate-2', pinId: 'in' },
         [],
         [],
         'sig-a'
       )
-
-      expect(useCircuitStore.getState().wires).toHaveLength(3)
-
-      store.removeJunction(junction.id)
-
-      // All wires connected to this junction should be removed
-      const state = useCircuitStore.getState()
-      expect(state.wires).toHaveLength(0)
-    })
-
-    it('does not remove unrelated wires when removing junction', () => {
-      const store = useCircuitStore.getState()
-
-      // Create two junctions
-      const junction1 = store.addJunction('sig-a', { x: 4, y: 0.2, z: 4 })
-      const junction2 = store.addJunction('sig-b', { x: 8, y: 0.2, z: 8 })
-
-      // Create wire for junction1
-      store.addWire(
+      const branchWire2 = store.addWire(
         { type: 'input', entityId: 'input-a' },
-        { type: 'junction', entityId: junction1.id },
+        { type: 'gate', entityId: 'gate-3', pinId: 'in' },
         [],
         [],
         'sig-a'
       )
 
-      // Create wire for junction2
-      store.addWire(
+      // Create junction tracking all three wires (original + 2 branches)
+      const junction = store.addJunction('sig-a', { x: 4, y: 0.2, z: 4 })
+      useCircuitStore.setState((state) => {
+        const j = state.junctions.find((j) => j.id === junction.id)
+        if (j) j.wireIds = [originalWire.id, branchWire1.id, branchWire2.id]
+      })
+
+      expect(useCircuitStore.getState().wires).toHaveLength(3)
+
+      store.removeJunction(junction.id)
+
+      // Branch wires removed, original wire kept
+      const state = useCircuitStore.getState()
+      expect(state.wires).toHaveLength(1)
+      expect(state.wires[0].id).toBe(originalWire.id)
+    })
+
+    it('does not remove unrelated wires when removing junction', () => {
+      const store = useCircuitStore.getState()
+
+      // Create wires for two different junctions
+      const wire1 = store.addWire(
+        { type: 'input', entityId: 'input-a' },
+        { type: 'gate', entityId: 'gate-1', pinId: 'in' },
+        [],
+        [],
+        'sig-a'
+      )
+      const branchWire = store.addWire(
+        { type: 'input', entityId: 'input-a' },
+        { type: 'gate', entityId: 'gate-2', pinId: 'in' },
+        [],
+        [],
+        'sig-a'
+      )
+      const unrelatedWire = store.addWire(
         { type: 'input', entityId: 'input-b' },
-        { type: 'junction', entityId: junction2.id },
+        { type: 'gate', entityId: 'gate-3', pinId: 'in' },
         [],
         [],
         'sig-b'
       )
 
-      expect(useCircuitStore.getState().wires).toHaveLength(2)
+      // Junction1 tracks wire1 (original) and branchWire
+      const junction1 = store.addJunction('sig-a', { x: 4, y: 0.2, z: 4 })
+      useCircuitStore.setState((state) => {
+        const j = state.junctions.find((j) => j.id === junction1.id)
+        if (j) j.wireIds = [wire1.id, branchWire.id]
+      })
+
+      expect(useCircuitStore.getState().wires).toHaveLength(3)
 
       store.removeJunction(junction1.id)
 
+      // branchWire removed, wire1 and unrelatedWire kept
       const state = useCircuitStore.getState()
+      expect(state.wires).toHaveLength(2)
+      expect(state.wires.map(w => w.id).sort()).toEqual([wire1.id, unrelatedWire.id].sort())
+    })
+  })
+
+  describe('removeJunction - wire cleanup', () => {
+    it('removes branch wires when junction is removed', () => {
+      const store = useCircuitStore.getState()
+
+      const wire1 = store.addWire(
+        { type: 'input', entityId: 'input-a' },
+        { type: 'gate', entityId: 'gate-1', pinId: 'in' },
+        [],
+        [],
+        'sig-a'
+      )
+      const wire2 = store.addWire(
+        { type: 'junction', entityId: 'j-placeholder' },
+        { type: 'gate', entityId: 'gate-2', pinId: 'in' },
+        [],
+        [],
+        'sig-a'
+      )
+      const wire3 = store.addWire(
+        { type: 'junction', entityId: 'j-placeholder' },
+        { type: 'gate', entityId: 'gate-3', pinId: 'in' },
+        [],
+        [],
+        'sig-a'
+      )
+
+      const junction = store.addJunction('sig-a', { x: 4, y: 0.2, z: 4 })
+
+      // Set wireIds: [original, branch1, branch2]
+      useCircuitStore.setState((state) => {
+        const j = state.junctions.find((j) => j.id === junction.id)
+        if (j) j.wireIds = [wire1.id, wire2.id, wire3.id]
+      })
+
+      expect(useCircuitStore.getState().wires).toHaveLength(3)
+
+      store.removeJunction(junction.id)
+
+      const state = useCircuitStore.getState()
+      // wire2 and wire3 (branch wires) removed, wire1 (original) remains
       expect(state.wires).toHaveLength(1)
-      expect(state.wires[0].to.entityId).toBe(junction2.id)
+      expect(state.wires[0].id).toBe(wire1.id)
+    })
+
+    it('removes junction from junctions array', () => {
+      const store = useCircuitStore.getState()
+      const junction = store.addJunction('sig-a', { x: 4, y: 0.2, z: 4 })
+
+      expect(useCircuitStore.getState().junctions).toHaveLength(1)
+
+      store.removeJunction(junction.id)
+
+      expect(useCircuitStore.getState().junctions).toHaveLength(0)
+    })
+
+    it('does nothing when junction not found', () => {
+      const store = useCircuitStore.getState()
+      store.addJunction('sig-a', { x: 4, y: 0.2, z: 4 })
+      store.addWire(
+        { type: 'input', entityId: 'input-a' },
+        { type: 'gate', entityId: 'gate-1', pinId: 'in' },
+        [],
+        [],
+        'sig-a'
+      )
+
+      const stateBefore = useCircuitStore.getState()
+
+      store.removeJunction('non-existent-id')
+
+      const stateAfter = useCircuitStore.getState()
+      expect(stateAfter.junctions).toHaveLength(1)
+      expect(stateAfter.wires).toHaveLength(1)
+      expect(stateAfter.junctions).toEqual(stateBefore.junctions)
+      expect(stateAfter.wires).toEqual(stateBefore.wires)
     })
   })
 

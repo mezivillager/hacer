@@ -30,6 +30,9 @@ export function handlePinClick(
     if (source && (source.type === 'input' || source.type === 'constant')) {
       // Node-to-gate wiring
       circuitActions.completeWiringFromNodeToGate(gateId, pinId, pinType)
+    } else if (source && source.type === 'junction') {
+      // Junction-to-gate wiring
+      circuitActions.completeWiringFromJunction(gateId, pinId, pinType)
     } else {
       // Gate-to-gate wiring (or no source specified, fallback to gate-to-gate)
       circuitActions.completeWiring(gateId, pinId, pinType)
@@ -98,9 +101,18 @@ export function handleNodePinClick(
 ): void {
   const currentWiringFrom = useCircuitStore.getState().wiringFrom
   if (currentWiringFrom) {
-    // Complete wiring to node (only output nodes can be wire destinations)
-    if (nodeType === 'output') {
-      circuitActions.completeWiringToNode(nodeId, nodeType)
+    // Check source type
+    const source = currentWiringFrom.source
+    if (source && source.type === 'junction') {
+      // Junction-to-node wiring
+      if (nodeType === 'output') {
+        circuitActions.completeWiringFromJunctionToNode(nodeId, nodeType)
+      }
+    } else {
+      // Complete wiring to node (only output nodes can be wire destinations)
+      if (nodeType === 'output') {
+        circuitActions.completeWiringToNode(nodeId, nodeType)
+      }
     }
     // If not an output node, do nothing (wiring continues)
   } else {
@@ -110,4 +122,28 @@ export function handleNodePinClick(
     }
     // If output node, do nothing (can't start wiring from output)
   }
+}
+
+/**
+ * Handle junction click - start wiring from junction
+ *
+ * @param junctionId - The junction's ID
+ * @param position - The junction's position in world coordinates
+ */
+export function handleJunctionClick(junctionId: string, position: Position): void {
+  const currentWiringFrom = useCircuitStore.getState().wiringFrom
+  const isPlacingJunction = useCircuitStore.getState().junctionPlacementMode === true
+
+  // Don't start wiring if in junction placement mode
+  if (isPlacingJunction) {
+    return
+  }
+
+  // Don't start wiring if already wiring
+  if (currentWiringFrom) {
+    return
+  }
+
+  // Start wiring from junction
+  circuitActions.startWiringFromJunction(junctionId, position)
 }

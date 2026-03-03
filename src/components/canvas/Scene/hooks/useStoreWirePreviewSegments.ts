@@ -14,6 +14,9 @@ interface UseStoreWirePreviewSegmentsParams {
  * Normalizes segments (reverse if needed for input->output) and stores them
  * in wiringFrom.segments for use when completing the wire.
  *
+ * For junction wiring, the path from calculateWirePathFromJunction already contains
+ * only the new segments (from junction to destination), so no extraction is needed.
+ *
  * @param params - Parameters including path, wiringFrom, and fromPinType
  */
 export function useStoreWirePreviewSegments({
@@ -21,13 +24,10 @@ export function useStoreWirePreviewSegments({
   wiringFrom,
   fromPinType,
 }: UseStoreWirePreviewSegmentsParams): void {
-  // Using ref to track stored segments to avoid infinite loops
   const storedSegmentsRef = useRef<string | null>(null)
   const calculatedPathRef = useRef<{ segments: WireSegment[], fromPinType: string } | null>(null)
 
-  // Store segments in useEffect (refs should not be updated during render)
   useEffect(() => {
-    // Update ref with current path data
     if (path && wiringFrom) {
       calculatedPathRef.current = {
         segments: path.segments,
@@ -38,26 +38,25 @@ export function useStoreWirePreviewSegments({
     }
 
     const pathData = calculatedPathRef.current
-    // Store segments when destination is set (either gate pin or node)
     const hasGateDestination = wiringFrom?.destinationGateId && wiringFrom?.destinationPinId
     const hasNodeDestination = wiringFrom?.destinationNodeId && wiringFrom?.destinationNodeType
     const hasDestination = hasGateDestination || hasNodeDestination
 
     if (pathData && hasDestination) {
-      // Normalize segments: always store as output -> input (or source -> destination)
       let segmentsToStore = pathData.segments
 
-      // If wiring from input to output, we need to reverse segments
-      // For node destinations, segments are already in the correct direction
+      // For junction wiring, calculateWirePathFromJunction already returns only the
+      // new segments (junction to destination). Use them directly.
+
+      // If wiring from input to output, reverse segments
       if (hasGateDestination && pathData.fromPinType !== 'output') {
-        segmentsToStore = pathData.segments.map(seg => ({
+        segmentsToStore = segmentsToStore.map(seg => ({
           ...seg,
           start: seg.end,
           end: seg.start,
         })).reverse()
       }
 
-      // Only update if segments actually changed (use ref to avoid infinite loops)
       const segmentsKey = JSON.stringify(segmentsToStore)
       if (storedSegmentsRef.current !== segmentsKey) {
         storedSegmentsRef.current = segmentsKey
@@ -68,6 +67,5 @@ export function useStoreWirePreviewSegments({
         }, false, 'WirePreview/storeSegments')
       }
     }
-  }, [path, wiringFrom, fromPinType]) // Update when path, wiringFrom, or fromPinType changes
+  }, [path, wiringFrom, fromPinType])
 }
-

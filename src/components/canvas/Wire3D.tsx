@@ -31,7 +31,7 @@ export function Wire3D({
   precomputedPath,
   isActive = false,
   isPreview = false,
-  isSelected = false
+  isSelected = false,
 }: Wire3DProps) {
   // Guard against undefined positions
   if (!start || !end) return null

@@ -2,6 +2,8 @@ import { message } from 'antd'
 import type { WiringActions, Position, CircuitStore, NodeType, WireEndpoint } from '../../types'
 import type { WireSegment } from '@/utils/wiringScheme/types'
 import { resolveCrossings } from '@/utils/wiringScheme/crossing'
+import { getSegmentsUpToPosition } from '@/utils/wirePosition'
+import { calculateNodePinPosition } from '@/nodes/config/nodeConfig'
 
 type SetState = (
   fn: (state: CircuitStore) => void,
@@ -17,12 +19,6 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
     pinType: 'input' | 'output',
     position: Position
   ) => {
-    console.debug('[wiringActions] startWiring', {
-      gateId,
-      pinId,
-      pinType,
-      position,
-    })
     set((state) => {
       state.wiringFrom = {
         fromGateId: gateId,
@@ -35,7 +31,6 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
         destinationNodeId: null,
         destinationNodeType: null,
         segments: null,
-        // Extended source info for unified wiring
         source: { type: 'gate', gateId, pinId, pinType },
       }
       state.placementMode = null
@@ -43,15 +38,9 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
   },
 
   updateWirePreviewPosition: (position: Position | null) => {
-    console.debug('[wiringActions] updateWirePreviewPosition', {
-      position,
-      hasWiringFrom: !!get().wiringFrom,
-    })
     set((state) => {
       if (state.wiringFrom) {
         state.wiringFrom.previewEndPosition = position
-        // Note: destination pin is cleared by BaseGate's handlePinOut, not here
-        // We don't clear it here because position can be null temporarily during transitions
       }
     }, false, 'updateWirePreviewPosition')
   },
@@ -61,10 +50,8 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
       if (state.wiringFrom) {
         state.wiringFrom.destinationGateId = gateId
         state.wiringFrom.destinationPinId = pinId
-        // Clear node destination when setting gate destination
         state.wiringFrom.destinationNodeId = null
         state.wiringFrom.destinationNodeType = null
-        // Clear segments when destination changes - WirePreview will recalculate and store them
         state.wiringFrom.segments = null
       }
     }, false, 'setDestinationPin')
@@ -75,37 +62,27 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
       if (state.wiringFrom) {
         state.wiringFrom.destinationNodeId = nodeId
         state.wiringFrom.destinationNodeType = nodeType
-        // Clear gate destination when setting node destination
         state.wiringFrom.destinationGateId = null
         state.wiringFrom.destinationPinId = null
-        // Clear segments when destination changes - WirePreview will recalculate and store them
         state.wiringFrom.segments = null
       }
     }, false, 'setDestinationNode')
   },
 
   cancelWiring: () => {
-    console.debug('[wiringActions] cancelWiring')
     set((state) => {
       state.wiringFrom = null
     }, false, 'cancelWiring')
   },
 
   completeWiring: (toGateId: string, toPinId: string, toPinType: 'input' | 'output') => {
-    console.debug('[wiringActions] completeWiring', {
-      toGateId,
-      toPinId,
-      toPinType,
-    })
     const state = get()
     const from = state.wiringFrom
     if (!from) {
       message.warning('No active wiring operation')
-      console.warn('[wiringActions] completeWiring - no wiringFrom state')
       return
     }
 
-    // Validate: must connect output to input (or vice versa)
     if (from.fromPinType === toPinType) {
       message.warning('Cannot connect same pin types')
       set((s) => {
@@ -114,7 +91,6 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
       return
     }
 
-    // Validate: cannot connect to same gate
     if (from.fromGateId === toGateId) {
       message.warning('Cannot connect gate to itself')
       set((s) => {
@@ -123,7 +99,6 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
       return
     }
 
-    // Check if wire already exists (using unified Wire format)
     const exists = state.wires.some(
       (w) =>
         w.from.type === 'gate' &&
@@ -146,11 +121,9 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
       return
     }
 
-    // Use stored segments from WirePreview (calculated during preview when destination pin was set)
     const wireSegments: WireSegment[] | null = from.segments
 
     if (!wireSegments) {
-      // This shouldn't happen in normal flow - segments should be calculated and stored by WirePreview
       message.error('Wire path not available. Please try connecting again.')
       set((s) => {
         s.wiringFrom = null
@@ -158,7 +131,6 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
       return
     }
 
-    // Resolve crossings: newer wire hops over older wires
     let resolvedSegments: WireSegment[]
     let crossedWireIds: string[] = []
     try {
@@ -166,7 +138,6 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
       resolvedSegments = result.segments
       crossedWireIds = result.crossedWireIds
     } catch (error) {
-      // Crossing resolution failed - show error and cancel wiring
       const errorMessage = error instanceof Error ? error.message : 'Failed to resolve wire crossings'
       message.error(`Cannot complete wire: ${errorMessage}`)
       set((s) => {
@@ -175,26 +146,15 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
       return
     }
 
-    // Create unified wire with WireEndpoint format
-    // Normalize: always store as output -> input
     let fromEndpoint: WireEndpoint
     let toEndpoint: WireEndpoint
 
     if (from.fromPinType === 'output') {
       fromEndpoint = { type: 'gate', entityId: from.fromGateId, pinId: from.fromPinId }
       toEndpoint = { type: 'gate', entityId: toGateId, pinId: toPinId }
-      console.debug('[wiringActions] Adding wire', {
-        from: fromEndpoint,
-        to: toEndpoint,
-      })
     } else {
-      // Reversed: input started wiring to output
       fromEndpoint = { type: 'gate', entityId: toGateId, pinId: toPinId }
       toEndpoint = { type: 'gate', entityId: from.fromGateId, pinId: from.fromPinId }
-      console.debug('[wiringActions] Adding wire (reversed)', {
-        from: fromEndpoint,
-        to: toEndpoint,
-      })
     }
 
     state.addWire(fromEndpoint, toEndpoint, resolvedSegments, crossedWireIds)
@@ -209,20 +169,13 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
    * Used when wiring from input/constant nodes to gate inputs.
    */
   completeWiringFromNodeToGate: (toGateId: string, toPinId: string, toPinType: 'input' | 'output') => {
-    console.debug('[wiringActions] completeWiringFromNodeToGate', {
-      toGateId,
-      toPinId,
-      toPinType,
-    })
     const state = get()
     const from = state.wiringFrom
     if (!from) {
       message.warning('No active wiring operation')
-      console.warn('[wiringActions] completeWiringFromNodeToGate - no wiringFrom state')
       return
     }
 
-    // Extract source information
     const source = from.source
     if (!source) {
       message.warning('Invalid wiring source')
@@ -230,21 +183,18 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
       return
     }
 
-    // Only input and constant nodes can be sources
     if (source.type !== 'input' && source.type !== 'constant') {
       message.warning('Can only complete wiring from input or constant nodes')
       set((s) => { s.wiringFrom = null }, false, 'completeWiringFromNodeToGate/invalidSource')
       return
     }
 
-    // Can only connect to gate input pins (not outputs)
     if (toPinType !== 'input') {
       message.warning('Can only connect nodes to gate input pins')
       set((s) => { s.wiringFrom = null }, false, 'completeWiringFromNodeToGate/invalidPinType')
       return
     }
 
-    // Build WireEndpoint from source node
     let fromEndpoint: WireEndpoint
     let signalId: string
 
@@ -252,14 +202,12 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
       fromEndpoint = { type: 'input', entityId: source.nodeId }
       signalId = `sig-${source.nodeId}`
     } else {
-      // source.type === 'constant'
       fromEndpoint = { type: 'constant', entityId: source.nodeId }
       signalId = `sig-${source.nodeId}`
     }
 
     const toEndpoint: WireEndpoint = { type: 'gate', entityId: toGateId, pinId: toPinId }
 
-    // Check if wire already exists
     const exists = state.wires.some(
       (w) =>
         w.from.type === fromEndpoint.type &&
@@ -277,11 +225,9 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
       return
     }
 
-    // Use stored segments from WirePreview (calculated during preview when destination pin was set)
     const wireSegments: WireSegment[] | null = from.segments
 
     if (!wireSegments || wireSegments.length === 0) {
-      // This shouldn't happen in normal flow - segments should be calculated and stored by WirePreview
       message.error('Wire path not available. Please try connecting again.')
       set((s) => {
         s.wiringFrom = null
@@ -289,7 +235,6 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
       return
     }
 
-    // Resolve crossings: newer wire hops over older wires
     let resolvedSegments: WireSegment[]
     let crossedWireIds: string[] = []
     try {
@@ -297,7 +242,6 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
       resolvedSegments = result.segments
       crossedWireIds = result.crossedWireIds
     } catch (error) {
-      // Crossing resolution failed - show error and cancel wiring
       const errorMessage = error instanceof Error ? error.message : 'Failed to resolve wire crossings'
       message.error(`Cannot complete wire: ${errorMessage}`)
       set((s) => {
@@ -306,11 +250,6 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
       return
     }
 
-    // Create unified wire with signal ID
-    console.debug('[wiringActions] Adding wire from node to gate', {
-      from: fromEndpoint,
-      to: toEndpoint,
-    })
     state.addWire(fromEndpoint, toEndpoint, resolvedSegments, crossedWireIds, signalId)
 
     set((s) => {
@@ -323,9 +262,6 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
    * Used for HDL-style circuits where signals originate from input nodes.
    */
   startWiringFromNode: (nodeId: string, nodeType: NodeType, position: Position) => {
-    console.debug('[wiringActions] startWiringFromNode', { nodeId, nodeType, position })
-
-    // Only input and constant nodes can be wire sources
     if (nodeType !== 'input' && nodeType !== 'constant') {
       message.warning('Can only start wiring from input or constant nodes')
       return
@@ -333,10 +269,9 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
 
     set((state) => {
       state.wiringFrom = {
-        // Legacy fields - empty since this is node-based wiring
         fromGateId: '',
         fromPinId: '',
-        fromPinType: 'output', // Nodes are always sources (like outputs)
+        fromPinType: 'output',
         fromPosition: position,
         previewEndPosition: null,
         destinationGateId: null,
@@ -344,7 +279,6 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
         destinationNodeId: null,
         destinationNodeType: null,
         segments: null,
-        // Extended source info
         source: { type: nodeType, nodeId },
       }
       state.placementMode = null
@@ -353,11 +287,138 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
   },
 
   /**
+   * Start wiring from a junction.
+   * Branch wires start at the original wire's start point and share segments up to the junction.
+   */
+  startWiringFromJunction: (junctionId: string, _position: Position) => {
+    const state = get()
+    const junction = state.junctions.find((j) => j.id === junctionId)
+
+    if (!junction) {
+      message.warning('Junction not found')
+      return
+    }
+
+    const originalWireId = junction.wireIds[0]
+    if (!originalWireId) {
+      message.warning('No wire passes through this junction')
+      return
+    }
+
+    const originalWire = state.wires.find((w) => w.id === originalWireId)
+    if (!originalWire) {
+      message.warning('Original wire not found')
+      return
+    }
+
+    const sharedSegments = getSegmentsUpToPosition(originalWire.segments, junction.position)
+
+    let fromPosition: Position
+    if (originalWire.from.type === 'gate' && originalWire.from.pinId) {
+      const pinPos = get().getPinWorldPosition(originalWire.from.entityId, originalWire.from.pinId)
+      if (!pinPos) {
+        message.warning('Could not determine wire start position')
+        return
+      }
+      fromPosition = pinPos
+    } else if (originalWire.from.type === 'input' || originalWire.from.type === 'constant') {
+      const node = originalWire.from.type === 'input'
+        ? state.inputNodes.find((n) => n.id === originalWire.from.entityId)
+        : state.constantNodes.find((n) => n.id === originalWire.from.entityId)
+      if (!node) {
+        message.warning('Could not find source node')
+        return
+      }
+      const pinOffset = calculateNodePinPosition(originalWire.from.type)
+      fromPosition = {
+        x: node.position.x + pinOffset.x,
+        y: node.position.y + pinOffset.y,
+        z: node.position.z + pinOffset.z,
+      }
+    } else if (originalWire.from.type === 'junction') {
+      let currentWire = originalWire
+      let depth = 0
+      const maxDepth = 100
+
+      while (currentWire.from.type === 'junction' && depth < maxDepth) {
+        const sourceJunction = state.junctions.find((j) => j.id === currentWire.from.entityId)
+        if (!sourceJunction || sourceJunction.wireIds.length === 0) {
+          message.warning('Could not trace back through junctions to find source')
+          return
+        }
+
+        const sourceWireId = sourceJunction.wireIds[0]
+        const sourceWire = state.wires.find((w) => w.id === sourceWireId)
+        if (!sourceWire) {
+          message.warning('Source wire not found when tracing through junctions')
+          return
+        }
+
+        currentWire = sourceWire
+        depth++
+      }
+
+      if (currentWire.from.type === 'gate' && currentWire.from.pinId) {
+        const pinPos = get().getPinWorldPosition(currentWire.from.entityId, currentWire.from.pinId)
+        if (!pinPos) {
+          message.warning('Could not determine wire start position after tracing through junctions')
+          return
+        }
+        fromPosition = pinPos
+      } else if (currentWire.from.type === 'input' || currentWire.from.type === 'constant') {
+        const node = currentWire.from.type === 'input'
+          ? state.inputNodes.find((n) => n.id === currentWire.from.entityId)
+          : state.constantNodes.find((n) => n.id === currentWire.from.entityId)
+        if (!node) {
+          message.warning('Could not find source node after tracing through junctions')
+          return
+        }
+        const pinOffset = calculateNodePinPosition(currentWire.from.type)
+        fromPosition = {
+          x: node.position.x + pinOffset.x,
+          y: node.position.y + pinOffset.y,
+          z: node.position.z + pinOffset.z,
+        }
+      } else {
+        message.warning('Unsupported wire source type after tracing through junctions')
+        return
+      }
+    } else {
+      message.warning('Unsupported wire source type for junction wiring')
+      return
+    }
+
+    set((state) => {
+      state.wiringFrom = {
+        fromGateId: originalWire.from.type === 'gate' ? originalWire.from.entityId : '',
+        fromPinId: originalWire.from.type === 'gate' ? originalWire.from.pinId || '' : '',
+        fromPinType: 'output',
+        fromPosition,
+        previewEndPosition: null,
+        destinationGateId: null,
+        destinationPinId: null,
+        destinationNodeId: null,
+        destinationNodeType: null,
+        segments: null,
+        source: { type: 'junction', junctionId },
+        destination: {
+          type: 'junction',
+          junctionId,
+          originalWireId: originalWire.id,
+          sharedSegments,
+        },
+      }
+      state.placementMode = null
+      state.nodePlacementMode = null
+      state.junctionPlacementMode = null
+    }, false, 'startWiringFromJunction')
+  },
+
+  /**
    * Complete wiring to a node (output node).
    * Used for HDL-style circuits where signals terminate at output nodes.
    */
   completeWiringToNode: (nodeId: string, nodeType: NodeType) => {
-    console.debug('[wiringActions] completeWiringToNode', { nodeId, nodeType })
     const state = get()
     const from = state.wiringFrom
     if (!from) {
@@ -365,14 +426,12 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
       return
     }
 
-    // Only output nodes can be wire destinations (for now)
     if (nodeType !== 'output') {
       message.warning('Can only complete wiring to output nodes')
       set((s) => { s.wiringFrom = null }, false, 'completeWiringToNode/invalidNodeType')
       return
     }
 
-    // Extract source information
     const source = from.source
     if (!source) {
       message.warning('Invalid wiring source')
@@ -380,7 +439,6 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
       return
     }
 
-    // Build WireEndpoint from source
     let fromEndpoint: WireEndpoint
     let signalId: string
 
@@ -391,7 +449,6 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
       fromEndpoint = { type: 'constant', entityId: source.nodeId }
       signalId = `sig-${source.nodeId}`
     } else if (source.type === 'gate') {
-      // Gate source - wiring from gate output to output node
       fromEndpoint = { type: 'gate', entityId: source.gateId, pinId: source.pinId }
       signalId = `sig-${source.gateId}-${source.pinId}`
     } else {
@@ -402,7 +459,6 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
 
     const toEndpoint: WireEndpoint = { type: 'output', entityId: nodeId }
 
-    // Check if wire already exists
     const exists = state.wires.some(
       (w) =>
         w.from.type === fromEndpoint.type &&
@@ -420,11 +476,9 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
       return
     }
 
-    // Use segments from wire preview
     const segments = from.segments ?? []
 
     if (!segments || segments.length === 0) {
-      // This shouldn't happen in normal flow - segments should be calculated and stored by WirePreview
       message.error('Wire path not available. Please try connecting again.')
       set((s) => {
         s.wiringFrom = null
@@ -432,7 +486,6 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
       return
     }
 
-    // Resolve crossings: newer wire hops over older wires
     let resolvedSegments: WireSegment[]
     let crossedWireIds: string[] = []
     try {
@@ -440,7 +493,6 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
       resolvedSegments = result.segments
       crossedWireIds = result.crossedWireIds
     } catch (error) {
-      // Crossing resolution failed - show error and cancel wiring
       const errorMessage = error instanceof Error ? error.message : 'Failed to resolve wire crossings'
       message.error(`Cannot complete wire: ${errorMessage}`)
       set((s) => {
@@ -449,12 +501,177 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
       return
     }
 
-    // Create unified wire with signal ID and resolved segments
     get().addWire(fromEndpoint, toEndpoint, resolvedSegments, crossedWireIds, signalId)
 
-    // Clear wiring state
     set((s) => {
       s.wiringFrom = null
     }, false, 'completeWiringToNode')
   },
+
+  /**
+   * Complete wiring from junction to a gate.
+   * Creates a branch wire that starts at the original wire's start and shares segments up to the junction.
+   */
+  completeWiringFromJunction: (toGateId: string, toPinId: string, toPinType: 'input' | 'output') => {
+    if (toPinType !== 'input') {
+      message.warning('Can only connect to gate input pins')
+      set((s) => { s.wiringFrom = null }, false, 'completeWiringFromJunction/invalidPinType')
+      return
+    }
+    const toEndpoint: WireEndpoint = { type: 'gate', entityId: toGateId, pinId: toPinId }
+    completeJunctionWiring(toEndpoint, 'completeWiringFromJunction', get, set)
+  },
+
+  /**
+   * Complete wiring from junction to a node (output node).
+   * Creates a branch wire that starts at the original wire's start and shares segments up to the junction.
+   */
+  completeWiringFromJunctionToNode: (nodeId: string, nodeType: NodeType) => {
+    if (nodeType !== 'output') {
+      message.warning('Can only complete wiring to output nodes')
+      set((s) => { s.wiringFrom = null }, false, 'completeWiringFromJunctionToNode/invalidNodeType')
+      return
+    }
+    const toEndpoint: WireEndpoint = { type: 'output', entityId: nodeId }
+    completeJunctionWiring(toEndpoint, 'completeWiringFromJunctionToNode', get, set)
+  },
 })
+
+/**
+ * Shared logic for completing wiring from a junction to any destination.
+ * Validates junction state, builds segments, resolves crossings, creates wire, and updates junction.
+ */
+function completeJunctionWiring(
+  toEndpoint: WireEndpoint,
+  actionPrefix: string,
+  get: GetState,
+  set: SetState,
+): void {
+  const state = get()
+  const from = state.wiringFrom
+  if (!from) {
+    message.warning('No active wiring operation')
+    return
+  }
+
+  if (!from.source || from.source.type !== 'junction') {
+    message.warning('Wiring source is not a junction')
+    set((s) => { s.wiringFrom = null }, false, `${actionPrefix}/invalidSource`)
+    return
+  }
+
+  const dest = from.destination
+  if (!dest || dest.type !== 'junction') {
+    message.warning('Junction wiring info not found')
+    set((s) => { s.wiringFrom = null }, false, `${actionPrefix}/noJunctionInfo`)
+    return
+  }
+
+  const originalWire = state.wires.find((w) => w.id === dest.originalWireId)
+  if (!originalWire) {
+    message.warning('Original wire not found')
+    set((s) => { s.wiringFrom = null }, false, `${actionPrefix}/originalWireNotFound`)
+    return
+  }
+
+  const fromEndpoint: WireEndpoint = { ...originalWire.from }
+
+  const exists = state.wires.some(
+    (w) =>
+      w.from.type === fromEndpoint.type &&
+      w.from.entityId === fromEndpoint.entityId &&
+      (fromEndpoint.type === 'gate' ? w.from.pinId === fromEndpoint.pinId : true) &&
+      w.to.type === toEndpoint.type &&
+      w.to.entityId === toEndpoint.entityId &&
+      (toEndpoint.type === 'gate' ? w.to.pinId === toEndpoint.pinId : true)
+  )
+
+  if (exists) {
+    message.warning('Wire already exists')
+    set((s) => { s.wiringFrom = null }, false, `${actionPrefix}/wireExists`)
+    return
+  }
+
+  const sharedSegments = dest.sharedSegments
+  const newSegments = from.segments ?? []
+
+  if (sharedSegments.length === 0) {
+    message.error('Cannot create branch wire: junction has no shared segments. Please place junction on a middle segment of the wire.')
+    set((s) => { s.wiringFrom = null }, false, `${actionPrefix}/noSharedSegments`)
+    return
+  }
+
+  if (newSegments.length === 0) {
+    message.error('Cannot create branch wire: no path segments calculated. Please try connecting again.')
+    set((s) => { s.wiringFrom = null }, false, `${actionPrefix}/noSegments`)
+    return
+  }
+
+  // Validate segment connection at junction position
+  const lastSharedSegment = sharedSegments[sharedSegments.length - 1]
+  const firstNewSegment = newSegments[0]
+  if (lastSharedSegment && firstNewSegment) {
+    const sharedEnd = lastSharedSegment.end
+    const newStart = firstNewSegment.start
+    const distance = Math.sqrt(
+      (sharedEnd.x - newStart.x) ** 2 +
+      (sharedEnd.y - newStart.y) ** 2 +
+      (sharedEnd.z - newStart.z) ** 2
+    )
+    if (distance > 0.1) {
+      message.error('Shared segments do not connect to new segments at junction. Please try connecting again.')
+      set((s) => { s.wiringFrom = null }, false, `${actionPrefix}/segmentMismatch`)
+      return
+    }
+
+    const junction = state.junctions.find((j) => j.id === from.source!.junctionId)
+    if (junction) {
+      const junctionPos = junction.position
+      const junctionToSharedEnd = Math.sqrt(
+        (junctionPos.x - sharedEnd.x) ** 2 +
+        (junctionPos.y - sharedEnd.y) ** 2 +
+        (junctionPos.z - sharedEnd.z) ** 2
+      )
+      const junctionToNewStart = Math.sqrt(
+        (junctionPos.x - newStart.x) ** 2 +
+        (junctionPos.y - newStart.y) ** 2 +
+        (junctionPos.z - newStart.z) ** 2
+      )
+      if (junctionToSharedEnd > 0.1 || junctionToNewStart > 0.1) {
+        message.error('Junction position does not match segment connection point. Please try connecting again.')
+        set((s) => { s.wiringFrom = null }, false, `${actionPrefix}/junctionPositionMismatch`)
+        return
+      }
+    }
+  }
+
+  const allSegments = [...sharedSegments, ...newSegments]
+
+  let resolvedSegments: WireSegment[]
+  let crossedWireIds: string[] = []
+  try {
+    const result = resolveCrossings(allSegments, state.wires)
+    resolvedSegments = result.segments
+    crossedWireIds = result.crossedWireIds
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Failed to resolve wire crossings'
+    message.error(`Cannot complete wire: ${errorMessage}`)
+    set((s) => { s.wiringFrom = null }, false, `${actionPrefix}/crossingResolutionFailed`)
+    return
+  }
+
+  const signalId = originalWire.signalId || `sig-${originalWire.from.entityId}`
+  const newWire = get().addWire(fromEndpoint, toEndpoint, resolvedSegments, crossedWireIds, signalId)
+
+  const junction = state.junctions.find((j) => j.id === from.source!.junctionId)
+  if (junction) {
+    set((s) => {
+      const updatedJunction = s.junctions.find((j) => j.id === junction.id)
+      if (updatedJunction && !updatedJunction.wireIds.includes(newWire.id)) {
+        updatedJunction.wireIds.push(newWire.id)
+      }
+    }, false, `${actionPrefix}/updateJunction`)
+  }
+
+  set((s) => { s.wiringFrom = null }, false, `${actionPrefix}/complete`)
+}

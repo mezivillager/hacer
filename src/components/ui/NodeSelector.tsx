@@ -4,6 +4,7 @@ import {
   LogoutOutlined,
   CheckCircleOutlined,
   CloseCircleOutlined,
+  ShareAltOutlined,
 } from '@ant-design/icons'
 import { useCircuitStore } from '@/store/circuitStore'
 import type { NodePlacementType } from '@/store/types'
@@ -76,9 +77,21 @@ function handleNodeSelect(
  */
 export function NodeSelector() {
   const nodePlacementMode = useCircuitStore((s) => s.nodePlacementMode)
+  const junctionPlacementMode = useCircuitStore((s) => s.junctionPlacementMode)
   const startNodePlacement = useCircuitStore((s) => s.startNodePlacement)
   const cancelNodePlacement = useCircuitStore((s) => s.cancelNodePlacement)
   const cancelPlacement = useCircuitStore((s) => s.cancelPlacement)
+  const startJunctionPlacement = useCircuitStore((s) => s.startJunctionPlacement)
+  const cancelJunctionPlacement = useCircuitStore((s) => s.cancelJunctionPlacement)
+
+  const handleJunctionClick = () => {
+    cancelPlacement()
+    if (junctionPlacementMode) {
+      cancelJunctionPlacement()
+    } else {
+      startJunctionPlacement()
+    }
+  }
 
   return (
     <Space wrap size="small" className="node-selector">
@@ -108,6 +121,18 @@ export function NodeSelector() {
           </Tooltip>
         )
       })}
+      <Tooltip title="Place junction on wire for branching" placement="top">
+        <Button
+          type={junctionPlacementMode ? 'primary' : 'default'}
+          icon={<ShareAltOutlined />}
+          onClick={handleJunctionClick}
+          style={{
+            borderColor: junctionPlacementMode ? colors.primary : undefined,
+          }}
+        >
+          Junction
+        </Button>
+      </Tooltip>
     </Space>
   )
 }

@@ -15,7 +15,6 @@ function pointToLineDistance(
   const dy = lineEnd.y - lineStart.y
   const dz = lineEnd.z - lineStart.z
 
-  // If line segment has zero length, return distance to start point
   const lineLengthSq = dx * dx + dy * dy + dz * dz
   if (lineLengthSq < 1e-10) {
     const px = point.x - lineStart.x
@@ -24,19 +23,16 @@ function pointToLineDistance(
     return Math.sqrt(px * px + py * py + pz * pz)
   }
 
-  // Calculate parameter t (projection of point onto line)
   const px = point.x - lineStart.x
   const py = point.y - lineStart.y
   const pz = point.z - lineStart.z
 
   const t = Math.max(0, Math.min(1, (px * dx + py * dy + pz * dz) / lineLengthSq))
 
-  // Find closest point on line segment
   const closestX = lineStart.x + t * dx
   const closestY = lineStart.y + t * dy
   const closestZ = lineStart.z + t * dz
 
-  // Return distance to closest point
   const distX = point.x - closestX
   const distY = point.y - closestY
   const distZ = point.z - closestZ
@@ -53,23 +49,19 @@ function pointToArcDistance(
   segment: WireSegment
 ): number {
   if (segment.type !== 'arc' || !segment.arcCenter || segment.arcRadius === undefined) {
-    // Fallback to line distance if arc metadata missing
     return pointToLineDistance(point, segment.start, segment.end)
   }
 
   const center = segment.arcCenter
   const radius = segment.arcRadius
 
-  // Determine arc orientation from start/end points
   const isHorizontal = Math.abs(segment.start.z - segment.end.z) < 0.001
 
-  // Sample points along the arc to find minimum distance
-  // For efficiency, sample at key points: start, midpoint, end
   const numSamples = 20
   let minDistance = Infinity
 
   for (let i = 0; i <= numSamples; i++) {
-    const t = (i / numSamples) * Math.PI // t goes from 0 to π
+    const t = (i / numSamples) * Math.PI
 
     const y = WIRE_HEIGHT + (HOP_HEIGHT - WIRE_HEIGHT) * Math.sin(t)
     let x: number
@@ -104,7 +96,6 @@ function distanceToSegment(point: Position, segment: WireSegment): number {
   if (segment.type === 'arc') {
     return pointToArcDistance(point, segment)
   } else {
-    // Straight segments: horizontal, vertical, entry, exit
     return pointToLineDistance(point, segment.start, segment.end)
   }
 }
@@ -134,12 +125,10 @@ export function findNearestWire(
   let nearestDistance = threshold
 
   for (const wire of wires) {
-    // Skip wires with no segments (cannot be selected)
     if (!wire.segments || wire.segments.length === 0) {
       continue
     }
 
-    // Check distance to each segment of the wire
     let minWireDistance = Infinity
 
     for (const segment of wire.segments) {
@@ -149,7 +138,6 @@ export function findNearestWire(
       }
     }
 
-    // If this wire is closer than previous best and within threshold
     if (minWireDistance < nearestDistance) {
       nearestDistance = minWireDistance
       nearestWireId = wire.id

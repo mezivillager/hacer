@@ -270,27 +270,144 @@ describe('simulationActions', () => {
     })
 
     it('handles deeply nested junctions correctly', () => {
-      // Create a chain of junctions: input -> j1 -> j2 -> j3 -> gate
+      // Chain: input -> wire1 (j1) -> wire2 (j2) -> wire3 (j3)
+      // Each junction's wireIds[0] points to the wire that carries the signal
       const inputNode = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
       const j1 = getState().addJunction('sig-a', { x: 2, y: 0, z: 0 })
       const j2 = getState().addJunction('sig-a', { x: 4, y: 0, z: 0 })
       const j3 = getState().addJunction('sig-a', { x: 6, y: 0, z: 0 })
 
-      // Wire the chain
-      getState().addWire({ type: 'input', entityId: inputNode.id }, { type: 'junction', entityId: j1.id }, [], [], 'sig-a')
-      getState().addWire({ type: 'junction', entityId: j1.id }, { type: 'junction', entityId: j2.id }, [], [], 'sig-a')
-      getState().addWire({ type: 'junction', entityId: j2.id }, { type: 'junction', entityId: j3.id }, [], [], 'sig-a')
+      // Original wire from input (j1 sits on this wire)
+      const wire1 = getState().addWire(
+        { type: 'input', entityId: inputNode.id },
+        { type: 'gate', entityId: 'gate-1', pinId: 'in' },
+        [], [], 'sig-a'
+      )
+      // Branch wire from j1 (j2 sits on this wire)
+      const wire2 = getState().addWire(
+        { type: 'input', entityId: inputNode.id },
+        { type: 'gate', entityId: 'gate-2', pinId: 'in' },
+        [], [], 'sig-a'
+      )
+      // Branch wire from j2 (j3 sits on this wire)
+      const wire3 = getState().addWire(
+        { type: 'input', entityId: inputNode.id },
+        { type: 'gate', entityId: 'gate-3', pinId: 'in' },
+        [], [], 'sig-a'
+      )
 
-      // Set input to true
+      // Update wireIds to set up the chain
+      useCircuitStore.setState((state) => {
+        const jn1 = state.junctions.find((j) => j.id === j1.id)
+        if (jn1) jn1.wireIds = [wire1.id]
+        const jn2 = state.junctions.find((j) => j.id === j2.id)
+        if (jn2) jn2.wireIds = [wire2.id]
+        const jn3 = state.junctions.find((j) => j.id === j3.id)
+        if (jn3) jn3.wireIds = [wire3.id]
+      })
+
       getState().updateInputNodeValue(inputNode.id, true)
 
-      // Reading from j3 should trace back through the chain to input
+      // j3 -> wireIds[0] = wire3 -> from = input node (value=true)
       const value = getSignalSourceValue(
         { type: 'junction', entityId: j3.id },
         getState()
       )
 
       expect(value).toBe(true)
+    })
+  })
+
+  describe('getSignalSourceValue - junction', () => {
+    it('resolves junction value through wireIds[0]', () => {
+      const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+
+      // NAND(false, false) = true
+      getState().simulationTick()
+
+      const wire = getState().addWire(
+        { type: 'gate', entityId: gate.id, pinId: gate.outputs[0].id },
+        { type: 'gate', entityId: 'dest-gate', pinId: 'dest-pin' },
+        []
+      )
+
+      // Create junction with wireIds[0] pointing to the wire from the gate output
+      const junction = getState().addJunction('sig-test', { x: 2, y: 0, z: 0 })
+      useCircuitStore.setState((state) => {
+        const j = state.junctions.find((j) => j.id === junction.id)
+        if (j) j.wireIds = [wire.id]
+      })
+
+      const value = getSignalSourceValue(
+        { type: 'junction', entityId: junction.id },
+        getState()
+      )
+
+      expect(value).toBe(true)
+    })
+
+    it('returns false for junction with no wireIds', () => {
+      const junction = getState().addJunction('sig-test', { x: 0, y: 0, z: 0 })
+
+      const value = getSignalSourceValue(
+        { type: 'junction', entityId: junction.id },
+        getState()
+      )
+
+      expect(value).toBe(false)
+    })
+
+    it('returns false for junction with non-existent wire', () => {
+      const junction = getState().addJunction('sig-test', { x: 0, y: 0, z: 0 })
+      useCircuitStore.setState((state) => {
+        const j = state.junctions.find((j) => j.id === junction.id)
+        if (j) j.wireIds = ['non-existent-wire']
+      })
+
+      const value = getSignalSourceValue(
+        { type: 'junction', entityId: junction.id },
+        getState()
+      )
+
+      expect(value).toBe(false)
+    })
+
+    it('handles cycle detection', () => {
+      const junctionA = getState().addJunction('sig-a', { x: 0, y: 0, z: 0 })
+      const junctionB = getState().addJunction('sig-a', { x: 4, y: 0, z: 0 })
+
+      // Wire from junctionB -> junctionA
+      const wireBA = getState().addWire(
+        { type: 'junction', entityId: junctionB.id },
+        { type: 'junction', entityId: junctionA.id },
+        [],
+        [],
+        'sig-a'
+      )
+
+      // Wire from junctionA -> junctionB
+      const wireAB = getState().addWire(
+        { type: 'junction', entityId: junctionA.id },
+        { type: 'junction', entityId: junctionB.id },
+        [],
+        [],
+        'sig-a'
+      )
+
+      // Set wireIds so each junction traces to the other
+      useCircuitStore.setState((state) => {
+        const jA = state.junctions.find((j) => j.id === junctionA.id)
+        const jB = state.junctions.find((j) => j.id === junctionB.id)
+        if (jA) jA.wireIds = [wireBA.id]
+        if (jB) jB.wireIds = [wireAB.id]
+      })
+
+      const value = getSignalSourceValue(
+        { type: 'junction', entityId: junctionA.id },
+        getState()
+      )
+
+      expect(value).toBe(false)
     })
   })
 
@@ -421,52 +538,41 @@ describe('simulationActions', () => {
     })
 
     it('propagates through junction for fan-out', () => {
-      // Create input node
+      // Fan-out: input feeds two gates via shared segments through a junction
+      // Both wires originate from input (junction just tracks which wires branch)
       const inputNode = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
-
-      // Create junction
       const junction = getState().addJunction('signal-a', { x: 2, y: 0, z: 0 })
-
-      // Create two gates
       const gate1 = getState().addGate('NOT', { x: 4, y: 0.2, z: -2 })
       const gate2 = getState().addGate('NOT', { x: 4, y: 0.2, z: 2 })
 
-      // Wire input to junction
-      getState().addWire(
+      // Original wire: input -> gate1
+      const wire1 = getState().addWire(
         { type: 'input', entityId: inputNode.id },
-        { type: 'junction', entityId: junction.id },
-        [],
-        [],
-        'signal-a'
-      )
-
-      // Wire junction to both gates (fan-out)
-      getState().addWire(
-        { type: 'junction', entityId: junction.id },
         { type: 'gate', entityId: gate1.id, pinId: gate1.inputs[0].id },
         [],
         [],
         'signal-a'
       )
-      getState().addWire(
-        { type: 'junction', entityId: junction.id },
+      // Branch wire: input -> gate2 (shares segments up to junction)
+      const wire2 = getState().addWire(
+        { type: 'input', entityId: inputNode.id },
         { type: 'gate', entityId: gate2.id, pinId: gate2.inputs[0].id },
         [],
         [],
         'signal-a'
       )
 
-      // Set input to true
-      getState().updateInputNodeValue(inputNode.id, true)
+      // Junction tracks both wires
+      useCircuitStore.setState((state) => {
+        const j = state.junctions.find((jn) => jn.id === junction.id)
+        if (j) j.wireIds = [wire1.id, wire2.id]
+      })
 
-      // Run simulation
+      getState().updateInputNodeValue(inputNode.id, true)
       getState().simulationTick()
 
-      // Both gates should receive true from junction
       expect(getState().gates[0].inputs[0].value).toBe(true)
       expect(getState().gates[1].inputs[0].value).toBe(true)
-
-      // Both NOT gates output false
       expect(getState().gates[0].outputs[0].value).toBe(false)
       expect(getState().gates[1].outputs[0].value).toBe(false)
     })

@@ -83,8 +83,11 @@ export function createMockStore(partial: Partial<CircuitState> = {}): CircuitSto
     cancelWiring: () => {},
     completeWiring: () => {},
     startWiringFromNode: () => {},
+    startWiringFromJunction: () => {},
     completeWiringFromNodeToGate: () => {},
     completeWiringToNode: () => {},
+    completeWiringFromJunction: () => {},
+    completeWiringFromJunctionToNode: () => {},
     getPinWorldPosition: () => null,
     getPinOrientation: () => null,
     toggleAxes: () => {},
@@ -99,9 +102,13 @@ export function createMockStore(partial: Partial<CircuitState> = {}): CircuitSto
     updateInputNodePosition: () => {},
     updateOutputNodePosition: () => {},
     // Junction actions
-    addJunction: () => ({ id: '', signalId: '', position: { x: 0, y: 0, z: 0 } }),
+    addJunction: () => ({ id: '', signalId: '', position: { x: 0, y: 0, z: 0 }, wireIds: [] }),
     removeJunction: () => {},
     updateJunctionPosition: () => {},
+    // Junction placement actions
+    startJunctionPlacement: () => {},
+    cancelJunctionPlacement: () => {},
+    placeJunctionOnWire: () => ({ id: '', signalId: '', position: { x: 0, y: 0, z: 0 }, wireIds: [] }),
     // Node placement actions
     startNodePlacement: () => {},
     cancelNodePlacement: () => {},

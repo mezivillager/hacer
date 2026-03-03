@@ -98,6 +98,7 @@ export function NodeRenderer({
           id={node.id}
           position={node.position}
           value={value}
+          onClick={onClick}
         />
       )
     }

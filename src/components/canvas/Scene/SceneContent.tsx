@@ -3,6 +3,7 @@ import { useCircuitStore } from '@/store/circuitStore'
 import { GroundPlane } from './GroundPlane'
 import { PlacementPreview } from './PlacementPreview'
 import { WirePreview } from './WirePreview'
+import { JunctionPreview } from './JunctionPreview'
 import { SceneGrid } from './SceneGrid'
 import { SceneOrbitControls } from './SceneOrbitControls'
 import { SceneKeyboardPan } from './SceneKeyboardPan'
@@ -25,6 +26,7 @@ export function SceneContent({ children }: SceneProps) {
       <GroundPlane />
       <PlacementPreview />
       <WirePreview />
+      <JunctionPreview />
       <SceneGrid />
       <SceneOrbitControls />
       <SceneKeyboardPan />

@@ -6,7 +6,7 @@ import { Wire3D } from './Wire3D'
 import { useCircuitStore, circuitActions } from '@/store/circuitStore'
 import { trackRender } from '@/utils/renderTracking'
 import { worldToGrid, canPlaceGateAt } from '@/utils/grid'
-import { handlePinClick, handleInputToggle, handleGateClick, handleInputNodeToggle, handleNodeClick, handleNodePinClick } from './handlers/canvasHandlers'
+import { handlePinClick, handleInputToggle, handleGateClick, handleInputNodeToggle, handleNodeClick, handleNodePinClick, handleJunctionClick } from './handlers/canvasHandlers'
 import { getSignalSourceValue } from '@/store/actions/simulationActions/simulationActions'
 
 const { Content } = Layout
@@ -216,6 +216,9 @@ export function CanvasArea() {
             <NodeRenderer
               key={junction.id}
               renderableNode={{ type: 'junction', node: junction, value: junctionValue }}
+              onClick={() => {
+                handleJunctionClick(junction.id, junction.position)
+              }}
             />
           )
         })}

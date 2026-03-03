@@ -36,6 +36,15 @@ export const createWireActions = (set: SetState, get: GetState): WireActions => 
     // Find wires that cross over the removed wire (they have arcs that may become orphaned)
     const state = get()
 
+    // Check if active wiring references this wire
+    // If wiring from junction, the originalWireId might reference this wire
+    if (state.wiringFrom?.destination?.type === 'junction' && state.wiringFrom.destination.originalWireId === wireId) {
+      // Cancel active wiring since the wire being deleted is the original wire for junction wiring
+      set((state) => {
+        state.wiringFrom = null
+      }, false, 'removeWire/cancelWiring')
+    }
+
     // Find wires that have arcs hopping over the wire being removed
     // These wires have the removed wire's ID in their crossesWireIds
     const affectedWireIds = state.wires
@@ -47,6 +56,23 @@ export const createWireActions = (set: SetState, get: GetState): WireActions => 
       const index = state.wires.findIndex((w) => w.id === wireId)
       if (index !== -1) {
         state.wires.splice(index, 1)
+      }
+
+      // Remove wire ID from all junctions
+      for (const junction of state.junctions) {
+        const wireIndex = junction.wireIds.indexOf(wireId)
+        if (wireIndex !== -1) {
+          junction.wireIds.splice(wireIndex, 1)
+        }
+      }
+
+      // Remove junctions that now have only 0 or 1 wire passing through them
+      // (Junctions are only needed when multiple wires pass through them)
+      for (let i = state.junctions.length - 1; i >= 0; i--) {
+        const junction = state.junctions[i]
+        if (junction.wireIds.length <= 1) {
+          state.junctions.splice(i, 1)
+        }
       }
     }, false, 'removeWire')
 

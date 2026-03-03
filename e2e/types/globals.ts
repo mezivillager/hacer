@@ -101,8 +101,16 @@ export interface CircuitActionsAPI {
   removeConstantNode: (nodeId: string) => void
   updateInputNodeValue: (nodeId: string, value: boolean) => void
   // Junction management actions
-  addJunction: (signalId: string, position: { x: number; y: number; z: number }) => { id: string; signalId: string }
+  addJunction: (signalId: string, position: { x: number; y: number; z: number }) => { id: string; signalId: string; wireIds: string[] }
   removeJunction: (junctionId: string) => void
+  // Junction placement actions
+  startJunctionPlacement: () => void
+  cancelJunctionPlacement: () => void
+  placeJunctionOnWire: (clickPoint: { x: number; y: number; z: number }, wireId: string) => { id: string; signalId: string; position: { x: number; y: number; z: number }; wireIds: string[] }
+  // Junction wiring actions
+  startWiringFromJunction: (junctionId: string, position: { x: number; y: number; z: number }) => void
+  completeWiringFromJunction: (toGateId: string, toPinId: string, toPinType: 'input' | 'output') => void
+  completeWiringFromJunctionToNode: (nodeId: string, nodeType: NodeType) => void
   // E2E helper for wire path calculation
   calculateWirePathSegments: (
     fromGateId: string,

@@ -11,6 +11,7 @@ describe('wireActions', () => {
     useCircuitStore.setState({
       gates: [],
       wires: [],
+      junctions: [],
       selectedGateId: null,
       simulationRunning: false,
       simulationSpeed: 100,
@@ -170,9 +171,172 @@ describe('wireActions', () => {
       })
 
       // Removing a non-existent wire should not throw even with undefined crossesWireIds
-      expect(() => getState().removeWire('some-other-wire-id')).not.toThrow()
+    expect(() => getState().removeWire('some-other-wire-id')).not.toThrow()
+  })
+
+  describe('removeWire with junctions', () => {
+    const SECTION_SIZE = 4.0
+    const WIRE_HEIGHT = 0.2
+
+    it('removes junction when only one wire remains', () => {
+      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('NAND', { x: 8, y: 0, z: 0 })
+      const gate3 = getState().addGate('NAND', { x: 8, y: 0, z: 4 })
+
+      // Create original wire with exit + vertical + horizontal + entry segments
+      const wire1 = getState().addWire(
+        { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
+        { type: 'gate', entityId: gate2.id, pinId: gate2.inputs[0].id },
+        [
+          { type: 'exit', start: { x: 0.7, y: WIRE_HEIGHT, z: 0 }, end: { x: SECTION_SIZE, y: WIRE_HEIGHT, z: 0 } },
+          { type: 'vertical', start: { x: SECTION_SIZE, y: WIRE_HEIGHT, z: 0 }, end: { x: SECTION_SIZE, y: WIRE_HEIGHT, z: -SECTION_SIZE } },
+          { type: 'horizontal', start: { x: SECTION_SIZE, y: WIRE_HEIGHT, z: -SECTION_SIZE }, end: { x: 2 * SECTION_SIZE, y: WIRE_HEIGHT, z: -SECTION_SIZE } },
+          { type: 'entry', start: { x: 2 * SECTION_SIZE, y: WIRE_HEIGHT, z: -SECTION_SIZE }, end: { x: 2 * SECTION_SIZE + 0.7, y: WIRE_HEIGHT, z: -SECTION_SIZE } },
+        ],
+        [],
+        'sig-test'
+      )
+
+      // Place junction at corner where vertical meets horizontal
+      const junction = getState().placeJunctionOnWire(
+        { x: SECTION_SIZE, y: WIRE_HEIGHT, z: -SECTION_SIZE },
+        wire1.id
+      )
+
+      // Create branch wire from junction
+      getState().startWiringFromJunction(junction.id, junction.position)
+      useCircuitStore.setState((state) => {
+        if (state.wiringFrom) {
+          state.wiringFrom.segments = [
+            {
+              start: { x: SECTION_SIZE, y: WIRE_HEIGHT, z: -SECTION_SIZE },
+              end: { x: 7.5, y: WIRE_HEIGHT, z: 4 },
+              type: 'horizontal',
+            },
+          ]
+        }
+      })
+      getState().completeWiringFromJunction(gate3.id, gate3.inputs[0].id, 'input')
+
+      expect(getState().junctions).toHaveLength(1)
+      expect(getState().wires).toHaveLength(2)
+
+      // Delete one wire - junction should be removed (only one wire remains)
+      getState().removeWire(wire1.id)
+
+      expect(getState().junctions).toHaveLength(0) // Junction removed
+      expect(getState().wires).toHaveLength(1) // Branch wire remains
+    })
+
+    it('keeps junction when multiple wires remain', () => {
+      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('NAND', { x: 8, y: 0, z: 0 })
+      const gate3 = getState().addGate('NAND', { x: 8, y: 0, z: 4 })
+      const gate4 = getState().addGate('NAND', { x: 8, y: 0, z: 8 })
+
+      // Create original wire with exit + vertical + horizontal + entry segments
+      const wire1 = getState().addWire(
+        { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
+        { type: 'gate', entityId: gate2.id, pinId: gate2.inputs[0].id },
+        [
+          { type: 'exit', start: { x: 0.7, y: WIRE_HEIGHT, z: 0 }, end: { x: SECTION_SIZE, y: WIRE_HEIGHT, z: 0 } },
+          { type: 'vertical', start: { x: SECTION_SIZE, y: WIRE_HEIGHT, z: 0 }, end: { x: SECTION_SIZE, y: WIRE_HEIGHT, z: -SECTION_SIZE } },
+          { type: 'horizontal', start: { x: SECTION_SIZE, y: WIRE_HEIGHT, z: -SECTION_SIZE }, end: { x: 2 * SECTION_SIZE, y: WIRE_HEIGHT, z: -SECTION_SIZE } },
+          { type: 'entry', start: { x: 2 * SECTION_SIZE, y: WIRE_HEIGHT, z: -SECTION_SIZE }, end: { x: 2 * SECTION_SIZE + 0.7, y: WIRE_HEIGHT, z: -SECTION_SIZE } },
+        ],
+        [],
+        'sig-test'
+      )
+
+      // Place junction at corner where vertical meets horizontal
+      const junction = getState().placeJunctionOnWire(
+        { x: SECTION_SIZE, y: WIRE_HEIGHT, z: -SECTION_SIZE },
+        wire1.id
+      )
+
+      // Create two branch wires
+      getState().startWiringFromJunction(junction.id, junction.position)
+      useCircuitStore.setState((state) => {
+        if (state.wiringFrom) {
+          state.wiringFrom.segments = [
+            {
+              start: { x: SECTION_SIZE, y: WIRE_HEIGHT, z: -SECTION_SIZE },
+              end: { x: 7.5, y: WIRE_HEIGHT, z: 4 },
+              type: 'horizontal',
+            },
+          ]
+        }
+      })
+      getState().completeWiringFromJunction(gate3.id, gate3.inputs[0].id, 'input')
+
+      getState().startWiringFromJunction(junction.id, junction.position)
+      useCircuitStore.setState((state) => {
+        if (state.wiringFrom) {
+          state.wiringFrom.segments = [
+            {
+              start: { x: SECTION_SIZE, y: WIRE_HEIGHT, z: -SECTION_SIZE },
+              end: { x: 7.5, y: WIRE_HEIGHT, z: 8 },
+              type: 'horizontal',
+            },
+          ]
+        }
+      })
+      getState().completeWiringFromJunction(gate4.id, gate4.inputs[0].id, 'input')
+
+      expect(getState().junctions).toHaveLength(1)
+      expect(getState().wires).toHaveLength(3) // Original + 2 branches
+
+      // Delete one branch wire - junction should remain (2 wires still pass through)
+      const branchWire = getState().wires.find((w) => w.to.entityId === gate3.id)
+      if (branchWire) {
+        getState().removeWire(branchWire.id)
+      }
+
+      expect(getState().junctions).toHaveLength(1) // Junction kept
+      expect(getState().wires).toHaveLength(2) // Original + 1 branch remain
+    })
+
+    it('cancels active wiring when original wire is deleted', () => {
+      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('NAND', { x: 8, y: 0, z: 0 })
+
+      // Create original wire with exit + vertical + horizontal + entry segments
+      const wire1 = getState().addWire(
+        { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
+        { type: 'gate', entityId: gate2.id, pinId: gate2.inputs[0].id },
+        [
+          { type: 'exit', start: { x: 0.7, y: WIRE_HEIGHT, z: 0 }, end: { x: SECTION_SIZE, y: WIRE_HEIGHT, z: 0 } },
+          { type: 'vertical', start: { x: SECTION_SIZE, y: WIRE_HEIGHT, z: 0 }, end: { x: SECTION_SIZE, y: WIRE_HEIGHT, z: -SECTION_SIZE } },
+          { type: 'horizontal', start: { x: SECTION_SIZE, y: WIRE_HEIGHT, z: -SECTION_SIZE }, end: { x: 2 * SECTION_SIZE, y: WIRE_HEIGHT, z: -SECTION_SIZE } },
+          { type: 'entry', start: { x: 2 * SECTION_SIZE, y: WIRE_HEIGHT, z: -SECTION_SIZE }, end: { x: 2 * SECTION_SIZE + 0.7, y: WIRE_HEIGHT, z: -SECTION_SIZE } },
+        ],
+        [],
+        'sig-test'
+      )
+
+      // Place junction at corner where vertical meets horizontal
+      const junction = getState().placeJunctionOnWire(
+        { x: SECTION_SIZE, y: WIRE_HEIGHT, z: -SECTION_SIZE },
+        wire1.id
+      )
+
+      // Start wiring from junction
+      getState().startWiringFromJunction(junction.id, junction.position)
+
+      // Verify wiring is active
+      expect(getState().wiringFrom).not.toBe(null)
+      expect(getState().wiringFrom?.destination?.originalWireId).toBe(wire1.id)
+
+      // Delete the original wire while wiring is active
+      getState().removeWire(wire1.id)
+
+      // Wiring should be cancelled
+      expect(getState().wiringFrom).toBe(null)
+      expect(getState().wires).toHaveLength(0) // Original wire deleted
+      expect(getState().junctions).toHaveLength(0) // Junction removed (no wires through it)
     })
   })
+})
 
   describe('setInputValue', () => {
     it('sets input pin value', () => {

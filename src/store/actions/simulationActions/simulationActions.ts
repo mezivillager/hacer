@@ -46,19 +46,18 @@ export function getSignalSourceValue(
       return outputPin?.value ?? false
     }
     case 'junction': {
-      // Cycle detection: if we've already visited this junction, we have a loop
       if (visited.has(from.entityId)) {
-        console.warn('[getSignalSourceValue] Cycle detected in junction wiring:', from.entityId)
         return false
       }
       visited.add(from.entityId)
 
-      // Junction gets its value from the wire feeding into it
-      const feedingWire = state.wires.find(
-        (w) => w.to.type === 'junction' && w.to.entityId === from.entityId
-      )
-      if (feedingWire) {
-        return getSignalSourceValue(feedingWire.from, state, visited)
+      // Resolve junction value by tracing through the original wire (wireIds[0])
+      const junction = state.junctions.find((j) => j.id === from.entityId)
+      if (junction && junction.wireIds.length > 0) {
+        const originalWire = state.wires.find((w) => w.id === junction.wireIds[0])
+        if (originalWire) {
+          return getSignalSourceValue(originalWire.from, state, visited)
+        }
       }
       return false
     }
@@ -89,7 +88,6 @@ export const createSimulationActions = (set: SetState): SimulationActions => ({
       state.selectedGateId = null
       state.selectedWireId = null
       state.placementMode = null
-      // Clear HDL nodes
       state.inputNodes = []
       state.outputNodes = []
       state.constantNodes = []
@@ -97,6 +95,9 @@ export const createSimulationActions = (set: SetState): SimulationActions => ({
       state.selectedNodeId = null
       state.selectedNodeType = null
       state.nodePlacementMode = null
+      state.junctionPlacementMode = null
+      state.junctionPreviewPosition = null
+      state.wiringFrom = null
     }, false, 'clearCircuit')
   },
 

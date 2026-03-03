@@ -10,6 +10,8 @@ interface JunctionNode3DProps {
   position: Position
   /** Current signal value passing through the junction */
   value: boolean
+  /** Click handler for the junction */
+  onClick?: () => void
 }
 
 /**
@@ -19,12 +21,19 @@ interface JunctionNode3DProps {
  * @param props - Junction node properties
  * @returns React Three Fiber mesh element
  */
-export function JunctionNode3D({ id: _id, position, value }: JunctionNode3DProps) {
+export function JunctionNode3D({ id: _id, position, value, onClick }: JunctionNode3DProps) {
   // Color based on signal value
   const color = value ? colors.pin.active : colors.pin.inactive
 
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (onClick) {
+      onClick()
+    }
+  }
+
   return (
-    <mesh position={[position.x, position.y, position.z]}>
+    <mesh position={[position.x, position.y, position.z]} onClick={handleClick}>
       <sphereGeometry args={[JUNCTION_CONFIG.radius, JUNCTION_CONFIG.segments, JUNCTION_CONFIG.segments]} />
       <meshStandardMaterial
         color={color}

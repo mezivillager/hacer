@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react'
-import { calculateWirePath, canExtendPath, extendPathFromEnd } from '@/utils/wiringScheme'
+import { calculateWirePath, calculateWirePathFromJunction, canExtendPath, extendPathFromEnd } from '@/utils/wiringScheme'
 import type { WireSegment, WirePath, DestinationType, Position } from '@/utils/wiringScheme/types'
 import type { GateInstance, WiringState } from '@/store/types'
+import { useCircuitStore } from '@/store/circuitStore'
 
 interface UseWirePreviewPathParams {
   wiringFrom: WiringState | null
@@ -34,19 +35,18 @@ export function useWirePreviewPath({
   allGates,
   fromPosition,
 }: UseWirePreviewPathParams): UseWirePreviewPathResult {
-  // Path state management for incremental extension
+  const junctions = useCircuitStore((s) => s.junctions)
+  const wires = useCircuitStore((s) => s.wires)
+
   const lastCalculatedPathRef = useRef<WirePath | null>(null)
   const lastPathEndRef = useRef<Position | null>(null)
   const lastDestinationRef = useRef<{ type: 'cursor' | 'pin', data: Position } | null>(null)
   const lastSegmentRef = useRef<WireSegment | null>(null)
 
-  // Track previous wiring source to detect changes
   const prevWiringSourceRef = useRef<{ gateId: string; pinId: string } | null>(null)
 
-  // Reset path state when wiring starts or is canceled
   useEffect(() => {
     if (!wiringFrom) {
-      // Wiring canceled - clear all path state
       lastCalculatedPathRef.current = null
       lastPathEndRef.current = null
       lastDestinationRef.current = null
@@ -55,13 +55,11 @@ export function useWirePreviewPath({
       return
     }
 
-    // Check if wiring source changed (new wiring started)
     const currentFromGateId = wiringFrom.fromGateId
     const currentFromPinId = wiringFrom.fromPinId
 
     if (prevWiringSourceRef.current) {
       if (prevWiringSourceRef.current.gateId !== currentFromGateId || prevWiringSourceRef.current.pinId !== currentFromPinId) {
-        // New wiring started - clear all path state
         lastCalculatedPathRef.current = null
         lastPathEndRef.current = null
         lastDestinationRef.current = null
@@ -72,12 +70,14 @@ export function useWirePreviewPath({
     prevWiringSourceRef.current = { gateId: currentFromGateId, pinId: currentFromPinId }
   }, [wiringFrom])
 
-  // Early returns if prerequisites not met
-  if (!wiringFrom || !destination || !startOrientation) {
+  const isJunctionWiring = wiringFrom?.source?.type === 'junction'
+  if (!wiringFrom || !destination) {
+    return { path: null, error: null }
+  }
+  if (!isJunctionWiring && !startOrientation) {
     return { path: null, error: null }
   }
 
-  // Calculate or extend path
   let previewPath: WirePath | undefined
   let shouldCalculateWirePath = true
   let error: Error | null = null
@@ -89,17 +89,13 @@ export function useWirePreviewPath({
     const lastPathEnd = lastPathEndRef.current
     const lastSegment = lastSegmentRef.current
 
-    // If we've already reached a pin (last segment is entry segment), use previous path
-    // This avoids redundant extension attempts and recalculations
     const hasReachedPin = lastSegment?.type === 'entry'
     const isOnPin = destination.type === 'pin'
 
     if (hasReachedPin && isOnPin && lastCalculatedPathRef.current) {
-      // Already reached pin - use previous path as-is, no extension or recalculation needed
       previewPath = lastCalculatedPathRef.current
       shouldCalculateWirePath = false
     } else {
-      // Check if we can extend (don't check for destination type change)
       const canExtend =
         hasLastPath &&
         hasLastSegment &&
@@ -111,7 +107,6 @@ export function useWirePreviewPath({
         })
 
       if (canExtend && lastCalculatedPathRef.current) {
-        // Try to extend from last path
         try {
           previewPath = extendPathFromEnd(
             lastCalculatedPathRef.current,
@@ -120,32 +115,60 @@ export function useWirePreviewPath({
               existingSegments,
             }
           )
-          shouldCalculateWirePath = false // Extension succeeded, don't recalculate
-        } catch (extensionError) {
-          // Extension failed (backtracking/overlap/invalid) - will recalculate from scratch
+          shouldCalculateWirePath = false
+        } catch {
           shouldCalculateWirePath = true
-          console.debug('[ 🔥 WirePreview ] Extension failed, recalculating:', extensionError)
         }
       }
     }
 
-    // Calculate wire path from scratch if needed
     if (shouldCalculateWirePath) {
-      console.debug('[ 🔥 WirePreview ] Recalculating:')
-      previewPath = calculateWirePath(
-        fromPosition,
-        destination,
-        { direction: startOrientation },
-        allGates,
-        {
-          sourceGateId: wiringFrom.fromGateId,
-          destinationGateId,
-          existingSegments,
+      if (wiringFrom?.source?.type === 'junction') {
+        const junction = junctions.find((j) => j.id === wiringFrom.source.junctionId)
+        if (junction) {
+          const sourceWireId = wiringFrom.destination?.type === 'junction'
+            ? wiringFrom.destination.originalWireId
+            : undefined
+          const sourceWire = sourceWireId ? wires.find((w) => w.id === sourceWireId) : undefined
+          previewPath = calculateWirePathFromJunction(
+            junction.position,
+            destination,
+            allGates,
+            {
+              sourceGateId: wiringFrom.fromGateId,
+              destinationGateId,
+              existingSegments,
+              sourceWireSegments: sourceWire?.segments,
+            }
+          )
+        } else {
+          previewPath = calculateWirePath(
+            fromPosition,
+            destination,
+            { direction: startOrientation },
+            allGates,
+            {
+              sourceGateId: wiringFrom.fromGateId,
+              destinationGateId,
+              existingSegments,
+            }
+          )
         }
-      )
+      } else {
+        previewPath = calculateWirePath(
+          fromPosition,
+          destination,
+          { direction: startOrientation },
+          allGates,
+          {
+            sourceGateId: wiringFrom.fromGateId,
+            destinationGateId,
+            existingSegments,
+          }
+        )
+      }
     }
 
-    // Update path state refs (previewPath is guaranteed to be assigned at this point)
     if (!previewPath) {
       throw new Error('previewPath must be assigned')
     }
@@ -163,13 +186,6 @@ export function useWirePreviewPath({
   } catch (err) {
     error = err instanceof Error ? err : new Error(String(err))
     console.error('[WirePreview] Pathfinding error:', error)
-    console.error('[WirePreview] Wiring context:', {
-      fromGateId: wiringFrom.fromGateId,
-      fromPinId: wiringFrom.fromPinId,
-      destinationGateId: wiringFrom.destinationGateId,
-      destinationPinId: wiringFrom.destinationPinId,
-      previewEndPosition: wiringFrom.previewEndPosition,
-    })
   }
 
   return {
@@ -177,4 +193,3 @@ export function useWirePreviewPath({
     error,
   }
 }
-

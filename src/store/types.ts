@@ -83,6 +83,7 @@ export interface JunctionNode {
   id: string
   position: Position
   signalId: string       // Which signal this junction belongs to
+  wireIds: string[]      // IDs of wires that pass through this junction
 }
 
 /**
@@ -129,6 +130,7 @@ export type WiringSource =
   | { type: 'input'; nodeId: string }
   | { type: 'output'; nodeId: string }
   | { type: 'constant'; nodeId: string }
+  | { type: 'junction'; junctionId: string }
 
 /**
  * Destination of a wire being created.
@@ -137,6 +139,7 @@ export type WiringSource =
 export type WiringDestination =
   | { type: 'gate'; gateId: string; pinId: string }
   | { type: 'output'; nodeId: string }
+  | { type: 'junction'; junctionId: string; originalWireId: string; sharedSegments: import('@/utils/wiringScheme/types').WireSegment[] }
 
 export interface WiringState {
   // Legacy gate-based wiring (for backward compatibility)
@@ -181,6 +184,10 @@ export interface CircuitState {
   nodePlacementMode: NodePlacementType | null
   selectedNodeId: string | null
   selectedNodeType: NodeType | null
+
+  // Junction placement
+  junctionPlacementMode: boolean | null
+  junctionPreviewPosition: Position | null
 }
 
 // Action types for the Zustand store
@@ -244,8 +251,11 @@ export interface WiringActions {
   completeWiring: (toGateId: string, toPinId: string, toPinType: 'input' | 'output') => void
   // Node-based wiring (for HDL support)
   startWiringFromNode: (nodeId: string, nodeType: NodeType, position: Position) => void
+  startWiringFromJunction: (junctionId: string, position: Position) => void
   completeWiringFromNodeToGate: (toGateId: string, toPinId: string, toPinType: 'input' | 'output') => void
   completeWiringToNode: (nodeId: string, nodeType: NodeType) => void
+  completeWiringFromJunction: (toGateId: string, toPinId: string, toPinType: 'input' | 'output') => void
+  completeWiringFromJunctionToNode: (nodeId: string, nodeType: NodeType) => void
 }
 
 export interface PinHelpers {
@@ -285,5 +295,15 @@ export interface JunctionActions {
   updateJunctionPosition: (junctionId: string, position: Position) => void
 }
 
+/**
+ * Actions for placing junction nodes on wires.
+ */
+export interface JunctionPlacementActions {
+  startJunctionPlacement: () => void
+  cancelJunctionPlacement: () => void
+  placeJunctionOnWire: (clickPoint: Position, wireId: string) => JunctionNode
+  updateJunctionPreviewPosition: (position: Position | null) => void
+}
+
 // Combined store type
-export interface CircuitStore extends CircuitState, GateActions, WireActions, SimulationActions, PlacementActions, NodePlacementActions, WiringActions, PinHelpers, ViewActions, NodeActions, JunctionActions {}
+export interface CircuitStore extends CircuitState, GateActions, WireActions, SimulationActions, PlacementActions, NodePlacementActions, WiringActions, PinHelpers, ViewActions, NodeActions, JunctionActions, JunctionPlacementActions {}
