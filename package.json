@@ -2,6 +2,28 @@
   "name": "hacer",
   "private": true,
   "version": "0.0.0",
+  "description": "A 3D logic gate simulator inspired by nand2tetris",
+  "license": "MIT",
+  "author": "mezivillager",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mezivillager/hacer"
+  },
+  "bugs": {
+    "url": "https://github.com/mezivillager/hacer/issues"
+  },
+  "homepage": "https://github.com/mezivillager/hacer#readme",
+  "keywords": [
+    "logic-gates",
+    "nand2tetris",
+    "simulator",
+    "3d",
+    "react",
+    "education"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
   "type": "module",
   "scripts": {
     "dev": "vite",
