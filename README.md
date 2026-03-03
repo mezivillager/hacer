@@ -4,6 +4,8 @@
 [![Node.js 20+](https://img.shields.io/badge/node-%3E%3D20-brightgreen)](https://nodejs.org)
 [![CI](https://github.com/mezivillager/hacer/actions/workflows/ci.yml/badge.svg)](https://github.com/mezivillager/hacer/actions/workflows/ci.yml)
 
+**[Live Demo](https://mezivillager.github.io/hacer/)**
+
 A complete first-principles computing platform. Build an entire computer from NAND gates up through a full software stack -- assembler, virtual machine, compiler, and high-level language -- all in an interactive 3D environment.
 
 Inspired by [nand2tetris](https://www.nand2tetris.org/) and going beyond it: HACER enables custom hardware architectures, plugin-based extensibility, AI agent integration, and real-time collaboration.
@@ -62,7 +64,7 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173) to view the simulator.
+Open [http://localhost:5173](http://localhost:5173) to view the simulator locally, or try the [live demo](https://mezivillager.github.io/hacer/).
 
 ## Controls
 
