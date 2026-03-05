@@ -6,7 +6,7 @@
 
 **[Live Demo](https://mezivillager.github.io/hacer/)**
 
-A complete first-principles computing platform. Build an entire computer from NAND gates up through a full software stack -- assembler, virtual machine, compiler, and high-level language -- all in an interactive 3D environment.
+A rudimentary first-principles computing platform. Build a basic computer from NAND gates up through a full software stack -- assembler, virtual machine, compiler, and high-level language -- all in an interactive 3D environment.
 
 Inspired by [nand2tetris](https://www.nand2tetris.org/) and going beyond it: HACER enables custom hardware architectures, plugin-based extensibility, AI agent integration, and real-time collaboration.
 
