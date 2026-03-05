@@ -1,4 +1,4 @@
-# HACER
+# HACER (Hardware Architecture & Constraints Explorer/Researcher)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js 20+](https://img.shields.io/badge/node-%3E%3D20-brightgreen)](https://nodejs.org)
