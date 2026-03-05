@@ -1,6 +1,6 @@
 # Phase 23: Documentation Automation & AI Agents (Weeks 73-75)
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)
+**Part of:** [Comprehensive Development Roadmap](../README.md)
 **Priority:** 🟡 MEDIUM
 **Timeline:** Weeks 73-75
 **Dependencies:** Phase 22 complete (public website established), Phase 16 complete (API ecosystem working)
@@ -1804,6 +1804,6 @@ interface ReviewerProfile {
 
 ---
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)  
-**Previous:** [Phase 19: Public Website & Documentation Platform](phase-19-public-website.md)  
-**Next:** [Phase 21: Release Management & Automated Changelog](phase-21-release-management.md)
+**Part of:** [Comprehensive Development Roadmap](../README.md)  
+**Previous:** [Phase 22: Public Website & Documentation Platform](phase-22-public-website.md)  
+**Next:** [Phase 24: AI-Powered Code Review & Quality Gates](phase-20-ai-code-review.md)

@@ -1,6 +1,6 @@
 # Phase 4.5: Release Management & Automation Foundation (Weeks 14-16)
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)
+**Part of:** [Comprehensive Development Roadmap](../README.md)
 **Priority:** 🟠 HIGH
 **Timeline:** Weeks 14-16
 **Dependencies:** Phase 2.5 complete (developer tooling established), basic project structure in place
@@ -1797,6 +1797,6 @@ interface Reviewer {
 
 ---
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)  
-**Previous:** [Phase 20: Documentation Automation & AI Agents](phase-20-docs-automation.md)  
-**Next:** [Phase 22: Authentication System](phase-22-authentication.md)
+**Part of:** [Comprehensive Development Roadmap](../README.md)  
+**Previous:** [Phase 3.5: Testing & Quality Infrastructure](phase-3.5-testing-infrastructure.md)  
+**Next:** [Phase 5: Core Architecture](phase-5-core-architecture.md)

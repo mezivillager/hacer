@@ -1,6 +1,6 @@
 # Phase 17: Analytics & Insights (Weeks 48-49)
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)  
+**Part of:** [Comprehensive Development Roadmap](../README.md)  
 **Priority:** 🟡 LOW  
 **Timeline:** Weeks 48-49  
 **Dependencies:** Phase 8 complete (backend with basic analytics)
@@ -1115,6 +1115,6 @@ Focus on practical, actionable recommendations they can complete in a reasonable
 
 ---
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)  
-**Previous:** [Phase 16: Advanced Collaboration Features](phase-16-advanced-collaboration.md)  
-**Next:** [Phase 18: API Ecosystem](phase-18-api-ecosystem.md)
+**Part of:** [Comprehensive Development Roadmap](../README.md)  
+**Previous:** [Phase 18: Advanced Collaboration](phase-18-advanced-collaboration.md)  
+**Next:** [Phase 20: Accessibility & i18n](phase-20-accessibility-i18n.md)

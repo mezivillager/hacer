@@ -1,6 +1,6 @@
 # Phase 11: Built-in Components Library (Weeks 37-39)
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)
+**Part of:** [Comprehensive Development Roadmap](../README.md)
 **Priority:** 🟢 HIGH
 **Timeline:** Weeks 37-39
 **Dependencies:** Phase 10 complete (software stack working), Phase 1.5 complete (design system established)
@@ -89,6 +89,6 @@ This phase creates a comprehensive library of built-in components covering the c
 
 ---
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)  
-**Previous:** [Phase 6: Software Stack](phase-6-software-stack.md)  
-**Next:** [Phase 8: Backend](phase-8-backend.md)
+**Part of:** [Comprehensive Development Roadmap](../README.md)  
+**Previous:** [Phase 10: Software Stack](phase-10-software-stack.md)  
+**Next:** [Phase 12: Backend](phase-12-backend.md)

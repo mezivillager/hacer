@@ -1,6 +1,6 @@
 # Phase 2: Plugin System & Extensibility (Weeks 8-10)
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)  
+**Part of:** [Comprehensive Development Roadmap](../README.md)  
 **Priority:** 🟠 HIGH  
 **Timeline:** Weeks 8-10  
 **Dependencies:** Phase 1 complete
@@ -69,6 +69,6 @@ This phase implements a comprehensive plugin system that enables extensibility w
 
 ---
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)  
-**Previous:** [Phase 1: Core Architecture](phase-1-core-architecture.md)  
-**Next:** [Phase 3: AI Integration](phase-3-ai-integration.md)
+**Part of:** [Comprehensive Development Roadmap](../README.md)  
+**Previous:** [Phase 5: Core Architecture](phase-5-core-architecture.md)  
+**Next:** [Phase 7: AI Integration](phase-7-ai-integration.md)

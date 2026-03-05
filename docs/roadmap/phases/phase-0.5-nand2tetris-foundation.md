@@ -1,6 +1,6 @@
 # Phase 0.5: Nand2Tetris Foundation (Weeks 2-4)
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)  
+**Part of:** [Comprehensive Development Roadmap](../README.md)  
 **Priority:** 🔴 CRITICAL - Blocks All Subsequent Phases  
 **Timeline:** Weeks 2-4  
 **Dependencies:** Phase 0.25 complete (grid-based system improves UX before core features)
@@ -329,6 +329,6 @@ export class SparseMemory implements MemorySystem {
 
 ---
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)  
+**Part of:** [Comprehensive Development Roadmap](../README.md)  
 **Previous:** [Phase 0: Critical Fixes](phase-0-critical-fixes.md)  
-**Next:** [Phase 1: Core Architecture](phase-1-core-architecture.md)
+**Next:** [Phase 1.5: Design System & Visual Consistency](phase-1.5-design-system.md)

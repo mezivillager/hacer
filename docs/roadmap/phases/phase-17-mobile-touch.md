@@ -1,6 +1,6 @@
 # Phase 15: Mobile & Touch Optimization (Weeks 44-45)
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)  
+**Part of:** [Comprehensive Development Roadmap](../README.md)  
 **Priority:** 🟡 MEDIUM  
 **Timeline:** Weeks 44-45  
 **Dependencies:** Phase 9 complete (design system with responsive components)
@@ -970,6 +970,6 @@ export function MobileForm() {
 
 ---
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)  
-**Previous:** [Phase 14: Security & Privacy](phase-14-security-privacy.md)  
-**Next:** [Phase 16: Advanced Collaboration Features](phase-16-advanced-collaboration.md)
+**Part of:** [Comprehensive Development Roadmap](../README.md)  
+**Previous:** [Phase 16: API Ecosystem](phase-16-api-ecosystem.md)  
+**Next:** [Phase 18: Advanced Collaboration](phase-18-advanced-collaboration.md)

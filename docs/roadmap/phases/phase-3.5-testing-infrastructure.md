@@ -1,6 +1,6 @@
 # Phase 3.5: Testing & Quality Infrastructure Foundation (Weeks 11-13)
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)
+**Part of:** [Comprehensive Development Roadmap](../README.md)
 **Priority:** 🟠 HIGH
 **Timeline:** Weeks 11-13
 **Dependencies:** Phase 2.5 complete (developer tooling established), Phase 1.5 complete (design system foundation)
@@ -74,6 +74,6 @@ This phase establishes comprehensive testing infrastructure using property-based
 
 ---
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)  
-**Previous:** [Phase 3: AI Integration](phase-3-ai-integration.md)  
-**Next:** [Phase 5: Performance](phase-5-performance.md)
+**Part of:** [Comprehensive Development Roadmap](../README.md)  
+**Previous:** [Phase 2.5: Developer Tooling & DX](phase-2.5-developer-tooling.md)  
+**Next:** [Phase 4.5: Release Management & Automation](phase-4.5-release-management.md)

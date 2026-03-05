@@ -1,6 +1,6 @@
 # Phase 8: Enhanced Testing & Curriculum Validation (Weeks 26-28)
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)
+**Part of:** [Comprehensive Development Roadmap](../README.md)
 **Priority:** 🟡 MEDIUM
 **Timeline:** Weeks 26-28
 **Dependencies:** Phase 7 complete (AI integration working), Phase 10 complete (software stack functional)
@@ -74,6 +74,6 @@ This phase establishes comprehensive testing infrastructure using property-based
 
 ---
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)  
-**Previous:** [Phase 3: AI Integration](phase-3-ai-integration.md)  
-**Next:** [Phase 5: Performance](phase-5-performance.md)
+**Part of:** [Comprehensive Development Roadmap](../README.md)  
+**Previous:** [Phase 7: AI Integration](phase-7-ai-integration.md)  
+**Next:** [Phase 9: Performance](phase-9-performance.md)

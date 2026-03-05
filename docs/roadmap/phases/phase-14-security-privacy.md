@@ -1,6 +1,6 @@
 # Phase 14: Security & Privacy (Weeks 42-43)
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)  
+**Part of:** [Comprehensive Development Roadmap](../README.md)  
 **Priority:** 🟠 HIGH  
 **Timeline:** Weeks 42-43  
 **Dependencies:** Phase 11 complete (production deployment working)
@@ -898,6 +898,6 @@ export function PrivacyControls() {
 
 ---
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)  
-**Previous:** [Phase 13: Advanced Performance & PWA](phase-13-advanced-performance-pwa.md)  
-**Next:** [Phase 15: Mobile & Touch Optimization](phase-15-mobile-touch.md)
+**Part of:** [Comprehensive Development Roadmap](../README.md)  
+**Previous:** [Phase 13: Deployment & Production](phase-13-deployment-production.md)  
+**Next:** [Phase 15: Authentication System](phase-15-authentication.md)

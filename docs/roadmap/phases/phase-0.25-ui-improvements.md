@@ -2,7 +2,7 @@
 
 **Status:** ✅ **COMPLETED**  
 **Completed:** 2025-12-17  
-**Part of:** [Comprehensive Development Roadmap](../../README.md)  
+**Part of:** [Comprehensive Development Roadmap](../README.md)  
 **Priority:** 🟠 HIGH - Improves User Experience Before Core Features  
 **Timeline:** Week 1.5 (between Phase 0 and Phase 0.5)  
 **Dependencies:** Phase 0 complete
@@ -1072,6 +1072,6 @@ e2e/specs/
 
 ---
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)  
+**Part of:** [Comprehensive Development Roadmap](../README.md)  
 **Previous:** [Phase 0: Critical Fixes](phase-0-critical-fixes.md)  
 **Next:** [Phase 0.5: Nand2Tetris Foundation](phase-0.5-nand2tetris-foundation.md)

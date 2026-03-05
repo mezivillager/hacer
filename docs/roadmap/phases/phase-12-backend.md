@@ -1,6 +1,6 @@
 # Phase 12: Backend & Collaboration (Weeks 40-44)
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)
+**Part of:** [Comprehensive Development Roadmap](../README.md)
 **Priority:** 🟡 MEDIUM
 **Timeline:** Weeks 40-44
 **Dependencies:** Phase 11 complete (components working), Phase 15 complete (authentication established)
@@ -136,5 +136,6 @@ This phase adds multi-user collaboration, cloud persistence, and offline-first a
 
 ---
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)  
-**Previous:** [Phase 7: Components](phase-7-components.md)
+**Part of:** [Comprehensive Development Roadmap](../README.md)  
+**Previous:** [Phase 11: Components](phase-11-components.md)  
+**Next:** [Phase 13: Deployment & Production](phase-13-deployment-production.md)

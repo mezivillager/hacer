@@ -1,6 +1,6 @@
 # Phase 10: Software Stack Integration (Weeks 32-36)
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)
+**Part of:** [Comprehensive Development Roadmap](../README.md)
 **Priority:** 🟠 HIGH
 **Timeline:** Weeks 32-36
 **Dependencies:** Phase 9 complete (performance foundation established), Phase 5 complete (core architecture working)
@@ -75,6 +75,6 @@ This phase completes the full computing system by implementing the software stac
 
 ---
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)  
-**Previous:** [Phase 5: Performance](phase-5-performance.md)  
-**Next:** [Phase 7: Components](phase-7-components.md)
+**Part of:** [Comprehensive Development Roadmap](../README.md)  
+**Previous:** [Phase 9: Performance](phase-9-performance.md)  
+**Next:** [Phase 11: Components](phase-11-components.md)

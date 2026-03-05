@@ -1,6 +1,6 @@
 # Phase 0: Critical Fixes (Week 1)
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)  
+**Part of:** [Comprehensive Development Roadmap](../README.md)  
 **Priority:** 🔴 CRITICAL  
 **Timeline:** Week 1  
 **Dependencies:** None - Must complete before ANY other work
@@ -252,5 +252,5 @@ src/
 
 ---
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)  
+**Part of:** [Comprehensive Development Roadmap](../README.md)  
 **Next:** [Phase 0.25: UI/UX Improvements & Grid-Based Circuit Design](phase-0.25-ui-improvements.md)

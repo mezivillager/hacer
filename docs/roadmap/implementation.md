@@ -1,6 +1,6 @@
 # HACER: Implementation Guide
 
-**Part of:** [Comprehensive Development Roadmap](../README.md)  
+**Part of:** [Comprehensive Development Roadmap](README.md)  
 **Focus:** Success Metrics, Risk Assessment, Technology Stack Evolution, and Detailed Checklists
 
 ---
@@ -573,5 +573,5 @@ Phase 23 (Weeks 73-75) → Phase 24 (Weeks 76-78)
 
 ---
 
-**Part of:** [Comprehensive Development Roadmap](../README.md)  
+**Part of:** [Comprehensive Development Roadmap](README.md)  
 **Next:** [Phase 0: Critical Fixes](phases/phase-0-critical-fixes.md)

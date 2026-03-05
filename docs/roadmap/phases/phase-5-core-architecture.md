@@ -1,6 +1,6 @@
 # Phase 5: Core Architecture Refactor (Weeks 17-19)
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)
+**Part of:** [Comprehensive Development Roadmap](../README.md)
 **Priority:** 🟠 HIGH
 **Timeline:** Weeks 17-19
 **Dependencies:** Phase 4.5 complete (release management established), Phase 1.5 complete (design system foundation)
@@ -309,6 +309,6 @@ export type CircuitEventHandler = (event: CircuitEvent) => void;
 
 ---
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)  
-**Previous:** [Phase 0.5: Nand2Tetris Foundation](phase-0.5-nand2tetris-foundation.md)  
-**Next:** [Phase 2: Plugin System](phase-2-plugin-system.md)
+**Part of:** [Comprehensive Development Roadmap](../README.md)  
+**Previous:** [Phase 4.5: Release Management & Automation](phase-4.5-release-management.md)  
+**Next:** [Phase 6: Plugin System](phase-6-plugin-system.md)

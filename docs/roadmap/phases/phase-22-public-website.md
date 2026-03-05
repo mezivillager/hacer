@@ -1,6 +1,6 @@
 # Phase 22: Public Website & Documentation Platform (Weeks 68-72)
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)
+**Part of:** [Comprehensive Development Roadmap](../README.md)
 **Priority:** 🟠 HIGH
 **Timeline:** Weeks 68-72
 **Dependencies:** Phase 23 complete (documentation automation working), Phase 13 complete (production deployment ready)
@@ -1525,6 +1525,6 @@ export function PerformanceDashboard() {
 
 ---
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)  
-**Previous:** [Phase 18: API Ecosystem](phase-18-api-ecosystem.md)  
-**Next:** [Phase 20: Documentation Automation & AI Agents](phase-20-docs-automation.md)
+**Part of:** [Comprehensive Development Roadmap](../README.md)  
+**Previous:** [Phase 21: Advanced Performance & PWA](phase-21-advanced-performance-pwa.md)  
+**Next:** [Phase 23: Documentation Automation & AI Agents](phase-23-docs-automation.md)

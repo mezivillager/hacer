@@ -1,6 +1,6 @@
 # Phase 16: Advanced Collaboration Features (Weeks 46-47)
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)  
+**Part of:** [Comprehensive Development Roadmap](../README.md)  
 **Priority:** 🟢 MEDIUM  
 **Timeline:** Weeks 46-47  
 **Dependencies:** Phase 8 complete (basic backend collaboration working)
@@ -1016,6 +1016,6 @@ export function useCollaborationTracking() {
 
 ---
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)  
-**Previous:** [Phase 15: Mobile & Touch Optimization](phase-15-mobile-touch.md)  
-**Next:** [Phase 17: Analytics & Insights](phase-17-analytics-insights.md)
+**Part of:** [Comprehensive Development Roadmap](../README.md)  
+**Previous:** [Phase 17: Mobile & Touch](phase-17-mobile-touch.md)  
+**Next:** [Phase 19: Analytics & Insights](phase-19-analytics-insights.md)

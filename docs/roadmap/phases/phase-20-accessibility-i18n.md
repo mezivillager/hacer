@@ -1,6 +1,6 @@
 # Phase 12: Accessibility & Internationalization (Weeks 36-38)
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)  
+**Part of:** [Comprehensive Development Roadmap](../README.md)  
 **Priority:** 🟢 MEDIUM  
 **Timeline:** Weeks 36-38  
 **Dependencies:** Phase 9 complete (design system provides consistent theming)
@@ -1027,6 +1027,6 @@ test.describe('Accessibility Tests', () => {
 
 ---
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)  
-**Previous:** [Phase 11: Deployment & Production](phase-11-deployment-production.md)  
-**Next:** [Phase 13: Advanced Performance & PWA](phase-13-advanced-performance-pwa.md)
+**Part of:** [Comprehensive Development Roadmap](../README.md)  
+**Previous:** [Phase 19: Analytics & Insights](phase-19-analytics-insights.md)  
+**Next:** [Phase 21: Advanced Performance & PWA](phase-21-advanced-performance-pwa.md)

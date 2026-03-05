@@ -1,6 +1,6 @@
 # Phase 1.5: Design System & Visual Consistency (Weeks 5-7)
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)
+**Part of:** [Comprehensive Development Roadmap](../README.md)
 **Priority:** 🟠 HIGH
 **Timeline:** Weeks 5-7
 **Dependencies:** Phase 0.5 complete (nand2tetris foundation established)
@@ -918,6 +918,6 @@ ${cssVars.map(var_ => var_.replace('--', '--hc-')).join('\n')}
 
 ---
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)  
-**Previous:** [Phase 8: Backend](phase-8-backend.md)  
-**Next:** [Phase 10: Developer Tooling](phase-10-developer-tooling.md)
+**Part of:** [Comprehensive Development Roadmap](../README.md)  
+**Previous:** [Phase 0.5: Nand2Tetris Foundation](phase-0.5-nand2tetris-foundation.md)  
+**Next:** [Phase 2.5: Developer Tooling & DX](phase-2.5-developer-tooling.md)

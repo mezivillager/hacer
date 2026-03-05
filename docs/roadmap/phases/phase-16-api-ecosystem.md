@@ -1,6 +1,6 @@
 # Phase 16: API Ecosystem (Weeks 53-55)
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)
+**Part of:** [Comprehensive Development Roadmap](../README.md)
 **Priority:** 🟡 MEDIUM
 **Timeline:** Weeks 53-55
 **Dependencies:** Phase 15 complete (authentication working), Phase 12 complete (backend established)
@@ -1242,8 +1242,9 @@ export class SlackIntegration implements Integration {
 
 ---
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)  
-**Previous:** [Phase 17: Analytics & Insights](phase-17-analytics-insights.md)
+**Part of:** [Comprehensive Development Roadmap](../README.md)  
+**Previous:** [Phase 15: Authentication System](phase-15-authentication.md)  
+**Next:** [Phase 17: Mobile & Touch](phase-17-mobile-touch.md)
 
 ---
 

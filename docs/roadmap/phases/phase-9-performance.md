@@ -1,6 +1,6 @@
 # Phase 9: Performance & Scale (Weeks 29-31)
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)
+**Part of:** [Comprehensive Development Roadmap](../README.md)
 **Priority:** 🟡 MEDIUM
 **Timeline:** Weeks 29-31
 **Dependencies:** Phase 8 complete (enhanced testing working), core functionality established
@@ -67,6 +67,6 @@ This phase optimizes performance for large circuits, implementing Web Workers fo
 
 ---
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)  
-**Previous:** [Phase 4: Testing](phase-4-testing.md)  
-**Next:** [Phase 6: Software Stack](phase-6-software-stack.md)
+**Part of:** [Comprehensive Development Roadmap](../README.md)  
+**Previous:** [Phase 8: Enhanced Testing](phase-8-enhanced-testing.md)  
+**Next:** [Phase 10: Software Stack](phase-10-software-stack.md)

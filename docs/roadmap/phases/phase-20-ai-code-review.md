@@ -1,6 +1,6 @@
 # Phase 20: AI-Powered Code Review & Quality Gates (Weeks 76-78)
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)
+**Part of:** [Comprehensive Development Roadmap](../README.md)
 **Priority:** 🟡 MEDIUM
 **Timeline:** Weeks 76-78
 **Dependencies:** Phase 19 complete (documentation system established), Phase 4.5 complete (release processes in place)
@@ -1652,5 +1652,5 @@ export class LearningService {
 
 ---
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)  
-**Previous:** [Phase 22: Authentication System](phase-22-authentication.md)
+**Part of:** [Comprehensive Development Roadmap](../README.md)  
+**Previous:** [Phase 23: Documentation Automation & AI Agents](phase-23-docs-automation.md)

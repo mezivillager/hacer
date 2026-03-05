@@ -1,6 +1,6 @@
 # Appendices
 
-**Part of:** [Comprehensive Development Roadmap](../README.md)
+**Part of:** [Comprehensive Development Roadmap](README.md)
 
 ---
 
@@ -289,4 +289,4 @@ Cloud Infrastructure
 
 ---
 
-**Part of:** [Comprehensive Development Roadmap](../README.md)
+**Part of:** [Comprehensive Development Roadmap](README.md)

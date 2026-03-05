@@ -1,6 +1,6 @@
 # Phase 2.5: Developer Tooling & DX Foundation (Weeks 8-10)
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)
+**Part of:** [Comprehensive Development Roadmap](../README.md)
 **Priority:** 🟠 HIGH
 **Timeline:** Weeks 8-10
 **Dependencies:** Phase 1.5 complete (design system foundation established)
@@ -1217,6 +1217,6 @@ if (!checkQualityGates()) {
 
 ---
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)  
-**Previous:** [Phase 9: Design System](phase-9-design-system.md)  
-**Next:** [Phase 11: Deployment & Production](phase-11-deployment-production.md)
+**Part of:** [Comprehensive Development Roadmap](../README.md)  
+**Previous:** [Phase 1.5: Design System & Visual Consistency](phase-1.5-design-system.md)  
+**Next:** [Phase 3.5: Testing & Quality Infrastructure](phase-3.5-testing-infrastructure.md)

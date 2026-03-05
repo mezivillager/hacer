@@ -1,6 +1,6 @@
 # Phase 15: Authentication System (Weeks 50-52)
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)
+**Part of:** [Comprehensive Development Roadmap](../README.md)
 **Priority:** 🟠 HIGH
 **Timeline:** Weeks 50-52
 **Dependencies:** Phase 13 (Deployment) complete, Phase 14 (Security) established
@@ -1714,6 +1714,6 @@ export default function UserManagement() {
 
 ---
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)  
-**Previous:** [Phase 21: Release Management & Automated Changelog](phase-21-release-management.md)  
-**Next:** [Phase 23: AI-Powered Code Review & Quality Gates](phase-23-ai-code-review.md)
+**Part of:** [Comprehensive Development Roadmap](../README.md)  
+**Previous:** [Phase 14: Security & Privacy](phase-14-security-privacy.md)  
+**Next:** [Phase 16: API Ecosystem](phase-16-api-ecosystem.md)

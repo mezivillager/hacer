@@ -1,6 +1,6 @@
 # Phase 7: AI Agent Integration (Weeks 23-25)
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)
+**Part of:** [Comprehensive Development Roadmap](../README.md)
 **Priority:** 🟠 HIGH
 **Timeline:** Weeks 23-25
 **Dependencies:** Phase 6 complete (plugin system established)
@@ -62,6 +62,6 @@ This phase creates AI agent parity - every human action becomes programmatically
 
 ---
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)  
-**Previous:** [Phase 2: Plugin System](phase-2-plugin-system.md)  
-**Next:** [Phase 4: Testing](phase-4-testing.md)
+**Part of:** [Comprehensive Development Roadmap](../README.md)  
+**Previous:** [Phase 6: Plugin System](phase-6-plugin-system.md)  
+**Next:** [Phase 8: Enhanced Testing](phase-8-enhanced-testing.md)

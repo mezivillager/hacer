@@ -1,6 +1,6 @@
 # Phase 13: Advanced Performance & PWA (Weeks 39-41)
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)  
+**Part of:** [Comprehensive Development Roadmap](../README.md)  
 **Priority:** 🟢 MEDIUM  
 **Timeline:** Weeks 39-41  
 **Dependencies:** Phase 11 complete (production deployment working)
@@ -1096,6 +1096,6 @@ export const performanceMonitor = new PerformanceMonitor();
 
 ---
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)  
-**Previous:** [Phase 12: Accessibility & Internationalization](phase-12-accessibility-i18n.md)  
-**Next:** [Phase 14: Security & Privacy](phase-14-security-privacy.md)
+**Part of:** [Comprehensive Development Roadmap](../README.md)  
+**Previous:** [Phase 20: Accessibility & i18n](phase-20-accessibility-i18n.md)  
+**Next:** [Phase 22: Public Website & Documentation Platform](phase-22-public-website.md)

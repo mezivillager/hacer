@@ -1,6 +1,6 @@
 # Phase 13: Deployment & Production (Weeks 45-47)
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)
+**Part of:** [Comprehensive Development Roadmap](../README.md)
 **Priority:** 🟠 HIGH
 **Timeline:** Weeks 45-47
 **Dependencies:** Phase 12 complete (backend working), Phase 4.5 complete (release management established)
@@ -1064,6 +1064,6 @@ jobs:
 
 ---
 
-**Part of:** [Comprehensive Development Roadmap](../../README.md)  
-**Previous:** [Phase 10: Developer Tooling](phase-10-developer-tooling.md)  
-**Next:** [Phase 12: Accessibility & Internationalization](phase-12-accessibility-i18n.md)
+**Part of:** [Comprehensive Development Roadmap](../README.md)  
+**Previous:** [Phase 12: Backend](phase-12-backend.md)  
+**Next:** [Phase 14: Security & Privacy](phase-14-security-privacy.md)

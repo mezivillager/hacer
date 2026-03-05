@@ -1,6 +1,6 @@
 # HACER: Vision & Architecture
 
-**Part of:** [Comprehensive Development Roadmap](../README.md)  
+**Part of:** [Comprehensive Development Roadmap](README.md)  
 **Focus:** Vision Statement, Architecture Principles, and Technical Architecture
 
 ---
@@ -331,5 +331,5 @@ See [Implementation Guide](implementation.md) for the detailed technology stack 
 
 ---
 
-**Part of:** [Comprehensive Development Roadmap](../README.md)  
+**Part of:** [Comprehensive Development Roadmap](README.md)  
 **Next:** [Phase 0: Critical Fixes](phases/phase-0-critical-fixes.md)
