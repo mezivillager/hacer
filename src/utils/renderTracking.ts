@@ -155,7 +155,7 @@ if (typeof window !== 'undefined') {
   setTimeout(() => {
     if (tracker.totalRenders === 0) {
       tracker.isStable = true
-      if (window.__RENDER_TRACKER__) {
+      if (typeof window !== 'undefined' && window.__RENDER_TRACKER__) {
         window.__RENDER_TRACKER__.isStable = true
       }
     }
