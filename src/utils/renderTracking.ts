@@ -29,6 +29,7 @@ const tracker: RenderTracker = {
 }
 
 let stabilityCheckTimer: ReturnType<typeof setTimeout> | null = null
+let initialStabilityTimer: ReturnType<typeof setTimeout> | null = null
 
 function updateStability() {
   tracker.isStable = false
@@ -40,6 +41,8 @@ function updateStability() {
 
   stabilityCheckTimer = setTimeout(() => {
     tracker.isStable = true
+    stabilityCheckTimer = null
+
     if (typeof window !== 'undefined' && window.__RENDER_TRACKER__) {
       window.__RENDER_TRACKER__.isStable = true
     }
@@ -116,6 +119,16 @@ export function isSceneStable(): boolean {
  * Reset all render stats (useful for tests)
  */
 export function resetRenderStats(): void {
+  if (stabilityCheckTimer) {
+    clearTimeout(stabilityCheckTimer)
+    stabilityCheckTimer = null
+  }
+
+  if (initialStabilityTimer) {
+    clearTimeout(initialStabilityTimer)
+    initialStabilityTimer = null
+  }
+
   tracker.stats = {}
   tracker.totalRenders = 0
   tracker.lastUpdateTime = 0
@@ -151,13 +164,18 @@ if (typeof window !== 'undefined') {
     reset: resetRenderStats,
   }
 
-  // Set initial stability after a delay (allows first render cycle to complete)
-  setTimeout(() => {
-    if (tracker.totalRenders === 0) {
-      tracker.isStable = true
-      if (typeof window !== 'undefined' && window.__RENDER_TRACKER__) {
-        window.__RENDER_TRACKER__.isStable = true
+  // Keep tests free from delayed callbacks that can outlive JSDOM teardown
+  if (import.meta.env.MODE !== 'test') {
+    // Set initial stability after a delay (allows first render cycle to complete)
+    initialStabilityTimer = setTimeout(() => {
+      if (tracker.totalRenders === 0) {
+        tracker.isStable = true
+        if (typeof window !== 'undefined' && window.__RENDER_TRACKER__) {
+          window.__RENDER_TRACKER__.isStable = true
+        }
       }
-    }
-  }, 200)
+
+      initialStabilityTimer = null
+    }, 200)
+  }
 }
