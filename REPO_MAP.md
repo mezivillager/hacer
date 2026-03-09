@@ -80,7 +80,7 @@ scripts/
 .github/
 ├── PULL_REQUEST_TEMPLATE.md  # PR template with TDD checklist
 └── workflows/
-    ├── mutation.yml  # Stryker mutation testing (PRs + weekly)
+    ├── mutation.yml  # Stryker mutation testing (PRs)
     └── e2e-ui.yml    # Slow UI E2E tests (scheduled twice weekly)
 ```
 

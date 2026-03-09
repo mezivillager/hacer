@@ -34,3 +34,4 @@ brainstorm
 .temp
 # stryker temp files
 .stryker-tmp
+reports

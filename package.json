@@ -40,6 +40,8 @@
     "test:e2e:ui": "playwright test --grep @ui",
     "test:e2e:store": "playwright test --grep @store",
     "test:e2e:headed": "playwright test --headed --grep @ui --workers 1",
+    "stryker": "stryker run",
+    "stryker:changed": "bash scripts/stryker-changed.sh",
     "prepare": "husky install || true"
   },
   "dependencies": {

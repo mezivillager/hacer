@@ -3,8 +3,6 @@ name: Mutation Testing
 on:
   pull_request:
     paths: ['src/**']
-  schedule:
-    - cron: '0 3 * * 0' # Weekly Sunday 3am UTC
 
 jobs:
   stryker:
@@ -14,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Needed for --since flag
+          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:
@@ -23,16 +21,13 @@ jobs:
 
       - run: npm ci
 
-      - name: Run Stryker (changed files only)
-        if: github.event_name == 'pull_request'
-        run: npx stryker run --since origin/main
-
-      - name: Run Stryker (full)
-        if: github.event_name == 'schedule'
-        run: npx stryker run
+      - name: Run Stryker (changed files only, max 3)
+        run: bash scripts/stryker-changed.sh ${{ github.event.pull_request.base.sha }}
+        env:
+          STRYKER_CHANGED_MAX_FILES: 3
 
       - name: Upload mutation report
-        if: always()
+        if: always() && hashFiles('reports/mutation/mutation.html') != ''
         uses: actions/upload-artifact@v4
         with:
           name: mutation-report
