@@ -42,17 +42,6 @@ export interface OutputNode {
   width: number          // bus width (1 for single bit)
 }
 
-/**
- * Constant value node - represents 'true' or 'false' constants.
- * In HDL: `a=true` or `a=false` wires a constant to a gate input.
- */
-export interface ConstantNode {
-  id: string
-  value: boolean         // true or false
-  position: Position
-  rotation: Rotation
-}
-
 // =============================================================================
 // Wire System (Unified)
 // =============================================================================
@@ -60,11 +49,11 @@ export interface ConstantNode {
 /**
  * Type of entity that can be a wire endpoint.
  */
-export type WireEndpointType = 'gate' | 'input' | 'output' | 'constant' | 'junction'
+export type WireEndpointType = 'gate' | 'input' | 'output' | 'junction'
 
 /**
  * Represents a connection point for a wire.
- * Can be a gate pin, circuit input/output node, constant, or junction.
+ * Can be a gate pin, circuit input/output node, or junction.
  */
 export interface WireEndpoint {
   /** Type of the endpoint entity */
@@ -93,7 +82,7 @@ export interface JunctionNode {
 export interface Wire {
   id: string
   signalId?: string      // Optional reference to logical signal (for HDL-style grouping)
-  from: WireEndpoint     // Source endpoint (gate output, input node, constant, junction)
+  from: WireEndpoint     // Source endpoint (gate output, input node, junction)
   to: WireEndpoint       // Destination endpoint (gate input, output node, junction)
   segments: WireSegment[]
   crossesWireIds: string[]
@@ -104,12 +93,12 @@ export type GateType = 'NAND' | 'AND' | 'OR' | 'NOT' | 'NOR' | 'XOR' | 'XNOR'
 /**
  * Node placement type for UI node placement mode.
  */
-export type NodePlacementType = 'INPUT' | 'OUTPUT' | 'CONSTANT_TRUE' | 'CONSTANT_FALSE'
+export type NodePlacementType = 'INPUT' | 'OUTPUT'
 
 /**
  * Node type discriminator for selection state.
  */
-export type NodeType = 'input' | 'output' | 'constant'
+export type NodeType = 'input' | 'output'
 
 export interface GateInstance {
   id: string
@@ -129,7 +118,6 @@ export type WiringSource =
   | { type: 'gate'; gateId: string; pinId: string; pinType: 'input' | 'output' }
   | { type: 'input'; nodeId: string }
   | { type: 'output'; nodeId: string }
-  | { type: 'constant'; nodeId: string }
   | { type: 'junction'; junctionId: string }
 
 /**
@@ -177,7 +165,6 @@ export interface CircuitState {
   // HDL Support: Circuit I/O nodes and junctions
   inputNodes: InputNode[]
   outputNodes: OutputNode[]
-  constantNodes: ConstantNode[]
   junctions: JunctionNode[]
 
   // Node placement and selection
@@ -272,15 +259,13 @@ export interface ViewActions {
 // =============================================================================
 
 /**
- * Actions for managing circuit I/O nodes (input, output, constant).
+ * Actions for managing circuit I/O nodes (input, output).
  */
 export interface NodeActions {
   addInputNode: (name: string, position: Position, width?: number) => InputNode
   addOutputNode: (name: string, position: Position, width?: number) => OutputNode
-  addConstantNode: (value: boolean, position: Position) => ConstantNode
   removeInputNode: (nodeId: string) => void
   removeOutputNode: (nodeId: string) => void
-  removeConstantNode: (nodeId: string) => void
   updateInputNodeValue: (nodeId: string, value: boolean) => void
   updateInputNodePosition: (nodeId: string, position: Position) => void
   updateOutputNodePosition: (nodeId: string, position: Position) => void

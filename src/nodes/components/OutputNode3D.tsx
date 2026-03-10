@@ -5,6 +5,7 @@ import { Text } from '@react-three/drei'
 import { colors, materials } from '@/theme'
 import { NODE_DIMENSIONS, NODE_COLORS, OUTPUT_NODE_CONFIG, calculateNodePinPosition } from '../config'
 import { useCircuitStore, circuitActions } from '@/store/circuitStore'
+import { useNodeDrag } from '@/hooks/useNodeDrag'
 import type { Position, Rotation } from '@/store/types'
 
 interface OutputNode3DProps {
@@ -52,7 +53,11 @@ export function OutputNode3D({
 
   // Check if wiring is active
   const wiringFrom = useCircuitStore((s) => s.wiringFrom)
+  const placementMode = useCircuitStore((s) => s.placementMode)
   const isWiringMode = wiringFrom !== null
+  const canDrag = placementMode === null && wiringFrom === null
+
+  const { isDragging, shouldAllowClick, onPointerDown, onPointerMove, onPointerUp } = useNodeDrag(id, 'output')
 
   // Body color based on state
   const bodyColor = selected
@@ -103,6 +108,7 @@ export function OutputNode3D({
   // Handle body click
   const handleBodyClick = (e: React.MouseEvent) => {
     e.stopPropagation()
+    if (!shouldAllowClick()) return
     if (onClick) {
       onClick()
     }
@@ -119,12 +125,17 @@ export function OutputNode3D({
         onClick={handleBodyClick}
         onPointerOver={() => setHovered(true)}
         onPointerOut={() => setHovered(false)}
+        onPointerDown={canDrag ? onPointerDown : undefined}
+        onPointerMove={canDrag ? onPointerMove : undefined}
+        onPointerUp={canDrag ? onPointerUp : undefined}
       >
         <boxGeometry args={OUTPUT_NODE_CONFIG.geometry.args} />
         <meshStandardMaterial
           color={bodyColor}
           metalness={materials.gate.metalness}
           roughness={materials.gate.roughness}
+          transparent={isDragging}
+          opacity={isDragging ? 0.7 : 1}
         />
       </mesh>
 

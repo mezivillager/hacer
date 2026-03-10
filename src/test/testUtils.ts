@@ -39,7 +39,6 @@ export function createMockStore(partial: Partial<CircuitState> = {}): CircuitSto
     // Node state fields
     inputNodes: [],
     outputNodes: [],
-    constantNodes: [],
     junctions: [],
     nodePlacementMode: null,
     selectedNodeId: null,
@@ -96,10 +95,8 @@ export function createMockStore(partial: Partial<CircuitState> = {}): CircuitSto
     // Node actions
     addInputNode: () => ({ id: '', name: '', position: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, value: false, width: 1 }),
     addOutputNode: () => ({ id: '', name: '', position: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, value: false, width: 1 }),
-    addConstantNode: () => ({ id: '', value: false, position: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 } }),
     removeInputNode: () => {},
     removeOutputNode: () => {},
-    removeConstantNode: () => {},
     updateInputNodeValue: () => {},
     updateInputNodePosition: () => {},
     updateOutputNodePosition: () => {},

@@ -57,11 +57,11 @@ describe('wireActions', () => {
     })
 
     it('creates wire with signal ID when provided', () => {
-      const inputNode = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
+      const gate = getState().addGate('NAND', { x: 2, y: 0, z: 0 })
       const outputNode = getState().addOutputNode('out', { x: 4, y: 0, z: 0 })
 
       const wire = getState().addWire(
-        { type: 'input', entityId: inputNode.id },
+        { type: 'gate', entityId: gate.id, pinId: gate.outputs[0].id },
         { type: 'output', entityId: outputNode.id },
         [],
         [],
@@ -69,6 +69,19 @@ describe('wireActions', () => {
       )
 
       expect(wire.signalId).toBe('sig-test')
+    })
+
+    it('throws when connecting input node directly to output node', () => {
+      const inputNode = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
+      const outputNode = getState().addOutputNode('out', { x: 4, y: 0, z: 0 })
+
+      expect(() =>
+        getState().addWire(
+          { type: 'input', entityId: inputNode.id },
+          { type: 'output', entityId: outputNode.id },
+          []
+        )
+      ).toThrow('Input nodes cannot connect directly to output nodes')
     })
   })
 

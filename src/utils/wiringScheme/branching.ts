@@ -20,11 +20,11 @@ import { calculateEntrySegment } from './segments'
 /**
  * Type of entity that can be a signal endpoint.
  */
-export type SignalEndpointType = 'gate' | 'input' | 'output' | 'constant' | 'junction'
+export type SignalEndpointType = 'gate' | 'input' | 'output' | 'junction'
 
 /**
  * Represents a connection point for a signal.
- * Can be a gate pin, circuit input/output node, constant, or junction.
+ * Can be a gate pin, circuit input/output node, or junction.
  */
 export interface SignalEndpoint {
   /** Type of the endpoint entity */

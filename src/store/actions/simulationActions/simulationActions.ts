@@ -36,10 +36,6 @@ export function getSignalSourceValue(
       const inputNode = state.inputNodes.find((n) => n.id === from.entityId)
       return inputNode?.value ?? false
     }
-    case 'constant': {
-      const constNode = state.constantNodes.find((n) => n.id === from.entityId)
-      return constNode?.value ?? false
-    }
     case 'gate': {
       const gate = state.gates.find((g) => g.id === from.entityId)
       const outputPin = gate?.outputs.find((p) => p.id === from.pinId)
@@ -90,7 +86,6 @@ export const createSimulationActions = (set: SetState): SimulationActions => ({
       state.placementMode = null
       state.inputNodes = []
       state.outputNodes = []
-      state.constantNodes = []
       state.junctions = []
       state.selectedNodeId = null
       state.selectedNodeType = null
@@ -105,7 +100,7 @@ export const createSimulationActions = (set: SetState): SimulationActions => ({
   simulationTick: () => {
     set((state) => {
       // Step 1: Propagate wires to gate inputs
-      // This handles all wire types: input nodes, constant nodes, junctions, and gate outputs
+      // This handles all wire types: input nodes, junctions, and gate outputs
       for (const wire of state.wires) {
         if (wire.to.type === 'gate' && wire.to.pinId) {
           const gate = state.gates.find((g) => g.id === wire.to.entityId)

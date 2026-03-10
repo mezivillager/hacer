@@ -100,7 +100,7 @@ src/
 │   ├── ui/           # Ant Design based UI (Sidebar, GateSelector, NodeSelector)
 │   └── canvas/       # React Three Fiber 3D (Scene, Wire3D, handlers)
 ├── gates/            # Gate components, icons, config, and handlers
-├── nodes/            # Input, output, junction, and constant nodes
+├── nodes/            # Input, output, and junction nodes
 ├── simulation/       # Circuit simulation engine (pure logic)
 ├── store/            # Zustand state and domain-organized actions
 ├── hooks/            # Custom hooks (keyboard shortcuts, drag, etc.)

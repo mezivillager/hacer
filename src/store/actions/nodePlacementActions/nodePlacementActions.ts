@@ -1,7 +1,7 @@
 /**
  * Node Placement Actions
  *
- * Actions for placing circuit I/O nodes (input, output, constant) on the canvas.
+ * Actions for placing circuit I/O nodes (input, output) on the canvas.
  * Similar to gate placement but for HDL-style circuit nodes.
  */
 
@@ -102,7 +102,7 @@ export const createNodePlacementActions = (
             name,
             position: snappedPosition,
             rotation: { x: 0, y: 0, z: 0 },
-            value: false,
+            value: true,
             width: 1,
           })
           nodeId = id
@@ -122,30 +122,6 @@ export const createNodePlacementActions = (
           })
           nodeId = id
           nodeType = 'output'
-          break
-        }
-        case 'CONSTANT_TRUE': {
-          const id = generateNodeId('const')
-          state.constantNodes.push({
-            id,
-            value: true,
-            position: snappedPosition,
-            rotation: { x: 0, y: 0, z: 0 },
-          })
-          nodeId = id
-          nodeType = 'constant'
-          break
-        }
-        case 'CONSTANT_FALSE': {
-          const id = generateNodeId('const')
-          state.constantNodes.push({
-            id,
-            value: false,
-            position: snappedPosition,
-            rotation: { x: 0, y: 0, z: 0 },
-          })
-          nodeId = id
-          nodeType = 'constant'
           break
         }
       }

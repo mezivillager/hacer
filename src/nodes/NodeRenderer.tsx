@@ -1,12 +1,11 @@
 // NodeRenderer - Dispatches to the correct node component based on node type
-import type { InputNode, OutputNode, ConstantNode, JunctionNode } from '@/store/types'
-import { InputNode3D, OutputNode3D, ConstantNode3D, JunctionNode3D } from './components'
+import type { InputNode, OutputNode, JunctionNode } from '@/store/types'
+import { InputNode3D, OutputNode3D, JunctionNode3D } from './components'
 
 // Node types that can be rendered
 export type RenderableNode =
   | { type: 'input'; node: InputNode }
   | { type: 'output'; node: OutputNode }
-  | { type: 'constant'; node: ConstantNode }
   | { type: 'junction'; node: JunctionNode; value: boolean }
 
 interface NodeRendererProps {
@@ -69,22 +68,6 @@ export function NodeRenderer({
           value={node.value}
           selected={selected}
           inputConnected={isConnected}
-          onClick={onClick}
-          onPinClick={onPinClick}
-        />
-      )
-    }
-
-    case 'constant': {
-      const { node } = renderableNode
-      return (
-        <ConstantNode3D
-          id={node.id}
-          position={node.position}
-          rotation={node.rotation}
-          value={node.value}
-          selected={selected}
-          outputConnected={isConnected}
           onClick={onClick}
           onPinClick={onPinClick}
         />

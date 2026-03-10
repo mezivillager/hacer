@@ -8,6 +8,8 @@ export function useKeyboardShortcuts() {
   const selectedGateId = useCircuitStore((s) => s.selectedGateId)
   const selectedWireId = useCircuitStore((s) => s.selectedWireId)
   const placementPreviewPosition = useCircuitStore((s) => s.placementPreviewPosition)
+  const selectedNodeId = useCircuitStore((s) => s.selectedNodeId)
+  const selectedNodeType = useCircuitStore((s) => s.selectedNodeType)
 
   // Get actions from store
   const cancelPlacement = useCircuitStore((s) => s.cancelPlacement)
@@ -17,6 +19,9 @@ export function useKeyboardShortcuts() {
   const rotateGate = useCircuitStore((s) => s.rotateGate)
   const removeGate = useCircuitStore((s) => s.removeGate)
   const removeWire = useCircuitStore((s) => s.removeWire)
+  const removeInputNode = useCircuitStore((s) => s.removeInputNode)
+  const removeOutputNode = useCircuitStore((s) => s.removeOutputNode)
+  const deselectNode = useCircuitStore((s) => s.deselectNode)
 
   const isPlacing = placementMode !== null
   const isWiring = wiringFrom !== null
@@ -57,7 +62,7 @@ export function useKeyboardShortcuts() {
           return
         }
 
-        // Delete wire if selected, otherwise delete gate if selected
+        // Delete wire if selected, otherwise delete gate or node if selected
         if (selectedWireId && !isDragging) {
           e.preventDefault()
           removeWire(selectedWireId)
@@ -68,6 +73,17 @@ export function useKeyboardShortcuts() {
           removeGate(selectedGateId)
           // Clear selection after deletion
           selectGate(null)
+        } else if (selectedNodeId && selectedNodeType && !isDragging) {
+          e.preventDefault()
+          switch (selectedNodeType) {
+            case 'input':
+              removeInputNode(selectedNodeId)
+              break
+            case 'output':
+              removeOutputNode(selectedNodeId)
+              break
+          }
+          deselectNode()
         }
         return
       }
@@ -97,5 +113,5 @@ export function useKeyboardShortcuts() {
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [isPlacing, isWiring, isDragging, selectedGateId, selectedWireId, cancelPlacement, cancelWiring, selectGate, selectWire, rotateGate, removeGate, removeWire])
+  }, [isPlacing, isWiring, isDragging, selectedGateId, selectedWireId, selectedNodeId, selectedNodeType, cancelPlacement, cancelWiring, selectGate, selectWire, rotateGate, removeGate, removeWire, removeInputNode, removeOutputNode, deselectNode])
 }

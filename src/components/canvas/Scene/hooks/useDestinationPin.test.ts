@@ -79,9 +79,9 @@ describe('useDestinationPin', () => {
     expect(result?.destination.type).toBe('pin')
     if (result?.destination.type === 'pin') {
       // Output node pin is on left side
-      // bodyHalfWidth = 0.3, pinRadius = 0.1, so pinOffset = 0.4
-      // Pin position = node.x + (-0.4) = 8 - 0.4 = 7.6
-      expect(result.destination.pin.x).toBeCloseTo(7.6, 1)
+      // bodyHalfWidth = 0.25, pinRadius = 0.1, so pinOffset = 0.35
+      // Pin position = node.x + (-0.35) = 8 - 0.35 = 7.65
+      expect(result.destination.pin.x).toBeCloseTo(7.65, 1)
       expect(result.destination.pin.y).toBe(0)
       expect(result.destination.pin.z).toBe(0)
       // Orientation should point left

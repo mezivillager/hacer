@@ -28,7 +28,7 @@ export function useDestinationPin(
     destinationGateId: string | null
     destinationPinId: string | null
     destinationNodeId: string | null
-    destinationNodeType: 'input' | 'output' | 'constant' | null
+    destinationNodeType: 'input' | 'output' | null
     previewEndPosition: { x: number; y: number; z: number } | null
   } | null
 ): DestinationPinResult | null {
