@@ -36,16 +36,27 @@ export function handleWireClick(e: ThreeEvent<MouseEvent>): string | null {
     y: e.point.y,
     z: e.point.z,
   }
-  const targetWireId = findNearestWire(clickPoint, state.wires, 0.5)
+
+  // During junction placement, also try the preview position for wire detection
+  // since the preview being visible indicates the user expects placement to succeed.
+  const previewPosition = isPlacingJunction ? state.junctionPreviewPosition : null
+  let targetWireId = findNearestWire(clickPoint, state.wires, 0.5)
+
+  if (!targetWireId && previewPosition) {
+    targetWireId = findNearestWire(previewPosition, state.wires, 0.5)
+  }
 
   if (!targetWireId) {
     return null
   }
 
-  // If in junction placement mode, place junction on wire instead of selecting
+  // If in junction placement mode, place junction on wire instead of selecting.
+  // Use the preview position when available, since the preview being visible
+  // indicates to the user that clicking should place the junction there.
   if (isPlacingJunction) {
+    const placementPoint = previewPosition ?? clickPoint
     try {
-      circuitActions.placeJunctionOnWire(clickPoint, targetWireId)
+      circuitActions.placeJunctionOnWire(placementPoint, targetWireId)
       return targetWireId
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : String(error)

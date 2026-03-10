@@ -75,7 +75,7 @@ export function JunctionPreview() {
 
   return (
     <mesh position={[nearestCorner.x, nearestCorner.y, nearestCorner.z]}>
-      <sphereGeometry args={[JUNCTION_CONFIG.radius * 1.2, JUNCTION_CONFIG.segments, JUNCTION_CONFIG.segments]} />
+      <sphereGeometry args={[JUNCTION_CONFIG.radius * 1.5, JUNCTION_CONFIG.segments, JUNCTION_CONFIG.segments]} />
       <meshStandardMaterial
         color={previewColor}
         transparent
