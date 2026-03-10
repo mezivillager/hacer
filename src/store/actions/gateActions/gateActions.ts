@@ -6,6 +6,33 @@ import { calculateWirePathFromConnection } from '@/utils/wiringScheme'
 import { collectWireSegments, combineAdjacentSegments } from '@/utils/wiringScheme/segments'
 import { resolveCrossings, removeOrphanedArcs } from '@/utils/wiringScheme/crossing'
 
+/**
+ * Checks if any wires connected to a gate have junctions that would be lost during rewiring.
+ * Returns true if a junction is found on any connected wire (either as a wire endpoint
+ * or placed on the wire via junction.wireIds).
+ */
+export function hasJunctionsOnConnectedWires(gateId: string, state: CircuitStore): boolean {
+  const { wires, junctions } = state
+
+  // Find all wires connected to this gate
+  const connectedWires = wires.filter(
+    (w) =>
+      (w.from.type === 'gate' && w.from.entityId === gateId) ||
+      (w.to.type === 'gate' && w.to.entityId === gateId)
+  )
+
+  // Check 1: Any connected wire has a junction endpoint
+  const hasJunctionEndpoint = connectedWires.some(
+    (w) => w.from.type === 'junction' || w.to.type === 'junction'
+  )
+  if (hasJunctionEndpoint) return true
+
+  // Check 2: Any junction is placed on a connected wire
+  return connectedWires.some(wire =>
+    junctions.some(j => j.wireIds.includes(wire.id))
+  )
+}
+
 // Helper to create a gate instance - exported for use in atomic placement actions
 export function createGateInstance(type: GateType, position: Position): GateInstance {
   const id = `gate-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`
@@ -178,6 +205,14 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
   updateGatePosition: (gateId: string, position: Position) => {
     // Snap position to grid before updating
     const snappedPosition = snapToGrid(position)
+
+    // Check if any connected wires have junctions that would be lost during rewiring
+    const currentState = get()
+    if (hasJunctionsOnConnectedWires(gateId, currentState)) {
+      message.warning('Cannot move gate: connected wires have junctions. Remove junctions first.')
+      return
+    }
+
     set((state) => {
       const gate = state.gates.find((g) => g.id === gateId)
       if (gate) {
@@ -192,6 +227,13 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
   },
 
   updateGateRotation: (gateId: string, rotation: Position) => {
+    // Check if any connected wires have junctions that would be lost during rewiring
+    const currentState = get()
+    if (hasJunctionsOnConnectedWires(gateId, currentState)) {
+      message.warning('Cannot rotate gate: connected wires have junctions. Remove junctions first.')
+      return
+    }
+
     set((state) => {
       const gate = state.gates.find((g) => g.id === gateId)
       if (gate) {
@@ -206,6 +248,13 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
   },
 
   rotateGate: (gateId: string, axis: 'x' | 'y' | 'z', angle: number) => {
+    // Check if any connected wires have junctions that would be lost during rewiring
+    const currentState = get()
+    if (hasJunctionsOnConnectedWires(gateId, currentState)) {
+      message.warning('Cannot rotate gate: connected wires have junctions. Remove junctions first.')
+      return
+    }
+
     set((state) => {
       const gate = state.gates.find((g) => g.id === gateId)
       if (gate) {
