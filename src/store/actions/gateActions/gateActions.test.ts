@@ -980,21 +980,29 @@ describe('gateActions', () => {
 
     it('prevents gate move when a wire has a junction endpoint', () => {
       const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('NAND', { x: GRID_SIZE * -2, y: 0, z: 0 })
 
-      // Create a wire from junction to gate (branch wire)
-      getState().addWire(
+      // Create the original wire that the junction is placed on
+      const originalWire = getState().addWire(
+        { type: 'gate', entityId: gate2.id, pinId: gate2.outputs[0].id },
+        { type: 'gate', entityId: gate1.id, pinId: gate1.inputs[1].id },
+        [{ start: { x: -2, y: 0, z: 0 }, end: { x: 0, y: 0, z: 0 }, type: 'horizontal' }]
+      )
+
+      // Create a branch wire from junction to gate (branch wire)
+      const branchWire = getState().addWire(
         { type: 'junction', entityId: 'junction-test-4' },
         { type: 'gate', entityId: gate1.id, pinId: gate1.inputs[0].id },
         [{ start: { x: -1, y: 0, z: 0 }, end: { x: 0, y: 0, z: 0 }, type: 'horizontal' }]
       )
 
-      // Add the junction to state
+      // Add the junction to state with both the original and branch wire
       useCircuitStore.setState((state) => {
         state.junctions.push({
           id: 'junction-test-4',
           position: { x: -1, y: 0, z: 0 },
           signalId: 'signal-1',
-          wireIds: ['some-original-wire'],
+          wireIds: [originalWire.id, branchWire.id],
         })
       })
 

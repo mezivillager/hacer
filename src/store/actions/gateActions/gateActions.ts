@@ -28,9 +28,8 @@ export function hasJunctionsOnConnectedWires(gateId: string, state: CircuitStore
   if (hasJunctionEndpoint) return true
 
   // Check 2: Any junction is placed on a connected wire
-  return connectedWires.some(wire =>
-    junctions.some(j => j.wireIds.includes(wire.id))
-  )
+  const connectedWireIds = new Set(connectedWires.map(w => w.id))
+  return junctions.some(j => j.wireIds.some(id => connectedWireIds.has(id)))
 }
 
 // Helper to create a gate instance - exported for use in atomic placement actions
