@@ -45,6 +45,7 @@ export function createMockStore(partial: Partial<CircuitState> = {}): CircuitSto
     selectedNodeType: null,
     junctionPlacementMode: null,
     junctionPreviewPosition: null,
+    junctionPreviewWireId: null,
   }
 
   // Merge provided partial state with defaults
