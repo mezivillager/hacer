@@ -1,7 +1,7 @@
 /**
  * Node Placement Actions
  *
- * Actions for placing circuit I/O nodes (input, output, constant) on the canvas.
+ * Actions for placing circuit I/O nodes (input, output) on the canvas.
  * Similar to gate placement but for HDL-style circuit nodes.
  */
 
@@ -65,10 +65,16 @@ export const createNodePlacementActions = (
 ): NodePlacementActions => ({
   startNodePlacement: (type: NodePlacementType) => {
     set((state) => {
-      state.nodePlacementMode = type
+      // Clear all selections
+      state.selectedGateId = null
+      state.selectedWireId = null
       state.selectedNodeId = null
       state.selectedNodeType = null
-      state.selectedGateId = null
+      state.gates.forEach((g) => {
+        g.selected = false
+      })
+
+      state.nodePlacementMode = type
       // Cancel gate placement if active
       state.placementMode = null
     }, false, 'startNodePlacement')
@@ -102,7 +108,7 @@ export const createNodePlacementActions = (
             name,
             position: snappedPosition,
             rotation: { x: 0, y: 0, z: 0 },
-            value: false,
+            value: true,
             width: 1,
           })
           nodeId = id
@@ -124,30 +130,6 @@ export const createNodePlacementActions = (
           nodeType = 'output'
           break
         }
-        case 'CONSTANT_TRUE': {
-          const id = generateNodeId('const')
-          state.constantNodes.push({
-            id,
-            value: true,
-            position: snappedPosition,
-            rotation: { x: 0, y: 0, z: 0 },
-          })
-          nodeId = id
-          nodeType = 'constant'
-          break
-        }
-        case 'CONSTANT_FALSE': {
-          const id = generateNodeId('const')
-          state.constantNodes.push({
-            id,
-            value: false,
-            position: snappedPosition,
-            rotation: { x: 0, y: 0, z: 0 },
-          })
-          nodeId = id
-          nodeType = 'constant'
-          break
-        }
       }
 
       // Clear placement mode and select the new node
@@ -157,6 +139,11 @@ export const createNodePlacementActions = (
       state.selectedNodeType = nodeType
       state.selectedGateId = null
       state.selectedWireId = null
+
+      // Deselect all gates
+      state.gates.forEach((g) => {
+        g.selected = false
+      })
     }, false, 'placeNode')
   },
 
@@ -166,6 +153,10 @@ export const createNodePlacementActions = (
       state.selectedNodeType = nodeType
       state.selectedGateId = null
       state.selectedWireId = null
+      // Deselect all gates
+      state.gates.forEach((g) => {
+        g.selected = false
+      })
     }, false, 'selectNode')
   },
 

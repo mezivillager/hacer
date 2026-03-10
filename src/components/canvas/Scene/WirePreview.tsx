@@ -24,11 +24,11 @@ export function WirePreview() {
 
   // For junction sources, startOrientation is not needed (we skip exit segment)
   const startOrientation = wiringFrom
-    ? (wiringFrom.source && (wiringFrom.source.type === 'input' || wiringFrom.source.type === 'constant'))
+    ? (wiringFrom.source && wiringFrom.source.type === 'input'
       ? { x: 1, y: 0, z: 0 }
       : (wiringFrom.fromGateId && wiringFrom.fromPinId
           ? circuitActions.getPinOrientation(wiringFrom.fromGateId, wiringFrom.fromPinId)
-          : null)
+          : null))
     : null
 
   const destination = destinationResult?.destination ?? null

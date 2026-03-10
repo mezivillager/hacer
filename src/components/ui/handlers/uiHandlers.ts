@@ -12,8 +12,7 @@ export function handleDeleteSelected(
   removeGate: (gateId: string) => void,
   removeWire: (wireId: string) => void,
   removeInputNode: (nodeId: string) => void,
-  removeOutputNode: (nodeId: string) => void,
-  removeConstantNode: (nodeId: string) => void
+  removeOutputNode: (nodeId: string) => void
 ): void {
   if (selectedWireId) {
     removeWire(selectedWireId)
@@ -26,9 +25,6 @@ export function handleDeleteSelected(
         break
       case 'output':
         removeOutputNode(selectedNodeId)
-        break
-      case 'constant':
-        removeConstantNode(selectedNodeId)
         break
     }
   }

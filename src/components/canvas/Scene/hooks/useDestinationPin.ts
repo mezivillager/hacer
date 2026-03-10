@@ -28,7 +28,7 @@ export function useDestinationPin(
     destinationGateId: string | null
     destinationPinId: string | null
     destinationNodeId: string | null
-    destinationNodeType: 'input' | 'output' | 'constant' | null
+    destinationNodeType: 'input' | 'output' | null
     previewEndPosition: { x: number; y: number; z: number } | null
   } | null
 ): DestinationPinResult | null {
@@ -49,7 +49,7 @@ export function useDestinationPin(
         y: outputNode.position.y + pinOffset.y,
         z: outputNode.position.z + pinOffset.z,
       }
-      // Output node input pins point left (opposite of input/constant nodes)
+      // Output node input pins point left (opposite of input nodes)
       const pinOrientation = { x: -1, y: 0, z: 0 }
 
       return {

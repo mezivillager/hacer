@@ -2,8 +2,10 @@
 import { useState, useRef } from 'react'
 import { Group } from 'three'
 import { Text } from '@react-three/drei'
+import { useCircuitStore } from '@/store/circuitStore'
 import { colors, materials } from '@/theme'
 import { NODE_DIMENSIONS, NODE_COLORS, INPUT_NODE_CONFIG, calculateNodePinPosition } from '../config'
+import { useNodeDrag } from '@/hooks/useNodeDrag'
 import type { Position, Rotation } from '@/store/types'
 
 interface InputNode3DProps {
@@ -21,24 +23,24 @@ interface InputNode3DProps {
   selected?: boolean
   /** Whether the output is connected to a wire */
   outputConnected?: boolean
-  /** Click handler for the node body */
+  /** Click handler for the node body (selects the node) */
   onClick?: () => void
-  /** Click handler for toggling the input value */
+  /** Handler for toggling the input value (shift+click) */
   onToggle?: () => void
   /** Click handler for the output pin */
   onPinClick?: (nodeId: string, worldPosition: { x: number; y: number; z: number }) => void
 }
 
 /**
- * InputNode3D renders a circuit input node with a label and output pin.
- * The node can be clicked to toggle its value.
+ * InputNode3D renders a cube-shaped circuit input node with a 0/1 label
+ * and output pin. Click selects; shift+click toggles value; drag to move.
  *
  * @param props - Input node properties
  * @returns React Three Fiber group element
  */
 export function InputNode3D({
   id,
-  name,
+  name: _name,
   position,
   rotation,
   value,
@@ -51,20 +53,21 @@ export function InputNode3D({
   const groupRef = useRef<Group>(null)
   const [hovered, setHovered] = useState(false)
 
-  // Body color based on state
+  const placementMode = useCircuitStore((s) => s.placementMode)
+  const wiringFrom = useCircuitStore((s) => s.wiringFrom)
+  const canDrag = placementMode === null && wiringFrom === null
+
+  const { isDragging, shouldAllowClick, onPointerDown, onPointerMove, onPointerUp, onPointerLeave } = useNodeDrag(id, 'input')
+
   const bodyColor = selected
     ? NODE_COLORS.input.selected
     : hovered
-      ? NODE_COLORS.input.hover
-      : NODE_COLORS.input.body
+      ? (value ? NODE_COLORS.input.hoverOn : NODE_COLORS.input.hoverOff)
+      : (value ? NODE_COLORS.input.bodyOn : NODE_COLORS.input.bodyOff)
 
-  // Pin color based on value
   const pinColor = value ? colors.pin.active : colors.pin.inactive
-
-  // Calculate pin position
   const pinPos = calculateNodePinPosition('input')
 
-  // Handle pin click
   const handlePinClick = (e: React.MouseEvent) => {
     e.stopPropagation()
     if (onPinClick) {
@@ -77,10 +80,9 @@ export function InputNode3D({
     }
   }
 
-  // Handle body click
-  // Shift+click toggles value, regular click selects
   const handleBodyClick = (e: React.MouseEvent) => {
     e.stopPropagation()
+    if (!shouldAllowClick()) return
     if (e.shiftKey && onToggle) {
       onToggle()
     } else if (onClick) {
@@ -94,21 +96,24 @@ export function InputNode3D({
       position={[position.x, position.y, position.z]}
       rotation={[rotation.x, rotation.y, rotation.z]}
     >
-      {/* Main body */}
       <mesh
         onClick={handleBodyClick}
         onPointerOver={() => setHovered(true)}
-        onPointerOut={() => setHovered(false)}
+        onPointerOut={() => { setHovered(false); if (canDrag && !isDragging) onPointerLeave() }}
+        onPointerDown={canDrag ? onPointerDown : undefined}
+        onPointerMove={canDrag ? onPointerMove : undefined}
+        onPointerUp={canDrag ? onPointerUp : undefined}
       >
         <boxGeometry args={INPUT_NODE_CONFIG.geometry.args} />
         <meshStandardMaterial
           color={bodyColor}
           metalness={materials.gate.metalness}
           roughness={materials.gate.roughness}
+          transparent={isDragging}
+          opacity={isDragging ? 0.7 : 1}
         />
       </mesh>
 
-      {/* Name label on top face */}
       <Text
         position={INPUT_NODE_CONFIG.text.position}
         rotation={[Math.PI, 0, 0]}
@@ -118,10 +123,9 @@ export function InputNode3D({
         anchorY="middle"
         font={undefined}
       >
-        {name}
+        {value ? '1' : '0'}
       </Text>
 
-      {/* Output pin (right side) */}
       <mesh
         position={[pinPos.x, pinPos.y, pinPos.z]}
         onClick={handlePinClick}

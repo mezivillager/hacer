@@ -37,7 +37,6 @@ export function Sidebar() {
   const wiresCount = useCircuitStore((s) => s.wires.length)
   const inputNodesCount = useCircuitStore((s) => s.inputNodes.length)
   const outputNodesCount = useCircuitStore((s) => s.outputNodes.length)
-  const constantNodesCount = useCircuitStore((s) => s.constantNodes.length)
 
   const selectedNodeType = useCircuitStore((s) => s.selectedNodeType)
 
@@ -46,7 +45,6 @@ export function Sidebar() {
   const removeWire = useCircuitStore((s) => s.removeWire)
   const removeInputNode = useCircuitStore((s) => s.removeInputNode)
   const removeOutputNode = useCircuitStore((s) => s.removeOutputNode)
-  const removeConstantNode = useCircuitStore((s) => s.removeConstantNode)
   const clearCircuit = useCircuitStore((s) => s.clearCircuit)
   const toggleSimulation = useCircuitStore((s) => s.toggleSimulation)
   const toggleAxes = useCircuitStore((s) => s.toggleAxes)
@@ -123,8 +121,7 @@ export function Sidebar() {
                   removeGate,
                   removeWire,
                   removeInputNode,
-                  removeOutputNode,
-                  removeConstantNode
+                  removeOutputNode
                 )}
                 disabled={!hasSelection}
                 block
@@ -157,7 +154,6 @@ export function Sidebar() {
             <Text type="secondary">Wires: {wiresCount}</Text>
             <Text type="secondary">Inputs: {inputNodesCount}</Text>
             <Text type="secondary">Outputs: {outputNodesCount}</Text>
-            <Text type="secondary">Constants: {constantNodesCount}</Text>
             <Text type="secondary">
               Status: {simulationRunning ? '▶ Running' : '⏸ Paused'}
             </Text>
