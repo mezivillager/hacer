@@ -5,32 +5,7 @@ import { useCircuitStore } from '../../circuitStore'
 import { calculateWirePathFromConnection } from '@/utils/wiringScheme'
 import { collectWireSegments, combineAdjacentSegments } from '@/utils/wiringScheme/segments'
 import { resolveCrossings, removeOrphanedArcs } from '@/utils/wiringScheme/crossing'
-
-/**
- * Checks if any wires connected to a gate have junctions that would be lost during rewiring.
- * Returns true if a junction is found on any connected wire (either as a wire endpoint
- * or placed on the wire via junction.wireIds).
- */
-export function hasJunctionsOnConnectedWires(gateId: string, state: CircuitStore): boolean {
-  const { wires, junctions } = state
-
-  // Find all wires connected to this gate
-  const connectedWires = wires.filter(
-    (w) =>
-      (w.from.type === 'gate' && w.from.entityId === gateId) ||
-      (w.to.type === 'gate' && w.to.entityId === gateId)
-  )
-
-  // Check 1: Any connected wire has a junction endpoint
-  const hasJunctionEndpoint = connectedWires.some(
-    (w) => w.from.type === 'junction' || w.to.type === 'junction'
-  )
-  if (hasJunctionEndpoint) return true
-
-  // Check 2: Any junction is placed on a connected wire
-  const connectedWireIds = new Set(connectedWires.map(w => w.id))
-  return junctions.some(j => j.wireIds.some(id => connectedWireIds.has(id)))
-}
+import { findWireCorners } from '@/utils/wirePosition'
 
 // Helper to create a gate instance - exported for use in atomic placement actions
 export function createGateInstance(type: GateType, position: Position): GateInstance {
@@ -204,14 +179,6 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
   updateGatePosition: (gateId: string, position: Position) => {
     // Snap position to grid before updating
     const snappedPosition = snapToGrid(position)
-
-    // Check if any connected wires have junctions that would be lost during rewiring
-    const currentState = get()
-    if (hasJunctionsOnConnectedWires(gateId, currentState)) {
-      message.warning('Cannot move gate: connected wires have junctions. Remove junctions first.')
-      return
-    }
-
     set((state) => {
       const gate = state.gates.find((g) => g.id === gateId)
       if (gate) {
@@ -226,13 +193,6 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
   },
 
   updateGateRotation: (gateId: string, rotation: Position) => {
-    // Check if any connected wires have junctions that would be lost during rewiring
-    const currentState = get()
-    if (hasJunctionsOnConnectedWires(gateId, currentState)) {
-      message.warning('Cannot rotate gate: connected wires have junctions. Remove junctions first.')
-      return
-    }
-
     set((state) => {
       const gate = state.gates.find((g) => g.id === gateId)
       if (gate) {
@@ -247,13 +207,6 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
   },
 
   rotateGate: (gateId: string, axis: 'x' | 'y' | 'z', angle: number) => {
-    // Check if any connected wires have junctions that would be lost during rewiring
-    const currentState = get()
-    if (hasJunctionsOnConnectedWires(gateId, currentState)) {
-      message.warning('Cannot rotate gate: connected wires have junctions. Remove junctions first.')
-      return
-    }
-
     set((state) => {
       const gate = state.gates.find((g) => g.id === gateId)
       if (gate) {
@@ -425,6 +378,55 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
         // Update the wire segments
         updateWireSegments(wire.id, updatedSegments, remainingCrossedIds)
       }
+    }
+
+    // After recalculating connected wires, preserve junctions on recalculated wires.
+    // Junctions that were on a recalculated wire may now be at an invalid position
+    // because the wire path changed. Relocate them to the nearest valid corner.
+    const recalculatedWireIdSet = new Set(connectedWireIds)
+    const junctionState = get()
+
+    for (const junction of [...junctionState.junctions]) {
+      // Only process junctions whose trunk wire (wireIds[0]) was recalculated
+      const trunkWireId = junction.wireIds[0]
+      if (!trunkWireId || !recalculatedWireIdSet.has(trunkWireId)) {
+        continue
+      }
+
+      const trunkWire = junctionState.wires.find((w) => w.id === trunkWireId)
+      if (!trunkWire) {
+        // Trunk wire was removed during recalculation (removeWire already cleans up junctions)
+        continue
+      }
+
+      // Find all valid corners on the recalculated trunk wire
+      const corners = findWireCorners(trunkWire)
+      if (corners.length === 0) {
+        // No corners available on new path - remove junction cleanly
+        junctionState.removeJunction(junction.id)
+        continue
+      }
+
+      // Find the nearest corner to the junction's current position
+      let nearestCorner = corners[0]
+      let nearestDistance = Infinity
+      for (const corner of corners) {
+        const dx = corner.x - junction.position.x
+        const dz = corner.z - junction.position.z
+        const distance = Math.sqrt(dx * dx + dz * dz)
+        if (distance < nearestDistance) {
+          nearestDistance = distance
+          nearestCorner = corner
+        }
+      }
+
+      // Update junction position to nearest corner on the recalculated wire
+      set((state) => {
+        const j = state.junctions.find((jn) => jn.id === junction.id)
+        if (j) {
+          j.position = nearestCorner
+        }
+      }, false, 'recalculateWiresForGate/relocateJunction')
     }
   },
 })
