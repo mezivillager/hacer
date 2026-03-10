@@ -18,6 +18,9 @@ export const createWireActions = (set: SetState, get: GetState): WireActions => 
     crossesWireIds: string[] = [],
     signalId?: string
   ) => {
+    if (from.type === 'input' && to.type === 'output') {
+      throw new Error('Input nodes cannot connect directly to output nodes')
+    }
     const wire: Wire = {
       id: `wire-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
       from,

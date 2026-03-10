@@ -28,7 +28,6 @@ describe('wiringActions', () => {
       // Node state fields
       inputNodes: [],
       outputNodes: [],
-      constantNodes: [],
       junctions: [],
       nodePlacementMode: null,
       selectedNodeId: null,
@@ -343,19 +342,11 @@ describe('wiringActions', () => {
       }
     })
 
-    it('sets wiringFrom state for constant node', () => {
-      getState().startWiringFromNode('const-1', 'constant', { x: 0.5, y: 0.2, z: 0 })
-
-      const wiringFrom = getState().wiringFrom
-      expect(wiringFrom).not.toBe(null)
-      expect(wiringFrom?.source?.type).toBe('constant')
-    })
-
     it('rejects output nodes as wire sources', () => {
       getState().startWiringFromNode('output-out', 'output', { x: 0, y: 0, z: 0 })
 
       expect(getState().wiringFrom).toBe(null)
-      expect(message.warning).toHaveBeenCalledWith('Can only start wiring from input or constant nodes')
+      expect(message.warning).toHaveBeenCalledWith('Can only start wiring from input nodes')
     })
 
     it('clears placement modes', () => {
@@ -379,9 +370,18 @@ describe('wiringActions', () => {
     })
 
     it('clears wiring state after completion to output', () => {
-      getState().startWiringFromNode('input-a', 'input', { x: 0, y: 0, z: 0 })
+      const gate = getState().addGate('NAND', { x: 4, y: 0, z: 0 })
+      const outputNode = getState().addOutputNode('out', { x: 8, y: 0, z: 0 })
+      getState().startWiring(gate.id, gate.outputs[0].id, 'output', { x: 4.7, y: 0, z: 0 })
+      useCircuitStore.setState((state) => {
+        if (state.wiringFrom) {
+          state.wiringFrom.segments = [
+            { start: { x: 4.7, y: 0.2, z: 0 }, end: { x: 7.5, y: 0.2, z: 0 }, type: 'horizontal' },
+          ]
+        }
+      })
 
-      getState().completeWiringToNode('output-out', 'output')
+      getState().completeWiringToNode(outputNode.id, 'output')
 
       expect(getState().wiringFrom).toBe(null)
     })
@@ -392,41 +392,12 @@ describe('wiringActions', () => {
       expect(message.warning).toHaveBeenCalledWith('No active wiring operation')
     })
 
-    it('creates signal wire from input node to output node', () => {
-      // Create actual nodes in store
+    it('rejects input node to output node connection', () => {
       const inputNode = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
       const outputNode = getState().addOutputNode('out', { x: 8, y: 0, z: 0 })
 
-      // Start wiring from input node
       getState().startWiringFromNode(inputNode.id, 'input', { x: 0.5, y: 0.2, z: 0 })
 
-      // Set wire segments (normally done by WirePreview)
-      useCircuitStore.setState((state) => {
-        if (state.wiringFrom) {
-          state.wiringFrom.segments = [
-            { start: { x: 0.5, y: 0.2, z: 0 }, end: { x: 7.5, y: 0.2, z: 0 }, type: 'horizontal' },
-          ]
-        }
-      })
-
-      // Complete wiring to output node
-      getState().completeWiringToNode(outputNode.id, 'output')
-
-      // Verify wire was created (using unified wire system)
-      const wires = getState().wires
-      expect(wires).toHaveLength(1)
-      expect(wires[0].from.type).toBe('input')
-      expect(wires[0].from.entityId).toBe(inputNode.id)
-      expect(wires[0].to.type).toBe('output')
-      expect(wires[0].to.entityId).toBe(outputNode.id)
-    })
-
-    it('creates signal wire from constant node to output node', () => {
-      const constNode = getState().addConstantNode(true, { x: 0, y: 0, z: 0 })
-      const outputNode = getState().addOutputNode('out', { x: 8, y: 0, z: 0 })
-
-      getState().startWiringFromNode(constNode.id, 'constant', { x: 0.5, y: 0.2, z: 0 })
-
       useCircuitStore.setState((state) => {
         if (state.wiringFrom) {
           state.wiringFrom.segments = [
@@ -437,20 +408,20 @@ describe('wiringActions', () => {
 
       getState().completeWiringToNode(outputNode.id, 'output')
 
-      const wires = getState().wires
-      expect(wires).toHaveLength(1)
-      expect(wires[0].from.type).toBe('constant')
-      expect(wires[0].from.entityId).toBe(constNode.id)
+      expect(message.warning).toHaveBeenCalledWith(
+        'Input nodes must connect to gates or junctions, not directly to output nodes'
+      )
+      expect(getState().wires).toHaveLength(0)
     })
 
     it('uses segments from wiringFrom state', () => {
-      const inputNode = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
+      const gate = getState().addGate('NAND', { x: 4, y: 0, z: 0 })
       const outputNode = getState().addOutputNode('out', { x: 8, y: 0, z: 4 })
 
-      getState().startWiringFromNode(inputNode.id, 'input', { x: 0.5, y: 0.2, z: 0 })
+      getState().startWiring(gate.id, gate.outputs[0].id, 'output', { x: 4.7, y: 0, z: 0 })
 
       const testSegments = [
-        { start: { x: 0.5, y: 0.2, z: 0 }, end: { x: 4, y: 0.2, z: 0 }, type: 'horizontal' as const },
+        { start: { x: 4.7, y: 0.2, z: 0 }, end: { x: 4, y: 0.2, z: 0 }, type: 'horizontal' as const },
         { start: { x: 4, y: 0.2, z: 0 }, end: { x: 4, y: 0.2, z: 4 }, type: 'vertical' as const },
         { start: { x: 4, y: 0.2, z: 4 }, end: { x: 7.5, y: 0.2, z: 4 }, type: 'horizontal' as const },
       ]

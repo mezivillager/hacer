@@ -53,16 +53,6 @@ describe('Signal System', () => {
       expect(signal.name).toBe('notA')
     })
 
-    it('creates a signal from a constant source', () => {
-      const source: SignalEndpoint = {
-        type: 'constant',
-        entityId: 'const-true',
-      }
-
-      const signal = createSignal('sig-const', source)
-
-      expect(signal.source.type).toBe('constant')
-    })
   })
 
   describe('addDestinationToSignal', () => {

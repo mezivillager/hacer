@@ -31,6 +31,7 @@ export function useGateDrag(gateId: string) {
   const pointerIdRef = useRef<number | null>(null) // Track pointer ID for capture
   const allowNextClickRef = useRef(true) // Track if next click should be allowed
   const canvasElementRef = useRef<HTMLElement | null>(null) // Store canvas element
+  const dragEndHandledRef = useRef(false)
 
   const handleDragStart = (event: ThreeEvent<PointerEvent>) => {
     event.stopPropagation()
@@ -58,6 +59,14 @@ export function useGateDrag(gateId: string) {
     // Don't set drag state yet - wait until we've moved beyond threshold
     // This prevents preview from showing on simple clicks
     setIsDragging(false)
+    dragEndHandledRef.current = false
+
+    // Ensure cleanup when pointer released anywhere (e.g. over gate, wire, outside canvas)
+    const onCaptureLost = () => {
+      canvasElement?.removeEventListener('lostpointercapture', onCaptureLost)
+      handleDragEnd()
+    }
+    canvasElement?.addEventListener('lostpointercapture', onCaptureLost)
   }
 
   const handleDrag = (event: ThreeEvent<PointerEvent>) => {
@@ -120,6 +129,9 @@ export function useGateDrag(gateId: string) {
   }
 
   const handleDragEnd = () => {
+    if (dragEndHandledRef.current) return
+    dragEndHandledRef.current = true
+
     // Release pointer capture from canvas element
     const canvasElement = canvasElementRef.current
     if (canvasElement && pointerIdRef.current !== null && canvasElement.releasePointerCapture) {
@@ -176,6 +188,8 @@ export function useGateDrag(gateId: string) {
   }
 
   const handleDragCancel = () => {
+    dragEndHandledRef.current = true
+
     // Set drag active to false first
     circuitActions.setDragActive(false)
 

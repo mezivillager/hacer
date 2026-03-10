@@ -143,7 +143,9 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
         g.selected = g.id === gateId
       })
       state.selectedGateId = gateId
-      // Deselect wire when selecting gate (mutually exclusive)
+      // Deselect node and wire when selecting gate (mutually exclusive)
+      state.selectedNodeId = null
+      state.selectedNodeType = null
       state.selectedWireId = null
     }, false, 'selectGate')
   },
@@ -173,6 +175,18 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
         })
       }
     }, false, 'selectWire')
+  },
+
+  deselectAll: () => {
+    set((state) => {
+      state.selectedGateId = null
+      state.selectedWireId = null
+      state.selectedNodeId = null
+      state.selectedNodeType = null
+      state.gates.forEach((g) => {
+        g.selected = false
+      })
+    }, false, 'deselectAll')
   },
 
   updateGatePosition: (gateId: string, position: Position) => {

@@ -21,6 +21,8 @@ describe('useKeyboardShortcuts', () => {
       wiringFrom: null,
       isDragActive: false,
       hoveredGateId: null,
+      selectedNodeId: null,
+      selectedNodeType: null,
     })
   })
 
@@ -184,6 +186,42 @@ describe('useKeyboardShortcuts', () => {
 
       expect(getState().wires).toHaveLength(0)
       expect(getState().selectedWireId).toBeNull()
+      expect(preventDefaultSpy).toHaveBeenCalled()
+    })
+
+    it('deletes selected input node when Delete key is pressed', () => {
+      const inputNode = getState().addInputNode('a', { x: 2, y: 0.2, z: 2 })
+      getState().selectNode(inputNode.id, 'input')
+
+      renderHook(() => useKeyboardShortcuts())
+
+      const event = new KeyboardEvent('keydown', { key: 'Delete', bubbles: true })
+      const preventDefaultSpy = vi.spyOn(event, 'preventDefault')
+
+      act(() => {
+        window.dispatchEvent(event)
+      })
+
+      expect(getState().inputNodes).toHaveLength(0)
+      expect(getState().selectedNodeId).toBeNull()
+      expect(preventDefaultSpy).toHaveBeenCalled()
+    })
+
+    it('deletes selected input node when Backspace key is pressed', () => {
+      const inputNode = getState().addInputNode('a', { x: 2, y: 0.2, z: 2 })
+      getState().selectNode(inputNode.id, 'input')
+
+      renderHook(() => useKeyboardShortcuts())
+
+      const event = new KeyboardEvent('keydown', { key: 'Backspace', bubbles: true })
+      const preventDefaultSpy = vi.spyOn(event, 'preventDefault')
+
+      act(() => {
+        window.dispatchEvent(event)
+      })
+
+      expect(getState().inputNodes).toHaveLength(0)
+      expect(getState().selectedNodeId).toBeNull()
       expect(preventDefaultSpy).toHaveBeenCalled()
     })
 

@@ -45,7 +45,7 @@ function generateSignalIdForWire(wire: Wire, get: GetState): string {
   // Generate signalId based on source
   if (wire.from.type === 'gate' && wire.from.pinId) {
     return `sig-${wire.from.entityId}-${wire.from.pinId}`
-  } else if (wire.from.type === 'input' || wire.from.type === 'constant') {
+  } else if (wire.from.type === 'input') {
     return `sig-${wire.from.entityId}`
   } else if (wire.from.type === 'junction') {
     // If wire starts from junction, use junction's signalId
@@ -174,6 +174,14 @@ export const createJunctionPlacementActions = (
       }
       state.junctionPlacementMode = null
       state.junctionPreviewPosition = null
+      // Clear all selections
+      state.selectedGateId = null
+      state.selectedNodeId = null
+      state.selectedNodeType = null
+      state.selectedWireId = null
+      state.gates.forEach((g) => {
+        g.selected = false
+      })
     }, false, 'placeJunctionOnWire')
 
     return junction

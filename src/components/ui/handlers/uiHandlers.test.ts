@@ -14,7 +14,6 @@ describe('UI Handlers', () => {
       const mockRemoveGate = vi.fn()
       const mockRemoveInputNode = vi.fn()
       const mockRemoveOutputNode = vi.fn()
-      const mockRemoveConstantNode = vi.fn()
 
       handleDeleteSelected(
         'gate-1',      // selectedGateId
@@ -24,8 +23,7 @@ describe('UI Handlers', () => {
         mockRemoveGate,
         mockRemoveWire,
         mockRemoveInputNode,
-        mockRemoveOutputNode,
-        mockRemoveConstantNode
+        mockRemoveOutputNode
       )
 
       expect(mockRemoveWire).toHaveBeenCalledWith('wire-1')
@@ -38,7 +36,6 @@ describe('UI Handlers', () => {
       const mockRemoveGate = vi.fn()
       const mockRemoveInputNode = vi.fn()
       const mockRemoveOutputNode = vi.fn()
-      const mockRemoveConstantNode = vi.fn()
 
       handleDeleteSelected(
         'gate-1',
@@ -48,8 +45,7 @@ describe('UI Handlers', () => {
         mockRemoveGate,
         mockRemoveWire,
         mockRemoveInputNode,
-        mockRemoveOutputNode,
-        mockRemoveConstantNode
+        mockRemoveOutputNode
       )
 
       expect(mockRemoveGate).toHaveBeenCalledWith('gate-1')
@@ -62,7 +58,6 @@ describe('UI Handlers', () => {
       const mockRemoveGate = vi.fn()
       const mockRemoveInputNode = vi.fn()
       const mockRemoveOutputNode = vi.fn()
-      const mockRemoveConstantNode = vi.fn()
 
       handleDeleteSelected(
         null,
@@ -72,8 +67,7 @@ describe('UI Handlers', () => {
         mockRemoveGate,
         mockRemoveWire,
         mockRemoveInputNode,
-        mockRemoveOutputNode,
-        mockRemoveConstantNode
+        mockRemoveOutputNode
       )
 
       expect(mockRemoveInputNode).toHaveBeenCalledWith('input-1')
@@ -86,7 +80,6 @@ describe('UI Handlers', () => {
       const mockRemoveGate = vi.fn()
       const mockRemoveInputNode = vi.fn()
       const mockRemoveOutputNode = vi.fn()
-      const mockRemoveConstantNode = vi.fn()
 
       handleDeleteSelected(
         null,
@@ -96,33 +89,10 @@ describe('UI Handlers', () => {
         mockRemoveGate,
         mockRemoveWire,
         mockRemoveInputNode,
-        mockRemoveOutputNode,
-        mockRemoveConstantNode
+        mockRemoveOutputNode
       )
 
       expect(mockRemoveOutputNode).toHaveBeenCalledWith('output-1')
-    })
-
-    it('deletes selected constant node', () => {
-      const mockRemoveWire = vi.fn()
-      const mockRemoveGate = vi.fn()
-      const mockRemoveInputNode = vi.fn()
-      const mockRemoveOutputNode = vi.fn()
-      const mockRemoveConstantNode = vi.fn()
-
-      handleDeleteSelected(
-        null,
-        null,
-        'const-1',
-        'constant',
-        mockRemoveGate,
-        mockRemoveWire,
-        mockRemoveInputNode,
-        mockRemoveOutputNode,
-        mockRemoveConstantNode
-      )
-
-      expect(mockRemoveConstantNode).toHaveBeenCalledWith('const-1')
     })
 
     it('does nothing when nothing is selected', () => {
@@ -130,7 +100,6 @@ describe('UI Handlers', () => {
       const mockRemoveGate = vi.fn()
       const mockRemoveInputNode = vi.fn()
       const mockRemoveOutputNode = vi.fn()
-      const mockRemoveConstantNode = vi.fn()
 
       handleDeleteSelected(
         null,
@@ -140,15 +109,13 @@ describe('UI Handlers', () => {
         mockRemoveGate,
         mockRemoveWire,
         mockRemoveInputNode,
-        mockRemoveOutputNode,
-        mockRemoveConstantNode
+        mockRemoveOutputNode
       )
 
       expect(mockRemoveWire).not.toHaveBeenCalled()
       expect(mockRemoveGate).not.toHaveBeenCalled()
       expect(mockRemoveInputNode).not.toHaveBeenCalled()
       expect(mockRemoveOutputNode).not.toHaveBeenCalled()
-      expect(mockRemoveConstantNode).not.toHaveBeenCalled()
     })
   })
 

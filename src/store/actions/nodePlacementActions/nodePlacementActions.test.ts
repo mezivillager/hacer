@@ -9,7 +9,7 @@ describe('Node Placement Actions', () => {
     useCircuitStore.setState({
       inputNodes: [],
       outputNodes: [],
-      constantNodes: [],
+      junctions: [],
       nodePlacementMode: null,
       selectedNodeId: null,
       selectedNodeType: null,
@@ -31,18 +31,6 @@ describe('Node Placement Actions', () => {
       const { startNodePlacement } = useCircuitStore.getState()
       startNodePlacement('OUTPUT')
       expect(useCircuitStore.getState().nodePlacementMode).toBe('OUTPUT')
-    })
-
-    it('sets nodePlacementMode to CONSTANT_TRUE', () => {
-      const { startNodePlacement } = useCircuitStore.getState()
-      startNodePlacement('CONSTANT_TRUE')
-      expect(useCircuitStore.getState().nodePlacementMode).toBe('CONSTANT_TRUE')
-    })
-
-    it('sets nodePlacementMode to CONSTANT_FALSE', () => {
-      const { startNodePlacement } = useCircuitStore.getState()
-      startNodePlacement('CONSTANT_FALSE')
-      expect(useCircuitStore.getState().nodePlacementMode).toBe('CONSTANT_FALSE')
     })
 
     it('clears any node selection when starting placement', () => {
@@ -81,7 +69,7 @@ describe('Node Placement Actions', () => {
   })
 
   describe('placeNode', () => {
-    it('places an INPUT node and clears placement mode', () => {
+    it('places an INPUT node with default value true and clears placement mode', () => {
       useCircuitStore.setState({ nodePlacementMode: 'INPUT' })
       const { placeNode } = useCircuitStore.getState()
       placeNode({ x: 2, y: 0.2, z: 3 })
@@ -91,6 +79,7 @@ describe('Node Placement Actions', () => {
       expect(state.inputNodes).toHaveLength(1)
       expect(state.inputNodes[0].name).toMatch(/^in/)
       expect(state.inputNodes[0].position.x).toBe(2)
+      expect(state.inputNodes[0].value).toBe(true)
     })
 
     it('places an OUTPUT node', () => {
@@ -103,26 +92,6 @@ describe('Node Placement Actions', () => {
       expect(state.outputNodes[0].name).toMatch(/^out/)
     })
 
-    it('places a CONSTANT_TRUE node', () => {
-      useCircuitStore.setState({ nodePlacementMode: 'CONSTANT_TRUE' })
-      const { placeNode } = useCircuitStore.getState()
-      placeNode({ x: 1, y: 0.2, z: 1 })
-
-      const state = useCircuitStore.getState()
-      expect(state.constantNodes).toHaveLength(1)
-      expect(state.constantNodes[0].value).toBe(true)
-    })
-
-    it('places a CONSTANT_FALSE node', () => {
-      useCircuitStore.setState({ nodePlacementMode: 'CONSTANT_FALSE' })
-      const { placeNode } = useCircuitStore.getState()
-      placeNode({ x: 1, y: 0.2, z: 1 })
-
-      const state = useCircuitStore.getState()
-      expect(state.constantNodes).toHaveLength(1)
-      expect(state.constantNodes[0].value).toBe(false)
-    })
-
     it('does nothing if not in node placement mode', () => {
       const { placeNode } = useCircuitStore.getState()
       placeNode({ x: 1, y: 0.2, z: 1 })
@@ -130,7 +99,6 @@ describe('Node Placement Actions', () => {
       const state = useCircuitStore.getState()
       expect(state.inputNodes).toHaveLength(0)
       expect(state.outputNodes).toHaveLength(0)
-      expect(state.constantNodes).toHaveLength(0)
     })
 
     it('selects the newly placed node', () => {

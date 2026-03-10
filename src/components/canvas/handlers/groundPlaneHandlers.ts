@@ -33,7 +33,8 @@ export function handlePointerMove(e: ThreeEvent<PointerEvent>): void {
   const isPlacingNode = state.nodePlacementMode !== null
   const isPlacingJunction = state.junctionPlacementMode === true
   const isWiring = state.wiringFrom !== null
-  const isDragging = state.isDragActive && state.placementPreviewPosition !== null && state.placementMode === null && state.selectedGateId !== null
+  const isDraggingGate = state.isDragActive && state.placementPreviewPosition !== null && state.placementMode === null && state.selectedGateId !== null
+  const isDraggingNode = state.isDragActive && state.placementPreviewPosition !== null && state.placementMode === null && state.selectedNodeId !== null && state.nodePlacementMode === null
 
   if (isPlacingGate || isPlacingNode) {
     const snappedPos = snapToGrid({ x: e.point.x, y: 0.2, z: e.point.z })
@@ -45,7 +46,7 @@ export function handlePointerMove(e: ThreeEvent<PointerEvent>): void {
       z: e.point.z,
     }
     updateJunctionPreviewPosition(previewPos)
-  } else if (isDragging) {
+  } else if (isDraggingGate || isDraggingNode) {
     const snappedPos = snapToGrid({ x: e.point.x, y: 0.2, z: e.point.z })
     updatePlacementPreviewPosition(snappedPos)
   } else if (isWiring) {
@@ -88,7 +89,7 @@ export function handleClick(e: ThreeEvent<MouseEvent>): void {
   const isPlacingNode = state.nodePlacementMode !== null
   const isPlacingJunction = state.junctionPlacementMode === true
   const isWiring = state.wiringFrom !== null
-  const isDragging = state.placementPreviewPosition !== null && state.placementMode === null && state.selectedGateId !== null
+  const isDraggingGateOrNode = state.placementPreviewPosition !== null && state.placementMode === null && (state.selectedGateId !== null || state.selectedNodeId !== null)
 
   if (isPlacingGate) {
     e.stopPropagation()
@@ -97,7 +98,18 @@ export function handleClick(e: ThreeEvent<MouseEvent>): void {
   } else if (isPlacingNode) {
     e.stopPropagation()
     const snappedPos = snapToGrid({ x: e.point.x, y: 0.2, z: e.point.z })
-    placeNode(snappedPos)
+    const gridPos = worldToGrid(snappedPos)
+    const canPlace = canPlaceGateAt(
+      gridPos,
+      state.gates,
+      undefined,
+      state.wires,
+      circuitActions.getPinWorldPosition,
+      circuitActions.getPinOrientation
+    )
+    if (canPlace) {
+      placeNode(snappedPos)
+    }
   } else if (isPlacingJunction) {
     const wireId = handleWireClick(e)
     if (!wireId) {
@@ -109,7 +121,7 @@ export function handleClick(e: ThreeEvent<MouseEvent>): void {
   } else if (isWiring) {
     e.stopPropagation()
     cancelWiring()
-  } else if (isDragging) {
+  } else if (isDraggingGateOrNode) {
     e.stopPropagation()
   } else {
     const wireId = handleWireClick(e)
@@ -125,9 +137,10 @@ export function handleClick(e: ThreeEvent<MouseEvent>): void {
  */
 export function handlePointerUp(): void {
   const state = useCircuitStore.getState()
-  const isDragging = state.isDragActive && state.placementPreviewPosition !== null && state.placementMode === null && state.selectedGateId !== null
+  const isDraggingGate = state.isDragActive && state.placementPreviewPosition !== null && state.placementMode === null && state.selectedGateId !== null
+  const isDraggingNode = state.isDragActive && state.placementPreviewPosition !== null && state.placementMode === null && state.selectedNodeId !== null && state.nodePlacementMode === null
 
-  if (isDragging) {
+  if (isDraggingGate) {
     setDragActive(false)
 
     const gate = state.gates.find(g => g.id === state.selectedGateId)
@@ -146,5 +159,10 @@ export function handlePointerUp(): void {
     } else {
       updatePlacementPreviewPosition(null)
     }
+  } else if (isDraggingNode) {
+    // Node drag COMPLETION is handled in useNodeDrag.
+    // We only need to ensure the preview is cleared if useNodeDrag didn't handle it,
+    // but clearing it here can cause a race condition (preview cleared before store update).
+    // So we let useNodeDrag handle its own cleanup.
   }
 }

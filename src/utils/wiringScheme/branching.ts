@@ -7,7 +7,7 @@
  *
  * Key concepts:
  * - Signal: A logical connection from one source to one or more destinations
- * - SignalEndpoint: A connection point (gate pin, input node, output node, constant)
+ * - SignalEndpoint: A connection point (gate pin, input node, output node)
  * - Junction: A visual branch point where a wire splits to multiple destinations
  */
 
@@ -20,11 +20,11 @@ import { calculateEntrySegment } from './segments'
 /**
  * Type of entity that can be a signal endpoint.
  */
-export type SignalEndpointType = 'gate' | 'input' | 'output' | 'constant' | 'junction'
+export type SignalEndpointType = 'gate' | 'input' | 'output' | 'junction'
 
 /**
  * Represents a connection point for a signal.
- * Can be a gate pin, circuit input/output node, constant, or junction.
+ * Can be a gate pin, circuit input/output node, or junction.
  */
 export interface SignalEndpoint {
   /** Type of the endpoint entity */
@@ -44,7 +44,7 @@ export interface Signal {
   id: string
   /** Optional name for internal HDL signals (e.g., 'notA', 'notB') */
   name?: string
-  /** Single source endpoint (output pin, input node, or constant) */
+  /** Single source endpoint (output pin or input node) */
   source: SignalEndpoint
   /** Array of destination endpoints (supports fan-out) */
   destinations: SignalEndpoint[]

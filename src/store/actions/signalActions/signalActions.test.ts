@@ -15,7 +15,6 @@ describe('Junction Actions', () => {
     useCircuitStore.setState({
       inputNodes: [],
       outputNodes: [],
-      constantNodes: [],
       junctions: [],
       wires: [],
       gates: [],
@@ -252,7 +251,6 @@ describe('Unified Wire System - Node and Junction Wiring', () => {
     useCircuitStore.setState({
       inputNodes: [],
       outputNodes: [],
-      constantNodes: [],
       junctions: [],
       wires: [],
       gates: [],
@@ -382,7 +380,6 @@ describe('XOR Circuit Wiring Integration', () => {
     useCircuitStore.setState({
       inputNodes: [],
       outputNodes: [],
-      constantNodes: [],
       junctions: [],
       wires: [],
       gates: [],

@@ -6,6 +6,7 @@ import { Wire3D } from './Wire3D'
 import { useCircuitStore, circuitActions } from '@/store/circuitStore'
 import { trackRender } from '@/utils/renderTracking'
 import { worldToGrid, canPlaceGateAt } from '@/utils/grid'
+import { calculateNodePinPosition } from '@/nodes/config'
 import { handlePinClick, handleInputToggle, handleGateClick, handleInputNodeToggle, handleNodeClick, handleNodePinClick, handleJunctionClick } from './handlers/canvasHandlers'
 import { getSignalSourceValue } from '@/store/actions/simulationActions/simulationActions'
 
@@ -17,25 +18,24 @@ const { getPinWorldPosition } = circuitActions
 
 export function CanvasArea() {
   // Use individual selectors - Zustand's shallow comparison works better with individual subscriptions
-  // For arrays, we need to be careful - but individual selectors are more stable
   const gates = useCircuitStore((s) => s.gates)
-  const wires = useCircuitStore((s) => s.wires) // Subscribe to wires to trigger re-render when wires change
+  const wires = useCircuitStore((s) => s.wires)
   const placementMode = useCircuitStore((s) => s.placementMode)
+  const nodePlacementMode = useCircuitStore((s) => s.nodePlacementMode)
   const wiringFrom = useCircuitStore((s) => s.wiringFrom)
   const placementPreviewPosition = useCircuitStore((s) => s.placementPreviewPosition)
   const isDragActive = useCircuitStore((s) => s.isDragActive)
   const selectedWireId = useCircuitStore((s) => s.selectedWireId)
-  // Note: selectedGateId is read via getState() in isDragInvalid calculation to avoid subscription
+
+  const simulationRunning = useCircuitStore((s) => s.simulationRunning)
 
   // HDL support: Subscribe to circuit I/O nodes
   const inputNodes = useCircuitStore((s) => s.inputNodes)
   const outputNodes = useCircuitStore((s) => s.outputNodes)
-  const constantNodes = useCircuitStore((s) => s.constantNodes)
   const junctions = useCircuitStore((s) => s.junctions)
   const selectedNodeId = useCircuitStore((s) => s.selectedNodeId)
 
   // Create a reactive isPinConnected function that will trigger re-renders when wires change
-  // This ensures gates re-render when their pin connection status changes
   const isPinConnectedReactive = (gateId: string, pinId: string): boolean => {
     return wires.some(
       w =>
@@ -45,14 +45,15 @@ export function CanvasArea() {
   }
 
   // Track renders with reason
-  const nodeCount = inputNodes.length + outputNodes.length + constantNodes.length + junctions.length
-  trackRender('CanvasArea', `gates:${gates.length},wires:${wires.length},nodes:${nodeCount},placing:${!!placementMode},wiring:${!!wiringFrom}`)
+  const nodeCount = inputNodes.length + outputNodes.length + junctions.length
+  trackRender('CanvasArea', `gates:${gates.length},wires:${wires.length},nodes:${nodeCount},placing:${!!placementMode},placingNode:${!!nodePlacementMode},wiring:${!!wiringFrom}`)
 
   const isPlacing = placementMode !== null
+  const isPlacingNode = nodePlacementMode !== null
   const isWiring = wiringFrom !== null
-  const isDragging = isDragActive && placementPreviewPosition !== null && placementMode === null
+  const isDragging = isDragActive && placementPreviewPosition !== null && placementMode === null && !isPlacingNode
 
-  // Check if current preview position is invalid for placement
+  // Check if current preview position is invalid for gate placement
   const isPlacementInvalid = isPlacing && placementPreviewPosition !== null && (() => {
     const gridPos = worldToGrid(placementPreviewPosition)
     return !canPlaceGateAt(
@@ -88,10 +89,13 @@ export function CanvasArea() {
     if (isPlacing) {
       return `📍 Click anywhere on the grid to place the ${placementMode} gate • Press Esc to cancel`
     }
+    if (isPlacingNode) {
+      return '📍 Click anywhere on the grid to place the node • Press Esc to cancel'
+    }
     if (isWiring) {
       return '🔗 Click on another pin to connect • Click empty space or Esc to cancel'
     }
-    return '🖱️ Click pin: Wire • Shift+click input: Toggle • Click body: Select gate • Click wire: Select wire • Drag body: Move • Left/Right arrows: Rotate gate (when selected) or pan view (when none selected) • Delete: Remove selected gate/wire • Scroll: Zoom'
+    return '🖱️ Click pin: Wire • Shift+click input: Toggle • Click body: Select • Drag body: Move • Left/Right arrows: Rotate gate (when selected) or pan view • Delete: Remove selected • Scroll: Zoom'
   })()
 
   return (
@@ -100,7 +104,7 @@ export function CanvasArea() {
         {/* Render all wires using unified Wire3D */}
         {wires.map((wire) => {
           // Get signal value based on source endpoint type
-          const signalValue = getSignalSourceValue(wire.from, useCircuitStore.getState())
+          const signalValue = simulationRunning ? getSignalSourceValue(wire.from, useCircuitStore.getState()) : false
 
           // Build precomputed path from stored segments
           const path = {
@@ -121,10 +125,10 @@ export function CanvasArea() {
             startPos = getPinWorldPosition(wire.from.entityId, wire.from.pinId)
           } else if (wire.from.type === 'input') {
             const inputNode = inputNodes.find(n => n.id === wire.from.entityId)
-            if (inputNode) startPos = { x: inputNode.position.x + 0.5, y: 0.2, z: inputNode.position.z }
-          } else if (wire.from.type === 'constant') {
-            const constNode = constantNodes.find(n => n.id === wire.from.entityId)
-            if (constNode) startPos = { x: constNode.position.x + 0.5, y: 0.2, z: constNode.position.z }
+            if (inputNode) {
+              const pinOffset = calculateNodePinPosition('input')
+              startPos = { x: inputNode.position.x + pinOffset.x, y: 0.2, z: inputNode.position.z + pinOffset.z }
+            }
           } else if (wire.from.type === 'junction') {
             const junction = junctions.find(j => j.id === wire.from.entityId)
             if (junction) startPos = { ...junction.position, y: 0.2 }
@@ -134,7 +138,10 @@ export function CanvasArea() {
             endPos = getPinWorldPosition(wire.to.entityId, wire.to.pinId)
           } else if (wire.to.type === 'output') {
             const outputNode = outputNodes.find(n => n.id === wire.to.entityId)
-            if (outputNode) endPos = { x: outputNode.position.x - 0.5, y: 0.2, z: outputNode.position.z }
+            if (outputNode) {
+              const pinOffset = calculateNodePinPosition('output')
+              endPos = { x: outputNode.position.x + pinOffset.x, y: 0.2, z: outputNode.position.z + pinOffset.z }
+            }
           } else if (wire.to.type === 'junction') {
             const junction = junctions.find(j => j.id === wire.to.entityId)
             if (junction) endPos = { ...junction.position, y: 0.2 }
@@ -165,12 +172,14 @@ export function CanvasArea() {
           />
         ))}
 
-        {/* Render circuit I/O nodes */}
-        {inputNodes.map(node => (
+        {inputNodes.map(node => {
+          const isConnected = wires.some(w => w.from.type === 'input' && w.from.entityId === node.id)
+          return (
           <NodeRenderer
             key={node.id}
             renderableNode={{ type: 'input', node }}
             selected={selectedNodeId === node.id}
+            isConnected={isConnected}
             onClick={() => {
               handleNodeClick(node.id, 'input')
             }}
@@ -179,7 +188,8 @@ export function CanvasArea() {
               handleNodePinClick(nodeId, 'input', worldPos)
             }}
           />
-        ))}
+          )
+        })}
         {outputNodes.map(node => (
           <NodeRenderer
             key={node.id}
@@ -193,25 +203,12 @@ export function CanvasArea() {
             }}
           />
         ))}
-        {constantNodes.map(node => (
-          <NodeRenderer
-            key={node.id}
-            renderableNode={{ type: 'constant', node }}
-            selected={selectedNodeId === node.id}
-            onClick={() => {
-              handleNodeClick(node.id, 'constant')
-            }}
-            onPinClick={(nodeId, worldPos) => {
-              handleNodePinClick(nodeId, 'constant', worldPos)
-            }}
-          />
-        ))}
         {junctions.map(junction => {
           // Calculate junction value from feeding wire
-          const junctionValue = getSignalSourceValue(
+          const junctionValue = simulationRunning ? getSignalSourceValue(
             { type: 'junction', entityId: junction.id },
             useCircuitStore.getState()
-          )
+          ) : false
           return (
             <NodeRenderer
               key={junction.id}

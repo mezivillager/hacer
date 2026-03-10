@@ -104,10 +104,8 @@ export interface CircuitActionsAPI {
   // Node management actions
   addInputNode: (name: string, position: { x: number; y: number; z: number }, width?: number) => { id: string; name: string; value: boolean }
   addOutputNode: (name: string, position: { x: number; y: number; z: number }, width?: number) => { id: string; name: string; value: boolean }
-  addConstantNode: (value: boolean, position: { x: number; y: number; z: number }) => { id: string; value: boolean }
   removeInputNode: (nodeId: string) => void
   removeOutputNode: (nodeId: string) => void
-  removeConstantNode: (nodeId: string) => void
   updateInputNodeValue: (nodeId: string, value: boolean) => void
   // Junction management actions
   addJunction: (signalId: string, position: { x: number; y: number; z: number }) => { id: string; signalId: string; wireIds: string[] }

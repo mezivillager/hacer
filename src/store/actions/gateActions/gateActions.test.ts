@@ -32,7 +32,6 @@ describe('gateActions', () => {
       // Node state fields
       inputNodes: [],
       outputNodes: [],
-      constantNodes: [],
       junctions: [],
       nodePlacementMode: null,
       selectedNodeId: null,
