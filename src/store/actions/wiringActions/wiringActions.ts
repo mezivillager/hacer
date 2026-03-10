@@ -195,11 +195,8 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
       return
     }
 
-    let fromEndpoint: WireEndpoint
-    let signalId: string
-
-    fromEndpoint = { type: 'input', entityId: source.nodeId }
-    signalId = `sig-${source.nodeId}`
+    const fromEndpoint: WireEndpoint = { type: 'input', entityId: source.nodeId }
+    const signalId = `sig-${source.nodeId}`
 
     const toEndpoint: WireEndpoint = { type: 'gate', entityId: toGateId, pinId: toPinId }
 

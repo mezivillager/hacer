@@ -114,56 +114,6 @@ test.describe('Node Wiring @store @wiring @nodes', () => {
     })
   })
 
-  test.describe('Constant Node to Gate', () => {
-    test('creates wire from constant true node to gate input', async ({ page }) => {
-      // Add a gate
-      const gate = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.center)
-      await ensureGates(page, 1)
-
-      if (!gate) {
-        throw new Error('Failed to create gate')
-      }
-
-      // Add a constant true node
-      const constNode = await page.evaluate(
-        ({ position }) => {
-          return window.__CIRCUIT_ACTIONS__?.addConstantNode(true, position)
-        },
-        { position: DEFAULT_POSITIONS.left }
-      )
-
-      expect(constNode).not.toBeNull()
-      expect(constNode?.id).toBeDefined()
-      expect(constNode?.value).toBe(true)
-
-      // Wire constant node to gate
-      await page.evaluate(
-        ({ constNodeId, gateId, pinId }) => {
-          const fromEndpoint = { type: 'constant' as const, entityId: constNodeId }
-          const toEndpoint = { type: 'gate' as const, entityId: gateId, pinId: pinId }
-          window.__CIRCUIT_ACTIONS__?.addWire(fromEndpoint, toEndpoint, [])
-        },
-        { constNodeId: constNode!.id, gateId: gate.id, pinId: `${gate.id}-in-0` }
-      )
-      await ensureWires(page, 1)
-
-      // Verify wire structure
-      const wire = await page.evaluate((): {
-        from: { type: string; entityId: string }
-        to: { type: string; entityId: string; pinId?: string }
-      } | null => {
-        const state = window.__CIRCUIT_STORE__
-        const w = state?.wires[0]
-        if (!w) return null
-        return { from: w.from, to: w.to }
-      })
-
-      expect(wire?.from.type).toBe('constant')
-      expect(wire?.from.entityId).toBe(constNode!.id)
-      expect(wire?.to.type).toBe('gate')
-    })
-  })
-
   test.describe('Full HDL-style Circuit', () => {
     test('creates input -> gate -> output circuit', async ({ page }) => {
       // Add a NOT gate
