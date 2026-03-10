@@ -990,7 +990,7 @@ describe('gateActions', () => {
       expect(getState().junctions).toHaveLength(1)
     })
 
-    it('removes junction when recalculated wire has no corners', () => {
+    it('handles junction cleanup when recalculated wire has no corners', () => {
       const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
       const gate2 = getState().addGate('NAND', { x: GRID_SIZE * 2, y: 0, z: 0 })
 
@@ -1015,9 +1015,20 @@ describe('gateActions', () => {
       // Move gate - triggers recalculation
       getState().updateGatePosition(gate1.id, { x: GRID_SIZE * 4, y: 0, z: GRID_SIZE * 2 })
 
-      // After recalculation, if the recalculated wire has corners,
-      // junction is relocated; if not (or wire was removed), junction is cleaned up
-      // The exact behavior depends on the path calculation, but no crash should occur
+      // Gate should have moved (not prevented)
+      const gate1After = getState().gates.find((g) => g.id === gate1.id)!
+      expect(gate1After.position).not.toEqual({ x: 0, y: 0, z: 0 })
+
+      // After recalculation, if the recalculated wire has corners, junction is
+      // relocated to one; otherwise (wire removed or no corners), junction is cleaned up.
+      // In either case, the operation should not crash and state should be consistent.
+      const remainingJunctions = getState().junctions
+      const remainingWires = getState().wires
+      // Each remaining junction should reference at least one existing wire
+      for (const j of remainingJunctions) {
+        const hasExistingWire = j.wireIds.some((id) => remainingWires.some((w) => w.id === id))
+        expect(hasExistingWire).toBe(true)
+      }
     })
 
     it('allows gate move when no junctions are involved', () => {

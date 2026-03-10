@@ -386,7 +386,11 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
     const recalculatedWireIdSet = new Set(connectedWireIds)
     const junctionState = get()
 
-    for (const junction of [...junctionState.junctions]) {
+    // Collect junction relocations first, then apply in one batch
+    const junctionUpdates: { id: string; position: Position }[] = []
+    const junctionsToRemove: string[] = []
+
+    for (const junction of junctionState.junctions) {
       // Only process junctions whose trunk wire (wireIds[0]) was recalculated
       const trunkWireId = junction.wireIds[0]
       if (!trunkWireId || !recalculatedWireIdSet.has(trunkWireId)) {
@@ -403,7 +407,7 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
       const corners = findWireCorners(trunkWire)
       if (corners.length === 0) {
         // No corners available on new path - remove junction cleanly
-        junctionState.removeJunction(junction.id)
+        junctionsToRemove.push(junction.id)
         continue
       }
 
@@ -420,13 +424,24 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
         }
       }
 
-      // Update junction position to nearest corner on the recalculated wire
+      junctionUpdates.push({ id: junction.id, position: nearestCorner })
+    }
+
+    // Apply junction removals
+    for (const junctionId of junctionsToRemove) {
+      get().removeJunction(junctionId)
+    }
+
+    // Apply junction relocations in a single state update
+    if (junctionUpdates.length > 0) {
       set((state) => {
-        const j = state.junctions.find((jn) => jn.id === junction.id)
-        if (j) {
-          j.position = nearestCorner
+        for (const update of junctionUpdates) {
+          const j = state.junctions.find((jn) => jn.id === update.id)
+          if (j) {
+            j.position = update.position
+          }
         }
-      }, false, 'recalculateWiresForGate/relocateJunction')
+      }, false, 'recalculateWiresForGate/relocateJunctions')
     }
   },
 })
