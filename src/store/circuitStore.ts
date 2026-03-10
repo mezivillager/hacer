@@ -47,6 +47,7 @@ const initialState = {
   // Junction placement
   junctionPlacementMode: null as boolean | null,
   junctionPreviewPosition: null as import('./types').Position | null,
+  junctionPreviewWireId: null as string | null,
 }
 
 // Create the Zustand store with Immer, devtools, and subscribeWithSelector middleware

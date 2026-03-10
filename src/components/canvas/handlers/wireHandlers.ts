@@ -37,36 +37,46 @@ export function handleWireClick(e: ThreeEvent<MouseEvent>): string | null {
     z: e.point.z,
   }
 
-  // During junction placement, also try the preview position for wire detection
-  // since the preview being visible indicates the user expects placement to succeed.
-  const previewPosition = isPlacingJunction ? state.junctionPreviewPosition : null
-  let targetWireId = findNearestWire(clickPoint, state.wires, 0.5)
+  // During junction placement, use the stored preview wireId and snapped corner position.
+  // These are computed by updateJunctionPreviewPosition when the preview is visible,
+  // so a non-null value means the preview was showing and the position is a valid corner.
+  if (isPlacingJunction) {
+    const previewPosition = state.junctionPreviewPosition
+    const previewWireId = state.junctionPreviewWireId
 
-  if (!targetWireId && previewPosition) {
-    targetWireId = findNearestWire(previewPosition, state.wires, 0.5)
+    if (previewPosition && previewWireId) {
+      try {
+        circuitActions.placeJunctionOnWire(previewPosition, previewWireId)
+        return previewWireId
+      } catch (error) {
+        const errorMsg = error instanceof Error ? error.message : String(error)
+        message.warning(errorMsg)
+        return previewWireId
+      }
+    }
+
+    // No preview visible — try to detect wire at click point as fallback
+    const targetWireId = findNearestWire(clickPoint, state.wires, 0.5)
+    if (targetWireId) {
+      try {
+        circuitActions.placeJunctionOnWire(clickPoint, targetWireId)
+        return targetWireId
+      } catch (error) {
+        const errorMsg = error instanceof Error ? error.message : String(error)
+        message.warning(errorMsg)
+        return targetWireId
+      }
+    }
+
+    return null
   }
 
+  // Normal wire selection
+  const targetWireId = findNearestWire(clickPoint, state.wires, 0.5)
   if (!targetWireId) {
     return null
   }
 
-  // If in junction placement mode, place junction on wire instead of selecting.
-  // Use the preview position when available, since the preview being visible
-  // indicates to the user that clicking should place the junction there.
-  if (isPlacingJunction) {
-    const placementPoint = previewPosition ?? clickPoint
-    try {
-      circuitActions.placeJunctionOnWire(placementPoint, targetWireId)
-      return targetWireId
-    } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : String(error)
-      message.warning(errorMsg)
-      // Return the wireId to signal we handled the click (don't cancel placement mode)
-      return targetWireId
-    }
-  }
-
-  // Normal wire selection
   circuitActions.selectWire(targetWireId)
   return targetWireId
 }
