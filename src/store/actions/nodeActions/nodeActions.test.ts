@@ -1,7 +1,7 @@
 /**
  * Node Actions Tests
  *
- * Tests for input/output/constant node management actions.
+ * Tests for input/output node management actions.
  * These nodes are essential for HDL-style circuits with chip-level I/O.
  */
 
@@ -15,7 +15,6 @@ describe('Node Actions', () => {
     useCircuitStore.setState({
       inputNodes: [],
       outputNodes: [],
-      constantNodes: [],
       junctions: [],
       wires: [],
       gates: [],
@@ -34,7 +33,7 @@ describe('Node Actions', () => {
       expect(node.id).toBeDefined()
       expect(node.name).toBe('a')
       expect(node.position).toEqual(position)
-      expect(node.value).toBe(false)
+      expect(node.value).toBe(true)
       expect(node.width).toBe(1)
     })
 
@@ -82,38 +81,6 @@ describe('Node Actions', () => {
       const state = useCircuitStore.getState()
       expect(state.outputNodes).toHaveLength(1)
       expect(state.outputNodes[0].name).toBe('out')
-    })
-  })
-
-  describe('addConstantNode', () => {
-    it('creates a constant true node', () => {
-      const position: Position = { x: -4, y: 0, z: 0 }
-      const store = useCircuitStore.getState()
-
-      const node = store.addConstantNode(true, position)
-
-      expect(node.id).toBeDefined()
-      expect(node.value).toBe(true)
-      expect(node.position).toEqual(position)
-    })
-
-    it('creates a constant false node', () => {
-      const position: Position = { x: -4, y: 0, z: 4 }
-      const store = useCircuitStore.getState()
-
-      const node = store.addConstantNode(false, position)
-
-      expect(node.value).toBe(false)
-    })
-
-    it('adds the node to the store state', () => {
-      const store = useCircuitStore.getState()
-
-      store.addConstantNode(true, { x: -4, y: 0, z: 0 })
-      store.addConstantNode(false, { x: -4, y: 0, z: 4 })
-
-      const state = useCircuitStore.getState()
-      expect(state.constantNodes).toHaveLength(2)
     })
   })
 
@@ -268,65 +235,16 @@ describe('Node Actions', () => {
     })
   })
 
-  describe('removeConstantNode', () => {
-    it('removes a constant node by ID', () => {
-      const store = useCircuitStore.getState()
-      const node = store.addConstantNode(true, { x: -4, y: 0, z: 0 })
-
-      store.removeConstantNode(node.id)
-
-      const state = useCircuitStore.getState()
-      expect(state.constantNodes).toHaveLength(0)
-    })
-
-    it('clears selection if the removed node was selected', () => {
-      const store = useCircuitStore.getState()
-      const node = store.addConstantNode(true, { x: -4, y: 0, z: 0 })
-
-      useCircuitStore.setState({ selectedNodeId: node.id, selectedNodeType: 'constant' })
-
-      store.removeConstantNode(node.id)
-
-      const state = useCircuitStore.getState()
-      expect(state.selectedNodeId).toBe(null)
-      expect(state.selectedNodeType).toBe(null)
-    })
-
-    it('removes wires connected to the deleted constant node', () => {
-      const store = useCircuitStore.getState()
-      const constNode = store.addConstantNode(true, { x: 0, y: 0, z: 0 })
-      const gate = store.addGate('NOT', { x: 4, y: 0.2, z: 0 })
-
-      // Create wire from constant to gate
-      store.addWire(
-        { type: 'constant', entityId: constNode.id },
-        { type: 'gate', entityId: gate.id, pinId: gate.inputs[0].id },
-        [],
-        [],
-        'sig-const'
-      )
-
-      expect(useCircuitStore.getState().wires).toHaveLength(1)
-
-      store.removeConstantNode(constNode.id)
-
-      const state = useCircuitStore.getState()
-      expect(state.wires).toHaveLength(0)
-    })
-  })
-
   describe('updateInputNodeValue', () => {
     it('updates the value of an input node', () => {
       const store = useCircuitStore.getState()
       const node = store.addInputNode('a', { x: 0, y: 0, z: 0 })
 
-      expect(node.value).toBe(false)
-
-      store.updateInputNodeValue(node.id, true)
+      store.updateInputNodeValue(node.id, false)
 
       const state = useCircuitStore.getState()
       const updated = state.inputNodes.find(n => n.id === node.id)
-      expect(updated?.value).toBe(true)
+      expect(updated?.value).toBe(false)
     })
   })
 

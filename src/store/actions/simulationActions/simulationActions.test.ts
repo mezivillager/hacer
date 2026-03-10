@@ -20,7 +20,6 @@ describe('simulationActions', () => {
       // Node state fields
       inputNodes: [],
       outputNodes: [],
-      constantNodes: [],
       junctions: [],
       nodePlacementMode: null,
       selectedNodeId: null,
@@ -78,18 +77,15 @@ describe('simulationActions', () => {
       // Add some nodes
       getState().addInputNode('a', { x: 0, y: 0, z: 0 })
       getState().addOutputNode('out', { x: 10, y: 0, z: 0 })
-      getState().addConstantNode(true, { x: -2, y: 0, z: 0 })
 
       // Verify they exist
       expect(getState().inputNodes).toHaveLength(1)
       expect(getState().outputNodes).toHaveLength(1)
-      expect(getState().constantNodes).toHaveLength(1)
 
       getState().clearCircuit()
 
       expect(getState().inputNodes).toHaveLength(0)
       expect(getState().outputNodes).toHaveLength(0)
-      expect(getState().constantNodes).toHaveLength(0)
       expect(getState().junctions).toHaveLength(0)
       expect(getState().wires).toHaveLength(0)
     })
@@ -176,28 +172,6 @@ describe('simulationActions', () => {
     it('returns false for non-existent input node', () => {
       const value = getSignalSourceValue(
         { type: 'input', entityId: 'non-existent' },
-        getState()
-      )
-
-      expect(value).toBe(false)
-    })
-
-    it('returns constant node value for constant source type', () => {
-      const constNode = getState().addConstantNode(true, { x: 0, y: 0, z: 0 })
-
-      const value = getSignalSourceValue(
-        { type: 'constant', entityId: constNode.id },
-        getState()
-      )
-
-      expect(value).toBe(true)
-    })
-
-    it('returns false constant node value', () => {
-      const constNode = getState().addConstantNode(false, { x: 0, y: 0, z: 0 })
-
-      const value = getSignalSourceValue(
-        { type: 'constant', entityId: constNode.id },
         getState()
       )
 
@@ -436,48 +410,6 @@ describe('simulationActions', () => {
       expect(getState().gates[0].inputs[0].value).toBe(true)
       // NOT gate output should be false (NOT(true) = false)
       expect(getState().gates[0].outputs[0].value).toBe(false)
-    })
-
-    it('propagates constant node value to gate input via wire', () => {
-      // Create constant node (true) and gate
-      const constNode = getState().addConstantNode(true, { x: 0, y: 0, z: 0 })
-      const gate = getState().addGate('NOT', { x: 4, y: 0.2, z: 0 })
-
-      // Create wire from constant to gate input
-      getState().addWire(
-        { type: 'constant', entityId: constNode.id },
-        { type: 'gate', entityId: gate.id, pinId: gate.inputs[0].id },
-        [],
-        [],
-        'signal-const'
-      )
-
-      // Run simulation tick
-      getState().simulationTick()
-
-      // Gate input should receive the constant value
-      expect(getState().gates[0].inputs[0].value).toBe(true)
-      // NOT gate output should be false
-      expect(getState().gates[0].outputs[0].value).toBe(false)
-    })
-
-    it('propagates false constant to gate input', () => {
-      const constNode = getState().addConstantNode(false, { x: 0, y: 0, z: 0 })
-      const gate = getState().addGate('NOT', { x: 4, y: 0.2, z: 0 })
-
-      getState().addWire(
-        { type: 'constant', entityId: constNode.id },
-        { type: 'gate', entityId: gate.id, pinId: gate.inputs[0].id },
-        [],
-        [],
-        'signal-const'
-      )
-
-      getState().simulationTick()
-
-      expect(getState().gates[0].inputs[0].value).toBe(false)
-      // NOT gate output should be true (NOT(false) = true)
-      expect(getState().gates[0].outputs[0].value).toBe(true)
     })
 
     it('propagates gate output to output node via wire', () => {

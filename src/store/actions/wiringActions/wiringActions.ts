@@ -165,8 +165,8 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
   },
 
   /**
-   * Complete wiring from a node (input or constant) to a gate pin.
-   * Used when wiring from input/constant nodes to gate inputs.
+   * Complete wiring from a node (input) to a gate pin.
+   * Used when wiring from input nodes to gate inputs.
    */
   completeWiringFromNodeToGate: (toGateId: string, toPinId: string, toPinType: 'input' | 'output') => {
     const state = get()
@@ -183,8 +183,8 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
       return
     }
 
-    if (source.type !== 'input' && source.type !== 'constant') {
-      message.warning('Can only complete wiring from input or constant nodes')
+    if (source.type !== 'input') {
+      message.warning('Can only complete wiring from input nodes')
       set((s) => { s.wiringFrom = null }, false, 'completeWiringFromNodeToGate/invalidSource')
       return
     }
@@ -195,16 +195,8 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
       return
     }
 
-    let fromEndpoint: WireEndpoint
-    let signalId: string
-
-    if (source.type === 'input') {
-      fromEndpoint = { type: 'input', entityId: source.nodeId }
-      signalId = `sig-${source.nodeId}`
-    } else {
-      fromEndpoint = { type: 'constant', entityId: source.nodeId }
-      signalId = `sig-${source.nodeId}`
-    }
+    const fromEndpoint: WireEndpoint = { type: 'input', entityId: source.nodeId }
+    const signalId = `sig-${source.nodeId}`
 
     const toEndpoint: WireEndpoint = { type: 'gate', entityId: toGateId, pinId: toPinId }
 
@@ -258,12 +250,12 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
   },
 
   /**
-   * Start wiring from a node (input or constant).
+   * Start wiring from a node (input only).
    * Used for HDL-style circuits where signals originate from input nodes.
    */
   startWiringFromNode: (nodeId: string, nodeType: NodeType, position: Position) => {
-    if (nodeType !== 'input' && nodeType !== 'constant') {
-      message.warning('Can only start wiring from input or constant nodes')
+    if (nodeType !== 'input') {
+      message.warning('Can only start wiring from input nodes')
       return
     }
 
@@ -279,7 +271,7 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
         destinationNodeId: null,
         destinationNodeType: null,
         segments: null,
-        source: { type: nodeType, nodeId },
+        source: { type: 'input', nodeId },
       }
       state.placementMode = null
       state.nodePlacementMode = null
@@ -321,10 +313,8 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
         return
       }
       fromPosition = pinPos
-    } else if (originalWire.from.type === 'input' || originalWire.from.type === 'constant') {
-      const node = originalWire.from.type === 'input'
-        ? state.inputNodes.find((n) => n.id === originalWire.from.entityId)
-        : state.constantNodes.find((n) => n.id === originalWire.from.entityId)
+    } else if (originalWire.from.type === 'input') {
+      const node = state.inputNodes.find((n) => n.id === originalWire.from.entityId)
       if (!node) {
         message.warning('Could not find source node')
         return
@@ -365,10 +355,8 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
           return
         }
         fromPosition = pinPos
-      } else if (currentWire.from.type === 'input' || currentWire.from.type === 'constant') {
-        const node = currentWire.from.type === 'input'
-          ? state.inputNodes.find((n) => n.id === currentWire.from.entityId)
-          : state.constantNodes.find((n) => n.id === currentWire.from.entityId)
+      } else if (currentWire.from.type === 'input') {
+        const node = state.inputNodes.find((n) => n.id === currentWire.from.entityId)
         if (!node) {
           message.warning('Could not find source node after tracing through junctions')
           return
@@ -439,16 +427,16 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
       return
     }
 
+    if (source.type === 'input') {
+      message.warning('Input nodes must connect to gates or junctions, not directly to output nodes')
+      set((s) => { s.wiringFrom = null }, false, 'completeWiringToNode/inputToOutputRejected')
+      return
+    }
+
     let fromEndpoint: WireEndpoint
     let signalId: string
 
-    if (source.type === 'input') {
-      fromEndpoint = { type: 'input', entityId: source.nodeId }
-      signalId = `sig-${source.nodeId}`
-    } else if (source.type === 'constant') {
-      fromEndpoint = { type: 'constant', entityId: source.nodeId }
-      signalId = `sig-${source.nodeId}`
-    } else if (source.type === 'gate') {
+    if (source.type === 'gate') {
       fromEndpoint = { type: 'gate', entityId: source.gateId, pinId: source.pinId }
       signalId = `sig-${source.gateId}-${source.pinId}`
     } else {

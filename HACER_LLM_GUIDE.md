@@ -1262,6 +1262,23 @@ export { XorGate } from './XorGate'; // Add export
 
 ---
 
+## 🔄 Workflow Orchestration
+
+For non-trivial tasks (3+ steps or architectural decisions), follow structured workflow practices:
+
+- **Plan first**: Enter plan mode; write detailed specs; re-plan if the task deviates.
+- **Use subagents**: Offload research, exploration, and parallel analysis; one focused task per subagent.
+- **Self-improvement**: After any correction, update `tasks/lessons.md`; review lessons at session start.
+- **Verify before done**: Never mark complete without proof; run tests, check logs; "Would a staff engineer approve?"
+- **Demand elegance**: For non-trivial changes, consider more elegant solutions; avoid over-engineering simple fixes.
+- **Autonomous bug fixing**: Fix bugs directly using logs, errors, failing tests; fix CI without being asked.
+
+**Task management**: Plan in `tasks/todo.md`, track progress, document results, capture lessons in `tasks/lessons.md`.
+
+**Full details**: See [docs/llm-workflow.md](docs/llm-workflow.md).
+
+---
+
 ## ✅ Code Review Checklist
 
 Before submitting ANY code change, verify:

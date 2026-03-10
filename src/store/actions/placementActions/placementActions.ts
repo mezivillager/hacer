@@ -13,8 +13,16 @@ type GetState = () => CircuitStore
 export const createPlacementActions = (set: SetState, get: GetState): PlacementActions => ({
   startPlacement: (type: GateType) => {
     set((state) => {
-      state.placementMode = type
+      // Clear all selections
       state.selectedGateId = null
+      state.selectedWireId = null
+      state.selectedNodeId = null
+      state.selectedNodeType = null
+      state.gates.forEach((g) => {
+        g.selected = false
+      })
+
+      state.placementMode = type
       // Cancel node placement if active
       state.nodePlacementMode = null
     }, false, 'startPlacement')
@@ -63,6 +71,11 @@ export const createPlacementActions = (set: SetState, get: GetState): PlacementA
       // Deselect all gates and select the new one
       state.gates.forEach((g) => { g.selected = g.id === newGate.id })
       state.selectedGateId = newGate.id
+      // Clear node and wire selection
+      state.selectedNodeId = null
+      state.selectedNodeType = null
+      state.selectedWireId = null
+      // Ensure other gates are deselected (already done in forEach above, but selectGateId is special)
     }, false, 'placeGate')
   },
 

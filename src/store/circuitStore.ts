@@ -39,7 +39,6 @@ const initialState = {
   // HDL Support: Circuit I/O nodes and junctions
   inputNodes: [] as import('./types').InputNode[],
   outputNodes: [] as import('./types').OutputNode[],
-  constantNodes: [] as import('./types').ConstantNode[],
   junctions: [] as import('./types').JunctionNode[],
   // Node placement and selection
   nodePlacementMode: null as import('./types').NodePlacementType | null,
@@ -218,11 +217,11 @@ export const circuitActions = {
   // Node CRUD actions (already in store, adding to circuitActions for convenience)
   addInputNode: (...args: Parameters<CircuitStore['addInputNode']>) => useCircuitStore.getState().addInputNode(...args),
   addOutputNode: (...args: Parameters<CircuitStore['addOutputNode']>) => useCircuitStore.getState().addOutputNode(...args),
-  addConstantNode: (...args: Parameters<CircuitStore['addConstantNode']>) => useCircuitStore.getState().addConstantNode(...args),
   removeInputNode: (...args: Parameters<CircuitStore['removeInputNode']>) => useCircuitStore.getState().removeInputNode(...args),
   removeOutputNode: (...args: Parameters<CircuitStore['removeOutputNode']>) => useCircuitStore.getState().removeOutputNode(...args),
-  removeConstantNode: (...args: Parameters<CircuitStore['removeConstantNode']>) => useCircuitStore.getState().removeConstantNode(...args),
   updateInputNodeValue: (...args: Parameters<CircuitStore['updateInputNodeValue']>) => useCircuitStore.getState().updateInputNodeValue(...args),
+  updateInputNodePosition: (...args: Parameters<CircuitStore['updateInputNodePosition']>) => useCircuitStore.getState().updateInputNodePosition(...args),
+  updateOutputNodePosition: (...args: Parameters<CircuitStore['updateOutputNodePosition']>) => useCircuitStore.getState().updateOutputNodePosition(...args),
   // Junction actions
   addJunction: (...args: Parameters<CircuitStore['addJunction']>) => useCircuitStore.getState().addJunction(...args),
   removeJunction: (...args: Parameters<CircuitStore['removeJunction']>) => useCircuitStore.getState().removeJunction(...args),

@@ -71,8 +71,21 @@ docs/
 │   ├── standards.md  # TDD workflow, test quality, mutation testing
 │   ├── structure.md  # Test file organization
 │   └── templates/    # TDD templates for unit, component, E2E tests
+├── llm-workflow.md   # Workflow orchestration for AI agents (plan, subagents, verification)
 ├── typescript-guidelines.md  # TypeScript best practices
 └── roadmap/          # Project roadmap and phases
+
+tasks/                # Task management for AI agents
+├── README.md         # Purpose of todo.md and lessons.md
+├── todo.md           # Current task plan (checkable items)
+├── lessons.md        # Captured patterns and mistakes
+├── todo.md.template  # Template for new task plans
+└── lessons.md.template  # Template for lesson entries
+
+.claude/              # Claude Code project rules
+├── CLAUDE.md         # Project overview for Claude Code
+└── rules/
+    └── workflow.md   # Workflow orchestration rules (auto-loaded)
 
 scripts/
 └── check-test-files.sh  # Pre-commit TDD verification script
@@ -441,6 +454,7 @@ See [Implementation Guide](implementation.md#technology-stack-evolution) for det
 
 - [`.cursorrules`](../.cursorrules) - **Start here!** Project rules, phase tracking, and quick reference
 - [`HACER_LLM_GUIDE.md`](../HACER_LLM_GUIDE.md) - Detailed development patterns, examples, and best practices
+- [`docs/llm-workflow.md`](./docs/llm-workflow.md) - Workflow orchestration for AI agents (plan mode, subagents, verification)
 - [`docs/testing/`](./docs/testing/) - Testing standards, TDD workflow, templates
 - [`docs/typescript-guidelines.md`](./docs/typescript-guidelines.md) - TypeScript best practices
 - [`docs/roadmap/`](./docs/roadmap/README.md) - Project roadmap and phases
@@ -452,6 +466,7 @@ See [Implementation Guide](implementation.md#technology-stack-evolution) for det
 This document focuses on **repository structure and file organization**. For:
 - **Quick rules & phase status**: See [`.cursorrules`](./.cursorrules)
 - **Detailed patterns & examples**: See [`HACER_LLM_GUIDE.md`](./HACER_LLM_GUIDE.md)
+- **Workflow orchestration**: See [`docs/llm-workflow.md`](./docs/llm-workflow.md)
 - **Testing standards & TDD**: See [`docs/testing/`](./docs/testing/)
 - **TypeScript guidelines**: See [`docs/typescript-guidelines.md`](./docs/typescript-guidelines.md)
 - **Where files go**: This document

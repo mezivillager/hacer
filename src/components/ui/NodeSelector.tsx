@@ -2,8 +2,6 @@ import { Tooltip, Button, Space } from 'antd'
 import {
   LoginOutlined,
   LogoutOutlined,
-  CheckCircleOutlined,
-  CloseCircleOutlined,
   ShareAltOutlined,
 } from '@ant-design/icons'
 import { useCircuitStore } from '@/store/circuitStore'
@@ -27,7 +25,7 @@ const NODE_TYPES: NodeTypeConfig[] = [
   {
     type: 'INPUT',
     label: 'Input',
-    description: 'Circuit input - toggleable external signal',
+    description: 'Circuit input - click to toggle signal value',
     icon: <LoginOutlined />,
   },
   {
@@ -35,18 +33,6 @@ const NODE_TYPES: NodeTypeConfig[] = [
     label: 'Output',
     description: 'Circuit output - displays computed result',
     icon: <LogoutOutlined />,
-  },
-  {
-    type: 'CONSTANT_TRUE',
-    label: '1',
-    description: 'Constant TRUE (1) - always outputs high signal',
-    icon: <CheckCircleOutlined />,
-  },
-  {
-    type: 'CONSTANT_FALSE',
-    label: '0',
-    description: 'Constant FALSE (0) - always outputs low signal',
-    icon: <CloseCircleOutlined />,
   },
 ]
 

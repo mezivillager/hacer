@@ -27,7 +27,7 @@ export function handlePinClick(
   if (currentWiringFrom) {
     // Check source type to route to appropriate completion action
     const source = currentWiringFrom.source
-    if (source && (source.type === 'input' || source.type === 'constant')) {
+    if (source && source.type === 'input') {
       // Node-to-gate wiring
       circuitActions.completeWiringFromNodeToGate(gateId, pinId, pinType)
     } else if (source && source.type === 'junction') {
@@ -91,7 +91,7 @@ export function handleNodeClick(nodeId: string, nodeType: NodeType): void {
  * Handle node pin click - start or complete wiring from/to node pins
  *
  * @param nodeId - The node's ID
- * @param nodeType - The type of node (input, output, constant)
+ * @param nodeType - The type of node (input, output)
  * @param worldPosition - The pin's position in world coordinates
  */
 export function handleNodePinClick(
@@ -116,8 +116,8 @@ export function handleNodePinClick(
     }
     // If not an output node, do nothing (wiring continues)
   } else {
-    // Start wiring from node (only input and constant nodes can be wire sources)
-    if (nodeType === 'input' || nodeType === 'constant') {
+    // Start wiring from node (only input nodes can be wire sources)
+    if (nodeType === 'input') {
       circuitActions.startWiringFromNode(nodeId, nodeType, worldPosition)
     }
     // If output node, do nothing (can't start wiring from output)

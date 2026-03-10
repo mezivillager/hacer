@@ -2,7 +2,7 @@
  * Store Types Tests
  *
  * Tests for the HDL-supporting circuit types including:
- * - InputNode, OutputNode, ConstantNode for circuit I/O
+ * - InputNode, OutputNode for circuit I/O
  * - Signal for logical wire connections with fan-out
  * - JunctionNode for visual wire branching
  */
@@ -11,7 +11,6 @@ import { describe, it, expect } from 'vitest'
 import type {
   InputNode,
   OutputNode,
-  ConstantNode,
   JunctionNode,
   Wire,
   WireEndpoint,
@@ -64,30 +63,6 @@ describe('Circuit Node Types', () => {
     })
   })
 
-  describe('ConstantNode', () => {
-    it('represents a constant true value', () => {
-      const trueNode: ConstantNode = {
-        id: 'const-true',
-        value: true,
-        position: { x: -4, y: 0, z: 0 },
-        rotation: { x: 0, y: 0, z: 0 },
-      }
-
-      expect(trueNode.value).toBe(true)
-    })
-
-    it('represents a constant false value', () => {
-      const falseNode: ConstantNode = {
-        id: 'const-false',
-        value: false,
-        position: { x: -4, y: 0, z: 4 },
-        rotation: { x: 0, y: 0, z: 0 },
-      }
-
-      expect(falseNode.value).toBe(false)
-    })
-  })
-
   describe('JunctionNode', () => {
     it('represents a wire branching point', () => {
       const junction: JunctionNode = {
@@ -133,15 +108,6 @@ describe('Wire Endpoint Types', () => {
       }
 
       expect(endpoint.type).toBe('output')
-    })
-
-    it('represents a constant endpoint', () => {
-      const endpoint: WireEndpoint = {
-        type: 'constant',
-        entityId: 'const-true',
-      }
-
-      expect(endpoint.type).toBe('constant')
     })
 
     it('represents a junction endpoint', () => {

@@ -6,9 +6,9 @@ import { colors } from '@/theme'
  * Nodes are smaller than gates since they represent simple I/O points.
  */
 export const NODE_DIMENSIONS = {
-  BODY_WIDTH: 0.6,
+  BODY_WIDTH: 0.5,
   BODY_HEIGHT: 0.5,
-  BODY_DEPTH: 0.3,
+  BODY_DEPTH: 0.5,
   PIN_RADIUS: 0.1,
   JUNCTION_RADIUS: 0.08,
   WIRE_STUB_OFFSET: 0.15,
@@ -20,18 +20,17 @@ export const NODE_DIMENSIONS = {
  */
 export const NODE_COLORS = {
   input: {
-    body: '#4a6a8a', // Blue-gray tint for inputs
-    hover: '#5a7a9a',
+    bodyOn: '#2ecc71',   // Green when value=1
+    bodyOff: '#e74c3c',  // Red when value=0
+    hoverOn: '#27ae60',
+    hoverOff: '#c0392b',
     selected: colors.gate.bodySelected,
   },
   output: {
-    body: '#6a5a4a', // Warm brown for outputs
-    hover: '#7a6a5a',
-    selected: colors.gate.bodySelected,
-  },
-  constant: {
-    body: '#5a5a5a', // Neutral gray for constants
-    hover: '#6a6a6a',
+    bodyOn: '#2ecc71',   // Green when value=1
+    bodyOff: '#e74c3c',  // Red when value=0
+    hoverOn: '#27ae60',
+    hoverOff: '#c0392b',
     selected: colors.gate.bodySelected,
   },
   junction: colors.wire.default, // Same as wire color for visual continuity
@@ -104,13 +103,12 @@ export const JUNCTION_CONFIG = {
  * Calculates the pin position for a node based on its type.
  * - Input nodes have an output pin on the right
  * - Output nodes have an input pin on the left
- * - Constant nodes have an output pin on the right
  *
- * @param nodeType - Type of node ('input', 'output', or 'constant')
+ * @param nodeType - Type of node ('input' or 'output')
  * @returns The 3D position of the pin relative to node center
  */
 export function calculateNodePinPosition(
-  nodeType: 'input' | 'output' | 'constant'
+  nodeType: 'input' | 'output'
 ): { x: number; y: number; z: number } {
   const bodyHalfWidth = NODE_DIMENSIONS.BODY_WIDTH / 2
   const pinOffset = bodyHalfWidth + NODE_DIMENSIONS.PIN_RADIUS
@@ -120,6 +118,6 @@ export function calculateNodePinPosition(
     return { x: -pinOffset, y: 0, z: 0 }
   }
 
-  // Input and constant nodes have output pin on right
+  // Input nodes have output pin on right
   return { x: pinOffset, y: 0, z: 0 }
 }

@@ -208,6 +208,56 @@ describe('groundPlaneHandlers', () => {
       expect(circuitActions.placeGate).toHaveBeenCalled()
     })
 
+    it('places node when in node placement mode and position is valid (same rules as gates)', () => {
+      vi.mocked(useCircuitStore.getState).mockReturnValue(
+        createMockStore({
+          placementMode: null,
+          nodePlacementMode: 'INPUT',
+          wiringFrom: null,
+          placementPreviewPosition: null,
+          selectedGateId: null,
+        })
+      )
+      vi.mocked(canPlaceGateAt).mockReturnValue(true)
+
+      const mockEvent = createMockThreeEvent<MouseEvent>(
+        { x: 2, y: 0.2, z: 2 },
+        { stopPropagation: vi.fn() }
+      )
+
+      handleClick(mockEvent)
+
+      expect(mockEvent.stopPropagation).toHaveBeenCalled()
+      expect(snapToGrid).toHaveBeenCalledWith({ x: 2, y: 0.2, z: 2 })
+      expect(canPlaceGateAt).toHaveBeenCalled()
+      expect(circuitActions.placeNode).toHaveBeenCalled()
+    })
+
+    it('does not place node when in node placement mode and position is invalid (e.g. section line)', () => {
+      vi.mocked(useCircuitStore.getState).mockReturnValue(
+        createMockStore({
+          placementMode: null,
+          nodePlacementMode: 'INPUT',
+          wiringFrom: null,
+          placementPreviewPosition: null,
+          selectedGateId: null,
+        })
+      )
+      vi.mocked(canPlaceGateAt).mockReturnValue(false)
+
+      const mockEvent = createMockThreeEvent<MouseEvent>(
+        { x: 0, y: 0.2, z: 0 },
+        { stopPropagation: vi.fn() }
+      )
+
+      handleClick(mockEvent)
+
+      expect(mockEvent.stopPropagation).toHaveBeenCalled()
+      expect(snapToGrid).toHaveBeenCalled()
+      expect(canPlaceGateAt).toHaveBeenCalled()
+      expect(circuitActions.placeNode).not.toHaveBeenCalled()
+    })
+
     it('cancels wiring when in wiring mode', () => {
       vi.mocked(useCircuitStore.getState).mockReturnValue(
         createMockStore({

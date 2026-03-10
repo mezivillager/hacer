@@ -1,0 +1,17 @@
+# Lessons Learned
+
+Capture patterns and mistakes here after any correction. Review at session start.
+
+## Format
+
+```markdown
+### [Date] — [Brief description]
+
+**What happened**: [Description of the mistake or correction]
+**Rule**: [Rule to prevent recurrence]
+**Context**: [Relevant file/area if applicable]
+```
+
+## Entries
+
+<!-- Add entries below -->
