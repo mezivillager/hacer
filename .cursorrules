@@ -256,6 +256,15 @@
 - Add `@example` for non-trivial functions
 - Keep descriptions concise but complete
 
+### Workflow Orchestration (Non-trivial Tasks)
+- Plan first: Enter plan mode for 3+ steps or architectural decisions; re-plan if task deviates
+- Use subagents: Offload research and parallel analysis; one focused task per subagent
+- Update `tasks/lessons.md` after any correction; review lessons at session start
+- Verify before done: Run tests, check logs; never mark complete without proof
+- Fix bugs autonomously: Use logs, errors, failing tests; fix CI without being asked.
+
+**Full:** [docs/llm-workflow.md](docs/llm-workflow.md)
+
 ### AI Agent Notes
 - Use shell commands (cat, echo) to edit dotfiles (.cursorrules, .env, etc.) - file tools often fail on them
 - **Update REPO_MAP.md** when doing significant refactoring:
