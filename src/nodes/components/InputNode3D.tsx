@@ -55,7 +55,10 @@ export function InputNode3D({
 
   const placementMode = useCircuitStore((s) => s.placementMode)
   const wiringFrom = useCircuitStore((s) => s.wiringFrom)
-  const canDrag = placementMode === null && wiringFrom === null
+  const nodePlacementMode = useCircuitStore((s) => s.nodePlacementMode)
+  const isJunctionPlacement = useCircuitStore((s) => s.junctionPlacementMode) !== null
+
+  const canDrag = placementMode === null && nodePlacementMode === null && !isJunctionPlacement && wiringFrom === null
 
   const { isDragging, shouldAllowClick, onPointerDown, onPointerMove, onPointerUp, onPointerLeave } = useNodeDrag(id, 'input')
 

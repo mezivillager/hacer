@@ -29,22 +29,49 @@ export function PlacementPreview() {
   // For gate placement/drag, validate position against existing gates and section lines
   if (isPlacingGate || (isDragging && selectedGateId !== null)) {
     // eslint-disable-next-line react-compiler/react-compiler -- getState() is valid for reading without subscribing
-    const gates = useCircuitStore.getState().gates
+    const snapshot = useCircuitStore.getState()
     const gridPos = worldToGrid(previewPosition)
     const gatesForValidation = isDragging && selectedGateId
-      ? gates.filter(g => g.id !== selectedGateId)
-      : gates
+      ? snapshot.gates.filter(g => g.id !== selectedGateId)
+      : snapshot.gates
     const excludeGateId = isDragging && selectedGateId ? selectedGateId : undefined
-    const isValid = canPlaceGateAt(gridPos, gatesForValidation, excludeGateId)
+    const existingNodes = [...snapshot.inputNodes, ...snapshot.outputNodes]
+
+    const isValid = canPlaceGateAt(
+      gridPos,
+      gatesForValidation,
+      excludeGateId,
+      snapshot.wires,
+      snapshot.getPinWorldPosition,
+      snapshot.getPinOrientation,
+      existingNodes
+    )
     if (!isValid) return null
   }
 
   // For node placement/drag, use same rules as gates (no section lines, no overlap with gates)
   if (isPlacingNode || isDraggingNode) {
     // eslint-disable-next-line react-compiler/react-compiler -- getState() is valid for reading without subscribing
-    const gates = useCircuitStore.getState().gates
+    const snapshot = useCircuitStore.getState()
     const gridPos = worldToGrid(previewPosition)
-    const isValid = canPlaceGateAt(gridPos, gates, undefined)
+    const existingNodes = [...snapshot.inputNodes, ...snapshot.outputNodes]
+    const excludeNodeId = isDraggingNode && selectedNodeId !== null ? selectedNodeId : undefined
+
+    // We filter existingNodes manually to handle excludeNodeId logic equivalent since
+    // canPlaceGateAt's excludeGateId matches on id. Doing it here allows dragging a node.
+    const nodesForValidation = excludeNodeId
+      ? existingNodes.filter(n => n.id !== excludeNodeId)
+      : existingNodes
+
+    const isValid = canPlaceGateAt(
+      gridPos,
+      snapshot.gates,
+      undefined,
+      snapshot.wires,
+      snapshot.getPinWorldPosition,
+      snapshot.getPinOrientation,
+      nodesForValidation
+    )
     if (!isValid) return null
   }
 

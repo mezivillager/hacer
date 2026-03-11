@@ -25,7 +25,7 @@ const NODE_TYPES: NodeTypeConfig[] = [
   {
     type: 'INPUT',
     label: 'Input',
-    description: 'Circuit input - click to toggle signal value',
+    description: 'Circuit input - click to select, Shift+click to toggle signal value',
     icon: <LoginOutlined />,
   },
   {

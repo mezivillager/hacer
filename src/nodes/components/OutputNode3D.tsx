@@ -54,8 +54,11 @@ export function OutputNode3D({
   // Check if wiring is active
   const wiringFrom = useCircuitStore((s) => s.wiringFrom)
   const placementMode = useCircuitStore((s) => s.placementMode)
+  const nodePlacementMode = useCircuitStore((s) => s.nodePlacementMode)
+  const isJunctionPlacement = useCircuitStore((s) => s.junctionPlacementMode) !== null
+
   const isWiringMode = wiringFrom !== null
-  const canDrag = placementMode === null && !isWiringMode
+  const canDrag = placementMode === null && nodePlacementMode === null && !isJunctionPlacement && !isWiringMode
 
   const { isDragging, shouldAllowClick, onPointerDown, onPointerMove, onPointerUp, onPointerLeave } = useNodeDrag(id, 'output')
 

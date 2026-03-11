@@ -110,9 +110,8 @@ describe('useNodeDrag', () => {
       result.current.onPointerDown(createMockThreeEvent({ x: 0, y: 0, z: 0 }))
     })
 
-    // Drag active state is set primarily in circuitActions on down
-    expect(useCircuitStore.getState().isDragActive).toBe(true)
-    // but the hook itself shouldn't consider it "dragging" until it moves
+    // Drag active state should be delayed until threshold is crossed
+    expect(useCircuitStore.getState().isDragActive).toBe(false)
     expect(result.current.isDragging).toBe(false)
 
     // Move below threshold (DRAG_THRESHOLD = 0.1)
@@ -122,6 +121,7 @@ describe('useNodeDrag', () => {
 
     // Still not dragging
     expect(result.current.isDragging).toBe(false)
+    expect(useCircuitStore.getState().isDragActive).toBe(false)
 
     // Move past threshold
     act(() => {
@@ -130,6 +130,7 @@ describe('useNodeDrag', () => {
 
     // Now dragging
     expect(result.current.isDragging).toBe(true)
+    expect(useCircuitStore.getState().isDragActive).toBe(true)
     expect(useCircuitStore.getState().placementPreviewPosition).toEqual(
       snapToGrid({ x: 0.5, y: 0.2, z: 0.5 })
     )

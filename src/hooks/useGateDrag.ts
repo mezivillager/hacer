@@ -168,10 +168,20 @@ export function useGateDrag(gateId: string) {
       return
     }
 
+    const state = useCircuitStore.getState()
     const gridPos = worldToGrid(previewPos)
-    const otherGates = useCircuitStore.getState().gates.filter((g) => g.id !== gateId)
+    const otherGates = state.gates.filter((g) => g.id !== gateId)
+    const existingNodes = [...state.inputNodes, ...state.outputNodes]
 
-    if (canPlaceGateAt(gridPos, otherGates, gateId)) {
+    if (canPlaceGateAt(
+      gridPos,
+      otherGates,
+      gateId,
+      state.wires.length > 0 ? state.wires : undefined,
+      circuitActions.getPinWorldPosition,
+      circuitActions.getPinOrientation,
+      existingNodes
+    )) {
       // Valid position - update gate
       circuitActions.updateGatePosition(gateId, previewPos)
     }

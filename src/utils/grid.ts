@@ -99,7 +99,8 @@ export function canPlaceGateAt(
   excludeGateId?: string,
   wires?: Wire[],
   getPinWorldPosition?: (gateId: string, pinId: string) => Position | null,
-  getPinOrientation?: (gateId: string, pinId: string) => { x: number; y: number; z: number } | null
+  getPinOrientation?: (gateId: string, pinId: string) => { x: number; y: number; z: number } | null,
+  existingNodes?: { id: string, position: Position }[]
 ): boolean {
   // Prevent placement on section lines
   // Section lines appear every GRID_SIZE * 2 units (4.0 units)
@@ -127,6 +128,23 @@ export function canPlaceGateAt(
     // MIN_GATE_SPACING = 1 means rowDiff and colDiff must both be > 1
     if (rowDiff <= MIN_GATE_SPACING && colDiff <= MIN_GATE_SPACING) {
       return false
+    }
+  }
+
+  // Check minimum spacing from all existing nodes
+  if (existingNodes) {
+    for (const node of existingNodes) {
+      if (excludeGateId && node.id === excludeGateId) {
+        continue
+      }
+
+      const nodeGrid = worldToGrid(node.position)
+      const rowDiff = Math.abs(nodeGrid.row - gridPos.row)
+      const colDiff = Math.abs(nodeGrid.col - gridPos.col)
+
+      if (rowDiff <= MIN_GATE_SPACING && colDiff <= MIN_GATE_SPACING) {
+        return false
+      }
     }
   }
 

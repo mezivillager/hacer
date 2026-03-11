@@ -148,6 +148,20 @@ describe('grid utilities', () => {
       expect(canPlaceGateAt({ row: 1, col: 2 }, [gate])).toBe(false)
     })
 
+    it('prevents placement overlapping with nodes', () => {
+      // Node at valid position
+      const node = { id: 'node1', position: { x: 2, y: 0, z: 2 } } // grid (1, 1)
+
+      // Attempt to place exactly at the node's position
+      expect(canPlaceGateAt({ row: 1, col: 1 }, [], undefined, undefined, undefined, undefined, [node])).toBe(false)
+
+      // Adjacent to node
+      expect(canPlaceGateAt({ row: 1, col: 0 }, [], undefined, undefined, undefined, undefined, [node])).toBe(false)
+
+      // Far away is ok (if valid grid pos, e.g. 3, 3)
+      expect(canPlaceGateAt({ row: 3, col: 3 }, [], undefined, undefined, undefined, undefined, [node])).toBe(true)
+    })
+
     it('allows placement when spacing > 1', () => {
       // Gate at valid position (both odd)
       const gate = createGate('gate1', { x: 2, y: 0, z: 2 }) // grid (1, 1)
