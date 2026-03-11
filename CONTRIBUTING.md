@@ -77,14 +77,15 @@ This project uses [Conventional Commits](https://www.conventionalcommits.org/) f
 
 - **feat**: A new feature (triggers minor version bump)
 - **fix**: A bug fix (triggers patch version bump)
-- **docs**: Documentation only changes (triggers patch version bump)
-- **style**: Code style changes (formatting, missing semi colons, etc.)
-- **refactor**: Code refactoring without feature changes
-- **perf**: Performance improvements
-- **test**: Adding or updating tests
-- **build**: Build system or dependency changes
-- **ci**: CI/CD configuration changes
-- **chore**: Other changes that don't modify src or test files (no version bump)
+- **perf**: Performance improvements (triggers patch version bump)
+- **revert**: Reverts a previous commit (triggers patch version bump)
+- **docs**: Documentation only changes (no release)
+- **style**: Code style changes (formatting, missing semi colons, etc.) (no release)
+- **refactor**: Code refactoring without feature changes (no release)
+- **test**: Adding or updating tests (no release)
+- **build**: Build system or dependency changes (no release)
+- **ci**: CI/CD configuration changes (no release)
+- **chore**: Other changes that don't modify src or test files (no release)
 
 ### Examples
 
