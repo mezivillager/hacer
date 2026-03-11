@@ -59,6 +59,64 @@ See [docs/testing/standards.md](docs/testing/standards.md) for the detailed work
 - **React Compiler** handles memoization -- do NOT use manual `useMemo`, `useCallback`, or `React.memo`
 - Avoid `any` types -- use proper generics or `unknown` with type guards
 
+## Commit Message Conventions
+
+This project uses [Conventional Commits](https://www.conventionalcommits.org/) for automated versioning and changelog generation. Commit messages are validated using commitlint.
+
+### Format
+
+```
+<type>(<scope>): <subject>
+
+<body>
+
+<footer>
+```
+
+### Types
+
+- **feat**: A new feature (triggers minor version bump)
+- **fix**: A bug fix (triggers patch version bump)
+- **docs**: Documentation only changes (triggers patch version bump)
+- **style**: Code style changes (formatting, missing semi colons, etc.)
+- **refactor**: Code refactoring without feature changes
+- **perf**: Performance improvements
+- **test**: Adding or updating tests
+- **build**: Build system or dependency changes
+- **ci**: CI/CD configuration changes
+- **chore**: Other changes that don't modify src or test files (no version bump)
+
+### Examples
+
+```bash
+feat: add wire color customization
+fix: resolve gate deletion memory leak
+docs: update installation instructions
+refactor: extract wire routing logic
+test: add unit tests for gate rotation
+```
+
+### Breaking Changes
+
+To trigger a major version bump, add `BREAKING CHANGE:` in the commit body or append `!` after the type:
+
+```bash
+feat!: redesign state management architecture
+
+BREAKING CHANGE: The store API has been completely redesigned.
+Migration guide: https://...
+```
+
+### Scope (optional)
+
+You can add a scope to provide more context:
+
+```bash
+feat(gates): add multiplexer gate type
+fix(simulation): correct XOR gate logic
+docs(readme): add deployment section
+```
+
 ## Testing Commands
 
 | Command | Purpose | When to use |
