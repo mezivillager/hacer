@@ -256,4 +256,4 @@ Check the GitHub Actions logs:
 
 ## Version History
 
-Semantic release was added in version 0.0.0 (2024). Prior to this, versions were managed manually.
+Semantic release was added to the project before the first automated release. The first automated release will be determined based on the conventional commit messages in the git history.
