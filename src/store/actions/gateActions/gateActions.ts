@@ -126,15 +126,10 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
   },
 
   selectGate: (gateId: string | null) => {
-    // Check if selection actually changed before mutating (avoids unnecessary array reference changes)
+    // If the gate is already selected, treat it as a toggle off request
     const currentState = useCircuitStore.getState()
-    if (currentState.selectedGateId === gateId) {
-      // Selection hasn't changed - check if gates are already in correct state
-      const allCorrect = currentState.gates.every((g) => g.selected === (g.id === gateId))
-      if (allCorrect) {
-        // Nothing to update - early return to avoid Immer mutation
-        return
-      }
+    if (currentState.selectedGateId === gateId && gateId !== null) {
+      gateId = null
     }
 
     set((state) => {

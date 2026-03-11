@@ -46,13 +46,15 @@ export const createPlacementActions = (set: SetState, get: GetState): PlacementA
     // Check for gate spacing AND wire paths
     const gridPos = worldToGrid(snappedPosition)
     const circuitActions = useCircuitStore.getState()
+    const existingNodes = [...currentState.inputNodes, ...currentState.outputNodes]
     if (!canPlaceGateAt(
       gridPos,
       currentState.gates,
       undefined, // excludeGateId (not applicable for new placements)
       currentState.wires.length > 0 ? currentState.wires : undefined,
       circuitActions.getPinWorldPosition,
-      circuitActions.getPinOrientation
+      circuitActions.getPinOrientation,
+      existingNodes
     )) {
       // Invalid placement (would overlap gate or block wire path) - do nothing
       return

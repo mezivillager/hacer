@@ -149,14 +149,19 @@ export const createNodePlacementActions = (
 
   selectNode: (nodeId: string, nodeType: NodeType) => {
     set((state) => {
-      state.selectedNodeId = nodeId
-      state.selectedNodeType = nodeType
-      state.selectedGateId = null
-      state.selectedWireId = null
-      // Deselect all gates
-      state.gates.forEach((g) => {
-        g.selected = false
-      })
+      if (state.selectedNodeId === nodeId) {
+        state.selectedNodeId = null
+        state.selectedNodeType = null
+      } else {
+        state.selectedNodeId = nodeId
+        state.selectedNodeType = nodeType
+        state.selectedGateId = null
+        state.selectedWireId = null
+        // Deselect all gates
+        state.gates.forEach((g) => {
+          g.selected = false
+        })
+      }
     }, false, 'selectNode')
   },
 

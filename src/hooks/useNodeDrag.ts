@@ -36,6 +36,7 @@ export function useNodeDrag(nodeId: string, nodeType: NodeType) {
   const allowNextClickRef = useRef(true)
   const canvasElementRef = useRef<HTMLElement | null>(null)
   const dragEndHandledRef = useRef(false)
+  const captureLostHandlerRef = useRef<(() => void) | null>(null)
 
   const getNode = () => {
     const state = useCircuitStore.getState()
@@ -66,12 +67,9 @@ export function useNodeDrag(nodeId: string, nodeType: NodeType) {
     allowNextClickRef.current = false
     dragEndHandledRef.current = false
     setIsDragging(false)
-    // Disable orbit controls immediately on pointer down
-    circuitActions.setDragActive(true)
-    // Seed placementPreviewPosition and selectNode so the ground plane can drive
-    // the preview from the first pointer move
+
+    // Select the node on pointer down, but delay drag state and preview until threshold
     circuitActions.selectNode(nodeId, nodeType)
-    circuitActions.updatePlacementPreviewPosition(snapToGrid({ ...node.position }))
 
     // Add global pointer move listener to detect drag even if cursor leaves mesh
     const handleCanvasPointerMove = (e: PointerEvent) => {
@@ -83,12 +81,17 @@ export function useNodeDrag(nodeId: string, nodeType: NodeType) {
 
       // 5px threshold for screen movement
       if (distance > 5) {
+        if (!hasMovedRef.current) {
+          // First time crossing threshold
+          circuitActions.setDragActive(true)
+          const currentNode = getNode()
+          if (currentNode) {
+            circuitActions.updatePlacementPreviewPosition(snapToGrid({ ...currentNode.position }))
+          }
+        }
+
         hasMovedRef.current = true
         didDragRef.current = true
-
-        // We can't easily access the current value of isDragging here due to closure,
-        // but we can ensure drag is active in the store
-        circuitActions.setDragActive(true)
 
         // We need to update the hook state to know we are dragging
         // This might cause a re-render, which is fine
@@ -103,9 +106,12 @@ export function useNodeDrag(nodeId: string, nodeType: NodeType) {
     canvasPointerMoveHandlerRef.current = handleCanvasPointerMove
 
     const onCaptureLost = () => {
-      canvasElement?.removeEventListener('lostpointercapture', onCaptureLost)
+      if (canvasElement && captureLostHandlerRef.current) {
+        canvasElement.removeEventListener('lostpointercapture', captureLostHandlerRef.current)
+      }
       handleDragEnd()
     }
+    captureLostHandlerRef.current = onCaptureLost
     canvasElement?.addEventListener('lostpointercapture', onCaptureLost)
   }
 
@@ -122,6 +128,11 @@ export function useNodeDrag(nodeId: string, nodeType: NodeType) {
     if (canvasElement && canvasPointerMoveHandlerRef.current) {
       canvasElement.removeEventListener('pointermove', canvasPointerMoveHandlerRef.current)
       canvasPointerMoveHandlerRef.current = null
+    }
+
+    if (canvasElement && captureLostHandlerRef.current) {
+      canvasElement.removeEventListener('lostpointercapture', captureLostHandlerRef.current)
+      captureLostHandlerRef.current = null
     }
 
     pointerIdRef.current = null
@@ -195,6 +206,11 @@ export function useNodeDrag(nodeId: string, nodeType: NodeType) {
       canvasPointerMoveHandlerRef.current = null
     }
 
+    if (canvasElement && captureLostHandlerRef.current) {
+      canvasElement.removeEventListener('lostpointercapture', captureLostHandlerRef.current)
+      captureLostHandlerRef.current = null
+    }
+
     pointerIdRef.current = null
     canvasElementRef.current = null
 
@@ -217,13 +233,17 @@ export function useNodeDrag(nodeId: string, nodeType: NodeType) {
 
     const state = useCircuitStore.getState()
     const gridPos = worldToGrid(previewPos)
+
+    const existingNodes = [...state.inputNodes, ...state.outputNodes].filter(n => n.id !== nodeId)
+
     const canPlace = canPlaceGateAt(
       gridPos,
       state.gates,
       undefined,
       state.wires,
       circuitActions.getPinWorldPosition,
-      circuitActions.getPinOrientation
+      circuitActions.getPinOrientation,
+      existingNodes
     )
     if (canPlace) {
       if (nodeType === 'input') {

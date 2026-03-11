@@ -99,13 +99,15 @@ export function handleClick(e: ThreeEvent<MouseEvent>): void {
     e.stopPropagation()
     const snappedPos = snapToGrid({ x: e.point.x, y: 0.2, z: e.point.z })
     const gridPos = worldToGrid(snappedPos)
+    const existingNodes = [...state.inputNodes, ...state.outputNodes]
     const canPlace = canPlaceGateAt(
       gridPos,
       state.gates,
       undefined,
       state.wires,
       circuitActions.getPinWorldPosition,
-      circuitActions.getPinOrientation
+      circuitActions.getPinOrientation,
+      existingNodes
     )
     if (canPlace) {
       placeNode(snappedPos)
@@ -150,8 +152,17 @@ export function handlePointerUp(): void {
       const gridPos = worldToGrid(previewPos)
       const otherGates = state.gates.filter(g => g.id !== state.selectedGateId)
       const selectedGateId = state.selectedGateId
+      const existingNodes = [...state.inputNodes, ...state.outputNodes]
 
-      if (canPlaceGateAt(gridPos, otherGates, selectedGateId)) {
+      if (canPlaceGateAt(
+        gridPos,
+        otherGates,
+        selectedGateId,
+        state.wires.length > 0 ? state.wires : undefined,
+        circuitActions.getPinWorldPosition,
+        circuitActions.getPinOrientation,
+        existingNodes
+      )) {
         updateGatePosition(selectedGateId, previewPos)
       }
 
