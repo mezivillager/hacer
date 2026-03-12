@@ -5,6 +5,7 @@ import { useCircuitStore } from '../../circuitStore'
 import { calculateWirePathFromConnection } from '@/utils/wiringScheme'
 import { collectWireSegments, combineAdjacentSegments } from '@/utils/wiringScheme/segments'
 import { resolveCrossings, removeOrphanedArcs } from '@/utils/wiringScheme/crossing'
+import { findWireCorners } from '@/utils/wirePosition'
 
 // Helper to create a gate instance - exported for use in atomic placement actions
 export function createGateInstance(type: GateType, position: Position): GateInstance {
@@ -386,6 +387,70 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
         // Update the wire segments
         updateWireSegments(wire.id, updatedSegments, remainingCrossedIds)
       }
+    }
+
+    // After recalculating connected wires, preserve junctions on recalculated wires.
+    // Junctions that were on a recalculated wire may now be at an invalid position
+    // because the wire path changed. Relocate them to the nearest valid corner.
+    const recalculatedWireIdSet = new Set(connectedWireIds)
+    const junctionState = get()
+
+    // Collect junction relocations first, then apply in one batch
+    const junctionUpdates: { id: string; position: Position }[] = []
+    const junctionsToRemove: string[] = []
+
+    for (const junction of junctionState.junctions) {
+      // Only process junctions whose trunk wire (wireIds[0]) was recalculated
+      const trunkWireId = junction.wireIds[0]
+      if (!trunkWireId || !recalculatedWireIdSet.has(trunkWireId)) {
+        continue
+      }
+
+      const trunkWire = junctionState.wires.find((w) => w.id === trunkWireId)
+      if (!trunkWire) {
+        // Trunk wire was removed during recalculation (removeWire already cleans up junctions)
+        continue
+      }
+
+      // Find all valid corners on the recalculated trunk wire
+      const corners = findWireCorners(trunkWire)
+      if (corners.length === 0) {
+        // No corners available on new path - remove junction cleanly
+        junctionsToRemove.push(junction.id)
+        continue
+      }
+
+      // Find the nearest corner to the junction's current position
+      let nearestCorner = corners[0]
+      let nearestDistance = Infinity
+      for (const corner of corners) {
+        const dx = corner.x - junction.position.x
+        const dz = corner.z - junction.position.z
+        const distance = Math.sqrt(dx * dx + dz * dz)
+        if (distance < nearestDistance) {
+          nearestDistance = distance
+          nearestCorner = corner
+        }
+      }
+
+      junctionUpdates.push({ id: junction.id, position: nearestCorner })
+    }
+
+    // Apply junction removals
+    for (const junctionId of junctionsToRemove) {
+      get().removeJunction(junctionId)
+    }
+
+    // Apply junction relocations in a single state update
+    if (junctionUpdates.length > 0) {
+      set((state) => {
+        for (const update of junctionUpdates) {
+          const j = state.junctions.find((jn) => jn.id === update.id)
+          if (j) {
+            j.position = update.position
+          }
+        }
+      }, false, 'recalculateWiresForGate/relocateJunctions')
     }
   },
 })

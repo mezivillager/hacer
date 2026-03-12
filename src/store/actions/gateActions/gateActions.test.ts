@@ -877,4 +877,217 @@ describe('gateActions', () => {
     })
   })
 
+  describe('junction preservation during rewiring', () => {
+    it('preserves junction when gate is moved by relocating to nearest corner', () => {
+      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('NAND', { x: GRID_SIZE * 2, y: 0, z: 0 })
+
+      // Create a gate-to-gate wire
+      const wire = getState().addWire(
+        { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
+        { type: 'gate', entityId: gate2.id, pinId: gate2.inputs[0].id },
+        [
+          { start: { x: 0, y: 0.2, z: 0 }, end: { x: GRID_SIZE, y: 0.2, z: 0 }, type: 'exit' },
+          { start: { x: GRID_SIZE, y: 0.2, z: 0 }, end: { x: GRID_SIZE, y: 0.2, z: -GRID_SIZE }, type: 'vertical' },
+          { start: { x: GRID_SIZE, y: 0.2, z: -GRID_SIZE }, end: { x: GRID_SIZE * 2, y: 0.2, z: -GRID_SIZE }, type: 'horizontal' },
+          { start: { x: GRID_SIZE * 2, y: 0.2, z: -GRID_SIZE }, end: { x: GRID_SIZE * 2, y: 0.2, z: 0 }, type: 'entry' },
+        ]
+      )
+
+      // Place a junction on the wire
+      useCircuitStore.setState((state) => {
+        state.junctions.push({
+          id: 'junction-test-1',
+          position: { x: GRID_SIZE, y: 0.2, z: 0 },
+          signalId: 'signal-1',
+          wireIds: [wire.id],
+        })
+      })
+
+      expect(getState().junctions).toHaveLength(1)
+
+      // Move gate1 - should succeed and junction should be preserved
+      getState().updateGatePosition(gate1.id, { x: GRID_SIZE * 4, y: 0, z: GRID_SIZE * 2 })
+
+      // Gate should have moved
+      const gate1After = getState().gates.find((g) => g.id === gate1.id)!
+      expect(gate1After.position).not.toEqual({ x: 0, y: 0, z: 0 })
+
+      // Junction should still exist (preserved, possibly relocated)
+      expect(getState().junctions).toHaveLength(1)
+      const junctionAfter = getState().junctions[0]
+      expect(junctionAfter.id).toBe('junction-test-1')
+    })
+
+    it('preserves junction when gate is rotated', () => {
+      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('NAND', { x: GRID_SIZE * 2, y: 0, z: 0 })
+
+      const wire = getState().addWire(
+        { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
+        { type: 'gate', entityId: gate2.id, pinId: gate2.inputs[0].id },
+        [
+          { start: { x: 0, y: 0.2, z: 0 }, end: { x: GRID_SIZE, y: 0.2, z: 0 }, type: 'exit' },
+          { start: { x: GRID_SIZE, y: 0.2, z: 0 }, end: { x: GRID_SIZE, y: 0.2, z: -GRID_SIZE }, type: 'vertical' },
+          { start: { x: GRID_SIZE, y: 0.2, z: -GRID_SIZE }, end: { x: GRID_SIZE * 2, y: 0.2, z: -GRID_SIZE }, type: 'horizontal' },
+          { start: { x: GRID_SIZE * 2, y: 0.2, z: -GRID_SIZE }, end: { x: GRID_SIZE * 2, y: 0.2, z: 0 }, type: 'entry' },
+        ]
+      )
+
+      useCircuitStore.setState((state) => {
+        state.junctions.push({
+          id: 'junction-test-2',
+          position: { x: GRID_SIZE, y: 0.2, z: 0 },
+          signalId: 'signal-1',
+          wireIds: [wire.id],
+        })
+      })
+
+      expect(getState().junctions).toHaveLength(1)
+
+      // Rotate gate1 - should succeed and junction should be preserved
+      getState().updateGateRotation(gate1.id, { x: Math.PI, y: 0, z: 0 })
+
+      // Gate should have rotated
+      const gate1After = getState().gates.find((g) => g.id === gate1.id)!
+      expect(gate1After.rotation).toEqual({ x: Math.PI, y: 0, z: 0 })
+
+      // Junction should still exist (preserved)
+      expect(getState().junctions).toHaveLength(1)
+    })
+
+    it('preserves junction via rotateGate', () => {
+      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('NAND', { x: GRID_SIZE * 2, y: 0, z: 0 })
+
+      const wire = getState().addWire(
+        { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
+        { type: 'gate', entityId: gate2.id, pinId: gate2.inputs[0].id },
+        [
+          { start: { x: 0, y: 0.2, z: 0 }, end: { x: GRID_SIZE, y: 0.2, z: 0 }, type: 'exit' },
+          { start: { x: GRID_SIZE, y: 0.2, z: 0 }, end: { x: GRID_SIZE, y: 0.2, z: -GRID_SIZE }, type: 'vertical' },
+          { start: { x: GRID_SIZE, y: 0.2, z: -GRID_SIZE }, end: { x: GRID_SIZE * 2, y: 0.2, z: -GRID_SIZE }, type: 'horizontal' },
+          { start: { x: GRID_SIZE * 2, y: 0.2, z: -GRID_SIZE }, end: { x: GRID_SIZE * 2, y: 0.2, z: 0 }, type: 'entry' },
+        ]
+      )
+
+      useCircuitStore.setState((state) => {
+        state.junctions.push({
+          id: 'junction-test-3',
+          position: { x: GRID_SIZE, y: 0.2, z: 0 },
+          signalId: 'signal-1',
+          wireIds: [wire.id],
+        })
+      })
+
+      expect(getState().junctions).toHaveLength(1)
+
+      // Rotate gate1 via rotateGate - should succeed and junction should be preserved
+      getState().rotateGate(gate1.id, 'y', Math.PI / 2)
+
+      // Junction should still exist
+      expect(getState().junctions).toHaveLength(1)
+    })
+
+    it('handles junction cleanup when recalculated wire has no corners', () => {
+      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('NAND', { x: GRID_SIZE * 2, y: 0, z: 0 })
+
+      // Create wire with only a straight horizontal segment (no corners)
+      const wire = getState().addWire(
+        { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
+        { type: 'gate', entityId: gate2.id, pinId: gate2.inputs[0].id },
+        [{ start: { x: 0, y: 0.2, z: 0 }, end: { x: 1, y: 0.2, z: 0 }, type: 'horizontal' }]
+      )
+
+      useCircuitStore.setState((state) => {
+        state.junctions.push({
+          id: 'junction-test-4',
+          position: { x: 0.5, y: 0.2, z: 0 },
+          signalId: 'signal-1',
+          wireIds: [wire.id, 'branch-wire-id'],
+        })
+      })
+
+      expect(getState().junctions).toHaveLength(1)
+
+      // Move gate - triggers recalculation
+      getState().updateGatePosition(gate1.id, { x: GRID_SIZE * 4, y: 0, z: GRID_SIZE * 2 })
+
+      // Gate should have moved (not prevented)
+      const gate1After = getState().gates.find((g) => g.id === gate1.id)!
+      expect(gate1After.position).not.toEqual({ x: 0, y: 0, z: 0 })
+
+      // After recalculation, if the recalculated wire has corners, junction is
+      // relocated to one; otherwise (wire removed or no corners), junction is cleaned up.
+      // In either case, the operation should not crash and state should be consistent.
+      const remainingJunctions = getState().junctions
+      const remainingWires = getState().wires
+      // Each remaining junction should reference at least one existing wire
+      for (const j of remainingJunctions) {
+        const hasExistingWire = j.wireIds.some((id) => remainingWires.some((w) => w.id === id))
+        expect(hasExistingWire).toBe(true)
+      }
+    })
+
+    it('allows gate move when no junctions are involved', () => {
+      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('NAND', { x: GRID_SIZE * 2, y: 0, z: 0 })
+
+      getState().addWire(
+        { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
+        { type: 'gate', entityId: gate2.id, pinId: gate2.inputs[0].id },
+        [{ start: { x: 0, y: 0, z: 0 }, end: { x: 1, y: 0, z: 0 }, type: 'horizontal' }]
+      )
+
+      // No junctions placed - move should be allowed
+      getState().updateGatePosition(gate1.id, { x: GRID_SIZE * 4, y: 0, z: GRID_SIZE * 2 })
+
+      const gate1After = getState().gates.find((g) => g.id === gate1.id)!
+      expect(gate1After.position).not.toEqual({ x: 0, y: 0, z: 0 })
+    })
+
+    it('does not affect junctions on non-recalculated wires', () => {
+      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('NAND', { x: GRID_SIZE * 2, y: 0, z: 0 })
+      const gate3 = getState().addGate('NAND', { x: GRID_SIZE * 4, y: 0, z: 0 })
+
+      // Wire from gate1 to gate2 (will be recalculated when gate1 moves)
+      getState().addWire(
+        { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
+        { type: 'gate', entityId: gate2.id, pinId: gate2.inputs[0].id },
+        [{ start: { x: 0, y: 0, z: 0 }, end: { x: 1, y: 0, z: 0 }, type: 'horizontal' }]
+      )
+
+      // Separate wire from gate2 to gate3 (NOT connected to gate1)
+      const otherWire = getState().addWire(
+        { type: 'gate', entityId: gate2.id, pinId: gate2.outputs[0].id },
+        { type: 'gate', entityId: gate3.id, pinId: gate3.inputs[0].id },
+        [
+          { start: { x: GRID_SIZE * 2, y: 0.2, z: 0 }, end: { x: GRID_SIZE * 3, y: 0.2, z: 0 }, type: 'exit' },
+          { start: { x: GRID_SIZE * 3, y: 0.2, z: 0 }, end: { x: GRID_SIZE * 3, y: 0.2, z: -GRID_SIZE }, type: 'vertical' },
+          { start: { x: GRID_SIZE * 3, y: 0.2, z: -GRID_SIZE }, end: { x: GRID_SIZE * 4, y: 0.2, z: -GRID_SIZE }, type: 'horizontal' },
+        ]
+      )
+
+      // Place junction on the other wire (not connected to gate1)
+      const originalPosition = { x: GRID_SIZE * 3, y: 0.2, z: 0 }
+      useCircuitStore.setState((state) => {
+        state.junctions.push({
+          id: 'junction-other',
+          position: originalPosition,
+          signalId: 'signal-2',
+          wireIds: [otherWire.id],
+        })
+      })
+
+      // Move gate1 - should not affect junction on other wire
+      getState().updateGatePosition(gate1.id, { x: GRID_SIZE * -2, y: 0, z: 0 })
+
+      const junctionAfter = getState().junctions.find((j) => j.id === 'junction-other')
+      expect(junctionAfter).toBeDefined()
+      expect(junctionAfter!.position).toEqual(originalPosition)
+    })
+  })
+
 })
