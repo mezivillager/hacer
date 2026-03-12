@@ -1,5 +1,9 @@
 name: CI
 
+# Runs on every push to main AND on every pull request targeting main.
+# All steps must pass before a PR can be merged (enforced via branch protection).
+# See AGENTS.md § "How GitHub Actions Enforce Quality" for a full explanation.
+
 on:
   push:
     branches: [main]
@@ -19,19 +23,29 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
-      - name: Lint
+      # Catches: TypeScript type errors + ESLint violations.
+      # Runs `tsc --noEmit` then `eslint .` — both must pass.
+      - name: Lint (TypeScript + ESLint)
         run: npm run lint
 
-      - name: Unit tests
+      # Catches: failing Vitest unit and component tests.
+      # Runs in non-watch mode so the step exits with a result.
+      - name: Unit tests (Vitest)
         run: npm run test:run
 
-      - name: Build
+      # Catches: compilation errors, broken imports, bad type exports.
+      # `tsc -b` must succeed AND Vite must produce a valid bundle.
+      - name: Build (tsc + Vite)
         run: npm run build
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 
-      - name: E2E store tests
+      # Catches: store/state integration failures via headless browser.
+      # Tests tagged @store only — fast enough to run on every PR.
+      # Full @ui tests run on a schedule (see e2e-ui.yml).
+      - name: E2E store tests (Playwright @store)
         run: npm run test:e2e:store
