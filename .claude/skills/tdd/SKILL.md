@@ -51,16 +51,32 @@ Remove duplication, improve names, extract helpers. Run tests after every change
 // tests/store/actions/myAction.test.ts
 import { describe, it, expect, beforeEach } from 'vitest'
 import { useCircuitStore } from '@/store/circuitStore'
+import { circuitActions } from '@/store/circuitStore'
 
 beforeEach(() => {
-  useCircuitStore.setState(useCircuitStore.getInitialState())
+  // Reset store to empty state before each test
+  useCircuitStore.setState({
+    gates: [],
+    wires: [],
+    selectedGateId: null,
+    selectedWireId: null,
+    simulationRunning: false,
+    placementMode: null,
+    wiringFrom: null,
+    inputNodes: [],
+    outputNodes: [],
+    junctions: [],
+    nodePlacementMode: null,
+    selectedNodeId: null,
+    selectedNodeType: null,
+  })
 })
 
 it('should do X when Y', () => {
-  const { doX } = circuitActions
-  doX(input)
-  const result = useCircuitStore.getState().someSlice
-  expect(result).toEqual(expected)
+  circuitActions.addGate('NAND', { x: 0, y: 0, z: 0 })
+  const { gates } = useCircuitStore.getState()
+  expect(gates).toHaveLength(1)
+  expect(gates[0].type).toBe('NAND')
 })
 ```
 

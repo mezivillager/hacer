@@ -5,18 +5,21 @@
 **REQUIREMENT**: Follow these patterns for ALL code changes - test coverage is mandatory.
 
 > **📚 Related Documentation:**
-> - [`.cursorrules`](.cursorrules) - **Start here!** Project rules, phase tracking, and architecture guidelines
+> - [`AGENTS.md`](AGENTS.md) - **Universal agent entry point.** CI quality gates, cognitive protocols, mandatory workflow.
+> - [`.cursorrules`](.cursorrules) - Phase tracking, TDD protocol, quick rules
 > - [`REPO_MAP.md`](REPO_MAP.md) - Repository structure, directory organization, and file locations
+> - [`.claude/skills/`](.claude/skills/) - Composable skill files (TDD, debugging, planning, review, patterns)
 > - [`docs/roadmap/`](docs/roadmap/) - Development roadmap, phases, and implementation plans
 
 ## Document Relationship
 
 This guide provides **detailed patterns and examples** for development. For quick reference:
+- **Start here (all agents)**: See [`AGENTS.md`](AGENTS.md)
 - **Quick rules & phase status**: See [`.cursorrules`](.cursorrules)
 - **Where to put files**: See [`REPO_MAP.md`](REPO_MAP.md)
 - **Detailed examples & patterns**: This document
 
-All three documents are kept in sync and should be consulted together.
+All documents are kept in sync and should be consulted together.
 
 ---
 
@@ -589,32 +592,51 @@ describe('nandGate', () => {
 
 ```typescript
 // ✅ CORRECT - Testing Zustand store actions
-// src/store/circuitStore.test.ts
+// src/store/actions/gateActions/gateActions.test.ts
 import { describe, it, expect, beforeEach } from 'vitest';
-import { circuitStore, circuitActions } from './circuitStore';
+import { useCircuitStore, circuitActions } from '@/store/circuitStore';
 
-describe('circuitStore', () => {
+describe('gateActions', () => {
   beforeEach(() => {
-    circuitActions.clearCircuit();
+    // Reset store to empty state (include all state slices)
+    useCircuitStore.setState({
+      gates: [],
+      wires: [],
+      selectedGateId: null,
+      selectedWireId: null,
+      simulationRunning: false,
+      simulationSpeed: 100,
+      placementMode: null,
+      wiringFrom: null,
+      inputNodes: [],
+      outputNodes: [],
+      junctions: [],
+      nodePlacementMode: null,
+      selectedNodeId: null,
+      selectedNodeType: null,
+    });
   });
 
   it('adds a gate with correct default values', () => {
-    circuitActions.addGate('nand', [0, 0, 0]);
-    expect(circuitStore.gates).toHaveLength(1);
-    expect(circuitStore.gates[0].type).toBe('nand');
+    // GateType: uppercase. Position: { x, y, z } object.
+    circuitActions.addGate('NAND', { x: 0, y: 0, z: 0 });
+    const { gates } = useCircuitStore.getState();
+    expect(gates).toHaveLength(1);
+    expect(gates[0].type).toBe('NAND');
   });
 
   it('removes wire when gate is deleted', () => {
-    circuitActions.addGate('nand', [0, 0, 0]);
-    circuitActions.addGate('nand', [2, 0, 0]);
-    const gate1 = circuitStore.gates[0].id;
-    const gate2 = circuitStore.gates[1].id;
+    const gate1 = circuitActions.addGate('NAND', { x: 0, y: 0, z: 0 });
+    const gate2 = circuitActions.addGate('NAND', { x: 2, y: 0, z: 0 });
     
-    circuitActions.addWire(gate1, 'output', gate2, 'inputA');
-    expect(circuitStore.wires).toHaveLength(1);
+    circuitActions.addWire({
+      fromEntityId: gate1.id, fromEntityType: 'gate', fromPinId: gate1.outputs[0].id,
+      toEntityId: gate2.id,   toEntityType: 'gate', toPinId: gate2.inputs[0].id,
+    });
+    expect(useCircuitStore.getState().wires).toHaveLength(1);
     
-    circuitActions.removeGate(gate1);
-    expect(circuitStore.wires).toHaveLength(0);
+    circuitActions.removeGate(gate1.id);
+    expect(useCircuitStore.getState().wires).toHaveLength(0);
   });
 });
 ```
@@ -623,18 +645,19 @@ describe('circuitStore', () => {
 
 ```typescript
 // ✅ CORRECT - Testing UI interactions
-// src/components/Sidebar.test.tsx
+// src/components/ui/GateSelector.test.tsx
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { Sidebar } from './Sidebar';
+import { GateSelector } from './GateSelector';
 
-describe('Sidebar', () => {
+describe('GateSelector', () => {
   it('starts placement mode when gate button clicked', () => {
     const onStartPlacement = vi.fn();
-    render(<Sidebar onStartPlacement={onStartPlacement} />);
+    render(<GateSelector onStartPlacement={onStartPlacement} />);
     
     fireEvent.click(screen.getByText('NAND'));
-    expect(onStartPlacement).toHaveBeenCalledWith('nand');
+    // GateType is uppercase
+    expect(onStartPlacement).toHaveBeenCalledWith('NAND');
   });
 });
 ```
@@ -642,86 +665,37 @@ describe('Sidebar', () => {
 ### E2E Tests (Playwright)
 
 ```typescript
-// ✅ CORRECT - Testing complete user workflow
-// e2e/circuit-building.spec.ts
-import { test, expect } from '@playwright/test';
+// ✅ CORRECT - E2E store test (fast path, @store tag, uses direct store actions)
+// e2e/specs/gates/gate-placement.store.spec.ts
+import { test, expect } from '@playwright/test'
+import { gateActions, storeAssertions } from '../../helpers'
 
-test.describe('Circuit Building', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto('http://localhost:5173');
-  });
+test.describe('@store Gate Placement', () => {
+  test('can place a NAND gate via store action', async ({ page }) => {
+    await page.goto('/')
 
-  test('can add a NAND gate to the canvas', async ({ page }) => {
-    // Click NAND button in sidebar
-    await page.click('button:has-text("NAND")');
-    
-    // Click on canvas to place gate
-    await page.click('canvas', { position: { x: 400, y: 300 } });
-    
-    // Verify gate was added (check store or visual indicator)
-    await expect(page.locator('[data-testid="gate-count"]')).toHaveText('1');
-  });
+    // Use circuitActions directly (fast — no UI click required)
+    const gate = await page.evaluate(() =>
+      window.__CIRCUIT_ACTIONS__.addGate('NAND', { x: 0, y: 0, z: 0 })
+    )
 
-  test('can wire two gates together', async ({ page }) => {
-    // Add first gate
-    await page.click('button:has-text("NAND")');
-    await page.click('canvas', { position: { x: 300, y: 300 } });
-    
-    // Add second gate
-    await page.click('button:has-text("NAND")');
-    await page.click('canvas', { position: { x: 500, y: 300 } });
-    
-    // Start wiring from output pin
-    await page.click('[data-testid="gate-0-output"]');
-    
-    // Complete wire to input pin
-    await page.click('[data-testid="gate-1-inputA"]');
-    
-    // Verify wire exists
-    await expect(page.locator('[data-testid="wire-count"]')).toHaveText('1');
-  });
+    const state = await page.evaluate(() => window.__CIRCUIT_STORE__.gates)
+    expect(state).toHaveLength(1)
+    expect(state[0].type).toBe('NAND')
+  })
+})
 
-  test('simulation propagates signals through wires', async ({ page }) => {
-    // Setup circuit...
-    // Toggle input
-    await page.keyboard.down('Shift');
-    await page.click('[data-testid="gate-0-inputA"]');
-    await page.keyboard.up('Shift');
-    
-    // Start simulation
-    await page.click('button:has-text("Start")');
-    
-    // Verify output changed
-    await expect(page.locator('[data-testid="gate-1-output"]')).toHaveClass(/active/);
-  });
-});
+// ✅ CORRECT - E2E UI test (slow path, @ui tag, uses real user interactions)
+// e2e/specs/gates/gate-placement.ui.spec.ts
+// See e2e/specs/gates/ for real examples using fixtures and helpers.
 ```
 
-### Playwright Configuration
+> **Note:** HACER E2E tests use a fixture system in `e2e/fixtures/` and helper library
+> in `e2e/helpers/`. Use `@store` tag for fast direct-store tests and `@ui` tag for
+> full browser interaction tests. See `e2e/specs/` for real examples.
+> - Fast: `npm run test:e2e:store` (run before every commit)
+> - Slow: `npm run test:e2e:ui` (scheduled CI or manual)
 
-```typescript
-// playwright.config.ts
-import { defineConfig } from '@playwright/test';
-
-export default defineConfig({
-  testDir: './e2e',
-  fullyParallel: true,
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
-  reporter: 'html',
-  use: {
-    baseURL: 'http://localhost:5173',
-    trace: 'on-first-retry',
-    screenshot: 'only-on-failure',
-  },
-  webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:5173',
-    reuseExistingServer: !process.env.CI,
-  },
-});
-```
 
 ### Test Coverage Requirements
 
@@ -898,73 +872,24 @@ HTMLCanvasElement.prototype.getContext = vi.fn(() => ({
 
 ```typescript
 // ✅ CORRECT - Organized store with typed actions
-// src/store/circuitStore.ts
-import { create } from 'zustand';
-import { immer } from 'zustand/middleware/immer';
+// See src/store/types.ts for the full types. Key types:
+// GateType = 'NAND' | 'AND' | 'OR' | 'NOT' | 'NOR' | 'XOR' | 'XNOR'  (always uppercase)
+// Position = { x: number; y: number; z: number }                        (object, not tuple)
+// Rotation = { x: number; y: number; z: number }
+//
+// Store uses immer + devtools + subscribeWithSelector middleware.
+// Action slices are factory functions; circuitActions re-exports them as a flat object.
 
-// Types
-export interface Gate {
-  id: string;
-  type: 'nand' | 'and' | 'or' | 'not' | 'nor' | 'xor';
-  position: [number, number, number];
-  rotation: number;
-  inputs: { id: string; value: boolean }[];
-  outputs: { id: string; value: boolean }[];
-}
+// Usage — direct add:
+circuitActions.addGate('NAND', { x: 0, y: 0, z: 0 })
 
-export interface Wire {
-  id: string;
-  fromGateId: string;
-  fromPinId: string;
-  toGateId: string;
-  toPinId: string;
-}
+// Usage — placement mode (click-to-place UI):
+circuitActions.startPlacement('NAND')
+circuitActions.placeGate({ x: 1, y: 0, z: 2 })
 
-interface CircuitState {
-  gates: Gate[];
-  wires: Wire[];
-  selectedGateId: string | null;
-  isSimulating: boolean;
-}
-
-// Store with immer for immutable updates
-export const useCircuitStore = create<CircuitState>()(
-  immer((set) => ({
-    gates: [],
-    wires: [],
-    selectedGateId: null,
-    isSimulating: false,
-  }))
-);
-
-// Actions - separate from store for stable references
-export const circuitActions = {
-  addGate: (type: Gate['type'], position: [number, number, number]) => {
-    useCircuitStore.setState((state) => {
-      const gate: Gate = {
-        id: `gate-${Date.now()}`,
-        type,
-        position,
-        rotation: 0,
-        inputs: [{ id: 'in-0', value: false }],
-        outputs: [{ id: 'out-0', value: false }],
-      };
-      state.gates.push(gate);
-    });
-  },
-
-  removeGate: (id: string) => {
-    useCircuitStore.setState((state) => {
-      // Remove associated wires first
-      state.wires = state.wires.filter(
-        w => w.fromGateId !== id && w.toGateId !== id
-      );
-      state.gates = state.gates.filter(g => g.id !== id);
-    });
-  },
-
-  // ... more actions
-};
+// Usage — remove:
+circuitActions.removeGate(gate.id)
+circuitActions.clearCircuit()
 ```
 
 ### Reading State in Components
@@ -1003,21 +928,33 @@ export const BadGateList = () => {
 
 ```typescript
 // ✅ CORRECT - Test actions directly
-import { useCircuitStore, circuitActions } from './circuitStore';
+import { useCircuitStore, circuitActions } from '@/store/circuitStore';
 
 describe('circuitActions', () => {
   beforeEach(() => {
-    // Reset store state
+    // Reset store state (see gateActions.test.ts for the full reset shape)
     useCircuitStore.setState({
       gates: [],
       wires: [],
       selectedGateId: null,
+      selectedWireId: null,
+      simulationRunning: false,
+      simulationSpeed: 100,
+      placementMode: null,
+      wiringFrom: null,
+      inputNodes: [],
+      outputNodes: [],
+      junctions: [],
+      nodePlacementMode: null,
+      selectedNodeId: null,
+      selectedNodeType: null,
     });
   });
 
   it('addGate creates gate with unique id', () => {
-    circuitActions.addGate('nand', [0, 0, 0]);
-    circuitActions.addGate('nand', [1, 0, 0]);
+    // GateType is UPPERCASE; Position is { x, y, z }
+    circuitActions.addGate('NAND', { x: 0, y: 0, z: 0 });
+    circuitActions.addGate('NAND', { x: 1, y: 0, z: 0 });
     
     const { gates } = useCircuitStore.getState();
     expect(gates).toHaveLength(2);
@@ -1050,7 +987,7 @@ const GoodComponent = () => {
   const gateCount = useCircuitStore((s) => s.gates.length);
   
   const handleClick = () => {
-    circuitActions.addGate('nand', [0, 0, 0]);
+    circuitActions.addGate('NAND', { x: 0, y: 0, z: 0 });
   };
   
   return <div onClick={handleClick}>{gateCount}</div>;
@@ -1124,9 +1061,14 @@ import { Button } from '@duro/components';
 |--------------|----------|---------|
 | New basic gate | `src/gates/components/` | XorGate.tsx |
 | Gate logic function | `src/simulation/gateLogic.ts` | `xorGate()` |
+| Gate config (3 files) | `src/gates/config/` | `xor-constants.ts`, `xor-helpers.ts`, `xor.tsx` |
 | New UI panel | `src/components/ui/` | ChipLibrary.tsx |
 | 3D helper | `src/components/canvas/` | PinConnector.tsx |
-| Shared types | `src/types/` | chip.ts |
+| Circuit I/O node (3D) | `src/nodes/components/` | BusNode3D.tsx |
+| Node configuration | `src/nodes/config/nodeConfig.ts` | add node type |
+| Wire routing util | `src/utils/wiringScheme/` | new routing strategy |
+| Store action slice | `src/store/actions/<domain>/` | nodeActions.ts |
+| Shared types | `src/store/types.ts` (Phase 0–4) | new interface |
 
 > **📚 For complete directory structure, current vs. future phases, and architecture evolution, see [`REPO_MAP.md`](REPO_MAP.md)**
 
@@ -1173,7 +1115,8 @@ test('renders 100 gates without frame drops', async ({ page }) => {
   // Add 100 gates programmatically
   for (let i = 0; i < 100; i++) {
     await page.evaluate((i) => {
-      window.circuitActions.addGate('nand', [i % 10, 0, Math.floor(i / 10)]);
+      // GateType is UPPERCASE; Position is { x, y, z } object
+      window.__CIRCUIT_ACTIONS__.addGate('NAND', { x: i % 10, y: 0, z: Math.floor(i / 10) });
     }, i);
   }
   
@@ -1236,16 +1179,15 @@ export const addGateWithConfig = (config: GateConfig) => { ... };
 4. **Follow existing patterns** - look at similar code
 
 ```typescript
-// ✅ CORRECT - New gate follows existing pattern
-// src/gates/XorGate.tsx
-import { memo } from 'react';
-import { BaseGate, BaseGateProps } from './BaseGate';
+// ✅ CORRECT - New gate follows existing pattern (React Compiler handles memoization)
+// src/gates/components/XorGate.tsx
+import { BaseGate, BaseGateProps } from '../common/BaseGate';
 
-export const XorGate = memo<BaseGateProps>((props) => {
+export function XorGate(props: BaseGateProps) {
   return <BaseGate {...props} gateType="xor" />;
-});
+}
 
-// src/gates/index.ts
+// src/gates/components/index.ts
 export { NandGate } from './NandGate';
 export { XorGate } from './XorGate'; // Add export
 ```
@@ -1337,9 +1279,9 @@ const BadComponent = () => {
   circuitStore.gates.push(newGate); // Will cause bugs
 };
 
-// ✅ CORRECT: Use actions
+// ✅ CORRECT: Use actions (GateType uppercase, Position is an object)
 const GoodComponent = () => {
-  circuitActions.addGate('nand', [0, 0, 0]);
+  circuitActions.addGate('NAND', { x: 0, y: 0, z: 0 });
 };
 
 // ❌ ANTI-PATTERN: Creating Three.js objects in render
@@ -1397,10 +1339,16 @@ const style = { color: 'blue' };
 
 ### NPM Scripts
 ```bash
-npm run dev          # Start dev server
-npm test             # Run Vitest unit/component tests
-npm run test:e2e     # Run Playwright E2E tests
-npm run test:coverage # Generate coverage report
+npm run dev              # Start dev server
+npm run lint             # TypeScript + ESLint (MANDATORY before commit)
+npm run typecheck        # TypeScript only
+npm run test:run         # Run Vitest unit/component tests (single run)
+npm run test             # Run Vitest in watch mode
+npm run test:coverage    # Generate coverage report
+npm run test:e2e:store   # Fast E2E — store tests only (@store tag) — run before every commit
+npm run test:e2e:ui      # Slow E2E — UI tests (@ui tag) — run manually or CI (2×/week)
+npm run build            # Production build (tsc + Vite)
+npm run stryker          # Mutation testing (full)
 ```
 
 ### External Resources
@@ -1411,18 +1359,18 @@ npm run test:coverage # Generate coverage report
 - Playwright: https://playwright.dev/docs/intro
 - Vitest: https://vitest.dev/guide/
 
-### Debug Helpers
+### Debug Helpers (browser console)
 ```typescript
-// Log store state changes
-useCircuitStore.subscribe((state) => console.log('State:', state));
+// Access store state (synced live via subscription)
+window.__CIRCUIT_STORE__            // Current CircuitStore state
+window.__CIRCUIT_ACTIONS__          // All circuitActions methods
+window.__CIRCUIT_STORE_SET_STATE__  // Directly set store state (E2E helper)
 
-// Access store in browser console
-window.__CIRCUIT_STORE__   // Current state
-window.__CIRCUIT_ACTIONS__ // Actions
+// Example: add a gate from the browser console
+window.__CIRCUIT_ACTIONS__.addGate('NAND', { x: 0, y: 0, z: 0 })
 
-// Inspect 3D scene
-// In browser console with React DevTools + R3F
-window.__THREE_DEVTOOLS__ // Three.js inspector
+// Log store state changes (via Zustand subscription)
+useCircuitStore.subscribe(state => console.log('State:', state))
 ```
 
 ---

@@ -3,7 +3,13 @@
 **PURPOSE**: Guide AI agents (Cursor, Claude Code) through structured task execution, verification, and self-improvement.  
 **SCOPE**: Workflow orchestration, task management, and core principles for all non-trivial development work.
 
+> **Primary entry point for all agents: [AGENTS.md](../AGENTS.md)**  
+> AGENTS.md explains the CI quality enforcement model, cognitive protocols from research papers,
+> and the mandatory Design → Plan → TDD → Debug → Review workflow.  
+> This document provides additional workflow details and ties into HACER-specific practices.
+
 > **Related Documentation:**
+> - [AGENTS.md](../AGENTS.md) - Universal guide (start here)
 > - [HACER_LLM_GUIDE.md](../HACER_LLM_GUIDE.md) - Project-specific patterns, React, testing, Zustand
 > - [.cursorrules](../.cursorrules) - Quick rules, phase tracking, TDD protocol
 > - [docs/testing/](./testing/) - TDD workflow, test standards, templates

@@ -30,19 +30,29 @@ src/
 ├── components/          # React UI components (Canvas, UI, gates)
 │   ├── canvas/          # Three.js/R3F scene components
 │   └── ui/              # Ant Design interface components
-├── store/               # Zustand state
-│   ├── circuitStore.ts  # Store definition
-│   └── actions/         # One folder per action group
-│       └── gateActions/ # gateActions.ts + gateActions.test.ts
+├── gates/               # Gate definitions
+│   ├── components/      # Gate React components
+│   ├── icons/           # Gate icon components
+│   └── config/          # Gate configs split into 3 files per gate:
+│       ├── nand-constants.ts  # colors, text
+│       ├── nand-helpers.ts    # pin/wire helpers, geometry
+│       └── nand.tsx           # React component (only export components here)
+├── nodes/               # Circuit I/O nodes and junctions
+│   ├── components/      # InputNode3D, OutputNode3D, JunctionNode3D
+│   └── config/          # nodeConfig.ts (node dimensions, pin positions)
 ├── simulation/          # Pure logic (no React, no Three.js)
 │   └── gateLogic.ts
-└── gates/               # Gate definitions
-    ├── components/      # Gate React components
-    ├── icons/           # Gate icon components
-    └── config/          # Gate configs split into 3 files:
-        ├── nand-constants.ts  # colors, text
-        ├── nand-helpers.ts    # pin/wire helpers, geometry
-        └── nand.tsx           # React component (only export components here)
+├── store/               # Zustand state
+│   ├── circuitStore.ts  # Store definition + circuitActions export
+│   ├── types.ts         # GateInstance, Wire, WireEndpoint, InputNode, etc.
+│   └── actions/         # One folder per action group
+│       └── gateActions/ # gateActions.ts + gateActions.test.ts
+├── hooks/               # Custom React hooks
+├── theme/               # ThemeProvider, tokens
+└── utils/               # Utility functions
+    ├── grid.ts          # Grid snap helpers
+    ├── wirePosition.ts  # Wire geometry
+    └── wiringScheme/    # Wire routing algorithm
 ```
 
 ### Key Rule: Gate Config File Split
@@ -67,24 +77,37 @@ const { gates } = useCircuitStore()
 
 ### Writing State (always through actions)
 ```typescript
-// ✅ Correct
-circuitActions.placeGate({ type: 'NAND', position: [0, 0, 0] })
+// ✅ Correct — direct add (type is always UPPERCASE)
+circuitActions.addGate('NAND', { x: 0, y: 0, z: 0 })
 circuitActions.selectGate(gateId)
 
+// ✅ Also correct — placement mode (user clicks to place; placeGate fires at click position)
+circuitActions.startPlacement('NAND')          // enters placement mode
+circuitActions.placeGate({ x: 1, y: 0, z: 2 }) // finalizes at position
+
 // ❌ Wrong — never mutate directly
-useCircuitStore.setState({ gates: { ...newGates } })
+useCircuitStore.setState({ gates: [...newGates] })
 ```
+
+> **GateType is always uppercase:** `'NAND' | 'AND' | 'OR' | 'NOT' | 'NOR' | 'XOR' | 'XNOR'`  
+> **Position is an object:** `{ x: number, y: number, z: number }` (not a tuple)
 
 ### Action File Pattern
 ```typescript
 // src/store/actions/gateActions/gateActions.ts
-export const gateActions = {
-  placeGate: (payload: PlaceGatePayload) => {
-    useCircuitStore.setState(state => ({
-      gates: { ...state.gates, [id]: newGate }
-    }))
+// Actions are factory functions called by the store initializer.
+// External code uses circuitActions.* (exported from circuitStore.ts).
+export function createGateActions(set: SetState, get: GetState) {
+  return {
+    addGate: (type: GateType, position: Position): GateInstance => {
+      // ...
+    },
   }
 }
+
+// Usage from components or tests:
+import { circuitActions } from '@/store/circuitStore'
+circuitActions.addGate('NAND', { x: 0, y: 0, z: 0 })
 ```
 
 ---
@@ -109,8 +132,11 @@ Always read `.cursorrules` → "Phase Tracking" section first.
 2. Add unit tests → `src/simulation/gateLogic.test.ts`
 3. Create component → `src/gates/components/`
 4. Create icon → `src/gates/icons/`
-5. Create config split → `src/gates/config/<gate>-constants.ts`, `<gate>-helpers.ts`, `<gate>.tsx`
-6. Export from barrel files
+5. Create 3-file config split:
+   - `src/gates/config/<gate>-constants.ts` — colors, text, non-React constants
+   - `src/gates/config/<gate>-helpers.ts` — pin/wire helpers, geometry
+   - `src/gates/config/<gate>.tsx` — React component (exports ONLY React components)
+6. Export from barrel files (`index.ts`)
 
 ---
 
@@ -174,7 +200,7 @@ npm run build              # Full production build
 | Anti-Pattern | Correct Pattern |
 |-------------|-----------------|
 | `useCircuitStore().gates` | `useCircuitStore(s => s.gates)` |
-| `useCircuitStore.setState({ gates: ... })` | `circuitActions.placeGate(...)` |
+| `useCircuitStore.setState({ gates: ... })` | `circuitActions.addGate('NAND', { x, y, z })` |
 | `useMemo(() => ..., [deps])` | Remove — React Compiler handles it |
 | `console.log("Error:", e)` | `message.error("User-facing message")` |
 | `new BoxGeometry()` in render body | Create in `useMemo` or module scope, dispose on unmount |

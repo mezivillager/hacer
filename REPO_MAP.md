@@ -4,7 +4,7 @@ This document helps AI agents and developers understand the codebase structure a
 
 ## ⚠️ IMPORTANT: Phase Tracking & Maintenance
 
-**Last Updated:** 2025-12-17  
+**Last Updated:** 2026-03-12  
 **Current Phase:** Phase 0.25 (Complete) ✅ → Phase 0.5 (In Progress)  
 **Next Phase:** Phase 0.5: Nand2Tetris Foundation
 
@@ -47,25 +47,49 @@ src/
 │       └── handlers/ # UI event handlers
 ├── gates/            # Gate components and logic
 │   ├── components/   # Individual gate components (NandGate, AndGate, etc.) - flat orientation
-│   ├── common/       # Shared gate components (BaseGate, BaseGateLabel, GatePin, WireStub)
-│   ├── config/       # Gate configuration (common.ts - dimensions, pin positions)
+│   ├── common/       # Shared gate components (BaseGate, GatePin, WireStub)
+│   ├── config/       # Gate configuration split into 3 files per gate:
+│   │   ├── nand-constants.ts  # Colors, text, non-React constants
+│   │   ├── nand-helpers.ts    # Pin/wire helpers, geometry utilities
+│   │   └── nand.tsx           # React component (only export components here)
 │   ├── handlers/     # Gate event handlers
 │   ├── icons/        # Gate icon components
-│   └── types.ts      # Gate type definitions
+│   └── types.ts      # Gate type definitions (GateType: 'NAND'|'AND'|'OR'|'NOT'|'NOR'|'XOR'|'XNOR')
+├── nodes/            # Circuit I/O nodes and junctions (HDL-level pins)
+│   ├── components/   # InputNode3D, OutputNode3D, JunctionNode3D
+│   └── config/       # Node configuration (nodeConfig.ts)
 ├── simulation/       # Circuit simulation engine (pure logic)
 ├── store/           # Zustand state management
-│   └── actions/     # State mutation actions (gateActions, wireActions, placementActions, etc.)
-│       └── pinHelpers/ # Pin position calculation helpers
+│   ├── circuitStore.ts  # Store + circuitActions export + window globals for E2E
+│   ├── types.ts         # All store types (GateInstance, Wire, WireEndpoint, InputNode, etc.)
+│   └── actions/     # State mutation action slices (one folder per domain)
+│       ├── gateActions/    # Gate CRUD and selection
+│       ├── wireActions/    # Wire CRUD
+│       ├── placementActions/   # Gate placement mode
+│       ├── wiringActions/      # Wire-drawing interaction
+│       ├── simulationActions/  # Simulation control
+│       ├── nodeActions/        # I/O node CRUD
+│       ├── nodePlacementActions/ # Node placement mode
+│       ├── signalActions/      # Junction signal
+│       ├── junctionPlacementActions/ # Junction placement
+│       ├── viewActions/        # Camera/axes toggle
+│       └── pinHelpers/         # Pin position calculation helpers
 ├── hooks/           # Custom React hooks (useKeyboardShortcuts, useGateDrag)
 ├── theme/           # Theme system (ThemeProvider, tokens - grid colors)
-├── types/           # Shared TypeScript types
 ├── utils/           # Utility functions
-│   └── grid.ts      # Grid system (GRID_SIZE, worldToGrid, snapToGrid, canPlaceGateAt)
-├── test/            # Test setup and utilities (testUtils.ts - createMockStore, etc.)
+│   ├── grid.ts      # Grid system (GRID_SIZE, worldToGrid, snapToGrid)
+│   ├── wirePosition.ts  # Wire geometry helpers
+│   ├── wireHitTest.ts   # Wire click detection
+│   └── wiringScheme/    # Wire routing algorithm (pathfinding, branching, crossing, segments)
+├── test/            # Test setup and utilities (testUtils.ts - createMockStore)
 ├── App.tsx          # Main application component
 └── main.tsx         # React entry point
 
+AGENTS.md             # Universal AI agent entry point (all agents read this first)
+
 docs/
+├── specs/            # Design spec artifacts (output of brainstorming skill)
+├── plans/            # Implementation plan artifacts (output of planning skill)
 ├── testing/          # Testing documentation (consolidated)
 │   ├── README.md     # Testing docs index
 │   ├── standards.md  # TDD workflow, test quality, mutation testing
@@ -83,18 +107,27 @@ tasks/                # Task management for AI agents
 └── lessons.md.template  # Template for lesson entries
 
 .claude/              # Claude Code project rules
-├── CLAUDE.md         # Project overview for Claude Code
-└── rules/
-    └── workflow.md   # Workflow orchestration rules (auto-loaded)
+├── CLAUDE.md         # Project overview (references AGENTS.md + skills)
+└── skills/           # Composable skill files (loaded on demand, ~5k tokens each)
+    ├── tdd/SKILL.md              # Iron Law TDD
+    ├── debugging/SKILL.md        # 4-phase systematic debugging
+    ├── brainstorming/SKILL.md    # Design-first HARD GATE
+    ├── planning/SKILL.md         # Bite-sized task plans
+    ├── code-review/SKILL.md      # Pre-merge self-review
+    └── hacer-patterns/SKILL.md   # HACER stack + architecture patterns
 
 scripts/
-└── check-test-files.sh  # Pre-commit TDD verification script
+├── check-test-files.sh  # Pre-commit TDD verification script
+└── stryker-changed.sh   # Run Stryker on changed files only (CI)
 
 .github/
-├── PULL_REQUEST_TEMPLATE.md  # PR template with TDD checklist
+├── copilot-instructions.md       # GitHub Copilot quick-start
+├── PULL_REQUEST_TEMPLATE.md      # PR template with TDD checklist
 └── workflows/
-    ├── mutation.yml  # Stryker mutation testing (PRs)
-    └── e2e-ui.yml    # Slow UI E2E tests (scheduled twice weekly)
+    ├── ci.yml        # Main CI (lint + unit tests + build + E2E store tests)
+    ├── mutation.yml  # Stryker mutation testing (PRs touching src/)
+    ├── e2e-ui.yml    # Slow UI E2E tests (scheduled Wed + Sat 4am UTC)
+    └── deploy.yml    # GitHub Pages deployment (push to main)
 ```
 
 ### 🔄 Next Phase Structure (Phase 0.5 - Starting Soon)

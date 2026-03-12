@@ -2,6 +2,10 @@
 
 ## Project: HACER
 
+> **Start every session by reading [AGENTS.md](./AGENTS.md)** — it explains CI quality gates,
+> cognitive protocols (ReAct, CoT, ToT, Reflexion), and the mandatory development workflow.
+> Claude Code users: skills are in `.claude/skills/*/SKILL.md`.
+
 ## ⚠️ IMPORTANT: Phase Tracking
 
 **Last Updated:** 2025-12-17  
@@ -88,6 +92,9 @@
   - Canvas (3D), UI (Ant Design), gates, theme
 - **Store Layer** (`src/store/`): Zustand state management
   - Actions organized by domain (gateActions, wireActions, etc.)
+- **Nodes Layer** (`src/nodes/`): Circuit I/O nodes and junctions
+  - InputNode3D, OutputNode3D, JunctionNode3D components
+  - nodeConfig — node dimensions and pin positions
 - **Simulation Layer** (`src/simulation/`): Pure gate logic (migrates to core/ in Phase 5)
 
 **🔄 Next (Phase 0.5):**
@@ -164,7 +171,8 @@
 2. Add unit tests to `src/simulation/gateLogic.test.ts`
 3. Create component in `src/gates/components/`
 4. Create icon in `src/gates/icons/`
-5. Export from barrel files
+5. Create config (3 files): `src/gates/config/<gate>-constants.ts`, `<gate>-helpers.ts`, `<gate>.tsx`
+6. Export from barrel files
 
 **⏸️ Future (Phase 5+):**
 1. Add to GateType in `src/core/gates/types.ts`
