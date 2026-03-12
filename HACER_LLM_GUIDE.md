@@ -23,6 +23,31 @@ All documents are kept in sync and should be consulted together.
 
 ---
 
+## ⚡ Discovery Protocol: Verify Types and Signatures Before Writing Code
+
+The examples in this guide illustrate **patterns and structure**. Specific values — type strings,
+position shapes, action signatures, state field names — change as the codebase evolves and will
+eventually drift from what is shown here. **Always look up the current truth in the source before
+writing code.**
+
+| What you need | Where to find it |
+|--------------|-----------------|
+| Type definitions (GateType, Position, Wire, etc.) | `src/store/types.ts` |
+| `circuitActions` method list + signatures | `src/store/circuitStore.ts` → `circuitActions` export |
+| Store state shape and initial field values | `src/store/circuitStore.ts` → `initialState` |
+| Store reset `beforeEach` pattern for tests | `src/store/actions/gateActions/gateActions.test.ts` |
+| E2E store test patterns | `e2e/specs/gates/gate-placement.store.spec.ts` |
+| E2E UI test patterns | `e2e/specs/gates/gate-placement.ui.spec.ts` |
+| Gate component pattern | `src/gates/components/NandGate.tsx` |
+| Node component pattern | `src/nodes/components/InputNode3D.tsx` |
+| Wire routing utilities | `src/utils/wiringScheme/` |
+
+**Quick check:** After writing any code that references a type or action, run `npm run typecheck`.
+TypeScript will tell you immediately if a type name or signature no longer matches.
+
+---
+---
+
 ## 🚨 NON-NEGOTIABLE RULES
 
 ### ALWAYS
@@ -166,14 +191,16 @@ function BadComponent({ items }) {
 ```typescript
 // ✅ CORRECT - Extract complex logic into custom hooks
 // hooks/useGatePlacement.ts
-export const useGatePlacement = (gateType: string) => {
+// ⚠️ This is a conceptual pattern example.
+// Always verify circuitActions signatures in src/store/circuitStore.ts before writing real code.
+// Verify GateType values and Position shape in src/store/types.ts.
+export const useGatePlacement = (gateType: GateType) => {
   const [isPlacing, setIsPlacing] = useState(false);
-  const [previewPos, setPreviewPos] = useState<[number, number, number] | null>(null);
   
   // React Compiler automatically memoizes these functions
   const startPlacement = () => {
     setIsPlacing(true);
-    circuitActions.startPlacement(gateType);
+    circuitActions.startPlacement(gateType); // verify signature
   };
   
   const cancelPlacement = () => {
@@ -181,15 +208,16 @@ export const useGatePlacement = (gateType: string) => {
     circuitActions.cancelPlacement();
   };
   
-  const placeGate = (position: [number, number, number]) => {
-    circuitActions.placeGate(gateType, position);
+  const placeGate = (position: Position) => { // see Position in src/store/types.ts
+    circuitActions.placeGate(position);        // verify signature
     setIsPlacing(false);
   };
   
-  return { isPlacing, previewPos, startPlacement, cancelPlacement, placeGate };
+  return { isPlacing, startPlacement, cancelPlacement, placeGate };
 };
 ```
 
+```typescript
 // Component uses clean hook interface
 export const GatePlacer = ({ gateType }) => {
   const { isPlacing, startPlacement, cancelPlacement } = useGatePlacement(gateType);
@@ -618,21 +646,17 @@ describe('gateActions', () => {
   });
 
   it('adds a gate with correct default values', () => {
-    // GateType: uppercase. Position: { x, y, z } object.
-    circuitActions.addGate('NAND', { x: 0, y: 0, z: 0 });
+    // Read src/store/types.ts for the correct GateType values and Position shape.
+    circuitActions.addGate(/* type, position — see src/store/types.ts */)
     const { gates } = useCircuitStore.getState();
     expect(gates).toHaveLength(1);
-    expect(gates[0].type).toBe('NAND');
   });
 
   it('removes wire when gate is deleted', () => {
-    const gate1 = circuitActions.addGate('NAND', { x: 0, y: 0, z: 0 });
-    const gate2 = circuitActions.addGate('NAND', { x: 2, y: 0, z: 0 });
+    const gate1 = circuitActions.addGate(/* ... */)
+    const gate2 = circuitActions.addGate(/* ... */)
     
-    circuitActions.addWire({
-      fromEntityId: gate1.id, fromEntityType: 'gate', fromPinId: gate1.outputs[0].id,
-      toEntityId: gate2.id,   toEntityType: 'gate', toPinId: gate2.inputs[0].id,
-    });
+    circuitActions.addWire(/* see circuitStore.ts for current signature */);
     expect(useCircuitStore.getState().wires).toHaveLength(1);
     
     circuitActions.removeGate(gate1.id);
@@ -656,8 +680,8 @@ describe('GateSelector', () => {
     render(<GateSelector onStartPlacement={onStartPlacement} />);
     
     fireEvent.click(screen.getByText('NAND'));
-    // GateType is uppercase
-    expect(onStartPlacement).toHaveBeenCalledWith('NAND');
+    // Verify with: npm run typecheck — TypeScript enforces the correct GateType values
+    expect(onStartPlacement).toHaveBeenCalledWith(expect.any(String));
   });
 });
 ```
@@ -676,12 +700,14 @@ test.describe('@store Gate Placement', () => {
 
     // Use circuitActions directly (fast — no UI click required)
     const gate = await page.evaluate(() =>
-      window.__CIRCUIT_ACTIONS__.addGate('NAND', { x: 0, y: 0, z: 0 })
+      // Read src/store/types.ts for correct type/position shapes before using
+      window.__CIRCUIT_ACTIONS__.addGate(/* type, position — see types.ts */)
     )
 
     const state = await page.evaluate(() => window.__CIRCUIT_STORE__.gates)
     expect(state).toHaveLength(1)
-    expect(state[0].type).toBe('NAND')
+    // Read src/store/types.ts for the current GateType values
+    expect(state[0].type).toBe(/* expected type — see types.ts */)
   })
 })
 
@@ -871,24 +897,25 @@ HTMLCanvasElement.prototype.getContext = vi.fn(() => ({
 ### Store Organization
 
 ```typescript
-// ✅ CORRECT - Organized store with typed actions
-// See src/store/types.ts for the full types. Key types:
-// GateType = 'NAND' | 'AND' | 'OR' | 'NOT' | 'NOR' | 'XOR' | 'XNOR'  (always uppercase)
-// Position = { x: number; y: number; z: number }                        (object, not tuple)
-// Rotation = { x: number; y: number; z: number }
+// The store is composed of typed slices defined in src/store/types.ts.
+// Actions are factory functions in src/store/actions/<domain>Actions/.
+// External code uses the flat circuitActions object from src/store/circuitStore.ts.
 //
-// Store uses immer + devtools + subscribeWithSelector middleware.
-// Action slices are factory functions; circuitActions re-exports them as a flat object.
+// Before writing store code:
+// 1. Read src/store/types.ts   — current types (GateInstance, Wire, Position, etc.)
+// 2. Read src/store/circuitStore.ts → circuitActions — current available actions
+// 3. Read src/store/circuitStore.ts → initialState — current state shape
+//
+// Example of the pattern (verify names and shapes in the above files):
+import { useCircuitStore, circuitActions } from '@/store/circuitStore'
 
-// Usage — direct add:
-circuitActions.addGate('NAND', { x: 0, y: 0, z: 0 })
+// Read: selector — only re-renders on this slice
+const gates = useCircuitStore(s => s.gates)
 
-// Usage — placement mode (click-to-place UI):
-circuitActions.startPlacement('NAND')
-circuitActions.placeGate({ x: 1, y: 0, z: 2 })
-
-// Usage — remove:
-circuitActions.removeGate(gate.id)
+// Write: always through circuitActions (immer draft inside)
+// Step 1: verify current action signature in src/store/circuitStore.ts → circuitActions
+circuitActions.addGate(/* type, position — see src/store/types.ts */)
+circuitActions.removeGate(gateId)
 circuitActions.clearCircuit()
 ```
 
@@ -927,40 +954,29 @@ export const BadGateList = () => {
 ### Testing Zustand Stores
 
 ```typescript
-// ✅ CORRECT - Test actions directly
-import { useCircuitStore, circuitActions } from '@/store/circuitStore';
+// ✅ CORRECT — copy the beforeEach reset from the canonical test:
+// src/store/actions/gateActions/gateActions.test.ts
+//
+// Rationale: the reset must include ALL state slices. When new slices are added,
+// only that canonical file is kept up to date. Copying a field list from docs
+// will miss any slices added after the docs were written.
 
-describe('circuitActions', () => {
+import { useCircuitStore, circuitActions } from '@/store/circuitStore'
+
+describe('myActions', () => {
   beforeEach(() => {
-    // Reset store state (see gateActions.test.ts for the full reset shape)
-    useCircuitStore.setState({
-      gates: [],
-      wires: [],
-      selectedGateId: null,
-      selectedWireId: null,
-      simulationRunning: false,
-      simulationSpeed: 100,
-      placementMode: null,
-      wiringFrom: null,
-      inputNodes: [],
-      outputNodes: [],
-      junctions: [],
-      nodePlacementMode: null,
-      selectedNodeId: null,
-      selectedNodeType: null,
-    });
-  });
+    // Copy the exact reset object from gateActions.test.ts → beforeEach.
+    // Do not rely on docs for the field list — read the file.
+    useCircuitStore.setState({ /* copy from canonical */ })
+  })
 
-  it('addGate creates gate with unique id', () => {
-    // GateType is UPPERCASE; Position is { x, y, z }
-    circuitActions.addGate('NAND', { x: 0, y: 0, z: 0 });
-    circuitActions.addGate('NAND', { x: 1, y: 0, z: 0 });
-    
-    const { gates } = useCircuitStore.getState();
-    expect(gates).toHaveLength(2);
-    expect(gates[0].id).not.toBe(gates[1].id);
-  });
-});
+  it('does the thing', () => {
+    // Check src/store/types.ts for correct type values and shapes.
+    // Check src/store/circuitStore.ts for current circuitActions signatures.
+    circuitActions.someAction(/* args */)
+    expect(useCircuitStore.getState().someSlice).toBe(expected)
+  })
+})
 ```
 
 ### Common Pitfalls
@@ -987,7 +1003,8 @@ const GoodComponent = () => {
   const gateCount = useCircuitStore((s) => s.gates.length);
   
   const handleClick = () => {
-    circuitActions.addGate('NAND', { x: 0, y: 0, z: 0 });
+    // See src/store/circuitStore.ts → circuitActions for current method signatures
+    circuitActions.addGate(/* type, position — see src/store/types.ts */);
   };
   
   return <div onClick={handleClick}>{gateCount}</div>;
@@ -1115,8 +1132,9 @@ test('renders 100 gates without frame drops', async ({ page }) => {
   // Add 100 gates programmatically
   for (let i = 0; i < 100; i++) {
     await page.evaluate((i) => {
-      // GateType is UPPERCASE; Position is { x, y, z } object
-      window.__CIRCUIT_ACTIONS__.addGate('NAND', { x: i % 10, y: 0, z: Math.floor(i / 10) });
+      // See Discovery Protocol above for canonical window globals.
+      // Read src/store/types.ts for correct GateType values and Position shape.
+      window.__CIRCUIT_ACTIONS__.addGate(/* type, position — see types.ts */)
     }, i);
   }
   
@@ -1155,20 +1173,19 @@ test('renders 100 gates without frame drops', async ({ page }) => {
 ### Safe Modification Pattern
 
 ```typescript
-// ❌ DANGEROUS - Changing function signature
+// ❌ DANGEROUS - Changing a function signature breaks all callers
 // Before
-export const addGate = (type: string, position: [number, number, number]) => { ... };
+export const doSomething = (arg1: string, arg2: number) => { ... };
 
-// After - This breaks all callers!
-export const addGate = (config: GateConfig) => { ... };
+// After — this breaks callers silently if TypeScript doesn't catch it
+export const doSomething = (config: SomeConfig) => { ... };
 
-// ✅ SAFE - Backward compatible change
-// Add new function, deprecate old one
-export const addGate = (type: string, position: [number, number, number]) => {
-  return addGateWithConfig({ type, position, rotation: 0 });
+// ✅ SAFE - Add new function, deprecate old one; update callers incrementally
+export const doSomething = (arg1: string, arg2: number) => {
+  return doSomethingWithConfig({ arg1, arg2 });
 };
 
-export const addGateWithConfig = (config: GateConfig) => { ... };
+export const doSomethingWithConfig = (config: SomeConfig) => { ... };
 ```
 
 ### Adding New Features
@@ -1279,9 +1296,10 @@ const BadComponent = () => {
   circuitStore.gates.push(newGate); // Will cause bugs
 };
 
-// ✅ CORRECT: Use actions (GateType uppercase, Position is an object)
+// ✅ CORRECT: Use actions — see src/store/circuitStore.ts for current signatures
 const GoodComponent = () => {
-  circuitActions.addGate('NAND', { x: 0, y: 0, z: 0 });
+  // Check src/store/types.ts for current GateType values and Position shape
+  circuitActions.addGate(/* type, position — see types.ts */)
 };
 
 // ❌ ANTI-PATTERN: Creating Three.js objects in render
@@ -1367,7 +1385,8 @@ window.__CIRCUIT_ACTIONS__          // All circuitActions methods
 window.__CIRCUIT_STORE_SET_STATE__  // Directly set store state (E2E helper)
 
 // Example: add a gate from the browser console
-window.__CIRCUIT_ACTIONS__.addGate('NAND', { x: 0, y: 0, z: 0 })
+// (verify type values in src/store/types.ts before using)
+window.__CIRCUIT_ACTIONS__.addGate(/* type, position — see src/store/types.ts */)
 
 // Log store state changes (via Zustand subscription)
 useCircuitStore.subscribe(state => console.log('State:', state))

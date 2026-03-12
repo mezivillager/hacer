@@ -9,6 +9,24 @@ HACER = Hardware Architecture Circuit Editor and Runtime. A 3D logic-gate circui
 
 ---
 
+## ⚡ Before Writing Any Code: Discover, Don't Assume
+
+Type definitions, API signatures, and state field names change as the codebase evolves.
+**Always read the source before writing code** — never rely on doc examples for specific values.
+
+| What you need | Canonical source |
+|--------------|-----------------|
+| Type definitions (GateType, Position, Wire, etc.) | `src/store/types.ts` |
+| Available `circuitActions` methods + signatures | `src/store/circuitStore.ts` → `circuitActions` export |
+| Store state shape and initial values | `src/store/circuitStore.ts` → `initialState` |
+| Store reset pattern for tests | `src/store/actions/gateActions/gateActions.test.ts` → `beforeEach` |
+| E2E test patterns | `e2e/specs/` — pick a spec in the same domain |
+| Gate component structure | `src/gates/components/NandGate.tsx` |
+| Node component structure | `src/nodes/components/InputNode3D.tsx` |
+| Wire routing utilities | `src/utils/wiringScheme/` |
+
+---
+
 ## Stack
 
 | Layer | Technology | Notes |
@@ -77,37 +95,39 @@ const { gates } = useCircuitStore()
 
 ### Writing State (always through actions)
 ```typescript
-// ✅ Correct — direct add (type is always UPPERCASE)
-circuitActions.addGate('NAND', { x: 0, y: 0, z: 0 })
-circuitActions.selectGate(gateId)
+// ✅ Correct — all mutations go through circuitActions
+// (verify current method signatures in src/store/circuitStore.ts)
+circuitActions.someAction(args)
 
-// ✅ Also correct — placement mode (user clicks to place; placeGate fires at click position)
-circuitActions.startPlacement('NAND')          // enters placement mode
-circuitActions.placeGate({ x: 1, y: 0, z: 2 }) // finalizes at position
+// ✅ Placement mode (user click-to-place UI)
+circuitActions.startPlacement(gateType)   // enters placement mode
+circuitActions.placeGate(position)         // finalizes at position
 
 // ❌ Wrong — never mutate directly
 useCircuitStore.setState({ gates: [...newGates] })
 ```
 
-> **GateType is always uppercase:** `'NAND' | 'AND' | 'OR' | 'NOT' | 'NOR' | 'XOR' | 'XNOR'`  
-> **Position is an object:** `{ x: number, y: number, z: number }` (not a tuple)
+> **Always verify action signatures and type shapes at their canonical source** before using them.
+> See the Discovery Protocol table above.
 
 ### Action File Pattern
 ```typescript
-// src/store/actions/gateActions/gateActions.ts
+// src/store/actions/<domain>Actions/<domain>Actions.ts
 // Actions are factory functions called by the store initializer.
 // External code uses circuitActions.* (exported from circuitStore.ts).
-export function createGateActions(set: SetState, get: GetState) {
+//
+// SetState and GetState are Zustand middleware types — see store/circuitStore.ts for imports.
+export function createSomeActions(set: SetState, get: GetState) {
   return {
-    addGate: (type: GateType, position: Position): GateInstance => {
-      // ...
+    someAction: (/* args — see src/store/types.ts for correct types */): ReturnType => {
+      set(draft => { /* immer mutation */ })
     },
   }
 }
 
-// Usage from components or tests:
+// Always import from the barrel:
 import { circuitActions } from '@/store/circuitStore'
-circuitActions.addGate('NAND', { x: 0, y: 0, z: 0 })
+// Then check src/store/circuitStore.ts for the current circuitActions API.
 ```
 
 ---
@@ -167,16 +187,14 @@ export function GateIcon() { ... }  // put this in its own file
 // Use JSDoc on all exported functions
 /**
  * Places a gate at the given position.
- * @param payload - Gate type and world-space position
- * @returns The ID of the newly placed gate
+ * @param type - Gate type (see GateType in src/store/types.ts)
+ * @param position - World-space position (see Position in src/store/types.ts)
+ * @returns The newly placed gate instance
  */
-export function placeGate(payload: PlaceGatePayload): GateId { ... }
+export function addGate(type: GateType, position: Position): GateInstance { ... }
 
-// No 'any' — define interfaces
-interface PlaceGatePayload {
-  type: GateType
-  position: [number, number, number]
-}
+// No 'any' — define interfaces for all parameters
+// Prefer using the types from src/store/types.ts rather than re-declaring them
 ```
 
 ---
@@ -200,7 +218,7 @@ npm run build              # Full production build
 | Anti-Pattern | Correct Pattern |
 |-------------|-----------------|
 | `useCircuitStore().gates` | `useCircuitStore(s => s.gates)` |
-| `useCircuitStore.setState({ gates: ... })` | `circuitActions.addGate('NAND', { x, y, z })` |
+| `useCircuitStore.setState({ gates: ... })` | `circuitActions.<action>(args)` — see `src/store/circuitStore.ts` for current API |
 | `useMemo(() => ..., [deps])` | Remove — React Compiler handles it |
 | `console.log("Error:", e)` | `message.error("User-facing message")` |
 | `new BoxGeometry()` in render body | Create in `useMemo` or module scope, dispose on unmount |

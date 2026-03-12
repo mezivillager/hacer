@@ -48,35 +48,26 @@ Remove duplication, improve names, extract helpers. Run tests after every change
 
 ### Pure logic (store actions, simulation)
 ```typescript
-// tests/store/actions/myAction.test.ts
+// src/store/actions/myAction.test.ts
 import { describe, it, expect, beforeEach } from 'vitest'
-import { useCircuitStore } from '@/store/circuitStore'
-import { circuitActions } from '@/store/circuitStore'
+import { useCircuitStore, circuitActions } from '@/store/circuitStore'
 
 beforeEach(() => {
-  // Reset store to empty state before each test
-  useCircuitStore.setState({
-    gates: [],
-    wires: [],
-    selectedGateId: null,
-    selectedWireId: null,
-    simulationRunning: false,
-    placementMode: null,
-    wiringFrom: null,
-    inputNodes: [],
-    outputNodes: [],
-    junctions: [],
-    nodePlacementMode: null,
-    selectedNodeId: null,
-    selectedNodeType: null,
-  })
+  // Always copy the reset state from the canonical example to include all slices:
+  // src/store/actions/gateActions/gateActions.test.ts → beforeEach
+  // Using a partial reset risks missing newly added state fields.
+  //
+  // If writing the first test for a new domain: read src/store/circuitStore.ts → initialState
+  // to get the complete current field list, then use that as your reset object.
+  useCircuitStore.setState({ /* copy from canonical or derive from initialState */ })
 })
 
 it('should do X when Y', () => {
-  circuitActions.addGate('NAND', { x: 0, y: 0, z: 0 })
-  const { gates } = useCircuitStore.getState()
-  expect(gates).toHaveLength(1)
-  expect(gates[0].type).toBe('NAND')
+  // Check src/store/types.ts for current type shapes.
+  // Check src/store/circuitStore.ts for current circuitActions method signatures.
+  circuitActions.someAction(/* args */)
+  const state = useCircuitStore.getState()
+  expect(state.someSlice).toBe(expected)
 })
 ```
 
