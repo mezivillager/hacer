@@ -16,13 +16,13 @@ cd hacer
 3. **Install dependencies**
 
 ```bash
-npm install
+pnpm install
 ```
 
 4. **Start the development server**
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 Open [http://localhost:5173](http://localhost:5173) to view the simulator locally.
@@ -53,9 +53,9 @@ See [docs/testing/standards.md](docs/testing/standards.md) for the detailed work
 
 ## Code Style and Linting
 
-- **Lint before committing**: `npm run lint` (runs both typecheck and ESLint)
-- **Fix auto-fixable issues**: `npm run lint:fix`
-- **TypeScript strict mode** is enforced; run `npm run typecheck` to verify
+- **Lint before committing**: `pnpm run lint` (runs both typecheck and ESLint)
+- **Fix auto-fixable issues**: `pnpm run lint:fix`
+- **TypeScript strict mode** is enforced; run `pnpm run typecheck` to verify
 - **React Compiler** handles memoization -- do NOT use manual `useMemo`, `useCallback`, or `React.memo`
 - Avoid `any` types -- use proper generics or `unknown` with type guards
 
@@ -63,19 +63,19 @@ See [docs/testing/standards.md](docs/testing/standards.md) for the detailed work
 
 | Command | Purpose | When to use |
 |---------|---------|-------------|
-| `npm run test:run` | Run unit tests (Vitest) once | Before committing |
-| `npm run test` | Run unit tests in watch mode | During development |
-| `npm run test:coverage` | Run unit tests with coverage | Checking coverage |
-| `npm run test:e2e:store` | Run fast E2E tests (store-based) | Before committing |
-| `npm run test:e2e:ui` | Run full UI E2E tests (slower) | Manual / CI only |
+| `pnpm run test:run` | Run unit tests (Vitest) once | Before committing |
+| `pnpm run test` | Run unit tests in watch mode | During development |
+| `pnpm run test:coverage` | Run unit tests with coverage | Checking coverage |
+| `pnpm run test:e2e:store` | Run fast E2E tests (store-based) | Before committing |
+| `pnpm run test:e2e:ui` | Run full UI E2E tests (slower) | Manual / CI only |
 
 ## Pull Request Process
 
 1. Create a branch from `main`
 2. Follow the TDD workflow for all new code
-3. Ensure all tests pass: `npm run test:run`
-4. Ensure lint passes: `npm run lint`
-5. Run store E2E tests: `npm run test:e2e:store`
+3. Ensure all tests pass: `pnpm run test:run`
+4. Ensure lint passes: `pnpm run lint`
+5. Run store E2E tests: `pnpm run test:e2e:store`
 6. Open a PR and fill out the [PR template](.github/PULL_REQUEST_TEMPLATE.md)
 
 The PR template includes a TDD checklist. All items must be checked for approval.

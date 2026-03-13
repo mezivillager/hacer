@@ -53,8 +53,8 @@
 
 **AI Agent Completion Checklist:**
 - [ ] All tests written and passing (RED → GREEN → REFACTOR)
-- [ ] **Linting passes: `npm run lint` exits with code 0** ⚠️ MANDATORY
-- [ ] No TypeScript errors (`npm run typecheck`)
+- [ ] **Linting passes: `pnpm run lint` exits with code 0** ⚠️ MANDATORY
+- [ ] No TypeScript errors (`pnpm run typecheck`)
 - [ ] Code follows project conventions (see Code Quality section)
 - [ ] JSDoc comments added for exported functions
 - [ ] No unused variables or imports
@@ -127,15 +127,15 @@
 **✅ Current (Phase 0):**
 - **Unit tests**: All `src/simulation/` functions (90%+ coverage)
 - **E2E tests**: Playwright with paired Store/UI tests (see below)
-- **Mutation testing**: `npm run stryker` to verify test quality
+- **Mutation testing**: `pnpm run stryker` to verify test quality
 
 **E2E Test Strategy (IMPORTANT for AI Agents):**
 - **Store tests (`@store`)**: FAST, use direct store actions, no scene waits
-  - Run: `npm run test:e2e:store`
+  - Run: `pnpm run test:e2e:store`
   - Preferred for TDD and AI agent workflows
   - Always run before committing
 - **UI tests (`@ui`)**: SLOW, use UI interactions, wait for scene ready
-  - Run: `npm run test:e2e:ui` (manual/CI only)
+  - Run: `pnpm run test:e2e:ui` (manual/CI only)
   - Run on CI scheduled (twice weekly), not on every commit
 - **Pairing rule**: Every feature needs BOTH store AND ui spec files
   - Share scenario files in `e2e/scenarios/`
@@ -238,7 +238,7 @@
 - Create type-safe helpers for test mocks
 
 **Linting Requirements (MANDATORY for AI Agents):**
-- **ALWAYS run `npm run lint` before considering code complete**
+- **ALWAYS run `pnpm run lint` before considering code complete**
 - **NEVER mark code as complete if linting errors exist**
 - Fix all linting errors (errors and warnings) before completion
 - Common issues to check:
@@ -246,7 +246,7 @@
   - Unused variables (prefix with `_` or remove)
   - Unused imports (remove)
   - Type safety issues (add proper type assertions)
-- Linting must pass: `npm run lint` should exit with code 0
+- Linting must pass: `pnpm run lint` should exit with code 0
 - If linting fails, fix errors immediately - do not proceed with other tasks
 
 ### Documentation Standards

@@ -31,4 +31,4 @@ fi
 
 # Stryker --mutate accepts comma-separated values; repeated --mutate overwrites
 mutate_list=$(echo "$limited" | grep -v '^$' | paste -sd ',' -)
-npx stryker run --mutate "$mutate_list"
+pnpm exec stryker run --mutate "$mutate_list"

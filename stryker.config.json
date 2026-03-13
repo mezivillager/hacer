@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
   "_comment": "mutate is the set of files to test. Business logic only (.ts), no UI components (.tsx).",
-  "packageManager": "npm",
+  "packageManager": "pnpm",
   "mutate": [
     "src/**/*.ts",
     "!src/**/*.test.ts",
@@ -17,7 +17,7 @@
   "testRunner": "vitest",
   "coverageAnalysis": "perTest",
   "ignoreStatic": true,
-  "buildCommand": "npm run build",
+  "buildCommand": "pnpm run build",
   "thresholds": {
     "high": 80,
     "low": 60,

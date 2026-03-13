@@ -43,20 +43,20 @@ Single config: `stryker.config.json`. The `mutate` array defines the set of file
 
 | Script | Purpose |
 |--------|---------|
-| `npm run stryker` | Full run on configured mutate set |
-| `npm run stryker:changed` | PR-only: changed files, max 3 files (~3 min) |
+| `pnpm run stryker` | Full run on configured mutate set |
+| `pnpm run stryker:changed` | PR-only: changed files, max 3 files (~3 min) |
 
 ## CI Workflow
 
 - **`--since` is not supported** by StrykerJS; the previous workflow would have failed.
-- **PRs:** Run `npm run stryker:changed` — only mutated changed source files (max 3, ~3 min cap). Uses `scripts/stryker-changed.sh`.
+- **PRs:** Run `pnpm run stryker:changed` — only mutated changed source files (max 3, ~3 min cap). Uses `scripts/stryker-changed.sh`.
 - **Timeout:** 30 minutes
 
 ## Recommendations
 
 1. **Business logic only** — the config covers `src/**/*.ts` (excluding tests). UI components (.tsx) are excluded. PR runs mutate any changed .ts source file (max 3), independent of the config.
 2. **Limit:** PR runs use max 3 changed files to keep runtime under ~3 min. Adjust `STRYKER_CHANGED_MAX_FILES` if needed.
-3. **Run `npm run stryker` locally** before committing changes to mutated files.
+3. **Run `pnpm run stryker` locally** before committing changes to mutated files.
 4. **Use `ignoreStatic`** for all configs to reduce runtime.
 5. **Address survived mutants** by adding or strengthening tests; avoid lowering thresholds.
 

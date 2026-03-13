@@ -35,3 +35,6 @@ brainstorm
 # stryker temp files
 .stryker-tmp
 reports
+
+# TypeScript build info
+*.tsbuildinfo

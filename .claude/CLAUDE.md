@@ -16,7 +16,7 @@ Hardware Architecture Circuit Editor and Runtime. A 3D circuit simulator inspire
 
 ## Verification Before Done
 
-- `npm test` — unit/component tests
-- `npm run test:e2e:store` — fast E2E (run before commit)
-- `npm run lint` — mandatory
-- `npm run typecheck` — TypeScript
+- `pnpm run test:run` — unit/component tests
+- `pnpm run test:e2e:store` — fast E2E (run before commit)
+- `pnpm run lint` — mandatory
+- `pnpm run typecheck` — TypeScript

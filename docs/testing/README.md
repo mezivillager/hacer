@@ -31,19 +31,19 @@ This folder contains all testing-related documentation for the HACER project.
 
 ### Unit Tests (Vitest)
 - Location: Co-located with source (`Component.test.tsx`)
-- Run: `npm test`
+- Run: `pnpm run test:run`
 - Speed: Fast
 - Use for: Pure logic, components, hooks
 
 ### E2E Tests (Playwright)
 - Location: `e2e/specs/`
 - **Store tests** (`@store`): Fast, run before every commit
-  - `npm run test:e2e:store`
+  - `pnpm run test:e2e:store`
 - **UI tests** (`@ui`): Slow, run manually or CI (2x/week)
-  - `npm run test:e2e:ui`
+  - `pnpm run test:e2e:ui`
 
 ### Mutation Tests (Stryker)
-- Run: `npm run stryker`
+- Run: `pnpm run stryker`
 - Purpose: Verify test quality by introducing bugs
 - Config: `stryker.config.json` — extend the `mutate` array as the codebase grows
 - When: CI on PRs (changed files only, max 3; ~3 min)

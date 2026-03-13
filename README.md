@@ -53,15 +53,15 @@ HACER is in active development. Phase 0.25 (interactive 3D circuit building) is 
 ## Prerequisites
 
 - **Node.js** 20 or higher (`.nvmrc` provided -- run `nvm use` if you have [nvm](https://github.com/nvm-sh/nvm))
-- **npm** 9+
+- **pnpm** 9+
 
 ## Getting Started
 
 ```bash
 git clone https://github.com/mezivillager/hacer.git
 cd hacer
-npm install
-npm run dev
+pnpm install
+pnpm run dev
 ```
 
 Open [http://localhost:5173](http://localhost:5173) to view the simulator locally, or try the [live demo](https://mezivillager.github.io/hacer/).
