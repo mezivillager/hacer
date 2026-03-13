@@ -17,21 +17,22 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
 
-      - run: npm ci
+      - uses: pnpm/action-setup@v4
+
+      - run: pnpm install --frozen-lockfile
 
       - name: Lint
-        run: npm run lint
+        run: pnpm run lint
 
       - name: Unit tests
-        run: npm run test:run
+        run: pnpm run test:run
 
       - name: Build
-        run: npm run build
+        run: pnpm run build
 
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
+        run: pnpm exec playwright install --with-deps chromium
 
       - name: E2E store tests
-        run: npm run test:e2e:store
+        run: pnpm run test:e2e:store

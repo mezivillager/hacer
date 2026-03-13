@@ -17,9 +17,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
 
-      - run: npm ci
+      - uses: pnpm/action-setup@v4
+
+      - run: pnpm install --frozen-lockfile
 
       - name: Run Stryker (changed files only, max 3)
         run: bash scripts/stryker-changed.sh ${{ github.event.pull_request.base.sha }}

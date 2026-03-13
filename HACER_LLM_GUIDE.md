@@ -24,7 +24,7 @@ All three documents are kept in sync and should be consulted together.
 
 ### ALWAYS
 ✅ Write tests BEFORE or WITH new features (unit, component, or E2E)
-✅ Run existing tests before committing (`npm test`)
+✅ Run existing tests before committing (`pnpm run test:run`)
 ✅ Use TypeScript with strict types (no `any`, no missing interfaces)
 ✅ Add JSDoc comments to all exported functions with `@param` and `@returns`
 ✅ Call hooks only at the top level (never in loops, conditions, or callbacks)
@@ -716,7 +716,7 @@ export default defineConfig({
     screenshot: 'only-on-failure',
   },
   webServer: {
-    command: 'npm run dev',
+    command: 'pnpm run dev',
     url: 'http://localhost:5173',
     reuseExistingServer: !process.env.CI,
   },
@@ -1295,7 +1295,7 @@ interface CodeReviewCriteria {
     □ useEffect dependencies complete and correct?
   };
   testing: {
-    □ All existing tests pass (`npm test`)?
+    □ All existing tests pass (`pnpm run test:run`)?
     □ New tests added for new functionality?
     □ Edge cases covered?
     □ E2E test updated if user workflow changed?
@@ -1395,12 +1395,12 @@ const style = { color: 'blue' };
 
 ## 📚 Quick References
 
-### NPM Scripts
+### pnpm Scripts
 ```bash
-npm run dev          # Start dev server
-npm test             # Run Vitest unit/component tests
-npm run test:e2e     # Run Playwright E2E tests
-npm run test:coverage # Generate coverage report
+pnpm run dev          # Start dev server
+pnpm run test:run     # Run Vitest unit/component tests
+pnpm run test:e2e     # Run Playwright E2E tests
+pnpm run test:coverage # Generate coverage report
 ```
 
 ### External Resources

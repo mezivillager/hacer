@@ -1,3 +1,3 @@
-npx lint-staged
-npm run typecheck
+pnpm exec lint-staged
+pnpm run typecheck
 ./scripts/check-test-files.sh

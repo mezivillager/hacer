@@ -3,12 +3,14 @@ import type { SingleInputGateProps } from '../types'
 import { notLogic } from '../config/logic'
 import {
   NOT_COLORS,
-  NOT_GEOMETRY,
   NOT_TEXT_CONFIG,
+} from '../config/not-constants'
+import {
+  NOT_GEOMETRY,
   createNotPinConfigs,
   createNotWireStubs,
-  createNotAdditionalElements,
-} from '../config/not'
+} from '../config/not-helpers'
+import { NotBubble } from '../config/not'
 
 export function NotGate({
   id,
@@ -46,7 +48,7 @@ export function NotGate({
       wireStubPositions={wireStubPositions}
       bodyGeometryObject={NOT_GEOMETRY.geometry}
       bodyGeometryProps={{ position: NOT_GEOMETRY.position }}
-      additionalElements={createNotAdditionalElements()}
+      additionalElements={<NotBubble />}
       textLabel={NOT_TEXT_CONFIG.label}
       textPosition={NOT_TEXT_CONFIG.position}
       textFontSize={NOT_TEXT_CONFIG.fontSize}

@@ -3,12 +3,14 @@ import type { TwoInputGateProps } from '../types'
 import { nandLogic } from '../config/logic'
 import {
   NAND_COLORS,
-  NAND_GEOMETRY,
   NAND_TEXT_CONFIG,
+  NAND_GEOMETRY,
+} from '../config/nand-constants'
+import {
   createNandPinConfigs,
   createNandWireStubs,
-  createNandAdditionalElements,
-} from '../config/nand'
+} from '../config/nand-helpers'
+import { NandBubble } from '../config/nand'
 
 export function NandGate({
   id,
@@ -55,7 +57,7 @@ export function NandGate({
       pinConfigs={pinConfigs}
       wireStubPositions={wireStubPositions}
       bodyGeometry={<boxGeometry args={NAND_GEOMETRY.args} />}
-      additionalElements={createNandAdditionalElements()}
+      additionalElements={<NandBubble />}
       textLabel={NAND_TEXT_CONFIG.label}
       textPosition={NAND_TEXT_CONFIG.position}
       textFontSize={NAND_TEXT_CONFIG.fontSize}

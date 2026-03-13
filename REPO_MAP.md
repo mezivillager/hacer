@@ -432,7 +432,7 @@ import { Scene } from '@/components/canvas/Scene';
   - **UI tests** (`@ui`): Slow, use UI interactions - run manually or CI (twice weekly)
   - Store and UI tests come in pairs, sharing scenarios from `e2e/scenarios/`
   - **E2E Test Optimization**: Scene reuse, test reorganization ✅ (Phase 0.25.8)
-- **Mutation Testing**: Stryker for test quality verification (`npm run stryker`)
+- **Mutation Testing**: Stryker for test quality verification (`pnpm run stryker`)
 - **Test Setup**: `src/test/setup.ts` - Global test configuration
 - **TDD Templates**: `docs/testing/templates/` - Copy-paste templates for new tests
 - **Testing Standards**: `docs/testing/standards.md` - TDD workflow documentation

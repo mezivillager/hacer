@@ -3,12 +3,14 @@ import type { TwoInputGateProps } from '../types'
 import { xorLogic } from '../config/logic'
 import {
   XOR_COLORS,
-  XOR_GEOMETRY,
   XOR_TEXT_CONFIG,
+} from '../config/xor-constants'
+import {
+  XOR_GEOMETRY,
   createXorPinConfigs,
   createXorWireStubs,
-  createXorAdditionalElements,
-} from '../config/xor'
+} from '../config/xor-helpers'
+import { XorLine } from '../config/xor'
 
 export function XorGate({
   id,
@@ -56,7 +58,7 @@ export function XorGate({
       wireStubPositions={wireStubPositions}
       bodyGeometryObject={XOR_GEOMETRY.geometry}
       bodyGeometryProps={{ position: XOR_GEOMETRY.position }}
-      additionalElements={createXorAdditionalElements()}
+      additionalElements={<XorLine />}
       textLabel={XOR_TEXT_CONFIG.label}
       textPosition={XOR_TEXT_CONFIG.position}
       textFontSize={XOR_TEXT_CONFIG.fontSize}
