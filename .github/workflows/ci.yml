@@ -1,5 +1,9 @@
 name: CI
 
+# Runs on every push to main AND on every pull request targeting main.
+# All steps must pass before a PR can be merged (enforced via branch protection).
+# See AGENTS.md § "How GitHub Actions Enforce Quality" for a full explanation.
+
 on:
   push:
     branches: [main]
@@ -22,17 +26,23 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - name: Lint
+      # Catches: TypeScript type errors + ESLint violations.
+      - name: Lint (TypeScript + ESLint)
         run: pnpm run lint
 
-      - name: Unit tests
+      # Catches: failing Vitest unit and component tests.
+      - name: Unit tests (Vitest)
         run: pnpm run test:run
 
-      - name: Build
+      # Catches: compilation errors, broken imports, bad type exports.
+      - name: Build (tsc + Vite)
         run: pnpm run build
 
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps chromium
 
-      - name: E2E store tests
+      # Catches: store/state integration failures via headless browser.
+      # Tests tagged @store only — fast enough to run on every PR.
+      # Full @ui tests run on a schedule (see e2e-ui.yml).
+      - name: E2E store tests (Playwright @store)
         run: pnpm run test:e2e:store
