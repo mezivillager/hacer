@@ -52,10 +52,8 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          # @semantic-release/git uses explicit URL (not origin), so configure credential store
-          # so git push https://github.com/... uses RELEASE_TOKEN instead of GITHUB_TOKEN
-          git config --global credential.helper store
-          echo "https://x-access-token:${RELEASE_TOKEN}@github.com" > "$HOME/.git-credentials"
+          # Rewrite https://github.com/ to use RELEASE_TOKEN; @semantic-release/git uses explicit URL
+          git config --global url."https://x-access-token:${RELEASE_TOKEN}@github.com/".insteadOf "https://github.com/"
 
       - name: Release
         env:
