@@ -52,6 +52,8 @@ describe('wireHandlers', () => {
       placementPreviewPosition: null,
       selectedGateId: null,
       junctionPlacementMode: null,
+      junctionPreviewPosition: null,
+      junctionPreviewWireId: null,
       wires: [],
     })
   })
@@ -167,6 +169,8 @@ describe('wireHandlers', () => {
         placementPreviewPosition: null,
         selectedGateId: null,
         junctionPlacementMode: true,
+        junctionPreviewPosition: null,
+        junctionPreviewWireId: null,
         wires: [{ id: 'wire-1' }],
       })
 
@@ -185,6 +189,32 @@ describe('wireHandlers', () => {
       expect(mockSelectWire).not.toHaveBeenCalled()
     })
 
+    it('uses stored preview position and wireId when available in junction placement mode', () => {
+      mockPlaceJunctionOnWire.mockReturnValue({ id: 'junction-1' })
+      ;(useCircuitStore.getState as ReturnType<typeof vi.fn>).mockReturnValue({
+        placementMode: null,
+        wiringFrom: null,
+        placementPreviewPosition: null,
+        selectedGateId: null,
+        junctionPlacementMode: true,
+        junctionPreviewPosition: { x: 3, y: 0.2, z: 4 },
+        junctionPreviewWireId: 'wire-2',
+        wires: [{ id: 'wire-2' }],
+      })
+
+      const mockEvent = {
+        point: { x: 3.1, y: 0.2, z: 4.1 },
+      } as unknown as ThreeEvent<MouseEvent>
+
+      const result = handleWireClick(mockEvent)
+      expect(result).toBe('wire-2')
+      // Should use stored preview position and wireId, not the raw click point
+      expect(mockPlaceJunctionOnWire).toHaveBeenCalledWith({ x: 3, y: 0.2, z: 4 }, 'wire-2')
+      // Should not call findNearestWire since preview data was used directly
+      expect(mockFindNearestWire).not.toHaveBeenCalled()
+      expect(mockSelectWire).not.toHaveBeenCalled()
+    })
+
     it('handles error when junction placement fails', () => {
       mockFindNearestWire.mockReturnValue('wire-1')
       mockPlaceJunctionOnWire.mockImplementation(() => {
@@ -196,6 +226,8 @@ describe('wireHandlers', () => {
         placementPreviewPosition: null,
         selectedGateId: null,
         junctionPlacementMode: true,
+        junctionPreviewPosition: null,
+        junctionPreviewWireId: null,
         wires: [{ id: 'wire-1' }],
       })
 
@@ -219,6 +251,8 @@ describe('wireHandlers', () => {
         placementPreviewPosition: null,
         selectedGateId: null,
         junctionPlacementMode: null,
+        junctionPreviewPosition: null,
+        junctionPreviewWireId: null,
         wires: [{ id: 'wire-1' }],
       })
 
@@ -229,6 +263,54 @@ describe('wireHandlers', () => {
       const result = handleWireClick(mockEvent)
       expect(result).toBe('wire-1')
       expect(mockSelectWire).toHaveBeenCalledWith('wire-1')
+      expect(mockPlaceJunctionOnWire).not.toHaveBeenCalled()
+    })
+
+    it('handles error when junction placement fails with stored preview position', () => {
+      mockPlaceJunctionOnWire.mockImplementation(() => {
+        throw new Error('Could not calculate position on wire')
+      })
+      ;(useCircuitStore.getState as ReturnType<typeof vi.fn>).mockReturnValue({
+        placementMode: null,
+        wiringFrom: null,
+        placementPreviewPosition: null,
+        selectedGateId: null,
+        junctionPlacementMode: true,
+        junctionPreviewPosition: { x: 5, y: 0.2, z: 5 },
+        junctionPreviewWireId: 'wire-3',
+        wires: [{ id: 'wire-3' }],
+      })
+
+      const mockEvent = {
+        point: { x: 5.1, y: 0.2, z: 5.1 },
+      } as unknown as ThreeEvent<MouseEvent>
+
+      const result = handleWireClick(mockEvent)
+      expect(result).toBe('wire-3')
+      expect(mockPlaceJunctionOnWire).toHaveBeenCalledWith({ x: 5, y: 0.2, z: 5 }, 'wire-3')
+      expect(message.warning).toHaveBeenCalledWith('Could not calculate position on wire')
+      expect(mockFindNearestWire).not.toHaveBeenCalled()
+    })
+
+    it('returns null when in junction placement mode with no preview and no wire found', () => {
+      mockFindNearestWire.mockReturnValue(null)
+      ;(useCircuitStore.getState as ReturnType<typeof vi.fn>).mockReturnValue({
+        placementMode: null,
+        wiringFrom: null,
+        placementPreviewPosition: null,
+        selectedGateId: null,
+        junctionPlacementMode: true,
+        junctionPreviewPosition: null,
+        junctionPreviewWireId: null,
+        wires: [],
+      })
+
+      const mockEvent = {
+        point: { x: 10, y: 0.2, z: 10 },
+      } as unknown as ThreeEvent<MouseEvent>
+
+      const result = handleWireClick(mockEvent)
+      expect(result).toBe(null)
       expect(mockPlaceJunctionOnWire).not.toHaveBeenCalled()
     })
   })

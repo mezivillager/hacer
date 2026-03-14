@@ -12,6 +12,13 @@ import type {
   Wire,
 } from '../../types'
 import { calculatePositionOnWire, findSegmentContainingPosition, isAtSegmentCorner, findWireCorners } from '@/utils/wirePosition'
+import { findNearestWire } from '@/utils/wireHitTest'
+
+/**
+ * Maximum distance from cursor to wire corner to show preview (in world units).
+ * Shared with JunctionPreview for consistent behavior.
+ */
+const PREVIEW_THRESHOLD = 0.3
 
 type SetState = (
   fn: (state: CircuitStore) => void,
@@ -88,13 +95,68 @@ export const createJunctionPlacementActions = (
     set((state) => {
       state.junctionPlacementMode = null
       state.junctionPreviewPosition = null
+      state.junctionPreviewWireId = null
     }, false, 'cancelJunctionPlacement')
   },
 
   updateJunctionPreviewPosition: (position: Position | null) => {
-    set((state) => {
-      state.junctionPreviewPosition = position
-    }, false, 'updateJunctionPreviewPosition')
+    if (!position) {
+      set((state) => {
+        state.junctionPreviewPosition = null
+        state.junctionPreviewWireId = null
+      }, false, 'updateJunctionPreviewPosition')
+      return
+    }
+
+    // Compute snapped corner and wireId so the stored position
+    // reflects the actual preview location (not the raw cursor).
+    const currentState = get()
+    const nearestWireId = findNearestWire(position, currentState.wires, 0.5)
+
+    if (!nearestWireId) {
+      set((state) => {
+        state.junctionPreviewPosition = null
+        state.junctionPreviewWireId = null
+      }, false, 'updateJunctionPreviewPosition')
+      return
+    }
+
+    const wire = currentState.wires.find((w) => w.id === nearestWireId)
+    if (!wire) {
+      set((state) => {
+        state.junctionPreviewPosition = null
+        state.junctionPreviewWireId = null
+      }, false, 'updateJunctionPreviewPosition')
+      return
+    }
+
+    const corners = findWireCorners(wire)
+    let nearestCorner: Position | null = null
+    let minCornerDistance = Infinity
+
+    for (const corner of corners) {
+      const dx = position.x - corner.x
+      const dy = position.y - corner.y
+      const dz = position.z - corner.z
+      const distance = Math.sqrt(dx * dx + dy * dy + dz * dz)
+
+      if (distance < minCornerDistance) {
+        minCornerDistance = distance
+        nearestCorner = corner
+      }
+    }
+
+    if (nearestCorner && minCornerDistance <= PREVIEW_THRESHOLD) {
+      set((state) => {
+        state.junctionPreviewPosition = nearestCorner
+        state.junctionPreviewWireId = nearestWireId
+      }, false, 'updateJunctionPreviewPosition')
+    } else {
+      set((state) => {
+        state.junctionPreviewPosition = null
+        state.junctionPreviewWireId = null
+      }, false, 'updateJunctionPreviewPosition')
+    }
   },
 
   placeJunctionOnWire: (clickPoint: Position, wireId: string): JunctionNode => {
@@ -174,6 +236,7 @@ export const createJunctionPlacementActions = (
       }
       state.junctionPlacementMode = null
       state.junctionPreviewPosition = null
+      state.junctionPreviewWireId = null
       // Clear all selections
       state.selectedGateId = null
       state.selectedNodeId = null

@@ -175,6 +175,7 @@ export interface CircuitState {
   // Junction placement
   junctionPlacementMode: boolean | null
   junctionPreviewPosition: Position | null
+  junctionPreviewWireId: string | null
 }
 
 // Action types for the Zustand store
