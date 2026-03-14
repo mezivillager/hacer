@@ -2,273 +2,67 @@
 
 ## Project: HACER
 
-## ⚠️ IMPORTANT: Phase Tracking
+> **Start every session by reading [AGENTS.md](./AGENTS.md)** — it explains CI quality gates,
+> cognitive protocols (ReAct, CoT, ToT, Reflexion), and the mandatory development workflow.
+> Claude Code users: skills are in `.claude/skills/*/SKILL.md`.
 
-**Last Updated:** 2025-12-17  
+## Phase Tracking
+
+**Last Updated:** 2026-03-14  
 **Current Phase:** Phase 0.25 (Complete) → Phase 0.5 (In Progress)  
 **Next Phase:** Phase 0.5: Nand2Tetris Foundation
 
 ### Phase Status Indicators
-- ✅ **Current/Active** - Rules and patterns currently in use
-- 🔄 **Next Phase** - Rules for the immediate next phase (ready to implement)
-- ⏸️ **Future Phase** - Rules for later phases (not yet applicable)
+- **Current/Active** - Rules and patterns currently in use
+- **Next Phase** - Rules for the immediate next phase (ready to implement)
+- **Future Phase** - Rules for later phases (not yet applicable)
 
-### Maintenance Guidelines
-- **Update this file when:** Starting a new phase, architecture changes, or stack updates
-- **Check phase status in:** `docs/roadmap/implementation.md` (Implementation Checklist)
-- **Phase completion:** Mark completed phases in implementation.md, then update this file
-- **AI Agents:** Always check the "Current Phase" section first, then look for phase-specific rules
+### Maintenance
+- **Update when:** Starting a new phase, architecture changes, or stack updates
+- **Check status in:** `docs/roadmap/implementation.md`
+- **AI Agents:** Always check the "Current Phase" section first
 
 ## Stack
-- React 19 with React Compiler (NO manual memoization)
-- TypeScript 5.9 strict mode
-- Zustand for state (NOT Valtio)
-- React Three Fiber for 3D
-- Vitest + Playwright for testing
-- fast-check for property-based testing (Phase 3.5+)
-- Zod for schema validation (Phase 5+)
 
-## TDD Workflow (MANDATORY)
-
-📖 **Full guide:** `docs/testing/` (see README.md)
-
-**Red-Green-Refactor Cycle:**
-1. **RED** - Write failing test(s) that define expected behavior
-2. **GREEN** - Write minimal code to make tests pass
-3. **REFACTOR** - Clean up while keeping tests green
-
-**For every feature or bug fix:**
-1. STOP - Do NOT write implementation code first
-2. Write test file (`.test.ts`/`.test.tsx`) defining the behavior
-3. Run tests to confirm they FAIL (Red phase)
-4. Write minimal implementation to pass (Green phase)
-5. Refactor if needed while tests pass
-
-**AI Agent TDD Protocol:**
-- When asked to implement a feature, FIRST create the test file
-- Create test file BEFORE implementation file
-- Run tests to show failure before writing implementation
-- NEVER generate implementation without corresponding test
-- If implementation exists without test, write test FIRST then verify it fails with broken code
-
-**AI Agent Completion Checklist:**
-- [ ] All tests written and passing (RED → GREEN → REFACTOR)
-- [ ] **Linting passes: `pnpm run lint` exits with code 0** ⚠️ MANDATORY
-- [ ] No TypeScript errors (`pnpm run typecheck`)
-- [ ] Code follows project conventions (see Code Quality section)
-- [ ] JSDoc comments added for exported functions
-- [ ] No unused variables or imports
-
-**TDD by Layer:**
-- **Pure logic** (`simulation/`, `store/actions/`): Unit test → implement → property test
-- **Components** (`gates/`, `components/`): RTL test → implement → visual test
-- **Workflows**: E2E Playwright test → implement features
-
-**Templates:** See `docs/testing/templates/`
+React 19 + React Compiler (NO manual memoization), TypeScript 5.9 strict, Zustand (NOT Valtio), React Three Fiber, Vitest + Playwright. See [HACER_LLM_GUIDE.md](HACER_LLM_GUIDE.md) for patterns.
 
 ## Critical Rules
 
 ### State Management
-- Read state: `useCircuitStore(state => state.property)`
-- Mutate state: `circuitActions.methodName()`
-- NEVER mutate store directly
-- NEVER use Valtio patterns (proxy, useSnapshot)
-- Use branded types (GateId, WireId, PinId, CircuitId) from Phase 5+
+- Read: `useCircuitStore(state => state.property)`
+- Mutate: `circuitActions.methodName()`
+- NEVER mutate store directly; NEVER use Valtio (proxy, useSnapshot)
 
 ### React Compiler
-- NO manual useMemo, useCallback, React.memo
-- React Compiler handles memoization automatically
-- Don't mutate during render
-- Keep renders pure
+- NO useMemo, useCallback, React.memo
+- Don't mutate during render; keep renders pure
 
-### Architecture Layers
+## TDD (MANDATORY)
 
-**✅ Current (Phase 0-4):**
-- **UI Layer** (`src/components/`): React UI components
-  - Canvas (3D), UI (Ant Design), gates, theme
-- **Store Layer** (`src/store/`): Zustand state management
-  - Actions organized by domain (gateActions, wireActions, etc.)
-- **Simulation Layer** (`src/simulation/`): Pure gate logic (migrates to core/ in Phase 5)
+Red → Green → Refactor. Test BEFORE implementation. See `.claude/skills/tdd/SKILL.md` and `docs/testing/`.
 
-**🔄 Next (Phase 0.5):**
-- **HDL Support** (`src/core/hdl/`): HDL parser and generator
-- **Testing Infrastructure** (`src/core/testing/nand2tetris/`): Test script execution
+## AI Agent Completion Checklist
 
-**⏸️ Future (Phase 5+):**
-- **Core Layer** (`src/core/`): Pure logic, ZERO React/browser dependencies
-  - Gates, simulation, HDL, serialization, events, types
-  - Use branded types for all IDs (GateId, WireId, etc.)
-  - Zod schemas for all data validation
-- **API Layer** (`src/api/`): Public programmatic interface (Phase 5+)
-  - All human actions must have programmatic equivalents
-  - Stable, versioned interface for AI agents
-- **Plugin Layer** (`src/plugins/`): Extensible renderers and analyzers (Phase 6+)
-  - 3D renderer, data view, analyzers, HDL, test engine
-  - Security sandboxing required
+Before marking any task complete:
+- [ ] Invoke `verification-before-completion` skill — run verification commands, confirm output before any completion claim
+- [ ] `pnpm run lint` exits 0
+- [ ] `pnpm run test:run` all pass
+- [ ] `pnpm run test:e2e:store` all pass
+- [ ] `pnpm run build` succeeds
 
-### File Organization
-- One component per file (max 200 lines)
-- Co-locate tests with implementation
-- Use barrel exports (index.ts)
-- Separate pure logic from UI (core/ vs components/)
+Full checklist: `.claude/skills/code-review/SKILL.md`
 
-### Testing Standards
+## Where to Look
 
-📖 **Full guide:** `docs/testing/` (see README.md)
+| Need | Where |
+|------|-------|
+| Phase rules, architecture, adding gates | `docs/roadmap/`, `REPO_MAP.md` |
+| TDD, planning, debugging, review | `.claude/skills/` |
+| Workflow, subagents, verification | `docs/llm-workflow.md` |
+| Patterns, examples | `HACER_LLM_GUIDE.md` |
+| TypeScript, code quality | `docs/typescript-guidelines.md` |
 
-**Core Principles:**
-- Each test has ONE reason to fail
-- Test behavior, not implementation
-- Descriptive test names (readable as sentences)
-- No logic in tests (no if/loops)
-- Include edge cases (null, empty, boundaries)
-- Use mutation testing to verify test quality
+## AI Agent Notes
 
-**✅ Current (Phase 0):**
-- **Unit tests**: All `src/simulation/` functions (90%+ coverage)
-- **E2E tests**: Playwright with paired Store/UI tests (see below)
-- **Mutation testing**: `pnpm run stryker` to verify test quality
-
-**E2E Test Strategy (IMPORTANT for AI Agents):**
-- **Store tests (`@store`)**: FAST, use direct store actions, no scene waits
-  - Run: `pnpm run test:e2e:store`
-  - Preferred for TDD and AI agent workflows
-  - Always run before committing
-- **UI tests (`@ui`)**: SLOW, use UI interactions, wait for scene ready
-  - Run: `pnpm run test:e2e:ui` (manual/CI only)
-  - Run on CI scheduled (twice weekly), not on every commit
-- **Pairing rule**: Every feature needs BOTH store AND ui spec files
-  - Share scenario files in `e2e/scenarios/`
-  - Example: `feature.store.spec.ts` + `feature.ui.spec.ts`
-
-**🔄 Next (Phase 0.5):**
-- **Curriculum tests**: Nand2tetris test script execution (.tst/.cmp)
-
-**⏸️ Future:**
-- **Property-based tests**: Gate logic invariants with fast-check (Phase 3.5+)
-- **Integration tests**: Cross-layer functionality (Phase 8+)
-- **Unit tests**: All `src/core/` functions (90%+ coverage) - after Phase 5 migration
-
-**AI Test Generation Checklist:**
-- [ ] Descriptive name explaining behavior
-- [ ] Meaningful assertions (not just `toBeDefined()`)
-- [ ] Edge cases covered
-- [ ] Error cases tested
-- [ ] No implementation details tested
-- [ ] Mocks are minimal and at boundaries
-
-### Adding a New Gate
-
-**✅ Current (Phase 0-4):**
-1. Add gate logic to `src/simulation/gateLogic.ts`
-2. Add unit tests to `src/simulation/gateLogic.test.ts`
-3. Create component in `src/gates/components/`
-4. Create icon in `src/gates/icons/`
-5. Export from barrel files
-
-**⏸️ Future (Phase 5+):**
-1. Add to GateType in `src/core/gates/types.ts`
-2. Add definition in `src/core/gates/registry.ts`
-3. Create renderer in `src/components/gates/` (or plugin)
-4. Add tests (truth table + visual + property-based)
-
-### HDL & File Formats
-
-**🔄 Next (Phase 0.5):**
-- Support .hdl, .tst, .cmp file formats
-- HDL parser in `src/core/hdl/`
-- Test engine in `src/core/testing/nand2tetris/`
-- Use Zod schemas for file format validation
-
-**⏸️ Future:**
-- Additional formats: .hack, .vm, .jack (Phase 10+)
-
-### Software Stack
-
-**⏸️ Future (Phase 10+):**
-- Assembler: `src/core/software/assembler/`
-- VM: `src/core/software/vm/`
-- Compiler: `src/core/software/compiler/`
-- All software stack code in `src/core/` (pure logic)
-
-### Plugin Development
-
-**⏸️ Future (Phase 6+):**
-- Plugins implement interfaces from `src/plugins/types.ts`
-- Security sandboxing required
-- Register in plugin registry
-- Document in plugin API docs
-
-### AI Agent Integration
-
-**⏸️ Future (Phase 7+):**
-- All actions must be accessible via `src/api/`
-- Create/update `.ai/context.yaml` and `llms.txt` files
-- Ensure AI parity: human actions = programmatic actions
-- Document in TypeDoc with AI-callable markers
-
-### Backend & Monorepo
-
-**⏸️ Future (Phase 12+):**
-- Monorepo structure with Turborepo
-- Backend: NestJS + GraphQL + PostgreSQL
-- Shared packages for core logic
-- Frontend and API as separate apps
-
-### Performance Guidelines
-- Simulation: <16ms for 1000 gates, 60fps target
-- Memory: <100MB for 10K gate circuits
-- Use Web Workers for simulation (Phase 9+)
-- Incremental evaluation for large circuits
-
-### Code Quality
-
-📖 **TypeScript guide:** `docs/typescript-guidelines.md`
-
-- TypeScript strict mode (no `any`)
-- ESLint with React Compiler plugin
-- 90%+ test coverage for new code
-- Property-based tests for invariants
-- Performance budgets enforced
-
-**Type Assertion Rules:**
-- NEVER use `as unknown as Type` (double assertions)
-- Use type guards instead of assertions
-- `as const` is fine for literal types
-- Create type-safe helpers for test mocks
-
-**Linting Requirements (MANDATORY for AI Agents):**
-- **ALWAYS run `pnpm run lint` before considering code complete**
-- **NEVER mark code as complete if linting errors exist**
-- Fix all linting errors (errors and warnings) before completion
-- Common issues to check:
-  - Unsafe return types from `page.evaluate()` in E2E tests (add explicit return type annotations)
-  - Unused variables (prefix with `_` or remove)
-  - Unused imports (remove)
-  - Type safety issues (add proper type assertions)
-- Linting must pass: `pnpm run lint` should exit with code 0
-- If linting fails, fix errors immediately - do not proceed with other tasks
-
-### Documentation Standards
-- All exported functions MUST have JSDoc comments
-- Include `@param` for each parameter with description
-- Include `@returns` describing the return value
-- Add `@example` for non-trivial functions
-- Keep descriptions concise but complete
-
-### Workflow Orchestration (Non-trivial Tasks)
-- Plan first: Enter plan mode for 3+ steps or architectural decisions; re-plan if task deviates
-- Use subagents: Offload research and parallel analysis; one focused task per subagent
-- Update `tasks/lessons.md` after any correction; review lessons at session start
-- Verify before done: Run tests, check logs; never mark complete without proof
-- Fix bugs autonomously: Use logs, errors, failing tests; fix CI without being asked.
-
-**Full:** [docs/llm-workflow.md](docs/llm-workflow.md)
-
-### AI Agent Notes
-- Use shell commands (cat, echo) to edit dotfiles (.cursorrules, .env, etc.) - file tools often fail on them
-- **Update REPO_MAP.md** when doing significant refactoring:
-  - Moving/renaming directories or files
-  - Creating new directories
-  - Changing architecture or file organization
-  - Completing phase milestones
+- Use shell commands (cat, echo) to edit dotfiles — file tools often fail on them
+- Update `REPO_MAP.md` when moving/renaming directories or completing phase milestones

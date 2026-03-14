@@ -1,0 +1,11 @@
+# HACER — Document index for AI assistants
+
+Read these files in order for context:
+
+.claude/CONSTITUTION.md
+AGENTS.md
+.cursorrules
+docs/llm-workflow.md
+HACER_LLM_GUIDE.md
+REPO_MAP.md
+.claude/CLAUDE.md

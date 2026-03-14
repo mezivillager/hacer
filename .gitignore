@@ -38,3 +38,9 @@ reports
 
 # TypeScript build info
 *.tsbuildinfo
+
+# Superpowers / LLM workflow
+.superpowers
+.worktrees
+worktrees
+.tmp_superpowers
