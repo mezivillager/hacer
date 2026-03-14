@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.2](https://github.com/mezivillager/hacer/compare/v1.0.1...v1.0.2) (2026-03-14)
+
+### Bug Fixes
+
+* use url.insteadOf to embed RELEASE_TOKEN in push URL ([e88debf](https://github.com/mezivillager/hacer/commit/e88debfe9416828d5e7f72f6f4af583ce555d2d1))
+
+### Continuous Integration
+
+* **release:** use PAT for checkout to bypass branch protection rules ([b530eea](https://github.com/mezivillager/hacer/commit/b530eea616617232820460a1a9ee21dcbda60210))
+
 ## [1.0.1](https://github.com/mezivillager/hacer/compare/v1.0.0...v1.0.1) (2026-03-14)
 
 ### Bug Fixes
