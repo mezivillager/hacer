@@ -103,19 +103,16 @@ After the first release, test different commit types:
 
 If the release doesn't work as expected:
 
-1. **Check Workflow Permissions**:
-   - Go to Repository Settings → Actions → General
-   - Ensure "Read and write permissions" is enabled for GITHUB_TOKEN
+1. **Check RELEASE_TOKEN** (required for branch protection):
+   - Create a PAT with `repo` scope
+   - Add as repository secret `RELEASE_TOKEN`
+   - See [semantic-release.md](./semantic-release.md#release_token-required-for-branch-protection) for setup
 
-2. **Check Branch Protection**:
-   - Semantic-release needs to push commits back to main
-   - Ensure the workflow has permission to bypass branch protection
-
-3. **Check Logs**:
+2. **Check Logs**:
    - Review the GitHub Actions logs for error messages
    - Look for semantic-release debug output
 
-4. **Manual Trigger**:
+3. **Manual Trigger**:
    - You can manually trigger the workflow from the Actions tab
    - Use "Run workflow" button on the Release workflow page
 

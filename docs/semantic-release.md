@@ -62,6 +62,21 @@ Validates commit messages to ensure they follow the conventional commits format.
 
 GitHub Actions workflow that runs the release process on pushes to `main`, `beta`, or `alpha` branches.
 
+### RELEASE_TOKEN (required for branch protection)
+
+If `main` has branch protection (e.g. "Require a pull request before merging"), the default `GITHUB_TOKEN` cannot push. Use a Personal Access Token (PAT) stored as `RELEASE_TOKEN`:
+
+1. **Create a PAT**: GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)
+   - **Note**: `hacer-release` (or similar)
+   - **Expiration**: 90 days or no expiration
+   - **Scopes**: `repo` (full control of private repositories)
+
+2. **Add repository secret**: Repository → Settings → Secrets and variables → Actions → New repository secret
+   - **Name**: `RELEASE_TOKEN`
+   - **Value**: paste the PAT
+
+3. **Rotate periodically**: If the PAT expires, create a new one and update the secret.
+
 ## Commit Message Format
 
 ### Basic Format
@@ -245,7 +260,7 @@ Check the GitHub Actions logs:
 4. Common issues:
    - Tests failed
    - Build failed
-   - GITHUB_TOKEN permissions issue
+   - **Protected branch**: `GH006: Protected branch update failed` — add `RELEASE_TOKEN` (see [RELEASE_TOKEN setup](#release_token-required-for-branch-protection) in Configuration Files above)
 
 ## Resources
 
