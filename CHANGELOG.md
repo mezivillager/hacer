@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1](https://github.com/mezivillager/hacer/compare/v1.0.0...v1.0.1) (2026-03-14)
+
+### Bug Fixes
+
+* avoid exposing RELEASE_TOKEN during pnpm install ([ebf6d28](https://github.com/mezivillager/hacer/commit/ebf6d28e07aca385ff3dc84e2fb321b55fbdfdcf))
+* use credential store so semantic-release push uses RELEASE_TOKEN ([8d1d27d](https://github.com/mezivillager/hacer/commit/8d1d27d051a80ce04bf2058e60161c191e4602fb))
+* use RELEASE_TOKEN for semantic-release with branch protection ([c7ad06e](https://github.com/mezivillager/hacer/commit/c7ad06e59cc05f89e71bb65dd54e1540f57b67bd))
+
 ## 1.0.0 (2026-03-14)
 
 ### Features
