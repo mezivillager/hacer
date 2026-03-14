@@ -64,7 +64,7 @@ GitHub Actions workflow that runs the release process on pushes to `main`, `beta
 
 ### RELEASE_TOKEN (required for branch protection)
 
-If `main` has branch protection (e.g. "Require a pull request before merging"), the default `GITHUB_TOKEN` cannot push. Use a Personal Access Token (PAT) stored as `RELEASE_TOKEN`:
+If `main` has branch protection (e.g. "Require a pull request before merging"), the default `GITHUB_TOKEN` cannot push. Use a Personal Access Token (PAT) stored as `RELEASE_TOKEN`. The workflow uses `GITHUB_TOKEN` for checkout and install, then configures the git remote with `RELEASE_TOKEN` only before the release step—this avoids exposing the long-lived PAT to dependency install scripts.
 
 1. **Create a PAT**: GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)
    - **Note**: `hacer-release` (or similar)
