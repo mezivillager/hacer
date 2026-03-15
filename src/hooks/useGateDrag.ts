@@ -173,11 +173,17 @@ export function useGateDrag(gateId: string) {
     const otherGates = state.gates.filter((g) => g.id !== gateId)
     const existingNodes = [...state.inputNodes, ...state.outputNodes]
 
+    const wiresExcludingDragged = state.wires.filter((w) => {
+      const isFrom = w.from.entityId === gateId
+      const isTo = w.to.entityId === gateId
+      return !isFrom && !isTo
+    })
+
     if (canPlaceGateAt(
       gridPos,
       otherGates,
       gateId,
-      state.wires.length > 0 ? state.wires : undefined,
+      wiresExcludingDragged.length > 0 ? wiresExcludingDragged : undefined,
       circuitActions.getPinWorldPosition,
       circuitActions.getPinOrientation,
       existingNodes
