@@ -103,6 +103,60 @@ describe('junctionPlacementActions', () => {
     })
   })
 
+  describe('updateJunctionPreviewPosition', () => {
+    it('clears preview position and wire id when called with null', () => {
+      useCircuitStore.setState({
+        junctionPreviewPosition: { x: 1, y: WIRE_HEIGHT, z: 1 },
+        junctionPreviewWireId: 'wire-1',
+      })
+
+      getState().updateJunctionPreviewPosition(null)
+
+      expect(getState().junctionPreviewPosition).toBe(null)
+      expect(getState().junctionPreviewWireId).toBe(null)
+    })
+
+    it('snaps to nearest corner and stores both position and wire id', () => {
+      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('NAND', { x: 2 * SECTION_SIZE, y: 0, z: -SECTION_SIZE })
+
+      const wire = getState().addWire(
+        { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
+        { type: 'gate', entityId: gate2.id, pinId: gate2.inputs[0].id },
+        createTestWireSegments()
+      )
+
+      getState().updateJunctionPreviewPosition({
+        x: CORNER_POSITION.x + 0.1,
+        y: CORNER_POSITION.y,
+        z: CORNER_POSITION.z - 0.1,
+      })
+
+      expect(getState().junctionPreviewPosition).toEqual(CORNER_POSITION)
+      expect(getState().junctionPreviewWireId).toBe(wire.id)
+    })
+
+    it('clears preview fields when not near any corner', () => {
+      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('NAND', { x: 2 * SECTION_SIZE, y: 0, z: -SECTION_SIZE })
+
+      getState().addWire(
+        { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
+        { type: 'gate', entityId: gate2.id, pinId: gate2.inputs[0].id },
+        createTestWireSegments()
+      )
+
+      getState().updateJunctionPreviewPosition({
+        x: 1.5 * SECTION_SIZE,
+        y: WIRE_HEIGHT,
+        z: -SECTION_SIZE,
+      })
+
+      expect(getState().junctionPreviewPosition).toBe(null)
+      expect(getState().junctionPreviewWireId).toBe(null)
+    })
+  })
+
   describe('placeJunctionOnWire', () => {
     it('creates junction on wire at corner position', () => {
       const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
