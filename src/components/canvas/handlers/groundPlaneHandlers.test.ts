@@ -415,5 +415,28 @@ describe('groundPlaneHandlers', () => {
       expect(circuitActions.setDragActive).not.toHaveBeenCalled()
       expect(circuitActions.updateGatePosition).not.toHaveBeenCalled()
     })
+
+    it('does not handle node drags (handled by useNodeDrag)', () => {
+      vi.mocked(useCircuitStore.getState).mockReturnValue(
+        createMockStore({
+          isDragActive: true,
+          placementPreviewPosition: { x: 2, y: 0.2, z: 3 },
+          placementMode: null,
+          selectedGateId: null, // no gate selected
+          selectedNodeId: 'node-1', // node selected instead
+          selectedNodeType: 'input',
+          nodePlacementMode: null,
+          gates: [],
+        })
+      )
+
+      handlePointerUp()
+
+      // Node drag completion is handled by useNodeDrag, not groundPlaneHandlers
+      expect(circuitActions.setDragActive).not.toHaveBeenCalled()
+      expect(circuitActions.updateGatePosition).not.toHaveBeenCalled()
+      expect(circuitActions.updatePlacementPreviewPosition).not.toHaveBeenCalled()
+    })
   })
 })
+

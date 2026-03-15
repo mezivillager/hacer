@@ -5,6 +5,7 @@ import { useCircuitStore } from '../../circuitStore'
 import { calculateWirePathFromConnection } from '@/utils/wiringScheme'
 import { collectWireSegments, combineAdjacentSegments } from '@/utils/wiringScheme/segments'
 import { resolveCrossings, removeOrphanedArcs } from '@/utils/wiringScheme/crossing'
+import { preserveJunctions } from '../junctionUtils'
 
 // Helper to create a gate instance - exported for use in atomic placement actions
 export function createGateInstance(type: GateType, position: Position): GateInstance {
@@ -126,19 +127,22 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
   },
 
   selectGate: (gateId: string | null) => {
-    // If the gate is already selected, treat it as a toggle off request
+    // Check if selection actually changed before mutating (avoids unnecessary array reference changes)
     const currentState = useCircuitStore.getState()
-    if (currentState.selectedGateId === gateId && gateId !== null) {
-      gateId = null
+    if (currentState.selectedGateId === gateId) {
+      // Selection hasn't changed - check if gates are already in correct state
+      const allCorrect = currentState.gates.every((g) => g.selected === (g.id === gateId))
+      if (allCorrect) {
+        // Nothing to update - early return to avoid Immer mutation
+        return
+      }
     }
 
     set((state) => {
-      // Update selection state
       state.gates.forEach((g) => {
         g.selected = g.id === gateId
       })
       state.selectedGateId = gateId
-      // Deselect node and wire when selecting gate (mutually exclusive)
       state.selectedNodeId = null
       state.selectedNodeType = null
       state.selectedWireId = null
@@ -149,12 +153,7 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
     // Check if selection actually changed before mutating (avoids unnecessary array reference changes)
     const currentState = useCircuitStore.getState()
     if (currentState.selectedWireId === wireId) {
-      // Toggle off if clicking the same wire
-      if (wireId !== null) {
-        set((state) => {
-          state.selectedWireId = null
-        }, false, 'deselectWire')
-      }
+      // Already selected — do nothing (consistent with selectGate/selectNode)
       return
     }
 
@@ -275,11 +274,17 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
         const toGateId = wire.to.entityId
         const toPinId = wire.to.pinId!
 
-        // Collect existing segments from other wires (for overlap avoidance in pathfinding)
-        // Exclude the wire being recalculated
-        // Note: This includes arc segments, but segmentsOverlap correctly excludes them
-        // (arc segments are not on section lines, so they don't cause overlap)
-        const allOtherWireSegments = collectWireSegments(freshWires, (w) => w.id !== wire.id)
+        // Exclude the wire being recalculated AND its junction branch wires (they share
+        // segments with the trunk and will be rebuilt after junction relocation).
+        const branchesToExclude = new Set<string>()
+        for (const junction of state.junctions) {
+          if (junction.wireIds[0] === wire.id) {
+            for (const branchId of junction.wireIds.slice(1)) {
+              branchesToExclude.add(branchId)
+            }
+          }
+        }
+        const allOtherWireSegments = collectWireSegments(freshWires, (w) => w.id !== wire.id && !branchesToExclude.has(w.id))
 
         // Use helper function to calculate path from wire connection info
         const newPath = calculateWirePathFromConnection(
@@ -312,9 +317,7 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
 
         // Resolve crossings: recalculated wire hops over all other existing wires
         // Get all other wires (excluding the wire being recalculated)
-        // IMPORTANT: Use freshWires which includes any wires updated in previous loop iterations
-        // This ensures crossing detection sees the latest state of all wires
-        const allOtherWires = freshWires.filter((w) => w.id !== wire.id)
+        const allOtherWires = freshWires.filter((w) => w.id !== wire.id && !branchesToExclude.has(w.id))
         let resolvedSegments = newPath.segments
         let crossedWireIds: string[] = []
 
@@ -387,5 +390,9 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
         updateWireSegments(wire.id, updatedSegments, remainingCrossedIds)
       }
     }
+
+    // Preserve junctions on recalculated wires — relocate + rebuild branches
+    const recalculatedWireIdSet = new Set(connectedWireIds)
+    preserveJunctions(recalculatedWireIdSet, null, set, get, 'recalculateWiresForGate')
   },
 })

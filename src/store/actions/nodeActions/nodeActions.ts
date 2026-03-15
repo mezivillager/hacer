@@ -17,6 +17,7 @@ import { calculateWirePath } from '@/utils/wiringScheme/core'
 import { collectWireSegments, combineAdjacentSegments } from '@/utils/wiringScheme/segments'
 import { resolveCrossings } from '@/utils/wiringScheme/crossing'
 import type { DestinationType } from '@/utils/wiringScheme/types'
+import { preserveJunctions } from '../junctionUtils'
 
 type SetState = (
   fn: (state: CircuitStore) => void,
@@ -129,7 +130,7 @@ export const createNodeActions = (set: SetState, get: GetState): NodeActions => 
         node.position = position
       }
     }, false, 'updateInputNodePosition')
-    recalculateWiresForNode(get, nodeId, 'input')
+    recalculateWiresForNode(set, get, nodeId, 'input')
   },
 
   updateOutputNodePosition: (nodeId: string, position: Position): void => {
@@ -139,7 +140,7 @@ export const createNodeActions = (set: SetState, get: GetState): NodeActions => 
         node.position = position
       }
     }, false, 'updateOutputNodePosition')
-    recalculateWiresForNode(get, nodeId, 'output')
+    recalculateWiresForNode(set, get, nodeId, 'output')
   },
 })
 
@@ -151,7 +152,7 @@ export const createNodeActions = (set: SetState, get: GetState): NodeActions => 
  * @param nodeId - The ID of the node that moved
  * @param nodeType - 'input' or 'output'
  */
-function recalculateWiresForNode(get: GetState, nodeId: string, nodeType: 'input' | 'output'): void {
+function recalculateWiresForNode(set: SetState, get: GetState, nodeId: string, nodeType: 'input' | 'output'): void {
   const state = get()
   const { wires, gates } = state
   const getPinWorldPosition = state.getPinWorldPosition
@@ -167,9 +168,29 @@ function recalculateWiresForNode(get: GetState, nodeId: string, nodeType: 'input
 
   if (connectedWires.length === 0) return
 
+  // Branch wires created from junctions are stored as full source->destination wires
+  // with shared trunk segments. Recalculating them directly as normal node wires breaks
+  // junction topology, so they are rebuilt in a dedicated junction-aware pass below.
+  const branchWireToJunctionId = new Map<string, string>()
+  const trunkToBranches = new Map<string, Set<string>>()
+  for (const junction of state.junctions) {
+    const trunkId = junction.wireIds[0]
+    if (trunkId) {
+      const branches = new Set(junction.wireIds.slice(1))
+      trunkToBranches.set(trunkId, branches)
+    }
+    for (const branchWireId of junction.wireIds.slice(1)) {
+      branchWireToJunctionId.set(branchWireId, junction.id)
+    }
+  }
+
   const pinOffset = calculateNodePinPosition(nodeType)
 
   for (const wire of connectedWires) {
+    if (branchWireToJunctionId.has(wire.id)) {
+      continue
+    }
+
     try {
       const freshState = get()
       const freshWires = freshState.wires
@@ -198,7 +219,7 @@ function recalculateWiresForNode(get: GetState, nodeId: string, nodeType: 'input
           const junction = freshState.junctions.find(j => j.id === wire.to.entityId)
           if (junction) {
             otherPinPos = { ...junction.position, y: 0.2 }
-            otherOrientation = { x: -1, y: 0, z: 0 } // junction as destination, wire arrives from left
+            otherOrientation = { x: -1, y: 0, z: 0 }
           }
         }
       } else {
@@ -209,14 +230,15 @@ function recalculateWiresForNode(get: GetState, nodeId: string, nodeType: 'input
           const junction = freshState.junctions.find(j => j.id === wire.from.entityId)
           if (junction) {
             otherPinPos = { ...junction.position, y: 0.2 }
-            otherOrientation = { x: 1, y: 0, z: 0 } // junction as source, wire leaves to right
+            otherOrientation = { x: 1, y: 0, z: 0 }
           }
         }
       }
 
       if (!otherPinPos || !otherOrientation) continue
 
-      const existingSegments = collectWireSegments(freshWires, (w) => w.id !== wire.id)
+      const branchesToExclude = trunkToBranches.get(wire.id) ?? new Set<string>()
+      const existingSegments = collectWireSegments(freshWires, (w) => w.id !== wire.id && !branchesToExclude.has(w.id))
 
       let startPin: Position
       let destination: DestinationType
@@ -234,7 +256,7 @@ function recalculateWiresForNode(get: GetState, nodeId: string, nodeType: 'input
 
       const newPath = calculateWirePath(startPin, destination, startOri, gates, { existingSegments })
 
-      const allOtherWires = freshWires.filter((w) => w.id !== wire.id)
+      const allOtherWires = freshWires.filter((w) => w.id !== wire.id && !branchesToExclude.has(w.id))
       let resolvedSegments = newPath.segments
       let crossedWireIds: string[] = []
 
@@ -252,4 +274,21 @@ function recalculateWiresForNode(get: GetState, nodeId: string, nodeType: 'input
       console.error(`[recalculateWiresForNode] Failed to recalculate wire ${wire.id}:`, error)
     }
   }
+
+  // Track which wires were actually recalculated (excludes skipped branch wires)
+  const recalculatedTrunkIds = new Set(
+    connectedWires.filter((w) => !branchWireToJunctionId.has(w.id)).map((w) => w.id)
+  )
+
+  // Collect junction IDs affected by branch wires whose destination moved
+  const skippedBranchJunctionIds = new Set<string>()
+  for (const wire of connectedWires) {
+    const junctionId = branchWireToJunctionId.get(wire.id)
+    if (junctionId) {
+      skippedBranchJunctionIds.add(junctionId)
+    }
+  }
+
+  // Preserve junctions — relocate + rebuild branches for affected junctions
+  preserveJunctions(recalculatedTrunkIds, skippedBranchJunctionIds, set, get, 'recalculateWiresForNode')
 }

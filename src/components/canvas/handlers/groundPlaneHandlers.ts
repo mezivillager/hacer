@@ -140,7 +140,6 @@ export function handleClick(e: ThreeEvent<MouseEvent>): void {
 export function handlePointerUp(): void {
   const state = useCircuitStore.getState()
   const isDraggingGate = state.isDragActive && state.placementPreviewPosition !== null && state.placementMode === null && state.selectedGateId !== null
-  const isDraggingNode = state.isDragActive && state.placementPreviewPosition !== null && state.placementMode === null && state.selectedNodeId !== null && state.nodePlacementMode === null
 
   if (isDraggingGate) {
     setDragActive(false)
@@ -154,11 +153,15 @@ export function handlePointerUp(): void {
       const selectedGateId = state.selectedGateId
       const existingNodes = [...state.inputNodes, ...state.outputNodes]
 
+      const wiresExcludingGate = state.wires.filter((w) => {
+        return w.from.entityId !== selectedGateId && w.to.entityId !== selectedGateId
+      })
+
       if (canPlaceGateAt(
         gridPos,
         otherGates,
         selectedGateId,
-        state.wires.length > 0 ? state.wires : undefined,
+        wiresExcludingGate.length > 0 ? wiresExcludingGate : undefined,
         circuitActions.getPinWorldPosition,
         circuitActions.getPinOrientation,
         existingNodes
@@ -170,10 +173,7 @@ export function handlePointerUp(): void {
     } else {
       updatePlacementPreviewPosition(null)
     }
-  } else if (isDraggingNode) {
-    // Node drag COMPLETION is handled in useNodeDrag.
-    // We only need to ensure the preview is cleared if useNodeDrag didn't handle it,
-    // but clearing it here can cause a race condition (preview cleared before store update).
-    // So we let useNodeDrag handle its own cleanup.
   }
+  // Note: Node drag completion is handled entirely by useNodeDrag's onPointerUp handler.
+  // Having it here too would cause double position updates and wire recalculations.
 }
