@@ -15,13 +15,12 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
-    "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
-      "@components/*": ["src/components/*"],
-      "@gates/*": ["src/gates/*"],
-      "@store/*": ["src/store/*"],
-      "@simulation/*": ["src/simulation/*"]
+      "@/*": ["./src/*"],
+      "@components/*": ["./src/components/*"],
+      "@gates/*": ["./src/gates/*"],
+      "@store/*": ["./src/store/*"],
+      "@simulation/*": ["./src/simulation/*"]
     }
   }
 }
