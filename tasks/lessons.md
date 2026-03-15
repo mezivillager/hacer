@@ -14,6 +14,12 @@ See [lessons.md.template](./lessons.md.template) for the entry format.
 - Mistake: Reviewed stale PR discussion instead of first confirming the exact target PR number/link.
 - Rule: When user asks about PR comments, always fetch and analyze the explicitly provided PR URL/number first, then summarize only that PR's unresolved comments.
 - Prevention checklist:
-	- Parse PR URL/number from the latest user message.
-	- Fetch that PR directly before any historical PR references.
-	- Confirm source PR number in the first summary line.
+  - Parse PR URL/number from the latest user message.
+  - Fetch that PR directly before any historical PR references.
+  - Confirm source PR number in the first summary line.
+
+### [2026-03-15] - Prefer migration over deprecation suppression
+
+**What happened**: I initially silenced a TypeScript deprecation (`ignoreDeprecations`) instead of implementing the underlying config migration.
+**Rule**: Do not use deprecation suppression as the primary fix when a concrete migration path is available; implement the real migration first, then validate.
+**Context**: TypeScript config in [tsconfig.base.json](../tsconfig.base.json)
