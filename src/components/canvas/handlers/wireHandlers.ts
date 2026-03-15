@@ -36,26 +36,48 @@ export function handleWireClick(e: ThreeEvent<MouseEvent>): string | null {
     y: e.point.y,
     z: e.point.z,
   }
-  const targetWireId = findNearestWire(clickPoint, state.wires, 0.5)
 
+  // During junction placement, use the stored preview wireId and snapped corner position.
+  // These are computed by updateJunctionPreviewPosition when the preview is visible,
+  // so a non-null value means the preview was showing and the position is a valid corner.
+  if (isPlacingJunction) {
+    const previewPosition = state.junctionPreviewPosition
+    const previewWireId = state.junctionPreviewWireId
+    const previewWireExists = previewWireId !== null && state.wires.some((w) => w.id === previewWireId)
+
+    if (previewPosition && previewWireId && previewWireExists) {
+      try {
+        circuitActions.placeJunctionOnWire(previewPosition, previewWireId)
+        return previewWireId
+      } catch (error) {
+        const errorMsg = error instanceof Error ? error.message : String(error)
+        message.warning(errorMsg)
+        return null
+      }
+    }
+
+    // No valid preview visible — try to detect wire at click point as fallback
+    const targetWireId = findNearestWire(clickPoint, state.wires, 0.5)
+    if (targetWireId) {
+      try {
+        circuitActions.placeJunctionOnWire(clickPoint, targetWireId)
+        return targetWireId
+      } catch (error) {
+        const errorMsg = error instanceof Error ? error.message : String(error)
+        message.warning(errorMsg)
+        return targetWireId
+      }
+    }
+
+    return null
+  }
+
+  // Normal wire selection
+  const targetWireId = findNearestWire(clickPoint, state.wires, 0.5)
   if (!targetWireId) {
     return null
   }
 
-  // If in junction placement mode, place junction on wire instead of selecting
-  if (isPlacingJunction) {
-    try {
-      circuitActions.placeJunctionOnWire(clickPoint, targetWireId)
-      return targetWireId
-    } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : String(error)
-      message.warning(errorMsg)
-      // Return the wireId to signal we handled the click (don't cancel placement mode)
-      return targetWireId
-    }
-  }
-
-  // Normal wire selection
   circuitActions.selectWire(targetWireId)
   return targetWireId
 }
