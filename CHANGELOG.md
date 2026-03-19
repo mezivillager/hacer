@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0](https://github.com/mezivillager/hacer/compare/v1.1.3...v1.2.0) (2026-03-19)
+
+### Features
+
+* **ui:** add demo overlay, GitHub link, and dynamic version ([d0bded5](https://github.com/mezivillager/hacer/commit/d0bded50ca6a89583df44e072ca9e0a4b7fe411e))
+
 ## [1.1.3](https://github.com/mezivillager/hacer/compare/v1.1.2...v1.1.3) (2026-03-17)
 
 ### Bug Fixes
