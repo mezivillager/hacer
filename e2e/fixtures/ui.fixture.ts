@@ -17,7 +17,7 @@
 
 import { test as base, Page, BrowserContext } from '@playwright/test'
 import { UI_SELECTORS } from '../selectors'
-import { TIMEOUTS } from '../config/constants'
+import { APP_ENTRY_URL, TIMEOUTS } from '../config/constants'
 import { waitForSceneReady } from '../helpers/waits'
 import { clearScene, waitForStore } from '../helpers/scene/scene-manager'
 
@@ -52,7 +52,7 @@ export const test = base.extend<UIFixtures, UIWorkerFixtures>({
       const page = await sharedContext.newPage()
 
       // Navigate and wait for app to be ready
-      await page.goto('/')
+      await page.goto(APP_ENTRY_URL)
       await page.waitForSelector(UI_SELECTORS.appTitle, {
         timeout: TIMEOUTS.selector,
       })

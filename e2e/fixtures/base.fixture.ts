@@ -8,7 +8,7 @@
 import { test as base } from '@playwright/test'
 import { waitForSceneReady } from '../helpers/waits'
 import { UI_SELECTORS } from '../selectors'
-import { TIMEOUTS } from '../config/constants'
+import { APP_ENTRY_URL, TIMEOUTS } from '../config/constants'
 
 /**
  * Extended test fixture with automatic page setup.
@@ -25,7 +25,7 @@ import { TIMEOUTS } from '../config/constants'
 export const test = base.extend<{ setupComplete: void }>({
   setupComplete: [
     async ({ page }, use) => {
-      await page.goto('/')
+      await page.goto(APP_ENTRY_URL)
       await page.waitForSelector(UI_SELECTORS.appTitle, { timeout: TIMEOUTS.selector })
       await page.waitForSelector(UI_SELECTORS.canvas, { timeout: TIMEOUTS.selector })
       await waitForSceneReady(page)
