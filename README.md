@@ -4,7 +4,9 @@
 [![Node.js 20+](https://img.shields.io/badge/node-%3E%3D20-brightgreen)](https://nodejs.org)
 [![CI](https://github.com/mezivillager/hacer/actions/workflows/ci.yml/badge.svg)](https://github.com/mezivillager/hacer/actions/workflows/ci.yml)
 
-**[Live Demo](https://mezivillager.github.io/hacer/)**
+**[Play With It](https://mezivillager.github.io/hacer/)**
+![hacer-demo](https://github.com/user-attachments/assets/3450f512-b6ff-46eb-8a28-f0f5a7021b7d)
+
 
 A rudimentary first-principles computing platform. Build a basic computer from NAND gates up through a full software stack -- assembler, virtual machine, compiler, and high-level language -- all in an interactive 3D environment.
 
