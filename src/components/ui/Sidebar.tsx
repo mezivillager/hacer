@@ -5,12 +5,14 @@ import {
   PauseCircleOutlined,
   ClearOutlined,
   SettingOutlined,
+  GithubOutlined,
 } from '@ant-design/icons'
 import { useCircuitStore } from '@/store/circuitStore'
 import { colors } from '@/theme'
 import { GateSelector } from './GateSelector'
 import { NodeSelector } from './NodeSelector'
 import { handleDeleteSelected } from './handlers/uiHandlers'
+import { useAppReleaseVersion } from '@/hooks/useAppReleaseVersion'
 
 const { Sider } = Layout
 const { Title, Text } = Typography
@@ -18,7 +20,6 @@ const { Title, Text } = Typography
 // Extracted styles using theme tokens
 const styles = {
   title: { margin: 0, color: colors.text.primary },
-  divider: { margin: '12px 0' },
   sectionTitle: { color: colors.text.primary, marginBottom: 8, display: 'block' as const },
   fullWidth: { width: '100%' },
   hint: { fontSize: 11, color: colors.primary },
@@ -54,17 +55,33 @@ export function Sidebar() {
   const isPlacingNode = nodePlacementMode !== null
   const hasSelection = selectedGateId !== null || selectedWireId !== null || selectedNodeId !== null
 
+  const appVersion = useAppReleaseVersion()
+
   return (
     <Sider width={260} className="app-sider">
       <div className="sider-content">
         <div className="sider-header">
-          <Title level={4} style={styles.title}>
-            🔌 HACER
-          </Title>
-          <Text type="secondary">Hardware Architecture & Constraints Explorer/Researcher</Text>
+          <div className="sider-title-row">
+            <Title level={4} style={styles.title}>
+              🔌 HACER
+            </Title>
+            <Button
+              icon={<GithubOutlined />}
+              href="https://github.com/mezivillager/hacer"
+              target="_blank"
+              rel="noopener noreferrer"
+              size="small"
+              className="github-link"
+            >
+              GitHub
+            </Button>
+          </div>
+          <Text type="secondary" className="sider-header-desc">
+            Hardware Architecture & Constraints Explorer/Researcher
+          </Text>
         </div>
 
-        <Divider style={styles.divider} />
+        <Divider className="sider-divider" />
 
         <div className="sider-section">
           <Text strong style={styles.sectionTitle}>
@@ -78,7 +95,7 @@ export function Sidebar() {
           )}
         </div>
 
-        <Divider style={styles.divider} />
+        <Divider className="sider-divider" />
 
         <div className="sider-section">
           <Text strong style={styles.sectionTitle}>
@@ -92,7 +109,7 @@ export function Sidebar() {
           )}
         </div>
 
-        <Divider style={styles.divider} />
+        <Divider className="sider-divider" />
 
         <div className="sider-section">
           <Text strong style={styles.sectionTitle}>
@@ -143,9 +160,9 @@ export function Sidebar() {
           </Space>
         </div>
 
-        <Divider style={styles.divider} />
+        <Divider className="sider-divider" />
 
-        <div className="sider-section">
+        <div className="sider-section sider-section--grow">
           <Text strong style={styles.sectionTitle}>
             Circuit Info
           </Text>
@@ -158,14 +175,15 @@ export function Sidebar() {
               Status: {simulationRunning ? '▶ Running' : '⏸ Paused'}
             </Text>
           </Space>
+          <div className="sider-section-grow-spacer" aria-hidden />
         </div>
 
         <div className="sider-footer">
           <Tooltip title="Settings (coming soon)">
-            <Button icon={<SettingOutlined />} type="text" />
+            <Button icon={<SettingOutlined />} type="text" size="small" />
           </Tooltip>
           <Text type="secondary" style={styles.smallText}>
-            v0.1.0 • nand2tetris inspired
+            {appVersion}
           </Text>
         </div>
       </div>

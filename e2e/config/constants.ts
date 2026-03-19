@@ -15,6 +15,12 @@ export const TIMEOUTS = {
   simulationSettle: 500,
 } as const
 
+/**
+ * App entry with demo tour suppressed (`DemoOverlay` reads `notour=1`).
+ * Keeps Playwright clicks on sidebar/canvas from competing with the tour card.
+ */
+export const APP_ENTRY_URL = '/?notour=1'
+
 /** Grid cell size in world units */
 export const GRID_SIZE = 2.0
 

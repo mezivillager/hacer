@@ -7,7 +7,7 @@
 
 import { test as base } from '@playwright/test'
 import { UI_SELECTORS } from '../selectors'
-import { TIMEOUTS } from '../config/constants'
+import { APP_ENTRY_URL, TIMEOUTS } from '../config/constants'
 
 /**
  * Extended test fixture for store-driven tests.
@@ -25,7 +25,7 @@ import { TIMEOUTS } from '../config/constants'
 export const test = base.extend<{ setupComplete: void }>({
   setupComplete: [
     async ({ page }, use) => {
-      await page.goto('/')
+      await page.goto(APP_ENTRY_URL)
       await page.waitForSelector(UI_SELECTORS.appTitle, { timeout: TIMEOUTS.selector })
       // Wait for store to be available (required for store tests)
       await page.waitForFunction(() => window.__CIRCUIT_STORE__ !== undefined, { timeout: TIMEOUTS.store })
