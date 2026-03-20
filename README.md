@@ -5,7 +5,7 @@
 [![CI](https://github.com/mezivillager/hacer/actions/workflows/ci.yml/badge.svg)](https://github.com/mezivillager/hacer/actions/workflows/ci.yml)
 
 **[Play With It](https://mezivillager.github.io/hacer/)**
-![hacer-demo](https://github.com/user-attachments/assets/3450f512-b6ff-46eb-8a28-f0f5a7021b7d)
+![hacer-demo](public/hacer-demo.gif)
 
 
 A rudimentary first-principles computing platform. Build a basic computer from NAND gates up through a full software stack -- assembler, virtual machine, compiler, and high-level language -- all in an interactive 3D environment.
