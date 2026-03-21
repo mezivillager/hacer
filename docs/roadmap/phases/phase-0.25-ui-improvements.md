@@ -11,7 +11,7 @@
 
 ## Overview
 
-This phase improves the user experience of gate placement, movement, rotation, and wiring by implementing a professional grid-based circuit design system. It also optimizes E2E test performance and organization.
+This phase improves the user experience of gate placement, movement, rotation, and wiring by implementing a professional grid-based circuit design system. It introduces circuit I/O nodes (input/output) and a junction system that enables wire branching for fan-out signals. It also optimizes E2E test performance and organization.
 
 **Exit Criteria:**
 - Gates snap to grid centers only
@@ -25,6 +25,11 @@ This phase improves the user experience of gate placement, movement, rotation, a
 - Wire stubs removed when wires are connected
 - Wires can be selected and deleted
 - Wire paths recalculate when gates move/rotate
+- Circuit I/O nodes (input and output) can be placed, moved, selected, and deleted
+- Input nodes support Shift+click to toggle their signal value
+- Wires can connect input nodes → gate inputs, gate outputs → gate inputs, gate outputs → output nodes
+- Junction nodes can be placed at wire corners to create signal branching (fan-out)
+- New wires can be started from junction nodes for multi-destination routing
 - E2E tests organized with sensible naming
 - E2E tests optimized (scene loaded once, reused across tests)
 - Performance: <2s for E2E test suite execution
@@ -1043,7 +1048,200 @@ e2e/specs/
 
 ---
 
-## Phase 0.25 Checklist & Exit Criteria
+## 0.25.9 Circuit I/O Node Placement
+
+**Problem:** The simulator only supports logic gates. To build complete HDL-style chips, users need explicit input and output terminals that map to HDL `IN`/`OUT` declarations.
+
+**Solution:** Add placeable circuit I/O nodes for inputs and outputs. Nodes behave like gates: they snap to the grid, can be moved and deleted, and support wires.
+
+### Node Types
+
+- **InputNode** – drives a single-bit signal into the circuit. Rendered as a small cube; green when value=1, red when value=0. Output pin on right side.
+- **OutputNode** – receives a computed signal. Rendered as a small cube; green when value=1, red when value=0. Input pin on left side.
+
+### Node Selector UI
+
+The `NodeSelector` component (toolbar next to the gate palette) shows three buttons:
+- **Input** (LoginOutlined icon) – activates `INPUT` placement mode
+- **Output** (LogoutOutlined icon) – activates `OUTPUT` placement mode
+- **Junction** (ShareAltOutlined icon) – activates junction placement mode (see 0.25.10)
+
+Clicking an already-active button cancels the corresponding placement mode.
+
+### Interaction Design
+
+| Action | Behaviour |
+|--------|-----------|
+| Click toolbar button | Activates placement mode; cancels any active gate/wire placement |
+| Move cursor over canvas | Node preview snaps to grid, same validation as gates |
+| Click canvas | Places node at snapped grid position (if cell is valid) |
+| Click node body | Selects node; deselects gates/wires |
+| **Shift+click input node** | Toggles the node's signal value (true ↔ false) immediately |
+| Drag node body | Moves node; releases on valid grid cell snap |
+| Delete / Backspace (node selected) | Removes node and all connected wires |
+| Escape | Cancels placement mode |
+
+### Wiring Support
+
+- Wires can start from an **input node's output pin** and end at a gate input pin or a junction.
+- Wires can start from a **gate output pin** and end at an **output node's input pin**.
+- Node-to-node wiring is not permitted (no input → output direct connection).
+- When a node is moved, all connected wires recalculate their paths.
+
+### State
+
+```typescript
+// Added to CircuitState
+inputNodes: InputNode[]       // list of placed input nodes
+outputNodes: OutputNode[]     // list of placed output nodes
+nodePlacementMode: NodePlacementType | null  // 'INPUT' | 'OUTPUT' | null
+selectedNodeId: string | null
+selectedNodeType: NodeType | null            // 'input' | 'output'
+```
+
+### Implementation Files
+
+- `src/store/types.ts` – `InputNode`, `OutputNode`, `NodePlacementType`, `NodeType`
+- `src/store/actions/nodePlacementActions/nodePlacementActions.ts` – placement lifecycle
+- `src/store/actions/nodeActions/nodeActions.ts` – add/remove/move + wire recalculation
+- `src/nodes/components/InputNode3D.tsx`, `OutputNode3D.tsx` – 3-D visuals
+- `src/nodes/NodeRenderer.tsx` – renders all nodes in the scene
+- `src/components/ui/NodeSelector.tsx` – toolbar buttons
+- `src/hooks/useNodeDrag.ts` – pointer-event drag hook for nodes
+
+### Acceptance Criteria
+
+- ✅ Input and output nodes can be placed on grid cells
+- ✅ Nodes snap to grid; section-line and wire-cell validation respected
+- ✅ Nodes can be selected (click body), moved (drag), and deleted (Delete key)
+- ✅ Shift+click on input node body toggles its signal value
+- ✅ Wires connect: input node → gate input, gate output → output node, gate output → gate input
+- ✅ Node deletion removes all connected wires
+- ✅ Wire paths recalculate when nodes are moved
+
+---
+
+## 0.25.10 Junction Node System
+
+**Problem:** Fan-out (one signal driving multiple destinations) is not possible with simple point-to-point wires. There is no way to tap into an existing wire.
+
+**Solution:** Add junction nodes that mark branch points on wires. A junction is placed at a wire corner; new wires can then be started from that junction to additional destinations.
+
+### Junction Concept
+
+- A **junction** is a small dot (sphere) rendered at a wire corner where a single signal fans out to multiple destinations.
+- Junctions only snap to **wire corners** (segment endpoints where direction changes). They cannot be placed mid-segment.
+- A junction has a `signalId` inherited from the wire it is placed on.
+- After placement the junction is added to `state.junctions`; the host wire's `wireIds` array is updated.
+
+### Placement Flow
+
+```
+User clicks "Junction" toolbar button
+  → junctionPlacementMode = true
+  → all other placement modes cancelled
+User moves cursor over canvas
+  → groundPlane onPointerMove calls updateJunctionPreviewPosition(rawCursor)
+  → action finds nearest wire within 0.5 world units
+  → among that wire's corners, finds the closest one within PREVIEW_THRESHOLD (0.3 units)
+  → sets junctionPreviewPosition (snapped corner) + junctionPreviewWireId
+JunctionPreview component renders a semi-transparent green sphere at that position
+User clicks canvas
+  → handleWireClick dispatches placeJunctionOnWire(previewPosition, previewWireId)
+  → validates junction is at a wire corner (isAtSegmentCorner)
+  → creates JunctionNode, updates wire.signalId, exits junction placement mode
+Pressing Escape / clicking outside valid corner
+  → cancelJunctionPlacement() clears preview and mode
+```
+
+### State
+
+```typescript
+// Added to CircuitState
+junctions: JunctionNode[]
+junctionPlacementMode: boolean | null   // true when placing
+junctionPreviewPosition: Position | null
+junctionPreviewWireId: string | null
+```
+
+### JunctionNode3D Visual
+
+- Small sphere rendered at junction position.
+- Color mirrors signal state: green (value=1) / inactive colour (value=0).
+- Emissive intensity increases when active.
+- Click on junction sphere → starts wiring from that junction (see 0.25.11).
+
+### Deletion
+
+- Deleting a junction removes all branching wires that originate from it (all wires except the primary/host wire).
+
+### Implementation Files
+
+- `src/store/types.ts` – `JunctionNode`, `JunctionPlacementActions`
+- `src/store/actions/junctionPlacementActions/junctionPlacementActions.ts` – placement lifecycle
+- `src/store/actions/signalActions/signalActions.ts` – junction-aware signal propagation
+- `src/nodes/components/JunctionNode3D.tsx` – sphere visual
+- `src/components/canvas/Scene/JunctionPreview.tsx` – hover preview sphere
+- `src/utils/wirePosition.ts` – `findWireCorners`, `isAtSegmentCorner`, `calculatePositionOnWire`
+- `src/utils/wireHitTest.ts` – `findNearestWire` (used during junction placement hover)
+- `src/components/canvas/handlers/wireHandlers.ts` – `handleWireClick` junction-placement branch
+- `src/components/ui/NodeSelector.tsx` – Junction toolbar button
+
+### Acceptance Criteria
+
+- ✅ Junction placement mode activated from toolbar
+- ✅ Cursor shows preview sphere only when near a wire corner (within 0.3 units)
+- ✅ Junction snaps exactly to wire corner on placement
+- ✅ Junction cannot be placed mid-segment (only at corners)
+- ✅ Junction visual (sphere) reflects signal value via colour
+- ✅ Cancelling mode (Escape or click-away) clears the preview
+- ✅ Deleting junction removes branching wires
+
+---
+
+## 0.25.11 Wire Branching from Junctions
+
+**Problem:** After placing a junction, there is no way to draw a new wire that shares the signal from that junction point.
+
+**Solution:** Clicking on a placed junction sphere starts a new wiring operation. The new wire shares all segments from the signal source up to the junction, then routes independently to its destination.
+
+### Branching Flow
+
+```
+User clicks placed junction sphere
+  → startWiringFromJunction(junctionId, position)
+  → state.wiringFrom.source = { type: 'junction', junctionId }
+  → state.wiringFrom.destination = { type: 'junction', junctionId,
+        originalWireId, sharedSegments: getSegmentsUpToPosition(originalWire.segments, junction.position) }
+User routes new wire to destination pin (gate input or output node)
+  → WirePreview renders the shared segments + new routing to cursor
+  → completeWiring / completeWiringToNode creates a new Wire with:
+        from: same as original wire's from endpoint
+        shared leading segments (from source → junction)
+        new routing segments (junction → destination)
+```
+
+### Multi-Level Junction Tracing
+
+If the host wire itself starts from another junction (chained fan-out), `startWiringFromJunction` traces backwards through the junction chain until it finds the original gate output or input node. This ensures the new branch carries the correct signal origin.
+
+### Shared Segments
+
+A branch wire stores its full segment list including the shared portion. This guarantees correct signal propagation (the path is rooted at the true source) while allowing independent routing after the junction point.
+
+### Implementation Files
+
+- `src/store/actions/wiringActions/wiringActions.ts` – `startWiringFromJunction`, branching in `completeWiring` / `completeWiringToNode`
+- `src/utils/wirePosition.ts` – `getSegmentsUpToPosition` (returns segments from start → junction)
+- `src/nodes/components/JunctionNode3D.tsx` – click handler calls `startWiringFromJunction`
+
+### Acceptance Criteria
+
+- ✅ Clicking a junction sphere starts a new wiring operation from that junction
+- ✅ New wire shares leading segments with original wire up to the junction
+- ✅ Multi-level chains (junction on a wire that itself starts from a junction) trace correctly to source
+- ✅ Branching wire respects all routing rules (grid alignment, gate avoidance, crossing resolution)
+- ✅ Signal state propagates correctly through branching wires
 
 | Task | Effort | Dependencies | Exit Criteria |
 |------|--------|--------------|---------------|
@@ -1056,8 +1254,11 @@ e2e/specs/
 | 0.25.7 Wire selection and deletion | 3h | - | Wires can be selected and deleted ✅ |
 | 0.25.8 E2E test reorganization | 2h | - | Tests organized, consistent naming ✅ |
 | 0.25.8 E2E test optimization | 3h | Test reorganization | Scene loaded once, tests <2s total ✅ |
+| 0.25.9 Circuit I/O node placement | 5h | Grid system | Input/output nodes placed, moved, deleted; Shift+click toggles input value; wires connect nodes to gates ✅ |
+| 0.25.10 Junction node system | 6h | Wire routing | Junctions placed at wire corners; visual preview snaps to corner; junction deletion removes branches ✅ |
+| 0.25.11 Wire branching from junctions | 4h | Junction system | New wires start from junction; shared segments reused; multi-level chaining works ✅ |
 
-**Total Estimated Effort:** ~29 hours  
+**Total Estimated Effort:** ~44 hours  
 **Performance Budget:** <2s E2E test suite, 60fps with 100+ gates
 
 ---

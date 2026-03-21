@@ -236,6 +236,9 @@ Testing:      Comprehensive test suite + visual regression
 - [x] 0.25.6 Wire stub removal when connected ✅
 - [x] 0.25.7 Wire selection and deletion ✅
 - [x] 0.25.8 E2E test reorganization and optimization ✅
+- [x] 0.25.9 Circuit I/O node placement (InputNode, OutputNode, Shift+click toggle) ✅
+- [x] 0.25.10 Junction node system (place junctions at wire corners for fan-out) ✅
+- [x] 0.25.11 Wire branching from junctions (shared-segment branch wires) ✅
 
 ### Phase 0.5: Nand2Tetris Foundation 🔄
 - [ ] HDL Parser/Generator implementation
