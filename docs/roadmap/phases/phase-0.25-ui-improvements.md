@@ -1132,7 +1132,7 @@ selectedNodeType: NodeType | null            // 'input' | 'output'
 - A **junction** is a small dot (sphere) rendered at a wire corner where a single signal fans out to multiple destinations.
 - Junctions only snap to **wire corners** (segment endpoints where direction changes). They cannot be placed mid-segment.
 - A junction has a `signalId` inherited from the wire it is placed on.
-- After placement the junction is added to `state.junctions`; the host wire's `wireIds` array is updated.
+- After placement the junction is added to `state.junctions` with `junction.wireIds` initialized to `[wireId]` (trunk wire at index 0); this list is later extended with branch wire IDs.
 
 ### Placement Flow
 
