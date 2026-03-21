@@ -5,6 +5,18 @@
 
 ---
 
+## AI agent phase sync
+
+**Last aligned:** 2026-03-21 — keep in sync with **`REPO_MAP.md`** (top banner) and **`.cursorrules`** (*Phase Tracking*).
+
+| Field | Value |
+|-------|--------|
+| **Completed** | Phase 0.25 (UI/grid/circuit UX) ✅ |
+| **In progress** | **Phase 0.5 — Nand2Tetris foundation** 🔄 |
+| **Detail** | See checklist below (*Phase 0.5*) and `docs/roadmap/phases/phase-0.5-nand2tetris-foundation.md` |
+
+---
+
 ## Success Metrics
 
 ### Technical Metrics

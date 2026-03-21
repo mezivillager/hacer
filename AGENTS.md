@@ -4,23 +4,63 @@
 
 > This file is read automatically by OpenAI Codex, GitHub Copilot, and other AI agents.  
 > Claude Code users: also see `.claude/CLAUDE.md` and `.claude/skills/`.  
-> Cursor users: also see `.cursorrules`.
+> Cursor users: also see `.cursorrules`, `.cursor/rules/000-hacer-precedence.mdc`, and `.cursor/AGENTS.md` (trimmed ECC hints).
 
 ---
 
-## 1. Start Every Session Here
+## 0. Rule precedence & definition of done
+
+**When instructions conflict, follow this order (highest wins):**
+
+1. The **user’s current message**  
+2. **`.cursorrules`** — HACER stack (React 19, Zustand, React Compiler, no Valtio)  
+3. **This `AGENTS.md`** — workflow, CI, protocols  
+4. **`HACER_LLM_GUIDE.md`** — codebase patterns and examples  
+5. **`REPO_MAP.md`** — file locations; do not assume directories that are not documented here  
+6. **`.cursor/rules/`** (ECC-derived) — general quality only where it does **not** contradict 2–5  
+
+**Definition of done — mandatory before claiming work is complete:** all of the following must succeed with **exit code 0**:
+
+`pnpm run lint` · `pnpm run test:run` · `pnpm run test:e2e:store` · `pnpm run build`
+
+No waivers. If a step fails, the task is **not** done.
+
+**Harness / MCP / hooks (Cursor):** see **`docs/llm-harness.md`**.
+
+---
+
+## 1. Start every session here
+
+### All agents
+
+- **Patterns & examples** → `HACER_LLM_GUIDE.md`  
+- **Where files live + task jump table** → `REPO_MAP.md` (section *Common tasks → start here*)  
+- **Planning / verification workflow** → `docs/llm-workflow.md`  
+- **Current task plan** → `tasks/todo.md`  
+- **Past mistakes** → `tasks/lessons.md`  
+
+### Claude Code track
 
 ```
-0. Read .claude/CONSTITUTION.md        → the foundational rules of engagement
-1. Read AGENTS.md (this file)         → cognitive protocols + CI gates + Superpowers workflow
-2. Read .cursorrules                   → phase tracking + stack rules
-3. Read docs/llm-workflow.md           → planning/subagent/verification/caching workflow
-4. Read tasks/todo.md                  → current task plan
-5. Read tasks/lessons.md               → past mistakes to avoid
+0. Read .claude/CONSTITUTION.md     → if present: foundational rules of engagement (skip if missing)
+1. Read AGENTS.md (this file)
+2. Read .cursorrules
+3. Read docs/llm-workflow.md
+4. Read tasks/todo.md
+5. Read tasks/lessons.md
 ```
 
-For patterns & examples → `HACER_LLM_GUIDE.md`  
-For directory layout   → `REPO_MAP.md`
+### Cursor track
+
+```
+1. Read .cursorrules
+2. Read AGENTS.md (this file)
+3. Read docs/llm-harness.md          → MCP + ECC hook tuning, session hygiene
+4. Read docs/llm-workflow.md         → when planning / multi-step work
+5. Read tasks/todo.md and tasks/lessons.md
+```
+
+Do **not** require missing paths: if `.claude/CONSTITUTION.md` or other Claude-only files are absent, continue with the Cursor track.
 
 ---
 
@@ -57,8 +97,8 @@ After any correction from the user, or any bug you caused, write a short lesson 
 *Source: [Park et al., 2023](https://arxiv.org/abs/2304.03442)*
 
 Treat context as a memory hierarchy:
-- **Working memory** → `.claude/CLAUDE.md` (active session context, ~always loaded)
-- **Semantic memory** → `.claude/skills/*.md` (loaded on demand, ~5k tokens each)
+- **Working memory** → `.claude/CLAUDE.md` when using Claude Code; **Cursor:** chat + `.cursor/AGENTS.md` for ECC hints
+- **Semantic memory** → `.claude/skills/*.md` (Claude Code) or **`.cursor/skills/`** (Cursor / project)
 - **Episodic memory** → `tasks/lessons.md` (past events, reviewed at session start)
 - **Long-term plan** → `docs/plans/` (implementation plans, persisted in git)
 
@@ -110,8 +150,8 @@ NO fix without root-cause investigation first.
 - Upon bugs or failure, trigger the `debugging` skill. Let it run its 4-phase root cause process before suggesting code.
 
 ### Step 6 — Review & Finish
-- Trigger `requesting-code-review` and `finishing-a-development-branch` when implementations meet the spec.
-- Code must pass: `pnpm run lint`, `pnpm test:run`, `pnpm test:e2e:store`, `build`.
+- Trigger `requesting-code-review` and `finishing-a-development-branch` when implementations meet the spec (Claude Code / Superpowers).
+- Code must pass: **`pnpm run lint`**, **`pnpm run test:run`**, **`pnpm run test:e2e:store`**, **`pnpm run build`** — see §0 *Definition of done*.
 
 ---
 
@@ -175,11 +215,13 @@ Mutation test fails      → A test always passes regardless of code. Fix the te
 | Concern | Where to look |
 |---------|--------------|
 | Stack rules (React 19, Zustand, R3F) | `.cursorrules` → Stack section |
-| Phase tracking | `.cursorrules` → Phase Tracking section |
+| Rule precedence (Cursor) | `.cursor/rules/000-hacer-precedence.mdc` |
+| Phase tracking | `.cursorrules` → Phase Tracking; `REPO_MAP.md`; `docs/roadmap/implementation.md` → *AI agent phase sync* |
 | Testing patterns + templates | `docs/testing/` |
-| File organization | `REPO_MAP.md` |
+| File organization + task entry points | `REPO_MAP.md` |
 | Detailed code examples | `HACER_LLM_GUIDE.md` |
-| Skills (TDD, debug, plan, review) | `.claude/skills/*/SKILL.md` |
+| Skills (TDD, debug, plan, review) | `.claude/skills/*/SKILL.md` · `.cursor/skills/` (project) |
+| MCP, ECC hooks, session hygiene | `docs/llm-harness.md` |
 
 ### Key Commands
 ```bash

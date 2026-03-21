@@ -7,7 +7,14 @@ import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist', 'test-results', 'playwright-report', 'coverage', '.stryker-tmp']),
+  globalIgnores([
+    'dist',
+    'test-results',
+    'playwright-report',
+    'coverage',
+    '.stryker-tmp',
+    '.cursor/**', // Vendored ECC / IDE harness — not application source
+  ]),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [

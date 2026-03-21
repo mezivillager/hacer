@@ -5,10 +5,11 @@
 > **Start every session by reading [AGENTS.md](./AGENTS.md)** — it explains CI quality gates,
 > cognitive protocols (ReAct, CoT, ToT, Reflexion), and the mandatory development workflow.
 > Claude Code users: skills are in `.claude/skills/*/SKILL.md`.
+> **Cursor:** rule precedence + harness tuning → `.cursor/rules/000-hacer-precedence.mdc`, [docs/llm-harness.md](./docs/llm-harness.md).
 
 ## Phase Tracking
 
-**Last Updated:** 2026-03-14  
+**Last Updated:** 2026-03-21  
 **Current Phase:** Phase 0.25 (Complete) → Phase 0.5 (In Progress)  
 **Next Phase:** Phase 0.5: Nand2Tetris Foundation
 
@@ -43,14 +44,13 @@ Red → Green → Refactor. Test BEFORE implementation. See `.claude/skills/tdd/
 
 ## AI Agent Completion Checklist
 
-Before marking any task complete:
-- [ ] Invoke `verification-before-completion` skill — run verification commands, confirm output before any completion claim
+**Definition of done (all must pass — no exceptions):**
 - [ ] `pnpm run lint` exits 0
-- [ ] `pnpm run test:run` all pass
-- [ ] `pnpm run test:e2e:store` all pass
+- [ ] `pnpm run test:run` — all pass
+- [ ] `pnpm run test:e2e:store` — all pass
 - [ ] `pnpm run build` succeeds
 
-Full checklist: `.claude/skills/code-review/SKILL.md`
+Optional: invoke `verification-before-completion` / code-review skills when using Claude Code. Full checklist: `.claude/skills/code-review/SKILL.md`
 
 ## Where to Look
 
@@ -59,6 +59,7 @@ Full checklist: `.claude/skills/code-review/SKILL.md`
 | Phase rules, architecture, adding gates | `docs/roadmap/`, `REPO_MAP.md` |
 | TDD, planning, debugging, review | `.claude/skills/` |
 | Workflow, subagents, verification | `docs/llm-workflow.md` |
+| Cursor harness, MCP, hook tuning | `docs/llm-harness.md` |
 | Patterns, examples | `HACER_LLM_GUIDE.md` |
 | TypeScript, code quality | `docs/typescript-guidelines.md` |
 
