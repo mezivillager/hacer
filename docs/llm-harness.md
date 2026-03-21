@@ -51,6 +51,8 @@ Hooks run on Cursor events. Full list:
 | `preCompact` | `pre-compact.js` | Save state before compaction |
 | `stop` | `stop.js` | Console.log audit on modified files |
 
+**CJS compatibility:** HACER uses `"type": "module"` in `package.json`, but ECC hooks are CJS (`require()`). The `.cursor/hooks/package.json` and `.cursor/scripts/package.json` files set `"type": "commonjs"` to fix this. Do not remove them.
+
 Optional tuning (via ECC env vars — see [upstream docs](https://github.com/affaan-m/everything-claude-code)):
 
 ```bash

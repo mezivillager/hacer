@@ -24,6 +24,24 @@ All documents are kept in sync and should be consulted together.
 
 **Precedence when docs disagree:** `.cursorrules` → root **`AGENTS.md`** → **this guide** → **`REPO_MAP.md`** → generic ECC rules under `.cursor/rules/`. See also **`docs/llm-harness.md`**.
 
+### How to read this file (1,400+ lines — do NOT load all at once)
+
+Read the **LLM quick reference** below (always), then **only the section you need** for the current task:
+
+| Task type | Read section |
+|-----------|--------------|
+| Any code change | **LLM quick reference** (line ~29) + **Discovery Protocol** (line ~71) |
+| React component work | **React Best Practices** (line ~130) |
+| Writing or fixing tests | **Testing Strategy** (line ~626) |
+| 3D / R3F scene work | **React Three Fiber Patterns** (line ~802) |
+| Store / state changes | **Zustand State Management** (line ~962) |
+| UI with Ant Design | **Ant Design Usage** (line ~1083) |
+| File placement / imports | **File Organization** (line ~1129) |
+| Performance tuning | **Performance Patterns** (line ~1161) |
+| AI-generated code review | **Code Review Checklist** (line ~1308) + **Anti-Patterns** (line ~1358) |
+
+Use `grep` or search to jump to the `## ` heading you need instead of reading end-to-end.
+
 ---
 
 ## 🤖 LLM quick reference (copy-paste patterns)
