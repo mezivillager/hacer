@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1](https://github.com/mezivillager/hacer/compare/v1.2.0...v1.2.1) (2026-03-22)
+
+### Bug Fixes
+
+* address PR [#43](https://github.com/mezivillager/hacer/issues/43) review comments — security, correctness, version sync ([#44](https://github.com/mezivillager/hacer/issues/44)) ([2648eee](https://github.com/mezivillager/hacer/commit/2648eee70d6e9fd259bca60b517c0ba539a3dcd9)), closes [10-#12](https://github.com/mezivillager/10-/issues/12)
+
+### Documentation
+
+* add missing phase 0.25 wiring system features to roadmap ([#42](https://github.com/mezivillager/hacer/issues/42)) ([5df73bc](https://github.com/mezivillager/hacer/commit/5df73bc20770cdf23ceeb2c07562a7f99853680d))
+
 ## [1.2.0](https://github.com/mezivillager/hacer/compare/v1.1.3...v1.2.0) (2026-03-19)
 
 ### Features
