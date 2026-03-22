@@ -169,7 +169,7 @@ scripts/
 - `src/core/chips/` - Chip hierarchy (ChipRegistry, ChipDefinition, composite chips)
 - `src/core/hdl/` - HDL parser and compiler
 - `src/core/testing/nand2tetris/` - Test script and compare file execution
-- `src/core/simulation/topologicalEval.ts` - Topological sort evaluation
+- `src/simulation/topologicalEval.ts` - Topological sort evaluation
 - `src/components/ui/ChipDefinitionPanel.tsx` - Chip I/O definition UI
 - `src/components/ui/TestResultsPanel.tsx` - Test results and diff display
 - `src/components/ui/PinoutPanel.tsx` - Chip pin inspection
@@ -340,7 +340,7 @@ hacer/
 - `src/core/chips/` - Chip hierarchy system (registry, definitions, composite chips)
 - `src/core/hdl/` - HDL parser and compiler for HACK HDL
 - `src/core/testing/nand2tetris/` - Test script execution (.tst/.cmp)
-- `src/core/simulation/topologicalEval.ts` - Topological sort for correct evaluation
+- `src/simulation/topologicalEval.ts` - Topological sort for correct evaluation
 - Multi-bit bus support (data model, simulation, 3D splitter/joiner)
 - Chip I/O definition workflow (node rename, name display, chip definition panel)
 - HDL editor, test results, pinout, curriculum browser UI panels

@@ -203,7 +203,7 @@ This roadmap has been broken down into focused, manageable sections:
 - **[Phase 21: Advanced Performance & PWA](phases/phase-21-advanced-performance-pwa.md)** - Offline support and optimization
 - **[Phase 22: Public Website & Documentation Platform](phases/phase-22-public-website.md)** - Professional website and integrated docs
 - **[Phase 23: Documentation Automation & AI Agents](phases/phase-23-docs-automation.md)** - AI-powered doc generation and updates
-- **[Phase 24: AI-Powered Code Review & Quality Gates](phases/phase-20-ai-code-review.md)** - Automated PR reviews and quality assurance
+- **[Phase 24: AI-Powered Code Review & Quality Gates](phases/phase-24-ai-code-review.md)** - Automated PR reviews and quality assurance
 
 ---
 
@@ -239,7 +239,7 @@ This roadmap has been broken down into focused, manageable sections:
 | [21](phases/phase-21-advanced-performance-pwa.md) | Weeks 78-80 | 🟢 MEDIUM | PWA features, bundle optimization, offline support |
 | [22](phases/phase-22-public-website.md) | Weeks 81-85 | 🟠 HIGH | Professional website and integrated docs |
 | [23](phases/phase-23-docs-automation.md) | Weeks 86-88 | 🟡 MEDIUM | AI-powered doc generation and updates |
-| [24](phases/phase-20-ai-code-review.md) | Weeks 89-91 | 🟡 MEDIUM | Automated PR reviews and quality assurance |
+| [24](phases/phase-24-ai-code-review.md) | Weeks 89-91 | 🟡 MEDIUM | Automated PR reviews and quality assurance |
 
 *Weeks 21+ are rebaselined after Phases 0.5–0.7 and 1.5 (through week 20); durations per phase are unchanged from the pre-split roadmap.*
 
