@@ -65,8 +65,10 @@ export default tool({
     }
 
     if (pattern) {
-      if (testFramework === "jest" || testFramework === "vitest") {
+      if (testFramework === "jest") {
         testArgs.push("--testPathPattern", pattern)
+      } else if (testFramework === "vitest") {
+        testArgs.push(pattern)
       } else {
         testArgs.push(pattern)
       }
@@ -121,8 +123,8 @@ async function detectTestFramework(cwd: string): Promise<string> {
     try {
       const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8"))
       const deps = {
-        ...packageJson.dependencies,
-        ...packageJson.devDependencies,
+        ...(packageJson.dependencies ?? {}),
+        ...(packageJson.devDependencies ?? {}),
       }
 
       if (deps.vitest) return "vitest"

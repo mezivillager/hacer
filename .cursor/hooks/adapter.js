@@ -22,7 +22,7 @@ function readStdin() {
 }
 
 function getPluginRoot() {
-  return path.resolve(__dirname, '..', '..');
+  return path.resolve(__dirname, '..');
 }
 
 function transformToClaude(cursorInput, overrides = {}) {
