@@ -105,7 +105,57 @@ describe('ChipRegistry', () => {
       inputs: [{ name: 'a', width: 0 }],
       outputs: [{ name: 'out', width: 1 }],
       implementation: { type: 'builtin', evaluate: () => ({ out: 0 }) },
-    })).toThrow('width must be >= 1')
+    })).toThrow('width must be a finite integer >= 1')
+  })
+
+  it('rejects chip with non-integer pin width', () => {
+    const reg = createChipRegistry()
+    expect(() => reg.register({
+      name: 'Bad',
+      inputs: [{ name: 'a', width: 1.5 }],
+      outputs: [{ name: 'out', width: 1 }],
+      implementation: { type: 'builtin', evaluate: () => ({ out: 0 }) },
+    })).toThrow('width must be a finite integer >= 1')
+  })
+
+  it('rejects chip with NaN pin width', () => {
+    const reg = createChipRegistry()
+    expect(() => reg.register({
+      name: 'Bad',
+      inputs: [{ name: 'a', width: NaN }],
+      outputs: [{ name: 'out', width: 1 }],
+      implementation: { type: 'builtin', evaluate: () => ({ out: 0 }) },
+    })).toThrow('width must be a finite integer >= 1')
+  })
+
+  it('rejects chip with Infinity pin width', () => {
+    const reg = createChipRegistry()
+    expect(() => reg.register({
+      name: 'Bad',
+      inputs: [{ name: 'a', width: Infinity }],
+      outputs: [{ name: 'out', width: 1 }],
+      implementation: { type: 'builtin', evaluate: () => ({ out: 0 }) },
+    })).toThrow('width must be a finite integer >= 1')
+  })
+
+  it('rejects chip with whitespace-padded name', () => {
+    const reg = createChipRegistry()
+    expect(() => reg.register({
+      name: ' Nand ',
+      inputs: [{ name: 'a', width: 1 }],
+      outputs: [{ name: 'out', width: 1 }],
+      implementation: { type: 'builtin', evaluate: () => ({ out: 0 }) },
+    })).toThrow('must not have leading or trailing whitespace')
+  })
+
+  it('rejects chip with whitespace-padded pin name', () => {
+    const reg = createChipRegistry()
+    expect(() => reg.register({
+      name: 'Bad',
+      inputs: [{ name: ' a', width: 1 }],
+      outputs: [{ name: 'out', width: 1 }],
+      implementation: { type: 'builtin', evaluate: () => ({ out: 0 }) },
+    })).toThrow('must not have leading or trailing whitespace')
   })
 
   it('rejects chip with duplicate pin names', () => {

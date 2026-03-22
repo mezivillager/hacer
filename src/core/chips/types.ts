@@ -39,6 +39,8 @@ export function validateChipDefinition(def: ChipDefinition): ChipValidationError
   const errors: ChipValidationError[] = []
   if (!def.name || def.name.trim() === '') {
     errors.push({ field: 'name', message: 'Chip name must not be empty' })
+  } else if (def.name !== def.name.trim()) {
+    errors.push({ field: 'name', message: 'Chip name must not have leading or trailing whitespace' })
   }
   if (def.inputs.length === 0) {
     errors.push({ field: 'inputs', message: 'Chip must have at least one input' })
@@ -47,16 +49,21 @@ export function validateChipDefinition(def: ChipDefinition): ChipValidationError
     errors.push({ field: 'outputs', message: 'Chip must have at least one output' })
   }
   const allPins = [...def.inputs, ...def.outputs]
+  const normalizedNames: string[] = []
   for (const pin of allPins) {
-    if (!pin.name || pin.name.trim() === '') {
+    const trimmedName = pin.name.trim()
+    if (!pin.name || trimmedName === '') {
       errors.push({ field: 'pin', message: 'Pin name must not be empty' })
+    } else if (pin.name !== trimmedName) {
+      errors.push({ field: 'pin', message: 'Pin name must not have leading or trailing whitespace' })
     }
-    if (pin.width < 1) {
-      errors.push({ field: 'pin', message: `Pin "${pin.name}" width must be >= 1` })
+    normalizedNames.push(trimmedName)
+    const width = pin.width
+    if (typeof width !== 'number' || !Number.isFinite(width) || !Number.isInteger(width) || width < 1) {
+      errors.push({ field: 'pin', message: `Pin "${trimmedName}" width must be a finite integer >= 1` })
     }
   }
-  const names = allPins.map(p => p.name)
-  const dupes = names.filter((n, i) => names.indexOf(n) !== i)
+  const dupes = normalizedNames.filter((n, i) => normalizedNames.indexOf(n) !== i)
   for (const dupe of [...new Set(dupes)]) {
     errors.push({ field: 'pin', message: `Duplicate pin name: "${dupe}"` })
   }
