@@ -12,6 +12,7 @@
 > - [AGENTS.md](../AGENTS.md) - Universal guide (start here)
 > - [HACER_LLM_GUIDE.md](../HACER_LLM_GUIDE.md) - Project-specific patterns, React, testing, Zustand
 > - [.cursorrules](../.cursorrules) - Quick rules, phase tracking, TDD protocol
+> - [docs/llm-harness.md](./llm-harness.md) - Cursor MCP, ECC hooks, rule precedence pointers
 > - [docs/testing/](./testing/) - TDD workflow, test standards, templates
 
 ---
