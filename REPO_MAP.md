@@ -2,9 +2,24 @@
 
 This document helps AI agents and developers understand the codebase structure and navigate the repository effectively across all development phases.
 
+## Common tasks → start here (LLM / human)
+
+| Task | Start here |
+|------|------------|
+| **Current phase / checklist** | `docs/roadmap/implementation.md` → *Implementation Checklist*; `.cursorrules` → *Phase Tracking* |
+| **Phase 0.5 (Nand2Tetris) spec** | `docs/roadmap/phases/phase-0.5-nand2tetris-foundation.md` |
+| **New Zustand state or action** | `src/store/circuitStore.ts`, `src/store/types.ts`, `src/store/actions/<domain>/` |
+| **Gate type / 3D gate UI** | `src/gates/config/`, `src/gates/components/`, `HACER_LLM_GUIDE.md` |
+| **Simulation / boolean logic** | `src/simulation/` · specs: `src/simulation/gateLogic.test.ts` |
+| **R3F canvas / scene** | `src/components/canvas/` |
+| **Unit / store tests** | Colocate `*.test.ts` next to code; reset pattern: `src/store/actions/gateActions/gateActions.test.ts` |
+| **Playwright store E2E** | `e2e/specs/**/*.store.spec.ts`, `e2e/fixtures/store.fixture.ts` |
+| **LLM workflow + harness tuning** | `docs/llm-workflow.md`, `docs/llm-harness.md` |
+| **CI = definition of done** | `pnpm run lint` · `pnpm run test:run` · `pnpm run test:e2e:store` · `pnpm run build` |
+
 ## ⚠️ IMPORTANT: Phase Tracking & Maintenance
 
-**Last Updated:** 2026-03-12  
+**Last Updated:** 2026-03-21  
 **Current Phase:** Phase 0.25 (Complete) ✅ → Phase 0.5 (In Progress)  
 **Next Phase:** Phase 0.5: Nand2Tetris Foundation
 
@@ -503,9 +518,12 @@ See [Implementation Guide](implementation.md#technology-stack-evolution) for det
 
 ## Related Documentation
 
-- [`.cursorrules`](../.cursorrules) - **Start here!** Project rules, phase tracking, and quick reference
-- [`HACER_LLM_GUIDE.md`](../HACER_LLM_GUIDE.md) - Detailed development patterns, examples, and best practices
-- [`docs/llm-workflow.md`](./docs/llm-workflow.md) - Workflow orchestration for AI agents (plan mode, subagents, verification)
+- [`.cursorrules`](./.cursorrules) - **Start here!** Project rules, phase tracking, and quick reference
+- [`AGENTS.md`](./AGENTS.md) - Universal agent entry, CI gates, rule precedence
+- [`.cursor/rules/000-hacer-precedence.mdc`](./.cursor/rules/000-hacer-precedence.mdc) - Cursor: HACER overrides ECC generic rules
+- [`docs/llm-harness.md`](./docs/llm-harness.md) - MCP, ECC hooks, session efficiency
+- [`HACER_LLM_GUIDE.md`](./HACER_LLM_GUIDE.md) - Detailed development patterns, examples, and best practices
+- [`docs/llm-workflow.md`](./llm-workflow.md) - Workflow orchestration for AI agents (plan mode, subagents, verification)
 - [`docs/testing/`](./docs/testing/) - Testing standards, TDD workflow, templates
 - [`docs/typescript-guidelines.md`](./docs/typescript-guidelines.md) - TypeScript best practices
 - [`docs/roadmap/`](./docs/roadmap/README.md) - Project roadmap and phases
@@ -516,6 +534,8 @@ See [Implementation Guide](implementation.md#technology-stack-evolution) for det
 
 This document focuses on **repository structure and file organization**. For:
 - **Quick rules & phase status**: See [`.cursorrules`](./.cursorrules)
+- **Rule precedence (Cursor)**: See [`.cursor/rules/000-hacer-precedence.mdc`](./.cursor/rules/000-hacer-precedence.mdc)
+- **Harness / MCP / hooks**: See [`docs/llm-harness.md`](./llm-harness.md)
 - **Detailed patterns & examples**: See [`HACER_LLM_GUIDE.md`](./HACER_LLM_GUIDE.md)
 - **Workflow orchestration**: See [`docs/llm-workflow.md`](./docs/llm-workflow.md)
 - **Testing standards & TDD**: See [`docs/testing/`](./docs/testing/)

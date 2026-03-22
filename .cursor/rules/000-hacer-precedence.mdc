@@ -1,0 +1,20 @@
+---
+description: HACER rule precedence — read before ECC generic rules
+alwaysApply: true
+---
+
+# HACER overrides (mandatory order)
+
+When instructions conflict, use **this order** (highest wins):
+
+1. **User message** in the current chat  
+2. **`.cursorrules`** — stack (React 19, Zustand, React Compiler, no Valtio)  
+3. **Root `AGENTS.md`** — HACER workflow, CI gates, cognitive protocols  
+4. **`HACER_LLM_GUIDE.md`** — patterns and examples for this codebase  
+5. **`REPO_MAP.md`** — where files live; **do not assume dirs from ECC** that are not listed here  
+6. **`.cursor/rules/`** (ECC-derived `common-*`, `typescript-*`) — general quality only where they **do not** contradict 2–4  
+7. **`.cursor/AGENTS.md`** — trimmed ECC agent hints  
+
+**Definition of done (no exceptions):** `pnpm run lint`, `pnpm run test:run`, `pnpm run test:e2e:store`, and `pnpm run build` all succeed — see root `AGENTS.md` §0.
+
+**Cursor-only:** Ignore steps that reference missing paths (e.g. `.claude/CONSTITUTION.md` if absent). Prefer `.cursorrules` + root `AGENTS.md` + `docs/llm-harness.md`.

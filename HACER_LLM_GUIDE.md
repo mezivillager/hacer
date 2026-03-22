@@ -8,6 +8,7 @@
 > - [`AGENTS.md`](AGENTS.md) - **Universal agent entry point.** CI quality gates, cognitive protocols, mandatory workflow.
 > - [`.cursorrules`](.cursorrules) - Phase tracking, TDD protocol, quick rules
 > - [`REPO_MAP.md`](REPO_MAP.md) - Repository structure, directory organization, and file locations
+> - [`docs/llm-harness.md`](docs/llm-harness.md) - MCP, ECC hooks, cross-platform layout, session efficiency
 > - [`.claude/skills/`](.claude/skills/) - Composable skill files (TDD, debugging, planning, review, patterns)
 > - [`docs/roadmap/`](docs/roadmap/) - Development roadmap, phases, and implementation plans
 
@@ -20,6 +21,68 @@ This guide provides **detailed patterns and examples** for development. For quic
 - **Detailed examples & patterns**: This document
 
 All documents are kept in sync and should be consulted together.
+
+**Precedence when docs disagree:** `.cursorrules` → root **`AGENTS.md`** → **this guide** → **`REPO_MAP.md`** → generic ECC rules under `.cursor/rules/`. See also **`docs/llm-harness.md`**.
+
+### How to read this file (1,400+ lines — do NOT load all at once)
+
+Read the **LLM quick reference** below (always), then **only the section you need** for the current task:
+
+| Task type | Read section |
+|-----------|--------------|
+| Any code change | **LLM quick reference** (line ~29) + **Discovery Protocol** (line ~71) |
+| React component work | **React Best Practices** (line ~130) |
+| Writing or fixing tests | **Testing Strategy** (line ~626) |
+| 3D / R3F scene work | **React Three Fiber Patterns** (line ~802) |
+| Store / state changes | **Zustand State Management** (line ~962) |
+| UI with Ant Design | **Ant Design Usage** (line ~1083) |
+| File placement / imports | **File Organization** (line ~1129) |
+| Performance tuning | **Performance Patterns** (line ~1161) |
+| AI-generated code review | **Code Review Checklist** (line ~1308) + **Anti-Patterns** (line ~1358) |
+
+Use `grep` or search to jump to the `## ` heading you need instead of reading end-to-end.
+
+---
+
+## 🤖 LLM quick reference (copy-paste patterns)
+
+*Signatures drift — always confirm in `src/store/circuitStore.ts` and `src/store/types.ts` after pasting.*
+
+### Zustand: read vs write
+
+```typescript
+import { useCircuitStore, circuitActions } from '@/store/circuitStore';
+
+// Read in components — narrow selectors (React Compiler: no useMemo on selectors)
+const gates = useCircuitStore((s) => s.gates);
+
+// Mutate only through actions (never mutate store state in place from UI)
+circuitActions.someAction(/* args per circuitStore.ts */);
+
+// Outside React (tests, helpers): snapshot / imperative
+const { gates } = useCircuitStore.getState();
+// useCircuitStore.setState(...) only when the codebase already does for that case
+```
+
+### React Compiler (mandatory)
+
+- **Do not add** `useMemo`, `useCallback`, or `React.memo` for optimization.  
+- Keep **render pure** — no mutating external objects during render.  
+- Follow **`eslint-plugin-react-compiler`** / project ESLint — fix violations, do not disable to “ship”.
+
+### React Three Fiber (high-signal)
+
+- Prefer **`useFrame`** for per-frame logic; avoid creating **new geometries/materials** inside render or `useFrame` without disposal.  
+- **`useLoader`** / assets: respect lifecycle; dispose in cleanup when adding custom resources.  
+- Keep **scene graph** updates compatible with R3F reconciliation — favor stable refs for objects that Three mutates internally.
+
+### Executable specs (prefer reading tests over guessing)
+
+| Area | Spec file(s) |
+|------|----------------|
+| Gate / store behavior | `src/store/actions/**/*.test.ts` |
+| Boolean simulation | `src/simulation/gateLogic.test.ts` |
+| Store E2E | `e2e/specs/**/*.store.spec.ts` |
 
 ---
 
@@ -45,7 +108,6 @@ writing code.**
 **Quick check:** After writing any code that references a type or action, run `pnpm run typecheck`.
 TypeScript will tell you immediately if a type name or signature no longer matches.
 
----
 ---
 
 ## 🚨 NON-NEGOTIABLE RULES
