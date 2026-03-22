@@ -177,7 +177,9 @@ This roadmap has been broken down into focused, manageable sections:
 ### Phase Documents
 - **[Phase 0: Critical Fixes](phases/phase-0-critical-fixes.md)** - Foundation fixes and documentation updates
 - **[Phase 0.25: UI/UX Improvements](phases/phase-0.25-ui-improvements.md)** - Grid-based circuit design and E2E test optimization
-- **[Phase 0.5: Nand2Tetris Foundation](phases/phase-0.5-nand2tetris-foundation.md)** - Essential nand2tetris gaps
+- **[Phase 0.5: Project 1 — Boolean Logic](phases/phase-0.5-nand2tetris-foundation.md)** - Chip hierarchy, buses, HDL, testing, 3D/UI for Project 1
+- **[Phase 0.6: Projects 2-3 — Arithmetic & Sequential Logic](phases/phase-0.6-arithmetic-sequential.md)** - DFF, clock, RAM, ALU, arithmetic chips
+- **[Phase 0.7: Projects 4-5 — Computer Architecture](phases/phase-0.7-computer-architecture.md)** - CPU, Memory, ROM, screen/keyboard I/O
 - **[Phase 1.5: Design System & Visual Consistency](phases/phase-1.5-design-system.md)** - Design foundation, tokens, Figma integration
 - **[Phase 2.5: Developer Tooling & DX](phases/phase-2.5-developer-tooling.md)** - Storybook, CI/CD, commit hooks, DX tools
 - **[Phase 3.5: Testing & Quality Infrastructure](phases/phase-3.5-testing-infrastructure.md)** - Testing foundation, quality gates, automation
@@ -211,31 +213,35 @@ This roadmap has been broken down into focused, manageable sections:
 |-------|----------|----------|------------------|
 | [0](phases/phase-0-critical-fixes.md) | Week 1 | 🔴 CRITICAL | Documentation fixes, tooling setup |
 | [0.25](phases/phase-0.25-ui-improvements.md) | Week 1.5 | 🟠 HIGH | Grid-based placement, wire routing, E2E optimization |
-| [0.5](phases/phase-0.5-nand2tetris-foundation.md) | Weeks 2-4 | 🔴 CRITICAL | HDL parser, sequential logic, file formats |
-| [1.5](phases/phase-1.5-design-system.md) | Weeks 5-7 | 🟠 HIGH | Design system foundation, tokens, Figma integration |
-| [2.5](phases/phase-2.5-developer-tooling.md) | Weeks 8-10 | 🟠 HIGH | Storybook, CI/CD, commit hooks, DX tools |
-| [3.5](phases/phase-3.5-testing-infrastructure.md) | Weeks 11-13 | 🟠 HIGH | Testing infrastructure, quality gates, automation |
-| [4.5](phases/phase-4.5-release-management.md) | Weeks 14-16 | 🟠 HIGH | Semantic release, conventional commits, automation |
-| [5](phases/phase-5-core-architecture.md) | Weeks 17-19 | 🟠 HIGH | Type safety, core refactor, event system |
-| [6](phases/phase-6-plugin-system.md) | Weeks 20-22 | 🟠 HIGH | Plugin framework, renderers, analyzers |
-| [7](phases/phase-7-ai-integration.md) | Weeks 23-25 | 🟠 HIGH | Public APIs, agent parity, AI context |
-| [8](phases/phase-8-enhanced-testing.md) | Weeks 26-28 | 🟡 MEDIUM | Curriculum tests, integration testing |
-| [9](phases/phase-9-performance.md) | Weeks 29-31 | 🟡 MEDIUM | Web workers, scaling, performance monitoring |
-| [10](phases/phase-10-software-stack.md) | Weeks 32-36 | 🟠 HIGH | Assembler, VM, compiler, integrated debugging |
-| [11](phases/phase-11-components.md) | Weeks 37-39 | 🟢 HIGH | Component library, visual browser, instantiation |
-| [12](phases/phase-12-backend.md) | Weeks 40-44 | 🟡 MEDIUM | Multi-user collaboration, offline-first architecture |
-| [13](phases/phase-13-deployment-production.md) | Weeks 45-47 | 🟠 HIGH | Deployment pipeline, error tracking, analytics |
-| [14](phases/phase-14-security-privacy.md) | Weeks 48-49 | 🟠 HIGH | Security audit, CSP, GDPR compliance |
-| [15](phases/phase-15-authentication.md) | Weeks 50-52 | 🟠 HIGH | Production-ready auth with Better Auth |
-| [16](phases/phase-16-api-ecosystem.md) | Weeks 53-55 | 🟡 MEDIUM | API platform, developer portal, third-party integrations |
-| [17](phases/phase-17-mobile-touch.md) | Weeks 56-57 | 🟡 MEDIUM | Touch gestures, responsive design, mobile UX |
-| [18](phases/phase-18-advanced-collaboration.md) | Weeks 58-59 | 🟢 MEDIUM | Voice/video calls, team workspaces, conflict resolution |
-| [19](phases/phase-19-analytics-insights.md) | Weeks 60-61 | 🟡 LOW | Learning analytics, AI recommendations, insights |
-| [20](phases/phase-20-accessibility-i18n.md) | Weeks 62-64 | 🟢 MEDIUM | WCAG AA compliance, multi-language support |
-| [21](phases/phase-21-advanced-performance-pwa.md) | Weeks 65-67 | 🟢 MEDIUM | PWA features, bundle optimization, offline support |
-| [22](phases/phase-22-public-website.md) | Weeks 68-72 | 🟠 HIGH | Professional website and integrated docs |
-| [23](phases/phase-23-docs-automation.md) | Weeks 73-75 | 🟡 MEDIUM | AI-powered doc generation and updates |
-| [24](phases/phase-20-ai-code-review.md) | Weeks 76-78 | 🟡 MEDIUM | Automated PR reviews and quality assurance |
+| [0.5](phases/phase-0.5-nand2tetris-foundation.md) | Weeks 2-8 | 🔴 CRITICAL | Project 1: chip hierarchy, buses, HDL, testing, 3D/UI |
+| [0.6](phases/phase-0.6-arithmetic-sequential.md) | Weeks 9-12 | 🔴 CRITICAL | Projects 2-3: DFF, clock, RAM, ALU |
+| [0.7](phases/phase-0.7-computer-architecture.md) | Weeks 13-17 | 🔴 CRITICAL | Projects 4-5: CPU, Memory, ROM, I/O |
+| [1.5](phases/phase-1.5-design-system.md) | Weeks 18-20 | 🟠 HIGH | Design system foundation, tokens, Figma integration |
+| [2.5](phases/phase-2.5-developer-tooling.md) | Weeks 21-23 | 🟠 HIGH | Storybook, CI/CD, commit hooks, DX tools |
+| [3.5](phases/phase-3.5-testing-infrastructure.md) | Weeks 24-26 | 🟠 HIGH | Testing infrastructure, quality gates, automation |
+| [4.5](phases/phase-4.5-release-management.md) | Weeks 27-29 | 🟠 HIGH | Semantic release, conventional commits, automation |
+| [5](phases/phase-5-core-architecture.md) | Weeks 30-32 | 🟠 HIGH | Type safety, core refactor, event system |
+| [6](phases/phase-6-plugin-system.md) | Weeks 33-35 | 🟠 HIGH | Plugin framework, renderers, analyzers |
+| [7](phases/phase-7-ai-integration.md) | Weeks 36-38 | 🟠 HIGH | Public APIs, agent parity, AI context |
+| [8](phases/phase-8-enhanced-testing.md) | Weeks 39-41 | 🟡 MEDIUM | Curriculum tests, integration testing |
+| [9](phases/phase-9-performance.md) | Weeks 42-44 | 🟡 MEDIUM | Web workers, scaling, performance monitoring |
+| [10](phases/phase-10-software-stack.md) | Weeks 45-49 | 🟠 HIGH | Assembler, VM, compiler, integrated debugging |
+| [11](phases/phase-11-components.md) | Weeks 50-52 | 🟢 HIGH | Component library, visual browser, instantiation |
+| [12](phases/phase-12-backend.md) | Weeks 53-57 | 🟡 MEDIUM | Multi-user collaboration, offline-first architecture |
+| [13](phases/phase-13-deployment-production.md) | Weeks 58-60 | 🟠 HIGH | Deployment pipeline, error tracking, analytics |
+| [14](phases/phase-14-security-privacy.md) | Weeks 61-62 | 🟠 HIGH | Security audit, CSP, GDPR compliance |
+| [15](phases/phase-15-authentication.md) | Weeks 63-65 | 🟠 HIGH | Production-ready auth with Better Auth |
+| [16](phases/phase-16-api-ecosystem.md) | Weeks 66-68 | 🟡 MEDIUM | API platform, developer portal, third-party integrations |
+| [17](phases/phase-17-mobile-touch.md) | Weeks 69-70 | 🟡 MEDIUM | Touch gestures, responsive design, mobile UX |
+| [18](phases/phase-18-advanced-collaboration.md) | Weeks 71-72 | 🟢 MEDIUM | Voice/video calls, team workspaces, conflict resolution |
+| [19](phases/phase-19-analytics-insights.md) | Weeks 73-74 | 🟡 LOW | Learning analytics, AI recommendations, insights |
+| [20](phases/phase-20-accessibility-i18n.md) | Weeks 75-77 | 🟢 MEDIUM | WCAG AA compliance, multi-language support |
+| [21](phases/phase-21-advanced-performance-pwa.md) | Weeks 78-80 | 🟢 MEDIUM | PWA features, bundle optimization, offline support |
+| [22](phases/phase-22-public-website.md) | Weeks 81-85 | 🟠 HIGH | Professional website and integrated docs |
+| [23](phases/phase-23-docs-automation.md) | Weeks 86-88 | 🟡 MEDIUM | AI-powered doc generation and updates |
+| [24](phases/phase-20-ai-code-review.md) | Weeks 89-91 | 🟡 MEDIUM | Automated PR reviews and quality assurance |
+
+*Weeks 21+ are rebaselined after Phases 0.5–0.7 and 1.5 (through week 20); durations per phase are unchanged from the pre-split roadmap.*
 
 ---
 
@@ -243,15 +249,9 @@ This roadmap has been broken down into focused, manageable sections:
 
 - **Phase 0 must complete before Phase 0.25** - Foundation fixes needed before UI improvements
 - **Phase 0.25 must complete before Phase 0.5** - Grid-based system improves UX before core features
-- **Phase 0 must complete before Phase 0.25** - Foundation fixes needed before UI improvements
-- **Phase 0.25 must complete before Phase 0.5** - Grid-based system improves UX before core features
-- **Phase 0.5 must complete before Phase 1** - Nand2tetris gaps are architectural prerequisites
-- **Phase 1 must complete before Phase 2** - Core architecture needed for plugin system
-- **Phase 2 must complete before Phase 3** - Plugin system needed for AI agents
-- **Phase 3 must complete before Phase 4** - APIs needed for comprehensive testing
-- **Phase 4 must complete before Phase 5** - Testing needed for performance validation
-- **Phase 5 must complete before Phase 6** - Performance foundation needed for software stack
-- **Phase 6 must complete before Phase 7** - Software stack needed for component validation
+- **Phase 0.5 must complete before Phase 0.6** - Project 1 (Boolean Logic) foundations needed for arithmetic and sequential logic
+- **Phase 0.6 must complete before Phase 0.7** - Projects 2-3 (arithmetic, RAM) needed for computer architecture
+- **Phase 0.7 must complete before Phase 1.5** - Complete hardware platform before design system polish
 - **Phase 1.5 must complete before Phase 2.5** - Design system foundation needed for developer tooling
 - **Phase 2.5 must complete before Phase 3.5** - Developer tooling needed for testing infrastructure
 - **Phase 3.5 must complete before Phase 4.5** - Testing foundation needed for release management
@@ -285,5 +285,5 @@ See [Implementation Guide](implementation.md) for detailed success metrics, risk
 ---
 
 **Document Status:** Modularized for LLM Agent Accessibility  
-**Last Updated:** December 13, 2025  
-**Next Review:** January 2026
+**Last Updated:** March 21, 2026  
+**Next Review:** Q2 2026

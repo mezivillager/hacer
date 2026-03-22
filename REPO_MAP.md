@@ -163,11 +163,43 @@ scripts/
     └── deploy.yml    # GitHub Pages deployment (push to main)
 ```
 
-### 🔄 Next Phase Structure (Phase 0.5 - Starting Soon)
+### 🔄 Next Phase Structure (Phase 0.5 — Project 1: Boolean Logic)
 
 **Expected additions:**
-- `src/core/hdl/` - HDL parser and generator
-- `src/core/testing/nand2tetris/` - Test script execution
+- `src/core/chips/` - Chip hierarchy (ChipRegistry, ChipDefinition, composite chips)
+- `src/core/hdl/` - HDL parser and compiler
+- `src/core/testing/nand2tetris/` - Test script and compare file execution
+- `src/core/simulation/topologicalEval.ts` - Topological sort evaluation
+- `src/components/ui/ChipDefinitionPanel.tsx` - Chip I/O definition UI
+- `src/components/ui/TestResultsPanel.tsx` - Test results and diff display
+- `src/components/ui/PinoutPanel.tsx` - Chip pin inspection
+- `src/components/ui/CurriculumBrowser.tsx` - Project/chip navigation
+- `src/components/ui/HDLEditor.tsx` - HDL code editor
+- `src/components/ui/StatusBar.tsx` - Error/status reporting
+- `src/gates/components/CompositeChip3D.tsx` - 3D composite chip rendering
+- `src/gates/components/BusSplitter3D.tsx` - Bus splitter visual component
+- `src/gates/components/BusJoiner3D.tsx` - Bus joiner visual component
+- `src/store/actions/persistenceActions/` - Circuit save/load to localStorage
+- `src/data/nand2tetris/project01/` - Bundled curriculum files (.hdl, .tst, .cmp)
+
+### 🔄 Phase 0.6 — Projects 2-3: Arithmetic & Sequential Logic
+
+**Expected additions:**
+- `src/core/gates/sequential/` - DFF, clock signal system
+- `src/core/gates/memory/` - SparseMemory, RAM implementations
+- `src/data/nand2tetris/project02/` - Project 2 curriculum files
+- `src/data/nand2tetris/project03/` - Project 3 curriculum files
+
+### 🔄 Phase 0.7 — Projects 4-5: Computer Architecture
+
+**Expected additions:**
+- `src/core/cpu/` - Hack CPU implementation
+- `src/core/memory/` - Memory-mapped I/O (Screen, Keyboard)
+- `src/core/rom/` - ROM32K, .hack file loader
+- `src/components/ui/ScreenDisplay.tsx` - Screen I/O rendering
+- `src/components/ui/DebugPanel.tsx` - Execution and debugging UI
+- `src/data/nand2tetris/project04/` - Project 4 test programs
+- `src/data/nand2tetris/project05/` - Project 5 curriculum files
 
 ### ⏸️ Future Structure (Phases 5-24 - Not Yet Implemented)
 
@@ -304,10 +336,31 @@ hacer/
 - 0.25.7 Wire selection and deletion ✅
 - 0.25.8 E2E test reorganization and optimization ✅
 
-### 🔄 Phase 0.5: Nand2Tetris Foundation (In Progress)
-- `src/core/hdl/parser.ts` - HDL parser for .hdl files
+### 🔄 Phase 0.5: Project 1 — Boolean Logic (In Progress)
+- `src/core/chips/` - Chip hierarchy system (registry, definitions, composite chips)
+- `src/core/hdl/` - HDL parser and compiler for HACK HDL
 - `src/core/testing/nand2tetris/` - Test script execution (.tst/.cmp)
-- Sequential logic support (DFF, Register, RAM)
+- `src/core/simulation/topologicalEval.ts` - Topological sort for correct evaluation
+- Multi-bit bus support (data model, simulation, 3D splitter/joiner)
+- Chip I/O definition workflow (node rename, name display, chip definition panel)
+- HDL editor, test results, pinout, curriculum browser UI panels
+- Circuit persistence (localStorage save/load)
+- Builtin implementations for all 15 Project 1 chips
+- See [Gap Analysis](docs/nand2tetris/project1/gap-analysis.md) for detailed requirements
+
+### 🔄 Phase 0.6: Projects 2-3 — Arithmetic & Sequential Logic (Planned)
+- `src/core/gates/sequential/` - DFF, clock system, Register, PC
+- `src/core/gates/memory/` - SparseMemory, RAM8 through RAM16K
+- Clock signal propagation and two-phase simulation
+- Project 2 chips (HalfAdder, FullAdder, Add16, Inc16, ALU)
+- Project 3 chips (Bit, Register, RAM8..RAM16K, PC)
+
+### 🔄 Phase 0.7: Projects 4-5 — Computer Architecture (Planned)
+- `src/core/cpu/` - Hack CPU, instruction decode, program counter
+- `src/core/memory/` - Memory-mapped I/O (Screen, Keyboard)
+- `src/core/rom/` - ROM32K, .hack file loading
+- Execution and debugging UI (step, run, register/memory views)
+- Screen display and keyboard input handling
 
 ### ⏸️ Phase 5: Core Architecture (Future)
 - `src/core/gates/registry.ts` - Single source of truth for gate definitions
@@ -362,10 +415,25 @@ hacer/
   - Keyboard rotation: 90° increments around Z axis (local) for world Y rotation
   - Camera position: `[0, 6, 6]` for optimal initial view
 
-### 🔄 Phase 0.5: Nand2Tetris Foundation (Next)
-- **HDL Support**: Parser and generator for .hdl files
-- **Test Infrastructure**: .tst/.cmp test script execution
-- **Sequential Logic**: DFF, Register, RAM components
+### 🔄 Phase 0.5: Project 1 — Boolean Logic (Next)
+- **Chip Hierarchy**: Composite chips — define, package, instantiate, evaluate
+- **Multi-bit Buses**: Data model, simulation, 3D splitter/joiner components
+- **HDL Support**: Parser and compiler for HACK HDL (.hdl files)
+- **Test Infrastructure**: .tst/.cmp test script execution and validation
+- **Simulation**: Topological sort for correct single-pass evaluation
+- **3D/UI**: Chip definition panel, test results, pinout, curriculum browser, HDL editor
+- **Persistence**: Circuit save/load via localStorage
+
+### 🔄 Phase 0.6: Projects 2-3 — Arithmetic & Sequential (Planned)
+- **Sequential Logic**: DFF, clock system, Register, PC
+- **Memory**: SparseMemory, RAM8 through RAM16K
+- **Arithmetic**: HalfAdder, FullAdder, Add16, Inc16, ALU
+
+### 🔄 Phase 0.7: Projects 4-5 — Computer Architecture (Planned)
+- **CPU**: Hack CPU, instruction decode, ALU integration
+- **Memory I/O**: Screen display, keyboard input (memory-mapped)
+- **ROM**: ROM32K, .hack program loading and execution
+- **Debugging**: Step/run execution, register/memory inspection
 
 ### ⏸️ Phase 5-7: Core Architecture & Extensibility (Future)
 - **Core Layer**: Pure logic in `src/core/` (ZERO React dependencies)
@@ -504,7 +572,11 @@ import { Scene } from '@/components/canvas/Scene';
 - **Testing Standards**: `docs/testing/standards.md` - TDD workflow documentation
 
 ### 🔄 Phase 0.5 (In Progress)
-- **Curriculum Tests**: Nand2tetris test script execution
+- **Curriculum Tests**: Nand2tetris Project 1 test script execution (.tst/.cmp)
+- **Chip Hierarchy Tests**: Composite chip creation, packaging, instantiation
+- **Bus Tests**: Multi-bit propagation, sub-bus slicing, bus splitter/joiner
+- **HDL Tests**: Parser correctness, compiler chip resolution, round-trip accuracy
+- **Persistence Tests**: Save/load circuit integrity
 
 ### ⏸️ Phase 3.5+ (Enhanced Testing - Future)
 - **Property-Based Tests**: fast-check for invariants
@@ -528,7 +600,10 @@ See [Implementation Guide](implementation.md#technology-stack-evolution) for det
 - [`docs/typescript-guidelines.md`](./docs/typescript-guidelines.md) - TypeScript best practices
 - [`docs/roadmap/`](./docs/roadmap/README.md) - Project roadmap and phases
 - [`docs/roadmap/phases/phase-0.25-ui-improvements.md`](./docs/roadmap/phases/phase-0.25-ui-improvements.md) - Phase 0.25 documentation (completed)
-- [`docs/roadmap/phases/phase-0.5-nand2tetris-foundation.md`](./docs/roadmap/phases/phase-0.5-nand2tetris-foundation.md) - Current phase documentation
+- [`docs/roadmap/phases/phase-0.5-nand2tetris-foundation.md`](./docs/roadmap/phases/phase-0.5-nand2tetris-foundation.md) - Phase 0.5: Project 1 Boolean Logic
+- [`docs/roadmap/phases/phase-0.6-arithmetic-sequential.md`](./docs/roadmap/phases/phase-0.6-arithmetic-sequential.md) - Phase 0.6: Projects 2-3
+- [`docs/roadmap/phases/phase-0.7-computer-architecture.md`](./docs/roadmap/phases/phase-0.7-computer-architecture.md) - Phase 0.7: Projects 4-5
+- [`docs/nand2tetris/project1/gap-analysis.md`](./docs/nand2tetris/project1/gap-analysis.md) - Project 1 gap analysis (reference for Phase 0.5)
 
 ## Document Relationship
 
