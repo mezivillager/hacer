@@ -67,13 +67,13 @@ describe('BaseGate', () => {
     bodyColor: '#2d5a3d',
     bodyHoverColor: '#3d7a4d',
     bodySelectedColor: '#4a9eff',
-    output: false,
-    inputs: [false, false],
+    output: 0,
+    inputs: [0, 0],
     pinConfigs: [
       {
         pinId: 'gate-1-in-0',
         position: [-0.6, 0.2, 0] as [number, number, number],
-        value: false,
+        value: 0,
         connected: false,
         pinType: 'input' as const,
         pinName: 'inputA',
@@ -81,7 +81,7 @@ describe('BaseGate', () => {
       {
         pinId: 'gate-1-out-0',
         position: [0.6, 0, 0] as [number, number, number],
-        value: false,
+        value: 0,
         connected: false,
         pinType: 'output' as const,
         pinName: 'output',
@@ -247,7 +247,7 @@ describe('BaseGate', () => {
           {
             pinId: 'gate-1-in-0',
             position: [-0.6, 0.2, 0] as [number, number, number],
-            value: false,
+            value: 0,
             connected: true, // inputA connected
             pinType: 'input' as const,
             pinName: 'inputA',
@@ -255,7 +255,7 @@ describe('BaseGate', () => {
           {
             pinId: 'gate-1-in-1',
             position: [-0.6, -0.2, 0] as [number, number, number],
-            value: false,
+            value: 0,
             connected: false, // inputB not connected
             pinType: 'input' as const,
             pinName: 'inputB',
@@ -263,7 +263,7 @@ describe('BaseGate', () => {
           {
             pinId: 'gate-1-out-0',
             position: [0.6, 0, 0] as [number, number, number],
-            value: false,
+            value: 0,
             connected: false, // output not connected
             pinType: 'output' as const,
             pinName: 'output',

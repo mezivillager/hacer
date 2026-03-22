@@ -18,7 +18,7 @@ interface InputNode3DProps {
   /** Rotation in 3D space */
   rotation: Rotation
   /** Current input value */
-  value: boolean
+  value: number
   /** Whether this node is selected */
   selected?: boolean
   /** Whether the output is connected to a wire */
@@ -65,10 +65,10 @@ export function InputNode3D({
   const bodyColor = selected
     ? NODE_COLORS.input.selected
     : hovered
-      ? (value ? NODE_COLORS.input.hoverOn : NODE_COLORS.input.hoverOff)
-      : (value ? NODE_COLORS.input.bodyOn : NODE_COLORS.input.bodyOff)
+      ? (value === 1 ? NODE_COLORS.input.hoverOn : NODE_COLORS.input.hoverOff)
+      : (value === 1 ? NODE_COLORS.input.bodyOn : NODE_COLORS.input.bodyOff)
 
-  const pinColor = value ? colors.pin.active : colors.pin.inactive
+  const pinColor = value === 1 ? colors.pin.active : colors.pin.inactive
   const pinPos = calculateNodePinPosition('input')
 
   const handlePinClick = (e: React.MouseEvent) => {
@@ -126,7 +126,7 @@ export function InputNode3D({
         anchorY="middle"
         font={undefined}
       >
-        {value ? '1' : '0'}
+        {value === 1 ? '1' : '0'}
       </Text>
 
       <mesh
@@ -137,7 +137,7 @@ export function InputNode3D({
         <meshStandardMaterial
           color={pinColor}
           emissive={pinColor}
-          emissiveIntensity={value ? 0.5 : 0.2}
+          emissiveIntensity={value === 1 ? 0.5 : 0.2}
           metalness={materials.pin.metalness}
           roughness={materials.pin.roughness}
         />

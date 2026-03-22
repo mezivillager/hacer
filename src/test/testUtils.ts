@@ -95,8 +95,8 @@ export function createMockStore(partial: Partial<CircuitState> = {}): CircuitSto
     getPinOrientation: () => null,
     toggleAxes: () => {},
     // Node actions
-    addInputNode: () => ({ id: '', name: '', position: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, value: true, width: 1 }),
-    addOutputNode: () => ({ id: '', name: '', position: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, value: false, width: 1 }),
+    addInputNode: () => ({ id: '', name: '', position: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, value: 0, width: 1 }),
+    addOutputNode: () => ({ id: '', name: '', position: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, value: 0, width: 1 }),
     removeInputNode: () => {},
     removeOutputNode: () => {},
     updateInputNodeValue: () => {},

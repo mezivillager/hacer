@@ -7,7 +7,7 @@ export interface Pin {
   id: string
   name: string
   type: 'input' | 'output'
-  value: boolean
+  value: number
 }
 
 import type { WireSegment } from '@/utils/wiringScheme/types'
@@ -25,7 +25,7 @@ export interface InputNode {
   name: string           // e.g., 'a', 'b', 'sel'
   position: Position
   rotation: Rotation
-  value: boolean         // current input value
+  value: number          // current input value
   width: number          // bus width (1 for single bit, 16 for 16-bit bus)
 }
 
@@ -38,7 +38,7 @@ export interface OutputNode {
   name: string           // e.g., 'out'
   position: Position
   rotation: Rotation
-  value: boolean         // current output value (computed from circuit)
+  value: number          // current output value (computed from circuit)
   width: number          // bus width (1 for single bit)
 }
 
@@ -200,7 +200,7 @@ export interface WireActions {
     signalId?: string
   ) => Wire
   removeWire: (wireId: string) => void
-  setInputValue: (gateId: string, pinId: string, value: boolean) => void
+  setInputValue: (gateId: string, pinId: string, value: number) => void
   updateWireSegments: (wireId: string, segments: WireSegment[], crossesWireIds?: string[]) => void
 }
 
@@ -268,7 +268,7 @@ export interface NodeActions {
   addOutputNode: (name: string, position: Position, width?: number) => OutputNode
   removeInputNode: (nodeId: string) => void
   removeOutputNode: (nodeId: string) => void
-  updateInputNodeValue: (nodeId: string, value: boolean) => void
+  updateInputNodeValue: (nodeId: string, value: number) => void
   updateInputNodePosition: (nodeId: string, position: Position) => void
   updateOutputNodePosition: (nodeId: string, position: Position) => void
 }

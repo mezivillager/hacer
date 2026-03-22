@@ -8,7 +8,7 @@ type SetState = (
 ) => void
 
 /**
- * Gets the boolean value at a wire's source endpoint.
+ * Gets the number value at a wire's source endpoint.
  *
  * Includes cycle detection to prevent infinite recursion when
  * junctions are incorrectly wired in a loop.
@@ -16,7 +16,7 @@ type SetState = (
  * @param from - The source endpoint of the wire
  * @param state - The current circuit state
  * @param visited - Set of visited junction IDs for cycle detection (internal use)
- * @returns The boolean value at the source
+ * @returns The number value at the source
  *
  * @example
  * ```ts
@@ -30,20 +30,20 @@ export function getSignalSourceValue(
   from: WireEndpoint,
   state: CircuitState,
   visited: Set<string> = new Set()
-): boolean {
+): number {
   switch (from.type) {
     case 'input': {
       const inputNode = state.inputNodes.find((n) => n.id === from.entityId)
-      return inputNode?.value ?? false
+      return inputNode?.value ?? 0
     }
     case 'gate': {
       const gate = state.gates.find((g) => g.id === from.entityId)
       const outputPin = gate?.outputs.find((p) => p.id === from.pinId)
-      return outputPin?.value ?? false
+      return outputPin?.value ?? 0
     }
     case 'junction': {
       if (visited.has(from.entityId)) {
-        return false
+        return 0
       }
       visited.add(from.entityId)
 
@@ -55,12 +55,12 @@ export function getSignalSourceValue(
           return getSignalSourceValue(originalWire.from, state, visited)
         }
       }
-      return false
+      return 0
     }
     case 'output':
     default:
       // Output nodes are destinations, not sources
-      return false
+      return 0
   }
 }
 

@@ -108,7 +108,7 @@ export const createNodePlacementActions = (
             name,
             position: snappedPosition,
             rotation: { x: 0, y: 0, z: 0 },
-            value: true,
+            value: 0,
             width: 1,
           })
           nodeId = id
@@ -123,7 +123,7 @@ export const createNodePlacementActions = (
             name,
             position: snappedPosition,
             rotation: { x: 0, y: 0, z: 0 },
-            value: false,
+            value: 0,
             width: 1,
           })
           nodeId = id

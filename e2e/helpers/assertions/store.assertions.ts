@@ -10,8 +10,8 @@ export interface StoreState {
   gates: Array<{
     id: string
     type: string
-    inputs: Array<{ id: string; value: boolean }>
-    outputs: Array<{ id: string; value: boolean }>
+    inputs: Array<{ id: string; value: number }>
+    outputs: Array<{ id: string; value: number }>
   }>
   wires: Array<{
     id: string
@@ -63,7 +63,7 @@ export async function getGateOutputValue(
   page: Page,
   gateIndex: number,
   outputIndex = 0
-): Promise<boolean | undefined> {
+): Promise<number | undefined> {
   return page.evaluate(
     ({ gateIndex, outputIndex }) => {
       return window.__CIRCUIT_STORE__?.gates[gateIndex]?.outputs[outputIndex]?.value
@@ -79,7 +79,7 @@ export async function getGateInputValue(
   page: Page,
   gateIndex: number,
   inputIndex: number
-): Promise<boolean | undefined> {
+): Promise<number | undefined> {
   return page.evaluate(
     ({ gateIndex, inputIndex }) => {
       return window.__CIRCUIT_STORE__?.gates[gateIndex]?.inputs[inputIndex]?.value

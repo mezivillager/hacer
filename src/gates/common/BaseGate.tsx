@@ -19,8 +19,8 @@ interface BaseGateComponentProps {
   bodyColor: string
   bodyHoverColor: string
   bodySelectedColor: string
-  output: boolean
-  inputs: boolean[]
+  output: number
+  inputs: number[]
   pinConfigs: PinConfig[]
   wireStubPositions: [number, number, number][]
   bodyGeometry?: React.ReactNode // React element like <boxGeometry /> (for simple geometries)
@@ -170,7 +170,7 @@ export function BaseGate(props: BaseGateComponentProps) {
       {/* Pins - rendered from configuration */}
       {pinConfigs.map((pinConfig) => {
         // Explicitly extract values to help ESLint type checker
-        const pinValue: boolean = pinConfig.value
+        const pinValue: number = pinConfig.value
         const pinConnected: boolean = pinConfig.connected
         const pinName: string = pinConfig.pinName
         const isOutput: boolean = pinConfig.pinType === 'output'

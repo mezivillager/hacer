@@ -153,11 +153,11 @@ export function createTwoInputPinConfigs(
   gateId: string,
   inputPinX: number,
   outputPinX: number,
-  inputA: boolean,
-  inputB: boolean,
+  inputA: number,
+  inputB: number,
   inputAConnected: boolean,
   inputBConnected: boolean,
-  output: boolean,
+  output: number,
   outputConnected: boolean
 ): PinConfig[] {
   return [
@@ -205,9 +205,9 @@ export function createSingleInputPinConfigs(
   gateId: string,
   inputPinX: number,
   outputPinX: number,
-  input: boolean,
+  input: number,
   inputConnected: boolean,
-  output: boolean,
+  output: number,
   outputConnected: boolean
 ): PinConfig[] {
   return [

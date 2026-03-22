@@ -6,7 +6,7 @@ import type { Position } from '@/store/types'
  * Get pin color based on state (wiring hover, output/input, connected/disconnected, value)
  */
 export function getPinColor(
-  value: boolean,
+  value: number,
   connected: boolean,
   pinName: string,
   isOutput: boolean,
@@ -14,9 +14,9 @@ export function getPinColor(
   hoveredPin: string | null
 ): string {
   if (isWiring && hoveredPin === pinName) return colors.primary
-  if (isOutput) return value ? colors.pin.active : colors.pin.inactive
-  if (connected) return value ? colors.pin.active : colors.pin.inactive
-  return value ? colors.pin.active : colors.pin.disconnected
+  if (isOutput) return value === 1 ? colors.pin.active : colors.pin.inactive
+  if (connected) return value === 1 ? colors.pin.active : colors.pin.inactive
+  return value === 1 ? colors.pin.active : colors.pin.disconnected
 }
 
 /**

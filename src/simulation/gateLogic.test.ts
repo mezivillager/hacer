@@ -12,132 +12,132 @@ import {
 
 describe('Gate Logic - Individual Functions', () => {
   describe('nandGate', () => {
-    it('returns true when both inputs are false', () => {
-      expect(nandGate(false, false)).toBe(true)
+    it('returns 1 when both inputs are 0', () => {
+      expect(nandGate(0, 0)).toBe(1)
     })
 
-    it('returns true when first input is true, second is false', () => {
-      expect(nandGate(true, false)).toBe(true)
+    it('returns 1 when first input is 1, second is 0', () => {
+      expect(nandGate(1, 0)).toBe(1)
     })
 
-    it('returns true when first input is false, second is true', () => {
-      expect(nandGate(false, true)).toBe(true)
+    it('returns 1 when first input is 0, second is 1', () => {
+      expect(nandGate(0, 1)).toBe(1)
     })
 
-    it('returns false only when both inputs are true', () => {
-      expect(nandGate(true, true)).toBe(false)
+    it('returns 0 only when both inputs are 1', () => {
+      expect(nandGate(1, 1)).toBe(0)
     })
   })
 
   describe('andGate', () => {
-    it('returns false when both inputs are false', () => {
-      expect(andGate(false, false)).toBe(false)
+    it('returns 0 when both inputs are 0', () => {
+      expect(andGate(0, 0)).toBe(0)
     })
 
-    it('returns false when one input is false', () => {
-      expect(andGate(true, false)).toBe(false)
-      expect(andGate(false, true)).toBe(false)
+    it('returns 0 when one input is 0', () => {
+      expect(andGate(1, 0)).toBe(0)
+      expect(andGate(0, 1)).toBe(0)
     })
 
-    it('returns true only when both inputs are true', () => {
-      expect(andGate(true, true)).toBe(true)
+    it('returns 1 only when both inputs are 1', () => {
+      expect(andGate(1, 1)).toBe(1)
     })
   })
 
   describe('orGate', () => {
-    it('returns false only when both inputs are false', () => {
-      expect(orGate(false, false)).toBe(false)
+    it('returns 0 only when both inputs are 0', () => {
+      expect(orGate(0, 0)).toBe(0)
     })
 
-    it('returns true when at least one input is true', () => {
-      expect(orGate(true, false)).toBe(true)
-      expect(orGate(false, true)).toBe(true)
-      expect(orGate(true, true)).toBe(true)
+    it('returns 1 when at least one input is 1', () => {
+      expect(orGate(1, 0)).toBe(1)
+      expect(orGate(0, 1)).toBe(1)
+      expect(orGate(1, 1)).toBe(1)
     })
   })
 
   describe('notGate', () => {
-    it('returns true when input is false', () => {
-      expect(notGate(false)).toBe(true)
+    it('returns 1 when input is 0', () => {
+      expect(notGate(0)).toBe(1)
     })
 
-    it('returns false when input is true', () => {
-      expect(notGate(true)).toBe(false)
+    it('returns 0 when input is 1', () => {
+      expect(notGate(1)).toBe(0)
     })
   })
 
   describe('norGate', () => {
-    it('returns true only when both inputs are false', () => {
-      expect(norGate(false, false)).toBe(true)
+    it('returns 1 only when both inputs are 0', () => {
+      expect(norGate(0, 0)).toBe(1)
     })
 
-    it('returns false when at least one input is true', () => {
-      expect(norGate(true, false)).toBe(false)
-      expect(norGate(false, true)).toBe(false)
-      expect(norGate(true, true)).toBe(false)
+    it('returns 0 when at least one input is 1', () => {
+      expect(norGate(1, 0)).toBe(0)
+      expect(norGate(0, 1)).toBe(0)
+      expect(norGate(1, 1)).toBe(0)
     })
   })
 
   describe('xorGate', () => {
-    it('returns false when both inputs are the same', () => {
-      expect(xorGate(false, false)).toBe(false)
-      expect(xorGate(true, true)).toBe(false)
+    it('returns 0 when both inputs are the same', () => {
+      expect(xorGate(0, 0)).toBe(0)
+      expect(xorGate(1, 1)).toBe(0)
     })
 
-    it('returns true when inputs are different', () => {
-      expect(xorGate(true, false)).toBe(true)
-      expect(xorGate(false, true)).toBe(true)
+    it('returns 1 when inputs are different', () => {
+      expect(xorGate(1, 0)).toBe(1)
+      expect(xorGate(0, 1)).toBe(1)
     })
   })
 
   describe('xnorGate', () => {
-    it('returns true when both inputs are the same', () => {
-      expect(xnorGate(false, false)).toBe(true)
-      expect(xnorGate(true, true)).toBe(true)
+    it('returns 1 when both inputs are the same', () => {
+      expect(xnorGate(0, 0)).toBe(1)
+      expect(xnorGate(1, 1)).toBe(1)
     })
 
-    it('returns false when inputs are different', () => {
-      expect(xnorGate(true, false)).toBe(false)
-      expect(xnorGate(false, true)).toBe(false)
+    it('returns 0 when inputs are different', () => {
+      expect(xnorGate(1, 0)).toBe(0)
+      expect(xnorGate(0, 1)).toBe(0)
     })
   })
 })
 
 describe('Gate Logic Lookup Table', () => {
   it('NAND logic matches truth table', () => {
-    expect(gateLogic.NAND([false, false])).toBe(true)
-    expect(gateLogic.NAND([true, false])).toBe(true)
-    expect(gateLogic.NAND([false, true])).toBe(true)
-    expect(gateLogic.NAND([true, true])).toBe(false)
+    expect(gateLogic.NAND([0, 0])).toBe(1)
+    expect(gateLogic.NAND([1, 0])).toBe(1)
+    expect(gateLogic.NAND([0, 1])).toBe(1)
+    expect(gateLogic.NAND([1, 1])).toBe(0)
   })
 
   it('AND logic matches truth table', () => {
-    expect(gateLogic.AND([false, false])).toBe(false)
-    expect(gateLogic.AND([true, true])).toBe(true)
+    expect(gateLogic.AND([0, 0])).toBe(0)
+    expect(gateLogic.AND([1, 1])).toBe(1)
   })
 
   it('OR logic matches truth table', () => {
-    expect(gateLogic.OR([false, false])).toBe(false)
-    expect(gateLogic.OR([true, false])).toBe(true)
+    expect(gateLogic.OR([0, 0])).toBe(0)
+    expect(gateLogic.OR([1, 0])).toBe(1)
   })
 
   it('NOT logic matches truth table', () => {
-    expect(gateLogic.NOT([false])).toBe(true)
-    expect(gateLogic.NOT([true])).toBe(false)
+    expect(gateLogic.NOT([0])).toBe(1)
+    expect(gateLogic.NOT([1])).toBe(0)
   })
 
   it('NOR logic matches truth table', () => {
-    expect(gateLogic.NOR([false, false])).toBe(true)
-    expect(gateLogic.NOR([true, false])).toBe(false)
+    expect(gateLogic.NOR([0, 0])).toBe(1)
+    expect(gateLogic.NOR([1, 0])).toBe(0)
   })
 
   it('XOR logic matches truth table', () => {
-    expect(gateLogic.XOR([false, false])).toBe(false)
-    expect(gateLogic.XOR([true, false])).toBe(true)
+    expect(gateLogic.XOR([0, 0])).toBe(0)
+    expect(gateLogic.XOR([1, 0])).toBe(1)
   })
 
   it('XNOR logic matches truth table', () => {
-    expect(gateLogic.XNOR([false, false])).toBe(true)
-    expect(gateLogic.XNOR([true, false])).toBe(false)
+    expect(gateLogic.XNOR([0, 0])).toBe(1)
+    expect(gateLogic.XNOR([1, 0])).toBe(0)
   })
 })

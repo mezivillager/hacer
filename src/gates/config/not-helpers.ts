@@ -83,9 +83,9 @@ export function calculateNotPinPositions() {
  */
 export function createNotPinConfigs(
   gateId: string,
-  input: boolean,
+  input: number,
   inputConnected: boolean,
-  output: boolean,
+  output: number,
   outputConnected: boolean
 ): PinConfig[] {
   const { inputPinX, outputPinX } = calculateNotPinPositions()

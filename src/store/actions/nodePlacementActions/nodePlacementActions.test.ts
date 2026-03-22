@@ -79,7 +79,7 @@ describe('Node Placement Actions', () => {
       expect(state.inputNodes).toHaveLength(1)
       expect(state.inputNodes[0].name).toMatch(/^in/)
       expect(state.inputNodes[0].position.x).toBe(2)
-      expect(state.inputNodes[0].value).toBe(true)
+      expect(state.inputNodes[0].value).toBe(0)
     })
 
     it('places an OUTPUT node', () => {
@@ -125,7 +125,7 @@ describe('Node Placement Actions', () => {
 
   describe('selectNode', () => {
     it('selects an input node', () => {
-      const inputNode = { id: 'in-1', name: 'a', position: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, value: false, width: 1 }
+      const inputNode = { id: 'in-1', name: 'a', position: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, value: 0, width: 1 }
       useCircuitStore.setState({ inputNodes: [inputNode] })
 
       const { selectNode } = useCircuitStore.getState()

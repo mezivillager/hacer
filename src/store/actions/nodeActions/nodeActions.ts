@@ -50,7 +50,7 @@ export const createNodeActions = (set: SetState, get: GetState): NodeActions => 
       name,
       position,
       rotation: { x: 0, y: 0, z: 0 },
-      value: true,
+      value: 0,
       width,
     }
 
@@ -67,7 +67,7 @@ export const createNodeActions = (set: SetState, get: GetState): NodeActions => 
       name,
       position,
       rotation: { x: 0, y: 0, z: 0 },
-      value: false,
+      value: 0,
       width,
     }
 
@@ -114,7 +114,7 @@ export const createNodeActions = (set: SetState, get: GetState): NodeActions => 
     }, false, 'removeOutputNode')
   },
 
-  updateInputNodeValue: (nodeId: string, value: boolean): void => {
+  updateInputNodeValue: (nodeId: string, value: number): void => {
     set((state) => {
       const node = state.inputNodes.find((n) => n.id === nodeId)
       if (node) {

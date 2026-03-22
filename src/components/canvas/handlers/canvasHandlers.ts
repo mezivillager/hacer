@@ -73,7 +73,7 @@ export function handleInputNodeToggle(nodeId: string): void {
   const currentInputNodes = useCircuitStore.getState().inputNodes
   const node = currentInputNodes.find(n => n.id === nodeId)
   if (node) {
-    circuitActions.updateInputNodeValue(nodeId, !node.value)
+    circuitActions.updateInputNodeValue(nodeId, node.value === 0 ? 1 : 0)
   }
 }
 

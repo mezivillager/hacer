@@ -48,11 +48,11 @@ function calculateAndPinPositions() {
  */
 export function createAndPinConfigs(
   gateId: string,
-  inputA: boolean,
-  inputB: boolean,
+  inputA: number,
+  inputB: number,
   inputAConnected: boolean,
   inputBConnected: boolean,
-  output: boolean,
+  output: number,
   outputConnected: boolean
 ): PinConfig[] {
   const { inputPinX, outputPinX } = calculateAndPinPositions()

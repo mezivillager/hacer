@@ -81,11 +81,11 @@ function calculateOrPinPositions() {
  */
 export function createOrPinConfigs(
   gateId: string,
-  inputA: boolean,
-  inputB: boolean,
+  inputA: number,
+  inputB: number,
   inputAConnected: boolean,
   inputBConnected: boolean,
-  output: boolean,
+  output: number,
   outputConnected: boolean
 ): PinConfig[] {
   const { inputPinX, outputPinX } = calculateOrPinPositions()

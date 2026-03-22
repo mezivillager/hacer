@@ -111,11 +111,11 @@ describe('createTwoInputPinConfigs', () => {
       'gate-1',
       -0.6,
       0.6,
+      1,
+      0,
       true,
       false,
-      true,
-      false,
-      true,
+      1,
       false
     )
 
@@ -127,18 +127,18 @@ describe('createTwoInputPinConfigs', () => {
       'gate-1',
       -0.6,
       0.6,
+      1,
+      0,
       true,
       false,
-      true,
-      false,
-      true,
+      1,
       false
     )
 
     const inputA = configs[0]
     expect(inputA.pinId).toBe('gate-1-in-0')
     expect(inputA.position).toEqual([-0.6, 0.2, 0])
-    expect(inputA.value).toBe(true)
+    expect(inputA.value).toBe(1)
     expect(inputA.connected).toBe(true)
     expect(inputA.pinType).toBe('input')
     expect(inputA.pinName).toBe('inputA')
@@ -149,18 +149,18 @@ describe('createTwoInputPinConfigs', () => {
       'gate-1',
       -0.6,
       0.6,
+      1,
+      0,
       true,
       false,
-      true,
-      false,
-      true,
+      1,
       false
     )
 
     const inputB = configs[1]
     expect(inputB.pinId).toBe('gate-1-in-1')
     expect(inputB.position).toEqual([-0.6, -0.2, 0])
-    expect(inputB.value).toBe(false)
+    expect(inputB.value).toBe(0)
     expect(inputB.connected).toBe(false)
     expect(inputB.pinType).toBe('input')
     expect(inputB.pinName).toBe('inputB')
@@ -171,18 +171,18 @@ describe('createTwoInputPinConfigs', () => {
       'gate-1',
       -0.6,
       0.6,
+      1,
+      0,
       true,
       false,
-      true,
-      false,
-      true,
+      1,
       false
     )
 
     const output = configs[2]
     expect(output.pinId).toBe('gate-1-out-0')
     expect(output.position).toEqual([0.6, 0, 0])
-    expect(output.value).toBe(true)
+    expect(output.value).toBe(1)
     expect(output.connected).toBe(false)
     expect(output.pinType).toBe('output')
     expect(output.pinName).toBe('output')
@@ -191,30 +191,30 @@ describe('createTwoInputPinConfigs', () => {
 
 describe('createSingleInputPinConfigs', () => {
   it('creates two pin configs with correct structure', () => {
-    const configs = createSingleInputPinConfigs('gate-1', -0.5, 0.7, true, true, false, false)
+    const configs = createSingleInputPinConfigs('gate-1', -0.5, 0.7, 1, true, 0, false)
 
     expect(configs).toHaveLength(2)
   })
 
   it('creates correct input pin config', () => {
-    const configs = createSingleInputPinConfigs('gate-1', -0.5, 0.7, true, true, false, false)
+    const configs = createSingleInputPinConfigs('gate-1', -0.5, 0.7, 1, true, 0, false)
 
     const input = configs[0]
     expect(input.pinId).toBe('gate-1-in-0')
     expect(input.position).toEqual([-0.5, 0, 0])
-    expect(input.value).toBe(true)
+    expect(input.value).toBe(1)
     expect(input.connected).toBe(true)
     expect(input.pinType).toBe('input')
     expect(input.pinName).toBe('input')
   })
 
   it('creates correct output pin config', () => {
-    const configs = createSingleInputPinConfigs('gate-1', -0.5, 0.7, true, true, false, false)
+    const configs = createSingleInputPinConfigs('gate-1', -0.5, 0.7, 1, true, 0, false)
 
     const output = configs[1]
     expect(output.pinId).toBe('gate-1-out-0')
     expect(output.position).toEqual([0.7, 0, 0])
-    expect(output.value).toBe(false)
+    expect(output.value).toBe(0)
     expect(output.connected).toBe(false)
     expect(output.pinType).toBe('output')
     expect(output.pinName).toBe('output')

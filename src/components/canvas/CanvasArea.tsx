@@ -208,7 +208,7 @@ export function CanvasArea() {
           const junctionValue = simulationRunning ? getSignalSourceValue(
             { type: 'junction', entityId: junction.id },
             useCircuitStore.getState()
-          ) : false
+          ) : 0
           return (
             <NodeRenderer
               key={junction.id}
