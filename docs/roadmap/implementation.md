@@ -252,15 +252,49 @@ Testing:      Comprehensive test suite + visual regression
 - [x] 0.25.10 Junction node system (place junctions at wire corners for fan-out) ✅
 - [x] 0.25.11 Wire branching from junctions (shared-segment branch wires) ✅
 
-### Phase 0.5: Nand2Tetris Foundation 🔄
-- [ ] HDL Parser/Generator implementation
-- [ ] Test script engine (.tst/.cmp support)
-- [ ] Sequential logic components (DFF, Register, RAM)
-- [ ] Chip hierarchy system
-- [ ] File format compatibility layer
-- [ ] ALU, CPU, Memory component implementations
-- [ ] Scripting and testing enhancements
-- [ ] Integration and validation
+### Phase 0.5: Project 1 — Boolean Logic 🔄
+- [ ] Chip hierarchy system (ChipRegistry, ChipDefinition, composite chip rendering)
+- [ ] Multi-bit bus support (data model, simulation, 3D bus splitter/joiner)
+- [ ] Chip I/O definition workflow (node rename, name display, chip definition panel)
+- [ ] HDL parser and compiler (HACK HDL grammar, chip-part resolution)
+- [ ] HDL editor UI panel (syntax highlighting, error display)
+- [ ] Test script execution (.tst parser, .cmp comparator, test engine)
+- [ ] Simulation engine: topological sort evaluation
+- [ ] Circuit persistence (localStorage, named circuits, save/load)
+- [ ] Curriculum navigation UI (project browser, chip list, progress tracking)
+- [ ] Test results and pinout UI panels
+- [ ] Multi-bit value input/display
+- [ ] Error/status reporting system
+- [ ] Nand primitive in chip registry + reference (builtin) implementations and toggle for 15 student-built chips
+- [ ] Bundle Project 1 curriculum files (48 files)
+- [ ] Integration testing and validation
+
+### Phase 0.6: Projects 2-3 — Arithmetic & Sequential Logic 🔄
+- [ ] DFF gate definition and builtin implementation
+- [ ] Clock system (signal, UI controls, visualization)
+- [ ] Two-phase simulation (combinatorial + clock edge)
+- [ ] SparseMemory implementation for RAM
+- [ ] RAM gate definitions (RAM8 through RAM16K)
+- [ ] Register and PC implementations
+- [ ] Extend test engine for tick/tock/ticktock
+- [ ] Project 2 builtin implementations (5 chips)
+- [ ] Project 3 builtin implementations (9 chips)
+- [ ] Bundle Project 2-3 curriculum files
+- [ ] Integration testing and validation
+
+### Phase 0.7: Projects 4-5 — Computer Architecture 🔄
+- [ ] CPU chip definition and builtin implementation
+- [ ] Instruction decode logic (A-instruction, C-instruction)
+- [ ] Memory chip (RAM16K + Screen + Keyboard memory map)
+- [ ] Screen I/O rendering (canvas display)
+- [ ] Keyboard I/O handling (event capture, key codes)
+- [ ] ROM32K implementation and .hack file loader
+- [ ] Computer chip (CPU + Memory + ROM integration)
+- [ ] Execution and debugging UI (step, run, pause, register/memory views)
+- [ ] Project 4 test programs and validation
+- [ ] Project 5 builtin implementations (Memory, CPU, Computer)
+- [ ] Bundle Project 4-5 curriculum files
+- [ ] Integration testing and validation
 
 ### Phase 1.5: Design System & Visual Consistency 🔄
 - [ ] Establish comprehensive design token system
@@ -517,27 +551,33 @@ Testing:      Comprehensive test suite + visual regression
 
 ### Phase Dependencies
 ```
-Phase 0 (Week 1) → Phase 0.5 (Weeks 2-4) → Phase 1.5 (Weeks 5-7)
+Phase 0 (Week 1) → Phase 0.25 (Week 1.5) → Phase 0.5 (Weeks 2-8, Project 1)
+                                                    ↓
+                              Phase 0.6 (Weeks 9-12, Projects 2-3)
+                                                    ↓
+                              Phase 0.7 (Weeks 13-17, Projects 4-5)
+                                                    ↓
+                              Phase 1.5 (Weeks 18-20)
+                                                    ↓
+Phase 2.5 (Weeks 21-23) → Phase 3.5 (Weeks 24-26) → Phase 4.5 (Weeks 27-29)
                                                          ↓
-Phase 2.5 (Weeks 8-10) → Phase 3.5 (Weeks 11-13) → Phase 4.5 (Weeks 14-16)
+Phase 5 (Weeks 30-32) → Phase 6 (Weeks 33-35) → Phase 7 (Weeks 36-38)
                                                          ↓
-Phase 5 (Weeks 17-19) → Phase 6 (Weeks 20-22) → Phase 7 (Weeks 23-25)
+Phase 8 (Weeks 39-41) → Phase 9 (Weeks 42-44) → Phase 10 (Weeks 45-49)
                                                          ↓
-Phase 8 (Weeks 26-28) → Phase 9 (Weeks 29-31) → Phase 10 (Weeks 32-36)
+Phase 11 (Weeks 50-52) → Phase 12 (Weeks 53-57) → Phase 13 (Weeks 58-60)
                                                          ↓
-Phase 11 (Weeks 37-39) → Phase 12 (Weeks 40-44) → Phase 13 (Weeks 45-47)
+Phase 14 (Weeks 61-62) → Phase 15 (Weeks 63-65) → Phase 16 (Weeks 66-68)
                                                          ↓
-Phase 14 (Weeks 48-49) → Phase 15 (Weeks 50-52) → Phase 16 (Weeks 53-55)
+Phase 17 (Weeks 69-70) → Phase 18 (Weeks 71-72) → Phase 19 (Weeks 73-74)
                                                          ↓
-Phase 17 (Weeks 56-57) → Phase 18 (Weeks 58-59) → Phase 19 (Weeks 60-61)
+Phase 20 (Weeks 75-77) → Phase 21 (Weeks 78-80) → Phase 22 (Weeks 81-85)
                                                          ↓
-Phase 20 (Weeks 62-64) → Phase 21 (Weeks 65-67) → Phase 22 (Weeks 68-72)
-                                                         ↓
-Phase 23 (Weeks 73-75) → Phase 24 (Weeks 76-78)
+Phase 23 (Weeks 86-88) → Phase 24 (Weeks 89-91)
 ```
 
 ### Critical Path Items
-1. **Phase 0.5 Completion** - nand2tetris gaps are architectural prerequisites
+1. **Phases 0.5–0.7 Completion** - nand2tetris hardware track (Projects 1–5) is prerequisite for a coherent platform API and design-system work on top of the full Hack machine
 2. **Phase 1.5 Completion** - Design system foundation needed for all UI development
 3. **Phase 2.5 Completion** - Developer tooling establishes team productivity baseline
 4. **Phase 3.5 Completion** - Testing infrastructure prevents quality issues

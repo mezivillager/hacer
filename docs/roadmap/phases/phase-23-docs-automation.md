@@ -1806,4 +1806,4 @@ interface ReviewerProfile {
 
 **Part of:** [Comprehensive Development Roadmap](../README.md)  
 **Previous:** [Phase 22: Public Website & Documentation Platform](phase-22-public-website.md)  
-**Next:** [Phase 24: AI-Powered Code Review & Quality Gates](phase-20-ai-code-review.md)
+**Next:** [Phase 24: AI-Powered Code Review & Quality Gates](phase-24-ai-code-review.md)

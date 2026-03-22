@@ -1,9 +1,9 @@
-# Phase 1.5: Design System & Visual Consistency (Weeks 5-7)
+# Phase 1.5: Design System & Visual Consistency (Weeks 18-20)
 
 **Part of:** [Comprehensive Development Roadmap](../README.md)
 **Priority:** 🟠 HIGH
-**Timeline:** Weeks 5-7
-**Dependencies:** Phase 0.5 complete (nand2tetris foundation established)
+**Timeline:** Weeks 18-20
+**Dependencies:** Phase 0.7 complete (hardware platform established through Project 5)
 
 ---
 
