@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { createChipRegistry, registerBuiltin } from './registry'
-import { validateChipDefinition, isBuiltinChip, isHDLChip } from './types'
+import { validateChipDefinition, isBuiltinChip, isHDLChip, isCircuitChip } from './types'
 import type { ChipDefinition } from './types'
 
 describe('ChipRegistry', () => {
@@ -60,14 +60,13 @@ describe('ChipRegistry', () => {
     reg.register(makeNandChip())
     const nand = reg.get('Nand')!
     expect(isBuiltinChip(nand)).toBe(true)
+    if (!isBuiltinChip(nand)) throw new Error('expected builtin')
 
-    if (nand.implementation.type === 'builtin') {
-      const evaluate = nand.implementation.evaluate
-      expect(evaluate({ a: 0, b: 0 })).toEqual({ out: 1 })
-      expect(evaluate({ a: 0, b: 1 })).toEqual({ out: 1 })
-      expect(evaluate({ a: 1, b: 0 })).toEqual({ out: 1 })
-      expect(evaluate({ a: 1, b: 1 })).toEqual({ out: 0 })
-    }
+    const evaluate = nand.implementation.evaluate
+    expect(evaluate({ a: 0, b: 0 })).toEqual({ out: 1 })
+    expect(evaluate({ a: 0, b: 1 })).toEqual({ out: 1 })
+    expect(evaluate({ a: 1, b: 0 })).toEqual({ out: 1 })
+    expect(evaluate({ a: 1, b: 1 })).toEqual({ out: 0 })
   })
 
   // --- registerBuiltin convenience ---
@@ -82,10 +81,9 @@ describe('ChipRegistry', () => {
     )
     expect(reg.has('Not')).toBe(true)
     const not = reg.get('Not')!
-    if (not.implementation.type === 'builtin') {
-      expect(not.implementation.evaluate({ in: 0 })).toEqual({ out: 1 })
-      expect(not.implementation.evaluate({ in: 1 })).toEqual({ out: 0 })
-    }
+    if (!isBuiltinChip(not)) throw new Error('expected builtin')
+    expect(not.implementation.evaluate({ in: 0 })).toEqual({ out: 1 })
+    expect(not.implementation.evaluate({ in: 1 })).toEqual({ out: 0 })
   })
 
   // --- Validation ---
@@ -118,6 +116,16 @@ describe('ChipRegistry', () => {
       outputs: [{ name: 'out', width: 1 }],
       implementation: { type: 'builtin', evaluate: () => ({ out: 0 }) },
     })).toThrow('Duplicate pin name')
+  })
+
+  it('rejects chip with whitespace-only pin name', () => {
+    const reg = createChipRegistry()
+    expect(() => reg.register({
+      name: 'Bad',
+      inputs: [{ name: '  ', width: 1 }],
+      outputs: [{ name: 'out', width: 1 }],
+      implementation: { type: 'builtin', evaluate: () => ({ out: 0 }) },
+    })).toThrow('Pin name must not be empty')
   })
 })
 
@@ -154,6 +162,13 @@ describe('type guards', () => {
     expect(isHDLChip({
       name: 'Not', inputs: [], outputs: [],
       implementation: { type: 'hdl', source: 'CHIP Not {}' },
+    } as ChipDefinition)).toBe(true)
+  })
+
+  it('isCircuitChip returns true for circuit', () => {
+    expect(isCircuitChip({
+      name: 'And', inputs: [], outputs: [],
+      implementation: { type: 'circuit', circuitData: {} },
     } as ChipDefinition)).toBe(true)
   })
 })
