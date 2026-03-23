@@ -13,7 +13,7 @@
 |-------|--------|
 | **Completed** | Phase 0.25 (UI/grid/circuit UX) ✅ |
 | **In progress** | **Phase 0.5 — Nand2Tetris foundation** 🔄 |
-| **Detail** | See checklist below (*Phase 0.5*) and `docs/roadmap/phases/phase-0.5-nand2tetris-foundation.md` |
+| **Detail** | See checklist below (*Phase 0.5*), per-ticket checkboxes in `docs/plans/phase-0.5-tickets-CHECKLIST.md`, and `docs/roadmap/phases/phase-0.5-nand2tetris-foundation.md` |
 
 ---
 
