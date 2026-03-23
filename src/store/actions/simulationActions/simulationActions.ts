@@ -38,6 +38,7 @@ export const createSimulationActions = (set: SetState): SimulationActions => ({
       state.nodePlacementMode = null
       state.junctionPlacementMode = null
       state.junctionPreviewPosition = null
+      state.junctionPreviewWireId = null
       state.wiringFrom = null
       state.lastSimulationError = null
     }, false, 'clearCircuit')
