@@ -129,19 +129,19 @@ function tokenize(
   }
 
   function readIdentifier(): string {
-    let result = ''
+    const start = pos
     while (pos < source.length && /[A-Za-z0-9_]/.test(source[pos])) {
-      result += advance()
+      advance()
     }
-    return result
+    return source.slice(start, pos)
   }
 
   function readNumber(): string {
-    let result = ''
+    const start = pos
     while (pos < source.length && /[0-9]/.test(source[pos])) {
-      result += advance()
+      advance()
     }
-    return result
+    return source.slice(start, pos)
   }
 
   while (pos < source.length) {
