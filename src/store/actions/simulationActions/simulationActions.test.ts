@@ -1,12 +1,21 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { message } from 'antd'
 import { useCircuitStore } from '../../circuitStore'
 import { getSignalSourceValue } from './simulationActions'
+
+vi.mock('antd', () => ({
+  message: {
+    error: vi.fn(),
+    warning: vi.fn(),
+  },
+}))
 
 // Helper to get store state
 const getState = () => useCircuitStore.getState()
 
 describe('simulationActions', () => {
   beforeEach(() => {
+    vi.clearAllMocks()
     // Reset store state before each test
     useCircuitStore.setState({
       gates: [],
@@ -24,6 +33,7 @@ describe('simulationActions', () => {
       nodePlacementMode: null,
       selectedNodeId: null,
       selectedNodeType: null,
+      lastSimulationError: null,
     })
   })
 
@@ -103,6 +113,17 @@ describe('simulationActions', () => {
       expect(getState().selectedNodeType).toBe(null)
       expect(getState().nodePlacementMode).toBe(null)
     })
+
+    it('clears lastSimulationError', () => {
+      useCircuitStore.setState({
+        lastSimulationError: {
+          type: 'cycle',
+          involvedGateIds: ['gate-a'],
+        },
+      })
+      getState().clearCircuit()
+      expect(getState().lastSimulationError).toBe(null)
+    })
   })
 
   describe('simulationTick', () => {
@@ -120,16 +141,12 @@ describe('simulationActions', () => {
       getState().setInputValue(gate1.id, gate1.inputs[0].id, 1)
       getState().setInputValue(gate1.id, gate1.inputs[1].id, 1)
 
-      // Run tick to calculate gate1 output
+      // Single tick propagates through entire chain (topological sort)
       getState().simulationTick()
 
-      // Gate1 output should now be false (NAND(true, true) = false)
+      // Gate1 output: NAND(1,1) = 0
       expect(getState().gates[0].outputs[0].value).toBe(0)
-
-      // Run another tick to propagate to gate2
-      getState().simulationTick()
-
-      // Gate2 input should receive gate1 output value
+      // Gate2 input receives gate1 output in same tick
       expect(getState().gates[1].inputs[0].value).toBe(0)
     })
 
@@ -153,6 +170,86 @@ describe('simulationActions', () => {
 
       // Should not throw, output should be calculated based on inputs
       expect(getState().gates[0].outputs[0].value).toBeDefined()
+    })
+
+    it('clears lastSimulationError on successful tick', () => {
+      useCircuitStore.setState({
+        lastSimulationError: {
+          type: 'cycle',
+          involvedGateIds: ['gate-x'],
+        },
+      })
+      getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      getState().simulationTick()
+      expect(getState().lastSimulationError).toBe(null)
+    })
+
+    it('sets lastSimulationError and shows message on combinational cycle', () => {
+      const gateA = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gateB = getState().addGate('NAND', { x: 4, y: 0, z: 0 })
+      getState().addWire(
+        { type: 'gate', entityId: gateA.id, pinId: gateA.outputs[0].id },
+        { type: 'gate', entityId: gateB.id, pinId: gateB.inputs[0].id },
+        []
+      )
+      getState().addWire(
+        { type: 'gate', entityId: gateB.id, pinId: gateB.outputs[0].id },
+        { type: 'gate', entityId: gateA.id, pinId: gateA.inputs[0].id },
+        []
+      )
+
+      getState().simulationTick()
+
+      const err = getState().lastSimulationError
+      expect(err?.type).toBe('cycle')
+      expect(err?.involvedGateIds).toContain(gateA.id)
+      expect(err?.involvedGateIds).toContain(gateB.id)
+      expect(message.error).toHaveBeenCalledWith(
+        expect.stringContaining('Combinational cycle detected')
+      )
+    })
+
+    it('does not show duplicate message.error on repeated cycle ticks', () => {
+      const gateA = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gateB = getState().addGate('NAND', { x: 4, y: 0, z: 0 })
+      getState().addWire(
+        { type: 'gate', entityId: gateA.id, pinId: gateA.outputs[0].id },
+        { type: 'gate', entityId: gateB.id, pinId: gateB.inputs[0].id },
+        []
+      )
+      getState().addWire(
+        { type: 'gate', entityId: gateB.id, pinId: gateB.outputs[0].id },
+        { type: 'gate', entityId: gateA.id, pinId: gateA.inputs[0].id },
+        []
+      )
+
+      getState().simulationTick()
+      expect(message.error).toHaveBeenCalledTimes(1)
+
+      // Second tick while cycle persists — no additional toast
+      getState().simulationTick()
+      expect(message.error).toHaveBeenCalledTimes(1)
+    })
+
+    it('clears lastSimulationError after cycle is broken and tick succeeds', () => {
+      const gateA = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gateB = getState().addGate('NAND', { x: 4, y: 0, z: 0 })
+      getState().addWire(
+        { type: 'gate', entityId: gateA.id, pinId: gateA.outputs[0].id },
+        { type: 'gate', entityId: gateB.id, pinId: gateB.inputs[0].id },
+        []
+      )
+      const w2 = getState().addWire(
+        { type: 'gate', entityId: gateB.id, pinId: gateB.outputs[0].id },
+        { type: 'gate', entityId: gateA.id, pinId: gateA.inputs[0].id },
+        []
+      )
+      getState().simulationTick()
+      expect(getState().lastSimulationError).not.toBe(null)
+
+      getState().removeWire(w2.id)
+      getState().simulationTick()
+      expect(getState().lastSimulationError).toBe(null)
     })
   })
 
@@ -579,25 +676,25 @@ describe('simulationActions', () => {
       // a=0, b=0 -> 0
       getState().updateInputNodeValue(inputA.id, 0)
       getState().updateInputNodeValue(inputB.id, 0)
-      for (let i = 0; i < 5; i++) getState().simulationTick()
+      getState().simulationTick()
       expect(getState().outputNodes[0].value).toBe(0)
 
       // a=0, b=1 -> 1
       getState().updateInputNodeValue(inputA.id, 0)
       getState().updateInputNodeValue(inputB.id, 1)
-      for (let i = 0; i < 5; i++) getState().simulationTick()
+      getState().simulationTick()
       expect(getState().outputNodes[0].value).toBe(1)
 
       // a=1, b=0 -> 1
       getState().updateInputNodeValue(inputA.id, 1)
       getState().updateInputNodeValue(inputB.id, 0)
-      for (let i = 0; i < 5; i++) getState().simulationTick()
+      getState().simulationTick()
       expect(getState().outputNodes[0].value).toBe(1)
 
       // a=1, b=1 -> 0
       getState().updateInputNodeValue(inputA.id, 1)
       getState().updateInputNodeValue(inputB.id, 1)
-      for (let i = 0; i < 5; i++) getState().simulationTick()
+      getState().simulationTick()
       expect(getState().outputNodes[0].value).toBe(0)
     })
   })

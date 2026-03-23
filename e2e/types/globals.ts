@@ -62,6 +62,8 @@ export interface CircuitStoreSnapshot {
   selectedGateId?: string | null
   placementMode?: GateType | null
   wiringFrom?: WiringState | null
+  /** Present when the last simulation tick hit a combinational cycle */
+  lastSimulationError?: { type: 'cycle'; involvedGateIds: string[] } | null
 }
 
 export interface CircuitActionsAPI {

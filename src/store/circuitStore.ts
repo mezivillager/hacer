@@ -20,7 +20,15 @@ import '../../e2e/types/globals' // Import for Window augmentation side-effect
 import '@/utils/renderTracking' // Initialize render tracking
 
 // Re-export types for convenience
-export type { CircuitState, GateInstance, GateType, Pin, Wire, WiringState } from './types'
+export type {
+  CircuitState,
+  GateInstance,
+  GateType,
+  Pin,
+  SimulationError,
+  Wire,
+  WiringState,
+} from './types'
 
 // Initial state values
 const initialState = {
@@ -30,6 +38,7 @@ const initialState = {
   selectedWireId: null as string | null,
   simulationRunning: false,
   simulationSpeed: 100,
+  lastSimulationError: null as import('./types').SimulationError | null,
   placementMode: null as import('./types').GateType | null,
   placementPreviewPosition: null as import('./types').Position | null,
   wiringFrom: null as import('./types').WiringState | null,

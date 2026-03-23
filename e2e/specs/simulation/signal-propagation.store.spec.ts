@@ -127,7 +127,6 @@ test.describe('Signal Propagation @store @simulation', () => {
       await toggleSimulationViaStore(page)
       await page.waitForTimeout(TIMEOUTS.simulation)
       await runSimulationTick(page)
-      await runSimulationTick(page)
 
       // NOT inverts the NAND output (0 -> 1)
       await expectGateOutput(page, 1, 1)
@@ -178,8 +177,6 @@ test.describe('Signal Propagation @store @simulation', () => {
       // Run simulation
       await toggleSimulationViaStore(page)
       await page.waitForTimeout(TIMEOUTS.simulation)
-      await runSimulationTick(page)
-      await runSimulationTick(page)
       await runSimulationTick(page)
 
       // Verify circuit is intact after simulation

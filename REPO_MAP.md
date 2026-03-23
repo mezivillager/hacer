@@ -340,7 +340,8 @@ hacer/
 - `src/core/chips/` - Chip hierarchy system (registry, definitions, composite chips)
 - `src/core/hdl/` - HDL parser and compiler for HACK HDL
 - `src/core/testing/nand2tetris/` - Test script execution (.tst/.cmp)
-- `src/simulation/topologicalEval.ts` - Topological sort for correct evaluation
+- `src/simulation/topologicalEval.ts` - Topological sort for correct evaluation; `evaluateCircuit` return + `getSignalSourceValue`
+- `CircuitState.lastSimulationError` — combinational cycle metadata after a failed `simulationTick` (cleared on success / `clearCircuit`)
 - Multi-bit bus support (data model, simulation, 3D splitter/joiner)
 - Chip I/O definition workflow (node rename, name display, chip definition panel)
 - HDL editor, test results, pinout, curriculum browser UI panels
