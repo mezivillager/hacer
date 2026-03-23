@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0](https://github.com/mezivillager/hacer/compare/v1.4.0...v1.5.0) (2026-03-23)
+
+### Features
+
+* **core:** add HACK HDL parser (P05-04) ([#52](https://github.com/mezivillager/hacer/issues/52)) ([482c6a7](https://github.com/mezivillager/hacer/commit/482c6a71e3da330203fae395aae659aa0aae48f0))
+
 ## [1.4.0](https://github.com/mezivillager/hacer/compare/v1.3.1...v1.4.0) (2026-03-23)
 
 ### Features
