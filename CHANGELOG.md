@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0](https://github.com/mezivillager/hacer/compare/v1.2.1...v1.3.0) (2026-03-23)
+
+### Features
+
+* **core:** ChipRegistry + Nand builtin (P05-01) ([#47](https://github.com/mezivillager/hacer/issues/47)) ([6fa2fda](https://github.com/mezivillager/hacer/commit/6fa2fda40f5fc0e9183b7eedef6376a3b0b74c3c))
+
+### Documentation
+
+* **plans:** Phase 0.5 tickets (P05-01–28), gap analysis, roadmap phases ([#45](https://github.com/mezivillager/hacer/issues/45)) ([eb080a0](https://github.com/mezivillager/hacer/commit/eb080a0f78b9e5f9e6236c937f02ba3814574f48)), closes [#46](https://github.com/mezivillager/hacer/issues/46)
+
 ## [1.2.1](https://github.com/mezivillager/hacer/compare/v1.2.0...v1.2.1) (2026-03-22)
 
 ### Bug Fixes
