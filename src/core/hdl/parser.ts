@@ -501,7 +501,7 @@ function tokenLabel(type: TokenType): string {
 // ---------------------------------------------------------------------------
 
 /**
- * Parse nand2tetris HACK HDL source into an {@link HDLChip} AST, or structured errors.
+ * Parse HACK-style HDL source into an {@link HDLChip} AST, or structured errors.
  *
  * @param source - Full `.hdl` file contents (comments and whitespace allowed)
  * @returns Discriminated union: `{ success: true, chip }` or `{ success: false, errors }`

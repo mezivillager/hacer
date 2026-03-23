@@ -2,224 +2,122 @@ import { describe, it, expect } from 'vitest'
 import { parseHDL } from './parser'
 
 // ---------------------------------------------------------------------------
-// Project 1 HDL fixtures (from nand2tetris curriculum)
+// HDL shape fixtures for parser tests (comments are filler only)
 // ---------------------------------------------------------------------------
 
-const NAND_HDL = `// This file is part of www.nand2tetris.org
-// and the book "The Elements of Computing Systems"
-// by Nisan and Schocken, MIT Press.
-// File name: projects/1/Nand.hdl
-/**
- * Nand gate:
- * if (a and b) out = 0, else out = 1 
- */
+const NAND_HDL = `// violet penguin says: built-in primitive
+// nobody parses this prose anyway
 CHIP Nand {
     IN a, b;
     OUT out;
-    
+
     PARTS:
     BUILTIN Nand;
 }`
 
-const NOT_HDL = `// This file is part of www.nand2tetris.org
-// and the book "The Elements of Computing Systems"
-// by Nisan and Schocken, MIT Press.
-// File name: projects/1/Not.hdl
-/**
- * Not gate:
- * if (in) out = 0, else out = 1
- */
+const NOT_HDL = `// fixture #2 — keep the kettle on
+/* lunar rover left a sock here */
 CHIP Not {
     IN in;
     OUT out;
 
     PARTS:
-    //// Replace this comment with your code.
+    //// quadruple slash still counts as line comment
 }`
 
-const AND_HDL = `// This file is part of www.nand2tetris.org
-// and the book "The Elements of Computing Systems"
-// by Nisan and Schocken, MIT Press.
-// File name: projects/1/And.hdl
-/**
- * And gate:
- * if (a and b) out = 1, else out = 0 
- */
+const AND_HDL = `// bananas are berries, strawberries are not
+// (irrelevant to HDL)
 CHIP And {
     IN a, b;
     OUT out;
-    
+
     PARTS:
-    //// Replace this comment with your code.
+    //// TODO: imagination required
 }`
 
-const OR_HDL = `// This file is part of www.nand2tetris.org
-// and the book "The Elements of Computing Systems"
-// by Nisan and Schocken, MIT Press.
-// File name: projects/1/Or.hdl
-/**
- * Or gate:
- * if (a or b) out = 1, else out = 0 
- */
+const OR_HDL = `// the number 7 is overrated
 CHIP Or {
     IN a, b;
     OUT out;
 
     PARTS:
-    //// Replace this comment with your code.
+    //// placeholder line for empty PARTS body
 }`
 
-const XOR_HDL = `// This file is part of www.nand2tetris.org
-// and the book "The Elements of Computing Systems"
-// by Nisan and Schocken, MIT Press.
-// File name: projects/1/Xor.hdl
-/**
- * Exclusive-or gate:
- * if ((a and Not(b)) or (Not(a) and b)) out = 1, else out = 0
- */
+const XOR_HDL = `/* jazz hands */
+// XOR rhymes with nothing useful
 CHIP Xor {
     IN a, b;
     OUT out;
 
     PARTS:
-    //// Replace this comment with your code.
+    //// stub
 }`
 
-const MUX_HDL = `// This file is part of www.nand2tetris.org
-// and the book "The Elements of Computing Systems"
-// by Nisan and Schocken, MIT Press.
-// File name: projects/1/Mux.hdl
-/** 
- * Multiplexor:
- * if (sel = 0) out = a, else out = b
- */
+const MUX_HDL = `// mux not muxtape
 CHIP Mux {
     IN a, b, sel;
     OUT out;
 
     PARTS:
-    //// Replace this comment with your code.
+    //// sel picks a lane
 }`
 
-const DMUX_HDL = `// This file is part of www.nand2tetris.org
-// and the book "The Elements of Computing Systems"
-// by Nisan and Schocken, MIT Press.
-// File name: projects/1/DMux.hdl
-/**
- * Demultiplexor:
- * [a, b] = [in, 0] if sel = 0
- *          [0, in] if sel = 1
- */
+const DMUX_HDL = `// demux demux demux
 CHIP DMux {
     IN in, sel;
     OUT a, b;
 
     PARTS:
-    //// Replace this comment with your code.
+    //// fan-out homework goes here
 }`
 
-const NOT16_HDL = `// This file is part of www.nand2tetris.org
-// and the book "The Elements of Computing Systems"
-// by Nisan and Schocken, MIT Press.
-// File name: projects/01/Not16.hdl
-/**
- * 16-bit Not gate:
- * for i = 0, ..., 15:
- * out[i] = Not(a[i])
- */
+const NOT16_HDL = `// sixteen bits walk into a bar
 CHIP Not16 {
     IN in[16];
     OUT out[16];
 
     PARTS:
-    //// Replace this comment with your code.
+    //// wide bus, narrow patience
 }`
 
-const AND16_HDL = `// This file is part of www.nand2tetris.org
-// and the book "The Elements of Computing Systems"
-// by Nisan and Schocken, MIT Press.
-// File name: projects/1/And16.hdl
-/**
- * 16-bit And gate:
- * for i = 0, ..., 15:
- * out[i] = a[i] And b[i] 
- */
+const AND16_HDL = `// parallel ANDs, serial coffee breaks
 CHIP And16 {
     IN a[16], b[16];
     OUT out[16];
 
     PARTS:
-    //// Replace this comment with your code.
+    //// bitwise vibes
 }`
 
-const OR16_HDL = `// This file is part of www.nand2tetris.org
-// and the book "The Elements of Computing Systems"
-// by Nisan and Schocken, MIT Press.
-// File name: projects/1/Or16.hdl
-/**
- * 16-bit Or gate:
- * for i = 0, ..., 15:
- * out[i] = a[i] Or b[i] 
- */
+const OR16_HDL = `// OR sixteen times fast
 CHIP Or16 {
     IN a[16], b[16];
     OUT out[16];
 
     PARTS:
-    //// Replace this comment with your code.
+    //// still empty on purpose
 }`
 
-const MUX16_HDL = `// This file is part of www.nand2tetris.org
-// and the book "The Elements of Computing Systems"
-// by Nisan and Schocken, MIT Press.
-// File name: projects/1/Mux16.hdl
-/**
- * 16-bit multiplexor: 
- * for i = 0, ..., 15:
- * if (sel = 0) out[i] = a[i], else out[i] = b[i]
- */
+const MUX16_HDL = `// pick one lane, sixteen wires wide
 CHIP Mux16 {
     IN a[16], b[16], sel;
     OUT out[16];
 
     PARTS:
-    //// Replace this comment with your code.
+    //// sel is scalar; buses are not
 }`
 
-const MUX4WAY16_HDL = `// This file is part of www.nand2tetris.org
-// and the book "The Elements of Computing Systems"
-// by Nisan and Schocken, MIT Press.
-// File name: projects/1/Mux4Way16.hdl
-/**
- * 4-way 16-bit multiplexor:
- * out = a if sel = 00
- *       b if sel = 01
- *       c if sel = 10
- *       d if sel = 11
- */
+const MUX4WAY16_HDL = `// four inputs, one spotlight
 CHIP Mux4Way16 {
     IN a[16], b[16], c[16], d[16], sel[2];
     OUT out[16];
-    
+
     PARTS:
-    //// Replace this comment with your code.
+    //// sel is two bits of chaos
 }`
 
-const MUX8WAY16_HDL = `// This file is part of www.nand2tetris.org
-// and the book "The Elements of Computing Systems"
-// by Nisan and Schocken, MIT Press.
-// File name: projects/1/Mux8Way16.hdl
-/**
- * 8-way 16-bit multiplexor:
- * out = a if sel = 000
- *       b if sel = 001
- *       c if sel = 010
- *       d if sel = 011
- *       e if sel = 100
- *       f if sel = 101
- *       g if sel = 110
- *       h if sel = 111
- */
+const MUX8WAY16_HDL = `// eight is enough (for this fixture)
 CHIP Mux8Way16 {
     IN a[16], b[16], c[16], d[16],
        e[16], f[16], g[16], h[16],
@@ -227,65 +125,34 @@ CHIP Mux8Way16 {
     OUT out[16];
 
     PARTS:
-    //// Replace this comment with your code.
+    //// line wrap above is intentional
 }`
 
-const DMUX4WAY_HDL = `// This file is part of www.nand2tetris.org
-// and the book "The Elements of Computing Systems"
-// by Nisan and Schocken, MIT Press.
-// File name: projects/1/DMux4Way.hdl
-/**
- * 4-way demultiplexor:
- * [a, b, c, d] = [in, 0, 0, 0] if sel = 00
- *                [0, in, 0, 0] if sel = 01
- *                [0, 0, in, 0] if sel = 10
- *                [0, 0, 0, in] if sel = 11
- */
+const DMUX4WAY_HDL = `// one in, four out, pick your fighter
 CHIP DMux4Way {
     IN in, sel[2];
     OUT a, b, c, d;
 
     PARTS:
-    //// Replace this comment with your code.
+    //// demux quartet
 }`
 
-const DMUX8WAY_HDL = `// This file is part of www.nand2tetris.org
-// and the book "The Elements of Computing Systems"
-// by Nisan and Schocken, MIT Press.
-// File name: projects/1/DMux8Way.hdl
-/**
- * 8-way demultiplexor:
- * [a, b, c, d, e, f, g, h] = [in, 0,  0,  0,  0,  0,  0,  0] if sel = 000
- *                            [0, in,  0,  0,  0,  0,  0,  0] if sel = 001
- *                            [0,  0, in,  0,  0,  0,  0,  0] if sel = 010
- *                            [0,  0,  0, in,  0,  0,  0,  0] if sel = 011
- *                            [0,  0,  0,  0, in,  0,  0,  0] if sel = 100
- *                            [0,  0,  0,  0,  0, in,  0,  0] if sel = 101
- *                            [0,  0,  0,  0,  0,  0, in,  0] if sel = 110
- *                            [0,  0,  0,  0,  0,  0,  0, in] if sel = 111
- */
+const DMUX8WAY_HDL = `// octopus routing diagram (ascii omitted)
 CHIP DMux8Way {
     IN in, sel[3];
     OUT a, b, c, d, e, f, g, h;
 
     PARTS:
-    //// Replace this comment with your code.
+    //// eight outputs, one lonely input
 }`
 
-const OR8WAY_HDL = `// This file is part of www.nand2tetris.org
-// and the book "The Elements of Computing Systems"
-// by Nisan and Schocken, MIT Press.
-// File name: projects/1/Or8Way.hdl
-/**
- * 8-way Or gate: 
- * out = in[0] Or in[1] Or ... Or in[7]
- */
+const OR8WAY_HDL = `// OR-tree sketch on a napkin
 CHIP Or8Way {
     IN in[8];
     OUT out;
 
     PARTS:
-    //// Replace this comment with your code.
+    //// eight-way fold coming soon
 }`
 
 // ---------------------------------------------------------------------------
@@ -318,7 +185,7 @@ describe('HDL Parser', () => {
       expect(result.chip.parts).toEqual([])
     })
 
-    it('parses And stub matching curriculum (IN, OUT, PARTS)', () => {
+    it('parses And stub with IN, OUT, PARTS', () => {
       const result = parseHDL(AND_HDL)
       expect(result.success).toBe(true)
       if (!result.success) return
@@ -330,7 +197,7 @@ describe('HDL Parser', () => {
       expect(result.chip.outputs).toEqual([{ name: 'out', width: 1 }])
     })
 
-    it('rejects chip missing OUT after IN (P05-04 grammar)', () => {
+    it('rejects chip missing OUT after IN (grammar)', () => {
       const result = parseHDL(`CHIP Bad {
         IN a;
         PARTS:
@@ -780,7 +647,7 @@ describe('HDL Parser', () => {
     })
   })
 
-  describe('all Project 1 HDL files parse', () => {
+  describe('all 16 chip-name fixtures parse', () => {
     const project1Chips: Record<string, string> = {
       Nand: NAND_HDL,
       Not: NOT_HDL,

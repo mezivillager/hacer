@@ -1,4 +1,4 @@
-/** Public API for HACK HDL parsing (nand2tetris subset). */
+/** Public API for HACK-style HDL parsing. */
 export type {
   HDLChip,
   HDLPin,
