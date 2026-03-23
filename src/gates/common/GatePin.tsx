@@ -1,5 +1,6 @@
 import { ThreeEvent } from '@react-three/fiber'
 import { materials } from '@/theme'
+import { isSignalHigh } from '@/simulation/signalDisplay'
 
 interface GatePinProps {
   id: string
@@ -32,7 +33,7 @@ export function GatePin({
   onPointerOut,
 }: GatePinProps) {
   const radius = isWiring && isHovered ? 0.13 : 0.1
-  const emissiveIntensity = isConnected && value === 1 ? 0.5 : isHovered ? 0.3 : 0.1
+  const emissiveIntensity = isConnected && isSignalHigh(value) ? 0.5 : isHovered ? 0.3 : 0.1
 
   return (
     <mesh

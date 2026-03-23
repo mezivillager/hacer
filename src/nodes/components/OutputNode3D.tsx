@@ -7,6 +7,7 @@ import { NODE_DIMENSIONS, NODE_COLORS, OUTPUT_NODE_CONFIG, calculateNodePinPosit
 import { useCircuitStore, circuitActions } from '@/store/circuitStore'
 import { useNodeDrag } from '@/hooks/useNodeDrag'
 import type { Position, Rotation } from '@/store/types'
+import { formatSignalLabel, isSignalHigh } from '@/simulation/signalDisplay'
 
 interface OutputNode3DProps {
   /** Unique identifier for the output node */
@@ -62,17 +63,19 @@ export function OutputNode3D({
 
   const { isDragging, shouldAllowClick, onPointerDown, onPointerMove, onPointerUp, onPointerLeave } = useNodeDrag(id, 'output')
 
+  const high = isSignalHigh(value)
+
   // Body color based on state
   const bodyColor = selected
     ? NODE_COLORS.output.selected
     : hovered
-      ? (value === 1 ? NODE_COLORS.output.hoverOn : NODE_COLORS.output.hoverOff)
-      : (value === 1 ? NODE_COLORS.output.bodyOn : NODE_COLORS.output.bodyOff)
+      ? (high ? NODE_COLORS.output.hoverOn : NODE_COLORS.output.hoverOff)
+      : (high ? NODE_COLORS.output.bodyOn : NODE_COLORS.output.bodyOff)
 
   // Pin color based on value and hover state (highlight when wiring and hovered)
   const pinColor = pinHovered && isWiringMode
     ? colors.primary
-    : (value === 1 ? colors.wire.active : colors.wire.default)
+    : (high ? colors.wire.active : colors.wire.default)
 
   // Calculate pin position (input pin on left side)
   const pinPos = calculateNodePinPosition('output')
@@ -150,7 +153,7 @@ export function OutputNode3D({
         anchorY="middle"
         font={undefined}
       >
-        {value === 1 ? '1' : '0'}
+        {formatSignalLabel(value)}
       </Text>
 
       {/* Input pin (left side) */}
@@ -164,7 +167,7 @@ export function OutputNode3D({
         <meshStandardMaterial
           color={pinColor}
           emissive={pinColor}
-          emissiveIntensity={value === 1 ? 0.5 : 0.2}
+          emissiveIntensity={high ? 0.5 : 0.2}
           metalness={materials.pin.metalness}
           roughness={materials.pin.roughness}
         />

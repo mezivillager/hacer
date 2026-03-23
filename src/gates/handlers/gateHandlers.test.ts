@@ -31,27 +31,31 @@ describe('gateHandlers', () => {
       expect(getPinColor(0, false, 'inputA', false, true, 'inputA')).toBe(colors.primary)
     })
 
-    it('returns active color for output pin with value true', () => {
+    it('returns active color for output pin when signal is high (1)', () => {
       expect(getPinColor(1, false, 'output', true, false, null)).toBe(colors.pin.active)
     })
 
-    it('returns inactive color for output pin with value false', () => {
+    it('returns active color for output pin when signal is high (multi-bit)', () => {
+      expect(getPinColor(3, false, 'output', true, false, null)).toBe(colors.pin.active)
+    })
+
+    it('returns inactive color for output pin when signal is low', () => {
       expect(getPinColor(0, false, 'output', true, false, null)).toBe(colors.pin.inactive)
     })
 
-    it('returns active color for connected input pin with value true', () => {
+    it('returns active color for connected input pin when signal is high', () => {
       expect(getPinColor(1, true, 'inputA', false, false, null)).toBe(colors.pin.active)
     })
 
-    it('returns inactive color for connected input pin with value false', () => {
+    it('returns inactive color for connected input pin when signal is low', () => {
       expect(getPinColor(0, true, 'inputA', false, false, null)).toBe(colors.pin.inactive)
     })
 
-    it('returns active color for disconnected input pin with value true', () => {
+    it('returns active color for disconnected input pin when signal is high', () => {
       expect(getPinColor(1, false, 'inputA', false, false, null)).toBe(colors.pin.active)
     })
 
-    it('returns disconnected color for disconnected input pin with value false', () => {
+    it('returns disconnected color for disconnected input pin when signal is low', () => {
       expect(getPinColor(0, false, 'inputA', false, false, null)).toBe(colors.pin.disconnected)
     })
   })

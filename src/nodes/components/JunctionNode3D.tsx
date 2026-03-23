@@ -2,6 +2,7 @@
 import { colors, materials } from '@/theme'
 import { JUNCTION_CONFIG } from '../config'
 import type { Position } from '@/store/types'
+import { isSignalHigh } from '@/simulation/signalDisplay'
 
 interface JunctionNode3DProps {
   /** Unique identifier for the junction */
@@ -22,8 +23,8 @@ interface JunctionNode3DProps {
  * @returns React Three Fiber mesh element
  */
 export function JunctionNode3D({ id: _id, position, value, onClick }: JunctionNode3DProps) {
-  // Color based on signal value
-  const color = value === 1 ? colors.pin.active : colors.pin.inactive
+  const high = isSignalHigh(value)
+  const color = high ? colors.pin.active : colors.pin.inactive
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -38,7 +39,7 @@ export function JunctionNode3D({ id: _id, position, value, onClick }: JunctionNo
       <meshStandardMaterial
         color={color}
         emissive={color}
-        emissiveIntensity={value === 1 ? 0.5 : 0.2}
+        emissiveIntensity={high ? 0.5 : 0.2}
         metalness={materials.pin.metalness}
         roughness={materials.pin.roughness}
       />

@@ -9,6 +9,7 @@ import { worldToGrid, canPlaceGateAt } from '@/utils/grid'
 import { calculateNodePinPosition } from '@/nodes/config'
 import { handlePinClick, handleInputToggle, handleGateClick, handleInputNodeToggle, handleNodeClick, handleNodePinClick, handleJunctionClick } from './handlers/canvasHandlers'
 import { getSignalSourceValue } from '@/store/actions/simulationActions/simulationActions'
+import { isSignalHigh } from '@/simulation/signalDisplay'
 
 const { Content } = Layout
 const { Text } = Typography
@@ -153,7 +154,7 @@ export function CanvasArea() {
               start={startPos}
               end={endPos}
               precomputedPath={path}
-              isActive={signalValue === 1}
+              isActive={isSignalHigh(signalValue)}
               isSelected={wire.id === selectedWireId}
             />
           )
