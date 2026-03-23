@@ -75,17 +75,17 @@ export function calculateNotPinPositions() {
  * Generates configurations for one input pin and one output pin.
  *
  * @param gateId - Unique identifier for the gate instance
- * @param input - Current boolean value of the input
+ * @param input - Input signal (0 or 1 for single-bit)
  * @param inputConnected - Whether the input is connected to a wire
- * @param output - Current boolean value of the output (inverted input)
+ * @param output - Output signal from NOT preview (0 or 1 for single-bit)
  * @param outputConnected - Whether the output is connected to a wire
  * @returns Array of PinConfig objects for the NOT gate's two pins
  */
 export function createNotPinConfigs(
   gateId: string,
-  input: boolean,
+  input: number,
   inputConnected: boolean,
-  output: boolean,
+  output: number,
   outputConnected: boolean
 ): PinConfig[] {
   const { inputPinX, outputPinX } = calculateNotPinPositions()

@@ -60,8 +60,8 @@ describe('useNodeDrag', () => {
     // Setup an initial store state
     useCircuitStore.setState(
       createMockStore({
-        inputNodes: [{ id: 'input-1', name: 'in1', position: { x: 0, y: 0.2, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, value: false, width: 1 }],
-        outputNodes: [{ id: 'output-1', name: 'out1', position: { x: 5, y: 0.2, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, value: false, width: 1 }],
+        inputNodes: [{ id: 'input-1', name: 'in1', position: { x: 0, y: 0.2, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, value: 0, width: 1 }],
+        outputNodes: [{ id: 'output-1', name: 'out1', position: { x: 5, y: 0.2, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, value: 0, width: 1 }],
         gates: [],
         wires: [],
         junctions: [],

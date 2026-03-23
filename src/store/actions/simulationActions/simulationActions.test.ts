@@ -117,33 +117,33 @@ describe('simulationActions', () => {
       )
 
       // Set gate1 inputs to true, true -> NAND output should be false
-      getState().setInputValue(gate1.id, gate1.inputs[0].id, true)
-      getState().setInputValue(gate1.id, gate1.inputs[1].id, true)
+      getState().setInputValue(gate1.id, gate1.inputs[0].id, 1)
+      getState().setInputValue(gate1.id, gate1.inputs[1].id, 1)
 
       // Run tick to calculate gate1 output
       getState().simulationTick()
 
       // Gate1 output should now be false (NAND(true, true) = false)
-      expect(getState().gates[0].outputs[0].value).toBe(false)
+      expect(getState().gates[0].outputs[0].value).toBe(0)
 
       // Run another tick to propagate to gate2
       getState().simulationTick()
 
       // Gate2 input should receive gate1 output value
-      expect(getState().gates[1].inputs[0].value).toBe(false)
+      expect(getState().gates[1].inputs[0].value).toBe(0)
     })
 
     it('calculates new output values for all gates', () => {
       const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
 
       // Set both inputs to true -> NAND output should be false
-      getState().setInputValue(gate.id, gate.inputs[0].id, true)
-      getState().setInputValue(gate.id, gate.inputs[1].id, true)
+      getState().setInputValue(gate.id, gate.inputs[0].id, 1)
+      getState().setInputValue(gate.id, gate.inputs[1].id, 1)
 
       getState().simulationTick()
 
       // Gate output should be calculated (NAND(true, true) = false)
-      expect(getState().gates[0].outputs[0].value).toBe(false)
+      expect(getState().gates[0].outputs[0].value).toBe(0)
     })
 
     it('handles gates with no wires', () => {
@@ -159,14 +159,14 @@ describe('simulationActions', () => {
   describe('getSignalSourceValue', () => {
     it('returns input node value for input source type', () => {
       const inputNode = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
-      getState().updateInputNodeValue(inputNode.id, true)
+      getState().updateInputNodeValue(inputNode.id, 1)
 
       const value = getSignalSourceValue(
         { type: 'input', entityId: inputNode.id },
         getState()
       )
 
-      expect(value).toBe(true)
+      expect(value).toBe(1)
     })
 
     it('returns false for non-existent input node', () => {
@@ -175,7 +175,7 @@ describe('simulationActions', () => {
         getState()
       )
 
-      expect(value).toBe(false)
+      expect(value).toBe(0)
     })
 
     it('returns gate output value for gate source type', () => {
@@ -188,7 +188,7 @@ describe('simulationActions', () => {
         getState()
       )
 
-      expect(value).toBe(true) // NAND(false, false) = true
+      expect(value).toBe(1) // NAND(false, false) = true
     })
 
     it('returns false for non-existent gate', () => {
@@ -197,7 +197,7 @@ describe('simulationActions', () => {
         getState()
       )
 
-      expect(value).toBe(false)
+      expect(value).toBe(0)
     })
 
     it('returns false for output source type (invalid)', () => {
@@ -208,7 +208,7 @@ describe('simulationActions', () => {
         getState()
       )
 
-      expect(value).toBe(false)
+      expect(value).toBe(0)
     })
 
     it('returns false and does not infinitely recurse on junction cycle', () => {
@@ -240,7 +240,7 @@ describe('simulationActions', () => {
         getState()
       )
 
-      expect(value).toBe(false)
+      expect(value).toBe(0)
     })
 
     it('handles deeply nested junctions correctly', () => {
@@ -280,7 +280,7 @@ describe('simulationActions', () => {
         if (jn3) jn3.wireIds = [wire3.id]
       })
 
-      getState().updateInputNodeValue(inputNode.id, true)
+      getState().updateInputNodeValue(inputNode.id, 1)
 
       // j3 -> wireIds[0] = wire3 -> from = input node (value=true)
       const value = getSignalSourceValue(
@@ -288,7 +288,7 @@ describe('simulationActions', () => {
         getState()
       )
 
-      expect(value).toBe(true)
+      expect(value).toBe(1)
     })
   })
 
@@ -317,7 +317,7 @@ describe('simulationActions', () => {
         getState()
       )
 
-      expect(value).toBe(true)
+      expect(value).toBe(1)
     })
 
     it('returns false for junction with no wireIds', () => {
@@ -328,7 +328,7 @@ describe('simulationActions', () => {
         getState()
       )
 
-      expect(value).toBe(false)
+      expect(value).toBe(0)
     })
 
     it('returns false for junction with non-existent wire', () => {
@@ -343,7 +343,7 @@ describe('simulationActions', () => {
         getState()
       )
 
-      expect(value).toBe(false)
+      expect(value).toBe(0)
     })
 
     it('handles cycle detection', () => {
@@ -381,7 +381,7 @@ describe('simulationActions', () => {
         getState()
       )
 
-      expect(value).toBe(false)
+      expect(value).toBe(0)
     })
   })
 
@@ -401,15 +401,15 @@ describe('simulationActions', () => {
       )
 
       // Set input node to true
-      getState().updateInputNodeValue(inputNode.id, true)
+      getState().updateInputNodeValue(inputNode.id, 1)
 
       // Run simulation tick
       getState().simulationTick()
 
       // Gate input should receive the input node value
-      expect(getState().gates[0].inputs[0].value).toBe(true)
+      expect(getState().gates[0].inputs[0].value).toBe(1)
       // NOT gate output should be false (NOT(true) = false)
-      expect(getState().gates[0].outputs[0].value).toBe(false)
+      expect(getState().gates[0].outputs[0].value).toBe(0)
     })
 
     it('propagates gate output to output node via wire', () => {
@@ -430,7 +430,7 @@ describe('simulationActions', () => {
       getState().simulationTick()
 
       // Output node should receive the gate output value
-      expect(getState().outputNodes[0].value).toBe(true)
+      expect(getState().outputNodes[0].value).toBe(1)
     })
 
     it('propagates input through gate to output node', () => {
@@ -458,15 +458,15 @@ describe('simulationActions', () => {
       )
 
       // Set input to true
-      getState().updateInputNodeValue(inputNode.id, true)
+      getState().updateInputNodeValue(inputNode.id, 1)
 
       // Run simulation - should propagate through
       getState().simulationTick()
 
       // Input = true, NOT(true) = false, output should be false
-      expect(getState().gates[0].inputs[0].value).toBe(true)
-      expect(getState().gates[0].outputs[0].value).toBe(false)
-      expect(getState().outputNodes[0].value).toBe(false)
+      expect(getState().gates[0].inputs[0].value).toBe(1)
+      expect(getState().gates[0].outputs[0].value).toBe(0)
+      expect(getState().outputNodes[0].value).toBe(0)
     })
 
     it('propagates through junction for fan-out', () => {
@@ -500,17 +500,18 @@ describe('simulationActions', () => {
         if (j) j.wireIds = [wire1.id, wire2.id]
       })
 
-      getState().updateInputNodeValue(inputNode.id, true)
+      getState().updateInputNodeValue(inputNode.id, 1)
       getState().simulationTick()
 
-      expect(getState().gates[0].inputs[0].value).toBe(true)
-      expect(getState().gates[1].inputs[0].value).toBe(true)
-      expect(getState().gates[0].outputs[0].value).toBe(false)
-      expect(getState().gates[1].outputs[0].value).toBe(false)
+      expect(getState().gates[0].inputs[0].value).toBe(1)
+      expect(getState().gates[1].inputs[0].value).toBe(1)
+      expect(getState().gates[0].outputs[0].value).toBe(0)
+      expect(getState().gates[1].outputs[0].value).toBe(0)
     })
 
     it('handles junction value when source is false', () => {
       const inputNode = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
+      getState().updateInputNodeValue(inputNode.id, 0)
       const junction = getState().addJunction('signal-a', { x: 2, y: 0, z: 0 })
       const gate = getState().addGate('NOT', { x: 4, y: 0.2, z: 0 })
 
@@ -533,8 +534,8 @@ describe('simulationActions', () => {
       // Input is false by default
       getState().simulationTick()
 
-      expect(getState().gates[0].inputs[0].value).toBe(false)
-      expect(getState().gates[0].outputs[0].value).toBe(true) // NOT(false) = true
+      expect(getState().gates[0].inputs[0].value).toBe(0)
+      expect(getState().gates[0].outputs[0].value).toBe(1) // NOT(false) = true
     })
 
     it('simulates XOR circuit with input nodes', () => {
@@ -576,28 +577,28 @@ describe('simulationActions', () => {
 
       // Test XOR truth table
       // a=0, b=0 -> 0
-      getState().updateInputNodeValue(inputA.id, false)
-      getState().updateInputNodeValue(inputB.id, false)
+      getState().updateInputNodeValue(inputA.id, 0)
+      getState().updateInputNodeValue(inputB.id, 0)
       for (let i = 0; i < 5; i++) getState().simulationTick()
-      expect(getState().outputNodes[0].value).toBe(false)
+      expect(getState().outputNodes[0].value).toBe(0)
 
       // a=0, b=1 -> 1
-      getState().updateInputNodeValue(inputA.id, false)
-      getState().updateInputNodeValue(inputB.id, true)
+      getState().updateInputNodeValue(inputA.id, 0)
+      getState().updateInputNodeValue(inputB.id, 1)
       for (let i = 0; i < 5; i++) getState().simulationTick()
-      expect(getState().outputNodes[0].value).toBe(true)
+      expect(getState().outputNodes[0].value).toBe(1)
 
       // a=1, b=0 -> 1
-      getState().updateInputNodeValue(inputA.id, true)
-      getState().updateInputNodeValue(inputB.id, false)
+      getState().updateInputNodeValue(inputA.id, 1)
+      getState().updateInputNodeValue(inputB.id, 0)
       for (let i = 0; i < 5; i++) getState().simulationTick()
-      expect(getState().outputNodes[0].value).toBe(true)
+      expect(getState().outputNodes[0].value).toBe(1)
 
       // a=1, b=1 -> 0
-      getState().updateInputNodeValue(inputA.id, true)
-      getState().updateInputNodeValue(inputB.id, true)
+      getState().updateInputNodeValue(inputA.id, 1)
+      getState().updateInputNodeValue(inputB.id, 1)
       for (let i = 0; i < 5; i++) getState().simulationTick()
-      expect(getState().outputNodes[0].value).toBe(false)
+      expect(getState().outputNodes[0].value).toBe(0)
     })
   })
 })

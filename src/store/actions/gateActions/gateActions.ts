@@ -16,7 +16,7 @@ export function createGateInstance(type: GateType, position: Position): GateInst
     id: `${id}-in-${i}`,
     name: `IN${i}`,
     type: 'input',
-    value: false,
+    value: 0,
   }))
 
   const outputs: Pin[] = [
@@ -24,7 +24,7 @@ export function createGateInstance(type: GateType, position: Position): GateInst
       id: `${id}-out-0`,
       name: 'OUT',
       type: 'output',
-      value: false,
+      value: 0,
     },
   ]
 

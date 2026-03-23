@@ -71,21 +71,21 @@ function calculateOrPinPositions() {
  * Generates configurations for two input pins and one output pin.
  *
  * @param gateId - Unique identifier for the gate instance
- * @param inputA - Current boolean value of the first input
- * @param inputB - Current boolean value of the second input
+ * @param inputA - First input signal (0 or 1 for single-bit)
+ * @param inputB - Second input signal (0 or 1 for single-bit)
  * @param inputAConnected - Whether the first input is connected to a wire
  * @param inputBConnected - Whether the second input is connected to a wire
- * @param output - Current boolean value of the output (result of OR operation)
+ * @param output - Output signal from OR preview (0 or 1 for single-bit)
  * @param outputConnected - Whether the output is connected to a wire
  * @returns Array of PinConfig objects for the OR gate's three pins
  */
 export function createOrPinConfigs(
   gateId: string,
-  inputA: boolean,
-  inputB: boolean,
+  inputA: number,
+  inputB: number,
   inputAConnected: boolean,
   inputBConnected: boolean,
-  output: boolean,
+  output: number,
   outputConnected: boolean
 ): PinConfig[] {
   const { inputPinX, outputPinX } = calculateOrPinPositions()

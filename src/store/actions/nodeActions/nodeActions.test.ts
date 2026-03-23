@@ -33,7 +33,7 @@ describe('Node Actions', () => {
       expect(node.id).toBeDefined()
       expect(node.name).toBe('a')
       expect(node.position).toEqual(position)
-      expect(node.value).toBe(true)
+      expect(node.value).toBe(1)
       expect(node.width).toBe(1)
     })
 
@@ -70,7 +70,7 @@ describe('Node Actions', () => {
       expect(node.id).toBeDefined()
       expect(node.name).toBe('out')
       expect(node.position).toEqual(position)
-      expect(node.value).toBe(false)
+      expect(node.value).toBe(0)
     })
 
     it('adds the node to the store state', () => {
@@ -240,11 +240,11 @@ describe('Node Actions', () => {
       const store = useCircuitStore.getState()
       const node = store.addInputNode('a', { x: 0, y: 0, z: 0 })
 
-      store.updateInputNodeValue(node.id, false)
+      store.updateInputNodeValue(node.id, 0)
 
       const state = useCircuitStore.getState()
       const updated = state.inputNodes.find(n => n.id === node.id)
-      expect(updated?.value).toBe(false)
+      expect(updated?.value).toBe(0)
     })
   })
 

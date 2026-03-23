@@ -18,8 +18,8 @@ export interface BaseGateProps {
 
 // Props for gates with two inputs (NAND, AND, OR)
 export interface TwoInputGateProps extends BaseGateProps {
-  inputA?: boolean
-  inputB?: boolean
+  inputA?: number
+  inputB?: number
   inputAConnected?: boolean
   inputBConnected?: boolean
   outputConnected?: boolean
@@ -27,7 +27,7 @@ export interface TwoInputGateProps extends BaseGateProps {
 
 // Props for gates with one input (NOT)
 export interface SingleInputGateProps extends BaseGateProps {
-  input?: boolean
+  input?: number
   inputConnected?: boolean
   outputConnected?: boolean
 }
@@ -36,7 +36,7 @@ export interface SingleInputGateProps extends BaseGateProps {
 export interface PinConfig {
   pinId: string
   position: [number, number, number]
-  value: boolean
+  value: number
   connected: boolean
   pinType: 'input' | 'output'
   pinName: string // 'inputA', 'inputB', 'input', 'output'

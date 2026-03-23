@@ -150,7 +150,7 @@ test.describe.skip('Render Sanity Check @render @performance @ui', () => {
     // Perform the operation
     await page.evaluate(
       ({ gateId, pinId }: { gateId: string; pinId: string }) => {
-        window.__CIRCUIT_ACTIONS__?.setInputValue(gateId, pinId, true)
+        window.__CIRCUIT_ACTIONS__?.setInputValue(gateId, pinId, 1)
       },
       { gateId: gate!.id, pinId: gate!.inputs[0].id }
     )

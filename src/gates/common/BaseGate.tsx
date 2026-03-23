@@ -19,8 +19,8 @@ interface BaseGateComponentProps {
   bodyColor: string
   bodyHoverColor: string
   bodySelectedColor: string
-  output: boolean
-  inputs: boolean[]
+  output: number
+  inputs: number[]
   pinConfigs: PinConfig[]
   wireStubPositions: [number, number, number][]
   bodyGeometry?: React.ReactNode // React element like <boxGeometry /> (for simple geometries)
@@ -89,22 +89,16 @@ export function BaseGate(props: BaseGateComponentProps) {
 
   // Create pin hover handlers
   const createPinHoverHandler = (pinName: string, pinId: string) => () => {
-    console.debug('[BaseGate] Pin hover', { pinName, pinId, isWiringMode, gateId: id })
     setHoveredPin(pinName) // Local state for visual highlighting (uses pinName)
     // Update store with destination pin when hovering during wiring
     if (isWiringMode) {
-      console.debug('[BaseGate] Setting destination pin', { gateId: id, pinId })
       circuitActions.setDestinationPin(id, pinId)
-    } else {
-      console.debug('[BaseGate] Not in wiring mode, skipping setDestinationPin')
     }
   }
   const handlePinOut = () => {
-    console.debug('[BaseGate] Pin out', { isWiringMode })
     setHoveredPin(null)
     // Clear destination pin in store when pointer leaves pin
     if (isWiringMode) {
-      console.debug('[BaseGate] Clearing destination pin')
       circuitActions.setDestinationPin(null, null)
     }
     handlePinPointerOut()
@@ -170,7 +164,7 @@ export function BaseGate(props: BaseGateComponentProps) {
       {/* Pins - rendered from configuration */}
       {pinConfigs.map((pinConfig) => {
         // Explicitly extract values to help ESLint type checker
-        const pinValue: boolean = pinConfig.value
+        const pinValue: number = pinConfig.value
         const pinConnected: boolean = pinConfig.connected
         const pinName: string = pinConfig.pinName
         const isOutput: boolean = pinConfig.pinType === 'output'

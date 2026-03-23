@@ -17,7 +17,7 @@ export function NotGate({
   position = [0, 0, 0],
   rotation = [0, 0, 0],
   selected = false,
-  input = false,
+  input = 0,
   inputConnected = false,
   outputConnected = false,
   isWiring = false,

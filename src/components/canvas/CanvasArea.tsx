@@ -104,7 +104,7 @@ export function CanvasArea() {
         {/* Render all wires using unified Wire3D */}
         {wires.map((wire) => {
           // Get signal value based on source endpoint type
-          const signalValue = simulationRunning ? getSignalSourceValue(wire.from, useCircuitStore.getState()) : false
+          const signalValue = simulationRunning ? getSignalSourceValue(wire.from, useCircuitStore.getState()) : 0
 
           // Build precomputed path from stored segments
           const path = {
@@ -153,7 +153,7 @@ export function CanvasArea() {
               start={startPos}
               end={endPos}
               precomputedPath={path}
-              isActive={signalValue}
+              isActive={signalValue === 1}
               isSelected={wire.id === selectedWireId}
             />
           )
@@ -208,7 +208,7 @@ export function CanvasArea() {
           const junctionValue = simulationRunning ? getSignalSourceValue(
             { type: 'junction', entityId: junction.id },
             useCircuitStore.getState()
-          ) : false
+          ) : 0
           return (
             <NodeRenderer
               key={junction.id}
