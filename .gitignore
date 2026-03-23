@@ -44,3 +44,6 @@ reports
 .worktrees
 worktrees
 .tmp_superpowers
+
+# npm lock file (project uses pnpm)
+package-lock.json
