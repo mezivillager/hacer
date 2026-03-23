@@ -1,5 +1,9 @@
 # Current focus
 
+**Phase 0.5 ticket progress:** check off tickets in [`docs/plans/phase-0.5-tickets-CHECKLIST.md`](../docs/plans/phase-0.5-tickets-CHECKLIST.md) when merged + CI gates pass.
+
+---
+
 ## Done: P05-03 Topological sort simulation (2026-03-23)
 
 - `src/simulation/topologicalEval.ts` — Kahn sort, `evaluateCircuit`, `getSignalSourceValue`

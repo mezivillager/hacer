@@ -8,6 +8,7 @@ This document helps AI agents and developers understand the codebase structure a
 |------|------------|
 | **Current phase / checklist** | `docs/roadmap/implementation.md` → *Implementation Checklist*; `.cursorrules` → *Phase Tracking* |
 | **Phase 0.5 (Nand2Tetris) spec** | `docs/roadmap/phases/phase-0.5-nand2tetris-foundation.md` |
+| **Phase 0.5 ticket checklist (P05-01…28)** | `docs/plans/phase-0.5-tickets-CHECKLIST.md` · plan: `docs/plans/2026-03-22-phase-0.5-tickets.md` |
 | **New Zustand state or action** | `src/store/circuitStore.ts`, `src/store/types.ts`, `src/store/actions/<domain>/` |
 | **Gate type / 3D gate UI** | `src/gates/config/`, `src/gates/components/`, `HACER_LLM_GUIDE.md` |
 | **Simulation / boolean logic** | `src/simulation/` · specs: `src/simulation/gateLogic.test.ts` |
