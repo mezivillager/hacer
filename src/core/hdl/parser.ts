@@ -92,31 +92,40 @@ function tokenize(
     }
   }
 
-  function skipBlockComment(): void {
+  function skipBlockComment(): HDLParseError | null {
+    const startLine = line
+    const startCol = column
     advance() // skip /
     advance() // skip *
     while (pos < source.length) {
       if (source[pos] === '*' && peekAt(1) === '/') {
         advance() // skip *
         advance() // skip /
-        return
+        return null
       }
       advance()
     }
+    return {
+      line: startLine,
+      column: startCol,
+      message: 'Unterminated block comment',
+    }
   }
 
-  function skipWhitespaceAndComments(): void {
+  function skipWhitespaceAndComments(): HDLParseError | null {
     while (pos < source.length) {
       if (/\s/.test(source[pos])) {
         skipWhitespace()
       } else if (source[pos] === '/' && peekAt(1) === '/') {
         skipLineComment()
       } else if (source[pos] === '/' && peekAt(1) === '*') {
-        skipBlockComment()
+        const err = skipBlockComment()
+        if (err) return err
       } else {
         break
       }
     }
+    return null
   }
 
   function readIdentifier(): string {
@@ -136,7 +145,8 @@ function tokenize(
   }
 
   while (pos < source.length) {
-    skipWhitespaceAndComments()
+    const commentErr = skipWhitespaceAndComments()
+    if (commentErr) return { errors: [commentErr] }
     if (pos >= source.length) break
 
     const startLine = line
@@ -360,7 +370,16 @@ class Parser {
     let width = 1
     if (this.eat('LBRACKET')) {
       const numToken = this.expect('NUMBER')
-      width = parseInt(numToken.value, 10) || 1
+      const parsed = parseInt(numToken.value, 10)
+      if (Number.isNaN(parsed) || parsed <= 0) {
+        this.errors.push({
+          line: numToken.line,
+          column: numToken.column,
+          message: 'Invalid pin width; expected positive integer',
+        })
+      } else {
+        width = parsed
+      }
       this.expect('RBRACKET')
     }
     return { name: nameToken.value, width }
