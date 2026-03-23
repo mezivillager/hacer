@@ -81,20 +81,21 @@ export function topologicalSort(state: CircuitState): TopologicalResult {
 
     const sourceGateId = resolveSourceGateId(wire.from, state)
     if (sourceGateId === null || !inDegree.has(sourceGateId)) continue
-    if (sourceGateId === destGateId) continue
 
     adjacency.get(sourceGateId)!.push(destGateId)
     inDegree.set(destGateId, inDegree.get(destGateId)! + 1)
   }
 
+  // Kahn's BFS — use a queue index instead of shift() to stay O(V+E)
   const queue: string[] = []
   for (const [id, degree] of inDegree) {
     if (degree === 0) queue.push(id)
   }
 
   const order: string[] = []
-  while (queue.length > 0) {
-    const current = queue.shift()!
+  let queueIdx = 0
+  while (queueIdx < queue.length) {
+    const current = queue[queueIdx++]
     order.push(current)
 
     for (const neighbor of adjacency.get(current)!) {
@@ -105,7 +106,8 @@ export function topologicalSort(state: CircuitState): TopologicalResult {
   }
 
   if (order.length < gateIds.length) {
-    const involvedGateIds = gateIds.filter((id) => !order.includes(id))
+    const orderedSet = new Set(order)
+    const involvedGateIds = gateIds.filter((id) => !orderedSet.has(id))
     return { type: 'cycle', involvedGateIds }
   }
 
@@ -180,12 +182,27 @@ export function evaluateCircuit(state: CircuitState): EvaluateCircuitResult {
     return { status: 'cycle', involvedGateIds: result.involvedGateIds }
   }
 
+  // Pre-index for O(gates + wires) evaluation instead of O(gates × wires)
+  const gateById = new Map(state.gates.map((g) => [g.id, g]))
+  const wiresByDestGate = new Map<string, typeof state.wires>()
+  for (const wire of state.wires) {
+    if (wire.to.type === 'gate' && wire.to.pinId) {
+      let bucket = wiresByDestGate.get(wire.to.entityId)
+      if (!bucket) {
+        bucket = []
+        wiresByDestGate.set(wire.to.entityId, bucket)
+      }
+      bucket.push(wire)
+    }
+  }
+
   for (const gateId of result.order) {
-    const gate = state.gates.find((g) => g.id === gateId)
+    const gate = gateById.get(gateId)
     if (!gate) continue
 
-    for (const wire of state.wires) {
-      if (wire.to.type === 'gate' && wire.to.entityId === gateId && wire.to.pinId) {
+    const incomingWires = wiresByDestGate.get(gateId)
+    if (incomingWires) {
+      for (const wire of incomingWires) {
         const inputPin = gate.inputs.find((p) => p.id === wire.to.pinId)
         if (inputPin) {
           inputPin.value = getSignalSourceValue(wire.from, state)

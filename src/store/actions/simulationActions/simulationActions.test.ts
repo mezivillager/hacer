@@ -209,6 +209,28 @@ describe('simulationActions', () => {
       )
     })
 
+    it('does not show duplicate message.error on repeated cycle ticks', () => {
+      const gateA = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gateB = getState().addGate('NAND', { x: 4, y: 0, z: 0 })
+      getState().addWire(
+        { type: 'gate', entityId: gateA.id, pinId: gateA.outputs[0].id },
+        { type: 'gate', entityId: gateB.id, pinId: gateB.inputs[0].id },
+        []
+      )
+      getState().addWire(
+        { type: 'gate', entityId: gateB.id, pinId: gateB.outputs[0].id },
+        { type: 'gate', entityId: gateA.id, pinId: gateA.inputs[0].id },
+        []
+      )
+
+      getState().simulationTick()
+      expect(message.error).toHaveBeenCalledTimes(1)
+
+      // Second tick while cycle persists — no additional toast
+      getState().simulationTick()
+      expect(message.error).toHaveBeenCalledTimes(1)
+    })
+
     it('clears lastSimulationError after cycle is broken and tick succeeds', () => {
       const gateA = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
       const gateB = getState().addGate('NAND', { x: 4, y: 0, z: 0 })

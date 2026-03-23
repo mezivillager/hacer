@@ -44,11 +44,14 @@ export const createSimulationActions = (set: SetState): SimulationActions => ({
   },
 
   simulationTick: () => {
-    let cycleInvolved: string[] | undefined
+    let newCycle: string[] | undefined
     set((state) => {
+      const hadCycleBefore = state.lastSimulationError !== null
       const outcome = evaluateCircuit(state)
       if (outcome.status === 'cycle') {
-        cycleInvolved = outcome.involvedGateIds
+        if (!hadCycleBefore) {
+          newCycle = outcome.involvedGateIds
+        }
         state.lastSimulationError = {
           type: 'cycle',
           involvedGateIds: outcome.involvedGateIds,
@@ -57,9 +60,9 @@ export const createSimulationActions = (set: SetState): SimulationActions => ({
         state.lastSimulationError = null
       }
     }, false, 'simulationTick')
-    if (cycleInvolved !== undefined) {
+    if (newCycle !== undefined) {
       const ids =
-        cycleInvolved.length > 0 ? cycleInvolved.join(', ') : 'unknown gates'
+        newCycle.length > 0 ? newCycle.join(', ') : 'unknown gates'
       message.error(
         `Combinational cycle detected. Gates involved: ${ids}. This simulation step had no effect.`
       )

@@ -235,6 +235,22 @@ describe('topologicalSort', () => {
     }
   })
 
+  it('detects a self-loop: gate output wired to its own input', () => {
+    const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+
+    getState().addWire(
+      { type: 'gate', entityId: gate.id, pinId: gate.outputs[0].id },
+      { type: 'gate', entityId: gate.id, pinId: gate.inputs[0].id },
+      []
+    )
+
+    const result = topologicalSort(getState())
+    expect(result.type).toBe('cycle')
+    if (result.type === 'cycle') {
+      expect(result.involvedGateIds).toContain(gate.id)
+    }
+  })
+
   it('ignores junctions — traces through to actual source', () => {
     const inputNode = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
     const gate1 = getState().addGate('NOT', { x: 4, y: 0, z: 0 })
