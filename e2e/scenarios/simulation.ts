@@ -15,18 +15,18 @@ export const simulationTwoGateScenario: SimulationScenario = {
     { fromGate: 0, fromPin: 'out-0', toGate: 1, toPin: 'in-0' },
   ],
   toggles: [
-    { gate: 0, pin: 'in-0', value: true },
-    { gate: 0, pin: 'in-1', value: true },
+    { gate: 0, pin: 'in-0', value: 1 },
+    { gate: 0, pin: 'in-1', value: 1 },
   ],
   expectations: {
     gates: 2,
     wires: 1,
     outputs: [
-      { gateIndex: 0, outputIndex: 0, value: false },
-      { gateIndex: 1, outputIndex: 0, value: true },
+      { gateIndex: 0, outputIndex: 0, value: 0 },
+      { gateIndex: 1, outputIndex: 0, value: 1 },
     ],
     inputs: [
-      { gateIndex: 1, inputIndex: 0, value: false },
+      { gateIndex: 1, inputIndex: 0, value: 0 },
     ],
   },
 }

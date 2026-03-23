@@ -359,22 +359,22 @@ describe('wireActions', () => {
     it('sets input pin value', () => {
       const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
 
-      getState().setInputValue(gate.id, gate.inputs[0].id, true)
+      getState().setInputValue(gate.id, gate.inputs[0].id, 1)
 
-      expect(getState().gates[0].inputs[0].value).toBe(true)
+      expect(getState().gates[0].inputs[0].value).toBe(1)
     })
 
     it('does nothing if gate does not exist', () => {
-      getState().setInputValue('non-existent-id', 'pin-id', true)
+      getState().setInputValue('non-existent-id', 'pin-id', 1)
       // Should not throw
     })
 
     it('does nothing if pin does not exist', () => {
       const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
 
-      getState().setInputValue(gate.id, 'non-existent-pin', true)
+      getState().setInputValue(gate.id, 'non-existent-pin', 1)
 
-      expect(getState().gates[0].inputs[0].value).toBe(false)
+      expect(getState().gates[0].inputs[0].value).toBe(0)
     })
   })
 

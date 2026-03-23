@@ -18,7 +18,7 @@ interface OutputNode3DProps {
   /** Rotation in 3D space */
   rotation: Rotation
   /** Current output value (computed from circuit) */
-  value: boolean
+  value: number
   /** Whether this node is selected */
   selected?: boolean
   /** Whether the input is connected to a wire */
@@ -66,13 +66,13 @@ export function OutputNode3D({
   const bodyColor = selected
     ? NODE_COLORS.output.selected
     : hovered
-      ? (value ? NODE_COLORS.output.hoverOn : NODE_COLORS.output.hoverOff)
-      : (value ? NODE_COLORS.output.bodyOn : NODE_COLORS.output.bodyOff)
+      ? (value === 1 ? NODE_COLORS.output.hoverOn : NODE_COLORS.output.hoverOff)
+      : (value === 1 ? NODE_COLORS.output.bodyOn : NODE_COLORS.output.bodyOff)
 
   // Pin color based on value and hover state (highlight when wiring and hovered)
   const pinColor = pinHovered && isWiringMode
     ? colors.primary
-    : (value ? colors.wire.active : colors.wire.default)
+    : (value === 1 ? colors.wire.active : colors.wire.default)
 
   // Calculate pin position (input pin on left side)
   const pinPos = calculateNodePinPosition('output')
@@ -150,7 +150,7 @@ export function OutputNode3D({
         anchorY="middle"
         font={undefined}
       >
-        {value ? '1' : '0'}
+        {value === 1 ? '1' : '0'}
       </Text>
 
       {/* Input pin (left side) */}
@@ -164,7 +164,7 @@ export function OutputNode3D({
         <meshStandardMaterial
           color={pinColor}
           emissive={pinColor}
-          emissiveIntensity={value ? 0.5 : 0.2}
+          emissiveIntensity={value === 1 ? 0.5 : 0.2}
           metalness={materials.pin.metalness}
           roughness={materials.pin.roughness}
         />

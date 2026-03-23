@@ -47,8 +47,8 @@ test.describe('Signal Propagation @store @simulation', () => {
       await setInputsViaStore(
         page,
         [
-          { gate: 0, pin: 'in-0', value: true },
-          { gate: 0, pin: 'in-1', value: true },
+          { gate: 0, pin: 'in-0', value: 1 },
+          { gate: 0, pin: 'in-1', value: 1 },
         ],
         [gate1.id, gate2.id]
       )
@@ -59,7 +59,7 @@ test.describe('Signal Propagation @store @simulation', () => {
       await runSimulationTick(page)
 
       // NAND(1,1) = 0, so gate1 output should be false
-      await expectGateOutput(page, 0, false)
+      await expectGateOutput(page, 0, 0)
     })
 
     test('propagates signals through AND-OR chain', async ({ page }) => {
@@ -83,8 +83,8 @@ test.describe('Signal Propagation @store @simulation', () => {
       await setInputsViaStore(
         page,
         [
-          { gate: 0, pin: 'in-0', value: true },
-          { gate: 0, pin: 'in-1', value: true },
+          { gate: 0, pin: 'in-0', value: 1 },
+          { gate: 0, pin: 'in-1', value: 1 },
         ],
         [gate1.id, gate2.id]
       )
@@ -94,7 +94,7 @@ test.describe('Signal Propagation @store @simulation', () => {
       await runSimulationTick(page)
 
       // AND(1,1) = 1
-      await expectGateOutput(page, 0, true)
+      await expectGateOutput(page, 0, 1)
     })
 
     test('NOT gate inverts signal', async ({ page }) => {
@@ -118,8 +118,8 @@ test.describe('Signal Propagation @store @simulation', () => {
       await setInputsViaStore(
         page,
         [
-          { gate: 0, pin: 'in-0', value: true },
-          { gate: 0, pin: 'in-1', value: true },
+          { gate: 0, pin: 'in-0', value: 1 },
+          { gate: 0, pin: 'in-1', value: 1 },
         ],
         [gate1.id, gate2.id]
       )
@@ -130,7 +130,7 @@ test.describe('Signal Propagation @store @simulation', () => {
       await runSimulationTick(page)
 
       // NOT inverts the NAND output (0 -> 1)
-      await expectGateOutput(page, 1, true)
+      await expectGateOutput(page, 1, 1)
     })
   })
 
@@ -167,10 +167,10 @@ test.describe('Signal Propagation @store @simulation', () => {
       await setInputsViaStore(
         page,
         [
-          { gate: 0, pin: 'in-0', value: true },
-          { gate: 0, pin: 'in-1', value: true },
-          { gate: 1, pin: 'in-1', value: true },
-          { gate: 2, pin: 'in-1', value: true },
+          { gate: 0, pin: 'in-0', value: 1 },
+          { gate: 0, pin: 'in-1', value: 1 },
+          { gate: 1, pin: 'in-1', value: 1 },
+          { gate: 2, pin: 'in-1', value: 1 },
         ],
         [gate1.id, gate2.id, gate3.id]
       )
@@ -217,8 +217,8 @@ test.describe('Signal Propagation @store @simulation', () => {
       await setInputsViaStore(
         page,
         [
-          { gate: 0, pin: 'in-0', value: false },
-          { gate: 0, pin: 'in-1', value: false },
+          { gate: 0, pin: 'in-0', value: 0 },
+          { gate: 0, pin: 'in-1', value: 0 },
         ],
         [gate1.id, gate2.id, gate3.id]
       )
@@ -228,7 +228,7 @@ test.describe('Signal Propagation @store @simulation', () => {
       await runSimulationTick(page)
 
       // NAND(0,0) = 1, so g1 output is true
-      await expectGateOutput(page, 0, true)
+      await expectGateOutput(page, 0, 1)
     })
   })
 
@@ -254,8 +254,8 @@ test.describe('Signal Propagation @store @simulation', () => {
       await setInputsViaStore(
         page,
         [
-          { gate: 0, pin: 'in-0', value: true },
-          { gate: 0, pin: 'in-1', value: false },
+          { gate: 0, pin: 'in-0', value: 1 },
+          { gate: 0, pin: 'in-1', value: 0 },
         ],
         [gate1.id, gate2.id]
       )
@@ -265,7 +265,7 @@ test.describe('Signal Propagation @store @simulation', () => {
       await runSimulationTick(page)
 
       // XOR(1,0) = 1
-      await expectGateOutput(page, 0, true)
+      await expectGateOutput(page, 0, 1)
     })
   })
 })

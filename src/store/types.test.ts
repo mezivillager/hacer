@@ -24,7 +24,7 @@ describe('Circuit Node Types', () => {
         name: 'a',
         position: { x: 0, y: 0, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
-        value: false,
+        value: 0,
         width: 1,
       }
 
@@ -39,7 +39,7 @@ describe('Circuit Node Types', () => {
         name: 'data',
         position: { x: 0, y: 0, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
-        value: false,
+        value: 0,
         width: 16, // 16-bit bus
       }
 
@@ -54,7 +54,7 @@ describe('Circuit Node Types', () => {
         name: 'out',
         position: { x: 32, y: 0, z: 4 },
         rotation: { x: 0, y: 0, z: 0 },
-        value: false,
+        value: 0,
         width: 1,
       }
 

@@ -9,7 +9,7 @@ interface GatePinProps {
   isWiring: boolean
   isHovered: boolean
   isConnected: boolean
-  value: boolean
+  value: number
   pinType: 'input' | 'output'
   onPinClick: (pinId: string, pinType: 'input' | 'output', localOffset: [number, number, number], isConnected: boolean) => (e: ThreeEvent<MouseEvent>) => void
   onPointerMove: (localOffset: [number, number, number]) => (e: ThreeEvent<PointerEvent>) => void
@@ -32,7 +32,7 @@ export function GatePin({
   onPointerOut,
 }: GatePinProps) {
   const radius = isWiring && isHovered ? 0.13 : 0.1
-  const emissiveIntensity = isConnected && value ? 0.5 : isHovered ? 0.3 : 0.1
+  const emissiveIntensity = isConnected && value === 1 ? 0.5 : isHovered ? 0.3 : 0.1
 
   return (
     <mesh

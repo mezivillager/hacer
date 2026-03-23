@@ -6,7 +6,7 @@ import { InputNode3D, OutputNode3D, JunctionNode3D } from './components'
 export type RenderableNode =
   | { type: 'input'; node: InputNode }
   | { type: 'output'; node: OutputNode }
-  | { type: 'junction'; node: JunctionNode; value: boolean }
+  | { type: 'junction'; node: JunctionNode; value: number }
 
 interface NodeRendererProps {
   /** The node to render with its type discriminator */

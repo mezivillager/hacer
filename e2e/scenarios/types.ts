@@ -35,7 +35,7 @@ export interface WirePlan {
 export interface TogglePlan {
   gate: number
   pin: 'in-0' | 'in-1'
-  value: boolean
+  value: number
 }
 
 /**
@@ -50,10 +50,10 @@ export interface NandScenario {
     gates: number
     wires: number
     outputs: {
-      gate1: boolean
-      gate2: boolean
-      gate3: boolean
-      gate3Inputs: [boolean, boolean]
+      gate1: number
+      gate2: number
+      gate3: number
+      gate3Inputs: [number, number]
     }
   }
 }
@@ -81,12 +81,12 @@ export interface SimulationScenario {
     outputs: Array<{
       gateIndex: number
       outputIndex: number
-      value: boolean
+      value: number
     }>
     inputs?: Array<{
       gateIndex: number
       inputIndex: number
-      value: boolean
+      value: number
     }>
   }
 }

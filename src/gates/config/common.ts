@@ -141,11 +141,11 @@ export function calculateWireStubPosition(
  * @param gateId - Unique identifier for the gate instance
  * @param inputPinX - X coordinate for both input pins
  * @param outputPinX - X coordinate for the output pin
- * @param inputA - Current boolean value of the first input
- * @param inputB - Current boolean value of the second input
+ * @param inputA - First input signal (0 or 1 for single-bit; wider values are not yet supported end-to-end)
+ * @param inputB - Second input signal (0 or 1 for single-bit)
  * @param inputAConnected - Whether the first input is connected to a wire
  * @param inputBConnected - Whether the second input is connected to a wire
- * @param output - Current boolean value of the output
+ * @param output - Output signal (0 or 1 for single-bit)
  * @param outputConnected - Whether the output is connected to a wire
  * @returns Array of three PinConfig objects for the gate's pins
  */
@@ -153,11 +153,11 @@ export function createTwoInputPinConfigs(
   gateId: string,
   inputPinX: number,
   outputPinX: number,
-  inputA: boolean,
-  inputB: boolean,
+  inputA: number,
+  inputB: number,
   inputAConnected: boolean,
   inputBConnected: boolean,
-  output: boolean,
+  output: number,
   outputConnected: boolean
 ): PinConfig[] {
   return [
@@ -195,9 +195,9 @@ export function createTwoInputPinConfigs(
  * @param gateId - Unique identifier for the gate instance
  * @param inputPinX - X coordinate for the input pin
  * @param outputPinX - X coordinate for the output pin
- * @param input - Current boolean value of the input
+ * @param input - Input signal (0 or 1 for single-bit)
  * @param inputConnected - Whether the input is connected to a wire
- * @param output - Current boolean value of the output
+ * @param output - Output signal (0 or 1 for single-bit)
  * @param outputConnected - Whether the output is connected to a wire
  * @returns Array of two PinConfig objects for the gate's pins
  */
@@ -205,9 +205,9 @@ export function createSingleInputPinConfigs(
   gateId: string,
   inputPinX: number,
   outputPinX: number,
-  input: boolean,
+  input: number,
   inputConnected: boolean,
-  output: boolean,
+  output: number,
   outputConnected: boolean
 ): PinConfig[] {
   return [

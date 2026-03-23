@@ -20,8 +20,8 @@ export interface CircuitStoreGate {
   type: string
   position: { x: number; y: number; z: number }
   rotation?: { x: number; y: number; z: number }
-  inputs: Array<{ id: string; value: boolean }>
-  outputs: Array<{ id: string; value: boolean }>
+  inputs: Array<{ id: string; value: number }>
+  outputs: Array<{ id: string; value: number }>
   selected?: boolean
 }
 
@@ -77,7 +77,7 @@ export interface CircuitActionsAPI {
     crossesWireIds?: string[],
     signalId?: string
   ) => CircuitWire
-  setInputValue: (gateId: string, pinId: string, value: boolean) => void
+  setInputValue: (gateId: string, pinId: string, value: number) => void
   toggleSimulation: () => void
   clearCircuit: () => void
   simulationTick: () => void
@@ -102,11 +102,11 @@ export interface CircuitActionsAPI {
   startWiringFromNode: (nodeId: string, nodeType: NodeType, position: { x: number; y: number; z: number }) => void
   completeWiringToNode: (nodeId: string, nodeType: NodeType) => void
   // Node management actions
-  addInputNode: (name: string, position: { x: number; y: number; z: number }, width?: number) => { id: string; name: string; value: boolean }
-  addOutputNode: (name: string, position: { x: number; y: number; z: number }, width?: number) => { id: string; name: string; value: boolean }
+  addInputNode: (name: string, position: { x: number; y: number; z: number }, width?: number) => { id: string; name: string; value: number }
+  addOutputNode: (name: string, position: { x: number; y: number; z: number }, width?: number) => { id: string; name: string; value: number }
   removeInputNode: (nodeId: string) => void
   removeOutputNode: (nodeId: string) => void
-  updateInputNodeValue: (nodeId: string, value: boolean) => void
+  updateInputNodeValue: (nodeId: string, value: number) => void
   // Junction management actions
   addJunction: (signalId: string, position: { x: number; y: number; z: number }) => { id: string; signalId: string; wireIds: string[] }
   removeJunction: (junctionId: string) => void

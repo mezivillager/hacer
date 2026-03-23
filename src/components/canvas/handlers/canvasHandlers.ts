@@ -51,7 +51,7 @@ export function handleInputToggle(gateId: string, pinId: string): void {
   if (gate) {
     const pin = gate.inputs.find(p => p.id === pinId)
     if (pin) {
-      circuitActions.setInputValue(gateId, pinId, !pin.value)
+      circuitActions.setInputValue(gateId, pinId, pin.value === 0 ? 1 : 0)
     }
   }
 }
@@ -73,7 +73,7 @@ export function handleInputNodeToggle(nodeId: string): void {
   const currentInputNodes = useCircuitStore.getState().inputNodes
   const node = currentInputNodes.find(n => n.id === nodeId)
   if (node) {
-    circuitActions.updateInputNodeValue(nodeId, !node.value)
+    circuitActions.updateInputNodeValue(nodeId, node.value === 0 ? 1 : 0)
   }
 }
 

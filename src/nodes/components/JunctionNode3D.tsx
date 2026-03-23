@@ -9,7 +9,7 @@ interface JunctionNode3DProps {
   /** Position in 3D space */
   position: Position
   /** Current signal value passing through the junction */
-  value: boolean
+  value: number
   /** Click handler for the junction */
   onClick?: () => void
 }
@@ -23,7 +23,7 @@ interface JunctionNode3DProps {
  */
 export function JunctionNode3D({ id: _id, position, value, onClick }: JunctionNode3DProps) {
   // Color based on signal value
-  const color = value ? colors.pin.active : colors.pin.inactive
+  const color = value === 1 ? colors.pin.active : colors.pin.inactive
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -38,7 +38,7 @@ export function JunctionNode3D({ id: _id, position, value, onClick }: JunctionNo
       <meshStandardMaterial
         color={color}
         emissive={color}
-        emissiveIntensity={value ? 0.5 : 0.2}
+        emissiveIntensity={value === 1 ? 0.5 : 0.2}
         metalness={materials.pin.metalness}
         roughness={materials.pin.roughness}
       />

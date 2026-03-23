@@ -21,18 +21,18 @@ export const threeGateScenario: NandScenario = {
     { fromGate: 1, fromPin: 'out-0', toGate: 2, toPin: 'in-1' },
   ],
   toggles: [
-    { gate: 0, pin: 'in-0', value: true },
-    { gate: 0, pin: 'in-1', value: true },
-    { gate: 1, pin: 'in-0', value: true },
+    { gate: 0, pin: 'in-0', value: 1 },
+    { gate: 0, pin: 'in-1', value: 1 },
+    { gate: 1, pin: 'in-0', value: 1 },
   ],
   expectations: {
     gates: 3,
     wires: 2,
     outputs: {
-      gate1: false,
-      gate2: true,
-      gate3: true,
-      gate3Inputs: [false, true],
+      gate1: 0,
+      gate2: 1,
+      gate3: 1,
+      gate3Inputs: [0, 1],
     },
   },
 }

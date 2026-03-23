@@ -1,85 +1,36 @@
-// Gate logic functions - pure boolean logic implementations
+// Gate logic for 3D display preview — matches simulation/gateLogic (0/1 single-bit; raw |/& for wider ints).
 
 /**
- * Computes the AND logic operation.
- * Returns true only when both inputs are true.
- *
- * @param a - First boolean input value
- * @param b - Second boolean input value
- * @returns true if both a AND b are true, false otherwise
- *
- * @example
- * andLogic(true, true)   // true
- * andLogic(true, false)  // false
- * andLogic(false, false) // false
+ * Computes the AND logic operation (bitwise for single-bit).
  */
-export function andLogic(a: boolean, b: boolean): boolean {
-  return a && b
+export function andLogic(a: number, b: number): number {
+  return a & b
 }
 
 /**
- * Computes the NAND (NOT-AND) logic operation.
- * Returns true unless both inputs are true.
- *
- * @param a - First boolean input value
- * @param b - Second boolean input value
- * @returns false if both a AND b are true, true otherwise
- *
- * @example
- * nandLogic(true, true)   // false
- * nandLogic(true, false)  // true
- * nandLogic(false, false) // true
+ * Computes the NAND logic operation.
  */
-export function nandLogic(a: boolean, b: boolean): boolean {
-  return !(a && b)
+export function nandLogic(a: number, b: number): number {
+  return (a & b) ^ 1
 }
 
 /**
- * Computes the OR logic operation.
- * Returns true if at least one input is true.
- *
- * @param a - First boolean input value
- * @param b - Second boolean input value
- * @returns true if a OR b (or both) are true, false otherwise
- *
- * @example
- * orLogic(true, false)  // true
- * orLogic(false, true)  // true
- * orLogic(false, false) // false
+ * Computes the OR logic operation (bitwise for single-bit).
  */
-export function orLogic(a: boolean, b: boolean): boolean {
-  return a || b
+export function orLogic(a: number, b: number): number {
+  return a | b
 }
 
 /**
- * Computes the XOR (exclusive OR) logic operation.
- * Returns true if exactly one input is true (inputs differ).
- *
- * @param a - First boolean input value
- * @param b - Second boolean input value
- * @returns true if a and b have different values, false if they are the same
- *
- * @example
- * xorLogic(true, false)  // true
- * xorLogic(false, true)  // true
- * xorLogic(true, true)   // false
- * xorLogic(false, false) // false
+ * Computes the XOR logic operation.
  */
-export function xorLogic(a: boolean, b: boolean): boolean {
-  return a !== b
+export function xorLogic(a: number, b: number): number {
+  return a ^ b
 }
 
 /**
  * Computes the NOT (inverter) logic operation.
- * Returns the opposite of the input value.
- *
- * @param a - Boolean input value to invert
- * @returns true if input is false, false if input is true
- *
- * @example
- * notLogic(true)  // false
- * notLogic(false) // true
  */
-export function notLogic(a: boolean): boolean {
-  return !a
+export function notLogic(a: number): number {
+  return a ^ 1
 }

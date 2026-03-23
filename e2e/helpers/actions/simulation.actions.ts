@@ -57,7 +57,7 @@ export async function setInputValue(
   page: Page,
   gateId: string,
   pinId: string,
-  value: boolean
+  value: number
 ): Promise<void> {
   await page.evaluate(
     ({ gateId, pinId, value }) => {
@@ -72,7 +72,7 @@ export async function setInputValue(
  */
 export async function setInputsViaStore(
   page: Page,
-  toggles: Array<{ gate: number; pin: string; value: boolean }>,
+  toggles: Array<{ gate: number; pin: string; value: number }>,
   gateIds: string[]
 ): Promise<void> {
   await page.evaluate(

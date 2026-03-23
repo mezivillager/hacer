@@ -8,10 +8,10 @@
 import { expect, Page } from '@playwright/test'
 
 export interface NandOutputsExpectation {
-  gate1Output: boolean
-  gate2Output: boolean
-  gate3Output: boolean
-  gate3Inputs: [boolean, boolean]
+  gate1Output: number
+  gate2Output: number
+  gate3Output: number
+  gate3Inputs: [number, number]
 }
 
 /**
@@ -45,7 +45,7 @@ export async function expectNandOutputs(
 export async function expectGateOutput(
   page: Page,
   gateIndex: number,
-  expectedValue: boolean,
+  expectedValue: number,
   outputIndex = 0
 ): Promise<void> {
   const value = await page.evaluate(
@@ -64,7 +64,7 @@ export async function expectGateInput(
   page: Page,
   gateIndex: number,
   inputIndex: number,
-  expectedValue: boolean
+  expectedValue: number
 ): Promise<void> {
   const value = await page.evaluate(
     ({ gateIndex, inputIndex }) => {

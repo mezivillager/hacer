@@ -7,8 +7,8 @@ interface ReadonlyGate {
   readonly type: GateType
   readonly position: { readonly x: number; readonly y: number; readonly z: number }
   readonly rotation: { readonly x: number; readonly y: number; readonly z: number }
-  readonly inputs: readonly { readonly id: string; readonly value: boolean }[]
-  readonly outputs: readonly { readonly id: string; readonly value: boolean }[]
+  readonly inputs: readonly { readonly id: string; readonly value: number }[]
+  readonly outputs: readonly { readonly id: string; readonly value: number }[]
   readonly selected: boolean
 }
 
@@ -50,8 +50,8 @@ export function GateRenderer({
       return (
         <NandGate
           {...commonProps}
-          inputA={gate.inputs[0]?.value ?? false}
-          inputB={gate.inputs[1]?.value ?? false}
+          inputA={gate.inputs[0]?.value ?? 0}
+          inputB={gate.inputs[1]?.value ?? 0}
           inputAConnected={isPinConnected(gate.id, `${gate.id}-in-0`)}
           inputBConnected={isPinConnected(gate.id, `${gate.id}-in-1`)}
           outputConnected={isPinConnected(gate.id, `${gate.id}-out-0`)}
@@ -62,8 +62,8 @@ export function GateRenderer({
       return (
         <AndGate
           {...commonProps}
-          inputA={gate.inputs[0]?.value ?? false}
-          inputB={gate.inputs[1]?.value ?? false}
+          inputA={gate.inputs[0]?.value ?? 0}
+          inputB={gate.inputs[1]?.value ?? 0}
           inputAConnected={isPinConnected(gate.id, `${gate.id}-in-0`)}
           inputBConnected={isPinConnected(gate.id, `${gate.id}-in-1`)}
           outputConnected={isPinConnected(gate.id, `${gate.id}-out-0`)}
@@ -74,8 +74,8 @@ export function GateRenderer({
       return (
         <OrGate
           {...commonProps}
-          inputA={gate.inputs[0]?.value ?? false}
-          inputB={gate.inputs[1]?.value ?? false}
+          inputA={gate.inputs[0]?.value ?? 0}
+          inputB={gate.inputs[1]?.value ?? 0}
           inputAConnected={isPinConnected(gate.id, `${gate.id}-in-0`)}
           inputBConnected={isPinConnected(gate.id, `${gate.id}-in-1`)}
           outputConnected={isPinConnected(gate.id, `${gate.id}-out-0`)}
@@ -86,7 +86,7 @@ export function GateRenderer({
       return (
         <NotGate
           {...commonProps}
-          input={gate.inputs[0]?.value ?? false}
+          input={gate.inputs[0]?.value ?? 0}
           inputConnected={isPinConnected(gate.id, `${gate.id}-in-0`)}
           outputConnected={isPinConnected(gate.id, `${gate.id}-out-0`)}
         />
@@ -96,8 +96,8 @@ export function GateRenderer({
       return (
         <XorGate
           {...commonProps}
-          inputA={gate.inputs[0]?.value ?? false}
-          inputB={gate.inputs[1]?.value ?? false}
+          inputA={gate.inputs[0]?.value ?? 0}
+          inputB={gate.inputs[1]?.value ?? 0}
           inputAConnected={isPinConnected(gate.id, `${gate.id}-in-0`)}
           inputBConnected={isPinConnected(gate.id, `${gate.id}-in-1`)}
           outputConnected={isPinConnected(gate.id, `${gate.id}-out-0`)}
@@ -109,8 +109,8 @@ export function GateRenderer({
       return (
         <NandGate
           {...commonProps}
-          inputA={gate.inputs[0]?.value ?? false}
-          inputB={gate.inputs[1]?.value ?? false}
+          inputA={gate.inputs[0]?.value ?? 0}
+          inputB={gate.inputs[1]?.value ?? 0}
           inputAConnected={isPinConnected(gate.id, `${gate.id}-in-0`)}
           inputBConnected={isPinConnected(gate.id, `${gate.id}-in-1`)}
           outputConnected={isPinConnected(gate.id, `${gate.id}-out-0`)}

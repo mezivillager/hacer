@@ -119,7 +119,7 @@ export const createWireActions = (set: SetState, get: GetState): WireActions => 
     }
   },
 
-  setInputValue: (gateId: string, pinId: string, value: boolean) => {
+  setInputValue: (gateId: string, pinId: string, value: number) => {
     set((state) => {
       const gate = state.gates.find((g) => g.id === gateId)
       if (gate) {
