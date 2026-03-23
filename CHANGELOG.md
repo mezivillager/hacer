@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.1](https://github.com/mezivillager/hacer/compare/v1.3.0...v1.3.1) (2026-03-23)
+
+### Bug Fixes
+
+* treat non-zero signals as high in 3D visuals (PR [#50](https://github.com/mezivillager/hacer/issues/50)) ([2ec9246](https://github.com/mezivillager/hacer/commit/2ec92464bfdac32a6a14b8de1a5ad0703c6cad9b))
+
+### Code Refactoring
+
+* migrate circuit signals boolean to number (P05-02) ([a5fb9b3](https://github.com/mezivillager/hacer/commit/a5fb9b34012cbd8be9ce3552259f7eb0ddb15c06))
+
 ## [1.3.0](https://github.com/mezivillager/hacer/compare/v1.2.1...v1.3.0) (2026-03-23)
 
 ### Features
