@@ -7,6 +7,7 @@ import { colors, materials } from '@/theme'
 import { NODE_DIMENSIONS, NODE_COLORS, INPUT_NODE_CONFIG, calculateNodePinPosition } from '../config'
 import { useNodeDrag } from '@/hooks/useNodeDrag'
 import type { Position, Rotation } from '@/store/types'
+import { formatSignalLabel, isSignalHigh } from '@/simulation/signalDisplay'
 
 interface InputNode3DProps {
   /** Unique identifier for the input node */
@@ -62,13 +63,15 @@ export function InputNode3D({
 
   const { isDragging, shouldAllowClick, onPointerDown, onPointerMove, onPointerUp, onPointerLeave } = useNodeDrag(id, 'input')
 
+  const high = isSignalHigh(value)
+
   const bodyColor = selected
     ? NODE_COLORS.input.selected
     : hovered
-      ? (value === 1 ? NODE_COLORS.input.hoverOn : NODE_COLORS.input.hoverOff)
-      : (value === 1 ? NODE_COLORS.input.bodyOn : NODE_COLORS.input.bodyOff)
+      ? (high ? NODE_COLORS.input.hoverOn : NODE_COLORS.input.hoverOff)
+      : (high ? NODE_COLORS.input.bodyOn : NODE_COLORS.input.bodyOff)
 
-  const pinColor = value === 1 ? colors.pin.active : colors.pin.inactive
+  const pinColor = high ? colors.pin.active : colors.pin.inactive
   const pinPos = calculateNodePinPosition('input')
 
   const handlePinClick = (e: React.MouseEvent) => {
@@ -126,7 +129,7 @@ export function InputNode3D({
         anchorY="middle"
         font={undefined}
       >
-        {value === 1 ? '1' : '0'}
+        {formatSignalLabel(value)}
       </Text>
 
       <mesh
@@ -137,7 +140,7 @@ export function InputNode3D({
         <meshStandardMaterial
           color={pinColor}
           emissive={pinColor}
-          emissiveIntensity={value === 1 ? 0.5 : 0.2}
+          emissiveIntensity={high ? 0.5 : 0.2}
           metalness={materials.pin.metalness}
           roughness={materials.pin.roughness}
         />
