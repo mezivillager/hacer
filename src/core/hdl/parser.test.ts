@@ -1,0 +1,632 @@
+import { describe, it, expect } from 'vitest'
+import { parseHDL } from './parser'
+
+// ---------------------------------------------------------------------------
+// Project 1 HDL fixtures (from nand2tetris curriculum)
+// ---------------------------------------------------------------------------
+
+const NAND_HDL = `// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/1/Nand.hdl
+/**
+ * Nand gate:
+ * if (a and b) out = 0, else out = 1 
+ */
+CHIP Nand {
+    IN a, b;
+    OUT out;
+    
+    PARTS:
+    BUILTIN Nand;
+}`
+
+const NOT_HDL = `// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/1/Not.hdl
+/**
+ * Not gate:
+ * if (in) out = 0, else out = 1
+ */
+CHIP Not {
+    IN in;
+    OUT out;
+
+    PARTS:
+    //// Replace this comment with your code.
+}`
+
+const AND_HDL = `// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/1/And.hdl
+/**
+ * And gate:
+ * if (a and b) out = 1, else out = 0 
+ */
+CHIP And {
+    IN a, b;
+    OUT out;
+    
+    PARTS:
+    //// Replace this comment with your code.
+}`
+
+const OR_HDL = `// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/1/Or.hdl
+/**
+ * Or gate:
+ * if (a or b) out = 1, else out = 0 
+ */
+CHIP Or {
+    IN a, b;
+    OUT out;
+
+    PARTS:
+    //// Replace this comment with your code.
+}`
+
+const XOR_HDL = `// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/1/Xor.hdl
+/**
+ * Exclusive-or gate:
+ * if ((a and Not(b)) or (Not(a) and b)) out = 1, else out = 0
+ */
+CHIP Xor {
+    IN a, b;
+    OUT out;
+
+    PARTS:
+    //// Replace this comment with your code.
+}`
+
+const MUX_HDL = `// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/1/Mux.hdl
+/** 
+ * Multiplexor:
+ * if (sel = 0) out = a, else out = b
+ */
+CHIP Mux {
+    IN a, b, sel;
+    OUT out;
+
+    PARTS:
+    //// Replace this comment with your code.
+}`
+
+const DMUX_HDL = `// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/1/DMux.hdl
+/**
+ * Demultiplexor:
+ * [a, b] = [in, 0] if sel = 0
+ *          [0, in] if sel = 1
+ */
+CHIP DMux {
+    IN in, sel;
+    OUT a, b;
+
+    PARTS:
+    //// Replace this comment with your code.
+}`
+
+const NOT16_HDL = `// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/01/Not16.hdl
+/**
+ * 16-bit Not gate:
+ * for i = 0, ..., 15:
+ * out[i] = Not(a[i])
+ */
+CHIP Not16 {
+    IN in[16];
+    OUT out[16];
+
+    PARTS:
+    //// Replace this comment with your code.
+}`
+
+const AND16_HDL = `// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/1/And16.hdl
+/**
+ * 16-bit And gate:
+ * for i = 0, ..., 15:
+ * out[i] = a[i] And b[i] 
+ */
+CHIP And16 {
+    IN a[16], b[16];
+    OUT out[16];
+
+    PARTS:
+    //// Replace this comment with your code.
+}`
+
+const OR16_HDL = `// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/1/Or16.hdl
+/**
+ * 16-bit Or gate:
+ * for i = 0, ..., 15:
+ * out[i] = a[i] Or b[i] 
+ */
+CHIP Or16 {
+    IN a[16], b[16];
+    OUT out[16];
+
+    PARTS:
+    //// Replace this comment with your code.
+}`
+
+const MUX16_HDL = `// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/1/Mux16.hdl
+/**
+ * 16-bit multiplexor: 
+ * for i = 0, ..., 15:
+ * if (sel = 0) out[i] = a[i], else out[i] = b[i]
+ */
+CHIP Mux16 {
+    IN a[16], b[16], sel;
+    OUT out[16];
+
+    PARTS:
+    //// Replace this comment with your code.
+}`
+
+const MUX4WAY16_HDL = `// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/1/Mux4Way16.hdl
+/**
+ * 4-way 16-bit multiplexor:
+ * out = a if sel = 00
+ *       b if sel = 01
+ *       c if sel = 10
+ *       d if sel = 11
+ */
+CHIP Mux4Way16 {
+    IN a[16], b[16], c[16], d[16], sel[2];
+    OUT out[16];
+    
+    PARTS:
+    //// Replace this comment with your code.
+}`
+
+const MUX8WAY16_HDL = `// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/1/Mux8Way16.hdl
+/**
+ * 8-way 16-bit multiplexor:
+ * out = a if sel = 000
+ *       b if sel = 001
+ *       c if sel = 010
+ *       d if sel = 011
+ *       e if sel = 100
+ *       f if sel = 101
+ *       g if sel = 110
+ *       h if sel = 111
+ */
+CHIP Mux8Way16 {
+    IN a[16], b[16], c[16], d[16],
+       e[16], f[16], g[16], h[16],
+       sel[3];
+    OUT out[16];
+
+    PARTS:
+    //// Replace this comment with your code.
+}`
+
+const DMUX4WAY_HDL = `// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/1/DMux4Way.hdl
+/**
+ * 4-way demultiplexor:
+ * [a, b, c, d] = [in, 0, 0, 0] if sel = 00
+ *                [0, in, 0, 0] if sel = 01
+ *                [0, 0, in, 0] if sel = 10
+ *                [0, 0, 0, in] if sel = 11
+ */
+CHIP DMux4Way {
+    IN in, sel[2];
+    OUT a, b, c, d;
+
+    PARTS:
+    //// Replace this comment with your code.
+}`
+
+const DMUX8WAY_HDL = `// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/1/DMux8Way.hdl
+/**
+ * 8-way demultiplexor:
+ * [a, b, c, d, e, f, g, h] = [in, 0,  0,  0,  0,  0,  0,  0] if sel = 000
+ *                            [0, in,  0,  0,  0,  0,  0,  0] if sel = 001
+ *                            [0,  0, in,  0,  0,  0,  0,  0] if sel = 010
+ *                            [0,  0,  0, in,  0,  0,  0,  0] if sel = 011
+ *                            [0,  0,  0,  0, in,  0,  0,  0] if sel = 100
+ *                            [0,  0,  0,  0,  0, in,  0,  0] if sel = 101
+ *                            [0,  0,  0,  0,  0,  0, in,  0] if sel = 110
+ *                            [0,  0,  0,  0,  0,  0,  0, in] if sel = 111
+ */
+CHIP DMux8Way {
+    IN in, sel[3];
+    OUT a, b, c, d, e, f, g, h;
+
+    PARTS:
+    //// Replace this comment with your code.
+}`
+
+const OR8WAY_HDL = `// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/1/Or8Way.hdl
+/**
+ * 8-way Or gate: 
+ * out = in[0] Or in[1] Or ... Or in[7]
+ */
+CHIP Or8Way {
+    IN in[8];
+    OUT out;
+
+    PARTS:
+    //// Replace this comment with your code.
+}`
+
+// ---------------------------------------------------------------------------
+// Tests
+// ---------------------------------------------------------------------------
+
+describe('HDL Parser', () => {
+  describe('basic parsing', () => {
+    it('parses Nand BUILTIN declaration', () => {
+      const result = parseHDL(NAND_HDL)
+      expect(result.success).toBe(true)
+      if (!result.success) return
+      expect(result.chip.name).toBe('Nand')
+      expect(result.chip.inputs).toEqual([
+        { name: 'a', width: 1 },
+        { name: 'b', width: 1 },
+      ])
+      expect(result.chip.outputs).toEqual([{ name: 'out', width: 1 }])
+      expect(result.chip.builtin).toBe('Nand')
+      expect(result.chip.parts).toEqual([])
+    })
+
+    it('parses Not stub (empty PARTS)', () => {
+      const result = parseHDL(NOT_HDL)
+      expect(result.success).toBe(true)
+      if (!result.success) return
+      expect(result.chip.name).toBe('Not')
+      expect(result.chip.inputs).toEqual([{ name: 'in', width: 1 }])
+      expect(result.chip.outputs).toEqual([{ name: 'out', width: 1 }])
+      expect(result.chip.parts).toEqual([])
+    })
+
+    it('parses And stub matching curriculum (IN, OUT, PARTS)', () => {
+      const result = parseHDL(AND_HDL)
+      expect(result.success).toBe(true)
+      if (!result.success) return
+      expect(result.chip.name).toBe('And')
+      expect(result.chip.inputs).toEqual([
+        { name: 'a', width: 1 },
+        { name: 'b', width: 1 },
+      ])
+      expect(result.chip.outputs).toEqual([{ name: 'out', width: 1 }])
+    })
+
+    it('rejects chip missing OUT after IN (P05-04 grammar)', () => {
+      const result = parseHDL(`CHIP Bad {
+        IN a;
+        PARTS:
+      }`)
+      expect(result.success).toBe(false)
+    })
+
+    it('rejects chip missing PARTS section', () => {
+      const result = parseHDL(`CHIP Bad {
+        IN a;
+        OUT b;
+      }`)
+      expect(result.success).toBe(false)
+    })
+
+    it('parses Mux4Way16 with bus widths and multi-bit sel', () => {
+      const result = parseHDL(MUX4WAY16_HDL)
+      expect(result.success).toBe(true)
+      if (!result.success) return
+      expect(result.chip.name).toBe('Mux4Way16')
+      expect(result.chip.inputs).toHaveLength(5)
+      expect(result.chip.inputs[0]).toEqual({ name: 'a', width: 16 })
+      expect(result.chip.inputs[4]).toEqual({ name: 'sel', width: 2 })
+      expect(result.chip.outputs).toEqual([{ name: 'out', width: 16 }])
+    })
+
+    it('parses Mux8Way16 with multi-line IN declaration', () => {
+      const result = parseHDL(MUX8WAY16_HDL)
+      expect(result.success).toBe(true)
+      if (!result.success) return
+      expect(result.chip.name).toBe('Mux8Way16')
+      expect(result.chip.inputs).toHaveLength(9)
+      expect(result.chip.inputs[7]).toEqual({ name: 'h', width: 16 })
+      expect(result.chip.inputs[8]).toEqual({ name: 'sel', width: 3 })
+    })
+
+    it('parses DMux8Way with many output pins', () => {
+      const result = parseHDL(DMUX8WAY_HDL)
+      expect(result.success).toBe(true)
+      if (!result.success) return
+      expect(result.chip.name).toBe('DMux8Way')
+      expect(result.chip.outputs).toHaveLength(8)
+      expect(result.chip.outputs.map((p) => p.name)).toEqual([
+        'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
+      ])
+    })
+  })
+
+  describe('parts and connections', () => {
+    it('parses a chip with parts and connections', () => {
+      const hdl = `CHIP Not {
+        IN in;
+        OUT out;
+        PARTS:
+        Nand(a=in, b=in, out=out);
+      }`
+      const result = parseHDL(hdl)
+      expect(result.success).toBe(true)
+      if (!result.success) return
+      expect(result.chip.parts).toHaveLength(1)
+      expect(result.chip.parts[0].name).toBe('Nand')
+      expect(result.chip.parts[0].connections).toEqual([
+        { internal: 'a', external: 'in' },
+        { internal: 'b', external: 'in' },
+        { internal: 'out', external: 'out' },
+      ])
+    })
+
+    it('parses multiple parts', () => {
+      const hdl = `CHIP And {
+        IN a, b;
+        OUT out;
+        PARTS:
+        Nand(a=a, b=b, out=nandOut);
+        Not(in=nandOut, out=out);
+      }`
+      const result = parseHDL(hdl)
+      expect(result.success).toBe(true)
+      if (!result.success) return
+      expect(result.chip.parts).toHaveLength(2)
+      expect(result.chip.parts[0].name).toBe('Nand')
+      expect(result.chip.parts[0].connections).toEqual([
+        { internal: 'a', external: 'a' },
+        { internal: 'b', external: 'b' },
+        { internal: 'out', external: 'nandOut' },
+      ])
+      expect(result.chip.parts[1].name).toBe('Not')
+      expect(result.chip.parts[1].connections).toEqual([
+        { internal: 'in', external: 'nandOut' },
+        { internal: 'out', external: 'out' },
+      ])
+    })
+
+    it('parses sub-bus connections', () => {
+      const hdl = `CHIP Test {
+        IN in[16];
+        OUT out[8];
+        PARTS:
+        Foo(a=in[0..7], out=out);
+      }`
+      const result = parseHDL(hdl)
+      expect(result.success).toBe(true)
+      if (!result.success) return
+      expect(result.chip.parts[0].connections[0]).toEqual({
+        internal: 'a', external: 'in', start: 0, end: 7,
+      })
+    })
+
+    it('parses single-bit sub-bus', () => {
+      const hdl = `CHIP Test {
+        IN in[16];
+        OUT out;
+        PARTS:
+        Not(in=in[3], out=out);
+      }`
+      const result = parseHDL(hdl)
+      expect(result.success).toBe(true)
+      if (!result.success) return
+      expect(result.chip.parts[0].connections[0]).toEqual({
+        internal: 'in', external: 'in', start: 3, end: 3,
+      })
+    })
+
+    it('parses true/false literal connections', () => {
+      const hdl = `CHIP Test {
+        IN in;
+        OUT out;
+        PARTS:
+        Nand(a=in, b=true, out=out);
+      }`
+      const result = parseHDL(hdl)
+      expect(result.success).toBe(true)
+      if (!result.success) return
+      expect(result.chip.parts[0].connections[1]).toEqual({
+        internal: 'b', external: 'true',
+      })
+    })
+
+    it('parses false literal connections', () => {
+      const hdl = `CHIP Test {
+        IN in;
+        OUT out;
+        PARTS:
+        Or(a=in, b=false, out=out);
+      }`
+      const result = parseHDL(hdl)
+      expect(result.success).toBe(true)
+      if (!result.success) return
+      expect(result.chip.parts[0].connections[1]).toEqual({
+        internal: 'b', external: 'false',
+      })
+    })
+  })
+
+  describe('comments', () => {
+    it('ignores line comments', () => {
+      const hdl = `// This is a comment
+      CHIP Not {
+        IN in; // input
+        OUT out;
+        PARTS:
+        // implementation
+      }`
+      const result = parseHDL(hdl)
+      expect(result.success).toBe(true)
+    })
+
+    it('ignores block comments', () => {
+      const hdl = `/* block */
+      CHIP Not { /* name */
+        IN in; OUT out;
+        PARTS: /* empty */
+      }`
+      const result = parseHDL(hdl)
+      expect(result.success).toBe(true)
+    })
+
+    it('ignores doc comments (/** ... */)', () => {
+      const hdl = `/**
+       * This is a doc comment
+       */
+      CHIP Not {
+        IN in; OUT out;
+        PARTS:
+      }`
+      const result = parseHDL(hdl)
+      expect(result.success).toBe(true)
+    })
+
+    it('ignores quadruple-slash comments (////)', () => {
+      const hdl = `CHIP Not {
+        IN in; OUT out;
+        PARTS:
+        //// Replace this comment with your code.
+      }`
+      const result = parseHDL(hdl)
+      expect(result.success).toBe(true)
+    })
+  })
+
+  describe('error handling', () => {
+    it('reports error for missing semicolon after IN', () => {
+      const result = parseHDL(`CHIP Not { IN in OUT out; PARTS: }`)
+      expect(result.success).toBe(false)
+      if (result.success) return
+      expect(result.errors).toHaveLength(1)
+      expect(result.errors[0].message).toContain(';')
+      expect(result.errors[0].line).toBeGreaterThan(0)
+    })
+
+    it('reports error for missing CHIP keyword', () => {
+      const result = parseHDL(`Not { IN in; OUT out; PARTS: }`)
+      expect(result.success).toBe(false)
+    })
+
+    it('reports error with line number', () => {
+      const result = parseHDL(`CHIP Not {\n  IN in;\n  OUT \n}`)
+      expect(result.success).toBe(false)
+      if (result.success) return
+      expect(result.errors[0].line).toBeGreaterThanOrEqual(3)
+    })
+
+    it('reports error for empty input', () => {
+      const result = parseHDL('')
+      expect(result.success).toBe(false)
+    })
+
+    it('reports error for unclosed brace', () => {
+      const result = parseHDL(`CHIP Not { IN in; OUT out; PARTS:`)
+      expect(result.success).toBe(false)
+    })
+
+    it('reports error for missing chip name', () => {
+      const result = parseHDL(`CHIP { IN in; OUT out; PARTS: }`)
+      expect(result.success).toBe(false)
+    })
+
+    it('error column is correct', () => {
+      const result = parseHDL(`CHIP Not { IN in OUT out; PARTS: }`)
+      expect(result.success).toBe(false)
+      if (result.success) return
+      expect(result.errors[0].column).toBeGreaterThan(0)
+    })
+
+    it('rejects trailing tokens after closing brace', () => {
+      const result = parseHDL(`CHIP Not {
+        IN in;
+        OUT out;
+        PARTS:
+      } extra`)
+      expect(result.success).toBe(false)
+      if (result.success) return
+      expect(result.errors[0].message).toContain('Unexpected token')
+    })
+
+    it("rejects BUILTIN without chip name", () => {
+      const result = parseHDL(`CHIP X {
+        IN a;
+        OUT b;
+        PARTS:
+        BUILTIN;
+      }`)
+      expect(result.success).toBe(false)
+      if (result.success) return
+      expect(result.errors.some((e) => e.message.includes('BUILTIN'))).toBe(true)
+    })
+  })
+
+  describe('all Project 1 HDL files parse', () => {
+    const project1Chips: Record<string, string> = {
+      Nand: NAND_HDL,
+      Not: NOT_HDL,
+      And: AND_HDL,
+      Or: OR_HDL,
+      Xor: XOR_HDL,
+      Mux: MUX_HDL,
+      DMux: DMUX_HDL,
+      Not16: NOT16_HDL,
+      And16: AND16_HDL,
+      Or16: OR16_HDL,
+      Mux16: MUX16_HDL,
+      Mux4Way16: MUX4WAY16_HDL,
+      Mux8Way16: MUX8WAY16_HDL,
+      DMux4Way: DMUX4WAY_HDL,
+      DMux8Way: DMUX8WAY_HDL,
+      Or8Way: OR8WAY_HDL,
+    }
+
+    for (const [name, hdl] of Object.entries(project1Chips)) {
+      it(`parses ${name}.hdl without errors`, () => {
+        const result = parseHDL(hdl)
+        expect(result.success).toBe(true)
+        if (result.success) {
+          expect(result.chip.name).toBe(name)
+        }
+      })
+    }
+  })
+})

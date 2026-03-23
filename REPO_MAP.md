@@ -218,11 +218,11 @@ src/
 │   │   ├── evaluate.ts     # Main simulation entry point
 │   │   ├── propagate.ts    # Signal propagation algorithm
 │   │   └── scheduler.ts    # Tick scheduling for sequential logic
-│   ├── hdl/                # HDL parser/compiler (Phase 0.5)
-│   │   ├── parser.ts       # Parse .hdl files
-│   │   ├── generator.ts    # Generate .hdl files
-│   │   ├── types.ts        # HDLChip, HDLPin, HDLPart
-│   │   └── index.ts
+│   ├── hdl/                # HDL parser (P05-04); compiler/generator later
+│   │   ├── parser.ts       # Tokenize + parse HACK HDL → AST
+│   │   ├── parser.test.ts  # Project 1 fixtures + grammar edge cases
+│   │   ├── types.ts        # HDLChip, HDLPin, HDLPart, HDLConnection
+│   │   └── index.ts        # Barrel: parseHDL + types
 │   ├── testing/            # Testing infrastructure
 │   │   ├── nand2tetris/    # .tst/.cmp test execution (Phase 0.5)
 │   │   └── index.ts
@@ -507,7 +507,7 @@ import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'; // 90° rot
 // Core logic (pure, no React)
 import { getGateDefinition } from '@/core/gates/registry';
 import { evaluateCircuit } from '@/core/simulation/evaluate';
-import { parseHDL } from '@/core/hdl/parser';
+import { parseHDL } from '@/core/hdl'; // or `@/core/hdl/parser`
 import type { GateId, WireId } from '@/core/types/branded';
 
 // Public API (for AI agents and programmatic access)
