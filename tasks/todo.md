@@ -1,4 +1,14 @@
-# Task: Replace Deprecated TypeScript baseUrl Usage
+# Current focus
+
+## Done: P05-03 Topological sort simulation (2026-03-23)
+
+- `src/simulation/topologicalEval.ts` — Kahn sort, `evaluateCircuit`, `getSignalSourceValue`
+- `simulationTick` → `evaluateCircuit`; cycles set `lastSimulationError` + `message.error`
+- Plan: `docs/plans/2026-03-23-topological-sort-eval.md` (success criteria checked)
+
+---
+
+# Task: Replace Deprecated TypeScript baseUrl Usage (historical)
 
 ## Plan
 

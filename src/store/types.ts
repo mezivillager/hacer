@@ -129,6 +129,15 @@ export type WiringDestination =
   | { type: 'output'; nodeId: string }
   | { type: 'junction'; junctionId: string; originalWireId: string; sharedSegments: import('@/utils/wiringScheme/types').WireSegment[] }
 
+/**
+ * Non-fatal simulation failure recorded for UI / devtools.
+ * Cleared on the next successful evaluation step or when the circuit is cleared.
+ */
+export type SimulationError = {
+  type: 'cycle'
+  involvedGateIds: string[]
+}
+
 export interface WiringState {
   // Legacy gate-based wiring (for backward compatibility)
   fromGateId: string
@@ -155,6 +164,8 @@ export interface CircuitState {
   selectedWireId: string | null
   simulationRunning: boolean
   simulationSpeed: number // ms per tick
+  /** Set when a tick cannot evaluate (e.g. combinational cycle); null after a successful tick */
+  lastSimulationError: SimulationError | null
   placementMode: GateType | null
   placementPreviewPosition: Position | null
   wiringFrom: WiringState | null

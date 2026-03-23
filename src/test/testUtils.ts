@@ -30,6 +30,7 @@ export function createMockStore(partial: Partial<CircuitState> = {}): CircuitSto
     selectedWireId: null,
     simulationRunning: false,
     simulationSpeed: 100,
+    lastSimulationError: null,
     placementMode: null,
     placementPreviewPosition: null,
     wiringFrom: null,
