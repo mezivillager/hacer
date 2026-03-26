@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0](https://github.com/mezivillager/hacer/compare/v1.5.0...v1.6.0) (2026-03-26)
+
+### Features
+
+* add project1 tst parser with block comment support ([908a450](https://github.com/mezivillager/hacer/commit/908a4500ce4f53d6e1edf80266fd58f910a07217))
+
+### Bug Fixes
+
+* handle comment-only input and block constructs in TST parser ([24b2bf1](https://github.com/mezivillager/hacer/commit/24b2bf144a7509f70da2e845547e29fdb0e57218))
+* harden TST parser with error detection for unterminated comments, missing terminators, and empty statements ([72af958](https://github.com/mezivillager/hacer/commit/72af958ee70eae61c6b364e4953ebdfe7aeaf80b))
+
+### Documentation
+
+* add Phase 0.5 P05 ticket checklist and cross-links ([33922b1](https://github.com/mezivillager/hacer/commit/33922b17300eb3032aa45bcc9d080c89cbd3c6e0))
+
 ## [1.5.0](https://github.com/mezivillager/hacer/compare/v1.4.0...v1.5.0) (2026-03-23)
 
 ### Features
