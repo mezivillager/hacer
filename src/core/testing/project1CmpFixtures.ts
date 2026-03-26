@@ -1,13 +1,3 @@
-/**
- * Project 1 `.cmp` fixtures adapted from the official Nand2Tetris
- * (The Elements of Computing Systems) web IDE `project_01` modules.
- *
- * These fixtures are included here solely for automated testing and
- * educational purposes. Use and redistribution of this file should
- * respect the upstream Nand2Tetris license/terms as described at
- * https://www.nand2tetris.org/ (see course materials / usage terms).
- */
-
 // Kept local to HACER tests to avoid cross-workspace runtime dependencies.
 
 export const project1CmpFixtures: Record<string, string> = {
