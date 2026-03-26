@@ -171,9 +171,8 @@ repeat 3 {
 };`)
       expect(result.success).toBe(false)
       if (result.success) return
-      expect(result.errors.some((e) => e.message.includes('Unsupported command'))).toBe(
-        true,
-      )
+      expect(result.errors).toHaveLength(1)
+      expect(result.errors[0].message).toContain('Unsupported command')
     })
   })
 
@@ -225,6 +224,46 @@ output;`)
       if (result.success) return
       expect(result.errors[0].message).toContain('Unterminated block comment')
       expect(result.errors[0].line).toBe(2)
+    })
+
+    it.each([
+      ['block comment only', '/* only a comment */'],
+      ['line comment only', '// just a line comment'],
+      [
+        'mixed comments only',
+        `// line comment\n/* block comment */\n// another line comment`,
+      ],
+    ])('rejects %s input as empty', (_label, input) => {
+      const result = parseTST(input)
+      expect(result.success).toBe(false)
+      if (result.success) return
+      expect(result.errors[0].message).toContain('Empty input')
+    })
+
+    it('reports single error for unsupported block construct', () => {
+      const result = parseTST(`output-list a;
+repeat 3 {
+  eval,
+  output;
+};`)
+      expect(result.success).toBe(false)
+      if (result.success) return
+      expect(result.errors).toHaveLength(1)
+      expect(result.errors[0].message).toContain('Unsupported command')
+      expect(result.errors[0].message).toContain('repeat')
+    })
+
+    it('reports single error for while block construct', () => {
+      const result = parseTST(`output-list a;
+while a {
+  set a 0,
+  eval,
+};`)
+      expect(result.success).toBe(false)
+      if (result.success) return
+      expect(result.errors).toHaveLength(1)
+      expect(result.errors[0].message).toContain('Unsupported command')
+      expect(result.errors[0].message).toContain('while')
     })
   })
 
