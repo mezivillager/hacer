@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.0](https://github.com/mezivillager/hacer/compare/v1.6.0...v1.7.0) (2026-03-26)
+
+### Features
+
+* add strict Project 1 CMP parser and comparator ([3b30737](https://github.com/mezivillager/hacer/commit/3b307379bc1616e5bc73e8cf38b6f3556e9fac44))
+
+### Bug Fixes
+
+* align parseCmp with codebase conventions - empty input errors, accurate line numbers, camelCase fixtures ([d0ef313](https://github.com/mezivillager/hacer/commit/d0ef313a8458f9753cfa72067c29b55fe994170b))
+
+### Code Refactoring
+
+* move testing utilities from nand2tetris/ to testing/, address all PR review comments ([dce56fa](https://github.com/mezivillager/hacer/commit/dce56fa303590e22406d8eb1d78f49037d75d8e4))
+
 ## [1.6.0](https://github.com/mezivillager/hacer/compare/v1.5.0...v1.6.0) (2026-03-26)
 
 ### Features
