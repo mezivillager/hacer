@@ -23,3 +23,9 @@ See [lessons.md.template](./lessons.md.template) for the entry format.
 **What happened**: I initially silenced a TypeScript deprecation (`ignoreDeprecations`) instead of implementing the underlying config migration.
 **Rule**: Do not use deprecation suppression as the primary fix when a concrete migration path is available; implement the real migration first, then validate.
 **Context**: TypeScript config in [tsconfig.base.json](../tsconfig.base.json)
+
+### [2026-03-26] - Verify implementation files are committed with their tests
+
+**What happened**: Parser tests were committed while the corresponding parser implementation remained unstaged in the working tree.
+**Rule**: Before marking a parser/task change complete, run `git status --short` and ensure implementation + tests for the same behavior are staged and committed together.
+**Context**: HDL parser parity hardening follow-up in `src/core/hdl/parser.ts` and `src/core/hdl/parser.test.ts`
