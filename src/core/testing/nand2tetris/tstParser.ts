@@ -142,6 +142,8 @@ function splitStatements(
     hasStatementContent = false
   }
 
+  let braceDepth = 0
+
   for (let idx = 0; idx < source.length; idx++) {
     const ch = source[idx]
 
@@ -158,7 +160,21 @@ function splitStatements(
       startStatement()
     }
 
-    if (ch === ',' || ch === ';') {
+    if (ch === '{') {
+      braceDepth++
+      current += ch
+      column++
+      continue
+    }
+
+    if (ch === '}') {
+      if (braceDepth > 0) braceDepth--
+      current += ch
+      column++
+      continue
+    }
+
+    if ((ch === ',' || ch === ';') && braceDepth === 0) {
       pushStatement(ch)
       column++
       continue
@@ -464,6 +480,13 @@ export function parseTST(source: string): TSTParseResult {
   const statements = splitStatements(withoutComments, errors)
   if (errors.length > 0) {
     return { success: false, errors }
+  }
+
+  if (statements.length === 0) {
+    return {
+      success: false,
+      errors: [{ line: 1, column: 1, message: 'Empty input' }],
+    }
   }
 
   const commands: TSTCommand[] = []
