@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import type { CmpParseResult } from './cmpParser'
 import { compareCmpRow, parseCmp } from './cmpParser'
-import { PROJECT1_CMP_FIXTURES } from './project1CmpFixtures'
+import { project1CmpFixtures } from './project1CmpFixtures'
 
 function expectSuccess(result: CmpParseResult) {
   expect(result.success).toBe(true)
@@ -78,6 +78,36 @@ describe('CMP Parser', () => {
       )
 
       expect(cmp.rows).toHaveLength(2)
+    })
+
+    it('returns Empty input error for empty string', () => {
+      const result = parseCmp('')
+
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        expect(result.errors[0]?.message).toBe('Empty input')
+      }
+    })
+
+    it('returns Empty input error for whitespace-only string', () => {
+      const result = parseCmp('   \n  \n  ')
+
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        expect(result.errors[0]?.message).toBe('Empty input')
+      }
+    })
+
+    it('reports accurate line numbers when blank lines are present', () => {
+      const result = parseCmp(`| a | b |
+
+| 0 |`)
+
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        expect(result.errors[0]?.line).toBe(3)
+        expect(result.errors[0]?.message).toMatch(/column count/i)
+      }
     })
 
     it('returns errors on row with mismatched column count', () => {
@@ -163,10 +193,10 @@ describe('CMP Parser', () => {
 
   describe('all Project 1 CMP files parse', () => {
     it('contains exactly 16 fixture entries', () => {
-      expect(Object.keys(PROJECT1_CMP_FIXTURES)).toHaveLength(16)
+      expect(Object.keys(project1CmpFixtures)).toHaveLength(16)
     })
 
-    for (const [name, cmpStr] of Object.entries(PROJECT1_CMP_FIXTURES)) {
+    for (const [name, cmpStr] of Object.entries(project1CmpFixtures)) {
       it(`parses ${name}.cmp without errors`, () => {
         const result = parseCmp(cmpStr)
 

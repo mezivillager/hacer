@@ -10,7 +10,7 @@
 
 // Kept local to HACER tests to avoid cross-workspace runtime dependencies.
 
-export const PROJECT1_CMP_FIXTURES: Record<string, string> = {
+export const project1CmpFixtures: Record<string, string> = {
   Nand: `| a | b |out|
 | 0 | 0 | 1 |
 | 0 | 1 | 1 |

@@ -101,17 +101,25 @@ function parseCellValue(
 export function parseCmp(source: string): CmpParseResult {
   const errors: CmpParseError[] = []
 
-  const lines: string[] = source
-    .replace(/\r\n/g, '\n')
-    .split('\n')
-    .map((line: string) => line.trim())
-    .filter((line: string) => line.length > 0)
-
-  if (lines.length === 0) {
-    return { success: true, file: { columns: [], rows: [] } }
+  if (!source.trim()) {
+    return {
+      success: false,
+      errors: [{ line: 1, column: 1, message: 'Empty input' }],
+    }
   }
 
-  const headerCells = toPipeCells(lines[0], 1, errors)
+  const rawLines = source.replace(/\r\n/g, '\n').split('\n')
+
+  // Build list of non-empty lines preserving their original 1-based line numbers
+  const nonEmptyLines: { text: string; lineNumber: number }[] = []
+  for (let i = 0; i < rawLines.length; i++) {
+    const trimmed = rawLines[i].trim()
+    if (trimmed.length > 0) {
+      nonEmptyLines.push({ text: trimmed, lineNumber: i + 1 })
+    }
+  }
+
+  const headerCells = toPipeCells(nonEmptyLines[0].text, nonEmptyLines[0].lineNumber, errors)
   if (headerCells === null) {
     return { success: false, errors }
   }
@@ -122,17 +130,18 @@ export function parseCmp(source: string): CmpParseResult {
   }))
 
   const rows: CmpRow[] = []
-  for (let rowIndex = 1; rowIndex < lines.length; rowIndex++) {
-    const cells = toPipeCells(lines[rowIndex], rowIndex + 1, errors)
+  for (let i = 1; i < nonEmptyLines.length; i++) {
+    const { text, lineNumber } = nonEmptyLines[i]
+    const cells = toPipeCells(text, lineNumber, errors)
     if (cells === null) {
       continue
     }
 
     if (cells.length !== columns.length) {
       errors.push({
-        line: rowIndex + 1,
+        line: lineNumber,
         column: 1,
-        message: `CMP line ${rowIndex + 1} column count mismatch: expected ${columns.length}, got ${cells.length}`,
+        message: `CMP line ${lineNumber} column count mismatch: expected ${columns.length}, got ${cells.length}`,
       })
       continue
     }
@@ -143,7 +152,7 @@ export function parseCmp(source: string): CmpParseResult {
       const columnName = columns[columnIndex]?.name ?? `col_${columnIndex}`
       const value = parseCellValue(
         cells[columnIndex],
-        rowIndex + 1,
+        lineNumber,
         columnIndex,
         columnName,
         errors,
