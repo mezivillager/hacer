@@ -2,6 +2,35 @@
 
 **Phase 0.5 ticket progress:** check off tickets in [`docs/plans/phase-0.5-tickets-CHECKLIST.md`](../docs/plans/phase-0.5-tickets-CHECKLIST.md) when merged + CI gates pass.
 
+## In Progress: HDL parser parity hardening (2026-03-26)
+
+- [x] Add RED tests for explicit unsupported `CLOCKED` diagnostics
+- [x] Add RED tests for invalid sub-bus range handling (`start > end`)
+- [x] Implement parser updates in `src/core/hdl/parser.ts`
+- [x] Run focused verification: `pnpm run test:run -- src/core/hdl/parser.test.ts`
+- [x] Run completion gates: `pnpm run lint && pnpm run test:run && pnpm run build && pnpm run test:e2e:store`
+- [x] Add canonical Project 1 HDL fixture corpus in `src/core/hdl/project1HdlFixtures.ts`
+- [x] Refactor `src/core/hdl/parser.test.ts` to consume canonical fixture map (remove duplicated inline fixture bodies)
+- [x] Tighten diagnostic contracts with exact message assertions for `CLOCKED` and descending sub-bus ranges
+- [x] Add strictness guard test for missing closing brace behavior
+- [x] Re-run verification gates: focused HDL tests, lint, typecheck, full unit tests, build, and store E2E
+
+### Review (HDL parser parity hardening)
+
+- Added explicit unsupported `CLOCKED` diagnostics in the HDL parser to avoid generic token mismatch errors.
+- Added validation for descending sub-bus ranges (`start > end`) with a specific range error message.
+- Added targeted parser tests covering both behaviors.
+- Added canonical Project 1 HDL fixtures module (`project1HdlFixtures`) with all 16 chips.
+- Removed duplicated Project 1 fixture bodies from `parser.test.ts` by importing the canonical fixture map.
+- Hardened parser diagnostics tests to assert exact messages for `CLOCKED` and descending range errors.
+- Verified (2026-03-26):
+	- `pnpm run test:run -- --run src/core/hdl/parser.test.ts` (pass: 69 files, 1081 tests)
+	- `pnpm run lint` (pass)
+	- `pnpm run typecheck` (pass)
+	- `pnpm run test:run` (pass: 69 files, 1081 tests)
+	- `pnpm run build` (pass; Vite build complete)
+	- `pnpm run test:e2e:store` (pass: 81 passed)
+
 ## In Progress: P05-06 CMP parser (2026-03-26)
 
 - [x] Create failing tests for CMP parsing and row comparison in `src/core/testing/cmpParser.test.ts`
