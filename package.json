@@ -55,7 +55,7 @@
     "react-dom": "^19.2.0",
     "three": "^0.183.2",
     "three-stdlib": "^2.36.1",
-    "zustand": "^5.0.2"
+    "zustand": "^5.0.12"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.4.3",
