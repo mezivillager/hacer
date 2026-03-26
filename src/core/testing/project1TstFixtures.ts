@@ -1,13 +1,3 @@
-/**
- * Project 1 `.tst` fixtures adapted from the official Nand2Tetris
- * (The Elements of Computing Systems) web IDE `project_01` modules.
- *
- * These fixtures are included here solely for automated testing and
- * educational purposes. Use and redistribution of this file should
- * respect the upstream Nand2Tetris license/terms as described at
- * https://www.nand2tetris.org/ (see course materials / usage terms).
- */
-
 export const nandTst = `output-list a b out;
 
 set a 0,
