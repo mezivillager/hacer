@@ -37,7 +37,8 @@ Use a lean strategy:
 - Keep fail-fast as the default parser behavior.
 - Keep targeted hardening already implemented (`CLOCKED`, descending range checks).
 - Add fixture parity coverage using a dedicated fixture corpus module.
-- Optional micro-recovery is allowed only inside malformed `PARTS` entries and only if readability remains high.
+- Consolidate existing inline Project 1 HDL fixture strings from tests into the canonical fixture module to avoid fixture drift.
+- Do not implement micro-recovery by default; only allow optional, tiny `PARTS`-local recovery if it remains trivial and well tested.
 
 ## Architecture and Boundaries
 
@@ -61,6 +62,7 @@ Proposed fixture file: `src/core/hdl/project1HdlFixtures.ts`.
 
 - Export a canonical map for all Project 1 HDL sources.
 - Keep fixture consumption test-only.
+- Migrate existing inline Project 1 fixture constants from `src/core/hdl/parser.test.ts` into this module so there is a single source of truth.
 
 ## Data and Control Flow
 
@@ -77,8 +79,10 @@ Proposed fixture file: `src/core/hdl/project1HdlFixtures.ts`.
 - Strict by default: malformed HDL returns failure.
 - No silent correction of user input.
 - Optional micro-recovery policy:
+- Default plan is fully fail-fast; ship this unless a concrete usability gap is proven.
   - If a malformed part declaration is encountered, parser may skip to the next semicolon and continue parsing subsequent parts.
   - This micro-recovery is only acceptable if implemented with one small helper and no broad synchronization framework.
+   - Micro-recovery must not mask structural errors (for example missing `}`) and must be covered by a guard test.
   - If helper complexity reduces readability, drop micro-recovery and stay fully fail-fast.
 
 ## Testing Plan
@@ -86,13 +90,15 @@ Proposed fixture file: `src/core/hdl/project1HdlFixtures.ts`.
 Primary file: `src/core/hdl/parser.test.ts`.
 
 1. Retain and validate targeted tests:
-   - Unsupported `CLOCKED` diagnostics.
+   - Unsupported `CLOCKED` diagnostics (assert exact diagnostic string, not only substring presence).
    - Descending sub-bus range rejection.
 2. Add fixture-driven tests using `project1HdlFixtures`:
    - Assert expected fixture count.
    - Assert each fixture parses successfully.
+   - Remove redundant inline fixture declarations once migration is complete.
 3. If micro-recovery is implemented:
    - Add one malformed `PARTS` test to verify one-entry skip behavior.
+   - Add one structural-error test to ensure no masking (for example missing closing brace still fails clearly).
 
 ## Verification Gates
 
