@@ -2,6 +2,27 @@
 
 **Phase 0.5 ticket progress:** check off tickets in [`docs/plans/phase-0.5-tickets-CHECKLIST.md`](../docs/plans/phase-0.5-tickets-CHECKLIST.md) when merged + CI gates pass.
 
+## In Progress: P05-06 CMP parser (2026-03-26)
+
+- [x] Create failing tests for CMP parsing and row comparison in `src/core/testing/nand2tetris/cmpParser.test.ts`
+- [x] Add self-contained Project 1 CMP fixture corpus (all 16 files) for parser coverage
+- [x] Implement `parseCmp` and `compareCmpRow` in `src/core/testing/nand2tetris/cmpParser.ts`
+- [x] Ensure compatibility with P05-05 execution order (`src/core/testing/nand2tetris/` may not exist)
+- [x] Run verification: `pnpm run test:run -- --run src/core/testing/nand2tetris/cmpParser.test.ts`
+- [x] Run completion gates: `pnpm run lint && pnpm run test:run && pnpm run build && pnpm run test:e2e:store`
+
+### Review (P05-06)
+
+- Added strict `.cmp` parser with deterministic malformed-row errors and Project-1 numeric parsing heuristic.
+- Added `compareCmpRow` first-mismatch reporting with optional caller row index.
+- Added local fixture corpus with all 16 Project 1 `.cmp` tables curated from canonical web-ide sources.
+- Verified:
+	- `pnpm exec vitest run src/core/testing/nand2tetris/cmpParser.test.ts` (29 passed)
+	- `pnpm run lint` (pass)
+	- `pnpm run test:run` (pass)
+	- `pnpm run build` (pass)
+	- `pnpm run test:e2e:store` (81 passed)
+
 ---
 
 ## Done: P05-03 Topological sort simulation (2026-03-23)
