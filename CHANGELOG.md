@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.1](https://github.com/mezivillager/hacer/compare/v1.7.0...v1.7.1) (2026-03-26)
+
+### Bug Fixes
+
+* **hdl-parser:** finalize CLOCKED and sub-bus diagnostics ([8d0d358](https://github.com/mezivillager/hacer/commit/8d0d358123c6a6cb3e3eb263a9c8a7e318be68ac))
+
+### Documentation
+
+* add HDL parser parity hardening design spec ([9088385](https://github.com/mezivillager/hacer/commit/9088385ca9435711ce6738e36c456932e21c8872))
+* **lessons:** require staged impl+tests before completion ([d3a3ca3](https://github.com/mezivillager/hacer/commit/d3a3ca3c3329b40f66e09024826ec274d3dbc1d5))
+* refine HDL parser parity hardening spec ([6626f50](https://github.com/mezivillager/hacer/commit/6626f50733e08aedd9d45f09022d40132b9e6179))
+
+### Tests
+
+* add canonical HDL parser fixture parity coverage ([aa9deac](https://github.com/mezivillager/hacer/commit/aa9deace4acf3488524f30b648af6cdf69ff9c28))
+
 ## [1.7.0](https://github.com/mezivillager/hacer/compare/v1.6.0...v1.7.0) (2026-03-26)
 
 ### Features
