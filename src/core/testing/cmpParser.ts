@@ -32,11 +32,31 @@ export interface CmpMismatch {
   actual: number
 }
 
-function toPipeCells(rawLine: string, lineNumber: number): string[] {
+export interface CmpParseError {
+  line: number
+  column: number
+  message: string
+}
+
+/** Discriminated union returned by `parseCmp`. */
+export type CmpParseResult =
+  | { success: true; file: CmpFile }
+  | { success: false; errors: CmpParseError[] }
+
+function toPipeCells(
+  rawLine: string,
+  lineNumber: number,
+  errors: CmpParseError[],
+): string[] | null {
   const line = rawLine.trim()
 
   if (!line.startsWith('|') || !line.endsWith('|')) {
-    throw new Error(`CMP line ${lineNumber} must be pipe-delimited`) // line number is 1-based for diagnostics
+    errors.push({
+      line: lineNumber,
+      column: 1,
+      message: `CMP line ${lineNumber} must be pipe-delimited`,
+    })
+    return null
   }
 
   return line
@@ -45,7 +65,13 @@ function toPipeCells(rawLine: string, lineNumber: number): string[] {
     .map((cell) => cell.trim())
 }
 
-function parseCellValue(cell: string, lineNumber: number, columnName: string): number {
+function parseCellValue(
+  cell: string,
+  lineNumber: number,
+  columnIndex: number,
+  columnName: string,
+  errors: CmpParseError[],
+): number | null {
   if (cell === '') {
     return 0
   }
@@ -54,18 +80,27 @@ function parseCellValue(cell: string, lineNumber: number, columnName: string): n
     return Number.parseInt(cell, 2)
   }
 
-  const parsed = Number.parseInt(cell, 10)
-  if (Number.isNaN(parsed)) {
-    throw new Error(
-      `CMP line ${lineNumber} has non-numeric value '${cell}' in column '${columnName}'`,
-    )
+  if (!/^-?\d+$/.test(cell)) {
+    errors.push({
+      line: lineNumber,
+      column: columnIndex + 1,
+      message: `CMP line ${lineNumber} has non-numeric value '${cell}' in column '${columnName}'`,
+    })
+    return null
   }
 
-  return parsed
+  return Number.parseInt(cell, 10)
 }
 
-/** Parses a nand2tetris .cmp expected-output table into numeric rows. */
-export function parseCmp(source: string): CmpFile {
+/**
+ * Parses a `.cmp` expected-output table into structured columns and numeric rows.
+ *
+ * @param source - Full `.cmp` file contents
+ * @returns Discriminated union: `{ success: true, file }` or `{ success: false, errors }`
+ */
+export function parseCmp(source: string): CmpParseResult {
+  const errors: CmpParseError[] = []
+
   const lines: string[] = source
     .replace(/\r\n/g, '\n')
     .split('\n')
@@ -73,10 +108,14 @@ export function parseCmp(source: string): CmpFile {
     .filter((line: string) => line.length > 0)
 
   if (lines.length === 0) {
-    return { columns: [], rows: [] }
+    return { success: true, file: { columns: [], rows: [] } }
   }
 
-  const headerCells = toPipeCells(lines[0], 1)
+  const headerCells = toPipeCells(lines[0], 1, errors)
+  if (headerCells === null) {
+    return { success: false, errors }
+  }
+
   const columns: CmpColumn[] = headerCells.map((name, index) => ({
     name,
     index,
@@ -84,23 +123,48 @@ export function parseCmp(source: string): CmpFile {
 
   const rows: CmpRow[] = []
   for (let rowIndex = 1; rowIndex < lines.length; rowIndex++) {
-    const cells = toPipeCells(lines[rowIndex], rowIndex + 1)
-
-    if (cells.length !== columns.length) {
-      throw new Error(
-        `CMP line ${rowIndex + 1} column count mismatch: expected ${columns.length}, got ${cells.length}`,
-      )
+    const cells = toPipeCells(lines[rowIndex], rowIndex + 1, errors)
+    if (cells === null) {
+      continue
     }
 
-    const values = cells.map((cell, columnIndex) => {
-      const columnName = columns[columnIndex]?.name ?? `col_${columnIndex}`
-      return parseCellValue(cell, rowIndex + 1, columnName)
-    })
+    if (cells.length !== columns.length) {
+      errors.push({
+        line: rowIndex + 1,
+        column: 1,
+        message: `CMP line ${rowIndex + 1} column count mismatch: expected ${columns.length}, got ${cells.length}`,
+      })
+      continue
+    }
 
-    rows.push({ values })
+    const values: number[] = []
+    let rowValid = true
+    for (let columnIndex = 0; columnIndex < cells.length; columnIndex++) {
+      const columnName = columns[columnIndex]?.name ?? `col_${columnIndex}`
+      const value = parseCellValue(
+        cells[columnIndex],
+        rowIndex + 1,
+        columnIndex,
+        columnName,
+        errors,
+      )
+      if (value === null) {
+        rowValid = false
+      } else {
+        values.push(value)
+      }
+    }
+
+    if (rowValid) {
+      rows.push({ values })
+    }
   }
 
-  return { columns, rows }
+  if (errors.length > 0) {
+    return { success: false, errors }
+  }
+
+  return { success: true, file: { columns, rows } }
 }
 
 /**
