@@ -168,10 +168,63 @@ output;`)
       const result = parseTST(`output-list a;
 repeat 3 {
   eval,
-}`)
+};`)
       expect(result.success).toBe(false)
       if (result.success) return
-      expect(result.errors[0].message).toContain('Unsupported command')
+      expect(result.errors.some((e) => e.message.includes('Unsupported command'))).toBe(
+        true,
+      )
+    })
+  })
+
+  describe('error handling', () => {
+    it('rejects unterminated block comments', () => {
+      const result = parseTST(`/* unterminated
+output-list a;`)
+      expect(result.success).toBe(false)
+      if (result.success) return
+      expect(result.errors[0].message).toContain('Unterminated block comment')
+      expect(result.errors[0].line).toBe(1)
+      expect(result.errors[0].column).toBe(1)
+    })
+
+    it('rejects statements missing terminator at EOF', () => {
+      const result = parseTST('output-list a b out')
+      expect(result.success).toBe(false)
+      if (result.success) return
+      expect(result.errors[0].message).toContain('missing terminator')
+    })
+
+    it('rejects single keyword missing terminator at EOF', () => {
+      const result = parseTST('output')
+      expect(result.success).toBe(false)
+      if (result.success) return
+      expect(result.errors[0].message).toContain('missing terminator')
+    })
+
+    it('rejects empty statements from consecutive separators', () => {
+      const result = parseTST('eval,,output;')
+      expect(result.success).toBe(false)
+      if (result.success) return
+      expect(result.errors[0].message).toContain('Empty statement')
+    })
+
+    it('rejects empty statement from leading separator', () => {
+      const result = parseTST(';eval,output;')
+      expect(result.success).toBe(false)
+      if (result.success) return
+      expect(result.errors[0].message).toContain('Empty statement')
+    })
+
+    it('reports location for unterminated block comment at offset', () => {
+      const result = parseTST(`output-list a;
+set a 0, /* unclosed
+eval,
+output;`)
+      expect(result.success).toBe(false)
+      if (result.success) return
+      expect(result.errors[0].message).toContain('Unterminated block comment')
+      expect(result.errors[0].line).toBe(2)
     })
   })
 

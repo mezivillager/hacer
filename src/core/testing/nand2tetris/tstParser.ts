@@ -16,9 +16,14 @@ const COMMAND_PATTERN = /^(\S+)(?:\s|$)/
 const OUTPUT_COLUMN_PATTERN =
   /^([A-Za-z_][A-Za-z0-9_]*)(?:%([BDXS])(\d+)\.(\d+)\.(\d+))?$/
 
-function stripComments(source: string): string {
+function stripComments(
+  source: string,
+  errors: TSTParseError[],
+): string {
   let result = ''
   let idx = 0
+  let line = 1
+  let column = 1
 
   while (idx < source.length) {
     const ch = source[idx]
@@ -27,18 +32,25 @@ function stripComments(source: string): string {
     if (ch === '/' && next === '/') {
       result += '  '
       idx += 2
+      column += 2
 
       while (idx < source.length && source[idx] !== '\n') {
         result += ' '
         idx++
+        column++
       }
 
       continue
     }
 
     if (ch === '/' && next === '*') {
+      const startLine = line
+      const startColumn = column
       result += '  '
       idx += 2
+      column += 2
+
+      let terminated = false
 
       while (idx < source.length) {
         const blockCh = source[idx]
@@ -47,24 +59,53 @@ function stripComments(source: string): string {
         if (blockCh === '*' && blockNext === '/') {
           result += '  '
           idx += 2
+          column += 2
+          terminated = true
           break
         }
 
-        result += blockCh === '\n' ? '\n' : ' '
+        if (blockCh === '\n') {
+          result += '\n'
+          line++
+          column = 1
+        } else {
+          result += ' '
+          column++
+        }
+
         idx++
+      }
+
+      if (!terminated) {
+        errors.push({
+          line: startLine,
+          column: startColumn,
+          message: 'Unterminated block comment',
+        })
       }
 
       continue
     }
 
     result += ch
+
+    if (ch === '\n') {
+      line++
+      column = 1
+    } else {
+      column++
+    }
+
     idx++
   }
 
   return result
 }
 
-function splitStatements(source: string): Statement[] {
+function splitStatements(
+  source: string,
+  errors: TSTParseError[],
+): Statement[] {
   const statements: Statement[] = []
 
   let current = ''
@@ -88,6 +129,12 @@ function splitStatements(source: string): Statement[] {
         terminator,
         line: statementStartLine,
         column: statementStartColumn,
+      })
+    } else {
+      errors.push({
+        line: statementStartLine,
+        column: statementStartColumn,
+        message: 'Empty statement',
       })
     }
 
@@ -128,11 +175,10 @@ function splitStatements(source: string): Statement[] {
   }
 
   if (current.trim().length > 0) {
-    statements.push({
-      text: current.trim(),
-      terminator: ';',
+    errors.push({
       line: statementStartLine,
       column: statementStartColumn,
+      message: 'Statement missing terminator',
     })
   }
 
@@ -408,11 +454,19 @@ export function parseTST(source: string): TSTParseResult {
     }
   }
 
-  const withoutComments = stripComments(source)
-  const statements = splitStatements(withoutComments)
+  const errors: TSTParseError[] = []
+
+  const withoutComments = stripComments(source, errors)
+  if (errors.length > 0) {
+    return { success: false, errors }
+  }
+
+  const statements = splitStatements(withoutComments, errors)
+  if (errors.length > 0) {
+    return { success: false, errors }
+  }
 
   const commands: TSTCommand[] = []
-  const errors: TSTParseError[] = []
 
   for (const statement of statements) {
     const parsed = parseStatement(statement)
