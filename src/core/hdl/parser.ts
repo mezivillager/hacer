@@ -16,6 +16,7 @@ type TokenType =
   | 'IN'
   | 'OUT'
   | 'PARTS'
+  | 'CLOCKED'
   | 'BUILTIN'
   | 'TRUE'
   | 'FALSE'
@@ -50,6 +51,7 @@ const KEYWORDS: Record<string, TokenType> = {
   IN: 'IN',
   OUT: 'OUT',
   PARTS: 'PARTS',
+  CLOCKED: 'CLOCKED',
   BUILTIN: 'BUILTIN',
   true: 'TRUE',
   false: 'FALSE',
@@ -253,6 +255,18 @@ class Parser {
     return this.tokens[this.pos]
   }
 
+  private reportUnsupportedClockedSection(): void {
+    const cur = this.current()
+    if (cur.type === 'CLOCKED') {
+      this.pos++
+    }
+    this.errors.push({
+      line: cur.line,
+      column: cur.column,
+      message: "Unsupported section 'CLOCKED' in Phase 0.5 parser scope",
+    })
+  }
+
   private eat(type: TokenType): Token | null {
     const tok = this.current()
     if (tok.type === type) {
@@ -319,6 +333,11 @@ class Parser {
 
     const outputs = this.parseOutDecl()
     if (this.errors.length > 0) return emptyChip()
+
+    if (this.current().type === 'CLOCKED') {
+      this.reportUnsupportedClockedSection()
+      return emptyChip()
+    }
 
     const partsResult = this.parsePartsDecl()
     if (this.errors.length > 0) return emptyChip()
@@ -405,6 +424,11 @@ class Parser {
       return { parts: [], builtin: nameToken.value }
     }
 
+    if (this.current().type === 'CLOCKED') {
+      this.reportUnsupportedClockedSection()
+      return { parts: [] }
+    }
+
     const parts: HDLPart[] = []
     while (this.current().type === 'IDENT') {
       parts.push(this.parsePart())
@@ -461,6 +485,13 @@ class Parser {
       if (this.eat('DOTDOT')) {
         const endToken = this.expect('NUMBER')
         end = parseInt(endToken.value, 10)
+        if (end < start) {
+          this.errors.push({
+            line: endToken.line,
+            column: endToken.column,
+            message: `Invalid sub-bus range '${start}..${end}'; expected start <= end`,
+          })
+        }
       }
       this.expect('RBRACKET')
       conn.start = start

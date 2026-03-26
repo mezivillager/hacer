@@ -365,6 +365,19 @@ describe('HDL Parser', () => {
       expect(clockedError?.message).toBe("Unsupported section 'CLOCKED' in Phase 0.5 parser scope")
     })
 
+    it('rejects CLOCKED content inside PARTS block with explicit unsupported message', () => {
+      const result = parseHDL(`CHIP RegLike {
+        IN in;
+        OUT out;
+        PARTS:
+        CLOCKED in;
+      }`)
+      expect(result.success).toBe(false)
+      if (result.success) return
+      const clockedError = result.errors.find((error) => error.message.includes('CLOCKED'))
+      expect(clockedError?.message).toBe("Unsupported section 'CLOCKED' in Phase 0.5 parser scope")
+    })
+
     it('rejects descending sub-bus ranges', () => {
       const result = parseHDL(`CHIP BadRange {
         IN in[16];
