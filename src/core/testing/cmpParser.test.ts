@@ -1,7 +1,14 @@
 import { describe, expect, it } from 'vitest'
 
+import type { CmpParseResult } from './cmpParser'
 import { compareCmpRow, parseCmp } from './cmpParser'
 import { PROJECT1_CMP_FIXTURES } from './project1CmpFixtures'
+
+function expectSuccess(result: CmpParseResult) {
+  expect(result.success).toBe(true)
+  if (!result.success) throw new Error('Expected success')
+  return result.file
+}
 
 const NAND_CMP = `| a | b |out|
 | 0 | 0 | 1 |
@@ -20,7 +27,7 @@ const MUX4WAY16_CMP = `|        a         |        b         |        c         
 describe('CMP Parser', () => {
   describe('parsing', () => {
     it('parses Nand.cmp header and rows', () => {
-      const cmp = parseCmp(NAND_CMP)
+      const cmp = expectSuccess(parseCmp(NAND_CMP))
 
       expect(cmp.columns.map((column) => column.name)).toEqual(['a', 'b', 'out'])
       expect(cmp.rows).toHaveLength(4)
@@ -29,7 +36,7 @@ describe('CMP Parser', () => {
     })
 
     it('parses Not.cmp', () => {
-      const cmp = parseCmp(NOT_CMP)
+      const cmp = expectSuccess(parseCmp(NOT_CMP))
 
       expect(cmp.columns.map((column) => column.name)).toEqual(['in', 'out'])
       expect(cmp.rows).toHaveLength(2)
@@ -38,7 +45,7 @@ describe('CMP Parser', () => {
     })
 
     it('parses multi-bit binary values (Mux4Way16.cmp)', () => {
-      const cmp = parseCmp(MUX4WAY16_CMP)
+      const cmp = expectSuccess(parseCmp(MUX4WAY16_CMP))
 
       expect(cmp.columns.map((column) => column.name)).toEqual([
         'a',
@@ -54,42 +61,66 @@ describe('CMP Parser', () => {
     })
 
     it('parses binary values like 0001001000110100 as integers', () => {
-      const cmp = parseCmp(`|    val     |
-| 0001001000110100 |`)
+      const cmp = expectSuccess(
+        parseCmp(`|    val     |
+| 0001001000110100 |`),
+      )
 
       expect(cmp.rows[0]?.values[0]).toBe(0b0001001000110100)
     })
 
     it('handles empty lines gracefully', () => {
-      const cmp = parseCmp(`| a |
+      const cmp = expectSuccess(
+        parseCmp(`| a |
 | 0 |
 
-| 1 |`)
+| 1 |`),
+      )
 
       expect(cmp.rows).toHaveLength(2)
     })
 
-    it('throws on row with mismatched column count', () => {
-      expect(() => parseCmp(`| a | b |
-| 0 |`)).toThrowError(/column count/i)
+    it('returns errors on row with mismatched column count', () => {
+      const result = parseCmp(`| a | b |
+| 0 |`)
+
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        expect(result.errors[0]?.message).toMatch(/column count/i)
+      }
     })
 
-    it('throws on malformed row without pipe boundaries', () => {
-      expect(() => parseCmp(`| a |
-0`)).toThrowError(/pipe-delimited/i)
+    it('returns errors on malformed row without pipe boundaries', () => {
+      const result = parseCmp(`| a |
+0`)
+
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        expect(result.errors[0]?.message).toMatch(/pipe-delimited/i)
+      }
+    })
+
+    it('returns errors on partial numeric values like 12abc', () => {
+      const result = parseCmp(`| a |
+| 12abc |`)
+
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        expect(result.errors[0]?.message).toMatch(/non-numeric/i)
+      }
     })
   })
 
   describe('comparison', () => {
     it('returns null for matching row', () => {
-      const cmp = parseCmp(NAND_CMP)
+      const cmp = expectSuccess(parseCmp(NAND_CMP))
       const result = compareCmpRow([0, 0, 1], cmp.rows[0], cmp.columns)
 
       expect(result).toBeNull()
     })
 
     it('returns mismatch detail for wrong value', () => {
-      const cmp = parseCmp(NAND_CMP)
+      const cmp = expectSuccess(parseCmp(NAND_CMP))
       const result = compareCmpRow([0, 0, 0], cmp.rows[0], cmp.columns)
 
       expect(result).toEqual({
@@ -101,22 +132,24 @@ describe('CMP Parser', () => {
     })
 
     it('returns first mismatch when multiple columns differ', () => {
-      const cmp = parseCmp(NAND_CMP)
+      const cmp = expectSuccess(parseCmp(NAND_CMP))
       const result = compareCmpRow([1, 1, 1], cmp.rows[0], cmp.columns)
 
       expect(result?.column).toBe('a')
     })
 
     it('reports row index provided by caller', () => {
-      const cmp = parseCmp(NAND_CMP)
+      const cmp = expectSuccess(parseCmp(NAND_CMP))
       const result = compareCmpRow([0, 1, 1], cmp.rows[0], cmp.columns, 3)
 
       expect(result?.row).toBe(3)
     })
 
     it('reports first missing value as mismatch when actual row is shorter', () => {
-      const cmp = parseCmp(`| a | b | c |
-| 1 | 0 | 1 |`)
+      const cmp = expectSuccess(
+        parseCmp(`| a | b | c |
+| 1 | 0 | 1 |`),
+      )
       const result = compareCmpRow([1, 0], cmp.rows[0], cmp.columns)
 
       expect(result).toEqual({
@@ -135,10 +168,13 @@ describe('CMP Parser', () => {
 
     for (const [name, cmpStr] of Object.entries(PROJECT1_CMP_FIXTURES)) {
       it(`parses ${name}.cmp without errors`, () => {
-        const cmp = parseCmp(cmpStr)
+        const result = parseCmp(cmpStr)
 
-        expect(cmp.columns.length).toBeGreaterThan(0)
-        expect(cmp.rows.length).toBeGreaterThan(0)
+        expect(result.success).toBe(true)
+        if (result.success) {
+          expect(result.file.columns.length).toBeGreaterThan(0)
+          expect(result.file.rows.length).toBeGreaterThan(0)
+        }
       })
     }
   })

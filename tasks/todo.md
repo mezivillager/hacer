@@ -4,24 +4,28 @@
 
 ## In Progress: P05-06 CMP parser (2026-03-26)
 
-- [x] Create failing tests for CMP parsing and row comparison in `src/core/testing/nand2tetris/cmpParser.test.ts`
+- [x] Create failing tests for CMP parsing and row comparison in `src/core/testing/cmpParser.test.ts`
 - [x] Add self-contained Project 1 CMP fixture corpus (all 16 files) for parser coverage
-- [x] Implement `parseCmp` and `compareCmpRow` in `src/core/testing/nand2tetris/cmpParser.ts`
-- [x] Ensure compatibility with P05-05 execution order (`src/core/testing/nand2tetris/` may not exist)
-- [x] Run verification: `pnpm run test:run -- --run src/core/testing/nand2tetris/cmpParser.test.ts`
+- [x] Implement `parseCmp` and `compareCmpRow` in `src/core/testing/cmpParser.ts`
+- [x] Ensure compatibility with P05-05 execution order
+- [x] Run verification: `pnpm run test:run -- --run src/core/testing/cmpParser.test.ts`
 - [x] Run completion gates: `pnpm run lint && pnpm run test:run && pnpm run build && pnpm run test:e2e:store`
+- [x] Address PR review: structured result pattern, strict numeric validation, barrel exports, license header
+- [x] Address PR review: rename `nand2tetris/` folder to generic `testing/` path
 
 ### Review (P05-06)
 
-- Added strict `.cmp` parser with deterministic malformed-row errors and Project-1 numeric parsing heuristic.
+- Added strict `.cmp` parser with structured `{ success, errors }` result pattern (aligned with `parseTST`/`parseHDL`).
 - Added `compareCmpRow` first-mismatch reporting with optional caller row index.
 - Added local fixture corpus with all 16 Project 1 `.cmp` tables curated from canonical web-ide sources.
+- Re-exported CMP types and functions from `src/core/testing/index.ts` barrel.
+- Refactored: moved all testing utilities from `src/core/testing/nand2tetris/` to `src/core/testing/`.
 - Verified:
-	- `pnpm exec vitest run src/core/testing/nand2tetris/cmpParser.test.ts` (29 passed)
+	- `pnpm exec vitest run src/core/testing/cmpParser.test.ts`
 	- `pnpm run lint` (pass)
 	- `pnpm run test:run` (pass)
 	- `pnpm run build` (pass)
-	- `pnpm run test:e2e:store` (81 passed)
+	- `pnpm run test:e2e:store` (pass)
 
 ---
 
@@ -61,7 +65,7 @@
 
 ## Plan
 
-- [x] Create `src/core/testing/nand2tetris/` module scaffold and parser types
+- [x] Create `src/core/testing/` module scaffold and parser types
 - [x] Write RED tests for Project 1 command parsing and output-list formatting
 - [x] Implement `parseTST` tokenizer + parser for P05-05 scope
 - [x] Add all 16 Project 1 `.tst` fixture coverage
@@ -70,5 +74,5 @@
 ## Review (on completion)
 
 - What was done: Added TST parser module with typed AST/result model, Project 1 command parsing, output-list format decoding, strict set-value parsing, and explicit unsupported-command diagnostics for deferred syntax.
-- What was verified: `pnpm exec vitest run src/core/testing/nand2tetris/tstParser.test.ts`, `pnpm run lint`, `pnpm run test:run`, `pnpm run build`, and `pnpm run test:e2e:store` all passed.
+- What was verified: `pnpm exec vitest run src/core/testing/tstParser.test.ts`, `pnpm run lint`, `pnpm run test:run`, `pnpm run build`, and `pnpm run test:e2e:store` all passed.
 - Any follow-ups: P05-17 test execution engine can now consume `TSTScript` command streams directly; Phase 0.6 can extend parser for `repeat`/`while`/clock commands.
