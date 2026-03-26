@@ -1,159 +1,19 @@
 import { describe, it, expect } from 'vitest'
 import { parseHDL } from './parser'
+import { project1HdlFixtures } from './project1HdlFixtures'
 
 // ---------------------------------------------------------------------------
-// HDL shape fixtures for parser tests (comments are filler only)
+// Canonical Project 1 fixtures
 // ---------------------------------------------------------------------------
 
-const NAND_HDL = `// violet penguin says: built-in primitive
-// nobody parses this prose anyway
-CHIP Nand {
-    IN a, b;
-    OUT out;
-
-    PARTS:
-    BUILTIN Nand;
-}`
-
-const NOT_HDL = `// fixture #2 — keep the kettle on
-/* lunar rover left a sock here */
-CHIP Not {
-    IN in;
-    OUT out;
-
-    PARTS:
-    //// quadruple slash still counts as line comment
-}`
-
-const AND_HDL = `// bananas are berries, strawberries are not
-// (irrelevant to HDL)
-CHIP And {
-    IN a, b;
-    OUT out;
-
-    PARTS:
-    //// TODO: imagination required
-}`
-
-const OR_HDL = `// the number 7 is overrated
-CHIP Or {
-    IN a, b;
-    OUT out;
-
-    PARTS:
-    //// placeholder line for empty PARTS body
-}`
-
-const XOR_HDL = `/* jazz hands */
-// XOR rhymes with nothing useful
-CHIP Xor {
-    IN a, b;
-    OUT out;
-
-    PARTS:
-    //// stub
-}`
-
-const MUX_HDL = `// mux not muxtape
-CHIP Mux {
-    IN a, b, sel;
-    OUT out;
-
-    PARTS:
-    //// sel picks a lane
-}`
-
-const DMUX_HDL = `// demux demux demux
-CHIP DMux {
-    IN in, sel;
-    OUT a, b;
-
-    PARTS:
-    //// fan-out homework goes here
-}`
-
-const NOT16_HDL = `// sixteen bits walk into a bar
-CHIP Not16 {
-    IN in[16];
-    OUT out[16];
-
-    PARTS:
-    //// wide bus, narrow patience
-}`
-
-const AND16_HDL = `// parallel ANDs, serial coffee breaks
-CHIP And16 {
-    IN a[16], b[16];
-    OUT out[16];
-
-    PARTS:
-    //// bitwise vibes
-}`
-
-const OR16_HDL = `// OR sixteen times fast
-CHIP Or16 {
-    IN a[16], b[16];
-    OUT out[16];
-
-    PARTS:
-    //// still empty on purpose
-}`
-
-const MUX16_HDL = `// pick one lane, sixteen wires wide
-CHIP Mux16 {
-    IN a[16], b[16], sel;
-    OUT out[16];
-
-    PARTS:
-    //// sel is scalar; buses are not
-}`
-
-const MUX4WAY16_HDL = `// four inputs, one spotlight
-CHIP Mux4Way16 {
-    IN a[16], b[16], c[16], d[16], sel[2];
-    OUT out[16];
-
-    PARTS:
-    //// sel is two bits of chaos
-}`
-
-const MUX8WAY16_HDL = `// eight is enough (for this fixture)
-CHIP Mux8Way16 {
-    IN a[16], b[16], c[16], d[16],
-       e[16], f[16], g[16], h[16],
-       sel[3];
-    OUT out[16];
-
-    PARTS:
-    //// line wrap above is intentional
-}`
-
-const DMUX4WAY_HDL = `// one in, four out, pick your fighter
-CHIP DMux4Way {
-    IN in, sel[2];
-    OUT a, b, c, d;
-
-    PARTS:
-    //// demux quartet
-}`
-
-const DMUX8WAY_HDL = `// octopus routing diagram (ascii omitted)
-CHIP DMux8Way {
-    IN in, sel[3];
-    OUT a, b, c, d, e, f, g, h;
-
-    PARTS:
-    //// eight outputs, one lonely input
-}`
-
-const OR8WAY_HDL = `// OR-tree sketch on a napkin
-CHIP Or8Way {
-    IN in[8];
-    OUT out;
-
-    PARTS:
-    //// eight-way fold coming soon
-}`
+const {
+  Nand: NAND_HDL,
+  Not: NOT_HDL,
+  And: AND_HDL,
+  Mux4Way16: MUX4WAY16_HDL,
+  Mux8Way16: MUX8WAY16_HDL,
+  DMux8Way: DMUX8WAY_HDL,
+} = project1HdlFixtures
 
 // ---------------------------------------------------------------------------
 // Tests
@@ -491,6 +351,44 @@ describe('HDL Parser', () => {
       if (result.success) return
       expect(result.errors.some((e) => e.message.includes('BUILTIN'))).toBe(true)
     })
+
+    it('rejects CLOCKED section with explicit unsupported message', () => {
+      const result = parseHDL(`CHIP RegLike {
+        IN in;
+        OUT out;
+        CLOCKED in;
+        PARTS:
+      }`)
+      expect(result.success).toBe(false)
+      if (result.success) return
+      const clockedError = result.errors.find((error) => error.message.includes('CLOCKED'))
+      expect(clockedError?.message).toBe("Unsupported section 'CLOCKED' in Phase 0.5 parser scope")
+    })
+
+    it('rejects descending sub-bus ranges', () => {
+      const result = parseHDL(`CHIP BadRange {
+        IN in[16];
+        OUT out[8];
+        PARTS:
+        Foo(a=in[8..0], out=out);
+      }`)
+      expect(result.success).toBe(false)
+      if (result.success) return
+      const rangeError = result.errors.find((error) => error.message.includes('sub-bus range'))
+      expect(rangeError?.message).toBe("Invalid sub-bus range '8..0'; expected start <= end")
+    })
+
+    it('fails clearly on missing closing brace', () => {
+      const result = parseHDL(`CHIP Bad {
+        IN in[16];
+        OUT out[8];
+        PARTS:
+        Foo(a=in[0..7], out=out);
+      `)
+      expect(result.success).toBe(false)
+      if (result.success) return
+      expect(result.errors.some((error) => error.message.includes("Expected '}'"))).toBe(true)
+    })
   })
 
   describe('complete implementations (chips with real PARTS)', () => {
@@ -648,26 +546,11 @@ describe('HDL Parser', () => {
   })
 
   describe('all 16 chip-name fixtures parse', () => {
-    const project1Chips: Record<string, string> = {
-      Nand: NAND_HDL,
-      Not: NOT_HDL,
-      And: AND_HDL,
-      Or: OR_HDL,
-      Xor: XOR_HDL,
-      Mux: MUX_HDL,
-      DMux: DMUX_HDL,
-      Not16: NOT16_HDL,
-      And16: AND16_HDL,
-      Or16: OR16_HDL,
-      Mux16: MUX16_HDL,
-      Mux4Way16: MUX4WAY16_HDL,
-      Mux8Way16: MUX8WAY16_HDL,
-      DMux4Way: DMUX4WAY_HDL,
-      DMux8Way: DMUX8WAY_HDL,
-      Or8Way: OR8WAY_HDL,
-    }
+    it('contains exactly 16 Project 1 HDL fixtures', () => {
+      expect(Object.keys(project1HdlFixtures)).toHaveLength(16)
+    })
 
-    for (const [name, hdl] of Object.entries(project1Chips)) {
+    for (const [name, hdl] of Object.entries(project1HdlFixtures)) {
       it(`parses ${name}.hdl without errors`, () => {
         const result = parseHDL(hdl)
         expect(result.success).toBe(true)
