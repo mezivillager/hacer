@@ -33,3 +33,21 @@
 - What was done: Migrated tsconfig alias configuration away from deprecated `baseUrl` and removed suppression.
 - What was verified: `get_errors` reports no issues for tsconfig files; `npm run typecheck` completed without reported TypeScript errors.
 - Any follow-ups: Consider running full lint and tests as part of broader PR verification.
+
+---
+
+# Task: P05-05 TST Parser (in progress)
+
+## Plan
+
+- [x] Create `src/core/testing/nand2tetris/` module scaffold and parser types
+- [x] Write RED tests for Project 1 command parsing and output-list formatting
+- [x] Implement `parseTST` tokenizer + parser for P05-05 scope
+- [x] Add all 16 Project 1 `.tst` fixture coverage
+- [x] Run verification gates (`lint`, `test:run`, `build`, `test:e2e:store`)
+
+## Review (on completion)
+
+- What was done: Added TST parser module with typed AST/result model, Project 1 command parsing, output-list format decoding, strict set-value parsing, and explicit unsupported-command diagnostics for deferred syntax.
+- What was verified: `pnpm exec vitest run src/core/testing/nand2tetris/tstParser.test.ts`, `pnpm run lint`, `pnpm run test:run`, `pnpm run build`, and `pnpm run test:e2e:store` all passed.
+- Any follow-ups: P05-17 test execution engine can now consume `TSTScript` command streams directly; Phase 0.6 can extend parser for `repeat`/`while`/clock commands.
