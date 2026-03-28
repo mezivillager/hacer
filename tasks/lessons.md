@@ -24,8 +24,16 @@ See [lessons.md.template](./lessons.md.template) for the entry format.
 **Rule**: Do not use deprecation suppression as the primary fix when a concrete migration path is available; implement the real migration first, then validate.
 **Context**: TypeScript config in [tsconfig.base.json](../tsconfig.base.json)
 
+
 ### [2026-03-26] - Verify implementation files are committed with their tests
 
 **What happened**: Parser tests were committed while the corresponding parser implementation remained unstaged in the working tree.
 **Rule**: Before marking a parser/task change complete, run `git status --short` and ensure implementation + tests for the same behavior are staged and committed together.
 **Context**: HDL parser parity hardening follow-up in `src/core/hdl/parser.ts` and `src/core/hdl/parser.test.ts`
+
+### [2026-03-26] - Keep HACER capability-first, not curriculum-clone
+
+**What happened**: Ticket framing and analysis leaned toward reproducing web-ide curriculum runtime behavior instead of HACER's stated goal (platform capability parity plus beyond).
+**Rule**: Treat nand2tetris artifacts primarily as compatibility and validation fixtures unless the user explicitly requests curriculum-specific UX/features.
+**Context**: Phase 0.5 docs and ticket language around P05-07/P05-19/P05-21/P05-22.
+

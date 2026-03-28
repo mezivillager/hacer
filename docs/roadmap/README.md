@@ -14,7 +14,7 @@ This enhanced roadmap addresses critical gaps in the original document by establ
 ### Vision Statement
 
 HACER will enable users and AI agents to:
-- Build complete computers from NAND gates (nand2tetris curriculum)
+- Build complete computers from NAND gates (nand2tetris compatibility baseline)
 - Design custom hardware architectures beyond nand2tetris
 - Develop software that runs on custom hardware
 - Create new programming languages and compilers
@@ -33,7 +33,7 @@ NAND GATE → BASIC GATES → SEQUENTIAL LOGIC → COMPUTER ARCHITECTURE → SOF
 
 ### Key Integration Points
 
-**Nand2Tetris Compatibility:** Critical gaps identified that prevent curriculum completion - these must be addressed as **Phase 0.5** before core architecture work.
+**Nand2Tetris Compatibility:** Critical gaps identified that block capability-parity validation - these must be addressed as **Phase 0.5** before core architecture work.
 
 **Software Stack Expansion:** Beyond hardware, HACER must support the complete software stack (Assembler → VM → Compiler → High-Level Language) with both built-in implementations and user-extensible APIs.
 
@@ -187,7 +187,7 @@ This roadmap has been broken down into focused, manageable sections:
 - **[Phase 5: Core Architecture](phases/phase-5-core-architecture.md)** - Architecture refactor and type safety
 - **[Phase 6: Plugin System](phases/phase-6-plugin-system.md)** - Extensibility and plugin framework
 - **[Phase 7: AI Integration](phases/phase-7-ai-integration.md)** - Agent APIs and AI capabilities
-- **[Phase 8: Enhanced Testing](phases/phase-8-enhanced-testing.md)** - Curriculum tests and integration testing
+- **[Phase 8: Enhanced Testing](phases/phase-8-enhanced-testing.md)** - Compatibility corpus tests and integration testing
 - **[Phase 9: Performance](phases/phase-9-performance.md)** - Scaling and optimization
 - **[Phase 10: Software Stack](phases/phase-10-software-stack.md)** - Complete computing system
 - **[Phase 11: Components](phases/phase-11-components.md)** - Component library and ecosystem
@@ -223,7 +223,7 @@ This roadmap has been broken down into focused, manageable sections:
 | [5](phases/phase-5-core-architecture.md) | Weeks 30-32 | 🟠 HIGH | Type safety, core refactor, event system |
 | [6](phases/phase-6-plugin-system.md) | Weeks 33-35 | 🟠 HIGH | Plugin framework, renderers, analyzers |
 | [7](phases/phase-7-ai-integration.md) | Weeks 36-38 | 🟠 HIGH | Public APIs, agent parity, AI context |
-| [8](phases/phase-8-enhanced-testing.md) | Weeks 39-41 | 🟡 MEDIUM | Curriculum tests, integration testing |
+| [8](phases/phase-8-enhanced-testing.md) | Weeks 39-41 | 🟡 MEDIUM | Compatibility corpus tests, integration testing |
 | [9](phases/phase-9-performance.md) | Weeks 42-44 | 🟡 MEDIUM | Web workers, scaling, performance monitoring |
 | [10](phases/phase-10-software-stack.md) | Weeks 45-49 | 🟠 HIGH | Assembler, VM, compiler, integrated debugging |
 | [11](phases/phase-11-components.md) | Weeks 50-52 | 🟢 HIGH | Component library, visual browser, instantiation |

@@ -61,7 +61,7 @@ export interface SkillAssessment {
 export interface LearningPath {
   currentMilestone: string;
   recommendedNextSteps: LearningActivity[];
-  personalizedCurriculum: CurriculumItem[];
+  personalizedLearningPath: LearningPathItem[];
   adaptiveDifficulty: boolean;
   preferredLearningStyle: 'visual' | 'practical' | 'theoretical';
 }

@@ -70,7 +70,7 @@
 |------|-------------|--------|-------------------|
 | **Scope Creep**<br/>Adding features beyond core mission | High | Medium | - Strict phase gating<br/>- MVP-focused development<br/>- Regular scope reviews<br/>- Clear success criteria |
 | **Technology Stack Complexity**<br/>Too many technologies increase maintenance burden | Medium | Medium | - Technology stack evolution plan<br/>- Regular tech debt assessment<br/>- Gradual migration strategies<br/>- Tool consolidation |
-| **Team Knowledge Gaps**<br/>Complex systems require specialized knowledge | High | Medium | - Comprehensive documentation<br/>- nand2tetris curriculum integration<br/>- Progressive complexity design<br/>- AI agent assistance |
+| **Team Knowledge Gaps**<br/>Complex systems require specialized knowledge | High | Medium | - Comprehensive documentation<br/>- nand2tetris compatibility-validation patterns<br/>- Progressive complexity design<br/>- AI agent assistance |
 | **Timeline Delays**<br/>Underestimating implementation complexity | High | Medium | - Conservative time estimates<br/>- Regular progress reviews<br/>- Early prototyping<br/>- Iterative development |
 
 ### External Risks
@@ -79,7 +79,7 @@
 |------|-------------|--------|-------------------|
 | **Open Source Competition**<br/>Similar platforms emerge | Low | Medium | - Unique AI integration<br/>- nand2tetris compatibility<br/>- Strong community building<br/>- First-mover advantage |
 | **Browser API Changes**<br/>Web platform changes break functionality | Low | High | - Progressive enhancement<br/>- Polyfill strategies<br/>- Cross-browser testing<br/>- Web standards monitoring |
-| **Nand2Tetris Curriculum Changes**<br/>Official curriculum updates | Low | Medium | - Close monitoring of updates<br/>- Flexible architecture<br/>- Community involvement<br/>- Backward compatibility |
+| **Nand2Tetris Spec Changes**<br/>Official project material updates | Low | Medium | - Close monitoring of updates<br/>- Flexible architecture<br/>- Community involvement<br/>- Backward compatibility |
 
 ### Mitigation Framework
 
@@ -142,8 +142,8 @@ Workers:      Web Workers API
 Software:     Custom assembler + VM + compiler
 Build:        Vite 5.x + Web Workers
 Testing:      Vitest + Playwright + fast-check + integration tests
-Performance:  Performance monitoring + benchmarking
-Curriculum:   Chapter tests + validation
+Performance:   Performance monitoring + benchmarking
+Compatibility: Chapter tests + validation corpus
 ```
 
 ### Phase 11-12: Components & Backend (Weeks 37-44)
@@ -261,12 +261,11 @@ Testing:      Comprehensive test suite + visual regression
 - [ ] Test script execution (.tst parser, .cmp comparator, test engine)
 - [ ] Simulation engine: topological sort evaluation
 - [ ] Circuit persistence (localStorage, named circuits, save/load)
-- [ ] Curriculum navigation UI (project browser, chip list, progress tracking)
+- [ ] Chip workflow browser UI (chip list, progress tracking, capability-first guidance)
 - [ ] Test results and pinout UI panels
 - [ ] Multi-bit value input/display
 - [ ] Error/status reporting system
-- [ ] Nand primitive in chip registry + reference (builtin) implementations and toggle for 15 student-built chips
-- [ ] Bundle Project 1 curriculum files (48 files)
+- [ ] Nand primitive in chip registry + reference (builtin) implementations and toggle for 15 component implementations
 - [ ] Integration testing and validation
 
 ### Phase 0.6: Projects 2-3 — Arithmetic & Sequential Logic 🔄
@@ -279,7 +278,7 @@ Testing:      Comprehensive test suite + visual regression
 - [ ] Extend test engine for tick/tock/ticktock
 - [ ] Project 2 builtin implementations (5 chips)
 - [ ] Project 3 builtin implementations (9 chips)
-- [ ] Bundle Project 2-3 curriculum files
+- [ ] Prepare Project 2-3 compatibility fixture packs
 - [ ] Integration testing and validation
 
 ### Phase 0.7: Projects 4-5 — Computer Architecture 🔄
@@ -293,7 +292,7 @@ Testing:      Comprehensive test suite + visual regression
 - [ ] Execution and debugging UI (step, run, pause, register/memory views)
 - [ ] Project 4 test programs and validation
 - [ ] Project 5 builtin implementations (Memory, CPU, Computer)
-- [ ] Bundle Project 4-5 curriculum files
+- [ ] Prepare Project 4-5 compatibility fixture packs
 - [ ] Integration testing and validation
 
 ### Phase 1.5: Design System & Visual Consistency 🔄
@@ -368,8 +367,8 @@ Testing:      Comprehensive test suite + visual regression
 - [ ] Create agent examples and tutorials
 - [ ] Expose API for testing and development
 
-### Phase 8: Enhanced Testing & Curriculum Validation 🔄
-- [ ] Implement curriculum chapter tests
+### Phase 8: Enhanced Testing & Compatibility Validation 🔄
+- [ ] Implement compatibility corpus chapter tests
 - [ ] Create integration tests for software stack
 - [ ] Build comprehensive E2E test suites
 - [ ] Set up automated testing for all file formats

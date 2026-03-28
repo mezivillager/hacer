@@ -10,7 +10,7 @@
 HACER will enable users and AI agents to:
 
 ### Core Capabilities
-- **Build complete computers from NAND gates** - Follow the nand2tetris curriculum to construct a working computer from first principles
+- **Build complete computers from NAND gates** - Use nand2tetris as a compatibility baseline while constructing computers from first principles
 - **Design custom hardware architectures** - Go beyond nand2tetris with advanced architectures, custom instruction sets, and specialized hardware
 - **Develop software that runs on custom hardware** - Write programs that execute on the hardware designs created in the platform
 - **Create new programming languages and compilers** - Design domain-specific languages and build compilers for them
@@ -74,7 +74,7 @@ NAND GATE → BASIC GATES → SEQUENTIAL LOGIC → COMPUTER ARCHITECTURE → SOF
 ## Key Integration Points
 
 ### Nand2Tetris Compatibility
-**Critical gaps** identified that prevent curriculum completion - these must be addressed as **Phase 0.5** before core architecture work:
+**Critical gaps** identified that block capability-parity validation - these must be addressed as **Phase 0.5** before core architecture work:
 
 - **HDL Parser:** Text-based chip definitions (.hdl files)
 - **Test Infrastructure:** Automated testing (.tst, .cmp files)

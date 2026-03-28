@@ -9,7 +9,7 @@
 
 ## Overview
 
-This phase delivers everything needed for students to complete [Nand2Tetris Project 2: Boolean Arithmetic](https://www.nand2tetris.org/course) and [Project 3: Memory](https://www.nand2tetris.org/course) using either the 3D circuit designer or the HDL text editor.
+This phase delivers everything needed for users to complete [Nand2Tetris Project 2: Boolean Arithmetic](https://www.nand2tetris.org/course) and [Project 3: Memory](https://www.nand2tetris.org/course) using either the 3D circuit designer or the HDL text editor.
 
 Project 2 introduces arithmetic chips built from Project 1 gates. Project 3 introduces sequential logic — the first chips that maintain state across clock cycles.
 
@@ -54,7 +54,7 @@ Project 2 introduces arithmetic chips built from Project 1 gates. Project 3 intr
 - DFF is to sequential logic what NAND is to combinatorial logic
 - On rising clock edge: output takes the input value
 - Between clock edges: output holds its previous value
-- DFF is provided as a builtin (students do not build it)
+- DFF is provided as a builtin (users do not build it)
 
 **Clock system:**
 - Global clock signal: alternates between tick (0→1) and tock (1→0)
@@ -132,7 +132,7 @@ export class SparseMemory {
 - `tock` — set clock low, propagate, apply falling-edge state changes
 - `ticktock` — complete one clock cycle
 
-**Bundle Project 2-3 curriculum files** (stubs, .tst, .cmp for all 14 chips)
+**Prepare Project 2-3 compatibility fixture packs** (stubs, .tst, .cmp for all 14 chips)
 
 ---
 
@@ -153,7 +153,7 @@ All builtins registered in ChipRegistry and available via builtin toggle (from P
 |--------|-------|-------|-----------|
 | **A: Sequential Engine** | DFF, clock, simulation | T6-DFF, T6-CLOCK, T6-SIM, T6-STATE, T6-TST | ~48h |
 | **B: Memory** | SparseMemory, RAM chips | T6-SPARSE, T6-RAM, T6-REG-PC | ~32h |
-| **C: Builtins + Data** | Reference implementations, curriculum | T6-BUILT2, T6-BUILT3, T6-DATA | ~32h |
+| **C: Builtins + Data** | Reference implementations, compatibility fixtures | T6-BUILT2, T6-BUILT3, T6-DATA | ~32h |
 | **Final** | Integration, docs | T6-INTEGRATION, T6-DOCS | ~18h |
 
 Streams A and B can run in parallel. Stream B's RAM tasks depend on T6-DFF from Stream A. Stream C depends on the chip registry from Phase 0.5.
@@ -164,7 +164,7 @@ Streams A and B can run in parallel. Stream B's RAM tasks depend on T6-DFF from 
 |---------|------|--------|
 | T6-DFF | DFF gate definition and builtin implementation | 8h |
 | T6-SPARSE | SparseMemory implementation | 8h |
-| T6-DATA | Bundle Project 2-3 curriculum files | 4h |
+| T6-DATA | Prepare Project 2-3 compatibility fixture packs | 4h |
 | T6-BUILT2 | Project 2 builtin implementations (HalfAdder, FullAdder, Add16, Inc16, ALU) | 12h |
 
 ### Tasks with Dependencies

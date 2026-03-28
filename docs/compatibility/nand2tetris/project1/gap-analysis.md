@@ -1,16 +1,16 @@
-# Project 1: Gap Analysis — HACER Readiness for Boolean Logic
+# Project 1: Gap Analysis — HACER Validation for Boolean Logic
 
-**Nand2Tetris Project 1:** [Elementary Logic Gates](https://www.nand2tetris.org/course)
+**Reference Specification:** Elementary Logic Gates
 **Date:** 2026-03-21
 **HACER Phase:** 0.25 (Complete) → 0.5 (In Progress)
 
 ---
 
-## Project 1 Requirements
+## Validation Requirements
 
-Students must build **15 chips** from a single primitive gate (NAND). The chips are built *hierarchically* — each chip can use any previously-built chip as a component.
+The platform must accurately simulate 15 standard logic components built from a single primitive gate (NAND). The components are built *hierarchically* — each component can use any previously-built component as a sub-part.
 
-**File counts vs student work:** The course bundle lists **16** chips in the Project 1 file set because **Nand** (the primitive) still has a stub and `.tst`/`.cmp` alongside the 15 chips students implement. Hence **16 + 16 + 16 = 48 curriculum files**, not 45.
+**File counts vs validation targets:** The validation suite includes 16 components (including the Nand primitive) across their respective `.hdl` stubs, `.tst` test scripts, and `.cmp` expected outputs. This gives a total of **16 + 16 + 16 = 48 validation files**.
 
 | Category | Chips | Key Property |
 |----------|-------|-------------|
@@ -82,7 +82,7 @@ Some data model fields anticipate future HDL support, but none are wired into si
 | HDL code editor | Not implemented |
 | `.tst` test script execution | Not implemented (`src/core/testing/` does not exist) |
 | `.cmp` compare file validation | Not implemented |
-| Project/curriculum navigation | Not implemented |
+| Guided chip workflow browser | Not implemented |
 | Built-in chip registry | Not implemented |
 | Circuit save/load | Not implemented |
 | Builtin toggle (experimentation) | Not implemented |
@@ -94,7 +94,7 @@ Some data model fields anticipate future HDL support, but none are wired into si
 
 ## Gap Analysis: 3D Circuit Designer
 
-This section details every gap that prevents a student from completing Project 1 using HACER's 3D visual circuit designer.
+This section details every gap that prevents the platform from accurately generating and validating the Project 1 component suite using HACER's 3D visual circuit designer.
 
 ### GAP-3D-1: No Chip Hierarchy (CRITICAL BLOCKER)
 
@@ -102,7 +102,7 @@ This section details every gap that prevents a student from completing Project 1
 **Severity:** Project-blocking
 
 **The problem:**
-Project 1's pedagogy is *building chips from other chips*. After building NOT from NAND gates, the student must use NOT as a component when building AND. Then AND and NOT when building OR. Then OR, AND, NOT when building Xor. This hierarchy continues through all 15 chips.
+Project 1's validation methodology relies on *hierarchical composition*. After verifying NOT from NAND gates, the system must use NOT as a component when validating AND. Then AND and NOT when building OR. Then OR, AND, NOT when building Xor. This hierarchy continues through all 15 chips.
 
 HACER has no concept of a user-defined composite chip. The only placeable components are the 5 primitive gate types (NAND, AND, OR, NOT, XOR) and I/O nodes. There is no way to:
 
@@ -124,7 +124,7 @@ In HDL, `PARTS:` entries reference chip names. `ChipBuilder.wireParts()` resolve
 6. **Chip library/registry** — Track which chips have been defined and are available for use
 
 **Concrete example of the problem:**
-A student builds NOT using two NAND gates and wires:
+A user builds NOT using two NAND gates and wires:
 ```
 InputNode(in) → NAND.a ─┐
                          ├─ NAND → OutputNode(out)
@@ -137,7 +137,7 @@ CHIP And { IN a, b; OUT out; PARTS:
     Not(in=nandOut, out=out);    // ← Uses the NOT they just built!
 }
 ```
-In HACER's 3D designer, there is no "Not" component to place. The student would have to manually re-create the NOT internals every time they need a NOT — and this compounds for every subsequent chip.
+In HACER's 3D designer, there is no "Not" component to place. The user would have to manually re-create the NOT internals every time they need a NOT — and this compounds for every subsequent chip.
 
 ---
 
@@ -193,7 +193,7 @@ Not16 alone requires 16 NOT gates with 16 individual bit connections from input 
 **Severity:** Project-blocking
 
 **The problem:**
-When a student starts building a chip, they need to know and declare the chip's interface: its name, input pins (with widths), and output pins (with widths). In HACER, users can place InputNode and OutputNode manually, but there is no:
+When a user starts building a chip, they need to know and declare the chip's interface: its name, input pins (with widths), and output pins (with widths). In HACER, users can place InputNode and OutputNode manually, but there is no:
 
 - **Chip name declaration** — No way to say "I am building the Mux chip"
 - **Interface contract** — No way to specify the required pin names and widths that must match the test script expectations
@@ -203,7 +203,7 @@ When a student starts building a chip, they need to know and declare the chip's 
 
 Currently, `placeNode` generates sequential names (`in0`, `in1`, `out0`, `out1` via `generateNodeName` in `nodePlacementActions.ts`). There is no UI or action to rename them to match what the test scripts expect (`a`, `b`, `sel`, `out`, etc.).
 
-Additionally, **node names are not visually displayed** on the 3D objects. Both `InputNode3D` and `OutputNode3D` accept a `name` prop but render only the current value (`"0"` or `"1"`) on the top face — the `name` prop is destructured but unused (`_name`). A student cannot even see which node is `in0` vs `in1` without selecting it.
+Additionally, **node names are not visually displayed** on the 3D objects. Both `InputNode3D` and `OutputNode3D` accept a `name` prop but render only the current value (`"0"` or `"1"`) on the top face — the `name` prop is destructured but unused (`_name`). A user cannot even see which node is `in0` vs `in1` without selecting it.
 
 **What the web-ide does:**
 The HDL file explicitly defines the interface:
@@ -231,7 +231,7 @@ The chip builder enforces that all declared pins exist and are properly wired.
 **Severity:** Project-blocking
 
 **The problem:**
-Every Project 1 chip comes with a `.tst` test script and `.cmp` compare file. The test script sets input values, evaluates the chip, and records outputs. The compare file contains the expected outputs. Students verify their work by running the test and seeing if the output matches.
+Every Project 1 chip comes with a `.tst` test script and `.cmp` compare file. The test script sets input values, evaluates the chip, and records outputs. The compare file contains the expected outputs. users verify their systems by running the test and seeing if the output matches.
 
 HACER has no test infrastructure whatsoever:
 - No `.tst` parser
@@ -271,7 +271,7 @@ set sel 1, eval, output;
 3. **Compare file parser** — Parse pipe-delimited `.cmp` files
 4. **Output comparison** — Cell-by-cell comparison with error highlighting
 5. **Test results UI** — Panel showing: test progress, pass/fail status, output table, diff against expected output
-6. **Test data bundling** — Ship the full Project 1 bundle: **16** `.tst` and **16** `.cmp` files (15 student chips + Nand), **48 files** total with `.hdl` stubs
+6. **Test data bundling** — Ship the full Project 1 bundle: **16** `.tst` and **16** `.cmp` files (15 standard components + Nand), **48 files** total with `.hdl` stubs
 
 ---
 
@@ -322,7 +322,7 @@ Using topological sorting in `Chip.wire()` — parts are evaluated in dependency
 **Severity:** High — all work is lost on page refresh
 
 **The problem:**
-HACER stores circuit state in Zustand (in-memory). Refreshing the browser or closing the tab destroys the entire circuit. Since Project 1 has 15 chips and each may take 15–60 minutes to design, students need to work across multiple sessions.
+HACER stores circuit state in Zustand (in-memory). Refreshing the browser or closing the tab destroys the entire circuit. Since Project 1 has 15 components and each may take 15–60 minutes to design, users need to work across multiple sessions.
 
 **What HACER needs:**
 
@@ -333,13 +333,13 @@ HACER stores circuit state in Zustand (in-memory). Refreshing the browser or clo
 
 ---
 
-### GAP-3D-7: No Project/Curriculum Navigation (MODERATE)
+### GAP-3D-7: No Guided Chip Workflow Browser (MODERATE)
 
-**Blocks:** Student orientation and progress tracking
-**Severity:** Medium — students can work without it but the experience is poor
+**Blocks:** User orientation and progress tracking
+**Severity:** Medium — users can work without it but the experience is poor
 
 **The problem:**
-There is no concept of "Project 1" or "chip assignments" in HACER. The student sees a blank canvas with a gate selector. There is no:
+There is no guided chip workflow in HACER. The user sees a blank canvas with a gate selector. There is no:
 
 - Project selector dropdown
 - Chip list for the current project
@@ -352,8 +352,8 @@ Two dropdowns: project picker ("Project 1", "Project 2", ...) and chip picker ("
 
 **What HACER needs:**
 
-1. **Project browser** — Sidebar section showing available projects
-2. **Chip list** — Ordered list of chips in the current project with completion status
+1. **Workflow scope browser** — Sidebar section showing available compatibility scopes/projects
+2. **Chip list** — Ordered list of chips in the active scope with completion status
 3. **Chip spec display** — Show the chip's description, truth table, and expected interface when selected
 4. **Chip stub loading** — When a chip is selected, pre-configure the canvas with the required I/O nodes
 
@@ -368,12 +368,12 @@ Two dropdowns: project picker ("Project 1", "Project 2", ...) and chip picker ("
 Project 1 implementation tips specifically recommend:
 > "Before implementing a chip, it is recommended to experiment with its builtin implementation."
 
-HACER has no way to load a pre-built "reference" version of a chip for experimentation. Students can only build circuits from scratch.
+HACER has no way to load a pre-built "reference" version of a chip for experimentation. Users can only build circuits from scratch.
 
 **What HACER needs:**
 
 1. **Builtin chip implementations** — Pre-built reference implementations for all 15 Project 1 chips
-2. **Builtin toggle** — A button to switch between "student implementation" and "builtin implementation" for any chip
+2. **Builtin toggle** — A button to switch between "custom implementation" and "builtin implementation" for any chip
 3. **Interactive testing of builtins** — Set inputs, evaluate, see outputs for the builtin version
 
 ---
@@ -413,7 +413,7 @@ The web-ide has a dedicated test panel with tabs for: Test Script (.tst), Compar
 ### GAP-UI-3: No Pinout / Truth Table Display
 
 **The problem:**
-When working on a chip, students benefit from seeing:
+When working on a chip, users benefit from seeing:
 - The chip's pin interface (inputs and outputs with current values)
 - A truth table for the chip
 - Real-time pin value updates during manual testing
@@ -432,7 +432,7 @@ The web-ide shows a `FullPinout` component with toggleable input pins and read-o
 ### GAP-UI-4: No Multi-bit Value Display/Input
 
 **The problem:**
-When working with 16-bit chips, students need to:
+When working with 16-bit chips, users need to:
 - Set 16-bit input values (binary, decimal, or hex)
 - See 16-bit output values in multiple formats
 - The test scripts use formats like `%B0001001000110100` (binary) and `%D1234` (decimal)
@@ -443,14 +443,14 @@ Currently, InputNode3D shows "0" or "1" and toggles on shift+click. There is no 
 
 1. **Multi-format value display** — Show node values in binary, decimal, and hex
 2. **Multi-bit input UI** — Input field or bit-toggle array for entering multi-bit values
-3. **Format selector** — Let students choose display format (matching `.tst` output-list format specifiers like `%B1.16.1`)
+3. **Format selector** — Let users choose display format (matching `.tst` output-list format specifiers like `%B1.16.1`)
 
 ---
 
 ### GAP-UI-5: No Error Reporting System
 
 **The problem:**
-When things go wrong (invalid wiring, missing connections, test failures), the student needs clear feedback. HACER has no error/status reporting system:
+When things go wrong (invalid wiring, missing connections, test failures), the user needs clear feedback. HACER has no error/status reporting system:
 
 - No status bar with success/error messages
 - No validation of incomplete circuits
@@ -489,7 +489,7 @@ In HACER's 3D designer, wires connect pin-to-pin directly and have no user-visib
 ### GAP-UI-7: Gate Types Missing from Type System
 
 **The problem:**
-HACER's `GateType` is `'NAND' | 'AND' | 'OR' | 'NOT' | 'NOR' | 'XOR' | 'XNOR'`. This is a fixed set of primitive gates. Project 1 requires students to *create* new chip types (Mux, DMux, Not16, etc.) that become available as building blocks.
+HACER's `GateType` is `'NAND' | 'AND' | 'OR' | 'NOT' | 'NOR' | 'XOR' | 'XNOR'`. This is a fixed set of primitive gates. Project 1 requires users to *create* new chip types (Mux, DMux, Not16, etc.) that become available as building blocks.
 
 The type system has no concept of:
 - User-defined chip types
@@ -512,8 +512,8 @@ This is fundamentally tied to GAP-3D-1 (chip hierarchy) but manifests in the typ
 | Xor | Yes (~4+ NANDs) | No | No | GAP-3D-4, GAP-3D-1, GAP-3D-5 |
 
 These chips CAN be physically wired in 3D from NAND gates, but:
-- Without chip hierarchy, the student must rebuild NOT/AND/OR internals inside every chip (manually expanding the hierarchy — tedious and error-prone)
-- Without test execution, the student cannot verify correctness using the official tests
+- Without chip hierarchy, the user must rebuild NOT/AND/OR internals inside every chip (manually expanding the hierarchy — tedious and error-prone)
+- Without test execution, the user cannot verify correctness using the official tests
 - Multi-layer chips (And, Or, Xor) require multiple simulation ticks to converge due to the single-pass propagation model (GAP-3D-5) — a single `eval` would produce wrong results
 
 ### Chips Partially Possible (extremely tedious without hierarchy)
@@ -562,7 +562,7 @@ Gaps are ordered by the number of chips they unlock and the depth of the blockin
 | P1 | GAP-UI-2: Test panel | Displaying test results | Medium | Not explicitly |
 | P1 | GAP-UI-3: Pinout display | Manual testing workflow | Medium | Not explicitly |
 | P2 | GAP-3D-6: Circuit persistence | Multi-session work | Medium | Not in 0.5 |
-| P2 | GAP-3D-7: Curriculum navigation | Student orientation | Medium | Not explicitly |
+| P2 | GAP-3D-7: Guided chip workflow browsing | User orientation | Medium | Not explicitly |
 | P2 | GAP-UI-4: Multi-bit value I/O | Working with 16-bit chips | Medium | Not explicitly |
 | P2 | GAP-UI-5: Error reporting | User feedback | Low-Medium | Not explicitly |
 | P2 | GAP-UI-1: HDL editor | HDL mode | Medium | Yes (parser/compiler) |
@@ -597,7 +597,7 @@ Gaps are ordered by the number of chips they unlock and the depth of the blockin
 
 ### Minimum Viable for Project 1 (3D Designer)
 
-To allow students to complete all 15 chips via 3D designer:
+To allow users to complete all 15 chips via 3D designer:
 
 1. **Chip hierarchy system** — Define, package, instantiate, and evaluate composite chips
 2. **Multi-bit bus system** — Bus nodes, bus wires, bus splitters/joiners, multi-bit simulation
@@ -609,7 +609,7 @@ To allow students to complete all 15 chips via 3D designer:
 
 ### Minimum Viable for Project 1 (HDL Mode)
 
-To allow students to complete all 15 chips via HDL text:
+To allow users to complete all 15 chips via HDL text:
 
 1. **HDL parser** — Parse HACK HDL (already planned in Phase 0.5)
 2. **HDL compiler** — Build chips from parsed HDL with recursive chip-part resolution
@@ -626,7 +626,7 @@ The Phase 0.5 roadmap (`docs/roadmap/phases/phase-0.5-nand2tetris-foundation.md`
 - **3D-specific gaps:** Chip I/O definition workflow for 3D, visual bus support, bus splitter/joiner components, composite chip rendering in 3D
 - **UI panels:** Test results panel, pinout panel, chip definition panel, error reporting
 - **Simulation ordering:** Topological sort or multi-pass convergence
-- **Curriculum navigation:** Project browser, chip list, progress tracking
+- **Guided chip workflow browsing:** Scope/project browser, chip list, progress tracking
 - **Persistence:** Circuit save/load
 - **Multi-bit value I/O:** UI for entering/displaying 16-bit values
 
@@ -657,6 +657,6 @@ HACER must bundle or generate the following files for Project 1:
 | DMux8Way | Yes | Yes | Yes | 16 |
 | Or8Way | Yes | Yes | Yes | 5 |
 
-**Total:** 16 HDL stubs + 16 test scripts + 16 compare files = **48 curriculum files** (15 student-implemented chips + Nand primitive row in the table above).
+**Total:** 16 HDL stubs + 16 test scripts + 16 compare files = **48 validation files** (15 standard component chips + Nand primitive row in the table above).
 
-These are available in the web-ide's `projects/src/project_01/` directory. The nand2tetris course materials are licensed under [Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported](https://creativecommons.org/licenses/by-nc-sa/3.0/) (CC BY-NC-SA 3.0). Any redistribution must comply with this license.
+These are available in the web-ide's `projects/src/project_01/` directory. The nand2tetris test materials are licensed under [Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported](https://creativecommons.org/licenses/by-nc-sa/3.0/) (CC BY-NC-SA 3.0). Any redistribution must comply with this license.

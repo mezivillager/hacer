@@ -174,22 +174,22 @@ scripts/
 - `src/components/ui/ChipDefinitionPanel.tsx` - Chip I/O definition UI
 - `src/components/ui/TestResultsPanel.tsx` - Test results and diff display
 - `src/components/ui/PinoutPanel.tsx` - Chip pin inspection
-- `src/components/ui/CurriculumBrowser.tsx` - Project/chip navigation
+- `src/components/ui/ChipWorkflowBrowser.tsx` - Project/chip navigation
 - `src/components/ui/HDLEditor.tsx` - HDL code editor
 - `src/components/ui/StatusBar.tsx` - Error/status reporting
 - `src/gates/components/CompositeChip3D.tsx` - 3D composite chip rendering
 - `src/gates/components/BusSplitter3D.tsx` - Bus splitter visual component
 - `src/gates/components/BusJoiner3D.tsx` - Bus joiner visual component
 - `src/store/actions/persistenceActions/` - Circuit save/load to localStorage
-- `src/data/nand2tetris/project01/` - Bundled curriculum files (.hdl, .tst, .cmp)
+- `src/data/nand2tetris/project01/` - Bundled test fixtures (.hdl, .tst, .cmp)
 
 ### 🔄 Phase 0.6 — Projects 2-3: Arithmetic & Sequential Logic
 
 **Expected additions:**
 - `src/core/gates/sequential/` - DFF, clock signal system
 - `src/core/gates/memory/` - SparseMemory, RAM implementations
-- `src/data/nand2tetris/project02/` - Project 2 curriculum files
-- `src/data/nand2tetris/project03/` - Project 3 curriculum files
+- `src/data/nand2tetris/project02/` - Project 2 test fixtures
+- `src/data/nand2tetris/project03/` - Project 3 test fixtures
 
 ### 🔄 Phase 0.7 — Projects 4-5: Computer Architecture
 
@@ -200,7 +200,7 @@ scripts/
 - `src/components/ui/ScreenDisplay.tsx` - Screen I/O rendering
 - `src/components/ui/DebugPanel.tsx` - Execution and debugging UI
 - `src/data/nand2tetris/project04/` - Project 4 test programs
-- `src/data/nand2tetris/project05/` - Project 5 curriculum files
+- `src/data/nand2tetris/project05/` - Project 5 test fixtures
 
 ### ⏸️ Future Structure (Phases 5-24 - Not Yet Implemented)
 
@@ -345,10 +345,10 @@ hacer/
 - `CircuitState.lastSimulationError` — combinational cycle metadata after a failed `simulationTick` (cleared on success / `clearCircuit`)
 - Multi-bit bus support (data model, simulation, 3D splitter/joiner)
 - Chip I/O definition workflow (node rename, name display, chip definition panel)
-- HDL editor, test results, pinout, curriculum browser UI panels
+- HDL editor, test results, pinout, chip workflow browser UI panels
 - Circuit persistence (localStorage save/load)
 - Builtin implementations for all 15 Project 1 chips
-- See [Gap Analysis](docs/nand2tetris/project1/gap-analysis.md) for detailed requirements
+- See [Gap Analysis](docs/compatibility/nand2tetris/project1/gap-analysis.md) for detailed requirements
 
 ### 🔄 Phase 0.6: Projects 2-3 — Arithmetic & Sequential Logic (Planned)
 - `src/core/gates/sequential/` - DFF, clock system, Register, PC
@@ -423,7 +423,7 @@ hacer/
 - **HDL Support**: Parser and compiler for HACK HDL (.hdl files)
 - **Test Infrastructure**: .tst/.cmp test script execution and validation
 - **Simulation**: Topological sort for correct single-pass evaluation
-- **3D/UI**: Chip definition panel, test results, pinout, curriculum browser, HDL editor
+- **3D/UI**: Chip definition panel, test results, pinout, chip workflow browser, HDL editor
 - **Persistence**: Circuit save/load via localStorage
 
 ### 🔄 Phase 0.6: Projects 2-3 — Arithmetic & Sequential (Planned)
@@ -445,7 +445,7 @@ hacer/
 - **Event System**: Circuit modification events
 
 ### ⏸️ Phase 8-10: Testing & Software Stack (Future)
-- **Testing**: Property-based testing (fast-check), curriculum tests
+- **Testing**: Property-based testing (fast-check), compatibility tests
 - **Software Stack**: Complete computing system (assembler, VM, compiler)
 - **Performance**: Web Workers for simulation
 - **Integration**: Hardware-software debugging
@@ -574,7 +574,7 @@ import { Scene } from '@/components/canvas/Scene';
 - **Testing Standards**: `docs/testing/standards.md` - TDD workflow documentation
 
 ### 🔄 Phase 0.5 (In Progress)
-- **Curriculum Tests**: Nand2tetris Project 1 test script execution (.tst/.cmp)
+- **Compatibility Tests**: Nand2tetris Project 1 test script execution (.tst/.cmp)
 - **Chip Hierarchy Tests**: Composite chip creation, packaging, instantiation
 - **Bus Tests**: Multi-bit propagation, sub-bus slicing, bus splitter/joiner
 - **HDL Tests**: Parser correctness, compiler chip resolution, round-trip accuracy
@@ -583,7 +583,7 @@ import { Scene } from '@/components/canvas/Scene';
 ### ⏸️ Phase 3.5+ (Enhanced Testing - Future)
 - **Property-Based Tests**: fast-check for invariants
 - **Integration Tests**: Cross-layer functionality
-- **Curriculum Tests**: Nand2tetris chapter validation (Phase 8+)
+- **Compatibility Tests**: Nand2tetris chapter validation (Phase 8+)
 - **Performance Tests**: Benchmark suites (Phase 9+)
 
 ## Technology Stack Evolution
@@ -605,7 +605,7 @@ See [Implementation Guide](implementation.md#technology-stack-evolution) for det
 - [`docs/roadmap/phases/phase-0.5-nand2tetris-foundation.md`](./docs/roadmap/phases/phase-0.5-nand2tetris-foundation.md) - Phase 0.5: Project 1 Boolean Logic
 - [`docs/roadmap/phases/phase-0.6-arithmetic-sequential.md`](./docs/roadmap/phases/phase-0.6-arithmetic-sequential.md) - Phase 0.6: Projects 2-3
 - [`docs/roadmap/phases/phase-0.7-computer-architecture.md`](./docs/roadmap/phases/phase-0.7-computer-architecture.md) - Phase 0.7: Projects 4-5
-- [`docs/nand2tetris/project1/gap-analysis.md`](./docs/nand2tetris/project1/gap-analysis.md) - Project 1 gap analysis (reference for Phase 0.5)
+- [`docs/compatibility/nand2tetris/project1/gap-analysis.md`](./docs/compatibility/nand2tetris/project1/gap-analysis.md) - Project 1 gap analysis (reference for Phase 0.5)
 
 ## Document Relationship
 
