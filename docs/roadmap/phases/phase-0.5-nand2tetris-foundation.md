@@ -303,7 +303,7 @@ export function evaluateCircuit(state: CircuitState): void {
 
 > Resolves: GAP-3D-6 (No Circuit Persistence)
 
-**Requirements:** users must be able to save their work and return to it across browser sessions.
+**Requirements:** Users must be able to save their work and return to it across browser sessions.
 
 **What must work:**
 - **Auto-save** — periodically save current circuit to `localStorage`
@@ -385,7 +385,7 @@ Project 1 tips specifically recommend: *"Before implementing a chip, it is recom
 
 > Resolves: GAP-UI-6 (Internal Wire Naming), GAP-UI-7 (Extensible Type System)
 
-**Requirements:** users can build chips in either mode (3D or HDL) and use them interchangeably.
+**Requirements:** Users can build chips in either mode (3D or HDL) and use them interchangeably.
 
 **How it works:**
 - Both 3D-built circuits and HDL-compiled chips register in the same `ChipRegistry`

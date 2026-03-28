@@ -181,15 +181,15 @@ scripts/
 - `src/gates/components/BusSplitter3D.tsx` - Bus splitter visual component
 - `src/gates/components/BusJoiner3D.tsx` - Bus joiner visual component
 - `src/store/actions/persistenceActions/` - Circuit save/load to localStorage
-- `src/data/nand2tetris/project01/` - Bundled test fixtures (.hdl, .tst, .cmp)
+- `src/core/testing/nand2tetris/project01/` - Provider-backed test fixtures (.hdl, .tst, .cmp)
 
 ### 🔄 Phase 0.6 — Projects 2-3: Arithmetic & Sequential Logic
 
 **Expected additions:**
 - `src/core/gates/sequential/` - DFF, clock signal system
 - `src/core/gates/memory/` - SparseMemory, RAM implementations
-- `src/data/nand2tetris/project02/` - Project 2 test fixtures
-- `src/data/nand2tetris/project03/` - Project 3 test fixtures
+- `src/core/testing/nand2tetris/project02/` - Project 2 test fixtures
+- `src/core/testing/nand2tetris/project03/` - Project 3 test fixtures
 
 ### 🔄 Phase 0.7 — Projects 4-5: Computer Architecture
 
@@ -199,8 +199,8 @@ scripts/
 - `src/core/rom/` - ROM32K, .hack file loader
 - `src/components/ui/ScreenDisplay.tsx` - Screen I/O rendering
 - `src/components/ui/DebugPanel.tsx` - Execution and debugging UI
-- `src/data/nand2tetris/project04/` - Project 4 test programs
-- `src/data/nand2tetris/project05/` - Project 5 test fixtures
+- `src/core/testing/nand2tetris/project04/` - Project 4 test programs
+- `src/core/testing/nand2tetris/project05/` - Project 5 test fixtures
 
 ### ⏸️ Future Structure (Phases 5-24 - Not Yet Implemented)
 
