@@ -31,6 +31,22 @@
 	- `pnpm run build` (pass; Vite build complete)
 	- `pnpm run test:e2e:store` (pass: 81 passed)
 
+## Done: De-scope P05-07 + capability-first documentation alignment (2026-03-26)
+
+- [x] Confirm de-scope decision scope: remove P05-07 as a required ticket, preserve parser fixture strategy, preserve builtin-registry path (P05-01/P05-15/P05-16/P05-18)
+- [x] Update ticket list/index docs to remove or replace P05-07 references and dependency arrows (`phase-0.5-tickets/README.md`, `phase-0.5-tickets-CHECKLIST.md`, `2026-03-22-phase-0.5-tickets.md`)
+- [x] Rewrite impacted phase-0.5 ticket docs that currently depend on `getChipFiles`/curriculum bundle assumptions (P05-15, P05-17, P05-19, P05-20, P05-21, P05-22, P05-24, P05-27, P05-28)
+- [x] Update gap-analysis and roadmap wording from "curriculum adherence/completion" to "capability parity validation corpus + HACER-first extensions"
+- [x] Ensure all docs frame nand2tetris assets as compatibility/validation fixtures rather than mandatory runtime curriculum UX
+- [x] Add review notes summarizing what changed and which assumptions were intentionally removed
+
+### Review (P05-07 de-scope)
+
+- Fully removed `docs/plans/phase-0.5-tickets/P05-07.md` and rewired Phase 0.5 plan/checklist/index dependencies.
+- Updated P05-xx ticket docs to remove runtime coupling to `getChipFiles`/`CHIP_ORDER` and replace it with fixture/provider language.
+- Rebranded P05-19 from curriculum navigation to chip workflow browser across dependent ticket references.
+- Broadened roadmap and gap-analysis language to capability-first compatibility validation framing.
+
 ## In Progress: P05-06 CMP parser (2026-03-26)
 
 - [x] Create failing tests for CMP parsing and row comparison in `src/core/testing/cmpParser.test.ts`

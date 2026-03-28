@@ -9,11 +9,11 @@
 
 ## Overview
 
-This phase delivers everything needed for students to complete [Nand2Tetris Project 4: Machine Language](https://www.nand2tetris.org/course) and [Project 5: Computer Architecture](https://www.nand2tetris.org/course).
+This phase delivers everything needed for users to complete [Nand2Tetris Project 4: Machine Language](https://www.nand2tetris.org/course) and [Project 5: Computer Architecture](https://www.nand2tetris.org/course).
 
-Project 4 introduces the Hack machine language — students write assembly programs that run on the hardware they built. Project 5 is the culmination of the hardware track: students build a complete computer (CPU + Memory + ROM) from the chips developed in Projects 1-3.
+Project 4 introduces the Hack machine language — users write assembly programs that run on the hardware they built. Project 5 is the culmination of the hardware track: users build a complete computer (CPU + Memory + ROM) from the chips developed in Projects 1-3.
 
-After this phase, students have a working computer built entirely from NAND gates.
+After this phase, users have a working computer built entirely from NAND gates.
 
 **Exit Criteria:**
 - All Project 5 chips completable and verified (Memory, CPU, Computer)
@@ -115,7 +115,7 @@ After this phase, students have a working computer built entirely from NAND gate
 - Fill.asm (keyboard-controlled screen fill)
 - These are tested by running them on the Computer chip
 
-**Note:** An assembler (translating `.asm` to `.hack`) is part of Project 6 and belongs in Phase 10 (Software Stack), not here. For Project 4, students write assembly by hand and the pre-assembled `.hack` files are provided.
+**Note:** An assembler (translating `.asm` to `.hack`) is part of Project 6 and belongs in Phase 10 (Software Stack), not here. For Project 4, users write assembly by hand and the pre-assembled `.hack` files are provided.
 
 ---
 
@@ -156,7 +156,7 @@ Streams A, B, and C can run in parallel. Stream D depends on all three.
 | Task ID | Task | Effort |
 |---------|------|--------|
 | T7-ROM | ROM32K implementation | 8h |
-| T7-DATA | Bundle Project 4-5 curriculum files | 4h |
+| T7-DATA | Prepare Project 4-5 compatibility fixture packs | 4h |
 
 ### Tasks with External Dependencies (Phase 0.6)
 
@@ -195,7 +195,7 @@ T7-CPU(20h) → T7-COMPUTER(12h) → T7-EXEC-UI(10h) → T7-DEBUG(16h) → T7-IN
 
 ## 0.7.7 Risk Mitigation
 
-**CPU complexity:** The Hack CPU is well-documented with a clear specification. Start with the builtin implementation, then let students build it from the ALU and registers they already have.
+**CPU complexity:** The Hack CPU is well-documented with a clear specification. Start with the builtin implementation, then let users build it from the ALU and registers they already have.
 
 **Screen rendering performance:** Use `requestAnimationFrame` to batch screen updates. Don't re-render on every memory write — buffer changes and render at 30-60fps.
 

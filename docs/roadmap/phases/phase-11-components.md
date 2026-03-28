@@ -9,7 +9,7 @@
 
 ## Overview
 
-This phase creates a comprehensive library of built-in components covering the complete nand2tetris curriculum, with a visual browser, one-click instantiation, and extensive documentation.
+This phase creates a comprehensive library of built-in components covering the complete nand2tetris compatibility baseline, with a visual browser, one-click instantiation, and extensive documentation.
 
 **Exit Criteria:**
 - Complete nand2tetris component library available

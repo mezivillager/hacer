@@ -4,13 +4,13 @@
 **Priority:** CRITICAL — Blocks All Subsequent Phases
 **Timeline:** Weeks 2-8 (7 weeks; ~4 weeks with 2 parallel work streams)
 **Dependencies:** Phase 0.25 complete (grid-based system improves UX before core features)
-**Gap Analysis:** [Project 1 Gap Analysis](../../nand2tetris/project1/gap-analysis.md)
+**Gap Analysis:** [Project 1 Gap Analysis](../../compatibility/nand2tetris/project1/gap-analysis.md)
 
 ---
 
 ## Overview
 
-This phase delivers everything needed for students to complete [Nand2Tetris Project 1: Boolean Logic](https://www.nand2tetris.org/course) using either the 3D circuit designer or the HDL text editor. Project 1 requires building **15** combinatorial chips from a single NAND primitive (Not through DMux8Way). **Nand** is the supplied primitive; it still ships in the official bundle with its own `.hdl` stub and tests, so the curriculum pack is **16** `.hdl` + **16** `.tst` + **16** `.cmp` = **48 files** (see [gap analysis appendix](../../nand2tetris/project1/gap-analysis.md)).
+This phase delivers everything needed for users to complete [Nand2Tetris Project 1: Boolean Logic](https://www.nand2tetris.org/course) as a compatibility-validation baseline using either the 3D circuit designer or the HDL text editor. Project 1 requires building **15** combinatorial chips from a single NAND primitive (Not through DMux8Way). **Nand** remains the supplied primitive, and the compatibility corpus includes **16** `.hdl` + **16** `.tst` + **16** `.cmp` assets for validation (see [gap analysis appendix](../../compatibility/nand2tetris/project1/gap-analysis.md)).
 
 Sequential logic (DFF, RAM), arithmetic (ALU), and computer architecture (CPU) are deferred to Phases 0.6 and 0.7 respectively.
 
@@ -35,7 +35,7 @@ Sequential logic (DFF, RAM), arithmetic (ALU), and computer architecture (CPU) a
 
 > Resolves: GAP-3D-1 (No Chip Hierarchy)
 
-**Requirements:** Enable composite chips — circuits that encapsulate sub-circuits and expose named I/O pins as reusable building blocks. This is the single most critical gap: without it, students cannot reuse a chip they've built as a part inside another chip.
+**Requirements:** Enable composite chips — circuits that encapsulate sub-circuits and expose named I/O pins as reusable building blocks. This is the single most critical gap: without it, users cannot reuse a chip they've built as a part inside another chip.
 
 **What must work:**
 - Define a circuit as a named chip with typed inputs/outputs
@@ -143,7 +143,7 @@ export interface ChipRegistry {
 
 **What must work:**
 
-1. **Chip definition panel** — UI section where student declares: chip name, input pins (name + width), output pins (name + width). When a Project 1 chip is selected from the curriculum browser, this is pre-filled from the stub.
+1. **Chip definition panel** — UI section where user declares: chip name, input pins (name + width), output pins (name + width). When a Project 1 chip is selected from the workflow browser, this is pre-filled from a starter template.
 
 2. **Node rename** — Add `renameInputNode(nodeId, newName)` and `renameOutputNode(nodeId, newName)` actions to the store.
 
@@ -256,9 +256,9 @@ Note: `tick` and `tock` are parsed but produce errors for Project 1 (combinatori
 - After all steps, compare recorded output to `.cmp` file loaded by `compare-to`
 - Report first mismatch with row/column, expected vs. actual
 
-**Curriculum data bundling:**
-- Ship all Project 1 files: 15 student `.hdl` stubs + 1 Nand BUILTIN `.hdl` + 16 `.tst` scripts + 16 `.cmp` files = 48 files
-- Source: nand2tetris course materials (CC BY-NC-SA 3.0 license compliance required)
+**Compatibility fixture provisioning:**
+- Provide all Project 1 validation assets: 15 user `.hdl` stubs + 1 Nand BUILTIN `.hdl` + 16 `.tst` scripts + 16 `.cmp` files = 48 files
+- Source can be in-repo fixtures or a pluggable provider backed by nand2tetris test materials (CC BY-NC-SA 3.0 compliance required)
 
 ---
 
@@ -303,7 +303,7 @@ export function evaluateCircuit(state: CircuitState): void {
 
 > Resolves: GAP-3D-6 (No Circuit Persistence)
 
-**Requirements:** Students must be able to save their work and return to it across browser sessions.
+**Requirements:** users must be able to save their work and return to it across browser sessions.
 
 **What must work:**
 - **Auto-save** — periodically save current circuit to `localStorage`
@@ -319,17 +319,17 @@ export function evaluateCircuit(state: CircuitState): void {
 
 ---
 
-## 0.5.8 Curriculum Navigation UI
+## 0.5.8 Chip Workflow Browser UI
 
-> Resolves: GAP-3D-7 (No Project/Curriculum Navigation)
+> Resolves: GAP-3D-7 (No Guided Chip Workflow)
 
-**Requirements:** Guide students through Project 1 with a structured interface.
+**Requirements:** Guide users through Project 1 chip workflows with a structured interface.
 
 **UI components:**
-1. **Project selector** — dropdown or sidebar section showing "Project 1: Boolean Logic"
+1. **Workflow scope selector** — dropdown or sidebar section showing "Project 1: Boolean Logic"
 2. **Chip list** — ordered list of 15 chips with completion status icons (not started / in progress / passing)
 3. **Chip spec display** — when a chip is selected, show: description, interface (IN/OUT pins with widths), truth table or behavior spec
-4. **Chip stub loading** — selecting a chip pre-configures the canvas with the chip definition (I/O nodes) and loads the corresponding `.tst`/`.cmp` files
+4. **Chip starter loading** — selecting a chip pre-configures the canvas with the chip definition (I/O nodes) and loads corresponding test/template assets from the active fixture/provider source
 5. **Recommended order** — visual ordering matching the Project 1 specification: Not, And, Or, Xor, Mux, DMux, Not16, And16, Or16, Mux16, Or8Way, Mux4Way16, Mux8Way16, DMux4Way, DMux8Way
 
 ---
@@ -369,15 +369,15 @@ export function evaluateCircuit(state: CircuitState): void {
 
 > Resolves: GAP-3D-8 (No Builtin Toggle)
 
-**Requirements:** Let students experiment with reference implementations before building their own.
+**Requirements:** Let users experiment with reference implementations before building their own.
 
 Project 1 tips specifically recommend: *"Before implementing a chip, it is recommended to experiment with its builtin implementation."*
 
 **What must work:**
 - Each of the 15 Project 1 chips has a pre-built reference implementation (builtin)
-- Toggle button switches between "student implementation" and "builtin implementation"
+- Toggle button switches between "user implementation" and "builtin implementation"
 - In builtin mode: set inputs, eval, see outputs — chip works correctly as a black box
-- The builtin serves as the fallback when a student hasn't implemented a chip yet but needs it as a chip-part
+- The builtin serves as the fallback when a user hasn't implemented a chip yet but needs it as a chip-part
 
 ---
 
@@ -385,12 +385,12 @@ Project 1 tips specifically recommend: *"Before implementing a chip, it is recom
 
 > Resolves: GAP-UI-6 (Internal Wire Naming), GAP-UI-7 (Extensible Type System)
 
-**Requirements:** Students can build chips in either mode (3D or HDL) and use them interchangeably.
+**Requirements:** users can build chips in either mode (3D or HDL) and use them interchangeably.
 
 **How it works:**
 - Both 3D-built circuits and HDL-compiled chips register in the same `ChipRegistry`
-- A student can build NOT in 3D, save it, then reference it in HDL: `Not(in=x, out=y);`
-- A student can write AND in HDL, compile it, then place it as a composite chip in 3D
+- A user can build NOT in 3D, save it, then reference it in HDL: `Not(in=x, out=y);`
+- A user can write AND in HDL, compile it, then place it as a composite chip in 3D
 - The `GateType` union is no longer the sole type system — `ChipRegistry` holds user-defined types at runtime (resolves GAP-UI-7)
 
 **3D-to-HDL export (resolves GAP-UI-6):**
@@ -410,11 +410,6 @@ Project 1 tips specifically recommend: *"Before implementing a chip, it is recom
 ### Task Dependency DAG
 
 ```
-                    ┌─────────────────────┐
-                    │  Curriculum files    │  (no deps, start immediately)
-                    │  T-DATA             │
-                    └─────────────────────┘
-
   ┌──────────────────────────────────────────────────────────────────┐
   │ STREAM A: Core Engine (no UI dependencies)                       │
   │                                                                  │
@@ -466,9 +461,8 @@ Project 1 tips specifically recommend: *"Before implementing a chip, it is recom
   │  serialization     save/load UI                                  │
   │                                                                  │
   │  T-NAV-UI           T-PINOUT         T-STATUS                   │
-  │  Curriculum         Pinout panel     Error/status bar            │
+  │  Chip workflow      Pinout panel     Error/status bar            │
   │  browser                                                         │
-  │  (needs T-DATA)                                                  │
   └──────────────────────────────────────────────────────────────────┘
 
   ┌──────────────────────────────────────────────────────────────────┐
@@ -488,7 +482,7 @@ With 2 developers, the phase can be completed in ~4 weeks by running streams in 
 |--------|-------|-----------|-----------|
 | **A: Core Engine** | HDL, test execution, chip hierarchy logic | T-REG, T-HIER, T-HDL-PARSE, T-HDL-COMPILE, T-TOPO, T-TST-PARSE, T-CMP-PARSE, T-TEST-ENG, T-BUILT | ~130h |
 | **B: Data Model & 3D** | Bus support, node identity, 3D components | T-BUS-MODEL, T-BUS-SIM, T-BUS-3D, T-BUS-UI, T-NODE-ID, T-CHIP-PANEL, T-AUTO-IO, T-VALIDATE, T-COMP-3D | ~86h |
-| **C: Infrastructure** | Persistence, curriculum, UI panels | T-SERIAL, T-PERSIST-UI, T-NAV-UI, T-PINOUT, T-STATUS, T-DATA | ~42h |
+| **C: Infrastructure** | Persistence and UI panels | T-SERIAL, T-PERSIST-UI, T-NAV-UI, T-PINOUT, T-STATUS | ~38h |
 | **Final** | Integration, interop, docs | T-INTEROP, T-HDL-UI, T-TEST-UI, T-TOGGLE-UI, T-INTEGRATION, T-DOCS | ~42h |
 
 Stream C can be absorbed into A or B since its tasks are small and independent.
@@ -522,8 +516,7 @@ These can begin on day 1, in any order:
 | T-CMP-PARSE | Compare file parser (.cmp) | 6h | GAP-3D-4 |
 | T-TOPO | Topological sort evaluation | 10h | GAP-3D-5 |
 | T-SERIAL | Circuit serialization format + localStorage | 10h | GAP-3D-6 |
-| T-NAV-UI | Curriculum navigation UI (project/chip browser) | 10h | GAP-3D-7 |
-| T-DATA | Bundle Project 1 curriculum files (48 files) | 4h | — |
+| T-NAV-UI | Chip workflow browser UI (project/chip browser) | 10h | GAP-3D-7 |
 | T-PINOUT | Pinout panel (pin values, eval button) | 8h | GAP-UI-3 |
 | T-STATUS | Error/status bar | 4h | GAP-UI-5 |
 
@@ -560,7 +553,7 @@ These can begin on day 1, in any order:
 
 **Complexity of chip hierarchy:** Start with flat hierarchy (chips using only builtins and one level of user-defined chips). Deep nesting can be optimized incrementally.
 
-**Multi-bit bus complexity in 3D:** The bus splitter/joiner approach may be visually overwhelming for Mux8Way16 (131 bits of I/O). Consider allowing composite chips to abstract away the bus wiring internally, so students only see the chip-level interface in the parent circuit.
+**Multi-bit bus complexity in 3D:** The bus splitter/joiner approach may be visually overwhelming for Mux8Way16 (131 bits of I/O). Consider allowing composite chips to abstract away the bus wiring internally, so users only see the chip-level interface in the parent circuit.
 
 **HDL parser robustness:** Use the web-ide's Ohm grammar as a reference for edge cases. The nand2tetris HDL dialect is small and well-specified.
 

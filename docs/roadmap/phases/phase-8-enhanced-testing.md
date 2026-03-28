@@ -1,4 +1,4 @@
-# Phase 8: Enhanced Testing & Curriculum Validation (Weeks 26-28)
+# Phase 8: Enhanced Testing & Compatibility Validation (Weeks 26-28)
 
 **Part of:** [Comprehensive Development Roadmap](../README.md)
 **Priority:** 🟡 MEDIUM
@@ -9,12 +9,12 @@
 
 ## Overview
 
-This phase establishes comprehensive testing infrastructure using property-based testing, curriculum test suites, and visual regression testing to ensure platform reliability and nand2tetris compatibility.
+This phase establishes comprehensive testing infrastructure using property-based testing, compatibility test suites, and visual regression testing to ensure platform reliability and nand2tetris compatibility.
 
 **Exit Criteria:**
 - Property-based testing with fast-check implemented
 - Circuit invariant testing functional
-- Curriculum test suites (nand2tetris projects 1-2) pass
+- Compatibility test suites (nand2tetris projects 1-2 corpus) pass
 - Visual regression testing configured
 - Coverage > 70% with automated reporting
 
@@ -42,7 +42,7 @@ This phase establishes comprehensive testing infrastructure using property-based
 - Truth table verification
 - Performance benchmarking
 
-### 4.5 Curriculum Tests
+### 4.5 Compatibility Corpus Tests
 - Nand2tetris projects 1-2 automated testing
 - Chapter-based test organization
 - Progress tracking and reporting
@@ -67,8 +67,8 @@ This phase establishes comprehensive testing infrastructure using property-based
 | Property Tests | ✅ Complete | Gate logic invariants tested |
 | Circuit Invariants | ✅ Complete | Data integrity validation |
 | CircuitTestHarness | ✅ Complete | Browser automation framework |
-| Curriculum Chapter 1 | ✅ Complete | Elementary gates fully tested |
-| Curriculum Chapter 2 | ✅ Complete | Multiplexors tested |
+| Compatibility Chapter 1 | ✅ Complete | Elementary gates fully tested |
+| Compatibility Chapter 2 | ✅ Complete | Multiplexors tested |
 | Visual Regression | ✅ Complete | Screenshot-based UI testing |
 | Coverage Reporting | ✅ Complete | 70%+ coverage achieved |
 

@@ -21,7 +21,6 @@
 - [x] **P05-04** — HDL parser — [P05-04.md](./phase-0.5-tickets/P05-04.md)
 - [ ] **P05-05** — TST parser — [P05-05.md](./phase-0.5-tickets/P05-05.md)
 - [ ] **P05-06** — CMP parser — [P05-06.md](./phase-0.5-tickets/P05-06.md)
-- [ ] **P05-07** — Curriculum data bundle (48 files) — [P05-07.md](./phase-0.5-tickets/P05-07.md)
 - [ ] **P05-08** — Node rename + name display — [P05-08.md](./phase-0.5-tickets/P05-08.md)
 - [ ] **P05-09** — StatusBar component — [P05-09.md](./phase-0.5-tickets/P05-09.md)
 - [ ] **P05-10** — PinoutPanel component — [P05-10.md](./phase-0.5-tickets/P05-10.md)
@@ -39,7 +38,7 @@
 
 - [ ] **P05-17** — Test execution engine — needs P05-05, P05-06, P05-03 — [P05-17.md](./phase-0.5-tickets/P05-17.md)
 - [ ] **P05-18** — Chip hierarchy evaluation — needs P05-01, P05-16 — [P05-18.md](./phase-0.5-tickets/P05-18.md)
-- [ ] **P05-19** — Curriculum navigation UI — needs P05-07, P05-01 — [P05-19.md](./phase-0.5-tickets/P05-19.md)
+- [ ] **P05-19** — Chip workflow browser UI — needs P05-01 — [P05-19.md](./phase-0.5-tickets/P05-19.md)
 - [ ] **P05-20** — ChipDefinitionPanel + auto-IO — needs P05-01, P05-08 — [P05-20.md](./phase-0.5-tickets/P05-20.md)
 
 ## Layer 3 — Full feature UI

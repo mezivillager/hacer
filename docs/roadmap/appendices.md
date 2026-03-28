@@ -16,7 +16,7 @@
 | Machine Code | `.hack` | Binary executable format | ✅ Complete | Assembler Output |
 | VM Code | `.vm` | Stack machine intermediate | ✅ Complete | Compiler Output |
 
-### Curriculum Project Coverage
+### Compatibility Project Coverage
 
 | Project | Chapter | Components | Status | Test Coverage |
 |---------|---------|------------|--------|----------------|
@@ -269,10 +269,10 @@ Cloud Infrastructure
   - Alternative assembly languages
   - Extended high-level language features
 
-- **Phase 11**: Educational Platform (8 weeks)
-  - Interactive tutorials and courses
-  - Progress tracking and certificates
-  - Classroom management tools
+- **Phase 11**: Platform Documentation & Workflows (8 weeks)
+  - Interactive platform walkthroughs
+  - Extensible test fixtures and tracking
+  - Third-party curriculum integrations
 
 - **Phase 12**: Enterprise Features (6 weeks)
   - Advanced collaboration features
