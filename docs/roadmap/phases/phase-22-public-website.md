@@ -461,7 +461,7 @@ export function HeroSection() {
               </div>
               <div className="text-center">
                 <div className="font-bold text-2xl text-foreground">50K+</div>
-                <div>Students</div>
+                <div>Users</div>
               </div>
               <div className="text-center">
                 <div className="font-bold text-2xl text-foreground">100+</div>
@@ -1097,7 +1097,7 @@ interface AnalyticsEvent {
 
 interface UserProperties {
   userId?: string;
-  userType?: 'student' | 'educator' | 'developer' | 'anonymous';
+  userType?: 'learner' | 'educator' | 'developer' | 'anonymous';
   experience?: 'beginner' | 'intermediate' | 'advanced';
   subscription?: 'free' | 'pro' | 'enterprise';
 }

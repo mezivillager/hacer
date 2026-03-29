@@ -25,7 +25,7 @@ NAND Gate --> Basic Gates --> Sequential Logic --> Computer Architecture --> Sof
 
 The platform is designed for:
 
-- **Learners** following the nand2tetris curriculum from first principles
+- **Learners** exploring digital logic and computer architecture from first principles
 - **Educators** teaching computer architecture and digital logic
 - **Tinkerers** designing custom hardware and experimenting with architectures
 - **AI agents** building and debugging circuits programmatically
@@ -161,7 +161,7 @@ HACER is developed in phases, each building on the previous. The full roadmap sp
 
 | Phase | Status | Description |
 |-------|--------|-------------|
-| 8 | Planned | Curriculum validation, integration tests, cross-browser testing |
+| 8 | Planned | Compatibility validation, integration tests, cross-browser testing |
 | 9 | Planned | Web Worker simulation, instanced rendering, LOD, performance |
 | 10 | Planned | Hack assembler, VM interpreter, Jack compiler, integrated debugger |
 | 11 | Planned | Built-in component library (ALU, CPU, RAM), visual browser |
