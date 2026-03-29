@@ -72,6 +72,7 @@ export function NodeRenameControl() {
               [selectedNode.id]: nextValue,
             }))
           }}
+          onPressEnter={handleApply}
           placeholder="Node name"
           size="small"
           data-testid="node-rename-input"
