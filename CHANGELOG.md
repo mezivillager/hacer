@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.0](https://github.com/mezivillager/hacer/compare/v1.7.1...v1.8.0) (2026-03-29)
+
+### Features
+
+* **nodes:** add node rename workflow and label rendering ([b767ccf](https://github.com/mezivillager/hacer/commit/b767ccfb57bcdc67acd6d65930d4b8266cf9ed60))
+
+### Bug Fixes
+
+* **nodes:** add Enter key support to NodeRenameControl and refactor E2E helpers ([901c147](https://github.com/mezivillager/hacer/commit/901c1474894fcc9d194718904be42d4ba163a603))
+
+### Documentation
+
+* address PR review feedback on tsbuildinfo, types, capitalization, and fixture paths ([a9f1ad6](https://github.com/mezivillager/hacer/commit/a9f1ad6d7b8e282e5c23da5c20296ffe3708f5a7))
+* reframe platform as capability-first over curriculum ([07de6d5](https://github.com/mezivillager/hacer/commit/07de6d5110df2bb932975b2223b4730639300a11))
+
 ## [1.7.1](https://github.com/mezivillager/hacer/compare/v1.7.0...v1.7.1) (2026-03-26)
 
 ### Bug Fixes
