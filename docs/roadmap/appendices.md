@@ -272,7 +272,7 @@ Cloud Infrastructure
 - **Phase 11**: Platform Documentation & Workflows (8 weeks)
   - Interactive platform walkthroughs
   - Extensible test fixtures and tracking
-  - Third-party curriculum integrations
+  - Third-party tool integrations
 
 - **Phase 12**: Enterprise Features (6 weeks)
   - Advanced collaboration features

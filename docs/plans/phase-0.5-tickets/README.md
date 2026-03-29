@@ -16,7 +16,7 @@ Each ticket file below is **self-contained** — a fresh LLM session can impleme
 | **UI features** (P05-09, P05-10, P05-12, P05-13, P05-19–24) | Component + store tests | **Add or extend** `@store` Playwright specs for visible behavior (`data-testid`s) | Required checklist in ticket |
 | **Pipeline / engine** (P05-16, P05-17, P05-26) | Required (compile/run tests) | Regression | Optional until UI wrappers (P05-21, P05-22) |
 | **Persistence** (P05-14) | Round-trip + store action tests | Regression + add save/load spec | Manual: save → refresh → load |
-| **Integration** (P05-27) | Not applicable | **New** `@store` + `@ui` Playwright specs under `e2e/specs/phase-0.5/` | Full student workflow |
+| **Integration** (P05-27) | Not applicable | **New** `@store` + `@ui` Playwright specs under `e2e/specs/phase-0.5/` | Full user workflow |
 | **Documentation** (P05-28) | Not applicable | Regression only | REPO_MAP accuracy, guide readability |
 
 **Parser corpus (P05-04–06):** Parsers are not on the React tree by default. If policy demands browser-level verification beyond Vitest, add a **dev-only** `window.__HACER_PARSE_SMOKE__` (or similar) in `main.tsx` guarded by `import.meta.env.DEV` and a thin `e2e/specs/**` file — optional for Layer 0; otherwise Vitest + green store E2E is sufficient.
