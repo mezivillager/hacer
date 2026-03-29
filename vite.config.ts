@@ -1,7 +1,7 @@
-/// <reference types="vitest/config" />
 import { readFileSync } from 'node:fs'
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vitest/config'
+import react, { reactCompilerPreset } from '@vitejs/plugin-react'
+import babel from '@rolldown/plugin-babel'
 import path from 'path'
 
 const pkg = JSON.parse(readFileSync(path.join(__dirname, 'package.json'), 'utf-8')) as {
@@ -15,10 +15,9 @@ export default defineConfig({
     __BUILD_APP_VERSION__: JSON.stringify(pkg.version),
   },
   plugins: [
-    react({
-      babel: {
-        plugins: ['babel-plugin-react-compiler'],
-      },
+    react(),
+    babel({
+      presets: [reactCompilerPreset()],
     }),
   ],
   resolve: {
