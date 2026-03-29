@@ -54,10 +54,30 @@ export interface CircuitStoreJunction {
   signalId: string
 }
 
+export interface CircuitStoreInputNode {
+  id: string
+  name: string
+  position: { x: number; y: number; z: number }
+  rotation: { x: number; y: number; z: number }
+  value: number
+  width: number
+}
+
+export interface CircuitStoreOutputNode {
+  id: string
+  name: string
+  position: { x: number; y: number; z: number }
+  rotation: { x: number; y: number; z: number }
+  value: number
+  width: number
+}
+
 export interface CircuitStoreSnapshot {
   gates: CircuitStoreGate[]
   wires: CircuitWire[]
   junctions?: CircuitStoreJunction[]
+  inputNodes?: CircuitStoreInputNode[]
+  outputNodes?: CircuitStoreOutputNode[]
   simulationRunning?: boolean
   selectedGateId?: string | null
   placementMode?: GateType | null
@@ -106,6 +126,8 @@ export interface CircuitActionsAPI {
   // Node management actions
   addInputNode: (name: string, position: { x: number; y: number; z: number }, width?: number) => { id: string; name: string; value: number }
   addOutputNode: (name: string, position: { x: number; y: number; z: number }, width?: number) => { id: string; name: string; value: number }
+  renameInputNode: (nodeId: string, newName: string) => void
+  renameOutputNode: (nodeId: string, newName: string) => void
   removeInputNode: (nodeId: string) => void
   removeOutputNode: (nodeId: string) => void
   updateInputNodeValue: (nodeId: string, value: number) => void

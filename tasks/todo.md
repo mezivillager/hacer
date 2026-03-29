@@ -2,6 +2,33 @@
 
 **Phase 0.5 ticket progress:** check off tickets in [`docs/plans/phase-0.5-tickets-CHECKLIST.md`](../docs/plans/phase-0.5-tickets-CHECKLIST.md) when merged + CI gates pass.
 
+## In Progress: P05-08 Input/Output node rename workflow (2026-03-28)
+
+- [x] Refresh ticket scope and assumptions in `docs/plans/phase-0.5-tickets/P05-08.md`
+- [x] Add RED tests for shared node name validation (`src/utils/nodeNameValidation.test.ts`)
+- [x] Implement shared node name validation helper (`src/utils/nodeNameValidation.ts`)
+- [x] Add RED tests for store rename actions (`src/store/actions/nodeActions/nodeActions.test.ts`)
+- [x] Implement `renameInputNode`/`renameOutputNode` in node actions and expose through `circuitActions`
+- [x] Add RED tests for sidebar rename UI (`src/components/ui/NodeRenameControl.test.tsx`, `src/components/ui/Sidebar.test.tsx`)
+- [x] Implement `NodeRenameControl` and integrate in `Sidebar`
+- [x] Add RED tests for 3D node name label rendering (`InputNode3D.test.tsx`, `OutputNode3D.test.tsx`)
+- [x] Render node names in input/output 3D components
+- [x] Add store E2E coverage for node rename flows (`e2e/specs/wiring/node-rename.store.spec.ts`)
+- [x] Run completion gates: `pnpm run lint && pnpm run test:run && pnpm run build && pnpm run test:e2e:store`
+
+### Review (P05-08 node rename)
+
+- Added a shared validator that enforces non-empty names, HDL-safe identifier format, and case-insensitive uniqueness within input or output node groups.
+- Added store actions `renameInputNode` and `renameOutputNode` and exposed them through `circuitActions` for UI and E2E callers.
+- Added sidebar rename UI (`NodeRenameControl`) with validation feedback and apply flow for selected input/output nodes.
+- Updated 3D node rendering to show both the node name and the node value labels.
+- Added store E2E coverage for successful rename plus duplicate and invalid-name rejections.
+- Verified (2026-03-28):
+	- `pnpm run lint` (pass)
+	- `pnpm run test:run` (pass: 71 files, 1106 tests)
+	- `pnpm run build` (pass)
+	- `pnpm run test:e2e:store` (pass: 85 tests)
+
 ## In Progress: HDL parser parity hardening (2026-03-26)
 
 - [x] Add RED tests for explicit unsupported `CLOCKED` diagnostics

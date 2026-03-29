@@ -275,4 +275,110 @@ describe('Node Actions', () => {
       expect(updated?.position).toEqual(newPosition)
     })
   })
+
+  describe('renameInputNode', () => {
+    it('renames an input node', () => {
+      const store = useCircuitStore.getState()
+      const node = store.addInputNode('in0', { x: 0, y: 0, z: 0 })
+
+      store.renameInputNode(node.id, 'a')
+
+      const updated = useCircuitStore.getState().inputNodes.find((n) => n.id === node.id)
+      expect(updated?.name).toBe('a')
+    })
+
+    it('trims whitespace before applying the name', () => {
+      const store = useCircuitStore.getState()
+      const node = store.addInputNode('in0', { x: 0, y: 0, z: 0 })
+
+      store.renameInputNode(node.id, '  sel  ')
+
+      const updated = useCircuitStore.getState().inputNodes.find((n) => n.id === node.id)
+      expect(updated?.name).toBe('sel')
+    })
+
+    it('rejects empty names', () => {
+      const store = useCircuitStore.getState()
+      const node = store.addInputNode('in0', { x: 0, y: 0, z: 0 })
+
+      store.renameInputNode(node.id, '   ')
+
+      const updated = useCircuitStore.getState().inputNodes.find((n) => n.id === node.id)
+      expect(updated?.name).toBe('in0')
+    })
+
+    it('rejects invalid HDL identifier format', () => {
+      const store = useCircuitStore.getState()
+      const node = store.addInputNode('in0', { x: 0, y: 0, z: 0 })
+
+      store.renameInputNode(node.id, 'bad-name')
+
+      const updated = useCircuitStore.getState().inputNodes.find((n) => n.id === node.id)
+      expect(updated?.name).toBe('in0')
+    })
+
+    it('rejects case-insensitive duplicate names within input nodes', () => {
+      const store = useCircuitStore.getState()
+      const first = store.addInputNode('a', { x: 0, y: 0, z: 0 })
+      store.addInputNode('sel', { x: 0, y: 0, z: 4 })
+
+      store.renameInputNode(first.id, 'SeL')
+
+      const updated = useCircuitStore.getState().inputNodes.find((n) => n.id === first.id)
+      expect(updated?.name).toBe('a')
+    })
+
+    it('allows case-only change for the current node name', () => {
+      const store = useCircuitStore.getState()
+      const node = store.addInputNode('sel', { x: 0, y: 0, z: 0 })
+
+      store.renameInputNode(node.id, 'SEL')
+
+      const updated = useCircuitStore.getState().inputNodes.find((n) => n.id === node.id)
+      expect(updated?.name).toBe('SEL')
+    })
+
+    it('is a no-op when node does not exist', () => {
+      const store = useCircuitStore.getState()
+      store.addInputNode('in0', { x: 0, y: 0, z: 0 })
+
+      store.renameInputNode('missing-node', 'x')
+
+      expect(useCircuitStore.getState().inputNodes).toHaveLength(1)
+      expect(useCircuitStore.getState().inputNodes[0]?.name).toBe('in0')
+    })
+  })
+
+  describe('renameOutputNode', () => {
+    it('renames an output node', () => {
+      const store = useCircuitStore.getState()
+      const node = store.addOutputNode('out0', { x: 8, y: 0, z: 0 })
+
+      store.renameOutputNode(node.id, 'out')
+
+      const updated = useCircuitStore.getState().outputNodes.find((n) => n.id === node.id)
+      expect(updated?.name).toBe('out')
+    })
+
+    it('rejects case-insensitive duplicate names within output nodes', () => {
+      const store = useCircuitStore.getState()
+      const first = store.addOutputNode('out0', { x: 8, y: 0, z: 0 })
+      store.addOutputNode('result', { x: 10, y: 0, z: 0 })
+
+      store.renameOutputNode(first.id, 'RESULT')
+
+      const updated = useCircuitStore.getState().outputNodes.find((n) => n.id === first.id)
+      expect(updated?.name).toBe('out0')
+    })
+
+    it('rejects invalid HDL identifier format', () => {
+      const store = useCircuitStore.getState()
+      const node = store.addOutputNode('out0', { x: 8, y: 0, z: 0 })
+
+      store.renameOutputNode(node.id, '1output')
+
+      const updated = useCircuitStore.getState().outputNodes.find((n) => n.id === node.id)
+      expect(updated?.name).toBe('out0')
+    })
+  })
 })

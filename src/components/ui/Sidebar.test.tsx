@@ -195,4 +195,26 @@ describe('Sidebar', () => {
     fireEvent.click(notIcon!)
     expect(actualGetState().placementMode).toBe('NOT')
   })
+
+  it('shows node rename controls when a node is selected', () => {
+    actualSetState({
+      inputNodes: [
+        {
+          id: 'input-1',
+          name: 'in0',
+          position: { x: 0, y: 0, z: 0 },
+          rotation: { x: 0, y: 0, z: 0 },
+          value: 1,
+          width: 1,
+        },
+      ],
+      selectedNodeId: 'input-1',
+      selectedNodeType: 'input',
+    })
+
+    render(<Sidebar />)
+
+    expect(screen.getByTestId('node-rename-input')).toBeInTheDocument()
+    expect(screen.getByTestId('node-rename-apply')).toBeInTheDocument()
+  })
 })

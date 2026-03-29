@@ -41,7 +41,7 @@ interface InputNode3DProps {
  */
 export function InputNode3D({
   id,
-  name: _name,
+  name,
   position,
   rotation,
   value,
@@ -119,6 +119,22 @@ export function InputNode3D({
           opacity={isDragging ? 0.7 : 1}
         />
       </mesh>
+
+      <Text
+        position={[
+          INPUT_NODE_CONFIG.text.position[0],
+          INPUT_NODE_CONFIG.text.position[1] + 0.18,
+          INPUT_NODE_CONFIG.text.position[2],
+        ]}
+        rotation={[Math.PI, 0, 0]}
+        fontSize={0.12}
+        color="#ffffff"
+        anchorX="center"
+        anchorY="middle"
+        font={undefined}
+      >
+        {name}
+      </Text>
 
       <Text
         position={INPUT_NODE_CONFIG.text.position}
