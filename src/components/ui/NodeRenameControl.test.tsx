@@ -107,4 +107,19 @@ describe('NodeRenameControl', () => {
     const updated = useCircuitStore.getState().outputNodes.find((n) => n.id === node.id)
     expect(updated?.name).toBe('out')
   })
+
+  it('renames node when Enter is pressed in the input', () => {
+    const store = useCircuitStore.getState()
+    const node = store.addInputNode('in0', { x: 0, y: 0, z: 0 })
+    store.selectNode(node.id, 'input')
+
+    render(<NodeRenameControl />)
+
+    fireEvent.change(screen.getByTestId('node-rename-input'), { target: { value: 'clk' } })
+    fireEvent.keyDown(screen.getByTestId('node-rename-input'), { key: 'Enter', code: 'Enter', charCode: 13 })
+    fireEvent.keyPress(screen.getByTestId('node-rename-input'), { key: 'Enter', code: 'Enter', charCode: 13 })
+
+    const updated = useCircuitStore.getState().inputNodes.find((n) => n.id === node.id)
+    expect(updated?.name).toBe('clk')
+  })
 })
