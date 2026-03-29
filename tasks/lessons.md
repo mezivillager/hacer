@@ -37,3 +37,9 @@ See [lessons.md.template](./lessons.md.template) for the entry format.
 **Rule**: Treat nand2tetris artifacts primarily as compatibility and validation fixtures unless the user explicitly requests curriculum-specific UX/features.
 **Context**: Phase 0.5 docs and ticket language around P05-07/P05-19/P05-21/P05-22.
 
+### [2026-03-29] - Use non-HTML reporter for Playwright in terminal flows
+
+**What happened**: Running Playwright with HTML reporter can keep the terminal open on failures and block iterative debugging loops.
+**Rule**: When running Playwright from terminal-driven agent workflows, use a non-HTML reporter (for example `--reporter=line`) unless the user explicitly asks for HTML reports.
+**Context**: P05-09 execution flow and store E2E verification commands.
+

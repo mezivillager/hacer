@@ -12,6 +12,7 @@ import { createNodeActions } from './actions/nodeActions/nodeActions'
 import { createJunctionActions } from './actions/signalActions/signalActions'
 import { createNodePlacementActions } from './actions/nodePlacementActions/nodePlacementActions'
 import { createJunctionPlacementActions } from './actions/junctionPlacementActions/junctionPlacementActions'
+import { createStatusActions } from './actions/statusActions/statusActions'
 import { calculateWirePathFromConnection } from '@/utils/wiringScheme'
 import { collectWireSegments } from '@/utils/wiringScheme/segments'
 import type { WireSegment } from '@/utils/wiringScheme/types'
@@ -57,6 +58,8 @@ const initialState = {
   junctionPlacementMode: null as boolean | null,
   junctionPreviewPosition: null as import('./types').Position | null,
   junctionPreviewWireId: null as string | null,
+  // Status bar feedback channel
+  statusMessages: [] as import('./types').StatusMessage[],
 }
 
 // Create the Zustand store with Immer, devtools, and subscribeWithSelector middleware
@@ -79,6 +82,7 @@ export const useCircuitStore = create<CircuitStore>()(
         ...createJunctionActions(set, get),
         ...createNodePlacementActions(set, get),
         ...createJunctionPlacementActions(set, get),
+        ...createStatusActions(set),
       }))
     ),
     { name: 'CircuitStore' }
@@ -247,6 +251,11 @@ export const circuitActions = {
   startWiringFromJunction: (...args: Parameters<CircuitStore['startWiringFromJunction']>) => useCircuitStore.getState().startWiringFromJunction(...args),
   completeWiringFromJunction: (...args: Parameters<CircuitStore['completeWiringFromJunction']>) => useCircuitStore.getState().completeWiringFromJunction(...args),
   completeWiringFromJunctionToNode: (...args: Parameters<CircuitStore['completeWiringFromJunctionToNode']>) => useCircuitStore.getState().completeWiringFromJunctionToNode(...args),
+  // Status actions
+  addStatus: (severity: import('./types').StatusMessage['severity'], text: string) =>
+    useCircuitStore.getState().addStatus(severity, text),
+  clearStatus: (id: string) => useCircuitStore.getState().clearStatus(id),
+  clearAllStatus: () => useCircuitStore.getState().clearAllStatus(),
 }
 
 // Expose store and actions for E2E testing

@@ -72,6 +72,13 @@ export interface CircuitStoreOutputNode {
   width: number
 }
 
+export interface CircuitStoreStatusMessage {
+  id: string
+  severity: 'info' | 'warning' | 'error'
+  text: string
+  timestamp: number
+}
+
 export interface CircuitStoreSnapshot {
   gates: CircuitStoreGate[]
   wires: CircuitWire[]
@@ -82,6 +89,7 @@ export interface CircuitStoreSnapshot {
   selectedGateId?: string | null
   placementMode?: GateType | null
   wiringFrom?: WiringState | null
+  statusMessages?: CircuitStoreStatusMessage[]
   /** Present when the last simulation tick hit a combinational cycle */
   lastSimulationError?: { type: 'cycle'; involvedGateIds: string[] } | null
 }
@@ -142,6 +150,10 @@ export interface CircuitActionsAPI {
   startWiringFromJunction: (junctionId: string, position: { x: number; y: number; z: number }) => void
   completeWiringFromJunction: (toGateId: string, toPinId: string, toPinType: 'input' | 'output') => void
   completeWiringFromJunctionToNode: (nodeId: string, nodeType: NodeType) => void
+  // Status actions
+  addStatus: (severity: CircuitStoreStatusMessage['severity'], text: string) => CircuitStoreStatusMessage
+  clearStatus: (id: string) => void
+  clearAllStatus: () => void
   // E2E helper for wire path calculation
   calculateWirePathSegments: (
     fromGateId: string,
