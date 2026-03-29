@@ -277,6 +277,8 @@ export interface ViewActions {
 export interface NodeActions {
   addInputNode: (name: string, position: Position, width?: number) => InputNode
   addOutputNode: (name: string, position: Position, width?: number) => OutputNode
+  renameInputNode: (nodeId: string, newName: string) => void
+  renameOutputNode: (nodeId: string, newName: string) => void
   removeInputNode: (nodeId: string) => void
   removeOutputNode: (nodeId: string) => void
   updateInputNodeValue: (nodeId: string, value: number) => void

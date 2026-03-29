@@ -16,6 +16,7 @@ import { calculateNodePinPosition } from '@/nodes/config'
 import { calculateWirePath } from '@/utils/wiringScheme/core'
 import { collectWireSegments, combineAdjacentSegments } from '@/utils/wiringScheme/segments'
 import { resolveCrossings } from '@/utils/wiringScheme/crossing'
+import { validateNodeName } from '@/utils/nodeNameValidation'
 import type { DestinationType } from '@/utils/wiringScheme/types'
 import { preserveJunctions } from '../junctionUtils'
 
@@ -76,6 +77,32 @@ export const createNodeActions = (set: SetState, get: GetState): NodeActions => 
     }, false, 'addOutputNode')
 
     return node
+  },
+
+  renameInputNode: (nodeId: string, newName: string): void => {
+    set((state) => {
+      const node = state.inputNodes.find((n) => n.id === nodeId)
+      if (!node) return
+
+      const existingNames = state.inputNodes.map((n) => n.name)
+      const result = validateNodeName(newName, existingNames, node.name)
+      if (!result.ok) return
+
+      node.name = result.normalizedName
+    }, false, 'renameInputNode')
+  },
+
+  renameOutputNode: (nodeId: string, newName: string): void => {
+    set((state) => {
+      const node = state.outputNodes.find((n) => n.id === nodeId)
+      if (!node) return
+
+      const existingNames = state.outputNodes.map((n) => n.name)
+      const result = validateNodeName(newName, existingNames, node.name)
+      if (!result.ok) return
+
+      node.name = result.normalizedName
+    }, false, 'renameOutputNode')
   },
 
   removeInputNode: (nodeId: string): void => {

@@ -11,6 +11,7 @@ import { useCircuitStore } from '@/store/circuitStore'
 import { colors } from '@/theme'
 import { GateSelector } from './GateSelector'
 import { NodeSelector } from './NodeSelector'
+import { NodeRenameControl } from './NodeRenameControl'
 import { handleDeleteSelected } from './handlers/uiHandlers'
 import { useAppReleaseVersion } from '@/hooks/useAppReleaseVersion'
 
@@ -107,6 +108,7 @@ export function Sidebar() {
               Click on the grid to place the node
             </Text>
           )}
+          <NodeRenameControl />
         </div>
 
         <Divider className="sider-divider" />

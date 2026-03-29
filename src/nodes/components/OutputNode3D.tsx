@@ -39,7 +39,7 @@ interface OutputNode3DProps {
  */
 export function OutputNode3D({
   id,
-  name: _name, // although not used, included to satisfy props
+  name,
   position,
   rotation,
   value,
@@ -143,7 +143,22 @@ export function OutputNode3D({
         />
       </mesh>
 
-      {/* Name label on top face */}
+      <Text
+        position={[
+          OUTPUT_NODE_CONFIG.text.position[0],
+          OUTPUT_NODE_CONFIG.text.position[1] + 0.18,
+          OUTPUT_NODE_CONFIG.text.position[2],
+        ]}
+        rotation={[Math.PI, 0, 0]}
+        fontSize={0.12}
+        color="#ffffff"
+        anchorX="center"
+        anchorY="middle"
+        font={undefined}
+      >
+        {name}
+      </Text>
+
       <Text
         position={OUTPUT_NODE_CONFIG.text.position}
         rotation={[Math.PI, 0, 0]}

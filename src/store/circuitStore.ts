@@ -227,6 +227,8 @@ export const circuitActions = {
   // Node CRUD actions (already in store, adding to circuitActions for convenience)
   addInputNode: (...args: Parameters<CircuitStore['addInputNode']>) => useCircuitStore.getState().addInputNode(...args),
   addOutputNode: (...args: Parameters<CircuitStore['addOutputNode']>) => useCircuitStore.getState().addOutputNode(...args),
+  renameInputNode: (...args: Parameters<CircuitStore['renameInputNode']>) => useCircuitStore.getState().renameInputNode(...args),
+  renameOutputNode: (...args: Parameters<CircuitStore['renameOutputNode']>) => useCircuitStore.getState().renameOutputNode(...args),
   removeInputNode: (...args: Parameters<CircuitStore['removeInputNode']>) => useCircuitStore.getState().removeInputNode(...args),
   removeOutputNode: (...args: Parameters<CircuitStore['removeOutputNode']>) => useCircuitStore.getState().removeOutputNode(...args),
   updateInputNodeValue: (...args: Parameters<CircuitStore['updateInputNodeValue']>) => useCircuitStore.getState().updateInputNodeValue(...args),
