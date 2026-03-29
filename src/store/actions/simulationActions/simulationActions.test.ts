@@ -124,6 +124,16 @@ describe('simulationActions', () => {
       getState().clearCircuit()
       expect(getState().lastSimulationError).toBe(null)
     })
+
+    it('clears statusMessages', () => {
+      useCircuitStore.setState({
+        statusMessages: [
+          { id: 'msg-1', severity: 'info', text: 'Hello', timestamp: Date.now() },
+        ],
+      })
+      getState().clearCircuit()
+      expect(getState().statusMessages).toHaveLength(0)
+    })
   })
 
   describe('simulationTick', () => {

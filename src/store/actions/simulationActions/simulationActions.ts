@@ -41,6 +41,7 @@ export const createSimulationActions = (set: SetState): SimulationActions => ({
       state.junctionPreviewWireId = null
       state.wiringFrom = null
       state.lastSimulationError = null
+      state.statusMessages = []
     }, false, 'clearCircuit')
   },
 

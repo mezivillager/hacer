@@ -15,7 +15,7 @@
   color: #ffffff;
   cursor: pointer;
   border: none;
-  outline: none;
+  outline: transparent;
   font-family: inherit;
   font-size: inherit;
   text-align: left;
@@ -24,6 +24,14 @@
 
 .statusBar:focus-visible {
   box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.8) inset;
+  outline: 2px solid transparent;
+}
+
+@media (forced-colors: active) {
+  .statusBar:focus-visible {
+    outline: 2px solid ButtonText;
+    box-shadow: none;
+  }
 }
 
 .info {
