@@ -42,6 +42,13 @@ export interface OutputNode {
   width: number          // bus width (1 for single bit)
 }
 
+export interface StatusMessage {
+  id: string
+  severity: 'info' | 'warning' | 'error'
+  text: string
+  timestamp: number
+}
+
 // =============================================================================
 // Wire System (Unified)
 // =============================================================================
@@ -187,6 +194,9 @@ export interface CircuitState {
   junctionPlacementMode: boolean | null
   junctionPreviewPosition: Position | null
   junctionPreviewWireId: string | null
+
+  // Status messages for user-visible feedback channel
+  statusMessages: StatusMessage[]
 }
 
 // Action types for the Zustand store
@@ -305,5 +315,11 @@ export interface JunctionPlacementActions {
   updateJunctionPreviewPosition: (position: Position | null) => void
 }
 
+export interface StatusActions {
+  addStatus: (severity: StatusMessage['severity'], text: string) => StatusMessage
+  clearStatus: (id: string) => void
+  clearAllStatus: () => void
+}
+
 // Combined store type
-export interface CircuitStore extends CircuitState, GateActions, WireActions, SimulationActions, PlacementActions, NodePlacementActions, WiringActions, PinHelpers, ViewActions, NodeActions, JunctionActions, JunctionPlacementActions {}
+export interface CircuitStore extends CircuitState, GateActions, WireActions, SimulationActions, PlacementActions, NodePlacementActions, WiringActions, PinHelpers, ViewActions, NodeActions, JunctionActions, JunctionPlacementActions, StatusActions {}

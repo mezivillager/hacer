@@ -47,6 +47,7 @@ export function createMockStore(partial: Partial<CircuitState> = {}): CircuitSto
     junctionPlacementMode: null,
     junctionPreviewPosition: null,
     junctionPreviewWireId: null,
+    statusMessages: [],
   }
 
   // Merge provided partial state with defaults
@@ -120,6 +121,15 @@ export function createMockStore(partial: Partial<CircuitState> = {}): CircuitSto
     placeNode: () => {},
     selectNode: () => {},
     deselectNode: () => {},
+    // Status actions
+    addStatus: (severity, text) => ({
+      id: 'status-mock',
+      severity,
+      text,
+      timestamp: Date.now(),
+    }),
+    clearStatus: () => {},
+    clearAllStatus: () => {},
   } satisfies CircuitStore
 }
 
