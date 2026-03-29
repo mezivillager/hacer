@@ -19,7 +19,7 @@ test.describe('Status Bar @store @simulation', () => {
 
     await page.getByTestId('status-bar').click()
 
-    const count = await page.evaluate(() => window.__CIRCUIT_STORE__?.statusMessages?.length ?? 0)
+    const count = await page.evaluate((): number => window.__CIRCUIT_STORE__?.statusMessages?.length ?? 0)
     expect(count).toBe(0)
   })
 })
