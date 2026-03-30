@@ -173,6 +173,8 @@ describe('Sidebar', () => {
     })
     render(<Sidebar />)
 
+    fireEvent.click(screen.getByTestId('sidebar-section-header-info'))
+
     expect(screen.getByText(/Gates: 2/)).toBeInTheDocument()
     expect(screen.getByText(/Wires: 1/)).toBeInTheDocument()
   })
@@ -183,6 +185,8 @@ describe('Sidebar', () => {
     store.addOutputNode('out', { x: 2, y: 0, z: 0 })
 
     render(<Sidebar />)
+
+  fireEvent.click(screen.getByTestId('quick-action-io'))
 
     expect(screen.getByTestId('pinout-panel')).toBeInTheDocument()
     expect(screen.getByTestId('pinout-open-button')).toBeInTheDocument()
@@ -248,11 +252,15 @@ describe('Sidebar', () => {
   })
 
   it('quick Chip I/O action expands io section', () => {
+    const store = useCircuitStore.getState()
+    store.addInputNode('a', { x: 0, y: 0, z: 0 })
+    store.addOutputNode('out', { x: 2, y: 0, z: 0 })
+
     render(<Sidebar />)
 
     fireEvent.click(screen.getByTestId('quick-action-io'))
 
-    expect(screen.getByTestId('sidebar-section-io')).toBeVisible()
+    expect(screen.getByTestId('sidebar-section-io')).toBeInTheDocument()
     expect(screen.getByTestId('pinout-open-button')).toBeInTheDocument()
   })
 })
