@@ -1,15 +1,35 @@
-// Tests for NodeSelector component
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { render, fireEvent, screen } from '@testing-library/react'
 import { NodeSelector } from './NodeSelector'
+import { useCircuitStore } from '@/store/circuitStore'
 
-// Note: Full component testing with RTL is complex due to Zustand integration.
-// This test focuses on:
-// 1. Component exports correctly
-// Full interaction tests are covered via E2E tests.
+const setState = useCircuitStore.setState
 
 describe('NodeSelector', () => {
-  it('exports a valid component', () => {
-    expect(NodeSelector).toBeDefined()
-    expect(typeof NodeSelector).toBe('function')
+  beforeEach(() => {
+    setState({
+      nodePlacementMode: null,
+      junctionPlacementMode: false,
+      startNodePlacement: vi.fn(),
+      cancelNodePlacement: vi.fn(),
+      cancelPlacement: vi.fn(),
+      startJunctionPlacement: vi.fn(),
+      cancelJunctionPlacement: vi.fn(),
+    })
+  })
+
+  it('renders compact segmented selector', () => {
+    render(<NodeSelector compact />)
+    expect(screen.getByTestId('node-compact-selector')).toBeInTheDocument()
+  })
+
+  it('selects input mode from compact segmented control', () => {
+    const startNodePlacement = vi.fn()
+    setState({ nodePlacementMode: null, startNodePlacement })
+
+    render(<NodeSelector compact />)
+    fireEvent.click(screen.getByRole('radio', { name: 'Input' }))
+
+    expect(startNodePlacement).toHaveBeenCalledWith('INPUT')
   })
 })
