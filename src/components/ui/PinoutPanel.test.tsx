@@ -15,14 +15,13 @@ vi.mock('antd', () => ({
     </button>
   ),
   Divider: ({ children }: { children?: ReactNode }) => <div>{children}</div>,
-  Drawer: ({ open, children, onClose, ...props }: {
+  Drawer: ({ open, children, onClose }: {
     open?: boolean
     children: ReactNode
     onClose?: () => void
-    [key: string]: unknown
   }) => (open
     ? (
-      <div data-testid="pinout-drawer" {...props}>
+      <div data-testid="pinout-drawer">
         <button type="button" data-testid="pinout-close-button" onClick={onClose}>Close</button>
         {children}
       </div>

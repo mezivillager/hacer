@@ -1,9 +1,11 @@
-import { Button, Divider } from 'antd'
+import { useState } from 'react'
+import { Button, Divider, Drawer } from 'antd'
 import { circuitActions, useCircuitStore } from '@/store/circuitStore'
 
 export function PinoutPanel() {
   const inputNodes = useCircuitStore((state) => state.inputNodes)
   const outputNodes = useCircuitStore((state) => state.outputNodes)
+  const [drawerOpen, setDrawerOpen] = useState(false)
 
   const handleToggle = (nodeId: string, currentValue: number) => {
     const newValue = currentValue ? 0 : 1
@@ -22,53 +24,88 @@ export function PinoutPanel() {
     <div data-testid="pinout-panel" style={{ padding: '8px 0' }}>
       <Divider style={{ margin: '8px 0', fontSize: 12 }}>Chip I/O</Divider>
 
-      {inputNodes.length > 0 && (
-        <div data-testid="pinout-inputs">
-          <div style={{ fontWeight: 600, fontSize: 11, marginBottom: 4, color: '#888' }}>INPUTS</div>
-          {inputNodes.map((node) => (
-            <div
-              key={node.id}
-              data-testid={`pin-input-${node.name}`}
-              style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '2px 0' }}
-            >
-              <span style={{ fontSize: 12 }}>
-                {node.name}
-                {node.width > 1 ? `[${node.width}]` : ''}
-              </span>
-              <span
-                style={{ cursor: node.width === 1 ? 'pointer' : 'default', fontFamily: 'monospace', fontSize: 12 }}
-                onClick={() => node.width === 1 && handleToggle(node.id, node.value)}
-                data-testid={`pin-toggle-${node.name}`}
-              >
-                {String(Number(node.value))}
-              </span>
-            </div>
-          ))}
-        </div>
-      )}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
+        <span style={{ fontSize: 12, color: '#aaa' }}>
+          In {inputNodes.length} | Out {outputNodes.length}
+        </span>
+        <Button size="small" onClick={() => setDrawerOpen(true)} data-testid="pinout-open-button">
+          Open
+        </Button>
+      </div>
 
-      {outputNodes.length > 0 && (
-        <div data-testid="pinout-outputs">
-          <div style={{ fontWeight: 600, fontSize: 11, marginBottom: 4, marginTop: 8, color: '#888' }}>OUTPUTS</div>
-          {outputNodes.map((node) => (
-            <div
-              key={node.id}
-              data-testid={`pin-output-${node.name}`}
-              style={{ display: 'flex', justifyContent: 'space-between', padding: '2px 0' }}
-            >
-              <span style={{ fontSize: 12 }}>
-                {node.name}
-                {node.width > 1 ? `[${node.width}]` : ''}
-              </span>
-              <span style={{ fontFamily: 'monospace', fontSize: 12 }}>{String(Number(node.value))}</span>
-            </div>
-          ))}
-        </div>
-      )}
+      <Drawer
+        title="Chip I/O"
+        placement="right"
+        width={320}
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        data-testid="pinout-drawer"
+        destroyOnClose={false}
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', height: '100%', gap: 8 }}>
+          <div style={{ overflowY: 'auto', minHeight: 0 }}>
+            {inputNodes.length > 0 && (
+              <div data-testid="pinout-inputs">
+                <div style={{ fontWeight: 600, fontSize: 11, marginBottom: 4, color: '#888' }}>INPUTS</div>
+                {inputNodes.map((node) => (
+                  <div
+                    key={node.id}
+                    data-testid={`pin-input-${node.name}`}
+                    style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '2px 0' }}
+                  >
+                    <span style={{ fontSize: 12 }}>
+                      {node.name}
+                      {node.width > 1 ? `[${node.width}]` : ''}
+                    </span>
+                    <span
+                      role={node.width === 1 ? 'button' : undefined}
+                      tabIndex={node.width === 1 ? 0 : -1}
+                      style={{ cursor: node.width === 1 ? 'pointer' : 'default', fontFamily: 'monospace', fontSize: 12 }}
+                      onClick={() => node.width === 1 && handleToggle(node.id, node.value)}
+                      onKeyDown={(event) => {
+                        if (node.width !== 1) {
+                          return
+                        }
 
-      <Button size="small" onClick={handleEval} style={{ marginTop: 8, width: '100%' }} data-testid="eval-button">
-        Eval
-      </Button>
+                        if (event.key === 'Enter' || event.key === ' ') {
+                          event.preventDefault()
+                          handleToggle(node.id, node.value)
+                        }
+                      }}
+                      data-testid={`pin-toggle-${node.name}`}
+                    >
+                      {String(Number(node.value))}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {outputNodes.length > 0 && (
+              <div data-testid="pinout-outputs" style={{ marginTop: 8 }}>
+                <div style={{ fontWeight: 600, fontSize: 11, marginBottom: 4, color: '#888' }}>OUTPUTS</div>
+                {outputNodes.map((node) => (
+                  <div
+                    key={node.id}
+                    data-testid={`pin-output-${node.name}`}
+                    style={{ display: 'flex', justifyContent: 'space-between', padding: '2px 0' }}
+                  >
+                    <span style={{ fontSize: 12 }}>
+                      {node.name}
+                      {node.width > 1 ? `[${node.width}]` : ''}
+                    </span>
+                    <span style={{ fontFamily: 'monospace', fontSize: 12 }}>{String(Number(node.value))}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <Button size="small" onClick={handleEval} data-testid="eval-button">
+            Eval
+          </Button>
+        </div>
+      </Drawer>
     </div>
   )
 }
