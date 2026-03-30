@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.0](https://github.com/mezivillager/hacer/compare/v1.8.1...v1.9.0) (2026-03-30)
+
+### Features
+
+* **statusbar:** implement StatusBar component and related store state (P05-09) ([b0cbda9](https://github.com/mezivillager/hacer/commit/b0cbda98581447abc45cdbba412a6f0f9285da6b))
+
+### Bug Fixes
+
+* clear statusMessages in clearCircuit and improve focus styles for forced-colors mode ([aa04e64](https://github.com/mezivillager/hacer/commit/aa04e643c1b2a95baba5df881dc9f55cd6e49d5e))
+* **lint:** resolve unsafe return types and enforce strict typecheck script ([6d8d9dc](https://github.com/mezivillager/hacer/commit/6d8d9dc3d3324b2e20a5d04e7a6a652728f60caf))
+
+### Documentation
+
+* rebrand student/curriculum references to generic user language ([1a041d7](https://github.com/mezivillager/hacer/commit/1a041d7e2d150581778423e801d1b95c21ffc8cd))
+
+### Code Refactoring
+
+* **ui:** improve StatusBar a11y and extract inline styles to CSS module ([396db28](https://github.com/mezivillager/hacer/commit/396db28b2040a0fbc629cfef24982f7de46cdd7e))
+
 ## [1.8.1](https://github.com/mezivillager/hacer/compare/v1.8.0...v1.8.1) (2026-03-29)
 
 ### Bug Fixes
