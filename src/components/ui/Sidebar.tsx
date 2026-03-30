@@ -71,7 +71,7 @@ export function Sidebar() {
           <Text strong style={styles.sectionTitle}>
             Elementary Gates
           </Text>
-          <GateSelector />
+          <GateSelector compact />
           {isPlacing && (
             <Text style={styles.hint} className="placement-hint">
               Click on the grid to place the {placementMode} gate
@@ -83,7 +83,7 @@ export function Sidebar() {
           <Text strong style={styles.sectionTitle}>
             Circuit I/O
           </Text>
-          <NodeSelector />
+          <NodeSelector compact />
           {isPlacingNode && (
             <Text style={styles.hint} className="placement-hint">
               Click on the grid to place the node
@@ -110,7 +110,7 @@ export function Sidebar() {
       label: <span data-testid="sidebar-section-header-io">Chip I/O</span>,
       children: (
         <div data-testid="sidebar-section-io">
-          <PinoutPanel />
+          <PinoutPanel compact />
         </div>
       ),
     },

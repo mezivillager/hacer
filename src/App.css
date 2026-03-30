@@ -97,6 +97,17 @@
   );
 }
 
+.sidebar-quick-actions .ant-btn {
+  width: 100%;
+  min-height: 28px;
+  height: auto;
+  padding: 4px 6px;
+  font-size: 12px;
+  line-height: 1.15;
+  white-space: normal;
+  text-align: center;
+}
+
 .sidebar-scroll-region {
   min-height: 0;
   overflow-y: auto;
@@ -250,6 +261,20 @@
 
 .gate-icon.active .gate-icon-label {
   color: var(--color-primary);
+}
+
+.gate-selector-compact,
+.node-selector-compact {
+  width: 100%;
+}
+
+.gate-selector-compact .ant-segmented,
+.node-selector-compact .ant-segmented {
+  width: 100%;
+}
+
+.node-selector-compact {
+  display: flex;
 }
 
 .placement-hint {

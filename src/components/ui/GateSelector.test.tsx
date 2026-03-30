@@ -16,6 +16,29 @@ vi.mock('@/gates/icons', () => ({
 // Mock antd Tooltip to just render children
 vi.mock('antd', () => ({
   Tooltip: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  Segmented: ({
+    options,
+    value,
+    onChange,
+  }: {
+    options: Array<{ label: string; value: string }>
+    value?: string
+    onChange: (nextValue: string) => void
+  }) => (
+    <div role="radiogroup">
+      {options.map((option) => (
+        <button
+          key={option.value}
+          type="button"
+          role="radio"
+          aria-checked={value === option.value}
+          onClick={() => onChange(option.value)}
+        >
+          {option.label}
+        </button>
+      ))}
+    </div>
+  ),
 }))
 
 const setState = useCircuitStore.setState

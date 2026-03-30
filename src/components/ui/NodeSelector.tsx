@@ -1,4 +1,4 @@
-import { Tooltip, Button, Space } from 'antd'
+import { Tooltip, Button, Space, Segmented } from 'antd'
 import {
   LoginOutlined,
   LogoutOutlined,
@@ -61,7 +61,11 @@ function handleNodeSelect(
 /**
  * NodeSelector component - buttons to select circuit I/O node types for placement.
  */
-export function NodeSelector() {
+interface NodeSelectorProps {
+  compact?: boolean
+}
+
+export function NodeSelector({ compact = false }: NodeSelectorProps) {
   const nodePlacementMode = useCircuitStore((s) => s.nodePlacementMode)
   const junctionPlacementMode = useCircuitStore((s) => s.junctionPlacementMode)
   const startNodePlacement = useCircuitStore((s) => s.startNodePlacement)
@@ -77,6 +81,45 @@ export function NodeSelector() {
     } else {
       startJunctionPlacement()
     }
+  }
+
+  if (compact) {
+    return (
+      <Space
+        size="small"
+        align="center"
+        wrap={false}
+        data-testid="node-compact-selector"
+        className="node-selector-compact"
+      >
+        <Segmented
+          size="small"
+          value={nodePlacementMode ?? ''}
+          options={NODE_TYPES.map((config) => ({
+            label: config.label,
+            value: config.type,
+          }))}
+          onChange={(value) => {
+            handleNodeSelect(
+              value as NodePlacementType,
+              nodePlacementMode,
+              startNodePlacement,
+              cancelNodePlacement,
+              cancelPlacement
+            )
+          }}
+        />
+        <Button
+          size="small"
+          data-testid="node-option-JUNCTION"
+          type={junctionPlacementMode ? 'primary' : 'default'}
+          icon={<ShareAltOutlined />}
+          onClick={handleJunctionClick}
+        >
+          Junction
+        </Button>
+      </Space>
+    )
   }
 
   return (

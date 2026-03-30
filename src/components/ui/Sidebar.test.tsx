@@ -46,33 +46,29 @@ describe('Sidebar', () => {
     expect(screen.getByText('NOT')).toBeInTheDocument()
   })
 
-  it('calls startPlacement when a gate icon is clicked', () => {
+  it('calls startPlacement when a gate option is clicked', () => {
     render(<Sidebar />)
 
-    const nandIcon = screen.getByText('NAND').closest('.gate-icon')
-    fireEvent.click(nandIcon!)
+    fireEvent.click(screen.getByRole('radio', { name: 'NAND' }))
 
     // Verify state change instead of spy
     expect(actualGetState().placementMode).toBe('NAND')
   })
 
-  it('shows active state on gate icon when in placement mode', () => {
+  it('shows active state on gate option when in placement mode', () => {
     actualSetState({ placementMode: 'NAND' })
     render(<Sidebar />)
 
-    const nandIcon = screen.getByText('NAND').closest('.gate-icon')
-    expect(nandIcon).toHaveClass('active')
+    expect(screen.getByRole('radio', { name: 'NAND' })).toBeChecked()
   })
 
-  it('calls cancelPlacement when active gate icon is clicked again', () => {
+  it('keeps selected gate when clicking active gate option again', () => {
     actualSetState({ placementMode: 'NAND' })
     render(<Sidebar />)
 
-    const nandIcon = screen.getByText('NAND').closest('.gate-icon')
-    fireEvent.click(nandIcon!)
+    fireEvent.click(screen.getByRole('radio', { name: 'NAND' }))
 
-    // Verify state change instead of spy
-    expect(actualGetState().placementMode).toBe(null)
+    expect(actualGetState().placementMode).toBe('NAND')
   })
 
   it('renders simulation controls', () => {
@@ -197,18 +193,15 @@ describe('Sidebar', () => {
     render(<Sidebar />)
 
     // Click AND gate
-    const andIcon = screen.getByText('AND').closest('.gate-icon')
-    fireEvent.click(andIcon!)
+    fireEvent.click(screen.getByRole('radio', { name: 'AND' }))
     expect(actualGetState().placementMode).toBe('AND')
 
     // Click OR gate
-    const orIcon = screen.getByText('OR').closest('.gate-icon')
-    fireEvent.click(orIcon!)
+    fireEvent.click(screen.getByRole('radio', { name: 'OR' }))
     expect(actualGetState().placementMode).toBe('OR')
 
     // Click NOT gate
-    const notIcon = screen.getByText('NOT').closest('.gate-icon')
-    fireEvent.click(notIcon!)
+    fireEvent.click(screen.getByRole('radio', { name: 'NOT' }))
     expect(actualGetState().placementMode).toBe('NOT')
   })
 

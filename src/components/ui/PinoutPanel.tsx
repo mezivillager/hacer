@@ -2,7 +2,11 @@ import { useState } from 'react'
 import { Button, Divider, Drawer } from 'antd'
 import { circuitActions, useCircuitStore } from '@/store/circuitStore'
 
-export function PinoutPanel() {
+interface PinoutPanelProps {
+  compact?: boolean
+}
+
+export function PinoutPanel({ compact = false }: PinoutPanelProps) {
   const inputNodes = useCircuitStore((state) => state.inputNodes)
   const outputNodes = useCircuitStore((state) => state.outputNodes)
   const [drawerOpen, setDrawerOpen] = useState(false)
@@ -21,11 +25,11 @@ export function PinoutPanel() {
   }
 
   return (
-    <div data-testid="pinout-panel" style={{ padding: '8px 0' }}>
-      <Divider style={{ margin: '8px 0', fontSize: 12 }}>Chip I/O</Divider>
+    <div data-testid="pinout-panel" style={{ padding: compact ? '4px 0' : '8px 0' }}>
+      {!compact && <Divider style={{ margin: '8px 0', fontSize: 12 }}>Chip I/O</Divider>}
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
-        <span style={{ fontSize: 12, color: '#aaa' }}>
+        <span style={{ fontSize: compact ? 11 : 12, color: '#aaa' }}>
           In {inputNodes.length} | Out {outputNodes.length}
         </span>
         <Button size="small" onClick={() => setDrawerOpen(true)} data-testid="pinout-open-button">
@@ -36,7 +40,7 @@ export function PinoutPanel() {
       <Drawer
         title="Chip I/O"
         placement="right"
-        width={320}
+        size="default"
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
         data-testid="pinout-drawer"

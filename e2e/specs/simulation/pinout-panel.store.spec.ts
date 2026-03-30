@@ -19,6 +19,8 @@ test.describe('Pinout Panel @store @simulation', () => {
       return { id: input.id, before: input.value }
     })
 
+    await page.getByTestId('quick-action-io').click()
+    await expect(page.getByTestId('sidebar-section-io')).toBeVisible()
     await expect(page.getByTestId('pinout-panel')).toBeVisible()
     await page.getByTestId('pinout-open-button').click()
     await expect(page.getByTestId('pinout-drawer')).toBeVisible()
