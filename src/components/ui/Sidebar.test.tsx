@@ -229,4 +229,30 @@ describe('Sidebar', () => {
     expect(screen.getByTestId('node-rename-input')).toBeInTheDocument()
     expect(screen.getByTestId('node-rename-apply')).toBeInTheDocument()
   })
+
+  it('renders sticky quick actions strip', () => {
+    render(<Sidebar />)
+
+    expect(screen.getByTestId('sidebar-quick-actions')).toBeInTheDocument()
+    expect(screen.getByTestId('quick-action-run-pause')).toBeInTheDocument()
+    expect(screen.getByTestId('quick-action-eval')).toBeInTheDocument()
+    expect(screen.getByTestId('quick-action-io')).toBeInTheDocument()
+  })
+
+  it('defaults to one expanded accordion section', () => {
+    render(<Sidebar />)
+
+    expect(screen.getByTestId('sidebar-section-build')).toBeInTheDocument()
+    expect(screen.queryByTestId('sidebar-section-controls')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('sidebar-section-info')).not.toBeInTheDocument()
+  })
+
+  it('quick Chip I/O action expands io section', () => {
+    render(<Sidebar />)
+
+    fireEvent.click(screen.getByTestId('quick-action-io'))
+
+    expect(screen.getByTestId('sidebar-section-io')).toBeVisible()
+    expect(screen.getByTestId('pinout-open-button')).toBeInTheDocument()
+  })
 })
