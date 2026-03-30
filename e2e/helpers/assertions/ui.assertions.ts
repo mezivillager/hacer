@@ -8,21 +8,10 @@
 import { expect, Page } from '@playwright/test'
 import { UI_SELECTORS } from '../../selectors'
 
-async function ensureInfoSectionVisible(page: Page): Promise<void> {
-  const infoSection = page.getByTestId('sidebar-section-info')
-  if (await infoSection.count() > 0) {
-    return
-  }
-
-  await page.getByTestId('sidebar-section-header-info').click()
-  await expect(page.getByTestId('sidebar-section-info')).toBeVisible()
-}
-
 /**
  * Assert the UI displays the expected gate count
  */
 export async function expectGateCount(page: Page, count: number): Promise<void> {
-  await ensureInfoSectionVisible(page)
   await expect(page.locator(UI_SELECTORS.status.gateCount)).toContainText(`${count}`)
 }
 
@@ -30,7 +19,6 @@ export async function expectGateCount(page: Page, count: number): Promise<void> 
  * Assert the UI displays the expected wire count
  */
 export async function expectWireCount(page: Page, count: number): Promise<void> {
-  await ensureInfoSectionVisible(page)
   await expect(page.locator(UI_SELECTORS.status.wireCount)).toContainText(`${count}`)
 }
 
@@ -38,7 +26,6 @@ export async function expectWireCount(page: Page, count: number): Promise<void> 
  * Assert the simulation status is displayed as running
  */
 export async function expectSimulationRunning(page: Page): Promise<void> {
-  await ensureInfoSectionVisible(page)
   await expect(page.locator(UI_SELECTORS.status.running)).toBeVisible()
 }
 
@@ -46,7 +33,6 @@ export async function expectSimulationRunning(page: Page): Promise<void> {
  * Assert the simulation status is displayed as paused
  */
 export async function expectSimulationPaused(page: Page): Promise<void> {
-  await ensureInfoSectionVisible(page)
   await expect(page.locator(UI_SELECTORS.status.paused)).toBeVisible()
 }
 

@@ -46,43 +46,47 @@ describe('Sidebar', () => {
     expect(screen.getByText('NOT')).toBeInTheDocument()
   })
 
-  it('calls startPlacement when a gate option is clicked', () => {
+  it('calls startPlacement when a gate icon is clicked', () => {
     render(<Sidebar />)
 
-    fireEvent.click(screen.getByRole('radio', { name: 'NAND' }))
+    const nandIcon = screen.getByText('NAND').closest('.gate-icon')
+    fireEvent.click(nandIcon!)
 
     // Verify state change instead of spy
     expect(actualGetState().placementMode).toBe('NAND')
   })
 
-  it('shows active state on gate option when in placement mode', () => {
+  it('shows active state on gate icon when in placement mode', () => {
     actualSetState({ placementMode: 'NAND' })
     render(<Sidebar />)
 
-    expect(screen.getByRole('radio', { name: 'NAND' })).toBeChecked()
+    const nandIcon = screen.getByText('NAND').closest('.gate-icon')
+    expect(nandIcon).toHaveClass('active')
   })
 
-  it('keeps selected gate when clicking active gate option again', () => {
+  it('calls cancelPlacement when active gate icon is clicked again', () => {
     actualSetState({ placementMode: 'NAND' })
     render(<Sidebar />)
 
-    fireEvent.click(screen.getByRole('radio', { name: 'NAND' }))
+    const nandIcon = screen.getByText('NAND').closest('.gate-icon')
+    fireEvent.click(nandIcon!)
 
-    expect(actualGetState().placementMode).toBe('NAND')
+    // Verify state change instead of spy
+    expect(actualGetState().placementMode).toBe(null)
   })
 
   it('renders simulation controls', () => {
     render(<Sidebar />)
-    expect(screen.getByTestId('quick-action-run-pause')).toHaveTextContent(/^Run$/)
-    expect(screen.getByTestId('quick-action-delete')).toHaveTextContent(/^Delete$/)
-    expect(screen.getByTestId('quick-action-clear')).toHaveTextContent(/^Clear$/)
+    expect(screen.getByText('Run Simulation')).toBeInTheDocument()
+    expect(screen.getByText('Delete Selected')).toBeInTheDocument()
+    expect(screen.getByText('Clear All')).toBeInTheDocument()
   })
 
   it('calls toggleSimulation when Run Simulation button is clicked', () => {
     render(<Sidebar />)
     expect(actualGetState().simulationRunning).toBe(false)
 
-    const button = screen.getByTestId('quick-action-run-pause')
+    const button = screen.getByText('Run Simulation')
     fireEvent.click(button)
 
     // Verify state change instead of spy
@@ -93,13 +97,14 @@ describe('Sidebar', () => {
     actualSetState({ simulationRunning: true })
     render(<Sidebar />)
 
-    expect(screen.getByTestId('quick-action-run-pause')).toHaveTextContent(/^Pause$/)
+    expect(screen.getByText('Pause Simulation')).toBeInTheDocument()
+    expect(screen.queryByText('Run Simulation')).not.toBeInTheDocument()
   })
 
   it('disables Delete Selected when no gate is selected', () => {
     render(<Sidebar />)
 
-    const button = screen.getByTestId('quick-action-delete').closest('button')
+    const button = screen.getByText('Delete Selected').closest('button')
     expect(button).toHaveAttribute('disabled')
   })
 
@@ -107,7 +112,7 @@ describe('Sidebar', () => {
     actualSetState({ selectedGateId: 'gate-1' })
     render(<Sidebar />)
 
-    const button = screen.getByTestId('quick-action-delete').closest('button')
+    const button = screen.getByText('Delete Selected').closest('button')
     expect(button).not.toHaveAttribute('disabled')
   })
 
@@ -119,7 +124,7 @@ describe('Sidebar', () => {
     })
     render(<Sidebar />)
 
-    const button = screen.getByTestId('quick-action-delete')
+    const button = screen.getByText('Delete Selected')
     fireEvent.click(button)
 
     // Verify state change - gate should be removed
@@ -129,7 +134,7 @@ describe('Sidebar', () => {
   it('disables Clear All when no gates exist', () => {
     render(<Sidebar />)
 
-    const button = screen.getByTestId('quick-action-clear').closest('button')
+    const button = screen.getByText('Clear All').closest('button')
     expect(button).toHaveAttribute('disabled')
   })
 
@@ -139,7 +144,7 @@ describe('Sidebar', () => {
     })
     render(<Sidebar />)
 
-    const button = screen.getByTestId('quick-action-clear').closest('button')
+    const button = screen.getByText('Clear All').closest('button')
     expect(button).not.toHaveAttribute('disabled')
   })
 
@@ -150,7 +155,7 @@ describe('Sidebar', () => {
     })
     render(<Sidebar />)
 
-    const button = screen.getByTestId('quick-action-clear')
+    const button = screen.getByText('Clear All')
     fireEvent.click(button)
 
     // Verify state change
@@ -168,39 +173,38 @@ describe('Sidebar', () => {
     })
     render(<Sidebar />)
 
-    fireEvent.click(screen.getByTestId('sidebar-section-header-info'))
-
     expect(screen.getByText(/Gates: 2/)).toBeInTheDocument()
     expect(screen.getByText(/Wires: 1/)).toBeInTheDocument()
   })
 
-  it('renders pinout summary trigger when nodes exist', () => {
+  it('renders pinout panel inline when I/O nodes exist', () => {
     const store = useCircuitStore.getState()
     store.addInputNode('a', { x: 0, y: 0, z: 0 })
     store.addOutputNode('out', { x: 2, y: 0, z: 0 })
 
     render(<Sidebar />)
 
-  fireEvent.click(screen.getByTestId('quick-action-io'))
-
     expect(screen.getByTestId('pinout-panel')).toBeInTheDocument()
-    expect(screen.getByTestId('pinout-open-button')).toBeInTheDocument()
-    expect(screen.getByText(/In 1 \| Out 1/i)).toBeInTheDocument()
+    expect(screen.getByTestId('pin-input-a')).toBeInTheDocument()
+    expect(screen.getByTestId('pin-output-out')).toBeInTheDocument()
   })
 
   it('can switch between different gate types for placement', () => {
     render(<Sidebar />)
 
     // Click AND gate
-    fireEvent.click(screen.getByRole('radio', { name: 'AND' }))
+    const andIcon = screen.getByText('AND').closest('.gate-icon')
+    fireEvent.click(andIcon!)
     expect(actualGetState().placementMode).toBe('AND')
 
     // Click OR gate
-    fireEvent.click(screen.getByRole('radio', { name: 'OR' }))
+    const orIcon = screen.getByText('OR').closest('.gate-icon')
+    fireEvent.click(orIcon!)
     expect(actualGetState().placementMode).toBe('OR')
 
     // Click NOT gate
-    fireEvent.click(screen.getByRole('radio', { name: 'NOT' }))
+    const notIcon = screen.getByText('NOT').closest('.gate-icon')
+    fireEvent.click(notIcon!)
     expect(actualGetState().placementMode).toBe('NOT')
   })
 
@@ -224,35 +228,5 @@ describe('Sidebar', () => {
 
     expect(screen.getByTestId('node-rename-input')).toBeInTheDocument()
     expect(screen.getByTestId('node-rename-apply')).toBeInTheDocument()
-  })
-
-  it('renders sticky quick actions strip', () => {
-    render(<Sidebar />)
-
-    expect(screen.getByTestId('sidebar-quick-actions')).toBeInTheDocument()
-    expect(screen.getByTestId('quick-action-run-pause')).toBeInTheDocument()
-    expect(screen.getByTestId('quick-action-eval')).toBeInTheDocument()
-    expect(screen.getByTestId('quick-action-io')).toBeInTheDocument()
-  })
-
-  it('defaults to one expanded accordion section', () => {
-    render(<Sidebar />)
-
-    expect(screen.getByTestId('sidebar-section-build')).toBeInTheDocument()
-    expect(screen.queryByTestId('sidebar-section-controls')).not.toBeInTheDocument()
-    expect(screen.queryByTestId('sidebar-section-info')).not.toBeInTheDocument()
-  })
-
-  it('quick Chip I/O action expands io section', () => {
-    const store = useCircuitStore.getState()
-    store.addInputNode('a', { x: 0, y: 0, z: 0 })
-    store.addOutputNode('out', { x: 2, y: 0, z: 0 })
-
-    render(<Sidebar />)
-
-    fireEvent.click(screen.getByTestId('quick-action-io'))
-
-    expect(screen.getByTestId('sidebar-section-io')).toBeInTheDocument()
-    expect(screen.getByTestId('pinout-open-button')).toBeInTheDocument()
   })
 })

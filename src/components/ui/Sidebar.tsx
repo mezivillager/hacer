@@ -1,5 +1,4 @@
-import { useState } from 'react'
-import { Layout, Button, Space, Typography, Tooltip, Divider, Switch, Collapse } from 'antd'
+import { Layout, Button, Space, Typography, Tooltip, Divider, Switch } from 'antd'
 import {
   DeleteOutlined,
   PlayCircleOutlined,
@@ -8,7 +7,7 @@ import {
   SettingOutlined,
   GithubOutlined,
 } from '@ant-design/icons'
-import { circuitActions, useCircuitStore } from '@/store/circuitStore'
+import { useCircuitStore } from '@/store/circuitStore'
 import { colors } from '@/theme'
 import { GateSelector } from './GateSelector'
 import { NodeSelector } from './NodeSelector'
@@ -30,8 +29,6 @@ const styles = {
 }
 
 export function Sidebar() {
-  const [activeSection, setActiveSection] = useState<string>('build')
-
   // Use selectors for granular subscriptions
   const placementMode = useCircuitStore((s) => s.placementMode)
   const nodePlacementMode = useCircuitStore((s) => s.nodePlacementMode)
@@ -62,77 +59,6 @@ export function Sidebar() {
 
   const appVersion = useAppReleaseVersion()
 
-  const sectionItems = [
-    {
-      key: 'build',
-      label: <span data-testid="sidebar-section-header-build">Build</span>,
-      children: (
-        <div data-testid="sidebar-section-build">
-          <Text strong style={styles.sectionTitle}>
-            Elementary Gates
-          </Text>
-          <GateSelector compact />
-          {isPlacing && (
-            <Text style={styles.hint} className="placement-hint">
-              Click on the grid to place the {placementMode} gate
-            </Text>
-          )}
-
-          <Divider className="sider-divider" />
-
-          <Text strong style={styles.sectionTitle}>
-            Circuit I/O
-          </Text>
-          <NodeSelector compact />
-          {isPlacingNode && (
-            <Text style={styles.hint} className="placement-hint">
-              Click on the grid to place the node
-            </Text>
-          )}
-          <NodeRenameControl />
-        </div>
-      ),
-    },
-    {
-      key: 'controls',
-      label: <span data-testid="sidebar-section-header-controls">Controls</span>,
-      children: (
-        <div data-testid="sidebar-section-controls">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Text type="secondary">Show Axes</Text>
-            <Switch checked={showAxes} onChange={toggleAxes} />
-          </div>
-        </div>
-      ),
-    },
-    {
-      key: 'io',
-      label: <span data-testid="sidebar-section-header-io">Chip I/O</span>,
-      children: (
-        <div data-testid="sidebar-section-io">
-          <PinoutPanel compact />
-        </div>
-      ),
-    },
-    {
-      key: 'info',
-      label: <span data-testid="sidebar-section-header-info">Circuit Info</span>,
-      children: (
-        <div data-testid="sidebar-section-info">
-          <Space direction="vertical" size={2}>
-            <Text type="secondary">Gates: {gatesCount}</Text>
-            <Text type="secondary">Wires: {wiresCount}</Text>
-            <Text type="secondary">Inputs: {inputNodesCount}</Text>
-            <Text type="secondary">Outputs: {outputNodesCount}</Text>
-            <Text type="secondary">
-              Status: {simulationRunning ? '▶ Running' : '⏸ Paused'}
-            </Text>
-          </Space>
-        </div>
-      ),
-    },
-  ]
-
   return (
     <Sider width={260} className="app-sider">
       <div className="sider-content">
@@ -159,83 +85,102 @@ export function Sidebar() {
 
         <Divider className="sider-divider" />
 
-        <div className="sidebar-quick-actions" data-testid="sidebar-quick-actions">
-          <Tooltip title={simulationRunning ? 'Pause Simulation' : 'Run Simulation'}>
-            <Button
-              data-testid="quick-action-run-pause"
-              icon={simulationRunning ? <PauseCircleOutlined /> : <PlayCircleOutlined />}
-              onClick={toggleSimulation}
-              size="small"
-            >
-              {simulationRunning ? 'Pause' : 'Run'}
-            </Button>
-          </Tooltip>
-          <Tooltip title="Run one evaluation tick">
-            <Button
-              data-testid="quick-action-eval"
-              onClick={() => circuitActions.simulationTick()}
-              size="small"
-            >
-              Eval
-            </Button>
-          </Tooltip>
-          <Tooltip title="Open Chip I/O section">
-            <Button
-              data-testid="quick-action-io"
-              onClick={() => setActiveSection('io')}
-              size="small"
-            >
-              I/O
-            </Button>
-          </Tooltip>
-          <Tooltip title="Remove the selected gate, wire, or node">
-            <Button
-              icon={<DeleteOutlined />}
-              onClick={() => handleDeleteSelected(
-                selectedGateId,
-                selectedWireId,
-                selectedNodeId,
-                selectedNodeType,
-                removeGate,
-                removeWire,
-                removeInputNode,
-                removeOutputNode
-              )}
-              data-testid="quick-action-delete"
-              disabled={!hasSelection}
-              size="small"
-              danger
-            >
-              Delete
-            </Button>
-          </Tooltip>
-          <Tooltip title="Remove all gates and wires">
-            <Button
-              icon={<ClearOutlined />}
-              onClick={clearCircuit}
-              data-testid="quick-action-clear"
-              disabled={gatesCount === 0}
-              size="small"
-            >
-              Clear
-            </Button>
-          </Tooltip>
+        <div className="sider-section">
+          <Text strong style={styles.sectionTitle}>
+            Elementary Gates
+          </Text>
+          <GateSelector />
+          {isPlacing && (
+            <Text style={styles.hint} className="placement-hint">
+              Click on the grid to place the {placementMode} gate
+            </Text>
+          )}
         </div>
 
-        <div className="sidebar-scroll-region">
-          <Collapse
-            accordion
-            activeKey={activeSection}
-            onChange={(key) => {
-              if (Array.isArray(key)) {
-                setActiveSection(key[0] ?? 'build')
-                return
-              }
+        <Divider className="sider-divider" />
 
-              setActiveSection(key || 'build')
-            }}
-            items={sectionItems}
-          />
+        <div className="sider-section">
+          <Text strong style={styles.sectionTitle}>
+            Circuit I/O
+          </Text>
+          <NodeSelector />
+          {isPlacingNode && (
+            <Text style={styles.hint} className="placement-hint">
+              Click on the grid to place the node
+            </Text>
+          )}
+          <NodeRenameControl />
+        </div>
+
+        <Divider className="sider-divider" />
+
+        <div className="sider-section">
+          <Text strong style={styles.sectionTitle}>
+            Controls
+          </Text>
+          <Space direction="vertical" style={styles.fullWidth}>
+            <Button
+              icon={simulationRunning ? <PauseCircleOutlined /> : <PlayCircleOutlined />}
+              onClick={toggleSimulation}
+              block
+            >
+              {simulationRunning ? 'Pause Simulation' : 'Run Simulation'}
+            </Button>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Text type="secondary">Show Axes</Text>
+              <Switch checked={showAxes} onChange={toggleAxes} />
+            </div>
+            <Tooltip title="Remove the selected gate, wire, or node">
+              <Button
+                icon={<DeleteOutlined />}
+                onClick={() => handleDeleteSelected(
+                  selectedGateId,
+                  selectedWireId,
+                  selectedNodeId,
+                  selectedNodeType,
+                  removeGate,
+                  removeWire,
+                  removeInputNode,
+                  removeOutputNode
+                )}
+                disabled={!hasSelection}
+                block
+                danger
+              >
+                Delete Selected
+              </Button>
+            </Tooltip>
+            <Tooltip title="Remove all gates and wires">
+              <Button
+                icon={<ClearOutlined />}
+                onClick={clearCircuit}
+                disabled={gatesCount === 0}
+                block
+              >
+                Clear All
+              </Button>
+            </Tooltip>
+          </Space>
+        </div>
+
+        <PinoutPanel />
+
+        <Divider className="sider-divider" />
+
+        <div className="sider-section sider-section--grow">
+          <Text strong style={styles.sectionTitle}>
+            Circuit Info
+          </Text>
+          <Space direction="vertical" size={2}>
+            <Text type="secondary">Gates: {gatesCount}</Text>
+            <Text type="secondary">Wires: {wiresCount}</Text>
+            <Text type="secondary">Inputs: {inputNodesCount}</Text>
+            <Text type="secondary">Outputs: {outputNodesCount}</Text>
+            <Text type="secondary">
+              Status: {simulationRunning ? '▶ Running' : '⏸ Paused'}
+            </Text>
+          </Space>
+          <div className="sider-section-grow-spacer" aria-hidden />
         </div>
 
         <div className="sider-footer">

@@ -1,4 +1,4 @@
-import { Tooltip, Segmented } from 'antd'
+import { Tooltip } from 'antd'
 import { useCircuitStore } from '@/store/circuitStore'
 import type { GateType } from '@/store/types'
 import { getGateIcon } from '@/gates/icons'
@@ -19,33 +19,11 @@ const gateDescriptions: Record<GateType, string> = {
   XNOR: 'XNOR Gate - Output is HIGH when inputs are the same',
 }
 
-interface GateSelectorProps {
-  compact?: boolean
-}
-
-export function GateSelector({ compact = false }: GateSelectorProps) {
+export function GateSelector() {
   // Use selectors for granular subscriptions
   const placementMode = useCircuitStore((s) => s.placementMode)
   const startPlacement = useCircuitStore((s) => s.startPlacement)
   const cancelPlacement = useCircuitStore((s) => s.cancelPlacement)
-
-  if (compact) {
-    return (
-      <div className="gate-selector-compact" data-testid="gate-segmented">
-        <Segmented
-          size="small"
-          value={placementMode ?? ''}
-          options={ELEMENTARY_GATES.map((type) => ({
-            label: type,
-            value: type,
-          }))}
-          onChange={(value) => {
-            handleGateSelect(value as GateType, placementMode, startPlacement, cancelPlacement)
-          }}
-        />
-      </div>
-    )
-  }
 
   return (
     <div className="gate-selector-grid">

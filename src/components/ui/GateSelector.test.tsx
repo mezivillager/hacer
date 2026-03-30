@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, fireEvent, screen } from '@testing-library/react'
+import { render, fireEvent } from '@testing-library/react'
 import { GateSelector } from './GateSelector'
 import { useCircuitStore } from '@/store/circuitStore'
 
@@ -16,29 +16,6 @@ vi.mock('@/gates/icons', () => ({
 // Mock antd Tooltip to just render children
 vi.mock('antd', () => ({
   Tooltip: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-  Segmented: ({
-    options,
-    value,
-    onChange,
-  }: {
-    options: Array<{ label: string; value: string }>
-    value?: string
-    onChange: (nextValue: string) => void
-  }) => (
-    <div role="radiogroup">
-      {options.map((option) => (
-        <button
-          key={option.value}
-          type="button"
-          role="radio"
-          aria-checked={value === option.value}
-          onClick={() => onChange(option.value)}
-        >
-          {option.label}
-        </button>
-      ))}
-    </div>
-  ),
 }))
 
 const setState = useCircuitStore.setState
@@ -131,19 +108,5 @@ describe('GateSelector', () => {
     expect(container.querySelector('[data-gate-type="OR"]')).toBeInTheDocument()
     expect(container.querySelector('[data-gate-type="NOT"]')).toBeInTheDocument()
     expect(container.querySelector('[data-gate-type="XOR"]')).toBeInTheDocument()
-  })
-
-  it('renders segmented gate selector in compact mode', () => {
-    render(<GateSelector compact />)
-    expect(screen.getByTestId('gate-segmented')).toBeInTheDocument()
-  })
-
-  it('selects gate via segmented option click in compact mode', () => {
-    const startPlacement = vi.fn()
-    setState({ placementMode: null, startPlacement })
-    render(<GateSelector compact />)
-
-    fireEvent.click(screen.getByRole('radio', { name: 'NAND' }))
-    expect(startPlacement).toHaveBeenCalledWith('NAND')
   })
 })

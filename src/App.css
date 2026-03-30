@@ -82,56 +82,6 @@
   padding: 0;
 }
 
-.sidebar-quick-actions {
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 6px;
-  padding-bottom: 10px;
-  background: linear-gradient(
-    180deg,
-    var(--color-bg-sidebar-start) 0%,
-    var(--color-bg-sidebar-end) 100%
-  );
-}
-
-.sidebar-quick-actions .ant-btn {
-  width: 100%;
-  min-height: 28px;
-  height: auto;
-  padding: 4px 6px;
-  font-size: 12px;
-  line-height: 1.15;
-  white-space: normal;
-  text-align: center;
-}
-
-.sidebar-scroll-region {
-  min-height: 0;
-  overflow-y: auto;
-  flex: 1 1 auto;
-  padding-right: 2px;
-}
-
-.sidebar-scroll-region .ant-collapse {
-  background: transparent;
-  border: 1px solid var(--color-border);
-}
-
-.sidebar-scroll-region .ant-collapse-item {
-  border-bottom-color: var(--color-border) !important;
-}
-
-.sidebar-scroll-region .ant-collapse-header {
-  padding: 8px 10px !important;
-}
-
-.sidebar-scroll-region .ant-collapse-content-box {
-  padding: 8px 10px !important;
-}
-
 /* Fills space between controls and footer so Circuit Info + empty area grow */
 .sider-section--grow {
   flex: 1 1 auto;
@@ -261,20 +211,6 @@
 
 .gate-icon.active .gate-icon-label {
   color: var(--color-primary);
-}
-
-.gate-selector-compact,
-.node-selector-compact {
-  width: 100%;
-}
-
-.gate-selector-compact .ant-segmented,
-.node-selector-compact .ant-segmented {
-  width: 100%;
-}
-
-.node-selector-compact {
-  display: flex;
 }
 
 .placement-hint {
