@@ -12,6 +12,7 @@ import { colors } from '@/theme'
 import { GateSelector } from './GateSelector'
 import { NodeSelector } from './NodeSelector'
 import { NodeRenameControl } from './NodeRenameControl'
+import { PinoutPanel } from './PinoutPanel'
 import { handleDeleteSelected } from './handlers/uiHandlers'
 import { useAppReleaseVersion } from '@/hooks/useAppReleaseVersion'
 
@@ -177,6 +178,7 @@ export function Sidebar() {
               Status: {simulationRunning ? '▶ Running' : '⏸ Paused'}
             </Text>
           </Space>
+          <PinoutPanel />
           <div className="sider-section-grow-spacer" aria-hidden />
         </div>
 

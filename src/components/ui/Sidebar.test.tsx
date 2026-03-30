@@ -177,6 +177,15 @@ describe('Sidebar', () => {
     expect(screen.getByText(/Wires: 1/)).toBeInTheDocument()
   })
 
+  it('renders pinout panel when nodes exist', () => {
+    const store = useCircuitStore.getState()
+    store.addInputNode('a', { x: 0, y: 0, z: 0 })
+
+    render(<Sidebar />)
+
+    expect(screen.getByTestId('pinout-panel')).toBeInTheDocument()
+  })
+
   it('can switch between different gate types for placement', () => {
     render(<Sidebar />)
 
