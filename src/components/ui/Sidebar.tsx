@@ -160,28 +160,34 @@ export function Sidebar() {
         <Divider className="sider-divider" />
 
         <div className="sidebar-quick-actions" data-testid="sidebar-quick-actions">
-          <Button
-            data-testid="quick-action-run-pause"
-            icon={simulationRunning ? <PauseCircleOutlined /> : <PlayCircleOutlined />}
-            onClick={toggleSimulation}
-            size="small"
-          >
-            {simulationRunning ? 'Pause Simulation' : 'Run Simulation'}
-          </Button>
-          <Button
-            data-testid="quick-action-eval"
-            onClick={() => circuitActions.simulationTick()}
-            size="small"
-          >
-            Eval
-          </Button>
-          <Button
-            data-testid="quick-action-io"
-            onClick={() => setActiveSection('io')}
-            size="small"
-          >
-            Chip I/O
-          </Button>
+          <Tooltip title={simulationRunning ? 'Pause Simulation' : 'Run Simulation'}>
+            <Button
+              data-testid="quick-action-run-pause"
+              icon={simulationRunning ? <PauseCircleOutlined /> : <PlayCircleOutlined />}
+              onClick={toggleSimulation}
+              size="small"
+            >
+              {simulationRunning ? 'Pause' : 'Run'}
+            </Button>
+          </Tooltip>
+          <Tooltip title="Run one evaluation tick">
+            <Button
+              data-testid="quick-action-eval"
+              onClick={() => circuitActions.simulationTick()}
+              size="small"
+            >
+              Eval
+            </Button>
+          </Tooltip>
+          <Tooltip title="Open Chip I/O section">
+            <Button
+              data-testid="quick-action-io"
+              onClick={() => setActiveSection('io')}
+              size="small"
+            >
+              I/O
+            </Button>
+          </Tooltip>
           <Tooltip title="Remove the selected gate, wire, or node">
             <Button
               icon={<DeleteOutlined />}
@@ -200,7 +206,7 @@ export function Sidebar() {
               size="small"
               danger
             >
-              Delete Selected
+              Delete
             </Button>
           </Tooltip>
           <Tooltip title="Remove all gates and wires">
@@ -211,7 +217,7 @@ export function Sidebar() {
               disabled={gatesCount === 0}
               size="small"
             >
-              Clear All
+              Clear
             </Button>
           </Tooltip>
         </div>

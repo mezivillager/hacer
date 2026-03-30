@@ -13,10 +13,10 @@ export const UI_SELECTORS = {
     // Legacy button (may not exist anymore, but keeping for compatibility)
     addNandGate: 'button:has-text("Add NAND Gate")',
     cancelPlacement: 'button:has-text("Cancel Placement")',
-    runSimulation: 'button:has-text("Run Simulation")',
-    pauseSimulation: 'button:has-text("Pause Simulation")',
-    deleteSelected: 'button:has-text("Delete Selected")',
-    clearAll: 'button:has-text("Clear All")',
+    runSimulation: '[data-testid="quick-action-run-pause"]',
+    pauseSimulation: '[data-testid="quick-action-run-pause"]',
+    deleteSelected: '[data-testid="quick-action-delete"]',
+    clearAll: '[data-testid="quick-action-clear"]',
   },
 
   // Gate selector grid - use data-gate-type attribute for precise selection

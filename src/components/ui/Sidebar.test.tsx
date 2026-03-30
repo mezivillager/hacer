@@ -73,16 +73,16 @@ describe('Sidebar', () => {
 
   it('renders simulation controls', () => {
     render(<Sidebar />)
-    expect(screen.getByText('Run Simulation')).toBeInTheDocument()
-    expect(screen.getByText('Delete Selected')).toBeInTheDocument()
-    expect(screen.getByText('Clear All')).toBeInTheDocument()
+    expect(screen.getByTestId('quick-action-run-pause')).toHaveTextContent(/^Run$/)
+    expect(screen.getByTestId('quick-action-delete')).toHaveTextContent(/^Delete$/)
+    expect(screen.getByTestId('quick-action-clear')).toHaveTextContent(/^Clear$/)
   })
 
   it('calls toggleSimulation when Run Simulation button is clicked', () => {
     render(<Sidebar />)
     expect(actualGetState().simulationRunning).toBe(false)
 
-    const button = screen.getByText('Run Simulation')
+    const button = screen.getByTestId('quick-action-run-pause')
     fireEvent.click(button)
 
     // Verify state change instead of spy
@@ -93,14 +93,13 @@ describe('Sidebar', () => {
     actualSetState({ simulationRunning: true })
     render(<Sidebar />)
 
-    expect(screen.getByText('Pause Simulation')).toBeInTheDocument()
-    expect(screen.queryByText('Run Simulation')).not.toBeInTheDocument()
+    expect(screen.getByTestId('quick-action-run-pause')).toHaveTextContent(/^Pause$/)
   })
 
   it('disables Delete Selected when no gate is selected', () => {
     render(<Sidebar />)
 
-    const button = screen.getByText('Delete Selected').closest('button')
+    const button = screen.getByTestId('quick-action-delete').closest('button')
     expect(button).toHaveAttribute('disabled')
   })
 
@@ -108,7 +107,7 @@ describe('Sidebar', () => {
     actualSetState({ selectedGateId: 'gate-1' })
     render(<Sidebar />)
 
-    const button = screen.getByText('Delete Selected').closest('button')
+    const button = screen.getByTestId('quick-action-delete').closest('button')
     expect(button).not.toHaveAttribute('disabled')
   })
 
@@ -120,7 +119,7 @@ describe('Sidebar', () => {
     })
     render(<Sidebar />)
 
-    const button = screen.getByText('Delete Selected')
+    const button = screen.getByTestId('quick-action-delete')
     fireEvent.click(button)
 
     // Verify state change - gate should be removed
@@ -130,7 +129,7 @@ describe('Sidebar', () => {
   it('disables Clear All when no gates exist', () => {
     render(<Sidebar />)
 
-    const button = screen.getByText('Clear All').closest('button')
+    const button = screen.getByTestId('quick-action-clear').closest('button')
     expect(button).toHaveAttribute('disabled')
   })
 
@@ -140,7 +139,7 @@ describe('Sidebar', () => {
     })
     render(<Sidebar />)
 
-    const button = screen.getByText('Clear All').closest('button')
+    const button = screen.getByTestId('quick-action-clear').closest('button')
     expect(button).not.toHaveAttribute('disabled')
   })
 
@@ -151,7 +150,7 @@ describe('Sidebar', () => {
     })
     render(<Sidebar />)
 
-    const button = screen.getByText('Clear All')
+    const button = screen.getByTestId('quick-action-clear')
     fireEvent.click(button)
 
     // Verify state change
