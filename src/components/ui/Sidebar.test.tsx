@@ -177,13 +177,16 @@ describe('Sidebar', () => {
     expect(screen.getByText(/Wires: 1/)).toBeInTheDocument()
   })
 
-  it('renders pinout panel when nodes exist', () => {
+  it('renders pinout summary trigger when nodes exist', () => {
     const store = useCircuitStore.getState()
     store.addInputNode('a', { x: 0, y: 0, z: 0 })
+    store.addOutputNode('out', { x: 2, y: 0, z: 0 })
 
     render(<Sidebar />)
 
     expect(screen.getByTestId('pinout-panel')).toBeInTheDocument()
+    expect(screen.getByTestId('pinout-open-button')).toBeInTheDocument()
+    expect(screen.getByText(/In 1 \| Out 1/i)).toBeInTheDocument()
   })
 
   it('can switch between different gate types for placement', () => {
