@@ -60,7 +60,7 @@
     "@radix-ui/react-tooltip": "1.2.8",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.4.2",
-    "@types/three": "^0.181.0",
+    "@types/three": "^0.183.1",
     "antd": "^6.0.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
