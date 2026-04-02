@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { message } from 'antd'
+import { notify } from '@lib/toast'
 import { Button, Input } from './shadcn'
 import { circuitActions, useCircuitStore } from '@/store/circuitStore'
 import { validateNodeName, type NodeNameValidationReason } from '@/utils/nodeNameValidation'
@@ -42,7 +42,7 @@ export function NodeRenameControl() {
   const handleApply = () => {
     const validation = validateNodeName(draftName, existingNames, selectedNode.name)
     if (!validation.ok) {
-      message.error(reasonToMessage(validation.reason))
+      notify.error(reasonToMessage(validation.reason))
       return
     }
 

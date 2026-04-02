@@ -1,14 +1,14 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { message } from 'antd'
+import { notify } from '@lib/toast'
 import { useCircuitStore } from '../../circuitStore'
 import { GRID_SIZE } from '@/utils/grid'
 import type { WireSegment } from '@/utils/wiringScheme/types'
 import { calculateWirePathFromConnection } from '@/utils/wiringScheme'
 import { collectWireSegments } from '@/utils/wiringScheme/segments'
 
-// Mock Ant Design message
-vi.mock('antd', () => ({
-  message: {
+// Mock toast notifications
+vi.mock('@lib/toast', () => ({
+  notify: {
     error: vi.fn(),
     warning: vi.fn(),
   },
@@ -642,7 +642,7 @@ describe('gateActions', () => {
       expect(getState().wires).toHaveLength(0)
 
       // Error message should be shown
-      expect(message.error).toHaveBeenCalledWith('Unable to recalculate wire path. Wire has been disconnected.')
+      expect(notify.error).toHaveBeenCalledWith('Unable to recalculate wire path. Wire has been disconnected.')
 
       // Restore original function
       useCircuitStore.setState((state) => {
@@ -681,7 +681,7 @@ describe('gateActions', () => {
       expect(getState().wires).toHaveLength(0)
 
       // Error message should be shown
-      expect(message.error).toHaveBeenCalledWith('Failed to recalculate wire. Wire has been disconnected.')
+      expect(notify.error).toHaveBeenCalledWith('Failed to recalculate wire. Wire has been disconnected.')
 
       // Error should be logged
       expect(consoleErrorSpy).toHaveBeenCalled()
@@ -736,7 +736,7 @@ describe('gateActions', () => {
       expect(remainingWires[0].id).toBe(wire2.id)
 
       // Error message should be shown (once for wire1)
-      expect(message.error).toHaveBeenCalledWith('Unable to recalculate wire path. Wire has been disconnected.')
+      expect(notify.error).toHaveBeenCalledWith('Unable to recalculate wire path. Wire has been disconnected.')
 
       // Restore original function
       useCircuitStore.setState((state) => {
