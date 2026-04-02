@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.11.0](https://github.com/mezivillager/hacer/compare/v1.10.0...v1.11.0) (2026-04-02)
+
+### Features
+
+* add Tailwind CSS v4 foundation, OKLch tokens, and cn() utility (Phase 1) ([5832753](https://github.com/mezivillager/hacer/commit/583275376f9aadd070a7ca6cc018fc96e874e848))
+
+### Bug Fixes
+
+* address PR feedback on Tailwind dependency scope and Phase 1 global styles ([a7e26ba](https://github.com/mezivillager/hacer/commit/a7e26ba66e6341a06b37477baab09b1fd861fd67))
+
+### Documentation
+
+* add clarifying comment to [@theme](https://github.com/theme) inline block in globals.css ([77daa16](https://github.com/mezivillager/hacer/commit/77daa1689c4653ffaf43676c96278cea968c0c10))
+
 ## [1.10.0](https://github.com/mezivillager/hacer/compare/v1.9.0...v1.10.0) (2026-04-02)
 
 ### Features
