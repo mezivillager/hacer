@@ -13,6 +13,7 @@ export default defineConfig([
     'playwright-report',
     'coverage',
     '.stryker-tmp',
+    'design-system/**',
     '.cursor/**', // Vendored ECC / IDE harness — not application source
   ]),
   {
