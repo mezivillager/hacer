@@ -1,6 +1,6 @@
-import { Layout } from 'antd'
 import { ThemeProvider } from './theme'
-import { Sidebar } from './components/ui/Sidebar'
+import { TooltipProvider } from './components/ui/shadcn'
+import { CompactToolbar } from './components/ui/CompactToolbar'
 import { CanvasArea } from './components/canvas/CanvasArea'
 import { DemoOverlay } from './components/ui/DemoOverlay'
 import { StatusBar } from './components/ui/StatusBar'
@@ -12,12 +12,16 @@ function AppContent() {
   useKeyboardShortcuts()
 
   return (
-    <Layout className="app-layout">
-      <Sidebar />
-      <CanvasArea />
-      <DemoOverlay />
-      <StatusBar />
-    </Layout>
+    <TooltipProvider>
+      <div className="flex h-screen w-full bg-background overflow-hidden">
+        <CompactToolbar />
+        <div className="flex-1 relative">
+          <CanvasArea />
+          <DemoOverlay />
+          <StatusBar />
+        </div>
+      </div>
+    </TooltipProvider>
   )
 }
 
