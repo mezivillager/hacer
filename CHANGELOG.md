@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.14.0](https://github.com/mezivillager/hacer/compare/v1.13.0...v1.14.0) (2026-04-02)
+
+### Features
+
+* Phase 4 notification system swap - replace antd message with Sonner toasts ([1d4cb7f](https://github.com/mezivillager/hacer/commit/1d4cb7f7301d27ad132eb42a805723e6e3f1f72f))
+
+### Bug Fixes
+
+* import CSSProperties directly from react in Toaster component ([daae0a8](https://github.com/mezivillager/hacer/commit/daae0a8b6ef0290da6fb2304cf4c214961d6db79))
+
 ## [1.13.0](https://github.com/mezivillager/hacer/compare/v1.12.0...v1.13.0) (2026-04-02)
 
 ### Features
