@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.13.0](https://github.com/mezivillager/hacer/compare/v1.12.0...v1.13.0) (2026-04-02)
+
+### Features
+
+* migrate leaf components from Ant Design to shadcn/ui (Phase 3) ([02bbf1b](https://github.com/mezivillager/hacer/commit/02bbf1bf26fb17ffb5e309613bf812ce14d7f3ff))
+
+### Bug Fixes
+
+* remove redundant TooltipProvider wrapping in GateSelector and NodeSelector ([ce33de7](https://github.com/mezivillager/hacer/commit/ce33de71c438553d0cd0c15ff26ca4b842d8ab65))
+
 ## [1.12.0](https://github.com/mezivillager/hacer/compare/v1.11.0...v1.12.0) (2026-04-02)
 
 ### Features
