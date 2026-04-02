@@ -80,6 +80,9 @@
   --canvas-grid: oklch(0.22 0.02 240);
 }
 
+/* @theme inline maps CSS custom properties to Tailwind utility classes.
+   The :root/.dark blocks define the raw values; this block makes them
+   available as e.g. bg-primary, text-foreground, etc. in Tailwind. */
 @theme inline {
   --font-sans: 'Geist', 'Geist Fallback', -apple-system, BlinkMacSystemFont,
     'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
