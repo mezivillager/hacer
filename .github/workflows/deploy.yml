@@ -9,8 +9,8 @@ permissions:
   contents: write
 
 concurrency:
-  group: pages-deploy
-  cancel-in-progress: true
+  group: gh-pages
+  cancel-in-progress: false
 
 jobs:
   deploy:
@@ -30,6 +30,11 @@ jobs:
         run: pnpm run build
         env:
           BASE_PATH: /hacer/
+
+      - name: Add GitHub Pages files
+        run: |
+          touch dist/.nojekyll
+          cp dist/index.html dist/404.html
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4

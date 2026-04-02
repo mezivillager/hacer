@@ -8,14 +8,15 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  issues: write
 
 concurrency:
-  group: pr-preview-${{ github.event.pull_request.number }}
-  cancel-in-progress: true
+  group: gh-pages
+  cancel-in-progress: false
 
 jobs:
   deploy-preview:
-    if: github.event.action != 'closed'
+    if: github.event.action != 'closed' && github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -32,6 +33,11 @@ jobs:
         run: pnpm run build
         env:
           BASE_PATH: /${{ github.event.repository.name }}/pr-preview/pr-${{ github.event.pull_request.number }}/
+
+      - name: Add GitHub Pages files
+        run: |
+          touch dist/.nojekyll
+          cp dist/index.html dist/404.html
 
       - name: Deploy preview
         uses: JamesIves/github-pages-deploy-action@v4
@@ -70,10 +76,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+        id: checkout-gh-pages
+        continue-on-error: true
         with:
           ref: gh-pages
 
+      - name: Skip cleanup (no gh-pages branch)
+        if: steps.checkout-gh-pages.outcome != 'success'
+        run: echo "gh-pages branch does not exist yet, skipping cleanup."
+
       - name: Remove preview directory
+        if: steps.checkout-gh-pages.outcome == 'success'
         run: |
           if [ -d "pr-preview/pr-${{ github.event.pull_request.number }}" ]; then
             git config user.name "github-actions[bot]"
