@@ -1,5 +1,5 @@
 import { ArrowRightToLine, ArrowLeftFromLine, GitBranch } from 'lucide-react'
-import { Button, Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from './shadcn'
+import { Button, Tooltip, TooltipTrigger, TooltipContent } from './shadcn'
 import { useCircuitStore } from '@/store/circuitStore'
 import type { NodePlacementType } from '@/store/types'
 
@@ -75,47 +75,45 @@ export function NodeSelector() {
   }
 
   return (
-    <TooltipProvider>
-      <div className="node-selector flex flex-wrap gap-2">
-        {NODE_TYPES.map((config) => {
-          const isActive = nodePlacementMode === config.type
+    <div className="node-selector flex flex-wrap gap-2">
+      {NODE_TYPES.map((config) => {
+        const isActive = nodePlacementMode === config.type
 
-          return (
-            <Tooltip key={config.type}>
-              <TooltipTrigger asChild>
-                <Button
-                  variant={isActive ? 'default' : 'outline'}
-                  onClick={() =>
-                    handleNodeSelect(
-                      config.type,
-                      nodePlacementMode,
-                      startNodePlacement,
-                      cancelNodePlacement,
-                      cancelPlacement
-                    )
-                  }
-                >
-                  {config.icon}
-                  {config.label}
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="top">{config.description}</TooltipContent>
-            </Tooltip>
-          )
-        })}
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant={junctionPlacementMode ? 'default' : 'outline'}
-              onClick={handleJunctionClick}
-            >
-              <GitBranch className="size-4" />
-              Junction
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent side="top">Place junction on wire for branching</TooltipContent>
-        </Tooltip>
-      </div>
-    </TooltipProvider>
+        return (
+          <Tooltip key={config.type}>
+            <TooltipTrigger asChild>
+              <Button
+                variant={isActive ? 'default' : 'outline'}
+                onClick={() =>
+                  handleNodeSelect(
+                    config.type,
+                    nodePlacementMode,
+                    startNodePlacement,
+                    cancelNodePlacement,
+                    cancelPlacement
+                  )
+                }
+              >
+                {config.icon}
+                {config.label}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="top">{config.description}</TooltipContent>
+          </Tooltip>
+        )
+      })}
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant={junctionPlacementMode ? 'default' : 'outline'}
+            onClick={handleJunctionClick}
+          >
+            <GitBranch className="size-4" />
+            Junction
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent side="top">Place junction on wire for branching</TooltipContent>
+      </Tooltip>
+    </div>
   )
 }
