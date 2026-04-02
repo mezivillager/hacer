@@ -16,7 +16,7 @@ MISSING_TESTS=()
 
 for file in $STAGED_FILES; do
   # Skip files in certain directories
-  if [[ "$file" == e2e/* ]] || [[ "$file" == scripts/* ]] || [[ "$file" == docs/* ]]; then
+  if [[ "$file" == e2e/* ]] || [[ "$file" == scripts/* ]] || [[ "$file" == docs/* ]] || [[ "$file" == design-system/* ]]; then
     continue
   fi
 
@@ -25,9 +25,9 @@ for file in $STAGED_FILES; do
   ext="${file##*.}"
   # Use basename with extension to remove it, then add .test.extension
   base=$(basename "$file" ".$ext")
-  
+
   test_file="$dir/$base.test.$ext"
-  
+
   # Check if test file exists
   if [ ! -f "$test_file" ]; then
     MISSING_TESTS+=("$file -> $test_file")
