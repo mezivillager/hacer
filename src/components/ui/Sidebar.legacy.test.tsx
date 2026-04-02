@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
-import { Sidebar } from './Sidebar'
+import { Sidebar } from './Sidebar.legacy'
 import { useCircuitStore } from '@/store/circuitStore'
 
 // Get a reference to the actual store's setState and getState for resetting and checking
