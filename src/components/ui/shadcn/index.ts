@@ -51,3 +51,4 @@ export {
 export { Tabs, TabsList, TabsTrigger, TabsContent } from './tabs'
 export { Kbd, KbdGroup } from './kbd'
 export { Spinner } from './spinner'
+export { Toaster } from './sonner'
