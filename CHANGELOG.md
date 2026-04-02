@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.0](https://github.com/mezivillager/hacer/compare/v1.9.0...v1.10.0) (2026-04-02)
+
+### Features
+
+* implement PR deploy preview with GitHub Pages ([f1f3cec](https://github.com/mezivillager/hacer/commit/f1f3cec9e0c73dbd384e6ec85bc2e439f381697f))
+
+### Bug Fixes
+
+* address PR review feedback - permissions, concurrency, fork guard, cleanup resilience ([c6c314d](https://github.com/mezivillager/hacer/commit/c6c314db261b0c58a7ca830d89c9bea5aa785630))
+
+### Documentation
+
+* add phased migration plan for design system adoption (Ant Design → shadcn/ui + Tailwind v4) ([eda2d87](https://github.com/mezivillager/hacer/commit/eda2d87b91b0a04219c5c6355d78615927445e8a))
+* design system added ([ead6d83](https://github.com/mezivillager/hacer/commit/ead6d830a7f273cce2153282b8cdcb13593bee69))
+
 ## [1.9.0](https://github.com/mezivillager/hacer/compare/v1.8.1...v1.9.0) (2026-03-30)
 
 ### Features
