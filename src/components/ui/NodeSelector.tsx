@@ -1,12 +1,7 @@
-import { Tooltip, Button, Space } from 'antd'
-import {
-  LoginOutlined,
-  LogoutOutlined,
-  ShareAltOutlined,
-} from '@ant-design/icons'
+import { ArrowRightToLine, ArrowLeftFromLine, GitBranch } from 'lucide-react'
+import { Button, Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from './shadcn'
 import { useCircuitStore } from '@/store/circuitStore'
 import type { NodePlacementType } from '@/store/types'
-import { colors } from '@/theme'
 
 /**
  * Node type configuration for the selector.
@@ -26,13 +21,13 @@ const NODE_TYPES: NodeTypeConfig[] = [
     type: 'INPUT',
     label: 'Input',
     description: 'Circuit input - click to select, Shift+click to toggle signal value',
-    icon: <LoginOutlined />,
+    icon: <ArrowRightToLine className="size-4" />,
   },
   {
     type: 'OUTPUT',
     label: 'Output',
     description: 'Circuit output - displays computed result',
-    icon: <LogoutOutlined />,
+    icon: <ArrowLeftFromLine className="size-4" />,
   },
 ]
 
@@ -80,45 +75,47 @@ export function NodeSelector() {
   }
 
   return (
-    <Space wrap size="small" className="node-selector">
-      {NODE_TYPES.map((config) => {
-        const isActive = nodePlacementMode === config.type
+    <TooltipProvider>
+      <div className="node-selector flex flex-wrap gap-2">
+        {NODE_TYPES.map((config) => {
+          const isActive = nodePlacementMode === config.type
 
-        return (
-          <Tooltip key={config.type} title={config.description} placement="top">
+          return (
+            <Tooltip key={config.type}>
+              <TooltipTrigger asChild>
+                <Button
+                  variant={isActive ? 'default' : 'outline'}
+                  onClick={() =>
+                    handleNodeSelect(
+                      config.type,
+                      nodePlacementMode,
+                      startNodePlacement,
+                      cancelNodePlacement,
+                      cancelPlacement
+                    )
+                  }
+                >
+                  {config.icon}
+                  {config.label}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="top">{config.description}</TooltipContent>
+            </Tooltip>
+          )
+        })}
+        <Tooltip>
+          <TooltipTrigger asChild>
             <Button
-              type={isActive ? 'primary' : 'default'}
-              icon={config.icon}
-              onClick={() =>
-                handleNodeSelect(
-                  config.type,
-                  nodePlacementMode,
-                  startNodePlacement,
-                  cancelNodePlacement,
-                  cancelPlacement
-                )
-              }
-              style={{
-                borderColor: isActive ? colors.primary : undefined,
-              }}
+              variant={junctionPlacementMode ? 'default' : 'outline'}
+              onClick={handleJunctionClick}
             >
-              {config.label}
+              <GitBranch className="size-4" />
+              Junction
             </Button>
-          </Tooltip>
-        )
-      })}
-      <Tooltip title="Place junction on wire for branching" placement="top">
-        <Button
-          type={junctionPlacementMode ? 'primary' : 'default'}
-          icon={<ShareAltOutlined />}
-          onClick={handleJunctionClick}
-          style={{
-            borderColor: junctionPlacementMode ? colors.primary : undefined,
-          }}
-        >
-          Junction
-        </Button>
-      </Tooltip>
-    </Space>
+          </TooltipTrigger>
+          <TooltipContent side="top">Place junction on wire for branching</TooltipContent>
+        </Tooltip>
+      </div>
+    </TooltipProvider>
   )
 }
