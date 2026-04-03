@@ -69,6 +69,17 @@ export const colors = {
   },
 } as const
 
+// Alias for 3D component imports (Three.js materials need direct hex values)
+export const threeColors = {
+  gate: colors.gate,
+  pin: colors.pin,
+  wire: colors.wire,
+  grid: colors.grid,
+  overlay: colors.overlay,
+  background: colors.background,
+  text: colors.text,
+} as const
+
 // Semantic tokens for common use cases
 export const semanticColors = {
   success: colors.pin.active,
@@ -90,6 +101,16 @@ export const materials = {
     metalness: 0.9,
     roughness: 0.1,
   },
+} as const
+
+// UI tokens — reference CSS variables (resolved by browser)
+// These are used only for TypeScript references; actual colors come from globals.css
+export const uiTokens = {
+  primary: 'var(--primary)',
+  background: 'var(--background)',
+  foreground: 'var(--foreground)',
+  border: 'var(--border)',
+  destructive: 'var(--destructive)',
 } as const
 
 // Type exports for type safety

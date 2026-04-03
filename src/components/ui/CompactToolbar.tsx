@@ -10,6 +10,8 @@ import {
   Grid3X3,
   ChevronDown,
   Moon,
+  Sun,
+  Monitor,
   ArrowRightToLine,
   ArrowLeftFromLine,
   GitBranch,
@@ -32,6 +34,8 @@ import { getGateIcon } from '@/gates/icons'
 import { handleDeleteSelected, handleGateSelect } from './handlers/uiHandlers'
 import { NodeRenameControl } from './NodeRenameControl'
 import { useAppReleaseVersion } from '@/hooks/useAppReleaseVersion'
+import { useThemeMode } from '@/theme'
+import type { Theme } from '@/theme'
 
 const ELEMENTARY_GATES: GateType[] = ['NAND', 'AND', 'OR', 'NOT', 'XOR']
 
@@ -41,9 +45,16 @@ const ioElements: { id: NodePlacementType | 'JUNCTION'; name: string; icon: type
   { id: 'JUNCTION', name: 'Junction', icon: GitBranch },
 ]
 
+const themeOptions: { value: Theme; icon: typeof Moon; label: string }[] = [
+  { value: 'dark', icon: Moon, label: 'Dark' },
+  { value: 'light', icon: Sun, label: 'Light' },
+  { value: 'system', icon: Monitor, label: 'System' },
+]
+
 export function CompactToolbar() {
   const [gatesOpen, setGatesOpen] = useState(false)
   const [ioOpen, setIoOpen] = useState(false)
+  const { theme, setTheme, resolvedTheme } = useThemeMode()
 
   // Zustand selectors
   const showAxes = useCircuitStore((s) => s.showAxes)
@@ -342,15 +353,40 @@ export function CompactToolbar() {
 
       {/* Bottom Actions */}
       <div className="flex flex-col items-center py-2 gap-1 border-t border-sidebar-border">
-        {/* Theme indicator (dark-only for now; full theme switching in Phase 7) */}
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button variant="ghost" size="icon" className="w-9 h-9" aria-label="Theme" disabled>
-              <Moon className="w-4 h-4" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent side="right">Theme (Dark)</TooltipContent>
-        </Tooltip>
+        {/* Theme Toggle */}
+        <Popover>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <PopoverTrigger asChild>
+                <Button variant="ghost" size="icon" className="w-9 h-9" aria-label="Theme" data-testid="theme-toggle">
+                  {resolvedTheme === 'dark' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+                </Button>
+              </PopoverTrigger>
+            </TooltipTrigger>
+            <TooltipContent side="right">Theme ({theme})</TooltipContent>
+          </Tooltip>
+          <PopoverContent side="right" align="end" className="w-36 p-2" data-testid="theme-popover">
+            <div className="text-xs font-medium text-muted-foreground mb-2 px-2">Theme</div>
+            <div className="flex flex-col gap-1">
+              {themeOptions.map((option) => {
+                const Icon = option.icon
+                return (
+                  <Button
+                    key={option.value}
+                    variant={theme === option.value ? 'secondary' : 'ghost'}
+                    size="sm"
+                    className="justify-start gap-2 h-8"
+                    data-testid={`theme-option-${option.value}`}
+                    onClick={() => setTheme(option.value)}
+                  >
+                    <Icon className="w-4 h-4" />
+                    <span className="text-xs">{option.label}</span>
+                  </Button>
+                )
+              })}
+            </div>
+          </PopoverContent>
+        </Popover>
 
         <Tooltip>
           <TooltipTrigger asChild>
