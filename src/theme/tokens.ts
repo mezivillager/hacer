@@ -104,7 +104,11 @@ export const materials = {
 } as const
 
 // UI tokens — reference CSS variables (resolved by browser)
-// These are used only for TypeScript references; actual colors come from globals.css
+// Usage guide:
+//   - colors / threeColors: use for Three.js 3D materials that need direct hex values
+//   - Tailwind classes (bg-primary, text-foreground, etc.): use for all UI components
+//   - uiTokens: use ONLY when programmatically setting CSS properties outside of Tailwind
+//     (e.g. inline styles or dynamic style objects that reference design tokens)
 export const uiTokens = {
   primary: 'var(--primary)',
   background: 'var(--background)',

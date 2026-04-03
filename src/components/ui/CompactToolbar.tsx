@@ -54,7 +54,7 @@ const themeOptions: { value: Theme; icon: typeof Moon; label: string }[] = [
 export function CompactToolbar() {
   const [gatesOpen, setGatesOpen] = useState(false)
   const [ioOpen, setIoOpen] = useState(false)
-  const { theme, setTheme, resolvedTheme } = useThemeMode()
+  const { theme, setTheme } = useThemeMode()
 
   // Zustand selectors
   const showAxes = useCircuitStore((s) => s.showAxes)
@@ -359,7 +359,7 @@ export function CompactToolbar() {
             <TooltipTrigger asChild>
               <PopoverTrigger asChild>
                 <Button variant="ghost" size="icon" className="w-9 h-9" aria-label="Theme" data-testid="theme-toggle">
-                  {resolvedTheme === 'dark' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+                  {theme === 'light' ? <Sun className="w-4 h-4" /> : theme === 'system' ? <Monitor className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
                 </Button>
               </PopoverTrigger>
             </TooltipTrigger>

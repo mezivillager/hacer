@@ -1,16 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { ThemeContext, type Theme } from './ThemeContext'
 
-function resolveTheme(theme: Theme): 'dark' | 'light' {
-  if (theme === 'system') {
-    return typeof window !== 'undefined' &&
-      window.matchMedia('(prefers-color-scheme: dark)').matches
-      ? 'dark'
-      : 'light'
-  }
-  return theme
-}
-
 function applyThemeToDOM(resolved: 'dark' | 'light') {
   if (typeof document !== 'undefined') {
     const root = document.documentElement
@@ -25,7 +15,20 @@ interface ThemeProviderProps {
 
 export function ThemeProvider({ children }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>('dark')
-  const resolved = resolveTheme(theme)
+  const [systemPrefersDark, setSystemPrefersDark] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches,
+  )
+
+  // Listen for system theme preference changes
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+    const handler = (e: MediaQueryListEvent) => setSystemPrefersDark(e.matches)
+    mediaQuery.addEventListener('change', handler)
+    return () => mediaQuery.removeEventListener('change', handler)
+  }, [])
+
+  const resolved: 'dark' | 'light' =
+    theme === 'system' ? (systemPrefersDark ? 'dark' : 'light') : theme
 
   // Sync DOM classes whenever resolved theme changes
   useEffect(() => {
