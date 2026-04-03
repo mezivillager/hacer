@@ -39,17 +39,17 @@ describe('CanvasArea', () => {
   })
 
   it('renders help overlay with default text', () => {
-    const { container } = render(<CanvasArea />)
-    const helpText = container.querySelector('.canvas-area > div:last-child')
+    const { getByTestId } = render(<CanvasArea />)
+    const helpText = getByTestId('help-overlay')
     expect(helpText).toBeInTheDocument()
-    expect(helpText?.textContent).toContain('Click pin: Wire')
+    expect(helpText.textContent).toContain('Click pin: Wire')
   })
 
   it('shows placement help text when in placement mode', () => {
     actualSetState({ placementMode: 'NAND' })
-    const { container } = render(<CanvasArea />)
-    const helpText = container.querySelector('.canvas-area > div:last-child')
-    expect(helpText?.textContent).toContain('Click anywhere on the grid')
+    const { getByTestId } = render(<CanvasArea />)
+    const helpText = getByTestId('help-overlay')
+    expect(helpText.textContent).toContain('Click anywhere on the grid')
   })
 
   it('shows wiring help text when in wiring mode', () => {
@@ -67,9 +67,9 @@ describe('CanvasArea', () => {
         segments: null,
       }
     })
-    const { container } = render(<CanvasArea />)
-    const helpText = container.querySelector('.canvas-area > div:last-child')
-    expect(helpText?.textContent).toContain('Click on another pin to connect')
+    const { getByTestId } = render(<CanvasArea />)
+    const helpText = getByTestId('help-overlay')
+    expect(helpText.textContent).toContain('Click on another pin to connect')
   })
 
   it('applies placing class when in placement mode', () => {

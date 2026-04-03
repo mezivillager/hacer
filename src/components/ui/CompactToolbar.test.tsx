@@ -3,6 +3,9 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { CompactToolbar } from './CompactToolbar'
 import { useCircuitStore } from '@/store/circuitStore'
 
+// Create a shared mock for setTheme that persists across test calls
+const mockSetTheme = vi.fn()
+
 // Mock useThemeMode from @/theme
 vi.mock('@/theme', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@/theme')>()
@@ -11,7 +14,7 @@ vi.mock('@/theme', async (importOriginal) => {
     useThemeMode: () => ({
       theme: 'dark' as const,
       resolvedTheme: 'dark' as const,
-      setTheme: vi.fn(),
+      setTheme: mockSetTheme,
     }),
   }
 })
@@ -255,5 +258,51 @@ describe('CompactToolbar', () => {
   it('renders version display', () => {
     render(<CompactToolbar />)
     expect(screen.getByTestId('app-version')).toBeInTheDocument()
+  })
+
+  it('renders theme toggle button', () => {
+    render(<CompactToolbar />)
+    expect(screen.getByTestId('theme-toggle')).toBeInTheDocument()
+  })
+
+  it('opens theme popover when theme button is clicked', () => {
+    render(<CompactToolbar />)
+
+    fireEvent.click(screen.getByTestId('theme-toggle'))
+
+    expect(screen.getByTestId('theme-popover')).toBeInTheDocument()
+    expect(screen.getByTestId('theme-option-dark')).toBeInTheDocument()
+    expect(screen.getByTestId('theme-option-light')).toBeInTheDocument()
+    expect(screen.getByTestId('theme-option-system')).toBeInTheDocument()
+  })
+
+  it('calls setTheme with dark when dark theme option is clicked', () => {
+    mockSetTheme.mockClear()
+    render(<CompactToolbar />)
+
+    fireEvent.click(screen.getByTestId('theme-toggle'))
+    fireEvent.click(screen.getByTestId('theme-option-dark'))
+
+    expect(mockSetTheme).toHaveBeenCalledWith('dark')
+  })
+
+  it('calls setTheme with light when light theme option is clicked', () => {
+    mockSetTheme.mockClear()
+    render(<CompactToolbar />)
+
+    fireEvent.click(screen.getByTestId('theme-toggle'))
+    fireEvent.click(screen.getByTestId('theme-option-light'))
+
+    expect(mockSetTheme).toHaveBeenCalledWith('light')
+  })
+
+  it('calls setTheme with system when system theme option is clicked', () => {
+    mockSetTheme.mockClear()
+    render(<CompactToolbar />)
+
+    fireEvent.click(screen.getByTestId('theme-toggle'))
+    fireEvent.click(screen.getByTestId('theme-option-system'))
+
+    expect(mockSetTheme).toHaveBeenCalledWith('system')
   })
 })

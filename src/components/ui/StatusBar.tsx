@@ -27,6 +27,7 @@ export function StatusBar() {
         className={cn(
           'flex justify-between items-center w-full px-3 py-1.5 text-white cursor-pointer border-none outline-transparent font-inherit text-inherit text-left transition-colors duration-200',
           'focus-visible:shadow-[0_0_0_2px_rgba(255,255,255,0.8)_inset] focus-visible:outline-2 focus-visible:outline-transparent',
+          'forced-colors:focus-visible:shadow-none forced-colors:focus-visible:outline-2 forced-colors:focus-visible:outline-solid forced-colors:focus-visible:outline-[ButtonText]',
           severityClasses[latest.severity],
         )}
       >

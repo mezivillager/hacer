@@ -41,7 +41,7 @@ export function DemoOverlay() {
     <div className="fixed inset-0 z-[1100] pointer-events-none bg-transparent" role="region" aria-label="App tour">
       <div className="absolute top-6 right-6 w-[360px] pointer-events-auto bg-gradient-to-br from-[#1e2a3a] to-[#162032] border border-primary/30 rounded-xl overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.5),0_0_0_1px_rgba(74,158,255,0.1)] animate-[demo-slide-down_0.4s_cubic-bezier(0.16,1,0.3,1)]">
         <button
-          className="absolute top-2 right-2 z-[2] w-7 h-7 border-none rounded-full bg-black/60 text-white/80 text-xs cursor-pointer flex items-center justify-center transition-colors hover:bg-red-500/70 hover:text-white"
+          className="absolute top-2 right-2 z-[2] w-7 h-7 border-none rounded-full bg-black/60 text-white/80 text-xs cursor-pointer flex items-center justify-center transition-colors hover:bg-red-500/70 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#162032] forced-colors:outline forced-colors:outline-2 forced-colors:outline-[ButtonText]"
           onClick={dismiss}
           aria-label="Close demo"
         >

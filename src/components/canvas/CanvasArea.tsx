@@ -219,7 +219,7 @@ export function CanvasArea() {
       </Scene>
 
       {/* Help overlay */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/70 px-4 py-2 rounded-[20px] backdrop-blur-sm pointer-events-none">
+      <div data-testid="help-overlay" className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/70 px-4 py-2 rounded-[20px] backdrop-blur-sm pointer-events-none">
         <span className="text-muted-foreground">{helpText}</span>
       </div>
     </div>
