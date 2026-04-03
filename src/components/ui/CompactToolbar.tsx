@@ -80,6 +80,7 @@ export function CompactToolbar() {
   const handleIoSelect = (id: NodePlacementType | 'JUNCTION') => {
     if (id === 'JUNCTION') {
       cancelPlacement()
+      cancelNodePlacement()
       if (junctionPlacementMode) {
         cancelJunctionPlacement()
       } else {
@@ -87,6 +88,7 @@ export function CompactToolbar() {
       }
     } else {
       cancelPlacement()
+      cancelJunctionPlacement()
       if (nodePlacementMode === id) {
         cancelNodePlacement()
       } else {
@@ -134,6 +136,7 @@ export function CompactToolbar() {
                   variant="ghost"
                   size="icon"
                   className={cn('w-9 h-9 relative', gatesOpen && 'bg-sidebar-accent')}
+                  aria-label="Gates"
                   data-testid="gates-dropdown-trigger"
                 >
                   <Cpu className="w-5 h-5" />
@@ -156,6 +159,8 @@ export function CompactToolbar() {
                     className="justify-start gap-2 h-8"
                     data-testid={`gate-button-${type}`}
                     onClick={() => {
+                      cancelJunctionPlacement()
+                      cancelNodePlacement()
                       handleGateSelect(type, placementMode, startPlacement, cancelPlacement)
                       setGatesOpen(false)
                     }}
@@ -178,6 +183,7 @@ export function CompactToolbar() {
                   variant="ghost"
                   size="icon"
                   className={cn('w-9 h-9 relative', ioOpen && 'bg-sidebar-accent')}
+                  aria-label="Circuit I/O"
                   data-testid="io-dropdown-trigger"
                 >
                   <ArrowRightToLine className="w-4 h-4" />
@@ -220,6 +226,7 @@ export function CompactToolbar() {
               size="icon"
               className="w-9 h-9"
               onClick={toggleSimulation}
+              aria-label={simulationRunning ? 'Pause Simulation' : 'Run Simulation'}
               data-testid="simulation-toggle"
             >
               {simulationRunning ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
@@ -240,6 +247,7 @@ export function CompactToolbar() {
               size="icon"
               className="w-9 h-9"
               onClick={toggleAxes}
+              aria-label="Show Axes"
               data-testid="axes-toggle"
             >
               <Grid3X3 className="w-4 h-4" />
@@ -248,7 +256,13 @@ export function CompactToolbar() {
           <TooltipContent side="right">
             <div className="flex items-center gap-2">
               <span>Show Axes</span>
-              <Switch checked={showAxes} className="scale-75" tabIndex={-1} />
+              <Switch
+                checked={showAxes}
+                className="pointer-events-none scale-75"
+                tabIndex={-1}
+                disabled
+                aria-hidden="true"
+              />
             </div>
           </TooltipContent>
         </Tooltip>
@@ -261,6 +275,7 @@ export function CompactToolbar() {
               size="icon"
               className="w-9 h-9 text-muted-foreground hover:text-destructive"
               disabled={!hasSelection}
+              aria-label="Delete Selected"
               onClick={() =>
                 handleDeleteSelected(
                   selectedGateId,
@@ -289,6 +304,7 @@ export function CompactToolbar() {
               size="icon"
               className="w-9 h-9 text-muted-foreground hover:text-destructive"
               disabled={gatesCount === 0}
+              aria-label="Clear All"
               onClick={clearCircuit}
               data-testid="clear-all"
             >
@@ -308,6 +324,7 @@ export function CompactToolbar() {
                     variant="secondary"
                     size="icon"
                     className="w-9 h-9"
+                    aria-label="Rename Node"
                     data-testid="node-rename-trigger"
                   >
                     <Settings className="w-4 h-4" />
@@ -328,7 +345,7 @@ export function CompactToolbar() {
         {/* Theme indicator (dark-only for now; full theme switching in Phase 7) */}
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button variant="ghost" size="icon" className="w-9 h-9" disabled>
+            <Button variant="ghost" size="icon" className="w-9 h-9" aria-label="Theme" disabled>
               <Moon className="w-4 h-4" />
             </Button>
           </TooltipTrigger>
@@ -337,7 +354,7 @@ export function CompactToolbar() {
 
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button variant="ghost" size="icon" className="w-9 h-9" asChild>
+            <Button variant="ghost" size="icon" className="w-9 h-9" aria-label="GitHub" asChild>
               <a
                 href="https://github.com/mezivillager/hacer"
                 target="_blank"
@@ -352,7 +369,7 @@ export function CompactToolbar() {
 
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button variant="ghost" size="icon" className="w-9 h-9" disabled>
+            <Button variant="ghost" size="icon" className="w-9 h-9" aria-label="Settings" disabled>
               <Settings className="w-4 h-4" />
             </Button>
           </TooltipTrigger>

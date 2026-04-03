@@ -168,6 +168,77 @@ describe('CompactToolbar', () => {
     expect(screen.getByTestId('io-dropdown-trigger')).toBeInTheDocument()
   })
 
+  it('opens io dropdown and shows io buttons', () => {
+    render(<CompactToolbar />)
+
+    fireEvent.click(screen.getByTestId('io-dropdown-trigger'))
+
+    expect(screen.getByTestId('io-dropdown')).toBeInTheDocument()
+    expect(screen.getByTestId('io-button-INPUT')).toBeInTheDocument()
+    expect(screen.getByTestId('io-button-OUTPUT')).toBeInTheDocument()
+    expect(screen.getByTestId('io-button-JUNCTION')).toBeInTheDocument()
+  })
+
+  it('activates INPUT node placement when Input button is clicked', () => {
+    render(<CompactToolbar />)
+
+    fireEvent.click(screen.getByTestId('io-dropdown-trigger'))
+    fireEvent.click(screen.getByTestId('io-button-INPUT'))
+
+    expect(actualGetState().nodePlacementMode).toBe('INPUT')
+  })
+
+  it('activates OUTPUT node placement when Output button is clicked', () => {
+    render(<CompactToolbar />)
+
+    fireEvent.click(screen.getByTestId('io-dropdown-trigger'))
+    fireEvent.click(screen.getByTestId('io-button-OUTPUT'))
+
+    expect(actualGetState().nodePlacementMode).toBe('OUTPUT')
+  })
+
+  it('activates junction placement when Junction button is clicked', () => {
+    render(<CompactToolbar />)
+
+    fireEvent.click(screen.getByTestId('io-dropdown-trigger'))
+    fireEvent.click(screen.getByTestId('io-button-JUNCTION'))
+
+    expect(actualGetState().junctionPlacementMode).toBe(true)
+  })
+
+  it('cancels junction placement when selecting a node type', () => {
+    actualSetState({ junctionPlacementMode: true })
+    render(<CompactToolbar />)
+
+    fireEvent.click(screen.getByTestId('io-dropdown-trigger'))
+    fireEvent.click(screen.getByTestId('io-button-INPUT'))
+
+    expect(actualGetState().junctionPlacementMode).toBe(null)
+    expect(actualGetState().nodePlacementMode).toBe('INPUT')
+  })
+
+  it('cancels junction placement when selecting a gate', () => {
+    actualSetState({ junctionPlacementMode: true })
+    render(<CompactToolbar />)
+
+    fireEvent.click(screen.getByTestId('gates-dropdown-trigger'))
+    fireEvent.click(screen.getByTestId('gate-button-NAND'))
+
+    expect(actualGetState().junctionPlacementMode).toBe(null)
+    expect(actualGetState().placementMode).toBe('NAND')
+  })
+
+  it('cancels node placement when selecting a junction', () => {
+    actualSetState({ nodePlacementMode: 'INPUT' })
+    render(<CompactToolbar />)
+
+    fireEvent.click(screen.getByTestId('io-dropdown-trigger'))
+    fireEvent.click(screen.getByTestId('io-button-JUNCTION'))
+
+    expect(actualGetState().nodePlacementMode).toBe(null)
+    expect(actualGetState().junctionPlacementMode).toBe(true)
+  })
+
   it('renders version display', () => {
     render(<CompactToolbar />)
     expect(screen.getByTestId('app-version')).toBeInTheDocument()
