@@ -77,21 +77,23 @@ export function CompactToolbar() {
 
   const appVersion = useAppReleaseVersion()
 
+  const cancelAllPlacement = () => {
+    cancelPlacement()
+    cancelNodePlacement()
+    cancelJunctionPlacement()
+  }
+
   const handleIoSelect = (id: NodePlacementType | 'JUNCTION') => {
     if (id === 'JUNCTION') {
-      cancelPlacement()
-      cancelNodePlacement()
-      if (junctionPlacementMode) {
-        cancelJunctionPlacement()
-      } else {
+      const wasActive = !!junctionPlacementMode
+      cancelAllPlacement()
+      if (!wasActive) {
         startJunctionPlacement()
       }
     } else {
-      cancelPlacement()
-      cancelJunctionPlacement()
-      if (nodePlacementMode === id) {
-        cancelNodePlacement()
-      } else {
+      const wasActive = nodePlacementMode === id
+      cancelAllPlacement()
+      if (!wasActive) {
         startNodePlacement(id)
       }
     }
@@ -159,8 +161,7 @@ export function CompactToolbar() {
                     className="justify-start gap-2 h-8"
                     data-testid={`gate-button-${type}`}
                     onClick={() => {
-                      cancelJunctionPlacement()
-                      cancelNodePlacement()
+                      cancelAllPlacement()
                       handleGateSelect(type, placementMode, startPlacement, cancelPlacement)
                       setGatesOpen(false)
                     }}
@@ -260,7 +261,6 @@ export function CompactToolbar() {
                 checked={showAxes}
                 className="pointer-events-none scale-75"
                 tabIndex={-1}
-                disabled
                 aria-hidden="true"
               />
             </div>
