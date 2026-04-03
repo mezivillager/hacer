@@ -6,7 +6,7 @@
  */
 
 export const UI_SELECTORS = {
-  appTitle: 'text=HACER',
+  appTitle: '[data-testid="compact-toolbar"]',
   canvas: 'canvas',
 
   buttons: {
