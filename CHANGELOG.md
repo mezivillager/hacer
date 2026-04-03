@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.16.0](https://github.com/mezivillager/hacer/compare/v1.15.0...v1.16.0) (2026-04-03)
+
+### Features
+
+* implement phase 6 - PropertiesPanel, RightActionBar, HelpBar + KeyboardShortcutsModal ([1150cad](https://github.com/mezivillager/hacer/commit/1150cadad8054b55b34c97bfde27865262547c7d))
+
 ## [1.15.0](https://github.com/mezivillager/hacer/compare/v1.14.0...v1.15.0) (2026-04-03)
 
 ### Features
