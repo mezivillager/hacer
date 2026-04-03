@@ -1,5 +1,4 @@
 import { ThemeProvider } from './theme'
-import { TooltipProvider } from './components/ui/shadcn'
 import { CompactToolbar } from './components/ui/CompactToolbar'
 import { CanvasArea } from './components/canvas/CanvasArea'
 import { DemoOverlay } from './components/ui/DemoOverlay'
@@ -12,16 +11,14 @@ function AppContent() {
   useKeyboardShortcuts()
 
   return (
-    <TooltipProvider>
-      <div className="flex h-screen w-full bg-background overflow-hidden">
-        <CompactToolbar />
-        <div className="flex-1 relative">
-          <CanvasArea />
-          <DemoOverlay />
-          <StatusBar />
-        </div>
+    <div className="flex h-screen w-full bg-background overflow-hidden">
+      <CompactToolbar />
+      <div className="flex-1 relative">
+        <CanvasArea />
+        <DemoOverlay />
+        <StatusBar />
       </div>
-    </TooltipProvider>
+    </div>
   )
 }
 

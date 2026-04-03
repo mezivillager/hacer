@@ -16,6 +16,7 @@
 /* Canvas content area */
 .app-content {
   position: relative;
+  height: 100%;
   background: var(--color-bg-main);
   overflow: hidden;
 }
