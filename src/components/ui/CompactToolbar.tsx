@@ -127,6 +127,7 @@ export function CompactToolbar() {
           <TooltipTrigger asChild>
             <div className="flex items-center justify-center w-8 h-8 rounded-md bg-primary/10 text-primary">
               <Cpu className="w-4 h-4" />
+              <span className="sr-only">HACER</span>
             </div>
           </TooltipTrigger>
           <TooltipContent side="right">
