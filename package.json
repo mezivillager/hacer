@@ -1,7 +1,7 @@
 {
   "name": "hacer",
   "private": true,
-  "version": "1.14.0",
+  "version": "1.15.0",
   "description": "First-principles computing platform: build a computer from NAND gates up in an interactive 3D environment. Inspired by nand2tetris.",
   "license": "MIT",
   "author": "mezivillager",

@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.15.0](https://github.com/mezivillager/hacer/compare/v1.14.0...v1.15.0) (2026-04-03)
+
+### Features
+
+* implement phase 5 - replace Sidebar with CompactToolbar ([5fd7a37](https://github.com/mezivillager/hacer/commit/5fd7a372bff14f7bc282dd64d2f7ac34b4799300))
+
+### Bug Fixes
+
+* address PR review - layout, accessibility, placement mode conflicts ([3dcb09a](https://github.com/mezivillager/hacer/commit/3dcb09a9a5bac008b8ff85efad069d2a4388abb8))
+
+### Code Refactoring
+
+* extract cancelAllPlacement helper, simplify Switch accessibility ([b751996](https://github.com/mezivillager/hacer/commit/b751996618bde54641c306d5f5ad557a9dc39ed1))
+
 ## [1.14.0](https://github.com/mezivillager/hacer/compare/v1.13.0...v1.14.0) (2026-04-02)
 
 ### Features
