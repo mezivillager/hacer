@@ -96,7 +96,7 @@ export function CanvasArea() {
   })()
 
   return (
-    <div className={`app-content ${isPlacing ? 'placing' : ''} ${isPlacing && isPlacementInvalid ? 'placing-invalid' : ''} ${isWiring ? 'wiring' : ''} ${isDragActive ? 'dragging' : ''} ${isDragInvalid ? 'dragging-invalid' : ''}`}>
+    <div className={`canvas-area relative h-full bg-background overflow-hidden ${isPlacing ? 'placing' : ''} ${isPlacing && isPlacementInvalid ? 'placing-invalid' : ''} ${isWiring ? 'wiring' : ''} ${isDragActive ? 'dragging' : ''} ${isDragInvalid ? 'dragging-invalid' : ''}`}>
       <Scene>
         {/* Render all wires using unified Wire3D */}
         {wires.map((wire) => {
@@ -219,7 +219,7 @@ export function CanvasArea() {
       </Scene>
 
       {/* Help overlay */}
-      <div className="help-overlay">
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/70 px-4 py-2 rounded-[20px] backdrop-blur-sm pointer-events-none">
         <span className="text-muted-foreground">{helpText}</span>
       </div>
     </div>

@@ -8,7 +8,6 @@ import { RightActionBar } from './components/ui/RightActionBar'
 import { HelpBar } from './components/ui/HelpBar'
 import { Toaster } from './components/ui/shadcn/sonner'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
-import './App.css'
 
 function AppContent() {
   useKeyboardShortcuts()

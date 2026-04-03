@@ -40,7 +40,7 @@ describe('CanvasArea', () => {
 
   it('renders help overlay with default text', () => {
     const { container } = render(<CanvasArea />)
-    const helpText = container.querySelector('.help-overlay')
+    const helpText = container.querySelector('.canvas-area > div:last-child')
     expect(helpText).toBeInTheDocument()
     expect(helpText?.textContent).toContain('Click pin: Wire')
   })
@@ -48,7 +48,7 @@ describe('CanvasArea', () => {
   it('shows placement help text when in placement mode', () => {
     actualSetState({ placementMode: 'NAND' })
     const { container } = render(<CanvasArea />)
-    const helpText = container.querySelector('.help-overlay')
+    const helpText = container.querySelector('.canvas-area > div:last-child')
     expect(helpText?.textContent).toContain('Click anywhere on the grid')
   })
 
@@ -68,14 +68,14 @@ describe('CanvasArea', () => {
       }
     })
     const { container } = render(<CanvasArea />)
-    const helpText = container.querySelector('.help-overlay')
+    const helpText = container.querySelector('.canvas-area > div:last-child')
     expect(helpText?.textContent).toContain('Click on another pin to connect')
   })
 
   it('applies placing class when in placement mode', () => {
     actualSetState({ placementMode: 'NAND' })
     const { container } = render(<CanvasArea />)
-    const content = container.querySelector('.app-content')
+    const content = container.querySelector('.canvas-area')
     expect(content?.className).toContain('placing')
   })
 
@@ -95,7 +95,7 @@ describe('CanvasArea', () => {
       }
     })
     const { container } = render(<CanvasArea />)
-    const content = container.querySelector('.app-content')
+    const content = container.querySelector('.canvas-area')
     expect(content?.className).toContain('wiring')
   })
 })

@@ -129,3 +129,65 @@
   --color-canvas-bg: var(--canvas-bg);
   --color-canvas-grid: var(--canvas-grid);
 }
+
+/* === Global resets (merged from index.css) === */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* === Canvas cursor states === */
+/* These compound selectors target the R3F <canvas> element
+   based on state classes on the parent wrapper. */
+.canvas-area canvas {
+  cursor: default;
+}
+
+.canvas-area.placing canvas,
+.canvas-area.placing canvas:active,
+.canvas-area.wiring canvas,
+.canvas-area.wiring canvas:active {
+  cursor: crosshair;
+}
+
+.canvas-area.placing.placing-invalid canvas,
+.canvas-area.placing.placing-invalid canvas:active {
+  cursor: not-allowed;
+}
+
+.canvas-area.dragging canvas {
+  cursor: grabbing;
+}
+
+.canvas-area.dragging.dragging-invalid canvas {
+  cursor: not-allowed;
+}
+
+/* === Demo overlay slide-down animation === */
+@keyframes demo-slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -3,6 +3,19 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { CompactToolbar } from './CompactToolbar'
 import { useCircuitStore } from '@/store/circuitStore'
 
+// Mock useThemeMode from @/theme
+vi.mock('@/theme', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/theme')>()
+  return {
+    ...actual,
+    useThemeMode: () => ({
+      theme: 'dark' as const,
+      resolvedTheme: 'dark' as const,
+      setTheme: vi.fn(),
+    }),
+  }
+})
+
 const actualSetState = useCircuitStore.setState
 const actualGetState = useCircuitStore.getState
 

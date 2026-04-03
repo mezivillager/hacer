@@ -59,9 +59,9 @@ export function NodeRenameControl() {
   }
 
   return (
-    <div className="node-rename-control" data-testid="node-rename-control">
+    <div className="mt-2.5 p-2 border border-border rounded-lg bg-white/[0.03] flex flex-col gap-2" data-testid="node-rename-control">
       <span className="text-sm font-semibold text-foreground">Rename Selected Node</span>
-      <div className="node-rename-row flex">
+      <div className="w-full flex">
         <Input
           value={draftName}
           onChange={(event) => {
@@ -78,7 +78,7 @@ export function NodeRenameControl() {
           }}
           placeholder="Node name"
           data-testid="node-rename-input"
-          className="node-rename-input h-8 text-sm rounded-r-none"
+          className="flex-1 h-8 text-sm rounded-r-none"
         />
         <Button
           size="sm"

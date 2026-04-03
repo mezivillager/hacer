@@ -49,14 +49,14 @@ describe('GateSelector', () => {
     setState({ placementMode: 'NAND' })
     const { container } = render(<GateSelector />)
     const nandIcon = container.querySelector('[data-gate-type="NAND"]')
-    expect(nandIcon?.className).toContain('active')
+    expect(nandIcon?.classList.contains('active')).toBe(true)
   })
 
   it('does not apply active class to unselected gates', () => {
     setState({ placementMode: 'NAND' })
     const { container } = render(<GateSelector />)
     const andIcon = container.querySelector('[data-gate-type="AND"]')
-    expect(andIcon?.className).not.toContain('active')
+    expect(andIcon?.classList.contains('active')).toBe(false)
   })
 
   it('calls startPlacement when clicking unselected gate', () => {

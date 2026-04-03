@@ -3,6 +3,7 @@ import { useCircuitStore } from '@/store/circuitStore'
 import type { GateType } from '@/store/types'
 import { getGateIcon } from '@/gates/icons'
 import { colors } from '@/theme'
+import { cn } from '@lib/utils'
 import { handleGateSelect } from './handlers/uiHandlers'
 
 // Elementary gates to show in the selector
@@ -26,7 +27,7 @@ export function GateSelector() {
   const cancelPlacement = useCircuitStore((s) => s.cancelPlacement)
 
   return (
-    <div className="gate-selector-grid">
+    <div className="grid grid-cols-2 gap-2 mb-2">
       {ELEMENTARY_GATES.map(type => {
         const IconComponent = getGateIcon(type)
         const isActive = placementMode === type
@@ -35,7 +36,10 @@ export function GateSelector() {
           <Tooltip key={type}>
             <TooltipTrigger asChild>
               <div
-                className={`gate-icon ${isActive ? 'active' : ''}`}
+                className={cn(
+                  'gate-icon flex flex-col items-center justify-center p-3 rounded-lg bg-white/5 border border-border cursor-pointer transition-all select-none hover:bg-primary/10 hover:border-primary hover:-translate-y-px active:translate-y-0',
+                  isActive && 'active bg-primary/20 border-primary shadow-[0_0_12px_rgba(74,158,255,0.3)]',
+                )}
                 data-gate-type={type}
                 onClick={() => handleGateSelect(type, placementMode, startPlacement, cancelPlacement)}
                 role="button"
@@ -47,7 +51,12 @@ export function GateSelector() {
                 }}
               >
                 <IconComponent size={36} color={isActive ? colors.primary : colors.text.secondary} />
-                <span className="gate-icon-label">{type}</span>
+                <span className={cn(
+                  'mt-1.5 text-[11px] font-medium text-white/65 uppercase tracking-wider',
+                  isActive && 'text-primary',
+                )}>
+                  {type}
+                </span>
               </div>
             </TooltipTrigger>
             <TooltipContent side="right">{gateDescriptions[type]}</TooltipContent>
