@@ -5,6 +5,50 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.14.0](https://github.com/mezivillager/hacer/compare/v1.13.0...v1.14.0) (2026-04-02)
+
+### Features
+
+* Phase 4 notification system swap - replace antd message with Sonner toasts ([1d4cb7f](https://github.com/mezivillager/hacer/commit/1d4cb7f7301d27ad132eb42a805723e6e3f1f72f))
+
+### Bug Fixes
+
+* import CSSProperties directly from react in Toaster component ([daae0a8](https://github.com/mezivillager/hacer/commit/daae0a8b6ef0290da6fb2304cf4c214961d6db79))
+
+## [1.13.0](https://github.com/mezivillager/hacer/compare/v1.12.0...v1.13.0) (2026-04-02)
+
+### Features
+
+* migrate leaf components from Ant Design to shadcn/ui (Phase 3) ([02bbf1b](https://github.com/mezivillager/hacer/commit/02bbf1bf26fb17ffb5e309613bf812ce14d7f3ff))
+
+### Bug Fixes
+
+* remove redundant TooltipProvider wrapping in GateSelector and NodeSelector ([ce33de7](https://github.com/mezivillager/hacer/commit/ce33de71c438553d0cd0c15ff26ca4b842d8ab65))
+
+## [1.12.0](https://github.com/mezivillager/hacer/compare/v1.11.0...v1.12.0) (2026-04-02)
+
+### Features
+
+* implement phase 2 design system migration - port shadcn/ui primitives ([8438692](https://github.com/mezivillager/hacer/commit/84386925d313cf4c4f6b5b1588d08f8139651711))
+
+### Bug Fixes
+
+* **kbd:** correct KbdGroup props type to match rendered element ([397f4a0](https://github.com/mezivillager/hacer/commit/397f4a044f5cd3b824f5e370b0b2c0cc586ed426))
+
+## [1.11.0](https://github.com/mezivillager/hacer/compare/v1.10.0...v1.11.0) (2026-04-02)
+
+### Features
+
+* add Tailwind CSS v4 foundation, OKLch tokens, and cn() utility (Phase 1) ([5832753](https://github.com/mezivillager/hacer/commit/583275376f9aadd070a7ca6cc018fc96e874e848))
+
+### Bug Fixes
+
+* address PR feedback on Tailwind dependency scope and Phase 1 global styles ([a7e26ba](https://github.com/mezivillager/hacer/commit/a7e26ba66e6341a06b37477baab09b1fd861fd67))
+
+### Documentation
+
+* add clarifying comment to [@theme](https://github.com/theme) inline block in globals.css ([77daa16](https://github.com/mezivillager/hacer/commit/77daa1689c4653ffaf43676c96278cea968c0c10))
+
 ## [1.10.0](https://github.com/mezivillager/hacer/compare/v1.9.0...v1.10.0) (2026-04-02)
 
 ### Features

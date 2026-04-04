@@ -1,4 +1,3 @@
-import { Layout, Typography } from 'antd'
 import { Scene } from './Scene'
 import { GateRenderer } from '@/gates'
 import { NodeRenderer } from '@/nodes'
@@ -10,9 +9,6 @@ import { calculateNodePinPosition } from '@/nodes/config'
 import { handlePinClick, handleInputToggle, handleGateClick, handleInputNodeToggle, handleNodeClick, handleNodePinClick, handleJunctionClick } from './handlers/canvasHandlers'
 import { getSignalSourceValue } from '@/store/actions/simulationActions/simulationActions'
 import { isSignalHigh } from '@/simulation/signalDisplay'
-
-const { Content } = Layout
-const { Text } = Typography
 
 // Get actions once - these are stable references that don't change
 const { getPinWorldPosition } = circuitActions
@@ -100,7 +96,7 @@ export function CanvasArea() {
   })()
 
   return (
-    <Content className={`app-content ${isPlacing ? 'placing' : ''} ${isPlacing && isPlacementInvalid ? 'placing-invalid' : ''} ${isWiring ? 'wiring' : ''} ${isDragActive ? 'dragging' : ''} ${isDragInvalid ? 'dragging-invalid' : ''}`}>
+    <div className={`app-content ${isPlacing ? 'placing' : ''} ${isPlacing && isPlacementInvalid ? 'placing-invalid' : ''} ${isWiring ? 'wiring' : ''} ${isDragActive ? 'dragging' : ''} ${isDragInvalid ? 'dragging-invalid' : ''}`}>
       <Scene>
         {/* Render all wires using unified Wire3D */}
         {wires.map((wire) => {
@@ -224,8 +220,8 @@ export function CanvasArea() {
 
       {/* Help overlay */}
       <div className="help-overlay">
-        <Text type="secondary">{helpText}</Text>
+        <span className="text-muted-foreground">{helpText}</span>
       </div>
-    </Content>
+    </div>
   )
 }

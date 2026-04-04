@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { CloseOutlined } from '@ant-design/icons'
+import { X } from 'lucide-react'
 import {
   DISMISS_DEMO_TOUR_EVENT,
   shouldSuppressDemoTourFromSearchParams,
@@ -41,7 +41,7 @@ export function DemoOverlay() {
     <div className="demo-overlay" role="region" aria-label="App tour">
       <div className="demo-overlay-card">
         <button className="demo-overlay-close" onClick={dismiss} aria-label="Close demo">
-          <CloseOutlined />
+          <X className="size-4" />
         </button>
         <div className="demo-overlay-media">
           <img
