@@ -7,16 +7,11 @@ const { messageError } = vi.hoisted(() => ({
   messageError: vi.fn(),
 }))
 
-vi.mock('antd', async () => {
-  const actual = await vi.importActual<typeof import('antd')>('antd')
-  return {
-    ...actual,
-    message: {
-      ...actual.message,
-      error: messageError,
-    },
-  }
-})
+vi.mock('@lib/toast', () => ({
+  notify: {
+    error: messageError,
+  },
+}))
 
 describe('NodeRenameControl', () => {
   beforeEach(() => {

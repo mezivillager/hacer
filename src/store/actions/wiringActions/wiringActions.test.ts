@@ -1,13 +1,13 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { message } from 'antd'
+import { notify } from '@lib/toast'
 import { useCircuitStore } from '../../circuitStore'
 
 // Helper to get store state
 const getState = () => useCircuitStore.getState()
 
-// Mock Ant Design message
-vi.mock('antd', () => ({
-  message: {
+// Mock toast notifications
+vi.mock('@lib/toast', () => ({
+  notify: {
     warning: vi.fn(),
     error: vi.fn(),
     info: vi.fn(),
@@ -147,7 +147,7 @@ describe('wiringActions', () => {
       getState().completeWiring(gate2.id, gate2.outputs[0].id, 'output')
 
       expect(getState().wires).toHaveLength(0)
-      expect(message.warning).toHaveBeenCalledWith('Cannot connect same pin types')
+      expect(notify.warning).toHaveBeenCalledWith('Cannot connect same pin types')
       expect(getState().wiringFrom).toBe(null)
     })
 
@@ -161,7 +161,7 @@ describe('wiringActions', () => {
       getState().completeWiring(gate.id, gate.inputs[0].id, 'input')
 
       expect(getState().wires).toHaveLength(0)
-      expect(message.warning).toHaveBeenCalledWith('Cannot connect gate to itself')
+      expect(notify.warning).toHaveBeenCalledWith('Cannot connect gate to itself')
       expect(getState().wiringFrom).toBe(null)
     })
 
@@ -201,7 +201,7 @@ describe('wiringActions', () => {
       getState().completeWiring(gate2.id, gate2.inputs[0].id, 'input')
 
       expect(getState().wires).toHaveLength(1)
-      expect(message.warning).toHaveBeenCalledWith('Wire already exists')
+      expect(notify.warning).toHaveBeenCalledWith('Wire already exists')
     })
 
     it('normalizes wire direction (input to output)', () => {
@@ -234,7 +234,7 @@ describe('wiringActions', () => {
       getState().completeWiring(gate2.id, gate2.inputs[0].id, 'input')
 
       expect(getState().wires).toHaveLength(0)
-      expect(message.warning).toHaveBeenCalledWith('No active wiring operation')
+      expect(notify.warning).toHaveBeenCalledWith('No active wiring operation')
     })
 
     it('resolves crossings by adding arc segments', () => {
@@ -346,7 +346,7 @@ describe('wiringActions', () => {
       getState().startWiringFromNode('output-out', 'output', { x: 0, y: 0, z: 0 })
 
       expect(getState().wiringFrom).toBe(null)
-      expect(message.warning).toHaveBeenCalledWith('Can only start wiring from input nodes')
+      expect(notify.warning).toHaveBeenCalledWith('Can only start wiring from input nodes')
     })
 
     it('clears placement modes', () => {
@@ -366,7 +366,7 @@ describe('wiringActions', () => {
 
       getState().completeWiringToNode('input-b', 'input')
 
-      expect(message.warning).toHaveBeenCalledWith('Can only complete wiring to output nodes')
+      expect(notify.warning).toHaveBeenCalledWith('Can only complete wiring to output nodes')
     })
 
     it('clears wiring state after completion to output', () => {
@@ -389,7 +389,7 @@ describe('wiringActions', () => {
     it('shows warning when no wiringFrom state', () => {
       getState().completeWiringToNode('output-out', 'output')
 
-      expect(message.warning).toHaveBeenCalledWith('No active wiring operation')
+      expect(notify.warning).toHaveBeenCalledWith('No active wiring operation')
     })
 
     it('rejects input node to output node connection', () => {
@@ -408,7 +408,7 @@ describe('wiringActions', () => {
 
       getState().completeWiringToNode(outputNode.id, 'output')
 
-      expect(message.warning).toHaveBeenCalledWith(
+      expect(notify.warning).toHaveBeenCalledWith(
         'Input nodes must connect to gates or junctions, not directly to output nodes'
       )
       expect(getState().wires).toHaveLength(0)
@@ -458,7 +458,7 @@ describe('wiringActions', () => {
 
       getState().completeWiringToNode('output-out', 'output')
 
-      expect(message.warning).toHaveBeenCalledWith('Invalid wiring source')
+      expect(notify.warning).toHaveBeenCalledWith('Invalid wiring source')
     })
   })
 
@@ -589,7 +589,7 @@ describe('wiringActions', () => {
 
       // Should still only have one wire
       expect(getState().wires).toHaveLength(1)
-      expect(message.warning).toHaveBeenCalledWith('Wire already exists')
+      expect(notify.warning).toHaveBeenCalledWith('Wire already exists')
     })
   })
 
@@ -648,7 +648,7 @@ describe('wiringActions', () => {
     it('warns when junction not found', () => {
       getState().startWiringFromJunction('non-existent', { x: 0, y: 0.2, z: 0 })
 
-      expect(message.warning).toHaveBeenCalledWith('Junction not found')
+      expect(notify.warning).toHaveBeenCalledWith('Junction not found')
       expect(getState().wiringFrom).toBe(null)
     })
 
@@ -657,7 +657,7 @@ describe('wiringActions', () => {
 
       getState().startWiringFromJunction(junction.id, junction.position)
 
-      expect(message.warning).toHaveBeenCalledWith('No wire passes through this junction')
+      expect(notify.warning).toHaveBeenCalledWith('No wire passes through this junction')
       expect(getState().wiringFrom).toBe(null)
     })
 
@@ -828,7 +828,7 @@ describe('wiringActions', () => {
 
       getState().completeWiringFromJunctionToNode(outputNode.id, 'output')
 
-      expect(message.warning).toHaveBeenCalledWith('Wiring source is not a junction')
+      expect(notify.warning).toHaveBeenCalledWith('Wiring source is not a junction')
       expect(getState().wiringFrom).toBe(null)
     })
 
@@ -869,7 +869,7 @@ describe('wiringActions', () => {
 
       getState().completeWiringFromJunctionToNode(inputNode.id, 'input')
 
-      expect(message.warning).toHaveBeenCalledWith('Can only complete wiring to output nodes')
+      expect(notify.warning).toHaveBeenCalledWith('Can only complete wiring to output nodes')
       expect(getState().wiringFrom).toBe(null)
     })
   })
