@@ -1,4 +1,4 @@
-import { message } from 'antd'
+import { notify } from '@lib/toast'
 import type { WiringActions, Position, CircuitStore, NodeType, WireEndpoint } from '../../types'
 import type { WireSegment } from '@/utils/wiringScheme/types'
 import { resolveCrossings } from '@/utils/wiringScheme/crossing'
@@ -79,12 +79,12 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
     const state = get()
     const from = state.wiringFrom
     if (!from) {
-      message.warning('No active wiring operation')
+      notify.warning('No active wiring operation')
       return
     }
 
     if (from.fromPinType === toPinType) {
-      message.warning('Cannot connect same pin types')
+      notify.warning('Cannot connect same pin types')
       set((s) => {
         s.wiringFrom = null
       }, false, 'completeWiring/invalidPinType')
@@ -92,7 +92,7 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
     }
 
     if (from.fromGateId === toGateId) {
-      message.warning('Cannot connect gate to itself')
+      notify.warning('Cannot connect gate to itself')
       set((s) => {
         s.wiringFrom = null
       }, false, 'completeWiring/sameGate')
@@ -114,7 +114,7 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
     )
 
     if (exists) {
-      message.warning('Wire already exists')
+      notify.warning('Wire already exists')
       set((s) => {
         s.wiringFrom = null
       }, false, 'completeWiring/wireExists')
@@ -124,7 +124,7 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
     const wireSegments: WireSegment[] | null = from.segments
 
     if (!wireSegments) {
-      message.error('Wire path not available. Please try connecting again.')
+      notify.error('Wire path not available. Please try connecting again.')
       set((s) => {
         s.wiringFrom = null
       }, false, 'completeWiring/noSegments')
@@ -139,7 +139,7 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
       crossedWireIds = result.crossedWireIds
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to resolve wire crossings'
-      message.error(`Cannot complete wire: ${errorMessage}`)
+      notify.error(`Cannot complete wire: ${errorMessage}`)
       set((s) => {
         s.wiringFrom = null
       }, false, 'completeWiring/crossingResolutionFailed')
@@ -172,25 +172,25 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
     const state = get()
     const from = state.wiringFrom
     if (!from) {
-      message.warning('No active wiring operation')
+      notify.warning('No active wiring operation')
       return
     }
 
     const source = from.source
     if (!source) {
-      message.warning('Invalid wiring source')
+      notify.warning('Invalid wiring source')
       set((s) => { s.wiringFrom = null }, false, 'completeWiringFromNodeToGate/noSource')
       return
     }
 
     if (source.type !== 'input') {
-      message.warning('Can only complete wiring from input nodes')
+      notify.warning('Can only complete wiring from input nodes')
       set((s) => { s.wiringFrom = null }, false, 'completeWiringFromNodeToGate/invalidSource')
       return
     }
 
     if (toPinType !== 'input') {
-      message.warning('Can only connect nodes to gate input pins')
+      notify.warning('Can only connect nodes to gate input pins')
       set((s) => { s.wiringFrom = null }, false, 'completeWiringFromNodeToGate/invalidPinType')
       return
     }
@@ -210,7 +210,7 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
     )
 
     if (exists) {
-      message.warning('Wire already exists')
+      notify.warning('Wire already exists')
       set((s) => {
         s.wiringFrom = null
       }, false, 'completeWiringFromNodeToGate/wireExists')
@@ -220,7 +220,7 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
     const wireSegments: WireSegment[] | null = from.segments
 
     if (!wireSegments || wireSegments.length === 0) {
-      message.error('Wire path not available. Please try connecting again.')
+      notify.error('Wire path not available. Please try connecting again.')
       set((s) => {
         s.wiringFrom = null
       }, false, 'completeWiringFromNodeToGate/noSegments')
@@ -235,7 +235,7 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
       crossedWireIds = result.crossedWireIds
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to resolve wire crossings'
-      message.error(`Cannot complete wire: ${errorMessage}`)
+      notify.error(`Cannot complete wire: ${errorMessage}`)
       set((s) => {
         s.wiringFrom = null
       }, false, 'completeWiringFromNodeToGate/crossingResolutionFailed')
@@ -255,7 +255,7 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
    */
   startWiringFromNode: (nodeId: string, nodeType: NodeType, position: Position) => {
     if (nodeType !== 'input') {
-      message.warning('Can only start wiring from input nodes')
+      notify.warning('Can only start wiring from input nodes')
       return
     }
 
@@ -287,19 +287,19 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
     const junction = state.junctions.find((j) => j.id === junctionId)
 
     if (!junction) {
-      message.warning('Junction not found')
+      notify.warning('Junction not found')
       return
     }
 
     const originalWireId = junction.wireIds[0]
     if (!originalWireId) {
-      message.warning('No wire passes through this junction')
+      notify.warning('No wire passes through this junction')
       return
     }
 
     const originalWire = state.wires.find((w) => w.id === originalWireId)
     if (!originalWire) {
-      message.warning('Original wire not found')
+      notify.warning('Original wire not found')
       return
     }
 
@@ -309,14 +309,14 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
     if (originalWire.from.type === 'gate' && originalWire.from.pinId) {
       const pinPos = get().getPinWorldPosition(originalWire.from.entityId, originalWire.from.pinId)
       if (!pinPos) {
-        message.warning('Could not determine wire start position')
+        notify.warning('Could not determine wire start position')
         return
       }
       fromPosition = pinPos
     } else if (originalWire.from.type === 'input') {
       const node = state.inputNodes.find((n) => n.id === originalWire.from.entityId)
       if (!node) {
-        message.warning('Could not find source node')
+        notify.warning('Could not find source node')
         return
       }
       const pinOffset = calculateNodePinPosition(originalWire.from.type)
@@ -333,14 +333,14 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
       while (currentWire.from.type === 'junction' && depth < maxDepth) {
         const sourceJunction = state.junctions.find((j) => j.id === currentWire.from.entityId)
         if (!sourceJunction || sourceJunction.wireIds.length === 0) {
-          message.warning('Could not trace back through junctions to find source')
+          notify.warning('Could not trace back through junctions to find source')
           return
         }
 
         const sourceWireId = sourceJunction.wireIds[0]
         const sourceWire = state.wires.find((w) => w.id === sourceWireId)
         if (!sourceWire) {
-          message.warning('Source wire not found when tracing through junctions')
+          notify.warning('Source wire not found when tracing through junctions')
           return
         }
 
@@ -351,14 +351,14 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
       if (currentWire.from.type === 'gate' && currentWire.from.pinId) {
         const pinPos = get().getPinWorldPosition(currentWire.from.entityId, currentWire.from.pinId)
         if (!pinPos) {
-          message.warning('Could not determine wire start position after tracing through junctions')
+          notify.warning('Could not determine wire start position after tracing through junctions')
           return
         }
         fromPosition = pinPos
       } else if (currentWire.from.type === 'input') {
         const node = state.inputNodes.find((n) => n.id === currentWire.from.entityId)
         if (!node) {
-          message.warning('Could not find source node after tracing through junctions')
+          notify.warning('Could not find source node after tracing through junctions')
           return
         }
         const pinOffset = calculateNodePinPosition(currentWire.from.type)
@@ -368,11 +368,11 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
           z: node.position.z + pinOffset.z,
         }
       } else {
-        message.warning('Unsupported wire source type after tracing through junctions')
+        notify.warning('Unsupported wire source type after tracing through junctions')
         return
       }
     } else {
-      message.warning('Unsupported wire source type for junction wiring')
+      notify.warning('Unsupported wire source type for junction wiring')
       return
     }
 
@@ -410,25 +410,25 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
     const state = get()
     const from = state.wiringFrom
     if (!from) {
-      message.warning('No active wiring operation')
+      notify.warning('No active wiring operation')
       return
     }
 
     if (nodeType !== 'output') {
-      message.warning('Can only complete wiring to output nodes')
+      notify.warning('Can only complete wiring to output nodes')
       set((s) => { s.wiringFrom = null }, false, 'completeWiringToNode/invalidNodeType')
       return
     }
 
     const source = from.source
     if (!source) {
-      message.warning('Invalid wiring source')
+      notify.warning('Invalid wiring source')
       set((s) => { s.wiringFrom = null }, false, 'completeWiringToNode/noSource')
       return
     }
 
     if (source.type === 'input') {
-      message.warning('Input nodes must connect to gates or junctions, not directly to output nodes')
+      notify.warning('Input nodes must connect to gates or junctions, not directly to output nodes')
       set((s) => { s.wiringFrom = null }, false, 'completeWiringToNode/inputToOutputRejected')
       return
     }
@@ -440,7 +440,7 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
       fromEndpoint = { type: 'gate', entityId: source.gateId, pinId: source.pinId }
       signalId = `sig-${source.gateId}-${source.pinId}`
     } else {
-      message.warning('Invalid wiring source type')
+      notify.warning('Invalid wiring source type')
       set((s) => { s.wiringFrom = null }, false, 'completeWiringToNode/invalidSourceType')
       return
     }
@@ -457,7 +457,7 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
     )
 
     if (exists) {
-      message.warning('Wire already exists')
+      notify.warning('Wire already exists')
       set((s) => {
         s.wiringFrom = null
       }, false, 'completeWiringToNode/wireExists')
@@ -467,7 +467,7 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
     const segments = from.segments ?? []
 
     if (!segments || segments.length === 0) {
-      message.error('Wire path not available. Please try connecting again.')
+      notify.error('Wire path not available. Please try connecting again.')
       set((s) => {
         s.wiringFrom = null
       }, false, 'completeWiringToNode/noSegments')
@@ -482,7 +482,7 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
       crossedWireIds = result.crossedWireIds
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to resolve wire crossings'
-      message.error(`Cannot complete wire: ${errorMessage}`)
+      notify.error(`Cannot complete wire: ${errorMessage}`)
       set((s) => {
         s.wiringFrom = null
       }, false, 'completeWiringToNode/crossingResolutionFailed')
@@ -502,7 +502,7 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
    */
   completeWiringFromJunction: (toGateId: string, toPinId: string, toPinType: 'input' | 'output') => {
     if (toPinType !== 'input') {
-      message.warning('Can only connect to gate input pins')
+      notify.warning('Can only connect to gate input pins')
       set((s) => { s.wiringFrom = null }, false, 'completeWiringFromJunction/invalidPinType')
       return
     }
@@ -516,7 +516,7 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
    */
   completeWiringFromJunctionToNode: (nodeId: string, nodeType: NodeType) => {
     if (nodeType !== 'output') {
-      message.warning('Can only complete wiring to output nodes')
+      notify.warning('Can only complete wiring to output nodes')
       set((s) => { s.wiringFrom = null }, false, 'completeWiringFromJunctionToNode/invalidNodeType')
       return
     }
@@ -538,26 +538,26 @@ function completeJunctionWiring(
   const state = get()
   const from = state.wiringFrom
   if (!from) {
-    message.warning('No active wiring operation')
+    notify.warning('No active wiring operation')
     return
   }
 
   if (!from.source || from.source.type !== 'junction') {
-    message.warning('Wiring source is not a junction')
+    notify.warning('Wiring source is not a junction')
     set((s) => { s.wiringFrom = null }, false, `${actionPrefix}/invalidSource`)
     return
   }
 
   const dest = from.destination
   if (!dest || dest.type !== 'junction') {
-    message.warning('Junction wiring info not found')
+    notify.warning('Junction wiring info not found')
     set((s) => { s.wiringFrom = null }, false, `${actionPrefix}/noJunctionInfo`)
     return
   }
 
   const originalWire = state.wires.find((w) => w.id === dest.originalWireId)
   if (!originalWire) {
-    message.warning('Original wire not found')
+    notify.warning('Original wire not found')
     set((s) => { s.wiringFrom = null }, false, `${actionPrefix}/originalWireNotFound`)
     return
   }
@@ -575,7 +575,7 @@ function completeJunctionWiring(
   )
 
   if (exists) {
-    message.warning('Wire already exists')
+    notify.warning('Wire already exists')
     set((s) => { s.wiringFrom = null }, false, `${actionPrefix}/wireExists`)
     return
   }
@@ -584,13 +584,13 @@ function completeJunctionWiring(
   const newSegments = from.segments ?? []
 
   if (sharedSegments.length === 0) {
-    message.error('Cannot create branch wire: junction has no shared segments. Please place junction on a middle segment of the wire.')
+    notify.error('Cannot create branch wire: junction has no shared segments. Please place junction on a middle segment of the wire.')
     set((s) => { s.wiringFrom = null }, false, `${actionPrefix}/noSharedSegments`)
     return
   }
 
   if (newSegments.length === 0) {
-    message.error('Cannot create branch wire: no path segments calculated. Please try connecting again.')
+    notify.error('Cannot create branch wire: no path segments calculated. Please try connecting again.')
     set((s) => { s.wiringFrom = null }, false, `${actionPrefix}/noSegments`)
     return
   }
@@ -607,7 +607,7 @@ function completeJunctionWiring(
       (sharedEnd.z - newStart.z) ** 2
     )
     if (distance > 0.1) {
-      message.error('Shared segments do not connect to new segments at junction. Please try connecting again.')
+      notify.error('Shared segments do not connect to new segments at junction. Please try connecting again.')
       set((s) => { s.wiringFrom = null }, false, `${actionPrefix}/segmentMismatch`)
       return
     }
@@ -629,7 +629,7 @@ function completeJunctionWiring(
         (junctionPos.z - newStart.z) ** 2
       )
       if (junctionToSharedEnd > 0.1 || junctionToNewStart > 0.1) {
-        message.error('Junction position does not match segment connection point. Please try connecting again.')
+        notify.error('Junction position does not match segment connection point. Please try connecting again.')
         set((s) => { s.wiringFrom = null }, false, `${actionPrefix}/junctionPositionMismatch`)
         return
       }
@@ -646,7 +646,7 @@ function completeJunctionWiring(
     crossedWireIds = result.crossedWireIds
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Failed to resolve wire crossings'
-    message.error(`Cannot complete wire: ${errorMessage}`)
+    notify.error(`Cannot complete wire: ${errorMessage}`)
     set((s) => { s.wiringFrom = null }, false, `${actionPrefix}/crossingResolutionFailed`)
     return
   }
