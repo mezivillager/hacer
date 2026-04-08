@@ -59,6 +59,13 @@ export default defineConfig([
       '@typescript-eslint/unbound-method': 'off', // Too strict - React Compiler handles this
     },
   },
+  // shadcn/ui components - allow exporting constants alongside components (standard pattern)
+  {
+    files: ['src/components/ui/shadcn/**/*.{ts,tsx}'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+    },
+  },
   // Test files - allow unsafe arguments for test mocks
   // Note: We use Vector3 in createMockThreeEvent, but still need type assertions for nativeEvent
   // since we can't create full native event objects in tests
