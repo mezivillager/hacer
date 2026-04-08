@@ -17,6 +17,7 @@
     "noUncheckedSideEffectImports": true,
     "paths": {
       "@/*": ["./src/*"],
+      "@lib/*": ["./src/lib/*"],
       "@components/*": ["./src/components/*"],
       "@gates/*": ["./src/gates/*"],
       "@store/*": ["./src/store/*"],
