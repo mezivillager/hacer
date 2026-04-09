@@ -13,9 +13,12 @@ vi.mock('@/gates/icons', () => ({
   },
 }))
 
-// Mock antd Tooltip to just render children
-vi.mock('antd', () => ({
+// Mock shadcn Tooltip to just render children
+vi.mock('./shadcn', () => ({
   Tooltip: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  TooltipTrigger: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  TooltipContent: ({ children }: { children: React.ReactNode }) => <span>{children}</span>,
+  TooltipProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }))
 
 const setState = useCircuitStore.setState

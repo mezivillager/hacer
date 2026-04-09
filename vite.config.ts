@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { defineConfig } from 'vitest/config'
+import tailwindcss from '@tailwindcss/vite'
 import react, { reactCompilerPreset } from '@vitejs/plugin-react'
 import babel from '@rolldown/plugin-babel'
 import path from 'path'
@@ -15,6 +16,7 @@ export default defineConfig({
     __BUILD_APP_VERSION__: JSON.stringify(pkg.version),
   },
   plugins: [
+    tailwindcss(),
     react(),
     babel({
       presets: [reactCompilerPreset()],
@@ -23,6 +25,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      '@lib': path.resolve(__dirname, './src/lib'),
       '@components': path.resolve(__dirname, './src/components'),
       '@gates': path.resolve(__dirname, './src/gates'),
       '@store': path.resolve(__dirname, './src/store'),
