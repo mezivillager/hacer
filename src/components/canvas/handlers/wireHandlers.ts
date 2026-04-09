@@ -1,5 +1,5 @@
 import type { ThreeEvent } from '@react-three/fiber'
-import { message } from 'antd'
+import { notify } from '@lib/toast'
 import { useCircuitStore, circuitActions } from '@/store/circuitStore'
 import { findNearestWire } from '@/utils/wireHitTest'
 import type { Position } from '@/store/types'
@@ -51,7 +51,7 @@ export function handleWireClick(e: ThreeEvent<MouseEvent>): string | null {
         return previewWireId
       } catch (error) {
         const errorMsg = error instanceof Error ? error.message : String(error)
-        message.warning(errorMsg)
+        notify.warning(errorMsg)
         return null
       }
     }
@@ -64,7 +64,7 @@ export function handleWireClick(e: ThreeEvent<MouseEvent>): string | null {
         return targetWireId
       } catch (error) {
         const errorMsg = error instanceof Error ? error.message : String(error)
-        message.warning(errorMsg)
+        notify.warning(errorMsg)
         return targetWireId
       }
     }

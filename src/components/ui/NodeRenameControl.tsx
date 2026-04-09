@@ -1,9 +1,8 @@
 import { useState } from 'react'
-import { Button, Input, Space, Typography, message } from 'antd'
+import { notify } from '@lib/toast'
+import { Button, Input } from './shadcn'
 import { circuitActions, useCircuitStore } from '@/store/circuitStore'
 import { validateNodeName, type NodeNameValidationReason } from '@/utils/nodeNameValidation'
-
-const { Text } = Typography
 
 function reasonToMessage(reason: NodeNameValidationReason): string {
   switch (reason) {
@@ -43,7 +42,7 @@ export function NodeRenameControl() {
   const handleApply = () => {
     const validation = validateNodeName(draftName, existingNames, selectedNode.name)
     if (!validation.ok) {
-      message.error(reasonToMessage(validation.reason))
+      notify.error(reasonToMessage(validation.reason))
       return
     }
 
@@ -61,8 +60,8 @@ export function NodeRenameControl() {
 
   return (
     <div className="node-rename-control" data-testid="node-rename-control">
-      <Text strong>Rename Selected Node</Text>
-      <Space.Compact className="node-rename-row">
+      <span className="text-sm font-semibold text-foreground">Rename Selected Node</span>
+      <div className="node-rename-row flex">
         <Input
           value={draftName}
           onChange={(event) => {
@@ -72,21 +71,24 @@ export function NodeRenameControl() {
               [selectedNode.id]: nextValue,
             }))
           }}
-          onPressEnter={handleApply}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              handleApply()
+            }
+          }}
           placeholder="Node name"
-          size="small"
           data-testid="node-rename-input"
-          className="node-rename-input"
+          className="node-rename-input h-8 text-sm rounded-r-none"
         />
         <Button
-          type="primary"
-          size="small"
+          size="sm"
           onClick={handleApply}
           data-testid="node-rename-apply"
+          className="rounded-l-none"
         >
           Apply
         </Button>
-      </Space.Compact>
+      </div>
     </div>
   )
 }
