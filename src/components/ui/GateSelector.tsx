@@ -1,4 +1,4 @@
-import { Tooltip } from 'antd'
+import { Tooltip, TooltipTrigger, TooltipContent } from './shadcn'
 import { useCircuitStore } from '@/store/circuitStore'
 import type { GateType } from '@/store/types'
 import { getGateIcon } from '@/gates/icons'
@@ -32,22 +32,25 @@ export function GateSelector() {
         const isActive = placementMode === type
 
         return (
-          <Tooltip key={type} title={gateDescriptions[type]} placement="right">
-            <div
-              className={`gate-icon ${isActive ? 'active' : ''}`}
-              data-gate-type={type}
-              onClick={() => handleGateSelect(type, placementMode, startPlacement, cancelPlacement)}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  handleGateSelect(type, placementMode, startPlacement, cancelPlacement)
-                }
-              }}
-            >
-              <IconComponent size={36} color={isActive ? colors.primary : colors.text.secondary} />
-              <span className="gate-icon-label">{type}</span>
-            </div>
+          <Tooltip key={type}>
+            <TooltipTrigger asChild>
+              <div
+                className={`gate-icon ${isActive ? 'active' : ''}`}
+                data-gate-type={type}
+                onClick={() => handleGateSelect(type, placementMode, startPlacement, cancelPlacement)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    handleGateSelect(type, placementMode, startPlacement, cancelPlacement)
+                  }
+                }}
+              >
+                <IconComponent size={36} color={isActive ? colors.primary : colors.text.secondary} />
+                <span className="gate-icon-label">{type}</span>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent side="right">{gateDescriptions[type]}</TooltipContent>
           </Tooltip>
         )
       })}
