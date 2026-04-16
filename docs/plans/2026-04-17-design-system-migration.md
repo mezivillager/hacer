@@ -51,7 +51,7 @@ Read `docs/specs/2026-04-17-design-system-migration-design.md` end-to-end. Confi
 
 ## Chunks
 
-Each chunk is one commit. Implement in order; each chunk's verification gate must be green before moving to the next. Chunk files reference the spec for context — read them together.
+Each chunk produces one logical commit (called the "anchor commit") matching the table below; some chunks (notably 1, 2, and 7) include intermediate safety commits inside the chunk to keep CI green at every step. Implement in order; each chunk's verification gate must be green before moving to the next. Chunk files reference the spec for context — read them together.
 
 | # | Commit | File | Spec section |
 |---|---|---|---|
