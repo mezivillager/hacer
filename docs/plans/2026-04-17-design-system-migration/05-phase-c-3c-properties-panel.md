@@ -95,7 +95,60 @@ describe('useSelectedElement', () => {
     }
   });
 
-  // ...similar for wire, input, output, junction kinds...
+  it('returns wire-shaped object when a wire is selected', () => {
+    // Place two gates and connect them via store action; then select the wire
+    circuitActions.placeGate('AND', { x: 1, y: 0, z: 1 });
+    circuitActions.placeGate('OR', { x: 5, y: 0, z: 1 });
+    const [g1, g2] = useCircuitStore.getState().gates;
+    // Use whatever existing helper creates a wire between two gate pins
+    // (e.g. circuitActions.createWire) \u2014 verify exact action name at impl
+    circuitActions.createWire(
+      { type: 'gate', entityId: g1.id, pinId: 'out' },
+      { type: 'gate', entityId: g2.id, pinId: 'in1' },
+    );
+    const wireId = useCircuitStore.getState().wires[0].id;
+    circuitActions.selectWire(wireId);
+    const { result } = renderHook(() => useSelectedElement());
+    expect(result.current?.kind).toBe('wire');
+    if (result.current?.kind === 'wire') {
+      expect(result.current.id).toBe(wireId);
+      expect(result.current.from.entityId).toBe(g1.id);
+    }
+  });
+
+  it('returns input-shaped object when an input node is selected', () => {
+    circuitActions.placeInputNode({ x: 0, y: 0, z: 0 });
+    const id = useCircuitStore.getState().inputNodes[0].id;
+    circuitActions.selectNode(id, 'input');
+    const { result } = renderHook(() => useSelectedElement());
+    expect(result.current?.kind).toBe('input');
+    if (result.current?.kind === 'input') expect(result.current.id).toBe(id);
+  });
+
+  it('returns output-shaped object when an output node is selected', () => {
+    circuitActions.placeOutputNode({ x: 0, y: 0, z: 0 });
+    const id = useCircuitStore.getState().outputNodes[0].id;
+    circuitActions.selectNode(id, 'output');
+    const { result } = renderHook(() => useSelectedElement());
+    expect(result.current?.kind).toBe('output');
+  });
+
+  it('returns junction-shaped object when a junction is selected', () => {
+    circuitActions.placeJunction({ x: 0, y: 0, z: 0 });
+    const id = useCircuitStore.getState().junctions[0].id;
+    circuitActions.selectNode(id, 'junction');
+    const { result } = renderHook(() => useSelectedElement());
+    expect(result.current?.kind).toBe('junction');
+  });
+
+  it('returns null when selectedNodeId is set but selectedNodeType is missing (defensive)', () => {
+    useCircuitStore.setState((s) => {
+      s.selectedNodeId = 'orphan';
+      s.selectedNodeType = null;
+    });
+    const { result } = renderHook(() => useSelectedElement());
+    expect(result.current).toBeNull();
+  });
 
   it('priority: gate > wire > node when multiple slots are populated (defensive)', () => {
     circuitActions.placeGate('AND', { x: 1, y: 0, z: 1 });

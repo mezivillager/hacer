@@ -11,8 +11,10 @@
 ### Add (shadcn primitives)
 
 ```bash
-npx shadcn@latest add dialog tabs kbd
+npx shadcn@latest add dialog tabs
 ```
+
+`kbd` is not a standard shadcn CLI component — copy it manually from the design-system folder in Task 1.5 below.
 
 ### Create
 
@@ -41,8 +43,34 @@ npx shadcn@latest add dialog tabs kbd
 ### Task 1: Add primitives
 
 ```bash
-npx shadcn@latest add dialog tabs kbd
+npx shadcn@latest add dialog tabs
 ```
+
+---
+
+### Task 1.5: Copy `kbd` primitive from design-system
+
+`kbd` is not a standard shadcn CLI component — it's a small custom primitive defined in `design-system/components/ui/kbd.tsx`. Copy it into `src/components/ui-kit/`.
+
+- [ ] **Step 1.5.1: Copy the file**
+
+```bash
+cp design-system/components/ui/kbd.tsx src/components/ui-kit/kbd.tsx
+```
+
+- [ ] **Step 1.5.2: Adjust imports if needed**
+
+Open `src/components/ui-kit/kbd.tsx`. If it imports from `@/lib/utils` (the design-system convention), the path resolves identically in HACER (we set `aliases.utils` to `@/lib/utils` in `components.json` chunk 2). No change needed.
+
+If it imports from `next/font` or any Next-only path, replace with the equivalent (likely just dropping the import — `kbd` is typically a styled `<kbd>` element with no font-specific dependency).
+
+- [ ] **Step 1.5.3: Verify typecheck**
+
+```bash
+pnpm run typecheck
+```
+
+Expected: green.
 
 ---
 

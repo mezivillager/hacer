@@ -348,9 +348,9 @@ App.tsx still imports the deleted components. Commit happens after Task 5.
 // src/App.tsx
 import { CanvasArea } from '@/components/canvas/CanvasArea';
 import { StatusBar } from '@/components/ui/StatusBar';
-import './index.css';
 
 // Phase A scaffold: bare layout. Replaced by themed shell in Phase B onward.
+// Note: globals.css/index.css is imported once in main.tsx, not here.
 function App() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
