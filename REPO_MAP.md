@@ -58,9 +58,16 @@ src/
 ├── components/        # React UI components
 │   ├── canvas/       # React Three Fiber 3D components
 │   │   ├── Scene/    # 3D scene components (Scene, SceneGrid, GroundPlane, PlacementPreview)
-│   │   └── handlers/ # Canvas event handlers
-│   └── ui/           # Ant Design based UI components (Sidebar, GateSelector)
-│       └── handlers/ # UI event handlers
+│   │   ├── handlers/ # Canvas event handlers
+│   │   └── hooks/    # useThemeColor (CSS-var \u2192 THREE.Color resolver)
+│   ├── ui/           # HACER shell components (CompactToolbar, RightActionBar,
+│   │   │             #   PropertiesPanel, HelpBar, KeyboardShortcutsModal,
+│   │   │             #   StatusBar, DemoOverlay, coming-soon helper, gate glyphs)
+│   └── ui-kit/       # shadcn/ui primitives (button, tooltip, popover, dialog,
+│                     #   tabs, switch, separator, input, label, card, kbd,
+│                     #   theme-provider). Drop-in copies via `npx shadcn add`.
+├── lib/              # notify (Sonner-backed), utils (cn helper), demoTour
+├── styles/           # globals.css (Tailwind v4 + OKLch tokens + Geist fonts)
 ├── gates/            # Gate components and logic
 │   ├── components/   # Individual gate components (NandGate, AndGate, etc.) - flat orientation
 │   ├── common/       # Shared gate components (BaseGate, GatePin, WireStub)
@@ -404,7 +411,11 @@ hacer/
 ### ✅ Phase 0.25: Current Architecture (Active)
 - **State Management**: Zustand with Immer middleware
 - **3D Rendering**: React Three Fiber with Drei helpers
-- **UI Framework**: Ant Design components
+- **UI Framework**: shadcn/ui + Radix UI primitives + Tailwind CSS v4 + OKLch design tokens (migrated from Ant Design in 2026-04)
+- **Toast notifications**: Sonner via `notify` helper (`@/lib/notify`)
+- **Theme**: `next-themes` tri-state (light/dark/system); 3D canvas reads CSS vars via `useThemeColor`
+- **Icons**: Lucide React + inline SVG gate glyphs (`@/components/ui/icons/GateGlyphs`)
+- **Font**: Geist Sans + Geist Mono (variable woff2 from `geist` npm package, served from `/public/fonts/`)
 - **Testing**: Vitest (unit) + Playwright (E2E)
 - **Logic Separation**: Pure logic in `src/simulation/`, state mutations in `src/store/actions/`
 - **Grid System**: Grid-based placement with section line validation (`src/utils/grid.ts`)
