@@ -1,30 +1,14 @@
-import { Layout } from 'antd'
-import { ThemeProvider } from './theme'
-import { Sidebar } from './components/ui/Sidebar'
-import { CanvasArea } from './components/canvas/CanvasArea'
-import { DemoOverlay } from './components/ui/DemoOverlay'
-import { StatusBar } from './components/ui/StatusBar'
-import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
-import './App.css'
+import { CanvasArea } from '@/components/canvas/CanvasArea'
+import { StatusBar } from '@/components/ui/StatusBar'
 
-function AppContent() {
-  useKeyboardShortcuts()
-
-  return (
-    <Layout className="app-layout">
-      <Sidebar />
-      <CanvasArea />
-      <DemoOverlay />
-      <StatusBar />
-    </Layout>
-  )
-}
-
+// Phase A scaffold: bare layout. Replaced by themed shell in Phase B onward.
+// Note: globals.css/index.css is imported once in main.tsx, not here.
 function App() {
   return (
-    <ThemeProvider>
-      <AppContent />
-    </ThemeProvider>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
+      <CanvasArea />
+      <StatusBar />
+    </div>
   )
 }
 

@@ -1,4 +1,3 @@
-import { Layout, Typography } from 'antd'
 import { Scene } from './Scene'
 import { GateRenderer } from '@/gates'
 import { NodeRenderer } from '@/nodes'
@@ -10,9 +9,6 @@ import { calculateNodePinPosition } from '@/nodes/config'
 import { handlePinClick, handleInputToggle, handleGateClick, handleInputNodeToggle, handleNodeClick, handleNodePinClick, handleJunctionClick } from './handlers/canvasHandlers'
 import { getSignalSourceValue } from '@/store/actions/simulationActions/simulationActions'
 import { isSignalHigh } from '@/simulation/signalDisplay'
-
-const { Content } = Layout
-const { Text } = Typography
 
 // Get actions once - these are stable references that don't change
 const { getPinWorldPosition } = circuitActions
@@ -100,7 +96,10 @@ export function CanvasArea() {
   })()
 
   return (
-    <Content className={`app-content ${isPlacing ? 'placing' : ''} ${isPlacing && isPlacementInvalid ? 'placing-invalid' : ''} ${isWiring ? 'wiring' : ''} ${isDragActive ? 'dragging' : ''} ${isDragInvalid ? 'dragging-invalid' : ''}`}>
+    <div
+      className={`app-content ${isPlacing ? 'placing' : ''} ${isPlacing && isPlacementInvalid ? 'placing-invalid' : ''} ${isWiring ? 'wiring' : ''} ${isDragActive ? 'dragging' : ''} ${isDragInvalid ? 'dragging-invalid' : ''}`}
+      style={{ position: 'relative', flex: 1, width: '100%', overflow: 'hidden' }}
+    >
       <Scene>
         {/* Render all wires using unified Wire3D */}
         {wires.map((wire) => {
@@ -222,10 +221,21 @@ export function CanvasArea() {
         })}
       </Scene>
 
-      {/* Help overlay */}
-      <div className="help-overlay">
-        <Text type="secondary">{helpText}</Text>
+      {/* Help overlay (Phase A — restyled in Phase C-3d HelpBar) */}
+      <div
+        className="help-overlay"
+        style={{
+          position: 'absolute',
+          bottom: 8,
+          left: 8,
+          right: 8,
+          fontSize: 12,
+          opacity: 0.7,
+          pointerEvents: 'none',
+        }}
+      >
+        {helpText}
       </div>
-    </Content>
+    </div>
   )
 }

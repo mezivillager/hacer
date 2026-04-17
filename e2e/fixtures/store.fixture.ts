@@ -6,7 +6,6 @@
  */
 
 import { test as base } from '@playwright/test'
-import { UI_SELECTORS } from '../selectors'
 import { APP_ENTRY_URL, TIMEOUTS } from '../config/constants'
 
 /**
@@ -26,8 +25,9 @@ export const test = base.extend<{ setupComplete: void }>({
   setupComplete: [
     async ({ page }, use) => {
       await page.goto(APP_ENTRY_URL)
-      await page.waitForSelector(UI_SELECTORS.appTitle, { timeout: TIMEOUTS.selector })
-      // Wait for store to be available (required for store tests)
+      // Phase A note: appTitle selector dropped \u2014 lived in deleted Sidebar.
+      // Store-global availability is the canonical mount signal for @store specs.
+      // Full UI_SELECTORS rewrite happens in Phase E (chunk 9).
       await page.waitForFunction(() => window.__CIRCUIT_STORE__ !== undefined, { timeout: TIMEOUTS.store })
       // Skip scene ready wait - store tests don't need 3D scene
       await use()
