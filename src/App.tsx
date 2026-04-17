@@ -4,6 +4,7 @@ import { Toaster } from 'sonner'
 import { CanvasArea } from '@/components/canvas/CanvasArea'
 import { StatusBar } from '@/components/ui/StatusBar'
 import { CompactToolbar } from '@/components/ui/CompactToolbar'
+import { RightActionBar } from '@/components/ui/RightActionBar'
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           <CompactToolbar />
           <div className="flex-1 relative">
             <CanvasArea />
+            <RightActionBar />
           </div>
         </div>
         <StatusBar />
