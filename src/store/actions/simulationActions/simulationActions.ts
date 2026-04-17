@@ -1,4 +1,4 @@
-import { message } from 'antd'
+import { notify } from '@/lib/notify'
 import { evaluateCircuit } from '@/simulation/topologicalEval'
 import type { SimulationActions, CircuitStore } from '../../types'
 
@@ -65,7 +65,7 @@ export const createSimulationActions = (set: SetState): SimulationActions => ({
     if (newCycle !== undefined) {
       const ids =
         newCycle.length > 0 ? newCycle.join(', ') : 'unknown gates'
-      message.error(
+      notify.error(
         `Combinational cycle detected. Gates involved: ${ids}. This simulation step had no effect.`
       )
     }

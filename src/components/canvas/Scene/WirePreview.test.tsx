@@ -1,20 +1,18 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render } from '@testing-library/react'
-import { message } from 'antd'
+import { notify } from '@/lib/notify'
 import { WirePreview } from './WirePreview'
 import { useCircuitStore } from '@/store/circuitStore'
 import { calculateWirePath } from '@/utils/wiringScheme'
 
-// Mock antd message
-vi.mock('antd', async () => {
-  const actual = await vi.importActual('antd')
-  return {
-    ...actual,
-    message: {
-      error: vi.fn(),
-    },
-  }
-})
+vi.mock('@/lib/notify', () => ({
+  notify: {
+    error: vi.fn(),
+    warning: vi.fn(),
+    info: vi.fn(),
+    success: vi.fn(),
+  },
+}))
 
 // Mock wiringScheme/core
 vi.mock('@/utils/wiringScheme/core', () => ({
@@ -185,7 +183,7 @@ describe('WirePreview', () => {
     expect(consoleErrorSpy).toHaveBeenCalledWith('[WirePreview] Pathfinding error:', pathfindingError)
 
     // Should show error notification
-    expect(message.error).toHaveBeenCalledWith('Unable to create wire path. Please try a different connection.')
+    expect(notify.error).toHaveBeenCalledWith('Unable to create wire path. Please try a different connection.')
 
     // Should cancel wiring
     expect(vi.mocked(circuitActions.cancelWiring)).toHaveBeenCalled()

@@ -26,17 +26,17 @@ vi.mock('@/utils/wireHitTest', () => ({
   },
 }))
 
-// Mock Ant Design message (prevents React DOM rendering in Node/CI)
-vi.mock('antd', () => ({
-  message: {
+vi.mock('@/lib/notify', () => ({
+  notify: {
     warning: vi.fn(),
     error: vi.fn(),
     info: vi.fn(),
+    success: vi.fn(),
   },
 }))
 
 import { handleWireClick } from './wireHandlers'
-import { message } from 'antd'
+import { notify } from '@/lib/notify'
 import { useCircuitStore } from '@/store/circuitStore'
 import type { ThreeEvent } from '@react-three/fiber'
 
@@ -238,7 +238,7 @@ describe('wireHandlers', () => {
       const result = handleWireClick(mockEvent)
       expect(result).toBe('wire-1')
       expect(mockPlaceJunctionOnWire).toHaveBeenCalled()
-      expect(message.warning).toHaveBeenCalledWith(
+      expect(notify.warning).toHaveBeenCalledWith(
         'Junction can only be placed at wire corners (section line intersections). Please click on a corner where segments meet.'
       )
     })
@@ -288,7 +288,7 @@ describe('wireHandlers', () => {
       const result = handleWireClick(mockEvent)
       expect(result).toBe(null)
       expect(mockPlaceJunctionOnWire).toHaveBeenCalledWith({ x: 5, y: 0.2, z: 5 }, 'wire-3')
-      expect(message.warning).toHaveBeenCalledWith('Could not calculate position on wire')
+      expect(notify.warning).toHaveBeenCalledWith('Could not calculate position on wire')
       expect(mockFindNearestWire).not.toHaveBeenCalled()
     })
 
