@@ -7,6 +7,7 @@ import { CompactToolbar } from '@/components/ui/CompactToolbar'
 import { RightActionBar } from '@/components/ui/RightActionBar'
 import { PropertiesPanel } from '@/components/ui/PropertiesPanel'
 import { HelpBar } from '@/components/ui/HelpBar'
+import { DemoOverlay } from '@/components/ui/DemoOverlay'
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
 
 function AppContent() {
@@ -21,7 +22,9 @@ function AppContent() {
         <CanvasArea />
         <RightActionBar />
         <PropertiesPanel />
+        <StatusBar />
         <HelpBar />
+        <DemoOverlay />
       </div>
     </div>
   )
@@ -32,7 +35,6 @@ function App() {
     <ThemeProvider>
       <TooltipProvider>
         <AppContent />
-        <StatusBar />
         <Toaster position="top-right" richColors closeButton />
       </TooltipProvider>
     </ThemeProvider>
