@@ -51,10 +51,18 @@ function PropertiesPanelInner({ selected }: { selected: SelectedElement }) {
     selected.kind === 'input' || selected.kind === 'output' ? selected.name : ''
   const [localLabel, setLocalLabel] = useState(initialName)
   const inputRef = useRef<HTMLInputElement>(null)
+  // When true, the next onBlur skips committing. Used by Escape so the
+  // programmatic blur after cancelEdit does not race with React's
+  // batched setState and accidentally commit the not-yet-reset value.
+  const skipNextCommitRef = useRef(false)
 
   const isEditableNode = selected.kind === 'input' || selected.kind === 'output'
 
   const commitName = () => {
+    if (skipNextCommitRef.current) {
+      skipNextCommitRef.current = false
+      return
+    }
     if (!isEditableNode) return
     const trimmed = localLabel.trim()
     if (!trimmed) {
@@ -71,7 +79,10 @@ function PropertiesPanelInner({ selected }: { selected: SelectedElement }) {
   }
 
   const cancelEdit = () => {
-    if (isEditableNode) setLocalLabel(selected.name)
+    if (isEditableNode) {
+      skipNextCommitRef.current = true
+      setLocalLabel(selected.name)
+    }
   }
 
   const handleDelete = () => {

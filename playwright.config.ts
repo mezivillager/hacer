@@ -10,7 +10,12 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: false, // Temporarily disabled for debugging
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 4 : undefined,
+  // @ui specs share a worker-scoped browser context for R3F scene
+  // initialization speed; running them across multiple workers locally
+  // surfaces a pre-existing test-isolation flake. Fixed worker count
+  // keeps the suite deterministic. CI uses 2 workers as a balance of
+  // speed and isolation.
+  workers: process.env.CI ? 2 : 1,
   reporter: 'html',
   timeout: 30000,
   use: {
@@ -18,10 +23,14 @@ export default defineConfig({
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     viewport: { width: 1280, height: 720 },
-    // Enable WebGL support for 3D canvas testing
+    // Enable WebGL support for 3D canvas testing.
+    // --use-gl=desktop fails in headless Chromium on this environment
+    // ("BindToCurrentSequence failed"); fall back to ANGLE+SwiftShader,
+    // which is software-rendered but reliable across machines.
     launchOptions: {
       args: [
-        '--use-gl=desktop',
+        '--use-angle=swiftshader',
+        '--enable-unsafe-swiftshader',
         '--enable-webgl',
         '--ignore-gpu-blocklist',
       ],

@@ -14,7 +14,6 @@
  */
 
 import { expect, Page } from '@playwright/test'
-import { UI_SELECTORS } from '../../selectors'
 
 async function readStoreCount(page: Page, slot: 'gates' | 'wires'): Promise<number> {
   return page.evaluate((s) => {
@@ -60,22 +59,7 @@ export async function expectSimulationPaused(page: Page): Promise<void> {
   await expect.poll(() => readSimulationRunning(page), { timeout: 5000 }).toBe(false)
 }
 
-/**
- * Assert a button is visible (UI-driven \u2014 used by @ui specs only).
- */
-export async function expectButtonVisible(
-  page: Page,
-  buttonKey: keyof typeof UI_SELECTORS.buttons
-): Promise<void> {
-  await expect(page.locator(UI_SELECTORS.buttons[buttonKey])).toBeVisible()
-}
-
-/**
- * Assert a button is enabled (UI-driven \u2014 used by @ui specs only).
- */
-export async function expectButtonEnabled(
-  page: Page,
-  buttonKey: keyof typeof UI_SELECTORS.buttons
-): Promise<void> {
-  await expect(page.locator(UI_SELECTORS.buttons[buttonKey])).toBeEnabled()
-}
+// expectButtonVisible / expectButtonEnabled removed in Phase E \u2014 the
+// legacy UI_SELECTORS.buttons map no longer exists, and no callers
+// reference them. New @ui specs target buttons directly via their
+// data-testid selectors from UI_SELECTORS.toolbar.
