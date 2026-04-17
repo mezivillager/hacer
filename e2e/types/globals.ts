@@ -113,6 +113,10 @@ export interface CircuitActionsAPI {
   simulationTick: () => void
   getPinWorldPosition: (gateId: string, pinId: string) => { x: number; y: number; z: number } | null
   selectGate: (gateId: string | null) => void
+  selectWire: (wireId: string | null) => void
+  selectNode: (nodeId: string, nodeType: NodeType) => void
+  deselectNode: () => void
+  deselectAll: () => void
   removeGate: (gateId: string) => void
   rotateGate: (gateId: string, axis: 'x' | 'y' | 'z', angle: number) => void
   updateGatePosition: (gateId: string, position: { x: number; y: number; z: number }) => void

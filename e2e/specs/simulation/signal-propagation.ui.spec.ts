@@ -22,7 +22,6 @@ import {
   expectSimulationRunning,
 } from '../../helpers/assertions'
 
-// TODO(design-system-migration): re-enable in Phase E once new shell selectors land.
 // TODO: Re-enable once UI e2e test stability is improved
 // Skipped due to flaky behavior causing test slowdowns
 test.describe.skip('Signal Propagation @ui @simulation', () => {
