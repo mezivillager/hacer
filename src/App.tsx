@@ -5,6 +5,7 @@ import { CanvasArea } from '@/components/canvas/CanvasArea'
 import { StatusBar } from '@/components/ui/StatusBar'
 import { CompactToolbar } from '@/components/ui/CompactToolbar'
 import { RightActionBar } from '@/components/ui/RightActionBar'
+import { PropertiesPanel } from '@/components/ui/PropertiesPanel'
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <div className="flex-1 relative">
             <CanvasArea />
             <RightActionBar />
+            <PropertiesPanel />
           </div>
         </div>
         <StatusBar />
