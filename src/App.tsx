@@ -1,17 +1,23 @@
 import { ThemeProvider } from '@/components/ui-kit/theme-provider'
+import { TooltipProvider } from '@/components/ui-kit/tooltip'
 import { Toaster } from 'sonner'
 import { CanvasArea } from '@/components/canvas/CanvasArea'
 import { StatusBar } from '@/components/ui/StatusBar'
+import { CompactToolbar } from '@/components/ui/CompactToolbar'
 
-// Phase B scaffold: themed shell, Sonner mounted. Shell components land in Phase C.
 function App() {
   return (
     <ThemeProvider>
-      <div className="flex flex-col h-screen w-screen overflow-hidden bg-background text-foreground">
-        <CanvasArea />
+      <TooltipProvider>
+        <div className="flex h-screen w-screen overflow-hidden bg-background text-foreground">
+          <CompactToolbar />
+          <div className="flex-1 relative">
+            <CanvasArea />
+          </div>
+        </div>
         <StatusBar />
-      </div>
-      <Toaster position="top-right" richColors closeButton />
+        <Toaster position="top-right" richColors closeButton />
+      </TooltipProvider>
     </ThemeProvider>
   )
 }

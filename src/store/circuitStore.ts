@@ -143,6 +143,7 @@ export const circuitActions = {
   removeGate: (...args: Parameters<CircuitStore['removeGate']>) => useCircuitStore.getState().removeGate(...args),
   selectGate: (...args: Parameters<CircuitStore['selectGate']>) => useCircuitStore.getState().selectGate(...args),
   selectWire: (...args: Parameters<CircuitStore['selectWire']>) => useCircuitStore.getState().selectWire(...args),
+  deselectAll: () => useCircuitStore.getState().deselectAll(),
   updateGatePosition: (...args: Parameters<CircuitStore['updateGatePosition']>) => useCircuitStore.getState().updateGatePosition(...args),
   updateGateRotation: (...args: Parameters<CircuitStore['updateGateRotation']>) => useCircuitStore.getState().updateGateRotation(...args),
   rotateGate: (...args: Parameters<CircuitStore['rotateGate']>) => useCircuitStore.getState().rotateGate(...args),
