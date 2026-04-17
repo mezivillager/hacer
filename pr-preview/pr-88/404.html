@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/hacer/pr-preview/pr-88/favicon.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/hacer/pr-preview/pr-88/favicon-16x16.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HACER</title>
+    <script>
+      // Avoid theme flash before React hydration. Mirrors next-themes runtime
+      // behavior for SSR-less Vite apps. Single class write on documentElement.
+      try {
+        var stored = localStorage.getItem('theme');
+        var theme = stored || 'system';
+        var dark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if (dark) document.documentElement.classList.add('dark');
+      } catch (_) {}
+    </script>
+    <script type="module" crossorigin src="/hacer/pr-preview/pr-88/assets/index-BGXFkUad.js"></script>
+    <link rel="stylesheet" crossorigin href="/hacer/pr-preview/pr-88/assets/index-f3kpSXAw.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
