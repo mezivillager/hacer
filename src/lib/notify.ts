@@ -1,14 +1,10 @@
-type NotifyOpts = { description?: string; duration?: number }
-type NotifyFn = (message: string, opts?: NotifyOpts) => void
+import { toast } from 'sonner'
 
-const stubLog = (level: string): NotifyFn => (msg, opts) => {
-  // Temporary stub; replaced by Sonner-backed implementation in Phase B.
-  console.warn(`[notify.${level}]`, msg, opts ?? '')
-}
+type NotifyOpts = { description?: string; duration?: number }
 
 export const notify = {
-  success: stubLog('success'),
-  info: stubLog('info'),
-  error: stubLog('error'),
-  warning: stubLog('warning'),
+  success: (msg: string, opts?: NotifyOpts) => toast.success(msg, opts),
+  info: (msg: string, opts?: NotifyOpts) => toast.info(msg, opts),
+  error: (msg: string, opts?: NotifyOpts) => toast.error(msg, opts),
+  warning: (msg: string, opts?: NotifyOpts) => toast.warning(msg, opts),
 }
