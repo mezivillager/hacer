@@ -57,8 +57,13 @@
   --sidebar-accent-foreground: oklch(0.18 0.01 240);
   --sidebar-border: oklch(0.88 0.01 240);
   --sidebar-ring: oklch(0.50 0.15 180);
-  --canvas-bg: oklch(0.95 0.01 240);
-  --canvas-grid: oklch(0.82 0.02 240);
+  /* Canvas tokens use HEX (not OKLch) because they are consumed by
+     THREE.js materials via useThemeColor; THREE.Color.setStyle does
+     not parse OKLch reliably in three@0.183. CSS rendering (e.g.
+     Scene.tsx's var(--canvas-bg) background) handles hex equally
+     well. Tuned for visible-but-subtle grid contrast. */
+  --canvas-bg: #f0f1f5;
+  --canvas-grid: #b8bdc4;
 }
 
 /* Dark theme — EDA/CAD inspired */
@@ -97,8 +102,8 @@
   --sidebar-accent-foreground: oklch(0.92 0 0);
   --sidebar-border: oklch(0.25 0.01 240);
   --sidebar-ring: oklch(0.65 0.15 180);
-  --canvas-bg: oklch(0.12 0.01 240);
-  --canvas-grid: oklch(0.22 0.02 240);
+  --canvas-bg: #14171d;
+  --canvas-grid: #353a42;
 }
 
 @theme inline {
