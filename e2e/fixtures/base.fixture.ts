@@ -26,7 +26,9 @@ export const test = base.extend<{ setupComplete: void }>({
   setupComplete: [
     async ({ page }, use) => {
       await page.goto(APP_ENTRY_URL)
-      await page.waitForSelector(UI_SELECTORS.appTitle, { timeout: TIMEOUTS.selector })
+      // Phase A note: appTitle selector dropped \u2014 the title element lived in
+      // the now-deleted Sidebar. Canvas presence is sufficient mount signal.
+      // Full UI_SELECTORS rewrite happens in Phase E (chunk 9).
       await page.waitForSelector(UI_SELECTORS.canvas, { timeout: TIMEOUTS.selector })
       await waitForSceneReady(page)
       await use()
