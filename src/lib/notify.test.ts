@@ -1,31 +1,35 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+
+vi.mock('sonner', () => ({
+  toast: {
+    success: vi.fn(),
+    info: vi.fn(),
+    error: vi.fn(),
+    warning: vi.fn(),
+  },
+}))
+
 import { notify } from './notify'
+import { toast } from 'sonner'
 
-describe('notify (Phase A stub)', () => {
-  let warnSpy: ReturnType<typeof vi.spyOn>
-
+describe('notify (Sonner-backed)', () => {
   beforeEach(() => {
-    warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
-  })
-
-  afterEach(() => {
-    warnSpy.mockRestore()
+    vi.clearAllMocks()
   })
 
   it.each(['success', 'info', 'error', 'warning'] as const)(
-    'exports notify.%s as a callable function',
+    'forwards notify.%s to sonner toast.%s',
     (level) => {
-      expect(typeof notify[level]).toBe('function')
+      notify[level]('hello')
+      expect(toast[level]).toHaveBeenCalledWith('hello', undefined)
     },
   )
 
-  it('routes calls to console.warn with the level prefix', () => {
-    notify.error('something broke')
-    expect(warnSpy).toHaveBeenCalledWith('[notify.error]', 'something broke', '')
-  })
-
-  it('forwards opts when provided', () => {
-    notify.success('done', { description: 'all good' })
-    expect(warnSpy).toHaveBeenCalledWith('[notify.success]', 'done', { description: 'all good' })
+  it('forwards options when provided', () => {
+    notify.error('boom', { description: 'details', duration: 1000 })
+    expect(toast.error).toHaveBeenCalledWith('boom', {
+      description: 'details',
+      duration: 1000,
+    })
   })
 })

@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { defineConfig } from 'vitest/config'
 import react, { reactCompilerPreset } from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
 import babel from '@rolldown/plugin-babel'
 import path from 'path'
 
@@ -15,6 +16,7 @@ export default defineConfig({
     __BUILD_APP_VERSION__: JSON.stringify(pkg.version),
   },
   plugins: [
+    tailwindcss(),
     react(),
     babel({
       presets: [reactCompilerPreset()],
