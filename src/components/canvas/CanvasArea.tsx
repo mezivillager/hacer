@@ -97,8 +97,7 @@ export function CanvasArea() {
 
   return (
     <div
-      className={`app-content ${isPlacing ? 'placing' : ''} ${isPlacing && isPlacementInvalid ? 'placing-invalid' : ''} ${isWiring ? 'wiring' : ''} ${isDragActive ? 'dragging' : ''} ${isDragInvalid ? 'dragging-invalid' : ''}`}
-      style={{ position: 'relative', flex: 1, width: '100%', overflow: 'hidden' }}
+      className={`app-content w-full h-full relative overflow-hidden ${isPlacing ? 'placing' : ''} ${isPlacing && isPlacementInvalid ? 'placing-invalid' : ''} ${isWiring ? 'wiring' : ''} ${isDragActive ? 'dragging' : ''} ${isDragInvalid ? 'dragging-invalid' : ''}`}
     >
       <Scene>
         {/* Render all wires using unified Wire3D */}
