@@ -1,12 +1,14 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { message } from 'antd'
+import { notify } from '@/lib/notify'
 import { useCircuitStore } from '../../circuitStore'
 import { getSignalSourceValue } from './simulationActions'
 
-vi.mock('antd', () => ({
-  message: {
+vi.mock('@/lib/notify', () => ({
+  notify: {
     error: vi.fn(),
     warning: vi.fn(),
+    info: vi.fn(),
+    success: vi.fn(),
   },
 }))
 
@@ -214,12 +216,12 @@ describe('simulationActions', () => {
       expect(err?.type).toBe('cycle')
       expect(err?.involvedGateIds).toContain(gateA.id)
       expect(err?.involvedGateIds).toContain(gateB.id)
-      expect(message.error).toHaveBeenCalledWith(
+      expect(notify.error).toHaveBeenCalledWith(
         expect.stringContaining('Combinational cycle detected')
       )
     })
 
-    it('does not show duplicate message.error on repeated cycle ticks', () => {
+    it('does not show duplicate notify.error on repeated cycle ticks', () => {
       const gateA = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
       const gateB = getState().addGate('NAND', { x: 4, y: 0, z: 0 })
       getState().addWire(
@@ -234,11 +236,11 @@ describe('simulationActions', () => {
       )
 
       getState().simulationTick()
-      expect(message.error).toHaveBeenCalledTimes(1)
+      expect(notify.error).toHaveBeenCalledTimes(1)
 
       // Second tick while cycle persists — no additional toast
       getState().simulationTick()
-      expect(message.error).toHaveBeenCalledTimes(1)
+      expect(notify.error).toHaveBeenCalledTimes(1)
     })
 
     it('clears lastSimulationError after cycle is broken and tick succeeds', () => {

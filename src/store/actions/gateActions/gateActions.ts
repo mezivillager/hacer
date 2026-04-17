@@ -1,4 +1,4 @@
-import { message } from 'antd'
+import { notify } from '@/lib/notify'
 import type { GateActions, GateInstance, GateType, Pin, Position, CircuitStore } from '../../types'
 import { snapToGrid } from '@/utils/grid'
 import { useCircuitStore } from '../../circuitStore'
@@ -302,7 +302,7 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
 
         if (!newPath) {
           // Path calculation failed - remove disconnected wire
-          message.error('Unable to recalculate wire path. Wire has been disconnected.')
+          notify.error('Unable to recalculate wire path. Wire has been disconnected.')
           console.error(`[recalculateWiresForGate] Failed to calculate path for wire ${wire.id} - pins or gates not found`, {
             wireId: wire.id,
             fromGateId,
@@ -342,7 +342,7 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
         updateWireSegments(wire.id, combinedSegments, crossedWireIds)
       } catch (error) {
         // Exception occurred - remove disconnected wire
-        message.error('Failed to recalculate wire. Wire has been disconnected.')
+        notify.error('Failed to recalculate wire. Wire has been disconnected.')
         console.error(`[recalculateWiresForGate] Failed to recalculate wire ${wire.id}:`, error)
         console.error(`[recalculateWiresForGate] Wire context:`, {
           wireId: wire.id,
