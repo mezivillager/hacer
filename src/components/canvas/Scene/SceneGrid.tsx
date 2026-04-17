@@ -1,22 +1,23 @@
 import { Grid } from '@react-three/drei'
-import { colors } from '@/theme'
+import { useThemeColor } from '../hooks/useThemeColor'
 import { GRID_SIZE } from '@/utils/grid'
 
 /**
- * Grid component - static, never re-renders.
- * Always uses default colors regardless of interaction state.
- * Grid cell size matches the logical grid system (GRID_SIZE = 2.0).
+ * Grid component. Cell + section colors read from --canvas-grid (a single
+ * uniform value per Phase 0.25 design choice) so the grid flips with the
+ * active theme.
  */
 export function SceneGrid() {
+  const gridColor = useThemeColor('--canvas-grid')
   return (
     <Grid
       args={[20, 20]}
       cellSize={GRID_SIZE}
       cellThickness={1}
-      cellColor={colors.grid.cell}
+      cellColor={gridColor}
       sectionSize={GRID_SIZE * 2}
       sectionThickness={1.5}
-      sectionColor={colors.grid.section}
+      sectionColor={gridColor}
       fadeDistance={30}
       fadeStrength={1}
       followCamera={false}
