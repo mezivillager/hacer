@@ -1,5 +1,4 @@
 import { Line } from '@react-three/drei'
-import { useThemeColor } from './hooks/useThemeColor'
 import { colors } from '@/theme'
 import type { WireSegment, WirePath } from '@/utils/wiringScheme/types'
 import { WIRE_HEIGHT, HOP_HEIGHT } from '@/utils/wiringScheme/types'
@@ -34,11 +33,6 @@ export function Wire3D({
   isPreview = false,
   isSelected = false,
 }: Wire3DProps) {
-  // Theme-aware default wire color. Active/selected colors stay as
-  // semantic signal colors (high signal = green, selected = blue) so
-  // they remain distinguishable from idle wires in both themes.
-  const themeDefault = useThemeColor('--muted-foreground')
-
   // Guard against undefined positions
   if (!start || !end) return null
 
@@ -55,12 +49,16 @@ export function Wire3D({
 
   const pathSegments: WireSegment[] = precomputedPath.segments
 
-  // Wire color - use selected color if selected, otherwise use active/inactive based on signal
+  // Wire color - use selected color if selected, otherwise use active/inactive
+  // based on signal. Idle wires keep their copper color in both themes (per
+  // user preference; copper is distinguishable from grid lines in both light
+  // and dark, and theme-tokenizing it made wires invisible against grid in
+  // light mode).
   const wireColor = isSelected
     ? colors.wire.selected
     : isActive
       ? colors.wire.active
-      : themeDefault
+      : colors.wire.default
 
   /**
    * Generate points along a semi-circular arc.

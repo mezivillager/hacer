@@ -1,18 +1,21 @@
 import { Canvas } from '@react-three/fiber'
 import { Suspense } from 'react'
-import { useThemeColor } from '../hooks/useThemeColor'
 import { SceneContent } from './SceneContent'
 import { SceneReadyBridge } from './SceneReadyBridge'
 import type { SceneProps } from './types'
 
+// Reference --canvas-bg directly so the BROWSER resolves the OKLch value
+// (correctly handles theme flips via the .dark class on <html>). Roundtripping
+// through THREE.Color in JS was lossy and produced a near-white sRGB hex
+// even when --canvas-bg resolved to dark.
+const bgStyle = { background: 'var(--canvas-bg)' }
+
 /**
  * Scene - Main 3D canvas component
- * Wraps the scene in a React Three Fiber Canvas. Background colour
- * reads from --canvas-bg so the 3D area flips with the active theme.
+ * Wraps the scene in a React Three Fiber Canvas. Background colour reads
+ * from --canvas-bg so the 3D area flips with the active theme.
  */
 export function Scene({ children }: SceneProps) {
-  const bg = useThemeColor('--canvas-bg')
-  const bgStyle = { background: `#${bg.getHexString()}` }
   return (
     <Canvas
       shadows
