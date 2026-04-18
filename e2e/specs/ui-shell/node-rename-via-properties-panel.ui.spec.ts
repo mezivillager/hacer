@@ -3,13 +3,22 @@ import { UI_SELECTORS } from '../../selectors'
 import { clearAllViaStore } from '../../helpers/actions'
 
 test.describe('Node rename via PropertiesPanel @ui @ui-shell', () => {
-  test('typing a new name + Enter renames the input node', async ({ page }) => {
+  test.beforeEach(async ({ page }) => {
     await clearAllViaStore(page)
+    await page.evaluate(() => {
+      window.__CIRCUIT_ACTIONS__?.deselectAll()
+      window.__CIRCUIT_ACTIONS__?.closePropertiesPanel()
+    })
+  })
 
-    // Add an input node and select it via store
+  test('typing a new name + Enter renames the input node', async ({ page }) => {
+    // Add an input node, select it, and explicitly open the properties panel
     await page.evaluate(() => {
       const node = window.__CIRCUIT_ACTIONS__?.addInputNode('a', { x: 0, y: 0.2, z: 0 })
-      if (node) window.__CIRCUIT_ACTIONS__?.selectNode(node.id, 'input')
+      if (node) {
+        window.__CIRCUIT_ACTIONS__?.selectNode(node.id, 'input')
+        window.__CIRCUIT_ACTIONS__?.openPropertiesPanel()
+      }
     })
 
     await expect(page.locator(UI_SELECTORS.propertiesPanel.root)).toBeVisible()
@@ -27,10 +36,12 @@ test.describe('Node rename via PropertiesPanel @ui @ui-shell', () => {
   })
 
   test('Escape reverts the input field', async ({ page }) => {
-    await clearAllViaStore(page)
     await page.evaluate(() => {
       const node = window.__CIRCUIT_ACTIONS__?.addInputNode('original', { x: 0, y: 0.2, z: 0 })
-      if (node) window.__CIRCUIT_ACTIONS__?.selectNode(node.id, 'input')
+      if (node) {
+        window.__CIRCUIT_ACTIONS__?.selectNode(node.id, 'input')
+        window.__CIRCUIT_ACTIONS__?.openPropertiesPanel()
+      }
     })
 
     const field = page.locator(UI_SELECTORS.propertiesPanel.nameField)

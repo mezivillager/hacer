@@ -22,6 +22,7 @@ export function useKeyboardShortcuts() {
   const removeInputNode = useCircuitStore((s) => s.removeInputNode)
   const removeOutputNode = useCircuitStore((s) => s.removeOutputNode)
   const deselectNode = useCircuitStore((s) => s.deselectNode)
+  const togglePropertiesPanel = useCircuitStore((s) => s.togglePropertiesPanel)
 
   const isPlacing = placementMode !== null
   const isWiring = wiringFrom !== null
@@ -45,6 +46,25 @@ export function useKeyboardShortcuts() {
           selectWire(null)
         } else {
           selectGate(null)
+        }
+        return
+      }
+
+      // I key - toggle PropertiesPanel for current selection (only when something is selected)
+      if (e.key === 'i' || e.key === 'I') {
+        const target = e.target as HTMLElement
+        const isInputField =
+          target.tagName === 'INPUT' ||
+          target.tagName === 'TEXTAREA' ||
+          target.isContentEditable
+        if (isInputField) return
+        const hasSelection =
+          selectedGateId !== null ||
+          selectedWireId !== null ||
+          selectedNodeId !== null
+        if (hasSelection) {
+          e.preventDefault()
+          togglePropertiesPanel()
         }
         return
       }
@@ -113,5 +133,5 @@ export function useKeyboardShortcuts() {
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [isPlacing, isWiring, isDragging, selectedGateId, selectedWireId, selectedNodeId, selectedNodeType, cancelPlacement, cancelWiring, selectGate, selectWire, rotateGate, removeGate, removeWire, removeInputNode, removeOutputNode, deselectNode])
+  }, [isPlacing, isWiring, isDragging, selectedGateId, selectedWireId, selectedNodeId, selectedNodeType, cancelPlacement, cancelWiring, selectGate, selectWire, rotateGate, removeGate, removeWire, removeInputNode, removeOutputNode, deselectNode, togglePropertiesPanel])
 }

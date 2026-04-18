@@ -48,6 +48,7 @@ export function createMockStore(partial: Partial<CircuitState> = {}): CircuitSto
     junctionPreviewPosition: null,
     junctionPreviewWireId: null,
     statusMessages: [],
+    propertiesPanelOpen: false,
   }
 
   // Merge provided partial state with defaults
@@ -96,6 +97,9 @@ export function createMockStore(partial: Partial<CircuitState> = {}): CircuitSto
     getPinWorldPosition: () => null,
     getPinOrientation: () => null,
     toggleAxes: () => {},
+    openPropertiesPanel: () => {},
+    closePropertiesPanel: () => {},
+    togglePropertiesPanel: () => {},
     // Node actions
     addInputNode: () => ({ id: '', name: '', position: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, value: 1, width: 1 }),
     addOutputNode: () => ({ id: '', name: '', position: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, value: 0, width: 1 }),

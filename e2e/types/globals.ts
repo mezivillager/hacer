@@ -92,6 +92,10 @@ export interface CircuitStoreSnapshot {
   statusMessages?: CircuitStoreStatusMessage[]
   /** Present when the last simulation tick hit a combinational cycle */
   lastSimulationError?: { type: 'cycle'; involvedGateIds: string[] } | null
+  selectedWireId?: string | null
+  selectedNodeId?: string | null
+  selectedNodeType?: NodeType | null
+  propertiesPanelOpen?: boolean
 }
 
 export interface CircuitActionsAPI {
@@ -158,6 +162,10 @@ export interface CircuitActionsAPI {
   addStatus: (severity: CircuitStoreStatusMessage['severity'], text: string) => CircuitStoreStatusMessage
   clearStatus: (id: string) => void
   clearAllStatus: () => void
+  // UI actions
+  openPropertiesPanel: () => void
+  closePropertiesPanel: () => void
+  togglePropertiesPanel: () => void
   // E2E helper for wire path calculation
   calculateWirePathSegments: (
     fromGateId: string,

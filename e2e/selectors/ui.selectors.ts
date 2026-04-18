@@ -20,6 +20,7 @@ export const UI_SELECTORS = {
     ioTrigger: '[data-testid="toolbar-io-trigger"]',
     simToggle: '[data-testid="toolbar-sim-toggle"]',
     axesToggle: '[data-testid="toolbar-axes-toggle"]',
+    propertiesToggle: '[data-testid="toolbar-properties-toggle"]',
     deleteSelected: '[data-testid="toolbar-delete-selected"]',
     clearAll: '[data-testid="toolbar-clear-all"]',
     themeTrigger: '[data-testid="toolbar-theme-trigger"]',

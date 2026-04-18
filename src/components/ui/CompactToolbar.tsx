@@ -16,6 +16,7 @@ import {
   Sun,
   Moon,
   Monitor,
+  Info,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui-kit/button'
@@ -63,6 +64,7 @@ export function CompactToolbar() {
   const junctionPlacementMode = useCircuitStore((s) => s.junctionPlacementMode)
   const simulationRunning = useCircuitStore((s) => s.simulationRunning)
   const showAxes = useCircuitStore((s) => s.showAxes)
+  const propertiesPanelOpen = useCircuitStore((s) => s.propertiesPanelOpen)
   const gatesCount = useCircuitStore((s) => s.gates.length)
   const selectedGateId = useCircuitStore((s) => s.selectedGateId)
   const selectedWireId = useCircuitStore((s) => s.selectedWireId)
@@ -275,6 +277,27 @@ export function CompactToolbar() {
               <span>Show Axes</span>
               <Switch checked={showAxes} className="scale-75" />
             </div>
+          </TooltipContent>
+        </Tooltip>
+
+        {/* Properties (toggle PropertiesPanel for current selection) */}
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              data-testid="toolbar-properties-toggle"
+              variant={propertiesPanelOpen ? 'secondary' : 'ghost'}
+              size="icon"
+              className="w-9 h-9"
+              disabled={!hasSelection}
+              aria-pressed={propertiesPanelOpen}
+              onClick={() => circuitActions.togglePropertiesPanel()}
+            >
+              <Info className="w-4 h-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="right">
+            {propertiesPanelOpen ? 'Hide Properties' : 'Show Properties'}
+            <span className="text-muted-foreground ml-2">I</span>
           </TooltipContent>
         </Tooltip>
 

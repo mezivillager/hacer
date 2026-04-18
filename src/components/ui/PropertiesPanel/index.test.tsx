@@ -22,16 +22,27 @@ describe('PropertiesPanel', () => {
   beforeEach(() => {
     circuitActions.clearCircuit()
     circuitActions.deselectAll()
+    circuitActions.closePropertiesPanel()
   })
 
   it('renders nothing when no selection', () => {
+    circuitActions.openPropertiesPanel()
     wrap()
     expect(screen.queryByTestId('properties-panel')).not.toBeInTheDocument()
   })
 
-  it('renders gate properties when a gate is selected', () => {
+  it('renders nothing when selection exists but propertiesPanelOpen is false', () => {
     const id = placeGate('AND')
     circuitActions.selectGate(id)
+    // panel stays closed because user has not explicitly opened it
+    wrap()
+    expect(screen.queryByTestId('properties-panel')).not.toBeInTheDocument()
+  })
+
+  it('renders gate properties when a gate is selected AND panel is open', () => {
+    const id = placeGate('AND')
+    circuitActions.selectGate(id)
+    circuitActions.openPropertiesPanel()
     wrap()
     expect(screen.getByTestId('properties-panel')).toBeInTheDocument()
     expect(screen.getByTestId('properties-type-label').textContent).toContain('AND')
@@ -40,6 +51,7 @@ describe('PropertiesPanel', () => {
   it('gate name is read-only with Coming soon stub', () => {
     const id = placeGate('AND')
     circuitActions.selectGate(id)
+    circuitActions.openPropertiesPanel()
     wrap()
     const nameField = screen.getByTestId('properties-name-field')
     // Read-only render: should be a non-editable text element, not an input
@@ -51,6 +63,7 @@ describe('PropertiesPanel', () => {
     circuitActions.addInputNode('a', { x: 0, y: 0.2, z: 0 })
     const id = useCircuitStore.getState().inputNodes[0].id
     circuitActions.selectNode(id, 'input')
+    circuitActions.openPropertiesPanel()
     wrap()
     const field = screen.getByTestId('properties-name-field')
     expect(field.tagName).toBe('INPUT')
@@ -64,6 +77,7 @@ describe('PropertiesPanel', () => {
     circuitActions.addOutputNode('out', { x: 0, y: 0.2, z: 0 })
     const id = useCircuitStore.getState().outputNodes[0].id
     circuitActions.selectNode(id, 'output')
+    circuitActions.openPropertiesPanel()
     wrap()
     const field = screen.getByTestId('properties-name-field')
     await user.clear(field)
@@ -75,20 +89,24 @@ describe('PropertiesPanel', () => {
     const user = userEvent.setup()
     const id = placeGate('AND')
     circuitActions.selectGate(id)
+    circuitActions.openPropertiesPanel()
     wrap()
     await user.click(screen.getByTestId('properties-delete'))
     expect(useCircuitStore.getState().gates).toHaveLength(0)
   })
 
-  it('Close (X) button clears selection', async () => {
+  it('Close (X) hides the panel but preserves selection', async () => {
     const user = userEvent.setup()
     const id = placeGate('AND')
     circuitActions.selectGate(id)
+    circuitActions.openPropertiesPanel()
     wrap()
     await user.click(screen.getByTestId('properties-close'))
-    await waitFor(() =>
-      expect(useCircuitStore.getState().selectedGateId).toBeNull(),
-    )
+    await waitFor(() => {
+      expect(useCircuitStore.getState().propertiesPanelOpen).toBe(false)
+    })
+    // Selection itself is preserved \u2014 user can still drag/delete
+    expect(useCircuitStore.getState().selectedGateId).toBe(id)
   })
 
   it('renders wire connection info pills when a wire is selected', () => {
@@ -104,6 +122,7 @@ describe('PropertiesPanel', () => {
       ]
       s.selectedWireId = 'wire-1'
     })
+    circuitActions.openPropertiesPanel()
     wrap()
     expect(screen.getByTestId('properties-panel')).toBeInTheDocument()
     expect(screen.getByTestId('properties-type-label').textContent?.toLowerCase()).toContain('wire')
