@@ -61,9 +61,18 @@
      THREE.js materials via useThemeColor; THREE.Color.setStyle does
      not parse OKLch reliably in three@0.183. CSS rendering (e.g.
      Scene.tsx's var(--canvas-bg) background) handles hex equally
-     well. Tuned for visible-but-subtle grid contrast. */
-  --canvas-bg: #f0f1f5;
-  --canvas-grid: #b8bdc4;
+     well.
+     --canvas-bg is intentionally noticeably darker/cooler than
+     --background so the 3D viewport reads as a distinct working
+     surface (drafting-board aesthetic).
+     --canvas-grid-section is more prominent than --canvas-grid so
+     major grid intervals have clear visual hierarchy. */
+  /* Cell lines: warm-neutral pencil gray — barely there, not competing.
+     Section lines: slightly cooler mid-gray — visible hierarchy without
+     fighting wire or gate colors. */
+  --canvas-bg: #d8e0ea;
+  --canvas-grid: #adbacb;
+  --canvas-grid-section: #8da0b2;
 }
 
 /* Dark theme — EDA/CAD inspired */
@@ -102,8 +111,14 @@
   --sidebar-accent-foreground: oklch(0.92 0 0);
   --sidebar-border: oklch(0.25 0.01 240);
   --sidebar-ring: oklch(0.65 0.15 180);
-  --canvas-bg: #14171d;
-  --canvas-grid: #353a42;
+  /* --canvas-bg is a saturated deep navy — noticeably bluer than the
+     near-neutral dark of --background (#171a1f), so the 3D viewport
+     reads as a distinct working surface even at glance.
+     Grid lines are intentionally low-saturation so wires own the
+     color space. */
+  --canvas-bg: #0b1525;
+  --canvas-grid: #223248;
+  --canvas-grid-section: #27405e;
 }
 
 @theme inline {
