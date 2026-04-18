@@ -25,37 +25,54 @@ describe('HelpBar', () => {
     window.localStorage.removeItem('helpBarCollapsed')
   })
 
-  it('default mode shows Click/Drag/Scroll hints', () => {
+  it('renders the default help text when no interactive mode is active', () => {
     wrap()
-    const bar = screen.getByTestId('help-bar')
-    expect(bar.textContent).toContain('Click')
-    expect(bar.textContent).toContain('Zoom')
+    const text = screen.getByTestId('help-bar-text').textContent ?? ''
+    expect(text).toContain('Click pin: Wire')
+    expect(text).toContain('Drag body: Move')
+    expect(text).toContain('Delete: Remove selected')
   })
 
-  it('selecting mode shows Delete/arrows/Esc hints when gate selected', () => {
+  it('shows placement help text when placementMode is set', () => {
     circuitActions.startPlacement('AND')
-    circuitActions.placeGate({ x: 1, y: 0.2, z: 1 })
-    const id = useCircuitStore.getState().gates[0].id
-    circuitActions.selectGate(id)
     wrap()
-    const bar = screen.getByTestId('help-bar')
-    expect(bar.textContent).toContain('Remove')
-    expect(bar.textContent).toContain('Rotate gate')
+    const text = screen.getByTestId('help-bar-text').textContent ?? ''
+    expect(text).toContain('place the AND gate')
+    expect(text).toContain('Esc to cancel')
   })
 
-  it('moving mode shows Esc/Click hints when placementMode is set', () => {
-    circuitActions.startPlacement('AND')
+  it('shows node placement help text when nodePlacementMode is set', () => {
+    circuitActions.startNodePlacement('INPUT')
     wrap()
-    const bar = screen.getByTestId('help-bar')
-    expect(bar.textContent).toContain('Place')
-    expect(bar.textContent).toContain('Cancel')
+    const text = screen.getByTestId('help-bar-text').textContent ?? ''
+    expect(text).toContain('place the node')
+  })
+
+  it('shows wiring help text when wiringFrom is set', () => {
+    useCircuitStore.setState((s) => {
+      s.wiringFrom = {
+        fromGateId: 'g1',
+        fromPinId: 'p1',
+        fromPinType: 'output',
+        fromPosition: { x: 0, y: 0, z: 0 },
+        previewEndPosition: null,
+        destinationGateId: null,
+        destinationPinId: null,
+        destinationNodeId: null,
+        destinationNodeType: null,
+        segments: null,
+      }
+    })
+    wrap()
+    const text = screen.getByTestId('help-bar-text').textContent ?? ''
+    expect(text).toContain('Click on another pin to connect')
   })
 
   it('collapse button hides strip and renders floating expand button', async () => {
     const user = userEvent.setup()
     wrap()
     const bar = screen.getByTestId('help-bar')
-    const collapseBtn = bar.querySelector('button[aria-label="Hide help bar"], button')
+    const collapseBtn = bar.querySelector('button')
     if (!collapseBtn) throw new Error('collapse button not found')
     await user.click(collapseBtn)
     await waitFor(() => {

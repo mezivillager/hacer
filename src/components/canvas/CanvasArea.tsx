@@ -81,19 +81,8 @@ export function CanvasArea() {
     )
   })()
 
-  // Help text based on current mode
-  const helpText = (() => {
-    if (isPlacing) {
-      return `📍 Click anywhere on the grid to place the ${placementMode} gate • Press Esc to cancel`
-    }
-    if (isPlacingNode) {
-      return '📍 Click anywhere on the grid to place the node • Press Esc to cancel'
-    }
-    if (isWiring) {
-      return '🔗 Click on another pin to connect • Click empty space or Esc to cancel'
-    }
-    return '🖱️ Click pin: Wire • Shift+click input: Toggle • Click body: Select • Drag body: Move • Left/Right arrows: Rotate gate (when selected) or pan view • Delete: Remove selected • Scroll: Zoom'
-  })()
+  // (Help overlay moved to <HelpBar />; useHelpText hook owns the contextual
+  // copy that used to live here as a local helpText function.)
 
   return (
     <div
@@ -219,22 +208,6 @@ export function CanvasArea() {
           )
         })}
       </Scene>
-
-      {/* Help overlay (Phase A — restyled in Phase C-3d HelpBar) */}
-      <div
-        className="help-overlay"
-        style={{
-          position: 'absolute',
-          bottom: 8,
-          left: 8,
-          right: 8,
-          fontSize: 12,
-          opacity: 0.7,
-          pointerEvents: 'none',
-        }}
-      >
-        {helpText}
-      </div>
     </div>
   )
 }
