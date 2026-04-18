@@ -197,6 +197,11 @@ export interface CircuitState {
 
   // Status messages for user-visible feedback channel
   statusMessages: StatusMessage[]
+
+  // UI: PropertiesPanel visibility (user-controlled). When false, the
+  // panel never renders even if a selection exists. Toggled via the
+  // CompactToolbar Properties button or the I keyboard shortcut.
+  propertiesPanelOpen: boolean
 }
 
 // Action types for the Zustand store
@@ -275,6 +280,9 @@ export interface PinHelpers {
 
 export interface ViewActions {
   toggleAxes: () => void
+  openPropertiesPanel: () => void
+  closePropertiesPanel: () => void
+  togglePropertiesPanel: () => void
 }
 
 // =============================================================================

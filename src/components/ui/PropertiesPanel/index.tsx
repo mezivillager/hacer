@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react'
+import { useCircuitStore } from '@/store/circuitStore'
 import {
   X,
   Trash2,
@@ -36,7 +37,14 @@ function getTypeLabel(el: SelectedElement): string {
 
 export function PropertiesPanel() {
   const selected = useSelectedElement()
-  if (!selected) return null
+  const open = useCircuitStore((s) => s.propertiesPanelOpen)
+  // Render only when (a) user has explicitly opened the panel AND
+  // (b) something is selected. Selection alone never opens the panel
+  // \u2014 user must click the Properties button in CompactToolbar or
+  // press the I keyboard shortcut. See
+  // docs/specs/2026-04-18-properties-panel-as-drawer-tab.md for the
+  // recommended future migration to a RightActionBar drawer tab.
+  if (!open || !selected) return null
   return <PropertiesPanelInner key={selected.id} selected={selected} />
 }
 
@@ -102,7 +110,10 @@ function PropertiesPanelInner({ selected }: { selected: SelectedElement }) {
     }
   }
 
-  const handleClose = () => circuitActions.deselectAll()
+  // Close button hides the panel but preserves selection (so user can
+  // still drag/delete the selected element). To deselect, click empty
+  // canvas or press Esc.
+  const handleClose = () => circuitActions.closePropertiesPanel()
 
   const positionDisplay =
     selected.kind === 'gate' || selected.kind === 'input' || selected.kind === 'output'

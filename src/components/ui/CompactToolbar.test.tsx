@@ -32,6 +32,7 @@ describe('CompactToolbar', () => {
     if (useCircuitStore.getState().simulationRunning) circuitActions.toggleSimulation()
     circuitActions.cancelPlacement()
     circuitActions.cancelNodePlacement()
+    circuitActions.closePropertiesPanel()
   })
 
   describe('Gates popover', () => {
@@ -108,6 +109,37 @@ describe('CompactToolbar', () => {
       const before = useCircuitStore.getState().showAxes
       await user.click(screen.getByTestId('toolbar-axes-toggle'))
       expect(useCircuitStore.getState().showAxes).toBe(!before)
+    })
+  })
+
+  describe('Properties toggle', () => {
+    it('is disabled when no selection', () => {
+      wrap()
+      expect(screen.getByTestId('toolbar-properties-toggle')).toBeDisabled()
+    })
+
+    it('toggles propertiesPanelOpen state when clicked with selection', async () => {
+      const user = userEvent.setup()
+      placeGateAt('AND', 1, 1)
+      const id = useCircuitStore.getState().gates[0].id
+      circuitActions.selectGate(id)
+      wrap()
+      expect(useCircuitStore.getState().propertiesPanelOpen).toBe(false)
+      await user.click(screen.getByTestId('toolbar-properties-toggle'))
+      expect(useCircuitStore.getState().propertiesPanelOpen).toBe(true)
+      await user.click(screen.getByTestId('toolbar-properties-toggle'))
+      expect(useCircuitStore.getState().propertiesPanelOpen).toBe(false)
+    })
+
+    it('reflects open state via aria-pressed', () => {
+      placeGateAt('AND', 1, 1)
+      const id = useCircuitStore.getState().gates[0].id
+      circuitActions.selectGate(id)
+      circuitActions.openPropertiesPanel()
+      wrap()
+      expect(screen.getByTestId('toolbar-properties-toggle').getAttribute('aria-pressed')).toBe(
+        'true',
+      )
     })
   })
 

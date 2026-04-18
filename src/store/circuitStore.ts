@@ -60,6 +60,8 @@ const initialState = {
   junctionPreviewWireId: null as string | null,
   // Status bar feedback channel
   statusMessages: [] as import('./types').StatusMessage[],
+  // UI: PropertiesPanel visibility (user-controlled; not persisted)
+  propertiesPanelOpen: false,
 }
 
 // Create the Zustand store with Immer, devtools, and subscribeWithSelector middleware
@@ -223,6 +225,9 @@ export const circuitActions = {
   },
   // View actions
   toggleAxes: () => useCircuitStore.getState().toggleAxes(),
+  openPropertiesPanel: () => useCircuitStore.getState().openPropertiesPanel(),
+  closePropertiesPanel: () => useCircuitStore.getState().closePropertiesPanel(),
+  togglePropertiesPanel: () => useCircuitStore.getState().togglePropertiesPanel(),
   // Node placement actions
   startNodePlacement: (...args: Parameters<CircuitStore['startNodePlacement']>) => useCircuitStore.getState().startNodePlacement(...args),
   cancelNodePlacement: () => useCircuitStore.getState().cancelNodePlacement(),

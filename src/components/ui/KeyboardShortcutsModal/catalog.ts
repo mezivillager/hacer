@@ -18,6 +18,7 @@ export const SHORTCUT_GROUPS: ShortcutGroup[] = [
       { keys: ['Esc'], action: 'Deselect' },
       { keys: ['Delete'], action: 'Delete selected' },
       { keys: ['Backspace'], action: 'Delete selected' },
+      { keys: ['I'], action: 'Show/hide Properties panel for selection' },
     ],
   },
   {
