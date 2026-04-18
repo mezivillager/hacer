@@ -4,38 +4,16 @@ import { Button } from '@/components/ui-kit/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui-kit/tooltip'
 import { Kbd } from '@/components/ui-kit/kbd'
 import { KeyboardShortcutsModal, MODAL_OPEN_EVENT } from '@/components/ui/KeyboardShortcutsModal'
-import { useContextMode, type ContextMode } from './useContextMode'
+import { useHelpText } from './useHelpText'
 import { useHelpBarCollapsed } from './useHelpBarCollapsed'
-
-const contextualHints: Record<ContextMode, { keys: string[]; action: string }[]> = {
-  default: [
-    { keys: ['Click'], action: 'Select' },
-    { keys: ['Drag'], action: 'Move camera' },
-    { keys: ['Scroll'], action: 'Zoom' },
-  ],
-  selecting: [
-    { keys: ['Delete'], action: 'Remove' },
-    { keys: ['\u2190', '\u2192'], action: 'Rotate gate' },
-    { keys: ['Esc'], action: 'Deselect' },
-  ],
-  wiring: [
-    { keys: ['Click pin'], action: 'Connect' },
-    { keys: ['Esc'], action: 'Cancel' },
-  ],
-  moving: [
-    { keys: ['Click'], action: 'Place' },
-    { keys: ['Esc'], action: 'Cancel' },
-  ],
-}
 
 function dispatchOpenModal() {
   window.dispatchEvent(new CustomEvent(MODAL_OPEN_EVENT))
 }
 
 export function HelpBar() {
-  const mode = useContextMode()
+  const helpText = useHelpText()
   const [collapsed, setCollapsed] = useHelpBarCollapsed()
-  const hints = contextualHints[mode]
 
   // Global "?" key opens the modal (skip when typing into an input).
   useEffect(() => {
@@ -87,7 +65,7 @@ export function HelpBar() {
         data-testid="help-bar"
         className="absolute bottom-0 left-0 right-0 bg-card/90 backdrop-blur-sm border-t border-border z-10"
       >
-        <div className="flex items-center justify-between px-3 py-1.5">
+        <div className="flex items-center justify-between gap-3 px-3 py-1.5">
           {/* Left: collapse toggle */}
           <Tooltip>
             <TooltipTrigger asChild>
@@ -103,24 +81,15 @@ export function HelpBar() {
             <TooltipContent>Hide help bar</TooltipContent>
           </Tooltip>
 
-          {/* Center: contextual hints */}
-          <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
-            {hints.map((hint, i) => (
-              <span key={i} className="flex items-center gap-1.5">
-                <span className="flex items-center gap-0.5">
-                  {hint.keys.map((k, ki) => (
-                    <span key={ki} className="flex items-center">
-                      {ki > 0 && <span className="text-muted-foreground/60 mx-0.5">+</span>}
-                      <Kbd className="text-[10px] px-1.5 py-0.5 min-w-[20px] justify-center">
-                        {k}
-                      </Kbd>
-                    </span>
-                  ))}
-                </span>
-                <span>{hint.action}</span>
-              </span>
-            ))}
-          </div>
+          {/* Center: contextual help text (matches the original CanvasArea
+              help-overlay copy; updates with placement / wiring / selection
+              state via useHelpText). */}
+          <p
+            data-testid="help-bar-text"
+            className="flex-1 text-center text-xs text-muted-foreground truncate"
+          >
+            {helpText}
+          </p>
 
           {/* Right: all shortcuts button */}
           <Tooltip>
@@ -129,7 +98,7 @@ export function HelpBar() {
                 data-testid="help-bar-all-shortcuts"
                 variant="ghost"
                 size="sm"
-                className="h-6 px-2 gap-1.5 text-xs text-muted-foreground hover:text-foreground"
+                className="h-6 px-2 gap-1.5 text-xs text-muted-foreground hover:text-foreground shrink-0"
                 onClick={dispatchOpenModal}
               >
                 <HelpCircle className="w-3.5 h-3.5" />

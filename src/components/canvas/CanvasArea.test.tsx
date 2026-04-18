@@ -38,39 +38,9 @@ describe('CanvasArea', () => {
     expect(getByTestId('scene')).toBeInTheDocument()
   })
 
-  it('renders help overlay with default text', () => {
-    const { container } = render(<CanvasArea />)
-    const helpText = container.querySelector('.help-overlay')
-    expect(helpText).toBeInTheDocument()
-    expect(helpText?.textContent).toContain('Click pin: Wire')
-  })
-
-  it('shows placement help text when in placement mode', () => {
-    actualSetState({ placementMode: 'NAND' })
-    const { container } = render(<CanvasArea />)
-    const helpText = container.querySelector('.help-overlay')
-    expect(helpText?.textContent).toContain('Click anywhere on the grid')
-  })
-
-  it('shows wiring help text when in wiring mode', () => {
-    actualSetState({
-      wiringFrom: {
-        fromGateId: 'gate-1',
-        fromPinId: 'pin-1',
-        fromPinType: 'output',
-        fromPosition: { x: 0, y: 0, z: 0 },
-        previewEndPosition: null,
-        destinationGateId: null,
-        destinationPinId: null,
-        destinationNodeId: null,
-        destinationNodeType: null,
-        segments: null,
-      }
-    })
-    const { container } = render(<CanvasArea />)
-    const helpText = container.querySelector('.help-overlay')
-    expect(helpText?.textContent).toContain('Click on another pin to connect')
-  })
+  // The CanvasArea help-overlay div was removed in PR #88; the help text
+  // it used to render is now owned by HelpBar via the useHelpText hook.
+  // Test that ownership belongs in HelpBar/index.test.tsx and useHelpText.test.ts.
 
   it('applies placing class when in placement mode', () => {
     actualSetState({ placementMode: 'NAND' })
