@@ -1,5 +1,5 @@
 import { createRoot } from 'react-dom/client'
-import './index.css'
+import './styles/globals.css'
 import App from './App'
 
 // Note: StrictMode removed as it can cause double-renders with R3F

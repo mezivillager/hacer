@@ -60,6 +60,8 @@ const initialState = {
   junctionPreviewWireId: null as string | null,
   // Status bar feedback channel
   statusMessages: [] as import('./types').StatusMessage[],
+  // UI: PropertiesPanel visibility (user-controlled; not persisted)
+  propertiesPanelOpen: false,
 }
 
 // Create the Zustand store with Immer, devtools, and subscribeWithSelector middleware
@@ -143,6 +145,7 @@ export const circuitActions = {
   removeGate: (...args: Parameters<CircuitStore['removeGate']>) => useCircuitStore.getState().removeGate(...args),
   selectGate: (...args: Parameters<CircuitStore['selectGate']>) => useCircuitStore.getState().selectGate(...args),
   selectWire: (...args: Parameters<CircuitStore['selectWire']>) => useCircuitStore.getState().selectWire(...args),
+  deselectAll: () => useCircuitStore.getState().deselectAll(),
   updateGatePosition: (...args: Parameters<CircuitStore['updateGatePosition']>) => useCircuitStore.getState().updateGatePosition(...args),
   updateGateRotation: (...args: Parameters<CircuitStore['updateGateRotation']>) => useCircuitStore.getState().updateGateRotation(...args),
   rotateGate: (...args: Parameters<CircuitStore['rotateGate']>) => useCircuitStore.getState().rotateGate(...args),
@@ -222,6 +225,9 @@ export const circuitActions = {
   },
   // View actions
   toggleAxes: () => useCircuitStore.getState().toggleAxes(),
+  openPropertiesPanel: () => useCircuitStore.getState().openPropertiesPanel(),
+  closePropertiesPanel: () => useCircuitStore.getState().closePropertiesPanel(),
+  togglePropertiesPanel: () => useCircuitStore.getState().togglePropertiesPanel(),
   // Node placement actions
   startNodePlacement: (...args: Parameters<CircuitStore['startNodePlacement']>) => useCircuitStore.getState().startNodePlacement(...args),
   cancelNodePlacement: () => useCircuitStore.getState().cancelNodePlacement(),

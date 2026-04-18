@@ -1,4 +1,4 @@
-import { message } from 'antd'
+import { notify } from '@/lib/notify'
 import { useCircuitStore, circuitActions } from '@/store/circuitStore'
 import { Wire3D } from '../Wire3D'
 import { trackRender } from '@/utils/renderTracking'
@@ -80,7 +80,7 @@ export function WirePreview() {
   }
 
   if (error) {
-    message.error('Unable to create wire path. Please try a different connection.')
+    notify.error('Unable to create wire path. Please try a different connection.')
     circuitActions.cancelWiring()
     return null
   }

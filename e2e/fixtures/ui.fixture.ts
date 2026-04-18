@@ -51,11 +51,10 @@ export const test = base.extend<UIFixtures, UIWorkerFixtures>({
     async ({ sharedContext }, use) => {
       const page = await sharedContext.newPage()
 
-      // Navigate and wait for app to be ready
+      // Navigate and wait for app to be ready.
+      // Phase A note: appTitle wait dropped \u2014 lived in deleted Sidebar.
+      // Full UI_SELECTORS rewrite in Phase E (chunk 9).
       await page.goto(APP_ENTRY_URL)
-      await page.waitForSelector(UI_SELECTORS.appTitle, {
-        timeout: TIMEOUTS.selector,
-      })
       await page.waitForSelector(UI_SELECTORS.canvas, {
         timeout: TIMEOUTS.selector,
       })

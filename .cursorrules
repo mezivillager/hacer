@@ -25,7 +25,7 @@
 
 ## Stack
 
-React 19 + React Compiler (NO manual memoization), TypeScript 5.9 strict, Zustand (NOT Valtio), React Three Fiber, Vitest + Playwright. See [HACER_LLM_GUIDE.md](HACER_LLM_GUIDE.md) for patterns.
+React 19 + React Compiler (NO manual memoization), TypeScript 5.9 strict, Zustand (NOT Valtio), React Three Fiber, Tailwind CSS v4 + shadcn/ui (NOT Ant Design), Sonner toasts via `notify` helper at `@/lib/notify`, `next-themes` tri-state (light/dark/system), Vitest + Playwright. See [HACER_LLM_GUIDE.md](HACER_LLM_GUIDE.md) for patterns.
 
 ## Critical Rules
 

@@ -49,12 +49,16 @@ export function Wire3D({
 
   const pathSegments: WireSegment[] = precomputedPath.segments
 
-  // Wire color - use selected color if selected, otherwise use active/inactive based on signal
+  // Wire color - use selected color if selected, otherwise use active/inactive
+  // based on signal. Idle wires keep their copper color in both themes (per
+  // user preference; copper is distinguishable from grid lines in both light
+  // and dark, and theme-tokenizing it made wires invisible against grid in
+  // light mode).
   const wireColor = isSelected
     ? colors.wire.selected
     : isActive
       ? colors.wire.active
-      : colors.wire.default // Always use copper for non-active wires (default and preview)
+      : colors.wire.default
 
   /**
    * Generate points along a semi-circular arc.

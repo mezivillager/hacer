@@ -1,5 +1,29 @@
 import '@testing-library/jest-dom'
 
+// Polyfill ResizeObserver for jsdom (used by Radix UI primitives)
+if (typeof globalThis.ResizeObserver === 'undefined') {
+  globalThis.ResizeObserver = class ResizeObserver {
+    observe(): void {}
+    unobserve(): void {}
+    disconnect(): void {}
+  } as unknown as typeof ResizeObserver
+}
+
+// Polyfill DOMRect for jsdom (used by Radix Popper / Tooltip positioning)
+if (typeof globalThis.DOMRect === 'undefined') {
+  globalThis.DOMRect = class DOMRect {
+    constructor(public x = 0, public y = 0, public width = 0, public height = 0) {}
+    get top() { return this.y }
+    get right() { return this.x + this.width }
+    get bottom() { return this.y + this.height }
+    get left() { return this.x }
+    toJSON() { return this }
+    static fromRect(rect?: { x?: number; y?: number; width?: number; height?: number }) {
+      return new DOMRect(rect?.x ?? 0, rect?.y ?? 0, rect?.width ?? 0, rect?.height ?? 0)
+    }
+  } as unknown as typeof DOMRect
+}
+
 // Mock WebGL context for Three.js tests
 const originalGetContext = HTMLCanvasElement.prototype.getContext
 

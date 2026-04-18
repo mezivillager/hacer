@@ -1,29 +1,42 @@
-import { Layout } from 'antd'
-import { ThemeProvider } from './theme'
-import { Sidebar } from './components/ui/Sidebar'
-import { CanvasArea } from './components/canvas/CanvasArea'
-import { DemoOverlay } from './components/ui/DemoOverlay'
-import { StatusBar } from './components/ui/StatusBar'
-import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
-import './App.css'
+import { ThemeProvider } from '@/components/ui-kit/theme-provider'
+import { TooltipProvider } from '@/components/ui-kit/tooltip'
+import { Toaster } from 'sonner'
+import { CanvasArea } from '@/components/canvas/CanvasArea'
+import { StatusBar } from '@/components/ui/StatusBar'
+import { CompactToolbar } from '@/components/ui/CompactToolbar'
+import { RightActionBar } from '@/components/ui/RightActionBar'
+import { PropertiesPanel } from '@/components/ui/PropertiesPanel'
+import { HelpBar } from '@/components/ui/HelpBar'
+import { DemoOverlay } from '@/components/ui/DemoOverlay'
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
 
 function AppContent() {
+  // Restore the global keyboard shortcut handler (was lost during the
+  // Phase A scaffold rewrite; HelpBar adds the "?"-opens-modal binding
+  // separately).
   useKeyboardShortcuts()
-
   return (
-    <Layout className="app-layout">
-      <Sidebar />
-      <CanvasArea />
-      <DemoOverlay />
-      <StatusBar />
-    </Layout>
+    <div className="flex h-screen w-screen overflow-hidden bg-background text-foreground">
+      <CompactToolbar />
+      <div className="flex-1 relative">
+        <CanvasArea />
+        <RightActionBar />
+        <PropertiesPanel />
+        <StatusBar />
+        <HelpBar />
+        <DemoOverlay />
+      </div>
+    </div>
   )
 }
 
 function App() {
   return (
     <ThemeProvider>
-      <AppContent />
+      <TooltipProvider>
+        <AppContent />
+        <Toaster position="top-right" richColors closeButton />
+      </TooltipProvider>
     </ThemeProvider>
   )
 }

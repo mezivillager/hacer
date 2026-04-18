@@ -6,23 +6,36 @@
  */
 
 import { Page } from '@playwright/test'
-import { UI_SELECTORS } from '../../selectors'
 import { TIMEOUTS } from '../../config/constants'
 
 /**
- * Start simulation via UI button
+ * Start simulation.
+ *
+ * Phase A note: the original implementation clicked the Sidebar's
+ * "Run Simulation" button. The Sidebar is deleted; this function now
+ * dispatches via the store global so @store specs continue to work.
+ * Phase E (chunk 9) will provide a separate UI-clicking helper for
+ * the new CompactToolbar sim toggle.
  */
 export async function startSimulationViaUI(page: Page): Promise<void> {
-  await page.click(UI_SELECTORS.buttons.runSimulation)
-  await page.locator(UI_SELECTORS.status.running).waitFor()
+  await page.evaluate(() => {
+    if (!window.__CIRCUIT_STORE__?.simulationRunning) {
+      window.__CIRCUIT_ACTIONS__?.toggleSimulation()
+    }
+  })
+  await page.waitForFunction(() => window.__CIRCUIT_STORE__?.simulationRunning === true)
 }
 
 /**
- * Pause simulation via UI button
+ * Pause simulation. See note on startSimulationViaUI.
  */
 export async function pauseSimulationViaUI(page: Page): Promise<void> {
-  await page.click(UI_SELECTORS.buttons.pauseSimulation)
-  await page.locator(UI_SELECTORS.status.paused).waitFor()
+  await page.evaluate(() => {
+    if (window.__CIRCUIT_STORE__?.simulationRunning) {
+      window.__CIRCUIT_ACTIONS__?.toggleSimulation()
+    }
+  })
+  await page.waitForFunction(() => window.__CIRCUIT_STORE__?.simulationRunning === false)
 }
 
 /**

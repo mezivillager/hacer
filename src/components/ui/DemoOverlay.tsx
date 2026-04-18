@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
-import { CloseOutlined } from '@ant-design/icons'
+import { X } from 'lucide-react'
+import { Button } from '@/components/ui-kit/button'
+import { Card } from '@/components/ui-kit/card'
 import {
   DISMISS_DEMO_TOUR_EVENT,
   shouldSuppressDemoTourFromSearchParams,
@@ -9,7 +11,7 @@ import {
  * Non-modal floating tour: clicks pass through everywhere except the card.
  * Dismiss is in-memory only (shows again on full page load unless `?notour=1`).
  *
- * Programmatic dismiss: `window.dispatchEvent(new CustomEvent('hacer-dismiss-demo-tour'))`
+ * Programmatic dismiss: window.dispatchEvent(new CustomEvent('hacer-dismiss-demo-tour')).
  */
 export function DemoOverlay() {
   const [suppressed] = useState(
@@ -31,29 +33,42 @@ export function DemoOverlay() {
     return () => window.removeEventListener(DISMISS_DEMO_TOUR_EVENT, onDismiss)
   }, [])
 
-  function dismiss() {
-    setVisible(false)
-  }
-
   if (suppressed || !visible) return null
 
   return (
-    <div className="demo-overlay" role="region" aria-label="App tour">
-      <div className="demo-overlay-card">
-        <button className="demo-overlay-close" onClick={dismiss} aria-label="Close demo">
-          <CloseOutlined />
-        </button>
-        <div className="demo-overlay-media">
-          <img
-            src={`${import.meta.env.BASE_URL}hacer-demo.gif`}
-            alt="HACER demo — place gates, wire them together, and simulate"
-          />
-        </div>
-        <div className="demo-overlay-caption">
-          <strong>Quick tour</strong>
-          <span>Place gates, connect pins, and run your circuit!</span>
-        </div>
+    <Card
+      role="region"
+      aria-label="App tour"
+      data-testid="demo-overlay"
+      // Bottom-left corner of the canvas-relative wrapper. The wrapper sits
+      // between the CompactToolbar (vertical, left) and RightActionBar
+      // (vertical, right), so left-4 inside the wrapper clears the toolbar.
+      // bottom-12 clears the full-width HelpBar (~28px) at the bottom edge
+      // with comfortable spacing.
+      className="absolute bottom-12 left-4 w-80 z-10 overflow-hidden bg-card/95 backdrop-blur-sm border-border shadow-xl animate-in slide-in-from-bottom-4 duration-300 p-0 gap-0"
+    >
+      <Button
+        variant="ghost"
+        size="icon"
+        className="absolute top-2 right-2 w-7 h-7 z-10"
+        onClick={() => setVisible(false)}
+        aria-label="Close demo"
+      >
+        <X className="w-4 h-4" />
+      </Button>
+      <div className="aspect-video bg-muted">
+        <img
+          src={`${import.meta.env.BASE_URL}hacer-demo.gif`}
+          alt="HACER demo \u2014 place gates, wire them together, and simulate"
+          className="w-full h-full object-cover"
+        />
       </div>
-    </div>
+      <div className="p-4 space-y-1">
+        <p className="text-sm font-semibold">Quick tour</p>
+        <p className="text-xs text-muted-foreground">
+          Place gates, connect pins, and run your circuit!
+        </p>
+      </div>
+    </Card>
   )
 }

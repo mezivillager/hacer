@@ -74,9 +74,11 @@ export async function addGateViaUI(
 ): Promise<void> {
   const gateType = options.type || 'NAND' // Default to NAND for backward compatibility
 
-  // Click the gate icon in the selector grid
-  const gateIconSelector = UI_SELECTORS.gateSelector.getIcon(gateType)
-  await page.click(gateIconSelector)
+  // Open Gates popover, click gate icon, wait for popover to close
+  await page.click(UI_SELECTORS.toolbar.gatesTrigger)
+  await page.waitForSelector(UI_SELECTORS.gatesPopover.root, { state: 'visible' })
+  await page.click(UI_SELECTORS.gatesPopover.getGate(gateType))
+  await page.waitForSelector(UI_SELECTORS.gatesPopover.root, { state: 'hidden' })
 
   // Wait for placement mode to be active in the store
   await page.waitForFunction(
@@ -86,9 +88,6 @@ export async function addGateViaUI(
     gateType,
     { timeout: 5000 }
   )
-
-  // Wait for active visual state
-  await page.waitForSelector('.gate-icon.active', { state: 'visible' })
 
   // Place the gate using store action (bypasses canvas click which doesn't work in Playwright)
   await page.evaluate(
@@ -150,18 +149,18 @@ export async function removeGateViaStore(page: Page, gateId: string): Promise<vo
 }
 
 /**
- * Delete selected gate via UI (click Delete Selected button)
+ * Delete selected gate via UI (click Delete Selected button in CompactToolbar)
  */
 export async function deleteSelectedViaUI(page: Page): Promise<void> {
-  await page.click(UI_SELECTORS.buttons.deleteSelected)
+  await page.click(UI_SELECTORS.toolbar.deleteSelected)
 }
 
 /**
- * Clear all gates via UI (click Clear All button)
+ * Clear all gates via UI (click Clear All button in CompactToolbar)
  * Does nothing if the button is disabled (no gates to clear)
  */
 export async function clearAllViaUI(page: Page): Promise<void> {
-  const button = page.locator(UI_SELECTORS.buttons.clearAll)
+  const button = page.locator(UI_SELECTORS.toolbar.clearAll)
   const isDisabled = await button.isDisabled()
   if (!isDisabled) {
     await button.click()
