@@ -40,7 +40,12 @@ export function DemoOverlay() {
       role="region"
       aria-label="App tour"
       data-testid="demo-overlay"
-      className="absolute bottom-20 right-4 w-80 z-10 overflow-hidden bg-card/95 backdrop-blur-sm border-border shadow-xl animate-in slide-in-from-bottom-4 duration-300 p-0 gap-0"
+      // Bottom-left corner of the canvas-relative wrapper. The wrapper sits
+      // between the CompactToolbar (vertical, left) and RightActionBar
+      // (vertical, right), so left-4 inside the wrapper clears the toolbar.
+      // bottom-12 clears the full-width HelpBar (~28px) at the bottom edge
+      // with comfortable spacing.
+      className="absolute bottom-12 left-4 w-80 z-10 overflow-hidden bg-card/95 backdrop-blur-sm border-border shadow-xl animate-in slide-in-from-bottom-4 duration-300 p-0 gap-0"
     >
       <Button
         variant="ghost"
