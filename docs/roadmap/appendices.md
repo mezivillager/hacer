@@ -162,7 +162,7 @@ Unit Tests (Functions & Classes)
 | Unit Tests | Vitest | 90%+ | Individual functions |
 | Integration | Vitest | 80%+ | Component interactions |
 | E2E Tests | Playwright | 70%+ | User workflows |
-| Property Tests | fast-check | N/A | Invariants & edge cases |
+| Property Tests | TBD property-testing library | N/A | Invariants & edge cases |
 | Visual Tests | Playwright | N/A | UI consistency |
 | Performance | Custom | N/A | Benchmarks & budgets |
 
