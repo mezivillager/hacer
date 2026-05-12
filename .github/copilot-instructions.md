@@ -20,6 +20,8 @@ pnpm run test:run         # all unit tests must pass
 pnpm run test:e2e:store   # all store E2E tests must pass
 ```
 
+When the change affects phase status, public behavior, repo layout, or Phase 0.5 tickets, follow the **author pass** in [`docs/llm-docs-sync.md`](../docs/llm-docs-sync.md) before marking work complete. Reviewers use the **reviewer pass** there before approving substantive merges.
+
 ## Phase Tracking
 
 Check `.cursorrules` → "Phase Tracking" section before starting. Always implement for the current phase only.

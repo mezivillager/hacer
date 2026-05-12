@@ -25,6 +25,8 @@
 
 No waivers. If a step fails, the task is **not** done.
 
+**Documentation sync:** Before claiming work complete, completing agents must run the **author pass** in **`docs/llm-docs-sync.md`** whenever the change affects phase status, public behavior, repo layout, or Phase 0.5 tickets. Reviewers run the **reviewer pass** from the same doc before approving merges that materially affect product or structure.
+
 **Harness / MCP / hooks (Cursor):** see **`docs/llm-harness.md`**.
 
 ---
@@ -35,6 +37,7 @@ No waivers. If a step fails, the task is **not** done.
 
 - **Patterns & examples** → `HACER_LLM_GUIDE.md`  
 - **Where files live + task jump table** → `REPO_MAP.md` (section *Common tasks → start here*)  
+- **Living docs aligned with code (author / reviewer)** → `docs/llm-docs-sync.md`  
 - **Planning / verification workflow** → `docs/llm-workflow.md`  
 - **Current task plan** → `tasks/todo.md`  
 - **Past mistakes** → `tasks/lessons.md`  

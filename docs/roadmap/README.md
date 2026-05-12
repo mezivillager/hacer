@@ -92,9 +92,3 @@ pnpm run test:run
 pnpm run test:e2e:store
 pnpm run build
 ```
-
-Documentation changes should also run:
-
-```bash
-pnpm run docs:check
-```

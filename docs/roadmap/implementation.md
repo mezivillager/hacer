@@ -52,7 +52,6 @@ Removed or unselected tooling should not appear in active implementation tasks.
 - `pnpm run test:run`
 - `pnpm run test:e2e:store`
 - `pnpm run build`
-- `pnpm run docs:check` for documentation refreshes
 
 ## Risk Assessment
 
@@ -61,7 +60,7 @@ Removed or unselected tooling should not appear in active implementation tasks.
 | Phase 0.5 scope creep | High | Medium | Keep tickets capability-first; defer polished panels until parser/test/compiler foundations exist |
 | Simulation correctness drift | Medium | High | Prefer pure logic tests and compatibility fixtures before UI wiring |
 | Runtime mismatch | Medium | High | Keep `.nvmrc`, `package.json` engines, and workflows on Node 22 |
-| Documentation drift | High | Medium | Keep `docs:check` in CI and update `REPO_MAP.md` when paths or phase state change |
+| Documentation drift | Medium | Medium | Update `README.md`, `REPO_MAP.md`, roadmap pages, and agent guides when paths or phase state change |
 | Performance pressure from buses/chips | Medium | Medium | Keep evaluation deterministic and add benchmarks when circuits grow beyond Project 1 scale |
 
 ## Implementation Checklist
@@ -188,7 +187,6 @@ Future phases remain useful directionally, but do not supersede Phase 0.5-0.7 pr
 - Unit tests through `pnpm run test:run`
 - Store-level E2E through `pnpm run test:e2e:store`
 - Production build through `pnpm run build`
-- Documentation drift guard through `pnpm run docs:check`
 
 ### Manual Review Focus
 

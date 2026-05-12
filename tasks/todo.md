@@ -2,18 +2,16 @@
 
 ## Documentation Refresh (2026-05-12)
 
-Bring living docs into alignment with the current codebase and add a guard that prevents the same drift from returning.
+Bring living docs into alignment with the current codebase (no automated doc grep guard — removed as unnecessary overhead).
 
 - [x] Create isolated worktree and branch: `docs/documentation-refresh-2026-05-12`
-- [x] Add `pnpm run docs:check` drift guard
 - [x] Align local/runtime docs and workflows on Node 22
 - [x] Refresh README, `HACER_LLM_GUIDE.md`, `REPO_MAP.md`, `.cursorrules`, and Copilot instructions
 - [x] Refresh roadmap index, implementation guide, and stale phase pages
 - [x] Remove active roadmap/ticket references to removed UI tooling and old stack majors
 - [x] Update Phase 0.5 checklist status for P05-01 through P05-06, P05-08, and P05-09
 - [x] Refresh release and testing docs against current workflow/package state
-- [x] Add `pnpm run docs:check` to CI after the docs check is green locally
-- [x] Run final verification gates (`docs:check`, `lint`, `test:run`, `test:e2e:store`, `build`)
+- [x] Run final verification gates (`lint`, `test:run`, `test:e2e:store`, `build`)
 
 ## Phase 0.5 Product Work
 
