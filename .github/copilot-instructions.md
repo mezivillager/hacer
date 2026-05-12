@@ -6,7 +6,8 @@ See [AGENTS.md](../AGENTS.md) for the complete guide — it covers cognitive pro
 
 - **Stack**: React 19 (React Compiler — no manual memoization), TypeScript strict, Zustand for state, React Three Fiber for 3D, Vitest + Playwright
 - **TDD is mandatory**: write the test first, watch it fail, then implement
-- **No `console.log`** for user feedback — use Ant Design Message/Notification
+- **No `console.log`** for user feedback — use `notify` from `@/lib/notify` or store-backed status messages
+- **UI primitives** live under `@/components/ui-kit/`; HACER shell components live under `@/components/ui/`
 - **One component per file** — never put multiple React components in one file
 - **State**: read via `useCircuitStore(state => ...)`, mutate via `circuitActions.*()` only
 - **Types**: no `any`; use branded types (GateId, WireId, PinId) where available

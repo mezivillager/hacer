@@ -9,9 +9,10 @@
 
 ## Phase Tracking
 
-**Last Updated:** 2026-03-21  
-**Current Phase:** Phase 0.25 (Complete) → Phase 0.5 (In Progress)  
-**Next Phase:** Phase 0.5: Nand2Tetris Foundation
+**Last Updated:** 2026-05-12  
+**Current Phase:** Phase 0.5 (In Progress)  
+**Completed Infrastructure:** Phase 0.25 UI/canvas, Tailwind/shadcn design shell, semantic-release  
+**Next Product Phase:** Phase 0.6: Arithmetic & Sequential Logic
 
 ### Phase Status Indicators
 - **Current/Active** - Rules and patterns currently in use
@@ -25,7 +26,7 @@
 
 ## Stack
 
-React 19 + React Compiler (NO manual memoization), TypeScript 5.9 strict, Zustand (NOT Valtio), React Three Fiber, Tailwind CSS v4 + shadcn/ui (NOT Ant Design), Sonner toasts via `notify` helper at `@/lib/notify`, `next-themes` tri-state (light/dark/system), Vitest + Playwright. See [HACER_LLM_GUIDE.md](HACER_LLM_GUIDE.md) for patterns.
+React 19 + React Compiler (NO manual memoization), TypeScript 5.9 strict, Zustand (NOT Valtio), React Three Fiber, Tailwind CSS v4 + shadcn/ui-style primitives, Sonner toasts via `notify` helper at `@/lib/notify`, `next-themes` tri-state (light/dark/system), Vitest + Playwright. See [HACER_LLM_GUIDE.md](HACER_LLM_GUIDE.md) for patterns.
 
 ## Critical Rules
 

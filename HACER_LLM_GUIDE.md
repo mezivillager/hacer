@@ -1,7 +1,7 @@
 # HACER Development Guide
 
 **PURPOSE**: Ensure AI-generated code doesn't break existing functionality as the codebase scales.  
-**SCOPE**: React Three Fiber 3D components, Zustand state, Ant Design UI, testing patterns.  
+**SCOPE**: React Three Fiber 3D components, Zustand state, Tailwind/shadcn UI, testing patterns.  
 **REQUIREMENT**: Follow these patterns for ALL code changes - test coverage is mandatory.
 
 > **📚 Related Documentation:**
@@ -35,7 +35,7 @@ Read the **LLM quick reference** below (always), then **only the section you nee
 | Writing or fixing tests | **Testing Strategy** (line ~626) |
 | 3D / R3F scene work | **React Three Fiber Patterns** (line ~802) |
 | Store / state changes | **Zustand State Management** (line ~962) |
-| UI with Ant Design | **Ant Design Usage** (line ~1083) |
+| UI with shadcn/Tailwind | **shadcn/ui + Tailwind Usage** (search heading) |
 | File placement / imports | **File Organization** (line ~1129) |
 | Performance tuning | **Performance Patterns** (line ~1161) |
 | AI-generated code review | **Code Review Checklist** (line ~1308) + **Anti-Patterns** (line ~1358) |
@@ -120,7 +120,9 @@ TypeScript will tell you immediately if a type name or signature no longer match
 ✅ Call hooks only at the top level (never in loops, conditions, or callbacks)
 ✅ Keep components under 200 lines (split if larger)
 ✅ **One component per file** - each React component gets its own file
-✅ Import from `antd` directly for UI components
+✅ Import shadcn/ui primitives from `@/components/ui-kit/<primitive>`
+✅ Use lucide-react icons for tool buttons and compact controls
+✅ Use `notify` from `@/lib/notify` for toast-style user feedback
 ✅ Use Zustand `create()` for shared state, selectors for granular subscriptions
 ✅ Let React Compiler handle memoization automatically
 ✅ Dispose Three.js resources on unmount (geometries, materials, textures)
@@ -135,7 +137,8 @@ TypeScript will tell you immediately if a type name or signature no longer match
 ❌ **Put multiple components in one file** - one component per file, use folders for related components
 ❌ Mix business logic with UI rendering (extract to hooks)
 ❌ Modify existing function signatures without updating all callers
-❌ Use `console.log()` for user feedback (use Ant Design Message/Notification)
+❌ Use `console.log()` or UI-library globals for user feedback (use `notify` or store-backed status messages)
+❌ Import removed UI packages or icon packs; use `@/components/ui-kit/*` and `lucide-react`
 ❌ Create new 3D geometries inside render loops
 ❌ Mutate Zustand state outside of action functions
 ❌ Import Three.js objects you don't dispose
@@ -1098,49 +1101,36 @@ const GoodComponent = () => {
 
 ---
 
-## 🎨 Ant Design Usage
+## shadcn/ui + Tailwind Usage
 
-### Import Pattern
-
-```typescript
-// ✅ CORRECT - Direct antd import
-import { Button, Card, Space, Slider, Switch, Typography, message } from 'antd';
-const { Text, Title } = Typography;
-
-// ❌ WRONG - No wrapper library exists in this project
-import { Button } from '@duro/components';
-```
-
-### Component Selection Matrix
-
-| UI Need | Primary Choice | Alternative | Never Use |
-|---------|---------------|-------------|-----------|
-| **Sidebar panels** | Card | Collapse | custom divs |
-| **Gate buttons** | Button | - | custom buttons |
-| **Simulation controls** | Switch, Slider | - | html inputs |
-| **Tooltips** | Tooltip | Popover | title attr |
-| **Feedback** | message, notification | Alert | console.log |
-| **Layout** | Space, Flex | Layout | manual CSS |
-| **Lists** | List | Table | div loops |
-
-### Styling Pattern
+HACER owns its UI primitives in `src/components/ui-kit/`. These are shadcn/ui-style files copied into the repo, not imports from a versioned `shadcn` runtime package.
 
 ```typescript
-// ✅ CORRECT - Use Ant Design's style props
-<Card 
-  styles={{ 
-    body: { padding: 12 },
-    header: { borderBottom: 'none' }
-  }}
->
-  <Space direction="vertical" size="small">
-    <Button type="primary" block>Add NAND Gate</Button>
-  </Space>
-</Card>
+import { Button } from '@/components/ui-kit/button'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui-kit/tooltip'
+import { notify } from '@/lib/notify'
+import { Trash2 } from 'lucide-react'
 
-// ❌ WRONG - Inline styles with hardcoded values
-<div style={{ padding: '12px', backgroundColor: '#f0f0f0' }}>
+export function DeleteCircuitButton() {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          onClick={() => notify.info('Delete circuit is not wired yet')}
+        >
+          <Trash2 className="h-4 w-4" />
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>Delete circuit</TooltipContent>
+    </Tooltip>
+  )
+}
 ```
+
+Use Tailwind classes and CSS variables from `src/styles/globals.css`. Keep HACER-owned shell components in `src/components/ui/`, and keep reusable primitives in `src/components/ui-kit/`.
 
 ---
 
@@ -1458,7 +1448,9 @@ pnpm run stryker          # Mutation testing (full)
 - React Three Fiber: https://docs.pmnd.rs/react-three-fiber
 - Drei (R3F helpers): https://github.com/pmndrs/drei
 - Zustand: https://github.com/pmndrs/zustand
-- Ant Design: https://ant.design/components/overview
+- shadcn/ui: https://ui.shadcn.com/docs
+- Radix UI: https://www.radix-ui.com/primitives
+- Tailwind CSS v4: https://tailwindcss.com/docs
 - Playwright: https://playwright.dev/docs/intro
 - Vitest: https://vitest.dev/guide/
 

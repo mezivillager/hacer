@@ -1,7 +1,7 @@
-# HACER (Hardware Architecture & Constraints Explorer/Researcher)
+# HACER (Hardware Architecture Circuit Editor and Runtime)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Node.js 20+](https://img.shields.io/badge/node-%3E%3D20-brightgreen)](https://nodejs.org)
+[![Node.js 22+](https://img.shields.io/badge/node-%3E%3D22-brightgreen)](https://nodejs.org)
 [![CI](https://github.com/mezivillager/hacer/actions/workflows/ci.yml/badge.svg)](https://github.com/mezivillager/hacer/actions/workflows/ci.yml)
 
 **[Play With It](https://mezivillager.github.io/hacer/)**
@@ -34,28 +34,35 @@ Every human action has a programmatic equivalent, so AI agents can build circuit
 
 ## Current Status
 
-HACER is in active development. Phase 0.25 (interactive 3D circuit building) is complete, and Phase 0.5 (nand2tetris foundation) is in progress. See the [full roadmap](#roadmap) below.
+HACER is in active development. Phase 0.25 (interactive 3D circuit building) is complete, and Phase 0.5 (nand2tetris Project 1 foundation) is in progress.
+
+Completed Phase 0.5 building blocks include the chip registry/Nand primitive, numeric node values, topological evaluation, HACK HDL parsing, Project 1 HDL fixtures, `.tst` parsing, `.cmp` parsing, node rename/name display, and status messaging. Remaining Phase 0.5 work focuses on HDL compilation, test execution, chip workflow UI, pinout/test-results panels, persistence, buses, and composite chip rendering.
 
 ## Features
 
 **Available now:**
 - Interactive 3D circuit canvas powered by React Three Fiber
+- Tailwind/shadcn UI shell with compact toolbar, right action drawer, properties panel, help bar, status bar, and theme switching
 - Real-time logic simulation with visual feedback (red = 0, green = 1)
 - Grid-aligned wire routing with junctions and I/O nodes
-- Gate types: NAND, AND, OR, NOT, XOR with drag-and-drop placement
+- Gate types: NAND, AND, OR, NOT, XOR, NOR, XNOR with placement controls
 - Gate movement, rotation, selection, and deletion
 - Wire selection and deletion
+- HACK HDL parser for Project 1 syntax
+- `.tst` and `.cmp` parsers plus Project 1 fixture corpora
+- Automated CI, mutation testing workflow, scheduled UI E2E, and semantic-release
 
 **Coming next:**
-- HDL parser/generator for text-based chip definitions
-- Test script engine (.tst/.cmp nand2tetris file support)
-- Sequential logic (DFF, Register, RAM)
-- Chip hierarchy and composition
+- HDL compiler for runnable chip definitions
+- Test execution engine that runs `.tst` scripts against `.cmp` expectations
+- Chip workflow browser, chip definition panel, pinout panel, HDL editor, and test results panel
+- Circuit persistence and 3D/HDL interoperability
+- Multi-bit bus rendering and composite chip rendering
 
 ## Prerequisites
 
-- **Node.js** 20 or higher (`.nvmrc` provided -- run `nvm use` if you have [nvm](https://github.com/nvm-sh/nvm))
-- **pnpm** 9+
+- **Node.js** 22 or higher (`.nvmrc` provided -- run `nvm use` if you have [nvm](https://github.com/nvm-sh/nvm))
+- **pnpm** 10.x (`packageManager` pins `pnpm@10.12.1`)
 
 ## Getting Started
 
@@ -85,30 +92,38 @@ Open [http://localhost:5173](http://localhost:5173) to view the simulator locall
 |-----------|---------|
 | React 19 | UI framework |
 | TypeScript 5.9 | Type safety (strict mode) |
-| Vite | Build tool |
-| React Three Fiber | 3D rendering (Three.js for React) |
-| Zustand | State management |
+| Vite 8 | Build tool |
+| React Three Fiber 9 + Three.js | 3D rendering |
+| Zustand 5 + Immer | State management |
 | React Compiler | Automatic memoization |
-| Ant Design | UI component library |
+| Tailwind CSS v4 + shadcn/ui primitives | UI styling and component primitives |
+| Radix UI | Accessible headless primitives under shadcn components |
+| lucide-react | Icon system |
+| Sonner | Toast notifications through `@/lib/notify` |
+| next-themes | Light/dark/system theme handling |
 | Vitest | Unit testing |
 | Playwright | E2E testing |
 | Stryker | Mutation testing |
+| semantic-release | Automated releases |
 
 ## Project Structure
 
 ```
 src/
 ├── components/
-│   ├── ui/           # Ant Design based UI (Sidebar, GateSelector, NodeSelector)
-│   └── canvas/       # React Three Fiber 3D (Scene, Wire3D, handlers)
+│   ├── ui/           # HACER shell components (CompactToolbar, RightActionBar, PropertiesPanel, HelpBar, StatusBar)
+│   ├── ui-kit/       # shadcn/ui-style primitives copied into the app
+│   └── canvas/       # React Three Fiber 3D (Scene, Wire3D, handlers, hooks)
+├── core/             # Chip registry, HDL parser, test parsers, Project 1 fixtures
 ├── gates/            # Gate components, icons, config, and handlers
 ├── nodes/            # Input, output, and junction nodes
 ├── simulation/       # Circuit simulation engine (pure logic)
 ├── store/            # Zustand state and domain-organized actions
-├── hooks/            # Custom hooks (keyboard shortcuts, drag, etc.)
+├── hooks/            # Custom hooks (keyboard shortcuts, drag, release version)
+├── lib/              # notify, utils, demo tour, GitHub release helpers
+├── styles/           # Tailwind v4 globals and CSS variables
+├── theme/            # Shared theme tokens consumed by canvas utilities
 ├── utils/            # Wiring, pathfinding, grid, hit-testing utilities
-├── theme/            # Design tokens and theme provider
-├── types/            # Shared TypeScript types
 ├── App.tsx           # Main application
 └── main.tsx          # Entry point
 
@@ -143,16 +158,16 @@ HACER is developed in phases, each building on the previous. The full roadmap sp
 |-------|--------|-------------|
 | 0 | Complete | Critical fixes, documentation, tooling setup |
 | 0.25 | Complete | Grid-based placement, wire routing, gate movement, E2E tests |
-| 0.5 | In Progress | HDL parser, test scripts, sequential logic, chip hierarchy |
+| 0.5 | In Progress | HDL parser/compiler, test scripts, buses, chip hierarchy |
 
 ### Core Platform (Phases 1.5 -- 7)
 
 | Phase | Status | Description |
 |-------|--------|-------------|
-| 1.5 | Planned | Design system, tokens, Figma integration, light/dark mode |
-| 2.5 | Planned | Storybook, CI/CD, conventional commits, developer tooling |
-| 3.5 | Planned | Property-based testing, quality gates, visual regression |
-| 4.5 | Planned | Semantic release, automated changelog, deployment pipelines |
+| 1.5 | Complete | Tailwind v4 + shadcn/ui shell, tokens, theme switching |
+| 2.5 | Re-scoped | Developer tooling, CI, hooks, and agent harness without a separate component explorer |
+| 3.5 | Partially Complete | Vitest, Playwright, Stryker, CI, and scheduled UI E2E are active; property/visual regression tooling remains unselected |
+| 4.5 | Complete | semantic-release, conventional commits, changelog, release workflow |
 | 5 | Planned | Core architecture refactor, branded types, Zod schemas, event system |
 | 6 | Planned | Plugin system, renderer/analyzer/agent plugin framework |
 | 7 | Planned | AI agent integration, public API, programmatic circuit building |
