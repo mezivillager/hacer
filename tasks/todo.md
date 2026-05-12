@@ -13,7 +13,7 @@ Bring living docs into alignment with the current codebase and add a guard that 
 - [x] Update Phase 0.5 checklist status for P05-01 through P05-06, P05-08, and P05-09
 - [x] Refresh release and testing docs against current workflow/package state
 - [x] Add `pnpm run docs:check` to CI after the docs check is green locally
-- [ ] Run final verification gates
+- [x] Run final verification gates (`docs:check`, `lint`, `test:run`, `test:e2e:store`, `build`)
 
 ## Phase 0.5 Product Work
 
