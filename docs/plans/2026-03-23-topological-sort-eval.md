@@ -536,7 +536,7 @@ This way:
 - [x] XOR circuit (3 layers, 5 gates) evaluates correctly in 1 tick (was 5)
 - [x] `getSignalSourceValue` still works for `CanvasArea.tsx` wire rendering
 - [x] No circular imports
-- [x] Cycle feedback: `lastSimulationError` + Ant Design `message.error` (follow-up to silent skip)
+- [x] Cycle feedback: `lastSimulationError` + status/notification feedback (follow-up to silent skip)
 - [x] Public API JSDoc (`@param` / `@returns`) on `topologicalEval` exports
 - [x] `pnpm run lint` exits 0
 - [x] `pnpm run test:run` — all pass

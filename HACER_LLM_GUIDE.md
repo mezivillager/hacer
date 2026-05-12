@@ -1,7 +1,7 @@
 # HACER Development Guide
 
 **PURPOSE**: Ensure AI-generated code doesn't break existing functionality as the codebase scales.  
-**SCOPE**: React Three Fiber 3D components, Zustand state, Tailwind/shadcn UI, testing patterns.  
+**SCOPE**: React Three Fiber 3D components, Zustand state, Tailwind CSS v4 + shadcn/ui-style primitives, testing patterns.  
 **REQUIREMENT**: Follow these patterns for ALL code changes - test coverage is mandatory.
 
 > **📚 Related Documentation:**
