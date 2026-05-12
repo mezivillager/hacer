@@ -177,7 +177,7 @@ scripts/
 **Expected additions:**
 - `src/core/chips/` - Chip hierarchy (ChipRegistry, ChipDefinition, composite chips)
 - `src/core/hdl/` - HDL parser and compiler
-- `src/core/testing/nand2tetris/` - Test script and compare file execution
+- `src/core/testing/` - Test script and compare file execution
 - `src/simulation/topologicalEval.ts` - Topological sort evaluation
 - `src/components/ui/ChipDefinitionPanel.tsx` - Chip I/O definition UI
 - `src/components/ui/TestResultsPanel.tsx` - Test results and diff display
@@ -189,15 +189,15 @@ scripts/
 - `src/gates/components/BusSplitter3D.tsx` - Bus splitter visual component
 - `src/gates/components/BusJoiner3D.tsx` - Bus joiner visual component
 - `src/store/actions/persistenceActions/` - Circuit save/load to localStorage
-- `src/core/testing/nand2tetris/project01/` - Provider-backed test fixtures (.hdl, .tst, .cmp)
+- `src/core/testing/project01/` - Provider-backed test fixtures (.hdl, .tst, .cmp)
 
 ### 🔄 Phase 0.6 — Projects 2-3: Arithmetic & Sequential Logic
 
 **Expected additions:**
 - `src/core/gates/sequential/` - DFF, clock signal system
 - `src/core/gates/memory/` - SparseMemory, RAM implementations
-- `src/core/testing/nand2tetris/project02/` - Project 2 test fixtures
-- `src/core/testing/nand2tetris/project03/` - Project 3 test fixtures
+- `src/core/testing/project02/` - Project 2 test fixtures
+- `src/core/testing/project03/` - Project 3 test fixtures
 
 ### 🔄 Phase 0.7 — Projects 4-5: Computer Architecture
 
@@ -207,8 +207,8 @@ scripts/
 - `src/core/rom/` - ROM32K, .hack file loader
 - `src/components/ui/ScreenDisplay.tsx` - Screen I/O rendering
 - `src/components/ui/DebugPanel.tsx` - Execution and debugging UI
-- `src/core/testing/nand2tetris/project04/` - Project 4 test programs
-- `src/core/testing/nand2tetris/project05/` - Project 5 test fixtures
+- `src/core/testing/project04/` - Project 4 test programs
+- `src/core/testing/project05/` - Project 5 test fixtures
 
 ### ⏸️ Future Structure (Phases 5-24 - Not Yet Implemented)
 

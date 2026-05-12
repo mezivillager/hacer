@@ -29,14 +29,14 @@ Each ticket file below is **self-contained** — a fresh LLM session can impleme
 
 | ID | Title | Effort | Gap(s) | Status |
 |----|-------|--------|--------|--------|
-| [P05-01](P05-01.md) | ChipRegistry + Nand builtin | 8h | GAP-3D-1, GAP-UI-7 | TODO |
-| [P05-02](P05-02.md) | Multi-bit data model (boolean to number) | 8h | GAP-3D-2 | TODO |
-| [P05-03](P05-03.md) | Topological sort simulation | 10h | GAP-3D-5 | TODO |
-| [P05-04](P05-04.md) | HDL parser | 14h | GAP-UI-1 | TODO |
-| [P05-05](P05-05.md) | TST parser | 8h | GAP-3D-4 | TODO |
-| [P05-06](P05-06.md) | CMP parser | 4h | GAP-3D-4 | TODO |
-| [P05-08](P05-08.md) | Node rename + name display | 5h | GAP-3D-3 | TODO |
-| [P05-09](P05-09.md) | StatusBar component | 4h | GAP-UI-5 | TODO |
+| [P05-01](P05-01.md) | ChipRegistry + Nand builtin | 8h | GAP-3D-1, GAP-UI-7 | DONE |
+| [P05-02](P05-02.md) | Multi-bit data model (boolean to number) | 8h | GAP-3D-2 | DONE |
+| [P05-03](P05-03.md) | Topological sort simulation | 10h | GAP-3D-5 | DONE |
+| [P05-04](P05-04.md) | HDL parser | 14h | GAP-UI-1 | DONE |
+| [P05-05](P05-05.md) | TST parser | 8h | GAP-3D-4 | DONE |
+| [P05-06](P05-06.md) | CMP parser | 4h | GAP-3D-4 | DONE |
+| [P05-08](P05-08.md) | Node rename + name display | 5h | GAP-3D-3 | DONE |
+| [P05-09](P05-09.md) | StatusBar component | 4h | GAP-UI-5 | DONE |
 | [P05-10](P05-10.md) | PinoutPanel component | 5h | GAP-UI-3 | TODO |
 
 ### Layer 1 — Depends on one Layer 0 item
@@ -201,7 +201,9 @@ beforeEach(() => {
 
 **Test framework:** `import { describe, it, expect, beforeEach } from 'vitest'`
 
-**New directories:** `src/core/` and `src/data/` do not exist yet — create them as needed. Layer 1/2 tickets may require `src/core/chips/builtins/`, `src/core/chips/`, `src/core/hdl/`, `src/core/testing/nand2tetris/`, `src/core/serialization/`.
+**New directories:** `src/core/` exists with `chips/`, `hdl/`, and `testing/`. Layer 1/2 tickets may still add `src/core/chips/builtins/`, `src/core/testing/engine.ts`, `src/core/serialization/`, or focused fixture/provider modules as needed.
+
+**UI stack:** Use HACER shell components in `src/components/ui/`, primitives from `@/components/ui-kit/*`, lucide-react icons, and `notify` from `@/lib/notify` for toast-style feedback.
 
 **State management:**
 - Read: `useCircuitStore(state => state.property)`
