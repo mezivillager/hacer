@@ -443,23 +443,23 @@ Before submitting AI-generated tests, verify:
 
 ---
 
-## Property-Based Testing (Phase 3.5+)
+## Property-Based Testing (Future Phase 3.5+)
 
-Use fast-check for testing invariants that should hold for all inputs:
+HACER does not currently install a property-testing library. When Phase 3.5 work resumes, choose and install a library first, then add invariant suites for behavior that should hold across many generated inputs.
 
 ```typescript
-import fc from 'fast-check';
+// Example shape only; replace `propertyTool` with the selected library.
 
 describe('gateLogic invariants', () => {
   it('NAND is self-dual', () => {
-    fc.assert(fc.property(fc.boolean(), fc.boolean(), (a, b) => {
+    propertyTool.assert(propertyTool.property(propertyTool.boolean(), propertyTool.boolean(), (a, b) => {
       // NAND(a,b) = NOT(AND(a,b))
       return nand(a, b) === !(a && b);
     }));
   });
 
   it('double NOT is identity', () => {
-    fc.assert(fc.property(fc.boolean(), (a) => {
+    propertyTool.assert(propertyTool.property(propertyTool.boolean(), (a) => {
       return not(not(a)) === a;
     }));
   });
@@ -488,6 +488,5 @@ describe('gateLogic invariants', () => {
 ## References
 
 - [Stryker Mutator](https://stryker-mutator.io/)
-- [fast-check](https://fast-check.dev/)
 - [Testing Trophy](https://kentcdodds.com/blog/the-testing-trophy-and-testing-classifications)
 - [Vitest Documentation](https://vitest.dev/)

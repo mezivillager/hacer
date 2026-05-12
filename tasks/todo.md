@@ -1,150 +1,24 @@
-# Current focus
+# Current Focus
 
-**Phase 0.5 ticket progress:** check off tickets in [`docs/plans/phase-0.5-tickets-CHECKLIST.md`](../docs/plans/phase-0.5-tickets-CHECKLIST.md) when merged + CI gates pass.
+## Documentation Refresh (2026-05-12)
 
-## In Progress: P05-08 Input/Output node rename workflow (2026-03-28)
+Bring living docs into alignment with the current codebase and add a guard that prevents the same drift from returning.
 
-- [x] Refresh ticket scope and assumptions in `docs/plans/phase-0.5-tickets/P05-08.md`
-- [x] Add RED tests for shared node name validation (`src/utils/nodeNameValidation.test.ts`)
-- [x] Implement shared node name validation helper (`src/utils/nodeNameValidation.ts`)
-- [x] Add RED tests for store rename actions (`src/store/actions/nodeActions/nodeActions.test.ts`)
-- [x] Implement `renameInputNode`/`renameOutputNode` in node actions and expose through `circuitActions`
-- [x] Add RED tests for sidebar rename UI (`src/components/ui/NodeRenameControl.test.tsx`, `src/components/ui/Sidebar.test.tsx`)
-- [x] Implement `NodeRenameControl` and integrate in `Sidebar`
-- [x] Add RED tests for 3D node name label rendering (`InputNode3D.test.tsx`, `OutputNode3D.test.tsx`)
-- [x] Render node names in input/output 3D components
-- [x] Add store E2E coverage for node rename flows (`e2e/specs/wiring/node-rename.store.spec.ts`)
-- [x] Run completion gates: `pnpm run lint && pnpm run test:run && pnpm run build && pnpm run test:e2e:store`
+- [x] Create isolated worktree and branch: `docs/documentation-refresh-2026-05-12`
+- [x] Add `pnpm run docs:check` drift guard
+- [x] Align local/runtime docs and workflows on Node 22
+- [x] Refresh README, `HACER_LLM_GUIDE.md`, `REPO_MAP.md`, `.cursorrules`, and Copilot instructions
+- [x] Refresh roadmap index, implementation guide, and stale phase pages
+- [x] Remove active roadmap/ticket references to removed UI tooling and old stack majors
+- [x] Update Phase 0.5 checklist status for P05-01 through P05-06, P05-08, and P05-09
+- [x] Refresh release and testing docs against current workflow/package state
+- [ ] Add `pnpm run docs:check` to CI after the docs check is green locally
+- [ ] Run final verification gates
 
-### Review (P05-08 node rename)
+## Phase 0.5 Product Work
 
-- Added a shared validator that enforces non-empty names, HDL-safe identifier format, and case-insensitive uniqueness within input or output node groups.
-- Added store actions `renameInputNode` and `renameOutputNode` and exposed them through `circuitActions` for UI and E2E callers.
-- Added sidebar rename UI (`NodeRenameControl`) with validation feedback and apply flow for selected input/output nodes.
-- Updated 3D node rendering to show both the node name and the node value labels.
-- Added store E2E coverage for successful rename plus duplicate and invalid-name rejections.
-- Verified (2026-03-28):
-	- `pnpm run lint` (pass)
-	- `pnpm run test:run` (pass: 71 files, 1106 tests)
-	- `pnpm run build` (pass)
-	- `pnpm run test:e2e:store` (pass: 85 tests)
+After this docs branch, resume Phase 0.5 from `docs/plans/phase-0.5-tickets-CHECKLIST.md`.
 
-## In Progress: HDL parser parity hardening (2026-03-26)
+Next unchecked Layer 0 ticket:
 
-- [x] Add RED tests for explicit unsupported `CLOCKED` diagnostics
-- [x] Add RED tests for invalid sub-bus range handling (`start > end`)
-- [x] Implement parser updates in `src/core/hdl/parser.ts`
-- [x] Run focused verification: `pnpm run test:run -- src/core/hdl/parser.test.ts`
-- [x] Run completion gates: `pnpm run lint && pnpm run test:run && pnpm run build && pnpm run test:e2e:store`
-- [x] Add canonical Project 1 HDL fixture corpus in `src/core/hdl/project1HdlFixtures.ts`
-- [x] Refactor `src/core/hdl/parser.test.ts` to consume canonical fixture map (remove duplicated inline fixture bodies)
-- [x] Tighten diagnostic contracts with exact message assertions for `CLOCKED` and descending sub-bus ranges
-- [x] Add strictness guard test for missing closing brace behavior
-- [x] Re-run verification gates: focused HDL tests, lint, typecheck, full unit tests, build, and store E2E
-
-### Review (HDL parser parity hardening)
-
-- Added explicit unsupported `CLOCKED` diagnostics in the HDL parser to avoid generic token mismatch errors.
-- Added validation for descending sub-bus ranges (`start > end`) with a specific range error message.
-- Added targeted parser tests covering both behaviors.
-- Added canonical Project 1 HDL fixtures module (`project1HdlFixtures`) with all 16 chips.
-- Removed duplicated Project 1 fixture bodies from `parser.test.ts` by importing the canonical fixture map.
-- Hardened parser diagnostics tests to assert exact messages for `CLOCKED` and descending range errors.
-- Verified (2026-03-26):
-	- `pnpm run test:run -- --run src/core/hdl/parser.test.ts` (pass: 69 files, 1081 tests)
-	- `pnpm run lint` (pass)
-	- `pnpm run typecheck` (pass)
-	- `pnpm run test:run` (pass: 69 files, 1081 tests)
-	- `pnpm run build` (pass; Vite build complete)
-	- `pnpm run test:e2e:store` (pass: 81 passed)
-
-## Done: De-scope P05-07 + capability-first documentation alignment (2026-03-26)
-
-- [x] Confirm de-scope decision scope: remove P05-07 as a required ticket, preserve parser fixture strategy, preserve builtin-registry path (P05-01/P05-15/P05-16/P05-18)
-- [x] Update ticket list/index docs to remove or replace P05-07 references and dependency arrows (`phase-0.5-tickets/README.md`, `phase-0.5-tickets-CHECKLIST.md`, `2026-03-22-phase-0.5-tickets.md`)
-- [x] Rewrite impacted phase-0.5 ticket docs that currently depend on `getChipFiles`/curriculum bundle assumptions (P05-15, P05-17, P05-19, P05-20, P05-21, P05-22, P05-24, P05-27, P05-28)
-- [x] Update gap-analysis and roadmap wording from "curriculum adherence/completion" to "capability parity validation corpus + HACER-first extensions"
-- [x] Ensure all docs frame nand2tetris assets as compatibility/validation fixtures rather than mandatory runtime curriculum UX
-- [x] Add review notes summarizing what changed and which assumptions were intentionally removed
-
-### Review (P05-07 de-scope)
-
-- Fully removed `docs/plans/phase-0.5-tickets/P05-07.md` and rewired Phase 0.5 plan/checklist/index dependencies.
-- Updated P05-xx ticket docs to remove runtime coupling to `getChipFiles`/`CHIP_ORDER` and replace it with fixture/provider language.
-- Rebranded P05-19 from curriculum navigation to chip workflow browser across dependent ticket references.
-- Broadened roadmap and gap-analysis language to capability-first compatibility validation framing.
-
-## In Progress: P05-06 CMP parser (2026-03-26)
-
-- [x] Create failing tests for CMP parsing and row comparison in `src/core/testing/cmpParser.test.ts`
-- [x] Add self-contained Project 1 CMP fixture corpus (all 16 files) for parser coverage
-- [x] Implement `parseCmp` and `compareCmpRow` in `src/core/testing/cmpParser.ts`
-- [x] Ensure compatibility with P05-05 execution order
-- [x] Run verification: `pnpm run test:run -- --run src/core/testing/cmpParser.test.ts`
-- [x] Run completion gates: `pnpm run lint && pnpm run test:run && pnpm run build && pnpm run test:e2e:store`
-- [x] Address PR review: structured result pattern, strict numeric validation, barrel exports, license header
-- [x] Address PR review: rename `nand2tetris/` folder to generic `testing/` path
-
-### Review (P05-06)
-
-- Added strict `.cmp` parser with structured `{ success, errors }` result pattern (aligned with `parseTST`/`parseHDL`).
-- Added `compareCmpRow` first-mismatch reporting with optional caller row index.
-- Added local fixture corpus with all 16 Project 1 `.cmp` tables curated from canonical web-ide sources.
-- Re-exported CMP types and functions from `src/core/testing/index.ts` barrel.
-- Refactored: moved all testing utilities from `src/core/testing/nand2tetris/` to `src/core/testing/`.
-- Verified:
-	- `pnpm exec vitest run src/core/testing/cmpParser.test.ts`
-	- `pnpm run lint` (pass)
-	- `pnpm run test:run` (pass)
-	- `pnpm run build` (pass)
-	- `pnpm run test:e2e:store` (pass)
-
----
-
-## Done: P05-03 Topological sort simulation (2026-03-23)
-
-- `src/simulation/topologicalEval.ts` — Kahn sort, `evaluateCircuit`, `getSignalSourceValue`
-- `simulationTick` → `evaluateCircuit`; cycles set `lastSimulationError` + `message.error`
-- Plan: `docs/plans/2026-03-23-topological-sort-eval.md` (success criteria checked)
-
----
-
-# Task: Replace Deprecated TypeScript baseUrl Usage (historical)
-
-## Plan
-
-- [x] Remove temporary deprecation suppression and deprecated option
-- [x] Migrate alias path targets to explicit relative mappings
-- [x] Validate diagnostics and TypeScript compilation
-- [x] Document lesson from user correction
-
-## Progress Notes
-
-- Removed `ignoreDeprecations` and `baseUrl` from TypeScript base config.
-- Updated all `paths` targets from `src/*` style to `./src/*` style.
-- Verified no diagnostics remain in tsconfig files.
-- Ran typecheck to confirm project config remains valid.
-
-## Review (on completion)
-
-- What was done: Migrated tsconfig alias configuration away from deprecated `baseUrl` and removed suppression.
-- What was verified: `get_errors` reports no issues for tsconfig files; `npm run typecheck` completed without reported TypeScript errors.
-- Any follow-ups: Consider running full lint and tests as part of broader PR verification.
-
----
-
-# Task: P05-05 TST Parser (in progress)
-
-## Plan
-
-- [x] Create `src/core/testing/` module scaffold and parser types
-- [x] Write RED tests for Project 1 command parsing and output-list formatting
-- [x] Implement `parseTST` tokenizer + parser for P05-05 scope
-- [x] Add all 16 Project 1 `.tst` fixture coverage
-- [x] Run verification gates (`lint`, `test:run`, `build`, `test:e2e:store`)
-
-## Review (on completion)
-
-- What was done: Added TST parser module with typed AST/result model, Project 1 command parsing, output-list format decoding, strict set-value parsing, and explicit unsupported-command diagnostics for deferred syntax.
-- What was verified: `pnpm exec vitest run src/core/testing/tstParser.test.ts`, `pnpm run lint`, `pnpm run test:run`, `pnpm run build`, and `pnpm run test:e2e:store` all passed.
-- Any follow-ups: P05-17 test execution engine can now consume `TSTScript` command streams directly; Phase 0.6 can extend parser for `repeat`/`while`/clock commands.
+- [ ] P05-10 - PinoutPanel component

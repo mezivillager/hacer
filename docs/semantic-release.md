@@ -4,7 +4,7 @@ This document explains how automated versioning and releases work in HACER using
 
 ## Overview
 
-HACER uses [semantic-release](https://github.com/semantic-release/semantic-release) to automate the version management and package publishing process. It analyzes commit messages following the [Conventional Commits](https://www.conventionalcommits.org/) specification to determine version bumps and generate changelogs automatically.
+HACER uses [semantic-release](https://github.com/semantic-release/semantic-release) to automate version management, changelog updates, git tags, and GitHub releases. The package is not published to npm (`npmPublish: false`); semantic-release updates `package.json`, `pnpm-lock.yaml`, and `CHANGELOG.md` in the release commit.
 
 ## How It Works
 
@@ -23,15 +23,15 @@ When you commit code with a conventional commit message, semantic-release analyz
 
 ### 2. Automatic Release Process
 
-The release workflow (`.github/workflows/release.yml`) runs automatically when changes are pushed to `main`, `beta`, or `alpha`:
+The release workflow (`.github/workflows/release.yml`) runs on Node 22 when changes are pushed to `main`, `beta`, or `alpha`, or when manually triggered:
 
-1. **Run Tests**: Ensures code quality (lint, unit tests, build)
+1. **Run Tests**: Ensures code quality (`pnpm run lint`, `pnpm run test:run`, `pnpm run build`)
 2. **Analyze Commits**: Determines the next version based on commit messages since the last release
 3. **Generate Changelog**: Creates/updates `CHANGELOG.md` with all changes
 4. **Update Version**: Bumps version in `package.json` (and updates `pnpm-lock.yaml` if needed)
 5. **Create Git Tag**: Tags the release commit (e.g., `v1.2.0`)
 6. **Create GitHub Release**: Creates a release on GitHub with auto-generated release notes
-7. **Commit Changes**: Commits the updated files with `[skip ci]` in the message; the workflow includes a condition to skip when the commit message contains `[skip ci]` to avoid re-running on release commits
+7. **Commit Changes**: Commits the updated files with `[skip ci]` in the message; the workflow skips release commits that contain `[skip ci]`
 
 ### 3. Branch Configuration
 
@@ -62,9 +62,9 @@ Validates commit messages to ensure they follow the conventional commits format.
 
 GitHub Actions workflow that runs the release process on pushes to `main`, `beta`, or `alpha` branches.
 
-### RELEASE_TOKEN (required for branch protection)
+### RELEASE_TOKEN (required)
 
-If `main` has branch protection (e.g. "Require a pull request before merging"), the default `GITHUB_TOKEN` cannot push. Use a Personal Access Token (PAT) stored as `RELEASE_TOKEN`. The workflow uses `GITHUB_TOKEN` for checkout and install, then configures the git remote with `RELEASE_TOKEN` only before the release step—this avoids exposing the long-lived PAT to dependency install scripts.
+The workflow checks out with `secrets.RELEASE_TOKEN` and passes that token to semantic-release as `GITHUB_TOKEN`. Use a Personal Access Token (PAT) stored as `RELEASE_TOKEN`; this is required for release commits and tags in protected repositories.
 
 1. **Create a PAT**: GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)
    - **Note**: `hacer-release` (or similar)
@@ -216,7 +216,7 @@ The `CHANGELOG.md` file is automatically generated and maintained by semantic-re
 
 ## Best Practices
 
-### DO ✅
+### Do
 
 - **Use conventional commit format** for all commits
 - **Include scope** when relevant: `feat(gates):`, `fix(simulation):`
@@ -225,7 +225,7 @@ The `CHANGELOG.md` file is automatically generated and maintained by semantic-re
 - **Group related changes** in a single commit when appropriate
 - **Use `chore:` for internal changes** that don't affect users
 
-### DON'T ❌
+### Do Not
 
 - Don't use vague subjects: ~~`fix: bug`~~ → Use: `fix: prevent crash when deleting connected gate`
 - Don't mix multiple types in one commit: ~~`feat/fix: add gates and fix bugs`~~
