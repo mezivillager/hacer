@@ -165,7 +165,7 @@ HACER is developed in phases, each building on the previous. The full roadmap sp
 | Phase | Status | Description |
 |-------|--------|-------------|
 | 1.5 | Complete | Tailwind v4 + shadcn/ui shell, tokens, theme switching |
-| 2.5 | Re-scoped | Developer tooling, CI, hooks, and agent harness without a separate component explorer |
+| 2.5 | Complete / maintain | Developer tooling, CI, hooks, and agent harness without a separate component explorer |
 | 3.5 | Partially Complete | Vitest, Playwright, Stryker, CI, and scheduled UI E2E are active; property/visual regression tooling remains unselected |
 | 4.5 | Complete | semantic-release, conventional commits, changelog, release workflow |
 | 5 | Planned | Core architecture refactor, branded types, Zod schemas, event system |
