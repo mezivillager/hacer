@@ -5,6 +5,91 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0](https://github.com/mezivillager/hacer/compare/v1.10.0...v2.0.0) (2026-05-12)
+
+### ⚠ BREAKING CHANGES
+
+* **ui:** Removes the Ant Design UI shell. The app renders only the
+3D canvas and StatusBar in this commit; interactive UI affordances return
+in subsequent commits as the new shadcn-based shell is built.
+
+Ant Design and @ant-design/icons removed from package.json. Bundle drops
+from 520 KB \u2192 403 KB gzipped (22% reduction).
+
+Deleted Ant-dependent components: Sidebar, GateSelector, NodeSelector,
+NodeRenameControl, DemoOverlay, ThemeProvider (Ant ConfigProvider variant),
+ThemeContext, useTheme, uiHandlers, and 329-line App.css. CanvasArea
+rewritten to drop Layout/Content/Typography in favour of plain HTML
+wrappers (help-overlay class preserved for existing test compatibility;
+restyled in chunk 7).
+
+src/theme/ retains tokens.ts only (consumed by 23+ R3F/gate/node files;
+retokens to OKLch CSS vars in Phase D / chunk 8). theme/index.ts trimmed
+to color/material/semanticColor exports only.
+
+E2E adaptations (5 unplanned but necessary):
+- e2e/fixtures/{base,store,ui,shared-context}.fixture.ts: drop the
+  appTitle waitForSelector (selector targeted deleted Sidebar title);
+  canvas presence + store-global availability are sufficient mount signals
+- e2e/helpers/common/setup.ts: same fix
+- e2e/helpers/assertions/ui.assertions.ts: rewrite expectGateCount /
+  expectWireCount / expectSimulation* to read from window.__CIRCUIT_STORE__
+  directly (the original DOM-text reads targeted the deleted Sidebar
+  Circuit Info section). UI-driven button assertions left for Phase E
+  rewrite (chunk 9).
+- e2e/helpers/actions/simulation.actions.ts: route startSimulationViaUI
+  and pauseSimulationViaUI through the store global until the new
+  CompactToolbar sim toggle lands in chunk 3a.
+
+@ui Playwright specs (8 files) marked .skip with TODO references for
+Phase E restoration. @store specs all green (86 passed).
+
+CI gates green: lint, test:run (1080 tests), test:e2e:store (86 tests),
+build (403 KB gzipped).
+
+Refs: docs/specs/2026-04-17-design-system-migration-design.md
+Refs: docs/plans/2026-04-17-design-system-migration/01-phase-a-ant-strip.md
+Made-with: Cursor
+
+### Features
+
+* **canvas:** retokenize R3F scene background, grid, and idle wires ([9208c22](https://github.com/mezivillager/hacer/commit/9208c221379ed23c6f3f6fca2767f9f956772afc)), closes [#7](https://github.com/mezivillager/hacer/issues/7)
+* **notify:** add Phase A console.warn stub ([d6108f9](https://github.com/mezivillager/hacer/commit/d6108f984d4c918829c6793775924e20743c7354))
+* **ui:** add CompactToolbar shell ([e329cec](https://github.com/mezivillager/hacer/commit/e329cecd4d8478b54753176a7fb033e3200b15b0))
+* **ui:** add HelpBar with contextual shortcuts and keyboard modal ([155b6c0](https://github.com/mezivillager/hacer/commit/155b6c0f268a18ce31d26b9c87c91546ccc8c964))
+* **ui:** add PropertiesPanel with NodeRenameControl absorbed ([a03d4f6](https://github.com/mezivillager/hacer/commit/a03d4f6941372cc0b2993c450dad3b60030888b3))
+* **ui:** add RightActionBar with Info drawer wired to store ([099dae8](https://github.com/mezivillager/hacer/commit/099dae85c1355e36b1abf4e284e7f499e1e07c3a))
+* **ui:** add Tailwind v4 + shadcn foundation ([f2e9d62](https://github.com/mezivillager/hacer/commit/f2e9d62f5b90fdae26c61b672ce1ca56eededbf9))
+* **ui:** make PropertiesPanel explicit-open instead of auto-on-selection ([19b4039](https://github.com/mezivillager/hacer/commit/19b4039de3f8a3b5f11c29e8597a1face021fd60))
+* **ui:** restyle StatusBar and rebuild DemoOverlay (Phase C complete) ([e9733c1](https://github.com/mezivillager/hacer/commit/e9733c19c7d6d92fb3a4c8fee9aaa94893fcf2f7))
+* **ui:** single bottom bar (HelpBar) with old help text + pixel-perfect shortcuts modal ([ea3cd19](https://github.com/mezivillager/hacer/commit/ea3cd19b84626737c870cefa83e1f9d0b75b33fd)), closes [#88](https://github.com/mezivillager/hacer/issues/88)
+* **ui:** strip Ant Design and lay groundwork for shadcn migration ([7dc2c07](https://github.com/mezivillager/hacer/commit/7dc2c072e7ae89fce0d8c1a48841ef613b1298ee))
+
+### Bug Fixes
+
+* **canvas,ui:** three Phase D / shadcn theme follow-ups ([1a6fccc](https://github.com/mezivillager/hacer/commit/1a6fccc6bf006ac7bf9d8cc3caddf38f5f88da63)), closes [#cd7f32](https://github.com/mezivillager/hacer/issues/cd7f32)
+* **canvas:** swap --canvas-bg and --canvas-grid from OKLch to hex ([4b0f145](https://github.com/mezivillager/hacer/commit/4b0f145fe6b9ca43a496891e91e58dd4e3135418)), closes [#f0f1f5](https://github.com/mezivillager/hacer/issues/f0f1f5) [#14171d](https://github.com/mezivillager/hacer/issues/14171d) [#b8bdc4](https://github.com/mezivillager/hacer/issues/b8bdc4) [#353a42](https://github.com/mezivillager/hacer/issues/353a42) [#b8bdc4](https://github.com/mezivillager/hacer/issues/b8bdc4) [#353a42](https://github.com/mezivillager/hacer/issues/353a42)
+
+### Documentation
+
+* add design system migration brainstorming spec ([429615b](https://github.com/mezivillager/hacer/commit/429615bab8a990130838873b500d1dfc77f5e41f))
+* add design system migration implementation plan ([ac6cc4a](https://github.com/mezivillager/hacer/commit/ac6cc4ad82fe39359b957dcf2103bda64026d44b))
+* address plan-document-reviewer feedback on migration plan ([27eab7c](https://github.com/mezivillager/hacer/commit/27eab7ce0717073af60702ee195adc8231b814ae))
+* remove design system migration doc ([4d691ab](https://github.com/mezivillager/hacer/commit/4d691abf685d66af0fd8335ad9120389b04c4730))
+* update REPO_MAP, .cursorrules, lessons.md for shadcn migration ([2ac9c6c](https://github.com/mezivillager/hacer/commit/2ac9c6c88967b23d4c60780138e28446fe24af5d))
+
+### Styles
+
+* **scene:** improve grid line visibility and contrast ([be9e7c4](https://github.com/mezivillager/hacer/commit/be9e7c426c32b7e33317ac79041337bfbaa0bf95)), closes [#adbacb](https://github.com/mezivillager/hacer/issues/adbacb) [#8da0b2](https://github.com/mezivillager/hacer/issues/8da0b2) [#223248](https://github.com/mezivillager/hacer/issues/223248) [#27405e](https://github.com/mezivillager/hacer/issues/27405e)
+
+### Code Refactoring
+
+* **notify:** replace antd message.* with notify.* shim ([45254f2](https://github.com/mezivillager/hacer/commit/45254f286ca3b6b37990be785ea36d29e2835bf6))
+
+### Tests
+
+* **e2e:** restore [@ui](https://github.com/ui) specs against new shell selectors (Phase E) ([89ccef9](https://github.com/mezivillager/hacer/commit/89ccef9b2c9a7b20b8c695ec8dbc1020501344e3))
+
 ## [1.10.0](https://github.com/mezivillager/hacer/compare/v1.9.0...v1.10.0) (2026-04-02)
 
 ### Features
