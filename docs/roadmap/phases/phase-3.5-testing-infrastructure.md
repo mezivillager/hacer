@@ -1,79 +1,52 @@
-# Phase 3.5: Testing & Quality Infrastructure Foundation (Weeks 11-13)
+# Phase 3.5: Testing and Quality Infrastructure
 
-**Part of:** [Comprehensive Development Roadmap](../README.md)
-**Priority:** 🟠 HIGH
-**Timeline:** Weeks 11-13
-**Dependencies:** Phase 2.5 complete (developer tooling established), Phase 1.5 complete (design system foundation)
-
----
-
-## Overview
-
-This phase establishes comprehensive testing infrastructure using property-based testing, compatibility test suites, and visual regression testing to ensure platform reliability and nand2tetris compatibility.
-
-**Exit Criteria:**
-- Property-based testing with fast-check implemented
-- Circuit invariant testing functional
-- Compatibility test suites (nand2tetris projects 1-2 corpus) pass
-- Visual regression testing configured
-- Coverage > 70% with automated reporting
+**Part of:** [Development Roadmap](../README.md)  
+**Status:** Partial / maintain  
+**Last Updated:** 2026-05-12  
+**Depends on:** Phase 2.5 developer tooling
 
 ---
 
-## Key Deliverables
+## Current Truth
 
-### 4.1 Testing Dependencies
-- fast-check for property-based testing
-- Vitest configuration for unit tests
-- Playwright for E2E and visual regression
+HACER has a solid testing baseline, but the larger testing roadmap is not fully complete. Do not document property testing, visual regression, or coverage thresholds as already implemented until the corresponding packages, workflows, and tests exist.
 
-### 4.2 Property Tests for Gates
-- NAND gate commutativity and associativity
-- Truth table validation for all gates
-- Deterministic evaluation testing
+## Completed
 
-### 4.3 Circuit Invariant Tests
-- Gate count consistency after operations
-- Wire reference integrity
-- Simulation determinism
+- Vitest unit tests with colocated `*.test.ts` and `*.test.tsx`
+- Playwright store E2E tests under `e2e/specs/**/*.store.spec.ts`
+- Scheduled Playwright UI tests through GitHub Actions
+- Stryker mutation workflow for PRs touching `src/`
+- Test standards and templates in `docs/testing/`
+- Fast store fixtures and reusable scenarios in `e2e/`
 
-### 4.4 CircuitTestHarness
-- Browser-based test automation
-- Truth table verification
-- Performance benchmarking
+## Remaining Work
 
-### 4.5 Compatibility Corpus Tests
-- Nand2tetris projects 1-2 automated testing
-- Chapter-based test organization
-- Progress tracking and reporting
+- [ ] Select and install a property-testing library before adding invariant suites
+- [ ] Define coverage thresholds that match current test shape
+- [ ] Add visual regression only if it becomes necessary for a stable visual surface
+- [ ] Expand compatibility fixtures as Phase 0.5-0.7 features land
+- [ ] Add performance regression tests when larger circuits are supported
+- [ ] Revisit accessibility automation for new panels and controls
 
-### 4.6 Visual Regression
-- Screenshot-based UI testing
-- Gate and wire rendering validation
-- Cross-browser compatibility
+## Required Gates
 
-### 4.7 Coverage Reporting
-- Automated coverage collection
-- CI integration with thresholds
-- Coverage gap analysis
+```bash
+pnpm run lint
+pnpm run test:run
+pnpm run test:e2e:store
+pnpm run build
+```
 
----
+## Optional / Situational Gates
 
-## Implementation Status
+```bash
+pnpm run test:e2e:ui
+pnpm run test:coverage
+pnpm run stryker
+```
 
-| Component | Status | Details |
-|-----------|--------|---------|
-| Testing Dependencies | ✅ Complete | fast-check, Vitest, Playwright configured |
-| Property Tests | ✅ Complete | Gate logic invariants tested |
-| Circuit Invariants | ✅ Complete | Data integrity validation |
-| CircuitTestHarness | ✅ Complete | Browser automation framework |
-| Compatibility Chapter 1 | ✅ Complete | Elementary gates fully tested |
-| Compatibility Chapter 2 | ✅ Complete | Multiplexors tested |
-| Visual Regression | ✅ Complete | Screenshot-based UI testing |
-| Coverage Reporting | ✅ Complete | 70%+ coverage achieved |
+Use optional gates when the changed code affects UI workflows, broad test quality, or coverage-sensitive areas.
 
----
-
-**Part of:** [Comprehensive Development Roadmap](../README.md)  
-**Previous:** [Phase 2.5: Developer Tooling & DX](phase-2.5-developer-tooling.md)  
-**Next:** [Phase 4.5: Release Management & Automation](phase-4.5-release-management.md)
+**Previous:** [Phase 2.5: Developer Tooling and DX](phase-2.5-developer-tooling.md)  
+**Next:** [Phase 4.5: Release Management and Automation](phase-4.5-release-management.md)
