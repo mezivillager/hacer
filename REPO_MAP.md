@@ -15,7 +15,7 @@ This document helps AI agents and developers understand the codebase structure a
 | **R3F canvas / scene** | `src/components/canvas/` |
 | **Unit / store tests** | Colocate `*.test.ts` next to code; reset pattern: `src/store/actions/gateActions/gateActions.test.ts` |
 | **Playwright store E2E** | `e2e/specs/**/*.store.spec.ts`, `e2e/fixtures/store.fixture.ts` |
-| **LLM workflow + harness tuning** | `docs/llm-workflow.md`, `docs/llm-harness.md` |
+| **LLM workflow + harness tuning** | `docs/llm-workflow.md`, `docs/llm-harness.md`, `docs/llm-docs-sync.md` |
 | **CI = definition of done** | `pnpm run lint` · `pnpm run test:run` · `pnpm run test:e2e:store` · `pnpm run build` |
 
 ## ⚠️ IMPORTANT: Phase Tracking & Maintenance
@@ -120,6 +120,7 @@ docs/
 │   ├── structure.md  # Test file organization
 │   └── templates/    # TDD templates for unit, component, E2E tests
 ├── llm-workflow.md   # Workflow orchestration for AI agents (plan, subagents, verification)
+├── llm-docs-sync.md  # Living docs vs code (author & reviewer passes)
 ├── typescript-guidelines.md  # TypeScript best practices
 └── roadmap/          # Project roadmap and phases
 
@@ -610,6 +611,7 @@ See [Implementation Guide](implementation.md#technology-stack-evolution) for det
 - [`docs/llm-harness.md`](./docs/llm-harness.md) - MCP, ECC hooks, session efficiency
 - [`HACER_LLM_GUIDE.md`](./HACER_LLM_GUIDE.md) - Detailed development patterns, examples, and best practices
 - [`docs/llm-workflow.md`](./llm-workflow.md) - Workflow orchestration for AI agents (plan mode, subagents, verification)
+- [`docs/llm-docs-sync.md`](./llm-docs-sync.md) - Living docs vs code (author & reviewer passes)
 - [`docs/testing/`](./docs/testing/) - Testing standards, TDD workflow, templates
 - [`docs/typescript-guidelines.md`](./docs/typescript-guidelines.md) - TypeScript best practices
 - [`docs/roadmap/`](./docs/roadmap/README.md) - Project roadmap and phases
@@ -627,6 +629,7 @@ This document focuses on **repository structure and file organization**. For:
 - **Harness / MCP / hooks**: See [`docs/llm-harness.md`](./llm-harness.md)
 - **Detailed patterns & examples**: See [`HACER_LLM_GUIDE.md`](./HACER_LLM_GUIDE.md)
 - **Workflow orchestration**: See [`docs/llm-workflow.md`](./docs/llm-workflow.md)
+- **Living docs vs code**: See [`docs/llm-docs-sync.md`](./docs/llm-docs-sync.md)
 - **Testing standards & TDD**: See [`docs/testing/`](./docs/testing/)
 - **TypeScript guidelines**: See [`docs/typescript-guidelines.md`](./docs/typescript-guidelines.md)
 - **Where files go**: This document

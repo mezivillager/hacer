@@ -32,7 +32,6 @@
     "lint": "pnpm run typecheck && eslint .",
     "lint:fix": "eslint . --fix",
     "lint:eslint": "eslint .",
-    "docs:check": "bash scripts/check-docs-truth.sh",
     "preview": "vite preview",
     "test": "vitest",
     "test:run": "vitest run",

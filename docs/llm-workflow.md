@@ -13,6 +13,7 @@
 > - [HACER_LLM_GUIDE.md](../HACER_LLM_GUIDE.md) - Project-specific patterns, React, testing, Zustand
 > - [.cursorrules](../.cursorrules) - Quick rules, phase tracking, TDD protocol
 > - [docs/llm-harness.md](./llm-harness.md) - Cursor MCP, ECC hooks, rule precedence pointers
+> - [docs/llm-docs-sync.md](./llm-docs-sync.md) - Living docs vs code (author & reviewer passes)
 > - [docs/testing/](./testing/) - TDD workflow, test standards, templates
 
 ---
@@ -54,6 +55,7 @@
 
 ### 4. Verification Before Done
 
+- **Documentation sync**: After gates pass, run the **author pass** in [`docs/llm-docs-sync.md`](./llm-docs-sync.md) when the change touches phases, README-facing behavior, paths, or Phase 0.5 tickets. Reviewers apply the **reviewer pass** before approving substantive merges.
 - **Proof of Work**: Never mark a task as complete without concrete proof that it functions correctly.
 - **Behavioral Diff**: When relevant, analyze and understand the differences in behavior between the `main` branch/original state and your changes.
 - **Quality Standard**: Ask yourself: "Would a staff engineer approve this?"

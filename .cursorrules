@@ -22,6 +22,7 @@
 ### Maintenance
 - **Update when:** Starting a new phase, architecture changes, or stack updates
 - **Check status in:** `docs/roadmap/implementation.md`
+- **Living docs vs code:** `docs/llm-docs-sync.md` (author pass before claiming done; reviewer pass before approving substantive merges)
 - **AI Agents:** Always check the "Current Phase" section first
 
 ## Stack

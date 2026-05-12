@@ -2,11 +2,13 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use Superpowers **`subagent-driven-development`** or **`executing-plans`** (exact invocation name depends on your harness; in Cursor Claude Code parity plugins the names are commonly prefixed like `superpowers:subagent-driven-development` — map to the equivalent skill in your environment).
 
-**Goal:** Bring HACER's living documentation back into alignment with the current codebase, remove de-scoped Storybook guidance, and add a repeatable drift check.
+> **Outcome:** `scripts/check-docs-truth.sh` and `pnpm run docs:check` were **removed**. Ant Design and Storybook are not dependencies anymore; an automated grep guard added CI/local friction without enough benefit. **Skip Task 1** — it is a one-line stub. Node 22 alignment and substantive documentation edits remain valid.
 
-**Architecture:** Treat `package.json`, active source paths, active workflows, and current tests as the source of truth. Update living docs and active Phase 0.5 ticket docs; preserve historical migration plans/specs as archival records unless they are still used as current agent guidance. Add a lightweight shell check that catches stale stack claims before future documentation changes land. **Unify GitHub Actions on the same Node major as local `.nvmrc`** so “supported runtime” is not release-only.
+**Goal:** Bring HACER's living documentation back into alignment with the current codebase and remove de-scoped Storybook guidance from active docs.
 
-**Convention — shell commands:** Run the commands exactly as shown (e.g. `pnpm`, `git`, `rg`). Do not prefix with sandbox wrappers (`rtk`, etc.) unless your local harness requires it; those prefixes are intentionally omitted here for copy-paste compatibility.
+**Architecture:** Treat `package.json`, active source paths, active workflows, and current tests as the source of truth. Update living docs and active Phase 0.5 ticket docs; preserve historical migration plans/specs as archival records unless they are still used as current agent guidance. **Unify GitHub Actions on the same Node major as local `.nvmrc`** so “supported runtime” is not release-only.
+
+**Convention — shell commands:** Run the commands exactly as shown (e.g. `pnpm`, `git`). Do not prefix with sandbox wrappers (`rtk`, etc.) unless your local harness requires it; those prefixes are intentionally omitted here for copy-paste compatibility.
 
 **Tech Stack:** React 19.2, TypeScript 5.9, Vite 8, Zustand 5, React Three Fiber 9, Three 0.183, Tailwind CSS v4, shadcn/ui primitives in `src/components/ui-kit/` (Radix primitives via `@radix-ui/react-*`; the umbrella `radix-ui` package may also appear in `package.json`), Sonner, next-themes, Vitest 4, Playwright 1.57, Stryker, semantic-release.
 
@@ -47,28 +49,21 @@ Use these facts to resolve documentation conflicts:
 - `tasks/todo.md` still leads with old Phase 0.5 work and should be reset to the documentation refresh while execution is underway.
 - **Secondary agent surfaces:** `docs/llm-harness.md`, `docs/llm-workflow.md`, and `.cursor/AGENTS.md` were not fully audited when this plan was written; spot-check them for the same staleness signals (antd, Storybook-as-current, old stack majors, Node 20 as the recommended prerequisite).
 
-## Drift checker design notes
+## Automated drift checker (removed)
 
-- **`docs/superpowers/**`** is not part of the default `active_docs` scan; those plans may name removed tools while narrating the cleanup. Optional manual review only.
-- **`docs/plans/2026-04-17-design-system-migration/**`** is excluded from the Storybook scan because that tree is archival (“Do Not Modify”) and may still mention historical tooling verbatim.
-- **Stale version strings** in prose: the script avoids a blanket `Node.js 20` doc match (too many false positives for migration narrative). Instead it enforces **no `node-version: '20'`** under `.github/workflows/` and **no `">=20"`** in `package.json` engines once engines are bumped.
-- **CI enforcement:** add `pnpm run docs:check` to `.github/workflows/ci.yml` only **after** local `docs:check` passes (Task 6), so the first green PR is not blocked mid-refresh.
+Originally this plan described `scripts/check-docs-truth.sh` and CI enforcement via `pnpm run docs:check`. That approach was dropped after implementation — keep docs accurate through normal review and the existing quality gates (`lint`, tests, `build`).
 
 ## File Structure
 
-### Create
-
-- `scripts/check-docs-truth.sh` - drift check for stale stack/tooling claims.
-
 ### Modify
 
-- `.github/workflows/ci.yml` - Node 22; after docs are green, add `pnpm run docs:check` (see Task 6).
+- `.github/workflows/ci.yml` - Node 22 (documentation follows code review and existing CI gates).
 - `.github/workflows/mutation.yml` - Node 22.
 - `.github/workflows/e2e-ui.yml` - Node 22.
 - `.github/workflows/deploy.yml` - Node 22.
 - `.github/workflows/pr-preview.yml` - Node 22.
 - `.nvmrc` - align local Node version with CI/release and working test runtime (22).
-- `package.json` - add `docs:check` script and align `engines.node` with the working test runtime (`>=22`).
+- `package.json` - align `engines.node` with the working test runtime (`>=22`).
 - `README.md` - public status, feature list, stack, structure, and roadmap summary.
 - `HACER_LLM_GUIDE.md` - replace Ant Design guidance with shadcn/ui, Tailwind, Radix, Sonner, next-themes, and current component-shell patterns.
 - `.github/copilot-instructions.md` - replace Ant Design notification guidance with `notify`.
@@ -108,199 +103,9 @@ These are historical records and should keep their original context.
 
 ---
 
-### Task 1: Add A Documentation Drift Check
+### Task 1 (historical — skip): Automated documentation drift check
 
-**Files:**
-- Create: `scripts/check-docs-truth.sh`
-- Modify: `.nvmrc`
-- Modify: `.github/workflows/ci.yml`
-- Modify: `.github/workflows/mutation.yml`
-- Modify: `.github/workflows/e2e-ui.yml`
-- Modify: `.github/workflows/deploy.yml`
-- Modify: `.github/workflows/pr-preview.yml`
-- Modify: `package.json`
-
-**Notes:** `.github/workflows/release.yml` already uses Node 22 — leave it unchanged unless you intentionally standardize quoting. **Do not** add `pnpm run docs:check` to CI until Task 6 (docs are green first).
-
-- [ ] **Step 1.1: Create the failing drift-check script**
-
-Add this exact file:
-
-```bash
-#!/usr/bin/env bash
-set -euo pipefail
-
-fail=0
-
-check_absent() {
-  local label="$1"
-  local pattern="$2"
-  shift 2
-  if rg -n "$pattern" "$@"; then
-    printf '\n[docs:check] stale reference found: %s\n' "$label" >&2
-    fail=1
-  fi
-}
-
-check_present() {
-  local label="$1"
-  local pattern="$2"
-  shift 2
-  if ! rg -n "$pattern" "$@" >/dev/null; then
-    printf '\n[docs:check] expected reference missing: %s\n' "$label" >&2
-    fail=1
-  fi
-}
-
-active_docs=(
-  README.md
-  HACER_LLM_GUIDE.md
-  REPO_MAP.md
-  .cursorrules
-  .github/copilot-instructions.md
-  docs/roadmap
-  docs/testing
-  docs/semantic-release.md
-  docs/TESTING_SEMANTIC_RELEASE.md
-  docs/plans/phase-0.5-tickets
-  docs/plans/phase-0.5-tickets-CHECKLIST.md
-)
-
-check_absent \
-  "active docs must not prescribe Ant Design" \
-  "from ['\"]antd|from ['\"]@ant-design|vi\\.mock\\(['\"]antd|Ant Design's|Ant Design UI|Ant Design based|Antd mock|Layout\\.Sider|Import from `antd`|Ant Design Message/Notification" \
-  "${active_docs[@]}"
-
-# Storybook is de-scoped; `docs/plans/**` may still mention it until roadmap/ticket tasks land.
-# Exclude the frozen migration plan tree ("Do Not Modify") from this grep.
-check_absent \
-  "living docs/plans/README/roadmap must not treat Storybook as current scope" \
-  "Storybook|storybook|@storybook" \
-  README.md docs/roadmap package.json docs/plans \
-  --glob '!docs/plans/2026-04-17-design-system-migration/**'
-
-check_absent \
-  "active docs must not claim stale tool majors or uninstalled quality tools are current (see Drift checker design notes)" \
-  "Zustand 4\\.x|Vite 5\\.x|React Three Fiber 6\\.x|pnpm\\s+9\\+|fast-check.*configured|fast-check implemented|Property Tests.*Complete|Semantic release.*Planned|Implement semantic release|Design system.*Planned" \
-  README.md docs/roadmap docs/testing docs/semantic-release.md docs/TESTING_SEMANTIC_RELEASE.md
-
-check_absent \
-  'package engines must not stay on ">=20" after refresh' \
-  '"node": ">=20"' \
-  package.json
-
-check_absent \
-  'workflows must not pin Node 20 after refresh' \
-  "node-version: ['\"]20['\"]" \
-  .github/workflows
-
-check_absent \
-  "package must stay free of removed/unselected tooling" \
-  "\"antd\"|@ant-design|storybook|@storybook|fast-check|prettier" \
-  package.json
-
-check_absent \
-  "source and e2e code must stay Ant-free" \
-  "from ['\"]antd|from ['\"]@ant-design" \
-  src e2e
-
-check_present \
-  "README must name current UI stack" \
-  "Tailwind CSS v4.*shadcn/ui|shadcn/ui.*Tailwind CSS v4" \
-  README.md
-
-check_present \
-  "HACER guide must name current UI stack" \
-  "Tailwind CSS v4.*shadcn/ui|shadcn/ui.*Tailwind CSS v4" \
-  HACER_LLM_GUIDE.md
-
-check_present \
-  "release docs must describe semantic-release" \
-  "semantic-release" \
-  .releaserc.json .github/workflows/release.yml docs/semantic-release.md
-
-exit "$fail"
-```
-
-- [ ] **Step 1.2: Make the script executable**
-
-Run:
-
-```bash
-chmod +x scripts/check-docs-truth.sh
-```
-
-Expected: exit code 0.
-
-- [ ] **Step 1.3: Align local Node (`≥22`) with CI**
-
-Replace `.nvmrc` with:
-
-```text
-22
-```
-
-In `package.json`, replace the engines block with:
-
-```json
-"engines": {
-  "node": ">=22"
-},
-```
-
-This matches the intended CI/release runtime and avoids the Node 20 `ERR_REQUIRE_ESM` startup failure in Vitest/jsdom described in the gap list.
-
-- [ ] **Step 1.4: Align non-release GitHub Actions on Node 22**
-
-In each file below, set `node-version` to `'22'` under `actions/setup-node` (mirror `release.yml`):
-
-- `.github/workflows/ci.yml`
-- `.github/workflows/mutation.yml`
-- `.github/workflows/e2e-ui.yml`
-- `.github/workflows/deploy.yml`
-- `.github/workflows/pr-preview.yml`
-
-- [ ] **Step 1.5: Add the `docs:check` package script**
-
-In `package.json`, add this entry after `lint:eslint`:
-
-```json
-"docs:check": "bash scripts/check-docs-truth.sh",
-```
-
-The surrounding script block should read:
-
-```json
-"lint": "pnpm run typecheck && eslint .",
-"lint:fix": "eslint . --fix",
-"lint:eslint": "eslint .",
-"docs:check": "bash scripts/check-docs-truth.sh",
-"preview": "vite preview",
-```
-
-- [ ] **Step 1.6: Run the new check and confirm it fails before doc edits**
-
-Use Node 22 (e.g. `nvm use` after `.nvmrc` is committed locally, or `nvm install 22` once). Run:
-
-```bash
-pnpm run docs:check
-```
-
-Expected: non-zero exit with stale references from `README.md`, `HACER_LLM_GUIDE.md`, roadmap docs, `docs/plans`, and Phase 0.5 ticket docs.
-
-- [ ] **Step 1.7: Commit drift guard plus Node alignment**
-
-Run:
-
-```bash
-git add .nvmrc package.json scripts/check-docs-truth.sh \
-  .github/workflows/ci.yml .github/workflows/mutation.yml \
-  .github/workflows/e2e-ui.yml .github/workflows/deploy.yml \
-  .github/workflows/pr-preview.yml
-git commit -m "test(docs): add documentation truth guard and align Node 22 runtime"
-```
-
-Expected: hook may warn or block if unrelated changes are unstaged; if pre-commit forbids committing while docs fail `docs:check`, keep changes staged or use a branch policy your team agrees on, then merge after Task 6 when `docs:check` is green. Documented intent: landing **script + Node bump** early is acceptable even while `docs:check` still fails until doc tasks complete.
+This task originally added `scripts/check-docs-truth.sh`, `pnpm run docs:check`, and CI wiring for it. **Do not implement.** Align `.nvmrc`, `package.json` engines, and workflow `node-version` fields via the substantive documentation / infra commits instead.
 
 ---
 
@@ -538,15 +343,9 @@ If `REPO_MAP.md` and `docs/roadmap/implementation.md` both use the new phase ban
 **Next Product Phase:** Phase 0.6: Arithmetic & Sequential Logic
 ```
 
-- [ ] **Step 2.10: Run focused doc guard**
+- [ ] **Step 2.10: Quick consistency pass**
 
-Run:
-
-```bash
-pnpm run docs:check
-```
-
-Expected: still fails because roadmap, `docs/plans` (including Phase 0.5 tickets), and other `active_docs` paths are not refreshed yet, but edits from Steps 2.1–2.7 should eliminate failures tied to the root README, `HACER_LLM_GUIDE.md`, and Copilot instructions.
+Skim the files touched in Steps 2.1–2.7 for internal consistency (terminology matches the README stack table).
 
 - [ ] **Step 2.11: Commit root docs refresh**
 
@@ -559,11 +358,11 @@ git commit -m "docs: align root guides with current stack"
 
 (Optional execution order: run Steps 2.12–2.13 *before* Step 2.11 if you want harness fixes in the same `git commit`; otherwise use a follow-up commit with `git add docs/llm-harness.md docs/llm-workflow.md .cursor/AGENTS.md`.)
 
-Expected: commit succeeds after remaining tasks, or remains staged if the hook requires `docs:check` to pass.
+Expected: commit succeeds when hooks pass.
 
 - [ ] **Step 2.12: Spot-check agent harness and workflow docs**
 
-Run a targeted scan (narrow patterns — same idea as `docs:check`, no blanket ban on mentioning “Node 20” in historical sentences):
+Run a targeted scan if `rg` is available (optional):
 
 ```bash
 rg -n "from ['\"]antd|from ['\"]@ant-design|Ant Design UI|Storybook|storybook|@storybook|Zustand 4|Vite 5|React Three Fiber 6|semantic-release.*[Pp]lan" \
@@ -572,13 +371,13 @@ rg -n "from ['\"]antd|from ['\"]@ant-design|Ant Design UI|Storybook|storybook|@s
 
 If any hit is **current** guidance (not historical context), rewrite that section to match Tasks 2.1–2.7 and the README stack table. If the files are already clean, skip edits.
 
-- [ ] **Step 2.13: Re-run focused doc guard**
+- [ ] **Step 2.13: Optional lint sanity**
 
 ```bash
-pnpm run docs:check
+pnpm run lint
 ```
 
-Expected: still fails on roadmap and Phase 0.5 tickets until Task 3–4, but root-tier failures should be cleared.
+Expected: passes (documentation edits should not affect TypeScript, but confirms the tree is healthy).
 
 ---
 
@@ -607,7 +406,7 @@ In the quick navigation table, use:
 
 ```markdown
 | [1.5](phases/phase-1.5-design-system.md) | Completed early | 🟠 HIGH | Tailwind/shadcn UI shell, tokens, themes |
-| [2.5](phases/phase-2.5-developer-tooling.md) | Active maintenance | 🟠 HIGH | CI, hooks, agent harness, docs drift checks |
+| [2.5](phases/phase-2.5-developer-tooling.md) | Active maintenance | 🟠 HIGH | CI, hooks, agent harness |
 | [3.5](phases/phase-3.5-testing-infrastructure.md) | Active maintenance | 🟠 HIGH | Vitest, Playwright, Stryker, scheduled UI E2E |
 | [4.5](phases/phase-4.5-release-management.md) | Complete | 🟠 HIGH | semantic-release, commitlint, changelog, release workflow |
 ```
@@ -652,7 +451,6 @@ Replace the Phase 2.5 checklist section with:
 - [x] Husky pre-commit hook
 - [x] Conventional commit linting
 - [x] Agent-facing workflow and harness docs
-- [ ] Documentation drift guard in `scripts/check-docs-truth.sh`
 - [ ] Revisit formatter/tooling choices after Phase 0.5 stabilizes
 ```
 
@@ -724,7 +522,7 @@ Replace the body with:
 ```markdown
 ## Overview
 
-Phase 2.5 now covers the developer tooling HACER actively uses: GitHub Actions, Husky hooks, commitlint, lint-staged, agent workflow docs, Cursor harness docs, and documentation drift checks.
+Phase 2.5 now covers the developer tooling HACER actively uses: GitHub Actions, Husky hooks, commitlint, lint-staged, agent workflow docs, and Cursor harness docs.
 
 ## In Scope
 
@@ -751,7 +549,7 @@ Phase 2.5 now covers the developer tooling HACER actively uses: GitHub Actions, 
 | Husky | Active | `.husky/` |
 | commitlint | Active | `commitlint.config.js` |
 | lint-staged | Active | `package.json` |
-| Docs drift guard | Active after this refresh | `scripts/check-docs-truth.sh` |
+| CI gates | Active | PR CI matches definition of done (`lint`, `test:run`, `build`, `test:e2e:store`) |
 ```
 
 - [ ] **Step 3.5: Correct `phase-3.5-testing-infrastructure.md`**
@@ -817,12 +615,11 @@ Store E2E remains part of HACER's full local definition of done and CI quality g
 Run:
 
 ```bash
-pnpm run docs:check
 rg -n "Zustand 4\\.x|Vite 5\\.x|React Three Fiber 6\\.x|Storybook|storybook|@storybook|fast-check.*configured|fast-check implemented|Semantic release.*Planned|Implement semantic release|Design system.*Planned|node-version: ['\"]20['\"]|\"node\": \">=20\"" \
   docs/roadmap README.md package.json .github/workflows
 ```
 
-Expected: `docs:check` may still fail on Phase 0.5 ticket docs; the manual `rg` should return **no matches** except while Task 1–3 are still incomplete.
+Expected: **no matches** once Tasks 1–3 edits are applied (optional check if `rg` is installed locally).
 
 - [ ] **Step 3.8: Commit roadmap refresh**
 
@@ -833,7 +630,7 @@ git add docs/roadmap/README.md docs/roadmap/implementation.md docs/roadmap/phase
 git commit -m "docs(roadmap): align roadmap with current tooling"
 ```
 
-Expected: commit succeeds after remaining tasks, or remains staged if the hook requires `docs:check` to pass.
+Expected: commit succeeds when hooks pass.
 
 ---
 
@@ -997,10 +794,9 @@ Run:
 
 ```bash
 rg -n "from ['\"]antd|from ['\"]@ant-design|vi\\.mock\\(['\"]antd|Ant Design's|Ant Design UI|Ant Design based|Antd mock|Layout\\.Sider|Import from `antd`|Ant Design Message/Notification" docs/plans/phase-0.5-tickets docs/plans/phase-0.5-tickets-CHECKLIST.md
-pnpm run docs:check
 ```
 
-Expected: the `rg` command returns no matches. `docs:check` may still fail only on semantic-release/testing docs until Task 5 is complete.
+Expected: the `rg` command returns no matches once ticket edits land (optional if `rg` is installed).
 
 - [ ] **Step 4.9: Commit Phase 0.5 docs refresh**
 
@@ -1011,7 +807,7 @@ git add docs/plans/phase-0.5-tickets-CHECKLIST.md docs/plans/phase-0.5-tickets/R
 git commit -m "docs(phase-0.5): refresh ticket status and UI guidance"
 ```
 
-Expected: commit succeeds after remaining tasks, or remains staged if the hook requires `docs:check` to pass.
+Expected: commit succeeds when hooks pass.
 
 ---
 
@@ -1095,13 +891,11 @@ Replace the top current-focus section with:
 
 ## In Progress: Documentation truth refresh (2026-05-12)
 
-- [ ] Add documentation drift guard
 - [ ] Refresh root and agent-facing docs
 - [ ] Refresh roadmap phase status
 - [ ] Refresh Phase 0.5 checklist and ticket docs
 - [ ] Refresh release/testing docs
 - [ ] Run full HACER definition of done (`lint`, tests, store E2E, `build`)
-- [ ] Enable `pnpm run docs:check` in `.github/workflows/ci.yml` once local check is green
 
 ### Review
 
@@ -1115,11 +909,10 @@ Move older completed Phase 0.5 entries below this section without deleting their
 Run:
 
 ```bash
-pnpm run docs:check
 rg -n "first version:|Expected first version|fast-check.*configured|fast-check implemented|Property Tests.*Complete|Semantic release.*Planned|Implement semantic release" docs/semantic-release.md docs/TESTING_SEMANTIC_RELEASE.md docs/testing docs/roadmap
 ```
 
-Expected: both commands return exit code 0 or no stale matches.
+Expected: **no stale matches** (optional if `rg` is installed).
 
 - [ ] **Step 5.6: Commit release/testing/task docs**
 
@@ -1130,102 +923,53 @@ git add docs/semantic-release.md docs/TESTING_SEMANTIC_RELEASE.md docs/testing/s
 git commit -m "docs: refresh release testing and task tracking"
 ```
 
-Expected: commit succeeds after the docs guard passes.
+Expected: commit succeeds when hooks pass.
 
 ---
 
-### Task 6: Full Verification And CI Wiring
+### Task 6: Full Verification
 
 **Files:**
-- Modify (Step 6.6): `.github/workflows/ci.yml` — append the `docs:check` job step after docs are green locally.
-- Modify (Steps 6.7–6.8): `tasks/todo.md` — verification notes.
+- Optionally modify: `tasks/todo.md` — short verification notes when wrapping the refresh branch.
 
-- [ ] **Step 6.1: Run documentation guard**
-
-Run:
-
-```bash
-pnpm run docs:check
-```
-
-Expected: exit code 0.
-
-- [ ] **Step 6.2: Run lint**
-
-Run:
+- [ ] **Step 6.1: Run lint**
 
 ```bash
 pnpm run lint
 ```
 
-Expected: exit code 0.
-
-- [ ] **Step 6.3: Run unit tests**
-
-Run:
+- [ ] **Step 6.2: Run unit tests**
 
 ```bash
 pnpm run test:run
 ```
 
-Expected: exit code 0.
-
-- [ ] **Step 6.4: Run store E2E tests**
-
-Run:
+- [ ] **Step 6.3: Run store E2E tests**
 
 ```bash
 pnpm run test:e2e:store
 ```
 
-Expected: exit code 0. If Playwright opens an HTML reporter during debugging, rerun the focused command with `-- --reporter=line`, then run the mandatory command above again before completion.
+Expected: exit code 0. If Playwright opens an HTML reporter during debugging, rerun with `-- --reporter=line`, then run the command above again before completion.
 
-- [ ] **Step 6.5: Run build**
-
-Run:
+- [ ] **Step 6.4: Run build**
 
 ```bash
 pnpm run build
 ```
 
-Expected: exit code 0.
+- [ ] **Step 6.5 (optional): Record verification in `tasks/todo.md`**
 
-- [ ] **Step 6.6: Wire `docs:check` into PR CI**
-
-Only after Steps 6.1–6.5 succeed: in `.github/workflows/ci.yml`, immediately after `pnpm install --frozen-lockfile`, add:
-
-```yaml
-      - name: Documentation truth (stack drift guard)
-        run: pnpm run docs:check
-```
-
-Keep this step **after** installs so `bash` and repo-local `scripts/check-docs-truth.sh` are available.
-
-- [ ] **Step 6.7: Record verification in `tasks/todo.md`**
-
-Replace `Pending completion.` in the Documentation truth refresh review with:
+Example review bullets:
 
 ```markdown
-- Added a docs truth guard for removed/stale stack references; CI now runs `pnpm run docs:check` on every PR.
 - Updated root, agent-facing, roadmap, Phase 0.5, release, and testing docs against the current codebase.
 - Verified:
-  - `pnpm run docs:check` (pass)
   - `pnpm run lint` (pass)
   - `pnpm run test:run` (pass)
   - `pnpm run test:e2e:store` (pass)
   - `pnpm run build` (pass)
 ```
-
-- [ ] **Step 6.8: Commit CI wiring and verification note**
-
-Run:
-
-```bash
-git add .github/workflows/ci.yml tasks/todo.md
-git commit -m "ci: run documentation truth guard; record verification"
-```
-
-Expected: commit succeeds.
 
 ---
 
@@ -1257,18 +1001,16 @@ git diff "${BASE}"...HEAD -- \
   docs/roadmap docs/plans/phase-0.5-tickets docs/plans/phase-0.5-tickets-CHECKLIST.md \
   docs/semantic-release.md docs/TESTING_SEMANTIC_RELEASE.md docs/testing/standards.md \
   docs/llm-harness.md docs/llm-workflow.md .cursor/AGENTS.md \
-  scripts/check-docs-truth.sh package.json tasks/todo.md
+  package.json tasks/todo.md
 ```
 
-Expected: changes match this plan’s scope (documentation, drift script, Node/workflow pins, CI `docs:check`).
+Expected: changes match documentation and workflow/runtime alignment from this plan (no drift script).
 
-- [ ] **Step 7.3: Final stale-reference sweep**
+- [ ] **Step 7.3: Final stale-reference sweep (optional)**
 
-`pnpm run docs:check` already encodes most invariants. Optionally run an extended grep that includes harness docs and excludes archival / execution-plan directories:
+If `rg` is installed, optionally verify obvious stale stack strings:
 
 ```bash
-pnpm run docs:check
-
 rg -n "from ['\"]antd|from ['\"]@ant-design|vi\\.mock\\(['\"]antd|Ant Design's|Ant Design UI|Ant Design based|Antd mock|Layout\\.Sider|Import from \`antd\`|Ant Design Message/Notification|Storybook|storybook|@storybook|Zustand 4\\.x|Vite 5\\.x|React Three Fiber 6\\.x|pnpm\\s+9\\+|fast-check.*configured|fast-check implemented|Property Tests.*Complete|Semantic release.*Planned|Implement semantic release|Design system.*Planned|node-version: ['\"]20['\"]|\"node\": \">=20\"" \
   README.md package.json HACER_LLM_GUIDE.md REPO_MAP.md .cursorrules \
   .github/copilot-instructions.md docs/roadmap docs/testing \
@@ -1279,7 +1021,7 @@ rg -n "from ['\"]antd|from ['\"]@ant-design|vi\\.mock\\(['\"]antd|Ant Design's|A
   --glob '!docs/plans/2026-04-17-design-system-migration/**'
 ```
 
-Expected: `pnpm run docs:check` exits 0 and the optional `rg` prints no lines.
+Expected: command prints nothing.
 
 - [ ] **Step 7.4: Summarize residual documentation decisions**
 
@@ -1290,16 +1032,16 @@ Residual decisions:
 - Whether to add property-based testing remains unselected; docs now say so instead of claiming it is configured.
 - Screenshot visual regression remains unselected; docs now distinguish scheduled UI E2E from screenshot baselines.
 - Historical migration specs/plans still mention Ant Design by design; active docs no longer prescribe it.
-- `docs/superpowers/**` and the frozen `2026-04-17-design-system-migration` tree may still name legacy tooling in prose; automated greps exclude them where noted.
+- `docs/superpowers/**` and the frozen `2026-04-17-design-system-migration` tree may still name legacy tooling in prose during reviews; spot-check when those files change.
 ```
 
 ---
 
 ## Self-Review Checklist
 
-- Spec coverage: Roadmap phases, implementation checklist, Phase 0.5 tickets, README, Copilot/agent guides, harness docs spot-check, semantic-release/testing standards, repeatable drift prevention, unified Node/runtime story, CI enforcement of `docs:check`.
+- Spec coverage: Roadmap phases, implementation checklist, Phase 0.5 tickets, README, Copilot/agent guides, harness docs spot-check, semantic-release/testing standards, unified Node/runtime story.
 - Honesty boundary: Steps that paste **replacement snippets** into long Markdown files still require a full-file read afterward for orphaned sections or duplicate headings—not every paragraph in every phase file can be enumerated here without drowning the executor.
-- Type consistency: No TypeScript interfaces or runtime APIs are introduced except the shell script and npm script. UI examples continue to reference `@/components/ui-kit/*`, `@/lib/notify`, and `lucide-react`.
+- Type consistency: UI examples in this plan reference `@/components/ui-kit/*`, `@/lib/notify`, and `lucide-react`.
 
 ## Execution Handoff
 

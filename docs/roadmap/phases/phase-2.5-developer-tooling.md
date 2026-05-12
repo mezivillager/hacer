@@ -47,7 +47,6 @@ This phase remains healthy when:
 - `pnpm run test:run` passes
 - `pnpm run test:e2e:store` passes
 - `pnpm run build` passes
-- `pnpm run docs:check` passes for documentation changes
 - The same Node major is used locally and in CI
 
 **Previous:** [Phase 1.5: Design System](phase-1.5-design-system.md)  
