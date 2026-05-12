@@ -22,7 +22,7 @@ The remaining problem is **process**: agents often finish code changes without r
 
 ## 3. Non-goals
 
-- No requirement to edit frozen migration specs/planes unless explicitly in scope.
+- No requirement to edit frozen migration specs/plans unless explicitly in scope.
 - No replacement “truth guard” CI step that scans the tree for banned strings.
 - No obligation to rewrite historical Phase narratives beyond correcting **current status** claims when they become false.
 

@@ -601,7 +601,7 @@ import { Scene } from '@/components/canvas/Scene';
 
 ## Technology Stack Evolution
 
-See [Implementation Guide](implementation.md#technology-stack-evolution) for detailed technology stack changes across phases.
+See [Implementation Guide](docs/roadmap/implementation.md#current-stack) for detailed technology stack changes across phases.
 
 ## Related Documentation
 
@@ -610,8 +610,8 @@ See [Implementation Guide](implementation.md#technology-stack-evolution) for det
 - [`.cursor/rules/000-hacer-precedence.mdc`](./.cursor/rules/000-hacer-precedence.mdc) - Cursor: HACER overrides ECC generic rules
 - [`docs/llm-harness.md`](./docs/llm-harness.md) - MCP, ECC hooks, session efficiency
 - [`HACER_LLM_GUIDE.md`](./HACER_LLM_GUIDE.md) - Detailed development patterns, examples, and best practices
-- [`docs/llm-workflow.md`](./llm-workflow.md) - Workflow orchestration for AI agents (plan mode, subagents, verification)
-- [`docs/llm-docs-sync.md`](./llm-docs-sync.md) - Living docs vs code (author & reviewer passes)
+- [`docs/llm-workflow.md`](./docs/llm-workflow.md) - Workflow orchestration for AI agents (plan mode, subagents, verification)
+- [`docs/llm-docs-sync.md`](./docs/llm-docs-sync.md) - Living docs vs code (author & reviewer passes)
 - [`docs/testing/`](./docs/testing/) - Testing standards, TDD workflow, templates
 - [`docs/typescript-guidelines.md`](./docs/typescript-guidelines.md) - TypeScript best practices
 - [`docs/roadmap/`](./docs/roadmap/README.md) - Project roadmap and phases
@@ -626,7 +626,7 @@ See [Implementation Guide](implementation.md#technology-stack-evolution) for det
 This document focuses on **repository structure and file organization**. For:
 - **Quick rules & phase status**: See [`.cursorrules`](./.cursorrules)
 - **Rule precedence (Cursor)**: See [`.cursor/rules/000-hacer-precedence.mdc`](./.cursor/rules/000-hacer-precedence.mdc)
-- **Harness / MCP / hooks**: See [`docs/llm-harness.md`](./llm-harness.md)
+- **Harness / MCP / hooks**: See [`docs/llm-harness.md`](./docs/llm-harness.md)
 - **Detailed patterns & examples**: See [`HACER_LLM_GUIDE.md`](./HACER_LLM_GUIDE.md)
 - **Workflow orchestration**: See [`docs/llm-workflow.md`](./docs/llm-workflow.md)
 - **Living docs vs code**: See [`docs/llm-docs-sync.md`](./docs/llm-docs-sync.md)
