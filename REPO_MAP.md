@@ -20,9 +20,10 @@ This document helps AI agents and developers understand the codebase structure a
 
 ## ⚠️ IMPORTANT: Phase Tracking & Maintenance
 
-**Last Updated:** 2026-03-21  
-**Current Phase:** Phase 0.25 (Complete) ✅ → Phase 0.5 (In Progress)  
-**Next Phase:** Phase 0.5: Nand2Tetris Foundation
+**Last Updated:** 2026-05-12  
+**Current Phase:** Phase 0.5 (In Progress)  
+**Completed Infrastructure:** Phase 0.25 UI/canvas, Tailwind/shadcn design shell, semantic-release  
+**Next Product Phase:** Phase 0.6: Arithmetic & Sequential Logic
 
 ### Phase Status Indicators
 - ✅ **Current/Active** - Structure and files currently in use
@@ -51,7 +52,7 @@ This document helps AI agents and developers understand the codebase structure a
 
 ## Directory Structure
 
-### Current Structure (Phase 0.25 - Complete, Phase 0.5 - In Progress)
+### Current Structure (Phase 0.5 - In Progress)
 
 ```
 src/
@@ -275,7 +276,7 @@ src/
 │   └── index.ts
 ├── components/              # React UI components (existing + new)
 │   ├── canvas/              # 3D canvas (becomes plugin in Phase 6)
-│   ├── ui/                  # Ant Design UI components
+│   ├── ui/                  # HACER shell UI components
 │   ├── gates/               # Gate renderers (Phase 5+)
 │   └── software/            # Software stack UI (Phase 10)
 │       ├── editor/          # Code editor
@@ -317,7 +318,7 @@ hacer/
 
 ## Key Files by Phase
 
-### ✅ Phase 0.25 (Current - Active)
+### ✅ Phase 0.25 (Completed Infrastructure)
 - `src/utils/grid.ts` - Grid system utilities (GRID_SIZE, worldToGrid, snapToGrid, canPlaceGateAt)
   - Grid-based placement with section line validation
   - Gates can only be placed in section interiors (odd row/col)
@@ -329,7 +330,7 @@ hacer/
 - `src/store/actions/` - State mutation actions
 - `src/simulation/gateLogic.ts` - Gate logic functions
 - `src/components/canvas/Scene/` - 3D scene components
-- `src/components/ui/` - Ant Design UI components
+- `src/components/ui/` - HACER shell UI components
 - `src/gates/components/` - Gate components with flat orientation (90° X rotation, text on top)
 - `src/hooks/useKeyboardShortcuts.ts` - 90° rotation increments (Z axis for world Y rotation)
 - `src/theme/tokens.ts` - Grid colors (uniform blue-tinted color for cell and section lines)
@@ -347,7 +348,7 @@ hacer/
 ### 🔄 Phase 0.5: Project 1 — Boolean Logic (In Progress)
 - `src/core/chips/` - Chip hierarchy system (registry, definitions, composite chips)
 - `src/core/hdl/` - HDL parser and compiler for HACK HDL
-- `src/core/testing/nand2tetris/` - Test script execution (.tst/.cmp)
+- `src/core/testing/` - Test script execution (.tst/.cmp)
 - `src/simulation/topologicalEval.ts` - Topological sort for correct evaluation; `evaluateCircuit` return + `getSignalSourceValue`
 - `CircuitState.lastSimulationError` — combinational cycle metadata after a failed `simulationTick` (cleared on success / `clearCircuit`)
 - Multi-bit bus support (data model, simulation, 3D splitter/joiner)
@@ -408,10 +409,10 @@ hacer/
 
 ## Architecture Evolution
 
-### ✅ Phase 0.25: Current Architecture (Active)
+### ✅ Phase 0.5: Current Architecture (Active)
 - **State Management**: Zustand with Immer middleware
 - **3D Rendering**: React Three Fiber with Drei helpers
-- **UI Framework**: shadcn/ui + Radix UI primitives + Tailwind CSS v4 + OKLch design tokens (migrated from Ant Design in 2026-04)
+- **UI Framework**: shadcn/ui-style primitives + Radix UI + Tailwind CSS v4 + OKLch design tokens
 - **Toast notifications**: Sonner via `notify` helper (`@/lib/notify`)
 - **Theme**: `next-themes` tri-state (light/dark/system); 3D canvas reads CSS vars via `useThemeColor`
 - **Icons**: Lucide React + inline SVG gate glyphs (`@/components/ui/icons/GateGlyphs`)
@@ -456,7 +457,7 @@ hacer/
 - **Event System**: Circuit modification events
 
 ### ⏸️ Phase 8-10: Testing & Software Stack (Future)
-- **Testing**: Property-based testing (fast-check), compatibility tests
+- **Testing**: Property-based testing tool selection, compatibility tests
 - **Software Stack**: Complete computing system (assembler, VM, compiler)
 - **Performance**: Web Workers for simulation
 - **Integration**: Hardware-software debugging
@@ -569,7 +570,7 @@ import { Scene } from '@/components/canvas/Scene';
 
 ## Testing Structure
 
-### ✅ Current (Phase 0.25 - Complete, Phase 0.5 - In Progress)
+### ✅ Current (Phase 0.5 - In Progress)
 - **Unit Tests**: Co-located with source files (`.test.ts` or `.test.tsx`)
   - Grid utilities tests: `src/utils/grid.test.ts` (section line validation)
   - Gate action tests: Updated for flat orientation
@@ -592,7 +593,7 @@ import { Scene } from '@/components/canvas/Scene';
 - **Persistence Tests**: Save/load circuit integrity
 
 ### ⏸️ Phase 3.5+ (Enhanced Testing - Future)
-- **Property-Based Tests**: fast-check for invariants
+- **Property-Based Tests**: select and install a property-testing library before adding invariant suites
 - **Integration Tests**: Cross-layer functionality
 - **Compatibility Tests**: Nand2tetris chapter validation (Phase 8+)
 - **Performance Tests**: Benchmark suites (Phase 9+)
