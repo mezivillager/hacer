@@ -30,6 +30,10 @@ jobs:
       - name: Lint (TypeScript + ESLint)
         run: pnpm run lint
 
+      # Catches stale documentation claims about stack, tooling, and de-scoped work.
+      - name: Documentation truth check
+        run: pnpm run docs:check
+
       # Catches: failing Vitest unit and component tests.
       - name: Unit tests (Vitest)
         run: pnpm run test:run
