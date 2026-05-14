@@ -7,7 +7,7 @@
 **When to mark done:** Change `[ ]` → `[x]` when the ticket is merged (or intentionally complete on your integration branch) **and** HACER definition of done passes:  
 `pnpm run lint` · `pnpm run test:run` · `pnpm run test:e2e:store` · `pnpm run build`
 
-**Last reviewed:** 2026-05-12 — checkboxes below match `main` (or current branch) + expected code paths.
+**Last reviewed:** 2026-05-14 — checkboxes below match `main` (or current branch) + expected code paths.
 
 **Verified this pass:** P05-01 `src/core/chips/`; P05-02 `Pin.value` / nodes `number` in `src/store/types.ts`; P05-03 `src/simulation/topologicalEval.ts`; P05-04 `src/core/hdl/`; P05-05 `src/core/testing/tstParser.ts`; P05-06 `src/core/testing/cmpParser.ts`; P05-08 rename actions, PropertiesPanel, and node rename E2E; P05-09 status actions, StatusBar, and store E2E.
 
@@ -53,6 +53,10 @@
 - [ ] **P05-26** — 3D/HDL interoperability — needs P05-16, P05-14 — [P05-26.md](./phase-0.5-tickets/P05-26.md)
 - [ ] **P05-27** — End-to-end integration testing — needs prior layers — [P05-27.md](./phase-0.5-tickets/P05-27.md)
 - [ ] **P05-28** — Documentation — needs P05-27 — [P05-28.md](./phase-0.5-tickets/P05-28.md)
+
+## Follow-ups (UX / labeling — optional ordering)
+
+- [ ] **P05-29** — Scene naming not effectively visible — fix in-view labels, previews, and signal surfacing — [P05-29.md](./phase-0.5-tickets/P05-29.md)
 
 ---
 

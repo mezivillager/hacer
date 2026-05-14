@@ -63,6 +63,8 @@ No waivers. If a step fails, the task is **not** done.
 5. Read tasks/todo.md and tasks/lessons.md
 ```
 
+**Git hygiene for agents:** `.cursor/rules/020-git-worktree-no-main.mdc` — do not commit directly to `main`; use a **feature branch** and preferably a **git worktree** per workstream.
+
 Do **not** require missing paths: if `.claude/CONSTITUTION.md` or other Claude-only files are absent, continue with the Cursor track.
 
 ---

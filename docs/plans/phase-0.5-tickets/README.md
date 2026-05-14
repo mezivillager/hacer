@@ -13,7 +13,7 @@ Each ticket file below is **self-contained** — a fresh LLM session can impleme
 |----------------|--------|------------------|-------------|
 | **Pure modules** (P05-01, P05-04–06, P05-15, P05-18) | Required (new tests) | **Regression only** — full suite must stay green | Optional unless UI ships |
 | **Store / simulation refactor** (P05-02, P05-03, P05-08, P05-11) | Required | Regression + add/adjust specs if store contract changes | Smoke when behavior is user-visible |
-| **UI features** (P05-09, P05-10, P05-12, P05-13, P05-19–24) | Component + store tests | **Add or extend** `@store` Playwright specs for visible behavior (`data-testid`s) | Required checklist in ticket |
+| **UI features** (P05-09, P05-10, P05-12, P05-13, P05-19–24, P05-29) | Component + store tests | **Add or extend** `@store` Playwright specs for visible behavior (`data-testid`s) | Required checklist in ticket |
 | **Pipeline / engine** (P05-16, P05-17, P05-26) | Required (compile/run tests) | Regression | Optional until UI wrappers (P05-21, P05-22) |
 | **Persistence** (P05-14) | Round-trip + store action tests | Regression + add save/load spec | Manual: save → refresh → load |
 | **Integration** (P05-27) | Not applicable | **New** `@store` + `@ui` Playwright specs under `e2e/specs/phase-0.5/` | Full user workflow |
@@ -76,6 +76,12 @@ Each ticket file below is **self-contained** — a fresh LLM session can impleme
 | [P05-27](P05-27.md) | End-to-end integration testing | 12h | P05-21, P05-22, P05-24, P05-26 | All (validation) | TODO |
 | [P05-28](P05-28.md) | Documentation | 4h | P05-27 | — | TODO |
 
+### Follow-ups — Post Layer 0–4 polish (optional ordering)
+
+| ID | Title | Effort | Depends | Gap(s) | Status |
+|----|-------|--------|---------|--------|--------|
+| [P05-29](P05-29.md) | Scene naming not effectively visible — fix in-view labels, previews, and signal surfacing | 8h | P05-10 (recommended) | GAP-UI-3 (partial), UX | TODO |
+
 ---
 
 ## Dependency Map
@@ -97,7 +103,7 @@ LAYER 0 (no deps)
   P05-06  CMP parser ─────► P05-17 (test engine)
   P05-08  Node rename ────► P05-20 (chip def panel)
   P05-09  StatusBar        (consumed by later layers)
-  P05-10  PinoutPanel      (consumed by later layers)
+  P05-10  PinoutPanel      (consumed by later layers; see P05-29 follow-up)
 
 LAYER 1
   P05-11  Bus simulation      [P05-02]
@@ -123,6 +129,9 @@ LAYER 4 (integration + polish)
   P05-26  3D/HDL interop       [P05-16, P05-14, P05-18, P05-24]
   P05-27  E2E integration      [P05-21, P05-22, P05-24, P05-26]
   P05-28  Documentation        [P05-27]
+
+FOLLOW-UPS (UX / labeling — optional ordering; does not block P05-11–28)
+  P05-10  PinoutPanel ───────► P05-29 (scene naming + preview contrast)
 ```
 
 ---

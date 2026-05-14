@@ -1,0 +1,13 @@
+---
+description: Git hygiene — no direct commits to main; use feature branches and worktrees
+alwaysApply: true
+---
+
+# Git: worktrees and branch isolation
+
+1. **Do not commit directly to `main`.** All substantive work (features, fixes, docs batches, ticket updates that are part of a deliverable) happens on a **dedicated branch**.
+2. **Prefer a dedicated git worktree** per parallel effort (`git worktree add`), especially for doc sweeps or long-running refactors, so `main` stays clean and context-switch cost stays low.
+3. **Before starting multi-file work**, create or attach to a branch: `git checkout -b <type>/<short-topic>` from current `origin/main` (or rebase per team policy).
+4. **Integrate via PR** (or explicit maintainer merge policy). Do not `git push origin main` from agent sessions unless the user explicitly orders an emergency hotfix and accepts the risk.
+
+This rule sits under HACER precedence: it does **not** override the user’s explicit instruction for a one-off operation, but agents should **warn** before direct `main` writes.
