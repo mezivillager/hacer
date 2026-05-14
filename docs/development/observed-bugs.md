@@ -28,6 +28,18 @@ When an item is **Fixed**, add the **Fixed in** link and move the detailed row t
 | **Notes** | Resolution tracked under **P05-29**; tune materials/colors and add regression-friendly tests where practical. |
 | **Fixed in** | — |
 
+### B-002 — Warning / toast UI overlaps the right action bar
+
+| Field | Detail |
+|-------|--------|
+| **Status** | Open |
+| **Area** | `App.tsx` (`Toaster` from Sonner), `RightActionBar`, global toast positioning / `z-index` / viewport inset |
+| **Symptom** | Warning banners (e.g. “Cannot connect same pin types”) render **on top of** the vertical **right action bar** so the toast background and the top icons (e.g. Info) overlap — layout looks broken. |
+| **Expected** | Toasts stay **clear of** the action bar: reserve right margin equal to bar + drawer width, move `Toaster` inset, or lower toast layer so the bar stays visually on top; toasts should remain fully readable without obscuring primary chrome. |
+| **Repro** | Trigger a Sonner warning while the right bar is visible (e.g. invalid wiring / same pin types) — observe overlap at top-right. |
+| **Notes** | May need theme-aware offset; align with `RightActionBar` `PANEL_WIDTH` when drawer is closed (icons only) vs open. |
+| **Fixed in** | — |
+
 ---
 
 ## Resolved
