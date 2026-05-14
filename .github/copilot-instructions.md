@@ -11,6 +11,7 @@ See [AGENTS.md](../AGENTS.md) for the complete guide — it covers cognitive pro
 - **One component per file** — never put multiple React components in one file
 - **State**: read via `useCircuitStore(state => ...)`, mutate via `circuitActions.*()` only
 - **Types**: no `any`; use branded types (GateId, WireId, PinId) where available
+- **Git hygiene**: do not commit directly to `main`; use a **feature branch** and preferably a **git worktree** per workstream (see `.cursor/rules/020-git-worktree-no-main.mdc`)
 
 ## Before Completing Any Task
 

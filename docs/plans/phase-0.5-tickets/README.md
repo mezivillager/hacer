@@ -13,7 +13,8 @@ Each ticket file below is **self-contained** — a fresh LLM session can impleme
 |----------------|--------|------------------|-------------|
 | **Pure modules** (P05-01, P05-04–06, P05-15, P05-18) | Required (new tests) | **Regression only** — full suite must stay green | Optional unless UI ships |
 | **Store / simulation refactor** (P05-02, P05-03, P05-08, P05-11) | Required | Regression + add/adjust specs if store contract changes | Smoke when behavior is user-visible |
-| **UI features** (P05-09, P05-10, P05-12, P05-13, P05-19–24, P05-29) | Component + store tests | **Add or extend** `@store` Playwright specs for visible behavior (`data-testid`s) | Required checklist in ticket |
+| **UI features** (P05-09, P05-10, P05-12, P05-13, P05-19–24) | Component + store tests | **Add or extend** `@store` Playwright specs for visible behavior (`data-testid`s) | Required checklist in ticket |
+| **Scene polish** (P05-29) | Component + visual tests | **Conditional** — only add/extend `@store` specs if new `data-testid` hooks are introduced (see P05-29 ticket) | Required checklist in ticket |
 | **Pipeline / engine** (P05-16, P05-17, P05-26) | Required (compile/run tests) | Regression | Optional until UI wrappers (P05-21, P05-22) |
 | **Persistence** (P05-14) | Round-trip + store action tests | Regression + add save/load spec | Manual: save → refresh → load |
 | **Integration** (P05-27) | Not applicable | **New** `@store` + `@ui` Playwright specs under `e2e/specs/phase-0.5/` | Full user workflow |

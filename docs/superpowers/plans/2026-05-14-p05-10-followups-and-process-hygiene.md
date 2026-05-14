@@ -25,7 +25,7 @@
 | `AGENTS.md` (optional, one sentence) | **Modify** — cross-link the new Cursor rule under Cursor track if you want redundancy beyond `alwaysApply` |
 
 **Dedicated worktree:** Branch `docs/p05-10-followups-plan-2026-05-14` at  
-`/Users/villager/Documents/codelab/slow/hacer/.worktrees/p05-10-followups-plan`  
+`.worktrees/p05-10-followups-plan`  
 (create with `git worktree add .worktrees/p05-10-followups-plan -b docs/p05-10-followups-plan-2026-05-14 origin/main` from repo root if missing).
 
 ---
@@ -344,7 +344,9 @@ git commit -m "chore(cursor): add rule requiring branches and worktrees over mai
 
 - [ ] **Step 1: In “Common tasks → start here” table, add row:**
 
+```markdown
 | **Observed bugs (informal)** | `docs/development/observed-bugs.md` |
+```
 
 - [ ] **Step 2: Commit**
 
@@ -422,7 +424,7 @@ Then open a PR titled e.g. `docs: P05-10 ticket fixes, P05-29 follow-up, observe
 **Plan complete and saved to**  
 `docs/superpowers/plans/2026-05-14-p05-10-followups-and-process-hygiene.md`  
 (on branch `docs/p05-10-followups-plan-2026-05-14` in worktree  
-`/Users/villager/Documents/codelab/slow/hacer/.worktrees/p05-10-followups-plan`).
+`.worktrees/p05-10-followups-plan`).
 
 **Two execution options:**
 
