@@ -1,14 +1,24 @@
+import { useState } from 'react'
 import { useCircuitStore, circuitActions } from '@/store/circuitStore'
 import { Button } from '@/components/ui-kit/button'
 import { Separator } from '@/components/ui-kit/separator'
 
+function inputsSignature(inputs: ReadonlyArray<{ id: string; value: number }>): string {
+  return inputs.map(n => `${n.id}=${n.value}`).join('|')
+}
+
 export function PinoutPanel() {
   const inputNodes = useCircuitStore(state => state.inputNodes)
   const outputNodes = useCircuitStore(state => state.outputNodes)
+  // `null` means "never evaluated" — initial render is dirty so the user can run the first eval.
+  const [lastEvaluatedSignature, setLastEvaluatedSignature] = useState<string | null>(null)
 
   if (inputNodes.length === 0 && outputNodes.length === 0) {
     return null
   }
+
+  const currentSignature = inputsSignature(inputNodes)
+  const isDirty = lastEvaluatedSignature === null || lastEvaluatedSignature !== currentSignature
 
   const handleToggle = (nodeId: string, currentValue: number) => {
     circuitActions.updateInputNodeValue(nodeId, currentValue ? 0 : 1)
@@ -16,6 +26,7 @@ export function PinoutPanel() {
 
   const handleEval = () => {
     circuitActions.simulationTick()
+    setLastEvaluatedSignature(currentSignature)
   }
 
   return (
@@ -78,8 +89,9 @@ export function PinoutPanel() {
         size="sm"
         variant="secondary"
         onClick={handleEval}
+        disabled={!isDirty}
         data-testid="eval-button"
-        className="w-full mt-2"
+        className="w-full mt-2 cursor-pointer"
       >
         Eval
       </Button>

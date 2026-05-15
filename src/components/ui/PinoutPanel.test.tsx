@@ -66,4 +66,43 @@ describe('PinoutPanel', () => {
     const evaluated = useCircuitStore.getState().outputNodes.find(n => n.id === output.id)
     expect(Number(evaluated?.value)).toBe(0)
   })
+
+  it('Eval button is enabled initially and disabled after one eval', () => {
+    const s = useCircuitStore.getState()
+    s.addInputNode('a', { x: 0, y: 0, z: 0 })
+    render(<PinoutPanel />)
+    const button = screen.getByTestId('eval-button')
+    // First mount: never evaluated yet — button is actionable.
+    expect((button as HTMLButtonElement).disabled).toBe(false)
+    fireEvent.click(button)
+    // After eval: nothing has changed since last run — disabled to prevent dup-clicks.
+    expect((button as HTMLButtonElement).disabled).toBe(true)
+  })
+
+  it('Eval button re-enables after toggling an input, then disables after another eval', () => {
+    const s = useCircuitStore.getState()
+    const node = s.addInputNode('a', { x: 0, y: 0, z: 0 })
+    circuitActions.updateInputNodeValue(node.id, 0)
+    render(<PinoutPanel />)
+    const button = screen.getByTestId('eval-button')
+
+    fireEvent.click(button) // first eval -> disabled
+    expect((button as HTMLButtonElement).disabled).toBe(true)
+
+    fireEvent.click(screen.getByTestId('pin-toggle-a')) // input changed -> re-enabled
+    expect((button as HTMLButtonElement).disabled).toBe(false)
+
+    fireEvent.click(button) // second eval -> disabled again
+    expect((button as HTMLButtonElement).disabled).toBe(true)
+  })
+
+  it('Eval button has cursor-pointer class so the enabled state looks clickable', () => {
+    const s = useCircuitStore.getState()
+    s.addInputNode('a', { x: 0, y: 0, z: 0 })
+    render(<PinoutPanel />)
+    const button = screen.getByTestId('eval-button')
+    // Disabled visual is provided by the Button primitive via `disabled:opacity-50`.
+    // We only need to ensure the enabled state advertises clickability.
+    expect(button.className).toContain('cursor-pointer')
+  })
 })
