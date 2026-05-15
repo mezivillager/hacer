@@ -35,7 +35,7 @@ test.describe('PinoutPanel @store @ui-shell @pinout', () => {
 
     const value = await page.evaluate((id) => {
       const state = window.__CIRCUIT_STORE__
-      return state?.inputNodes.find(n => n.id === id)?.value ?? null
+      return state?.inputNodes?.find(n => n.id === id)?.value ?? null
     }, created.aId)
     expect(Number(value)).toBe(1)
   })
