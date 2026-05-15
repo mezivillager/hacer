@@ -20,6 +20,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui-kit/too
 import { Separator } from '@/components/ui-kit/separator'
 import { cn } from '@/lib/utils'
 import { ComingSoon } from './coming-soon'
+import { PinoutPanel } from './PinoutPanel'
 import { useCircuitStore } from '@/store/circuitStore'
 
 type ActivePanel = 'info' | 'history' | 'layers' | null
@@ -169,7 +170,13 @@ export function RightActionBar() {
 
           {/* Panel content */}
           <div className="flex-1 overflow-y-auto p-4">
-            {activePanel === 'info' && <CircuitInfoPanel />}
+            {activePanel === 'info' && (
+              <div className="space-y-4">
+                <CircuitInfoPanel />
+                <Separator />
+                <PinoutPanel />
+              </div>
+            )}
             {activePanel === 'layers' && <LayersPanel />}
             {activePanel === 'history' && <HistoryPanel />}
           </div>
