@@ -33,6 +33,7 @@ describe('CompactToolbar', () => {
     circuitActions.cancelPlacement()
     circuitActions.cancelNodePlacement()
     circuitActions.closePropertiesPanel()
+    circuitActions.setPerformanceMode('normal')
   })
 
   describe('Gates popover', () => {
@@ -190,15 +191,29 @@ describe('CompactToolbar', () => {
     })
   })
 
-  describe('Settings (stub)', () => {
-    it('renders with Coming soon tooltip on focus', async () => {
+  describe('Settings', () => {
+    it('opens performance settings', async () => {
+      const user = userEvent.setup()
       wrap()
-      // Focus the settings button imperatively (Tab through preceding interactive
-      // elements is brittle and userEvent.hover doesn't open Radix tooltips in jsdom).
-      const btn = screen.getByTestId('toolbar-settings')
-      btn.focus()
-      const matches = await screen.findAllByText(/coming soon/i)
-      expect(matches.length).toBeGreaterThan(0)
+
+      await user.click(screen.getByTestId('toolbar-settings'))
+
+      expect(screen.getByTestId('settings-popover')).toBeInTheDocument()
+      expect(screen.getByTestId('low-power-mode-switch')).toHaveAttribute(
+        'aria-checked',
+        'false',
+      )
+    })
+
+    it('toggles low-power mode from settings', async () => {
+      const user = userEvent.setup()
+      wrap()
+
+      await user.click(screen.getByTestId('toolbar-settings'))
+      await user.click(screen.getByTestId('low-power-mode-switch'))
+
+      expect(useCircuitStore.getState().performanceMode).toBe('low-power')
+      expect(screen.getByTestId('low-power-mode-switch')).toHaveAttribute('aria-checked', 'true')
     })
   })
 })

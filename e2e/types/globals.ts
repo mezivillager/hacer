@@ -7,7 +7,13 @@
  * This file is imported in production code for the side-effect of Window augmentation.
  */
 
-import type { GateType, WiringState, NodeType, WireEndpointType } from '../../src/store/types'
+import type {
+  GateType,
+  WiringState,
+  NodeType,
+  PerformanceMode,
+  WireEndpointType,
+} from '../../src/store/types'
 import type { WireSegment } from '../../src/utils/wiringScheme/types'
 
 export interface SceneHelpers {
@@ -95,6 +101,7 @@ export interface CircuitStoreSnapshot {
   selectedWireId?: string | null
   selectedNodeId?: string | null
   selectedNodeType?: NodeType | null
+  performanceMode?: PerformanceMode
   propertiesPanelOpen?: boolean
 }
 
@@ -166,6 +173,8 @@ export interface CircuitActionsAPI {
   openPropertiesPanel: () => void
   closePropertiesPanel: () => void
   togglePropertiesPanel: () => void
+  setPerformanceMode: (mode: PerformanceMode) => void
+  togglePerformanceMode: () => void
   // E2E helper for wire path calculation
   calculateWirePathSegments: (
     fromGateId: string,

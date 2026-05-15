@@ -3,15 +3,12 @@ import { UI_SELECTORS } from '../../selectors'
 import { clearAllViaStore } from '../../helpers/actions'
 
 /**
- * Regression guard: stubbed UI surfaces must remain stubs (disabled +
- * tooltip on hover/focus). If a future feature wires real behavior to
- * one of these, that's deliberate and the test should be updated.
+ * Regression guard: still-stubbed UI surfaces must remain disabled while
+ * Settings stays visible as a real popover entry point.
  */
 test.describe('Coming soon tooltips @ui @ui-shell', () => {
-  test('Settings button is disabled-but-rendered', async ({ page }) => {
+  test('Settings button is rendered', async ({ page }) => {
     await clearAllViaStore(page)
-    // Settings is the lightest-weight stub: not disabled (settings can theoretically open)
-    // but click is a no-op. Just verify it renders.
     await expect(page.locator(UI_SELECTORS.toolbar.settings)).toBeVisible()
   })
 

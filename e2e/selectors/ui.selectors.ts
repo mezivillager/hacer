@@ -30,6 +30,12 @@ export const UI_SELECTORS = {
     settings: '[data-testid="toolbar-settings"]',
   },
 
+  settingsPopover: {
+    root: '[data-testid="settings-popover"]',
+    lowPowerSwitch: '[data-testid="low-power-mode-switch"]',
+    performanceModeLabel: '[data-testid="performance-mode-label"]',
+  },
+
   // Inside the open Gates popover
   gatesPopover: {
     root: '[data-testid="gates-popover"]',

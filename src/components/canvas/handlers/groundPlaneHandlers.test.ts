@@ -1,5 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { handlePointerMove, handlePointerLeave, handleClick, handlePointerUp } from './groundPlaneHandlers'
+import {
+  getWirePreviewDebounceMs,
+  handlePointerMove,
+  handlePointerLeave,
+  handleClick,
+  handlePointerUp,
+} from './groundPlaneHandlers'
 import { useCircuitStore, circuitActions } from '@/store/circuitStore'
 import { snapToGrid, worldToGrid, canPlaceGateAt } from '@/utils/grid'
 import type { WiringState, GateInstance } from '@/store/types'
@@ -37,6 +43,13 @@ vi.mock('@/utils/debounce', () => ({
 describe('groundPlaneHandlers', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+  })
+
+  describe('getWirePreviewDebounceMs', () => {
+    it('uses a slower wire preview cadence in low-power mode', () => {
+      expect(getWirePreviewDebounceMs('normal')).toBe(50)
+      expect(getWirePreviewDebounceMs('low-power')).toBe(150)
+    })
   })
 
   describe('handlePointerMove', () => {
@@ -439,4 +452,3 @@ describe('groundPlaneHandlers', () => {
     })
   })
 })
-

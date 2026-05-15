@@ -1,4 +1,5 @@
 import type { ViewActions, CircuitStore } from '../../types'
+import { writePerformanceMode } from '@/lib/performanceModeStorage'
 
 type SetState = (
   fn: (state: CircuitStore) => void,
@@ -26,5 +27,18 @@ export const createViewActions = (set: SetState): ViewActions => ({
     set((state) => {
       state.propertiesPanelOpen = !state.propertiesPanelOpen
     }, false, 'togglePropertiesPanel')
+  },
+  setPerformanceMode: (mode) => {
+    writePerformanceMode(mode)
+    set((state) => {
+      state.performanceMode = mode
+    }, false, 'setPerformanceMode')
+  },
+  togglePerformanceMode: () => {
+    set((state) => {
+      const nextMode = state.performanceMode === 'normal' ? 'low-power' : 'normal'
+      state.performanceMode = nextMode
+      writePerformanceMode(nextMode)
+    }, false, 'togglePerformanceMode')
   },
 })

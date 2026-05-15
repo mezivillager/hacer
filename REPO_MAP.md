@@ -14,6 +14,7 @@ This document helps AI agents and developers understand the codebase structure a
 | **Gate type / 3D gate UI** | `src/gates/config/`, `src/gates/components/`, `HACER_LLM_GUIDE.md` |
 | **Simulation / boolean logic** | `src/simulation/` · specs: `src/simulation/gateLogic.test.ts` |
 | **R3F canvas / scene** | `src/components/canvas/` |
+| **Performance mode / render detail** | `src/components/canvas/Scene/renderConfig.ts`, `src/lib/performanceModeStorage.ts`, `src/store/actions/viewActions/` |
 | **Unit / store tests** | Colocate `*.test.ts` next to code; reset pattern: `src/store/actions/gateActions/gateActions.test.ts` |
 | **Playwright store E2E** | `e2e/specs/**/*.store.spec.ts`, `e2e/fixtures/store.fixture.ts` |
 | **LLM workflow + harness tuning** | `docs/llm-workflow.md`, `docs/llm-harness.md`, `docs/llm-docs-sync.md` |
@@ -59,7 +60,7 @@ This document helps AI agents and developers understand the codebase structure a
 src/
 ├── components/        # React UI components
 │   ├── canvas/       # React Three Fiber 3D components
-│   │   ├── Scene/    # 3D scene components (Scene, SceneGrid, GroundPlane, PlacementPreview)
+│   │   ├── Scene/    # 3D scene components (Scene, renderConfig, SceneGrid, GroundPlane, PlacementPreview)
 │   │   ├── handlers/ # Canvas event handlers
 │   │   └── hooks/    # useThemeColor (CSS-var \u2192 THREE.Color resolver)
 │   ├── ui/           # HACER shell components (CompactToolbar, RightActionBar,
@@ -68,7 +69,7 @@ src/
 │   └── ui-kit/       # shadcn/ui primitives (button, tooltip, popover, dialog,
 │                     #   tabs, switch, separator, input, label, card, kbd,
 │                     #   theme-provider). Drop-in copies via `npx shadcn add`.
-├── lib/              # notify (Sonner-backed), utils (cn helper), demoTour
+├── lib/              # notify (Sonner-backed), utils (cn helper), demoTour, performanceModeStorage
 ├── styles/           # globals.css (Tailwind v4 + OKLch tokens + Geist fonts)
 ├── gates/            # Gate components and logic
 │   ├── components/   # Individual gate components (NandGate, AndGate, etc.) - flat orientation
@@ -97,7 +98,7 @@ src/
 │       ├── nodePlacementActions/ # Node placement mode
 │       ├── signalActions/      # Junction signal
 │       ├── junctionPlacementActions/ # Junction placement
-│       ├── viewActions/        # Camera/axes toggle
+│       ├── viewActions/        # Axes, properties panel, and performance mode UI actions
 │       └── pinHelpers/         # Pin position calculation helpers
 ├── hooks/           # Custom React hooks (useKeyboardShortcuts, useGateDrag)
 ├── theme/           # Theme system (ThemeProvider, tokens - grid colors)

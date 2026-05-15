@@ -11,6 +11,8 @@ vi.mock('@react-three/drei', () => ({
       data-enablerotate={String(props.enableRotate)}
       data-enablepan={String(props.enablePan)}
       data-enablezoom={String(props.enableZoom)}
+      data-enabledamping={String(props.enableDamping)}
+      data-dampingfactor={String(props.dampingFactor)}
     >
       OrbitControls
     </div>
@@ -23,6 +25,7 @@ describe('SceneOrbitControls', () => {
   beforeEach(() => {
     setState({
       isDragActive: false,
+      performanceMode: 'normal',
       placementMode: null,
       wiringFrom: null,
       hoveredGateId: null,
@@ -97,5 +100,15 @@ describe('SceneOrbitControls', () => {
     const { getByTestId } = render(<SceneOrbitControls />)
     const controls = getByTestId('orbit-controls')
     expect(controls.getAttribute('data-enablezoom')).toBe('true')
+  })
+
+  it('disables damping in low-power mode', () => {
+    setState({ performanceMode: 'low-power' })
+
+    const { getByTestId } = render(<SceneOrbitControls />)
+    const controls = getByTestId('orbit-controls')
+
+    expect(controls.getAttribute('data-enabledamping')).toBe('false')
+    expect(controls.getAttribute('data-dampingfactor')).toBe('0')
   })
 })

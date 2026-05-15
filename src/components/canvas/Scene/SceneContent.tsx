@@ -16,12 +16,14 @@ import type { SceneProps } from './types'
  */
 export function SceneContent({ children }: SceneProps) {
   const showAxes = useCircuitStore((s) => s.showAxes)
+  const performanceMode = useCircuitStore((s) => s.performanceMode)
+  const lowPowerEnabled = performanceMode === 'low-power'
 
   return (
     <>
       <ambientLight intensity={0.5} />
-      <directionalLight position={[10, 10, 5]} intensity={1} castShadow />
-      <Environment preset="city" />
+      <directionalLight position={[10, 10, 5]} intensity={1} castShadow={!lowPowerEnabled} />
+      {!lowPowerEnabled && <Environment preset="city" />}
       {showAxes && <SceneAxes />}
       <GroundPlane />
       <PlacementPreview />
@@ -34,4 +36,3 @@ export function SceneContent({ children }: SceneProps) {
     </>
   )
 }
-

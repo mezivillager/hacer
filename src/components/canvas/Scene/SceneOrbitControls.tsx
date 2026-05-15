@@ -12,15 +12,17 @@ export function SceneOrbitControls() {
   const placementMode = useCircuitStore((state): GateType | null => state.placementMode)
   const wiringFrom = useCircuitStore((state): WiringState | null => state.wiringFrom)
   const hoveredGateId = useCircuitStore((state): string | null => state.hoveredGateId)
+  const performanceMode = useCircuitStore((state): string => state.performanceMode)
 
   // Disable orbital controls when any interaction is active or when hovering over a gate
   const isInteracting = isDragActive || placementMode !== null || wiringFrom !== null || hoveredGateId !== null
+  const lowPowerEnabled = performanceMode === 'low-power'
 
   return (
     <OrbitControls
       makeDefault
-      enableDamping
-      dampingFactor={0.05}
+      enableDamping={!lowPowerEnabled}
+      dampingFactor={lowPowerEnabled ? 0 : 0.05}
       minDistance={2}
       maxDistance={50}
       maxPolarAngle={Math.PI / 2}

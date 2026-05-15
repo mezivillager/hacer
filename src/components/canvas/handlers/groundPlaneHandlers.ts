@@ -3,6 +3,7 @@ import { useCircuitStore, circuitActions } from '@/store/circuitStore'
 import { snapToGrid, worldToGrid, canPlaceGateAt } from '@/utils/grid'
 import { debounce } from '@/utils/debounce'
 import { handleWireClick } from './wireHandlers'
+import type { PerformanceMode } from '@/store/types'
 
 const {
   updateWirePreviewPosition: updateWirePreviewPositionOriginal,
@@ -18,10 +19,19 @@ const {
   updateJunctionPreviewPosition,
 } = circuitActions
 
-// Debounce wire preview updates to reduce calculation frequency (100ms delay)
+export function getWirePreviewDebounceMs(performanceMode: PerformanceMode): number {
+  return performanceMode === 'low-power' ? 150 : 50
+}
+
+// Debounce wire preview updates to reduce pathfinding frequency.
 const updateWirePreviewPosition = debounce(
   updateWirePreviewPositionOriginal as (...args: unknown[]) => void,
-  50
+  getWirePreviewDebounceMs('normal')
+) as typeof updateWirePreviewPositionOriginal
+
+const updateWirePreviewPositionLowPower = debounce(
+  updateWirePreviewPositionOriginal as (...args: unknown[]) => void,
+  getWirePreviewDebounceMs('low-power')
 ) as typeof updateWirePreviewPositionOriginal
 
 /**
@@ -55,7 +65,11 @@ export function handlePointerMove(e: ThreeEvent<PointerEvent>): void {
       y: 0.2,
       z: e.point.z,
     }
-    updateWirePreviewPosition(previewPos)
+    const updatePreview =
+      state.performanceMode === 'low-power'
+        ? updateWirePreviewPositionLowPower
+        : updateWirePreviewPosition
+    updatePreview(previewPos)
   }
 }
 

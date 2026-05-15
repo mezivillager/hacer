@@ -65,6 +65,7 @@ export function BaseGate(props: BaseGateComponentProps) {
 
   // Subscribe to wiring state to reactively hide stubs during wiring
   const wiringFrom = useCircuitStore((s) => s.wiringFrom)
+  const performanceMode = useCircuitStore((s) => s.performanceMode)
 
   // Drag functionality - use getState() to avoid subscriptions that cause re-renders
   // eslint-disable-next-line react-compiler/react-compiler -- getState() is valid for reading without subscribing
@@ -144,7 +145,7 @@ export function BaseGate(props: BaseGateComponentProps) {
       </mesh>
 
       {/* Gate text label on top face - flat on horizontal surface */}
-      {textLabel && (
+      {textLabel && performanceMode !== 'low-power' && (
         <Text
           position={textPosition}
           rotation={[Math.PI, 0, 0]}

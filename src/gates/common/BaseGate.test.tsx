@@ -2,12 +2,14 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render } from '@testing-library/react'
 import '@testing-library/jest-dom/vitest'
 import { BaseGate } from './BaseGate'
+import { useCircuitStore } from '@/store/circuitStore'
 import type { PinConfig } from '../types'
 import type { GateType } from '@/store/types'
 
 // Mock dependencies
 vi.mock('@/store/circuitStore', () => {
   const mockState = {
+    performanceMode: 'normal' as 'normal' | 'low-power',
     placementMode: null,
     wiringFrom: null,
     wires: [],
@@ -94,6 +96,7 @@ describe('BaseGate', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
+    useCircuitStore.getState().performanceMode = 'normal'
   })
 
   it('renders gate with provided geometry', () => {
@@ -104,6 +107,14 @@ describe('BaseGate', () => {
   it('renders text label when provided', () => {
     const { getByTestId } = render(<BaseGate {...defaultProps} textLabel="AND" />)
     expect(getByTestId('gate-text')).toHaveTextContent('AND')
+  })
+
+  it('hides text labels in low-power mode', () => {
+    useCircuitStore.getState().performanceMode = 'low-power'
+
+    const { queryByTestId } = render(<BaseGate {...defaultProps} textLabel="AND" />)
+
+    expect(queryByTestId('gate-text')).not.toBeInTheDocument()
   })
 
   it('renders additional elements when provided', () => {
