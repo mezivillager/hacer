@@ -1,0 +1,88 @@
+import { useCircuitStore, circuitActions } from '@/store/circuitStore'
+import { Button } from '@/components/ui-kit/button'
+import { Separator } from '@/components/ui-kit/separator'
+
+export function PinoutPanel() {
+  const inputNodes = useCircuitStore(state => state.inputNodes)
+  const outputNodes = useCircuitStore(state => state.outputNodes)
+
+  if (inputNodes.length === 0 && outputNodes.length === 0) {
+    return null
+  }
+
+  const handleToggle = (nodeId: string, currentValue: number) => {
+    circuitActions.updateInputNodeValue(nodeId, currentValue ? 0 : 1)
+  }
+
+  const handleEval = () => {
+    circuitActions.simulationTick()
+  }
+
+  return (
+    <div data-testid="pinout-panel" className="space-y-2">
+      <div className="text-xs font-semibold">Chip I/O</div>
+      <Separator />
+
+      {inputNodes.length > 0 && (
+        <div data-testid="pinout-inputs" className="space-y-1">
+          <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+            Inputs
+          </div>
+          {inputNodes.map(node => (
+            <div
+              key={node.id}
+              data-testid={`pin-input-${node.name}`}
+              className="flex items-center justify-between py-0.5"
+            >
+              <span className="text-xs">
+                {node.name}
+                {node.width > 1 ? `[${node.width}]` : ''}
+              </span>
+              <button
+                type="button"
+                data-testid={`pin-toggle-${node.name}`}
+                onClick={() => handleToggle(node.id, node.value)}
+                className="font-mono text-xs cursor-pointer hover:bg-accent rounded px-1.5 py-0.5"
+              >
+                {String(Number(node.value))}
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {outputNodes.length > 0 && (
+        <div data-testid="pinout-outputs" className="space-y-1 pt-2">
+          <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+            Outputs
+          </div>
+          {outputNodes.map(node => (
+            <div
+              key={node.id}
+              data-testid={`pin-output-${node.name}`}
+              className="flex items-center justify-between py-0.5"
+            >
+              <span className="text-xs">
+                {node.name}
+                {node.width > 1 ? `[${node.width}]` : ''}
+              </span>
+              <span className="font-mono text-xs px-1.5 py-0.5">
+                {String(Number(node.value))}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <Button
+        size="sm"
+        variant="secondary"
+        onClick={handleEval}
+        data-testid="eval-button"
+        className="w-full mt-2"
+      >
+        Eval
+      </Button>
+    </div>
+  )
+}
