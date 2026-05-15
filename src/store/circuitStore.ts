@@ -13,6 +13,7 @@ import { createJunctionActions } from './actions/signalActions/signalActions'
 import { createNodePlacementActions } from './actions/nodePlacementActions/nodePlacementActions'
 import { createJunctionPlacementActions } from './actions/junctionPlacementActions/junctionPlacementActions'
 import { createStatusActions } from './actions/statusActions/statusActions'
+import { readPerformanceMode } from '@/lib/performanceModeStorage'
 import { calculateWirePathFromConnection } from '@/utils/wiringScheme'
 import { collectWireSegments } from '@/utils/wiringScheme/segments'
 import type { WireSegment } from '@/utils/wiringScheme/types'
@@ -26,6 +27,7 @@ export type {
   GateInstance,
   GateType,
   Pin,
+  PerformanceMode,
   SimulationError,
   Wire,
   WiringState,
@@ -46,6 +48,7 @@ const initialState = {
   isDragActive: false,
   hoveredGateId: null as string | null,
   showAxes: false,
+  performanceMode: readPerformanceMode(),
   // HDL Support: Circuit I/O nodes and junctions
   inputNodes: [] as import('./types').InputNode[],
   outputNodes: [] as import('./types').OutputNode[],
@@ -228,6 +231,8 @@ export const circuitActions = {
   openPropertiesPanel: () => useCircuitStore.getState().openPropertiesPanel(),
   closePropertiesPanel: () => useCircuitStore.getState().closePropertiesPanel(),
   togglePropertiesPanel: () => useCircuitStore.getState().togglePropertiesPanel(),
+  setPerformanceMode: (...args: Parameters<CircuitStore['setPerformanceMode']>) => useCircuitStore.getState().setPerformanceMode(...args),
+  togglePerformanceMode: () => useCircuitStore.getState().togglePerformanceMode(),
   // Node placement actions
   startNodePlacement: (...args: Parameters<CircuitStore['startNodePlacement']>) => useCircuitStore.getState().startNodePlacement(...args),
   cancelNodePlacement: () => useCircuitStore.getState().cancelNodePlacement(),

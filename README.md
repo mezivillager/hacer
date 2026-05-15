@@ -42,7 +42,7 @@ Completed Phase 0.5 building blocks include the chip registry/Nand primitive, nu
 
 **Available now:**
 - Interactive 3D circuit canvas powered by React Three Fiber
-- Tailwind/shadcn UI shell with compact toolbar, right action drawer, properties panel, help bar, status bar, and theme switching
+- Tailwind/shadcn UI shell with compact toolbar, right action drawer, properties panel, help bar, status bar, theme switching, and Low Power rendering mode
 - Real-time logic simulation with visual feedback (red = 0, green = 1)
 - Grid-aligned wire routing with junctions and I/O nodes
 - Gate types: NAND, AND, OR, NOT, XOR, NOR, XNOR with placement controls
@@ -120,7 +120,7 @@ src/
 ├── simulation/       # Circuit simulation engine (pure logic)
 ├── store/            # Zustand state and domain-organized actions
 ├── hooks/            # Custom hooks (keyboard shortcuts, drag, release version)
-├── lib/              # notify, utils, demo tour, GitHub release helpers
+├── lib/              # notify, utils, demo tour, GitHub release helpers, local UI preference storage
 ├── styles/           # Tailwind v4 globals and CSS variables
 ├── theme/            # Shared theme tokens consumed by canvas utilities
 ├── utils/            # Wiring, pathfinding, grid, hit-testing utilities

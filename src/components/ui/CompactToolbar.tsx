@@ -24,7 +24,6 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui-kit/too
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui-kit/popover'
 import { Separator } from '@/components/ui-kit/separator'
 import { Switch } from '@/components/ui-kit/switch'
-import { ComingSoon } from './coming-soon'
 import {
   NandGateIcon,
   AndGateIcon,
@@ -64,6 +63,7 @@ export function CompactToolbar() {
   const junctionPlacementMode = useCircuitStore((s) => s.junctionPlacementMode)
   const simulationRunning = useCircuitStore((s) => s.simulationRunning)
   const showAxes = useCircuitStore((s) => s.showAxes)
+  const performanceMode = useCircuitStore((s) => s.performanceMode)
   const propertiesPanelOpen = useCircuitStore((s) => s.propertiesPanelOpen)
   const gatesCount = useCircuitStore((s) => s.gates.length)
   const selectedGateId = useCircuitStore((s) => s.selectedGateId)
@@ -123,6 +123,7 @@ export function CompactToolbar() {
   }
 
   const version = useAppReleaseVersion()
+  const lowPowerEnabled = performanceMode === 'low-power'
 
   return (
     <div
@@ -404,16 +405,49 @@ export function CompactToolbar() {
           <TooltipContent side="right">GitHub</TooltipContent>
         </Tooltip>
 
-        <ComingSoon>
-          <Button
-            data-testid="toolbar-settings"
-            variant="ghost"
-            size="icon"
-            className="w-9 h-9"
+        <Popover>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <PopoverTrigger asChild>
+                <Button
+                  data-testid="toolbar-settings"
+                  variant={lowPowerEnabled ? 'secondary' : 'ghost'}
+                  size="icon"
+                  className="w-9 h-9"
+                >
+                  <Settings className="w-4 h-4" />
+                </Button>
+              </PopoverTrigger>
+            </TooltipTrigger>
+            <TooltipContent side="right">Settings</TooltipContent>
+          </Tooltip>
+          <PopoverContent
+            data-testid="settings-popover"
+            side="right"
+            align="end"
+            className="w-56 p-3"
           >
-            <Settings className="w-4 h-4" />
-          </Button>
-        </ComingSoon>
+            <div className="flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                <div className="text-sm font-medium">Low Power</div>
+                <div
+                  data-testid="performance-mode-label"
+                  className="text-xs text-muted-foreground"
+                >
+                  {lowPowerEnabled ? 'Enabled' : 'Normal'}
+                </div>
+              </div>
+              <Switch
+                data-testid="low-power-mode-switch"
+                aria-label="Low Power Mode"
+                checked={lowPowerEnabled}
+                onCheckedChange={(checked) => {
+                  circuitActions.setPerformanceMode(checked ? 'low-power' : 'normal')
+                }}
+              />
+            </div>
+          </PopoverContent>
+        </Popover>
 
         <div data-testid="toolbar-version" className="text-[10px] text-muted-foreground mt-1">
           {version}

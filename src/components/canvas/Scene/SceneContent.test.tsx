@@ -28,6 +28,10 @@ vi.mock('./SceneKeyboardPan', () => ({
   SceneKeyboardPan: () => <div data-testid="scene-keyboard-pan">SceneKeyboardPan</div>,
 }))
 
+vi.mock('./JunctionPreview', () => ({
+  JunctionPreview: () => <div data-testid="junction-preview">JunctionPreview</div>,
+}))
+
 vi.mock('@react-three/drei', () => ({
   Environment: () => <div data-testid="environment">Environment</div>,
 }))
@@ -38,6 +42,7 @@ describe('SceneContent', () => {
   beforeEach(() => {
     setState({
       placementMode: null,
+      performanceMode: 'normal',
       wiringFrom: null,
     })
   })
@@ -72,10 +77,28 @@ describe('SceneContent', () => {
     expect(getByTestId('environment')).toBeInTheDocument()
   })
 
+  it('omits Environment in low-power mode', () => {
+    setState({ performanceMode: 'low-power' })
+
+    const { queryByTestId } = render(<SceneContent />)
+
+    expect(queryByTestId('environment')).not.toBeInTheDocument()
+  })
+
   it('renders ambient and directional lights', () => {
     const { container } = render(<SceneContent />)
     expect(container.innerHTML).toContain('ambientlight')
     expect(container.innerHTML).toContain('directionallight')
+  })
+
+  it('disables directional shadows in low-power mode', () => {
+    setState({ performanceMode: 'low-power' })
+
+    const { container } = render(<SceneContent />)
+    const light = container.querySelector('directionallight')
+
+    expect(light).toBeInTheDocument()
+    expect(light).not.toHaveAttribute('castshadow')
   })
 
   it('renders children', () => {

@@ -37,6 +37,7 @@ export function createMockStore(partial: Partial<CircuitState> = {}): CircuitSto
     isDragActive: false,
     hoveredGateId: null,
     showAxes: false,
+    performanceMode: 'normal',
     // Node state fields
     inputNodes: [],
     outputNodes: [],
@@ -100,6 +101,8 @@ export function createMockStore(partial: Partial<CircuitState> = {}): CircuitSto
     openPropertiesPanel: () => {},
     closePropertiesPanel: () => {},
     togglePropertiesPanel: () => {},
+    setPerformanceMode: () => {},
+    togglePerformanceMode: () => {},
     // Node actions
     addInputNode: () => ({ id: '', name: '', position: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, value: 1, width: 1 }),
     addOutputNode: () => ({ id: '', name: '', position: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, value: 0, width: 1 }),

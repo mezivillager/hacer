@@ -1,7 +1,9 @@
 import { Line } from '@react-three/drei'
+import { useCircuitStore } from '@/store/circuitStore'
 import { colors } from '@/theme'
 import type { WireSegment, WirePath } from '@/utils/wiringScheme/types'
 import { WIRE_HEIGHT, HOP_HEIGHT } from '@/utils/wiringScheme/types'
+import { getWireArcPointCount, getWireLineWidth } from './wireRenderConfig'
 
 interface Wire3DProps {
   /** Start position (for validation only - actual path uses segments) */
@@ -33,6 +35,8 @@ export function Wire3D({
   isPreview = false,
   isSelected = false,
 }: Wire3DProps) {
+  const performanceMode = useCircuitStore((s) => s.performanceMode)
+
   // Guard against undefined positions
   if (!start || !end) return null
 
@@ -111,7 +115,7 @@ export function Wire3D({
     // - t goes from 0 to π (semi-circle)
     // - angle interpolates from startAngle to endAngle
     // - y follows a sinusoidal path: WIRE_HEIGHT + (HOP_HEIGHT - WIRE_HEIGHT) * sin(t)
-    const numPoints = 30 // Number of points for smooth curve
+    const numPoints = getWireArcPointCount(performanceMode)
     // Generate intermediate points (skip first and last)
     for (let i = 1; i < numPoints; i++) {
       const t = (i / numPoints) * Math.PI // t goes from 0 to π
@@ -169,7 +173,7 @@ export function Wire3D({
             key={`segment-${index}`}
             points={points}
             color={wireColor}
-            lineWidth={isSelected ? 3 : 1}
+            lineWidth={getWireLineWidth({ isSelected, performanceMode })}
             transparent
             opacity={isPreview ? 0.7 : 1}
           />

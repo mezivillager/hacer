@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render } from '@testing-library/react'
+import { render, waitFor } from '@testing-library/react'
 import { notify } from '@/lib/notify'
 import { WirePreview } from './WirePreview'
 import { useCircuitStore } from '@/store/circuitStore'
@@ -182,8 +182,12 @@ describe('WirePreview', () => {
     // Should log error to console (from useWirePreviewPath hook)
     expect(consoleErrorSpy).toHaveBeenCalledWith('[WirePreview] Pathfinding error:', pathfindingError)
 
-    // Should show error notification
-    expect(notify.error).toHaveBeenCalledWith('Unable to create wire path. Please try a different connection.')
+    // Should show error notification after commit, not during render.
+    await waitFor(() => {
+      expect(notify.error).toHaveBeenCalledWith(
+        'Unable to create wire path. Please try a different connection.',
+      )
+    })
 
     // Should cancel wiring
     expect(vi.mocked(circuitActions.cancelWiring)).toHaveBeenCalled()

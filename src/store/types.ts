@@ -2,6 +2,7 @@
 
 export type Position = { x: number; y: number; z: number }
 export type Rotation = { x: number; y: number; z: number }
+export type PerformanceMode = 'normal' | 'low-power'
 
 export interface Pin {
   id: string
@@ -179,6 +180,7 @@ export interface CircuitState {
   isDragActive: boolean
   hoveredGateId: string | null
   showAxes: boolean
+  performanceMode: PerformanceMode
 
   // HDL Support: Circuit I/O nodes and junctions
   inputNodes: InputNode[]
@@ -283,6 +285,8 @@ export interface ViewActions {
   openPropertiesPanel: () => void
   closePropertiesPanel: () => void
   togglePropertiesPanel: () => void
+  setPerformanceMode: (mode: PerformanceMode) => void
+  togglePerformanceMode: () => void
 }
 
 // =============================================================================

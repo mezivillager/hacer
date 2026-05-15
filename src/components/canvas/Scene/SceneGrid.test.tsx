@@ -1,6 +1,7 @@
-import { describe, it, expect, vi } from 'vitest'
+import { beforeEach, describe, it, expect, vi } from 'vitest'
 import { render } from '@testing-library/react'
 import { SceneGrid } from './SceneGrid'
+import { useCircuitStore } from '@/store/circuitStore'
 
 // Mock @react-three/drei Grid component
 vi.mock('@react-three/drei', () => ({
@@ -14,6 +15,10 @@ vi.mock('@react-three/drei', () => ({
 }))
 
 describe('SceneGrid', () => {
+  beforeEach(() => {
+    useCircuitStore.setState({ performanceMode: 'normal' })
+  })
+
   it('renders Grid component', () => {
     const { getByTestId } = render(<SceneGrid />)
     expect(getByTestId('grid')).toBeInTheDocument()
@@ -35,5 +40,17 @@ describe('SceneGrid', () => {
     const { getByTestId } = render(<SceneGrid />)
     const grid = getByTestId('grid')
     expect(grid.getAttribute('data-followcamera')).toBe('false')
+  })
+
+  it('uses a finite lighter grid in low-power mode', () => {
+    useCircuitStore.setState({ performanceMode: 'low-power' })
+
+    const { getByTestId } = render(<SceneGrid />)
+    const grid = getByTestId('grid')
+
+    expect(grid.getAttribute('data-infinitegrid')).toBe('false')
+    expect(grid.getAttribute('data-cellthickness')).toBe('0.6')
+    expect(grid.getAttribute('data-sectionthickness')).toBe('0.8')
+    expect(grid.getAttribute('data-fadedistance')).toBe('18')
   })
 })

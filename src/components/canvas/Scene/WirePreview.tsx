@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { notify } from '@/lib/notify'
 import { useCircuitStore, circuitActions } from '@/store/circuitStore'
 import { Wire3D } from '../Wire3D'
@@ -54,6 +55,13 @@ export function WirePreview() {
   const isActive = wiringFrom !== null && wiringFrom.previewEndPosition !== null
   trackRender('WirePreview', `active:${isActive}`)
 
+  useEffect(() => {
+    if (!error) return
+
+    notify.error('Unable to create wire path. Please try a different connection.')
+    circuitActions.cancelWiring()
+  }, [error])
+
   if (!wiringFrom || !wiringFrom.previewEndPosition) return null
 
   // For junction wiring, compare against junction position; otherwise use fromPosition
@@ -80,8 +88,6 @@ export function WirePreview() {
   }
 
   if (error) {
-    notify.error('Unable to create wire path. Please try a different connection.')
-    circuitActions.cancelWiring()
     return null
   }
 

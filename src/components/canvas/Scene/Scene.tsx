@@ -1,5 +1,7 @@
 import { Canvas } from '@react-three/fiber'
 import { Suspense } from 'react'
+import { useCircuitStore } from '@/store/circuitStore'
+import { getSceneRenderConfig } from './renderConfig'
 import { SceneContent } from './SceneContent'
 import { SceneReadyBridge } from './SceneReadyBridge'
 import type { SceneProps } from './types'
@@ -16,9 +18,12 @@ const bgStyle = { background: 'var(--canvas-bg)' }
  * from --canvas-bg so the 3D area flips with the active theme.
  */
 export function Scene({ children }: SceneProps) {
+  const performanceMode = useCircuitStore((s) => s.performanceMode)
+  const renderConfig = getSceneRenderConfig(performanceMode)
+
   return (
     <Canvas
-      shadows
+      {...renderConfig}
       camera={{ position: [0, 6, 6], fov: 50 }}
       style={bgStyle}
       data-testid="scene-canvas"
@@ -30,4 +35,3 @@ export function Scene({ children }: SceneProps) {
     </Canvas>
   )
 }
-
