@@ -5,6 +5,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0](https://github.com/mezivillager/hacer/compare/v2.0.0...v2.1.0) (2026-05-15)
+
+### Features
+
+* add low power performance mode ([af50b8f](https://github.com/mezivillager/hacer/commit/af50b8fad572e08a58c5a8c26da73071988af2db))
+
+### Documentation
+
+* add B-002 toast overlap with right action bar to observed bugs ([cbd0bff](https://github.com/mezivillager/hacer/commit/cbd0bffeebfa9ed17aaccd9837278c151e6d3082))
+* add P05-10 follow-ups and process hygiene implementation plan ([def9348](https://github.com/mezivillager/hacer/commit/def934861d948d64d05d7b7bf22f05ee2236e34f))
+* add performance mode implementation plan ([fd03586](https://github.com/mezivillager/hacer/commit/fd035865c5156190b160fa0c11c12c6caac19529))
+* address PR review comments on p05-10 followups plan ([13115d2](https://github.com/mezivillager/hacer/commit/13115d210fbe3d83cc40b6ff48a07711520c7ede))
+* address review comments on documentation refresh ([0f344fd](https://github.com/mezivillager/hacer/commit/0f344fdc678646b57d41d24f3844f2e52bfacf58))
+* align root guides with current stack ([b0397e0](https://github.com/mezivillager/hacer/commit/b0397e073123556186d57042ef5ff50d508d44e7))
+* mark documentation refresh verification complete ([4ab5e42](https://github.com/mezivillager/hacer/commit/4ab5e423d9ffae43177228202aabf51220df3f94))
+* P05-29 follow-up ticket, P05-10 alignment, observed bugs log, git rule ([8c51741](https://github.com/mezivillager/hacer/commit/8c517415e95df136f456fb65c0db380a03e5101c))
+* refresh phase 0.5 ticket status and UI guidance ([4543f89](https://github.com/mezivillager/hacer/commit/4543f89f8b2874de8f85839738619c0226dee22a))
+* refresh roadmap against current implementation ([4122d1b](https://github.com/mezivillager/hacer/commit/4122d1b4751de09ade76f891251d90514c5017ea))
+* remove docs truth CI and add LLM docs-sync playbook ([9e0e990](https://github.com/mezivillager/hacer/commit/9e0e99020dbe8b7e980811c41e4a47fae323cba6))
+* update release testing and current task docs ([68ca296](https://github.com/mezivillager/hacer/commit/68ca296bdddbe84e670d8b3f36a9984336c914e3))
+
+### Code Refactoring
+
+* address performance mode review comments ([45dd5bb](https://github.com/mezivillager/hacer/commit/45dd5bb96e198acfd82448a4a5f6f23183b7aa56))
+
+### Tests
+
+* **docs:** add documentation truth guard and align Node 22 runtime ([81936a9](https://github.com/mezivillager/hacer/commit/81936a94fdcf935d676d66019a3ef292b28bcff7))
+
+### Continuous Integration
+
+* enforce documentation truth check ([ec76950](https://github.com/mezivillager/hacer/commit/ec7695007a8dd33293d07210dea4170a00d4841e))
+
 ## [2.0.0](https://github.com/mezivillager/hacer/compare/v1.10.0...v2.0.0) (2026-05-12)
 
 ### ⚠ BREAKING CHANGES
