@@ -24,15 +24,23 @@ export function getWirePreviewDebounceMs(performanceMode: PerformanceMode): numb
 }
 
 // Debounce wire preview updates to reduce pathfinding frequency.
+// Both modes have their own debouncer so cancellation works per-mode and we can
+// clear pending updates when wiring ends or the pointer leaves the canvas,
+// avoiding stale preview positions reappearing after cancellation.
 const updateWirePreviewPosition = debounce(
   updateWirePreviewPositionOriginal as (...args: unknown[]) => void,
   getWirePreviewDebounceMs('normal')
-) as typeof updateWirePreviewPositionOriginal
+)
 
 const updateWirePreviewPositionLowPower = debounce(
   updateWirePreviewPositionOriginal as (...args: unknown[]) => void,
   getWirePreviewDebounceMs('low-power')
-) as typeof updateWirePreviewPositionOriginal
+)
+
+function cancelPendingWirePreviewUpdates(): void {
+  updateWirePreviewPosition.cancel()
+  updateWirePreviewPositionLowPower.cancel()
+}
 
 /**
  * Handle pointer move on ground plane - update preview positions for placing, wiring, or dragging
@@ -87,6 +95,7 @@ export function handlePointerLeave(): void {
     updatePlacementPreviewPosition(null)
   }
   if (isWiring) {
+    cancelPendingWirePreviewUpdates()
     updateWirePreviewPositionOriginal(null)
   }
   if (isPlacingJunction) {
@@ -136,6 +145,7 @@ export function handleClick(e: ThreeEvent<MouseEvent>): void {
     }
   } else if (isWiring) {
     e.stopPropagation()
+    cancelPendingWirePreviewUpdates()
     cancelWiring()
   } else if (isDraggingGateOrNode) {
     e.stopPropagation()

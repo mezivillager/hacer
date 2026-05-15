@@ -1,6 +1,5 @@
 import { storeTest as test, storeExpect as expect } from '../../fixtures'
-
-const PERFORMANCE_MODE_STORAGE_KEY = 'hacer.performanceMode'
+import { PERFORMANCE_MODE_STORAGE_KEY } from '@/lib/performanceModeStorage'
 
 test.describe('Performance mode @store @performance', () => {
   test.beforeEach(async ({ page }) => {
