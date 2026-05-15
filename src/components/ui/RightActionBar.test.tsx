@@ -95,4 +95,14 @@ describe('RightActionBar', () => {
     await user.click(screen.getByTestId('right-bar-drawer-close'))
     await waitFor(() => expect(screen.queryByTestId('info-panel')).not.toBeInTheDocument())
   })
+
+  it('renders PinoutPanel inside the info drawer when chip I/O exists', async () => {
+    const user = userEvent.setup()
+    useCircuitStore.getState().addInputNode('a', { x: 0, y: 0, z: 0 })
+    wrap()
+    await user.click(screen.getByTestId('right-bar-info-trigger'))
+    expect(await screen.findByTestId('info-panel')).toBeInTheDocument()
+    expect(screen.getByTestId('pinout-panel')).toBeInTheDocument()
+    expect(screen.getByTestId('pin-input-a')).toBeInTheDocument()
+  })
 })
