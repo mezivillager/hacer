@@ -37,7 +37,11 @@ vi.mock('@/utils/grid', () => ({
 
 // Mock debounce to execute immediately for testing
 vi.mock('@/utils/debounce', () => ({
-  debounce: <T extends (...args: unknown[]) => unknown>(fn: T) => fn,
+  debounce: <T extends (...args: unknown[]) => unknown>(fn: T) => {
+    const wrapped = ((...args: unknown[]) => fn(...args)) as T & { cancel: () => void }
+    wrapped.cancel = () => {}
+    return wrapped
+  },
 }))
 
 describe('groundPlaneHandlers', () => {
