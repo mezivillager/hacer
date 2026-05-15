@@ -20,7 +20,8 @@ export function PinoutPanel() {
   const currentSignature = inputsSignature(inputNodes)
   const isDirty = lastEvaluatedSignature === null || lastEvaluatedSignature !== currentSignature
 
-  const handleToggle = (nodeId: string, currentValue: number) => {
+  const handleToggle = (nodeId: string, currentValue: number, width: number) => {
+    if (width !== 1) return
     circuitActions.updateInputNodeValue(nodeId, currentValue ? 0 : 1)
   }
 
@@ -52,8 +53,9 @@ export function PinoutPanel() {
               <button
                 type="button"
                 data-testid={`pin-toggle-${node.name}`}
-                onClick={() => handleToggle(node.id, node.value)}
-                className="font-mono text-xs cursor-pointer hover:bg-accent rounded px-1.5 py-0.5"
+                onClick={() => handleToggle(node.id, node.value, node.width)}
+                disabled={node.width !== 1}
+                className="font-mono text-xs cursor-pointer hover:bg-accent disabled:cursor-default disabled:hover:bg-transparent rounded px-1.5 py-0.5"
               >
                 {String(Number(node.value))}
               </button>
@@ -91,7 +93,7 @@ export function PinoutPanel() {
         onClick={handleEval}
         disabled={!isDirty}
         data-testid="eval-button"
-        className="w-full mt-2 cursor-pointer"
+        className="w-full mt-2 cursor-pointer disabled:cursor-not-allowed"
       >
         Eval
       </Button>

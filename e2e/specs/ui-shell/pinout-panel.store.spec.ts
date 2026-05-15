@@ -4,10 +4,19 @@
  * Tag: @store @ui-shell @pinout
  */
 
-import { storeTest as test, storeExpect as expect } from '../../fixtures'
-import { DEFAULT_POSITIONS } from '../../config/constants'
+import { test, expect } from '@playwright/test'
+import { PERFORMANCE_MODE_STORAGE_KEY } from '@/lib/performanceModeStorage'
+import { APP_ENTRY_URL, DEFAULT_POSITIONS, TIMEOUTS } from '../../config/constants'
 
 test.describe('PinoutPanel @store @ui-shell @pinout', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.addInitScript((storageKey) => {
+      localStorage.setItem(storageKey, 'low-power')
+    }, PERFORMANCE_MODE_STORAGE_KEY)
+    await page.goto(APP_ENTRY_URL)
+    await page.waitForFunction(() => window.__CIRCUIT_STORE__ !== undefined, { timeout: TIMEOUTS.store })
+  })
+
   test('renders pin rows after creating I/O via store, and toggle updates store', async ({ page }) => {
     // Create input + output via the store first so PinoutPanel renders (returns null when empty).
     const created = await page.evaluate(({ leftPos, rightPos }) => {
@@ -18,6 +27,9 @@ test.describe('PinoutPanel @store @ui-shell @pinout', () => {
 
     expect(created.aId).not.toBeNull()
     expect(created.outId).not.toBeNull()
+    await page.waitForFunction(
+      () => window.__CIRCUIT_STORE__?.inputNodes?.length === 1 && window.__CIRCUIT_STORE__?.outputNodes?.length === 1,
+    )
 
     // Open the right-bar info drawer where PinoutPanel lives.
     await page.getByTestId('right-bar-info-trigger').click()
@@ -30,8 +42,14 @@ test.describe('PinoutPanel @store @ui-shell @pinout', () => {
     await page.evaluate((id) => {
       window.__CIRCUIT_ACTIONS__?.updateInputNodeValue(id!, 0)
     }, created.aId)
+    await page.waitForFunction(
+      (id) => window.__CIRCUIT_STORE__?.inputNodes?.find(n => n.id === id)?.value === 0,
+      created.aId,
+    )
 
-    await page.getByTestId('pin-toggle-a').click()
+    const inputToggle = page.getByTestId('pin-toggle-a')
+    await expect(inputToggle).toHaveText('0')
+    await inputToggle.click()
 
     const value = await page.evaluate((id) => {
       const state = window.__CIRCUIT_STORE__

@@ -43,6 +43,20 @@ describe('PinoutPanel', () => {
     expect(Number(toggledBack?.value)).toBe(0)
   })
 
+  it('leaves multi-bit input values read-only', () => {
+    const s = useCircuitStore.getState()
+    const node = s.addInputNode('data', { x: 0, y: 0, z: 0 }, 16)
+    circuitActions.updateInputNodeValue(node.id, 12)
+    render(<PinoutPanel />)
+
+    const valueCell = screen.getByTestId('pin-toggle-data')
+    expect(valueCell).toBeDisabled()
+    fireEvent.click(valueCell)
+
+    const updated = useCircuitStore.getState().inputNodes.find(n => n.id === node.id)
+    expect(Number(updated?.value)).toBe(12)
+  })
+
   it('Eval button runs simulationTick and propagates through a NOT gate', () => {
     const s = useCircuitStore.getState()
     const input = s.addInputNode('a', { x: 0, y: 0, z: 0 })
@@ -96,13 +110,13 @@ describe('PinoutPanel', () => {
     expect((button as HTMLButtonElement).disabled).toBe(true)
   })
 
-  it('Eval button has cursor-pointer class so the enabled state looks clickable', () => {
+  it('Eval button only shows a pointer cursor while enabled', () => {
     const s = useCircuitStore.getState()
     s.addInputNode('a', { x: 0, y: 0, z: 0 })
     render(<PinoutPanel />)
     const button = screen.getByTestId('eval-button')
-    // Disabled visual is provided by the Button primitive via `disabled:opacity-50`.
-    // We only need to ensure the enabled state advertises clickability.
     expect(button.className).toContain('cursor-pointer')
+    fireEvent.click(button)
+    expect(button.className).toContain('disabled:cursor-not-allowed')
   })
 })
