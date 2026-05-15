@@ -105,4 +105,15 @@ describe('RightActionBar', () => {
     expect(screen.getByTestId('pinout-panel')).toBeInTheDocument()
     expect(screen.getByTestId('pin-input-a')).toBeInTheDocument()
   })
+
+  it('does not render a pinout separator when no chip I/O exists', async () => {
+    const user = userEvent.setup()
+    wrap()
+    await user.click(screen.getByTestId('right-bar-info-trigger'))
+
+    expect(await screen.findByTestId('info-panel')).toBeInTheDocument()
+    expect(screen.queryByTestId('pinout-panel')).not.toBeInTheDocument()
+    const drawer = screen.getByTestId('right-bar-drawer')
+    expect(drawer.querySelectorAll('[data-slot="separator"]')).toHaveLength(0)
+  })
 })

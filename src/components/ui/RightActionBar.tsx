@@ -29,6 +29,7 @@ const PANEL_WIDTH = 280
 
 export function RightActionBar() {
   const [activePanel, setActivePanel] = useState<ActivePanel>(null)
+  const hasChipIo = useCircuitStore((s) => s.inputNodes.length > 0 || s.outputNodes.length > 0)
 
   const togglePanel = (p: ActivePanel) => {
     setActivePanel(activePanel === p ? null : p)
@@ -173,8 +174,12 @@ export function RightActionBar() {
             {activePanel === 'info' && (
               <div className="space-y-4">
                 <CircuitInfoPanel />
-                <Separator />
-                <PinoutPanel />
+                {hasChipIo && (
+                  <>
+                    <Separator />
+                    <PinoutPanel />
+                  </>
+                )}
               </div>
             )}
             {activePanel === 'layers' && <LayersPanel />}
