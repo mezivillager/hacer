@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.0](https://github.com/mezivillager/hacer/compare/v2.1.0...v2.2.0) (2026-05-16)
+
+### Features
+
+* **pinout-panel:** disable Eval until inputs change; cursor-pointer on enabled ([16214a2](https://github.com/mezivillager/hacer/commit/16214a2c273c5b5ad05131d73704edad3864109c))
+* **pinout-panel:** implement PinoutPanel component (P05-10) ([bff17c2](https://github.com/mezivillager/hacer/commit/bff17c2364b5c56f37b627b558151bb08995a9da))
+* **right-action-bar:** mount PinoutPanel below CircuitInfoPanel (P05-10) ([8176e78](https://github.com/mezivillager/hacer/commit/8176e782301370a61d5b871f7ef5fd9856439368))
+
+### Bug Fixes
+
+* **e2e:** handle possibly-undefined inputNodes in pinout-panel spec ([392612d](https://github.com/mezivillager/hacer/commit/392612d0ff404e93e3ee1dce17b2046a844ec4bf))
+* **pinout-panel:** address pinout review feedback ([3863ade](https://github.com/mezivillager/hacer/commit/3863ade8fe62ffd9ae51aa1786703e6051d35107))
+
+### Documentation
+
+* **p05-10:** add PinoutPanel implementation plan ([86cc131](https://github.com/mezivillager/hacer/commit/86cc131f18adbdce8a7276a6384d4e755414b166))
+* **p05-10:** align ticket with implementation (sm size, store spec path, eval test) ([26ac0ee](https://github.com/mezivillager/hacer/commit/26ac0ee4121e9d960fc938281505017a55923c7f))
+
+### Tests
+
+* **e2e:** add [@store](https://github.com/store) spec for PinoutPanel toggle (P05-10) ([d1254a4](https://github.com/mezivillager/hacer/commit/d1254a4bdec155988fa9cd04a9372e59a0d47dec))
+* **pinout-panel:** add failing PinoutPanel unit tests (P05-10) ([d5572bd](https://github.com/mezivillager/hacer/commit/d5572bd2a872535770ba1ee15567772f40d64910))
+* **right-action-bar:** add failing PinoutPanel integration test (P05-10) ([f86d1b7](https://github.com/mezivillager/hacer/commit/f86d1b7175e997fff7d768630b91a9fcacdbe300))
+
 ## [2.1.0](https://github.com/mezivillager/hacer/compare/v2.0.0...v2.1.0) (2026-05-15)
 
 ### Features
