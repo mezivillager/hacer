@@ -5,7 +5,7 @@ description: Use when working on any HACER feature — covers the full stack, ar
 
 # HACER Patterns and Conventions
 
-HACER = Hardware Architecture Circuit Editor and Runtime. A 3D logic-gate circuit simulator inspired by nand2tetris.
+HACER = hardware architecture and constraints explorer & researcher. A 3D logic-gate circuit simulator inspired by nand2tetris.
 
 <instructions>
 ## ⚡ Before Writing Any Code: Discover, Don't Assume

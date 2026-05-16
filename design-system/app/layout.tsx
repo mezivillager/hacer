@@ -9,7 +9,7 @@ const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: 'HACER - Digital Circuit Designer',
-  description: 'Hardware Architecture & Constraints Explorer/Researcher - Design and simulate digital logic circuits',
+  description: 'hardware architecture and constraints explorer & researcher - Design and simulate digital logic circuits',
   generator: 'v0.app',
   icons: {
     icon: [

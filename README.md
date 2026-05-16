@@ -1,4 +1,4 @@
-# HACER (Hardware Architecture Circuit Editor and Runtime)
+# HACER (hardware architecture and constraints explorer & researcher)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js 22+](https://img.shields.io/badge/node-%3E%3D22-brightgreen)](https://nodejs.org)

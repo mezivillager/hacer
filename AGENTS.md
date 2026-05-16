@@ -1,6 +1,6 @@
 # AGENTS.md — Universal AI Agent Guide for HACER
 
-**HACER** = Hardware Architecture Circuit Editor and Runtime. A 3D logic-gate simulator built with React 19, React Three Fiber, Zustand, and Vitest/Playwright.
+**HACER** = hardware architecture and constraints explorer & researcher. A 3D logic-gate simulator built with React 19, React Three Fiber, Zustand, and Vitest/Playwright.
 
 > This file is read automatically by OpenAI Codex, GitHub Copilot, and other AI agents.  
 > Claude Code users: also see `.claude/CLAUDE.md` and `.claude/skills/`.  

@@ -1,6 +1,6 @@
 # HACER
 
-Hardware Architecture Circuit Editor and Runtime. A 3D circuit simulator inspired by nand2tetris.
+hardware architecture and constraints explorer & researcher. A 3D circuit simulator inspired by nand2tetris.
 
 ## Quick Start for AI Agents
 
