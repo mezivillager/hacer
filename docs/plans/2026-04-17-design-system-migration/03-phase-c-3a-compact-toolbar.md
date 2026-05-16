@@ -563,7 +563,7 @@ export function CompactToolbar() {
           </TooltipTrigger>
           <TooltipContent side="right">
             <p className="font-semibold">HACER</p>
-            <p className="text-xs text-muted-foreground">hardware architecture and constraints explorer & researcher</p>
+            <p className="text-xs text-muted-foreground">Hardware Architecture and Constraints Explorer & Researcher</p>
           </TooltipContent>
         </Tooltip>
       </div>

@@ -141,7 +141,7 @@ export function CompactToolbar() {
           <TooltipContent side="right">
             <p className="font-semibold">HACER</p>
             <p className="text-xs text-muted-foreground">
-              hardware architecture and constraints explorer & researcher
+              Hardware Architecture and Constraints Explorer & Researcher
             </p>
           </TooltipContent>
         </Tooltip>

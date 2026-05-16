@@ -1,6 +1,6 @@
 # HACER
 
-hardware architecture and constraints explorer & researcher. A 3D circuit simulator inspired by nand2tetris.
+Hardware Architecture and Constraints Explorer & Researcher. A 3D circuit simulator inspired by nand2tetris.
 
 ## Quick Start for AI Agents
 
