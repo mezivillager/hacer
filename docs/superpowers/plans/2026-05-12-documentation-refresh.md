@@ -124,7 +124,7 @@ This task originally added `scripts/check-docs-truth.sh`, `pnpm run docs:check`,
 Replace the H1 with:
 
 ```markdown
-# HACER (hardware architecture and constraints explorer & researcher)
+# HACER (Hardware Architecture and Constraints Explorer & Researcher)
 ```
 
 Replace the `## Current Status` body with:
