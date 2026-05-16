@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.1](https://github.com/mezivillager/hacer/compare/v2.2.0...v2.2.1) (2026-05-16)
+
+### Bug Fixes
+
+* **copy:** restore HACER expansion title casing ([da1a458](https://github.com/mezivillager/hacer/commit/da1a458c4c7c789895f87a5882d8cb449dab125a))
+
+### Documentation
+
+* **ui:** update HACER acronym expansion wording ([2bf8cf7](https://github.com/mezivillager/hacer/commit/2bf8cf7d6b0804520213c113c7b0905c891d7ab2))
+
 ## [2.2.0](https://github.com/mezivillager/hacer/compare/v2.1.0...v2.2.0) (2026-05-16)
 
 ### Features
