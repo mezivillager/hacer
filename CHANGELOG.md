@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.2](https://github.com/mezivillager/hacer/compare/v2.2.1...v2.2.2) (2026-05-17)
+
+### Bug Fixes
+
+* **deps:** bump react-dom from 19.2.4 to 19.2.6 to match react version ([36ba9f0](https://github.com/mezivillager/hacer/commit/36ba9f0ce7cd4664e105be403cc583d77dcdcd80))
+
 ## [2.2.1](https://github.com/mezivillager/hacer/compare/v2.2.0...v2.2.1) (2026-05-16)
 
 ### Bug Fixes
