@@ -8,6 +8,12 @@ See [lessons.md.template](./lessons.md.template) for the entry format.
 
 <!-- Add entries below -->
 
+### [2026-05-18] - Keep Superpowers Plan Storage Scoped
+
+**What happened**: I moved all plan and ticket docs into `docs/superpowers/plans` after the user asked to move Superpowers plan docs.
+**Rule**: Only move docs authored through Superpowers planning or writing-plans into `docs/superpowers/plans`; leave existing project plans and ticket docs in `docs/plans` unless explicitly requested.
+**Context**: P05-11 ticket-content plan relocation correction.
+
 ### 2026-03-15 - Verify Exact PR Context Before Comment Analysis
 
 - Situation: User asked for comments on the new PR, but analysis initially referenced an older PR context.
