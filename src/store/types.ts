@@ -9,6 +9,8 @@ export interface Pin {
   name: string
   type: 'input' | 'output'
   value: number
+  /** Bit width of the pin. Defaults to 1 for primitive gates when omitted. */
+  width?: number
 }
 
 import type { WireSegment } from '@/utils/wiringScheme/types'
@@ -94,6 +96,11 @@ export interface Wire {
   to: WireEndpoint       // Destination endpoint (gate input, output node, junction)
   segments: WireSegment[]
   crossesWireIds: string[]
+  /**
+   * Bit width of the wire. Defaults to 1 when omitted (legacy wires).
+   * Set automatically by `addWire` as `min(sourceWidth, destinationWidth)`.
+   */
+  width?: number
 }
 
 export type GateType = 'NAND' | 'AND' | 'OR' | 'NOT' | 'NOR' | 'XOR' | 'XNOR'
@@ -225,7 +232,8 @@ export interface WireActions {
     to: WireEndpoint,
     segments: WireSegment[],
     crossesWireIds?: string[],
-    signalId?: string
+    signalId?: string,
+    width?: number
   ) => Wire
   removeWire: (wireId: string) => void
   setInputValue: (gateId: string, pinId: string, value: number) => void
