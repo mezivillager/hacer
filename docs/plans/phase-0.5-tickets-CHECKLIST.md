@@ -7,9 +7,9 @@
 **When to mark done:** Change `[ ]` → `[x]` when the ticket is merged (or intentionally complete on your integration branch) **and** HACER definition of done passes:  
 `pnpm run lint` · `pnpm run test:run` · `pnpm run test:e2e:store` · `pnpm run build`
 
-**Last reviewed:** 2026-05-14 — checkboxes below match `main` (or current branch) + expected code paths.
+**Last reviewed:** 2026-05-18 — checkboxes below match `main` (or current branch) + expected code paths.
 
-**Verified this pass:** P05-01 `src/core/chips/`; P05-02 `Pin.value` / nodes `number` in `src/store/types.ts`; P05-03 `src/simulation/topologicalEval.ts`; P05-04 `src/core/hdl/`; P05-05 `src/core/testing/tstParser.ts`; P05-06 `src/core/testing/cmpParser.ts`; P05-08 rename actions, PropertiesPanel, and node rename E2E; P05-09 status actions, StatusBar, and store E2E.
+**Verified this pass:** P05-01 `src/core/chips/`; P05-02 `Pin.value` / nodes `number` in `src/store/types.ts`; P05-03 `src/simulation/topologicalEval.ts`; P05-04 `src/core/hdl/`; P05-05 `src/core/testing/tstParser.ts`; P05-06 `src/core/testing/cmpParser.ts`; P05-08 rename actions, PropertiesPanel, and node rename E2E; P05-09 status actions, StatusBar, and store E2E; P05-10 `src/components/ui/PinoutPanel.tsx`, `src/components/ui/RightActionBar.tsx`, `src/components/ui/PinoutPanel.test.tsx`, and `e2e/specs/ui-shell/pinout-panel.store.spec.ts`.
 
 ---
 
@@ -23,7 +23,7 @@
 - [x] **P05-06** — CMP parser — [P05-06.md](./phase-0.5-tickets/P05-06.md)
 - [x] **P05-08** — Node rename + name display — [P05-08.md](./phase-0.5-tickets/P05-08.md)
 - [x] **P05-09** — StatusBar component — [P05-09.md](./phase-0.5-tickets/P05-09.md)
-- [ ] **P05-10** — PinoutPanel component — [P05-10.md](./phase-0.5-tickets/P05-10.md)
+- [x] **P05-10** — PinoutPanel component — [P05-10.md](./phase-0.5-tickets/P05-10.md)
 
 ## Layer 1 — Depends on one Layer 0 item
 

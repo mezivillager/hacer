@@ -17,6 +17,6 @@ Bring living docs into alignment with the current codebase (no automated doc gre
 
 After this docs branch, resume Phase 0.5 from `docs/plans/phase-0.5-tickets-CHECKLIST.md`.
 
-Next unchecked Layer 0 ticket:
+Next unchecked Layer 1 ticket:
 
-- [ ] P05-10 - PinoutPanel component
+- [ ] P05-11 - Bus simulation + multi-bit wires
