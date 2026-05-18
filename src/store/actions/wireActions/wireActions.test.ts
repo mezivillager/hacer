@@ -71,17 +71,38 @@ describe('wireActions', () => {
       expect(wire.signalId).toBe('sig-test')
     })
 
-    it('throws when connecting input node directly to output node', () => {
-      const inputNode = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
-      const outputNode = getState().addOutputNode('out', { x: 4, y: 0, z: 0 })
+    it('allows direct input-node to output-node wiring when widths match', () => {
+      const inputNode = getState().addInputNode('a', { x: 0, y: 0, z: 0 }, 16)
+      const outputNode = getState().addOutputNode('out', { x: 4, y: 0, z: 0 }, 16)
+      const wire = getState().addWire(
+        { type: 'input', entityId: inputNode.id },
+        { type: 'output', entityId: outputNode.id },
+        []
+      )
+      expect(wire.width).toBe(16)
+    })
 
+    it('throws when input-to-output widths differ', () => {
+      const inputNode = getState().addInputNode('a', { x: 0, y: 0, z: 0 }, 16)
+      const outputNode = getState().addOutputNode('out', { x: 4, y: 0, z: 0 }, 1)
       expect(() =>
         getState().addWire(
           { type: 'input', entityId: inputNode.id },
           { type: 'output', entityId: outputNode.id },
           []
         )
-      ).toThrow('Input nodes cannot connect directly to output nodes')
+      ).toThrow(/width/i)
+    })
+
+    it('infers wire width as min(source, destination) for gate destinations', () => {
+      const inputNode = getState().addInputNode('a', { x: 0, y: 0, z: 0 }, 16)
+      const gate = getState().addGate('NOT', { x: 4, y: 0, z: 0 })
+      const wire = getState().addWire(
+        { type: 'input', entityId: inputNode.id },
+        { type: 'gate', entityId: gate.id, pinId: gate.inputs[0].id },
+        []
+      )
+      expect(wire.width).toBe(1)
     })
   })
 

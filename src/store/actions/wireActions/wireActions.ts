@@ -10,23 +10,57 @@ type SetState = (
 
 type GetState = () => CircuitStore
 
+function getEndpointWidth(endpoint: WireEndpoint, state: CircuitStore): number {
+  switch (endpoint.type) {
+    case 'input': {
+      const node = state.inputNodes.find((n) => n.id === endpoint.entityId)
+      return node?.width ?? 1
+    }
+    case 'output': {
+      const node = state.outputNodes.find((n) => n.id === endpoint.entityId)
+      return node?.width ?? 1
+    }
+    case 'gate': {
+      const gate = state.gates.find((g) => g.id === endpoint.entityId)
+      const pin =
+        gate?.inputs.find((p) => p.id === endpoint.pinId) ??
+        gate?.outputs.find((p) => p.id === endpoint.pinId)
+      return pin?.width ?? 1
+    }
+    case 'junction':
+    default:
+      return 1
+  }
+}
+
 export const createWireActions = (set: SetState, get: GetState): WireActions => ({
   addWire: (
     from: WireEndpoint,
     to: WireEndpoint,
     segments: WireSegment[],
     crossesWireIds: string[] = [],
-    signalId?: string
+    signalId?: string,
+    explicitWidth?: number
   ) => {
-    if (from.type === 'input' && to.type === 'output') {
-      throw new Error('Input nodes cannot connect directly to output nodes')
+    const state = get()
+    const sourceWidth = getEndpointWidth(from, state)
+    const destWidth = getEndpointWidth(to, state)
+
+    if (from.type === 'input' && to.type === 'output' && sourceWidth !== destWidth) {
+      throw new Error(
+        `Direct input-to-output pass-through requires matching widths (source=${sourceWidth}, destination=${destWidth})`
+      )
     }
+
+    const width = explicitWidth ?? Math.min(sourceWidth, destWidth)
+
     const wire: Wire = {
       id: `wire-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
       from,
       to,
       segments,
       crossesWireIds,
+      width,
       ...(signalId && { signalId }),
     }
     set((state) => {
