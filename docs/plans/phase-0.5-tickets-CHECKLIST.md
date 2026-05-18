@@ -27,7 +27,7 @@
 
 ## Layer 1 — Depends on one Layer 0 item
 
-- [ ] **P05-11** — Bus simulation + multi-bit wires — needs P05-02 — [P05-11.md](./phase-0.5-tickets/P05-11.md)
+- [x] **P05-11** — Bus simulation + multi-bit wires — needs P05-02 — [P05-11.md](./phase-0.5-tickets/P05-11.md)
 - [ ] **P05-12** — Bus 3D components — needs P05-02 — [P05-12.md](./phase-0.5-tickets/P05-12.md)
 - [ ] **P05-13** — Multi-bit I/O UI — needs P05-02 — [P05-13.md](./phase-0.5-tickets/P05-13.md)
 - [ ] **P05-14** — Circuit persistence — needs P05-03 — [P05-14.md](./phase-0.5-tickets/P05-14.md)
