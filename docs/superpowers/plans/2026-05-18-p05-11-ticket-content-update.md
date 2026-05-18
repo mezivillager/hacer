@@ -22,9 +22,9 @@
 
 ## File Structure
 
-- Modify: `docs/superpowers/plans/phase-0.5-tickets/P05-11.md` - refresh the ticket text, code snippets, tests, pitfalls, and verification guidance.
-- No planned modification: `docs/superpowers/plans/phase-0.5-tickets/P05-12.md` - leave adjacent ticket content unchanged unless P05-11's public API names change.
-- No planned modification: `docs/superpowers/plans/phase-0.5-tickets/P05-13.md` - leave adjacent ticket content unchanged unless the formatter plan should import `busOps` directly.
+- Modify: `docs/plans/phase-0.5-tickets/P05-11.md` - refresh the ticket text, code snippets, tests, pitfalls, and verification guidance.
+- No planned modification: `docs/plans/phase-0.5-tickets/P05-12.md` - leave adjacent ticket content unchanged unless P05-11's public API names change.
+- No planned modification: `docs/plans/phase-0.5-tickets/P05-13.md` - leave adjacent ticket content unchanged unless the formatter plan should import `busOps` directly.
 
 ---
 
@@ -33,9 +33,9 @@
 ### Task 1: Refresh P05-11 context and dependency notes
 
 **Files:**
-- Modify: `docs/superpowers/plans/phase-0.5-tickets/P05-11.md`
+- Modify: `docs/plans/phase-0.5-tickets/P05-11.md`
 
-- [ ] **Step 1: Re-read current code references**
+- [x] **Step 1: Re-read current code references**
 
 Check these source files before editing the ticket:
 
@@ -47,7 +47,7 @@ sed -n '1,560p' src/store/actions/wiringActions/wiringActions.ts
 sed -n '1,220p' src/simulation/gateLogic.ts
 ```
 
-- [ ] **Step 2: Update the Context section**
+- [x] **Step 2: Update the Context section**
 
 Replace the current context summary with text that says:
 
@@ -57,7 +57,7 @@ After P05-02, store values are `number` bitmasks and input/output nodes carry a 
 The remaining bus-simulation gap is not value storage; it is width-aware propagation. `Wire` has no width metadata, store `Pin` has no width metadata, `topologicalEval` copies raw numbers without clamping, and the UI/store currently reject direct input-node to output-node wiring.
 ```
 
-- [ ] **Step 3: Make the direct pass-through decision explicit**
+- [x] **Step 3: Make the direct pass-through decision explicit**
 
 Recommended ticket update: P05-11 should allow direct input-node to output-node wires for pass-through chips and bus propagation tests. Add this to the Goal section:
 
@@ -67,12 +67,12 @@ Recommended ticket update: P05-11 should allow direct input-node to output-node 
 
 Also add a note that if the implementer rejects this scope, they must rewrite the manual and automated acceptance tests to avoid direct input-to-output examples.
 
-- [ ] **Step 4: Verify the edited Markdown diff**
+- [x] **Step 4: Verify the edited Markdown diff**
 
 Run:
 
 ```bash
-git diff -- docs/superpowers/plans/phase-0.5-tickets/P05-11.md
+git diff -- docs/plans/phase-0.5-tickets/P05-11.md
 ```
 
 Expected: Context and goal text mention P05-10, `Wire.width`, `Pin.width`, clamping, and direct input-to-output wiring.
@@ -84,9 +84,9 @@ Expected: Context and goal text mention P05-10, `Wire.width`, `Pin.width`, clamp
 ### Task 2: Specify width metadata and inference
 
 **Files:**
-- Modify: `docs/superpowers/plans/phase-0.5-tickets/P05-11.md`
+- Modify: `docs/plans/phase-0.5-tickets/P05-11.md`
 
-- [ ] **Step 1: Replace the type-change snippet**
+- [x] **Step 1: Replace the type-change snippet**
 
 Update the ticket so width metadata is not only on `Wire`. Use this snippet:
 
@@ -110,7 +110,7 @@ export interface Wire {
 }
 ```
 
-- [ ] **Step 2: Add endpoint width rules**
+- [x] **Step 2: Add endpoint width rules**
 
 Document these invariants in the ticket:
 
@@ -121,7 +121,7 @@ Document these invariants in the ticket:
 - Existing wires without `width` behave as `width: 1` for backward compatibility.
 ```
 
-- [ ] **Step 3: Add busOps edge cases**
+- [x] **Step 3: Add busOps edge cases**
 
 Keep the existing `busOps` API names, but add edge-case expectations:
 
@@ -132,12 +132,12 @@ Keep the existing `busOps` API names, but add edge-case expectations:
 - `clampToWidth(value, width)` is the shared helper for propagation, gate inputs, output-node writes, and future UI formatters.
 ```
 
-- [ ] **Step 4: Verify the edited Markdown diff**
+- [x] **Step 4: Verify the edited Markdown diff**
 
 Run:
 
 ```bash
-git diff -- docs/superpowers/plans/phase-0.5-tickets/P05-11.md
+git diff -- docs/plans/phase-0.5-tickets/P05-11.md
 ```
 
 Expected: The ticket no longer suggests `Wire.width` alone is sufficient for width-aware propagation.
@@ -149,9 +149,9 @@ Expected: The ticket no longer suggests `Wire.width` alone is sufficient for wid
 ### Task 3: Tighten simulation requirements and acceptance tests
 
 **Files:**
-- Modify: `docs/superpowers/plans/phase-0.5-tickets/P05-11.md`
+- Modify: `docs/plans/phase-0.5-tickets/P05-11.md`
 
-- [ ] **Step 1: Add files that must change during implementation**
+- [x] **Step 1: Add files that must change during implementation**
 
 Add these implementation files to the ticket's Files to Modify section:
 
@@ -162,7 +162,7 @@ Add these implementation files to the ticket's Files to Modify section:
 | `src/simulation/topologicalEval.ts` | Clamp values to wire and destination widths when propagating to gate inputs and output nodes. |
 ```
 
-- [ ] **Step 2: Replace impossible integration examples**
+- [x] **Step 2: Replace impossible integration examples**
 
 If direct pass-through is in scope, replace the current sample test with one that first updates `addWire` behavior and then verifies:
 
@@ -184,7 +184,7 @@ it('propagates a 16-bit input directly to a 16-bit output', () => {
 
 If direct pass-through remains out of scope, remove this example and make the acceptance test use the first legal bus-aware component that exists in the same implementation plan.
 
-- [ ] **Step 3: Add mismatch and clamp tests**
+- [x] **Step 3: Add mismatch and clamp tests**
 
 Add test requirements for:
 
@@ -194,7 +194,7 @@ Add test requirements for:
 - A missing `wire.width` on old fixtures behaves as width `1`.
 ```
 
-- [ ] **Step 4: Update manual verification**
+- [x] **Step 4: Update manual verification**
 
 Replace the current console-only manual check with:
 
@@ -209,9 +209,9 @@ Manual: Create a 16-bit input and 16-bit output, connect them directly, set the 
 ### Task 4: Add source comparison and final checks
 
 **Files:**
-- Modify: `docs/superpowers/plans/phase-0.5-tickets/P05-11.md`
+- Modify: `docs/plans/phase-0.5-tickets/P05-11.md`
 
-- [ ] **Step 1: Add web-ide semantic reference**
+- [x] **Step 1: Add web-ide semantic reference**
 
 Add a short note to the Pitfalls or Context section:
 
@@ -219,7 +219,7 @@ Add a short note to the Pitfalls or Context section:
 nand2tetris web-ide represents a bus as bit storage plus a numeric `busVoltage` bitmask. `InSubBus` and `OutSubBus` in `simulator/src/chip/chip.ts` implement range reads and writes using the same masking model as `readSubBus` and `writeSubBus`. HACER should store values as bitmasks and keep sub-bus helpers pure until the HDL compiler maps ranges to concrete wires.
 ```
 
-- [ ] **Step 2: Update verification commands**
+- [x] **Step 2: Update verification commands**
 
 Make P05-11's Verification section require the focused tests before the full gates:
 
@@ -231,7 +231,7 @@ pnpm run test:e2e:store
 pnpm run build
 ```
 
-- [ ] **Step 3: Check documentation formatting**
+- [x] **Step 3: Check documentation formatting**
 
 Run:
 
@@ -241,12 +241,12 @@ git diff --check
 
 Expected: no trailing whitespace or whitespace errors.
 
-- [ ] **Step 4: Review final ticket content**
+- [x] **Step 4: Review final ticket content**
 
 Run:
 
 ```bash
-sed -n '1,260p' docs/superpowers/plans/phase-0.5-tickets/P05-11.md
+sed -n '1,260p' docs/plans/phase-0.5-tickets/P05-11.md
 ```
 
 Expected: P05-11's story is internally consistent: P05-02 provides numeric values, P05-10 provides display, P05-11 provides bus helpers and width-aware propagation, P05-12/P05-13 consume the bus foundation later.
@@ -259,8 +259,8 @@ Living-doc rows touched by executing this plan:
 
 | Surface | Expected update | Notes |
 |---------|-----------------|-------|
-| `docs/superpowers/plans/phase-0.5-tickets/P05-11.md` | Updated | Main target of the plan. |
-| `docs/superpowers/plans/phase-0.5-tickets-CHECKLIST.md` | N/A unless completion status changes | P05-11 remains unchecked until implementation merges and gates pass. |
+| `docs/plans/phase-0.5-tickets/P05-11.md` | Updated | Main target of the plan. |
+| `docs/plans/phase-0.5-tickets-CHECKLIST.md` | N/A unless completion status changes | P05-11 remains unchecked until implementation merges and gates pass. |
 | `docs/roadmap/implementation.md` | N/A | No phase transition or public roadmap claim changes. |
 | `REPO_MAP.md` | N/A | No repo layout change. |
 
