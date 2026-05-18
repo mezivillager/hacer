@@ -427,10 +427,8 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
       return
     }
 
-    if (source.type === 'input') {
-      notify.warning('Input nodes must connect to gates or junctions, not directly to output nodes')
-      set((s) => { s.wiringFrom = null }, false, 'completeWiringToNode/inputToOutputRejected')
-      return
+    if (source.type === 'input' && nodeType === 'output') {
+      // Direct input-to-output pass-through is allowed; addWire validates matching widths.
     }
 
     let fromEndpoint: WireEndpoint
@@ -439,6 +437,9 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
     if (source.type === 'gate') {
       fromEndpoint = { type: 'gate', entityId: source.gateId, pinId: source.pinId }
       signalId = `sig-${source.gateId}-${source.pinId}`
+    } else if (source.type === 'input') {
+      fromEndpoint = { type: 'input', entityId: source.nodeId }
+      signalId = `sig-input-${source.nodeId}`
     } else {
       notify.warning('Invalid wiring source type')
       set((s) => { s.wiringFrom = null }, false, 'completeWiringToNode/invalidSourceType')

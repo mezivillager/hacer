@@ -392,9 +392,9 @@ describe('wiringActions', () => {
       expect(notify.warning).toHaveBeenCalledWith('No active wiring operation')
     })
 
-    it('rejects input node to output node connection', () => {
-      const inputNode = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
-      const outputNode = getState().addOutputNode('out', { x: 8, y: 0, z: 0 })
+    it('creates input-to-output pass-through wire when widths match', () => {
+      const inputNode = getState().addInputNode('a', { x: 0, y: 0, z: 0 }, 16)
+      const outputNode = getState().addOutputNode('out', { x: 8, y: 0, z: 0 }, 16)
 
       getState().startWiringFromNode(inputNode.id, 'input', { x: 0.5, y: 0.2, z: 0 })
 
@@ -408,10 +408,11 @@ describe('wiringActions', () => {
 
       getState().completeWiringToNode(outputNode.id, 'output')
 
-      expect(notify.warning).toHaveBeenCalledWith(
-        'Input nodes must connect to gates or junctions, not directly to output nodes'
-      )
-      expect(getState().wires).toHaveLength(0)
+      expect(getState().wires).toHaveLength(1)
+      const wire = getState().wires[0]
+      expect(wire.from).toEqual({ type: 'input', entityId: inputNode.id })
+      expect(wire.to).toEqual({ type: 'output', entityId: outputNode.id })
+      expect(wire.width).toBe(16)
     })
 
     it('uses segments from wiringFrom state', () => {
