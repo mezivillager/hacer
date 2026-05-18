@@ -1,5 +1,6 @@
 import { gateLogic } from './gateLogic'
-import type { CircuitState, WireEndpoint } from '@/store/types'
+import { clampToWidth } from './busOps'
+import type { CircuitState, Wire, WireEndpoint } from '@/store/types'
 
 /**
  * Result of {@link topologicalSort}: a gate evaluation order, or cycle involvement.
@@ -168,6 +169,27 @@ export function getSignalSourceValue(
   }
 }
 
+function destinationWidth(wire: Wire, state: CircuitState): number {
+  let endpointWidth: number
+  switch (wire.to.type) {
+    case 'output': {
+      const node = state.outputNodes.find((n) => n.id === wire.to.entityId)
+      endpointWidth = node?.width ?? 1
+      break
+    }
+    case 'gate': {
+      const gate = state.gates.find((g) => g.id === wire.to.entityId)
+      const pin = gate?.inputs.find((p) => p.id === wire.to.pinId)
+      endpointWidth = pin?.width ?? 1
+      break
+    }
+    default:
+      endpointWidth = 1
+  }
+  const wireWidth = wire.width ?? 1
+  return Math.min(wireWidth, endpointWidth)
+}
+
 /**
  * Evaluates all gates in topological order in one pass, then drives output nodes.
  * Mutates the Immer draft in place when the result {@link EvaluateCircuitResult} has `status: 'ok'`.
@@ -205,7 +227,8 @@ export function evaluateCircuit(state: CircuitState): EvaluateCircuitResult {
       for (const wire of incomingWires) {
         const inputPin = gate.inputs.find((p) => p.id === wire.to.pinId)
         if (inputPin) {
-          inputPin.value = getSignalSourceValue(wire.from, state)
+          const raw = getSignalSourceValue(wire.from, state)
+          inputPin.value = clampToWidth(raw, destinationWidth(wire, state))
         }
       }
     }
@@ -224,7 +247,8 @@ export function evaluateCircuit(state: CircuitState): EvaluateCircuitResult {
     if (wire.to.type === 'output') {
       const outputNode = state.outputNodes.find((n) => n.id === wire.to.entityId)
       if (outputNode) {
-        outputNode.value = getSignalSourceValue(wire.from, state)
+        const raw = getSignalSourceValue(wire.from, state)
+        outputNode.value = clampToWidth(raw, destinationWidth(wire, state))
       }
     }
   }
