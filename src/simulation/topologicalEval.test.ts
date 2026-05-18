@@ -693,3 +693,62 @@ describe('evaluateCircuit', () => {
     expect(getState().gates[1].outputs[0].value).toBe(0)
   })
 })
+
+describe('multi-bit propagation', () => {
+  it('propagates a 16-bit input directly to a 16-bit output', () => {
+    const input = getState().addInputNode('in', { x: 0, y: 0, z: 0 }, 16)
+    const output = getState().addOutputNode('out', { x: 4, y: 0, z: 0 }, 16)
+    getState().updateInputNodeValue(input.id, 0x1234)
+    getState().addWire(
+      { type: 'input', entityId: input.id },
+      { type: 'output', entityId: output.id },
+      []
+    )
+    useCircuitStore.setState((state) => { evaluateCircuit(state) })
+    expect(getState().outputNodes.find((n) => n.id === output.id)?.value).toBe(0x1234)
+  })
+
+  it('clamps oversized values to destination width', () => {
+    const input = getState().addInputNode('in', { x: 0, y: 0, z: 0 }, 16)
+    const output = getState().addOutputNode('out', { x: 4, y: 0, z: 0 }, 16)
+    getState().updateInputNodeValue(input.id, 0x1FFFF)
+    getState().addWire(
+      { type: 'input', entityId: input.id },
+      { type: 'output', entityId: output.id },
+      []
+    )
+    useCircuitStore.setState((state) => { evaluateCircuit(state) })
+    expect(getState().outputNodes.find((n) => n.id === output.id)?.value).toBe(0xFFFF)
+  })
+
+  it('clamps a wide source feeding a one-bit primitive gate input to the least significant bit', () => {
+    const input = getState().addInputNode('in', { x: 0, y: 0, z: 0 }, 16)
+    const gate = getState().addGate('NOT', { x: 4, y: 0, z: 0 })
+    getState().updateInputNodeValue(input.id, 0x0002)
+    getState().addWire(
+      { type: 'input', entityId: input.id },
+      { type: 'gate', entityId: gate.id, pinId: gate.inputs[0].id },
+      []
+    )
+    useCircuitStore.setState((state) => { evaluateCircuit(state) })
+    expect(getState().gates.find((g) => g.id === gate.id)?.inputs[0].value).toBe(0)
+  })
+
+  it('treats legacy wires with missing width as width 1', () => {
+    const input = getState().addInputNode('in', { x: 0, y: 0, z: 0 }, 1)
+    const output = getState().addOutputNode('out', { x: 4, y: 0, z: 0 }, 1)
+    getState().updateInputNodeValue(input.id, 1)
+    getState().addWire(
+      { type: 'input', entityId: input.id },
+      { type: 'output', entityId: output.id },
+      []
+    )
+    useCircuitStore.setState((state) => {
+      for (const wire of state.wires) {
+        delete (wire as { width?: number }).width
+      }
+    })
+    useCircuitStore.setState((state) => { evaluateCircuit(state) })
+    expect(getState().outputNodes.find((n) => n.id === output.id)?.value).toBe(1)
+  })
+})
