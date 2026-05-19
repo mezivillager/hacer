@@ -30,3 +30,12 @@ Next unchecked Layer 1 ticket:
 - `topologicalEval` clamps every value written to a gate input pin and every value written to an output node using `min(wire.width ?? 1, destination.width ?? 1)`.
 - Legacy wires with missing `width` continue to behave as width 1 (covered by test).
 - Verification: lint, 1194 unit tests, 89 store E2E specs, and production build all green.
+
+## P05-13 — Multi-bit I/O UI (2026-05-19)
+
+- Pure helpers in `src/components/ui/multiBitFormat.ts`: `formatValue(value, width, 'B'|'D'|'X')` masks to width via `widthMask` (`0xFFFFFFFF` at width ≥ 32 to dodge `1 << 32` UB); `parseValue` accepts `0x`/`0X`/`0b`/`0B` and decimal, returns `null` on empty/whitespace/negative/non-numeric.
+- `MultiBitInput.tsx` renders width-many bit toggles (MSB on left) for `width ≤ 8` and a click-to-edit numeric input for wider buses; embedded `FormatSelector` (B/D/X) keeps format state local via `useState` per node — not in Zustand.
+- `PinoutPanel` branches on `node.width`: width=1 keeps the legacy single-bit toggle; width>1 renders `MultiBitInput`, with outputs passing `readOnly` (no-op `onValueChange`).
+- `formatSignalLabel(value, width = 1)` now delegates to `formatValue(value, width, 'X')` for `width > 1`; `width` default keeps every legacy call site working. `InputNode3D`/`OutputNode3D` receive `width` via `NodeRenderer` prop drilling so 3D labels read `0x..` for buses.
+- Pre-commit lint-staged runs `eslint --fix`, which strips `as HTMLInputElement` casts via `@typescript-eslint/no-unnecessary-type-assertion` — use `@testing-library/jest-dom` matchers (`toHaveValue`, `toBeDisabled`) instead of casts in DOM tests.
+- Verification: lint, 1231 unit tests, 89 store E2E specs (one wiring-junction flake passed on re-run; unrelated to this UI ticket), production build all green.
