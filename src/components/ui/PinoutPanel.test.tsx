@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
+import '@testing-library/jest-dom/vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { useCircuitStore, circuitActions } from '@/store/circuitStore'
 import { PinoutPanel } from './PinoutPanel'
@@ -43,18 +44,39 @@ describe('PinoutPanel', () => {
     expect(Number(toggledBack?.value)).toBe(0)
   })
 
-  it('leaves multi-bit input values read-only', () => {
-    const s = useCircuitStore.getState()
-    const node = s.addInputNode('data', { x: 0, y: 0, z: 0 }, 16)
-    circuitActions.updateInputNodeValue(node.id, 12)
-    render(<PinoutPanel />)
+  describe('multi-bit inputs (P05-13)', () => {
+    it('renders MultiBitInput for an input node with width > 1', () => {
+      const s = useCircuitStore.getState()
+      const node = s.addInputNode('in4', { x: 0, y: 0, z: 0 }, 4)
+      render(<PinoutPanel />)
+      expect(screen.getByTestId(`multibit-input-${node.id}`)).toBeTruthy()
+      expect(screen.getAllByTestId(new RegExp(`^bit-toggle-${node.id}-`))).toHaveLength(4)
+    })
 
-    const valueCell = screen.getByTestId('pin-toggle-data')
-    expect(valueCell).toBeDisabled()
-    fireEvent.click(valueCell)
+    it('toggling a bit in a multi-bit input updates the store value', () => {
+      const s = useCircuitStore.getState()
+      const node = s.addInputNode('in4', { x: 0, y: 0, z: 0 }, 4)
+      circuitActions.updateInputNodeValue(node.id, 0)
+      render(<PinoutPanel />)
+      fireEvent.click(screen.getByTestId(`bit-toggle-${node.id}-3`))
+      expect(useCircuitStore.getState().inputNodes.find(n => n.id === node.id)?.value).toBe(1)
+    })
 
-    const updated = useCircuitStore.getState().inputNodes.find(n => n.id === node.id)
-    expect(Number(updated?.value)).toBe(12)
+    it('still renders the legacy single-bit toggle for width=1 inputs', () => {
+      const s = useCircuitStore.getState()
+      s.addInputNode('single', { x: 0, y: 0, z: 0 })
+      render(<PinoutPanel />)
+      expect(screen.getByTestId('pin-toggle-single')).toBeTruthy()
+    })
+
+    it('multi-bit output renders MultiBitInput in read-only mode', () => {
+      const s = useCircuitStore.getState()
+      const node = s.addOutputNode('out8', { x: 0, y: 0, z: 0 }, 8)
+      render(<PinoutPanel />)
+      expect(screen.getByTestId(`multibit-input-${node.id}`)).toBeTruthy()
+      const toggles = screen.getAllByTestId(new RegExp(`^bit-toggle-${node.id}-`))
+      toggles.forEach(t => expect(t).toBeDisabled())
+    })
   })
 
   it('Eval button runs simulationTick and propagates through a NOT gate', () => {

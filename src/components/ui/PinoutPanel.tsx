@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useCircuitStore, circuitActions } from '@/store/circuitStore'
 import { Button } from '@/components/ui-kit/button'
 import { Separator } from '@/components/ui-kit/separator'
+import { MultiBitInput } from './MultiBitInput'
 
 function inputsSignature(inputs: ReadonlyArray<{ id: string; value: number }>): string {
   return inputs.map(n => `${n.id}=${n.value}`).join('|')
@@ -20,8 +21,7 @@ export function PinoutPanel() {
   const currentSignature = inputsSignature(inputNodes)
   const isDirty = lastEvaluatedSignature === null || lastEvaluatedSignature !== currentSignature
 
-  const handleToggle = (nodeId: string, currentValue: number, width: number) => {
-    if (width !== 1) return
+  const handleToggle = (nodeId: string, currentValue: number) => {
     circuitActions.updateInputNodeValue(nodeId, currentValue ? 0 : 1)
   }
 
@@ -50,15 +50,23 @@ export function PinoutPanel() {
                 {node.name}
                 {node.width > 1 ? `[${node.width}]` : ''}
               </span>
-              <button
-                type="button"
-                data-testid={`pin-toggle-${node.name}`}
-                onClick={() => handleToggle(node.id, node.value, node.width)}
-                disabled={node.width !== 1}
-                className="font-mono text-xs cursor-pointer hover:bg-accent disabled:cursor-default disabled:hover:bg-transparent rounded px-1.5 py-0.5"
-              >
-                {String(Number(node.value))}
-              </button>
+              {node.width === 1 ? (
+                <button
+                  type="button"
+                  data-testid={`pin-toggle-${node.name}`}
+                  onClick={() => handleToggle(node.id, node.value)}
+                  className="font-mono text-xs cursor-pointer hover:bg-accent disabled:cursor-default disabled:hover:bg-transparent rounded px-1.5 py-0.5"
+                >
+                  {String(Number(node.value))}
+                </button>
+              ) : (
+                <MultiBitInput
+                  nodeId={node.id}
+                  currentValue={node.value}
+                  width={node.width}
+                  onValueChange={(id, v) => circuitActions.updateInputNodeValue(id, v)}
+                />
+              )}
             </div>
           ))}
         </div>
@@ -79,9 +87,19 @@ export function PinoutPanel() {
                 {node.name}
                 {node.width > 1 ? `[${node.width}]` : ''}
               </span>
-              <span className="font-mono text-xs px-1.5 py-0.5">
-                {String(Number(node.value))}
-              </span>
+              {node.width === 1 ? (
+                <span className="font-mono text-xs px-1.5 py-0.5">
+                  {String(Number(node.value))}
+                </span>
+              ) : (
+                <MultiBitInput
+                  nodeId={node.id}
+                  currentValue={node.value}
+                  width={node.width}
+                  onValueChange={() => {}}
+                  readOnly
+                />
+              )}
             </div>
           ))}
         </div>
