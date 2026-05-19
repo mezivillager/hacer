@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
+import '@testing-library/jest-dom/vitest'
 import { MultiBitInput } from './MultiBitInput'
 
 describe('MultiBitInput (width ≤ 8 — bit toggles)', () => {
@@ -58,7 +59,7 @@ describe('MultiBitInput (width > 8 — numeric input)', () => {
     )
     fireEvent.click(screen.getByTestId('multibit-display-n2'))
     const input = screen.getByTestId('multibit-text-input-n2')
-    expect(input.value).toBe('171')
+    expect(input).toHaveValue('171')
   })
 
   it('committing an edit (Enter -> blur) calls onValueChange with the parsed value', () => {
