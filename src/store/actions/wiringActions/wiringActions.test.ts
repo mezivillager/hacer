@@ -415,6 +415,29 @@ describe('wiringActions', () => {
       expect(wire.width).toBe(16)
     })
 
+    it('reports a recoverable error and clears wiring state when pass-through widths differ', () => {
+      const inputNode = getState().addInputNode('a', { x: 0, y: 0, z: 0 }, 16)
+      const outputNode = getState().addOutputNode('out', { x: 8, y: 0, z: 0 }, 1)
+
+      getState().startWiringFromNode(inputNode.id, 'input', { x: 0.5, y: 0.2, z: 0 })
+
+      useCircuitStore.setState((state) => {
+        if (state.wiringFrom) {
+          state.wiringFrom.segments = [
+            { start: { x: 0.5, y: 0.2, z: 0 }, end: { x: 7.5, y: 0.2, z: 0 }, type: 'horizontal' },
+          ]
+        }
+      })
+
+      expect(() => getState().completeWiringToNode(outputNode.id, 'output')).not.toThrow()
+
+      expect(getState().wires).toHaveLength(0)
+      expect(getState().wiringFrom).toBe(null)
+      expect(notify.error).toHaveBeenCalledWith(
+        'Cannot complete wire: Direct input-to-output pass-through requires matching widths (source=16, destination=1)'
+      )
+    })
+
     it('uses segments from wiringFrom state', () => {
       const gate = getState().addGate('NAND', { x: 4, y: 0, z: 0 })
       const outputNode = getState().addOutputNode('out', { x: 8, y: 0, z: 4 })

@@ -9,7 +9,7 @@
 
 **Last reviewed:** 2026-05-18 — checkboxes below match `main` (or current branch) + expected code paths.
 
-**Verified this pass:** P05-01 `src/core/chips/`; P05-02 `Pin.value` / nodes `number` in `src/store/types.ts`; P05-03 `src/simulation/topologicalEval.ts`; P05-04 `src/core/hdl/`; P05-05 `src/core/testing/tstParser.ts`; P05-06 `src/core/testing/cmpParser.ts`; P05-08 rename actions, PropertiesPanel, and node rename E2E; P05-09 status actions, StatusBar, and store E2E; P05-10 `src/components/ui/PinoutPanel.tsx`, `src/components/ui/RightActionBar.tsx`, `src/components/ui/PinoutPanel.test.tsx`, and `e2e/specs/ui-shell/pinout-panel.store.spec.ts`.
+**Verified this pass:** P05-01 `src/core/chips/`; P05-02 `Pin.value` / nodes `number` in `src/store/types.ts`; P05-03 `src/simulation/topologicalEval.ts`; P05-04 `src/core/hdl/`; P05-05 `src/core/testing/tstParser.ts`; P05-06 `src/core/testing/cmpParser.ts`; P05-08 rename actions, PropertiesPanel, and node rename E2E; P05-09 status actions, StatusBar, and store E2E; P05-10 `src/components/ui/PinoutPanel.tsx`, `src/components/ui/RightActionBar.tsx`, `src/components/ui/PinoutPanel.test.tsx`, and `e2e/specs/ui-shell/pinout-panel.store.spec.ts`; P05-11 `src/simulation/busOps.ts`, `src/simulation/busOps.test.ts`, `src/simulation/topologicalEval.ts`, `src/simulation/topologicalEval.test.ts`, `src/store/types.ts`, `src/store/actions/wireActions/wireActions.ts`, `src/store/actions/wireActions/wireActions.test.ts`, `src/store/actions/wiringActions/wiringActions.ts`, and `src/store/actions/wiringActions/wiringActions.test.ts`.
 
 ---
 
