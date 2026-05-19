@@ -28,3 +28,19 @@ describe('formatSignalLabel', () => {
     expect(formatSignalLabel(16)).toBe('16')
   })
 })
+
+describe('formatSignalLabel — multi-bit (P05-13)', () => {
+  it('single-bit unchanged', () => {
+    expect(formatSignalLabel(0, 1)).toBe('0')
+    expect(formatSignalLabel(1, 1)).toBe('1')
+  })
+  it('multi-bit renders as hex with 0x prefix', () => {
+    expect(formatSignalLabel(0xFF, 8)).toBe('0xFF')
+  })
+  it('multi-bit pads hex to ceil(width/4)', () => {
+    expect(formatSignalLabel(0x5, 16)).toBe('0x0005')
+  })
+  it('falls back to single-bit behavior when width is omitted', () => {
+    expect(formatSignalLabel(1)).toBe('1')
+  })
+})
