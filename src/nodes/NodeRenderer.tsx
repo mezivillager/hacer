@@ -48,6 +48,7 @@ export function NodeRenderer({
           position={node.position}
           rotation={node.rotation}
           value={node.value}
+          width={node.width}
           selected={selected}
           outputConnected={isConnected}
           onClick={onClick}
@@ -66,6 +67,7 @@ export function NodeRenderer({
           position={node.position}
           rotation={node.rotation}
           value={node.value}
+          width={node.width}
           selected={selected}
           inputConnected={isConnected}
           onClick={onClick}

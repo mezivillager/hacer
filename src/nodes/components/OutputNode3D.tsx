@@ -20,6 +20,8 @@ interface OutputNode3DProps {
   rotation: Rotation
   /** Current output value (computed from circuit) */
   value: number
+  /** Bit width of the output (1 for single bit, >1 for bus) */
+  width: number
   /** Whether this node is selected */
   selected?: boolean
   /** Whether the input is connected to a wire */
@@ -43,6 +45,7 @@ export function OutputNode3D({
   position,
   rotation,
   value,
+  width,
   selected = false,
   inputConnected: _inputConnected = false,
   onClick,
@@ -168,7 +171,7 @@ export function OutputNode3D({
         anchorY="middle"
         font={undefined}
       >
-        {formatSignalLabel(value)}
+        {formatSignalLabel(value, width)}
       </Text>
 
       {/* Input pin (left side) */}
