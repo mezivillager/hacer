@@ -490,7 +490,16 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
       return
     }
 
-    get().addWire(fromEndpoint, toEndpoint, resolvedSegments, crossedWireIds, signalId)
+    try {
+      get().addWire(fromEndpoint, toEndpoint, resolvedSegments, crossedWireIds, signalId)
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to create wire'
+      notify.error(`Cannot complete wire: ${errorMessage}`)
+      set((s) => {
+        s.wiringFrom = null
+      }, false, 'completeWiringToNode/addWireFailed')
+      return
+    }
 
     set((s) => {
       s.wiringFrom = null

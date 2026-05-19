@@ -19,7 +19,7 @@ After this docs branch, resume Phase 0.5 from `docs/plans/phase-0.5-tickets-CHEC
 
 Next unchecked Layer 1 ticket:
 
-- [x] P05-11 - Bus simulation + multi-bit wires
+- [ ] P05-12 - Bus 3D components
 
 ## P05-11 — Bus Simulation + Multi-bit Wire Propagation (2026-05-18)
 

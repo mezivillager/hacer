@@ -260,7 +260,7 @@ Living-doc rows touched by executing this plan:
 | Surface | Expected update | Notes |
 |---------|-----------------|-------|
 | `docs/plans/phase-0.5-tickets/P05-11.md` | Updated | Main target of the plan. |
-| `docs/plans/phase-0.5-tickets-CHECKLIST.md` | N/A unless completion status changes | P05-11 remains unchecked until implementation merges and gates pass. |
+| `docs/plans/phase-0.5-tickets-CHECKLIST.md` | Updated | P05-11 is marked complete after implementation and verification on this branch. |
 | `docs/roadmap/implementation.md` | N/A | No phase transition or public roadmap claim changes. |
 | `REPO_MAP.md` | N/A | No repo layout change. |
 
