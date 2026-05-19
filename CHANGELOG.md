@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.0](https://github.com/mezivillager/hacer/compare/v2.2.2...v2.3.0) (2026-05-19)
+
+### Features
+
+* **busOps:** implement bitmask helpers for bus simulation (P05-11) ([7e8ef6e](https://github.com/mezivillager/hacer/commit/7e8ef6ea721e136c7d485d7be23b1ac456bc96ac))
+* **eval:** clamp propagated values to wire and destination widths (P05-11) ([b55191d](https://github.com/mezivillager/hacer/commit/b55191d847aded8984e9cdace39c4a7597b01060))
+* **gates:** set width=1 on primitive gate pins (P05-11) ([b882793](https://github.com/mezivillager/hacer/commit/b8827939c1a438b6fc66312ef9951b2990bd295e))
+* **types:** add optional width to Pin and Wire (P05-11) ([3bc0d79](https://github.com/mezivillager/hacer/commit/3bc0d79d22c0c0f1becafd9148331c8f68ffb729))
+* **wires:** infer wire width and allow matching-width pass-through (P05-11) ([7afa2f9](https://github.com/mezivillager/hacer/commit/7afa2f9ff03071c1260f51a4fe7b1ae9a9e88478))
+* **wiring:** support input-to-output pass-through in completeWiringToNode (P05-11) ([1d999e1](https://github.com/mezivillager/hacer/commit/1d999e19e71649596101d2d74270743598f0d2a1))
+
+### Bug Fixes
+
+* **wiring:** recover from pass-through width mismatch ([5c7e85e](https://github.com/mezivillager/hacer/commit/5c7e85e0cb962f66f53c9546fa7548332890460f))
+
+### Documentation
+
+* keep non-superpowers plans in docs/plans ([1c1d139](https://github.com/mezivillager/hacer/commit/1c1d139a5ec60bf13108f9ff15bcbdb02a17aad7))
+* **p05-11:** mark ticket complete and record review notes ([ae48bea](https://github.com/mezivillager/hacer/commit/ae48beabfde217f5e84b5bdda84475b5bb7f707e))
+* update p05-11 bus simulation ticket ([4868fbe](https://github.com/mezivillager/hacer/commit/4868fbeb4ceceb9d564f3d70ecb6fb4f45ae646e))
+
+### Tests
+
+* **busOps:** add failing bitmask helper suite (P05-11) ([149061b](https://github.com/mezivillager/hacer/commit/149061bf4cdec2a3201f519769017a498fad9acd))
+* **eval:** add failing multi-bit propagation cases (P05-11) ([3206f06](https://github.com/mezivillager/hacer/commit/3206f06099f4e04215b446132c3162cca6e26b87))
+
 ## [2.2.2](https://github.com/mezivillager/hacer/compare/v2.2.1...v2.2.2) (2026-05-17)
 
 ### Bug Fixes
