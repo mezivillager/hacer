@@ -20,6 +20,8 @@ interface InputNode3DProps {
   rotation: Rotation
   /** Current input value */
   value: number
+  /** Bit width of the input (1 for single bit, >1 for bus) */
+  width: number
   /** Whether this node is selected */
   selected?: boolean
   /** Whether the output is connected to a wire */
@@ -45,6 +47,7 @@ export function InputNode3D({
   position,
   rotation,
   value,
+  width,
   selected = false,
   outputConnected: _outputConnected = false,
   onClick,
@@ -145,7 +148,7 @@ export function InputNode3D({
         anchorY="middle"
         font={undefined}
       >
-        {formatSignalLabel(value)}
+        {formatSignalLabel(value, width)}
       </Text>
 
       <mesh

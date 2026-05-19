@@ -52,6 +52,7 @@ describe('OutputNode3D', () => {
         position={{ x: 8, y: 0, z: 0 }}
         rotation={{ x: 0, y: 0, z: 0 }}
         value={0}
+        width={1}
       />
     )
 
