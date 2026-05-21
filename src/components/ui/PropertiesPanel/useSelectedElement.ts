@@ -11,8 +11,8 @@ export type SelectedElement =
       rotation: GateInstance['rotation']
     }
   | { kind: 'wire'; id: string; from: Wire['from']; to: Wire['to'] }
-  | { kind: 'input'; id: string; name: string; position: InputNode['position'] }
-  | { kind: 'output'; id: string; name: string; position: OutputNode['position'] }
+  | { kind: 'input'; id: string; name: string; position: InputNode['position']; width: InputNode['width'] }
+  | { kind: 'output'; id: string; name: string; position: OutputNode['position']; width: OutputNode['width'] }
 
 /**
  * Maps HACER's three selection slots (selectedGateId / selectedWireId /
@@ -58,10 +58,10 @@ export function useSelectedElement(): SelectedElement | null {
   if (selectedNodeId && selectedNodeType) {
     if (selectedNodeType === 'input') {
       const n = inputNodes.find((x) => x.id === selectedNodeId)
-      if (n) return { kind: 'input', id: n.id, name: n.name, position: n.position }
+      if (n) return { kind: 'input', id: n.id, name: n.name, position: n.position, width: n.width }
     } else if (selectedNodeType === 'output') {
       const n = outputNodes.find((x) => x.id === selectedNodeId)
-      if (n) return { kind: 'output', id: n.id, name: n.name, position: n.position }
+      if (n) return { kind: 'output', id: n.id, name: n.name, position: n.position, width: n.width }
     }
   }
 
