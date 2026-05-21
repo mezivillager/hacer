@@ -95,6 +95,7 @@ describe('grid utilities', () => {
       inputs: [],
       outputs: [],
       selected: false,
+      width: 1,
     })
 
     it('prevents placement on section lines', () => {
@@ -250,6 +251,7 @@ describe('grid utilities', () => {
       inputs: [],
       outputs: [],
       selected: false,
+      width: 1,
     })
 
     const createWire = (id: string, fromGateId: string, fromPinId: string, toGateId: string, toPinId: string): Wire => ({

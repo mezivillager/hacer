@@ -65,6 +65,7 @@ describe('PlacementPreview', () => {
           inputs: [],
           outputs: [],
           selected: false,
+          width: 1,
         },
       ],
     })
@@ -97,6 +98,7 @@ describe('PlacementPreview', () => {
           inputs: [],
           outputs: [],
           selected: false,
+          width: 1,
         },
       ],
     })

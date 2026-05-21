@@ -1091,4 +1091,22 @@ describe('gateActions', () => {
     })
   })
 
+  describe('addGate — width', () => {
+    it('defaults to width 1 with width-1 pins', () => {
+      const store = useCircuitStore.getState()
+      const g = store.addGate('NOT', { x: 0, y: 0, z: 0 })
+      expect(g.width).toBe(1)
+      expect(g.inputs.every((p) => p.width === 1)).toBe(true)
+      expect(g.outputs.every((p) => p.width === 1)).toBe(true)
+    })
+
+    it('accepts explicit width and propagates to all pins', () => {
+      const store = useCircuitStore.getState()
+      const g = store.addGate('AND', { x: 0, y: 0, z: 0 }, 4)
+      expect(g.width).toBe(4)
+      expect(g.inputs.every((p) => p.width === 4)).toBe(true)
+      expect(g.outputs.every((p) => p.width === 4)).toBe(true)
+    })
+  })
+
 })

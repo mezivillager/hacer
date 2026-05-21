@@ -358,8 +358,8 @@ describe('groundPlaneHandlers', () => {
           placementMode: null,
           selectedGateId: 'gate-1',
           gates: [
-            { id: 'gate-1', type: 'NAND', position: { x: 1, y: 0.2, z: 2 }, rotation: { x: 0, y: 0, z: 0 }, inputs: [], outputs: [], selected: false },
-            { id: 'gate-2', type: 'AND', position: { x: 5, y: 0.2, z: 6 }, rotation: { x: 0, y: 0, z: 0 }, inputs: [], outputs: [], selected: false },
+            { id: 'gate-1', type: 'NAND', position: { x: 1, y: 0.2, z: 2 }, rotation: { x: 0, y: 0, z: 0 }, inputs: [], outputs: [], selected: false, width: 1 },
+            { id: 'gate-2', type: 'AND', position: { x: 5, y: 0.2, z: 6 }, rotation: { x: 0, y: 0, z: 0 }, inputs: [], outputs: [], selected: false, width: 1 },
           ] as GateInstance[],
         })
       )
@@ -383,8 +383,8 @@ describe('groundPlaneHandlers', () => {
           placementMode: null,
           selectedGateId: 'gate-1',
           gates: [
-            { id: 'gate-1', type: 'NAND', position: { x: 1, y: 0.2, z: 2 }, rotation: { x: 0, y: 0, z: 0 }, inputs: [], outputs: [], selected: false },
-            { id: 'gate-2', type: 'AND', position: { x: 2, y: 0.2, z: 3 }, rotation: { x: 0, y: 0, z: 0 }, inputs: [], outputs: [], selected: false },
+            { id: 'gate-1', type: 'NAND', position: { x: 1, y: 0.2, z: 2 }, rotation: { x: 0, y: 0, z: 0 }, inputs: [], outputs: [], selected: false, width: 1 },
+            { id: 'gate-2', type: 'AND', position: { x: 2, y: 0.2, z: 3 }, rotation: { x: 0, y: 0, z: 0 }, inputs: [], outputs: [], selected: false, width: 1 },
           ] as GateInstance[],
         })
       )
