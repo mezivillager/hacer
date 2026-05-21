@@ -150,6 +150,24 @@ export const createNodeActions = (set: SetState, get: GetState): NodeActions => 
     }, false, 'updateInputNodeValue')
   },
 
+  updateInputNodeWidth: (nodeId: string, width: number): void => {
+    set((state) => {
+      const node = state.inputNodes.find((n) => n.id === nodeId)
+      if (node) {
+        node.width = width
+      }
+    }, false, 'updateInputNodeWidth')
+  },
+
+  updateOutputNodeWidth: (nodeId: string, width: number): void => {
+    set((state) => {
+      const node = state.outputNodes.find((n) => n.id === nodeId)
+      if (node) {
+        node.width = width
+      }
+    }, false, 'updateOutputNodeWidth')
+  },
+
   updateInputNodePosition: (nodeId: string, position: Position): void => {
     set((state) => {
       const node = state.inputNodes.find((n) => n.id === nodeId)

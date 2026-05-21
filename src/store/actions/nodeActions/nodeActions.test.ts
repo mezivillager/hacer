@@ -381,4 +381,57 @@ describe('Node Actions', () => {
       expect(updated?.name).toBe('out0')
     })
   })
+
+  describe('updateInputNodeWidth', () => {
+    it('changes the width of an existing input node', () => {
+      const store = useCircuitStore.getState()
+      const node = store.addInputNode('in', { x: 0, y: 0, z: 0 }, 1)
+
+      store.updateInputNodeWidth(node.id, 4)
+
+      const updated = useCircuitStore.getState().inputNodes.find((n) => n.id === node.id)
+      expect(updated?.width).toBe(4)
+    })
+
+    it('is a no-op when the node id is unknown', () => {
+      const store = useCircuitStore.getState()
+      const before = useCircuitStore.getState().inputNodes.length
+
+      store.updateInputNodeWidth('does-not-exist', 8)
+
+      expect(useCircuitStore.getState().inputNodes.length).toBe(before)
+    })
+
+    it('does not mutate other nodes', () => {
+      const store = useCircuitStore.getState()
+      const a = store.addInputNode('a', { x: 0, y: 0, z: 0 }, 1)
+      const b = store.addInputNode('b', { x: 1, y: 0, z: 0 }, 1)
+
+      store.updateInputNodeWidth(a.id, 4)
+
+      const bAfter = useCircuitStore.getState().inputNodes.find((n) => n.id === b.id)
+      expect(bAfter?.width).toBe(1)
+    })
+  })
+
+  describe('updateOutputNodeWidth', () => {
+    it('changes the width of an existing output node', () => {
+      const store = useCircuitStore.getState()
+      const node = store.addOutputNode('out', { x: 0, y: 0, z: 0 }, 1)
+
+      store.updateOutputNodeWidth(node.id, 8)
+
+      const updated = useCircuitStore.getState().outputNodes.find((n) => n.id === node.id)
+      expect(updated?.width).toBe(8)
+    })
+
+    it('is a no-op when the node id is unknown', () => {
+      const store = useCircuitStore.getState()
+      const before = useCircuitStore.getState().outputNodes.length
+
+      store.updateOutputNodeWidth('does-not-exist', 8)
+
+      expect(useCircuitStore.getState().outputNodes.length).toBe(before)
+    })
+  })
 })
