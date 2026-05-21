@@ -721,7 +721,7 @@ describe('multi-bit propagation', () => {
     expect(getState().outputNodes.find((n) => n.id === output.id)?.value).toBe(0xFFFF)
   })
 
-  it('clamps a wide source feeding a one-bit primitive gate input to the least significant bit', () => {
+  it('widens a default-width-1 gate to match a wide source instead of clamping (P05-13)', () => {
     const input = getState().addInputNode('in', { x: 0, y: 0, z: 0 }, 16)
     const gate = getState().addGate('NOT', { x: 4, y: 0, z: 0 })
     getState().updateInputNodeValue(input.id, 0x0002)
@@ -731,7 +731,9 @@ describe('multi-bit propagation', () => {
       []
     )
     useCircuitStore.setState((state) => { evaluateCircuit(state) })
-    expect(getState().gates.find((g) => g.id === gate.id)?.inputs[0].value).toBe(0)
+    const g = getState().gates.find((g) => g.id === gate.id)!
+    expect(g.width).toBe(16)
+    expect(g.inputs[0].value).toBe(0x0002)
   })
 
   it('treats legacy wires with missing width as width 1', () => {

@@ -94,7 +94,7 @@ describe('wireActions', () => {
       ).toThrow(/width/i)
     })
 
-    it('infers wire width as min(source, destination) for gate destinations', () => {
+    it('widens a default (width=1) gate to match source bus width (P05-13)', () => {
       const inputNode = getState().addInputNode('a', { x: 0, y: 0, z: 0 }, 16)
       const gate = getState().addGate('NOT', { x: 4, y: 0, z: 0 })
       const wire = getState().addWire(
@@ -102,7 +102,9 @@ describe('wireActions', () => {
         { type: 'gate', entityId: gate.id, pinId: gate.inputs[0].id },
         []
       )
-      expect(wire.width).toBe(1)
+      // P05-13: gate widens to match the wire instead of silently narrowing.
+      expect(wire.width).toBe(16)
+      expect(getState().gates.find((g) => g.id === gate.id)!.width).toBe(16)
     })
   })
 
@@ -428,6 +430,75 @@ describe('wireActions', () => {
       getState().updateWireSegments('non-existent-id', newSegments)
       // Should not throw
       expect(getState().wires).toHaveLength(0)
+    })
+  })
+
+  describe('addWire — gate width inference', () => {
+    it('widens a default (width=1) gate when an N-bit wire connects to its input', () => {
+      const store = useCircuitStore.getState()
+      const inNode = store.addInputNode('a', { x: 0, y: 0, z: 0 }, 4)
+      const not = store.addGate('NOT', { x: 4, y: 0, z: 0 })
+
+      store.addWire(
+        { type: 'input', entityId: inNode.id },
+        { type: 'gate', entityId: not.id, pinId: not.inputs[0].id },
+        []
+      )
+
+      const g = useCircuitStore.getState().gates.find((x) => x.id === not.id)!
+      expect(g.width).toBe(4)
+      expect(g.inputs.every((p) => p.width === 4)).toBe(true)
+      expect(g.outputs.every((p) => p.width === 4)).toBe(true)
+    })
+
+    it('widens a gate when an N-bit wire connects from its output to a wider sink', () => {
+      const store = useCircuitStore.getState()
+      const not = store.addGate('NOT', { x: 0, y: 0, z: 0 })
+      const outNode = store.addOutputNode('o', { x: 4, y: 0, z: 0 }, 8)
+
+      store.addWire(
+        { type: 'gate', entityId: not.id, pinId: not.outputs[0].id },
+        { type: 'output', entityId: outNode.id },
+        []
+      )
+
+      const g = useCircuitStore.getState().gates.find((x) => x.id === not.id)!
+      expect(g.width).toBe(8)
+    })
+
+    it('throws when adding a wire of a different width to an already-widened gate', () => {
+      const store = useCircuitStore.getState()
+      const a = store.addInputNode('a', { x: 0, y: 0, z: 0 }, 4)
+      const b = store.addInputNode('b', { x: 0, y: 0, z: 4 }, 8)
+      const and = store.addGate('AND', { x: 4, y: 0, z: 0 })
+
+      store.addWire(
+        { type: 'input', entityId: a.id },
+        { type: 'gate', entityId: and.id, pinId: and.inputs[0].id },
+        []
+      )
+
+      expect(() => {
+        store.addWire(
+          { type: 'input', entityId: b.id },
+          { type: 'gate', entityId: and.id, pinId: and.inputs[1].id },
+          []
+        )
+      }).toThrow(/width mismatch/i)
+    })
+
+    it('wire width matches the widened gate width (not the pre-widen 1)', () => {
+      const store = useCircuitStore.getState()
+      const inNode = store.addInputNode('a', { x: 0, y: 0, z: 0 }, 4)
+      const not = store.addGate('NOT', { x: 4, y: 0, z: 0 })
+
+      const wire = store.addWire(
+        { type: 'input', entityId: inNode.id },
+        { type: 'gate', entityId: not.id, pinId: not.inputs[0].id },
+        []
+      )
+
+      expect(wire.width).toBe(4)
     })
   })
 })
