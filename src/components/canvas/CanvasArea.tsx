@@ -8,7 +8,7 @@ import { worldToGrid, canPlaceGateAt } from '@/utils/grid'
 import { calculateNodePinPosition } from '@/nodes/config'
 import { handlePinClick, handleInputToggle, handleGateClick, handleInputNodeToggle, handleNodeClick, handleNodePinClick, handleJunctionClick } from './handlers/canvasHandlers'
 import { getSignalSourceValue } from '@/store/actions/simulationActions/simulationActions'
-import { isSignalHigh } from '@/simulation/signalDisplay'
+import { isSignalHigh, formatSignalLabel } from '@/simulation/signalDisplay'
 
 // Get actions once - these are stable references that don't change
 const { getPinWorldPosition } = circuitActions
@@ -143,6 +143,7 @@ export function CanvasArea() {
               precomputedPath={path}
               isActive={isSignalHigh(signalValue)}
               isSelected={wire.id === selectedWireId}
+              signalLabel={simulationRunning ? formatSignalLabel(signalValue, wire.width ?? 1) : undefined}
             />
           )
         })}
