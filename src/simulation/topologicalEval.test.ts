@@ -752,3 +752,42 @@ describe('multi-bit propagation', () => {
     expect(getState().outputNodes.find((n) => n.id === output.id)?.value).toBe(1)
   })
 })
+
+describe('multi-bit gates', () => {
+  it('NOT gate at width 4: 0b0111 input → 0b1000 output node', () => {
+    const inNode = getState().addInputNode('in', { x: 0, y: 0, z: 0 }, 4)
+    const not = getState().addGate('NOT', { x: 4, y: 0, z: 0 }, 4)
+    const outNode = getState().addOutputNode('out', { x: 8, y: 0, z: 0 }, 4)
+    getState().addWire(
+      { type: 'input', entityId: inNode.id },
+      { type: 'gate', entityId: not.id, pinId: not.inputs[0].id },
+      []
+    )
+    getState().addWire(
+      { type: 'gate', entityId: not.id, pinId: not.outputs[0].id },
+      { type: 'output', entityId: outNode.id },
+      []
+    )
+    getState().updateInputNodeValue(inNode.id, 0b0111)
+
+    useCircuitStore.setState((state) => { evaluateCircuit(state) })
+
+    expect(getState().outputNodes.find((n) => n.id === outNode.id)?.value).toBe(0b1000)
+  })
+
+  it('AND gate at width 8: 0xF0 & 0x0F = 0x00', () => {
+    const a = getState().addInputNode('a', { x: 0, y: 0, z: 0 }, 8)
+    const b = getState().addInputNode('b', { x: 0, y: 0, z: 4 }, 8)
+    const g = getState().addGate('AND', { x: 4, y: 0, z: 0 }, 8)
+    const o = getState().addOutputNode('o', { x: 8, y: 0, z: 0 }, 8)
+    getState().addWire({ type: 'input', entityId: a.id }, { type: 'gate', entityId: g.id, pinId: g.inputs[0].id }, [])
+    getState().addWire({ type: 'input', entityId: b.id }, { type: 'gate', entityId: g.id, pinId: g.inputs[1].id }, [])
+    getState().addWire({ type: 'gate', entityId: g.id, pinId: g.outputs[0].id }, { type: 'output', entityId: o.id }, [])
+    getState().updateInputNodeValue(a.id, 0xF0)
+    getState().updateInputNodeValue(b.id, 0x0F)
+
+    useCircuitStore.setState((state) => { evaluateCircuit(state) })
+
+    expect(getState().outputNodes.find((n) => n.id === o.id)?.value).toBe(0x00)
+  })
+})
