@@ -3,6 +3,7 @@ import { colors, materials } from '@/theme'
 import { JUNCTION_CONFIG } from '../config'
 import type { Position } from '@/store/types'
 import { isSignalHigh } from '@/simulation/signalDisplay'
+import { FloatingLabel } from '@/components/canvas/FloatingLabel'
 
 interface JunctionNode3DProps {
   /** Unique identifier for the junction */
@@ -11,6 +12,8 @@ interface JunctionNode3DProps {
   position: Position
   /** Current signal value passing through the junction */
   value: number
+  /** Signal name (truncated if long) shown above the junction */
+  signalId?: string
   /** Click handler for the junction */
   onClick?: () => void
 }
@@ -22,7 +25,7 @@ interface JunctionNode3DProps {
  * @param props - Junction node properties
  * @returns React Three Fiber mesh element
  */
-export function JunctionNode3D({ id: _id, position, value, onClick }: JunctionNode3DProps) {
+export function JunctionNode3D({ id: _id, position, value, signalId, onClick }: JunctionNode3DProps) {
   const high = isSignalHigh(value)
   const color = high ? colors.pin.active : colors.pin.inactive
 
@@ -33,17 +36,24 @@ export function JunctionNode3D({ id: _id, position, value, onClick }: JunctionNo
     }
   }
 
+  const labelText = signalId
+    ? (signalId.length > 8 ? signalId.slice(0, 6) + '\u2026' : signalId)
+    : ''
+
   return (
-    <mesh position={[position.x, position.y, position.z]} onClick={handleClick}>
-      <sphereGeometry args={[JUNCTION_CONFIG.radius, JUNCTION_CONFIG.segments, JUNCTION_CONFIG.segments]} />
-      <meshStandardMaterial
-        color={color}
-        emissive={color}
-        emissiveIntensity={high ? 0.5 : 0.2}
-        metalness={materials.pin.metalness}
-        roughness={materials.pin.roughness}
-      />
-    </mesh>
+    <group position={[position.x, position.y, position.z]}>
+      <mesh onClick={handleClick}>
+        <sphereGeometry args={[JUNCTION_CONFIG.radius, JUNCTION_CONFIG.segments, JUNCTION_CONFIG.segments]} />
+        <meshStandardMaterial
+          color={color}
+          emissive={color}
+          emissiveIntensity={high ? 0.5 : 0.2}
+          metalness={materials.pin.metalness}
+          roughness={materials.pin.roughness}
+        />
+      </mesh>
+      <FloatingLabel position={[0, 0, 0]} text={labelText} offsetY={0.8} fontSize={0.25} />
+    </group>
   )
 }
 JunctionNode3D.displayName = 'JunctionNode3D'
