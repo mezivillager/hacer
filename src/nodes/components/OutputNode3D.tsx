@@ -1,13 +1,13 @@
 // OutputNode3D - Visual representation of a circuit output node
 import { useState, useRef } from 'react'
 import { Group } from 'three'
-import { Text } from '@react-three/drei'
 import { colors, materials } from '@/theme'
 import { NODE_DIMENSIONS, NODE_COLORS, OUTPUT_NODE_CONFIG, calculateNodePinPosition } from '../config'
 import { useCircuitStore, circuitActions } from '@/store/circuitStore'
 import { useNodeDrag } from '@/hooks/useNodeDrag'
 import type { Position, Rotation } from '@/store/types'
 import { formatSignalLabel, isSignalHigh } from '@/simulation/signalDisplay'
+import { FloatingLabel } from '@/components/canvas/FloatingLabel'
 
 interface OutputNode3DProps {
   /** Unique identifier for the output node */
@@ -146,33 +146,11 @@ export function OutputNode3D({
         />
       </mesh>
 
-      <Text
-        position={[
-          OUTPUT_NODE_CONFIG.text.position[0],
-          OUTPUT_NODE_CONFIG.text.position[1] + 0.18,
-          OUTPUT_NODE_CONFIG.text.position[2],
-        ]}
-        rotation={[Math.PI, 0, 0]}
-        fontSize={0.12}
-        color="#ffffff"
-        anchorX="center"
-        anchorY="middle"
-        font={undefined}
-      >
-        {name}
-      </Text>
-
-      <Text
-        position={OUTPUT_NODE_CONFIG.text.position}
-        rotation={[Math.PI, 0, 0]}
-        fontSize={OUTPUT_NODE_CONFIG.text.fontSize}
-        color="#ffffff"
-        anchorX="center"
-        anchorY="middle"
-        font={undefined}
-      >
-        {formatSignalLabel(value, width)}
-      </Text>
+      <FloatingLabel
+        position={[0, 0, 0]}
+        text={`${name}: ${formatSignalLabel(value, width)}`}
+        offsetY={1.2}
+      />
 
       {/* Input pin (left side) */}
       <mesh

@@ -32,6 +32,7 @@ vi.mock('@/hooks/useNodeDrag', () => ({
 
 vi.mock('@react-three/drei', () => ({
   Text: ({ children }: { children: string }) => <div data-testid="node-text">{children}</div>,
+  Billboard: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }))
 
 describe('OutputNode3D', () => {
@@ -44,7 +45,7 @@ describe('OutputNode3D', () => {
     expect(OutputNode3D.displayName).toBe('OutputNode3D')
   })
 
-  it('renders both node name label and value label', () => {
+  it('renders a combined floating label with name and value', () => {
     render(
       <OutputNode3D
         id="output-1"
@@ -57,7 +58,6 @@ describe('OutputNode3D', () => {
     )
 
     const labels = screen.getAllByTestId('node-text').map((node) => node.textContent)
-    expect(labels).toContain('out')
-    expect(labels).toContain('0')
+    expect(labels).toContain('out: 0')
   })
 })

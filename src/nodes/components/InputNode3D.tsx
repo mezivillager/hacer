@@ -1,13 +1,13 @@
 // InputNode3D - Visual representation of a circuit input node
 import { useState, useRef } from 'react'
 import { Group } from 'three'
-import { Text } from '@react-three/drei'
 import { useCircuitStore } from '@/store/circuitStore'
 import { colors, materials } from '@/theme'
 import { NODE_DIMENSIONS, NODE_COLORS, INPUT_NODE_CONFIG, calculateNodePinPosition } from '../config'
 import { useNodeDrag } from '@/hooks/useNodeDrag'
 import type { Position, Rotation } from '@/store/types'
 import { formatSignalLabel, isSignalHigh } from '@/simulation/signalDisplay'
+import { FloatingLabel } from '@/components/canvas/FloatingLabel'
 
 interface InputNode3DProps {
   /** Unique identifier for the input node */
@@ -123,33 +123,11 @@ export function InputNode3D({
         />
       </mesh>
 
-      <Text
-        position={[
-          INPUT_NODE_CONFIG.text.position[0],
-          INPUT_NODE_CONFIG.text.position[1] + 0.18,
-          INPUT_NODE_CONFIG.text.position[2],
-        ]}
-        rotation={[Math.PI, 0, 0]}
-        fontSize={0.12}
-        color="#ffffff"
-        anchorX="center"
-        anchorY="middle"
-        font={undefined}
-      >
-        {name}
-      </Text>
-
-      <Text
-        position={INPUT_NODE_CONFIG.text.position}
-        rotation={[Math.PI, 0, 0]}
-        fontSize={INPUT_NODE_CONFIG.text.fontSize}
-        color="#ffffff"
-        anchorX="center"
-        anchorY="middle"
-        font={undefined}
-      >
-        {formatSignalLabel(value, width)}
-      </Text>
+      <FloatingLabel
+        position={[0, 0, 0]}
+        text={`${name}: ${formatSignalLabel(value, width)}`}
+        offsetY={1.2}
+      />
 
       <mesh
         position={[pinPos.x, pinPos.y, pinPos.z]}
