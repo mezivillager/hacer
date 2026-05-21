@@ -33,6 +33,23 @@ function getEndpointWidth(endpoint: WireEndpoint, state: CircuitStore): number {
   }
 }
 
+function inferGateWidening(
+  endpoint: WireEndpoint,
+  otherWidth: number,
+  state: CircuitStore
+): number | null {
+  if (endpoint.type !== 'gate') return null
+  const gate = state.gates.find((g) => g.id === endpoint.entityId)
+  if (!gate) return null
+  if (gate.width === 1 && otherWidth > 1) return otherWidth
+  if (gate.width !== otherWidth && otherWidth !== 1) {
+    throw new Error(
+      `Gate width mismatch: gate ${gate.id} is ${gate.width} bits, wire is ${otherWidth} bits`
+    )
+  }
+  return null
+}
+
 export const createWireActions = (set: SetState, get: GetState): WireActions => ({
   addWire: (
     from: WireEndpoint,
@@ -43,14 +60,22 @@ export const createWireActions = (set: SetState, get: GetState): WireActions => 
     explicitWidth?: number
   ) => {
     const state = get()
-    const sourceWidth = getEndpointWidth(from, state)
-    const destWidth = getEndpointWidth(to, state)
+    let sourceWidth = getEndpointWidth(from, state)
+    let destWidth = getEndpointWidth(to, state)
 
     if (from.type === 'input' && to.type === 'output' && sourceWidth !== destWidth) {
       throw new Error(
         `Direct input-to-output pass-through requires matching widths (source=${sourceWidth}, destination=${destWidth})`
       )
     }
+
+    // Gate width inference. If either endpoint is a default-width-1 gate and the
+    // other side has width > 1, widen the gate. If the gate already has width > 1
+    // and the new wire's width disagrees, throw (matches web-ide's no-silent-narrowing rule).
+    const widenFromGateTo = inferGateWidening(from, destWidth, state)
+    const widenToGateTo = inferGateWidening(to, sourceWidth, state)
+    if (widenFromGateTo != null) sourceWidth = widenFromGateTo
+    if (widenToGateTo != null) destWidth = widenToGateTo
 
     const width = explicitWidth ?? Math.min(sourceWidth, destWidth)
 
@@ -64,6 +89,22 @@ export const createWireActions = (set: SetState, get: GetState): WireActions => 
       ...(signalId && { signalId }),
     }
     set((state) => {
+      if (widenFromGateTo != null && from.type === 'gate') {
+        const gate = state.gates.find((g) => g.id === from.entityId)
+        if (gate) {
+          gate.width = widenFromGateTo
+          for (const p of gate.inputs) p.width = widenFromGateTo
+          for (const p of gate.outputs) p.width = widenFromGateTo
+        }
+      }
+      if (widenToGateTo != null && to.type === 'gate') {
+        const gate = state.gates.find((g) => g.id === to.entityId)
+        if (gate) {
+          gate.width = widenToGateTo
+          for (const p of gate.inputs) p.width = widenToGateTo
+          for (const p of gate.outputs) p.width = widenToGateTo
+        }
+      }
       state.wires.push(wire)
     }, false, 'addWire')
     return wire
