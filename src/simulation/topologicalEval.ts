@@ -236,7 +236,7 @@ export function evaluateCircuit(state: CircuitState): EvaluateCircuitResult {
     const inputValues = gate.inputs.map((p) => p.value)
     const logic = gateLogic[gate.type]
     if (logic) {
-      const outputValue = logic(inputValues, 1)
+      const outputValue = logic(inputValues, gate.width)
       for (const output of gate.outputs) {
         output.value = outputValue
       }
