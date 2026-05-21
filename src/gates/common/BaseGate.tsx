@@ -1,6 +1,5 @@
 import { useRef, useState } from 'react'
 import { Group, type BufferGeometry } from 'three'
-import { Text } from '@react-three/drei'
 import { circuitActions, useCircuitStore } from '@/store/circuitStore'
 import { materials } from '@/theme'
 import { useGateDrag } from '@/hooks/useGateDrag'
@@ -8,6 +7,7 @@ import { GatePin, WireStub } from './index'
 import { getPinColor, getWorldPosition, createGateClickHandler, createPinPointerMoveHandler, createPinClickHandler, handlePinPointerOut } from '../handlers/gateHandlers'
 import type { GateType } from '@/store/types'
 import type { PinConfig } from '../types'
+import { FloatingLabel } from '@/components/canvas/FloatingLabel'
 
 interface BaseGateComponentProps {
   id: string
@@ -28,8 +28,6 @@ interface BaseGateComponentProps {
   bodyGeometryProps?: { position?: [number, number, number] } // Optional props for geometry mesh
   additionalElements?: React.ReactNode
   textLabel?: string
-  textPosition?: [number, number, number]
-  textFontSize?: number
   onClick?: () => void
   onPinClick?: (gateId: string, pinId: string, pinType: 'input' | 'output', worldPosition: { x: number; y: number; z: number }) => void
   onInputToggle?: (gateId: string, pinId: string) => void
@@ -53,8 +51,6 @@ export function BaseGate(props: BaseGateComponentProps) {
     bodyGeometryProps,
     additionalElements,
     textLabel,
-    textPosition = [0, 0, -0.2],
-    textFontSize = 0.25,
     onClick,
     onPinClick,
     onInputToggle,
@@ -66,6 +62,7 @@ export function BaseGate(props: BaseGateComponentProps) {
   // Subscribe to wiring state to reactively hide stubs during wiring
   const wiringFrom = useCircuitStore((s) => s.wiringFrom)
   const performanceMode = useCircuitStore((s) => s.performanceMode)
+  const gateWidth = useCircuitStore((s) => s.gates.find((g) => g.id === id)?.width ?? 1)
 
   // Drag functionality - use getState() to avoid subscriptions that cause re-renders
   // eslint-disable-next-line react-compiler/react-compiler -- getState() is valid for reading without subscribing
@@ -144,19 +141,13 @@ export function BaseGate(props: BaseGateComponentProps) {
         />
       </mesh>
 
-      {/* Gate text label on top face - flat on horizontal surface */}
+      {/* Floating gate label above body */}
       {textLabel && performanceMode !== 'low-power' && (
-        <Text
-          position={textPosition}
-          rotation={[Math.PI, 0, 0]}
-          fontSize={textFontSize}
-          color="#ffffff"
-          anchorX="center"
-          anchorY="middle"
-          font={undefined}
-        >
-          {textLabel}
-        </Text>
+        <FloatingLabel
+          position={[0, 0, 0]}
+          text={gateWidth > 1 ? `${textLabel}:${gateWidth}` : textLabel}
+          offsetY={1.4}
+        />
       )}
 
       {/* Additional elements (negation bubble, extra lines, etc.) */}

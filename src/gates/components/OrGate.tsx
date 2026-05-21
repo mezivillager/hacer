@@ -56,8 +56,6 @@ export function OrGate({
       bodyGeometryObject={OR_GEOMETRY.geometry}
       bodyGeometryProps={{ position: OR_GEOMETRY.position }}
       textLabel={OR_TEXT_CONFIG.label}
-      textPosition={OR_TEXT_CONFIG.position}
-      textFontSize={OR_TEXT_CONFIG.fontSize}
       onClick={onClick}
       onPinClick={onPinClick}
       onInputToggle={onInputToggle}

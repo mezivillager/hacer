@@ -60,8 +60,6 @@ export function XorGate({
       bodyGeometryProps={{ position: XOR_GEOMETRY.position }}
       additionalElements={<XorLine />}
       textLabel={XOR_TEXT_CONFIG.label}
-      textPosition={XOR_TEXT_CONFIG.position}
-      textFontSize={XOR_TEXT_CONFIG.fontSize}
       onClick={onClick}
       onPinClick={onPinClick}
       onInputToggle={onInputToggle}
