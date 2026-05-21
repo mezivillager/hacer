@@ -22,6 +22,8 @@ import { circuitActions } from '@/store/circuitStore'
 import { notify } from '@/lib/notify'
 import { useSelectedElement, type SelectedElement } from './useSelectedElement'
 
+const STANDARD_WIDTHS = [1, 2, 4, 8, 16, 32] as const
+
 function getTypeLabel(el: SelectedElement): string {
   switch (el.kind) {
     case 'gate':
@@ -295,6 +297,34 @@ function PropertiesPanelInner({ selected }: { selected: SelectedElement }) {
               <p className="text-xs text-muted-foreground">
                 Edit the name in the header above. Press Enter to commit, Escape to cancel.
               </p>
+            </div>
+          )}
+
+          {isEditableNode && (
+            <div className="col-span-2 flex items-center justify-between">
+              <Label htmlFor={`width-${selected.id}`} className="text-xs text-muted-foreground">
+                Width
+              </Label>
+              <select
+                id={`width-${selected.id}`}
+                data-testid="node-width-select"
+                className="font-mono text-xs rounded border border-border bg-background px-2 py-1 cursor-pointer"
+                value={selected.width}
+                onChange={(e) => {
+                  const next = Number(e.target.value)
+                  if (selected.kind === 'input') {
+                    circuitActions.updateInputNodeWidth(selected.id, next)
+                  } else if (selected.kind === 'output') {
+                    circuitActions.updateOutputNodeWidth(selected.id, next)
+                  }
+                }}
+              >
+                {STANDARD_WIDTHS.map((w) => (
+                  <option key={w} value={w}>
+                    {w}
+                  </option>
+                ))}
+              </select>
             </div>
           )}
 

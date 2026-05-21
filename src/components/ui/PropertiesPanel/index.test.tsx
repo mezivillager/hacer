@@ -127,4 +127,57 @@ describe('PropertiesPanel', () => {
     expect(screen.getByTestId('properties-panel')).toBeInTheDocument()
     expect(screen.getByTestId('properties-type-label').textContent?.toLowerCase()).toContain('wire')
   })
+
+  describe('width editor', () => {
+    it('shows the current width for a selected input node', () => {
+      circuitActions.addInputNode('in', { x: 0, y: 0.2, z: 0 }, 4)
+      const id = useCircuitStore.getState().inputNodes[0].id
+      circuitActions.selectNode(id, 'input')
+      circuitActions.openPropertiesPanel()
+      wrap()
+      const select = screen.getByTestId('node-width-select')
+      expect(select).toHaveValue('4')
+    })
+
+    it('changing the width dispatches updateInputNodeWidth for input nodes', async () => {
+      const user = userEvent.setup()
+      circuitActions.addInputNode('in', { x: 0, y: 0.2, z: 0 }, 1)
+      const id = useCircuitStore.getState().inputNodes[0].id
+      circuitActions.selectNode(id, 'input')
+      circuitActions.openPropertiesPanel()
+      wrap()
+      await user.selectOptions(screen.getByTestId('node-width-select'), '8')
+      expect(useCircuitStore.getState().inputNodes[0].width).toBe(8)
+    })
+
+    it('changing the width dispatches updateOutputNodeWidth for output nodes', async () => {
+      const user = userEvent.setup()
+      circuitActions.addOutputNode('out', { x: 0, y: 0.2, z: 0 }, 1)
+      const id = useCircuitStore.getState().outputNodes[0].id
+      circuitActions.selectNode(id, 'output')
+      circuitActions.openPropertiesPanel()
+      wrap()
+      await user.selectOptions(screen.getByTestId('node-width-select'), '16')
+      expect(useCircuitStore.getState().outputNodes[0].width).toBe(16)
+    })
+
+    it('does not render the width select when a gate is selected', () => {
+      const id = placeGate('AND')
+      circuitActions.selectGate(id)
+      circuitActions.openPropertiesPanel()
+      wrap()
+      expect(screen.queryByTestId('node-width-select')).toBeNull()
+    })
+
+    it('offers the standard width set 1, 2, 4, 8, 16, 32', () => {
+      circuitActions.addInputNode('in', { x: 0, y: 0.2, z: 0 }, 1)
+      const id = useCircuitStore.getState().inputNodes[0].id
+      circuitActions.selectNode(id, 'input')
+      circuitActions.openPropertiesPanel()
+      wrap()
+      const select = screen.getByTestId('node-width-select')
+      const values = Array.from(select.querySelectorAll('option')).map((o) => o.value)
+      expect(values).toEqual(['1', '2', '4', '8', '16', '32'])
+    })
+  })
 })
