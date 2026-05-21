@@ -39,3 +39,12 @@ Next unchecked Layer 1 ticket:
 - `formatSignalLabel(value, width = 1)` now delegates to `formatValue(value, width, 'X')` for `width > 1`; `width` default keeps every legacy call site working. `InputNode3D`/`OutputNode3D` receive `width` via `NodeRenderer` prop drilling so 3D labels read `0x..` for buses.
 - Pre-commit lint-staged runs `eslint --fix`, which strips `as HTMLInputElement` casts via `@typescript-eslint/no-unnecessary-type-assertion` — use `@testing-library/jest-dom` matchers (`toHaveValue`, `toBeDisabled`) instead of casts in DOM tests.
 - Verification: lint, 1231 unit tests, 89 store E2E specs (one wiring-junction flake passed on re-run; unrelated to this UI ticket), production build all green.
+
+## PropertiesPanel width editor (2026-05-21)
+
+- Added `updateInputNodeWidth(id, width)` and `updateOutputNodeWidth(id, width)` actions in `src/store/actions/nodeActions/nodeActions.ts`, following the simpler `updateInputNodeValue` Immer-mutation pattern (no validation analog to `validateNodeName`). Wired into the `circuitActions` facade (`src/store/circuitStore.ts`) and the `NodeActions` interface (`src/store/types.ts`).
+- `PropertiesPanel` now renders a `<select>` of standard widths (1, 2, 4, 8, 16, 32) for selected input/output nodes; dispatches the matching update action on change. `useSelectedElement` discriminated union extended to expose `width` on `input`/`output` variants.
+- Test mock store in `src/test/testUtils.ts` stubs the two new actions so production `build` (TS strict) stays green.
+- Unblocks manual smoke testing of P05-13 (multi-bit I/O UI) without needing a placement-time width dialog.
+- Known limitation: changing a node's width does NOT re-infer the width of wires already connected to it; for smoke testing, set width before wiring. A follow-up ticket should either re-infer wire widths on node-width change or disable the editor when wires are connected.
+- Verification: lint, 1241 unit tests, 89 store E2E specs, production build all green.
