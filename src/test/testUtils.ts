@@ -111,6 +111,8 @@ export function createMockStore(partial: Partial<CircuitState> = {}): CircuitSto
     removeInputNode: () => {},
     removeOutputNode: () => {},
     updateInputNodeValue: () => {},
+    updateInputNodeWidth: () => {},
+    updateOutputNodeWidth: () => {},
     updateInputNodePosition: () => {},
     updateOutputNodePosition: () => {},
     // Junction actions
