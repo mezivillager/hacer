@@ -123,6 +123,7 @@ export interface GateInstance {
   inputs: Pin[]
   outputs: Pin[]
   selected: boolean
+  width: number
 }
 
 /**
@@ -215,7 +216,7 @@ export interface CircuitState {
 
 // Action types for the Zustand store
 export interface GateActions {
-  addGate: (type: GateType, position: Position) => GateInstance
+  addGate: (type: GateType, position: Position, width?: number) => GateInstance
   removeGate: (gateId: string) => void
   selectGate: (gateId: string | null) => void
   selectWire: (wireId: string | null) => void
