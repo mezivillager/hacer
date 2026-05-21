@@ -312,6 +312,8 @@ export interface NodeActions {
   removeInputNode: (nodeId: string) => void
   removeOutputNode: (nodeId: string) => void
   updateInputNodeValue: (nodeId: string, value: number) => void
+  updateInputNodeWidth: (nodeId: string, width: number) => void
+  updateOutputNodeWidth: (nodeId: string, width: number) => void
   updateInputNodePosition: (nodeId: string, position: Position) => void
   updateOutputNodePosition: (nodeId: string, position: Position) => void
 }

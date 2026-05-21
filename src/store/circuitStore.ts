@@ -247,6 +247,8 @@ export const circuitActions = {
   removeInputNode: (...args: Parameters<CircuitStore['removeInputNode']>) => useCircuitStore.getState().removeInputNode(...args),
   removeOutputNode: (...args: Parameters<CircuitStore['removeOutputNode']>) => useCircuitStore.getState().removeOutputNode(...args),
   updateInputNodeValue: (...args: Parameters<CircuitStore['updateInputNodeValue']>) => useCircuitStore.getState().updateInputNodeValue(...args),
+  updateInputNodeWidth: (...args: Parameters<CircuitStore['updateInputNodeWidth']>) => useCircuitStore.getState().updateInputNodeWidth(...args),
+  updateOutputNodeWidth: (...args: Parameters<CircuitStore['updateOutputNodeWidth']>) => useCircuitStore.getState().updateOutputNodeWidth(...args),
   updateInputNodePosition: (...args: Parameters<CircuitStore['updateInputNodePosition']>) => useCircuitStore.getState().updateInputNodePosition(...args),
   updateOutputNodePosition: (...args: Parameters<CircuitStore['updateOutputNodePosition']>) => useCircuitStore.getState().updateOutputNodePosition(...args),
   // Junction actions
