@@ -55,8 +55,6 @@ export function AndGate({
       wireStubPositions={wireStubPositions}
       bodyGeometry={<boxGeometry args={AND_GEOMETRY.args} />}
       textLabel={AND_TEXT_CONFIG.label}
-      textPosition={AND_TEXT_CONFIG.position}
-      textFontSize={AND_TEXT_CONFIG.fontSize}
       onClick={onClick}
       onPinClick={onPinClick}
       onInputToggle={onInputToggle}

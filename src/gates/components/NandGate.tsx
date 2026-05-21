@@ -59,8 +59,6 @@ export function NandGate({
       bodyGeometry={<boxGeometry args={NAND_GEOMETRY.args} />}
       additionalElements={<NandBubble />}
       textLabel={NAND_TEXT_CONFIG.label}
-      textPosition={NAND_TEXT_CONFIG.position}
-      textFontSize={NAND_TEXT_CONFIG.fontSize}
       onClick={onClick}
       onPinClick={onPinClick}
       onInputToggle={onInputToggle}

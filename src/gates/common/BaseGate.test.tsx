@@ -42,6 +42,7 @@ vi.mock('@/hooks/useGateDrag', () => ({
 
 vi.mock('@react-three/drei', () => ({
   Text: ({ children }: { children: string }) => <div data-testid="gate-text">{children}</div>,
+  Billboard: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }))
 
 vi.mock('@react-three/fiber', () => ({
