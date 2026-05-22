@@ -29,6 +29,14 @@ interface BaseGateComponentProps {
   bodyGeometryProps?: { position?: [number, number, number] } // Optional props for geometry mesh
   additionalElements?: React.ReactNode
   textLabel?: string
+  /**
+   * Override the floating-label vertical offset. Use a smaller value for
+   * non-rectangular bodies whose visible top at center-X sits below the
+   * theoretical max-Y (e.g. NOT triangle: visible top at X=0 is y=0.2,
+   * not 0.4, so the default 0.6 offset produces a doubled gap).
+   * Defaults to LABEL_GEOMETRY.GATE.offsetY.
+   */
+  labelOffsetY?: number
   onClick?: () => void
   onPinClick?: (gateId: string, pinId: string, pinType: 'input' | 'output', worldPosition: { x: number; y: number; z: number }) => void
   onInputToggle?: (gateId: string, pinId: string) => void
@@ -52,6 +60,7 @@ export function BaseGate(props: BaseGateComponentProps) {
     bodyGeometryProps,
     additionalElements,
     textLabel,
+    labelOffsetY,
     onClick,
     onPinClick,
     onInputToggle,
@@ -227,7 +236,7 @@ export function BaseGate(props: BaseGateComponentProps) {
         <FloatingLabel
           position={position}
           text={gateWidth > 1 ? `${textLabel}:${gateWidth}` : textLabel}
-          offsetY={LABEL_GEOMETRY.GATE.offsetY}
+          offsetY={labelOffsetY ?? LABEL_GEOMETRY.GATE.offsetY}
         />
       )}
     </>
