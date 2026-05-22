@@ -4,8 +4,6 @@ import { colors } from '@/theme'
 import type { WireSegment, WirePath } from '@/utils/wiringScheme/types'
 import { WIRE_HEIGHT, HOP_HEIGHT } from '@/utils/wiringScheme/types'
 import { getWireArcPointCount, getWireLineWidth } from './wireRenderConfig'
-import { FloatingLabel } from './FloatingLabel'
-import { LABEL_GEOMETRY } from './labelGeometry'
 
 interface Wire3DProps {
   /** Start position (for validation only - actual path uses segments) */
@@ -20,8 +18,6 @@ interface Wire3DProps {
   isPreview?: boolean
   /** Whether the wire is selected */
   isSelected?: boolean
-  /** Optional floating midpoint label (signal name or formatted value) */
-  signalLabel?: string
 }
 
 /**
@@ -38,7 +34,6 @@ export function Wire3D({
   isActive = false,
   isPreview = false,
   isSelected = false,
-  signalLabel,
 }: Wire3DProps) {
   const performanceMode = useCircuitStore((s) => s.performanceMode)
 
@@ -156,17 +151,6 @@ export function Wire3D({
     return points
   }
 
-  // Render segments as lines (no thickness, elegant look like grid lines)
-  // Pick midpoint segment for label placement
-  const midSegment = pathSegments.length > 0 ? pathSegments[Math.floor(pathSegments.length / 2)] : null
-  const midPoint = midSegment
-    ? {
-        x: (midSegment.start.x + midSegment.end.x) / 2,
-        y: (midSegment.start.y + midSegment.end.y) / 2,
-        z: (midSegment.start.z + midSegment.end.z) / 2,
-      }
-    : null
-
   return (
     <>
       {pathSegments.map((segment, index) => {
@@ -194,15 +178,6 @@ export function Wire3D({
           />
         )
       })}
-      {signalLabel && midPoint && !isPreview && (
-        <FloatingLabel
-          position={[midPoint.x, midPoint.y, midPoint.z]}
-          text={signalLabel}
-          offsetY={LABEL_GEOMETRY.WIRE.offsetY}
-          fontSize={LABEL_GEOMETRY.WIRE.fontSize}
-          lowPowerVariant="html"
-        />
-      )}
     </>
   )
 }
