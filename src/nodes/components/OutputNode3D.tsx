@@ -8,6 +8,7 @@ import { useNodeDrag } from '@/hooks/useNodeDrag'
 import type { Position, Rotation } from '@/store/types'
 import { formatSignalLabel, isSignalHigh } from '@/simulation/signalDisplay'
 import { FloatingLabel } from '@/components/canvas/FloatingLabel'
+import { LABEL_GEOMETRY } from '@/components/canvas/labelGeometry'
 
 interface OutputNode3DProps {
   /** Unique identifier for the output node */
@@ -149,7 +150,9 @@ export function OutputNode3D({
       <FloatingLabel
         position={[0, 0, 0]}
         text={`${name}: ${formatSignalLabel(value, width)}`}
-        offsetY={1.2}
+        offsetY={LABEL_GEOMETRY.NODE.offsetY}
+        fontSize={LABEL_GEOMETRY.NODE.fontSize}
+        lowPowerVariant="html"
       />
 
       {/* Input pin (left side) */}
