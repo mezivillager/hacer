@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.2](https://github.com/mezivillager/hacer/compare/v2.3.1...v2.3.2) (2026-05-22)
+
+### Bug Fixes
+
+* remove redundant canvas context assertion ([cb60f93](https://github.com/mezivillager/hacer/commit/cb60f932ab9107d7292fc87f78814f1d606c10f8))
+
 ## [2.3.1](https://github.com/mezivillager/hacer/compare/v2.3.0...v2.3.1) (2026-05-22)
 
 ### Bug Fixes
