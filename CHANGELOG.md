@@ -5,6 +5,53 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.0](https://github.com/mezivillager/hacer/compare/v2.3.2...v2.4.0) (2026-05-22)
+
+### Features
+
+* **3d:** float gate label above body; show :W suffix for multi-bit ([8730b7d](https://github.com/mezivillager/hacer/commit/8730b7d06971915dd6c21c6a1d53973fe85db930))
+* **3d:** float input/output node labels above the mesh ([c4828e6](https://github.com/mezivillager/hacer/commit/c4828e65718e23398f27766d5e39e83d0e8dc629))
+* **3d:** float junction signal label above branch point ([cd61fe7](https://github.com/mezivillager/hacer/commit/cd61fe7150956af90bdd98e82ac9398936dde2e4))
+* **3d:** float midpoint signal label on wires ([542fec5](https://github.com/mezivillager/hacer/commit/542fec5b8eec9afadb146aa24626b85535b3df4b))
+* **3d:** FloatingLabel — camera-facing label, hidden in low-power ([b354a89](https://github.com/mezivillager/hacer/commit/b354a896375e4c9190968b4c5d172147432380ca))
+* **3d:** FloatingLabel exposes LABEL_GEOMETRY + crude DOM fallback in low-power ([016ddb0](https://github.com/mezivillager/hacer/commit/016ddb0dfc6a2a83475374209860fa1d57634cb1))
+* **3d:** gate label uses LABEL_GEOMETRY.GATE + crude fallback in low-power ([2e3b1f2](https://github.com/mezivillager/hacer/commit/2e3b1f23c96bc982ca3fca0f1110dd785f03bd06))
+* **3d:** I/O node labels use LABEL_GEOMETRY.NODE (smaller, closer) ([cffc122](https://github.com/mezivillager/hacer/commit/cffc12293f7badac64b0be898c5b0054388db5e7))
+* **3d:** junction label uses LABEL_GEOMETRY.JUNCTION ([0c58310](https://github.com/mezivillager/hacer/commit/0c583107a45d50bb3f730cead079362f0f732482))
+* **3d:** remove wire midpoint labels ([5f0b920](https://github.com/mezivillager/hacer/commit/5f0b920ffbe88b21d713700b64fde4c70edf71cf))
+* **3d:** uniform DOM-overlay labels rendered outside rotated groups ([50008f9](https://github.com/mezivillager/hacer/commit/50008f9986add9e7ee311f300fbe7e8b924467e0))
+* **3d:** wire labels use LABEL_GEOMETRY.WIRE; show signalId even when sim paused ([9bf21da](https://github.com/mezivillager/hacer/commit/9bf21da6ad569da0b1d79fc0053b2b8486bcb5b5))
+* **eval:** gateLogic receives gate.width during evaluation ([b0106a9](https://github.com/mezivillager/hacer/commit/b0106a983d278b2741e23ff9e3f769968b4cdefc))
+* **gates:** GateInstance carries bus width (default 1) ([fbcaf40](https://github.com/mezivillager/hacer/commit/fbcaf402b7cecbcf8493169d7f437684f366c1de))
+* **p05-13:** formatSignalLabel accepts width and renders hex for multi-bit ([1daec04](https://github.com/mezivillager/hacer/commit/1daec04626d88210067fb536204a4f83077ff9e4))
+* **p05-13:** InputNode3D/OutputNode3D show hex-formatted multi-bit values ([ef33aa4](https://github.com/mezivillager/hacer/commit/ef33aa44d4d48b200c4ac203917a712ed35ac430))
+* **p05-13:** MultiBitInput bit-toggle + format selector for width<=8 ([166905a](https://github.com/mezivillager/hacer/commit/166905a6998981713b1cf53a0f1ec240cb6519e8))
+* **p05-13:** wire MultiBitInput into PinoutPanel for multi-bit I/O ([f60b77b](https://github.com/mezivillager/hacer/commit/f60b77bc8e05d74f7b8b752abc0220d58d92eeec))
+* **props-panel:** add updateInputNodeWidth/updateOutputNodeWidth actions ([7986820](https://github.com/mezivillager/hacer/commit/79868201749760c80730b28692d71871708e4ee9))
+* **props-panel:** width selector for input/output nodes ([22d2b76](https://github.com/mezivillager/hacer/commit/22d2b76197be5e3c92544ab6422f628bd498abf1))
+* **sim:** gateLogic operates bitwise across configurable bus width ([70e8790](https://github.com/mezivillager/hacer/commit/70e8790db479be800fa3322c19d29073ad05645b))
+* **wires:** infer gate width from connected wires; throw on mismatch (P05-13) ([d6c191c](https://github.com/mezivillager/hacer/commit/d6c191ce19ff4b00721213ec0a3aaa4493a6efd3))
+
+### Bug Fixes
+
+* **3d:** NOT label gap matches I/O node gap ([097d1cc](https://github.com/mezivillager/hacer/commit/097d1cc03b5757ff40ad28bf0562c6f9628c08f7))
+* **p05-13:** use toHaveValue matcher to avoid type-cast eslint conflict ([a29c7a0](https://github.com/mezivillager/hacer/commit/a29c7a07d731829c9391151f139cdd71263b396f))
+* **store:** cascade node width change through connected wires/gates ([c9bbb68](https://github.com/mezivillager/hacer/commit/c9bbb68ed6b0d072d3243ff6d58b59bd3524fc0c))
+* **wires:** reject bit wire into widened gate ([115c8c5](https://github.com/mezivillager/hacer/commit/115c8c5f11d3652bac589aa705df3d1f63526c21))
+
+### Documentation
+
+* **p05-13:** add implementation plan ([83a2b6c](https://github.com/mezivillager/hacer/commit/83a2b6c3142952c43df9e0df0d2670bea3ab8d50))
+* **p05-13:** mark ticket complete and record completion notes ([d55bdd7](https://github.com/mezivillager/hacer/commit/d55bdd7d4b148bb3d6fcbd5b2ddfe29bf3b4ad54))
+* **p05-13:** note floating-label polish follow-up ([bc64c97](https://github.com/mezivillager/hacer/commit/bc64c9739761551068b9f252cb3154d10f76a3ff))
+* **props-panel:** record width-editor completion + known limitation ([497c2d5](https://github.com/mezivillager/hacer/commit/497c2d5a3e14f9f5137d1b78a5b0956a762b8093))
+
+### Tests
+
+* **p05-13:** add multi-bit format/parse helpers with width masking ([b78850b](https://github.com/mezivillager/hacer/commit/b78850b1767c13dc57f213da1f3aed6014ef0540))
+* **p05-13:** cover MultiBitInput numeric-input path and readOnly ([b0c5436](https://github.com/mezivillager/hacer/commit/b0c5436bb82a2c6568d50ec2e7e800d7fb62f06d))
+* **testUtils:** stub width update actions in mock store ([db6896b](https://github.com/mezivillager/hacer/commit/db6896be449a2df7627e49eb89589093eef37ec0))
+
 ## [2.3.2](https://github.com/mezivillager/hacer/compare/v2.3.1...v2.3.2) (2026-05-22)
 
 ### Bug Fixes
