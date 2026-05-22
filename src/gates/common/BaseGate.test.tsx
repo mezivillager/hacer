@@ -43,6 +43,7 @@ vi.mock('@/hooks/useGateDrag', () => ({
 vi.mock('@react-three/drei', () => ({
   Text: ({ children }: { children: string }) => <div data-testid="gate-text">{children}</div>,
   Billboard: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  Html: ({ children }: { children: React.ReactNode }) => <div data-testid="gate-html">{children}</div>,
 }))
 
 vi.mock('@react-three/fiber', () => ({
@@ -110,12 +111,13 @@ describe('BaseGate', () => {
     expect(getByTestId('gate-text')).toHaveTextContent('AND')
   })
 
-  it('hides text labels in low-power mode', () => {
+  it('shows a crude DOM label in low-power mode (not the SDF Text)', () => {
     useCircuitStore.getState().performanceMode = 'low-power'
 
     const { queryByTestId } = render(<BaseGate {...defaultProps} textLabel="AND" />)
 
     expect(queryByTestId('gate-text')).not.toBeInTheDocument()
+    expect(queryByTestId('gate-html')).toBeInTheDocument()
   })
 
   it('renders additional elements when provided', () => {
