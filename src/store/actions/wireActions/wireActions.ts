@@ -42,7 +42,7 @@ function inferGateWidening(
   const gate = state.gates.find((g) => g.id === endpoint.entityId)
   if (!gate) return null
   if (gate.width === 1 && otherWidth > 1) return otherWidth
-  if (gate.width !== otherWidth && otherWidth !== 1) {
+  if (gate.width !== otherWidth) {
     throw new Error(
       `Gate width mismatch: gate ${gate.id} is ${gate.width} bits, wire is ${otherWidth} bits`
     )
