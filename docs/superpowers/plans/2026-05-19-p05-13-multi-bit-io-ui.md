@@ -6,7 +6,7 @@
 
 **Architecture:** New pure helpers (`formatValue`, `parseValue`) live in `src/components/ui/multiBitFormat.ts` so they are unit-testable without React Testing Library. A new presentational component `MultiBitInput.tsx` uses these helpers and the existing shadcn/Tailwind design system (NO inline styles — match the rest of `PinoutPanel`). The 3D node labels reuse `formatValue` via a thin wrapper inside `src/simulation/signalDisplay.ts` so that label rendering stays centralized. Format-selector state is local per node (UI concern, not circuit state — `useState` is fine, React Compiler handles it).
 
-**Tech Stack:** React 18, TypeScript, Zustand, Vitest + @testing-library/react, Tailwind, shadcn/ui (`@/components/ui-kit/button`), React Three Fiber (`<Text>` from drei).
+**Tech Stack:** React 19, TypeScript, Zustand, Vitest + @testing-library/react, Tailwind, shadcn/ui (`@/components/ui-kit/button`), React Three Fiber (`<Text>` from drei).
 
 **Reference Spec:** [`docs/plans/phase-0.5-tickets/P05-13.md`](../../plans/phase-0.5-tickets/P05-13.md)
 

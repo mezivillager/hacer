@@ -8,7 +8,7 @@
 - **Gates**: each gate carries a `width: number` (default 1). `gateLogic` becomes width-aware — every op masks with `widthMask(width)`. Width is **inferred at wire-add time**, mirroring how `addWire` already infers wire width. Mismatched gate inputs throw, matching web-ide's strict semantics (no silent narrowing).
 - **Labels**: one shared `<FloatingLabel>` component (Drei `<Text>` + `<Billboard>`) renders above each element's bounding box, camera-facing, hidden in `low-power` performance mode. The existing face-painted `<Text>` on `InputNode3D`/`OutputNode3D`/`BaseGate` is removed and replaced.
 
-**Tech Stack:** React 18, TypeScript, Zustand+Immer, R3F, `@react-three/drei` (`<Text>`, `<Billboard>`), Vitest, Playwright.
+**Tech Stack:** React 19, TypeScript, Zustand+Immer, R3F, `@react-three/drei` (`<Text>`, `<Billboard>`), Vitest, Playwright.
 
 **Reference:**
 - web-ide multi-bit model: `~/Documents/codelab/slow/web-ide/simulator/src/chip/builtins/logic/not.ts` (`not16(inn) = ~inn & 0xffff`); per-width gate variants; strict width validation in `chip.ts`.

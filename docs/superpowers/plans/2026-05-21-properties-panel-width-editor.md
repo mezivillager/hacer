@@ -6,7 +6,7 @@
 
 **Architecture:** Two new store actions (`updateInputNodeWidth`, `updateOutputNodeWidth`) mirror the existing `renameInputNode`/`renameOutputNode` pattern. The panel renders a `<select>` of standard widths (1, 2, 4, 8, 16, 32) when an I/O node is selected and dispatches the matching action on change. We deliberately skip placement-time width selection — changing width on a freshly placed node is sufficient for smoke testing and keeps the surface minimal.
 
-**Tech Stack:** React 18, TypeScript, Zustand, Vitest + @testing-library/react, Tailwind + shadcn UI primitives.
+**Tech Stack:** React 19, TypeScript, Zustand, Vitest + @testing-library/react, Tailwind + shadcn UI primitives.
 
 **Reference:**
 - P05-13 multi-bit I/O UI plan: [`docs/superpowers/plans/2026-05-19-p05-13-multi-bit-io-ui.md`](./2026-05-19-p05-13-multi-bit-io-ui.md)

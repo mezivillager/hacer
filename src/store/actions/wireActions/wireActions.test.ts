@@ -487,6 +487,27 @@ describe('wireActions', () => {
       }).toThrow(/width mismatch/i)
     })
 
+    it('throws when a width-1 wire connects to an already-widened gate', () => {
+      const store = useCircuitStore.getState()
+      const bus = store.addInputNode('bus', { x: 0, y: 0, z: 0 }, 4)
+      const bit = store.addInputNode('bit', { x: 0, y: 0, z: 4 })
+      const and = store.addGate('AND', { x: 4, y: 0, z: 0 })
+
+      store.addWire(
+        { type: 'input', entityId: bus.id },
+        { type: 'gate', entityId: and.id, pinId: and.inputs[0].id },
+        []
+      )
+
+      expect(() => {
+        store.addWire(
+          { type: 'input', entityId: bit.id },
+          { type: 'gate', entityId: and.id, pinId: and.inputs[1].id },
+          []
+        )
+      }).toThrow(/width mismatch/i)
+    })
+
     it('wire width matches the widened gate width (not the pre-widen 1)', () => {
       const store = useCircuitStore.getState()
       const inNode = store.addInputNode('a', { x: 0, y: 0, z: 0 }, 4)
