@@ -143,7 +143,15 @@ export function CanvasArea() {
               precomputedPath={path}
               isActive={isSignalHigh(signalValue)}
               isSelected={wire.id === selectedWireId}
-              signalLabel={simulationRunning ? formatSignalLabel(signalValue, wire.width ?? 1) : undefined}
+              signalLabel={(() => {
+                // Prefer the named signal so wires labelled in HDL-style flows
+                // remain identifiable when the sim is paused. Fall back to the
+                // live value while running; otherwise no label (no "0" noise
+                // on a paused canvas).
+                if (wire.signalId) return wire.signalId
+                if (simulationRunning) return formatSignalLabel(signalValue, wire.width ?? 1)
+                return undefined
+              })()}
             />
           )
         })}
