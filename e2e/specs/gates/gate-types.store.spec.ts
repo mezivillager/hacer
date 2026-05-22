@@ -13,7 +13,6 @@ import {
   ALL_GATE_TYPES,
   TWO_INPUT_GATES,
   SINGLE_INPUT_GATES,
-  type GateType,
 } from '../../config/constants'
 import {
   addGateViaStore,
@@ -82,7 +81,7 @@ test.describe('Gate Types @store @gates', () => {
       test(`${gateType} gate has 1 input and 1 output`, async ({ page }) => {
         await addGateViaStore(
           page,
-          gateType as GateType,
+          gateType,
           DEFAULT_POSITIONS.center
         )
 
@@ -118,7 +117,7 @@ test.describe('Gate Types @store @gates', () => {
 
         await addGateViaStore(
           page,
-          gateType as GateType,
+          gateType,
           DEFAULT_POSITIONS.center
         )
 

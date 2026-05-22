@@ -205,20 +205,20 @@ describe('type guards', () => {
     expect(isBuiltinChip({
       name: 'Nand', inputs: [], outputs: [],
       implementation: { type: 'builtin', evaluate: () => ({}) },
-    } as ChipDefinition)).toBe(true)
+    })).toBe(true)
   })
 
   it('isHDLChip returns true for hdl', () => {
     expect(isHDLChip({
       name: 'Not', inputs: [], outputs: [],
       implementation: { type: 'hdl', source: 'CHIP Not {}' },
-    } as ChipDefinition)).toBe(true)
+    })).toBe(true)
   })
 
   it('isCircuitChip returns true for circuit', () => {
     expect(isCircuitChip({
       name: 'And', inputs: [], outputs: [],
       implementation: { type: 'circuit', circuitData: {} },
-    } as ChipDefinition)).toBe(true)
+    })).toBe(true)
   })
 })

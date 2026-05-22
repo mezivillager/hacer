@@ -21,7 +21,6 @@
  */
 
 import { describe, it, expect } from 'vitest'
-import type { Position } from '@/store/types'
 import {
   createSignal,
   addDestinationToSignal,
@@ -36,22 +35,22 @@ describe('XOR Circuit Complete Wiring', () => {
   // Gate positions in a logical layout
   const layout = {
     // Input nodes on the left
-    inputA: { x: 0, y: 0.2, z: 0 } as Position,
-    inputB: { x: 0, y: 0.2, z: 12 } as Position,
+    inputA: { x: 0, y: 0.2, z: 0 },
+    inputB: { x: 0, y: 0.2, z: 12 },
 
     // NOT gates for inverting inputs
-    not1: { x: 8, y: 0.2, z: 0 } as Position,   // Not(a) -> notA
-    not2: { x: 8, y: 0.2, z: 12 } as Position,  // Not(b) -> notB
+    not1: { x: 8, y: 0.2, z: 0 },   // Not(a) -> notA
+    not2: { x: 8, y: 0.2, z: 12 },  // Not(b) -> notB
 
     // AND gates for products
-    and1: { x: 16, y: 0.2, z: 4 } as Position,  // And(a, notB) -> aAndNotB
-    and2: { x: 16, y: 0.2, z: 8 } as Position,  // And(notA, b) -> notAAndB
+    and1: { x: 16, y: 0.2, z: 4 },  // And(a, notB) -> aAndNotB
+    and2: { x: 16, y: 0.2, z: 8 },  // And(notA, b) -> notAAndB
 
     // OR gate for sum
-    or: { x: 24, y: 0.2, z: 6 } as Position,    // Or(aAndNotB, notAAndB) -> out
+    or: { x: 24, y: 0.2, z: 6 },    // Or(aAndNotB, notAAndB) -> out
 
     // Output node on the right
-    output: { x: 32, y: 0.2, z: 6 } as Position,
+    output: { x: 32, y: 0.2, z: 6 },
   }
 
   describe('Signal Topology', () => {

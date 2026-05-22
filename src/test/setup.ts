@@ -6,7 +6,7 @@ if (typeof globalThis.ResizeObserver === 'undefined') {
     observe(): void {}
     unobserve(): void {}
     disconnect(): void {}
-  } as unknown as typeof ResizeObserver
+  }
 }
 
 // Polyfill DOMRect for jsdom (used by Radix Popper / Tooltip positioning)
@@ -21,7 +21,7 @@ if (typeof globalThis.DOMRect === 'undefined') {
     static fromRect(rect?: { x?: number; y?: number; width?: number; height?: number }) {
       return new DOMRect(rect?.x ?? 0, rect?.y ?? 0, rect?.width ?? 0, rect?.height ?? 0)
     }
-  } as unknown as typeof DOMRect
+  }
 }
 
 // Mock WebGL context for Three.js tests
