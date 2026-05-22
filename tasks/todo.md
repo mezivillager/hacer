@@ -40,6 +40,17 @@ Next unchecked Layer 1 ticket:
 - Pre-commit lint-staged runs `eslint --fix`, which strips `as HTMLInputElement` casts via `@typescript-eslint/no-unnecessary-type-assertion` — use `@testing-library/jest-dom` matchers (`toHaveValue`, `toBeDisabled`) instead of casts in DOM tests.
 - Verification: lint, 1231 unit tests, 89 store E2E specs (one wiring-junction flake passed on re-run; unrelated to this UI ticket), production build all green.
 
+## P05-13 follow-up — Floating label polish (2026-05-22)
+
+- Centralised label sizing in `src/components/canvas/labelGeometry.ts` as `LABEL_GEOMETRY`: NODE `0.18`, GATE `0.22`, JUNCTION `0.14`, WIRE `0.16`. Roughly half the previous defaults (`0.35`/`0.25`), matching the KiCad/Altium ~30–40% body-height convention for reference designators. Constants split into a sibling module so `FloatingLabel.tsx` stays HMR-clean (`react-refresh/only-export-components`).
+- `offsetY` shrunk to `bodyHalfHeight + 0.20` gap (NODE `0.45`, GATE `0.6`, JUNCTION `0.32`, WIRE `0.2`) so labels sit just above the bounding box instead of floating 1.2–1.4 units above it.
+- `FloatingLabel` gained a `lowPowerVariant: 'hide' | 'html'` prop. Node, gate, junction, and wire call sites opt into `'html'`, rendering a Drei `<Html>` overlay (monospace, 11 px, dark translucent bg, `pointerEvents: none`) when `performanceMode === 'low-power'`. Cheaper than SDF `<Text>` + Billboard rotation per frame, but keeps labels legible.
+- Gate label no longer guards on `performanceMode` locally — `FloatingLabel` owns the low-power branch end-to-end. The dead `useCircuitStore(s => s.performanceMode)` subscription in `BaseGate.tsx` was dropped.
+- Wire labels decoupled from `simulationRunning`: `CanvasArea` prefers `wire.signalId` (so HDL-named wires stay identifiable on a paused canvas) and falls back to the live formatted value only when the sim runs. Emits `undefined` when neither is available (no "0" noise on an unwired canvas).
+- BaseGate test mock extended with `Html` alongside `Text`/`Billboard`; the "hides text in low-power" case became "shows crude DOM label in low-power" — asserts `gate-html` present and `gate-text` absent.
+- Verification: lint, 1268 unit tests, store E2E (3 specs flaked in the long 17.9-min sequential run but all 19 passed on targeted re-run — same wiring-junction-style timing flake noted earlier in this todo), production build all green.
+- Known limitation: junction labels at `offsetY=0.32` may visually clip very short wires; ship-as-is and revisit if smoke surfaces a real problem.
+
 ## PropertiesPanel width editor (2026-05-21)
 
 - Added `updateInputNodeWidth(id, width)` and `updateOutputNodeWidth(id, width)` actions in `src/store/actions/nodeActions/nodeActions.ts`, following the simpler `updateInputNodeValue` Immer-mutation pattern (no validation analog to `validateNodeName`). Wired into the `circuitActions` facade (`src/store/circuitStore.ts`) and the `NodeActions` interface (`src/store/types.ts`).
