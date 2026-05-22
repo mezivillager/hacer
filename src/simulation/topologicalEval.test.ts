@@ -792,4 +792,31 @@ describe('multi-bit gates', () => {
 
     expect(getState().outputNodes.find((n) => n.id === o.id)?.value).toBe(0x00)
   })
+
+  // User-reported (2026-05-22): width was set on the input node AFTER wiring.
+  // The connected wire/gate/output remained at the default width of 1, so the
+  // NOT gate only inverted the LSB and the output reported 0 instead of the
+  // expected 0b0100. Width cascade from updateInputNodeWidth fixes it.
+  it('width set on input node AFTER wiring: NOT at 4 bits flips all bits', () => {
+    const inNode = getState().addInputNode('in', { x: 0, y: 0, z: 0 }, 1)
+    const not = getState().addGate('NOT', { x: 4, y: 0, z: 0 })
+    const outNode = getState().addOutputNode('out', { x: 8, y: 0, z: 0 }, 1)
+    getState().addWire(
+      { type: 'input', entityId: inNode.id },
+      { type: 'gate', entityId: not.id, pinId: not.inputs[0].id },
+      []
+    )
+    getState().addWire(
+      { type: 'gate', entityId: not.id, pinId: not.outputs[0].id },
+      { type: 'output', entityId: outNode.id },
+      []
+    )
+
+    getState().updateInputNodeWidth(inNode.id, 4)
+    getState().updateInputNodeValue(inNode.id, 0b1011)
+
+    useCircuitStore.setState((state) => { evaluateCircuit(state) })
+
+    expect(getState().outputNodes.find((n) => n.id === outNode.id)?.value).toBe(0b0100)
+  })
 })

@@ -153,18 +153,18 @@ export const createNodeActions = (set: SetState, get: GetState): NodeActions => 
   updateInputNodeWidth: (nodeId: string, width: number): void => {
     set((state) => {
       const node = state.inputNodes.find((n) => n.id === nodeId)
-      if (node) {
-        node.width = width
-      }
+      if (!node) return
+      node.width = width
+      propagateWidthFrom(state, 'input', nodeId, width)
     }, false, 'updateInputNodeWidth')
   },
 
   updateOutputNodeWidth: (nodeId: string, width: number): void => {
     set((state) => {
       const node = state.outputNodes.find((n) => n.id === nodeId)
-      if (node) {
-        node.width = width
-      }
+      if (!node) return
+      node.width = width
+      propagateWidthFrom(state, 'output', nodeId, width)
     }, false, 'updateOutputNodeWidth')
   },
 
@@ -188,6 +188,98 @@ export const createNodeActions = (set: SetState, get: GetState): NodeActions => 
     recalculateWiresForNode(set, get, nodeId, 'output')
   },
 })
+
+/**
+ * Endpoint key used by `propagateWidthFrom`'s BFS visited set.
+ */
+type EndpointKey = `${'input' | 'output' | 'gate' | 'junction'}:${string}`
+
+/**
+ * Cascade a width change from a starting entity through every wire it
+ * (transitively) reaches.
+ *
+ * When the user changes a node's width via the Properties Panel, the rest of
+ * the circuit it's wired to must follow: wires inherit the new width, gates
+ * widen (along with all their pins), and output nodes downstream are
+ * brought along. Without this, the simulation engine clamps signals to the
+ * stale (width-1) endpoint and the user sees a NOT gate flipping only the
+ * least-significant bit.
+ *
+ * Behaviour:
+ *  - BFS across the wire graph, treating gates / junctions / I/O nodes as
+ *    nodes and wires as undirected edges.
+ *  - Every wire in the connected component is set to `width` (no narrowing
+ *    check — the user opted in by editing a node's width).
+ *  - Gates have their `width` and all input/output pin widths set.
+ *  - Junctions don't carry width but propagate through.
+ *
+ * Operates on the Immer draft passed by the caller's `set((state) => …)`
+ * block — mutations are picked up by Zustand's middleware.
+ *
+ * @param state - The Immer draft of CircuitStore
+ * @param startType - Type of the entity the user edited ('input' | 'output')
+ * @param startId - ID of the entity the user edited
+ * @param width - Target bit width
+ */
+function propagateWidthFrom(
+  state: CircuitStore,
+  startType: 'input' | 'output',
+  startId: string,
+  width: number,
+): void {
+  const visited = new Set<EndpointKey>()
+  visited.add(`${startType}:${startId}`)
+
+  type Entity = { type: 'input' | 'output' | 'gate' | 'junction'; id: string }
+  const queue: Entity[] = [{ type: startType, id: startId }]
+
+  while (queue.length > 0) {
+    const current = queue.shift()!
+
+    for (const wire of state.wires) {
+      const fromMatches = wire.from.type === current.type && wire.from.entityId === current.id
+      const toMatches = wire.to.type === current.type && wire.to.entityId === current.id
+      if (!fromMatches && !toMatches) continue
+
+      wire.width = width
+
+      const other = fromMatches ? wire.to : wire.from
+      const otherKey: EndpointKey = `${other.type}:${other.entityId}`
+      if (visited.has(otherKey)) continue
+      visited.add(otherKey)
+
+      switch (other.type) {
+        case 'input': {
+          const n = state.inputNodes.find((x) => x.id === other.entityId)
+          if (n) n.width = width
+          queue.push({ type: 'input', id: other.entityId })
+          break
+        }
+        case 'output': {
+          const n = state.outputNodes.find((x) => x.id === other.entityId)
+          if (n) n.width = width
+          queue.push({ type: 'output', id: other.entityId })
+          break
+        }
+        case 'gate': {
+          const g = state.gates.find((x) => x.id === other.entityId)
+          if (g) {
+            g.width = width
+            for (const p of g.inputs) p.width = width
+            for (const p of g.outputs) p.width = width
+          }
+          queue.push({ type: 'gate', id: other.entityId })
+          break
+        }
+        case 'junction': {
+          // Junctions don't carry width themselves but signals flow through them.
+          queue.push({ type: 'junction', id: other.entityId })
+          break
+        }
+      }
+    }
+  }
+}
 
 /**
  * Recalculate wire segments for all wires connected to a node after it moves.

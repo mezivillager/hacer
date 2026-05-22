@@ -67,5 +67,20 @@ Next unchecked Layer 1 ticket:
 - `PropertiesPanel` now renders a `<select>` of standard widths (1, 2, 4, 8, 16, 32) for selected input/output nodes; dispatches the matching update action on change. `useSelectedElement` discriminated union extended to expose `width` on `input`/`output` variants.
 - Test mock store in `src/test/testUtils.ts` stubs the two new actions so production `build` (TS strict) stays green.
 - Unblocks manual smoke testing of P05-13 (multi-bit I/O UI) without needing a placement-time width dialog.
-- Known limitation: changing a node's width does NOT re-infer the width of wires already connected to it; for smoke testing, set width before wiring. A follow-up ticket should either re-infer wire widths on node-width change or disable the editor when wires are connected.
+- ~~Known limitation: changing a node's width does NOT re-infer the width of wires already connected to it.~~ **Resolved 2026-05-22 — see "Width cascade + NOT label gap" below.**
 - Verification: lint, 1241 unit tests, 89 store E2E specs, production build all green.
+
+## P05-13 follow-up — Width cascade + NOT label gap (2026-05-22)
+
+User-reported issues against the merged P05-13 changes:
+
+1. **NOT gate label sat too high.** The triangle's visible top edge at the label's X-coordinate (centre) is `y ≈ 0.2`, not the theoretical max-Y of `0.4` — the top edge interpolates between vertices `(-0.4, 0.4)` and `(0.4, 0)`. So the default `LABEL_GEOMETRY.GATE.offsetY=0.6` produced a `0.4`-unit gap, double the `0.2` gap I/O node labels have above their cube bodies.
+2. **NOT eval did not flip bits.** With `in0[4]=0xB`, output was `0x0` instead of the expected `0x4`. Root cause: the user set the input node's width to 4 **after** wiring; the connected wire and the NOT gate stayed at width 1, so `topologicalEval` clamped the incoming `11` down to `1` before `notGate(1, 1)=0`.
+
+Fixes:
+
+- `BaseGate` gained an optional `labelOffsetY?: number` prop (defaults to `LABEL_GEOMETRY.GATE.offsetY`). `NotGate.tsx` passes `labelOffsetY={NOT_TEXT_CONFIG.labelOffsetY}` (= `0.4`). Box-shaped gates keep the `0.6` default since their top edge is flat at `y=0.4`. `NOT_TEXT_CONFIG` gained a `labelOffsetY` field with a comment explaining the triangle-interpolation reasoning.
+- `updateInputNodeWidth` and `updateOutputNodeWidth` now BFS across the wire graph (treating gates/junctions/I/O nodes as nodes and wires as undirected edges) and propagate the new width to every wire, every connected gate (plus all its pins), and every connected I/O node in the same component. Junctions don't carry width but signals flow through them. Disconnected circuits are untouched.
+- Added `propagateWidthFrom` helper in `src/store/actions/nodeActions/nodeActions.ts`. Mutates the Immer draft directly — Zustand middleware picks it up.
+- Tests: four new cascade cases in `nodeActions.test.ts` (direct, full-chain, disconnected-component isolation, output-side cascade) plus an integration case in `topologicalEval.test.ts` exercising the exact user workflow (`NOT 0b1011 → 0b0100` after `updateInputNodeWidth` post-wiring).
+- Verification: lint, 1268 unit tests, 89 store E2E specs, production build all green.
