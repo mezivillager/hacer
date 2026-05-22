@@ -50,6 +50,7 @@ export function NotGate({
       bodyGeometryProps={{ position: NOT_GEOMETRY.position }}
       additionalElements={<NotBubble />}
       textLabel={NOT_TEXT_CONFIG.label}
+      labelOffsetY={NOT_TEXT_CONFIG.labelOffsetY}
       onClick={onClick}
       onPinClick={onPinClick}
       onInputToggle={onInputToggle}
