@@ -31,8 +31,7 @@ vi.mock('@/hooks/useNodeDrag', () => ({
 }))
 
 vi.mock('@react-three/drei', () => ({
-  Text: ({ children }: { children: string }) => <div data-testid="node-text">{children}</div>,
-  Billboard: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  Html: ({ children }: { children: React.ReactNode }) => <div data-testid="node-label">{children}</div>,
 }))
 
 describe('OutputNode3D', () => {
@@ -57,7 +56,7 @@ describe('OutputNode3D', () => {
       />
     )
 
-    const labels = screen.getAllByTestId('node-text').map((node) => node.textContent)
+    const labels = screen.getAllByTestId('node-label').map((node) => node.textContent)
     expect(labels).toContain('out: 0')
   })
 })

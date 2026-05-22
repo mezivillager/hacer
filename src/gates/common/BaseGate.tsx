@@ -119,118 +119,118 @@ export function BaseGate(props: BaseGateComponentProps) {
   }
 
   return (
-    <group ref={groupRef} position={position} rotation={rotation}>
-      {/* Main body - gate-specific geometry */}
-      <mesh
-        {...(bodyGeometryProps || {})}
-        {...(bodyGeometryObject ? { geometry: bodyGeometryObject } : {})}
-        onClick={handleClick}
-        onPointerOver={handlePointerOver}
-        onPointerOut={handlePointerOut}
-        onPointerDown={canDrag ? onPointerDown : undefined}
-        onPointerMove={canDrag ? onPointerMove : undefined}
-        onPointerUp={canDrag ? onPointerUp : undefined}
-      >
-        {bodyGeometry}
-        <meshStandardMaterial
-          color={currentBodyColor}
-          metalness={materials.gate.metalness}
-          roughness={materials.gate.roughness}
-          transparent={isDragging}
-          opacity={isDragging ? 0.7 : 1}
-        />
-      </mesh>
+    <>
+      <group ref={groupRef} position={position} rotation={rotation}>
+        {/* Main body - gate-specific geometry */}
+        <mesh
+          {...(bodyGeometryProps || {})}
+          {...(bodyGeometryObject ? { geometry: bodyGeometryObject } : {})}
+          onClick={handleClick}
+          onPointerOver={handlePointerOver}
+          onPointerOut={handlePointerOut}
+          onPointerDown={canDrag ? onPointerDown : undefined}
+          onPointerMove={canDrag ? onPointerMove : undefined}
+          onPointerUp={canDrag ? onPointerUp : undefined}
+        >
+          {bodyGeometry}
+          <meshStandardMaterial
+            color={currentBodyColor}
+            metalness={materials.gate.metalness}
+            roughness={materials.gate.roughness}
+            transparent={isDragging}
+            opacity={isDragging ? 0.7 : 1}
+          />
+        </mesh>
 
-      {/* Floating gate label above body. FloatingLabel itself owns the
-          low-power branch: in low-power mode it renders a crude DOM overlay
-          via Drei <Html> instead of returning null. */}
-      {textLabel && (
-        <FloatingLabel
-          position={[0, 0, 0]}
-          text={gateWidth > 1 ? `${textLabel}:${gateWidth}` : textLabel}
-          offsetY={LABEL_GEOMETRY.GATE.offsetY}
-          fontSize={LABEL_GEOMETRY.GATE.fontSize}
-          lowPowerVariant="html"
-        />
-      )}
+        {/* Additional elements (negation bubble, extra lines, etc.) */}
+        {additionalElements}
 
-      {/* Additional elements (negation bubble, extra lines, etc.) */}
-      {additionalElements}
-
-      {/* Pins - rendered from configuration */}
-      {pinConfigs.map((pinConfig) => {
+        {/* Pins - rendered from configuration */}
+        {pinConfigs.map((pinConfig) => {
         // Explicitly extract values to help ESLint type checker
         const pinValue: number = pinConfig.value
         const pinConnected: boolean = pinConfig.connected
         const pinName: string = pinConfig.pinName
         const isOutput: boolean = pinConfig.pinType === 'output'
 
-        const pinColor = getPinColor(
-          pinValue,
-          pinConnected,
-          pinName,
-          isOutput,
-          isWiring,
-          hoveredPin
-        )
+          const pinColor = getPinColor(
+            pinValue,
+            pinConnected,
+            pinName,
+            isOutput,
+            isWiring,
+            hoveredPin
+          )
 
-        return (
-          <GatePin
-            key={pinConfig.pinId}
-            id={id}
-            pinId={pinConfig.pinId}
-            position={pinConfig.position}
-            color={pinColor}
-            isWiring={isWiring}
-            isHovered={hoveredPin === pinConfig.pinId}
-            isConnected={pinConnected}
-            value={pinValue}
-            pinType={pinConfig.pinType}
-            onPinClick={handlePinClick}
-            onPointerMove={handlePinPointerMove}
-            onPointerOver={createPinHoverHandler(pinName, pinConfig.pinId)}
-            onPointerOut={handlePinOut}
-          />
-        )
-      })}
+          return (
+            <GatePin
+              key={pinConfig.pinId}
+              id={id}
+              pinId={pinConfig.pinId}
+              position={pinConfig.position}
+              color={pinColor}
+              isWiring={isWiring}
+              isHovered={hoveredPin === pinConfig.pinId}
+              isConnected={pinConnected}
+              value={pinValue}
+              pinType={pinConfig.pinType}
+              onPinClick={handlePinClick}
+              onPointerMove={handlePinPointerMove}
+              onPointerOver={createPinHoverHandler(pinName, pinConfig.pinId)}
+              onPointerOut={handlePinOut}
+            />
+          )
+        })}
 
-      {/* Wire stubs - rendered from configuration, only when pins are not connected */}
-      {/* Also hide stub if this pin is currently being wired (even during preview) */}
-      {wireStubPositions
-        .map((stubPosition, index) => {
-          // Map stub position index to corresponding pin config
-          // Order should match: [inputA, inputB, output] for two-input gates
-          // or [input, output] for single-input gates
-          const pinConfig = pinConfigs[index]
-          if (!pinConfig) {
-            return null
-          }
+        {/* Wire stubs - rendered from configuration, only when pins are not connected */}
+        {/* Also hide stub if this pin is currently being wired (even during preview) */}
+        {wireStubPositions
+          .map((stubPosition, index) => {
+            // Map stub position index to corresponding pin config
+            // Order should match: [inputA, inputB, output] for two-input gates
+            // or [input, output] for single-input gates
+            const pinConfig = pinConfigs[index]
+            if (!pinConfig) {
+              return null
+            }
 
-          const isConnected = pinConfig.connected ?? false
+            const isConnected = pinConfig.connected ?? false
 
-          // Check if this pin is currently being wired (hide stub during wiring/preview)
-          // Compare both gate ID and pin ID to determine if this pin is the source of wiring
-          const isBeingWired = wiringFrom !== null &&
-            wiringFrom.fromGateId === id &&
-            wiringFrom.fromPinId === pinConfig.pinId
+            // Check if this pin is currently being wired (hide stub during wiring/preview)
+            // Compare both gate ID and pin ID to determine if this pin is the source of wiring
+            const isBeingWired = wiringFrom !== null &&
+              wiringFrom.fromGateId === id &&
+              wiringFrom.fromPinId === pinConfig.pinId
 
-          const shouldHide = isConnected || isBeingWired
+            const shouldHide = isConnected || isBeingWired
 
-          if (shouldHide) {
-            return null
-          }
+            if (shouldHide) {
+              return null
+            }
 
-          return {
-            position: stubPosition,
-            index,
-            pinId: pinConfig.pinId,
-          }
-        })
-        .filter((item): item is NonNullable<typeof item> => item !== null)
-        .map(({ position, index, pinId }) => (
-          <WireStub key={`stub-${pinId}-${index}`} position={position} />
-        ))}
-    </group>
+            return {
+              position: stubPosition,
+              index,
+              pinId: pinConfig.pinId,
+            }
+          })
+          .filter((item): item is NonNullable<typeof item> => item !== null)
+          .map(({ position, index, pinId }) => (
+            <WireStub key={`stub-${pinId}-${index}`} position={position} />
+          ))}
+      </group>
+
+      {/* Floating gate label rendered OUTSIDE the rotated group so the
+          offsetY pushes it straight up in world space — regardless of the
+          gate's rotation. */}
+      {textLabel && (
+        <FloatingLabel
+          position={position}
+          text={gateWidth > 1 ? `${textLabel}:${gateWidth}` : textLabel}
+          offsetY={LABEL_GEOMETRY.GATE.offsetY}
+        />
+      )}
+    </>
   )
 }
 BaseGate.displayName = 'BaseGate'

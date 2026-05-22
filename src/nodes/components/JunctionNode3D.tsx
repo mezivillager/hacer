@@ -42,25 +42,25 @@ export function JunctionNode3D({ id: _id, position, value, signalId, onClick }: 
     : ''
 
   return (
-    <group position={[position.x, position.y, position.z]}>
-      <mesh onClick={handleClick}>
-        <sphereGeometry args={[JUNCTION_CONFIG.radius, JUNCTION_CONFIG.segments, JUNCTION_CONFIG.segments]} />
-        <meshStandardMaterial
-          color={color}
-          emissive={color}
-          emissiveIntensity={high ? 0.5 : 0.2}
-          metalness={materials.pin.metalness}
-          roughness={materials.pin.roughness}
-        />
-      </mesh>
+    <>
+      <group position={[position.x, position.y, position.z]}>
+        <mesh onClick={handleClick}>
+          <sphereGeometry args={[JUNCTION_CONFIG.radius, JUNCTION_CONFIG.segments, JUNCTION_CONFIG.segments]} />
+          <meshStandardMaterial
+            color={color}
+            emissive={color}
+            emissiveIntensity={high ? 0.5 : 0.2}
+            metalness={materials.pin.metalness}
+            roughness={materials.pin.roughness}
+          />
+        </mesh>
+      </group>
       <FloatingLabel
-        position={[0, 0, 0]}
+        position={[position.x, position.y, position.z]}
         text={labelText}
         offsetY={LABEL_GEOMETRY.JUNCTION.offsetY}
-        fontSize={LABEL_GEOMETRY.JUNCTION.fontSize}
-        lowPowerVariant="html"
       />
-    </group>
+    </>
   )
 }
 JunctionNode3D.displayName = 'JunctionNode3D'

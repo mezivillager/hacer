@@ -123,55 +123,56 @@ export function OutputNode3D({
   }
 
   return (
-    <group
-      ref={groupRef}
-      position={[position.x, position.y, position.z]}
-      rotation={[rotation.x, rotation.y, rotation.z]}
-    >
-      {/* Main body */}
-      <mesh
-        onClick={handleBodyClick}
-        onPointerOver={() => setHovered(true)}
-        onPointerOut={() => { setHovered(false); if (canDrag && !isDragging) onPointerLeave() }}
-        onPointerDown={canDrag ? onPointerDown : undefined}
-        onPointerMove={canDrag ? onPointerMove : undefined}
-        onPointerUp={canDrag ? onPointerUp : undefined}
+    <>
+      <group
+        ref={groupRef}
+        position={[position.x, position.y, position.z]}
+        rotation={[rotation.x, rotation.y, rotation.z]}
       >
-        <boxGeometry args={OUTPUT_NODE_CONFIG.geometry.args} />
-        <meshStandardMaterial
-          color={bodyColor}
-          metalness={materials.gate.metalness}
-          roughness={materials.gate.roughness}
-          transparent={isDragging}
-          opacity={isDragging ? 0.7 : 1}
-        />
-      </mesh>
+        {/* Main body */}
+        <mesh
+          onClick={handleBodyClick}
+          onPointerOver={() => setHovered(true)}
+          onPointerOut={() => { setHovered(false); if (canDrag && !isDragging) onPointerLeave() }}
+          onPointerDown={canDrag ? onPointerDown : undefined}
+          onPointerMove={canDrag ? onPointerMove : undefined}
+          onPointerUp={canDrag ? onPointerUp : undefined}
+        >
+          <boxGeometry args={OUTPUT_NODE_CONFIG.geometry.args} />
+          <meshStandardMaterial
+            color={bodyColor}
+            metalness={materials.gate.metalness}
+            roughness={materials.gate.roughness}
+            transparent={isDragging}
+            opacity={isDragging ? 0.7 : 1}
+          />
+        </mesh>
 
+        {/* Input pin (left side) */}
+        <mesh
+          position={[pinPos.x, pinPos.y, pinPos.z]}
+          onClick={handlePinClick}
+          onPointerOver={handlePinPointerOver}
+          onPointerOut={handlePinPointerOut}
+        >
+          <sphereGeometry args={[NODE_DIMENSIONS.PIN_RADIUS, 16, 16]} />
+          <meshStandardMaterial
+            color={pinColor}
+            emissive={pinColor}
+            emissiveIntensity={high ? 0.5 : 0.2}
+            metalness={materials.pin.metalness}
+            roughness={materials.pin.roughness}
+          />
+        </mesh>
+      </group>
+
+      {/* Label lives outside the rotated group so offsetY is world-space up. */}
       <FloatingLabel
-        position={[0, 0, 0]}
+        position={[position.x, position.y, position.z]}
         text={`${name}: ${formatSignalLabel(value, width)}`}
         offsetY={LABEL_GEOMETRY.NODE.offsetY}
-        fontSize={LABEL_GEOMETRY.NODE.fontSize}
-        lowPowerVariant="html"
       />
-
-      {/* Input pin (left side) */}
-      <mesh
-        position={[pinPos.x, pinPos.y, pinPos.z]}
-        onClick={handlePinClick}
-        onPointerOver={handlePinPointerOver}
-        onPointerOut={handlePinPointerOut}
-      >
-        <sphereGeometry args={[NODE_DIMENSIONS.PIN_RADIUS, 16, 16]} />
-        <meshStandardMaterial
-          color={pinColor}
-          emissive={pinColor}
-          emissiveIntensity={high ? 0.5 : 0.2}
-          metalness={materials.pin.metalness}
-          roughness={materials.pin.roughness}
-        />
-      </mesh>
-    </group>
+    </>
   )
 }
 OutputNode3D.displayName = 'OutputNode3D'

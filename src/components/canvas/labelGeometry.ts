@@ -1,10 +1,11 @@
 /**
  * Schematic-style label sizing presets for 3D floating labels.
  *
- * Font sizes follow the KiCad/Altium reference-designator convention of
- * roughly 30–40% of the component's smaller body dimension. `offsetY` is
- * body half-height + a small (~0.20) gap, so labels sit just above the
- * bounding box instead of floating high above the scene.
+ * `fontSize` is retained for parity with the previous SDF Billboard renderer
+ * (which scaled in world units); the current DOM-overlay implementation in
+ * `FloatingLabel.tsx` ignores it but the presets keep it documented in case
+ * we re-introduce a world-space variant later. `offsetY` is body half-height
+ * plus a small (~0.20) gap so labels sit just above the bounding box.
  *
  * Kept in its own module so `FloatingLabel.tsx` stays HMR-clean
  * (react-refresh/only-export-components).
@@ -16,6 +17,4 @@ export const LABEL_GEOMETRY = {
   GATE: { fontSize: 0.22, offsetY: 0.6 },
   /** Junction sphere radius 0.08. */
   JUNCTION: { fontSize: 0.14, offsetY: 0.32 },
-  /** Wire labels float just above the wire line itself. */
-  WIRE: { fontSize: 0.16, offsetY: 0.2 },
 } as const
