@@ -111,5 +111,5 @@ HTMLCanvasElement.prototype.getContext = function (
       drawingBufferHeight: 150,
     } as unknown as RenderingContext
   }
-  return originalGetContext.apply(this, [type, ...args] as Parameters<typeof originalGetContext>) as RenderingContext | null
+  return originalGetContext.apply(this, [type, ...args] as Parameters<typeof originalGetContext>)
 } as unknown as typeof HTMLCanvasElement.prototype.getContext
