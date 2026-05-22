@@ -310,14 +310,14 @@ describe('XOR Circuit Integration', () => {
     // This test verifies the visual wiring can be generated
     // XOR layout positions (all gates positioned on section lines)
     const positions = {
-      inputA: { x: 0, y: 0.2, z: 0 } as Position,
-      inputB: { x: 0, y: 0.2, z: 8 } as Position,
-      not1: { x: 8, y: 0.2, z: 0 } as Position,   // Not(in=a)
-      not2: { x: 8, y: 0.2, z: 8 } as Position,   // Not(in=b)
-      and1: { x: 16, y: 0.2, z: 2 } as Position,  // And(a, notB)
-      and2: { x: 16, y: 0.2, z: 6 } as Position,  // And(notA, b)
-      or: { x: 24, y: 0.2, z: 4 } as Position,    // Or
-      output: { x: 32, y: 0.2, z: 4 } as Position,
+      inputA: { x: 0, y: 0.2, z: 0 },
+      inputB: { x: 0, y: 0.2, z: 8 },
+      not1: { x: 8, y: 0.2, z: 0 },   // Not(in=a)
+      not2: { x: 8, y: 0.2, z: 8 },   // Not(in=b)
+      and1: { x: 16, y: 0.2, z: 2 },  // And(a, notB)
+      and2: { x: 16, y: 0.2, z: 6 },  // And(notA, b)
+      or: { x: 24, y: 0.2, z: 4 },    // Or
+      output: { x: 32, y: 0.2, z: 4 },
     }
 
     // Calculate junction for input 'a' fan-out (goes to not1 and and1)

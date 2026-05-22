@@ -13,7 +13,6 @@ import {
   ALL_GATE_TYPES,
   TWO_INPUT_GATES,
   SINGLE_INPUT_GATES,
-  type GateType,
 } from '../../config/constants'
 import {
   addGateViaUI,
@@ -78,7 +77,7 @@ test.describe('Gate Types @ui @gates', () => {
     for (const gateType of SINGLE_INPUT_GATES) {
       test(`${gateType} gate has 1 input and 1 output`, async ({ page }) => {
         await addGateViaUI(page, {
-          type: gateType as GateType,
+          type: gateType,
           position: DEFAULT_POSITIONS.center,
         })
 
@@ -107,7 +106,7 @@ test.describe('Gate Types @ui @gates', () => {
     for (const gateType of TWO_INPUT_GATES) {
       test(`${gateType} gate has 2 inputs and 1 output`, async ({ page }) => {
         await addGateViaUI(page, {
-          type: gateType as GateType,
+          type: gateType,
           position: DEFAULT_POSITIONS.center,
         })
 
