@@ -8,6 +8,7 @@ import { getPinColor, getWorldPosition, createGateClickHandler, createPinPointer
 import type { GateType } from '@/store/types'
 import type { PinConfig } from '../types'
 import { FloatingLabel } from '@/components/canvas/FloatingLabel'
+import { LABEL_GEOMETRY } from '@/components/canvas/labelGeometry'
 
 interface BaseGateComponentProps {
   id: string
@@ -61,7 +62,6 @@ export function BaseGate(props: BaseGateComponentProps) {
 
   // Subscribe to wiring state to reactively hide stubs during wiring
   const wiringFrom = useCircuitStore((s) => s.wiringFrom)
-  const performanceMode = useCircuitStore((s) => s.performanceMode)
   const gateWidth = useCircuitStore((s) => s.gates.find((g) => g.id === id)?.width ?? 1)
 
   // Drag functionality - use getState() to avoid subscriptions that cause re-renders
@@ -141,12 +141,16 @@ export function BaseGate(props: BaseGateComponentProps) {
         />
       </mesh>
 
-      {/* Floating gate label above body */}
-      {textLabel && performanceMode !== 'low-power' && (
+      {/* Floating gate label above body. FloatingLabel itself owns the
+          low-power branch: in low-power mode it renders a crude DOM overlay
+          via Drei <Html> instead of returning null. */}
+      {textLabel && (
         <FloatingLabel
           position={[0, 0, 0]}
           text={gateWidth > 1 ? `${textLabel}:${gateWidth}` : textLabel}
-          offsetY={1.4}
+          offsetY={LABEL_GEOMETRY.GATE.offsetY}
+          fontSize={LABEL_GEOMETRY.GATE.fontSize}
+          lowPowerVariant="html"
         />
       )}
 
