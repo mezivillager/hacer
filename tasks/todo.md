@@ -51,6 +51,16 @@ Next unchecked Layer 1 ticket:
 - Verification: lint, 1268 unit tests, store E2E (3 specs flaked in the long 17.9-min sequential run but all 19 passed on targeted re-run — same wiring-junction-style timing flake noted earlier in this todo), production build all green.
 - Known limitation: junction labels at `offsetY=0.32` may visually clip very short wires; ship-as-is and revisit if smoke surfaces a real problem.
 
+## P05-13 follow-up — Label uniform DOM style (2026-05-22)
+
+- `FloatingLabel` now renders a Drei `<Html>` DOM overlay in **both** performance modes. The SDF `<Text>` + `<Billboard>` branch is gone. Style is monospace 11 px on a dark translucent background, mirroring the KiCad/Altium reference-designator look the user preferred.
+- Removed the `lowPowerVariant` prop (always-HTML now); every call site drops it.
+- Gate label orientation fix: `BaseGate.tsx`, `InputNode3D.tsx`, `OutputNode3D.tsx`, and `JunctionNode3D.tsx` now render their `<FloatingLabel>` as a **sibling** of the rotated `<group>` (using world-space `position`), so `offsetY` is always world-space up — independent of the entity's `rotation`. Previously, rotated gates pushed the label off to the side.
+- Wire labels removed entirely. `CanvasArea` no longer computes a `signalLabel`; `Wire3D` no longer accepts the prop. Wire color (active vs idle) still indicates state, and the connected output node label shows the value.
+- `LABEL_GEOMETRY.WIRE` preset dropped from `labelGeometry.ts`.
+- Test mocks updated: `BaseGate.test.tsx`, `InputNode3D.test.tsx`, `OutputNode3D.test.tsx`, and `FloatingLabel.test.tsx` mock only `Html` now (drop `Text`/`Billboard`); assertions look up the rendered label DOM via `data-testid`.
+- Verification: lint, 1263 unit tests, production build all green.
+
 ## PropertiesPanel width editor (2026-05-21)
 
 - Added `updateInputNodeWidth(id, width)` and `updateOutputNodeWidth(id, width)` actions in `src/store/actions/nodeActions/nodeActions.ts`, following the simpler `updateInputNodeValue` Immer-mutation pattern (no validation analog to `validateNodeName`). Wired into the `circuitActions` facade (`src/store/circuitStore.ts`) and the `NodeActions` interface (`src/store/types.ts`).
