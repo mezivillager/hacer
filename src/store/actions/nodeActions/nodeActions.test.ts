@@ -434,4 +434,106 @@ describe('Node Actions', () => {
       expect(useCircuitStore.getState().outputNodes.length).toBe(before)
     })
   })
+
+  describe('updateInputNodeWidth — width cascade', () => {
+    it('propagates new width to a directly-connected wire and the gate at the other end', () => {
+      const store = useCircuitStore.getState()
+      const inNode = store.addInputNode('in', { x: 0, y: 0, z: 0 }, 1)
+      const not = store.addGate('NOT', { x: 4, y: 0, z: 0 })
+      store.addWire(
+        { type: 'input', entityId: inNode.id },
+        { type: 'gate', entityId: not.id, pinId: not.inputs[0].id },
+        []
+      )
+
+      store.updateInputNodeWidth(inNode.id, 4)
+
+      const after = useCircuitStore.getState()
+      expect(after.inputNodes.find((n) => n.id === inNode.id)?.width).toBe(4)
+      const gateAfter = after.gates.find((g) => g.id === not.id)
+      expect(gateAfter?.width).toBe(4)
+      expect(gateAfter?.inputs.every((p) => p.width === 4)).toBe(true)
+      expect(gateAfter?.outputs.every((p) => p.width === 4)).toBe(true)
+      const wireAfter = after.wires[0]
+      expect(wireAfter?.width).toBe(4)
+    })
+
+    it('cascades width across the whole connected component (input → NOT → output)', () => {
+      const store = useCircuitStore.getState()
+      const inNode = store.addInputNode('in', { x: 0, y: 0, z: 0 }, 1)
+      const not = store.addGate('NOT', { x: 4, y: 0, z: 0 })
+      const outNode = store.addOutputNode('out', { x: 8, y: 0, z: 0 }, 1)
+      store.addWire(
+        { type: 'input', entityId: inNode.id },
+        { type: 'gate', entityId: not.id, pinId: not.inputs[0].id },
+        []
+      )
+      store.addWire(
+        { type: 'gate', entityId: not.id, pinId: not.outputs[0].id },
+        { type: 'output', entityId: outNode.id },
+        []
+      )
+
+      store.updateInputNodeWidth(inNode.id, 4)
+
+      const after = useCircuitStore.getState()
+      expect(after.inputNodes.find((n) => n.id === inNode.id)?.width).toBe(4)
+      expect(after.gates.find((g) => g.id === not.id)?.width).toBe(4)
+      expect(after.outputNodes.find((n) => n.id === outNode.id)?.width).toBe(4)
+      for (const wire of after.wires) {
+        expect(wire.width).toBe(4)
+      }
+    })
+
+    it('does NOT touch entities in a disconnected component', () => {
+      const store = useCircuitStore.getState()
+      const a = store.addInputNode('a', { x: 0, y: 0, z: 0 }, 1)
+      const notA = store.addGate('NOT', { x: 4, y: 0, z: 0 })
+      store.addWire(
+        { type: 'input', entityId: a.id },
+        { type: 'gate', entityId: notA.id, pinId: notA.inputs[0].id },
+        []
+      )
+      // Separate, unconnected circuit
+      const b = store.addInputNode('b', { x: 0, y: 0, z: 4 }, 1)
+      const notB = store.addGate('NOT', { x: 4, y: 0, z: 4 })
+      store.addWire(
+        { type: 'input', entityId: b.id },
+        { type: 'gate', entityId: notB.id, pinId: notB.inputs[0].id },
+        []
+      )
+
+      store.updateInputNodeWidth(a.id, 4)
+
+      const after = useCircuitStore.getState()
+      expect(after.inputNodes.find((n) => n.id === b.id)?.width).toBe(1)
+      expect(after.gates.find((g) => g.id === notB.id)?.width).toBe(1)
+    })
+  })
+
+  describe('updateOutputNodeWidth — width cascade', () => {
+    it('cascades width backwards through the connected component', () => {
+      const store = useCircuitStore.getState()
+      const inNode = store.addInputNode('in', { x: 0, y: 0, z: 0 }, 1)
+      const not = store.addGate('NOT', { x: 4, y: 0, z: 0 })
+      const outNode = store.addOutputNode('out', { x: 8, y: 0, z: 0 }, 1)
+      store.addWire(
+        { type: 'input', entityId: inNode.id },
+        { type: 'gate', entityId: not.id, pinId: not.inputs[0].id },
+        []
+      )
+      store.addWire(
+        { type: 'gate', entityId: not.id, pinId: not.outputs[0].id },
+        { type: 'output', entityId: outNode.id },
+        []
+      )
+
+      store.updateOutputNodeWidth(outNode.id, 8)
+
+      const after = useCircuitStore.getState()
+      expect(after.outputNodes.find((n) => n.id === outNode.id)?.width).toBe(8)
+      expect(after.gates.find((g) => g.id === not.id)?.width).toBe(8)
+      expect(after.inputNodes.find((n) => n.id === inNode.id)?.width).toBe(8)
+    })
+  })
 })
