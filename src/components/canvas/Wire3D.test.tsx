@@ -11,6 +11,7 @@
 import { describe, it, expect } from 'vitest'
 import { Wire3D } from './Wire3D'
 import { getWireArcPointCount, getWireLineWidth } from './wireRenderConfig'
+import { LABEL_GEOMETRY } from './labelGeometry'
 
 describe('Wire3D', () => {
   describe('exports', () => {
@@ -24,6 +25,13 @@ describe('Wire3D', () => {
 
     it('has correct function name', () => {
       expect(Wire3D.name).toBe('Wire3D')
+    })
+  })
+
+  describe('label sizing', () => {
+    it('exports a wire label preset that is smaller than the gate preset', () => {
+      expect(LABEL_GEOMETRY.WIRE.fontSize).toBeLessThan(LABEL_GEOMETRY.GATE.fontSize)
+      expect(LABEL_GEOMETRY.WIRE.offsetY).toBeLessThan(LABEL_GEOMETRY.GATE.offsetY)
     })
   })
 

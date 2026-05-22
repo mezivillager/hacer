@@ -5,6 +5,7 @@ import type { WireSegment, WirePath } from '@/utils/wiringScheme/types'
 import { WIRE_HEIGHT, HOP_HEIGHT } from '@/utils/wiringScheme/types'
 import { getWireArcPointCount, getWireLineWidth } from './wireRenderConfig'
 import { FloatingLabel } from './FloatingLabel'
+import { LABEL_GEOMETRY } from './labelGeometry'
 
 interface Wire3DProps {
   /** Start position (for validation only - actual path uses segments) */
@@ -197,8 +198,9 @@ export function Wire3D({
         <FloatingLabel
           position={[midPoint.x, midPoint.y, midPoint.z]}
           text={signalLabel}
-          offsetY={0.3}
-          fontSize={0.22}
+          offsetY={LABEL_GEOMETRY.WIRE.offsetY}
+          fontSize={LABEL_GEOMETRY.WIRE.fontSize}
+          lowPowerVariant="html"
         />
       )}
     </>
