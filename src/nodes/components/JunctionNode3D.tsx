@@ -4,6 +4,7 @@ import { JUNCTION_CONFIG } from '../config'
 import type { Position } from '@/store/types'
 import { isSignalHigh } from '@/simulation/signalDisplay'
 import { FloatingLabel } from '@/components/canvas/FloatingLabel'
+import { LABEL_GEOMETRY } from '@/components/canvas/labelGeometry'
 
 interface JunctionNode3DProps {
   /** Unique identifier for the junction */
@@ -52,7 +53,13 @@ export function JunctionNode3D({ id: _id, position, value, signalId, onClick }: 
           roughness={materials.pin.roughness}
         />
       </mesh>
-      <FloatingLabel position={[0, 0, 0]} text={labelText} offsetY={0.8} fontSize={0.25} />
+      <FloatingLabel
+        position={[0, 0, 0]}
+        text={labelText}
+        offsetY={LABEL_GEOMETRY.JUNCTION.offsetY}
+        fontSize={LABEL_GEOMETRY.JUNCTION.fontSize}
+        lowPowerVariant="html"
+      />
     </group>
   )
 }
