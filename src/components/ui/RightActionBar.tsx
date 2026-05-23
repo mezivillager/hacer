@@ -318,12 +318,13 @@ function QuickActionButton({
   icon: Icon,
   label,
   onClick,
-  ...rest
+  'data-testid': dataTestId,
 }: {
   icon: IconComponent
   label: string
   onClick?: () => void
-} & Pick<React.ComponentProps<'button'>, 'data-testid'>) {
+  'data-testid'?: string
+}) {
   const disabled = !onClick
   return (
     <Button
@@ -332,7 +333,7 @@ function QuickActionButton({
       className="w-full justify-between h-8 text-xs"
       onClick={onClick}
       disabled={disabled}
-      {...rest}
+      data-testid={dataTestId}
     >
       <div className="flex items-center gap-2">
         <Icon className="w-3 h-3" />
