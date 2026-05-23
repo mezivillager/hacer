@@ -167,3 +167,86 @@ describe('loadCircuit', () => {
     expect(circuitActions.loadCircuit('future')).toBe(false)
   })
 })
+
+describe('exportCircuitJSON', () => {
+  it('triggers a Blob URL download with the serialized JSON', () => {
+    const gate = circuitActions.addGate('NAND', { x: 0, y: 0, z: 0 })
+
+    const createObjectURL = vi.fn().mockReturnValue('blob:hacer-test')
+    const revokeObjectURL = vi.fn()
+    const originalURL = globalThis.URL
+    globalThis.URL = { ...originalURL, createObjectURL, revokeObjectURL } as unknown as typeof URL
+
+    const click = vi.fn()
+    const remove = vi.fn()
+    const anchor = { click, remove, href: '', download: '', style: {} as CSSStyleDeclaration } as unknown as HTMLAnchorElement
+    const createElement = vi.spyOn(document, 'createElement').mockReturnValue(anchor)
+
+    try {
+      circuitActions.exportCircuitJSON('export-1')
+      expect(createObjectURL).toHaveBeenCalledTimes(1)
+      expect(click).toHaveBeenCalledTimes(1)
+      const [blob] = createObjectURL.mock.calls[0] as [Blob]
+      expect(blob).toBeInstanceOf(Blob)
+      expect(anchor.download).toBe('export-1.circuit.json')
+
+      return blob.text().then((text) => {
+        const parsed = JSON.parse(text)
+        expect(parsed.name).toBe('export-1')
+        expect(parsed.gates).toHaveLength(1)
+        expect(parsed.gates[0].id).toBe(gate.id)
+      })
+    } finally {
+      globalThis.URL = originalURL
+      createElement.mockRestore()
+    }
+  })
+})
+
+describe('importCircuitJSON', () => {
+  it('replaces current state with the imported JSON and returns true', () => {
+    const blob = JSON.stringify({
+      version: 1,
+      name: 'imported',
+      savedAt: new Date().toISOString(),
+      gates: [
+        {
+          id: 'gate-imp-1',
+          type: 'NAND',
+          position: { x: 0, y: 0, z: 0 },
+          rotation: { x: Math.PI / 2, y: 0, z: 0 },
+          width: 1,
+        },
+      ],
+      wires: [],
+      inputNodes: [],
+      outputNodes: [],
+      junctions: [],
+    })
+    expect(circuitActions.importCircuitJSON(blob)).toBe(true)
+    const state = useCircuitStore.getState()
+    expect(state.gates).toHaveLength(1)
+    expect(state.gates[0].id).toBe('gate-imp-1')
+  })
+
+  it('returns false on invalid JSON', () => {
+    expect(circuitActions.importCircuitJSON('not json')).toBe(false)
+  })
+
+  it('returns false on unsupported version', () => {
+    expect(
+      circuitActions.importCircuitJSON(
+        JSON.stringify({
+          version: 999,
+          name: 'x',
+          savedAt: new Date().toISOString(),
+          gates: [],
+          wires: [],
+          inputNodes: [],
+          outputNodes: [],
+          junctions: [],
+        }),
+      ),
+    ).toBe(false)
+  })
+})
