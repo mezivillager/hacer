@@ -98,7 +98,7 @@ describe('CircuitLibrary', () => {
     const file = new File([blob], 'imp.circuit.json', { type: 'application/json' })
 
     render(<CircuitLibrary />)
-    const input = screen.getByTestId('library-import-input') as HTMLInputElement
+    const input = screen.getByTestId('library-import-input')
     Object.defineProperty(input, 'files', { value: [file] })
     fireEvent.change(input)
 

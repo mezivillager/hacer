@@ -90,7 +90,9 @@ export function CircuitLibrary() {
             type="file"
             accept="application/json,.json"
             className="hidden"
-            onChange={handleImportChange}
+            onChange={(e) => {
+              void handleImportChange(e)
+            }}
           />
         </div>
       </div>
