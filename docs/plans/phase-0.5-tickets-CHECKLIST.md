@@ -7,9 +7,9 @@
 **When to mark done:** Change `[ ]` → `[x]` when the ticket is merged (or intentionally complete on your integration branch) **and** HACER definition of done passes:  
 `pnpm run lint` · `pnpm run test:run` · `pnpm run test:e2e:store` · `pnpm run build`
 
-**Last reviewed:** 2026-05-18 — checkboxes below match `main` (or current branch) + expected code paths.
+**Last reviewed:** 2026-05-23 — checkboxes below match `main` (or current branch) + expected code paths.
 
-**Verified this pass:** P05-01 `src/core/chips/`; P05-02 `Pin.value` / nodes `number` in `src/store/types.ts`; P05-03 `src/simulation/topologicalEval.ts`; P05-04 `src/core/hdl/`; P05-05 `src/core/testing/tstParser.ts`; P05-06 `src/core/testing/cmpParser.ts`; P05-08 rename actions, PropertiesPanel, and node rename E2E; P05-09 status actions, StatusBar, and store E2E; P05-10 `src/components/ui/PinoutPanel.tsx`, `src/components/ui/RightActionBar.tsx`, `src/components/ui/PinoutPanel.test.tsx`, and `e2e/specs/ui-shell/pinout-panel.store.spec.ts`; P05-11 `src/simulation/busOps.ts`, `src/simulation/busOps.test.ts`, `src/simulation/topologicalEval.ts`, `src/simulation/topologicalEval.test.ts`, `src/store/types.ts`, `src/store/actions/wireActions/wireActions.ts`, `src/store/actions/wireActions/wireActions.test.ts`, `src/store/actions/wiringActions/wiringActions.ts`, and `src/store/actions/wiringActions/wiringActions.test.ts`.
+**Verified this pass:** P05-01 `src/core/chips/`; P05-02 `Pin.value` / nodes `number` in `src/store/types.ts`; P05-03 `src/simulation/topologicalEval.ts`; P05-04 `src/core/hdl/`; P05-05 `src/core/testing/tstParser.ts`; P05-06 `src/core/testing/cmpParser.ts`; P05-08 rename actions, PropertiesPanel, and node rename E2E; P05-09 status actions, StatusBar, and store E2E; P05-10 `src/components/ui/PinoutPanel.tsx`, `src/components/ui/RightActionBar.tsx`, `src/components/ui/PinoutPanel.test.tsx`, and `e2e/specs/ui-shell/pinout-panel.store.spec.ts`; P05-11 `src/simulation/busOps.ts`, `src/simulation/busOps.test.ts`, `src/simulation/topologicalEval.ts`, `src/simulation/topologicalEval.test.ts`, `src/store/types.ts`, `src/store/actions/wireActions/wireActions.ts`, `src/store/actions/wireActions/wireActions.test.ts`, `src/store/actions/wiringActions/wiringActions.ts`, and `src/store/actions/wiringActions/wiringActions.test.ts`; P05-14 `src/core/serialization/*`, `src/store/actions/persistenceActions/*`, `src/components/ui/CircuitLibrary.{tsx,test.tsx}`, `src/components/ui/RightActionBar.tsx`, and `e2e/specs/persistence/circuit-persistence.store.spec.ts`.
 
 ---
 
@@ -30,7 +30,7 @@
 - [x] **P05-11** — Bus simulation + multi-bit wires — needs P05-02 — [P05-11.md](./phase-0.5-tickets/P05-11.md)
 - [ ] **P05-12** — Bus 3D components — needs P05-02 — [P05-12.md](./phase-0.5-tickets/P05-12.md)
 - [x] **P05-13** — Multi-bit I/O UI — needs P05-02 — [P05-13.md](./phase-0.5-tickets/P05-13.md)
-- [ ] **P05-14** — Circuit persistence — needs P05-03 — [P05-14.md](./phase-0.5-tickets/P05-14.md)
+- [x] **P05-14** — Circuit persistence — needs P05-03 — [P05-14.md](./phase-0.5-tickets/P05-14.md)
 - [ ] **P05-15** — Builtin chip implementations (16 chips) — needs P05-01 — [P05-15.md](./phase-0.5-tickets/P05-15.md)
 - [ ] **P05-16** — HDL compiler — needs P05-04, P05-01 — [P05-16.md](./phase-0.5-tickets/P05-16.md)
 
