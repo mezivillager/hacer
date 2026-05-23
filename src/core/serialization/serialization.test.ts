@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { useCircuitStore, circuitActions } from '@/store/circuitStore'
 import { serializeCircuit } from './serialize'
+import { deserializeCircuit } from './deserialize'
 import { CIRCUIT_FORMAT_VERSION } from './types'
 
 beforeEach(() => {
@@ -96,5 +97,113 @@ describe('serializeCircuit', () => {
       arcRadius: 0.075,
       crossedWireId: 'some-other-wire',
     })
+  })
+})
+
+describe('deserializeCircuit', () => {
+  it('rejects unknown version', () => {
+    expect(() =>
+      deserializeCircuit({
+        version: 0 as 1,
+        name: 'x',
+        savedAt: '',
+        gates: [],
+        wires: [],
+        inputNodes: [],
+        outputNodes: [],
+        junctions: [],
+      }),
+    ).toThrow(/Unsupported circuit version/)
+  })
+
+  it('round-trips an empty circuit', () => {
+    const out = serializeCircuit(useCircuitStore.getState(), 'empty')
+    const restored = deserializeCircuit(out)
+    expect(restored).toEqual({ gates: [], wires: [], inputNodes: [], outputNodes: [], junctions: [] })
+  })
+
+  it('round-trips a single gate and preserves its id, width, and pin ids', () => {
+    const gate = circuitActions.addGate('NAND', { x: 4, y: 0, z: 4 }, 1)
+    const expectedInIds = gate.inputs.map((p) => p.id)
+    const expectedOutIds = gate.outputs.map((p) => p.id)
+
+    const blob = serializeCircuit(useCircuitStore.getState(), 'one-gate')
+    const restored = deserializeCircuit(blob)
+
+    expect(restored.gates).toHaveLength(1)
+    expect(restored.gates[0].id).toBe(gate.id)
+    expect(restored.gates[0].width).toBe(1)
+    expect(restored.gates[0].inputs.map((p) => p.id)).toEqual(expectedInIds)
+    expect(restored.gates[0].outputs.map((p) => p.id)).toEqual(expectedOutIds)
+  })
+
+  it('round-trips a 16-bit gate', () => {
+    const gate = circuitActions.addGate('AND', { x: 0, y: 0, z: 0 }, 16)
+    const blob = serializeCircuit(useCircuitStore.getState(), 'wide')
+    const restored = deserializeCircuit(blob)
+    expect(restored.gates[0].width).toBe(16)
+    expect(restored.gates[0].inputs.every((p) => p.width === 16)).toBe(true)
+    expect(restored.gates[0].outputs.every((p) => p.width === 16)).toBe(true)
+    expect(restored.gates[0].id).toBe(gate.id)
+  })
+
+  it('round-trips a gate-to-gate wire with arc segment', () => {
+    const a = circuitActions.addGate('NAND', { x: -4, y: 0, z: 0 })
+    const b = circuitActions.addGate('NAND', { x: 4, y: 0, z: 0 })
+    circuitActions.addWire(
+      { type: 'gate', entityId: a.id, pinId: `${a.id}-out-0` },
+      { type: 'gate', entityId: b.id, pinId: `${b.id}-in-0` },
+      [
+        { start: { x: -3, y: 0.2, z: 0 }, end: { x: 0, y: 0.2, z: 0 }, type: 'horizontal' },
+        {
+          start: { x: 0, y: 0.2, z: 0 },
+          end: { x: 0.15, y: 0.2, z: 0 },
+          type: 'arc',
+          arcCenter: { x: 0.075, y: 0.2, z: 0 },
+          arcRadius: 0.075,
+          crossedWireId: 'other',
+        },
+        { start: { x: 0.15, y: 0.2, z: 0 }, end: { x: 3, y: 0.2, z: 0 }, type: 'horizontal' },
+      ],
+    )
+    const blob = serializeCircuit(useCircuitStore.getState(), 'arced')
+    const restored = deserializeCircuit(blob)
+    expect(restored.wires).toHaveLength(1)
+    expect(restored.wires[0].segments).toEqual(blob.wires[0].segments)
+    expect(restored.wires[0].from).toEqual(blob.wires[0].from)
+  })
+
+  it('round-trips junctions with signalId and wireIds', () => {
+    const a = circuitActions.addGate('NAND', { x: 0, y: 0, z: 0 })
+    const blob: ReturnType<typeof serializeCircuit> = {
+      version: 1,
+      name: 'jn',
+      savedAt: new Date().toISOString(),
+      gates: [
+        {
+          id: a.id,
+          type: 'NAND',
+          position: { x: 0, y: 0, z: 0 },
+          rotation: { x: Math.PI / 2, y: 0, z: 0 },
+          width: 1,
+        },
+      ],
+      wires: [],
+      inputNodes: [],
+      outputNodes: [],
+      junctions: [
+        { id: 'junction-test-1', position: { x: 2, y: 0.2, z: 0 }, signalId: 'sig-1', wireIds: ['wire-a', 'wire-b'] },
+      ],
+    }
+    const restored = deserializeCircuit(blob)
+    expect(restored.junctions).toEqual(blob.junctions)
+  })
+
+  it('honors the saved InputNode value (does not re-default to 1)', () => {
+    const i = circuitActions.addInputNode('a', { x: 0, y: 0, z: 0 })
+    circuitActions.updateInputNodeValue(i.id, 0)
+    const blob = serializeCircuit(useCircuitStore.getState(), 'val')
+    const restored = deserializeCircuit(blob)
+    expect(restored.inputNodes[0].value).toBe(0)
   })
 })
