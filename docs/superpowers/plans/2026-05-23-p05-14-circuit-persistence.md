@@ -887,11 +887,11 @@ export const createPersistenceActions = (_set: SetState, get: GetState): Persist
   },
 
   exportCircuitJSON: (_name?: string) => {
-    throw new Error('exportCircuitJSON: not implemented yet (Task 9)')
+    throw new Error('exportCircuitJSON: not implemented yet (Task 8)')
   },
 
   importCircuitJSON: (_json: string) => {
-    throw new Error('importCircuitJSON: not implemented yet (Task 9)')
+    throw new Error('importCircuitJSON: not implemented yet (Task 8)')
   },
 })
 ```
@@ -1937,7 +1937,24 @@ git commit -m "feat(ui): right-rail Circuit Library panel + live Export/Import q
 ### Task 13: Playwright store test for persistence round-trip
 
 **Files:**
+- Modify: `e2e/types/globals.ts` (extend `CircuitActionsAPI` so the new methods are visible to Playwright TypeScript)
 - Create: `e2e/specs/persistence/circuit-persistence.store.spec.ts`
+
+- [ ] **Step 13.0: Extend `CircuitActionsAPI` for the new persistence surface**
+
+The runtime exposure happens automatically — `circuitStore.ts` already assigns `window.__CIRCUIT_ACTIONS__ = circuitActions`, and Task 6 added save/load/list/delete/export/import to `circuitActions`. But the TypeScript contract in `e2e/types/globals.ts` does **not** know about them yet, so Playwright spec typecheck will fail without this step.
+
+Open `e2e/types/globals.ts` and add the following block at the bottom of the `CircuitActionsAPI` interface (just before the closing `}`):
+
+```typescript
+  // Persistence actions (P05-14)
+  saveCircuit: (name: string) => void
+  loadCircuit: (name: string) => boolean
+  listSavedCircuits: () => Array<{ name: string; savedAt: string }>
+  deleteSavedCircuit: (name: string) => void
+  exportCircuitJSON: (name?: string) => void
+  importCircuitJSON: (json: string) => boolean
+```
 
 - [ ] **Step 13.1: Write the spec**
 
@@ -2058,7 +2075,7 @@ Expected: 3 tests PASS.
 - [ ] **Step 13.3: Commit**
 
 ```bash
-git add e2e/specs/persistence/circuit-persistence.store.spec.ts
+git add e2e/types/globals.ts e2e/specs/persistence/circuit-persistence.store.spec.ts
 git commit -m "test(e2e): @persistence store spec for save/load/import round-trip (P05-14)"
 ```
 
