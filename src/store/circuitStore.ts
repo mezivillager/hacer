@@ -14,6 +14,7 @@ import { createNodePlacementActions } from './actions/nodePlacementActions/nodeP
 import { createJunctionPlacementActions } from './actions/junctionPlacementActions/junctionPlacementActions'
 import { createStatusActions } from './actions/statusActions/statusActions'
 import { createPersistenceActions } from './actions/persistenceActions/persistenceActions'
+import { subscribeAutosave } from './actions/persistenceActions/autosave'
 import { readPerformanceMode } from '@/lib/performanceModeStorage'
 import { calculateWirePathFromConnection } from '@/utils/wiringScheme'
 import { collectWireSegments } from '@/utils/wiringScheme/segments'
@@ -130,6 +131,8 @@ useCircuitStore.subscribe(
     }
   }
 )
+
+subscribeAutosave()
 
 // Legacy exports for backward compatibility during migration
 // circuitStore gives direct access to the current state (readonly)
