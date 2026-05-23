@@ -182,6 +182,13 @@ export interface CircuitActionsAPI {
     toGateId: string,
     toPinId: string
   ) => WireSegment[] | null
+  // Persistence actions (P05-14)
+  saveCircuit: (name: string) => void
+  loadCircuit: (name: string) => boolean
+  listSavedCircuits: () => Array<{ name: string; savedAt: string }>
+  deleteSavedCircuit: (name: string) => void
+  exportCircuitJSON: (name?: string) => void
+  importCircuitJSON: (json: string) => boolean
 }
 
 export interface RenderTrackerStats {
