@@ -139,6 +139,13 @@ export function createMockStore(partial: Partial<CircuitState> = {}): CircuitSto
     }),
     clearStatus: () => {},
     clearAllStatus: () => {},
+    // Persistence actions
+    saveCircuit: () => {},
+    loadCircuit: () => false,
+    listSavedCircuits: () => [],
+    deleteSavedCircuit: () => {},
+    exportCircuitJSON: () => {},
+    importCircuitJSON: () => false,
   } satisfies CircuitStore
 }
 
