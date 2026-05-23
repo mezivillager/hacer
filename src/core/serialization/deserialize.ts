@@ -106,7 +106,7 @@ function reconstructJunction(s: SerializedJunction): JunctionNode {
 
 export function deserializeCircuit(data: SerializedCircuit): DeserializedCircuit {
   if (data.version !== CIRCUIT_FORMAT_VERSION) {
-    throw new Error(`Unsupported circuit version: ${data.version}`)
+    throw new Error(`Unsupported circuit version: ${String(data.version)}`)
   }
   return {
     gates: data.gates.map(reconstructGate),

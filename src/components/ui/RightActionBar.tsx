@@ -14,6 +14,7 @@ import {
   Play,
   Undo2,
   Redo2,
+  FolderOpen,
 } from 'lucide-react'
 import { Button } from '@/components/ui-kit/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui-kit/tooltip'
@@ -21,9 +22,10 @@ import { Separator } from '@/components/ui-kit/separator'
 import { cn } from '@/lib/utils'
 import { ComingSoon } from './coming-soon'
 import { PinoutPanel } from './PinoutPanel'
-import { useCircuitStore } from '@/store/circuitStore'
+import { CircuitLibrary } from './CircuitLibrary'
+import { useCircuitStore, circuitActions } from '@/store/circuitStore'
 
-type ActivePanel = 'info' | 'history' | 'layers' | null
+type ActivePanel = 'info' | 'history' | 'layers' | 'library' | null
 
 const PANEL_WIDTH = 280
 
@@ -86,6 +88,21 @@ export function RightActionBar() {
               </Button>
             </TooltipTrigger>
             <TooltipContent side="left">History</TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                data-testid="right-bar-library-trigger"
+                variant={activePanel === 'library' ? 'secondary' : 'ghost'}
+                size="icon"
+                className="w-8 h-8"
+                onClick={() => togglePanel('library')}
+              >
+                <FolderOpen className="w-4 h-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="left">Circuit Library</TooltipContent>
           </Tooltip>
 
           <Separator className="my-1" />
@@ -157,6 +174,7 @@ export function RightActionBar() {
               {activePanel === 'info' && 'Circuit Info'}
               {activePanel === 'layers' && 'Layers'}
               {activePanel === 'history' && 'History'}
+              {activePanel === 'library' && 'Circuit Library'}
             </h3>
             <Button
               data-testid="right-bar-drawer-close"
@@ -184,6 +202,7 @@ export function RightActionBar() {
             )}
             {activePanel === 'layers' && <LayersPanel />}
             {activePanel === 'history' && <HistoryPanel />}
+            {activePanel === 'library' && <CircuitLibrary />}
           </div>
         </div>
       </div>
@@ -233,12 +252,22 @@ function CircuitInfoPanel() {
       <div className="pt-4 border-t border-border">
         <p className="text-xs text-muted-foreground mb-3">Quick Actions</p>
         <div className="space-y-2">
-          <ComingSoon>
-            <QuickActionButton icon={Download} label="Export Circuit" />
-          </ComingSoon>
-          <ComingSoon>
-            <QuickActionButton icon={Upload} label="Import Circuit" />
-          </ComingSoon>
+          <QuickActionButton
+            data-testid="info-quick-export"
+            icon={Download}
+            label="Export Circuit"
+            onClick={() => circuitActions.exportCircuitJSON()}
+          />
+          <QuickActionButton
+            data-testid="info-quick-import"
+            icon={Upload}
+            label="Import Circuit"
+            onClick={() =>
+              document
+                .querySelector<HTMLInputElement>('[data-testid="library-import-input"]')
+                ?.click()
+            }
+          />
           <ComingSoon>
             <QuickActionButton icon={Settings2} label="Generate Truth Table" />
           </ComingSoon>
@@ -285,9 +314,26 @@ function StatCard({ testId, label, value }: { testId: string; label: string; val
 
 type IconComponent = React.ComponentType<{ className?: string }>
 
-function QuickActionButton({ icon: Icon, label }: { icon: IconComponent; label: string }) {
+function QuickActionButton({
+  icon: Icon,
+  label,
+  onClick,
+  ...rest
+}: {
+  icon: IconComponent
+  label: string
+  onClick?: () => void
+} & Pick<React.ComponentProps<'button'>, 'data-testid'>) {
+  const disabled = !onClick
   return (
-    <Button variant="ghost" size="sm" className="w-full justify-between h-8 text-xs" disabled>
+    <Button
+      variant="ghost"
+      size="sm"
+      className="w-full justify-between h-8 text-xs"
+      onClick={onClick}
+      disabled={disabled}
+      {...rest}
+    >
       <div className="flex items-center gap-2">
         <Icon className="w-3 h-3" />
         {label}
