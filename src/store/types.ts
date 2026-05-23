@@ -344,5 +344,19 @@ export interface StatusActions {
   clearAllStatus: () => void
 }
 
+export interface SavedCircuitSummary {
+  name: string
+  savedAt: string
+}
+
+export interface PersistenceActions {
+  saveCircuit: (name: string) => void
+  loadCircuit: (name: string) => boolean
+  listSavedCircuits: () => SavedCircuitSummary[]
+  deleteSavedCircuit: (name: string) => void
+  exportCircuitJSON: (name?: string) => void
+  importCircuitJSON: (json: string) => boolean
+}
+
 // Combined store type
-export interface CircuitStore extends CircuitState, GateActions, WireActions, SimulationActions, PlacementActions, NodePlacementActions, WiringActions, PinHelpers, ViewActions, NodeActions, JunctionActions, JunctionPlacementActions, StatusActions {}
+export interface CircuitStore extends CircuitState, GateActions, WireActions, SimulationActions, PlacementActions, NodePlacementActions, WiringActions, PinHelpers, ViewActions, NodeActions, JunctionActions, JunctionPlacementActions, StatusActions, PersistenceActions {}

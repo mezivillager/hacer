@@ -13,6 +13,7 @@ import { createJunctionActions } from './actions/signalActions/signalActions'
 import { createNodePlacementActions } from './actions/nodePlacementActions/nodePlacementActions'
 import { createJunctionPlacementActions } from './actions/junctionPlacementActions/junctionPlacementActions'
 import { createStatusActions } from './actions/statusActions/statusActions'
+import { createPersistenceActions } from './actions/persistenceActions/persistenceActions'
 import { readPerformanceMode } from '@/lib/performanceModeStorage'
 import { calculateWirePathFromConnection } from '@/utils/wiringScheme'
 import { collectWireSegments } from '@/utils/wiringScheme/segments'
@@ -88,6 +89,7 @@ export const useCircuitStore = create<CircuitStore>()(
         ...createNodePlacementActions(set, get),
         ...createJunctionPlacementActions(set, get),
         ...createStatusActions(set),
+        ...createPersistenceActions(set, get),
       }))
     ),
     { name: 'CircuitStore' }
@@ -269,6 +271,13 @@ export const circuitActions = {
     useCircuitStore.getState().addStatus(severity, text),
   clearStatus: (id: string) => useCircuitStore.getState().clearStatus(id),
   clearAllStatus: () => useCircuitStore.getState().clearAllStatus(),
+  // Persistence actions
+  saveCircuit: (...args: Parameters<CircuitStore['saveCircuit']>) => useCircuitStore.getState().saveCircuit(...args),
+  loadCircuit: (...args: Parameters<CircuitStore['loadCircuit']>) => useCircuitStore.getState().loadCircuit(...args),
+  listSavedCircuits: () => useCircuitStore.getState().listSavedCircuits(),
+  deleteSavedCircuit: (...args: Parameters<CircuitStore['deleteSavedCircuit']>) => useCircuitStore.getState().deleteSavedCircuit(...args),
+  exportCircuitJSON: (...args: Parameters<CircuitStore['exportCircuitJSON']>) => useCircuitStore.getState().exportCircuitJSON(...args),
+  importCircuitJSON: (...args: Parameters<CircuitStore['importCircuitJSON']>) => useCircuitStore.getState().importCircuitJSON(...args),
 }
 
 // Expose store and actions for E2E testing
