@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { circuitActions } from '@/store/circuitStore'
+import { useCircuitStore, circuitActions } from '@/store/circuitStore'
 
 vi.mock('@/lib/notify', () => ({
   notify: {
@@ -81,5 +81,89 @@ describe('deleteSavedCircuit', () => {
     circuitActions.deleteSavedCircuit('a')
     expect(localStorage.getItem('hacer-circuit-a')).toBeNull()
     expect(localStorage.getItem('hacer-circuit-b')).not.toBeNull()
+  })
+})
+
+describe('loadCircuit', () => {
+  it('returns false when the named circuit is missing', () => {
+    expect(circuitActions.loadCircuit('does-not-exist')).toBe(false)
+  })
+
+  it('replaces gates / wires / nodes / junctions with the saved snapshot', () => {
+    const a = circuitActions.addGate('NAND', { x: 0, y: 0, z: 0 })
+    const b = circuitActions.addGate('NAND', { x: 4, y: 0, z: 0 })
+    circuitActions.addWire(
+      { type: 'gate', entityId: a.id, pinId: `${a.id}-out-0` },
+      { type: 'gate', entityId: b.id, pinId: `${b.id}-in-0` },
+      [{ start: { x: -2, y: 0.2, z: 0 }, end: { x: 2, y: 0.2, z: 0 }, type: 'horizontal' }],
+    )
+    circuitActions.saveCircuit('snap')
+    circuitActions.clearCircuit()
+
+    expect(circuitActions.loadCircuit('snap')).toBe(true)
+    const state = useCircuitStore.getState()
+    expect(state.gates).toHaveLength(2)
+    expect(state.wires).toHaveLength(1)
+    expect(state.wires[0].from.entityId).toBe(a.id)
+    expect(state.wires[0].to.entityId).toBe(b.id)
+  })
+
+  it('clears selection, placement, wiring, and lastSimulationError before applying', () => {
+    const gate = circuitActions.addGate('NAND', { x: 0, y: 0, z: 0 })
+    circuitActions.selectGate(gate.id)
+    circuitActions.startPlacement('AND')
+    useCircuitStore.setState((s) => {
+      s.lastSimulationError = { type: 'cycle', involvedGateIds: [gate.id] }
+    })
+    circuitActions.saveCircuit('s')
+
+    circuitActions.loadCircuit('s')
+    const s = useCircuitStore.getState()
+    expect(s.selectedGateId).toBeNull()
+    expect(s.selectedWireId).toBeNull()
+    expect(s.selectedNodeId).toBeNull()
+    expect(s.placementMode).toBeNull()
+    expect(s.nodePlacementMode).toBeNull()
+    expect(s.wiringFrom).toBeNull()
+    expect(s.lastSimulationError).toBeNull()
+  })
+
+  it('ticks the simulation so outputs reflect saved input values', () => {
+    const i = circuitActions.addInputNode('a', { x: -4, y: 0, z: 0 })
+    const o = circuitActions.addOutputNode('out', { x: 4, y: 0, z: 0 })
+    circuitActions.addWire(
+      { type: 'input', entityId: i.id },
+      { type: 'output', entityId: o.id },
+      [{ start: { x: -3, y: 0.2, z: 0 }, end: { x: 3, y: 0.2, z: 0 }, type: 'horizontal' }],
+    )
+    circuitActions.updateInputNodeValue(i.id, 1)
+    circuitActions.saveCircuit('passthrough')
+    circuitActions.clearCircuit()
+
+    circuitActions.loadCircuit('passthrough')
+    const out = useCircuitStore.getState().outputNodes[0]
+    expect(out.value).toBe(1)
+  })
+
+  it('returns false on JSON parse failure', () => {
+    localStorage.setItem('hacer-circuit-broken', '{ this is not json')
+    expect(circuitActions.loadCircuit('broken')).toBe(false)
+  })
+
+  it('returns false on unsupported version', () => {
+    localStorage.setItem(
+      'hacer-circuit-future',
+      JSON.stringify({
+        version: 999,
+        name: 'future',
+        savedAt: new Date().toISOString(),
+        gates: [],
+        wires: [],
+        inputNodes: [],
+        outputNodes: [],
+        junctions: [],
+      }),
+    )
+    expect(circuitActions.loadCircuit('future')).toBe(false)
   })
 })
