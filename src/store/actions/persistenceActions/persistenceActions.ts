@@ -1,5 +1,6 @@
 import { notify } from '@/lib/notify'
-import { serializeCircuit } from '@/core/serialization'
+import { deserializeCircuit, serializeCircuit, type SerializedCircuit } from '@/core/serialization'
+import { useCircuitStore } from '@/store/circuitStore'
 import type { CircuitStore, PersistenceActions, SavedCircuitSummary } from '../../types'
 
 export const STORAGE_PREFIX = 'hacer-circuit-'
@@ -60,8 +61,52 @@ export const createPersistenceActions = (_set: SetState, get: GetState): Persist
     }
   },
 
-  loadCircuit: (_name: string) => {
-    throw new Error('loadCircuit: not implemented yet (Task 7)')
+  loadCircuit: (rawName: string) => {
+    const name = normalizeName(rawName)
+    if (!name) return false
+    const raw = safeRead(storageKeyFor(name))
+    if (!raw) {
+      notify.warning(`Circuit "${name}" not found`)
+      return false
+    }
+    let parsed: SerializedCircuit
+    try {
+      parsed = JSON.parse(raw) as SerializedCircuit
+    } catch {
+      notify.error(`Saved circuit "${name}" is corrupt`)
+      return false
+    }
+    let restored
+    try {
+      restored = deserializeCircuit(parsed)
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'unknown error'
+      notify.error(`Could not load "${name}": ${message}`)
+      return false
+    }
+    useCircuitStore.setState((s) => {
+      s.gates = restored.gates
+      s.wires = restored.wires
+      s.inputNodes = restored.inputNodes
+      s.outputNodes = restored.outputNodes
+      s.junctions = restored.junctions
+
+      s.selectedGateId = null
+      s.selectedWireId = null
+      s.selectedNodeId = null
+      s.selectedNodeType = null
+      s.placementMode = null
+      s.placementPreviewPosition = null
+      s.nodePlacementMode = null
+      s.junctionPlacementMode = null
+      s.junctionPreviewPosition = null
+      s.junctionPreviewWireId = null
+      s.wiringFrom = null
+      s.lastSimulationError = null
+    }, false, 'loadCircuit')
+    useCircuitStore.getState().simulationTick()
+    notify.success(`Loaded "${name}"`)
+    return true
   },
 
   listSavedCircuits: () => {
