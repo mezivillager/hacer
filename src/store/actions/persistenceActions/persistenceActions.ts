@@ -136,11 +136,58 @@ export const createPersistenceActions = (_set: SetState, get: GetState): Persist
     notify.info(`Deleted circuit "${name}"`)
   },
 
-  exportCircuitJSON: (_name?: string) => {
-    throw new Error('exportCircuitJSON: not implemented yet (Task 8)')
+  exportCircuitJSON: (rawName?: string) => {
+    const name = normalizeName(rawName ?? '') || 'circuit'
+    const data = serializeCircuit(get(), name)
+    const json = JSON.stringify(data, null, 2)
+    if (typeof window === 'undefined' || typeof document === 'undefined') return
+    const blob = new Blob([json], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `${name}.circuit.json`
+    a.click()
+    URL.revokeObjectURL(url)
   },
 
-  importCircuitJSON: (_json: string) => {
-    throw new Error('importCircuitJSON: not implemented yet (Task 8)')
+  importCircuitJSON: (json: string) => {
+    let parsed: SerializedCircuit
+    try {
+      parsed = JSON.parse(json) as SerializedCircuit
+    } catch {
+      notify.error('Imported file is not valid JSON')
+      return false
+    }
+    let restored
+    try {
+      restored = deserializeCircuit(parsed)
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'unknown error'
+      notify.error(`Import failed: ${message}`)
+      return false
+    }
+    useCircuitStore.setState((s) => {
+      s.gates = restored.gates
+      s.wires = restored.wires
+      s.inputNodes = restored.inputNodes
+      s.outputNodes = restored.outputNodes
+      s.junctions = restored.junctions
+
+      s.selectedGateId = null
+      s.selectedWireId = null
+      s.selectedNodeId = null
+      s.selectedNodeType = null
+      s.placementMode = null
+      s.placementPreviewPosition = null
+      s.nodePlacementMode = null
+      s.junctionPlacementMode = null
+      s.junctionPreviewPosition = null
+      s.junctionPreviewWireId = null
+      s.wiringFrom = null
+      s.lastSimulationError = null
+    }, false, 'importCircuitJSON')
+    useCircuitStore.getState().simulationTick()
+    notify.success(`Imported "${parsed.name ?? 'circuit'}"`)
+    return true
   },
 })
