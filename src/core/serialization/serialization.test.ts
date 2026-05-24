@@ -143,13 +143,45 @@ describe('deserializeCircuit', () => {
     expect(restored.gates[0].outputs.map((p) => p.id)).toEqual(expectedOutIds)
   })
 
-  it('round-trips a 16-bit gate', () => {
+  it('round-trips a gate with explicit gate-level width without overriding chip-fixed pin widths', () => {
+    // Gate-level `width` is metadata for future parametric chips. For Project 1
+    // builtins, pin widths come from the chip definition (And is 1-bit) and the
+    // gate-level value must not bleed into per-pin widths.
     const gate = circuitActions.addGate('And', { x: 0, y: 0, z: 0 }, 16)
     const blob = serializeCircuit(useCircuitStore.getState(), 'wide')
     const restored = deserializeCircuit(blob)
     expect(restored.gates[0].width).toBe(16)
-    expect(restored.gates[0].inputs.every((p) => p.width === 16)).toBe(true)
-    expect(restored.gates[0].outputs.every((p) => p.width === 16)).toBe(true)
+    expect(restored.gates[0].inputs.every((p) => p.width === 1)).toBe(true)
+    expect(restored.gates[0].outputs.every((p) => p.width === 1)).toBe(true)
+    expect(restored.gates[0].id).toBe(gate.id)
+  })
+
+  it('round-trips a Not16 chip with chip-defined 16-bit pin widths', () => {
+    // Regression guard: pre-fix, reconstructGate clobbered pin widths with
+    // s.width (=1 by default), silently reducing Not16 to a 1-bit chip on load.
+    const gate = circuitActions.addGate('Not16', { x: 0, y: 0, z: 0 })
+    const blob = serializeCircuit(useCircuitStore.getState(), 'not16')
+    const restored = deserializeCircuit(blob)
+    expect(restored.gates[0].chipName).toBe('Not16')
+    expect(restored.gates[0].inputs[0].width).toBe(16)
+    expect(restored.gates[0].outputs[0].width).toBe(16)
+    expect(restored.gates[0].id).toBe(gate.id)
+  })
+
+  it('round-trips a Mux8Way16 chip preserving multi-width selector', () => {
+    // Mux8Way16 has 8 data inputs at width 16, plus a 3-bit selector. Verifies
+    // that mixed-width pin schemas survive serialize/deserialize intact.
+    const gate = circuitActions.addGate('Mux8Way16', { x: 0, y: 0, z: 0 })
+    const blob = serializeCircuit(useCircuitStore.getState(), 'mux8way')
+    const restored = deserializeCircuit(blob)
+    expect(restored.gates[0].chipName).toBe('Mux8Way16')
+    const inputsByName = Object.fromEntries(
+      restored.gates[0].inputs.map((p) => [p.name, p.width])
+    )
+    expect(inputsByName.a).toBe(16)
+    expect(inputsByName.h).toBe(16)
+    expect(inputsByName.sel).toBe(3)
+    expect(restored.gates[0].outputs[0].width).toBe(16)
     expect(restored.gates[0].id).toBe(gate.id)
   })
 

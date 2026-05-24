@@ -52,17 +52,19 @@ const cloneVec3 = (v: { x: number; y: number; z: number }) => ({ x: v.x, y: v.y,
 
 function reconstructGate(s: SerializedGate, chipName: string): GateInstance {
   const tmpl = createGateInstance(chipName, cloneVec3(s.position), s.width)
+  // Spread chip-def pin widths from tmpl; never overwrite with s.width — the
+  // gate-level width is a parametric multiplier for future chips, not a per-pin
+  // override. For Project 1 builtins (Not16 etc.) the chip definition is the
+  // single source of truth for bus widths.
   const inputs: Pin[] = tmpl.inputs.map((p, i) => ({
     ...p,
     id: `${s.id}-in-${i}`,
     value: 0,
-    width: s.width,
   }))
   const outputs: Pin[] = tmpl.outputs.map((p, i) => ({
     ...p,
     id: `${s.id}-out-${i}`,
     value: 0,
-    width: s.width,
   }))
   return {
     id: s.id,
