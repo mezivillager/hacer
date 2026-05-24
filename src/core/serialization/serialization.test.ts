@@ -1,8 +1,9 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { useCircuitStore, circuitActions } from '@/store/circuitStore'
+import { notify } from '@/lib/notify'
 import { serializeCircuit } from './serialize'
 import { deserializeCircuit } from './deserialize'
-import { CIRCUIT_FORMAT_VERSION } from './types'
+import { CIRCUIT_FORMAT_VERSION, type SerializedCircuit } from './types'
 
 beforeEach(() => {
   circuitActions.clearCircuit()
@@ -213,5 +214,67 @@ describe('deserializeCircuit', () => {
     const blob = serializeCircuit(useCircuitStore.getState(), 'val')
     const restored = deserializeCircuit(blob)
     expect(restored.inputNodes[0].value).toBe(0)
+  })
+})
+
+describe('deserialize legacy GateType migration', () => {
+  it('maps NAND/AND/OR/NOT/XOR to Nand/And/Or/Not/Xor', () => {
+    const legacy: SerializedCircuit = {
+      version: CIRCUIT_FORMAT_VERSION,
+      name: 'legacy',
+      savedAt: new Date().toISOString(),
+      gates: [
+        { id: 'g1', type: 'NAND', position: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, width: 1 },
+        { id: 'g2', type: 'AND', position: { x: 2, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, width: 1 },
+        { id: 'g3', type: 'OR', position: { x: 4, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, width: 1 },
+        { id: 'g4', type: 'NOT', position: { x: 6, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, width: 1 },
+        { id: 'g5', type: 'XOR', position: { x: 8, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, width: 1 },
+      ],
+      wires: [],
+      inputNodes: [],
+      outputNodes: [],
+      junctions: [],
+    }
+    const restored = deserializeCircuit(legacy)
+    expect(restored.gates.map((g) => g.chipName)).toEqual(['Nand', 'And', 'Or', 'Not', 'Xor'])
+  })
+
+  it('warns and skips NOR/XNOR gates', () => {
+    const notifySpy = vi.spyOn(notify, 'warning').mockImplementation(() => {})
+    const legacy: SerializedCircuit = {
+      version: CIRCUIT_FORMAT_VERSION,
+      name: 'has-nor',
+      savedAt: new Date().toISOString(),
+      gates: [
+        { id: 'g1', type: 'NOR', position: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, width: 1 },
+        { id: 'g2', type: 'And', position: { x: 2, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, width: 1 },
+      ],
+      wires: [],
+      inputNodes: [],
+      outputNodes: [],
+      junctions: [],
+    }
+    const restored = deserializeCircuit(legacy)
+    expect(restored.gates).toHaveLength(1)
+    expect(restored.gates[0].chipName).toBe('And')
+    expect(notifySpy).toHaveBeenCalledWith(expect.stringMatching(/NOR.*not supported/i))
+    notifySpy.mockRestore()
+  })
+
+  it('accepts modern chip names verbatim', () => {
+    const modern: SerializedCircuit = {
+      version: CIRCUIT_FORMAT_VERSION,
+      name: 'modern',
+      savedAt: new Date().toISOString(),
+      gates: [
+        { id: 'g1', type: 'Mux16', position: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, width: 1 },
+      ],
+      wires: [],
+      inputNodes: [],
+      outputNodes: [],
+      junctions: [],
+    }
+    const restored = deserializeCircuit(modern)
+    expect(restored.gates[0].chipName).toBe('Mux16')
   })
 })
