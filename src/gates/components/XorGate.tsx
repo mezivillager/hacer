@@ -48,7 +48,6 @@ export function XorGate({
       rotation={rotation}
       selected={selected}
       isWiring={isWiring}
-      gateType="XOR"
       bodyColor={XOR_COLORS.body}
       bodyHoverColor={XOR_COLORS.hover}
       bodySelectedColor={XOR_COLORS.selected}

@@ -45,7 +45,6 @@ export function OrGate({
       rotation={rotation}
       selected={selected}
       isWiring={isWiring}
-      gateType="OR"
       bodyColor={OR_COLORS.body}
       bodyHoverColor={OR_COLORS.hover}
       bodySelectedColor={OR_COLORS.selected}

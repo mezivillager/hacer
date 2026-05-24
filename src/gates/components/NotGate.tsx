@@ -38,7 +38,6 @@ export function NotGate({
       rotation={rotation}
       selected={selected}
       isWiring={isWiring}
-      gateType="NOT"
       bodyColor={NOT_COLORS.body}
       bodyHoverColor={NOT_COLORS.hover}
       bodySelectedColor={NOT_COLORS.selected}
