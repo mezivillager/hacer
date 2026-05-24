@@ -31,7 +31,7 @@
 - [ ] **P05-12** — Bus 3D components — needs P05-02 — [P05-12.md](./phase-0.5-tickets/P05-12.md)
 - [x] **P05-13** — Multi-bit I/O UI — needs P05-02 — [P05-13.md](./phase-0.5-tickets/P05-13.md)
 - [x] **P05-14** — Circuit persistence — needs P05-03 — [P05-14.md](./phase-0.5-tickets/P05-14.md)
-- [ ] **P05-15** — Builtin chip implementations (16 chips) — needs P05-01 — [P05-15.md](./phase-0.5-tickets/P05-15.md)
+- [x] **P05-15** — Builtin chip implementations (16 chips) — needs P05-01 — **completed via** [2026-05-24-builtin-chip-placement-standardization.md](../2026-05-24-builtin-chip-placement-standardization.md)
 - [ ] **P05-16** — HDL compiler — needs P05-04, P05-01 — [P05-16.md](./phase-0.5-tickets/P05-16.md)
 
 ## Layer 2 — Multiple dependencies
@@ -45,7 +45,6 @@
 
 - [ ] **P05-21** — HDL editor UI — needs P05-16 — [P05-21.md](./phase-0.5-tickets/P05-21.md)
 - [ ] **P05-22** — Test results panel — needs P05-17 — [P05-22.md](./phase-0.5-tickets/P05-22.md)
-- [ ] **P05-23** — Builtin toggle UI — needs P05-15 — [P05-23.md](./phase-0.5-tickets/P05-23.md)
 - [ ] **P05-24** — Composite chip 3D rendering — needs P05-01 — [P05-24.md](./phase-0.5-tickets/P05-24.md)
 
 ## Layer 4 — Integration
@@ -57,6 +56,11 @@
 ## Follow-ups (UX / labeling — optional ordering)
 
 - [ ] **P05-29** — Scene naming not effectively visible — fix in-view labels, previews, and signal surfacing — [P05-29.md](./phase-0.5-tickets/P05-29.md)
+
+## Deferred — requires composite/user chips first
+
+- [ ] **P05-23** — Builtin toggle UI — needs P05-15 — [P05-23.md](./phase-0.5-tickets/P05-23.md)
+  - **Why deferred (2026-05-24):** User-defined chips do not exist yet; the builtin/user toggle is meaningless until at least one user chip-source ships. Revisit once P05-16/P05-18/P05-24 composite-chip work begins.
 
 ---
 

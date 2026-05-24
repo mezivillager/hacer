@@ -11,7 +11,9 @@ This document helps AI agents and developers understand the codebase structure a
 | **Phase 0.5 ticket checklist (P05-01…28, P05-29)** | `docs/plans/phase-0.5-tickets-CHECKLIST.md` · plan: `docs/plans/2026-03-22-phase-0.5-tickets.md` |
 | **Observed bugs (informal log)** | `docs/development/observed-bugs.md` |
 | **New Zustand state or action** | `src/store/circuitStore.ts`, `src/store/types.ts`, `src/store/actions/<domain>/` |
-| **Gate type / 3D gate UI** | `src/gates/config/`, `src/gates/components/`, `HACER_LLM_GUIDE.md` |
+| **Builtin chip definitions** | `src/core/chips/appRegistry.ts`, `src/core/chips/builtins/project01.ts` |
+| **3D chip body & icons** | `src/components/scene/ChipBody3D.tsx`, `src/components/scene/chipBodyLayout.ts`, `src/components/ui/icons/ChipIcons.tsx` |
+| **Gate placement / renderer** | `src/gates/GateRenderer.tsx`, `src/gates/common/BaseGate.tsx`, `HACER_LLM_GUIDE.md` |
 | **Simulation / boolean logic** | `src/simulation/` · specs: `src/simulation/gateLogic.test.ts` |
 | **R3F canvas / scene** | `src/components/canvas/` |
 | **Performance mode / render detail** | `src/components/canvas/Scene/renderConfig.ts`, `src/lib/performanceModeStorage.ts`, `src/store/actions/viewActions/` |
@@ -71,16 +73,11 @@ src/
 │                     #   theme-provider). Drop-in copies via `npx shadcn add`.
 ├── lib/              # notify (Sonner-backed), utils (cn helper), demoTour, performanceModeStorage
 ├── styles/           # globals.css (Tailwind v4 + OKLch tokens + Geist fonts)
-├── gates/            # Gate components and logic
-│   ├── components/   # Individual gate components (NandGate, AndGate, etc.) - flat orientation
-│   ├── common/       # Shared gate components (BaseGate, GatePin, WireStub)
-│   ├── config/       # Gate configuration split into 3 files per gate:
-│   │   ├── nand-constants.ts  # Colors, text, non-React constants
-│   │   ├── nand-helpers.ts    # Pin/wire helpers, geometry utilities
-│   │   └── nand.tsx           # React component (only export components here)
-│   ├── handlers/     # Gate event handlers
-│   ├── icons/        # Gate icon components
-│   └── types.ts      # Gate type definitions (GateType: 'NAND'|'AND'|'OR'|'NOT'|'NOR'|'XOR'|'XNOR')
+├── gates/            # Gate placement plumbing (per-chip components and icons live elsewhere — see core/chips/ and components/scene/)
+│   ├── GateRenderer.tsx  # Registry-driven 3D renderer dispatch for any placed chip
+│   ├── common/       # Shared 3D primitives (BaseGate, GatePin, WireStub)
+│   ├── handlers/     # Gate event handlers (selection, drag, rotate)
+│   └── types.ts      # Gate-renderer prop types
 ├── nodes/            # Circuit I/O nodes and junctions (HDL-level pins)
 │   ├── components/   # InputNode3D, OutputNode3D, JunctionNode3D
 │   └── config/       # Node configuration (nodeConfig.ts)
@@ -188,9 +185,14 @@ scripts/
 - `src/components/ui/ChipWorkflowBrowser.tsx` - Project/chip navigation
 - `src/components/ui/HDLEditor.tsx` - HDL code editor
 - `src/components/ui/StatusBar.tsx` - Error/status reporting
-- `src/gates/components/CompositeChip3D.tsx` - 3D composite chip rendering
-- `src/gates/components/BusSplitter3D.tsx` - Bus splitter visual component
-- `src/gates/components/BusJoiner3D.tsx` - Bus joiner visual component
+- `src/components/scene/ChipBody3D.tsx` - Generic 3D body for any registered chip (used by `GateRenderer`)
+- `src/components/scene/chipBodyLayout.ts` - Pin-layout math (centers, body sizing) for `ChipBody3D`
+- `src/components/ui/icons/ChipIcons.tsx` - 16 SVG icons keyed by chip name (toolbar buttons, pinout panel)
+- `src/core/chips/appRegistry.ts` - Singleton builtin + user chip registries
+- `src/core/chips/builtins/project01.ts` - Project 1 builtin registration (16 chips: Nand…DMux8Way)
+- `src/gates/components/CompositeChip3D.tsx` - 3D composite chip rendering (planned)
+- `src/gates/components/BusSplitter3D.tsx` - Bus splitter visual component (planned)
+- `src/gates/components/BusJoiner3D.tsx` - Bus joiner visual component (planned)
 - `src/store/actions/persistenceActions/` - Circuit save/load to localStorage
 - `src/core/testing/project01/` - Provider-backed test fixtures (.hdl, .tst, .cmp)
 
@@ -334,7 +336,7 @@ hacer/
 - `src/simulation/gateLogic.ts` - Gate logic functions
 - `src/components/canvas/Scene/` - 3D scene components
 - `src/components/ui/` - HACER shell UI components
-- `src/gates/components/` - Gate components with flat orientation (90° X rotation, text on top)
+- `src/gates/GateRenderer.tsx` + `src/components/scene/ChipBody3D.tsx` - Registry-driven 3D rendering (replaces per-gate `src/gates/components/{Nand,And,Or,Not,Xor}Gate.tsx` deleted 2026-05-24)
 - `src/hooks/useKeyboardShortcuts.ts` - 90° rotation increments (Z axis for world Y rotation)
 - `src/theme/tokens.ts` - Grid colors (uniform blue-tinted color for cell and section lines)
 
@@ -418,7 +420,7 @@ hacer/
 - **UI Framework**: shadcn/ui-style primitives + Radix UI + Tailwind CSS v4 + OKLch design tokens
 - **Toast notifications**: Sonner via `notify` helper (`@/lib/notify`)
 - **Theme**: `next-themes` tri-state (light/dark/system); 3D canvas reads CSS vars via `useThemeColor`
-- **Icons**: Lucide React + inline SVG gate glyphs (`@/components/ui/icons/GateGlyphs`)
+- **Icons**: Lucide React + inline SVG chip icons (`@/components/ui/icons/ChipIcons` — keyed by registered chip name)
 - **Font**: Geist Sans + Geist Mono (variable woff2 from `geist` npm package, served from `/public/fonts/`)
 - **Testing**: Vitest (unit) + Playwright (E2E)
 - **Logic Separation**: Pure logic in `src/simulation/`, state mutations in `src/store/actions/`
@@ -508,8 +510,9 @@ import { SceneGrid } from '@/components/canvas/Scene/SceneGrid';
 import { PlacementPreview } from '@/components/canvas/Scene/PlacementPreview';
 import { Sidebar } from '@/components/ui/Sidebar';
 
-// Gates (flat orientation)
-import { NandGate } from '@/gates/components';
+// Gates (registry-driven; per-chip components were removed 2026-05-24)
+import { GateRenderer } from '@/gates';
+import { getBuiltinChipRegistry } from '@/core/chips/appRegistry';
 
 // Simulation
 import { nandGate } from '@/simulation/gateLogic';
@@ -539,16 +542,12 @@ import { Scene } from '@/components/canvas/Scene';
 
 ## Adding New Features
 
-### Adding a New Gate (Phase 0.25)
-1. Add gate logic function to `src/simulation/gateLogic.ts`
-2. Add unit tests to `src/simulation/gateLogic.test.ts`
-3. Create gate component in `src/gates/components/`
-   - Use flat orientation: default rotation `{ x: Math.PI / 2, y: 0, z: 0 }`
-   - Position text on Z- face with 180° X rotation for flat appearance
-   - Position pins with Y offsets (become horizontal after gate rotation)
-4. Create gate icon in `src/gates/icons/`
-5. Export from `src/gates/components/index.ts`
-6. Add to gate selector in `src/components/ui/GateSelector.tsx`
+### Adding a New Builtin Chip (Phase 0.5 — registry-driven, as of 2026-05-24)
+1. Add the chip's `BuiltinEvalFn` and `ChipDefinition` (signal names, widths) to `src/core/chips/builtins/project01.ts` (or a new `projectNN.ts`)
+2. Register it in the singleton via `registerBuiltin(...)` so `getBuiltinChipRegistry().list()` exposes it
+3. Add an SVG icon entry in `src/components/ui/icons/ChipIcons.tsx` keyed by chip name (toolbar/pinout panel will pick it up automatically)
+4. Add the chip's truth-table fixture and a Vitest spec
+5. The 3D body, pin layout, and toolbar button are produced automatically by `ChipBody3D` / `chipBodyLayout` / `CompactToolbar` — no per-chip component file is needed
 
 ### Adding a New Gate (Phase 5+)
 1. Add to `GateType` in `src/core/gates/types.ts`
