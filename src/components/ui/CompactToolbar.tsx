@@ -24,23 +24,39 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui-kit/too
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui-kit/popover'
 import { Separator } from '@/components/ui-kit/separator'
 import { Switch } from '@/components/ui-kit/switch'
-import {
-  NandGateIcon,
-  AndGateIcon,
-  OrGateIcon,
-  NotGateIcon,
-  XorGateIcon,
-} from './icons/GateGlyphs'
+import { CHIP_ICON_MAP, CHIP_ICON_FALLBACK, NandIcon } from './icons/ChipIcons'
+import { getBuiltinChipRegistry } from '@/core/chips/appRegistry'
 import { useCircuitStore, circuitActions } from '@/store/circuitStore'
 import { useAppReleaseVersion } from '@/hooks/useAppReleaseVersion'
 
-const gates: Array<{ type: string; Icon: React.ComponentType<{ className?: string }> }> = [
-  { type: 'Nand', Icon: NandGateIcon },
-  { type: 'And', Icon: AndGateIcon },
-  { type: 'Or', Icon: OrGateIcon },
-  { type: 'Not', Icon: NotGateIcon },
-  { type: 'Xor', Icon: XorGateIcon },
-]
+type ChipCategory = 'single-bit' | '16-bit' | 'multi-way'
+
+const CATEGORY_BY_CHIP: Record<string, ChipCategory> = {
+  Nand: 'single-bit',
+  Not: 'single-bit',
+  And: 'single-bit',
+  Or: 'single-bit',
+  Xor: 'single-bit',
+  Mux: 'single-bit',
+  DMux: 'single-bit',
+  Not16: '16-bit',
+  And16: '16-bit',
+  Or16: '16-bit',
+  Mux16: '16-bit',
+  Or8Way: 'multi-way',
+  Mux4Way16: 'multi-way',
+  Mux8Way16: 'multi-way',
+  DMux4Way: 'multi-way',
+  DMux8Way: 'multi-way',
+}
+
+const CATEGORY_ORDER: ChipCategory[] = ['single-bit', '16-bit', 'multi-way']
+
+const CATEGORY_LABEL: Record<ChipCategory, string> = {
+  'single-bit': 'Single-bit',
+  '16-bit': '16-bit',
+  'multi-way': 'Multi-way',
+}
 
 const ioElements = [
   { id: 'input', label: 'Input', Icon: ArrowRightFromLine },
@@ -73,11 +89,11 @@ export function CompactToolbar() {
   const [ioOpen, setIoOpen] = useState(false)
   const { theme, setTheme } = useTheme()
 
-  const handleGateSelect = (type: string) => {
-    if (placementMode === type) {
+  const handleGateSelect = (chipName: string) => {
+    if (placementMode === chipName) {
       circuitActions.cancelPlacement()
     } else {
-      circuitActions.startPlacement(type)
+      circuitActions.startPlacement(chipName)
     }
     setGatesOpen(false)
   }
@@ -155,7 +171,7 @@ export function CompactToolbar() {
                   size="icon"
                   className={cn('w-9 h-9 relative', gatesOpen && 'bg-sidebar-accent')}
                 >
-                  <NandGateIcon className="w-5 h-5" />
+                  <NandIcon className="w-5 h-5" />
                   <ChevronDown className="w-2 h-2 absolute bottom-1 right-1 opacity-60" />
                 </Button>
               </PopoverTrigger>
@@ -166,26 +182,46 @@ export function CompactToolbar() {
             data-testid="gates-popover"
             side="right"
             align="start"
-            className="w-48 p-2"
+            className="w-64 p-2"
           >
-            <div className="text-xs font-medium text-muted-foreground mb-2 px-2">
-              Elementary Gates
-            </div>
-            <div className="grid grid-cols-2 gap-1">
-              {gates.map(({ type, Icon }) => (
-                <Button
-                  key={type}
-                  data-testid={`gate-button-${type}`}
-                  variant={placementMode === type ? 'secondary' : 'ghost'}
-                  size="sm"
-                  className="justify-start gap-2 h-8"
-                  onClick={() => handleGateSelect(type)}
-                >
-                  <Icon className="w-4 h-4" />
-                  <span className="text-xs">{type}</span>
-                </Button>
-              ))}
-            </div>
+            {(() => {
+              const chips = getBuiltinChipRegistry().list()
+              const byCategory = new Map<ChipCategory, typeof chips>()
+              for (const c of CATEGORY_ORDER) byCategory.set(c, [])
+              for (const chip of chips) {
+                const cat = CATEGORY_BY_CHIP[chip.name] ?? 'single-bit'
+                byCategory.get(cat)!.push(chip)
+              }
+              return CATEGORY_ORDER.map((cat) => {
+                const items = byCategory.get(cat) ?? []
+                if (items.length === 0) return null
+                return (
+                  <div key={cat} className="mb-2 last:mb-0">
+                    <div className="text-xs font-medium text-muted-foreground mb-1 px-2">
+                      {CATEGORY_LABEL[cat]}
+                    </div>
+                    <div className="grid grid-cols-2 gap-1">
+                      {items.map((chip) => {
+                        const Icon = CHIP_ICON_MAP[chip.name] ?? CHIP_ICON_FALLBACK
+                        return (
+                          <Button
+                            key={chip.name}
+                            data-testid={`gate-button-${chip.name}`}
+                            variant={placementMode === chip.name ? 'secondary' : 'ghost'}
+                            size="sm"
+                            className="justify-start gap-2 h-8"
+                            onClick={() => handleGateSelect(chip.name)}
+                          >
+                            <Icon className="w-4 h-4" />
+                            <span className="text-xs truncate">{chip.name}</span>
+                          </Button>
+                        )
+                      })}
+                    </div>
+                  </div>
+                )
+              })
+            })()}
           </PopoverContent>
         </Popover>
 
