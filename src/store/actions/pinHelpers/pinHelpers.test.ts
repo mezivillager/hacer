@@ -1,8 +1,34 @@
 import { describe, it, expect, beforeEach } from 'vitest'
+import { Vector3, Euler } from 'three'
 import { useCircuitStore } from '../../circuitStore'
+import { computeChipLayout } from '@/components/scene/chipBodyLayout'
+import { getBuiltinChipRegistry } from '@/core/chips/appRegistry'
+import type { GateInstance, Position } from '../../types'
 
 // Helper to get store state
 const getState = () => useCircuitStore.getState()
+
+/**
+ * Computes the world position of a pin by routing through `chipBodyLayout`
+ * (the single source of truth for the visible 3D pin position) and applying
+ * the gate's rotation + position. The store-level `getPinWorldPosition`
+ * must agree with this for wire endpoints to coincide with rendered pins.
+ */
+function expectedWorldPos(gate: GateInstance, pinId: string): Position {
+  const chip = getBuiltinChipRegistry().get(gate.chipName)
+  if (!chip) throw new Error(`Test setup: chip ${gate.chipName} not in registry`)
+  const layout = computeChipLayout(chip, gate.id)
+  const slot = layout.pinSlots.find((s) => s.pinId === pinId)
+  if (!slot) throw new Error(`Test setup: pin ${pinId} has no layout slot`)
+  const local = new Vector3(slot.position[0], slot.position[1], slot.position[2])
+  const euler = new Euler(gate.rotation.x, gate.rotation.y, gate.rotation.z, 'XYZ')
+  local.applyEuler(euler)
+  return {
+    x: gate.position.x + local.x,
+    y: gate.position.y + local.y,
+    z: gate.position.z + local.z,
+  }
+}
 
 describe('pinHelpers', () => {
   beforeEach(() => {
@@ -18,35 +44,39 @@ describe('pinHelpers', () => {
     })
   })
 
-  // Pin position constants from pinHelpers.ts - must match gate component geometry
+  // Pin position constants derived from the chipBodyLayout source of truth:
+  //   For a 2-input chip (e.g. Nand) MIN_SIZE_X=1.0 + SIZE_X_GROWTH=0.05 * 2 = 1.1,
+  //   so halfBodyX=0.55 and the pin sits PIN_OFFSET_X=0.05 outside the body.
+  //   Inputs at x=-0.6, output at x=+0.6. No bubble offset (generic 3D body).
   const INPUT_PIN_X = -0.6
-  const OUTPUT_PIN_X = 0.84
+  const OUTPUT_PIN_X = 0.6
 
   describe('getPinWorldPosition', () => {
-    it('returns input pin world position for first input', () => {
+    it('returns input pin world position for first input (top of screen after rotation)', () => {
       const gate = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
 
       const position = getState().getPinWorldPosition(gate.id, gate.inputs[0].id)
 
       expect(position).not.toBeNull()
       expect(position?.x).toBeCloseTo(INPUT_PIN_X, 1)
-      // After 90° X rotation: local Y offset (0.2) becomes world Z
-      // Local position [INPUT_PIN_X, 0.2, 0] → World [INPUT_PIN_X, 0, 0.2]
+      // chipBodyLayout places chip.inputs[0] at local Y = -0.2 (the lowest
+      // local Y in a 2-input chip). After the [PI/2, 0, 0] rotation that maps
+      // local Y → world Z, the pin lands at world Z = -0.2 — the "far" side
+      // of the camera (top of the screen given the [0, 6, 6] camera).
       expect(position?.y).toBeCloseTo(0, 1)
-      expect(position?.z).toBeCloseTo(0.2, 1)
+      expect(position?.z).toBeCloseTo(-0.2, 1)
     })
 
-    it('returns input pin world position for second input', () => {
+    it('returns input pin world position for second input (bottom of screen after rotation)', () => {
       const gate = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
 
       const position = getState().getPinWorldPosition(gate.id, gate.inputs[1].id)
 
       expect(position).not.toBeNull()
       expect(position?.x).toBeCloseTo(INPUT_PIN_X, 1)
-      // After 90° X rotation: local Y offset (-0.2) becomes world Z
-      // Local position [INPUT_PIN_X, -0.2, 0] → World [INPUT_PIN_X, 0, -0.2]
+      // chip.inputs[1] at local Y = +0.2 → world Z = +0.2 after rotation.
       expect(position?.y).toBeCloseTo(0, 1)
-      expect(position?.z).toBeCloseTo(-0.2, 1)
+      expect(position?.z).toBeCloseTo(0.2, 1)
     })
 
     it('returns output pin world position', () => {
@@ -66,11 +96,10 @@ describe('pinHelpers', () => {
       const position = getState().getPinWorldPosition(gate.id, gate.outputs[0].id)
 
       expect(position).not.toBeNull()
-      // Gate position is added to rotated pin position
-      // Output pin is at local [OUTPUT_PIN_X, 0, 0], after 90° X rotation: world [OUTPUT_PIN_X, 0, 0]
+      // Output pin local [OUTPUT_PIN_X, 0, 0] → world after rotation [OUTPUT_PIN_X, 0, 0]
       expect(position?.x).toBeCloseTo(5 + OUTPUT_PIN_X, 1)
-      expect(position?.y).toBeCloseTo(10, 1) // Gate Y + pin Y (0 after rotation)
-      expect(position?.z).toBeCloseTo(15, 1) // Gate Z + pin Z (0 after rotation)
+      expect(position?.y).toBeCloseTo(10, 1)
+      expect(position?.z).toBeCloseTo(15, 1)
     })
 
     it('accounts for gate rotation', () => {
@@ -80,7 +109,7 @@ describe('pinHelpers', () => {
       const position = getState().getPinWorldPosition(gate.id, gate.outputs[0].id)
 
       expect(position).not.toBeNull()
-      // After 180° rotation, output should be on the opposite side
+      // After an additional 180° around Y, the output ends up on the opposite side.
       expect(position?.x).toBeCloseTo(-OUTPUT_PIN_X, 1)
     })
 
@@ -140,15 +169,14 @@ describe('pinHelpers', () => {
     it('pin center accounts for flat gate orientation (90° X rotation)', () => {
       const gate = getState().addGate('Nand', { x: 0, y: 0.2, z: 0 })
 
-      // Gate has default 90° X rotation (flat orientation)
-      // Local Y offset (0.2 for inputA) becomes world Z after rotation
+      // Gate has default 90° X rotation (flat orientation). chipBodyLayout
+      // places chip.inputs[0] at local Y = -0.2, which after the rotation
+      // becomes world Z = -0.2.
       const inputAPosition = getState().getPinWorldPosition(gate.id, gate.inputs[0].id)
 
       expect(inputAPosition).not.toBeNull()
-      // After 90° X rotation: local [INPUT_PIN_X, 0.2, 0] → world [INPUT_PIN_X, 0.2, 0.2]
-      // Y coordinate should be gate Y (0.2), not pin local Y (0.2) which becomes Z
-      expect(inputAPosition?.y).toBeCloseTo(0.2, 5) // Gate Y position
-      expect(inputAPosition?.z).toBeCloseTo(0.2, 5) // Local Y offset becomes Z
+      expect(inputAPosition?.y).toBeCloseTo(0.2, 5) // Gate Y is preserved
+      expect(inputAPosition?.z).toBeCloseTo(-0.2, 5) // Local Y maps to world Z
     })
 
     it('pin center accounts for user rotation (Z rotation)', () => {
@@ -228,6 +256,100 @@ describe('pinHelpers', () => {
       expect(createdWire?.to.type).toBe('gate')
       expect(createdWire?.to.entityId).toBe(gate2.id)
       expect(createdWire?.to.pinId).toBe(gate2.inputs[0].id)
+    })
+  })
+
+  describe('getPinWorldPosition - layout/world-position contract', () => {
+    // Regression for the wiring bug where clicking a visually-rendered pin
+    // wired to a different pin position because getPinWorldPosition used
+    // hardcoded legacy offsets that diverged from chipBodyLayout.
+    //
+    // The store-level getPinWorldPosition MUST agree with the chipBodyLayout
+    // function used by ChipBody3D — otherwise the wire endpoint and the
+    // rendered pin disagree, and clicking pin N wires to a different pin.
+
+    it('Nand (2 inputs, 1 output): every pin matches the layout-derived world position', () => {
+      const gate = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+      for (const pin of [...gate.inputs, ...gate.outputs]) {
+        const expected = expectedWorldPos(gate, pin.id)
+        const actual = getState().getPinWorldPosition(gate.id, pin.id)
+        expect(actual, `pin ${pin.id} should have a world position`).not.toBeNull()
+        expect(actual?.x).toBeCloseTo(expected.x, 5)
+        expect(actual?.y).toBeCloseTo(expected.y, 5)
+        expect(actual?.z).toBeCloseTo(expected.z, 5)
+      }
+    })
+
+    it('Not (1 input, 1 output): single input pin matches the layout slot', () => {
+      const gate = getState().addGate('Not', { x: 1, y: 0, z: 2 })
+      for (const pin of [...gate.inputs, ...gate.outputs]) {
+        const expected = expectedWorldPos(gate, pin.id)
+        const actual = getState().getPinWorldPosition(gate.id, pin.id)
+        expect(actual?.x).toBeCloseTo(expected.x, 5)
+        expect(actual?.y).toBeCloseTo(expected.y, 5)
+        expect(actual?.z).toBeCloseTo(expected.z, 5)
+      }
+    })
+
+    it('Mux (3 inputs a/b/sel, 1 output): each input has a distinct world position matching the layout', () => {
+      const gate = getState().addGate('Mux', { x: 0, y: 0, z: 0 })
+      expect(gate.inputs).toHaveLength(3)
+      for (const pin of gate.inputs) {
+        const expected = expectedWorldPos(gate, pin.id)
+        const actual = getState().getPinWorldPosition(gate.id, pin.id)
+        expect(actual?.x).toBeCloseTo(expected.x, 5)
+        expect(actual?.y).toBeCloseTo(expected.y, 5)
+        expect(actual?.z).toBeCloseTo(expected.z, 5)
+      }
+      const zs = gate.inputs.map((p) => getState().getPinWorldPosition(gate.id, p.id)?.z ?? NaN)
+      expect(new Set(zs).size).toBe(3)
+    })
+
+    it('Mux8Way16 (9 distinct input pins): every input returns a unique world position matching the layout', () => {
+      // Regression for the previous hardcoded-offset bug, which collapsed
+      // every input with index >= 1 to the same Y=-0.2 position. Mux8Way16
+      // has 9 input pins (a..h + sel) — the strongest multi-pin coverage
+      // available in Project 1 builtins.
+      const gate = getState().addGate('Mux8Way16', { x: 0, y: 0, z: 0 })
+      expect(gate.inputs).toHaveLength(9)
+      for (const pin of gate.inputs) {
+        const expected = expectedWorldPos(gate, pin.id)
+        const actual = getState().getPinWorldPosition(gate.id, pin.id)
+        expect(actual?.x).toBeCloseTo(expected.x, 5)
+        expect(actual?.y).toBeCloseTo(expected.y, 5)
+        expect(actual?.z).toBeCloseTo(expected.z, 5)
+      }
+      // Each input must occupy a unique world position.
+      const fingerprints = gate.inputs.map((p) => {
+        const pos = getState().getPinWorldPosition(gate.id, p.id)
+        return `${pos?.x.toFixed(4)}|${pos?.y.toFixed(4)}|${pos?.z.toFixed(4)}`
+      })
+      expect(new Set(fingerprints).size).toBe(9)
+    })
+
+    it('Mux16 (3 inputs of mixed widths): layout contract holds under multi-bit pins', () => {
+      const gate = getState().addGate('Mux16', { x: 0, y: 0, z: 0 })
+      for (const pin of [...gate.inputs, ...gate.outputs]) {
+        const expected = expectedWorldPos(gate, pin.id)
+        const actual = getState().getPinWorldPosition(gate.id, pin.id)
+        expect(actual?.x).toBeCloseTo(expected.x, 5)
+        expect(actual?.y).toBeCloseTo(expected.y, 5)
+        expect(actual?.z).toBeCloseTo(expected.z, 5)
+      }
+    })
+
+    it('Layout contract survives gate rotation (180° around Y)', () => {
+      const gate = getState().addGate('Mux', { x: 3, y: 0, z: 4 })
+      getState().rotateGate(gate.id, 'y', Math.PI)
+      // Read the rotated gate back so expectedWorldPos uses current rotation.
+      const rotatedGate = getState().gates.find((g) => g.id === gate.id)!
+      for (const pin of [...rotatedGate.inputs, ...rotatedGate.outputs]) {
+        const expected = expectedWorldPos(rotatedGate, pin.id)
+        const actual = getState().getPinWorldPosition(rotatedGate.id, pin.id)
+        expect(actual?.x).toBeCloseTo(expected.x, 5)
+        expect(actual?.y).toBeCloseTo(expected.y, 5)
+        expect(actual?.z).toBeCloseTo(expected.z, 5)
+      }
     })
   })
 })
