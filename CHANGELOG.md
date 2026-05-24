@@ -5,6 +5,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.0](https://github.com/mezivillager/hacer/compare/v2.4.0...v2.5.0) (2026-05-24)
+
+### Features
+
+* **serialize:** barrel export for serialization module (P05-14) ([8bec950](https://github.com/mezivillager/hacer/commit/8bec95037427fda33554de4b94144cbe0277b273))
+* **serialize:** deserializeCircuit with pin-id-preserving gate reconstruction (P05-14) ([c99a181](https://github.com/mezivillager/hacer/commit/c99a181fa91eb4df62a25e88a9c0b4dbabfefbba))
+* **serialize:** SerializedCircuit types + pure serializeCircuit (P05-14) ([1207966](https://github.com/mezivillager/hacer/commit/12079664e025ee002c35bd53e29119941127d43f))
+* **store:** debounced autosave subscription writes __autosave__ slot (P05-14) ([596c9b0](https://github.com/mezivillager/hacer/commit/596c9b0819b3fc79ca52068cc63bf4962f700eeb))
+* **store:** persistenceActions exportCircuitJSON + importCircuitJSON (P05-14) ([4e36cd3](https://github.com/mezivillager/hacer/commit/4e36cd332e07dc330d9699c4a7ab0a6e07f08753))
+* **store:** persistenceActions skeleton + save/list/delete (P05-14) ([5ebb170](https://github.com/mezivillager/hacer/commit/5ebb170d6413aa215c05b453c6730a18915b0e16))
+* **store:** persistenceActions.loadCircuit clears UI state + ticks sim (P05-14) ([7818f3e](https://github.com/mezivillager/hacer/commit/7818f3e553af1db404667ee423a473f80a562e05))
+* **ui:** CircuitLibrary panel — save/load/list/delete/export/import (P05-14) ([05f2024](https://github.com/mezivillager/hacer/commit/05f20243091ff894f864d4ef4654d176d3ce5162))
+* **ui:** right-rail Circuit Library panel + live Export/Import quick actions (P05-14) ([5148596](https://github.com/mezivillager/hacer/commit/51485960c5f77bfec152941deb4a009c3cb28bb5))
+
+### Bug Fixes
+
+* **persistence:** address review feedback ([2d76d77](https://github.com/mezivillager/hacer/commit/2d76d7744c16d34729e1f03fa1360e6c29f20374))
+* **ui:** explicit data-testid prop on QuickActionButton (P05-14) ([3825975](https://github.com/mezivillager/hacer/commit/382597535eb66004edef8828f280ee150b812e90))
+
+### Documentation
+
+* **p05-14:** bite-sized TDD implementation plan ([5baed3d](https://github.com/mezivillager/hacer/commit/5baed3d6941bc1bf5df740065fe9cf6afce1e2e9))
+* **p05-14:** refresh ticket against current code paths ([7107eb2](https://github.com/mezivillager/hacer/commit/7107eb283c42701144643311861731cbab26996b))
+* **p05-14:** self-review fixes — stub task refs, signature sync, E2E types ([d0757f7](https://github.com/mezivillager/hacer/commit/d0757f76564d517691596a7376024452d3606382))
+* **phase-0.5:** mark P05-14 done — circuit persistence shipped ([bfdf573](https://github.com/mezivillager/hacer/commit/bfdf573be0a5a0ede549bd1f0088363d3652e70e))
+
+### Tests
+
+* **e2e:** [@persistence](https://github.com/persistence) store spec for save/load/import round-trip (P05-14) ([66e59c4](https://github.com/mezivillager/hacer/commit/66e59c46d6d2874ca0b06bfff4c34e1dffbc83c4))
+
 ## [2.4.0](https://github.com/mezivillager/hacer/compare/v2.3.2...v2.4.0) (2026-05-22)
 
 ### Features
