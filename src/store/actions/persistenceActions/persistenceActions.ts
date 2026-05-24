@@ -146,8 +146,14 @@ export const createPersistenceActions = (_set: SetState, get: GetState): Persist
     const a = document.createElement('a')
     a.href = url
     a.download = `${name}.circuit.json`
-    a.click()
-    URL.revokeObjectURL(url)
+    a.style.display = 'none'
+    document.body.appendChild(a)
+    try {
+      a.click()
+    } finally {
+      a.remove()
+      window.setTimeout(() => URL.revokeObjectURL(url), 0)
+    }
   },
 
   importCircuitJSON: (json: string) => {

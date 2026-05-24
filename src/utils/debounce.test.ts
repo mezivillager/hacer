@@ -46,4 +46,18 @@ describe('debounce', () => {
     expect(fn).toHaveBeenCalledTimes(1)
     expect(fn).toHaveBeenCalledWith('second')
   })
+
+  it('flush() runs the latest pending call immediately', () => {
+    const fn = vi.fn()
+    const debounced = debounce(fn, 100)
+
+    debounced('first')
+    debounced('second')
+    debounced.flush()
+
+    expect(fn).toHaveBeenCalledTimes(1)
+    expect(fn).toHaveBeenCalledWith('second')
+    vi.advanceTimersByTime(500)
+    expect(fn).toHaveBeenCalledTimes(1)
+  })
 })

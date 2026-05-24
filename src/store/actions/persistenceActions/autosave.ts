@@ -1,13 +1,13 @@
 import { serializeCircuit } from '@/core/serialization'
 import { useCircuitStore } from '@/store/circuitStore'
+import { debounce, type DebouncedFunction } from '@/utils/debounce'
 import { AUTOSAVE_KEY } from './persistenceActions'
-import { debounce, type DebouncedFn } from './debounce'
 
 export const AUTOSAVE_DEBOUNCE_MS = 2000
 export const AUTOSAVE_NAME = '__autosave__'
 
 let unsubscribe: (() => void) | null = null
-let pendingWrite: DebouncedFn | null = null
+let pendingWrite: DebouncedFunction<() => void> | null = null
 
 function writeAutosave(): void {
   if (typeof window === 'undefined') return

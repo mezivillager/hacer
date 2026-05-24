@@ -132,7 +132,9 @@ useCircuitStore.subscribe(
   }
 )
 
-subscribeAutosave()
+if (import.meta.env.MODE !== 'test') {
+  subscribeAutosave()
+}
 
 // Legacy exports for backward compatibility during migration
 // circuitStore gives direct access to the current state (readonly)
