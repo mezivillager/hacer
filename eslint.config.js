@@ -15,6 +15,8 @@ export default defineConfig([
     '.stryker-tmp',
     'design-system/**',
     '.cursor/**', // Vendored ECC / IDE harness — not application source
+    '.worktrees/**', // Sibling git worktrees — they lint themselves on their own branches
+    '.claude/worktrees/**', // Legacy worktree location — same rationale
   ]),
   {
     files: ['**/*.{ts,tsx}'],
