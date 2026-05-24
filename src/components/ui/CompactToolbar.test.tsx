@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event'
 import { TooltipProvider } from '@/components/ui-kit/tooltip'
 import { CompactToolbar } from './CompactToolbar'
 import { useCircuitStore, circuitActions } from '@/store/circuitStore'
+import { resetAppRegistriesForTests } from '@/core/chips/appRegistry'
 
 vi.mock('next-themes', () => ({
   useTheme: () => ({ theme: 'dark', setTheme: vi.fn(), resolvedTheme: 'dark' }),
@@ -27,6 +28,7 @@ function placeGateAt(chipName: 'Nand' | 'And' | 'Or' | 'Not' | 'Xor', x: number,
 
 describe('CompactToolbar', () => {
   beforeEach(() => {
+    resetAppRegistriesForTests()
     circuitActions.clearCircuit()
     circuitActions.deselectAll()
     if (useCircuitStore.getState().simulationRunning) circuitActions.toggleSimulation()
@@ -37,13 +39,49 @@ describe('CompactToolbar', () => {
   })
 
   describe('Gates popover', () => {
-    it('renders the 5 Project 1 elementary gates when popover opens', async () => {
+    it('gate popover lists all 16 Project 1 chips with data-testid hooks', async () => {
       const user = userEvent.setup()
       wrap()
       await user.click(screen.getByTestId('toolbar-gates-trigger'))
-      for (const type of ['Nand', 'And', 'Or', 'Not', 'Xor']) {
-        expect(screen.getByTestId(`gate-button-${type}`)).toBeInTheDocument()
+
+      const expected = [
+        'Nand',
+        'Not',
+        'And',
+        'Or',
+        'Xor',
+        'Mux',
+        'DMux',
+        'Not16',
+        'And16',
+        'Or16',
+        'Mux16',
+        'Or8Way',
+        'Mux4Way16',
+        'Mux8Way16',
+        'DMux4Way',
+        'DMux8Way',
+      ]
+      for (const name of expected) {
+        expect(screen.getByTestId(`gate-button-${name}`)).toBeInTheDocument()
       }
+    })
+
+    it('does NOT list legacy NOR/XNOR/uppercase variants', async () => {
+      const user = userEvent.setup()
+      wrap()
+      await user.click(screen.getByTestId('toolbar-gates-trigger'))
+      expect(screen.queryByTestId('gate-button-NOR')).toBeNull()
+      expect(screen.queryByTestId('gate-button-XNOR')).toBeNull()
+      expect(screen.queryByTestId('gate-button-NAND')).toBeNull()
+    })
+
+    it('clicking a chip button calls startPlacement(chipName)', async () => {
+      const user = userEvent.setup()
+      wrap()
+      await user.click(screen.getByTestId('toolbar-gates-trigger'))
+      await user.click(screen.getByTestId('gate-button-Mux'))
+      expect(useCircuitStore.getState().placementMode).toBe('Mux')
     })
 
     it('clicking a gate sets placementMode and closes popover', async () => {
