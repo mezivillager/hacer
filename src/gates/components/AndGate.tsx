@@ -45,7 +45,6 @@ export function AndGate({
       rotation={rotation}
       selected={selected}
       isWiring={isWiring}
-      gateType="AND"
       bodyColor={AND_COLORS.body}
       bodyHoverColor={AND_COLORS.hover}
       bodySelectedColor={AND_COLORS.selected}

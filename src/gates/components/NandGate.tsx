@@ -48,7 +48,6 @@ export function NandGate({
       rotation={rotation}
       selected={selected}
       isWiring={isWiring}
-      gateType="NAND"
       bodyColor={NAND_COLORS.body}
       bodyHoverColor={NAND_COLORS.hover}
       bodySelectedColor={NAND_COLORS.selected}

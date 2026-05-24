@@ -4,7 +4,6 @@ import '@testing-library/jest-dom/vitest'
 import { BaseGate } from './BaseGate'
 import { useCircuitStore } from '@/store/circuitStore'
 import type { PinConfig } from '../types'
-import type { GateType } from '@/store/types'
 
 // Mock dependencies
 vi.mock('@/store/circuitStore', () => {
@@ -65,7 +64,6 @@ describe('BaseGate', () => {
     rotation: [0, 0, 0] as [number, number, number],
     selected: false,
     isWiring: false,
-    gateType: 'AND' as GateType,
     bodyColor: '#2d5a3d',
     bodyHoverColor: '#3d7a4d',
     bodySelectedColor: '#4a9eff',

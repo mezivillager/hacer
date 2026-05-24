@@ -5,7 +5,6 @@ import { materials } from '@/theme'
 import { useGateDrag } from '@/hooks/useGateDrag'
 import { GatePin, WireStub } from './index'
 import { getPinColor, getWorldPosition, createGateClickHandler, createPinPointerMoveHandler, createPinClickHandler, handlePinPointerOut } from '../handlers/gateHandlers'
-import type { GateType } from '@/store/types'
 import type { PinConfig } from '../types'
 import { FloatingLabel } from '@/components/canvas/FloatingLabel'
 import { LABEL_GEOMETRY } from '@/components/canvas/labelGeometry'
@@ -16,7 +15,6 @@ interface BaseGateComponentProps {
   rotation: [number, number, number]
   selected: boolean
   isWiring: boolean
-  gateType: GateType
   bodyColor: string
   bodyHoverColor: string
   bodySelectedColor: string
@@ -49,7 +47,7 @@ export function BaseGate(props: BaseGateComponentProps) {
     rotation,
     selected,
     isWiring,
-    // gateType, output, inputs - no longer used after removing BaseGateLabel
+    // output, inputs - no longer used after removing BaseGateLabel
     bodyColor,
     bodyHoverColor,
     bodySelectedColor,
