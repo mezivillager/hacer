@@ -2,3 +2,5 @@ export type { ChipPin, ChipDefinition, ChipImplementation, BuiltinEvalFn, ChipVa
 export { isBuiltinChip, isHDLChip, isCircuitChip, validateChipDefinition } from './types'
 export type { ChipRegistry } from './registry'
 export { createChipRegistry, registerBuiltin } from './registry'
+export { getBuiltinChipRegistry, getUserChipRegistry, resetAppRegistriesForTests } from './appRegistry'
+export { registerProject1Builtins } from './builtins/project01'
