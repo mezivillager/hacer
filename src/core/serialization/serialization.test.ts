@@ -27,12 +27,17 @@ describe('serializeCircuit', () => {
   })
 
   it('serializes a single gate including width', () => {
-    const gate = circuitActions.addGate('NAND', { x: 4, y: 0, z: 4 })
+    const gate = circuitActions.addGate('Nand', { x: 4, y: 0, z: 4 })
     const out = serializeCircuit(useCircuitStore.getState(), 'one-gate')
     expect(out.gates).toHaveLength(1)
     expect(out.gates[0]).toEqual({
       id: gate.id,
-      type: 'NAND',
+      // SerializedGate keeps the `type` field on disk (see
+      // src/core/serialization/types.ts). Phase 5 will migrate the on-disk
+      // schema; for Phase 4 the runtime store renamed `type` → `chipName`,
+      // but the saved blob still uses `type` and stores the canonical
+      // chip name as the value.
+      type: 'Nand',
       position: { x: 4, y: 0, z: 4 },
       rotation: { x: Math.PI / 2, y: 0, z: 0 },
       width: 1,
@@ -40,7 +45,7 @@ describe('serializeCircuit', () => {
   })
 
   it('preserves multi-bit gate width', () => {
-    const gate = circuitActions.addGate('AND', { x: 0, y: 0, z: 0 }, 16)
+    const gate = circuitActions.addGate('And', { x: 0, y: 0, z: 0 }, 16)
     const out = serializeCircuit(useCircuitStore.getState(), 'wide')
     expect(out.gates[0].width).toBe(16)
     expect(out.gates[0].id).toBe(gate.id)
@@ -60,15 +65,15 @@ describe('serializeCircuit', () => {
   })
 
   it('deep-clones positions and segments (no shared refs with store)', () => {
-    const gate = circuitActions.addGate('NAND', { x: 4, y: 0, z: 4 })
+    const gate = circuitActions.addGate('Nand', { x: 4, y: 0, z: 4 })
     const out = serializeCircuit(useCircuitStore.getState(), 'isolated')
     out.gates[0].position.x = 9999
     expect(useCircuitStore.getState().gates.find((g) => g.id === gate.id)?.position.x).toBe(4)
   })
 
   it('serializes wire segments with type and optional arc metadata', () => {
-    const a = circuitActions.addGate('NAND', { x: -4, y: 0, z: 0 })
-    const b = circuitActions.addGate('NAND', { x: 4, y: 0, z: 0 })
+    const a = circuitActions.addGate('Nand', { x: -4, y: 0, z: 0 })
+    const b = circuitActions.addGate('Nand', { x: 4, y: 0, z: 0 })
     circuitActions.addWire(
       { type: 'gate', entityId: a.id, pinId: `${a.id}-out-0` },
       { type: 'gate', entityId: b.id, pinId: `${b.id}-in-0` },
@@ -123,7 +128,7 @@ describe('deserializeCircuit', () => {
   })
 
   it('round-trips a single gate and preserves its id, width, and pin ids', () => {
-    const gate = circuitActions.addGate('NAND', { x: 4, y: 0, z: 4 }, 1)
+    const gate = circuitActions.addGate('Nand', { x: 4, y: 0, z: 4 }, 1)
     const expectedInIds = gate.inputs.map((p) => p.id)
     const expectedOutIds = gate.outputs.map((p) => p.id)
 
@@ -138,7 +143,7 @@ describe('deserializeCircuit', () => {
   })
 
   it('round-trips a 16-bit gate', () => {
-    const gate = circuitActions.addGate('AND', { x: 0, y: 0, z: 0 }, 16)
+    const gate = circuitActions.addGate('And', { x: 0, y: 0, z: 0 }, 16)
     const blob = serializeCircuit(useCircuitStore.getState(), 'wide')
     const restored = deserializeCircuit(blob)
     expect(restored.gates[0].width).toBe(16)
@@ -148,8 +153,8 @@ describe('deserializeCircuit', () => {
   })
 
   it('round-trips a gate-to-gate wire with arc segment', () => {
-    const a = circuitActions.addGate('NAND', { x: -4, y: 0, z: 0 })
-    const b = circuitActions.addGate('NAND', { x: 4, y: 0, z: 0 })
+    const a = circuitActions.addGate('Nand', { x: -4, y: 0, z: 0 })
+    const b = circuitActions.addGate('Nand', { x: 4, y: 0, z: 0 })
     circuitActions.addWire(
       { type: 'gate', entityId: a.id, pinId: `${a.id}-out-0` },
       { type: 'gate', entityId: b.id, pinId: `${b.id}-in-0` },
@@ -174,7 +179,7 @@ describe('deserializeCircuit', () => {
   })
 
   it('round-trips junctions with signalId and wireIds', () => {
-    const a = circuitActions.addGate('NAND', { x: 0, y: 0, z: 0 })
+    const a = circuitActions.addGate('Nand', { x: 0, y: 0, z: 0 })
     const blob: ReturnType<typeof serializeCircuit> = {
       version: 1,
       name: 'jn',
@@ -182,7 +187,10 @@ describe('deserializeCircuit', () => {
       gates: [
         {
           id: a.id,
-          type: 'NAND',
+          // SerializedGate keeps `type` for cross-version compatibility — see
+          // src/core/serialization/types.ts. The runtime store renamed
+          // `type` → `chipName`, but the saved blob still uses `type`.
+          type: 'Nand',
           position: { x: 0, y: 0, z: 0 },
           rotation: { x: Math.PI / 2, y: 0, z: 0 },
           width: 1,

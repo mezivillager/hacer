@@ -34,10 +34,10 @@ describe('HelpBar', () => {
   })
 
   it('shows placement help text when placementMode is set', () => {
-    circuitActions.startPlacement('AND')
+    circuitActions.startPlacement('And')
     wrap()
     const text = screen.getByTestId('help-bar-text').textContent ?? ''
-    expect(text).toContain('place the AND gate')
+    expect(text).toContain('place the And gate')
     expect(text).toContain('Esc to cancel')
   })
 

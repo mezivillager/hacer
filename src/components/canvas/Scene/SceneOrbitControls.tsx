@@ -1,6 +1,6 @@
 import { OrbitControls } from '@react-three/drei'
 import { useCircuitStore } from '@/store/circuitStore'
-import type { WiringState, GateType, PerformanceMode } from '@/store/types'
+import type { WiringState, PerformanceMode } from '@/store/types'
 
 /**
  * OrbitControls component - disabled during interactions (placing, wiring, dragging, hovering over gates).
@@ -9,7 +9,7 @@ import type { WiringState, GateType, PerformanceMode } from '@/store/types'
  */
 export function SceneOrbitControls() {
   const isDragActive = useCircuitStore((state): boolean => state.isDragActive)
-  const placementMode = useCircuitStore((state): GateType | null => state.placementMode)
+  const placementMode = useCircuitStore((state): string | null => state.placementMode)
   const wiringFrom = useCircuitStore((state): WiringState | null => state.wiringFrom)
   const hoveredGateId = useCircuitStore((state): string | null => state.hoveredGateId)
   const performanceMode = useCircuitStore((state): PerformanceMode => state.performanceMode)

@@ -28,7 +28,7 @@ describe('useKeyboardShortcuts', () => {
 
   describe('Delete key handling', () => {
     it('deletes selected gate when Delete key is pressed', () => {
-      const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
       getState().selectGate(gate.id)
 
       renderHook(() => useKeyboardShortcuts())
@@ -46,7 +46,7 @@ describe('useKeyboardShortcuts', () => {
     })
 
     it('deletes selected gate when Backspace key is pressed', () => {
-      const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
       getState().selectGate(gate.id)
 
       renderHook(() => useKeyboardShortcuts())
@@ -64,7 +64,7 @@ describe('useKeyboardShortcuts', () => {
     })
 
     it('does nothing when Delete key is pressed and no gate is selected', () => {
-      getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      getState().addGate('Nand', { x: 0, y: 0, z: 0 })
 
       renderHook(() => useKeyboardShortcuts())
 
@@ -80,9 +80,9 @@ describe('useKeyboardShortcuts', () => {
     })
 
     it('does nothing when Delete key is pressed during placement mode', () => {
-      const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
       getState().selectGate(gate.id)
-      getState().startPlacement('AND')
+      getState().startPlacement('And')
 
       renderHook(() => useKeyboardShortcuts())
 
@@ -98,8 +98,8 @@ describe('useKeyboardShortcuts', () => {
     })
 
     it('does nothing when Delete key is pressed during wiring mode', () => {
-      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-      getState().addGate('NAND', { x: 2, y: 0, z: 2 })
+      const gate1 = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+      getState().addGate('Nand', { x: 2, y: 0, z: 2 })
       getState().selectGate(gate1.id)
 
       // Start wiring from gate1 output
@@ -122,7 +122,7 @@ describe('useKeyboardShortcuts', () => {
     })
 
     it('does nothing when Delete key is pressed during dragging', () => {
-      const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
       getState().selectGate(gate.id)
       // Set preview position to simulate dragging
       getState().updatePlacementPreviewPosition({ x: 2, y: 0, z: 2 })
@@ -141,8 +141,8 @@ describe('useKeyboardShortcuts', () => {
     })
 
     it('removes associated wires when gate is deleted via Delete key', () => {
-      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-      const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 2 })
+      const gate1 = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('Nand', { x: 2, y: 0, z: 2 })
       getState().selectGate(gate1.id)
 
       // Create wire between gates
@@ -166,8 +166,8 @@ describe('useKeyboardShortcuts', () => {
     })
 
     it('deletes selected wire when Delete key is pressed', () => {
-      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-      const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 2 })
+      const gate1 = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('Nand', { x: 2, y: 0, z: 2 })
       const wire = getState().addWire(
         { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
         { type: 'gate', entityId: gate2.id, pinId: gate2.inputs[0].id },
@@ -226,8 +226,8 @@ describe('useKeyboardShortcuts', () => {
     })
 
     it('deletes selected wire when Backspace key is pressed', () => {
-      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-      const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 2 })
+      const gate1 = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('Nand', { x: 2, y: 0, z: 2 })
       const wire = getState().addWire(
         { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
         { type: 'gate', entityId: gate2.id, pinId: gate2.inputs[0].id },
@@ -250,8 +250,8 @@ describe('useKeyboardShortcuts', () => {
     })
 
     it('prioritizes wire deletion over gate deletion when both are selected', () => {
-      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-      const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 2 })
+      const gate1 = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('Nand', { x: 2, y: 0, z: 2 })
       const wire = getState().addWire(
         { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
         { type: 'gate', entityId: gate2.id, pinId: gate2.inputs[0].id },
@@ -280,8 +280,8 @@ describe('useKeyboardShortcuts', () => {
 
   describe('Escape key handling', () => {
     it('deselects wire when Escape key is pressed with wire selected', () => {
-      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-      const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 2 })
+      const gate1 = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('Nand', { x: 2, y: 0, z: 2 })
       const wire = getState().addWire(
         { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
         { type: 'gate', entityId: gate2.id, pinId: gate2.inputs[0].id },
@@ -302,7 +302,7 @@ describe('useKeyboardShortcuts', () => {
 
   describe('Delete key with other shortcuts', () => {
     it('does not interfere with Escape key for deselecting', () => {
-      const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
       getState().selectGate(gate.id)
 
       renderHook(() => useKeyboardShortcuts())
@@ -326,7 +326,7 @@ describe('useKeyboardShortcuts', () => {
     })
 
     it('does not interfere with arrow keys for rotation', () => {
-      const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
       getState().selectGate(gate.id)
 
       const { rerender } = renderHook(() => useKeyboardShortcuts())
@@ -342,7 +342,7 @@ describe('useKeyboardShortcuts', () => {
       expect(getState().selectedGateId).toBeNull()
 
       // Add new gate and select it
-      const gate2 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
       getState().selectGate(gate2.id)
 
       // Re-render hook to pick up new selection
@@ -366,7 +366,7 @@ describe('useKeyboardShortcuts', () => {
 
   describe('Arrow key handling', () => {
     it('does not rotate gate when ArrowLeft is pressed and no gate is selected', () => {
-      const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
       // Don't select the gate
 
       renderHook(() => useKeyboardShortcuts())
@@ -389,7 +389,7 @@ describe('useKeyboardShortcuts', () => {
     })
 
     it('does not rotate gate when ArrowRight is pressed and no gate is selected', () => {
-      const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
       // Don't select the gate
 
       renderHook(() => useKeyboardShortcuts())
@@ -412,7 +412,7 @@ describe('useKeyboardShortcuts', () => {
     })
 
     it('rotates gate when ArrowLeft is pressed and gate is selected', () => {
-      const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
       getState().selectGate(gate.id)
 
       renderHook(() => useKeyboardShortcuts())
@@ -434,7 +434,7 @@ describe('useKeyboardShortcuts', () => {
     })
 
     it('rotates gate when ArrowRight is pressed and gate is selected', () => {
-      const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
       getState().selectGate(gate.id)
 
       renderHook(() => useKeyboardShortcuts())
@@ -456,7 +456,7 @@ describe('useKeyboardShortcuts', () => {
     })
 
     it('does not rotate gate when arrow key is pressed during dragging', () => {
-      const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
       getState().selectGate(gate.id)
       // Set preview position to simulate dragging
       getState().updatePlacementPreviewPosition({ x: 2, y: 0, z: 2 })

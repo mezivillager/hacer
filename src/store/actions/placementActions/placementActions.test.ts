@@ -22,17 +22,17 @@ describe('placementActions', () => {
 
   describe('startPlacement', () => {
     it('sets placement mode', () => {
-      getState().startPlacement('NAND')
+      getState().startPlacement('Nand')
 
-      expect(getState().placementMode).toBe('NAND')
+      expect(getState().placementMode).toBe('Nand')
     })
 
     it('clears selected gate', () => {
       // Use valid position (both odd)
-      const gate = getState().addGate('NAND', { x: 2, y: 0.2, z: 2 })
+      const gate = getState().addGate('Nand', { x: 2, y: 0.2, z: 2 })
       getState().selectGate(gate.id)
 
-      getState().startPlacement('AND')
+      getState().startPlacement('And')
 
       expect(getState().selectedGateId).toBe(null)
     })
@@ -40,7 +40,7 @@ describe('placementActions', () => {
     it('clears nodePlacementMode when starting gate placement', () => {
       useCircuitStore.setState({ nodePlacementMode: 'INPUT' })
 
-      getState().startPlacement('NAND')
+      getState().startPlacement('Nand')
 
       expect(getState().nodePlacementMode).toBe(null)
     })
@@ -48,8 +48,8 @@ describe('placementActions', () => {
 
   describe('cancelPlacement', () => {
     it('clears placement mode', () => {
-      getState().startPlacement('NAND')
-      expect(getState().placementMode).toBe('NAND')
+      getState().startPlacement('Nand')
+      expect(getState().placementMode).toBe('Nand')
 
       getState().cancelPlacement()
 
@@ -59,7 +59,7 @@ describe('placementActions', () => {
 
   describe('placeGate', () => {
     it('places gate at position and clears placement mode', () => {
-      getState().startPlacement('NAND')
+      getState().startPlacement('Nand')
 
       // Use valid position (not on section line - both row and col must be odd)
       // Position (2, 0.2, 2) = grid (1, 1) - both odd ✓
@@ -67,7 +67,7 @@ describe('placementActions', () => {
 
       expect(getState().gates).toHaveLength(1)
       expect(getState().gates[0].position).toEqual({ x: 2, y: 0.2, z: 2 })
-      expect(getState().gates[0].type).toBe('NAND')
+      expect(getState().gates[0].chipName).toBe('Nand')
       expect(getState().placementMode).toBe(null)
     })
 
@@ -79,7 +79,7 @@ describe('placementActions', () => {
 
     describe('grid snapping', () => {
       it('snaps position to grid center', () => {
-        getState().startPlacement('NAND')
+        getState().startPlacement('Nand')
 
         // Position slightly off grid should snap to grid center (valid position)
         // (2.9, 0.2, 2.9) → grid (1, 1) - both odd ✓
@@ -90,7 +90,7 @@ describe('placementActions', () => {
       })
 
       it('snaps to nearest grid cell', () => {
-        getState().startPlacement('NAND')
+        getState().startPlacement('Nand')
 
         // Position between grid cells should snap to nearest (valid position)
         // (3.1, 0.2, 3.1) → grid (2, 2) - but this is on section line!
@@ -104,7 +104,7 @@ describe('placementActions', () => {
       })
 
       it('verifies gate is placed at grid center', () => {
-        getState().startPlacement('AND')
+        getState().startPlacement('And')
 
         // Use valid position (both row and col odd)
         // GRID_SIZE * 2 = 4, GRID_SIZE * 3 = 6
@@ -125,8 +125,8 @@ describe('placementActions', () => {
     describe('spacing validation', () => {
       it('prevents placement in same cell as existing gate', () => {
         // Use valid position (both odd)
-        const gate = getState().addGate('NAND', { x: 2, y: 0.2, z: 2 }) // grid (1, 1)
-        getState().startPlacement('AND')
+        const gate = getState().addGate('Nand', { x: 2, y: 0.2, z: 2 }) // grid (1, 1)
+        getState().startPlacement('And')
 
         getState().placeGate({ x: 2, y: 0.2, z: 2 })
 
@@ -137,8 +137,8 @@ describe('placementActions', () => {
 
       it('prevents placement in adjacent cell', () => {
         // Use valid position (both odd)
-        getState().addGate('NAND', { x: 2, y: 0.2, z: 2 }) // grid (1, 1)
-        getState().startPlacement('AND')
+        getState().addGate('Nand', { x: 2, y: 0.2, z: 2 }) // grid (1, 1)
+        getState().startPlacement('And')
 
         // Note: With section line restrictions, adjacent valid positions don't exist
         // Adjacent positions would be on section lines (even row or col), which are invalid
@@ -161,8 +161,8 @@ describe('placementActions', () => {
 
       it('allows placement when spacing is sufficient', () => {
         // Use valid position (both odd)
-        const gate = getState().addGate('NAND', { x: 2, y: 0.2, z: 2 }) // grid (1, 1)
-        getState().startPlacement('AND')
+        const gate = getState().addGate('Nand', { x: 2, y: 0.2, z: 2 }) // grid (1, 1)
+        getState().startPlacement('And')
 
         // Place 2+ cells away (spacing > 1) at valid position
         // grid (1, 5) - both odd, far enough ✓
@@ -175,8 +175,8 @@ describe('placementActions', () => {
 
       it('does nothing when placement is invalid', () => {
         // Use valid position (both odd)
-        getState().addGate('NAND', { x: 2, y: 0.2, z: 2 }) // grid (1, 1)
-        getState().startPlacement('AND')
+        getState().addGate('Nand', { x: 2, y: 0.2, z: 2 }) // grid (1, 1)
+        getState().startPlacement('And')
 
         const initialGateCount = getState().gates.length
 
@@ -186,7 +186,7 @@ describe('placementActions', () => {
         // Should still have same number of gates
         expect(getState().gates).toHaveLength(initialGateCount)
         // Placement mode should still be active (not cleared on invalid placement)
-        expect(getState().placementMode).toBe('AND')
+        expect(getState().placementMode).toBe('And')
       })
     })
   })

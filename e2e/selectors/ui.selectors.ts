@@ -9,7 +9,7 @@
  * that targeted the deleted Ant Sidebar/GateSelector/etc.
  */
 
-import type { GateType } from '@/store/types'
+import type { GateType } from '../config/constants'
 
 export const UI_SELECTORS = {
   canvas: 'canvas',

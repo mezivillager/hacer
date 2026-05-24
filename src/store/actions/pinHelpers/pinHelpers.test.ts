@@ -24,7 +24,7 @@ describe('pinHelpers', () => {
 
   describe('getPinWorldPosition', () => {
     it('returns input pin world position for first input', () => {
-      const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
 
       const position = getState().getPinWorldPosition(gate.id, gate.inputs[0].id)
 
@@ -37,7 +37,7 @@ describe('pinHelpers', () => {
     })
 
     it('returns input pin world position for second input', () => {
-      const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
 
       const position = getState().getPinWorldPosition(gate.id, gate.inputs[1].id)
 
@@ -50,7 +50,7 @@ describe('pinHelpers', () => {
     })
 
     it('returns output pin world position', () => {
-      const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
 
       const position = getState().getPinWorldPosition(gate.id, gate.outputs[0].id)
 
@@ -61,7 +61,7 @@ describe('pinHelpers', () => {
     })
 
     it('accounts for gate position', () => {
-      const gate = getState().addGate('NAND', { x: 5, y: 10, z: 15 })
+      const gate = getState().addGate('Nand', { x: 5, y: 10, z: 15 })
 
       const position = getState().getPinWorldPosition(gate.id, gate.outputs[0].id)
 
@@ -74,7 +74,7 @@ describe('pinHelpers', () => {
     })
 
     it('accounts for gate rotation', () => {
-      const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
       getState().rotateGate(gate.id, 'y', Math.PI)
 
       const position = getState().getPinWorldPosition(gate.id, gate.outputs[0].id)
@@ -91,7 +91,7 @@ describe('pinHelpers', () => {
     })
 
     it('returns null if pin does not exist', () => {
-      const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
 
       const position = getState().getPinWorldPosition(gate.id, 'non-existent-pin')
 
@@ -101,7 +101,7 @@ describe('pinHelpers', () => {
 
   describe('getPinWorldPosition - Center Alignment', () => {
     it('returns exact pin center with no Y offset above or below', () => {
-      const gate = getState().addGate('NAND', { x: 0, y: 0.2, z: 0 })
+      const gate = getState().addGate('Nand', { x: 0, y: 0.2, z: 0 })
 
       const inputPosition = getState().getPinWorldPosition(gate.id, gate.inputs[0].id)
       const outputPosition = getState().getPinWorldPosition(gate.id, gate.outputs[0].id)
@@ -124,7 +124,7 @@ describe('pinHelpers', () => {
       ]
       const positions = rotations.map(rot => {
         // Create a fresh gate for each rotation
-        const gate = getState().addGate('NAND', { x: 0, y: 0.2, z: 0 })
+        const gate = getState().addGate('Nand', { x: 0, y: 0.2, z: 0 })
         const pinId = gate.outputs[0].id
         // Set rotation directly using updateGateRotation (absolute, not relative)
         getState().updateGateRotation(gate.id, { x: Math.PI / 2, y: 0, z: rot.z })
@@ -138,7 +138,7 @@ describe('pinHelpers', () => {
     })
 
     it('pin center accounts for flat gate orientation (90° X rotation)', () => {
-      const gate = getState().addGate('NAND', { x: 0, y: 0.2, z: 0 })
+      const gate = getState().addGate('Nand', { x: 0, y: 0.2, z: 0 })
 
       // Gate has default 90° X rotation (flat orientation)
       // Local Y offset (0.2 for inputA) becomes world Z after rotation
@@ -152,7 +152,7 @@ describe('pinHelpers', () => {
     })
 
     it('pin center accounts for user rotation (Z rotation)', () => {
-      const gate = getState().addGate('NAND', { x: 0, y: 0.2, z: 0 })
+      const gate = getState().addGate('Nand', { x: 0, y: 0.2, z: 0 })
       const pinId = gate.outputs[0].id
 
       // Rotate 90° around Z axis (which is world Y after 90° X rotation)
@@ -168,7 +168,7 @@ describe('pinHelpers', () => {
     })
 
     it('works for all pin types (input A, input B, output)', () => {
-      const gate = getState().addGate('NAND', { x: 0, y: 0.2, z: 0 })
+      const gate = getState().addGate('Nand', { x: 0, y: 0.2, z: 0 })
 
       const inputAPos = getState().getPinWorldPosition(gate.id, gate.inputs[0].id)
       const inputBPos = getState().getPinWorldPosition(gate.id, gate.inputs[1].id)
@@ -181,7 +181,7 @@ describe('pinHelpers', () => {
     })
 
     it('works for all gate types', () => {
-      const gateTypes = ['NAND', 'AND', 'OR', 'XOR', 'NOT'] as const
+      const gateTypes = ['Nand', 'And', 'Or', 'Xor', 'Not'] as const
       const positions: Array<{ type: string; y: number }> = []
 
       gateTypes.forEach(type => {
@@ -200,8 +200,8 @@ describe('pinHelpers', () => {
     })
 
     it('wire start/end positions match pin centers exactly', () => {
-      const gate1 = getState().addGate('NAND', { x: 0, y: 0.2, z: 0 })
-      const gate2 = getState().addGate('NAND', { x: 5, y: 0.2, z: 0 })
+      const gate1 = getState().addGate('Nand', { x: 0, y: 0.2, z: 0 })
+      const gate2 = getState().addGate('Nand', { x: 5, y: 0.2, z: 0 })
 
       const fromPinPos = getState().getPinWorldPosition(gate1.id, gate1.outputs[0].id)
       const toPinPos = getState().getPinWorldPosition(gate2.id, gate2.inputs[0].id)

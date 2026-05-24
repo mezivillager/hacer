@@ -26,8 +26,8 @@ import {
 test.describe('Signal Propagation @store @simulation', () => {
   test.describe('Two-Gate Circuits', () => {
     test('propagates signals through NAND-NAND chain', async ({ page }) => {
-      const gate1 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.left)
-      const gate2 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.right)
+      const gate1 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.left)
+      const gate2 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.right)
       await ensureGates(page, 2)
 
       if (!gate1 || !gate2) {
@@ -63,8 +63,8 @@ test.describe('Signal Propagation @store @simulation', () => {
     })
 
     test('propagates signals through AND-OR chain', async ({ page }) => {
-      const gate1 = await addGateViaStore(page, 'AND', DEFAULT_POSITIONS.left)
-      const gate2 = await addGateViaStore(page, 'OR', DEFAULT_POSITIONS.right)
+      const gate1 = await addGateViaStore(page, 'And', DEFAULT_POSITIONS.left)
+      const gate2 = await addGateViaStore(page, 'Or', DEFAULT_POSITIONS.right)
       await ensureGates(page, 2)
 
       if (!gate1 || !gate2) {
@@ -98,8 +98,8 @@ test.describe('Signal Propagation @store @simulation', () => {
     })
 
     test('NOT gate inverts signal', async ({ page }) => {
-      const gate1 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.left)
-      const gate2 = await addGateViaStore(page, 'NOT', DEFAULT_POSITIONS.right)
+      const gate1 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.left)
+      const gate2 = await addGateViaStore(page, 'Not', DEFAULT_POSITIONS.right)
       await ensureGates(page, 2)
 
       if (!gate1 || !gate2) {
@@ -135,9 +135,9 @@ test.describe('Signal Propagation @store @simulation', () => {
 
   test.describe('Three-Gate Circuits', () => {
     test('propagates through three-gate chain', async ({ page }) => {
-      const gate1 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.left)
-      const gate2 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.center)
-      const gate3 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.right)
+      const gate1 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.left)
+      const gate2 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.center)
+      const gate3 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.right)
       await ensureGates(page, 3)
 
       if (!gate1 || !gate2 || !gate3) {
@@ -186,9 +186,9 @@ test.describe('Signal Propagation @store @simulation', () => {
 
     test('fan-out: one output to multiple inputs', async ({ page }) => {
       // g1 output connects to both g2 and g3 inputs
-      const gate1 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.left)
-      const gate2 = await addGateViaStore(page, 'AND', DEFAULT_POSITIONS.topRight)
-      const gate3 = await addGateViaStore(page, 'OR', DEFAULT_POSITIONS.bottomRight)
+      const gate1 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.left)
+      const gate2 = await addGateViaStore(page, 'And', DEFAULT_POSITIONS.topRight)
+      const gate3 = await addGateViaStore(page, 'Or', DEFAULT_POSITIONS.bottomRight)
       await ensureGates(page, 3)
 
       if (!gate1 || !gate2 || !gate3) {
@@ -231,8 +231,8 @@ test.describe('Signal Propagation @store @simulation', () => {
 
   test.describe('Mixed Gate Type Circuits', () => {
     test('XOR gate in circuit', async ({ page }) => {
-      const gate1 = await addGateViaStore(page, 'XOR', DEFAULT_POSITIONS.left)
-      const gate2 = await addGateViaStore(page, 'NOT', DEFAULT_POSITIONS.right)
+      const gate1 = await addGateViaStore(page, 'Xor', DEFAULT_POSITIONS.left)
+      const gate2 = await addGateViaStore(page, 'Not', DEFAULT_POSITIONS.right)
       await ensureGates(page, 2)
 
       if (!gate1 || !gate2) {

@@ -16,8 +16,8 @@ import { expectWireCount, expectGateCount } from '../../helpers/assertions'
 test.describe('Wire Creation @store @wiring', () => {
   test.describe('Wire Structure', () => {
     test('creates wire with correct structure', async ({ page }) => {
-      const gate1 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.left)
-      const gate2 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.right)
+      const gate1 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.left)
+      const gate2 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.right)
       await ensureGates(page, 2)
 
       if (!gate1 || !gate2) {
@@ -60,8 +60,8 @@ test.describe('Wire Creation @store @wiring', () => {
     })
 
     test('verifies pin positions are accurate', async ({ page }) => {
-      const gate1 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.left)
-      const gate2 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.right)
+      const gate1 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.left)
+      const gate2 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.right)
       await ensureGates(page, 2)
 
       if (!gate1 || !gate2) {
@@ -116,10 +116,10 @@ test.describe('Wire Creation @store @wiring', () => {
 
   test.describe('Multiple Wires', () => {
     test('multiple wires can coexist independently', async ({ page }) => {
-      const gate1 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.topLeft)
-      const gate2 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.topRight)
-      const gate3 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.bottomLeft)
-      const gate4 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.bottomRight)
+      const gate1 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.topLeft)
+      const gate2 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.topRight)
+      const gate3 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.bottomLeft)
+      const gate4 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.bottomRight)
       await ensureGates(page, 4)
 
       if (!gate1 || !gate2 || !gate3 || !gate4) {
@@ -164,7 +164,7 @@ test.describe('Wire Creation @store @wiring', () => {
 
   test.describe('Connection Status', () => {
     test('pin connection status updates when wire connects', async ({ page }) => {
-      const gate1 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.left)
+      const gate1 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.left)
       await ensureGates(page, 1)
 
       // Verify initial state: output pin not connected
@@ -189,7 +189,7 @@ test.describe('Wire Creation @store @wiring', () => {
       expect(initialStatus?.isConnected).toBe(false)
 
       // Add second gate and connect wire
-      const gate2 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.right)
+      const gate2 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.right)
       await ensureGates(page, 2)
 
       if (!gate1 || !gate2) {
@@ -227,8 +227,8 @@ test.describe('Wire Creation @store @wiring', () => {
     })
 
     test('pin connection status updates when wire disconnects', async ({ page }) => {
-      const gate1 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.left)
-      const gate2 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.right)
+      const gate1 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.left)
+      const gate2 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.right)
       await ensureGates(page, 2)
 
       if (!gate1 || !gate2) {
@@ -280,8 +280,8 @@ test.describe('Wire Creation @store @wiring', () => {
 
   test.describe('Wire Deletion on Gate Removal', () => {
     test('wires are removed when connected gate is deleted', async ({ page }) => {
-      const gate1 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.left)
-      const gate2 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.right)
+      const gate1 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.left)
+      const gate2 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.right)
       await ensureGates(page, 2)
 
       if (!gate1 || !gate2) {
@@ -311,9 +311,9 @@ test.describe('Wire Creation @store @wiring', () => {
   test.describe('Cross-Gate-Type Wiring', () => {
     // Test wiring between different gate types
     const gateTypePairs: [GateType, GateType][] = [
-      ['NAND', 'AND'],
-      ['OR', 'NOT'],
-      ['XOR', 'NAND'],
+      ['Nand', 'And'],
+      ['Or', 'Not'],
+      ['Xor', 'Nand'],
     ]
 
     for (const [type1, type2] of gateTypePairs) {

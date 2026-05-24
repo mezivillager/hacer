@@ -93,7 +93,7 @@ describe('useDestinationPin', () => {
   })
 
   it('returns gate pin destination when gate pin is set as destination', () => {
-    const gate = getState().addGate('NAND', { x: 2, y: 0, z: 0 })
+    const gate = getState().addGate('Nand', { x: 2, y: 0, z: 0 })
 
     useCircuitStore.setState({
       wiringFrom: {
@@ -120,7 +120,7 @@ describe('useDestinationPin', () => {
   })
 
   it('prioritizes node destination over gate destination', () => {
-    const gate = getState().addGate('NAND', { x: 2, y: 0, z: 0 })
+    const gate = getState().addGate('Nand', { x: 2, y: 0, z: 0 })
     const outputNode = getState().addOutputNode('out', { x: 8, y: 0, z: 0 })
 
     useCircuitStore.setState({

@@ -18,12 +18,12 @@ afterEach(() => {
 
 describe('subscribeAutosave', () => {
   it('does not write before the debounce window elapses', () => {
-    circuitActions.addGate('NAND', { x: 0, y: 0, z: 0 })
+    circuitActions.addGate('Nand', { x: 0, y: 0, z: 0 })
     expect(localStorage.getItem(AUTOSAVE_KEY)).toBeNull()
   })
 
   it('writes a SerializedCircuit to the autosave slot after the debounce', () => {
-    circuitActions.addGate('NAND', { x: 0, y: 0, z: 0 })
+    circuitActions.addGate('Nand', { x: 0, y: 0, z: 0 })
     vi.advanceTimersByTime(AUTOSAVE_DEBOUNCE_MS)
     const raw = localStorage.getItem(AUTOSAVE_KEY)
     expect(raw).not.toBeNull()
@@ -35,8 +35,8 @@ describe('subscribeAutosave', () => {
 
   it('coalesces multiple rapid changes into a single write', () => {
     const setItem = vi.spyOn(Storage.prototype, 'setItem')
-    circuitActions.addGate('NAND', { x: 0, y: 0, z: 0 })
-    circuitActions.addGate('AND', { x: 4, y: 0, z: 0 })
+    circuitActions.addGate('Nand', { x: 0, y: 0, z: 0 })
+    circuitActions.addGate('And', { x: 4, y: 0, z: 0 })
     circuitActions.addInputNode('a', { x: -4, y: 0, z: 0 })
     expect(setItem.mock.calls.filter(([k]) => k === AUTOSAVE_KEY)).toHaveLength(0)
     vi.advanceTimersByTime(AUTOSAVE_DEBOUNCE_MS)
@@ -53,10 +53,10 @@ describe('subscribeAutosave', () => {
     // does produce a new `gates` array reference and therefore DOES schedule an
     // autosave. That is intentional and harmless (the serializer drops `selected`,
     // so the write is functionally a no-op besides the new `savedAt`).
-    circuitActions.addGate('NAND', { x: 0, y: 0, z: 0 })
+    circuitActions.addGate('Nand', { x: 0, y: 0, z: 0 })
     vi.advanceTimersByTime(AUTOSAVE_DEBOUNCE_MS)
     const baseline = localStorage.getItem(AUTOSAVE_KEY)
-    circuitActions.startPlacement('AND')
+    circuitActions.startPlacement('And')
     circuitActions.cancelPlacement()
     circuitActions.addStatus('info', 'just a message')
     vi.advanceTimersByTime(AUTOSAVE_DEBOUNCE_MS)

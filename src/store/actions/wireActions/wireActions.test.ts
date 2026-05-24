@@ -22,8 +22,8 @@ describe('wireActions', () => {
 
   describe('addWire', () => {
     it('adds a wire between two gates', () => {
-      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-      const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 0 })
+      const gate1 = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('Nand', { x: 2, y: 0, z: 0 })
 
       const wire = getState().addWire(
         { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
@@ -39,8 +39,8 @@ describe('wireActions', () => {
     })
 
     it('creates wire with unique id', () => {
-      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-      const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 0 })
+      const gate1 = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('Nand', { x: 2, y: 0, z: 0 })
 
       const wire1 = getState().addWire(
         { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
@@ -57,7 +57,7 @@ describe('wireActions', () => {
     })
 
     it('creates wire with signal ID when provided', () => {
-      const gate = getState().addGate('NAND', { x: 2, y: 0, z: 0 })
+      const gate = getState().addGate('Nand', { x: 2, y: 0, z: 0 })
       const outputNode = getState().addOutputNode('out', { x: 4, y: 0, z: 0 })
 
       const wire = getState().addWire(
@@ -96,7 +96,7 @@ describe('wireActions', () => {
 
     it('widens a default (width=1) gate to match source bus width (P05-13)', () => {
       const inputNode = getState().addInputNode('a', { x: 0, y: 0, z: 0 }, 16)
-      const gate = getState().addGate('NOT', { x: 4, y: 0, z: 0 })
+      const gate = getState().addGate('Not', { x: 4, y: 0, z: 0 })
       const wire = getState().addWire(
         { type: 'input', entityId: inputNode.id },
         { type: 'gate', entityId: gate.id, pinId: gate.inputs[0].id },
@@ -110,8 +110,8 @@ describe('wireActions', () => {
 
   describe('removeWire', () => {
     it('removes wire from store', () => {
-      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-      const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 0 })
+      const gate1 = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('Nand', { x: 2, y: 0, z: 0 })
 
       const wire = getState().addWire(
         { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
@@ -125,8 +125,8 @@ describe('wireActions', () => {
     })
 
     it('does nothing if wire does not exist', () => {
-      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-      const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 0 })
+      const gate1 = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('Nand', { x: 2, y: 0, z: 0 })
 
       getState().addWire(
         { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
@@ -140,10 +140,10 @@ describe('wireActions', () => {
     })
 
     it('removes orphaned arcs from wires that crossed over the removed wire', () => {
-      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-      const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 0 })
-      const gate3 = getState().addGate('NAND', { x: 4, y: 0, z: 0 })
-      const gate4 = getState().addGate('NAND', { x: 6, y: 0, z: 0 })
+      const gate1 = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('Nand', { x: 2, y: 0, z: 0 })
+      const gate3 = getState().addGate('Nand', { x: 4, y: 0, z: 0 })
+      const gate4 = getState().addGate('Nand', { x: 6, y: 0, z: 0 })
 
       // Wire B: created first, no arcs (vertical segment)
       const wireB = getState().addWire(
@@ -185,8 +185,8 @@ describe('wireActions', () => {
     })
 
     it('handles wires with undefined crossesWireIds gracefully', () => {
-      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-      const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 0 })
+      const gate1 = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('Nand', { x: 2, y: 0, z: 0 })
 
       // Create a wire and manually set crossesWireIds to undefined to simulate legacy data
       const wire = getState().addWire(
@@ -215,9 +215,9 @@ describe('wireActions', () => {
     const WIRE_HEIGHT = 0.2
 
     it('removes junction when only one wire remains', () => {
-      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-      const gate2 = getState().addGate('NAND', { x: 8, y: 0, z: 0 })
-      const gate3 = getState().addGate('NAND', { x: 8, y: 0, z: 4 })
+      const gate1 = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('Nand', { x: 8, y: 0, z: 0 })
+      const gate3 = getState().addGate('Nand', { x: 8, y: 0, z: 4 })
 
       // Create original wire with exit + vertical + horizontal + entry segments
       const wire1 = getState().addWire(
@@ -265,10 +265,10 @@ describe('wireActions', () => {
     })
 
     it('keeps junction when multiple wires remain', () => {
-      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-      const gate2 = getState().addGate('NAND', { x: 8, y: 0, z: 0 })
-      const gate3 = getState().addGate('NAND', { x: 8, y: 0, z: 4 })
-      const gate4 = getState().addGate('NAND', { x: 8, y: 0, z: 8 })
+      const gate1 = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('Nand', { x: 8, y: 0, z: 0 })
+      const gate3 = getState().addGate('Nand', { x: 8, y: 0, z: 4 })
+      const gate4 = getState().addGate('Nand', { x: 8, y: 0, z: 8 })
 
       // Create original wire with exit + vertical + horizontal + entry segments
       const wire1 = getState().addWire(
@@ -333,8 +333,8 @@ describe('wireActions', () => {
     })
 
     it('cancels active wiring when original wire is deleted', () => {
-      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-      const gate2 = getState().addGate('NAND', { x: 8, y: 0, z: 0 })
+      const gate1 = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('Nand', { x: 8, y: 0, z: 0 })
 
       // Create original wire with exit + vertical + horizontal + entry segments
       const wire1 = getState().addWire(
@@ -380,7 +380,7 @@ describe('wireActions', () => {
 
   describe('setInputValue', () => {
     it('sets input pin value', () => {
-      const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
 
       getState().setInputValue(gate.id, gate.inputs[0].id, 1)
 
@@ -393,7 +393,7 @@ describe('wireActions', () => {
     })
 
     it('does nothing if pin does not exist', () => {
-      const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
 
       getState().setInputValue(gate.id, 'non-existent-pin', 1)
 
@@ -403,8 +403,8 @@ describe('wireActions', () => {
 
   describe('updateWireSegments', () => {
     it('updates wire segments', () => {
-      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-      const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 0 })
+      const gate1 = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('Nand', { x: 2, y: 0, z: 0 })
 
       const wire = getState().addWire(
         { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
@@ -437,7 +437,7 @@ describe('wireActions', () => {
     it('widens a default (width=1) gate when an N-bit wire connects to its input', () => {
       const store = useCircuitStore.getState()
       const inNode = store.addInputNode('a', { x: 0, y: 0, z: 0 }, 4)
-      const not = store.addGate('NOT', { x: 4, y: 0, z: 0 })
+      const not = store.addGate('Not', { x: 4, y: 0, z: 0 })
 
       store.addWire(
         { type: 'input', entityId: inNode.id },
@@ -453,7 +453,7 @@ describe('wireActions', () => {
 
     it('widens a gate when an N-bit wire connects from its output to a wider sink', () => {
       const store = useCircuitStore.getState()
-      const not = store.addGate('NOT', { x: 0, y: 0, z: 0 })
+      const not = store.addGate('Not', { x: 0, y: 0, z: 0 })
       const outNode = store.addOutputNode('o', { x: 4, y: 0, z: 0 }, 8)
 
       store.addWire(
@@ -470,7 +470,7 @@ describe('wireActions', () => {
       const store = useCircuitStore.getState()
       const a = store.addInputNode('a', { x: 0, y: 0, z: 0 }, 4)
       const b = store.addInputNode('b', { x: 0, y: 0, z: 4 }, 8)
-      const and = store.addGate('AND', { x: 4, y: 0, z: 0 })
+      const and = store.addGate('And', { x: 4, y: 0, z: 0 })
 
       store.addWire(
         { type: 'input', entityId: a.id },
@@ -491,7 +491,7 @@ describe('wireActions', () => {
       const store = useCircuitStore.getState()
       const bus = store.addInputNode('bus', { x: 0, y: 0, z: 0 }, 4)
       const bit = store.addInputNode('bit', { x: 0, y: 0, z: 4 })
-      const and = store.addGate('AND', { x: 4, y: 0, z: 0 })
+      const and = store.addGate('And', { x: 4, y: 0, z: 0 })
 
       store.addWire(
         { type: 'input', entityId: bus.id },
@@ -511,7 +511,7 @@ describe('wireActions', () => {
     it('wire width matches the widened gate width (not the pre-widen 1)', () => {
       const store = useCircuitStore.getState()
       const inNode = store.addInputNode('a', { x: 0, y: 0, z: 0 }, 4)
-      const not = store.addGate('NOT', { x: 4, y: 0, z: 0 })
+      const not = store.addGate('Not', { x: 4, y: 0, z: 0 })
 
       const wire = store.addWire(
         { type: 'input', entityId: inNode.id },

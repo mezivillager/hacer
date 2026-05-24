@@ -1,15 +1,27 @@
-import type { GateInstance, GateType } from '@/store/types'
-import { NandGate, AndGate, OrGate, NotGate, XorGate } from './components'
+import type { GateInstance } from '@/store/types'
+import { ChipBody3D } from '@/components/scene/ChipBody3D'
 
-// Use a readonly-compatible type for gate props from store snapshot
 interface ReadonlyGate {
   readonly id: string
-  readonly type: GateType
+  readonly chipName: string
   readonly position: { readonly x: number; readonly y: number; readonly z: number }
   readonly rotation: { readonly x: number; readonly y: number; readonly z: number }
-  readonly inputs: readonly { readonly id: string; readonly value: number }[]
-  readonly outputs: readonly { readonly id: string; readonly value: number }[]
+  readonly inputs: readonly {
+    readonly id: string
+    readonly name: string
+    readonly value: number
+    readonly width?: number
+    readonly type: 'input'
+  }[]
+  readonly outputs: readonly {
+    readonly id: string
+    readonly name: string
+    readonly value: number
+    readonly width?: number
+    readonly type: 'output'
+  }[]
   readonly selected: boolean
+  readonly width: number
 }
 
 interface GateRendererProps {
@@ -34,88 +46,15 @@ export function GateRenderer({
   onPinClick,
   onInputToggle,
 }: GateRendererProps) {
-  const commonProps = {
-    id: gate.id,
-    position: [gate.position.x, gate.position.y, gate.position.z] as [number, number, number],
-    rotation: [gate.rotation.x, gate.rotation.y, gate.rotation.z] as [number, number, number],
-    selected: gate.selected,
-    isWiring,
-    onClick,
-    onPinClick,
-    onInputToggle,
-  }
-
-  switch (gate.type) {
-    case 'NAND':
-      return (
-        <NandGate
-          {...commonProps}
-          inputA={gate.inputs[0]?.value ?? 0}
-          inputB={gate.inputs[1]?.value ?? 0}
-          inputAConnected={isPinConnected(gate.id, `${gate.id}-in-0`)}
-          inputBConnected={isPinConnected(gate.id, `${gate.id}-in-1`)}
-          outputConnected={isPinConnected(gate.id, `${gate.id}-out-0`)}
-        />
-      )
-
-    case 'AND':
-      return (
-        <AndGate
-          {...commonProps}
-          inputA={gate.inputs[0]?.value ?? 0}
-          inputB={gate.inputs[1]?.value ?? 0}
-          inputAConnected={isPinConnected(gate.id, `${gate.id}-in-0`)}
-          inputBConnected={isPinConnected(gate.id, `${gate.id}-in-1`)}
-          outputConnected={isPinConnected(gate.id, `${gate.id}-out-0`)}
-        />
-      )
-
-    case 'OR':
-      return (
-        <OrGate
-          {...commonProps}
-          inputA={gate.inputs[0]?.value ?? 0}
-          inputB={gate.inputs[1]?.value ?? 0}
-          inputAConnected={isPinConnected(gate.id, `${gate.id}-in-0`)}
-          inputBConnected={isPinConnected(gate.id, `${gate.id}-in-1`)}
-          outputConnected={isPinConnected(gate.id, `${gate.id}-out-0`)}
-        />
-      )
-
-    case 'NOT':
-      return (
-        <NotGate
-          {...commonProps}
-          input={gate.inputs[0]?.value ?? 0}
-          inputConnected={isPinConnected(gate.id, `${gate.id}-in-0`)}
-          outputConnected={isPinConnected(gate.id, `${gate.id}-out-0`)}
-        />
-      )
-
-    case 'XOR':
-      return (
-        <XorGate
-          {...commonProps}
-          inputA={gate.inputs[0]?.value ?? 0}
-          inputB={gate.inputs[1]?.value ?? 0}
-          inputAConnected={isPinConnected(gate.id, `${gate.id}-in-0`)}
-          inputBConnected={isPinConnected(gate.id, `${gate.id}-in-1`)}
-          outputConnected={isPinConnected(gate.id, `${gate.id}-out-0`)}
-        />
-      )
-
-    // Fallback for unsupported gate types - render as NAND
-    default:
-      return (
-        <NandGate
-          {...commonProps}
-          inputA={gate.inputs[0]?.value ?? 0}
-          inputB={gate.inputs[1]?.value ?? 0}
-          inputAConnected={isPinConnected(gate.id, `${gate.id}-in-0`)}
-          inputBConnected={isPinConnected(gate.id, `${gate.id}-in-1`)}
-          outputConnected={isPinConnected(gate.id, `${gate.id}-out-0`)}
-        />
-      )
-  }
+  return (
+    <ChipBody3D
+      gate={gate as GateInstance}
+      isWiring={isWiring}
+      isPinConnected={isPinConnected}
+      onClick={onClick}
+      onPinClick={onPinClick}
+      onInputToggle={onInputToggle}
+    />
+  )
 }
 GateRenderer.displayName = 'GateRenderer'

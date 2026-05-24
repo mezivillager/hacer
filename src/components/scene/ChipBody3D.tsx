@@ -6,12 +6,6 @@ import type { GateInstance } from '@/store/types'
 
 interface ChipBody3DProps {
   gate: GateInstance
-  /**
-   * Name of the chip definition to render. Decoupled from `GateInstance`
-   * until T4.A migrates `GateInstance.type → chipName`; once that ships, this
-   * prop becomes redundant and should be derived from `gate.chipName`.
-   */
-  chipName: string
   isWiring: boolean
   isPinConnected: (gateId: string, pinId: string) => boolean
   onClick: () => void
@@ -30,7 +24,6 @@ const CHIP_BODY_SELECTED = '#5e81ac'
 
 export function ChipBody3D({
   gate,
-  chipName,
   isWiring,
   isPinConnected,
   onClick,
@@ -38,10 +31,10 @@ export function ChipBody3D({
   onInputToggle,
 }: ChipBody3DProps) {
   const chip =
-    getBuiltinChipRegistry().get(chipName) ??
-    getUserChipRegistry().get(chipName)
+    getBuiltinChipRegistry().get(gate.chipName) ??
+    getUserChipRegistry().get(gate.chipName)
   if (!chip) {
-    throw new Error(`ChipBody3D: chip "${chipName}" not found in any registry`)
+    throw new Error(`ChipBody3D: chip "${gate.chipName}" not found in any registry`)
   }
 
   const layout = computeChipLayout(chip, gate.id)

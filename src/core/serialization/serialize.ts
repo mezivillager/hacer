@@ -34,7 +34,10 @@ function cloneSegment(s: {
 export function serializeCircuit(state: CircuitState, name: string): SerializedCircuit {
   const gates: SerializedGate[] = state.gates.map((g) => ({
     id: g.id,
-    type: g.type,
+    // SerializedGate.type stays a string for forward/backward compatibility;
+    // it now carries the registry chip name (e.g. 'Nand') sourced from
+    // `GateInstance.chipName`. Phase 5 / P05-15 maps legacy uppercase saves.
+    type: g.chipName,
     position: cloneVec3(g.position),
     rotation: cloneVec3(g.rotation),
     width: g.width,

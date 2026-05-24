@@ -24,11 +24,11 @@ test.describe.skip('Wire Persistence @ui @wiring', () => {
   test.describe('Gate Rotation', () => {
     test('wire persists when gate rotates via keyboard', async ({ page }) => {
       await addGateViaUI(page, {
-        type: 'NAND',
+        chipName: 'Nand',
         position: DEFAULT_POSITIONS.left,
       })
       await addGateViaUI(page, {
-        type: 'NAND',
+        chipName: 'Nand',
         position: DEFAULT_POSITIONS.right,
         rotate: { direction: 'left', times: 2 },
       })
@@ -70,16 +70,16 @@ test.describe.skip('Wire Persistence @ui @wiring', () => {
     test('all wires persist through gate rotations', async ({ page }) => {
       // Create 3 gates
       await addGateViaUI(page, {
-        type: 'NAND',
+        chipName: 'Nand',
         position: DEFAULT_POSITIONS.left,
       })
       await addGateViaUI(page, {
-        type: 'AND',
+        chipName: 'And',
         position: DEFAULT_POSITIONS.center,
         rotate: { direction: 'left', times: 2 },
       })
       await addGateViaUI(page, {
-        type: 'OR',
+        chipName: 'Or',
         position: DEFAULT_POSITIONS.right,
         rotate: { direction: 'left', times: 2 },
       })

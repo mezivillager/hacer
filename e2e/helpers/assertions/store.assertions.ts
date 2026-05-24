@@ -9,7 +9,7 @@ import { expect, Page } from '@playwright/test'
 export interface StoreState {
   gates: Array<{
     id: string
-    type: string
+    chipName: string
     inputs: Array<{ id: string; value: number }>
     outputs: Array<{ id: string; value: number }>
   }>

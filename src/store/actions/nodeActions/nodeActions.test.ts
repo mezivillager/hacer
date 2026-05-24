@@ -137,7 +137,7 @@ describe('Node Actions', () => {
     it('removes wires connected to the deleted input node', () => {
       const store = useCircuitStore.getState()
       const inputNode = store.addInputNode('a', { x: 0, y: 0, z: 0 })
-      const gate = store.addGate('NOT', { x: 4, y: 0.2, z: 0 })
+      const gate = store.addGate('Not', { x: 4, y: 0.2, z: 0 })
 
       // Create wire from input to gate
       store.addWire(
@@ -160,7 +160,7 @@ describe('Node Actions', () => {
       const store = useCircuitStore.getState()
       const inputNode1 = store.addInputNode('a', { x: 0, y: 0, z: 0 })
       const inputNode2 = store.addInputNode('b', { x: 0, y: 0, z: 4 })
-      const gate = store.addGate('AND', { x: 4, y: 0.2, z: 0 })
+      const gate = store.addGate('And', { x: 4, y: 0.2, z: 0 })
 
       // Create wires from both inputs
       store.addWire(
@@ -214,7 +214,7 @@ describe('Node Actions', () => {
 
     it('removes wires connected to the deleted output node', () => {
       const store = useCircuitStore.getState()
-      const gate = store.addGate('NOT', { x: 0, y: 0.2, z: 0 })
+      const gate = store.addGate('Not', { x: 0, y: 0.2, z: 0 })
       const outputNode = store.addOutputNode('out', { x: 4, y: 0, z: 0 })
 
       // Create wire from gate to output
@@ -439,7 +439,7 @@ describe('Node Actions', () => {
     it('propagates new width to a directly-connected wire and the gate at the other end', () => {
       const store = useCircuitStore.getState()
       const inNode = store.addInputNode('in', { x: 0, y: 0, z: 0 }, 1)
-      const not = store.addGate('NOT', { x: 4, y: 0, z: 0 })
+      const not = store.addGate('Not', { x: 4, y: 0, z: 0 })
       store.addWire(
         { type: 'input', entityId: inNode.id },
         { type: 'gate', entityId: not.id, pinId: not.inputs[0].id },
@@ -461,7 +461,7 @@ describe('Node Actions', () => {
     it('cascades width across the whole connected component (input → NOT → output)', () => {
       const store = useCircuitStore.getState()
       const inNode = store.addInputNode('in', { x: 0, y: 0, z: 0 }, 1)
-      const not = store.addGate('NOT', { x: 4, y: 0, z: 0 })
+      const not = store.addGate('Not', { x: 4, y: 0, z: 0 })
       const outNode = store.addOutputNode('out', { x: 8, y: 0, z: 0 }, 1)
       store.addWire(
         { type: 'input', entityId: inNode.id },
@@ -488,7 +488,7 @@ describe('Node Actions', () => {
     it('does NOT touch entities in a disconnected component', () => {
       const store = useCircuitStore.getState()
       const a = store.addInputNode('a', { x: 0, y: 0, z: 0 }, 1)
-      const notA = store.addGate('NOT', { x: 4, y: 0, z: 0 })
+      const notA = store.addGate('Not', { x: 4, y: 0, z: 0 })
       store.addWire(
         { type: 'input', entityId: a.id },
         { type: 'gate', entityId: notA.id, pinId: notA.inputs[0].id },
@@ -496,7 +496,7 @@ describe('Node Actions', () => {
       )
       // Separate, unconnected circuit
       const b = store.addInputNode('b', { x: 0, y: 0, z: 4 }, 1)
-      const notB = store.addGate('NOT', { x: 4, y: 0, z: 4 })
+      const notB = store.addGate('Not', { x: 4, y: 0, z: 4 })
       store.addWire(
         { type: 'input', entityId: b.id },
         { type: 'gate', entityId: notB.id, pinId: notB.inputs[0].id },
@@ -515,7 +515,7 @@ describe('Node Actions', () => {
     it('cascades width backwards through the connected component', () => {
       const store = useCircuitStore.getState()
       const inNode = store.addInputNode('in', { x: 0, y: 0, z: 0 }, 1)
-      const not = store.addGate('NOT', { x: 4, y: 0, z: 0 })
+      const not = store.addGate('Not', { x: 4, y: 0, z: 0 })
       const outNode = store.addOutputNode('out', { x: 8, y: 0, z: 0 }, 1)
       store.addWire(
         { type: 'input', entityId: inNode.id },

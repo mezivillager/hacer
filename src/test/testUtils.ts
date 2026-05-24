@@ -60,7 +60,7 @@ export function createMockStore(partial: Partial<CircuitState> = {}): CircuitSto
   return {
     ...state,
     // Action methods (no-ops - mocked separately via circuitActions)
-    addGate: () => ({ id: '', type: 'NAND', position: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, inputs: [], outputs: [], selected: false, width: 1 }),
+    addGate: () => ({ id: '', chipName: 'Nand', position: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, inputs: [], outputs: [], selected: false, width: 1 }),
     removeGate: () => {},
     selectGate: () => {},
     selectWire: () => {},

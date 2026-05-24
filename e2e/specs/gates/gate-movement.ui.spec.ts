@@ -22,7 +22,7 @@ test.describe('Gate Movement @ui @gates', () => {
         page,
       }) => {
         await addGateViaUI(page, {
-          type: gateType,
+          chipName: gateType,
           position: DEFAULT_POSITIONS.center,
         })
         await ensureGates(page, 1)
@@ -63,7 +63,7 @@ test.describe('Gate Movement @ui @gates', () => {
 
     test('arrow keys rotate in opposite directions', async ({ page }) => {
       await addGateViaUI(page, {
-        type: 'NAND',
+        chipName: 'Nand',
         position: DEFAULT_POSITIONS.center,
       })
       await ensureGates(page, 1)
@@ -106,7 +106,7 @@ test.describe('Gate Movement @ui @gates', () => {
 
     test('rotation requires gate selection', async ({ page }) => {
       await addGateViaUI(page, {
-        type: 'NAND',
+        chipName: 'Nand',
         position: DEFAULT_POSITIONS.center,
       })
       await ensureGates(page, 1)
@@ -150,7 +150,7 @@ test.describe('Gate Movement @ui @gates', () => {
       page,
     }) => {
       await addGateViaUI(page, {
-        type: 'NAND',
+        chipName: 'Nand',
         position: DEFAULT_POSITIONS.center,
       })
       await ensureGates(page, 1)
@@ -166,13 +166,13 @@ test.describe('Gate Movement @ui @gates', () => {
 
     test('can select different gates', async ({ page }) => {
       await addGateViaUI(page, {
-        type: 'NAND',
+        chipName: 'Nand',
         position: DEFAULT_POSITIONS.left,
       })
       await ensureGates(page, 1)
 
       await addGateViaUI(page, {
-        type: 'OR',
+        chipName: 'Or',
         position: DEFAULT_POSITIONS.right,
       })
       await ensureGates(page, 2)

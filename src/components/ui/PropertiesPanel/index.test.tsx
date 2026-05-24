@@ -12,8 +12,8 @@ const wrap = () =>
     </TooltipProvider>,
   )
 
-function placeGate(type: 'AND' | 'OR' | 'NAND'): string {
-  circuitActions.startPlacement(type)
+function placeGate(chipName: 'And' | 'Or' | 'Nand'): string {
+  circuitActions.startPlacement(chipName)
   circuitActions.placeGate({ x: 1, y: 0.2, z: 1 })
   return useCircuitStore.getState().gates[0].id
 }
@@ -32,7 +32,7 @@ describe('PropertiesPanel', () => {
   })
 
   it('renders nothing when selection exists but propertiesPanelOpen is false', () => {
-    const id = placeGate('AND')
+    const id = placeGate('And')
     circuitActions.selectGate(id)
     // panel stays closed because user has not explicitly opened it
     wrap()
@@ -40,16 +40,16 @@ describe('PropertiesPanel', () => {
   })
 
   it('renders gate properties when a gate is selected AND panel is open', () => {
-    const id = placeGate('AND')
+    const id = placeGate('And')
     circuitActions.selectGate(id)
     circuitActions.openPropertiesPanel()
     wrap()
     expect(screen.getByTestId('properties-panel')).toBeInTheDocument()
-    expect(screen.getByTestId('properties-type-label').textContent).toContain('AND')
+    expect(screen.getByTestId('properties-type-label').textContent).toContain('And')
   })
 
   it('gate name is read-only with Coming soon stub', () => {
-    const id = placeGate('AND')
+    const id = placeGate('And')
     circuitActions.selectGate(id)
     circuitActions.openPropertiesPanel()
     wrap()
@@ -87,7 +87,7 @@ describe('PropertiesPanel', () => {
 
   it('Delete button removes the selected gate', async () => {
     const user = userEvent.setup()
-    const id = placeGate('AND')
+    const id = placeGate('And')
     circuitActions.selectGate(id)
     circuitActions.openPropertiesPanel()
     wrap()
@@ -97,7 +97,7 @@ describe('PropertiesPanel', () => {
 
   it('Close (X) hides the panel but preserves selection', async () => {
     const user = userEvent.setup()
-    const id = placeGate('AND')
+    const id = placeGate('And')
     circuitActions.selectGate(id)
     circuitActions.openPropertiesPanel()
     wrap()
@@ -162,7 +162,7 @@ describe('PropertiesPanel', () => {
     })
 
     it('does not render the width select when a gate is selected', () => {
-      const id = placeGate('AND')
+      const id = placeGate('And')
       circuitActions.selectGate(id)
       circuitActions.openPropertiesPanel()
       wrap()

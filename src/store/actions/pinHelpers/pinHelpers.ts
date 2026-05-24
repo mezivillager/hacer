@@ -90,10 +90,10 @@ function computePinWorldPosition(
 
   let localOffset: Vector3
   if (inputIndex !== -1) {
-    // Determine input pin X and Y based on gate type
-    // Single-input gates (NOT): input at Y=0, X position depends on gate geometry
-    // Two-input gates: inputs at Y=0.2 and Y=-0.2, X position is standard
-    const isSingleInputGate = gate.type === 'NOT'
+    // Determine input pin X and Y based on chip name.
+    // Single-input gates ('Not'): input at Y=0, X position depends on gate
+    // geometry. Two-input gates: inputs at Y=±0.2, X position is standard.
+    const isSingleInputGate = gate.chipName === 'Not'
 
     let inputPinX: number
     let yOffset: number
@@ -111,10 +111,9 @@ function computePinWorldPosition(
 
     localOffset = new Vector3(inputPinX, yOffset, 0)
   } else if (outputIndex !== -1) {
-    // Determine output pin X based on gate type (bubble gates use different position)
-    // Gates with bubbles: NAND, NOT
-    // Gates without bubbles: AND, OR, XOR
-    const hasBubble = gate.type === 'NAND' || gate.type === 'NOT'
+    // Determine output pin X based on chip name (bubble chips use different
+    // position). Bubble chips: 'Nand', 'Not'. Non-bubble: 'And', 'Or', 'Xor'.
+    const hasBubble = gate.chipName === 'Nand' || gate.chipName === 'Not'
     const outputPinX = hasBubble ? OUTPUT_PIN_X_WITH_BUBBLE : OUTPUT_PIN_X_NO_BUBBLE
     localOffset = new Vector3(outputPinX, 0, 0)
   } else {

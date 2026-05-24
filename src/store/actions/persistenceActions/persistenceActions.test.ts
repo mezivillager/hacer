@@ -17,7 +17,7 @@ beforeEach(() => {
 
 describe('saveCircuit', () => {
   it('writes a SerializedCircuit JSON under hacer-circuit-<name>', () => {
-    circuitActions.addGate('NAND', { x: 0, y: 0, z: 0 })
+    circuitActions.addGate('Nand', { x: 0, y: 0, z: 0 })
     circuitActions.saveCircuit('demo')
     const raw = localStorage.getItem('hacer-circuit-demo')
     expect(raw).not.toBeNull()
@@ -38,7 +38,7 @@ describe('saveCircuit', () => {
   it('overwrites an existing entry under the same name', () => {
     circuitActions.saveCircuit('demo')
     const first = JSON.parse(localStorage.getItem('hacer-circuit-demo')!)
-    circuitActions.addGate('AND', { x: 4, y: 0, z: 4 })
+    circuitActions.addGate('And', { x: 4, y: 0, z: 4 })
     circuitActions.saveCircuit('demo')
     const second = JSON.parse(localStorage.getItem('hacer-circuit-demo')!)
     expect(second.gates.length).toBeGreaterThan(first.gates.length)
@@ -90,8 +90,8 @@ describe('loadCircuit', () => {
   })
 
   it('replaces gates / wires / nodes / junctions with the saved snapshot', () => {
-    const a = circuitActions.addGate('NAND', { x: 0, y: 0, z: 0 })
-    const b = circuitActions.addGate('NAND', { x: 4, y: 0, z: 0 })
+    const a = circuitActions.addGate('Nand', { x: 0, y: 0, z: 0 })
+    const b = circuitActions.addGate('Nand', { x: 4, y: 0, z: 0 })
     circuitActions.addWire(
       { type: 'gate', entityId: a.id, pinId: `${a.id}-out-0` },
       { type: 'gate', entityId: b.id, pinId: `${b.id}-in-0` },
@@ -109,9 +109,9 @@ describe('loadCircuit', () => {
   })
 
   it('clears selection, placement, wiring, and lastSimulationError before applying', () => {
-    const gate = circuitActions.addGate('NAND', { x: 0, y: 0, z: 0 })
+    const gate = circuitActions.addGate('Nand', { x: 0, y: 0, z: 0 })
     circuitActions.selectGate(gate.id)
-    circuitActions.startPlacement('AND')
+    circuitActions.startPlacement('And')
     useCircuitStore.setState((s) => {
       s.lastSimulationError = { type: 'cycle', involvedGateIds: [gate.id] }
     })
@@ -170,7 +170,7 @@ describe('loadCircuit', () => {
 
 describe('exportCircuitJSON', () => {
   it('triggers a Blob URL download with the serialized JSON', () => {
-    const gate = circuitActions.addGate('NAND', { x: 0, y: 0, z: 0 })
+    const gate = circuitActions.addGate('Nand', { x: 0, y: 0, z: 0 })
     vi.useFakeTimers()
 
     const createObjectURL = vi.fn().mockReturnValue('blob:hacer-test')
@@ -222,7 +222,8 @@ describe('importCircuitJSON', () => {
       gates: [
         {
           id: 'gate-imp-1',
-          type: 'NAND',
+          // SerializedGate keeps `type` on disk; Phase 5 will migrate.
+          type: 'Nand',
           position: { x: 0, y: 0, z: 0 },
           rotation: { x: Math.PI / 2, y: 0, z: 0 },
           width: 1,

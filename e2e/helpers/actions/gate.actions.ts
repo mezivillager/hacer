@@ -9,7 +9,7 @@ import { Page } from '@playwright/test'
 import { UI_SELECTORS } from '../../selectors'
 import type { Position3D } from '../../config/constants'
 
-export type GateType = 'NAND' | 'AND' | 'OR' | 'NOT' | 'XOR'
+export type GateType = 'Nand' | 'And' | 'Or' | 'Not' | 'Xor'
 
 export interface GateResult {
   id: string
@@ -22,14 +22,14 @@ export interface GateResult {
  */
 export async function addGateViaStore(
   page: Page,
-  type: GateType,
+  chipName: GateType,
   position: Position3D
 ): Promise<GateResult | null> {
   return page.evaluate(
-    ({ type, position }) => {
-      return window.__CIRCUIT_ACTIONS__?.addGate(type, position) ?? null
+    ({ chipName, position }) => {
+      return window.__CIRCUIT_ACTIONS__?.addGate(chipName, position) ?? null
     },
-    { type, position }
+    { chipName, position }
   )
 }
 
@@ -38,14 +38,14 @@ export async function addGateViaStore(
  */
 export async function addGatesViaStore(
   page: Page,
-  placements: Array<{ type?: GateType; position: Position3D }>
+  placements: Array<{ chipName?: GateType; position: Position3D }>
 ): Promise<string[]> {
   return page.evaluate(
     (placements) => {
       const ids: string[] = []
       placements.forEach((p) => {
-        const gateType = p.type || 'NAND' // Default to NAND for backward compatibility
-        const res = window.__CIRCUIT_ACTIONS__?.addGate(gateType, p.position)
+        const gateChipName = p.chipName || 'Nand'
+        const res = window.__CIRCUIT_ACTIONS__?.addGate(gateChipName, p.position)
         if (res?.id) ids.push(res.id)
       })
       return ids
@@ -55,7 +55,7 @@ export async function addGatesViaStore(
 }
 
 export interface GatePlacementOptions {
-  type?: GateType
+  chipName?: GateType
   position: Position3D
   rotate?: { direction: 'left' | 'right'; times: number }
 }
@@ -72,20 +72,20 @@ export async function addGateViaUI(
   page: Page,
   options: GatePlacementOptions
 ): Promise<void> {
-  const gateType = options.type || 'NAND' // Default to NAND for backward compatibility
+  const chipName = options.chipName || 'Nand'
 
   // Open Gates popover, click gate icon, wait for popover to close
   await page.click(UI_SELECTORS.toolbar.gatesTrigger)
   await page.waitForSelector(UI_SELECTORS.gatesPopover.root, { state: 'visible' })
-  await page.click(UI_SELECTORS.gatesPopover.getGate(gateType))
+  await page.click(UI_SELECTORS.gatesPopover.getGate(chipName))
   await page.waitForSelector(UI_SELECTORS.gatesPopover.root, { state: 'hidden' })
 
   // Wait for placement mode to be active in the store
   await page.waitForFunction(
-    (expectedType: string) => {
-      return window.__CIRCUIT_STORE__?.placementMode === expectedType
+    (expectedChipName: string) => {
+      return window.__CIRCUIT_STORE__?.placementMode === expectedChipName
     },
-    gateType,
+    chipName,
     { timeout: 5000 }
   )
 
@@ -115,13 +115,13 @@ export async function addGateViaUI(
 }
 
 /**
- * Add a NAND gate via UI (backward compatibility)
+ * Add a Nand gate via UI (backward compatibility wrapper).
  */
 export async function addNandGateViaUI(
   page: Page,
   options: GatePlacementOptions
 ): Promise<void> {
-  return addGateViaUI(page, { ...options, type: 'NAND' })
+  return addGateViaUI(page, { ...options, chipName: 'Nand' })
 }
 
 /**
@@ -187,16 +187,22 @@ export async function getGateIds(page: Page): Promise<string[]> {
 }
 
 /**
- * Get gate type from the store
+ * Get the chip name of a gate from the store, narrowed to the e2e
+ * `GateType` literal union.
  */
 export async function getGateType(page: Page, gateId: string): Promise<GateType | null> {
   return page.evaluate(
     ({ gateId }) => {
       const gate = window.__CIRCUIT_STORE__?.gates.find((g) => g.id === gateId)
-      const type = gate?.type
-      // Type guard to ensure it's a valid GateType
-      if (type === 'NAND' || type === 'AND' || type === 'OR' || type === 'NOT' || type === 'XOR') {
-        return type
+      const chipName = (gate as unknown as { chipName?: string })?.chipName
+      if (
+        chipName === 'Nand' ||
+        chipName === 'And' ||
+        chipName === 'Or' ||
+        chipName === 'Not' ||
+        chipName === 'Xor'
+      ) {
+        return chipName
       }
       return null
     },

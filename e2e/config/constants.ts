@@ -52,13 +52,13 @@ export const DEFAULT_POSITIONS = {
 
 export type Position3D = { x: number; y: number; z: number }
 
-/** All available gate types for parameterized tests */
-export const ALL_GATE_TYPES = ['NAND', 'AND', 'OR', 'NOT', 'XOR'] as const
+/** All available builtin gate chip names for parameterized tests */
+export const ALL_GATE_TYPES = ['Nand', 'And', 'Or', 'Not', 'Xor'] as const
 
-/** Two-input gate types */
-export const TWO_INPUT_GATES = ['NAND', 'AND', 'OR', 'XOR'] as const
+/** Two-input gate chip names */
+export const TWO_INPUT_GATES = ['Nand', 'And', 'Or', 'Xor'] as const
 
-/** Single-input gate types */
-export const SINGLE_INPUT_GATES = ['NOT'] as const
+/** Single-input gate chip names */
+export const SINGLE_INPUT_GATES = ['Not'] as const
 
 export type GateType = (typeof ALL_GATE_TYPES)[number]

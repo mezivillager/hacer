@@ -29,7 +29,7 @@ test.describe('Gate Types @ui @gates', () => {
   for (const gateType of ALL_GATE_TYPES) {
     test(`can add ${gateType} gate via UI`, async ({ page }) => {
       await addGateViaUI(page, {
-        type: gateType,
+        chipName: gateType,
         position: DEFAULT_POSITIONS.center,
       })
 
@@ -54,7 +54,7 @@ test.describe('Gate Types @ui @gates', () => {
 
     for (let i = 0; i < ALL_GATE_TYPES.length; i++) {
       await addGateViaUI(page, {
-        type: ALL_GATE_TYPES[i],
+        chipName: ALL_GATE_TYPES[i],
         position: positions[i],
       })
     }
@@ -77,7 +77,7 @@ test.describe('Gate Types @ui @gates', () => {
     for (const gateType of SINGLE_INPUT_GATES) {
       test(`${gateType} gate has 1 input and 1 output`, async ({ page }) => {
         await addGateViaUI(page, {
-          type: gateType,
+          chipName: gateType,
           position: DEFAULT_POSITIONS.center,
         })
 
@@ -106,7 +106,7 @@ test.describe('Gate Types @ui @gates', () => {
     for (const gateType of TWO_INPUT_GATES) {
       test(`${gateType} gate has 2 inputs and 1 output`, async ({ page }) => {
         await addGateViaUI(page, {
-          type: gateType,
+          chipName: gateType,
           position: DEFAULT_POSITIONS.center,
         })
 
@@ -136,7 +136,7 @@ test.describe('Gate Types @ui @gates', () => {
   test.describe('Gate Deletion', () => {
     test('can delete a gate via UI', async ({ page }) => {
       await addGateViaUI(page, {
-        type: 'NAND',
+        chipName: 'Nand',
         position: DEFAULT_POSITIONS.center,
       })
       await expectGateCount(page, 1)
@@ -152,11 +152,11 @@ test.describe('Gate Types @ui @gates', () => {
 
     test('can clear all gates via UI', async ({ page }) => {
       await addGateViaUI(page, {
-        type: 'NAND',
+        chipName: 'Nand',
         position: DEFAULT_POSITIONS.left,
       })
       await addGateViaUI(page, {
-        type: 'AND',
+        chipName: 'And',
         position: DEFAULT_POSITIONS.right,
       })
       await expectGateCount(page, 2)

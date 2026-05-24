@@ -83,7 +83,7 @@ describe('PinoutPanel', () => {
     const s = useCircuitStore.getState()
     const input = s.addInputNode('a', { x: 0, y: 0, z: 0 })
     circuitActions.updateInputNodeValue(input.id, 1)
-    const gate = s.addGate('NOT', { x: 2, y: 0, z: 0 })
+    const gate = s.addGate('Not', { x: 2, y: 0, z: 0 })
     const output = s.addOutputNode('out', { x: 4, y: 0, z: 0 })
     s.addWire(
       { type: 'input', entityId: input.id },

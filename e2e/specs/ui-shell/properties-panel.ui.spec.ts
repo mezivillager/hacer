@@ -23,7 +23,7 @@ test.describe('PropertiesPanel @ui @ui-shell', () => {
   })
 
   test('does not render on selection alone (panel must be explicitly opened)', async ({ page }) => {
-    const gate = await addGateViaStore(page, 'AND', { x: 1, y: 0.2, z: 1 })
+    const gate = await addGateViaStore(page, 'And', { x: 1, y: 0.2, z: 1 })
     if (!gate) throw new Error('gate creation failed')
     await selectGate(page, gate.id)
     // Selection without explicit open: panel stays hidden
@@ -31,17 +31,17 @@ test.describe('PropertiesPanel @ui @ui-shell', () => {
   })
 
   test('renders gate type label when a gate is selected AND panel is opened', async ({ page }) => {
-    const gate = await addGateViaStore(page, 'AND', { x: 1, y: 0.2, z: 1 })
+    const gate = await addGateViaStore(page, 'And', { x: 1, y: 0.2, z: 1 })
     if (!gate) throw new Error('gate creation failed')
     await selectGate(page, gate.id)
     await openPropertiesPanel(page)
 
     await expect(page.locator(UI_SELECTORS.propertiesPanel.root)).toBeVisible()
-    await expect(page.locator(UI_SELECTORS.propertiesPanel.typeLabel)).toContainText('AND')
+    await expect(page.locator(UI_SELECTORS.propertiesPanel.typeLabel)).toContainText('And')
   })
 
   test('Close button (X) hides the panel but preserves selection', async ({ page }) => {
-    const gate = await addGateViaStore(page, 'AND', { x: 1, y: 0.2, z: 1 })
+    const gate = await addGateViaStore(page, 'And', { x: 1, y: 0.2, z: 1 })
     if (!gate) throw new Error('gate creation failed')
     await selectGate(page, gate.id)
     await openPropertiesPanel(page)
@@ -56,7 +56,7 @@ test.describe('PropertiesPanel @ui @ui-shell', () => {
   })
 
   test('Properties button in CompactToolbar toggles the panel', async ({ page }) => {
-    const gate = await addGateViaStore(page, 'AND', { x: 1, y: 0.2, z: 1 })
+    const gate = await addGateViaStore(page, 'And', { x: 1, y: 0.2, z: 1 })
     if (!gate) throw new Error('gate creation failed')
     await selectGate(page, gate.id)
 

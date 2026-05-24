@@ -17,7 +17,7 @@ test.describe('Node Wiring @store @wiring @nodes', () => {
   test.describe('Input Node to Gate', () => {
     test('creates wire from input node to gate input', async ({ page }) => {
       // Add a gate
-      const gate = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.center)
+      const gate = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.center)
       await ensureGates(page, 1)
 
       if (!gate) {
@@ -67,7 +67,7 @@ test.describe('Node Wiring @store @wiring @nodes', () => {
   test.describe('Gate to Output Node', () => {
     test('creates wire from gate output to output node', async ({ page }) => {
       // Add a gate
-      const gate = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.center)
+      const gate = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.center)
       await ensureGates(page, 1)
 
       if (!gate) {
@@ -117,7 +117,7 @@ test.describe('Node Wiring @store @wiring @nodes', () => {
   test.describe('Full HDL-style Circuit', () => {
     test('creates input -> gate -> output circuit', async ({ page }) => {
       // Add a NOT gate
-      const gate = await addGateViaStore(page, 'NOT', DEFAULT_POSITIONS.center)
+      const gate = await addGateViaStore(page, 'Not', DEFAULT_POSITIONS.center)
       await ensureGates(page, 1)
 
       if (!gate) {
@@ -172,8 +172,8 @@ test.describe('Node Wiring @store @wiring @nodes', () => {
   test.describe('Junction-based Fan-out', () => {
     test('creates junction for signal branching', async ({ page }) => {
       // Add two gates
-      const gate1 = await addGateViaStore(page, 'AND', DEFAULT_POSITIONS.topRight)
-      const gate2 = await addGateViaStore(page, 'OR', DEFAULT_POSITIONS.bottomRight)
+      const gate1 = await addGateViaStore(page, 'And', DEFAULT_POSITIONS.topRight)
+      const gate2 = await addGateViaStore(page, 'Or', DEFAULT_POSITIONS.bottomRight)
       await ensureGates(page, 2)
 
       if (!gate1 || !gate2) {
@@ -259,7 +259,7 @@ test.describe('Node Wiring @store @wiring @nodes', () => {
   test.describe('Node Removal', () => {
     test('removes wires when input node is deleted', async ({ page }) => {
       // Add a gate
-      const gate = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.center)
+      const gate = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.center)
       await ensureGates(page, 1)
 
       if (!gate) {
@@ -298,7 +298,7 @@ test.describe('Node Wiring @store @wiring @nodes', () => {
 
     test('removes wires when output node is deleted', async ({ page }) => {
       // Add a gate
-      const gate = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.center)
+      const gate = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.center)
       await ensureGates(page, 1)
 
       if (!gate) {
@@ -337,7 +337,7 @@ test.describe('Node Wiring @store @wiring @nodes', () => {
 
     test('removes wires when junction is deleted', async ({ page }) => {
       // Add a gate
-      const gate = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.right)
+      const gate = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.right)
       await ensureGates(page, 1)
 
       if (!gate) {
@@ -398,7 +398,7 @@ test.describe('Node Wiring @store @wiring @nodes', () => {
   test.describe('Gate to Output Node Wiring Flow', () => {
     test('completes wiring from gate output to output node via wiring flow', async ({ page }) => {
       // Add a gate
-      const gate = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.center)
+      const gate = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.center)
       await ensureGates(page, 1)
 
       if (!gate) {
@@ -483,7 +483,7 @@ test.describe('Node Wiring @store @wiring @nodes', () => {
 
     test('prevents duplicate wires from same gate output to same output node', async ({ page }) => {
       // Add a gate
-      const gate = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.center)
+      const gate = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.center)
       await ensureGates(page, 1)
 
       if (!gate) {

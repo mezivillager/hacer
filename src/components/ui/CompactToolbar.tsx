@@ -29,22 +29,17 @@ import {
   AndGateIcon,
   OrGateIcon,
   NotGateIcon,
-  NorGateIcon,
   XorGateIcon,
-  XnorGateIcon,
 } from './icons/GateGlyphs'
 import { useCircuitStore, circuitActions } from '@/store/circuitStore'
 import { useAppReleaseVersion } from '@/hooks/useAppReleaseVersion'
-import type { GateType } from '@/store/types'
 
-const gates: Array<{ type: GateType; Icon: React.ComponentType<{ className?: string }> }> = [
-  { type: 'NAND', Icon: NandGateIcon },
-  { type: 'AND', Icon: AndGateIcon },
-  { type: 'OR', Icon: OrGateIcon },
-  { type: 'NOT', Icon: NotGateIcon },
-  { type: 'NOR', Icon: NorGateIcon },
-  { type: 'XOR', Icon: XorGateIcon },
-  { type: 'XNOR', Icon: XnorGateIcon },
+const gates: Array<{ type: string; Icon: React.ComponentType<{ className?: string }> }> = [
+  { type: 'Nand', Icon: NandGateIcon },
+  { type: 'And', Icon: AndGateIcon },
+  { type: 'Or', Icon: OrGateIcon },
+  { type: 'Not', Icon: NotGateIcon },
+  { type: 'Xor', Icon: XorGateIcon },
 ]
 
 const ioElements = [
@@ -78,7 +73,7 @@ export function CompactToolbar() {
   const [ioOpen, setIoOpen] = useState(false)
   const { theme, setTheme } = useTheme()
 
-  const handleGateSelect = (type: GateType) => {
+  const handleGateSelect = (type: string) => {
     if (placementMode === type) {
       circuitActions.cancelPlacement()
     } else {

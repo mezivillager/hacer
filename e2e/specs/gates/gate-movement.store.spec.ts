@@ -65,7 +65,7 @@ test.describe('Gate Movement @store @gates', () => {
     }
 
     test('gate can be rotated multiple times', async ({ page }) => {
-      const gate = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.center)
+      const gate = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.center)
       await ensureGates(page, 1)
 
       // Rotate 4 times (full circle)
@@ -92,7 +92,7 @@ test.describe('Gate Movement @store @gates', () => {
     })
 
     test('can rotate in both directions', async ({ page }) => {
-      const gate = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.center)
+      const gate = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.center)
       await ensureGates(page, 1)
 
       // Rotate right (positive)
@@ -133,7 +133,7 @@ test.describe('Gate Movement @store @gates', () => {
 
   test.describe('Position Update', () => {
     test('gate position can be updated via store', async ({ page }) => {
-      const gate = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.left)
+      const gate = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.left)
       await ensureGates(page, 1)
 
       // Get initial position
@@ -178,8 +178,8 @@ test.describe('Gate Movement @store @gates', () => {
     })
 
     test('multiple gates can be moved independently', async ({ page }) => {
-      const gate1 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.left)
-      const gate2 = await addGateViaStore(page, 'AND', DEFAULT_POSITIONS.right)
+      const gate1 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.left)
+      const gate2 = await addGateViaStore(page, 'And', DEFAULT_POSITIONS.right)
       await ensureGates(page, 2)
 
       // Get initial positions
@@ -249,7 +249,7 @@ test.describe('Gate Movement @store @gates', () => {
 
   test.describe('Selection and Movement', () => {
     test('can select a gate via store', async ({ page }) => {
-      const gate = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.center)
+      const gate = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.center)
       await ensureGates(page, 1)
 
       // Select the gate
@@ -266,7 +266,7 @@ test.describe('Gate Movement @store @gates', () => {
     })
 
     test('can deselect a gate', async ({ page }) => {
-      const gate = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.center)
+      const gate = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.center)
       await ensureGates(page, 1)
 
       // Select then deselect

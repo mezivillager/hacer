@@ -61,8 +61,8 @@ describe('simulationActions', () => {
 
   describe('clearCircuit', () => {
     it('clears all gates and wires', () => {
-      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-      const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 0 })
+      const gate1 = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('Nand', { x: 2, y: 0, z: 0 })
       getState().addWire(
         { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
         { type: 'gate', entityId: gate2.id, pinId: gate2.inputs[0].id },
@@ -78,7 +78,7 @@ describe('simulationActions', () => {
     })
 
     it('clears placement mode', () => {
-      useCircuitStore.setState({ placementMode: 'NAND' })
+      useCircuitStore.setState({ placementMode: 'Nand' })
 
       getState().clearCircuit()
 
@@ -140,8 +140,8 @@ describe('simulationActions', () => {
 
   describe('simulationTick', () => {
     it('propagates output values through wires to inputs', () => {
-      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-      const gate2 = getState().addGate('NAND', { x: 2, y: 0, z: 0 })
+      const gate1 = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('Nand', { x: 2, y: 0, z: 0 })
 
       getState().addWire(
         { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
@@ -163,7 +163,7 @@ describe('simulationActions', () => {
     })
 
     it('calculates new output values for all gates', () => {
-      const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
 
       // Set both inputs to true -> NAND output should be false
       getState().setInputValue(gate.id, gate.inputs[0].id, 1)
@@ -176,7 +176,7 @@ describe('simulationActions', () => {
     })
 
     it('handles gates with no wires', () => {
-      getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      getState().addGate('Nand', { x: 0, y: 0, z: 0 })
 
       getState().simulationTick()
 
@@ -191,14 +191,14 @@ describe('simulationActions', () => {
           involvedGateIds: ['gate-x'],
         },
       })
-      getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      getState().addGate('Nand', { x: 0, y: 0, z: 0 })
       getState().simulationTick()
       expect(getState().lastSimulationError).toBe(null)
     })
 
     it('sets lastSimulationError and shows message on combinational cycle', () => {
-      const gateA = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-      const gateB = getState().addGate('NAND', { x: 4, y: 0, z: 0 })
+      const gateA = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+      const gateB = getState().addGate('Nand', { x: 4, y: 0, z: 0 })
       getState().addWire(
         { type: 'gate', entityId: gateA.id, pinId: gateA.outputs[0].id },
         { type: 'gate', entityId: gateB.id, pinId: gateB.inputs[0].id },
@@ -222,8 +222,8 @@ describe('simulationActions', () => {
     })
 
     it('does not show duplicate notify.error on repeated cycle ticks', () => {
-      const gateA = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-      const gateB = getState().addGate('NAND', { x: 4, y: 0, z: 0 })
+      const gateA = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+      const gateB = getState().addGate('Nand', { x: 4, y: 0, z: 0 })
       getState().addWire(
         { type: 'gate', entityId: gateA.id, pinId: gateA.outputs[0].id },
         { type: 'gate', entityId: gateB.id, pinId: gateB.inputs[0].id },
@@ -244,8 +244,8 @@ describe('simulationActions', () => {
     })
 
     it('clears lastSimulationError after cycle is broken and tick succeeds', () => {
-      const gateA = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-      const gateB = getState().addGate('NAND', { x: 4, y: 0, z: 0 })
+      const gateA = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+      const gateB = getState().addGate('Nand', { x: 4, y: 0, z: 0 })
       getState().addWire(
         { type: 'gate', entityId: gateA.id, pinId: gateA.outputs[0].id },
         { type: 'gate', entityId: gateB.id, pinId: gateB.inputs[0].id },
@@ -288,7 +288,7 @@ describe('simulationActions', () => {
     })
 
     it('returns gate output value for gate source type', () => {
-      const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
       // Set inputs to false, false -> NAND output should be true
       getState().simulationTick()
 
@@ -403,7 +403,7 @@ describe('simulationActions', () => {
 
   describe('getSignalSourceValue - junction', () => {
     it('resolves junction value through wireIds[0]', () => {
-      const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+      const gate = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
 
       // NAND(false, false) = true
       getState().simulationTick()
@@ -498,7 +498,7 @@ describe('simulationActions', () => {
     it('propagates input node value to gate input via wire', () => {
       // Create input node and gate
       const inputNode = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
-      const gate = getState().addGate('NOT', { x: 4, y: 0.2, z: 0 })
+      const gate = getState().addGate('Not', { x: 4, y: 0.2, z: 0 })
 
       // Create wire from input to gate input
       getState().addWire(
@@ -523,7 +523,7 @@ describe('simulationActions', () => {
 
     it('propagates gate output to output node via wire', () => {
       // Create gate and output node
-      const gate = getState().addGate('NOT', { x: 0, y: 0.2, z: 0 })
+      const gate = getState().addGate('Not', { x: 0, y: 0.2, z: 0 })
       const outputNode = getState().addOutputNode('out', { x: 4, y: 0, z: 0 })
 
       // Create wire from gate output to output node
@@ -545,7 +545,7 @@ describe('simulationActions', () => {
     it('propagates input through gate to output node', () => {
       // Create input -> gate -> output chain
       const inputNode = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
-      const gate = getState().addGate('NOT', { x: 4, y: 0.2, z: 0 })
+      const gate = getState().addGate('Not', { x: 4, y: 0.2, z: 0 })
       const outputNode = getState().addOutputNode('out', { x: 8, y: 0, z: 0 })
 
       // Wire input to gate
@@ -583,8 +583,8 @@ describe('simulationActions', () => {
       // Both wires originate from input (junction just tracks which wires branch)
       const inputNode = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
       const junction = getState().addJunction('signal-a', { x: 2, y: 0, z: 0 })
-      const gate1 = getState().addGate('NOT', { x: 4, y: 0.2, z: -2 })
-      const gate2 = getState().addGate('NOT', { x: 4, y: 0.2, z: 2 })
+      const gate1 = getState().addGate('Not', { x: 4, y: 0.2, z: -2 })
+      const gate2 = getState().addGate('Not', { x: 4, y: 0.2, z: 2 })
 
       // Original wire: input -> gate1
       const wire1 = getState().addWire(
@@ -622,7 +622,7 @@ describe('simulationActions', () => {
       const inputNode = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
       getState().updateInputNodeValue(inputNode.id, 0)
       const junction = getState().addJunction('signal-a', { x: 2, y: 0, z: 0 })
-      const gate = getState().addGate('NOT', { x: 4, y: 0.2, z: 0 })
+      const gate = getState().addGate('Not', { x: 4, y: 0.2, z: 0 })
 
       getState().addWire(
         { type: 'input', entityId: inputNode.id },
@@ -655,15 +655,15 @@ describe('simulationActions', () => {
       const outputNode = getState().addOutputNode('out', { x: 20, y: 0, z: 0 })
 
       // Create NOT gates
-      const notA = getState().addGate('NOT', { x: 4, y: 0.2, z: -4 })
-      const notB = getState().addGate('NOT', { x: 4, y: 0.2, z: 4 })
+      const notA = getState().addGate('Not', { x: 4, y: 0.2, z: -4 })
+      const notB = getState().addGate('Not', { x: 4, y: 0.2, z: 4 })
 
       // Create AND gates
-      const and1 = getState().addGate('AND', { x: 8, y: 0.2, z: -2 }) // a AND NOT(b)
-      const and2 = getState().addGate('AND', { x: 8, y: 0.2, z: 2 })  // NOT(a) AND b
+      const and1 = getState().addGate('And', { x: 8, y: 0.2, z: -2 }) // a AND NOT(b)
+      const and2 = getState().addGate('And', { x: 8, y: 0.2, z: 2 })  // NOT(a) AND b
 
       // Create OR gate
-      const orGate = getState().addGate('OR', { x: 12, y: 0.2, z: 0 })
+      const orGate = getState().addGate('Or', { x: 12, y: 0.2, z: 0 })
 
       // Wire inputs to NOT gates
       getState().addWire({ type: 'input', entityId: inputA.id }, { type: 'gate', entityId: notA.id, pinId: notA.inputs[0].id }, [], [], 'sig-a-not')

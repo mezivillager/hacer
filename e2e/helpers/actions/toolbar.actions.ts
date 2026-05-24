@@ -8,7 +8,7 @@
 
 import type { Page } from '@playwright/test'
 import { UI_SELECTORS } from '../../selectors/ui.selectors'
-import type { GateType } from '@/store/types'
+import type { GateType } from '../../config/constants'
 
 export async function selectGateViaToolbar(page: Page, gateType: GateType): Promise<void> {
   await page.click(UI_SELECTORS.toolbar.gatesTrigger)

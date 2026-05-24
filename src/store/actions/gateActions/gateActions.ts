@@ -1,40 +1,59 @@
 import { notify } from '@/lib/notify'
-import type { GateActions, GateInstance, GateType, Pin, Position, CircuitStore } from '../../types'
+import type { GateActions, GateInstance, Pin, Position, CircuitStore } from '../../types'
 import { snapToGrid } from '@/utils/grid'
 import { useCircuitStore } from '../../circuitStore'
 import { calculateWirePathFromConnection } from '@/utils/wiringScheme'
 import { collectWireSegments, combineAdjacentSegments } from '@/utils/wiringScheme/segments'
 import { resolveCrossings, removeOrphanedArcs } from '@/utils/wiringScheme/crossing'
 import { preserveJunctions } from '../junctionUtils'
+import { getBuiltinChipRegistry, getUserChipRegistry } from '@/core/chips/appRegistry'
 
-// Helper to create a gate instance - exported for use in atomic placement actions
-export function createGateInstance(type: GateType, position: Position, width: number = 1): GateInstance {
+/**
+ * Creates a gate instance for a registered chip name. Pin definitions
+ * (names + widths) are read from the builtin registry, falling back to the
+ * user registry. Throws if `chipName` is not registered.
+ *
+ * @param chipName - Registered chip name (e.g. `'Nand'`, `'Mux16'`)
+ * @param position - World position to place the gate at
+ * @param width - Multiplier on top of declared pin widths (default 1).
+ *   Reserved for future parametric widths; for Project 1 builtins all widths
+ *   are already fixed by the chip definition.
+ */
+export function createGateInstance(
+  chipName: string,
+  position: Position,
+  width: number = 1,
+): GateInstance {
+  const chip =
+    getBuiltinChipRegistry().get(chipName) ??
+    getUserChipRegistry().get(chipName)
+  if (!chip) {
+    throw new Error(`createGateInstance: chip "${chipName}" not found in any registry`)
+  }
+
   const id = `gate-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`
 
-  const inputCount = type === 'NOT' ? 1 : 2
-  const inputs: Pin[] = Array.from({ length: inputCount }, (_, i) => ({
+  const inputs: Pin[] = chip.inputs.map((p, i) => ({
     id: `${id}-in-${i}`,
-    name: `IN${i}`,
+    name: p.name,
     type: 'input',
     value: 0,
-    width,
+    width: p.width,
   }))
 
-  const outputs: Pin[] = [
-    {
-      id: `${id}-out-0`,
-      name: 'OUT',
-      type: 'output',
-      value: 0,
-      width,
-    },
-  ]
+  const outputs: Pin[] = chip.outputs.map((p, i) => ({
+    id: `${id}-out-${i}`,
+    name: p.name,
+    type: 'output',
+    value: 0,
+    width: p.width,
+  }))
 
   return {
     id,
-    type,
+    chipName,
     position,
-    rotation: { x: Math.PI / 2, y: 0, z: 0 }, // Default: gates lie flat (90° around X axis)
+    rotation: { x: Math.PI / 2, y: 0, z: 0 },
     inputs,
     outputs,
     selected: false,
@@ -50,8 +69,8 @@ type SetState = (
 type GetState = () => CircuitStore
 
 export const createGateActions = (set: SetState, get: GetState): GateActions => ({
-  addGate: (type: GateType, position: Position, width?: number) => {
-    const gate = createGateInstance(type, position, width)
+  addGate: (chipName: string, position: Position, width?: number) => {
+    const gate = createGateInstance(chipName, position, width)
     set((state) => {
       state.gates.push(gate)
     }, false, 'addGate')

@@ -22,7 +22,7 @@ test.describe('Gate Placement @ui @gates', () => {
     for (const gateType of ALL_GATE_TYPES) {
       test(`${gateType} gate snaps to grid center via UI`, async ({ page }) => {
         await addGateViaUI(page, {
-          type: gateType,
+          chipName: gateType,
           position: DEFAULT_POSITIONS.center,
         })
         await ensureGates(page, 1)
@@ -53,7 +53,7 @@ test.describe('Gate Placement @ui @gates', () => {
         page,
       }) => {
         await addGateViaUI(page, {
-          type: gateType,
+          chipName: gateType,
           position: DEFAULT_POSITIONS.center,
         })
         await ensureGates(page, 1)
@@ -88,7 +88,7 @@ test.describe('Gate Placement @ui @gates', () => {
 
       for (let i = 0; i < positions.length; i++) {
         await addGateViaUI(page, {
-          type: ALL_GATE_TYPES[i],
+          chipName: ALL_GATE_TYPES[i],
           position: positions[i],
         })
       }
@@ -110,7 +110,7 @@ test.describe('Gate Placement @ui @gates', () => {
         await clearAllViaUI(page)
 
         await addGateViaUI(page, {
-          type: gateType,
+          chipName: gateType,
           position: DEFAULT_POSITIONS.center,
         })
         await ensureGates(page, 1)
