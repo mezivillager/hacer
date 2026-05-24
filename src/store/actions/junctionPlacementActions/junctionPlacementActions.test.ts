@@ -79,7 +79,7 @@ describe('junctionPlacementActions', () => {
 
     it('clears other placement modes', () => {
       useCircuitStore.setState({
-        placementMode: 'NAND',
+        placementMode: 'Nand',
         nodePlacementMode: 'INPUT',
       })
 
@@ -117,8 +117,8 @@ describe('junctionPlacementActions', () => {
     })
 
     it('snaps to nearest corner and stores both position and wire id', () => {
-      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-      const gate2 = getState().addGate('NAND', { x: 2 * SECTION_SIZE, y: 0, z: -SECTION_SIZE })
+      const gate1 = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('Nand', { x: 2 * SECTION_SIZE, y: 0, z: -SECTION_SIZE })
 
       const wire = getState().addWire(
         { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
@@ -137,8 +137,8 @@ describe('junctionPlacementActions', () => {
     })
 
     it('clears preview fields when not near any corner', () => {
-      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-      const gate2 = getState().addGate('NAND', { x: 2 * SECTION_SIZE, y: 0, z: -SECTION_SIZE })
+      const gate1 = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('Nand', { x: 2 * SECTION_SIZE, y: 0, z: -SECTION_SIZE })
 
       getState().addWire(
         { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
@@ -159,8 +159,8 @@ describe('junctionPlacementActions', () => {
 
   describe('placeJunctionOnWire', () => {
     it('creates junction on wire at corner position', () => {
-      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-      const gate2 = getState().addGate('NAND', { x: 2 * SECTION_SIZE, y: 0, z: -SECTION_SIZE })
+      const gate1 = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('Nand', { x: 2 * SECTION_SIZE, y: 0, z: -SECTION_SIZE })
 
       const wire = getState().addWire(
         { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
@@ -179,8 +179,8 @@ describe('junctionPlacementActions', () => {
     })
 
     it('generates signalId if wire does not have one', () => {
-      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-      const gate2 = getState().addGate('NAND', { x: 2 * SECTION_SIZE, y: 0, z: -SECTION_SIZE })
+      const gate1 = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('Nand', { x: 2 * SECTION_SIZE, y: 0, z: -SECTION_SIZE })
 
       const wire = getState().addWire(
         { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
@@ -196,8 +196,8 @@ describe('junctionPlacementActions', () => {
     })
 
     it('uses wire signalId if wire already has one', () => {
-      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-      const gate2 = getState().addGate('NAND', { x: 2 * SECTION_SIZE, y: 0, z: -SECTION_SIZE })
+      const gate1 = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('Nand', { x: 2 * SECTION_SIZE, y: 0, z: -SECTION_SIZE })
 
       const wire = getState().addWire(
         { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
@@ -219,8 +219,8 @@ describe('junctionPlacementActions', () => {
     })
 
     it('rejects placement when position is not at a corner', () => {
-      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-      const gate2 = getState().addGate('NAND', { x: 2 * SECTION_SIZE, y: 0, z: -SECTION_SIZE })
+      const gate1 = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('Nand', { x: 2 * SECTION_SIZE, y: 0, z: -SECTION_SIZE })
 
       const wire = getState().addWire(
         { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
@@ -235,8 +235,8 @@ describe('junctionPlacementActions', () => {
     })
 
     it('rejects placement when position is not at segment endpoint', () => {
-      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-      const gate2 = getState().addGate('NAND', { x: 2 * SECTION_SIZE, y: 0, z: -SECTION_SIZE })
+      const gate1 = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('Nand', { x: 2 * SECTION_SIZE, y: 0, z: -SECTION_SIZE })
 
       const wire = getState().addWire(
         { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
@@ -251,8 +251,8 @@ describe('junctionPlacementActions', () => {
     })
 
     it('allows placement at corners of multi-segment wire', () => {
-      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-      const gate2 = getState().addGate('NAND', { x: 2 * SECTION_SIZE, y: 0, z: -SECTION_SIZE })
+      const gate1 = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('Nand', { x: 2 * SECTION_SIZE, y: 0, z: -SECTION_SIZE })
 
       const wire = getState().addWire(
         { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
@@ -267,8 +267,8 @@ describe('junctionPlacementActions', () => {
     })
 
     it('allows multiple junctions on same wire at different corners', () => {
-      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-      const gate2 = getState().addGate('NAND', { x: 3 * SECTION_SIZE, y: 0, z: -2 * SECTION_SIZE })
+      const gate1 = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('Nand', { x: 3 * SECTION_SIZE, y: 0, z: -2 * SECTION_SIZE })
 
       const wire = getState().addWire(
         { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
@@ -288,10 +288,10 @@ describe('junctionPlacementActions', () => {
     })
 
     it('allows wiring from each junction independently', () => {
-      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-      const gate2 = getState().addGate('NAND', { x: 3 * SECTION_SIZE, y: 0, z: -2 * SECTION_SIZE })
-      const gate3 = getState().addGate('NAND', { x: 3 * SECTION_SIZE, y: 0, z: SECTION_SIZE })
-      const gate4 = getState().addGate('NAND', { x: 3 * SECTION_SIZE, y: 0, z: 2 * SECTION_SIZE })
+      const gate1 = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('Nand', { x: 3 * SECTION_SIZE, y: 0, z: -2 * SECTION_SIZE })
+      const gate3 = getState().addGate('Nand', { x: 3 * SECTION_SIZE, y: 0, z: SECTION_SIZE })
+      const gate4 = getState().addGate('Nand', { x: 3 * SECTION_SIZE, y: 0, z: 2 * SECTION_SIZE })
 
       const wire = getState().addWire(
         { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
@@ -351,8 +351,8 @@ describe('junctionPlacementActions', () => {
     })
 
     it('throws error when wire has no segments', () => {
-      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-      const gate2 = getState().addGate('NAND', { x: 8, y: 0, z: 0 })
+      const gate1 = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('Nand', { x: 8, y: 0, z: 0 })
 
       const wire = getState().addWire(
         { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
@@ -366,8 +366,8 @@ describe('junctionPlacementActions', () => {
     })
 
     it('allows placement at corners even when wire contains arc segments', () => {
-      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-      const gate2 = getState().addGate('NAND', { x: 3 * SECTION_SIZE, y: 0, z: -SECTION_SIZE })
+      const gate1 = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('Nand', { x: 3 * SECTION_SIZE, y: 0, z: -SECTION_SIZE })
 
       const wire = getState().addWire(
         { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
@@ -401,8 +401,8 @@ describe('junctionPlacementActions', () => {
 
   describe('placeJunctionOnWire - snap to corner', () => {
     it('snaps to nearest corner when clicking near but not exactly on a corner', () => {
-      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-      const gate2 = getState().addGate('NAND', { x: 2 * SECTION_SIZE, y: 0, z: -SECTION_SIZE })
+      const gate1 = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('Nand', { x: 2 * SECTION_SIZE, y: 0, z: -SECTION_SIZE })
 
       const wire = getState().addWire(
         { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
@@ -425,8 +425,8 @@ describe('junctionPlacementActions', () => {
     })
 
     it('does not snap when clicking far from any corner', () => {
-      const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-      const gate2 = getState().addGate('NAND', { x: 2 * SECTION_SIZE, y: 0, z: -SECTION_SIZE })
+      const gate1 = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('Nand', { x: 2 * SECTION_SIZE, y: 0, z: -SECTION_SIZE })
 
       const wire = getState().addWire(
         { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },

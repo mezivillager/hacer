@@ -155,7 +155,7 @@ describe('SceneKeyboardPan', () => {
   })
 
   it('does not pan when in placement mode', () => {
-    setState({ placementMode: 'NAND' })
+    setState({ placementMode: 'Nand' })
     render(<SceneKeyboardPan />)
 
     const event = new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true })

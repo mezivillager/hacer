@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { render } from '@testing-library/react'
 import { ChipBody3D } from './ChipBody3D'
 import { getBuiltinChipRegistry, resetAppRegistriesForTests } from '@/core/chips/appRegistry'
-import type { GateInstance, GateType } from '@/store/types'
+import type { GateInstance } from '@/store/types'
 
 // R3F primitives (<group>, <mesh>, <boxGeometry>, etc.) are unknown HTML
 // elements in jsdom, which is harmless. The hooks below are not unknown
@@ -66,11 +66,8 @@ beforeEach(() => {
 
 /**
  * Build a GateInstance whose pin schema mirrors the chip's declared pins.
- *
- * `GateInstance.type: GateType` is still the legacy union (T4.A migrates this
- * to `chipName: string`); ChipBody3D reads its chip name from the explicit
- * `chipName` prop, not from `gate.type`, so the cast here is purely a type
- * shim until that migration lands.
+ * `GateInstance.chipName` drives rendering: ChipBody3D resolves the chip
+ * definition from `gate.chipName` against the registry.
  */
 function makeGate(chipName: string): GateInstance {
   const reg = getBuiltinChipRegistry()
@@ -78,7 +75,7 @@ function makeGate(chipName: string): GateInstance {
   if (!chip) throw new Error(`chip ${chipName} not registered`)
   return {
     id: `g-${chipName}`,
-    type: chipName as GateType,
+    chipName,
     position: { x: 0, y: 0, z: 0 },
     rotation: { x: Math.PI / 2, y: 0, z: 0 },
     inputs: chip.inputs.map((p, i) => ({
@@ -107,7 +104,6 @@ describe('ChipBody3D', () => {
       render(
         <ChipBody3D
           gate={gate}
-          chipName="Not"
           isWiring={false}
           isPinConnected={() => false}
           onClick={() => {}}
@@ -124,7 +120,6 @@ describe('ChipBody3D', () => {
       render(
         <ChipBody3D
           gate={gate}
-          chipName="Mux8Way16"
           isWiring={false}
           isPinConnected={() => false}
           onClick={() => {}}
@@ -137,12 +132,12 @@ describe('ChipBody3D', () => {
 
   it('throws a readable error for unknown chipName', () => {
     const gate = makeGate('Not')
+    const brokenGate: GateInstance = { ...gate, chipName: 'TotallyNotARealChip' }
     const spy = vi.spyOn(console, 'error').mockImplementation(() => {})
     expect(() =>
       render(
         <ChipBody3D
-          gate={gate}
-          chipName="TotallyNotARealChip"
+          gate={brokenGate}
           isWiring={false}
           isPinConnected={() => false}
           onClick={() => {}}

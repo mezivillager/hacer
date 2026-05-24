@@ -1,4 +1,4 @@
-import type { PlacementActions, GateType, Position, CircuitStore } from '../../types'
+import type { PlacementActions, Position, CircuitStore } from '../../types'
 import { createGateInstance } from '../gateActions/gateActions'
 import { snapToGrid, worldToGrid, canPlaceGateAt } from '@/utils/grid'
 import { useCircuitStore } from '../../circuitStore'
@@ -11,9 +11,8 @@ type SetState = (
 type GetState = () => CircuitStore
 
 export const createPlacementActions = (set: SetState, get: GetState): PlacementActions => ({
-  startPlacement: (type: GateType) => {
+  startPlacement: (chipName: string) => {
     set((state) => {
-      // Clear all selections
       state.selectedGateId = null
       state.selectedWireId = null
       state.selectedNodeId = null
@@ -22,8 +21,7 @@ export const createPlacementActions = (set: SetState, get: GetState): PlacementA
         g.selected = false
       })
 
-      state.placementMode = type
-      // Cancel node placement if active
+      state.placementMode = chipName
       state.nodePlacementMode = null
     }, false, 'startPlacement')
   },

@@ -51,7 +51,7 @@ describe('useGateDrag', () => {
 
   describe('drag start', () => {
     it('sets dragging state after movement exceeds threshold', () => {
-      const gate = getState().addGate('NAND', { x: 2, y: 0.2, z: 2 })
+      const gate = getState().addGate('Nand', { x: 2, y: 0.2, z: 2 })
 
       const { result } = renderHook(() => useGateDrag(gate.id))
 
@@ -83,7 +83,7 @@ describe('useGateDrag', () => {
     })
 
     it('stops propagation on drag start', () => {
-      const gate = getState().addGate('NAND', { x: 2, y: 0.2, z: 2 })
+      const gate = getState().addGate('Nand', { x: 2, y: 0.2, z: 2 })
       const { result } = renderHook(() => useGateDrag(gate.id))
 
       const mockEvent = createMockEvent({ x: 2, y: 0.2, z: 2 })
@@ -98,7 +98,7 @@ describe('useGateDrag', () => {
 
   describe('drag move', () => {
     it('updates preview position during drag', () => {
-      const gate = getState().addGate('NAND', { x: 2, y: 0.2, z: 2 })
+      const gate = getState().addGate('Nand', { x: 2, y: 0.2, z: 2 })
       const { result } = renderHook(() => useGateDrag(gate.id))
 
       act(() => {
@@ -118,7 +118,7 @@ describe('useGateDrag', () => {
     })
 
     it('preserves Y coordinate during drag', () => {
-      const gate = getState().addGate('NAND', { x: 2, y: 0.2, z: 2 })
+      const gate = getState().addGate('Nand', { x: 2, y: 0.2, z: 2 })
       const { result } = renderHook(() => useGateDrag(gate.id))
 
       act(() => {
@@ -134,7 +134,7 @@ describe('useGateDrag', () => {
     })
 
     it('cancels drag if gate is deleted during drag', () => {
-      const gate = getState().addGate('NAND', { x: 2, y: 0.2, z: 2 })
+      const gate = getState().addGate('Nand', { x: 2, y: 0.2, z: 2 })
       const { result } = renderHook(() => useGateDrag(gate.id))
 
       act(() => {
@@ -155,7 +155,7 @@ describe('useGateDrag', () => {
 
   describe('drag end', () => {
     it('updates gate position on valid drag end', () => {
-      const gate = getState().addGate('NAND', { x: 2, y: 0.2, z: 2 })
+      const gate = getState().addGate('Nand', { x: 2, y: 0.2, z: 2 })
       const { result } = renderHook(() => useGateDrag(gate.id))
 
       act(() => {
@@ -178,7 +178,7 @@ describe('useGateDrag', () => {
     })
 
     it('does not update gate position if drag distance is below threshold', () => {
-      const gate = getState().addGate('NAND', { x: 2, y: 0.2, z: 2 })
+      const gate = getState().addGate('Nand', { x: 2, y: 0.2, z: 2 })
       const originalPos = { ...gate.position }
       const { result } = renderHook(() => useGateDrag(gate.id))
 
@@ -201,8 +201,8 @@ describe('useGateDrag', () => {
     })
 
     it('does not update gate position if final position is invalid', () => {
-      const gate1 = getState().addGate('NAND', { x: 2, y: 0.2, z: 2 })
-      getState().addGate('AND', { x: 6, y: 0.2, z: 6 })
+      const gate1 = getState().addGate('Nand', { x: 2, y: 0.2, z: 2 })
+      getState().addGate('And', { x: 6, y: 0.2, z: 6 })
       const originalPos = { ...gate1.position }
       const { result } = renderHook(() => useGateDrag(gate1.id))
 
@@ -224,7 +224,7 @@ describe('useGateDrag', () => {
     })
 
     it('excludes dragged gate from validation', () => {
-      const gate = getState().addGate('NAND', { x: 2, y: 0.2, z: 2 })
+      const gate = getState().addGate('Nand', { x: 2, y: 0.2, z: 2 })
       const { result } = renderHook(() => useGateDrag(gate.id))
 
       act(() => {
@@ -246,7 +246,7 @@ describe('useGateDrag', () => {
     })
 
     it('clears preview position on drag end', () => {
-      const gate = getState().addGate('NAND', { x: 2, y: 0.2, z: 2 })
+      const gate = getState().addGate('Nand', { x: 2, y: 0.2, z: 2 })
       const { result } = renderHook(() => useGateDrag(gate.id))
 
       act(() => {
@@ -269,7 +269,7 @@ describe('useGateDrag', () => {
 
   describe('drag cancel', () => {
     it('cancels drag on pointer leave', () => {
-      const gate = getState().addGate('NAND', { x: 2, y: 0.2, z: 2 })
+      const gate = getState().addGate('Nand', { x: 2, y: 0.2, z: 2 })
       const { result } = renderHook(() => useGateDrag(gate.id))
 
       // Start dragging with pointer down and move beyond threshold
@@ -291,7 +291,7 @@ describe('useGateDrag', () => {
     })
 
     it('cancels drag if gate is deleted', () => {
-      const gate = getState().addGate('NAND', { x: 2, y: 0.2, z: 2 })
+      const gate = getState().addGate('Nand', { x: 2, y: 0.2, z: 2 })
       const { result } = renderHook(() => useGateDrag(gate.id))
 
       act(() => {
@@ -311,7 +311,7 @@ describe('useGateDrag', () => {
 
   describe('grid snapping', () => {
     it('snaps position to grid during drag', () => {
-      const gate = getState().addGate('NAND', { x: 2, y: 0.2, z: 2 })
+      const gate = getState().addGate('Nand', { x: 2, y: 0.2, z: 2 })
       const { result } = renderHook(() => useGateDrag(gate.id))
 
       act(() => {

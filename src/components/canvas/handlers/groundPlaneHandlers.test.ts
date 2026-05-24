@@ -60,7 +60,7 @@ describe('groundPlaneHandlers', () => {
     it('updates placement preview position when placing', () => {
       vi.mocked(useCircuitStore.getState).mockReturnValue(
         createMockStore({
-          placementMode: 'NAND',
+          placementMode: 'Nand',
           wiringFrom: null,
           isDragActive: false,
           placementPreviewPosition: null,
@@ -146,7 +146,7 @@ describe('groundPlaneHandlers', () => {
     it('clears placement preview position when placing', () => {
       vi.mocked(useCircuitStore.getState).mockReturnValue(
         createMockStore({
-          placementMode: 'NAND',
+          placementMode: 'Nand',
           wiringFrom: null,
         })
       )
@@ -181,7 +181,7 @@ describe('groundPlaneHandlers', () => {
     it('clears both when placing and wiring (edge case)', () => {
       vi.mocked(useCircuitStore.getState).mockReturnValue(
         createMockStore({
-          placementMode: 'NAND',
+          placementMode: 'Nand',
           wiringFrom: {
             fromGateId: 'gate-1',
             fromPinId: 'pin-1',
@@ -206,7 +206,7 @@ describe('groundPlaneHandlers', () => {
     it('places gate when in placement mode', () => {
       vi.mocked(useCircuitStore.getState).mockReturnValue(
         createMockStore({
-          placementMode: 'NAND',
+          placementMode: 'Nand',
           wiringFrom: null,
           placementPreviewPosition: null,
           selectedGateId: null,
@@ -358,8 +358,8 @@ describe('groundPlaneHandlers', () => {
           placementMode: null,
           selectedGateId: 'gate-1',
           gates: [
-            { id: 'gate-1', type: 'NAND', position: { x: 1, y: 0.2, z: 2 }, rotation: { x: 0, y: 0, z: 0 }, inputs: [], outputs: [], selected: false, width: 1 },
-            { id: 'gate-2', type: 'AND', position: { x: 5, y: 0.2, z: 6 }, rotation: { x: 0, y: 0, z: 0 }, inputs: [], outputs: [], selected: false, width: 1 },
+            { id: 'gate-1', chipName: 'Nand', position: { x: 1, y: 0.2, z: 2 }, rotation: { x: 0, y: 0, z: 0 }, inputs: [], outputs: [], selected: false, width: 1 },
+            { id: 'gate-2', chipName: 'And', position: { x: 5, y: 0.2, z: 6 }, rotation: { x: 0, y: 0, z: 0 }, inputs: [], outputs: [], selected: false, width: 1 },
           ] as GateInstance[],
         })
       )
@@ -383,8 +383,8 @@ describe('groundPlaneHandlers', () => {
           placementMode: null,
           selectedGateId: 'gate-1',
           gates: [
-            { id: 'gate-1', type: 'NAND', position: { x: 1, y: 0.2, z: 2 }, rotation: { x: 0, y: 0, z: 0 }, inputs: [], outputs: [], selected: false, width: 1 },
-            { id: 'gate-2', type: 'AND', position: { x: 2, y: 0.2, z: 3 }, rotation: { x: 0, y: 0, z: 0 }, inputs: [], outputs: [], selected: false, width: 1 },
+            { id: 'gate-1', chipName: 'Nand', position: { x: 1, y: 0.2, z: 2 }, rotation: { x: 0, y: 0, z: 0 }, inputs: [], outputs: [], selected: false, width: 1 },
+            { id: 'gate-2', chipName: 'And', position: { x: 2, y: 0.2, z: 3 }, rotation: { x: 0, y: 0, z: 0 }, inputs: [], outputs: [], selected: false, width: 1 },
           ] as GateInstance[],
         })
       )

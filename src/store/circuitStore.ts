@@ -27,7 +27,6 @@ import '@/utils/renderTracking' // Initialize render tracking
 export type {
   CircuitState,
   GateInstance,
-  GateType,
   Pin,
   PerformanceMode,
   SimulationError,
@@ -44,7 +43,7 @@ const initialState = {
   simulationRunning: false,
   simulationSpeed: 100,
   lastSimulationError: null as import('./types').SimulationError | null,
-  placementMode: null as import('./types').GateType | null,
+  placementMode: null as string | null,
   placementPreviewPosition: null as import('./types').Position | null,
   wiringFrom: null as import('./types').WiringState | null,
   isDragActive: false,

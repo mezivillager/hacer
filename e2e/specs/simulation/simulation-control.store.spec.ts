@@ -23,7 +23,7 @@ import {
 
 test.describe('Simulation Control @store @simulation', () => {
   test('can start and stop simulation', async ({ page }) => {
-    await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.center)
+    await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.center)
     await expectGateCount(page, 1)
 
     await startSimulationViaUI(page)
@@ -44,7 +44,7 @@ test.describe('Simulation Control @store @simulation', () => {
   })
 
   test('can toggle simulation via store', async ({ page }) => {
-    await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.center)
+    await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.center)
 
     // Start via store
     await toggleSimulationViaStore(page)

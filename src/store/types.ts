@@ -103,8 +103,6 @@ export interface Wire {
   width?: number
 }
 
-export type GateType = 'NAND' | 'AND' | 'OR' | 'NOT' | 'NOR' | 'XOR' | 'XNOR'
-
 /**
  * Node placement type for UI node placement mode.
  */
@@ -117,7 +115,8 @@ export type NodeType = 'input' | 'output'
 
 export interface GateInstance {
   id: string
-  type: GateType
+  /** Name of the chip in the builtin registry (e.g., 'Nand', 'Mux16'). */
+  chipName: string
   position: Position
   rotation: Rotation
   inputs: Pin[]
@@ -182,7 +181,7 @@ export interface CircuitState {
   simulationSpeed: number // ms per tick
   /** Set when a tick cannot evaluate (e.g. combinational cycle); null after a successful tick */
   lastSimulationError: SimulationError | null
-  placementMode: GateType | null
+  placementMode: string | null
   placementPreviewPosition: Position | null
   wiringFrom: WiringState | null
   isDragActive: boolean
@@ -216,7 +215,7 @@ export interface CircuitState {
 
 // Action types for the Zustand store
 export interface GateActions {
-  addGate: (type: GateType, position: Position, width?: number) => GateInstance
+  addGate: (chipName: string, position: Position, width?: number) => GateInstance
   removeGate: (gateId: string) => void
   selectGate: (gateId: string | null) => void
   selectWire: (wireId: string | null) => void
@@ -249,7 +248,7 @@ export interface SimulationActions {
 }
 
 export interface PlacementActions {
-  startPlacement: (type: GateType) => void
+  startPlacement: (chipName: string) => void
   cancelPlacement: () => void
   placeGate: (position: Position) => void
   updatePlacementPreviewPosition: (position: Position | null) => void

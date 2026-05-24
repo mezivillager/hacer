@@ -12,8 +12,8 @@ const wrap = () =>
     </TooltipProvider>,
   )
 
-function placeGate(type: 'AND' | 'OR' | 'NAND', x: number, z: number) {
-  circuitActions.startPlacement(type)
+function placeGate(chipName: 'And' | 'Or' | 'Nand', x: number, z: number) {
+  circuitActions.startPlacement(chipName)
   circuitActions.placeGate({ x, y: 0.2, z })
 }
 
@@ -37,8 +37,8 @@ describe('RightActionBar', () => {
 
   it('Info panel shows correct counts from store', async () => {
     const user = userEvent.setup()
-    placeGate('AND', 1, 1)
-    placeGate('OR', 5, 1)
+    placeGate('And', 1, 1)
+    placeGate('Or', 5, 1)
     wrap()
     await user.click(screen.getByTestId('right-bar-info-trigger'))
     expect((await screen.findByTestId('info-stat-gates')).textContent).toContain('2')

@@ -14,7 +14,7 @@ describe('circuitStore autosave bootstrap', () => {
     const { circuitActions } = await import('./circuitStore')
     const { AUTOSAVE_KEY } = await import('./actions/persistenceActions/persistenceActions')
 
-    circuitActions.addGate('NAND', { x: 0, y: 0, z: 0 })
+    circuitActions.addGate('Nand', { x: 0, y: 0, z: 0 })
 
     expect(vi.getTimerCount()).toBe(0)
     vi.advanceTimersByTime(2500)

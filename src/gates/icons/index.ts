@@ -1,4 +1,3 @@
-import type { GateType } from '@/store/types'
 import { NandIcon } from './NandIcon'
 import { AndIcon } from './AndIcon'
 import { OrIcon } from './OrIcon'
@@ -11,16 +10,19 @@ export { OrIcon } from './OrIcon'
 export { NotIcon } from './NotIcon'
 export { XorIcon } from './XorIcon'
 
-// Map gate types to their icon components
+/**
+ * Map of canonical chip names to their 2D icon components. Names match the
+ * builtin chip registry (`Nand`, `And`, `Or`, `Not`, `Xor`).
+ */
 export const gateIcons: Record<string, React.ComponentType<{ size?: number; color?: string }>> = {
-  NAND: NandIcon,
-  AND: AndIcon,
-  OR: OrIcon,
-  NOT: NotIcon,
-  XOR: XorIcon,
+  Nand: NandIcon,
+  And: AndIcon,
+  Or: OrIcon,
+  Not: NotIcon,
+  Xor: XorIcon,
 }
 
-// Get icon component for a gate type
-export function getGateIcon(type: GateType) {
-  return gateIcons[type] ?? NandIcon
+/** Look up the 2D icon for a chip name, falling back to the Nand glyph. */
+export function getGateIcon(chipName: string) {
+  return gateIcons[chipName] ?? NandIcon
 }

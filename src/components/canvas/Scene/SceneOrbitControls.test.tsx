@@ -59,7 +59,7 @@ describe('SceneOrbitControls', () => {
   })
 
   it('disables rotation and pan when in placement mode', () => {
-    setState({ placementMode: 'NAND' })
+    setState({ placementMode: 'Nand' })
     const { getByTestId } = render(<SceneOrbitControls />)
     const controls = getByTestId('orbit-controls')
     expect(controls.getAttribute('data-enablerotate')).toBe('false')
@@ -96,7 +96,7 @@ describe('SceneOrbitControls', () => {
   })
 
   it('keeps zoom enabled during interactions', () => {
-    setState({ isDragActive: true, placementMode: 'AND' })
+    setState({ isDragActive: true, placementMode: 'And' })
     const { getByTestId } = render(<SceneOrbitControls />)
     const controls = getByTestId('orbit-controls')
     expect(controls.getAttribute('data-enablezoom')).toBe('true')

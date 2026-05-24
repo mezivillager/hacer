@@ -42,8 +42,8 @@ describe('useExistingSegments', () => {
       type: 'horizontal',
     }
 
-    const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-    const gate2 = getState().addGate('NAND', { x: 8, y: 0, z: 0 })
+    const gate1 = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+    const gate2 = getState().addGate('Nand', { x: 8, y: 0, z: 0 })
 
     getState().addWire(
       { type: 'gate', entityId: gate1.id, pinId: `${gate1.id}-out-0` },
@@ -69,8 +69,8 @@ describe('useExistingSegments', () => {
       type: 'horizontal',
     }
 
-    const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-    const gate2 = getState().addGate('NAND', { x: 4, y: 0, z: 0 })
+    const gate1 = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+    const gate2 = getState().addGate('Nand', { x: 4, y: 0, z: 0 })
     getState().addWire(
       { type: 'gate', entityId: gate1.id, pinId: `${gate1.id}-out-0` },
       { type: 'gate', entityId: gate2.id, pinId: `${gate2.id}-in-0` },

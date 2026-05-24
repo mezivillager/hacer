@@ -3,8 +3,8 @@ import { renderHook } from '@testing-library/react'
 import { useSelectedElement } from './useSelectedElement'
 import { useCircuitStore, circuitActions } from '@/store/circuitStore'
 
-function placeGateAt(type: 'AND' | 'NAND' | 'OR', x: number, z: number): string {
-  circuitActions.startPlacement(type)
+function placeGateAt(chipName: 'And' | 'Nand' | 'Or', x: number, z: number): string {
+  circuitActions.startPlacement(chipName)
   circuitActions.placeGate({ x, y: 0.2, z })
   return useCircuitStore.getState().gates[useCircuitStore.getState().gates.length - 1].id
 }
@@ -21,12 +21,12 @@ describe('useSelectedElement', () => {
   })
 
   it('returns gate-shaped object when a gate is selected', () => {
-    const id = placeGateAt('AND', 1, 1)
+    const id = placeGateAt('And', 1, 1)
     circuitActions.selectGate(id)
     const { result } = renderHook(() => useSelectedElement())
     expect(result.current?.kind).toBe('gate')
     if (result.current?.kind === 'gate') {
-      expect(result.current.gateType).toBe('AND')
+      expect(result.current.gateType).toBe('And')
       expect(result.current.id).toBe(id)
     }
   })
@@ -81,7 +81,7 @@ describe('useSelectedElement', () => {
   })
 
   it('priority: gate > wire > node when multiple slots are populated', () => {
-    const gid = placeGateAt('AND', 1, 1)
+    const gid = placeGateAt('And', 1, 1)
     useCircuitStore.setState((s) => {
       s.selectedGateId = gid
       s.selectedWireId = 'fake-wire'

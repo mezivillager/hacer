@@ -61,7 +61,7 @@ describe('wireHandlers', () => {
   describe('handleWireClick', () => {
     it('returns null when in placement mode', () => {
       ;(useCircuitStore.getState as ReturnType<typeof vi.fn>).mockReturnValue({
-        placementMode: 'NAND',
+        placementMode: 'Nand',
         wiringFrom: null,
         placementPreviewPosition: null,
         selectedGateId: null,

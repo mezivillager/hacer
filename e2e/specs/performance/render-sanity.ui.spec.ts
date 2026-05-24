@@ -63,7 +63,7 @@ test.describe.skip('Render Sanity Check @render @performance @ui', () => {
     await resetRenderStats(page)
 
     // Perform the operation
-    await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.center)
+    await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.center)
     await ensureGates(page, 1)
     await waitForSceneStable(page)
 
@@ -81,7 +81,7 @@ test.describe.skip('Render Sanity Check @render @performance @ui', () => {
 
   test('selectGate stays within render budget', async ({ page }) => {
     // Setup: add a gate first
-    const gate = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.center)
+    const gate = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.center)
     await ensureGates(page, 1)
     await waitForSceneStable(page)
 
@@ -108,8 +108,8 @@ test.describe.skip('Render Sanity Check @render @performance @ui', () => {
 
   test('addWire stays within render budget', async ({ page }) => {
     // Setup: add two gates
-    const gate1 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.left)
-    const gate2 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.right)
+    const gate1 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.left)
+    const gate2 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.right)
     await ensureGates(page, 2)
     await waitForSceneStable(page)
 
@@ -140,7 +140,7 @@ test.describe.skip('Render Sanity Check @render @performance @ui', () => {
 
   test('toggleInput stays within render budget', async ({ page }) => {
     // Setup: add a gate
-    const gate = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.center)
+    const gate = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.center)
     await ensureGates(page, 1)
     await waitForSceneStable(page)
 
@@ -178,7 +178,7 @@ test.describe.skip('Render Sanity Check @render @performance @ui', () => {
 
     // Test addGate
     await resetRenderStats(page)
-    await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.center)
+    await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.center)
     await ensureGates(page, 1)
     await waitForSceneStable(page)
     let counts = await getComponentRenderCounts(page)
@@ -192,8 +192,8 @@ test.describe.skip('Render Sanity Check @render @performance @ui', () => {
     console.log('deselectGate renders:', counts)
 
     // Test addWire
-    const gate1 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.left)
-    const gate2 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.right)
+    const gate1 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.left)
+    const gate2 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.right)
     await ensureGates(page, 3)
     await waitForSceneStable(page)
 

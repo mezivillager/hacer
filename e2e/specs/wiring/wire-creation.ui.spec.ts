@@ -22,11 +22,11 @@ test.describe('Wire Creation @ui @wiring', () => {
   test('can wire two gates via UI', async ({ page }) => {
     // Place two gates
     await addGateViaUI(page, {
-      type: 'NAND',
+      chipName: 'Nand',
       position: DEFAULT_POSITIONS.left,
     })
     await addGateViaUI(page, {
-      type: 'NAND',
+      chipName: 'Nand',
       position: DEFAULT_POSITIONS.right,
       rotate: { direction: 'left', times: 2 },
     })
@@ -45,20 +45,20 @@ test.describe('Wire Creation @ui @wiring', () => {
   test('can create multiple independent wires', async ({ page }) => {
     // Place 4 gates
     await addGateViaUI(page, {
-      type: 'NAND',
+      chipName: 'Nand',
       position: DEFAULT_POSITIONS.topLeft,
     })
     await addGateViaUI(page, {
-      type: 'AND',
+      chipName: 'And',
       position: DEFAULT_POSITIONS.topRight,
       rotate: { direction: 'left', times: 2 },
     })
     await addGateViaUI(page, {
-      type: 'OR',
+      chipName: 'Or',
       position: DEFAULT_POSITIONS.bottomLeft,
     })
     await addGateViaUI(page, {
-      type: 'XOR',
+      chipName: 'Xor',
       position: DEFAULT_POSITIONS.bottomRight,
       rotate: { direction: 'left', times: 2 },
     })
@@ -93,11 +93,11 @@ test.describe('Wire Creation @ui @wiring', () => {
       })
 
       await addGateViaUI(page, {
-        type: 'NAND',
+        chipName: 'Nand',
         position: DEFAULT_POSITIONS.left,
       })
       await addGateViaUI(page, {
-        type: 'NAND',
+        chipName: 'Nand',
         position: DEFAULT_POSITIONS.right,
         rotate: { direction: 'left', times: 2 },
       })
@@ -150,11 +150,11 @@ test.describe('Wire Creation @ui @wiring', () => {
       await page.waitForTimeout(200)
 
       await addGateViaUI(page, {
-        type: 'NAND',
+        chipName: 'Nand',
         position: DEFAULT_POSITIONS.left,
       })
       await addGateViaUI(page, {
-        type: 'NAND',
+        chipName: 'Nand',
         position: DEFAULT_POSITIONS.right,
         rotate: { direction: 'left', times: 2 },
       })
@@ -190,19 +190,19 @@ test.describe('Wire Creation @ui @wiring', () => {
 
   test.describe('Cross-Gate-Type Wiring', () => {
     const gateTypePairs: [GateType, GateType][] = [
-      ['NAND', 'AND'],
-      ['OR', 'NOT'],
-      ['XOR', 'NAND'],
+      ['Nand', 'And'],
+      ['Or', 'Not'],
+      ['Xor', 'Nand'],
     ]
 
     for (const [type1, type2] of gateTypePairs) {
       test(`can wire ${type1} output to ${type2} input`, async ({ page }) => {
         await addGateViaUI(page, {
-          type: type1,
+          chipName: type1,
           position: DEFAULT_POSITIONS.left,
         })
         await addGateViaUI(page, {
-          type: type2,
+          chipName: type2,
           position: DEFAULT_POSITIONS.right,
           rotate: { direction: 'left', times: 2 },
         })

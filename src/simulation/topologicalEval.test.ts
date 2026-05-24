@@ -42,7 +42,7 @@ describe('topologicalSort', () => {
   })
 
   it('returns single gate when one gate has no gate-to-gate dependencies', () => {
-    const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+    const gate = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
     const result = topologicalSort(getState())
     expect(result.type).toBe('success')
     if (result.type === 'success') {
@@ -51,8 +51,8 @@ describe('topologicalSort', () => {
   })
 
   it('sorts two-gate chain: gate1 → gate2', () => {
-    const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-    const gate2 = getState().addGate('NAND', { x: 4, y: 0, z: 0 })
+    const gate1 = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+    const gate2 = getState().addGate('Nand', { x: 4, y: 0, z: 0 })
 
     getState().addWire(
       { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
@@ -68,9 +68,9 @@ describe('topologicalSort', () => {
   })
 
   it('sorts three-gate chain: gate1 → gate2 → gate3', () => {
-    const gate1 = getState().addGate('NOT', { x: 0, y: 0, z: 0 })
-    const gate2 = getState().addGate('AND', { x: 4, y: 0, z: 0 })
-    const gate3 = getState().addGate('OR', { x: 8, y: 0, z: 0 })
+    const gate1 = getState().addGate('Not', { x: 0, y: 0, z: 0 })
+    const gate2 = getState().addGate('And', { x: 4, y: 0, z: 0 })
+    const gate3 = getState().addGate('Or', { x: 8, y: 0, z: 0 })
 
     getState().addWire(
       { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
@@ -92,9 +92,9 @@ describe('topologicalSort', () => {
   })
 
   it('handles fan-out: gate1 feeds gate2 AND gate3', () => {
-    const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-    const gate2 = getState().addGate('NOT', { x: 4, y: 0, z: -2 })
-    const gate3 = getState().addGate('NOT', { x: 4, y: 0, z: 2 })
+    const gate1 = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+    const gate2 = getState().addGate('Not', { x: 4, y: 0, z: -2 })
+    const gate3 = getState().addGate('Not', { x: 4, y: 0, z: 2 })
 
     getState().addWire(
       { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
@@ -116,9 +116,9 @@ describe('topologicalSort', () => {
   })
 
   it('handles fan-in: gate1 and gate2 both feed gate3', () => {
-    const gate1 = getState().addGate('NOT', { x: 0, y: 0, z: -2 })
-    const gate2 = getState().addGate('NOT', { x: 0, y: 0, z: 2 })
-    const gate3 = getState().addGate('AND', { x: 4, y: 0, z: 0 })
+    const gate1 = getState().addGate('Not', { x: 0, y: 0, z: -2 })
+    const gate2 = getState().addGate('Not', { x: 0, y: 0, z: 2 })
+    const gate3 = getState().addGate('And', { x: 4, y: 0, z: 0 })
 
     getState().addWire(
       { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
@@ -140,10 +140,10 @@ describe('topologicalSort', () => {
   })
 
   it('handles diamond: A→B, A→C, B→D, C→D', () => {
-    const gateA = getState().addGate('NOT', { x: 0, y: 0, z: 0 })
-    const gateB = getState().addGate('NOT', { x: 4, y: 0, z: -2 })
-    const gateC = getState().addGate('NOT', { x: 4, y: 0, z: 2 })
-    const gateD = getState().addGate('AND', { x: 8, y: 0, z: 0 })
+    const gateA = getState().addGate('Not', { x: 0, y: 0, z: 0 })
+    const gateB = getState().addGate('Not', { x: 4, y: 0, z: -2 })
+    const gateC = getState().addGate('Not', { x: 4, y: 0, z: 2 })
+    const gateD = getState().addGate('And', { x: 8, y: 0, z: 0 })
 
     getState().addWire(
       { type: 'gate', entityId: gateA.id, pinId: gateA.outputs[0].id },
@@ -181,8 +181,8 @@ describe('topologicalSort', () => {
   })
 
   it('handles isolated gates (no wires between them)', () => {
-    const gate1 = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-    const gate2 = getState().addGate('NOT', { x: 4, y: 0, z: 0 })
+    const gate1 = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+    const gate2 = getState().addGate('Not', { x: 4, y: 0, z: 0 })
 
     const result = topologicalSort(getState())
     expect(result.type).toBe('success')
@@ -194,8 +194,8 @@ describe('topologicalSort', () => {
   })
 
   it('detects a cycle: gate A → gate B → gate A', () => {
-    const gateA = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-    const gateB = getState().addGate('NAND', { x: 4, y: 0, z: 0 })
+    const gateA = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+    const gateB = getState().addGate('Nand', { x: 4, y: 0, z: 0 })
 
     getState().addWire(
       { type: 'gate', entityId: gateA.id, pinId: gateA.outputs[0].id },
@@ -213,8 +213,8 @@ describe('topologicalSort', () => {
   })
 
   it('returns involved gate IDs in cycle result', () => {
-    const gateA = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-    const gateB = getState().addGate('NAND', { x: 4, y: 0, z: 0 })
+    const gateA = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+    const gateB = getState().addGate('Nand', { x: 4, y: 0, z: 0 })
 
     getState().addWire(
       { type: 'gate', entityId: gateA.id, pinId: gateA.outputs[0].id },
@@ -236,7 +236,7 @@ describe('topologicalSort', () => {
   })
 
   it('detects a self-loop: gate output wired to its own input', () => {
-    const gate = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+    const gate = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
 
     getState().addWire(
       { type: 'gate', entityId: gate.id, pinId: gate.outputs[0].id },
@@ -253,8 +253,8 @@ describe('topologicalSort', () => {
 
   it('ignores junctions — traces through to actual source', () => {
     const inputNode = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
-    const gate1 = getState().addGate('NOT', { x: 4, y: 0, z: 0 })
-    const gate2 = getState().addGate('AND', { x: 8, y: 0, z: 0 })
+    const gate1 = getState().addGate('Not', { x: 4, y: 0, z: 0 })
+    const gate2 = getState().addGate('And', { x: 8, y: 0, z: 0 })
     const junction = getState().addJunction('sig-a', { x: 2, y: 0, z: 0 })
 
     // input → gate1 (original wire, junction sits on it)
@@ -296,7 +296,7 @@ describe('topologicalSort', () => {
   it('handles input-node-only sources (gates with in-degree 0)', () => {
     const inputA = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
     const inputB = getState().addInputNode('b', { x: 0, y: 2, z: 0 })
-    const gate = getState().addGate('AND', { x: 4, y: 0, z: 0 })
+    const gate = getState().addGate('And', { x: 4, y: 0, z: 0 })
 
     getState().addWire(
       { type: 'input', entityId: inputA.id },
@@ -320,7 +320,7 @@ describe('topologicalSort', () => {
 describe('evaluateCircuit', () => {
   it('single NOT gate: input 0 → output 1', () => {
     const inputNode = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
-    const gate = getState().addGate('NOT', { x: 4, y: 0, z: 0 })
+    const gate = getState().addGate('Not', { x: 4, y: 0, z: 0 })
     const outputNode = getState().addOutputNode('out', { x: 8, y: 0, z: 0 })
 
     getState().addWire(
@@ -344,7 +344,7 @@ describe('evaluateCircuit', () => {
   it('single NAND gate: inputs 1,1 → output 0', () => {
     const inputA = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
     const inputB = getState().addInputNode('b', { x: 0, y: 2, z: 0 })
-    const gate = getState().addGate('NAND', { x: 4, y: 0, z: 0 })
+    const gate = getState().addGate('Nand', { x: 4, y: 0, z: 0 })
     const outputNode = getState().addOutputNode('out', { x: 8, y: 0, z: 0 })
 
     getState().addWire(
@@ -375,8 +375,8 @@ describe('evaluateCircuit', () => {
     // NOT(1)=0, AND(0,1)=0
     const inputA = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
     const inputB = getState().addInputNode('b', { x: 0, y: 2, z: 0 })
-    const notGate = getState().addGate('NOT', { x: 4, y: 0, z: 0 })
-    const andGate = getState().addGate('AND', { x: 8, y: 0, z: 0 })
+    const notGate = getState().addGate('Not', { x: 4, y: 0, z: 0 })
+    const andGate = getState().addGate('And', { x: 8, y: 0, z: 0 })
     const outputNode = getState().addOutputNode('out', { x: 12, y: 0, z: 0 })
 
     // inputA → NOT
@@ -419,9 +419,9 @@ describe('evaluateCircuit', () => {
     const inputA = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
     const inputB = getState().addInputNode('b', { x: 0, y: 2, z: 0 })
     const inputC = getState().addInputNode('c', { x: 0, y: 4, z: 0 })
-    const notGate = getState().addGate('NOT', { x: 4, y: 0, z: 0 })
-    const andGate = getState().addGate('AND', { x: 8, y: 0, z: 0 })
-    const orGate = getState().addGate('OR', { x: 12, y: 0, z: 0 })
+    const notGate = getState().addGate('Not', { x: 4, y: 0, z: 0 })
+    const andGate = getState().addGate('And', { x: 8, y: 0, z: 0 })
+    const orGate = getState().addGate('Or', { x: 12, y: 0, z: 0 })
     const outputNode = getState().addOutputNode('out', { x: 16, y: 0, z: 0 })
 
     // inputA → NOT
@@ -474,8 +474,8 @@ describe('evaluateCircuit', () => {
 
   it('fan-out: one input drives two NOT gates', () => {
     const inputNode = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
-    const gate1 = getState().addGate('NOT', { x: 4, y: 0, z: -2 })
-    const gate2 = getState().addGate('NOT', { x: 4, y: 0, z: 2 })
+    const gate1 = getState().addGate('Not', { x: 4, y: 0, z: -2 })
+    const gate2 = getState().addGate('Not', { x: 4, y: 0, z: 2 })
 
     getState().addWire(
       { type: 'input', entityId: inputNode.id },
@@ -498,7 +498,7 @@ describe('evaluateCircuit', () => {
   it('fan-in: two inputs drive one AND gate', () => {
     const inputA = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
     const inputB = getState().addInputNode('b', { x: 0, y: 2, z: 0 })
-    const gate = getState().addGate('AND', { x: 4, y: 0, z: 0 })
+    const gate = getState().addGate('And', { x: 4, y: 0, z: 0 })
 
     getState().addWire(
       { type: 'input', entityId: inputA.id },
@@ -520,9 +520,9 @@ describe('evaluateCircuit', () => {
 
   it('diamond: A→NOT1, A→NOT2, NOT1→AND.in0, NOT2→AND.in1', () => {
     const inputNode = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
-    const not1 = getState().addGate('NOT', { x: 4, y: 0, z: -2 })
-    const not2 = getState().addGate('NOT', { x: 4, y: 0, z: 2 })
-    const andGate = getState().addGate('AND', { x: 8, y: 0, z: 0 })
+    const not1 = getState().addGate('Not', { x: 4, y: 0, z: -2 })
+    const not2 = getState().addGate('Not', { x: 4, y: 0, z: 2 })
+    const andGate = getState().addGate('And', { x: 8, y: 0, z: 0 })
     const outputNode = getState().addOutputNode('out', { x: 12, y: 0, z: 0 })
 
     getState().addWire(
@@ -562,7 +562,7 @@ describe('evaluateCircuit', () => {
   })
 
   it('propagates to output nodes via wires', () => {
-    const gate = getState().addGate('NOT', { x: 0, y: 0, z: 0 })
+    const gate = getState().addGate('Not', { x: 0, y: 0, z: 0 })
     const outputNode = getState().addOutputNode('out', { x: 4, y: 0, z: 0 })
 
     getState().addWire(
@@ -578,8 +578,8 @@ describe('evaluateCircuit', () => {
   })
 
   it('does not modify state on cycle detection', () => {
-    const gateA = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-    const gateB = getState().addGate('NAND', { x: 4, y: 0, z: 0 })
+    const gateA = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+    const gateB = getState().addGate('Nand', { x: 4, y: 0, z: 0 })
 
     getState().addWire(
       { type: 'gate', entityId: gateA.id, pinId: gateA.outputs[0].id },
@@ -604,7 +604,7 @@ describe('evaluateCircuit', () => {
   })
 
   it('returns status ok when evaluation succeeds', () => {
-    getState().addGate('NOT', { x: 0, y: 0, z: 0 })
+    getState().addGate('Not', { x: 0, y: 0, z: 0 })
     let outcome: EvaluateCircuitResult | undefined
     useCircuitStore.setState((state) => {
       outcome = evaluateCircuit(state)
@@ -613,8 +613,8 @@ describe('evaluateCircuit', () => {
   })
 
   it('returns status cycle when graph has combinational feedback', () => {
-    const gateA = getState().addGate('NAND', { x: 0, y: 0, z: 0 })
-    const gateB = getState().addGate('NAND', { x: 4, y: 0, z: 0 })
+    const gateA = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+    const gateB = getState().addGate('Nand', { x: 4, y: 0, z: 0 })
     getState().addWire(
       { type: 'gate', entityId: gateA.id, pinId: gateA.outputs[0].id },
       { type: 'gate', entityId: gateB.id, pinId: gateB.inputs[0].id },
@@ -643,7 +643,7 @@ describe('evaluateCircuit', () => {
   })
 
   it('handles circuit with no wires (isolated gates)', () => {
-    getState().addGate('NAND', { x: 0, y: 0, z: 0 })
+    getState().addGate('Nand', { x: 0, y: 0, z: 0 })
 
     useCircuitStore.setState((state) => { evaluateCircuit(state) })
 
@@ -664,8 +664,8 @@ describe('evaluateCircuit', () => {
   it('junction fan-out: input→junction→gate1, junction→gate2', () => {
     const inputNode = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
     const junction = getState().addJunction('sig-a', { x: 2, y: 0, z: 0 })
-    const gate1 = getState().addGate('NOT', { x: 4, y: 0, z: -2 })
-    const gate2 = getState().addGate('NOT', { x: 4, y: 0, z: 2 })
+    const gate1 = getState().addGate('Not', { x: 4, y: 0, z: -2 })
+    const gate2 = getState().addGate('Not', { x: 4, y: 0, z: 2 })
 
     // Original wire: input → gate1 (junction sits on it)
     const wire1 = getState().addWire(
@@ -723,7 +723,7 @@ describe('multi-bit propagation', () => {
 
   it('widens a default-width-1 gate to match a wide source instead of clamping (P05-13)', () => {
     const input = getState().addInputNode('in', { x: 0, y: 0, z: 0 }, 16)
-    const gate = getState().addGate('NOT', { x: 4, y: 0, z: 0 })
+    const gate = getState().addGate('Not', { x: 4, y: 0, z: 0 })
     getState().updateInputNodeValue(input.id, 0x0002)
     getState().addWire(
       { type: 'input', entityId: input.id },
@@ -756,10 +756,18 @@ describe('multi-bit propagation', () => {
 })
 
 describe('multi-bit gates', () => {
-  it('NOT gate at width 4: 0b0111 input → 0b1000 output node', () => {
-    const inNode = getState().addInputNode('in', { x: 0, y: 0, z: 0 }, 4)
-    const not = getState().addGate('NOT', { x: 4, y: 0, z: 0 }, 4)
-    const outNode = getState().addOutputNode('out', { x: 8, y: 0, z: 0 }, 4)
+  // Phase 4 contract: primitive chips have fixed pin widths from the chip
+  // registry. The legacy "Not at width 4" tests broadcasted the gate-level
+  // `width` parameter to pin widths; that behavior was removed (see plan
+  // note in
+  // docs/plans/2026-05-24-builtin-chip-placement-standardization.md).
+  // Multi-bit semantics now live in dedicated 16-bit chips (`Not16`,
+  // `And16`, …) and are exercised here.
+
+  it('Not16: 0x0007 input → 0xFFF8 output node', () => {
+    const inNode = getState().addInputNode('in', { x: 0, y: 0, z: 0 }, 16)
+    const not = getState().addGate('Not16', { x: 4, y: 0, z: 0 })
+    const outNode = getState().addOutputNode('out', { x: 8, y: 0, z: 0 }, 16)
     getState().addWire(
       { type: 'input', entityId: inNode.id },
       { type: 'gate', entityId: not.id, pinId: not.inputs[0].id },
@@ -770,37 +778,38 @@ describe('multi-bit gates', () => {
       { type: 'output', entityId: outNode.id },
       []
     )
-    getState().updateInputNodeValue(inNode.id, 0b0111)
+    getState().updateInputNodeValue(inNode.id, 0x0007)
 
     useCircuitStore.setState((state) => { evaluateCircuit(state) })
 
-    expect(getState().outputNodes.find((n) => n.id === outNode.id)?.value).toBe(0b1000)
+    expect(getState().outputNodes.find((n) => n.id === outNode.id)?.value).toBe(0xFFF8)
   })
 
-  it('AND gate at width 8: 0xF0 & 0x0F = 0x00', () => {
-    const a = getState().addInputNode('a', { x: 0, y: 0, z: 0 }, 8)
-    const b = getState().addInputNode('b', { x: 0, y: 0, z: 4 }, 8)
-    const g = getState().addGate('AND', { x: 4, y: 0, z: 0 }, 8)
-    const o = getState().addOutputNode('o', { x: 8, y: 0, z: 0 }, 8)
+  it('And16: 0xF0F0 & 0x0F0F = 0x0000', () => {
+    const a = getState().addInputNode('a', { x: 0, y: 0, z: 0 }, 16)
+    const b = getState().addInputNode('b', { x: 0, y: 0, z: 4 }, 16)
+    const g = getState().addGate('And16', { x: 4, y: 0, z: 0 })
+    const o = getState().addOutputNode('o', { x: 8, y: 0, z: 0 }, 16)
     getState().addWire({ type: 'input', entityId: a.id }, { type: 'gate', entityId: g.id, pinId: g.inputs[0].id }, [])
     getState().addWire({ type: 'input', entityId: b.id }, { type: 'gate', entityId: g.id, pinId: g.inputs[1].id }, [])
     getState().addWire({ type: 'gate', entityId: g.id, pinId: g.outputs[0].id }, { type: 'output', entityId: o.id }, [])
-    getState().updateInputNodeValue(a.id, 0xF0)
-    getState().updateInputNodeValue(b.id, 0x0F)
+    getState().updateInputNodeValue(a.id, 0xF0F0)
+    getState().updateInputNodeValue(b.id, 0x0F0F)
 
     useCircuitStore.setState((state) => { evaluateCircuit(state) })
 
-    expect(getState().outputNodes.find((n) => n.id === o.id)?.value).toBe(0x00)
+    expect(getState().outputNodes.find((n) => n.id === o.id)?.value).toBe(0x0000)
   })
 
   // User-reported (2026-05-22): width was set on the input node AFTER wiring.
-  // The connected wire/gate/output remained at the default width of 1, so the
-  // NOT gate only inverted the LSB and the output reported 0 instead of the
-  // expected 0b0100. Width cascade from updateInputNodeWidth fixes it.
-  it('width set on input node AFTER wiring: NOT at 4 bits flips all bits', () => {
+  // The cascade from `updateInputNodeWidth` to wire widths is the regression
+  // guard. We now route through `Not16` (fixed-16) so the gate's input pin
+  // width is always 16; the assertion verifies the wire-side cascade still
+  // delivers the full multi-bit value to the gate.
+  it('width set on input node AFTER wiring: wire cascade still feeds Not16', () => {
     const inNode = getState().addInputNode('in', { x: 0, y: 0, z: 0 }, 1)
-    const not = getState().addGate('NOT', { x: 4, y: 0, z: 0 })
-    const outNode = getState().addOutputNode('out', { x: 8, y: 0, z: 0 }, 1)
+    const not = getState().addGate('Not16', { x: 4, y: 0, z: 0 })
+    const outNode = getState().addOutputNode('out', { x: 8, y: 0, z: 0 }, 16)
     getState().addWire(
       { type: 'input', entityId: inNode.id },
       { type: 'gate', entityId: not.id, pinId: not.inputs[0].id },
@@ -812,11 +821,11 @@ describe('multi-bit gates', () => {
       []
     )
 
-    getState().updateInputNodeWidth(inNode.id, 4)
-    getState().updateInputNodeValue(inNode.id, 0b1011)
+    getState().updateInputNodeWidth(inNode.id, 16)
+    getState().updateInputNodeValue(inNode.id, 0x000B)
 
     useCircuitStore.setState((state) => { evaluateCircuit(state) })
 
-    expect(getState().outputNodes.find((n) => n.id === outNode.id)?.value).toBe(0b0100)
+    expect(getState().outputNodes.find((n) => n.id === outNode.id)?.value).toBe(0xFFF4)
   })
 })

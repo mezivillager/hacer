@@ -43,7 +43,7 @@ describe('CanvasArea', () => {
   // Test that ownership belongs in HelpBar/index.test.tsx and useHelpText.test.ts.
 
   it('applies placing class when in placement mode', () => {
-    actualSetState({ placementMode: 'NAND' })
+    actualSetState({ placementMode: 'Nand' })
     const { container } = render(<CanvasArea />)
     const content = container.querySelector('.app-content')
     expect(content?.className).toContain('placing')

@@ -5,7 +5,7 @@ export type SelectedElement =
   | {
       kind: 'gate'
       id: string
-      gateType: GateInstance['type']
+      gateType: GateInstance['chipName']
       name: string
       position: GateInstance['position']
       rotation: GateInstance['rotation']
@@ -42,8 +42,8 @@ export function useSelectedElement(): SelectedElement | null {
       return {
         kind: 'gate',
         id: g.id,
-        gateType: g.type,
-        name: `${g.type}_${g.id.slice(0, 4)}`,
+        gateType: g.chipName,
+        name: `${g.chipName}_${g.id.slice(0, 4)}`,
         position: g.position,
         rotation: g.rotation,
       }

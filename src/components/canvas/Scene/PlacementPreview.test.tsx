@@ -22,7 +22,7 @@ describe('PlacementPreview', () => {
   })
 
   it('returns null when placementMode is set but no preview position', () => {
-    setState({ placementMode: 'NAND' })
+    setState({ placementMode: 'Nand' })
     const { container } = render(<PlacementPreview />)
     expect(container.firstChild).toBeNull()
   })
@@ -35,7 +35,7 @@ describe('PlacementPreview', () => {
 
   it('renders when placementMode and previewPosition are set', () => {
     setState({
-      placementMode: 'NAND',
+      placementMode: 'Nand',
       placementPreviewPosition: { x: 2, y: 0, z: 2 },
     })
     const { container } = render(<PlacementPreview />)
@@ -54,12 +54,12 @@ describe('PlacementPreview', () => {
 
   it('returns null when position conflicts with existing gate', () => {
     setState({
-      placementMode: 'NAND',
+      placementMode: 'Nand',
       placementPreviewPosition: { x: 0, y: 0, z: 0 },
       gates: [
         {
           id: 'existing-gate',
-          type: 'AND',
+          chipName: 'And',
           position: { x: 0, y: 0, z: 0 },
           rotation: { x: 0, y: 0, z: 0 },
           inputs: [],
@@ -75,7 +75,7 @@ describe('PlacementPreview', () => {
 
   it('renders preview rings and box geometry', () => {
     setState({
-      placementMode: 'NAND',
+      placementMode: 'Nand',
       placementPreviewPosition: { x: 6, y: 0, z: 6 },
     })
     const { container } = render(<PlacementPreview />)
@@ -92,7 +92,7 @@ describe('PlacementPreview', () => {
       gates: [
         {
           id: 'dragged-gate',
-          type: 'AND',
+          chipName: 'And',
           position: { x: 2, y: 0, z: 2 },
           rotation: { x: 0, y: 0, z: 0 },
           inputs: [],

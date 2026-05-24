@@ -10,7 +10,7 @@ test.describe('RightActionBar Info drawer @ui @ui-shell', () => {
     await expect(page.locator(UI_SELECTORS.infoPanel.gatesCount)).toContainText('0')
 
     // Add a gate via store and verify the count updates while drawer is open
-    await addGateViaStore(page, 'AND', { x: 1, y: 0.2, z: 1 })
+    await addGateViaStore(page, 'And', { x: 1, y: 0.2, z: 1 })
     await expect(page.locator(UI_SELECTORS.infoPanel.gatesCount)).toContainText('1')
 
     await closeInfoDrawer(page)

@@ -1,5 +1,6 @@
-import { gateLogic } from './gateLogic'
 import { clampToWidth } from './busOps'
+import { getBuiltinChipRegistry, getUserChipRegistry } from '@/core/chips/appRegistry'
+import { isBuiltinChip } from '@/core/chips/types'
 import type { CircuitState, Wire, WireEndpoint } from '@/store/types'
 
 /**
@@ -233,12 +234,24 @@ export function evaluateCircuit(state: CircuitState): EvaluateCircuitResult {
       }
     }
 
-    const inputValues = gate.inputs.map((p) => p.value)
-    const logic = gateLogic[gate.type]
-    if (logic) {
-      const outputValue = logic(inputValues, gate.width)
-      for (const output of gate.outputs) {
-        output.value = outputValue
+    const chip =
+      getBuiltinChipRegistry().get(gate.chipName) ??
+      getUserChipRegistry().get(gate.chipName)
+    if (!chip || !isBuiltinChip(chip)) {
+      // Unknown or non-builtin chip — skip evaluation. User/HDL chips will
+      // route through evaluateChip() in a later ticket (P05-18).
+      continue
+    }
+
+    const inputsByName: Record<string, number> = {}
+    for (const inputPin of gate.inputs) {
+      inputsByName[inputPin.name] = inputPin.value
+    }
+    const outputs = chip.implementation.evaluate(inputsByName)
+    for (const outputPin of gate.outputs) {
+      const newValue = outputs[outputPin.name]
+      if (typeof newValue === 'number') {
+        outputPin.value = clampToWidth(newValue, outputPin.width ?? 1)
       }
     }
   }

@@ -42,7 +42,7 @@ describe('Node Placement Actions', () => {
     })
 
     it('clears gate placementMode when starting node placement', () => {
-      useCircuitStore.setState({ placementMode: 'NAND' })
+      useCircuitStore.setState({ placementMode: 'Nand' })
       const { startNodePlacement } = useCircuitStore.getState()
       startNodePlacement('INPUT')
       expect(useCircuitStore.getState().placementMode).toBe(null)

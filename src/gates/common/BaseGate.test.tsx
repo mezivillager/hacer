@@ -89,7 +89,7 @@ describe('BaseGate', () => {
     ] as PinConfig[],
     wireStubPositions: [[-0.75, 0.2, 0], [0.75, 0, 0]] as [number, number, number][],
     bodyGeometry: <boxGeometry args={[1, 0.8, 0.4]} />,
-    textLabel: 'AND',
+    textLabel: 'And',
   }
 
   beforeEach(() => {
@@ -103,16 +103,16 @@ describe('BaseGate', () => {
   })
 
   it('renders text label when provided', () => {
-    const { getByTestId } = render(<BaseGate {...defaultProps} textLabel="AND" />)
-    expect(getByTestId('gate-html')).toHaveTextContent('AND')
+    const { getByTestId } = render(<BaseGate {...defaultProps} textLabel="And" />)
+    expect(getByTestId('gate-html')).toHaveTextContent('And')
   })
 
   it('renders the same DOM-overlay label in low-power mode (style is uniform across modes)', () => {
     useCircuitStore.getState().performanceMode = 'low-power'
 
-    const { getByTestId } = render(<BaseGate {...defaultProps} textLabel="AND" />)
+    const { getByTestId } = render(<BaseGate {...defaultProps} textLabel="And" />)
 
-    expect(getByTestId('gate-html')).toHaveTextContent('AND')
+    expect(getByTestId('gate-html')).toHaveTextContent('And')
   })
 
   it('renders additional elements when provided', () => {

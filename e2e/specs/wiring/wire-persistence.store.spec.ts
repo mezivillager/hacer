@@ -16,8 +16,8 @@ import { expectWireCount } from '../../helpers/assertions'
 test.describe('Wire Persistence @store @wiring', () => {
   test.describe('Gate Movement', () => {
     test('wire persists when gate moves', async ({ page }) => {
-      const gate1 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.left)
-      const gate2 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.right)
+      const gate1 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.left)
+      const gate2 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.right)
       await ensureGates(page, 2)
 
       if (!gate1 || !gate2) {
@@ -61,8 +61,8 @@ test.describe('Wire Persistence @store @wiring', () => {
     })
 
     test('wire persists when source gate moves', async ({ page }) => {
-      const gate1 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.left)
-      const gate2 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.right)
+      const gate1 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.left)
+      const gate2 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.right)
       await ensureGates(page, 2)
 
       if (!gate1 || !gate2) {
@@ -108,8 +108,8 @@ test.describe('Wire Persistence @store @wiring', () => {
 
   test.describe('Gate Rotation', () => {
     test('wire persists when gate rotates', async ({ page }) => {
-      const gate1 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.left)
-      const gate2 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.right)
+      const gate1 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.left)
+      const gate2 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.right)
       await ensureGates(page, 2)
 
       if (!gate1 || !gate2) {
@@ -146,8 +146,8 @@ test.describe('Wire Persistence @store @wiring', () => {
     })
 
     test('wire persists when source gate rotates', async ({ page }) => {
-      const gate1 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.left)
-      const gate2 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.right)
+      const gate1 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.left)
+      const gate2 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.right)
       await ensureGates(page, 2)
 
       if (!gate1 || !gate2) {
@@ -190,8 +190,8 @@ test.describe('Wire Persistence @store @wiring', () => {
   test.describe('Multiple Wire Persistence', () => {
     test('all wires persist when gate rotates', async ({ page }) => {
       // Create 2 gates and wire them
-      const gate1 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.left)
-      const gate2 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.right)
+      const gate1 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.left)
+      const gate2 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.right)
       await ensureGates(page, 2)
 
       if (!gate1 || !gate2) {

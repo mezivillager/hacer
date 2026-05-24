@@ -25,7 +25,7 @@ describe('CircuitLibrary', () => {
   })
 
   it('saves the current circuit when the user submits a name', () => {
-    circuitActions.addGate('NAND', { x: 0, y: 0, z: 0 })
+    circuitActions.addGate('Nand', { x: 0, y: 0, z: 0 })
     render(<CircuitLibrary />)
     fireEvent.change(screen.getByTestId('library-name-input'), { target: { value: 'my-circuit' } })
     fireEvent.click(screen.getByTestId('library-save'))
@@ -34,7 +34,7 @@ describe('CircuitLibrary', () => {
   })
 
   it('loads a saved circuit when the user clicks the row Load button', () => {
-    circuitActions.addGate('NAND', { x: 0, y: 0, z: 0 })
+    circuitActions.addGate('Nand', { x: 0, y: 0, z: 0 })
     circuitActions.saveCircuit('one')
     circuitActions.clearCircuit()
     render(<CircuitLibrary />)
@@ -51,7 +51,7 @@ describe('CircuitLibrary', () => {
   })
 
   it('triggers export when the Export button is clicked', () => {
-    circuitActions.addGate('NAND', { x: 0, y: 0, z: 0 })
+    circuitActions.addGate('Nand', { x: 0, y: 0, z: 0 })
     render(<CircuitLibrary />)
     fireEvent.change(screen.getByTestId('library-name-input'), { target: { value: 'demo' } })
     vi.useFakeTimers()
@@ -88,7 +88,8 @@ describe('CircuitLibrary', () => {
       gates: [
         {
           id: 'gate-imp-1',
-          type: 'NAND',
+          // SerializedGate keeps `type` on disk; Phase 5 will migrate.
+          type: 'Nand',
           position: { x: 0, y: 0, z: 0 },
           rotation: { x: Math.PI / 2, y: 0, z: 0 },
           width: 1,

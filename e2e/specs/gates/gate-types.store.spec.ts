@@ -153,7 +153,7 @@ test.describe('Gate Types @store @gates', () => {
     test('can delete a gate', async ({ page }) => {
       const gate = await addGateViaStore(
         page,
-        'NAND',
+        'Nand',
         DEFAULT_POSITIONS.center
       )
       await expectGateCount(page, 1)
@@ -178,8 +178,8 @@ test.describe('Gate Types @store @gates', () => {
     })
 
     test('can clear all gates', async ({ page }) => {
-      await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.left)
-      await addGateViaStore(page, 'AND', DEFAULT_POSITIONS.right)
+      await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.left)
+      await addGateViaStore(page, 'And', DEFAULT_POSITIONS.right)
       await expectGateCount(page, 2)
 
       await clearAllViaStore(page)

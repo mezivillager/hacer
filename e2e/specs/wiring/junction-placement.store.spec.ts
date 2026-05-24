@@ -21,7 +21,7 @@ const DEFAULT_POSITIONS = {
 test.describe('Junction Placement @store @wiring @junctions', () => {
   test('places junction on wire', async ({ page }) => {
     // Add a gate
-    const gate = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.center)
+    const gate = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.center)
     await ensureGates(page, 1)
 
     if (!gate) {
@@ -93,9 +93,9 @@ test.describe('Junction Placement @store @wiring @junctions', () => {
 
   test('wires from junction to create branch', async ({ page }) => {
     // Add gates
-    const gate1 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.center)
-    const gate2 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.right)
-    const gate3 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.farRight)
+    const gate1 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.center)
+    const gate2 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.right)
+    const gate3 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.farRight)
 
     await ensureGates(page, 3)
 
@@ -214,9 +214,9 @@ test.describe('Junction Placement @store @wiring @junctions', () => {
 
   test('removes junction when only one wire remains', async ({ page }) => {
     // Add gates
-    const gate1 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.center)
-    const gate2 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.right)
-    const gate3 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.farRight)
+    const gate1 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.center)
+    const gate2 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.right)
+    const gate3 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.farRight)
 
     if (!gate1 || !gate2 || !gate3) {
       throw new Error('Failed to create gates')
@@ -325,8 +325,8 @@ test.describe('Junction Placement @store @wiring @junctions', () => {
 
   test('rejects junction placement when not at corner', async ({ page }) => {
     // Add gates
-    const gate1 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.center)
-    const gate2 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.farRight)
+    const gate1 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.center)
+    const gate2 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.farRight)
 
     await ensureGates(page, 2)
 
@@ -398,10 +398,10 @@ test.describe('Junction Placement @store @wiring @junctions', () => {
 
   test('creates multiple branches from same junction', async ({ page }) => {
     // Add gates
-    const gate1 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.center)
-    const gate2 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.right)
-    const gate3 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.farRight)
-    const gate4 = await addGateViaStore(page, 'NAND', { x: 12, y: 0, z: 4 })
+    const gate1 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.center)
+    const gate2 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.right)
+    const gate3 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.farRight)
+    const gate4 = await addGateViaStore(page, 'Nand', { x: 12, y: 0, z: 4 })
 
     await ensureGates(page, 4)
 
@@ -543,10 +543,10 @@ test.describe('Junction Placement @store @wiring @junctions', () => {
 
   test('handles nested junctions (junction on branch wire)', async ({ page }) => {
     // Add gates
-    const gate1 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.center)
-    const gate2 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.right)
-    const gate3 = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.farRight)
-    const gate4 = await addGateViaStore(page, 'NAND', { x: 12, y: 0, z: 4 })
+    const gate1 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.center)
+    const gate2 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.right)
+    const gate3 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.farRight)
+    const gate4 = await addGateViaStore(page, 'Nand', { x: 12, y: 0, z: 4 })
 
     await ensureGates(page, 4)
 

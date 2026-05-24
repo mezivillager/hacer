@@ -26,7 +26,7 @@ import {
 test.describe.skip('Simulation Control @ui @simulation', () => {
   test('can start and stop simulation via UI', async ({ page }) => {
     await addGateViaUI(page, {
-      type: 'NAND',
+      chipName: 'Nand',
       position: DEFAULT_POSITIONS.center,
     })
     await ensureGates(page, 1)
@@ -53,7 +53,7 @@ test.describe.skip('Simulation Control @ui @simulation', () => {
     for (const gateType of ALL_GATE_TYPES) {
       test(`can run simulation with ${gateType} gate`, async ({ page }) => {
         await addGateViaUI(page, {
-          type: gateType,
+          chipName: gateType,
           position: DEFAULT_POSITIONS.center,
         })
         await ensureGates(page, 1)

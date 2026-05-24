@@ -20,8 +20,8 @@ const wrap = () =>
     </TooltipProvider>,
   )
 
-function placeGateAt(type: 'NAND' | 'AND' | 'OR' | 'NOT' | 'NOR' | 'XOR' | 'XNOR', x: number, z: number) {
-  circuitActions.startPlacement(type)
+function placeGateAt(chipName: 'Nand' | 'And' | 'Or' | 'Not' | 'Xor', x: number, z: number) {
+  circuitActions.startPlacement(chipName)
   circuitActions.placeGate({ x, y: 0.2, z })
 }
 
@@ -37,11 +37,11 @@ describe('CompactToolbar', () => {
   })
 
   describe('Gates popover', () => {
-    it('renders all 7 HACER gate types when popover opens', async () => {
+    it('renders the 5 Project 1 elementary gates when popover opens', async () => {
       const user = userEvent.setup()
       wrap()
       await user.click(screen.getByTestId('toolbar-gates-trigger'))
-      for (const type of ['NAND', 'AND', 'OR', 'NOT', 'NOR', 'XOR', 'XNOR']) {
+      for (const type of ['Nand', 'And', 'Or', 'Not', 'Xor']) {
         expect(screen.getByTestId(`gate-button-${type}`)).toBeInTheDocument()
       }
     })
@@ -50,17 +50,17 @@ describe('CompactToolbar', () => {
       const user = userEvent.setup()
       wrap()
       await user.click(screen.getByTestId('toolbar-gates-trigger'))
-      await user.click(screen.getByTestId('gate-button-AND'))
-      expect(useCircuitStore.getState().placementMode).toBe('AND')
+      await user.click(screen.getByTestId('gate-button-And'))
+      expect(useCircuitStore.getState().placementMode).toBe('And')
     })
 
     it('clicking the same gate again clears placementMode (toggle)', async () => {
       const user = userEvent.setup()
       wrap()
       await user.click(screen.getByTestId('toolbar-gates-trigger'))
-      await user.click(screen.getByTestId('gate-button-AND'))
+      await user.click(screen.getByTestId('gate-button-And'))
       await user.click(screen.getByTestId('toolbar-gates-trigger'))
-      await user.click(screen.getByTestId('gate-button-AND'))
+      await user.click(screen.getByTestId('gate-button-And'))
       expect(useCircuitStore.getState().placementMode).toBeNull()
     })
   })
@@ -121,7 +121,7 @@ describe('CompactToolbar', () => {
 
     it('toggles propertiesPanelOpen state when clicked with selection', async () => {
       const user = userEvent.setup()
-      placeGateAt('AND', 1, 1)
+      placeGateAt('And', 1, 1)
       const id = useCircuitStore.getState().gates[0].id
       circuitActions.selectGate(id)
       wrap()
@@ -133,7 +133,7 @@ describe('CompactToolbar', () => {
     })
 
     it('reflects open state via aria-pressed', () => {
-      placeGateAt('AND', 1, 1)
+      placeGateAt('And', 1, 1)
       const id = useCircuitStore.getState().gates[0].id
       circuitActions.selectGate(id)
       circuitActions.openPropertiesPanel()
@@ -152,7 +152,7 @@ describe('CompactToolbar', () => {
 
     it('removes the selected gate', async () => {
       const user = userEvent.setup()
-      placeGateAt('AND', 1, 1)
+      placeGateAt('And', 1, 1)
       const id = useCircuitStore.getState().gates[0].id
       circuitActions.selectGate(id)
       wrap()
@@ -169,7 +169,7 @@ describe('CompactToolbar', () => {
 
     it('clears the circuit when gates exist', async () => {
       const user = userEvent.setup()
-      placeGateAt('AND', 1, 1)
+      placeGateAt('And', 1, 1)
       wrap()
       await user.click(screen.getByTestId('toolbar-clear-all'))
       expect(useCircuitStore.getState().gates).toHaveLength(0)

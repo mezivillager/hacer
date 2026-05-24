@@ -8,7 +8,6 @@
  */
 
 import type {
-  GateType,
   WiringState,
   NodeType,
   PerformanceMode,
@@ -23,7 +22,8 @@ export interface SceneHelpers {
 
 export interface CircuitStoreGate {
   id: string
-  type: string
+  /** Registered chip name (e.g. 'Nand', 'Mux16'). */
+  chipName: string
   position: { x: number; y: number; z: number }
   rotation?: { x: number; y: number; z: number }
   inputs: Array<{ id: string; value: number }>
@@ -93,7 +93,7 @@ export interface CircuitStoreSnapshot {
   outputNodes?: CircuitStoreOutputNode[]
   simulationRunning?: boolean
   selectedGateId?: string | null
-  placementMode?: GateType | null
+  placementMode?: string | null
   wiringFrom?: WiringState | null
   statusMessages?: CircuitStoreStatusMessage[]
   /** Present when the last simulation tick hit a combinational cycle */
@@ -107,7 +107,7 @@ export interface CircuitStoreSnapshot {
 
 export interface CircuitActionsAPI {
   addGate: (
-    type: GateType,
+    chipName: string,
     position: { x: number; y: number; z: number }
   ) => { id: string; inputs: Array<{ id: string }>; outputs: Array<{ id: string }> }
   // Unified wire API using WireEndpoint format
@@ -133,7 +133,7 @@ export interface CircuitActionsAPI {
   updateGatePosition: (gateId: string, position: { x: number; y: number; z: number }) => void
   removeWire: (wireId: string) => void
   // Placement actions
-  startPlacement: (type: GateType) => void
+  startPlacement: (chipName: string) => void
   cancelPlacement: () => void
   placeGate: (position: { x: number; y: number; z: number }) => void
   // Wiring actions

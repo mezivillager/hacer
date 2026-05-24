@@ -50,9 +50,9 @@ test.describe('Gate Placement @store @gates', () => {
 
     test('gate position is preserved at grid coordinates', async ({ page }) => {
       // Place gates at different positions (don't clear between, just verify positions)
-      await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.left)
-      await addGateViaStore(page, 'AND', DEFAULT_POSITIONS.right)
-      await addGateViaStore(page, 'OR', DEFAULT_POSITIONS.top)
+      await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.left)
+      await addGateViaStore(page, 'And', DEFAULT_POSITIONS.right)
+      await addGateViaStore(page, 'Or', DEFAULT_POSITIONS.top)
       await ensureGates(page, 3)
 
       const positions = await page.evaluate((): Array<{
@@ -150,7 +150,7 @@ test.describe('Gate Placement @store @gates', () => {
   test.describe('Grid Position Validation', () => {
     test('gates placed at odd grid coordinates are valid', async ({ page }) => {
       // All DEFAULT_POSITIONS use odd coordinates (section interiors)
-      const gate = await addGateViaStore(page, 'NAND', DEFAULT_POSITIONS.center)
+      const gate = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.center)
       await ensureGates(page, 1)
 
       expect(gate).not.toBeNull()

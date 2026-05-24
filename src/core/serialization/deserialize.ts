@@ -1,5 +1,5 @@
 import { createGateInstance } from '@/store/actions/gateActions/gateActions'
-import type { GateInstance, GateType, InputNode, JunctionNode, OutputNode, Pin, Wire } from '@/store/types'
+import type { GateInstance, InputNode, JunctionNode, OutputNode, Pin, Wire } from '@/store/types'
 import type { WireSegment } from '@/utils/wiringScheme/types'
 import {
   CIRCUIT_FORMAT_VERSION,
@@ -23,7 +23,11 @@ export interface DeserializedCircuit {
 const cloneVec3 = (v: { x: number; y: number; z: number }) => ({ x: v.x, y: v.y, z: v.z })
 
 function reconstructGate(s: SerializedGate): GateInstance {
-  const tmpl = createGateInstance(s.type as GateType, cloneVec3(s.position), s.width)
+  // Phase 4 reads `s.type` as a chip name string. Legacy uppercase names
+  // (`'NAND'`, …) and unsupported types (`'NOR'`, `'XNOR'`) are migrated by
+  // a follow-up phase (P05-15 / persistence migration); for now we trust the
+  // field, and `createGateInstance` will throw for unknown chip names.
+  const tmpl = createGateInstance(s.type, cloneVec3(s.position), s.width)
   const inputs: Pin[] = tmpl.inputs.map((p, i) => ({
     ...p,
     id: `${s.id}-in-${i}`,
@@ -38,7 +42,7 @@ function reconstructGate(s: SerializedGate): GateInstance {
   }))
   return {
     id: s.id,
-    type: s.type as GateType,
+    chipName: s.type,
     position: cloneVec3(s.position),
     rotation: cloneVec3(s.rotation),
     inputs,

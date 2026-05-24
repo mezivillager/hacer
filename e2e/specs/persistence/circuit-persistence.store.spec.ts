@@ -18,7 +18,7 @@ test.describe('Circuit persistence @store @persistence', () => {
       if (!actions) throw new Error('circuitActions not available')
       const input = actions.addInputNode('a', { x: -4, y: 0, z: 0 })
       const output = actions.addOutputNode('out', { x: 4, y: 0, z: 0 })
-      const nand = actions.addGate('NAND', { x: 0, y: 0, z: 0 })
+      const nand = actions.addGate('Nand', { x: 0, y: 0, z: 0 })
       actions.addWire(
         { type: 'input', entityId: input.id },
         { type: 'gate', entityId: nand.id, pinId: `${nand.id}-in-0` },
@@ -70,7 +70,7 @@ test.describe('Circuit persistence @store @persistence', () => {
     const exported = await page.evaluate(() => {
       const actions = window.__CIRCUIT_ACTIONS__
       if (!actions) throw new Error('actions missing')
-      actions.addGate('NAND', { x: 0, y: 0, z: 0 })
+      actions.addGate('Nand', { x: 0, y: 0, z: 0 })
       actions.saveCircuit('export-source')
       const raw = localStorage.getItem('hacer-circuit-export-source')
       if (!raw) throw new Error('expected localStorage entry to exist')
@@ -92,9 +92,9 @@ test.describe('Circuit persistence @store @persistence', () => {
   test('listSavedCircuits returns saved circuits and excludes the autosave slot', async ({ page }) => {
     await page.evaluate(() => {
       const actions = window.__CIRCUIT_ACTIONS__!
-      actions.addGate('NAND', { x: 0, y: 0, z: 0 })
+      actions.addGate('Nand', { x: 0, y: 0, z: 0 })
       actions.saveCircuit('alpha')
-      actions.addGate('AND', { x: 4, y: 0, z: 0 })
+      actions.addGate('And', { x: 4, y: 0, z: 0 })
       actions.saveCircuit('beta')
     })
 
