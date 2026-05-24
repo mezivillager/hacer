@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { TooltipProvider } from '@/components/ui-kit/tooltip'
@@ -115,5 +115,20 @@ describe('RightActionBar', () => {
     expect(screen.queryByTestId('pinout-panel')).not.toBeInTheDocument()
     const drawer = screen.getByTestId('right-bar-drawer')
     expect(drawer.querySelectorAll('[data-slot="separator"]')).toHaveLength(0)
+  })
+
+  it('info quick import opens its own file input when the library panel is closed', async () => {
+    const user = userEvent.setup()
+    wrap()
+    await user.click(screen.getByTestId('right-bar-info-trigger'))
+
+    expect(screen.queryByTestId('library-import-input')).not.toBeInTheDocument()
+    const input = await screen.findByTestId('info-import-input')
+    const click = vi.spyOn(input, 'click').mockImplementation(() => undefined)
+
+    await user.click(screen.getByTestId('info-quick-import'))
+
+    expect(click).toHaveBeenCalledTimes(1)
+    click.mockRestore()
   })
 })

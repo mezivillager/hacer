@@ -171,6 +171,7 @@ describe('loadCircuit', () => {
 describe('exportCircuitJSON', () => {
   it('triggers a Blob URL download with the serialized JSON', () => {
     const gate = circuitActions.addGate('NAND', { x: 0, y: 0, z: 0 })
+    vi.useFakeTimers()
 
     const createObjectURL = vi.fn().mockReturnValue('blob:hacer-test')
     const revokeObjectURL = vi.fn()
@@ -178,14 +179,20 @@ describe('exportCircuitJSON', () => {
     globalThis.URL = { ...originalURL, createObjectURL, revokeObjectURL } as unknown as typeof URL
 
     const click = vi.fn()
-    const remove = vi.fn()
-    const anchor = { click, remove, href: '', download: '', style: {} as CSSStyleDeclaration } as unknown as HTMLAnchorElement
+    const anchor = document.createElement('a')
+    const remove = vi.spyOn(anchor, 'remove')
+    anchor.click = click
     const createElement = vi.spyOn(document, 'createElement').mockReturnValue(anchor)
+    const appendChild = vi.spyOn(document.body, 'appendChild')
 
     try {
       circuitActions.exportCircuitJSON('export-1')
       expect(createObjectURL).toHaveBeenCalledTimes(1)
+      expect(appendChild).toHaveBeenCalledWith(anchor)
       expect(click).toHaveBeenCalledTimes(1)
+      expect(remove).toHaveBeenCalledTimes(1)
+      vi.runAllTimers()
+      expect(revokeObjectURL).toHaveBeenCalledWith('blob:hacer-test')
       const [blob] = createObjectURL.mock.calls[0] as [Blob]
       expect(blob).toBeInstanceOf(Blob)
       expect(anchor.download).toBe('export-1.circuit.json')
@@ -197,8 +204,11 @@ describe('exportCircuitJSON', () => {
         expect(parsed.gates[0].id).toBe(gate.id)
       })
     } finally {
+      vi.useRealTimers()
       globalThis.URL = originalURL
       createElement.mockRestore()
+      appendChild.mockRestore()
+      remove.mockRestore()
     }
   })
 })

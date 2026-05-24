@@ -54,9 +54,10 @@ describe('CircuitLibrary', () => {
     circuitActions.addGate('NAND', { x: 0, y: 0, z: 0 })
     render(<CircuitLibrary />)
     fireEvent.change(screen.getByTestId('library-name-input'), { target: { value: 'demo' } })
+    vi.useFakeTimers()
 
-    const click = vi.fn()
-    const anchor = { click, remove: vi.fn(), href: '', download: '', style: {} as CSSStyleDeclaration } as unknown as HTMLAnchorElement
+    const anchor = document.createElement('a')
+    const click = vi.spyOn(anchor, 'click').mockImplementation(() => undefined)
     const realCreateElement = document.createElement.bind(document)
     const createElement = vi.spyOn(document, 'createElement').mockImplementation((tag: string) => {
       if (tag === 'a') return anchor
@@ -70,9 +71,12 @@ describe('CircuitLibrary', () => {
     try {
       fireEvent.click(screen.getByTestId('library-export'))
       expect(click).toHaveBeenCalled()
+      vi.runAllTimers()
     } finally {
+      vi.useRealTimers()
       globalThis.URL = originalURL
       createElement.mockRestore()
+      click.mockRestore()
     }
   })
 

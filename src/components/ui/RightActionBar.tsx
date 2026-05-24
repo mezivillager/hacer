@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import {
   Info,
   History,
@@ -216,6 +216,15 @@ function CircuitInfoPanel() {
   const inputsCount = useCircuitStore((s) => s.inputNodes.length)
   const outputsCount = useCircuitStore((s) => s.outputNodes.length)
   const simulationRunning = useCircuitStore((s) => s.simulationRunning)
+  const importFileRef = useRef<HTMLInputElement>(null)
+
+  const handleImportChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+    const text = await file.text()
+    circuitActions.importCircuitJSON(text)
+    event.target.value = ''
+  }
 
   return (
     <div data-testid="info-panel" className="space-y-4">
@@ -262,11 +271,17 @@ function CircuitInfoPanel() {
             data-testid="info-quick-import"
             icon={Upload}
             label="Import Circuit"
-            onClick={() =>
-              document
-                .querySelector<HTMLInputElement>('[data-testid="library-import-input"]')
-                ?.click()
-            }
+            onClick={() => importFileRef.current?.click()}
+          />
+          <input
+            ref={importFileRef}
+            data-testid="info-import-input"
+            type="file"
+            accept="application/json,.json"
+            className="hidden"
+            onChange={(e) => {
+              void handleImportChange(e)
+            }}
           />
           <ComingSoon>
             <QuickActionButton icon={Settings2} label="Generate Truth Table" />
