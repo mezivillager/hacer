@@ -74,7 +74,7 @@ describe('every builtin matches its .cmp fixture row-for-row', () => {
         const expected = Object.fromEntries(
           schema.outputs.map((p) => [p, row.values[colIndex(p)]])
         )
-        expect(chip.implementation.evaluate(inputs)).toEqual(expected)
+        expect(chip.implementation.evaluate(inputs), `row ${r}`).toEqual(expected)
       }
     })
   }

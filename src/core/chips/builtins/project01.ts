@@ -32,14 +32,14 @@ export function registerProject1Builtins(registry: ChipRegistry): void {
     'Nand',
     [pin('a'), pin('b')],
     [pin('out')],
-    (i) => ({ out: (i.a & i.b) === 0 ? 1 : 0 }),
+    (i) => ({ out: (~(i.a & i.b)) & 1 }),
   )
 
   safe(
     'Not',
     [pin('in')],
     [pin('out')],
-    (i) => ({ out: i.in === 0 ? 1 : 0 }),
+    (i) => ({ out: (~i.in) & 1 }),
   )
 
   safe(
@@ -109,7 +109,7 @@ export function registerProject1Builtins(registry: ChipRegistry): void {
     'Mux16',
     [pin('a', 16), pin('b', 16), pin('sel')],
     [pin('out', 16)],
-    (i) => ({ out: ((i.sel & 1) === 0 ? i.a : i.b) & MASK16 }),
+    (i) => ({ out: (((i.sel & 1) === 0 ? i.a : i.b) & MASK16) >>> 0 }),
   )
 
   safe(
