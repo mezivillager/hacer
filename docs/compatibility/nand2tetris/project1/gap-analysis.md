@@ -364,6 +364,12 @@ Two dropdowns: project picker ("Project 1", "Project 2", ...) and chip picker ("
 **Blocks:** Project 1 recommended workflow (tip #0)
 **Severity:** Low — convenience feature
 
+**Status (2026-05-24):** Requirement #1 (builtin chip implementations) is **CLOSED**
+via `docs/plans/2026-05-24-builtin-chip-placement-standardization.md`. Requirements
+#2 (toggle button) and #3 (interactive testing) are deferred until user-defined
+chip composition lands (P05-16/P05-18/P05-24); until then, all 16 builtins are
+the only placeable units in HACER and there is no user-implementation to toggle to.
+
 **The problem:**
 Project 1 implementation tips specifically recommend:
 > "Before implementing a chip, it is recommended to experiment with its builtin implementation."
