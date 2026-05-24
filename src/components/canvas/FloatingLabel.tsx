@@ -4,6 +4,15 @@ const LABEL_DEFAULT_COLOR = '#ffffff'
 const LABEL_DEFAULT_OFFSET_Y = 0.5
 const LABEL_FONT_PX = 11
 
+/**
+ * Cap drei `<Html>`-projected z-indices strictly below shadcn's
+ * Popover/Dialog layer (Tailwind `z-50`). Otherwise scene-element labels —
+ * input/output node names, junction labels, chip-name labels — can poke up
+ * through the chip selector and other modal overlays. Drei's zIndexRange is
+ * `[far, near]`; both must stay under 50.
+ */
+const LABEL_Z_INDEX_RANGE: [number, number] = [40, 0]
+
 interface FloatingLabelProps {
   /** World-space anchor; offsetY is added to the Y component. */
   position: [number, number, number]
@@ -36,7 +45,7 @@ export function FloatingLabel({
     <Html
       position={[position[0], position[1] + offsetY, position[2]]}
       center
-      zIndexRange={[100, 0]}
+      zIndexRange={LABEL_Z_INDEX_RANGE}
       style={{ pointerEvents: 'none' }}
     >
       <span
