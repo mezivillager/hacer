@@ -1,3 +1,4 @@
+import { notify } from '@/lib/notify'
 import { createGateInstance } from '@/store/actions/gateActions/gateActions'
 import type { GateInstance, InputNode, JunctionNode, OutputNode, Pin, Wire } from '@/store/types'
 import type { WireSegment } from '@/utils/wiringScheme/types'
@@ -20,14 +21,37 @@ export interface DeserializedCircuit {
   junctions: JunctionNode[]
 }
 
+/** Canonical mapping from legacy uppercase gate types to chip-registry names.
+ *  Pre-Phase-5 saves used `GateType` (`'NAND' | 'AND' | …`); Phase 4 renamed
+ *  the in-store field to `chipName` ('Nand', …). This table migrates the
+ *  Project 1 builtin equivalents on load. */
+const LEGACY_GATE_TYPE_MAP: Record<string, string> = {
+  NAND: 'Nand',
+  AND: 'And',
+  OR: 'Or',
+  NOT: 'Not',
+  XOR: 'Xor',
+}
+
+/** Legacy gate types that have no Project 1 builtin equivalent. Saves
+ *  containing these are loaded with the offending gates dropped + a warning. */
+const UNSUPPORTED_LEGACY_TYPES = new Set(['NOR', 'XNOR'])
+
+/** Returns the canonical chip name for a saved `type` field, or `null` to
+ *  signal the gate should be skipped (unsupported legacy type). Modern saves
+ *  pass through unchanged. */
+function migrateGateTypeName(raw: string): string | null {
+  if (Object.prototype.hasOwnProperty.call(LEGACY_GATE_TYPE_MAP, raw)) {
+    return LEGACY_GATE_TYPE_MAP[raw]
+  }
+  if (UNSUPPORTED_LEGACY_TYPES.has(raw)) return null
+  return raw
+}
+
 const cloneVec3 = (v: { x: number; y: number; z: number }) => ({ x: v.x, y: v.y, z: v.z })
 
-function reconstructGate(s: SerializedGate): GateInstance {
-  // Phase 4 reads `s.type` as a chip name string. Legacy uppercase names
-  // (`'NAND'`, …) and unsupported types (`'NOR'`, `'XNOR'`) are migrated by
-  // a follow-up phase (P05-15 / persistence migration); for now we trust the
-  // field, and `createGateInstance` will throw for unknown chip names.
-  const tmpl = createGateInstance(s.type, cloneVec3(s.position), s.width)
+function reconstructGate(s: SerializedGate, chipName: string): GateInstance {
+  const tmpl = createGateInstance(chipName, cloneVec3(s.position), s.width)
   const inputs: Pin[] = tmpl.inputs.map((p, i) => ({
     ...p,
     id: `${s.id}-in-${i}`,
@@ -42,7 +66,7 @@ function reconstructGate(s: SerializedGate): GateInstance {
   }))
   return {
     id: s.id,
-    chipName: s.type,
+    chipName,
     position: cloneVec3(s.position),
     rotation: cloneVec3(s.rotation),
     inputs,
@@ -112,8 +136,21 @@ export function deserializeCircuit(data: SerializedCircuit): DeserializedCircuit
   if (data.version !== CIRCUIT_FORMAT_VERSION) {
     throw new Error(`Unsupported circuit version: ${String(data.version)}`)
   }
+
+  const gates: GateInstance[] = []
+  for (const s of data.gates) {
+    const chipName = migrateGateTypeName(s.type)
+    if (chipName === null) {
+      notify.warning(
+        `Skipped unsupported gate type "${s.type}" — NOR and XNOR are not supported in the builtin chip system.`,
+      )
+      continue
+    }
+    gates.push(reconstructGate(s, chipName))
+  }
+
   return {
-    gates: data.gates.map(reconstructGate),
+    gates,
     wires: data.wires.map(reconstructWire),
     inputNodes: data.inputNodes.map(reconstructInputNode),
     outputNodes: data.outputNodes.map(reconstructOutputNode),

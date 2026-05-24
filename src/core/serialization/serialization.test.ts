@@ -240,7 +240,7 @@ describe('deserialize legacy GateType migration', () => {
   })
 
   it('warns and skips NOR/XNOR gates', () => {
-    const notifySpy = vi.spyOn(notify, 'warning').mockImplementation(() => {})
+    const notifySpy = vi.spyOn(notify, 'warning').mockImplementation(() => 'noop')
     const legacy: SerializedCircuit = {
       version: CIRCUIT_FORMAT_VERSION,
       name: 'has-nor',
