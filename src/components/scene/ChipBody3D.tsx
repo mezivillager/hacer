@@ -71,7 +71,7 @@ export function ChipBody3D({
       pinConfigs={pinConfigs}
       wireStubPositions={wireStubPositions}
       bodyGeometry={
-        <boxGeometry args={[bodyDimensions.width, bodyDimensions.height, bodyDimensions.depth]} />
+        <boxGeometry args={[bodyDimensions.sizeX, bodyDimensions.sizeY, bodyDimensions.sizeZ]} />
       }
       textLabel={chip.name}
       onClick={onClick}
