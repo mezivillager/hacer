@@ -509,6 +509,36 @@ describe('Node Actions', () => {
       expect(after.inputNodes.find((n) => n.id === b.id)?.width).toBe(1)
       expect(after.gates.find((g) => g.id === notB.id)?.width).toBe(1)
     })
+
+    // PR #107 review feedback (Copilot). The width cascade was added in
+    // P05-13 to push a node-width change across the wire graph so that
+    // homogeneous primitives (Not, And, …) widen along with the input node
+    // and the simulation engine stops clamping signals to width 1. With
+    // the chip registry, mixed-width chips (Mux16, Mux4Way16, Or8Way, …)
+    // carry per-pin widths from the chip definition; bulk-rewriting them
+    // to a single width would silently corrupt the chip schema (e.g. set
+    // Mux16.sel.width=16 when the user widens an input node feeding
+    // Mux16.a). Cascade must respect the declared per-pin schema.
+    it('does not clobber Mux16 sel.width=1 during width cascade', () => {
+      const store = useCircuitStore.getState()
+      const wide = store.addInputNode('data', { x: 0, y: 0, z: 0 }, 1)
+      const mux = store.addGate('Mux16', { x: 4, y: 0, z: 0 })
+      store.addWire(
+        { type: 'input', entityId: wide.id },
+        { type: 'gate', entityId: mux.id, pinId: mux.inputs[0].id },
+        []
+      )
+
+      // User opts in to widening the input node to 16-bit. The cascade
+      // should NOT rewrite Mux16.sel from 1 to 16.
+      store.updateInputNodeWidth(wide.id, 16)
+
+      const after = useCircuitStore.getState().gates.find((g) => g.id === mux.id)!
+      const widthByName = Object.fromEntries(
+        after.inputs.map((p) => [p.name, p.width])
+      )
+      expect(widthByName.sel).toBe(1)
+    })
   })
 
   describe('updateOutputNodeWidth — width cascade', () => {
