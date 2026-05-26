@@ -82,6 +82,7 @@ Each ticket file below is **self-contained** — a fresh LLM session can impleme
 | ID | Title | Effort | Depends | Gap(s) | Status |
 |----|-------|--------|---------|--------|--------|
 | [P05-29](P05-29.md) | Scene naming not effectively visible — fix in-view labels, previews, and signal surfacing | 8h | P05-10 (recommended) | GAP-UI-3 (partial), UX | TODO |
+| [P05-30](P05-30.md) | P05-15 follow-up — splitter / joiner for bit-level access on placed chips (promotes [P05-12](P05-12.md); cross-links B-003 / B-004) | 6h | P05-15 (DONE), P05-12 | GAP-3D-2 | TODO |
 
 ---
 

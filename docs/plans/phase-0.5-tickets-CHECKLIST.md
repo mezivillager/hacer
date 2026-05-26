@@ -56,6 +56,8 @@
 ## Follow-ups (UX / labeling — optional ordering)
 
 - [ ] **P05-29** — Scene naming not effectively visible — fix in-view labels, previews, and signal surfacing — [P05-29.md](./phase-0.5-tickets/P05-29.md)
+- [ ] **P05-30** — P05-15 follow-up: splitter / joiner for bit-level access on placed chips — [P05-30.md](./phase-0.5-tickets/P05-30.md)
+  - **Status (2026-05-26):** Queued behind P05-15. Promotes [P05-12](./phase-0.5-tickets/P05-12.md) to "next up." Cross-links observed bugs [B-003](../development/observed-bugs.md#b-003--wiring-not-preserved-when-dragging-an-input-node-wired-to-a-multi-input-chip) and [B-004](../development/observed-bugs.md#b-004--multi-input-chips-n--2-have-insufficient-pin-spacing-for-the-current-wiring-rule), which are likely de-risked once splitter/joiner lands.
 
 ## Deferred — requires composite/user chips first
 
