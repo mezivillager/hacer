@@ -310,3 +310,96 @@ describe('deserialize legacy GateType migration', () => {
     expect(restored.gates[0].chipName).toBe('Mux16')
   })
 })
+
+describe('deserialize resilience', () => {
+  // PR #107 review feedback (Codex P2 + Copilot):
+  // `migrateGateTypeName` passes unknown chip names through, but
+  // `reconstructGate` then calls `createGateInstance` which throws when the
+  // name is not registered. A single unknown gate (e.g. save from a newer
+  // build with additional chips) would abort the entire load. Instead,
+  // unknown names should be treated like the unsupported legacy NOR/XNOR
+  // path: warn + skip, and let the rest of the circuit load.
+  it('warns and skips gates with unknown chip names; keeps the rest', () => {
+    const notifySpy = vi.spyOn(notify, 'warning').mockImplementation(() => 'noop')
+    const blob: SerializedCircuit = {
+      version: CIRCUIT_FORMAT_VERSION,
+      name: 'unknown-mixed',
+      savedAt: new Date().toISOString(),
+      gates: [
+        { id: 'g-unknown', type: 'NotARealChip2099', position: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, width: 1 },
+        { id: 'g-and', type: 'And', position: { x: 4, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, width: 1 },
+      ],
+      wires: [],
+      inputNodes: [],
+      outputNodes: [],
+      junctions: [],
+    }
+    const restored = deserializeCircuit(blob)
+    expect(restored.gates).toHaveLength(1)
+    expect(restored.gates[0].chipName).toBe('And')
+    expect(notifySpy).toHaveBeenCalledWith(expect.stringMatching(/NotARealChip2099/))
+    notifySpy.mockRestore()
+  })
+
+  // PR #107 review feedback (Codex P1):
+  // When gates are skipped (NOR/XNOR or unknown chip names), wires that
+  // reference those gates as endpoints become dangling. Today the loader
+  // reconstructs every wire unchanged, so missing-gate endpoints silently
+  // drive 0 through the simulation engine and corrupt downstream state.
+  // Drop those wires and prune any junction `wireIds` entries that point
+  // to the dropped wires.
+  it('drops wires whose endpoints reference skipped legacy gates and prunes junction wireIds', () => {
+    const notifySpy = vi.spyOn(notify, 'warning').mockImplementation(() => 'noop')
+    const blob: SerializedCircuit = {
+      version: CIRCUIT_FORMAT_VERSION,
+      name: 'orphan-wires',
+      savedAt: new Date().toISOString(),
+      gates: [
+        { id: 'g-nor', type: 'NOR', position: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, width: 1 },
+        { id: 'g-and', type: 'And', position: { x: 4, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, width: 1 },
+        { id: 'g-or', type: 'Or', position: { x: 8, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, width: 1 },
+      ],
+      wires: [
+        // Wire referencing the skipped NOR gate as source — should be dropped.
+        {
+          id: 'w-orphan-from',
+          from: { type: 'gate', entityId: 'g-nor', pinId: 'g-nor-out-0' },
+          to: { type: 'gate', entityId: 'g-and', pinId: 'g-and-in-0' },
+          segments: [],
+          crossesWireIds: [],
+        },
+        // Wire referencing the skipped NOR gate as dest — should be dropped.
+        {
+          id: 'w-orphan-to',
+          from: { type: 'gate', entityId: 'g-and', pinId: 'g-and-out-0' },
+          to: { type: 'gate', entityId: 'g-nor', pinId: 'g-nor-in-0' },
+          segments: [],
+          crossesWireIds: [],
+        },
+        // Wire between two surviving gates — should survive.
+        {
+          id: 'w-good',
+          from: { type: 'gate', entityId: 'g-and', pinId: 'g-and-out-0' },
+          to: { type: 'gate', entityId: 'g-or', pinId: 'g-or-in-0' },
+          segments: [],
+          crossesWireIds: [],
+        },
+      ],
+      inputNodes: [],
+      outputNodes: [],
+      junctions: [
+        // Pure orphan: every wireId references a dropped wire — junction itself drops.
+        { id: 'j-pure-orphan', position: { x: 1, y: 0.2, z: 0 }, signalId: 'sig-x', wireIds: ['w-orphan-from', 'w-orphan-to'] },
+        // Mixed: one dropped, one alive — junction stays but loses the dropped wireId.
+        { id: 'j-mixed', position: { x: 2, y: 0.2, z: 0 }, signalId: 'sig-y', wireIds: ['w-orphan-from', 'w-good'] },
+      ],
+    }
+    const restored = deserializeCircuit(blob)
+    expect(restored.gates.map((g) => g.id).sort()).toEqual(['g-and', 'g-or'])
+    expect(restored.wires.map((w) => w.id)).toEqual(['w-good'])
+    expect(restored.junctions.find((j) => j.id === 'j-pure-orphan')).toBeUndefined()
+    const jMixed = restored.junctions.find((j) => j.id === 'j-mixed')
+    expect(jMixed?.wireIds).toEqual(['w-good'])
+    notifySpy.mockRestore()
+  })
+})
