@@ -521,5 +521,52 @@ describe('wireActions', () => {
 
       expect(wire.width).toBe(4)
     })
+
+    // PR #107 review feedback (Copilot). Mux16 declares a/b/out at width 16
+    // and `sel` at width 1. The legacy gate-widening path bulk-rewrote
+    // every pin to a single width whenever a wider wire connected, which
+    // silently corrupted `sel`. Mixed-width chip schemas must survive
+    // wire-time width inference intact.
+    it('does not clobber Mux16 sel.width=1 when a 16-bit wire connects to a 16-bit pin', () => {
+      const store = useCircuitStore.getState()
+      const wide = store.addInputNode('data', { x: 0, y: 0, z: 0 }, 16)
+      const mux = store.addGate('Mux16', { x: 4, y: 0, z: 0 })
+
+      // Connect a 16-bit input to the Mux16's `a` pin (declared width 16).
+      store.addWire(
+        { type: 'input', entityId: wide.id },
+        { type: 'gate', entityId: mux.id, pinId: mux.inputs[0].id },
+        []
+      )
+
+      const after = useCircuitStore.getState().gates.find((g) => g.id === mux.id)!
+      const inputWidthByName = Object.fromEntries(
+        after.inputs.map((p) => [p.name, p.width])
+      )
+      // a and b are bus pins (width 16); sel is the selector (width 1).
+      expect(inputWidthByName.a).toBe(16)
+      expect(inputWidthByName.b).toBe(16)
+      expect(inputWidthByName.sel).toBe(1)
+      expect(after.outputs[0].width).toBe(16)
+    })
+
+    it('preserves Mux4Way16 sel.width=2 across wire-time width inference', () => {
+      const store = useCircuitStore.getState()
+      const wide = store.addInputNode('data', { x: 0, y: 0, z: 0 }, 16)
+      const mux = store.addGate('Mux4Way16', { x: 4, y: 0, z: 0 })
+
+      store.addWire(
+        { type: 'input', entityId: wide.id },
+        { type: 'gate', entityId: mux.id, pinId: mux.inputs[0].id },
+        []
+      )
+
+      const after = useCircuitStore.getState().gates.find((g) => g.id === mux.id)!
+      const inputWidthByName = Object.fromEntries(
+        after.inputs.map((p) => [p.name, p.width])
+      )
+      expect(inputWidthByName.a).toBe(16)
+      expect(inputWidthByName.sel).toBe(2)
+    })
   })
 })

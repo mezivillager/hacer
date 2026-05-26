@@ -1,6 +1,26 @@
-import type { WireActions, Wire, WireEndpoint, CircuitStore } from '../../types'
+import type { WireActions, Wire, WireEndpoint, CircuitStore, GateInstance } from '../../types'
 import type { WireSegment } from '@/utils/wiringScheme/types'
 import { removeOrphanedArcs } from '@/utils/wiringScheme/crossing'
+
+/**
+ * A chip is "mixed-width" if its pins (as currently materialised on the
+ * gate instance) have non-uniform widths. `createGateInstance` writes pin
+ * widths from the chip definition, so this reflects the declared schema —
+ * e.g. Mux16 has 16-bit `a/b/out` and a 1-bit `sel`.
+ *
+ * The legacy gate-widening path (`inferGateWidening` below + the bulk pin
+ * overwrite in `addWire`) was designed for homogeneous-width primitives
+ * like Not / And / Or where rewriting every pin to one width is a no-op
+ * for the chip schema. For mixed-width chips, bulk rewriting silently
+ * collapses the schema (e.g. would set Mux16.sel.width to 16), so this
+ * helper guards the bulk write.
+ */
+function isMixedWidthChip(gate: GateInstance): boolean {
+  const widths = new Set<number>()
+  for (const p of gate.inputs) widths.add(p.width ?? 1)
+  for (const p of gate.outputs) widths.add(p.width ?? 1)
+  return widths.size > 1
+}
 
 type SetState = (
   fn: (state: CircuitStore) => void,
@@ -41,6 +61,17 @@ function inferGateWidening(
   if (endpoint.type !== 'gate') return null
   const gate = state.gates.find((g) => g.id === endpoint.entityId)
   if (!gate) return null
+  // PR #107 review (Copilot): the bulk-widen path (in `addWire` below)
+  // rewrites *every* pin to one width. For mixed-width chips (Mux16,
+  // Mux4Way16, Mux8Way16, Or8Way, DMux4Way, DMux8Way) the chip definition
+  // intentionally declares non-uniform pin widths and the bulk write
+  // silently corrupts that schema (e.g. setting Mux16.sel from 1 to 16).
+  // The per-pin widths set by `createGateInstance` are the source of
+  // truth for these chips; widening is a no-op so the bulk overwrite
+  // never fires for them. The width check below (which we still want for
+  // homogeneous chips) is also skipped — per-pin width compatibility is
+  // already enforced by `getEndpointWidth` reading from the specific pin.
+  if (isMixedWidthChip(gate)) return null
   if (gate.width === 1 && otherWidth > 1) return otherWidth
   if (gate.width !== otherWidth) {
     throw new Error(

@@ -264,11 +264,25 @@ function propagateWidthFrom(
         case 'gate': {
           const g = state.gates.find((x) => x.id === other.entityId)
           if (g) {
-            g.width = width
-            for (const p of g.inputs) p.width = width
-            for (const p of g.outputs) p.width = width
+            // PR #107 review (Copilot): mixed-width chips (Mux16,
+            // Mux4Way16, Mux8Way16, Or8Way, DMux4Way, DMux8Way) declare
+            // non-uniform pin widths in the chip definition. Bulk
+            // rewriting every pin to one width during cascade would
+            // silently collapse the schema (e.g. set Mux16.sel from 1
+            // to the cascade width). Treat the mixed-width chip as a
+            // type wall: leave its declared per-pin widths alone and
+            // stop the cascade at this gate.
+            const widths = new Set<number>()
+            for (const p of g.inputs) widths.add(p.width ?? 1)
+            for (const p of g.outputs) widths.add(p.width ?? 1)
+            const mixedWidthChip = widths.size > 1
+            if (!mixedWidthChip) {
+              g.width = width
+              for (const p of g.inputs) p.width = width
+              for (const p of g.outputs) p.width = width
+              queue.push({ type: 'gate', id: other.entityId })
+            }
           }
-          queue.push({ type: 'gate', id: other.entityId })
           break
         }
         case 'junction': {
