@@ -5,6 +5,53 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.6.0](https://github.com/mezivillager/hacer/compare/v2.5.0...v2.6.0) (2026-05-26)
+
+### Features
+
+* **app:** initialize builtin chip registry at boot ([b383215](https://github.com/mezivillager/hacer/commit/b383215ed6ee580ad80a9abb0f1df027b5694ec1))
+* **chips:** app-level singleton registries (builtin + user) ([97f88ea](https://github.com/mezivillager/hacer/commit/97f88ea1ece90075ed75266be45e5a16e82ab12e))
+* **chips:** register 16 Project 1 builtins with bit-correct evaluate fns ([2e2bf14](https://github.com/mezivillager/hacer/commit/2e2bf1410385afcd89b52e395fc4e87f1c48bf50))
+* **persistence:** migrate legacy GateType saves to chipName; warn on NOR/XNOR ([f77870a](https://github.com/mezivillager/hacer/commit/f77870a11c504a5ad13faa7db7421b08e9edd45b))
+* **scene:** ChipBody3D — generic R3F render for any chip definition ([16cf57e](https://github.com/mezivillager/hacer/commit/16cf57e13c8265eb08976dc741d8e1a520d17c6e))
+* **scene:** computeChipLayout — generic pin placement math ([787b566](https://github.com/mezivillager/hacer/commit/787b5664e815ed45a1b6ed5b374ae004fb03aafc))
+* **ui:** registry-driven gate selector with 16 chips grouped by category ([1a7536d](https://github.com/mezivillager/hacer/commit/1a7536d627f7cc85c82990a15fb313bc2c36f64a))
+* **ui:** SVG icons for 16 Project 1 chips + fallback ([6fc621d](https://github.com/mezivillager/hacer/commit/6fc621d66d142fc6c019b4c7ac29b48e07b5e429))
+
+### Bug Fixes
+
+* **canvas:** cap FloatingLabel z-index below popover/dialog overlays ([7a2409d](https://github.com/mezivillager/hacer/commit/7a2409d44dff620f66b3d63781364ba93a399cd8))
+* **canvas:** drop junction labels + cap scene labels below all UI chrome ([354d324](https://github.com/mezivillager/hacer/commit/354d324bebc2676d94d9914eb65e9d83f2488fd3))
+* **persistence:** preserve chip-def pin widths on deserialization ([710ebfe](https://github.com/mezivillager/hacer/commit/710ebfeed757104a0253784a9e7c9f4a0ee746dd))
+* **persistence:** warn-skip unknown chips + drop orphan wires on load ([fab47c8](https://github.com/mezivillager/hacer/commit/fab47c871a9a654667d10b87f3fbe472b52c5762)), closes [#107](https://github.com/mezivillager/hacer/issues/107)
+* **scene:** match legacy AND footprint and lay chips flat on the ground ([26cd732](https://github.com/mezivillager/hacer/commit/26cd7320fa547ab500743730d6ff6cfddbe760db))
+* **store:** preserve mixed-width chip pin schemas across wire/cascade widening ([372b57d](https://github.com/mezivillager/hacer/commit/372b57d3cde2d08ef37d5d6773f836f6008c1591)), closes [#107](https://github.com/mezivillager/hacer/issues/107)
+* **store:** route getPinWorldPosition through chipBodyLayout ([5bc1dda](https://github.com/mezivillager/hacer/commit/5bc1ddadbea75cb576be2dfbce4946dc3a039de4))
+* **ui:** make ComingSoon stubs greyed out + tooltip on hover ([3656d22](https://github.com/mezivillager/hacer/commit/3656d22380cebdaa54b6f40a916edfce6a53deb6))
+
+### Documentation
+
+* **p0.5:** add P05-31 truth-table generator follow-up ticket ([7b28460](https://github.com/mezivillager/hacer/commit/7b284602f8c33995db64896ec59eaafd9b42253a))
+* **p0.5:** track multi-input chip wiring follow-ups (B-003, B-004, P05-30) ([5aab959](https://github.com/mezivillager/hacer/commit/5aab95982c2b4447eadd35ad402ffe8a927d453c))
+* **plans:** builtin chip placement standardization plan ([18905af](https://github.com/mezivillager/hacer/commit/18905afe5ac426eddc7809c492a1be970fb664f7))
+* REPO_MAP + ticket cross-refs for builtin chip placement standardization ([edfbba4](https://github.com/mezivillager/hacer/commit/edfbba44854d6ca8005f71e70c762e62ecef2dc4))
+* **REPO_MAP:** replace stale @/simulation/gateLogic import example ([ffeabac](https://github.com/mezivillager/hacer/commit/ffeabacdda3eb532b8d942dd4e17297277f2c889)), closes [#107](https://github.com/mezivillager/hacer/issues/107)
+
+### Code Refactoring
+
+* **chips:** align gate idioms and improve fixture failure context ([44c545a](https://github.com/mezivillager/hacer/commit/44c545a2d11510fa343769307392405020646845))
+* migrate placement + simulation from GateType union to ChipRegistry ([7d47c8c](https://github.com/mezivillager/hacer/commit/7d47c8c7ad6a06f6bf04c52a3a18b1b186c79424))
+
+### Tests
+
+* **chips:** appRegistry singleton + reset contract ([c36eef3](https://github.com/mezivillager/hacer/commit/c36eef374279519c09ca32359f065dac2ddb2c47))
+* **chips:** fixture-driven coverage for 16 Project 1 builtins ([dcdc90f](https://github.com/mezivillager/hacer/commit/dcdc90f6cd916bfb7f39164450f211f6cb166c96))
+* **e2e:** update gate-name strings; add [@store](https://github.com/store) placement spec for new chips ([2e61766](https://github.com/mezivillager/hacer/commit/2e617668a3381b3a64f15c63bdea5cd61d21fc1e))
+* **persistence:** legacy GateType migration cases ([ee861f0](https://github.com/mezivillager/hacer/commit/ee861f0611870e83b123f90b9ceb55265c71d149))
+* **scene:** chip body layout math contract ([cee1091](https://github.com/mezivillager/hacer/commit/cee10912b725e1df822aa59d08bdb8eea598489f))
+* **scene:** ChipBody3D renders any chip definition ([37169ce](https://github.com/mezivillager/hacer/commit/37169cea0c7b6058fb717091a57c6ff4b627758e))
+* **ui:** toolbar lists all 16 builtin chips and dispatches by name ([b3ab278](https://github.com/mezivillager/hacer/commit/b3ab278593d7692a383dc8693e27a53d8f3e931f))
+
 ## [2.5.0](https://github.com/mezivillager/hacer/compare/v2.4.0...v2.5.0) (2026-05-24)
 
 ### Features
