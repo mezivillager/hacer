@@ -7,7 +7,6 @@ import {
   type SerializedCircuit,
   type SerializedGate,
   type SerializedInputNode,
-  type SerializedJunction,
   type SerializedOutputNode,
   type SerializedWire,
   type SerializedWireSegment,
@@ -125,14 +124,9 @@ function reconstructOutputNode(s: SerializedOutputNode): OutputNode {
   }
 }
 
-function reconstructJunction(s: SerializedJunction): JunctionNode {
-  return {
-    id: s.id,
-    position: cloneVec3(s.position),
-    signalId: s.signalId,
-    wireIds: [...s.wireIds],
-  }
-}
+// Junction reconstruction is inlined inside `deserializeCircuit` so the
+// orphan-wire pruning (PR #107 Codex P1) can filter each junction's
+// `wireIds` against the just-built `droppedWireIds` set in the same pass.
 
 export function deserializeCircuit(data: SerializedCircuit): DeserializedCircuit {
   if (data.version !== CIRCUIT_FORMAT_VERSION) {
@@ -140,22 +134,69 @@ export function deserializeCircuit(data: SerializedCircuit): DeserializedCircuit
   }
 
   const gates: GateInstance[] = []
+  // Track every gate ID that did not survive the load so we can prune wires
+  // (and junction wireId entries) that reference them. Without this,
+  // dangling wires would silently drive 0 into downstream gate inputs via
+  // the simulation's missing-endpoint fallback.
+  const skippedGateIds = new Set<string>()
   for (const s of data.gates) {
     const chipName = migrateGateTypeName(s.type)
     if (chipName === null) {
       notify.warning(
         `Skipped unsupported gate type "${s.type}" — NOR and XNOR are not supported in the builtin chip system.`,
       )
+      skippedGateIds.add(s.id)
       continue
     }
-    gates.push(reconstructGate(s, chipName))
+    // `migrateGateTypeName` passes unknown names through unchanged, but
+    // `createGateInstance` (called from `reconstructGate`) throws when a
+    // chip name is not in either the builtin or user registry — for
+    // example, a save produced by a newer build with chips this build
+    // doesn't ship yet. Catch and skip: warn + drop the gate so the rest
+    // of the circuit still loads.
+    try {
+      gates.push(reconstructGate(s, chipName))
+    } catch (err) {
+      const reason = err instanceof Error ? err.message : String(err)
+      notify.warning(
+        `Skipped unknown chip "${s.type}" while loading circuit (${reason}).`,
+      )
+      skippedGateIds.add(s.id)
+    }
+  }
+
+  const isLiveGateRef = (endpoint: SerializedWire['from']): boolean =>
+    endpoint.type !== 'gate' || !skippedGateIds.has(endpoint.entityId)
+
+  const wires: Wire[] = []
+  const droppedWireIds = new Set<string>()
+  for (const s of data.wires) {
+    if (!isLiveGateRef(s.from) || !isLiveGateRef(s.to)) {
+      droppedWireIds.add(s.id)
+      continue
+    }
+    wires.push(reconstructWire(s))
+  }
+
+  // Prune dropped wireIds from each junction's wireIds; drop the junction
+  // entirely if it ends up with zero live wireIds.
+  const junctions: JunctionNode[] = []
+  for (const s of data.junctions) {
+    const liveWireIds = s.wireIds.filter((id) => !droppedWireIds.has(id))
+    if (liveWireIds.length === 0) continue
+    junctions.push({
+      id: s.id,
+      position: cloneVec3(s.position),
+      signalId: s.signalId,
+      wireIds: liveWireIds,
+    })
   }
 
   return {
     gates,
-    wires: data.wires.map(reconstructWire),
+    wires,
     inputNodes: data.inputNodes.map(reconstructInputNode),
     outputNodes: data.outputNodes.map(reconstructOutputNode),
-    junctions: data.junctions.map(reconstructJunction),
+    junctions,
   }
 }
