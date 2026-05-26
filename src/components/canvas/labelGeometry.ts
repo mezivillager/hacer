@@ -15,6 +15,7 @@ export const LABEL_GEOMETRY = {
   NODE: { fontSize: 0.18, offsetY: 0.45 },
   /** Gate body height ≈ 0.8 (see `gates/config/common.ts:COMMON_DIMENSIONS`). */
   GATE: { fontSize: 0.22, offsetY: 0.6 },
-  /** Junction sphere radius 0.08. */
-  JUNCTION: { fontSize: 0.14, offsetY: 0.32 },
+  // Junction labels intentionally absent: junctions are tap points on a
+  // shared net, not user-meaningful entities, and a per-junction label
+  // adds noise without distinguishing one tap from another.
 } as const

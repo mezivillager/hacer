@@ -5,13 +5,24 @@ const LABEL_DEFAULT_OFFSET_Y = 0.5
 const LABEL_FONT_PX = 11
 
 /**
- * Cap drei `<Html>`-projected z-indices strictly below shadcn's
- * Popover/Dialog layer (Tailwind `z-50`). Otherwise scene-element labels —
- * input/output node names, junction labels, chip-name labels — can poke up
- * through the chip selector and other modal overlays. Drei's zIndexRange is
- * `[far, near]`; both must stay under 50.
+ * Cap drei `<Html>`-projected z-indices strictly below every UI-chrome
+ * layer. Two stacking bugs forced this cap downward over time:
+ *
+ *   - Earlier: scene labels (input/output node names, gate-name labels)
+ *     poked up through shadcn Popover/Dialog overlays at Tailwind `z-50`.
+ *   - 2026-05-26: an output-node label rendered on top of the always-
+ *     visible right drawer (also a sibling of the canvas) at Tailwind
+ *     `z-10` when the label's projected screen position fell behind the
+ *     drawer.
+ *
+ * The canvas wrapper does not establish its own stacking context (no
+ * z-index of its own), so Drei `<Html>` labels stack against UI chrome
+ * directly in the parent context. Cap below the lowest chrome layer
+ * (z-10) so labels can never out-stack any UI chrome — drawer, panels,
+ * help bar, demo overlay, popovers, dialogs, toasts. Drei's `zIndexRange`
+ * is `[far, near]`: both ends must stay under 10.
  */
-const LABEL_Z_INDEX_RANGE: [number, number] = [40, 0]
+const LABEL_Z_INDEX_RANGE: [number, number] = [9, 0]
 
 interface FloatingLabelProps {
   /** World-space anchor; offsetY is added to the Y component. */
