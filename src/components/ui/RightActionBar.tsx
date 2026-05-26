@@ -283,7 +283,7 @@ function CircuitInfoPanel() {
               void handleImportChange(e)
             }}
           />
-          <ComingSoon>
+          <ComingSoon triggerClassName="block w-full">
             <QuickActionButton icon={Settings2} label="Generate Truth Table" />
           </ComingSoon>
         </div>
