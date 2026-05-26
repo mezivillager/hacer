@@ -69,9 +69,11 @@ describe('RightActionBar', () => {
   })
 
   it('Undo, Redo, Find, Maximize render as disabled stub buttons', () => {
-    // Note: disabled buttons can't receive focus in jsdom (or browsers), so
-    // Radix tooltip doesn't open on focus. The ComingSoon wrapper is itself
-    // tested in coming-soon.test.tsx; here we just verify the stub intent.
+    // ComingSoon wraps each stub in a focusable <span> that owns the
+    // tooltip trigger (see coming-soon.tsx). The button itself stays
+    // `disabled` so click + visual greying still work — that's what this
+    // test verifies. The "Coming soon" tooltip behaviour is covered in
+    // coming-soon.test.tsx so we don't repeat it for every stub here.
     wrap()
     for (const tid of ['right-bar-undo', 'right-bar-redo', 'right-bar-find', 'right-bar-maximize']) {
       expect(screen.getByTestId(tid)).toBeDisabled()

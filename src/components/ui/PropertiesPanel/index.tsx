@@ -263,7 +263,7 @@ function PropertiesPanelInner({ selected }: { selected: SelectedElement }) {
               <Palette className="w-3 h-3" />
               Color
             </Label>
-            <ComingSoon>
+            <ComingSoon triggerClassName="block w-full">
               <Button variant="outline" className="w-full h-8 justify-between text-sm" disabled>
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full border border-border bg-primary" />
