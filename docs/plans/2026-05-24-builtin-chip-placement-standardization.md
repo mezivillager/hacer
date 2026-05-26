@@ -2263,7 +2263,7 @@ This plan deliberately does NOT:
 
 - Add HDL compiler (P05-16) — `getUserChipRegistry()` exists but stays empty
 - Add chip hierarchy / recursive evaluation (P05-18) — builtins are leaf evaluators only
-- Add bus splitter / joiner 3D components (P05-12) — bus pins remain whole; bit-level access is a future ticket
+- Add bus splitter / joiner 3D components ([P05-12](./phase-0.5-tickets/P05-12.md)) — bus pins remain whole; bit-level access is a future ticket, now tracked as the explicit P05-15 follow-up [P05-30](./phase-0.5-tickets/P05-30.md)
 - Add composite chip 3D rendering (P05-24) — every placed chip uses the same generic body
 - Add the builtin/user toggle UI (P05-23) — deferred; see Task 6.3 Step 3
 - Add the chip workflow browser (P05-19) — the toolbar selector is the only chip-picker for now
