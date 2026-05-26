@@ -514,8 +514,11 @@ import { Sidebar } from '@/components/ui/Sidebar';
 import { GateRenderer } from '@/gates';
 import { getBuiltinChipRegistry } from '@/core/chips/appRegistry';
 
-// Simulation
-import { nandGate } from '@/simulation/gateLogic';
+// Simulation (registry-driven; the per-primitive helpers in
+// `@/simulation/gateLogic` were removed 2026-05-24 — every chip's
+// evaluation now lives on its `ChipDefinition.evaluate` in
+// `@/core/chips/builtins/project01.ts`).
+import { evaluateCircuit } from '@/simulation/topologicalEval';
 
 // Hooks
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'; // 90° rotation
