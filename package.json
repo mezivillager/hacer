@@ -77,7 +77,7 @@
   },
   "devDependencies": {
     "@commitlint/cli": "^21.0.1",
-    "@commitlint/config-conventional": "^20.5.0",
+    "@commitlint/config-conventional": "^21.0.2",
     "@eslint/js": "^9.39.1",
     "@playwright/test": "^1.60.0",
     "@rolldown/plugin-babel": "^0.2.2",
