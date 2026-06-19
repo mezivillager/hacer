@@ -16,7 +16,7 @@ goodwill rather than enforcement.
 We will (1) keep an ADR log under `docs/decisions/`, (2) add a `docs-sync` capture skill that writes
 ADRs and runs the author pass, and (3) enforce it with a Claude Code **Stop hook** that prompts (and,
 by default, blocks once per session) when code changed but no docs were touched. The hook keys off
-`git status` change-presence only — it does **not** grep doc contents (the repo deliberately rejected
+git change-presence — committed (vs the `origin/main` merge-base) and uncommitted — it does **not** grep doc *contents* (the repo deliberately rejected
 repo-wide grep-CI in `docs/llm-docs-sync.md`).
 
 ## Consequences
