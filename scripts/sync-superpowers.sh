@@ -26,13 +26,14 @@ git clone --depth 1 "$REPO_URL" "$TEMP_DIR"
 # Sync skills using rsync
 # --recursive: copy directories
 # --update: skip files that are newer in destination
-# --exclude: don't touch our custom hacer-patterns
+# --exclude: don't touch our custom hacer-patterns / docs-sync skills
 echo "📂 Synchronizing skills..."
 rsync -rv --update \
   --exclude='hacer-patterns/' \
+  --exclude='docs-sync/' \
   "$TEMP_DIR/skills/" "$DEST_DIR/"
 
 echo "🧹 Cleaning up..."
 rm -rf "$TEMP_DIR"
 
-echo "✅ Superpowers skills updated successfully! Your 'hacer-patterns' skill was preserved."
+echo "✅ Superpowers skills updated successfully! Your 'hacer-patterns' and 'docs-sync' skills were preserved."
