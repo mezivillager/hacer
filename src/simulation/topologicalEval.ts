@@ -220,6 +220,8 @@ export function evaluateCircuit(state: CircuitState): EvaluateCircuitResult {
     }
   }
 
+  const resolver = combineRegistries(getBuiltinChipRegistry(), getUserChipRegistry())
+
   for (const gateId of result.order) {
     const gate = gateById.get(gateId)
     if (!gate) continue
@@ -235,7 +237,6 @@ export function evaluateCircuit(state: CircuitState): EvaluateCircuitResult {
       }
     }
 
-    const resolver = combineRegistries(getBuiltinChipRegistry(), getUserChipRegistry())
     const chip = resolver.get(gate.chipName)
     if (!chip) {
       // Unknown chip — skip evaluation.
