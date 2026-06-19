@@ -10,58 +10,60 @@
 
 | Format | Extension | Purpose | Support Level | Implementation |
 |--------|-----------|---------|---------------|----------------|
-| Hardware Description | `.hdl` | Text-based chip definitions | ✅ Complete | HDL Parser/Generator |
-| Test Script | `.tst` | Automated test execution | ✅ Complete | Test Engine Plugin |
-| Test Output | `.cmp` | Expected test results | ✅ Complete | Comparison Engine |
-| Machine Code | `.hack` | Binary executable format | ✅ Complete | Assembler Output |
-| VM Code | `.vm` | Stack machine intermediate | ✅ Complete | Compiler Output |
+| Hardware Description | `.hdl` | Text-based chip definitions | 🔶 Parser only | `src/core/hdl` — parse done (P05-04); compiler open (P05-16) |
+| Test Script | `.tst` | Automated test execution | 🔶 Parser only | `src/core/testing` — parse done (P05-05); engine open (P05-17) |
+| Test Output | `.cmp` | Expected test results | 🔶 Parser only | `src/core/testing` — parse done (P05-06); comparison open (P05-17) |
+| Machine Code | `.hack` | Binary executable format | 📋 Planned | Assembler (future phase) |
+| VM Code | `.vm` | Stack machine intermediate | 📋 Planned | Compiler (future phase) |
 
 ### Compatibility Project Coverage
 
 | Project | Chapter | Components | Status | Test Coverage |
 |---------|---------|------------|--------|----------------|
-| 1 | Boolean Logic | NAND, AND, OR, NOT, XOR | ✅ Complete | 100% |
-| 2 | Boolean Arithmetic | HalfAdder, FullAdder, ALU | ✅ Complete | 100% |
-| 3 | Sequential Logic | DFF, Register, RAM | ✅ Complete | 100% |
-| 4 | Machine Language | Assembler | ✅ Complete | 100% |
-| 5 | Computer Architecture | CPU, Memory, Computer | ✅ Complete | 100% |
-| 6 | Assembler | Hack Assembly → Machine Code | ✅ Complete | 100% |
-| 7 | VM I | Stack Arithmetic | ✅ Complete | 100% |
-| 8 | VM II | Program Control | ✅ Complete | 100% |
-| 9 | High-Level Language | Jack Syntax & Semantics | ✅ Complete | 100% |
-| 10 | Compiler I | Syntax Analysis | ✅ Complete | 100% |
-| 11 | Compiler II | Code Generation | ✅ Complete | 100% |
-| 12 | Operating System | OS Implementation | ✅ Complete | 100% |
+| 1 | Boolean Logic | NAND, AND, OR, NOT, XOR | 🔶 In Progress (Phase 0.5) | Partial |
+| 2 | Boolean Arithmetic | HalfAdder, FullAdder, ALU | 📋 Planned | — |
+| 3 | Sequential Logic | DFF, Register, RAM | 📋 Planned | — |
+| 4 | Machine Language | Assembler | 📋 Planned | — |
+| 5 | Computer Architecture | CPU, Memory, Computer | 📋 Planned | — |
+| 6 | Assembler | Hack Assembly → Machine Code | 📋 Planned | — |
+| 7 | VM I | Stack Arithmetic | 📋 Planned | — |
+| 8 | VM II | Program Control | 📋 Planned | — |
+| 9 | High-Level Language | Jack Syntax & Semantics | 📋 Planned | — |
+| 10 | Compiler I | Syntax Analysis | 📋 Planned | — |
+| 11 | Compiler II | Code Generation | 📋 Planned | — |
+| 12 | Operating System | OS Implementation | 📋 Planned | — |
 
 ---
 
 ## B. Performance Benchmarks
 
+> ⚠️ These are **target** figures for future phases — not measured results.
+
 ### Simulation Performance
 
 | Circuit Size | Target FPS | Memory Usage | Status |
 |-------------|------------|--------------|--------|
-| 100 gates | 60fps | <10MB | ✅ Achieved |
-| 500 gates | 60fps | <25MB | ✅ Achieved |
-| 1,000 gates | 30fps | <50MB | ✅ Achieved |
-| 5,000 gates | 30fps | <100MB | ✅ Achieved |
-| 10,000 gates | 15fps | <200MB | ✅ Achieved |
+| 100 gates | 60fps | <10MB | 🎯 Target |
+| 500 gates | 60fps | <25MB | 🎯 Target |
+| 1,000 gates | 30fps | <50MB | 🎯 Target |
+| 5,000 gates | 30fps | <100MB | 🎯 Target |
+| 10,000 gates | 15fps | <200MB | 🎯 Target |
 
 ### Rendering Performance
 
 | Gates | Instanced Rendering | LOD System | Memory |
 |-------|-------------------|------------|--------|
-| 1,000 | ✅ 60fps | ✅ Active | <25MB |
-| 5,000 | ✅ 60fps | ✅ Active | <50MB |
-| 10,000 | ✅ 30fps | ✅ Active | <100MB |
+| 1,000 | 🎯 60fps (target) | 📋 Planned | <25MB |
+| 5,000 | 🎯 60fps (target) | 📋 Planned | <50MB |
+| 10,000 | 🎯 30fps (target) | 📋 Planned | <100MB |
 
 ### Compilation Performance
 
 | Language | Input Size | Target | Status |
 |----------|------------|--------|--------|
-| HDL | 1,000 lines | <50ms | ✅ Achieved |
-| Assembly | 10,000 instructions | <100ms | ✅ Achieved |
-| Jack | 5,000 LOC | <500ms | ✅ Achieved |
+| HDL | 1,000 lines | <50ms | 🎯 Target |
+| Assembly | 10,000 instructions | <100ms | 🎯 Target |
+| Jack | 5,000 LOC | <500ms | 🎯 Target |
 
 ---
 

@@ -38,17 +38,17 @@ Each ticket file below is **self-contained** — a fresh LLM session can impleme
 | [P05-06](P05-06.md) | CMP parser | 4h | GAP-3D-4 | DONE |
 | [P05-08](P05-08.md) | Node rename + name display | 5h | GAP-3D-3 | DONE |
 | [P05-09](P05-09.md) | StatusBar component | 4h | GAP-UI-5 | DONE |
-| [P05-10](P05-10.md) | PinoutPanel component | 5h | GAP-UI-3 | TODO |
+| [P05-10](P05-10.md) | PinoutPanel component | 5h | GAP-UI-3 | DONE |
 
 ### Layer 1 — Depends on one Layer 0 item
 
 | ID | Title | Effort | Depends | Gap(s) | Status |
 |----|-------|--------|---------|--------|--------|
-| [P05-11](P05-11.md) | Bus simulation + multi-bit wire propagation | 10h | P05-02 | GAP-3D-2 | TODO |
+| [P05-11](P05-11.md) | Bus simulation + multi-bit wire propagation | 10h | P05-02 | GAP-3D-2 | DONE |
 | [P05-12](P05-12.md) | Bus 3D components (splitter, joiner) | 8h | P05-02 | GAP-3D-2 | TODO |
-| [P05-13](P05-13.md) | Multi-bit I/O UI (bit toggles, format selector) | 5h | P05-02 | GAP-UI-4, GAP-3D-2 | TODO |
-| [P05-14](P05-14.md) | Circuit persistence (serialize + save/load + export/import) | 10h | P05-03 | GAP-3D-6 | TODO |
-| [P05-15](P05-15.md) | Builtin chip implementations (16 Project 1 chips) | 8h | P05-01 | GAP-3D-8 | TODO |
+| [P05-13](P05-13.md) | Multi-bit I/O UI (bit toggles, format selector) | 5h | P05-02 | GAP-UI-4, GAP-3D-2 | DONE |
+| [P05-14](P05-14.md) | Circuit persistence (serialize + save/load + export/import) | 10h | P05-03 | GAP-3D-6 | DONE |
+| [P05-15](P05-15.md) | Builtin chip implementations (16 Project 1 chips) | 8h | P05-01 | GAP-3D-8 | DONE |
 | [P05-16](P05-16.md) | HDL compiler (HDL → evaluable chip) | 14h | P05-04, P05-01 | GAP-UI-1, GAP-3D-1 | TODO |
 
 ### Layer 2 — Depends on multiple Layer 0/1 items
