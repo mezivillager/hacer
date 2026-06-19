@@ -1,6 +1,6 @@
 // src/core/hdl/compiler.ts
 import type { HDLChip, HDLPart } from './types'
-import type { ChipDefinition, ChipPin } from '../chips/types'
+import type { ChipDefinition } from '../chips/types'
 import type { ChipRegistry } from '../chips/registry'
 import { isBuiltinChip } from '../chips/types'
 
@@ -49,14 +49,14 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
   }
 
   // 2. Resolve parts
-  const resolved: Array<{ part: HDLPart; def: ChipDefinition; index: number }> = []
-  ast.parts.forEach((part, index) => {
+  const resolved: Array<{ part: HDLPart; def: ChipDefinition }> = []
+  ast.parts.forEach((part) => {
     const def = registry.get(part.name)
     if (!def) {
       errors.push({ message: `Unknown chip-part: "${part.name}"`, partName: part.name })
       return
     }
-    resolved.push({ part, def, index })
+    resolved.push({ part, def })
   })
   if (errors.length) return { success: false, errors }
 
