@@ -1,7 +1,7 @@
 # LLM Workflow Integration Proposal
 
 **PURPOSE**: Integrate best practices from the "Complete Claude AI Learning Document" into a reusable workflow that works not just for HACER but for any software repo.  
-**STATUS**: ✅ Alternative A implemented (2025-03).
+**STATUS**: ✅ Alternative A implemented (2025-03). **Historical record** — for the live workflow see [`AGENTS.md`](../AGENTS.md), [`.claude/skills/`](../.claude/skills/), and [`docs/llm-workflow.md`](./llm-workflow.md); do not treat any "missing / ❌" items below as current.
 
 ---
 
