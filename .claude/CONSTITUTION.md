@@ -7,6 +7,7 @@ This constitution defines the non-negotiable behavioral boundaries, coding stand
 - **Root Cause Resolution:** Fix the underlying system, not just the symptom. Avoid "hacky" fixes unless explicitly requested as a temporary workaround.
 - **Simplicity & Elegance:** Prefer simple, readable, and maintainable solutions over complex, clever ones. Minimize the impact of changes.
 - **Evidence Over Claims:** Never claim a task is complete without concrete proof. Always run tests (`pnpm run test:run`), linting (`pnpm run lint`), and builds (`pnpm run build`) before declaring success.
+- **Design for Longevity:** Favor extensibility, configurability, and scalability over near-term expedience. Build clean, well-defined seams so the system can grow — new chip/implementation types, deeper levels below NAND, higher architectures, plugins — without rework. This *complements* Simplicity & Elegance: stay simple, but never take a shortcut that flattens information or forecloses future growth. When the expedient option and the extensible option diverge, choose extensible. (YAGNI still holds — don't build unused features; do leave the door open.) See `docs/decisions/0003`.
 
 ## 2. Coding Standards
 - **Strict TypeScript:** No `any`. Fix type errors; never suppress with `@ts-ignore`. Branded ID types (`GateId`, `WireId`, `PinId`) are a **Phase 5+ aspiration** — IDs are plain `string` today; do not assume branded types exist.
