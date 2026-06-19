@@ -24,7 +24,7 @@ This document helps AI agents and developers understand the codebase structure a
 
 ## ⚠️ IMPORTANT: Phase Tracking & Maintenance
 
-**Last Updated:** 2026-05-14  
+**Last Updated:** 2026-06-19  
 **Current Phase:** Phase 0.5 (In Progress)  
 **Completed Infrastructure:** Phase 0.25 UI/canvas, Tailwind/shadcn design shell, semantic-release  
 **Next Product Phase:** Phase 0.6: Arithmetic & Sequential Logic
@@ -508,7 +508,7 @@ import { snapToGrid, worldToGrid, canPlaceGateAt, GRID_SIZE } from '@/utils/grid
 import { Scene } from '@/components/canvas/Scene';
 import { SceneGrid } from '@/components/canvas/Scene/SceneGrid';
 import { PlacementPreview } from '@/components/canvas/Scene/PlacementPreview';
-import { Sidebar } from '@/components/ui/Sidebar';
+import { CompactToolbar } from '@/components/ui/CompactToolbar';
 
 // Gates (registry-driven; per-chip components were removed 2026-05-24)
 import { GateRenderer } from '@/gates';
