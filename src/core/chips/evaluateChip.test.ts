@@ -1,8 +1,9 @@
 // src/core/chips/evaluateChip.test.ts
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { createChipRegistry, registerBuiltin } from './registry'
 import type { ChipRegistry } from './registry'
 import { evaluateChip } from './evaluateChip'
+import * as compilerModule from '../hdl/compiler'
 
 let registry: ChipRegistry
 beforeEach(() => {
@@ -41,11 +42,21 @@ describe('evaluateChip', () => {
   })
 
   it('compiles an hdl chip once and reuses the cached evaluator', () => {
-    const src = 'CHIP Not { IN in; OUT out; PARTS: Nand(a=in, b=in, out=out); }'
-    const chip = { name: 'Not', inputs: [{ name: 'in', width: 1 }], outputs: [{ name: 'out', width: 1 }], implementation: { type: 'hdl' as const, source: src } }
+    // Use a fresh chip object not seen by any other test so the WeakMap has no entry yet.
+    const src = 'CHIP CacheNot { IN in; OUT out; PARTS: Nand(a=in, b=in, out=out); }'
+    const chip = { name: 'CacheNot', inputs: [{ name: 'in', width: 1 }], outputs: [{ name: 'out', width: 1 }], implementation: { type: 'hdl' as const, source: src } }
     registry.register(chip)
-    // Same ChipDefinition object → second eval hits the WeakMap cache (no recompile, same result).
+
+    const spy = vi.spyOn(compilerModule, 'compileHDL')
+
+    // First eval — cache miss → compileHDL must be called once.
     expect(evaluateChip(chip, { in: 0 }, registry)).toEqual({ out: 1 })
+    // Second eval — cache hit → compileHDL must NOT be called again.
     expect(evaluateChip(chip, { in: 1 }, registry)).toEqual({ out: 0 })
+
+    // If the WeakMap cache were bypassed, compileHDL would be called twice.
+    expect(spy).toHaveBeenCalledTimes(1)
+
+    spy.mockRestore()
   })
 })
