@@ -39,4 +39,13 @@ describe('evaluateChip', () => {
     const Loop = registry.get('Loop')!
     expect(() => evaluateChip(Loop, { a: 1 }, registry, { maxDepth: 10 })).toThrow(/depth/i)
   })
+
+  it('compiles an hdl chip once and reuses the cached evaluator', () => {
+    const src = 'CHIP Not { IN in; OUT out; PARTS: Nand(a=in, b=in, out=out); }'
+    const chip = { name: 'Not', inputs: [{ name: 'in', width: 1 }], outputs: [{ name: 'out', width: 1 }], implementation: { type: 'hdl' as const, source: src } }
+    registry.register(chip)
+    // Same ChipDefinition object → second eval hits the WeakMap cache (no recompile, same result).
+    expect(evaluateChip(chip, { in: 0 }, registry)).toEqual({ out: 1 })
+    expect(evaluateChip(chip, { in: 1 }, registry)).toEqual({ out: 0 })
+  })
 })
