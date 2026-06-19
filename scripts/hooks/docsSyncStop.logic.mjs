@@ -23,6 +23,33 @@ export function isDocPath(p) {
   return p.endsWith('.md')
 }
 
+/** Parse `git status --porcelain` output (uncommitted changes) into changed paths. */
+export function parsePorcelainPaths(text) {
+  return (text || '')
+    .split('\n')
+    .filter(Boolean)
+    .map((line) => line.slice(3)) // strip the 2 status chars + space
+    .map((p) => (p.includes(' -> ') ? p.split(' -> ')[1] : p)) // rename: take new path
+    .map((p) => p.replace(/^"|"$/g, '').trim())
+    .filter(Boolean)
+}
+
+/** Parse `git diff --name-only` output (committed changes vs a base) into changed paths. */
+export function parseDiffNamesPaths(text) {
+  return (text || '')
+    .split('\n')
+    .map((p) => p.trim())
+    .filter(Boolean)
+}
+
+/**
+ * Union of uncommitted (porcelain) and committed (diff vs base) changed paths, deduped.
+ * Detecting committed changes is what stops the "work committed before Stop" bypass.
+ */
+export function collectChangedPaths(porcelainText, diffText) {
+  return [...new Set([...parsePorcelainPaths(porcelainText), ...parseDiffNamesPaths(diffText)])]
+}
+
 /**
  * Decide whether the Stop hook should remind/block to prompt a docs-sync.
  * @param {{ stopHookActive?: boolean, alreadyReminded?: boolean, changedPaths?: string[], enforce?: boolean }} input

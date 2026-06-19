@@ -5,7 +5,7 @@ import { execFileSync } from 'node:child_process'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { evaluateStopHook } from './docsSyncStop.logic.mjs'
+import { evaluateStopHook, collectChangedPaths } from './docsSyncStop.logic.mjs'
 
 function readStdin() {
   try {
@@ -15,22 +15,34 @@ function readStdin() {
   }
 }
 
-function gitChangedPaths(cwd) {
+function git(cwd, args) {
   try {
-    const out = execFileSync('git', ['-C', cwd, 'status', '--porcelain'], {
+    return execFileSync('git', ['-C', cwd, ...args], {
       encoding: 'utf-8',
       stdio: ['ignore', 'pipe', 'ignore'],
     })
-    return out
-      .split('\n')
-      .filter(Boolean)
-      .map((line) => line.slice(3)) // strip the 2 status chars + space
-      .map((p) => (p.includes(' -> ') ? p.split(' -> ')[1] : p)) // rename: take new path
-      .map((p) => p.replace(/^"|"$/g, '').trim())
-      .filter(Boolean)
   } catch {
-    return [] // not a git repo (e.g. workspace root) or git unavailable → no nudge
+    return null
   }
+}
+
+// Commit to diff committed changes against — the branch's merge-base with the
+// integration target. Without this, work committed before Stop leaves a clean
+// worktree and the checkpoint is silently bypassed.
+function baseRef(cwd) {
+  for (const base of ['origin/main', 'main']) {
+    const mb = git(cwd, ['merge-base', base, 'HEAD'])
+    if (mb && mb.trim()) return mb.trim()
+  }
+  return null
+}
+
+function gitChangedPaths(cwd) {
+  const porcelain = git(cwd, ['status', '--porcelain']) // uncommitted (worktree + index + untracked)
+  if (porcelain === null) return [] // not a git repo (e.g. workspace root) or git unavailable → no nudge
+  const base = baseRef(cwd)
+  const committed = base ? git(cwd, ['diff', '--name-only', base, 'HEAD']) : '' // committed on this branch
+  return collectChangedPaths(porcelain, committed || '')
 }
 
 function markerFile(sessionId) {
