@@ -106,3 +106,31 @@ describe('compileHDL — single-bit', () => {
     expect(r.evaluate({ a: 1, b: 1 }, ctx)).toEqual({ out: 0 })
   })
 })
+
+describe('compileHDL — sub-bus / 16-bit', () => {
+  let reg: ChipRegistry
+  beforeEach(() => {
+    reg = createChipRegistry()
+    registerBuiltin(reg, 'Nand', [{ name: 'a', width: 1 }, { name: 'b', width: 1 }], [{ name: 'out', width: 1 }], (i) => ({ out: ~(i.a & i.b) & 1 }))
+    registerBuiltin(reg, 'Not', [{ name: 'in', width: 1 }], [{ name: 'out', width: 1 }], (i) => ({ out: i.in === 0 ? 1 : 0 }))
+  })
+
+  it('compiles Not4 over sub-bus bits and evaluates bitwise', () => {
+    const src = `CHIP Not4 { IN in[4]; OUT out[4];
+      PARTS:
+      Not(in=in[0], out=out[0]);
+      Not(in=in[1], out=out[1]);
+      Not(in=in[2], out=out[2]);
+      Not(in=in[3], out=out[3]);
+    }`
+    const ast = parseHDL(src)
+    expect(ast.success).toBe(true)
+    if (!ast.success) return
+    const r = compileHDL(ast.chip, reg)
+    expect(r.success).toBe(true)
+    if (!r.success) return
+    const ctx = builtinOnlyCtx(reg)
+    expect(r.evaluate({ in: 0b0000 }, ctx)).toEqual({ out: 0b1111 })
+    expect(r.evaluate({ in: 0b1010 }, ctx)).toEqual({ out: 0b0101 })
+  })
+})
