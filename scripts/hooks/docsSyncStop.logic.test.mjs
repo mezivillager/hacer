@@ -3,6 +3,9 @@ import {
   evaluateStopHook,
   isCodePath,
   isDocPath,
+  parsePorcelainPaths,
+  parseDiffNamesPaths,
+  collectChangedPaths,
   REMINDER,
 } from './docsSyncStop.logic.mjs'
 
@@ -65,5 +68,40 @@ describe('path classifiers', () => {
     expect(isDocPath('.cursorrules')).toBe(true)
     expect(isDocPath('CHANGELOG.md')).toBe(false)
     expect(isDocPath('src/x.ts')).toBe(false)
+  })
+})
+
+describe('parsePorcelainPaths', () => {
+  it('extracts paths and strips status codes', () => {
+    expect(parsePorcelainPaths(' M src/a.ts\n?? src/b.ts')).toEqual(['src/a.ts', 'src/b.ts'])
+  })
+  it('takes the new path for renames', () => {
+    expect(parsePorcelainPaths('R  old.ts -> src/new.ts')).toEqual(['src/new.ts'])
+  })
+  it('returns [] for empty input', () => {
+    expect(parsePorcelainPaths('')).toEqual([])
+  })
+})
+
+describe('parseDiffNamesPaths', () => {
+  it('splits one path per line', () => {
+    expect(parseDiffNamesPaths('src/a.ts\ndocs/x.md\n')).toEqual(['src/a.ts', 'docs/x.md'])
+  })
+  it('returns [] for empty input', () => {
+    expect(parseDiffNamesPaths('')).toEqual([])
+  })
+})
+
+describe('collectChangedPaths', () => {
+  it('unions worktree and committed paths, deduped and order-preserving', () => {
+    expect(collectChangedPaths(' M src/a.ts', 'src/a.ts\ndocs/x.md')).toEqual([
+      'src/a.ts',
+      'docs/x.md',
+    ])
+  })
+  it('detects committed-only changes when the worktree is clean (the PR#119 fix)', () => {
+    expect(collectChangedPaths('', 'src/store/circuitStore.ts')).toEqual([
+      'src/store/circuitStore.ts',
+    ])
   })
 })
