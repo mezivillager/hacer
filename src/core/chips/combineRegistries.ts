@@ -28,7 +28,7 @@ export function combineRegistries(...registries: ChipRegistry[]): ChipRegistry {
       }
       return out
     },
-    register(): void {
+    register(_chip: ChipDefinition): void {
       throw new Error('combineRegistries: read-only view; register on a concrete registry instead')
     },
   }
