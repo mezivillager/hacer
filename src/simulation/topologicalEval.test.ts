@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { useCircuitStore } from '@/store/circuitStore'
+import { getUserChipRegistry, resetAppRegistriesForTests } from '@/core/chips/appRegistry'
 import {
   topologicalSort,
   evaluateCircuit,
@@ -752,6 +753,50 @@ describe('multi-bit propagation', () => {
     })
     useCircuitStore.setState((state) => { evaluateCircuit(state) })
     expect(getState().outputNodes.find((n) => n.id === output.id)?.value).toBe(1)
+  })
+})
+
+describe('evaluateCircuit — hdl chips', () => {
+  beforeEach(() => resetAppRegistriesForTests())
+
+  it('evaluates a placed hdl chip on the canvas via evaluateChip', () => {
+    // Register an HDL "HdlNot" into the user registry.
+    // We use a unique name (not "Not") so builtin lookup doesn't shadow it,
+    // ensuring the HDL evaluation path is exercised.
+    getUserChipRegistry().register({
+      name: 'HdlNot',
+      inputs: [{ name: 'in', width: 1 }],
+      outputs: [{ name: 'out', width: 1 }],
+      implementation: { type: 'hdl', source: 'CHIP HdlNot { IN in; OUT out; PARTS: Nand(a=in, b=in, out=out); }' },
+    })
+
+    // Mirror the existing single-NOT-gate test pattern (evaluateCircuit describe,
+    // "single NOT gate: input 0 → output 1"), swapping 'Not' for 'HdlNot'.
+    const inputNode = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
+    const gate = getState().addGate('HdlNot', { x: 4, y: 0, z: 0 })
+    const outputNode = getState().addOutputNode('out', { x: 8, y: 0, z: 0 })
+
+    getState().addWire(
+      { type: 'input', entityId: inputNode.id },
+      { type: 'gate', entityId: gate.id, pinId: gate.inputs[0].id },
+      []
+    )
+    getState().addWire(
+      { type: 'gate', entityId: gate.id, pinId: gate.outputs[0].id },
+      { type: 'output', entityId: outputNode.id },
+      []
+    )
+
+    getState().updateInputNodeValue(inputNode.id, 0)
+    let outcome: EvaluateCircuitResult | undefined
+    useCircuitStore.setState((state) => {
+      outcome = evaluateCircuit(state)
+    })
+
+    expect(outcome?.status).toBe('ok')
+    // HdlNot(0) = Nand(0,0) = 1
+    expect(getState().gates[0].outputs[0].value).toBe(1)
+    expect(getState().outputNodes[0].value).toBe(1)
   })
 })
 
