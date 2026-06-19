@@ -11,7 +11,7 @@ git clone https://github.com/mezivillager/hacer.git
 cd hacer
 ```
 
-2. **Prerequisites**: Node.js 20 or higher. Use `nvm use` if you have [nvm](https://github.com/nvm-sh/nvm) (`.nvmrc` is provided).
+2. **Prerequisites**: Node.js 22 or higher. Use `nvm use` if you have [nvm](https://github.com/nvm-sh/nvm) (`.nvmrc` is provided).
 
 3. **Install dependencies**
 

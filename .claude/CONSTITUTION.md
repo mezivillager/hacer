@@ -4,7 +4,7 @@ This constitution defines the non-negotiable behavioral boundaries, coding stand
 
 ## 1. Prime Directives
 - **Zero Laziness:** Always provide complete, working code. Never use placeholders like `// ...existing code...` or `// implement logic here`.
-- **Root Cause Resolution:** Fix the underlying system, not just the symptom. Avoid "hacky" fixes unless explicitly explicitly requested as a temporary workaround.
+- **Root Cause Resolution:** Fix the underlying system, not just the symptom. Avoid "hacky" fixes unless explicitly requested as a temporary workaround.
 - **Simplicity & Elegance:** Prefer simple, readable, and maintainable solutions over complex, clever ones. Minimize the impact of changes.
 - **Evidence Over Claims:** Never claim a task is complete without concrete proof. Always run tests (`pnpm run test:run`), linting (`pnpm run lint`), and builds (`pnpm run build`) before declaring success.
 

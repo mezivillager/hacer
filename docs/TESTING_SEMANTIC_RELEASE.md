@@ -1,7 +1,7 @@
 # Testing Semantic Release
 
 **Last Updated:** 2026-05-12  
-**Current package version:** 2.0.0  
+**Current package version:** see `package.json` (`version` field) — not hardcoded here  
 **Status:** semantic-release is already installed and active.
 
 This document is for validating the current release setup after release-related changes. It is not a first-release checklist.
