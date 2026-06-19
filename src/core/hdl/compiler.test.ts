@@ -107,6 +107,48 @@ describe('compileHDL — single-bit', () => {
   })
 })
 
+describe('compileHDL — connection validation (rejects silently-wrong HDL)', () => {
+  it('errors when a required part input pin is left unconnected', () => {
+    // Nand needs both a and b; b is omitted. Without validation this compiles and the
+    // builtin coerces the missing b to 0, producing a plausible-but-wrong truth table.
+    const ast = parseHDL('CHIP Bad { IN in; OUT out; PARTS: Nand(a=in, out=out); }')
+    expect(ast.success).toBe(true)
+    if (!ast.success) return
+    const r = compileHDL(ast.chip, registry)
+    expect(r.success).toBe(false)
+    if (!r.success) {
+      expect(r.errors.some((e) => /\bb\b/.test(e.pinName ?? '') || /not connected|unconnected/i.test(e.message))).toBe(true)
+    }
+  })
+
+  it('errors when a part input reads a signal no part produces (typo)', () => {
+    // `nandOtu` is not a chip input, not a literal, and nothing writes it.
+    // Without validation it reads as 0 at evaluation, silently changing behavior.
+    const ast = parseHDL('CHIP Bad { IN in; OUT out; PARTS: Nand(a=nandOtu, b=in, out=out); }')
+    expect(ast.success).toBe(true)
+    if (!ast.success) return
+    const r = compileHDL(ast.chip, registry)
+    expect(r.success).toBe(false)
+    if (!r.success) {
+      expect(r.errors.some((e) => /nandOtu/.test(e.message))).toBe(true)
+    }
+  })
+
+  it('errors when an unsliced bus connects to a mismatched-width pin', () => {
+    // chip input `in` is 16-bit but Not's `in` pin is 1-bit; the unsliced connection
+    // must be rejected (the scalar builtin would otherwise silently truncate the bus).
+    registerBuiltin(registry, 'Not', [{ name: 'in', width: 1 }], [{ name: 'out', width: 1 }], (i) => ({ out: i.in === 0 ? 1 : 0 }))
+    const ast = parseHDL('CHIP Bad { IN in[16]; OUT out; PARTS: Not(in=in, out=out); }')
+    expect(ast.success).toBe(true)
+    if (!ast.success) return
+    const r = compileHDL(ast.chip, registry)
+    expect(r.success).toBe(false)
+    if (!r.success) {
+      expect(r.errors.some((e) => /width/i.test(e.message))).toBe(true)
+    }
+  })
+})
+
 describe('compileHDL — sub-bus / 16-bit', () => {
   let reg: ChipRegistry
   beforeEach(() => {

@@ -63,6 +63,19 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
 
   const chipInputNames = new Set(ast.inputs.map((p) => p.name))
 
+  // Signal widths: chip I/O are declared; internal wires are inferred from the (unsliced)
+  // output pin that produces them. Used to reject full-width bus↔scalar pin mismatches below.
+  const signalWidth = new Map<string, number>()
+  for (const p of ast.inputs) signalWidth.set(p.name, p.width)
+  for (const p of ast.outputs) signalWidth.set(p.name, p.width)
+  for (const { part, def } of resolved) {
+    for (const conn of part.connections) {
+      if (conn.start !== undefined || LITERALS.has(conn.external)) continue // sliced writes don't pin total width
+      const outPin = def.outputs.find((p) => p.name === conn.internal)
+      if (outPin && !signalWidth.has(conn.external)) signalWidth.set(conn.external, outPin.width)
+    }
+  }
+
   // 3. Validate connections + classify reads/writes per part
   // reads[i] = internal signals part i consumes (external names, minus literals & chip inputs)
   // writes[i] = signals part i produces
@@ -71,6 +84,7 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
   for (const { part, def } of resolved) {
     const r = new Set<string>()
     const w = new Set<string>()
+    const connectedInputs = new Set<string>()
     for (const conn of part.connections) {
       const inPin = def.inputs.find((p) => p.name === conn.internal)
       const outPin = def.outputs.find((p) => p.name === conn.internal)
@@ -84,8 +98,15 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
         if (sliceWidth !== pin.width) {
           errors.push({ message: `Part "${part.name}" pin "${conn.internal}" width ${pin.width} != slice width ${sliceWidth}`, partName: part.name, pinName: conn.internal })
         }
+      } else if (pin && !LITERALS.has(conn.external)) {
+        // Unsliced connection: pin width must match the external signal's full width.
+        const extWidth = signalWidth.get(conn.external)
+        if (extWidth !== undefined && extWidth !== pin.width) {
+          errors.push({ message: `Part "${part.name}" pin "${conn.internal}" width ${pin.width} != signal "${conn.external}" width ${extWidth}`, partName: part.name, pinName: conn.internal })
+        }
       }
       if (inPin) {
+        connectedInputs.add(inPin.name)
         if (LITERALS.has(conn.external)) continue
         if (!chipInputNames.has(conn.external)) r.add(conn.external)
       } else {
@@ -94,6 +115,13 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
           continue
         }
         w.add(conn.external)
+      }
+    }
+    // Every input pin must be wired — an unconnected input would be silently read as 0.
+    // (Output pins may legally be left unconnected when a chip doesn't use them.)
+    for (const p of def.inputs) {
+      if (!connectedInputs.has(p.name)) {
+        errors.push({ message: `Part "${part.name}" input pin "${p.name}" is not connected`, partName: part.name, pinName: p.name })
       }
     }
     reads.push(r)
@@ -110,12 +138,18 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
   reads.forEach((r, i) => {
     r.forEach((sig) => {
       const p = producerOf.get(sig)
-      if (p !== undefined && p !== i) {
+      if (p === undefined) {
+        // Not a chip input, not a literal, and no part writes it → dangling/typo'd signal.
+        errors.push({ message: `Signal "${sig}" is read by part "${resolved[i].part.name}" but no part produces it`, partName: resolved[i].part.name })
+        return
+      }
+      if (p !== i) {
         adj[p].push(i)
         indegree[i]++
       }
     })
   })
+  if (errors.length) return { success: false, errors }
   const queue: number[] = []
   for (let i = 0; i < n; i++) if (indegree[i] === 0) queue.push(i)
   const order: number[] = []
