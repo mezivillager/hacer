@@ -18,6 +18,22 @@ describe('combineRegistries', () => {
     expect(c.list().map((d) => d.name).sort()).toEqual(['Foo', 'Nand'])
   })
 
+  it('list() deduplicates by name and get() returns first-registry definition', () => {
+    const a = createChipRegistry()
+    const b = createChipRegistry()
+    const implA = (i: Record<string, number>) => ({ out: i.x })
+    const implB = (i: Record<string, number>) => ({ out: ~i.x & 1 })
+    registerBuiltin(a, 'Dup', [{ name: 'x', width: 1 }], [{ name: 'out', width: 1 }], implA)
+    registerBuiltin(b, 'Dup', [{ name: 'x', width: 1 }], [{ name: 'out', width: 1 }], implB)
+    const c = combineRegistries(a, b)
+    const names = c.list().map((d) => d.name).filter((n) => n === 'Dup')
+    expect(names).toHaveLength(1)
+    const def = c.get('Dup')
+    expect(def).toBeDefined()
+    // first-wins: implementation should match registry a's definition
+    expect(def).toBe(a.get('Dup'))
+  })
+
   it('is read-only (register throws)', () => {
     const c = combineRegistries(createChipRegistry())
     expect(() => c.register({ name: 'X', inputs: [{ name: 'a', width: 1 }], outputs: [{ name: 'o', width: 1 }], implementation: { type: 'circuit', circuitData: null } })).toThrow()
