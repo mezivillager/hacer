@@ -30,6 +30,7 @@ See [llms.txt](../llms.txt) for document discovery order.
 | Review | `requesting-code-review` | After task or before merge — dispatch code reviewer |
 | Review | `code-review` | Before PR — full self-review checklist |
 | Finish | `finishing-a-development-branch` | Implementation complete — merge, PR, or cleanup |
+| Finish | `docs-sync` | Session end — capture emergent decisions as ADRs + reconcile living docs |
 | HACER | `hacer-patterns` | Any HACER code — stack, architecture, patterns |
 
 Full list: `.claude/skills/` — each skill has a `SKILL.md` with frontmatter `name` and `description`.
@@ -42,6 +43,7 @@ Full list: `.claude/skills/` — each skill has a `SKILL.md` with frontmatter `n
 - **Capture lessons**: [tasks/lessons.md](../tasks/lessons.md)
 - **Design specs**: [docs/specs/](../docs/specs/)
 - **Implementation plans**: [docs/plans/](../docs/plans/)
+- **Decisions (ADRs)**: [docs/decisions/](../docs/decisions/) — capture emergent decisions via the `docs-sync` skill
 
 ## Verification Before Done
 
