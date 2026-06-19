@@ -26,3 +26,4 @@ It captures decisions here and then runs the author pass in [`../llm-docs-sync.m
 | [0001](0001-adopt-adr-log-and-docs-sync-enforcement.md) | Adopt ADR log + enforced docs-sync | Accepted | 2026-06-19 |
 | [0002](0002-commit-and-worktree-conventions.md) | Commit attribution & worktree location conventions | Accepted | 2026-06-19 |
 | [0003](0003-design-for-longevity.md) | Design for long-term extensibility over near-term expedience | Accepted | 2026-06-19 |
+| [0004](0004-p05-18-boundary-evaluatechip-seam-landed-in-p05-16.md) | P05-18 re-scope: evaluateChip dispatch seam landed in P05-16 | Accepted | 2026-06-19 |

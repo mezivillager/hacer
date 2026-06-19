@@ -32,12 +32,12 @@
 - [x] **P05-13** — Multi-bit I/O UI — needs P05-02 — [P05-13.md](./phase-0.5-tickets/P05-13.md)
 - [x] **P05-14** — Circuit persistence — needs P05-03 — [P05-14.md](./phase-0.5-tickets/P05-14.md)
 - [x] **P05-15** — Builtin chip implementations (16 chips) — needs P05-01 — **completed via** [2026-05-24-builtin-chip-placement-standardization.md](../2026-05-24-builtin-chip-placement-standardization.md)
-- [ ] **P05-16** — HDL compiler — needs P05-04, P05-01 — [P05-16.md](./phase-0.5-tickets/P05-16.md)
+- [x] **P05-16** — HDL compiler — needs P05-04, P05-01 — [P05-16.md](./phase-0.5-tickets/P05-16.md)
 
 ## Layer 2 — Multiple dependencies
 
 - [ ] **P05-17** — Test execution engine — needs P05-05, P05-06, P05-03 — [P05-17.md](./phase-0.5-tickets/P05-17.md)
-- [ ] **P05-18** — Chip hierarchy evaluation — needs P05-01, P05-16 — [P05-18.md](./phase-0.5-tickets/P05-18.md)
+- [ ] **P05-18** — Chip hierarchy evaluation — needs P05-01, P05-16 — [P05-18.md](./phase-0.5-tickets/P05-18.md) — **re-scoped per ADR-0004**: the evaluateChip dispatch seam and engine routing landed in P05-16; P05-18 now focuses on user-chip authoring lifecycle and deeper composites
 - [ ] **P05-19** — Chip workflow browser UI — needs P05-01 — [P05-19.md](./phase-0.5-tickets/P05-19.md)
 - [ ] **P05-20** — ChipDefinitionPanel + auto-IO — needs P05-01, P05-08 — [P05-20.md](./phase-0.5-tickets/P05-20.md)
 

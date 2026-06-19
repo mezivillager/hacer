@@ -49,14 +49,14 @@ Each ticket file below is **self-contained** — a fresh LLM session can impleme
 | [P05-13](P05-13.md) | Multi-bit I/O UI (bit toggles, format selector) | 5h | P05-02 | GAP-UI-4, GAP-3D-2 | DONE |
 | [P05-14](P05-14.md) | Circuit persistence (serialize + save/load + export/import) | 10h | P05-03 | GAP-3D-6 | DONE |
 | [P05-15](P05-15.md) | Builtin chip implementations (16 Project 1 chips) | 8h | P05-01 | GAP-3D-8 | DONE |
-| [P05-16](P05-16.md) | HDL compiler (HDL → evaluable chip) | 14h | P05-04, P05-01 | GAP-UI-1, GAP-3D-1 | TODO |
+| [P05-16](P05-16.md) | HDL compiler (HDL → evaluable chip) | 14h | P05-04, P05-01 | GAP-UI-1, GAP-3D-1 | DONE |
 
 ### Layer 2 — Depends on multiple Layer 0/1 items
 
 | ID | Title | Effort | Depends | Gap(s) | Status |
 |----|-------|--------|---------|--------|--------|
 | [P05-17](P05-17.md) | Test execution engine | 12h | P05-05, P05-06, P05-03 | GAP-3D-4 | TODO |
-| [P05-18](P05-18.md) | Chip hierarchy evaluation (recursive) | 10h | P05-01, P05-16 | GAP-3D-1 | TODO |
+| [P05-18](P05-18.md) | Chip hierarchy evaluation (recursive) — **re-scoped per ADR-0004** (seam in P05-16) | 10h | P05-01, P05-16 | GAP-3D-1 | TODO |
 | [P05-19](P05-19.md) | Chip workflow browser UI | 8h | P05-01 | GAP-3D-7 | TODO |
 | [P05-20](P05-20.md) | ChipDefinitionPanel + auto-IO + validation | 8h | P05-01, P05-08 | GAP-3D-3 | TODO |
 
