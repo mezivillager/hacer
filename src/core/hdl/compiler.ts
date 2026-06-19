@@ -3,6 +3,7 @@ import type { HDLChip, HDLPart } from './types'
 import type { ChipDefinition } from '../chips/types'
 import type { ChipRegistry } from '../chips/registry'
 import { isBuiltinChip } from '../chips/types'
+import { readSubBus, writeSubBus } from '@/simulation/busOps'
 
 export interface EvalContext {
   registry: ChipRegistry
@@ -77,6 +78,13 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
         errors.push({ message: `Part "${part.name}" has no pin "${conn.internal}"`, partName: part.name, pinName: conn.internal })
         continue
       }
+      const pin = inPin ?? outPin
+      if (pin && conn.start !== undefined) {
+        const sliceWidth = (conn.end ?? conn.start) - conn.start + 1
+        if (sliceWidth !== pin.width) {
+          errors.push({ message: `Part "${part.name}" pin "${conn.internal}" width ${pin.width} != slice width ${sliceWidth}`, partName: part.name, pinName: conn.internal })
+        }
+      }
       if (inPin) {
         if (LITERALS.has(conn.external)) continue
         if (!chipInputNames.has(conn.external)) r.add(conn.external)
@@ -135,13 +143,22 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
         if (!def.inputs.some((p) => p.name === conn.internal)) continue // not an input pin
         if (conn.external === 'true') partInputs[conn.internal] = 1
         else if (conn.external === 'false') partInputs[conn.internal] = 0
-        else partInputs[conn.internal] = signals[conn.external] ?? 0 // Task 5 adds sub-bus read
+        else {
+          const sig = signals[conn.external] ?? 0
+          partInputs[conn.internal] =
+            conn.start !== undefined ? readSubBus(sig, conn.start, (conn.end ?? conn.start) - conn.start + 1) : sig
+        }
       }
       const partOutputs = ctx.evalChip(def, partInputs, { ...ctx, depth: ctx.depth + 1 })
       for (const conn of part.connections) {
         if (!def.outputs.some((p) => p.name === conn.internal)) continue // not an output pin
         const v = partOutputs[conn.internal]
-        if (typeof v === 'number') signals[conn.external] = v // Task 5 adds sub-bus write
+        if (typeof v === 'number') {
+          signals[conn.external] =
+            conn.start !== undefined
+              ? writeSubBus(signals[conn.external] ?? 0, v, conn.start, (conn.end ?? conn.start) - conn.start + 1)
+              : v
+        }
       }
     }
 
