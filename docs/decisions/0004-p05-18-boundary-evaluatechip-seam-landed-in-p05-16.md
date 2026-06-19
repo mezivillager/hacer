@@ -42,6 +42,15 @@ not part of P05-16:
   implementation, once that evaluator is built).
 - Any session picking up P05-18 should read this ADR first to avoid duplicating work.
 
+## Caveat — cache invalidation for future HDL editing
+
+The `evaluateChip` compiled-evaluator cache is a module `WeakMap` keyed by `ChipDefinition` object
+identity. Today `registry.register` rejects duplicate names, so editing HDL means a **new**
+`ChipDefinition` object is produced (fresh compile, cache correct). When a future "edit chip HDL"
+feature (P05-18/P05-21) lands, it **must** replace the `ChipDefinition` object rather than mutate
+`implementation.source` in place — or add explicit cache invalidation — otherwise a stale compiled
+evaluator could be reused silently.
+
 ## Affected living docs
 - `docs/plans/phase-0.5-tickets-CHECKLIST.md` — P05-16 marked DONE; P05-18 re-scope note added.
 - `docs/plans/phase-0.5-tickets/README.md` — P05-16 Status → DONE; P05-18 note added.
