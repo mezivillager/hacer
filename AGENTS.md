@@ -93,6 +93,7 @@ Brainstorm  →  Worktree  →  Plan  →  Execute (Subagents + TDD)  →  Revie
 ### Step 2 — Branching / Worktrees
 **Do NOT push directly to main without isolating your work.**
 - Trigger `using-git-worktrees` to establish a parallel dev stream.
+- **All new work goes in a dedicated worktree placed OUTSIDE the repo** as a sibling folder named `hacer-wt-<topic>` — e.g. `git worktree add ../hacer-wt-<topic> -b <type>/<topic>`. Never nest worktrees inside the repo. See `.cursor/rules/020-git-worktree-no-main.mdc`.
 
 ### Step 3 — Write a Plan
 - Trigger the `planning` skill.

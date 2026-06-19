@@ -1,4 +1,10 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
+# Reject AI authorship attribution in commit messages (HACER policy — see docs/decisions/0002).
+if grep -qiE 'co-authored-by:.*claude|generated with .*claude' "$1"; then
+  echo "❌ commit-msg: remove AI authorship attribution (e.g. 'Co-Authored-By: Claude', 'Generated with Claude Code')." >&2
+  exit 1
+fi
+
 pnpm exec commitlint --edit $1
