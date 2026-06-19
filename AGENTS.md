@@ -25,7 +25,7 @@
 
 No waivers. If a step fails, the task is **not** done.
 
-**Documentation sync:** Before claiming work complete, completing agents must run the **author pass** in **`docs/llm-docs-sync.md`** whenever the change affects phase status, public behavior, repo layout, or Phase 0.5 tickets. Reviewers run the **reviewer pass** from the same doc before approving merges that materially affect product or structure.
+**Documentation sync:** Before claiming work complete, completing agents must run the **author pass** in **`docs/llm-docs-sync.md`** whenever the change affects phase status, public behavior, repo layout, or Phase 0.5 tickets. Reviewers run the **reviewer pass** from the same doc before approving merges that materially affect product or structure. Additionally, capture emergent decisions or new directions as ADRs in **`docs/decisions/`** via the **`docs-sync`** skill; a Claude Code Stop hook (`scripts/hooks/docsSyncStop.mjs`) prompts when code changed but no docs were touched.
 
 **Harness / MCP / hooks (Cursor):** see **`docs/llm-harness.md`**.
 
@@ -38,6 +38,7 @@ No waivers. If a step fails, the task is **not** done.
 - **Patterns & examples** → `HACER_LLM_GUIDE.md`  
 - **Where files live + task jump table** → `REPO_MAP.md` (section *Common tasks → start here*)  
 - **Living docs aligned with code (author / reviewer)** → `docs/llm-docs-sync.md`  
+- **Recent decisions & new directions** → `docs/decisions/` (ADR log; capture via the `docs-sync` skill)  
 - **Planning / verification workflow** → `docs/llm-workflow.md`  
 - **Current task plan** → `tasks/todo.md`  
 - **Past mistakes** → `tasks/lessons.md`  
@@ -208,6 +209,7 @@ pnpm run build            # Production build
 - `tasks/lessons.md` → lessons from corrections (always read at session start; always update after mistakes)
 - `docs/specs/` → design documents (output of brainstorming)
 - `docs/plans/` → implementation plans (output of planning)
+- `docs/decisions/` → ADR log of cross-cutting decisions & direction changes (run the `docs-sync` skill to add)
 
 ---
 
