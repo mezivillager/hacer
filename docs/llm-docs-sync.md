@@ -33,6 +33,7 @@ Update **only** rows that this change logically touches. Mark others **N/A**.
 | `.cursorrules` | Phase-tracking banner must match agreed wording elsewhere |
 | `HACER_LLM_GUIDE.md` | Mandatory patterns or stack examples change |
 | `.github/copilot-instructions.md` | Same agent-facing rule changes as above |
+| `docs/decisions/*.md` | A cross-cutting decision, new direction, or rejected approach emerged this session (add an ADR via the `docs-sync` skill) |
 
 ---
 
@@ -43,6 +44,17 @@ Unless the task explicitly includes them:
 - Archival specs/plans marked **Do Not Modify** (e.g. dated migration trees)
 - `tasks/lessons.md` except when recording a lesson per project convention
 - `docs/superpowers/plans/**` as historical execution artifacts
+
+---
+
+## Capturing emergent decisions (ADRs)
+
+Living-doc reconciliation keeps docs aligned with **code**. But sessions also produce **decisions and
+new directions** that aren't tied to a single file. Capture those as ADRs in
+[`docs/decisions/`](./decisions/README.md) so they aren't lost between sessions.
+
+Run the **`docs-sync`** skill at session end (the Stop hook will prompt you). It writes any ADRs, then
+runs the author pass below. If no doc-relevant decision was made, say so explicitly — that is a valid outcome.
 
 ---
 
