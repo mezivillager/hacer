@@ -1,6 +1,7 @@
 import { clampToWidth } from './busOps'
 import { getBuiltinChipRegistry, getUserChipRegistry } from '@/core/chips/appRegistry'
-import { isBuiltinChip } from '@/core/chips/types'
+import { evaluateChipWithCtx, DEFAULT_MAX_DEPTH } from '@/core/chips/evaluateChip'
+import { combineRegistries } from '@/core/chips/combineRegistries'
 import type { CircuitState, Wire, WireEndpoint } from '@/store/types'
 
 /**
@@ -234,12 +235,10 @@ export function evaluateCircuit(state: CircuitState): EvaluateCircuitResult {
       }
     }
 
-    const chip =
-      getBuiltinChipRegistry().get(gate.chipName) ??
-      getUserChipRegistry().get(gate.chipName)
-    if (!chip || !isBuiltinChip(chip)) {
-      // Unknown or non-builtin chip — skip evaluation. User/HDL chips will
-      // route through evaluateChip() in a later ticket (P05-18).
+    const resolver = combineRegistries(getBuiltinChipRegistry(), getUserChipRegistry())
+    const chip = resolver.get(gate.chipName)
+    if (!chip) {
+      // Unknown chip — skip evaluation.
       continue
     }
 
@@ -247,7 +246,20 @@ export function evaluateCircuit(state: CircuitState): EvaluateCircuitResult {
     for (const inputPin of gate.inputs) {
       inputsByName[inputPin.name] = inputPin.value
     }
-    const outputs = chip.implementation.evaluate(inputsByName)
+    let outputs: Record<string, number>
+    try {
+      outputs = evaluateChipWithCtx(chip, inputsByName, {
+        registry: resolver,
+        depth: 0,
+        maxDepth: DEFAULT_MAX_DEPTH,
+        evalChip: evaluateChipWithCtx,
+      })
+    } catch {
+      // Compile/eval failure for this chip — skip it; combinational result for the
+      // rest of the circuit is still produced. (Surfacing per-chip compile errors to
+      // the UI is a follow-up; see spec error model.)
+      continue
+    }
     for (const outputPin of gate.outputs) {
       const newValue = outputs[outputPin.name]
       if (typeof newValue === 'number') {
