@@ -11,7 +11,7 @@
 
 Compile a parsed `HDLChip` AST into an **evaluable** chip and run it, closing the gap where HDL parses
 (P05-04) and a chip registry exists (P05-01) but nothing turns HDL into something the simulator can
-evaluate. **Acceptance:** all 15 Project-1 chips compile from their HDL fixtures — bottom-up from a
+evaluate. **Acceptance:** all 15 Project-1 chips compile from authored canonical HDL sources — bottom-up from a
 single `Nand` builtin — and evaluate identically to the builtin references.
 
 ## Non-goals
@@ -34,6 +34,7 @@ single `Nand` builtin — and evaluate identically to the builtin references.
   `isBuiltinChip/isHDLChip/isCircuitChip`; app registries `getBuiltinChipRegistry()` (16 Project-1 chips), `getUserChipRegistry()`.
 - `busOps`: `maskForWidth`, `readSubBus(value,startBit,numBits)`, `writeSubBus(target,sub,startBit,numBits)`, `clampToWidth(value,width)`.
 - `topologicalEval.ts` currently evaluates **builtin chips only**; HDL/user chips were explicitly deferred to "a later ticket". **No `compiler.ts` exists yet.**
+- ⚠️ `project1HdlFixtures.ts` is a **parser-regression corpus** (empty `PARTS:` stubs like `//// imagination required`) — **not** real implementations, and unusable for compilation. P05-16 authors the canonical Project-1 HDL in a new `src/core/hdl/project1HdlSources.ts`.
 
 ## Architecture
 
@@ -118,7 +119,7 @@ placed chip on canvas → topologicalEval → evaluateChip ───────
   cases (unknown part, unconnected pin, width mismatch, cycle).
 - `src/core/chips/evaluateChip.test.ts` — builtin dispatch; hdl dispatch (compile + cache hit); depth
   guard; `circuit` → clear error.
-- `src/core/hdl/project1-bottom-up.test.ts` — compile all 15 Project-1 chips from `project1HdlFixtures`
+- `src/core/hdl/project1-bottom-up.test.ts` — compile all 15 Project-1 chips from the authored `project1HdlSources`
   in dependency order starting from **Nand only**, registering each compiled chip; assert each matches
   its builtin reference (full truth table for ≤4-input 1-bit chips; representative vectors for 16-bit /
   multi-way). Proves the whole Project-1 hierarchy builds from a single NAND.
@@ -135,7 +136,8 @@ g. Compiled-evaluator caching, depth guard, error-message polish.
 
 ## Files
 - **Create:** `src/core/hdl/compiler.ts` (+ `compiler.test.ts`); `src/core/chips/evaluateChip.ts`
-  (+ `evaluateChip.test.ts`); `src/core/hdl/project1-bottom-up.test.ts`.
+  (+ `evaluateChip.test.ts`); `src/core/hdl/project1HdlSources.ts` (canonical Project-1 HDL — the existing
+  `project1HdlFixtures.ts` are parser stubs); `src/core/hdl/project1-bottom-up.test.ts`.
 - **Edit:** `src/simulation/topologicalEval.ts` (route via `evaluateChip`); `src/core/chips/types.ts`
   (add `ast?: HDLChip` to the `hdl` implementation variant).
 
