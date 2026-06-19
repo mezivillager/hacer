@@ -25,7 +25,7 @@ function buildHdlRegistry(): ChipRegistry {
   return reg
 }
 
-// Exhaustive vectors for small chips; representative vectors for wide ones.
+// Exhaustive vectors for small chips; discriminating vectors for wide ones.
 function inputVectors(inputs: { name: string; width: number }[]): Record<string, number>[] {
   const totalBits = inputs.reduce((s, p) => s + p.width, 0)
   if (totalBits <= 8) {
@@ -41,13 +41,49 @@ function inputVectors(inputs: { name: string; width: number }[]): Record<string,
     }
     return combos
   }
-  // wide: a handful of representative vectors
-  const samples = [0, 1, 0xffff, 0xaaaa, 0x5555, 0x1234, 0x8001]
+
+  // Wide path: split pins into narrow (width <= 4, e.g. sel) and wide (e.g. 16-bit data).
+  // Strategy:
+  //   1. Enumerate ALL values for each narrow pin (full cross-product) — this sweeps sel fully.
+  //   2. For each narrow combination, emit several data assignments where every wide pin
+  //      receives a DISTINCT value (pin-index–shifted from a pattern set), so a != b != c …
+  //      This makes sel routing observable: the selected output differs by sel value.
+  const narrowPins = inputs.filter((p) => p.width <= 4)
+  const widePins = inputs.filter((p) => p.width > 4)
+
+  // Eight visually distinct 16-bit patterns — enough to assign each of up to 8 data ports uniquely.
+  const DATA_PATTERNS = [0x0000, 0xffff, 0xaaaa, 0x5555, 0x1234, 0x8001, 0x3c3c, 0xc3c3]
+
+  // Build cross-product of all narrow-pin values.
+  const narrowCombos: Record<string, number>[] = [{}]
+  for (const p of narrowPins) {
+    const maxVal = (1 << p.width) - 1
+    const expanded: Record<string, number>[] = []
+    for (const existing of narrowCombos) {
+      for (let v = 0; v <= maxVal; v++) {
+        expanded.push({ ...existing, [p.name]: v })
+      }
+    }
+    narrowCombos.length = 0
+    narrowCombos.push(...expanded)
+  }
+
+  // For each narrow combo, emit one vector per "pattern offset" so consecutive wide pins differ.
+  // patternOffset shifts which DATA_PATTERN each wide pin starts from — producing distinct
+  // per-pin values across offsets and guaranteeing a != b across the whole vector set.
+  const NUM_OFFSETS = DATA_PATTERNS.length // 8 offsets → 8 data assignments per narrow combo
   const combos: Record<string, number>[] = []
-  for (const s of samples) {
-    const v: Record<string, number> = {}
-    for (const p of inputs) v[p.name] = s & ((1 << Math.min(p.width, 31)) - 1 || 0xffff)
-    combos.push(v)
+  for (const narrowCombo of narrowCombos) {
+    for (let offset = 0; offset < NUM_OFFSETS; offset++) {
+      const v: Record<string, number> = { ...narrowCombo }
+      for (let i = 0; i < widePins.length; i++) {
+        const p = widePins[i]
+        const mask = (1 << Math.min(p.width, 16)) - 1
+        // Each wide pin i gets a pattern shifted by (i + offset) so pins are distinguishable.
+        v[p.name] = DATA_PATTERNS[(i + offset) % DATA_PATTERNS.length] & mask
+      }
+      combos.push(v)
+    }
   }
   return combos
 }
@@ -63,6 +99,7 @@ describe('Project-1 bottom-up from NAND', () => {
   for (const name of project1DependencyOrder) {
     it(`${name} compiled-from-HDL matches the builtin reference`, () => {
       const hdlChip = hdlReg.get(name)!
+      expect(hdlChip).toBeTruthy()
       const ref = builtinReg.get(name)!
       expect(ref).toBeTruthy()
       for (const inputs of inputVectors(ref.inputs)) {
