@@ -185,6 +185,8 @@ type StoreState = ReturnType<typeof useCircuitStore.getState>;
 
 ## Branded Types (Phase 5+)
 
+> **Status: NOT YET IMPLEMENTED.** No branded types exist in `src/` today; IDs are plain `string`. This section documents the intended future convention (Phase 5+), not current code.
+
 Prevent ID confusion with branded types:
 
 ```typescript

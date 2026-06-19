@@ -9,7 +9,7 @@ This constitution defines the non-negotiable behavioral boundaries, coding stand
 - **Evidence Over Claims:** Never claim a task is complete without concrete proof. Always run tests (`pnpm run test:run`), linting (`pnpm run lint`), and builds (`pnpm run build`) before declaring success.
 
 ## 2. Coding Standards
-- **Strict TypeScript:** No `any`. Use precise, branded types (`GateId`, `WireId`, `PinId`) wherever possible. Fix type errors, do not suppress them with `@ts-ignore`.
+- **Strict TypeScript:** No `any`. Fix type errors; never suppress with `@ts-ignore`. Branded ID types (`GateId`, `WireId`, `PinId`) are a **Phase 5+ aspiration** — IDs are plain `string` today; do not assume branded types exist.
 - **React 19 & Compiler:** No manual memoization (`useMemo`, `useCallback`, `React.memo`). Do not mutate during render. Ensure pure renders.
 - **State Management (Zustand strictly):** Read via `useCircuitStore(state => state.property)`. Mutate exclusively via `circuitActions`. NEVER use Valtio or direct store mutations.
 - **Component Architecture:** Strictly ONE React component per file.
