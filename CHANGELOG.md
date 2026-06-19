@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.7.0](https://github.com/mezivillager/hacer/compare/v2.6.0...v2.7.0) (2026-06-19)
+
+### Features
+
+* add docs-sync capture skill; preserve it in superpowers sync ([c47e3cf](https://github.com/mezivillager/hacer/commit/c47e3cfa09edad9be7d799ca9cfb855c6e3ebe95))
+* enforce docs-sync via Claude Code Stop hook ([677d396](https://github.com/mezivillager/hacer/commit/677d3965669d4de90449582c2c08aeed48527f86))
+
+### Bug Fixes
+
+* detect committed branch changes in docs-sync Stop hook (PR[#119](https://github.com/mezivillager/hacer/issues/119) review) ([679c885](https://github.com/mezivillager/hacer/commit/679c88528f9d20fcca122993ddb01c0ace5e2af9))
+
+### Documentation
+
+* add ADR decision log and wire it into llm-docs-sync ([015808f](https://github.com/mezivillager/hacer/commit/015808f585cac40a8a3bf2aeb7621d1fa20ef055))
+* add docs-cleanup-and-sync-enforcement plan ([a70dbed](https://github.com/mezivillager/hacer/commit/a70dbeded57ed1c250f247cc160849a5770f60c2))
+* dedupe workflow doc to pointer, mark proposal historical, relocate workspace file ([f16ec92](https://github.com/mezivillager/hacer/commit/f16ec924df01165cb58f1973548a8202747821bd))
+* fix dead Sidebar import example and refresh REPO_MAP banner date ([64f3d8d](https://github.com/mezivillager/hacer/commit/64f3d8d455149853909fb71238f8c8e7326a8bbc))
+* fix stale Node prereq, hardcoded version, typo, and phase-24 title ([4898ab2](https://github.com/mezivillager/hacer/commit/4898ab242cdd4174a37453fd20e9f8a22a10dde5))
+* mark branded ID types as Phase 5+ aspiration (not current) ([866070b](https://github.com/mezivillager/hacer/commit/866070b6ec921883b712b4c79e9256b9d501dbc6))
+* note committed-change detection in ADR-0001 ([5c935ec](https://github.com/mezivillager/hacer/commit/5c935ecfcdb1b013e574acd1021375f72ddd7dd6))
+* reconcile phase/ticket status with the Phase 0.5 checklist ([418e091](https://github.com/mezivillager/hacer/commit/418e0919d4a5e20bafe50246baffd6ee8445db0a))
+* wire docs-sync skill and ADR log into agent entry docs ([24fb860](https://github.com/mezivillager/hacer/commit/24fb860353a05645605e35b66f8d67e95afc8bc8))
+
+### Tests
+
+* add tested decision logic for docs-sync Stop hook ([6b9d3e7](https://github.com/mezivillager/hacer/commit/6b9d3e7747f667bdd66a5ca1046b0a571dc27c3c))
+
 ## [2.6.0](https://github.com/mezivillager/hacer/compare/v2.5.0...v2.6.0) (2026-05-26)
 
 ### Features
