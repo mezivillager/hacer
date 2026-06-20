@@ -5,6 +5,45 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.8.0](https://github.com/mezivillager/hacer/compare/v2.7.0...v2.8.0) (2026-06-20)
+
+### Features
+
+* **chips:** add combineRegistries read-only multi-registry resolver ([050de99](https://github.com/mezivillager/hacer/commit/050de99a6350656ec38670cda057025d6038a48f))
+* **chips:** add evaluateChip dispatch seam (builtin/hdl/circuit, depth guard, cache) ([91f5cca](https://github.com/mezivillager/hacer/commit/91f5ccabd97df81392e50b08e42c13d4fc94e6d4))
+* **hdl:** author canonical Project-1 HDL sources (Not..Mux8Way16) ([5763adf](https://github.com/mezivillager/hacer/commit/5763adfea004168f9b3c00f35b293c41e358fd11))
+* **hdl:** compile single-bit HDL chips to an evaluator (parts, graph, topo-sort, validation) ([4129bd3](https://github.com/mezivillager/hacer/commit/4129bd3881ead5121b149644a86040aa46ab2524))
+* **hdl:** sub-bus (a[i], a[i..j]) read/write + width validation in compiler ([a9a8728](https://github.com/mezivillager/hacer/commit/a9a87281ddea1fa90f754ce66c8eccb24ef6daf5))
+* **sim:** evaluate hdl/composite chips on the canvas via evaluateChip seam ([15e38c0](https://github.com/mezivillager/hacer/commit/15e38c04bd0149b9b518de4f299671b16b6b3f76))
+
+### Bug Fixes
+
+* **hdl:** reject silently-wrong HDL in compiler validation ([b1295ae](https://github.com/mezivillager/hacer/commit/b1295ae3388fc7d98da0025705f8ce125a456073))
+
+### Performance Improvements
+
+* **sim:** hoist combineRegistries out of the gate loop; doc cache caveat ([2838eb4](https://github.com/mezivillager/hacer/commit/2838eb4ef6b58b61627ce7f13b35b09dd1225226))
+
+### Documentation
+
+* add 'Design for Longevity' prime directive + ADR-0003 ([7f5d4d4](https://github.com/mezivillager/hacer/commit/7f5d4d4743f3671902c2c69591005d6ebd507f26))
+* P05-16 done — sync REPO_MAP/checklist, ADR for P05-18 boundary ([9d709c8](https://github.com/mezivillager/hacer/commit/9d709c84303c7ce9b9a50bf5b7d5af05a7042975))
+* P05-16 HDL compiler design spec ([48b381f](https://github.com/mezivillager/hacer/commit/48b381f4d08b5f11116c27edda011adf7914246d))
+* P05-16 HDL compiler implementation plan ([a49af2c](https://github.com/mezivillager/hacer/commit/a49af2c3db408654e16f1a649e61c2a86fe738f7))
+* P05-16 spec — author canonical HDL (fixtures are parser stubs) ([e863d4d](https://github.com/mezivillager/hacer/commit/e863d4dbc847ced5687f9c785c1186d8e97d1c17))
+
+### Code Refactoring
+
+* **chips:** match register signature + test combineRegistries dedup ([076fc2f](https://github.com/mezivillager/hacer/commit/076fc2f7b1d5b1f5e776135064fc5cda326e88da))
+* **hdl:** drop unused import and field in compiler ([f928fd7](https://github.com/mezivillager/hacer/commit/f928fd776787cce4f7137bc59f535be883afe010))
+
+### Tests
+
+* **chips:** assert evaluateChip cache hit via compile-once spy ([75ada40](https://github.com/mezivillager/hacer/commit/75ada406a709b78a38c83dfb90966fc1d0e39649))
+* **hdl:** add cache-hit test for evaluateChip WeakMap evaluator cache ([84b7a0a](https://github.com/mezivillager/hacer/commit/84b7a0ac56dec4f0244ef3c20f160f5018b1fb81))
+* **hdl:** strengthen bottom-up vectors to exercise mux/sel routing ([eb60bff](https://github.com/mezivillager/hacer/commit/eb60bff97d945368f6fcf1b3e88e2d886cd6998e))
+* **hdl:** verify all 15 Project-1 chips compile bottom-up from NAND vs builtins ([a252eda](https://github.com/mezivillager/hacer/commit/a252eda64a3b098f69ec8b03fd8cef99194ce1ed))
+
 ## [2.7.0](https://github.com/mezivillager/hacer/compare/v2.6.0...v2.7.0) (2026-06-19)
 
 ### Features
