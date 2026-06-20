@@ -1,9 +1,10 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 import { runTest } from './engine'
 import { parseTST } from './tstParser'
 import { parseCmp } from './cmpParser'
 import type { CmpFile } from './cmpParser'
 import { createChipRegistry, registerBuiltin } from '../chips/registry'
+import { getBuiltinChipRegistry, resetAppRegistriesForTests } from '../chips/appRegistry'
 import { project1TstFixtures } from './project1TstFixtures'
 import { project1CmpFixtures } from './project1CmpFixtures'
 
@@ -100,5 +101,22 @@ describe('runTest — error paths', () => {
     const result = runTest(s, { registry: reg })
     expect(result.passed).toBe(false)
     expect(result.error).not.toBeNull()
+  })
+})
+
+describe('gold standard A — all 16 Project-1 .tst pass against builtins', () => {
+  beforeEach(() => resetAppRegistriesForTests())
+
+  it.each(Object.keys(project1TstFixtures))('%s.tst passes against the builtin', (name) => {
+    const reg = getBuiltinChipRegistry()
+    const def = reg.get(name)
+    expect(def, `builtin "${name}" should be registered`).toBeDefined()
+    const result = runTest(script(project1TstFixtures[name]), {
+      registry: reg,
+      chip: def!,
+      cmpData: cmp(project1CmpFixtures[name]),
+    })
+    expect(result.error).toBeNull()
+    expect(result.passed, `${name}: ${JSON.stringify(result.firstFailure)}`).toBe(true)
   })
 })
