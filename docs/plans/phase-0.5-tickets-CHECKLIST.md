@@ -44,7 +44,7 @@
 ## Layer 3 — Full feature UI
 
 - [ ] **P05-21** — HDL editor UI — needs P05-16 — [P05-21.md](./phase-0.5-tickets/P05-21.md)
-- [ ] **P05-22** — Test results panel — needs P05-17 — [P05-22.md](./phase-0.5-tickets/P05-22.md)
+- [x] **P05-22** — Test results panel — needs P05-17 — [P05-22.md](./phase-0.5-tickets/P05-22.md)
 - [ ] **P05-24** — Composite chip 3D rendering — needs P05-01 — [P05-24.md](./phase-0.5-tickets/P05-24.md)
 
 ## Layer 4 — Integration
