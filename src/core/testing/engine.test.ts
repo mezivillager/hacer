@@ -7,6 +7,9 @@ import { createChipRegistry, registerBuiltin } from '../chips/registry'
 import { getBuiltinChipRegistry, resetAppRegistriesForTests } from '../chips/appRegistry'
 import { project1TstFixtures } from './project1TstFixtures'
 import { project1CmpFixtures } from './project1CmpFixtures'
+import { parseHDL } from '../hdl/parser'
+import { hdlChipDefinition } from '../hdl/compiler'
+import { project1HdlSources, project1DependencyOrder } from '../hdl/project1HdlSources'
 
 function script(src: string) {
   const r = parseTST(src)
@@ -111,6 +114,34 @@ describe('gold standard A — all 16 Project-1 .tst pass against builtins', () =
     const reg = getBuiltinChipRegistry()
     const def = reg.get(name)
     expect(def, `builtin "${name}" should be registered`).toBeDefined()
+    const result = runTest(script(project1TstFixtures[name]), {
+      registry: reg,
+      chip: def!,
+      cmpData: cmp(project1CmpFixtures[name]),
+    })
+    expect(result.error).toBeNull()
+    expect(result.passed, `${name}: ${JSON.stringify(result.firstFailure)}`).toBe(true)
+  })
+})
+
+describe('gold standard B — 15 composites pass against HDL compiled from NAND', () => {
+  // Build a registry: Nand as the only builtin, every composite as an HDL ChipDefinition,
+  // registered in dependency order so each chip's parts already exist.
+  function buildFromNand() {
+    const reg = createChipRegistry()
+    registerBuiltin(reg, 'Nand', [{ name: 'a', width: 1 }, { name: 'b', width: 1 }], [{ name: 'out', width: 1 }], (i) => ({ out: ~(i.a & i.b) & 1 }))
+    for (const name of project1DependencyOrder) {
+      const ast = parseHDL(project1HdlSources[name])
+      if (!ast.success) throw new Error(`HDL parse failed for ${name}: ${ast.errors.map((e) => e.message).join('; ')}`)
+      reg.register(hdlChipDefinition(ast.chip, project1HdlSources[name]))
+    }
+    return reg
+  }
+
+  it.each(project1DependencyOrder)('%s (HDL from NAND) passes its official .tst', (name) => {
+    const reg = buildFromNand()
+    const def = reg.get(name)
+    expect(def, `composite "${name}" should be registered`).toBeDefined()
     const result = runTest(script(project1TstFixtures[name]), {
       registry: reg,
       chip: def!,
