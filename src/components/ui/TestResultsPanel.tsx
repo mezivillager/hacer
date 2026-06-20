@@ -8,6 +8,9 @@ const CHIP_NAMES = Object.keys(project1TstFixtures)
 const SELECT_CLASS = 'font-mono text-xs rounded border border-border bg-background px-2 py-1 cursor-pointer'
 
 export function TestResultsPanel() {
+  // Sources are read at render time. This is correct today (all sources register at module load).
+  // When dynamic post-mount registration lands (user chips P05-18 / canvas P05-26), the source list
+  // must become reactive (a Zustand slice or useSyncExternalStore) so the dropdown re-renders.
   const sources = getImplementationSources()
   const [chipName, setChipName] = useState<string>(CHIP_NAMES[0] ?? '')
   const [sourceId, setSourceId] = useState<string>(sources[0]?.id ?? 'builtin')

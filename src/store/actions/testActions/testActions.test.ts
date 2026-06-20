@@ -41,6 +41,12 @@ describe('runChipTest', () => {
     expect(r?.firstFailure).toMatchObject({ row: 0, column: 'out' })
   })
 
+  it('does not modify completedChips on a failed run (unknown source)', () => {
+    useCircuitStore.setState({ completedChips: ['And'] })
+    circuitActions.runChipTest('Not', 'nope')
+    expect(useCircuitStore.getState().completedChips).toEqual(['And'])
+  })
+
   it('clearTestResult resets the result', () => {
     circuitActions.runChipTest('Not', 'builtin')
     circuitActions.clearTestResult()
