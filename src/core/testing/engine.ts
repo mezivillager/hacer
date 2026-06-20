@@ -34,7 +34,12 @@ export interface TestResult {
   error: string | null
 }
 
-function stripExt(filename: string): string {
+/**
+ * Chip name from a `.tst` `load` filename — strip the last extension (`Not.hdl` → `Not`).
+ * A leading-dot name (dot at index 0) has no real extension, so it is returned unchanged.
+ * Exported for unit testing; not part of the package's public surface (`index.ts`).
+ */
+export function stripExt(filename: string): string {
   const dot = filename.lastIndexOf('.')
   return dot > 0 ? filename.slice(0, dot) : filename
 }
@@ -68,13 +73,18 @@ export function runTest(script: TSTScript, options: RunTestOptions): TestResult 
         activeChip = def
         break
       }
-      case 'compare-to':
-        // Explicit cmpData wins; otherwise resolve the named .cmp via loadCmpFile.
-        if (!cmpExplicit && options.loadCmpFile) {
-          cmpData = options.loadCmpFile(cmd.filename) ?? cmpData
+      case 'compare-to': {
+        // Explicit cmpData wins. Otherwise the script declared it wants comparison,
+        // so a compare-to target we cannot resolve must FAIL the run — never skip
+        // verification silently (that would let a broken chip report passed: true).
+        if (!cmpExplicit) {
+          const resolved = options.loadCmpFile?.(cmd.filename) ?? null
+          if (!resolved) return fail(`compare-to "${cmd.filename}" could not be resolved`)
+          cmpData = resolved
           cmpRowIndex = 0
         }
         break
+      }
       case 'output-list':
         outputColumns = cmd.columns.map((c) => c.name)
         break
@@ -127,7 +137,8 @@ export function runTest(script: TSTScript, options: RunTestOptions): TestResult 
   }
 
   if (cmpData && cmpRowIndex !== cmpData.rows.length) {
-    return fail(`Output row count ${cmpRowIndex} does not match .cmp row count ${cmpData.rows.length}`)
+    // Parallel to the surplus-row guard above; both report emitted vs expected counts.
+    return fail(`Output row count ${outputRows.length} is fewer than .cmp row count ${cmpData.rows.length}`)
   }
 
   return {

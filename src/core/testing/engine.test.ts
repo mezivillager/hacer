@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { runTest } from './engine'
+import { runTest, stripExt } from './engine'
 import { parseTST } from './tstParser'
 import { parseCmp } from './cmpParser'
 import type { CmpFile } from './cmpParser'
@@ -73,6 +73,26 @@ describe('runTest — comparison', () => {
     const result = runTest(s, { registry: builtinNot(), cmpData: cmp(project1CmpFixtures.Not) })
     expect(result.passed).toBe(false)
     expect(result.error).toMatch(/exceed|row count/i)
+  })
+
+  it('resolves compare-to via loadCmpFile and compares against it', () => {
+    const result = runTest(script(project1TstFixtures.Not), {
+      registry: builtinNot(),
+      loadCmpFile: (f) => (f === 'Not.cmp' ? cmp(project1CmpFixtures.Not) : null),
+    })
+    expect(result.error).toBeNull()
+    expect(result.passed).toBe(true)
+  })
+
+  it('errors when a compare-to target cannot be resolved', () => {
+    // The script declares `compare-to Not.cmp`, but the resolver can't find it →
+    // the run must FAIL rather than silently skip verification (a vacuous pass).
+    const result = runTest(script(project1TstFixtures.Not), {
+      registry: builtinNot(),
+      loadCmpFile: () => null,
+    })
+    expect(result.passed).toBe(false)
+    expect(result.error).toMatch(/compare-to|resolve/i)
   })
 })
 
@@ -158,4 +178,11 @@ describe('gold standard B — 15 composites pass against HDL compiled from NAND'
     expect(result.error).toBeNull()
     expect(result.passed, `${name}: ${JSON.stringify(result.firstFailure)}`).toBe(true)
   })
+})
+
+describe('stripExt', () => {
+  it('strips the file extension', () => expect(stripExt('Not.hdl')).toBe('Not'))
+  it('returns the name unchanged when there is no extension', () => expect(stripExt('Not')).toBe('Not'))
+  it('strips only the last extension', () => expect(stripExt('My.Chip.hdl')).toBe('My.Chip'))
+  it('preserves a leading-dot name (no real extension)', () => expect(stripExt('.hdlrc')).toBe('.hdlrc'))
 })
