@@ -16,6 +16,8 @@ This document helps AI agents and developers understand the codebase structure a
 | **Gate placement / renderer** | `src/gates/GateRenderer.tsx`, `src/gates/common/BaseGate.tsx`, `HACER_LLM_GUIDE.md` |
 | **Simulation / boolean logic** | `src/simulation/` · specs: `src/simulation/gateLogic.test.ts` |
 | **R3F canvas / scene** | `src/components/canvas/` |
+| **Non-3D DOM shell / 3D⇄2D boundary** | `src/components/Shell.tsx` (`App = providers → <Shell scene={<CanvasArea/>} />`); the store is the contract |
+| **RTL integration tests (non-3D UX)** | `src/test/renderShell.tsx` harness — render the shell with no Canvas; rigor in AGENTS.md §3 Step 4.1 |
 | **Performance mode / render detail** | `src/components/canvas/Scene/renderConfig.ts`, `src/lib/performanceModeStorage.ts`, `src/store/actions/viewActions/` |
 | **Unit / store tests** | Colocate `*.test.ts` next to code; reset pattern: `src/store/actions/gateActions/gateActions.test.ts` |
 | **Playwright store E2E** | `e2e/specs/**/*.store.spec.ts`, `e2e/fixtures/store.fixture.ts` |
