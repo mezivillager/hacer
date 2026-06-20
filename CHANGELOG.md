@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.9.0](https://github.com/mezivillager/hacer/compare/v2.8.0...v2.9.0) (2026-06-20)
+
+### Features
+
+* **testing:** compare output rows against .cmp, report firstFailure + row-count mismatch ([babd3e3](https://github.com/mezivillager/hacer/commit/babd3e36976c985bb03a044b851584630d756168))
+* **testing:** structured errors for unknown chip, eval-before-load, eval throw ([b84d68b](https://github.com/mezivillager/hacer/commit/b84d68bbd64425ce5d0cf969a45c97b9e41c05ce))
+* **testing:** test execution engine skeleton — run script, record rows ([8a12847](https://github.com/mezivillager/hacer/commit/8a1284720a532ab66444edc7004edec80630a0ed))
+
+### Bug Fixes
+
+* **testing:** error when output rows exceed .cmp row count ([5a3ea92](https://github.com/mezivillager/hacer/commit/5a3ea9211efc8b68a6b3a874c5524f41b43296cc))
+* **testing:** fail the run when a compare-to target cannot be resolved ([327f83e](https://github.com/mezivillager/hacer/commit/327f83e592e96a310ff43aa5413a3f9c3508084f)), closes [#121](https://github.com/mezivillager/hacer/issues/121)
+
+### Documentation
+
+* **p05-17:** ADR-0005 (engine design + verification contract); REPO_MAP testing layer ([b250a9c](https://github.com/mezivillager/hacer/commit/b250a9ca84c4dd3eb86dedd87278d5baa76d263f))
+* **p05-17:** mark test execution engine done in phase-0.5 checklist ([74c7c28](https://github.com/mezivillager/hacer/commit/74c7c285adaa6eec24f15281e7a805e5575bb5c7))
+* **p05-17:** test execution engine design spec ([7cecb8b](https://github.com/mezivillager/hacer/commit/7cecb8b13b88c496fdfb1a8cfb0146499056ff34))
+* **p05-17:** test execution engine implementation plan ([ef18cbe](https://github.com/mezivillager/hacer/commit/ef18cbe00dcb20a2b1d361fd2ca9a6eff63f49ca))
+
+### Tests
+
+* **testing:** 15 composites pass official .tst when compiled from a single NAND ([f45e18d](https://github.com/mezivillager/hacer/commit/f45e18db560b70bbc32901dfa97e08823b7b1bd6))
+* **testing:** all 16 Project-1 .tst pass against builtins ([93d3bee](https://github.com/mezivillager/hacer/commit/93d3bee53d207a22ca470ba5877808b1ed5f0ae3))
+* **testing:** lock acceptance counts and anchor compile-error assertion ([f01e03a](https://github.com/mezivillager/hacer/commit/f01e03aeceb5f50a289d0e54d31e1e5cc8ae3390))
+
 ## [2.8.0](https://github.com/mezivillager/hacer/compare/v2.7.0...v2.8.0) (2026-06-20)
 
 ### Features
