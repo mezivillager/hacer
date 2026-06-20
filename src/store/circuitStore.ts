@@ -14,6 +14,8 @@ import { createNodePlacementActions } from './actions/nodePlacementActions/nodeP
 import { createJunctionPlacementActions } from './actions/junctionPlacementActions/junctionPlacementActions'
 import { createStatusActions } from './actions/statusActions/statusActions'
 import { createPersistenceActions } from './actions/persistenceActions/persistenceActions'
+import { createTestActions } from './actions/testActions/testActions'
+import { readCompletedChips } from '@/core/testing/chipCompletion'
 import { subscribeAutosave } from './actions/persistenceActions/autosave'
 import { readPerformanceMode } from '@/lib/performanceModeStorage'
 import { calculateWirePathFromConnection } from '@/utils/wiringScheme'
@@ -66,6 +68,10 @@ const initialState = {
   statusMessages: [] as import('./types').StatusMessage[],
   // UI: PropertiesPanel visibility (user-controlled; not persisted)
   propertiesPanelOpen: false,
+  // Test results panel state
+  testResult: null,
+  testColumns: [],
+  completedChips: readCompletedChips(),
 }
 
 // Create the Zustand store with Immer, devtools, and subscribeWithSelector middleware
@@ -90,6 +96,7 @@ export const useCircuitStore = create<CircuitStore>()(
         ...createJunctionPlacementActions(set, get),
         ...createStatusActions(set),
         ...createPersistenceActions(set, get),
+        ...createTestActions(set, get),
       }))
     ),
     { name: 'CircuitStore' }
@@ -282,6 +289,9 @@ export const circuitActions = {
   deleteSavedCircuit: (...args: Parameters<CircuitStore['deleteSavedCircuit']>) => useCircuitStore.getState().deleteSavedCircuit(...args),
   exportCircuitJSON: (...args: Parameters<CircuitStore['exportCircuitJSON']>) => useCircuitStore.getState().exportCircuitJSON(...args),
   importCircuitJSON: (...args: Parameters<CircuitStore['importCircuitJSON']>) => useCircuitStore.getState().importCircuitJSON(...args),
+  // Test actions
+  runChipTest: (chipName: string, sourceId: string) => useCircuitStore.getState().runChipTest(chipName, sourceId),
+  clearTestResult: () => useCircuitStore.getState().clearTestResult(),
 }
 
 // Expose store and actions for E2E testing
