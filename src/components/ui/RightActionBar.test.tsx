@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { TooltipProvider } from '@/components/ui-kit/tooltip'
 import { RightActionBar } from './RightActionBar'
@@ -132,5 +132,11 @@ describe('RightActionBar', () => {
 
     expect(click).toHaveBeenCalledTimes(1)
     click.mockRestore()
+  })
+
+  it('opens the Tests panel when the tests trigger is clicked', () => {
+    wrap()
+    fireEvent.click(screen.getByTestId('right-bar-tests-trigger'))
+    expect(screen.getByTestId('test-results-panel')).toBeTruthy()
   })
 })
