@@ -50,6 +50,9 @@ export function createMockStore(partial: Partial<CircuitState> = {}): CircuitSto
     junctionPreviewWireId: null,
     statusMessages: [],
     propertiesPanelOpen: false,
+    testResult: null,
+    testColumns: [],
+    completedChips: [],
   }
 
   // Merge provided partial state with defaults
@@ -146,6 +149,9 @@ export function createMockStore(partial: Partial<CircuitState> = {}): CircuitSto
     deleteSavedCircuit: () => {},
     exportCircuitJSON: () => {},
     importCircuitJSON: () => false,
+    // Test actions
+    runChipTest: () => {},
+    clearTestResult: () => {},
   } satisfies CircuitStore
 }
 

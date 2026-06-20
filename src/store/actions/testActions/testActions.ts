@@ -1,5 +1,5 @@
 // src/store/actions/testActions/testActions.ts
-import type { CircuitStore } from '../../types'
+import type { CircuitStore, TestActions } from '../../types'
 import type { TestResult } from '@/core/testing/engine'
 import type { CmpFile } from '@/core/testing/cmpParser'
 import { runTest } from '@/core/testing/engine'
@@ -12,11 +12,6 @@ import { markChipCompleted } from '@/core/testing/chipCompletion'
 
 type SetState = (fn: (state: CircuitStore) => void, replace?: false, actionName?: string) => void
 type GetState = () => CircuitStore
-
-export interface TestActions {
-  runChipTest: (chipName: string, sourceId: string) => void
-  clearTestResult: () => void
-}
 
 function parseCmpFixture(name: string): CmpFile | null {
   const raw = project1CmpFixtures[name.replace(/\.cmp$/i, '')]
