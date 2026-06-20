@@ -61,9 +61,13 @@ export function runTest(script: TSTScript, options: RunTestOptions): TestResult 
 
   for (const cmd of script.commands) {
     switch (cmd.type) {
-      case 'load':
-        activeChip = registry.get(stripExt(cmd.filename)) ?? activeChip
+      case 'load': {
+        const name = stripExt(cmd.filename)
+        const def = registry.get(name)
+        if (!def) return fail(`Chip "${name}" not found`)
+        activeChip = def
         break
+      }
       case 'compare-to':
         // Explicit cmpData wins; otherwise resolve the named .cmp via loadCmpFile.
         if (!cmpExplicit && options.loadCmpFile) {
@@ -78,8 +82,11 @@ export function runTest(script: TSTScript, options: RunTestOptions): TestResult 
         inputs[cmd.pin] = cmd.value
         break
       case 'eval':
-        if (activeChip) {
+        if (!activeChip) return fail('eval before a chip was loaded')
+        try {
           lastOutputs = evaluateChip(activeChip, inputs, registry, maxDepth === undefined ? undefined : { maxDepth })
+        } catch (e) {
+          return fail(e instanceof Error ? e.message : String(e))
         }
         break
       case 'output': {

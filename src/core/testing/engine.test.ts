@@ -71,3 +71,34 @@ describe('runTest — comparison', () => {
     expect(result.error).toMatch(/exceed|row count/i)
   })
 })
+
+describe('runTest — error paths', () => {
+  it('errors when load names a chip not in the registry', () => {
+    const s = script('load Missing.hdl, output-list a out; set a 0, eval, output;')
+    const result = runTest(s, { registry: createChipRegistry() })
+    expect(result.passed).toBe(false)
+    expect(result.error).toContain('Missing')
+  })
+
+  it('errors when eval runs before any chip is loaded', () => {
+    const s = script('output-list a out; set a 1, eval, output;')
+    const result = runTest(s, { registry: createChipRegistry() })
+    expect(result.passed).toBe(false)
+    expect(result.error).toMatch(/load/i)
+  })
+
+  it('captures a runtime error when evaluating a chip that fails to compile', () => {
+    const reg = createChipRegistry()
+    // HDL referencing an unknown part → compileHDL fails → evaluateChip throws.
+    reg.register({
+      name: 'Broken',
+      inputs: [{ name: 'in', width: 1 }],
+      outputs: [{ name: 'out', width: 1 }],
+      implementation: { type: 'hdl', source: 'CHIP Broken { IN in; OUT out; PARTS: Nope(a=in, out=out); }' },
+    })
+    const s = script('load Broken.hdl, output-list in out; set in 1, eval, output;')
+    const result = runTest(s, { registry: reg })
+    expect(result.passed).toBe(false)
+    expect(result.error).not.toBeNull()
+  })
+})
