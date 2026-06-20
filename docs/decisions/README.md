@@ -27,3 +27,4 @@ It captures decisions here and then runs the author pass in [`../llm-docs-sync.m
 | [0002](0002-commit-and-worktree-conventions.md) | Commit attribution & worktree location conventions | Accepted | 2026-06-19 |
 | [0003](0003-design-for-longevity.md) | Design for long-term extensibility over near-term expedience | Accepted | 2026-06-19 |
 | [0004](0004-p05-18-boundary-evaluatechip-seam-landed-in-p05-16.md) | P05-18 re-scope: evaluateChip dispatch seam landed in P05-16 | Accepted | 2026-06-19 |
+| [0005](0005-p05-17-test-execution-engine-design-and-verification-contract.md) | P05-17 test execution engine: functional design + never-vacuous verification contract | Accepted | 2026-06-20 |

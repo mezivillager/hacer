@@ -24,7 +24,7 @@ This document helps AI agents and developers understand the codebase structure a
 
 ## ⚠️ IMPORTANT: Phase Tracking & Maintenance
 
-**Last Updated:** 2026-06-19  
+**Last Updated:** 2026-06-20  
 **Current Phase:** Phase 0.5 (In Progress)  
 **Completed Infrastructure:** Phase 0.25 UI/canvas, Tailwind/shadcn design shell, semantic-release; P05-16 HDL compiler + evaluateChip seam  
 **Next Product Phase:** Phase 0.6: Arithmetic & Sequential Logic
@@ -358,6 +358,7 @@ hacer/
   - `src/core/hdl/compiler.ts` - Compiles a parsed HDL AST into an evaluable `CompiledEvaluator`; resolves part dependencies, builds topological order, validates connections, and returns `{success, evaluate}`.
   - `src/core/hdl/project1HdlSources.ts` - Canonical HDL source strings for all 15 Project-1 chips (Not → DMux8Way), used by acceptance tests.
 - `src/core/testing/` - Test script execution (.tst/.cmp)
+  - `src/core/testing/engine.ts` - `runTest(script, options)` runs a parsed `.tst` against a chip (via the `evaluateChip` seam), records output rows, and compares to `.cmp` data; returns a UI-agnostic `TestResult`. Never throws — structural problems (unknown chip, eval-before-load, eval throw, row-count mismatch, unresolvable `compare-to`) become `error`; value mismatches become `firstFailure` (P05-17, ADR-0005).
 - `src/simulation/topologicalEval.ts` - Topological sort for correct evaluation; `evaluateCircuit` return + `getSignalSourceValue`; routes chip evaluation through `evaluateChipWithCtx` so HDL/composite chips evaluate on the canvas.
 - `CircuitState.lastSimulationError` — combinational cycle metadata after a failed `simulationTick` (cleared on success / `clearCircuit`)
 - Multi-bit bus support (data model, simulation, 3D splitter/joiner)
