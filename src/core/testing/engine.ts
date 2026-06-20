@@ -4,17 +4,13 @@ import type { ChipRegistry } from '../chips/registry'
 import { evaluateChip } from '../chips/evaluateChip'
 import type { TSTScript } from './types'
 import type { CmpFile } from './cmpParser'
+import { compareCmpRow } from './cmpParser'
 
 export interface RunTestOptions {
-  /** Resolves `load X` and sub-parts during HDL recursion. */
   registry: ChipRegistry
-  /** Active chip when a script has no `load` (e.g. Nand.tst). */
   chip?: ChipDefinition
-  /** Explicit expected data; takes precedence over `compare-to`. */
   cmpData?: CmpFile
-  /** Resolves `compare-to X.cmp` to a CmpFile (used only when `cmpData` is unset). */
   loadCmpFile?: (filename: string) => CmpFile | null
-  /** Forwarded to evaluateChip. */
   maxDepth?: number
 }
 
@@ -49,12 +45,31 @@ export function runTest(script: TSTScript, options: RunTestOptions): TestResult 
   let lastOutputs: Record<string, number> = {}
   let activeChip: ChipDefinition | null = options.chip ?? null
   let outputColumns: string[] = []
+  const cmpExplicit = options.cmpData !== undefined
+  let cmpData: CmpFile | undefined = options.cmpData
+  let cmpRowIndex = 0
   const outputRows: OutputRow[] = []
+
+  const fail = (error: string): TestResult => ({
+    passed: false,
+    totalSteps: outputRows.length,
+    passedSteps: cmpRowIndex,
+    outputRows,
+    firstFailure: null,
+    error,
+  })
 
   for (const cmd of script.commands) {
     switch (cmd.type) {
       case 'load':
         activeChip = registry.get(stripExt(cmd.filename)) ?? activeChip
+        break
+      case 'compare-to':
+        // Explicit cmpData wins; otherwise resolve the named .cmp via loadCmpFile.
+        if (!cmpExplicit && options.loadCmpFile) {
+          cmpData = options.loadCmpFile(cmd.filename) ?? cmpData
+          cmpRowIndex = 0
+        }
         break
       case 'output-list':
         outputColumns = cmd.columns.map((c) => c.name)
@@ -73,18 +88,42 @@ export function runTest(script: TSTScript, options: RunTestOptions): TestResult 
           values[col] = lastOutputs[col] ?? inputs[col] ?? 0
         }
         outputRows.push({ values })
+        if (cmpData && cmpRowIndex < cmpData.rows.length) {
+          // Build the actual row in .cmp COLUMN order (the comparison's source of truth).
+          const actualRow = cmpData.columns.map((c) => values[c.name] ?? 0)
+          const mismatch = compareCmpRow(actualRow, cmpData.rows[cmpRowIndex], cmpData.columns, cmpRowIndex)
+          if (mismatch) {
+            return {
+              passed: false,
+              totalSteps: outputRows.length,
+              passedSteps: cmpRowIndex,
+              outputRows,
+              firstFailure: {
+                row: mismatch.row,
+                column: mismatch.column,
+                expected: String(mismatch.expected),
+                actual: String(mismatch.actual),
+              },
+              error: null,
+            }
+          }
+          cmpRowIndex++
+        }
         break
       }
-      case 'compare-to':
       case 'output-file':
         break
     }
   }
 
+  if (cmpData && cmpRowIndex !== cmpData.rows.length) {
+    return fail(`Output row count ${cmpRowIndex} does not match .cmp row count ${cmpData.rows.length}`)
+  }
+
   return {
     passed: true,
     totalSteps: outputRows.length,
-    passedSteps: 0,
+    passedSteps: cmpRowIndex,
     outputRows,
     firstFailure: null,
     error: null,
