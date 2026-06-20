@@ -16,3 +16,6 @@ export type {
   CmpParseResult,
 } from './cmpParser'
 export { parseCmp, compareCmpRow } from './cmpParser'
+
+export { runTest } from './engine'
+export type { RunTestOptions, OutputRow, TestFailure, TestResult } from './engine'
