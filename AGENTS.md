@@ -109,6 +109,21 @@ NO production code without a failing test first.
 - Enforce the `test-driven-development` skill loop (Red → Green → Refactor). No exceptions.
 - See `docs/testing/` for HACER-specific templates.
 
+#### Step 4.1 — Non-3D UX testing rigor (MANDATORY for DOM-shell work)
+The app has two areas with the Zustand store as their contract: the **3D scene** (R3F `<Canvas>`)
+and the **non-3D DOM shell** (`<Shell>` — toolbar, panels, status bar, overlays). The shell renders
+the scene as an injected prop, so it is fully testable in jsdom with no WebGL. For **any** non-3D UX
+feature or change:
+- **Component RTL** for each new/changed component (isolated render).
+- **RTL integration tests** for the user scenarios the feature enables — render the real shell via
+  `renderShell()` (`src/test/renderShell.tsx`) and drive the store through `circuitActions`. Capture
+  requirements/user flows here, not just isolated widgets. This is the primary correctness gate for
+  non-3D UX.
+- **`@store` Playwright** for store-contract behavior.
+- Reserve **full-Canvas `@ui` Playwright** for genuinely 3D-dependent flows only — it is flaky and slow
+  (several suites are currently skipped for that reason; see [P05-32](docs/plans/phase-0.5-tickets/P05-32.md)).
+  Do not add a `@ui` spec for something an RTL integration test can cover.
+
 ### Step 5 — Systematic Debugging
 ```
 NO fix without root-cause investigation first.
