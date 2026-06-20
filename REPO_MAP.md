@@ -361,6 +361,10 @@ hacer/
   - `src/core/hdl/project1HdlSources.ts` - Canonical HDL source strings for all 15 Project-1 chips (Not → DMux8Way), used by acceptance tests.
 - `src/core/testing/` - Test script execution (.tst/.cmp)
   - `src/core/testing/engine.ts` - `runTest(script, options)` runs a parsed `.tst` against a chip (via the `evaluateChip` seam), records output rows, and compares to `.cmp` data; returns a UI-agnostic `TestResult`. Never throws — structural problems (unknown chip, eval-before-load, eval throw, row-count mismatch, unresolvable `compare-to`) become `error`; value mismatches become `firstFailure` (P05-17, ADR-0005).
+  - `src/core/testing/implementationSources.ts` - pluggable `ChipImplementationSource` registry (Test Lab's "what to test against"): `builtin` + `hdl-from-nand` today; user chips (P05-18) / canvas (P05-26) register later. (P05-22, ADR-0006)
+  - `src/core/testing/chipCompletion.ts` - persists passed chips to `localStorage['hacer-completed-chips']` (the P05-19 completion contract).
+  - `src/store/actions/testActions/` - `runChipTest(chipName, sourceId)` store action (AI-Agent-Parity surface) → writes `testResult`/`testColumns`/`completedChips`.
+  - `src/components/ui/TestResultsPanel.tsx` - the Test Lab panel (RightActionBar `'tests'` drawer): chip/source selectors, Run, output table + diff highlight, ✓ on completed. Thin view over the store.
 - `src/simulation/topologicalEval.ts` - Topological sort for correct evaluation; `evaluateCircuit` return + `getSignalSourceValue`; routes chip evaluation through `evaluateChipWithCtx` so HDL/composite chips evaluate on the canvas.
 - `CircuitState.lastSimulationError` — combinational cycle metadata after a failed `simulationTick` (cleared on success / `clearCircuit`)
 - Multi-bit bus support (data model, simulation, 3D splitter/joiner)

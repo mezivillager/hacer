@@ -28,3 +28,4 @@ It captures decisions here and then runs the author pass in [`../llm-docs-sync.m
 | [0003](0003-design-for-longevity.md) | Design for long-term extensibility over near-term expedience | Accepted | 2026-06-19 |
 | [0004](0004-p05-18-boundary-evaluatechip-seam-landed-in-p05-16.md) | P05-18 re-scope: evaluateChip dispatch seam landed in P05-16 | Accepted | 2026-06-19 |
 | [0005](0005-p05-17-test-execution-engine-design-and-verification-contract.md) | P05-17 test execution engine: functional design + never-vacuous verification contract | Accepted | 2026-06-20 |
+| [0006](0006-p05-22-test-lab-implementation-source-seam-and-store-action.md) | P05-22 Test Lab: pluggable implementation-source seam + test execution as a store action | Accepted | 2026-06-20 |
