@@ -52,4 +52,14 @@ describe('runChipTest', () => {
     circuitActions.clearTestResult()
     expect(useCircuitStore.getState().testResult).toBeNull()
   })
+
+  it('captures an error (does not throw) when a source resolve throws', () => {
+    registerImplementationSource({
+      id: 'throwing',
+      label: 'Throwing',
+      resolve: () => { throw new Error('boom from resolve') },
+    })
+    expect(() => circuitActions.runChipTest('Not', 'throwing')).not.toThrow()
+    expect(useCircuitStore.getState().testResult?.error).toMatch(/boom/i)
+  })
 })

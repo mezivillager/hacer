@@ -32,7 +32,12 @@ export const createTestActions = (set: SetState, get: GetState): TestActions => 
 
     const source = getImplementationSource(sourceId)
     if (!source) return fail(`unknown implementation source "${sourceId}"`)
-    const resolved = source.resolve(chipName)
+    let resolved: ReturnType<typeof source.resolve>
+    try {
+      resolved = source.resolve(chipName)
+    } catch (e) {
+      return fail(e instanceof Error ? e.message : String(e))
+    }
     if (!resolved) return fail(`no "${chipName}" implementation from source "${sourceId}"`)
     const tstRaw = project1TstFixtures[chipName]
     if (!tstRaw) return fail(`no test fixture for "${chipName}"`)
