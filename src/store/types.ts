@@ -1,5 +1,7 @@
 // Types for the circuit simulation
 
+import type { TestResult } from '@/core/testing/engine'
+
 export type Position = { x: number; y: number; z: number }
 export type Rotation = { x: number; y: number; z: number }
 export type PerformanceMode = 'normal' | 'low-power'
@@ -211,6 +213,11 @@ export interface CircuitState {
   // panel never renders even if a selection exists. Toggled via the
   // CompactToolbar Properties button or the I keyboard shortcut.
   propertiesPanelOpen: boolean
+
+  // Test results panel state
+  testResult: TestResult | null
+  testColumns: string[]
+  completedChips: string[]
 }
 
 // Action types for the Zustand store
@@ -343,6 +350,12 @@ export interface StatusActions {
   clearAllStatus: () => void
 }
 
+export interface TestActions {
+  /** Run a chip's official .tst against the chosen implementation source; writes testResult/testColumns. */
+  runChipTest: (chipName: string, sourceId: string) => void
+  clearTestResult: () => void
+}
+
 export interface SavedCircuitSummary {
   name: string
   savedAt: string
@@ -358,4 +371,4 @@ export interface PersistenceActions {
 }
 
 // Combined store type
-export interface CircuitStore extends CircuitState, GateActions, WireActions, SimulationActions, PlacementActions, NodePlacementActions, WiringActions, PinHelpers, ViewActions, NodeActions, JunctionActions, JunctionPlacementActions, StatusActions, PersistenceActions {}
+export interface CircuitStore extends CircuitState, GateActions, WireActions, SimulationActions, PlacementActions, NodePlacementActions, WiringActions, PinHelpers, ViewActions, NodeActions, JunctionActions, JunctionPlacementActions, StatusActions, PersistenceActions, TestActions {}
