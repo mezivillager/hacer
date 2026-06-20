@@ -15,6 +15,7 @@ import {
   Undo2,
   Redo2,
   FolderOpen,
+  FlaskConical,
 } from 'lucide-react'
 import { Button } from '@/components/ui-kit/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui-kit/tooltip'
@@ -23,9 +24,10 @@ import { cn } from '@/lib/utils'
 import { ComingSoon } from './coming-soon'
 import { PinoutPanel } from './PinoutPanel'
 import { CircuitLibrary } from './CircuitLibrary'
+import { TestResultsPanel } from './TestResultsPanel'
 import { useCircuitStore, circuitActions } from '@/store/circuitStore'
 
-type ActivePanel = 'info' | 'history' | 'layers' | 'library' | null
+type ActivePanel = 'info' | 'history' | 'layers' | 'library' | 'tests' | null
 
 const PANEL_WIDTH = 280
 
@@ -88,6 +90,21 @@ export function RightActionBar() {
               </Button>
             </TooltipTrigger>
             <TooltipContent side="left">History</TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                data-testid="right-bar-tests-trigger"
+                variant={activePanel === 'tests' ? 'secondary' : 'ghost'}
+                size="icon"
+                className="w-8 h-8"
+                onClick={() => togglePanel('tests')}
+              >
+                <FlaskConical className="w-4 h-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="left">Tests</TooltipContent>
           </Tooltip>
 
           <Tooltip>
@@ -175,6 +192,7 @@ export function RightActionBar() {
               {activePanel === 'layers' && 'Layers'}
               {activePanel === 'history' && 'History'}
               {activePanel === 'library' && 'Circuit Library'}
+              {activePanel === 'tests' && 'Tests'}
             </h3>
             <Button
               data-testid="right-bar-drawer-close"
@@ -203,6 +221,7 @@ export function RightActionBar() {
             {activePanel === 'layers' && <LayersPanel />}
             {activePanel === 'history' && <HistoryPanel />}
             {activePanel === 'library' && <CircuitLibrary />}
+            {activePanel === 'tests' && <TestResultsPanel />}
           </div>
         </div>
       </div>
