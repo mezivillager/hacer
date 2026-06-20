@@ -103,6 +103,9 @@ export interface CircuitStoreSnapshot {
   selectedNodeType?: NodeType | null
   performanceMode?: PerformanceMode
   propertiesPanelOpen?: boolean
+  testResult: { passed: boolean; error: string | null; firstFailure: { row: number; column: string; expected: string; actual: string } | null } | null
+  testColumns: string[]
+  completedChips: string[]
 }
 
 export interface CircuitActionsAPI {
@@ -182,6 +185,8 @@ export interface CircuitActionsAPI {
     toGateId: string,
     toPinId: string
   ) => WireSegment[] | null
+  runChipTest: (chipName: string, sourceId: string) => void
+  clearTestResult: () => void
   // Persistence actions (P05-14)
   saveCircuit: (name: string) => void
   loadCircuit: (name: string) => boolean
