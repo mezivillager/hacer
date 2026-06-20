@@ -74,6 +74,12 @@ Do **not** require missing paths: if `.claude/CONSTITUTION.md` or other Claude-o
 
 On every non-trivial task, follow: **ReAct** (Reason → Act → Observe), **Chain-of-Thought** (explicit numbered steps), **Tree-of-Thoughts** (propose 2–3 alternatives before committing), **Reflexion** (capture lessons in `tasks/lessons.md`), **Toolformer** (cheapest tool that works).
 
+**Decision priority — long-term goal over ease of shipping.** When options trade off, optimize for what
+best serves HACER's long-term arc (extensibility, configurability, AI-native first-principles platform —
+the North Star), **not** for whatever is quickest to ship. Prefer the flexible, future-proof option and
+build seams for what's coming, accepting reasonable near-term cost. This is the standing tie-breaker for
+every design, scoping, and review decision; see [ADR-0003](docs/decisions/0003-design-for-longevity.md).
+
 Full details with paper citations: **[`docs/cognitive-protocols.md`](docs/cognitive-protocols.md)**
 
 ---
@@ -90,21 +96,26 @@ Validate Ticket  →  Brainstorm  →  Worktree  →  Plan  →  Execute (Subage
 - Save specs to `docs/specs/YYYY-MM-DD-<topic>.md`.
 - Present the design; get approval; then proceed.
 
-#### Step 1.0 — Ticket Freshness Protocol (validate the ticket against reality FIRST)
+#### Step 1.0 — Ticket Freshness check (READ-ONLY validation, before you design)
 Most `docs/plans/phase-0.5-tickets/*` were authored early and **drift from the code** — wrong APIs,
 references to superseded designs, or dependencies on re-scoped/never-built sibling tickets. Before you
-design, reconcile the ticket you are picking up. This is expected, routine work — not a detour:
+design, reconcile the ticket you are picking up against reality. This is expected, routine work — not a
+detour.
 
+**At pickup — read-only (you may still be in the main checkout, so do NOT edit files yet):**
 - **Validate** the ticket's claims (APIs, file paths, dependencies, "files to create") against the
-  *current* codebase. **Trust the code over the ticket.**
-- **Revise the ticket file in place** when stale — correct it, delete dead references, note what's
-  superseded. **Merge** tickets that have collapsed into one; **split** a ticket that has grown into
-  separable deliverables. Never renumber — cross-link instead.
+  *current* codebase. **Trust the code over the ticket.** Note every stale point and decide whether the
+  ticket needs revising, merging with a sibling, or splitting — then carry those findings into the design.
+
+**In the worktree (Step 2+) — commit the ticket reconciliation alongside the design spec:**
+- **Revise the ticket file in place** — correct it, delete dead references, note what's superseded.
+  **Merge** tickets that have collapsed into one; **split** a ticket that has grown into separable
+  deliverables. Never renumber — cross-link instead.
 - The **`docs/specs/` design doc is the source of truth on conflict** — update the ticket to match the
   approved design, not the reverse.
 - **Record material re-scopes as an ADR** (`docs/decisions/`, via `docs-sync`) — as
   [ADR-0004](docs/decisions/0004-p05-18-boundary-evaluatechip-seam-landed-in-p05-16.md) did when P05-16
-  absorbed P05-18's seam. Commit the ticket edits alongside the design spec.
+  absorbed P05-18's seam.
 - Keep the phase checklist (`docs/plans/phase-0.5-tickets-CHECKLIST.md`) in sync with any merge/split.
 
 ### Step 2 — Branching / Worktrees
