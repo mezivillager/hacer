@@ -798,7 +798,68 @@ git commit -m "feat(ui): add Tests panel to RightActionBar"
 
 ---
 
-### Task 6: `@store` E2E + globals types
+### Task 6: Test Lab shell-integration test (RTL — mandatory rigor)
+
+**Files:**
+- Create (test): `src/components/ui/TestResultsPanel.integration.test.tsx`
+
+**Interfaces:**
+- Consumes: `renderShell()` (`@/test/renderShell`) — mounts the full DOM shell with no Canvas; `circuitActions`/`useCircuitStore`; `resetImplementationSourcesForTests` (Task 1). Requires the `'tests'` trigger from Task 5.
+
+Per AGENTS.md §3 Step 4.1, a non-3D UX feature ships an RTL **integration** test that captures the user scenario across the real shell (not just the isolated component). This renders the whole shell, opens the Tests panel from the action bar, runs a chip, and asserts the result — the end-to-end Test Lab flow in jsdom.
+
+- [ ] **Step 1: Write the integration test**
+
+Create `src/components/ui/TestResultsPanel.integration.test.tsx`:
+
+```tsx
+import { describe, it, expect, beforeEach } from 'vitest'
+import { screen, fireEvent } from '@testing-library/react'
+import { renderShell } from '@/test/renderShell'
+import { useCircuitStore, circuitActions } from '@/store/circuitStore'
+import { resetImplementationSourcesForTests } from '@/core/testing/implementationSources'
+
+beforeEach(() => {
+  localStorage.clear()
+  resetImplementationSourcesForTests()
+  circuitActions.clearCircuit()
+  useCircuitStore.setState({ testResult: null, testColumns: [], completedChips: [] })
+})
+
+describe('Test Lab (shell integration)', () => {
+  it('user opens the Tests panel from the action bar, runs a chip, and sees a passing result', () => {
+    renderShell()
+    // The panel is not visible until the user opens it from the RightActionBar.
+    expect(screen.queryByTestId('test-results-panel')).toBeNull()
+    fireEvent.click(screen.getByTestId('right-bar-tests-trigger'))
+    expect(screen.getByTestId('test-results-panel')).toBeTruthy()
+
+    fireEvent.change(screen.getByTestId('test-chip-select'), { target: { value: 'Not' } })
+    fireEvent.change(screen.getByTestId('test-source-select'), { target: { value: 'builtin' } })
+    fireEvent.click(screen.getByTestId('run-test-button'))
+
+    expect(screen.getByTestId('test-summary').textContent).toContain('Comparison ended successfully')
+    expect(screen.getByTestId('output-table')).toBeTruthy()
+    expect(screen.getByTestId('output-row-0')).toBeTruthy()
+  })
+})
+```
+
+- [ ] **Step 2: Run it to verify it passes**
+
+Run: `pnpm exec vitest run src/components/ui/TestResultsPanel.integration.test.tsx`
+Expected: PASS. (The whole shell renders with no Canvas — `renderShell()` injects no scene.) If `right-bar-tests-trigger` isn't found, Task 5 isn't complete.
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add src/components/ui/TestResultsPanel.integration.test.tsx
+git commit -m "test(ui): Test Lab shell-integration test (open panel -> run -> result)"
+```
+
+---
+
+### Task 7: `@store` E2E + globals types
 
 **Files:**
 - Modify: `e2e/types/globals.ts`
@@ -899,9 +960,10 @@ git commit -m "docs(p05-22): mark test results panel done in phase-0.5 checklist
 - `runChipTest` store action + state + `addStatus` + completion → Task 3. ✅ (sync, not Promise; `testRunning` dropped — sync execution can't surface it.)
 - Thin panel: chip/source selectors, Run, summary, output table, red diff cell, ✓ marker, steps → Task 4. ✅
 - RightActionBar `'tests'` drawer → Task 5. ✅
-- `@store` E2E + globals → Task 6. ✅
+- RTL **integration** test (Test Lab flow via `renderShell`) per AGENTS.md §3 Step 4.1 rigor → Task 6. ✅
+- `@store` E2E + globals → Task 7. ✅
 - DoD + checklist tick → Final. ✅
-- Ticket already revised + spec committed (`d5c6e6f`).
+- Ticket already revised + spec committed (rebased onto main with the test foundation).
 
 **Placeholder scan:** none — every step has complete code or an exact command.
 
