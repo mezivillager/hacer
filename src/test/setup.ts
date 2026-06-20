@@ -24,6 +24,21 @@ if (typeof globalThis.DOMRect === 'undefined') {
   }
 }
 
+// Polyfill matchMedia for jsdom (used by next-themes ThemeProvider — required to render the
+// full app shell / `renderShell()` integration harness, and by any media-query-aware component)
+if (typeof window !== 'undefined' && typeof window.matchMedia !== 'function') {
+  window.matchMedia = (query: string) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: () => {},
+    removeListener: () => {},
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    dispatchEvent: () => false,
+  })
+}
+
 // Mock WebGL context for Three.js tests
 const originalGetContext = HTMLCanvasElement.prototype.getContext
 
