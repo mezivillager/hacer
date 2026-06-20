@@ -103,12 +103,16 @@ describe('runTest — error paths', () => {
     const s = script('load Broken.hdl, output-list in out; set in 1, eval, output;')
     const result = runTest(s, { registry: reg })
     expect(result.passed).toBe(false)
-    expect(result.error).not.toBeNull()
+    expect(result.error).toMatch(/compile|Nope/i)
   })
 })
 
 describe('gold standard A — all 16 Project-1 .tst pass against builtins', () => {
   beforeEach(() => resetAppRegistriesForTests())
+
+  it('exercises all 16 Project-1 fixtures', () => {
+    expect(Object.keys(project1TstFixtures)).toHaveLength(16)
+  })
 
   it.each(Object.keys(project1TstFixtures))('%s.tst passes against the builtin', (name) => {
     const reg = getBuiltinChipRegistry()
@@ -137,6 +141,10 @@ describe('gold standard B — 15 composites pass against HDL compiled from NAND'
     }
     return reg
   }
+
+  it('exercises all 15 composite chips', () => {
+    expect(project1DependencyOrder).toHaveLength(15)
+  })
 
   it.each(project1DependencyOrder)('%s (HDL from NAND) passes its official .tst', (name) => {
     const reg = buildFromNand()
