@@ -36,7 +36,7 @@
 
 ## Layer 2 — Multiple dependencies
 
-- [ ] **P05-17** — Test execution engine — needs P05-05, P05-06, P05-03 — [P05-17.md](./phase-0.5-tickets/P05-17.md)
+- [x] **P05-17** — Test execution engine — needs P05-05, P05-06, P05-03 — [P05-17.md](./phase-0.5-tickets/P05-17.md)
 - [ ] **P05-18** — Chip hierarchy evaluation — needs P05-01, P05-16 — [P05-18.md](./phase-0.5-tickets/P05-18.md) — **re-scoped per ADR-0004**: the evaluateChip dispatch seam and engine routing landed in P05-16; P05-18 now focuses on user-chip authoring lifecycle and deeper composites
 - [ ] **P05-19** — Chip workflow browser UI — needs P05-01 — [P05-19.md](./phase-0.5-tickets/P05-19.md)
 - [ ] **P05-20** — ChipDefinitionPanel + auto-IO — needs P05-01, P05-08 — [P05-20.md](./phase-0.5-tickets/P05-20.md)
