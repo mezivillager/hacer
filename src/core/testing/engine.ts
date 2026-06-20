@@ -88,7 +88,10 @@ export function runTest(script: TSTScript, options: RunTestOptions): TestResult 
           values[col] = lastOutputs[col] ?? inputs[col] ?? 0
         }
         outputRows.push({ values })
-        if (cmpData && cmpRowIndex < cmpData.rows.length) {
+        if (cmpData) {
+          if (cmpRowIndex >= cmpData.rows.length) {
+            return fail(`Output row count ${outputRows.length} exceeds .cmp row count ${cmpData.rows.length}`)
+          }
           // Build the actual row in .cmp COLUMN order (the comparison's source of truth).
           const actualRow = cmpData.columns.map((c) => values[c.name] ?? 0)
           const mismatch = compareCmpRow(actualRow, cmpData.rows[cmpRowIndex], cmpData.columns, cmpRowIndex)

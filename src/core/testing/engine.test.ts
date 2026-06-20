@@ -62,4 +62,12 @@ describe('runTest — comparison', () => {
     expect(result.passed).toBe(false)
     expect(result.error).toMatch(/row count/i)
   })
+
+  it('errors when the script emits more output rows than the .cmp has', () => {
+    // Not.cmp has 2 rows; this script emits 3 output rows.
+    const s = script('load Not.hdl, output-list in out; set in 0, eval, output; set in 1, eval, output; set in 0, eval, output;')
+    const result = runTest(s, { registry: builtinNot(), cmpData: cmp(project1CmpFixtures.Not) })
+    expect(result.passed).toBe(false)
+    expect(result.error).toMatch(/exceed|row count/i)
+  })
 })
