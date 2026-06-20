@@ -14,6 +14,11 @@ These are authoritative for any operational detail — start here:
 4. `HACER_LLM_GUIDE.md` — code patterns/examples. `REPO_MAP.md` — file layout & "add X" jump table.
 5. `docs/decisions/` — ADR log of emergent decisions; run the `docs-sync` skill at session end.
 
+> **Tickets drift — validate before you build.** The `docs/plans/phase-0.5-tickets/*` specs were
+> written early and are often stale (outdated APIs, superseded designs, re-scoped siblings). Before
+> implementing a ticket, reconcile it against the current code and **revise / merge / split it in
+> place** — see AGENTS.md §3 Step 1.0 "Ticket Freshness Protocol". The design spec wins on conflict.
+
 ## North Star (don't lose sight of it)
 
 HACER is a first-principles, **AI-native** computing platform — build a computer from one NAND gate up, in 3D — inspired by nand2tetris and meant to outgrow it. The owner's driving purpose: a research lab for **master's/PhD-level AI-assisted hardware development**, aspiring to extend **downward below the NAND** (toward transistors/physics) and **upward** to higher architectures, growing slowly and ever more configurable. Propose and plan with that arc in mind, not just the immediate ticket. Full framing + which parts are documented vs. owner-intent: `../CLAUDE.md`.

@@ -23,6 +23,7 @@
 - **Update when:** Starting a new phase, architecture changes, or stack updates
 - **Check status in:** `docs/roadmap/implementation.md`
 - **Living docs vs code:** `docs/llm-docs-sync.md` (author pass before claiming done; reviewer pass before approving substantive merges)
+- **Ticket freshness:** `docs/plans/phase-0.5-tickets/*` are often stale. Before implementing a ticket, validate it against the code and **revise / merge / split it in place** — see AGENTS.md §3 Step 1.0. Trust the code and the `docs/specs/` design over the ticket.
 - **AI Agents:** Always check the "Current Phase" section first
 
 ## Stack
