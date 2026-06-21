@@ -208,11 +208,14 @@ export function combineAdjacentSegments(segments: WireSegment[]): WireSegment[] 
         // Combine the group: from first start to last end
         const firstSegment = currentGroup[0]
         const lastSegment = currentGroup[currentGroup.length - 1]
+        // Preserve `approach` only when every segment in the group carries it
+        const allApproach = currentGroup.every((s) => s.approach === true)
 
         result.push({
           start: firstSegment.start,
           end: lastSegment.end,
           type: firstSegment.type, // Preserve type (horizontal or vertical)
+          ...(allApproach ? { approach: true } : {}),
         })
       } else {
         // Single segment - add as-is
@@ -229,11 +232,14 @@ export function combineAdjacentSegments(segments: WireSegment[]): WireSegment[] 
     // Combine the group: from first start to last end
     const firstSegment = currentGroup[0]
     const lastSegment = currentGroup[currentGroup.length - 1]
+    // Preserve `approach` only when every segment in the group carries it
+    const allApproach = currentGroup.every((s) => s.approach === true)
 
     result.push({
       start: firstSegment.start,
       end: lastSegment.end,
       type: firstSegment.type, // Preserve type (horizontal or vertical)
+      ...(allApproach ? { approach: true } : {}),
     })
   } else {
     // Single segment - add as-is

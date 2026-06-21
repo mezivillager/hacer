@@ -132,13 +132,15 @@ export function calculateWirePath(
     }
 
     const existingSegments = options.existingSegments || []
-    const routingPath = findPathAlongSectionLines(exitSegment.end, routingEnd, existingSegments)
+    // Pass the confluence point for pin destinations so the pathfinder can
+    // pre-tag backbone segments as `approach` before the overlap check. This
+    // lets concurrent wires to the same chip side share the confluence track
+    // (approach-vs-approach sharing — Finding 2 / ADR-0007).
+    const confluencePoint = destination.type === 'pin' ? routingEnd : undefined
+    const routingPath = findPathAlongSectionLines(exitSegment.end, routingEnd, existingSegments, confluencePoint)
 
-    // For pin destinations, the coarse path's segments along the chip-side
-    // section line are a fan-in bus: multiple wires destined for the same chip
-    // side legitimately converge on that line (a confluence). Tag those backbone
-    // segments so subsequent wires may share the track instead of being rejected
-    // as overlapping (research Finding 2; B-003/B-004).
+    // Tag backbone segments as approach for any that weren't already tagged
+    // during pathfinding (e.g. the direct-segment path).
     const taggedRoutingPath =
       destination.type === 'pin'
         ? markConfluenceApproach(routingPath, routingEnd)
@@ -187,8 +189,9 @@ function markConfluenceApproach(
         Math.abs(seg.end.x - confluence.x) < CONFLUENCE_TOLERANCE
       : Math.abs(seg.start.z - confluence.z) < CONFLUENCE_TOLERANCE &&
         Math.abs(seg.end.z - confluence.z) < CONFLUENCE_TOLERANCE
+  const coord = backboneIsColumn ? confluence.x : confluence.z
   return routingPath.map((seg) =>
-    onBackbone(seg) ? { ...seg, approach: true } : seg,
+    onBackbone(seg) ? { ...seg, approach: true, confluenceCoord: coord } : seg,
   )
 }
 
@@ -259,7 +262,8 @@ export function calculateWirePathFromJunction(
       )
       return distToStart > TOLERANCE && distToEnd > TOLERANCE
     })
-    const routingPath = findPathAlongSectionLines(junctionPosition, routingEnd, existingSegments)
+    const confluencePoint = destination.type === 'pin' ? routingEnd : undefined
+    const routingPath = findPathAlongSectionLines(junctionPosition, routingEnd, existingSegments, confluencePoint)
 
     const allSegments = [...routingPath, ...approachSegments]
 

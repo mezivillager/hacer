@@ -149,15 +149,27 @@ export function segmentsOverlap(segment1: WireSegment, segment2: WireSegment): b
  * remain fully exclusive, so distinct pins still resolve to distinct lanes
  * (node-exclusivity preserved — Finding 10).
  *
- * @param potential - The segment being routed/placed
- * @param existing - An existing segment it overlaps
+ * @param potential - The segment being routed/placed (must also be approach-tagged)
+ * @param existing - An existing segment it overlaps (must be approach-tagged)
  * @returns True if the overlap is a shareable confluence (not a conflict)
  */
 function isShareableConfluence(potential: WireSegment, existing: WireSegment): boolean {
-  // Only an existing *approach* segment is shareable, and only by another
-  // routing/approach segment that is collinear with it on the same line.
   if (!existing.approach) return false
-  return areSegmentsOnSameSectionLine(potential, existing)
+  if (!areSegmentsOnSameSectionLine(potential, existing)) return false
+
+  // Non-approach potentials may transit the confluence backbone (grid topology
+  // requires this — unrelated wires may need to traverse the same section column
+  // on their way to a different destination).
+  if (!potential.approach) return true
+
+  // Both approach: only allow if they belong to the SAME confluence backbone
+  // (confluenceCoord must match). Different confluences on the same section line
+  // (e.g. two chips whose input sides happen to share x=-4) must not share
+  // approach segments — each wire's backbone is a distinct signal route (CASE2 fix,
+  // Finding 2 / ADR-0007).
+  return potential.confluenceCoord !== undefined &&
+    existing.confluenceCoord !== undefined &&
+    Math.abs(potential.confluenceCoord - existing.confluenceCoord) < 0.001
 }
 
 /**

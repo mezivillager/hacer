@@ -276,18 +276,52 @@ function wouldBacktrack(
   return segmentsOverlap(halvedPreviousSegment, nextSegment)
 }
 
+const CONFLUENCE_TOLERANCE = 0.001
+
+/**
+ * Return true if `seg` lies on the shared confluence backbone (the section-line
+ * column/row that all pins on one chip side funnel through). Mirrors the logic in
+ * `markConfluenceApproach` so the pathfinder can pre-tag backbone segments before
+ * the overlap check, enabling approach-vs-approach sharing (Finding 2 / ADR-0007).
+ */
+function isOnConfluenceBackbone(seg: WireSegment, confluence: Position): boolean {
+  const onSection = (coord: number) =>
+    Math.abs(coord - Math.round(coord / SECTION_SIZE) * SECTION_SIZE) < CONFLUENCE_TOLERANCE
+  const backboneIsColumn = onSection(confluence.x)
+  if (backboneIsColumn) {
+    return (
+      Math.abs(seg.start.x - confluence.x) < CONFLUENCE_TOLERANCE &&
+      Math.abs(seg.end.x - confluence.x) < CONFLUENCE_TOLERANCE
+    )
+  }
+  return (
+    Math.abs(seg.start.z - confluence.z) < CONFLUENCE_TOLERANCE &&
+    Math.abs(seg.end.z - confluence.z) < CONFLUENCE_TOLERANCE
+  )
+}
+
+function confluenceCoordFor(confluence: Position): number {
+  const onSection = (coord: number) =>
+    Math.abs(coord - Math.round(coord / SECTION_SIZE) * SECTION_SIZE) < CONFLUENCE_TOLERANCE
+  return onSection(confluence.x) ? confluence.x : confluence.z
+}
+
 /**
  * Find path along section lines from start to end using greedy algorithm.
  *
  * @param start - Start position (must be on a section line)
  * @param end - End position (destination)
+ * @param existingSegments - Existing segments to avoid overlapping with
+ * @param confluencePoint - Optional confluence point; segments on the backbone
+ *   are pre-tagged `approach: true` so concurrent pin wires may share it.
  * @returns Array of segments forming the path
  * @throws Error if pathfinding fails (cannot make progress or exceeds max iterations)
  */
 export function findPathAlongSectionLines(
   start: Position,
   end: Position,
-  existingSegments: WireSegment[] = []
+  existingSegments: WireSegment[] = [],
+  confluencePoint?: Position,
 ): WireSegment[] {
   const path: WireSegment[] = []
   let current: Position = { ...start }
@@ -332,7 +366,10 @@ export function findPathAlongSectionLines(
     if (canReachDirectly) {
       // Destination is on the same section line and closer than any corner
       // Move directly to destination
-      const directSegment = createSegment(current, routingEnd)
+      let directSegment = createSegment(current, routingEnd)
+      if (confluencePoint && isOnConfluenceBackbone(directSegment, confluencePoint)) {
+        directSegment = { ...directSegment, approach: true, confluenceCoord: confluenceCoordFor(confluencePoint) }
+      }
       if (!wouldOverlapWithExisting(directSegment, existingSegments)) {
         path.push(directSegment)
         current = routingEnd
@@ -371,7 +408,10 @@ export function findPathAlongSectionLines(
         return false
       }
 
-      const potentialSegment = createSegment(current, corner)
+      let potentialSegment = createSegment(current, corner)
+      if (confluencePoint && isOnConfluenceBackbone(potentialSegment, confluencePoint)) {
+        potentialSegment = { ...potentialSegment, approach: true, confluenceCoord: confluenceCoordFor(confluencePoint) }
+      }
       const overlaps = wouldOverlapWithExisting(potentialSegment, existingSegments)
       if (overlaps) {
         overlappingCorners.push(corner)
@@ -415,7 +455,10 @@ export function findPathAlongSectionLines(
     }
 
     // Create segment from current to nearest corner
-    const segment = createSegment(current, nearestCorner)
+    let segment = createSegment(current, nearestCorner)
+    if (confluencePoint && isOnConfluenceBackbone(segment, confluencePoint)) {
+      segment = { ...segment, approach: true, confluenceCoord: confluenceCoordFor(confluencePoint) }
+    }
     path.push(segment)
     previous = current
     current = nearestCorner
