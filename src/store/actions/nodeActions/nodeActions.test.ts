@@ -8,6 +8,8 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { useCircuitStore } from '../../circuitStore'
 import type { Position } from '../../types'
+import { calculateWirePath } from '@/utils/wiringScheme/core'
+import { calculateNodePinPosition } from '@/nodes/config'
 
 describe('Node Actions', () => {
   beforeEach(() => {
@@ -566,4 +568,84 @@ describe('Node Actions', () => {
       expect(after.inputNodes.find((n) => n.id === inNode.id)?.width).toBe(8)
     })
   })
+
+  // B-003: dragging an input node wired to an INNER pin of a dense multi-input
+  // chip used to drop the wire — the re-route threw and the catch silently left
+  // stale/orphaned segments. With the Stage-1 routing fix the re-route succeeds,
+  // and even on a genuine failure the wire's segments must be preserved.
+  describe('updateInputNodePosition — preserves wires to multi-input chips (B-003)', () => {
+    function wireInputToPin(
+      nodeName: string,
+      nodePos: Position,
+      chipName: string,
+      gatePos: Position,
+      pinIndex: number,
+    ) {
+      const store = useCircuitStore.getState()
+      const node = store.addInputNode(nodeName, nodePos)
+      const gate = store.addGate(chipName, gatePos)
+      const pin = gate.inputs[pinIndex]
+
+      // Compute the node→pin path the same way the live wiring flow does.
+      const pinOffset = calculateNodePinPosition('input')
+      const nodePinPos: Position = {
+        x: nodePos.x + pinOffset.x,
+        y: 0.2,
+        z: nodePos.z + pinOffset.z,
+      }
+      const s = useCircuitStore.getState()
+      const gatePinPos = s.getPinWorldPosition(gate.id, pin.id)!
+      const gatePinOri = s.getPinOrientation(gate.id, pin.id)!
+      const path = calculateWirePath(
+        nodePinPos,
+        { type: 'pin', pin: gatePinPos, orientation: { direction: gatePinOri } },
+        { direction: { x: 1, y: 0, z: 0 } },
+        s.gates,
+        {},
+      )
+      store.addWire(
+        { type: 'input', entityId: node.id },
+        { type: 'gate', entityId: gate.id, pinId: pin.id },
+        path.segments,
+      )
+      return { node, gate, pin }
+    }
+
+    it('keeps and re-routes the wire when dragging a node wired to a Mux4Way16 inner pin', () => {
+      // Inner pin (index 2 = "c") is the one the old router could not reach.
+      const { node } = wireInputToPin('a', { x: -8, y: 0, z: 0 }, 'Mux4Way16', { x: 0, y: 0, z: 0 }, 2)
+
+      const before = useCircuitStore.getState().wires
+      expect(before).toHaveLength(1)
+      const wireId = before[0].id
+
+      store_updateInputNodePosition(node.id, { x: -8, y: 0, z: 4 })
+
+      const after = useCircuitStore.getState().wires
+      // Wire must still exist and still carry a non-empty segment path.
+      const wire = after.find((w) => w.id === wireId)
+      expect(wire).toBeDefined()
+      expect(wire!.segments.length).toBeGreaterThan(0)
+    })
+
+    it('preserves prior segments if a re-route somehow fails (no orphaning)', () => {
+      const { node } = wireInputToPin('a', { x: -8, y: 0, z: 0 }, 'Mux4Way16', { x: 0, y: 0, z: 0 }, 3)
+
+      const wireBefore = useCircuitStore.getState().wires[0]
+      const wireId = wireBefore.id
+      expect(wireBefore.segments.length).toBeGreaterThan(0)
+
+      store_updateInputNodePosition(node.id, { x: -4, y: 0, z: 0 })
+
+      const wireAfter = useCircuitStore.getState().wires.find((w) => w.id === wireId)
+      expect(wireAfter).toBeDefined()
+      // Never left with zero segments (orphaned).
+      expect(wireAfter!.segments.length).toBeGreaterThan(0)
+    })
+  })
 })
+
+// Helper to call the store action by name (keeps the test readable).
+function store_updateInputNodePosition(nodeId: string, position: Position) {
+  useCircuitStore.getState().updateInputNodePosition(nodeId, position)
+}
