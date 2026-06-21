@@ -11,6 +11,7 @@ import { calculateExitSegment, calculateTotalLength } from './segments'
 import { findPathAlongSectionLines } from './pathfinding'
 import { snapCursorToSectionBoundary } from './extension'
 import { computePinApproach } from './approach'
+import { nudgeTransitRun } from './lanes'
 
 /**
  * Options for calculating wire path from wire connection information.
@@ -146,7 +147,20 @@ export function calculateWirePath(
         ? markConfluenceApproach(routingPath, routingEnd)
         : routingPath
 
-    const allSegments = [exitSegment, ...taggedRoutingPath, ...approachSegments]
+    let allSegments = [exitSegment, ...taggedRoutingPath, ...approachSegments]
+
+    // Lane-level exclusivity (CASE1): nudge any routing run that transits another
+    // confluence's approach backbone onto this net's own parallel lane so two
+    // distinct wires never share one physical track. Deterministic per net.
+    if (destination.type === 'pin') {
+      allSegments = nudgeTransitRun(
+        allSegments,
+        existingSegments,
+        startPin,
+        routingEnd,
+        ownConfluenceCoord(routingEnd),
+      )
+    }
 
     const totalLength = calculateTotalLength(allSegments)
 
@@ -162,6 +176,17 @@ export function calculateWirePath(
 }
 
 const CONFLUENCE_TOLERANCE = 0.001
+
+/**
+ * The backbone coordinate this net OWNS (its confluence on a section line): x for
+ * a left/right pin side, z for a top/bottom side. Used to keep a net's own fan-in
+ * bus on lane 0 while nudging only transits over OTHER confluences.
+ */
+function ownConfluenceCoord(confluence: Position): number {
+  const onSection = (coord: number) =>
+    Math.abs(coord - Math.round(coord / SECTION_SIZE) * SECTION_SIZE) < CONFLUENCE_TOLERANCE
+  return onSection(confluence.x) ? confluence.x : confluence.z
+}
 
 /**
  * Tag the routing segments that form the fan-in bus into the shared confluence
@@ -265,7 +290,20 @@ export function calculateWirePathFromJunction(
     const confluencePoint = destination.type === 'pin' ? routingEnd : undefined
     const routingPath = findPathAlongSectionLines(junctionPosition, routingEnd, existingSegments, confluencePoint)
 
-    const allSegments = [...routingPath, ...approachSegments]
+    let allSegments = [...routingPath, ...approachSegments]
+
+    // Lane-level exclusivity (CASE1): nudge transit runs over other confluences'
+    // backbones onto this net's own lane (see calculateWirePath). Pathfinding has
+    // already tagged this net's own backbone segments via `confluencePoint`.
+    if (destination.type === 'pin') {
+      allSegments = nudgeTransitRun(
+        allSegments,
+        existingSegments,
+        junctionPosition,
+        routingEnd,
+        ownConfluenceCoord(routingEnd),
+      )
+    }
 
     const totalLength = calculateTotalLength(allSegments)
 
