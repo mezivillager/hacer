@@ -420,9 +420,23 @@ function recalculateWiresForNode(set: SetState, get: GetState, nodeId: string, n
       }
 
       const combinedSegments = combineAdjacentSegments(resolvedSegments)
-      updateWireSegments(wire.id, combinedSegments, crossedWireIds)
+
+      // B-003: a re-route that yields an empty/invalid path must NOT overwrite a
+      // valid wire — that silently orphans the connection (the wire goes blank
+      // and stops following the node). Only commit a non-empty re-route; if the
+      // new path is empty, keep the wire's existing segments intact.
+      if (combinedSegments.length > 0) {
+        updateWireSegments(wire.id, combinedSegments, crossedWireIds)
+      } else {
+        console.warn(
+          `[recalculateWiresForNode] Empty re-route for wire ${wire.id}; preserving existing segments.`,
+        )
+      }
     } catch (error) {
-      console.error(`[recalculateWiresForNode] Failed to recalculate wire ${wire.id}:`, error)
+      // A thrown re-route (e.g. unreachable layout) likewise must not drop the
+      // wire — leaving the existing segments in place keeps the connection
+      // visible and correct rather than orphaned.
+      console.error(`[recalculateWiresForNode] Failed to recalculate wire ${wire.id}; preserving existing segments:`, error)
     }
   }
 
