@@ -36,6 +36,10 @@ export function subscribeAutosave(): void {
   })
 }
 
+export function isAutosaveSubscribed(): boolean {
+  return unsubscribe !== null
+}
+
 export function __resetAutosaveForTests(): void {
   if (pendingWrite) pendingWrite.cancel()
   pendingWrite = null
