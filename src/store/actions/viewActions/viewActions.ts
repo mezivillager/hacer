@@ -41,4 +41,9 @@ export const createViewActions = (set: SetState): ViewActions => ({
       writePerformanceMode(nextMode)
     }, false, 'togglePerformanceMode')
   },
+  setRightPanelOpen: (open) => {
+    set((state) => {
+      state.rightPanelOpen = open
+    }, false, 'setRightPanelOpen')
+  },
 })

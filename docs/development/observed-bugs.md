@@ -33,12 +33,12 @@ When an item is **Fixed**, add the **Fixed in** link and move the detailed row t
 | Field | Detail |
 |-------|--------|
 | **Status** | Fixed |
-| **Area** | `App.tsx` (`Toaster` from Sonner), `RightActionBar`, global toast positioning / `z-index` / viewport inset |
-| **Symptom** | Warning banners (e.g. “Cannot connect same pin types”) render **on top of** the vertical **right action bar** so the toast background and the top icons (e.g. Info) overlap — layout looks broken. |
-| **Expected** | Toasts stay **clear of** the action bar: reserve right margin equal to bar + drawer width, move `Toaster` inset, or lower toast layer so the bar stays visually on top; toasts should remain fully readable without obscuring primary chrome. |
-| **Repro** | Trigger a Sonner warning while the right bar is visible (e.g. invalid wiring / same pin types) — observe overlap at top-right. |
-| **Root cause** | Sonner `<Toaster position=”top-right”>` uses `right: 24px` (its `VIEWPORT_OFFSET` default). The `RightActionBar` icon column is ~44 px wide (`w-8` + `px-1.5` padding + border, `absolute top-0 right-0`). Toasts at 24 px from the right overlapped the icon column. |
-| **Fix** | Added `offset={{ right: '60px' }}` to `<Toaster>` in `src/App.tsx` — shifts toasts 60 px from the right edge, clearing the ~44 px icon bar with a 16 px gap. Theme-agnostic. The 280 px drawer also benefits: when open it expands leftward from the same absolute-right anchor so toasts remain clear. |
+| **Area** | `App.tsx` (`Toaster` from Sonner), `RightActionBar`, `store/types.ts`, `store/actions/viewActions/viewActions.ts` |
+| **Symptom** | Warning banners (e.g. “Cannot connect same pin types”) render **on top of** the vertical **right action bar** so the toast background and the top icons (e.g. Info) overlap — layout looks broken. Overlap occurred in both the closed (icon-column only) and open (icon column + 280 px drawer) states. |
+| **Expected** | Toasts stay **clear of** the action bar in all states: closed → clear the ~44 px icon column; open → clear icon column + 280 px `PANEL_WIDTH` drawer. |
+| **Repro** | Trigger a Sonner warning while the right bar is visible (e.g. invalid wiring / same pin types) — observe overlap at top-right. Open a panel drawer and repeat — observe overlap with the drawer. |
+| **Root cause** | Sonner `<Toaster position=”top-right”>` uses `right: 24px` (its `VIEWPORT_OFFSET` default). The `RightActionBar` icon column is ~44 px wide (`absolute top-0 right-0`), and the panel drawer adds another 280 px when open (expanding leftward inside the same container). A static 60 px offset cleared the closed bar but still overlapped the open 280 px drawer. |
+| **Fix** | **Reactive offset** via a store field (`rightPanelOpen: boolean` in `CircuitState`, set by `RightActionBar` via `circuitActions.setRightPanelOpen` inside a `useEffect` on `activePanel` changes). `App.tsx` reads `rightPanelOpen` with a narrow selector and passes `offset={{ right: rightPanelOpen ? '360px' : '60px' }}` to `<Toaster>` — closed state clears the icon bar, open state clears bar + drawer. No `useMemo`/`useCallback` (React-Compiler-clean). |
 | **Fixed in** | `fix/toast-overlaps-action-bar` — see commit SHA in `.superpowers/b002-report.md` |
 
 ### B-003 — Wiring not preserved when dragging an input node wired to a multi-input chip
@@ -84,4 +84,4 @@ When an item is **Fixed**, add the **Fixed in** link and move the detailed row t
 | **Guard test** | PR #125 review finding resolved: `isAutosaveSubscribed()` is now captured at module scope (before any `beforeEach` cleanup) and asserted `false`. Guard removal causes `subscribedAtModuleLoad` to be `true` → test fails. The MODE guard in `circuitStore.ts` is now genuinely tested, not vacuously. |
 ### B-002 (moved from Open — see entry above for full detail)
 
-**Root cause**: Sonner default `right: 24px` offset overlapped the ~44 px-wide `RightActionBar` icon column (`absolute top-0 right-0 z-10`). **Fix**: `offset={{ right: '60px' }}` on `<Toaster>` in `App.tsx`. **Regression test**: `e2e/specs/ui-shell/toast-no-overlap.ui.spec.ts` — asserts `toast.right ≤ bar.left` via bbox comparison.
+**Root cause**: Sonner default `right: 24px` overlapped the ~44 px icon column; a static 60 px fix cleared the closed bar but not the 280 px open drawer. **Fix**: reactive `rightPanelOpen` store field; `RightActionBar` syncs it via `useEffect`; `App.tsx` selects it and passes `offset={{ right: rightPanelOpen ? '360px' : '60px' }}` to `<Toaster>`. **Regression tests**: `e2e/specs/ui-shell/toast-no-overlap.ui.spec.ts` — two cases: (a) drawer closed → `toast.right ≤ bar.left`; (b) drawer open → `toast.right ≤ drawer.left`.

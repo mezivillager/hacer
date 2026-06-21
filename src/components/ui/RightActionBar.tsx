@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import {
   Info,
   History,
@@ -34,6 +34,11 @@ const PANEL_WIDTH = 280
 export function RightActionBar() {
   const [activePanel, setActivePanel] = useState<ActivePanel>(null)
   const hasChipIo = useCircuitStore((s) => s.inputNodes.length > 0 || s.outputNodes.length > 0)
+
+  // Keep the store in sync so <Toaster> can offset reactively (B-002).
+  useEffect(() => {
+    circuitActions.setRightPanelOpen(activePanel !== null)
+  }, [activePanel])
 
   const togglePanel = (p: ActivePanel) => {
     setActivePanel(activePanel === p ? null : p)

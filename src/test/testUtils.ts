@@ -53,6 +53,7 @@ export function createMockStore(partial: Partial<CircuitState> = {}): CircuitSto
     testResult: null,
     testColumns: [],
     completedChips: [],
+    rightPanelOpen: false,
   }
 
   // Merge provided partial state with defaults
@@ -106,6 +107,7 @@ export function createMockStore(partial: Partial<CircuitState> = {}): CircuitSto
     togglePropertiesPanel: () => {},
     setPerformanceMode: () => {},
     togglePerformanceMode: () => {},
+    setRightPanelOpen: () => {},
     // Node actions
     addInputNode: () => ({ id: '', name: '', position: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, value: 1, width: 1 }),
     addOutputNode: () => ({ id: '', name: '', position: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, value: 0, width: 1 }),
