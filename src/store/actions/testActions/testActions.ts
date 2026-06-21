@@ -9,9 +9,39 @@ import { project1TstFixtures } from '@/core/testing/project1TstFixtures'
 import { project1CmpFixtures } from '@/core/testing/project1CmpFixtures'
 import { getImplementationSource } from '@/core/testing/implementationSources'
 import { markChipCompleted } from '@/core/testing/chipCompletion'
+import type { ChipRegistry } from '@/core/chips/registry'
+import type { ChipDefinition } from '@/core/chips/types'
 
 type SetState = (fn: (state: CircuitStore) => void, replace?: false, actionName?: string) => void
 type GetState = () => CircuitStore
+
+/**
+ * Build a registry that resolves `chipName` to `sourceChip` (the chip returned by the
+ * implementation source), then delegates all other lookups to `baseRegistry`.
+ * This ensures the engine's `load <chip>.hdl` command always uses the source's chip, even
+ * when `baseRegistry` does not contain it under that name (e.g. a custom source that provides
+ * its own chip-under-test and only uses the registry for sub-part dependencies).
+ */
+function makeSourceFirstRegistry(chipName: string, sourceChip: ChipDefinition, baseRegistry: ChipRegistry): ChipRegistry {
+  return {
+    get(name: string): ChipDefinition | undefined {
+      return name === chipName ? sourceChip : baseRegistry.get(name)
+    },
+    has(name: string): boolean {
+      return name === chipName || baseRegistry.has(name)
+    },
+    list(): ChipDefinition[] {
+      const out: ChipDefinition[] = [sourceChip]
+      for (const def of baseRegistry.list()) {
+        if (def.name !== chipName) out.push(def)
+      }
+      return out
+    },
+    register(_chip: ChipDefinition): void {
+      throw new Error('makeSourceFirstRegistry: read-only view')
+    },
+  }
+}
 
 function parseCmpFixture(name: string): CmpFile | null {
   const raw = project1CmpFixtures[name.replace(/\.cmp$/i, '')]
@@ -44,8 +74,14 @@ export const createTestActions = (set: SetState, get: GetState): TestActions => 
     const tst = parseTST(tstRaw)
     if (!tst.success) return fail(`TST parse error: ${tst.errors[0]?.message ?? 'unknown'}`)
 
+    // Build a registry where `chipName` resolves to `resolved.chip` (the source's chip-under-test),
+    // layered over `resolved.registry` (for sub-part lookups). This ensures the engine's
+    // `load <chip>.hdl` command does not silently replace the source chip with whatever the
+    // base registry happens to have under that name.
+    const registry = makeSourceFirstRegistry(chipName, resolved.chip, resolved.registry)
+
     const result = runTest(tst.script, {
-      registry: resolved.registry,
+      registry,
       chip: resolved.chip,
       cmpData: parseCmpFixture(chipName) ?? undefined,
       loadCmpFile: (filename) => parseCmpFixture(filename),

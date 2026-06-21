@@ -62,4 +62,32 @@ describe('runChipTest', () => {
     expect(() => circuitActions.runChipTest('Not', 'throwing')).not.toThrow()
     expect(useCircuitStore.getState().testResult?.error).toMatch(/boom/i)
   })
+
+  it('uses resolved.chip from source even when registry does not contain it under that name', () => {
+    // A source whose resolve() returns a broken Not (always out:0) in a registry that does NOT
+    // register it under "Not". If runChipTest fell back to registry.get("Not") after load Not.hdl,
+    // it would either error ("Not not found") or pick up some other chip — it would NOT observe
+    // the broken chip's failure.  The fix must prove that the source chip is actually tested.
+    const wrongReg = createChipRegistry()
+    // Register a DIFFERENT chip so the registry is non-empty but has no "Not":
+    registerBuiltin(wrongReg, 'Placeholder', [{ name: 'in', width: 1 }], [{ name: 'out', width: 1 }], () => ({ out: 0 }))
+    const brokenChip: import('@/core/chips/types').ChipDefinition = {
+      name: 'Not',
+      inputs: [{ name: 'in', width: 1 }],
+      outputs: [{ name: 'out', width: 1 }],
+      implementation: { type: 'builtin', evaluate: () => ({ out: 0 }) }, // always wrong
+    }
+    registerImplementationSource({
+      id: 'source-chip-only',
+      label: 'SourceChipOnly',
+      // resolved.chip is brokenChip; registry does NOT contain "Not"
+      resolve: (name) => (name === 'Not' ? { chip: brokenChip, registry: wrongReg } : null),
+    })
+    circuitActions.runChipTest('Not', 'source-chip-only')
+    const r = useCircuitStore.getState().testResult
+    // Must have observed the broken chip (always-0) and failed, not errored with "Not not found"
+    expect(r?.error).toBeNull()
+    expect(r?.passed).toBe(false)
+    expect(r?.firstFailure).toMatchObject({ row: 0, column: 'out' })
+  })
 })
