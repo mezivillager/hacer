@@ -1,5 +1,5 @@
 /**
- * Lane-level exclusivity / nudging (closes CASE1).
+ * Lane-level exclusivity / nudging (closes CASE1 and transit-vs-transit merges).
  *
  * No two distinct wires may share the same physical orthogonal track over an
  * overlapping range. The coarse grid forces an unrelated net's trunk to *transit*
@@ -11,6 +11,16 @@
  * trunk physically coexists with the backbone instead of merging, while still
  * transiting (it is never blocked for lack of a corner; it gets a lane instead).
  *
+ * A per-net hash gives each transit a well-spread *starting* lane index, but two
+ * distinct nets can hash to the same index. To avoid re-introducing the silent
+ * merge one lane over, the nudge **probes** outward from the starting index to
+ * the first lane that is free of every other wire already on that track — both
+ * foreign approach backbones AND already-placed transit runs (`existingSegments`
+ * carries the prior wires at routing time). This is deterministic for a given
+ * circuit state and order-dependent across the initial build order, which is the
+ * accepted libavoid "ordering + nudging" trade-off (order-dependent separation
+ * beats a silent merge).
+ *
  * This is the libavoid *nudging* concept (research Finding 2) applied on top of
  * the existing coarse-grid + approach router — NOT the Stage-3 visibility-graph
  * rewrite. See docs/superpowers/specs/2026-06-21-wire-routing-lane-exclusivity-design.md
@@ -18,7 +28,12 @@
  */
 
 import type { Position, WireSegment } from './types'
-import { SECTION_SIZE, TRANSIT_LANE_PITCH, TRANSIT_LANE_SLOTS } from './types'
+import {
+  SECTION_SIZE,
+  TRANSIT_LANE_PITCH,
+  TRANSIT_LANE_SLOTS,
+  MAX_TRANSIT_LANE_OFFSET,
+} from './types'
 import { coordinateRangesOverlap } from './overlap'
 
 const TOLERANCE = 0.001
@@ -52,20 +67,61 @@ export function laneIndexForNet(start: Position, end: Position): number {
     h ^= (p >>> 16) & 0xffff
     h = Math.imul(h, 0x01000193)
   }
+  // Final avalanche (Murmur3 fmix32) so structured, near-identical inputs (e.g.
+  // pins one section apart) spread across lanes instead of collapsing — `% SLOTS`
+  // otherwise samples only the poorly-mixed low bits and systematically collides.
+  h ^= h >>> 16
+  h = Math.imul(h, 0x85ebca6b)
+  h ^= h >>> 13
+  h = Math.imul(h, 0xc2b2ae35)
+  h ^= h >>> 16
   h >>>= 0
   return 1 + (h % TRANSIT_LANE_SLOTS)
 }
 
 /**
- * Signed lane offset δ for a net on a given track. The sign points toward the
- * net's own routing side so the lane stays inside the section cell and away from
- * the backbone owner's geometry. `awayFromCoord` is a reference coordinate (the
- * net's source/destination along the nudge axis) used only to choose a side.
+ * Probe for a FREE lane coordinate for a transit run on a given track.
+ *
+ * The per-net hash gives a well-spread *starting* lane index (good spread,
+ * minimal probing). From there we walk indices outward — index, index+1,
+ * index+2, … wrapping within the slot count — converting each to the candidate
+ * coordinate `sectionCoord + sign·idx·PITCH` on the source-biased side, and
+ * return the first candidate that is not already occupied (within TOLERANCE) by
+ * another wire on this track over the overlapping range. Lane 0 (`sectionCoord`
+ * exactly) is the backbone owner's and is never a probe target.
+ *
+ * If no candidate within {@link MAX_TRANSIT_LANE_OFFSET} is free (extreme
+ * single-column transit density — a Stage-3 visibility-graph concern), we return
+ * the last safe candidate rather than push the run far enough to reshape the
+ * path. Keeping the offset tiny preserves perpendicular hops.
+ *
+ * @param occupied - coordinates already taken on this exact track over the run's
+ *   overlapping range (foreign backbones + already-placed transit runs).
  */
-function laneOffset(start: Position, end: Position, sectionCoord: number, awayFromCoord: number): number {
-  const index = laneIndexForNet(start, end)
+function probeLaneCoord(
+  start: Position,
+  end: Position,
+  sectionCoord: number,
+  awayFromCoord: number,
+  occupied: number[],
+): number {
+  const startIndex = laneIndexForNet(start, end)
   const sign = awayFromCoord >= sectionCoord ? 1 : -1
-  return sign * index * TRANSIT_LANE_PITCH
+  const isFree = (coord: number) => !occupied.some((o) => Math.abs(o - coord) < TOLERANCE)
+
+  let lastSafe = sectionCoord + sign * startIndex * TRANSIT_LANE_PITCH
+  // Probe a bounded budget of indices starting at the hash index, walking up and
+  // wrapping within the slot range, capped by the safe offset so hops survive.
+  for (let step = 0; step < TRANSIT_LANE_SLOTS; step++) {
+    const index = 1 + ((startIndex - 1 + step) % TRANSIT_LANE_SLOTS)
+    const offset = index * TRANSIT_LANE_PITCH
+    if (offset > MAX_TRANSIT_LANE_OFFSET + TOLERANCE) continue
+    const candidate = sectionCoord + sign * offset
+    lastSafe = candidate
+    if (isFree(candidate)) return candidate
+  }
+  // No free lane within the cap: keep the last safe lane (documented residual).
+  return lastSafe
 }
 
 /** A maximal run of consecutive routing segments on a single track. */
@@ -88,6 +144,31 @@ function segAxis(seg: WireSegment): 'x' | 'z' | null {
 }
 
 /**
+ * Coordinates already OCCUPIED on a run's exact track over its overlapping range,
+ * gathered from ALL collinear existing segments — not just approach backbones.
+ * A coordinate is occupied if some existing segment of the same axis lies within
+ * the probe window (`±MAX_TRANSIT_LANE_OFFSET` of `sectionCoord`, so it can only
+ * be a lane on this very track) and its range overlaps the run's range. This is
+ * what lets the probe avoid both foreign backbones (lane 0) and already-placed
+ * transit runs (off-grid lanes), preventing transit-vs-transit merges.
+ */
+function occupiedLaneCoords(run: TrackRun, existingSegments: WireSegment[]): number[] {
+  const coords: number[] = []
+  for (const seg of existingSegments) {
+    const axis = segAxis(seg)
+    if (axis !== run.axis) continue
+    const segCoord = axis === 'x' ? seg.start.x : seg.start.z
+    // Only segments on (or within nudging distance of) this track can collide.
+    if (Math.abs(segCoord - run.sectionCoord) > MAX_TRANSIT_LANE_OFFSET + TOLERANCE) continue
+    const segMin = axis === 'x' ? Math.min(seg.start.z, seg.end.z) : Math.min(seg.start.x, seg.end.x)
+    const segMax = axis === 'x' ? Math.max(seg.start.z, seg.end.z) : Math.max(seg.start.x, seg.end.x)
+    if (!coordinateRangesOverlap(run.rangeMin, run.rangeMax, segMin, segMax)) continue
+    coords.push(segCoord)
+  }
+  return coords
+}
+
+/**
  * Nudge any maximal run of the new path's routing segments that *transits* a
  * DIFFERENT confluence's approach backbone onto the net's own parallel lane.
  *
@@ -97,8 +178,15 @@ function segAxis(seg: WireSegment): 'x' | 'z' | null {
  * run already off-grid) is never nudged, so confluence fan-in buses (B-003/B-004)
  * and same-confluence sharing (CASE2) are untouched.
  *
+ * When a run IS nudged, the destination lane is chosen by {@link probeLaneCoord},
+ * which starts at the per-net hash index and probes outward to the first lane
+ * free of every other wire on that track over the overlapping range — both
+ * foreign backbones (lane 0) and already-placed transit runs (off-grid lanes).
+ * This prevents two distinct transit nets that hash to the same index from
+ * silently merging onto the same offset lane.
+ *
  * @param segments - the new wire's full segment list (exit + routing + approach)
- * @param existingSegments - segments of all other wires (to detect backbones)
+ * @param existingSegments - segments of all other wires (backbones + prior transits)
  * @param netStart - this net's exit point (intrinsic identity, for the lane hash)
  * @param netEnd - this net's destination (intrinsic identity)
  * @param ownConfluenceCoord - this net's own confluence coord, if any (its owned track)
@@ -185,14 +273,17 @@ export function nudgeTransitRun(
     })
     if (!collides) continue
 
-    // Nudge: shift the run's constant coordinate to the net's own lane. Bias the
-    // side toward the net's SOURCE so the adjoining perpendicular segment (which
+    // Nudge: shift the run's constant coordinate to a FREE lane. Bias the side
+    // toward the net's SOURCE so the adjoining perpendicular segment (which
     // continues toward the destination) still spans ACROSS the original section
     // line — preserving any perpendicular crossing/hop with the backbone rather
-    // than degrading it to a no-touch.
+    // than degrading it to a no-touch. The probe starts at the per-net hash index
+    // and walks outward to the first lane free of every other wire on this track
+    // (foreign backbones AND already-placed transit runs) so two distinct transit
+    // nets that hash to the same index never merge.
     const towardSource = run.axis === 'x' ? netStart.x : netStart.z
-    const delta = laneOffset(netStart, netEnd, run.sectionCoord, towardSource)
-    const laneCoord = run.sectionCoord + delta
+    const occupied = occupiedLaneCoords(run, existingSegments)
+    const laneCoord = probeLaneCoord(netStart, netEnd, run.sectionCoord, towardSource, occupied)
 
     // Apply to every segment endpoint that currently sits on the run's track:
     // the run segments themselves AND the corner endpoints of the adjoining

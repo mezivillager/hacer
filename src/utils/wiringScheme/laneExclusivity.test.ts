@@ -147,6 +147,63 @@ describe('lane-level exclusivity (CASE1)', () => {
     expect(bVert!.start.x).toBeCloseTo(aVert!.start.x, 6)
   })
 
+  it('separates TWO distinct transit nets that hash to the SAME lane (no transit-vs-transit merge)', () => {
+    // Build a chip approach backbone on column x = -4 (Mux4Way16 input fan-in).
+    const slots = inputSlots('Mux4Way16')
+    const chipPin = pinWorldPosition(gatePos, slots[0].position)
+    const chipWire = calculateWirePath(
+      { x: -8, y: 0.2, z: -4 },
+      { type: 'pin', pin: chipPin, orientation: { direction: dir } },
+      sourceOri,
+      [],
+      {},
+    )
+
+    // TWO unrelated transit nets, both routed to the SAME far pin across the
+    // x = -4 column. Their exit z values (-6 and -5) are chosen so the per-net
+    // hash maps BOTH to the SAME starting transit lane index (lane 5), and their
+    // vertical runs overlap in z over several units — so without per-track lane
+    // probing they land on the identical offset coordinate and silently merge.
+    const farPin: Position = { x: 7.325, y: 0.2, z: -0.8 }
+    const farOri = { direction: { x: -1, y: 0, z: 0 } }
+    const routeTransit = (z: number, existing: WireSegment[]) =>
+      calculateWirePath(
+        { x: -7.325, y: 0.2, z },
+        { type: 'pin', pin: farPin, orientation: farOri },
+        sourceOri,
+        [],
+        { existingSegments: existing },
+      )
+
+    // Route net A, then net B with A's segments present (the real sequential
+    // controller flow: each new wire sees previously-routed wires).
+    const existing: WireSegment[] = [...chipWire.segments]
+    const netA = routeTransit(-6, existing)
+    existing.push(...netA.segments)
+    const netB = routeTransit(-5, existing)
+
+    // Each net's transit vertical RUN near the x = -4 column: the whole maximal
+    // collinear run (all vertical segments sharing one x), reduced to (x, zRange).
+    const transitRun = (segs: WireSegment[]) => {
+      const verts = verticalRoutingSegments(segs).filter((s) => Math.abs(s.start.x - -4) < 1.0)
+      expect(verts.length).toBeGreaterThan(0)
+      const x = verts[0].start.x
+      const zs = verts.flatMap((s) => [s.start.z, s.end.z])
+      return { x, zMin: Math.min(...zs), zMax: Math.max(...zs) }
+    }
+    const runA = transitRun(netA.segments)
+    const runB = transitRun(netB.segments)
+
+    // Sanity: the two runs genuinely contend for the same track — their z-ranges
+    // overlap, so if they share an x they physically merge.
+    const overlap = Math.min(runA.zMax, runB.zMax) - Math.max(runA.zMin, runB.zMin)
+    expect(overlap).toBeGreaterThan(0.001)
+
+    // The invariant: two DISTINCT nets must not occupy the same physical track
+    // over an overlapping range. (RED on current code: both land on x = -4.36.)
+    expect(Math.abs(runA.x - runB.x)).toBeGreaterThan(0.001)
+  })
+
   it('does NOT nudge the chip fan-in bus (owner keeps lane 0; B-003/B-004 unaffected)', () => {
     // All pins of one chip share one confluence — they are owners on lane 0 and
     // must keep riding the exact backbone column (the legitimate fan-in bus).
