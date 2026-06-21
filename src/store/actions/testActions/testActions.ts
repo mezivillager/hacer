@@ -87,7 +87,7 @@ export const createTestActions = (set: SetState, get: GetState): TestActions => 
       loadCmpFile: (filename) => parseCmpFixture(filename),
     })
     const outputList = tst.script.commands.find((c) => c.type === 'output-list')
-    const columns = outputList && outputList.type === 'output-list' ? outputList.columns.map((c) => c.name) : []
+    const columns = outputList && outputList.type === 'output-list' ? outputList.columns : []
     const completed = result.passed ? markChipCompleted(chipName) : get().completedChips
 
     set((s) => {

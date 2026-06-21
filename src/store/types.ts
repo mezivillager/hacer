@@ -1,6 +1,7 @@
 // Types for the circuit simulation
 
 import type { TestResult } from '@/core/testing/engine'
+import type { TSTOutputColumn } from '@/core/testing/types'
 
 export type Position = { x: number; y: number; z: number }
 export type Rotation = { x: number; y: number; z: number }
@@ -216,7 +217,8 @@ export interface CircuitState {
 
   // Test results panel state
   testResult: TestResult | null
-  testColumns: string[]
+  /** Column metadata from the .tst output-list command; used by TestResultsPanel to format values. */
+  testColumns: TSTOutputColumn[]
   completedChips: string[]
 }
 

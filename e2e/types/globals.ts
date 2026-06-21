@@ -104,7 +104,8 @@ export interface CircuitStoreSnapshot {
   performanceMode?: PerformanceMode
   propertiesPanelOpen?: boolean
   testResult: { passed: boolean; error: string | null; firstFailure: { row: number; column: string; expected: string; actual: string } | null } | null
-  testColumns: string[]
+  /** Column metadata from the .tst output-list command — at minimum name, format, and width. */
+  testColumns: Array<{ name: string; format: 'B' | 'D' | 'X' | 'S'; padLeft: number; width: number; padRight: number }>
   completedChips: string[]
 }
 

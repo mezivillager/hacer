@@ -3,6 +3,7 @@ import { Button } from '@/components/ui-kit/button'
 import { useCircuitStore, circuitActions } from '@/store/circuitStore'
 import { project1TstFixtures } from '@/core/testing/project1TstFixtures'
 import { getImplementationSources } from '@/core/testing/implementationSources'
+import { formatColumnValue } from '@/core/testing/formatColumnValue'
 
 const CHIP_NAMES = Object.keys(project1TstFixtures)
 const SELECT_CLASS = 'font-mono text-xs rounded border border-border bg-background px-2 py-1 cursor-pointer'
@@ -74,7 +75,7 @@ export function TestResultsPanel() {
                   <tr>
                     <th className="px-1.5 py-0.5 border-b border-border">#</th>
                     {testColumns.map((col) => (
-                      <th key={col} className="px-1.5 py-0.5 border-b border-border">{col}</th>
+                      <th key={col.name} className="px-1.5 py-0.5 border-b border-border">{col.name}</th>
                     ))}
                   </tr>
                 </thead>
@@ -85,14 +86,15 @@ export function TestResultsPanel() {
                       <tr key={i} data-testid={`output-row-${i}`}>
                         <td className="px-1.5 py-0.5 text-muted-foreground">{i}</td>
                         {testColumns.map((col) => {
-                          const failCol = failing && testResult.firstFailure?.column === col
+                          const failCol = failing && testResult.firstFailure?.column === col.name
+                          const rawValue = row.values[col.name]
                           return (
                             <td
-                              key={col}
+                              key={col.name}
                               data-testid={failCol ? 'fail-cell' : undefined}
                               className={failCol ? 'px-1.5 py-0.5 bg-destructive/20 text-destructive' : 'px-1.5 py-0.5'}
                             >
-                              {row.values[col] ?? '-'}
+                              {rawValue !== undefined ? formatColumnValue(rawValue, col) : '-'}
                             </td>
                           )
                         })}

@@ -53,4 +53,18 @@ describe('TestResultsPanel', () => {
     fireEvent.click(screen.getByTestId('run-test-button'))
     expect(screen.getByTestId('test-chip-select').textContent).toContain('✓ Not')
   })
+
+  it('renders 16-bit binary column values as 16-character binary strings, not raw decimals', () => {
+    // Not16: output-list in%B1.16.1 out%B1.16.1 — both columns are 16-bit binary
+    render(<TestResultsPanel />)
+    fireEvent.change(screen.getByTestId('test-chip-select'), { target: { value: 'Not16' } })
+    fireEvent.change(screen.getByTestId('test-source-select'), { target: { value: 'builtin' } })
+    fireEvent.click(screen.getByTestId('run-test-button'))
+    expect(screen.getByTestId('test-summary').textContent).toContain('Comparison ended successfully')
+    // First row: in=0b0000000000000000 → out=0b1111111111111111 (65535)
+    // The cell must show the binary string, not a raw decimal like 65535
+    const firstRow = screen.getByTestId('output-row-0')
+    expect(firstRow.textContent).toMatch(/[01]{16}/)
+    expect(firstRow.textContent).not.toContain('65535')
+  })
 })
