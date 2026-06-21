@@ -236,6 +236,60 @@ test.describe('Wire Persistence @store @wiring', () => {
       expect(wire?.fromEntityId).toBe(gate1.id)
       expect(wire?.toEntityId).toBe(gate2.id)
     })
+
+    test('all wires in a 3-gate chain persist when middle gate rotates', async ({ page }) => {
+      const gate1 = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.left)
+      const gate2 = await addGateViaStore(page, 'And', DEFAULT_POSITIONS.center)
+      const gate3 = await addGateViaStore(page, 'Or', DEFAULT_POSITIONS.right)
+      await ensureGates(page, 3)
+
+      if (!gate1 || !gate2 || !gate3) {
+        throw new Error('Failed to create gates')
+      }
+
+      // Wire g1 -> g2
+      await addWireViaStore(page, {
+        fromGateId: gate1.id,
+        fromPinId: `${gate1.id}-out-0`,
+        toGateId: gate2.id,
+        toPinId: `${gate2.id}-in-0`,
+      })
+      // Wire g2 -> g3
+      await addWireViaStore(page, {
+        fromGateId: gate2.id,
+        fromPinId: `${gate2.id}-out-0`,
+        toGateId: gate3.id,
+        toPinId: `${gate3.id}-in-0`,
+      })
+      await ensureWires(page, 2)
+
+      // Rotate middle gate
+      await page.evaluate(({ gateId }: { gateId: string }) => {
+        window.__CIRCUIT_ACTIONS__?.rotateGate(gateId, 'z', Math.PI / 2)
+      }, { gateId: gate2.id })
+
+      // Both wires must still exist
+      const wireCount = await page.evaluate((): number => {
+        return window.__CIRCUIT_STORE__?.wires.length ?? 0
+      })
+      expect(wireCount).toBe(2)
+
+      // Wire endpoints are unchanged
+      const wires = await page.evaluate((): Array<{
+        fromEntityId: string
+        toEntityId: string
+      }> => {
+        const state = window.__CIRCUIT_STORE__
+        return (state?.wires ?? []).map((w) => ({
+          fromEntityId: w.from.entityId,
+          toEntityId: w.to.entityId,
+        }))
+      })
+      expect(wires[0].fromEntityId).toBe(gate1.id)
+      expect(wires[0].toEntityId).toBe(gate2.id)
+      expect(wires[1].fromEntityId).toBe(gate2.id)
+      expect(wires[1].toEntityId).toBe(gate3.id)
+    })
   })
 })
 
