@@ -17,7 +17,9 @@ describe('runChipTest', () => {
     circuitActions.runChipTest('Not', 'builtin')
     const s = useCircuitStore.getState()
     expect(s.testResult?.passed).toBe(true)
-    expect(s.testColumns).toEqual(['in', 'out'])
+    // testColumns now carries full column metadata; verify name and format for Not's output-list
+    expect(s.testColumns.map((c) => c.name)).toEqual(['in', 'out'])
+    expect(s.testColumns.every((c) => c.format === 'B')).toBe(true)
     expect(s.completedChips).toContain('Not')
     expect(JSON.parse(localStorage.getItem('hacer-completed-chips') ?? '[]')).toContain('Not')
   })
