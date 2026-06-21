@@ -92,4 +92,34 @@ describe('nudgeTransitRun', () => {
     const out = nudgeTransitRun(segs, [], pos(-8, -2), pos(-4, -3), undefined)
     expect(out[0].start.x).toBeCloseTo(-4, 6)
   })
+
+  it('probes a second transit to a free lane when it hashes to the SAME lane as the first', () => {
+    // netA (-8,-2)->(0,-3) and netB (-8,1)->(0,-3) both hash to the same transit
+    // lane index, and both transit x=-4 over an overlapping z-range. Without
+    // probing they would land on the identical offset coordinate and merge.
+    const runA = (z1: number, z2: number): WireSegment[] => [
+      horiz(-8, z1, -4),
+      vert(-4, z1, z2),
+      horiz(-4, z2, 0),
+    ]
+    // Net A nudged against the backbone only.
+    const outA = nudgeTransitRun(runA(-2, -6), [backbone], pos(-8, -2), pos(0, -3), undefined)
+    const vertA = outA.find((s) => Math.abs(s.start.z - s.end.z) > 0.001)!
+    expect(Math.abs(vertA.start.x - -4)).toBeGreaterThan(0.001) // nudged off the line
+
+    // Net B sees the backbone AND net A's already-placed (nudged) segments. Its
+    // z-range (1..-5) overlaps A's (−2..−6) around z∈[-5,-2], so a shared lane
+    // would merge — the probe must move B to a different lane.
+    const outB = nudgeTransitRun(
+      runA(1, -5),
+      [backbone, ...outA],
+      pos(-8, 1),
+      pos(0, -3),
+      undefined,
+    )
+    const vertB = outB.find((s) => Math.abs(s.start.z - s.end.z) > 0.001)!
+    expect(Math.abs(vertB.start.x - -4)).toBeGreaterThan(0.001) // also nudged off the line
+    // The two distinct nets do NOT share the same physical lane.
+    expect(Math.abs(vertB.start.x - vertA.start.x)).toBeGreaterThan(0.001)
+  })
 })

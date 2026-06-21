@@ -35,7 +35,8 @@ export const LANE_BASE = 0.3
 export const LANE_PITCH = 0.4
 
 /**
- * Transit-lane (nudging) constants — lane-level exclusivity (closes CASE1).
+ * Transit-lane (nudging) constants — lane-level exclusivity (closes CASE1 and the
+ * transit-vs-transit collision).
  *
  * When an unrelated net's trunk must transit a chip's approach backbone column,
  * the coarse grid offers no alternative corner, so the trunk used to ride the
@@ -48,17 +49,42 @@ export const LANE_PITCH = 0.4
  * deliberately tiny — the nudge must move a run only just OFF the section line so
  * the two wires stop sharing one physical track, WITHOUT reshaping the path's
  * corner topology (a large lateral shift would relocate crossings and corners).
- * The maximum offset (`PITCH * SLOTS`) is kept well under one pin spacing so a
- * nudged transit still crosses the same perpendicular segments at essentially the
- * same points (hops are preserved).
- * `TRANSIT_LANE_SLOTS` is the number of distinct lanes a deterministic per-net
- * hash maps into; enough that a collision between two distinct transit nets on the
- * same column is rare, and a collision degrades only to the pre-existing
- * reject-and-reroute (never a silent merge). Lane 0 (the exact section line) is
- * reserved for the confluence that OWNS the backbone, so transit indices start at 1.
+ * The maximum offset (`MAX_TRANSIT_LANE_OFFSET`) is kept well under one pin
+ * spacing so a nudged transit still crosses the same perpendicular segments at
+ * essentially the same points (hops are preserved).
+ *
+ * `TRANSIT_LANE_SLOTS` is the number of distinct physical lanes available within
+ * the safe offset cap (`SLOTS · PITCH = MAX_TRANSIT_LANE_OFFSET`). The per-net
+ * hash maps into `1..SLOTS` as a *starting* index only — `nudgeTransitRun` then
+ * **probes** outward from that index to the first lane that is actually free of
+ * every other wire already on that track (other transit runs AND foreign
+ * backbones), so two distinct transit nets that hash to the same starting index
+ * still resolve to distinct lanes rather than silently merging. The probe is what
+ * guarantees separation; the slot count and hash spread only minimize probing.
+ *
+ * Lane 0 (the exact section line) is reserved for the confluence that OWNS the
+ * backbone, so transit indices start at 1 and the owner's fan-in bus is never
+ * nudged (B-003/B-004).
+ *
+ * Residual: if probing within `MAX_TRANSIT_LANE_OFFSET` cannot find a free lane
+ * (extreme transit density crowding a single column past the safe offset cap),
+ * the run stays on its last safe lane rather than being pushed far enough to
+ * reshape the path — a narrow, documented Stage-3 (visibility-graph) concern, not
+ * the general case. The other residual is order-of-construction: a transit routed
+ * *before* its target chip's backbone exists has no backbone to avoid yet and
+ * falls back to the pre-existing greedy reject-and-reroute.
  */
 export const TRANSIT_LANE_PITCH = 0.06
 export const TRANSIT_LANE_SLOTS = 6
+/**
+ * Hard cap on a transit lane's offset from the section line
+ * (= `TRANSIT_LANE_SLOTS · TRANSIT_LANE_PITCH`). Kept strictly under one pin
+ * spacing (~0.4u, see {@link LANE_PITCH}) so a nudged transit still crosses the
+ * same perpendicular segments at essentially the same points (hops preserved) and
+ * never reshapes corner topology. Probing stops here; a run that cannot find a
+ * free lane within this cap stays on its last safe lane.
+ */
+export const MAX_TRANSIT_LANE_OFFSET = TRANSIT_LANE_SLOTS * TRANSIT_LANE_PITCH
 
 /**
  * Standard wire height above ground plane (matches pin center Y coordinate for flat gates).
