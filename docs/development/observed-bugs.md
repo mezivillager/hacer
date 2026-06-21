@@ -64,6 +64,18 @@ When an item is **Fixed**, add the **Fixed in** link and move the detailed row t
 | **Notes** | Likely needs `chipBodyLayout.ts` to scale `sizeY` (pin-column length) with pin count beyond a small floor — current sizing was tuned for the 1- and 2-input legacy footprint. Pair fix with **B-003**: once spacing is fixed, drag-rerouting should also recover. Until splitter/joiner ships (see [P05-30](../plans/phase-0.5-tickets/P05-30.md) → [P05-12](../plans/phase-0.5-tickets/P05-12.md)) this is the only access path for the inner bits. |
 | **Fixed in** | — |
 
+### B-005 — `circuitStore.autosave.test.ts` bootstrap test times out under parallel full-suite load
+
+| Field | Detail |
+|-------|--------|
+| **Status** | Open |
+| **Area** | `src/store/circuitStore.autosave.test.ts` (test design), vitest config (default 5000ms timeout) |
+| **Symptom** | `does not subscribe autosave at module load in test mode` times out at 5000ms when `pnpm run test:run` runs the full suite in parallel, but passes reliably when the file is run in isolation. Observed repeatedly across sessions and during unrelated PRs. |
+| **Expected** | The test completes well within the timeout under any parallel load condition. |
+| **Repro** | `pnpm run test:run` (intermittent, more likely under CPU load) vs `pnpm exec vitest run src/store/circuitStore.autosave.test.ts` (always passes). |
+| **Notes** | The test uses `vi.resetModules()` + two dynamic `import()` calls to get a fresh module instance. When run alone, test duration is ~1.29s (transform+env overhead adds ~3.5s total). Under parallel worker CPU contention the module re-evaluation of the heavy store graph (Zustand + Immer + devtools + all action factories) exceeds the 5000ms default. Root cause: the `resetModules` + dynamic import is unnecessary — the same invariant (no autosave subscribed at module load in test mode) can be verified using static imports + `__resetAutosaveForTests()`, as the companion `autosave.test.ts` already does. |
+| **Fixed in** | — |
+
 ---
 
 ## Resolved
