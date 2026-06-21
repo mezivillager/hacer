@@ -139,7 +139,33 @@ export function segmentsOverlap(segment1: WireSegment, segment2: WireSegment): b
 }
 
 /**
+ * Whether two collinear, same-line segments may legitimately **share** track as
+ * a confluence / bus rather than being a routing conflict (wire-routing Stage 1,
+ * research Finding 2). This is the *only* sanctioned overlap relaxation: it
+ * applies when the existing segment is a per-pin **approach** segment (the short
+ * fan-out from the shared confluence point toward a pin's lane). Approach
+ * connectors for different pins on the same chip side legitimately ride a shared
+ * confluence line; the distinct per-pin **lanes** carry the actual signal and
+ * remain fully exclusive, so distinct pins still resolve to distinct lanes
+ * (node-exclusivity preserved — Finding 10).
+ *
+ * @param potential - The segment being routed/placed
+ * @param existing - An existing segment it overlaps
+ * @returns True if the overlap is a shareable confluence (not a conflict)
+ */
+function isShareableConfluence(potential: WireSegment, existing: WireSegment): boolean {
+  // Only an existing *approach* segment is shareable, and only by another
+  // routing/approach segment that is collinear with it on the same line.
+  if (!existing.approach) return false
+  return areSegmentsOnSameSectionLine(potential, existing)
+}
+
+/**
  * Check if a potential segment would overlap with any existing segments.
+ *
+ * Overlaps that are *shareable confluences* (collinear with an existing per-pin
+ * approach bus — see {@link isShareableConfluence}) are not treated as conflicts,
+ * which is what lets every pin of a dense multi-input chip be wired (B-003/B-004).
  *
  * @param potentialSegment - The segment to check
  * @param existingSegments - Array of existing wire segments
@@ -149,6 +175,10 @@ export function wouldOverlapWithExisting(
   potentialSegment: WireSegment,
   existingSegments: WireSegment[]
 ): boolean {
-  return existingSegments.some(existing => segmentsOverlap(potentialSegment, existing))
+  return existingSegments.some(
+    (existing) =>
+      segmentsOverlap(potentialSegment, existing) &&
+      !isShareableConfluence(potentialSegment, existing),
+  )
 }
 

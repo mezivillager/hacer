@@ -17,6 +17,24 @@ export type { Position, GateInstance }
 export const SECTION_SIZE = 4.0
 
 /**
+ * Per-pin approach-lane constants (wire-routing Stage 1 — see
+ * docs/superpowers/specs/2026-06-21-wire-routing-stage1-design.md and ADR-0007).
+ *
+ * Dense multi-input chips (Mux4Way16, Mux8Way16) pack their pins ~0.4u apart,
+ * far finer than {@link SECTION_SIZE}. Routing every pin to the same coarse
+ * section line collapses their approach paths onto one line and the overlap
+ * check rejects the inner pins. Instead, each pin escapes the coarse grid onto
+ * its **own** vertical/horizontal lane inside the gap between the pin and the
+ * section line, so distinct pins resolve to distinct lanes (exclusivity
+ * preserved — Finding 10) while the short connector at the shared confluence
+ * line is treated as a shareable bus (Finding 2).
+ */
+// Distance of the first lane from the pin (toward the section line).
+export const LANE_BASE = 0.3
+// Spacing between consecutive per-pin lanes.
+export const LANE_PITCH = 0.4
+
+/**
  * Standard wire height above ground plane (matches pin center Y coordinate for flat gates).
  * Grid-aligned wire routing types.
  */
@@ -50,6 +68,14 @@ export interface WireSegment {
   arcCenter?: Position // Center point of arc (at base height)
   arcRadius?: number // Radius of arc
   crossedWireId?: string // ID of wire this arc hops over
+  /**
+   * Marks a per-pin **approach** segment (lane connector / lane / entry) that
+   * fans a pin off the coarse grid (wire-routing Stage 1). Approach segments
+   * are exempt from inter-wire overlap rejection *against other approach
+   * segments* (a shared confluence bus is legitimate); they are otherwise
+   * normal renderable segments. Ignored by the renderer and length math.
+   */
+  approach?: boolean
 }
 
 /**
