@@ -249,6 +249,27 @@ describe('Wire Segment Overlap Detection', () => {
       const overlapping = createHorizontalSegment(2, 4, 6) // Overlaps with first
       expect(wouldOverlapWithExisting(overlapping, existing)).toBe(true)
     })
+
+    // Wire-routing Stage 1 (B-003/B-004): an existing per-pin *approach*
+    // segment is a shareable confluence bus — collinear routing/approach
+    // segments may ride it instead of being rejected.
+    it('treats an existing approach segment as a shareable confluence (no conflict)', () => {
+      const approachBus: WireSegment = { ...createVerticalSegment(4, 0, 4), approach: true }
+      const potential = createVerticalSegment(4, 2, 6) // Same line, overlaps the bus
+      expect(wouldOverlapWithExisting(potential, [approachBus])).toBe(false)
+    })
+
+    it('still rejects overlap with a NON-approach segment on the same line', () => {
+      const normal = createVerticalSegment(4, 0, 4) // not an approach bus
+      const potential = createVerticalSegment(4, 2, 6)
+      expect(wouldOverlapWithExisting(potential, [normal])).toBe(true)
+    })
+
+    it('does not let an approach segment share track on a DIFFERENT line', () => {
+      const approachBus: WireSegment = { ...createVerticalSegment(4, 0, 4), approach: true }
+      const potential = createVerticalSegment(8, 2, 6) // different vertical line — no overlap anyway
+      expect(wouldOverlapWithExisting(potential, [approachBus])).toBe(false)
+    })
   })
 })
 

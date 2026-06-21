@@ -260,7 +260,10 @@ describe('WiringScheme Core Module', () => {
       expect(path.totalLength).toBeGreaterThan(0)
     })
 
-    it('ensures all intermediate points are on section lines', () => {
+    it('ensures non-approach routing points stay on section lines', () => {
+      // Stage-1 (B-003/B-004): per-pin **approach** segments deliberately leave
+      // the coarse grid to give each pin its own lane. The coarse routing
+      // segments (everything not marked `approach`) must still ride the grid.
       const startPin = createPosition(1.4, 0.2, 2.0)
       const endPin = createPosition(5.4, 0.2, 10.0)
       const startOrientation: PinOrientation = { direction: { x: 1, y: 0, z: 0 } }
@@ -280,21 +283,20 @@ describe('WiringScheme Core Module', () => {
         return Math.abs(coord - snapped) < 0.001
       }
 
-      // Check that all intermediate routing segments have endpoints on section lines
+      // Check that coarse (non-approach) routing segments stay on section lines.
       for (const segment of path.segments) {
+        if (segment.approach) continue
         if (segment.type === 'horizontal') {
-          // For horizontal segments, z should be on section line (x can vary)
           expect(isCoordOnSectionLine(segment.start.z)).toBe(true)
           expect(isCoordOnSectionLine(segment.end.z)).toBe(true)
         } else if (segment.type === 'vertical') {
-          // For vertical segments, x should be on section line (z can vary)
           expect(isCoordOnSectionLine(segment.start.x)).toBe(true)
           expect(isCoordOnSectionLine(segment.end.x)).toBe(true)
         }
       }
     })
 
-    it('ensures destination point is on a section line', () => {
+    it('ends with an entry segment reaching the true pin via a per-pin lane', () => {
       const startPin = createPosition(1.4, 0.2, 2.0)
       const endPin = createPosition(5.4, 0.2, 10.0)
       const startOrientation: PinOrientation = { direction: { x: 1, y: 0, z: 0 } }
@@ -310,18 +312,10 @@ describe('WiringScheme Core Module', () => {
 
       const entrySegment = path.segments[path.segments.length - 1]
       expect(entrySegment.type).toBe('entry')
-
-      // Helper function to check if coordinate is on section line (same logic as isOnSectionLine)
-      const isCoordOnSectionLine = (coord: number): boolean => {
-        const snapped = Math.round(coord / SECTION_SIZE) * SECTION_SIZE
-        return Math.abs(coord - snapped) < 0.001
-      }
-
-      // Entry segment start should be on a section line
-      const routingStart = entrySegment.start
-      const isOnSectionLineX = isCoordOnSectionLine(routingStart.x)
-      const isOnSectionLineZ = isCoordOnSectionLine(routingStart.z)
-      expect(isOnSectionLineX || isOnSectionLineZ).toBe(true)
+      // The entry must terminate at the true pin coordinate (no longer snapped
+      // to the coarse grid — the per-pin lane delivers it precisely).
+      expect(entrySegment.end.x).toBeCloseTo(endPin.x, 3)
+      expect(entrySegment.end.z).toBeCloseTo(endPin.z, 3)
     })
 
     it('path segments connect properly for cursor destinations', () => {

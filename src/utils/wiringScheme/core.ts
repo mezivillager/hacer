@@ -6,9 +6,11 @@
  */
 
 import type { Position, PinOrientation, DestinationType, WirePath, WirePathOptions, GateInstance } from './types'
-import { calculateExitSegment, calculateEntrySegment, calculateTotalLength } from './segments'
+import { SECTION_SIZE } from './types'
+import { calculateExitSegment, calculateTotalLength } from './segments'
 import { findPathAlongSectionLines } from './pathfinding'
 import { snapCursorToSectionBoundary } from './extension'
+import { computePinApproach } from './approach'
 
 /**
  * Options for calculating wire path from wire connection information.
@@ -114,12 +116,17 @@ export function calculateWirePath(
   try {
     const exitSegment = calculateExitSegment(startPin, startOrientation)
 
-    let entrySegment: ReturnType<typeof calculateEntrySegment> | null = null
+    // Per-pin escape approach: for pin destinations, the coarse router only has
+    // to reach a shared confluence point near the chip; the approach segments
+    // then fan the wire onto the pin's own lane and into the pin. This keeps
+    // dense, closely-spaced pins on distinct lanes (B-003/B-004, ADR-0007).
+    let approachSegments: import('./types').WireSegment[] = []
     let routingEnd: Position
 
     if (destination.type === 'pin') {
-      entrySegment = calculateEntrySegment(destination.pin, destination.orientation)
-      routingEnd = entrySegment.start
+      const approach = computePinApproach(destination.pin, destination.orientation)
+      routingEnd = approach.routingEnd
+      approachSegments = approach.segments
     } else {
       routingEnd = snapCursorToSectionBoundary(destination.pos)
     }
@@ -127,10 +134,17 @@ export function calculateWirePath(
     const existingSegments = options.existingSegments || []
     const routingPath = findPathAlongSectionLines(exitSegment.end, routingEnd, existingSegments)
 
-    const allSegments = [exitSegment, ...routingPath]
-    if (entrySegment) {
-      allSegments.push(entrySegment)
-    }
+    // For pin destinations, the coarse path's segments along the chip-side
+    // section line are a fan-in bus: multiple wires destined for the same chip
+    // side legitimately converge on that line (a confluence). Tag those backbone
+    // segments so subsequent wires may share the track instead of being rejected
+    // as overlapping (research Finding 2; B-003/B-004).
+    const taggedRoutingPath =
+      destination.type === 'pin'
+        ? markConfluenceApproach(routingPath, routingEnd)
+        : routingPath
+
+    const allSegments = [exitSegment, ...taggedRoutingPath, ...approachSegments]
 
     const totalLength = calculateTotalLength(allSegments)
 
@@ -143,6 +157,39 @@ export function calculateWirePath(
       `Wire path calculation failed: ${error instanceof Error ? error.message : String(error)}.`
     )
   }
+}
+
+const CONFLUENCE_TOLERANCE = 0.001
+
+/**
+ * Tag the routing segments that form the fan-in bus into the shared confluence
+ * as `approach` (shareable). Multiple wires destined for the same chip side all
+ * converge on the chip-side section line, so the segments running *along that
+ * section column* (`x === confluence.x`) are a legitimate shared backbone — not
+ * a routing conflict (research Finding 2; B-003/B-004). Marking them lets
+ * {@link wouldOverlapWithExisting} treat the shared track as a confluence bus.
+ * Segments off the confluence column stay fully exclusive, so unrelated wires
+ * are unaffected and distinct pins still resolve to distinct lanes (Finding 10).
+ */
+function markConfluenceApproach(
+  routingPath: import('./types').WireSegment[],
+  confluence: Position,
+): import('./types').WireSegment[] {
+  // The confluence sits on a section line on one axis (the chip-side backbone):
+  // x for left/right pins, z for top/bottom pins. Tag routing segments lying on
+  // that backbone line.
+  const onSection = (coord: number) =>
+    Math.abs(coord - Math.round(coord / SECTION_SIZE) * SECTION_SIZE) < CONFLUENCE_TOLERANCE
+  const backboneIsColumn = onSection(confluence.x)
+  const onBackbone = (seg: import('./types').WireSegment) =>
+    backboneIsColumn
+      ? Math.abs(seg.start.x - confluence.x) < CONFLUENCE_TOLERANCE &&
+        Math.abs(seg.end.x - confluence.x) < CONFLUENCE_TOLERANCE
+      : Math.abs(seg.start.z - confluence.z) < CONFLUENCE_TOLERANCE &&
+        Math.abs(seg.end.z - confluence.z) < CONFLUENCE_TOLERANCE
+  return routingPath.map((seg) =>
+    onBackbone(seg) ? { ...seg, approach: true } : seg,
+  )
 }
 
 /**
@@ -172,12 +219,13 @@ export function calculateWirePathFromJunction(
   options: JunctionWirePathOptions = {}
 ): WirePath {
   try {
-    let entrySegment: ReturnType<typeof calculateEntrySegment> | null = null
+    let approachSegments: import('./types').WireSegment[] = []
     let routingEnd: Position
 
     if (destination.type === 'pin') {
-      entrySegment = calculateEntrySegment(destination.pin, destination.orientation)
-      routingEnd = entrySegment.start
+      const approach = computePinApproach(destination.pin, destination.orientation)
+      routingEnd = approach.routingEnd
+      approachSegments = approach.segments
     } else {
       routingEnd = snapCursorToSectionBoundary(destination.pos)
     }
@@ -213,10 +261,7 @@ export function calculateWirePathFromJunction(
     })
     const routingPath = findPathAlongSectionLines(junctionPosition, routingEnd, existingSegments)
 
-    const allSegments = [...routingPath]
-    if (entrySegment) {
-      allSegments.push(entrySegment)
-    }
+    const allSegments = [...routingPath, ...approachSegments]
 
     const totalLength = calculateTotalLength(allSegments)
 
