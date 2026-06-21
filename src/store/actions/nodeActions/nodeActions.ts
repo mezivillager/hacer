@@ -436,7 +436,7 @@ function recalculateWiresForNode(set: SetState, get: GetState, nodeId: string, n
       // A thrown re-route (e.g. unreachable layout) likewise must not drop the
       // wire — leaving the existing segments in place keeps the connection
       // visible and correct rather than orphaned.
-      console.error(`[recalculateWiresForNode] Failed to recalculate wire ${wire.id}; preserving existing segments:`, error)
+      console.error(`[recalculateWiresForNode] Failed to recalculate wire ${wire.id}; preserving existing segments:`, error) // diagnostic only
     }
   }
 

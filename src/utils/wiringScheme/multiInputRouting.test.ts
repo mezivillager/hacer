@@ -148,6 +148,35 @@ describe('dense multi-input chip routing (B-003/B-004)', () => {
     expect(laneXs.size).toBe(slots.length)
   })
 
+  // Genuine B-004 co-located scenario: all input nodes clustered to one side of
+  // Mux4Way16, sources at x=-5 (between section lines -4 and -8) so ALL sources
+  // exit onto the shared backbone column x=-4 (the chip-side section line).
+  // Every wire's trunk runs along that backbone, so each later wire sees prior
+  // wires' backbone segments (approach-tagged) in existingSegments.
+  // The approach-vs-approach sharing must allow all pins to route without throwing.
+  it('routes ALL Mux4Way16 inputs concurrently with co-located sources (B-004 genuine repro)', () => {
+    const slots = inputSlots('Mux4Way16')
+    const existing: WireSegment[] = []
+    // Sources at x=-5 all exit to backbone x=-4; z varies by 0.4 (sub-section clustering)
+    const colocatedSource = (i: number): Position => ({ x: -5, y: 0.2, z: i * 0.4 })
+
+    slots.forEach((slot, i) => {
+      const pin = pinWorldPosition(gatePos, slot.position)
+      const path = calculateWirePath(
+        colocatedSource(i),
+        { type: 'pin', pin, orientation: { direction: dir } },
+        sourceOrientation,
+        [],
+        { existingSegments: existing },
+      )
+      expect(path.segments.length).toBeGreaterThan(0)
+      const last = path.segments[path.segments.length - 1]
+      expect(last.end.x).toBeCloseTo(pin.x, 3)
+      expect(last.end.z).toBeCloseTo(pin.z, 3)
+      existing.push(...path.segments)
+    })
+  })
+
   it('routes a 2-input chip (And) unchanged — regression guard', () => {
     const slots = inputSlots('And')
     expect(slots).toHaveLength(2)

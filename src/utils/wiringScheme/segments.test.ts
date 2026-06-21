@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import type { Position } from '@/store/types'
 import type { PinOrientation, WireSegment } from './types'
 import { SECTION_SIZE, WIRE_HEIGHT } from './types'
-import { calculateExitSegment, calculateEntrySegment, collectWireSegments } from './segments'
+import { calculateExitSegment, calculateEntrySegment, collectWireSegments, combineAdjacentSegments } from './segments'
 import type { Wire } from '@/store/types'
 
 describe('WiringScheme Segments Module', () => {
@@ -234,6 +234,42 @@ describe('WiringScheme Segments Module', () => {
       // Should still create valid segments
       expect(exitSegment.end.x).toBe(4.0) // Should go to next section line (8.0) or stay at 4.0?
       expect(entrySegment.start.x).toBeDefined()
+    })
+  })
+
+  describe('combineAdjacentSegments — approach marker preservation', () => {
+    const h = (x1: number, z: number, x2: number, approach?: true): WireSegment => ({
+      start: { x: x1, y: WIRE_HEIGHT, z },
+      end: { x: x2, y: WIRE_HEIGHT, z },
+      type: 'horizontal',
+      ...(approach ? { approach: true } : {}),
+    })
+
+    it('preserves approach:true when ALL combined segments carry it', () => {
+      const segs = [h(0, 4, 4, true), h(4, 4, 8, true)]
+      const result = combineAdjacentSegments(segs)
+      expect(result).toHaveLength(1)
+      expect(result[0].approach).toBe(true)
+    })
+
+    it('drops approach when at least one combined segment does NOT carry it', () => {
+      const segs = [h(0, 4, 4, true), h(4, 4, 8)]
+      const result = combineAdjacentSegments(segs)
+      expect(result).toHaveLength(1)
+      expect(result[0].approach).toBeUndefined()
+    })
+
+    it('preserves approach on a single non-combined segment', () => {
+      const seg = h(0, 4, 4, true)
+      const result = combineAdjacentSegments([seg])
+      expect(result[0].approach).toBe(true)
+    })
+
+    it('does not add approach to combined segments that had none', () => {
+      const segs = [h(0, 4, 4), h(4, 4, 8)]
+      const result = combineAdjacentSegments(segs)
+      expect(result).toHaveLength(1)
+      expect(result[0].approach).toBeUndefined()
     })
   })
 

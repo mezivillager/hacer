@@ -71,11 +71,19 @@ export interface WireSegment {
   /**
    * Marks a per-pin **approach** segment (lane connector / lane / entry) that
    * fans a pin off the coarse grid (wire-routing Stage 1). Approach segments
-   * are exempt from inter-wire overlap rejection *against other approach
-   * segments* (a shared confluence bus is legitimate); they are otherwise
-   * normal renderable segments. Ignored by the renderer and length math.
+   * are shareable against other approach segments on the SAME confluence
+   * backbone (confluenceCoord must match). Non-approach transit wires may
+   * also traverse the backbone (approach-vs-non-approach is always allowed).
+   * Ignored by the renderer and length math.
    */
   approach?: boolean
+  /**
+   * The backbone coordinate of the confluence this approach segment belongs to
+   * (x for vertical backbone, z for horizontal backbone). Two approach segments
+   * may share a track only when their confluenceCoord values match.
+   * Set by `markConfluenceApproach` in core.ts.
+   */
+  confluenceCoord?: number
 }
 
 /**

@@ -250,13 +250,12 @@ describe('Wire Segment Overlap Detection', () => {
       expect(wouldOverlapWithExisting(overlapping, existing)).toBe(true)
     })
 
-    // Wire-routing Stage 1 (B-003/B-004): an existing per-pin *approach*
-    // segment is a shareable confluence bus — collinear routing/approach
-    // segments may ride it instead of being rejected.
-    it('treats an existing approach segment as a shareable confluence (no conflict)', () => {
-      const approachBus: WireSegment = { ...createVerticalSegment(4, 0, 4), approach: true }
-      const potential = createVerticalSegment(4, 2, 6) // Same line, overlaps the bus
-      expect(wouldOverlapWithExisting(potential, [approachBus])).toBe(false)
+    // Wire-routing Stage 1 (B-003/B-004): two per-pin *approach* segments on the
+    // same line AND same confluence bus may ride each other (Finding 2 / ADR-0007).
+    it('allows two approach segments on the SAME confluence to share a bus (no conflict)', () => {
+      const approachBus: WireSegment = { ...createVerticalSegment(4, 0, 4), approach: true, confluenceCoord: 4 }
+      const approachPotential: WireSegment = { ...createVerticalSegment(4, 2, 6), approach: true, confluenceCoord: 4 }
+      expect(wouldOverlapWithExisting(approachPotential, [approachBus])).toBe(false)
     })
 
     it('still rejects overlap with a NON-approach segment on the same line', () => {
@@ -269,6 +268,31 @@ describe('Wire Segment Overlap Detection', () => {
       const approachBus: WireSegment = { ...createVerticalSegment(4, 0, 4), approach: true }
       const potential = createVerticalSegment(8, 2, 6) // different vertical line — no overlap anyway
       expect(wouldOverlapWithExisting(potential, [approachBus])).toBe(false)
+    })
+
+    // CASE2 regression (B-003/B-004 review finding): two approach segments from
+    // DIFFERENT confluences on the same section line must not share — each wire's
+    // backbone is a distinct signal route. confluenceCoord mismatch = conflict.
+    it('rejects approach segments with DIFFERENT confluenceCoord on the same line (CASE2)', () => {
+      const approachChip1: WireSegment = { ...createVerticalSegment(4, 0, 8), approach: true, confluenceCoord: 4 }
+      // Approach segment from a different chip whose confluence also happens to be at x=4 but different coord
+      // Simulate CASE2: same backbone column, different confluenceCoord (e.g. wire going to x=-4)
+      const approachChip2: WireSegment = { ...createVerticalSegment(4, 2, 6), approach: true, confluenceCoord: -4 }
+      expect(wouldOverlapWithExisting(approachChip2, [approachChip1])).toBe(true)
+    })
+
+    it('allows non-approach transit over approach backbone (grid topology requirement)', () => {
+      // An unrelated wire's trunk must be able to traverse the approach backbone
+      // column to reach its destination — the coarse routing grid leaves no alternative.
+      const approachBus: WireSegment = { ...createVerticalSegment(4, 0, 8), approach: true, confluenceCoord: 4 }
+      const ordinaryTrunk = createVerticalSegment(4, 2, 6) // transit, not approach
+      expect(wouldOverlapWithExisting(ordinaryTrunk, [approachBus])).toBe(false)
+    })
+
+    it('rejects an approach segment overlapping a non-approach existing (no approach relaxation)', () => {
+      const ordinary: WireSegment = createVerticalSegment(4, 0, 8) // non-approach existing
+      const approachPotential: WireSegment = { ...createVerticalSegment(4, 2, 6), approach: true, confluenceCoord: 4 }
+      expect(wouldOverlapWithExisting(approachPotential, [ordinary])).toBe(true)
     })
   })
 })
