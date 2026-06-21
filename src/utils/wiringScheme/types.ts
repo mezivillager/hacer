@@ -35,6 +35,32 @@ export const LANE_BASE = 0.3
 export const LANE_PITCH = 0.4
 
 /**
+ * Transit-lane (nudging) constants — lane-level exclusivity (closes CASE1).
+ *
+ * When an unrelated net's trunk must transit a chip's approach backbone column,
+ * the coarse grid offers no alternative corner, so the trunk used to ride the
+ * backbone's exact track and merge with it visually (CASE1). Instead the trunk
+ * is **nudged** onto its own parallel lane — a small deterministic offset from
+ * the section line — so the two wires physically coexist (libavoid nudging,
+ * research Finding 2; ADR-0007).
+ *
+ * `TRANSIT_LANE_PITCH` is the spacing between consecutive transit lanes. It is
+ * deliberately tiny — the nudge must move a run only just OFF the section line so
+ * the two wires stop sharing one physical track, WITHOUT reshaping the path's
+ * corner topology (a large lateral shift would relocate crossings and corners).
+ * The maximum offset (`PITCH * SLOTS`) is kept well under one pin spacing so a
+ * nudged transit still crosses the same perpendicular segments at essentially the
+ * same points (hops are preserved).
+ * `TRANSIT_LANE_SLOTS` is the number of distinct lanes a deterministic per-net
+ * hash maps into; enough that a collision between two distinct transit nets on the
+ * same column is rare, and a collision degrades only to the pre-existing
+ * reject-and-reroute (never a silent merge). Lane 0 (the exact section line) is
+ * reserved for the confluence that OWNS the backbone, so transit indices start at 1.
+ */
+export const TRANSIT_LANE_PITCH = 0.06
+export const TRANSIT_LANE_SLOTS = 6
+
+/**
  * Standard wire height above ground plane (matches pin center Y coordinate for flat gates).
  * Grid-aligned wire routing types.
  */
