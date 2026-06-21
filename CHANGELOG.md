@@ -5,6 +5,47 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.10.0](https://github.com/mezivillager/hacer/compare/v2.9.0...v2.10.0) (2026-06-21)
+
+### Features
+
+* **store:** runChipTest action + test state (testResult/testColumns/completedChips) ([605a016](https://github.com/mezivillager/hacer/commit/605a0165370a69f9bfe3aa4731d957f8a610ade0))
+* **testing:** persist completed chips to localStorage (hacer-completed-chips) ([4c34751](https://github.com/mezivillager/hacer/commit/4c3475186d9d54d026c58ce05fedbf5cf55332b3))
+* **testing:** pluggable chip implementation-source registry (builtin, hdl-from-nand) ([aa95037](https://github.com/mezivillager/hacer/commit/aa95037be62046b10a03fdf452f28372881b31b7))
+* **ui:** add Tests panel to RightActionBar ([c0c9a62](https://github.com/mezivillager/hacer/commit/c0c9a628f4f026a7e92f0821570201d6b3d51298))
+* **ui:** format bus output values using .tst column metadata ([247fbe3](https://github.com/mezivillager/hacer/commit/247fbe34ee2ef15898c6f4b48ce6ab4397b88a19))
+* **ui:** TestResultsPanel — chip/source selectors, run, output table, diff highlight ([78acdd4](https://github.com/mezivillager/hacer/commit/78acdd44d1bccc7757c306a628cf29afa950effe))
+
+### Bug Fixes
+
+* **store:** runChipTest never throws — guard source.resolve() ([7421ea8](https://github.com/mezivillager/hacer/commit/7421ea8add477e04a6cb27e487efbec9ada8696c))
+* **testing:** runChipTest honors source's resolved chip via source-first registry ([b1e97f1](https://github.com/mezivillager/hacer/commit/b1e97f170daa819b3f3f0d626b50494d232d4527))
+
+### Documentation
+
+* **p05-22:** add RTL shell-integration test task per non-3D UX rigor ([96757b5](https://github.com/mezivillager/hacer/commit/96757b580721dc7eddcc59db167730510f405849))
+* **p05-22:** ADR-0006 (source seam + AI-parity store action); REPO_MAP; tick checklist ([a706e10](https://github.com/mezivillager/hacer/commit/a706e10bea65a5bd12faead79f6ed9e64cc01f63))
+* **p05-22:** test results panel design spec; revise stale ticket to match ([53057bd](https://github.com/mezivillager/hacer/commit/53057bdc2d65340b1c2c4d7871a3a40df38769ae))
+* **p05-22:** test results panel implementation plan ([603c912](https://github.com/mezivillager/hacer/commit/603c9127cc71d400c648b9d48f72148b75c924db))
+* **tickets:** mark P05-32 done, update status + write migration report ([83dd070](https://github.com/mezivillager/hacer/commit/83dd07081f6a59556cbfed45c136a757455e594e))
+* **workflow:** add Ticket Freshness Protocol to validate/revise stale tickets at pickup ([05c2ff1](https://github.com/mezivillager/hacer/commit/05c2ff173cdc7bc93eb113db118135f1c543ed92))
+* **workflow:** non-3D UX testing rigor + foundation spec + P05-32 follow-up ([0319dc8](https://github.com/mezivillager/hacer/commit/0319dc82832f55e8736b04fcf60179574b6d1d39))
+* **workflow:** read-only ticket validation at pickup; add long-term-priority decision rule ([73f04cd](https://github.com/mezivillager/hacer/commit/73f04cd189e08246258be319eb9febc508a39698)), closes [#122](https://github.com/mezivillager/hacer/issues/122)
+
+### Code Refactoring
+
+* **app:** extract <Shell> DOM boundary + renderShell RTL integration harness ([c8536ef](https://github.com/mezivillager/hacer/commit/c8536ef8b7140d8a20dfe488a3a75de747119cbd))
+* **testing:** dedupe TestActions type, document source read, assert no-op on failure ([353071a](https://github.com/mezivillager/hacer/commit/353071aa1c6ede5bcaf3c7d1fe48fe001dbb984c))
+
+### Tests
+
+* **e2e:** [@store](https://github.com/store) coverage for runChipTest (pass + unknown-source error) ([bd562ff](https://github.com/mezivillager/hacer/commit/bd562fff44c8e828a6bdb4d17c88b44fecdff195))
+* **e2e:** migrate render-sanity from flaky [@ui](https://github.com/ui) to RTL/[@store](https://github.com/store) (P05-32) ([8b04b9d](https://github.com/mezivillager/hacer/commit/8b04b9d6cf79b513080969a2f0da9e68328e2868))
+* **e2e:** migrate signal-propagation from flaky [@ui](https://github.com/ui) to [@store](https://github.com/store) (P05-32) ([7e1ce7d](https://github.com/mezivillager/hacer/commit/7e1ce7ddbe846dfb2eb408b5da9f79f8e4791a55))
+* **e2e:** migrate simulation-control from flaky [@ui](https://github.com/ui) to RTL/[@store](https://github.com/store) (P05-32) ([f4919b4](https://github.com/mezivillager/hacer/commit/f4919b436329247559d911a6760eb89f927e3730))
+* **e2e:** migrate wire-persistence from flaky [@ui](https://github.com/ui) to [@store](https://github.com/store) (P05-32) ([dad20b2](https://github.com/mezivillager/hacer/commit/dad20b217f5e3395d58286202d11dced76d2e407))
+* **ui:** Test Lab shell-integration test (open panel -> run -> result) ([c55df74](https://github.com/mezivillager/hacer/commit/c55df742091cb1cbfc1a661b399c86ca7926671e))
+
 ## [2.9.0](https://github.com/mezivillager/hacer/compare/v2.8.0...v2.9.0) (2026-06-20)
 
 ### Features
