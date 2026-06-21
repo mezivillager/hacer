@@ -3,20 +3,32 @@ import { TooltipProvider } from '@/components/ui-kit/tooltip'
 import { Toaster } from 'sonner'
 import { CanvasArea } from '@/components/canvas/CanvasArea'
 import { Shell } from '@/components/Shell'
+import { useCircuitStore } from '@/store/circuitStore'
+
+// Icon column: w-8 (32px) + px-1.5*2 (12px) + 1px border ≈ 44px. Use 60px for a clear gap.
+const ICON_COL_OFFSET = '60px'
+// Icon column + open drawer (280px PANEL_WIDTH) + same 16px gap = 356px → round to 360px.
+const DRAWER_OPEN_OFFSET = '360px'
 
 function App() {
+  const rightPanelOpen = useCircuitStore((s) => s.rightPanelOpen)
+
   return (
     <ThemeProvider>
       <TooltipProvider>
         <Shell scene={<CanvasArea />} />
         {/*
-         * offset.right must clear the always-visible icon column (~44 px wide: w-8 + px-1.5 padding
-         * on each side + border). 60 px gives a comfortable 16 px gap. When the 280 px drawer is
-         * open the toast will still sit 16 px to its left; the drawer shifts the toaster further
-         * right automatically because the bar is absolutely-positioned from the viewport edge and
-         * the toast inset is relative to that same edge — so open-drawer overlap is also prevented.
+         * offset.right reactively clears both RightActionBar states (B-002):
+         *  - Closed: 60 px clears the ~44 px icon column with a comfortable gap.
+         *  - Open:  360 px clears the icon column (44 px) + 280 px drawer + gap.
+         * rightPanelOpen is kept in the store by RightActionBar via setRightPanelOpen.
          */}
-        <Toaster position="top-right" richColors closeButton offset={{ right: '60px' }} />
+        <Toaster
+          position="top-right"
+          richColors
+          closeButton
+          offset={{ right: rightPanelOpen ? DRAWER_OPEN_OFFSET : ICON_COL_OFFSET }}
+        />
       </TooltipProvider>
     </ThemeProvider>
   )

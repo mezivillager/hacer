@@ -72,6 +72,8 @@ const initialState = {
   testResult: null,
   testColumns: [],
   completedChips: readCompletedChips(),
+  // UI: RightActionBar drawer open state (not persisted; drives Toaster offset)
+  rightPanelOpen: false,
 }
 
 // Create the Zustand store with Immer, devtools, and subscribeWithSelector middleware
@@ -246,6 +248,7 @@ export const circuitActions = {
   togglePropertiesPanel: () => useCircuitStore.getState().togglePropertiesPanel(),
   setPerformanceMode: (...args: Parameters<CircuitStore['setPerformanceMode']>) => useCircuitStore.getState().setPerformanceMode(...args),
   togglePerformanceMode: () => useCircuitStore.getState().togglePerformanceMode(),
+  setRightPanelOpen: (...args: Parameters<CircuitStore['setRightPanelOpen']>) => useCircuitStore.getState().setRightPanelOpen(...args),
   // Node placement actions
   startNodePlacement: (...args: Parameters<CircuitStore['startNodePlacement']>) => useCircuitStore.getState().startNodePlacement(...args),
   cancelNodePlacement: () => useCircuitStore.getState().cancelNodePlacement(),

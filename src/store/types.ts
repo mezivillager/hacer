@@ -220,6 +220,10 @@ export interface CircuitState {
   /** Column metadata from the .tst output-list command; used by TestResultsPanel to format values. */
   testColumns: TSTOutputColumn[]
   completedChips: string[]
+  // UI: Whether the RightActionBar drawer is open (any panel active).
+  // Kept in the store so <Toaster> can reactively offset itself to
+  // avoid overlapping the 280 px drawer (B-002).
+  rightPanelOpen: boolean
 }
 
 // Action types for the Zustand store
@@ -304,6 +308,7 @@ export interface ViewActions {
   togglePropertiesPanel: () => void
   setPerformanceMode: (mode: PerformanceMode) => void
   togglePerformanceMode: () => void
+  setRightPanelOpen: (open: boolean) => void
 }
 
 // =============================================================================

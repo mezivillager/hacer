@@ -107,6 +107,8 @@ export interface CircuitStoreSnapshot {
   /** Column metadata from the .tst output-list command — at minimum name, format, and width. */
   testColumns: Array<{ name: string; format: 'B' | 'D' | 'X' | 'S'; padLeft: number; width: number; padRight: number }>
   completedChips: string[]
+  /** Whether the RightActionBar drawer is open (B-002 reactive toast offset). */
+  rightPanelOpen?: boolean
 }
 
 export interface CircuitActionsAPI {
@@ -179,6 +181,7 @@ export interface CircuitActionsAPI {
   togglePropertiesPanel: () => void
   setPerformanceMode: (mode: PerformanceMode) => void
   togglePerformanceMode: () => void
+  setRightPanelOpen: (open: boolean) => void
   // E2E helper for wire path calculation
   calculateWirePathSegments: (
     fromGateId: string,
