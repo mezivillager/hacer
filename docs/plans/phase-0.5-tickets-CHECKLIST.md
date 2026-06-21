@@ -60,8 +60,8 @@
   - **Status (2026-05-26):** Queued behind P05-15. Promotes [P05-12](./phase-0.5-tickets/P05-12.md) to "next up." Cross-links observed bugs [B-003](../development/observed-bugs.md#b-003--wiring-not-preserved-when-dragging-an-input-node-wired-to-a-multi-input-chip) and [B-004](../development/observed-bugs.md#b-004--multi-input-chips-n--2-have-insufficient-pin-spacing-for-the-current-wiring-rule), which are likely de-risked once splitter/joiner lands.
 - [ ] **P05-31** — Truth-table generator for the current canvas circuit — [P05-31.md](./phase-0.5-tickets/P05-31.md)
   - **Status (2026-05-26):** Closes GAP-UI-3 item 4 (the last open item under "No Pinout / Truth Table Display"). Replaces the stub `Generate Truth Table` Quick Action in `RightActionBar` with a live engine + drawer table; coordinate UI primitive sharing with [P05-22](./phase-0.5-tickets/P05-22.md) if it lands first.
-- [ ] **P05-32** — Replace skipped flaky `@ui` Playwright suites with RTL integration tests — [P05-32.md](./phase-0.5-tickets/P05-32.md)
-  - **Status (2026-06-20):** Filed by the non-3D UX test foundation (`<Shell>` boundary + `renderShell()` harness + AGENTS.md §3 Step 4.1 rigor). Migrates the 4 `.skip`-ped `@ui` suites (render-sanity, signal-propagation, simulation-control, wire-persistence) to RTL integration / `@store` coverage; keeps only genuinely 3D-dependent smokes in `@ui`.
+- [x] **P05-32** — Replace skipped flaky `@ui` Playwright suites with RTL integration tests — [P05-32.md](./phase-0.5-tickets/P05-32.md)
+  - **Status (2026-06-21):** Done. All 4 skipped @ui suites migrated. render-sanity → minimal @ui smoke + RTL Shell.integration.test.tsx; signal-propagation → deleted (already covered by existing @store spec); simulation-control → new simulation-control.store.spec.ts + RTL; wire-persistence → deleted + 3-gate chain test added to wire-persistence.store.spec.ts. 103 @store tests pass, 1417 vitest tests pass, build green.
 
 ## Deferred — requires composite/user chips first
 
