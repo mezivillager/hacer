@@ -21,6 +21,9 @@ function App() {
          * offset.right reactively clears both RightActionBar states (B-002):
          *  - Closed: 60 px clears the ~44 px icon column with a comfortable gap.
          *  - Open:  360 px clears the icon column (44 px) + 280 px drawer + gap.
+         * mobileOffset mirrors it: below Sonner's 600 px breakpoint the desktop
+         * `offset` is ignored, and since RightActionBar has no responsive hide the
+         * toast would otherwise span under the rail — so apply the same clearance there.
          * rightPanelOpen is kept in the store by RightActionBar via setRightPanelOpen.
          */}
         <Toaster
@@ -28,6 +31,7 @@ function App() {
           richColors
           closeButton
           offset={{ right: rightPanelOpen ? DRAWER_OPEN_OFFSET : ICON_COL_OFFSET }}
+          mobileOffset={{ right: rightPanelOpen ? DRAWER_OPEN_OFFSET : ICON_COL_OFFSET }}
         />
       </TooltipProvider>
     </ThemeProvider>

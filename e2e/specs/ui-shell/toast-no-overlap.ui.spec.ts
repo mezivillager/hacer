@@ -111,4 +111,32 @@ test.describe('Toast positioning — no overlap with RightActionBar @ui @ui-shel
     await page.waitForFunction(() => !window.__CIRCUIT_STORE__?.rightPanelOpen, { timeout: 3000 })
     await dismissToasts(page)
   })
+
+  test('(c) mobile width (<=600px): toast still clears the right action bar', async ({ page }) => {
+    // Below Sonner's 600px breakpoint the desktop `offset` is dropped; `mobileOffset`
+    // must keep the toast off the (still-visible) rail. Regression for the PR #127 finding.
+    await page.setViewportSize({ width: 500, height: 800 })
+
+    // Ensure the drawer is closed at this width.
+    const isOpen = await page.evaluate(() => !!window.__CIRCUIT_STORE__?.rightPanelOpen)
+    if (isOpen) {
+      const activeTrigger = page.locator('[data-testid^="right-bar-"][data-testid$="-trigger"][data-variant="secondary"]').first()
+      if (await activeTrigger.count() > 0) await activeTrigger.click()
+      await page.waitForFunction(() => !window.__CIRCUIT_STORE__?.rightPanelOpen, { timeout: 3000 })
+    }
+    await page.waitForTimeout(250)
+
+    await triggerWarningToast(page)
+    const firstToast = page.locator('[data-sonner-toast]').first()
+    await expect(firstToast).toBeVisible({ timeout: 5000 })
+
+    const toastRect = await firstToast.boundingBox()
+    const barRect = await page.locator('[data-testid="right-action-bar"]').boundingBox()
+    if (!toastRect || !barRect) throw new Error('Could not get bounding boxes')
+
+    expect(toastRect.x + toastRect.width).toBeLessThanOrEqual(barRect.x)
+
+    await dismissToasts(page)
+    await page.setViewportSize({ width: 1280, height: 720 }) // restore for subsequent tests
+  })
 })
