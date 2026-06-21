@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.10.1](https://github.com/mezivillager/hacer/compare/v2.10.0...v2.10.1) (2026-06-21)
+
+### Bug Fixes
+
+* **toast:** clear right drawer too, not just icon bar (B-002) ([ecbefe1](https://github.com/mezivillager/hacer/commit/ecbefe106b1640684e55a28cb2e307e16143eed9))
+* **toast:** clear the rail at mobile widths too via mobileOffset (B-002) ([ce33540](https://github.com/mezivillager/hacer/commit/ce335405ba6cf52ffbab1ac042973035e1e3a1b4))
+* **toast:** offset Sonner toaster 60 px from right to clear action bar (B-002) ([c84b02c](https://github.com/mezivillager/hacer/commit/c84b02c2e67cac515d16211fcad55e46a2bf3f08))
+
+### Documentation
+
+* **bugs:** log B-005 autosave test flake under parallel load ([0bf3d30](https://github.com/mezivillager/hacer/commit/0bf3d307c84b64ba7ad365b9c617e68faa4c85a2))
+
+### Tests
+
+* **store:** assert autosave guard at module load (capture before reset) ([44aedf8](https://github.com/mezivillager/hacer/commit/44aedf865608e5e353119d9ea1eab429b6412825))
+* **store:** de-flake autosave bootstrap test under parallel load ([593859d](https://github.com/mezivillager/hacer/commit/593859dabf9b742079777f242ae2b2c2b664b626))
+* **store:** make autosave bootstrap test non-vacuous; cite B-005 fix commit ([d3d6a35](https://github.com/mezivillager/hacer/commit/d3d6a3551205dcd4990f93476339068069103799))
+
 ## [2.10.0](https://github.com/mezivillager/hacer/compare/v2.9.0...v2.10.0) (2026-06-21)
 
 ### Features
