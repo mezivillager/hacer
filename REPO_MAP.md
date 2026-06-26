@@ -19,6 +19,7 @@ This document helps AI agents and developers understand the codebase structure a
 | **Non-3D DOM shell / 3D⇄2D boundary** | `src/components/Shell.tsx` (`App = providers → <Shell scene={<CanvasArea/>} />`); the store is the contract |
 | **RTL integration tests (non-3D UX)** | `src/test/renderShell.tsx` harness — render the shell with no Canvas; rigor in AGENTS.md §3 Step 4.1 |
 | **Performance mode / render detail** | `src/components/canvas/Scene/renderConfig.ts`, `src/lib/performanceModeStorage.ts`, `src/store/actions/viewActions/` |
+| **Scene-graph routing tests (3D geometry)** | `src/test/r3f/` harness + `src/components/canvas/routingScene.test.tsx` — GPU-free R3F scene-graph tests asserting rendered wire geometry; see ADR-0008 |
 | **Unit / store tests** | Colocate `*.test.ts` next to code; reset pattern: `src/store/actions/gateActions/gateActions.test.ts` |
 | **Playwright store E2E** | `e2e/specs/**/*.store.spec.ts`, `e2e/fixtures/store.fixture.ts` |
 | **LLM workflow + harness tuning** | `docs/llm-workflow.md`, `docs/llm-harness.md`, `docs/llm-docs-sync.md` |
@@ -107,6 +108,8 @@ src/
 │   ├── wireHitTest.ts   # Wire click detection
 │   └── wiringScheme/    # Wire routing algorithm (pathfinding, branching, crossing, segments)
 ├── test/            # Test setup and utilities (testUtils.ts - createMockStore)
+│   └── r3f/         # Scene-graph routing test harness (ADR-0008): linePoints, seedCircuit,
+│                    #   TestScene, renderCircuitScene, wireGeometry (expectNoWireOverlaps etc.)
 ├── App.tsx          # Main application component
 └── main.tsx         # React entry point
 
