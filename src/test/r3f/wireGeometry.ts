@@ -6,6 +6,9 @@ import { segmentsOverlap } from '@/utils/wiringScheme/overlap'
 import type { WireSegment } from '@/utils/wiringScheme/types'
 import { useCircuitStore } from '@/store/circuitStore'
 
+/** Matches the router's TOLERANCE; segmentsOverlap is locked to this, so the oracle is too. */
+const OVERLAP_TOLERANCE = 0.001
+
 export interface RenderedWire {
   wireId: string
   /** One entry per rendered drei <Line> (i.e. per stored wire segment). */
@@ -75,18 +78,17 @@ interface EnrichedSegment {
 function findStoredSegment(
   wireId: string,
   renderedSeg: WireSegment,
-  tol: number,
 ): WireSegment | undefined {
   const storeWire = useCircuitStore.getState().wires.find((w) => w.id === wireId)
   if (!storeWire) return undefined
   const { start: rs, end: re } = renderedSeg
   return storeWire.segments.find((s) => {
     const fwdMatch =
-      Math.hypot(s.start.x - rs.x, s.start.z - rs.z) < tol &&
-      Math.hypot(s.end.x - re.x, s.end.z - re.z) < tol
+      Math.hypot(s.start.x - rs.x, s.start.z - rs.z) < OVERLAP_TOLERANCE &&
+      Math.hypot(s.end.x - re.x, s.end.z - re.z) < OVERLAP_TOLERANCE
     const revMatch =
-      Math.hypot(s.start.x - re.x, s.start.z - re.z) < tol &&
-      Math.hypot(s.end.x - rs.x, s.end.z - rs.z) < tol
+      Math.hypot(s.start.x - re.x, s.start.z - re.z) < OVERLAP_TOLERANCE &&
+      Math.hypot(s.end.x - rs.x, s.end.z - rs.z) < OVERLAP_TOLERANCE
     return fwdMatch || revMatch
   })
 }
@@ -140,6 +142,8 @@ function isLegitimateApproachOverlap(a: EnrichedSegment, b: EnrichedSegment): bo
   // Neither is a backbone:
   //   - two transits sharing a track is a real merge -> flag
   //   - otherwise an overlap involving a non-backbone approach lane/entry -> accepted
+  //     (relies on approach connectors being short by construction: LANE_BASE/LANE_PITCH,
+  //     so a non-backbone approach can't span a long foreign-trunk merge)
   if (!a.approach && !b.approach) return false
   return true
 }
@@ -158,12 +162,12 @@ function isLegitimateApproachOverlap(a: EnrichedSegment, b: EnrichedSegment): bo
  * backbone (CASE1), two different confluences sharing a track (CASE2), and
  * transit-vs-transit merges are flagged. This keeps the oracle correct for
  * junction-free circuits without false-positives on legitimate fan-in.
+ *
+ * The oracle is locked to the router's 0.001 tolerance (OVERLAP_TOLERANCE); passing
+ * a separate tolerance is not supported because `segmentsOverlap` hard-codes its own
+ * TOLERANCE=0.001 and `findStoredSegment` must match it exactly.
  */
-export function expectNoWireOverlaps(
-  handle: SceneTestHandle,
-  opts: { tolerance?: number } = {},
-): void {
-  const tol = opts.tolerance ?? 0.001
+export function expectNoWireOverlaps(handle: SceneTestHandle): void {
   const wires = getRenderedWirePolylines(handle)
 
   const straight: EnrichedSegment[] = []
@@ -171,13 +175,13 @@ export function expectNoWireOverlaps(
     for (const s of w.segments) {
       if (s.points.length !== 2) continue // skip arcs/hops
       const [a, b] = s.points
-      const horizontal = Math.abs(a.z - b.z) < tol
+      const horizontal = Math.abs(a.z - b.z) < OVERLAP_TOLERANCE
       const seg: WireSegment = {
         start: { x: a.x, y: a.y, z: a.z },
         end: { x: b.x, y: b.y, z: b.z },
         type: horizontal ? 'horizontal' : 'vertical',
       }
-      const stored = findStoredSegment(w.wireId, seg, tol)
+      const stored = findStoredSegment(w.wireId, seg)
       straight.push({
         wireId: w.wireId,
         seg,

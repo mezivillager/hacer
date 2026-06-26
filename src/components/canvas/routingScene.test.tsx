@@ -31,6 +31,8 @@ describe('routing scene-graph: render contract', () => {
     const rendered = getRenderedWirePolylines(handle)
 
     expect(rendered).toHaveLength(1)
+    // Non-vacuity: route must have at least one segment.
+    expect(wire.segments.length).toBeGreaterThan(0)
     // One rendered <Line> per stored segment.
     expect(rendered[0].segments).toHaveLength(wire.segments.length)
     // Each rendered straight segment's endpoints equal the computed segment endpoints.
@@ -45,7 +47,6 @@ describe('routing scene-graph: render contract', () => {
       expect(last.y).toBeCloseTo(seg.end.y, 3)
       expect(last.z).toBeCloseTo(seg.end.z, 3)
     })
-    expect(TOL).toBe(0.001)
   })
 })
 
@@ -122,7 +123,7 @@ describe('routing scene-graph: dense multi-input chips (B-004)', () => {
       expect(reaches, `no wire reaches pin at ${pos.x},${pos.y},${pos.z}`).toBe(true)
     }
     // No two distinct wires share a collinear track at the render level.
-    expectNoWireOverlaps(handle, { tolerance: TOL })
+    expectNoWireOverlaps(handle)
   }
 
   function getWireEndpointsMatchesPin(
@@ -225,7 +226,7 @@ describe('routing scene-graph: B-004a / CASE1 + transit-vs-transit', () => {
     ).toBeGreaterThan(TOL)
 
     // Main assertion: lane-nudging fix keeps them on distinct parallel tracks.
-    expectNoWireOverlaps(handle, { tolerance: TOL })
+    expectNoWireOverlaps(handle)
   })
 
   it('routes a transit wire off an unrelated chip fan-in backbone (CASE1)', async () => {
@@ -272,8 +273,37 @@ describe('routing scene-graph: B-004a / CASE1 + transit-vs-transit', () => {
       'transit must route a vertical trunk near the backbone column (|x - (-4)| < 1) — CASE1 precondition',
     ).toBeGreaterThan(0)
 
+    // Backbone-presence precondition: at least one backbone wire has a vertical segment
+    // exactly on the x=-4 column (|x-(-4)| < TOL). This proves a real backbone exists
+    // on that column before we assert the transit was nudged off it.
+    const backboneRendered = rendered.filter((w) => w.wireId !== transitWire.id)
+    const backboneVerticals = backboneRendered.flatMap((w) =>
+      w.segments.filter((s) => {
+        if (s.points.length !== 2) return false
+        const [a, b] = s.points
+        return Math.abs(a.x - b.x) < TOL && Math.abs(a.z - b.z) > TOL && Math.abs(a.x - -4) < TOL
+      }),
+    )
+    expect(
+      backboneVerticals.length,
+      'at least one backbone wire must have a vertical segment exactly on the x=-4 column — backbone-presence precondition',
+    ).toBeGreaterThan(0)
+
+    // Z-overlap precondition: the backbone vertical z-range must overlap the transit
+    // vertical z-range, confirming a backbone vertical genuinely spans the transit's z
+    // so the subsequent expectNoWireOverlaps passing means the transit was actually nudged.
+    const zsBackbone = backboneVerticals.flatMap((s) => [s.points[0].z, s.points[1].z])
+    const zBackbone = { min: Math.min(...zsBackbone), max: Math.max(...zsBackbone) }
+    const zsTransit = transitVerticals.flatMap((s) => [s.points[0].z, s.points[1].z])
+    const zTransit = { min: Math.min(...zsTransit), max: Math.max(...zsTransit) }
+    const zOverlap = Math.min(zBackbone.max, zTransit.max) - Math.max(zBackbone.min, zTransit.min)
+    expect(
+      zOverlap,
+      'backbone and transit vertical z-ranges must overlap — confirming the transit genuinely needed nudging off the backbone',
+    ).toBeGreaterThan(TOL)
+
     // Main assertion: transit is nudged off the backbone track — no collinear merge.
-    expectNoWireOverlaps(handle, { tolerance: TOL })
+    expectNoWireOverlaps(handle)
   })
 })
 
@@ -353,6 +383,6 @@ describe('routing scene-graph: broad overlap sweep', () => {
     rendered.forEach((w) => expect(w.segments.length).toBeGreaterThan(0))
 
     // The discovery oracle. A failure here is a NEW routing bug — log it.
-    expectNoWireOverlaps(handle, { tolerance: TOL })
+    expectNoWireOverlaps(handle)
   })
 })

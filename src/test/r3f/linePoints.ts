@@ -5,6 +5,9 @@
 // polyline from that one shared interleaved array: point0 = first start, then each
 // segment's end.
 //
+// Points are LOCAL-SPACE coordinates (equal to world under the harness's untransformed
+// wrappers — the test scene applies no transforms to wire wrapper groups).
+//
 // GATES_RENDER_UNDER_TEST = true — a real GateRenderer (ChipBody3D) also renders
 // cleanly under test-renderer on React 19 (gate-stability probe, Task 1 Step 6).
 import { Vector3 } from 'three'
@@ -13,7 +16,7 @@ import type { Object3D } from 'three'
 interface LineLike extends Object3D {
   geometry?: {
     attributes?: {
-      instanceStart?: { data: { array: ArrayLike<number> } }
+      instanceStart?: { count?: number; data: { array: ArrayLike<number> } }
     }
   }
 }
@@ -24,12 +27,18 @@ export function isRenderedLine(obj: Object3D): boolean {
   return !!g?.attributes?.instanceStart?.data?.array
 }
 
-/** Read a rendered drei <Line>'s world-space polyline points, in order. */
+/**
+ * Read a rendered drei <Line>'s local-space polyline points, in order.
+ * Points are local-space coordinates (equal to world under the harness's
+ * untransformed wrappers — the test scene applies no transforms to wire groups).
+ */
 export function readLinePoints(obj: Object3D): Vector3[] {
   const g = (obj as LineLike).geometry
   const arr = g?.attributes?.instanceStart?.data?.array
   if (!arr) return []
-  const segCount = Math.floor(arr.length / 6)
+  // Prefer the geometry's own count (number of sub-segments); fall back to
+  // length-based calculation if count is somehow absent.
+  const segCount = g?.attributes?.instanceStart?.count ?? Math.floor(arr.length / 6)
   const points: Vector3[] = []
   if (segCount > 0) {
     points.push(new Vector3(arr[0], arr[1], arr[2]))
