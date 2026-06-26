@@ -7,6 +7,11 @@ import { TestScene } from './TestScene'
  * Task-1 spike outcome. Core routing assertions resolve pin positions from the
  * store (getPinWorldPosition), so they hold regardless of this flag; it only
  * controls the realism nicety of also rendering gate bodies.
+ *
+ * The gate-render capability is validated by the gate-stability test in
+ * `linePoints.test.tsx`. Core routing tests use `gates: false` for isolation and
+ * speed. This flag is the default for callers that opt into rendering gate meshes
+ * (hybrid path).
  */
 export const GATES_RENDER_UNDER_TEST = true
 
