@@ -5,13 +5,11 @@ import { Wire3D } from './Wire3D'
 import { useCircuitStore, circuitActions } from '@/store/circuitStore'
 import { trackRender } from '@/utils/renderTracking'
 import { worldToGrid, canPlaceGateAt } from '@/utils/grid'
-import { calculateNodePinPosition } from '@/nodes/config'
 import { handlePinClick, handleInputToggle, handleGateClick, handleInputNodeToggle, handleNodeClick, handleNodePinClick, handleJunctionClick } from './handlers/canvasHandlers'
+import { deriveWire3DProps } from './deriveWire3DProps'
 import { getSignalSourceValue } from '@/store/actions/simulationActions/simulationActions'
 import { isSignalHigh } from '@/simulation/signalDisplay'
 
-// Get actions once - these are stable references that don't change
-const { getPinWorldPosition } = circuitActions
 
 export function CanvasArea() {
   // Use individual selectors - Zustand's shallow comparison works better with individual subscriptions
@@ -94,46 +92,10 @@ export function CanvasArea() {
           // Get signal value based on source endpoint type
           const signalValue = simulationRunning ? getSignalSourceValue(wire.from, useCircuitStore.getState()) : 0
 
-          // Build precomputed path from stored segments
-          const path = {
-            segments: wire.segments,
-            totalLength: wire.segments.reduce((sum: number, seg) => {
-              const dx = seg.end.x - seg.start.x
-              const dy = seg.end.y - seg.start.y
-              const dz = seg.end.z - seg.start.z
-              return sum + Math.sqrt(dx * dx + dy * dy + dz * dz)
-            }, 0),
-          }
-
-          // Get start/end positions based on endpoint types
-          let startPos = null
-          let endPos = null
-
-          if (wire.from.type === 'gate' && wire.from.pinId) {
-            startPos = getPinWorldPosition(wire.from.entityId, wire.from.pinId)
-          } else if (wire.from.type === 'input') {
-            const inputNode = inputNodes.find(n => n.id === wire.from.entityId)
-            if (inputNode) {
-              const pinOffset = calculateNodePinPosition('input')
-              startPos = { x: inputNode.position.x + pinOffset.x, y: 0.2, z: inputNode.position.z + pinOffset.z }
-            }
-          } else if (wire.from.type === 'junction') {
-            const junction = junctions.find(j => j.id === wire.from.entityId)
-            if (junction) startPos = { ...junction.position, y: 0.2 }
-          }
-
-          if (wire.to.type === 'gate' && wire.to.pinId) {
-            endPos = getPinWorldPosition(wire.to.entityId, wire.to.pinId)
-          } else if (wire.to.type === 'output') {
-            const outputNode = outputNodes.find(n => n.id === wire.to.entityId)
-            if (outputNode) {
-              const pinOffset = calculateNodePinPosition('output')
-              endPos = { x: outputNode.position.x + pinOffset.x, y: 0.2, z: outputNode.position.z + pinOffset.z }
-            }
-          } else if (wire.to.type === 'junction') {
-            const junction = junctions.find(j => j.id === wire.to.entityId)
-            if (junction) endPos = { ...junction.position, y: 0.2 }
-          }
+          const { start: startPos, end: endPos, precomputedPath: path } = deriveWire3DProps(
+            wire,
+            useCircuitStore.getState(),
+          )
 
           return (
             <Wire3D
