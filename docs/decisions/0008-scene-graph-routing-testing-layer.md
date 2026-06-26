@@ -58,6 +58,12 @@ This classification was validated empirically against the real Mux4Way16/Mux8Way
 - Screenshot / pixel-diff tests — too brittle for a headless CI environment.
 - Asserting crossing-hop geometry (arc/hop lines with >2 points) — intentionally excluded; crossing resolution has its own extensive unit coverage in `crossing.test.ts`.
 
+**Limitations / honest scope:**
+`Wire3D` renders straight segments verbatim from `wire.segments`, so for the current straight-segment circuits the rendered tracks mirror the stored tracks — the overlap oracle's signal on these scenarios is also derivable from store data. The rendering layer's distinct value is:
+(a) proving `Wire3D`/`deriveWire3DProps` emit one rendered line per stored segment and resolve endpoints correctly (including the null-endpoint → no-render behavior), and
+(b) being the enforcement substrate for FUTURE routing stages where rendering transforms geometry (e.g. arc/hop generation from crossing data).
+A note on future coverage: an arc/hop render-only test (asserting that crossing-resolution produces the expected >2-point line geometry at render time) is a natural next enhancement once that stage is implemented, and would exercise the layer's divergence-detection value more strongly.
+
 ## Affected living docs
 
 - `REPO_MAP.md` — added `src/test/r3f/` to the directory structure and common-tasks table. ✅
