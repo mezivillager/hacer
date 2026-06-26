@@ -30,3 +30,4 @@ It captures decisions here and then runs the author pass in [`../llm-docs-sync.m
 | [0005](0005-p05-17-test-execution-engine-design-and-verification-contract.md) | P05-17 test execution engine: functional design + never-vacuous verification contract | Accepted | 2026-06-20 |
 | [0006](0006-p05-22-test-lab-implementation-source-seam-and-store-action.md) | P05-22 Test Lab: pluggable implementation-source seam + test execution as a store action | Accepted | 2026-06-20 |
 | [0007](0007-wire-routing-engine-direction.md) | Wire routing engine direction: gridless orthogonal-visibility-graph (staged) | Accepted | 2026-06-21 |
+| [0008](0008-scene-graph-routing-testing-layer.md) | Scene-graph routing testing layer as DoD enforcer | Accepted | 2026-06-26 |
