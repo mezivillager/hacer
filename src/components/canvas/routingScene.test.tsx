@@ -318,3 +318,41 @@ describe('routing scene-graph: node-drag re-route (B-003)', () => {
     expectWireConnects(after[0], expectedNodePin, { x: pinPos.x, y: WIRE_HEIGHT, z: pinPos.z }, TOL)
   })
 })
+
+describe('routing scene-graph: broad overlap sweep', () => {
+  let handle: SceneTestHandle | null = null
+  beforeEach(() => resetCircuitStore())
+  afterEach(async () => {
+    if (handle) await handle.unmount()
+    handle = null
+  })
+
+  it('routes a mixed multi-gate circuit with no two wires sharing a track', async () => {
+    // Junction-free mixed circuit: a small fan of gates feeding two consumers.
+    // Verified chip inventory: And (2 in), Or (2 in), Xor (2 in), Mux (3 in: a/b/sel),
+    // Not (1 in). mux.inputs[2] is the 'sel' pin — confirmed from project01 builtins.
+    const a = getState().addGate('And', { x: -8, y: 0, z: -4 })
+    const b = getState().addGate('Or', { x: -8, y: 0, z: 0 })
+    const c = getState().addGate('Xor', { x: -8, y: 0, z: 4 })
+    const mux = getState().addGate('Mux', { x: 6, y: 0, z: 0 })
+    const out = getState().addGate('Not', { x: 14, y: 0, z: 2 })
+
+    // Non-vacuity: Mux has exactly 3 inputs (a, b, sel).
+    expect(mux.inputs).toHaveLength(3)
+
+    wireGatePins(a.id, a.outputs[0].id, mux.id, mux.inputs[0].id)
+    wireGatePins(b.id, b.outputs[0].id, mux.id, mux.inputs[1].id)
+    wireGatePins(c.id, c.outputs[0].id, mux.id, mux.inputs[2].id) // sel
+    wireGatePins(mux.id, mux.outputs[0].id, out.id, out.inputs[0].id)
+
+    handle = await renderCircuitScene({ gates: false })
+    const rendered = getRenderedWirePolylines(handle)
+
+    // Non-vacuity guards: 4 wires rendered, each with real geometry.
+    expect(rendered).toHaveLength(4)
+    rendered.forEach((w) => expect(w.segments.length).toBeGreaterThan(0))
+
+    // The discovery oracle. A failure here is a NEW routing bug — log it.
+    expectNoWireOverlaps(handle, { tolerance: TOL })
+  })
+})
