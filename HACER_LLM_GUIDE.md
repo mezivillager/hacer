@@ -655,6 +655,7 @@ export const App = () => {
 | Zustand state mutations | Unit | Vitest | Critical |
 | UI button clicks, forms | Component | RTL + Vitest | High |
 | 3D component props | Component | RTL + Vitest | Medium |
+| Wire routing geometry (rendered positions) | Scene-graph | `@react-three/test-renderer` + Vitest | Critical |
 | Add gate → wire → simulate | E2E | Playwright | Critical |
 | Complex circuit workflows | E2E | Playwright | High |
 
@@ -810,6 +811,46 @@ export default defineConfig({
   },
 });
 ```
+
+### Scene-Graph Tests (`@react-three/test-renderer`)
+
+The scene-graph layer (`src/test/r3f/`) renders the live R3F scene headlessly (no WebGL/GPU) and reads back world-space wire geometry. It is the routing DoD enforcer — it catches render-level bugs that unit tests and store E2E tests cannot see (e.g., two wires routing to distinct store coordinates but collapsing to a shared track in rendered geometry).
+
+**Harness entry points:**
+- `renderCircuitScene(options?)` — renders `useCircuitStore`'s current circuit; returns a `SceneTestHandle` with `scene` (a `THREE.Scene`) and `unmount()`.
+- `resetCircuitStore()` / `wireGatePins(...)` / `wireInputNodeToPin(...)` in `src/test/r3f/seedCircuit.ts` — seed helpers that use the real routing computation.
+- `getRenderedWirePolylines(handle)` — walks the scene, returns `RenderedWire[]` (polyline of world-space `Vector3`s per wire).
+- `expectWireConnects(wire, start, end, tol?)` — asserts wire endpoints reach the given positions within tolerance.
+- `expectNoWireOverlaps(handle, opts?)` — asserts no two distinct wires share a collinear straight track (the primary routing-merge bug detector).
+
+**Key file:** `src/components/canvas/routingScene.test.tsx` — 8 core routing tests (render contract, connectivity, B-004 dense chips, transit-vs-transit, CASE1, B-003 node-drag, broad overlap sweep). See ADR-0008 for the design rationale.
+
+```typescript
+// ✅ Pattern: seed the store, render, assert geometry
+import { resetCircuitStore, wireGatePins } from '@/test/r3f/seedCircuit'
+import { renderCircuitScene } from '@/test/r3f/renderCircuitScene'
+import { getRenderedWirePolylines, expectWireConnects, expectNoWireOverlaps } from '@/test/r3f/wireGeometry'
+
+describe('my routing test', () => {
+  let handle: SceneTestHandle | null = null
+  beforeEach(() => resetCircuitStore())
+  afterEach(async () => { if (handle) await handle.unmount(); handle = null })
+
+  it('wire reaches the destination pin', async () => {
+    const g1 = useCircuitStore.getState().addGate('And', { x: 0, y: 0, z: 0 })
+    const g2 = useCircuitStore.getState().addGate('Or', { x: 10, y: 0, z: 0 })
+    wireGatePins(g1.id, g1.outputs[0].id, g2.id, g2.inputs[0].id)
+    handle = await renderCircuitScene({ gates: false })
+    const [wire] = getRenderedWirePolylines(handle)
+    const srcPos = useCircuitStore.getState().getPinWorldPosition(g1.id, g1.outputs[0].id)!
+    const dstPos = useCircuitStore.getState().getPinWorldPosition(g2.id, g2.inputs[0].id)!
+    expectWireConnects(wire, srcPos, dstPos, 0.001)
+    expectNoWireOverlaps(handle, { tolerance: 0.001 })
+  })
+})
+```
+
+> **Note on `expectNoWireOverlaps`:** The oracle is intentionally stronger than the production `isShareableConfluence` routing check. It judges *final rendered geometry*, distinguishing backbone segments (owning a `confluenceCoord`) from benign approach lanes. Assumes junction-free test circuits. See `src/test/r3f/wireGeometry.test.tsx` for 6 classification oracle tests.
 
 ### Test Coverage Requirements
 
