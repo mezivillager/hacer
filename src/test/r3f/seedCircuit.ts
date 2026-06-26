@@ -1,7 +1,8 @@
 import { useCircuitStore } from '@/store/circuitStore'
-import { calculateWirePathFromConnection } from '@/utils/wiringScheme/core'
+import { calculateWirePathFromConnection, calculateWirePath } from '@/utils/wiringScheme/core'
 import type { Wire } from '@/store/types'
 import type { WireSegment } from '@/utils/wiringScheme/types'
+import { calculateNodePinPosition } from '@/nodes/config'
 
 /** Reset the live store to an empty circuit between tests. */
 export function resetCircuitStore(): void {
@@ -49,6 +50,31 @@ export function wireGatePins(
   }
   return state.addWire(
     { type: 'gate', entityId: fromGateId, pinId: fromPinId },
+    { type: 'gate', entityId: toGateId, pinId: toPinId },
+    path.segments,
+  )
+}
+
+/** Wire an input node to a gate input pin using the app's node-routing path. */
+export function wireInputNodeToPin(nodeId: string, toGateId: string, toPinId: string): Wire {
+  const state = useCircuitStore.getState()
+  const node = state.inputNodes.find((n) => n.id === nodeId)
+  if (!node) throw new Error(`input node ${nodeId} not found`)
+  const pinPos = state.getPinWorldPosition(toGateId, toPinId)
+  const pinOri = state.getPinOrientation(toGateId, toPinId)
+  if (!pinPos || !pinOri) throw new Error(`pin ${toGateId}.${toPinId} not found`)
+
+  const off = calculateNodePinPosition('input')
+  const startPin = { x: node.position.x + off.x, y: 0.2, z: node.position.z + off.z }
+  const path = calculateWirePath(
+    startPin,
+    { type: 'pin', pin: pinPos, orientation: { direction: pinOri } },
+    { direction: { x: 1, y: 0, z: 0 } },
+    state.gates,
+    { existingSegments: state.wires.flatMap((w) => w.segments) },
+  )
+  return state.addWire(
+    { type: 'input', entityId: nodeId },
     { type: 'gate', entityId: toGateId, pinId: toPinId },
     path.segments,
   )

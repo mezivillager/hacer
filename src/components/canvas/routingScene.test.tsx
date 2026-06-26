@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { useCircuitStore } from '@/store/circuitStore'
-import { resetCircuitStore, wireGatePins } from '@/test/r3f/seedCircuit'
+import { resetCircuitStore, wireGatePins, wireInputNodeToPin } from '@/test/r3f/seedCircuit'
 import { renderCircuitScene, type SceneTestHandle } from '@/test/r3f/renderCircuitScene'
 import {
   getRenderedWirePolylines,
@@ -9,6 +9,7 @@ import {
   expectNoWireOverlaps,
 } from '@/test/r3f/wireGeometry'
 import { WIRE_HEIGHT } from '@/utils/wiringScheme/types'
+import { calculateNodePinPosition } from '@/nodes/config'
 
 const getState = () => useCircuitStore.getState()
 const TOL = 0.001
@@ -273,5 +274,47 @@ describe('routing scene-graph: B-004a / CASE1 + transit-vs-transit', () => {
 
     // Main assertion: transit is nudged off the backbone track — no collinear merge.
     expectNoWireOverlaps(handle, { tolerance: TOL })
+  })
+})
+
+describe('routing scene-graph: node-drag re-route (B-003)', () => {
+  let handle: SceneTestHandle | null = null
+  beforeEach(() => resetCircuitStore())
+  afterEach(async () => {
+    if (handle) await handle.unmount()
+    handle = null
+  })
+
+  it('keeps the wire connected to an input node after the node is moved', async () => {
+    const chip = getState().addGate('Mux4Way16', { x: 0, y: 0, z: 0 })
+    const innerPin = chip.inputs[2].id // an inner pin (the B-003-prone case)
+    const node = getState().addInputNode('a', { x: -10, y: 0, z: 2 })
+    wireInputNodeToPin(node.id, chip.id, innerPin)
+
+    // Render before the move: connects node pin → gate pin.
+    handle = await renderCircuitScene({ gates: false })
+    const before = getRenderedWirePolylines(handle)
+    expect(before).toHaveLength(1)
+    expect(before[0].segments.length).toBeGreaterThan(0)
+    await handle.unmount()
+    handle = null
+
+    // Move the node (this triggers recalculateWiresForNode).
+    const newPos = { x: -14, y: 0, z: -3 }
+    getState().updateInputNodePosition(node.id, newPos)
+
+    // Render after the move: wire still renders (non-empty) and follows the node.
+    handle = await renderCircuitScene({ gates: false })
+    const after = getRenderedWirePolylines(handle)
+    expect(after).toHaveLength(1)
+    expect(after[0].segments.length).toBeGreaterThan(0) // B-003: must not be orphaned/empty
+
+    const off = calculateNodePinPosition('input')
+    const expectedNodePin = { x: newPos.x + off.x, y: 0.2, z: newPos.z + off.z }
+    const pinPos = getState().getPinWorldPosition(chip.id, innerPin)!
+    // Project pinPos to the wire plane (y=WIRE_HEIGHT): the router forces exit/approach
+    // segments to y=WIRE_HEIGHT, so the rendered endpoint sits at WIRE_HEIGHT, not the
+    // pin's real y. This is geometrically correct — NOT a weakening.
+    expectWireConnects(after[0], expectedNodePin, { x: pinPos.x, y: WIRE_HEIGHT, z: pinPos.z }, TOL)
   })
 })
