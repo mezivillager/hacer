@@ -54,7 +54,7 @@ describe('gate-stability probe (informational)', () => {
     } catch {
       renderedClean = false
     }
-    // This test never fails; it documents the spike outcome for the harness default.
-    expect(typeof renderedClean).toBe('boolean')
+    // Asserts the spike outcome: a real GateRenderer renders headlessly under test-renderer.
+    expect(renderedClean).toBe(true)
   })
 })
