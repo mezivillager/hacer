@@ -30,3 +30,26 @@ export function getRenderedWirePolylines(handle: SceneTestHandle): RenderedWire[
 export function getWireEndpoints(w: RenderedWire): { start: Vector3; end: Vector3 } {
   return { start: w.polyline[0], end: w.polyline[w.polyline.length - 1] }
 }
+
+/** Assert a rendered wire's endpoints reach `start` and `end` within tolerance. */
+export function expectWireConnects(
+  w: RenderedWire,
+  start: { x: number; y: number; z: number },
+  end: { x: number; y: number; z: number },
+  tol = 0.001,
+): void {
+  const ends = getWireEndpoints(w)
+  const startD = ends.start.distanceTo(new Vector3(start.x, start.y, start.z))
+  const endD = ends.end.distanceTo(new Vector3(end.x, end.y, end.z))
+  if (startD > tol || endD > tol) {
+    throw new Error(
+      `wire ${w.wireId} does not connect: ` +
+        `start rendered (${fmt(ends.start)}) vs expected (${fmt(start)}) Δ=${startD.toFixed(4)}; ` +
+        `end rendered (${fmt(ends.end)}) vs expected (${fmt(end)}) Δ=${endD.toFixed(4)} (tol=${tol})`,
+    )
+  }
+}
+
+function fmt(p: { x: number; y: number; z: number }): string {
+  return `${p.x.toFixed(3)},${p.y.toFixed(3)},${p.z.toFixed(3)}`
+}
