@@ -92,25 +92,56 @@ function findStoredSegment(
 }
 
 /**
- * Mirror of the production `isShareableConfluence` in overlap.ts. Returns true
- * when an overlap between two enriched segments is NOT a routing bug:
- *   - Non-approach vs approach: the non-approach wire may transit the backbone.
- *   - Both approach with the SAME confluenceCoord: intentional shared backbone
- *     (multi-pin fan-in for the same chip side, Finding 2 / ADR-0007).
- * Any other case (two approach wires on different backbones, or two transit wires
- * on the same track) is a real bug and must NOT be suppressed.
+ * Classify whether an overlap between two enriched rendered segments is an
+ * INTENTIONAL shared track (return true) or a real routing defect (return false).
+ *
+ * A "backbone" segment is an approach segment that OWNS a confluence column
+ * (`approach === true` AND `confluenceCoord !== undefined`). The router lets many
+ * pins of one chip side fan in along a single backbone; everything else should
+ * route on its own track or be nudged onto a free parallel lane.
+ *
+ * Legitimate (exempt):
+ *   - Two backbone segments on the SAME confluence (multi-pin fan-in, B-003/B-004).
+ *   - An overlap involving a NON-backbone approach segment (a per-pin lane
+ *     connector / entry, confluenceCoord undefined) that is not two transits —
+ *     these short shared connectors are an accepted artifact of dense fan-in
+ *     (empirically present in the Mux4Way16/Mux8Way16 scenes).
+ *
+ * Real defect (flag):
+ *   - Transit vs transit: two unrelated trunks merged onto one track.
+ *   - Anything (a transit trunk OR a different net's approach) running ALONG a
+ *     BACKBONE column — i.e. CASE1 (a foreign trunk merged onto a chip's approach
+ *     backbone) and CASE2 (two different confluences sharing a backbone track).
+ *
+ * This is intentionally STRONGER than the production `isShareableConfluence`,
+ * which is a routing-time *permissibility* check (it lets a transit traverse a
+ * backbone so routing need not fail, expecting the later lane-nudging pass to move
+ * it off). The oracle judges the FINAL geometry: in a nudged layout a transit must
+ * not remain collinear with a backbone. Assumption: test circuits provide free
+ * lanes so transits are nudged off; on a saturated single-column circuit a *forced*
+ * transit-on-backbone would be flagged here — itself worth examining (the layer's
+ * discovery role).
  */
 function isLegitimateApproachOverlap(a: EnrichedSegment, b: EnrichedSegment): boolean {
-  // If neither is an approach segment, this is a transit-vs-transit overlap — a real bug.
+  const aBackbone = a.approach && a.confluenceCoord !== undefined
+  const bBackbone = b.approach && b.confluenceCoord !== undefined
+
+  // Two backbones: legitimate only when they are the SAME confluence (fan-in);
+  // two different confluences sharing a track is CASE2.
+  if (aBackbone && bBackbone) {
+    // Both confluenceCoord are defined (the backbone flags guarantee it); narrow
+    // explicitly for the type checker without a non-null assertion.
+    if (a.confluenceCoord === undefined || b.confluenceCoord === undefined) return false
+    return Math.abs(a.confluenceCoord - b.confluenceCoord) < 0.001
+  }
+  // Exactly one backbone: nothing else may run ALONG a backbone column — this is
+  // CASE1 (a foreign trunk merged onto the backbone). Flag it.
+  if (aBackbone || bBackbone) return false
+  // Neither is a backbone:
+  //   - two transits sharing a track is a real merge -> flag
+  //   - otherwise an overlap involving a non-backbone approach lane/entry -> accepted
   if (!a.approach && !b.approach) return false
-  // Non-approach vs approach: the non-approach wire is allowed to traverse the backbone.
-  if (!a.approach || !b.approach) return true
-  // Both approach: only the same confluence backbone may share track.
-  return (
-    a.confluenceCoord !== undefined &&
-    b.confluenceCoord !== undefined &&
-    Math.abs(a.confluenceCoord - b.confluenceCoord) < 0.001
-  )
+  return true
 }
 
 /**
@@ -121,11 +152,12 @@ function isLegitimateApproachOverlap(a: EnrichedSegment, b: EnrichedSegment): bo
  * infers horizontal/vertical from coordinates (not the `type` field). Perpendicular
  * crossings are not collinear, so they are correctly NOT flagged.
  *
- * Approach-confluence overlaps (multi-pin fan-in sharing a backbone) are
- * intentional by design and are skipped using the same exception logic as the
- * production `isShareableConfluence` / `wouldOverlapWithExisting` in overlap.ts.
- * This keeps the oracle correct for junction-free circuits without false-positives
- * on legitimate approach-backbone sharing.
+ * Intentional shared tracks (multi-pin fan-in along one confluence backbone, plus
+ * the short non-backbone approach lane/entry connectors of dense fan-in) are
+ * exempted by {@link isLegitimateApproachOverlap}; a foreign trunk merged onto a
+ * backbone (CASE1), two different confluences sharing a track (CASE2), and
+ * transit-vs-transit merges are flagged. This keeps the oracle correct for
+ * junction-free circuits without false-positives on legitimate fan-in.
  */
 export function expectNoWireOverlaps(
   handle: SceneTestHandle,
