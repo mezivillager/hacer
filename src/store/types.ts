@@ -62,7 +62,7 @@ export interface StatusMessage {
 /**
  * Type of entity that can be a wire endpoint.
  */
-export type WireEndpointType = 'gate' | 'input' | 'output' | 'junction'
+export type WireEndpointType = 'gate' | 'input' | 'output' | 'junction' | 'bus'
 
 /**
  * Represents a connection point for a wire.
@@ -126,6 +126,30 @@ export interface GateInstance {
   outputs: Pin[]
   selected: boolean
   width: number
+}
+
+/**
+ * Kind discriminator for bus components.
+ */
+export type BusComponentKind = 'splitter' | 'joiner'
+
+/**
+ * Bus splitter/joiner entity. NOT a registry chip and NOT a GateInstance — a
+ * separate entity (like InputNode/OutputNode) whose pins are derived from
+ * kind+width via createBusPins.
+ *  - splitter: input `in` (N-bit) → outputs `out0..out{N-1}` (1-bit each).
+ *  - joiner:   inputs `in0..in{N-1}` (1-bit each) → output `out` (N-bit).
+ */
+export interface BusComponent {
+  id: string
+  kind: BusComponentKind
+  position: Position
+  rotation: Rotation
+  /** Bus width N (>= 2). */
+  width: number
+  inputs: Pin[]
+  outputs: Pin[]
+  selected: boolean
 }
 
 /**
@@ -196,6 +220,7 @@ export interface CircuitState {
   inputNodes: InputNode[]
   outputNodes: OutputNode[]
   junctions: JunctionNode[]
+  busComponents: BusComponent[]
 
   // Node placement and selection
   nodePlacementMode: NodePlacementType | null
@@ -363,6 +388,16 @@ export interface TestActions {
   clearTestResult: () => void
 }
 
+/**
+ * Actions for managing bus splitter/joiner components.
+ */
+export interface BusActions {
+  placeBusSplitter: (width: number, position: Position) => BusComponent | null
+  placeBusJoiner: (width: number, position: Position) => BusComponent | null
+  updateBusComponentPosition: (id: string, position: Position) => void
+  removeBusComponent: (id: string) => void
+}
+
 export interface SavedCircuitSummary {
   name: string
   savedAt: string
@@ -378,4 +413,4 @@ export interface PersistenceActions {
 }
 
 // Combined store type
-export interface CircuitStore extends CircuitState, GateActions, WireActions, SimulationActions, PlacementActions, NodePlacementActions, WiringActions, PinHelpers, ViewActions, NodeActions, JunctionActions, JunctionPlacementActions, StatusActions, PersistenceActions, TestActions {}
+export interface CircuitStore extends CircuitState, GateActions, WireActions, SimulationActions, PlacementActions, NodePlacementActions, WiringActions, PinHelpers, ViewActions, NodeActions, JunctionActions, JunctionPlacementActions, StatusActions, PersistenceActions, TestActions, BusActions {}

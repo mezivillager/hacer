@@ -150,6 +150,11 @@ export function getSignalSourceValue(
       const outputPin = gate?.outputs.find((p) => p.id === from.pinId)
       return outputPin?.value ?? 0
     }
+    case 'bus': {
+      const component = state.busComponents.find((c) => c.id === from.entityId)
+      const outputPin = component?.outputs.find((p) => p.id === from.pinId)
+      return outputPin?.value ?? 0
+    }
     case 'junction': {
       if (visited.has(from.entityId)) {
         return 0

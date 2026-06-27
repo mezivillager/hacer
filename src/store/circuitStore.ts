@@ -15,6 +15,7 @@ import { createJunctionPlacementActions } from './actions/junctionPlacementActio
 import { createStatusActions } from './actions/statusActions/statusActions'
 import { createPersistenceActions } from './actions/persistenceActions/persistenceActions'
 import { createTestActions } from './actions/testActions/testActions'
+import { createBusActions } from './actions/busActions/busActions'
 import { readCompletedChips } from '@/core/testing/chipCompletion'
 import { subscribeAutosave } from './actions/persistenceActions/autosave'
 import { readPerformanceMode } from '@/lib/performanceModeStorage'
@@ -56,6 +57,7 @@ const initialState = {
   inputNodes: [] as import('./types').InputNode[],
   outputNodes: [] as import('./types').OutputNode[],
   junctions: [] as import('./types').JunctionNode[],
+  busComponents: [] as import('./types').BusComponent[],
   // Node placement and selection
   nodePlacementMode: null as import('./types').NodePlacementType | null,
   selectedNodeId: null as string | null,
@@ -99,6 +101,7 @@ export const useCircuitStore = create<CircuitStore>()(
         ...createStatusActions(set),
         ...createPersistenceActions(set, get),
         ...createTestActions(set, get),
+        ...createBusActions(set, get),
       }))
     ),
     { name: 'CircuitStore' }
@@ -295,6 +298,11 @@ export const circuitActions = {
   // Test actions
   runChipTest: (chipName: string, sourceId: string) => useCircuitStore.getState().runChipTest(chipName, sourceId),
   clearTestResult: () => useCircuitStore.getState().clearTestResult(),
+  // Bus actions
+  placeBusSplitter: (...args: Parameters<CircuitStore['placeBusSplitter']>) => useCircuitStore.getState().placeBusSplitter(...args),
+  placeBusJoiner: (...args: Parameters<CircuitStore['placeBusJoiner']>) => useCircuitStore.getState().placeBusJoiner(...args),
+  updateBusComponentPosition: (...args: Parameters<CircuitStore['updateBusComponentPosition']>) => useCircuitStore.getState().updateBusComponentPosition(...args),
+  removeBusComponent: (...args: Parameters<CircuitStore['removeBusComponent']>) => useCircuitStore.getState().removeBusComponent(...args),
 }
 
 // Expose store and actions for E2E testing
