@@ -31,3 +31,4 @@ It captures decisions here and then runs the author pass in [`../llm-docs-sync.m
 | [0006](0006-p05-22-test-lab-implementation-source-seam-and-store-action.md) | P05-22 Test Lab: pluggable implementation-source seam + test execution as a store action | Accepted | 2026-06-20 |
 | [0007](0007-wire-routing-engine-direction.md) | Wire routing engine direction: gridless orthogonal-visibility-graph (staged) | Accepted | 2026-06-21 |
 | [0008](0008-scene-graph-routing-testing-layer.md) | Scene-graph routing testing layer as DoD enforcer | Accepted | 2026-06-26 |
+| [0009](0009-bus-components-entity-and-wireendpoint-bus.md) | Bus components as a separate entity; `'bus'` WireEndpoint | Accepted | 2026-06-27 |
