@@ -645,6 +645,44 @@ describe('Node Actions', () => {
   })
 })
 
+// M3: node↔bus re-route when the NODE moves (bus endpoint must be resolved)
+describe('recalculateWiresForNode — bus endpoint (M3)', () => {
+  beforeEach(() => {
+    useCircuitStore.setState({
+      inputNodes: [],
+      outputNodes: [],
+      junctions: [],
+      wires: [],
+      gates: [],
+      busComponents: [],
+      selectedNodeId: null,
+      selectedNodeType: null,
+    })
+  })
+
+  it('re-routes a node→bus wire (non-empty) when the input node moves', () => {
+    const inputNode = useCircuitStore.getState().addInputNode('a', { x: 0, y: 0, z: 0 }, 4)
+    const splitter = useCircuitStore.getState().placeBusSplitter(4, { x: 6, y: 0, z: 0 })!
+    const busPinPos = useCircuitStore.getState().getPinWorldPosition(splitter.id, 'in')!
+
+    // Add a wire from the input node to the bus splitter's 'in' pin
+    useCircuitStore.getState().addWire(
+      { type: 'input', entityId: inputNode.id },
+      { type: 'bus', entityId: splitter.id, pinId: 'in' },
+      [{ start: { x: 0.35, y: 0.2, z: 0 }, end: { x: busPinPos.x, y: 0.2, z: busPinPos.z }, type: 'horizontal' }],
+    )
+
+    const before = JSON.stringify(useCircuitStore.getState().wires[0].segments)
+
+    // Move the input node to trigger re-route
+    useCircuitStore.getState().updateInputNodePosition(inputNode.id, { x: 0, y: 0, z: 4 })
+
+    const after = useCircuitStore.getState().wires[0].segments
+    expect(after.length).toBeGreaterThan(0)
+    expect(JSON.stringify(after)).not.toBe(before)
+  })
+})
+
 // Helper to call the store action by name (keeps the test readable).
 function store_updateInputNodePosition(nodeId: string, position: Position) {
   useCircuitStore.getState().updateInputNodePosition(nodeId, position)

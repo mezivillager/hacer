@@ -47,4 +47,27 @@ describe('deriveWire3DProps', () => {
     // x is node.x + positive pin offset (input node pin is on the right)
     expect(start!.x).toBeGreaterThan(node.position.x)
   })
+
+  it('resolves bus endpoints via getPinWorldPosition', () => {
+    useCircuitStore.setState({ busComponents: [] })
+    const splitter = getState().placeBusSplitter(4, { x: 5, y: 0, z: 0 })!
+    const gate = getState().addGate('Not', { x: 0, y: 0, z: 0 })
+
+    const wire = getState().addWire(
+      { type: 'bus', entityId: splitter.id, pinId: 'out0' },
+      { type: 'gate', entityId: gate.id, pinId: gate.inputs[0].id },
+      [{ start: { x: 4, y: 0.2, z: 0 }, end: { x: 1, y: 0.2, z: 0 }, type: 'horizontal' }],
+    )
+    const { start, end } = deriveWire3DProps(wire, getState())
+
+    const expectedStart = getState().getPinWorldPosition(splitter.id, 'out0')
+    const expectedEnd = getState().getPinWorldPosition(gate.id, gate.inputs[0].id)
+
+    expect(start).not.toBeNull()
+    expect(end).not.toBeNull()
+    expect(start!.x).toBeCloseTo(expectedStart!.x, 3)
+    expect(start!.z).toBeCloseTo(expectedStart!.z, 3)
+    expect(end!.x).toBeCloseTo(expectedEnd!.x, 3)
+    expect(end!.z).toBeCloseTo(expectedEnd!.z, 3)
+  })
 })

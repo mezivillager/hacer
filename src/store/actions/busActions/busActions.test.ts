@@ -71,4 +71,22 @@ describe('busActions', () => {
     expect(getState().busComponents).toHaveLength(0)
     expect(getState().wires).toHaveLength(0)
   })
+
+  it('updateBusComponentPosition re-routes connected wires (non-empty, B-003)', () => {
+    const inputNode = getState().addInputNode('a', { x: 0, y: 0, z: 0 }, 4)
+    const splitter = getState().placeBusSplitter(4, { x: 6, y: 0, z: 2 })!
+    const pin = getState().getPinWorldPosition(splitter.id, 'in')!
+    getState().addWire(
+      { type: 'input', entityId: inputNode.id },
+      { type: 'bus', entityId: splitter.id, pinId: 'in' },
+      [{ start: { x: 0.35, y: 0.2, z: 0 }, end: { x: pin.x, y: 0.2, z: pin.z }, type: 'horizontal' }],
+    )
+    const before = JSON.stringify(getState().wires[0].segments)
+
+    getState().updateBusComponentPosition(splitter.id, { x: 6, y: 0, z: -4 })
+
+    const after = getState().wires[0].segments
+    expect(after.length).toBeGreaterThan(0)
+    expect(JSON.stringify(after)).not.toBe(before)
+  })
 })

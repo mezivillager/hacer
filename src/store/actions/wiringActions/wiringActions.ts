@@ -1,5 +1,5 @@
 import { notify } from '@/lib/notify'
-import type { WiringActions, Position, CircuitStore, NodeType, WireEndpoint } from '../../types'
+import type { WiringActions, Position, CircuitStore, NodeType, WireEndpoint, WiringSource } from '../../types'
 import type { WireSegment } from '@/utils/wiringScheme/types'
 import { resolveCrossings } from '@/utils/wiringScheme/crossing'
 import { getSegmentsUpToPosition } from '@/utils/wirePosition'
@@ -11,6 +11,86 @@ type SetState = (
   actionName?: string
 ) => void
 type GetState = () => CircuitStore
+
+/** Build a from-endpoint from a generic wiring source (gate/input/bus). */
+function resolveSourceEndpoint(source: WiringSource): WireEndpoint | null {
+  switch (source.type) {
+    case 'gate':
+      return { type: 'gate', entityId: source.gateId, pinId: source.pinId }
+    case 'input':
+      return { type: 'input', entityId: source.nodeId }
+    case 'bus':
+      return { type: 'bus', entityId: source.busId, pinId: source.pinId }
+    case 'output':
+    case 'junction':
+    default:
+      return null
+  }
+}
+
+function endpointsEqual(a: WireEndpoint, b: WireEndpoint): boolean {
+  return a.type === b.type && a.entityId === b.entityId && a.pinId === b.pinId
+}
+
+/**
+ * Shared completion core: read the active wiring source generically, resolve
+ * crossings, and create the wire to `toEndpoint`. Used by all bus wiring
+ * actions so the logic is generalized rather than cloned per source/dest pair.
+ */
+function createWireFromActiveWiring(
+  toEndpoint: WireEndpoint,
+  get: GetState,
+  set: SetState,
+  actionName: string,
+): void {
+  const state = get()
+  const from = state.wiringFrom
+  if (!from?.source) {
+    notify.warning('No active wiring operation')
+    return
+  }
+  const fromEndpoint = resolveSourceEndpoint(from.source)
+  if (!fromEndpoint) {
+    notify.warning('Invalid wiring source')
+    set((s) => { s.wiringFrom = null }, false, `${actionName}/invalidSource`)
+    return
+  }
+  const exists = state.wires.some(
+    (w) => endpointsEqual(w.from, fromEndpoint) && endpointsEqual(w.to, toEndpoint),
+  )
+  if (exists) {
+    notify.warning('Wire already exists')
+    set((s) => { s.wiringFrom = null }, false, `${actionName}/wireExists`)
+    return
+  }
+  const segments = from.segments ?? []
+  if (segments.length === 0) {
+    notify.error('Wire path not available. Please try connecting again.')
+    set((s) => { s.wiringFrom = null }, false, `${actionName}/noSegments`)
+    return
+  }
+  let resolvedSegments: WireSegment[]
+  let crossedWireIds: string[] = []
+  try {
+    const result = resolveCrossings(segments, state.wires)
+    resolvedSegments = result.segments
+    crossedWireIds = result.crossedWireIds
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : 'Failed to resolve wire crossings'
+    notify.error(`Cannot complete wire: ${msg}`)
+    set((s) => { s.wiringFrom = null }, false, `${actionName}/crossingResolutionFailed`)
+    return
+  }
+  try {
+    state.addWire(fromEndpoint, toEndpoint, resolvedSegments, crossedWireIds)
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : 'Failed to create wire'
+    notify.error(`Cannot complete wire: ${msg}`)
+    set((s) => { s.wiringFrom = null }, false, `${actionName}/addWireFailed`)
+    return
+  }
+  set((s) => { s.wiringFrom = null }, false, actionName)
+}
 
 export const createWiringActions = (set: SetState, get: GetState): WiringActions => ({
   startWiring: (
@@ -532,6 +612,38 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
     }
     const toEndpoint: WireEndpoint = { type: 'output', entityId: nodeId }
     completeJunctionWiring(toEndpoint, 'completeWiringFromJunctionToNode', get, set)
+  },
+
+  startWiringFromBus: (busId, pinId, pinType, position) => {
+    set((state) => {
+      state.wiringFrom = {
+        fromGateId: '',
+        fromPinId: '',
+        fromPinType: pinType,
+        fromPosition: position,
+        previewEndPosition: null,
+        destinationGateId: null,
+        destinationPinId: null,
+        destinationNodeId: null,
+        destinationNodeType: null,
+        segments: null,
+        source: { type: 'bus', busId, pinId, pinType },
+      }
+      state.placementMode = null
+      state.nodePlacementMode = null
+    }, false, 'startWiringFromBus')
+  },
+
+  completeWiringToBus: (busId, pinId) => {
+    createWireFromActiveWiring({ type: 'bus', entityId: busId, pinId }, get, set, 'completeWiringToBus')
+  },
+
+  completeWiringFromBusToGate: (gateId, pinId, _pinType) => {
+    createWireFromActiveWiring({ type: 'gate', entityId: gateId, pinId }, get, set, 'completeWiringFromBusToGate')
+  },
+
+  completeWiringFromBusToNode: (nodeId, _nodeType) => {
+    createWireFromActiveWiring({ type: 'output', entityId: nodeId }, get, set, 'completeWiringFromBusToNode')
   },
 })
 
