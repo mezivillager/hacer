@@ -40,6 +40,7 @@ export const createSimulationActions = (set: SetState): SimulationActions => ({
       state.junctionPlacementMode = null
       state.junctionPreviewPosition = null
       state.junctionPreviewWireId = null
+      state.busPlacementMode = null
       state.wiringFrom = null
       state.lastSimulationError = null
       state.statusMessages = []

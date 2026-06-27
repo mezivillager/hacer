@@ -143,6 +143,14 @@ describe('simulationActions', () => {
       getState().clearCircuit()
       expect(getState().busComponents).toHaveLength(0)
     })
+
+    it('clears busPlacementMode', () => {
+      useCircuitStore.setState({ busPlacementMode: 'splitter' })
+
+      getState().clearCircuit()
+
+      expect(getState().busPlacementMode).toBe(null)
+    })
   })
 
   describe('simulationTick', () => {

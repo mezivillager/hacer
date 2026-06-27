@@ -999,6 +999,83 @@ describe('wiringActions', () => {
     })
   })
 
+  describe('completeWiringFromJunctionToBus', () => {
+    // Helper: create a wire with segments between gate1 output and gate2 input,
+    // place a junction at the corner, and startWiringFromJunction.
+    function setupJunctionWiring() {
+      const gate1 = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+      const gate2 = getState().addGate('Nand', { x: 8, y: 0, z: 0 })
+
+      const wire = getState().addWire(
+        { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
+        { type: 'gate', entityId: gate2.id, pinId: gate2.inputs[0].id },
+        [
+          { start: { x: 0.7, y: 0.2, z: 0 }, end: { x: 4, y: 0.2, z: 0 }, type: 'exit' },
+          { start: { x: 4, y: 0.2, z: 0 }, end: { x: 4, y: 0.2, z: -4 }, type: 'vertical' },
+          { start: { x: 4, y: 0.2, z: -4 }, end: { x: 8, y: 0.2, z: -4 }, type: 'horizontal' },
+          { start: { x: 8, y: 0.2, z: -4 }, end: { x: 8.7, y: 0.2, z: -4 }, type: 'entry' },
+        ],
+        [],
+        'sig-test',
+      )
+
+      // Place junction at the vertical/horizontal corner
+      const junction = getState().placeJunctionOnWire({ x: 4, y: 0.2, z: -4 }, wire.id)
+      getState().startWiringFromJunction(junction.id, junction.position)
+
+      // Set new segments from the junction toward the bus destination
+      useCircuitStore.setState((state) => {
+        if (state.wiringFrom) {
+          state.wiringFrom.segments = [
+            { start: { x: 4, y: 0.2, z: -4 }, end: { x: 12, y: 0.2, z: -4 }, type: 'horizontal' },
+          ]
+        }
+      })
+
+      return { gate1, gate2, junction, wire }
+    }
+
+    it('creates a branch wire from junction to a bus INPUT pin', () => {
+      const { gate1, junction } = setupJunctionWiring()
+      // Use a joiner so `in0` is an input pin
+      const joiner = getState().placeBusJoiner(4, { x: 12, y: 0, z: 0 })!
+
+      getState().completeWiringFromJunctionToBus(joiner.id, 'in0')
+
+      const wires = getState().wires
+      // Original wire + branch wire
+      expect(wires).toHaveLength(2)
+
+      const branchWire = wires.find(
+        (w) => w.to.type === 'bus' && w.to.entityId === joiner.id && w.to.pinId === 'in0',
+      )
+      expect(branchWire).toBeDefined()
+      // Branch wire's from comes from the original wire's source (gate1 output)
+      expect(branchWire!.from.type).toBe('gate')
+      expect(branchWire!.from.entityId).toBe(gate1.id)
+      // Segments are non-empty (shared + new)
+      expect(branchWire!.segments.length).toBeGreaterThan(0)
+      expect(getState().wiringFrom).toBeNull()
+
+      // Junction should track the new wire
+      const updatedJunction = getState().junctions.find((j) => j.id === junction.id)
+      expect(updatedJunction?.wireIds).toContain(branchWire!.id)
+    })
+
+    it('rejects wiring from a junction to a bus OUTPUT pin', () => {
+      setupJunctionWiring()
+      // Use a splitter so `out0` is an output pin
+      const splitter = getState().placeBusSplitter(4, { x: 12, y: 0, z: 0 })!
+
+      getState().completeWiringFromJunctionToBus(splitter.id, 'out0')
+
+      // No new wire should be created (only the original wire from setupJunctionWiring)
+      expect(getState().wires).toHaveLength(1)
+      expect(notify.warning).toHaveBeenCalledWith('Can only connect to bus input pins')
+      expect(getState().wiringFrom).toBeNull()
+    })
+  })
+
   describe('edge cases', () => {
     it('handles multiple branches from same junction', () => {
       const gate1 = getState().addGate('Nand', { x: 0, y: 0, z: 0 })

@@ -324,6 +324,7 @@ export interface WiringActions {
   completeWiringToNode: (nodeId: string, nodeType: NodeType) => void
   completeWiringFromJunction: (toGateId: string, toPinId: string, toPinType: 'input' | 'output') => void
   completeWiringFromJunctionToNode: (nodeId: string, nodeType: NodeType) => void
+  completeWiringFromJunctionToBus: (busId: string, pinId: string) => void
   // Bus-based wiring (generalized pin path)
   startWiringFromBus: (busId: string, pinId: string, pinType: 'input' | 'output', position: Position) => void
   completeWiringToBus: (busId: string, pinId: string) => void
