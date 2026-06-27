@@ -12,6 +12,7 @@ export function resetCircuitStore(): void {
     inputNodes: [],
     outputNodes: [],
     junctions: [],
+    busComponents: [],
     selectedGateId: null,
     selectedWireId: null,
     selectedNodeId: null,
