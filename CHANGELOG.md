@@ -5,6 +5,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.11.0](https://github.com/mezivillager/hacer/compare/v2.10.2...v2.11.0) (2026-06-27)
+
+### Features
+
+* **nodes:** bus component selection, drag, and delete ([084b627](https://github.com/mezivillager/hacer/commit/084b627ff56cdef5356abae4d881b6deae70ea11))
+* **nodes:** render bus splitter/joiner with width-dynamic pins ([3fc0bc6](https://github.com/mezivillager/hacer/commit/3fc0bc62a0363ae9ac9566ba2f578beb6e892046))
+* **scene:** add bus pin layout and world-position resolution ([3faa699](https://github.com/mezivillager/hacer/commit/3faa69944d414ed52cf2e8188fdbbee18318e17d))
+* **simulation:** add bus splitter/joiner logic and pin generation ([1b14622](https://github.com/mezivillager/hacer/commit/1b146223df1c8f610a90e37fb285072df156bfac))
+* **simulation:** evaluate bus components in topological order ([9cd620a](https://github.com/mezivillager/hacer/commit/9cd620aabf97ea1ad89f30325d2361123f61dd57))
+* **store:** add bus component entity, CRUD actions, and bus wire endpoint ([3db3892](https://github.com/mezivillager/hacer/commit/3db389286201a5fc85dfc5c92871d07784945a4a))
+* **toolbar:** add bus splitter/joiner placement flow ([b04e69f](https://github.com/mezivillager/hacer/commit/b04e69ffce9deab8f2255a6e79962df6f6db9b7a))
+* **wiring:** wire bus pins to gates/nodes and re-route on move ([843fe46](https://github.com/mezivillager/hacer/commit/843fe464890199c4905179b28ef87194837bfa4f))
+
+### Bug Fixes
+
+* **bus:** reset bus placement on clear; support junction→bus wiring ([6d3ebe3](https://github.com/mezivillager/hacer/commit/6d3ebe36998944c317834d6ec566d1f256c5c487))
+* **store:** persist bus components and integrate into circuit lifecycle ([bbcec95](https://github.com/mezivillager/hacer/commit/bbcec954ef21cee137b6e6ddc5ca554949ee36ff))
+* **wiring:** compute preview path for bus-sourced wires; stabilize bus junction signalId ([a0389d1](https://github.com/mezivillager/hacer/commit/a0389d12db7cfa430a63c2934b95ea4bc0b3449c))
+* **wiring:** enforce bus pin direction/self-connection guards and junction-aware re-route ([f469dab](https://github.com/mezivillager/hacer/commit/f469dabcebf20d1923727e5121f7e510f5ae0d88))
+
+### Documentation
+
+* add bus splitter/joiner (P05-12a) design spec ([96ce30a](https://github.com/mezivillager/hacer/commit/96ce30ad6c30300671977c70eab200400ce69aff))
+* add bus splitter/joiner (P05-12a) implementation plan ([b6cb26f](https://github.com/mezivillager/hacer/commit/b6cb26fdafa8f0dec067612f30c0031cfcbe98d9))
+* record bus component ADR-0009 and sync living docs ([0f84f6b](https://github.com/mezivillager/hacer/commit/0f84f6b01b9fcae4e810b49f13e0db08e41d7395))
+
+### Tests
+
+* **r3f:** assert splitter output pins render connected wires ([66e5c96](https://github.com/mezivillager/hacer/commit/66e5c968ef97a09a4c74b7b748aafaa7a51cd036))
+
 ## [2.10.2](https://github.com/mezivillager/hacer/compare/v2.10.1...v2.10.2) (2026-06-27)
 
 ### Bug Fixes
