@@ -1425,5 +1425,45 @@ describe('wiringActions', () => {
       expect(getState().wires).toHaveLength(0)
       expect(notify.warning).toHaveBeenCalledWith('Cannot connect gate to itself')
     })
+
+    // M5: setDestinationBus computes routed segments synchronously so
+    // completeWiringToBus works on the canvas without test-only manual seeding.
+    describe('setDestinationBus (M5)', () => {
+      it('records bus destination and computes routed segments synchronously', () => {
+        const gate = getState().addGate('Not', { x: 0, y: 0, z: 0 })
+        const splitter = getState().placeBusSplitter(4, { x: 6, y: 0, z: 0 })!
+        const gateOutputPos = getState().getPinWorldPosition(gate.id, gate.outputs[0].id)!
+
+        // Start wiring (no segments yet)
+        getState().startWiring(gate.id, gate.outputs[0].id, 'output', gateOutputPos)
+        expect(getState().wiringFrom?.segments).toBeNull()
+
+        // setDestinationBus should compute segments synchronously
+        getState().setDestinationBus(splitter.id, 'in')
+
+        const wiringFrom = getState().wiringFrom
+        expect(wiringFrom?.destination).toEqual({ type: 'bus', busId: splitter.id, pinId: 'in' })
+        expect(wiringFrom?.segments).not.toBeNull()
+        expect(wiringFrom?.segments?.length).toBeGreaterThan(0)
+      })
+
+      it('setDestinationBus + completeWiringToBus creates a routed wire without manual seeding', () => {
+        const gate = getState().addGate('Not', { x: 0, y: 0, z: 0 })
+        const splitter = getState().placeBusSplitter(4, { x: 6, y: 0, z: 0 })!
+        const gateOutputPos = getState().getPinWorldPosition(gate.id, gate.outputs[0].id)!
+
+        getState().startWiring(gate.id, gate.outputs[0].id, 'output', gateOutputPos)
+        // Production path: set destination (computes segments) then complete
+        getState().setDestinationBus(splitter.id, 'in')
+        getState().completeWiringToBus(splitter.id, 'in')
+
+        expect(getState().wires).toHaveLength(1)
+        const wire = getState().wires[0]
+        expect(wire.from).toEqual({ type: 'gate', entityId: gate.id, pinId: gate.outputs[0].id })
+        expect(wire.to).toEqual({ type: 'bus', entityId: splitter.id, pinId: 'in' })
+        expect(wire.segments.length).toBeGreaterThan(0)
+        expect(getState().wiringFrom).toBeNull()
+      })
+    })
   })
 })

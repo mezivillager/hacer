@@ -4,6 +4,8 @@ import type { WireSegment } from '@/utils/wiringScheme/types'
 import { resolveCrossings } from '@/utils/wiringScheme/crossing'
 import { getSegmentsUpToPosition } from '@/utils/wirePosition'
 import { calculateNodePinPosition } from '@/nodes/config/nodeConfig'
+import { calculateWirePath } from '@/utils/wiringScheme/core'
+import { collectWireSegments } from '@/utils/wiringScheme/segments'
 
 type SetState = (
   fn: (state: CircuitStore) => void,
@@ -193,6 +195,71 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
         state.wiringFrom.segments = null
       }
     }, false, 'setDestinationNode')
+  },
+
+  /**
+   * Set a bus pin as the wiring destination and compute routed segments
+   * synchronously. Unlike setDestinationPin (which relies on the async hook),
+   * this computes segments immediately so handleBusPinClick can call
+   * setDestinationBus + completeWiringToBus in the same event handler and
+   * find the segments ready.
+   */
+  setDestinationBus: (busId: string, pinId: string) => {
+    const state = get()
+    const from = state.wiringFrom
+    if (!from) return
+
+    // Record the bus destination (clear legacy gate/node fields for consistency).
+    set((s) => {
+      if (s.wiringFrom) {
+        s.wiringFrom.destination = { type: 'bus', busId, pinId }
+        s.wiringFrom.destinationGateId = null
+        s.wiringFrom.destinationPinId = null
+        s.wiringFrom.destinationNodeId = null
+        s.wiringFrom.destinationNodeType = null
+        s.wiringFrom.segments = null
+      }
+    }, false, 'setDestinationBus/record')
+
+    // Resolve source orientation from the wiring source.
+    const source = from.source
+    let fromOri: { x: number; y: number; z: number } | null = null
+    if (source) {
+      if (source.type === 'gate') {
+        fromOri = state.getPinOrientation(source.gateId, source.pinId)
+      } else if (source.type === 'bus') {
+        fromOri = state.getPinOrientation(source.busId, source.pinId)
+      } else if (source.type === 'input') {
+        fromOri = { x: 1, y: 0, z: 0 } // input nodes always emit to the right
+      }
+    }
+    // Fallback: derive from fromPinType
+    if (!fromOri) {
+      fromOri = from.fromPinType === 'output' ? { x: 1, y: 0, z: 0 } : { x: -1, y: 0, z: 0 }
+    }
+
+    // Resolve target position and orientation from the bus pin layout.
+    const toPos = state.getPinWorldPosition(busId, pinId)
+    const toOri = state.getPinOrientation(busId, pinId)
+    if (!toPos || !toOri) return
+
+    // Compute route synchronously — mirrors recalculateWiresForBusComponent.
+    const existingSegments = collectWireSegments(state.wires)
+    const newPath = calculateWirePath(
+      from.fromPosition,
+      { type: 'pin', pin: toPos, orientation: { direction: toOri } },
+      { direction: fromOri },
+      state.gates,
+      { existingSegments },
+    )
+
+    if (newPath.segments.length > 0) {
+      set((s) => {
+        if (s.wiringFrom) {
+          s.wiringFrom.segments = newPath.segments
+        }
+      }, false, 'setDestinationBus/segments')
+    }
   },
 
   cancelWiring: () => {
