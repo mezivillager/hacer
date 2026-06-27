@@ -16,6 +16,18 @@ When an item is **Fixed**, add the **Fixed in** link and move the detailed row t
 
 ## Open
 
+### B-004b (CASE2) — Same-column confluences are not distinguished, so unrelated chip fan-ins can merge
+
+| Field | Detail |
+|-------|--------|
+| **Status** | Open |
+| **Area** | `src/utils/wiringScheme/approach.ts` (`markConfluenceApproach`), `src/utils/wiringScheme/overlap.ts` (`isShareableConfluence`); also the scene-graph oracle `src/test/r3f/wireGeometry.ts` (`isLegitimateApproachOverlap`) shares the limitation |
+| **Symptom** | A confluence backbone is identified only by its `confluenceCoord` (a single coordinate). When two **separate** chips are placed so their input sides snap to the **same** section column/row (e.g. both backbones at `x = -4`), both fan-ins get the same `confluenceCoord`, so `isShareableConfluence` treats their unrelated approach backbones as one shareable bus — unrelated chip fan-ins can silently merge on one physical track. |
+| **Expected** | Two distinct chips that happen to share a section column must keep distinct confluence identities and must NOT share an approach backbone. |
+| **Repro** | Place two multi-input chips so their input sides align on the same world X (same section column); wire each chip's inputs; observe the two fan-in backbones share a track. The existing CASE2 unit test uses *different* coordinates (−4 vs −8), so it does not cover the same-column case. |
+| **Notes** | Found by the automated reviewer on PR #128 (P1). Root cause: confluence identity is a coordinate, not an owner. Proper fix needs a confluence **owner identity** (e.g. the chip/gate id or a unique confluence id) carried on approach segments, threaded through `markConfluenceApproach` → `WireSegment` metadata → `isShareableConfluence`, **and** the scene-graph oracle's `isLegitimateApproachOverlap` (which keys on `confluenceCoord` too). Add a same-column CASE2 test at both the router and render levels. Sibling of [B-004a (CASE1)](#b-004a-case1--unrelated-trunk-merged-visually-onto-a-chips-approach-backbone-lane-level-exclusivity). Latent — requires specific same-column placement to trigger. |
+| **Fixed in** | — |
+
 ### B-001 — Gate placement preview lacks contrast in light mode
 
 | Field | Detail |
