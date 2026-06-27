@@ -90,6 +90,7 @@ export const createPersistenceActions = (_set: SetState, get: GetState): Persist
       s.inputNodes = restored.inputNodes
       s.outputNodes = restored.outputNodes
       s.junctions = restored.junctions
+      s.busComponents = restored.busComponents
 
       s.selectedGateId = null
       s.selectedWireId = null
@@ -178,6 +179,7 @@ export const createPersistenceActions = (_set: SetState, get: GetState): Persist
       s.inputNodes = restored.inputNodes
       s.outputNodes = restored.outputNodes
       s.junctions = restored.junctions
+      s.busComponents = restored.busComponents
 
       s.selectedGateId = null
       s.selectedWireId = null

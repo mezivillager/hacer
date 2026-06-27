@@ -1,6 +1,7 @@
 import { notify } from '@/lib/notify'
 import { createGateInstance } from '@/store/actions/gateActions/gateActions'
-import type { GateInstance, InputNode, JunctionNode, OutputNode, Pin, Wire } from '@/store/types'
+import { createBusPins } from '@/store/actions/busActions/busPins'
+import type { BusComponent, GateInstance, InputNode, JunctionNode, OutputNode, Pin, Wire } from '@/store/types'
 import type { WireSegment } from '@/utils/wiringScheme/types'
 import {
   CIRCUIT_FORMAT_VERSION,
@@ -18,6 +19,7 @@ export interface DeserializedCircuit {
   inputNodes: InputNode[]
   outputNodes: OutputNode[]
   junctions: JunctionNode[]
+  busComponents: BusComponent[]
 }
 
 /** Canonical mapping from legacy uppercase gate types to chip-registry names.
@@ -168,10 +170,34 @@ export function deserializeCircuit(data: SerializedCircuit): DeserializedCircuit
   const isLiveGateRef = (endpoint: SerializedWire['from']): boolean =>
     endpoint.type !== 'gate' || !skippedGateIds.has(endpoint.entityId)
 
+  // Reconstruct bus components and build a live-id set for wire pruning.
+  // Pins are regenerated from kind+width (deterministic, same as createBusPins)
+  // rather than read from the saved pin arrays, mirroring how gates use createGateInstance.
+  const liveBusIds = new Set<string>()
+  const busComponents: BusComponent[] = []
+  for (const s of data.busComponents ?? []) {
+    const { inputs, outputs } = createBusPins(s.kind, s.width)
+    busComponents.push({
+      id: s.id,
+      kind: s.kind,
+      position: cloneVec3(s.position),
+      rotation: cloneVec3(s.rotation),
+      width: s.width,
+      inputs,
+      outputs,
+      selected: false,
+    })
+    liveBusIds.add(s.id)
+  }
+
+  /** Prunes a wire whose 'bus' endpoint references a bus component not in the restored set. */
+  const isLiveBusRef = (endpoint: SerializedWire['from']): boolean =>
+    endpoint.type !== 'bus' || liveBusIds.has(endpoint.entityId)
+
   const wires: Wire[] = []
   const droppedWireIds = new Set<string>()
   for (const s of data.wires) {
-    if (!isLiveGateRef(s.from) || !isLiveGateRef(s.to)) {
+    if (!isLiveGateRef(s.from) || !isLiveGateRef(s.to) || !isLiveBusRef(s.from) || !isLiveBusRef(s.to)) {
       droppedWireIds.add(s.id)
       continue
     }
@@ -198,5 +224,6 @@ export function deserializeCircuit(data: SerializedCircuit): DeserializedCircuit
     inputNodes: data.inputNodes.map(reconstructInputNode),
     outputNodes: data.outputNodes.map(reconstructOutputNode),
     junctions,
+    busComponents,
   }
 }

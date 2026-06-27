@@ -33,6 +33,7 @@ export const createSimulationActions = (set: SetState): SimulationActions => ({
       state.inputNodes = []
       state.outputNodes = []
       state.junctions = []
+      state.busComponents = []
       state.selectedNodeId = null
       state.selectedNodeType = null
       state.nodePlacementMode = null
