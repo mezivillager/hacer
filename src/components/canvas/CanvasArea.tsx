@@ -1,11 +1,11 @@
 import { Scene } from './Scene'
 import { GateRenderer } from '@/gates'
-import { NodeRenderer } from '@/nodes'
+import { NodeRenderer, BusComponentRenderer } from '@/nodes'
 import { Wire3D } from './Wire3D'
 import { useCircuitStore, circuitActions } from '@/store/circuitStore'
 import { trackRender } from '@/utils/renderTracking'
 import { worldToGrid, canPlaceGateAt } from '@/utils/grid'
-import { handlePinClick, handleInputToggle, handleGateClick, handleInputNodeToggle, handleNodeClick, handleNodePinClick, handleJunctionClick } from './handlers/canvasHandlers'
+import { handlePinClick, handleInputToggle, handleGateClick, handleInputNodeToggle, handleNodeClick, handleNodePinClick, handleJunctionClick, handleBusPinClick } from './handlers/canvasHandlers'
 import { deriveWire3DProps } from './deriveWire3DProps'
 import { getSignalSourceValue } from '@/store/actions/simulationActions/simulationActions'
 import { isSignalHigh } from '@/simulation/signalDisplay'
@@ -29,6 +29,7 @@ export function CanvasArea() {
   const outputNodes = useCircuitStore((s) => s.outputNodes)
   const junctions = useCircuitStore((s) => s.junctions)
   const selectedNodeId = useCircuitStore((s) => s.selectedNodeId)
+  const busComponents = useCircuitStore((s) => s.busComponents)
 
   // Create a reactive isPinConnected function that will trigger re-renders when wires change
   const isPinConnectedReactive = (gateId: string, pinId: string): boolean => {
@@ -169,6 +170,13 @@ export function CanvasArea() {
             />
           )
         })}
+        {busComponents.map((component) => (
+          <BusComponentRenderer
+            key={component.id}
+            component={component}
+            onPinClick={handleBusPinClick}
+          />
+        ))}
       </Scene>
     </div>
   )

@@ -40,7 +40,8 @@ export function useStoreWirePreviewSegments({
     const pathData = calculatedPathRef.current
     const hasGateDestination = wiringFrom?.destinationGateId && wiringFrom?.destinationPinId
     const hasNodeDestination = wiringFrom?.destinationNodeId && wiringFrom?.destinationNodeType
-    const hasDestination = hasGateDestination || hasNodeDestination
+    const hasBusDestination = wiringFrom?.destination?.type === 'bus'
+    const hasDestination = hasGateDestination || hasNodeDestination || hasBusDestination
 
     if (pathData && hasDestination) {
       let segmentsToStore = pathData.segments

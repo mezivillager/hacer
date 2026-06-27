@@ -33,6 +33,9 @@ export function handlePinClick(
     } else if (source && source.type === 'junction') {
       // Junction-to-gate wiring
       circuitActions.completeWiringFromJunction(gateId, pinId, pinType)
+    } else if (source && source.type === 'bus') {
+      // Bus-to-gate wiring
+      circuitActions.completeWiringFromBusToGate(gateId, pinId, pinType)
     } else {
       // Gate-to-gate wiring (or no source specified, fallback to gate-to-gate)
       circuitActions.completeWiring(gateId, pinId, pinType)
@@ -108,6 +111,11 @@ export function handleNodePinClick(
       if (nodeType === 'output') {
         circuitActions.completeWiringFromJunctionToNode(nodeId, nodeType)
       }
+    } else if (source && source.type === 'bus') {
+      // Bus-to-node wiring (only output nodes can be bus wire destinations)
+      if (nodeType === 'output') {
+        circuitActions.completeWiringFromBusToNode(nodeId, nodeType)
+      }
     } else {
       // Complete wiring to node (only output nodes can be wire destinations)
       if (nodeType === 'output') {
@@ -146,4 +154,30 @@ export function handleJunctionClick(junctionId: string, position: Position): voi
 
   // Start wiring from junction
   circuitActions.startWiringFromJunction(junctionId, position)
+}
+
+/**
+ * Handle bus pin click - start wiring from a bus pin, or complete the active
+ * wire onto this bus pin. Completion calls setDestinationBus first to compute
+ * routed segments synchronously, so completeWiringToBus finds them ready.
+ *
+ * @param busId - The bus component's ID
+ * @param pinId - The clicked pin's ID
+ * @param pinType - 'input' | 'output'
+ * @param worldPosition - Pin position in world coordinates
+ */
+export function handleBusPinClick(
+  busId: string,
+  pinId: string,
+  pinType: 'input' | 'output',
+  worldPosition: Position,
+): void {
+  const currentWiringFrom = useCircuitStore.getState().wiringFrom
+  if (currentWiringFrom) {
+    // Compute routed segments synchronously, then complete the wire.
+    circuitActions.setDestinationBus(busId, pinId)
+    circuitActions.completeWiringToBus(busId, pinId)
+  } else {
+    circuitActions.startWiringFromBus(busId, pinId, pinType, worldPosition)
+  }
 }

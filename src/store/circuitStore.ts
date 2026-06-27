@@ -201,6 +201,9 @@ export const circuitActions = {
   setDestinationNode: (...args: Parameters<CircuitStore['setDestinationNode']>): void => {
     useCircuitStore.getState().setDestinationNode(...args)
   },
+  setDestinationBus: (...args: Parameters<CircuitStore['setDestinationBus']>): void => {
+    useCircuitStore.getState().setDestinationBus(...args)
+  },
   cancelWiring: () => useCircuitStore.getState().cancelWiring(),
   completeWiring: (...args: Parameters<CircuitStore['completeWiring']>) => useCircuitStore.getState().completeWiring(...args),
   startWiringFromNode: (...args: Parameters<CircuitStore['startWiringFromNode']>) => useCircuitStore.getState().startWiringFromNode(...args),

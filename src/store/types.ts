@@ -171,6 +171,7 @@ export type WiringDestination =
   | { type: 'gate'; gateId: string; pinId: string }
   | { type: 'output'; nodeId: string }
   | { type: 'junction'; junctionId: string; originalWireId: string; sharedSegments: import('@/utils/wiringScheme/types').WireSegment[] }
+  | { type: 'bus'; busId: string; pinId: string }
 
 /**
  * Non-fatal simulation failure recorded for UI / devtools.
@@ -311,6 +312,7 @@ export interface WiringActions {
   updateWirePreviewPosition: (position: Position | null) => void
   setDestinationPin: (gateId: string | null, pinId: string | null) => void
   setDestinationNode: (nodeId: string | null, nodeType: NodeType | null) => void
+  setDestinationBus: (busId: string, pinId: string) => void
   cancelWiring: () => void
   completeWiring: (toGateId: string, toPinId: string, toPinType: 'input' | 'output') => void
   // Node-based wiring (for HDL support)

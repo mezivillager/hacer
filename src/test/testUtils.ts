@@ -92,6 +92,7 @@ export function createMockStore(partial: Partial<CircuitState> = {}): CircuitSto
     updateWirePreviewPosition: () => {},
     setDestinationPin: () => {},
     setDestinationNode: () => {},
+    setDestinationBus: () => {},
     cancelWiring: () => {},
     completeWiring: () => {},
     startWiringFromNode: () => {},
