@@ -3,7 +3,7 @@ export const CIRCUIT_FORMAT_VERSION = 1 as const
 export type SerializedPosition = { x: number; y: number; z: number }
 export type SerializedRotation = { x: number; y: number; z: number }
 
-export type SerializedEndpointType = 'gate' | 'input' | 'output' | 'junction'
+export type SerializedEndpointType = 'gate' | 'input' | 'output' | 'junction' | 'bus'
 
 export interface SerializedWireSegment {
   start: SerializedPosition

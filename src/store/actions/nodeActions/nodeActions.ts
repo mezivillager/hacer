@@ -192,7 +192,7 @@ export const createNodeActions = (set: SetState, get: GetState): NodeActions => 
 /**
  * Endpoint key used by `propagateWidthFrom`'s BFS visited set.
  */
-type EndpointKey = `${'input' | 'output' | 'gate' | 'junction'}:${string}`
+type EndpointKey = `${'input' | 'output' | 'gate' | 'junction' | 'bus'}:${string}`
 
 /**
  * Cascade a width change from a starting entity through every wire it

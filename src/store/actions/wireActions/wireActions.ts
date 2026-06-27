@@ -47,6 +47,13 @@ function getEndpointWidth(endpoint: WireEndpoint, state: CircuitStore): number {
         gate?.outputs.find((p) => p.id === endpoint.pinId)
       return pin?.width ?? 1
     }
+    case 'bus': {
+      const component = state.busComponents.find((c) => c.id === endpoint.entityId)
+      const pin =
+        component?.inputs.find((p) => p.id === endpoint.pinId) ??
+        component?.outputs.find((p) => p.id === endpoint.pinId)
+      return pin?.width ?? 1
+    }
     case 'junction':
     default:
       return 1
