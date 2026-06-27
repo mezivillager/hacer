@@ -1,4 +1,5 @@
 import { clampToWidth } from './busOps'
+import { evaluateSplitter, evaluateJoiner } from './busLogic'
 import { getBuiltinChipRegistry, getUserChipRegistry } from '@/core/chips/appRegistry'
 import { evaluateChipWithCtx, DEFAULT_MAX_DEPTH } from '@/core/chips/evaluateChip'
 import { combineRegistries } from '@/core/chips/combineRegistries'
@@ -34,6 +35,8 @@ function resolveSourceGateId(
   switch (endpoint.type) {
     case 'gate':
       return endpoint.entityId
+    case 'bus':
+      return endpoint.entityId
     case 'input':
     case 'output':
       return null
@@ -63,30 +66,33 @@ function resolveSourceGateId(
  * @returns Ordered gate IDs, or a cycle with the gates that could not be scheduled
  */
 export function topologicalSort(state: CircuitState): TopologicalResult {
-  const gateIds = state.gates.map((g) => g.id)
-  if (gateIds.length === 0) {
+  const nodeIds = [
+    ...state.gates.map((g) => g.id),
+    ...state.busComponents.map((c) => c.id),
+  ]
+  if (nodeIds.length === 0) {
     return { type: 'success', order: [] }
   }
 
   const adjacency = new Map<string, string[]>()
   const inDegree = new Map<string, number>()
 
-  for (const id of gateIds) {
+  for (const id of nodeIds) {
     adjacency.set(id, [])
     inDegree.set(id, 0)
   }
 
   for (const wire of state.wires) {
-    if (wire.to.type !== 'gate') continue
+    if (wire.to.type !== 'gate' && wire.to.type !== 'bus') continue
 
-    const destGateId = wire.to.entityId
-    if (!inDegree.has(destGateId)) continue
+    const destId = wire.to.entityId
+    if (!inDegree.has(destId)) continue
 
-    const sourceGateId = resolveSourceGateId(wire.from, state)
-    if (sourceGateId === null || !inDegree.has(sourceGateId)) continue
+    const sourceId = resolveSourceGateId(wire.from, state)
+    if (sourceId === null || !inDegree.has(sourceId)) continue
 
-    adjacency.get(sourceGateId)!.push(destGateId)
-    inDegree.set(destGateId, inDegree.get(destGateId)! + 1)
+    adjacency.get(sourceId)!.push(destId)
+    inDegree.set(destId, inDegree.get(destId)! + 1)
   }
 
   // Kahn's BFS — use a queue index instead of shift() to stay O(V+E)
@@ -108,9 +114,9 @@ export function topologicalSort(state: CircuitState): TopologicalResult {
     }
   }
 
-  if (order.length < gateIds.length) {
+  if (order.length < nodeIds.length) {
     const orderedSet = new Set(order)
-    const involvedGateIds = gateIds.filter((id) => !orderedSet.has(id))
+    const involvedGateIds = nodeIds.filter((id) => !orderedSet.has(id))
     return { type: 'cycle', involvedGateIds }
   }
 
@@ -190,6 +196,12 @@ function destinationWidth(wire: Wire, state: CircuitState): number {
       endpointWidth = pin?.width ?? 1
       break
     }
+    case 'bus': {
+      const component = state.busComponents.find((c) => c.id === wire.to.entityId)
+      const pin = component?.inputs.find((p) => p.id === wire.to.pinId)
+      endpointWidth = pin?.width ?? 1
+      break
+    }
     default:
       endpointWidth = 1
   }
@@ -225,9 +237,46 @@ export function evaluateCircuit(state: CircuitState): EvaluateCircuitResult {
     }
   }
 
+  const busById = new Map(state.busComponents.map((c) => [c.id, c]))
+  const wiresByDestBus = new Map<string, typeof state.wires>()
+  for (const wire of state.wires) {
+    if (wire.to.type === 'bus' && wire.to.pinId) {
+      let bucket = wiresByDestBus.get(wire.to.entityId)
+      if (!bucket) {
+        bucket = []
+        wiresByDestBus.set(wire.to.entityId, bucket)
+      }
+      bucket.push(wire)
+    }
+  }
+
   const resolver = combineRegistries(getBuiltinChipRegistry(), getUserChipRegistry())
 
   for (const gateId of result.order) {
+    const busComponent = busById.get(gateId)
+    if (busComponent) {
+      const incoming = wiresByDestBus.get(gateId)
+      if (incoming) {
+        for (const wire of incoming) {
+          const inputPin = busComponent.inputs.find((p) => p.id === wire.to.pinId)
+          if (inputPin) {
+            const raw = getSignalSourceValue(wire.from, state)
+            inputPin.value = clampToWidth(raw, destinationWidth(wire, state))
+          }
+        }
+      }
+      if (busComponent.kind === 'splitter') {
+        const bits = evaluateSplitter(busComponent.inputs[0]?.value ?? 0, busComponent.width)
+        busComponent.outputs.forEach((pin, i) => {
+          pin.value = bits[i] ?? 0
+        })
+      } else {
+        const inValues = busComponent.inputs.map((p) => p.value)
+        busComponent.outputs[0].value = clampToWidth(evaluateJoiner(inValues), busComponent.width)
+      }
+      continue
+    }
+
     const gate = gateById.get(gateId)
     if (!gate) continue
 
