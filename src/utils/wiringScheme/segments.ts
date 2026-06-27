@@ -182,6 +182,39 @@ function areSameRoutingType(seg1: WireSegment, seg2: WireSegment): boolean {
  *
  * @internal Exported for testing only
  */
+/**
+ * Reduce a group of adjacent same-routing-type segments to the single segment
+ * that should be emitted. A single-segment group is returned as-is; a multi
+ * group is combined from the first start to the last end, preserving:
+ * - `approach` only when every segment in the group carries it, and
+ * - `confluenceCoord` only when every (approach) segment agrees on the same
+ *   coordinate. Carrying the coordinate through is required so a backbone that
+ *   pathfinding emitted as several consecutive approach segments stays a
+ *   recognised approach backbone (`isApproachBackbone` / `isShareableConfluence`
+ *   need the coordinate); dropping it would silently demote the bus.
+ */
+function finalizeSegmentGroup(group: WireSegment[]): WireSegment {
+  if (group.length === 1) {
+    return group[0]
+  }
+  const firstSegment = group[0]
+  const lastSegment = group[group.length - 1]
+  const allApproach = group.every((s) => s.approach === true)
+  const firstCoord = firstSegment.confluenceCoord
+  const sameConfluence =
+    allApproach &&
+    firstCoord !== undefined &&
+    group.every((s) => s.confluenceCoord !== undefined && Math.abs(s.confluenceCoord - firstCoord) < 0.001)
+
+  return {
+    start: firstSegment.start,
+    end: lastSegment.end,
+    type: firstSegment.type, // Preserve type (horizontal or vertical)
+    ...(allApproach ? { approach: true } : {}),
+    ...(sameConfluence ? { confluenceCoord: firstCoord } : {}),
+  }
+}
+
 export function combineAdjacentSegments(segments: WireSegment[]): WireSegment[] {
   if (segments.length === 0) {
     return []
@@ -204,47 +237,14 @@ export function combineAdjacentSegments(segments: WireSegment[]): WireSegment[] 
       currentGroup.push(currentSegment)
     } else {
       // Cannot combine - finalize current group and start new one
-      if (currentGroup.length > 1) {
-        // Combine the group: from first start to last end
-        const firstSegment = currentGroup[0]
-        const lastSegment = currentGroup[currentGroup.length - 1]
-        // Preserve `approach` only when every segment in the group carries it
-        const allApproach = currentGroup.every((s) => s.approach === true)
-
-        result.push({
-          start: firstSegment.start,
-          end: lastSegment.end,
-          type: firstSegment.type, // Preserve type (horizontal or vertical)
-          ...(allApproach ? { approach: true } : {}),
-        })
-      } else {
-        // Single segment - add as-is
-        result.push(currentGroup[0])
-      }
-
+      result.push(finalizeSegmentGroup(currentGroup))
       // Start new group with current segment
       currentGroup = [currentSegment]
     }
   }
 
   // Finalize the last group
-  if (currentGroup.length > 1) {
-    // Combine the group: from first start to last end
-    const firstSegment = currentGroup[0]
-    const lastSegment = currentGroup[currentGroup.length - 1]
-    // Preserve `approach` only when every segment in the group carries it
-    const allApproach = currentGroup.every((s) => s.approach === true)
-
-    result.push({
-      start: firstSegment.start,
-      end: lastSegment.end,
-      type: firstSegment.type, // Preserve type (horizontal or vertical)
-      ...(allApproach ? { approach: true } : {}),
-    })
-  } else {
-    // Single segment - add as-is
-    result.push(currentGroup[0])
-  }
+  result.push(finalizeSegmentGroup(currentGroup))
 
   return result
 }

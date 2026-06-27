@@ -271,6 +271,39 @@ describe('WiringScheme Segments Module', () => {
       expect(result).toHaveLength(1)
       expect(result[0].approach).toBeUndefined()
     })
+
+    // Confluence identity must survive combination — a backbone emitted as
+    // several consecutive approach segments (source > 1 section away) is later
+    // recognised as a shareable approach backbone only if it keeps its
+    // confluenceCoord (isApproachBackbone / isShareableConfluence require it).
+    const hc = (x1: number, z: number, x2: number, confluenceCoord?: number): WireSegment => ({
+      start: { x: x1, y: WIRE_HEIGHT, z },
+      end: { x: x2, y: WIRE_HEIGHT, z },
+      type: 'horizontal',
+      approach: true,
+      ...(confluenceCoord !== undefined ? { confluenceCoord } : {}),
+    })
+
+    it('preserves confluenceCoord when ALL combined approach segments agree on it', () => {
+      const segs = [hc(0, 4, 4, -4), hc(4, 4, 8, -4)]
+      const result = combineAdjacentSegments(segs)
+      expect(result).toHaveLength(1)
+      expect(result[0].approach).toBe(true)
+      expect(result[0].confluenceCoord).toBe(-4)
+    })
+
+    it('drops confluenceCoord when combined approach segments disagree on it', () => {
+      const segs = [hc(0, 4, 4, -4), hc(4, 4, 8, -8)]
+      const result = combineAdjacentSegments(segs)
+      expect(result).toHaveLength(1)
+      expect(result[0].approach).toBe(true)
+      expect(result[0].confluenceCoord).toBeUndefined()
+    })
+
+    it('preserves confluenceCoord on a single non-combined approach segment', () => {
+      const result = combineAdjacentSegments([hc(0, 4, 4, -4)])
+      expect(result[0].confluenceCoord).toBe(-4)
+    })
   })
 
   describe('collectWireSegments', () => {
