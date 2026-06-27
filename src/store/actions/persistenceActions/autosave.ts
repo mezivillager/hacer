@@ -29,7 +29,8 @@ export function subscribeAutosave(): void {
       state.wires !== prev.wires ||
       state.inputNodes !== prev.inputNodes ||
       state.outputNodes !== prev.outputNodes ||
-      state.junctions !== prev.junctions
+      state.junctions !== prev.junctions ||
+      state.busComponents !== prev.busComponents
     ) {
       pendingWrite!()
     }

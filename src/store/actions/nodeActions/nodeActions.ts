@@ -241,12 +241,17 @@ function propagateWidthFrom(
       const toMatches = wire.to.type === current.type && wire.to.entityId === current.id
       if (!fromMatches && !toMatches) continue
 
-      wire.width = width
-
       const other = fromMatches ? wire.to : wire.from
       const otherKey: EndpointKey = `${other.type}:${other.entityId}`
       if (visited.has(otherKey)) continue
       visited.add(otherKey)
+
+      // Bus pins have intrinsic widths set by their kind+width definition; do
+      // not cascade width through a bus endpoint (treat it as a fixed-width wall,
+      // like the mixed-width-chip guard for gates).
+      if (other.type !== 'bus') {
+        wire.width = width
+      }
 
       switch (other.type) {
         case 'input': {
@@ -288,6 +293,10 @@ function propagateWidthFrom(
         case 'junction': {
           // Junctions don't carry width themselves but signals flow through them.
           queue.push({ type: 'junction', id: other.entityId })
+          break
+        }
+        case 'bus': {
+          // Bus pins have intrinsic widths; stop the cascade here.
           break
         }
       }

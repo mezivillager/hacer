@@ -136,6 +136,13 @@ describe('simulationActions', () => {
       getState().clearCircuit()
       expect(getState().statusMessages).toHaveLength(0)
     })
+
+    it('clears busComponents', () => {
+      getState().placeBusSplitter(4, { x: 0, y: 0, z: 0 })
+      expect(getState().busComponents).toHaveLength(1)
+      getState().clearCircuit()
+      expect(getState().busComponents).toHaveLength(0)
+    })
   })
 
   describe('simulationTick', () => {

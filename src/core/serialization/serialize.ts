@@ -1,6 +1,7 @@
 import type { CircuitState } from '@/store/types'
 import {
   CIRCUIT_FORMAT_VERSION,
+  type SerializedBusComponent,
   type SerializedCircuit,
   type SerializedGate,
   type SerializedInputNode,
@@ -81,6 +82,17 @@ export function serializeCircuit(state: CircuitState, name: string): SerializedC
     wireIds: [...j.wireIds],
   }))
 
+  const busComponents: SerializedBusComponent[] = state.busComponents.map((c) => ({
+    id: c.id,
+    kind: c.kind,
+    position: cloneVec3(c.position),
+    rotation: cloneVec3(c.rotation),
+    width: c.width,
+    inputs: c.inputs.map((p) => ({ id: p.id, name: p.name, type: p.type, value: p.value, width: p.width })),
+    outputs: c.outputs.map((p) => ({ id: p.id, name: p.name, type: p.type, value: p.value, width: p.width })),
+    selected: c.selected,
+  }))
+
   return {
     version: CIRCUIT_FORMAT_VERSION,
     name,
@@ -90,5 +102,6 @@ export function serializeCircuit(state: CircuitState, name: string): SerializedC
     inputNodes,
     outputNodes,
     junctions,
+    busComponents,
   }
 }

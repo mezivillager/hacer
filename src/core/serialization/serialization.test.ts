@@ -125,7 +125,7 @@ describe('deserializeCircuit', () => {
   it('round-trips an empty circuit', () => {
     const out = serializeCircuit(useCircuitStore.getState(), 'empty')
     const restored = deserializeCircuit(out)
-    expect(restored).toEqual({ gates: [], wires: [], inputNodes: [], outputNodes: [], junctions: [] })
+    expect(restored).toEqual({ gates: [], wires: [], inputNodes: [], outputNodes: [], junctions: [], busComponents: [] })
   })
 
   it('round-trips a single gate and preserves its id, width, and pin ids', () => {
@@ -246,6 +246,61 @@ describe('deserializeCircuit', () => {
     const blob = serializeCircuit(useCircuitStore.getState(), 'val')
     const restored = deserializeCircuit(blob)
     expect(restored.inputNodes[0].value).toBe(0)
+  })
+
+  it('round-trips a bus splitter component and its bus-endpoint wire', () => {
+    const splitter = circuitActions.placeBusSplitter(4, { x: 2, y: 0, z: 0 })!
+    const gate = circuitActions.addGate('Not', { x: 6, y: 0, z: 0 })
+    // Wire from splitter out0 pin to gate input — uses type:'bus' endpoint
+    circuitActions.addWire(
+      { type: 'bus', entityId: splitter.id, pinId: 'out0' },
+      { type: 'gate', entityId: gate.id, pinId: gate.inputs[0].id },
+      [],
+    )
+
+    const blob = serializeCircuit(useCircuitStore.getState(), 'bus-splitter')
+    const restored = deserializeCircuit(blob)
+
+    // Bus component round-trips with correct id, kind, width, position, and pins
+    expect(restored.busComponents).toHaveLength(1)
+    const rc = restored.busComponents[0]
+    expect(rc.id).toBe(splitter.id)
+    expect(rc.kind).toBe('splitter')
+    expect(rc.width).toBe(4)
+    expect(rc.position).toEqual({ x: 2, y: 0, z: 0 })
+    expect(rc.inputs).toHaveLength(1)   // splitter: 1 wide input
+    expect(rc.outputs).toHaveLength(4)  // splitter: N 1-bit outputs
+
+    // Bus wire survives (endpoint references a live bus component)
+    expect(restored.wires).toHaveLength(1)
+    expect(restored.wires[0].from.type).toBe('bus')
+    expect(restored.wires[0].from.entityId).toBe(splitter.id)
+    expect(restored.wires[0].from.pinId).toBe('out0')
+  })
+
+  it('prunes a wire whose bus endpoint references an absent bus component', () => {
+    // Build a blob that has a bus-endpoint wire but no matching busComponent
+    const blob: SerializedCircuit = {
+      version: 1,
+      name: 'dangling-bus',
+      savedAt: new Date().toISOString(),
+      gates: [],
+      wires: [
+        {
+          id: 'w-dangling',
+          from: { type: 'bus', entityId: 'bus-splitter-nonexistent', pinId: 'out0' },
+          to: { type: 'gate', entityId: 'g1', pinId: 'g1-in-0' },
+          segments: [],
+          crossesWireIds: [],
+        },
+      ],
+      inputNodes: [],
+      outputNodes: [],
+      junctions: [],
+      busComponents: [],  // no bus components — wire is dangling
+    }
+    const restored = deserializeCircuit(blob)
+    expect(restored.wires).toHaveLength(0)
   })
 })
 

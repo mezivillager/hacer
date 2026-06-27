@@ -108,6 +108,20 @@ describe('loadCircuit', () => {
     expect(state.wires[0].to.entityId).toBe(b.id)
   })
 
+  it('restores busComponents from the saved snapshot', () => {
+    const splitter = circuitActions.placeBusSplitter(4, { x: 3, y: 0, z: 0 })!
+    circuitActions.saveCircuit('bus-snap')
+    circuitActions.clearCircuit()
+    expect(useCircuitStore.getState().busComponents).toHaveLength(0)
+
+    expect(circuitActions.loadCircuit('bus-snap')).toBe(true)
+    const state = useCircuitStore.getState()
+    expect(state.busComponents).toHaveLength(1)
+    expect(state.busComponents[0].id).toBe(splitter.id)
+    expect(state.busComponents[0].kind).toBe('splitter')
+    expect(state.busComponents[0].width).toBe(4)
+  })
+
   it('clears selection, placement, wiring, and lastSimulationError before applying', () => {
     const gate = circuitActions.addGate('Nand', { x: 0, y: 0, z: 0 })
     circuitActions.selectGate(gate.id)
