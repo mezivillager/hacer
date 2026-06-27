@@ -443,4 +443,51 @@ describe('junctionPlacementActions', () => {
       }).toThrow('Junction can only be placed at wire corners (section line intersections)')
     })
   })
+
+  describe('[M1] stable signalId for bus-sourced wires', () => {
+    beforeEach(() => {
+      useCircuitStore.setState({
+        gates: [],
+        wires: [],
+        junctions: [],
+        busComponents: [],
+        junctionPlacementMode: null,
+      })
+    })
+
+    it('generates a stable sig-<busId>-<pinId> for a wire sourced from a bus output pin', () => {
+      const splitter = getState().placeBusSplitter(4, { x: 0, y: 0, z: 0 })!
+      const gate = getState().addGate('Nand', { x: 2 * SECTION_SIZE, y: 0, z: -SECTION_SIZE })
+
+      const wire = getState().addWire(
+        { type: 'bus', entityId: splitter.id, pinId: 'out0' },
+        { type: 'gate', entityId: gate.id, pinId: gate.inputs[0].id },
+        createTestWireSegments(),
+      )
+
+      const junction = getState().placeJunctionOnWire(CORNER_POSITION, wire.id)
+
+      // Before fix: junction.signalId falls to `sig-${Date.now()}` (unstable)
+      // After fix: stable `sig-<busId>-<pinId>` shape
+      expect(junction.signalId).toBe(`sig-${splitter.id}-out0`)
+    })
+
+    it('two junctions on the same bus-sourced wire share the same stable signalId', () => {
+      const splitter = getState().placeBusSplitter(4, { x: 0, y: 0, z: 0 })!
+      const gate = getState().addGate('Nand', { x: 3 * SECTION_SIZE, y: 0, z: -2 * SECTION_SIZE })
+
+      const wire = getState().addWire(
+        { type: 'bus', entityId: splitter.id, pinId: 'out1' },
+        { type: 'gate', entityId: gate.id, pinId: gate.inputs[0].id },
+        createMultiCornerWireSegments(),
+      )
+
+      const junction1 = getState().placeJunctionOnWire(MULTI_CORNER_1, wire.id)
+      const junction2 = getState().placeJunctionOnWire(MULTI_CORNER_2, wire.id)
+
+      const expected = `sig-${splitter.id}-out1`
+      expect(junction1.signalId).toBe(expected)
+      expect(junction2.signalId).toBe(expected)
+    })
+  })
 })

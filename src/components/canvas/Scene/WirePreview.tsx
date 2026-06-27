@@ -24,17 +24,24 @@ export function WirePreview() {
   const destinationResult = useDestinationPin(wiringFrom)
 
   // For junction sources, startOrientation is not needed (we skip exit segment)
+  const source = wiringFrom?.source ?? null
   const startOrientation = wiringFrom
-    ? (wiringFrom.source && wiringFrom.source.type === 'input'
+    ? (source?.type === 'input'
       ? { x: 1, y: 0, z: 0 }
-      : (wiringFrom.fromGateId && wiringFrom.fromPinId
-          ? circuitActions.getPinOrientation(wiringFrom.fromGateId, wiringFrom.fromPinId)
-          : null))
+      : source?.type === 'bus'
+        ? circuitActions.getPinOrientation(source.busId, source.pinId)
+        : (wiringFrom.fromGateId && wiringFrom.fromPinId
+            ? circuitActions.getPinOrientation(wiringFrom.fromGateId, wiringFrom.fromPinId)
+            : null))
     : null
 
   const destination = destinationResult?.destination ?? null
   const destinationGateId = destinationResult?.destinationGateId
-  const fromPosition = wiringFrom?.fromPosition ?? { x: 0, y: 0, z: 0 }
+  // For bus sources, re-derive fromPosition from the live pin layout so the
+  // preview stays anchored to the rendered pin even if the bus moved.
+  const fromPosition = (source?.type === 'bus'
+    ? (circuitActions.getPinWorldPosition(source.busId, source.pinId) ?? wiringFrom?.fromPosition)
+    : wiringFrom?.fromPosition) ?? { x: 0, y: 0, z: 0 }
 
   const { path: previewPath, error } = useWirePreviewPath({
     wiringFrom: wiringFrom ?? null,
