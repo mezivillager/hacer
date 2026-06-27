@@ -5,6 +5,41 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.10.2](https://github.com/mezivillager/hacer/compare/v2.10.1...v2.10.2) (2026-06-27)
+
+### Bug Fixes
+
+* **store:** preserve wires when dragging nodes wired to multi-input chips ([8aca563](https://github.com/mezivillager/hacer/commit/8aca563e0a7577682754bf0773674d514f707228))
+* **test:** strengthen overlap oracle to catch transit-on-backbone (CASE1) ([a74eb4b](https://github.com/mezivillager/hacer/commit/a74eb4b26d66f041f300b8f015aa2a82a779eeb1))
+* **wire-routing:** nudge transit trunks off chip approach backbones (CASE1) ([94cbcd9](https://github.com/mezivillager/hacer/commit/94cbcd9d3ac2bf7026efc94d962ce92d698c93bb))
+* **wire-routing:** preserve confluenceCoord when combining approach segments ([e417292](https://github.com/mezivillager/hacer/commit/e417292a2676c903c4d1398bf995b003ca528eae))
+* **wire-routing:** probe transit lanes to free slot (close transit-vs-transit merge) ([3ca2374](https://github.com/mezivillager/hacer/commit/3ca23746b76a4b426693fae5015efcd9217a2360))
+* **wire-routing:** tighten confluence sharing — same-confluenceCoord only (B-003/B-004) ([3f2607e](https://github.com/mezivillager/hacer/commit/3f2607e1ff75a3876e9c4fa63a015f89fcb2674f))
+* **wiring:** route dense multi-input chip pins via per-pin escape lanes ([3ae6681](https://github.com/mezivillager/hacer/commit/3ae6681690f040869751db4e8ab63639f7155504))
+
+### Documentation
+
+* add scene-graph routing testing design spec and implementation plan ([47c7ef2](https://github.com/mezivillager/hacer/commit/47c7ef2c9f1344fb2a5007cdef72fc7c525f93df))
+* calibrate ADR-0008 on scene-graph layer's render-vs-store scope ([3dfc60e](https://github.com/mezivillager/hacer/commit/3dfc60ef71dc757913c2a671782bbce85b878bca))
+* record scene-graph routing testing layer as DoD enforcer (ADR + living docs) ([7510ce8](https://github.com/mezivillager/hacer/commit/7510ce84d26ab7643b07ec7a6ea46a12a6fd9241))
+* **routing:** design for lane-level wire exclusivity (nudging, CASE1) ([37b04ee](https://github.com/mezivillager/hacer/commit/37b04ee2f7d705be5df25143ea83755b3bc178ec))
+* **routing:** research report + ADR-0007 for wire-routing engine direction ([1e9054d](https://github.com/mezivillager/hacer/commit/1e9054d89642f37528635cf4b32254c00900f11b))
+
+### Code Refactoring
+
+* extract deriveWire3DProps shared by CanvasArea and scene tests ([ca6491e](https://github.com/mezivillager/hacer/commit/ca6491e78893a106449045d408d5d20f2d9d3359))
+
+### Tests
+
+* add broad scene-graph overlap sweep for routing-bug discovery ([ebbc397](https://github.com/mezivillager/hacer/commit/ebbc397cc63d2662f946bfa6c5dbf86f5a37e1cd))
+* add render-level overlap oracle and dense multi-input routing tests ([255cf49](https://github.com/mezivillager/hacer/commit/255cf495027574afd02c01224c217622ccc0fa94))
+* add scene-graph connectivity invariant and real-gate routing test ([49a1441](https://github.com/mezivillager/hacer/commit/49a1441b05fcdafcb93e731d79abc53fc8040a45))
+* add scene-graph line-read primitive and resolve test-renderer spike ([fc9538e](https://github.com/mezivillager/hacer/commit/fc9538eb8f471622720519576fbd0f147ee1c399))
+* add scene-graph render harness and render-contract routing test ([a78473a](https://github.com/mezivillager/hacer/commit/a78473aed90801c7d202a24671470420aaacae31))
+* enforce node-drag re-route connectivity on rendered geometry (B-003) ([cf7355e](https://github.com/mezivillager/hacer/commit/cf7355ed6d9ff2d30769dd4f1401622a9f205cb1))
+* enforce transit-vs-transit and CASE1 lane separation on rendered geometry ([84cd73b](https://github.com/mezivillager/hacer/commit/84cd73bd7b5a9978734b0a6e926cb544249d9fe6))
+* tighten scene-graph oracle and tests per final review ([3aca0c6](https://github.com/mezivillager/hacer/commit/3aca0c6dcf8e3e5d699d4fb224220c288545eb2d))
+
 ## [2.10.1](https://github.com/mezivillager/hacer/compare/v2.10.0...v2.10.1) (2026-06-21)
 
 ### Bug Fixes
