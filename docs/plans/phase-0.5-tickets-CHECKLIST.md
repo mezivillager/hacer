@@ -28,7 +28,7 @@
 ## Layer 1 — Depends on one Layer 0 item
 
 - [x] **P05-11** — Bus simulation + multi-bit wires — needs P05-02 — [P05-11.md](./phase-0.5-tickets/P05-11.md)
-- [ ] **P05-12** — Bus 3D components — needs P05-02 — [P05-12.md](./phase-0.5-tickets/P05-12.md)
+- [~] **P05-12** — Bus 3D components — needs P05-02 — [P05-12.md](./phase-0.5-tickets/P05-12.md) — **split into 12a/12b (ADR-0009):** 12a (splitter/joiner entity: store, simulation, wiring, rendering, placement) ✅ done — spec `docs/superpowers/specs/2026-06-27-bus-splitter-joiner-design.md`, plan `docs/superpowers/plans/2026-06-27-bus-splitter-joiner.md`; **12b (thick bus wires + ×N labels) still open** as a follow-on spec
 - [x] **P05-13** — Multi-bit I/O UI — needs P05-02 — [P05-13.md](./phase-0.5-tickets/P05-13.md)
 - [x] **P05-14** — Circuit persistence — needs P05-03 — [P05-14.md](./phase-0.5-tickets/P05-14.md)
 - [x] **P05-15** — Builtin chip implementations (16 chips) — needs P05-01 — **completed via** [2026-05-24-builtin-chip-placement-standardization.md](../2026-05-24-builtin-chip-placement-standardization.md)

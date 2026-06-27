@@ -14,6 +14,7 @@ This document helps AI agents and developers understand the codebase structure a
 | **Builtin chip definitions** | `src/core/chips/appRegistry.ts`, `src/core/chips/builtins/project01.ts` |
 | **3D chip body & icons** | `src/components/scene/ChipBody3D.tsx`, `src/components/scene/chipBodyLayout.ts`, `src/components/ui/icons/ChipIcons.tsx` |
 | **Gate placement / renderer** | `src/gates/GateRenderer.tsx`, `src/gates/common/BaseGate.tsx`, `HACER_LLM_GUIDE.md` |
+| **Bus splitter/joiner components** | entity: `src/store/types.ts` (`BusComponent`), actions `src/store/actions/busActions/` + `busPlacementActions/`; logic `src/simulation/busLogic.ts`; layout `src/components/scene/busBodyLayout.ts`; render `src/nodes/BusSplitter3D.tsx`/`BusJoiner3D.tsx`/`BusComponentRenderer.tsx`; see ADR-0009 |
 | **Simulation / boolean logic** | `src/simulation/` · specs: `src/simulation/gateLogic.test.ts` |
 | **R3F canvas / scene** | `src/components/canvas/` |
 | **Non-3D DOM shell / 3D⇄2D boundary** | `src/components/Shell.tsx` (`App = providers → <Shell scene={<CanvasArea/>} />`); the store is the contract |
@@ -81,8 +82,9 @@ src/
 │   ├── common/       # Shared 3D primitives (BaseGate, GatePin, WireStub)
 │   ├── handlers/     # Gate event handlers (selection, drag, rotate)
 │   └── types.ts      # Gate-renderer prop types
-├── nodes/            # Circuit I/O nodes and junctions (HDL-level pins)
+├── nodes/            # Circuit I/O nodes, junctions (HDL-level pins), and bus components
 │   ├── components/   # InputNode3D, OutputNode3D, JunctionNode3D
+│   ├── BusSplitter3D / BusJoiner3D / BusComponentRenderer  # bus components (ADR-0009)
 │   └── config/       # Node configuration (nodeConfig.ts)
 ├── simulation/       # Circuit simulation engine (pure logic)
 ├── store/           # Zustand state management

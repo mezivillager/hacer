@@ -1198,6 +1198,7 @@ Use Tailwind classes and CSS variables from `src/styles/globals.css`. Keep HACER
 | New UI panel | `src/components/ui/` | ChipLibrary.tsx |
 | 3D helper | `src/components/canvas/` | PinConnector.tsx |
 | Circuit I/O node (3D) | `src/nodes/components/` | BusNode3D.tsx |
+| Bus component (splitter/joiner) | `src/nodes/` + `src/store/actions/busActions/` | BusSplitter3D.tsx — separate entity, see ADR-0009 |
 | Node configuration | `src/nodes/config/nodeConfig.ts` | add node type |
 | Wire routing util | `src/utils/wiringScheme/` | new routing strategy |
 | Store action slice | `src/store/actions/<domain>/` | nodeActions.ts |
