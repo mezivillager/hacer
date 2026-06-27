@@ -95,6 +95,51 @@ describe('busActions', () => {
     expect(lastSeg.end.z).toBeCloseTo(newPinPos.z, 2)
   })
 
+  it('selectBus sets selectedBusId and clears other selections', () => {
+    const gate = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+    getState().selectGate(gate.id)
+    const c = getState().placeBusSplitter(4, { x: 3, y: 0, z: 0 })!
+
+    getState().selectBus(c.id)
+
+    expect(getState().selectedBusId).toBe(c.id)
+    expect(getState().selectedGateId).toBeNull()
+    expect(getState().selectedWireId).toBeNull()
+    expect(getState().selectedNodeId).toBeNull()
+    const selected = getState().busComponents.find(b => b.id === c.id)
+    expect(selected?.selected).toBe(true)
+  })
+
+  it('deselectAll clears selectedBusId', () => {
+    const c = getState().placeBusSplitter(4, { x: 3, y: 0, z: 0 })!
+    getState().selectBus(c.id)
+    expect(getState().selectedBusId).toBe(c.id)
+
+    getState().deselectAll()
+
+    expect(getState().selectedBusId).toBeNull()
+    expect(getState().busComponents[0].selected).toBe(false)
+  })
+
+  it('selectGate clears selectedBusId', () => {
+    const c = getState().placeBusSplitter(4, { x: 3, y: 0, z: 0 })!
+    getState().selectBus(c.id)
+    const gate = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+
+    getState().selectGate(gate.id)
+
+    expect(getState().selectedBusId).toBeNull()
+    expect(getState().busComponents[0].selected).toBe(false)
+  })
+
+  it('removeBusComponent removes bus component after selectBus', () => {
+    const c = getState().placeBusSplitter(4, { x: 3, y: 0, z: 0 })!
+    getState().selectBus(c.id)
+    getState().removeBusComponent(c.id)
+
+    expect(getState().busComponents).toHaveLength(0)
+  })
+
   // I1: bus↔junction wire must NOT be silently skipped when the bus moves
   it('I1 — re-routes a bus↔junction wire when the bus moves (not silently skipped)', () => {
     const splitter = getState().placeBusSplitter(4, { x: 4, y: 0, z: 0 })!

@@ -93,6 +93,18 @@ export const createBusActions = (set: SetState, get: GetState): BusActions => ({
       )
     }, false, 'removeBusComponent')
   },
+
+  selectBus: (busId) => {
+    set((state) => {
+      state.selectedBusId = busId
+      state.busComponents.forEach((c) => { c.selected = (c.id === busId) })
+      state.selectedGateId = null
+      state.selectedWireId = null
+      state.selectedNodeId = null
+      state.selectedNodeType = null
+      state.gates.forEach((g) => { g.selected = false })
+    }, false, 'selectBus')
+  },
 })
 
 function endpointWorldPosition(endpoint: WireEndpoint, state: CircuitStore): Position | null {

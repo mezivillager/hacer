@@ -1,4 +1,5 @@
 // BusJoiner3D - N 1-bit inputs joined into 1 N-bit output
+import { useState } from 'react'
 import type { BusComponent } from '@/store/types'
 import { colors, materials } from '@/theme'
 import { NODE_DIMENSIONS } from './config'
@@ -7,10 +8,14 @@ import { isSignalHigh } from '@/simulation/signalDisplay'
 import { FloatingLabel } from '@/components/canvas/FloatingLabel'
 import { LABEL_GEOMETRY } from '@/components/canvas/labelGeometry'
 import type { BusPinClickHandler } from './BusSplitter3D'
+import { useBusDrag } from '@/hooks/useBusDrag'
+import { useCircuitStore } from '@/store/circuitStore'
 
 interface BusJoiner3DProps {
   component: BusComponent
   onPinClick?: BusPinClickHandler
+  onClick?: () => void
+  selected?: boolean
 }
 
 /**
@@ -18,7 +23,7 @@ interface BusJoiner3DProps {
  * `JOIN xN` label, and dynamically laid-out pins (N inputs on the left, 1
  * output on the right). React-Compiler clean: no memo hooks.
  */
-export function BusJoiner3D({ component, onPinClick }: BusJoiner3DProps) {
+export function BusJoiner3D({ component, onPinClick, onClick, selected = false }: BusJoiner3DProps) {
   const { position, rotation, width } = component
   const dims = computeBusBodyDimensions(component)
   const slots = computeBusPinLayout(component)
@@ -27,15 +32,41 @@ export function BusJoiner3D({ component, onPinClick }: BusJoiner3DProps) {
     component.outputs.find((p) => p.id === pinId)?.value ??
     0
 
+  const [hovered, setHovered] = useState(false)
+  const wiringFrom = useCircuitStore((s) => s.wiringFrom)
+  const busPlacementMode = useCircuitStore((s) => s.busPlacementMode)
+  const canDrag = wiringFrom === null && busPlacementMode === null
+
+  const { isDragging, shouldAllowClick, onPointerDown, onPointerMove, onPointerUp, onPointerLeave } = useBusDrag(component.id)
+
+  const bodyColor = selected
+    ? colors.gate.bodySelected
+    : hovered
+      ? colors.gate.bodyHover
+      : colors.gate.body
+
   return (
     <>
       <group position={[position.x, position.y, position.z]} rotation={[rotation.x, rotation.y, rotation.z]}>
-        <mesh>
+        <mesh
+          onClick={(e) => {
+            e.stopPropagation()
+            if (!shouldAllowClick()) return
+            if (onClick) onClick()
+          }}
+          onPointerOver={() => setHovered(true)}
+          onPointerOut={() => { setHovered(false); if (canDrag && !isDragging) onPointerLeave() }}
+          onPointerDown={canDrag ? onPointerDown : undefined}
+          onPointerMove={canDrag ? onPointerMove : undefined}
+          onPointerUp={canDrag ? onPointerUp : undefined}
+        >
           <boxGeometry args={[dims.sizeX, dims.sizeY, dims.sizeZ]} />
           <meshStandardMaterial
-            color={colors.gate.body}
+            color={bodyColor}
             metalness={materials.gate.metalness}
             roughness={materials.gate.roughness}
+            transparent={isDragging}
+            opacity={isDragging ? 0.7 : 1}
           />
         </mesh>
 

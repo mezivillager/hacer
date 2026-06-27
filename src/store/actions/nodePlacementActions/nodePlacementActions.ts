@@ -73,6 +73,8 @@ export const createNodePlacementActions = (
       state.gates.forEach((g) => {
         g.selected = false
       })
+      state.selectedBusId = null
+      state.busComponents.forEach((c) => { c.selected = false })
 
       state.nodePlacementMode = type
       // Cancel gate placement if active
@@ -149,7 +151,7 @@ export const createNodePlacementActions = (
 
   selectNode: (nodeId: string, nodeType: NodeType) => {
     const currentState = get()
-    if (currentState.selectedNodeId === nodeId && currentState.selectedNodeType === nodeType) {
+    if (currentState.selectedNodeId === nodeId && currentState.selectedNodeType === nodeType && currentState.selectedBusId === null) {
       const gatesCorrect = currentState.gates.every((g) => !g.selected)
       if (gatesCorrect && !currentState.selectedGateId && !currentState.selectedWireId) {
         return
@@ -164,6 +166,8 @@ export const createNodePlacementActions = (
       state.gates.forEach((g) => {
         g.selected = false
       })
+      state.selectedBusId = null
+      state.busComponents.forEach((c) => { c.selected = false })
     }, false, 'selectNode')
   },
 

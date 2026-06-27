@@ -83,9 +83,10 @@ export function CompactToolbar() {
   const selectedWireId = useCircuitStore((s) => s.selectedWireId)
   const selectedNodeId = useCircuitStore((s) => s.selectedNodeId)
   const selectedNodeType = useCircuitStore((s) => s.selectedNodeType)
+  const selectedBusId = useCircuitStore((s) => s.selectedBusId)
 
   const hasSelection =
-    selectedGateId !== null || selectedWireId !== null || selectedNodeId !== null
+    selectedGateId !== null || selectedWireId !== null || selectedNodeId !== null || selectedBusId !== null
 
   const [gatesOpen, setGatesOpen] = useState(false)
   const [ioOpen, setIoOpen] = useState(false)
@@ -141,6 +142,9 @@ export function CompactToolbar() {
       circuitActions.removeInputNode(selectedNodeId)
     } else if (selectedNodeId && selectedNodeType === 'output') {
       circuitActions.removeOutputNode(selectedNodeId)
+    } else if (selectedBusId) {
+      circuitActions.removeBusComponent(selectedBusId)
+      circuitActions.selectBus(null)
     }
   }
 

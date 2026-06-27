@@ -23,6 +23,8 @@ describe('useKeyboardShortcuts', () => {
       hoveredGateId: null,
       selectedNodeId: null,
       selectedNodeType: null,
+      busComponents: [],
+      selectedBusId: null,
     })
   })
 
@@ -275,6 +277,38 @@ describe('useKeyboardShortcuts', () => {
       expect(getState().selectedWireId).toBeNull()
       // Gate should remain
       expect(getState().gates).toHaveLength(2)
+    })
+
+    it('deletes selected bus component when Delete key is pressed', () => {
+      const busComponent = getState().placeBusSplitter(4, { x: 3, y: 0, z: 0 })
+      getState().selectBus(busComponent!.id)
+
+      renderHook(() => useKeyboardShortcuts())
+
+      const event = new KeyboardEvent('keydown', { key: 'Delete', bubbles: true })
+      const preventDefaultSpy = vi.spyOn(event, 'preventDefault')
+
+      act(() => { window.dispatchEvent(event) })
+
+      expect(getState().busComponents).toHaveLength(0)
+      expect(getState().selectedBusId).toBeNull()
+      expect(preventDefaultSpy).toHaveBeenCalled()
+    })
+
+    it('deletes selected bus component when Backspace key is pressed', () => {
+      const busComponent = getState().placeBusJoiner(8, { x: 3, y: 0, z: 0 })
+      getState().selectBus(busComponent!.id)
+
+      renderHook(() => useKeyboardShortcuts())
+
+      const event = new KeyboardEvent('keydown', { key: 'Backspace', bubbles: true })
+      const preventDefaultSpy = vi.spyOn(event, 'preventDefault')
+
+      act(() => { window.dispatchEvent(event) })
+
+      expect(getState().busComponents).toHaveLength(0)
+      expect(getState().selectedBusId).toBeNull()
+      expect(preventDefaultSpy).toHaveBeenCalled()
     })
   })
 
