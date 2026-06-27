@@ -731,6 +731,29 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
     completeJunctionWiring(toEndpoint, 'completeWiringFromJunctionToNode', get, set)
   },
 
+  /**
+   * Complete wiring from junction to a bus INPUT pin.
+   * Mirrors completeWiringFromJunction and completeWiringFromJunctionToNode:
+   * validates the target pin is an input, then delegates to the shared
+   * completeJunctionWiring core.
+   */
+  completeWiringFromJunctionToBus: (busId: string, pinId: string) => {
+    const busComponent = get().busComponents.find((c) => c.id === busId)
+    if (!busComponent) {
+      notify.warning('Bus component not found')
+      set((s) => { s.wiringFrom = null }, false, 'completeWiringFromJunctionToBus/notFound')
+      return
+    }
+    const isInput = busComponent.inputs.some((p) => p.id === pinId)
+    if (!isInput) {
+      notify.warning('Can only connect to bus input pins')
+      set((s) => { s.wiringFrom = null }, false, 'completeWiringFromJunctionToBus/notInputPin')
+      return
+    }
+    const toEndpoint: WireEndpoint = { type: 'bus', entityId: busId, pinId }
+    completeJunctionWiring(toEndpoint, 'completeWiringFromJunctionToBus', get, set)
+  },
+
   startWiringFromBus: (busId, pinId, pinType, position) => {
     set((state) => {
       state.wiringFrom = {

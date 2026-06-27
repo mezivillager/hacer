@@ -103,6 +103,7 @@ export function createMockStore(partial: Partial<CircuitState> = {}): CircuitSto
     completeWiringToNode: () => {},
     completeWiringFromJunction: () => {},
     completeWiringFromJunctionToNode: () => {},
+    completeWiringFromJunctionToBus: () => {},
     startWiringFromBus: () => {},
     completeWiringToBus: () => {},
     completeWiringFromBusToGate: () => {},

@@ -186,9 +186,16 @@ export function handleBusPinClick(
 ): void {
   const currentWiringFrom = useCircuitStore.getState().wiringFrom
   if (currentWiringFrom) {
-    // Compute routed segments synchronously, then complete the wire.
-    circuitActions.setDestinationBus(busId, pinId)
-    circuitActions.completeWiringToBus(busId, pinId)
+    const source = currentWiringFrom.source
+    if (source && source.type === 'junction') {
+      // Junction-to-bus wiring: segments are handled inside completeWiringFromJunctionToBus
+      // via the completeJunctionWiring shared core (shared+new segments).
+      circuitActions.completeWiringFromJunctionToBus(busId, pinId)
+    } else {
+      // Gate/input/bus source: compute routed segments synchronously, then complete.
+      circuitActions.setDestinationBus(busId, pinId)
+      circuitActions.completeWiringToBus(busId, pinId)
+    }
   } else {
     circuitActions.startWiringFromBus(busId, pinId, pinType, worldPosition)
   }

@@ -294,6 +294,7 @@ export const circuitActions = {
   startWiringFromJunction: (...args: Parameters<CircuitStore['startWiringFromJunction']>) => useCircuitStore.getState().startWiringFromJunction(...args),
   completeWiringFromJunction: (...args: Parameters<CircuitStore['completeWiringFromJunction']>) => useCircuitStore.getState().completeWiringFromJunction(...args),
   completeWiringFromJunctionToNode: (...args: Parameters<CircuitStore['completeWiringFromJunctionToNode']>) => useCircuitStore.getState().completeWiringFromJunctionToNode(...args),
+  completeWiringFromJunctionToBus: (...args: Parameters<CircuitStore['completeWiringFromJunctionToBus']>) => useCircuitStore.getState().completeWiringFromJunctionToBus(...args),
   // Status actions
   addStatus: (severity: import('./types').StatusMessage['severity'], text: string) =>
     useCircuitStore.getState().addStatus(severity, text),

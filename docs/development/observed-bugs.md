@@ -16,6 +16,17 @@ When an item is **Fixed**, add the **Fixed in** link and move the detailed row t
 
 ## Open
 
+### B-008 — Disconnected input pins retain stale values (gates and bus components)
+
+| Field | Detail |
+|-------|--------|
+| **Status** | Open |
+| **Area** | `src/simulation/topologicalEval.ts`, `src/store/actions/wireActions/wireActions.ts` (`removeWire`) |
+| **Symptom** | When a wire is removed from a destination input pin (gate or bus component), that pin retains its last driven value. The gate/bus component therefore continues to evaluate using the stale value instead of treating the undriven pin as 0. |
+| **Expected** | After a wire is disconnected, the destination input pin's value resets to 0 so the component evaluates correctly with no incoming signal. |
+| **Notes** | Pre-existing gate behavior: the simulation loop in `evaluateCircuit` only overwrites input pins that have an incoming wire; undriven pins are left unchanged. Bus components share this behavior after the bus-splitter/joiner feature (P05-12a). Fixing bus-only would create an inconsistency with gates. The proper cross-cutting fix is either: (a) reset undriven input pins to 0 before applying incoming wires in `evaluateCircuit`, or (b) reset the destination pin value in `removeWire` when the last wire to that pin is removed. Either approach changes existing gate simulation behavior and requires full-suite validation. |
+| **Fixed in** | — |
+
 ### B-004b (CASE2) — Same-column confluences are not distinguished, so unrelated chip fan-ins can merge
 
 | Field | Detail |
