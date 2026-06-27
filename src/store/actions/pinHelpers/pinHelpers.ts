@@ -1,6 +1,7 @@
 import { Vector3, Euler } from 'three'
-import type { PinHelpers, Position, CircuitStore, GateInstance } from '../../types'
+import type { PinHelpers, Position, CircuitStore, GateInstance, BusComponent } from '../../types'
 import { computeChipLayout } from '@/components/scene/chipBodyLayout'
+import { computeBusPinLayout } from '@/components/scene/busBodyLayout'
 import { getBuiltinChipRegistry, getUserChipRegistry } from '@/core/chips/appRegistry'
 
 type GetState = () => CircuitStore
@@ -88,13 +89,58 @@ function computePinWorldPosition(
   }
 }
 
+/**
+ * World-space position of a bus component's pin, computed from the SAME layout
+ * function the renderer uses (computeBusPinLayout) so wire endpoints never
+ * diverge from the rendered pins.
+ */
+function computeBusPinWorldPosition(
+  busComponents: BusComponent[],
+  entityId: string,
+  pinId: string,
+): Position | null {
+  const component = busComponents.find((c) => c.id === entityId)
+  if (!component) return null
+  const slot = computeBusPinLayout(component).find((s) => s.pinId === pinId)
+  if (!slot) return null
+  const localOffset = new Vector3(slot.position[0], slot.position[1], slot.position[2])
+  const euler = new Euler(component.rotation.x, component.rotation.y, component.rotation.z, 'XYZ')
+  localOffset.applyEuler(euler)
+  return {
+    x: component.position.x + localOffset.x,
+    y: component.position.y + localOffset.y,
+    z: component.position.z + localOffset.z,
+  }
+}
+
+function computeBusPinOrientation(
+  busComponents: BusComponent[],
+  entityId: string,
+  pinId: string,
+): { x: number; y: number; z: number } | null {
+  const component = busComponents.find((c) => c.id === entityId)
+  if (!component) return null
+  const slot = computeBusPinLayout(component).find((s) => s.pinId === pinId)
+  if (!slot) return null
+  const localDirection = slot.side === 'input' ? new Vector3(-1, 0, 0) : new Vector3(1, 0, 0)
+  const euler = new Euler(component.rotation.x, component.rotation.y, component.rotation.z, 'XYZ')
+  localDirection.applyEuler(euler)
+  return { x: localDirection.x, y: localDirection.y, z: localDirection.z }
+}
+
 export const createPinHelpers = (get: GetState): PinHelpers => ({
   getPinWorldPosition: (gateId: string, pinId: string) => {
     const state = get()
-    return computePinWorldPosition(state.gates, gateId, pinId)
+    return (
+      computePinWorldPosition(state.gates, gateId, pinId) ??
+      computeBusPinWorldPosition(state.busComponents, gateId, pinId)
+    )
   },
   getPinOrientation: (gateId: string, pinId: string) => {
     const state = get()
-    return computePinOrientation(state.gates, gateId, pinId)
+    return (
+      computePinOrientation(state.gates, gateId, pinId) ??
+      computeBusPinOrientation(state.busComponents, gateId, pinId)
+    )
   },
 })
