@@ -64,6 +64,7 @@ const initialState = {
   nodePlacementMode: null as import('./types').NodePlacementType | null,
   selectedNodeId: null as string | null,
   selectedNodeType: null as import('./types').NodeType | null,
+  selectedBusId: null as string | null,
   // Junction placement
   junctionPlacementMode: null as boolean | null,
   junctionPreviewPosition: null as import('./types').Position | null,
@@ -313,6 +314,7 @@ export const circuitActions = {
   placeBusJoiner: (...args: Parameters<CircuitStore['placeBusJoiner']>) => useCircuitStore.getState().placeBusJoiner(...args),
   updateBusComponentPosition: (...args: Parameters<CircuitStore['updateBusComponentPosition']>) => useCircuitStore.getState().updateBusComponentPosition(...args),
   removeBusComponent: (...args: Parameters<CircuitStore['removeBusComponent']>) => useCircuitStore.getState().removeBusComponent(...args),
+  selectBus: (...args: Parameters<CircuitStore['selectBus']>) => useCircuitStore.getState().selectBus(...args),
   // Bus placement actions
   startBusPlacement: (...args: Parameters<CircuitStore['startBusPlacement']>) => useCircuitStore.getState().startBusPlacement(...args),
   cancelBusPlacement: () => useCircuitStore.getState().cancelBusPlacement(),

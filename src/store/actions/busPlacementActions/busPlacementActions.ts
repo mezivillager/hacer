@@ -33,6 +33,8 @@ export const createBusPlacementActions = (
       state.gates.forEach((g) => {
         g.selected = false
       })
+      state.selectedBusId = null
+      state.busComponents.forEach((c) => { c.selected = false })
     }, false, 'startBusPlacement')
   },
 

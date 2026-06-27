@@ -157,6 +157,18 @@ export function handleJunctionClick(junctionId: string, position: Position): voi
 }
 
 /**
+ * Handle bus component body click - select bus if not wiring
+ *
+ * @param busId - The bus component's ID
+ */
+export function handleBusClick(busId: string): void {
+  const currentWiringFrom = useCircuitStore.getState().wiringFrom
+  if (!currentWiringFrom) {
+    circuitActions.selectBus(busId)
+  }
+}
+
+/**
  * Handle bus pin click - start wiring from a bus pin, or complete the active
  * wire onto this bus pin. Completion calls setDestinationBus first to compute
  * routed segments synchronously, so completeWiringToBus finds them ready.

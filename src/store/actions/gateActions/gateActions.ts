@@ -151,7 +151,7 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
   selectGate: (gateId: string | null) => {
     // Check if selection actually changed before mutating (avoids unnecessary array reference changes)
     const currentState = useCircuitStore.getState()
-    if (currentState.selectedGateId === gateId) {
+    if (currentState.selectedGateId === gateId && currentState.selectedBusId === null) {
       // Selection hasn't changed - check if gates are already in correct state
       const allCorrect = currentState.gates.every((g) => g.selected === (g.id === gateId))
       if (allCorrect) {
@@ -168,13 +168,15 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
       state.selectedNodeId = null
       state.selectedNodeType = null
       state.selectedWireId = null
+      state.selectedBusId = null
+      state.busComponents.forEach((c) => { c.selected = false })
     }, false, 'selectGate')
   },
 
   selectWire: (wireId: string | null) => {
     // Check if selection actually changed before mutating (avoids unnecessary array reference changes)
     const currentState = useCircuitStore.getState()
-    if (currentState.selectedWireId === wireId) {
+    if (currentState.selectedWireId === wireId && currentState.selectedBusId === null) {
       // Already selected — do nothing (consistent with selectGate/selectNode)
       return
     }
@@ -189,6 +191,8 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
         state.gates.forEach((g) => {
           g.selected = false
         })
+        state.selectedBusId = null
+        state.busComponents.forEach((c) => { c.selected = false })
       }
     }, false, 'selectWire')
   },
@@ -202,6 +206,8 @@ export const createGateActions = (set: SetState, get: GetState): GateActions => 
       state.gates.forEach((g) => {
         g.selected = false
       })
+      state.selectedBusId = null
+      state.busComponents.forEach((c) => { c.selected = false })
     }, false, 'deselectAll')
   },
 

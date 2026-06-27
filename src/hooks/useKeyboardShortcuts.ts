@@ -10,6 +10,7 @@ export function useKeyboardShortcuts() {
   const placementPreviewPosition = useCircuitStore((s) => s.placementPreviewPosition)
   const selectedNodeId = useCircuitStore((s) => s.selectedNodeId)
   const selectedNodeType = useCircuitStore((s) => s.selectedNodeType)
+  const selectedBusId = useCircuitStore((s) => s.selectedBusId)
 
   // Get actions from store
   const cancelPlacement = useCircuitStore((s) => s.cancelPlacement)
@@ -23,6 +24,8 @@ export function useKeyboardShortcuts() {
   const removeOutputNode = useCircuitStore((s) => s.removeOutputNode)
   const deselectNode = useCircuitStore((s) => s.deselectNode)
   const togglePropertiesPanel = useCircuitStore((s) => s.togglePropertiesPanel)
+  const removeBusComponent = useCircuitStore((s) => s.removeBusComponent)
+  const selectBus = useCircuitStore((s) => s.selectBus)
 
   const isPlacing = placementMode !== null
   const isWiring = wiringFrom !== null
@@ -61,7 +64,8 @@ export function useKeyboardShortcuts() {
         const hasSelection =
           selectedGateId !== null ||
           selectedWireId !== null ||
-          selectedNodeId !== null
+          selectedNodeId !== null ||
+          selectedBusId !== null
         if (hasSelection) {
           e.preventDefault()
           togglePropertiesPanel()
@@ -104,6 +108,10 @@ export function useKeyboardShortcuts() {
               break
           }
           deselectNode()
+        } else if (selectedBusId && !isDragging) {
+          e.preventDefault()
+          removeBusComponent(selectedBusId)
+          selectBus(null)
         }
         return
       }
@@ -133,5 +141,5 @@ export function useKeyboardShortcuts() {
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [isPlacing, isWiring, isDragging, selectedGateId, selectedWireId, selectedNodeId, selectedNodeType, cancelPlacement, cancelWiring, selectGate, selectWire, rotateGate, removeGate, removeWire, removeInputNode, removeOutputNode, deselectNode, togglePropertiesPanel])
+  }, [isPlacing, isWiring, isDragging, selectedGateId, selectedWireId, selectedNodeId, selectedNodeType, selectedBusId, cancelPlacement, cancelWiring, selectGate, selectWire, rotateGate, removeGate, removeWire, removeInputNode, removeOutputNode, deselectNode, togglePropertiesPanel, removeBusComponent, selectBus])
 }

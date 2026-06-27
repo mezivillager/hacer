@@ -229,6 +229,7 @@ export interface CircuitState {
   nodePlacementMode: NodePlacementType | null
   selectedNodeId: string | null
   selectedNodeType: NodeType | null
+  selectedBusId: string | null
 
   // Junction placement
   junctionPlacementMode: boolean | null
@@ -405,6 +406,7 @@ export interface BusActions {
   placeBusJoiner: (width: number, position: Position) => BusComponent | null
   updateBusComponentPosition: (id: string, position: Position) => void
   removeBusComponent: (id: string) => void
+  selectBus: (busId: string | null) => void
 }
 
 /**

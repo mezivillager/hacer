@@ -47,6 +47,7 @@ export function createMockStore(partial: Partial<CircuitState> = {}): CircuitSto
     nodePlacementMode: null,
     selectedNodeId: null,
     selectedNodeType: null,
+    selectedBusId: null,
     junctionPlacementMode: null,
     junctionPreviewPosition: null,
     junctionPreviewWireId: null,
@@ -166,6 +167,7 @@ export function createMockStore(partial: Partial<CircuitState> = {}): CircuitSto
     placeBusJoiner: () => null,
     updateBusComponentPosition: () => {},
     removeBusComponent: () => {},
+    selectBus: () => {},
     // Bus placement actions
     startBusPlacement: () => {},
     cancelBusPlacement: () => {},
