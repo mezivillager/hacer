@@ -41,11 +41,13 @@ vi.mock('../Wire3D', () => ({
 vi.mock('@/store/circuitStore', async () => {
   const actual = await vi.importActual('@/store/circuitStore')
   const mockGetPinOrientation = vi.fn(() => ({ x: 1, y: 0, z: 0 }))
+  const mockGetPinWorldPosition = vi.fn(() => null)
   const mockCancelWiring = vi.fn()
   return {
     ...actual,
     circuitActions: {
       getPinOrientation: mockGetPinOrientation,
+      getPinWorldPosition: mockGetPinWorldPosition,
       cancelWiring: mockCancelWiring,
     },
   }
@@ -193,5 +195,43 @@ describe('WirePreview', () => {
     expect(vi.mocked(circuitActions.cancelWiring)).toHaveBeenCalled()
 
     consoleErrorSpy.mockRestore()
+  })
+
+  it('[C1] computes preview path for bus source without manually seeding segments', async () => {
+    // Before fix: startOrientation is null for bus source (fromGateId/fromPinId are both '')
+    // so WirePreview returns null early and useStoreWirePreviewSegments stores nothing.
+    // After fix: orientation is resolved from source.busId/source.pinId → Wire3D renders
+    // and segments are stored in wiringFrom.segments.
+    setState({
+      wiringFrom: {
+        fromGateId: '',
+        fromPinId: '',
+        fromPinType: 'output',
+        fromPosition: { x: 5, y: 0.2, z: 0 },
+        previewEndPosition: { x: 8, y: 0.2, z: 0 },
+        destinationGateId: 'gate-dest',
+        destinationPinId: 'gate-dest-in-0',
+        destinationNodeId: null,
+        destinationNodeType: null,
+        segments: null,
+        source: { type: 'bus', busId: 'bus-splitter-1', pinId: 'out0', pinType: 'output' },
+      },
+      gates: [],
+    })
+
+    const { getAllByTestId } = render(<WirePreview />)
+
+    // Wire3D must render — proves startOrientation resolved for the bus source
+    const wires = getAllByTestId('wire-3d')
+    expect(wires.length).toBeGreaterThan(0)
+    expect(wires[0].getAttribute('data-preview')).toBe('true')
+
+    // Segments must be stored (hasGateDestination is true → useStoreWirePreviewSegments stores them)
+    await waitFor(() => {
+      const segments = useCircuitStore.getState().wiringFrom?.segments
+      expect(segments).not.toBeNull()
+      expect(Array.isArray(segments)).toBe(true)
+      expect((segments as unknown[]).length).toBeGreaterThan(0)
+    })
   })
 })
