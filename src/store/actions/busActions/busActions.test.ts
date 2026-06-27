@@ -88,5 +88,32 @@ describe('busActions', () => {
     const after = getState().wires[0].segments
     expect(after.length).toBeGreaterThan(0)
     expect(JSON.stringify(after)).not.toBe(before)
+    // M2: also assert that the wire endpoint reaches the moved bus pin (not just "changed")
+    const newPinPos = getState().getPinWorldPosition(splitter.id, 'in')!
+    const lastSeg = after[after.length - 1]
+    expect(lastSeg.end.x).toBeCloseTo(newPinPos.x, 2)
+    expect(lastSeg.end.z).toBeCloseTo(newPinPos.z, 2)
+  })
+
+  // I1: bus↔junction wire must NOT be silently skipped when the bus moves
+  it('I1 — re-routes a bus↔junction wire when the bus moves (not silently skipped)', () => {
+    const splitter = getState().placeBusSplitter(4, { x: 4, y: 0, z: 0 })!
+    const junction = getState().addJunction('sig-j', { x: 2, y: 0.2, z: 0 })
+
+    // Create a wire with a junction as the to-endpoint (bus is source, junction is destination)
+    getState().addWire(
+      { type: 'bus', entityId: splitter.id, pinId: 'out0' },
+      { type: 'junction', entityId: junction.id },
+      [{ start: { x: 4.5, y: 0.2, z: 0 }, end: { x: 2, y: 0.2, z: 0 }, type: 'horizontal' }],
+    )
+
+    const before = JSON.stringify(getState().wires[0].segments)
+
+    // Move the bus component — wire must be re-routed, not silently skipped
+    getState().updateBusComponentPosition(splitter.id, { x: 4, y: 0, z: 3 })
+
+    const after = getState().wires[0].segments
+    expect(after.length).toBeGreaterThan(0) // Not orphaned
+    expect(JSON.stringify(after)).not.toBe(before) // Actually re-routed
   })
 })

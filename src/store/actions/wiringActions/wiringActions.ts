@@ -34,11 +34,21 @@ function endpointsEqual(a: WireEndpoint, b: WireEndpoint): boolean {
 
 /**
  * Shared completion core: read the active wiring source generically, resolve
- * crossings, and create the wire to `toEndpoint`. Used by all bus wiring
+ * crossings, and create the wire to `rawToEndpoint`. Used by all bus wiring
  * actions so the logic is generalized rather than cloned per source/dest pair.
+ *
+ * C1 — Pin-direction parity with completeWiring:
+ *   - Rejects same-direction connections (output→output or input→input).
+ *   - Orients the wire so `wire.from` is always the output endpoint (the signal
+ *     source). The simulation keys off `wire.from`, so a backwards wire would
+ *     silently mis-simulate.
+ *
+ * C2 — Self-connection guard (parity with completeWiring):
+ *   - Rejects when source and target belong to the same component/entity.
  */
 function createWireFromActiveWiring(
-  toEndpoint: WireEndpoint,
+  rawToEndpoint: WireEndpoint,
+  targetPinType: 'input' | 'output',
   get: GetState,
   set: SetState,
   actionName: string,
@@ -55,8 +65,44 @@ function createWireFromActiveWiring(
     set((s) => { s.wiringFrom = null }, false, `${actionName}/invalidSource`)
     return
   }
+
+  // C1: Determine the source pin direction from the wiring source.
+  //     Gate and bus sources carry pinType directly; input nodes always drive
+  //     (output direction); other types resolved above would have returned null.
+  const source = from.source
+  const sourcePinType: 'input' | 'output' =
+    (source.type === 'gate' || source.type === 'bus') ? source.pinType : 'output'
+
+  // C1: Reject same-direction connections (mirrors completeWiring).
+  if (sourcePinType === targetPinType) {
+    notify.warning('Cannot connect same pin types')
+    set((s) => { s.wiringFrom = null }, false, `${actionName}/samePinType`)
+    return
+  }
+
+  // C2: Self-connection guard (mirrors completeWiring).
+  if (fromEndpoint.entityId === rawToEndpoint.entityId) {
+    notify.warning('Cannot connect gate to itself')
+    set((s) => { s.wiringFrom = null }, false, `${actionName}/selfConnection`)
+    return
+  }
+
+  // C1: Orient the wire so from=output endpoint, to=input endpoint.
+  //     If the active source is an input pin, the raw target is the output
+  //     (the signal source), so swap the endpoints before storing.
+  let finalFromEndpoint: WireEndpoint
+  let finalToEndpoint: WireEndpoint
+  if (sourcePinType === 'output') {
+    finalFromEndpoint = fromEndpoint
+    finalToEndpoint = rawToEndpoint
+  } else {
+    // Source is input → raw target is the output (signal source) → swap.
+    finalFromEndpoint = rawToEndpoint
+    finalToEndpoint = fromEndpoint
+  }
+
   const exists = state.wires.some(
-    (w) => endpointsEqual(w.from, fromEndpoint) && endpointsEqual(w.to, toEndpoint),
+    (w) => endpointsEqual(w.from, finalFromEndpoint) && endpointsEqual(w.to, finalToEndpoint),
   )
   if (exists) {
     notify.warning('Wire already exists')
@@ -82,7 +128,7 @@ function createWireFromActiveWiring(
     return
   }
   try {
-    state.addWire(fromEndpoint, toEndpoint, resolvedSegments, crossedWireIds)
+    state.addWire(finalFromEndpoint, finalToEndpoint, resolvedSegments, crossedWireIds)
   } catch (error) {
     const msg = error instanceof Error ? error.message : 'Failed to create wire'
     notify.error(`Cannot complete wire: ${msg}`)
@@ -386,7 +432,9 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
     const sharedSegments = getSegmentsUpToPosition(originalWire.segments, junction.position)
 
     let fromPosition: Position
-    if (originalWire.from.type === 'gate' && originalWire.from.pinId) {
+    // I2: Accept 'bus' source in addition to 'gate' — getPinWorldPosition already
+    //     resolves bus pins via computeBusPinWorldPosition, so the trace-back works.
+    if ((originalWire.from.type === 'gate' || originalWire.from.type === 'bus') && originalWire.from.pinId) {
       const pinPos = get().getPinWorldPosition(originalWire.from.entityId, originalWire.from.pinId)
       if (!pinPos) {
         notify.warning('Could not determine wire start position')
@@ -428,7 +476,8 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
         depth++
       }
 
-      if (currentWire.from.type === 'gate' && currentWire.from.pinId) {
+      // I2: Also accept 'bus' as a traced-back source type.
+      if ((currentWire.from.type === 'gate' || currentWire.from.type === 'bus') && currentWire.from.pinId) {
         const pinPos = get().getPinWorldPosition(currentWire.from.entityId, currentWire.from.pinId)
         if (!pinPos) {
           notify.warning('Could not determine wire start position after tracing through junctions')
@@ -458,8 +507,9 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
 
     set((state) => {
       state.wiringFrom = {
-        fromGateId: originalWire.from.type === 'gate' ? originalWire.from.entityId : '',
-        fromPinId: originalWire.from.type === 'gate' ? originalWire.from.pinId || '' : '',
+        // I2: Include bus sources in the legacy fromGateId/fromPinId fields (used for devtools).
+        fromGateId: (originalWire.from.type === 'gate' || originalWire.from.type === 'bus') ? originalWire.from.entityId : '',
+        fromPinId: (originalWire.from.type === 'gate' || originalWire.from.type === 'bus') ? originalWire.from.pinId || '' : '',
         fromPinType: 'output',
         fromPosition,
         previewEndPosition: null,
@@ -635,15 +685,47 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
   },
 
   completeWiringToBus: (busId, pinId) => {
-    createWireFromActiveWiring({ type: 'bus', entityId: busId, pinId }, get, set, 'completeWiringToBus')
+    // C1: look up the target bus pin's direction so createWireFromActiveWiring can validate.
+    const busComponent = get().busComponents.find((c) => c.id === busId)
+    if (!busComponent) {
+      notify.warning('Bus component not found')
+      set((s) => { s.wiringFrom = null }, false, 'completeWiringToBus/notFound')
+      return
+    }
+    const pin = [...busComponent.inputs, ...busComponent.outputs].find((p) => p.id === pinId)
+    if (!pin) {
+      notify.warning('Bus pin not found')
+      set((s) => { s.wiringFrom = null }, false, 'completeWiringToBus/pinNotFound')
+      return
+    }
+    createWireFromActiveWiring(
+      { type: 'bus', entityId: busId, pinId },
+      pin.type,
+      get, set, 'completeWiringToBus',
+    )
   },
 
-  completeWiringFromBusToGate: (gateId, pinId, _pinType) => {
-    createWireFromActiveWiring({ type: 'gate', entityId: gateId, pinId }, get, set, 'completeWiringFromBusToGate')
+  completeWiringFromBusToGate: (gateId, pinId, pinType) => {
+    // C1: pass the gate pin's declared direction (no longer discarded as _pinType).
+    createWireFromActiveWiring(
+      { type: 'gate', entityId: gateId, pinId },
+      pinType,
+      get, set, 'completeWiringFromBusToGate',
+    )
   },
 
-  completeWiringFromBusToNode: (nodeId, _nodeType) => {
-    createWireFromActiveWiring({ type: 'output', entityId: nodeId }, get, set, 'completeWiringFromBusToNode')
+  completeWiringFromBusToNode: (nodeId, nodeType) => {
+    // An output node always RECEIVES the signal — it is an 'input'-direction destination.
+    if (nodeType !== 'output') {
+      notify.warning('Can only complete wiring to output nodes')
+      set((s) => { s.wiringFrom = null }, false, 'completeWiringFromBusToNode/invalidNodeType')
+      return
+    }
+    createWireFromActiveWiring(
+      { type: 'output', entityId: nodeId },
+      'input',
+      get, set, 'completeWiringFromBusToNode',
+    )
   },
 })
 

@@ -685,6 +685,36 @@ describe('wiringActions', () => {
       expect(getState().wiringFrom).toBe(null)
     })
 
+    // I2: startWiringFromJunction must accept a bus source
+    it('I2 — accepts a junction on a bus-sourced wire and enables branching (no unsupported warning)', () => {
+      const splitter = getState().placeBusSplitter(4, { x: 0, y: 0, z: 0 })!
+      const gate1 = getState().addGate('Not', { x: 6, y: 0, z: 0 })
+
+      // Create a wire from bus output to gate input (bus-sourced wire)
+      const wire = getState().addWire(
+        { type: 'bus', entityId: splitter.id, pinId: 'out0' },
+        { type: 'gate', entityId: gate1.id, pinId: gate1.inputs[0].id },
+        [
+          { start: { x: 0.5, y: 0.2, z: 0 }, end: { x: 2, y: 0.2, z: 0 }, type: 'exit' },
+          { start: { x: 2, y: 0.2, z: 0 }, end: { x: 2, y: 0.2, z: -2 }, type: 'vertical' },
+          { start: { x: 2, y: 0.2, z: -2 }, end: { x: 5.5, y: 0.2, z: -2 }, type: 'horizontal' },
+          { start: { x: 5.5, y: 0.2, z: -2 }, end: { x: 5.5, y: 0.2, z: 0 }, type: 'entry' },
+        ],
+        [],
+        'sig-bus-out0',
+      )
+
+      // Place junction at a corner on the wire
+      const junction = getState().placeJunctionOnWire({ x: 2, y: 0.2, z: -2 }, wire.id)
+
+      // Start wiring from the junction — must NOT warn "Unsupported wire source type"
+      getState().startWiringFromJunction(junction.id, junction.position)
+
+      expect(notify.warning).not.toHaveBeenCalledWith('Unsupported wire source type for junction wiring')
+      expect(getState().wiringFrom).not.toBeNull()
+      expect(getState().wiringFrom?.source?.type).toBe('junction')
+    })
+
     it('traces back through junctions to find ultimate source', () => {
       const gate1 = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
       const gate2 = getState().addGate('Nand', { x: 8, y: 0, z: 0 })
@@ -1291,6 +1321,109 @@ describe('wiringActions', () => {
       expect(getState().wires).toHaveLength(1)
       expect(getState().wires[0].from).toEqual({ type: 'bus', entityId: splitter.id, pinId: 'out0' })
       expect(getState().wires[0].to).toEqual({ type: 'gate', entityId: gate.id, pinId: gate.inputs[0].id })
+      // M3: bus→gate test must also assert non-empty segments (parity with gate→bus sibling above)
+      expect(getState().wires[0].segments.length).toBeGreaterThan(0)
+    })
+
+    // M1: completeWiringFromBusToNode — currently untested path
+    it('wires a splitter output to an output node (bus→node, M1)', () => {
+      const splitter = getState().placeBusSplitter(4, { x: 0, y: 0, z: 0 })!
+      const outputNode = getState().addOutputNode('out', { x: 8, y: 0, z: 0 })
+
+      getState().startWiringFromBus(splitter.id, 'out0', 'output', { x: 0.5, y: 0.2, z: 0 })
+      useCircuitStore.setState((s) => {
+        if (s.wiringFrom) {
+          s.wiringFrom.segments = [
+            { start: { x: 0.5, y: 0.2, z: 0 }, end: { x: 7.5, y: 0.2, z: 0 }, type: 'horizontal' },
+          ]
+        }
+      })
+      getState().completeWiringFromBusToNode(outputNode.id, 'output')
+
+      expect(getState().wires).toHaveLength(1)
+      expect(getState().wires[0].from).toEqual({ type: 'bus', entityId: splitter.id, pinId: 'out0' })
+      expect(getState().wires[0].to).toEqual({ type: 'output', entityId: outputNode.id })
+      expect(getState().wires[0].segments.length).toBeGreaterThan(0)
+      expect(getState().wiringFrom).toBe(null)
+    })
+
+    // C1: pin-direction validation
+    it('C1 — rejects output→output bus connection (no wire, warning)', () => {
+      const splitter = getState().placeBusSplitter(4, { x: 4, y: 0, z: 0 })!
+      const gate = getState().addGate('Not', { x: 0, y: 0, z: 0 })
+
+      // Gate OUTPUT → splitter OUTPUT pin ('out0') — same direction, must be rejected
+      getState().startWiring(gate.id, gate.outputs[0].id, 'output', { x: 0.7, y: 0.2, z: 0 })
+      useCircuitStore.setState((s) => {
+        if (s.wiringFrom) {
+          s.wiringFrom.segments = [
+            { start: { x: 0.7, y: 0.2, z: 0 }, end: { x: 3.5, y: 0.2, z: 0 }, type: 'horizontal' },
+          ]
+        }
+      })
+      getState().completeWiringToBus(splitter.id, 'out0')
+
+      expect(getState().wires).toHaveLength(0)
+      expect(notify.warning).toHaveBeenCalledWith('Cannot connect same pin types')
+    })
+
+    it('C1 — rejects input→input bus connection (no wire, warning)', () => {
+      const joiner = getState().placeBusJoiner(4, { x: 6, y: 0, z: 0 })!
+      const gate = getState().addGate('Not', { x: 0, y: 0, z: 0 })
+
+      // Bus INPUT pin ('in0') → gate INPUT — same direction, must be rejected
+      getState().startWiringFromBus(joiner.id, 'in0', 'input', { x: 6.5, y: 0.2, z: 0 })
+      useCircuitStore.setState((s) => {
+        if (s.wiringFrom) {
+          s.wiringFrom.segments = [
+            { start: { x: 6.5, y: 0.2, z: 0 }, end: { x: 0.7, y: 0.2, z: 0 }, type: 'horizontal' },
+          ]
+        }
+      })
+      getState().completeWiringFromBusToGate(gate.id, gate.inputs[0].id, 'input')
+
+      expect(getState().wires).toHaveLength(0)
+      expect(notify.warning).toHaveBeenCalledWith('Cannot connect same pin types')
+    })
+
+    it('C1 — wire started from bus INPUT to gate OUTPUT is oriented from=gate OUTPUT (correct swap)', () => {
+      const joiner = getState().placeBusJoiner(4, { x: 6, y: 0, z: 0 })!
+      const gate = getState().addGate('Not', { x: 0, y: 0, z: 0 })
+
+      // Start from joiner INPUT 'in0', wire to gate OUTPUT — must swap so from=gate output
+      getState().startWiringFromBus(joiner.id, 'in0', 'input', { x: 6.5, y: 0.2, z: 0 })
+      useCircuitStore.setState((s) => {
+        if (s.wiringFrom) {
+          s.wiringFrom.segments = [
+            { start: { x: 6.5, y: 0.2, z: 0 }, end: { x: 0.7, y: 0.2, z: 0 }, type: 'horizontal' },
+          ]
+        }
+      })
+      getState().completeWiringFromBusToGate(gate.id, gate.outputs[0].id, 'output')
+
+      expect(getState().wires).toHaveLength(1)
+      // After orientation fix: from=gate output (the signal source), to=bus input
+      expect(getState().wires[0].from).toEqual({ type: 'gate', entityId: gate.id, pinId: gate.outputs[0].id })
+      expect(getState().wires[0].to).toEqual({ type: 'bus', entityId: joiner.id, pinId: 'in0' })
+    })
+
+    // C2: self-connection guard
+    it('C2 — rejects wiring two pins on the same bus component (self-connection)', () => {
+      const splitter = getState().placeBusSplitter(4, { x: 0, y: 0, z: 0 })!
+
+      // out0 (output) → 'in' (input) on same splitter — different directions but same entity
+      getState().startWiringFromBus(splitter.id, 'out0', 'output', { x: 0.5, y: 0.2, z: 0 })
+      useCircuitStore.setState((s) => {
+        if (s.wiringFrom) {
+          s.wiringFrom.segments = [
+            { start: { x: 0.5, y: 0.2, z: 0 }, end: { x: 0.5, y: 0.2, z: 0.2 }, type: 'vertical' },
+          ]
+        }
+      })
+      getState().completeWiringToBus(splitter.id, 'in')
+
+      expect(getState().wires).toHaveLength(0)
+      expect(notify.warning).toHaveBeenCalledWith('Cannot connect gate to itself')
     })
   })
 })
