@@ -91,6 +91,14 @@ export interface CircuitStoreSnapshot {
   junctions?: CircuitStoreJunction[]
   inputNodes?: CircuitStoreInputNode[]
   outputNodes?: CircuitStoreOutputNode[]
+  busComponents?: Array<{
+    id: string
+    kind: 'splitter' | 'joiner'
+    width: number
+    inputs: Array<{ id: string }>
+    outputs: Array<{ id: string }>
+  }>
+  busPlacementMode?: 'splitter' | 'joiner' | null
   simulationRunning?: boolean
   selectedGateId?: string | null
   placementMode?: string | null
@@ -198,6 +206,13 @@ export interface CircuitActionsAPI {
   deleteSavedCircuit: (name: string) => void
   exportCircuitJSON: (name?: string) => void
   importCircuitJSON: (json: string) => boolean
+  // Bus actions (P05-12a)
+  placeBusSplitter: (width: number, position: { x: number; y: number; z: number }) => { id: string; kind: string; width: number } | null
+  placeBusJoiner: (width: number, position: { x: number; y: number; z: number }) => { id: string; kind: string; width: number } | null
+  removeBusComponent: (id: string) => void
+  startBusPlacement: (kind: 'splitter' | 'joiner') => void
+  cancelBusPlacement: () => void
+  placeBusComponent: (position: { x: number; y: number; z: number }) => void
 }
 
 export interface RenderTrackerStats {

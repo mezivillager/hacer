@@ -16,6 +16,7 @@ import { createStatusActions } from './actions/statusActions/statusActions'
 import { createPersistenceActions } from './actions/persistenceActions/persistenceActions'
 import { createTestActions } from './actions/testActions/testActions'
 import { createBusActions } from './actions/busActions/busActions'
+import { createBusPlacementActions } from './actions/busPlacementActions/busPlacementActions'
 import { readCompletedChips } from '@/core/testing/chipCompletion'
 import { subscribeAutosave } from './actions/persistenceActions/autosave'
 import { readPerformanceMode } from '@/lib/performanceModeStorage'
@@ -58,6 +59,7 @@ const initialState = {
   outputNodes: [] as import('./types').OutputNode[],
   junctions: [] as import('./types').JunctionNode[],
   busComponents: [] as import('./types').BusComponent[],
+  busPlacementMode: null as import('./types').BusComponentKind | null,
   // Node placement and selection
   nodePlacementMode: null as import('./types').NodePlacementType | null,
   selectedNodeId: null as string | null,
@@ -102,6 +104,7 @@ export const useCircuitStore = create<CircuitStore>()(
         ...createPersistenceActions(set, get),
         ...createTestActions(set, get),
         ...createBusActions(set, get),
+        ...createBusPlacementActions(set, get),
       }))
     ),
     { name: 'CircuitStore' }
@@ -310,6 +313,10 @@ export const circuitActions = {
   placeBusJoiner: (...args: Parameters<CircuitStore['placeBusJoiner']>) => useCircuitStore.getState().placeBusJoiner(...args),
   updateBusComponentPosition: (...args: Parameters<CircuitStore['updateBusComponentPosition']>) => useCircuitStore.getState().updateBusComponentPosition(...args),
   removeBusComponent: (...args: Parameters<CircuitStore['removeBusComponent']>) => useCircuitStore.getState().removeBusComponent(...args),
+  // Bus placement actions
+  startBusPlacement: (...args: Parameters<CircuitStore['startBusPlacement']>) => useCircuitStore.getState().startBusPlacement(...args),
+  cancelBusPlacement: () => useCircuitStore.getState().cancelBusPlacement(),
+  placeBusComponent: (...args: Parameters<CircuitStore['placeBusComponent']>) => useCircuitStore.getState().placeBusComponent(...args),
 }
 
 // Expose store and actions for E2E testing

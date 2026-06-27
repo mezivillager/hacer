@@ -223,6 +223,7 @@ export interface CircuitState {
   outputNodes: OutputNode[]
   junctions: JunctionNode[]
   busComponents: BusComponent[]
+  busPlacementMode: BusComponentKind | null
 
   // Node placement and selection
   nodePlacementMode: NodePlacementType | null
@@ -406,6 +407,15 @@ export interface BusActions {
   removeBusComponent: (id: string) => void
 }
 
+/**
+ * Actions for placing bus components on the canvas (mirrors node placement).
+ */
+export interface BusPlacementActions {
+  startBusPlacement: (kind: BusComponentKind) => void
+  cancelBusPlacement: () => void
+  placeBusComponent: (position: Position) => void
+}
+
 export interface SavedCircuitSummary {
   name: string
   savedAt: string
@@ -421,4 +431,4 @@ export interface PersistenceActions {
 }
 
 // Combined store type
-export interface CircuitStore extends CircuitState, GateActions, WireActions, SimulationActions, PlacementActions, NodePlacementActions, WiringActions, PinHelpers, ViewActions, NodeActions, JunctionActions, JunctionPlacementActions, StatusActions, PersistenceActions, TestActions, BusActions {}
+export interface CircuitStore extends CircuitState, GateActions, WireActions, SimulationActions, PlacementActions, NodePlacementActions, WiringActions, PinHelpers, ViewActions, NodeActions, JunctionActions, JunctionPlacementActions, StatusActions, PersistenceActions, TestActions, BusActions, BusPlacementActions {}
