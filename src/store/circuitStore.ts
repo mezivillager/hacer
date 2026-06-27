@@ -206,6 +206,10 @@ export const circuitActions = {
   startWiringFromNode: (...args: Parameters<CircuitStore['startWiringFromNode']>) => useCircuitStore.getState().startWiringFromNode(...args),
   completeWiringFromNodeToGate: (...args: Parameters<CircuitStore['completeWiringFromNodeToGate']>) => useCircuitStore.getState().completeWiringFromNodeToGate(...args),
   completeWiringToNode: (...args: Parameters<CircuitStore['completeWiringToNode']>) => useCircuitStore.getState().completeWiringToNode(...args),
+  startWiringFromBus: (...args: Parameters<CircuitStore['startWiringFromBus']>) => useCircuitStore.getState().startWiringFromBus(...args),
+  completeWiringToBus: (...args: Parameters<CircuitStore['completeWiringToBus']>) => useCircuitStore.getState().completeWiringToBus(...args),
+  completeWiringFromBusToGate: (...args: Parameters<CircuitStore['completeWiringFromBusToGate']>) => useCircuitStore.getState().completeWiringFromBusToGate(...args),
+  completeWiringFromBusToNode: (...args: Parameters<CircuitStore['completeWiringFromBusToNode']>) => useCircuitStore.getState().completeWiringFromBusToNode(...args),
   // Helper functions
   getPinWorldPosition: (...args: Parameters<CircuitStore['getPinWorldPosition']>): ReturnType<CircuitStore['getPinWorldPosition']> => useCircuitStore.getState().getPinWorldPosition(...args),
   getPinOrientation: (...args: Parameters<CircuitStore['getPinOrientation']>): ReturnType<CircuitStore['getPinOrientation']> => useCircuitStore.getState().getPinOrientation(...args),

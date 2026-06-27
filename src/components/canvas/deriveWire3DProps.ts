@@ -28,6 +28,8 @@ export function deriveWire3DProps(wire: Wire, state: CircuitStore): DerivedWire3
   let start: Position | null = null
   if (wire.from.type === 'gate' && wire.from.pinId) {
     start = state.getPinWorldPosition(wire.from.entityId, wire.from.pinId)
+  } else if (wire.from.type === 'bus' && wire.from.pinId) {
+    start = state.getPinWorldPosition(wire.from.entityId, wire.from.pinId)
   } else if (wire.from.type === 'input') {
     const node = state.inputNodes.find((n) => n.id === wire.from.entityId)
     if (node) {
@@ -41,6 +43,8 @@ export function deriveWire3DProps(wire: Wire, state: CircuitStore): DerivedWire3
 
   let end: Position | null = null
   if (wire.to.type === 'gate' && wire.to.pinId) {
+    end = state.getPinWorldPosition(wire.to.entityId, wire.to.pinId)
+  } else if (wire.to.type === 'bus' && wire.to.pinId) {
     end = state.getPinWorldPosition(wire.to.entityId, wire.to.pinId)
   } else if (wire.to.type === 'output') {
     const node = state.outputNodes.find((n) => n.id === wire.to.entityId)

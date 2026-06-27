@@ -1251,4 +1251,46 @@ describe('wiringActions', () => {
       expect(branchWire?.from.entityId).toBe(gate1.id)
     })
   })
+
+  describe('bus wiring', () => {
+    it('wires a gate output to a splitter input (bus destination)', () => {
+      const gate = getState().addGate('Not', { x: 0, y: 0, z: 0 })
+      const splitter = getState().placeBusSplitter(4, { x: 4, y: 0, z: 0 })!
+
+      getState().startWiring(gate.id, gate.outputs[0].id, 'output', { x: 0.7, y: 0.2, z: 0 })
+      useCircuitStore.setState((s) => {
+        if (s.wiringFrom) {
+          s.wiringFrom.segments = [
+            { start: { x: 0.7, y: 0.2, z: 0 }, end: { x: 3.5, y: 0.2, z: 0 }, type: 'horizontal' },
+          ]
+        }
+      })
+      getState().completeWiringToBus(splitter.id, 'in')
+
+      expect(getState().wires).toHaveLength(1)
+      expect(getState().wires[0].from).toEqual({ type: 'gate', entityId: gate.id, pinId: gate.outputs[0].id })
+      expect(getState().wires[0].to).toEqual({ type: 'bus', entityId: splitter.id, pinId: 'in' })
+      expect(getState().wires[0].segments.length).toBeGreaterThan(0)
+      expect(getState().wiringFrom).toBe(null)
+    })
+
+    it('wires a splitter output to a gate input (bus source)', () => {
+      const splitter = getState().placeBusSplitter(4, { x: 0, y: 0, z: 0 })!
+      const gate = getState().addGate('Not', { x: 6, y: 0, z: 0 })
+
+      getState().startWiringFromBus(splitter.id, 'out0', 'output', { x: 0.5, y: 0.2, z: 0 })
+      useCircuitStore.setState((s) => {
+        if (s.wiringFrom) {
+          s.wiringFrom.segments = [
+            { start: { x: 0.5, y: 0.2, z: 0 }, end: { x: 5.5, y: 0.2, z: 0 }, type: 'horizontal' },
+          ]
+        }
+      })
+      getState().completeWiringFromBusToGate(gate.id, gate.inputs[0].id, 'input')
+
+      expect(getState().wires).toHaveLength(1)
+      expect(getState().wires[0].from).toEqual({ type: 'bus', entityId: splitter.id, pinId: 'out0' })
+      expect(getState().wires[0].to).toEqual({ type: 'gate', entityId: gate.id, pinId: gate.inputs[0].id })
+    })
+  })
 })

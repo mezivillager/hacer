@@ -375,6 +375,9 @@ function recalculateWiresForNode(set: SetState, get: GetState, nodeId: string, n
         if (wire.to.type === 'gate' && wire.to.pinId) {
           otherPinPos = getPinWorldPosition(wire.to.entityId, wire.to.pinId)
           otherOrientation = getPinOrientation(wire.to.entityId, wire.to.pinId)
+        } else if (wire.to.type === 'bus' && wire.to.pinId) {
+          otherPinPos = getPinWorldPosition(wire.to.entityId, wire.to.pinId)
+          otherOrientation = getPinOrientation(wire.to.entityId, wire.to.pinId)
         } else if (wire.to.type === 'junction') {
           const junction = freshState.junctions.find(j => j.id === wire.to.entityId)
           if (junction) {
@@ -384,6 +387,9 @@ function recalculateWiresForNode(set: SetState, get: GetState, nodeId: string, n
         }
       } else {
         if (wire.from.type === 'gate' && wire.from.pinId) {
+          otherPinPos = getPinWorldPosition(wire.from.entityId, wire.from.pinId)
+          otherOrientation = getPinOrientation(wire.from.entityId, wire.from.pinId)
+        } else if (wire.from.type === 'bus' && wire.from.pinId) {
           otherPinPos = getPinWorldPosition(wire.from.entityId, wire.from.pinId)
           otherOrientation = getPinOrientation(wire.from.entityId, wire.from.pinId)
         } else if (wire.from.type === 'junction') {

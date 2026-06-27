@@ -161,6 +161,7 @@ export type WiringSource =
   | { type: 'input'; nodeId: string }
   | { type: 'output'; nodeId: string }
   | { type: 'junction'; junctionId: string }
+  | { type: 'bus'; busId: string; pinId: string; pinType: 'input' | 'output' }
 
 /**
  * Destination of a wire being created.
@@ -319,6 +320,11 @@ export interface WiringActions {
   completeWiringToNode: (nodeId: string, nodeType: NodeType) => void
   completeWiringFromJunction: (toGateId: string, toPinId: string, toPinType: 'input' | 'output') => void
   completeWiringFromJunctionToNode: (nodeId: string, nodeType: NodeType) => void
+  // Bus-based wiring (generalized pin path)
+  startWiringFromBus: (busId: string, pinId: string, pinType: 'input' | 'output', position: Position) => void
+  completeWiringToBus: (busId: string, pinId: string) => void
+  completeWiringFromBusToGate: (gateId: string, pinId: string, pinType: 'input' | 'output') => void
+  completeWiringFromBusToNode: (nodeId: string, nodeType: NodeType) => void
 }
 
 export interface PinHelpers {
