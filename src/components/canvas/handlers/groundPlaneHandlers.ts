@@ -12,6 +12,7 @@ const {
   setDragActive,
   placeGate,
   placeNode,
+  placeBusComponent,
   cancelWiring,
   selectGate: selectGateAction,
   deselectNode,
@@ -49,12 +50,13 @@ export function handlePointerMove(e: ThreeEvent<PointerEvent>): void {
   const state = useCircuitStore.getState()
   const isPlacingGate = state.placementMode !== null
   const isPlacingNode = state.nodePlacementMode !== null
+  const isPlacingBus = state.busPlacementMode !== null
   const isPlacingJunction = state.junctionPlacementMode === true
   const isWiring = state.wiringFrom !== null
   const isDraggingGate = state.isDragActive && state.placementPreviewPosition !== null && state.placementMode === null && state.selectedGateId !== null
   const isDraggingNode = state.isDragActive && state.placementPreviewPosition !== null && state.placementMode === null && state.selectedNodeId !== null && state.nodePlacementMode === null
 
-  if (isPlacingGate || isPlacingNode) {
+  if (isPlacingGate || isPlacingNode || isPlacingBus) {
     const snappedPos = snapToGrid({ x: e.point.x, y: 0.2, z: e.point.z })
     updatePlacementPreviewPosition(snappedPos)
   } else if (isPlacingJunction) {
@@ -88,10 +90,11 @@ export function handlePointerLeave(): void {
   const state = useCircuitStore.getState()
   const isPlacingGate = state.placementMode !== null
   const isPlacingNode = state.nodePlacementMode !== null
+  const isPlacingBus = state.busPlacementMode !== null
   const isPlacingJunction = state.junctionPlacementMode === true
   const isWiring = state.wiringFrom !== null
 
-  if (isPlacingGate || isPlacingNode) {
+  if (isPlacingGate || isPlacingNode || isPlacingBus) {
     updatePlacementPreviewPosition(null)
   }
   if (isWiring) {
@@ -110,6 +113,7 @@ export function handleClick(e: ThreeEvent<MouseEvent>): void {
   const state = useCircuitStore.getState()
   const isPlacingGate = state.placementMode !== null
   const isPlacingNode = state.nodePlacementMode !== null
+  const isPlacingBus = state.busPlacementMode !== null
   const isPlacingJunction = state.junctionPlacementMode === true
   const isWiring = state.wiringFrom !== null
   const isDraggingGateOrNode = state.placementPreviewPosition !== null && state.placementMode === null && (state.selectedGateId !== null || state.selectedNodeId !== null)
@@ -135,6 +139,10 @@ export function handleClick(e: ThreeEvent<MouseEvent>): void {
     if (canPlace) {
       placeNode(snappedPos)
     }
+  } else if (isPlacingBus) {
+    e.stopPropagation()
+    const snappedPos = snapToGrid({ x: e.point.x, y: 0.2, z: e.point.z })
+    placeBusComponent(snappedPos)
   } else if (isPlacingJunction) {
     const wireId = handleWireClick(e)
     if (!wireId) {

@@ -17,6 +17,7 @@ import {
   Moon,
   Monitor,
   Info,
+  Split,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui-kit/button'
@@ -72,6 +73,7 @@ export function CompactToolbar() {
   const placementMode = useCircuitStore((s) => s.placementMode)
   const nodePlacementMode = useCircuitStore((s) => s.nodePlacementMode)
   const junctionPlacementMode = useCircuitStore((s) => s.junctionPlacementMode)
+  const busPlacementMode = useCircuitStore((s) => s.busPlacementMode)
   const simulationRunning = useCircuitStore((s) => s.simulationRunning)
   const showAxes = useCircuitStore((s) => s.showAxes)
   const performanceMode = useCircuitStore((s) => s.performanceMode)
@@ -117,6 +119,15 @@ export function CompactToolbar() {
       } else {
         circuitActions.startNodePlacement(mappedType)
       }
+    }
+    setIoOpen(false)
+  }
+
+  const handleBusSelect = (kind: 'splitter' | 'joiner') => {
+    if (busPlacementMode === kind) {
+      circuitActions.cancelBusPlacement()
+    } else {
+      circuitActions.startBusPlacement(kind)
     }
     setIoOpen(false)
   }
@@ -264,6 +275,29 @@ export function CompactToolbar() {
                   <span className="text-xs">{label}</span>
                 </Button>
               ))}
+            </div>
+            <div className="text-xs font-medium text-muted-foreground mt-2 mb-2 px-2">Buses</div>
+            <div className="flex flex-col gap-1">
+              <Button
+                data-testid="bus-button-splitter"
+                variant={busPlacementMode === 'splitter' ? 'secondary' : 'ghost'}
+                size="sm"
+                className="justify-start gap-2 h-8"
+                onClick={() => handleBusSelect('splitter')}
+              >
+                <Split className="w-4 h-4" />
+                <span className="text-xs">Splitter</span>
+              </Button>
+              <Button
+                data-testid="bus-button-joiner"
+                variant={busPlacementMode === 'joiner' ? 'secondary' : 'ghost'}
+                size="sm"
+                className="justify-start gap-2 h-8"
+                onClick={() => handleBusSelect('joiner')}
+              >
+                <Split className="w-4 h-4 rotate-180" />
+                <span className="text-xs">Joiner</span>
+              </Button>
             </div>
           </PopoverContent>
         </Popover>
