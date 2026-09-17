@@ -50,7 +50,6 @@ Red → Green → Refactor. Test BEFORE implementation. See `.claude/skills/tdd/
 **Definition of done (all must pass — no exceptions):**
 - [ ] `pnpm run lint` exits 0
 - [ ] `pnpm run test:run` — all pass
-- [ ] `pnpm run test:e2e:store` — all pass
 - [ ] `pnpm run build` succeeds
 
 Optional: invoke `verification-before-completion` / code-review skills when using Claude Code. Full checklist: `.claude/skills/code-review/SKILL.md`

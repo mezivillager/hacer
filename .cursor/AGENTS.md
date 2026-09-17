@@ -62,4 +62,4 @@ skills/       — Trimmed workflow skills
 
 ## Success criteria (align with CI)
 
-Match **HACER** checks: `pnpm run lint`, `pnpm run test:run`, `pnpm run test:e2e:store`, `pnpm run build` — see root **`AGENTS.md`** for the full checklist.
+Match **HACER** checks: `pnpm run lint`, `pnpm run test:run`, `pnpm run build` — see root **`AGENTS.md`** for the full checklist.

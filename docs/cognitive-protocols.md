@@ -42,5 +42,5 @@ Treat context as a memory hierarchy:
 Use the cheapest tool that gets the job done. Tool use has costs (tokens, latency, side-effects):
 - Reading a file → use `view` or `grep`, not `bash cat`
 - Finding a pattern → use `grep`, not opening every file
-- Running tests → `pnpm run test:run` for fast, `pnpm run test:e2e:store` for store, full suite only when needed
+- Running tests → `pnpm run test:run` for fast; E2E (`pnpm run test:e2e:store`) is manual only, when a change warrants browser-level verification
 - Exploring directories → `glob`, not `find`

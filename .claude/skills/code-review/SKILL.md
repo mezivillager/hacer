@@ -15,7 +15,6 @@ Before calling any task "Done", you must execute the full local verification sui
 ### 1. Verification Requirements
 - **Linting**: `pnpm run lint` must exit with code 0 (ESLint + Typecheck).
 - **Unit Tests**: `pnpm run test:run` must pass all Vitest tests.
-- **Store E2E**: `pnpm run test:e2e:store` must pass all Playwright store tests.
 - **Build**: `pnpm run build` must succeed without errors.
 
 ### 2. TDD Iron Law

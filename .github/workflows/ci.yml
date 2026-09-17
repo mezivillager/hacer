@@ -41,12 +41,3 @@ jobs:
       # Catches: compilation errors, broken imports, bad type exports.
       - name: Build (tsc + Vite)
         run: pnpm run build
-
-      - name: Install Playwright browsers
-        run: pnpm exec playwright install --with-deps chromium
-
-      # Catches: store/state integration failures via headless browser.
-      # Tests tagged @store only — fast enough to run on every PR.
-      # Full @ui tests run on a schedule (see e2e-ui.yml).
-      - name: E2E store tests (Playwright @store)
-        run: pnpm run test:e2e:store

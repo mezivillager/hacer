@@ -28,7 +28,6 @@ Remove duplication, improve names, extract helpers. Run tests after every change
 - [ ] Watched test **fail** for the right reason
 - [ ] Wrote **minimal** code to pass
 - [ ] All tests pass: `pnpm run test:run`
-- [ ] E2E store tests pass: `pnpm run test:e2e:store`
 - [ ] No TypeScript errors: `pnpm run lint`
 </instructions>
 

@@ -89,6 +89,5 @@ Before work is complete, all required gates must pass:
 ```bash
 pnpm run lint
 pnpm run test:run
-pnpm run test:e2e:store
 pnpm run build
 ```

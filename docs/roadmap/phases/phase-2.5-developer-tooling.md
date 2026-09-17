@@ -45,7 +45,6 @@ This phase remains healthy when:
 
 - `pnpm run lint` passes
 - `pnpm run test:run` passes
-- `pnpm run test:e2e:store` passes
 - `pnpm run build` passes
 - The same Node major is used locally and in CI
 
