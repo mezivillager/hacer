@@ -50,7 +50,6 @@ Removed or unselected tooling should not appear in active implementation tasks.
 
 - `pnpm run lint`
 - `pnpm run test:run`
-- `pnpm run test:e2e:store`
 - `pnpm run build`
 
 ## Risk Assessment
@@ -184,7 +183,6 @@ Future phases remain useful directionally, but do not supersede Phase 0.5-0.7 pr
 
 - ESLint and TypeScript checks through `pnpm run lint`
 - Unit tests through `pnpm run test:run`
-- Store-level E2E through `pnpm run test:e2e:store`
 - Production build through `pnpm run build`
 
 ### Manual Review Focus

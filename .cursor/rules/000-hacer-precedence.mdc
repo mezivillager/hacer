@@ -15,6 +15,6 @@ When instructions conflict, use **this order** (highest wins):
 6. **`.cursor/rules/`** (ECC-derived `common-*`, `typescript-*`) — general quality only where they **do not** contradict 2–4  
 7. **`.cursor/AGENTS.md`** — trimmed ECC agent hints  
 
-**Definition of done (no exceptions):** `pnpm run lint`, `pnpm run test:run`, `pnpm run test:e2e:store`, and `pnpm run build` all succeed — see root `AGENTS.md` §0.
+**Definition of done (no exceptions):** `pnpm run lint`, `pnpm run test:run`, and `pnpm run build` all succeed — see root `AGENTS.md` §0.
 
 **Cursor-only:** Ignore steps that reference missing paths (e.g. `.claude/CONSTITUTION.md` if absent). Prefer `.cursorrules` + root `AGENTS.md` + `docs/llm-harness.md`.

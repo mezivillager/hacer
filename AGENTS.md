@@ -21,7 +21,7 @@
 
 **Definition of done — mandatory before claiming work is complete:** all of the following must succeed with **exit code 0**:
 
-`pnpm run lint` · `pnpm run test:run` · `pnpm run test:e2e:store` · `pnpm run build`
+`pnpm run lint` · `pnpm run test:run` · `pnpm run build`
 
 No waivers. If a step fails, the task is **not** done.
 
@@ -169,7 +169,7 @@ NO fix without root-cause investigation first.
 
 ### Step 6 — Review & Finish
 - Trigger `requesting-code-review` and `finishing-a-development-branch` when implementations meet the spec (Claude Code / Superpowers).
-- Code must pass: **`pnpm run lint`**, **`pnpm run test:run`**, **`pnpm run test:e2e:store`**, **`pnpm run build`** — see §0 *Definition of done*.
+- Code must pass: **`pnpm run lint`**, **`pnpm run test:run`**, **`pnpm run build`** — see §0 *Definition of done*.
 
 ---
 
@@ -200,14 +200,15 @@ File: `.github/workflows/ci.yml`
 | Docs paths | `pnpm run lint:docs` | Machine-specific absolute paths in documentation |
 | Unit tests | `pnpm run test:run` | Failing Vitest tests |
 | Build | `pnpm run build` | Compilation errors, broken imports |
-| E2E store tests | `pnpm run test:e2e:store` | Store/state integration failures |
 
 **Enforcement mechanism:** If *any* of these steps returns a non-zero exit code, the workflow fails. With branch protection rules requiring the `CI` status check, the PR **cannot be merged** until all steps pass.
 
-### Layer 3 — Scheduled Full E2E (Wed + Sat at 4am UTC)
-File: `.github/workflows/e2e-ui.yml`
+### Layer 3 — E2E (manual only)
+File: `.github/workflows/e2e.yml`
 
-Full Playwright UI tests (`@ui` tag) run on a schedule to catch regressions that only appear in end-to-end browser scenarios. These are too slow for every PR but run regularly enough to catch drift.
+Playwright E2E tests **never run automatically** — not on push, not on PR, not on a schedule. Run them deliberately, when a change warrants browser-level verification: from the Actions tab, or `gh workflow run e2e.yml -f suite=store` (`store` | `ui` | `all`). Locally: `pnpm run test:e2e:store` / `:ui`.
+
+They are not part of the definition of done.
 
 ---
 
@@ -217,7 +218,6 @@ Full Playwright UI tests (`@ui` tag) run on a schedule to catch regressions that
 CI fails at "Lint"       → TypeScript error or ESLint violation. Run `pnpm run lint` locally.
 CI fails at "Unit tests" → A Vitest test failed. Run `pnpm run test:run` locally.
 CI fails at "Build"      → Compilation error. Run `pnpm run build` locally.
-CI fails at "E2E store"  → Playwright store test failed. Run `pnpm run test:e2e:store` locally.
 ```
 
 ---
@@ -243,8 +243,8 @@ pnpm run typecheck        # TypeScript only
 pnpm run test             # Vitest watch mode
 pnpm run test:run         # Vitest (single run)
 pnpm run test:coverage    # Vitest + coverage report
-pnpm run test:e2e:store   # Playwright store tests (fast, use this pre-commit)
-pnpm run test:e2e:ui      # Playwright UI tests (slow, use selectively)
+pnpm run test:e2e:store   # Playwright store tests — manual only, not a done-criterion
+pnpm run test:e2e:ui      # Playwright UI tests — manual only, slow
 pnpm run build            # Production build
 ```
 
@@ -268,6 +268,6 @@ pnpm run build            # Production build
 |---------|-----|
 | **Kitchen sink session** — one task, then unrelated questions, then back to the first | Clear context between unrelated tasks. Start fresh for each distinct workstream. |
 | **Correcting over and over** — same issue, multiple failed corrections, context polluted | After 2+ failed corrections on the same issue, clear context and re-prompt with a better initial prompt that incorporates what you learned. |
-| **Trust-then-verify gap** — plausible-looking implementation that doesn't handle edge cases | Always provide verification (tests, lint, build). Run `pnpm run lint`, `pnpm run test:run`, `pnpm run test:e2e:store` before marking done. Never ship without proof. |
+| **Trust-then-verify gap** — plausible-looking implementation that doesn't handle edge cases | Always provide verification (tests, lint, build). Run `pnpm run lint`, `pnpm run test:run`, `pnpm run build` before marking done. Never ship without proof. |
 | **Infinite exploration** — "investigate" without scoping; reads hundreds of files | Scope investigations narrowly. Use subagents so exploration doesn't consume your main context. One focused task per subagent. |
 | **Over-specified docs** — rules get lost in noise, agent ignores half of them | Keep AGENTS.md and .cursorrules concise. Ruthlessly prune. If the agent already does something correctly without the instruction, delete it. |

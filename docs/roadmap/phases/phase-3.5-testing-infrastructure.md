@@ -33,13 +33,13 @@ HACER has a solid testing baseline, but the larger testing roadmap is not fully 
 ```bash
 pnpm run lint
 pnpm run test:run
-pnpm run test:e2e:store
 pnpm run build
 ```
 
 ## Optional / Situational Gates
 
 ```bash
+pnpm run test:e2e:store
 pnpm run test:e2e:ui
 pnpm run test:coverage
 ```

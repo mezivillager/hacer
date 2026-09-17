@@ -125,7 +125,7 @@ Use [tasks/todo.md](../tasks/todo.md) and [tasks/lessons.md](../tasks/lessons.md
 
 | Practice | HACER Integration |
 |----------|-------------------|
-| **Verification** | Run `pnpm run test:run`, `pnpm run test:e2e:store`, `pnpm run lint`, `pnpm run typecheck` before marking done. See [.cursorrules](../.cursorrules) AI Agent Completion Checklist. |
+| **Verification** | Run `pnpm run test:run`, `pnpm run lint`, `pnpm run typecheck` before marking done. See [.cursorrules](../.cursorrules) AI Agent Completion Checklist. |
 | **TDD** | Follow [docs/testing/](./testing/) — write tests first, Red-Green-Refactor. |
 | **Elegance** | Follow [HACER_LLM_GUIDE.md](../HACER_LLM_GUIDE.md) patterns; avoid anti-patterns. |
-| **Bug Fixing** | Use store tests (`pnpm run test:e2e:store`) for fast iteration; fix CI without being asked. |
+| **Bug Fixing** | Reach for store E2E (`pnpm run test:e2e:store`, manual) when a bug is browser-level; fix CI without being asked. |

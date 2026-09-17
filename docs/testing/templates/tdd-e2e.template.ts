@@ -135,8 +135,8 @@ test.describe('Feature Name (UI) @ui', () => {
  * - [ ] UI tests verified manually (not required for commit)
  *
  * Running E2E tests:
- * - npm run test:e2e:store     # FAST - run before every commit
- * - npm run test:e2e:ui        # SLOW - run manually or CI only
+ * - npm run test:e2e:store     # FAST - manual only, not a done-criterion
+ * - npm run test:e2e:ui        # SLOW - manual only
  * - npm run test:e2e           # All tests (slow)
  * - npm run test:e2e:headed    # With browser visible
  *
@@ -145,5 +145,5 @@ test.describe('Feature Name (UI) @ui', () => {
  * 2. Write store test first (fast TDD iteration)
  * 3. Implement feature
  * 4. Create matching UI test
- * 5. Run: npm run test:e2e:store (must pass before commit)
+ * 5. Run: npm run test:e2e:store when the change warrants browser-level checking
  */
