@@ -1,3 +1,4 @@
 pnpm exec lint-staged
 pnpm run typecheck
 ./scripts/check-test-files.sh
+node scripts/check-doc-paths.mjs --staged

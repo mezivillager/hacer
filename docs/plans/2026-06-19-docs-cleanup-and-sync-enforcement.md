@@ -49,9 +49,8 @@
 
 - [ ] **Step 1: Create and switch to the feature branch**
 
-Run:
+Run, from the repo root:
 ```bash
-cd /Users/villager/Documents/codelab/ha/hacer
 git checkout -b docs/cleanup-and-sync-enforcement
 ```
 Expected: `Switched to a new branch 'docs/cleanup-and-sync-enforcement'`

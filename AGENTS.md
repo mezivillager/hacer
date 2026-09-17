@@ -123,6 +123,15 @@ detour.
 - Trigger `using-git-worktrees` to establish a parallel dev stream.
 - **All new work goes in a dedicated worktree placed OUTSIDE the repo** as a sibling folder named `hacer-wt-<topic>` — e.g. `git worktree add ../hacer-wt-<topic> -b <type>/<topic>`. Never nest worktrees inside the repo. See `.cursor/rules/020-git-worktree-no-main.mdc`.
 
+### Step 2b — Writing Docs
+**Never write a machine-specific absolute path into documentation.** No `/Users/<name>/…`, <!-- allow-abs-path -->
+`/home/<name>/…`, `/root/…`, `C:\…`, or `~/`-rooted paths outside the portable dotfile roots <!-- allow-abs-path -->
+(`~/.claude`, `~/.config`, `~/.cursor`, `~/.local`, `~/.ssh`). Use repo-relative paths
+(`src/simulation/topologicalEval.ts`), reference workspace siblings as `../web-ide/…`, and say
+"from the repo root" instead of `cd`-ing to a fixed location. Enforced by
+`scripts/check-doc-paths.mjs` in pre-commit and CI; mark a deliberate exception with
+`<!-- allow-abs-path -->`. See `.cursor/rules/021-no-absolute-paths-in-docs.mdc` and ADR-0010.
+
 ### Step 3 — Write a Plan
 - Trigger the `planning` skill.
 - Break implementation into 2–5 minute atomic tasks.
@@ -178,8 +187,9 @@ File: `.husky/pre-commit`
 | ESLint auto-fix + verify | `lint-staged` | ✅ Hard — commit fails |
 | TypeScript type check | `pnpm run typecheck` | ✅ Hard — commit fails |
 | Test file presence check | `./scripts/check-test-files.sh` | ⚠️ Soft — warns only |
+| Absolute paths in docs | `node scripts/check-doc-paths.mjs --staged` | ✅ Hard — commit fails |
 
-**What it catches:** Style violations, type errors, and missing test files — *before the code ever leaves your machine.*
+**What it catches:** Style violations, type errors, missing test files, and machine-specific absolute paths in docs — *before the code ever leaves your machine.*
 
 ### Layer 2 — CI Workflow (remote, every push + every PR to `main`)
 File: `.github/workflows/ci.yml`
@@ -187,6 +197,7 @@ File: `.github/workflows/ci.yml`
 | Step | Command | What it catches |
 |------|---------|-----------------|
 | Lint | `pnpm run lint` | TypeScript errors + ESLint violations |
+| Docs paths | `pnpm run lint:docs` | Machine-specific absolute paths in documentation |
 | Unit tests | `pnpm run test:run` | Failing Vitest tests |
 | Build | `pnpm run build` | Compilation errors, broken imports |
 | E2E store tests | `pnpm run test:e2e:store` | Store/state integration failures |

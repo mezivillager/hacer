@@ -30,6 +30,10 @@ jobs:
       - name: Lint (TypeScript + ESLint)
         run: pnpm run lint
 
+      # Catches: machine-specific absolute paths in documentation.
+      - name: Docs (no absolute paths)
+        run: pnpm run lint:docs
+
       # Catches: failing Vitest unit and component tests.
       - name: Unit tests (Vitest)
         run: pnpm run test:run

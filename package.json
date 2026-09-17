@@ -32,6 +32,7 @@
     "lint": "pnpm run typecheck && eslint .",
     "lint:fix": "eslint . --fix",
     "lint:eslint": "eslint .",
+    "lint:docs": "node scripts/check-doc-paths.mjs",
     "preview": "vite preview",
     "test": "vitest",
     "test:run": "vitest run",

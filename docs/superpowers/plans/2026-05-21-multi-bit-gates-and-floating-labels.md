@@ -11,7 +11,7 @@
 **Tech Stack:** React 19, TypeScript, Zustand+Immer, R3F, `@react-three/drei` (`<Text>`, `<Billboard>`), Vitest, Playwright.
 
 **Reference:**
-- web-ide multi-bit model: `~/Documents/codelab/ha/web-ide/simulator/src/chip/builtins/logic/not.ts` (`not16(inn) = ~inn & 0xffff`); per-width gate variants; strict width validation in `chip.ts`.
+- web-ide multi-bit model: `../web-ide/simulator/src/chip/builtins/logic/not.ts` (workspace sibling of this repo) (`not16(inn) = ~inn & 0xffff`); per-width gate variants; strict width validation in `chip.ts`.
 - P05-11 width clamp: `src/simulation/topologicalEval.ts:231,251` already clamps to destination width.
 - P05-13 multi-bit UI: `formatSignalLabel(value, width)` in `src/simulation/signalDisplay.ts` already returns hex for `width > 1`.
 
