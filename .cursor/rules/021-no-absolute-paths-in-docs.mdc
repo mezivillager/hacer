@@ -1,0 +1,24 @@
+---
+description: Docs hygiene — no machine-specific absolute paths; use repo-relative paths
+alwaysApply: true
+---
+
+# Docs: no machine-specific absolute paths
+
+1. **Never write a machine-specific absolute path into documentation.** That means no
+   `/Users/<name>/…`, `/home/<name>/…`, `/root/…`, `C:\…`, and no `~/`-rooted path outside the
+   portable dotfile roots (`~/.claude`, `~/.config`, `~/.cursor`, `~/.local`, `~/.ssh`).
+2. **Use repo-relative paths instead.** Reference files as `src/simulation/topologicalEval.ts`,
+   and workspace siblings as `../web-ide/simulator/src/chip/chip.ts`. For shell snippets, say
+   "from the repo root" rather than `cd`-ing to a hardcoded location.
+3. **Enforced, not merely advised.** `scripts/check-doc-paths.mjs` runs in `.husky/pre-commit`
+   (staged docs) and in CI (every tracked doc). Detection logic and its unit tests live in
+   `scripts/hooks/docPaths.logic.mjs` / `docPaths.logic.test.mjs`.
+4. **Escape hatch, used sparingly.** If a doc genuinely must quote a real absolute path, mark that
+   line with `<!-- allow-abs-path -->` and it is skipped.
+5. **Vendored trees are exempt** (`.claude/skills/` except `hacer-patterns/` and `docs-sync/`,
+   `.cursor/`, `node_modules/`) because `scripts/sync-superpowers.sh` overwrites them upstream.
+
+**Why:** an absolute path is true on exactly one machine. It is useless to any other contributor or
+agent, and it rots the moment a directory is renamed — which is precisely what happened when the
+workspace moved from `slow/` to `ha/`.
