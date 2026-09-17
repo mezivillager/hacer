@@ -16,7 +16,6 @@ HACER has a solid testing baseline, but the larger testing roadmap is not fully 
 - Vitest unit tests with colocated `*.test.ts` and `*.test.tsx`
 - Playwright store E2E tests under `e2e/specs/**/*.store.spec.ts`
 - Scheduled Playwright UI tests through GitHub Actions
-- Stryker mutation workflow for PRs touching `src/`
 - Test standards and templates in `docs/testing/`
 - Fast store fixtures and reusable scenarios in `e2e/`
 
@@ -43,7 +42,6 @@ pnpm run build
 ```bash
 pnpm run test:e2e:ui
 pnpm run test:coverage
-pnpm run stryker
 ```
 
 Use optional gates when the changed code affects UI workflows, broad test quality, or coverage-sensitive areas.

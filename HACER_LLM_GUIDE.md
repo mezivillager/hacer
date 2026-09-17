@@ -1483,7 +1483,6 @@ pnpm run test:coverage    # Generate coverage report
 pnpm run test:e2e:store   # Fast E2E — store tests only (@store tag) — run before every commit
 pnpm run test:e2e:ui      # Slow E2E — UI tests (@ui tag) — run manually or CI (2×/week)
 pnpm run build            # Production build (tsc + Vite)
-pnpm run stryker          # Mutation testing (full)
 ```
 
 ### External Resources

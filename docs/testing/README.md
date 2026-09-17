@@ -6,8 +6,7 @@ This folder contains all testing-related documentation for the HACER project.
 
 | Document | Description |
 |----------|-------------|
-| [standards.md](./standards.md) | TDD workflow, test quality principles, mutation testing |
-| [stryker-evaluation.md](./stryker-evaluation.md) | Stryker setup evaluation, config, CI, gap-detection results |
+| [standards.md](./standards.md) | TDD workflow, test quality principles |
 | [structure.md](./structure.md) | Test file organization, unit vs E2E separation |
 | [templates/](./templates/) | Copy-paste templates for new tests |
 
@@ -41,13 +40,6 @@ This folder contains all testing-related documentation for the HACER project.
   - `pnpm run test:e2e:store`
 - **UI tests** (`@ui`): Slow, run manually or CI (2x/week)
   - `pnpm run test:e2e:ui`
-
-### Mutation Tests (Stryker)
-- Run: `pnpm run stryker`
-- Purpose: Verify test quality by introducing bugs
-- Config: `stryker.config.json` — extend the `mutate` array as the codebase grows
-- When: CI on PRs (changed files only, max 3; ~3 min)
-- See: [stryker-evaluation.md](./stryker-evaluation.md)
 
 ## AI Agent Notes
 

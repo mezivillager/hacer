@@ -204,14 +204,7 @@ File: `.github/workflows/ci.yml`
 
 **Enforcement mechanism:** If *any* of these steps returns a non-zero exit code, the workflow fails. With branch protection rules requiring the `CI` status check, the PR **cannot be merged** until all steps pass.
 
-### Layer 3 — Mutation Testing (remote, every PR touching `src/`)
-File: `.github/workflows/mutation.yml`
-
-Stryker mutates your source code (changes `+` to `-`, flips `&&` to `||`, etc.) and runs your tests against each mutation. If a test suite passes on a mutated version, that test is not actually verifying the behavior it claims to verify.
-
-**What it catches:** Tests that always pass regardless of what the code does. This is the strongest quality signal — it catches copy-paste test boilerplate and tests that verify mocks instead of real behavior.
-
-### Layer 4 — Scheduled Full E2E (Wed + Sat at 4am UTC)
+### Layer 3 — Scheduled Full E2E (Wed + Sat at 4am UTC)
 File: `.github/workflows/e2e-ui.yml`
 
 Full Playwright UI tests (`@ui` tag) run on a schedule to catch regressions that only appear in end-to-end browser scenarios. These are too slow for every PR but run regularly enough to catch drift.
@@ -225,7 +218,6 @@ CI fails at "Lint"       → TypeScript error or ESLint violation. Run `pnpm run
 CI fails at "Unit tests" → A Vitest test failed. Run `pnpm run test:run` locally.
 CI fails at "Build"      → Compilation error. Run `pnpm run build` locally.
 CI fails at "E2E store"  → Playwright store test failed. Run `pnpm run test:e2e:store` locally.
-Mutation test fails      → A test always passes regardless of code. Fix the test to assert real behavior.
 ```
 
 ---

@@ -28,7 +28,7 @@
 | UI | Tailwind CSS v4, shadcn/ui-style primitives in `src/components/ui-kit/`, Radix UI primitives, lucide-react |
 | Feedback | Sonner through `notify` at `@/lib/notify` |
 | Theme | `next-themes` plus CSS variables consumed by React Three Fiber helpers |
-| Testing | Vitest 4, Playwright 1.57, Stryker |
+| Testing | Vitest 4, Playwright 1.57 |
 | Release | semantic-release with conventional commits and GitHub releases |
 
 Removed or unselected tooling should not appear in active implementation tasks.
@@ -152,7 +152,6 @@ Ticket-level truth lives in `docs/plans/phase-0.5-tickets-CHECKLIST.md`.
 - [x] Vitest unit test suite
 - [x] Playwright store E2E suite
 - [x] Scheduled Playwright UI suite
-- [x] Stryker mutation workflow
 - [x] Testing standards and templates
 - [ ] Property-testing library selection and invariant suite
 - [ ] Visual regression strategy

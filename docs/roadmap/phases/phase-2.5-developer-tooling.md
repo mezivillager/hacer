@@ -20,7 +20,7 @@ The selected developer-tooling baseline is present. This phase should be maintai
 - Node 22 alignment across local runtime and workflows
 - Husky/lint-staged pre-commit flow
 - Commitlint and conventional commit conventions
-- Vitest, Playwright, and Stryker commands
+- Vitest and Playwright commands
 - Agent-facing docs in `AGENTS.md`, `.cursorrules`, `HACER_LLM_GUIDE.md`, `REPO_MAP.md`, `docs/llm-workflow.md`, and `docs/llm-harness.md`
 
 ## Active Maintenance Scope
