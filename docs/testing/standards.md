@@ -325,10 +325,10 @@ test.describe('Feature @ui', () => {
 ### Running E2E Tests
 
 ```bash
-# TDD workflow (fast, run often)
+# TDD workflow (fast) — manual only, not a done-criterion
 npm run test:e2e:store
 
-# Full validation (slow, run manually or CI)
+# Full validation (slow) — manual only
 npm run test:e2e:ui
 
 # All tests

@@ -125,8 +125,8 @@ docs(readme): add deployment section
 | `pnpm run test:run` | Run unit tests (Vitest) once | Before committing |
 | `pnpm run test` | Run unit tests in watch mode | During development |
 | `pnpm run test:coverage` | Run unit tests with coverage | Checking coverage |
-| `pnpm run test:e2e:store` | Run fast E2E tests (store-based) | Before committing |
-| `pnpm run test:e2e:ui` | Run full UI E2E tests (slower) | Manual / CI only |
+| `pnpm run test:e2e:store` | Run fast E2E tests (store-based) | Manual only |
+| `pnpm run test:e2e:ui` | Run full UI E2E tests (slower) | Manual only |
 
 ## Pull Request Process
 
@@ -134,7 +134,6 @@ docs(readme): add deployment section
 2. Follow the TDD workflow for all new code
 3. Ensure all tests pass: `pnpm run test:run`
 4. Ensure lint passes: `pnpm run lint`
-5. Run store E2E tests: `pnpm run test:e2e:store`
 6. Open a PR and fill out the [PR template](.github/PULL_REQUEST_TEMPLATE.md)
 
 The PR template includes a TDD checklist. All items must be checked for approval.

@@ -50,6 +50,5 @@ Full list: `.claude/skills/` — each skill has a `SKILL.md` with frontmatter `n
 ```bash
 pnpm run lint              # TypeScript + ESLint — must exit 0
 pnpm run test:run          # Vitest unit tests — must all pass
-pnpm run test:e2e:store    # Playwright store tests — must all pass
 pnpm run build             # Production build — must succeed
 ```

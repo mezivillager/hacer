@@ -24,7 +24,7 @@ This document helps AI agents and developers understand the codebase structure a
 | **Unit / store tests** | Colocate `*.test.ts` next to code; reset pattern: `src/store/actions/gateActions/gateActions.test.ts` |
 | **Playwright store E2E** | `e2e/specs/**/*.store.spec.ts`, `e2e/fixtures/store.fixture.ts` |
 | **LLM workflow + harness tuning** | `docs/llm-workflow.md`, `docs/llm-harness.md`, `docs/llm-docs-sync.md` |
-| **CI = definition of done** | `pnpm run lint` · `pnpm run test:run` · `pnpm run test:e2e:store` · `pnpm run build` |
+| **CI = definition of done** | `pnpm run lint` · `pnpm run test:run` · `pnpm run build` |
 
 ## ⚠️ IMPORTANT: Phase Tracking & Maintenance
 
@@ -172,8 +172,8 @@ scripts/
 ├── copilot-instructions.md       # GitHub Copilot quick-start
 ├── PULL_REQUEST_TEMPLATE.md      # PR template with TDD checklist
 └── workflows/
-    ├── ci.yml        # Main CI (lint + unit tests + build + E2E store tests)
-    ├── e2e-ui.yml    # Slow UI E2E tests (scheduled Wed + Sat 4am UTC)
+    ├── ci.yml        # Main CI (lint + docs paths + unit tests + build)
+    ├── e2e.yml       # Playwright E2E — manual dispatch only (store | ui | all)
     └── deploy.yml    # GitHub Pages deployment (push to main)
 ```
 

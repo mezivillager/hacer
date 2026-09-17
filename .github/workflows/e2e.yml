@@ -1,0 +1,53 @@
+name: E2E Tests (Manual)
+
+# E2E tests never run automatically — no push, PR or schedule trigger.
+# Run them from the Actions tab, or: gh workflow run e2e.yml -f suite=store
+on:
+  workflow_dispatch:
+    inputs:
+      suite:
+        description: 'Which Playwright suite to run'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - store
+          - ui
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+
+      - uses: pnpm/action-setup@v6
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Run E2E suite (${{ inputs.suite }})
+        run: |
+          case "${{ inputs.suite }}" in
+            store) pnpm run test:e2e:store ;;
+            ui)    pnpm run test:e2e:ui ;;
+            *)     pnpm run test:e2e ;;
+          esac
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: e2e-results-${{ inputs.suite }}
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7

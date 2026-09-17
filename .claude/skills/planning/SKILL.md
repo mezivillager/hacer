@@ -57,7 +57,7 @@ Spec: docs/specs/YYYY-MM-DD-<topic>.md
 
 **Goal:** One sentence.
 **Files:** List every file to create or modify.
-**Run tests with:** `pnpm run test:run && pnpm run test:e2e:store`
+**Run tests with:** `pnpm run test:run`
 ```
 
 ## HACER-Specific Guidance

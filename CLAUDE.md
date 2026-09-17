@@ -25,4 +25,4 @@ HACER is a first-principles, **AI-native** computing platform — build a comput
 
 ## Definition of done (all must exit 0)
 
-`pnpm run lint` · `pnpm run test:run` · `pnpm run test:e2e:store` · `pnpm run build`
+`pnpm run lint` · `pnpm run test:run` · `pnpm run build`

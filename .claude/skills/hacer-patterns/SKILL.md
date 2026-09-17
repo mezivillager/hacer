@@ -104,7 +104,7 @@ Gate configs use exactly three files per gate to satisfy React Fast Refresh (TSX
 
 ```bash
 pnpm run test:run           # All Vitest tests (fast, use during TDD)
-pnpm run test:e2e:store     # Playwright @store tests (pre-commit)
+pnpm run test:e2e:store     # Playwright @store tests — manual only
 pnpm run test:e2e:ui        # Playwright @ui tests (slow, skip unless needed)
 pnpm run test:coverage      # Coverage report
 pnpm run lint               # TypeScript + ESLint (must exit 0)

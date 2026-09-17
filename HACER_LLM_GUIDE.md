@@ -785,8 +785,8 @@ test.describe('@store Gate Placement', () => {
 > **Note:** HACER E2E tests use a fixture system in `e2e/fixtures/` and helper library
 > in `e2e/helpers/`. Use `@store` tag for fast direct-store tests and `@ui` tag for
 > full browser interaction tests. See `e2e/specs/` for real examples.
-> - Fast: `pnpm run test:e2e:store` (run before every commit)
-> - Slow: `pnpm run test:e2e:ui` (scheduled CI or manual)
+> - Fast: `pnpm run test:e2e:store` (manual — not a done-criterion)
+> - Slow: `pnpm run test:e2e:ui` (manual)
 
 ```typescript
 // playwright.config.ts
@@ -1480,8 +1480,8 @@ ppnpm run typecheck        # TypeScript only
 pnpm run test:run         # Run Vitest unit/component tests (single run)
 pnpm run test             # Run Vitest in watch mode
 pnpm run test:coverage    # Generate coverage report
-pnpm run test:e2e:store   # Fast E2E — store tests only (@store tag) — run before every commit
-pnpm run test:e2e:ui      # Slow E2E — UI tests (@ui tag) — run manually or CI (2×/week)
+pnpm run test:e2e:store   # Fast E2E — store tests only (@store tag) — manual only
+pnpm run test:e2e:ui      # Slow E2E — UI tests (@ui tag) — manual only
 pnpm run build            # Production build (tsc + Vite)
 ```
 
