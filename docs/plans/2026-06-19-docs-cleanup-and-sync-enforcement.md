@@ -51,7 +51,7 @@
 
 Run:
 ```bash
-cd /Users/villager/Documents/codelab/slow/hacer
+cd /Users/villager/Documents/codelab/ha/hacer
 git checkout -b docs/cleanup-and-sync-enforcement
 ```
 Expected: `Switched to a new branch 'docs/cleanup-and-sync-enforcement'`

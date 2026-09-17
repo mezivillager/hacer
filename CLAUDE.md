@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-> **Pointer file.** Sessions normally run from the parent workspace (`slow/`), whose `../CLAUDE.md` carries the cross-repo orientation, the project North Star, and the verified architecture overview. **If you opened a session directly in `hacer/`, read `../CLAUDE.md` first when it exists.** This file is a thin signpost so nothing is lost when `hacer/` is opened in isolation.
+> **Pointer file.** Sessions normally run from the parent workspace (`ha/`), whose `../CLAUDE.md` carries the cross-repo orientation, the project North Star, and the verified architecture overview. **If you opened a session directly in `hacer/`, read `../CLAUDE.md` first when it exists.** This file is a thin signpost so nothing is lost when `hacer/` is opened in isolation.
 
 ## Canonical entry docs (this repo)
 
