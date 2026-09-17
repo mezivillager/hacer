@@ -12,7 +12,6 @@ export default defineConfig([
     'test-results',
     'playwright-report',
     'coverage',
-    '.stryker-tmp',
     'design-system/**',
     '.cursor/**', // Vendored ECC / IDE harness — not application source
     '.worktrees/**', // Sibling git worktrees — they lint themselves on their own branches

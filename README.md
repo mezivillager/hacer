@@ -50,7 +50,7 @@ Completed Phase 0.5 building blocks include the chip registry/Nand primitive, nu
 - Wire selection and deletion
 - HACK HDL parser for Project 1 syntax
 - `.tst` and `.cmp` parsers plus Project 1 fixture corpora
-- Automated CI, mutation testing workflow, scheduled UI E2E, and semantic-release
+- Automated CI, scheduled UI E2E, and semantic-release
 
 **Coming next:**
 - HDL compiler for runnable chip definitions
@@ -103,7 +103,6 @@ Open [http://localhost:5173](http://localhost:5173) to view the simulator locall
 | next-themes | Light/dark/system theme handling |
 | Vitest | Unit testing |
 | Playwright | E2E testing |
-| Stryker | Mutation testing |
 | semantic-release | Automated releases |
 
 ## Project Structure
@@ -166,7 +165,7 @@ HACER is developed in phases, each building on the previous. The full roadmap sp
 |-------|--------|-------------|
 | 1.5 | Complete | Tailwind v4 + shadcn/ui shell, tokens, theme switching |
 | 2.5 | Complete / maintain | Developer tooling, CI, hooks, and agent harness without a separate component explorer |
-| 3.5 | Partially Complete | Vitest, Playwright, Stryker, CI, and scheduled UI E2E are active; property/visual regression tooling remains unselected |
+| 3.5 | Partially Complete | Vitest, Playwright, CI, and scheduled UI E2E are active; property/visual regression tooling remains unselected |
 | 4.5 | Complete | semantic-release, conventional commits, changelog, release workflow |
 | 5 | Planned | Core architecture refactor, branded types, Zod schemas, event system |
 | 6 | Planned | Plugin system, renderer/analyzer/agent plugin framework |

@@ -227,42 +227,6 @@ it('renders with correct title', () => {
 
 ---
 
-## Test Quality Verification
-
-### Mutation Testing with Stryker
-
-Mutation testing automatically verifies test quality by introducing bugs (mutants) and checking if tests catch them.
-
-```bash
-# Run mutation testing
-npm run stryker
-
-# View HTML report
-open reports/mutation/html/index.html
-```
-
-**Interpreting Results:**
-- **Killed mutants**: Tests caught the bug ✅
-- **Survived mutants**: Tests missed the bug ❌ (weak tests)
-- **Timeout/Error**: Mutant caused infinite loop or crash
-- **No coverage**: Code not covered by any test
-
-**Target Scores:**
-- 80%+ mutation score for critical logic (simulation, core)
-- 60%+ for UI components
-- 50% minimum threshold (build fails below this)
-
-### Common Survived Mutants and Fixes
-
-| Mutant Type | Example | Fix |
-|-------------|---------|-----|
-| Boundary | `>` → `>=` | Add boundary test cases |
-| Negation | `!x` → `x` | Test both true/false paths |
-| Arithmetic | `+` → `-` | Verify calculation results |
-| Return value | `return x` → `return null` | Assert on return value |
-
----
-
 ## E2E Test Strategy (Playwright)
 
 E2E tests come in **pairs**: Store tests (fast) and UI tests (slow).
@@ -487,6 +451,5 @@ describe('gateLogic invariants', () => {
 
 ## References
 
-- [Stryker Mutator](https://stryker-mutator.io/)
 - [Testing Trophy](https://kentcdodds.com/blog/the-testing-trophy-and-testing-classifications)
 - [Vitest Documentation](https://vitest.dev/)

@@ -33,3 +33,4 @@ It captures decisions here and then runs the author pass in [`../llm-docs-sync.m
 | [0008](0008-scene-graph-routing-testing-layer.md) | Scene-graph routing testing layer as DoD enforcer | Accepted | 2026-06-26 |
 | [0009](0009-bus-components-entity-and-wireendpoint-bus.md) | Bus components as a separate entity; `'bus'` WireEndpoint | Accepted | 2026-06-27 |
 | [0010](0010-no-absolute-paths-in-docs.md) | No machine-specific absolute paths in documentation | Accepted | 2026-09-17 |
+| [0011](0011-remove-stryker-mutation-testing.md) | Remove Stryker mutation testing | Accepted | 2026-09-17 |

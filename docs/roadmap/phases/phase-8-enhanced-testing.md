@@ -9,14 +9,13 @@
 
 ## Overview
 
-Phase 8 expands the current Vitest/Playwright/Stryker baseline into a broader compatibility and regression strategy. It is future work; do not treat property testing, visual regression, or broad compatibility corpus coverage as complete today.
+Phase 8 expands the current Vitest/Playwright baseline into a broader compatibility and regression strategy. It is future work; do not treat property testing, visual regression, or broad compatibility corpus coverage as complete today.
 
 ## Current Baseline
 
 - Vitest unit tests
 - Playwright store E2E tests
 - Scheduled Playwright UI tests
-- Stryker mutation workflow
 - Phase 0.5 parser/test-fixture foundations in progress
 
 ## Future Deliverables

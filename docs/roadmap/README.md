@@ -3,7 +3,7 @@
 **Last Updated:** 2026-05-12  
 **Project:** HACER - Hardware Architecture and Constraints Explorer & Researcher  
 **Current Product Phase:** Phase 0.5 - nand2tetris Project 1 foundation  
-**Current Infrastructure Baseline:** Node 22, React 19, TypeScript 5.9, Vite 8, Zustand 5, React Three Fiber 9, Tailwind CSS v4, shadcn/ui-style primitives, Vitest 4, Playwright 1.57, Stryker, semantic-release
+**Current Infrastructure Baseline:** Node 22, React 19, TypeScript 5.9, Vite 8, Zustand 5, React Three Fiber 9, Tailwind CSS v4, shadcn/ui-style primitives, Vitest 4, Playwright 1.57, semantic-release
 
 ---
 
@@ -15,7 +15,7 @@ Already-completed infrastructure should not be re-planned as future work:
 
 - Phase 0 and Phase 0.25 foundation work is complete.
 - The Tailwind/shadcn design shell is implemented in `src/components/ui/`, `src/components/ui-kit/`, `src/styles/`, and `src/theme/`.
-- CI, linting, Vitest, Playwright store E2E, scheduled UI E2E, mutation testing, commitlint, lint-staged, and semantic-release are present.
+- CI, linting, Vitest, Playwright store E2E, scheduled UI E2E, commitlint, lint-staged, and semantic-release are present.
 - Story-driven component tooling is not part of the selected roadmap.
 
 Use [implementation.md](implementation.md) for the live checklist and `docs/plans/phase-0.5-tickets-CHECKLIST.md` for ticket-level Phase 0.5 status.
@@ -46,7 +46,7 @@ The near-term product path is intentionally narrow:
 | [0.7](phases/phase-0.7-computer-architecture.md) | Planned | Projects 4-5 CPU, memory map, ROM, screen, keyboard |
 | [1.5](phases/phase-1.5-design-system.md) | Complete / maintain | Tailwind/shadcn design shell, theme tokens, compact app chrome |
 | [2.5](phases/phase-2.5-developer-tooling.md) | Complete / maintain | CI, local hooks, release hygiene, agent docs |
-| [3.5](phases/phase-3.5-testing-infrastructure.md) | Partial | Vitest, Playwright, Stryker, scheduled UI E2E; future coverage/property/visual work |
+| [3.5](phases/phase-3.5-testing-infrastructure.md) | Partial | Vitest, Playwright, scheduled UI E2E; future coverage/property/visual work |
 | [4.5](phases/phase-4.5-release-management.md) | Complete / maintain | semantic-release, changelog, GitHub releases |
 
 ## Future Platform Phases

@@ -122,7 +122,7 @@ docs/
 ├── plans/            # Implementation plan artifacts (output of planning skill)
 ├── testing/          # Testing documentation (consolidated)
 │   ├── README.md     # Testing docs index
-│   ├── standards.md  # TDD workflow, test quality, mutation testing
+│   ├── standards.md  # TDD workflow, test quality
 │   ├── structure.md  # Test file organization
 │   └── templates/    # TDD templates for unit, component, E2E tests
 ├── llm-workflow.md   # Workflow orchestration for AI agents (plan, subagents, verification)
@@ -166,7 +166,6 @@ tasks/                # Task management for AI agents
 
 scripts/
 ├── check-test-files.sh  # Pre-commit TDD verification script
-├── stryker-changed.sh   # Run Stryker on changed files only (CI)
 └── sync-superpowers.sh  # Sync skills from obra/superpowers (preserves hacer-patterns)
 
 .github/
@@ -174,7 +173,6 @@ scripts/
 ├── PULL_REQUEST_TEMPLATE.md      # PR template with TDD checklist
 └── workflows/
     ├── ci.yml        # Main CI (lint + unit tests + build + E2E store tests)
-    ├── mutation.yml  # Stryker mutation testing (PRs touching src/)
     ├── e2e-ui.yml    # Slow UI E2E tests (scheduled Wed + Sat 4am UTC)
     └── deploy.yml    # GitHub Pages deployment (push to main)
 ```
@@ -601,7 +599,6 @@ import { Scene } from '@/components/canvas/Scene';
   - **UI tests** (`@ui`): Slow, use UI interactions - run manually or CI (twice weekly)
   - Store and UI tests come in pairs, sharing scenarios from `e2e/scenarios/`
   - **E2E Test Optimization**: Scene reuse, test reorganization ✅ (Phase 0.25.8)
-- **Mutation Testing**: Stryker for test quality verification (`pnpm run stryker`)
 - **Test Setup**: `src/test/setup.ts` - Global test configuration
 - **TDD Templates**: `docs/testing/templates/` - Copy-paste templates for new tests
 - **Testing Standards**: `docs/testing/standards.md` - TDD workflow documentation
