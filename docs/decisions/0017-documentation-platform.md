@@ -1,8 +1,8 @@
 # 0017. Documentation platform: Astro Starlight at `/docs/` on the existing Pages deploy
 
-- **Status:** Proposed
+- **Status:** Accepted (by delegation — owner, 2026-09-18: "documentation has to research the state of the art … and do everything needed to take that live, deployment, etc")
 - **Date:** 2026-09-18
-- **Deciders:** Repo owner (to accept); proposed by the #267 research session
+- **Deciders:** Repo owner (delegated); proposed by the #267 research session
 - **Phase:** Phase 0.5
 
 ## Context
