@@ -27,10 +27,13 @@ policy: the other half is an *independent* QA that drives the changed flow in a 
 
 ## Decision
 1. **A PR is critical** when it touches `src/components/**`, `src/gates/**`, `src/nodes/**`,
-   `src/App.tsx` or `src/store/actions/**` (user-facing behaviour), or carries the `critical`
-   label, or fixes a `sev:high` / `sev:critical` bug (the PR carries that `sev:*` label). The
-   check reads the PR's file list and labels; nothing else. The definition is code:
-   `scripts/browser-qa.logic.mjs` (`CRITICAL_PATHS`, `CRITICAL_LABEL`, `SEVERITY_LABELS`).
+   `src/App.tsx` or `src/store/actions/**` (user-facing behaviour; a rename counts by its old
+   path too), or carries the `critical` label, or fixes a `sev:high` / `sev:critical` bug — the
+   PR or an issue its body links (`Fixes` / `Closes` / `Resolves` / `Part of #n`) carries
+   `critical`, `sev:high` or `sev:critical`. `sev:*` is an issue label, so the check reads the
+   PR's files, labels and body and the linked issues' labels (`issues: read`), and re-runs when
+   the body is edited. The definition is code: `scripts/browser-qa.logic.mjs` (`CRITICAL_PATHS`,
+   `CRITICAL_LABEL`, `SEVERITY_LABELS`, `decide`).
 2. **Browser suites run automatically in GitHub Actions only.** `.github/workflows/browser-qa.yml`
    (job `browser-qa`) runs on every PR and always reports. A non-critical PR exits green with
    `BROWSER-QA: skipped (no critical paths)`. A critical PR builds the bundle, serves it with
@@ -65,9 +68,9 @@ policy: the other half is an *independent* QA that drives the changed flow in a 
 - It runs under `pull_request` because it must execute the PR's code, so — unlike `pr-hygiene` —
   a PR can edit its own copy. `scripts/browser-qa*.mjs` belongs on #151's protected-path list
   beside `.github/**` and `playwright.config.ts`.
-- The `sev:*` rule reads the PR's labels, not the linked issue's: a fix for a `sev:high` bug
-  carries that label on its PR (or `critical`). Resolving `Fixes #n` labels would need
-  `issues: read`; deliberately not done here.
+- A label added to a linked issue after the PR's last run takes effect on the next push, body
+  edit or `gh workflow run browser-qa.yml -f pr=<n>`; a link the API cannot resolve fails the
+  check rather than skipping it.
 
 ## Affected living docs
 `docs/decisions/0012-e2e-tests-manual-only.md` (status), `docs/decisions/README.md` (index),
