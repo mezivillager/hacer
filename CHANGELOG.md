@@ -1,5 +1,7 @@
 # Changelog
 
+> **Since 2026-09-18 (ADR-0015)** release notes are published on the GitHub Releases page and this file is no longer updated automatically; entries below are the history up to v2.11.0.
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
