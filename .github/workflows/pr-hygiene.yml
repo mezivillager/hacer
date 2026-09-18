@@ -9,18 +9,28 @@ name: PR Hygiene
 # always the base branch's copy. The PR itself is read through the GitHub API and is never
 # checked out or executed, so a PR cannot edit its own guard. Keep it that way: no `ref:`
 # on the checkout, no `pnpm install`, no third-party actions.
+#
+# That also means a change to this workflow only takes effect once it is on main. To try it
+# before that, or to re-check any PR by hand, dispatch it with a PR number:
+#   gh workflow run pr-hygiene.yml --ref <branch-with-the-workflow> -f pr=<n>
 
 on:
   pull_request_target:
     types: [opened, synchronize, reopened, edited, labeled, unlabeled]
     branches: [main]
+  workflow_dispatch:
+    inputs:
+      pr:
+        description: Pull request number to check
+        required: true
+        type: number
 
 permissions:
   contents: read
   pull-requests: read
 
 concurrency:
-  group: pr-hygiene-${{ github.event.pull_request.number }}
+  group: pr-hygiene-${{ github.event.pull_request.number || inputs.pr }}
   cancel-in-progress: true
 
 jobs:
@@ -42,4 +52,4 @@ jobs:
         run: node scripts/pr-hygiene.mjs "$PR_NUMBER"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_NUMBER: ${{ github.event.pull_request.number || inputs.pr }}
