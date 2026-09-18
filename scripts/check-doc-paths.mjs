@@ -27,9 +27,8 @@ import {
 /**
  * Docs whose path citations must all exist (ADR-0014). A doc opts in by being
  * listed here once its citations are green, so this check is never red on main.
- * REPO_MAP.md joins with the PR that fixes its 66 dead citations (#241).
  */
-const PATH_EXISTENCE_FILES = ['AGENTS.md']
+const PATH_EXISTENCE_FILES = ['REPO_MAP.md', 'AGENTS.md']
 
 const staged = process.argv.includes('--staged')
 

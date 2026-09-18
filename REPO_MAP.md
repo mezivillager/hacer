@@ -14,8 +14,8 @@ This document helps AI agents and developers understand the codebase structure a
 | **Builtin chip definitions** | `src/core/chips/appRegistry.ts`, `src/core/chips/builtins/project01.ts` |
 | **3D chip body & icons** | `src/components/scene/ChipBody3D.tsx`, `src/components/scene/chipBodyLayout.ts`, `src/components/ui/icons/ChipIcons.tsx` |
 | **Gate placement / renderer** | `src/gates/GateRenderer.tsx`, `src/gates/common/BaseGate.tsx`, `HACER_LLM_GUIDE.md` |
-| **Bus splitter/joiner components** | entity: `src/store/types.ts` (`BusComponent`), actions `src/store/actions/busActions/` + `busPlacementActions/`; logic `src/simulation/busLogic.ts`; layout `src/components/scene/busBodyLayout.ts`; render `src/nodes/BusSplitter3D.tsx`/`BusJoiner3D.tsx`/`BusComponentRenderer.tsx`; see ADR-0009 |
-| **Simulation / boolean logic** | `src/simulation/` · specs: `src/simulation/gateLogic.test.ts` |
+| **Bus splitter/joiner components** | entity: `src/store/types.ts` (`BusComponent`), actions `src/store/actions/busActions/` + `src/store/actions/busPlacementActions/`; logic `src/simulation/busLogic.ts`; layout `src/components/scene/busBodyLayout.ts`; render `src/nodes/BusSplitter3D.tsx`, `src/nodes/BusJoiner3D.tsx`, `src/nodes/BusComponentRenderer.tsx`; see ADR-0009 |
+| **Simulation / boolean logic** | `src/simulation/topologicalEval.ts` (evaluates placed chips through `src/core/chips/evaluateChip.ts`) · specs: `src/simulation/topologicalEval.test.ts`, per-chip truth tables in `src/core/chips/builtins/project01.test.ts` |
 | **R3F canvas / scene** | `src/components/canvas/` |
 | **Non-3D DOM shell / 3D⇄2D boundary** | `src/components/Shell.tsx` (`App = providers → <Shell scene={<CanvasArea/>} />`); the store is the contract |
 | **RTL integration tests (non-3D UX)** | `src/test/renderShell.tsx` harness — render the shell with no Canvas; rigor in AGENTS.md §3 Step 4.1 |
@@ -28,7 +28,7 @@ This document helps AI agents and developers understand the codebase structure a
 
 ## ⚠️ IMPORTANT: Phase Tracking & Maintenance
 
-**Last Updated:** 2026-06-20  
+**Last Updated:** 2026-09-18  
 **Current Phase:** Phase 0.5 (In Progress)  
 **Completed Infrastructure:** Phase 0.25 UI/canvas, Tailwind/shadcn design shell, semantic-release; P05-16 HDL compiler + evaluateChip seam  
 **Next Product Phase:** Phase 0.6: Arithmetic & Sequential Logic
@@ -54,7 +54,8 @@ This document helps AI agents and developers understand the codebase structure a
 
 **AI Agent Instructions:**
 1. **Always check "Current Phase" first** - Only use rules/patterns for current phase
-2. **Verify structure exists** - Don't assume future directories exist
+2. **Verify structure exists** - Don't assume future directories exist. Every path cited inline in this file
+   (and in `AGENTS.md`) is checked by `pnpm run lint:docs`; fenced tree diagrams are not (ADR-0014)
 3. **Check phase indicators** - Look for ✅/🔄/⏸️ markers to know what's active
 4. **Update this file** - If you create new directories, document them here immediately
 
@@ -69,12 +70,21 @@ src/
 │   │   ├── Scene/    # 3D scene components (Scene, renderConfig, SceneGrid, GroundPlane, PlacementPreview)
 │   │   ├── handlers/ # Canvas event handlers
 │   │   └── hooks/    # useThemeColor (CSS-var \u2192 THREE.Color resolver)
+│   ├── scene/        # ChipBody3D (generic 3D body for any registered chip), chipBodyLayout,
+│   │                 #   busBodyLayout — pin-layout math the renderers share
 │   ├── ui/           # HACER shell components (CompactToolbar, RightActionBar,
 │   │   │             #   PropertiesPanel, HelpBar, KeyboardShortcutsModal,
 │   │   │             #   StatusBar, DemoOverlay, coming-soon helper, gate glyphs)
 │   └── ui-kit/       # shadcn/ui primitives (button, tooltip, popover, dialog,
 │                     #   tabs, switch, separator, input, label, card, kbd,
 │                     #   theme-provider). Drop-in copies via `npx shadcn add`.
+├── core/             # Pure logic, no React (imports store *types* only)
+│   ├── chips/        # ChipDefinition types, ChipRegistry, appRegistry (builtin + user singletons),
+│   │   │             #   evaluateChip seam, combineRegistries
+│   │   └── builtins/ # project01.ts — the 16 Project 1 builtins (definition + evaluate + test)
+│   ├── hdl/          # HACK HDL parser + compiler, Project 1 HDL sources/fixtures
+│   ├── serialization/ # Circuit document save/load format (wired via persistenceActions)
+│   └── testing/      # .tst/.cmp parsers, test engine, implementation sources, chip completion
 ├── lib/              # notify (Sonner-backed), utils (cn helper), demoTour, performanceModeStorage
 ├── styles/           # globals.css (Tailwind v4 + OKLch tokens + Geist fonts)
 ├── gates/            # Gate placement plumbing (per-chip components and icons live elsewhere — see core/chips/ and components/scene/)
@@ -100,6 +110,10 @@ src/
 │       ├── nodePlacementActions/ # Node placement mode
 │       ├── signalActions/      # Junction signal
 │       ├── junctionPlacementActions/ # Junction placement
+│       ├── busActions/ + busPlacementActions/ # Bus splitter/joiner CRUD and placement (ADR-0009)
+│       ├── persistenceActions/ # Circuit save/load (localStorage)
+│       ├── statusActions/      # Status bar messages
+│       ├── testActions/        # runChipTest — Test Lab store action
 │       ├── viewActions/        # Axes, properties panel, and performance mode UI actions
 │       └── pinHelpers/         # Pin position calculation helpers
 ├── hooks/           # Custom React hooks (useKeyboardShortcuts, useGateDrag)
@@ -141,14 +155,17 @@ tasks/                # Task management for AI agents
 ├── CONSTITUTION.md   # Non-negotiable behavioral boundaries (Step 0)
 ├── CLAUDE.md        # Project overview (references AGENTS.md + skills)
 ├── profiles/        # Loki mode and other execution profiles
-└── skills/          # Composable skill files (21 skills, load on demand)
+├── rules/           # workflow.md (pointer to docs/llm-workflow.md)
+└── skills/          # Composable skill files (24 skills, load on demand)
     ├── brainstorming/   # Design-first HARD GATE, visual companion, spec reviewer
     ├── code-review/
     ├── debugging/
     ├── dispatching-parallel-agents/
+    ├── docs-sync/       # Session-end ADR capture + living-doc reconciliation (ours)
     ├── executing-plans/
     ├── finishing-a-development-branch/
     ├── git-operations/
+    ├── ha-next/ · ha-prompt-it/   # Harness loop skills (ours)
     ├── hacer-patterns/
     ├── planning/
     ├── project-mapper/
@@ -165,8 +182,11 @@ tasks/                # Task management for AI agents
     └── writing-skills/
 
 scripts/
+├── backlog.mjs          # `ready` / `projects` — the backlog over GitHub Issues, pick rule from docs/portfolio.md (ADR-0013)
+├── check-doc-paths.mjs  # lint:docs — no absolute paths (all docs) + cited paths exist (REPO_MAP, AGENTS)
 ├── check-test-files.sh  # Pre-commit TDD verification script
-└── sync-superpowers.sh  # Sync skills from obra/superpowers (preserves hacer-patterns)
+├── hooks/               # Pure logic + tests behind the hooks (docPaths, docPathExists, docsSyncStop)
+└── sync-superpowers.sh  # Sync skills from obra/superpowers (preserves hacer-patterns, docs-sync)
 
 .github/
 ├── copilot-instructions.md       # GitHub Copilot quick-start
@@ -174,51 +194,35 @@ scripts/
 └── workflows/
     ├── ci.yml        # Main CI (lint + docs paths + unit tests + build)
     ├── e2e.yml       # Playwright E2E — manual dispatch only (store | ui | all)
-    └── deploy.yml    # GitHub Pages deployment (push to main)
+    ├── deploy.yml    # GitHub Pages deployment (push to main)
+    ├── pr-preview.yml # PR preview deployment
+    └── release.yml   # semantic-release
 ```
 
-### 🔄 Next Phase Structure (Phase 0.5 — Project 1: Boolean Logic)
+### 🔄 Phase 0.5 — Project 1: Boolean Logic (in progress)
 
-**Expected additions:**
-- `src/core/chips/` - Chip hierarchy (ChipRegistry, ChipDefinition, composite chips)
-- `src/core/hdl/` - HDL parser and compiler
-- `src/core/testing/` - Test script and compare file execution
-- `src/simulation/topologicalEval.ts` - Topological sort evaluation
-- `src/components/ui/ChipDefinitionPanel.tsx` - Chip I/O definition UI
-- `src/components/ui/TestResultsPanel.tsx` - Test results and diff display
-- `src/components/ui/PinoutPanel.tsx` - Chip pin inspection
-- `src/components/ui/ChipWorkflowBrowser.tsx` - Project/chip navigation
-- `src/components/ui/HDLEditor.tsx` - HDL code editor
-- `src/components/ui/StatusBar.tsx` - Error/status reporting
-- `src/components/scene/ChipBody3D.tsx` - Generic 3D body for any registered chip (used by `GateRenderer`)
-- `src/components/scene/chipBodyLayout.ts` - Pin-layout math (centers, body sizing) for `ChipBody3D`
-- `src/components/ui/icons/ChipIcons.tsx` - 16 SVG icons keyed by chip name (toolbar buttons, pinout panel)
-- `src/core/chips/appRegistry.ts` - Singleton builtin + user chip registries
-- `src/core/chips/builtins/project01.ts` - Project 1 builtin registration (16 chips: Nand…DMux8Way)
-- `src/gates/components/CompositeChip3D.tsx` - 3D composite chip rendering (planned)
-- `src/gates/components/BusSplitter3D.tsx` - Bus splitter visual component (planned)
-- `src/gates/components/BusJoiner3D.tsx` - Bus joiner visual component (planned)
-- `src/store/actions/persistenceActions/` - Circuit save/load to localStorage
-- `src/core/testing/project01/` - Provider-backed test fixtures (.hdl, .tst, .cmp)
+Landed and shown in the tree above: `src/core/chips/` (registry, builtins, `evaluateChip` seam),
+`src/core/hdl/` (parser + compiler), `src/core/testing/` (`.tst`/`.cmp` engine, fixtures in
+`src/core/testing/project1TstFixtures.ts` and `src/core/testing/project1CmpFixtures.ts`), `src/simulation/topologicalEval.ts`,
+`src/components/scene/ChipBody3D.tsx` + `src/components/scene/chipBodyLayout.ts`, `src/components/ui/icons/ChipIcons.tsx`,
+`src/components/ui/TestResultsPanel.tsx`, `src/components/ui/PinoutPanel.tsx`, `src/components/ui/StatusBar.tsx`,
+`src/store/actions/persistenceActions/`, and the bus components under `src/nodes/`.
 
-### 🔄 Phase 0.6 — Projects 2-3: Arithmetic & Sequential Logic
+**Still to come (no files yet — do not cite paths for these until they exist):** an HDL editor panel,
+a chip I/O definition panel, and a project/chip workflow browser. (User/composite chips already render
+through `ChipBody3D`, which resolves `chipName` from the builtin *and* user registries.)
+Spec: `docs/roadmap/phases/phase-0.5-nand2tetris-foundation.md`; tickets: `docs/plans/phase-0.5-tickets-CHECKLIST.md`.
 
-**Expected additions:**
-- `src/core/gates/sequential/` - DFF, clock signal system
-- `src/core/gates/memory/` - SparseMemory, RAM implementations
-- `src/core/testing/project02/` - Project 2 test fixtures
-- `src/core/testing/project03/` - Project 3 test fixtures
+### 🔄 Phase 0.6 — Projects 2-3: Arithmetic & Sequential Logic (planned)
 
-### 🔄 Phase 0.7 — Projects 4-5: Computer Architecture
+No files yet. Expect Project 2/3 builtins as siblings of `src/core/chips/builtins/project01.ts`, a
+clock/DFF model and RAM in `src/core/`, and their `.tst`/`.cmp` fixtures next to the Project 1 ones in
+`src/core/testing/`. Spec: `docs/roadmap/phases/phase-0.6-arithmetic-sequential.md`.
 
-**Expected additions:**
-- `src/core/cpu/` - Hack CPU implementation
-- `src/core/memory/` - Memory-mapped I/O (Screen, Keyboard)
-- `src/core/rom/` - ROM32K, .hack file loader
-- `src/components/ui/ScreenDisplay.tsx` - Screen I/O rendering
-- `src/components/ui/DebugPanel.tsx` - Execution and debugging UI
-- `src/core/testing/project04/` - Project 4 test programs
-- `src/core/testing/project05/` - Project 5 test fixtures
+### 🔄 Phase 0.7 — Projects 4-5: Computer Architecture (planned)
+
+No files yet. Expect the Hack CPU, memory-mapped I/O (Screen, Keyboard), ROM32K + `.hack` loading,
+and an execution/debugging UI. Spec: `docs/roadmap/phases/phase-0.7-computer-architecture.md`.
 
 ### ⏸️ Future Structure (Phases 5-24 - Not Yet Implemented)
 
@@ -338,7 +342,7 @@ hacer/
 - `src/store/actions/placementActions/` - Grid-based placement actions
 - `src/store/circuitStore.ts` - Main Zustand store
 - `src/store/actions/` - State mutation actions
-- `src/simulation/gateLogic.ts` - Gate logic functions
+- `src/simulation/topologicalEval.ts` - Circuit evaluation (per-chip logic lives on `ChipDefinition.evaluate` in `src/core/chips/builtins/project01.ts`)
 - `src/components/canvas/Scene/` - 3D scene components
 - `src/components/ui/` - HACER shell UI components
 - `src/gates/GateRenderer.tsx` + `src/components/scene/ChipBody3D.tsx` - Registry-driven 3D rendering (replaces per-gate `src/gates/components/{Nand,And,Or,Not,Xor}Gate.tsx` deleted 2026-05-24)
@@ -378,53 +382,25 @@ hacer/
 - See [Gap Analysis](docs/compatibility/nand2tetris/project1/gap-analysis.md) for detailed requirements
 
 ### 🔄 Phase 0.6: Projects 2-3 — Arithmetic & Sequential Logic (Planned)
-- `src/core/gates/sequential/` - DFF, clock system, Register, PC
-- `src/core/gates/memory/` - SparseMemory, RAM8 through RAM16K
+- No files yet — builtins will sit beside `src/core/chips/builtins/project01.ts`
+- DFF, clock system, Register, PC; SparseMemory, RAM8 through RAM16K
 - Clock signal propagation and two-phase simulation
 - Project 2 chips (HalfAdder, FullAdder, Add16, Inc16, ALU)
 - Project 3 chips (Bit, Register, RAM8..RAM16K, PC)
 
 ### 🔄 Phase 0.7: Projects 4-5 — Computer Architecture (Planned)
-- `src/core/cpu/` - Hack CPU, instruction decode, program counter
-- `src/core/memory/` - Memory-mapped I/O (Screen, Keyboard)
-- `src/core/rom/` - ROM32K, .hack file loading
+- No files yet
+- Hack CPU, instruction decode, program counter; memory-mapped I/O (Screen, Keyboard); ROM32K, `.hack` file loading
 - Execution and debugging UI (step, run, register/memory views)
 - Screen display and keyboard input handling
 
-### ⏸️ Phase 5: Core Architecture (Future)
-- `src/core/gates/registry.ts` - Single source of truth for gate definitions
-- `src/core/types/branded.ts` - Branded ID types (GateId, WireId, PinId, CircuitId)
-- `src/core/circuit/schema.ts` - Zod validation schemas
-- `src/core/events/types.ts` - Event system types
-- `src/api/index.ts` - Public API entry point
-- Migration: `src/simulation/` → `src/core/simulation/`
+### ⏸️ Phases 5-24 (Future)
 
-### ⏸️ Phase 6: Plugin System (Future)
-- `src/plugins/types.ts` - Plugin interface definitions
-- `src/plugins/registry.ts` - Plugin registry with security
-- `src/plugins/renderers/three/` - 3D renderer as plugin
-- `src/plugins/analyzers/` - Analyzer plugins
-
-### ⏸️ Phase 7: AI Integration (Future)
-- `src/api/` - Complete public API (all human actions)
-- `.ai/context.yaml` - AI context file
-- `llms.txt` - Quick reference for AI assistants
-
-### ⏸️ Phase 9: Performance (Future)
-- `src/workers/simulation.worker.ts` - Web Worker for simulation
-- Performance monitoring and optimization
-
-### ⏸️ Phase 10: Software Stack (Future)
-- `src/core/software/assembler/` - Hack assembler
-- `src/core/software/vm/` - VM interpreter
-- `src/core/software/compiler/` - Jack compiler
-- `src/components/software/` - Software development UI
-
-### ⏸️ Phase 12: Backend & Collaboration (Future)
-- `apps/api/` - NestJS backend application
-- `apps/web/` - Frontend React app
-- `packages/core/` - Shared core logic package
-- Database migrations and models
+No files yet — this map documents what exists. The planned layout (core/api/plugins/workers split,
+software stack, monorepo) is illustrated in the "Future Structure" tree above and specified per phase
+in `docs/roadmap/phases/` (`docs/roadmap/phases/phase-5-core-architecture.md` through `docs/roadmap/phases/phase-24-ai-code-review.md`); see
+`docs/roadmap/implementation.md` for the sequence. Two forward-looking files already exist:
+`llms.txt` (AI document-discovery order) and `docs/roadmap/vision.md` (AI-Agent Parity, plugin-first).
 
 ## Architecture Evolution
 
@@ -470,8 +446,8 @@ hacer/
 
 ### ⏸️ Phase 5-7: Core Architecture & Extensibility (Future)
 - **Core Layer**: Pure logic in `src/core/` (ZERO React dependencies)
-- **API Layer**: Public programmatic interface in `src/api/`
-- **Plugin System**: Extensible architecture in `src/plugins/`
+- **API Layer**: Public programmatic interface (AI-Agent Parity surface; no files yet)
+- **Plugin System**: Renderers, analyzers and tools behind stable APIs (no files yet)
 - **Type Safety**: Branded types, Zod validation
 - **Event System**: Circuit modification events
 
@@ -502,10 +478,10 @@ hacer/
 ## File Organization Conventions
 
 - **One component per file** - Maximum 200 lines per component file
-- **Co-located tests** - Test files next to implementation (e.g., `Component.tsx` and `Component.test.tsx`)
-- **Barrel exports** - Use `index.ts` files for clean imports
-- **Type definitions** - Co-locate types with components or in `src/types/` (Phase 0-4) or `src/core/types/` (Phase 5+)
-- **Pure logic separation** - All pure logic in `src/core/` (Phase 5+), no React/browser dependencies
+- **Co-located tests** - Test files next to implementation (e.g. `src/utils/grid.ts` and `src/utils/grid.test.ts`)
+- **Barrel exports** - Per-folder barrels for clean imports (e.g. `src/gates/index.ts`, `src/store/actions/index.ts`)
+- **Type definitions** - Store types in `src/store/types.ts`; pure-logic types next to their module (e.g. `src/core/chips/types.ts`, `src/core/hdl/types.ts`)
+- **Pure logic separation** - Pure logic in `src/core/` and `src/simulation/`, no React/browser dependencies
 
 ## Import Patterns
 
@@ -560,37 +536,22 @@ import { Scene } from '@/components/canvas/Scene';
 ## Adding New Features
 
 ### Adding a New Builtin Chip (Phase 0.5 — registry-driven, as of 2026-05-24)
-1. Add the chip's `BuiltinEvalFn` and `ChipDefinition` (signal names, widths) to `src/core/chips/builtins/project01.ts` (or a new `projectNN.ts`)
+1. Add the chip's `BuiltinEvalFn` and `ChipDefinition` (signal names, widths) to `src/core/chips/builtins/project01.ts` (or a new `src/core/chips/builtins/project<NN>.ts`)
 2. Register it in the singleton via `registerBuiltin(...)` so `getBuiltinChipRegistry().list()` exposes it
 3. Add an SVG icon entry in `src/components/ui/icons/ChipIcons.tsx` keyed by chip name (toolbar/pinout panel will pick it up automatically)
 4. Add the chip's truth-table fixture and a Vitest spec
 5. The 3D body, pin layout, and toolbar button are produced automatically by `ChipBody3D` / `chipBodyLayout` / `CompactToolbar` — no per-chip component file is needed
 
-### Adding a New Gate (Phase 5+)
-1. Add to `GateType` in `src/core/gates/types.ts`
-2. Add definition in `src/core/gates/registry.ts`
-3. Create renderer in `src/components/gates/` (or as plugin)
-4. Add API function in `src/api/circuit.ts`
-5. Add tests (truth table + visual + property-based)
-6. Update AI context files if needed
+### Adding a plugin, an API function, or a software-stack component (Phase 5+)
 
-### Adding a New Plugin (Phase 6+)
-1. Implement plugin interface from `src/plugins/types.ts`
-2. Add security sandboxing
-3. Register in plugin registry
-4. Document in plugin API docs
-5. Add tests for plugin functionality
-
-### Adding Software Stack Component (Phase 10+)
-1. Implement in `src/core/software/` (pure logic)
-2. Add API functions in `src/api/software.ts`
-3. Create UI in `src/components/software/`
-4. Add tests and documentation
+Not possible yet — none of those seams exist. The intended shape is in
+`docs/roadmap/phases/phase-5-core-architecture.md`, `docs/roadmap/phases/phase-6-plugin-system.md` and
+`docs/roadmap/phases/phase-10-software-stack.md`.
 
 ## Testing Structure
 
 ### ✅ Current (Phase 0.5 - In Progress)
-- **Unit Tests**: Co-located with source files (`.test.ts` or `.test.tsx`)
+- **Unit Tests**: Co-located with source files (`*.test.ts` or `*.test.tsx`)
   - Grid utilities tests: `src/utils/grid.test.ts` (section line validation)
   - Gate action tests: Updated for flat orientation
   - Pin helper tests: Updated for Y offsets becoming horizontal
