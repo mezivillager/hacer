@@ -10,6 +10,7 @@ export const WARN_LINES = 200
 export const FAIL_LINES = 400
 export const WARN_FILES = 15
 export const OVERRIDE_LABEL = 'size-override'
+export const DEPENDENCY_LABEL = 'dependencies'
 
 const LEVELS = ['pass', 'warn', 'fail']
 
@@ -93,6 +94,11 @@ export function findLinkedIssues(body) {
 /** True when there is at least one reviewable file and all of them are documentation. */
 export function isDocsOnly(reviewableFilenames) {
   return reviewableFilenames.length > 0 && reviewableFilenames.every((p) => p.startsWith('docs/') || p.endsWith('.md'))
+}
+
+/** Why the linked-issue rule does not apply to this PR, or null when it does. */
+export function linkedIssueExemption() {
+  return null // not implemented
 }
 
 // ---------------------------------------------------------------- rules
