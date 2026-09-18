@@ -157,7 +157,11 @@ every later ruling resolves against this section>
 context, Opus or better, that reads only the spec and the code it cites: does the
 contract match the code as it stands, is anything named that does not exist, does
 it build for the current phase, and is any success criterion unprovable? Fold its
-must-fixes before presenting.
+must-fixes before presenting. When the spec changes semantics under `src/core/**` or
+`src/simulation/**`, or shapes an epic or ADR in `spine`, `surfaces` or `horizon`, the
+same review includes the fidelity check (`docs/harness/fidelity-brief.md`, ADR-0018):
+the contract is checked against the oracle vectors and the book, not only against the
+code. Its proposals go to `docs/harness/fidelity-inbox.md`; they are never applied here.
 
 **The spec is the prompt.** Save it as `docs/specs/YYYY-MM-DD-<topic>.md` — one
 artifact, not two. Its contract section is the authority every later ruling
