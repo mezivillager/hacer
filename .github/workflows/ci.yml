@@ -30,8 +30,8 @@ jobs:
       - name: Lint (TypeScript + ESLint)
         run: pnpm run lint
 
-      # Catches: machine-specific absolute paths in documentation.
-      - name: Docs (no absolute paths)
+      # Catches: machine-specific absolute paths in any doc; dead path citations in REPO_MAP.md + AGENTS.md.
+      - name: Docs (paths are portable and exist)
         run: pnpm run lint:docs
 
       # Catches: failing Vitest unit and component tests.
