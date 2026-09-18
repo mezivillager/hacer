@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import {
+  DEPENDENCY_LABEL,
   FAIL_LINES,
   OVERRIDE_LABEL,
   RULES,
@@ -11,6 +12,7 @@ import {
   formatConsole,
   formatSummary,
   isDocsOnly,
+  linkedIssueExemption,
   measure,
   nextPageUrl,
   parseGeneratedPatterns,
@@ -25,6 +27,7 @@ function file(filename, additions = 1, deletions = 0, status = 'modified') {
 function pr(overrides = {}) {
   return {
     body: 'Fixes #150',
+    author: 'mezivillager',
     labels: [],
     files: [file('src/core/thing.ts', 10, 2)],
     gitattributes: '',
@@ -172,6 +175,26 @@ describe('isDocsOnly', () => {
   })
 })
 
+describe('linkedIssueExemption', () => {
+  it('exempts any *[bot] author, naming the login', () => {
+    expect(DEPENDENCY_LABEL).toBe('dependencies')
+    expect(linkedIssueExemption({ author: 'dependabot[bot]', labels: [] })).toContain('dependabot[bot]')
+    expect(linkedIssueExemption({ author: 'renovate[bot]', labels: [] })).toContain('renovate[bot]')
+  })
+
+  it('exempts a PR carrying the dependencies label, naming the label', () => {
+    expect(linkedIssueExemption({ author: 'mezivillager', labels: ['javascript', DEPENDENCY_LABEL] })).toContain(
+      DEPENDENCY_LABEL,
+    )
+  })
+
+  it('is null for a human author without the label, a missing author, and "[bot]" not at the end', () => {
+    expect(linkedIssueExemption({ author: 'mezivillager', labels: ['project:harness'] })).toBeNull()
+    expect(linkedIssueExemption({ author: undefined, labels: [] })).toBeNull()
+    expect(linkedIssueExemption({ author: '[bot]impostor', labels: [] })).toBeNull()
+  })
+})
+
 describe('evaluate', () => {
   const findingsFor = (result, rule) => result.findings.filter((f) => f.rule === rule)
   const levelsOf = (result, rule) => findingsFor(result, rule).map((f) => f.level)
@@ -258,6 +281,35 @@ describe('evaluate', () => {
     expect(result.verdict).toBe('FAIL')
   })
 
+  it('skips the linked-issue rule for a bot author and says why', () => {
+    const result = evaluate(pr({ body: 'Bumps zustand from 5.0.13 to 5.0.15.', author: 'dependabot[bot]' }))
+    expect(result.verdict).toBe('PASS')
+    expect(result.linkedIssueExemption).toContain('dependabot[bot]')
+    expect(levelsOf(result, 'linked-issue')).toEqual(['pass'])
+    expect(findingsFor(result, 'linked-issue')[0].message).toMatch(/skipped.*dependabot\[bot\]/)
+  })
+
+  it('skips the linked-issue rule for a PR carrying the dependencies label and says why', () => {
+    const result = evaluate(pr({ body: 'Bump x.', labels: [DEPENDENCY_LABEL] }))
+    expect(result.verdict).toBe('PASS')
+    expect(levelsOf(result, 'linked-issue')).toEqual(['pass'])
+    expect(findingsFor(result, 'linked-issue')[0].message).toMatch(/skipped.*dependencies/)
+  })
+
+  it('still applies the size rule to an exempt PR', () => {
+    const result = evaluate(pr({ body: null, author: 'dependabot[bot]', files: [file('src/a.ts', 401, 0)] }))
+    expect(result.verdict).toBe('FAIL')
+    expect(levelsOf(result, 'size')).toEqual(['fail'])
+    expect(levelsOf(result, 'linked-issue')).toEqual(['pass'])
+  })
+
+  it('still requires a human author without the dependencies label to link an issue', () => {
+    const result = evaluate(pr({ body: 'Bump x.', author: 'mezivillager', labels: ['javascript'] }))
+    expect(result.verdict).toBe('FAIL')
+    expect(result.linkedIssueExemption).toBeNull()
+    expect(levelsOf(result, 'linked-issue')).toEqual(['fail'])
+  })
+
   it('reports a fail even when the size rule would only warn', () => {
     const result = evaluate(pr({ body: '', files: [file('src/a.ts', 250, 0)] }))
     expect(result.verdict).toBe('FAIL')
@@ -307,6 +359,12 @@ describe('formatConsole', () => {
   it('names the linked issue on a pass', () => {
     expect(formatConsole(evaluate(pr())).split('\n')[0]).toMatch(/^HYGIENE: PASS .*issue=#150/)
   })
+
+  it('marks the issue field skipped and states the reason for an exempt PR', () => {
+    const [first, ...rest] = formatConsole(evaluate(pr({ body: null, author: 'dependabot[bot]' }))).split('\n')
+    expect(first).toMatch(/^HYGIENE: PASS .*issue=skipped/)
+    expect(rest.some((line) => /skipped.*dependabot\[bot\]/.test(line))).toBe(true)
+  })
 })
 
 describe('formatSummary', () => {
@@ -317,5 +375,11 @@ describe('formatSummary', () => {
     expect(out).toContain('| Test | 7 | 1 |')
     expect(out).toContain('#150')
     expect(out).toContain('src/a.ts')
+  })
+
+  it('states why the linked-issue rule was skipped for an exempt PR', () => {
+    const out = formatSummary(evaluate(pr({ body: null, labels: [DEPENDENCY_LABEL] })))
+    expect(out).toContain('pr-hygiene: PASS')
+    expect(out).toMatch(/skipped.*dependencies/)
   })
 })
