@@ -203,6 +203,16 @@ File: `.github/workflows/ci.yml`
 
 **Enforcement mechanism:** If *any* of these steps returns a non-zero exit code, the workflow fails. With branch protection rules requiring the `CI` status check, the PR **cannot be merged** until all steps pass.
 
+### Layer 2b — PR hygiene (remote, every PR to `main`)
+File: `.github/workflows/pr-hygiene.yml` → `scripts/pr-hygiene.mjs` (rules in `pr-hygiene.logic.mjs`)
+
+| Rule | Verdict | What it catches |
+|------|---------|-----------------|
+| Size budget (ADR-0013) | warn > 200, **fail > 400** reviewable lines; `size-override` label reports and passes | Bulky PRs — tests, lockfile, snapshots, vectors, fixtures and `linguist-generated` files are not counted |
+| Linked issue | **fail** without `Fixes #n` / `Closes #n` / `Resolves #n` / `Part of #n` (docs-only PRs exempt) | Work with no issue behind it |
+
+Runs under `pull_request_target` from the base branch and reads the PR through the API only — a PR cannot edit its own guard. Locally: `GITHUB_TOKEN=$(gh auth token) node scripts/pr-hygiene.mjs <pr>`.
+
 ### Layer 3 — E2E (manual only)
 File: `.github/workflows/e2e.yml`
 

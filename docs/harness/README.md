@@ -23,7 +23,7 @@ merge. If a step below is wrong, fix it here — not in a chat.
 | How a task is built | `.claude/skills/ha-prompt-it/SKILL.md` + `implementer-brief.md` | tiers, TDD mechanics, worktree rules |
 | How a PR is judged | `verifier-brief.md` | what blocks, what is a nit, what must be tried |
 | What must be green | `main-rules` ruleset (required check `ci`, 0 approvals, no bypass) + `AGENTS.md` definition of done | add a required check here after it is green on its own PR |
-| PR size and shape | ADR-0013 (400 reviewable lines, one sub-issue per PR) — enforced by `pr-hygiene` once #150 lands | the budget numbers |
+| PR size and shape | ADR-0013 (400 reviewable lines, one sub-issue per PR) — enforced by the `pr-hygiene` check (`scripts/pr-hygiene.logic.mjs`) | the budget numbers |
 | What the human still does | `WORK-SYSTEM.md` §7 (merge tiers) | opt a tier into auto-merge |
 | What went wrong, and whether it was mechanised | `ledger.md` | second occurrence → a lint, test or hook |
 
