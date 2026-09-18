@@ -1,0 +1,60 @@
+# The harness — how work gets chosen, built, verified and merged
+
+This directory *is* the process. Everything an agent follows lives here or is linked from here, and
+it is changed the same way as anything else: an issue under the `harness` epic, a small PR, a
+merge. If a step below is wrong, fix it here — not in a chat.
+
+## The loop, end to end
+
+```
+  docs/portfolio.md ──► GitHub Issues ──► backlog.mjs ready ──► claim ──► ha-prompt-it (Light)
+   (order, pick rule)    (epics → tasks)   (what is pickable)              issue = spec
+                                                                            red → green → DoD
+                                                                                 │
+  ledger.md ◄── retro ◄── merge on green + PASS ◄── verifier (fresh context) ◄── PR (one sub-issue,
+                                                                                 ≤ 400 reviewable lines)
+```
+
+| Step | Where the knob lives | What you can adjust |
+|---|---|---|
+| Which projects, in what order, how picks rotate | `docs/portfolio.md` | row order, the 2:2:1 ratio, dormant-mode caps |
+| What a task must contain before an agent may take it | `WORK-SYSTEM.md` §2 (issue form) and the labels | acceptance criteria as tests, verification command, risk |
+| Who may author pickable tasks | `scripts/backlog.mjs` allowlist (`BACKLOG_ALLOWLIST`) | the identities agents trust on a public repo |
+| How a task is built | `.claude/skills/ha-prompt-it/SKILL.md` + `implementer-brief.md` | tiers, TDD mechanics, worktree rules |
+| How a PR is judged | `verifier-brief.md` | what blocks, what is a nit, what must be tried |
+| What must be green | `main-rules` ruleset (required check `ci`, 0 approvals, no bypass) + `AGENTS.md` definition of done | add a required check here after it is green on its own PR |
+| PR size and shape | ADR-0013 (400 reviewable lines, one sub-issue per PR) — enforced by `pr-hygiene` once #150 lands | the budget numbers |
+| What the human still does | `WORK-SYSTEM.md` §7 (merge tiers) | opt a tier into auto-merge |
+| What went wrong, and whether it was mechanised | `ledger.md` | second occurrence → a lint, test or hook |
+
+## The five sentences it answers
+
+| You say | What happens |
+|---|---|
+| "list the priority projects" | `node scripts/backlog.mjs projects` — rows in portfolio order with open / ready / in-progress / needs-human counts and the next pick |
+| "what's open in *surfaces*?" | `gh issue view <epic#>` or `backlog.mjs tasks <slug>` (#149 follow-up) |
+| "what can you do next?" | the **`ha-next`** skill: `backlog.mjs ready`, present the top pick with its why, claim it, build it through `ha-prompt-it`, PR, verifier, merge |
+| "work the next N" | locally: `/autonomous` over `ha-next` N times; in the cloud: N `claude --cloud` sessions, one issue each |
+| "queue up: …" | triage: shape the idea into issues in the form, split to fit the budget, `agent-ready` only if risk:0/1 and the criteria are unambiguous; otherwise `needs-human` |
+
+## Rules that are conventions, not controls (yet)
+
+Agents act under the owner's GitHub identity, so every label an agent respects is one an agent could
+also apply. The ruleset (required `ci`, no bypass) is the only hard control today. A separate bot
+identity (harness epic) turns labels into controls. Until then: the allowlist in `backlog.mjs` reads
+issue bodies and comments only from trusted authors, `bot-filed` issues are never `agent-ready`
+without the owner, and anything shaped from outside content is `needs-human`.
+
+## Cloud sessions and routines
+
+They clone this repo and nothing else. Anything the loop needs must be in here — which is why
+`ha-prompt-it`, the North Star and these briefs moved in. `/autonomous` (the local queue driver) is
+a personal skill and is *not* available there; in the cloud, one session = one issue.
+
+## Files
+
+- `README.md` — this page.
+- `ledger.md` — failures and what they became.
+- `implementer-brief.md` — the brief a builder agent receives for one issue.
+- `verifier-brief.md` — the brief a fresh-context verifier receives for one PR.
+- `../research/2026-09-18-agent-readiness/` — why the process looks like this.
