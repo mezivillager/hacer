@@ -38,5 +38,5 @@ It captures decisions here and then runs the author pass in [`../llm-docs-sync.m
 | [0013](0013-backlog-in-github-issues-and-portfolio.md) | Backlog in GitHub Issues, project order in `docs/portfolio.md`, one sub-issue per PR | Accepted | 2026-09-18 |
 | [0014](0014-cited-doc-paths-must-exist.md) | Paths cited in agent entry docs must exist (`lint:docs`) | Accepted | 2026-09-18 |
 | [0015](0015-releases-do-not-commit-to-main.md) | Releases tag and publish; they no longer commit to `main` | Accepted | 2026-09-18 |
-| [0017](0017-documentation-platform.md) | Documentation platform: Astro Starlight at `/docs/` on the existing Pages deploy | Proposed | 2026-09-18 |
+| [0017](0017-documentation-platform.md) | Documentation platform: Astro Starlight at `/docs/` on the existing Pages deploy | Accepted | 2026-09-18 |
 | [0018](0018-fidelity-gate.md) | Fidelity gate: engineering-truth review of epics, ADRs and core semantics | Proposed | 2026-09-18 |
