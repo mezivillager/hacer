@@ -15,26 +15,25 @@ Type definitions, API signatures, and state field names change as the codebase e
 
 | What you need | Canonical source |
 |--------------|-----------------|
-| Type definitions (GateType, Position, Wire, etc.) | `src/store/types.ts` |
+| Store types (GateInstance, Position, Wire, etc.) | `src/store/types.ts` |
+| Chip definitions + registries | `src/core/chips/types.ts`, `src/core/chips/registry.ts`, `src/core/chips/appRegistry.ts` |
 | Available `circuitActions` methods + signatures | `src/store/circuitStore.ts` → `circuitActions` export |
 | Store state shape and initial values | `src/store/circuitStore.ts` → `initialState` |
 | Store reset pattern for tests | `src/store/actions/gateActions/gateActions.test.ts` → `beforeEach` |
 | E2E test patterns | `e2e/specs/` — pick a spec in the same domain |
-| Gate component structure | `src/gates/components/NandGate.tsx` |
+| Gate rendering (data-driven, any chip) | `src/gates/GateRenderer.tsx` → `src/components/scene/ChipBody3D.tsx` |
 | Node component structure | `src/nodes/components/InputNode3D.tsx` |
 | Wire routing utilities | `src/utils/wiringScheme/` |
 
-## Adding a New Gate (current phase 0–4)
+## Adding a New Gate (= a builtin chip, Phase 0.5)
 
-1. Add gate logic → `src/simulation/gateLogic.ts`
-2. Add unit tests → `src/simulation/gateLogic.test.ts`
-3. Create component → `src/gates/components/`
-4. Create icon → `src/gates/icons/`
-5. Create 3-file config split:
-   - `src/gates/config/<gate>-constants.ts` — colors, text, non-React constants
-   - `src/gates/config/<gate>-helpers.ts` — pin/wire helpers, geometry
-   - `src/gates/config/<gate>.tsx` — React component (exports ONLY React components)
-6. Export from barrel files (`index.ts`)
+Canonical recipe: `HACER_LLM_GUIDE.md` → *Adding a builtin chip*. A gate is a `GateInstance` with a
+`chipName`; there is no gate type union, no per-gate logic file and no per-gate component.
+
+1. `registerBuiltin(registry, name, inputs, outputs, evaluate)` in `src/core/chips/builtins/project01.ts` — pure, width-masked
+2. Red first: `.cmp` fixture in `src/core/testing/project1CmpFixtures.ts` + `CHIP_NAMES`/`PIN_SCHEMA` entry in `src/core/chips/builtins/project01.test.ts`
+3. Icon: `CHIP_ICON_MAP` entry in `src/components/ui/icons/ChipIcons.tsx` (fallback icon otherwise)
+4. Nothing else — toolbar, placement (`circuitActions.startPlacement(chipName)`), 3D body (`src/components/scene/ChipBody3D.tsx` + `src/components/scene/chipBodyLayout.ts`) and evaluation (`src/simulation/topologicalEval.ts` → `evaluateChipWithCtx`) are registry-driven
 
 ## Phase Tracking (check before implementing)
 
@@ -54,21 +53,22 @@ Always read `.cursorrules` → "Phase Tracking" section first.
 
 ```
 src/
-├── components/          # React UI components (Canvas, UI, gates)
+├── components/          # React UI components
 │   ├── canvas/          # Three.js/R3F scene components
-│   └── ui/              # Ant Design interface components
-├── gates/               # Gate definitions
-│   ├── components/      # Gate React components
-│   ├── icons/           # Gate icon components
-│   └── config/          # Gate configs split into 3 files per gate:
-│       ├── nand-constants.ts  # colors, text
-│       ├── nand-helpers.ts    # pin/wire helpers, geometry
-│       └── nand.tsx           # React component (only export components here)
-├── nodes/               # Circuit I/O nodes and junctions
+│   ├── scene/           # ChipBody3D + chipBodyLayout — data-driven 3D body for any chip
+│   ├── ui/              # HACER shell components (toolbar, panels, icons/ChipIcons.tsx)
+│   └── ui-kit/          # shadcn/ui primitives
+├── core/                # Pure logic, no React
+│   ├── chips/           # ChipDefinition, registry, appRegistry, evaluateChip seam
+│   │   └── builtins/    # project01.ts — definition + evaluate (+ .cmp-driven test)
+│   ├── hdl/             # HACK HDL parser + compiler
+│   ├── serialization/   # save/load format
+│   └── testing/         # .tst/.cmp parsers, test engine, fixtures
+├── gates/               # GateRenderer (dispatches to ChipBody3D), shared 3D primitives, handlers
+├── nodes/               # Circuit I/O nodes, junctions, bus splitter/joiner
 │   ├── components/      # InputNode3D, OutputNode3D, JunctionNode3D
 │   └── config/          # nodeConfig.ts (node dimensions, pin positions)
-├── simulation/          # Pure logic (no React, no Three.js)
-│   └── gateLogic.ts
+├── simulation/          # topologicalEval.ts (evaluates every placed chip), busLogic, busOps
 ├── store/               # Zustand state
 │   ├── circuitStore.ts  # Store definition + circuitActions export
 │   ├── types.ts         # GateInstance, Wire, WireEndpoint, InputNode, etc.
@@ -82,11 +82,9 @@ src/
     └── wiringScheme/    # Wire routing algorithm
 ```
 
-### Key Rule: Gate Config File Split
-Gate configs use exactly three files per gate to satisfy React Fast Refresh (TSX files must only export React components):
-- `*-constants.ts` → colors, text, non-React constants
-- `*-helpers.ts` → pin/wire helpers, geometry utilities
-- `*.tsx` → React components only
+### Key Rule: React Fast Refresh
+TSX files export React components only; constants and helpers live in sibling `.ts` files
+(e.g. `src/components/scene/chipBodyLayout.ts` next to `src/components/scene/ChipBody3D.tsx`).
 
 ## Stack Rules
 
@@ -95,8 +93,8 @@ Gate configs use exactly three files per gate to satisfy React Fast Refresh (TSX
 | **UI** | React 19 + React Compiler | NO `useMemo`/`useCallback`/`React.memo` |
 | **3D** | React Three Fiber + Three.js | Dispose geometries/materials/textures on unmount |
 | **State** | Zustand | Selectors for reads, `circuitActions.*()` for writes |
-| **UI components** | Ant Design | Use `message`/`notification`, never `console.log`, for user feedback |
-| **Types** | TypeScript 5.9 strict | No `any`; use branded types (GateId, WireId, PinId) |
+| **UI components** | shadcn/ui primitives (`@/components/ui-kit/`) | Use `notify` from `@/lib/notify`, never `console.log`, for user feedback |
+| **Types** | TypeScript 5.9 strict | No `any`; IDs are plain `string` today (branded types are a Phase 5+ aspiration) |
 | **Tests** | Vitest (unit) + Playwright (E2E) | TDD mandatory; test before implement |
 | **Build** | Vite + tsc | `pnpm run build` = `tsc -b && vite build` |
 
@@ -182,11 +180,11 @@ export function GateIcon() { ... }  // put this in its own file
 // Use JSDoc on all exported functions
 /**
  * Places a gate at the given position.
- * @param type - Gate type (see GateType in src/store/types.ts)
+ * @param chipName - Registered chip name, e.g. 'Nand' (see src/core/chips/appRegistry.ts)
  * @param position - World-space position (see Position in src/store/types.ts)
  * @returns The newly placed gate instance
  */
-export function addGate(type: GateType, position: Position): GateInstance { ... }
+export function addGate(chipName: string, position: Position): GateInstance { ... }
 ```
 
 ## Common Anti-Patterns (reject these in code review)
@@ -196,7 +194,7 @@ export function addGate(type: GateType, position: Position): GateInstance { ... 
 | `useCircuitStore().gates` | `useCircuitStore(s => s.gates)` |
 | `useCircuitStore.setState({ gates: ... })` | `circuitActions.<action>(args)` |
 | `useMemo(() => ..., [deps])` | Remove — React Compiler handles it |
-| `console.log("Error:", e)` | `message.error("User-facing message")` |
+| `console.log("Error:", e)` | `notify.error("User-facing message")` (`@/lib/notify`) |
 | `new BoxGeometry()` in render body | Create in `useMemo` or module scope, dispose on unmount |
 | Valtio `proxy(state)` / `useSnapshot()` | Zustand only |
 </examples>
