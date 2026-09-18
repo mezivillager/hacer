@@ -1,0 +1,45 @@
+name: PR Hygiene
+
+# Linked issue + size budget (ADR-0013): warn above 200 reviewable changed lines, fail above
+# 400 unless the PR carries the `size-override` label; fail when the body links no issue
+# (docs-only PRs exempt). Reviewable excludes tests, the lockfile, snapshots, vendored
+# vectors, fixtures and linguist-generated files.
+#
+# Runs on pull_request_target so the checkout — and therefore scripts/pr-hygiene.mjs — is
+# always the base branch's copy. The PR itself is read through the GitHub API and is never
+# checked out or executed, so a PR cannot edit its own guard. Keep it that way: no `ref:`
+# on the checkout, no `pnpm install`, no third-party actions.
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, edited, labeled, unlabeled]
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: pr-hygiene-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  pr-hygiene:
+    name: pr-hygiene
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      # Base branch only (the pull_request_target default) — never the PR head.
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+
+      # Node built-ins only; no dependencies to install.
+      - name: Linked issue + size budget
+        run: node scripts/pr-hygiene.mjs "$PR_NUMBER"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
