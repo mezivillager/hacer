@@ -314,6 +314,43 @@
     }
   },
   {
+    "number": 188,
+    "title": "ADR: document / layouts['2d'|'3d'] sidecar / per-surface session state; serialization version bump plan",
+    "labels": [
+      {
+        "name": "project:core"
+      },
+      {
+        "name": "agent-ready"
+      },
+      {
+        "name": "risk:2"
+      },
+      {
+        "name": "research"
+      }
+    ],
+    "author": {
+      "login": "mezivillager"
+    },
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "number": 211,
+          "state": "OPEN",
+          "title": "<Schematic2D> read-only (React SVG with data-*/ARIA) + svg2d driver → then input toggling → then editing"
+        }
+      ]
+    },
+    "parent": {
+      "number": 140,
+      "state": "OPEN"
+    }
+  },
+  {
     "number": 190,
     "title": "ADR before any Phase 0.6 sequential work: one engine — lower the canvas circuit onto compileHDL; implement the 'circuit' chip type",
     "labels": [
@@ -362,6 +399,161 @@
     },
     "parent": {
       "number": 140,
+      "state": "OPEN"
+    }
+  },
+  {
+    "number": 193,
+    "title": "Vendor the official nand2tetris vectors (projects 1–5) from web-ide via a sync script; confirm the licence that covers them",
+    "labels": [
+      {
+        "name": "project:verify"
+      },
+      {
+        "name": "agent-ready"
+      },
+      {
+        "name": "risk:2"
+      }
+    ],
+    "author": {
+      "login": "mezivillager"
+    },
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "number": 200,
+          "state": "OPEN",
+          "title": "Change-triggered differential job vs web-ide's simulator on generated circuits (pinned clone built in CI only)"
+        },
+        {
+          "number": 194,
+          "state": "OPEN",
+          "title": "File-based conformance suite for Project 1; pass count recorded and only allowed to rise"
+        },
+        {
+          "number": 177,
+          "state": "OPEN",
+          "title": "Phase 0.6 epic to shape: Arithmetic & Sequential (Projects 2–3) — vectors → conformance red → ALU chips → clock/DFF only after the one-engine ADR"
+        }
+      ]
+    },
+    "parent": {
+      "number": 141,
+      "state": "OPEN"
+    }
+  },
+  {
+    "number": 206,
+    "title": "Register user HDL into the user chip registry (no getUserChipRegistry().register call exists today) — sub-task of P05-18",
+    "labels": [
+      {
+        "name": "project:surfaces"
+      },
+      {
+        "name": "agent-ready"
+      },
+      {
+        "name": "risk:1"
+      }
+    ],
+    "author": {
+      "login": "mezivillager"
+    },
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "parent": {
+      "number": 142,
+      "state": "OPEN"
+    }
+  },
+  {
+    "number": 210,
+    "title": "Spike: netlist → ELK graph → positions as a pure function in Node; golden-SVG tests; measure the elkjs bundle",
+    "labels": [
+      {
+        "name": "project:surfaces"
+      },
+      {
+        "name": "agent-ready"
+      },
+      {
+        "name": "risk:1"
+      },
+      {
+        "name": "research"
+      }
+    ],
+    "author": {
+      "login": "mezivillager"
+    },
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "number": 212,
+          "state": "OPEN",
+          "title": "HDL surface: CodeMirror 6, diagnostics as data from the existing parser, one-way HDL → circuit with auto-layout"
+        },
+        {
+          "number": 211,
+          "state": "OPEN",
+          "title": "<Schematic2D> read-only (React SVG with data-*/ARIA) + svg2d driver → then input toggling → then editing"
+        },
+        {
+          "number": 167,
+          "state": "OPEN",
+          "title": "P05-21: HDL surface (re-cut of 'HDL Editor UI Panel'): diagnostics as data first, editor second"
+        }
+      ]
+    },
+    "parent": {
+      "number": 142,
+      "state": "OPEN"
+    }
+  },
+  {
+    "number": 211,
+    "title": "<Schematic2D> read-only (React SVG with data-*/ARIA) + svg2d driver → then input toggling → then editing",
+    "labels": [
+      {
+        "name": "project:surfaces"
+      },
+      {
+        "name": "risk:2"
+      }
+    ],
+    "author": {
+      "login": "mezivillager"
+    },
+    "blockedBy": {
+      "nodes": [
+        {
+          "number": 188,
+          "state": "OPEN",
+          "title": "ADR: document / layouts['2d'|'3d'] sidecar / per-surface session state; serialization version bump plan"
+        },
+        {
+          "number": 210,
+          "state": "OPEN",
+          "title": "Spike: netlist → ELK graph → positions as a pure function in Node; golden-SVG tests; measure the elkjs bundle"
+        }
+      ]
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "parent": {
+      "number": 142,
       "state": "OPEN"
     }
   },
@@ -483,6 +675,34 @@
     },
     "parent": {
       "number": 147,
+      "state": "OPEN"
+    }
+  },
+  {
+    "number": 263,
+    "title": "docs/public: HDL language reference (the nand2tetris subset HACER accepts today, and what it rejects)",
+    "labels": [
+      {
+        "name": "agent-ready"
+      },
+      {
+        "name": "risk:1"
+      },
+      {
+        "name": "project:pubdocs"
+      }
+    ],
+    "author": {
+      "login": "mezivillager"
+    },
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "parent": {
+      "number": 260,
       "state": "OPEN"
     }
   }

@@ -5,6 +5,18 @@
 
 export const DEFAULT_ALLOWLIST = ['mezivillager']
 
+/**
+ * Pick rule 2: the six-slot cycle, one pick per slot, repeated until every bucket is drained. This is
+ * the literal line under "Pick rule" in docs/portfolio.md; the test keeps the two in step.
+ */
+export const PICK_ROTATION = ['surfaces', 'harness', 'spine', 'aux', 'surfaces', 'harness']
+
+/** The `aux` slot takes these buckets in turn, skipping an empty one. */
+export const AUX_ROTATION = ['verify', 'upkeep', 'bugs']
+
+/** Rows whose `research` tasks come first inside a slot (docs/portfolio.md "Design first"). */
+export const DESIGN_FIRST_SLUGS = ['surfaces', 'core']
+
 /** Portfolio row whose tasks come strictly first while any are pickable (pick rule 2). */
 export const FOUNDATION_SLUG = 'harness'
 
