@@ -30,18 +30,18 @@ Read the **LLM quick reference** below (always), then **only the section you nee
 
 | Task type | Read section |
 |-----------|--------------|
-| Any code change | **LLM quick reference** (line ~29) + **Discovery Protocol** (line ~71) |
-| React component work | **React Best Practices** (line ~130) |
-| Writing or fixing tests | **Testing Strategy** (line ~626) |
-| 3D / R3F scene work | **React Three Fiber Patterns** (line ~802) |
-| Store / state changes | **Zustand State Management** (line ~962) |
-| UI with shadcn/Tailwind | **shadcn/ui + Tailwind Usage** (search heading) |
-| Adding a gate / builtin chip | **Adding a builtin chip** (search heading — the canonical recipe; REPO_MAP, CONTRIBUTING and the `hacer-patterns` skill link here) |
-| File placement / imports | **File Organization** (line ~1129) |
-| Performance tuning | **Performance Patterns** (line ~1161) |
-| AI-generated code review | **Code Review Checklist** (line ~1308) + **Anti-Patterns** (line ~1358) |
+| Any code change | `## 🤖 LLM quick reference` + `## ⚡ Discovery Protocol` |
+| React component work | `## ⚛️ React Best Practices` |
+| Writing or fixing tests | `## 🧪 Testing Strategy` |
+| 3D / R3F scene work | `## 🎮 React Three Fiber Patterns` |
+| Store / state changes | `## 📦 Zustand State Management` |
+| UI with shadcn/Tailwind | `## shadcn/ui + Tailwind Usage` |
+| Adding a gate / builtin chip | `### Adding a builtin chip` — the canonical recipe; REPO_MAP, CONTRIBUTING and the `hacer-patterns` skill link here |
+| File placement / imports | `## 📁 File Organization` |
+| Performance tuning | `## ⚡ Performance Patterns` |
+| AI-generated code review | `## ✅ Code Review Checklist` + `## 🚫 Anti-Patterns to Avoid` |
 
-Use `grep` or search to jump to the `## ` heading you need instead of reading end-to-end.
+Search for the heading text (line numbers drift with every edit) instead of reading end-to-end.
 
 ---
 
@@ -1343,10 +1343,11 @@ component; everything downstream of the definition is data-driven.
    (`createGateInstance` in `src/store/actions/gateActions/gateActions.ts`); the 3D body is
    `src/components/scene/ChipBody3D.tsx`, sized by `computeChipLayout` in
    `src/components/scene/chipBodyLayout.ts`; and `src/simulation/topologicalEval.ts` evaluates every
-   placed chip through `evaluateChipWithCtx` (`src/core/chips/evaluateChip.ts`) — builtin, HDL-compiled
-   and composite alike.
+   placed chip through `evaluateChipWithCtx` (`src/core/chips/evaluateChip.ts`) — builtin and HDL-compiled
+   alike, including HDL chips composed of other chips. A `{ type: 'circuit' }` definition (a chip
+   packaged from the canvas) still throws `not supported yet` there; that is a later ticket.
 
-User chips (compiled HDL, later circuits) take the same path through `getUserChipRegistry()`;
+User chips (compiled HDL today, canvas circuits later) take the same path through `getUserChipRegistry()`;
 `ChipBody3D` and `createGateInstance` resolve `chipName` from both registries.
 
 ### Test Requirements for AI Changes

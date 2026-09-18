@@ -51,6 +51,8 @@ See [docs/testing/standards.md](docs/testing/standards.md) for the detailed work
 | Components (`src/gates/`, `src/components/`) | Component (RTL) | Co-located `.test.tsx` | `src/components/scene/ChipBody3D.test.tsx` |
 | Workflows | E2E (Playwright) | `e2e/specs/` | `gate-placement.store.spec.ts` |
 
+Adding a gate means adding a **builtin chip**: follow the canonical recipe in `HACER_LLM_GUIDE.md` → *Adding a builtin chip* (definition + pure `evaluate` in `src/core/chips/builtins/`, `.cmp` truth-table spec red first, icon; toolbar, 3D body and evaluation are registry-driven).
+
 ## Code Style and Linting
 
 - **Lint before committing**: `pnpm run lint` (runs both typecheck and ESLint)
@@ -144,10 +146,11 @@ HACER is organized in layers that separate pure logic from UI:
 
 ```
 src/
+├── core/             Chip definitions + registries, HDL parser/compiler, .tst/.cmp engine (pure)
 ├── simulation/       Pure gate logic (no React/browser deps)
 ├── store/actions/    State mutations organized by domain
-├── components/       React UI and 3D canvas
-├── gates/            Gate components, icons, configs
+├── components/       React UI and 3D canvas (scene/ChipBody3D renders any registered chip)
+├── gates/            GateRenderer (dispatches to ChipBody3D), shared 3D primitives, handlers
 ├── nodes/            I/O and junction node components
 ├── hooks/            Custom React hooks
 ├── utils/            Wiring, pathfinding, grid utilities
@@ -174,7 +177,7 @@ For the full repository map including planned directories, see [REPO_MAP.md](REP
 | Area | Skill level | Description |
 |------|-------------|-------------|
 | Bug fixes | Beginner | Fix issues labeled `bug` |
-| Gate types | Beginner | Add new gate types (NOR, XNOR, etc.) |
+| Builtin chips | Beginner | Add a builtin chip (definition, `.cmp` spec, icon) — `HACER_LLM_GUIDE.md` → *Adding a builtin chip* |
 | Tests | Beginner | Improve test coverage for existing code |
 | Documentation | Beginner | Improve docs, fix typos, add examples |
 | HDL support | Intermediate | HDL parser/generator (Phase 0.5) |
