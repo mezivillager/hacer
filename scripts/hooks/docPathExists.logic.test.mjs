@@ -40,6 +40,13 @@ describe('extractPathCitations — what counts as a citation', () => {
     expect(paths('phase tracking is in `.cursorrules`')).toEqual(['.cursorrules'])
   })
 
+  it('extracts a bare directory citation, which means a top-level directory', () => {
+    expect(paths('actions `src/store/actions/busActions/` + `busPlacementActions/`')).toEqual([
+      'src/store/actions/busActions',
+      'busPlacementActions',
+    ])
+  })
+
   it('extracts a slash path under an unknown root when it ends in a file extension', () => {
     expect(paths('- `apps/api/index.ts` - NestJS backend')).toEqual(['apps/api/index.ts'])
   })
@@ -103,6 +110,7 @@ describe('extractPathCitations — what is ignored', () => {
     ['a shell command containing a path', '`node scripts/check-doc-paths.mjs --staged`'],
     ['either/or prose', '`read/write`'],
     ['extension-only prose', '`.tst/.cmp`'],
+    ['a bare extension mention', 'test scripts (`.tst`, `.cmp`) and `.md` docs'],
     ['a dotted identifier', '`CircuitState.lastSimulationError`'],
     ['a JSX snippet', '`<Shell scene={<CanvasArea/>} />`'],
     ['an object literal', '`{ x: Math.PI / 2, y: 0 }`'],
