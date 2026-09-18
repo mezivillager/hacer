@@ -222,8 +222,8 @@ File: `.github/workflows/browser-qa.yml` → `scripts/browser-qa.mjs` (rules in 
 
 | PR | What runs | Result line |
 |----|-----------|-------------|
-| Touches no critical path, no `critical` / `sev:high` / `sev:critical` label | nothing — green in seconds | `BROWSER-QA: skipped (no critical paths)` |
-| Touches `src/components/`, `src/gates/`, `src/nodes/`, `src/App.tsx` or `src/store/actions/`, or carries one of those labels | build → `vite preview` → Playwright `@store` (`--workers 1`, retries 2, SwiftShader) | `BROWSER-QA: PASS\|FAIL suites=… passed=… failed=…` |
+| Touches no critical path; neither it nor an issue its body links (`Fixes` / `Part of #n`) carries `critical` / `sev:high` / `sev:critical` | nothing — green in seconds | `BROWSER-QA: skipped (no critical paths)` |
+| Touches `src/components/`, `src/gates/`, `src/nodes/`, `src/App.tsx` or `src/store/actions/` (renames by old path too), or it or a linked issue carries one of those labels | build → `vite preview` → Playwright `@store` (`--workers 1`, retries 2, SwiftShader) | `BROWSER-QA: PASS\|FAIL suites=… passed=… failed=…` |
 | …and touches `src/components/canvas/`, `src/gates/` or `src/nodes/` | the above plus `@ui` (3D) | same line, `suites=store,ui` |
 
 ADR-0016: browser suites run automatically **in GitHub Actions only** — never as a local gate, and 3D never on the owner's laptop. The HTML report is uploaded as an artifact; a run in which no test ran is a FAIL. Re-check a PR by hand: `gh workflow run browser-qa.yml -f pr=<n>`. Critical PRs also need the independent QA agent's verdict (#257).
