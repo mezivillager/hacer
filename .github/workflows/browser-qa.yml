@@ -10,7 +10,9 @@ name: browser-qa
 # Browser suites never run on a laptop as a gate; `e2e.yml` stays for manual runs.
 #
 # The decision and the verdict are `scripts/browser-qa.mjs` (rules in browser-qa.logic.mjs,
-# unit tested). Re-check any PR by hand: gh workflow run browser-qa.yml -f pr=<n>
+# unit tested). Re-check any PR by hand: gh workflow run browser-qa.yml -f pr=<n> — that run
+# tests the PR's merge ref like the PR's own run does, but reports in its log and job summary,
+# not as the PR's check.
 
 on:
   pull_request:
@@ -27,8 +29,9 @@ permissions:
   contents: read
   pull-requests: read
 
+# Per event, so a manual re-check never cancels the PR's own in-flight check.
 concurrency:
-  group: browser-qa-${{ github.event.pull_request.number || inputs.pr }}
+  group: browser-qa-${{ github.event_name }}-${{ github.event.pull_request.number || inputs.pr }}
   cancel-in-progress: true
 
 jobs:
@@ -40,10 +43,11 @@ jobs:
       PR_NUMBER: ${{ github.event.pull_request.number || inputs.pr }}
 
     steps:
-      # pull_request: the default merge ref. workflow_dispatch: the PR's head, resolved by number.
+      # Both events test the PR merged into main: pull_request by default, workflow_dispatch by
+      # number. The merge ref also carries main's scripts/browser-qa.mjs to a PR branched earlier.
       - uses: actions/checkout@v7
         with:
-          ref: ${{ github.event_name == 'workflow_dispatch' && format('refs/pull/{0}/head', inputs.pr) || '' }}
+          ref: ${{ github.event_name == 'workflow_dispatch' && format('refs/pull/{0}/merge', inputs.pr) || '' }}
 
       - uses: actions/setup-node@v7
         with:
