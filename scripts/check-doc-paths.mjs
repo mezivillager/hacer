@@ -1,20 +1,35 @@
 #!/usr/bin/env node
-// Guard: no machine-specific absolute paths in documentation.
+// Guard: documentation paths are portable and real.
 //
 //   node scripts/check-doc-paths.mjs --staged   # pre-commit: only staged docs
 //   node scripts/check-doc-paths.mjs            # CI: every tracked doc
 //
-// Exits 1 and prints file:line:col for each violation. Detection logic (and its
-// tests) live in scripts/hooks/docPaths.logic.mjs.
+// Two checks, each a pure function with its own unit tests under scripts/hooks/:
+//   1. no machine-specific absolute paths, in every doc we author (docPaths.logic.mjs)
+//   2. every cited repo-relative path exists, in PATH_EXISTENCE_FILES (docPathExists.logic.mjs)
+// Exits 1 and prints one line per violation.
 
 import { execFileSync } from 'node:child_process'
 import { readFileSync, existsSync } from 'node:fs'
+import { dirname } from 'node:path'
 import {
   OPT_OUT_MARKER,
   findAbsolutePaths,
   formatViolations,
   isScannedFile,
 } from './hooks/docPaths.logic.mjs'
+import {
+  MISSING_PATH_MARKER,
+  findDeadPaths,
+  formatDeadPaths,
+} from './hooks/docPathExists.logic.mjs'
+
+/**
+ * Docs whose path citations must all exist (ADR-0014). A doc opts in by being
+ * listed here once its citations are green, so this check is never red on main.
+ * REPO_MAP.md joins with the PR that fixes its 66 dead citations (#241).
+ */
+const PATH_EXISTENCE_FILES = ['AGENTS.md']
 
 const staged = process.argv.includes('--staged')
 
@@ -33,33 +48,63 @@ const files = (
       git(['ls-files', '--cached', '--others', '--exclude-standard'])
 ).filter(isScannedFile)
 
-let failures = 0
-const report = []
+let absoluteFailures = 0
+let deadFailures = 0
+const absoluteReport = []
+const deadReport = []
 
 for (const file of files) {
   if (!existsSync(file)) continue // staged deletion racing the hook
-  const violations = findAbsolutePaths(readFileSync(file, 'utf8'))
+  const text = readFileSync(file, 'utf8')
+
+  const violations = findAbsolutePaths(text)
   if (violations.length > 0) {
-    failures += violations.length
-    report.push(formatViolations(file, violations))
+    absoluteFailures += violations.length
+    absoluteReport.push(formatViolations(file, violations))
+  }
+
+  if (PATH_EXISTENCE_FILES.includes(file)) {
+    const docDir = dirname(file) === '.' ? '' : dirname(file)
+    const dead = findDeadPaths(text, existsSync, { docDir })
+    if (dead.length > 0) {
+      deadFailures += dead.length
+      deadReport.push(formatDeadPaths(file, dead))
+    }
   }
 }
 
-if (failures === 0) {
+if (absoluteFailures === 0 && deadFailures === 0) {
   process.exit(0)
 }
 
-console.error('')
-console.error(`❌ ${failures} machine-specific absolute path(s) found in documentation:`)
-console.error('')
-console.error(report.join('\n'))
-console.error('')
-console.error('   Docs must use repo-relative paths — an absolute path is true on one')
-console.error('   machine only, and rots as soon as a directory is renamed.')
-console.error('')
-console.error('     cd /Users/you/code/ha/hacer   ->   from the repo root')
-console.error('     ~/code/ha/web-ide/src/x.ts    ->   ../web-ide/src/x.ts')
-console.error('')
-console.error(`   If a doc genuinely must quote a real path, mark that line:  <!-- ${OPT_OUT_MARKER} -->`)
-console.error('')
+if (absoluteFailures > 0) {
+  console.error('')
+  console.error(`❌ ${absoluteFailures} machine-specific absolute path(s) found in documentation:`)
+  console.error('')
+  console.error(absoluteReport.join('\n'))
+  console.error('')
+  console.error('   Docs must use repo-relative paths — an absolute path is true on one')
+  console.error('   machine only, and rots as soon as a directory is renamed.')
+  console.error('')
+  console.error('     cd /Users/you/code/ha/hacer   ->   from the repo root')
+  console.error('     ~/code/ha/web-ide/src/x.ts    ->   ../web-ide/src/x.ts')
+  console.error('')
+  console.error(`   If a doc genuinely must quote a real path, mark that line:  <!-- ${OPT_OUT_MARKER} -->`)
+  console.error('')
+}
+
+if (deadFailures > 0) {
+  console.error('')
+  console.error(`❌ ${deadFailures} cited path(s) do not exist (${PATH_EXISTENCE_FILES.join(', ')}):`)
+  console.error('')
+  console.error(deadReport.join('\n'))
+  console.error('')
+  console.error('   These docs are what agents read first; a path that is not there sends')
+  console.error('   them nowhere. Correct the citation, or remove the line if the file is')
+  console.error('   only planned — do not invent files.')
+  console.error('')
+  console.error(`   To cite a path deliberately ahead of its file, mark that line:  <!-- ${MISSING_PATH_MARKER} -->`)
+  console.error('')
+}
+
 process.exit(1)
