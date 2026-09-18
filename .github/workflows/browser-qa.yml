@@ -1,0 +1,94 @@
+name: browser-qa
+
+# Browser QA in the cloud for critical changes (ADR-0016, amends ADR-0012). Runs on every PR
+# and always reports: when the PR touches no critical path — src/components, src/gates,
+# src/nodes, src/App.tsx, src/store/actions, or the `critical` / `sev:high` / `sev:critical`
+# label — it exits green with `BROWSER-QA: skipped (no critical paths)`. Otherwise it builds the
+# bundle, serves it with `vite preview` (playwright.config.ts webServer, CI branch) and runs the
+# Playwright `@store` suite — plus `@ui` when src/components/canvas, src/gates or src/nodes are
+# touched — then prints one greppable `BROWSER-QA: PASS|FAIL suites=… passed=… failed=…` line.
+# Browser suites never run on a laptop as a gate; `e2e.yml` stays for manual runs.
+#
+# The decision and the verdict are `scripts/browser-qa.mjs` (rules in browser-qa.logic.mjs,
+# unit tested). Re-check any PR by hand: gh workflow run browser-qa.yml -f pr=<n>
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      pr:
+        description: Pull request number to check
+        required: true
+        type: number
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: browser-qa-${{ github.event.pull_request.number || inputs.pr }}
+  cancel-in-progress: true
+
+jobs:
+  browser-qa:
+    name: browser-qa
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      PR_NUMBER: ${{ github.event.pull_request.number || inputs.pr }}
+
+    steps:
+      # pull_request: the default merge ref. workflow_dispatch: the PR's head, resolved by number.
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && format('refs/pull/{0}/head', inputs.pr) || '' }}
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+
+      # Node built-ins only — runs before the install so a non-critical PR is green in seconds.
+      - name: Critical paths → suites
+        id: decide
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api "repos/${{ github.repository }}/pulls/$PR_NUMBER/files" --paginate --jq '.[].filename' > "$RUNNER_TEMP/files.txt"
+          gh api "repos/${{ github.repository }}/pulls/$PR_NUMBER" --jq '.labels[].name' > "$RUNNER_TEMP/labels.txt"
+          node scripts/browser-qa.mjs decide "$RUNNER_TEMP/files.txt" "$RUNNER_TEMP/labels.txt" "$RUNNER_TEMP/decision.json"
+
+      - uses: pnpm/action-setup@v6
+        if: steps.decide.outputs.critical == 'true'
+
+      - run: pnpm install --frozen-lockfile
+        if: steps.decide.outputs.critical == 'true'
+
+      - name: Install Playwright browsers
+        if: steps.decide.outputs.critical == 'true'
+        run: pnpm exec playwright install --with-deps chromium
+
+      # `CI` makes playwright.config.ts build the bundle and serve it with `vite preview`; the
+      # SwiftShader WebGL flags come from the same config. One run covers every selected suite.
+      - name: Playwright against the built bundle
+        if: steps.decide.outputs.critical == 'true'
+        env:
+          GREP: ${{ steps.decide.outputs.grep }}
+          PLAYWRIGHT_JSON_OUTPUT_FILE: test-results/browser-qa.json
+        run: pnpm exec playwright test --grep "$GREP" --workers 1 --retries 2 --reporter=html,json
+
+      - name: Upload playwright-report
+        if: always() && steps.decide.outputs.critical == 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: browser-qa-pr-${{ env.PR_NUMBER }}
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
+          if-no-files-found: ignore
+
+      - name: Verdict
+        if: always() && steps.decide.outputs.critical == 'true'
+        run: node scripts/browser-qa.mjs report test-results/browser-qa.json "$RUNNER_TEMP/decision.json"

@@ -43,7 +43,11 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'pnpm run dev',
+    // CI runs against what ships: build the bundle, then serve it with `vite preview`
+    // (#218, ADR-0016). Locally the dev server is kept, and an already-running one is reused.
+    command: process.env.CI
+      ? 'pnpm exec vite build && pnpm exec vite preview --port 5173 --strictPort'
+      : 'pnpm run dev',
     url: 'http://localhost:5173',
     reuseExistingServer: true,
     timeout: 120 * 1000,
