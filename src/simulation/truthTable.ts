@@ -4,6 +4,15 @@ import type { CircuitDocument, Pin } from '@/store/types'
 /** Default cap on the summed width of all input nodes (2^8 = 256 rows). */
 export const DEFAULT_MAX_INPUT_BITS = 8
 
+/** Hard ceiling on `maxInputBits`, whatever the caller asks for (2^16 = 65,536 rows). */
+export const MAX_INPUT_BITS_CEILING = 16
+
+/** One table column: the node's name and bit width (for formatting multi-bit cells). */
+export interface TruthTableColumn {
+  name: string
+  width: number
+}
+
 export interface TruthTableRow {
   /** One value per input node, in `headers.inputs` order. */
   inputs: number[]
@@ -11,33 +20,43 @@ export interface TruthTableRow {
   outputs: Array<number | null>
 }
 
-/** A truth table as data: column names plus one row per input assignment. */
+/** A truth table as data: column descriptors plus one row per input assignment. */
 export interface TruthTable {
-  headers: { inputs: string[]; outputs: string[] }
+  headers: { inputs: TruthTableColumn[]; outputs: TruthTableColumn[] }
   rows: TruthTableRow[]
 }
 
 export interface GenerateTruthTableOptions {
-  /** Refuse to enumerate when the summed input width exceeds this. Default {@link DEFAULT_MAX_INPUT_BITS}. */
+  /**
+   * Refuse to enumerate when the summed input width exceeds this. Default
+   * {@link DEFAULT_MAX_INPUT_BITS}; clamped to `[0, MAX_INPUT_BITS_CEILING]`, and `NaN` means no budget.
+   */
   maxInputBits?: number
 }
 
-/** Outcome of {@link generateTruthTable}: the table, or a diagnostic (never thrown). */
+/**
+ * Outcome of {@link generateTruthTable}: the table, or a diagnostic (never thrown).
+ * In `over-budget`, `maxInputBits` is the budget actually applied after clamping.
+ */
 export type TruthTableResult =
   | { ok: true; table: TruthTable }
   | { ok: false; reason: 'over-budget'; totalInputBits: number; maxInputBits: number }
   | { ok: false; reason: 'cycle'; involvedGateIds: string[] }
 
-/** Copies the parts of a circuit that evaluation writes to; the read-only rest is shared. */
+/**
+ * Copies the parts of a circuit that evaluation writes to; the read-only rest is shared.
+ * Pin values restart at 0 so the table depends on the circuit, not on whatever a
+ * previous simulation left on a pin that has since been disconnected.
+ */
 function scratchCopy(circuit: CircuitDocument): CircuitDocument {
-  const withOwnPins = <T extends { inputs: Pin[]; outputs: Pin[] }>(entity: T): T => ({
+  const withFreshPins = <T extends { inputs: Pin[]; outputs: Pin[] }>(entity: T): T => ({
     ...entity,
-    inputs: entity.inputs.map((p) => ({ ...p })),
-    outputs: entity.outputs.map((p) => ({ ...p })),
+    inputs: entity.inputs.map((p) => ({ ...p, value: 0 })),
+    outputs: entity.outputs.map((p) => ({ ...p, value: 0 })),
   })
   return {
-    gates: circuit.gates.map(withOwnPins),
-    busComponents: circuit.busComponents.map(withOwnPins),
+    gates: circuit.gates.map(withFreshPins),
+    busComponents: circuit.busComponents.map(withFreshPins),
     inputNodes: circuit.inputNodes.map((n) => ({ ...n })),
     outputNodes: circuit.outputNodes.map((n) => ({ ...n })),
     wires: circuit.wires,
@@ -55,16 +74,19 @@ function scratchCopy(circuit: CircuitDocument): CircuitDocument {
  * (distinct from an evaluated `0`). The passed-in circuit is never mutated.
  *
  * @param circuit - The circuit document (a `CircuitState` or a deserialized save)
- * @param options - `maxInputBits` caps the summed input width (default 8 → 256 rows)
+ * @param options - `maxInputBits` caps the summed input width (default 8 → 256 rows, ceiling 16)
  * @returns The table, or an `over-budget` / `cycle` diagnostic
  */
 export function generateTruthTable(
   circuit: CircuitDocument,
   { maxInputBits = DEFAULT_MAX_INPUT_BITS }: GenerateTruthTableOptions = {},
 ): TruthTableResult {
+  const budget = Number.isNaN(maxInputBits)
+    ? 0
+    : Math.min(Math.max(0, Math.trunc(maxInputBits)), MAX_INPUT_BITS_CEILING)
   const totalInputBits = circuit.inputNodes.reduce((sum, n) => sum + n.width, 0)
-  if (totalInputBits > maxInputBits) {
-    return { ok: false, reason: 'over-budget', totalInputBits, maxInputBits }
+  if (totalInputBits > budget) {
+    return { ok: false, reason: 'over-budget', totalInputBits, maxInputBits: budget }
   }
 
   const scratch = scratchCopy(circuit)
@@ -98,8 +120,8 @@ export function generateTruthTable(
     ok: true,
     table: {
       headers: {
-        inputs: scratch.inputNodes.map((n) => n.name),
-        outputs: scratch.outputNodes.map((n) => n.name),
+        inputs: scratch.inputNodes.map(({ name, width }) => ({ name, width })),
+        outputs: scratch.outputNodes.map(({ name, width }) => ({ name, width })),
       },
       rows,
     },
