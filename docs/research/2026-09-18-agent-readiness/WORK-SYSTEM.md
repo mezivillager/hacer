@@ -79,6 +79,7 @@ Pickable = open · `agent-ready` · no `in-progress` · every `blockedBy` closed
 4. **In scope / out of scope.**
 5. **Files likely touched.**
 6. **Risk** label; **blocked-by**.
+7. *Added 2026-09-18 (#259):* a `surfaces` task also names the **scenario ids** it covers and the **drivers** it adds (`hdl` / `mcp` / `svg2d` / `cli`), and links its sibling issues for the other non-3D surfaces — `docs/portfolio.md` "Hand in hand".
 
 Evidence: across 3,180 agent PRs, well-scoped (+16.4%), self-contained (+16.7%) and reproduction-bearing (+11.5%) issues merged markedly more often (track 3). An issue whose estimate exceeds the PR budget is split into sub-issues before it is ready.
 
