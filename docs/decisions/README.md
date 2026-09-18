@@ -35,3 +35,4 @@ It captures decisions here and then runs the author pass in [`../llm-docs-sync.m
 | [0010](0010-no-absolute-paths-in-docs.md) | No machine-specific absolute paths in documentation | Accepted | 2026-09-17 |
 | [0011](0011-remove-stryker-mutation-testing.md) | Remove Stryker mutation testing | Accepted | 2026-09-17 |
 | [0012](0012-e2e-tests-manual-only.md) | E2E tests run on manual invocation only | Accepted | 2026-09-17 |
+| [0013](0013-backlog-in-github-issues-and-portfolio.md) | Backlog in GitHub Issues, project order in `docs/portfolio.md`, one sub-issue per PR | Accepted | 2026-09-18 |
