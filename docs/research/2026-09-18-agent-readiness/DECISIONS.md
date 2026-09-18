@@ -169,3 +169,114 @@ Continues the numbering of `../2026-09-18-hacer-agent-readiness/rulings.md` (R1�
 
 **R43 — Process artifacts move into the repo.** Mezi (2026-09-18): everything needed to move forward must be PR'd and merged; the process must be reviewable and adjustable; its maintenance gets its own queue. So: this run's rulings land as `docs/research/2026-09-18-agent-readiness/DECISIONS.md`; from item 3 on, new rulings go to `docs/harness/ledger.md` in the repo (this file mirrors them until that exists); the `harness` portfolio row is the queue for the process itself; the "what can you do next?" entry point is a repo skill (`ha-next`) so cloud sessions have it too.
 *Cost if wrong:* none — files.
+
+---
+
+# Execution run, continued (R44–R84)
+
+Judgment calls from the rest of 2026-09-18: the tracer bullet, the foundation PRs, and the owner's steering during the run. Each has its cost if wrong and how to revert it.
+
+**R44 — For a Light-tier task that starts from an `agent-ready` issue, the issue body IS the spec; no `docs/specs/` file is written.** AGENTS.md Step 1 / ha-prompt-it ask for a `docs/specs/` design for anything with 3+ steps; the new work system puts goal, acceptance criteria, verification command, scope and files on the issue instead, which is the same content in the place agents read. To be codified in ha-prompt-it v2 (#154) and AGENTS.md. Full-tier work still gets a spec file.
+*Cost if wrong:* low — a spec file can be added to any issue after the fact.
+
+**R45 — P05-31 is split for the tracer bullet:** the engine (#164, pure function + tests, ≤200 reviewable lines) is the PR; the store action and the drawer UI become two follow-up sub-issues of the same ticket. The ticket file gets a note in the engine PR. This is the "one sub-issue per PR" rule applied to a ticket written before it.
+*Cost if wrong:* none — the follow-ups are filed immediately.
+
+**R46 — `ha/CLAUDE.md` edited in place (R6 lifted by the grant).** The four verified-stale statements were corrected and the file now points at `docs/north-star.md` as the canonical copy. Backup: a local backup (the file is not under version control).
+*Cost if wrong:* none — restore the backup.
+
+**R47 — Builder judgment calls accepted as-is.** PR #238: `{ok:false, reason:'cycle'}` variant added (a stale table on a feedback loop would violate the criteria); flat `src/simulation/truthTable.ts`; `topologicalEval` parameter type widened to a new `CircuitDocument` (type-only). PR #239: `ready` prints the full pick order with harness first (head = next pick); extra reasons `not-pulled` and `on-request`; lanes read from the portfolio table; test file named `backlog.logic.test.mjs` (issue #149's verification command updated to match).
+*Cost if wrong:* low — each is a few lines.
+
+**R48 — Red-commit mechanics under the pre-commit `tsc -b`:** a red is "tests + the smallest compiling stub that fails", never `--no-verify`. Written into `docs/harness/implementer-brief.md` (PR #240) and the ledger; ha-prompt-it v2 (#154) must say the same.
+
+**R49 — On a BLOCK, the same builder fixes on the same branch; nits that change a contract other issues will consume (#235/#236) are taken in the same fix round; purely internal nits are optional.** Applied to PR #238: blocker (stale pin state) + headers `{name,width}` + `maxInputBits` sanity bound; "sort once" left optional.
+*Cost if wrong:* low — a few more lines in one PR.
+
+**R50 — The run follows its own pick rule.** Queue item 10 (C1, Vitest node/jsdom split) was queued before the pick rule existed; `backlog.mjs ready` shows it is not pulled by any spine task, so it is not picked. The run works foundation items (#150, #153) and then the pick order — the run does not get to jump the queue it just built.
+*Cost if wrong:* C1 waits until a spine task depends on it (or you re-order the portfolio).
+
+**R51 — `strict_required_status_checks_policy: true` means every PR must be rebased onto current `main` (fresh CI run) before merging.** Kept: tests run against the real merge base, which matters with several agents landing PRs. Cost: one extra CI cycle (~2 min) per PR when `main` moved; `gh pr update-branch --rebase` does it. Ledger candidate if it becomes the bottleneck.
+
+**R52 — PR #238 fix-round rulings accepted:** the `over-budget` diagnostic reports the budget actually applied (clamped), and `NaN` maps to budget 0 (fails closed). Sort-once deferred with a stated reason (would make the evaluator touch a runtime change).
+*Cost if wrong:* one line each.
+
+**R53 — Verifier nits on a PASS are filed as one depth-1 follow-up issue, not fixed in-PR** (PR #244 → #247). Follows `verifier-brief.md`; a fix round would cost another verify + CI cycle for two two-line changes.
+*Cost if wrong:* the gaps live on `main` until #247 is picked (harness foundation → soon).
+
+**R54 — `pr-hygiene` becomes a required check only after one green run on `main`** (the workflow cannot execute from its own PR). Verified: `gh api actions/workflows` did not list it before merge.
+
+**R55 — A stack was accepted for #153** (three PRs each under budget, one logical sequence) although the work system says "avoid stacks". Merge order is enforced by me: verify and merge #245, rebase #246 onto `main` (`gh pr update-branch --rebase` drops the already-applied commits), verify, merge, then #248. Ledger candidate: the builder split correctly because a single PR measured 454 reviewable lines — the budget did its job.
+*Cost if wrong:* a mis-rebased stack (PR #135's accident); mitigated by rebase-only merges and CI on each.
+
+**R56 — `claude/migrate-hacer-app-ui` deleted** (tip `ead6d83`, 2026-04-02, already an ancestor of `main`, no PR); the four merged-but-undeleted branches (#135, #134, #119, #132) deleted; `delete_branch_on_merge` prevents recurrence.
+*Cost if wrong:* none — every deleted tip is reachable from `main`.
+
+**R57 — Making `pr-hygiene` required exposed a gap the verifier's nits did not: bot PRs cannot link an issue.** Fix is #249 (skip the linked-issue rule for `*[bot]` authors / `dependencies` label; size rule still applies). Until it lands, dependabot PRs cannot merge — acceptable for an hour. Ledger row to add: "a required check must be run against every *kind* of PR that exists (human, agent, bot) before it is required".
+
+**R58 — #248 BLOCK upheld, not overturned.** The verifier itself flagged that AC 2 could be read as conditional; I read it literally: the PR body claims CONTRIBUTING.md links to the recipe and the diff does not, and two pre-chipName framing lines remain. A three-line fix; the builder still has context.
+**R59 — REPO_MAP's fenced aspirational trees: delete (follow-up issue), agreeing with the verifier.** They contradict the corrected current tree and cannot be linted.
+*Cost if wrong:* the roadmap specs still carry that layout; nothing is lost.
+
+**R60 — Ledger row to land: the `gh` OAuth token cannot update a PR branch that changes `.github/workflows/**` (`workflow` scope missing), so agent sessions cannot rebase such PRs; dependabot can (`@dependabot rebase`). For agent-authored workflow PRs, the fix is `gh auth refresh -s workflow` (owner action) — filed in the end-of-run review rather than done now (changes the token's scope).
+
+**R61 — Coordinator made a one-word doc fix directly on PR #245's verified branch** (AGENTS.md:211 `pr-hygiene.logic.mjs` → `scripts/pr-hygiene.logic.mjs`), a One-liner tier: the new path-exists check caught a dead citation that a *later* PR (#244) introduced on `main`. No re-verification: the change is one path string and `lint:docs` is the proof. Ledger row: the check paid for itself before it even merged.
+*Cost if wrong:* none.
+
+**R62 — Recipe sweep outside the four named docs:** `docs/plans/phase-0-critical-fixes.md` is a dated plan (historical); `phase-0.5-tickets/README.md` and `docs/testing/standards.md` are living → fix (#253).
+
+**R63 — R51 amended: `strict_required_status_checks_policy` → false.** With 10 PRs landing in two hours, every merge put every other green PR BEHIND and cost a rebase + ~2 min CI; dependabot PRs re-triggered each other. Non-strict means checks are judged on the PR head as tested; `ci.yml` still runs on every push to `main` and would flag a semantic conflict within minutes, and rebase-only linear history is unchanged.
+*Cost if wrong:* a red `main` for one cycle (revert commit). *Revert:* flip the flag back (one API call).
+
+**R64 — Releases stop committing to `main` (ADR-0015, PR #254).** Removing the bypass made `@semantic-release/git`'s push fail on every release (5 failures today). Options weighed: a bypass-granted GitHub App or deploy key (owner setup, more moving parts) vs. dropping the in-repo CHANGELOG/version commit (tags + GitHub Releases carry the notes). Chose the latter; the ADR names the alternative.
+*Cost if wrong:* `CHANGELOG.md` and `package.json` version stop tracking releases on `main`. *Revert:* restore the two plugins and grant a bypass to a non-human actor.
+
+**R65 — Agent PRs must not touch `.github/workflows/**` until the `gh` token has the `workflow` scope** (owner action: `gh auth refresh -s workflow`). The cosmetic `ci.yml` step rename was dropped from #245 for this reason. Ledger row.
+
+**R66 — Item 12 (cloud spike) marked blocked, not forced.** `claude --cloud` refuses non-interactive shells and a pseudo-TTY hits the trust prompt; driving that prompt from a script would be a hack around a deliberate guard. Left as a one-line command for Mezi.
+
+**R67 — Cost.** Mezi (2026-09-18): careful about cost; explore open/free models. Filed as a `harness` research task (model tiering per role, open-model evaluation, tokens-per-PR metric) rather than changing models mid-run. Measured today: ~1.4M subagent tokens / 8 verified PRs. Verifiers already skip PRs < ~100 reviewable lines.
+**R68 — Browser testing stays off the PR path (ADR-0012); #220 remains `needs-human`** — the owner's "is browser testing baked in?" is answered honestly as "no, by your ADR; the GPU-free 3D lane is queued; #220 is your call".
+
+**R69 — Browser QA policy (owner, 2026-09-18):** "all critical features/fixes have to pass through an independent QA that does browser testing"; 3D browser runs in the cloud only, 2D/other may run locally. Overrides ADR-0012's "never automatically" → ADR-0016 (#220, re-scoped and agent-ready), a `browser-qa` required check on critical paths, and an independent QA agent brief (#257). "Critical" is defined mechanically by paths/labels so the check needs no judgment.
+*Cost if wrong:* browser CI minutes (free on the public repo) and some flake; the check starts advisory until one green run.
+
+**R70 — Cursor lane (owner has two subscriptions):** filed #258 (Bugbot advisory review; Cursor cloud agents as extra builders/QA under the same briefs). Never a required check.
+
+**R71 — Portfolio priority (owner):** surfaces (2D · HDL · MCP) catch up with 3D and grow hand in hand → row order and rotation change (2 surfaces : 1 spine : 1 enabler : 1 upkeep), enablers pulled by surfaces or spine, and a hand-in-hand readiness rule for surface tasks. Amends R21. Implemented by an agent as a PR, not by hand, so the change is reviewable.
+*Cost if wrong:* the spine slows to 1 in 5 picks; one number to change.
+
+**R72 — "Surfaces first" means "design first."** Owner: opening the platform for 2D/HDL/MCP needs core refactoring and architectural decisions. Ruled: the surfaces epic starts with the five architecture ADRs (#188 #189 #190 #209 #210) at the Full tier, each an ADR the owner reviews; core enablers are then pulled by those ADRs; surfaces land hand in hand via the scenario × driver matrix. Posted on #142; the portfolio PR (#259) carries the ordering. R11/R21 stand except for the row order.
+*Cost if wrong:* a week of design before new surface code — which is what he asked for.
+
+**R73 — R71 amended: features and process are equal.** Owner: surfaces catch up *feature-wise*; process and auxiliary work are of equal priority. Rotation becomes a 6-slot cycle `surfaces → harness → spine → aux → surfaces → harness` (aux = verify/upkeep/bugs in turn): features 3/6 with surfaces double-weighted, process/aux 3/6 with harness double-weighted. The "harness-only foundation" step is dropped.
+*Cost if wrong:* one line in `docs/portfolio.md` and one array in `backlog.logic.mjs`.
+
+**R74 — Public documentation is a portfolio row (`pubdocs`, epic #260) that shares the surfaces' pick slots and is bound to them by rule:** a surface capability is not done until its `docs/public/` page exists; references are generated from the registry/MCP/CLI definitions so they cannot drift; `pr-hygiene` warns when surface code changes without a `docs/public` change. Published with the app at `/docs/`.
+*Cost if wrong:* a row and a label; the docs themselves are wanted regardless.
+
+**R75 — Docs platform decided by research + ADR-0017 before any docs are written**, then taken live on the existing GitHub Pages under `/docs/` (owner: research state of the art, deploy it). #262 (skeleton) now waits on it. Dispatched as a research agent whose first PR is the note + ADR; the deploy PRs follow through the normal loop.
+*Cost if wrong:* a day of research; the alternative (pick VitePress by reflex) is what the owner asked us not to do.
+
+**R76 — R&D / product-fidelity role added to the harness** (owner): a standing brief + agent definition (like the verifier), ADR-0018 making a fidelity review a gate on spine/surfaces/horizon epics and ADRs, ground truth named per domain (the `.tst/.cmp` oracle today; physics/EE references for below-NAND), proposals filed as `rd-review` issues the owner accepts — the agent never rewrites the roadmap itself. First job: fact-check the current roadmap and the below-NAND ambition.
+*Cost if wrong:* one more review per epic/ADR (research-tier tokens), and a set of proposals you can ignore.
+
+**R77 — R&D proposals require owner approval (owner):** the R&D agent queues proposals in `docs/harness/rd-inbox.md` (status proposed/approved/declined) and never files issues; approval by the owner (status change or "approve RD-00N") is what turns an entry into issues. Exception kept: an actual defect found by fact-checking shipped behaviour goes through the bot issue contract (repro required, `bot-filed`, never `agent-ready` without the owner).
+*Cost if wrong:* proposals wait for the owner — which is the intent.
+
+**R78 — Names (owner):** the engineering-truth role is **fidelity** (`hacer-fidelity`, `fidelity-brief.md`, `fidelity-inbox.md`, label `fidelity`); **product** is reserved for a separate usability/design role (filed as its own research task with the same approval inbox, `product-inbox.md`). Both never file issues themselves.
+
+**R79 — The team is a versioned roster** (`docs/harness/team.md` + `.claude/agents/hacer-<role>.md`), filed as an umbrella issue blocked by the three role PRs in flight and the model-tiering task, rather than dispatched now: four agents are already running, and the roster should describe briefs that exist.
+
+**R80 — Continual refinement is a role with an inbox** (owner): retro role + `harness-inbox.md` (proposals for policy changes, owner-approved) on top of the existing ledger + second-occurrence rule; the team roster (#270) starts with research that refines the owner's suggested roles from evidence rather than copying them. Neither dispatched yet: four agents are in flight and both depend on #255 (model tiers) and the role PRs.
+
+**R81 — Docs-only process PRs that encode owner rulings are reviewed by the coordinator**, not a fresh-context verifier (applied to #274, 312 lines): the coordinator holds the rulings the PR must honour, and a verifier would need them spelled out to judge the same thing; saves a ~150k-token dispatch. Code, workflows and anything security-relevant still get a fresh verifier (#273).
+*Cost if wrong:* a process doc merges with a flaw the coordinator shares; the ledger/retro role catches it on use.
+
+**R82 — An agent regressed its own branch to a superseded spec** (the portfolio agent reset to `origin/main` and rebuilt the original 2:1:1:1 rotation after three addenda had moved it to the six-slot cycle), most likely because the addenda lived only in messages and an issue comment while the issue body still carried the first spec. Fixed by rewriting #259's body to the final spec and telling the agent to restore its six-slot commits from the reflog. Ledger row: **steering changes go into the issue body, not only into messages or comments** — the issue is what an agent re-reads.
+*Cost if wrong:* none; one resumed agent.
+
+**R83 — ADR-0017 (docs platform: Astro Starlight at `/hacer/docs/` on the existing Pages deploy) accepted by delegation** — the owner said "do everything needed to take that live, deployment, etc", so the choice is delegated; accepting it leaves #262 (implementation) directly pickable on resume. Coordinator review of #276: the recommendation is evidence-backed (Astro 7 on Vite 8, $0, one `BASE_PATH` drives both builds, generated references gated by `git diff --exit-code`, llms.txt with an honest note that it only pays when agents are pointed at it). ADR-0018 (fidelity gate) stays Proposed — no delegation was given for it.
+*Cost if wrong:* the owner prefers VitePress (the named runner-up) — a config folder to swap per the ADR. *Revert:* status → Superseded.
+
+**R84 — Wrap-up (owner: "wrap up current ongoing PRs and tasks, and call it a day"; "make sure there's committed context … so nothing is lost").** No new work is dispatched; the four in-flight items finish (verifier #273, portfolio #259, fidelity PR 2 #268, docs #276); the session is recorded in a committed file `docs/harness/sessions/2026-09-18.md` + the later rulings appended to the committed DECISIONS.md; the workspace CLAUDE.md and memory gain a resume pointer.

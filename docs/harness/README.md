@@ -74,3 +74,4 @@ a personal skill and is *not* available there; in the cloud, one session = one i
 - `fidelity-inbox.md` — proposals from fidelity reviews, waiting for the owner's approval.
 - `routines/fidelity-digest.md` — the change-triggered re-check of the roadmap (ADR-0018 §5).
 - `../research/2026-09-18-agent-readiness/` — why the process looks like this.
+- `sessions/` — dated session records: the goal, the owner's rulings, what was built, the state at close, how to resume. Start with the latest one when picking the work back up.
