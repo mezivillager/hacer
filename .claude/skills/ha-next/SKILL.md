@@ -40,6 +40,13 @@ Dispatch a **fresh-context** agent with `docs/harness/verifier-brief.md` and the
 one verdict comment. `BLOCK` → fix in the same branch, push, re-run the verifier. Nits → file the
 ones worth keeping as follow-up issues (`--parent` the epic, depth 1, ≤ 3).
 
+**Fidelity review (ADR-0018).** If the PR changes semantics under `src/core/**` or
+`src/simulation/**` (evaluator, HDL compiler, test engine, builtins, clocking), also dispatch a
+fresh-context `hacer-fidelity` agent with `docs/harness/fidelity-brief.md` and the PR number. Its
+comment is advisory unless it reports an oracle divergence (a `sev:critical` bug). Its proposals go
+to `docs/harness/fidelity-inbox.md` for the owner; it files no issues. After a qualifying merge,
+dispatch `docs/harness/routines/fidelity-digest.md` once.
+
 ## 5. Merge on green + PASS
 ```bash
 gh pr checks <pr>                          # ci must be green; the ruleset enforces it
@@ -58,4 +65,7 @@ the `harness` epic). Then report: PR, evidence, follow-ups filed, ledger line.
 Shape the idea into issues in the form (`docs/research/2026-09-18-agent-readiness/WORK-SYSTEM.md`
 §2): goal, acceptance criteria as tests, verification command, scope, files, risk, blocked-by.
 `agent-ready` only if risk:0/1 and the criteria are unambiguous; otherwise `needs-human` with your
-recommended answer. Split anything over the budget before it is ready.
+recommended answer. Split anything over the budget before it is ready. An epic or ADR in `spine`,
+`surfaces` or `horizon` gets a fidelity verdict comment (`hacer-fidelity`, ADR-0018 §2) before
+sub-issues are shaped from it; an approved `fidelity-inbox.md` entry is filed here, labelled
+`fidelity`, by you — never by the fidelity agent.

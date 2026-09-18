@@ -37,6 +37,19 @@ merge. If a step below is wrong, fix it here — not in a chat.
 | "work the next N" | locally: `/autonomous` over `ha-next` N times; in the cloud: N `claude --cloud` sessions, one issue each |
 | "queue up: …" | triage: shape the idea into issues in the form, split to fit the budget, `agent-ready` only if risk:0/1 and the criteria are unambiguous; otherwise `needs-human` |
 
+## Standing roles
+
+Three fresh-context roles judge work; none of them builds it, and none decides for the owner.
+
+| Role | Judges | Brief | Writes |
+|---|---|---|---|
+| **verifier** (code) | a PR against its issue and the code | `verifier-brief.md` | one verdict comment |
+| **QA** (browser) | a critical PR's changed flow, in a browser against the preview | `qa-brief.md` (#257, in flight) | one QA verdict |
+| **fidelity** (engineering truth) | an epic, ADR, spec or semantic PR against physics, digital logic and the domain's oracle | `fidelity-brief.md` · ADR-0018 · agent `.claude/agents/hacer-fidelity.md` | one verdict comment; proposals queued in `fidelity-inbox.md` for the owner's approval, never filed as issues |
+
+A separate **product** role (usability and design) is being defined under its own issue (#269);
+it is not the fidelity role and is not defined here.
+
 ## Rules that are conventions, not controls (yet)
 
 Agents act under the owner's GitHub identity, so every label an agent respects is one an agent could
@@ -57,4 +70,7 @@ a personal skill and is *not* available there; in the cloud, one session = one i
 - `ledger.md` — failures and what they became.
 - `implementer-brief.md` — the brief a builder agent receives for one issue.
 - `verifier-brief.md` — the brief a fresh-context verifier receives for one PR.
+- `fidelity-brief.md` — the brief the fidelity role receives for one epic, ADR, spec or semantic PR.
+- `fidelity-inbox.md` — proposals from fidelity reviews, waiting for the owner's approval.
+- `routines/fidelity-digest.md` — the change-triggered re-check of the roadmap (ADR-0018 §5).
 - `../research/2026-09-18-agent-readiness/` — why the process looks like this.
