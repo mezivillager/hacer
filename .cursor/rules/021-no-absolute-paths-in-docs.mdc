@@ -18,6 +18,9 @@ alwaysApply: true
    line with `<!-- allow-abs-path -->` and it is skipped.
 5. **Vendored trees are exempt** (`.claude/skills/` except `hacer-patterns/` and `docs-sync/`,
    `.cursor/`, `node_modules/`) because `scripts/sync-superpowers.sh` overwrites them upstream.
+6. **Cited paths must exist** in `REPO_MAP.md` and `AGENTS.md`: the same script checks every
+   backticked path and link target against the tree (`DEAD PATH file:line path`). Describe a
+   planned file without a path, or mark the line `<!-- allow-missing-path -->`. See ADR-0014.
 
 **Why:** an absolute path is true on exactly one machine. It is useless to any other contributor or
 agent, and it rots the moment a directory is renamed — which is precisely what happened when the

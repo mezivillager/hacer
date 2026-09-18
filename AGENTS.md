@@ -132,6 +132,10 @@ detour.
 `scripts/check-doc-paths.mjs` in pre-commit and CI; mark a deliberate exception with
 `<!-- allow-abs-path -->`. See `.cursor/rules/021-no-absolute-paths-in-docs.mdc` and ADR-0010.
 
+**Cite only paths that exist.** In `REPO_MAP.md` and this file, every backticked path and link
+target is checked against the tree by the same script (`DEAD PATH file:line path`, ADR-0014).
+Describe a planned file without a path, or mark the line `<!-- allow-missing-path -->`.
+
 ### Step 3 — Write a Plan
 - Trigger the `planning` skill.
 - Break implementation into 2–5 minute atomic tasks.
