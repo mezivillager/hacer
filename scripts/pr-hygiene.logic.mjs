@@ -2,7 +2,7 @@
 // No I/O — fully unit tested in pr-hygiene.logic.test.mjs. The GitHub API and
 // the runner environment live in scripts/pr-hygiene.mjs.
 //
-// A rule is `(ctx) => finding[]` over { body, labels, files, measures }; the verdict is the
+// A rule is `(ctx) => finding[]` over { body, author, labels, files, measures }; the verdict is the
 // highest level any finding reaches. To add a rule (e.g. #151's tamper flag: protected
 // paths touched), append it to RULES — nothing else needs to change.
 
@@ -96,9 +96,14 @@ export function isDocsOnly(reviewableFilenames) {
   return reviewableFilenames.length > 0 && reviewableFilenames.every((p) => p.startsWith('docs/') || p.endsWith('.md'))
 }
 
-/** Why the linked-issue rule does not apply to this PR, or null when it does. */
-export function linkedIssueExemption() {
-  return null // not implemented
+/**
+ * Why the linked-issue rule does not apply to this PR, or null when it does: a bot author
+ * (`dependabot[bot]` and friends) or the `dependencies` label. Bot PRs carry no `Fixes #n`.
+ */
+export function linkedIssueExemption({ author, labels }) {
+  if ((author ?? '').endsWith('[bot]')) return `bot author \`${author}\``
+  if (labels.includes(DEPENDENCY_LABEL)) return `\`${DEPENDENCY_LABEL}\` label`
+  return null
 }
 
 // ---------------------------------------------------------------- rules
@@ -122,7 +127,11 @@ function sizeBudget({ labels, measures }) {
   return findings
 }
 
-function linkedIssue({ body, measures }) {
+function linkedIssue({ body, author, labels, measures }) {
+  const exemption = linkedIssueExemption({ author, labels })
+  if (exemption) {
+    return [{ rule: 'linked-issue', level: 'pass', message: `linked-issue rule skipped — ${exemption}` }]
+  }
   const issues = findLinkedIssues(body)
   if (issues.length > 0) {
     return [{ rule: 'linked-issue', level: 'pass', message: `linked ${issues.map((n) => `#${n}`).join(', ')}` }]
@@ -143,12 +152,12 @@ export const RULES = [sizeBudget, linkedIssue]
 
 /**
  * Run every rule over one PR.
- * @param {{body:string|null, labels:string[], files:object[], gitattributes?:string}} input
- * @returns {{verdict:'PASS'|'WARN'|'FAIL', findings:object[], measures:object, linkedIssues:number[], docsOnly:boolean}}
+ * @param {{body:string|null, author?:string, labels:string[], files:object[], gitattributes?:string}} input
+ * @returns {{verdict:'PASS'|'WARN'|'FAIL', findings:object[], measures:object, linkedIssues:number[], docsOnly:boolean, linkedIssueExemption:string|null}}
  */
-export function evaluate({ body, labels = [], files, gitattributes }, rules = RULES) {
+export function evaluate({ body, author, labels = [], files, gitattributes }, rules = RULES) {
   const measures = measure(files, parseGeneratedPatterns(gitattributes))
-  const findings = rules.flatMap((rule) => rule({ body, labels, files, measures }))
+  const findings = rules.flatMap((rule) => rule({ body, author, labels, files, measures }))
   const worst = Math.max(0, ...findings.map((f) => LEVELS.indexOf(f.level)))
   return {
     verdict: LEVELS[worst].toUpperCase(),
@@ -156,6 +165,7 @@ export function evaluate({ body, labels = [], files, gitattributes }, rules = RU
     measures,
     linkedIssues: findLinkedIssues(body),
     docsOnly: isDocsOnly(measures.reviewable.files.map((f) => f.filename)),
+    linkedIssueExemption: linkedIssueExemption({ author, labels }),
   }
 }
 
@@ -170,6 +180,7 @@ export function nextPageUrl(linkHeader) {
 const ICONS = { pass: '✅', warn: '⚠️', fail: '❌' }
 
 function issueLabel(result) {
+  if (result.linkedIssueExemption) return 'skipped'
   if (result.linkedIssues.length > 0) return result.linkedIssues.map((n) => `#${n}`).join(',')
   return result.docsOnly ? 'docs-only' : 'none'
 }

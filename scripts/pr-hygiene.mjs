@@ -4,8 +4,8 @@
 //   node scripts/pr-hygiene.mjs <pr-number>
 //
 // Needs GITHUB_TOKEN (or GH_TOKEN; locally: `GITHUB_TOKEN=$(gh auth token)`). GITHUB_REPOSITORY
-// defaults to mezivillager/hacer. The PR is read through the REST API only — its body, labels
-// and per-file line counts — so this script, checked out from the base branch, never sees or
+// defaults to mezivillager/hacer. The PR is read through the REST API only — its body, author,
+// labels and per-file line counts — so this script, checked out from the base branch, never sees or
 // runs the PR's code. `.gitattributes` (linguist-generated) is read from the checkout, i.e. main.
 //
 // Prints one greppable `HYGIENE: PASS|WARN|FAIL …` line, appends a report to
@@ -56,7 +56,13 @@ const [{ json: pull }, files] = await Promise.all([get(pullUrl), getAll(`${pullU
 const attributesPath = path.join(import.meta.dirname, '..', '.gitattributes')
 const gitattributes = existsSync(attributesPath) ? readFileSync(attributesPath, 'utf8') : ''
 
-const result = evaluate({ body: pull.body, labels: pull.labels.map((label) => label.name), files, gitattributes })
+const result = evaluate({
+  body: pull.body,
+  author: pull.user?.login,
+  labels: pull.labels.map((label) => label.name),
+  files,
+  gitattributes,
+})
 
 console.log(formatConsole(result))
 if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, formatSummary(result))
