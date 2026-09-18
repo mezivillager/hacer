@@ -91,8 +91,8 @@ choice below is in `docs/research/2026-09-docs-platform.md`.
   `docs/roadmap/phases/phase-22-public-website.md` is superseded.
 - Rejected explicitly: versioned docs now; committing TypeDoc output; generating the CLI/MCP
   pages only at build time (no reviewable diff); Algolia DocSearch; a hosted docs product.
-- Follow-on work: #262 (PR 2: generator, first pages, deploy at `/docs/`), the PR 3 sub-issue
-  (`llms.txt`, link check, `lint:docs` prefix), then #263–#266 against this platform.
+- Follow-on work: #262 (PR 2: generator, first pages, deploy at `/docs/`), #275 (PR 3:
+  `llms.txt`, link check, `lint:docs` prefix), then #263–#266 against this platform.
 
 ## Affected living docs
 `README.md` (Documentation table, Phase-22 row), `REPO_MAP.md` (Website line),
@@ -105,6 +105,6 @@ updated in PR 2/PR 3, not here. `AGENTS.md` definition of done: unchanged (`buil
   [[0014]] cited paths exist · [[0015]] releases tag only
 - `docs/research/2026-09-docs-platform.md` (evidence) · `docs/north-star.md` ·
   `docs/research/2026-09-18-agent-readiness/REPORT.md` §3–§4
-- Issues #260 (epic), #261–#266 (sub-issues), #267 (this research)
+- Issues #260 (epic), #261–#266 and #275 (sub-issues), #267 (this research), PR #276
 - `.github/workflows/deploy.yml` · `.github/workflows/pr-preview.yml` · `.github/workflows/ci.yml` ·
   `vite.config.ts` · `scripts/check-doc-paths.mjs` · `scripts/pr-hygiene.logic.mjs`
