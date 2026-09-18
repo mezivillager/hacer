@@ -208,7 +208,7 @@ File: `.github/workflows/ci.yml`
 **Enforcement mechanism:** If *any* of these steps returns a non-zero exit code, the workflow fails. With branch protection rules requiring the `CI` status check, the PR **cannot be merged** until all steps pass.
 
 ### Layer 2b — PR hygiene (remote, every PR to `main`)
-File: `.github/workflows/pr-hygiene.yml` → `scripts/pr-hygiene.mjs` (rules in `pr-hygiene.logic.mjs`)
+File: `.github/workflows/pr-hygiene.yml` → `scripts/pr-hygiene.mjs` (rules in `scripts/pr-hygiene.logic.mjs`)
 
 | Rule | Verdict | What it catches |
 |------|---------|-----------------|
