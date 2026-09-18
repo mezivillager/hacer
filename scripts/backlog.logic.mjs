@@ -17,14 +17,16 @@ export const AUX_ROTATION = ['verify', 'upkeep', 'bugs']
 /** Rows whose `research` tasks come first inside a slot (docs/portfolio.md "Design first"). */
 export const DESIGN_FIRST_SLUGS = ['surfaces', 'core']
 
-/** Portfolio row whose tasks come strictly first while any are pickable (pick rule 2). */
-export const FOUNDATION_SLUG = 'harness'
-
-/** Pick rule 3: tasks each lane contributes per round. A lane absent here is picked on request only. */
-const ROTATION = [['spine', 2], ['enabler', 2], ['upkeep', 1]]
+const AUX_SLOT = 'aux'
+/** Rows that queue in another row's bucket: `pubdocs` shares the `surfaces` slot. */
+const SHARED_BUCKET = new Map([['pubdocs', 'surfaces']])
+/** Every bucket the cycle can draw from, in cycle order (the aux buckets last). */
+const BUCKET_ORDER = [...new Set(PICK_ROTATION.filter((slot) => slot !== AUX_SLOT)), ...AUX_ROTATION]
+const bucketOf = (slug) => SHARED_BUCKET.get(slug) ?? slug
 
 const byNumber = (a, b) => a.number - b.number
-const byRankThenNumber = (a, b) => a.rank - b.rank || a.number - b.number
+const designFirst = (task) => (DESIGN_FIRST_SLUGS.includes(task.project) && task.labels.includes('research') ? 0 : 1)
+const byDesignFirstThenNumber = (a, b) => designFirst(a) - designFirst(b) || a.number - b.number
 
 /**
  * Parse the portfolio table `| rank | slug | Project | [#epic](…) | lane | … |`.
@@ -80,38 +82,64 @@ export function triageTasks(issues, portfolioRows, allowlist = DEFAULT_ALLOWLIST
   return tasks.sort(byNumber)
 }
 
-/** Round-robin over the lane buckets in ROTATION order until every bucket is drained. */
+/** The aux bucket to draw from: the first non-empty one at or after `from`, in AUX_ROTATION order; -1 if none. */
+function nextAux(buckets, from) {
+  for (let step = 0; step < AUX_ROTATION.length; step++) {
+    const index = (from + step) % AUX_ROTATION.length
+    if (buckets.get(AUX_ROTATION[index]).length > 0) return index
+  }
+  return -1
+}
+
+/** One pick per PICK_ROTATION slot, an empty slot skipped, repeated until every bucket is drained. */
 function rotate(buckets) {
   const picks = []
+  let aux = 0
+  const take = (name) => {
+    if (buckets.get(name).length > 0) picks.push(buckets.get(name).shift())
+  }
   while ([...buckets.values()].some((bucket) => bucket.length > 0)) {
-    for (const [lane, take] of ROTATION) picks.push(...buckets.get(lane).splice(0, take))
+    for (const slot of PICK_ROTATION) {
+      if (slot !== AUX_SLOT) {
+        take(slot)
+        continue
+      }
+      const index = nextAux(buckets, aux)
+      if (index < 0) continue
+      take(AUX_ROTATION[index])
+      aux = (index + 1) % AUX_ROTATION.length
+    }
   }
   return picks
 }
 
 /**
- * The pick rule over the pickable tasks: any `sev:critical` first; then the foundation row; then the
- * spine : enabler : upkeep rotation, an enabler only while it blocks an open spine task (pull, don't
- * push); on-request lanes never. Every task comes back exactly once — the picks in pick order with
- * `reason: null`, then the rest by number, each with its one-word reason.
+ * The pick rule over the pickable tasks: any `sev:critical` first; then the six-slot cycle over the
+ * buckets, `pubdocs` sharing the `surfaces` slot, an enabler only while it blocks an open task of a
+ * bucket and then in that bucket's slot (pull, don't push); on-request rows never. Inside a slot,
+ * `research` tasks of DESIGN_FIRST_SLUGS come first, then the oldest issue. Every task comes back
+ * exactly once — the picks in pick order with `reason: null`, then the rest by number, each with
+ * its one-word reason.
  */
 export function planReady(issues, portfolioRows, allowlist = DEFAULT_ALLOWLIST) {
   const tasks = triageTasks(issues, portfolioRows, allowlist)
-  const spineNumbers = new Set(tasks.filter((task) => task.lane === 'spine').map((task) => task.number))
-  const pullsSpine = (task) => task.blocking.some((number) => spineNumbers.has(number))
+  const bucketByNumber = new Map(tasks.map((task) => [task.number, bucketOf(task.project)]))
+  /** The bucket a pulled enabler takes a slot of: the earliest in the cycle holding an open task it blocks. */
+  const pulledInto = (task) => {
+    const blocked = new Set(task.blocking.map((number) => bucketByNumber.get(number)))
+    return BUCKET_ORDER.find((name) => blocked.has(name)) ?? null
+  }
 
   const critical = []
-  const foundation = []
-  const buckets = new Map(ROTATION.map(([lane]) => [lane, []]))
+  const buckets = new Map(BUCKET_ORDER.map((name) => [name, []]))
   const unpicked = tasks.filter((task) => !task.pickable)
-  for (const task of tasks.filter((task) => task.pickable).sort(byRankThenNumber)) {
+  for (const task of tasks.filter((task) => task.pickable).sort(byDesignFirstThenNumber)) {
+    const bucket = task.lane === 'enabler' ? pulledInto(task) : bucketOf(task.project)
     if (task.labels.includes('sev:critical')) critical.push(task)
-    else if (task.project === FOUNDATION_SLUG) foundation.push(task)
-    else if (task.lane === 'enabler' && !pullsSpine(task)) unpicked.push({ ...task, reason: 'not-pulled' })
-    else if (buckets.has(task.lane)) buckets.get(task.lane).push(task)
-    else unpicked.push({ ...task, reason: 'on-request' })
+    else if (buckets.has(bucket)) buckets.get(bucket).push(task)
+    else unpicked.push({ ...task, reason: task.lane === 'enabler' ? 'not-pulled' : 'on-request' })
   }
-  return [...critical, ...foundation, ...rotate(buckets), ...unpicked.sort(byNumber)]
+  return [...critical, ...rotate(buckets), ...unpicked.sort(byNumber)]
 }
 
 /** One summary per portfolio row, in file order: live counts and the next pick for that row. */
