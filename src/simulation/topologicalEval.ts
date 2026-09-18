@@ -3,7 +3,7 @@ import { evaluateSplitter, evaluateJoiner } from './busLogic'
 import { getBuiltinChipRegistry, getUserChipRegistry } from '@/core/chips/appRegistry'
 import { evaluateChipWithCtx, DEFAULT_MAX_DEPTH } from '@/core/chips/evaluateChip'
 import { combineRegistries } from '@/core/chips/combineRegistries'
-import type { CircuitState, Wire, WireEndpoint } from '@/store/types'
+import type { CircuitDocument, Wire, WireEndpoint } from '@/store/types'
 
 /**
  * Result of {@link topologicalSort}: a gate evaluation order, or cycle involvement.
@@ -29,7 +29,7 @@ export type EvaluateCircuitResult =
  */
 function resolveSourceGateId(
   endpoint: WireEndpoint,
-  state: CircuitState,
+  state: CircuitDocument,
   visited: Set<string> = new Set()
 ): string | null {
   switch (endpoint.type) {
@@ -65,7 +65,7 @@ function resolveSourceGateId(
  * @param state - Circuit snapshot or Immer draft
  * @returns Ordered gate IDs, or a cycle with the gates that could not be scheduled
  */
-export function topologicalSort(state: CircuitState): TopologicalResult {
+export function topologicalSort(state: CircuitDocument): TopologicalResult {
   const nodeIds = [
     ...state.gates.map((g) => g.id),
     ...state.busComponents.map((c) => c.id),
@@ -143,7 +143,7 @@ export function topologicalSort(state: CircuitState): TopologicalResult {
  */
 export function getSignalSourceValue(
   from: WireEndpoint,
-  state: CircuitState,
+  state: CircuitDocument,
   visited: Set<string> = new Set()
 ): number {
   switch (from.type) {
@@ -182,7 +182,7 @@ export function getSignalSourceValue(
   }
 }
 
-function destinationWidth(wire: Wire, state: CircuitState): number {
+function destinationWidth(wire: Wire, state: CircuitDocument): number {
   let endpointWidth: number
   switch (wire.to.type) {
     case 'output': {
@@ -214,10 +214,10 @@ function destinationWidth(wire: Wire, state: CircuitState): number {
  * Mutates the Immer draft in place when the result {@link EvaluateCircuitResult} has `status: 'ok'`.
  * On a combinational cycle, returns without mutating gate or output values.
  *
- * @param state - Circuit state (typically an Immer draft from Zustand)
+ * @param state - Circuit document (typically an Immer draft from Zustand, or a scratch copy)
  * @returns Whether evaluation ran, or cycle metadata if the graph has feedback
  */
-export function evaluateCircuit(state: CircuitState): EvaluateCircuitResult {
+export function evaluateCircuit(state: CircuitDocument): EvaluateCircuitResult {
   const result = topologicalSort(state)
   if (result.type === 'cycle') {
     return { status: 'cycle', involvedGateIds: result.involvedGateIds }
