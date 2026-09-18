@@ -255,6 +255,16 @@ export interface CircuitState {
   rightPanelOpen: boolean
 }
 
+/**
+ * The structural part of a circuit: what the simulation reads and persistence
+ * round-trips, without UI/selection state. Satisfied by `CircuitState` (and
+ * so by the live store) and by a deserialized save.
+ */
+export type CircuitDocument = Pick<
+  CircuitState,
+  'gates' | 'wires' | 'inputNodes' | 'outputNodes' | 'junctions' | 'busComponents'
+>
+
 // Action types for the Zustand store
 export interface GateActions {
   addGate: (chipName: string, position: Position, width?: number) => GateInstance
