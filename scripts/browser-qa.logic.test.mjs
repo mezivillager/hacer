@@ -129,6 +129,43 @@ describe('decide', () => {
   })
 })
 
+// `sev:*` lives on issues, not PRs: the runner resolves the body's Fixes/Closes/Resolves/Part of #n
+// (pr-hygiene's findLinkedIssues) and passes each linked issue's labels in.
+describe('linked issues', () => {
+  const sevHigh223 = { number: 223, labels: ['bug', 'sev:high', 'agent-ready'] }
+
+  it('makes a sev:high fix critical off the critical paths (#223, a fix in src/utils)', () => {
+    expect(decide(['src/utils/wiringScheme/approach.ts'], ['project:bugs', 'risk:1'], [sevHigh223])).toEqual({
+      critical: true,
+      reasons: ['issue #223 sev:high'],
+      suites: ['store'],
+    })
+    expect(isCritical(['src/utils/wiringScheme/approach.ts'], ['risk:1'], [sevHigh223])).toBe(true)
+  })
+
+  it('counts sev:critical and critical on a linked issue', () => {
+    const issues = [
+      { number: 1, labels: ['sev:critical'] },
+      { number: 2, labels: ['critical'] },
+    ]
+    expect(decide(['docs/x.md'], [], issues).reasons).toEqual(['issue #1 sev:critical', 'issue #2 critical'])
+  })
+
+  it('ignores linked issues without those labels', () => {
+    const issues = [{ number: 5, labels: ['bug', 'sev:low', 'risk:0'] }]
+    expect(decide(['src/core/x.ts'], [], issues)).toEqual({ critical: false, reasons: [], suites: [] })
+    expect(isCritical(['src/core/x.ts'], [], issues)).toBe(false)
+  })
+
+  it('lists paths, then the PR labels, then the linked issues', () => {
+    expect(decide(['src/App.tsx'], ['critical'], [sevHigh223]).reasons).toEqual([
+      'path src/App.tsx',
+      'label critical',
+      'issue #223 sev:high',
+    ])
+  })
+})
+
 describe('formatDecision', () => {
   it('prints the exact skip line', () => {
     expect(formatDecision(decide(['docs/x.md'], []))).toBe('BROWSER-QA: skipped (no critical paths)')
