@@ -10,9 +10,10 @@ name: PR Hygiene
 # checked out or executed, so a PR cannot edit its own guard. Keep it that way: no `ref:`
 # on the checkout, no `pnpm install`, no third-party actions.
 #
-# That also means a change to this workflow only takes effect once it is on main. To try it
-# before that, or to re-check any PR by hand, dispatch it with a PR number:
-#   gh workflow run pr-hygiene.yml --ref <branch-with-the-workflow> -f pr=<n>
+# That also means this workflow only runs once it is on main — GitHub registers workflows
+# from the default branch, so it cannot check the PR that introduces it. Once it is there, a
+# change to it can be tried from its branch, and any PR re-checked by hand:
+#   gh workflow run pr-hygiene.yml --ref <branch> -f pr=<n>
 
 on:
   pull_request_target:
