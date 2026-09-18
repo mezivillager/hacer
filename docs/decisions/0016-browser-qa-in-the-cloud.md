@@ -62,6 +62,12 @@ policy: the other half is an *independent* QA that drives the changed flow in a 
   The definition of done is unchanged: `pnpm run lint` · `pnpm run test:run` · `pnpm run build`.
 - The `browser-qa` check must be added to the `main-rules` ruleset by the owner after its first
   green run on a critical PR; until then it reports but does not block.
+- It runs under `pull_request` because it must execute the PR's code, so — unlike `pr-hygiene` —
+  a PR can edit its own copy. `scripts/browser-qa*.mjs` belongs on #151's protected-path list
+  beside `.github/**` and `playwright.config.ts`.
+- The `sev:*` rule reads the PR's labels, not the linked issue's: a fix for a `sev:high` bug
+  carries that label on its PR (or `critical`). Resolving `Fixes #n` labels would need
+  `issues: read`; deliberately not done here.
 
 ## Affected living docs
 `docs/decisions/0012-e2e-tests-manual-only.md` (status), `docs/decisions/README.md` (index),
