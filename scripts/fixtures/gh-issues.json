@@ -1,0 +1,489 @@
+[
+  {
+    "number": 138,
+    "title": "Epic: harness — autonomous-run improvements & agent-readiness",
+    "labels": [
+      {
+        "name": "project:harness"
+      },
+      {
+        "name": "epic"
+      }
+    ],
+    "author": {
+      "login": "mezivillager"
+    },
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "parent": null
+  },
+  {
+    "number": 148,
+    "title": "Bootstrap the backlog: retire tasks/todo.md and the P05 checklist as history; AGENTS.md Step 1.0 points at GitHub Issues",
+    "labels": [
+      {
+        "name": "project:harness"
+      },
+      {
+        "name": "agent-ready"
+      },
+      {
+        "name": "risk:2"
+      }
+    ],
+    "author": {
+      "login": "mezivillager"
+    },
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "parent": {
+      "number": 138,
+      "state": "OPEN"
+    }
+  },
+  {
+    "number": 149,
+    "title": "scripts/backlog.mjs: `ready`, `projects`, `tasks`, `next`, `claim` over gh issue JSON, with unit tests",
+    "labels": [
+      {
+        "name": "project:harness"
+      },
+      {
+        "name": "agent-ready"
+      },
+      {
+        "name": "in-progress"
+      },
+      {
+        "name": "risk:2"
+      }
+    ],
+    "author": {
+      "login": "mezivillager"
+    },
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "number": 161,
+          "state": "OPEN",
+          "title": "docs/harness/README.md + .claude/skills/ha-next: 'what can you do next?' → pick → PR → merge"
+        },
+        {
+          "number": 156,
+          "state": "OPEN",
+          "title": "scripts/agent-orient + SessionStart hook: phase, ready tasks, CI status, open agent PRs, ledger tail, three metrics"
+        }
+      ]
+    },
+    "parent": {
+      "number": 138,
+      "state": "OPEN"
+    }
+  },
+  {
+    "number": 150,
+    "title": "pr-hygiene check: linked issue + size budget (warn 200 / fail 400 reviewable lines), as a required check",
+    "labels": [
+      {
+        "name": "project:harness"
+      },
+      {
+        "name": "agent-ready"
+      },
+      {
+        "name": "risk:2"
+      }
+    ],
+    "author": {
+      "login": "mezivillager"
+    },
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "number": 151,
+          "state": "OPEN",
+          "title": "Tamper flag: protected paths, removed expect(), added .skip/.only/passWithNoTests → loud PR notice"
+        }
+      ]
+    },
+    "parent": {
+      "number": 138,
+      "state": "OPEN"
+    }
+  },
+  {
+    "number": 151,
+    "title": "Tamper flag: protected paths, removed expect(), added .skip/.only/passWithNoTests → loud PR notice",
+    "labels": [
+      {
+        "name": "project:harness"
+      },
+      {
+        "name": "risk:2"
+      },
+      {
+        "name": "agent-ready"
+      }
+    ],
+    "author": {
+      "login": "mezivillager"
+    },
+    "blockedBy": {
+      "nodes": [
+        {
+          "number": 150,
+          "state": "OPEN",
+          "title": "pr-hygiene check: linked issue + size budget (warn 200 / fail 400 reviewable lines), as a required check"
+        }
+      ]
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "parent": {
+      "number": 138,
+      "state": "OPEN"
+    }
+  },
+  {
+    "number": 154,
+    "title": "ha-prompt-it v2 in the repo: issue-driven, milestone = PR, plans without complete code, blocked exit, dormant mode, ~200-line budget",
+    "labels": [
+      {
+        "name": "project:harness"
+      },
+      {
+        "name": "risk:2"
+      }
+    ],
+    "author": {
+      "login": "mezivillager"
+    },
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "parent": {
+      "number": 138,
+      "state": "OPEN"
+    }
+  },
+  {
+    "number": 162,
+    "title": "Owner action: move RELEASE_TOKEN into a main-restricted GitHub environment (value must be re-entered)",
+    "labels": [
+      {
+        "name": "project:harness"
+      },
+      {
+        "name": "needs-human"
+      },
+      {
+        "name": "risk:2"
+      }
+    ],
+    "author": {
+      "login": "mezivillager"
+    },
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "parent": {
+      "number": 138,
+      "state": "OPEN"
+    }
+  },
+  {
+    "number": 175,
+    "title": "P05-30: Splitter/joiner for bit-level access on placed chips — verify first, P05-12a may have delivered it",
+    "labels": [
+      {
+        "name": "project:spine"
+      },
+      {
+        "name": "agent-ready"
+      },
+      {
+        "name": "risk:1"
+      },
+      {
+        "name": "research"
+      }
+    ],
+    "author": {
+      "login": "mezivillager"
+    },
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "parent": {
+      "number": 139,
+      "state": "OPEN"
+    }
+  },
+  {
+    "number": 177,
+    "title": "Phase 0.6 epic to shape: Arithmetic & Sequential (Projects 2–3) — vectors → conformance red → ALU chips → clock/DFF only after the one-engine ADR",
+    "labels": [
+      {
+        "name": "project:spine"
+      },
+      {
+        "name": "risk:2"
+      }
+    ],
+    "author": {
+      "login": "mezivillager"
+    },
+    "blockedBy": {
+      "nodes": [
+        {
+          "number": 190,
+          "state": "OPEN",
+          "title": "ADR before any Phase 0.6 sequential work: one engine — lower the canvas circuit onto compileHDL; implement the 'circuit' chip type"
+        },
+        {
+          "number": 193,
+          "state": "OPEN",
+          "title": "Vendor the official nand2tetris vectors (projects 1–5) from web-ide via a sync script; confirm the licence that covers them"
+        }
+      ]
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "parent": {
+      "number": 139,
+      "state": "OPEN"
+    }
+  },
+  {
+    "number": 178,
+    "title": "Vitest node + jsdom projects: core, simulation, utils run with no DOM",
+    "labels": [
+      {
+        "name": "project:core"
+      },
+      {
+        "name": "agent-ready"
+      },
+      {
+        "name": "risk:2"
+      }
+    ],
+    "author": {
+      "login": "mezivillager"
+    },
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "number": 179,
+          "state": "OPEN",
+          "title": "Layer walls: dependency-cruiser in lint + no-DOM tsconfig.core.json, shipped with a baseline of today's violations"
+        }
+      ]
+    },
+    "parent": {
+      "number": 140,
+      "state": "OPEN"
+    }
+  },
+  {
+    "number": 190,
+    "title": "ADR before any Phase 0.6 sequential work: one engine — lower the canvas circuit onto compileHDL; implement the 'circuit' chip type",
+    "labels": [
+      {
+        "name": "project:core"
+      },
+      {
+        "name": "agent-ready"
+      },
+      {
+        "name": "risk:2"
+      },
+      {
+        "name": "research"
+      }
+    ],
+    "author": {
+      "login": "mezivillager"
+    },
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "number": 213,
+          "state": "OPEN",
+          "title": "Canonical HDL printer + property parse(print(c)) ≅ c"
+        },
+        {
+          "number": 207,
+          "state": "OPEN",
+          "title": "tst parser: repeat, while, tick, tock (Phase 0.6 vectors)"
+        },
+        {
+          "number": 177,
+          "state": "OPEN",
+          "title": "Phase 0.6 epic to shape: Arithmetic & Sequential (Projects 2–3) — vectors → conformance red → ALU chips → clock/DFF only after the one-engine ADR"
+        },
+        {
+          "number": 168,
+          "state": "OPEN",
+          "title": "P05-26: 3D/HDL interoperability (re-cut): canonical HDL printer + round-trip property"
+        }
+      ]
+    },
+    "parent": {
+      "number": 140,
+      "state": "OPEN"
+    }
+  },
+  {
+    "number": 222,
+    "title": "B-008: Disconnected input pins retain stale values (gates and bus components)",
+    "labels": [
+      {
+        "name": "bug"
+      },
+      {
+        "name": "project:bugs"
+      },
+      {
+        "name": "agent-ready"
+      },
+      {
+        "name": "risk:1"
+      },
+      {
+        "name": "sev:high"
+      }
+    ],
+    "author": {
+      "login": "mezivillager"
+    },
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "parent": {
+      "number": 145,
+      "state": "OPEN"
+    }
+  },
+  {
+    "number": 226,
+    "title": "Triage the 7 open dependabot PRs (rebase, merge greens, close the rest with a reason)",
+    "labels": [
+      {
+        "name": "project:upkeep"
+      },
+      {
+        "name": "agent-ready"
+      },
+      {
+        "name": "risk:0"
+      }
+    ],
+    "author": {
+      "login": "mezivillager"
+    },
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "parent": {
+      "number": 146,
+      "state": "OPEN"
+    }
+  },
+  {
+    "number": 227,
+    "title": "Delete merged remote branches; prune the two stale worktrees; remove untracked .stryker-tmp; decide claude/migrate-hacer-app-ui",
+    "labels": [
+      {
+        "name": "project:upkeep"
+      },
+      {
+        "name": "agent-ready"
+      },
+      {
+        "name": "risk:0"
+      }
+    ],
+    "author": {
+      "login": "outsider"
+    },
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "parent": {
+      "number": 146,
+      "state": "OPEN"
+    }
+  },
+  {
+    "number": 230,
+    "title": "Research note: below the NAND gate — switch-level / transistor-level simulation survey; tscircuit as an architectural twin",
+    "labels": [
+      {
+        "name": "project:horizon"
+      },
+      {
+        "name": "agent-ready"
+      },
+      {
+        "name": "risk:0"
+      },
+      {
+        "name": "research"
+      }
+    ],
+    "author": {
+      "login": "mezivillager"
+    },
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "parent": {
+      "number": 147,
+      "state": "OPEN"
+    }
+  }
+]
