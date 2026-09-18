@@ -181,7 +181,7 @@ NO fix without root-cause investigation first.
 
 This section directly answers: *"How does the GitHub Action enforce quality?"*
 
-Quality is enforced in **four automated layers**, all of which run without human involvement:
+Quality is enforced in **five automated layers**, all of which run without human involvement:
 
 ### Layer 1 — Pre-commit Hook (local, every `git commit`)
 File: `.husky/pre-commit`
@@ -217,10 +217,21 @@ File: `.github/workflows/pr-hygiene.yml` → `scripts/pr-hygiene.mjs` (rules in 
 
 Runs under `pull_request_target` from the base branch and reads the PR through the API only — a PR cannot edit its own guard. Locally: `GITHUB_TOKEN=$(gh auth token) node scripts/pr-hygiene.mjs <pr>`.
 
-### Layer 3 — E2E (manual only)
+### Layer 2c — Browser QA in the cloud (remote, every PR; runs the suites only for critical PRs)
+File: `.github/workflows/browser-qa.yml` → `scripts/browser-qa.mjs` (rules in `scripts/browser-qa.logic.mjs`)
+
+| PR | What runs | Result line |
+|----|-----------|-------------|
+| Touches no critical path, no `critical` / `sev:high` / `sev:critical` label | nothing — green in seconds | `BROWSER-QA: skipped (no critical paths)` |
+| Touches `src/components/`, `src/gates/`, `src/nodes/`, `src/App.tsx` or `src/store/actions/`, or carries one of those labels | build → `vite preview` → Playwright `@store` (`--workers 1`, retries 2, SwiftShader) | `BROWSER-QA: PASS\|FAIL suites=… passed=… failed=…` |
+| …and touches `src/components/canvas/`, `src/gates/` or `src/nodes/` | the above plus `@ui` (3D) | same line, `suites=store,ui` |
+
+ADR-0016: browser suites run automatically **in GitHub Actions only** — never as a local gate, and 3D never on the owner's laptop. The HTML report is uploaded as an artifact; a run in which no test ran is a FAIL. Re-check a PR by hand: `gh workflow run browser-qa.yml -f pr=<n>`. Critical PRs also need the independent QA agent's verdict (#257).
+
+### Layer 3 — E2E (manual, any suite)
 File: `.github/workflows/e2e.yml`
 
-Playwright E2E tests **never run automatically** — not on push, not on PR, not on a schedule. Run them deliberately, when a change warrants browser-level verification: from the Actions tab, or `gh workflow run e2e.yml -f suite=store` (`store` | `ui` | `all`). Locally: `pnpm run test:e2e:store` / `:ui`.
+Outside `browser-qa`, Playwright never runs automatically — not on push, not on a schedule. Run any suite deliberately from the Actions tab, or `gh workflow run e2e.yml -f suite=store` (`store` | `ui` | `all`). Locally, 2D/`@store` runs are allowed by choice (`pnpm run test:e2e:store`); `@ui` (3D) runs in CI only.
 
 They are not part of the definition of done.
 
