@@ -2,12 +2,14 @@ name: browser-qa
 
 # Browser QA in the cloud for critical changes (ADR-0016, amends ADR-0012). Runs on every PR
 # and always reports: when the PR touches no critical path — src/components, src/gates,
-# src/nodes, src/App.tsx, src/store/actions, or the `critical` / `sev:high` / `sev:critical`
-# label — it exits green with `BROWSER-QA: skipped (no critical paths)`. Otherwise it builds the
-# bundle, serves it with `vite preview` (playwright.config.ts webServer, CI branch) and runs the
-# Playwright `@store` suite — plus `@ui` when src/components/canvas, src/gates or src/nodes are
-# touched — then prints one greppable `BROWSER-QA: PASS|FAIL suites=… passed=… failed=…` line.
-# Browser suites never run on a laptop as a gate; `e2e.yml` stays for manual runs.
+# src/nodes, src/App.tsx, src/store/actions (a rename counts by its old path too) — and neither
+# it nor an issue its body links (Fixes/Closes/Resolves/Part of #n) carries `critical`,
+# `sev:high` or `sev:critical`, it exits green with `BROWSER-QA: skipped (no critical paths)`
+# (the body decides too, hence `edited`). Otherwise it builds the bundle, serves it with
+# `vite preview` (playwright.config.ts webServer, CI branch) and runs the Playwright `@store`
+# suite — plus `@ui` when src/components/canvas, src/gates or src/nodes are touched — then
+# prints one greppable `BROWSER-QA: PASS|FAIL suites=… passed=… failed=…` line. Browser suites
+# never run on a laptop as a gate; `e2e.yml` stays for manual runs.
 #
 # The decision and the verdict are `scripts/browser-qa.mjs` (rules in browser-qa.logic.mjs,
 # unit tested). Re-check any PR by hand: gh workflow run browser-qa.yml -f pr=<n> — that run
@@ -16,7 +18,7 @@ name: browser-qa
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened, labeled]
+    types: [opened, synchronize, reopened, edited, labeled]
     branches: [main]
   workflow_dispatch:
     inputs:
@@ -28,6 +30,7 @@ on:
 permissions:
   contents: read
   pull-requests: read
+  issues: read # the labels of the issues a PR body links
 
 # Per event, so a manual re-check never cancels the PR's own in-flight check.
 concurrency:
@@ -59,9 +62,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh api "repos/${{ github.repository }}/pulls/$PR_NUMBER/files" --paginate --jq '.[].filename' > "$RUNNER_TEMP/files.txt"
-          gh api "repos/${{ github.repository }}/pulls/$PR_NUMBER" --jq '.labels[].name' > "$RUNNER_TEMP/labels.txt"
-          node scripts/browser-qa.mjs decide "$RUNNER_TEMP/files.txt" "$RUNNER_TEMP/labels.txt" "$RUNNER_TEMP/decision.json"
+          gh api "repos/${{ github.repository }}/pulls/$PR_NUMBER/files" --paginate --jq '.[] | .filename, (.previous_filename // empty)' > "$RUNNER_TEMP/files.txt"
+          gh api "repos/${{ github.repository }}/pulls/$PR_NUMBER" > "$RUNNER_TEMP/pull.json"
+          node scripts/browser-qa.mjs decide "$RUNNER_TEMP/files.txt" "$RUNNER_TEMP/pull.json" "$RUNNER_TEMP/decision.json"
 
       - uses: pnpm/action-setup@v6
         if: steps.decide.outputs.critical == 'true'

@@ -21,8 +21,8 @@ export function isCriticalPath(filename) {
 
 const criticalLabels = (labels) => labels.filter((l) => l === CRITICAL_LABEL || SEVERITY_LABELS.includes(l))
 
-export function isCritical(filenames, labels) {
-  return filenames.some(isCriticalPath) || criticalLabels(labels).length > 0
+export function isCritical(filenames, labels, linkedIssues = []) {
+  return decide(filenames, labels, linkedIssues).critical
 }
 
 /** `['store']`, plus `'ui'` when a 3D path is touched. Always at least `store` — the caller gates on isCritical. */
@@ -36,14 +36,16 @@ export function grepFor(suites) {
 }
 
 /**
- * @param {string[]} filenames  the PR's files (GET /repos/{owner}/{repo}/pulls/{n}/files)
+ * @param {string[]} filenames  the PR's files, renames by old and new path (GET …/pulls/{n}/files)
  * @param {string[]} labels     the PR's labels
+ * @param {{number:number, labels:string[]}[]} linkedIssues  issues the body links, with their labels
  * @returns {{critical:boolean, reasons:string[], suites:string[]}}
  */
-export function decide(filenames, labels) {
+export function decide(filenames, labels, linkedIssues = []) {
   const reasons = [
     ...filenames.filter(isCriticalPath).map((f) => `path ${f}`),
     ...criticalLabels(labels).map((l) => `label ${l}`),
+    ...linkedIssues.flatMap((issue) => criticalLabels(issue.labels).map((l) => `issue #${issue.number} ${l}`)),
   ]
   const critical = reasons.length > 0
   return { critical, reasons, suites: critical ? suitesFor(filenames) : [] }
