@@ -47,8 +47,8 @@ See [docs/testing/standards.md](docs/testing/standards.md) for the detailed work
 
 | Layer | Test type | Location | Example |
 |-------|-----------|----------|---------|
-| Pure logic (`src/simulation/`, `src/store/actions/`) | Unit (Vitest) | Co-located `.test.ts` | `gateLogic.test.ts` |
-| Components (`src/gates/`, `src/components/`) | Component (RTL) | Co-located `.test.tsx` | `AndGate.test.tsx` |
+| Pure logic (`src/core/`, `src/simulation/`, `src/store/actions/`) | Unit (Vitest) | Co-located `.test.ts` | `src/core/chips/builtins/project01.test.ts` (every builtin vs its `.cmp`), `src/simulation/topologicalEval.test.ts` |
+| Components (`src/gates/`, `src/components/`) | Component (RTL) | Co-located `.test.tsx` | `src/components/scene/ChipBody3D.test.tsx` |
 | Workflows | E2E (Playwright) | `e2e/specs/` | `gate-placement.store.spec.ts` |
 
 ## Code Style and Linting

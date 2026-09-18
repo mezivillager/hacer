@@ -36,6 +36,7 @@ Read the **LLM quick reference** below (always), then **only the section you nee
 | 3D / R3F scene work | **React Three Fiber Patterns** (line ~802) |
 | Store / state changes | **Zustand State Management** (line ~962) |
 | UI with shadcn/Tailwind | **shadcn/ui + Tailwind Usage** (search heading) |
+| Adding a gate / builtin chip | **Adding a builtin chip** (search heading — the canonical recipe; REPO_MAP, CONTRIBUTING and the `hacer-patterns` skill link here) |
 | File placement / imports | **File Organization** (line ~1129) |
 | Performance tuning | **Performance Patterns** (line ~1161) |
 | AI-generated code review | **Code Review Checklist** (line ~1308) + **Anti-Patterns** (line ~1358) |
@@ -81,7 +82,7 @@ const { gates } = useCircuitStore.getState();
 | Area | Spec file(s) |
 |------|----------------|
 | Gate / store behavior | `src/store/actions/**/*.test.ts` |
-| Boolean simulation | `src/simulation/gateLogic.test.ts` |
+| Chip evaluation | `src/core/chips/builtins/project01.test.ts` (every builtin vs its `.cmp`), `src/simulation/topologicalEval.test.ts` |
 | Store E2E | `e2e/specs/**/*.store.spec.ts` |
 
 ---
@@ -95,13 +96,14 @@ writing code.**
 
 | What you need | Where to find it |
 |--------------|-----------------|
-| Type definitions (GateType, Position, Wire, etc.) | `src/store/types.ts` |
+| Store types (GateInstance, Position, Wire, etc.) | `src/store/types.ts` |
+| Chip definitions and registries | `src/core/chips/types.ts`, `src/core/chips/registry.ts`, `src/core/chips/appRegistry.ts` |
 | `circuitActions` method list + signatures | `src/store/circuitStore.ts` → `circuitActions` export |
 | Store state shape and initial field values | `src/store/circuitStore.ts` → `initialState` |
 | Store reset `beforeEach` pattern for tests | `src/store/actions/gateActions/gateActions.test.ts` |
 | E2E store test patterns | `e2e/specs/gates/gate-placement.store.spec.ts` |
 | E2E UI test patterns | `e2e/specs/gates/gate-placement.ui.spec.ts` |
-| Gate component pattern | `src/gates/components/NandGate.tsx` |
+| Gate rendering (data-driven, any chip) | `src/gates/GateRenderer.tsx` → `src/components/scene/ChipBody3D.tsx` |
 | Node component pattern | `src/nodes/components/InputNode3D.tsx` |
 | Wire routing utilities | `src/utils/wiringScheme/` |
 
@@ -258,14 +260,14 @@ function BadComponent({ items }) {
 // hooks/useGatePlacement.ts
 // ⚠️ This is a conceptual pattern example.
 // Always verify circuitActions signatures in src/store/circuitStore.ts before writing real code.
-// Verify GateType values and Position shape in src/store/types.ts.
-export const useGatePlacement = (gateType: GateType) => {
+// A gate is identified by its registered chip name (see "Adding a builtin chip" below).
+export const useGatePlacement = (chipName: string) => {
   const [isPlacing, setIsPlacing] = useState(false);
   
   // React Compiler automatically memoizes these functions
   const startPlacement = () => {
     setIsPlacing(true);
-    circuitActions.startPlacement(gateType); // verify signature
+    circuitActions.startPlacement(chipName); // verify signature
   };
   
   const cancelPlacement = () => {
@@ -452,7 +454,7 @@ export const snapToGrid = (value: number) => ...;
 **File Naming Conventions:**
 - **Components**: PascalCase - `GateEditor.tsx`, `WireRenderer.tsx`
 - **Hooks**: camelCase starting with "use" - `useGatePlacement.ts`, `useCircuitState.ts`
-- **Utilities**: camelCase - `gateLogic.ts`, `simulationEngine.ts`
+- **Utilities**: camelCase - `topologicalEval.ts`, `busLogic.ts`
 - **Types**: camelCase - `circuit.ts`, `gate.ts` (or co-located with component)
 - **Tests**: Same name + `.test.ts` or `.spec.ts` - `GateEditor.test.tsx`
 
@@ -495,19 +497,19 @@ components/
 **Barrel Exports (index.ts):**
 ```typescript
 // ✅ CORRECT - Use index.ts for clean imports
-// components/gates/index.ts
-export { NandGate } from './NandGate';
-export { AndGate } from './AndGate';
-export { OrGate } from './OrGate';
-export type { GateProps, GateType } from './types';
+// src/gates/index.ts
+export { GateRenderer } from './GateRenderer';
+export { BaseGate } from './common/BaseGate';
+export { GatePin } from './common/GatePin';
+export { WireStub } from './common/WireStub';
 
 // Usage:
-import { NandGate, AndGate, type GateProps } from '@/components/gates';
+import { GateRenderer, BaseGate } from '@/gates';
 
 // ❌ WRONG - Direct imports from multiple files
-import { NandGate } from '@/components/gates/NandGate';
-import { AndGate } from '@/components/gates/AndGate';
-import { OrGate } from '@/components/gates/OrGate';
+import { GateRenderer } from '@/gates/GateRenderer';
+import { BaseGate } from '@/gates/common/BaseGate';
+import { GatePin } from '@/gates/common/GatePin';
 ```
 
 ### State Management Patterns
@@ -662,24 +664,30 @@ export const App = () => {
 ### Unit Tests (Vitest)
 
 ```typescript
-// ✅ CORRECT - Pure function, easy to test
-// src/simulation/gateLogic.ts
-export const nandGate = (a: boolean, b: boolean): boolean => !(a && b);
-
-// src/simulation/gateLogic.test.ts
+// ✅ CORRECT - Pure chip evaluation, checked against its nand2tetris .cmp table
+// Condensed from src/core/chips/builtins/project01.test.ts — read that file for the real thing.
 import { describe, it, expect } from 'vitest';
-import { nandGate } from './gateLogic';
+import { createChipRegistry } from '@/core/chips/registry';
+import { isBuiltinChip } from '@/core/chips/types';
+import { registerProject1Builtins } from '@/core/chips/builtins/project01';
+import { parseCmp } from '@/core/testing/cmpParser';
+import { project1CmpFixtures } from '@/core/testing/project1CmpFixtures';
 
-describe('nandGate', () => {
-  it('returns true when both inputs are false', () => {
-    expect(nandGate(false, false)).toBe(true);
-  });
-  it('returns true when one input is false', () => {
-    expect(nandGate(true, false)).toBe(true);
-    expect(nandGate(false, true)).toBe(true);
-  });
-  it('returns false only when both inputs are true', () => {
-    expect(nandGate(true, true)).toBe(false);
+describe('Nand matches its .cmp fixture row-for-row', () => {
+  it('evaluates every row', () => {
+    const registry = createChipRegistry();
+    registerProject1Builtins(registry);
+    const chip = registry.get('Nand');
+    if (!chip || !isBuiltinChip(chip)) throw new Error('Nand is not a registered builtin');
+
+    const parsed = parseCmp(project1CmpFixtures.Nand);
+    if (!parsed.success) throw new Error('fixture failed to parse');
+    const col = (name: string) => parsed.file.columns.findIndex((c) => c.name === name);
+
+    for (const row of parsed.file.rows) {
+      const inputs = { a: row.values[col('a')], b: row.values[col('b')] };
+      expect(chip.implementation.evaluate(inputs)).toEqual({ out: row.values[col('out')] });
+    }
   });
 });
 ```
@@ -712,8 +720,8 @@ describe('gateActions', () => {
   });
 
   it('adds a gate with correct default values', () => {
-    // Read src/store/types.ts for the correct GateType values and Position shape.
-    circuitActions.addGate(/* type, position — see src/store/types.ts */)
+    // addGate(chipName, position): chipName must be registered (see src/core/chips/appRegistry.ts).
+    circuitActions.addGate('Nand', /* position — see src/store/types.ts */)
     const { gates } = useCircuitStore.getState();
     expect(gates).toHaveLength(1);
   });
@@ -746,8 +754,8 @@ describe('GateSelector', () => {
     render(<GateSelector onStartPlacement={onStartPlacement} />);
     
     fireEvent.click(screen.getByText('NAND'));
-    // Verify with: pnpm run typecheck — TypeScript enforces the correct GateType values
-    expect(onStartPlacement).toHaveBeenCalledWith(expect.any(String));
+    // Placement is keyed by registered chip name
+    expect(onStartPlacement).toHaveBeenCalledWith('Nand');
   });
 });
 ```
@@ -766,14 +774,13 @@ test.describe('@store Gate Placement', () => {
 
     // Use circuitActions directly (fast — no UI click required)
     const gate = await page.evaluate(() =>
-      // Read src/store/types.ts for correct type/position shapes before using
-      window.__CIRCUIT_ACTIONS__.addGate(/* type, position — see types.ts */)
+      // addGate(chipName, position) — read src/store/types.ts for the Position shape
+      window.__CIRCUIT_ACTIONS__.addGate('Nand', /* position — see types.ts */)
     )
 
     const state = await page.evaluate(() => window.__CIRCUIT_STORE__.gates)
     expect(state).toHaveLength(1)
-    // Read src/store/types.ts for the current GateType values
-    expect(state[0].type).toBe(/* expected type — see types.ts */)
+    expect(state[0].chipName).toBe('Nand')
   })
 })
 
@@ -1183,7 +1190,7 @@ Use Tailwind classes and CSS variables from `src/styles/globals.css`. Keep HACER
 
 - **Components**: PascalCase - `GateEditor.tsx`, `WireRenderer.tsx`
 - **Hooks**: camelCase with "use" prefix - `useGatePlacement.ts`, `useCircuitState.ts`
-- **Utilities**: camelCase - `gateLogic.ts`, `simulationEngine.ts`
+- **Utilities**: camelCase - `topologicalEval.ts`, `busLogic.ts`
 - **Types**: camelCase - `circuit.ts`, `gate.ts` (or co-located with component)
 - **Tests**: Component name + `.test.tsx` - `GateEditor.test.tsx`
 - **Folders**: PascalCase for feature folders - `components/GateEditor/`
@@ -1192,9 +1199,9 @@ Use Tailwind classes and CSS variables from `src/styles/globals.css`. Keep HACER
 
 | Feature Type | Location | Example |
 |--------------|----------|---------|
-| New basic gate | `src/gates/components/` | XorGate.tsx |
-| Gate logic function | `src/simulation/gateLogic.ts` | `xorGate()` |
-| Gate config (3 files) | `src/gates/config/` | `xor-constants.ts`, `xor-helpers.ts`, `xor.tsx` |
+| New builtin chip (definition + evaluate) | `src/core/chips/builtins/project01.ts` | `registerBuiltin(registry, 'Xor', …)` — see "Adding a builtin chip" |
+| Chip truth-table spec | `src/core/chips/builtins/project01.test.ts` + `src/core/testing/project1CmpFixtures.ts` | row-for-row vs `.cmp` |
+| Chip icon | `src/components/ui/icons/ChipIcons.tsx` | `CHIP_ICON_MAP` entry |
 | New UI panel | `src/components/ui/` | ChipLibrary.tsx |
 | 3D helper | `src/components/canvas/` | PinConnector.tsx |
 | Circuit I/O node (3D) | `src/nodes/components/` | BusNode3D.tsx |
@@ -1250,8 +1257,8 @@ test('renders 100 gates without frame drops', async ({ page }) => {
   for (let i = 0; i < 100; i++) {
     await page.evaluate((i) => {
       // See Discovery Protocol above for canonical window globals.
-      // Read src/store/types.ts for correct GateType values and Position shape.
-      window.__CIRCUIT_ACTIONS__.addGate(/* type, position — see types.ts */)
+      // addGate(chipName, position) — read src/store/types.ts for the Position shape.
+      window.__CIRCUIT_ACTIONS__.addGate('Nand', /* position — see types.ts */)
     }, i);
   }
   
@@ -1312,25 +1319,41 @@ export const doSomethingWithConfig = (config: SomeConfig) => { ... };
 3. **Export from index.ts** for clean imports
 4. **Follow existing patterns** - look at similar code
 
-```typescript
-// ✅ CORRECT - New gate follows existing pattern (React Compiler handles memoization)
-// src/gates/components/XorGate.tsx
-import { BaseGate, BaseGateProps } from '../common/BaseGate';
+### Adding a builtin chip (the "add a gate" recipe — canonical; other docs link here)
 
-export function XorGate(props: BaseGateProps) {
-  return <BaseGate {...props} gateType="xor" />;
-}
+A placed gate is a `GateInstance` (`src/store/types.ts`) whose `chipName` names a `ChipDefinition` in
+a chip registry. There is no per-gate type union, no per-gate logic file and no per-gate React
+component; everything downstream of the definition is data-driven.
 
-// src/gates/components/index.ts
-export { NandGate } from './NandGate';
-export { XorGate } from './XorGate'; // Add export
-```
+1. **Define and register.** In `src/core/chips/builtins/project01.ts` (or a sibling
+   `project<NN>.ts` wired into `src/core/chips/appRegistry.ts`) add a
+   `registerBuiltin(registry, name, inputs, outputs, evaluate)` call. Pins are `{ name, width }`
+   (`ChipPin`); `evaluate` is a pure `BuiltinEvalFn` — `(inputs: Record<string, number>) =>
+   Record<string, number>` — with every output masked to its pin width (`& 1`, `& MASK16`).
+   Types in `src/core/chips/types.ts`, registry API in `src/core/chips/registry.ts`.
+2. **Test — red first.** Add the chip's `.cmp` truth table to `src/core/testing/project1CmpFixtures.ts`
+   and the chip to `CHIP_NAMES` + `PIN_SCHEMA` in `src/core/chips/builtins/project01.test.ts`; the
+   existing table-driven spec then checks `evaluate` against every row (see the Unit Tests section above).
+3. **Icon.** Add a `<Name>Icon` and a `CHIP_ICON_MAP` entry in
+   `src/components/ui/icons/ChipIcons.tsx`. An unmapped chip renders `CHIP_ICON_FALLBACK`, so this
+   step is cosmetic, not blocking.
+4. **Nothing else.** The toolbar lists `getBuiltinChipRegistry().list()`
+   (`src/components/ui/CompactToolbar.tsx`); placement is `circuitActions.startPlacement(chipName)`
+   and `circuitActions.addGate(chipName, position)`, whose pins are derived from the definition
+   (`createGateInstance` in `src/store/actions/gateActions/gateActions.ts`); the 3D body is
+   `src/components/scene/ChipBody3D.tsx`, sized by `computeChipLayout` in
+   `src/components/scene/chipBodyLayout.ts`; and `src/simulation/topologicalEval.ts` evaluates every
+   placed chip through `evaluateChipWithCtx` (`src/core/chips/evaluateChip.ts`) — builtin, HDL-compiled
+   and composite alike.
+
+User chips (compiled HDL, later circuits) take the same path through `getUserChipRegistry()`;
+`ChipBody3D` and `createGateInstance` resolve `chipName` from both registries.
 
 ### Test Requirements for AI Changes
 
 | Change Type | Required Tests |
 |-------------|----------------|
-| New gate type | Unit test for logic + E2E test for wiring |
+| New builtin chip | `.cmp` truth-table spec (row for row) + E2E placement/wiring if the UI changes |
 | Store action | Unit test for mutation |
 | UI component | Component test for interactions |
 | Bug fix | Regression test that would have caught the bug |
@@ -1415,8 +1438,8 @@ const BadComponent = () => {
 
 // ✅ CORRECT: Use actions — see src/store/circuitStore.ts for current signatures
 const GoodComponent = () => {
-  // Check src/store/types.ts for current GateType values and Position shape
-  circuitActions.addGate(/* type, position — see types.ts */)
+  // addGate(chipName, position) — chipName is a registered chip, see src/core/chips/appRegistry.ts
+  circuitActions.addGate('Nand', /* position — see src/store/types.ts */)
 };
 
 // ❌ ANTI-PATTERN: Creating Three.js objects in render

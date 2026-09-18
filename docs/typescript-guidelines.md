@@ -142,7 +142,7 @@ if (result.ok) {
 function process<T>(data: T): T { ... }
 
 // ✅ GOOD - Constrained
-function process<T extends GateType>(data: T): T { ... }
+function process<T extends ChipDefinition>(data: T): T { ... }
 ```
 
 ### Use `satisfies` for Validation
@@ -254,7 +254,7 @@ const gateCount = useCircuitStore((state) => Object.keys(state.gates).length);
 ```typescript
 // ✅ Define action types explicitly
 interface CircuitActions {
-  addGate: (type: GateType, position: Vector3Like) => void;
+  addGate: (chipName: string, position: Vector3Like) => void;
   removeGate: (id: string) => void;
   connectWire: (from: PinRef, to: PinRef) => void;
 }

@@ -74,7 +74,7 @@ Treat these as ground truth for behavior:
 | Area | Example spec files |
 |------|---------------------|
 | Store / gates | `src/store/actions/**/*.test.ts` |
-| Simulation | `src/simulation/gateLogic.test.ts` |
+| Simulation | `src/simulation/topologicalEval.test.ts`, `src/core/chips/builtins/project01.test.ts` |
 | E2E store | `e2e/specs/**/*.store.spec.ts` |
 
 Add or extend tests when behavior is easy to misread from prose alone.

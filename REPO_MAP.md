@@ -230,7 +230,7 @@ and an execution/debugging UI. Spec: `docs/roadmap/phases/phase-0.7-computer-arc
 src/
 ├── core/                    # Pure logic, ZERO React/browser dependencies (Phase 5)
 │   ├── gates/              # Gate definitions and registry
-│   │   ├── types.ts        # GateType, GateDefinition, PinDefinition
+│   │   ├── types.ts        # ChipDefinition, ChipPin (today: src/core/chips/types.ts)
 │   │   ├── registry.ts     # Single source of truth for all gates
 │   │   └── index.ts
 │   ├── circuit/            # Circuit document types and schemas
@@ -535,12 +535,14 @@ import { Scene } from '@/components/canvas/Scene';
 
 ## Adding New Features
 
-### Adding a New Builtin Chip (Phase 0.5 — registry-driven, as of 2026-05-24)
-1. Add the chip's `BuiltinEvalFn` and `ChipDefinition` (signal names, widths) to `src/core/chips/builtins/project01.ts` (or a new `src/core/chips/builtins/project<NN>.ts`)
-2. Register it in the singleton via `registerBuiltin(...)` so `getBuiltinChipRegistry().list()` exposes it
-3. Add an SVG icon entry in `src/components/ui/icons/ChipIcons.tsx` keyed by chip name (toolbar/pinout panel will pick it up automatically)
-4. Add the chip's truth-table fixture and a Vitest spec
-5. The 3D body, pin layout, and toolbar button are produced automatically by `ChipBody3D` / `chipBodyLayout` / `CompactToolbar` — no per-chip component file is needed
+### Adding a new builtin chip (the "add a gate" recipe)
+
+Canonical recipe: `HACER_LLM_GUIDE.md` → *Adding a builtin chip*. In one line: a gate is a
+`GateInstance` with a `chipName`; add a `registerBuiltin(...)` call in `src/core/chips/builtins/project01.ts`
+(definition + pure `evaluate`), a `.cmp` fixture + `CHIP_NAMES`/`PIN_SCHEMA` entry in
+`src/core/chips/builtins/project01.test.ts`, and an icon in `src/components/ui/icons/ChipIcons.tsx`.
+Toolbar, placement, the 3D body (`src/components/scene/ChipBody3D.tsx`) and evaluation
+(`src/simulation/topologicalEval.ts`) are registry-driven — no per-chip component or logic file.
 
 ### Adding a plugin, an API function, or a software-stack component (Phase 5+)
 
