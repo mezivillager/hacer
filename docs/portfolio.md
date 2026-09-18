@@ -34,6 +34,12 @@ blocked by is closed, and its author is on the allowlist (the owner and the owne
 At 5 open agent PRs, or 7 days without a human merge: no new PR-producing work; only `horizon`
 notes and issue shaping. Scheduled jobs stand down.
 
+## Commands
+
+- `node scripts/backlog.mjs ready` — pickable tasks in pick order, then every other open task with its one-word reason (`--json` for the array).
+- `node scripts/backlog.mjs projects` — one line per row above: open · ready · in-progress · needs-human · next pick.
+- The rule is pure logic in `scripts/backlog.logic.mjs`, tested against a recorded `gh issue list` fixture; `tasks`, `next` and `claim` follow in [#149](https://github.com/mezivillager/hacer/issues/149).
+
 ## Where the rest of the process lives
 
 Labels, the issue form, the agent loop, PR budget, checks and merge tiers:

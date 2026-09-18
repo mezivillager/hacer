@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs'
+import path from 'node:path'
 import { describe, it, expect } from 'vitest'
 import {
   DEFAULT_ALLOWLIST,
@@ -15,8 +16,8 @@ import {
 //   gh issue list -R mezivillager/hacer --state open --limit 500 --json number,title,labels,author,blockedBy,blocking,parent
 // taken 2026-09-18, with two edits the live backlog could not supply: #151 carries `agent-ready`
 // (a shaped-but-blocked task) and #227 is filed by `outsider` (an author off the allowlist).
-const fixtureIssues = JSON.parse(readFileSync(new URL('./fixtures/gh-issues.json', import.meta.url), 'utf8'))
-const livePortfolio = readFileSync(new URL('../docs/portfolio.md', import.meta.url), 'utf8')
+const fixtureIssues = JSON.parse(readFileSync(path.join(import.meta.dirname, 'fixtures', 'gh-issues.json'), 'utf8'))
+const livePortfolio = readFileSync(path.join(import.meta.dirname, '..', 'docs', 'portfolio.md'), 'utf8')
 const portfolioRows = parsePortfolio(livePortfolio)
 
 /** Minimal issue in the gh JSON shape; every field can be overridden. */
