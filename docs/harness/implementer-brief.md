@@ -20,7 +20,7 @@ Given to a builder agent (or followed by a session) for a single `agent-ready` i
 
 ## Deliver
 - `git push -u origin <branch>`; `gh pr create` with: `Fixes #<n>` (or `Part of #<n>` when the issue has more slices), what/why in ≤ 10 lines, any deviation from the issue with the reason, the definition-of-done results, and labels `project:<slug>` + `risk:<tier>`.
-- Do **not** merge. Report: PR URL, reviewable line count (`git diff --numstat origin/main...HEAD`), test names added, and every open question — flag what you could not verify rather than guessing.
+- Do **not** merge, and do **not** keep watching CI after the PR is open — report and stop (a watcher costs tokens and adds nothing; the coordinator merges on green). Report: PR URL, reviewable line count (`git diff --numstat origin/main...HEAD`), test names added, and every open question — flag what you could not verify rather than guessing.
 
 ## Blocked exit
 If the issue is ambiguous, impossible as written, or needs a harness change: label it `needs-human`, write the question **and your recommended answer** on the issue, release the claim, and stop. That is a good outcome, not a failure.
