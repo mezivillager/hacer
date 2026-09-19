@@ -8,7 +8,7 @@
  * (window.__CIRCUIT_ACTIONS__), because synthetic pointer events do not reach R3F reliably.
  *
  * Tag: @tour, outside the @store and @ui runs. Cloud only (ADR-0016): .github/workflows/ui-tour.yml
- * runs it; it never runs on a laptop.
+ * runs it, and without `CI` set it skips itself, so it never runs on a laptop.
  */
 
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs'
@@ -117,6 +117,7 @@ async function wire(page: Page, plan: WirePlan, whileHovering?: () => Promise<vo
 }
 
 test.describe('App tour @tour', () => {
+  test.skip(!process.env.CI, 'cloud-only: the tour renders the 3D canvas (ADR-0016)')
   test.use({ actionTimeout: 15_000 })
 
   test('walks the main screens and flows', async ({ page }) => {

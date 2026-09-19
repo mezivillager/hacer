@@ -68,8 +68,13 @@ most severe first:
 - `agent-ready` only when the fix is concrete — the file, the change and the test are named and no
   design choice is left open. Otherwise no state label, with the open question and your
   recommended answer in the body.
-- A defect that blocks a flow is also labelled `bug` + `sev:high`, one that loses the user's work
-  `bug` + `sev:critical` (the pick rule takes those first), with the tour steps that reproduce it.
+- A defect that blocks a flow also gets `bug` + `sev:high` and the tour steps that reproduce it.
+  `sev:high` does not change when it is picked: polish is picked on request (`docs/portfolio.md`,
+  pick rule 3).
+- **Never set `sev:critical` yourself** — it pre-empts the whole queue, so a filer must not be able
+  to put it on its own issue. When a defect loses the user's work, make the first Evidence line
+  `Suspected sev:critical — <why>` and name the issue in your report; the coordinator reproduces it
+  and applies `sev:critical`.
 
 **(b) Product strategy → `product-inbox.md`**, never an issue: a new capability, a flow redesign, a
 change to the roadmap or an epic. Entries `PRD-NNN`, `status: proposed`; the owner approves, then the
