@@ -12,7 +12,7 @@ Declined entries stay, so the same proposal is not made twice.
 ```markdown
 ### FID-NNN · <one-line proposal>
 - **Date:** YYYY-MM-DD · **Target epic:** #139 spine | #142 surfaces | #147 horizon | #140 core
-- **Status:** proposed | approved | declined (<reason>) | filed (#n)
+- **Status:** proposed | approved | declined (<reason>) | deferred (<until>) | filed (#n)
 - **Why:** <the finding, with its source — file:line, book section, URL and fetch date>
 - **Review note:** docs/research/<note>.md
 
@@ -31,7 +31,7 @@ Ids are sequential and never reused. Target epics: `#139` spine, `#142` surfaces
 
 ### FID-001 · Adopt the reference clock contract for Phase 0.6: tick samples, tock commits
 - **Date:** 2026-09-18 · **Target epic:** #139 spine
-- **Status:** proposed
+- **Status:** deferred (owner, 2026-09-19: "they need to wait until other surfaces have caught up first" — revisit when the surfaces epic #142 exits)
 - **Why:** `docs/roadmap/phases/phase-0.6-arithmetic-sequential.md` §0.6.1 says a DFF's output changes on the rising edge and §0.6.3 applies state changes on both edges. The book's Appendix A §A.7 says outputs "stabilize to new values only at tocks"; the reference `../web-ide/simulator/src/chip/builtins/sequential/dff.ts` reads `in` on `tick()` and writes `out` on `tock()`; official `Bit.cmp` row `3+` has `out=0` after tick and row `4` has `out=1` after tock. A rising-edge DFF fails the oracle at its first sequential row.
 - **Review note:** docs/research/2026-09-fidelity-review-roadmap.md §3.2
 
@@ -48,7 +48,7 @@ Phase 0.6's clock model is the reference's: `tick` = evaluate, then every clocke
 
 ### FID-002 · A chip *instance* model with clocked pins, before the one-engine lowering (#190)
 - **Date:** 2026-09-18 · **Target epic:** #140 core
-- **Status:** proposed
+- **Status:** deferred (owner, 2026-09-19: "they need to wait until other surfaces have caught up first" — revisit when the surfaces epic #142 exits)
 - **Why:** `src/core/chips/types.ts:7` makes a builtin a pure function and `src/core/chips/evaluateChip.ts:12` caches one compiled closure per *definition*; two DFF parts have nowhere to keep separate state. `src/core/hdl/compiler.ts` step 4 rejects `Bit.hdl`'s `Mux → DFF → Mux` loop as a cycle, while Appendix A allows a loop "through a clocked pin" and the reference cuts dependency edges at clocked inputs (`../web-ide/simulator/src/chip/chip.ts:614-618, 675-679`) and infers a composite's clocked pins as those with no in→out path (`../web-ide/simulator/src/chip/builder.ts:242-246`). Project 5 vectors also address internal parts by name (`ARegister[0]`, `RAM16K[0]`, `ROM32K load`).
 - **Review note:** docs/research/2026-09-fidelity-review-roadmap.md §3.2, §3.3, §4
 
@@ -65,7 +65,7 @@ Phase 0.6's clock model is the reference's: `tick` = evaluate, then every clocke
 
 ### FID-003 · Roadmap corrections where the text contradicts the oracle or the code
 - **Date:** 2026-09-18 · **Target epic:** #139 spine
-- **Status:** proposed
+- **Status:** deferred (owner, 2026-09-19: "they need to wait until other surfaces have caught up first" — revisit when the surfaces epic #142 exits)
 - **Why:** (1) `phase-0.5` §0.5.6 promises a "multi-pass convergence" fallback that would accept combinational loops Appendix A rejects ("to avoid uncontrolled data races") and the code refuses (`src/simulation/topologicalEval.ts:117-123`); (2) `phase-0.7` §0.7.5 says reset "clear[s] registers" while `ComputerAdd.cmp` row 7 shows `PC=0` and `DRegister=5` after `reset=1`; (3) `vision.md` lists "Propagation delays and setup/hold times" under a zero-delay model ("The operation of combinational chips is instantaneous").
 - **Review note:** docs/research/2026-09-fidelity-review-roadmap.md §1, §3.1, §3.3
 
@@ -82,7 +82,7 @@ The phase pages state what the N2T engine does and does not do: combinational lo
 
 ### FID-004 · "Below the NAND" as three engine tiers; first step a delay-model engine
 - **Date:** 2026-09-18 · **Target epic:** #147 horizon
-- **Status:** proposed
+- **Status:** deferred (owner, 2026-09-19: "they need to wait until other surfaces have caught up first" — revisit when the surfaces epic #142 exits)
 - **Why:** `docs/north-star.md` names transistors and device physics as the direction with no model behind it. Three honest tiers exist — gate level with delays and X (Logisim, DigitalJS), switch level (Bryant 1984), circuit level (SPICE-class) — and each has a test that separates real from fake. The first tier already has an oracle: a NAND-built master–slave DFF must pass the builtin DFF's `.cmp` vectors through the delay engine.
 - **Review note:** docs/research/2026-09-fidelity-review-roadmap.md §5
 
@@ -99,7 +99,7 @@ FID-002
 
 ### FID-005 · Honest scale and performance budgets for 0.6/0.7
 - **Date:** 2026-09-18 · **Target epic:** #139 spine
-- **Status:** proposed
+- **Status:** deferred (owner, 2026-09-19: "they need to wait until other surfaces have caught up first" — revisit when the surfaces epic #142 exits)
 - **Why:** `phase-0.6` §0.6.2 justifies a sparse `Map` with "<50MB" when a dense `Uint16Array(16384)` is 32 KB; the real cost is a hierarchical RAM16K of 262 144 DFF instances per eval, which the reference avoids by shipping RAM chips as builtins. `phase-0.7`'s "<200ms per instruction" and `vision.md`'s "<16ms for 1000 gates" have no benchmark in the repo.
 - **Review note:** docs/research/2026-09-fidelity-review-roadmap.md §1, §3.2, §3.3
 
