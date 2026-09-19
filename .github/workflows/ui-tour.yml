@@ -1,0 +1,59 @@
+name: ui-tour
+
+# The product role's eyes (#269, docs/harness/product-brief.md): Playwright walks the app's main
+# screens and flows (e2e/tour/app-tour.spec.ts, tag @tour) against the built bundle and saves a
+# full-page screenshot and an accessibility snapshot per step into tour-output/.
+# Manual and cloud only (ADR-0016) — the tour mounts the 3D canvas, so it never runs on a laptop:
+#   gh workflow run ui-tour.yml [--ref <branch>]   then   gh run download <run-id> -n ui-tour
+# `--grep @store` / `--grep @ui` never select it (browser-qa.yml, e2e.yml's store and ui suites);
+# e2e.yml's manual `all` suite does run it, in the cloud, without uploading tour-output/.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ui-tour:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+
+      - uses: pnpm/action-setup@v6
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
+
+      # `CI` makes playwright.config.ts build the bundle and serve it with `vite preview`; the
+      # SwiftShader WebGL flags come from the same config. A retry restarts the tour from scratch.
+      - name: UI tour against the built bundle
+        run: pnpm exec playwright test --grep @tour --workers 1 --reporter=list,html
+
+      - name: Upload tour-output
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ui-tour
+          path: tour-output/
+          retention-days: 14
+          if-no-files-found: warn
+
+      - name: Upload playwright-report
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ui-tour-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 14
+          if-no-files-found: ignore
