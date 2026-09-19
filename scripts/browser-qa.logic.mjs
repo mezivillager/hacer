@@ -4,11 +4,24 @@
 
 // ---------------------------------------------------------------- what is critical
 
-/** User-facing behaviour (ADR-0016). A trailing slash is a directory prefix; otherwise exact. */
-export const CRITICAL_PATHS = ['src/components/', 'src/gates/', 'src/nodes/', 'src/App.tsx', 'src/store/actions/']
-
-/** 3D and node rendering: these need the `@ui` suite on top of `@store`. */
-export const UI_PATHS = ['src/components/canvas/', 'src/gates/', 'src/nodes/']
+/**
+ * Work that changes the UI (ADR-0016, amended 2026-09-19 by #282). A trailing slash is a directory
+ * prefix; otherwise exact. `src/simulation/` and `src/core/` stay out — the conformance oracle
+ * covers them. `src/surfaces/` is listed ahead of its first file, the 2D surface.
+ */
+export const CRITICAL_PATHS = [
+  'src/components/',
+  'src/App.tsx',
+  'src/gates/',
+  'src/nodes/',
+  'src/store/',
+  'src/utils/',
+  'src/styles/',
+  'index.html',
+  'e2e/',
+  'playwright.config.ts',
+  'src/surfaces/',
+]
 
 export const CRITICAL_LABEL = 'critical'
 export const SEVERITY_LABELS = ['sev:high', 'sev:critical']
@@ -25,12 +38,16 @@ export function isCritical(filenames, labels, linkedIssues = []) {
   return decide(filenames, labels, linkedIssues).critical
 }
 
-/** `['store']`, plus `'ui'` when a 3D path is touched. Always at least `store` — the caller gates on isCritical. */
-export function suitesFor(filenames) {
-  return filenames.some((f) => matchesAny(f, UI_PATHS)) ? ['store', 'ui'] : ['store']
+/**
+ * Always `['store']` — the caller gates on isCritical. `@ui` mounts the 3D canvas, and 3D browser
+ * testing is far-future research (#284): it never runs automatically, only by hand via `e2e.yml`.
+ * The file list stays the seam for a suite picked by path, such as a future 2D-surface suite.
+ */
+export function suitesFor(_filenames) {
+  return ['store']
 }
 
-/** Playwright `--grep` pattern for the suites: `@store` or `@store|@ui`. */
+/** Playwright `--grep` pattern for the suites, e.g. `@store`; several join with `|`. */
 export function grepFor(suites) {
   return suites.map((s) => `@${s}`).join('|')
 }
