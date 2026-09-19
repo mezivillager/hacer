@@ -13,7 +13,7 @@
     ]
   },
   "env": {
-    "CLAUDE_CODE_SUBAGENT_MODEL": "sonnet",
+    "CLAUDE_CODE_SUBAGENT_MODEL": "opus",
     "CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS": "4"
   }
 }

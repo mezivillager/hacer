@@ -67,17 +67,18 @@ a personal skill and is *not* available there; in the cloud, one session = one i
 
 ## Budgets (cost limits)
 
-Set 2026-09-19 at the owner's request ("we need to setup reasonable limit, especially for claude").
+Set 2026-09-19 at the owner's request ("we need to setup reasonable limit, especially for claude"; "subagents should be mainly opus for significant difficulty work, and sonnet only if it's routine and easy work").
 Change them here, in a PR, like any other knob.
 
 | Limit | Value | Where it is enforced |
 |---|---|---|
-| Default subagent model | **Sonnet** (`CLAUDE_CODE_SUBAGENT_MODEL=sonnet`) | `.claude/settings.json` `env` |
-| Opus only for | fidelity reviews (`hacer-fidelity`), design ADRs at the Full tier, security-sensitive verifications (workflows, secrets) | agent `model:` frontmatter or an explicit per-dispatch model |
+| Coordinator model | the owner's choice per session — **Opus** typically, **Fable** for harder work | set by the owner when starting a session; not configured here |
+| Default subagent model | **Opus** (`CLAUDE_CODE_SUBAGENT_MODEL=opus`) — significant work: features, fixes, design, verification of code, fidelity | `.claude/settings.json` `env` |
+| Sonnet only for | routine, easy work: docs-only edits and their review, mechanical changes, issue/label housekeeping, gardening | an explicit `model: sonnet` per dispatch (or agent `model:` frontmatter) |
 | Concurrent subagents per session | **4** (`CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS=4`; default is 20) | `.claude/settings.json` `env` |
 | Subagent tokens per coordinator run | stop dispatching new work and report at **~2M** (summed from task notifications), unless the owner asked for a longer run | the coordinator (`ha-next`, `/autonomous`) |
 | Agents after their PR | report and **stop** — never keep watching CI | `implementer-brief.md` |
-| Cloud routines | **Sonnet**, one-off or at most weekly, change-triggered; at most **1** recurring routine until #255 reports | routine config |
+| Cloud routines | **Sonnet** for routine runs (spikes, gardening), Opus when the run does significant work; one-off or at most weekly, change-triggered; at most **1** recurring routine until #255 reports | routine config |
 | Cursor Bugbot | advisory only, never a required check | GitHub ruleset (not listed) |
 
 Account-level caps only the owner can set: Claude **extra usage** (claude.ai → Settings → Usage) and
