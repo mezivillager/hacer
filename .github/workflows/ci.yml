@@ -10,6 +10,10 @@ on:
   pull_request:
     branches: [main]
 
+# Read-only job token (CodeQL actions/missing-workflow-permissions): CI only reads the repo.
+permissions:
+  contents: read
+
 jobs:
   ci:
     runs-on: ubuntu-latest
