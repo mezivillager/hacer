@@ -3,7 +3,6 @@ import {
   CRITICAL_LABEL,
   CRITICAL_PATHS,
   SEVERITY_LABELS,
-  UI_PATHS,
   decide,
   formatDecision,
   formatSummary,
@@ -22,15 +21,20 @@ function report(stats = {}, errors = []) {
 }
 
 describe('constants', () => {
-  it('carries the ADR-0016 definition of critical', () => {
+  it('carries the ADR-0016 definition of critical: the PR changes the UI (amended 2026-09-19, #282)', () => {
     expect(CRITICAL_PATHS).toEqual([
       'src/components/',
+      'src/App.tsx',
       'src/gates/',
       'src/nodes/',
-      'src/App.tsx',
-      'src/store/actions/',
+      'src/store/',
+      'src/utils/',
+      'src/styles/',
+      'index.html',
+      'e2e/',
+      'playwright.config.ts',
+      'src/surfaces/',
     ])
-    expect(UI_PATHS).toEqual(['src/components/canvas/', 'src/gates/', 'src/nodes/'])
     expect(CRITICAL_LABEL).toBe('critical')
     expect(SEVERITY_LABELS).toEqual(['sev:high', 'sev:critical'])
   })
@@ -44,22 +48,28 @@ describe('isCriticalPath', () => {
     'src/nodes/InputNode.tsx',
     'src/App.tsx',
     'src/store/actions/gates/addGate.ts',
+    'src/store/types.ts',
+    'src/store/circuitStore.ts',
+    'src/utils/wiringScheme/approach.ts',
+    'src/styles/globals.css',
+    'index.html',
+    'e2e/specs/gates/gate-types.ui.spec.ts',
+    'playwright.config.ts',
+    'src/surfaces/2d/Board.tsx',
   ])('matches %s', (filename) => {
     expect(isCriticalPath(filename)).toBe(true)
   })
 
   it.each([
-    'src/store/types.ts',
-    'src/store/circuitStore.ts',
     'src/core/hdl/parser.ts',
     'src/simulation/topologicalEval.ts',
     'src/App.test.tsx',
     'src/components.ts',
     'src/nodesLegacy/Old.tsx',
     'docs/decisions/0016-browser-qa-in-the-cloud.md',
-    'playwright.config.ts',
+    'docs/index.html',
     '.github/workflows/browser-qa.yml',
-    'e2e/specs/gates/gate-types.ui.spec.ts',
+    'scripts/browser-qa.logic.mjs',
   ])('does not match %s', (filename) => {
     expect(isCriticalPath(filename)).toBe(false)
   })
@@ -91,16 +101,20 @@ describe('isCritical', () => {
 })
 
 describe('suitesFor', () => {
-  it('is store only for 2D critical paths', () => {
+  it('is store only for the DOM shell, the store and the rest of the UI', () => {
     expect(suitesFor(['src/App.tsx'])).toEqual(['store'])
     expect(suitesFor(['src/store/actions/wires/addWire.ts'])).toEqual(['store'])
     expect(suitesFor(['src/components/ui/Toolbar.tsx'])).toEqual(['store'])
+    expect(suitesFor(['src/utils/grid.ts', 'index.html'])).toEqual(['store'])
   })
 
-  it('adds ui when canvas, gates or nodes are touched', () => {
-    expect(suitesFor(['src/components/canvas/Scene.tsx'])).toEqual(['store', 'ui'])
-    expect(suitesFor(['src/gates/components/NandGate.tsx'])).toEqual(['store', 'ui'])
-    expect(suitesFor(['docs/x.md', 'src/nodes/InputNode.tsx'])).toEqual(['store', 'ui'])
+  // Owner ruling 2026-09-19 (#282): 3D browser testing is far-future research (#284); `@ui`
+  // runs only by hand through e2e.yml.
+  it('never adds ui, even when canvas, gates, nodes or a @ui spec are touched', () => {
+    expect(suitesFor(['src/components/canvas/Scene.tsx'])).toEqual(['store'])
+    expect(suitesFor(['src/gates/components/NandGate.tsx'])).toEqual(['store'])
+    expect(suitesFor(['docs/x.md', 'src/nodes/InputNode.tsx'])).toEqual(['store'])
+    expect(suitesFor(['e2e/specs/gates/gate-types.ui.spec.ts'])).toEqual(['store'])
   })
 
   it('is store only when critical by label with no critical file', () => {
@@ -125,7 +139,7 @@ describe('decide', () => {
     const result = decide(['src/gates/A.tsx', 'src/App.tsx', 'docs/x.md'], ['critical', 'sev:high'])
     expect(result.critical).toBe(true)
     expect(result.reasons).toEqual(['path src/gates/A.tsx', 'path src/App.tsx', 'label critical', 'label sev:high'])
-    expect(result.suites).toEqual(['store', 'ui'])
+    expect(result.suites).toEqual(['store'])
   })
 })
 
@@ -134,13 +148,14 @@ describe('decide', () => {
 describe('linked issues', () => {
   const sevHigh223 = { number: 223, labels: ['bug', 'sev:high', 'agent-ready'] }
 
-  it('makes a sev:high fix critical off the critical paths (#223, a fix in src/utils)', () => {
-    expect(decide(['src/utils/wiringScheme/approach.ts'], ['project:bugs', 'risk:1'], [sevHigh223])).toEqual({
+  // #223's own fix was in src/utils, which is a critical path since #282; src/simulation stays off.
+  it('makes a sev:high fix critical off the critical paths (a fix in src/simulation)', () => {
+    expect(decide(['src/simulation/topologicalEval.ts'], ['project:bugs', 'risk:1'], [sevHigh223])).toEqual({
       critical: true,
       reasons: ['issue #223 sev:high'],
       suites: ['store'],
     })
-    expect(isCritical(['src/utils/wiringScheme/approach.ts'], ['risk:1'], [sevHigh223])).toBe(true)
+    expect(isCritical(['src/simulation/topologicalEval.ts'], ['risk:1'], [sevHigh223])).toBe(true)
   })
 
   it('counts sev:critical and critical on a linked issue', () => {
@@ -173,7 +188,7 @@ describe('formatDecision', () => {
 
   it('prints the suites and the reasons when critical', () => {
     expect(formatDecision(decide(['src/nodes/N.tsx'], ['critical']))).toBe(
-      'BROWSER-QA: critical suites=store,ui — path src/nodes/N.tsx, label critical',
+      'BROWSER-QA: critical suites=store — path src/nodes/N.tsx, label critical',
     )
   })
 })
