@@ -24,7 +24,7 @@ merge. If a step below is wrong, fix it here — not in a chat.
 | How a PR is judged | `verifier-brief.md` | what blocks, what is a nit, what must be tried |
 | What must be green | `main-rules` ruleset (required check `ci`, 0 approvals, no bypass) + `AGENTS.md` definition of done | add a required check here after it is green on its own PR |
 | PR size and shape | ADR-0013 (400 reviewable lines, one sub-issue per PR) — enforced by the `pr-hygiene` check (`scripts/pr-hygiene.logic.mjs`) | the budget numbers |
-| Which PRs get a browser run, and which suites | ADR-0016 (critical = `src/components`, `src/gates`, `src/nodes`, `src/App.tsx`, `src/store/actions`, the `critical` / `sev:*` labels on the PR or an issue it links) — the `browser-qa` check (`scripts/browser-qa.logic.mjs`), cloud only, never a local gate | the critical paths, the `@ui` paths |
+| Which PRs get a browser run, and which suites | ADR-0016 (critical = the PR changes the UI: `src/components`, `src/App.tsx`, `src/gates`, `src/nodes`, `src/store`, `src/utils`, `src/styles`, `index.html`, `e2e`, `playwright.config.ts`, later `src/surfaces`; or the `critical` / `sev:*` labels on the PR or an issue it links) — the `browser-qa` check (`scripts/browser-qa.logic.mjs`) runs `@store` only, cloud only, never a local gate; `@ui` (3D) runs only by hand via `e2e.yml`; locally, only suites that do not mount the 3D canvas — *amended 2026-09-19 (#282): was `src/store/actions` only, plus `@ui` on canvas paths* | the critical paths (`CRITICAL_PATHS`) |
 | What the human still does | `WORK-SYSTEM.md` §7 (merge tiers) | opt a tier into auto-merge |
 | What went wrong, and whether it was mechanised | `ledger.md` | second occurrence → a lint, test or hook |
 
