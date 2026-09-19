@@ -45,3 +45,6 @@ worktrees
 
 # npm lock file (project uses pnpm)
 package-lock.json
+
+# UI tour captures (e2e/tour, uploaded by ui-tour.yml)
+tour-output
