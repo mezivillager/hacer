@@ -77,10 +77,10 @@ Change them here, in a PR, like any other knob.
 | Subagent tokens per coordinator run | stop dispatching new work and report at **~2M** (summed from task notifications), unless the owner asked for a longer run | the coordinator (`ha-next`, `/autonomous`) |
 | Agents after their PR | report and **stop** — never keep watching CI | `implementer-brief.md` |
 | Cloud routines | **Sonnet** for routine runs (spikes, gardening), Opus when the run does significant work; one-off or at most weekly, change-triggered; at most **1** recurring routine until #255 reports | routine config |
-| Cursor Bugbot | advisory only, never a required check | GitHub ruleset (not listed) |
+| Cursor second opinion (local `cursor-agent`) | advisory, never a gate; standard `composer-2.5`, one run per PR head on `risk:1`/`risk:2` or `src/core`, `src/simulation`, `.github/workflows`, `scripts` changes; read-only config and 15-min timeout from `cursor-lane.md` §1. Bugbot is **not** used (owner, 2026-09-19: usage-based, not cost-effective) | the coordinator (wrapper: #296) |
 
 Account-level caps only the owner can set: Claude **extra usage** (claude.ai → Settings → Usage) and
-Cursor **spend limits** (Cursor dashboard). Recommended values are in #255.
+Cursor **on-demand spend limit** (cursor.com dashboard → Spending). Recommended values are in #255.
 
 ## Files
 
@@ -93,5 +93,6 @@ Cursor **spend limits** (Cursor dashboard). Recommended values are in #255.
 - `routines/fidelity-digest.md` — the change-triggered re-check of the roadmap (ADR-0018 §5).
 - `product-brief.md` — the brief the product role receives for a usability and design review.
 - `product-inbox.md` — product-strategy proposals from product reviews, waiting for the owner's approval.
+- `cursor-lane.md` — what Cursor can carry: the local `cursor-agent` second opinion (verified read-only setup, trial, budget) and keep/skip verdicts for the rest.
 - `../research/2026-09-18-agent-readiness/` — why the process looks like this.
 - `sessions/` — dated session records: the goal, the owner's rulings, what was built, the state at close, how to resume. Start with the latest one when picking the work back up.
