@@ -36,7 +36,7 @@ merge. If a step below is wrong, fix it here — not in a chat.
 | "what's open in *surfaces*?" | `gh issue view <epic#>` or `backlog.mjs tasks <slug>` (#149 follow-up) |
 | "what can you do next?" | the **`ha-next`** skill: `backlog.mjs ready`, present the top pick with its why, claim it, build it through `ha-prompt-it`, PR, verifier, merge |
 | "work the next N" | locally: `/autonomous` over `ha-next` N times; in the cloud: N `claude --cloud` sessions, one issue each |
-| "queue up: …" | triage: shape the idea into issues in the form, split to fit the budget, `agent-ready` only if risk:0/1 and the criteria are unambiguous; otherwise `needs-human` |
+| "queue up: …" | triage: shape the idea into issues in the form, split to fit the budget, `agent-ready` only if risk:0/1 and the criteria are unambiguous; otherwise `needs-human` — *one exception:* product-role polish issues may be `agent-ready` at `risk:2` when the fix is concrete (owner's ruling on #269; `product-brief.md`) |
 
 ## Standing roles
 
