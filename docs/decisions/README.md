@@ -40,4 +40,4 @@ It captures decisions here and then runs the author pass in [`../llm-docs-sync.m
 | [0015](0015-releases-do-not-commit-to-main.md) | Releases tag and publish; they no longer commit to `main` | Accepted | 2026-09-18 |
 | [0016](0016-browser-qa-in-the-cloud.md) | Browser QA in the cloud is required for critical changes (amends 0012) | Accepted | 2026-09-18 |
 | [0017](0017-documentation-platform.md) | Documentation platform: Astro Starlight at `/docs/` on the existing Pages deploy | Accepted | 2026-09-18 |
-| [0018](0018-fidelity-gate.md) | Fidelity gate: engineering-truth review of epics, ADRs and core semantics | Proposed | 2026-09-18 |
+| [0018](0018-fidelity-gate.md) | Fidelity gate: engineering-truth review of epics, ADRs and core semantics | Accepted | 2026-09-18 |

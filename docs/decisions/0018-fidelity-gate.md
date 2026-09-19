@@ -1,6 +1,6 @@
 # 0018. Fidelity gate: engineering-truth review of epics, ADRs and core semantics
 
-- **Status:** Proposed
+- **Status:** Accepted (owner, 2026-09-19)
 - **Date:** 2026-09-18
 - **Deciders:** Repo owner (issue #268); drafted by the first fidelity run
 - **Phase:** Phase 0.5 (applies to 0.5 → 0.7 and the horizon)
