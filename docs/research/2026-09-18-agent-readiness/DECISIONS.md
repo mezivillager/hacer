@@ -280,3 +280,83 @@ Judgment calls from the rest of 2026-09-18: the tracer bullet, the foundation PR
 *Cost if wrong:* the owner prefers VitePress (the named runner-up) — a config folder to swap per the ADR. *Revert:* status → Superseded.
 
 **R84 — Wrap-up (owner: "wrap up current ongoing PRs and tasks, and call it a day"; "make sure there's committed context … so nothing is lost").** No new work is dispatched; the four in-flight items finish (verifier #273, portfolio #259, fidelity PR 2 #268, docs #276); the session is recorded in a committed file `docs/harness/sessions/2026-09-18.md` + the later rulings appended to the committed DECISIONS.md; the workspace CLAUDE.md and memory gain a resume pointer.
+
+## Execution run, late 2026-09-18 and 2026-09-19 (R85–R106)
+
+**R85 — PR #278 (portfolio six-slot cycle) reviewed by the coordinator (R81), PASS; builder's six questions ruled** (tiebreak stays surfaces/core; hand-in-hand shaping → #279; keep WORK-SYSTEM §2 note; retire WORK-SYSTEM live sections → #280; title ok; direct pull only). First `project:surfaces` pick sits at position 11 today because the design-first ADRs (#188/#189/#190, labelled `core`) take the surfaces slots first — intended.
+*Cost if wrong:* the surfaces bucket fills slowly until #279 shapes its issues.
+
+**R86 — Fidelity PR 2 (#281) reviewed by the coordinator, PASS.** Its five proposals stay `proposed` in `fidelity-inbox.md` for the owner (R77). Its #190 finding is posted on #190 as a verdict comment (allowed by the role), because #190 is the next design ADR to be picked and must not be built against the rising-edge model.
+
+**R87 — #273 BLOCK upheld; fix (a):** browser-qa reads the `sev:*`/`critical` labels of the issues the PR links (`Fixes/Closes/Part of #n`, reusing `findLinkedIssues`), which needs `issues: read` (read-only on a public repo — acceptable). Fix (b) (builders copy labels onto PRs) was rejected: it relies on a convention the owner's ruling ("all critical features/fixes") should not depend on. The builder also pushes its two local commits (merge-ref + per-event concurrency for manual runs). To prove the browser path before merge, the coordinator applies the new `critical` label to #273 so `@store` actually runs in CI. The definition gap the verifier found (store/simulation/utils/e2e changes are not "critical") is left for the owner — noted on #220.
+*Cost if wrong:* one more permission scope on a read-only workflow.
+
+**R88 — #273 fix reviewed by the coordinator** (small, targeted: linked-issue `sev:*`/`critical` via `findLinkedIssues` imported from pr-hygiene, `issues: read`, `previous_filename` for renames, `edited` trigger, fail-closed on unreadable issues; `gh` called with an argv array — no shell interpolation of PR text). Not re-sent to the verifier: the security surface did not change beyond one read scope, and the real proof is the `critical`-labelled run of the actual browser suites.
+
+**R89 — #273 merged after proof; `browser-qa` required.** Critical-labelled run 35349510882: `BROWSER-QA: PASS suites=store passed=107 failed=0 flaky=0` in 2.1 min on the built bundle with SwiftShader in Actions — the first real cloud browser run. Required checks are now `ci`, `pr-hygiene`, `browser-qa` (non-strict); non-critical PRs pass it with the skip line. The owner's "what counts as critical" question moved to an open needs-human issue (282) with a stated default.
+*Cost if wrong:* flaky browser runs block merges — mitigated by retries 2 / 1 worker; revert = drop `browser-qa` from the required list (one API call).
+
+**R90 — Stopped the browser-qa builder agent after its PR merged** (it kept polling its own background work, ~300k tokens total). Its work is on `main`; nothing in its worktree was unpushed (pruned earlier). Ledger candidate: builder agents should end once their PR is handed back, not keep watching CI.
+
+**R91 — Publish = on-green** for mezivillager/hacer, relying on the owner's grants ("all necessary permissions are granted, no restriction on github pushing, deploying, releasing", 2026-09-18; "I have given you the permission", 2026-09-19). Recorded as a standing grant in `ha/CLAUDE.md` so future runs stop asking.
+*Revert:* delete that line.
+
+**R92 — Browser QA per the owner (2026-09-19):** browser suites run automatically only in CI, for PRs that change the UI (DOM shell, app flows, store, routing, e2e config) — the `@store` suite as a UI-regression net; the `@ui` canvas suite (3D browser testing) never runs automatically and becomes a far-future, cloud-only research task; local browser tests are allowed only for suites that do not mount the 3D canvas (the future 2D surface, the DOM shell). `src/simulation/**` and `src/core/**` stay out (the conformance oracle covers them).
+*Cost if wrong:* a UI regression in a 3D-only change slips past CI until the research lands.
+
+**R93 — Fidelity proposals FID-001…005 deferred (owner: "they need to wait until other surfaces have caught up first").** Status set to `deferred`; the #190 finding stays posted on #190 as a verdict comment, so the design-first ADR still sees it without any issue being filed.
+*Cost if wrong:* 0.6 clock work is not scheduled — it is not scheduled anyway until the spine reaches 0.6.
+
+**R94 — RELEASE_TOKEN is removed, not moved.** Since ADR-0015 the release job only pushes a tag and creates a GitHub Release, which the job's own short-lived `GITHUB_TOKEN` can do; a long-lived personal token readable by any workflow on any branch of the repo is the risk, and deleting it is strictly better than fencing it.
+*Cost if wrong:* a release run fails for lack of permission — caught by the first release run after merge; revert is one workflow line.
+
+**R95 — The product agent files UI-polish issues itself** (≤5 per review, evidence required, `agent-ready` when concrete), while product *strategy* proposals (roadmap/epic changes) still queue for the owner. Owner 2026-09-19: "you are supposed to find that out, not me … for me to not be a blocker"; his earlier approval rule ("when product agents want to create tasks … it should get my approval") is read as covering roadmap-level proposals, not UI defects.
+*Cost if wrong:* up to five polish issues per review the owner would not have picked — cheap to close. *Revert:* route polish through `product-inbox.md` too.
+
+**R96 — The product agent's eyes are a cloud UI tour** (Playwright `@tour` spec + `workflow_dispatch` workflow uploading screenshots and accessibility snapshots), never a local browser: the app mounts the 3D canvas, and the owner's rule is no 3D rendering on his laptop.
+
+**R97 — CodeQL enabled via the API (default setup, default suite), advisory only.** First scan: 2 medium alerts (`actions/missing-workflow-permissions` on `ci.yml`, `e2e.yml`) → fixed in the same run (#287). The ruleset's `code_scanning` rule stays off; revisit after a few weeks of alert volume.
+*Cost if wrong:* an extra ~5-min CodeQL check on PRs; free on a public repo.
+
+**R98 — Cloud spike #158 blocked on one owner step:** the owner's Claude account has no GitHub connection, so a cloud routine cannot clone the repo; `/web-setup` (or https://claude.ai/connect-github) is the only fix and only he can run it. The routine prompt is drafted; creating it is one call once connected.
+*Resolved the same day:* the owner connected GitHub and granted the Claude GitHub App write access; the routine ran the spike (#293) and a second routine proved `git push` works.
+
+**R99 — `ha/CLAUDE.md` records the standing publish grant and the owner's minimal-involvement preference; memory `owner-minimal-involvement` saved.**
+
+**R100 — "Let only active tasks and PRs finish" defers the rest of #269.** The UI-tour workflow run and
+PR 2 (the first usability review) are new work, even though they belong to the running #269 item.
+They start tomorrow. Cost if wrong: the first usability review is one day later.
+
+**R101 — #258's research PR gets a coordinator review, not a separate verifier,** if it is docs plus
+the `.cursor/BUGBOT.md` deletion. It gets an Opus verifier if it adds code or a workflow. Cost if
+wrong: a doc error reaches main, and that is cheap to fix.
+
+**R102 — A verifier BLOCK on #294 is fixed tonight only if the fix is small** (≤ ~30 lines, same
+scope), by resuming its builder. Otherwise the PR stays open for tomorrow. Cost if wrong: #294
+waits a day.
+
+**R103 — #294 BLOCK upheld (the verifier's self-escalation finding). The fix keeps the owner out of
+the loop.** The verifier's option (a), "never `agent-ready` without the owner", was rejected because
+it contradicts R95 and the owner's "for me to not be a blocker". Instead: the product agent never
+sets `sev:critical`, since that label pre-empts the whole queue. It may set `bug` + `sev:high`,
+which doesn't change picking. A suspected data-loss defect is flagged in the Evidence and in its
+report, and the coordinator reproduces it and applies `sev:critical`. The three nits ride along:
+a CI-only `test.skip`, the README exception line, and the source wording. The builder fixes it
+tonight (R102, under 30 lines). Cost if wrong: a real data-loss bug waits one coordinator pass
+before it pre-empts.
+
+**R104 — Polish found by the product agent stays on request** (portfolio pick rule 3), for now.
+It is revisited when the first usability review shows the volume. Cost if wrong: polish issues
+wait until the owner or a dormant cycle picks them.
+
+**R105 — #297, the Cursor lane, is coordinator-reviewed and passes** (R101: docs plus a config
+deletion). #258 closes on merge. Adopted: Composer 2.5, run locally, as an advisory second opinion
+on included usage. The note says honestly that it caught 0 of 2 blockers in the trial, so it is a
+cheap reading pass, and a Claude verifier must reproduce any BLOCK before it counts. Cloud agents,
+Grok Bot, MCP and the APIs are skipped as usage-based. Cost if wrong: about $0.15–0.28 of included
+usage per risk:1/2 PR for little signal. Revert: delete the Budgets row, or close #296.
+
+**R106 — #296 (the second-opinion wrapper) stays `agent-ready` at `risk:2`.** The triage rule's
+`needs-human` is satisfied by the owner's explicit 2026-09-19 request for this exact capability.
+Cost if wrong: an agent builds a local script the owner didn't want yet. It is bounded by the
+verified deny-all config and a fresh verifier.
