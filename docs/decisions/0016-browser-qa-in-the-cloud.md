@@ -1,6 +1,6 @@
 # 0016. Browser QA in the cloud is required for critical changes
 
-- **Status:** Accepted — amends [ADR-0012](0012-e2e-tests-manual-only.md)
+- **Status:** Accepted — amends [ADR-0012](0012-e2e-tests-manual-only.md); amended 2026-09-19 (#282, see *Amendment* below)
 - **Date:** 2026-09-18
 - **Deciders:** Repo owner (issue #220; QA agent in #257)
 - **Phase:** Phase 0.5
@@ -34,6 +34,7 @@ policy: the other half is an *independent* QA that drives the changed flow in a 
    PR's files, labels and body and the linked issues' labels (`issues: read`), and re-runs when
    the body is edited. The definition is code: `scripts/browser-qa.logic.mjs` (`CRITICAL_PATHS`,
    `CRITICAL_LABEL`, `SEVERITY_LABELS`, `decide`).
+   *Amended 2026-09-19 (#282): the paths are now the UI-changing set below.*
 2. **Browser suites run automatically in GitHub Actions only.** `.github/workflows/browser-qa.yml`
    (job `browser-qa`) runs on every PR and always reports. A non-critical PR exits green with
    `BROWSER-QA: skipped (no critical paths)`. A critical PR builds the bundle, serves it with
@@ -42,9 +43,11 @@ policy: the other half is an *independent* QA that drives the changed flow in a 
    `--workers 1`, `--retries 2`, then prints one greppable
    `BROWSER-QA: PASS|FAIL suites=… passed=… failed=…` line and a job summary. A run in which no
    test ran is a FAIL. Once green on its first critical PR it becomes a required check.
+   *Amended 2026-09-19 (#282): `@ui` never runs automatically — see below.*
 3. **Never a local gate.** No definition of done, hook or skill asks for `test:e2e*` on a
    developer machine. 2D and other browser tests *may* be run locally by choice; **3D (`@ui`)
    never runs on the owner's laptop** — CI or a cloud session only.
+   *Amended 2026-09-19 (#282): locally, only suites that do not mount the 3D canvas — see below.*
 4. **Playwright in CI tests what ships** (#218 folded in): with `CI` set, the `webServer` in
    `playwright.config.ts` runs `vite build` and serves the bundle with `vite preview`; locally
    it keeps the dev server and reuses one already running.
@@ -72,6 +75,38 @@ policy: the other half is an *independent* QA that drives the changed flow in a 
   edit or `gh workflow run browser-qa.yml -f pr=<n>`; a link the API cannot resolve fails the
   check rather than skipping it.
 
+## Amendment 2026-09-19 (#282)
+The owner ruled on what browser testing is for and where each kind of it may run:
+
+> "browser testing in my opinion is mainly for features and fixes that change the ui, or to check
+> regression in ui, and locally this is mainly going to be for the 2d surface and the non-render ui
+> surface ... 3d browser testing that needs research and should never be done locally (but that
+> should be far out in the future, since other surfaces need to first catch up with the 3d surface)"
+
+This replaces the paths of §1, the `@ui` clause of §2 and the local-run sentence of §3; the rest
+stands.
+
+1. **Critical = the PR changes the UI:** it touches `src/components/**`, `src/App.tsx`,
+   `src/gates/**`, `src/nodes/**`, `src/store/**`, `src/utils/**`, `src/styles/**` (the global
+   stylesheet), `index.html`, `e2e/**` or `playwright.config.ts` — or `src/surfaces/**`, listed
+   ahead of the 2D surface's first file — or it or an issue it links carries `critical`,
+   `sev:high` or `sev:critical` (unchanged). `src/simulation/**` and `src/core/**` stay out: the
+   conformance oracle covers them.
+2. **`browser-qa` runs `@store` only.** The `@ui` (3D canvas) suite never runs automatically,
+   whatever the PR touches; it stays available by hand: `gh workflow run e2e.yml -f suite=ui`.
+3. **Browser suites run automatically only in CI.** Locally, browser tests are allowed only for
+   suites that do not mount the 3D canvas — the future 2D surface and the DOM shell — and never
+   as a gate. Every Playwright suite today, `@store` included, loads the whole app, and `App`
+   mounts the canvas (`<Shell scene={<CanvasArea />} />`), so none of them runs on a laptop.
+4. **3D browser testing is a separate, far-future, cloud-only research task** (#284), to start
+   once the other surfaces have caught up with the 3D one.
+
+Consequences: a store, utility or style change now pays a `@store` run (2.1 min on #273's first
+cloud run); a canvas, gate or node change no longer gets `@ui`, so its browser-level net is
+`@store`, the independent QA agent (§6, #257) and a manual `e2e.yml` run. Updated alongside:
+`scripts/browser-qa.logic.mjs`, the `browser-qa.yml` header, `docs/harness/README.md` (checks
+row) and `AGENTS.md` §4.
+
 ## Affected living docs
 `docs/decisions/0012-e2e-tests-manual-only.md` (status), `docs/decisions/README.md` (index),
 `docs/harness/README.md` (checks table), `AGENTS.md` (§4 CI layers), `playwright.config.ts` —
@@ -79,5 +114,6 @@ updated alongside this ADR.
 
 ## Links
 - [[0012-e2e-tests-manual-only]] · [[0013-backlog-in-github-issues-and-portfolio]]
-- Issues #220 (this ADR + workflow), #218 (built bundle, folded in), #257 (QA agent)
+- Issues #220 (this ADR + workflow), #218 (built bundle, folded in), #257 (QA agent), #282 (the
+  2026-09-19 amendment), #284 (3D browser-testing research)
 - `.github/workflows/browser-qa.yml`, `scripts/browser-qa.mjs`, `scripts/browser-qa.logic.mjs`

@@ -223,15 +223,14 @@ File: `.github/workflows/browser-qa.yml` → `scripts/browser-qa.mjs` (rules in 
 | PR | What runs | Result line |
 |----|-----------|-------------|
 | Touches no critical path; neither it nor an issue its body links (`Fixes` / `Part of #n`) carries `critical` / `sev:high` / `sev:critical` | nothing — green in seconds | `BROWSER-QA: skipped (no critical paths)` |
-| Touches `src/components/`, `src/gates/`, `src/nodes/`, `src/App.tsx` or `src/store/actions/` (renames by old path too), or it or a linked issue carries one of those labels | build → `vite preview` → Playwright `@store` (`--workers 1`, retries 2, SwiftShader) | `BROWSER-QA: PASS\|FAIL suites=… passed=… failed=…` |
-| …and touches `src/components/canvas/`, `src/gates/` or `src/nodes/` | the above plus `@ui` (3D) | same line, `suites=store,ui` |
+| Changes the UI — touches `src/components/`, `src/App.tsx`, `src/gates/`, `src/nodes/`, `src/store/`, `src/utils/`, `src/styles/`, `index.html`, `e2e/`, `playwright.config.ts` or, later, `src/surfaces/**` (renames by old path too) — or it or a linked issue carries one of those labels | build → `vite preview` → Playwright `@store` only (`--workers 1`, retries 2, SwiftShader) | `BROWSER-QA: PASS\|FAIL suites=store passed=… failed=…` |
 
-ADR-0016: browser suites run automatically **in GitHub Actions only** — never as a local gate, and 3D never on the owner's laptop. The HTML report is uploaded as an artifact; a run in which no test ran is a FAIL. Re-check a PR by hand: `gh workflow run browser-qa.yml -f pr=<n>`. Critical PRs also need the independent QA agent's verdict (#257).
+ADR-0016 (amended 2026-09-19, #282): browser suites run automatically **in GitHub Actions only**, never as a local gate, and only `@store`: the `@ui` (3D canvas) suite never runs automatically — 3D browser testing is far-future, cloud-only research (#284). `src/core/` and `src/simulation/` stay out; the conformance oracle covers them. The HTML report is uploaded as an artifact; a run in which no test ran is a FAIL. Re-check a PR by hand: `gh workflow run browser-qa.yml -f pr=<n>`. Critical PRs also need the independent QA agent's verdict (#257).
 
 ### Layer 3 — E2E (manual, any suite)
 File: `.github/workflows/e2e.yml`
 
-Outside `browser-qa`, Playwright never runs automatically — not on push, not on a schedule. Run any suite deliberately from the Actions tab, or `gh workflow run e2e.yml -f suite=store` (`store` | `ui` | `all`). Locally, 2D/`@store` runs are allowed by choice (`pnpm run test:e2e:store`); `@ui` (3D) runs in CI only.
+Outside `browser-qa`, Playwright never runs automatically — not on push, not on a schedule. Run any suite deliberately from the Actions tab, or `gh workflow run e2e.yml -f suite=store` (`store` | `ui` | `all`) — the only way `@ui` (3D) runs. Locally, only a browser suite that does not mount the 3D canvas may run, by choice (the future 2D surface, the DOM shell); every Playwright suite today, `@store` included, loads the whole app and mounts the canvas, so none runs on a laptop (ADR-0016, amended 2026-09-19).
 
 They are not part of the definition of done.
 
