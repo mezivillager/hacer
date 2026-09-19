@@ -150,6 +150,9 @@ export interface CircuitActionsAPI {
   startPlacement: (chipName: string) => void
   cancelPlacement: () => void
   placeGate: (position: { x: number; y: number; z: number }) => void
+  updatePlacementPreviewPosition: (position: { x: number; y: number; z: number } | null) => void
+  // Node placement actions (the palette starts placement; a canvas click places)
+  placeNode: (position: { x: number; y: number; z: number }) => void
   // Wiring actions
   startWiring: (gateId: string, pinId: string, pinType: 'input' | 'output', position: { x: number; y: number; z: number }) => void
   updateWirePreviewPosition: (position: { x: number; y: number; z: number } | null) => void
@@ -159,6 +162,7 @@ export interface CircuitActionsAPI {
   completeWiring: (toGateId: string, toPinId: string, toPinType: 'input' | 'output') => void
   // Node-based wiring actions
   startWiringFromNode: (nodeId: string, nodeType: NodeType, position: { x: number; y: number; z: number }) => void
+  completeWiringFromNodeToGate: (toGateId: string, toPinId: string, toPinType: 'input' | 'output') => void
   completeWiringToNode: (nodeId: string, nodeType: NodeType) => void
   // Node management actions
   addInputNode: (name: string, position: { x: number; y: number; z: number }, width?: number) => { id: string; name: string; value: number }
