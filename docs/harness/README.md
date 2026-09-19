@@ -40,16 +40,14 @@ merge. If a step below is wrong, fix it here — not in a chat.
 
 ## Standing roles
 
-Three fresh-context roles judge work; none of them builds it, and none decides for the owner.
+Four fresh-context roles judge work; none of them builds it, and none decides strategy for the owner.
 
 | Role | Judges | Brief | Writes |
 |---|---|---|---|
 | **verifier** (code) | a PR against its issue and the code | `verifier-brief.md` | one verdict comment |
 | **QA** (browser) | a critical PR's changed flow, in a browser against the preview | `qa-brief.md` (#257, in flight) | one QA verdict |
 | **fidelity** (engineering truth) | an epic, ADR, spec or semantic PR against physics, digital logic and the domain's oracle | `fidelity-brief.md` · ADR-0018 · agent `.claude/agents/hacer-fidelity.md` | one verdict comment; proposals queued in `fidelity-inbox.md` for the owner's approval, never filed as issues |
-
-A separate **product** role (usability and design) is being defined under its own issue (#269);
-it is not the fidelity role and is not defined here.
+| **product** (usability & design) | the app's screens and flows, from the cloud UI tour (`.github/workflows/ui-tour.yml`) and the code, or one UI-facing PR or issue | `product-brief.md` · agent `.claude/agents/hacer-product.md` | at most five `project:polish` issues per review under #144, filed directly (owner, 2026-09-19); strategy proposals queued in `product-inbox.md` for the owner's approval |
 
 ## Rules that are conventions, not controls (yet)
 
@@ -93,5 +91,7 @@ Cursor **spend limits** (Cursor dashboard). Recommended values are in #255.
 - `fidelity-brief.md` — the brief the fidelity role receives for one epic, ADR, spec or semantic PR.
 - `fidelity-inbox.md` — proposals from fidelity reviews, waiting for the owner's approval.
 - `routines/fidelity-digest.md` — the change-triggered re-check of the roadmap (ADR-0018 §5).
+- `product-brief.md` — the brief the product role receives for a usability and design review.
+- `product-inbox.md` — product-strategy proposals from product reviews, waiting for the owner's approval.
 - `../research/2026-09-18-agent-readiness/` — why the process looks like this.
 - `sessions/` — dated session records: the goal, the owner's rulings, what was built, the state at close, how to resume. Start with the latest one when picking the work back up.
