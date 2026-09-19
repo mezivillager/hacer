@@ -30,6 +30,8 @@ tag is the version of record.
   moving parts than a static site needs.
 - Pending releases: the next successful run will release everything since `v2.11.0`.
 
+- **2026-09-19 (#162):** with no commit to push, the release job no longer needs a personal access token. `release.yml` uses the job's own short-lived `GITHUB_TOKEN` (`contents`/`issues`/`pull-requests: write`, already granted); the `RELEASE_TOKEN` repository secret is deleted, so no long-lived credential is readable by workflows on other branches.
+
 ## Affected living docs
 `CHANGELOG.md` (header note) · `docs/decisions/README.md` (index). `AGENTS.md` does not mention the release mechanics.
 
