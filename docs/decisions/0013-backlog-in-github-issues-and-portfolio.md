@@ -28,6 +28,20 @@ lets an agent answer "what can you do next?", pick it up, and get it merged with
 3. **One PR = one sub-issue**, inside a budget of 400 reviewable changed lines (warn at 200; tests,
    lockfile, vendored vectors, snapshots and generated files excluded). Plans carry contracts and
    test names, not complete code — AGENTS.md Step 3's "complete code snippet" is amended by this ADR.
+   *Amended 2026-09-21 (#326) with two exemptions, both enforced by `scripts/pr-hygiene.logic.mjs`:*
+   - *A **deletion-only PR** is outside the budget. The owner: "anything that should be removed
+     should be removed, refactor deletion prs can be any size they need to be" — a 400-line ceiling
+     would force a removal into arbitrary slices. The check runs on `pull_request_target` and never
+     checks out the PR, so all it has is each file's additions and deletions; "deletion-only" is
+     therefore a conservative proxy rather than a reading of the diff: the PR deletes more than it
+     adds, and its additions are at most **5 lines in any one file, 20 in total, and 5% of what it
+     deletes** — the size of the import and re-export fix-ups a removal forces, too small to be
+     behaviour. Over any of the three it is not exempt, and the check names the file that spent it.*
+   - ***Research evidence appendices*** *(`docs/research/*/evidence/`) are excluded, like snapshots:
+     measurements, outside research and review transcripts are evidence a reader consults, not prose
+     anyone line-reviews. Every other file under `docs/research/` still counts, the report included.*
+
+   *The linked-issue rule is unchanged by both; the `size-override` label still exists for the rest.*
 4. **The ruleset binds everyone.** `main-rules`: 0 approvals, required status check `ci` (strict),
    rebase-only linear history, **no bypass actors**. The `update`, `required_deployments` and
    `code_scanning` rules were dropped (none could be satisfied by a PR branch).
