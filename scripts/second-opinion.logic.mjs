@@ -16,7 +16,12 @@ export const EXIT = { ok: 0, failed: 1, usage: 2, refusedFlag: 3, timeout: 4, di
  * ~/.cursor/cli-config.json is set to, so leaving `--force` off does *not* make a run read-only. */
 export const DENY_RULES = ['Shell(*)', 'Write(**)', 'Write(/**)', 'WebFetch(*)', 'Mcp(*:*)']
 
-/** Written to both CURSOR_CONFIG_DIR/cli-config.json and the checkout's .cursor/cli.json. */
+/** The checkout's `.cursor/cli.json` — layer 2, the one a PR could otherwise supply itself. Takes the
+ * permissions block *only*: given the whole reviewerConfig() the CLI dies with "Unrecognized key(s)
+ * in object: 'version', 'editor', 'approvalMode', …" before it ever calls a model. */
+export const checkoutConfig = () => ({ permissions: { allow: [], deny: [...DENY_RULES] } })
+
+/** Layer 1 — written to CURSOR_CONFIG_DIR/cli-config.json, the shape of ~/.cursor/cli-config.json. */
 export function reviewerConfig() {
   return {
     version: 1,
@@ -160,8 +165,11 @@ export const MODEL_RATES = {
 /** Null for an unpriced model — better a visible gap than a run that looks free. */
 export const ratesFor = (model) => MODEL_RATES[model] ?? null
 
-/** The CLI resolves a model id to a variant name, so fall back to the card we asked for. */
-export const ratesForRun = (resolved, requested) => ratesFor(resolved) ?? ratesFor(requested)
+/** Which card priced a run: the resolved model's, else the requested one's, else none. The CLI
+ * resolves an id to a variant, so without the fallback every line is unpriced — but a *Fast* variant
+ * costs up to 4.8× the standard card, hence `cost.pricedAs` saying which card was used. */
+export const pricingModel = (resolved, requested) => [resolved, requested].find((m) => ratesFor(m)) ?? null
+export const ratesForRun = (resolved, requested) => ratesFor(pricingModel(resolved, requested))
 
 export function costOf(usage, rates) {
   if (!rates) return null
@@ -176,16 +184,20 @@ const statusLines = (status) => status.split('\n').map((l) => l.trimEnd()).filte
 const pathOf = (line) => line.slice(3).split(' -> ').at(-1)
 
 /**
- * Did the run leave anything behind in the throwaway worktree? A clean exit is not evidence.
- * `unknown` — git status could not be read — is its own state and never reports success.
+ * Did the run change the throwaway worktree at all? A clean exit is not evidence. Both directions
+ * count: a *vanished* line means the run deleted an untracked file or restored a tracked one — a
+ * stub that only ran `rm -f .cursor/cli.json` used to pass. `unknown` never reports success.
  * @returns {{state:'clean'|'dirty'|'unknown', changed:string[], reason:string|null}}
  */
 export function assessDelivery({ before, after, error } = {}) {
   if (error || typeof before !== 'string' || typeof after !== 'string') {
     return { state: 'unknown', changed: [], reason: error ? String(error) : 'git status was not read both before and after the run' }
   }
-  const baseline = new Set(statusLines(before))
-  const changed = statusLines(after).filter((line) => !baseline.has(line)).map(pathOf)
+  const was = new Set(statusLines(before))
+  const now = new Set(statusLines(after))
+  const added = [...now].filter((line) => !was.has(line))
+  const gone = [...was].filter((line) => !now.has(line))
+  const changed = [...new Set([...added, ...gone].map(pathOf))]
   return { state: changed.length > 0 ? 'dirty' : 'clean', changed, reason: null }
 }
 
@@ -201,7 +213,7 @@ export function auditLine({ at, pr, requestedModel, resolvedModel: resolved, usa
     wallMs,
     exitCode,
     verdict,
-    cost: { usd: cost === null ? null : Number(cost.toFixed(4)), currency: 'USD', note: 'list price, not a bill' },
+    cost: { usd: cost === null ? null : Number(cost.toFixed(4)), currency: 'USD', pricedAs: pricingModel(resolved, requestedModel), note: 'list price, not a bill' },
   }
   return JSON.stringify(record) + '\n'
 }

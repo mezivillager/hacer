@@ -22,7 +22,7 @@ import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { findLinkedIssues } from './pr-hygiene.logic.mjs'
 import { AUDIT_FILE, DEFAULT_MODEL, EXIT, KILL_GRACE_MS, TIMEOUT_MS } from './second-opinion.logic.mjs'
-import { assessDelivery, auditLine, buildPrompt, costOf, cursorArgs, extractRubric } from './second-opinion.logic.mjs'
+import { assessDelivery, auditLine, buildPrompt, checkoutConfig, costOf, cursorArgs, extractRubric } from './second-opinion.logic.mjs'
 import { formatSummaryLine, parseReview, ratesForRun, readStream, refusedFlags, reviewerConfig, totalTokens } from './second-opinion.logic.mjs'
 
 const die = (code, message) => {
@@ -88,6 +88,7 @@ const tmpRoot = mkdtempSync(path.join(tmpdir(), `hacer-second-opinion-${pr}-`))
 const checkout = path.join(tmpRoot, 'checkout')
 const configDir = path.join(tmpRoot, 'cursor-config')
 let exitCode = EXIT.ok
+let audit = null // captured as soon as the CLI returns, written in `finally` even if a later step throws
 
 try {
   const head = gh(['pr', 'view', String(pr), '--json', 'headRefOid', '--jq', '.headRefOid']).trim()
@@ -95,7 +96,7 @@ try {
   git(['worktree', 'add', '--detach', checkout, head])
   rmSync(path.join(checkout, '.cursor'), { recursive: true, force: true })
   mkdirSync(path.join(checkout, '.cursor'), { recursive: true })
-  writeFileSync(path.join(checkout, '.cursor', 'cli.json'), JSON.stringify(reviewerConfig(), null, 2))
+  writeFileSync(path.join(checkout, '.cursor', 'cli.json'), JSON.stringify(checkoutConfig(), null, 2))
   mkdirSync(configDir, { recursive: true })
   writeFileSync(path.join(configDir, 'cli-config.json'), JSON.stringify(reviewerConfig(), null, 2))
 
@@ -116,29 +117,40 @@ try {
   } catch (statusError) {
     error = statusError
   }
-  const { text, usage, model: resolved } = readStream(stdout)
+  const { text, usage, model: resolved, result } = readStream(stdout)
   const { verdict } = parseReview(text)
   const delivery = assessDelivery({ before, after, error })
-  const codeFor = { unknown: EXIT.unverified, dirty: EXIT.dirty, clean: code === 0 ? EXIT.ok : EXIT.failed }
+  audit = { pr, requestedModel: model, resolvedModel: resolved, usage, wallMs: Date.now() - started, verdict }
+  // No `result` frame means the CLI never reached a review — "could not look", not a review we
+  // could not parse. A rejected config can still exit 0, so the exit code alone is no proof.
+  const noAnswer = result === null && verdict === 'UNPARSED'
+  const codeFor = { unknown: EXIT.unverified, dirty: EXIT.dirty, clean: noAnswer ? EXIT.unverified : code === 0 ? EXIT.ok : EXIT.failed }
   exitCode = timedOut ? EXIT.timeout : codeFor[delivery.state]
 
   if (text.trim()) console.log(text.trim())
   if (timedOut) console.error(`second-opinion: no answer within ${TIMEOUT_MS / 1000}s — killed the process group`)
-  if (delivery.state === 'dirty') console.error(`second-opinion: the run left files behind: ${delivery.changed.join(', ')}`)
+  if (delivery.state === 'dirty') console.error(`second-opinion: the run changed the worktree: ${delivery.changed.join(', ')}`)
   if (delivery.state === 'unknown') console.error(`second-opinion: could not check the worktree — ${delivery.reason}`)
+  if (noAnswer) console.error('second-opinion: the CLI produced no result frame — no review was made')
   if (exitCode !== EXIT.ok && stderr.trim()) console.error(stderr.trim().split('\n').slice(-5).join('\n'))
 
-  const wallMs = Date.now() - started
   const cost = costOf(usage, ratesForRun(resolved, model))
-  console.log(formatSummaryLine({ pr, model: resolved ?? model, verdict, wallMs, tokens: totalTokens(usage), cost }))
-
-  const auditPath = path.join(git(['rev-parse', '--path-format=absolute', '--git-common-dir']).trim(), AUDIT_FILE)
-  mkdirSync(path.dirname(auditPath), { recursive: true })
-  appendFileSync(auditPath, auditLine({ pr, requestedModel: model, resolvedModel: resolved, usage, wallMs, exitCode, verdict }))
+  console.log(formatSummaryLine({ ...audit, model: resolved ?? model, tokens: totalTokens(usage), cost }))
 } catch (error) {
   console.error(`second-opinion: ${error?.message ?? error}`)
   if (exitCode === EXIT.ok) exitCode = EXIT.failed
 } finally {
+  // A run that spent tokens leaves its row even if a later step threw; its own try, so a failure
+  // here cannot skip the cleanup.
+  try {
+    if (audit) {
+      const dir = path.join(git(['rev-parse', '--path-format=absolute', '--git-common-dir']).trim(), path.dirname(AUDIT_FILE))
+      mkdirSync(dir, { recursive: true })
+      appendFileSync(path.join(dir, path.basename(AUDIT_FILE)), auditLine({ ...audit, exitCode }))
+    }
+  } catch (auditError) {
+    console.error(`second-opinion: could not write the audit row — ${auditError?.message ?? auditError}`)
+  }
   try {
     git(['worktree', 'remove', '--force', checkout])
   } catch {
