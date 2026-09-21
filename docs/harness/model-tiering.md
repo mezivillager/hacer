@@ -30,6 +30,25 @@ has caught were found by running something — the `scratchCopy` repro on #238, 
 (`cursor-lane.md` §1.4). Haiku *could* run commands and still missed it: the capability is
 necessary, not sufficient.
 
+## 1a. What happened when Sonnet verified live (2026-09-21)
+
+The replay in §1 hid the verdicts but could not hide that later commits existed. These four are the
+stronger evidence: real PRs, no known answer, nobody had reviewed them first.
+
+| PR | Verdict | What it found |
+|---|---|---|
+| #312 | BLOCK | the new e2e specs failed in CI `browser-qa` — which the builder could not run locally and does not watch. The only layer that could see it was a verifier reading the PR's own CI logs. **This was a `src/simulation` change**, and it is why that path is a candidate to move later rather than never |
+| #319 | BLOCK | a killed lane run recorded zero usage, so the ration could be evaded by killing runs; and a future-dated reading never went stale |
+| #320 | BLOCK | every fetch failure was reported as a timeout; and an allowlist entry was equivalent to arbitrary shell |
+| #324 | PASS | re-derived the 66/68 = 134 file split independently (zero overlap, zero gap), reran the suite at both `origin/main` and the PR head, and triggered both new throw sites by hand. It also flagged, unprompted, that the tier table assigned this PR to Opus |
+
+None of these is a verdict letter matching a known answer. Each is a defect found, or an invariant
+re-derived, by an agent that could not look the answer up.
+
+**The honest limit.** Every one is `risk:1`. There is no live Sonnet `risk:2` verdict, which is why
+`risk:2` and the engine stay on Opus. And a tier that passes four times is not proven — §2's row
+names what would move it back, and the ledger is where an overturned verdict gets recorded.
+
 ## 2. The assignment
 
 | Role | Tier | Evidence | What would change it |
@@ -37,8 +56,8 @@ necessary, not sufficient.
 | coordinator | Opus — the owner's choice per session (`README.md` Budgets) | it decides what every other agent does; one wrong dispatch wastes a whole builder run (150–270k) | unmeasured — a replay of one `ha-next` pick that chose the same issue and wrote the same prompt |
 | builder, `risk:1`/`risk:2` | Opus | §1 replayed the verifier, not the builder; the owner's Budgets ruling (2026-09-19) already puts significant work on Opus | a Sonnet builder replay landing the same diff on a merged `risk:1` PR and passing a fresh Opus verifier |
 | builder, `risk:0` (docs, mechanical) | Sonnet | Sonnet ran the full definition of done unaided in both replays, and reproduced #245's own negative test | a Sonnet `risk:0` PR blocked for something a careful reading pass should have caught |
-| verifier, `risk:1`/`risk:2`, or any `src/core` / `src/simulation` change | Opus | one pair is not enough to move the gate that catches defects; Sonnet's #238 result is a single positive, from a replay that could see later commits existed | a second measured pair, history hidden past the reviewed commit, where Sonnet again reproduces the blocker |
-| verifier, `risk:0` docs-only | Sonnet | passed #245 with every criterion cited and the negative test reproduced | one `overturned` Sonnet verdict at `risk:0` |
+| verifier, `risk:2`, or any `src/core` / `src/simulation` change | Opus | the engine is where a missed defect is least recoverable, and Sonnet's one positive on engine code (#312) is a single data point | three live `risk:2` pairs where a Sonnet verdict and an Opus second pass agree |
+| verifier, `risk:0` / `risk:1` elsewhere | **Sonnet** (owner's call, 2026-09-21) | §1's replay plus **four live outings** (§1a): three blocks with defects nobody knew were there, one pass with an independently re-derived invariant | one `overturned` Sonnet verdict — a PASS whose defect a later pass finds, or a BLOCK that does not survive |
 | QA (browser) | Opus | the brief is still in flight (#257); no replay is possible until it exists | a QA replay once the brief lands |
 | product | Opus (pinned in `.claude/agents/hacer-product.md`) | judgment over screenshots and code; unmeasured | a replay against a past review's filed issues |
 | fidelity | Opus (pinned in `.claude/agents/hacer-fidelity.md`) | the highest-consequence verdict here, and Haiku's failure mode — a broken criterion marked satisfied, with a citation — is precisely what a fidelity verdict must never do | a replay on an artifact with a known unsound claim |
