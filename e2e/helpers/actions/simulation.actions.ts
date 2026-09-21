@@ -81,7 +81,49 @@ export async function setInputValue(
 }
 
 /**
- * Set multiple input values via store using gate indices
+ * Drive gate input pins from freshly created input nodes, one node per pin,
+ * wired to the pin and set to the requested value.
+ *
+ * Prefer this over {@link setInputsViaStore} for any pin that has no incoming
+ * wire: `evaluateCircuit` clears an input pin that no wire drives (B-008), so a
+ * value written straight onto an unconnected pin is erased by the next tick.
+ * Each call adds one input node and one wire per entry — assert wire counts
+ * accordingly.
+ */
+export async function driveInputsViaStore(
+  page: Page,
+  inputs: Array<{ gate: number; pin: string; value: number }>,
+  gateIds: string[]
+): Promise<void> {
+  await page.evaluate(
+    ({ inputs, gateIds }) => {
+      inputs.forEach((input, i) => {
+        const gateId = gateIds[input.gate]
+        const node = window.__CIRCUIT_ACTIONS__?.addInputNode(`drv-${i}`, {
+          x: -8,
+          y: i * 2,
+          z: 0,
+        })
+        if (!node) return
+        window.__CIRCUIT_ACTIONS__?.addWire(
+          { type: 'input', entityId: node.id },
+          { type: 'gate', entityId: gateId, pinId: `${gateId}-${input.pin}` },
+          []
+        )
+        // addInputNode starts a node at 1, so always write the value explicitly.
+        window.__CIRCUIT_ACTIONS__?.updateInputNodeValue(node.id, input.value)
+      })
+    },
+    { inputs, gateIds }
+  )
+}
+
+/**
+ * Set multiple input values via store using gate indices.
+ *
+ * Only meaningful for a pin that already has an incoming wire — the value is
+ * overwritten by that wire on the next tick — or while the simulation is
+ * stopped. For driving a circuit, use {@link driveInputsViaStore}. See #309.
  */
 export async function setInputsViaStore(
   page: Page,

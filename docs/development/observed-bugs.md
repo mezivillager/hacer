@@ -21,11 +21,11 @@ When an item is **Fixed**, add the **Fixed in** link and move the detailed row t
 | Field | Detail |
 |-------|--------|
 | **Status** | Fixed |
-| **Area** | `src/simulation/topologicalEval.ts`, `src/store/actions/wireActions/wireActions.ts` (`removeWire`) |
+| **Area** | `src/simulation/topologicalEval.ts` (`evaluateCircuit`) — where the fix landed; `removeWire` was the other candidate site and was not used |
 | **Symptom** | When a wire is removed from a destination input pin (gate or bus component), that pin retains its last driven value. The gate/bus component therefore continues to evaluate using the stale value instead of treating the undriven pin as 0. |
 | **Expected** | After a wire is disconnected, the destination input pin's value resets to 0 so the component evaluates correctly with no incoming signal. |
 | **Notes** | Pre-existing gate behavior: the simulation loop in `evaluateCircuit` only overwrites input pins that have an incoming wire; undriven pins are left unchanged. Bus components share this behavior after the bus-splitter/joiner feature (P05-12a). Fixing bus-only would create an inconsistency with gates. The proper cross-cutting fix is either: (a) reset undriven input pins to 0 before applying incoming wires in `evaluateCircuit`, or (b) reset the destination pin value in `removeWire` when the last wire to that pin is removed. Either approach changes existing gate simulation behavior and requires full-suite validation. |
-| **Fixed in** | Issue #222 — option (a): `evaluateCircuit` clears every input pin no wire drives, so the rule holds for the live tick, the truth table and a deserialised document alike. Gate pins driven by hand via `setInputValue` (shift+click on an unconnected pin) no longer survive a tick — follow-up filed. |
+| **Fixed in** | Issue #222 / PR #312 — option (a): `evaluateCircuit` clears every input pin no wire drives, so the rule holds for the live tick, the truth table and a deserialised document alike. The clear is **lazy**: the pin still reads the old value between `removeWire` and the next tick, which matters only to a reader of the store in that window. Gate pins driven by hand via `setInputValue` (shift+click on an unconnected pin) no longer survive a tick — follow-up [#309](https://github.com/mezivillager/hacer/issues/309). |
 
 ### B-004b (CASE2) — Same-column confluences are not distinguished, so unrelated chip fan-ins can merge
 
