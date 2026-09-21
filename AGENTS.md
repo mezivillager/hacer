@@ -264,6 +264,7 @@ pnpm run lint             # TypeScript + ESLint (MANDATORY before commit)
 pnpm run typecheck        # TypeScript only
 pnpm run test             # Vitest watch mode
 pnpm run test:run         # Vitest (single run)
+pnpm run test:node        # Vitest, headless half only — no jsdom (docs/testing/vitest-projects.md)
 pnpm run test:coverage    # Vitest + coverage report
 pnpm run test:e2e:store   # Playwright store tests — manual only, not a done-criterion
 pnpm run test:e2e:ui      # Playwright UI tests — manual only, slow
