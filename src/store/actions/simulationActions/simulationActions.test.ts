@@ -164,9 +164,17 @@ describe('simulationActions', () => {
         []
       )
 
-      // Set gate1 inputs to true, true -> NAND output should be false
-      getState().setInputValue(gate1.id, gate1.inputs[0].id, 1)
-      getState().setInputValue(gate1.id, gate1.inputs[1].id, 1)
+      // Drive gate1 inputs high from input nodes -> NAND output should be false.
+      // (Undriven pins evaluate as 0 — B-008 — so every value comes from a wire.)
+      gate1.inputs.forEach((pin, i) => {
+        const node = getState().addInputNode(pin.name, { x: -4, y: i * 2, z: 0 })
+        getState().addWire(
+          { type: 'input', entityId: node.id },
+          { type: 'gate', entityId: gate1.id, pinId: pin.id },
+          []
+        )
+        getState().updateInputNodeValue(node.id, 1)
+      })
 
       // Single tick propagates through entire chain (topological sort)
       getState().simulationTick()
@@ -180,9 +188,16 @@ describe('simulationActions', () => {
     it('calculates new output values for all gates', () => {
       const gate = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
 
-      // Set both inputs to true -> NAND output should be false
-      getState().setInputValue(gate.id, gate.inputs[0].id, 1)
-      getState().setInputValue(gate.id, gate.inputs[1].id, 1)
+      // Drive both inputs high from input nodes -> NAND output should be false
+      gate.inputs.forEach((pin, i) => {
+        const node = getState().addInputNode(pin.name, { x: -4, y: i * 2, z: 0 })
+        getState().addWire(
+          { type: 'input', entityId: node.id },
+          { type: 'gate', entityId: gate.id, pinId: pin.id },
+          []
+        )
+        getState().updateInputNodeValue(node.id, 1)
+      })
 
       getState().simulationTick()
 

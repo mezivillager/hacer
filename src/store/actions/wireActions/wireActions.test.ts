@@ -1,5 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { useCircuitStore } from '../../circuitStore'
+import { serializeCircuit, deserializeCircuit } from '@/core/serialization'
+import { evaluateCircuit } from '@/simulation/topologicalEval'
 import type { WireSegment } from '@/utils/wiringScheme/types'
 
 // Helper to get store state
@@ -568,5 +570,75 @@ describe('wireActions', () => {
       expect(inputWidthByName.a).toBe(16)
       expect(inputWidthByName.sel).toBe(2)
     })
+  })
+})
+
+describe('disconnected input pins (B-008)', () => {
+  const origin = { x: 0, y: 0, z: 0 }
+
+  beforeEach(() => {
+    useCircuitStore.setState({
+      gates: [],
+      wires: [],
+      junctions: [],
+      inputNodes: [],
+      outputNodes: [],
+      busComponents: [],
+      lastSimulationError: null,
+    })
+  })
+
+  /** `a` and `b` into a Nand whose output drives `out`; `b` starts high. */
+  function buildNandWithDrivenB() {
+    const a = getState().addInputNode('a', origin)
+    const b = getState().addInputNode('b', origin)
+    const gate = getState().addGate('Nand', origin)
+    const out = getState().addOutputNode('out', origin)
+    getState().addWire(
+      { type: 'input', entityId: a.id },
+      { type: 'gate', entityId: gate.id, pinId: gate.inputs[0].id },
+      []
+    )
+    const wireB = getState().addWire(
+      { type: 'input', entityId: b.id },
+      { type: 'gate', entityId: gate.id, pinId: gate.inputs[1].id },
+      []
+    )
+    getState().addWire(
+      { type: 'gate', entityId: gate.id, pinId: gate.outputs[0].id },
+      { type: 'output', entityId: out.id },
+      []
+    )
+    getState().updateInputNodeValue(b.id, 1)
+    getState().simulationTick()
+    return { a, b, wireB }
+  }
+
+  it('clears the destination input pin once its wire is removed', () => {
+    const { b, wireB } = buildNandWithDrivenB()
+    expect(getState().gates[0].inputs[1].value).toBe(1)
+
+    getState().removeWire(wireB.id)
+    getState().removeInputNode(b.id)
+    getState().simulationTick()
+
+    expect(getState().gates[0].inputs[1].value).toBe(0)
+    expect(getState().outputNodes[0].value).toBe(1)
+  })
+
+  it('evaluates the same as a save/reload round-trip after a wire is removed', () => {
+    const { a, b, wireB } = buildNandWithDrivenB()
+    getState().removeWire(wireB.id)
+    getState().removeInputNode(b.id)
+    getState().updateInputNodeValue(a.id, 1)
+    getState().simulationTick()
+
+    const reloaded = deserializeCircuit(serializeCircuit(getState(), 'b-008'))
+    evaluateCircuit(reloaded)
+
+    expect(getState().gates[0].inputs.map((p) => p.value)).toEqual(
+      reloaded.gates[0].inputs.map((p) => p.value)
+    )
+    expect(getState().outputNodes[0].value).toBe(reloaded.outputNodes[0].value)
   })
 })
