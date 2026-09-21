@@ -100,6 +100,11 @@ Which tier each role gets, the replay that decided it, and what would change it:
 Account-level caps only the owner can set: Claude **extra usage** (claude.ai → Settings → Usage) and
 Cursor **on-demand spend limit** (cursor.com dashboard → Spending). Recommended values are in #255.
 
+**Reading Claude's own meters is not a matter of looking at the page.** A JSON endpoint behind
+Settings → Usage returns the session, weekly-all and premium-tier percentages as numbers; the recipe,
+the field to read (`limits`), and why it needs a real browser session are in `usage-rationing.md`.
+Read it before dispatching a batch of agents — the meter does not move linearly with tokens.
+
 ## What to measure (four numbers)
 
 Median reviewable lines per PR · the owner's minutes per merged PR · escaped defects, found after

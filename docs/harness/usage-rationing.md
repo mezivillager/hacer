@@ -1,4 +1,4 @@
-# Usage rationing — the Cursor lane's daily ration
+# Usage rationing — reading the meters, and the Cursor lane's daily ration
 
 Set 2026-09-21 at the owner's request: *"my plan for cursor usage is to ration our usage equally
 across all days, so we don't consume it all in some days and then have days where we can't use it at
@@ -8,6 +8,46 @@ policy as code, checked before every lane run.
 **Why it exists:** that morning an unrationed research burst spent about **17M tokens in 40
 minutes** — **49 reviews' worth, three days of even use** at the measured 347,838 per review — and
 nothing would have said so until the lane stopped working. The ration makes that visible in advance.
+
+## Reading Claude's own usage — programmatically, not by eye
+
+Claude's weekly and session meters were read by *looking at* `claude.ai/settings/usage` until
+2026-09-21. There is a JSON endpoint behind that page, and it is what a run should use: the numbers
+arrive as numbers, the field names are stable, and nothing has to be parsed out of rendered text.
+
+```js
+// In an authenticated claude.ai tab (Claude in Chrome → javascript_tool), same-origin fetch:
+const org = (await (await fetch('/api/organizations')).json())[0].uuid
+const d   = await (await fetch(`/api/organizations/${org}/usage`)).json()
+d.limits  // → [{kind, group, percent, severity, resets_at, is_active}, …]
+```
+
+`limits` is the array to read. Its three rows, measured 2026-09-21:
+
+| `kind` | What it is | Then |
+|---|---|---|
+| `session` | the rolling 5-hour window | 15% |
+| `weekly_all` | **all models — this is the run's stop condition** | 46% |
+| `weekly_scoped` | the separate meter for the premium model tier | 43% |
+
+`seven_day_breakdown.rows` splits the week by surface (`claude_code`, `chat`, `cowork`, `other`);
+it read `claude_code 100%`, which is what a week of agent work looks like. `extra_usage` and `spend`
+carry the credit pool — `enabled: false` and a `$0` limit here, which is the owner's setting.
+The top-level `five_hour` and `seven_day` objects repeat `limits`; several sibling keys are
+code-named model groups and were all `null` on this plan. Prefer `limits` over any of them.
+
+**Discover the organisation id at runtime**, as above. It identifies the account, and this repository
+is public — do not commit it, here or in a script.
+
+**A browser is required, and that is not a limitation worth fighting.** `claude.ai` sits behind bot
+protection: the same request with Claude Code's own OAuth token returns `403` with a Cloudflare
+interstitial. Working around that is out of bounds. The supported path is a real authenticated
+session, which the Chrome tool already gives an agent.
+
+**When to read it.** Before dispatching a batch of agents, and again before deciding whether there is
+room for one more. The meter is not linear in tokens: on 2026-09-21 it moved **10 points in three
+hours** while four subagents ran — faster than a per-token estimate predicted, because a long-running
+coordinator's own context is charged on every turn too. Estimate to plan; read before committing.
 
 ## The ration, in tokens
 
