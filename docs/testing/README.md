@@ -8,6 +8,7 @@ This folder contains all testing-related documentation for the HACER project.
 |----------|-------------|
 | [standards.md](./standards.md) | TDD workflow, test quality principles |
 | [structure.md](./structure.md) | Test file organization, unit vs E2E separation |
+| [vitest-projects.md](./vitest-projects.md) | The `node` / `jsdom` split — which project a test file lands in, and why |
 | [templates/](./templates/) | Copy-paste templates for new tests |
 
 ## Templates
