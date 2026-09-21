@@ -232,6 +232,16 @@ describe('auditLine and formatSummaryLine', () => {
     })
   })
 
+  it('prices a resolved variant name at the rate card of the model that was asked for', () => {
+    // A real run resolves `composer-2.5` to a variant; without the fallback every line would be
+    // unpriced, and the daily ration is measured from this file.
+    const record = JSON.parse(
+      auditLine({ pr: 296, requestedModel: 'composer-2.5', resolvedModel: 'composer-2.5-standard', usage, wallMs: 1, exitCode: 0, verdict: 'PASS' }),
+    )
+    expect(record.resolvedModel).toBe('composer-2.5-standard')
+    expect(record.cost.usd).toBe(1.15)
+  })
+
   it('records a null resolved model and a null cost rather than inventing either', () => {
     const record = JSON.parse(auditLine({ pr: 1, requestedModel: 'mystery-model', usage: {}, wallMs: 1, exitCode: 4, verdict: 'UNPARSED' }))
     expect(record.resolvedModel).toBeNull()
