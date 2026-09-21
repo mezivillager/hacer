@@ -13,7 +13,7 @@
 | **Author** | Implementing agent | Before claiming work complete (after tests/build pass). |
 | **Reviewer** | Reviewer agent or human | Before approving a merge that materially changes product behavior, phase delivery, repo layout, or public README claims. |
 
-Code **definition of done** is unchanged: `pnpm run lint`, `pnpm run test:run`, `pnpm run build`.
+Code **definition of done** is unchanged — stated once, in full, at `docs/harness/implementer-brief.md`.
 
 ---
 

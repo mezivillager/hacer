@@ -84,10 +84,4 @@ The near-term product path is intentionally narrow:
 
 ## Definition of Done
 
-Before work is complete, all required gates must pass:
-
-```bash
-pnpm run lint
-pnpm run test:run
-pnpm run build
-```
+Stated once, in full, at `docs/harness/implementer-brief.md`.

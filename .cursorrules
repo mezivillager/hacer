@@ -47,10 +47,7 @@ Red → Green → Refactor. Test BEFORE implementation. See `.claude/skills/tdd/
 
 ## AI Agent Completion Checklist
 
-**Definition of done (all must pass — no exceptions):**
-- [ ] `pnpm run lint` exits 0
-- [ ] `pnpm run test:run` — all pass
-- [ ] `pnpm run build` succeeds
+**Definition of done (no exceptions):** stated once, in full, at `docs/harness/implementer-brief.md`.
 
 Optional: invoke `verification-before-completion` / code-review skills when using Claude Code. Full checklist: `.claude/skills/code-review/SKILL.md`
 

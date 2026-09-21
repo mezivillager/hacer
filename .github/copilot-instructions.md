@@ -15,10 +15,7 @@ See [AGENTS.md](../AGENTS.md) for the complete guide — it covers cognitive pro
 
 ## Before Completing Any Task
 
-```bash
-pnpm run lint             # must exit 0
-pnpm run test:run         # all unit tests must pass
-```
+The definition of done is stated once, in full, at [`docs/harness/implementer-brief.md`](../docs/harness/implementer-brief.md).
 
 When the change affects phase status, public behavior, repo layout, or Phase 0.5 tickets, follow the **author pass** in [`docs/llm-docs-sync.md`](../docs/llm-docs-sync.md) before marking work complete. Reviewers use the **reviewer pass** there before approving substantive merges.
 

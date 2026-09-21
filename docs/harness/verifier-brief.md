@@ -9,7 +9,7 @@ issue and the code. Read-only, except a throwaway worktree and exactly one comme
 
 ## Method
 1. Worktree from the PR head: `git fetch origin && git worktree add ../hacer-wt-verify-<pr> origin/<branch>`, `rm -rf node_modules && pnpm install --frozen-lockfile`, Node 22.
-2. Run the issue's verification command and the definition of done (`lint`, `test:run`, `build`, `lint:docs`); record exit codes and counts.
+2. Run the issue's verification command and the definition of done (`docs/harness/implementer-brief.md`); record exit codes and counts.
 3. Read every changed file in full. For each acceptance criterion, cite the test (`file:line`) that proves it, or write "unproven".
 4. Check the commit sequence: tests committed before the implementation; the red commit fails on its own (check it out; never `git stash`).
 5. Check scope and layering: nothing outside the issue; no new imports across the layer walls; changes to shared files (store types, evaluator, configs) are minimal and justified.

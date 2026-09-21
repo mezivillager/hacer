@@ -47,8 +47,4 @@ Full list: `.claude/skills/` — each skill has a `SKILL.md` with frontmatter `n
 
 ## Verification Before Done
 
-```bash
-pnpm run lint              # TypeScript + ESLint — must exit 0
-pnpm run test:run          # Vitest unit tests — must all pass
-pnpm run build             # Production build — must succeed
-```
+The definition of done is stated once, in full, at [`docs/harness/implementer-brief.md`](../docs/harness/implementer-brief.md).
