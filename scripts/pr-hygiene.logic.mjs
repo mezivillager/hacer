@@ -12,6 +12,11 @@ export const WARN_FILES = 15
 export const OVERRIDE_LABEL = 'size-override'
 export const DEPENDENCY_LABEL = 'dependencies'
 
+// What a deletion is still allowed to add: the import and re-export fix-ups a removal forces.
+export const FIXUP_MAX_LINES_PER_FILE = 5
+export const FIXUP_MAX_LINES = 20
+export const FIXUP_MAX_SHARE = 0.05
+
 const LEVELS = ['pass', 'warn', 'fail']
 
 // ---------------------------------------------------------------- classification
@@ -77,6 +82,11 @@ export function measure(files, generatedPatterns = []) {
     buckets[kind].files.push(reason ? { filename: f.filename, lines, reason } : { filename: f.filename, lines })
   }
   return buckets
+}
+
+/** Not implemented yet — see #326. */
+export function deletionOnlyExemption(_reviewable) {
+  return null
 }
 
 // ---------------------------------------------------------------- linked issue
