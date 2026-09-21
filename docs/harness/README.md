@@ -20,7 +20,7 @@ merge. If a step below is wrong, fix it here — not in a chat.
 | Which projects, in what order, how picks rotate | `docs/portfolio.md` | row order, the six-slot cycle (`surfaces → harness → spine → aux → surfaces → harness`), the hand-in-hand rule, dormant-mode caps — *amended 2026-09-18 (#259): was the 2:2:1 ratio* |
 | What a task must contain before an agent may take it | `WORK-SYSTEM.md` §2 (issue form) and the labels | acceptance criteria as tests, verification command, risk |
 | Who may author pickable tasks | `scripts/backlog.mjs` allowlist (`BACKLOG_ALLOWLIST`) | the identities agents trust on a public repo |
-| How a task is built | `.claude/skills/ha-prompt-it/SKILL.md` + `implementer-brief.md` | tiers, TDD mechanics, worktree rules |
+| How a task is built | `.claude/skills/ha-prompt-it/SKILL.md` + `implementer-brief.md` · agent `.claude/agents/hacer-builder.md` | tiers, TDD mechanics, worktree rules |
 | How a PR is judged | `verifier-brief.md` | what blocks, what is a nit, what must be tried |
 | What must be green | `main-rules` ruleset (required check `ci`, 0 approvals, no bypass) + `AGENTS.md` definition of done | add a required check here after it is green on its own PR |
 | PR size and shape | ADR-0013 (400 reviewable lines, one sub-issue per PR) — enforced by the `pr-hygiene` check (`scripts/pr-hygiene.logic.mjs`) | the budget numbers |
@@ -44,7 +44,7 @@ Four fresh-context roles judge work; none of them builds it, and none decides st
 
 | Role | Judges | Brief | Writes |
 |---|---|---|---|
-| **verifier** (code) | a PR against its issue and the code | `verifier-brief.md` | one verdict comment |
+| **verifier** (code) | a PR against its issue and the code | `verifier-brief.md` · agent `.claude/agents/hacer-verifier.md` | one verdict comment |
 | **QA** (browser) | a critical PR's changed flow, in a browser against the preview | `qa-brief.md` (#257, in flight) | one QA verdict |
 | **fidelity** (engineering truth) | an epic, ADR, spec or semantic PR against physics, digital logic and the domain's oracle | `fidelity-brief.md` · ADR-0018 · agent `.claude/agents/hacer-fidelity.md` | one verdict comment; proposals queued in `fidelity-inbox.md` for the owner's approval, never filed as issues |
 | **product** (usability & design) | the app's screens and flows, from the cloud UI tour (`.github/workflows/ui-tour.yml`) and the code, or one UI-facing PR or issue | `product-brief.md` · agent `.claude/agents/hacer-product.md` | at most five `project:polish` issues per review under #144, filed directly (owner, 2026-09-19); strategy proposals queued in `product-inbox.md` for the owner's approval |
@@ -79,8 +79,21 @@ Change them here, in a PR, like any other knob.
 | Cloud routines | **Sonnet** for routine runs (spikes, gardening), Opus when the run does significant work; one-off or at most weekly, change-triggered; at most **1** recurring routine until #255 reports | routine config |
 | Cursor second opinion (local `cursor-agent`) | advisory, never a gate; standard `composer-2.5`, one run per PR head on `risk:1`/`risk:2` or `src/core`, `src/simulation`, `.github/workflows`, `scripts` changes; read-only config and 15-min timeout from `cursor-lane.md` §1. Bugbot is **not** used (owner, 2026-09-19: usage-based, not cost-effective) | the coordinator (wrapper: #296) |
 
+Which tier each role gets, the replay that decided it, and what would change it: `model-tiering.md`
+(#255) — it refines the two rows above rather than replacing them.
+
 Account-level caps only the owner can set: Claude **extra usage** (claude.ai → Settings → Usage) and
 Cursor **on-demand spend limit** (cursor.com dashboard → Spending). Recommended values are in #255.
+
+## What to measure (four numbers)
+
+Median reviewable lines per PR · the owner's minutes per merged PR · escaped defects, found after
+the gates passed (each adds a test at the layer that missed it) · **tokens per merged PR**, summed
+from the subagent usage reports of every agent that touched it. The conformance pass count is
+already a gate. The first three come from `WORK-SYSTEM.md` §9; the fourth was added by #255 —
+the first reading is ~1.4M subagent tokens for 8 verified PRs (~175k each) on the first execution
+run. `scripts/agent-orient` (#156) prints all four once it exists; until then the coordinator
+reports the number when it reports the run.
 
 ## Files
 
@@ -93,6 +106,7 @@ Cursor **on-demand spend limit** (cursor.com dashboard → Spending). Recommende
 - `routines/fidelity-digest.md` — the change-triggered re-check of the roadmap (ADR-0018 §5).
 - `product-brief.md` — the brief the product role receives for a usability and design review.
 - `product-inbox.md` — product-strategy proposals from product reviews, waiting for the owner's approval.
+- `model-tiering.md` — which model tier each role gets, measured by replaying the verifier brief.
 - `cursor-lane.md` — what Cursor can carry: the local `cursor-agent` second opinion (verified read-only setup, trial, budget) and keep/skip verdicts for the rest.
 - `../research/2026-09-18-agent-readiness/` — why the process looks like this.
 - `sessions/` — dated session records: the goal, the owner's rulings, what was built, the state at close, how to resume. Start with the latest one when picking the work back up.
