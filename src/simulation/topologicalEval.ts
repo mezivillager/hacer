@@ -3,7 +3,7 @@ import { evaluateSplitter, evaluateJoiner } from './busLogic'
 import { getBuiltinChipRegistry, getUserChipRegistry } from '@/core/chips/appRegistry'
 import { evaluateChipWithCtx, DEFAULT_MAX_DEPTH } from '@/core/chips/evaluateChip'
 import { combineRegistries } from '@/core/chips/combineRegistries'
-import type { CircuitDocument, Wire, WireEndpoint } from '@/store/types'
+import type { CircuitDocument, Pin, Wire, WireEndpoint } from '@/store/types'
 
 /**
  * Result of {@link topologicalSort}: a gate evaluation order, or cycle involvement.
@@ -210,6 +210,30 @@ function destinationWidth(wire: Wire, state: CircuitDocument): number {
 }
 
 /**
+ * Clears every input pin of `entity` that no wire currently drives.
+ *
+ * A pin's value belongs to its driver. Only the loop below writes input pins,
+ * and only for pins a wire reaches — so without this a pin whose wire was
+ * removed would keep whatever that wire last wrote and the chip would go on
+ * evaluating a signal that is no longer connected (B-008). A pin with no
+ * incoming wire is floating, and HACER reads floating as `0`: the value
+ * {@link getSignalSourceValue} already returns for a missing source, and the
+ * value a save/reload produces (gate pin values are not serialised).
+ *
+ * Stated here rather than in each caller so every entry point to evaluation —
+ * the live store tick, the truth table, a deserialised document — inherits it.
+ *
+ * @param entity - Gate or bus component whose input pins are being reconciled
+ * @param incoming - Wires whose destination is this entity, or `undefined` for none
+ */
+function clearUndrivenInputs(entity: { inputs: Pin[] }, incoming: Wire[] | undefined): void {
+  const driven = new Set(incoming?.map((w) => w.to.pinId))
+  for (const pin of entity.inputs) {
+    if (!driven.has(pin.id)) pin.value = 0
+  }
+}
+
+/**
  * Evaluates all gates in topological order in one pass, then drives output nodes.
  * Mutates the Immer draft in place when the result {@link EvaluateCircuitResult} has `status: 'ok'`.
  * On a combinational cycle, returns without mutating gate or output values.
@@ -256,6 +280,7 @@ export function evaluateCircuit(state: CircuitDocument): EvaluateCircuitResult {
     const busComponent = busById.get(gateId)
     if (busComponent) {
       const incoming = wiresByDestBus.get(gateId)
+      clearUndrivenInputs(busComponent, incoming)
       if (incoming) {
         for (const wire of incoming) {
           const inputPin = busComponent.inputs.find((p) => p.id === wire.to.pinId)
@@ -281,6 +306,7 @@ export function evaluateCircuit(state: CircuitDocument): EvaluateCircuitResult {
     if (!gate) continue
 
     const incomingWires = wiresByDestGate.get(gateId)
+    clearUndrivenInputs(gate, incomingWires)
     if (incomingWires) {
       for (const wire of incomingWires) {
         const inputPin = gate.inputs.find((p) => p.id === wire.to.pinId)
