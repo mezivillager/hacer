@@ -13,6 +13,7 @@ give it the sources.
 - The issue the PR closes (its acceptance criteria and verification command); the PR diff; `AGENTS.md`, `.claude/CONSTITUTION.md`, `.claude/skills/hacer-patterns/SKILL.md`.
 - The budget: ≤ 400 reviewable changed lines (≤ 200 expected); one sub-issue per PR.
 - **Model:** a `risk:0` docs-only PR is verified on **Sonnet**; `risk:1` / `risk:2`, and any PR touching `src/core/` or `src/simulation/`, on **Opus** — why, and what would change it: `model-tiering.md`.
+- When the coordinator ran `node scripts/second-opinion.mjs <pr>` (`cursor-lane.md` §1.6), its output — **advisory leads, read after your own pass**. A second-opinion BLOCK counts only once you reproduce it; add `Second opinion (<model>): <verdict>; confirmed <n>, rejected <n>` to the verdict.
 
 ## Method
 1. Worktree from the PR head: `git fetch origin && git worktree add ../hacer-wt-verify-<pr> origin/<branch>`, `rm -rf node_modules && pnpm install --frozen-lockfile`, Node 22.
