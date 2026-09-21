@@ -63,6 +63,20 @@ They clone this repo and nothing else. Anything the loop needs must be in here �
 `ha-prompt-it`, the North Star and these briefs moved in. `/autonomous` (the local queue driver) is
 a personal skill and is *not* available there; in the cloud, one session = one issue.
 
+## Measurement rules
+
+Set 2026-09-21, after a lane run exited 0 while `verdict=PASS` and its only act had been deleting a
+file, and a separate run reported `UNPARSED` for a run that never reached a model at all — both
+caught by looking, not by the exit code. Applies to every number this harness reports about itself.
+
+- **exit 0 is not acceptance** — acceptance is the coordinator's decision about a result.
+- **Unknown cost stays unknown** — `0` is only known when the basis is measured or included.
+- **Failed attempts stay in the denominator** — cost per accepted task counts every attempt.
+- **Record the model a run resolved to**, not only the one requested.
+- **A successful demo is not qualification** — label a smoke test as a smoke test.
+- **Never rank lanes by the harness's own dollar figure** — it prices every model at Anthropic's
+  rates (evidence: `docs/harness/cursor-lane.md`).
+
 ## Budgets (cost limits)
 
 Set 2026-09-19 at the owner's request ("we need to setup reasonable limit, especially for claude"; "subagents should be mainly opus for significant difficulty work, and sonnet only if it's routine and easy work").

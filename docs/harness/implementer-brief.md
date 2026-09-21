@@ -9,6 +9,11 @@ Given to a builder agent (or followed by a session) for a single `agent-ready` i
 - **Scope is the issue's acceptance criteria — nothing else.** Something adjacent that needs fixing becomes a follow-up issue, filed by you, linked from the PR.
 - **Model:** the coordinator dispatches `risk:0` docs-only or mechanical work on **Sonnet**, and `risk:1` / `risk:2` on **Opus** — the measurement and what would change it: `model-tiering.md`.
 - **Budget:** ≤ 400 reviewable changed lines (tests, lockfile, fixtures, generated files excluded); aim for ≤ 200. If the criteria cannot fit, split the issue into sub-issues (`gh issue create --parent <n>`) and deliver the first.
+- **You are a delegated worker on an approved, bounded task:** do not re-plan, do not ask whether to
+  proceed, do not stop at a design for the same scope; missing authority is stop-and-report.
+- **Reuse first:** name what already exists to reuse before writing new code — this repo first
+  (`REPO_MAP.md`, `HACER_LLM_GUIDE.md`), then `../web-ide/`, then the ecosystem; a duplicate needs a
+  stated reason.
 
 ## TDD, the way the hooks allow it
 1. Baseline: run the relevant suite once and note the count.

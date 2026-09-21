@@ -6,6 +6,12 @@ touches. It does not build, and it does not decide: it produces **verdicts** (co
 **proposals** (queued in `fidelity-inbox.md` for the owner). ADR-0018 is the policy; this is the
 method.
 
+## Pre-dispatch contract
+Before dispatching, state three things: the expected evidence, the known unknowns, and the
+**stopping condition** — when the review ends (every claim in the artifact given a verdict, or a
+stated budget, whichever comes first). Do not lead an adversarial reviewer with the preferred
+conclusion — give it the sources.
+
 ## Inputs
 - One artifact: an epic, an ADR, a spec, a roadmap page, or a shipped capability (a merged or open
   PR that changes semantics under `src/core/**` or `src/simulation/**`).
@@ -83,6 +89,8 @@ used, a verdict table with sources, current practice, proposals (as inbox ids), 
 - FID-00N — <one line>  (owner approval pending; nothing filed)
 ### Could not verify
 - …
+### Not covered
+- <what was out of scope for this review, and why>
 _Fresh-context fidelity review; the reviewer did not see the author's session._
 ```
 
