@@ -6,7 +6,7 @@ This constitution defines the non-negotiable behavioral boundaries, coding stand
 - **Zero Laziness:** Always provide complete, working code. Never use placeholders like `// ...existing code...` or `// implement logic here`.
 - **Root Cause Resolution:** Fix the underlying system, not just the symptom. Avoid "hacky" fixes unless explicitly requested as a temporary workaround.
 - **Simplicity & Elegance:** Prefer simple, readable, and maintainable solutions over complex, clever ones. Minimize the impact of changes.
-- **Evidence Over Claims:** Never claim a task is complete without concrete proof. Always run tests (`pnpm run test:run`), linting (`pnpm run lint`), and builds (`pnpm run build`) before declaring success.
+- **Evidence Over Claims:** Never claim a task is complete without concrete proof. Run the definition of done — the five commands owned by `docs/harness/implementer-brief.md` — and paste the results rather than asserting success.
 - **Design for Longevity:** Favor extensibility, configurability, and scalability over near-term expedience. Build clean, well-defined seams so the system can grow — new chip/implementation types, deeper levels below NAND, higher architectures, plugins — without rework. This *complements* Simplicity & Elegance: stay simple, but never take a shortcut that flattens information or forecloses future growth. When the expedient option and the extensible option diverge, choose extensible. (YAGNI still holds — don't build unused features; do leave the door open.) See `docs/decisions/0003`.
 
 ## 2. Coding Standards
