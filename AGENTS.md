@@ -19,11 +19,9 @@
 5. **`REPO_MAP.md`** — file locations; do not assume directories that are not documented here  
 6. **`.cursor/rules/`** (ECC-derived) — general quality only where it does **not** contradict 2–5  
 
-**Definition of done — mandatory before claiming work is complete:** all of the following must succeed with **exit code 0**:
-
-`pnpm run lint` · `pnpm run test:run` · `pnpm run build`
-
-No waivers. If a step fails, the task is **not** done.
+**Definition of done — mandatory before claiming work is complete:** stated once, in full, at
+`docs/harness/implementer-brief.md` § Definition of done. No waivers. If a step fails, the task is
+**not** done.
 
 **Documentation sync:** Before claiming work complete, completing agents must run the **author pass** in **`docs/llm-docs-sync.md`** whenever the change affects phase status, public behavior, repo layout, or Phase 0.5 tickets. Reviewers run the **reviewer pass** from the same doc before approving merges that materially affect product or structure. Additionally, capture emergent decisions or new directions as ADRs in **`docs/decisions/`** via the **`docs-sync`** skill; a Claude Code Stop hook (`scripts/hooks/docsSyncStop.mjs`) prompts when code changed but no docs were touched.
 
@@ -173,7 +171,7 @@ NO fix without root-cause investigation first.
 
 ### Step 6 — Review & Finish
 - Trigger `requesting-code-review` and `finishing-a-development-branch` when implementations meet the spec (Claude Code / Superpowers).
-- Code must pass: **`pnpm run lint`**, **`pnpm run test:run`**, **`pnpm run build`** — see §0 *Definition of done*.
+- Code must pass the definition of done — see §0.
 
 ---
 

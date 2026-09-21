@@ -24,7 +24,7 @@ This document helps AI agents and developers understand the codebase structure a
 | **Unit / store tests** | Colocate `*.test.ts` next to code; reset pattern: `src/store/actions/gateActions/gateActions.test.ts` |
 | **Playwright store E2E** | `e2e/specs/**/*.store.spec.ts`, `e2e/fixtures/store.fixture.ts` |
 | **LLM workflow + harness tuning** | `docs/llm-workflow.md`, `docs/llm-harness.md`, `docs/llm-docs-sync.md` |
-| **CI = definition of done** | `pnpm run lint` · `pnpm run test:run` · `pnpm run build` |
+| **Definition of done** | `docs/harness/implementer-brief.md` |
 
 ## ⚠️ IMPORTANT: Phase Tracking & Maintenance
 

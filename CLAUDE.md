@@ -23,6 +23,6 @@ These are authoritative for any operational detail — start here:
 
 HACER is a first-principles, **AI-native** computing platform — build a computer from one NAND gate up, in 3D — inspired by nand2tetris and meant to outgrow it. The owner's driving purpose: a research lab for **master's/PhD-level AI-assisted hardware development**, aspiring to extend **downward below the NAND** (toward transistors/physics) and **upward** to higher architectures, growing slowly and ever more configurable. Propose and plan with that arc in mind, not just the immediate ticket. Full framing + which parts are documented vs. owner-intent: `docs/north-star.md` (in this repo; the workspace `../CLAUDE.md` mirrors it). How work is chosen: `docs/portfolio.md`.
 
-## Definition of done (all must exit 0)
+## Definition of done
 
-`pnpm run lint` · `pnpm run test:run` · `pnpm run build`
+Stated once, in full, at `docs/harness/implementer-brief.md` — five commands, all exit 0.
