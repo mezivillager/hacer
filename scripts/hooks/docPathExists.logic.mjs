@@ -7,6 +7,7 @@
 // scanned: tree diagrams and code samples are illustrations, not citations.
 
 import { posix } from 'node:path'
+import { OWNED_SKILLS } from './docPaths.logic.mjs'
 
 /** Top-level directories a citation may start with. */
 export const KNOWN_ROOTS = ['src', 'docs', 'scripts', 'e2e', 'tasks', 'public', '.claude', '.cursor', '.github', '.husky']
@@ -14,12 +15,25 @@ export const KNOWN_ROOTS = ['src', 'docs', 'scripts', 'e2e', 'tasks', 'public', 
 /** A line carrying this marker is skipped, for a doc that must cite a path that is not there yet. */
 export const MISSING_PATH_MARKER = 'allow-missing-path'
 
-/** Stub (#299). */
-export const PATH_EXISTENCE_PATTERNS = []
+/**
+ * Docs whose path citations must all exist (ADR-0014), as `*` globs over the repo-relative
+ * path — `*` matches inside one segment only. A doc opts in by being listed here once its
+ * citations are green, so this check is never red on `main`. Only the skills we own are in:
+ * `scripts/sync-superpowers.sh` overwrites the rest, so a citation fixed there comes back.
+ */
+export const PATH_EXISTENCE_PATTERNS = [
+  'REPO_MAP.md',
+  'AGENTS.md',
+  'docs/harness/*-brief.md',
+  ...OWNED_SKILLS.map((prefix) => `${prefix}SKILL.md`),
+]
 
-/** Stub (#299). */
-export function isPathExistenceFile() {
-  return false
+/** Does this repo-relative file opt in to the citation check? */
+export function isPathExistenceFile(file, patterns = PATH_EXISTENCE_PATTERNS) {
+  return patterns.some((pattern) => {
+    const source = pattern.replace(/[.+^${}()|[\]\\?]/g, '\\$&').replace(/\*/g, '[^/]*')
+    return new RegExp(`^${source}$`).test(file)
+  })
 }
 
 /** File extensions that make a slash-less token, or a token under an unknown root, a path. */
@@ -42,9 +56,12 @@ const NOT_A_PATH = /[\s*{}<>…|=]|\.\.\./
  * @typedef {{ line: number, path: string, kind: 'code' | 'link' }} PathCitation
  */
 
-/** `./x/` → `x`; anchors dropped. Returns '' when nothing is left. */
+/** A `file:12` / `file:12-20` citation — the briefs require them, and the line is not the path. */
+const LINE_SUFFIX = /:\d+(?:-\d+)?$/
+
+/** `./x/` → `x`; anchors and line suffixes dropped. Returns '' when nothing is left. */
 function normalise(raw) {
-  return raw.replace(/#.*$/, '').replace(/^\.\//, '').replace(/\/+$/, '')
+  return raw.replace(/#.*$/, '').replace(LINE_SUFFIX, '').replace(/^\.\//, '').replace(/\/+$/, '')
 }
 
 function isSchemeOrAbsolute(token) {
@@ -116,7 +133,12 @@ export function extractPathCitations(text, options = {}) {
  * @returns {PathCitation[]}
  */
 export function findDeadPaths(text, exists, options = {}) {
-  return extractPathCitations(text, options).filter((c) => !exists(c.path))
+  const docDir = options.docDir || ''
+  // A backticked citation resolves against the repo root or — like a link target already
+  // does — against the citing doc: `verifier-brief.md` in docs/harness/ means its sibling.
+  return extractPathCitations(text, options).filter(
+    (c) => !exists(c.path) && !(c.kind === 'code' && docDir && exists(posix.join(docDir, c.path))),
+  )
 }
 
 /** Render one `DEAD PATH file:line path` per hit, for grep. */

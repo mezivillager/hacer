@@ -20,15 +20,11 @@ import {
 } from './hooks/docPaths.logic.mjs'
 import {
   MISSING_PATH_MARKER,
+  PATH_EXISTENCE_PATTERNS,
   findDeadPaths,
   formatDeadPaths,
+  isPathExistenceFile,
 } from './hooks/docPathExists.logic.mjs'
-
-/**
- * Docs whose path citations must all exist (ADR-0014). A doc opts in by being
- * listed here once its citations are green, so this check is never red on main.
- */
-const PATH_EXISTENCE_FILES = ['REPO_MAP.md', 'AGENTS.md']
 
 const staged = process.argv.includes('--staged')
 
@@ -62,7 +58,7 @@ for (const file of files) {
     absoluteReport.push(formatViolations(file, violations))
   }
 
-  if (PATH_EXISTENCE_FILES.includes(file)) {
+  if (isPathExistenceFile(file)) {
     const docDir = dirname(file) === '.' ? '' : dirname(file)
     const dead = findDeadPaths(text, existsSync, { docDir })
     if (dead.length > 0) {
@@ -94,7 +90,7 @@ if (absoluteFailures > 0) {
 
 if (deadFailures > 0) {
   console.error('')
-  console.error(`❌ ${deadFailures} cited path(s) do not exist (${PATH_EXISTENCE_FILES.join(', ')}):`)
+  console.error(`❌ ${deadFailures} cited path(s) do not exist (${PATH_EXISTENCE_PATTERNS.join(', ')}):`)
   console.error('')
   console.error(deadReport.join('\n'))
   console.error('')

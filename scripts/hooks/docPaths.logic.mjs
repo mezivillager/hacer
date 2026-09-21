@@ -18,7 +18,7 @@ export const OPT_OUT_MARKER = 'allow-abs-path'
  * explicitly preserves, which are ours and are checked.
  */
 const VENDORED_PREFIXES = ['.claude/skills/', '.cursor/', 'node_modules/', '.tmp_superpowers/']
-const OWNED_SKILLS = ['.claude/skills/hacer-patterns/', '.claude/skills/docs-sync/']
+export const OWNED_SKILLS = ['.claude/skills/hacer-patterns/', '.claude/skills/docs-sync/']
 
 /** Generated files nobody hand-edits. */
 const GENERATED_FILES = ['CHANGELOG.md']

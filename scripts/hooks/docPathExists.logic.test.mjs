@@ -203,11 +203,22 @@ describe('findDeadPaths', () => {
 })
 
 describe('isPathExistenceFile', () => {
-  it('opts in the two root entry docs and every harness brief', () => {
+  it('opts in the root entry docs, every harness brief and the skills we own', () => {
     expect(PATH_EXISTENCE_PATTERNS).toContain('REPO_MAP.md')
     expect(PATH_EXISTENCE_PATTERNS).toContain('AGENTS.md')
-    expect(['REPO_MAP.md', 'AGENTS.md', 'docs/harness/implementer-brief.md', 'docs/harness/fidelity-brief.md']
-      .every(isPathExistenceFile)).toBe(true)
+    expect([
+      'REPO_MAP.md',
+      'AGENTS.md',
+      'docs/harness/implementer-brief.md',
+      'docs/harness/fidelity-brief.md',
+      '.claude/skills/hacer-patterns/SKILL.md',
+      '.claude/skills/docs-sync/SKILL.md',
+    ].every((file) => isPathExistenceFile(file))).toBe(true)
+  })
+
+  it('leaves the vendored skills out — sync-superpowers.sh would bring a dead citation back', () => {
+    expect(isPathExistenceFile('.claude/skills/using-git-worktrees/SKILL.md')).toBe(false)
+    expect(isPathExistenceFile('.claude/skills/brainstorming/SKILL.md')).toBe(false)
   })
 
   it.each([
