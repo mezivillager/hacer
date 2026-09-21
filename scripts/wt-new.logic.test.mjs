@@ -1,9 +1,11 @@
 import { describe, it, expect } from 'vitest'
 import {
   REQUIRED_BABEL_HELPERS,
+  formatFreshness,
   hasBabelHelperSymlinks,
   isTreeClean,
   judge,
+  judgeFetch,
   parseSpec,
 } from './wt-new.logic.mjs'
 
@@ -86,5 +88,46 @@ describe('judge', () => {
   it('blames an unclean tree last, once install and verify both passed', () => {
     const result = judge({ ...passing, treeClean: false })
     expect(result).toEqual({ ok: false, reason: expect.stringContaining('uncommitted changes') })
+  })
+})
+
+describe('judgeFetch', () => {
+  it('is ok on exit 0', () => {
+    expect(judgeFetch(0)).toEqual({ ok: true })
+  })
+
+  it('blames a real timeout only on exit 124 (timeout(1)/gtimeout(1)\'s own code) and says to retry', () => {
+    const result = judgeFetch(124)
+    expect(result.ok).toBe(false)
+    expect(result.cause).toBe('timeout')
+    expect(result.reason).toMatch(/timed out after 60s/)
+    expect(result.reason).toMatch(/retry/)
+  })
+
+  // The bug the verifier caught: a bogus remote fails in under a second with exit 128, and the
+  // old code told an unattended agent to "wait and retry" — advice that loops forever on a
+  // permanent error. Every non-124, non-zero exit must be reported as git's own failure instead.
+  for (const exitCode of [1, 2, 128]) {
+    it(`blames git's own failure on exit ${exitCode}, and does not say to retry`, () => {
+      const result = judgeFetch(exitCode)
+      expect(result.ok).toBe(false)
+      expect(result.cause).toBe('error')
+      expect(result.reason).toMatch(new RegExp(`exit ${exitCode}`))
+      expect(result.reason).not.toMatch(/timed out/)
+      expect(result.reason).not.toMatch(/wait for it to finish and retry/)
+    })
+  }
+})
+
+describe('formatFreshness', () => {
+  it('reports up to date, with the ahead count, when nothing is behind', () => {
+    expect(formatFreshness(0, 0)).toBe('up to date — 0 commit(s) ahead of origin/main')
+    expect(formatFreshness(0, 3)).toBe('up to date — 3 commit(s) ahead of origin/main')
+  })
+
+  it('reports drift, with both counts, and warns against trusting a stale --numstat', () => {
+    const result = formatFreshness(4, 3)
+    expect(result).toMatch(/4 commit\(s\) behind, 3 ahead/)
+    expect(result).toMatch(/--numstat/)
   })
 })
