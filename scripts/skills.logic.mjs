@@ -134,7 +134,12 @@ export const BRIEF_INVARIANTS = [
       { id: 'nits-never-block', phrases: ['**NIT** ≤ 3', 'Nits never block'] },
       { id: 'pass-without-blockers', phrases: ['**PASS** when there are no blockers'] },
       { id: 'try-to-break-it', phrases: ['Try to break it:', 'Do not commit them.'] },
-      { id: 'model-per-risk-tier', phrases: ['**Model:**', '`risk:0`', 'Sonnet', '`risk:2`', 'Opus'] },
+      // The tier split itself, not just that a Model line exists: the engine and `risk:2` keep the
+      // higher tier, and a PR that reaches neither does not. Owner's call, 2026-09-21.
+      {
+        id: 'model-per-risk-tier',
+        phrases: ['**Model:**', '`risk:0` and `risk:1`', 'Sonnet', '`risk:2`', '`src/core/`', '`src/simulation/`', 'Opus'],
+      },
     ],
     absent: [
       { id: 'stryker-mutation-testing', phrases: ['Stryker'], why: 'ADR-0011 removed Stryker' },
