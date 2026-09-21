@@ -2,9 +2,11 @@ import { describe, it, expect } from 'vitest'
 import {
   KNOWN_ROOTS,
   MISSING_PATH_MARKER,
+  PATH_EXISTENCE_PATTERNS,
   extractPathCitations,
   findDeadPaths,
   formatDeadPaths,
+  isPathExistenceFile,
 } from './docPathExists.logic.mjs'
 
 const paths = (text, opts) => extractPathCitations(text, opts).map((c) => c.path)
@@ -181,6 +183,50 @@ describe('findDeadPaths', () => {
 
   it('returns nothing for a clean doc', () => {
     expect(findDeadPaths('see `AGENTS.md`', exists)).toEqual([])
+  })
+
+  it('resolves a backticked citation against the citing doc as well as the repo root', () => {
+    const siblings = (p) => p === 'docs/harness/verifier-brief.md'
+    expect(findDeadPaths('see `verifier-brief.md`', siblings, { docDir: 'docs/harness' })).toEqual([])
+    expect(findDeadPaths('see `verifier-brief.md`', siblings, { docDir: 'docs' })).toEqual([
+      { line: 1, path: 'verifier-brief.md', kind: 'code' },
+    ])
+  })
+
+  it('ignores the :line suffix the briefs require of a citation', () => {
+    expect(paths('`src/core/chips/types.ts:7` and `src/simulation/topologicalEval.ts:117-123`')).toEqual([
+      'src/core/chips/types.ts',
+      'src/simulation/topologicalEval.ts',
+    ])
+    expect(findDeadPaths('`src/simulation/topologicalEval.ts:42`', exists)).toEqual([])
+  })
+})
+
+describe('isPathExistenceFile', () => {
+  it('opts in the two root entry docs and every harness brief', () => {
+    expect(PATH_EXISTENCE_PATTERNS).toContain('REPO_MAP.md')
+    expect(PATH_EXISTENCE_PATTERNS).toContain('AGENTS.md')
+    expect(['REPO_MAP.md', 'AGENTS.md', 'docs/harness/implementer-brief.md', 'docs/harness/fidelity-brief.md']
+      .every(isPathExistenceFile)).toBe(true)
+  })
+
+  it.each([
+    'CONTRIBUTING.md',
+    'docs/harness/README.md',
+    'docs/harness/ledger.md',
+    'docs/roadmap/vision.md',
+  ])('leaves %s out until its citations are green', (file) => {
+    expect(isPathExistenceFile(file)).toBe(false)
+  })
+
+  it('does not let * cross a directory boundary', () => {
+    expect(isPathExistenceFile('docs/harness/sessions/2026-09-19-brief.md')).toBe(false)
+    expect(isPathExistenceFile('x/REPO_MAP.md')).toBe(false)
+  })
+
+  it('takes the patterns as an argument, so a caller can narrow them', () => {
+    expect(isPathExistenceFile('REPO_MAP.md', ['AGENTS.md'])).toBe(false)
+    expect(isPathExistenceFile('docs/a.md', ['docs/*.md'])).toBe(true)
   })
 })
 
