@@ -705,5 +705,110 @@
       "number": 260,
       "state": "OPEN"
     }
+  },
+  {
+    "number": 315,
+    "title": "Canvas-less shell: the renderer selector (ADR-0019 slice 1)",
+    "labels": [
+      {
+        "name": "project:surfaces"
+      },
+      {
+        "name": "agent-ready"
+      },
+      {
+        "name": "risk:1"
+      },
+      {
+        "name": "project:foundation"
+      }
+    ],
+    "author": {
+      "login": "mezivillager"
+    },
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "number": 316,
+          "state": "OPEN",
+          "title": "Canvas-less shell: a local @shell Playwright project and the first spec (ADR-0019 slice 2)"
+        }
+      ]
+    },
+    "parent": {
+      "number": 138,
+      "state": "OPEN"
+    }
+  },
+  {
+    "number": 329,
+    "title": "Layer rules as a ratchet: dependency-cruiser with a shrink-only baseline, wired into lint (foundation guard 0.1)",
+    "labels": [
+      {
+        "name": "agent-ready"
+      },
+      {
+        "name": "risk:1"
+      },
+      {
+        "name": "project:foundation"
+      }
+    ],
+    "author": {
+      "login": "mezivillager"
+    },
+    "blockedBy": {
+      "nodes": []
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "number": 336,
+          "state": "OPEN",
+          "title": "src/core/index.ts and src/simulation/index.ts: the engine's front door, with a node test that proves it is headless (foundation 1.4)"
+        }
+      ]
+    },
+    "parent": {
+      "number": 318,
+      "state": "OPEN"
+    }
+  },
+  {
+    "number": 331,
+    "title": "Characterize the legacy app before it is replaced: rendered geometry, evaluation fixtures, the 43 store actions",
+    "labels": [
+      {
+        "name": "agent-ready"
+      },
+      {
+        "name": "risk:1"
+      },
+      {
+        "name": "project:foundation"
+      }
+    ],
+    "author": {
+      "login": "mezivillager"
+    },
+    "blockedBy": {
+      "nodes": [
+        {
+          "number": 323,
+          "state": "CLOSED",
+          "title": "Vitest node project: run the ~36 already-headless test files without jsdom (foundation guard 0.2)"
+        }
+      ]
+    },
+    "blocking": {
+      "nodes": []
+    },
+    "parent": {
+      "number": 318,
+      "state": "OPEN"
+    }
   }
 ]
