@@ -15,11 +15,15 @@
 // (verifier-brief.md). Non-zero means the *run* is not trustworthy: timeout, a dirty worktree and
 // "could not look" each get their own code. Every run appends one JSON line to
 // <git-common-dir>/hacer-lane-runs/second-opinion.jsonl.
+//
+// Exit 7 is the one exception: the day's ration was already spent, or included usage could not be
+// confirmed, so no run happened at all (docs/harness/usage-rationing.md). Skip the lane and carry on.
 
 import { execFileSync, spawn } from 'node:child_process'
-import { appendFileSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { appendFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
+import { laneStatus, OBSERVATION_FILE } from './lane-budget.logic.mjs'
 import { findLinkedIssues } from './pr-hygiene.logic.mjs'
 import { AUDIT_FILE, DEFAULT_MODEL, EXIT, KILL_GRACE_MS, TIMEOUT_MS } from './second-opinion.logic.mjs'
 import { assessDelivery, auditLine, buildPrompt, checkoutConfig, costOf, cursorArgs, extractRubric } from './second-opinion.logic.mjs'
@@ -42,6 +46,18 @@ if (!Number.isInteger(pr) || pr <= 0 || !model) die(EXIT.usage, 'usage: node scr
 const BIG = { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 }
 const git = (args, cwd) => execFileSync('git', args, { ...BIG, cwd })
 const gh = (args) => execFileSync(process.env.GH_BIN ?? 'gh', args, BIG)
+// Worktrees share the common dir, so every worktree's runs count against the same day.
+const auditPath = () => path.join(git(['rev-parse', '--path-format=absolute', '--git-common-dir']).trim(), AUDIT_FILE)
+
+// The day's ration, checked before anything is fetched or spawned (#302). A refusal is a skip, not
+// a failure — the coordinator proceeds without the lane, never falling back to something that bills.
+const read = (file) => (existsSync(file) ? readFileSync(file, 'utf8') : null)
+const ration = laneStatus({
+  audit: read(auditPath()),
+  observation: read(path.join(import.meta.dirname, '..', OBSERVATION_FILE)),
+  dayBudget: process.env.HACER_LANE_DAY_TOKENS,
+})
+if (!ration.allowed) die(EXIT.rationSpent, `${ration.reason} — skipping the lane (docs/harness/usage-rationing.md)`)
 
 /**
  * The CLI has no timeout flag, and `timeout 900` would kill only the wrapper: the 2026-09-19 trial
@@ -144,9 +160,9 @@ try {
   // here cannot skip the cleanup.
   try {
     if (audit) {
-      const dir = path.join(git(['rev-parse', '--path-format=absolute', '--git-common-dir']).trim(), path.dirname(AUDIT_FILE))
-      mkdirSync(dir, { recursive: true })
-      appendFileSync(path.join(dir, path.basename(AUDIT_FILE)), auditLine({ ...audit, exitCode }))
+      const file = auditPath()
+      mkdirSync(path.dirname(file), { recursive: true })
+      appendFileSync(file, auditLine({ ...audit, exitCode }))
     }
   } catch (auditError) {
     console.error(`second-opinion: could not write the audit row — ${auditError?.message ?? auditError}`)

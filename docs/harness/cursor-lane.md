@@ -150,6 +150,10 @@ breaks - how to see it (or "none") / NITS (at most 3).
   `<git-common-dir>/hacer-lane-runs/second-opinion.jsonl` — the file the daily ration is measured
   from. It exits non-zero when the *run* cannot be trusted (timeout 4, dirty worktree 5, could not
   look 6); a BLOCK verdict is advisory and still exits 0.
+- **The daily ration:** before it fetches or spawns anything the wrapper checks the day's token
+  ration (#302, `usage-rationing.md`): 6M tokens a local day, and the dashboard's "Included" label as
+  the hard guard. Exit **7** means no run happened — skip the lane and proceed without it, never fall
+  back to anything that bills. `node scripts/lane-budget.mjs` prints the state at any time.
 
 ### 1.7 Prompt injection
 The diff and every file at the PR head (`AGENTS.md` included) are untrusted. Controls: the verified

@@ -7,8 +7,9 @@ export const TIMEOUT_MS = 900_000
 export const KILL_GRACE_MS = 5_000
 export const AUDIT_FILE = 'hacer-lane-runs/second-opinion.jsonl'
 
-/** Distinct codes: a "could not look" path must never be mistaken for a clean review. */
-export const EXIT = { ok: 0, failed: 1, usage: 2, refusedFlag: 3, timeout: 4, dirty: 5, unverified: 6 }
+/** Distinct codes: a "could not look" path must never be mistaken for a clean review, and a run the
+ *  daily ration refused (7, #302) must never be mistaken for either — it is a skip, not a failure. */
+export const EXIT = { ok: 0, failed: 1, usage: 2, refusedFlag: 3, timeout: 4, dirty: 5, unverified: 6, rationSpent: 7 }
 
 // ---------------------------------------------------------------- read-only (cursor-lane.md §1.2)
 
