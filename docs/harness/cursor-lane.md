@@ -143,7 +143,13 @@ breaks - how to see it (or "none") / NITS (at most 3).
   `--api-key` or `CURSOR_API_KEY` (docs; not tested). Proposal: run the loop on the second
   subscription, its key in the coordinator's environment (never in the repo), so the loop never eats
   the owner's interactive allowance and runs can use a scratch `HOME` (no user MCP or hooks).
-- **Wrapper script:** #296 (under #138). This PR does not build it.
+- **The command:** `node scripts/second-opinion.mjs <pr> [--model composer-2.5]` (#296), run from the
+  repo. It builds both deny layers of §1.2, takes the rubric below from `origin/main`, fences the
+  diff, spawns the CLI detached and kills the whole process group on the 900 s timeout, asserts the
+  throwaway worktree is unchanged, prints one `SECOND-OPINION:` line and appends one JSON line to
+  `<git-common-dir>/hacer-lane-runs/second-opinion.jsonl` — the file the daily ration is measured
+  from. It exits non-zero when the *run* cannot be trusted (timeout 4, dirty worktree 5, could not
+  look 6); a BLOCK verdict is advisory and still exits 0.
 
 ### 1.7 Prompt injection
 The diff and every file at the PR head (`AGENTS.md` included) are untrusted. Controls: the verified

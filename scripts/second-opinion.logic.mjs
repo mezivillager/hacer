@@ -165,6 +165,9 @@ export const MODEL_RATES = {
 /** Null for an unpriced model — better a visible gap than a run that looks free. */
 export const ratesFor = (model) => MODEL_RATES[model] ?? null
 
+/** The CLI resolves a model id to a variant name, so fall back to the card we asked for. */
+export const ratesForRun = (resolved, requested) => ratesFor(resolved) ?? ratesFor(requested)
+
 export function costOf(usage, rates) {
   if (!rates) return null
   const u = normaliseUsage(usage)
@@ -198,7 +201,7 @@ export function assessDelivery({ before, after, error } = {}) {
 
 /** One JSON line per run for .git/hacer-lane-runs/ — what the daily Cursor ration is measured from. */
 export function auditLine({ at, pr, requestedModel, resolvedModel: resolved, usage, wallMs, exitCode, verdict }) {
-  const cost = costOf(usage, ratesFor(resolved ?? requestedModel))
+  const cost = costOf(usage, ratesForRun(resolved, requestedModel))
   return (
     JSON.stringify({
       at: at ?? new Date().toISOString(),
