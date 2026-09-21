@@ -14,56 +14,21 @@
 # HEAD is from `origin/main`, read-only — it never rebases. Cheap enough to run before every
 # `--numstat` or final rebase.
 #
-# Decidable steps (spec parsing, the final verdict) live in wt-new.logic.mjs, via the thin CLI
+# A failure after `git worktree add` (install, verify, or the final checks) leaves the worktree,
+# branch and any partial `node_modules` in place for inspection — the failure message prints the
+# exact `git worktree remove` / `git branch -D` to run before retrying the same topic.
+#
+# Decidable steps (spec parsing, the verdicts) live in wt-new.logic.mjs, via the thin CLI
 # wt-new.mjs. This script does the actual I/O: fetch, `git worktree add`, install, run the verify
 # command, gather the evidence.
 
 set -euo pipefail
 
-# Fetch origin, bounded — an indefinite hang here (a ref-lock race with a sibling worktree
-# fetching at the same moment has happened before) used to leave an agent idle until someone
-# noticed and resumed it.
-fetch_origin() {
-  local timeout_bin
-  timeout_bin="$(command -v timeout || command -v gtimeout || true)"
-  if [ -n "$timeout_bin" ]; then
-    "$timeout_bin" 60 git fetch origin || {
-      echo "wt-new: git fetch origin timed out after 60s (a ref-lock race with a sibling worktree" \
-        "fetching at the same moment is the usual cause) — wait for it to finish and retry" >&2
-      exit 1
-    }
-  else
-    git fetch origin
-  fi
-}
-
-if [ "${1:-}" = "--refresh" ]; then
-  echo "wt-new --refresh: fetching origin…"
-  fetch_origin
-  read -r BEHIND AHEAD <<< "$(git rev-list --left-right --count origin/main...HEAD)"
-  if [ "$BEHIND" = "0" ]; then
-    echo "wt-new --refresh: up to date — $AHEAD commit(s) ahead of origin/main"
-  else
-    echo "wt-new --refresh: origin/main has moved — $BEHIND commit(s) behind, $AHEAD ahead." \
-      "Diff/rebase against origin/main, not a stale HEAD, before trusting a --numstat."
-  fi
-  exit 0
-fi
-
-SPEC="${1:-}"
-VERIFY_CMD="${2:-pnpm run lint:docs}"
-
-if [ -z "$SPEC" ]; then
-  echo "usage: scripts/wt-new <type>/<topic> [verify-command] | scripts/wt-new --refresh" >&2
-  exit 2
-fi
-
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "$SCRIPT_DIR/.." && git rev-parse --show-toplevel)"
-cd "$REPO_ROOT"
 
 # Node 22 — the Bash tool's PATH resolves nvm's default (22) ahead of /usr/local/bin, but a plain
-# shell (no nvm loaded) can still land on the stray v14 at /usr/local/bin/node.
+# shell (no nvm loaded) can still land on the stray v14 at /usr/local/bin/node. Checked first:
+# both --refresh and the main flow below call `node` for wt-new.mjs.
 if [[ "$(node -v 2>/dev/null)" != v22* ]]; then
   export NVM_DIR="$HOME/.nvm"
   # shellcheck disable=SC1091
@@ -75,9 +40,45 @@ if [[ "$(node -v 2>/dev/null)" != v22* ]]; then
   exit 1
 fi
 
+# Fetch origin, bounded — an indefinite hang here (a ref-lock race with a sibling worktree
+# fetching at the same moment has happened before) used to leave an agent idle until someone
+# noticed and resumed it. The verdict is wt-new.mjs's: exit 124 is the only code `timeout`/
+# `gtimeout` use for "still running at the deadline" — any other nonzero exit is git failing on
+# its own (bad remote, no network, …) and must never be told to "wait and retry".
+fetch_origin() {
+  local timeout_bin status
+  timeout_bin="$(command -v timeout || command -v gtimeout || true)"
+  if [ -n "$timeout_bin" ]; then
+    "$timeout_bin" 60 git fetch origin && status=0 || status=$?
+  else
+    git fetch origin && status=0 || status=$?
+  fi
+  node "$SCRIPT_DIR/wt-new.mjs" fetch-verdict "$status"
+}
+
+if [ "${1:-}" = "--refresh" ]; then
+  echo "wt-new --refresh: fetching origin…"
+  fetch_origin
+  read -r BEHIND AHEAD <<< "$(git rev-list --left-right --count origin/main...HEAD)"
+  echo "wt-new --refresh: $(node "$SCRIPT_DIR/wt-new.mjs" freshness "$BEHIND" "$AHEAD")"
+  exit 0
+fi
+
+SPEC="${1:-}"
+VERIFY_CMD="${2:-pnpm run lint:docs}"
+
+if [ -z "$SPEC" ]; then
+  echo "usage: scripts/wt-new <type>/<topic> [verify-command] | scripts/wt-new --refresh" >&2
+  exit 2
+fi
+
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && git rev-parse --show-toplevel)"
+cd "$REPO_ROOT"
+
 PARSED="$(node "$SCRIPT_DIR/wt-new.mjs" parse "$SPEC")"
 read -r WT_BRANCH WT_DIR <<< "$PARSED"
 WT_PATH="$(dirname "$REPO_ROOT")/$WT_DIR"
+CLEANUP="git worktree remove \"$WT_PATH\" --force && git branch -D $WT_BRANCH"
 
 if [ -e "$WT_PATH" ]; then
   echo "wt-new: $WT_PATH already exists — remove it or pick a different topic" >&2
@@ -95,7 +96,7 @@ echo "wt-new: installing — rm -rf node_modules && pnpm install --frozen-lockfi
 rm -rf node_modules
 INSTALL_OUTPUT="$(pnpm install --frozen-lockfile 2>&1)" || {
   echo "$INSTALL_OUTPUT" >&2
-  echo "wt-new: pnpm install --frozen-lockfile failed" >&2
+  echo "wt-new: pnpm install --frozen-lockfile failed. Clean up before retrying this topic: $CLEANUP" >&2
   exit 1
 }
 echo "$INSTALL_OUTPUT"
@@ -108,4 +109,7 @@ echo "wt-new: verifying — $VERIFY_CMD"
 VERIFY_EXIT=0
 bash -c "$VERIFY_CMD" || VERIFY_EXIT=$?
 
-node "$SCRIPT_DIR/wt-new.mjs" judge "$WT_PATH" "$VERIFY_EXIT"
+if ! node "$SCRIPT_DIR/wt-new.mjs" judge "$WT_PATH" "$VERIFY_EXIT"; then
+  echo "wt-new: clean up before retrying this topic: $CLEANUP" >&2
+  exit 1
+fi

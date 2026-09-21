@@ -65,3 +65,37 @@ export function judge(evidence) {
   }
   return { ok: true, reason: null }
 }
+
+/**
+ * The verdict for one `git fetch origin` attempt, wrapped in `timeout 60` (or `gtimeout`). Only
+ * exit 124 — `timeout(1)`'s own code for "the command was still running at the deadline" — is a
+ * real timeout, worth retrying once whatever is holding the lock finishes. Every other nonzero
+ * exit is git's own failure (a bad remote, no network, …): retrying without fixing the cause
+ * cannot help, so it must never carry "wait and retry" advice — the bug a reviewer caught live,
+ * reproduced with a bogus remote failing in under a second yet reported as a 60s timeout.
+ * @returns {{ok: true} | {ok: false, cause: 'timeout' | 'error', reason: string}}
+ */
+export function judgeFetch(exitCode) {
+  if (exitCode === 0) return { ok: true }
+  if (exitCode === 124) {
+    return {
+      ok: false,
+      cause: 'timeout',
+      reason: 'git fetch origin timed out after 60s (a ref-lock race with a sibling worktree ' +
+        'fetching at the same moment is the usual cause) — wait for it to finish and retry',
+    }
+  }
+  return {
+    ok: false,
+    cause: 'error',
+    reason: `git fetch origin failed (exit ${exitCode}) — see git's error above; this is not a ` +
+      'timeout, so retrying without addressing the cause will not help',
+  }
+}
+
+/** The one-line report `wt-new --refresh` prints for how far HEAD is from `origin/main`. */
+export function formatFreshness(behind, ahead) {
+  if (behind === 0) return `up to date — ${ahead} commit(s) ahead of origin/main`
+  return `origin/main has moved — ${behind} commit(s) behind, ${ahead} ahead. ` +
+    'Diff/rebase against origin/main, not a stale HEAD, before trusting a --numstat.'
+}
