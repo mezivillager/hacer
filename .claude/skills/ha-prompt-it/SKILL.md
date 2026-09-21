@@ -207,16 +207,22 @@ verdict and proceed.
 
 **Before any dispatch:**
 
-- **Node, in every single command** — the Bash tool starts on Node v14 and pnpm
-  refuses to run: `export NVM_DIR="$HOME/.nvm"; . "$NVM_DIR/nvm.sh"; nvm use 22`.
-  Shell state does not persist between calls, so repeat it each time.
-- **Worktree** — `git worktree add ../hacer-wt-<topic> -b <type>/<topic>`, a
-  sibling of the repo, never nested, never committing to `main`.
-- **Repair `node_modules` on arrival** — every `hacer-wt-*` has lost its unscoped
-  symlinks: `rm -rf node_modules && pnpm install --frozen-lockfile`, then verify
-  `ls node_modules/.pnpm/@babel+helper-compilation-targets@*/node_modules/` lists
-  `browserslist`, `lru-cache`, `semver`. A plain install fixes only the top level
-  and leaves every test failing on `_lruCache is not a constructor`.
+- **Node** — verified on-machine (2026-09-21): the Bash tool's PATH already puts
+  nvm's default alias (22) ahead of `/usr/local/bin`, so a fresh shell resolves
+  `node -v` to 22.x with no `nvm use` needed. Run `node -v` first anyway to
+  confirm. If it ever prints v14, that's the stray `/usr/local/bin/node` (a 2020
+  Homebrew install nvm's PATH entry normally shadows) — recover with
+  `export NVM_DIR="$HOME/.nvm"; . "$NVM_DIR/nvm.sh"; nvm use 22`.
+- **Worktree, install, verify — one command:** `bash scripts/wt-new <type>/<n>-<topic>`
+  fetches, branches from `origin/main` (never a stale base), creates the
+  sibling `hacer-wt-<topic>`, installs with `--frozen-lockfile`, and verifies
+  the @babel helper symlinks and a chosen command before it says ready (#157).
+  Falls back to the manual sequence only if the script itself is unavailable:
+  `git worktree add ../hacer-wt-<topic> -b <type>/<topic>`, then
+  `rm -rf node_modules && pnpm install --frozen-lockfile` and check
+  `ls node_modules/.pnpm/@babel+helper-compilation-targets@*/node_modules/`
+  lists `browserslist`, `lru-cache`, `semver` (a plain install fixes only the
+  top level and leaves every test failing on `_lruCache is not a constructor`).
 - **Baseline** — run the unit suite once now, so later numbers compare against
   measured ones.
 - **Stack drift (checked 2026-09-17):** the pins are behind — vitest ^4.1.2 vs
