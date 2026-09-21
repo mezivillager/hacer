@@ -114,6 +114,7 @@ export const BRIEF_INVARIANTS = [
       { id: 'reviewable-line-budget', phrases: ['400 reviewable changed lines'] },
       { id: 'red-is-a-compiling-stub', phrases: ['Red commit', 'smallest compiling stub'] },
       { id: 'no-ai-attribution', phrases: ['no AI attribution trailers'] },
+      { id: 'model-per-risk-tier', phrases: ['**Model:**', '`risk:0`', 'Sonnet', '`risk:2`', 'Opus'] },
       {
         id: 'five-definition-of-done-commands',
         phrases: ['pnpm run lint', 'pnpm run test:run', 'pnpm run build', 'pnpm run lint:docs', 'verification command'],
@@ -133,6 +134,7 @@ export const BRIEF_INVARIANTS = [
       { id: 'nits-never-block', phrases: ['**NIT** ≤ 3', 'Nits never block'] },
       { id: 'pass-without-blockers', phrases: ['**PASS** when there are no blockers'] },
       { id: 'try-to-break-it', phrases: ['Try to break it:', 'Do not commit them.'] },
+      { id: 'model-per-risk-tier', phrases: ['**Model:**', '`risk:0`', 'Sonnet', '`risk:2`', 'Opus'] },
     ],
     absent: [
       { id: 'stryker-mutation-testing', phrases: ['Stryker'], why: 'ADR-0011 removed Stryker' },
