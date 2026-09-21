@@ -8,6 +8,7 @@ import {
   assessDelivery,
   auditLine,
   buildPrompt,
+  checkoutConfig,
   costOf,
   cursorArgs,
   extractRubric,
@@ -32,6 +33,16 @@ describe('reviewerConfig', () => {
       permissions: { allow: [], deny: ['Shell(*)', 'Write(**)', 'Write(/**)', 'WebFetch(*)', 'Mcp(*:*)'] },
     })
     expect(DENY_RULES).toHaveLength(5)
+  })
+
+  it('gives the checkout its own file the permissions block alone — the CLI rejects the rest', () => {
+    // The live run on #305 died with "Unrecognized key(s) in object: 'version', 'editor',
+    // 'approvalMode', 'autoAcceptWebSearch', 'attribution'" before any model call: .cursor/cli.json
+    // and CURSOR_CONFIG_DIR/cli-config.json are two different schemas.
+    expect(checkoutConfig()).toEqual({ permissions: { allow: [], deny: DENY_RULES } })
+    expect(Object.keys(checkoutConfig())).toEqual(['permissions'])
+    checkoutConfig().permissions.deny.push('Shell(rm)')
+    expect(checkoutConfig().permissions.deny).toEqual(DENY_RULES)
   })
 
   it('returns a fresh object each call, so one run cannot mutate the config of the next', () => {
@@ -197,6 +208,23 @@ describe('assessDelivery', () => {
     })
   })
 
+  it('is dirty when the run removed a baseline line, not only when it added one', () => {
+    // A stub whose only act was `rm -f .cursor/cli.json` used to pass: it deleted the reviewer's
+    // own deny file and the assertion said unchanged.
+    expect(assessDelivery({ before: '?? .cursor/\n', after: '' })).toMatchObject({ state: 'dirty', changed: ['.cursor/'] })
+    // ` D .cursor/rules/000.mdc` vanishing means the run put a deleted tracked file back.
+    expect(assessDelivery({ before: ' D .cursor/rules/000.mdc\n?? .cursor/\n', after: '?? .cursor/\n' })).toMatchObject({
+      state: 'dirty',
+      changed: ['.cursor/rules/000.mdc'],
+    })
+  })
+
+  it('names an added and a removed path once each, in that order', () => {
+    expect(assessDelivery({ before: ' M gone.ts\n', after: '?? new.ts\n' }).changed).toEqual(['new.ts', 'gone.ts'])
+    // The same path changing status is one path, not two.
+    expect(assessDelivery({ before: '?? a.ts\n', after: ' M a.ts\n' }).changed).toEqual(['a.ts'])
+  })
+
   it('is unknown — never clean — when git status could not be read, so success is never reported blind', () => {
     expect(assessDelivery({ before: '', after: null, error: new Error('not a git repository') }).state).toBe('unknown')
     expect(assessDelivery({ before: '', after: null }).state).toBe('unknown')
@@ -228,7 +256,7 @@ describe('auditLine and formatSummaryLine', () => {
       wallMs: 165_000,
       exitCode: 0,
       verdict: 'PASS',
-      cost: { usd: 1.15, currency: 'USD', note: 'list price, not a bill' },
+      cost: { usd: 1.15, currency: 'USD', pricedAs: 'composer-2.5', note: 'list price, not a bill' },
     })
   })
 
@@ -240,12 +268,16 @@ describe('auditLine and formatSummaryLine', () => {
     )
     expect(record.resolvedModel).toBe('composer-2.5-standard')
     expect(record.cost.usd).toBe(1.15)
+    // The fallback can misprice 4.8× if the variant is a Fast one, so the line says which card paid.
+    expect(record.cost.pricedAs).toBe('composer-2.5')
+    expect(JSON.parse(auditLine({ pr: 1, requestedModel: 'composer-2.5', resolvedModel: 'gpt-5.6-sol-high', usage, wallMs: 1, exitCode: 0, verdict: 'PASS' })).cost.pricedAs).toBe('gpt-5.6-sol-high')
   })
 
   it('records a null resolved model and a null cost rather than inventing either', () => {
     const record = JSON.parse(auditLine({ pr: 1, requestedModel: 'mystery-model', usage: {}, wallMs: 1, exitCode: 4, verdict: 'UNPARSED' }))
     expect(record.resolvedModel).toBeNull()
     expect(record.cost.usd).toBeNull()
+    expect(record.cost.pricedAs).toBeNull()
     expect(Date.parse(record.at)).not.toBeNaN()
   })
 
