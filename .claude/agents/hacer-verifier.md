@@ -12,9 +12,13 @@ risk, and the measurement behind it: `docs/harness/model-tiering.md`.
 
 The `model: opus` above is a **fail-safe, not the usual case.** Most PRs are `risk:0` or `risk:1`
 and are dispatched on Sonnet; this frontmatter is what applies when the coordinator passes no model,
-and it errs towards the tier that must never be skipped on an engine change. If you are running as
-Opus on a `risk:1` PR outside `src/core` and `src/simulation`, say so in your verdict — that is a
-dispatch the coordinator should have tiered down, and it belongs in the ledger, not in silence.
+and it errs towards the tier that must never be skipped on an engine change.
+
+**Name the model you ran on in every verdict** (`Verified on:`), and if it is not the tier the rule
+gives for this PR, say so in one line — **in either direction.** Running high on a small PR costs
+money and is the safe error. Running low on `risk:2` or on an engine change is the unsafe one, and
+it has already happened once: #320 was verified a tier low and merged, and nothing noticed, because
+nothing looks. You are the only thing that looks.
 
 ## Boundaries
 - Read-only on the repo: a throwaway worktree from the PR head, and exactly one comment on the PR.

@@ -134,12 +134,18 @@ export const BRIEF_INVARIANTS = [
       { id: 'nits-never-block', phrases: ['**NIT** ≤ 3', 'Nits never block'] },
       { id: 'pass-without-blockers', phrases: ['**PASS** when there are no blockers'] },
       { id: 'try-to-break-it', phrases: ['Try to break it:', 'Do not commit them.'] },
-      // The tier split itself, not just that a Model line exists: the engine and `risk:2` keep the
-      // higher tier, and a PR that reaches neither does not. Owner's call, 2026-09-21.
+      // The tier split itself, as ONE phrase. `containsPhrases` is an ordered-subsequence match, so a
+      // list of short phrases pins only their order: a rewrite that preserves word order while saying
+      // the opposite passes (verified on #351). A whole sentence is an exact substring match, which is
+      // what pinning a mapping requires. Owner's call, 2026-09-21; the evidence is model-tiering.md §1a.
       {
         id: 'model-per-risk-tier',
-        phrases: ['**Model:**', '`risk:0` and `risk:1`', 'Sonnet', '`risk:2`', '`src/core/`', '`src/simulation/`', 'Opus'],
+        phrases: [
+          '**Model:** a PR touching `src/core/` or `src/simulation/`, or labelled `risk:2`, is verified on **Opus**; every other PR, at `risk:0` or `risk:1`, on **Sonnet**',
+        ],
       },
+      // Without this the tier that reviewed a PR is unrecorded, so no future tier claim is auditable.
+      { id: 'verdict-names-its-model', phrases: ['Name the model you ran on', '**Verified on:**'] },
     ],
     absent: [
       { id: 'stryker-mutation-testing', phrases: ['Stryker'], why: 'ADR-0011 removed Stryker' },

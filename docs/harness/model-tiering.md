@@ -32,22 +32,37 @@ necessary, not sufficient.
 
 ## 1a. What happened when Sonnet verified live (2026-09-21)
 
-The replay in §1 hid the verdicts but could not hide that later commits existed. These four are the
-stronger evidence: real PRs, no known answer, nobody had reviewed them first.
+§1's replay hid the verdicts but could not hide that later commits existed. These four were real
+PRs with no known answer and no prior review. **Read the attribution column before the finding
+column** — it is the weaker half of this evidence, and the reason for the rule in §1b.
 
-| PR | Verdict | What it found |
-|---|---|---|
-| #312 | BLOCK | the new e2e specs failed in CI `browser-qa` — which the builder could not run locally and does not watch. The only layer that could see it was a verifier reading the PR's own CI logs. **This was a `src/simulation` change**, and it is why that path is a candidate to move later rather than never |
-| #319 | BLOCK | a killed lane run recorded zero usage, so the ration could be evaded by killing runs; and a future-dated reading never went stale |
-| #320 | BLOCK | every fetch failure was reported as a timeout; and an allowlist entry was equivalent to arbitrary shell |
-| #324 | PASS | re-derived the 66/68 = 134 file split independently (zero overlap, zero gap), reran the suite at both `origin/main` and the PR head, and triggered both new throw sites by hand. It also flagged, unprompted, that the tier table assigned this PR to Opus |
+| PR | Risk | Attributable to Sonnet? | Verdict and what it found |
+|---|---|---|---|
+| #320 | **`risk:2`** | **yes — its own verdict says "this review ran on Sonnet"** | BLOCK, two real defects: every fetch failure was reported as a timeout, and an allowlist entry was equivalent to arbitrary shell. Red `c03eb3a` → fix `eadbb09` |
+| #324 | `risk:1` | second-hand only — `sessions/2026-09-21.md` records it; the verdict itself does not | PASS. Re-derived the 134-file split independently (zero overlap, zero gap), reran the suite at `origin/main` and at the PR head, hand-triggered both new throw sites |
+| #312 | `risk:1`, **`src/simulation`** | **no — unrecorded anywhere** | BLOCK. The new e2e specs failed CI `browser-qa` (run 35586513124 = failure), which the builder cannot run locally and does not watch. Fix `fa80f44` |
+| #319 | `risk:1` | **no — unrecorded anywhere** | BLOCK, two real silent allows: a killed lane run recorded zero usage, and a future-dated reading never went stale. Red `d1f807a` → fix `eff901c` |
 
-None of these is a verdict letter matching a known answer. Each is a defect found, or an invariant
-re-derived, by an agent that could not look the answer up.
+**What this does and does not establish.**
+- Every defect above is real and was fixed. That part is checkable from the repository.
+- **Two of the four cannot be attributed to any model.** If either was Opus, the live base is two
+  outings, not four — enough to meet §1's bar, not enough to exceed it comfortably.
+- **#320 is `risk:2`, and it was verified on Sonnet against the table then in force.** Nobody
+  noticed at the time. It is simultaneously the strongest single data point here — a live `risk:2`
+  block, attributable, with real defects — and a policy violation that went unseen, which is the
+  better argument for §1b than any of the findings.
+- The dispatch prompts live outside this repository, so **"the agent could not look the answer up"
+  is not falsifiable from here.** None of the four was given a pointer to its defect as far as the
+  coordinator's records go, but a reader cannot check that, and the claim should not be leaned on.
 
-**The honest limit.** Every one is `risk:1`. There is no live Sonnet `risk:2` verdict, which is why
-`risk:2` and the engine stay on Opus. And a tier that passes four times is not proven — §2's row
-names what would move it back, and the ledger is where an overturned verdict gets recorded.
+## 1b. The rule this produced: a verdict names its model
+
+Nothing in the repository, the PR or the API records which tier verified a PR. That is why half the
+table above is unattributable, and why a `risk:2` PR was verified a tier low without anyone seeing
+it. So: **every verdict carries a `Verified on:` field**, and a verifier running on a tier other
+than the one the rule gives says so, in either direction (`verifier-brief.md`). Until a verdict
+names its model it cannot be counted as evidence for or against a tier — including the two rows
+above, which is why §2's `risk:2` row still reads 0 of 3 rather than 1 of 3.
 
 ## 2. The assignment
 
@@ -56,8 +71,8 @@ names what would move it back, and the ledger is where an overturned verdict get
 | coordinator | Opus — the owner's choice per session (`README.md` Budgets) | it decides what every other agent does; one wrong dispatch wastes a whole builder run (150–270k) | unmeasured — a replay of one `ha-next` pick that chose the same issue and wrote the same prompt |
 | builder, `risk:1`/`risk:2` | Opus | §1 replayed the verifier, not the builder; the owner's Budgets ruling (2026-09-19) already puts significant work on Opus | a Sonnet builder replay landing the same diff on a merged `risk:1` PR and passing a fresh Opus verifier |
 | builder, `risk:0` (docs, mechanical) | Sonnet | Sonnet ran the full definition of done unaided in both replays, and reproduced #245's own negative test | a Sonnet `risk:0` PR blocked for something a careful reading pass should have caught |
-| verifier, `risk:2`, or any `src/core` / `src/simulation` change | Opus | the engine is where a missed defect is least recoverable, and Sonnet's one positive on engine code (#312) is a single data point | three live `risk:2` pairs where a Sonnet verdict and an Opus second pass agree |
-| verifier, `risk:0` / `risk:1` elsewhere | **Sonnet** (owner's call, 2026-09-21) | §1's replay plus **four live outings** (§1a): three blocks with defects nobody knew were there, one pass with an independently re-derived invariant | one `overturned` Sonnet verdict — a PASS whose defect a later pass finds, or a BLOCK that does not survive |
+| verifier, `risk:2`, or any `src/core` / `src/simulation` change | Opus | the engine is where a missed defect is least recoverable. #320 is a live `risk:2` Sonnet block with real defects — but it was dispatched against the policy in force, and a violation nobody caught is not a result anybody designed | three live `risk:2` pairs where a Sonnet verdict and an Opus second pass agree, **each naming its model** (§1b). #320 is not one of them: it had no Opus second pass |
+| verifier, `risk:0` / `risk:1`, neither file under `src/core` nor `src/simulation` | **Sonnet** (owner's call, 2026-09-21) | §1's replay, plus **two attributable live outings** (#320 a `risk:2` block, #324 a `risk:1` pass with a re-derived invariant) and two more whose model was never recorded (§1a) | one `overturned` Sonnet verdict — a PASS whose defect a later pass finds, or a BLOCK that does not survive |
 | QA (browser) | Opus | the brief is still in flight (#257); no replay is possible until it exists | a QA replay once the brief lands |
 | product | Opus (pinned in `.claude/agents/hacer-product.md`) | judgment over screenshots and code; unmeasured | a replay against a past review's filed issues |
 | fidelity | Opus (pinned in `.claude/agents/hacer-fidelity.md`) | the highest-consequence verdict here, and Haiku's failure mode — a broken criterion marked satisfied, with a citation — is precisely what a fidelity verdict must never do | a replay on an artifact with a known unsound claim |
@@ -94,9 +109,10 @@ output and cache reads, so they are token-count ratios, not a measured bill.
 
 ## 5. Limits, and what could not be verified
 
-- **n = 2 PRs**, one defective and one clean, one replay per tier and no repeats — so nothing here
-  carries a variance estimate. A single Sonnet success is why the `risk:1`/`risk:2` verifier does
-  not move.
+- **n = 2 PRs** in §1's replay, one defective and one clean, one replay per tier and no repeats — so
+  nothing here carries a variance estimate. §1a adds live outings, of which only two can be
+  attributed to a model at all; that is what moved `risk:0`/`risk:1` and what is still short of
+  moving `risk:2`.
 - The Sonnet replay could see from `git log` that two commits followed `4fd5238`, a weak hint that
   the PR was later fixed. It did not read them; a cleaner replay hides history past the commit.
 - Haiku's blocker may be environmental: three agents and a `pnpm install` were running on the

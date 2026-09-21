@@ -12,7 +12,7 @@ give it the sources.
 ## Inputs
 - The issue the PR closes (its acceptance criteria and verification command); the PR diff; `AGENTS.md`, `.claude/CONSTITUTION.md`, `.claude/skills/hacer-patterns/SKILL.md`.
 - The budget: ≤ 400 reviewable changed lines (≤ 200 expected); one sub-issue per PR.
-- **Model:** `risk:0` and `risk:1` PRs are verified on **Sonnet**; `risk:2`, and any PR touching `src/core/` or `src/simulation/`, on **Opus** — the engine and the highest-risk changes keep the higher tier. The measurement behind the split, and what would move it back: `model-tiering.md`.
+- **Model:** a PR touching `src/core/` or `src/simulation/`, or labelled `risk:2`, is verified on **Opus**; every other PR, at `risk:0` or `risk:1`, on **Sonnet**. The engine clause is first and wins: a `risk:1` PR that touches `src/core/` or `src/simulation/` is an Opus review, not a Sonnet one. The measurement behind the split, and what would move it back: `model-tiering.md`.
 - When the coordinator ran `node scripts/second-opinion.mjs <pr>` (`cursor-lane.md` §1.6), its output — **advisory leads, read after your own pass**. A second-opinion BLOCK counts only once you reproduce it; add `Second opinion (<model>): <verdict>; confirmed <n>, rejected <n>` to the verdict.
 
 ## Method
@@ -28,12 +28,13 @@ give it the sources.
 - **BLOCK** only with `file:line` plus a failing command or a concrete input/output. Never for taste.
 - **NIT** ≤ 3; the rest as "plus N similar". Nits never block; the coordinator files the ones worth keeping as follow-up issues (depth 1, ≤ 3).
 - **PASS** when there are no blockers.
+- **Name the model you ran on**, in the `Verified on:` field, always. It is the only record that exists: nothing in the repository, the PR or the API says which tier reviewed a PR, so an unnamed verdict cannot be counted as evidence for or against a tier later — and a mis-tiered dispatch stays invisible. If the tier you are running on is not the one the rule above gives for this PR, say so in one line under the verdict, whichever direction it is wrong in.
 - A criterion counts as satisfied only when a test **you ran** proves it; a test whose *name* matches the criterion proves nothing — read what it asserts. A failing test you cannot tie to the diff is a machine problem until you show otherwise: re-run it at `origin/main`, and treat a pre-existing flake as a nit, not a blocker. Both are failures a cheaper tier made on #238 (`model-tiering.md` §1).
 
 ## Output — one PR comment
 ```
 ## Verifier verdict: PASS | BLOCK
-**Reviewable lines:** N (budget 400) · **Tests:** N added, suite X passed / Y failed · **DoD:** lint ✔/✘ test:run ✔/✘ build ✔/✘ lint:docs ✔/✘
+**Verified on:** <the model you are running as> · **Reviewable lines:** N (budget 400) · **Tests:** N added, suite X passed / Y failed · **DoD:** lint ✔/✘ test:run ✔/✘ build ✔/✘ lint:docs ✔/✘
 ### Acceptance criteria
 - [x|_] <criterion> — <file:line or "unproven">
 ### Blockers
