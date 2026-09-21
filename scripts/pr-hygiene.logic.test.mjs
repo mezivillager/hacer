@@ -2,11 +2,15 @@ import { describe, it, expect } from 'vitest'
 import {
   DEPENDENCY_LABEL,
   FAIL_LINES,
+  FIXUP_MAX_LINES,
+  FIXUP_MAX_LINES_PER_FILE,
+  FIXUP_MAX_SHARE,
   OVERRIDE_LABEL,
   RULES,
   WARN_FILES,
   WARN_LINES,
   classifyFile,
+  deletionOnlyExemption,
   evaluate,
   findLinkedIssues,
   formatConsole,
@@ -41,6 +45,12 @@ describe('constants', () => {
     expect(FAIL_LINES).toBe(400)
     expect(WARN_FILES).toBe(15)
     expect(OVERRIDE_LABEL).toBe('size-override')
+  })
+
+  it('carries the fix-up allowance a deletion-only PR may spend (#326)', () => {
+    expect(FIXUP_MAX_LINES_PER_FILE).toBe(5)
+    expect(FIXUP_MAX_LINES).toBe(20)
+    expect(FIXUP_MAX_SHARE).toBe(0.05)
   })
 })
 
@@ -92,8 +102,16 @@ describe('classifyFile', () => {
     ['conformance/vectors/and.json', 'vectors'],
     ['scripts/fixtures/gh-issues.json', 'fixture'],
     ['CHANGELOG.md', 'changelog'],
+    ['docs/research/2026-09-18-agent-readiness/evidence/transcript.md', 'evidence'],
+    ['docs/research/2026-09-18-agent-readiness/evidence/raw/timings.json', 'evidence'],
   ])('excludes %s as %s', (filename, reason) => {
     expect(classifyFile(filename)).toEqual({ kind: 'excluded', reason })
+  })
+
+  it('still counts every research file outside a top-level evidence/ directory', () => {
+    expect(classifyFile('docs/research/2026-09-18-agent-readiness/REPORT.md').kind).toBe('reviewable')
+    expect(classifyFile('docs/research/2026-09-18-agent-readiness/notes/evidence/x.md').kind).toBe('reviewable')
+    expect(classifyFile('docs/evidence/x.md').kind).toBe('reviewable')
   })
 
   it('excludes files matching a linguist-generated pattern from .gitattributes', () => {
@@ -135,6 +153,64 @@ describe('measure', () => {
   it('handles an empty diff', () => {
     const m = measure([])
     expect(m.reviewable).toEqual({ lines: 0, files: [] })
+  })
+
+  it('keeps each file own additions and deletions, so a rule can tell them apart', () => {
+    const m = measure([file('src/a.ts', 3, 90)])
+    expect(m.reviewable.files[0]).toMatchObject({ lines: 93, additions: 3, deletions: 90 })
+  })
+})
+
+describe('deletionOnlyExemption', () => {
+  /** The reviewable bucket the rule is handed, built the way evaluate() builds it. */
+  const reviewable = (...files) => measure(files).reviewable
+
+  it('exempts a PR that only deletes', () => {
+    const result = deletionOnlyExemption(reviewable(file('src/legacy.ts', 0, 900), file('src/old.ts', 0, 300)))
+    expect(result.exempt).toBe(true)
+    expect(result.reason).toContain('1200')
+  })
+
+  it('exempts a deletion carrying the import and re-export fix-ups it forces', () => {
+    const files = [file('src/legacy.ts', 0, 900), file('src/index.ts', 2, 6), file('src/app.ts', 3, 1)]
+    expect(deletionOnlyExemption(reviewable(...files)).exempt).toBe(true)
+  })
+
+  it('refuses a "deletion" that sneaks in behaviour, naming the file that did it', () => {
+    const result = deletionOnlyExemption(reviewable(file('src/legacy.ts', 0, 900), file('src/feature.ts', 60, 0)))
+    expect(result.exempt).toBe(false)
+    expect(result.reason).toContain('src/feature.ts')
+    expect(result.reason).toContain('60')
+  })
+
+  it(`allows ${FIXUP_MAX_LINES_PER_FILE} added lines in one file and not one more`, () => {
+    const at = (additions) => reviewable(file('src/legacy.ts', 0, 900), file('src/index.ts', additions, 0))
+    expect(deletionOnlyExemption(at(FIXUP_MAX_LINES_PER_FILE)).exempt).toBe(true)
+    expect(deletionOnlyExemption(at(FIXUP_MAX_LINES_PER_FILE + 1)).exempt).toBe(false)
+  })
+
+  it(`caps the whole fix-up allowance at ${FIXUP_MAX_LINES} lines however much is deleted`, () => {
+    const fixups = (count) => Array.from({ length: count }, (_, i) => file(`src/i${i}.ts`, FIXUP_MAX_LINES_PER_FILE, 0))
+    const at = (count) => reviewable(file('src/legacy.ts', 0, 9000), ...fixups(count))
+    expect(deletionOnlyExemption(at(FIXUP_MAX_LINES / FIXUP_MAX_LINES_PER_FILE)).exempt).toBe(true)
+    const over = deletionOnlyExemption(at(FIXUP_MAX_LINES / FIXUP_MAX_LINES_PER_FILE + 1))
+    expect(over.exempt).toBe(false)
+    expect(over.reason).toContain(String(FIXUP_MAX_LINES))
+  })
+
+  it(`caps fix-ups at ${FIXUP_MAX_SHARE * 100}% of what the PR deletes`, () => {
+    // 300 deleted → a 15-line allowance, reached before the 20-line absolute cap.
+    const at = (additions) => reviewable(file('src/legacy.ts', 0, 300), ...additions.map((a, i) => file(`src/i${i}.ts`, a, 0)))
+    expect(deletionOnlyExemption(at([5, 5, 5])).exempt).toBe(true)
+    const over = deletionOnlyExemption(at([4, 4, 4, 4]))
+    expect(over.exempt).toBe(false)
+    expect(over.reason).toContain('300')
+  })
+
+  it('says nothing about a PR that is not deletion-shaped', () => {
+    expect(deletionOnlyExemption(reviewable(file('src/a.ts', 500, 0)))).toBeNull()
+    expect(deletionOnlyExemption(reviewable(file('src/a.ts', 300, 250)))).toBeNull()
+    expect(deletionOnlyExemption(reviewable())).toBeNull()
   })
 })
 
@@ -220,6 +296,48 @@ describe('evaluate', () => {
     expect(result.verdict).toBe('PASS')
     expect(findingsFor(result, 'size')[0].message).toContain('900')
     expect(findingsFor(result, 'size')[0].message).toContain(OVERRIDE_LABEL)
+  })
+
+  it('passes an over-budget deletion-only PR and says the budget was waived for it', () => {
+    const result = evaluate(pr({ files: [file('src/legacy.ts', 0, 1200), file('src/index.ts', 2, 8)] }))
+    expect(result.verdict).toBe('PASS')
+    expect(result.sizeExemption).toContain('deletes')
+    expect(findingsFor(result, 'size')[0].message).toMatch(/deletion-only/)
+    expect(formatConsole(result).split('\n')[0]).toContain('size=deletion-only')
+  })
+
+  it('fails an over-budget "deletion" that adds behaviour, and names the file', () => {
+    const result = evaluate(pr({ files: [file('src/legacy.ts', 0, 1200), file('src/feature.ts', 120, 0)] }))
+    expect(result.verdict).toBe('FAIL')
+    expect(result.sizeExemption).toBeNull()
+    expect(findingsFor(result, 'size')[0].message).toMatch(/not exempt.*src\/feature\.ts/)
+  })
+
+  it('still requires a deletion-only PR to link an issue', () => {
+    const result = evaluate(pr({ body: 'Removes the legacy machinery.', files: [file('src/legacy.ts', 0, 1200)] }))
+    expect(result.verdict).toBe('FAIL')
+    expect(levelsOf(result, 'size')).toEqual(['pass'])
+    expect(levelsOf(result, 'linked-issue')).toEqual(['fail'])
+  })
+
+  it('leaves a deletion inside the target alone — nothing to waive, nothing to say', () => {
+    const result = evaluate(pr({ files: [file('src/legacy.ts', 0, 150)] }))
+    expect(result.sizeExemption).toBeNull()
+    expect(findingsFor(result, 'size')[0].message).not.toMatch(/deletion-only/)
+  })
+
+  it('excludes a research evidence appendix but counts the report beside it', () => {
+    const result = evaluate(
+      pr({
+        files: [
+          file('docs/research/2026-09-21-x/evidence/transcripts.md', 1500, 0),
+          file('docs/research/2026-09-21-x/REPORT.md', 120, 0),
+        ],
+      }),
+    )
+    expect(result.verdict).toBe('PASS')
+    expect(result.measures.reviewable.lines).toBe(120)
+    expect(result.measures.excluded.files[0]).toMatchObject({ lines: 1500, reason: 'evidence' })
   })
 
   it('does not count test lines, but reports them', () => {
