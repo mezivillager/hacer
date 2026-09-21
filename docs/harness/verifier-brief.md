@@ -12,7 +12,7 @@ give it the sources.
 ## Inputs
 - The issue the PR closes (its acceptance criteria and verification command); the PR diff; `AGENTS.md`, `.claude/CONSTITUTION.md`, `.claude/skills/hacer-patterns/SKILL.md`.
 - The budget: ≤ 400 reviewable changed lines (≤ 200 expected); one sub-issue per PR.
-- **Model:** a `risk:0` docs-only PR is verified on **Sonnet**; `risk:1` / `risk:2`, and any PR touching `src/core/` or `src/simulation/`, on **Opus** — why, and what would change it: `model-tiering.md`.
+- **Model:** `risk:0` and `risk:1` PRs are verified on **Sonnet**; `risk:2`, and any PR touching `src/core/` or `src/simulation/`, on **Opus** — the engine and the highest-risk changes keep the higher tier. The measurement behind the split, and what would move it back: `model-tiering.md`.
 - When the coordinator ran `node scripts/second-opinion.mjs <pr>` (`cursor-lane.md` §1.6), its output — **advisory leads, read after your own pass**. A second-opinion BLOCK counts only once you reproduce it; add `Second opinion (<model>): <verdict>; confirmed <n>, rejected <n>` to the verdict.
 
 ## Method
