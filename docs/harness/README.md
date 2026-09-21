@@ -92,6 +92,7 @@ Change them here, in a PR, like any other knob.
 | Agents after their PR | report and **stop** — never keep watching CI | `implementer-brief.md` |
 | Cloud routines | **Sonnet** for routine runs (spikes, gardening), Opus when the run does significant work; one-off or at most weekly, change-triggered; at most **1** recurring routine until #255 reports | routine config |
 | Cursor second opinion (local `cursor-agent`) | advisory, never a gate; standard `composer-2.5`, one run per PR head on `risk:1`/`risk:2` or `src/core`, `src/simulation`, `.github/workflows`, `scripts` changes; read-only config and 15-min timeout from `cursor-lane.md` §1. Bugbot is **not** used (owner, 2026-09-19: usage-based, not cost-effective) | the coordinator (wrapper: #296) |
+| Cursor daily ration | **6M tokens a local day** (12M burst ceiling), ≈17 measured reviews; the lane is skipped with exit 7 when the day is spent or included usage is unconfirmed — the policy, its arithmetic and the dashboard re-read are in `usage-rationing.md` | `scripts/lane-budget.mjs`, run by `scripts/second-opinion.mjs` before every lane run (#302) |
 
 Which tier each role gets, the replay that decided it, and what would change it: `model-tiering.md`
 (#255) — it refines the two rows above rather than replacing them.
@@ -123,5 +124,6 @@ reports the number when it reports the run.
 - `product-inbox.md` — product-strategy proposals from product reviews, waiting for the owner's approval.
 - `model-tiering.md` — which model tier each role gets, measured by replaying the verifier brief.
 - `cursor-lane.md` — what Cursor can carry: the local `cursor-agent` second opinion (verified read-only setup, trial, budget) and keep/skip verdicts for the rest.
+- `usage-rationing.md` — the Cursor lane's daily token ration, how a run is measured, and the dashboard reading the "Included" guard rests on (`cursor-usage.json`).
 - `../research/2026-09-18-agent-readiness/` — why the process looks like this.
 - `sessions/` — dated session records: the goal, the owner's rulings, what was built, the state at close, how to resume. Start with the latest one when picking the work back up.
