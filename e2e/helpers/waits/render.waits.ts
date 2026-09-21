@@ -4,12 +4,16 @@
  * Wait utilities for scene stability and render tracking.
  */
 
-import { Page } from '@playwright/test'
+import { Page, errors } from '@playwright/test'
 import { TIMEOUTS } from '../../config/constants'
 
 /**
- * Wait until the scene is stable (no recent renders)
- * Falls back to a minimum wait if tracker isn't available
+ * Wait until the scene is stable (no recent renders).
+ *
+ * Throws on timeout, naming what it waited for and for how long — callers
+ * that genuinely want best-effort waiting must opt in explicitly at the
+ * call site rather than relying on a silent fallback (issue #317). There
+ * is currently no such caller; every existing use wants a real failure.
  */
 export async function waitForSceneStable(
   page: Page,
@@ -25,12 +29,14 @@ export async function waitForSceneStable(
       },
       { timeout }
     )
-  } catch {
-    // Fallback: if timeout waiting for stability, just wait a bit
-    // But only if page is still open
-    if (!page.isClosed()) {
-      await page.waitForTimeout(200)
+  } catch (error) {
+    if (error instanceof errors.TimeoutError) {
+      throw new Error(
+        `Scene did not stabilize within ${timeout}ms (window.__RENDER_TRACKER__.isStable never became true)`
+      )
     }
+    // Not a timeout (e.g. page/context already closed) — do not relabel it.
+    throw error
   }
 }
 
