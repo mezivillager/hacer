@@ -53,6 +53,9 @@ const EXCLUSIONS = [
   ['vectors', (p) => p.startsWith('conformance/vectors/')],
   ['fixture', (p) => p.startsWith('scripts/fixtures/')],
   ['changelog', (p) => p === 'CHANGELOG.md'],
+  // A research deliverable's appendices — measurements, outside research, review transcripts — are
+  // evidence a reader consults, not prose anyone line-reviews. The report beside them still counts.
+  ['evidence', (p) => /^docs\/research\/[^/]+\/evidence\//.test(p)],
 ]
 
 /**
@@ -77,16 +80,57 @@ export function measure(files, generatedPatterns = []) {
   const buckets = { reviewable: { lines: 0, files: [] }, test: { lines: 0, files: [] }, excluded: { lines: 0, files: [] } }
   for (const f of files) {
     const { kind, reason } = classifyFile(f.filename, generatedPatterns)
-    const lines = (f.additions ?? 0) + (f.deletions ?? 0)
+    const additions = f.additions ?? 0
+    const deletions = f.deletions ?? 0
+    const lines = additions + deletions
+    const entry = { filename: f.filename, lines, additions, deletions }
     buckets[kind].lines += lines
-    buckets[kind].files.push(reason ? { filename: f.filename, lines, reason } : { filename: f.filename, lines })
+    buckets[kind].files.push(reason ? { ...entry, reason } : entry)
   }
   return buckets
 }
 
-/** Not implemented yet — see #326. */
-export function deletionOnlyExemption(_reviewable) {
-  return null
+/**
+ * Why the size budget does not apply to a deletion, or why it still does (#326). The owner's
+ * rule: "anything that should be removed should be removed, refactor deletion prs can be any
+ * size they need to be" — a removal must not be sliced into arbitrary 400-line PRs.
+ *
+ * The check runs on `pull_request_target` and never checks out the PR, so all it has is each
+ * file's name and its additions/deletions — it cannot read an added line to tell an import
+ * fix-up from new behaviour. The proxy is therefore deliberately conservative: a deletion may
+ * add at most {@link FIXUP_MAX_LINES_PER_FILE} lines to any one file, at most
+ * {@link FIXUP_MAX_LINES} in total, and no more than {@link FIXUP_MAX_SHARE} of what it deletes.
+ * Test and excluded files are outside the budget already, so only the reviewable bucket is weighed.
+ *
+ * @param {{files:{filename:string,additions:number,deletions:number}[]}} reviewable
+ * @returns {{exempt:boolean, reason:string}|null} null when the PR is not deletion-shaped at all.
+ */
+export function deletionOnlyExemption({ files }) {
+  const added = files.reduce((n, f) => n + f.additions, 0)
+  const deleted = files.reduce((n, f) => n + f.deletions, 0)
+  if (deleted === 0 || added >= deleted) return null
+  const no = (reason) => ({ exempt: false, reason })
+  const blocker = files.find((f) => f.additions > FIXUP_MAX_LINES_PER_FILE)
+  if (blocker) {
+    return no(
+      `\`${blocker.filename}\` adds ${blocker.additions} lines — a forced fix-up adds at most ` +
+        `${FIXUP_MAX_LINES_PER_FILE} to a file, so this PR adds behaviour`,
+    )
+  }
+  if (added > FIXUP_MAX_LINES) return no(`${added} added lines exceed the ${FIXUP_MAX_LINES}-line fix-up allowance`)
+  const share = Math.floor(deleted * FIXUP_MAX_SHARE)
+  if (added > share) {
+    return no(`${added} added lines exceed ${FIXUP_MAX_SHARE * 100}% of the ${deleted} deleted (${share})`)
+  }
+  return {
+    exempt: true,
+    reason: `deletes ${deleted} reviewable lines and adds ${added}, none more than ${FIXUP_MAX_LINES_PER_FILE} to a file`,
+  }
+}
+
+/** The deletion verdict only when the budget is actually at stake — under the target nothing is waived. */
+function deletionWaiver({ reviewable }) {
+  return reviewable.lines > WARN_LINES ? deletionOnlyExemption(reviewable) : null
 }
 
 // ---------------------------------------------------------------- linked issue
@@ -121,8 +165,13 @@ export function linkedIssueExemption({ author, labels }) {
 function sizeBudget({ labels, measures }) {
   const { lines, files } = measures.reviewable
   const override = labels.includes(OVERRIDE_LABEL)
-  const suffix = override ? ` — passed by the \`${OVERRIDE_LABEL}\` label` : ''
-  const level = (wanted) => (override ? 'pass' : wanted)
+  const deletion = deletionWaiver(measures)
+  const suffix = override
+    ? ` — passed by the \`${OVERRIDE_LABEL}\` label`
+    : deletion
+      ? ` — ${deletion.exempt ? 'passed as deletion-only' : 'not exempt as deletion-only'}: ${deletion.reason}`
+      : ''
+  const level = (wanted) => (override || deletion?.exempt ? 'pass' : wanted)
   const findings = []
   if (lines > FAIL_LINES) {
     findings.push({ rule: 'size', level: level('fail'), message: `${lines} reviewable lines exceed the ${FAIL_LINES}-line budget${suffix}` })
@@ -169,6 +218,7 @@ export function evaluate({ body, author, labels = [], files, gitattributes }, ru
   const measures = measure(files, parseGeneratedPatterns(gitattributes))
   const findings = rules.flatMap((rule) => rule({ body, author, labels, files, measures }))
   const worst = Math.max(0, ...findings.map((f) => LEVELS.indexOf(f.level)))
+  const deletion = deletionWaiver(measures)
   return {
     verdict: LEVELS[worst].toUpperCase(),
     findings,
@@ -176,6 +226,7 @@ export function evaluate({ body, author, labels = [], files, gitattributes }, ru
     linkedIssues: findLinkedIssues(body),
     docsOnly: isDocsOnly(measures.reviewable.files.map((f) => f.filename)),
     linkedIssueExemption: linkedIssueExemption({ author, labels }),
+    sizeExemption: deletion?.exempt ? deletion.reason : null,
   }
 }
 
@@ -200,7 +251,8 @@ export function formatConsole(result) {
   const { reviewable, test, excluded } = result.measures
   const head =
     `HYGIENE: ${result.verdict} reviewable=${reviewable.lines} test=${test.lines} ` +
-    `excluded=${excluded.lines} files=${reviewable.files.length} issue=${issueLabel(result)}`
+    `excluded=${excluded.lines} files=${reviewable.files.length} issue=${issueLabel(result)}` +
+    (result.sizeExemption ? ' size=deletion-only' : '')
   return [head, ...result.findings.map((f) => `  ${ICONS[f.level]} ${f.message}`)].join('\n')
 }
 
