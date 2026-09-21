@@ -14,6 +14,14 @@ export const KNOWN_ROOTS = ['src', 'docs', 'scripts', 'e2e', 'tasks', 'public', 
 /** A line carrying this marker is skipped, for a doc that must cite a path that is not there yet. */
 export const MISSING_PATH_MARKER = 'allow-missing-path'
 
+/** Stub (#299). */
+export const PATH_EXISTENCE_PATTERNS = []
+
+/** Stub (#299). */
+export function isPathExistenceFile() {
+  return false
+}
+
 /** File extensions that make a slash-less token, or a token under an unknown root, a path. */
 const KNOWN_EXTENSIONS = [
   'md', 'mdc', 'mdx', 'txt', 'ts', 'tsx', 'js', 'jsx', 'mjs', 'cjs', 'json', 'yml', 'yaml',
