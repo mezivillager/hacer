@@ -195,9 +195,11 @@ describe('planReady', () => {
   })
 
   it('keeps pickable-but-unpicked tasks marked pickable, for the project counts', () => {
-    expect(plan.find((task) => task.number === 178).pickable).toBe(true)
     expect(plan.find((task) => task.number === 230).pickable).toBe(true)
     expect(plan.find((task) => task.number === 151).pickable).toBe(false)
+    // every enabler in the fixture is risk:2, so the `not-pulled` case needs an issue of its own
+    const [notPulled] = planReady([open(1, 'core')], portfolioRows)
+    expect(notPulled).toMatchObject({ number: 1, reason: 'not-pulled', pickable: true })
   })
 
   it('puts a sev:critical bug before everything, even the first foundation slot', () => {

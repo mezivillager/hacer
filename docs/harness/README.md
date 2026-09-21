@@ -17,7 +17,7 @@ merge. If a step below is wrong, fix it here — not in a chat.
 
 | Step | Where the knob lives | What you can adjust |
 |---|---|---|
-| Which projects, in what order, how picks rotate | `docs/portfolio.md` | row order, the six-slot cycle (`surfaces → harness → spine → aux → surfaces → harness`), the hand-in-hand rule, dormant-mode caps — *amended 2026-09-18 (#259): was the 2:2:1 ratio* |
+| Which projects, in what order, how picks rotate | `docs/portfolio.md` | row order, the six-slot cycle (`foundation → foundation → harness → foundation → spine → aux`), the foundation gate, the hand-in-hand rule, dormant-mode caps — *amended 2026-09-18 (#259): was the 2:2:1 ratio; amended 2026-09-21 (#330) while the foundation plan (#318) runs: was `surfaces → harness → spine → aux → surfaces → harness`* |
 | What a task must contain before an agent may take it | `WORK-SYSTEM.md` §2 (issue form) and the labels | acceptance criteria as tests, verification command, risk |
 | Who may author pickable tasks | `scripts/backlog.mjs` allowlist (`BACKLOG_ALLOWLIST`) | the identities agents trust on a public repo |
 | How a task is built | `.claude/skills/ha-prompt-it/SKILL.md` + `implementer-brief.md` · agent `.claude/agents/hacer-builder.md` | tiers, TDD mechanics, worktree rules |
