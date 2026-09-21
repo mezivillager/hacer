@@ -1,0 +1,111 @@
+#!/usr/bin/env bash
+# scripts/wt-new <type>/<topic> [verify-command] — a sibling worktree, installed and verified,
+# ready to work in, first time. Fixes the paper cut eight agents paid by hand on 2026-09-21: a
+# branch cut from a stale base, `pnpm install` forgotten, `husky: command not found`, Node
+# resolving to the stray v14 at /usr/local/bin/node. See docs/harness/implementer-brief.md and
+# .cursor/rules/020-git-worktree-no-main.mdc for the convention this follows.
+#
+#   bash scripts/wt-new chore/probe
+#   bash scripts/wt-new feat/157-wt-new "pnpm run test:run"
+#   bash scripts/wt-new --refresh          # run from inside an existing worktree — see below
+#
+# `--refresh`: `origin/main` can move mid-task on a busy day (a builder had it move underneath a
+# long task and only noticed from phantom deletions in a `--numstat`). Fetches and reports how far
+# HEAD is from `origin/main`, read-only — it never rebases. Cheap enough to run before every
+# `--numstat` or final rebase.
+#
+# Decidable steps (spec parsing, the final verdict) live in wt-new.logic.mjs, via the thin CLI
+# wt-new.mjs. This script does the actual I/O: fetch, `git worktree add`, install, run the verify
+# command, gather the evidence.
+
+set -euo pipefail
+
+# Fetch origin, bounded — an indefinite hang here (a ref-lock race with a sibling worktree
+# fetching at the same moment has happened before) used to leave an agent idle until someone
+# noticed and resumed it.
+fetch_origin() {
+  local timeout_bin
+  timeout_bin="$(command -v timeout || command -v gtimeout || true)"
+  if [ -n "$timeout_bin" ]; then
+    "$timeout_bin" 60 git fetch origin || {
+      echo "wt-new: git fetch origin timed out after 60s (a ref-lock race with a sibling worktree" \
+        "fetching at the same moment is the usual cause) — wait for it to finish and retry" >&2
+      exit 1
+    }
+  else
+    git fetch origin
+  fi
+}
+
+if [ "${1:-}" = "--refresh" ]; then
+  echo "wt-new --refresh: fetching origin…"
+  fetch_origin
+  read -r BEHIND AHEAD <<< "$(git rev-list --left-right --count origin/main...HEAD)"
+  if [ "$BEHIND" = "0" ]; then
+    echo "wt-new --refresh: up to date — $AHEAD commit(s) ahead of origin/main"
+  else
+    echo "wt-new --refresh: origin/main has moved — $BEHIND commit(s) behind, $AHEAD ahead." \
+      "Diff/rebase against origin/main, not a stale HEAD, before trusting a --numstat."
+  fi
+  exit 0
+fi
+
+SPEC="${1:-}"
+VERIFY_CMD="${2:-pnpm run lint:docs}"
+
+if [ -z "$SPEC" ]; then
+  echo "usage: scripts/wt-new <type>/<topic> [verify-command] | scripts/wt-new --refresh" >&2
+  exit 2
+fi
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && git rev-parse --show-toplevel)"
+cd "$REPO_ROOT"
+
+# Node 22 — the Bash tool's PATH resolves nvm's default (22) ahead of /usr/local/bin, but a plain
+# shell (no nvm loaded) can still land on the stray v14 at /usr/local/bin/node.
+if [[ "$(node -v 2>/dev/null)" != v22* ]]; then
+  export NVM_DIR="$HOME/.nvm"
+  # shellcheck disable=SC1091
+  [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" && nvm use 22 >/dev/null
+fi
+if [[ "$(node -v 2>/dev/null)" != v22* ]]; then
+  echo "wt-new: node -v is '$(node -v 2>/dev/null || echo "not found")', not 22.x — nvm's default is 22;" \
+    "/usr/local/bin/node is a stray v14 that wins only when nvm hasn't been loaded" >&2
+  exit 1
+fi
+
+PARSED="$(node "$SCRIPT_DIR/wt-new.mjs" parse "$SPEC")"
+read -r WT_BRANCH WT_DIR <<< "$PARSED"
+WT_PATH="$(dirname "$REPO_ROOT")/$WT_DIR"
+
+if [ -e "$WT_PATH" ]; then
+  echo "wt-new: $WT_PATH already exists — remove it or pick a different topic" >&2
+  exit 1
+fi
+
+echo "wt-new: fetching origin — never cutting from a base that might be stale…"
+fetch_origin
+
+echo "wt-new: creating $WT_PATH on $WT_BRANCH from origin/main…"
+git worktree add "$WT_PATH" -b "$WT_BRANCH" origin/main
+
+cd "$WT_PATH"
+echo "wt-new: installing — rm -rf node_modules && pnpm install --frozen-lockfile…"
+rm -rf node_modules
+INSTALL_OUTPUT="$(pnpm install --frozen-lockfile 2>&1)" || {
+  echo "$INSTALL_OUTPUT" >&2
+  echo "wt-new: pnpm install --frozen-lockfile failed" >&2
+  exit 1
+}
+echo "$INSTALL_OUTPUT"
+if command grep -q "husky: command not found" <<< "$INSTALL_OUTPUT"; then
+  echo "wt-new: note — 'husky: command not found' above is expected and harmless;" \
+    "husky isn't a devDependency and hooks run via core.hooksPath, not that binary."
+fi
+
+echo "wt-new: verifying — $VERIFY_CMD"
+VERIFY_EXIT=0
+bash -c "$VERIFY_CMD" || VERIFY_EXIT=$?
+
+node "$SCRIPT_DIR/wt-new.mjs" judge "$WT_PATH" "$VERIFY_EXIT"
