@@ -22,6 +22,7 @@ lets an agent answer "what can you do next?", pick it up, and get it merged with
    `in-progress`, `needs-human`, `risk:0/1/2`, `research`, `bug`, `sev:*`, `bot-filed`,
    `overturned`, `epic`.
 2. *Amended 2026-09-18 (#259): the rotation below is superseded by the six-slot cycle `surfaces → harness → spine → aux → surfaces → harness` (`pubdocs` shares the `surfaces` slot, `aux` = `verify → upkeep → bugs`, `core`/`3d` pulled by any bucket, no foundation-first step) plus the hand-in-hand and design-first rules — `docs/portfolio.md` is authoritative.*
+   *Amended again 2026-09-21 (#330), while the foundation plan (#318) runs: a `foundation` row, the cycle `foundation → foundation → harness → foundation → spine → aux`, `project:foundation` winning over any other `project:` label, and a gate that holds `risk:2` outside `foundation`/`harness` — `docs/research/2026-09-21-foundation-audit/REPORT.md` §7.*
    **Project order lives in `docs/portfolio.md`** (owner-owned, in git) with the pick rule:
    `sev:critical` first; the `harness` foundation slice strictly first; then 2 spine : 2 enabler :
    1 upkeep, enablers only when a spine task is blocked by them.

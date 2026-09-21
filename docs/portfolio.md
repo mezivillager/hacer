@@ -6,39 +6,66 @@ pick rule below decides what "next" means; `scripts/backlog.mjs ready` computes 
 
 | # | slug | Project | Epic | Lane | Progress is… |
 |---|------|---------|------|------|--------------|
-| 1 | harness | Autonomous-run improvements & agent-readiness — *also the queue for maintaining and improving this process itself* | [#138](https://github.com/mezivillager/hacer/issues/138) | process | G0 + G1 exit tests pass (`docs/research/2026-09-18-agent-readiness/REPORT.md` §4) |
-| 2 | surfaces | Renderer surfaces: CLI/HDL · MCP · 2D | [#142](https://github.com/mezivillager/hacer/issues/142) | feature | scenarios pass through ≥3 headless drivers |
-| 3 | pubdocs | Public documentation for platform consumers (API · MCP · CLI · HDL · plugins) | [#260](https://github.com/mezivillager/hacer/issues/260) | feature | every shipped surface capability has its `docs/public/` page |
-| 4 | core | Headless core | [#140](https://github.com/mezivillager/hacer/issues/140) | enabler | `vitest --project node` green; `hacer test` passes Project-1 vectors |
-| 5 | verify | QA service | [#141](https://github.com/mezivillager/hacer/issues/141) | aux | capability matrix generated; differential job green |
-| 6 | spine | nand2tetris alignment 0.5 → 0.7 | [#139](https://github.com/mezivillager/hacer/issues/139) | feature | conformance pass count for the current phase |
-| 7 | 3d | 3D surface sustainability | [#143](https://github.com/mezivillager/hacer/issues/143) | enabler | scene-graph coverage; draw-call budget held |
-| 8 | polish | UI polish | [#144](https://github.com/mezivillager/hacer/issues/144) | taste | batches the owner approved |
-| 9 | bugs | Bugs | [#145](https://github.com/mezivillager/hacer/issues/145) | aux | no `sev:high` open > 7 days |
-| 10 | upkeep | Maintenance & documentation | [#146](https://github.com/mezivillager/hacer/issues/146) | aux | 0 stale dependabot PRs; 0 dead doc paths |
-| 11 | horizon | Beyond nand2tetris (research notes only) | [#147](https://github.com/mezivillager/hacer/issues/147) | research | one open note at a time |
+| 1 | foundation | Foundation plan: guards, the read-only pipeline, removals (`docs/research/2026-09-21-foundation-audit/REPORT.md`) | [#318](https://github.com/mezivillager/hacer/issues/318) | feature | the plan's phase exits (§6); `CircuitState` and `junction` gone from `src/` |
+| 2 | harness | Autonomous-run improvements & agent-readiness — *also the queue for maintaining and improving this process itself* | [#138](https://github.com/mezivillager/hacer/issues/138) | process | G0 + G1 exit tests pass (`docs/research/2026-09-18-agent-readiness/REPORT.md` §4) |
+| 3 | surfaces | Renderer surfaces: CLI/HDL · MCP · 2D | [#142](https://github.com/mezivillager/hacer/issues/142) | feature | scenarios pass through ≥3 headless drivers |
+| 4 | pubdocs | Public documentation for platform consumers (API · MCP · CLI · HDL · plugins) | [#260](https://github.com/mezivillager/hacer/issues/260) | feature | every shipped surface capability has its `docs/public/` page |
+| 5 | core | Headless core | [#140](https://github.com/mezivillager/hacer/issues/140) | enabler | `vitest --project node` green; `hacer test` passes Project-1 vectors |
+| 6 | verify | QA service | [#141](https://github.com/mezivillager/hacer/issues/141) | aux | capability matrix generated; differential job green |
+| 7 | spine | nand2tetris alignment 0.5 → 0.7 | [#139](https://github.com/mezivillager/hacer/issues/139) | feature | conformance pass count for the current phase |
+| 8 | 3d | 3D surface sustainability | [#143](https://github.com/mezivillager/hacer/issues/143) | enabler | scene-graph coverage; draw-call budget held |
+| 9 | polish | UI polish | [#144](https://github.com/mezivillager/hacer/issues/144) | taste | batches the owner approved |
+| 10 | bugs | Bugs | [#145](https://github.com/mezivillager/hacer/issues/145) | aux | no `sev:high` open > 7 days |
+| 11 | upkeep | Maintenance & documentation | [#146](https://github.com/mezivillager/hacer/issues/146) | aux | 0 stale dependabot PRs; 0 dead doc paths |
+| 12 | horizon | Beyond nand2tetris (research notes only) | [#147](https://github.com/mezivillager/hacer/issues/147) | research | one open note at a time |
 
 ## Pick rule
 
 1. Any open `sev:critical` bug.
-2. Otherwise a six-slot cycle, half features and half process/auxiliary — the owner (2026-09-18):
-   "when I say the non-3d surfaces catching up as a priority, I meant feature-wise; the process
-   ironing and other auxiliary items are of equal priority."
+2. Otherwise a six-slot cycle — **amended 2026-09-21 (#330), in force while the foundation plan
+   (#318) runs.** The owner: "we shouldn't build more on a wrong foundation that would crumble soon,
+   so we have to fix the foundation first, and have to keep maintaining the foundation … process
+   ironing prs can go hand in hand with that."
 
-   `surfaces → harness → spine → aux → surfaces → harness` (then repeat)
+   `foundation → foundation → harness → foundation → spine → aux` (then repeat)
 
-   - a `surfaces` slot takes the oldest pickable `surfaces` **or** `pubdocs` task, so docs and
-     surfaces alternate naturally;
    - `aux` takes `verify → upkeep → bugs` in turn;
    - a slot whose bucket has nothing pickable is skipped;
    - an enabler (`core`, `3d`) is pulled, never pushed: eligible only while it blocks an open task of
      one of the buckets above, and it takes a slot of that bucket;
-   - inside a slot, `research` tasks of `surfaces` and `core` come first (design first, below), then
-     the oldest issue.
+   - inside a slot, `research` tasks of `foundation`, `surfaces` and `core` come first (design first,
+     below), then the oldest issue;
+   - `surfaces` and `pubdocs` are **outside** the amended cycle, so their tasks report `on-request`
+     until the plan pulls one forward with `project:foundation` (the gate, below). They are not
+     cancelled: the plan's Phase 0.6 *is* the surfaces work, and a `surfaces` slot takes the oldest
+     pickable `surfaces` **or** `pubdocs` task again as soon as the amendment lifts.
+
+   It lifts when the default renderer switches (plan §6 phase C), and the cycle goes back to
+   `surfaces → harness → spine → aux → surfaces → harness` — set 2026-09-18, when the owner said
+   "the process ironing and other auxiliary items are of equal priority."
 3. `polish` and `horizon` are picked only when the owner asks, or in dormant mode (`horizon` only).
 
 A task is **pickable** when it is open, labelled `agent-ready`, not `in-progress`, every issue it is
-blocked by is closed, and its author is on the allowlist (the owner and the owner's bot identities).
+blocked by is closed, its author is on the allowlist (the owner and the owner's bot identities), and
+the gate below does not hold it.
+
+## The foundation gate
+
+While the amendment runs. `docs/research/2026-09-21-foundation-audit/REPORT.md` §7 is the
+specification; these three rules are what `scripts/backlog.logic.mjs` computes.
+
+- **Pulling an issue forward is one label.** An issue carrying `project:foundation` files under the
+  foundation row whatever else it carries — GitHub lists labels in creation order, which is an
+  accident, so the row is chosen explicitly. The enablers the plan pulls forward keep their original
+  `project:` label as well, so their epic's progress and the hand-in-hand rule still count them.
+- **`risk:2` waits, and says so.** A `risk:2` task outside `foundation` and `harness` is held and
+  `ready` prints `foundation-gate` as its reason: that label already marks the store, UI, R3F and
+  architecture paths this plan is replacing and the ADR (#327) will redefine, so the safe-to-proceed
+  test is a filter over it, not a second label. A `sev:critical` bug is never held — a defect that
+  corrupts evaluation is still fixed, in the evaluation layer, as #312 was.
+- **New work on hand editing stops.** Wire drawing, junction placement, dragging, previews, and
+  polish or fixes whose only beneficiary is that machinery: not `agent-ready` while the plan runs.
+  All of it is `risk:2` store/UI/R3F work, so the same filter holds it with the same stated reason.
 
 ## Hand in hand
 
@@ -56,7 +83,8 @@ note the non-3d surfaces have to grow hand in hand."
 decisions and designing." The `surfaces` row therefore starts with the architecture ADRs #188, #189,
 #190, #209 and #210 — research tasks at the Full tier, each an ADR the owner reviews. The core
 enablers (#178, #179, #180–#187) are pulled by those ADRs; surface code lands only after its ADR is
-accepted, and with its scenario ids and drivers named.
+accepted, and with its scenario ids and drivers named. `foundation` is design-first for the same
+reason: its ADR (#327, which absorbs #188/#189/#190) leads its own slot, ahead of the plan's code.
 
 ## Dormant mode
 

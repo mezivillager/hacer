@@ -8,17 +8,50 @@ export const DEFAULT_ALLOWLIST = ['mezivillager']
 /**
  * Pick rule 2: the six-slot cycle, one pick per slot, repeated until every bucket is drained. This is
  * the literal line under "Pick rule" in docs/portfolio.md; the test keeps the two in step.
+ *
+ * Amended 2026-09-21 (#330) while the foundation plan (#318) runs — foundation first, process
+ * alongside. `harness`, `spine` and `aux` stay in the cycle on purpose: BUCKET_ORDER is derived from
+ * this list and anything outside it is filed `on-request`, so dropping a row erases it rather than
+ * deprioritising it. `surfaces`/`pubdocs` work the plan needs is pulled forward by one label instead
+ * (PRIORITY_ROWS). Reverting to `['surfaces', 'harness', 'spine', 'aux', 'surfaces', 'harness']`
+ * lifts the amendment.
  */
-export const PICK_ROTATION = ['surfaces', 'harness', 'spine', 'aux', 'surfaces', 'harness']
+export const PICK_ROTATION = ['foundation', 'foundation', 'harness', 'foundation', 'spine', 'aux']
 
 /** The `aux` slot takes these buckets in turn, skipping an empty one. */
 export const AUX_ROTATION = ['verify', 'upkeep', 'bugs']
 
-/** Rows whose `research` tasks come first inside a slot (docs/portfolio.md "Design first"). */
-export const DESIGN_FIRST_SLUGS = ['surfaces', 'core']
+/**
+ * Rows whose `research` tasks come first inside a slot (docs/portfolio.md "Design first").
+ * `foundation` is here so the ADR the plan waits on (#327) leads its own slot.
+ */
+export const DESIGN_FIRST_SLUGS = ['foundation', 'surfaces', 'core']
+
+/**
+ * Rows that win over whatever `project:` label GitHub happens to list first — label-creation order,
+ * an accident. Pulling an issue forward is one added label: it files here while keeping its original
+ * row's label, so that epic's progress and the hand-in-hand rule still count it. Empty this list to
+ * go back to "first label wins".
+ */
+const PRIORITY_ROWS = ['foundation']
+
+/**
+ * The foundation gate (`docs/research/2026-09-21-foundation-audit/REPORT.md` §7), in force for as
+ * long as the rotation above is: a `risk:2` task outside the rows below is held, and `ready` prints
+ * GATE_REASON so the output says why. That label already marks the store, UI, R3F and architecture
+ * paths the plan is replacing — which is
+ * where new hand-editing work (wire drawing, junction placement, dragging, previews) lands — so the
+ * safe-to-proceed test is this filter, not a second label. `sev:critical` is never held: a bug that
+ * corrupts evaluation is still fixed in the evaluation layer.
+ */
+const GATED_RISK_LABEL = 'risk:2'
+const GATE_EXEMPT_ROWS = ['foundation', 'harness']
+const GATE_REASON = 'foundation-gate'
+const heldByGate = (task) =>
+  task.labels.includes(GATED_RISK_LABEL) && !GATE_EXEMPT_ROWS.includes(task.project)
 
 const AUX_SLOT = 'aux'
-/** Rows that queue in another row's bucket: `pubdocs` shares the `surfaces` slot. */
+/** Rows that queue in another row's bucket: `pubdocs` shares the `surfaces` slot — both `on-request` while #330's rotation runs. */
 const SHARED_BUCKET = new Map([['pubdocs', 'surfaces']])
 /** Every bucket the cycle can draw from, in cycle order (the aux buckets last). */
 const BUCKET_ORDER = [...new Set(PICK_ROTATION.filter((slot) => slot !== AUX_SLOT)), ...AUX_ROTATION]
@@ -43,10 +76,11 @@ export function parsePortfolio(markdown) {
   return rows
 }
 
-/** The row an issue files under: its `project:<slug>` label first, else its parent epic. */
+/** The row an issue files under: a PRIORITY_ROWS label, else its first `project:<slug>` label, else its parent epic. */
 function portfolioRowOf(issue, labels, rowBySlug, rowByEpic) {
-  const projectLabel = labels.find((name) => name.startsWith('project:'))
-  if (projectLabel) return rowBySlug.get(projectLabel.slice('project:'.length)) ?? null
+  const slugs = labels.filter((name) => name.startsWith('project:')).map((name) => name.slice('project:'.length))
+  const slug = slugs.find((candidate) => PRIORITY_ROWS.includes(candidate)) ?? slugs[0]
+  if (slug !== undefined) return rowBySlug.get(slug) ?? null
   return rowByEpic.get(issue.parent?.number) ?? null
 }
 
@@ -114,9 +148,10 @@ function rotate(buckets) {
 }
 
 /**
- * The pick rule over the pickable tasks: any `sev:critical` first; then the six-slot cycle over the
- * buckets, `pubdocs` sharing the `surfaces` slot, an enabler only while it blocks an open task of a
- * bucket and then in that bucket's slot (pull, don't push); on-request rows never. Inside a slot,
+ * The pick rule over the pickable tasks: any `sev:critical` first; then the foundation gate holds
+ * what is not safe to proceed on; then the six-slot cycle over the buckets, `pubdocs` sharing the
+ * `surfaces` slot, an enabler only while it blocks an open task of a bucket and then in that
+ * bucket's slot (pull, don't push); on-request rows never. Inside a slot,
  * `research` tasks of DESIGN_FIRST_SLUGS come first, then the oldest issue. Every task comes back
  * exactly once — the picks in pick order with `reason: null`, then the rest by number, each with
  * its one-word reason.
@@ -134,9 +169,16 @@ export function planReady(issues, portfolioRows, allowlist = DEFAULT_ALLOWLIST) 
   const buckets = new Map(BUCKET_ORDER.map((name) => [name, []]))
   const unpicked = tasks.filter((task) => !task.pickable)
   for (const task of tasks.filter((task) => task.pickable).sort(byDesignFirstThenNumber)) {
+    if (task.labels.includes('sev:critical')) {
+      critical.push(task)
+      continue
+    }
+    if (heldByGate(task)) {
+      unpicked.push({ ...task, pickable: false, reason: GATE_REASON })
+      continue
+    }
     const bucket = task.lane === 'enabler' ? pulledInto(task) : bucketOf(task.project)
-    if (task.labels.includes('sev:critical')) critical.push(task)
-    else if (buckets.has(bucket)) buckets.get(bucket).push(task)
+    if (buckets.has(bucket)) buckets.get(bucket).push(task)
     else unpicked.push({ ...task, reason: task.lane === 'enabler' ? 'not-pulled' : 'on-request' })
   }
   return [...critical, ...rotate(buckets), ...unpicked.sort(byNumber)]
