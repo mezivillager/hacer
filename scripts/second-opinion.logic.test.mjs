@@ -4,9 +4,11 @@ import {
   DENY_RULES,
   DIFF_TAG,
   EXIT,
+  MEASURED_REVIEW_TOKENS,
   MODEL_RATES,
   assessDelivery,
   auditLine,
+  usageAccounting,
   buildPrompt,
   checkoutConfig,
   costOf,
@@ -192,6 +194,37 @@ describe('readStream', () => {
     expect(out.result).toBeNull()
     expect(out.text).toBe('')
     expect(out.usage).toEqual({ inputTokens: 0, cacheReadTokens: 0, cacheWriteTokens: 0, outputTokens: 0 })
+    expect(out.reachedModel).toBe(false)
+  })
+
+  it('says the run reached the model when the kill landed before the result frame', () => {
+    // The TIMEOUT_MS / KILL_GRACE_MS / SIGKILL path leaves real generation and no `result` frame,
+    // so usage has no source — but the model was still paid. `reachedModel` is what says so.
+    const out = readStream(stream({ type: 'assistant', message: { content: [{ type: 'text', text: 'VERDICT: PASS' }] } }) + '{"type":"assist')
+    expect(out.text).toBe('VERDICT: PASS')
+    expect(out.result).toBeNull()
+    expect(totalTokens(out.usage)).toBe(0)
+    expect(out.reachedModel).toBe(true)
+  })
+})
+
+describe('usageAccounting', () => {
+  it('takes the CLI meter whenever it reported one', () => {
+    expect(usageAccounting({ usage, reachedModel: true })).toEqual({ source: 'measured', charged: 3_100_000, note: null })
+  })
+
+  it('charges a killed run the measured per-review estimate — unknown is never zero', () => {
+    // Reading a killed run as {0,0,0,0} would let every timeout escape the day's ration and draw
+    // down the real included pool while lane-budget reported it untouched.
+    const out = usageAccounting({ usage: {}, reachedModel: true })
+    expect(out).toMatchObject({ source: 'estimated', charged: MEASURED_REVIEW_TOKENS })
+    expect(MEASURED_REVIEW_TOKENS).toBe(347_838)
+    expect(out.note).toMatch(/estimate/)
+  })
+
+  it('charges nothing for a run that never reached a model, because a rejected config is free', () => {
+    expect(usageAccounting({ usage: {}, reachedModel: false })).toEqual({ source: 'none', charged: 0, note: null })
+    expect(usageAccounting()).toEqual({ source: 'none', charged: 0, note: null })
   })
 })
 
@@ -253,11 +286,25 @@ describe('auditLine and formatSummaryLine', () => {
       requestedModel: 'composer-2.5',
       resolvedModel: 'composer-2.5',
       usage,
+      usageSource: 'measured',
+      chargedTokens: 3_100_000,
       wallMs: 165_000,
       exitCode: 0,
       verdict: 'PASS',
       cost: { usd: 1.15, currency: 'USD', pricedAs: 'composer-2.5', note: 'list price, not a bill' },
     })
+  })
+
+  it('marks a killed run estimated, records why, and leaves its dollar figure unknown', () => {
+    const record = JSON.parse(
+      auditLine({ pr: 305, requestedModel: 'composer-2.5', usage: {}, reachedModel: true, wallMs: 900_000, exitCode: EXIT.timeout, verdict: 'UNPARSED' }),
+    )
+    expect(record.usage).toEqual({ inputTokens: 0, cacheReadTokens: 0, cacheWriteTokens: 0, outputTokens: 0 })
+    expect(record.usageSource).toBe('estimated')
+    expect(record.chargedTokens).toBe(MEASURED_REVIEW_TOKENS)
+    expect(record.usageNote).toMatch(/estimate/)
+    // Unknown cost stays unknown (README, Measurement rules): $0 would be a bill nothing measured.
+    expect(record.cost.usd).toBeNull()
   })
 
   it('prices a resolved variant name at the rate card of the model that was asked for', () => {
@@ -278,13 +325,18 @@ describe('auditLine and formatSummaryLine', () => {
     expect(record.resolvedModel).toBeNull()
     expect(record.cost.usd).toBeNull()
     expect(record.cost.pricedAs).toBeNull()
+    expect(record.usageSource).toBe('none')
+    expect(record.chargedTokens).toBe(0)
     expect(Date.parse(record.at)).not.toBeNaN()
   })
 
-  it('prints the one greppable SECOND-OPINION line', () => {
+  it('prints the one greppable SECOND-OPINION line, and marks a token count that was estimated', () => {
     expect(formatSummaryLine({ pr: 296, model: 'composer-2.5', verdict: 'PASS', wallMs: 165_400, tokens: 564_000, cost: 0.1442 })).toBe(
       'SECOND-OPINION: pr=296 model=composer-2.5 verdict=PASS wall=165s tokens=564000 cost≈$0.14',
     )
     expect(formatSummaryLine({ pr: 1, model: 'x', verdict: 'UNPARSED', wallMs: 0, tokens: 0, cost: null })).toContain('cost≈$?')
+    expect(
+      formatSummaryLine({ pr: 305, model: 'composer-2.5', verdict: 'UNPARSED', wallMs: 900_000, tokens: MEASURED_REVIEW_TOKENS, cost: null, usageSource: 'estimated' }),
+    ).toContain('tokens≈347838 (estimated)')
   })
 })

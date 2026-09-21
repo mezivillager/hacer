@@ -121,6 +121,10 @@ const normaliseUsage = (usage) => ({
 
 export const totalTokens = (usage) => Object.values(normaliseUsage(usage)).reduce((a, b) => a + b, 0)
 
+// Stub: red commit (#302 review).
+export const MEASURED_REVIEW_TOKENS = 0
+export const usageAccounting = () => ({ source: 'none', charged: 0, note: null })
+
 const assistantText = (frame) => {
   const content = frame?.message?.content ?? frame?.content
   if (typeof content === 'string') return content

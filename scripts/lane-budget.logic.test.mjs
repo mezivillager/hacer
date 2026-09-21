@@ -19,8 +19,9 @@ import {
 /** A local-time Date, so a test never depends on the machine's offset from UTC. */
 const local = (y, m, d, h = 12, min = 0) => new Date(y, m - 1, d, h, min, 0, 0)
 
-/** One audit row, in the shape `auditLine()` writes (second-opinion.logic.mjs). */
-const row = ({ at, tokens = MEASURED_REVIEW_TOKENS, exitCode = 0, resolvedModel = null, usd = 0.1 }) =>
+/** One audit row, in the shape `auditLine()` writes (second-opinion.logic.mjs). The default shape is
+ *  deliberately the *old* one, with no `chargedTokens`: rows already in the file must keep counting. */
+const row = ({ at, tokens = MEASURED_REVIEW_TOKENS, exitCode = 0, resolvedModel = null, usd = 0.1, extra = {} }) =>
   JSON.stringify({
     at: at.toISOString(),
     pr: 305,
@@ -31,7 +32,13 @@ const row = ({ at, tokens = MEASURED_REVIEW_TOKENS, exitCode = 0, resolvedModel 
     exitCode,
     verdict: 'PASS',
     cost: { usd, currency: 'USD', pricedAs: 'composer-2.5', note: 'list price, not a bill' },
+    ...extra,
   })
+
+/** A run killed before the CLI's `result` frame: it generated, nothing measured it, and the row says
+ *  what it was charged instead (second-opinion.logic.mjs `usageAccounting`). */
+const killedRow = (at) =>
+  row({ at, tokens: 0, exitCode: 4, usd: null, extra: { usageSource: 'estimated', chargedTokens: MEASURED_REVIEW_TOKENS } })
 
 const NOW = local(2026, 9, 21, 14, 30)
 const FRESH = JSON.stringify({ readAt: '2026-09-21', includedTokens: 43_600_000, onDemandUsd: 0 })
@@ -96,6 +103,19 @@ describe('spentToday', () => {
     const spent = spentToday(row({ at: NOW, exitCode: EXIT.unverified }), NOW)
     expect(spent.tokens).toBe(MEASURED_REVIEW_TOKENS)
     expect(spent.freeRuns).toBe(0)
+  })
+
+  it('charges a killed run the estimate its row records, not the zero nothing measured', () => {
+    // A run killed before the `result` frame (timeout / SIGKILL) has usage {0,0,0,0} but was paid
+    // for. Counting the raw tuple would let every timeout escape the day's ration silently.
+    const spent = spentToday(killedRow(NOW), NOW)
+    expect(spent.tokens).toBe(MEASURED_REVIEW_TOKENS)
+    expect(spent.freeRuns).toBe(0)
+  })
+
+  it('still reads the raw usage of a row written before the charged field existed', () => {
+    expect(spentToday(row({ at: NOW }), NOW).tokens).toBe(MEASURED_REVIEW_TOKENS)
+    expect(spentToday(row({ at: NOW, tokens: 0, usd: null }), NOW)).toMatchObject({ tokens: 0, freeRuns: 1 })
   })
 
   it('reports the per-model split and records that the spend was keyed on the requested id', () => {
@@ -174,6 +194,21 @@ describe('mayRun', () => {
     const stale = parseObservation(JSON.stringify({ readAt: '2026-09-21', onDemandUsd: 0 }))
     const later = local(2026, 9, 21 + OBSERVATION_MAX_AGE_DAYS + 1, 14)
     expect(mayRun({ ...base, observation: stale, now: later })).toMatchObject({ allowed: false, code: 'unconfirmed' })
+  })
+
+  it('refuses a reading dated in the future, so a mistyped year cannot make the guard vacuous', () => {
+    // A negative age never exceeds the 7-day limit, so without this the staleness refusal is dead
+    // and one typo in a hand-entered date disables the guard permanently.
+    const observation = parseObservation(JSON.stringify({ readAt: '2027-06-01', onDemandUsd: 0 }))
+    const verdict = mayRun({ ...base, observation })
+    expect(verdict).toMatchObject({ allowed: false, code: 'future' })
+    expect(verdict.reason).toMatch(/future/)
+  })
+
+  it('allows one day of clock and timezone slack ahead, and refuses two', () => {
+    const dated = (day) => parseObservation(JSON.stringify({ readAt: `2026-09-${day}`, onDemandUsd: 0 }))
+    expect(mayRun({ ...base, observation: dated(22) }).allowed).toBe(true)
+    expect(mayRun({ ...base, observation: dated(23) })).toMatchObject({ allowed: false, code: 'future' })
   })
 
   it('does not roll unused ration over: an idle yesterday buys nothing today', () => {
