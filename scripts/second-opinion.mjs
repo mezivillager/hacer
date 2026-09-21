@@ -5,42 +5,25 @@
 //
 // Read-only never comes from leaving `--force` off: the owner's own ~/.cursor/cli-config.json sets
 // approvalMode "unrestricted", so a plain `-p` run writes files (docs/harness/cursor-lane.md §1.2,
-// trial runs 3 and 4). It comes from two deny layers, both verified: CURSOR_CONFIG_DIR pointed at a
-// temp dir holding reviewerConfig(), and the throwaway checkout's own .cursor/cli.json — written
-// after .cursor/ is deleted, so the PR cannot ship hooks, rules, MCP servers or permissions of its
-// own. Nothing here reads or writes ~/.cursor/. The rubric is read from origin/main, never from the
-// PR; the diff goes in fenced as untrusted data.
+// trial runs 3 and 4). It comes from two verified deny layers: CURSOR_CONFIG_DIR pointed at a temp
+// dir holding reviewerConfig(), and the throwaway checkout's own .cursor/cli.json — written after
+// .cursor/ is deleted, so the PR cannot ship hooks, rules, MCP servers or permissions of its own.
+// Nothing here reads or writes ~/.cursor/. The rubric comes from origin/main, never from the PR,
+// and the diff goes in fenced as untrusted data.
 //
-// Advisory: a BLOCK still exits 0 — only the Claude verifier can turn one into a blocker
-// (docs/harness/verifier-brief.md). Non-zero means the *run* is not trustworthy: EXIT.timeout, .dirty
-// (the run changed the worktree) and .unverified (could not look) each get their own code.
-// Every run appends one JSON line to <git-common-dir>/hacer-lane-runs/second-opinion.jsonl.
+// Advisory: a BLOCK still exits 0 — only the Claude verifier turns one into a blocker
+// (verifier-brief.md). Non-zero means the *run* is not trustworthy: timeout, a dirty worktree and
+// "could not look" each get their own code. Every run appends one JSON line to
+// <git-common-dir>/hacer-lane-runs/second-opinion.jsonl.
 
 import { execFileSync, spawn } from 'node:child_process'
 import { appendFileSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { findLinkedIssues } from './pr-hygiene.logic.mjs'
-import {
-  AUDIT_FILE,
-  DEFAULT_MODEL,
-  EXIT,
-  KILL_GRACE_MS,
-  TIMEOUT_MS,
-  assessDelivery,
-  auditLine,
-  buildPrompt,
-  costOf,
-  cursorArgs,
-  extractRubric,
-  formatSummaryLine,
-  parseReview,
-  ratesForRun,
-  readStream,
-  refusedFlags,
-  reviewerConfig,
-  totalTokens,
-} from './second-opinion.logic.mjs'
+import { AUDIT_FILE, DEFAULT_MODEL, EXIT, KILL_GRACE_MS, TIMEOUT_MS } from './second-opinion.logic.mjs'
+import { assessDelivery, auditLine, buildPrompt, costOf, cursorArgs, extractRubric } from './second-opinion.logic.mjs'
+import { formatSummaryLine, parseReview, ratesForRun, readStream, refusedFlags, reviewerConfig, totalTokens } from './second-opinion.logic.mjs'
 
 const die = (code, message) => {
   console.error(`second-opinion: ${message}`)
@@ -76,11 +59,12 @@ function runReviewer({ checkout, configDir, prompt }) {
     let stdout = ''
     let stderr = ''
     let timedOut = false
+    // The negative pid is the group: the CLI and every MCP child it started.
     const killGroup = (signal) => {
       try {
         process.kill(-child.pid, signal)
       } catch {
-        /* the group is already gone */
+        /* already gone */
       }
     }
     const timer = setTimeout(() => {
@@ -88,18 +72,16 @@ function runReviewer({ checkout, configDir, prompt }) {
       killGroup('SIGTERM')
       setTimeout(() => killGroup('SIGKILL'), KILL_GRACE_MS).unref()
     }, TIMEOUT_MS)
-    child.stdout.on('data', (chunk) => (stdout += chunk))
-    child.stderr.on('data', (chunk) => (stderr += chunk))
     const finish = (code, error) => {
       clearTimeout(timer)
       resolve({ stdout, stderr: error ? `${stderr}${error}` : stderr, code, timedOut })
     }
+    child.stdout.on('data', (chunk) => (stdout += chunk))
+    child.stderr.on('data', (chunk) => (stderr += chunk))
     child.on('close', (code) => finish(code))
     child.on('error', (error) => finish(null, error))
   })
 }
-
-// ---------------------------------------------------------------- set up the throwaway checkout
 
 const started = Date.now()
 const tmpRoot = mkdtempSync(path.join(tmpdir(), `hacer-second-opinion-${pr}-`))
@@ -124,7 +106,7 @@ try {
     .join('\n\n')
   const prompt = buildPrompt({ rubric, criteria, diff: gh(['pr', 'diff', String(pr)]) })
 
-  // ---------------------------------------------------------------- run, then prove it only read
+  // Run, then prove it only read: a clean exit is not evidence.
   const before = git(['status', '--porcelain'], checkout)
   const { stdout, stderr, code, timedOut } = await runReviewer({ checkout, configDir, prompt })
   let after = null
@@ -134,19 +116,11 @@ try {
   } catch (statusError) {
     error = statusError
   }
-
   const { text, usage, model: resolved } = readStream(stdout)
   const { verdict } = parseReview(text)
   const delivery = assessDelivery({ before, after, error })
-  exitCode = timedOut
-    ? EXIT.timeout
-    : delivery.state === 'unknown'
-      ? EXIT.unverified
-      : delivery.state === 'dirty'
-        ? EXIT.dirty
-        : code === 0
-          ? EXIT.ok
-          : EXIT.failed
+  const codeFor = { unknown: EXIT.unverified, dirty: EXIT.dirty, clean: code === 0 ? EXIT.ok : EXIT.failed }
+  exitCode = timedOut ? EXIT.timeout : codeFor[delivery.state]
 
   if (text.trim()) console.log(text.trim())
   if (timedOut) console.error(`second-opinion: no answer within ${TIMEOUT_MS / 1000}s — killed the process group`)
@@ -156,8 +130,7 @@ try {
 
   const wallMs = Date.now() - started
   const cost = costOf(usage, ratesForRun(resolved, model))
-  const summary = { pr, model: resolved ?? model, verdict, wallMs, tokens: totalTokens(usage), cost }
-  console.log(formatSummaryLine(summary))
+  console.log(formatSummaryLine({ pr, model: resolved ?? model, verdict, wallMs, tokens: totalTokens(usage), cost }))
 
   const auditPath = path.join(git(['rev-parse', '--path-format=absolute', '--git-common-dir']).trim(), AUDIT_FILE)
   mkdirSync(path.dirname(auditPath), { recursive: true })
