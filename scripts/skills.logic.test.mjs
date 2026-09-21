@@ -1,7 +1,7 @@
 import { readFileSync, readdirSync, existsSync } from 'node:fs'
 import path from 'node:path'
 import { describe, it, expect } from 'vitest'
-import { findAbsolutePaths } from './hooks/docPaths.logic.mjs'
+import { findAbsolutePaths, isScannedFile } from './hooks/docPaths.logic.mjs'
 import {
   BRIEF_INVARIANTS,
   SECRET_PATTERNS,
@@ -61,7 +61,7 @@ describe('checkSkillFrontmatter', () => {
   })
 
   it.each(SKILL_FRONTMATTER_KEYS)('reports a missing %s', (key) => {
-    const lines = SKILL_FRONTMATTER_KEYS.filter((k) => k !== key).map((k) => `${k}: something`)
+    const lines = SKILL_FRONTMATTER_KEYS.filter((k) => k !== key).map((k) => `${k}: ${k === 'name' ? 'tdd' : 'something'}`)
     expect(checkSkillFrontmatter('tdd', frontmatter(...lines))).toEqual([`tdd: frontmatter has no ${key}`])
   })
 
@@ -112,11 +112,23 @@ describe('no live skill or brief leaks a path or a secret', () => {
     ...skillSlugs.map((slug) => [`.claude/skills/${slug}/SKILL.md`, () => readSkill(slug)]),
     ...BRIEF_INVARIANTS.map((invariant) => [invariant.file, () => readBrief(invariant.file)]),
   ]
+  // `.claude/skills/` is vendored (scripts/sync-superpowers.sh overwrites it), so the
+  // house style is policed only where we own the file — isScannedFile knows which.
+  const authored = docs.filter(([file]) => isScannedFile(file))
 
-  it.each(docs)('%s cites no machine-absolute path', (_file, read) => {
+  it('polices the briefs and the skills this repo owns', () => {
+    expect(authored.map(([file]) => file)).toEqual([
+      '.claude/skills/docs-sync/SKILL.md',
+      '.claude/skills/hacer-patterns/SKILL.md',
+      ...BRIEF_INVARIANTS.map((invariant) => invariant.file),
+    ])
+  })
+
+  it.each(authored)('%s cites no machine-absolute path', (_file, read) => {
     expect(findAbsolutePaths(read())).toEqual([])
   })
 
+  // A secret is never waived, vendored or not: these files are loaded verbatim.
   it.each(docs)('%s carries no secret-shaped string', (_file, read) => {
     expect(findSecrets(read())).toEqual([])
   })

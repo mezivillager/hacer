@@ -13,7 +13,7 @@ changes, or one UI-facing PR or issue. Why the method looks like this:
   `e2e/tour/app-tour.spec.ts`: `gh workflow run ui-tour.yml` (`--ref <branch>` for a PR branch),
   then `gh run download <run-id> -n ui-tour`. Per step, `NN-<step>.png` (full page) and
   `NN-<step>.json`: what was done, URL, viewport, theme, `title`, `lang`, and the accessibility
-  snapshot with each element's box in CSS px. `tour.json` lists the steps and the commit.
+  snapshot with each element's box in CSS px. `tour.json` lists the steps and the commit. <!-- allow-missing-path: inside the downloaded artifact, not the repo -->
 - **The code** on `origin/main` (or the PR head): the design system `src/components/ui-kit/`, the
   shell (`src/App.tsx`, `src/components/Shell.tsx`, `src/components/ui/`), the theme tokens in
   `src/styles/globals.css`.
@@ -87,7 +87,7 @@ issue or inbox id), and what stayed `unverified`. The cited PNGs are committed b
 PR, labels `project:polish` and `risk:0`.
 
 ## Permissions
-- **Read** the repo, the tour artifact, the web, and `gh` issues and PRs; **run** `ui-tour.yml`.
+- **Read** the repo, the tour artifact, the web, and `gh` issues and PRs; **run** `.github/workflows/ui-tour.yml`.
 - **Write** only the review note, its cited PNGs and `product-inbox.md` entries, on your own branch;
   **file** only the issues in (a).
 - **Never** edit code, a roadmap page or an ADR, label anyone else's issue or PR, or render the app

@@ -13,7 +13,7 @@ Run this before wrapping up a session that changed code or made decisions.
    reject an approach, or alter an assumption recorded in the docs? List each candidate.
 
 2. **Record each decision as an ADR.** For every material decision, create
-   `docs/decisions/NNNN-kebab-title.md` from `docs/decisions/0000-template.md`
+   `docs/decisions/NNNN-kebab-title.md` from `docs/decisions/0000-template.md` <!-- allow-missing-path: NNNN is the next number, not a file -->
    (next zero-padded number; never renumber). Add a row to `docs/decisions/README.md`'s index.
 
 3. **Run the author pass.** Follow the author pass in `docs/llm-docs-sync.md`: for each affected row of
