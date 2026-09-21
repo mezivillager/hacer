@@ -85,6 +85,7 @@ Cursor **on-demand spend limit** (cursor.com dashboard → Spending). Recommende
 ## Files
 
 - `README.md` — this page.
+- `COVERAGE.md` — one owner per rule: which file states each standing rule, and why the rest link to it.
 - `ledger.md` — failures and what they became.
 - `implementer-brief.md` — the brief a builder agent receives for one issue.
 - `verifier-brief.md` — the brief a fresh-context verifier receives for one PR.
