@@ -126,3 +126,34 @@ describe('bus simulation', () => {
     expect(getState().outputNodes[0].value).toBe(0b1011)
   })
 })
+
+describe('undriven bus input pins (B-008)', () => {
+  it('clears a joiner input pin once its wire is removed', () => {
+    const a = getState().addInputNode('a', { x: 0, y: 0, z: 0 }, 1)
+    const b = getState().addInputNode('b', { x: 0, y: 2, z: 0 }, 1)
+    const joiner = getState().placeBusJoiner(2, { x: 4, y: 0, z: 0 })!
+
+    getState().addWire(
+      { type: 'input', entityId: a.id },
+      { type: 'bus', entityId: joiner.id, pinId: 'in0' },
+      [],
+    )
+    const wireB = getState().addWire(
+      { type: 'input', entityId: b.id },
+      { type: 'bus', entityId: joiner.id, pinId: 'in1' },
+      [],
+    )
+    getState().updateInputNodeValue(a.id, 0)
+    getState().updateInputNodeValue(b.id, 1)
+
+    useCircuitStore.setState((state) => { evaluateCircuit(state) })
+    expect(getState().busComponents[0].outputs[0].value).toBe(0b10)
+
+    getState().removeWire(wireB.id)
+    useCircuitStore.setState((state) => { evaluateCircuit(state) })
+
+    const joinerNow = getState().busComponents[0]
+    expect(joinerNow.inputs.find((p) => p.id === 'in1')!.value).toBe(0)
+    expect(joinerNow.outputs[0].value).toBe(0)
+  })
+})

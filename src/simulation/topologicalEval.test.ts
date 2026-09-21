@@ -874,3 +874,31 @@ describe('multi-bit gates', () => {
     expect(getState().outputNodes.find((n) => n.id === outNode.id)?.value).toBe(0xFFF4)
   })
 })
+
+describe('undriven input pins (B-008)', () => {
+  it('clears a gate input pin that no wire drives', () => {
+    const gate = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+    getState().setInputValue(gate.id, gate.inputs[0].id, 1)
+    getState().setInputValue(gate.id, gate.inputs[1].id, 1)
+
+    useCircuitStore.setState((state) => { evaluateCircuit(state) })
+
+    expect(getState().gates[0].inputs.map((p) => p.value)).toEqual([0, 0])
+    expect(getState().gates[0].outputs[0].value).toBe(1)
+  })
+
+  it('leaves a gate input pin that a wire still drives', () => {
+    const a = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
+    const gate = getState().addGate('Nand', { x: 4, y: 0, z: 0 })
+    getState().addWire(
+      { type: 'input', entityId: a.id },
+      { type: 'gate', entityId: gate.id, pinId: gate.inputs[0].id },
+      []
+    )
+    getState().updateInputNodeValue(a.id, 1)
+
+    useCircuitStore.setState((state) => { evaluateCircuit(state) })
+
+    expect(getState().gates[0].inputs.map((p) => p.value)).toEqual([1, 0])
+  })
+})
