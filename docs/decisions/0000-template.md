@@ -8,6 +8,10 @@
 ## Context
 <What forces are at play? What problem, new idea, or direction emerged? Link the session, PR, or issue.>
 
+## Reuse considered
+<Candidate · licence · verdict (adopt / integrate / pilot / retain-custom / reject) · date — one
+entry per candidate evaluated; "none found" is a valid entry.>
+
 ## Decision
 <State it plainly and actively: "We will …">
 

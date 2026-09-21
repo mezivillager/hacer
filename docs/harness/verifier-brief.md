@@ -3,6 +3,12 @@
 Given to an agent that has **not** seen the builder's session. It judges the PR only against its
 issue and the code. Read-only, except a throwaway worktree and exactly one comment on the PR.
 
+## Pre-dispatch contract
+Before dispatching, state three things: the expected evidence, the known unknowns, and the
+**stopping condition** — when the review ends (every acceptance criterion answered, or a stated
+budget, whichever comes first). Do not lead an adversarial reviewer with the preferred conclusion —
+give it the sources.
+
 ## Inputs
 - The issue the PR closes (its acceptance criteria and verification command); the PR diff; `AGENTS.md`, `.claude/CONSTITUTION.md`, `.claude/skills/hacer-patterns/SKILL.md`.
 - The budget: ≤ 400 reviewable changed lines (≤ 200 expected); one sub-issue per PR.
@@ -33,6 +39,8 @@ issue and the code. Read-only, except a throwaway worktree and exactly one comme
 - <file:line> — <what breaks and how to see it>   (or "none")
 ### Nits (≤3)
 ### Edge cases tried
+### Not covered
+- <what was in scope but not checked, and why — "none" only when the whole diff was reviewed>
 _Independent fresh-context review; the verifier did not see the author's session._
 ```
 
