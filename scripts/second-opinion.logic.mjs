@@ -12,10 +12,8 @@ export const EXIT = { ok: 0, failed: 1, usage: 2, refusedFlag: 3, timeout: 4, di
 
 // ---------------------------------------------------------------- read-only (cursor-lane.md §1.2)
 
-/**
- * Deny rules beat `unrestricted` (trial run 5), which is what the owner's own
- * ~/.cursor/cli-config.json is set to — so leaving `--force` off does *not* make a run read-only.
- */
+/** Deny rules beat `unrestricted` (trial run 5) — which is what the owner's own
+ * ~/.cursor/cli-config.json is set to, so leaving `--force` off does *not* make a run read-only. */
 export const DENY_RULES = ['Shell(*)', 'Write(**)', 'Write(/**)', 'WebFetch(*)', 'Mcp(*:*)']
 
 /** Written to both CURSOR_CONFIG_DIR/cli-config.json and the checkout's .cursor/cli.json. */
@@ -50,10 +48,8 @@ export function cursorArgs({ model = DEFAULT_MODEL, prompt }) {
 export const DIFF_TAG = 'untrusted-pr-diff'
 const CLOSING_TAG = new RegExp(`<\\s*/\\s*${DIFF_TAG}\\s*>`, 'gi')
 
-/**
- * The diff is data, not instructions, so a closing tag inside it would otherwise let the PR end the
- * fence and write its own orders. The rubric comes from origin/main — never from the PR under review.
- */
+/** The diff is data, not instructions: a closing tag inside it would otherwise let the PR end the
+ * fence and write its own orders. The rubric comes from origin/main, never from the PR. */
 export function buildPrompt({ rubric, criteria, diff }) {
   return [
     String(rubric ?? '').trim(),
@@ -76,7 +72,7 @@ const NOTHING = /^(none|n\/a|nothing|-)\.?$/i
 
 /**
  * The rubric asks for `VERDICT: PASS|BLOCK`, then `BLOCKERS:` and `NITS:` lists. Anything else is
- * UNPARSED — the coordinator sees that rather than a verdict this never read.
+ * UNPARSED, so the coordinator sees that rather than a verdict that was never actually read.
  * @returns {{verdict:'PASS'|'BLOCK'|'UNPARSED', blockers:string[], nits:string[]}}
  */
 export function parseReview(text) {
@@ -136,16 +132,15 @@ const resolvedModel = (result) =>
  * @returns {{frames:object[], result:object|null, text:string, usage:object, model:string|null}}
  */
 export function readStream(stdout) {
-  const frames = String(stdout ?? '')
-    .split('\n')
-    .flatMap((line) => {
-      try {
-        const value = JSON.parse(line)
-        return value && typeof value === 'object' ? [value] : []
-      } catch {
-        return []
-      }
-    })
+  const parse = (line) => {
+    try {
+      const value = JSON.parse(line)
+      return value && typeof value === 'object' ? [value] : []
+    } catch {
+      return [] // progress noise and the half line a killed run leaves behind
+    }
+  }
+  const frames = String(stdout ?? '').split('\n').flatMap(parse)
   const result = frames.findLast((f) => f.type === 'result') ?? null
   const final = typeof result?.result === 'string' ? result.result : ''
   const text = final.trim() ? final : frames.filter((f) => f.type === 'assistant').map(assistantText).join('')
@@ -172,12 +167,7 @@ export function costOf(usage, rates) {
   if (!rates) return null
   const u = normaliseUsage(usage)
   const per = (tokens, rate) => (tokens / 1e6) * rate
-  return (
-    per(u.inputTokens, rates.input) +
-    per(u.cacheReadTokens, rates.cacheRead) +
-    per(u.cacheWriteTokens, rates.cacheWrite) +
-    per(u.outputTokens, rates.output)
-  )
+  return per(u.inputTokens, rates.input) + per(u.cacheReadTokens, rates.cacheRead) + per(u.cacheWriteTokens, rates.cacheWrite) + per(u.outputTokens, rates.output)
 }
 
 // ---------------------------------------------------------------- delivery and reporting
@@ -202,19 +192,18 @@ export function assessDelivery({ before, after, error } = {}) {
 /** One JSON line per run for .git/hacer-lane-runs/ — what the daily Cursor ration is measured from. */
 export function auditLine({ at, pr, requestedModel, resolvedModel: resolved, usage, wallMs, exitCode, verdict }) {
   const cost = costOf(usage, ratesForRun(resolved, requestedModel))
-  return (
-    JSON.stringify({
-      at: at ?? new Date().toISOString(),
-      pr,
-      requestedModel,
-      resolvedModel: resolved ?? null,
-      usage: normaliseUsage(usage),
-      wallMs,
-      exitCode,
-      verdict,
-      cost: { usd: cost === null ? null : Number(cost.toFixed(4)), currency: 'USD', note: 'list price, not a bill' },
-    }) + '\n'
-  )
+  const record = {
+    at: at ?? new Date().toISOString(),
+    pr,
+    requestedModel,
+    resolvedModel: resolved ?? null,
+    usage: normaliseUsage(usage),
+    wallMs,
+    exitCode,
+    verdict,
+    cost: { usd: cost === null ? null : Number(cost.toFixed(4)), currency: 'USD', note: 'list price, not a bill' },
+  }
+  return JSON.stringify(record) + '\n'
 }
 
 /** The one greppable line the coordinator reads. */
