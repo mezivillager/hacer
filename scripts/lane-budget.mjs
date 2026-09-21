@@ -1,16 +1,13 @@
 #!/usr/bin/env node
 // lane-budget: what the Cursor lane has spent today, and whether one more run fits (#302).
 //
-//   node scripts/lane-budget.mjs
-//   HACER_LANE_DAY_TOKENS=3000000 node scripts/lane-budget.mjs
+//   node scripts/lane-budget.mjs        [HACER_LANE_DAY_TOKENS=<tokens> overrides the day's ration]
 //
 // Reads the rows second-opinion.mjs appends to <git-common-dir>/hacer-lane-runs/second-opinion.jsonl
 // and the last Cursor dashboard reading in docs/harness/cursor-usage.json — taken by hand or with a
-// browser, because no supported API exposes those numbers. docs/harness/usage-rationing.md is the
-// policy and says how to re-read them.
-//
-// Prints one greppable `LANE-BUDGET:` line plus the detail, and exits 7 (EXIT.rationSpent) when one
-// more run does not fit. That is a skip, not a failure: the coordinator proceeds without the lane.
+// browser, because no supported API exposes those numbers. Prints one greppable `LANE-BUDGET:` line
+// plus the detail, and exits 7 (EXIT.rationSpent) when one more run does not fit — a skip, not a
+// failure: the coordinator proceeds without the lane. Policy: docs/harness/usage-rationing.md.
 
 import { execFileSync } from 'node:child_process'
 import { existsSync, readFileSync } from 'node:fs'

@@ -27,7 +27,7 @@ import { laneStatus, OBSERVATION_FILE } from './lane-budget.logic.mjs'
 import { findLinkedIssues } from './pr-hygiene.logic.mjs'
 import { AUDIT_FILE, DEFAULT_MODEL, EXIT, KILL_GRACE_MS, TIMEOUT_MS } from './second-opinion.logic.mjs'
 import { assessDelivery, auditLine, buildPrompt, checkoutConfig, costOf, cursorArgs, extractRubric } from './second-opinion.logic.mjs'
-import { formatSummaryLine, parseReview, ratesForRun, readStream, refusedFlags, reviewerConfig, totalTokens } from './second-opinion.logic.mjs'
+import { formatSummaryLine, parseReview, ratesForRun, readStream, refusedFlags, reviewerConfig, usageAccounting } from './second-opinion.logic.mjs'
 
 const die = (code, message) => {
   console.error(`second-opinion: ${message}`)
@@ -133,10 +133,10 @@ try {
   } catch (statusError) {
     error = statusError
   }
-  const { text, usage, model: resolved, result } = readStream(stdout)
+  const { text, usage, model: resolved, result, reachedModel } = readStream(stdout)
   const { verdict } = parseReview(text)
   const delivery = assessDelivery({ before, after, error })
-  audit = { pr, requestedModel: model, resolvedModel: resolved, usage, wallMs: Date.now() - started, verdict }
+  audit = { pr, requestedModel: model, resolvedModel: resolved, usage, reachedModel, wallMs: Date.now() - started, verdict }
   // No `result` frame means the CLI never reached a review — "could not look", not a review we
   // could not parse. A rejected config can still exit 0, so the exit code alone is no proof.
   const noAnswer = result === null && verdict === 'UNPARSED'
@@ -150,8 +150,10 @@ try {
   if (noAnswer) console.error('second-opinion: the CLI produced no result frame — no review was made')
   if (exitCode !== EXIT.ok && stderr.trim()) console.error(stderr.trim().split('\n').slice(-5).join('\n'))
 
-  const cost = costOf(usage, ratesForRun(resolved, model))
-  console.log(formatSummaryLine({ ...audit, model: resolved ?? model, tokens: totalTokens(usage), cost }))
+  // A killed run is charged the measured estimate, not the zero its missing usage frame implies.
+  const { source, charged } = usageAccounting({ usage, reachedModel })
+  const cost = source === 'estimated' ? null : costOf(usage, ratesForRun(resolved, model))
+  console.log(formatSummaryLine({ ...audit, model: resolved ?? model, tokens: charged, usageSource: source, cost }))
 } catch (error) {
   console.error(`second-opinion: ${error?.message ?? error}`)
   if (exitCode === EXIT.ok) exitCode = EXIT.failed

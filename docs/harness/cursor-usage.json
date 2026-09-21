@@ -3,6 +3,5 @@
   "source": "cursor.com/dashboard/usage (Pro+), read in a browser",
   "window": "2026-09-15..2026-09-21",
   "includedTokens": 43600000,
-  "onDemandUsd": 0,
-  "note": "Tokens per event, every row Type \"Included in Pro Plus\". The page publishes no weekly quota meter and no dollar pool, so there is no denominator for a percentage. See docs/harness/usage-rationing.md."
+  "onDemandUsd": 0
 }
