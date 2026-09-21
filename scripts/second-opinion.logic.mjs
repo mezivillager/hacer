@@ -121,9 +121,22 @@ const normaliseUsage = (usage) => ({
 
 export const totalTokens = (usage) => Object.values(normaliseUsage(usage)).reduce((a, b) => a + b, 0)
 
-// Stub: red commit (#302 review).
-export const MEASURED_REVIEW_TOKENS = 0
-export const usageAccounting = () => ({ source: 'none', charged: 0, note: null })
+/** One lane review, measured on #305 (2026-09-21): 347,838 tokens, ≈$0.10 at list price, 170 s, 84%
+ *  cache reads. Also what a killed run is charged, because unknown is never zero. */
+export const MEASURED_REVIEW_TOKENS = 347_838
+
+/** How a row's tokens were arrived at. `measured` is the CLI's own meter; `estimated` is a run killed
+ *  before the `result` frame that carries usage — the TIMEOUT_MS / KILL_GRACE_MS / SIGKILL path — so
+ *  it generated, was paid for, and nothing measured it, and reading that as {0,0,0,0} would let every
+ *  timeout escape the ration while the included pool drained; `none` never reached a model at all (a
+ *  rejected config), which is genuinely free.
+ *  @returns {{source:'measured'|'estimated'|'none', charged:number, note:string|null}} */
+export function usageAccounting({ usage, reachedModel } = {}) {
+  const measured = totalTokens(usage)
+  if (measured > 0) return { source: 'measured', charged: measured, note: null }
+  if (!reachedModel) return { source: 'none', charged: 0, note: null }
+  return { source: 'estimated', charged: MEASURED_REVIEW_TOKENS, note: 'killed before the result frame that carries usage; charged at the measured per-review estimate' }
+}
 
 const assistantText = (frame) => {
   const content = frame?.message?.content ?? frame?.content
@@ -154,7 +167,10 @@ export function readStream(stdout) {
   const result = frames.findLast((f) => f.type === 'result') ?? null
   const final = typeof result?.result === 'string' ? result.result : ''
   const text = final.trim() ? final : frames.filter((f) => f.type === 'assistant').map(assistantText).join('')
-  return { frames, result, text, usage: normaliseUsage(result?.usage), model: resolvedModel(result) }
+  // An assistant frame means the model generated — and was paid — whatever happened next; a killed
+  // run leaves those and no `result`, the only frame that reports usage.
+  const reachedModel = frames.some((f) => f.type === 'assistant') || Boolean(final.trim())
+  return { frames, result, text, usage: normaliseUsage(result?.usage), model: resolvedModel(result), reachedModel }
 }
 
 // ---------------------------------------------------------------- cost (list price, not a bill)
@@ -207,24 +223,30 @@ export function assessDelivery({ before, after, error } = {}) {
 }
 
 /** One JSON line per run for .git/hacer-lane-runs/ — what the daily Cursor ration is measured from. */
-export function auditLine({ at, pr, requestedModel, resolvedModel: resolved, usage, wallMs, exitCode, verdict }) {
+export function auditLine({ at, pr, requestedModel, resolvedModel: resolved, usage, reachedModel, wallMs, exitCode, verdict }) {
   const cost = costOf(usage, ratesForRun(resolved, requestedModel))
+  const { source, charged, note } = usageAccounting({ usage, reachedModel })
   const record = {
     at: at ?? new Date().toISOString(),
     pr,
     requestedModel,
     resolvedModel: resolved ?? null,
     usage: normaliseUsage(usage),
+    usageSource: source,
+    chargedTokens: charged,
+    ...(note ? { usageNote: note } : {}),
     wallMs,
     exitCode,
     verdict,
-    cost: { usd: cost === null ? null : Number(cost.toFixed(4)), currency: 'USD', pricedAs: pricingModel(resolved, requestedModel), note: 'list price, not a bill' },
+    // Unknown cost stays unknown (README, Measurement rules): an estimated run has no measured split.
+    cost: { usd: source === 'estimated' || cost === null ? null : Number(cost.toFixed(4)), currency: 'USD', pricedAs: pricingModel(resolved, requestedModel), note: 'list price, not a bill' },
   }
   return JSON.stringify(record) + '\n'
 }
 
-/** The one greppable line the coordinator reads. */
-export function formatSummaryLine({ pr, model, verdict, wallMs, tokens, cost }) {
+/** The one greppable line the coordinator reads. A token count that was not measured says so. */
+export function formatSummaryLine({ pr, model, verdict, wallMs, tokens, cost, usageSource }) {
   const dollars = typeof cost === 'number' ? `$${cost.toFixed(2)}` : '$?'
-  return `SECOND-OPINION: pr=${pr} model=${model} verdict=${verdict} wall=${Math.round(wallMs / 1000)}s tokens=${tokens} cost≈${dollars}`
+  const counted = usageSource && usageSource !== 'measured' ? `tokens≈${tokens} (${usageSource})` : `tokens=${tokens}`
+  return `SECOND-OPINION: pr=${pr} model=${model} verdict=${verdict} wall=${Math.round(wallMs / 1000)}s ${counted} cost≈${dollars}`
 }
