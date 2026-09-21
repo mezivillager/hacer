@@ -12,7 +12,7 @@ import { DEFAULT_POSITIONS, TIMEOUTS } from '../../config/constants'
 import {
   addGateViaStore,
   addWireViaStore,
-  setInputsViaStore,
+  driveInputsViaStore,
   runSimulationTick,
   toggleSimulationViaStore,
 } from '../../helpers/actions'
@@ -44,7 +44,7 @@ test.describe('Signal Propagation @store @simulation', () => {
       await ensureWires(page, 1)
 
       // Set inputs on gate1 (both true for NAND)
-      await setInputsViaStore(
+      await driveInputsViaStore(
         page,
         [
           { gate: 0, pin: 'in-0', value: 1 },
@@ -80,7 +80,7 @@ test.describe('Signal Propagation @store @simulation', () => {
       await ensureWires(page, 1)
 
       // Set inputs: AND(1,1) = 1
-      await setInputsViaStore(
+      await driveInputsViaStore(
         page,
         [
           { gate: 0, pin: 'in-0', value: 1 },
@@ -115,7 +115,7 @@ test.describe('Signal Propagation @store @simulation', () => {
       await ensureWires(page, 1)
 
       // NAND(1,1) = 0, NOT(0) = 1
-      await setInputsViaStore(
+      await driveInputsViaStore(
         page,
         [
           { gate: 0, pin: 'in-0', value: 1 },
@@ -162,8 +162,9 @@ test.describe('Signal Propagation @store @simulation', () => {
       await expectGateCount(page, 3)
       await expectWireCount(page, 2)
 
-      // Set inputs
-      await setInputsViaStore(
+      // Drive every otherwise-floating input from its own input node,
+      // which adds one wire each (2 chain wires + 4 drive wires = 6).
+      await driveInputsViaStore(
         page,
         [
           { gate: 0, pin: 'in-0', value: 1 },
@@ -181,7 +182,7 @@ test.describe('Signal Propagation @store @simulation', () => {
 
       // Verify circuit is intact after simulation
       await expectGateCount(page, 3)
-      await expectWireCount(page, 2)
+      await expectWireCount(page, 6)
     })
 
     test('fan-out: one output to multiple inputs', async ({ page }) => {
@@ -211,7 +212,7 @@ test.describe('Signal Propagation @store @simulation', () => {
       await ensureWires(page, 2)
 
       // Set inputs
-      await setInputsViaStore(
+      await driveInputsViaStore(
         page,
         [
           { gate: 0, pin: 'in-0', value: 0 },
@@ -248,7 +249,7 @@ test.describe('Signal Propagation @store @simulation', () => {
       await ensureWires(page, 1)
 
       // XOR(1,0) = 1, NOT(1) = 0
-      await setInputsViaStore(
+      await driveInputsViaStore(
         page,
         [
           { gate: 0, pin: 'in-0', value: 1 },
