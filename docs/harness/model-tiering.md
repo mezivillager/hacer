@@ -51,6 +51,11 @@ column** — it is the weaker half of this evidence, and the reason for the rule
   noticed at the time. It is simultaneously the strongest single data point here — a live `risk:2`
   block, attributable, with real defects — and a policy violation that went unseen, which is the
   better argument for §1b than any of the findings.
+- **Only two of the four are inside the row this change lowers.** #320 is `risk:2` and #312 is an
+  engine change — both stay on Opus. So the direct evidence for `risk:0`/`risk:1` off the engine is
+  §1's replay, plus #319 (model unrecorded) and #324 (attributed second-hand). #320 and #312 argue
+  *a fortiori*: a tier that held on harder categories is unlikely to fail on an easier one. That is
+  a real argument and a weaker one than four live outings sounds, and the row in §2 says so.
 - The dispatch prompts live outside this repository, so **"the agent could not look the answer up"
   is not falsifiable from here.** None of the four was given a pointer to its defect as far as the
   coordinator's records go, but a reader cannot check that, and the claim should not be leaned on.
@@ -61,8 +66,9 @@ Nothing in the repository, the PR or the API records which tier verified a PR. T
 table above is unattributable, and why a `risk:2` PR was verified a tier low without anyone seeing
 it. So: **every verdict carries a `Verified on:` field**, and a verifier running on a tier other
 than the one the rule gives says so, in either direction (`verifier-brief.md`). Until a verdict
-names its model it cannot be counted as evidence for or against a tier — including the two rows
-above, which is why §2's `risk:2` row still reads 0 of 3 rather than 1 of 3.
+names its model it cannot be counted as evidence for or against a tier — which is why two of the
+four rows above are struck through in the attribution column, and why §2's `risk:2` row still reads
+0 of 3.
 
 ## 2. The assignment
 
@@ -71,8 +77,8 @@ above, which is why §2's `risk:2` row still reads 0 of 3 rather than 1 of 3.
 | coordinator | Opus — the owner's choice per session (`README.md` Budgets) | it decides what every other agent does; one wrong dispatch wastes a whole builder run (150–270k) | unmeasured — a replay of one `ha-next` pick that chose the same issue and wrote the same prompt |
 | builder, `risk:1`/`risk:2` | Opus | §1 replayed the verifier, not the builder; the owner's Budgets ruling (2026-09-19) already puts significant work on Opus | a Sonnet builder replay landing the same diff on a merged `risk:1` PR and passing a fresh Opus verifier |
 | builder, `risk:0` (docs, mechanical) | Sonnet | Sonnet ran the full definition of done unaided in both replays, and reproduced #245's own negative test | a Sonnet `risk:0` PR blocked for something a careful reading pass should have caught |
-| verifier, `risk:2`, or any `src/core` / `src/simulation` change | Opus | the engine is where a missed defect is least recoverable. #320 is a live `risk:2` Sonnet block with real defects — but it was dispatched against the policy in force, and a violation nobody caught is not a result anybody designed | three live `risk:2` pairs where a Sonnet verdict and an Opus second pass agree, **each naming its model** (§1b). #320 is not one of them: it had no Opus second pass |
-| verifier, `risk:0` / `risk:1`, neither file under `src/core` nor `src/simulation` | **Sonnet** (owner's call, 2026-09-21) | §1's replay, plus **two attributable live outings** (#320 a `risk:2` block, #324 a `risk:1` pass with a re-derived invariant) and two more whose model was never recorded (§1a) | one `overturned` Sonnet verdict — a PASS whose defect a later pass finds, or a BLOCK that does not survive |
+| verifier, `risk:2`, or any `src/core` / `src/simulation` change | Opus | the engine is where a missed defect is least recoverable. #320 is a live `risk:2` Sonnet block with real defects — but it was dispatched against the policy in force, and a violation nobody caught is not a result anybody designed | three live `risk:2` pairs where a Sonnet verdict and a second pass agree, **each naming its model** (§1b). #320's fix did get a coordinator review (a PASS at 11:43:02Z), but that review names no model either — the same gap, one layer up — so it counts once both halves are attributable |
+| verifier, `risk:0` / `risk:1`, neither file under `src/core` nor `src/simulation` | **Sonnet** (owner's call, 2026-09-21) | §1's replay, plus §1a's live outings — of which **only #319 and #324 are inside this row**; #320 is `risk:2` and #312 is an engine change, so both argue *a fortiori* rather than directly | one `overturned` Sonnet verdict — a PASS whose defect a later pass finds, or a BLOCK that does not survive |
 | QA (browser) | Opus | the brief is still in flight (#257); no replay is possible until it exists | a QA replay once the brief lands |
 | product | Opus (pinned in `.claude/agents/hacer-product.md`) | judgment over screenshots and code; unmeasured | a replay against a past review's filed issues |
 | fidelity | Opus (pinned in `.claude/agents/hacer-fidelity.md`) | the highest-consequence verdict here, and Haiku's failure mode — a broken criterion marked satisfied, with a citation — is precisely what a fidelity verdict must never do | a replay on an artifact with a known unsound claim |
