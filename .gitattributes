@@ -5,3 +5,8 @@
 *.gif binary
 *.ico binary
 *.svg text
+
+# Layer-ratchet baselines (#329): machine-written violation records, never line-reviewed.
+# `linguist-generated` is what scripts/pr-hygiene.logic.mjs reads to keep them out of the budget.
+.dependency-cruiser-known-violations.json linguist-generated
+eslint-suppressions.json linguist-generated

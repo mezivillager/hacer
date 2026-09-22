@@ -1,0 +1,32 @@
+{
+  "src/core/testing/chipCompletion.ts": {
+    "no-restricted-globals": {
+      "count": 2
+    }
+  },
+  "src/utils/renderTracking.ts": {
+    "no-console": {
+      "count": 1
+    }
+  },
+  "src/utils/wiringScheme/branching.ts": {
+    "no-console": {
+      "count": 1
+    }
+  },
+  "src/utils/wiringScheme/crossing.ts": {
+    "no-console": {
+      "count": 26
+    }
+  },
+  "src/utils/wiringScheme/extension.ts": {
+    "no-console": {
+      "count": 4
+    }
+  },
+  "src/utils/wiringScheme/pathfinding.ts": {
+    "no-console": {
+      "count": 1
+    }
+  }
+}
