@@ -94,15 +94,26 @@ boundaries, never at every task. Draw the boundaries for parallelism too: group
 tasks by what they depend on rather than by narrative order, so each milestone
 opens with as wide a first wave as the work allows.
 
-## Sizing — decide before Phase 1; say which tier and why, in one line
+## Sizing — ask before Phase 1; the tier is Mezi's call
 
-- **One-liner** — a single small edit, a question, a lookup. Do it directly.
-- **Light** — about one milestone's worth, no new cross-system seam. Spec plus
-  TDD in this session; no plan document, no fan-out. **AGENTS.md Step 1 is still a
-  hard gate:** anything with 3+ implementation steps gets a `docs/specs/` design
-  approved before code, at every tier above one-liner.
+Recommend a tier in one line with the reason, then ask and wait for the answer.
+Never size silently. Under the `autonomous` skill the question goes in the run's
+opening message with the recommendation as the default (Light when the call is
+close); a tier named in the hand-over is the answer.
+
+- **One-liner** — a single small edit, a question, a lookup. Do it directly, no
+  question.
+- **Light** — about one milestone's worth, no new cross-system seam. The spec,
+  its fresh-eyes review and the publish decision, then TDD in this session with
+  Gate 2 before implementing, then ONE whole-branch review before the definition
+  of done. No plan document, no staffing table, no implementer agents; the spec
+  reviewer and the whole-branch reviewer are the only seats. **AGENTS.md Step 1
+  is still a hard gate:** anything with 3+ implementation steps gets a
+  `docs/specs/` design approved before code, at every tier above one-liner.
 - **Full** — several milestones, a new seam, or parallel agents: the whole
   pipeline below.
+
+Mezi can change the tier with "light" or "full" at any point.
 
 ## Phase 1 — The spec. Do not write code.
 
@@ -124,9 +135,10 @@ opens with as wide a first wave as the work allows.
 6. **Phase discipline:** state which phase the work belongs to. If it only makes
    sense in 0.6+, say so and propose the 0.5-shaped slice instead.
 
-**Also produce the staffing table** (format at the bottom of this file) at the
-end of Phase 1, with `Depends on`, `Writes` and `Wave` filled in — it is what
-makes the parallel schedule reviewable before a single agent is dispatched.
+**Full tier only: also produce the staffing table** (format at the bottom of
+this file) at the end of Phase 1, with `Depends on`, `Writes` and `Wave` filled
+in — it is what makes the parallel schedule reviewable before a single agent is
+dispatched. Light has no staffing table.
 
 The spec's shape:
 
@@ -167,6 +179,20 @@ code. Its proposals go to `docs/harness/fidelity-inbox.md`; they are never appli
 artifact, not two. Its contract section is the authority every later ruling
 resolves against.
 
+**Bind the session's topic file in the same step.** The day's session record,
+`docs/harness/sessions/YYYY-MM-DD.md`, is already this repo's committed memory of
+a session; bind it: `topic-bind docs/harness/sessions/YYYY-MM-DD.md --label
+<topic>` (or `topic-bind --new …` for a new day, then reshape it to the session
+record's sections). Keep a `## Current state` block at its head — rewritten as
+the run moves, with the next action, in-flight work and the paths to spec, plan
+and PR — and append the owner's rulings below it. The topic hooks
+(`~/.claude/hooks/topic-*.sh`) nudge, gate and re-orient from that file: a turn
+that does work without touching it is blocked once, and after every compaction
+the session is re-oriented from it. The spec is never the binding — approved at
+Gate 1, then mostly static. **If `topic-bind --show` already reports a binding**
+(an autonomous run bound its `state.md` at arm time), keep it and link the
+session record from the bound file's Paths instead of re-binding.
+
 ## Phase 2 — The plan.
 
 Use the repo's `planning` / `writing-plans` skills, with these amendments:
@@ -194,14 +220,13 @@ Use the repo's `planning` / `writing-plans` skills, with these amendments:
   sync the plan in the same turn — a stale plan is worse than no plan, because
   the next agent believes it.
 
-**Executable plan review — the load-bearing step.** Dispatch a fresh-context
-reviewer, Opus or better, that BUILDS the plan in a throwaway `hacer-wt-*`
-worktree off the same base: type the plan's test and implementation code, run the
-suites, verify the selectors and fixtures exist as cited, and enumerate the blast
-radius on existing tests one by one (breaks / survives, with the reason). Demand
-measured claims ("8 fail, 5 pass, here are the names"). It leaves nothing behind.
-Fold must-fixes. **The plan is not a gate** — present it in one line with the
-verdict and proceed.
+Run the planning skill's self-review yourself (spec coverage, placeholder scan,
+type consistency), checking every cited selector, fixture and store shape against
+the tree as you go. **The plan gets no reviewer agent and is never built in a
+throwaway worktree** — the executable plan review was cut on 2026-09-22 (45–106
+minutes per run to type the plan in twice); the red contract and the milestone
+review are where plan errors surface. **The plan is not a gate** — present it in
+one line and proceed.
 
 ## Phase 3 — Gated execution.
 
@@ -235,6 +260,26 @@ verdict and proceed.
 Execute with the repo's `executing-plans` / `dispatching-parallel-agents` skills.
 Gates 2 and 3 are additional mandatory stops at milestone boundaries; inside a
 milestone, rule and proceed, ledger every ruling, never stall.
+
+- **One review per milestone, none per task.** When a milestone's tasks are all
+  green, dispatch ONE fresh reviewer, Opus or better, handed the milestone's
+  brief, the implementers' reports and the milestone diff as file paths,
+  returning both verdicts (spec compliance AND quality) over the whole milestone.
+  Task completions still land with their hash in the ledger; they do not each
+  buy a reviewer. The verifier brief (`docs/harness/verifier-brief.md`) is that
+  reviewer's brief when the work is a harness ticket.
+- **Every fix round ends with the coordinator's delta-read, never a re-review
+  agent:** the fix diff against the findings list, each finding marked addressed
+  or open, the implementer resumed for what is still open. The next fresh eyes
+  are the milestone review or the whole-branch review.
+- **The whole-branch review is never skipped, in any tier:** one fresh reviewer
+  over the whole diff before the definition of done runs, pointed at the
+  ledger's parked findings. Its fix wave ends with the coordinator's delta-read.
+- **No parked agents, no coordinator-run suites.** An agent whose handback you
+  have read is resumed or stopped in that same turn — an agent waiting on a
+  `SendMessage` is dead wall time. The coordinator reads reports and diffs, not
+  transcripts, and runs no suite itself: its context is the run's latency
+  multiplier.
 
 - **Red tests are COMMITTED** before any green work exists. A test that passes
   before the implementation is a vacuous passer: name it at the gate with the
@@ -375,7 +420,7 @@ suite=store` is the useful move.
   (`data`, `result`, `item`, `handle`) is a red flag: name the domain concept —
   gate, pin, wire, junction, bus.
 
-## Staffing table (produced in Phase 1, kept current)
+## Staffing table (Full tier: produced in Phase 1, kept current)
 
 | # | Subtask | Lane | Depends on | Writes | Wave |
 |---|---|---|---|---|---|
@@ -384,6 +429,14 @@ Lanes: Coordinator (main thread — judgment, architecture, phase and seam
 decisions, never delegated); implementer agents (Opus or better); Explore
 (read-only fan-out). Independent dispatches go out in one message so they run
 concurrently; same wave means dispatched together. Every inter-stage artifact —
-spec, plan, brief, report, diff — travels as a FILE PATH, never pasted text. Tell
-every subagent: flag what you cannot verify as an open question, never fill the
-gap with a plausible answer.
+spec, plan, brief, report, diff — travels as a FILE PATH, never pasted text.
+
+**Every brief carries a measured-facts table**, not prose about state: one row
+per fact the agent will lean on — the value, the exact command that produced it,
+and when. Those rows are GIVEN: the agent re-runs the command when it doubts one
+and otherwise does not rediscover it; only the agent's own new claims must be
+measured. Never write "treat as verified" and "prove every load-bearing claim" in
+the same brief — an agent facing both re-derives everything. Reviewers get the
+same table: fresh eyes means no inherited conclusions, not no inherited facts.
+Tell every subagent: flag what you cannot verify as an open question, never fill
+the gap with a plausible answer.
