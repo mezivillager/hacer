@@ -16,6 +16,7 @@ export default defineConfig([
     '.cursor/**', // Vendored ECC / IDE harness — not application source
     '.worktrees/**', // Sibling git worktrees — they lint themselves on their own branches
     '.claude/worktrees/**', // Legacy worktree location — same rationale
+    'scripts/fixtures/layer-ratchet/**', // Deliberately wrong imports — the layer ratchet's test subject
   ]),
   {
     files: ['**/*.{ts,tsx}'],
