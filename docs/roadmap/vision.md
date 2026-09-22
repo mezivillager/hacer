@@ -41,12 +41,12 @@ Every human capability will have a programmatic equivalent, enabling AI agents t
 ```
 NAND GATE → BASIC GATES → SEQUENTIAL LOGIC → COMPUTER ARCHITECTURE → SOFTWARE STACK
      ↓            ↓            ↓              ↓                    ↓
-  Visual 3D    HDL/Text     Clock Signals    ALU/CPU/Memory     Assembler/VM/
-  Building    Definitions   State Machines   I/O Systems       Compiler/HLL
+  Spec/Prompt  HDL/Text     Clock Signals    ALU/CPU/Memory     Assembler/VM/
+  → 3D view   Definitions   State Machines   I/O Systems       Compiler/HLL
 ```
 
 ### Phase 1: Foundation (NAND → Basic Gates)
-- **Visual 3D Building:** Intuitive drag-and-drop circuit construction
+- **Declarative construction, projected in 3D:** circuits are *declared* — in a spec, a command, a prompt or an MCP call — and placed and wired automatically; the 3D and 2D surfaces are read-only projections you navigate and inspect ([ADR-0020](../decisions/0020-spec-only-writes-read-only-projections.md), superseding the earlier drag-and-drop construction model)
 - **Fundamental Gates:** NAND, AND, OR, NOT, XOR, NOR, XNOR
 - **Truth Tables:** Visual verification of logic behavior
 - **Basic Combinational Logic:** Multiplexors, demultiplexors, adders
@@ -152,7 +152,9 @@ The circuit model and simulation engine must be completely independent of UI fra
 
 ### 2. Plugin-First Extensibility
 All functionality beyond core simulation is implemented as plugins:
-- **Renderer Plugins:** 3D, 2D, data visualization, custom views
+- **Renderer Plugins:** 3D, 2D, data visualization, custom views — read-only projections behind one
+  serialisable scene description, so a renderer can be swapped or run side by side for comparison
+  ([ADR-0020](../decisions/0020-spec-only-writes-read-only-projections.md))
 - **Agent Plugins:** AI assistants, tutors, debuggers, code generators
 - **Analyzer Plugins:** Circuit analysis, optimization, verification
 - **Tool Plugins:** Custom editors, simulators, exporters

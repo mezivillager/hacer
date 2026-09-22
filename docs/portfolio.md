@@ -66,6 +66,10 @@ specification; these three rules are what `scripts/backlog.logic.mjs` computes.
 - **New work on hand editing stops.** Wire drawing, junction placement, dragging, previews, and
   polish or fixes whose only beneficiary is that machinery: not `agent-ready` while the plan runs.
   All of it is `risk:2` store/UI/R3F work, so the same filter holds it with the same stated reason.
+  Since [ADR-0020](decisions/0020-spec-only-writes-read-only-projections.md) those capabilities are
+  **non-goals, not deferred work** (its §6), so the sweep (#340) closes them rather than holding
+  them. Hand editing is reopenable only as alternative C of that ADR: a command writing a layout
+  hint, never a new gesture state machine.
 
 ## Hand in hand
 
@@ -80,11 +84,13 @@ note the non-3d surfaces have to grow hand in hand."
   PR, or a linked `pubdocs` sub-issue blocks the surface epic's exit.
 
 **Design first.** The owner: "that will mean a whole lot of core refactoring … lots of architectural
-decisions and designing." The `surfaces` row therefore starts with the architecture ADRs #188, #189,
-#190, #209 and #210 — research tasks at the Full tier, each an ADR the owner reviews. The core
-enablers (#178, #179, #180–#187) are pulled by those ADRs; surface code lands only after its ADR is
-accepted, and with its scenario ids and drivers named. `foundation` is design-first for the same
-reason: its ADR (#327, which absorbs #188/#189/#190) leads its own slot, ahead of the plan's code.
+decisions and designing." The `surfaces` row therefore starts with the architecture ADRs #209 and
+#210 — research tasks at the Full tier, each an ADR the owner reviews. The core enablers (#178,
+#179, #180–#187) are pulled by those ADRs; surface code lands only after its ADR is accepted, and
+with its scenario ids and drivers named. `foundation` is design-first for the same reason: its ADR
+(#327) led its own slot, ahead of the plan's code, and
+[ADR-0020](decisions/0020-spec-only-writes-read-only-projections.md) is its output — **it absorbs
+#188, #189 and #190, and re-points #217**, so those three no longer gate the `surfaces` row.
 
 ## Dormant mode
 
