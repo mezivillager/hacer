@@ -36,6 +36,8 @@ export function hdlChipDefinition(ast: HDLChip, source: string): ChipDefinition 
 }
 
 const LITERALS = new Set(['true', 'false'])
+/** An unsliced write covers a signal's whole width, however wide it later turns out to be. */
+const WHOLE_SIGNAL = Number.MAX_SAFE_INTEGER
 
 export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResult {
   const errors: HDLCompileError[] = []
@@ -81,6 +83,8 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
   // writes[i] = signals part i produces
   const reads: Set<string>[] = []
   const writes: Set<string>[] = []
+  // Every bit range already driven, per signal — one bit may have only one driver.
+  const drivenRanges = new Map<string, Array<{ first: number; last: number }>>()
   for (const { part, def } of resolved) {
     const r = new Set<string>()
     const w = new Set<string>()
@@ -114,6 +118,18 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
           errors.push({ message: `Part "${part.name}" output "${conn.internal}" cannot connect to literal "${conn.external}"`, partName: part.name, pinName: conn.internal })
           continue
         }
+        // One bit, one driver. Two parts writing the same bit is a short circuit, not a value,
+        // and which one survived would depend on the part order — exactly what step 4 stops
+        // depending on. Matches the reference simulator (../web-ide, `ChipBuilder`).
+        const first = conn.start ?? 0
+        const last = conn.start !== undefined ? (conn.end ?? conn.start) : WHOLE_SIGNAL
+        const driven = drivenRanges.get(conn.external) ?? []
+        const clash = driven.find((range) => first <= range.last && range.first <= last)
+        if (clash) {
+          errors.push({ message: `Signal "${conn.external}" bit ${Math.max(first, clash.first)} is driven by more than one part`, partName: part.name, pinName: conn.internal })
+        }
+        driven.push({ first, last })
+        drivenRanges.set(conn.external, driven)
         w.add(conn.external)
       }
     }
@@ -131,21 +147,31 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
 
   // 4. Topological order (Kahn) — part A depends on B if A reads a signal B writes (internal wire).
   const n = resolved.length
-  const producerOf = new Map<string, number>() // signal -> producing part index
-  writes.forEach((w, i) => w.forEach((sig) => producerOf.set(sig, i)))
+  const producersOf = new Map<string, number[]>() // signal -> every part index that writes it
+  writes.forEach((w, i) =>
+    w.forEach((sig) => {
+      const producers = producersOf.get(sig)
+      if (producers) producers.push(i)
+      else producersOf.set(sig, [i])
+    }),
+  )
   const adj: number[][] = Array.from({ length: n }, () => []) // producer -> consumers
   const indegree = new Array(n).fill(0)
   reads.forEach((r, i) => {
     r.forEach((sig) => {
-      const p = producerOf.get(sig)
-      if (p === undefined) {
+      const producers = producersOf.get(sig)
+      if (producers === undefined) {
         // Not a chip input, not a literal, and no part writes it → dangling/typo'd signal.
         errors.push({ message: `Signal "${sig}" is read by part "${resolved[i].part.name}" but no part produces it`, partName: resolved[i].part.name })
         return
       }
-      if (p !== i) {
-        adj[p].push(i)
-        indegree[i]++
+      // An edge from EVERY producer, not just the last one: a signal assembled from several slice
+      // writes is only complete once all of them have run, so all of them must precede the read.
+      for (const p of producers) {
+        if (p !== i) {
+          adj[p].push(i)
+          indegree[i]++
+        }
       }
     })
   })
