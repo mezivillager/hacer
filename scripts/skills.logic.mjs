@@ -145,7 +145,15 @@ export const BRIEF_INVARIANTS = [
         ],
       },
       // Without this the tier that reviewed a PR is unrecorded, so no future tier claim is auditable.
-      { id: 'verdict-names-its-model', phrases: ['Name the model you ran on', '**Verified on:**'] },
+      // One phrase per entry on purpose: `containsPhrases` is an ordered subsequence, so several
+      // phrases in one entry couple the rule to document order — an innocent section reorder then
+      // fails with a misleading message. Split, each of these is order-independent.
+      { id: 'verdict-has-a-model-field', phrases: ['**Verified on:**'] },
+      // "always" is the load-bearing word: a rewrite asking for the field only when off-tier passed
+      // an earlier version of this invariant.
+      { id: 'verdict-names-its-model', phrases: ['**Name the model you ran on**, in the `Verified on:` field, always.'] },
+      // The unsafe direction is running low on the engine; a rewrite that dropped this half passed.
+      { id: 'off-tier-disclosed-both-ways', phrases: ['whichever direction it is wrong in'] },
     ],
     absent: [
       { id: 'stryker-mutation-testing', phrases: ['Stryker'], why: 'ADR-0011 removed Stryker' },

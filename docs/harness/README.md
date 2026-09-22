@@ -133,8 +133,8 @@ Change them here, in a PR, like any other knob.
 | Limit | Value | Where it is enforced |
 |---|---|---|
 | Coordinator model | the owner's choice per session — **Opus** typically, **Fable** for harder work | set by the owner when starting a session; not configured here |
-| Default subagent model | **Opus** (`CLAUDE_CODE_SUBAGENT_MODEL=opus`) — significant work: features, fixes, design, verification of code, fidelity | `.claude/settings.json` `env` |
-| Sonnet only for | routine, easy work: docs-only edits and their review, mechanical changes, issue/label housekeeping, gardening | an explicit `model: sonnet` per dispatch (or agent `model:` frontmatter) |
+| Default subagent model | **Opus** (`CLAUDE_CODE_SUBAGENT_MODEL=opus`) — significant work: features, fixes, design, fidelity, and verification of `risk:2` or engine changes | `.claude/settings.json` `env` |
+| Sonnet for | routine, easy work: docs-only edits and their review, mechanical changes, issue/label housekeeping, gardening — **and verifying any PR that is not `risk:2` and touches neither `src/core/` nor `src/simulation/`** (`model-tiering.md` §2) | an explicit `model: sonnet` per dispatch (or agent `model:` frontmatter) |
 | Concurrent subagents per session | **4** (`CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS=4`; default is 20) | `.claude/settings.json` `env` |
 | Subagent tokens per coordinator run | stop dispatching new work and report at **~2M** (summed from task notifications), unless the owner asked for a longer run | the coordinator (`ha-next`, `/autonomous`) |
 | Agents after their PR | report and **stop** — never keep watching CI | `implementer-brief.md` |
@@ -143,7 +143,10 @@ Change them here, in a PR, like any other knob.
 | Cursor daily ration | **6M tokens a local day** (12M burst ceiling), ≈17 measured reviews; the lane is skipped with exit 7 when the day is spent or included usage is unconfirmed — the policy, its arithmetic and the dashboard re-read are in `usage-rationing.md` | `scripts/lane-budget.mjs`, run by `scripts/second-opinion.mjs` before every lane run (#302) |
 
 Which tier each role gets, the replay that decided it, and what would change it: `model-tiering.md`
-(#255) — it refines the two rows above rather than replacing them.
+(#255). It **refines the two rows above, and on one point overrides them**: verification is tiered by
+the PR, not by the word "significant" — `risk:2` and engine changes on Opus, everything else on
+Sonnet. Where the table above and `model-tiering.md` disagree about verification, `model-tiering.md`
+is the one to follow.
 
 Account-level caps only the owner can set: Claude **extra usage** (claude.ai → Settings → Usage) and
 Cursor **on-demand spend limit** (cursor.com dashboard → Spending). Recommended values are in #255.
