@@ -2,7 +2,7 @@
 
 > Moved into the repo on 2026-09-18 so cloud sessions and routines see it; the workspace `CLAUDE.md` now points here. Owner intent, not a spec: the parts marked "beyond current docs" are forward intent.
 
-HACER ("Hardware Architecture and Constraints Explorer & Researcher") is a first-principles computing platform: build a working computer from a single NAND gate up through a full software stack, in an interactive 3D environment. Inspired by nand2tetris — and meant to outgrow it.
+HACER ("Hardware Architecture and Constraints Explorer & Researcher") is a first-principles computing platform: build a working computer from a single NAND gate up through a full software stack, in an explorable 3D environment. Inspired by nand2tetris — and meant to outgrow it.
 
 The owner's explicit ask: **every session should reason and propose with the greater goal in view**, not just the immediate ticket. When you plan, suggest, or design, serve the current near-term phase *while* staying compatible with the long arc below.
 
@@ -10,6 +10,7 @@ The owner's explicit ask: **every session should reason and propose with the gre
 - **nand2tetris as a compatibility baseline, then beyond it** — native `.hdl/.tst/.cmp/.hack/.vm/.jack`, the 12 reference projects, then custom hardware architectures, custom instruction sets, and new languages.
 - **AI-Agent Parity** — *every action a human can take, an AI agent can take programmatically.* AI is a first-class user for design, optimization, autonomous building, and tutoring/explaining (dedicated Tutor/Debug agent types; full Agent API is the future Phase 7).
 - **Progressive complexity + plugin-first extensibility** — start narrow and grow (Beginner→Creator); renderers, agents, analyzers, and tools plug into stable APIs. "Start simple, grow more complex and more configurable over time."
+- **Declared, not drawn** (owner, 2026-09-21; decided in [ADR-0020](decisions/0020-spec-only-writes-read-only-projections.md)) — a circuit is *stated*, in a spec, a command, a prompt or an MCP call, and wiring is routed automatically. The 2D and 3D surfaces are **read-only projections**: navigate, orbit, zoom, hover and click to inspect, and nothing else. Both renderers are first-class; 3D is the showcase and a differentiator — *"the 3d rendering of complex components will be one of its differentiators"* — and read-only is what frees its effort for composite chips, levels of detail and signal flow rather than for following a hand. Manual 2D/3D editing is not lost, only not built: it returns, if ever, as a command writing a layout hint.
 
 **Owner's North Star that goes *beyond* current docs** (treat as forward intent, not as something the roadmap already specifies — don't go hunting for docs that don't exist):
 - **Extend downward, below the NAND gate** — toward transistors / device physics. (Docs today treat NAND as the floor; the only adjacent note is far-future FPGA bitstream synthesis in `appendices.md`.)
