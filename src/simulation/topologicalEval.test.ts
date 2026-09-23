@@ -1066,7 +1066,12 @@ describe('junction feed wire — structural trace (#356)', () => {
     expect(truthTable(c.a.id)[c.not1.id]).toEqual([1, 0])
   })
 
-  it('survives the trunk being deleted and re-added (the real path to a branch-first junction)', () => {
+  // Delete-and-re-add is how `wireIds` ends up branch-first through ordinary use. It is NOT by
+  // itself enough to make the evaluator read the wrong value: `completeJunctionWiring` copies the
+  // trunk's source into every branch (`wiringActions.ts`), so the wires a junction lists share a
+  // `from` and index 0 is harmless. The wrong values need a branch whose `from` IS the junction —
+  // a shape serialization permits and no store action writes today. Both are covered here.
+  it('survives the trunk being deleted and re-added (wireIds becomes branch-first)', () => {
     const c = buildFanOut()
     setWireIds(c.junction.id, [c.trunk.id, c.branch1.id, c.branch2.id])
 
