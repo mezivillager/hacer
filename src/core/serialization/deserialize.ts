@@ -26,6 +26,14 @@ export interface DeserializedCircuit {
  * never shows anything to a person — the caller decides that. Every warning names
  * what was wrong *and where*: the version of the document, or the id and saved
  * type of the gate that was dropped.
+ *
+ * **Where the line falls.** A warning is always about *one entry*, and only ever a
+ * gate entry: a gate is reported and dropped, and the rest of the circuit loads.
+ * Anything wrong with the *document itself* — a missing top-level array, or a
+ * malformed wire, node, junction or bus record — is not one bad gate but nothing to
+ * load, and it still throws out of `deserializeCircuit` for the caller to catch,
+ * exactly as it did before warnings became data. Widening recovery to those records
+ * would change what a person sees, which #181 deliberately does not do.
  */
 export type DeserializeWarning =
   | {
@@ -102,6 +110,9 @@ function migrateGateTypeName(raw: string): string | null {
 }
 
 const cloneVec3 = (v: { x: number; y: number; z: number }) => ({ x: v.x, y: v.y, z: v.z })
+
+/** Stands in for `id`/`type` when the entry does not carry a readable one. */
+const UNIDENTIFIED_GATE = '(unidentified)'
 
 /** Rebuilds a saved gate, or `null` when no registry knows its chip. */
 function reconstructGate(s: SerializedGate, chipName: string): GateInstance | null {
@@ -219,35 +230,66 @@ export function deserializeCircuit(data: SerializedCircuit): DeserializeResult {
   // the simulation's missing-endpoint fallback.
   const skippedGateIds = new Set<string>()
   for (const s of data.gates) {
-    const chipName = migrateGateTypeName(s.type)
-    if (chipName === null) {
+    // Recovery is *per entry*: a gate this build cannot rebuild is reported and
+    // dropped, and the rest of the circuit still loads. `importCircuitJSON` reads
+    // an arbitrary user-supplied file, so a record whose shape this build does not
+    // know — a save from a newer build, a hand-edited file — is an expected input,
+    // and losing a whole circuit over one gate is the worse outcome. The `try`
+    // spans exactly what it spanned before warnings became data (#181): every way
+    // one entry can fail ends as one warning naming that gate.
+    try {
+      // Routed into the handler below rather than warned about here: an entry with
+      // no readable `type` is the same event, and one construction site keeps the
+      // warning's `gateType: string` contract honest instead of reporting `undefined`.
+      if (typeof s?.type !== 'string') throw new TypeError('gate record has no "type" field')
+      const chipName = migrateGateTypeName(s.type)
+      if (chipName === null) {
+        warnings.push({
+          code: 'unsupported-gate-type',
+          gateId: s.id,
+          gateType: s.type,
+          message: `Skipped unsupported gate type "${s.type}" — NOR and XNOR are not supported in the builtin chip system.`,
+        })
+        skippedGateIds.add(s.id)
+        continue
+      }
+      // `migrateGateTypeName` passes unknown names through unchanged, so a save
+      // produced by a newer build with chips this one doesn't ship yet reaches
+      // here. Drop that gate with a warning and let the rest of the circuit load.
+      const gate = reconstructGate(s, chipName)
+      if (gate === null) {
+        warnings.push({
+          code: 'unknown-chip',
+          gateId: s.id,
+          gateType: s.type,
+          chipName,
+          message:
+            `Skipped unknown chip "${s.type}" while loading circuit — ` +
+            `"${chipName}" is in neither the builtin nor the user chip registry.`,
+        })
+        skippedGateIds.add(s.id)
+        continue
+      }
+      gates.push(gate)
+    } catch (error) {
+      // The entry is whatever the file said it was; read its identity defensively.
+      const entry = s as Partial<SerializedGate> | null | undefined
+      const gateId = typeof entry?.id === 'string' ? entry.id : UNIDENTIFIED_GATE
+      const gateType = typeof entry?.type === 'string' ? entry.type : UNIDENTIFIED_GATE
+      const reason = error instanceof Error ? error.message : String(error)
       warnings.push({
-        code: 'unsupported-gate-type',
-        gateId: s.id,
-        gateType: s.type,
-        message: `Skipped unsupported gate type "${s.type}" — NOR and XNOR are not supported in the builtin chip system.`,
-      })
-      skippedGateIds.add(s.id)
-      continue
-    }
-    // `migrateGateTypeName` passes unknown names through unchanged, so a save
-    // produced by a newer build with chips this one doesn't ship yet reaches
-    // here. Drop that gate with a warning and let the rest of the circuit load.
-    const gate = reconstructGate(s, chipName)
-    if (gate === null) {
-      warnings.push({
-        code: 'unknown-chip',
-        gateId: s.id,
-        gateType: s.type,
-        chipName,
+        code: 'unreadable-gate',
+        gateId,
+        gateType,
+        reason,
         message:
-          `Skipped unknown chip "${s.type}" while loading circuit — ` +
-          `"${chipName}" is in neither the builtin nor the user chip registry.`,
+          `Skipped gate "${gateId}" (saved as "${gateType}") while loading circuit — ` +
+          `this build could not read that record: ${reason}.`,
       })
-      skippedGateIds.add(s.id)
-      continue
+      // Only a gate we can name can have its wires pruned; an entry with no
+      // readable id had no id for a wire to reference either.
+      if (gateId !== UNIDENTIFIED_GATE) skippedGateIds.add(gateId)
     }
-    gates.push(gate)
   }
 
   const isLiveGateRef = (endpoint: SerializedWire['from']): boolean =>

@@ -57,10 +57,18 @@ function storageKeyFor(name: string): string {
  * logic and returns its warnings as data (#181); this is the one place that
  * decides they become toasts.
  *
- * A `null` document means the document was not readable at all — the first
- * warning says why, and it is reported as an error, exactly as the thrown
- * version used to be. A readable document with warnings loads, and each warning
- * is shown, exactly as the reader's own `notify.warning` calls used to.
+ * Three outcomes, one per way a load can end:
+ * - **`null` document** — not readable at all (today: a version this build does not
+ *   know). The first warning says why, shown as one error, exactly as the thrown
+ *   version used to be.
+ * - **document + warnings** — every gate entry the reader could not rebuild was
+ *   dropped and named: one warning toast each, in document order, then the circuit
+ *   loads. Same count and order as the reader's own `notify.warning` calls used to
+ *   produce; two of the texts changed (same information, better wording).
+ * - **a throw out of `deserializeCircuit`** — the document's own shape is wrong (a
+ *   missing top-level array, a malformed wire/node/junction/bus record), so there is
+ *   nothing to load. Unchanged: each caller's `try/catch` turns it into one error
+ *   toast. Recovery is per *gate* entry only — see `DeserializeWarning`.
  *
  * @returns the restored circuit, or `null` when there is nothing to load.
  */
