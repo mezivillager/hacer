@@ -632,3 +632,144 @@ describe('compileHDL — a part input pin bit may be bound only once (#367)', ()
     }
   })
 })
+
+// ── #363 — dependency edges per bit range, not per signal ──────────────────────────────────────
+// #362 gave a read an edge from EVERY writer of the signal, which is right for a signal assembled
+// from several slice writes and wrong for a read that never looks at the bits the other writers
+// produce: a part reading `t[1]` waited for the part that writes `t[0]`, and when that writer was
+// itself downstream of the reader the compiler reported a cycle that does not exist bit-wise.
+// An unsliced read still overlaps every write, so #355's rule is unchanged — it is the special
+// case of this one where the read covers the whole signal.
+
+function perBitRegistry(): ChipRegistry {
+  const r = joinerRegistry()
+  registerBuiltin(r, 'Not4', [{ name: 'in', width: 4 }], [{ name: 'out', width: 4 }], (i) => ({ out: ~i.in & 0xf }))
+  registerBuiltin(r, 'Not8', [{ name: 'in', width: 8 }], [{ name: 'out', width: 8 }], (i) => ({ out: ~i.in & 0xff }))
+  return r
+}
+
+describe('compileHDL — dependency edges follow bits, not signal names (#363)', () => {
+  let reg: ChipRegistry
+  beforeEach(() => {
+    reg = perBitRegistry()
+  })
+  function compile(src: string) {
+    const ast = parseHDL(src)
+    expect(ast.success).toBe(true)
+    if (!ast.success) throw new Error('parse failed')
+    return compileHDL(ast.chip, reg)
+  }
+  /** Every ordering of the parts must compile AND agree on the value — the whole point. */
+  function expectSameUnderEveryOrdering(chip: (order: readonly string[]) => string, parts: readonly string[], inputs: Record<string, number>, expected: Record<string, number>) {
+    for (const order of permutations(parts)) {
+      const label = order.join(' ')
+      expect({ label, ...evaluateHdl(chip(order), inputs, reg) }).toEqual({ label, ...expected })
+    }
+  }
+
+  // The issue's own chip. Two signals cross: `u` is written from `t[1]` and `t[0]` is written from
+  // `u`, so per-signal edges close a loop t→u→t that no bit ever travels.
+  const F2_PARTS = ['Not(in=t[1], out=u);', 'Not(in=u, out=t[0]);', 'Not(in=a, out=t[1]);', 'And(a=t[0], b=u, out=out);'] as const
+  const f2 = (order: readonly string[]) => `CHIP F2 { IN a; OUT out; PARTS: ${order.join(' ')} }`
+
+  it("compiles the issue's F2 chip, which has no cycle bit-wise", () => {
+    const r = compile(f2(F2_PARTS))
+    expect(r.success).toBe(true)
+  })
+
+  it('evaluates F2 the same, and correctly, under every one of the 24 part orderings', () => {
+    // a=0: t[1]=1, u=Not(1)=0, t[0]=Not(0)=1, out=And(1,0)=0. a=1: t[1]=0, u=1, t[0]=0, out=0.
+    expectSameUnderEveryOrdering(f2, F2_PARTS, { a: 0 }, { out: 0 })
+    expectSameUnderEveryOrdering(f2, F2_PARTS, { a: 1 }, { out: 0 })
+  })
+
+  // The issue's second repro, measured on plain 1-bit parts: a three-link chain through three bits
+  // of one signal, read whole at the end. Bit-wise the order is forced and acyclic.
+  const X_PARTS = ['Not(in=a, out=u[0]);', 'Not(in=u[0], out=u[1]);', 'Not(in=u[1], out=u[2]);', 'Not16(in=u, out=out);'] as const
+  const xChain = (order: readonly string[]) => `CHIP X { IN a; OUT out[16]; PARTS: ${order.join(' ')} }`
+
+  it('compiles a chain through three bits of one signal, read whole (#355 unchanged)', () => {
+    // a=0 → u[0]=1, u[1]=0, u[2]=1 → u=0b101=5 → out = ~5 & 0xffff = 65530. The whole-signal read
+    // still waits for all three writers, which is what makes 5 rather than a half-built value.
+    expectSameUnderEveryOrdering(xChain, X_PARTS, { a: 0 }, { out: 65530 })
+  })
+
+  // Derived here, not taken from the issue: the same defect with WIDE ranges and slices on BOTH
+  // sides of a connection (#357/#370) — the bus-joiner shape the importer emits. `m[4..7]` is read
+  // by a part that `m[0..3]`'s writer is downstream of, so the per-signal edges close a loop while
+  // every bit flows one way: m[4..7] → lo → m[0..3] → out.
+  const BUS_PARTS = [
+    'Not4(in=m[4..7], out=lo);',
+    'Not4(in=lo, out=m[0..3]);',
+    'Not8(in[0..3]=a, in[4..7]=a, out[4..7]=m[4..7]);',
+    'Not8(in[0..3]=m[0..3], in[4..7]=lo, out=out);',
+  ] as const
+  const bus = (order: readonly string[]) => `CHIP Bus { IN a[4]; OUT out[8]; PARTS: ${order.join(' ')} }`
+
+  it('compiles wide disjoint slices with part-pin slices on both sides, in every ordering', () => {
+    // a=5 → m[4..7]=~5&0xf=0xa, lo=5, m[0..3]=0xa, out = ~(0xa | (5<<4)) & 0xff = 0x5 | (0xa<<4).
+    expectSameUnderEveryOrdering(bus, BUS_PARTS, { a: 0b0101 }, { out: 0xa5 })
+  })
+
+  it('still rejects a real bit-wise cycle, naming the signal and the bits', () => {
+    const r = compile('CHIP C { IN a; OUT out; PARTS: Not(in=w[1], out=w[0]); Not(in=w[0], out=w[1]); And(a=w[0], b=w[1], out=out); }')
+    expect(r.success).toBe(false)
+    if (!r.success) {
+      const message = r.errors[0].message
+      expect(message).toMatch(/combinational cycle/)
+      expect(message).toContain('"w" bit 0')
+      expect(message).toContain('"w" bit 1')
+    }
+  })
+
+  it('names no bit when the cycle runs through whole signals', () => {
+    const r = compile('CHIP C { IN a; OUT out; PARTS: Not(in=w2, out=w1); Not(in=w1, out=w2); And(a=w1, b=w2, out=out); }')
+    expect(r.success).toBe(false)
+    if (!r.success) {
+      const message = r.errors[0].message
+      expect(message).toContain('"w1"')
+      expect(message).toContain('"w2"')
+      expect(message).not.toMatch(/bit/)
+    }
+  })
+
+  it('still catches a cycle a whole-signal read closes through one slice writer (#355)', () => {
+    // `Not16(in=t)` reads every bit of `t`, so it really does depend on the part writing `t[0]`,
+    // which reads `x` back from it. Widening the read must not lose that edge.
+    const r = compile('CHIP R { IN a; OUT out[16]; PARTS: Not16(in=t, out=x); Not(in=x[0], out=t[0]); Not(in=a, out=t[1]); Not16(in=x, out=out); }')
+    expect(r.success).toBe(false)
+    if (!r.success) {
+      expect(r.errors[0].message).toMatch(/combinational cycle/)
+      expect(r.errors[0].message).toContain('"t" bit 0')
+    }
+  })
+
+  it('reports a bit driven by three parts once, not twice', () => {
+    const r = compile('CHIP D { IN a; OUT out[16]; PARTS: Not(in=a, out=t[0]); Not(in=a, out=t[0]); Not(in=a, out=t[0]); Not16(in=t, out=out); }')
+    expect(r.success).toBe(false)
+    if (!r.success) {
+      expect(r.errors.filter((e) => /driven by more than one part/.test(e.message))).toHaveLength(1)
+      expect(r.errors[0].message).toBe('Signal "t" bit 0 is driven by more than one part')
+    }
+  })
+
+  it('names no bit when two parts drive a whole signal', () => {
+    const r = compile('CHIP D { IN a[16]; OUT out[16]; PARTS: Not16(in=a, out=t); Not16(in=a, out=t); Not16(in=t, out=out); }')
+    expect(r.success).toBe(false)
+    if (!r.success) expect(r.errors[0].message).toBe('Signal "t" is driven by more than one part')
+  })
+
+  it('still names the shared bit when a whole-signal write overlaps a slice write', () => {
+    const r = compile('CHIP D { IN a[16]; OUT out[16]; PARTS: Not16(in=a, out=t); Not(in=a[0], out=t[3]); Not16(in=t, out=out); }')
+    expect(r.success).toBe(false)
+    if (!r.success) expect(r.errors[0].message).toBe('Signal "t" bit 3 is driven by more than one part')
+  })
+
+  it('reports a part input pin bit bound by three connections once, not twice', () => {
+    const r = compile('CHIP D { IN a; OUT out[16]; PARTS: Not16(in[0]=a, in[0]=a, in[0]=a, out=out); }')
+    expect(r.success).toBe(false)
+    if (!r.success) {
+      expect(r.errors.filter((e) => /bound by more than one connection/.test(e.message))).toHaveLength(1)
+    }
+  })
+})
