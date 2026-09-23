@@ -3,7 +3,8 @@ import type { HDLChip, HDLPart, HDLSlice } from './types'
 import type { ChipDefinition } from '../chips/types'
 import type { ChipRegistry } from '../chips/registry'
 import { isBuiltinChip } from '../chips/types'
-import { readSubBus, writeSubBus } from '@/simulation/busOps'
+import { maskForWidth, readSubBus, writeSubBus } from '@/simulation/busOps'
+import { printPinRef } from './printer'
 
 export interface EvalContext {
   registry: ChipRegistry
@@ -76,7 +77,11 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
     for (const conn of part.connections) {
       if (conn.externalSlice || LITERALS.has(conn.external)) continue // sliced writes don't pin total width
       const outPin = def.outputs.find((p) => p.name === conn.internal)
-      if (outPin && !signalWidth.has(conn.external)) signalWidth.set(conn.external, outPin.width)
+      // A part-pin slice narrows what is written: `Not16(in=a, out[0..3]=nib)` makes `nib` 4 bits
+      // wide, not 16 — the transfer width, not the whole pin, is what reaches the signal.
+      if (outPin && !signalWidth.has(conn.external)) {
+        signalWidth.set(conn.external, conn.internalSlice ? sliceBits(conn.internalSlice) : outPin.width)
+      }
     }
   }
 
@@ -99,16 +104,21 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
         continue
       }
       const pin = inPin ?? outPin
-      if (pin && conn.externalSlice) {
-        const sliceWidth = sliceBits(conn.externalSlice)
-        if (sliceWidth !== pin.width) {
-          errors.push({ message: `Part "${part.name}" pin "${conn.internal}" width ${pin.width} != slice width ${sliceWidth}`, partName: part.name, pinName: conn.internal })
-        }
-      } else if (pin && !LITERALS.has(conn.external)) {
-        // Unsliced connection: pin width must match the external signal's full width.
-        const extWidth = signalWidth.get(conn.external)
-        if (extWidth !== undefined && extWidth !== pin.width) {
-          errors.push({ message: `Part "${part.name}" pin "${conn.internal}" width ${pin.width} != signal "${conn.external}" width ${extWidth}`, partName: part.name, pinName: conn.internal })
+      if (pin && conn.internalSlice && conn.internalSlice.end >= pin.width) {
+        errors.push({ message: `Part "${part.name}" pin "${printPinRef(conn.internal, conn.internalSlice)}" is out of range; "${conn.internal}" has width ${pin.width}`, partName: part.name, pinName: conn.internal })
+      } else if (pin) {
+        // The two sides are sized independently: the part's pin (sliced or whole) has to carry
+        // exactly as many bits as the signal it is wired to (sliced, or whole when its width is
+        // known). A literal takes the width of the side it is bound to.
+        const internalWidth = conn.internalSlice ? sliceBits(conn.internalSlice) : pin.width
+        const externalWidth = conn.externalSlice
+          ? sliceBits(conn.externalSlice)
+          : LITERALS.has(conn.external)
+            ? internalWidth
+            : signalWidth.get(conn.external)
+        if (externalWidth !== undefined && externalWidth !== internalWidth) {
+          const external = conn.externalSlice ? `slice "${printPinRef(conn.external, conn.externalSlice)}"` : `signal "${conn.external}"`
+          errors.push({ message: `Part "${part.name}" pin "${printPinRef(conn.internal, conn.internalSlice)}" width ${internalWidth} != ${external} width ${externalWidth}`, partName: part.name, pinName: conn.internal })
         }
       }
       if (inPin) {
@@ -202,25 +212,36 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
     for (const { part, def } of orderedParts) {
       const partInputs: Record<string, number> = {}
       for (const conn of part.connections) {
-        if (!def.inputs.some((p) => p.name === conn.internal)) continue // not an input pin
-        if (conn.external === 'true') partInputs[conn.internal] = 1
-        else if (conn.external === 'false') partInputs[conn.internal] = 0
-        else {
+        const inPin = def.inputs.find((p) => p.name === conn.internal)
+        if (!inPin) continue // not an input pin
+        // Bits moved by this wire: its part-pin slice, or the whole pin. Validation has already
+        // proved the external side carries the same number.
+        const bits = conn.internalSlice ? sliceBits(conn.internalSlice) : inPin.width
+        let value: number
+        if (LITERALS.has(conn.external)) {
+          value = conn.external === 'true' ? maskForWidth(bits) : 0
+        } else {
           const sig = signals[conn.external] ?? 0
-          partInputs[conn.internal] = conn.externalSlice
-            ? readSubBus(sig, conn.externalSlice.start, sliceBits(conn.externalSlice))
-            : sig
+          value = conn.externalSlice ? readSubBus(sig, conn.externalSlice.start, bits) : sig
         }
+        // A sliced part pin is assembled bit-group by bit-group (`Or8Way(in[0]=a, in[1]=b)`),
+        // so each wire writes into the pin instead of replacing it. Unbound bits stay 0.
+        partInputs[conn.internal] = conn.internalSlice
+          ? writeSubBus(partInputs[conn.internal] ?? 0, value, conn.internalSlice.start, bits)
+          : value
       }
       const partOutputs = ctx.evalChip(def, partInputs, { ...ctx, depth: ctx.depth + 1 })
       for (const conn of part.connections) {
-        if (!def.outputs.some((p) => p.name === conn.internal)) continue // not an output pin
+        const outPin = def.outputs.find((p) => p.name === conn.internal)
+        if (!outPin) continue // not an output pin
         const v = partOutputs[conn.internal]
-        if (typeof v === 'number') {
-          signals[conn.external] = conn.externalSlice
-            ? writeSubBus(signals[conn.external] ?? 0, v, conn.externalSlice.start, sliceBits(conn.externalSlice))
-            : v
-        }
+        if (typeof v !== 'number') continue
+        const bits = conn.internalSlice ? sliceBits(conn.internalSlice) : outPin.width
+        // Read the part's own pin through its slice first, then place the result on the signal.
+        const value = conn.internalSlice ? readSubBus(v, conn.internalSlice.start, bits) : v
+        signals[conn.external] = conn.externalSlice
+          ? writeSubBus(signals[conn.external] ?? 0, value, conn.externalSlice.start, bits)
+          : value
       }
     }
 

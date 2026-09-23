@@ -460,25 +460,27 @@ class Parser {
     return conns
   }
 
+  /**
+   * `Conn = PinRef '=' (PinRef | 'true' | 'false')`, where `PinRef = IDENT SubBus?`.
+   *
+   * Both sides take a slice, independently: the left names a pin of the part being instantiated
+   * and the right names a signal of the chip being declared. A literal takes no slice.
+   */
   private parseConn(): HDLConnection {
     const internalToken = this.expect('IDENT')
+    const internalSlice = this.parseSlice()
     this.expect('EQUALS')
 
-    if (this.current().type === 'TRUE') {
+    const conn: HDLConnection = { internal: internalToken.value, external: '' }
+    if (internalSlice) conn.internalSlice = internalSlice
+
+    if (this.current().type === 'TRUE' || this.current().type === 'FALSE') {
+      conn.external = this.current().type === 'TRUE' ? 'true' : 'false'
       this.pos++
-      return { internal: internalToken.value, external: 'true' }
-    }
-    if (this.current().type === 'FALSE') {
-      this.pos++
-      return { internal: internalToken.value, external: 'false' }
+      return conn
     }
 
-    const externalToken = this.expect('IDENT')
-    const conn: HDLConnection = {
-      internal: internalToken.value,
-      external: externalToken.value,
-    }
-
+    conn.external = this.expect('IDENT').value
     const externalSlice = this.parseSlice()
     if (externalSlice) conn.externalSlice = externalSlice
 

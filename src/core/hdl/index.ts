@@ -6,5 +6,7 @@ export type {
   HDLConnection,
   HDLParseError,
   HDLParseResult,
+  HDLSlice,
 } from './types'
 export { parseHDL } from './parser'
+export { printHDL } from './printer'
