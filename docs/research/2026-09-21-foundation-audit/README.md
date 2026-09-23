@@ -9,6 +9,7 @@ is a differentiator to invest in.
 | Read | For |
 |---|---|
 | `REPORT.md` | the answer, the target structure, the working rules, the ordered plan (§6), the plan as issues (§6a), the gate (§7), testing (§8), rendering R&D (§9a) |
+| `BACKLOG-SWEEP.md` | the verdict on every open issue against the read-only direction (#340, 2026-09-23): keep / re-scope / hold / close, the count per class, and the Phase N issues the sweep filed |
 | `evidence/MEASUREMENTS.md` | what was measured in the code (called F1 in the other files); re-derive with `evidence/scripts/run.sh` |
 | `evidence/RESEARCH.md` | outside sources, dated, tagged evidence or opinion (F2) |
 | `evidence/TESTING.md` | the testing audit: what each layer has caught, its cost, the fate of every suite (T1) |

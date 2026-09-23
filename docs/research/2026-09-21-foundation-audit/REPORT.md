@@ -354,8 +354,8 @@ re-used rather than re-filed; an issue pulled forward from another row keeps tha
 | 1.6 held-out oracle | #193, #338, #151 | vectors, differential harness, tamper flag |
 | P.1 the ADR | #327 | absorbs #188, #189, #190, #217 (held) |
 | P.2 the spike | #328 | its break list becomes the Phase N issues |
-| P.3 backlog sweep | #340 | every open issue, once |
-| Phase N, Phase C | not filed | the ADR and the spike produce them — filing now would pre-empt both |
+| P.3 backlog sweep | #340 | every open issue, once — **done 2026-09-23**, verdicts in `BACKLOG-SWEEP.md` |
+| Phase N, Phase C | ~~not filed~~ | **Amended 2026-09-23.** The ADR is accepted and the spike delivered, so Phase N *is* filed: N.0–N.11 are #373, #374, #377–#386, plus the two preconditions the ADR's own text turned into work — #372 (the alias/`compileSpec` spike, before N.1) and #376 (the real-version-1 corpus, ADR-0020 §7.2). Phase C stays unfiled: C.1 is the gate over §6's frozen capability list, and C.2's deletions are filed as each replacement becomes the default |
 
 Held, each with the reason on the issue: #183, #185, #186 (refactoring legacy code scheduled for
 deletion — rule 1), #184 (kept code, but the ADR names its module), #188, #189, #190, #217.
