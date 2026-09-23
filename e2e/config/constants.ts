@@ -21,9 +21,6 @@ export const TIMEOUTS = {
  */
 export const APP_ENTRY_URL = '/?notour=1'
 
-/** Grid cell size in world units */
-export const GRID_SIZE = 2.0
-
 /** Y position for flat gates (BODY_DEPTH / 2) */
 export const GATE_Y = 0.2
 

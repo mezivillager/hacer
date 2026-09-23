@@ -23,14 +23,6 @@ async function readStoreCount(page: Page, slot: 'gates' | 'wires'): Promise<numb
   }, slot)
 }
 
-async function readSimulationRunning(page: Page): Promise<boolean> {
-  return page.evaluate(() => {
-    const store = window.__CIRCUIT_STORE__
-    if (!store) throw new Error('window.__CIRCUIT_STORE__ not initialized')
-    return Boolean(store.simulationRunning)
-  })
-}
-
 /**
  * Assert the store reports the expected gate count.
  */
@@ -43,20 +35,6 @@ export async function expectGateCount(page: Page, count: number): Promise<void> 
  */
 export async function expectWireCount(page: Page, count: number): Promise<void> {
   await expect.poll(() => readStoreCount(page, 'wires'), { timeout: 5000 }).toBe(count)
-}
-
-/**
- * Assert the store reports simulation as running.
- */
-export async function expectSimulationRunning(page: Page): Promise<void> {
-  await expect.poll(() => readSimulationRunning(page), { timeout: 5000 }).toBe(true)
-}
-
-/**
- * Assert the store reports simulation as paused.
- */
-export async function expectSimulationPaused(page: Page): Promise<void> {
-  await expect.poll(() => readSimulationRunning(page), { timeout: 5000 }).toBe(false)
 }
 
 // expectButtonVisible / expectButtonEnabled removed in Phase E \u2014 the

@@ -33,27 +33,6 @@ export async function addGateViaStore(
   )
 }
 
-/**
- * Add multiple gates via store and return their IDs
- */
-export async function addGatesViaStore(
-  page: Page,
-  placements: Array<{ chipName?: GateType; position: Position3D }>
-): Promise<string[]> {
-  return page.evaluate(
-    (placements) => {
-      const ids: string[] = []
-      placements.forEach((p) => {
-        const gateChipName = p.chipName || 'Nand'
-        const res = window.__CIRCUIT_ACTIONS__?.addGate(gateChipName, p.position)
-        if (res?.id) ids.push(res.id)
-      })
-      return ids
-    },
-    placements
-  )
-}
-
 export interface GatePlacementOptions {
   chipName?: GateType
   position: Position3D
@@ -115,34 +94,12 @@ export async function addGateViaUI(
 }
 
 /**
- * Add a Nand gate via UI (backward compatibility wrapper).
- */
-export async function addNandGateViaUI(
-  page: Page,
-  options: GatePlacementOptions
-): Promise<void> {
-  return addGateViaUI(page, { ...options, chipName: 'Nand' })
-}
-
-/**
  * Select a gate via store (pass null to deselect)
  */
 export async function selectGate(page: Page, gateId: string | null): Promise<void> {
   await page.evaluate(
     ({ gateId }) => {
       window.__CIRCUIT_ACTIONS__?.selectGate(gateId)
-    },
-    { gateId }
-  )
-}
-
-/**
- * Remove a gate via store
- */
-export async function removeGateViaStore(page: Page, gateId: string): Promise<void> {
-  await page.evaluate(
-    ({ gateId }) => {
-      window.__CIRCUIT_ACTIONS__?.removeGate(gateId)
     },
     { gateId }
   )

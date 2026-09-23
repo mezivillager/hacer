@@ -54,27 +54,6 @@ export async function ensureWires(page: Page, count: number, timeout: number = T
 }
 
 /**
- * Wait until simulation is in the expected running state
- */
-export async function ensureSimulationState(
-  page: Page,
-  running: boolean,
-  timeout: number = TIMEOUTS.store
-): Promise<void> {
-  // First ensure the store is initialized
-  await waitForStoreUpdate(page, timeout)
-
-  // Then wait for the expected simulation state
-  await page.waitForFunction(
-    (expectedRunning) => {
-      return window.__CIRCUIT_STORE__?.simulationRunning === expectedRunning
-    },
-    running,
-    { timeout }
-  )
-}
-
-/**
  * Wait for the circuit store to be initialized and ready
  */
 export async function waitForStoreUpdate(page: Page, timeout: number = TIMEOUTS.store): Promise<void> {
