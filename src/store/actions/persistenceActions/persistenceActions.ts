@@ -9,8 +9,9 @@ import {
 import { useCircuitStore } from '@/store/circuitStore'
 import type { CircuitStore, PersistenceActions, SavedCircuitSummary } from '../../types'
 
-export const STORAGE_PREFIX = 'hacer-circuit-'
-export const AUTOSAVE_KEY = `${STORAGE_PREFIX}__autosave__`
+import { AUTOSAVE_KEY, STORAGE_PREFIX } from './storageKeys'
+
+export { AUTOSAVE_KEY, STORAGE_PREFIX }
 
 type SetState = (fn: (state: CircuitStore) => void, replace?: false, actionName?: string) => void
 type GetState = () => CircuitStore
