@@ -1,6 +1,6 @@
 # 0020. Spec-only writes, read-only projections
 
-- **Status:** Proposed — revised after the fresh-context adversarial review [#359](https://github.com/mezivillager/hacer/issues/359) required by #327. Verdict `sound with corrections`; the corrections are applied below and **four decisions changed after that review**, which is why this is not Accepted: nobody accepts their own revision. A second pass over those four deltas is the remaining gate. See "What the review changed".
+- **Status:** Accepted — the fresh-context adversarial review [#359](https://github.com/mezivillager/hacer/issues/359) required by #327 returned `sound with corrections`, and the second pass over the four post-review deltas returned `accept with corrections` (both on [#358](https://github.com/mezivillager/hacer/pull/358), 2026-09-23). Both sets of corrections are applied below — the second pass's seven under "What the second pass changed" — and no further review round is required.
 - **Date:** 2026-09-23
 - **Deciders:** Builder agent for [#327](https://github.com/mezivillager/hacer/issues/327), on the owner's directions of 2026-09-21 (quoted below) and the measurements of spikes [#328](https://github.com/mezivillager/hacer/issues/328) and [#210](https://github.com/mezivillager/hacer/issues/210); revised by a second fresh context against #359's review
 - **Phase:** Phase 0.5 · foundation plan [#318](https://github.com/mezivillager/hacer/issues/318), item P.1
@@ -27,6 +27,25 @@ and generalised from a near-chain (§2). (b) The review asks for `layout(doc, su
 to get a row in §12 *"whatever the answer"*; the answer is that it wins on the measurement, so it is
 the contract in §2 and §12 instead records the two pure comparators it beat. Everything else the
 review raised — the preconditions, the supersession bookkeeping, the counts, the dating — is applied.
+
+## What the second pass changed
+
+The second pass over those four deltas returned `accept with corrections`: it sent none of the four
+back, and found **one measured defect and six text-level gaps**. All seven are applied here and none
+of them changes a decision.
+
+| | Correction | Where |
+|---|---|---|
+| 1 | §1.8's safety argument was **measurably false and is replaced**. #362 refuses two part *outputs* on a bit; C8 is one part *input* pin bound twice, which compiles and silently evaluates last-binding-wins. The decision — keep both drivers — is unchanged; its ground is now the undefined legacy value plus a `compileSpec` rule, with the engine half filed as [#367](https://github.com/mezivillager/hacer/issues/367) | §1.8, §10 |
+| 2 | The parity exemption said "a pin driven by two sources", which swallows C10 — the dissolved joiner whose parity §1.2 cites as measured. Narrowed to **"on the same bit"** | §1, §1.8, §10 |
+| 3 | A net's id is its **sliced** signal reference, not its signal name, which collides on C10. Plus the empty-net normalisation, [#363](https://github.com/mezivillager/hacer/issues/363) as a precondition and as the thing the alias spike must run after, and alias cycles named as a checked property | §1, §1.5, §2, §10 |
+| 4 | "Substitution before ordering" is **stronger** than the draft argued for 1.5 — it removes an in-edge — and is **not a rename** for 1.6. Both stated plainly | §1.5 |
+| 5 | `previous`'s degenerate cases (stale, partial, foreign strategy) are defined; drift is **non-monotone**, not slow; and the hint-less-node-among-hinted-nodes rule that `tidy` still needs is stated | §2 |
+| 6 | The gate rule now says what a **bundled** row does, because rows 13 and 18 name capabilities the legacy app does not have | §6 |
+| 7 | `docs/decisions/README.md`'s index row and this status line move together | this file, the index |
+
+The second pass's own suggestion is taken too: the spike's raw outputs are committed beside
+`evidence/LAYOUT-ORDER.md` before the throwaway tree is deleted.
 
 ## Context
 
@@ -148,14 +167,37 @@ adopting the shape this ADR says it adopted. With an explicit net list:
 - fan-out (row 7) is the sinks list, which is why there is no junction entity;
 - an **unfinished** circuit is `driver: null` — a signal read by a part that nothing writes yet. That
   is exactly the shape `circuit-json` has no room for, and it is why its schema is rejected (1.1);
-- a **multi-driven** pin is two nets naming the same sink, which is representable, diagnosable and
-  compile-rejected rather than inexpressible (1.8).
+- a **multi-driven** pin is two nets naming the same sink, which is representable, diagnosable and —
+  when the two overlap **on the same bit** — compile-rejected rather than inexpressible (1.8). Two
+  nets naming the same sink on *disjoint* bits are ordinary and legal: that is C10, a dissolved
+  joiner (1.2).
 
-`Part` therefore carries only `{ id, chip }`. **The text form does not change**: it is still HDL, and
-`parseSpec` lowers `Chip(pin=signal)` bindings to nets by signal name while `printSpec` raises them
-back. A net's **id is its signal name**, which the text carries already — so net ids are stable
-across a round trip with no marker, which is what `route`'s canonical order, `describeScene`'s
-`netId` and the overlap oracle all rest on. Only part ids need 1.9's marker. *The cost, named:* the in-memory document no longer mirrors the text one-to-one, so the spike's
+`Part` therefore carries only `{ id, chip }`. **The part syntax does not change**: it is still HDL,
+and `parseSpec` lowers `Chip(pin=signal)` bindings to nets while `printSpec` raises them back. What
+changes is the *lowering*, not the part form — 1.5 adds exactly one statement plain HDL has no form
+for (`wire out = a;`) and names it there as a superset in one direction.
+
+**A net's id is its *sliced* signal reference** — `t`, `out`, `out[0]`, `t[3..7]` — and not its
+signal name. *The second pass is right that the name alone collides.* C10 is signal `out` written by
+two parts on disjoint slices (1.2): keyed by name that is either two nets sharing one id or one net
+with two drivers, which `driver: Ref | null` forbids — so "stable net ids" would fail on the very
+case §1.2 cites as measured. The sliced reference is what the adopted code already keys by: the
+spike's netlist uses `` const key = (r) => r.start === undefined ? r.name : `${r.name}[a..b]` `` and
+carries `bus` and `width` beside it. A net is named by the **signal it carries**, so a pass-through
+(1.5) is `out` — the OUT that `wire out = a;` defines — and the `chip-in` on the other side is its
+driver, not its name. The text carries the name and the slice already, so net ids stay stable across
+a round trip with no marker, which is what `route`'s canonical order, `describeScene`'s `netId` and
+the overlap oracle all rest on. Only part ids need 1.9's marker.
+
+**One normalisation clause, because the model admits a net that cannot be printed.** `disconnect` can
+leave a net with neither a driver nor a sink; it has no printed form and would vanish on a round
+trip. Every command and `parseSpec` therefore **drop a net that has no driver and no sinks**, and
+that is the only normalisation. A net with a driver *or* a sink survives: the driverless one is 1.1's
+unfinished circuit, the sinkless one a declared-but-unread signal. `driver: null` and "a net nobody
+wrote" are not distinguishable and do not need to be — a net exists iff its reference appears in a
+binding.
+
+*The cost, named:* the in-memory document no longer mirrors the text one-to-one, so the spike's
 *"printer is a fixed point for all eleven cases"* was measured against a shape that is no longer the
 shape. **That evidence does not transfer and is re-measured as part of N.1** — which it needed
 anyway, because 1.9's id marker changes the printer's output too.
@@ -234,16 +276,35 @@ unrepresentable. Still rejected.
 
 *The engine change, named, and smaller than the first draft thought:* `compileSpec` must bind an OUT
 signal whose producer is an IN signal. It does this by **substitution before ordering** — every read
-of `out` is rewritten to read `a` in the signal table, introducing no node — so **Kahn ordering is
-untouched by construction**, which was the first draft's stated risk. The slice case (1.6) is the
-same shape [#355](https://github.com/mezivillager/hacer/issues/355) already changes `producerOf` to
-carry: a set of producers per signal, one of which is now an IN.
+of `out` is rewritten to read `a` in the signal table — and the code supports that **harder than the
+first revision argued**. `src/core/hdl/compiler.ts` excludes chip inputs from a part's read set
+*before* Kahn (`if (!chipInputNames.has(conn.external)) r.add(conn.external)`), so rewriting a read
+of `out` into a read of `a` does not merely introduce no node: it **removes an in-edge**. No node, no
+edge, no cycle — which was the first draft's stated risk.
+
+**That argument carries 1.5 and not 1.6, and the limit is stated rather than papered over.** When bit
+0 of `out` comes from `a` and bit 1 from a part, one read of `out` cannot be rewritten into one read
+of `a`: substitution is not a rename there. 1.6's mechanism is the different one named just above —
+a **set of producers per signal**, one of which is now an IN, the shape
+[#355](https://github.com/mezivillager/hacer/issues/355) changed `producerOf` to carry — and the
+in-edge argument does **not** transfer to it. That is precisely what the spike has to settle.
+
+**Alias cycles are type-expressible, so they are rejected rather than assumed away.** `driver: Ref`
+admits `kind: 'chip-out'`, so `wire x = y; wire y = x;` types. Nothing makes the substitution graph
+acyclic: `parseSpec` accepts such a document and marks a diagnostic (1.1 — it still draws), and
+`compileSpec` refuses it by name with the cycle's members. **Acyclicity of the substitution graph is
+a property the spike must assert**, not a premise it may rest on.
+
 **What would settle it, and when:** an engine spike with **alias fixtures and a Kahn-ordering
 property over a document mixing driverless-OUT nets, slices and parts** — *not* the Project-1
 vectors, which cannot exercise it at all because no nand2tetris HDL contains a `wire` statement
 (the review's C5, correct, and the first draft's proposed experiment was under-powered for what it
-had to settle). **It runs before N.1 lands**, which is the point past which reversing this stops
-being free (see the spec's migration policy above).
+had to settle). **It runs after [#363](https://github.com/mezivillager/hacer/issues/363) and before
+N.1 lands.** After #363 because `compileHDL` tracks reads and writes per *signal* rather than per
+bit, so since #362 it reports **spurious** combinational cycles on disjoint slices — which is exactly
+the mixed slice/whole-signal shape the spike's fixtures must contain, and it would fail them for a
+reason that has nothing to do with aliases. Before N.1 because that is the point past which
+reversing this stops being free (see the spec's migration policy above).
 
 **1.6 A bus-joiner bit driven by a chip input node is the same net, with a slice on the sink ref.**
 Case C11 breaks today because HDL can only write a slice from a part output. `wire out[0] = a;` is
@@ -257,9 +318,10 @@ drew**, so it records each one in the sidecar as `{ kind: 'slice-inferred', part
 and the shell surfaces them once on import. Silence would make an importer bug indistinguishable
 from a faithful import.
 
-**1.8 A pin driven by two sources is illegal in the spec, and the importer keeps both drivers.** It
-is legal in v1, it is order-dependent, and it survives import only because `compileHDL`'s evaluator
-is *also* last-wins (case C8) — nothing guarantees those two coincidences stay aligned. `parseSpec`
+**1.8 A pin driven by two sources *on the same bit* is illegal in the spec, and the importer keeps
+both drivers.** It is legal in v1, it is order-dependent, and it survives import only because
+`compileHDL`'s evaluator is *also* last-binding-wins (case C8, measured below) — nothing guarantees
+those two coincidences stay aligned. `parseSpec`
 accepts it and marks a diagnostic (so the drawing tells the truth about what was declared);
 `compileSpec` rejects it; **the importer keeps every driver and records a note naming them.**
 
@@ -272,13 +334,25 @@ inheriting a legacy bug as a specification: the legacy document's value on a mul
 There is no correct answer to be in parity with. So the importer chooses nothing, loses nothing, and
 says so; §10 exempts the case from parity with that reason.
 
-[#355](https://github.com/mezivillager/hacer/issues/355) settles what `compileSpec` then does, and
-it is no longer a spec-only rule: writing the same bit twice is **a compile error** in the engine —
-the same answer the reference simulator gives (`Cannot write to pin x[i] multiple times`,
-`../web-ide/simulator/src/chip/builder.ts`), decided on #355 and in flight as PR #362. Keeping both
-drivers is therefore safe rather than reckless: nothing silently evaluates one of them. A document
-that reaches `compileSpec` with two drivers on a bit is refused by name, with both drivers in the
-message, and the drawing has already been showing the diagnostic since it was parsed.
+**What makes keeping both safe is the spec's own rule — not a refusal the engine already performs.**
+*The first revision claimed the second, and the second pass measured it false; this is the corrected
+ground, and the decision above is unchanged.* The engine's clash check is narrower than the case:
+[#362](https://github.com/mezivillager/hacer/pull/362) (merged 2026-09-23) refuses a signal driven by
+two part **outputs** on overlapping bits, and `drivenRanges` in `src/core/hdl/compiler.ts` is
+populated only from part *output* connections. C8 is the other shape — one part **input** pin bound
+to two signals — and that check never sees it. Measured against `origin/main` with #362 in:
+`Not(in=a, in=b, out=out)` **compiles**, and evaluates `{a:1, b:0}` to `out=1`; the same document
+with its bindings swapped evaluates it to `out=0`. Silently last-binding-wins — the exact
+order-dependence the first revision said was impossible.
+
+So the rule is `compileSpec`'s to carry and to test, today: a document reaching it with two drivers
+on a bit is refused **by name**, with both drivers in the message, while the drawing has been showing
+the diagnostic since it was parsed. **Once [#367](https://github.com/mezivillager/hacer/issues/367)
+lands it is the engine's rule too** — #367 is the input-side twin of #355, filed against exactly the
+measurement above, and it brings `compileHDL` in line with the reference simulator (`Cannot write to
+pin x[i] multiple times`, `../web-ide/simulator/src/chip/builder.ts`); it is listed with the other
+preconditions in §10. Keeping both drivers is safe because nothing on the spec path ever *chooses*
+one of them — not because nothing could.
 
 **1.9 Part ids are emitted into the HDL text as a structured trailing comment, and read back.**
 `Nand(a=a, b=b, out=t); // #p3`. The sidecar's `part-id → hint` binding does **not** survive a text
@@ -319,7 +393,7 @@ common path buys nothing and makes every caller and every golden async for no re
 
 Preconditions, which are part of the contract and each get a test:
 
-- **stable part ids** (1.9) and **stable net ids** (§1: a net's id is its signal name);
+- **stable part ids** (1.9) and **stable net ids** (§1: a net's id is its sliced signal reference);
 - **canonical part and net order**, with a test asserting that permuting the input is a no-op — ELK
   moved 195 of 198 nodes on a permutation with no topology change;
 - **a pinned strategy**: `Placements` records `{ strategyId, strategyVersion, options }`, so a golden
@@ -339,6 +413,18 @@ on every later one the parts `previous` already placed keep their relative order
 ones are inserted.** It is still pure and still deterministic — `previous` is an ordinary argument,
 not hidden state; with the same `(doc, surface, previous)` it returns the same placements, and with
 no `previous` it returns exactly what `order: 'barycentre'` returns.
+
+**`previous`'s edges, because it is a contract input and its degenerate cases are the ordinary
+ones.** It is **advisory and never a source of truth**. An entry naming a part the document no longer
+has is ignored; a part the document has with no entry in `previous` is new, and is inserted by the
+first-layout rule among the parts that are held — which is the "one part added" row below. A
+`previous` whose `strategyId` differs from the strategy being run, or whose `strategyVersion` this
+build does not know, is **ignored whole**: the call degrades to a first layout rather than
+half-honouring an ordering it cannot reproduce, and `Placements` records that it was discarded, so a
+golden can tell a first layout from a dropped one. A `previous` belonging to the other surface is a
+different argument rather than a stale one — placements and hints are keyed by surface from v1 (1.4).
+None of this touches purity: the same `(doc, surface, previous)` returns the same placements,
+degenerate cases included.
 
 *This replaces the first draft's `order: 'id'` default, on measurement rather than judgement.* The
 draft called that its weakest decision, measured stability and not readability, and proposed to
@@ -385,14 +471,25 @@ Consequences of the change, each stated:
   it is the right thing to ask for when a golden wants one canonical drawing from one document with
   no history.
 - **`tidy` stops being the fallback for anything** and becomes what it says: one reflow, on request,
-  written to hints with `origin: 'tidy'`. Three of the review's four objections to
-  `tidy`-as-fallback are answered by not needing it — there is no import moment to find, an
-  agent-generated spec gets the good drawing with no command, and tidy-written hints are now
-  distinguishable from chosen ones by `origin` (1.4). The fourth is **half** answered and should not
-  be overstated: incremental layout *does* drift, measured at 1 650 → 2 384 crossings over ten
-  successive additions. It drifts slowly, it stays well below `order: 'id'`'s **best** drawing
-  (3 221), and `tidy` is the reset when someone wants one — which is a reasonable place for an
-  explicit command, and not a place for a silent default.
+  written to hints with `origin: 'tidy'`. **Two** of the review's four objections to
+  `tidy`-as-fallback are answered by not needing it: there is no import moment to find, and an
+  agent-generated spec gets the good drawing with no command. **The third is not answered by
+  `origin` (1.4) alone**, as the first revision claimed — `tidy` is still the drift reset, it writes
+  a hint for **every** node (row 20), and the invariant above is that `layout` never moves a hinted
+  node, so the case needing an answer is the ordinary one five minutes after the first `tidy`: a
+  **hint-less node added among hinted ones**. The rule, stated: hinted nodes are placed first, at
+  their hints, and are then **fixed occupants** of the lattice cells they land on; hint-less nodes
+  are layered and ordered exactly as above and take the first free cell of their layer in canonical
+  within-layer order — so a new part can never land on a hinted one, and no hinted node moves.
+  `tidy` rewrites the hints it wrote (`origin: 'tidy'`) and leaves `origin: 'user'` hints alone, so
+  the reset stays available after any number of additions.
+- **The fourth objection — drift — is half answered, and "slowly" was the wrong word.** Drift is
+  **non-monotone**: the same harness records *one* addition taking the 54-node fixture 1 650 →
+  **2 681** (`docs/research/2026-09-21-foundation-audit/evidence/layout-order-q4.txt`), worse than
+  the 2 384 it reaches after ten. Ten edits therefore do not bound a hundred, and no threshold is
+  defined here. What survives is the claim that matters: incremental stays below `order: 'id'`'s
+  **best** drawing (3 221) on every fixture measured, and `tidy` is the reset when someone wants one
+  — which is a reasonable place for an explicit command, and not a place for a silent default.
 - **`Placements` records `previous`'s `strategyId`/`strategyVersion`**, so a drawing that came from a
   chain of incremental layouts can say so and can be rebuilt from scratch on demand.
 - **What is still not measured:** whether the barycentre drawing *reads* to a person. The number says
@@ -572,7 +669,15 @@ spec path, each as a scenario runnable through the CLI driver **and** at least o
 
 **The gating rule, stated once so the list and the plan cannot drift apart again.** A row gates the
 switch **unless** (a) the legacy app does not have that capability today, so it cannot regress, and
-(b) no gating row depends on it. Exactly two rows qualify, each marked and reasoned in place. *The
+(b) no gating row depends on it. Exactly two rows qualify, each marked and reasoned in place.
+**Rows bundle capabilities, so (a) is read across all of them: a row gates if the legacy app has
+*any* of the capabilities that row names, and the row's runnable scenario then covers exactly those —
+a capability bundled into a gating row that the legacy app does *not* have rides along as new work,
+scheduled, never a gate.** Two rows need that clause and both are marked in place: row 18 bundles
+*drill into a composite*, which the legacy app has no form of (no `drill`, `drillDown`, `enterChip`
+or `subcircuit` anywhere in `src`, and [#172](https://github.com/mezivillager/hacer/issues/172) is
+open and promoted in §11), and row 13 bundles *inspect a net*, where a net is not a legacy entity.
+Without the clause two readers applying (a) literally reach different answers on both rows. *The
 review's C2 is right that the first draft contradicted itself here* — §6 said "every row", §7.3 said
 "rows 1–18", `REPORT.md` §6 said "every scenario", and the two rows that fell through the gap were
 `setHint` and `tidy`: as written, the switch was allowed with **no way to place a part**. §7.3 and
@@ -597,12 +702,12 @@ nothing if something people use today is neither on it nor deliberately dropped.
 | 10 | Leave a circuit unfinished and still see it | parse-to-render (1.1) | gates |
 | 11 | Set an input value; run, step, reset | `setInput` / `run` / `step` / `reset` + pins panel | gates |
 | 12 | See live signal values on the drawing | `describeScene` signals | gates |
-| 13 | Inspect a part, pin or net (ids, widths, values) | hover / click → inspect panel | gates |
+| 13 | Inspect a part, pin or net (ids, widths, values) | hover / click → inspect panel | gates — on part and pin; a net is not a legacy entity (bundled-row rule) |
 | 14 | Run a `.tst`/`.cmp` and see the result | `src/core/testing` + the sidecar's test binding | gates |
 | 15 | Truth table for the current chip | `truthTable`, re-typed onto the spec | gates |
 | 16 | Save, load and autosave a design | spec + sidecar serialisation | gates |
 | 17 | Open a saved version-1 document | `fromLegacyCircuit` + `deserialize` | gates |
-| 18 | Navigate: pan, orbit, zoom, fit, drill into a composite | both renderers | gates |
+| 18 | Navigate: pan, orbit, zoom, fit, drill into a composite | both renderers | gates — on pan/orbit/zoom/fit; drill-down is new work (#172), not a gate (bundled-row rule) |
 | 19 | Put a part (or an I/O terminal) where I want it | `setHint` (1.4) | **gates** — replaces drag-to-place, which the legacy app has |
 | 20 | Tidy the drawing | `tidy` (one reflow → hints, `origin: 'tidy'`) | no — no legacy equivalent, and §2's `{ previous }` removed its fallback role |
 | 21 | Export / import a design as a JSON file you can commit or send | spec + sidecar as two files; `exportCircuitJSON` / `importCircuitJSON` retire with `serialize.ts` | gates — and §7.2 depends on it |
@@ -763,15 +868,23 @@ importer would fail the acceptance test as it was written in `REPORT.md` §6. Th
 about twenty lines, lives in the importer's test harness, and is itself covered by the case that
 exposed the defect.
 
-**One case is exempt from parity, by name and with its reason: a pin driven by two sources (C8).**
-The legacy document's value there is not *last-wins*, it is **undefined** — it depends on array
-order, exactly as #356 showed for junctions — so there is nothing well-defined to be in parity with.
-The importer keeps both drivers and records a note (1.8); `compileSpec` refuses the document by name
-(#355); the acceptance test asserts **that refusal and that note**, not a value. This is the only
-exemption, and the review's C1 is the reason it is written down rather than papered over by an
-importer that quietly picks one driver.
+**One case is exempt from parity, by name and with its reason: a pin driven by two sources *on the
+same bit* (C8).** The legacy document's value there is not *last-wins*, it is **undefined** — it
+depends on array order, exactly as #356 showed for junctions — so there is nothing well-defined to be
+in parity with. The importer keeps both drivers and records a note (1.8); `compileSpec` refuses the
+document by name (1.8 — the engine half is
+[#367](https://github.com/mezivillager/hacer/issues/367), not #362, which refuses only two part
+*outputs* on a bit); the acceptance test asserts **that refusal and that note**, not a value. This is
+the only exemption, and the review's C1 is the reason it is written down rather than papered over by
+an importer that quietly picks one driver.
 
-**Four preconditions of N.2 and N.3**, not parallel work — the draft listed two, and §11 already
+**"On the same bit" is load-bearing, and the first revision left it out.** Without it the exemption
+literally covers C10 — `Not(in=a, out=out[0]); Not(in=b, out=out[1])`, where pin `out` has two
+sources on *disjoint* bits — whose parity §1.2 cites as measured (`PARITY: HOLDS`) and which
+capability row 9 gates. A dissolved joiner is the case this test most needs to keep, not one to
+exempt. "On overlapping bit ranges" is the engine's own predicate and means the same thing.
+
+**Six preconditions of N.2 and N.3**, not parallel work — the draft listed two, and §11 already
 listed a third under "keep, newly blocking" without §10 naming it:
 [#355](https://github.com/mezivillager/hacer/issues/355) — `compileHDL` keeps only the last writer of
 a slice-written signal (measured: 65533 against the correct 65532 on a mere reorder), which is exactly
@@ -785,6 +898,15 @@ reason this test is restated at all; and
 and imports store actions and `notify`, so **the importer has never once seen the output of the
 reader it is specified to consume.** S328 ran it only against hand-built objects. That is the same
 class of precondition as #355 and #357, and the draft left it in §11 alone.
+
+**Two more, added by the second pass**, both engine defects this ADR's own text now rests on:
+[#363](https://github.com/mezivillager/hacer/issues/363) — since #362, `compileHDL` tracks reads and
+writes per *signal* rather than per bit, so it reports a **spurious** combinational cycle on disjoint
+slices, which is every dissolved joiner (1.2) and every mixed slice/whole-signal document the alias
+spike must contain (1.5); and
+[#367](https://github.com/mezivillager/hacer/issues/367) — a part **input** pin bound twice compiles
+and silently evaluates last-binding-wins, which is the C8 shape the importer now emits and the gap
+the first revision wrongly believed #362 had closed (1.8).
 
 ### 11. The backlog sweep
 
@@ -801,7 +923,8 @@ once. This ADR fixes the rule it applies:
 - **Keep unchanged:** #166 and #168 (the scenario suite and the canonical HDL printer) — both are
   this work already filed. #172 (composite chip 3D rendering) is kept and *promoted*: it is where
   the 3D renderer's effort goes after N.8.
-- **Keep, newly blocking:** #355, #356, #357 (§10), and #181 (`deserialize` returns data).
+- **Keep, newly blocking:** #355, #356, #357, #363, #367 (§10), and #181 (`deserialize` returns
+  data).
 
 ## Consequences
 
