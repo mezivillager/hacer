@@ -1,9 +1,32 @@
 # 0020. Spec-only writes, read-only projections
 
-- **Status:** Proposed — pending the fresh-context adversarial review that #327 requires before acceptance
+- **Status:** Accepted — revised after the fresh-context adversarial review [#359](https://github.com/mezivillager/hacer/issues/359) required by #327. Verdict `sound with corrections`; the corrections are applied below and four decisions changed. See "What the review changed".
 - **Date:** 2026-09-23
-- **Deciders:** Builder agent for [#327](https://github.com/mezivillager/hacer/issues/327), on the owner's directions of 2026-09-21 (quoted below) and the measurements of spikes [#328](https://github.com/mezivillager/hacer/issues/328) and [#210](https://github.com/mezivillager/hacer/issues/210)
+- **Deciders:** Builder agent for [#327](https://github.com/mezivillager/hacer/issues/327), on the owner's directions of 2026-09-21 (quoted below) and the measurements of spikes [#328](https://github.com/mezivillager/hacer/issues/328) and [#210](https://github.com/mezivillager/hacer/issues/210); revised by a second fresh context against #359's review
 - **Phase:** Phase 0.5 · foundation plan [#318](https://github.com/mezivillager/hacer/issues/318), item P.1
+
+## What the review changed
+
+The spine survived the review unaltered and is not restated here: spec-only writes, read-only
+projections, pure `layout` / `route` / `describeScene`, renderers as plug-ins behind one serialisable
+description, channel routing, `describeScene` reserving instancing, replace → switch → delete. Four
+decisions changed, and both defects the review found are fixed.
+
+| | Was | Is now | Why |
+|---|---|---|---|
+| **Layout ordering** (§2) | `order: 'id'` default; barycentre reachable only through `tidy` | `layout(doc, surface, { previous })` — barycentre on the first layout, then existing parts hold their relative order | The comparison the ADR skipped was run on the real fixtures. id order costs **2–3× the crossings** and its stability is an artefact of append-ordered ids. `evidence/LAYOUT-ORDER.md` |
+| **`aliases`** (§1.5, §1.6) | A second top-level connectivity array for pass-throughs | **Removed.** Connectivity is one explicit `nets` list; a pass-through is an ordinary net | It fought the Reuse section: the ADR claimed circuit-json's and DigitalJS's shape, where connectivity is its own element kind, then attached connectivity to parts. One mechanism, not two |
+| **Multi-driven pins** (§1.8, §10) | The importer keeps the **first** driver | The importer keeps **both** and records a note; §10 exempts the case from parity, with the reason | Keeping the first silently evaluates the *other* driver than the legacy document did, failing §10's own test on C8 — the one case whose parity was measured |
+| **The switch gate** (§6, §7.3) | §6 said "every row", §7.3 said "rows 1–18" | Every row, and four capabilities the legacy app has that neither list named are added | As written the switch was allowed with no way to place a part |
+
+Two of the review's statements are **corrected rather than adopted**, and both are noted where they
+belong. (a) It says S328 reported *"`crossings=0` on the real Parity5 fixture, with no id-order
+comparison at all"*; S328 did report one — `spike/out/q2.txt` prints "(id-order before sweeps: 0)"
+for all four of its real fixtures. That makes the ADR's error worse, not better: it had the number
+and generalised from a near-chain (§2). (b) The review asks for `layout(doc, surface, { previous })`
+to get a row in §12 *"whatever the answer"*; the answer is that it wins on the measurement, so it is
+the contract in §2 and §12 instead records the two pure comparators it beat. Everything else the
+review raised — the preconditions, the supersession bookkeeping, the counts, the dating — is applied.
 
 ## Context
 
@@ -51,21 +74,26 @@ renderers       3D (R3F) · 2D (SVG): draw, pan, orbit, zoom, hover/click to ins
 | Candidate | Licence | Verdict | Date |
 |---|---|---|---|
 | tscircuit **`circuit-json`** + its three consumers (`@tscircuit/3d-viewer`, `circuit-to-canvas`, `circuit-json-to-gltf`) | ISC / MIT | **adopt the shape, reject the schema** — see below | 2026-09-23 |
-| **DigitalJS** flat `devices`/`connectors`/`subcircuits` with `celltype` references | BSD-2 | **adopt the shape, reject the limit** — see below | 2026-09-23 |
-| **CircuitVerse** | MIT | reject — `circuitElement.js` carries `saveObject()` and `draw()` together; no model/renderer separation at all, the exact coupling being removed | 2026-09-23 |
+| **DigitalJS** flat `devices`/`connectors`/`subcircuits` with `celltype` references | BSD-2 | **adopt the shape, reject the limit** — see below | 2026-09-21 (R1) |
+| **CircuitVerse** | MIT | reject — `circuitElement.js` carries `saveObject()` and `draw()` together; no model/renderer separation at all, the exact coupling being removed | 2026-09-21 (R1) |
 | **`elkjs` 0.12.0** | EPL-2.0 | reject as a dependency, **retain as a named future `LayoutStrategy`** — 439,672 B min+gzip against our 886 B, 21–1,271 ms against 0.09–3.6 ms, blocks the event loop for 1,688 ms on a 896-node graph, does not bundle for the browser (`Could not resolve "web-worker"`), determinism rests on `randomSeed` defaulting to 1, and output changes completely under a mere input permutation (195/198 nodes moved, median 3,336 px) | 2026-09-23 |
 | **`@dagrejs/dagre` 3.1.1** | MIT | reject — **no port model at all**, so pin sides and pin order would be faked on top; no more stable than ELK (36–65% unmoved) and slower past ~200 nodes (1,853 ms at 906 nodes) | 2026-09-23 |
 | **`@xyflow/react` 12.11.6** | MIT | reject — 59,281 B gzip on top of React, and it is an *editor* (drag, connect, select) of which the read-only ruling uses almost nothing; plain SVG from placements needed zero dependency bytes and produced every S210 golden | 2026-09-23 |
-| **three.js `Object3D.toJSON()`** | MIT | reject as the scene description — `ObjectLoader` branches on `metadata.type` and **never on `metadata.version`**, so a format bump is silent; every object carries a random uuid; `matrix` is a flat 16-float array that hides which of position/rotation/scale moved | 2026-09-23 |
-| **glTF 2.0** | Khronos | reject as source of truth, **adopt later as an export target** — zero ratified text/glyph extensions and labels are HACER's primary content; neither `.gltf` nor `.glb` is diffable. `KHR_node_visibility` and `EXT_mesh_gpu_instancing` (both ratified) are useful to a read-only viewer | 2026-09-23 |
-| **OpenUSD on the web** (`@needle-tools/usd`) | PolyForm-Noncommercial | reject — 33.75 MB wasm, non-OSS licence, requires `SharedArrayBuffer` and COOP/COEP | 2026-09-23 |
-| **`@react-three/test-renderer` `toGraph()`/`toTree()` as the golden format** | MIT | reject *as the golden* — `toGraph()` emits `{type, name, children}` with nothing numeric, so a chip at the origin and one 500 units away serialise identically; `toTree()` snapshots authored JSX props. **Retain the renderer** as the description→mesh seam (ADR-0008) | 2026-09-23 |
-| **`@react-three/a11y` 3.0.0** | MIT | reject the package (published 2022-05-15, depends on `zustand ^3` against R3F 9's zustand 5); **adopt the pattern** for the fallback DOM tree | 2026-09-23 |
-| **xeokit-sdk** (data-texture model, 73,203-object scene) | AGPL-3.0 | reject the code — AGPL is decisive for MIT HACER; adopt the convergent finding that every viewer reaching scale owns an explicit model layer separate from its renderer | 2026-09-23 |
+| **three.js `Object3D.toJSON()`** | MIT | reject as the scene description — `ObjectLoader` branches on `metadata.type` and **never on `metadata.version`**, so a format bump is silent; every object carries a random uuid; `matrix` is a flat 16-float array that hides which of position/rotation/scale moved | 2026-09-21 (R1) |
+| **glTF 2.0** | Khronos | reject as source of truth, **adopt later as an export target** — zero ratified text/glyph extensions and labels are HACER's primary content; neither `.gltf` nor `.glb` is diffable. `KHR_node_visibility` and `EXT_mesh_gpu_instancing` (both ratified) are useful to a read-only viewer | 2026-09-21 (R1) |
+| **OpenUSD on the web** (`@needle-tools/usd`) | PolyForm-Noncommercial | reject — 33.75 MB wasm, non-OSS licence, requires `SharedArrayBuffer` and COOP/COEP | 2026-09-21 (R1) |
+| **`@react-three/test-renderer` `toGraph()`/`toTree()` as the golden format** | MIT | reject *as the golden* — `toGraph()` emits `{type, name, children}` with nothing numeric, so a chip at the origin and one 500 units away serialise identically; `toTree()` snapshots authored JSX props. **Retain the renderer** as the description→mesh seam (ADR-0008) | 2026-09-21 (R1) |
+| **`@react-three/a11y` 3.0.0** | MIT | reject the package (published 2022-05-15, depends on `zustand ^3` against R3F 9's zustand 5); **adopt the pattern** for the fallback DOM tree | 2026-09-21 (R1) |
+| **xeokit-sdk** (data-texture model, 73,203-object scene) | AGPL-3.0 | reject the code — AGPL is decisive for MIT HACER; adopt the convergent finding that every viewer reaching scale owns an explicit model layer separate from its renderer | 2026-09-21 (R1) |
 | nand2tetris **`web-ide`** (`../web-ide/`) | MIT | **adopt two things** — (a) its simulator is UI-agnostic *by having no canvas at all*: the reference implementation of the whole 12-project curriculum has **no graphical editing**, which is direct evidence that spec-only authoring is sufficient; (b) its `.tst`/`.cmp` tooling as the conformance reference. Reject its course/project coupling | 2026-09-23 |
 | **`src/utils/wiringScheme/branching.ts`**'s unused `Signal` / `signalId` net model (in-repo) | n/a | **adopt** — the spike's 217-line importer used it directly and converted all eleven hard cases | 2026-09-23 |
 | **`src/core/hdl`, `src/core/chips`, `src/core/testing`** (in-repo, ~3,440 lines) | n/a | **adopt whole** — this is the engine; nothing here replaces it | 2026-09-23 |
 | deck.gl `JSONConverter` class registry; Vega-Lite's two-tier spec→resolved-spec pattern | MIT / BSD-3 | **adopt the patterns** — an explicit registry of allowed node kinds makes a generated description validated rather than trusted | 2026-09-23 |
+
+*Dates are where the evidence is, not where the table was typed.* The rows marked **(R1)** were
+assessed on 2026-09-21 in `docs/research/2026-09-21-rendering/R1-rendering.md` and neither spike
+re-checked them; the rest were assessed on 2026-09-23 by the spikes. (The review's citation-hygiene
+nit, applied.)
 
 **`circuit-json` — what we take and what we do not.** Take: one flat array of typed, id-keyed
 elements; a logical netlist (`source_component`, `source_port`, `source_net`, `source_trace`)
@@ -96,14 +124,49 @@ there is no shared version counter and no migration between the two — only the
 
 ```
 CircuitSpec  { schemaVersion, name, ins: Port[], outs: Port[],
-               parts: Part[],          // { id, chip, conns: Conn[] }
-               aliases: Alias[] }      // { from: Ref, to: Ref }   — see 1.5
+               parts: Part[],          // { id, chip }          — what exists
+               nets:  Net[] }          // { id, driver: Ref | null, sinks: Ref[] }  — how it is connected
+Ref          { kind: 'part-pin' | 'chip-in' | 'chip-out', partId?, pin, slice? }
 Sidecar      { schemaVersion,
-               hints: { '3d': Record<PartId, Hint>, '2d': Record<PartId, Hint> },  // empty by default
+               hints: { '3d': Record<NodeId, Hint>, '2d': Record<NodeId, Hint> },  // empty by default
                meta:  { title?, description?, tags? },
                tests: TestBinding[],   // { tst, cmp } — inline text or a repo-relative path
                notes: ImportNote[] }   // machine-readable, never `notify`
 ```
+
+**Connectivity is one mechanism: an explicit driver → sinks net list.** *This is the review's C5 and
+it is right.* The first draft attached connectivity to parts as HDL-shaped `conns` and then needed a
+second top-level array (`aliases`) for the one case that has no part to attach to — while the Reuse
+section claimed to adopt `circuit-json`'s and DigitalJS's shape, in which **connectivity is its own
+element kind** (`source_net` / `source_trace`; `connectors`). The second array was an artefact of not
+adopting the shape this ADR says it adopted. With an explicit net list:
+
+- a part-to-part connection is a net whose driver is a `part-pin` and whose sinks are `part-pin`s;
+- **a pass-through is an ordinary net** whose driver is a `chip-in` and whose sink is a `chip-out`
+  (1.5) — and capability row 5 already requires both of those ref kinds to exist;
+- a joiner bit driven by a chip input is the same net with a `slice` on the sink ref (1.6);
+- fan-out (row 7) is the sinks list, which is why there is no junction entity;
+- an **unfinished** circuit is `driver: null` — a signal read by a part that nothing writes yet. That
+  is exactly the shape `circuit-json` has no room for, and it is why its schema is rejected (1.1);
+- a **multi-driven** pin is two nets naming the same sink, which is representable, diagnosable and
+  compile-rejected rather than inexpressible (1.8).
+
+`Part` therefore carries only `{ id, chip }`. **The text form does not change**: it is still HDL, and
+`parseSpec` lowers `Chip(pin=signal)` bindings to nets by signal name while `printSpec` raises them
+back. A net's **id is its signal name**, which the text carries already — so net ids are stable
+across a round trip with no marker, which is what `route`'s canonical order, `describeScene`'s
+`netId` and the overlap oracle all rest on. Only part ids need 1.9's marker. *The cost, named:* the in-memory document no longer mirrors the text one-to-one, so the spike's
+*"printer is a fixed point for all eleven cases"* was measured against a shape that is no longer the
+shape. **That evidence does not transfer and is re-measured as part of N.1** — which it needed
+anyway, because 1.9's id marker changes the printer's output too.
+
+**The spec format's own migration policy** — the review's C6, and the gap it names is real. The rule
+above covers only legacy↔spec. For the spec itself: **`schemaVersion` is read on every load and a
+document whose version this build does not know is refused with a named error, never
+best-effort-parsed**; a forward migration is a pure function `migrate(n → n+1)` with a fixture of a
+real version-*n* document, and **no construct may be removed from a version without one**. Until the
+first real spec is saved anywhere, v1 is free to change and the version does not move; the first
+commit of a `.spec` fixture to this repository is the boundary, and N.1 is where it falls.
 
 Seven things the canvas expresses today have no plain-HDL form. Each is decided here.
 
@@ -131,33 +194,61 @@ spike's printer is a fixed point for all eleven cases on *structure*; nothing me
 comments survive a round trip, and HACER's parser skips them today. Anything that must survive the
 printer therefore goes in the sidecar, where it is typed and diffable.
 
-**1.4 Layout hints are the sidecar's `hints` map — stable `part-id → hint`, empty by default, and
-the only place a future manual edit could write.** They are **keyed by surface** from v1
+**1.4 Layout hints are the sidecar's `hints` map — stable `node-id → hint`, empty by default, and
+the only place a future manual edit could write.** A `NodeId` is a part id **or a chip I/O terminal's
+id** (`in:a`, `out:sel`). *The review's C5 caught this: the first draft keyed hints by `PartId`, and a
+chip IN/OUT is not a part, so there was no way to hint the position of an I/O terminal at all* —
+silently excluding from row 19 the very entities ADR-0008 assertion 6 is about, and the entities that
+carry a third to a half of the crossings in a real drawing (`evidence/LAYOUT-ORDER.md` §1). A `Hint`
+is `{ x, y, z, rotation? }` on the same fixed lattice `layout` places on, in the surface's own
+coordinate space, plus `origin: 'user' | 'tidy'` so a later reflow can tell a position someone chose
+from one a command wrote. They are **keyed by surface** from v1
 (`'3d'`, `'2d'`), following `circuit-json`'s per-surface placement split: a position chosen on a
 2D schematic is not a position in 3D, and one shared map would force one surface to lie. Both maps
 start empty, so the cost of the second key is deferred until someone actually places something.
 *Alternative considered:* one surface-neutral map that a 2D surface projects by dropping an axis —
 simpler, and reopenable if the second map never fills.
 
-**1.5 A pass-through (an input wired straight to an output, no part between) becomes an explicit
-alias.** It is drawable and evaluable today, it has no HDL form, and on import it silently vanishes
-(case C7 breaks). The spec gets an `aliases` list — `{ from: Ref, to: Ref }`, where a `Ref` may
-carry a slice — and the shell's text form is `wire out = a;`. It is rendered natively as a wire with
-no part on it.
-*Rejected alternative:* importing it as `Or(a=x, b=x, out=y)`, which is plain HDL and evaluates
-identically, but puts a gate on the screen that nobody declared — and a read-only projection's whole
-promise is that what you see is what you declared.
-*Rejected alternative:* rejecting it at import with a warning, which silently deletes a working
-circuit; a learner's very first act ("connect this input to that output") would be unrepresentable.
-*The cost, named:* the spec is now a strict superset of nand2tetris HDL text, and `compileSpec` needs
-an alias table — binding an OUT signal to an IN signal with no producer — which nobody has attempted.
-If that change turns out to disturb Kahn ordering, reject-with-warning is the fallback and the
-importer records a note instead of dropping the wire. **What would settle it:** a one-day engine
-spike that adds the alias table to `compileHDL` and re-runs the Project-1 vectors.
+**1.5 A pass-through (an input wired straight to an output, no part between) is an ordinary net —
+driver `chip-in`, sink `chip-out`.** It is drawable and evaluable today, it has no HDL *text* form,
+and on import it silently vanishes (case C7 breaks). In the document it needs **no new construct**:
+it is a net like any other, so `layout`, `route`, `describeScene`, the overlap oracle, the command
+registry and every golden handle it without a second code path. It is rendered natively as a wire
+with no part on it, because that is what it is.
 
-**1.6 A bus-joiner bit driven by a chip input node is the same construct.** Case C11 breaks today
-because HDL can only write a slice from a part output. `wire out[0] = a;` is an alias with a slice on
-its target, so 1.5 covers it with no second mechanism.
+The **text** still needs a syntax, because HDL genuinely has none: the printed form is
+`wire out = a;`, and `parseSpec` accepts it. *This is a named superset of nand2tetris HDL text, in
+one direction only.* Reading official `.hdl` is unaffected. Writing it is covered by an **export
+mode** — `printSpec(doc, { dialect: 'nand2tetris' })` desugars each driverless-OUT net to
+`Or(a=x, b=x, out=y)`, which is plain HDL and evaluates identically — so `north-star.md`'s
+compatibility promise stays true in both directions.
+
+*The review's C5 is right that the first draft conflated two questions here.* `Or(a=x, b=x, out=y)`
+was rejected on a **document** argument — it puts a gate on the screen that nobody declared, and a
+read-only projection's whole promise is that what you see is what you declared. That argument is
+correct and it does not apply to **export**, where nothing is on a screen. Document and export are
+now two decisions, decided differently.
+*Rejected alternative:* rejecting the pass-through at import with a warning, which silently deletes a
+working circuit; a learner's very first act ("connect this input to that output") would be
+unrepresentable. Still rejected.
+
+*The engine change, named, and smaller than the first draft thought:* `compileSpec` must bind an OUT
+signal whose producer is an IN signal. It does this by **substitution before ordering** — every read
+of `out` is rewritten to read `a` in the signal table, introducing no node — so **Kahn ordering is
+untouched by construction**, which was the first draft's stated risk. The slice case (1.6) is the
+same shape [#355](https://github.com/mezivillager/hacer/issues/355) already changes `producerOf` to
+carry: a set of producers per signal, one of which is now an IN.
+**What would settle it, and when:** an engine spike with **alias fixtures and a Kahn-ordering
+property over a document mixing driverless-OUT nets, slices and parts** — *not* the Project-1
+vectors, which cannot exercise it at all because no nand2tetris HDL contains a `wire` statement
+(the review's C5, correct, and the first draft's proposed experiment was under-powered for what it
+had to settle). **It runs before N.1 lands**, which is the point past which reversing this stops
+being free (see the spec's migration policy above).
+
+**1.6 A bus-joiner bit driven by a chip input node is the same net, with a slice on the sink ref.**
+Case C11 breaks today because HDL can only write a slice from a part output. `wire out[0] = a;` is
+that net printed; 1.5 covers it with no second mechanism and no second width rule — 1.7's rules apply
+unchanged, because the ref is an ordinary ref.
 
 **1.7 Inferred slices are recorded, not silent.** v1 `addWire` sets `width = min(src, dst)` and the
 evaluator clamps, so a 16-bit source into a 1-bit pin is silent today; HDL needs `a[0]`, and a 1-bit
@@ -166,11 +257,28 @@ drew**, so it records each one in the sidecar as `{ kind: 'slice-inferred', part
 and the shell surfaces them once on import. Silence would make an importer bug indistinguishable
 from a faithful import.
 
-**1.8 A pin driven by two sources is illegal in the spec.** It is legal in v1, it is order-dependent,
-and it survives import only because `compileHDL`'s evaluator is *also* last-wins (case C8) — nothing
-guarantees those two coincidences stay aligned. `parseSpec` accepts it and marks a diagnostic (so the
-drawing tells the truth about what was declared); `compileSpec` rejects it; the importer keeps the
-first driver in canonical order and records a note.
+**1.8 A pin driven by two sources is illegal in the spec, and the importer keeps both drivers.** It
+is legal in v1, it is order-dependent, and it survives import only because `compileHDL`'s evaluator
+is *also* last-wins (case C8) — nothing guarantees those two coincidences stay aligned. `parseSpec`
+accepts it and marks a diagnostic (so the drawing tells the truth about what was declared);
+`compileSpec` rejects it; **the importer keeps every driver and records a note naming them.**
+
+*The first draft said "keeps the first driver in canonical order", and the review's C1 is right that
+this is a defect.* The legacy evaluator is last-wins, so keeping the first makes the spec evaluate
+**the other driver** than the legacy document did — and §10's acceptance test then fails on C8, the
+one case whose parity was actually measured. Keeping the *last* would pass that test, but only by
+inheriting a legacy bug as a specification: the legacy document's value on a multi-driven pin is not
+*last*, it is **undefined**, because it depends on array order, exactly as #356 showed for junctions.
+There is no correct answer to be in parity with. So the importer chooses nothing, loses nothing, and
+says so; §10 exempts the case from parity with that reason.
+
+[#355](https://github.com/mezivillager/hacer/issues/355) settles what `compileSpec` then does, and
+it is no longer a spec-only rule: writing the same bit twice is **a compile error** in the engine —
+the same answer the reference simulator gives (`Cannot write to pin x[i] multiple times`,
+`../web-ide/simulator/src/chip/builder.ts`), decided on #355 and in flight as PR #362. Keeping both
+drivers is therefore safe rather than reckless: nothing silently evaluates one of them. A document
+that reaches `compileSpec` with two drivers on a bit is refused by name, with both drivers in the
+message, and the drawing has already been showing the diagnostic since it was parsed.
 
 **1.9 Part ids are emitted into the HDL text as a structured trailing comment, and read back.**
 `Nand(a=a, b=b, out=t); // #p3`. The sidecar's `part-id → hint` binding does **not** survive a text
@@ -179,15 +287,28 @@ so hints are lost the moment a spec passes through its own printer.
 *Rejected alternative:* keying the sidecar by canonical part order — under which inserting one part
 above another shifts every hint after it, which is precisely the instability the sidecar exists to
 prevent.
+Only **parts** need the marker. An I/O terminal's `NodeId` (1.4) is derived from its declared name —
+`in:a`, `out:sel` — which the HDL text already carries in the `IN`/`OUT` lines, so those hints
+survive a round trip with no marker and no ambiguity. Renaming a port moves its hint, which is
+correct: it is a different port.
 Both HACER's parser and the reference `web-ide` grammar treat `//` to end-of-line as whitespace
 (`base.ohm:68-73`), so the marker is invisible to nand2tetris tooling and to any other HDL consumer.
 HACER's parser must read it with a dedicated rule attached to the part, not by retaining comments
-generally, so ordinary comments stay ignorable. A spec hand-edited without ids falls back to
-order-keying for the parts that lost theirs, and the shell says so.
+generally, so ordinary comments stay ignorable. **Concretely, and the review is right that this is
+not a grammar change:** `src/core/hdl/parser.ts` discards comments in the *tokenizer*
+(`skipWhitespaceAndComments()`), so the tokenizer has to emit `// #p<n>` as its own token kind and
+the part rule consumes it. One clause, but it is the difference between a small change and a
+confusing one. A spec hand-edited without ids falls back to order-keying for the parts that lost
+theirs, and the shell says so.
+*Evidence that no longer applies:* the printer's fixed point for all eleven cases was measured on
+output **without** markers, and the shipped printer emits them. Together with the net lowering above,
+that makes the round trip an N.1 measurement rather than an inherited fact — recorded in the
+made-without-evidence table.
 
 ### 2. The pipeline contracts
 
-**`layout(doc, surface, options) → Placements` — pure, deterministic, and synchronous.**
+**`layout(doc, surface, options) → Placements` — pure, deterministic, and synchronous. `options`
+carries `previous?: Placements`.**
 
 *This amends `REPORT.md` §4 and #327, both of which say "asynchronous".* Async was a precaution
 against `elkjs`'s promise API, and elkjs is rejected (Reuse considered). Our own layered placer runs
@@ -198,7 +319,7 @@ common path buys nothing and makes every caller and every golden async for no re
 
 Preconditions, which are part of the contract and each get a test:
 
-- **stable part ids** (1.9);
+- **stable part ids** (1.9) and **stable net ids** (§1: a net's id is its signal name);
 - **canonical part and net order**, with a test asserting that permuting the input is a no-op — ELK
   moved 195 of 198 nodes on a permutation with no topology change;
 - **a pinned strategy**: `Placements` records `{ strategyId, strategyVersion, options }`, so a golden
@@ -209,24 +330,96 @@ Preconditions, which are part of the contract and each get a test:
 **Stability under edit is the stated guarantee, not a hope.** A read-only view re-renders when the
 spec changes; if a one-part edit reshuffles the drawing, the person watching loses their place.
 
-> `layout` never moves a part that has a sidecar hint. Hint-less parts are placed by longest-path
+> `layout` never moves a node that has a sidecar hint. Hint-less nodes are placed by longest-path
 > layering (layer → X, within-layer order → Z, hierarchy depth → Y) with a **stable within-layer
 > order**. A full reflow is an explicit action and never a side effect of an edit.
 
-The two spikes disagreed, and the disagreement is the design. A Sugiyama-style placer with a
-**barycentre ordering sweep** moved 16 of 16 parts when one part was added (layers stable, Z
-reflowed); the same layering with **id ordering** kept 100% of nodes fixed on every fixture — 8, 54,
-198 and 906 nodes — against elkjs's 0–57%. So it is the ordering step that destabilises, not the
-layering. Barycentre is worth something real: it cut crossings from 43 to 8 on a tangled layer. The
-resolution:
+**The default is `layout(doc, surface, { previous })`: barycentre ordering on the first layout, and
+on every later one the parts `previous` already placed keep their relative order while only the new
+ones are inserted.** It is still pure and still deterministic — `previous` is an ordinary argument,
+not hidden state; with the same `(doc, surface, previous)` it returns the same placements, and with
+no `previous` it returns exactly what `order: 'barycentre'` returns.
 
-- **`order: 'id'` is the default.** Stability wins in the path a person watches.
-- **`order: 'barycentre'` is reachable only through an explicit `tidy` command**, whose result is
-  written into the sidecar as hints — so the reflow happens once, visibly, on request, and then never
-  again.
+*This replaces the first draft's `order: 'id'` default, on measurement rather than judgement.* The
+draft called that its weakest decision, measured stability and not readability, and proposed to
+settle it by rasterising drawings for a human to judge. The review's C4 pointed out that a cheaper
+experiment already existed in both spikes' throwaway code, and that it was cheap only while that
+code existed. It was run on 2026-09-23 —
+`docs/research/2026-09-21-foundation-audit/evidence/LAYOUT-ORDER.md`, full tables there:
 
-**`route(doc, placements) → RoutedNets` — one pass, canonical net order, no shared mutable
+| drawn graph | `order: 'id'` | barycentre | `{ previous }` |
+|---|---|---|---|
+| Parity5, 22 nodes | 50 crossings | **0** | **0** |
+| Mux4Way16 → Mux, 54 nodes | 3 221 | **1 650** | **1 650** |
+| Mux4Way16 → primitives, 198 nodes | 7 228 | **3 033** | **3 033** |
+| Mux8Way16 → primitives, 906 nodes | 42 696 | **13 475** | **13 475** |
+| stability, one part added (54 nodes) | 100% | 91% | **100%** |
+| stability, one part added (906 nodes) | 100% | 93% | 93% |
+| stability, **one connection rewired** (54) | 100% | 56% | **100%** |
+| stability, **one part deleted** (54) | 72% | 81% | **87%** |
+| after ten successive additions (54) | 3 383 crossings, 0 moves | 1 213, 195 moves | 2 384, **56 moves** |
+
+Three things this settles, all against the first draft:
+
+1. **id order costs 2–3× the crossings on every real circuit**, not nothing. The draft's
+   `crossings=0` came from S328's **parts-only** graph on a near-chain; the chip's own I/O terminals
+   are drawn (`src/nodes/`, row 5, ADR-0008 assertion 6), and with them Parity5 is 50 against 0.
+   The draft's only contrary number — 43 → 8 on a graph *built* to be tangled — understated the real
+   cost rather than overstating it.
+2. **id order's stability belongs to the id convention, not to the ordering.** `addPart` appends, so
+   a new id sorts last and displaces nothing. Give the same edit an id that sorts mid-list and id
+   order falls to 70%, below barycentre's 91%; on a **delete** it is the worst of the three on both
+   axes at 72%. Any renumbering, any importer assigning ids in canonical order, any
+   delete-and-re-add, and the guarantee is gone.
+3. **Barycentre was never 0% stable.** It holds 91–95% of nodes on the real fixtures. The draft's
+   "16 of 16 moved" is a *coordinate* metric on the smallest fixture, where the priority pass shifts
+   nodes whose order never changed. S210's own sketch — *"fewer crossings, 41–100% stable"* — was
+   right, and the ADR quoted only the side that agreed with it. (The review says S328 reported no
+   id-order comparison on the real fixture; it did, as "(id-order before sweeps: 0)" in
+   `spike/out/q2.txt`. That is a correction to the review and it makes the draft's error worse.)
+
+Consequences of the change, each stated:
+
+- **`order` survives as an explicit option**, not as the default. With neither `previous` nor
+  `order`, `layout` does the first-layout thing — barycentre. `order: 'id'` has to be asked for, and
+  it is the right thing to ask for when a golden wants one canonical drawing from one document with
+  no history.
+- **`tidy` stops being the fallback for anything** and becomes what it says: one reflow, on request,
+  written to hints with `origin: 'tidy'`. Three of the review's four objections to
+  `tidy`-as-fallback are answered by not needing it — there is no import moment to find, an
+  agent-generated spec gets the good drawing with no command, and tidy-written hints are now
+  distinguishable from chosen ones by `origin` (1.4). The fourth is **half** answered and should not
+  be overstated: incremental layout *does* drift, measured at 1 650 → 2 384 crossings over ten
+  successive additions. It drifts slowly, it stays well below `order: 'id'`'s **best** drawing
+  (3 221), and `tidy` is the reset when someone wants one — which is a reasonable place for an
+  explicit command, and not a place for a silent default.
+- **`Placements` records `previous`'s `strategyId`/`strategyVersion`**, so a drawing that came from a
+  chain of incremental layouts can say so and can be rebuilt from scratch on demand.
+- **What is still not measured:** whether the barycentre drawing *reads* to a person. The number says
+  it crosses 2–3× less than the alternative; it does not say it is good. That is still the
+  rasterise-and-judge experiment, now at much lower stakes because it compares a good drawing against
+  a better one rather than deciding the default.
+
+**`route(doc, placements) → RoutedNets` — total, one pass, canonical net order, no shared mutable
 occupancy state. Channel routing, not search.**
+
+**`route` is total: every net in the document receives a non-empty path whose endpoints are the
+declared pins, or a failure named against that net's id.** *This is the review's C3 and it is
+right.* ADR-0008's assertion 6 was a **render-level no-orphan** guarantee — its reason for existing
+is B-003, *"repair the `recalculateWiresForNode` catch-and-ignore so a failed re-route doesn't orphan
+the wire"* — and the restatement in §8 (*"a spec edit re-routes only the nets that changed"*) is a
+**minimality** property that a net re-routing to nothing satisfies. Assertions 1 and 2 do not cover
+the gap either: "one rendered line per described segment" is vacuously true of a net with zero
+segments. Totality restores it, and this ADR keeps both halves.
+
+*Checked, because the review asked for it to be checked:* totality plus assertions 1 and 2 is
+**sufficient** to carry assertion 6's force, and it carries it further than the original did — over
+every spec edit rather than only over `updateInputNodePosition`. Totality supplies the non-empty
+path; "whose endpoints are the declared pins" plus assertion 2's `partId:pinName` world positions
+supplies "connects to the gate pin"; assertion 1 supplies "renders". The one loophole the review's
+wording leaves is the escape clause, and it is closed here: **a named failure is a diagnostic
+attached to that net id, carried by `describeScene` and drawn (1.1). It can never be a silent
+absence** — which is the precise failure mode B-003 was.
 
 Layer-channel orthogonal routing gives each net a lane whose index is its position in the canonical
 net order *restricted to that channel*; no net's path depends on any other net's path. Measured
@@ -258,7 +451,9 @@ canonically ordered, fixed float precision, `schemaVersion`.** It must carry:
   its `sourceKey` and the **channel/lane index** it used: that is what turns ADR-0008's assertions 4
   and 5 from geometry guesses into equalities, and lets the overlap oracle classify same-source
   versus different-source without re-deriving the circuit;
-- resolved **pin world positions keyed by `partId:pinName`**;
+- resolved **pin world positions keyed by `nodeId:pinName`**, where a `nodeId` is a part id **or**
+  a chip I/O terminal's id (1.4) — an I/O terminal has a pin and it is drawn, and keying this by
+  `partId` alone would leave assertion 6's own subject unaddressable;
 - **an instancing form — `{ geometryKey, transforms[], colors[], instanceIds[] }` — together with an
   `instanceId → nodeId` map, mandatory in schema v1** even while the first renderer emits one node
   per mesh. The measured reason: a 16-part chip is already **148 draw calls and 23,736 triangles**; a
@@ -310,10 +505,24 @@ and MCP. `scope` is `'spec'`, `'run'` or `'session'`.
 
 - **spec:** `addPart`, `removePart`, `connect`, `disconnect`, `rename`, `setHint`, `tidy`.
 - **run:** `setInput`, `run`, `step`, `reset`, `runTest`.
-- **session:** selection, inspection, camera, panels, renderer — excluded from undo and from MCP.
+- **session:** selection, inspection, camera, panels, renderer — excluded from undo, and **partly**
+  exposed to MCP.
 
 `connect(from, to)` is **semantic**: it names endpoints and never a path. Routing is `route`'s job,
-and no user-authored geometry enters the document.
+and **no user-authored geometry enters the spec.** *The draft said "the document", which is false as
+written and the review's C4 caught it:* §1 says the document is spec **plus sidecar**, §5 says the
+sidecar is undoable with the spec as one document and one history, and `setHint` and `tidy` write
+geometry into the sidecar on purpose. The line that matters is between the two halves, not around
+both: the spec has no coordinates in it, ever.
+
+**Session scope and MCP.** Excluding session from *undo* is plainly right — nobody wants ⌘Z to move
+the camera back. Excluding it from *MCP* is not, and needs the sentence the review asked for.
+`north-star.md` promises that *"every action a human can take, an AI agent can take
+programmatically"*, and the owner's stated ambition includes AI that teaches by building and
+showcasing: **an agent that cannot aim the camera cannot showcase.** So the carve-out is explicit —
+`camera`, `inspect` and `renderer` are MCP commands; selection and panel chrome are not, because
+they are the shell's own furniture and an agent reads the scene description instead. Session
+commands return the same `CommandResult` and are still absent from history.
 
 **Validation returns data.** `CommandResult = { ok: true, doc, notes } | { ok: false, errors }`.
 58 of the 82 `notify` calls inside state today are gesture validation; they do not come back. The
@@ -358,38 +567,56 @@ fails loudly.
 
 ### 6. The capability list the default switch is judged against — frozen here
 
-Phase C.1 switches the default renderer only when every row passes through the spec path, each as a
-scenario runnable through the CLI driver **and** at least one rendered view.
+Phase C.1 switches the default renderer only when **every row marked "gates" passes** through the
+spec path, each as a scenario runnable through the CLI driver **and** at least one rendered view.
 
-| # | Capability | Replaced by |
-|---|---|---|
-| 1 | Declare a chip with named IN/OUT of given widths | spec text |
-| 2 | Add a part of a registered chip | `addPart` |
-| 3 | Remove a part | `removePart` |
-| 4 | Connect a part output to a part input, by name | `connect` |
-| 5 | Connect a chip IN to a part input, or a part output to a chip OUT | `connect` |
-| 6 | Connect through a bit slice (`a[0]`, `out[0..7]`) | `connect` with a slice ref (needs #357) |
-| 7 | Fan one source out to many sinks | the net model — no junction entity |
-| 8 | Pass an input straight to an output | alias (1.5) |
-| 9 | Split or join a bus | slices (1.2) |
-| 10 | Leave a circuit unfinished and still see it | parse-to-render (1.1) |
-| 11 | Set an input value; run, step, reset | `setInput` / `run` / `step` / `reset` + pins panel |
-| 12 | See live signal values on the drawing | `describeScene` signals |
-| 13 | Inspect a part, pin or net (ids, widths, values) | hover / click → inspect panel |
-| 14 | Run a `.tst`/`.cmp` and see the result | `src/core/testing` + the sidecar's test binding |
-| 15 | Truth table for the current chip | `truthTable`, re-typed onto the spec |
-| 16 | Save, load and autosave a design | spec + sidecar serialisation |
-| 17 | Open a saved version-1 document | `fromLegacyCircuit` + `deserialize` |
-| 18 | Navigate: pan, orbit, zoom, fit, drill into a composite | both renderers |
-| 19 | Put a part where I want it | `setHint` |
-| 20 | Tidy the drawing | `tidy` (one-shot barycentre → hints) |
+**The gating rule, stated once so the list and the plan cannot drift apart again.** A row gates the
+switch **unless** (a) the legacy app does not have that capability today, so it cannot regress, and
+(b) no gating row depends on it. Exactly two rows qualify, each marked and reasoned in place. *The
+review's C2 is right that the first draft contradicted itself here* — §6 said "every row", §7.3 said
+"rows 1–18", `REPORT.md` §6 said "every scenario", and the two rows that fell through the gap were
+`setHint` and `tidy`: as written, the switch was allowed with **no way to place a part**. §7.3 and
+`REPORT.md` §6 now both point at this rule instead of restating it.
+
+Rows 21–23 are capabilities the legacy app **has today** that the first draft's list did not name at
+all, and that its non-goals did not drop either — the review found all three. Row 24 is the opposite
+omission it found: undo is designed in §5 and was never listed anywhere. A frozen list is worth
+nothing if something people use today is neither on it nor deliberately dropped.
+
+| # | Capability | Replaced by | Gates? |
+|---|---|---|---|
+| 1 | Declare a chip with named IN/OUT of given widths | spec text | gates |
+| 2 | Add a part of a registered chip | `addPart` | gates |
+| 3 | Remove a part | `removePart` | gates |
+| 4 | Connect a part output to a part input, by name | `connect` | gates |
+| 5 | Connect a chip IN to a part input, or a part output to a chip OUT | `connect` | gates |
+| 6 | Connect through a bit slice (`a[0]`, `out[0..7]`) | `connect` with a slice ref (needs #357) | gates |
+| 7 | Fan one source out to many sinks | the net's sinks list — no junction entity | gates |
+| 8 | Pass an input straight to an output | an ordinary net, driver `chip-in` → sink `chip-out` (1.5) | gates |
+| 9 | Split or join a bus | slices (1.2) | gates |
+| 10 | Leave a circuit unfinished and still see it | parse-to-render (1.1) | gates |
+| 11 | Set an input value; run, step, reset | `setInput` / `run` / `step` / `reset` + pins panel | gates |
+| 12 | See live signal values on the drawing | `describeScene` signals | gates |
+| 13 | Inspect a part, pin or net (ids, widths, values) | hover / click → inspect panel | gates |
+| 14 | Run a `.tst`/`.cmp` and see the result | `src/core/testing` + the sidecar's test binding | gates |
+| 15 | Truth table for the current chip | `truthTable`, re-typed onto the spec | gates |
+| 16 | Save, load and autosave a design | spec + sidecar serialisation | gates |
+| 17 | Open a saved version-1 document | `fromLegacyCircuit` + `deserialize` | gates |
+| 18 | Navigate: pan, orbit, zoom, fit, drill into a composite | both renderers | gates |
+| 19 | Put a part (or an I/O terminal) where I want it | `setHint` (1.4) | **gates** — replaces drag-to-place, which the legacy app has |
+| 20 | Tidy the drawing | `tidy` (one reflow → hints, `origin: 'tidy'`) | no — no legacy equivalent, and §2's `{ previous }` removed its fallback role |
+| 21 | Export / import a design as a JSON file you can commit or send | spec + sidecar as two files; `exportCircuitJSON` / `importCircuitJSON` retire with `serialize.ts` | gates — and §7.2 depends on it |
+| 22 | The named circuit library | the library lists spec documents (`CircuitLibrary.tsx`) | gates |
+| 23 | Record that a chip's `.tst` passed (`✓ <name>`) | `chipCompletion.ts` re-pointed at the session slice (plan item 1.1); §7.4g deletes `CircuitState` around it | gates |
+| 24 | Undo / redo a design change | §5's spec history | no — the legacy app has none, so it cannot regress; scheduled at N.10 |
 
 **Non-goals — named here so the switch is never blocked on them.** Hand-chosen wire paths are
 **dropped**: `route` owns every path and no user-authored geometry enters the document. So are
 dragging a part with the mouse, click-on-canvas placement, the wire-drawing gesture, junction
 placement, placement previews, marquee selection and keyboard nudging. The **junction as a domain
-entity** is dropped — fan-out is a property of a net (`junction` is referenced in 47 production files
-today). `BusComponent` as a document entity is dropped (1.2). Crossing and arc-hop bookkeeping stored
+entity** is dropped — fan-out is a property of a net (`junction` is referenced in **44** production
+files today; 81 including tests — the draft said 47, and the review's count is the right one).
+`BusComponent` as a document entity is dropped (1.2). Crossing and arc-hop bookkeeping stored
 in the document is dropped; it is a renderer concern derived from `route` output, if it is wanted at
 all. Toggling an input by clicking its 3D pin is dropped at the switch and reopenable as a shortcut
 that emits `setInput`.
@@ -397,27 +624,47 @@ that emits `setInput`.
 ### 7. Removal — replace, switch, delete, in this order
 
 1. **Before anything is replaced:** the characterization baseline (#331) records what the legacy
-   renderer draws and what the legacy engine evaluates. This is the only irreversible step in the
-   plan and it comes first.
+   renderer draws and what the legacy engine evaluates. It comes first, and it is **one of two**
+   points of no return — see 2. **It can only be produced in CI.** It needs #217's `describe()` over
+   the *legacy* app, which mounts the canvas, which ADR-0016 as amended (2026-09-19) forbids on the
+   owner's laptop. Naming #331 "first" without naming that constraint hides the one thing that
+   decides when it can happen; the run is a cloud job, and the plan waits on it.
 2. **A corpus of real version-1 documents is captured and committed as fixtures** before
-   `serialize.ts` is deleted. **No real saved circuit file exists anywhere in the repository today** —
+   `serialize.ts` is deleted — **the second point of no return**, which is the whole reason this
+   precondition exists. **No real saved circuit file exists anywhere in the repository today** —
    the spike's eleven cases were hand-built to `serialize.ts`'s exact shape, and the importer was
-   never run against a *deserialized* document. Without a captured corpus the importer's only
+   never run against a *deserialized* document (#181). Without a captured corpus the importer's only
    evidence is hand-built forever, and a genuine save could carry a shape none of the cases has
    (stale `crossesWireIds`, arc segments, orphaned junctions). This is a **precondition on C.1**, not
    a nice-to-have.
-3. **The switch (C.1)** happens when §6's rows 1–18 all pass.
-4. **Then delete, by consumer group, largest first, each PR as large as it needs to be:**
+   **The mechanism, and its exit, because the draft named neither.** Capture is
+   `exportCircuitJSON` (`persistenceActions`, wired to `RightActionBar`) plus each `localStorage`
+   autosave slot; it is run by whoever holds a browser with saved designs in it — in practice the
+   owner, once, from the legacy app before it is switched, which is the *only* window in which it can
+   be run at all, since `exportCircuitJSON` dies with `serialize.ts` (capability row 21).
+   **The exit, so the precondition cannot block the switch silently:** if the answer is "no saved
+   circuits exist", that is recorded as a stated limit — *"the hand-built corpus is the only
+   evidence; no real document was ever seen"* — in the N.2 PR and in `observed-bugs.md`, and C.1
+   proceeds. A precondition with no exit is a deadlock, not a gate.
+3. **The 36 e2e files that read `__CIRCUIT_STORE__` / `__CIRCUIT_ACTIONS__`** (measured: 36) migrate
+   to §5's `__CIRCUIT_READY__` contract **with the store swap, in N.7's own PR** — not afterwards.
+   §5 designs the bridge and the draft made nothing gate on the migration; a swapped store with 36
+   specs still racing three globals is a broken suite, not a migration.
+4. **The switch (C.1)** happens when every gating row of §6 passes, by the rule stated there.
+5. **Then delete, by consumer group, largest first, each PR as large as it needs to be:**
    a. gesture state, drag hooks, placement actions and previews — the 9 gesture fields of
       `CircuitState` and about 1,200 lines;
    b. the wiring, wire and junction actions (1,766 lines) and the `junction` entity;
    c. `src/utils/wiringScheme` and `src/utils/wireSharing.ts` — the legacy router, 3,640 lines;
    d. the canvas-shaped evaluator and serialisers: `topologicalEval.ts` (363 lines),
       `truthTable.ts` re-typed, `serialize.ts` deleted;
-   e. the `BusComponent` entity and every `'bus'` endpoint switch;
+   e. the `BusComponent` entity and every `'bus'` endpoint switch — **including
+      `src/simulation/busLogic.ts`** (ADR-0009's `evaluateSplitter` / `evaluateJoiner`, first-class
+      in the legacy topological sort), which the draft implied and never named;
    f. the gesture e2e specs, and the `@ui` rows that only exercised them;
-   g. `CircuitState` itself.
-5. **`deserialize` survives** as the importer's private reader of version-1 documents, with version
+   g. `CircuitState` itself — and capability row 23's completion tracking moves to the session slice
+      *before* this step, not during it.
+6. **`deserialize` survives** as the importer's private reader of version-1 documents, with version
    dispatch and warnings returned as data (#181). It is the only legacy reader that outlives the
    switch.
 
@@ -443,11 +690,11 @@ circuit. Its seven assertions become properties:
 | # | Assertion | Becomes |
 |---|---|---|
 | 1 | render contract | property of `describeScene` + the test-renderer suite: one rendered line per described segment |
-| 2 | connectivity | property of `describeScene`: pin world positions keyed by `partId:pinName` |
+| 2 | connectivity | property of `describeScene`: pin world positions keyed by `nodeId:pinName`, parts **and** chip I/O terminals |
 | 3 | dense chips reach distinct pins | property of `route` — lane disjointness |
 | 4 | transit separation | property of `route` — lane disjointness |
 | 5 | CASE1 off-backbone | property of `route` — lane disjointness |
-| 6 | node-drag re-route | **does not survive read-only.** Restated: **"a spec edit re-routes only the nets that changed"**, a property of `route` over a pair of documents, measured at 2 of 22 |
+| 6 | node-drag re-route | **does not survive read-only** *as a drag*. Two properties replace it, and both are needed: **`route` is total** (§2 — every net gets a non-empty path between its declared pins, or a named, rendered failure), which carries B-003's no-orphan force over every spec edit rather than only over `updateInputNodePosition`; **and** *"a spec edit re-routes only the nets that changed"*, measured at 2 of 22. The draft kept only the second, which a net re-routing to nothing satisfies |
 | 7 | broad overlap sweep | property of `route` |
 
 3, 4, 5 and 7 collapse into one invariant — *no two nets with different sources share a collinear
@@ -464,7 +711,18 @@ switches and **no `default` arm**.
 
 **ADR-0019 (canvas-less shell mode) — unchanged and load-bearing.** `?renderer=` is the plug-in
 selector; `renderer=none` is how the shell and the 2D renderer are tested on the owner's laptop.
-**ADR-0016 and ADR-0012 — unchanged**: anything that mounts the canvas still runs only in CI.
+**ADR-0016 and ADR-0012 — unchanged**: anything that mounts the canvas still runs only in CI, which
+is why §7.1's baseline is a cloud job.
+
+**The supersession is written in both directions, as this repo already does it.** *The review's C6:
+the draft announced all three supersessions in ADR-0020 and in the index, while ADR-0007, ADR-0008
+and ADR-0009 each still read a bare `Accepted` with no pointer — and "Affected living docs" omitted
+the one section that would have caught it.* The repo's own precedent is ADR-0012, whose status line
+reads *"Accepted — Superseded in part by ADR-0016 (§1: …)"* with the index row mirroring it, and
+ADR-0013's inline *Amended* note. So in this PR: **ADR-0007's status line records that it is
+superseded by ADR-0020 and that Stages 2–4 are cancelled; ADR-0008's records that assertion 6 is
+restated here; ADR-0009's records that it is superseded in the document and kept in the projection.**
+Their index rows mirror the change, and all three are listed under "Affected living docs".
 
 ### 9. The issues this absorbs
 
@@ -505,13 +763,28 @@ importer would fail the acceptance test as it was written in `REPORT.md` §6. Th
 about twenty lines, lives in the importer's test harness, and is itself covered by the case that
 exposed the defect.
 
-**Two engine defects are preconditions of N.2 and N.3**, not parallel work:
+**One case is exempt from parity, by name and with its reason: a pin driven by two sources (C8).**
+The legacy document's value there is not *last-wins*, it is **undefined** — it depends on array
+order, exactly as #356 showed for junctions — so there is nothing well-defined to be in parity with.
+The importer keeps both drivers and records a note (1.8); `compileSpec` refuses the document by name
+(#355); the acceptance test asserts **that refusal and that note**, not a value. This is the only
+exemption, and the review's C1 is the reason it is written down rather than papered over by an
+importer that quietly picks one driver.
+
+**Four preconditions of N.2 and N.3**, not parallel work — the draft listed two, and §11 already
+listed a third under "keep, newly blocking" without §10 naming it:
 [#355](https://github.com/mezivillager/hacer/issues/355) — `compileHDL` keeps only the last writer of
 a slice-written signal (measured: 65533 against the correct 65532 on a mere reorder), which is exactly
 the shape a dissolved joiner produces (1.2); and
 [#357](https://github.com/mezivillager/hacer/issues/357) — the parser rejects a slice on a part pin
 (`Not16(in[0]=a)`), which is legal HDL, required from Project 2, and the only way to express capability
-row 6 and cases C9 and C11.
+row 6 and cases C9 and C11. Two more, which belong here and not only in §11:
+[#356](https://github.com/mezivillager/hacer/issues/356) — the junction-tracing defect that is the
+reason this test is restated at all; and
+[#181](https://github.com/mezivillager/hacer/issues/181) — `deserialize` throws on any version but 1
+and imports store actions and `notify`, so **the importer has never once seen the output of the
+reader it is specified to consume.** S328 ran it only against hand-built objects. That is the same
+class of precondition as #355 and #357, and the draft left it in §11 alone.
 
 ### 11. The backlog sweep
 
@@ -546,27 +819,45 @@ circuit is harder than before** — each legacy capability is removed only after
 default. Alternative C (§12) is the door back, and the sidecar plus the command API are what keep it
 cheap to open.
 
-**The weakest part of this decision.** It is not the spec format and not the router; it is
-**`order: 'id'` as the default layout, which nobody has looked at.** Stability was measured
-exhaustively — 100% of nodes fixed across 8, 54, 198 and 906-node fixtures — and readability was not.
-The crossing evidence runs the other way: barycentre cut crossings 43 → 8 on a *deliberately tangled*
-bipartite graph, and no one has rasterised an id-ordered 48-part `Mux4Way16` and judged whether it
-reads. "The default drawing is unreadable" is not a failure any gate in §6 can catch, and it would
-surface only after the switch. **What would settle it:** rasterise the id-ordered placer's output at
-16, 48 and 192 parts and have the product role judge them, before N.4 is accepted. If it fails,
-the fallback is already designed — run `tidy` once on import so the barycentre pass produces hints,
-and let stability protect them from then on.
+**The weakest part of this decision — measured, and it is no longer the layout.** The first draft
+named `order: 'id'` as its weakest point and proposed a human-judged experiment. That experiment was
+replaced by the cheap one the review pointed at, run before both spikes' trees were collected, and
+it went against the draft: id order costs **2–3× the crossings** on every real fixture, and its
+stability is a property of append-ordered ids rather than of the ordering (§2,
+`evidence/LAYOUT-ORDER.md`). The default is now `layout(doc, surface, { previous })`.
+
+What remains weakest is **the alias-free pass-through through `compileSpec`** (1.5) — the engine
+still has to bind an OUT signal whose producer is an IN, nobody has run it, and the official
+Project-1 vectors cannot exercise it because no nand2tetris HDL contains a `wire` statement. The
+substitution-before-ordering argument says Kahn ordering cannot be disturbed; an argument is not a
+measurement. Its spike is scheduled before N.1 rather than left open, because N.1 is where reversing
+it stops being free.
+
+One aesthetic question is still open and is honestly labelled: **whether the barycentre drawing reads
+well to a person.** The measurement says it crosses 2–3× less than the alternative; it does not say
+it is good. Rasterise at 16, 48 and 192 parts and have the product role judge, before N.4 is
+accepted — the same experiment as before, at much lower stakes, because it now compares a good
+drawing against a better one instead of choosing the default.
 
 **Made without evidence, and what would settle each:**
 
-| Decision | Why there is no evidence | What would settle it |
-|---|---|---|
-| The alias construct for pass-throughs and input-driven joiner bits (1.5, 1.6) | No one has tried binding an OUT signal with no producer in `compileHDL` | A one-day engine spike adding the alias table and re-running the Project-1 vectors |
-| Part ids as `// #p3` in the text (1.9) | Both grammars tolerate the comment (verified), but no round trip through a *hand-edited* file was tried | A property test: print → hand-edit → parse → print, asserting hints survive |
-| Surface-keyed hints rather than one neutral map (1.4) | Both maps are empty at v1, so nothing distinguishes them yet | The first real hand-placed position on a 2D surface |
-| Whole-document undo entries, capped at 100 (5) | The spec's size on a realistic circuit was never measured | Measure a 200-part spec's serialised size; adopt patches only if it hurts |
-| Keystroke coalescing at 500 ms (5) | A conventional number, not a measured one | Watch one person type into the spec editor |
-| 3D draw-call budgets (2) | `renderer.info` was never read from a live renderer; "draw calls = meshes" is reasoned, not observed — culling, material sharing and render order are invisible to a headless count | The CI benchmark of `REPORT.md` §9a (#325), which is the only place this can be measured |
+| Decision | Why there is no evidence | What would settle it | When |
+|---|---|---|---|
+| A pass-through as a net with a `chip-in` driver, and the substitution `compileSpec` needs (1.5, 1.6) | No one has tried binding an OUT signal whose producer is an IN. The Project-1 vectors **cannot** settle it: no nand2tetris HDL contains a `wire` statement, so they would only show no regression | An engine spike with **alias fixtures** plus a Kahn-ordering property over a document mixing driverless-OUT nets, slices and parts | **Before N.1 lands** — the point past which reversing it stops being free (§1's migration policy) |
+| Part ids as `// #p3` in the text (1.9) | Both grammars tolerate the comment (verified), but no round trip through a *hand-edited* file was tried — **and** the printer's "fixed point for all eleven cases" was measured without markers and against the pre-`nets` shape, so it no longer applies | Re-measure print → parse → print on the shipped printer; then a property test: print → hand-edit → parse → print, asserting hints survive | N.1 |
+| The importer keeping **both** drivers of a multi-driven pin, and §10's parity exemption (1.8) | Only C8 was ever measured, and it held by a coincidence of two last-wins evaluators. No real document with a multi-driven pin has been seen — and none exists in the repo (§7.2) | The captured corpus (§7.2), or the stated limit if it is empty. Until then the rule is chosen to lose nothing rather than to be right | §7.2, before C.1 |
+| Surface-keyed hints rather than one neutral map (1.4) | Both maps are empty at v1, so nothing distinguishes them yet | The first real hand-placed position on a 2D surface | whenever it happens — reversible, alternative recorded |
+| Whole-document undo entries, capped at 100 (5) | The spec's size on a realistic circuit was never measured | Measure a 200-part spec's serialised size; adopt patches only if it hurts | N.10 |
+| Keystroke coalescing at 500 ms (5) | A conventional number, not a measured one | Watch one person type into the spec editor | N.10 |
+| 3D draw-call budgets (2) | `renderer.info` was never read from a live renderer; "draw calls = meshes" is reasoned, not observed — culling, material sharing and render order are invisible to a headless count | The CI benchmark of `REPORT.md` §9a (#325), which is the only place this can be measured | standing — a reserved field, additive |
+
+**Why the "when" column exists.** *The review's C6:* the first draft fixed a migration policy only
+between legacy and spec, and none for the spec format itself, so the syntactic decisions were free to
+reverse *only until the first real spec is saved* and nothing scheduled their settling before that
+point. §1 now fixes the spec's own migration policy and names the boundary (the first committed
+`.spec` fixture, at N.1); every row above now says when it is settled relative to it. The row the
+review singled out — the alias — is settled *before* N.1, and the construct it was worried about no
+longer exists as a construct.
 
 **Explicitly rejected.** Freezing the legacy canvas (§12 B, by the owner). Keeping hand drawing as a
 client of `connect` (§12 C, reopenable). `circuit-json` as the schema, `elkjs`, `dagre`,
@@ -584,17 +875,33 @@ routing (§2). And the whole class of user-authored geometry (§6).
 | **D. Refactor the legacy state layer in place** | Store factory, `.position` migration, notify-to-results, on the legacy code | Wide changes to code that is being removed | Rejected: it improves what is being retired |
 | **E. Adopt `circuit-json` wholesale as the spec** | Take the shipped schema rather than writing one | No single-driver rule, no bit widths, no slices, no unfinished designs — cases C4, C5, C6, C9 and C11 all fall outside it | Rejected; its *shape* is adopted (Reuse considered) |
 | **F. Keep two evaluators** | The canvas `topologicalEval` beside `compileHDL` | tick/tock implemented twice, and #355/#356 show the canvas evaluator is already wrong where the HDL one is not | Rejected — this was #190's own question |
+| **G. A pure comparator: `order: 'id'` or `order: 'barycentre'`, one of the two** | Choose the within-layer comparator once and live with it | id order: 2–3× the crossings on every real circuit, and its stability is the append convention's, lost on a delete or a renumber (70–72%). Barycentre: 56% of the drawing re-sorts when one wire is rewired | **Rejected on measurement, `evidence/LAYOUT-ORDER.md`.** Superseded by `{ previous }` (§2), which is both. `order` survives as an explicit, `previous`-free option for goldens |
+| **H. A second top-level `aliases` array for pass-throughs** | Keep connectivity on parts as HDL-shaped `conns`, add one more array for what has no part | Two connectivity mechanisms that `layout`, `route`, `describeScene`, the overlap oracle, the command registry, the generated MCP schemas and every golden each handle in parallel — and it contradicts the shape the Reuse section adopts | **Rejected after review** (#359 C5). Replaced by one explicit `nets` list (§1) |
 
 ## Affected living docs
 
-- `docs/decisions/README.md` — index row. ✅
+- `docs/decisions/README.md` — the 0020 row, **and the 0007 / 0008 / 0009 rows**, which announce the
+  supersessions from both ends. ✅
+- `docs/decisions/0007-wire-routing-engine-direction.md` — status line: superseded by this ADR,
+  Stages 2–4 cancelled. ✅
+- `docs/decisions/0008-scene-graph-routing-testing-layer.md` — status line: assertion 6 restated
+  here. ✅
+- `docs/decisions/0009-bus-components-entity-and-wireendpoint-bus.md` — status line: superseded in
+  the document, kept in the projection. ✅
+- `docs/research/2026-09-21-foundation-audit/evidence/LAYOUT-ORDER.md` — **new**: the ordering
+  measurement §2 rests on. ✅
+- `docs/roadmap/phases/phase-22-public-website.md` — the marketing copy still pitching
+  "drag-and-drop"; forward-looking copy, so the README rule does not cover it. ✅
 - `docs/north-star.md` — "interactive 3D environment" restated as declared-and-projected. ✅
 - `docs/roadmap/vision.md` — "Visual 3D Building: Intuitive drag-and-drop circuit construction"
   restated; the evolution-path diagram row restated. ✅
 - `docs/portfolio.md` — the design-first paragraph records that #188/#189/#190 are absorbed here. ✅
 - `docs/research/2026-09-21-foundation-audit/REPORT.md` — §4's "asynchronous" `layout` and §6's N.2
   acceptance test are amended **by this ADR**, which is the plan's own mechanism (P.1); the report is
-  a dated research artefact and is not rewritten. Recorded in §2 and §10 above.
+  a dated research artefact and is not rewritten. **But the amendment is now recorded at both ends**:
+  a one-line pointer sits at each amended place in the report, the way ADR-0013 carries its own
+  inline *Amended* note. Recording it only in the amending document leaves a reader of REPORT §4
+  looking at "asynchronous" with nothing to follow (the review's C6, same class). ✅
 - `README.md` — **deliberately unchanged.** It describes what ships today, and today the app is still
   hand-driven. It changes at the Phase C switch, not at the decision.
 - `REPO_MAP.md`, `HACER_LLM_GUIDE.md`, `.cursorrules`, `docs/testing/structure.md` — N/A until the

@@ -123,12 +123,17 @@ spec            HDL-shaped: parts + nets, chip IN/OUT, plus a small sidecar   �
    │            PARSED to render (an unfinished circuit still draws) · COMPILED only to evaluate
 engine          compile · evaluate · run .tst/.cmp            src/core (hdl, chips, testing): sound
    │
-layout(doc, surface) → placements              pure, deterministic, asynchronous
+layout(doc, surface) → placements              pure, deterministic, asynchronous   [1]
 route(doc, placements) → wire paths            pure, deterministic, one pass, canonical net order
 describeScene(doc, placements, paths, signals) pure → a serialisable scene description
    │
 renderers       3D (R3F) · 2D (SVG): draw, pan, orbit, zoom, hover/click to inspect — nothing else
 ```
+
+> **[1] Amended by [ADR-0020](../../decisions/0020-spec-only-writes-read-only-projections.md) §2: `layout` is
+> synchronous.** Async existed for elkjs's promise API, and elkjs is rejected. ADR-0020 also gives it
+> `options.previous` and makes the default ordering incremental rather than `order: 'id'`
+> (`evidence/LAYOUT-ORDER.md`).
 
 - **The spec is HDL-shaped, and the ADR settles its edges.** nand2tetris-native; the engine already
   parses, compiles and tests it; the reference web IDE has no graphical editing. Four things the
@@ -141,7 +146,7 @@ renderers       3D (R3F) · 2D (SVG): draw, pan, orbit, zoom, hover/click to ins
   paragraph and relied on "optional layout hints" in another. Version 3: the sidecar exists from the
   first version of the spec, as a stable `part-id → hint` map, empty by default. It is also the only
   place a future drag could write, so it is what keeps "manual edits later" possible.
-- **Layout is asynchronous and its determinism has preconditions**: stable part ids, a canonical part
+- **Layout is asynchronous** (*amended: [ADR-0020](../../decisions/0020-spec-only-writes-read-only-projections.md) §2 makes it synchronous*) **and its determinism has preconditions**: stable part ids, a canonical part
   and net order, and a pinned layout library version and options — or the golden tests flake. `elkjs`
   is not a dependency today, its API is promise-based, and it has no layered 3D algorithm: nothing in
   the plan or the backlog yet names how parts are placed in 3D. The spike must name one and measure a
@@ -286,6 +291,9 @@ that deletes it)
   found by structure, never by `junction.wireIds[0]` — because the positional trace read a
   branch-first junction as floating, so a *correct* importer would have failed the test (#356, now
   fixed in `topologicalEval`; any parity figure measured before that fix has to be re-taken).
+  *Further amended by [ADR-0020](../../decisions/0020-spec-only-writes-read-only-projections.md) §10:
+  a pin driven by two sources **on the same bit** is a named exemption — the wider wording would have
+  swallowed the dissolved-joiner case whose parity §1.2 cites as measured.*
 - N.3 The spec evaluates through `compileHDL` — one engine.
 - N.4 `layout`. · N.5 `route`, with ADR-0008's assertions as properties. · N.6 `describeScene`, with
   goldens in Node, diffed against 0.5's baseline.
@@ -305,6 +313,10 @@ that deletes it)
 **Phase C — Switch, and finish deleting**
 - C.1 **Gate, as a command:** every scenario in the ADR's capability list passes through the spec
   path. Then the default renderer switches and legacy documents import on load.
+  *Refined by [ADR-0020](../../decisions/0020-spec-only-writes-read-only-projections.md) §6, which states the
+  gating rule and freezes the list at 24 rows: a row gates unless the legacy app does not have that capability
+  and no gating row depends on it. Two rows qualify, `tidy` and undo, each marked in place. §7.2's captured
+  corpus and §7.3's e2e bridge migration are preconditions of the same gate.*
 - C.2 **Delete everything the new path replaced** that was not already deleted along the way: hand
   wiring and junction entities, drag and placement, previews and gesture state, the legacy store
   slices and evaluator, the gesture e2e specs. By consumer group, each PR as large as it needs to be.
