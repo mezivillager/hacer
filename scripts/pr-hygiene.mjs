@@ -17,7 +17,14 @@
 
 import { appendFileSync, existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
-import { RATCHET_BASELINE_FILE, evaluate, formatConsole, formatSummary, nextPageUrl } from './pr-hygiene.logic.mjs'
+import {
+  RATCHET_BASELINE_FILE,
+  evaluate,
+  formatConsole,
+  formatSummary,
+  nextPageUrl,
+  readAtRef,
+} from './pr-hygiene.logic.mjs'
 
 const REPO = process.env.GITHUB_REPOSITORY ?? 'mezivillager/hacer'
 const TOKEN = process.env.GITHUB_TOKEN ?? process.env.GH_TOKEN
@@ -44,7 +51,7 @@ async function get(url) {
   return { json: await res.json(), next: nextPageUrl(res.headers.get('link')) }
 }
 
-/** A file's raw bytes at one commit, or null when the path does not exist there. */
+/** A file's raw bytes at one commit, or null when the contents API answers 404 — see `readAtRef`. */
 async function getContent(ref, filePath) {
   const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${filePath}?ref=${ref}`, {
     headers: {
@@ -56,6 +63,25 @@ async function getContent(ref, filePath) {
   if (res.status === 404) return null
   if (!res.ok) throw new Error(`GitHub API ${res.status} for ${filePath}@${ref}`)
   return res.text()
+}
+
+/**
+ * Does this ref resolve in this repo? A 404 from the contents API means nothing until it does.
+ * Measured 2026-09-24: this endpoint answers 200 for a real sha and **422** for one it cannot
+ * resolve — a bogus sha and a branch that does not exist both — while the contents API answers a
+ * flat 404 for all three. Either code here means "no such ref"; anything else is a real failure.
+ */
+async function refExists(ref) {
+  const res = await fetch(`https://api.github.com/repos/${REPO}/commits/${ref}`, {
+    headers: {
+      Authorization: `Bearer ${TOKEN}`,
+      Accept: 'application/vnd.github.sha',
+      'X-GitHub-Api-Version': '2022-11-28',
+    },
+  })
+  if (res.status === 404 || res.status === 422) return false
+  if (!res.ok) throw new Error(`GitHub API ${res.status} for commit ${ref}`)
+  return true
 }
 
 async function getAll(url) {
@@ -81,9 +107,13 @@ if (files.some((file) => file.filename === RATCHET_BASELINE_FILE)) {
     `https://api.github.com/repos/${REPO}/compare/${pull.base.sha}...${pull.head.sha}?per_page=1`,
   )
   const mergeBase = comparison.merge_base_commit?.sha ?? pull.base.sha
+  // A 404 is only "the path is absent here" once the ref itself resolves (#432): the contents API
+  // answers 404 for an unresolvable ref too, and reading that as an empty baseline would make the
+  // whole head file look like a legitimate arming. The extra request is only made on a 404.
+  const io = { readPath: getContent, refExists }
   const [base, head] = await Promise.all([
-    getContent(mergeBase, RATCHET_BASELINE_FILE),
-    getContent(pull.head.sha, RATCHET_BASELINE_FILE),
+    readAtRef(io, mergeBase, RATCHET_BASELINE_FILE),
+    readAtRef(io, pull.head.sha, RATCHET_BASELINE_FILE),
   ])
   ratchet = { base, head }
 }
