@@ -4,8 +4,8 @@
  * Minimal @ui smoke: confirms the app mounts and the 3D scene signals
  * readiness via `window.__SCENE_READY__`. Everything else that was in
  * the old skipped spec (render-budget checks per CanvasArea/GroundPlane)
- * was based on render tracking that is disabled (renderTracking.ts
- * `trackRender` early-returns), so those assertions were vacuous.
+ * was based on the render tracker deleted in #321, so those
+ * assertions were vacuous.
  * Non-3D shell-mounts coverage lives in the RTL integration test:
  *   src/components/Shell.integration.test.tsx
  *

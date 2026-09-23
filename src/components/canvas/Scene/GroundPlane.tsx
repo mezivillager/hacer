@@ -1,4 +1,3 @@
-import { trackRender } from '@/utils/renderTracking'
 import { handlePointerMove, handlePointerLeave, handleClick, handlePointerUp } from '../handlers/groundPlaneHandlers'
 
 /**
@@ -7,8 +6,6 @@ import { handlePointerMove, handlePointerLeave, handleClick, handlePointerUp } f
  * Optimized automatically by React Compiler.
  */
 export function GroundPlane() {
-  trackRender('GroundPlane', 'static')
-
   return (
     <mesh
       rotation={[-Math.PI / 2, 0, 0]}

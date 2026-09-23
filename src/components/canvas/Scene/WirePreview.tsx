@@ -2,7 +2,6 @@ import { useEffect } from 'react'
 import { notify } from '@/lib/notify'
 import { useCircuitStore, circuitActions } from '@/store/circuitStore'
 import { Wire3D } from '../Wire3D'
-import { trackRender } from '@/utils/renderTracking'
 import { useExistingSegments } from '@/hooks/useExistingSegments'
 import { useDestinationPin } from './hooks/useDestinationPin'
 import { useWirePreviewPath } from './hooks/useWirePreviewPath'
@@ -58,9 +57,6 @@ export function WirePreview() {
     wiringFrom: wiringFrom ?? null,
     fromPinType: wiringFrom?.fromPinType ?? 'output',
   })
-
-  const isActive = wiringFrom !== null && wiringFrom.previewEndPosition !== null
-  trackRender('WirePreview', `active:${isActive}`)
 
   useEffect(() => {
     if (!error) return

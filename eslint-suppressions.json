@@ -4,11 +4,6 @@
       "count": 2
     }
   },
-  "src/utils/renderTracking.ts": {
-    "no-console": {
-      "count": 1
-    }
-  },
   "src/utils/wiringScheme/branching.ts": {
     "no-console": {
       "count": 1
