@@ -7,7 +7,7 @@ import type {
   CircuitStore,
   WireEndpoint,
 } from '../../types'
-import { createBusPins } from '@/core/buses/busPins'
+import { createBusPins } from '@/simulation'
 import { calculateWirePath } from '@/utils/wiringScheme/core'
 import { collectWireSegments, combineAdjacentSegments } from '@/utils/wiringScheme/segments'
 import { resolveCrossings } from '@/utils/wiringScheme/crossing'

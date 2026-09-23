@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { useCircuitStore } from '@/store/circuitStore'
-import { createBusPins } from '@/core/buses/busPins'
+import { createBusPins } from '@/simulation'
 import type { BusComponent, BusComponentKind } from '@/store/types'
 import { computeBusPinLayout, computeBusBodyDimensions } from './busBodyLayout'
 
