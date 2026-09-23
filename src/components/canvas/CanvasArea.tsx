@@ -3,7 +3,6 @@ import { GateRenderer } from '@/gates'
 import { NodeRenderer, BusComponentRenderer } from '@/nodes'
 import { Wire3D } from './Wire3D'
 import { useCircuitStore, circuitActions } from '@/store/circuitStore'
-import { trackRender } from '@/utils/renderTracking'
 import { worldToGrid, canPlaceGateAt } from '@/utils/grid'
 import { handlePinClick, handleInputToggle, handleGateClick, handleInputNodeToggle, handleNodeClick, handleNodePinClick, handleJunctionClick, handleBusPinClick, handleBusClick } from './handlers/canvasHandlers'
 import { deriveWire3DProps } from './deriveWire3DProps'
@@ -40,10 +39,6 @@ export function CanvasArea() {
         (w.to.type === 'gate' && w.to.entityId === gateId && w.to.pinId === pinId)
     )
   }
-
-  // Track renders with reason
-  const nodeCount = inputNodes.length + outputNodes.length + junctions.length
-  trackRender('CanvasArea', `gates:${gates.length},wires:${wires.length},nodes:${nodeCount},placing:${!!placementMode},placingNode:${!!nodePlacementMode},wiring:${!!wiringFrom}`)
 
   const isPlacing = placementMode !== null
   const isPlacingNode = nodePlacementMode !== null

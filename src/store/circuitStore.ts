@@ -25,7 +25,6 @@ import { collectWireSegments } from '@/utils/wiringScheme/segments'
 import type { WireSegment } from '@/utils/wiringScheme/types'
 import type { CircuitStore } from './types'
 import '../../e2e/types/globals' // Import for Window augmentation side-effect
-import '@/utils/renderTracking' // Initialize render tracking
 
 // Re-export types for convenience
 export type {

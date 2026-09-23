@@ -4,4 +4,3 @@
 
 export * from './scene.waits'
 export * from './store.waits'
-export * from './render.waits'

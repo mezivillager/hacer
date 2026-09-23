@@ -1,6 +1,5 @@
 import { useCircuitStore } from '@/store/circuitStore'
 import { semanticColors } from '@/theme'
-import { trackRender } from '@/utils/renderTracking'
 import { worldToGrid, canPlaceGateAt } from '@/utils/grid'
 import { NODE_DIMENSIONS } from '@/nodes/config'
 
@@ -21,8 +20,6 @@ export function PlacementPreview() {
   const isDragging = placementMode === null && nodePlacementMode === null && previewPosition !== null && isDragActive
   const isDraggingNode = isDragging && selectedNodeId !== null
   const isActive = isPlacingGate || isPlacingNode || isDragging
-
-  trackRender('PlacementPreview', `active:${isActive},placingGate:${isPlacingGate},placingNode:${isPlacingNode},dragging:${isDragging}`)
 
   if (!isActive || !previewPosition) return null
 

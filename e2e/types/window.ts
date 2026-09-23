@@ -5,6 +5,4 @@ export type {
   CircuitWire,
   CircuitStoreSnapshot,
   CircuitActionsAPI,
-  RenderTrackerStats,
-  RenderTrackerSnapshot,
 } from './globals'

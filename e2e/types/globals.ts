@@ -219,20 +219,6 @@ export interface CircuitActionsAPI {
   placeBusComponent: (position: { x: number; y: number; z: number }) => void
 }
 
-export interface RenderTrackerStats {
-  count: number
-  lastRenderTime: number
-  reasons: string[]
-}
-
-export interface RenderTrackerSnapshot {
-  stats: Record<string, RenderTrackerStats>
-  totalRenders: number
-  lastUpdateTime: number
-  isStable: boolean
-  reset: () => void
-}
-
 // Augment the global Window interface
 declare global {
   interface Window {
@@ -241,6 +227,5 @@ declare global {
     __CIRCUIT_STORE__?: CircuitStoreSnapshot
     __CIRCUIT_ACTIONS__?: CircuitActionsAPI
     __CIRCUIT_STORE_SET_STATE__?: (fn: (draft: CircuitStoreSnapshot) => void) => void
-    __RENDER_TRACKER__?: RenderTrackerSnapshot
   }
 }
