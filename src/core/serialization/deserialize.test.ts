@@ -234,3 +234,75 @@ describe('deserializeCircuit: a warning always names a gate, as a string', () =>
     }
   })
 })
+
+// ── The pruning key: the id the document wrote, not the one the warning shows ──────────────────
+// PR #399 review (round 2): a dropped gate has to be recorded under the id its own record
+// carries. JSON ids are untrusted — a file can write `id: 7` on the gate and `entityId: 7` on the
+// wire, and those match — so keying the skip set off a *display* value leaves that wire pointing
+// at a gate the restored circuit does not contain. `deserializeCircuit`'s own comment above the
+// skip set says why that matters: a dangling wire silently drives 0 into downstream gate inputs
+// through the simulation's missing-endpoint fallback (the state #107 added pruning to prevent).
+// All three dropping branches take one document shape here, so they stay pinned together.
+
+interface PruningCase {
+  /** Reads as the `it.each` title via `$name`. */
+  name: string
+  /** The gate record that will be dropped, exactly as a file could write it. */
+  gate: Record<string, unknown>
+  /** What the wire's `entityId` says — the same JSON value the gate's `id` carries. */
+  entityId: unknown
+}
+
+const ZERO_VEC = { x: 0, y: 0, z: 0 }
+
+const PRUNING_CASES: PruningCase[] = [
+  {
+    // The regression: a numeric id that reaches the `catch` (this record has no `position`).
+    name: 'a numeric id, record the reader cannot rebuild',
+    gate: { id: 7, type: 'And', rotation: ZERO_VEC, width: 1 },
+    entityId: 7,
+  },
+  {
+    name: 'a string id, record the reader cannot rebuild (control)',
+    gate: { id: 'g-bad', type: 'And', rotation: ZERO_VEC, width: 1 },
+    entityId: 'g-bad',
+  },
+  {
+    name: 'a numeric id on an unsupported legacy type (control)',
+    gate: { id: 7, type: 'NOR', position: ZERO_VEC, rotation: ZERO_VEC, width: 1 },
+    entityId: 7,
+  },
+  {
+    // The stand-in a nameless entry displays is an ordinary string, so a real gate may carry it.
+    name: 'an id equal to the stand-in shown for a nameless entry',
+    gate: { id: '(unidentified)', type: 'And', rotation: ZERO_VEC, width: 1 },
+    entityId: '(unidentified)',
+  },
+]
+
+/** The gate that will be dropped, one good `And`, and a wire from the dropped gate into it. */
+const withDroppedGateWire = ({ gate, entityId }: PruningCase): SerializedCircuit => ({
+  ...emptyDocument(CIRCUIT_FORMAT_VERSION),
+  gates: [gate, GOOD_GATE] as unknown as SerializedGate[],
+  wires: [
+    {
+      id: 'w-dangling',
+      from: { type: 'gate', entityId, pinId: `${String(entityId)}-out-0` },
+      to: { type: 'gate', entityId: GOOD_GATE.id, pinId: `${GOOD_GATE.id}-in-0` },
+      segments: [],
+      crossesWireIds: [],
+    },
+  ] as unknown as SerializedWire[],
+})
+
+describe('deserializeCircuit: wires are pruned on the id the document wrote', () => {
+  it.each(PRUNING_CASES)('prunes the wire into a gate dropped with $name', (testCase) => {
+    const { document: restored, warnings } = deserializeCircuit(withDroppedGateWire(testCase))
+
+    // The good gate survives and exactly one warning names the dropped one …
+    expect(restored?.gates.map((g) => g.id)).toEqual([GOOD_GATE.id])
+    expect(warnings).toHaveLength(1)
+    // … and nothing is left referencing the gate that is no longer there.
+    expect(restored?.wires).toEqual([])
+  })
+})
