@@ -62,7 +62,7 @@ const CORE_EXPORTS = [
   'validateChipDefinition',
 ]
 
-const SIMULATION_EXPORTS = ['clampToWidth', 'maskForWidth', 'readSubBus', 'writeSubBus']
+const SIMULATION_EXPORTS = ['clampToWidth', 'createBusPins', 'maskForWidth', 'readSubBus', 'writeSubBus']
 
 describe('the engine entry points', () => {
   it('exports exactly the documented public surface', () => {
