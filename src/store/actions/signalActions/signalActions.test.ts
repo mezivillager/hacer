@@ -8,6 +8,8 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { useCircuitStore } from '../../circuitStore'
 import type { Position, WireEndpoint } from '../../types'
+import { SECTION_SIZE, WIRE_HEIGHT } from '@/utils/wiringScheme/types'
+import type { WireSegment } from '@/utils/wiringScheme/types'
 
 describe('Junction Actions', () => {
   beforeEach(() => {
@@ -521,5 +523,186 @@ describe('XOR Circuit Wiring Integration', () => {
     expect(wireAnd1ToOr).toBeDefined()
     expect(wireAnd2ToOr).toBeDefined()
     expect(wireOrToOut).toBeDefined()
+  })
+})
+
+// ── #364: `removeJunction` keeps the wire that FEEDS the junction, not `wireIds[0]` ────────────
+//
+// A junction sits *on* a trunk wire that keeps running to its own destination; branch wires exist
+// only because of the junction, so removing the junction removes the branches and keeps the trunk.
+// `wireIds[0]` stood in for "the trunk", but that array is bookkeeping order, not structure — and
+// `slice(1)` on a branch-first junction deleted the trunk and kept a branch. That is data loss in
+// the saved document, not a rendering artefact, which is why it outlived #364's geometry half.
+describe('removeJunction — the feed wire survives, not wireIds[0] (#364)', () => {
+  const getState = () => useCircuitStore.getState()
+
+  /** Z-shaped wire with a real perpendicular corner, so `placeJunctionOnWire` accepts it. */
+  function zSegments(): WireSegment[] {
+    return [
+      { type: 'exit', start: { x: 0.7, y: WIRE_HEIGHT, z: 0 }, end: { x: SECTION_SIZE, y: WIRE_HEIGHT, z: 0 } },
+      { type: 'vertical', start: { x: SECTION_SIZE, y: WIRE_HEIGHT, z: 0 }, end: { x: SECTION_SIZE, y: WIRE_HEIGHT, z: -SECTION_SIZE } },
+      { type: 'horizontal', start: { x: SECTION_SIZE, y: WIRE_HEIGHT, z: -SECTION_SIZE }, end: { x: 2 * SECTION_SIZE, y: WIRE_HEIGHT, z: -SECTION_SIZE } },
+      { type: 'entry', start: { x: 2 * SECTION_SIZE, y: WIRE_HEIGHT, z: -SECTION_SIZE }, end: { x: 2 * SECTION_SIZE + 0.7, y: WIRE_HEIGHT, z: -SECTION_SIZE } },
+    ]
+  }
+
+  /** The corner where the vertical segment meets the horizontal one. */
+  const CORNER = { x: SECTION_SIZE, y: WIRE_HEIGHT, z: -SECTION_SIZE }
+
+  beforeEach(() => {
+    useCircuitStore.setState({
+      gates: [], wires: [], junctions: [], inputNodes: [], outputNodes: [],
+      junctionPlacementMode: null, junctionPreviewPosition: null, junctionPreviewWireId: null,
+    })
+  })
+
+  /**
+   * `source → sink` trunk with a junction placed on it by the real action, then two branch wires.
+   *
+   * Only the two `wireIds` appends are hand-written: they stand in for `completeJunctionWiring`,
+   * which appends each new branch to `wireIds` (`wiringActions.ts`). A branch whose `from` IS the
+   * junction is a shape serialization permits and no store action writes today (#365's verifier),
+   * so it is built with `addWire` rather than through the wiring gesture.
+   */
+  function buildFanOut() {
+    const source = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+    const sink = getState().addGate('Nand', { x: 2 * SECTION_SIZE, y: 0, z: -SECTION_SIZE })
+    const branchSink1 = getState().addGate('Nand', { x: 4 * SECTION_SIZE, y: 0, z: 0 })
+    const branchSink2 = getState().addGate('Nand', { x: 4 * SECTION_SIZE, y: 0, z: 4 })
+
+    const trunk = getState().addWire(
+      { type: 'gate', entityId: source.id, pinId: source.outputs[0].id },
+      { type: 'gate', entityId: sink.id, pinId: sink.inputs[0].id },
+      zSegments()
+    )
+    const junction = getState().placeJunctionOnWire(CORNER, trunk.id)
+    const branch1 = getState().addWire(
+      { type: 'junction', entityId: junction.id },
+      { type: 'gate', entityId: branchSink1.id, pinId: branchSink1.inputs[0].id },
+      []
+    )
+    const branch2 = getState().addWire(
+      { type: 'junction', entityId: junction.id },
+      { type: 'gate', entityId: branchSink2.id, pinId: branchSink2.inputs[0].id },
+      []
+    )
+    attachWires(junction.id, [branch1.id, branch2.id])
+
+    return { source, sink, junction, trunk, branch1, branch2 }
+  }
+
+  /** Append wire ids to a junction, the way `completeJunctionWiring` does. */
+  function attachWires(junctionId: string, wireIds: string[]) {
+    useCircuitStore.setState((state) => {
+      const j = state.junctions.find((x) => x.id === junctionId)
+      if (!j) return
+      for (const id of wireIds) if (!j.wireIds.includes(id)) j.wireIds.push(id)
+    })
+  }
+
+  function setWireIds(junctionId: string, wireIds: string[]) {
+    useCircuitStore.setState((state) => {
+      const j = state.junctions.find((x) => x.id === junctionId)
+      if (j) j.wireIds = wireIds
+    })
+  }
+
+  const wireIdsNow = () => getState().wires.map((w) => w.id)
+
+  it('keeps the trunk when wireIds[0] genuinely is the trunk', () => {
+    const c = buildFanOut()
+    expect(getState().junctions[0].wireIds).toEqual([c.trunk.id, c.branch1.id, c.branch2.id])
+
+    getState().removeJunction(c.junction.id)
+
+    expect(wireIdsNow()).toEqual([c.trunk.id])
+    expect(getState().junctions).toHaveLength(0)
+  })
+
+  it('keeps the trunk when wireIds[0] is a branch', () => {
+    const c = buildFanOut()
+    setWireIds(c.junction.id, [c.branch1.id, c.branch2.id, c.trunk.id])
+
+    getState().removeJunction(c.junction.id)
+
+    // The surviving wire is the one that fed the junction — not `wireIds[0]`.
+    expect(wireIdsNow()).toEqual([c.trunk.id])
+  })
+
+  it('keeps a feed wire that ends at the junction and is listed last', () => {
+    const source = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+    const sink = getState().addGate('Nand', { x: 4 * SECTION_SIZE, y: 0, z: 0 })
+    const junction = getState().addJunction('sig-a', CORNER)
+
+    const feed = getState().addWire(
+      { type: 'gate', entityId: source.id, pinId: source.outputs[0].id },
+      { type: 'junction', entityId: junction.id },
+      []
+    )
+    const branch = getState().addWire(
+      { type: 'junction', entityId: junction.id },
+      { type: 'gate', entityId: sink.id, pinId: sink.inputs[0].id },
+      []
+    )
+    setWireIds(junction.id, [branch.id, feed.id])
+
+    getState().removeJunction(junction.id)
+
+    expect(wireIdsNow()).toEqual([feed.id])
+  })
+
+  it('keeps the feed wire of a junction fed from another junction (a chain)', () => {
+    const c = buildFanOut()
+    // A second junction sits on branch1: its feed is a wire that STARTS at the first junction.
+    const chainSink = getState().addGate('Nand', { x: 6 * SECTION_SIZE, y: 0, z: 0 })
+    const junction2 = getState().addJunction(c.junction.signalId, { x: 3 * SECTION_SIZE, y: WIRE_HEIGHT, z: 0 })
+    const branch3 = getState().addWire(
+      { type: 'junction', entityId: junction2.id },
+      { type: 'gate', entityId: chainSink.id, pinId: chainSink.inputs[0].id },
+      []
+    )
+    setWireIds(junction2.id, [branch3.id, c.branch1.id])
+
+    getState().removeJunction(junction2.id)
+
+    // branch1 feeds junction2, so branch1 survives and branch3 goes.
+    expect(wireIdsNow()).toEqual([c.trunk.id, c.branch1.id, c.branch2.id])
+    // The upstream junction keeps every wire it still owns.
+    expect(getState().junctions.map((j) => j.id)).toEqual([c.junction.id])
+    expect(getState().junctions[0].wireIds).toEqual([c.trunk.id, c.branch1.id, c.branch2.id])
+  })
+
+  it('removes every listed wire when the junction has no feed wire', () => {
+    const c = buildFanOut()
+    // Malformed document: the junction lists only wires that start at it — nothing feeds it.
+    setWireIds(c.junction.id, [c.branch1.id, c.branch2.id])
+
+    getState().removeJunction(c.junction.id)
+
+    // Floating, exactly as the evaluator reads it (#356/#365): nothing is the trunk, so no listed
+    // wire is kept. The trunk the junction no longer lists is untouched.
+    expect(wireIdsNow()).toEqual([c.trunk.id])
+    expect(getState().junctions).toHaveLength(0)
+  })
+
+  it('keeps the trunk after it is deleted and re-drawn (wireIds becomes branch-first)', () => {
+    const c = buildFanOut()
+
+    // `removeWire` splices the trunk out of `wireIds`; the junction survives on its two branches.
+    getState().removeWire(c.trunk.id)
+    expect(getState().junctions[0].wireIds).toEqual([c.branch1.id, c.branch2.id])
+
+    // Re-drawing the wire and re-attaching it appends it *last*, as `completeJunctionWiring` does.
+    const trunk2 = getState().addWire(
+      { type: 'gate', entityId: c.source.id, pinId: c.source.outputs[0].id },
+      { type: 'gate', entityId: c.sink.id, pinId: c.sink.inputs[0].id },
+      zSegments()
+    )
+    attachWires(c.junction.id, [trunk2.id])
+    expect(getState().junctions[0].wireIds).toEqual([c.branch1.id, c.branch2.id, trunk2.id])
+
+    getState().removeJunction(c.junction.id)
+
+    expect(wireIdsNow()).toEqual([trunk2.id])
   })
 })
