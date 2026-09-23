@@ -3,7 +3,7 @@ import { evaluateSplitter, evaluateJoiner } from './busLogic'
 import { getBuiltinChipRegistry, getUserChipRegistry } from '@/core/chips/appRegistry'
 import { evaluateChipWithCtx, DEFAULT_MAX_DEPTH } from '@/core/chips/evaluateChip'
 import { combineRegistries } from '@/core/chips/combineRegistries'
-import type { CircuitDocument, Pin, Wire, WireEndpoint } from '@/store/types'
+import type { CircuitDocument, JunctionNode, Pin, Wire, WireEndpoint } from '@/store/types'
 
 /**
  * Result of {@link topologicalSort}: a gate evaluation order, or cycle involvement.
@@ -18,6 +18,36 @@ export type TopologicalResult =
 export type EvaluateCircuitResult =
   | { status: 'ok' }
   | { status: 'cycle'; involvedGateIds: string[] }
+
+/**
+ * The wire that feeds a junction, found by structure rather than by position in `wireIds` (#356).
+ *
+ * A junction is not a graph node — it is a branch point placed *on* a wire — so the wire that
+ * brings the signal to it is either a wire that **ends** at it, or, in the fan-out model where the
+ * trunk runs past the junction to its own destination, one of the junction's listed wires that does
+ * not **start** at it. Every branch wire starts at the junction, so a branch is never the feed.
+ *
+ * `wireIds[0]` used to stand in for this, but that array is bookkeeping order, not structure:
+ * `removeWire` splices the trunk out of `wireIds` and re-attaching a redrawn wire appends it last,
+ * which leaves a branch first and made every branch of that junction read as floating.
+ *
+ * One pass over `state.wires` — the same cost as the single `find` it replaces.
+ *
+ * @param junction - Junction whose incoming signal is being traced
+ * @param state - Current circuit state
+ * @returns The feed wire, or `null` when the junction has none (a malformed document)
+ */
+function findJunctionFeedWire(junction: JunctionNode, state: CircuitDocument): Wire | null {
+  let trunk: Wire | null = null
+  for (const wire of state.wires) {
+    // A wire that ends at the junction states the structure outright, so it wins.
+    if (wire.to.type === 'junction' && wire.to.entityId === junction.id) return wire
+    if (trunk !== null) continue
+    if (wire.from.type === 'junction' && wire.from.entityId === junction.id) continue // a branch
+    if (junction.wireIds.includes(wire.id)) trunk = wire
+  }
+  return trunk
+}
 
 /**
  * Traces through junctions to find the actual source gate ID.
@@ -45,13 +75,8 @@ function resolveSourceGateId(
       visited.add(endpoint.entityId)
 
       const junction = state.junctions.find((j) => j.id === endpoint.entityId)
-      if (junction && junction.wireIds.length > 0) {
-        const originalWire = state.wires.find((w) => w.id === junction.wireIds[0])
-        if (originalWire) {
-          return resolveSourceGateId(originalWire.from, state, visited)
-        }
-      }
-      return null
+      const feedWire = junction ? findJunctionFeedWire(junction, state) : null
+      return feedWire ? resolveSourceGateId(feedWire.from, state, visited) : null
     }
     default:
       return null
@@ -128,6 +153,10 @@ export function topologicalSort(state: CircuitDocument): TopologicalResult {
  *
  * Includes cycle detection so malformed junction loops cannot recurse infinitely.
  *
+ * A junction resolves through its feed wire ({@link findJunctionFeedWire}). A junction that has no
+ * feed wire — only branches, which a malformed document can carry — is floating, and HACER reads
+ * floating as `0`: the value an undriven pin already takes, and the one a junction loop returns.
+ *
  * @param from - Source endpoint of the wire
  * @param state - Current circuit state
  * @param visited - Internal: junction IDs already visited
@@ -168,13 +197,8 @@ export function getSignalSourceValue(
       visited.add(from.entityId)
 
       const junction = state.junctions.find((j) => j.id === from.entityId)
-      if (junction && junction.wireIds.length > 0) {
-        const originalWire = state.wires.find((w) => w.id === junction.wireIds[0])
-        if (originalWire) {
-          return getSignalSourceValue(originalWire.from, state, visited)
-        }
-      }
-      return 0
+      const feedWire = junction ? findJunctionFeedWire(junction, state) : null
+      return feedWire ? getSignalSourceValue(feedWire.from, state, visited) : 0
     }
     case 'output':
     default:
