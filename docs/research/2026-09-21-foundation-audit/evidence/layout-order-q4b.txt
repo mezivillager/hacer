@@ -1,0 +1,10 @@
+
+### delete one mid-list part — Mux4Way16 -> Mux (48 parts)
+  id           crossings 3221 -> 3061   stable=38/53 (72%)
+  barycentre   crossings 1650 -> 1557   stable=43/53 (81%)
+  incremental  crossings 1650 -> 1555   stable=46/53 (87%)
+
+### rewire one connection (no id changes) — Mux4Way16 -> Mux (48 parts)
+  id           crossings 3221 -> 3219   stable=54/54 (100%)
+  barycentre   crossings 1650 -> 1627   stable=30/54 (56%)
+  incremental  crossings 1650 -> 1648   stable=54/54 (100%)

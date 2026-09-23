@@ -1,0 +1,74 @@
+
+### PARTS-ONLY graphs (S328 excluded chip I/O terminals from the drawn graph)
+  Parity5                    parts-only: id=0 barycentre=0   |   with I/O terminals: id=50 barycentre=0
+  Mux4Way16 -> Mux (48)      parts-only: id=205 barycentre=0   |   with I/O terminals: id=3221 barycentre=1650
+  Mux4Way16 -> prim (192)    parts-only: id=1900 barycentre=0   |   with I/O terminals: id=7228 barycentre=3033
+  The chip I/O terminals ARE drawn (src/nodes, capability row 5, ADR-0008 assertion 6).
+  Excluding them is what made the real fixture look free of crossings.
+Crossings = standard pairwise inter-layer count (S328 countCrossings, dummy nodes included).
+Layering is identical in all three rows; only the within-layer comparator differs.
+Stability = nodes keeping the same (layer, index) after adding one part.
+
+### Parity5 — 16 Nands, depth 12 (S328 real fixture)  (22 drawn nodes, 33 edges)
+  id           crossings=    50 (after edit     50)  stable=22/22 (100%)  layer-moved=0
+  barycentre   crossings=     0 (after edit      0)  stable=21/22 (95%)  layer-moved=0
+  incremental  crossings=     0 (after edit      0)  stable=21/22 (95%)  layer-moved=0
+  edit = add one part "p016_Not" tapping an existing internal signal
+
+### Xor -> primitives (S210 fixture S2)  (12 drawn nodes, 15 edges)
+  id           crossings=     4 (after edit      4)  stable=12/12 (100%)  layer-moved=0
+  barycentre   crossings=     2 (after edit      2)  stable=12/12 (100%)  layer-moved=0
+  incremental  crossings=     2 (after edit      2)  stable=12/12 (100%)  layer-moved=0
+  edit = add one part "zz_new_Not" tapping an existing internal signal
+
+### Mux8Way16 -> Mux4Way16/Mux16 (S210 fixture B)  (13 drawn nodes, 14 edges)
+  id           crossings=    12 (after edit     12)  stable=13/13 (100%)  layer-moved=0
+  barycentre   crossings=     0 (after edit      0)  stable=13/13 (100%)  layer-moved=0
+  incremental  crossings=     0 (after edit      0)  stable=13/13 (100%)  layer-moved=0
+  edit = add one part "zz_new_Not" tapping an existing internal signal
+
+### Mux4Way16 -> Mux, 48 parts (S210 fixture M)  (54 drawn nodes, 160 edges)
+  id           crossings=  3221 (after edit   3236)  stable=54/54 (100%)  layer-moved=0
+  barycentre   crossings=  1650 (after edit   1657)  stable=49/54 (91%)  layer-moved=0
+  incremental  crossings=  1650 (after edit   2681)  stable=54/54 (100%)  layer-moved=0
+  edit = add one part "zz_new_Not" tapping an existing internal signal
+
+### Mux4Way16 -> primitives, 192 parts (S210 fixture L)  (198 drawn nodes, 352 edges)
+  id           crossings=  7228 (after edit   7229)  stable=198/198 (100%)  layer-moved=0
+  barycentre   crossings=  3033 (after edit   3048)  stable=189/198 (95%)  layer-moved=0
+  incremental  crossings=  3033 (after edit   3048)  stable=189/198 (95%)  layer-moved=0
+  edit = add one part "zz_new_Not" tapping an existing internal signal
+
+### Mux8Way16 -> primitives, 896 parts (S210 fixture XL)  (906 drawn nodes, 1424 edges)
+  id           crossings= 42696 (after edit  42790)  stable=906/906 (100%)  layer-moved=0
+  barycentre   crossings= 13475 (after edit  13491)  stable=842/906 (93%)  layer-moved=0
+  incremental  crossings= 13475 (after edit  13491)  stable=842/906 (93%)  layer-moved=0
+  edit = add one part "zz_new_Not" tapping an existing internal signal
+
+### CONTROL: tangled bipartite, built to be tangled (synthetic)  (16 drawn nodes, 16 edges)
+  id           crossings=    43 (after edit     57)  stable=16/16 (100%)  layer-moved=0
+  barycentre   crossings=     8 (after edit      8)  stable=8/16 (50%)  layer-moved=0
+  incremental  crossings=     8 (after edit      8)  stable=8/16 (50%)  layer-moved=0
+  edit = add one part "ZZ" tapping an existing internal signal
+
+### sensitivity — a new part whose id sorts in the MIDDLE, not last
+(the append convention makes new ids sort last; this is the counterfactual)
+  newId=zz_new_Not   id           stable=54/54 (100%)  crossings after edit=3236
+  newId=zz_new_Not   barycentre   stable=49/54 (91%)  crossings after edit=1657
+  newId=zz_new_Not   incremental  stable=54/54 (100%)  crossings after edit=2681
+  newId=p0055_Not    id           stable=38/54 (70%)  crossings after edit=3253
+  newId=p0055_Not    barycentre   stable=49/54 (91%)  crossings after edit=1657
+  newId=p0055_Not    incremental  stable=54/54 (100%)  crossings after edit=2681
+  newId=a_new_Not    id           stable=38/54 (70%)  crossings after edit=3253
+  newId=a_new_Not    barycentre   stable=49/54 (91%)  crossings after edit=1657
+  newId=a_new_Not    incremental  stable=54/54 (100%)  crossings after edit=2681
+
+### determinism — incremental is still a pure function of (graph, previous)
+  1 distinct orderings over 20 runs with the same (graph, previous)
+  1 distinct orderings over 20 runs with NO previous (first layout = barycentre)
+  first layout identical to barycentre: true
+
+### ten successive one-part additions (does quality drift?)
+  id           crossings 3221 -> 3383 after 10 additions; total node-moves across the 10 edits = 0
+  barycentre   crossings 1650 -> 1213 after 10 additions; total node-moves across the 10 edits = 195
+  incremental  crossings 1650 -> 2384 after 10 additions; total node-moves across the 10 edits = 56

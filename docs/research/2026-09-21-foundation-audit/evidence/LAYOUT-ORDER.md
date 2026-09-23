@@ -16,7 +16,8 @@ tangled bipartite graph as a control. Node 22.19.0, Vitest, `environment: 'node'
 
 Three comparators:
 
-- **`id`** — sort each layer by part id. ADR-0020's proposed default.
+- **`id`** — sort each layer by part id. The ADR-0020 draft's proposed default, which this
+  measurement replaced.
 - **`barycentre`** — eight alternating barycentre sweeps, keeping the best. S328's placer.
 - **`incremental`** — `layout(doc, surface, { previous })`: barycentre on the first layout; on every
   later layout, the ordinary sweeps followed by a repair pass that restores the **relative order of
@@ -147,6 +148,14 @@ The harness is two files, written into S328's throwaway spike tree and run with 
 `spike/vitest.spike.config.ts`: `order.ts` (the three comparators over one shared layering) and
 `q4.test.ts` (fixtures, edits, reporting). Both spike trees are uncommitted and short-lived by
 design — ADR-0013's rule for spikes — so the numbers above are the record, and the harness is
-archived with this run's notes rather than in the repo. Re-deriving it is a couple of hours: the
-layering and crossing counter are ~120 lines, the fixtures come from `src/core/hdl/parser.ts` and
-`src/core/hdl/project1HdlSources.ts`, and the comparator repair pass is ~20 lines.
+archived with this run's notes rather than in the repo.
+
+Re-deriving it is a couple of hours: the layering and crossing counter are ~120 lines, the fixtures
+come from `src/core/hdl/parser.ts` and `src/core/hdl/project1HdlSources.ts`, and the comparator
+repair pass is ~20 lines.
+
+**The raw output is committed beside this file**, because every table above was derived from it and
+its producer is about to be deleted: `layout-order-q4.txt` carries the parts-only cross-check, the
+per-fixture crossings, the one-part-added runs under three new-id positions and the ten-edit drift
+run; `layout-order-q4b.txt` carries the delete and the rewire runs. They are verbatim spike stdout,
+not a report — read them as the provenance of the numbers above, not as a document anyone maintains.
