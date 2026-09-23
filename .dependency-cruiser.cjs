@@ -18,7 +18,14 @@
  * — a baseline write rewrites the whole file, so a line review sees churn, not meaning) but does
  * take it out of review. So this paragraph is not the fence; the fence is the `ratchet` rule in
  * `scripts/pr-hygiene.logic.mjs`, which compares the committed rows against the PR's merge base
- * and fails any row added under a rule name that already existed, naming it.
+ * and fails any row added under a rule name that already existed, naming it — whatever the row
+ * *count* did, so fixing one violation while absorbing another does not buy a pass.
+ *
+ * One thing that rule cannot see, stated rather than left implicit: **renaming a rule below** and
+ * letting its rows re-enter under the new name. In the baseline a genuinely new rule and a renamed
+ * one are the same shape, so no comparison of rows can separate them. What it does see is that
+ * rows *left* as well as arrived, which no real arming does — that reads `swapped` and warns,
+ * pointing here. The fence on a rename is this file: a renamed rule is a reviewable line in it.
  *
  * A guard that cries wolf makes agents argue with it, so every rule here is deliberately narrow:
  * it names the directions the audit measured and nothing more. Widen it only with a measurement.

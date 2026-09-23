@@ -220,24 +220,76 @@ function linkedIssue({ body, author, labels, measures }) {
  */
 export const RATCHET_BASELINE_FILE = '.dependency-cruiser-known-violations.json'
 
-/** A greppable claim in the PR body that growth under an existing rule is deliberate. */
-export const RATCHET_DECLARATION_RE = /^[ \t]*Baseline-growth:[ \t]*(\S.*?)[ \t]*$/im
+/**
+ * A greppable claim in the PR body that a named absorption is deliberate.
+ *
+ * **What it is for** (corrected #432): *not* a plain rename — that was the PR body's claim and it
+ * was wrong twice over. A rename used to pass on a warn without any declaration, and now fails
+ * like every other row added under an existing rule name. The case that genuinely needs the hatch
+ * is a **move**: a file that enters `src/core` records new `engine-no-state` rows while its old
+ * rows disappear, and no comparison of rows can tell that from a silent reset. That is a real case
+ * while the foundation plan moves files between layers, which is why the hatch stays — `main-rules`
+ * allows no bypass, so a rule with no way to argue with it gets deleted rather than obeyed.
+ *
+ * **What fences it**: the declaration has to *name the rows it covers*, in the same
+ * `<rule>: <from> → <to>` form the failure message prints, so it cannot pre-authorise rows the
+ * author never saw; one line per row, or several rows on one line. Any non-blank text used to be
+ * enough — `Baseline-growth: .` cleared a measured reset. A line inside a fenced code block is an
+ * example, not a claim, and does not count. `ratchet=absorbed` stays on the `HYGIENE:` line and in
+ * the step summary even when the declaration holds, so the reset is on the record either way.
+ */
+export const RATCHET_DECLARATION_RE = /^[ \t]*Baseline-growth:[ \t]*(\S.*?)[ \t]*$/gim
 
 /** How many added rows the message names before it says "+n more". */
 export const RATCHET_MAX_NAMED_ROWS = 5
 
-// Red stubs (#432) — replaced by the implementation in the next commit.
+/** A PR body with fenced code blocks removed. An unclosed fence swallows the rest of the body. */
 export function stripFencedCode(text) {
-  return text ?? ''
+  let fence = null
+  const mark = (line) => /^[ \t]*(`{3,}|~{3,})/.exec(line)?.[1]
+  return (text ?? '')
+    .split('\n')
+    .filter((line) => {
+      const here = mark(line)
+      if (fence === null) {
+        if (here) fence = here
+        return !here
+      }
+      if (here && here[0] === fence[0] && here.length >= fence.length) fence = null
+      return false
+    })
+    .join('\n')
 }
-export function ratchetDeclarations() {
-  return []
+
+/** `->` and `→` name the same edge, and whitespace in a PR body is not meaningful. */
+const normaliseClaim = (text) => text.replace(/->/g, '→').replace(/\s+/g, ' ').trim()
+
+/** Every `Baseline-growth:` claim in the body's prose. */
+export function ratchetDeclarations(body) {
+  return [...stripFencedCode(body).matchAll(RATCHET_DECLARATION_RE)].map((match) => match[1])
 }
-export function undeclaredRatchetRows(_body, rows) {
-  return rows
+
+/** The absorbed rows no declaration names — a declaration covers only what it spells out. */
+export function undeclaredRatchetRows(body, rows) {
+  const claims = ratchetDeclarations(body).map(normaliseClaim)
+  return rows.filter((row) => !claims.some((claim) => claim.includes(normaliseClaim(`${row.rule}: ${row.edge}`))))
 }
-export async function readAtRef() {
-  throw new Error('readAtRef is not implemented')
+
+/**
+ * A file's bytes at one ref, or null when the path is genuinely absent there.
+ *
+ * The contents API answers **404 for both** an absent path and a ref it cannot resolve, and the two
+ * are indistinguishable in the response. Reading the second as the first is the one fail-open
+ * direction that matters here: an unresolvable base would parse as an empty ratchet and the whole
+ * head baseline would read as a legitimate arming. So a 404 becomes `null` only once the ref
+ * itself resolves; otherwise it throws, and a thrown error is a failed required check.
+ * @param {{readPath:(ref:string,path:string)=>Promise<string|null>, refExists:(ref:string)=>Promise<boolean>}} io
+ */
+export async function readAtRef(io, ref, filePath) {
+  const body = await io.readPath(ref, filePath)
+  if (body !== null) return body
+  if (await io.refExists(ref)) return null
+  throw new Error(`cannot resolve \`${ref}\` — refusing to read a missing \`${filePath}\` as an empty baseline`)
 }
 
 /**
@@ -266,10 +318,20 @@ const ratchetRowKey = (row) => `${row.rule}\u0000${row.edge}`
  * that is **new in this PR** — that is what tells an armed rule from an absorbed violation, and it
  * is the one thing a reviewer cannot see in a `linguist-generated` diff.
  *
- * - `armed` — every added row belongs to a rule name the base did not have. #404's shape.
- * - `absorbed` — rows grew and at least one belongs to a rule that already existed.
- * - `swapped` — a row is new but the count did not grow (a renamed file records the same violation
- *   under a new path). Worth saying out loud, not worth blocking.
+ * Every verdict is a **set** difference. The row count judges nothing (#432): it went on gating the
+ * fail/warn split, so "fix one violation and absorb another" stayed flat and warned — and that is
+ * not an adversarial case but the ordinary shape of a refactor moving files between layers.
+ *
+ * - `armed` — every added row belongs to a rule name the base did not have, and nothing was
+ *   removed. #404's shape (34 → 77, arming `core-through-index`).
+ * - `absorbed` — at least one added row belongs to a rule that already existed, whatever the count
+ *   did. Flat and falling counts included.
+ * - `swapped` — rows left *and* arrived, all of them under rule names new in this PR. A rule armed
+ *   while violations were fixed looks like this; so does a rule **renamed** in
+ *   `.dependency-cruiser.cjs` to carry its old rows under a new name. The baseline cannot tell
+ *   those apart — a genuinely new rule and a renamed one are the same shape in it — so this warns
+ *   and points at the config diff rather than reading `armed` and passing in silence. The residual
+ *   is real and stated: the fence on a rename is the reviewable line in the config.
  * @param {{base:string|null, head:string|null}} contents
  */
 export function compareRatchetBaseline({ base, head }) {
@@ -281,21 +343,23 @@ export function compareRatchetBaseline({ base, head }) {
   }
   const counts = { base: parsedBase.rows.length, head: parsedHead.rows.length }
   const baseKeys = new Set(parsedBase.rows.map(ratchetRowKey))
+  const headKeys = new Set(parsedHead.rows.map(ratchetRowKey))
   const baseRules = new Set(parsedBase.rows.map((row) => row.rule))
   const added = parsedHead.rows.filter((row) => !baseKeys.has(ratchetRowKey(row)))
+  const removed = parsedBase.rows.filter((row) => !headKeys.has(ratchetRowKey(row)))
   const armedRules = [...new Set(added.filter((row) => !baseRules.has(row.rule)).map((row) => row.rule))]
   const absorbed = added.filter((row) => baseRules.has(row.rule))
   const status =
     added.length === 0
-      ? counts.head < counts.base
+      ? removed.length > 0
         ? 'shrank'
         : 'unchanged'
-      : absorbed.length === 0
-        ? 'armed'
-        : counts.head > counts.base
-          ? 'absorbed'
-          : 'swapped'
-  return { status, counts, added, absorbed, armedRules }
+      : absorbed.length > 0
+        ? 'absorbed'
+        : removed.length > 0
+          ? 'swapped'
+          : 'armed'
+  return { status, counts, added, absorbed, removed, armedRules }
 }
 
 /** Added rows, named — "the baseline grew" on its own is not something anyone can act on. */
@@ -308,27 +372,38 @@ function nameRatchetRows(rows) {
 function ratchetGrowth({ body, ratchet }) {
   const finding = (level, message) => [{ rule: 'ratchet', level, message }]
   if (!ratchet) return finding('pass', `\`${RATCHET_BASELINE_FILE}\` unchanged`)
-  const { status, counts, added, absorbed, armedRules, detail } = ratchet
+  const { status, counts, added, absorbed, removed, armedRules, detail } = ratchet
   if (status === 'unreadable') return finding('fail', `${detail} — its growth cannot be checked`)
   if (status === 'unchanged') return finding('pass', `${counts.head} baseline rows, unchanged`)
-  const moved = `${counts.base} → ${counts.head} baseline rows`
+  const rules = armedRules.map((rule) => `\`${rule}\``).join(', ')
+  // Never "flat" once the rows have changed: the count is the one number this rule does not judge
+  // on, and "71 baseline rows, flat" after 72 was a false statement in a required check's output.
+  const moved =
+    counts.head === counts.base
+      ? `${counts.head} baseline rows, count flat`
+      : `${counts.base} → ${counts.head} baseline rows`
   if (status === 'shrank') return finding('pass', `${moved} — the ratchet shrank`)
   if (status === 'armed') {
-    const rules = armedRules.map((rule) => `\`${rule}\``).join(', ')
     return finding('pass', `${moved}, arming ${rules} (${plural(added.length, 'row')}) — growth is legitimate when a rule is armed in the same commit`)
   }
-  const declared = RATCHET_DECLARATION_RE.exec(body ?? '')?.[1]
-  const what =
-    status === 'absorbed'
-      ? `${moved} with no new rule armed — ${plural(absorbed.length, 'violation')} absorbed: ${nameRatchetRows(absorbed)}`
-      : `${counts.head} baseline rows, flat, but ${plural(absorbed.length, 'violation')} is new: ${nameRatchetRows(absorbed)}`
-  if (declared) return finding('warn', `${what} — declared: "${declared}"`)
   if (status === 'swapped') {
-    return finding('warn', `${what}. A renamed file records the same violation under a new path; anything else is an absorption`)
+    return finding(
+      'warn',
+      `${moved} — ${plural(removed.length, 'row')} left and ${plural(added.length, 'row')} arrived, all under ${rules}. ` +
+        'A rule armed while violations were fixed looks like this, and so does a rule **renamed** in ' +
+        '`.dependency-cruiser.cjs` to carry its old rows under a new name — the baseline cannot tell them apart, so read the config diff',
+    )
   }
+  const what = `${moved} — no new rule armed, ${plural(absorbed.length, 'violation')} absorbed: ${nameRatchetRows(absorbed)}`
+  const undeclared = undeclaredRatchetRows(body, absorbed)
+  if (undeclared.length === 0) {
+    return finding('warn', `${what} — declared: ${ratchetDeclarations(body).map((claim) => `"${claim}"`).join('; ')}`)
+  }
+  const unnamed = undeclared.length === absorbed.length ? '' : ` — ${nameRatchetRows(undeclared)} still undeclared`
   return finding(
     'fail',
-    `${what}. Fix the import, arm a rule in the same commit, or state the reason in the PR body as \`Baseline-growth: <why>\``,
+    `${what}${unnamed}. Fix the import, arm a rule in the same commit, or name every row in the PR body as ` +
+      `\`Baseline-growth: ${undeclared[0].rule}: ${undeclared[0].edge} — <why>\``,
   )
 }
 
