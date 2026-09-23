@@ -52,6 +52,14 @@ export type DeserializeWarning =
       /** The chip name `gateType` migrated to, which no registry knows. */
       chipName: string
     }
+  | {
+      code: 'unreadable-gate'
+      message: string
+      gateId: string
+      gateType: string
+      /** What went wrong while rebuilding this one gate, verbatim. */
+      reason: string
+    }
 
 export interface DeserializeResult {
   /**
