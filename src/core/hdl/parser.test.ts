@@ -162,7 +162,7 @@ describe('HDL Parser', () => {
       expect(result.success).toBe(true)
       if (!result.success) return
       expect(result.chip.parts[0].connections[0]).toEqual({
-        internal: 'a', external: 'in', start: 0, end: 7,
+        internal: 'a', external: 'in', externalSlice: { start: 0, end: 7 },
       })
     })
 
@@ -177,7 +177,7 @@ describe('HDL Parser', () => {
       expect(result.success).toBe(true)
       if (!result.success) return
       expect(result.chip.parts[0].connections[0]).toEqual({
-        internal: 'in', external: 'in', start: 3, end: 3,
+        internal: 'in', external: 'in', externalSlice: { start: 3, end: 3 },
       })
     })
 
@@ -537,10 +537,10 @@ describe('HDL Parser', () => {
       if (!result.success) return
       expect(result.chip.parts).toHaveLength(7)
       expect(result.chip.parts[0].connections[0]).toEqual({
-        internal: 'a', external: 'in', start: 0, end: 0,
+        internal: 'a', external: 'in', externalSlice: { start: 0, end: 0 },
       })
       expect(result.chip.parts[0].connections[1]).toEqual({
-        internal: 'b', external: 'in', start: 1, end: 1,
+        internal: 'b', external: 'in', externalSlice: { start: 1, end: 1 },
       })
     })
 
@@ -550,10 +550,10 @@ describe('HDL Parser', () => {
       if (!result.success) return
       expect(result.chip.parts).toHaveLength(3)
       expect(result.chip.parts[0].connections[2]).toEqual({
-        internal: 'sel', external: 'sel', start: 0, end: 0,
+        internal: 'sel', external: 'sel', externalSlice: { start: 0, end: 0 },
       })
       expect(result.chip.parts[2].connections[2]).toEqual({
-        internal: 'sel', external: 'sel', start: 1, end: 1,
+        internal: 'sel', external: 'sel', externalSlice: { start: 1, end: 1 },
       })
     })
   })

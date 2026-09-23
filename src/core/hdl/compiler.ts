@@ -1,5 +1,5 @@
 // src/core/hdl/compiler.ts
-import type { HDLChip, HDLPart } from './types'
+import type { HDLChip, HDLPart, HDLSlice } from './types'
 import type { ChipDefinition } from '../chips/types'
 import type { ChipRegistry } from '../chips/registry'
 import { isBuiltinChip } from '../chips/types'
@@ -36,6 +36,8 @@ export function hdlChipDefinition(ast: HDLChip, source: string): ChipDefinition 
 }
 
 const LITERALS = new Set(['true', 'false'])
+/** Bits carried by an inclusive slice: `[3]` is 1, `[0..7]` is 8. */
+const sliceBits = (slice: HDLSlice): number => slice.end - slice.start + 1
 /** An unsliced write covers a signal's whole width, however wide it later turns out to be. */
 const WHOLE_SIGNAL = Number.MAX_SAFE_INTEGER
 
@@ -72,7 +74,7 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
   for (const p of ast.outputs) signalWidth.set(p.name, p.width)
   for (const { part, def } of resolved) {
     for (const conn of part.connections) {
-      if (conn.start !== undefined || LITERALS.has(conn.external)) continue // sliced writes don't pin total width
+      if (conn.externalSlice || LITERALS.has(conn.external)) continue // sliced writes don't pin total width
       const outPin = def.outputs.find((p) => p.name === conn.internal)
       if (outPin && !signalWidth.has(conn.external)) signalWidth.set(conn.external, outPin.width)
     }
@@ -97,8 +99,8 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
         continue
       }
       const pin = inPin ?? outPin
-      if (pin && conn.start !== undefined) {
-        const sliceWidth = (conn.end ?? conn.start) - conn.start + 1
+      if (pin && conn.externalSlice) {
+        const sliceWidth = sliceBits(conn.externalSlice)
         if (sliceWidth !== pin.width) {
           errors.push({ message: `Part "${part.name}" pin "${conn.internal}" width ${pin.width} != slice width ${sliceWidth}`, partName: part.name, pinName: conn.internal })
         }
@@ -121,8 +123,8 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
         // One bit, one driver. Two parts writing the same bit is a short circuit, not a value,
         // and which one survived would depend on the part order — exactly what step 4 stops
         // depending on. Matches the reference simulator (../web-ide, `ChipBuilder`).
-        const first = conn.start ?? 0
-        const last = conn.start !== undefined ? (conn.end ?? conn.start) : WHOLE_SIGNAL
+        const first = conn.externalSlice?.start ?? 0
+        const last = conn.externalSlice?.end ?? WHOLE_SIGNAL
         const driven = drivenRanges.get(conn.external) ?? []
         const clash = driven.find((range) => first <= range.last && range.first <= last)
         if (clash) {
@@ -205,8 +207,9 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
         else if (conn.external === 'false') partInputs[conn.internal] = 0
         else {
           const sig = signals[conn.external] ?? 0
-          partInputs[conn.internal] =
-            conn.start !== undefined ? readSubBus(sig, conn.start, (conn.end ?? conn.start) - conn.start + 1) : sig
+          partInputs[conn.internal] = conn.externalSlice
+            ? readSubBus(sig, conn.externalSlice.start, sliceBits(conn.externalSlice))
+            : sig
         }
       }
       const partOutputs = ctx.evalChip(def, partInputs, { ...ctx, depth: ctx.depth + 1 })
@@ -214,10 +217,9 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
         if (!def.outputs.some((p) => p.name === conn.internal)) continue // not an output pin
         const v = partOutputs[conn.internal]
         if (typeof v === 'number') {
-          signals[conn.external] =
-            conn.start !== undefined
-              ? writeSubBus(signals[conn.external] ?? 0, v, conn.start, (conn.end ?? conn.start) - conn.start + 1)
-              : v
+          signals[conn.external] = conn.externalSlice
+            ? writeSubBus(signals[conn.external] ?? 0, v, conn.externalSlice.start, sliceBits(conn.externalSlice))
+            : v
         }
       }
     }

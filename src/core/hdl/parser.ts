@@ -5,6 +5,7 @@ import type {
   HDLParseResult,
   HDLPart,
   HDLPin,
+  HDLSlice,
 } from './types'
 
 // ---------------------------------------------------------------------------
@@ -478,27 +479,32 @@ class Parser {
       external: externalToken.value,
     }
 
-    if (this.eat('LBRACKET')) {
-      const startToken = this.expect('NUMBER')
-      const start = parseInt(startToken.value, 10)
-      let end = start
-      if (this.eat('DOTDOT')) {
-        const endToken = this.expect('NUMBER')
-        end = parseInt(endToken.value, 10)
-        if (end < start) {
-          this.errors.push({
-            line: endToken.line,
-            column: endToken.column,
-            message: `Invalid sub-bus range '${start}..${end}'; expected start <= end`,
-          })
-        }
-      }
-      this.expect('RBRACKET')
-      conn.start = start
-      conn.end = end
-    }
+    const externalSlice = this.parseSlice()
+    if (externalSlice) conn.externalSlice = externalSlice
 
     return conn
+  }
+
+  /** `[n]` or `[n..m]` after a pin name, or nothing. Inclusive; `[n]` is one bit. */
+  private parseSlice(): HDLSlice | null {
+    if (!this.eat('LBRACKET')) return null
+
+    const startToken = this.expect('NUMBER')
+    const start = parseInt(startToken.value, 10)
+    let end = start
+    if (this.eat('DOTDOT')) {
+      const endToken = this.expect('NUMBER')
+      end = parseInt(endToken.value, 10)
+      if (end < start) {
+        this.errors.push({
+          line: endToken.line,
+          column: endToken.column,
+          message: `Invalid sub-bus range '${start}..${end}'; expected start <= end`,
+        })
+      }
+    }
+    this.expect('RBRACKET')
+    return { start, end }
   }
 }
 
