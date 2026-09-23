@@ -1,6 +1,743 @@
 [
   {
     "type": "dependency",
+    "from": "src/components/scene/ChipBody3D.test.tsx",
+    "to": "src/core/chips/appRegistry.ts",
+    "unresolvedTo": "@/core/chips/appRegistry",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/components/scene/ChipBody3D.tsx",
+    "to": "src/core/chips/appRegistry.ts",
+    "unresolvedTo": "@/core/chips/appRegistry",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/components/scene/chipBodyLayout.test.ts",
+    "to": "src/core/chips/types.ts",
+    "unresolvedTo": "@/core/chips/types",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "type-only",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/components/scene/chipBodyLayout.ts",
+    "to": "src/core/chips/types.ts",
+    "unresolvedTo": "@/core/chips/types",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "type-only",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/components/ui/CompactToolbar.test.tsx",
+    "to": "src/core/chips/appRegistry.ts",
+    "unresolvedTo": "@/core/chips/appRegistry",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/components/ui/CompactToolbar.tsx",
+    "to": "src/core/chips/appRegistry.ts",
+    "unresolvedTo": "@/core/chips/appRegistry",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/components/ui/TestResultsPanel.integration.test.tsx",
+    "to": "src/core/testing/implementationSources.ts",
+    "unresolvedTo": "@/core/testing/implementationSources",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/components/ui/TestResultsPanel.test.tsx",
+    "to": "src/core/chips/registry.ts",
+    "unresolvedTo": "@/core/chips/registry",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/components/ui/TestResultsPanel.test.tsx",
+    "to": "src/core/testing/implementationSources.ts",
+    "unresolvedTo": "@/core/testing/implementationSources",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/components/ui/TestResultsPanel.tsx",
+    "to": "src/core/testing/formatColumnValue.ts",
+    "unresolvedTo": "@/core/testing/formatColumnValue",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/components/ui/TestResultsPanel.tsx",
+    "to": "src/core/testing/implementationSources.ts",
+    "unresolvedTo": "@/core/testing/implementationSources",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/components/ui/TestResultsPanel.tsx",
+    "to": "src/core/testing/project1TstFixtures.ts",
+    "unresolvedTo": "@/core/testing/project1TstFixtures",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/main.tsx",
+    "to": "src/core/chips/appRegistry.ts",
+    "unresolvedTo": "@/core/chips/appRegistry",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/simulation/topologicalEval.test.ts",
+    "to": "src/core/chips/appRegistry.ts",
+    "unresolvedTo": "@/core/chips/appRegistry",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/simulation/topologicalEval.ts",
+    "to": "src/core/chips/appRegistry.ts",
+    "unresolvedTo": "@/core/chips/appRegistry",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/simulation/topologicalEval.ts",
+    "to": "src/core/chips/combineRegistries.ts",
+    "unresolvedTo": "@/core/chips/combineRegistries",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/simulation/topologicalEval.ts",
+    "to": "src/core/chips/evaluateChip.ts",
+    "unresolvedTo": "@/core/chips/evaluateChip",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/simulation/truthTable.test.ts",
+    "to": "src/core/serialization/index.ts",
+    "unresolvedTo": "@/core/serialization",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/simulation/truthTable.test.ts",
+    "to": "src/core/testing/cmpParser.ts",
+    "unresolvedTo": "@/core/testing/cmpParser",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/simulation/truthTable.test.ts",
+    "to": "src/core/testing/project1CmpFixtures.ts",
+    "unresolvedTo": "@/core/testing/project1CmpFixtures",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/store/actions/gateActions/gateActions.ts",
+    "to": "src/core/chips/appRegistry.ts",
+    "unresolvedTo": "@/core/chips/appRegistry",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/store/actions/persistenceActions/autosave.ts",
+    "to": "src/core/serialization/index.ts",
+    "unresolvedTo": "@/core/serialization",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/store/actions/persistenceActions/persistenceActions.ts",
+    "to": "src/core/serialization/index.ts",
+    "unresolvedTo": "@/core/serialization",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/store/actions/pinHelpers/pinHelpers.test.ts",
+    "to": "src/core/chips/appRegistry.ts",
+    "unresolvedTo": "@/core/chips/appRegistry",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/store/actions/pinHelpers/pinHelpers.ts",
+    "to": "src/core/chips/appRegistry.ts",
+    "unresolvedTo": "@/core/chips/appRegistry",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/store/actions/testActions/testActions.test.ts",
+    "to": "src/core/chips/registry.ts",
+    "unresolvedTo": "@/core/chips/registry",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/store/actions/testActions/testActions.test.ts",
+    "to": "src/core/chips/types.ts",
+    "unresolvedTo": "@/core/chips/types",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "type-import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/store/actions/testActions/testActions.test.ts",
+    "to": "src/core/testing/implementationSources.ts",
+    "unresolvedTo": "@/core/testing/implementationSources",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/store/actions/testActions/testActions.ts",
+    "to": "src/core/chips/registry.ts",
+    "unresolvedTo": "@/core/chips/registry",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "type-only",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/store/actions/testActions/testActions.ts",
+    "to": "src/core/chips/types.ts",
+    "unresolvedTo": "@/core/chips/types",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "type-only",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/store/actions/testActions/testActions.ts",
+    "to": "src/core/testing/chipCompletion.ts",
+    "unresolvedTo": "@/core/testing/chipCompletion",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/store/actions/testActions/testActions.ts",
+    "to": "src/core/testing/cmpParser.ts",
+    "unresolvedTo": "@/core/testing/cmpParser",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/store/actions/testActions/testActions.ts",
+    "to": "src/core/testing/engine.ts",
+    "unresolvedTo": "@/core/testing/engine",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/store/actions/testActions/testActions.ts",
+    "to": "src/core/testing/implementationSources.ts",
+    "unresolvedTo": "@/core/testing/implementationSources",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/store/actions/testActions/testActions.ts",
+    "to": "src/core/testing/project1CmpFixtures.ts",
+    "unresolvedTo": "@/core/testing/project1CmpFixtures",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/store/actions/testActions/testActions.ts",
+    "to": "src/core/testing/project1TstFixtures.ts",
+    "unresolvedTo": "@/core/testing/project1TstFixtures",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/store/actions/testActions/testActions.ts",
+    "to": "src/core/testing/tstParser.ts",
+    "unresolvedTo": "@/core/testing/tstParser",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/store/actions/wireActions/wireActions.test.ts",
+    "to": "src/core/serialization/index.ts",
+    "unresolvedTo": "@/core/serialization",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/store/circuitStore.ts",
+    "to": "src/core/testing/chipCompletion.ts",
+    "unresolvedTo": "@/core/testing/chipCompletion",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/store/types.ts",
+    "to": "src/core/testing/engine.ts",
+    "unresolvedTo": "@/core/testing/engine",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "type-only",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/store/types.ts",
+    "to": "src/core/testing/types.ts",
+    "unresolvedTo": "@/core/testing/types",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "type-only",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/utils/wiringScheme/laneExclusivity.test.ts",
+    "to": "src/core/chips/appRegistry.ts",
+    "unresolvedTo": "@/core/chips/appRegistry",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/utils/wiringScheme/multiInputRouting.test.ts",
+    "to": "src/core/chips/appRegistry.ts",
+    "unresolvedTo": "@/core/chips/appRegistry",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "core-through-index"
+    }
+  },
+  {
+    "type": "dependency",
     "from": "src/core/serialization/deserialize.ts",
     "to": "src/store/actions/busActions/busPins.ts",
     "unresolvedTo": "@/store/actions/busActions/busPins",

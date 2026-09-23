@@ -11,6 +11,8 @@ This document helps AI agents and developers understand the codebase structure a
 | **Phase 0.5 ticket checklist (P05-01…28, P05-29)** | `docs/plans/phase-0.5-tickets-CHECKLIST.md` · plan: `docs/plans/2026-03-22-phase-0.5-tickets.md` |
 | **Observed bugs (informal log)** | `docs/development/observed-bugs.md` |
 | **New Zustand state or action** | `src/store/circuitStore.ts`, `src/store/types.ts`, `src/store/actions/<domain>/` |
+| **Using the engine from outside it (CLI, MCP, harness, renderer)** | `src/core/index.ts` + `src/simulation/index.ts` — the two entry points. Import from these, never past them: `.dependency-cruiser.cjs`'s `core-through-index` rule is a shrink-only ratchet, and `src/core/index.test.ts` proves the surface stays headless |
+| **Adding to the engine's public API** | Add the name to its module index (`src/core/chips/index.ts`, `src/core/hdl/index.ts`, `src/core/testing/index.ts`), then to `src/core/index.ts` and the list in `src/core/index.test.ts` — the test asserts an exact surface, so widening it is deliberate |
 | **Builtin chip definitions** | `src/core/chips/appRegistry.ts`, `src/core/chips/builtins/project01.ts` |
 | **3D chip body & icons** | `src/components/scene/ChipBody3D.tsx`, `src/components/scene/chipBodyLayout.ts`, `src/components/ui/icons/ChipIcons.tsx` |
 | **Gate placement / renderer** | `src/gates/GateRenderer.tsx`, `src/gates/common/BaseGate.tsx`, `HACER_LLM_GUIDE.md` |
@@ -79,6 +81,8 @@ src/
 │                     #   tabs, switch, separator, input, label, card, kbd,
 │                     #   theme-provider). Drop-in copies via `npx shadcn add`.
 ├── core/             # Pure logic, no React (imports store *types* only)
+│   ├── index.ts      # THE ENGINE'S FRONT DOOR — compile HDL, the chip registry, evaluate,
+│   │                 #   the .tst/.cmp runner. Code outside src/core imports from here.
 │   ├── chips/        # ChipDefinition types, ChipRegistry, appRegistry (builtin + user singletons),
 │   │   │             #   evaluateChip seam, combineRegistries
 │   │   └── builtins/ # project01.ts — the 16 Project 1 builtins (definition + evaluate + test)
@@ -97,6 +101,9 @@ src/
 │   ├── BusSplitter3D / BusJoiner3D / BusComponentRenderer  # bus components (ADR-0009)
 │   └── config/       # Node configuration (nodeConfig.ts)
 ├── simulation/       # Circuit simulation engine (pure logic)
+│                     #   index.ts — the other half of the engine's front door: bus operations.
+│                     #   topologicalEval/truthTable/busLogic walk the canvas document and are
+│                     #   deliberately not exported; signalDisplay imports from components/.
 ├── store/           # Zustand state management
 │   ├── circuitStore.ts  # Store + circuitActions export + window globals for E2E
 │   ├── types.ts         # All store types (GateInstance, Wire, WireEndpoint, InputNode, etc.)
@@ -202,6 +209,7 @@ scripts/
 ### 🔄 Phase 0.5 — Project 1: Boolean Logic (in progress)
 
 Landed and shown in the tree above: `src/core/chips/` (registry, builtins, `evaluateChip` seam),
+`src/core/index.ts` + `src/simulation/index.ts` (the engine's entry points, #336),
 `src/core/hdl/` (parser + compiler), `src/core/testing/` (`.tst`/`.cmp` engine, fixtures in
 `src/core/testing/project1TstFixtures.ts` and `src/core/testing/project1CmpFixtures.ts`), `src/simulation/topologicalEval.ts`,
 `src/components/scene/ChipBody3D.tsx` + `src/components/scene/chipBodyLayout.ts`, `src/components/ui/icons/ChipIcons.tsx`,
@@ -360,6 +368,7 @@ hacer/
 - 0.25.8 E2E test reorganization and optimization ✅
 
 ### 🔄 Phase 0.5: Project 1 — Boolean Logic (In Progress)
+- `src/core/index.ts` / `src/simulation/index.ts` - The engine's public surface: compile HDL, the chip registry, evaluate, the `.tst`/`.cmp` runner, bus operations. Named re-exports only, sourced from the module indexes. `src/core/index.test.ts` (the `node` Vitest project) asserts the exact export list, runs one chip end to end with no DOM global defined, and walks the transitive import closure to prove it reaches no store, UI, package or browser global (#336).
 - `src/core/chips/` - Chip hierarchy system (registry, definitions, composite chips)
   - `src/core/chips/evaluateChip.ts` - Central dispatch seam: routes any `ChipDefinition` to its evaluator (builtin / HDL-compiled / unsupported); module-level `WeakMap` cache prevents recompilation per object. **HDL chips now evaluate on the canvas through this seam** (P05-16, ADR-0004).
   - `src/core/chips/combineRegistries.ts` - Merges two `ChipRegistry` instances (builtin + user) into a single lookup used by the HDL compiler.
