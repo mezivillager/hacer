@@ -1,6 +1,12 @@
-# Observed bugs (informal log)
+# Observed bugs (historical)
 
-Human- and agent-observed issues that are **not yet** guaranteed to have a GitHub issue or a failing automated test. Use this log to **capture repro** quickly; promote entries to dedicated tickets or delete when fixed.
+**New bugs are GitHub issues.** Do not add entries to this file — file them on the
+[issue tracker](https://github.com/mezivillager/hacer/issues).
+
+This log records bugs captured before the backlog lived in GitHub Issues
+([ADR-0013](../decisions/0013-backlog-in-github-issues-and-portfolio.md)).
+An entry that is still open links to the issue that carries it. Resolved and
+closed rows stay so the repro is not lost.
 
 ## Conventions
 
@@ -10,7 +16,7 @@ Human- and agent-observed issues that are **not yet** guaranteed to have a GitHu
 | **Status** | Open / Investigating / Fixed / **Closed — machinery removed** |
 | **Fixed in** | PR URL or commit when closed; for a *machinery removed* entry, the issue that closed it and what replaces the capability |
 
-When an item is **Fixed**, add the **Fixed in** link and move the detailed row to **Resolved** below, or keep a one-line pointer in `tasks/lessons.md` — stay consistent per PR.
+A **Fixed** entry appears once, under **Resolved**, with its **Fixed in** link — or as a one-line pointer in `tasks/lessons.md`, not both, and never still under **Open**.
 
 ## Closing a bug in machinery that is being removed (ADR-0020)
 
@@ -33,10 +39,13 @@ its per-issue verdicts are in `docs/research/2026-09-21-foundation-audit/BACKLOG
 
 ## Open
 
+Still open. Each entry links to the GitHub issue that carries it.
+
 ### B-009 — `removeJunction` deletes wires by position, not by structure
 
 | Field | Detail |
 |-------|--------|
+| **Issue** | [#403](https://github.com/mezivillager/hacer/issues/403) |
 | **Status** | **Partly fixed** — corrected 2026-09-23 after [#396](https://github.com/mezivillager/hacer/pull/396)'s verifier measured the claim. An earlier revision of this entry read *Fixed / measured end to end through the real actions*; that was wrong for the documents the app writes, and is restated honestly below. |
 | **Area** | `src/store/actions/signalActions/signalActions.ts` (`removeJunction`), `src/simulation/topologicalEval.ts:43-53` (`findJunctionFeedWire`) |
 | **Symptom** | `removeJunction` kept one of a junction's wires and deleted the rest, choosing by position: `wireIds.slice(1)`. `removeWire` splices the trunk out of `wireIds` and re-attaching a redrawn wire appends it **last**, so a branch can sit at `wireIds[0]`; the deletion then removed **the trunk and kept a branch** — data loss in a saved document, not a cosmetic defect. |
@@ -46,30 +55,6 @@ its per-issue verdicts are in `docs/research/2026-09-21-foundation-audit/BACKLOG
 | **Reachability** | `removeJunction` has no UI caller. Its in-app path is `junctionUtils.ts:126` `applyJunctionRelocations`, reached from `recalculateWiresForGate` / `recalculateWiresForNode` — i.e. dragging a gate or a node ([#395](https://github.com/mezivillager/hacer/issues/395)); and `busActions.ts:268`, bus-component recalculation. Also the programmatic actions facade (`circuitStore.ts:285`). |
 | **Carried by** | [#403](https://github.com/mezivillager/hacer/issues/403) — the remaining, reachable data loss, with the measurement. [#395](https://github.com/mezivillager/hacer/issues/395) inherits the same hole: its suggested fix reuses `findJunctionFeedWire`. The acceptance criterion on [#376](https://github.com/mezivillager/hacer/issues/376) — *capture the corpus before exercising `removeJunction`* — **still stands**, for every document, not just ones saved before the partial fix. |
 | **Partly fixed in** | [#364](https://github.com/mezivillager/hacer/issues/364) / [#396](https://github.com/mezivillager/hacer/pull/396). |
-
-### B-008 — Disconnected input pins retain stale values (gates and bus components)
-
-| Field | Detail |
-|-------|--------|
-| **Status** | Fixed |
-| **Area** | `src/simulation/topologicalEval.ts` (`evaluateCircuit`) — where the fix landed; `removeWire` was the other candidate site and was not used |
-| **Symptom** | When a wire is removed from a destination input pin (gate or bus component), that pin retains its last driven value. The gate/bus component therefore continues to evaluate using the stale value instead of treating the undriven pin as 0. |
-| **Expected** | After a wire is disconnected, the destination input pin's value resets to 0 so the component evaluates correctly with no incoming signal. |
-| **Notes** | Pre-existing gate behavior: the simulation loop in `evaluateCircuit` only overwrites input pins that have an incoming wire; undriven pins are left unchanged. Bus components share this behavior after the bus-splitter/joiner feature (P05-12a). Fixing bus-only would create an inconsistency with gates. The proper cross-cutting fix is either: (a) reset undriven input pins to 0 before applying incoming wires in `evaluateCircuit`, or (b) reset the destination pin value in `removeWire` when the last wire to that pin is removed. Either approach changes existing gate simulation behavior and requires full-suite validation. |
-| **Fixed in** | Issue #222 / PR #312 — option (a): `evaluateCircuit` clears every input pin no wire drives, so the rule holds for the live tick, the truth table and a deserialised document alike. The clear is **lazy**: the pin still reads the old value between `removeWire` and the next tick, which matters only to a reader of the store in that window. Gate pins driven by hand via `setInputValue` (shift+click on an unconnected pin) no longer survive a tick — follow-up [#309](https://github.com/mezivillager/hacer/issues/309). |
-
-### B-002 — Warning / toast UI overlaps the right action bar
-
-| Field | Detail |
-|-------|--------|
-| **Status** | Fixed |
-| **Area** | `App.tsx` (`Toaster` from Sonner), `RightActionBar`, `store/types.ts`, `store/actions/viewActions/viewActions.ts` |
-| **Symptom** | Warning banners (e.g. “Cannot connect same pin types”) render **on top of** the vertical **right action bar** so the toast background and the top icons (e.g. Info) overlap — layout looks broken. Overlap occurred in both the closed (icon-column only) and open (icon column + 280 px drawer) states. |
-| **Expected** | Toasts stay **clear of** the action bar in all states: closed → clear the ~44 px icon column; open → clear icon column + 280 px `PANEL_WIDTH` drawer. |
-| **Repro** | Trigger a Sonner warning while the right bar is visible (e.g. invalid wiring / same pin types) — observe overlap at top-right. Open a panel drawer and repeat — observe overlap with the drawer. |
-| **Root cause** | Sonner `<Toaster position=”top-right”>` uses `right: 24px` (its `VIEWPORT_OFFSET` default). The `RightActionBar` icon column is ~44 px wide (`absolute top-0 right-0`), and the panel drawer adds another 280 px when open (expanding leftward inside the same container). A static 60 px offset cleared the closed bar but still overlapped the open 280 px drawer. |
-| **Fix** | **Reactive offset** via a store field (`rightPanelOpen: boolean` in `CircuitState`, set by `RightActionBar` via `circuitActions.setRightPanelOpen` inside a `useEffect` on `activePanel` changes). `App.tsx` reads `rightPanelOpen` with a narrow selector and passes `offset={{ right: rightPanelOpen ? '360px' : '60px' }}` to `<Toaster>` — closed state clears the icon bar, open state clears bar + drawer. No `useMemo`/`useCallback` (React-Compiler-clean). |
-| **Fixed in** | `fix/toast-overlaps-action-bar` — see commit SHA in `.superpowers/b002-report.md` |
 
 ---
 
@@ -130,9 +115,32 @@ characterization golden (#331) must record what the legacy app did — including
 | **Notes** | Root cause: `vi.resetModules()` + two dynamic `import()` calls caused the full module graph (Zustand + Immer + devtools + all action factories) to be re-evaluated on every run. Test body alone took ~1290ms even in isolation; under parallel CPU contention this exceeded the 5000ms default. Fix: rewrote the test to use static imports + `__resetAutosaveForTests()` (the same pattern as `autosave.test.ts`), eliminating the module-reset overhead. Test body now takes ~10ms. |
 | **Fixed in** | `c7c3ae8` — test: replace vi.resetModules()+dynamic import with static imports+__resetAutosaveForTests |
 | **Guard test** | PR #125 review finding resolved: `isAutosaveSubscribed()` is now captured at module scope (before any `beforeEach` cleanup) and asserted `false`. Guard removal causes `subscribedAtModuleLoad` to be `true` → test fails. The MODE guard in `circuitStore.ts` is now genuinely tested, not vacuously. |
-### B-002 (moved from Open — see entry above for full detail)
 
-**Root cause**: Sonner default `right: 24px` overlapped the ~44 px icon column; a static 60 px fix cleared the closed bar but not the 280 px open drawer. **Fix**: reactive `rightPanelOpen` store field; `RightActionBar` syncs it via `useEffect`; `App.tsx` selects it and passes `offset={{ right: rightPanelOpen ? '360px' : '60px' }}` (and matching `mobileOffset`) to `<Toaster>`. **Regression tests**: `e2e/specs/ui-shell/toast-no-overlap.ui.spec.ts` — three cases: (a) drawer closed → `toast.right ≤ bar.left`; (b) drawer open → `toast.right ≤ drawer.left`; (c) mobile width (<=600px) → `toast.right ≤ bar.left`.
+### B-008 — Disconnected input pins retain stale values (gates and bus components)
+
+| Field | Detail |
+|-------|--------|
+| **Status** | Fixed |
+| **Area** | `src/simulation/topologicalEval.ts` (`evaluateCircuit`) — where the fix landed; `removeWire` was the other candidate site and was not used |
+| **Symptom** | When a wire is removed from a destination input pin (gate or bus component), that pin retains its last driven value. The gate/bus component therefore continues to evaluate using the stale value instead of treating the undriven pin as 0. |
+| **Expected** | After a wire is disconnected, the destination input pin's value resets to 0 so the component evaluates correctly with no incoming signal. |
+| **Notes** | Pre-existing gate behavior: the simulation loop in `evaluateCircuit` only overwrites input pins that have an incoming wire; undriven pins are left unchanged. Bus components share this behavior after the bus-splitter/joiner feature (P05-12a). Fixing bus-only would create an inconsistency with gates. The proper cross-cutting fix is either: (a) reset undriven input pins to 0 before applying incoming wires in `evaluateCircuit`, or (b) reset the destination pin value in `removeWire` when the last wire to that pin is removed. Either approach changes existing gate simulation behavior and requires full-suite validation. |
+| **Fixed in** | Issue #222 / PR #312 — option (a): `evaluateCircuit` clears every input pin no wire drives, so the rule holds for the live tick, the truth table and a deserialised document alike. The clear is **lazy**: the pin still reads the old value between `removeWire` and the next tick, which matters only to a reader of the store in that window. Gate pins driven by hand via `setInputValue` (shift+click on an unconnected pin) no longer survive a tick — follow-up [#309](https://github.com/mezivillager/hacer/issues/309). |
+
+### B-002 — Warning / toast UI overlaps the right action bar
+
+| Field | Detail |
+|-------|--------|
+| **Status** | Fixed |
+| **Area** | `App.tsx` (`Toaster` from Sonner), `RightActionBar`, `store/types.ts`, `store/actions/viewActions/viewActions.ts` |
+| **Symptom** | Warning banners (e.g. “Cannot connect same pin types”) render **on top of** the vertical **right action bar** so the toast background and the top icons (e.g. Info) overlap — layout looks broken. Overlap occurred in both the closed (icon-column only) and open (icon column + 280 px drawer) states. |
+| **Expected** | Toasts stay **clear of** the action bar in all states: closed → clear the ~44 px icon column; open → clear icon column + 280 px `PANEL_WIDTH` drawer. |
+| **Repro** | Trigger a Sonner warning while the right bar is visible (e.g. invalid wiring / same pin types) — observe overlap at top-right. Open a panel drawer and repeat — observe overlap with the drawer. |
+| **Root cause** | Sonner `<Toaster position=”top-right”>` uses `right: 24px` (its `VIEWPORT_OFFSET` default). The `RightActionBar` icon column is ~44 px wide (`absolute top-0 right-0`), and the panel drawer adds another 280 px when open (expanding leftward inside the same container). A static 60 px offset cleared the closed bar but still overlapped the open 280 px drawer. |
+| **Fix** | **Reactive offset** via a store field (`rightPanelOpen: boolean` in `CircuitState`, set by `RightActionBar` via `circuitActions.setRightPanelOpen` inside a `useEffect` on `activePanel` changes). `App.tsx` reads `rightPanelOpen` with a narrow selector and passes `offset={{ right: rightPanelOpen ? '360px' : '60px' }}` to `<Toaster>` — closed state clears the icon bar, open state clears bar + drawer. No `useMemo`/`useCallback` (React-Compiler-clean). The same `right` value is also passed as `mobileOffset`. |
+| **Fixed in** | [PR #127](https://github.com/mezivillager/hacer/pull/127) (`fix/toast-overlaps-action-bar`) |
+| **Regression tests** | `e2e/specs/ui-shell/toast-no-overlap.ui.spec.ts` — (a) drawer closed → `toast.right ≤ bar.left`; (b) drawer open → `toast.right ≤ drawer.left`; (c) mobile width (<=600px) → `toast.right ≤ bar.left`. |
+
 
 ### B-003 — Wiring not preserved when dragging an input node wired to a multi-input chip
 
