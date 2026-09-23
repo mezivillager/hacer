@@ -195,3 +195,5 @@ PRs, and `ledger.md`. **Who is coordinating, and why a claim is idle**, is not �
 - `../research/2026-09-18-agent-readiness/` — why the process looks like this.
 - `sessions/` — dated session records: the goal, the owner's rulings, what was built, the state at close, how to resume. Start with the latest one when picking the work back up.
 - `sessions/COORDINATOR-HANDOFF.md` — claim-comment fields, when to write a `*-handoff.md`, and how a second coordinator resumes or releases idle claims. Product “what’s next” still comes from `docs/portfolio.md` and Issues; handoffs carry **coordinator meta-state** only.
+- `cloud-queue.md` — standing Claude → Grok Bot queue for cloud-heavy work (Cloud Agent builds, long browser QA, large install/build/test). Local Claude enqueues; Grok Bot runs those rows. Not a second picker for ordinary local work.
+- `sessions/cloud-queue-inbox.md` — the live inbox for that queue. Append rows; do not invent state.
