@@ -1,8 +1,8 @@
 # 0020. Spec-only writes, read-only projections
 
-- **Status:** Accepted — the fresh-context adversarial review [#359](https://github.com/mezivillager/hacer/issues/359) required by #327 returned `sound with corrections`, and the second pass over the four post-review deltas returned `accept with corrections` (both on [#358](https://github.com/mezivillager/hacer/pull/358), 2026-09-23). Both sets of corrections are applied below — the second pass's seven under "What the second pass changed" — and no further review round is required.
-- **Date:** 2026-09-23
-- **Deciders:** Builder agent for [#327](https://github.com/mezivillager/hacer/issues/327), on the owner's directions of 2026-09-21 (quoted below) and the measurements of spikes [#328](https://github.com/mezivillager/hacer/issues/328) and [#210](https://github.com/mezivillager/hacer/issues/210); revised by a second fresh context against #359's review
+- **Status:** Accepted — the fresh-context adversarial review [#359](https://github.com/mezivillager/hacer/issues/359) required by #327 returned `sound with corrections`, and the second pass over the four post-review deltas returned `accept with corrections` (both on [#358](https://github.com/mezivillager/hacer/pull/358), 2026-09-23). Both sets of corrections are applied below — the second pass's seven under "What the second pass changed" — and no further review round is required. **Amended 2026-09-24** by the spike this ADR scheduled for 1.5/1.6 ([#372](https://github.com/mezivillager/hacer/issues/372)), which ran, found the mechanism 1.5 describes does not work, and replaced it — "What the spike changed". The status does **not** move: the spine, the review's acceptance and every decision stand, and correcting a mechanism is what a scheduled spike is for.
+- **Date:** 2026-09-23 · mechanism amended 2026-09-24 ([#372](https://github.com/mezivillager/hacer/issues/372))
+- **Deciders:** Builder agent for [#327](https://github.com/mezivillager/hacer/issues/327), on the owner's directions of 2026-09-21 (quoted below) and the measurements of spikes [#328](https://github.com/mezivillager/hacer/issues/328) and [#210](https://github.com/mezivillager/hacer/issues/210); revised by a second fresh context against #359's review; mechanism amended by the builder agent for [#372](https://github.com/mezivillager/hacer/issues/372), on that spike's measurements and its own re-measurement against `origin/main`
 - **Phase:** Phase 0.5 · foundation plan [#318](https://github.com/mezivillager/hacer/issues/318), item P.1
 
 ## What the review changed
@@ -46,6 +46,44 @@ of them changes a decision.
 
 The second pass's own suggestion is taken too: the spike's raw outputs are committed beside
 `evidence/LAYOUT-ORDER.md` before the throwaway tree is deleted.
+
+## What the spike changed
+
+§1.5 scheduled its own spike to run before N.1, and
+[#372](https://github.com/mezivillager/hacer/issues/372) ran it on 2026-09-24 — after
+[#363](https://github.com/mezivillager/hacer/issues/363) and the input-side fix
+([#375](https://github.com/mezivillager/hacer/pull/375)) had landed. It executed the mechanism §1.5
+describes and **the mechanism does not work as written**: the ordering argument the ADR made is
+correct, and the lowering it was attached to moves no value. That is what a scheduled spike is for,
+so the status line does not move. The spine, §1's document shape and every decision the review
+accepted are untouched; what follows amends the mechanism underneath them.
+
+| | Was | Is now | Why |
+|---|---|---|---|
+| **§1.5's lowering** | "Substitution before ordering" — rewrite every read of `out` to read `a` | Substitution of the **binding**, keyed by the sliced net id: rename where a read lies inside one alias net, **split the pin binding** where it straddles — **plus a boundary write-back** over the alias DAG, in `compileSpec` | `compileHDL` ends `result[pin.name] = signals[pin.name] ?? 0`, so **a chip OUT is an extraction, not a read**, and rewriting reads can never reach it. 6 of 7 pass-through fixtures compiled clean and evaluated the OUT to **0**; the 7th "passed" only because 0 was the expected answer |
+| **§1.5's Kahn argument** | The load-bearing claim | **Confirmed, unchanged** — and restated as conditional on the alias root being a chip **IN** | Measured: 1 node / **0** edges under substitution against 2 / 1 under the injected-buffer alternative. An OUT→OUT alias (`wire o2 = o1;`) keeps its edge, and that is where a cycle can live |
+| **§1.6's limit** | Substitution "is not a rename" there, so §1.6 waits on a per-signal producer set (#355's shape) | Still not a rename — but a **rewrite** carries it: `out[0]` renames, and an unsliced read of a mixed `out` splits into two bindings on the part's own pin. §1.6 waits on nothing | Measured against `origin/main` (V5, V6 in §1.5). The spike's opposite conclusion is a property of its model, which keyed aliases by signal *name* and excluded every sliced net from substitution |
+| **§1.8's ownership** | One `compileSpec` rule, handed to the engine once #367 lands | **Split, permanently.** Input side: the engine's, and free — #367 landed as #375. Output side: `compileSpec`'s, over **nets**, before lowering | A rewrite creates no writer, so one part and one alias on a bit compiles clean, while the injected-writer lowering of the same document is refused. Measured both ways |
+| **§1's normalisation** | Drop a net with no driver and no sinks; that is the only rule | Plus: classify a net by its driver's **kind**, never by name equality | `wire x = x;` on a chip OUT is a 1-cycle that a name-equality rule eats silently, after which the document compiles with `x=0` |
+| **§1.9's fallback** | Order-keying is the fallback when ids are lost | Plus: **an injected part has no id**, so the export dialect must append its buffers last and say so | The marker parses today and `printHDL` drops it, both measured; a synthetic part anywhere but last shifts every id after it |
+| **Consequences, row 1** | "Made without evidence" | Settled, with a narrower successor: these fixtures have still never run through a real `parseSpec`/`compileSpec` | — |
+
+**Two of the spike's findings are corrected rather than adopted.** (a) *"§1.6 read by a part is the
+case no rewrite carries"* is **measurably too strong**. Its fixture could not be split because its
+alias map was keyed by signal name, while §1 keys a net by its **sliced** reference; with that key the
+read splits, and `Any2(in[0]=a, in[1]=out[1])` evaluates correctly on `origin/main`. What genuinely
+cannot be carried is narrower, and is not a lowering question at all: a read that reaches the engine
+**unsplit**, which the engine then fails to report
+([#431](https://github.com/mezivillager/hacer/issues/431)). (b) The break list proposes adding
+`Or4`/`Or8` builtins so the export desugar can reach every width; that is the per-case growth §1
+exists to avoid, and the width-generic desugar carried by
+[#374](https://github.com/mezivillager/hacer/issues/374) is taken instead.
+
+**One thing the spike is right about and does not price.** Its boundary write-back is engine-external
+only because an alias root is, by the `Ref` type, a `chip-in` or a `chip-out` — the caller's inputs or
+the result record, with no third place a value could be hiding. If a later revision lets an alias
+root be an internal signal, the write-back stops being expressible outside the engine. That is the
+constraint to defend at N.1.
 
 ## Context
 
@@ -197,6 +235,15 @@ unfinished circuit, the sinkless one a declared-but-unread signal. `driver: null
 wrote" are not distinguishable and do not need to be — a net exists iff its reference appears in a
 binding.
 
+**And one classification clause the spike added: a net is classified by its driver's *kind*, never by
+name equality.** `wire x = x;` where `x` is a chip OUT is an alias whose root is itself — a 1-cycle —
+and a rule that drops a net whose driver *name* equals its signal name eats it silently: measured,
+the alias map came back empty, the lowering produced an empty parts list, and the document compiled
+with `x=0`. The name-equality shape that *is* ordinary is the other one — a net carrying signal `a`
+whose driver is the `chip-in` `a`, unsliced, which is fan-out and no alias at all. So: `chip-in`
+driver with the same name and no slice → an ordinary net; **any `chip-out` driver → an alias, and it
+goes to the cycle check, self-reference included** (1.5).
+
 *The cost, named:* the in-memory document no longer mirrors the text one-to-one, so the spike's
 *"printer is a fixed point for all eleven cases"* was measured against a shape that is no longer the
 shape. **That evidence does not transfer and is re-measured as part of N.1** — which it needed
@@ -274,42 +321,134 @@ now two decisions, decided differently.
 working circuit; a learner's very first act ("connect this input to that output") would be
 unrepresentable. Still rejected.
 
-*The engine change, named, and smaller than the first draft thought:* `compileSpec` must bind an OUT
-signal whose producer is an IN signal. It does this by **substitution before ordering** — every read
-of `out` is rewritten to read `a` in the signal table — and the code supports that **harder than the
-first revision argued**. `src/core/hdl/compiler.ts` excludes chip inputs from a part's read set
-*before* Kahn (`if (!chipInputNames.has(conn.external)) r.add(conn.external)`), so rewriting a read
-of `out` into a read of `a` does not merely introduce no node: it **removes an in-edge**. No node, no
-edge, no cycle — which was the first draft's stated risk.
+*The engine change, named — and the spike this ADR scheduled for it replaced the mechanism
+([#372](https://github.com/mezivillager/hacer/issues/372), 2026-09-24).* `compileSpec` must bind an
+OUT signal whose producer is an IN signal. The draft said it does this by **substitution before
+ordering** — every read of `out` rewritten to read `a` before the ordering runs. Executed, that
+argument is **half right**, and the half that fails is the half the value depends on.
 
-**That argument carries 1.5 and not 1.6, and the limit is stated rather than papered over.** When bit
-0 of `out` comes from `a` and bit 1 from a part, one read of `out` cannot be rewritten into one read
-of `a`: substitution is not a rename there. 1.6's mechanism is the different one named just above —
-a **set of producers per signal**, one of which is now an IN, the shape
-[#355](https://github.com/mezivillager/hacer/issues/355) changed `producerOf` to carry — and the
-in-edge argument does **not** transfer to it. That is precisely what the spike has to settle.
+- **The Kahn half holds exactly as written.** `src/core/hdl/compiler.ts` excludes chip inputs from a
+  part's read set *before* Kahn (`if (!chipInputNames.has(conn.external)) r.push(...)`), so rewriting
+  a read of `out` into a read of `a` does not merely introduce no node: it **removes an in-edge**.
+  Measured on the spike's fixture D — 1 node / **0** edges under substitution, against 2 nodes / 1
+  edge under the injected-buffer alternative. No node, no edge, no cycle, as claimed.
+- **The value half does not hold, and that is the finding.** `compileHDL` ends
+  `for (const pin of ast.outputs) result[pin.name] = signals[pin.name] ?? 0` — **a chip OUT is an
+  extraction from the signal table, not a read of it** — so a rule that rewrites *reads* can never
+  reach it. A pass-through lowered by substitution alone becomes
+  `CHIP P { IN a; OUT out; PARTS: }`, an empty parts list the compiler accepts, and it evaluates
+  `out=0` for `a=1`. Measured on 6 of the spike's 7 pass-through fixtures — the 7th "passed" only
+  because 0 was the expected answer — and re-measured here against `origin/main` (V1 below).
+- **The in-edge claim is conditional on the alias root's kind**, which the draft did not say.
+  `driver: Ref` admits `kind: 'chip-out'`, so `wire o2 = o1;` with `o1` part-driven is type-valid;
+  there the rewrite redirects a read rather than removing one, and the edge stays. "No node, no edge"
+  is a claim about **chip-IN-rooted** aliases only — and OUT→OUT aliases are exactly where the cycle
+  below can live.
+
+**Decided on that measurement: the lowering is a rewrite of the *binding* plus a boundary write-back,
+and the document path injects no part.** Two rules, both `compileSpec`'s, neither touching an engine
+file:
+
+1. **Rewrite the binding, not just the name.** The alias map is keyed by the **sliced** net reference
+   §1 already mandates, so a read resolves per bit: a read lying wholly inside one alias net is
+   renamed to that net's root with the slices composed, and a read that **straddles** an alias
+   boundary is split into several bindings on the part's own pin — `Any2(in=out)` becomes
+   `Any2(in[0]=a, in[1]=out[1])`. Both forms are legal HDL since
+   [#357](https://github.com/mezivillager/hacer/issues/357), and
+   [#375](https://github.com/mezivillager/hacer/pull/375)'s per-pin bit claims make the two pieces
+   disjoint claims rather than a clash (measured: V5, V6).
+2. **Write the boundary back.** After `evaluate` returns, copy each alias root's value onto its
+   `chip-out` sinks, over the alias DAG in dependency order, `writeSubBus` for a sliced sink. It can
+   be engine-external because an alias root is, by the `Ref` type, either a `chip-in` (the caller's
+   inputs) or a `chip-out` (the result record); there is no third place the value could be. Measured
+   on the spike's round 3: whole-signal, sliced, 16-bit and OUT→OUT fixtures and a 3-long alias chain
+   all evaluate correctly, and cycles and self-aliases are refused by name.
+
+*Why this and not the injected writer* — `Or(a=x, b=x, out=y)` in the **document** lowering, which
+the spike measured correct on every fixture it ran. It puts a part in the part list that nobody
+declared, and three things then pay for it: 1.9's part ids shift unless synthetic parts are always
+appended last; the engine's cycle and clash messages name `Or` parts the author cannot see; and the
+buffer needs a chip of the net's width, which the registry has at 1 and 16 and nowhere between. The
+binding rewrite keeps all three intact, and costs one check (below). The injected writer stays
+exactly where this ADR already put it — the **export dialect**, where nothing is on a screen.
+
+*What the document lowering gives up, and 1.8 pays for:* because no writer is injected, the engine
+never sees an alias as a driver, so a document with two drivers on one bit — one part, one alias —
+**compiles clean**, and a boundary write-back then silently overwrites the part's bit. Measured (V4):
+the rewritten document compiles; the same document with a buffer injected is refused,
+`Signal "out" bit 0 is driven by more than one part`. That check is `compileSpec`'s, unconditionally,
+and 1.8 now says so.
+
+*The export mode's width rule, corrected:* `Or(a=x, b=x, out=y)` above is the width-1 illustration,
+not the rule. The registry has `Or` and `Or16` and nothing between (`src/core/chips/builtins/`), so a
+4- or 8-bit pass-through has no buffer to desugar to. The export desugar is **width-generic** — per
+bit, or the smallest covering buffer — and is carried by
+[#374](https://github.com/mezivillager/hacer/issues/374). An `Or4`/`Or8` per width is rejected: that
+is the per-case growth §1 exists to avoid.
+
+**That argument carries 1.5 and not 1.6 — and the spike narrowed exactly which part of 1.6 it fails
+to carry.** When bit 0 of `out` comes from `a` and bit 1 from a part, one read of `out` cannot be
+rewritten into one read of `a`: substitution is not a **rename** there. What is measured is that it
+is still a **rewrite**. Keyed by the sliced net id, a read of `out[0]` renames to `a` while `out[1]`
+stands (V2); an unsliced read of `out` splits into two bindings on the part's own pin (V5); and so
+does a read whose slice straddles the boundary (V6). So 1.6 needs no second mechanism and does
+**not** wait on a per-signal producer set — the shape
+[#355](https://github.com/mezivillager/hacer/issues/355) gave `producerOf`, which the draft named as
+1.6's mechanism and this amendment withdraws. *The spike concludes the opposite — that no text
+rewrite and no post-pass carries a 1.6 pass-through read by a part. That conclusion is corrected
+rather than adopted:* its alias map was keyed by signal **name** and excluded every sliced net from
+substitution by construction, so its fixture could only be renamed whole or not at all. That is a
+property of the spike's model, not of the engine.
+
+**The residual, stated precisely, because it is the one thing nothing catches.** A part reading an
+alias-driven signal is carried — *provided `compileSpec` splits the binding*. If it fails to, the
+engine will not say so: `producersOf` is keyed by signal **name** while the edges are bit-keyed, so a
+read of a bit nothing produces compiles and evaluates 0 in silence (V3: `Any2(in=out)` over a mixed
+`out` gives `any=0` where the truth is 1). That is a live `compileHDL` defect, filed by the spike as
+[#431](https://github.com/mezivillager/hacer/issues/431) and outside this ADR; until it lands, the
+split is `compileSpec`'s to **test**, not to assume.
 
 **Alias cycles are type-expressible, so they are rejected rather than assumed away.** `driver: Ref`
 admits `kind: 'chip-out'`, so `wire x = y; wire y = x;` types. Nothing makes the substitution graph
 acyclic: `parseSpec` accepts such a document and marks a diagnostic (1.1 — it still draws), and
-`compileSpec` refuses it by name with the cycle's members. **Acyclicity of the substitution graph is
-a property the spike must assert**, not a premise it may rest on.
+`compileSpec` refuses it by name with the cycle's members. **Acyclicity was asserted, not assumed,
+and it is not free.** Measured: naive resolution over `{x ← y, y ← x}` does not terminate — it
+exhausted a 10,000-step budget and came back to where it started — so an unguarded `compileSpec`
+*hangs* before any HDL exists rather than reporting anything. The catch is a three-colour DFS over
+the alias map in `parseSpec`: ~20 lines, O(nets), members in order (`["x", "y", "x"]`), needing no
+HDL, no registry and no parts, so the diagnostic is available exactly where 1.1 wants it — and a
+legal 3-long chain `x ← y ← z ← a` returns nothing and evaluates correctly. It has to be caught
+there: under the decided rewrite the engine never sees the cycle at all, and under the injected
+writer it does see it but names synthetic `Or` parts the author never declared.
 
-**What would settle it, and when:** an engine spike with **alias fixtures and a Kahn-ordering
-property over a document mixing driverless-OUT nets, slices and parts** — *not* the Project-1
-vectors, which cannot exercise it at all because no nand2tetris HDL contains a `wire` statement
-(the review's C5, correct, and the first draft's proposed experiment was under-powered for what it
-had to settle). **It runs after [#363](https://github.com/mezivillager/hacer/issues/363) and before
-N.1 lands.** After #363 because `compileHDL` tracks reads and writes per *signal* rather than per
-bit, so since #362 it reports **spurious** combinational cycles on disjoint slices — which is exactly
-the mixed slice/whole-signal shape the spike's fixtures must contain, and it would fail them for a
-reason that has nothing to do with aliases. Before N.1 because that is the point past which
-reversing this stops being free (see the spec's migration policy above).
+**What settled it, and what it was measured on.** The spike ran on 2026-09-24, after
+[#363](https://github.com/mezivillager/hacer/issues/363) landed and before N.1 — alias fixtures over
+documents mixing driverless-OUT nets, slices and parts, both lowerings, with a four-line Kahn probe
+in a throwaway worktree; *not* the Project-1 vectors, which cannot exercise it at all because no
+nand2tetris HDL contains a `wire` statement (the review's C5, correct). Its note and fixtures are
+local and uncommitted, as both earlier spikes' were. Because that model is not the shipped one, every
+measurement this amendment rests on was re-run against `origin/main`'s real `compileHDL`, on HDL
+lowered by hand:
+
+```
+V1  CHIP P { IN a; OUT out; PARTS: }                             compiles; {a:1} -> out=0
+V2  Not(in=a, out=out[1]); Or(a=a, b=out[1], out=any)            {a:1} -> any=1   per-bit rename
+V3  Not(in=a, out=out[1]); Any2(in=out, out=any)                 {a:1} -> any=0   truth 1 (#431)
+V4  Not(in=a, out=out[0])                                        compiles
+    Not(in=a, out=out[0]); Or(a=a, b=a, out=out[0])              refused: "out" bit 0 driven twice
+V5  Not(in=a, out=out[1]); Any2(in[0]=a, in[1]=out[1], out=any)  {a:1} -> any=1   pin split
+V6  Not x2 -> out[2..3]; Any4(in[0..1]=s, in[2..3]=out[2..3])    {s:0b01} -> any=1 straddling read
+V7  Not(in=a, out=o1), with `wire o2 = o1`                       o1=1, o2=0       write-back needed
+```
 
 **1.6 A bus-joiner bit driven by a chip input node is the same net, with a slice on the sink ref.**
 Case C11 breaks today because HDL can only write a slice from a part output. `wire out[0] = a;` is
 that net printed; 1.5 covers it with no second mechanism and no second width rule — 1.7's rules apply
-unchanged, because the ref is an ordinary ref.
+unchanged, because the ref is an ordinary ref. *Amended by the #372 spike:* "no second mechanism"
+survived, but the mechanism 1.6 inherits is the amended one — the per-bit binding rewrite plus the
+boundary write-back, not substitution alone — and the shape 1.6 has to be **tested** on is the mixed
+signal **read by a part**, where the read is split rather than renamed, and where nothing but
+`compileSpec` will notice a missed split until #431 lands.
 
 **1.7 Inferred slices are recorded, not silent.** v1 `addWire` sets `width = min(src, dst)` and the
 evaluator clamps, so a 16-bit source into a 1-bit pin is silent today; HDL needs `a[0]`, and a 1-bit
@@ -354,6 +493,20 @@ pin x[i] multiple times`, `../web-ide/simulator/src/chip/builder.ts`); it is lis
 preconditions in §10. Keeping both drivers is safe because nothing on the spec path ever *chooses*
 one of them — not because nothing could.
 
+**Amended by the #372 spike: the two halves of this rule have different owners, and permanently.**
+The **input** half arrived free: #367 landed as
+[#375](https://github.com/mezivillager/hacer/pull/375) (merged 2026-09-23), and `claimBits` keys a
+part's bound ranges by the *pin's own* bits, so a pin bit bound twice is now refused by the engine
+(`Part "Not" pin "in" bit 0 is bound by more than one connection`) — and 1.5's rewrite can neither
+create nor hide such a clash, because renaming or splitting an **external** never touches the pin
+side (measured: two aliases of one IN bound to two pins, and to two bits of one pin, both compile and
+evaluate correctly). The **output** half is `compileSpec`'s and stays `compileSpec`'s: `drivenRanges`
+is populated only from part *output* connections, and 1.5's decided lowering injects no part, so a
+bit driven by one part and one alias never reaches the engine as two drivers — it compiles clean, and
+the boundary write-back then overwrites the part's bit silently (measured, V4 in 1.5). So
+`compileSpec` runs the overlap check over **nets**, before lowering, counting an alias net as a
+driver of its sink's bits; the engine's part-side check is the second net, not the first.
+
 **1.9 Part ids are emitted into the HDL text as a structured trailing comment, and read back.**
 `Nand(a=a, b=b, out=t); // #p3`. The sidecar's `part-id → hint` binding does **not** survive a text
 round trip otherwise: the printer is a fixed point for all eleven cases, but the text carries no ids,
@@ -378,6 +531,18 @@ theirs, and the shell says so.
 output **without** markers, and the shipped printer emits them. Together with the net lowering above,
 that makes the round trip an N.1 measurement rather than an inherited fact — recorded in the
 made-without-evidence table.
+*Amended by the #372 spike — two measurements and one caveat.* `Nand(a=a, b=b, out=t); // #p3`
+**parses today**, because the tokenizer already treats `//` to end of line as whitespace; `printHDL`
+**drops it**, ids read back from its output being `["<lost>", "<lost>"]` while the text stays a fixed
+point, so the loss is silent exactly as predicted. A spike-local id-preserving printer restored them
+over two round trips, and 1.5's rewrite does not disturb the binding, because it rewrites a
+connection's **externals** and never the part list. The caveat is the order-keyed fallback: **an
+injected part has no id.** The export dialect's buffers (1.5) are unmarked parts, so a document that
+passes through the export lowering loses positional recovery for every id after the first injected
+one. It is safe **only** while injected parts are appended last, which the export printer must
+guarantee and state — and that the document lowering injects nothing is one of the reasons it is the
+decided one. The tokenizer rule itself is still unmeasured: the round trip was measured with a
+spike-local printer and a regex reader over its output, so the parser change is N.1's to measure.
 
 ### 2. The pipeline contracts
 
@@ -906,7 +1071,11 @@ slices, which is every dissolved joiner (1.2) and every mixed slice/whole-signal
 spike must contain (1.5); and
 [#367](https://github.com/mezivillager/hacer/issues/367) — a part **input** pin bound twice compiles
 and silently evaluates last-binding-wins, which is the C8 shape the importer now emits and the gap
-the first revision wrongly believed #362 had closed (1.8).
+the first revision wrongly believed #362 had closed (1.8). **Both have since landed** — #363 in time
+for the alias spike to run on it, and #367 as
+[#375](https://github.com/mezivillager/hacer/pull/375) (merged 2026-09-23), whose per-pin bit claims
+the #372 spike then measured as the input half of 1.8's rule. Neither is outstanding; the **output**
+half of 1.8 is `compileSpec`'s permanently, and that is the precondition that became a requirement.
 
 ### 11. The backlog sweep
 
@@ -949,12 +1118,18 @@ it went against the draft: id order costs **2–3× the crossings** on every rea
 stability is a property of append-ordered ids rather than of the ordering (§2,
 `evidence/LAYOUT-ORDER.md`). The default is now `layout(doc, surface, { previous })`.
 
-What remains weakest is **the alias-free pass-through through `compileSpec`** (1.5) — the engine
-still has to bind an OUT signal whose producer is an IN, nobody has run it, and the official
-Project-1 vectors cannot exercise it because no nand2tetris HDL contains a `wire` statement. The
-substitution-before-ordering argument says Kahn ordering cannot be disturbed; an argument is not a
-measurement. Its spike is scheduled before N.1 rather than left open, because N.1 is where reversing
-it stops being free.
+**And it is no longer the alias-free pass-through either.** That was the weakest part when this ADR
+was accepted — the engine had to bind an OUT signal whose producer is an IN, nobody had run it, and
+the substitution-before-ordering argument was an argument, not a measurement. Its spike
+([#372](https://github.com/mezivillager/hacer/issues/372)) ran on 2026-09-24 and cost the mechanism
+rather than the decision: the Kahn argument held, the substitution it was attached to moved no value,
+and the lowering is now a per-bit binding rewrite plus a boundary write-back (1.5, and "What the
+spike changed"). **What is weakest now is that `parseSpec` and `compileSpec` do not exist.** Every
+number above was measured either against a spike-local spec model or — for the ones this ADR now
+rests on — against the real `compileHDL` fed HDL lowered by hand, never against the pass that will do
+the lowering. N.1's first obligation is to re-run these fixtures through the shipped one, and the
+split rule is the part most likely to be got wrong, because nothing in the engine reports a missed
+split until [#431](https://github.com/mezivillager/hacer/issues/431) lands.
 
 One aesthetic question is still open and is honestly labelled: **whether the barycentre drawing reads
 well to a person.** The measurement says it crosses 2–3× less than the alternative; it does not say
@@ -966,7 +1141,7 @@ drawing against a better one instead of choosing the default.
 
 | Decision | Why there is no evidence | What would settle it | When |
 |---|---|---|---|
-| A pass-through as a net with a `chip-in` driver, and the substitution `compileSpec` needs (1.5, 1.6) | No one has tried binding an OUT signal whose producer is an IN. The Project-1 vectors **cannot** settle it: no nand2tetris HDL contains a `wire` statement, so they would only show no regression | An engine spike with **alias fixtures** plus a Kahn-ordering property over a document mixing driverless-OUT nets, slices and parts | **Before N.1 lands** — the point past which reversing it stops being free (§1's migration policy) |
+| A pass-through as a net with a `chip-in` driver, and the lowering `compileSpec` needs (1.5, 1.6) | **Settled 2026-09-24 by [#372](https://github.com/mezivillager/hacer/issues/372)**, and the mechanism changed with it: substitution holds for the ordering and moves no value, so the lowering is a per-bit binding rewrite plus a boundary write-back, and `compileSpec` carries 1.8's output side. What is still unevidenced is narrower — the fixtures have run against `compileHDL` by hand, never through a real `parseSpec`/`compileSpec` | Re-run the #372 fixtures against the shipped pass, the straddling-read split and the alias-cycle DFS included | N.1 |
 | Part ids as `// #p3` in the text (1.9) | Both grammars tolerate the comment (verified), but no round trip through a *hand-edited* file was tried — **and** the printer's "fixed point for all eleven cases" was measured without markers and against the pre-`nets` shape, so it no longer applies | Re-measure print → parse → print on the shipped printer; then a property test: print → hand-edit → parse → print, asserting hints survive | N.1 |
 | The importer keeping **both** drivers of a multi-driven pin, and §10's parity exemption (1.8) | Only C8 was ever measured, and it held by a coincidence of two last-wins evaluators. No real document with a multi-driven pin has been seen — and none exists in the repo (§7.2) | The captured corpus (§7.2), or the stated limit if it is empty. Until then the rule is chosen to lose nothing rather than to be right | §7.2, before C.1 |
 | Surface-keyed hints rather than one neutral map (1.4) | Both maps are empty at v1, so nothing distinguishes them yet | The first real hand-placed position on a 2D surface | whenever it happens — reversible, alternative recorded |
@@ -1036,6 +1211,12 @@ routing (§2). And the whole class of user-authored geometry (§6).
   [#318](https://github.com/mezivillager/hacer/issues/318) (foundation plan) ·
   [#328](https://github.com/mezivillager/hacer/issues/328) and
   [#210](https://github.com/mezivillager/hacer/issues/210) (the spikes) ·
+  [#372](https://github.com/mezivillager/hacer/issues/372) (the alias spike, which amended §1.5, §1.6,
+  §1.8, §1.9 and §1's normalisation) ·
+  [#374](https://github.com/mezivillager/hacer/issues/374) (N.1, which carries the lowering) ·
+  [#375](https://github.com/mezivillager/hacer/pull/375) (the input-side rule, merged) ·
+  [#431](https://github.com/mezivillager/hacer/issues/431) (the unproduced-bit defect the spike
+  found) ·
   absorbed: [#188](https://github.com/mezivillager/hacer/issues/188),
   [#189](https://github.com/mezivillager/hacer/issues/189),
   [#190](https://github.com/mezivillager/hacer/issues/190),
