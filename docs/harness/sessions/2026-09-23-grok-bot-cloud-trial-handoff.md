@@ -2,138 +2,118 @@
 
 **Audience:** the local Claude coordinator (and any human picking up).
 **Author:** Grok Bot (Cursor desktop assistant), coordinating a **cloud-only** builder trial for `mezivillager/hacer`.
-**Status as of 2026-09-23 ~13:26 Africa/Addis_Ababa:** **paused** — waiting on a clean Spending baseline before any cloud builders launch.
+**Status as of 2026-09-23 ~14:15 Africa/Addis_Ababa:** **done** — trial completed and closed.
 
 Convention: `docs/harness/sessions/COORDINATOR-HANDOFF.md`.
 
-This note exists so the local Claude coordinator does **not** treat Grok Bot’s claims or metering work as its own unfinished loop, and so it can resume, amend, or unwind cleanly.
+This note exists so the local Claude coordinator does not invent conflicting claims or state about this trial, and so it does not treat the trial as an unfinished loop of its own.
 
 ---
 
 ## 1. What this was
 
-Owner asked Grok Bot to trial fitting into the ha-next / harness loop as **coordinator**, with **Cursor Cloud Agents as builders** (no local implement on the Mac for those tasks), then report how it went including usage.
+Owner asked Grok Bot to trial fitting into the ha-next / harness loop as **coordinator**, with **Cursor Cloud Agents as builders** (no local implement for those tasks), then report how it went including usage.
 
-Owner later required: **be certain about usage/cost before any implementation.** Builds are blocked until that is satisfied.
+The loop that ran:
 
-Agreed fit (not yet fully run):
+Orient → claim → launch Cursor Cloud Agent builders → await PR → fresh-context verify → merge on green + PASS → release claim → report.
 
-| Role | Who |
-|---|---|
-| Orient / pick / claim / merge decision | Grok Bot (this trial) |
-| Implement + open PR | Cursor Cloud Agents only |
-| Fresh-context verify | separate verifier (not started) |
-| Merge on green | **needs explicit owner grant** — not given |
+Owner clarified that merge on green after a fresh-context verifier PASS is the normal coordinator path for this loop. That path is what closed both issues.
+
+| Role | Who | Result |
+|---|---|---|
+| Orient / pick / claim / merge | Grok Bot (this trial) | Done for #252 and #225 |
+| Implement + open PR | Cursor Cloud Agents | #419, #420 |
+| Fresh-context verify | separate verifier | PASS on both |
+| Merge on green + PASS | coordinator | Both merged; claims deleted |
 
 ---
 
-## 2. Repo / workspace
+## 2. Repo
 
 - GitHub: `https://github.com/mezivillager/hacer`
-- Local main checkout used for orient/claim scripts: this repo’s root (sibling worktrees live under the parent `ha/` workspace, e.g. `hacer-wt-*`)
-- Process map: `docs/harness/README.md`; pick skill **`ha-next`**; implementer brief `docs/harness/implementer-brief.md`
+- Process map: `docs/harness/README.md`; pick skill `ha-next`; implementer brief `docs/harness/implementer-brief.md`
 
 ---
 
-## 3. Claims Grok Bot holds (important)
+## 3. Claims
 
-These were claimed for the trial. **No cloud builder was successfully launched** (first attempt hit GitHub rate limit). **No PRs** from this trial.
+**No live claims from this trial.** Both were released after merge. `claim/252` and `claim/225` are gone. Neither issue is Grok Bot work still in progress.
 
-| Issue | Claim ref | Intent | Labels (when last checked) | Title (short) |
+| Issue | Claim (during trial) | Cloud agent | PR | Outcome |
 |---|---|---|---|---|
-| **#252** | `refs/heads/claim/252` | `paused:metering` | `project:upkeep`, `agent-ready`, `in-progress`, `risk:0` | REPO_MAP.md: remove fenced Future Structure / Monorepo trees; fix `.tsx` shorthands; verify `pnpm run lint:docs` |
-| **#225** | `refs/heads/claim/225` | `paused:metering` | `project:bugs`, `agent-ready`, `in-progress`, `risk:0` | observed-bugs.md: B-002 once under Resolved; open → issues; historical header; verify `pnpm run lint:docs` |
+| #252 (REPO_MAP) | `claim/252` | `bc-3d020358-e796-5c07-b89c-545de5d38800` | #419 | Merged after fresh-context verifier PASS + CI green; claim deleted |
+| #225 (observed-bugs) | `claim/225` | `bc-3719ff1e-ae40-5a5f-8198-044af6a65773` | #420 | Merged after fresh-context verifier PASS + CI green; claim deleted |
 
-Both still show **`in-progress`**. Latest claim comments should say `Intent: paused:metering` and point at this handoff (per `COORDINATOR-HANDOFF.md`). No builders, no PRs for these issues yet.
+Related work, recorded so it is not mistaken for leftover trial state:
 
-### If the local Claude coordinator should take over
-
-Pick one deliberately:
-
-1. **Keep claims** — leave `claim/252` and `claim/225` alone; either finish the cloud trial later or implement those issues yourself under the same claims.
-2. **Release claims** — if you want them back in the ready pool for a normal ha-next pick:
-   - delete remote claim refs (`git push origin --delete claim/252 claim/225` or equivalent),
-   - remove `in-progress` from the issues,
-   - leave a short issue comment that Grok Bot’s trial released the claim (point at this file).
-3. **Do not** open a second claim or a second builder on the same issue while these refs exist.
+| Ref | What it is |
+|---|---|
+| #417 | Process docs for claim / handoff / pause (PR). **Merged.** |
+| #418 | Handoff polish follow-up (issue). **Still open.** Ordinary backlog. |
+| #421 | Nit from the #419 verifier (issue). **Still open.** Ordinary backlog. |
 
 ---
 
-## 4. Usage / cost metering (why builds are paused)
+## 4. Usage / cost metering
 
-### Decisions locked with the owner
+Owner prefers **% of plan included usage**, not dollar amounts, as the spend signal.
 
-- Care about **% of plan included usage**, not mainly dollar amounts.
-- **Grok Bot’s own weekly meter** is separate from Cursor monthly pools; Grok Bot chat/tooling does not burn Cursor Models / Other Models included %. **Cloud Agents Grok Bot launches do count as Cursor usage.**
-- Cloud Agents draw **included usage first**, then on-demand if enabled.
-- There is **no personal Spending-% API** on a normal plan. Cloud Agents API gives **per-agent tokens** only (`GET https://api.cursor.com/v1/agents/{id}/usage`). Admin/Analytics spend APIs are Enterprise/team-key.
+- The **Grok Bot weekly meter** is separate from the Cursor monthly pools. Cloud Agents launched by Grok Bot count as Cursor usage (typically **Other Models**).
+- Cloud Agents draw included usage first, then on-demand if it is enabled. On-demand stayed **disabled** through this trial.
+- There is **no personal Spending-% API** on a normal plan. `GET /v1/agents/{id}/usage` reports per-agent usage; the dollar figures below are **charged amounts (cents)**, not plan %. Admin and Analytics spend APIs are Enterprise / team-only.
 
-### What was set up
+### Clean before-shot
 
-- Owner created a Cursor **user API key**; it is stored for Grok Bot as an env secret (do **not** copy into the repo).
-- Key authenticated (`GET /v1/me` OK). Usage path after a run: `GET /v1/agents/{id}/usage` → tokens; optional $ via published model rates.
-- For **plan %**: need Spending UI before/after (or owner paste).
-
-### Spending baseline (noisy — not the clean “before”)
-
-Owner pasted Spending ~13:22 Africa/Addis_Ababa 2026-09-23 while **Cursor CLI was still reviewing with Codex**:
+~13:48 Africa/Addis_Ababa, 2026-09-23. Plan: Pro+ $60/mo; usage limits reset **Oct 19**. On-demand **disabled**.
 
 | Pool | % |
 |---|---|
-| Plan | Pro+ ($60/mo), resets **Oct 19** |
 | Cursor Models | **3%** |
-| Other Models | **82%** (contaminated by ongoing Codex CLI) |
-| Grok Bot weekly | **1%** (resets Sep 30) |
-| On-demand | **Disabled** |
+| Other Models | **84%** |
+| Grok Bot weekly | **2%** (resets Sep 30) |
 
-Owner chose **`wait_clean_baseline`**: do **not** start cloud builders until a fresh Spending shot after Codex CLI finishes. Cloud builders are expected to hit **Other Models**; with on-demand off, hitting 100% can stall runs.
+### After-shot
 
----
+~14:15 Africa/Addis_Ababa, same day (Spending screenshot). On-demand still **disabled**. Plan still Pro+ $60/mo, reset Oct 19; Grok Bot weekly still resets Sep 30.
 
-## 5. What was *not* done
+| Pool | % | Delta vs before |
+|---|---|---|
+| Cursor Models | **4%** | +1 |
+| Other Models | **84%** | unchanged at 1% resolution |
+| Grok Bot weekly | **3%** | +1 |
 
-- No successful Cloud Agent launch / no builder PR for #252 or #225
-- No fresh-context verifier
-- No merge (and no merge-on-green grant)
-- No release of claims
-- No commit of this handoff (file may be local-only until someone commits it)
+### Usage API (charged $, not plan %)
 
----
+| Run | Approx. charge | Approx. tokens |
+|---|---|---|
+| #252 (`bc-3d020358-e796-5c07-b89c-545de5d38800`) | **$2.90** | ~1.73M |
+| #225 (`bc-3719ff1e-ae40-5a5f-8198-044af6a65773`) | **$5.36** | ~3.51M |
+| Combined | **$8.26** | |
 
-## 6. Suggested next steps (for whoever resumes)
-
-**Grok Bot resume (cloud trial):**
-
-1. Owner sends clean Spending % (Cursor Models / Other Models / Grok Bot weekly).
-2. Launch **cloud-only** builders for #252 then #225 (or one first); record agent ids.
-3. After each: `GET /v1/agents/{id}/usage`; after both: Spending after-shot → delta on Other Models (and note any concurrent non-trial usage).
-4. Fresh-context verify; **ask before merge**.
-5. Update or close this handoff.
-
-**Local Claude coordinator resume (normal ha-next):**
-
-1. Read this file and §3.
-2. Either release both claims or finish those two issues yourself — do not double-claim.
-3. Ignore Grok Bot metering state unless you are continuing the same cloud trial.
-4. Treat Grok Bot weekly usage as separate from Cursor Models / Other Models bars; cloud agents launched for this trial are real Cursor (likely Other Models) usage.
+**Finding:** small docs PRs can charge API dollars without moving the Other Models Spending bar at 1% ticks. Other Models stayed at 84% across the trial while the usage API reported about $8.26 combined.
 
 ---
 
-## 7. Ammends / unwind checklist
+## 5. Suggested next (local Claude coordinator)
 
-If this trial should be discarded:
-
-- [ ] Delete `claim/252` and `claim/225` refs on origin
-- [ ] Remove `in-progress` from #252 and #225
-- [ ] Comment on both issues: trial aborted; claims released; link this path
-- [ ] Delete or mark this handoff superseded
-- [ ] Optionally revoke the Cursor user API key created for Grok Bot on 2026-09-23 (confirm name in dashboard before revoking)
+1. Ignore this trial’s claims. Both were released. There is no metering pause to resume.
+2. Optional leftovers **#418** and **#421** are ordinary backlog. They are not Grok Bot state and they are not a continuation of this trial.
+3. Product picks still come from `docs/portfolio.md` and GitHub Issues, not from this file.
 
 ---
 
-## 8. Pointers
+## 6. History — superseded pause
+
+An earlier revision of this file (timestamp ~13:26 Africa/Addis_Ababa) recorded the trial as **paused**: waiting on a clean Spending baseline, with `claim/252` and `claim/225` still held, and with an unwind checklist for a trial that had not launched builders. **That pause is superseded.** The clean before-shot in §4 (~13:48) was taken, both builders ran, both PRs merged, and both claims were deleted. Act on the **done** status above.
+
+---
+
+## 7. Pointers
 
 - Harness map: `docs/harness/README.md`
 - Cursor lane notes: `docs/harness/cursor-lane.md`
-- Session style siblings: `docs/harness/sessions/`
+- Handoff convention: `docs/harness/sessions/COORDINATOR-HANDOFF.md`
 - Issues: https://github.com/mezivillager/hacer/issues/252 · https://github.com/mezivillager/hacer/issues/225
+- PRs: https://github.com/mezivillager/hacer/pull/419 · https://github.com/mezivillager/hacer/pull/420
+- Follow-ups: https://github.com/mezivillager/hacer/issues/418 · https://github.com/mezivillager/hacer/issues/421 · process docs https://github.com/mezivillager/hacer/pull/417
