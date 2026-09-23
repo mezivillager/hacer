@@ -104,7 +104,7 @@ describe('generateTruthTable', () => {
     expect(getState().gates[0].inputs[1].value).toBe(1)
 
     const live = generateTruthTable(getState())
-    const reloaded = generateTruthTable(deserializeCircuit(serializeCircuit(getState(), 'repro')))
+    const reloaded = generateTruthTable(deserializeCircuit(serializeCircuit(getState(), 'repro')).document!)
 
     // A floating pin reads 0, so NAND(a, 0) is 1 for both rows.
     expect(live).toEqual({

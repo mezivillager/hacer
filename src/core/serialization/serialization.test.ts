@@ -1,13 +1,19 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 import { useCircuitStore, circuitActions } from '@/store/circuitStore'
-import { notify } from '@/lib/notify'
 import { serializeCircuit } from './serialize'
-import { deserializeCircuit } from './deserialize'
+import { deserializeCircuit, type DeserializedCircuit } from './deserialize'
 import { CIRCUIT_FORMAT_VERSION, type SerializedCircuit } from './types'
 
 beforeEach(() => {
   circuitActions.clearCircuit()
 })
+
+/** The restored circuit, failing the test if the document could not be read at all. */
+function restore(data: SerializedCircuit): DeserializedCircuit {
+  const { document } = deserializeCircuit(data)
+  expect(document).not.toBeNull()
+  return document!
+}
 
 describe('serializeCircuit', () => {
   it('produces a SerializedCircuit with version 1 and the given name', () => {
@@ -107,8 +113,8 @@ describe('serializeCircuit', () => {
 })
 
 describe('deserializeCircuit', () => {
-  it('rejects unknown version', () => {
-    expect(() =>
+  it('reports an unreadable version as data instead of throwing', () => {
+    const call = () =>
       deserializeCircuit({
         version: 0 as 1,
         name: 'x',
@@ -118,13 +124,23 @@ describe('deserializeCircuit', () => {
         inputNodes: [],
         outputNodes: [],
         junctions: [],
-      }),
-    ).toThrow(/Unsupported circuit version/)
+      })
+    expect(call).not.toThrow()
+    const { document, warnings } = call()
+    expect(document).toBeNull()
+    expect(warnings).toEqual([
+      {
+        code: 'unsupported-version',
+        version: 0,
+        supported: CIRCUIT_FORMAT_VERSION,
+        message: expect.stringMatching(/Unsupported circuit version: 0/),
+      },
+    ])
   })
 
   it('round-trips an empty circuit', () => {
     const out = serializeCircuit(useCircuitStore.getState(), 'empty')
-    const restored = deserializeCircuit(out)
+    const restored = restore(out)
     expect(restored).toEqual({ gates: [], wires: [], inputNodes: [], outputNodes: [], junctions: [], busComponents: [] })
   })
 
@@ -134,7 +150,7 @@ describe('deserializeCircuit', () => {
     const expectedOutIds = gate.outputs.map((p) => p.id)
 
     const blob = serializeCircuit(useCircuitStore.getState(), 'one-gate')
-    const restored = deserializeCircuit(blob)
+    const restored = restore(blob)
 
     expect(restored.gates).toHaveLength(1)
     expect(restored.gates[0].id).toBe(gate.id)
@@ -149,7 +165,7 @@ describe('deserializeCircuit', () => {
     // gate-level value must not bleed into per-pin widths.
     const gate = circuitActions.addGate('And', { x: 0, y: 0, z: 0 }, 16)
     const blob = serializeCircuit(useCircuitStore.getState(), 'wide')
-    const restored = deserializeCircuit(blob)
+    const restored = restore(blob)
     expect(restored.gates[0].width).toBe(16)
     expect(restored.gates[0].inputs.every((p) => p.width === 1)).toBe(true)
     expect(restored.gates[0].outputs.every((p) => p.width === 1)).toBe(true)
@@ -161,7 +177,7 @@ describe('deserializeCircuit', () => {
     // s.width (=1 by default), silently reducing Not16 to a 1-bit chip on load.
     const gate = circuitActions.addGate('Not16', { x: 0, y: 0, z: 0 })
     const blob = serializeCircuit(useCircuitStore.getState(), 'not16')
-    const restored = deserializeCircuit(blob)
+    const restored = restore(blob)
     expect(restored.gates[0].chipName).toBe('Not16')
     expect(restored.gates[0].inputs[0].width).toBe(16)
     expect(restored.gates[0].outputs[0].width).toBe(16)
@@ -173,7 +189,7 @@ describe('deserializeCircuit', () => {
     // that mixed-width pin schemas survive serialize/deserialize intact.
     const gate = circuitActions.addGate('Mux8Way16', { x: 0, y: 0, z: 0 })
     const blob = serializeCircuit(useCircuitStore.getState(), 'mux8way')
-    const restored = deserializeCircuit(blob)
+    const restored = restore(blob)
     expect(restored.gates[0].chipName).toBe('Mux8Way16')
     const inputsByName = Object.fromEntries(
       restored.gates[0].inputs.map((p) => [p.name, p.width])
@@ -205,7 +221,7 @@ describe('deserializeCircuit', () => {
       ],
     )
     const blob = serializeCircuit(useCircuitStore.getState(), 'arced')
-    const restored = deserializeCircuit(blob)
+    const restored = restore(blob)
     expect(restored.wires).toHaveLength(1)
     expect(restored.wires[0].segments).toEqual(blob.wires[0].segments)
     expect(restored.wires[0].from).toEqual(blob.wires[0].from)
@@ -236,7 +252,7 @@ describe('deserializeCircuit', () => {
         { id: 'junction-test-1', position: { x: 2, y: 0.2, z: 0 }, signalId: 'sig-1', wireIds: ['wire-a', 'wire-b'] },
       ],
     }
-    const restored = deserializeCircuit(blob)
+    const restored = restore(blob)
     expect(restored.junctions).toEqual(blob.junctions)
   })
 
@@ -244,7 +260,7 @@ describe('deserializeCircuit', () => {
     const i = circuitActions.addInputNode('a', { x: 0, y: 0, z: 0 })
     circuitActions.updateInputNodeValue(i.id, 0)
     const blob = serializeCircuit(useCircuitStore.getState(), 'val')
-    const restored = deserializeCircuit(blob)
+    const restored = restore(blob)
     expect(restored.inputNodes[0].value).toBe(0)
   })
 
@@ -259,7 +275,7 @@ describe('deserializeCircuit', () => {
     )
 
     const blob = serializeCircuit(useCircuitStore.getState(), 'bus-splitter')
-    const restored = deserializeCircuit(blob)
+    const restored = restore(blob)
 
     // Bus component round-trips with correct id, kind, width, position, and pins
     expect(restored.busComponents).toHaveLength(1)
@@ -299,7 +315,7 @@ describe('deserializeCircuit', () => {
       junctions: [],
       busComponents: [],  // no bus components — wire is dangling
     }
-    const restored = deserializeCircuit(blob)
+    const restored = restore(blob)
     expect(restored.wires).toHaveLength(0)
   })
 })
@@ -322,12 +338,11 @@ describe('deserialize legacy GateType migration', () => {
       outputNodes: [],
       junctions: [],
     }
-    const restored = deserializeCircuit(legacy)
+    const restored = restore(legacy)
     expect(restored.gates.map((g) => g.chipName)).toEqual(['Nand', 'And', 'Or', 'Not', 'Xor'])
   })
 
   it('warns and skips NOR/XNOR gates', () => {
-    const notifySpy = vi.spyOn(notify, 'warning').mockImplementation(() => 'noop')
     const legacy: SerializedCircuit = {
       version: CIRCUIT_FORMAT_VERSION,
       name: 'has-nor',
@@ -341,11 +356,17 @@ describe('deserialize legacy GateType migration', () => {
       outputNodes: [],
       junctions: [],
     }
-    const restored = deserializeCircuit(legacy)
-    expect(restored.gates).toHaveLength(1)
-    expect(restored.gates[0].chipName).toBe('And')
-    expect(notifySpy).toHaveBeenCalledWith(expect.stringMatching(/NOR.*not supported/i))
-    notifySpy.mockRestore()
+    const { document, warnings } = deserializeCircuit(legacy)
+    expect(document?.gates).toHaveLength(1)
+    expect(document?.gates[0].chipName).toBe('And')
+    expect(warnings).toEqual([
+      {
+        code: 'unsupported-gate-type',
+        gateId: 'g1',
+        gateType: 'NOR',
+        message: expect.stringMatching(/NOR.*not supported/i),
+      },
+    ])
   })
 
   it('accepts modern chip names verbatim', () => {
@@ -361,7 +382,7 @@ describe('deserialize legacy GateType migration', () => {
       outputNodes: [],
       junctions: [],
     }
-    const restored = deserializeCircuit(modern)
+    const restored = restore(modern)
     expect(restored.gates[0].chipName).toBe('Mux16')
   })
 })
@@ -375,7 +396,6 @@ describe('deserialize resilience', () => {
   // unknown names should be treated like the unsupported legacy NOR/XNOR
   // path: warn + skip, and let the rest of the circuit load.
   it('warns and skips gates with unknown chip names; keeps the rest', () => {
-    const notifySpy = vi.spyOn(notify, 'warning').mockImplementation(() => 'noop')
     const blob: SerializedCircuit = {
       version: CIRCUIT_FORMAT_VERSION,
       name: 'unknown-mixed',
@@ -389,11 +409,18 @@ describe('deserialize resilience', () => {
       outputNodes: [],
       junctions: [],
     }
-    const restored = deserializeCircuit(blob)
-    expect(restored.gates).toHaveLength(1)
-    expect(restored.gates[0].chipName).toBe('And')
-    expect(notifySpy).toHaveBeenCalledWith(expect.stringMatching(/NotARealChip2099/))
-    notifySpy.mockRestore()
+    const { document, warnings } = deserializeCircuit(blob)
+    expect(document?.gates).toHaveLength(1)
+    expect(document?.gates[0].chipName).toBe('And')
+    expect(warnings).toEqual([
+      {
+        code: 'unknown-chip',
+        gateId: 'g-unknown',
+        gateType: 'NotARealChip2099',
+        chipName: 'NotARealChip2099',
+        message: expect.stringMatching(/NotARealChip2099/),
+      },
+    ])
   })
 
   // PR #107 review feedback (Codex P1):
@@ -404,7 +431,6 @@ describe('deserialize resilience', () => {
   // Drop those wires and prune any junction `wireIds` entries that point
   // to the dropped wires.
   it('drops wires whose endpoints reference skipped legacy gates and prunes junction wireIds', () => {
-    const notifySpy = vi.spyOn(notify, 'warning').mockImplementation(() => 'noop')
     const blob: SerializedCircuit = {
       version: CIRCUIT_FORMAT_VERSION,
       name: 'orphan-wires',
@@ -449,12 +475,11 @@ describe('deserialize resilience', () => {
         { id: 'j-mixed', position: { x: 2, y: 0.2, z: 0 }, signalId: 'sig-y', wireIds: ['w-orphan-from', 'w-good'] },
       ],
     }
-    const restored = deserializeCircuit(blob)
+    const restored = restore(blob)
     expect(restored.gates.map((g) => g.id).sort()).toEqual(['g-and', 'g-or'])
     expect(restored.wires.map((w) => w.id)).toEqual(['w-good'])
     expect(restored.junctions.find((j) => j.id === 'j-pure-orphan')).toBeUndefined()
     const jMixed = restored.junctions.find((j) => j.id === 'j-mixed')
     expect(jMixed?.wireIds).toEqual(['w-good'])
-    notifySpy.mockRestore()
   })
 })

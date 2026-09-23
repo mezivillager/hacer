@@ -22,6 +22,48 @@ export interface DeserializedCircuit {
   busComponents: BusComponent[]
 }
 
+/**
+ * A single thing the reader could not do, returned as data. `deserializeCircuit`
+ * never shows anything to a person — the caller decides that. Every warning names
+ * what was wrong *and where*: the version of the document, or the id and saved
+ * type of the gate that was dropped.
+ */
+export type DeserializeWarning =
+  | {
+      code: 'unsupported-version'
+      message: string
+      /** The `version` field as written in the document. */
+      version: number
+      /** The one version this build reads. */
+      supported: typeof CIRCUIT_FORMAT_VERSION
+    }
+  | {
+      code: 'unsupported-gate-type'
+      message: string
+      /** Id of the gate that was dropped. */
+      gateId: string
+      /** The gate's `type` field as saved, e.g. `'NOR'`. */
+      gateType: string
+    }
+  | {
+      code: 'unknown-chip'
+      message: string
+      gateId: string
+      gateType: string
+      /** The chip name `gateType` migrated to, which no registry knows. */
+      chipName: string
+    }
+
+export interface DeserializeResult {
+  /**
+   * The restored circuit, or `null` when the document could not be read at all
+   * (today: any version this build does not know). A non-null document can still
+   * carry warnings — parts of it were dropped.
+   */
+  document: DeserializedCircuit | null
+  warnings: DeserializeWarning[]
+}
+
 /** Canonical mapping from legacy uppercase gate types to chip-registry names.
  *  Pre-Phase-5 saves used `GateType` (`'NAND' | 'AND' | …`); Phase 4 renamed
  *  the in-store field to `chipName` ('Nand', …). This table migrates the
@@ -130,7 +172,7 @@ function reconstructOutputNode(s: SerializedOutputNode): OutputNode {
 // orphan-wire pruning (PR #107 Codex P1) can filter each junction's
 // `wireIds` against the just-built `droppedWireIds` set in the same pass.
 
-export function deserializeCircuit(data: SerializedCircuit): DeserializedCircuit {
+function readVersion1(data: SerializedCircuit): DeserializedCircuit {
   if (data.version !== CIRCUIT_FORMAT_VERSION) {
     throw new Error(`Unsupported circuit version: ${String(data.version)}`)
   }
@@ -226,4 +268,8 @@ export function deserializeCircuit(data: SerializedCircuit): DeserializedCircuit
     junctions,
     busComponents,
   }
+}
+
+export function deserializeCircuit(data: SerializedCircuit): DeserializeResult {
+  return { document: readVersion1(data), warnings: [] }
 }

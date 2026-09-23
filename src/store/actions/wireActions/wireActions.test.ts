@@ -633,7 +633,7 @@ describe('disconnected input pins (B-008)', () => {
     getState().updateInputNodeValue(a.id, 1)
     getState().simulationTick()
 
-    const reloaded = deserializeCircuit(serializeCircuit(getState(), 'b-008'))
+    const reloaded = deserializeCircuit(serializeCircuit(getState(), 'b-008')).document!
     evaluateCircuit(reloaded)
 
     expect(getState().gates[0].inputs.map((p) => p.value)).toEqual(

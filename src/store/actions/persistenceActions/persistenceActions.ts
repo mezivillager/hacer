@@ -1,5 +1,11 @@
 import { notify } from '@/lib/notify'
-import { deserializeCircuit, serializeCircuit, type SerializedCircuit } from '@/core/serialization'
+import {
+  deserializeCircuit,
+  serializeCircuit,
+  type DeserializedCircuit,
+  type DeserializeResult,
+  type SerializedCircuit,
+} from '@/core/serialization'
 import { useCircuitStore } from '@/store/circuitStore'
 import type { CircuitStore, PersistenceActions, SavedCircuitSummary } from '../../types'
 
@@ -45,6 +51,27 @@ function storageKeyFor(name: string): string {
   return `${STORAGE_PREFIX}${name}`
 }
 
+/**
+ * Turns a reader result into what the person sees. `deserializeCircuit` is pure
+ * logic and returns its warnings as data (#181); this is the one place that
+ * decides they become toasts.
+ *
+ * A `null` document means the document was not readable at all — the first
+ * warning says why, and it is reported as an error, exactly as the thrown
+ * version used to be. A readable document with warnings loads, and each warning
+ * is shown, exactly as the reader's own `notify.warning` calls used to.
+ *
+ * @returns the restored circuit, or `null` when there is nothing to load.
+ */
+function reportDeserialized(result: DeserializeResult, failurePrefix: string): DeserializedCircuit | null {
+  if (!result.document) {
+    notify.error(`${failurePrefix}: ${result.warnings[0]?.message ?? 'unknown error'}`)
+    return null
+  }
+  for (const warning of result.warnings) notify.warning(warning.message)
+  return result.document
+}
+
 export const createPersistenceActions = (_set: SetState, get: GetState): PersistenceActions => ({
   saveCircuit: (rawName: string) => {
     const name = normalizeName(rawName)
@@ -76,14 +103,16 @@ export const createPersistenceActions = (_set: SetState, get: GetState): Persist
       notify.error(`Saved circuit "${name}" is corrupt`)
       return false
     }
-    let restored
+    let result: DeserializeResult
     try {
-      restored = deserializeCircuit(parsed)
+      result = deserializeCircuit(parsed)
     } catch (error) {
       const message = error instanceof Error ? error.message : 'unknown error'
       notify.error(`Could not load "${name}": ${message}`)
       return false
     }
+    const restored = reportDeserialized(result, `Could not load "${name}"`)
+    if (!restored) return false
     useCircuitStore.setState((s) => {
       s.gates = restored.gates
       s.wires = restored.wires
@@ -165,14 +194,16 @@ export const createPersistenceActions = (_set: SetState, get: GetState): Persist
       notify.error('Imported file is not valid JSON')
       return false
     }
-    let restored
+    let result: DeserializeResult
     try {
-      restored = deserializeCircuit(parsed)
+      result = deserializeCircuit(parsed)
     } catch (error) {
       const message = error instanceof Error ? error.message : 'unknown error'
       notify.error(`Import failed: ${message}`)
       return false
     }
+    const restored = reportDeserialized(result, 'Import failed')
+    if (!restored) return false
     useCircuitStore.setState((s) => {
       s.gates = restored.gates
       s.wires = restored.wires
