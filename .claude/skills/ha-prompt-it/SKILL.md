@@ -289,6 +289,22 @@ milestone, rule and proceed, ledger every ruling, never stall.
 - **Test files freeze at green.** An assertion that looks wrong is a BLOCKED
   report, not an adaptation. Rulings that change the contract land as honest new
   commits.
+- **Red-first is the mutation; a flip is the rare exception.** A test committed
+  failing and turned green by the implementation has already proved it can
+  fail: it is never mutation-checked again — not at the gate, not in a review,
+  not in a fix round — and a review finding is closed by a red→green pair,
+  which is its own mutation. No brief asks for "the mutation that proves it".
+  Gate 2 asks you to *name* the change that would flip each red, in one clause.
+  **Execute a flip only for a test that did not go red-first** — a pre-existing
+  test whose coverage of a changed guard is in doubt, or a vacuous passer kept
+  because it pins a decision, money, eligibility, PHI/PII placement or
+  persisted state — and only when its silent failure would corrupt a decision
+  or persisted data. When you do: the single test node (`pnpm vitest run <file> -t "<name>"`),
+  never a suite; restore with `git checkout -- <file>`; report the test's NAME;
+  a handful per PR at most. Reviewers name flips; they do not run them.
+  (Measured 2026-09-23: after the 09-19 selection memo, mutation-style runs
+  rose from 216 to 302 with 20–46 suite-wide runs a day — the trigger, not the
+  selection, is what costs.)
 - **Testing rigour — pick the cheapest tool that can actually fail.** The repo
   already has a harness for each layer; use it rather than inventing one:
 
