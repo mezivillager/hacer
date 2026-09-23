@@ -1,9 +1,12 @@
 /**
  * Bus pin generation — pure logic, no store, no React, no browser.
  *
- * Lives in `src/core` because `core/serialization/deserialize.ts` rebuilds a saved bus
- * component's pins on load; importing it from `src/store` was one of the engine→state
- * edges the layer ratchet records (#181, #329).
+ * Lives beside the other bus modules in `src/simulation` (`busOps`, `busLogic`), and is exported
+ * from `@/simulation` (#336): a bus component's pin interface is the contract all three layers
+ * agree on — the store creates a component with it, `core/serialization/deserialize.ts` rebuilds a
+ * saved one with it, and the renderers lay out against the ids it produces. It was in `src/store`
+ * until #181; the engine importing it there was one of the engine→state edges the layer ratchet
+ * records (#329).
  */
 
 /**

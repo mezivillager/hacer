@@ -1,5 +1,5 @@
-import { createBusPins } from '@/core/buses/busPins'
 import { getBuiltinChipRegistry, getUserChipRegistry } from '@/core/chips/appRegistry'
+import { createBusPins } from '@/simulation'
 import type { BusComponent, GateInstance, InputNode, JunctionNode, OutputNode, Pin, Wire } from '@/store/types'
 import type { WireSegment } from '@/utils/wiringScheme/types'
 import {
