@@ -12,12 +12,15 @@ import type {
 } from '../../types'
 // Imported rather than restated, so the store and the evaluator cannot disagree about which wire
 // feeds a junction. The rule is a document-structure query and would read better in a small shared
-// module — but there is nowhere to put it that the layer ratchet allows: it operates on
-// `JunctionNode` / `CircuitDocument`, which live in `src/store/types.ts`, so an engine home
-// (`src/core/document/junctions.ts`) is a new `engine-no-state` edge and a store home is a new
-// `engine → state` edge from the evaluator. Both measured with `pnpm run lint:layers`: 1 new
-// violation each, ratchet red. Here it is 0 new (`simulationActions.ts:2` is the precedent). The
-// real fix is to move the document types below both layers — ADR-0020 / #318 work, not this one's.
+// module. Two homes were measured with `pnpm run lint:layers` and both cost 1 new violation:
+// `src/core/document/junctions.ts` (a new `engine-no-state` edge, because the rule operates on
+// `JunctionNode` / `CircuitDocument` from `src/store/types.ts`) and a store home imported by the
+// evaluator (a new `engine → state` edge). Here it is 0 new; `simulationActions.ts:2` is the
+// precedent. Not "the only 0-new home" — `src/utils/` is unclassified by the ratchet, so e.g.
+// `src/utils/wireSharing.ts`, which already imports `Wire`/`JunctionNode` and holds "wires passing
+// through a junction", would also measure 0. That is unclassified rather than blessed, so moving
+// there is out of scope here. The real fix is to move the document types below both layers —
+// ADR-0020 / #318 work, not this one's.
 import { findJunctionFeedWire } from '@/simulation/topologicalEval'
 
 type SetState = (
