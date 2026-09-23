@@ -210,3 +210,27 @@ describe('deserializeCircuit: what stays fatal to the whole document', () => {
     expect(() => deserializeCircuit(badWire)).toThrow()
   })
 })
+
+describe('deserializeCircuit: a warning always names a gate, as a string', () => {
+  // `DeserializeWarning` declares `gateId: string` / `gateType: string`, and a caller may
+  // switch on them. A record with neither field is exactly the input that would otherwise
+  // put `undefined` in both — so the reader names it, and never reports a type it cannot keep.
+  const nameless = (): SerializedCircuit => ({
+    ...emptyDocument(CIRCUIT_FORMAT_VERSION),
+    gates: [
+      { type: 'NOR', position: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, width: 1 },
+      { id: 'g-no-type', position: { x: 2, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, width: 1 },
+      GOOD_GATE,
+    ] as unknown as SerializedGate[],
+  })
+
+  it('reports a string id and type for an entry that carries neither', () => {
+    const { document: restored, warnings } = deserializeCircuit(nameless())
+    expect(restored?.gates.map((g) => g.id)).toEqual(['g-and'])
+    expect(warnings.map((w) => w.code)).toEqual(['unsupported-gate-type', 'unreadable-gate'])
+    for (const warning of warnings) {
+      expect(typeof (warning as { gateId?: unknown }).gateId).toBe('string')
+      expect(typeof (warning as { gateType?: unknown }).gateType).toBe('string')
+    }
+  })
+})

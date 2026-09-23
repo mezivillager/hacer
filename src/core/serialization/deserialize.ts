@@ -114,6 +114,10 @@ const cloneVec3 = (v: { x: number; y: number; z: number }) => ({ x: v.x, y: v.y,
 /** Stands in for `id`/`type` when the entry does not carry a readable one. */
 const UNIDENTIFIED_GATE = '(unidentified)'
 
+/** The entry's own id, or the stand-in — a warning's `gateId` is declared `string`. */
+const gateIdOf = (s: SerializedGate | null | undefined): string =>
+  typeof s?.id === 'string' ? s.id : UNIDENTIFIED_GATE
+
 /** Rebuilds a saved gate, or `null` when no registry knows its chip. */
 function reconstructGate(s: SerializedGate, chipName: string): GateInstance | null {
   // Read the chip definition directly rather than through the store's
@@ -246,7 +250,7 @@ export function deserializeCircuit(data: SerializedCircuit): DeserializeResult {
       if (chipName === null) {
         warnings.push({
           code: 'unsupported-gate-type',
-          gateId: s.id,
+          gateId: gateIdOf(s),
           gateType: s.type,
           message: `Skipped unsupported gate type "${s.type}" — NOR and XNOR are not supported in the builtin chip system.`,
         })
@@ -260,7 +264,7 @@ export function deserializeCircuit(data: SerializedCircuit): DeserializeResult {
       if (gate === null) {
         warnings.push({
           code: 'unknown-chip',
-          gateId: s.id,
+          gateId: gateIdOf(s),
           gateType: s.type,
           chipName,
           message:
@@ -273,8 +277,8 @@ export function deserializeCircuit(data: SerializedCircuit): DeserializeResult {
       gates.push(gate)
     } catch (error) {
       // The entry is whatever the file said it was; read its identity defensively.
-      const entry = s as Partial<SerializedGate> | null | undefined
-      const gateId = typeof entry?.id === 'string' ? entry.id : UNIDENTIFIED_GATE
+      const entry = s as SerializedGate | null | undefined
+      const gateId = gateIdOf(entry)
       const gateType = typeof entry?.type === 'string' ? entry.type : UNIDENTIFIED_GATE
       const reason = error instanceof Error ? error.message : String(error)
       warnings.push({
