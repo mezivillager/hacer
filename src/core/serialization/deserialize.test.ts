@@ -5,7 +5,12 @@
 // (environment: 'node', no setup file); the environment assertions below prove that at runtime.
 import { describe, it, expect, vi } from 'vitest'
 import { deserializeCircuit } from './deserialize'
-import { CIRCUIT_FORMAT_VERSION, type SerializedCircuit } from './types'
+import {
+  CIRCUIT_FORMAT_VERSION,
+  type SerializedCircuit,
+  type SerializedGate,
+  type SerializedWire,
+} from './types'
 
 // If anything in the reader's runtime graph reaches for the store or the toast channel, the
 // factory runs and the import of `./deserialize` above fails loudly with this message.
@@ -107,5 +112,101 @@ describe('deserializeCircuit version dispatch', () => {
       },
     ])
     expect(warnings[0].message).toMatch(/version/i)
+  })
+})
+
+// ── Entries the reader cannot rebuild ──────────────────────────────────────────────────────────
+// PR #399 review: `cloneVec3(s.position)` / `cloneVec3(s.rotation)` threw straight out of the
+// reader, so one gate entry written by a build that shapes its records differently cost the whole
+// circuit. `importCircuitJSON` hands this function an arbitrary user-supplied file, so "one entry
+// this build cannot read" is an expected case, not a bug — and it is the same *kind* of event as a
+// gate whose chip no registry knows: one gate the reader could not rebuild. Same treatment:
+// a per-entry warning naming it, and the rest of the document loads.
+
+/** Gate records this build cannot rebuild: the transform is missing, or null-shaped. */
+const UNREADABLE_GATES = [
+  { id: 'g-no-position', type: 'And', rotation: { x: 0, y: 0, z: 0 }, width: 1 },
+  { id: 'g-null-rotation', type: 'And', position: { x: 2, y: 0, z: 0 }, rotation: null, width: 1 },
+] as unknown as SerializedGate[]
+
+const GOOD_GATE: SerializedGate = {
+  id: 'g-and',
+  type: 'And',
+  position: { x: 4, y: 0, z: 0 },
+  rotation: { x: 0, y: 0, z: 0 },
+  width: 1,
+}
+
+/** Two unreadable gate entries and one good `And`, plus a wire into one of the bad ones. */
+const withUnreadableGates = (): SerializedCircuit => ({
+  ...emptyDocument(CIRCUIT_FORMAT_VERSION),
+  gates: [...UNREADABLE_GATES, GOOD_GATE],
+  wires: [
+    {
+      id: 'w-dangling',
+      from: { type: 'gate', entityId: 'g-no-position', pinId: 'g-no-position-out-0' },
+      to: { type: 'gate', entityId: 'g-and', pinId: 'g-and-in-0' },
+      segments: [],
+      crossesWireIds: [],
+    },
+  ],
+})
+
+describe('deserializeCircuit: a gate entry it cannot rebuild', () => {
+  it('does not throw, and loads every gate it could read', () => {
+    const call = () => deserializeCircuit(withUnreadableGates())
+    expect(call).not.toThrow()
+
+    const { document: restored } = call()
+    expect(restored).not.toBeNull()
+    expect(restored?.gates.map((g) => g.id)).toEqual(['g-and'])
+    expect(restored?.gates[0].chipName).toBe('And')
+  })
+
+  it('reports each one as a warning naming that gate and why', () => {
+    const { warnings } = deserializeCircuit(withUnreadableGates())
+    expect(warnings).toEqual([
+      {
+        code: 'unreadable-gate',
+        gateId: 'g-no-position',
+        gateType: 'And',
+        reason: expect.any(String) as string,
+        message: expect.stringContaining('g-no-position'),
+      },
+      {
+        code: 'unreadable-gate',
+        gateId: 'g-null-rotation',
+        gateType: 'And',
+        reason: expect.any(String) as string,
+        message: expect.stringContaining('g-null-rotation'),
+      },
+    ])
+    // The underlying failure reaches the person, not just the id — main put it in the text too.
+    const unreadable = warnings.filter((w) => w.code === 'unreadable-gate')
+    expect(unreadable).toHaveLength(2)
+    for (const warning of unreadable) expect(warning.message).toContain(warning.reason)
+  })
+
+  it('prunes wires that referenced the dropped gate, as for any other skipped gate', () => {
+    const { document: restored } = deserializeCircuit(withUnreadableGates())
+    expect(restored?.wires).toEqual([])
+  })
+})
+
+describe('deserializeCircuit: what stays fatal to the whole document', () => {
+  // The line drawn in #181/#399: recovery is *per entry*. A document whose own shape is wrong is
+  // not one bad gate — there is nothing to load — and it throws here exactly as it does on `main`.
+  it('throws when a top-level array is missing', () => {
+    const noGates: Partial<SerializedCircuit> = { ...emptyDocument(CIRCUIT_FORMAT_VERSION) }
+    delete noGates.gates
+    expect(() => deserializeCircuit(noGates as SerializedCircuit)).toThrow(/gates/)
+  })
+
+  it('throws on a malformed wire entry, unchanged from before', () => {
+    const badWire: SerializedCircuit = {
+      ...emptyDocument(CIRCUIT_FORMAT_VERSION),
+      wires: [{ id: 'w1' }] as unknown as SerializedWire[],
+    }
+    expect(() => deserializeCircuit(badWire)).toThrow()
   })
 })
