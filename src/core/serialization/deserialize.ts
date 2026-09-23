@@ -1,6 +1,6 @@
 import { notify } from '@/lib/notify'
 import { createGateInstance } from '@/store/actions/gateActions/gateActions'
-import { createBusPins } from '@/store/actions/busActions/busPins'
+import { createBusPins } from '@/core/buses/busPins'
 import type { BusComponent, GateInstance, InputNode, JunctionNode, OutputNode, Pin, Wire } from '@/store/types'
 import type { WireSegment } from '@/utils/wiringScheme/types'
 import {

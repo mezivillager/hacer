@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { BusSplitter3D } from './BusSplitter3D'
-import { createBusPins } from '@/store/actions/busActions/busPins'
+import { createBusPins } from '@/core/buses/busPins'
 import type { BusComponent } from '@/store/types'
 
 vi.mock('@react-three/drei', () => ({
