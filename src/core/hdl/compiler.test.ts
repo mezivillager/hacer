@@ -369,3 +369,118 @@ describe('compileHDL — a bit may be driven only once (#355)', () => {
     expect(r.success).toBe(true)
   })
 })
+
+// ── #357 — a slice on the part's own pin ───────────────────────────────────────────────────────
+// The internal side (the part's pin) and the external side (the signal) are independent: each may
+// be sliced, on the same wire, and they are read and written at opposite ends. The transfer width
+// is the internal slice's width, or the part pin's own width when it is unsliced — the rule the
+// reference simulator uses (`getSubBusWidth(lhs) ?? partChip.get(lhs.pin)?.width`,
+// ../web-ide/simulator/src/chip/builder.ts).
+
+function partPinSliceRegistry(): ChipRegistry {
+  const r = createChipRegistry()
+  registerBuiltin(r, 'Not', [{ name: 'in', width: 1 }], [{ name: 'out', width: 1 }], (i) => ({ out: i.in === 0 ? 1 : 0 }))
+  registerBuiltin(r, 'Not16', [{ name: 'in', width: 16 }], [{ name: 'out', width: 16 }], (i) => ({ out: ~i.in & 0xffff }))
+  registerBuiltin(r, 'Or8Way', [{ name: 'in', width: 8 }], [{ name: 'out', width: 1 }], (i) => ({ out: i.in === 0 ? 0 : 1 }))
+  return r
+}
+
+describe('compileHDL — part-pin slices (#357)', () => {
+  let reg: ChipRegistry
+  beforeEach(() => {
+    reg = partPinSliceRegistry()
+  })
+  function compile(src: string) {
+    const ast = parseHDL(src)
+    expect(ast.success).toBe(true)
+    if (!ast.success) throw new Error(`parse failed: ${ast.errors.map((e) => e.message).join('; ')}`)
+    return compileHDL(ast.chip, reg)
+  }
+
+  it('binds one bit of a wide part input from a narrow signal', () => {
+    // Bits 2..7 of Or8Way's `in` are never bound and read as 0, so out = a | b.
+    const r = compile('CHIP C { IN a, b; OUT out; PARTS: Or8Way(in[0]=a, in[1]=b, out=out); }')
+    expect(r.success).toBe(true)
+    if (!r.success) return
+    const ctx = builtinOnlyCtx(reg)
+    expect(r.evaluate({ a: 0, b: 0 }, ctx)).toEqual({ out: 0 })
+    expect(r.evaluate({ a: 1, b: 0 }, ctx)).toEqual({ out: 1 })
+    expect(r.evaluate({ a: 0, b: 1 }, ctx)).toEqual({ out: 1 })
+    expect(r.evaluate({ a: 1, b: 1 }, ctx)).toEqual({ out: 1 })
+  })
+
+  it('reads through a slice on both sides of one connection', () => {
+    // in[0..7] takes bus[8..15] and in[8..15] takes bus[0..7]: the halves swap, then invert.
+    const r = compile('CHIP C { IN bus[16]; OUT out[16]; PARTS: Not16(in[0..7]=bus[8..15], in[8..15]=bus[0..7], out=out); }')
+    expect(r.success).toBe(true)
+    if (!r.success) return
+    expect(r.evaluate({ bus: 0xff00 }, builtinOnlyCtx(reg))).toEqual({ out: 0xff00 })
+    expect(r.evaluate({ bus: 0x1234 }, builtinOnlyCtx(reg))).toEqual({ out: ~0x3412 & 0xffff })
+  })
+
+  it('writes one bit of a wide part output to a narrow signal', () => {
+    const r = compile('CHIP C { IN a[16]; OUT out; PARTS: Not16(in=a, out[0]=out); }')
+    expect(r.success).toBe(true)
+    if (!r.success) return
+    const ctx = builtinOnlyCtx(reg)
+    expect(r.evaluate({ a: 0x0000 }, ctx)).toEqual({ out: 1 })
+    expect(r.evaluate({ a: 0x0001 }, ctx)).toEqual({ out: 0 })
+  })
+
+  it('widens a literal to the width of the part-pin slice it is bound to', () => {
+    const r = compile('CHIP C { IN a; OUT out[16]; PARTS: Not16(in[0..3]=true, out=out); }')
+    expect(r.success).toBe(true)
+    if (!r.success) return
+    expect(r.evaluate({ a: 0 }, builtinOnlyCtx(reg))).toEqual({ out: ~0b1111 & 0xffff })
+  })
+
+  it('infers an internal signal width from the part-pin slice that writes it', () => {
+    // `nib` is 4 bits wide because out[0..3] wrote it — not 16, the width of the whole `out` pin.
+    const r = compile('CHIP C { IN a[16]; OUT out[16]; PARTS: Not16(in=a, out[0..3]=nib); Not16(in=nib, out=out); }')
+    expect(r.success).toBe(false)
+    if (!r.success) expect(r.errors.some((e) => /width 16 != signal "nib" width 4/.test(e.message))).toBe(true)
+  })
+
+  it('errors when the two sides of a connection have different widths', () => {
+    const r = compile('CHIP C { IN a; OUT out[16]; PARTS: Not16(in[0..3]=a, out=out); }')
+    expect(r.success).toBe(false)
+    if (!r.success) expect(r.errors.some((e) => /width/i.test(e.message) && e.pinName === 'in')).toBe(true)
+  })
+
+  it('errors on a part-pin slice past the end of the pin', () => {
+    const r = compile('CHIP C { IN a; OUT out[16]; PARTS: Not16(in[16]=a, out=out); }')
+    expect(r.success).toBe(false)
+    if (!r.success) {
+      const err = r.errors.find((e) => /out of range/i.test(e.message))
+      expect(err?.partName).toBe('Not16')
+      expect(err?.pinName).toBe('in')
+      expect(err?.message).toContain('in[16]')
+      expect(err?.message).toContain('width 16')
+    }
+  })
+
+  it('errors on a slice on a pin the part does not have', () => {
+    const r = compile('CHIP C { IN a; OUT out[16]; PARTS: Not16(nope[0]=a, in=a, out=out); }')
+    expect(r.success).toBe(false)
+    if (!r.success) {
+      const err = r.errors.find((e) => /has no pin/i.test(e.message))
+      expect(err?.partName).toBe('Not16')
+      expect(err?.pinName).toBe('nope')
+    }
+  })
+
+  it('still rejects two part-pin-sliced outputs driving the same signal (#355)', () => {
+    // Both connections write the whole of `t`: the slice is on the part's pin, not on the signal.
+    const r = compile('CHIP C { IN a[16]; OUT out; PARTS: Not16(in=a, out[0]=t); Not16(in=a, out[1]=t); Not(in=t, out=out); }')
+    expect(r.success).toBe(false)
+    if (!r.success) expect(r.errors.some((e) => /driven by more than one part/i.test(e.message))).toBe(true)
+  })
+
+  it('accepts part-pin-sliced outputs writing disjoint slices of one signal (#355)', () => {
+    const r = compile('CHIP C { IN a[16]; OUT out[16]; PARTS: Not16(in=a, out[0]=t[0]); Not16(in=a, out[1]=t[1]); Not16(in=t, out=out); }')
+    expect(r.success).toBe(true)
+    if (!r.success) return
+    // a = 0 → both Not16 outputs are 0xffff, so t[0] = t[1] = 1 and t = 0b11.
+    expect(r.evaluate({ a: 0 }, builtinOnlyCtx(reg))).toEqual({ out: ~0b11 & 0xffff })
+  })
+})

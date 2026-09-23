@@ -574,3 +574,84 @@ describe('HDL Parser', () => {
     }
   })
 })
+
+// ── #357 — a slice on the part's own pin ───────────────────────────────────────────────────────
+// `Not16(in[0]=a)` is legal nand2tetris HDL and is required from Project 2 onward. The grammar
+// is symmetric: both sides of a wire are `Name SubBus?` (the reference Ohm grammar's `WireSide`,
+// ../web-ide/simulator/src/languages/grammars/hdl.ohm), so the same `[n]` / `[n..m]` production
+// applies to the part's pin and to the signal, independently.
+describe('HDL Parser — part-pin slices (#357)', () => {
+  it('parses a single-bit slice on a part pin', () => {
+    const result = parseHDL('CHIP C { IN a; OUT b[16]; PARTS: Not16(in[0]=a, out=b); }')
+    expect(result.success).toBe(true)
+    if (!result.success) return
+    expect(result.chip.parts[0].connections).toEqual([
+      { internal: 'in', internalSlice: { start: 0, end: 0 }, external: 'a' },
+      { internal: 'out', external: 'b' },
+    ])
+  })
+
+  it('parses a range slice on a part pin', () => {
+    const result = parseHDL('CHIP C { IN a[8]; OUT b[16]; PARTS: Not16(in[0..7]=a, out=b); }')
+    expect(result.success).toBe(true)
+    if (!result.success) return
+    expect(result.chip.parts[0].connections[0]).toEqual({
+      internal: 'in', internalSlice: { start: 0, end: 7 }, external: 'a',
+    })
+  })
+
+  it('parses slices on both sides of one connection, kept apart', () => {
+    const result = parseHDL('CHIP C { IN bus[16]; OUT b[16]; PARTS: Not16(in[0..7]=bus[8..15], out=b); }')
+    expect(result.success).toBe(true)
+    if (!result.success) return
+    expect(result.chip.parts[0].connections[0]).toEqual({
+      internal: 'in',
+      internalSlice: { start: 0, end: 7 },
+      external: 'bus',
+      externalSlice: { start: 8, end: 15 },
+    })
+  })
+
+  it('parses a slice on an output part pin', () => {
+    const result = parseHDL('CHIP C { IN a[16]; OUT b; PARTS: Not16(in=a, out[3]=b); }')
+    expect(result.success).toBe(true)
+    if (!result.success) return
+    expect(result.chip.parts[0].connections[1]).toEqual({
+      internal: 'out', internalSlice: { start: 3, end: 3 }, external: 'b',
+    })
+  })
+
+  it('parses the Or8Way shape: one part pin bound bit by bit', () => {
+    const result = parseHDL('CHIP C { IN a, b; OUT o; PARTS: Or8Way(in[0]=a, in[1]=b, out=o); }')
+    expect(result.success).toBe(true)
+    if (!result.success) return
+    expect(result.chip.parts[0].connections.slice(0, 2)).toEqual([
+      { internal: 'in', internalSlice: { start: 0, end: 0 }, external: 'a' },
+      { internal: 'in', internalSlice: { start: 1, end: 1 }, external: 'b' },
+    ])
+  })
+
+  it('accepts a slice on a part pin bound to a literal', () => {
+    const result = parseHDL('CHIP C { IN a; OUT b[16]; PARTS: Not16(in[0]=true, out=b); }')
+    expect(result.success).toBe(true)
+    if (!result.success) return
+    expect(result.chip.parts[0].connections[0]).toEqual({
+      internal: 'in', internalSlice: { start: 0, end: 0 }, external: 'true',
+    })
+  })
+
+  it('rejects a reversed range on a part pin, with a span', () => {
+    const result = parseHDL(`CHIP C {
+      IN a[8];
+      OUT b[16];
+      PARTS:
+      Not16(in[7..0]=a, out=b);
+    }`)
+    expect(result.success).toBe(false)
+    if (result.success) return
+    const rangeError = result.errors.find((error) => error.message.includes('sub-bus range'))
+    expect(rangeError?.message).toBe("Invalid sub-bus range '7..0'; expected start <= end")
+    expect(rangeError?.line).toBe(5)
+    expect(rangeError?.column).toBeGreaterThan(0)
+  })
+})
