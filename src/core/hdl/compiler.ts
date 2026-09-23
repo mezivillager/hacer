@@ -1,5 +1,5 @@
 // src/core/hdl/compiler.ts
-import type { HDLChip, HDLPart, HDLSlice } from './types'
+import type { HDLChip, HDLConnection, HDLPart, HDLSlice } from './types'
 import type { ChipDefinition } from '../chips/types'
 import type { ChipRegistry } from '../chips/registry'
 import { isBuiltinChip } from '../chips/types'
@@ -51,18 +51,30 @@ interface BitRange {
 /** Do two inclusive ranges share a bit? The one overlap test the whole file reasons with. */
 const overlaps = (a: BitRange, b: BitRange): boolean => a.first <= b.last && b.first <= a.last
 
+/** The bits two overlapping ranges share. Unbounded only when both cover a whole signal. */
+const shared = (a: BitRange, b: BitRange): BitRange => ({ first: Math.max(a.first, b.first), last: Math.min(a.last, b.last) })
+
+/**
+ * Name the bits of a range — and name none when it reaches to `WHOLE_SIGNAL`, because then no
+ * particular bit is what went wrong. One rule for every message that mentions bits: an index is
+ * printed only where it is actually determined. (`web-ide` drops the index the same way,
+ * ../web-ide/simulator/src/chip/builder.ts.)
+ */
+const describeBits = (range: BitRange): string =>
+  range.last === WHOLE_SIGNAL ? '' : range.first === range.last ? ` bit ${range.first}` : ` bits ${range.first}..${range.last}`
+
 /**
  * One bit, one source — the same rule on both sides of a connection (#355 out, #367 in).
  *
- * Claims `[first..last]` of `key` and returns the first bit that was already claimed, or `null`
- * when nothing overlaps. Disjoint ranges are legal on both sides: several parts may each write
+ * Claims `[first..last]` of `key` and returns the bits that were already claimed, or `null` when
+ * nothing overlaps. Disjoint ranges are legal on both sides: several parts may each write
  * their own slice of a signal, and several connections may each feed their own slice of a part's
  * input pin. Overlap is not a value — which claim survived would depend on the order the parts or
  * the bindings happen to appear in the document. The reference simulator draws the same rule
  * across both sides, one `checkMultipleAssignments` over an input-pin map and an output-pin map
  * (../web-ide/simulator/src/chip/builder.ts).
  */
-function claimBits(claimed: Map<string, BitRange[]>, key: string, first: number, last: number): number | null {
+function claimBits(claimed: Map<string, BitRange[]>, key: string, first: number, last: number): BitRange | null {
   const ranges = claimed.get(key)
   if (!ranges) {
     claimed.set(key, [{ first, last }])
@@ -70,12 +82,66 @@ function claimBits(claimed: Map<string, BitRange[]>, key: string, first: number,
   }
   const clash = ranges.find((range) => overlaps({ first, last }, range))
   ranges.push({ first, last })
-  return clash ? Math.max(first, clash.first) : null
+  return clash ? shared({ first, last }, clash) : null
 }
 
 /** Do any of these claims land on a pin `width` bits wide? Same overlap test, against the pin. */
 const coversAnyBit = (ranges: BitRange[] | undefined, width: number): boolean =>
   (ranges ?? []).some((range) => overlaps(range, { first: 0, last: width - 1 }))
+
+/**
+ * Report a message once. N parts driving one bit is one mistake, not N−1 of them, and the second
+ * copy of a message tells a reader nothing the first did not. Scoped by the `seen` set the caller
+ * owns, so two parts that happen to share a name still report separately.
+ */
+function pushOnce(errors: HDLCompileError[], seen: Set<string>, error: HDLCompileError): void {
+  if (seen.has(error.message)) return
+  seen.add(error.message)
+  errors.push(error)
+}
+
+/** A signal, and the bits of it that one connection reads or writes. */
+interface SignalRange extends BitRange {
+  signal: string
+}
+
+/** The bits a connection touches on the *signal* side: its external slice, or the whole signal. */
+const externalRange = (conn: HDLConnection): BitRange => ({
+  first: conn.externalSlice?.start ?? 0,
+  last: conn.externalSlice?.end ?? WHOLE_SIGNAL,
+})
+
+/**
+ * The signals and bits on one real cycle, as `"w" bit 0 → "w" bit 1`, for the error message.
+ *
+ * Kahn leaves behind exactly the parts it could not place, and every one of those still has an
+ * unplaced predecessor — so following any one predecessor from any of them must revisit a part,
+ * and the walk between the two visits is a cycle. Returns `''` if the graph somehow offers no
+ * predecessor, so a missing trace can never turn a rejection into a crash.
+ */
+function cycleTrace(unplaced: Set<number>, adj: readonly number[][], edgeCarries: Map<string, string>): string {
+  const predecessor = new Map<number, number>()
+  adj.forEach((consumers, from) => {
+    if (!unplaced.has(from)) return
+    for (const to of consumers) if (unplaced.has(to) && !predecessor.has(to)) predecessor.set(to, from)
+  })
+  const walk: number[] = []
+  const visitedAt = new Map<number, number>()
+  const [start] = unplaced
+  if (start === undefined) return ''
+  let part = start
+  while (!visitedAt.has(part)) {
+    visitedAt.set(part, walk.length)
+    walk.push(part)
+    const previous = predecessor.get(part)
+    if (previous === undefined) return ''
+    part = previous
+  }
+  // The walk runs backwards along the edges, so the loop it closed reads forwards reversed.
+  const loop = walk.slice(visitedAt.get(part)).reverse()
+  const carried = loop.map((from, i) => edgeCarries.get(`${from}->${loop[(i + 1) % loop.length]}`) ?? '')
+  return carried.filter((label, i) => label !== '' && carried.indexOf(label) === i).join(' → ')
+}
 
 export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResult {
   const errors: HDLCompileError[] = []
@@ -121,15 +187,19 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
   }
 
   // 3. Validate connections + classify reads/writes per part
-  // reads[i] = internal signals part i consumes (external names, minus literals & chip inputs)
-  // writes[i] = signals part i produces
-  const reads: Set<string>[] = []
-  const writes: Set<string>[] = []
+  // reads[i] = the signal BITS part i consumes (external names, minus literals & chip inputs)
+  // writes[i] = the signal bits part i produces
+  // Bits, not names: a read of `t[1]` and a write of `t[0]` touch the same signal and no common
+  // bit, so step 4 must be able to tell them apart (#363).
+  const reads: SignalRange[][] = []
+  const writes: SignalRange[][] = []
   // Every bit range already driven, per signal — one bit may have only one driver.
   const drivenRanges = new Map<string, BitRange[]>()
+  const reportedDriverClash = new Set<string>()
   for (const { part, def } of resolved) {
-    const r = new Set<string>()
-    const w = new Set<string>()
+    const r: SignalRange[] = []
+    const w: SignalRange[] = []
+    const reportedBindingClash = new Set<string>()
     // Every bit range already bound, per input pin of THIS part — one bit may have only one
     // source. Per part, like the reference simulator's `inPins` (cleared for each part); the
     // driven map above is per chip, because a signal is shared and a pin is not.
@@ -173,10 +243,10 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
         // waiting to be inferred.
         const boundClash = claimBits(boundRanges, inPin.name, conn.internalSlice?.start ?? 0, conn.internalSlice?.end ?? inPin.width - 1)
         if (boundClash !== null) {
-          errors.push({ message: `Part "${part.name}" pin "${inPin.name}" bit ${boundClash} is bound by more than one connection`, partName: part.name, pinName: inPin.name })
+          pushOnce(errors, reportedBindingClash, { message: `Part "${part.name}" pin "${inPin.name}" bit ${boundClash.first} is bound by more than one connection`, partName: part.name, pinName: inPin.name })
         }
         if (LITERALS.has(conn.external)) continue
-        if (!chipInputNames.has(conn.external)) r.add(conn.external)
+        if (!chipInputNames.has(conn.external)) r.push({ signal: conn.external, ...externalRange(conn) })
       } else {
         if (LITERALS.has(conn.external)) {
           errors.push({ message: `Part "${part.name}" output "${conn.internal}" cannot connect to literal "${conn.external}"`, partName: part.name, pinName: conn.internal })
@@ -185,11 +255,15 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
         // One bit, one driver. Two parts writing the same bit is a short circuit, not a value,
         // and which one survived would depend on the part order — exactly what step 4 stops
         // depending on. Matches the reference simulator (../web-ide, `ChipBuilder`).
-        const drivenClash = claimBits(drivenRanges, conn.external, conn.externalSlice?.start ?? 0, conn.externalSlice?.end ?? WHOLE_SIGNAL)
+        const written = externalRange(conn)
+        const drivenClash = claimBits(drivenRanges, conn.external, written.first, written.last)
         if (drivenClash !== null) {
-          errors.push({ message: `Signal "${conn.external}" bit ${drivenClash} is driven by more than one part`, partName: part.name, pinName: conn.internal })
+          // The message names one bit, so it names the first shared one — and names none when the
+          // overlap has no end, because two whole-signal writes clash at no particular bit.
+          const at = drivenClash.last === WHOLE_SIGNAL ? drivenClash : { first: drivenClash.first, last: drivenClash.first }
+          pushOnce(errors, reportedDriverClash, { message: `Signal "${conn.external}"${describeBits(at)} is driven by more than one part`, partName: part.name, pinName: conn.internal })
         }
-        w.add(conn.external)
+        w.push({ signal: conn.external, ...written })
       }
     }
     // Every input pin must be wired — an unconnected input would be silently read as 0. Since
@@ -209,33 +283,48 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
   }
   if (errors.length) return { success: false, errors }
 
-  // 4. Topological order (Kahn) — part A depends on B if A reads a signal B writes (internal wire).
+  // 4. Topological order (Kahn) — part A depends on B if A reads BITS that B writes.
   const n = resolved.length
-  const producersOf = new Map<string, number[]>() // signal -> every part index that writes it
+  /** signal -> every part that writes it, with the bits that part writes. */
+  const producersOf = new Map<string, Array<{ part: number; bits: BitRange }>>()
   writes.forEach((w, i) =>
-    w.forEach((sig) => {
-      const producers = producersOf.get(sig)
-      if (producers) producers.push(i)
-      else producersOf.set(sig, [i])
+    w.forEach(({ signal, first, last }) => {
+      const producer = { part: i, bits: { first, last } }
+      const producers = producersOf.get(signal)
+      if (producers) producers.push(producer)
+      else producersOf.set(signal, [producer])
     }),
   )
   const adj: number[][] = Array.from({ length: n }, () => []) // producer -> consumers
   const indegree = new Array(n).fill(0)
+  /** `producer->consumer` -> the signal and shared bits that edge carries, for the cycle message. */
+  const edgeCarries = new Map<string, string>()
+  const reportedDangling = new Set<string>()
   reads.forEach((r, i) => {
-    r.forEach((sig) => {
-      const producers = producersOf.get(sig)
+    r.forEach((read) => {
+      const producers = producersOf.get(read.signal)
       if (producers === undefined) {
-        // Not a chip input, not a literal, and no part writes it → dangling/typo'd signal.
-        errors.push({ message: `Signal "${sig}" is read by part "${resolved[i].part.name}" but no part produces it`, partName: resolved[i].part.name })
+        // Not a chip input, not a literal, and no part writes it → dangling/typo'd signal. Once
+        // per part, as before: `reads` was a Set of names and is now a list of ranges, so a part
+        // reading two slices of one missing signal would otherwise say so twice.
+        const dangling = `${i}:${read.signal}`
+        if (reportedDangling.has(dangling)) return
+        reportedDangling.add(dangling)
+        errors.push({ message: `Signal "${read.signal}" is read by part "${resolved[i].part.name}" but no part produces it`, partName: resolved[i].part.name })
         return
       }
-      // An edge from EVERY producer, not just the last one: a signal assembled from several slice
-      // writes is only complete once all of them have run, so all of them must precede the read.
-      for (const p of producers) {
-        if (p !== i) {
-          adj[p].push(i)
-          indegree[i]++
-        }
+      // An edge from EVERY producer whose bits this read actually touches. Every producer, because
+      // a signal assembled from several slice writes is only complete once all of them have run
+      // (#355); only the overlapping ones, because bits a read never looks at cannot make it wait
+      // (#363). An unsliced read covers the whole signal and so still overlaps every write, which
+      // is why #355's rule is not a second case here but this one's widest instance.
+      for (const producer of producers) {
+        if (producer.part === i || !overlaps(read, producer.bits)) continue
+        const edge = `${producer.part}->${i}`
+        if (edgeCarries.has(edge)) continue // one edge per pair; a second read adds no ordering
+        edgeCarries.set(edge, `"${read.signal}"${describeBits(shared(read, producer.bits))}`)
+        adj[producer.part].push(i)
+        indegree[i]++
       }
     })
   })
@@ -252,7 +341,14 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
     }
   }
   if (order.length !== n) {
-    return { success: false, errors: [{ message: 'Cyclic part dependency: parts cannot be topologically ordered (combinational cycle)' }] }
+    const placed = new Set(order)
+    const unplaced = new Set<number>()
+    for (let i = 0; i < n; i++) if (!placed.has(i)) unplaced.add(i)
+    const carried = cycleTrace(unplaced, adj, edgeCarries)
+    return {
+      success: false,
+      errors: [{ message: `Cyclic part dependency: parts cannot be topologically ordered (combinational cycle)${carried ? ` through ${carried}` : ''}` }],
+    }
   }
   const orderedParts = order.map((i) => resolved[i])
 
