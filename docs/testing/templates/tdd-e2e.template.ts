@@ -10,11 +10,10 @@
  *   - e2e/specs/feature-name.store.spec.ts  (FAST - for TDD, AI agents, pre-commit)
  *   - e2e/specs/feature-name.ui.spec.ts     (SLOW - manual/CI only, twice weekly)
  *
- * Both files share the same scenario from e2e/scenarios/:
- *   - e2e/scenarios/featureName.ts
+ * Both files drive the same circuit through e2e/helpers/:
  *
  * TDD Workflow:
- * 1. Create scenario file in e2e/scenarios/
+ * 1. Write the shared setup as a helper in e2e/helpers/
  * 2. Create STORE test first (fast iteration)
  * 3. Run store tests to verify they fail
  * 4. Implement features to pass
@@ -28,11 +27,10 @@
 // import { test, expect } from '../fixtures';
 import { test, expect } from '@playwright/test';
 // Import scenario:
-// import { yourScenario } from '../scenarios';
 // Import helpers as needed:
 // import { addGateViaUI, connectWiresViaUI } from '../helpers/actions';
 // import { expectGateCount, expectWireCount } from '../helpers/assertions';
-// import { ensureGates, waitForSceneStable } from '../helpers/waits';
+// import { ensureGates, waitForSceneReady } from '../helpers/waits';
 
 // ============================================================================
 // STORE TEST TEMPLATE (feature-name.store.spec.ts)
@@ -42,11 +40,11 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Feature Name (Store) @store', () => {
   // Store tests are FAST - preferred for TDD iteration
-  // Use shared scenario data from e2e/scenarios/
+  // Use shared setup from e2e/helpers/
 
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
-    // NO waitForSceneStable - that's what makes store tests fast
+    // NO scene wait - that's what makes store tests fast
   });
 
   test('can perform action via store', async ({ page }) => {
@@ -90,7 +88,7 @@ test.describe('Feature Name (UI) @ui', () => {
 
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
-    // await waitForSceneStable(page); // Required for UI tests
+    // await waitForSceneReady(page); // Required for UI tests
   });
 
   test('user can perform action via UI', async ({ page }) => {
@@ -121,7 +119,6 @@ test.describe('Feature Name (UI) @ui', () => {
  * E2E Test Pairing Checklist:
  *
  * Files to create:
- * - [ ] e2e/scenarios/featureName.ts       (shared test data)
  * - [ ] e2e/specs/feature-name.store.spec.ts (FAST - @store)
  * - [ ] e2e/specs/feature-name.ui.spec.ts    (SLOW - @ui)
  *
@@ -141,7 +138,7 @@ test.describe('Feature Name (UI) @ui', () => {
  * - npm run test:e2e:headed    # With browser visible
  *
  * AI Agent Workflow:
- * 1. Create scenario in e2e/scenarios/
+ * 1. Write the shared setup as a helper in e2e/helpers/
  * 2. Write store test first (fast TDD iteration)
  * 3. Implement feature
  * 4. Create matching UI test
