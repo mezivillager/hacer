@@ -8,12 +8,16 @@
 // labels and per-file line counts — so this script, checked out from the base branch, never sees or
 // runs the PR's code. `.gitattributes` (linguist-generated) is read from the checkout, i.e. main.
 //
+// The one exception is the layer-ratchet baseline (#406): when a PR changes it, the file's
+// *contents* are read through the same API at the merge base and at the PR head, so the check can
+// tell an armed rule from an absorbed violation. Contents are data, never code that is run here.
+//
 // Prints one greppable `HYGIENE: PASS|WARN|FAIL …` line, appends a report to
 // $GITHUB_STEP_SUMMARY when set, and exits 1 on FAIL. Rules live in pr-hygiene.logic.mjs.
 
 import { appendFileSync, existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
-import { evaluate, formatConsole, formatSummary, nextPageUrl } from './pr-hygiene.logic.mjs'
+import { RATCHET_BASELINE_FILE, evaluate, formatConsole, formatSummary, nextPageUrl } from './pr-hygiene.logic.mjs'
 
 const REPO = process.env.GITHUB_REPOSITORY ?? 'mezivillager/hacer'
 const TOKEN = process.env.GITHUB_TOKEN ?? process.env.GH_TOKEN
@@ -40,6 +44,20 @@ async function get(url) {
   return { json: await res.json(), next: nextPageUrl(res.headers.get('link')) }
 }
 
+/** A file's raw bytes at one commit, or null when the path does not exist there. */
+async function getContent(ref, filePath) {
+  const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${filePath}?ref=${ref}`, {
+    headers: {
+      Authorization: `Bearer ${TOKEN}`,
+      Accept: 'application/vnd.github.raw',
+      'X-GitHub-Api-Version': '2022-11-28',
+    },
+  })
+  if (res.status === 404) return null
+  if (!res.ok) throw new Error(`GitHub API ${res.status} for ${filePath}@${ref}`)
+  return res.text()
+}
+
 async function getAll(url) {
   const items = []
   for (let page = url; page; ) {
@@ -53,6 +71,23 @@ async function getAll(url) {
 const pullUrl = `https://api.github.com/repos/${REPO}/pulls/${number}`
 const [{ json: pull }, files] = await Promise.all([get(pullUrl), getAll(`${pullUrl}/files?per_page=100`)])
 
+// The layer-ratchet baseline (#406), read only when the PR touches it, and only ever as *content*
+// through the API — at the merge base (not `base.sha`, which drifts while a PR is open) and at the
+// PR head. Reading two blobs is not checking out a PR: nothing from the head is executed, and the
+// copy of this script doing the reading is always main's.
+let ratchet = null
+if (files.some((file) => file.filename === RATCHET_BASELINE_FILE)) {
+  const { json: comparison } = await get(
+    `https://api.github.com/repos/${REPO}/compare/${pull.base.sha}...${pull.head.sha}?per_page=1`,
+  )
+  const mergeBase = comparison.merge_base_commit?.sha ?? pull.base.sha
+  const [base, head] = await Promise.all([
+    getContent(mergeBase, RATCHET_BASELINE_FILE),
+    getContent(pull.head.sha, RATCHET_BASELINE_FILE),
+  ])
+  ratchet = { base, head }
+}
+
 const attributesPath = path.join(import.meta.dirname, '..', '.gitattributes')
 const gitattributes = existsSync(attributesPath) ? readFileSync(attributesPath, 'utf8') : ''
 
@@ -62,6 +97,7 @@ const result = evaluate({
   labels: pull.labels.map((label) => label.name),
   files,
   gitattributes,
+  ratchet,
 })
 
 console.log(formatConsole(result))

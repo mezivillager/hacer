@@ -8,5 +8,8 @@
 
 # Layer-ratchet baselines (#329): machine-written violation records, never line-reviewed.
 # `linguist-generated` is what scripts/pr-hygiene.logic.mjs reads to keep them out of the budget.
+# Kept that way on purpose (#406): a baseline write rewrites the whole file, so a line review sees
+# churn rather than meaning. What pays for the lost review is pr-hygiene's `ratchet` rule, which
+# reads the rows against the PR's merge base — for the first file only; #429 covers the second.
 .dependency-cruiser-known-violations.json linguist-generated
 eslint-suppressions.json linguist-generated
