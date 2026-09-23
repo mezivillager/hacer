@@ -773,3 +773,104 @@ describe('compileHDL — dependency edges follow bits, not signal names (#363)',
     }
   })
 })
+
+// ── A part's edge to ITSELF (#397) ─────────────────────────────────────────────────────────────
+// The under-approximation twin of #363. Step 4 used to drop the edge a part would take from
+// itself, so a part that reads a signal it writes was never a cycle: it read whatever the signal
+// held before it ran, which for an internal wire is 0. The skip existed because per-SIGNAL edges
+// made a part that writes `t[0]` and reads `t[1]` depend on itself; since #363 the edges are
+// per-BIT, so the one `overlaps()` test the file already reasons with answers this too — a real
+// self-cycle and a legitimate disjoint self-reference differ only in whether the bits meet.
+describe('compileHDL — a part may not read the bits it writes itself (#397)', () => {
+  let reg: ChipRegistry
+  beforeEach(() => {
+    reg = perBitRegistry()
+  })
+  function compile(src: string) {
+    const ast = parseHDL(src)
+    expect(ast.success).toBe(true)
+    if (!ast.success) throw new Error('parse failed')
+    return compileHDL(ast.chip, reg)
+  }
+  /** Rejected as a combinational cycle, and the message says which signal and bits closed it. */
+  function expectCycle(src: string, ...mentions: readonly string[]) {
+    const r = compile(src)
+    expect({ src, success: r.success }).toEqual({ src, success: false })
+    if (r.success) return
+    const message = r.errors[0].message
+    expect(message).toMatch(/combinational cycle/)
+    for (const mention of mentions) expect(message).toContain(mention)
+  }
+  /** Every ordering of the parts must agree — on rejecting, or on the value. */
+  function eachOrdering(parts: readonly string[], chip: (order: readonly string[]) => string): string[] {
+    return permutations(parts).map(chip)
+  }
+
+  // The issue's chip. One part reads `w` and drives it, which is a combinational loop of length
+  // one; at `main` it compiled and `out` was 1 for every input, because `And` read `w` as the 0 it
+  // held before the part ran rather than the value the part itself put there.
+  const SELF_PARTS = ['And(a=w, b=a, out=w);', 'Not(in=w, out=out);'] as const
+  const self = (order: readonly string[]) => `CHIP S { IN a; OUT out; PARTS: ${order.join(' ')} }`
+
+  it("rejects the issue's one-part feedback loop, naming the signal", () => {
+    expectCycle(self(SELF_PARTS), '"w"')
+  })
+
+  it('rejects it in every part ordering', () => {
+    for (const src of eachOrdering(SELF_PARTS, self)) expectCycle(src, '"w"')
+  })
+
+  // A self-cycle on one bit of a wider signal: the read and the write are both slices, and they
+  // land on the same bit. Named exactly like a two-part cycle on that bit (#363).
+  const BIT_PARTS = ['Not4(in[0]=t[0], out[0]=t[0]);', 'Not(in=a, out=t[1]);', 'Not16(in=t, out=out);'] as const
+  const bitCycle = (order: readonly string[]) => `CHIP B { IN a; OUT out[16]; PARTS: ${order.join(' ')} }`
+
+  it('names the bit when a part reads and writes the same bit of a wider signal', () => {
+    expectCycle(bitCycle(BIT_PARTS), '"t" bit 0')
+  })
+
+  it('rejects that sliced self-cycle in every one of the six part orderings', () => {
+    for (const src of eachOrdering(BIT_PARTS, bitCycle)) expectCycle(src, '"t" bit 0')
+  })
+
+  it('names the shared bits when a self-read and a self-write only partly overlap', () => {
+    // reads `t[2..5]`, writes `t[0..3]` — bits 2..3 are both, and those are the ones that loop.
+    expectCycle('CHIP P { IN a; OUT out[8]; PARTS: Not8(in[0..3]=t[2..5], out[0..3]=t[0..3]); Not(in=a, out=t[6]); Not8(in=t, out=out); }', '"t" bits 2..3')
+  })
+
+  it('rejects a whole-signal read against the same part’s sliced write', () => {
+    // An unsliced read covers every bit of the signal, so it reaches the one bit the part drives.
+    // The widest instance of the same overlap test, not a second rule (#363).
+    expectCycle('CHIP W { IN a; OUT out[16]; PARTS: Not(in=a, out=t[1]); Not16(in=t, out[0]=t[0]); Not16(in=t, out=out); }', '"t" bit 0')
+  })
+
+  it('rejects a sliced read against the same part’s whole-signal write', () => {
+    expectCycle('CHIP V { IN a; OUT out[8]; PARTS: Not8(in[0]=t[0], out=t); Not8(in=t, out=out); }', '"t" bit 0')
+  })
+
+  // ── The other side of the boundary: a self-reference on bits that never meet is legal HDL, and
+  // is exactly what the old skip was protecting. It has to keep compiling AND keep its value.
+  const DISJOINT_PARTS = ['Not(in=a, out=t[0]);', 'Not8(in[0]=t[0], out[1]=t[1]);', 'Not16(in=t, out=out);'] as const
+  const disjoint = (order: readonly string[]) => `CHIP D { IN a; OUT out[16]; PARTS: ${order.join(' ')} }`
+
+  it('still compiles a part that reads one bit of a signal and writes another', () => {
+    // a=0 → t[0]=1 → the middle part reads in=0b1, drives out=0xfe, and its bit 1 is 1 → t[1]=1.
+    // t=0b11 → out = ~3 & 0xffff = 65532. Unchanged from `main`, where the self-skip allowed it.
+    for (const src of eachOrdering(DISJOINT_PARTS, disjoint)) {
+      expect({ src, ...evaluateHdl(src, { a: 0 }, reg) }).toEqual({ src, out: 65532 })
+    }
+  })
+
+  // The same thing with WIDE adjacent ranges and part-pin slices on both sides — the bus-joiner
+  // shape, where a part reads the low nibble of a signal and drives the high one.
+  const NIBBLE_PARTS = ['Not4(in=a, out=t[0..3]);', 'Not8(in[0..3]=t[0..3], out[4..7]=t[4..7]);', 'Not8(in=t, out=out);'] as const
+  const nibble = (order: readonly string[]) => `CHIP N { IN a[4]; OUT out[8]; PARTS: ${order.join(' ')} }`
+
+  it('still compiles a part reading t[0..3] and writing the adjacent t[4..7]', () => {
+    // a=5 → t[0..3]=~5&0xf=0xa → the joiner reads 0x0a, drives ~0x0a&0xff=0xf5, its bits 4..7 are
+    // 0xf → t=0xfa → out = ~0xfa & 0xff = 5.
+    for (const src of eachOrdering(NIBBLE_PARTS, nibble)) {
+      expect({ src, ...evaluateHdl(src, { a: 0b0101 }, reg) }).toEqual({ src, out: 5 })
+    }
+  })
+})
