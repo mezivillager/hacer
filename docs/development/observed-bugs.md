@@ -33,6 +33,20 @@ its per-issue verdicts are in `docs/research/2026-09-21-foundation-audit/BACKLOG
 
 ## Open
 
+### B-009 — `removeJunction` deletes wires by position, not by structure
+
+| Field | Detail |
+|-------|--------|
+| **Status** | **Partly fixed** — corrected 2026-09-23 after [#396](https://github.com/mezivillager/hacer/pull/396)'s verifier measured the claim. An earlier revision of this entry read *Fixed / measured end to end through the real actions*; that was wrong for the documents the app writes, and is restated honestly below. |
+| **Area** | `src/store/actions/signalActions/signalActions.ts` (`removeJunction`), `src/simulation/topologicalEval.ts:43-53` (`findJunctionFeedWire`) |
+| **Symptom** | `removeJunction` kept one of a junction's wires and deleted the rest, choosing by position: `wireIds.slice(1)`. `removeWire` splices the trunk out of `wireIds` and re-attaching a redrawn wire appends it **last**, so a branch can sit at `wireIds[0]`; the deletion then removed **the trunk and kept a branch** — data loss in a saved document, not a cosmetic defect. |
+| **Expected** | Removing a junction never deletes a wire that has two real endpoints, and never decides anything from array order. |
+| **Fixed for** | Documents that carry **junction-endpoint wires** — a branch whose `from`, or a feed wire whose `to`, *is* the junction. `findJunctionFeedWire` reads the structure outright there. Serialization permits that shape, `deserialize.ts` preserves it, and the legacy importer ([#377](https://github.com/mezivillager/hacer/issues/377)) will read documents of it. Tests: `signalActions.test.ts`, `describe('removeJunction — the feed wire survives, not wireIds[0] (#364)')`. |
+| **NOT fixed for** | **Documents the app writes today.** `completeJunctionWiring` copies the trunk's source into every branch it creates (`wiringActions.ts:859`) and is the only appender to `wireIds` (`:959`), so every listed wire shares one `from` and nothing in the document distinguishes trunk from branch. `topologicalEval.ts:49` is then false and `:50` falls back to the first listed wire in `state.wires` order — which is creation order, the same wire `wireIds[0]` named. Measured at both `2f52456` (merge base) and `e2f6f87` (#396 head): the reproduction with gesture-shaped branches gives survivors `[branch1]` on **both**, losing `trunk'` and `branch2`. Pinned in the repo as `gesture-shaped branches: two user-drawn wires are still lost (known limit, #403)` — run it, don't take this table's word for it. |
+| **Reachability** | `removeJunction` has no UI caller. Its in-app path is `junctionUtils.ts:126` `applyJunctionRelocations`, reached from `recalculateWiresForGate` / `recalculateWiresForNode` — i.e. dragging a gate or a node ([#395](https://github.com/mezivillager/hacer/issues/395)). Also the programmatic actions facade (`circuitStore.ts:285`). |
+| **Carried by** | [#403](https://github.com/mezivillager/hacer/issues/403) — the remaining, reachable data loss, with the measurement. [#395](https://github.com/mezivillager/hacer/issues/395) inherits the same hole: its suggested fix reuses `findJunctionFeedWire`. The acceptance criterion on [#376](https://github.com/mezivillager/hacer/issues/376) — *capture the corpus before exercising `removeJunction`* — **still stands**, for every document, not just ones saved before the partial fix. |
+| **Partly fixed in** | [#364](https://github.com/mezivillager/hacer/issues/364) / [#396](https://github.com/mezivillager/hacer/pull/396). |
+
 ### B-008 — Disconnected input pins retain stale values (gates and bus components)
 
 | Field | Detail |
@@ -103,17 +117,6 @@ characterization golden (#331) must record what the legacy app did — including
 ---
 
 ## Resolved
-
-### B-009 — `removeJunction` deleted the trunk wire when a branch sat first in `wireIds`
-
-| Field | Detail |
-|-------|--------|
-| **Status** | Fixed |
-| **Area** | `src/store/actions/signalActions/signalActions.ts` (`removeJunction`) |
-| **Symptom** | `removeJunction` deleted `wireIds.slice(1)`. `removeWire` splices the trunk out of `wireIds` and re-attaching a redrawn wire appends it **last**, so a branch can sit at `wireIds[0]`. In that state the deletion removed **the trunk and kept a branch** — data loss, not a cosmetic defect. Measured end to end through the real actions: `placeJunctionOnWire` → attach two branches → `removeWire(trunk)` → re-attach a redrawn trunk leaves `wireIds = [branch, branch, trunk']`. |
-| **Expected** | Removing a junction keeps the feed wire, found by structure, never by position. |
-| **Notes** | Found by the #365 verifier as an addendum to #364, whose other five readers are geometry-only and stay closed with the canvas. This one was **reopened and fixed rather than closed with the machinery**: it corrupts a **saved document**, which ADR-0020's rule treats the same way as a wrong value, and it is reachable through ordinary use. `findJunctionFeedWire` (`src/simulation/topologicalEval.ts`) is now exported and used here, so the store and the evaluator share one definition of "which wire feeds this junction". A junction with no feed wire is read as floating, as the evaluator reads it: nothing is the trunk, so no listed wire is kept. |
-| **Fixed in** | [#364](https://github.com/mezivillager/hacer/issues/364). The acceptance criterion on [#376](https://github.com/mezivillager/hacer/issues/376) — *capture the corpus before exercising `removeJunction`* — still stands for documents saved **before** this fix. |
 
 ### B-005 — `circuitStore.autosave.test.ts` bootstrap test times out under parallel full-suite load
 

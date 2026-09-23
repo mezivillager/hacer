@@ -36,6 +36,15 @@ export type EvaluateCircuitResult =
  * Exported because the store needs the same notion of "which wire feeds this junction": `removeJunction`
  * keeps the feed wire and deletes the branches (#364). One definition, so the two cannot drift.
  *
+ * LIMIT (#403, measured 2026-09-23). The first test — "does the wire start at this junction?" — is
+ * structural only for documents that carry junction endpoints: serialized, hand-authored, or from
+ * the legacy importer (#377). No store action writes that shape. `completeJunctionWiring` copies
+ * the trunk's source into every branch (`wiringActions.ts:859`), so in a document the live wiring
+ * gesture writes, every listed wire has the same `from` and the branch test below never fires; the
+ * `trunk` fallback then returns the first LISTED wire in `state.wires` order, which is creation
+ * order. For those documents this is a positional answer wearing a structural coat. Do not build
+ * a new decision on it without reading #403 first.
+ *
  * @param junction - Junction whose incoming signal is being traced
  * @param state - Current circuit state
  * @returns The feed wire, or `null` when the junction has none (a malformed document)

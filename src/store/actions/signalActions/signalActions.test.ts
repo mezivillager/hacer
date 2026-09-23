@@ -533,6 +533,19 @@ describe('XOR Circuit Wiring Integration', () => {
 // `wireIds[0]` stood in for "the trunk", but that array is bookkeeping order, not structure — and
 // `slice(1)` on a branch-first junction deleted the trunk and kept a branch. That is data loss in
 // the saved document, not a rendering artefact, which is why it outlived #364's geometry half.
+//
+// SCOPE — read before trusting a green run here.
+// Every test in this block builds at least one wire whose `from` or `to` IS the junction, and that
+// shape is what makes the rule structural: `findJunctionFeedWire` can only tell a trunk from a
+// branch when the branch says "I start at the junction". Serialization permits that shape,
+// `deserialize.ts` preserves it and the legacy importer (#377) will read documents carrying it —
+// but no store action writes it. `completeJunctionWiring` copies the trunk's source into every
+// branch (`wiringActions.ts`, `const fromEndpoint = { ...originalWire.from }`), so in a document
+// the live wiring gesture writes, trunk and branches share one `from` and the rule has nothing to
+// discriminate on. These tests therefore describe the IMPORTER's world, not the app's, and the
+// hand-written endpoints below are load-bearing for every assertion here that turns on telling a
+// trunk from a branch. The app's world is pinned at the end of this block, and still loses wires:
+// see `gesture-shaped branches` and #403.
 describe('removeJunction — the feed wire survives, not wireIds[0] (#364)', () => {
   const getState = () => useCircuitStore.getState()
 
@@ -559,10 +572,14 @@ describe('removeJunction — the feed wire survives, not wireIds[0] (#364)', () 
   /**
    * `source → sink` trunk with a junction placed on it by the real action, then two branch wires.
    *
-   * Only the two `wireIds` appends are hand-written: they stand in for `completeJunctionWiring`,
-   * which appends each new branch to `wireIds` (`wiringActions.ts`). A branch whose `from` IS the
-   * junction is a shape serialization permits and no store action writes today (#365's verifier),
-   * so it is built with `addWire` rather than through the wiring gesture.
+   * Two things here are hand-written, and both are load-bearing (see the SCOPE note above):
+   *  - the two `wireIds` appends, standing in for `completeJunctionWiring`, which appends each new
+   *    branch to `wireIds` (`wiringActions.ts:959`);
+   *  - `from: { type: 'junction' }` on both branches — a shape serialization permits and no store
+   *    action writes today (#365's verifier), which is why they are built with `addWire` rather
+   *    than through the wiring gesture. Give the branches the gesture's `from` instead (the source
+   *    pin, as `wiringActions.ts:859` does) and every assertion below that turns on telling a
+   *    trunk from a branch stops holding — measured, and pinned by the last test in this block.
    */
   function buildFanOut() {
     const source = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
@@ -600,6 +617,14 @@ describe('removeJunction — the feed wire survives, not wireIds[0] (#364)', () 
     })
   }
 
+  /**
+   * Overwrite a junction's `wireIds` outright — NO store action does this. Every real writer is
+   * order-preserving: `placeJunctionOnWire` seeds `[wireId]` (`junctionPlacementActions.ts:228`),
+   * `completeJunctionWiring` appends, `removeWire` splices, `removeJunction` filters, and
+   * `deserialize.ts:217` keeps the saved order. It is used here only to reach a list order in one
+   * step that the gesture reaches in several, so a test can state the ordering it is about.
+   * The one test that reaches its ordering through the real actions is the re-draw case below.
+   */
   function setWireIds(junctionId: string, wireIds: string[]) {
     useCircuitStore.setState((state) => {
       const j = state.junctions.find((x) => x.id === junctionId)
@@ -629,6 +654,10 @@ describe('removeJunction — the feed wire survives, not wireIds[0] (#364)', () 
     expect(wireIdsNow()).toEqual([c.trunk.id])
   })
 
+  // Both wires here are hand-written shapes: a feed wire whose `to` IS the junction and a branch
+  // whose `from` is. Serialization permits both and the importer (#377) will produce them; no store
+  // action writes either (see the SCOPE note). This is the one shape in which "which wire feeds
+  // this junction" is a lookup rather than a guess — the document states it outright.
   it('keeps a feed wire that ends at the junction and is listed last', () => {
     const source = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
     const sink = getState().addGate('Nand', { x: 4 * SECTION_SIZE, y: 0, z: 0 })
@@ -704,5 +733,88 @@ describe('removeJunction — the feed wire survives, not wireIds[0] (#364)', () 
     getState().removeJunction(c.junction.id)
 
     expect(wireIdsNow()).toEqual([trunk2.id])
+  })
+
+  // ── The shape the live wiring gesture writes ─────────────────────────────────────────────────
+  //
+  // `completeJunctionWiring` copies the trunk's source into every branch (`wiringActions.ts:859`),
+  // so a gesture-written junction lists wires that are structurally indistinguishable: same `from`
+  // (the source pin), a destination pin on each `to`, and segments sharing the trunk's prefix up
+  // to the junction. The fixture above avoids that by giving branches a junction `from`.
+  //
+  // This is the same reproduction as the re-draw test, with the branches built the way the gesture
+  // builds them and nothing else changed.
+  function buildGestureFanOut() {
+    const source = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
+    const sink = getState().addGate('Nand', { x: 2 * SECTION_SIZE, y: 0, z: -SECTION_SIZE })
+    const branchSink1 = getState().addGate('Nand', { x: 4 * SECTION_SIZE, y: 0, z: 0 })
+    const branchSink2 = getState().addGate('Nand', { x: 4 * SECTION_SIZE, y: 0, z: 4 })
+    // The gesture's source endpoint: `{ ...originalWire.from }`, i.e. the trunk's own source pin.
+    const fromSource: WireEndpoint = { type: 'gate', entityId: source.id, pinId: source.outputs[0].id }
+
+    const trunk = getState().addWire(
+      fromSource,
+      { type: 'gate', entityId: sink.id, pinId: sink.inputs[0].id },
+      zSegments()
+    )
+    const junction = getState().placeJunctionOnWire(CORNER, trunk.id)
+    const branch1 = getState().addWire(
+      fromSource,
+      { type: 'gate', entityId: branchSink1.id, pinId: branchSink1.inputs[0].id },
+      []
+    )
+    const branch2 = getState().addWire(
+      fromSource,
+      { type: 'gate', entityId: branchSink2.id, pinId: branchSink2.inputs[0].id },
+      []
+    )
+    attachWires(junction.id, [branch1.id, branch2.id])
+
+    return { source, sink, junction, trunk, branch1, branch2, fromSource }
+  }
+
+  // KNOWN LIMIT, pinned on purpose — this documents what the fix does NOT reach (#403).
+  //
+  // Written first as `expect(wireIdsNow()).toEqual([trunk2.id])` (the outcome the #364 fix aims
+  // for) and run: it fails here, and it fails identically with `main`'s `wireIds.slice(1)` in
+  // place. `topologicalEval.ts:49` ("a wire starting at the junction is a branch") is false for
+  // every gesture-built branch, so `:50` falls back to the first LISTED wire in `state.wires`
+  // order — and `state.wires` is strictly creation-ordered (every writer pushes at the end or
+  // removes: `wireActions.ts:146/174`, the four `filter` rebuilds, `deserialize.ts:204`), so that
+  // is the same wire `wireIds[0]` named. The positional read moved arrays; it did not go away.
+  //
+  // Two wires the user drew — `trunk2` and `branch2` — are deleted, and both have two real
+  // endpoints and complete segments, so neither needed the junction to exist. That is the part of
+  // B-009 this fix leaves standing. Carried by #403: UPDATE this test when #403 lands, do not
+  // delete it — it is the reproduction.
+  it('gesture-shaped branches: two user-drawn wires are still lost (known limit, #403)', () => {
+    const c = buildGestureFanOut()
+
+    getState().removeWire(c.trunk.id)
+    expect(getState().junctions[0].wireIds).toEqual([c.branch1.id, c.branch2.id])
+
+    const trunk2 = getState().addWire(
+      c.fromSource,
+      { type: 'gate', entityId: c.sink.id, pinId: c.sink.inputs[0].id },
+      zSegments()
+    )
+    attachWires(c.junction.id, [trunk2.id])
+    expect(getState().junctions[0].wireIds).toEqual([c.branch1.id, c.branch2.id, trunk2.id])
+
+    getState().removeJunction(c.junction.id)
+
+    // What actually happens, on this branch and on `main` alike: the oldest listed wire survives.
+    expect(wireIdsNow()).toEqual([c.branch1.id])
+  })
+
+  // The ordinary gesture-shaped fan-out — trunk never deleted — is unaffected, on both branches:
+  // `placeJunctionOnWire` records the trunk first and nothing reorders `state.wires`, so the
+  // positional read happens to be right. This is the case #403 must not regress.
+  it('gesture-shaped branches: an undisturbed fan-out still keeps its trunk', () => {
+    const c = buildGestureFanOut()
+
+    getState().removeJunction(c.junction.id)
+
+    expect(wireIdsNow()).toEqual([c.trunk.id])
   })
 })
