@@ -166,6 +166,17 @@ the first reading is ~1.4M subagent tokens for 8 verified PRs (~175k each) on th
 run. `scripts/agent-orient` (#156) prints all four once it exists; until then the coordinator
 reports the number when it reports the run.
 
+## Multiple coordinators and paused claims
+
+The loop does not assume a single chat. **Product progress** is in portfolio, Issues, claim refs,
+PRs, and `ledger.md`. **Who is coordinating, and why a claim is idle**, is not — unless written down.
+
+- Claim comments name `Claimed by`, `Intent` (`building` | `paused:<reason>` | `handing-off`), and
+  an optional `Handoff:` path — see `sessions/COORDINATOR-HANDOFF.md` and `ha-next` §2.
+- Prefer **not claiming** while blocked on metering or other pauses that delay the builder; release
+  or mark `paused:` if a claim already exists.
+- At orient, list open `claim/*` refs and any `sessions/*-handoff.md` (until #156 prints them).
+
 ## Files
 
 - `README.md` — this page.
@@ -183,3 +194,4 @@ reports the number when it reports the run.
 - `usage-rationing.md` — the Cursor lane's daily token ration, how a run is measured, and the dashboard reading the "Included" guard rests on (`cursor-usage.json`).
 - `../research/2026-09-18-agent-readiness/` — why the process looks like this.
 - `sessions/` — dated session records: the goal, the owner's rulings, what was built, the state at close, how to resume. Start with the latest one when picking the work back up.
+- `sessions/COORDINATOR-HANDOFF.md` — claim-comment fields, when to write a `*-handoff.md`, and how a second coordinator resumes or releases idle claims. Product “what’s next” still comes from `docs/portfolio.md` and Issues; handoffs carry **coordinator meta-state** only.

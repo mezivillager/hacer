@@ -13,21 +13,45 @@ node -v                                   # must be 22
 gh pr list --state open --author @me      # dormant mode: ≥ 5 open agent PRs → no new PR work
 node scripts/backlog.mjs projects
 node scripts/backlog.mjs ready
+git ls-remote origin 'refs/heads/claim/*' # open claims (holder is in the issue's claim comment)
+ls docs/harness/sessions/*-handoff.md 2>/dev/null   # foreign / paused coordinator state
 ```
 Show the top pick with its *why* (portfolio row, why it is pickable, what it is blocked by if
 anything) and the next two. If nothing is pickable, say what would unblock the closest one
 (`needs-human`, a blocker, unshaped) and stop — that is the answer, not a failure.
 
+Also surface **open claims** and any `docs/harness/sessions/*-handoff.md` files: read the latest
+claim comment on each claimed issue (format in §2). A claim with `intent: paused:…` and no open PR,
+or `in-progress` with no PR and no push for a long stretch, is **stale or paused** — do not treat it
+as an active build; either resume it, follow the handoff, or release it (see
+`docs/harness/sessions/COORDINATOR-HANDOFF.md`). Until `scripts/agent-orient` (#156) prints this in
+one screen, the commands above are the orient.
+
 If Mezi said "what can you do next?" rather than "do it": present the pick and **stop**. If he
 said "work it" / "pick it up" / "next N": continue.
 
 ## 2. Claim
+**Do not claim** while blocked on metering, auth, owner input, or any pause that means no builder
+will start soon. Claim when you are about to build (or immediately dispatch a builder). A metering
+or cost pause happens *before* claim, or the claim is released until the pause lifts.
+
 ```bash
 git push origin HEAD:refs/heads/claim/<n>            # atomic: a second creation is rejected
 gh issue edit <n> --add-label in-progress
-gh issue comment <n> --body "Claimed: <session id / run>, branch <type>/<n>-<topic>"
+gh issue comment <n> --body "$(cat <<'EOF'
+Claimed by: <coordinator-id>   # e.g. claude-local / grok-bot / cursor-cloud
+Intent: building | paused:<reason> | handing-off
+Session/run: <id>
+Branch: <type>/<n>-<topic>     # omit until known
+Handoff: <path or none>        # required when intent is paused:* or handing-off
+EOF
+)"
 ```
 If the claim ref already exists, someone else has it: take the next pick.
+
+When intent changes (build starts, pause, handoff), **post a new claim comment** with the same
+fields — do not leave a stale `building` comment on an idle claim. Full convention:
+`docs/harness/sessions/COORDINATOR-HANDOFF.md`.
 
 ## 3. Build — `ha-prompt-it`, tier Light unless the issue says otherwise
 Follow `docs/harness/implementer-brief.md` exactly: own worktree, red commit (tests + compiling
