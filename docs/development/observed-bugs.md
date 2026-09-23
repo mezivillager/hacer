@@ -101,6 +101,23 @@ characterization golden (#331) must record what the legacy app did — including
 
 ---
 
+## Stated limits (ADR-0020 §7.2)
+
+A limit recorded here is not a bug. It is something the project knows it cannot currently evidence,
+written down so a later reader does not mistake the absence of a finding for the absence of a
+problem.
+
+### L-001 — The legacy document corpus is hand-built; no real saved circuit was ever seen
+
+| Field | Detail |
+|-------|--------|
+| **Recorded** | 2026-09-23, closing [#376](https://github.com/mezivillager/hacer/issues/376) |
+| **The question** | ADR-0020 §7.2 makes capturing a corpus of **real** version-1 documents a hard precondition on §7.5d (deleting `serialize.ts`) and on C.1 — with an exit clause if no such documents exist, so the precondition cannot block the switch silently. Only the owner could answer it: `exportCircuitJSON` runs in a browser holding saved designs, and it dies with `serialize.ts`. |
+| **The answer** | The owner, 2026-09-23: **"No real circuits."** The exit clause applies; §7.5d and C.1 proceed. |
+| **The limit** | **The hand-built corpus is the only evidence the importer will ever have.** The eleven cases in the #328 spike were constructed to `serialize.ts`'s exact shape by reading the writer, so they cannot contain anything the writer's *observed* output would have had but its code does not obviously produce — a stale `crossesWireIds`, an arc segment, an orphaned junction, a `'bus'` endpoint in an unexpected combination, a multi-driven pin. A real save could have carried a shape none of them has, and now none ever will. |
+| **What this changes** | Nothing is blocked, and nothing needs re-deciding. But the importer's parity evidence (N.2, [#377](https://github.com/mezivillager/hacer/issues/377)) rests entirely on documents written by the same reasoning that wrote the importer — the classic weak-oracle shape. The mitigation already in the plan is the **held-out oracle**: the official nand2tetris vectors ([#193](https://github.com/mezivillager/hacer/issues/193)) and the differential harness against the reference simulator ([#338](https://github.com/mezivillager/hacer/issues/338)), neither of which HACER authored. Those carry more weight now than they did when they were filed. |
+| **What would lift it** | A real version-1 document appearing from anywhere — an old browser profile, a shared file, a screenshot-driven reconstruction. If one ever does, run it through `deserialize` and record what it contained that the eleven cases did not. |
+
 ## Resolved
 
 ### B-005 — `circuitStore.autosave.test.ts` bootstrap test times out under parallel full-suite load
