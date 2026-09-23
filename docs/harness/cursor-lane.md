@@ -189,7 +189,15 @@ builders (no local implement on the Mac for those tasks). This does not replace 
 | Handoff | Write `sessions/YYYY-MM-DD-grok-bot-handoff.md` (or the active coordinator id) and link it from claim comments so the local Claude coordinator can resume or release. |
 
 The §2 table’s “Skip for now” on Cloud Agents remains the default for the *Cursor lane as second
-opinion*. Use this §2.1 path only when the owner explicitly runs a cloud-builder trial.
+opinion*. Use this §2.1 path when the owner explicitly runs a cloud-builder trial, or for a row
+on the standing Claude → Grok Bot queue.
+
+**Standing enqueue.** Local Claude does not launch those Cloud Agents itself. It appends
+cloud-heavy rows (Cloud Agent builds, long browser QA, large install/build/test loops) for
+Grok Bot to run. The process is `docs/harness/cloud-queue.md`; the live list is
+`docs/harness/sessions/cloud-queue-inbox.md`. The closed trial handoff
+`docs/harness/sessions/2026-09-23-grok-bot-cloud-trial-handoff.md` is evidence the Cloud
+Agent door worked with on-demand off. It is not a live claim list.
 
 ## 3. How a Cursor agent would follow our process (only if cloud agents are adopted)
 The coordinator keeps every GitHub write except the push. It claims (`claim/<n>` ref and

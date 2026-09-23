@@ -91,4 +91,5 @@ Then: resume, follow the handoff, or release (`git push origin --delete claim/<n
 - Loop map: `docs/harness/README.md`
 - Pick skill: `.claude/skills/ha-next/SKILL.md`
 - Cursor / cloud builder notes: `docs/harness/cursor-lane.md`
+- Claude → Grok Bot cloud queue: `docs/harness/cloud-queue.md` (live inbox: `docs/harness/sessions/cloud-queue-inbox.md`)
 - Orient script (not finished): #156
