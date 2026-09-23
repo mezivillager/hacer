@@ -7,10 +7,27 @@ Human- and agent-observed issues that are **not yet** guaranteed to have a GitHu
 | Column | Meaning |
 |--------|---------|
 | **ID** | `B-NNN` monotonic in this file |
-| **Status** | Open / Investigating / Fixed |
-| **Fixed in** | PR URL or commit when closed |
+| **Status** | Open / Investigating / Fixed / **Closed — machinery removed** |
+| **Fixed in** | PR URL or commit when closed; for a *machinery removed* entry, the issue that closed it and what replaces the capability |
 
 When an item is **Fixed**, add the **Fixed in** link and move the detailed row to **Resolved** below, or keep a one-line pointer in `tasks/lessons.md` — stay consistent per PR.
+
+## Closing a bug in machinery that is being removed (ADR-0020)
+
+Since [ADR-0020](../decisions/0020-spec-only-writes-read-only-projections.md) (Accepted 2026-09-23) the rendered
+surfaces are read-only and the hand-editing machinery is **removed, not frozen**. An entry in this log whose only
+beneficiary is that machinery — wire drawing, junction placement, dragging, placement previews, or their polish — is
+**closed rather than fixed**, and closing it is never silent:
+
+- its GitHub issue is closed with a comment that **quotes the owner's direction** and **names what replaces the
+  capability**;
+- its row moves to **Closed with the machinery** below, with `Status: Closed — machinery removed`;
+- **a bug that corrupts evaluation is never closed this way.** It is fixed in the evaluation layer, as B-008 (#222 /
+  PR #312) and #355, #356, #363 and #367 were. The test is whether the defect produces a *wrong value*, not whether it
+  lives in legacy code.
+
+The sweep that applied this rule to every open issue is [#340](https://github.com/mezivillager/hacer/issues/340);
+its per-issue verdicts are in `docs/research/2026-09-21-foundation-audit/BACKLOG-SWEEP.md`.
 
 ---
 
@@ -27,30 +44,6 @@ When an item is **Fixed**, add the **Fixed in** link and move the detailed row t
 | **Notes** | Pre-existing gate behavior: the simulation loop in `evaluateCircuit` only overwrites input pins that have an incoming wire; undriven pins are left unchanged. Bus components share this behavior after the bus-splitter/joiner feature (P05-12a). Fixing bus-only would create an inconsistency with gates. The proper cross-cutting fix is either: (a) reset undriven input pins to 0 before applying incoming wires in `evaluateCircuit`, or (b) reset the destination pin value in `removeWire` when the last wire to that pin is removed. Either approach changes existing gate simulation behavior and requires full-suite validation. |
 | **Fixed in** | Issue #222 / PR #312 — option (a): `evaluateCircuit` clears every input pin no wire drives, so the rule holds for the live tick, the truth table and a deserialised document alike. The clear is **lazy**: the pin still reads the old value between `removeWire` and the next tick, which matters only to a reader of the store in that window. Gate pins driven by hand via `setInputValue` (shift+click on an unconnected pin) no longer survive a tick — follow-up [#309](https://github.com/mezivillager/hacer/issues/309). |
 
-### B-004b (CASE2) — Same-column confluences are not distinguished, so unrelated chip fan-ins can merge
-
-| Field | Detail |
-|-------|--------|
-| **Status** | Open |
-| **Area** | `src/utils/wiringScheme/approach.ts` (`markConfluenceApproach`), `src/utils/wiringScheme/overlap.ts` (`isShareableConfluence`); also the scene-graph oracle `src/test/r3f/wireGeometry.ts` (`isLegitimateApproachOverlap`) shares the limitation |
-| **Symptom** | A confluence backbone is identified only by its `confluenceCoord` (a single coordinate). When two **separate** chips are placed so their input sides snap to the **same** section column/row (e.g. both backbones at `x = -4`), both fan-ins get the same `confluenceCoord`, so `isShareableConfluence` treats their unrelated approach backbones as one shareable bus — unrelated chip fan-ins can silently merge on one physical track. |
-| **Expected** | Two distinct chips that happen to share a section column must keep distinct confluence identities and must NOT share an approach backbone. |
-| **Repro** | Place two multi-input chips so their input sides align on the same world X (same section column); wire each chip's inputs; observe the two fan-in backbones share a track. The existing CASE2 unit test uses *different* coordinates (−4 vs −8), so it does not cover the same-column case. |
-| **Notes** | Found by the automated reviewer on PR #128 (P1). Root cause: confluence identity is a coordinate, not an owner. Proper fix needs a confluence **owner identity** (e.g. the chip/gate id or a unique confluence id) carried on approach segments, threaded through `markConfluenceApproach` → `WireSegment` metadata → `isShareableConfluence`, **and** the scene-graph oracle's `isLegitimateApproachOverlap` (which keys on `confluenceCoord` too). Add a same-column CASE2 test at both the router and render levels. Sibling of [B-004a (CASE1)](#b-004a-case1--unrelated-trunk-merged-visually-onto-a-chips-approach-backbone-lane-level-exclusivity). Latent — requires specific same-column placement to trigger. |
-| **Fixed in** | — |
-
-### B-001 — Gate placement preview lacks contrast in light mode
-
-| Field | Detail |
-|-------|--------|
-| **Status** | Open |
-| **Area** | `src/components/canvas/Scene/PlacementPreview.tsx`, theme (`semanticColors.success`), light-mode grid/background |
-| **Symptom** | When placing or dragging a **gate**, the preview mesh is hard to see in **light** theme — not bold enough against the canvas. |
-| **Expected** | Preview uses **high-contrast**, unambiguous colors in light (and remains acceptable in dark). |
-| **Repro** | Set theme to light → choose a gate from toolbar → move cursor over grid to show placement preview. |
-| **Notes** | Resolution tracked under **P05-29**; tune materials/colors and add regression-friendly tests where practical. |
-| **Fixed in** | — |
-
 ### B-002 — Warning / toast UI overlaps the right action bar
 
 | Field | Detail |
@@ -63,6 +56,60 @@ When an item is **Fixed**, add the **Fixed in** link and move the detailed row t
 | **Root cause** | Sonner `<Toaster position=”top-right”>` uses `right: 24px` (its `VIEWPORT_OFFSET` default). The `RightActionBar` icon column is ~44 px wide (`absolute top-0 right-0`), and the panel drawer adds another 280 px when open (expanding leftward inside the same container). A static 60 px offset cleared the closed bar but still overlapped the open 280 px drawer. |
 | **Fix** | **Reactive offset** via a store field (`rightPanelOpen: boolean` in `CircuitState`, set by `RightActionBar` via `circuitActions.setRightPanelOpen` inside a `useEffect` on `activePanel` changes). `App.tsx` reads `rightPanelOpen` with a narrow selector and passes `offset={{ right: rightPanelOpen ? '360px' : '60px' }}` to `<Toaster>` — closed state clears the icon bar, open state clears bar + drawer. No `useMemo`/`useCallback` (React-Compiler-clean). |
 | **Fixed in** | `fix/toast-overlaps-action-bar` — see commit SHA in `.superpowers/b002-report.md` |
+
+---
+
+## Closed with the machinery
+
+Rows whose only beneficiary is hand editing, closed under the rule above. Kept here rather than deleted, because a
+characterization golden (#331) must record what the legacy app did — including its bugs — before it is replaced.
+
+### B-004b (CASE2) — Same-column confluences are not distinguished, so unrelated chip fan-ins can merge
+
+| Field | Detail |
+|-------|--------|
+| **Status** | Closed — machinery removed |
+| **Area** | `src/utils/wiringScheme/approach.ts` (`markConfluenceApproach`), `src/utils/wiringScheme/overlap.ts` (`isShareableConfluence`); also the scene-graph oracle `src/test/r3f/wireGeometry.ts` (`isLegitimateApproachOverlap`) shares the limitation |
+| **Symptom** | A confluence backbone is identified only by its `confluenceCoord` (a single coordinate). When two **separate** chips are placed so their input sides snap to the **same** section column/row (e.g. both backbones at `x = -4`), both fan-ins get the same `confluenceCoord`, so `isShareableConfluence` treats their unrelated approach backbones as one shareable bus — unrelated chip fan-ins can silently merge on one physical track. |
+| **Expected** | Two distinct chips that happen to share a section column must keep distinct confluence identities and must NOT share an approach backbone. |
+| **Repro** | Place two multi-input chips so their input sides align on the same world X (same section column); wire each chip's inputs; observe the two fan-in backbones share a track. The existing CASE2 unit test uses *different* coordinates (−4 vs −8), so it does not cover the same-column case. |
+| **Notes** | Found by the automated reviewer on PR #128 (P1). Root cause: confluence identity is a coordinate, not an owner. Proper fix needs a confluence **owner identity** (e.g. the chip/gate id or a unique confluence id) carried on approach segments, threaded through `markConfluenceApproach` → `WireSegment` metadata → `isShareableConfluence`, **and** the scene-graph oracle's `isLegitimateApproachOverlap` (which keys on `confluenceCoord` too). Add a same-column CASE2 test at both the router and render levels. Sibling of [B-004a (CASE1)](#b-004a-case1--unrelated-trunk-merged-visually-onto-a-chips-approach-backbone-lane-level-exclusivity). Latent — requires specific same-column placement to trigger. |
+| **Closed in** | [#223](https://github.com/mezivillager/hacer/issues/223), by the backlog sweep [#340](https://github.com/mezivillager/hacer/issues/340), 2026-09-23. `src/utils/wiringScheme` and `wireSharing.ts` (3,640 lines) are deleted at ADR-0020 §7.5c. **Replaced by** `route` — channel routing (N.5, [#380](https://github.com/mezivillager/hacer/issues/380)), under which ADR-0008's assertions 3, 4, 5 and 7 collapse into one invariant — *no two nets with different sources share a collinear track* — satisfied **by construction**, because a lane is a net's position in the canonical order restricted to one channel. The bug class cannot recur. **#331 still records this entry beside the characterization golden**, so the golden does not enshrine the bug. |
+
+### B-001 — Gate placement preview lacks contrast in light mode
+
+| Field | Detail |
+|-------|--------|
+| **Status** | Closed — machinery removed |
+| **Area** | `src/components/canvas/Scene/PlacementPreview.tsx`, theme (`semanticColors.success`), light-mode grid/background |
+| **Symptom** | When placing or dragging a **gate**, the preview mesh is hard to see in **light** theme — not bold enough against the canvas. |
+| **Expected** | Preview uses **high-contrast**, unambiguous colors in light (and remains acceptable in dark). |
+| **Repro** | Set theme to light → choose a gate from toolbar → move cursor over grid to show placement preview. |
+| **Notes** | Resolution tracked under **P05-29**; tune materials/colors and add regression-friendly tests where practical. |
+| **Closed in** | [#224](https://github.com/mezivillager/hacer/issues/224), by the backlog sweep [#340](https://github.com/mezivillager/hacer/issues/340), 2026-09-23. ADR-0020 §6 names **placement previews** in the non-goals, so there is no preview to give contrast to. **Replaced by** `setHint` (capability row 19) — a declared position on a fixed lattice in the sidecar, reached from the shell, the CLI, MCP or a prompt — drawn read-only by N.8 ([#383](https://github.com/mezivillager/hacer/issues/383)) and N.9 ([#384](https://github.com/mezivillager/hacer/issues/384)). |
+
+### B-009 — `removeJunction` deletes the trunk wire when a branch sits first in `wireIds`
+
+| Field | Detail |
+|-------|--------|
+| **Status** | Closed — machinery removed (**a stated limit of the legacy app, not a fix**) |
+| **Area** | `src/store/actions/signalActions.ts:61` (`removeJunction`) |
+| **Symptom** | `removeJunction` deletes `wireIds.slice(1)`. `removeWire` splices the trunk out of `wireIds` and re-attaching a redrawn wire appends it **last** (verified in #356), so a branch can sit at `wireIds[0]`. In that state the deletion removes **the trunk and keeps a branch** — data loss, not a cosmetic defect. |
+| **Expected** | Removing a junction keeps the feed wire, found by structure (the wire whose `to` is the junction), never by position. |
+| **Notes** | Found by the #365 verifier, 2026-09-23, as an addendum to #364, whose other five readers are geometry-only. It is **carried out of #364 rather than closed with it**, because it can corrupt a **saved document**, and ADR-0020 §7.2 requires a corpus of *real* version-1 documents before `serialize.ts` is deleted. Not fixed, because the whole gesture is deleted at §7.5b and the junction stops being a domain entity (§6 — fan-out is a net's sinks list). |
+| **Closed in** | [#364](https://github.com/mezivillager/hacer/issues/364), by the backlog sweep [#340](https://github.com/mezivillager/hacer/issues/340), 2026-09-23. **Carried forward as an acceptance criterion on [#376](https://github.com/mezivillager/hacer/issues/376)**: *capture the corpus before exercising `removeJunction`* — a capture taken afterwards may already be corrupt. |
+
+### B-010 — Shift+click drive of a floating gate input pin does not survive a tick
+
+| Field | Detail |
+|-------|--------|
+| **Status** | Closed — machinery removed |
+| **Area** | `src/components/canvas/handlers/canvasHandlers.ts`, `src/gates/handlers/gateHandlers.ts` |
+| **Symptom** | The follow-up named in B-008's *Fixed in* row: after #222 / PR #312, `evaluateCircuit` clears every input pin no wire drives, which is the correct invariant, so a value written by shift+clicking an **unconnected** gate input pin is erased by the next tick. |
+| **Expected** | Either the affordance is removed, or a hand-held pin value is a real driver the evaluation layer respects. |
+| **Notes** | **Not the evaluation-corruption class** — #222 made evaluation *correct*; what is left is a missing affordance, not a wrong value. Its option (b) would add a `driven`/`held` field to `CircuitState` for a gesture that is being removed. |
+| **Closed in** | [#309](https://github.com/mezivillager/hacer/issues/309), by the backlog sweep [#340](https://github.com/mezivillager/hacer/issues/340), 2026-09-23. ADR-0020 §6: *"Toggling an input by clicking its 3D pin is dropped at the switch and reopenable as a shortcut that emits `setInput`."* **Replaced by** `setInput` (capability row 11) from the shell's pins panel ([#386](https://github.com/mezivillager/hacer/issues/386)), the CLI, MCP or a prompt — *"driving the simulation is not editing the design, but it moves off the drawing"*. |
+
 
 ---
 
