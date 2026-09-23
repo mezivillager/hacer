@@ -1,4 +1,6 @@
 import { describe, it, expect } from 'vitest'
+import { readFileSync } from 'node:fs'
+import path from 'node:path'
 import {
   DEPENDENCY_LABEL,
   FAIL_LINES,
@@ -18,8 +20,11 @@ import {
   isDocsOnly,
   linkedIssueExemption,
   measure,
+  RATCHET_BASELINE_FILE,
+  compareRatchetBaseline,
   nextPageUrl,
   parseGeneratedPatterns,
+  parseRatchetBaseline,
 } from './pr-hygiene.logic.mjs'
 
 /** A file entry in the shape of GET /repos/{owner}/{repo}/pulls/{n}/files. */
@@ -499,5 +504,162 @@ describe('formatSummary', () => {
     const out = formatSummary(evaluate(pr({ body: null, labels: [DEPENDENCY_LABEL] })))
     expect(out).toContain('pr-hygiene: PASS')
     expect(out).toMatch(/skipped.*dependencies/)
+  })
+})
+
+
+// ── The ratchet growth guard (#406) ────────────────────────────────────────────────────────────
+//
+// `pnpm run lint:layers` refuses a new violation, but the documented `depcruise … --baseline`
+// write absorbs it and `lint` is green again — measured on this repo 2026-09-24: 72 rows → 73,
+// with `engine-no-state: src/core/ratchetProbe.ts -> src/store/circuitStore.ts` absorbed. That
+// command cannot simply go away: arming a rule needs it (#404 took the baseline 34 → 77 arming
+// `core-through-index`). So the rule is not "rows may never grow" — it is "a row may only appear
+// under a rule name that is new in this PR".
+
+const violation = (name, from, to) => ({ type: 'dependency', from, to, rule: { severity: 'error', name } })
+const baselineOf = (...rows) => JSON.stringify(rows, null, 2)
+
+/** This repo's own committed baseline — the parser is pinned against the real file, not a mock. */
+const REAL_BASELINE = readFileSync(path.join(import.meta.dirname, '..', RATCHET_BASELINE_FILE), 'utf8')
+const realRows = () => JSON.parse(REAL_BASELINE)
+
+describe('parseRatchetBaseline', () => {
+  it('reads one comparable row per recorded violation', () => {
+    const parsed = parseRatchetBaseline(baselineOf(violation('engine-no-state', 'src/core/a.ts', 'src/store/b.ts')))
+    expect(parsed).toEqual({ rows: [{ rule: 'engine-no-state', edge: 'src/core/a.ts → src/store/b.ts' }] })
+  })
+
+  it('treats an absent file as an empty ratchet', () => {
+    expect(parseRatchetBaseline(null)).toEqual({ rows: [] })
+  })
+
+  it('reports a file that is not a JSON array of violation rows', () => {
+    expect(parseRatchetBaseline('{ not json').error).toMatch(/JSON/)
+    expect(parseRatchetBaseline('{}').error).toMatch(/array/)
+    expect(parseRatchetBaseline('[{"from":"a","to":"b"}]').error).toMatch(/rule name/)
+  })
+
+  it('parses the baseline this repo actually commits', () => {
+    const { rows, error } = parseRatchetBaseline(REAL_BASELINE)
+    expect(error).toBeUndefined()
+    expect(rows.length).toBe(realRows().length)
+    expect(rows.every((row) => row.rule && row.edge.includes(' → '))).toBe(true)
+  })
+})
+
+describe('compareRatchetBaseline', () => {
+  const engine = violation('engine-no-state', 'src/core/a.ts', 'src/store/b.ts')
+  const other = violation('engine-no-state', 'src/core/c.ts', 'src/store/b.ts')
+  const armed = violation('core-through-index', 'src/components/x.tsx', 'src/core/chips/y.ts')
+
+  it('passes an unchanged baseline, whatever order the rows are written in', () => {
+    const verdict = compareRatchetBaseline({ base: baselineOf(engine, other), head: baselineOf(other, engine) })
+    expect(verdict.status).toBe('unchanged')
+  })
+
+  it('passes a baseline that shrank', () => {
+    const verdict = compareRatchetBaseline({ base: baselineOf(engine, other), head: baselineOf(engine) })
+    expect(verdict.status).toBe('shrank')
+    expect(verdict.counts).toEqual({ base: 2, head: 1 })
+  })
+
+  it('reads growth under a rule name new in this PR as arming that rule', () => {
+    const verdict = compareRatchetBaseline({ base: baselineOf(engine), head: baselineOf(engine, armed) })
+    expect(verdict.status).toBe('armed')
+    expect(verdict.armedRules).toEqual(['core-through-index'])
+    expect(verdict.added).toHaveLength(1)
+  })
+
+  it('reads #404 — the real 29 → 72 growth — as arming core-through-index', () => {
+    const base = realRows().filter((row) => row.rule.name !== 'core-through-index')
+    const verdict = compareRatchetBaseline({ base: JSON.stringify(base), head: REAL_BASELINE })
+    expect(verdict.status).toBe('armed')
+    expect(verdict.armedRules).toEqual(['core-through-index'])
+    expect(verdict.absorbed).toHaveLength(0)
+  })
+
+  it('reads a row added under an existing rule as an absorption, and names it', () => {
+    const verdict = compareRatchetBaseline({ base: baselineOf(engine), head: baselineOf(engine, other) })
+    expect(verdict.status).toBe('absorbed')
+    expect(verdict.absorbed).toEqual([{ rule: 'engine-no-state', edge: 'src/core/c.ts → src/store/b.ts' }])
+  })
+
+  it('names only the pre-existing-rule rows when one PR both arms and absorbs', () => {
+    const verdict = compareRatchetBaseline({ base: baselineOf(engine), head: baselineOf(engine, armed, other) })
+    expect(verdict.status).toBe('absorbed')
+    expect(verdict.absorbed.map((row) => row.edge)).toEqual(['src/core/c.ts → src/store/b.ts'])
+    expect(verdict.armedRules).toEqual(['core-through-index'])
+  })
+
+  it('reproduces the measured reset: the real baseline plus one absorbed edge', () => {
+    const head = [...realRows(), { type: 'dependency', from: 'src/core/ratchetProbe.ts', to: 'src/store/circuitStore.ts', rule: { severity: 'error', name: 'engine-no-state' } }]
+    const verdict = compareRatchetBaseline({ base: REAL_BASELINE, head: JSON.stringify(head) })
+    expect(verdict.status).toBe('absorbed')
+    expect(verdict.counts).toEqual({ base: 72, head: 73 })
+    expect(verdict.absorbed).toEqual([
+      { rule: 'engine-no-state', edge: 'src/core/ratchetProbe.ts → src/store/circuitStore.ts' },
+    ])
+  })
+
+  it('flags a row swapped in without growth — the count alone would not see it', () => {
+    const verdict = compareRatchetBaseline({ base: baselineOf(engine), head: baselineOf(other) })
+    expect(verdict.status).toBe('swapped')
+    expect(verdict.added.map((row) => row.edge)).toEqual(['src/core/c.ts → src/store/b.ts'])
+  })
+
+  it('reports a head baseline it cannot read rather than passing it', () => {
+    expect(compareRatchetBaseline({ base: baselineOf(engine), head: 'nope' }).status).toBe('unreadable')
+  })
+})
+
+describe('the ratchet rule inside evaluate()', () => {
+  const engine = violation('engine-no-state', 'src/core/a.ts', 'src/store/b.ts')
+  const other = violation('engine-no-state', 'src/core/c.ts', 'src/store/b.ts')
+  const armed = violation('core-through-index', 'src/components/x.tsx', 'src/core/chips/y.ts')
+  const ratchetPr = (ratchet, overrides = {}) => pr({ ratchet, ...overrides })
+  const ratchetFinding = (result) => result.findings.find((finding) => finding.rule === 'ratchet')
+
+  it('passes a PR that does not touch the baseline at all', () => {
+    const result = evaluate(pr())
+    expect(ratchetFinding(result).level).toBe('pass')
+    expect(ratchetFinding(result).message).toContain(RATCHET_BASELINE_FILE)
+  })
+
+  it('fails an undeclared absorption and names the added rows', () => {
+    const result = evaluate(ratchetPr({ base: baselineOf(engine), head: baselineOf(engine, other) }))
+    expect(result.verdict).toBe('FAIL')
+    expect(ratchetFinding(result).message).toContain('engine-no-state: src/core/c.ts → src/store/b.ts')
+    expect(ratchetFinding(result).message).toContain('Baseline-growth:')
+  })
+
+  it('warns, rather than failing, when the PR body declares the growth', () => {
+    const result = evaluate(
+      ratchetPr({ base: baselineOf(engine), head: baselineOf(engine, other) }, { body: 'Fixes #150\n\nBaseline-growth: renamed src/core/a.ts' }),
+    )
+    expect(result.verdict).toBe('WARN')
+    expect(ratchetFinding(result).level).toBe('warn')
+    expect(ratchetFinding(result).message).toContain('renamed src/core/a.ts')
+  })
+
+  it('passes a rule armed in the same commit', () => {
+    const result = evaluate(ratchetPr({ base: baselineOf(engine), head: baselineOf(engine, armed) }))
+    expect(ratchetFinding(result).level).toBe('pass')
+    expect(ratchetFinding(result).message).toContain('core-through-index')
+  })
+
+  it('warns on a swap that keeps the row count flat', () => {
+    const result = evaluate(ratchetPr({ base: baselineOf(engine), head: baselineOf(other) }))
+    expect(ratchetFinding(result).level).toBe('warn')
+  })
+
+  it('fails a baseline it cannot read', () => {
+    const result = evaluate(ratchetPr({ base: baselineOf(engine), head: '[' }))
+    expect(result.verdict).toBe('FAIL')
+  })
+
+  it('puts the ratchet verdict on the greppable HYGIENE line', () => {
+    const out = formatConsole(evaluate(ratchetPr({ base: baselineOf(engine), head: baselineOf(engine, other) })))
+    expect(out).toContain('ratchet=absorbed')
   })
 })

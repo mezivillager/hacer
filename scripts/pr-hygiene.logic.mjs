@@ -207,16 +207,40 @@ function linkedIssue({ body, author, labels, measures }) {
   ]
 }
 
-export const RULES = [sizeBudget, linkedIssue]
+// ---------------------------------------------------------------- ratchet growth
+
+/**
+ * The layer ratchet's baseline (#329, #406). `.gitattributes` marks it `linguist-generated`, which
+ * keeps its machine-written rows out of the size budget — and therefore out of review — so this
+ * rule is what stands between a `depcruise … --baseline` reset and `main`.
+ */
+export const RATCHET_BASELINE_FILE = '.dependency-cruiser-known-violations.json'
+
+/** A greppable claim in the PR body that growth under an existing rule is deliberate. */
+export const RATCHET_DECLARATION_RE = /^[ \t]*Baseline-growth:[ \t]*(\S.*?)[ \t]*$/im
+
+export function parseRatchetBaseline() {
+  return { error: 'parseRatchetBaseline is not implemented' }
+}
+
+export function compareRatchetBaseline() {
+  return { status: 'not-implemented' }
+}
+
+function ratchetGrowth() {
+  return []
+}
+
+export const RULES = [sizeBudget, linkedIssue, ratchetGrowth]
 
 /**
  * Run every rule over one PR.
  * @param {{body:string|null, author?:string, labels:string[], files:object[], gitattributes?:string}} input
  * @returns {{verdict:'PASS'|'WARN'|'FAIL', findings:object[], measures:object, linkedIssues:number[], docsOnly:boolean, linkedIssueExemption:string|null}}
  */
-export function evaluate({ body, author, labels = [], files, gitattributes }, rules = RULES) {
+export function evaluate({ body, author, labels = [], files, gitattributes, ratchet = null }, rules = RULES) {
   const measures = measure(files, parseGeneratedPatterns(gitattributes))
-  const findings = rules.flatMap((rule) => rule({ body, author, labels, files, measures }))
+  const findings = rules.flatMap((rule) => rule({ body, author, labels, files, measures, ratchet }))
   const worst = Math.max(0, ...findings.map((f) => LEVELS.indexOf(f.level)))
   const deletion = deletionWaiver(measures)
   return {
