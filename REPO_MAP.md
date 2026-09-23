@@ -98,7 +98,7 @@ src/
 │   └── types.ts      # Gate-renderer prop types
 ├── nodes/            # Circuit I/O nodes, junctions (HDL-level pins), and bus components
 │   ├── components/   # InputNode3D, OutputNode3D, JunctionNode3D
-│   ├── BusSplitter3D / BusJoiner3D / BusComponentRenderer  # bus components (ADR-0009)
+│   ├── BusSplitter3D.tsx / BusJoiner3D.tsx / BusComponentRenderer.tsx  # bus components (ADR-0009)
 │   └── config/       # Node configuration (nodeConfig.ts)
 ├── simulation/       # Circuit simulation engine (pure logic)
 │                     #   index.ts — the other half of the engine's front door: bus operations.
@@ -232,111 +232,7 @@ clock/DFF model and RAM in `src/core/`, and their `.tst`/`.cmp` fixtures next to
 No files yet. Expect the Hack CPU, memory-mapped I/O (Screen, Keyboard), ROM32K + `.hack` loading,
 and an execution/debugging UI. Spec: `docs/roadmap/phases/phase-0.7-computer-architecture.md`.
 
-### ⏸️ Future Structure (Phases 5-24 - Not Yet Implemented)
-
-```
-src/
-├── core/                    # Pure logic, ZERO React/browser dependencies (Phase 5)
-│   ├── gates/              # Gate definitions and registry
-│   │   ├── types.ts        # ChipDefinition, ChipPin (today: src/core/chips/types.ts)
-│   │   ├── registry.ts     # Single source of truth for all gates
-│   │   └── index.ts
-│   ├── circuit/            # Circuit document types and schemas
-│   │   ├── types.ts        # CircuitDocument, Wire, Gate, etc.
-│   │   ├── schema.ts       # Zod validation schemas
-│   │   └── index.ts
-│   ├── simulation/         # Simulation engine (migrated from src/simulation/)
-│   │   ├── evaluate.ts     # Main simulation entry point
-│   │   ├── propagate.ts    # Signal propagation algorithm
-│   │   └── scheduler.ts    # Tick scheduling for sequential logic
-│   ├── hdl/                # HDL parser (P05-04); compiler/generator later
-│   │   ├── parser.ts       # Tokenize + parse HACK HDL → AST
-│   │   ├── parser.test.ts  # Project 1 fixtures + grammar edge cases
-│   │   ├── types.ts        # HDLChip, HDLPin, HDLPart, HDLConnection
-│   │   └── index.ts        # Barrel: parseHDL + types
-│   ├── testing/            # Testing infrastructure
-│   │   ├── nand2tetris/    # .tst/.cmp test execution (Phase 0.5)
-│   │   └── index.ts
-│   ├── serialization/      # Data import/export (Phase 5)
-│   │   ├── schema.ts       # Zod schemas for validation
-│   │   ├── v1.ts           # Version 1 format handlers
-│   │   └── migrate.ts      # Version migration functions
-│   ├── events/             # Event system (Phase 5)
-│   │   ├── types.ts        # CircuitEvent discriminated union
-│   │   └── emitter.ts      # Event emission and handling
-│   ├── analysis/           # Circuit analysis tools (Phase 5)
-│   │   ├── cycle.ts        # Cycle detection
-│   │   └── floating.ts     # Floating input detection
-│   ├── software/           # Software stack (Phase 10)
-│   │   ├── assembler/      # Hack assembler
-│   │   ├── vm/             # VM interpreter
-│   │   ├── compiler/       # Jack compiler
-│   │   └── index.ts
-│   ├── types/              # Shared type definitions
-│   │   ├── branded.ts      # Branded ID types (GateId, WireId, etc.)
-│   │   └── index.ts
-│   └── index.ts
-├── api/                     # Public programmatic interface (Phase 5)
-│   ├── index.ts             # Main export (what AI agents import)
-│   ├── circuit.ts           # Circuit manipulation API
-│   ├── simulation.ts         # Simulation control API
-│   ├── hdl.ts               # HDL import/export API
-│   ├── software.ts           # Software stack API (Phase 10)
-│   └── types.ts             # Re-exported public types
-├── plugins/                 # Plugin system (Phase 6)
-│   ├── types.ts             # Plugin interfaces
-│   ├── registry.ts          # Plugin registry with security
-│   ├── renderers/           # Built-in renderer plugins
-│   │   ├── three/           # 3D renderer (converted from components)
-│   │   └── data/            # Data table view
-│   ├── analyzers/           # Built-in analyzer plugins
-│   │   ├── cycle/           # Cycle detection
-│   │   └── floating/        # Floating input detection
-│   └── index.ts
-├── workers/                 # Web Workers (Phase 9)
-│   ├── simulation.worker.ts # Simulation worker
-│   └── index.ts
-├── components/              # React UI components (existing + new)
-│   ├── canvas/              # 3D canvas (becomes plugin in Phase 6)
-│   ├── ui/                  # HACER shell UI components
-│   ├── gates/               # Gate renderers (Phase 5+)
-│   └── software/            # Software stack UI (Phase 10)
-│       ├── editor/          # Code editor
-│       ├── debugger/        # Integrated debugger
-│       └── terminal/        # Terminal/console
-├── store/                   # Zustand state management (existing)
-│   ├── circuitStore.ts      # Main circuit state
-│   ├── actions/             # State mutation actions
-│   └── uiStore.ts           # UI-only state (Phase 5)
-├── gates/                   # Gate components (Phase 0-4, migrates in Phase 5)
-├── simulation/              # Simulation logic (Phase 0-4, migrates to core/ in Phase 5)
-├── hooks/                   # Custom React hooks
-├── theme/                   # Theme system
-├── types/                   # Shared TypeScript types (Phase 0-4, migrates in Phase 5)
-└── utils/                   # Utility functions
-```
-
-### Monorepo Structure (Phase 12+)
-
-```
-hacer/
-├── apps/
-│   ├── web/                 # Frontend React app
-│   │   └── src/            # (current src/ structure)
-│   └── api/                 # NestJS backend
-│       ├── src/
-│       │   ├── graphql/     # GraphQL resolvers
-│       │   ├── database/    # Database models and migrations
-│       │   ├── auth/        # Authentication
-│       │   └── collaboration/ # Real-time collaboration
-│       └── ...
-├── packages/
-│   ├── core/                # Shared core logic (from src/core/)
-│   ├── api/                 # Shared API types
-│   └── ui/                  # Shared UI components
-├── docs/                    # Documentation
-└── e2e/                     # E2E tests
-```
+Future directory layouts are specified in `docs/roadmap/`.
 
 ## Key Files by Phase
 
@@ -406,7 +302,7 @@ hacer/
 ### ⏸️ Phases 5-24 (Future)
 
 No files yet — this map documents what exists. The planned layout (core/api/plugins/workers split,
-software stack, monorepo) is illustrated in the "Future Structure" tree above and specified per phase
+software stack, monorepo) is specified per phase
 in `docs/roadmap/phases/` (`docs/roadmap/phases/phase-5-core-architecture.md` through `docs/roadmap/phases/phase-24-ai-code-review.md`); see
 `docs/roadmap/implementation.md` for the sequence. Two forward-looking files already exist:
 `llms.txt` (AI document-discovery order) and `docs/roadmap/vision.md` (AI-Agent Parity, plugin-first).
