@@ -8,6 +8,11 @@
  * `--baseline-mode shrink-only` (`pnpm run lint:layers:shrink`), so a violation that has been fixed
  * can never be re-added. Run it, and read the count, with `pnpm run lint:layers`.
  *
+ * Adding a RULE is the one exception: its existing violations have to enter the baseline before the
+ * ratchet can hold them, which shrink-only cannot do. Record them once, with the rule, in the same
+ * commit — `pnpm exec depcruise src --config .dependency-cruiser.cjs --baseline` — and say in the
+ * commit message how many rows that added. From then on the rule shrinks like every other.
+ *
  * A guard that cries wolf makes agents argue with it, so every rule here is deliberately narrow:
  * it names the directions the audit measured and nothing more. Widen it only with a measurement.
  *
@@ -64,6 +69,14 @@ module.exports = {
       comment: 'The store may not import a 3D library; geometry types belong to the renderer.',
       from: { path: STATE },
       to: { path: RENDERING_PACKAGES },
+    },
+    {
+      name: 'core-through-index',
+      severity: 'error',
+      comment:
+        "Code outside src/core imports the engine through src/core/index.ts, not past it into a module's internals.",
+      from: { path: '^src/', pathNot: '^src/core/' },
+      to: { path: '^src/core/', pathNot: '^src/core/index\\.ts$' },
     },
     {
       name: 'src-no-e2e',

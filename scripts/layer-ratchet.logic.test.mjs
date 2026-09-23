@@ -75,6 +75,7 @@ describe('the rules in .dependency-cruiser.cjs', () => {
     ['state-no-ui', 'src/store importing src/components'],
     ['state-no-3d', 'src/store importing three'],
     ['src-no-e2e', 'src/core importing e2e/types'],
+    ['core-through-index', 'src/components importing src/core/internal instead of src/core/index'],
     ['no-circular', 'src/simulation/cycleA ↔ cycleB'],
   ])('catches %s (%s)', (rule) => {
     expect([...fired]).toContain(rule)
