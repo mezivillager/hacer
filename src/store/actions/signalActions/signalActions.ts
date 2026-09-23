@@ -10,6 +10,7 @@ import type {
   Position,
   CircuitStore,
 } from '../../types'
+import { findJunctionFeedWire } from '@/simulation/topologicalEval'
 
 type SetState = (
   fn: (state: CircuitStore) => void,
@@ -56,9 +57,21 @@ export const createJunctionActions = (set: SetState, _get: GetState): JunctionAc
       const junction = state.junctions.find((j) => j.id === junctionId)
       if (!junction) return
 
+      // The wire that *feeds* the junction survives; every other wire the junction lists is a
+      // branch that exists only because of it. `wireIds[0]` used to stand in for the feed wire,
+      // but that array is bookkeeping order, not structure (#364): `removeWire` splices the trunk
+      // out and re-attaching a redrawn wire appends it last, so a branch can sit first — and
+      // `slice(1)` then deleted the user's trunk and kept a branch. The rule is shared with the
+      // evaluator (#356/#365) rather than restated, so the two cannot disagree about a document.
+      //
+      // A junction with no feed wire is a malformed document, and it is read the way the evaluator
+      // reads it: floating. Nothing is the trunk, so no listed wire is kept — each one starts at a
+      // junction that is about to cease to exist.
+      const feedWireId = findJunctionFeedWire(junction, state)?.id
+
       const wireIdsToRemove =
         junction.wireIds.length > 0
-          ? junction.wireIds.slice(1)
+          ? junction.wireIds.filter((id) => id !== feedWireId)
           : state.wires
               .filter(
                 (w) =>
