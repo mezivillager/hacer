@@ -29,9 +29,9 @@ It captures decisions here and then runs the author pass in [`../llm-docs-sync.m
 | [0004](0004-p05-18-boundary-evaluatechip-seam-landed-in-p05-16.md) | P05-18 re-scope: evaluateChip dispatch seam landed in P05-16 | Accepted | 2026-06-19 |
 | [0005](0005-p05-17-test-execution-engine-design-and-verification-contract.md) | P05-17 test execution engine: functional design + never-vacuous verification contract | Accepted | 2026-06-20 |
 | [0006](0006-p05-22-test-lab-implementation-source-seam-and-store-action.md) | P05-22 Test Lab: pluggable implementation-source seam + test execution as a store action | Accepted | 2026-06-20 |
-| [0007](0007-wire-routing-engine-direction.md) | Wire routing engine direction: gridless orthogonal-visibility-graph (staged) | Accepted | 2026-06-21 |
-| [0008](0008-scene-graph-routing-testing-layer.md) | Scene-graph routing testing layer as DoD enforcer | Accepted | 2026-06-26 |
-| [0009](0009-bus-components-entity-and-wireendpoint-bus.md) | Bus components as a separate entity; `'bus'` WireEndpoint | Accepted | 2026-06-27 |
+| [0007](0007-wire-routing-engine-direction.md) | Wire routing engine direction: gridless orthogonal-visibility-graph (staged) | Accepted — superseded by [0020](0020-spec-only-writes-read-only-projections.md) | 2026-06-21 |
+| [0008](0008-scene-graph-routing-testing-layer.md) | Scene-graph routing testing layer as DoD enforcer | Accepted — amended by [0020](0020-spec-only-writes-read-only-projections.md) (assertion 6) | 2026-06-26 |
+| [0009](0009-bus-components-entity-and-wireendpoint-bus.md) | Bus components as a separate entity; `'bus'` WireEndpoint | Accepted — superseded in the document by [0020](0020-spec-only-writes-read-only-projections.md) | 2026-06-27 |
 | [0010](0010-no-absolute-paths-in-docs.md) | No machine-specific absolute paths in documentation | Accepted | 2026-09-17 |
 | [0011](0011-remove-stryker-mutation-testing.md) | Remove Stryker mutation testing | Accepted | 2026-09-17 |
 | [0012](0012-e2e-tests-manual-only.md) | E2E tests run on manual invocation only | Accepted — superseded in part by [0016](0016-browser-qa-in-the-cloud.md) | 2026-09-17 |
@@ -42,4 +42,4 @@ It captures decisions here and then runs the author pass in [`../llm-docs-sync.m
 | [0017](0017-documentation-platform.md) | Documentation platform: Astro Starlight at `/docs/` on the existing Pages deploy | Accepted | 2026-09-18 |
 | [0018](0018-fidelity-gate.md) | Fidelity gate: engineering-truth review of epics, ADRs and core semantics | Accepted | 2026-09-18 |
 | [0019](0019-canvas-less-shell-mode.md) | Canvas-less shell mode selected by `?renderer=none` | Accepted | 2026-09-21 |
-| [0020](0020-spec-only-writes-read-only-projections.md) | Spec-only writes, read-only projections (supersedes [0007](0007-wire-routing-engine-direction.md), amends [0008](0008-scene-graph-routing-testing-layer.md), supersedes [0009](0009-bus-components-entity-and-wireendpoint-bus.md) in the document) | Proposed | 2026-09-23 |
+| [0020](0020-spec-only-writes-read-only-projections.md) | Spec-only writes, read-only projections (supersedes [0007](0007-wire-routing-engine-direction.md), amends [0008](0008-scene-graph-routing-testing-layer.md), supersedes [0009](0009-bus-components-entity-and-wireendpoint-bus.md) in the document) | Accepted | 2026-09-23 |

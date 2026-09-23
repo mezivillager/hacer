@@ -510,7 +510,7 @@ const features = [
   {
     icon: CircuitBoard,
     title: 'Interactive Circuit Design',
-    description: 'Build and simulate digital circuits with drag-and-drop components. Real-time evaluation and debugging.',
+    description: 'Declare digital circuits in a spec and watch them render and simulate. Real-time evaluation and debugging.',
     demo: 'circuit-builder',
     tags: ['Visual', 'Real-time', 'Educational'],
   },
