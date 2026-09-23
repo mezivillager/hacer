@@ -9,11 +9,6 @@
       "count": 1
     }
   },
-  "src/utils/wiringScheme/crossing.ts": {
-    "no-console": {
-      "count": 26
-    }
-  },
   "src/utils/wiringScheme/extension.ts": {
     "no-console": {
       "count": 4

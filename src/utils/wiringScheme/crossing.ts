@@ -44,12 +44,6 @@ export function findSegmentCrossing(
   const verticalIsVertical = Math.abs(verticalSeg.start.x - verticalSeg.end.x) < TOLERANCE
 
   if (!horizontalIsHorizontal || !verticalIsVertical) {
-    console.log(`[findSegmentCrossing] Segments not perpendicular`, {
-      horizontalIsHorizontal,
-      verticalIsVertical,
-      horizontalSeg: { start: horizontalSeg.start, end: horizontalSeg.end },
-      verticalSeg: { start: verticalSeg.start, end: verticalSeg.end },
-    })
     return null
   }
 
@@ -82,23 +76,11 @@ export function findSegmentCrossing(
   // Note: We allow endpoint intersections because segments can meet at section line corners
   // This is a valid crossing that should be resolved with arcs
 
-  console.log(`[findSegmentCrossing] Checking intersection`, {
-    intersectionPoint: { x: intersectionPoint.x, z: intersectionPoint.z },
-    horizontalRange: { min: horizontalMinX, max: horizontalMaxX },
-    verticalRange: { min: verticalMinZ, max: verticalMaxZ },
-    isWithinHorizontal,
-    isWithinVertical,
-    horizontalSeg: { start: horizontalSeg.start, end: horizontalSeg.end },
-    verticalSeg: { start: verticalSeg.start, end: verticalSeg.end },
-  })
-
   if (isWithinHorizontal && isWithinVertical) {
     // Allow intersection if it's within bounds (including endpoints at section line corners)
-    console.log(`[findSegmentCrossing] Valid intersection found!`)
     return intersectionPoint
   }
 
-  console.log(`[findSegmentCrossing] Intersection outside segments`)
   return null
 }
 
@@ -126,27 +108,17 @@ export function detectCrossings(
 
     // Check against all existing wires
     for (const existingWire of existingWires) {
-      console.log(`[detectCrossings] Checking against existing wire ${existingWire.id}`, {
-        existingWireSegmentsCount: existingWire.segments.length,
-      })
       for (let existingSegIndex = 0; existingSegIndex < existingWire.segments.length; existingSegIndex++) {
         const existingSeg = existingWire.segments[existingSegIndex]
 
         // Skip entry/exit segments and arc segments
         if (existingSeg.type === 'entry' || existingSeg.type === 'exit' || existingSeg.type === 'arc') {
-          console.log(`[detectCrossings] Skipping existing segment ${existingSegIndex} (type: ${existingSeg.type})`)
           continue
         }
-
-        console.log(`[detectCrossings] Comparing new segment ${segIndex} with existing segment ${existingSegIndex}`, {
-          newSeg: { type: newSeg.type, start: { x: newSeg.start.x, z: newSeg.start.z }, end: { x: newSeg.end.x, z: newSeg.end.z } },
-          existingSeg: { type: existingSeg.type, start: { x: existingSeg.start.x, z: existingSeg.start.z }, end: { x: existingSeg.end.x, z: existingSeg.end.z } },
-        })
 
         // Only check perpendicular segments (horizontal × vertical)
         // Same-line overlaps are already handled by overlap detection
         if (areSegmentsOnSameSectionLine(newSeg, existingSeg)) {
-          console.log(`[detectCrossings] Segments on same section line, skipping`)
           continue
         }
 
@@ -154,14 +126,8 @@ export function detectCrossings(
         const newIsHorizontal = Math.abs(newSeg.start.z - newSeg.end.z) < TOLERANCE
         const existingIsHorizontal = Math.abs(existingSeg.start.z - existingSeg.end.z) < TOLERANCE
 
-        console.log(`[detectCrossings] Segment orientations`, {
-          newIsHorizontal,
-          existingIsHorizontal,
-        })
-
         // Must be one horizontal and one vertical
         if (newIsHorizontal === existingIsHorizontal) {
-          console.log(`[detectCrossings] Both segments same orientation, skipping`)
           continue
         }
 
@@ -170,19 +136,7 @@ export function detectCrossings(
         const verticalSeg = newIsHorizontal ? existingSeg : newSeg
         const intersection = findSegmentCrossing(horizontalSeg, verticalSeg)
 
-        console.log(`[detectCrossings] Intersection check result`, {
-          intersection: intersection ? { x: intersection.x, z: intersection.z } : null,
-        })
-
         if (intersection) {
-          console.log(`[detectCrossings] Found crossing!`, {
-            newSegmentIndex: segIndex,
-            existingWireId: existingWire.id,
-            existingSegmentIndex: existingSegIndex,
-            intersectionPoint: intersection,
-            horizontalSeg: { start: horizontalSeg.start, end: horizontalSeg.end },
-            verticalSeg: { start: verticalSeg.start, end: verticalSeg.end },
-          })
           crossings.push({
             segmentIndex: segIndex,
             existingWireId: existingWire.id,
@@ -210,15 +164,6 @@ export function detectCrossings(
       Math.abs(b.intersectionPoint.x - segB.start.x) +
       Math.abs(b.intersectionPoint.z - segB.start.z)
     return distA - distB
-  })
-
-  console.log('[detectCrossings] Finished detection', {
-    totalCrossings: crossings.length,
-    crossings: crossings.map((c) => ({
-      segmentIndex: c.segmentIndex,
-      existingWireId: c.existingWireId,
-      intersectionPoint: c.intersectionPoint,
-    })),
   })
 
   return crossings
@@ -600,20 +545,11 @@ export function resolveCrossings(
   newWireSegments: WireSegment[],
   existingWires: Wire[]
 ): CrossingResolutionResult {
-  console.log('[resolveCrossings] Starting resolution', {
-    newWireSegmentsCount: newWireSegments.length,
-    existingWiresCount: existingWires.length,
-  })
 
   // Detect all crossings
   const allCrossings = detectCrossings(newWireSegments, existingWires)
 
-  console.log('[resolveCrossings] After detection', {
-    crossingsCount: allCrossings.length,
-  })
-
   if (allCrossings.length === 0) {
-    console.log('[resolveCrossings] No crossings found, returning original segments')
     return { segments: newWireSegments, crossedWireIds: [] }
   }
 
@@ -663,10 +599,6 @@ export function resolveCrossings(
     // Check if we've seen this intersection point for this specific segment
     if (previousSegmentIndex === segIndex) {
       // Already added this intersection for this segment, skip
-      console.log(`[resolveCrossings] Deduplicating crossing at same intersection point within segment`, {
-        segmentIndex: segIndex,
-        intersectionPoint: crossing.intersectionPoint,
-      })
       continue
     }
 
@@ -691,11 +623,6 @@ export function resolveCrossings(
         const isAtPrevEnd = Math.abs(crossing.intersectionPoint.x - prevSegment.end.x) < TOLERANCE &&
                              Math.abs(crossing.intersectionPoint.z - prevSegment.end.z) < TOLERANCE
         if (isAtCurrentStart && isAtPrevEnd) {
-          console.log(`[resolveCrossings] Deduplicating crossing at segment boundary (previous segment)`, {
-            currentSegmentIndex: segIndex,
-            previousSegmentIndex: prevSegmentIndex,
-            intersectionPoint: crossing.intersectionPoint,
-          })
           continue
         }
       }
@@ -716,11 +643,6 @@ export function resolveCrossings(
         const isAtNextStart = Math.abs(crossing.intersectionPoint.x - nextSegment.start.x) < TOLERANCE &&
                                Math.abs(crossing.intersectionPoint.z - nextSegment.start.z) < TOLERANCE
         if (isAtCurrentEnd && isAtNextStart) {
-          console.log(`[resolveCrossings] Deduplicating crossing at segment boundary (next segment)`, {
-            currentSegmentIndex: segIndex,
-            nextSegmentIndex,
-            intersectionPoint: crossing.intersectionPoint,
-          })
           continue
         }
       }
@@ -754,11 +676,6 @@ export function resolveCrossings(
           // Prefer processing on the earlier segment (previousSegmentIndex < segIndex)
           // This ensures the arc is created on the first segment and extends into the second
           if (previousSegmentIndex < segIndex) {
-            console.log(`[resolveCrossings] Deduplicating crossing at segment boundary (previous segment handles it)`, {
-              currentSegmentIndex: segIndex,
-              previousSegmentIndex,
-              intersectionPoint: crossing.intersectionPoint,
-            })
             continue
           } else {
             // This shouldn't happen if segments are processed in order, but handle it
@@ -772,11 +689,6 @@ export function resolveCrossings(
               )
               if (index >= 0) {
                 prevCrossings.splice(index, 1)
-                console.log(`[resolveCrossings] Moving crossing from previous segment to current (boundary handling)`, {
-                  currentSegmentIndex: segIndex,
-                  previousSegmentIndex,
-                  intersectionPoint: crossing.intersectionPoint,
-                })
               }
             }
             // Continue to add crossing to current segment
@@ -789,11 +701,6 @@ export function resolveCrossings(
     crossingsBySegment.get(segIndex)!.push(crossing)
     seenIntersections.set(intersectionKey, segIndex)
   }
-
-  console.log('[resolveCrossings] Processing crossings', {
-    crossingsToProcess: allCrossings.length,
-    segmentsWithCrossings: crossingsBySegment.size,
-  })
 
   // Process each segment
   const result: WireSegment[] = []
@@ -843,40 +750,13 @@ export function resolveCrossings(
     }
 
     if (crossings.length > 0) {
-      console.log(`[resolveCrossings] Processing segment ${segIndex} with ${crossings.length} crossings`, {
-        originalSegment: { start: segment.start, end: segment.end, type: segment.type },
-      })
-      try {
-        // Replace segment with hop version
-        const replaced = replaceSegmentWithHop(segment, crossings, existingWires)
-        console.log(`[resolveCrossings] Segment ${segIndex} replaced`, {
-          originalType: segment.type,
-          originalSegment: { start: segment.start, end: segment.end },
-          replacedCount: replaced.length,
-          hasArcs: replaced.some((s) => s.type === 'arc'),
-          replacedSegments: replaced.map((s) => ({
-            start: s.start,
-            end: s.end,
-            type: s.type,
-            isArc: s.type === 'arc',
-          })),
-        })
-        result.push(...replaced)
-      } catch (error) {
-        console.error(`[resolveCrossings] Error replacing segment ${segIndex}:`, error)
-        throw error
-      }
+      // Replace segment with hop version
+      result.push(...replaceSegmentWithHop(segment, crossings, existingWires))
     } else {
       // Keep original segment
       result.push(segment)
     }
   }
-
-  console.log('[resolveCrossings] Finished resolution', {
-    finalSegmentsCount: result.length,
-    hasArcs: result.some((s) => s.type === 'arc'),
-    crossedWireIds: Array.from(crossedWireIds),
-  })
 
   return { segments: result, crossedWireIds: Array.from(crossedWireIds) }
 }
