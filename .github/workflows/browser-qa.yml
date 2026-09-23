@@ -31,10 +31,23 @@ permissions:
   pull-requests: read
   issues: read # the labels of the issues a PR body links
 
-# Per event, so a manual re-check never cancels the PR's own in-flight check.
+# Per event name, so a manual re-check never queues behind the PR's own check. Note that
+# `github.event_name` is `pull_request` for every PR action alike — it separates
+# `workflow_dispatch`, nothing more.
+#
+# Cancellation is off (#295): GitHub sends one webhook action per label, so a PR opened and then
+# labelled starts several runs in this group within seconds, and a run cancelled *in progress*
+# still posts a `cancelled` check run named `browser-qa`. GitHub judges the required context by
+# the newest check run with that name, so one cancellation strands the PR at
+# `mergeStateStatus: BLOCKED` while every check reports green. Runs are serialised instead: GitHub
+# keeps one pending run per group and drops the rest while they are still pending, which creates
+# no job and no check run, so a PR pays for at most one extra run (13s when it skips, ~4 min when
+# it runs Playwright) and the deciding run is the last one, which sees the final labels. A
+# superseded push is no longer cancelled — that is the price. Guarded by
+# scripts/required-checks.logic.mjs.
 concurrency:
   group: browser-qa-${{ github.event_name }}-${{ github.event.pull_request.number || inputs.pr }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   browser-qa:
