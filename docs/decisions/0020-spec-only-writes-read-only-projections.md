@@ -1,6 +1,6 @@
 # 0020. Spec-only writes, read-only projections
 
-- **Status:** Accepted — revised after the fresh-context adversarial review [#359](https://github.com/mezivillager/hacer/issues/359) required by #327. Verdict `sound with corrections`; the corrections are applied below and four decisions changed. See "What the review changed".
+- **Status:** Proposed — revised after the fresh-context adversarial review [#359](https://github.com/mezivillager/hacer/issues/359) required by #327. Verdict `sound with corrections`; the corrections are applied below and **four decisions changed after that review**, which is why this is not Accepted: nobody accepts their own revision. A second pass over those four deltas is the remaining gate. See "What the review changed".
 - **Date:** 2026-09-23
 - **Deciders:** Builder agent for [#327](https://github.com/mezivillager/hacer/issues/327), on the owner's directions of 2026-09-21 (quoted below) and the measurements of spikes [#328](https://github.com/mezivillager/hacer/issues/328) and [#210](https://github.com/mezivillager/hacer/issues/210); revised by a second fresh context against #359's review
 - **Phase:** Phase 0.5 · foundation plan [#318](https://github.com/mezivillager/hacer/issues/318), item P.1
