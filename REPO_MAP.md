@@ -560,7 +560,7 @@ Not possible yet — none of those seams exist. The intended shape is in
 - **E2E Tests**: Located in `e2e/specs/` directory
   - **Store tests** (`@store`): Fast, use direct store actions - run before every commit
   - **UI tests** (`@ui`): Slow, use UI interactions - run manually or CI (twice weekly)
-  - Store and UI tests come in pairs, sharing scenarios from `e2e/scenarios/`
+  - Store and UI tests come in pairs, sharing helpers from `e2e/helpers/`
   - **E2E Test Optimization**: Scene reuse, test reorganization ✅ (Phase 0.25.8)
 - **Test Setup**: `src/test/setup.ts` - Global test configuration
 - **TDD Templates**: `docs/testing/templates/` - Copy-paste templates for new tests

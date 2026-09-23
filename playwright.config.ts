@@ -7,6 +7,9 @@ if (process.env.FORCE_COLOR && process.env.NO_COLOR) {
 
 export default defineConfig({
   testDir: './e2e',
+  // Playwright owns *.spec.ts only; a Vitest *.test.ts under e2e/ is not its file
+  // to collect, and trying to load one breaks `playwright test --list` (#332).
+  testMatch: '**/*.spec.ts',
   fullyParallel: true,
   forbidOnly: false, // Temporarily disabled for debugging
   retries: process.env.CI ? 2 : 0,
