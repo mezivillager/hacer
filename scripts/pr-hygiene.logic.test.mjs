@@ -25,6 +25,8 @@ import {
   nextPageUrl,
   parseGeneratedPatterns,
   parseRatchetBaseline,
+  readAtRef,
+  stripFencedCode,
 } from './pr-hygiene.logic.mjs'
 
 /** A file entry in the shape of GET /repos/{owner}/{repo}/pulls/{n}/files. */
@@ -602,9 +604,9 @@ describe('compareRatchetBaseline', () => {
     ])
   })
 
-  it('flags a row swapped in without growth — the count alone would not see it', () => {
+  it('reads a row swapped in under an existing rule as an absorption — the count never gates it', () => {
     const verdict = compareRatchetBaseline({ base: baselineOf(engine), head: baselineOf(other) })
-    expect(verdict.status).toBe('swapped')
+    expect(verdict.status).toBe('absorbed')
     expect(verdict.added.map((row) => row.edge)).toEqual(['src/core/c.ts → src/store/b.ts'])
   })
 
@@ -635,7 +637,10 @@ describe('the ratchet rule inside evaluate()', () => {
 
   it('warns, rather than failing, when the PR body declares the growth', () => {
     const result = evaluate(
-      ratchetPr({ base: baselineOf(engine), head: baselineOf(engine, other) }, { body: 'Fixes #150\n\nBaseline-growth: renamed src/core/a.ts' }),
+      ratchetPr(
+        { base: baselineOf(engine), head: baselineOf(engine, other) },
+        { body: 'Fixes #150\n\nBaseline-growth: engine-no-state: src/core/c.ts → src/store/b.ts — renamed src/core/a.ts' },
+      ),
     )
     expect(result.verdict).toBe('WARN')
     expect(ratchetFinding(result).level).toBe('warn')
@@ -648,9 +653,9 @@ describe('the ratchet rule inside evaluate()', () => {
     expect(ratchetFinding(result).message).toContain('core-through-index')
   })
 
-  it('warns on a swap that keeps the row count flat', () => {
+  it('fails a swap that keeps the row count flat — one fixed, one absorbed', () => {
     const result = evaluate(ratchetPr({ base: baselineOf(engine), head: baselineOf(other) }))
-    expect(ratchetFinding(result).level).toBe('warn')
+    expect(ratchetFinding(result).level).toBe('fail')
   })
 
   it('fails a baseline it cannot read', () => {
@@ -661,5 +666,152 @@ describe('the ratchet rule inside evaluate()', () => {
   it('puts the ratchet verdict on the greppable HYGIENE line', () => {
     const out = formatConsole(evaluate(ratchetPr({ base: baselineOf(engine), head: baselineOf(engine, other) })))
     expect(out).toContain('ratchet=absorbed')
+  })
+})
+
+
+// ── What the verifier found still open (#432) ───────────────────────────────────────────────────
+//
+// Detection was already a set difference; the fail/warn split was not — it still asked whether the
+// row *count* grew, so "fix one violation and absorb another" read `swapped` → warn → exit 0. That
+// is not an adversarial case: it is the ordinary shape of the foundation refactor, which moves
+// files between layers and can repair one cross-layer edge while introducing another.
+
+describe('the fail/warn split is the row set, not the count (#432)', () => {
+  const engine = violation('engine-no-state', 'src/core/a.ts', 'src/store/b.ts')
+  const other = violation('engine-no-state', 'src/core/c.ts', 'src/store/b.ts')
+  const third = violation('engine-no-state', 'src/core/d.ts', 'src/store/b.ts')
+  const fourth = violation('engine-no-state', 'src/core/e.ts', 'src/store/b.ts')
+  const armed = violation('core-through-index', 'src/components/x.tsx', 'src/core/chips/y.ts')
+  const renamedRule = violation('engine-no-state-v2', 'src/core/a.ts', 'src/store/b.ts')
+  const ratchetFinding = (result) => result.findings.find((finding) => finding.rule === 'ratchet')
+
+  it('fails fix-one-absorb-one, where the count stays flat', () => {
+    const verdict = compareRatchetBaseline({ base: baselineOf(engine, other), head: baselineOf(other, third) })
+    expect(verdict.status).toBe('absorbed')
+    expect(verdict.counts).toEqual({ base: 2, head: 2 })
+    expect(verdict.absorbed.map((row) => row.edge)).toEqual(['src/core/d.ts → src/store/b.ts'])
+  })
+
+  it('fails fix-two-absorb-one, where the count falls', () => {
+    const verdict = compareRatchetBaseline({
+      base: baselineOf(engine, other, third),
+      head: baselineOf(third, fourth),
+    })
+    expect(verdict.status).toBe('absorbed')
+    expect(verdict.counts).toEqual({ base: 3, head: 2 })
+    expect(verdict.absorbed.map((row) => row.edge)).toEqual(['src/core/e.ts → src/store/b.ts'])
+  })
+
+  it('never calls the row count flat when it fell', () => {
+    const result = evaluate(pr({ ratchet: { base: baselineOf(engine, other, third), head: baselineOf(third, fourth) } }))
+    expect(result.verdict).toBe('FAIL')
+    expect(ratchetFinding(result).message).toContain('3 → 2 baseline rows')
+    expect(ratchetFinding(result).message).not.toContain('flat')
+  })
+
+  it('still passes a rule armed with nothing removed', () => {
+    const verdict = compareRatchetBaseline({ base: baselineOf(engine), head: baselineOf(engine, armed) })
+    expect(verdict.status).toBe('armed')
+    expect(verdict.removed).toEqual([])
+  })
+
+  it('warns — not passes — when rows leave under one name and arrive under another', () => {
+    // A rule renamed in `.dependency-cruiser.cjs` carries its old rows under the new name, which
+    // is indistinguishable from a genuine arming by the baseline alone. It is distinguishable from
+    // an *arming*, though: an arming removes nothing. So a baseline that both lost and gained rows
+    // warns and points at the config diff, instead of reading `armed` and passing silently.
+    const verdict = compareRatchetBaseline({ base: baselineOf(engine), head: baselineOf(renamedRule) })
+    expect(verdict.status).toBe('swapped')
+    const result = evaluate(pr({ ratchet: { base: baselineOf(engine), head: baselineOf(renamedRule) } }))
+    expect(result.verdict).toBe('WARN')
+    expect(ratchetFinding(result).message).toMatch(/renamed/i)
+  })
+})
+
+describe('the Baseline-growth declaration has to name its rows (#432)', () => {
+  const engine = violation('engine-no-state', 'src/core/a.ts', 'src/store/b.ts')
+  const other = violation('engine-no-state', 'src/core/c.ts', 'src/store/b.ts')
+  const third = violation('engine-no-state', 'src/core/d.ts', 'src/store/b.ts')
+  const absorbing = { base: baselineOf(engine), head: baselineOf(engine, other) }
+  const named = 'engine-no-state: src/core/c.ts → src/store/b.ts'
+  const ratchetFinding = (result) => result.findings.find((finding) => finding.rule === 'ratchet')
+
+  it('refuses a declaration that names nothing', () => {
+    expect(evaluate(pr({ ratchet: absorbing, body: 'Fixes #150\n\nBaseline-growth: .' })).verdict).toBe('FAIL')
+  })
+
+  it('accepts one that names the absorbed row', () => {
+    const result = evaluate(pr({ ratchet: absorbing, body: `Fixes #150\n\nBaseline-growth: ${named} — moved into src/core` }))
+    expect(result.verdict).toBe('WARN')
+    expect(ratchetFinding(result).message).toContain('moved into src/core')
+  })
+
+  it('takes -> for the arrow, so a hand-typed row still counts', () => {
+    const body = 'Fixes #150\n\nBaseline-growth: engine-no-state: src/core/c.ts -> src/store/b.ts — why'
+    expect(evaluate(pr({ ratchet: absorbing, body })).verdict).toBe('WARN')
+  })
+
+  it('ignores a declaration inside a fenced code block', () => {
+    const body = ['Fixes #150', '', '```', `Baseline-growth: ${named} — an example, not a claim`, '```'].join('\n')
+    expect(evaluate(pr({ ratchet: absorbing, body })).verdict).toBe('FAIL')
+  })
+
+  it('fails when the declaration covers only some of the absorbed rows', () => {
+    const result = evaluate(
+      pr({
+        ratchet: { base: baselineOf(engine), head: baselineOf(engine, other, third) },
+        body: `Fixes #150\n\nBaseline-growth: ${named} — one of the two`,
+      }),
+    )
+    expect(result.verdict).toBe('FAIL')
+    expect(ratchetFinding(result).message).toContain('src/core/d.ts → src/store/b.ts')
+  })
+})
+
+describe('stripFencedCode', () => {
+  it('drops ``` and ~~~ blocks and keeps the prose around them', () => {
+    const body = ['before', '```js', 'Baseline-growth: x', '```', 'after', '~~~', 'Baseline-growth: y', '~~~', 'end'].join('\n')
+    const stripped = stripFencedCode(body)
+    expect(stripped).toContain('before')
+    expect(stripped).toContain('after')
+    expect(stripped).toContain('end')
+    expect(stripped).not.toContain('Baseline-growth')
+  })
+
+  it('drops the rest of the body after an unclosed fence', () => {
+    expect(stripFencedCode('prose\n```\nBaseline-growth: x')).not.toContain('Baseline-growth')
+  })
+})
+
+describe('readAtRef (#432)', () => {
+  // The contents API answers 404 both for an absent path and for a ref it cannot resolve. Reading
+  // the second as the first is the one fail-open direction: an unresolvable base would make the
+  // whole head baseline look like a legitimate arming.
+  const io = (present, refs) => ({
+    readPath: async (ref, filePath) => present[`${ref}:${filePath}`] ?? null,
+    refExists: async (ref) => refs.includes(ref),
+  })
+
+  it('returns the bytes when the path is there', async () => {
+    await expect(readAtRef(io({ 'abc:f.json': '[]' }, ['abc']), 'abc', 'f.json')).resolves.toBe('[]')
+  })
+
+  it('reads a 404 as an absent path once the ref resolves', async () => {
+    await expect(readAtRef(io({}, ['abc']), 'abc', 'f.json')).resolves.toBeNull()
+  })
+
+  it('throws rather than reading an unresolvable ref as an empty baseline', async () => {
+    await expect(readAtRef(io({}, []), 'deadbeef', 'f.json')).rejects.toThrow(/deadbeef/)
+  })
+})
+
+describe('the rule that pays for `linguist-generated` (#432)', () => {
+  it('stays wired into RULES, so the exclusion cannot outlive the control', () => {
+    // `.gitattributes` keeps the baseline out of review; `ratchetGrowth` is what buys that. The two
+    // live in different files, so deleting the rule would silently restore the free pass.
+    expect(RULES.map((rule) => rule.name)).toContain('ratchetGrowth')
+    const attributes = readFileSync(path.join(import.meta.dirname, '..', '.gitattributes'), 'utf8')
+    expect(attributes).toContain(`${RATCHET_BASELINE_FILE} linguist-generated`)
   })
 })

@@ -226,6 +226,20 @@ export const RATCHET_DECLARATION_RE = /^[ \t]*Baseline-growth:[ \t]*(\S.*?)[ \t]
 /** How many added rows the message names before it says "+n more". */
 export const RATCHET_MAX_NAMED_ROWS = 5
 
+// Red stubs (#432) — replaced by the implementation in the next commit.
+export function stripFencedCode(text) {
+  return text ?? ''
+}
+export function ratchetDeclarations() {
+  return []
+}
+export function undeclaredRatchetRows(_body, rows) {
+  return rows
+}
+export async function readAtRef() {
+  throw new Error('readAtRef is not implemented')
+}
+
 /**
  * One comparable row per recorded violation. A baseline write rewrites the whole file, so rows
  * have to compare as a set — never by position, and never by count alone.
