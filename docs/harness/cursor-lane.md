@@ -174,6 +174,23 @@ reproduce any BLOCK; the owner's user-level MCP servers still start on every run
 | APIs | The Cloud Agents API (`api.cursor.com/v1/agents`, public beta, all plans), the TypeScript and Python SDKs, and Automations (cloud agents on triggers). | **Skip**: they all drive usage-based cloud agents |
 | `cursor-agent` CLI | Runs locally on the plan's included usage. | **Keep**: this is the second opinion |
 
+## 2.1 External coordinator + Cloud Agents (optional path)
+
+Amended 2026-09-23 for a **Grok Bot coordinator** trial that dispatches **Cursor Cloud Agents** as
+builders (no local implement on the Mac for those tasks). This does not replace the local
+`cursor-agent` second opinion in §1.
+
+| Rule | Detail |
+|---|---|
+| Who claims / merges | The coordinator (Grok Bot or Claude) keeps GitHub writes: claim, labels, merge decision. Merge-on-green still needs the owner’s standing grant for that coordinator. |
+| Who builds | Cursor Cloud Agents only for that trial’s implement step; record the agent id on the issue. |
+| Usage pools | Grok Bot’s **weekly** meter is separate from Cursor monthly **Cursor Models / Other Models**. Cloud Agents count as **Cursor** usage (typically Other Models at API rates). |
+| Metering before launch | There is no personal Spending-% API on a normal plan. Capture Spending UI before/after (or owner paste). After each run: `GET /v1/agents/{id}/usage` with a user API key for tokens. Do **not** claim a batch of issues while blocked only on metering — see `sessions/COORDINATOR-HANDOFF.md`. |
+| Handoff | Write `sessions/YYYY-MM-DD-grok-bot-handoff.md` (or the active coordinator id) and link it from claim comments so the local Claude coordinator can resume or release. |
+
+The §2 table’s “Skip for now” on Cloud Agents remains the default for the *Cursor lane as second
+opinion*. Use this §2.1 path only when the owner explicitly runs a cloud-builder trial.
+
 ## 3. How a Cursor agent would follow our process (only if cloud agents are adopted)
 The coordinator keeps every GitHub write except the push. It claims (`claim/<n>` ref and
 `in-progress`), creates `<type>/<n>-<topic>` from `origin/main`, and dispatches allowlisted issues
