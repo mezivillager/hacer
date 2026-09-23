@@ -34,6 +34,12 @@ export interface DeserializedCircuit {
  * load, and it still throws out of `deserializeCircuit` for the caller to catch,
  * exactly as it did before warnings became data. Widening recovery to those records
  * would change what a person sees, which #181 deliberately does not do.
+ *
+ * **One deliberate widening, not parity.** A gate entry that is literally `null` used
+ * to kill the whole load: the old reader read `s.type` *outside* its `try`, so it threw
+ * on the null before recovery could start. Here it is one `unreadable-gate` warning and
+ * the rest of the document loads — the same treatment every other unreadable entry gets,
+ * and the only per-entry path where this reader recovers where the previous one did not.
  */
 export type DeserializeWarning =
   | {
@@ -111,10 +117,13 @@ function migrateGateTypeName(raw: string): string | null {
 
 const cloneVec3 = (v: { x: number; y: number; z: number }) => ({ x: v.x, y: v.y, z: v.z })
 
-/** Stands in for `id`/`type` when the entry does not carry a readable one. */
+/** Stands in for `id`/`type` when the entry does not carry a readable one. Purely a
+ *  display value: nothing keys off it, so a gate whose real id happens to be this
+ *  string is dropped and pruned like any other. */
 const UNIDENTIFIED_GATE = '(unidentified)'
 
-/** The entry's own id, or the stand-in — a warning's `gateId` is declared `string`. */
+/** The entry's own id, or the stand-in — a warning's `gateId` is declared `string`.
+ *  For showing a person, never for pruning: see the `catch` in `deserializeCircuit`. */
 const gateIdOf = (s: SerializedGate | null | undefined): string =>
   typeof s?.id === 'string' ? s.id : UNIDENTIFIED_GATE
 
@@ -232,7 +241,11 @@ export function deserializeCircuit(data: SerializedCircuit): DeserializeResult {
   // (and junction wireId entries) that reference them. Without this,
   // dangling wires would silently drive 0 into downstream gate inputs via
   // the simulation's missing-endpoint fallback.
-  const skippedGateIds = new Set<string>()
+  // Keyed on each id *as the document wrote it*, never on anything this file
+  // displays: `SerializedGate.id` is declared `string`, but the file is untrusted,
+  // and a wire written `entityId: 7` matches a gate written `id: 7`. `unknown` says
+  // that honestly, and `Set` membership is by value either way.
+  const skippedGateIds = new Set<unknown>()
   for (const s of data.gates) {
     // Recovery is *per entry*: a gate this build cannot rebuild is reported and
     // dropped, and the rest of the circuit still loads. `importCircuitJSON` reads
@@ -290,9 +303,12 @@ export function deserializeCircuit(data: SerializedCircuit): DeserializeResult {
           `Skipped gate "${gateId}" (saved as "${gateType}") while loading circuit — ` +
           `this build could not read that record: ${reason}.`,
       })
-      // Only a gate we can name can have its wires pruned; an entry with no
-      // readable id had no id for a wire to reference either.
-      if (gateId !== UNIDENTIFIED_GATE) skippedGateIds.add(gateId)
+      // Prune on the entry's own id, exactly as the two branches above do. `gateId`
+      // is only what the warning shows: a document can write `id: 7` on the gate and
+      // `entityId: 7` on the wire, and those match, so keying the skip set off a
+      // display value leaves that wire dangling (PR #399 review, round 2).
+      const rawId: unknown = (entry as { id?: unknown } | null | undefined)?.id
+      if (rawId !== undefined && rawId !== null) skippedGateIds.add(rawId)
     }
   }
 
