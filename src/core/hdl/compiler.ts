@@ -317,9 +317,15 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
       // a signal assembled from several slice writes is only complete once all of them have run
       // (#355); only the overlapping ones, because bits a read never looks at cannot make it wait
       // (#363). An unsliced read covers the whole signal and so still overlaps every write, which
-      // is why #355's rule is not a second case here but this one's widest instance.
+      // is why #355's rule is not a second case here but this one's widest instance. A part is a
+      // producer of its own reads like any other: an edge from a part to itself is a combinational
+      // loop of length one, and Kahn leaves it unplaced and traces it like any other cycle. The
+      // self-edge used to be skipped outright, because per-SIGNAL edges made a part that writes
+      // `t[0]` and reads `t[1]` wait for itself; now that edges follow bits, `overlaps` keeps that
+      // legitimate disjoint self-reference and only rejects a read that reaches the part's own
+      // written bits — which at `main` read the value the signal held before the part ran (#397).
       for (const producer of producers) {
-        if (producer.part === i || !overlaps(read, producer.bits)) continue
+        if (!overlaps(read, producer.bits)) continue
         const edge = `${producer.part}->${i}`
         if (edgeCarries.has(edge)) continue // one edge per pair; a second read adds no ordering
         edgeCarries.set(edge, `"${read.signal}"${describeBits(shared(read, producer.bits))}`)
