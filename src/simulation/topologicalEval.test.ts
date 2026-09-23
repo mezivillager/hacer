@@ -902,3 +902,192 @@ describe('undriven input pins (B-008)', () => {
     expect(getState().gates[0].inputs.map((p) => p.value)).toEqual([1, 0])
   })
 })
+
+// ── #356: a junction's feed wire is found by structure, not by `wireIds[0]` ────────────────────
+//
+// HACER's fan-out model: a junction sits *on* a trunk wire; branch wires start at the junction.
+// `wireIds` records both, and nothing keeps the trunk first — `removeWire` splices the trunk out
+// and re-attaching a wire appends it last, so a branch can end up at `wireIds[0]`.
+describe('junction feed wire — structural trace (#356)', () => {
+  /** `input a` → Not1 (trunk, junction sits on it); junction → Not2, Not3 (branches). */
+  function buildFanOut() {
+    const a = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
+    const not1 = getState().addGate('Not', { x: 6, y: 0, z: -2 })
+    const not2 = getState().addGate('Not', { x: 6, y: 0, z: 0 })
+    const not3 = getState().addGate('Not', { x: 6, y: 0, z: 2 })
+    const junction = getState().addJunction('sig-a', { x: 3, y: 0, z: 0 })
+
+    const trunk = getState().addWire(
+      { type: 'input', entityId: a.id },
+      { type: 'gate', entityId: not1.id, pinId: not1.inputs[0].id },
+      []
+    )
+    const branch1 = getState().addWire(
+      { type: 'junction', entityId: junction.id },
+      { type: 'gate', entityId: not2.id, pinId: not2.inputs[0].id },
+      []
+    )
+    const branch2 = getState().addWire(
+      { type: 'junction', entityId: junction.id },
+      { type: 'gate', entityId: not3.id, pinId: not3.inputs[0].id },
+      []
+    )
+    return { a, not1, not2, not3, junction, trunk, branch1, branch2 }
+  }
+
+  function setWireIds(junctionId: string, wireIds: string[]) {
+    useCircuitStore.setState((state) => {
+      const j = state.junctions.find((x) => x.id === junctionId)
+      if (j) j.wireIds = wireIds
+    })
+  }
+
+  /** Every gate output for `a = 0` then `a = 1`, keyed by gate id — the circuit's truth table. */
+  function truthTable(inputNodeId: string): Record<string, number[]> {
+    const rows: Record<string, number[]> = {}
+    for (const value of [0, 1]) {
+      getState().updateInputNodeValue(inputNodeId, value)
+      useCircuitStore.setState((state) => { evaluateCircuit(state) })
+      for (const gate of getState().gates) {
+        rows[gate.id] = [...(rows[gate.id] ?? []), gate.outputs[0].value]
+      }
+    }
+    return rows
+  }
+
+  it('evaluates a junction whose wireIds[0] is a branch wire', () => {
+    const c = buildFanOut()
+    setWireIds(c.junction.id, [c.branch1.id, c.branch2.id, c.trunk.id])
+
+    getState().updateInputNodeValue(c.a.id, 1)
+    useCircuitStore.setState((state) => { evaluateCircuit(state) })
+
+    // All three gates are Not(a); with a = 1 every one of them outputs 0.
+    const byId = new Map(getState().gates.map((g) => [g.id, g.outputs[0].value]))
+    expect(byId.get(c.not1.id)).toBe(0)
+    expect(byId.get(c.not2.id)).toBe(0)
+    expect(byId.get(c.not3.id)).toBe(0)
+  })
+
+  it('evaluates identically with wireIds reversed', () => {
+    const forward = buildFanOut()
+    setWireIds(forward.junction.id, [forward.trunk.id, forward.branch1.id, forward.branch2.id])
+    const forwardRows = Object.values(truthTable(forward.a.id))
+
+    useCircuitStore.setState({ gates: [], wires: [], inputNodes: [], outputNodes: [], junctions: [] })
+
+    const reversed = buildFanOut()
+    setWireIds(reversed.junction.id, [reversed.branch2.id, reversed.branch1.id, reversed.trunk.id])
+    const reversedRows = Object.values(truthTable(reversed.a.id))
+
+    expect(reversedRows).toEqual(forwardRows)
+  })
+
+  it('traces a junction chain whose junctions are both branch-first', () => {
+    const c = buildFanOut()
+    // A second junction sits on branch1 and feeds Not4.
+    const not4 = getState().addGate('Not', { x: 9, y: 0, z: 0 })
+    const junction2 = getState().addJunction('sig-a', { x: 5, y: 0, z: 0 })
+    const branch3 = getState().addWire(
+      { type: 'junction', entityId: junction2.id },
+      { type: 'gate', entityId: not4.id, pinId: not4.inputs[0].id },
+      []
+    )
+    setWireIds(c.junction.id, [c.branch1.id, c.branch2.id, c.trunk.id])
+    setWireIds(junction2.id, [branch3.id, c.branch1.id])
+
+    getState().updateInputNodeValue(c.a.id, 1)
+    useCircuitStore.setState((state) => { evaluateCircuit(state) })
+
+    const byId = new Map(getState().gates.map((g) => [g.id, g.outputs[0].value]))
+    expect(byId.get(c.not2.id)).toBe(0)
+    expect(byId.get(not4.id)).toBe(0)
+  })
+
+  it('follows a wire whose `to` endpoint is the junction', () => {
+    const a = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
+    const not1 = getState().addGate('Not', { x: 6, y: 0, z: 0 })
+    const junction = getState().addJunction('sig-a', { x: 3, y: 0, z: 0 })
+
+    // The feed terminates at the junction; the branch leaves it and is listed first.
+    const feed = getState().addWire(
+      { type: 'input', entityId: a.id },
+      { type: 'junction', entityId: junction.id },
+      []
+    )
+    const branch = getState().addWire(
+      { type: 'junction', entityId: junction.id },
+      { type: 'gate', entityId: not1.id, pinId: not1.inputs[0].id },
+      []
+    )
+    setWireIds(junction.id, [branch.id, feed.id])
+
+    getState().updateInputNodeValue(a.id, 1)
+    useCircuitStore.setState((state) => { evaluateCircuit(state) })
+
+    expect(getState().gates[0].outputs[0].value).toBe(0)
+  })
+
+  it('orders gates through a branch-first junction', () => {
+    // `sink` is created first on purpose: with no dependency edge it would be scheduled first.
+    const sink = getState().addGate('Not', { x: 8, y: 0, z: 0 })
+    const source = getState().addGate('Not', { x: 0, y: 0, z: 0 })
+    const passThrough = getState().addGate('Not', { x: 4, y: 0, z: 4 })
+    const junction = getState().addJunction('sig-src', { x: 2, y: 0, z: 0 })
+
+    const trunk = getState().addWire(
+      { type: 'gate', entityId: source.id, pinId: source.outputs[0].id },
+      { type: 'gate', entityId: passThrough.id, pinId: passThrough.inputs[0].id },
+      []
+    )
+    const branch = getState().addWire(
+      { type: 'junction', entityId: junction.id },
+      { type: 'gate', entityId: sink.id, pinId: sink.inputs[0].id },
+      []
+    )
+    setWireIds(junction.id, [branch.id, trunk.id])
+
+    const result = topologicalSort(getState())
+    expect(result.type).toBe('success')
+    if (result.type === 'success') {
+      expect(result.order.indexOf(source.id)).toBeLessThan(result.order.indexOf(sink.id))
+    }
+  })
+
+  it('reads a junction with no feed wire as floating (0) and still evaluates', () => {
+    const c = buildFanOut()
+    // Malformed document: the junction lists only wires that start at it.
+    setWireIds(c.junction.id, [c.branch1.id, c.branch2.id])
+
+    const result = topologicalSort(getState())
+    expect(result.type).toBe('success')
+
+    expect(truthTable(c.a.id)[c.not2.id]).toEqual([1, 1])
+    expect(truthTable(c.a.id)[c.not1.id]).toEqual([1, 0])
+  })
+
+  it('survives the trunk being deleted and re-added (the real path to a branch-first junction)', () => {
+    const c = buildFanOut()
+    setWireIds(c.junction.id, [c.trunk.id, c.branch1.id, c.branch2.id])
+
+    // `removeWire` splices the trunk out of `wireIds`; the junction survives on its two branches.
+    getState().removeWire(c.trunk.id)
+    expect(getState().junctions[0].wireIds).toEqual([c.branch1.id, c.branch2.id])
+
+    // Re-drawing the wire and re-attaching it appends it *last*, as `completeWiringFromJunction` does.
+    const trunk2 = getState().addWire(
+      { type: 'input', entityId: c.a.id },
+      { type: 'gate', entityId: c.not1.id, pinId: c.not1.inputs[0].id },
+      []
+    )
+    useCircuitStore.setState((state) => {
+      const j = state.junctions[0]
+      if (j && !j.wireIds.includes(trunk2.id)) j.wireIds.push(trunk2.id)
+    })
+    expect(getState().junctions[0].wireIds[0]).toBe(c.branch1.id)
+
+    const rows = truthTable(c.a.id)
+    expect(rows[c.not2.id]).toEqual(rows[c.not1.id])
+    expect(rows[c.not3.id]).toEqual(rows[c.not1.id])
+  })
+})
