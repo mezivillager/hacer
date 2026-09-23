@@ -484,3 +484,151 @@ describe('compileHDL — part-pin slices (#357)', () => {
     expect(r.evaluate({ a: 0 }, builtinOnlyCtx(reg))).toEqual({ out: ~0b11 & 0xffff })
   })
 })
+
+// ── #367 — a part input pin's bits may be bound only once ──────────────────────────────────────
+// The input side of the rule #355 gave the output side. #357 put a slice on the part's own pin, so
+// both ends of a wire now name bit ranges and one per-bit claim decides both: a signal's bit may
+// have one driver, a part input pin's bit may have one source.
+
+describe('compileHDL — a part input pin bit may be bound only once (#367)', () => {
+  // Two connections feeding one pin bit is not a value: which binding survived depended on the
+  // order the bindings appear in the document. The reference simulator applies one rule to both
+  // sides — a single `checkMultipleAssignments` run against an input-pin map and an output-pin map
+  // (../web-ide/simulator/src/chip/builder.ts, "Cannot write to pin x[i] multiple times").
+  let reg: ChipRegistry
+  beforeEach(() => {
+    reg = joinerRegistry()
+  })
+  function compile(src: string) {
+    const ast = parseHDL(src)
+    expect(ast.success).toBe(true)
+    if (!ast.success) throw new Error(`parse failed: ${ast.errors.map((e) => e.message).join('; ')}`)
+    return compileHDL(ast.chip, reg)
+  }
+  const isDoubleBind = (message: string) => /bound by more than one connection/i.test(message)
+
+  /** Everything a document means to the compiler: why it was rejected, or what it evaluates to. */
+  function outcome(src: string, cases: Array<Record<string, number>>): { compiled: boolean; detail: string[] } {
+    const r = compile(src)
+    if (!r.success) return { compiled: false, detail: r.errors.map((e) => e.message).sort() }
+    const ctx = builtinOnlyCtx(reg)
+    return { compiled: true, detail: cases.map((inputs) => JSON.stringify(r.evaluate(inputs, ctx))) }
+  }
+  const BOTH_WAYS = [{ a: 1, b: 0 }, { a: 0, b: 1 }]
+
+  it('rejects a part input pin bound twice, naming the part, the pin and the bit', () => {
+    const r = compile('CHIP D { IN a, b; OUT out; PARTS: Not(in=a, in=b, out=out); }')
+    expect(r.success).toBe(false)
+    if (!r.success) {
+      const e = r.errors.find((x) => isDoubleBind(x.message))
+      expect(e?.message).toBe('Part "Not" pin "in" bit 0 is bound by more than one connection')
+      expect(e?.partName).toBe('Not')
+      expect(e?.pinName).toBe('in')
+    }
+  })
+
+  it('answers the same whichever order the two bindings appear in', () => {
+    // The defect as measured: {a:1,b:0} gave out=1 one way round and out=0 the other — one
+    // document, two meanings. Rejecting both is an answer; last-binding-wins is not.
+    expect(outcome('CHIP D { IN a, b; OUT out; PARTS: Not(in=a, in=b, out=out); }', BOTH_WAYS)).toEqual(
+      outcome('CHIP D { IN a, b; OUT out; PARTS: Not(in=b, in=a, out=out); }', BOTH_WAYS),
+    )
+  })
+
+  it('rejects a pin bound to both a literal and a signal', () => {
+    const r = compile('CHIP D { IN a, b; OUT out; PARTS: And(a=true, a=a, b=b, out=out); }')
+    expect(r.success).toBe(false)
+    if (!r.success) expect(r.errors.some((e) => isDoubleBind(e.message))).toBe(true)
+  })
+
+  it('accepts one signal feeding two different pins of the same part', () => {
+    // The rule is per pin, not per signal — fanning one signal out to several pins is ordinary HDL.
+    const r = compile('CHIP D { IN a; OUT out; PARTS: And(a=a, b=a, out=out); }')
+    expect(r.success).toBe(true)
+  })
+
+  // ── the shapes #357 made expressible ─────────────────────────────────────────────────────────
+
+  it('rejects a whole-pin binding that overlaps a sliced binding of the same pin', () => {
+    // Measured by #370's verifier: `Not16(in=a, in[0]=b)` compiled and evaluated order-dependently
+    // — out=65534 with `in=a` first, 65535 with `in[0]=b` first. An unsliced binding claims every
+    // bit of the pin, exactly as an unsliced write claims every bit of a signal on the other side,
+    // so it overlaps any slice of the same pin.
+    const r = compile('CHIP D { IN a[16], b; OUT out[16]; PARTS: Not16(in=a, in[0]=b, out=out); }')
+    expect(r.success).toBe(false)
+    if (!r.success) {
+      const e = r.errors.find((x) => isDoubleBind(x.message))
+      expect(e?.message).toBe('Part "Not16" pin "in" bit 0 is bound by more than one connection')
+      expect(e?.partName).toBe('Not16')
+      expect(e?.pinName).toBe('in')
+    }
+  })
+
+  it('answers the same whichever order the whole-pin and the sliced binding appear in', () => {
+    const ORDERED = [{ a: 0, b: 1 }]
+    expect(outcome('CHIP D { IN a[16], b; OUT out[16]; PARTS: Not16(in=a, in[0]=b, out=out); }', ORDERED)).toEqual(
+      outcome('CHIP D { IN a[16], b; OUT out[16]; PARTS: Not16(in[0]=b, in=a, out=out); }', ORDERED),
+    )
+  })
+
+  it('rejects two part-pin slices that overlap, naming the first shared bit', () => {
+    const r = compile('CHIP D { IN x[4], y[4]; OUT out[16]; PARTS: Not16(in[0..3]=x, in[2..5]=y, out=out); }')
+    expect(r.success).toBe(false)
+    if (!r.success) {
+      const e = r.errors.find((x) => isDoubleBind(x.message))
+      expect(e?.message).toBe('Part "Not16" pin "in" bit 2 is bound by more than one connection')
+    }
+  })
+
+  it('accepts disjoint bindings on a wide input pin, and assembles the pin from them (#357)', () => {
+    // Was `it.todo` while a slice on the part-pin side did not parse. It parses since #357, so this
+    // is the real test: the rule admits disjoint ranges, and the halves meet exactly with no gap.
+    const r = compile('CHIP D { IN lo[8], hi[8]; OUT out[16]; PARTS: Not16(in[0..7]=lo, in[8..15]=hi, out=out); }')
+    expect(r.success).toBe(true)
+    if (!r.success) return
+    const ctx = builtinOnlyCtx(reg)
+    expect(r.evaluate({ lo: 0x00, hi: 0x00 }, ctx)).toEqual({ out: 0xffff })
+    expect(r.evaluate({ lo: 0xff, hi: 0x00 }, ctx)).toEqual({ out: 0xff00 })
+    expect(r.evaluate({ lo: 0x34, hi: 0x12 }, ctx)).toEqual({ out: ~0x1234 & 0xffff })
+  })
+
+  // ── "not connected" asks about bits, not about names ─────────────────────────────────────────
+
+  it('accepts a partially bound input pin — the bits nothing binds read 0', () => {
+    // Since #357 a pin may be bound in pieces, so an unbound *bit* is no longer evidence of a
+    // mistake: `Or8Way(in[0]=a, in[1]=b)` is legal and its bits 2..7 read 0, and the reference
+    // simulator has no connectedness pass at all. Here bits 8..15 are never bound, read 0, and
+    // Not16 inverts them to ones.
+    const r = compile('CHIP D { IN lo[8]; OUT out[16]; PARTS: Not16(in[0..7]=lo, out=out); }')
+    expect(r.success).toBe(true)
+    if (!r.success) return
+    const ctx = builtinOnlyCtx(reg)
+    expect(r.evaluate({ lo: 0x00 }, ctx)).toEqual({ out: 0xffff })
+    expect(r.evaluate({ lo: 0xff }, ctx)).toEqual({ out: 0xff00 })
+  })
+
+  it('reports a pin whose only binding is out of range as both out of range and unbound', () => {
+    // A cascade, and both halves are true: `in[16]` names no bit of a 16-bit pin, so `in` really
+    // does end up with nothing bound. Pinned because the second message is new — before the
+    // coverage check, naming the pin at all was enough to satisfy the connectedness rule.
+    const r = compile('CHIP D { IN a; OUT out[16]; PARTS: Not16(in[16]=a, out=out); }')
+    expect(r.success).toBe(false)
+    if (!r.success) {
+      expect(r.errors.map((e) => e.message)).toEqual([
+        'Part "Not16" pin "in[16]" is out of range; "in" has width 16',
+        'Part "Not16" input pin "in" is not connected',
+      ])
+    }
+  })
+
+  it('still rejects an input pin with no bits bound at all', () => {
+    const r = compile('CHIP D { IN a; OUT out; PARTS: And(a=a, out=out); }')
+    expect(r.success).toBe(false)
+    if (!r.success) {
+      const e = r.errors.find((x) => /is not connected/.test(x.message))
+      expect(e?.message).toBe('Part "And" input pin "b" is not connected')
+      expect(e?.partName).toBe('And')
+      expect(e?.pinName).toBe('b')
+    }
+  })
+})
