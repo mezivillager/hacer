@@ -42,6 +42,41 @@ const sliceBits = (slice: HDLSlice): number => slice.end - slice.start + 1
 /** An unsliced write covers a signal's whole width, however wide it later turns out to be. */
 const WHOLE_SIGNAL = Number.MAX_SAFE_INTEGER
 
+/** An inclusive bit range: both `first` and `last` are covered. */
+interface BitRange {
+  first: number
+  last: number
+}
+
+/** Do two inclusive ranges share a bit? The one overlap test the whole file reasons with. */
+const overlaps = (a: BitRange, b: BitRange): boolean => a.first <= b.last && b.first <= a.last
+
+/**
+ * One bit, one source — the same rule on both sides of a connection (#355 out, #367 in).
+ *
+ * Claims `[first..last]` of `key` and returns the first bit that was already claimed, or `null`
+ * when nothing overlaps. Disjoint ranges are legal on both sides: several parts may each write
+ * their own slice of a signal, and several connections may each feed their own slice of a part's
+ * input pin. Overlap is not a value — which claim survived would depend on the order the parts or
+ * the bindings happen to appear in the document. The reference simulator draws the same rule
+ * across both sides, one `checkMultipleAssignments` over an input-pin map and an output-pin map
+ * (../web-ide/simulator/src/chip/builder.ts).
+ */
+function claimBits(claimed: Map<string, BitRange[]>, key: string, first: number, last: number): number | null {
+  const ranges = claimed.get(key)
+  if (!ranges) {
+    claimed.set(key, [{ first, last }])
+    return null
+  }
+  const clash = ranges.find((range) => overlaps({ first, last }, range))
+  ranges.push({ first, last })
+  return clash ? Math.max(first, clash.first) : null
+}
+
+/** Do any of these claims land on a pin `width` bits wide? Same overlap test, against the pin. */
+const coversAnyBit = (ranges: BitRange[] | undefined, width: number): boolean =>
+  (ranges ?? []).some((range) => overlaps(range, { first: 0, last: width - 1 }))
+
 export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResult {
   const errors: HDLCompileError[] = []
 
@@ -91,11 +126,14 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
   const reads: Set<string>[] = []
   const writes: Set<string>[] = []
   // Every bit range already driven, per signal — one bit may have only one driver.
-  const drivenRanges = new Map<string, Array<{ first: number; last: number }>>()
+  const drivenRanges = new Map<string, BitRange[]>()
   for (const { part, def } of resolved) {
     const r = new Set<string>()
     const w = new Set<string>()
-    const connectedInputs = new Set<string>()
+    // Every bit range already bound, per input pin of THIS part — one bit may have only one
+    // source. Per part, like the reference simulator's `inPins` (cleared for each part); the
+    // driven map above is per chip, because a signal is shared and a pin is not.
+    const boundRanges = new Map<string, BitRange[]>()
     for (const conn of part.connections) {
       const inPin = def.inputs.find((p) => p.name === conn.internal)
       const outPin = def.outputs.find((p) => p.name === conn.internal)
@@ -122,7 +160,21 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
         }
       }
       if (inPin) {
-        connectedInputs.add(inPin.name)
+        // One bit, one source — the twin of the one-driver rule below. Two connections feeding
+        // the same pin bit is not a value: which one survived would depend on the order the
+        // bindings appear in the document, which is the order-dependence #355 removed on the
+        // other side of the connection.
+        //
+        // The bits claimed are the PIN's, not the signal's: a part-pin slice claims only what it
+        // feeds, so `Or8Way(in[0]=a, in[1]=b)` is two disjoint claims, while an unsliced binding
+        // claims the pin whole and so collides with any slice of it (`Not16(in=a, in[0]=b)`).
+        // That is the same rule WHOLE_SIGNAL states below, spelled out rather than sentinelled: a
+        // pin's width is always known from its chip definition, while a signal's may still be
+        // waiting to be inferred.
+        const boundClash = claimBits(boundRanges, inPin.name, conn.internalSlice?.start ?? 0, conn.internalSlice?.end ?? inPin.width - 1)
+        if (boundClash !== null) {
+          errors.push({ message: `Part "${part.name}" pin "${inPin.name}" bit ${boundClash} is bound by more than one connection`, partName: part.name, pinName: inPin.name })
+        }
         if (LITERALS.has(conn.external)) continue
         if (!chipInputNames.has(conn.external)) r.add(conn.external)
       } else {
@@ -133,22 +185,22 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
         // One bit, one driver. Two parts writing the same bit is a short circuit, not a value,
         // and which one survived would depend on the part order — exactly what step 4 stops
         // depending on. Matches the reference simulator (../web-ide, `ChipBuilder`).
-        const first = conn.externalSlice?.start ?? 0
-        const last = conn.externalSlice?.end ?? WHOLE_SIGNAL
-        const driven = drivenRanges.get(conn.external) ?? []
-        const clash = driven.find((range) => first <= range.last && range.first <= last)
-        if (clash) {
-          errors.push({ message: `Signal "${conn.external}" bit ${Math.max(first, clash.first)} is driven by more than one part`, partName: part.name, pinName: conn.internal })
+        const drivenClash = claimBits(drivenRanges, conn.external, conn.externalSlice?.start ?? 0, conn.externalSlice?.end ?? WHOLE_SIGNAL)
+        if (drivenClash !== null) {
+          errors.push({ message: `Signal "${conn.external}" bit ${drivenClash} is driven by more than one part`, partName: part.name, pinName: conn.internal })
         }
-        driven.push({ first, last })
-        drivenRanges.set(conn.external, driven)
         w.add(conn.external)
       }
     }
-    // Every input pin must be wired — an unconnected input would be silently read as 0.
+    // Every input pin must be wired — an unconnected input would be silently read as 0. Since
+    // #357 a pin may be bound in pieces, so this asks about bits, not about names: an unbound
+    // *bit* is no longer evidence of a mistake, because `Or8Way(in[0]=a, in[1]=b)` is legal HDL
+    // whose bits 2..7 read 0, and the reference simulator has no connectedness pass at all
+    // (../web-ide/simulator/src/chip/builder.ts checks assignment, never coverage). A pin no
+    // binding lands on anywhere is still a forgotten wire, so that stays an error.
     // (Output pins may legally be left unconnected when a chip doesn't use them.)
     for (const p of def.inputs) {
-      if (!connectedInputs.has(p.name)) {
+      if (!coversAnyBit(boundRanges.get(p.name), p.width)) {
         errors.push({ message: `Part "${part.name}" input pin "${p.name}" is not connected`, partName: part.name, pinName: p.name })
       }
     }
