@@ -22,12 +22,59 @@ merge. If a step below is wrong, fix it here — not in a chat.
 | Who may author pickable tasks | `scripts/backlog.mjs` allowlist (`BACKLOG_ALLOWLIST`) | the identities agents trust on a public repo |
 | How a task is built | `.claude/skills/ha-prompt-it/SKILL.md` + `implementer-brief.md` · agent `.claude/agents/hacer-builder.md` | tiers, TDD mechanics, worktree rules |
 | How a PR is judged | `verifier-brief.md` | what blocks, what is a nit, what must be tried |
-| What must be green | `main-rules` ruleset (required check `ci`, 0 approvals, no bypass) + `docs/harness/implementer-brief.md` definition of done | add a required check here after it is green on its own PR |
+| What must be green | `main-rules` ruleset (required checks `ci`, `pr-hygiene`, `browser-qa`, 0 approvals, no bypass) + `docs/harness/implementer-brief.md` definition of done — when one of them will not go green, read *When a required check is stuck* below | add a required check here after it is green on its own PR |
 | PR size and shape | ADR-0013 (400 reviewable lines, one sub-issue per PR) — enforced by the `pr-hygiene` check (`scripts/pr-hygiene.logic.mjs`). Two exemptions — *amended 2026-09-21 (#326)*: a **deletion-only** PR is outside the budget ("refactor deletion prs can be any size they need to be"), where deletion-only means it deletes more than it adds and adds at most 5 lines to a file, 20 in all and 5% of what it deletes — the fix-ups a removal forces, since the check sees counts, never the diff; and **research evidence** (`docs/research/*/evidence/`) is excluded, while the report beside it counts. Both reasons print in the check's output; the linked-issue rule is unaffected | the budget numbers, `FIXUP_MAX_*` |
 | Which layer may import what | `.dependency-cruiser.cjs` (import direction, cycles, engine packages, `src/` → `e2e/`) and `eslint.config.js` → "the engine layer" (`console.*`, DOM globals — globals are not dependencies, so no import graph can see them). Today's violations are recorded in `.dependency-cruiser-known-violations.json` and `eslint-suppressions.json`; a **new** one fails. Checked by `pnpm run lint:layers`, which `pnpm run lint` runs, so it is in the definition of done and in CI. After fixing one, `pnpm run lint:layers:shrink` drops it from the baseline for good — the baseline only ever shrinks, so a fixed violation cannot be re-added, and a stale ESLint suppression fails the lint until it is pruned. The line it prints is the foundation plan's one tracked metric (#329, 2026-09-23: 16 production edges · 8 test-only · 10 cycle edges in 3 cycles · 35 engine globals) | the rules themselves — widen one only with a measurement, and narrow any rule that fires on legitimate code rather than suppressing it case by case |
 | Which PRs get a browser run, and which suites | ADR-0016 (critical = the PR changes the UI: `src/components`, `src/App.tsx`, `src/gates`, `src/nodes`, `src/store`, `src/utils`, `src/styles`, `index.html`, `e2e`, `playwright.config.ts`, later `src/surfaces`; or the `critical` / `sev:*` labels on the PR or an issue it links) — the `browser-qa` check (`scripts/browser-qa.logic.mjs`) runs `@store` only, cloud only, never a local gate; `@ui` (3D) runs only by hand via `e2e.yml`; locally, only suites that do not mount the 3D canvas — *amended 2026-09-19 (#282): was `src/store/actions` only, plus `@ui` on canvas paths* | the critical paths (`CRITICAL_PATHS`) |
 | What the human still does | `WORK-SYSTEM.md` §7 (merge tiers) | opt a tier into auto-merge |
 | What went wrong, and whether it was mechanised | `ledger.md` | second occurrence → a lint, test or hook |
+
+## When a required check is stuck
+
+`gh pr checks` reports everything green, `gh pr view <n> --json mergeStateStatus` says `BLOCKED`,
+and nothing on the PR explains it. Two things look like that and only one is a fault.
+
+**Not a signal:** `gh api repos/mezivillager/hacer/commits/<sha>/status` returning `pending`. That
+endpoint reports *legacy commit statuses*, which this repo never posts — it answers
+`state=pending total_count=0` on every commit, merged ones included. Read the check runs instead.
+
+**The fault (#295):** a `cancelled` check run under a required context.
+
+```sh
+gh api repos/mezivillager/hacer/commits/<sha>/check-runs --jq \
+  '.check_runs[] | select(.name=="ci" or .name=="pr-hygiene" or .name=="browser-qa")
+   | "\(.name) \(.conclusion) \(.started_at)"'
+```
+
+GitHub judges a required context by the **newest** check run carrying that name, so a single
+`cancelled` run blocks the merge although an older run of the same context succeeded.
+
+Recovery, on the same SHA, with no new commit and no force-push:
+
+```sh
+gh run list -R mezivillager/hacer --branch <branch> --json databaseId,name,conclusion
+gh run rerun <id> -R mezivillager/hacer      # one cancelled run, then wait for it
+```
+
+Re-run them **one at a time**: the re-runs join the same concurrency group, and before #295 they
+cancelled each other exactly as the originals had — that is what the second round of `cancelled`
+runs on #360 was. `gh pr update-branch --rebase` also clears it, but usually no-ops (`PR branch
+already up-to-date`), since an agent's branch is normally current with `main`.
+
+**Why it happens, and what now stops it.** GitHub sends one webhook action *per label*, so
+`gh pr edit --add-label a,b` on a fresh PR delivers `opened`, `labeled`, `labeled` within seconds;
+every workflow listing `labeled` starts a run per action. `.github/workflows/pr-hygiene.yml` and
+`.github/workflows/browser-qa.yml` now set `cancel-in-progress: false`, so a run that has started
+always finishes — GitHub still keeps only one *pending* run per group, and a pending run creates no
+job and therefore no check run. `scripts/required-checks.logic.mjs` fails the unit suite if either
+is turned back on. Both workflows genuinely need the `labeled` trigger, so narrowing `types:`
+was not an option: `size-override` and `dependencies` change the `pr-hygiene` verdict (#360's
+`pr-hygiene` went red, then green when `size-override` was applied) and `critical` / `sev:*`
+change `browser-qa`'s.
+
+**One gap.** `pr-hygiene.yml` runs on `pull_request_target`, so GitHub always uses **`main`'s** copy
+of it. A PR that changes that file cannot test its own change; the change takes effect for every PR
+the moment it lands on `main`. Use the recovery above on any PR opened before it landed.
 
 ## The five sentences it answers
 
