@@ -1,6 +1,5 @@
-import { notify } from '@/lib/notify'
-import { createGateInstance } from '@/store/actions/gateActions/gateActions'
 import { createBusPins } from '@/core/buses/busPins'
+import { getBuiltinChipRegistry, getUserChipRegistry } from '@/core/chips/appRegistry'
 import type { BusComponent, GateInstance, InputNode, JunctionNode, OutputNode, Pin, Wire } from '@/store/types'
 import type { WireSegment } from '@/utils/wiringScheme/types'
 import {
@@ -64,6 +63,9 @@ export interface DeserializeResult {
   warnings: DeserializeWarning[]
 }
 
+/** The document versions this build reads. Everything else is reported, not thrown. */
+const READABLE_VERSIONS: readonly number[] = [CIRCUIT_FORMAT_VERSION]
+
 /** Canonical mapping from legacy uppercase gate types to chip-registry names.
  *  Pre-Phase-5 saves used `GateType` (`'NAND' | 'AND' | …`); Phase 4 renamed
  *  the in-store field to `chipName` ('Nand', …). This table migrates the
@@ -93,21 +95,30 @@ function migrateGateTypeName(raw: string): string | null {
 
 const cloneVec3 = (v: { x: number; y: number; z: number }) => ({ x: v.x, y: v.y, z: v.z })
 
-function reconstructGate(s: SerializedGate, chipName: string): GateInstance {
-  const tmpl = createGateInstance(chipName, cloneVec3(s.position), s.width)
-  // Spread chip-def pin widths from tmpl; never overwrite with s.width — the
+/** Rebuilds a saved gate, or `null` when no registry knows its chip. */
+function reconstructGate(s: SerializedGate, chipName: string): GateInstance | null {
+  // Read the chip definition directly rather than through the store's
+  // `createGateInstance`: that import was the engine -> state edge this file
+  // exists to remove (#181), and only the pin names and widths were ever used.
+  const chip = getBuiltinChipRegistry().get(chipName) ?? getUserChipRegistry().get(chipName)
+  if (!chip) return null
+  // Pin widths come from the chip definition; never from `s.width` — the
   // gate-level width is a parametric multiplier for future chips, not a per-pin
   // override. For Project 1 builtins (Not16 etc.) the chip definition is the
   // single source of truth for bus widths.
-  const inputs: Pin[] = tmpl.inputs.map((p, i) => ({
-    ...p,
+  const inputs: Pin[] = chip.inputs.map((p, i) => ({
     id: `${s.id}-in-${i}`,
+    name: p.name,
+    type: 'input',
     value: 0,
+    width: p.width,
   }))
-  const outputs: Pin[] = tmpl.outputs.map((p, i) => ({
-    ...p,
+  const outputs: Pin[] = chip.outputs.map((p, i) => ({
     id: `${s.id}-out-${i}`,
+    name: p.name,
+    type: 'output',
     value: 0,
+    width: p.width,
   }))
   return {
     id: s.id,
@@ -172,11 +183,27 @@ function reconstructOutputNode(s: SerializedOutputNode): OutputNode {
 // orphan-wire pruning (PR #107 Codex P1) can filter each junction's
 // `wireIds` against the just-built `droppedWireIds` set in the same pass.
 
-function readVersion1(data: SerializedCircuit): DeserializedCircuit {
-  if (data.version !== CIRCUIT_FORMAT_VERSION) {
-    throw new Error(`Unsupported circuit version: ${String(data.version)}`)
+export function deserializeCircuit(data: SerializedCircuit): DeserializeResult {
+  // Version dispatch is a lookup, not a throw: this function survives as the
+  // importer's private reader of version-1 documents (ADR-0020 §7.6), and a
+  // document it does not read is a fact to report, not an exception.
+  if (!READABLE_VERSIONS.includes(data.version)) {
+    return {
+      document: null,
+      warnings: [
+        {
+          code: 'unsupported-version',
+          version: data.version,
+          supported: CIRCUIT_FORMAT_VERSION,
+          message:
+            `Unsupported circuit version: ${String(data.version)} — ` +
+            `this build reads version ${String(CIRCUIT_FORMAT_VERSION)}.`,
+        },
+      ],
+    }
   }
 
+  const warnings: DeserializeWarning[] = []
   const gates: GateInstance[] = []
   // Track every gate ID that did not survive the load so we can prune wires
   // (and junction wireId entries) that reference them. Without this,
@@ -186,27 +213,33 @@ function readVersion1(data: SerializedCircuit): DeserializedCircuit {
   for (const s of data.gates) {
     const chipName = migrateGateTypeName(s.type)
     if (chipName === null) {
-      notify.warning(
-        `Skipped unsupported gate type "${s.type}" — NOR and XNOR are not supported in the builtin chip system.`,
-      )
+      warnings.push({
+        code: 'unsupported-gate-type',
+        gateId: s.id,
+        gateType: s.type,
+        message: `Skipped unsupported gate type "${s.type}" — NOR and XNOR are not supported in the builtin chip system.`,
+      })
       skippedGateIds.add(s.id)
       continue
     }
-    // `migrateGateTypeName` passes unknown names through unchanged, but
-    // `createGateInstance` (called from `reconstructGate`) throws when a
-    // chip name is not in either the builtin or user registry — for
-    // example, a save produced by a newer build with chips this build
-    // doesn't ship yet. Catch and skip: warn + drop the gate so the rest
-    // of the circuit still loads.
-    try {
-      gates.push(reconstructGate(s, chipName))
-    } catch (err) {
-      const reason = err instanceof Error ? err.message : String(err)
-      notify.warning(
-        `Skipped unknown chip "${s.type}" while loading circuit (${reason}).`,
-      )
+    // `migrateGateTypeName` passes unknown names through unchanged, so a save
+    // produced by a newer build with chips this one doesn't ship yet reaches
+    // here. Drop that gate with a warning and let the rest of the circuit load.
+    const gate = reconstructGate(s, chipName)
+    if (gate === null) {
+      warnings.push({
+        code: 'unknown-chip',
+        gateId: s.id,
+        gateType: s.type,
+        chipName,
+        message:
+          `Skipped unknown chip "${s.type}" while loading circuit — ` +
+          `"${chipName}" is in neither the builtin nor the user chip registry.`,
+      })
       skippedGateIds.add(s.id)
+      continue
     }
+    gates.push(gate)
   }
 
   const isLiveGateRef = (endpoint: SerializedWire['from']): boolean =>
@@ -261,15 +294,14 @@ function readVersion1(data: SerializedCircuit): DeserializedCircuit {
   }
 
   return {
-    gates,
-    wires,
-    inputNodes: data.inputNodes.map(reconstructInputNode),
-    outputNodes: data.outputNodes.map(reconstructOutputNode),
-    junctions,
-    busComponents,
+    document: {
+      gates,
+      wires,
+      inputNodes: data.inputNodes.map(reconstructInputNode),
+      outputNodes: data.outputNodes.map(reconstructOutputNode),
+      junctions,
+      busComponents,
+    },
+    warnings,
   }
-}
-
-export function deserializeCircuit(data: SerializedCircuit): DeserializeResult {
-  return { document: readVersion1(data), warnings: [] }
 }

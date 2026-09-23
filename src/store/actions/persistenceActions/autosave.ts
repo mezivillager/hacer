@@ -1,7 +1,7 @@
 import { serializeCircuit } from '@/core/serialization'
 import { useCircuitStore } from '@/store/circuitStore'
 import { debounce, type DebouncedFunction } from '@/utils/debounce'
-import { AUTOSAVE_KEY } from './persistenceActions'
+import { AUTOSAVE_KEY } from './storageKeys'
 
 export const AUTOSAVE_DEBOUNCE_MS = 2000
 export const AUTOSAVE_NAME = '__autosave__'
