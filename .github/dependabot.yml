@@ -4,6 +4,28 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    groups:
+      # Keep React and the React Three ecosystem in ONE pull request. Do not split this.
+      #
+      # @react-three/fiber's peerDependencies.react is a *bounded* range, not "^19":
+      # 9.5.0 (what the lockfile resolves) declares ">=19 <19.3"; 9.8.0 declares ">=19 <19.4".
+      # A React minor can therefore fall outside the installed R3F's range. pnpm 10 leaves
+      # strict-peer-dependencies at its default of false, so that mismatch is a *warning* —
+      # lint, test:run and build all stay green — and it first shows up in a browser, which
+      # no agent here runs (ADR-0016). Ungrouped, Dependabot opens react, react-dom and
+      # @react-three/fiber as three independent PRs, and merging the React pair first lands
+      # exactly the unsupported combination.
+      #
+      # Membership: everything under @react-three/* peer-depends on @react-three/fiber, so
+      # the whole scope has to move with it. `three` is deliberately excluded — every
+      # consumer declares an open-ended floor (fiber ">=0.156", drei ">=0.159"), so a three
+      # bump cannot split this relationship, and three ships often enough that grouping it
+      # would park React bumps behind unrelated ones.
+      react-and-react-three:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@react-three/*"
 
   - package-ecosystem: "github-actions"
     directory: "/"
