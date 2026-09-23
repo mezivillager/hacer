@@ -3,4 +3,3 @@
  */
 
 export * from './ui.selectors'
-export * from './canvas.selectors'

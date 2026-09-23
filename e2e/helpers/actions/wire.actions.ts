@@ -6,7 +6,6 @@
  */
 
 import { Page } from '@playwright/test'
-import { clickPin } from './canvas.actions'
 import { ensureWires } from '../waits'
 import { TIMEOUTS } from '../../config/constants'
 
@@ -40,49 +39,6 @@ export async function addWireViaStore(page: Page, wire: WireSpec): Promise<void>
     },
     { wire }
   )
-}
-
-/**
- * Add multiple wires via store using gate indices and pin names.
- * Uses unified WireEndpoint format internally.
- */
-export async function addWiresViaStore(
-  page: Page,
-  wires: Array<{
-    fromGate: number
-    fromPin: string
-    toGate: number
-    toPin: string
-  }>,
-  gateIds: string[]
-): Promise<void> {
-  await page.evaluate(
-    ({ wires, gateIds }) => {
-      wires.forEach((w) => {
-        const fromGateId = gateIds[w.fromGate]
-        const toGateId = gateIds[w.toGate]
-        // Convert to WireEndpoint format
-        const fromEndpoint = { type: 'gate' as const, entityId: fromGateId, pinId: `${fromGateId}-${w.fromPin}` }
-        const toEndpoint = { type: 'gate' as const, entityId: toGateId, pinId: `${toGateId}-${w.toPin}` }
-        window.__CIRCUIT_ACTIONS__?.addWire(fromEndpoint, toEndpoint, [])
-      })
-    },
-    { wires, gateIds }
-  )
-}
-
-/**
- * Add a wire via UI by clicking pins
- */
-export async function addWireViaUI(
-  page: Page,
-  fromGateId: string,
-  fromPinId: string,
-  toGateId: string,
-  toPinId: string
-): Promise<void> {
-  await clickPin(page, fromGateId, fromPinId)
-  await clickPin(page, toGateId, toPinId)
 }
 
 /**

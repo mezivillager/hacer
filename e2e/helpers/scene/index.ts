@@ -4,7 +4,6 @@
 
 export {
   clearScene,
-  validateSceneClean,
   waitForStore,
 } from './scene-manager'
 

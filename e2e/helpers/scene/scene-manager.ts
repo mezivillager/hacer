@@ -48,21 +48,6 @@ export async function clearScene(page: Page): Promise<void> {
 }
 
 /**
- * Validate that the scene is in a clean state.
- * Useful for asserting scene reset worked correctly.
- */
-export async function validateSceneClean(page: Page): Promise<boolean> {
-  return page.evaluate(() => {
-    const store = window.__CIRCUIT_STORE__
-    return (
-      store?.gates.length === 0 &&
-      store?.wires.length === 0 &&
-      store?.selectedGateId === null
-    )
-  })
-}
-
-/**
  * Wait for the store to be available.
  */
 export async function waitForStore(
@@ -73,4 +58,3 @@ export async function waitForStore(
     timeout,
   })
 }
-

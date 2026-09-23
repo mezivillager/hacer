@@ -8,15 +8,6 @@
 
 import type { Page } from '@playwright/test'
 import { UI_SELECTORS } from '../../selectors/ui.selectors'
-import type { GateType } from '../../config/constants'
-
-export async function selectGateViaToolbar(page: Page, gateType: GateType): Promise<void> {
-  await page.click(UI_SELECTORS.toolbar.gatesTrigger)
-  await page.waitForSelector(UI_SELECTORS.gatesPopover.root, { state: 'visible' })
-  await page.click(UI_SELECTORS.gatesPopover.getGate(gateType))
-  // Popover auto-closes on click; wait for it
-  await page.waitForSelector(UI_SELECTORS.gatesPopover.root, { state: 'hidden' })
-}
 
 export async function selectIoViaToolbar(
   page: Page,
@@ -44,16 +35,4 @@ export async function setThemeViaToolbar(
 ): Promise<void> {
   await page.click(UI_SELECTORS.toolbar.themeTrigger)
   await page.click(UI_SELECTORS.toolbar.themeOption(theme))
-}
-
-export async function clickToolbarSimToggle(page: Page): Promise<void> {
-  await page.click(UI_SELECTORS.toolbar.simToggle)
-}
-
-export async function clickToolbarClearAll(page: Page): Promise<void> {
-  await page.click(UI_SELECTORS.toolbar.clearAll)
-}
-
-export async function clickToolbarDeleteSelected(page: Page): Promise<void> {
-  await page.click(UI_SELECTORS.toolbar.deleteSelected)
 }
