@@ -88,17 +88,6 @@ characterization golden (#331) must record what the legacy app did — including
 | **Notes** | Resolution tracked under **P05-29**; tune materials/colors and add regression-friendly tests where practical. |
 | **Closed in** | [#224](https://github.com/mezivillager/hacer/issues/224), by the backlog sweep [#340](https://github.com/mezivillager/hacer/issues/340), 2026-09-23. ADR-0020 §6 names **placement previews** in the non-goals, so there is no preview to give contrast to. **Replaced by** `setHint` (capability row 19) — a declared position on a fixed lattice in the sidecar, reached from the shell, the CLI, MCP or a prompt — drawn read-only by N.8 ([#383](https://github.com/mezivillager/hacer/issues/383)) and N.9 ([#384](https://github.com/mezivillager/hacer/issues/384)). |
 
-### B-009 — `removeJunction` deletes the trunk wire when a branch sits first in `wireIds`
-
-| Field | Detail |
-|-------|--------|
-| **Status** | Closed — machinery removed (**a stated limit of the legacy app, not a fix**) |
-| **Area** | `src/store/actions/signalActions.ts:61` (`removeJunction`) |
-| **Symptom** | `removeJunction` deletes `wireIds.slice(1)`. `removeWire` splices the trunk out of `wireIds` and re-attaching a redrawn wire appends it **last** (verified in #356), so a branch can sit at `wireIds[0]`. In that state the deletion removes **the trunk and keeps a branch** — data loss, not a cosmetic defect. |
-| **Expected** | Removing a junction keeps the feed wire, found by structure (the wire whose `to` is the junction), never by position. |
-| **Notes** | Found by the #365 verifier, 2026-09-23, as an addendum to #364, whose other five readers are geometry-only. It is **carried out of #364 rather than closed with it**, because it can corrupt a **saved document**, and ADR-0020 §7.2 requires a corpus of *real* version-1 documents before `serialize.ts` is deleted. Not fixed, because the whole gesture is deleted at §7.5b and the junction stops being a domain entity (§6 — fan-out is a net's sinks list). |
-| **Closed in** | [#364](https://github.com/mezivillager/hacer/issues/364), by the backlog sweep [#340](https://github.com/mezivillager/hacer/issues/340), 2026-09-23. **Carried forward as an acceptance criterion on [#376](https://github.com/mezivillager/hacer/issues/376)**: *capture the corpus before exercising `removeJunction`* — a capture taken afterwards may already be corrupt. |
-
 ### B-010 — Shift+click drive of a floating gate input pin does not survive a tick
 
 | Field | Detail |
@@ -114,6 +103,17 @@ characterization golden (#331) must record what the legacy app did — including
 ---
 
 ## Resolved
+
+### B-009 — `removeJunction` deleted the trunk wire when a branch sat first in `wireIds`
+
+| Field | Detail |
+|-------|--------|
+| **Status** | Fixed |
+| **Area** | `src/store/actions/signalActions/signalActions.ts` (`removeJunction`) |
+| **Symptom** | `removeJunction` deleted `wireIds.slice(1)`. `removeWire` splices the trunk out of `wireIds` and re-attaching a redrawn wire appends it **last**, so a branch can sit at `wireIds[0]`. In that state the deletion removed **the trunk and kept a branch** — data loss, not a cosmetic defect. Measured end to end through the real actions: `placeJunctionOnWire` → attach two branches → `removeWire(trunk)` → re-attach a redrawn trunk leaves `wireIds = [branch, branch, trunk']`. |
+| **Expected** | Removing a junction keeps the feed wire, found by structure, never by position. |
+| **Notes** | Found by the #365 verifier as an addendum to #364, whose other five readers are geometry-only and stay closed with the canvas. This one was **reopened and fixed rather than closed with the machinery**: it corrupts a **saved document**, which ADR-0020's rule treats the same way as a wrong value, and it is reachable through ordinary use. `findJunctionFeedWire` (`src/simulation/topologicalEval.ts`) is now exported and used here, so the store and the evaluator share one definition of "which wire feeds this junction". A junction with no feed wire is read as floating, as the evaluator reads it: nothing is the trunk, so no listed wire is kept. |
+| **Fixed in** | [#364](https://github.com/mezivillager/hacer/issues/364). The acceptance criterion on [#376](https://github.com/mezivillager/hacer/issues/376) — *capture the corpus before exercising `removeJunction`* — still stands for documents saved **before** this fix. |
 
 ### B-005 — `circuitStore.autosave.test.ts` bootstrap test times out under parallel full-suite load
 

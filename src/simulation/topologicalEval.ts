@@ -33,11 +33,14 @@ export type EvaluateCircuitResult =
  *
  * One pass over `state.wires` — the same cost as the single `find` it replaces.
  *
+ * Exported because the store needs the same notion of "which wire feeds this junction": `removeJunction`
+ * keeps the feed wire and deletes the branches (#364). One definition, so the two cannot drift.
+ *
  * @param junction - Junction whose incoming signal is being traced
  * @param state - Current circuit state
  * @returns The feed wire, or `null` when the junction has none (a malformed document)
  */
-function findJunctionFeedWire(junction: JunctionNode, state: CircuitDocument): Wire | null {
+export function findJunctionFeedWire(junction: JunctionNode, state: CircuitDocument): Wire | null {
   let trunk: Wire | null = null
   for (const wire of state.wires) {
     // A wire that ends at the junction states the structure outright, so it wins.
