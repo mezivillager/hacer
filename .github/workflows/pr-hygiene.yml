@@ -6,10 +6,15 @@ name: PR Hygiene
 # Reviewable excludes tests, the lockfile, snapshots, vendored vectors, fixtures and
 # linguist-generated files.
 #
+# Also checks the layer-ratchet baseline for growth (#406): when a PR touches
+# .dependency-cruiser-known-violations.json, its contents are read through the API at the merge
+# base and at the PR head, and a row added under a rule name that already existed fails the check.
+#
 # Runs on pull_request_target so the checkout — and therefore scripts/pr-hygiene.mjs — is
 # always the base branch's copy. The PR itself is read through the GitHub API and is never
-# checked out or executed, so a PR cannot edit its own guard. Keep it that way: no `ref:`
-# on the checkout, no `pnpm install`, no third-party actions.
+# checked out or executed, so a PR cannot edit its own guard — reading a baseline's bytes as
+# data is not running it. Keep it that way: no `ref:` on the checkout, no `pnpm install`, no
+# third-party actions. `contents: read` below is what the baseline reads need.
 #
 # That also means this workflow only runs once it is on main — GitHub registers workflows
 # from the default branch, so it cannot check the PR that introduces it. Once it is there, a

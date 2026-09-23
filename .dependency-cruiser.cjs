@@ -13,6 +13,13 @@
  * commit — `pnpm exec depcruise src --config .dependency-cruiser.cjs --baseline` — and say in the
  * commit message how many rows that added. From then on the rule shrinks like every other.
  *
+ * That same command absorbs whatever *else* is broken in the tree at that moment, and no one reads
+ * this baseline in a PR: `.gitattributes` keeps it `linguist-generated`, which is deliberate (#406
+ * — a baseline write rewrites the whole file, so a line review sees churn, not meaning) but does
+ * take it out of review. So this paragraph is not the fence; the fence is the `ratchet` rule in
+ * `scripts/pr-hygiene.logic.mjs`, which compares the committed rows against the PR's merge base
+ * and fails any row added under a rule name that already existed, naming it.
+ *
  * A guard that cries wolf makes agents argue with it, so every rule here is deliberately narrow:
  * it names the directions the audit measured and nothing more. Widen it only with a measurement.
  *

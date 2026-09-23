@@ -2,7 +2,7 @@
 // No I/O — fully unit tested in pr-hygiene.logic.test.mjs. The GitHub API and
 // the runner environment live in scripts/pr-hygiene.mjs.
 //
-// A rule is `(ctx) => finding[]` over { body, author, labels, files, measures }; the verdict is the
+// A rule is `(ctx) => finding[]` over { body, author, labels, files, measures, ratchet }; the verdict is the
 // highest level any finding reaches. To add a rule (e.g. #151's tamper flag: protected
 // paths touched), append it to RULES — nothing else needs to change.
 
@@ -18,6 +18,7 @@ export const FIXUP_MAX_LINES = 20
 export const FIXUP_MAX_SHARE = 0.05
 
 const LEVELS = ['pass', 'warn', 'fail']
+const plural = (count, one, many = `${one}s`) => `${count} ${count === 1 ? one : many}`
 
 // ---------------------------------------------------------------- classification
 
@@ -210,25 +211,111 @@ function linkedIssue({ body, author, labels, measures }) {
 // ---------------------------------------------------------------- ratchet growth
 
 /**
- * The layer ratchet's baseline (#329, #406). `.gitattributes` marks it `linguist-generated`, which
- * keeps its machine-written rows out of the size budget — and therefore out of review — so this
- * rule is what stands between a `depcruise … --baseline` reset and `main`.
+ * The layer ratchet's baseline (#329, #406). `pnpm run lint:layers` refuses a new violation, but
+ * the documented `depcruise … --baseline` write absorbs it and `lint` goes green again — measured
+ * 2026-09-24: 72 rows → 73. That command cannot go away, because arming a new rule needs it (#404
+ * took the baseline 34 → 77 arming `core-through-index`). `.gitattributes` marks the file
+ * `linguist-generated`, which keeps its machine-written rows out of the size budget and therefore
+ * out of review, so this rule — not a reader — is what stands between a reset and `main`.
  */
 export const RATCHET_BASELINE_FILE = '.dependency-cruiser-known-violations.json'
 
 /** A greppable claim in the PR body that growth under an existing rule is deliberate. */
 export const RATCHET_DECLARATION_RE = /^[ \t]*Baseline-growth:[ \t]*(\S.*?)[ \t]*$/im
 
-export function parseRatchetBaseline() {
-  return { error: 'parseRatchetBaseline is not implemented' }
+/** How many added rows the message names before it says "+n more". */
+export const RATCHET_MAX_NAMED_ROWS = 5
+
+/**
+ * One comparable row per recorded violation. A baseline write rewrites the whole file, so rows
+ * have to compare as a set — never by position, and never by count alone.
+ * @param {string|null|undefined} text the file at one commit, or null when it does not exist there
+ * @returns {{rows:{rule:string,edge:string}[], error?:undefined}|{rows?:undefined, error:string}}
+ */
+export function parseRatchetBaseline(text) {
+  if (text === null || text === undefined) return { rows: [] }
+  let parsed
+  try {
+    parsed = JSON.parse(text)
+  } catch {
+    return { error: 'is not valid JSON' }
+  }
+  if (!Array.isArray(parsed)) return { error: 'is not a JSON array of violation rows' }
+  if (parsed.some((row) => typeof row?.rule?.name !== 'string')) return { error: 'has a row with no rule name' }
+  return { rows: parsed.map((row) => ({ rule: row.rule.name, edge: `${row.from} → ${row.to}` })) }
 }
 
-export function compareRatchetBaseline() {
-  return { status: 'not-implemented' }
+const ratchetRowKey = (row) => `${row.rule}\u0000${row.edge}`
+
+/**
+ * The verdict on one baseline against the PR's merge base. A row may only appear under a rule name
+ * that is **new in this PR** — that is what tells an armed rule from an absorbed violation, and it
+ * is the one thing a reviewer cannot see in a `linguist-generated` diff.
+ *
+ * - `armed` — every added row belongs to a rule name the base did not have. #404's shape.
+ * - `absorbed` — rows grew and at least one belongs to a rule that already existed.
+ * - `swapped` — a row is new but the count did not grow (a renamed file records the same violation
+ *   under a new path). Worth saying out loud, not worth blocking.
+ * @param {{base:string|null, head:string|null}} contents
+ */
+export function compareRatchetBaseline({ base, head }) {
+  const parsedBase = parseRatchetBaseline(base)
+  const parsedHead = parseRatchetBaseline(head)
+  if (parsedHead.error) return { status: 'unreadable', detail: `\`${RATCHET_BASELINE_FILE}\` ${parsedHead.error}` }
+  if (parsedBase.error) {
+    return { status: 'unreadable', detail: `the base copy of \`${RATCHET_BASELINE_FILE}\` ${parsedBase.error}` }
+  }
+  const counts = { base: parsedBase.rows.length, head: parsedHead.rows.length }
+  const baseKeys = new Set(parsedBase.rows.map(ratchetRowKey))
+  const baseRules = new Set(parsedBase.rows.map((row) => row.rule))
+  const added = parsedHead.rows.filter((row) => !baseKeys.has(ratchetRowKey(row)))
+  const armedRules = [...new Set(added.filter((row) => !baseRules.has(row.rule)).map((row) => row.rule))]
+  const absorbed = added.filter((row) => baseRules.has(row.rule))
+  const status =
+    added.length === 0
+      ? counts.head < counts.base
+        ? 'shrank'
+        : 'unchanged'
+      : absorbed.length === 0
+        ? 'armed'
+        : counts.head > counts.base
+          ? 'absorbed'
+          : 'swapped'
+  return { status, counts, added, absorbed, armedRules }
 }
 
-function ratchetGrowth() {
-  return []
+/** Added rows, named — "the baseline grew" on its own is not something anyone can act on. */
+function nameRatchetRows(rows) {
+  const shown = rows.slice(0, RATCHET_MAX_NAMED_ROWS).map((row) => `\`${row.rule}: ${row.edge}\``)
+  const rest = rows.length - shown.length
+  return shown.join(', ') + (rest > 0 ? `, +${rest} more` : '')
+}
+
+function ratchetGrowth({ body, ratchet }) {
+  const finding = (level, message) => [{ rule: 'ratchet', level, message }]
+  if (!ratchet) return finding('pass', `\`${RATCHET_BASELINE_FILE}\` unchanged`)
+  const { status, counts, added, absorbed, armedRules, detail } = ratchet
+  if (status === 'unreadable') return finding('fail', `${detail} — its growth cannot be checked`)
+  if (status === 'unchanged') return finding('pass', `${counts.head} baseline rows, unchanged`)
+  const moved = `${counts.base} → ${counts.head} baseline rows`
+  if (status === 'shrank') return finding('pass', `${moved} — the ratchet shrank`)
+  if (status === 'armed') {
+    const rules = armedRules.map((rule) => `\`${rule}\``).join(', ')
+    return finding('pass', `${moved}, arming ${rules} (${plural(added.length, 'row')}) — growth is legitimate when a rule is armed in the same commit`)
+  }
+  const declared = RATCHET_DECLARATION_RE.exec(body ?? '')?.[1]
+  const what =
+    status === 'absorbed'
+      ? `${moved} with no new rule armed — ${plural(absorbed.length, 'violation')} absorbed: ${nameRatchetRows(absorbed)}`
+      : `${counts.head} baseline rows, flat, but ${plural(absorbed.length, 'violation')} is new: ${nameRatchetRows(absorbed)}`
+  if (declared) return finding('warn', `${what} — declared: "${declared}"`)
+  if (status === 'swapped') {
+    return finding('warn', `${what}. A renamed file records the same violation under a new path; anything else is an absorption`)
+  }
+  return finding(
+    'fail',
+    `${what}. Fix the import, arm a rule in the same commit, or state the reason in the PR body as \`Baseline-growth: <why>\``,
+  )
 }
 
 export const RULES = [sizeBudget, linkedIssue, ratchetGrowth]
@@ -240,7 +327,8 @@ export const RULES = [sizeBudget, linkedIssue, ratchetGrowth]
  */
 export function evaluate({ body, author, labels = [], files, gitattributes, ratchet = null }, rules = RULES) {
   const measures = measure(files, parseGeneratedPatterns(gitattributes))
-  const findings = rules.flatMap((rule) => rule({ body, author, labels, files, measures, ratchet }))
+  const verdict = ratchet ? compareRatchetBaseline(ratchet) : null
+  const findings = rules.flatMap((rule) => rule({ body, author, labels, files, measures, ratchet: verdict }))
   const worst = Math.max(0, ...findings.map((f) => LEVELS.indexOf(f.level)))
   const deletion = deletionWaiver(measures)
   return {
@@ -251,6 +339,7 @@ export function evaluate({ body, author, labels = [], files, gitattributes, ratc
     docsOnly: isDocsOnly(measures.reviewable.files.map((f) => f.filename)),
     linkedIssueExemption: linkedIssueExemption({ author, labels }),
     sizeExemption: deletion?.exempt ? deletion.reason : null,
+    ratchet: verdict?.status ?? null,
   }
 }
 
@@ -276,7 +365,8 @@ export function formatConsole(result) {
   const head =
     `HYGIENE: ${result.verdict} reviewable=${reviewable.lines} test=${test.lines} ` +
     `excluded=${excluded.lines} files=${reviewable.files.length} issue=${issueLabel(result)}` +
-    (result.sizeExemption ? ' size=deletion-only' : '')
+    (result.sizeExemption ? ' size=deletion-only' : '') +
+    (result.ratchet ? ` ratchet=${result.ratchet}` : '')
   return [head, ...result.findings.map((f) => `  ${ICONS[f.level]} ${f.message}`)].join('\n')
 }
 
