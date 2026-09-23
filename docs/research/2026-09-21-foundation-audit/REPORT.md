@@ -282,6 +282,10 @@ that deletes it)
   because these components are kept, not removed.
 - N.1 The spec model in `src/core`: parts, nets, sidecar; `fromHDL` / `toHDL`; versioned from day one.
 - N.2 `fromLegacyCircuit`: a one-way importer, fixtures from P.2, evaluation parity as its test.
+  Parity is asserted against a **structurally traced** legacy evaluation — a junction's feed wire
+  found by structure, never by `junction.wireIds[0]` — because the positional trace read a
+  branch-first junction as floating, so a *correct* importer would have failed the test (#356, now
+  fixed in `topologicalEval`; any parity figure measured before that fix has to be re-taken).
 - N.3 The spec evaluates through `compileHDL` — one engine.
 - N.4 `layout`. · N.5 `route`, with ADR-0008's assertions as properties. · N.6 `describeScene`, with
   goldens in Node, diffed against 0.5's baseline.
