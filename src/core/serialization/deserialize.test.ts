@@ -7,6 +7,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { deserializeCircuit } from './deserialize'
 import {
   CIRCUIT_FORMAT_VERSION,
+  type SerializedBusComponent,
   type SerializedCircuit,
   type SerializedGate,
   type SerializedWire,
@@ -299,10 +300,123 @@ describe('deserializeCircuit: wires are pruned on the id the document wrote', ()
   it.each(PRUNING_CASES)('prunes the wire into a gate dropped with $name', (testCase) => {
     const { document: restored, warnings } = deserializeCircuit(withDroppedGateWire(testCase))
 
-    // The good gate survives and exactly one warning names the dropped one …
+    // The good gate survives and exactly one *gate* warning names the dropped one …
     expect(restored?.gates.map((g) => g.id)).toEqual([GOOD_GATE.id])
-    expect(warnings).toHaveLength(1)
-    // … and nothing is left referencing the gate that is no longer there.
+    expect(warnings.filter((w) => w.code !== 'dropped-wire')).toHaveLength(1)
+    // … and nothing is left referencing the gate that is no longer there, with the wire
+    // that went with it named too (#402).
     expect(restored?.wires).toEqual([])
+    expect(warnings.filter((w) => w.code === 'dropped-wire')).toEqual([
+      { code: 'dropped-wire', wireId: 'w-dangling', reason: 'missing-gate', message: expect.any(String) as string },
+    ])
+  })
+})
+
+// ── What pruning takes with it (#402) ──────────────────────────────────────────────────────────
+// #107 (Codex P1) made the reader drop a wire whose endpoint gate or bus component did not
+// survive the load, and a junction whose `wireIds` all point at dropped wires. Both are right —
+// a dangling wire silently drives 0 downstream through the simulation's missing-endpoint
+// fallback — and both used to happen with nothing said: the person was told a gate was skipped
+// and never told that the wiring went with it. Same treatment as a dropped gate, then: one
+// warning per entity, carrying its id, returned as data. Who sees what is the caller's call.
+
+const BUS_SPLITTER: SerializedBusComponent = {
+  id: 'bus-live',
+  kind: 'splitter',
+  position: ZERO_VEC,
+  rotation: ZERO_VEC,
+  width: 4,
+  inputs: [],
+  outputs: [],
+  selected: false,
+}
+
+const gateEnd = (entityId: string, dir: 'in' | 'out') => ({
+  type: 'gate' as const,
+  entityId,
+  pinId: `${entityId}-${dir}-0`,
+})
+
+const busEnd = (entityId: string) => ({ type: 'bus' as const, entityId, pinId: `${entityId}-in-0` })
+
+/** A wire record with the fields this reader ignores here defaulted away. */
+const wireRecord = (id: string, from: SerializedWire['from'], to: SerializedWire['to']): SerializedWire => ({
+  id,
+  from,
+  to,
+  segments: [],
+  crossesWireIds: [],
+})
+
+/** One NOR (always skipped) and one live `And`; one live splitter and one bus id the document
+ *  never defines; three wires — one orphaned by the gate, one by the bus, one good — and two
+ *  junctions, one joining only doomed wires and one that keeps the good wire. */
+const withDroppedWiring = (): SerializedCircuit => ({
+  ...emptyDocument(CIRCUIT_FORMAT_VERSION),
+  gates: [{ id: 'g-nor', type: 'NOR', position: ZERO_VEC, rotation: ZERO_VEC, width: 1 }, GOOD_GATE],
+  busComponents: [BUS_SPLITTER],
+  wires: [
+    wireRecord('w-orphan-gate', gateEnd('g-nor', 'out'), gateEnd(GOOD_GATE.id, 'in')),
+    wireRecord('w-orphan-bus', gateEnd(GOOD_GATE.id, 'out'), busEnd('bus-never-saved')),
+    wireRecord('w-good', gateEnd(GOOD_GATE.id, 'out'), busEnd(BUS_SPLITTER.id)),
+  ],
+  junctions: [
+    { id: 'j-orphan', position: ZERO_VEC, signalId: 'sig-x', wireIds: ['w-orphan-gate', 'w-orphan-bus'] },
+    { id: 'j-mixed', position: ZERO_VEC, signalId: 'sig-y', wireIds: ['w-orphan-gate', 'w-good'] },
+  ],
+})
+
+describe('deserializeCircuit: the wires and junctions pruning takes with it', () => {
+  it('reports each pruned wire, naming its id and which endpoint went missing', () => {
+    const { document: restored, warnings } = deserializeCircuit(withDroppedWiring())
+    expect(restored?.wires.map((w) => w.id)).toEqual(['w-good'])
+    expect(warnings.filter((w) => w.code === 'dropped-wire')).toEqual([
+      {
+        code: 'dropped-wire',
+        wireId: 'w-orphan-gate',
+        reason: 'missing-gate',
+        message: expect.stringContaining('w-orphan-gate'),
+      },
+      {
+        code: 'dropped-wire',
+        wireId: 'w-orphan-bus',
+        reason: 'missing-bus',
+        message: expect.stringContaining('w-orphan-bus'),
+      },
+    ])
+  })
+
+  it('reports a junction left joining nothing, and says nothing about one that keeps a wire', () => {
+    const { document: restored, warnings } = deserializeCircuit(withDroppedWiring())
+    expect(restored?.junctions.map((j) => j.id)).toEqual(['j-mixed'])
+    expect(restored?.junctions[0].wireIds).toEqual(['w-good'])
+    expect(warnings.filter((w) => w.code === 'dropped-junction')).toEqual([
+      { code: 'dropped-junction', junctionId: 'j-orphan', message: expect.stringContaining('j-orphan') },
+    ])
+  })
+
+  // The last acceptance criterion of #402: the frozen set of #181 keeps its text *and* its place.
+  it('leaves every gate warning ahead of them, unchanged', () => {
+    const { warnings } = deserializeCircuit(withDroppedWiring())
+    expect(warnings.map((w) => w.code)).toEqual([
+      'unsupported-gate-type',
+      'dropped-wire',
+      'dropped-wire',
+      'dropped-junction',
+    ])
+    expect(warnings[0].message).toBe(
+      'Skipped unsupported gate type "NOR" — NOR and XNOR are not supported in the builtin chip system.',
+    )
+  })
+
+  it('warns about nothing when every wire and junction survives', () => {
+    const doc = withDroppedWiring()
+    const { warnings } = deserializeCircuit({
+      ...doc,
+      gates: [GOOD_GATE],
+      wires: doc.wires.filter((w) => w.id === 'w-good'),
+      junctions: [{ id: 'j-live', position: ZERO_VEC, signalId: 'sig-z', wireIds: ['w-good'] }],
+    })
+    expect(warnings).toEqual([])
   })
 })

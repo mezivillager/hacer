@@ -27,13 +27,19 @@ export interface DeserializedCircuit {
  * what was wrong *and where*: the version of the document, or the id and saved
  * type of the gate that was dropped.
  *
- * **Where the line falls.** A warning is always about *one entry*, and only ever a
- * gate entry: a gate is reported and dropped, and the rest of the circuit loads.
- * Anything wrong with the *document itself* — a missing top-level array, or a
- * malformed wire, node, junction or bus record — is not one bad gate but nothing to
- * load, and it still throws out of `deserializeCircuit` for the caller to catch,
- * exactly as it did before warnings became data. Widening recovery to those records
- * would change what a person sees, which #181 deliberately does not do.
+ * **Where the line falls.** A warning is always about *one entry*, and only ever an
+ * entry this reader *chose* to drop: a gate it could not rebuild, and (#402) the wires
+ * and junctions that pruning then takes with it. Anything wrong with the *document
+ * itself* — a missing top-level array, or a malformed wire, node, junction or bus
+ * record — is not one bad entry but nothing to load, and it still throws out of
+ * `deserializeCircuit` for the caller to catch, exactly as it did before warnings
+ * became data. Widening recovery to those records would change what a person sees,
+ * which #181 deliberately does not do.
+ *
+ * **Counts, not a wall of toasts.** `dropped-wire` and `dropped-junction` are emitted
+ * one per entity, because a caller or a test wants the ids — but a document that drops
+ * 40 wires must not raise 40 toasts, so the store's `reportDeserialized` summarises
+ * exactly these two codes into one line and leaves every other code's toast alone.
  *
  * **One deliberate widening, not parity.** A gate entry that is literally `null` used
  * to kill the whole load: the old reader read `s.type` *outside* its `try`, so it threw
@@ -73,6 +79,20 @@ export type DeserializeWarning =
       gateType: string
       /** What went wrong while rebuilding this one gate, verbatim. */
       reason: string
+    }
+  | {
+      code: 'dropped-wire'
+      message: string
+      /** Id of the wire that was pruned. */
+      wireId: string
+      /** Which endpoint could not be restored: a gate this build skipped, or a bus component. */
+      reason: 'missing-gate' | 'missing-bus'
+    }
+  | {
+      code: 'dropped-junction'
+      message: string
+      /** Id of the junction that was pruned. */
+      junctionId: string
     }
 
 export interface DeserializeResult {

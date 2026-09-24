@@ -275,3 +275,70 @@ describe('importCircuitJSON', () => {
     ).toBe(false)
   })
 })
+
+// ── What a person is told when a load prunes wiring (#402) ─────────────────────────────────────
+// `reportDeserialized` raises one toast per warning, which is right for the codes #181 froze —
+// each is one gate the person placed. It is wrong for the wires and junctions pruning takes with
+// those gates: a document losing 40 wires would raise 40 toasts. Those two codes are summarised
+// into one line naming the counts; the per-entity ids stay in the warning data for callers.
+describe('loadCircuit: telling the person what the load pruned', () => {
+  /** A document whose only NOR gate is always skipped, with `wires` wires into it — all pruned —
+   *  and `junctions` junctions that join nothing but those wires, so they are pruned too. */
+  const withDanglingWiring = (wires: number, junctions: number) => ({
+    version: 1,
+    name: 'dangling',
+    savedAt: new Date().toISOString(),
+    gates: [
+      { id: 'g-nor', type: 'NOR', position: { x: 0, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, width: 1 },
+      { id: 'g-and', type: 'And', position: { x: 4, y: 0, z: 0 }, rotation: { x: 0, y: 0, z: 0 }, width: 1 },
+    ],
+    wires: Array.from({ length: wires }, (_, i) => ({
+      id: `w-${i}`,
+      from: { type: 'gate', entityId: 'g-nor', pinId: 'g-nor-out-0' },
+      to: { type: 'gate', entityId: 'g-and', pinId: 'g-and-in-0' },
+      segments: [],
+      crossesWireIds: [],
+    })),
+    inputNodes: [],
+    outputNodes: [],
+    junctions: Array.from({ length: junctions }, (_, i) => ({
+      id: `j-${i}`,
+      position: { x: 1, y: 0.2, z: 0 },
+      signalId: `sig-${i}`,
+      wireIds: [`w-${i}`],
+    })),
+  })
+
+  /** Loads a freshly written document and returns the warning toasts it raised, in order. */
+  const warningsFrom = async (doc: unknown): Promise<string[]> => {
+    const { notify } = await import('@/lib/notify')
+    vi.mocked(notify.warning).mockClear()
+    localStorage.setItem('hacer-circuit-dangling', JSON.stringify(doc))
+    expect(circuitActions.loadCircuit('dangling')).toBe(true)
+    return vi.mocked(notify.warning).mock.calls.map(([message]) => message)
+  }
+
+  it('raises one summary line for 12 dropped wires and 2 dropped junctions, not 14 toasts', async () => {
+    expect(await warningsFrom(withDanglingWiring(12, 2))).toEqual([
+      'Skipped unsupported gate type "NOR" — NOR and XNOR are not supported in the builtin chip system.',
+      'Skipped 12 wires and 2 junctions while loading circuit — ' +
+        'wiring left dangling by gates or bus components that could not be loaded.',
+    ])
+    expect(useCircuitStore.getState().wires).toEqual([])
+    expect(useCircuitStore.getState().junctions).toEqual([])
+  })
+
+  it('counts in the singular, and names only what was actually dropped', async () => {
+    const [, summary] = await warningsFrom(withDanglingWiring(1, 0))
+    expect(summary).toBe(
+      'Skipped 1 wire while loading circuit — ' +
+        'wiring left dangling by gates or bus components that could not be loaded.',
+    )
+  })
+
+  it('says nothing extra when the load prunes no wiring', async () => {
+    expect(await warningsFrom(withDanglingWiring(0, 0))).toEqual([
+      'Skipped unsupported gate type "NOR" — NOR and XNOR are not supported in the builtin chip system.',
+    ])
+  })
+})
