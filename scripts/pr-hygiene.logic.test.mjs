@@ -648,7 +648,8 @@ describe('compareRatchetBaseline', () => {
     const head = [...realRows(), { type: 'dependency', from: 'src/core/ratchetProbe.ts', to: 'src/store/circuitStore.ts', rule: { severity: 'error', name: 'engine-no-state' } }]
     const verdict = compareRatchetBaseline({ base: REAL_BASELINE, head: JSON.stringify(head) })
     expect(verdict.status).toBe('absorbed')
-    expect(verdict.counts).toEqual({ base: 72, head: 73 })
+    expect(realRows().length).toBeGreaterThan(0)
+    expect(verdict.counts).toEqual({ base: realRows().length, head: realRows().length + 1 })
     expect(verdict.absorbed).toEqual([
       { rule: 'engine-no-state', edge: 'src/core/ratchetProbe.ts → src/store/circuitStore.ts' },
     ])
