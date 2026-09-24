@@ -455,6 +455,22 @@ describe('evaluate', () => {
   })
 })
 
+describe('protected path: conformance/vectors/**', () => {
+  const levelsOf = (result, rule) => result.findings.filter((f) => f.rule === rule).map((f) => f.level)
+
+  it('warns, and does not fail, when the vendored oracle is touched', () => {
+    const result = evaluate(pr({ files: [file('conformance/vectors/01/Xor.tst', 40, 0), file('src/core/thing.ts', 10, 2)] }))
+    expect(levelsOf(result, 'protected-path')).toEqual(['warn'])
+    expect(result.findings.find((f) => f.rule === 'protected-path').message).toContain('conformance/vectors/01/Xor.tst')
+    expect(result.verdict).toBe('WARN')
+  })
+
+  it('stays quiet when the oracle is left alone', () => {
+    const result = evaluate(pr())
+    expect(levelsOf(result, 'protected-path')).toEqual([])
+  })
+})
+
 describe('nextPageUrl', () => {
   it('extracts the rel="next" link from a GitHub Link header', () => {
     const link =
