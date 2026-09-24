@@ -543,6 +543,14 @@ const baselineOf = (...rows) => JSON.stringify(rows, null, 2)
 const REAL_BASELINE = readFileSync(path.join(import.meta.dirname, '..', RATCHET_BASELINE_FILE), 'utf8')
 const realRows = () => JSON.parse(REAL_BASELINE)
 
+// #460 RED DEMO — temporary, removed in the fix commit. A copy of the live baseline with
+// `engine-no-state` and `core-through-index` shrunk to 0 rows, to show both hazards before they
+// are fixed: the #404-reproduction test (line ~613) goes red, and the "also repairs a real
+// violation" test (line ~851) passes vacuously (the `findIndex` it relies on returns -1, so its
+// own `filter` removes nothing — nothing is repaired, yet it still reports PASS).
+const SHRUNK_BASELINE = readFileSync(path.join(import.meta.dirname, 'fixtures/pr-hygiene/known-violations-both-rules-at-zero.json'), 'utf8')
+const shrunkRows = () => JSON.parse(SHRUNK_BASELINE)
+
 /** This repo's own config — the only place a rule name is ever declared. Read as text, never run. */
 const REAL_CONFIG = readFileSync(path.join(import.meta.dirname, '..', RATCHET_CONFIG_FILE), 'utf8')
 /** A config declaring exactly these rule names, in the shape the real one writes them. */
@@ -614,10 +622,10 @@ describe('compareRatchetBaseline', () => {
     // #404 is the only genuine arming in this repo's history, and it touched the config
     // (`gh api repos/mezivillager/hacer/pulls/404/files`). Its base config is the real one with
     // that rule's declaration taken back out.
-    const base = realRows().filter((row) => row.rule.name !== 'core-through-index')
+    const base = shrunkRows().filter((row) => row.rule.name !== 'core-through-index') // #460 RED DEMO
     const verdict = compareRatchetBaseline({
       base: JSON.stringify(base),
-      head: REAL_BASELINE,
+      head: SHRUNK_BASELINE, // #460 RED DEMO
       baseConfig: REAL_CONFIG.replace("name: 'core-through-index'", "name: 'core-through-index-was-not-here'"),
       headConfig: REAL_CONFIG,
       configTouched: true,
@@ -848,10 +856,10 @@ describe('a rule name is only new because the config declares it (#432 round 3)'
   })
 
   it('fails that attack when the PR also repairs a real violation, instead of warning `swapped`', () => {
-    const rows = realRows()
+    const rows = shrunkRows() // #460 RED DEMO
     const repaired = rows.findIndex((row) => row.rule.name === 'engine-no-state')
     const head = JSON.stringify([...rows.filter((_, index) => index !== repaired), uiPackages], null, 2)
-    const result = evaluate(untouched({ base: REAL_BASELINE, head }))
+    const result = evaluate(untouched({ base: SHRUNK_BASELINE, head })) // #460 RED DEMO
     expect(result.ratchet).toBe('absorbed')
     expect(result.verdict).toBe('FAIL')
   })
