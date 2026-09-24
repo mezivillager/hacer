@@ -13,6 +13,10 @@ export function parsePrNumber(folderName) {
 /**
  * Folder names to remove: those whose PR number is not in `openPrNumbers`. A folder with no
  * parseable PR number is left alone — it isn't this sweep's to touch either way.
+ *
+ * @deprecated round 2 (#484): "not in the open list" removed a folder on an empty/short `gh pr
+ * list` result — replaced by `planRemovals`, which requires positive per-folder evidence of
+ * closure. Kept only until the CLI is rewired in the same commit that removes this.
  */
 export function foldersToRemove(folderNames, openPrNumbers) {
   const open = new Set(openPrNumbers)
@@ -20,4 +24,25 @@ export function foldersToRemove(folderNames, openPrNumbers) {
     const prNumber = parsePrNumber(name)
     return prNumber !== null && !open.has(prNumber)
   })
+}
+
+// ---------------------------------------------------------------------------------------------
+// Round 2 (#484): a verifier reproduced real data loss — an empty/short `gh pr list` result made
+// every folder look closed. Below, TODO(#484 round 2): implement for real.
+
+/** STUB — see TODO above. */
+export function foldersNeedingLookup(_folderNames, _openPrNumbers) {
+  throw new Error('not implemented')
+}
+
+/** STUB — see TODO above. */
+export function planRemovals(_folderNames, _folderStates) {
+  throw new Error('not implemented')
+}
+
+export const DEFAULT_MAX_REMOVALS = 40
+
+/** STUB — see TODO above. */
+export function safetyCheck(_folderNames, _toRemove, _maxRemovals = DEFAULT_MAX_REMOVALS) {
+  throw new Error('not implemented')
 }
