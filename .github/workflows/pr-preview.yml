@@ -4,6 +4,11 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, closed]
     branches: [main]
+  schedule:
+    # Safety net for what the closed-event cleanup below misses — its job missing, failing, or
+    # (Dependabot PRs) unable to push with a read-only pull_request token (#484).
+    - cron: '17 4 * * *'
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -117,3 +122,28 @@ jobs:
             ## 🚀 Deploy Preview
 
             🧹 Preview has been removed (PR closed).
+
+  sweep-previews:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/checkout@v7
+        with:
+          ref: gh-pages
+          path: gh-pages
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+
+      # Node built-ins only; no dependencies to install.
+      - name: Remove previews for closed PRs
+        run: node scripts/pr-preview-sweep.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
