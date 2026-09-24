@@ -94,7 +94,7 @@ TSX files export React components only; constants and helpers live in sibling `.
 | **3D** | React Three Fiber + Three.js | Dispose geometries/materials/textures on unmount |
 | **State** | Zustand | Selectors for reads, `circuitActions.*()` for writes |
 | **UI components** | shadcn/ui primitives (`@/components/ui-kit/`) | Use `notify` from `@/lib/notify`, never `console.log`, for user feedback |
-| **Types** | TypeScript 5.9 strict | No `any`; IDs are plain `string` today (branded types are a Phase 5+ aspiration) |
+| **Types** | TypeScript 6.0 strict | No `any`; IDs are plain `string` today (branded types are a Phase 5+ aspiration) |
 | **Tests** | Vitest (unit) + Playwright (E2E) | TDD mandatory; test before implement |
 | **Build** | Vite + tsc | `pnpm run build` = `tsc -b && vite build` |
 

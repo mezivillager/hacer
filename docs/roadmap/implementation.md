@@ -21,7 +21,7 @@
 | Area | Current choice |
 |------|----------------|
 | Runtime | Node 22, pnpm 10.12.1 |
-| App | React 19 + React Compiler + TypeScript 5.9 strict |
+| App | React 19 + React Compiler + TypeScript 6.0 strict |
 | State | Zustand 5 + Immer |
 | 3D | React Three Fiber 9 + Drei + Three 0.183 |
 | Build | Vite 8 |
