@@ -6,17 +6,23 @@
 export const DEFAULT_ALLOWLIST = ['mezivillager']
 
 /**
- * Pick rule 2: the six-slot cycle, one pick per slot, repeated until every bucket is drained. This is
- * the literal line under "Pick rule" in docs/portfolio.md; the test keeps the two in step.
+ * Pick rule 2: the eight-slot cycle, one pick per slot, repeated until every bucket is drained. This
+ * is the literal line under "Pick rule" in docs/portfolio.md; the test keeps the two in step.
  *
  * Amended 2026-09-21 (#330) while the foundation plan (#318) runs — foundation first, process
  * alongside. `harness`, `spine` and `aux` stay in the cycle on purpose: BUCKET_ORDER is derived from
  * this list and anything outside it is filed `on-request`, so dropping a row erases it rather than
  * deprioritising it. `surfaces`/`pubdocs` work the plan needs is pulled forward by one label instead
  * (PRIORITY_ROWS). Reverting to `['surfaces', 'harness', 'spine', 'aux', 'surfaces', 'harness']`
- * lifts the amendment.
+ * lifts that amendment.
+ *
+ * Amended again 2026-09-25 (#482): the owner approved `lineage` (#457) and `mission-control` (#458)
+ * "equal footing as the other priority projects" — one slot each, literally equal to `harness` and
+ * `spine`; `foundation` keeps its three picks, spaced further apart to make room.
  */
-export const PICK_ROTATION = ['foundation', 'foundation', 'harness', 'foundation', 'spine', 'aux']
+export const PICK_ROTATION = [
+  'foundation', 'lineage', 'harness', 'foundation', 'mission-control', 'spine', 'foundation', 'aux',
+]
 
 /** The `aux` slot takes these buckets in turn, skipping an empty one. */
 export const AUX_ROTATION = ['verify', 'upkeep', 'bugs']
@@ -42,10 +48,12 @@ const PRIORITY_ROWS = ['foundation']
  * paths the plan is replacing — which is
  * where new hand-editing work (wire drawing, junction placement, dragging, previews) lands — so the
  * safe-to-proceed test is this filter, not a second label. `sev:critical` is never held: a bug that
- * corrupts evaluation is still fixed in the evaluation layer.
+ * corrupts evaluation is still fixed in the evaluation layer. `lineage` and `mission-control` join
+ * for the same reason `harness` is exempt: their `risk:2` work is CI checks, not the store/UI/R3F or
+ * architecture paths this gate protects.
  */
 const GATED_RISK_LABEL = 'risk:2'
-const GATE_EXEMPT_ROWS = ['foundation', 'harness']
+const GATE_EXEMPT_ROWS = ['foundation', 'harness', 'lineage', 'mission-control']
 const GATE_REASON = 'foundation-gate'
 const heldByGate = (task) =>
   task.labels.includes(GATED_RISK_LABEL) && !GATE_EXEMPT_ROWS.includes(task.project)
@@ -149,7 +157,7 @@ function rotate(buckets) {
 
 /**
  * The pick rule over the pickable tasks: any `sev:critical` first; then the foundation gate holds
- * what is not safe to proceed on; then the six-slot cycle over the buckets, `pubdocs` sharing the
+ * what is not safe to proceed on; then the eight-slot cycle over the buckets, `pubdocs` sharing the
  * `surfaces` slot, an enabler only while it blocks an open task of a bucket and then in that
  * bucket's slot (pull, don't push); on-request rows never. Inside a slot,
  * `research` tasks of DESIGN_FIRST_SLUGS come first, then the oldest issue. Every task comes back
