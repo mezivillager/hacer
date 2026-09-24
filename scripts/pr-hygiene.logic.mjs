@@ -407,7 +407,7 @@ export function compareRatchetBaseline({ base, head, baseConfig = null, headConf
   const unscanned =
     configTouched && added.length > 0
       ? (unscannedConfig(baseConfig, "the merge base's", 'Trusted, it would read every name in this PR as newly declared and an absorbed row as `armed`') ??
-        unscannedConfig(headConfig, "this PR's", "Merged, it would be every later PR's base, where that reads an absorbed row as `armed`"))
+        unscannedConfig(headConfig, "this PR's", "Merged, it would be every later PR's base, where every later arming would fail closed here"))
       : null
   if (unscanned) return { status: 'unreadable', detail: unscanned }
   // The rule names this PR brings into existence. Without a config edit there are none, so every
