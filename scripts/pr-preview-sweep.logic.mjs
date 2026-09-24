@@ -1,8 +1,14 @@
-// Pure logic for the pr-preview sweep (#484): which pr-preview/pr-N folders on gh-pages no
-// longer belong to an open PR. No I/O — unit tested in pr-preview-sweep.logic.test.mjs. Listing
-// gh-pages, calling `gh pr list` and removing/committing live in scripts/pr-preview-sweep.mjs.
+// Pure logic for the pr-preview sweep (#484): which pr-preview/pr-N folders on gh-pages have
+// positive evidence of closure and may be removed. No I/O — unit tested in
+// pr-preview-sweep.logic.test.mjs. Listing gh-pages, calling `gh pr list`/`gh pr view` and
+// removing/committing live in scripts/pr-preview-sweep.mjs.
+//
+// The rule (round 2, after a verifier reproduced real data loss on PR #491): removal needs PROOF
+// a PR is closed or merged, never just "absent from the open list" — an empty or short `gh pr
+// list` result must never read as "everything is closed."
 
 const PR_FOLDER_PATTERN = /^pr-(\d+)$/
+const CLOSED_STATES = new Set(['CLOSED', 'MERGED'])
 
 /** The PR number a `pr-preview/` folder name encodes, or null when it isn't a `pr-<N>` folder. */
 export function parsePrNumber(folderName) {
@@ -11,14 +17,13 @@ export function parsePrNumber(folderName) {
 }
 
 /**
- * Folder names to remove: those whose PR number is not in `openPrNumbers`. A folder with no
- * parseable PR number is left alone — it isn't this sweep's to touch either way.
- *
- * @deprecated round 2 (#484): "not in the open list" removed a folder on an empty/short `gh pr
- * list` result — replaced by `planRemovals`, which requires positive per-folder evidence of
- * closure. Kept only until the CLI is rewired in the same commit that removes this.
+ * Folder names that can skip an individual `gh pr view` lookup because the `gh pr list --state
+ * open` pre-filter already proves them open. Everything else needs a lookup — including every
+ * folder when the pre-filter came back empty: a failed call and a genuine zero-open-PRs day look
+ * identical from here, so both get the same safe treatment, a real per-folder check, rather than
+ * either being trusted as "nothing is open."
  */
-export function foldersToRemove(folderNames, openPrNumbers) {
+export function foldersNeedingLookup(folderNames, openPrNumbers) {
   const open = new Set(openPrNumbers)
   return folderNames.filter((name) => {
     const prNumber = parsePrNumber(name)
@@ -26,23 +31,48 @@ export function foldersToRemove(folderNames, openPrNumbers) {
   })
 }
 
-// ---------------------------------------------------------------------------------------------
-// Round 2 (#484): a verifier reproduced real data loss — an empty/short `gh pr list` result made
-// every folder look closed. Below, TODO(#484 round 2): implement for real.
-
-/** STUB — see TODO above. */
-export function foldersNeedingLookup(_folderNames, _openPrNumbers) {
-  throw new Error('not implemented')
-}
-
-/** STUB — see TODO above. */
-export function planRemovals(_folderNames, _folderStates) {
-  throw new Error('not implemented')
+/**
+ * Which folders to remove and which to keep, given each folder's resolved PR state (a Map of
+ * folder name -> the `state` field `gh pr view` returned, or no entry when no lookup ran or it
+ * produced nothing usable). Removal requires *positive evidence of closure*: state is exactly
+ * 'CLOSED' or 'MERGED'. No PR number, an 'OPEN' state, and a missing/failed/unparseable lookup
+ * are ALL kept — "not proven open" is never grounds for removal; only "proven closed" is. `kept`
+ * carries a reason for anything worth explaining (everything but a plain open PR).
+ */
+export function planRemovals(folderNames, folderStates) {
+  const toRemove = []
+  const kept = []
+  for (const name of folderNames) {
+    const prNumber = parsePrNumber(name)
+    if (prNumber === null) {
+      kept.push({ name, reason: 'no PR number in folder name' })
+      continue
+    }
+    const state = folderStates.get(name)
+    if (CLOSED_STATES.has(state)) {
+      toRemove.push(name)
+    } else if (state === 'OPEN') {
+      kept.push({ name, reason: null })
+    } else {
+      kept.push({ name, reason: `pr #${prNumber}: no positive evidence of closure (state=${state ?? 'unknown'})` })
+    }
+  }
+  return { toRemove, kept }
 }
 
 export const DEFAULT_MAX_REMOVALS = 40
 
-/** STUB — see TODO above. */
-export function safetyCheck(_folderNames, _toRemove, _maxRemovals = DEFAULT_MAX_REMOVALS) {
-  throw new Error('not implemented')
+/**
+ * The last gate before anything destructive happens. Refuses when the plan would wipe every
+ * folder present — a near-certain sign the PR data was empty or wrong, not that every preview is
+ * genuinely stale — or when it wants to remove more than `maxRemovals` folders in one run.
+ */
+export function safetyCheck(folderNames, toRemove, maxRemovals = DEFAULT_MAX_REMOVALS) {
+  if (folderNames.length > 0 && toRemove.length === folderNames.length) {
+    return { allowed: false, reason: `would remove every folder present (${toRemove.length}/${folderNames.length})` }
+  }
+  if (toRemove.length > maxRemovals) {
+    return { allowed: false, reason: `${toRemove.length} removals exceeds --max-removals ${maxRemovals}` }
+  }
+  return { allowed: true, reason: null }
 }
