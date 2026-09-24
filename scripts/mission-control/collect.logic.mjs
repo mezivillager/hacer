@@ -25,8 +25,8 @@ function parseTables(markdown = '') {
   })
 }
 
-// Pull requests: the verifier's verdict is the comment headed `## Verifier verdict: PASS | BLOCK` (verifier-brief.md).
-const VERDICT = /^##\s+\**Verifier verdict\s*(?:\(([^)]*)\))?\s*:[\s*]*(PASS|BLOCK)\b/im
+// Pull requests: a verdict is a comment that opens with `## Verifier verdict: PASS | BLOCK` (verifier-brief.md).
+const VERDICT = /^\s*##\s+\**Verifier verdict\s*(?:\(([^)]*)\))?\s*:[\s*]*(PASS|BLOCK)\b/i
 const VERIFIED_ON = /^\W*Verified on[:*\s]+(.+)$/m
 
 /** Trusted verdict comments; the round is the heading's `(round N, …)`, else the verdict's position on the PR. */
@@ -56,7 +56,7 @@ function buildPrs({ prsOpen = [], prsMerged = [] }, { allowlist }) {
 
 // Claims: a `claim/<n>` ref plus the issue's latest claim comment (sessions/COORDINATOR-HANDOFF.md).
 const claimRefs = (lsRemote) => lsRemote.split('\n').filter(Boolean).map((line) => line.split('\t'))
-  .map(([sha, ref]) => ({ sha, ref, number: Number(ref.split('/').pop()) }))
+  .map(([sha, ref]) => ({ sha, ref, number: Number(ref.split('/').pop()) })).filter((claim) => Number.isInteger(claim.number))
 
 /** One GraphQL query for every claimed issue: its state, labels, and the comments that carry the claim fields. */
 export function claimsQuery(repo, lsRemote) {
@@ -78,7 +78,7 @@ function buildClaims({ claimRefs: lsRemote = '', claimIssues }, { allowlist }) {
   const items = claimRefs(lsRemote).map(({ sha, ref, number }) => {
     const issue = issues.get(number)
     const comment = issue?.comments.nodes
-      .filter((node) => allowlist.includes(node.author?.login) && /^Claimed by:/m.test(node.body)).at(-1)
+      .filter((node) => allowlist.includes(node.author?.login) && /^\s*Claimed by:/.test(node.body)).at(-1)
     return {
       number, ref, sha, state: issue?.state ?? null, title: issue?.title ?? null, url: issue?.url ?? null,
       labels: issue?.labels.nodes.map((label) => label.name) ?? null, onClosedIssue: issue ? issue.state === 'CLOSED' : null,
@@ -169,8 +169,8 @@ const SECTIONS = {
   lineage: { build: () => ({ until: 'DL-7', items: [] }) }, // the decision graph, once DL-7 draws it
 }
 
-/** A section whose required input failed, or whose build threw on a changed API shape, keeps the previous snapshot's
- *  data, flagged `error` and dated when that data was fetched; a failed optional input leaves it `partial`. */
+/** A section whose required input failed, or whose data came out of schema (a changed API shape), keeps the previous
+ *  snapshot's data, flagged `error` and dated when it was fetched; a failed optional input leaves it `partial`. */
 export function buildSnapshot(inputs, { now, head, previous = null, allowlist = DEFAULT_ALLOWLIST }) {
   const values = Object.fromEntries(Object.entries(inputs).filter(([, input]) => !('error' in input)).map(([id, input]) => [id, input.value]))
   const broken = (ids) => ids.filter((id) => !(id in values)).map((id) => `${id}: ${inputs[id]?.error ?? 'not collected'}`)
@@ -182,6 +182,8 @@ export function buildSnapshot(inputs, { now, head, previous = null, allowlist = 
     if (errors.length === 0) {
       try {
         snapshot[name] = build(values, { allowlist })
+        const invalid = conform(snapshot[name], SCHEMA_V1[name], name, [])
+        if (invalid.length > 0) throw new Error(invalid.join('; '))
         const missing = broken(optional)
         const status = missing.length > 0 ? { status: 'partial', error: missing.join('; ') } : { status: 'ok' }
         snapshot.freshness[name] = { source, fetchedAt: now, ...status }
