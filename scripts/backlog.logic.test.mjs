@@ -57,7 +57,7 @@ describe('parsePortfolio', () => {
   it('reads every row of the live docs/portfolio.md in file order', () => {
     expect(portfolioRows.map((row) => row.slug)).toEqual([
       'foundation', 'harness', 'surfaces', 'pubdocs', 'core', 'verify', 'spine', '3d', 'polish', 'bugs', 'upkeep',
-      'horizon',
+      'horizon', 'lineage', 'mission-control',
     ])
     expect(portfolioRows[0]).toEqual({ rank: 1, slug: 'foundation', epicNumber: 318, lane: 'feature' })
     expect(portfolioRows[1]).toEqual({ rank: 2, slug: 'harness', epicNumber: 138, lane: 'process' })
@@ -66,6 +66,9 @@ describe('parsePortfolio', () => {
     expect(portfolioRows.filter((row) => row.lane === 'enabler').map((row) => row.slug)).toEqual(['core', '3d'])
     expect(portfolioRows.filter((row) => row.lane === 'aux').map((row) => row.slug)).toEqual(['verify', 'bugs', 'upkeep'])
     expect(portfolioRows[11]).toMatchObject({ rank: 12, epicNumber: 147, lane: 'research' })
+    // rows 13-14, amended 2026-09-25 (#482): lineage and mission-control join on equal footing.
+    expect(portfolioRows[12]).toEqual({ rank: 13, slug: 'lineage', epicNumber: 457, lane: 'process' })
+    expect(portfolioRows[13]).toEqual({ rank: 14, slug: 'mission-control', epicNumber: 458, lane: 'process' })
   })
 
   it('skips the header, the separator and prose', () => {
@@ -81,10 +84,14 @@ describe('parsePortfolio', () => {
 })
 
 describe('the rotation constants', () => {
-  // Amended 2026-09-21 (#330) while the foundation plan (#318) runs: three of the six slots are
+  // Amended 2026-09-21 (#330) while the foundation plan (#318) runs: three of the eight slots are
   // `foundation`, and `foundation` is design-first so the ADR the plan waits on leads its own slot.
+  // Amended again 2026-09-25 (#482): `lineage` and `mission-control` join, one slot each, "equal
+  // footing as the other priority projects" — literally equal to `harness` and `spine`.
   it('mirror the literal cycle and aux order written in docs/portfolio.md', () => {
-    expect(PICK_ROTATION).toEqual(['foundation', 'foundation', 'harness', 'foundation', 'spine', 'aux'])
+    expect(PICK_ROTATION).toEqual([
+      'foundation', 'lineage', 'harness', 'foundation', 'mission-control', 'spine', 'foundation', 'aux',
+    ])
     expect(AUX_ROTATION).toEqual(['verify', 'upkeep', 'bugs'])
     expect(livePortfolio).toContain(`\`${PICK_ROTATION.join(' → ')}\``)
     expect(livePortfolio).toContain(`\`${AUX_ROTATION.join(' → ')}\``)
@@ -163,15 +170,16 @@ describe('triageTasks', () => {
 describe('planReady', () => {
   const plan = planReady(fixtureIssues, portfolioRows)
 
-  it('orders the fixture: foundation → foundation → harness → foundation → spine → aux, skipping drained slots', () => {
-    // round 1: #315 · #329 · #148 · #331 · #175 (spine) · #226 (aux: verify is held, so upkeep)
-    // round 2: foundation drained · #150 · spine drained · #222 (aux carries on at bugs)
-    expect(picks(plan)).toEqual([315, 329, 148, 331, 175, 226, 150, 222])
+  it('orders the fixture: foundation → lineage → harness → foundation → mission-control → spine → foundation → aux, skipping drained slots', () => {
+    // round 1: #315 (foundation) · lineage empty · #148 (harness) · #329 (foundation) · mission-control
+    // empty · #175 (spine) · #331 (foundation) · #226 (aux: verify is held, so upkeep)
+    // round 2: foundation drained · #150 (harness) · spine drained · #222 (aux carries on at bugs)
+    expect(picks(plan)).toEqual([315, 148, 329, 175, 331, 226, 150, 222])
   })
 
   it('returns every task once: picks first, then the rest by number', () => {
     expect(numbers(plan)).toEqual([
-      315, 329, 148, 331, 175, 226, 150, 222,
+      315, 148, 329, 175, 331, 226, 150, 222,
       149, 151, 154, 162, 177, 178, 188, 190, 193, 206, 210, 211, 227, 230, 263,
     ])
   })
@@ -210,21 +218,33 @@ describe('planReady', () => {
     expect(picks(planReady(issues, portfolioRows))).toEqual([2, 1])
   })
 
-  it('cycles the six slots, rotates aux in turn, and skips a slot whose bucket is empty', () => {
+  it('cycles the eight slots, rotates aux in turn, and skips a slot whose bucket is empty', () => {
     const issues = [
       open(11, 'foundation'), open(12, 'foundation'), open(13, 'foundation'), open(14, 'foundation'),
       open(21, 'harness'), open(22, 'harness'),
       open(31, 'spine'),
       open(41, 'verify'), open(51, 'upkeep'), open(52, 'upkeep'), open(61, 'bugs'),
     ]
-    // round 1: 11 12 21 13 31 41 · round 2: 14 (no foundation) 22 (no foundation) (no spine) 51
+    // round 1: 11 (foundation) · lineage empty · 21 (harness) · 12 (foundation) · mission-control
+    // empty · 31 (spine) · 13 (foundation) · 41 (aux: verify)
+    // round 2: 14 (foundation) · 22 (harness) · (no spine) · 51 (aux: upkeep)
     // round 3: aux → bugs 61 · round 4: aux → verify is empty → upkeep 52
-    expect(picks(planReady(issues, portfolioRows))).toEqual([11, 12, 21, 13, 31, 41, 14, 22, 51, 61, 52])
+    expect(picks(planReady(issues, portfolioRows))).toEqual([11, 21, 12, 31, 13, 41, 14, 22, 51, 61, 52])
   })
 
   it('aux skips an empty bucket and carries on in turn from the one it used', () => {
     const issues = [open(1, 'upkeep'), open(2, 'upkeep'), open(3, 'bugs')]
     expect(picks(planReady(issues, portfolioRows))).toEqual([1, 3, 2])
+  })
+
+  // Amended 2026-09-25 (#482): the two new rows each get their own slot in the cycle.
+  it('an agent-ready task labelled project:lineage is pickable in the lineage slot; same for mission-control', () => {
+    const issues = [open(1, 'lineage'), open(2, 'mission-control')]
+    const plan = planReady(issues, portfolioRows)
+    // lineage (slot 2) is drawn before mission-control (slot 5) within the same round.
+    expect(picks(plan)).toEqual([1, 2])
+    expect(plan.find((task) => task.number === 1)).toMatchObject({ project: 'lineage', rank: 13, pickable: true })
+    expect(plan.find((task) => task.number === 2)).toMatchObject({ project: 'mission-control', rank: 14, pickable: true })
   })
 
   it('queues the rows the amended rotation leaves out as on-request, until one is pulled forward', () => {
@@ -242,7 +262,7 @@ describe('planReady', () => {
       open(8, 'core', { research: true, blocking: [9] }), open(9, 'foundation', { blockedBy: [8] }),
       open(1, 'spine', { research: true }), open(3, 'spine'),
     ]
-    expect(picks(planReady(issues, portfolioRows))).toEqual([6, 8, 2, 1, 3])
+    expect(picks(planReady(issues, portfolioRows))).toEqual([6, 8, 1, 2, 3])
   })
 
   it('an enabler is pulled by an open task in any bucket and takes a slot of that bucket', () => {
@@ -310,6 +330,16 @@ describe('the foundation gate', () => {
     expect(reasonOf(plan, 1)).toBe('foundation-gate')
   })
 
+  // Amended 2026-09-25 (#482): lineage and mission-control join GATE_EXEMPT_ROWS for the same reason
+  // harness is there — their risk:2 work is CI checks, not the store/UI/R3F paths the gate protects.
+  it('does not hold a risk:2 task in lineage or mission-control', () => {
+    const issues = [risky(1, 'lineage'), risky(2, 'mission-control')]
+    const plan = planReady(issues, portfolioRows)
+    expect(picks(plan)).toEqual([1, 2])
+    expect(reasonOf(plan, 1)).not.toBe('foundation-gate')
+    expect(reasonOf(plan, 2)).not.toBe('foundation-gate')
+  })
+
   it('stops new hand-editing work: wire drawing, junction placement, dragging and previews are risk:2', () => {
     // e.g. #224 "Gate placement preview lacks contrast in light mode" — bugs row, risk:2.
     const plan = planReady([risky(224, 'bugs'), open(1, 'foundation')], portfolioRows)
@@ -354,6 +384,9 @@ describe('summarizeProjects', () => {
     expect(rowFor('verify')).toMatchObject({ open: 1, ready: 0 })
     expect(rowFor('upkeep')).toMatchObject({ open: 2, ready: 1 })
     expect(rowFor('3d')).toMatchObject({ open: 0, ready: 0, next: null })
+    // no lineage/mission-control task exists in this recorded (2026-09-18/21) fixture yet.
+    expect(rowFor('lineage')).toMatchObject({ epicNumber: 457, open: 0, ready: 0, next: null })
+    expect(rowFor('mission-control')).toMatchObject({ epicNumber: 458, open: 0, ready: 0, next: null })
   })
 
   it('names the next pick per project in pick order, falling back to the first pickable task', () => {
