@@ -9,19 +9,8 @@ import type {
   JunctionNode,
   Position,
   CircuitStore,
+  WireEndpoint,
 } from '../../types'
-// Imported rather than restated, so the store and the evaluator cannot disagree about which wire
-// feeds a junction. The rule is a document-structure query and would read better in a small shared
-// module. Two homes were measured with `pnpm run lint:layers` and both cost 1 new violation:
-// `src/core/document/junctions.ts` (a new `engine-no-state` edge, because the rule operates on
-// `JunctionNode` / `CircuitDocument` from `src/store/types.ts`) and a store home imported by the
-// evaluator (a new `engine → state` edge). Here it is 0 new; `simulationActions.ts:2` is the
-// precedent. Not "the only 0-new home" — `src/utils/` is unclassified by the ratchet, so e.g.
-// `src/utils/wireSharing.ts`, which already imports `Wire`/`JunctionNode` and holds "wires passing
-// through a junction", would also measure 0. That is unclassified rather than blessed, so moving
-// there is out of scope here. The real fix is to move the document types below both layers —
-// ADR-0020 / #318 work, not this one's.
-import { findJunctionFeedWire } from '@/simulation/topologicalEval'
 
 type SetState = (
   fn: (state: CircuitStore) => void,
@@ -68,35 +57,15 @@ export const createJunctionActions = (set: SetState, _get: GetState): JunctionAc
       const junction = state.junctions.find((j) => j.id === junctionId)
       if (!junction) return
 
-      // The wire that *feeds* the junction survives; the others are deleted. `wireIds[0]` used to
-      // stand in for the feed wire, but that array is bookkeeping order, not structure (#364):
-      // `removeWire` splices the trunk out and re-attaching a redrawn wire appends it last, so a
-      // branch can sit first — and `slice(1)` then deleted the user's trunk and kept a branch. The
-      // rule is shared with the evaluator (#356/#365) rather than restated, so the two cannot
-      // disagree about a document.
-      //
-      // A junction with no feed wire is a malformed document, and it is read the way the evaluator
-      // reads it: floating. Nothing is the trunk, so no listed wire is kept — each one starts at a
-      // junction that is about to cease to exist.
-      //
-      // SCOPE (#403, measured): this is structural only where the document carries junction
-      // endpoints — serialized, hand-authored, or from the importer (#377). Where the live wiring
-      // gesture wrote it, trunk and branches share one `from` (`wiringActions.ts:859`), so
-      // `findJunctionFeedWire` falls through to the first listed wire in `state.wires` order and
-      // the choice is still positional; the wires deleted there have two real endpoints and did
-      // not need the junction to exist. #403 carries that, with the reproduction.
-      const feedWireId = findJunctionFeedWire(junction, state)?.id
-
-      const wireIdsToRemove =
-        junction.wireIds.length > 0
-          ? junction.wireIds.filter((id) => id !== feedWireId)
-          : state.wires
-              .filter(
-                (w) =>
-                  (w.from.type === 'junction' && w.from.entityId === junctionId) ||
-                  (w.to.type === 'junction' && w.to.entityId === junctionId)
-              )
-              .map((w) => w.id)
+      // Only the wires that would dangle are deleted: those whose `from` or `to` IS this junction,
+      // since that endpoint is about to name nothing (#403). Every wire with two real endpoints
+      // stays, whatever `wireIds` lists. The live wiring gesture writes each branch as a complete
+      // source-pin → sink wire (`wiringActions.ts`, `{ ...originalWire.from }`), so the old
+      // "keep one listed wire, delete the rest" deleted wires the user drew — whichever one it kept.
+      const endsHere = (e: WireEndpoint) => e.type === 'junction' && e.entityId === junctionId
+      const wireIdsToRemove = state.wires
+        .filter((w) => endsHere(w.from) || endsHere(w.to))
+        .map((w) => w.id)
 
       state.wires = state.wires.filter((w) => !wireIdsToRemove.includes(w.id))
 
