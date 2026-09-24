@@ -74,7 +74,11 @@ export function extractSpecifiers(source) {
 }
 
 function globToRegExp(pattern) {
-  throw new Error(`not implemented: ${pattern}`)
+  // CodeQL js/regex-injection only treats this global replace as a sanitizer.
+  // Escape every metacharacter first, then restore `*` / `**` glob semantics.
+  const escaped = pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const source = escaped.replace(/\\\*\\\*/g, '.*').replace(/\\\*/g, '[^/]*')
+  return new RegExp(`^${source}$`)
 }
 
 function matchSeed(file, seed) {
