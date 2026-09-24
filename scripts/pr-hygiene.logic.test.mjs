@@ -21,6 +21,7 @@ import {
   linkedIssueExemption,
   measure,
   RATCHET_BASELINE_FILE,
+  RATCHET_CONFIG_FILE,
   compareRatchetBaseline,
   nextPageUrl,
   parseGeneratedPatterns,
@@ -526,6 +527,13 @@ const baselineOf = (...rows) => JSON.stringify(rows, null, 2)
 const REAL_BASELINE = readFileSync(path.join(import.meta.dirname, '..', RATCHET_BASELINE_FILE), 'utf8')
 const realRows = () => JSON.parse(REAL_BASELINE)
 
+/** This repo's own config — the only place a rule name is ever declared. Read as text, never run. */
+const REAL_CONFIG = readFileSync(path.join(import.meta.dirname, '..', RATCHET_CONFIG_FILE), 'utf8')
+/** A config declaring exactly these rule names, in the shape the real one writes them. */
+const configOf = (...names) => `module.exports = {\n  forbidden: [\n${names.map((name) => `    { name: '${name}', severity: 'error' },`).join('\n')}\n  ],\n}\n`
+/** The config as the PR's changed-file list sees it: edited, or not. */
+const configEdit = () => file(RATCHET_CONFIG_FILE, 6, 0)
+
 describe('parseRatchetBaseline', () => {
   it('reads one comparable row per recorded violation', () => {
     const parsed = parseRatchetBaseline(baselineOf(violation('engine-no-state', 'src/core/a.ts', 'src/store/b.ts')))
@@ -554,6 +562,12 @@ describe('compareRatchetBaseline', () => {
   const engine = violation('engine-no-state', 'src/core/a.ts', 'src/store/b.ts')
   const other = violation('engine-no-state', 'src/core/c.ts', 'src/store/b.ts')
   const armed = violation('core-through-index', 'src/components/x.tsx', 'src/core/chips/y.ts')
+  /** The config side of a PR that genuinely arms `name`: it is declared here and was not before. */
+  const arming = (name, baseNames = ['engine-no-state']) => ({
+    baseConfig: configOf(...baseNames),
+    headConfig: configOf(...baseNames, name),
+    configTouched: true,
+  })
 
   it('passes an unchanged baseline, whatever order the rows are written in', () => {
     const verdict = compareRatchetBaseline({ base: baselineOf(engine, other), head: baselineOf(other, engine) })
@@ -566,16 +580,32 @@ describe('compareRatchetBaseline', () => {
     expect(verdict.counts).toEqual({ base: 2, head: 1 })
   })
 
-  it('reads growth under a rule name new in this PR as arming that rule', () => {
-    const verdict = compareRatchetBaseline({ base: baselineOf(engine), head: baselineOf(engine, armed) })
+  it('reads growth under a rule name this PR declares in the config as arming that rule', () => {
+    // "New in this PR" is a claim about `.dependency-cruiser.cjs`, not about the baseline rows.
+    // This case used to assert the same thing while supplying no config at all, which is exactly
+    // the conflation that let a zero-row rule absorb a violation (#432 round 2, blocker 2).
+    const verdict = compareRatchetBaseline({
+      base: baselineOf(engine),
+      head: baselineOf(engine, armed),
+      ...arming('core-through-index'),
+    })
     expect(verdict.status).toBe('armed')
     expect(verdict.armedRules).toEqual(['core-through-index'])
     expect(verdict.added).toHaveLength(1)
   })
 
   it('reads #404 — the real 29 → 72 growth — as arming core-through-index', () => {
+    // #404 is the only genuine arming in this repo's history, and it touched the config
+    // (`gh api repos/mezivillager/hacer/pulls/404/files`). Its base config is the real one with
+    // that rule's declaration taken back out.
     const base = realRows().filter((row) => row.rule.name !== 'core-through-index')
-    const verdict = compareRatchetBaseline({ base: JSON.stringify(base), head: REAL_BASELINE })
+    const verdict = compareRatchetBaseline({
+      base: JSON.stringify(base),
+      head: REAL_BASELINE,
+      baseConfig: REAL_CONFIG.replace("name: 'core-through-index'", "name: 'core-through-index-was-not-here'"),
+      headConfig: REAL_CONFIG,
+      configTouched: true,
+    })
     expect(verdict.status).toBe('armed')
     expect(verdict.armedRules).toEqual(['core-through-index'])
     expect(verdict.absorbed).toHaveLength(0)
@@ -588,7 +618,11 @@ describe('compareRatchetBaseline', () => {
   })
 
   it('names only the pre-existing-rule rows when one PR both arms and absorbs', () => {
-    const verdict = compareRatchetBaseline({ base: baselineOf(engine), head: baselineOf(engine, armed, other) })
+    const verdict = compareRatchetBaseline({
+      base: baselineOf(engine),
+      head: baselineOf(engine, armed, other),
+      ...arming('core-through-index'),
+    })
     expect(verdict.status).toBe('absorbed')
     expect(verdict.absorbed.map((row) => row.edge)).toEqual(['src/core/c.ts → src/store/b.ts'])
     expect(verdict.armedRules).toEqual(['core-through-index'])
@@ -648,7 +682,19 @@ describe('the ratchet rule inside evaluate()', () => {
   })
 
   it('passes a rule armed in the same commit', () => {
-    const result = evaluate(ratchetPr({ base: baselineOf(engine), head: baselineOf(engine, armed) }))
+    // `configTouched` is not something the caller asserts: evaluate() reads it off the PR's own
+    // changed-file list, so a claim of arming always costs a reviewable line in the config.
+    const result = evaluate(
+      ratchetPr(
+        {
+          base: baselineOf(engine),
+          head: baselineOf(engine, armed),
+          baseConfig: configOf('engine-no-state'),
+          headConfig: configOf('engine-no-state', 'core-through-index'),
+        },
+        { files: [file('src/core/thing.ts', 10, 2), configEdit()] },
+      ),
+    )
     expect(ratchetFinding(result).level).toBe('pass')
     expect(ratchetFinding(result).message).toContain('core-through-index')
   })
@@ -711,7 +757,13 @@ describe('the fail/warn split is the row set, not the count (#432)', () => {
   })
 
   it('still passes a rule armed with nothing removed', () => {
-    const verdict = compareRatchetBaseline({ base: baselineOf(engine), head: baselineOf(engine, armed) })
+    const verdict = compareRatchetBaseline({
+      base: baselineOf(engine),
+      head: baselineOf(engine, armed),
+      baseConfig: configOf('engine-no-state'),
+      headConfig: configOf('engine-no-state', 'core-through-index'),
+      configTouched: true,
+    })
     expect(verdict.status).toBe('armed')
     expect(verdict.removed).toEqual([])
   })
@@ -721,11 +773,111 @@ describe('the fail/warn split is the row set, not the count (#432)', () => {
     // is indistinguishable from a genuine arming by the baseline alone. It is distinguishable from
     // an *arming*, though: an arming removes nothing. So a baseline that both lost and gained rows
     // warns and points at the config diff, instead of reading `armed` and passing silently.
-    const verdict = compareRatchetBaseline({ base: baselineOf(engine), head: baselineOf(renamedRule) })
+    const rename = {
+      base: baselineOf(engine),
+      head: baselineOf(renamedRule),
+      baseConfig: configOf('engine-no-state'),
+      headConfig: configOf('engine-no-state-v2'),
+    }
+    const verdict = compareRatchetBaseline({ ...rename, configTouched: true })
     expect(verdict.status).toBe('swapped')
-    const result = evaluate(pr({ ratchet: { base: baselineOf(engine), head: baselineOf(renamedRule) } }))
+    const result = evaluate(pr({ ratchet: rename, files: [file('src/core/thing.ts', 10, 2), configEdit()] }))
     expect(result.verdict).toBe('WARN')
     expect(ratchetFinding(result).message).toMatch(/renamed/i)
+  })
+})
+
+// ── A rule name is only "new" because the config declares it (#432 round 3) ─────────────────────
+//
+// Round 2 derived "a new rule is being armed here" from the base *baseline rows*. A rule already
+// armed in `.dependency-cruiser.cjs` with zero recorded rows satisfies that for free, and
+// `engine-no-ui-packages` is exactly that on this repo. Measured 2026-09-24 in a worktree: a real
+// `zustand` import under `src/core/` fails `pnpm run lint:layers` (`1 new`), the documented
+// `depcruise … --baseline` write absorbs it (72 rows → 73), `lint` is green again, and feeding both
+// real baselines to `evaluate()` read `PASS ratchet=armed`, "arming `engine-no-ui-packages` (1
+// row)" — with no config edit anywhere, so nothing reviewable and no declaration. A rule name
+// present in no config at all passed the same way, and the same case plus one repaired violation
+// read `WARN ratchet=swapped`, telling the reader to go and read a config diff that did not exist.
+//
+// The channel widens exactly as the ratchet succeeds: `engine-no-ui` is down to one row,
+// `state-no-3d` and `src-no-e2e` to two. So `armed` and `swapped` now require the rule name to be
+// declared in the head config and absent from the base one — and the config to be in the PR's own
+// changed files, which is the only part of this a reviewer can see.
+
+describe('a rule name is only new because the config declares it (#432 round 3)', () => {
+  const uiPackages = violation('engine-no-ui-packages', 'src/core/ratchetProbeUiPkg.ts', 'node_modules/zustand/index.js')
+  const engine = violation('engine-no-state', 'src/core/a.ts', 'src/store/b.ts')
+  const armed = violation('core-through-index', 'src/components/x.tsx', 'src/core/chips/y.ts')
+  const renamed = violation('engine-no-state-v2', 'src/core/a.ts', 'src/store/b.ts')
+  const ratchetFinding = (result) => result.findings.find((finding) => finding.rule === 'ratchet')
+  const untouched = (ratchet) => pr({ ratchet, body: 'Fixes #406' })
+  const edited = (ratchet) => pr({ ratchet, body: 'Fixes #406', files: [file('src/core/thing.ts', 10, 2), configEdit()] })
+
+  it('pins the premise: the real config declares a rule the real baseline has no row for', () => {
+    const recorded = new Set(realRows().map((row) => row.rule.name))
+    const declared = [...REAL_CONFIG.matchAll(/name:\s*'([^']+)'/g)].map((match) => match[1])
+    expect([...recorded].every((name) => declared.includes(name))).toBe(true)
+    expect(declared.filter((name) => !recorded.has(name))).toContain('engine-no-ui-packages')
+  })
+
+  it('fails the measured attack — a row absorbed under a zero-row rule, config untouched', () => {
+    const head = JSON.stringify([...realRows(), uiPackages], null, 2)
+    const result = evaluate(untouched({ base: REAL_BASELINE, head }))
+    expect(result.ratchet).toBe('absorbed')
+    expect(result.verdict).toBe('FAIL')
+    expect(ratchetFinding(result).message).toContain(
+      'engine-no-ui-packages: src/core/ratchetProbeUiPkg.ts → node_modules/zustand/index.js',
+    )
+  })
+
+  it('fails that attack when the PR also repairs a real violation, instead of warning `swapped`', () => {
+    const rows = realRows()
+    const repaired = rows.findIndex((row) => row.rule.name === 'engine-no-state')
+    const head = JSON.stringify([...rows.filter((_, index) => index !== repaired), uiPackages], null, 2)
+    const result = evaluate(untouched({ base: REAL_BASELINE, head }))
+    expect(result.ratchet).toBe('absorbed')
+    expect(result.verdict).toBe('FAIL')
+  })
+
+  it('fails a rule name declared in neither config, even when the config is edited', () => {
+    const head = JSON.stringify([...realRows(), violation('totally-made-up', 'src/core/x.ts', 'src/store/y.ts')], null, 2)
+    const result = evaluate(
+      edited({ base: REAL_BASELINE, head, baseConfig: REAL_CONFIG, headConfig: `${REAL_CONFIG}\n// a cosmetic edit\n` }),
+    )
+    expect(result.ratchet).toBe('absorbed')
+    expect(result.verdict).toBe('FAIL')
+  })
+
+  it('fails a rename whose config edit is not in the PR — `swapped` is unreachable without one', () => {
+    const result = evaluate(untouched({ base: baselineOf(engine), head: baselineOf(renamed) }))
+    expect(result.ratchet).toBe('absorbed')
+    expect(result.verdict).toBe('FAIL')
+  })
+
+  it('says where the declaration is when it passes an arming, so the claim is checkable', () => {
+    const result = evaluate(
+      edited({
+        base: baselineOf(engine),
+        head: baselineOf(engine, armed),
+        baseConfig: configOf('engine-no-state'),
+        headConfig: configOf('engine-no-state', 'core-through-index'),
+      }),
+    )
+    expect(result.verdict).toBe('PASS')
+    expect(ratchetFinding(result).message).toContain(RATCHET_CONFIG_FILE)
+  })
+
+  it('only sends a `swapped` reader to a config diff the PR actually has', () => {
+    const input = edited({
+      base: baselineOf(engine),
+      head: baselineOf(renamed),
+      baseConfig: configOf('engine-no-state'),
+      headConfig: configOf('engine-no-state-v2'),
+    })
+    const result = evaluate(input)
+    expect(result.ratchet).toBe('swapped')
+    expect(ratchetFinding(result).message).toContain(RATCHET_CONFIG_FILE)
+    expect(input.files.map((f) => f.filename)).toContain(RATCHET_CONFIG_FILE)
   })
 })
 
@@ -808,9 +960,13 @@ describe('readAtRef (#432)', () => {
 
 describe('the rule that pays for `linguist-generated` (#432)', () => {
   it('stays wired into RULES, so the exclusion cannot outlive the control', () => {
-    // `.gitattributes` keeps the baseline out of review; `ratchetGrowth` is what buys that. The two
-    // live in different files, so deleting the rule would silently restore the free pass.
-    expect(RULES.map((rule) => rule.name)).toContain('ratchetGrowth')
+    // `.gitattributes` keeps the baseline out of review; the ratchet rule is what buys that. The
+    // two live in different files, so dropping the rule would silently restore the free pass.
+    // Asserted on behaviour, not on the rule function's name: renaming it is not the regression.
+    const engine = violation('engine-no-state', 'src/core/a.ts', 'src/store/b.ts')
+    const other = violation('engine-no-state', 'src/core/c.ts', 'src/store/b.ts')
+    const result = evaluate(pr({ ratchet: { base: baselineOf(engine), head: baselineOf(engine, other) } }), RULES)
+    expect(result.findings.some((finding) => finding.rule === 'ratchet' && finding.level === 'fail')).toBe(true)
     const attributes = readFileSync(path.join(import.meta.dirname, '..', '.gitattributes'), 'utf8')
     expect(attributes).toContain(`${RATCHET_BASELINE_FILE} linguist-generated`)
   })
