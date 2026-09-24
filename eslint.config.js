@@ -79,14 +79,14 @@ export default defineConfig([
   // does not, because src/utils is shared code with legitimate, guarded browser helpers. Neither
   // covers test files: the `node` Vitest project already fails them for touching a DOM global.
   {
-    files: ['src/core/**/*.ts', 'src/simulation/**/*.ts', 'src/utils/**/*.{ts,tsx}'],
+    files: ['src/core/**/*.ts', 'src/simulation/**/*.ts', 'src/scenarios/**/*.ts', 'src/utils/**/*.{ts,tsx}'],
     ignores: ['**/*.test.{ts,tsx}', '**/*.spec.{ts,tsx}'],
     rules: {
       'no-console': 'error', // Pure logic returns errors as data; the UI decides how to show them.
     },
   },
   {
-    files: ['src/core/**/*.ts', 'src/simulation/**/*.ts'],
+    files: ['src/core/**/*.ts', 'src/simulation/**/*.ts', 'src/scenarios/**/*.ts'],
     ignores: ['**/*.test.ts', '**/*.spec.ts'],
     rules: {
       'no-restricted-globals': [

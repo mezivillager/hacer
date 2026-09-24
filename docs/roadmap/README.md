@@ -3,7 +3,7 @@
 **Last Updated:** 2026-05-12  
 **Project:** HACER - Hardware Architecture and Constraints Explorer & Researcher  
 **Current Product Phase:** Phase 0.5 - nand2tetris Project 1 foundation  
-**Current Infrastructure Baseline:** Node 22, React 19, TypeScript 5.9, Vite 8, Zustand 5, React Three Fiber 9, Tailwind CSS v4, shadcn/ui-style primitives, Vitest 4, Playwright 1.57, semantic-release
+**Current Infrastructure Baseline:** Node 22, React 19, TypeScript 6.0, Vite 8, Zustand 5, React Three Fiber 9, Tailwind CSS v4, shadcn/ui-style primitives, Vitest 4, Playwright 1.57, semantic-release
 
 ---
 

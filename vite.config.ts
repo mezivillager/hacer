@@ -20,11 +20,11 @@ const pkg = JSON.parse(readFileSync(path.join(__dirname, 'package.json'), 'utf-8
 // just not in the strictest project, which is still strictly better than not run at all.
 const ALL_TESTS = ['src/**/*.{test,spec}.{ts,tsx,mts,js}', 'scripts/**/*.{test,spec}.mjs']
 
-// Membership is by directory: the layers that must stay headless — pure logic, state, and the
-// repo's own tooling — plus the `.ts`/`.mjs` extension rule (a `.tsx` test renders JSX, so it
+// Membership is by directory: the layers that must stay headless — pure logic, state, scenarios,
+// and the repo's own tooling — plus the `.ts`/`.mjs` extension rule (a `.tsx` test renders JSX, so it
 // belongs with a DOM). A new test file under one of these joins `node` with no config change,
 // and fails loudly if it reaches for `window`, `document` or `localStorage`. That is the point.
-const NODE_TEST_DIRS = ['src/core', 'src/simulation', 'src/store', 'src/utils', 'src/lib', 'scripts']
+const NODE_TEST_DIRS = ['src/core', 'src/simulation', 'src/store', 'src/utils', 'src/lib', 'src/scenarios', 'scripts']
 const NODE_TEST_FILE = /\.(test|spec)\.(ts|mjs)$/
 
 // The exceptions: files in those directories that still need a DOM. Measured 2026-09-21 (#323) —
