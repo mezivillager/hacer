@@ -200,6 +200,7 @@ PRs, and `ledger.md`. **Who is coordinating, and why a claim is idle**, is not �
 - `model-tiering.md` — which model tier each role gets, measured by replaying the verifier brief.
 - `cursor-lane.md` — what Cursor can carry: the local `cursor-agent` second opinion (verified read-only setup, trial, budget) and keep/skip verdicts for the rest.
 - `usage-rationing.md` — the Cursor lane's daily token ration, how a run is measured, and the dashboard reading the "Included" guard rests on (`cursor-usage.json`).
+- `mission-control.md` — the snapshot `scripts/mission-control/collect.mjs --json` prints (schema v1): every section, where it comes from, and how a failed source is flagged rather than fatal — what Mission Control's site and the coordinator's orient step both read.
 - `../research/2026-09-18-agent-readiness/` — why the process looks like this.
 - `sessions/` — dated session records: the goal, the owner's rulings, what was built, the state at close, how to resume. Start with the latest one when picking the work back up.
 - `sessions/COORDINATOR-HANDOFF.md` — claim-comment fields, when to write a `*-handoff.md`, and how a second coordinator resumes or releases idle claims. Product “what’s next” still comes from `docs/portfolio.md` and Issues; handoffs carry **coordinator meta-state** only.
