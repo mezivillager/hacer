@@ -1,0 +1,288 @@
+[
+  {
+    "author": {
+      "id": "MDQ6VXNlcjgzNjc2MDc1",
+      "is_bot": false,
+      "login": "mezivillager",
+      "name": ""
+    },
+    "closingIssuesReferences": [
+      {
+        "id": "I_kwDORdjPzc8AAAABTEc8NA",
+        "number": 482,
+        "repository": {
+          "id": "R_kgDORdjPzQ",
+          "name": "hacer",
+          "owner": {
+            "id": "MDQ6VXNlcjgzNjc2MDc1",
+            "login": "mezivillager"
+          }
+        },
+        "url": "https://github.com/mezivillager/hacer/issues/482"
+      }
+    ],
+    "comments": [
+      {
+        "id": "IC_kwDORdjPzc8AAAABWw9bkA",
+        "author": {
+          "login": "github-actions"
+        },
+        "authorAssociation": "CONTRIBUTOR",
+        "body": "",
+        "createdAt": "2026-09-24T21:40:19Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/486#issuecomment-5822700432",
+        "viewerDidAuthor": false
+      }
+    ],
+    "createdAt": "2026-09-24T21:39:33Z",
+    "headRefName": "feat/portfolio-lineage-mission-control",
+    "isDraft": false,
+    "labels": [
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZjXw",
+        "name": "project:harness",
+        "description": "Portfolio row: harness",
+        "color": "0E8A16"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZuvA",
+        "name": "risk:1",
+        "description": "pure logic under conformance (src/core, src/simulation)",
+        "color": "FEF2C0"
+      }
+    ],
+    "mergedAt": null,
+    "number": 486,
+    "title": "Portfolio: rows for lineage and mission-control, and the eight-slot pick cycle",
+    "url": "https://github.com/mezivillager/hacer/pull/486"
+  },
+  {
+    "author": {
+      "id": "MDQ6VXNlcjgzNjc2MDc1",
+      "is_bot": false,
+      "login": "mezivillager",
+      "name": ""
+    },
+    "closingIssuesReferences": [
+      {
+        "id": "I_kwDORdjPzc8AAAABS3xN5w",
+        "number": 438,
+        "repository": {
+          "id": "R_kgDORdjPzQ",
+          "name": "hacer",
+          "owner": {
+            "id": "MDQ6VXNlcjgzNjc2MDc1",
+            "login": "mezivillager"
+          }
+        },
+        "url": "https://github.com/mezivillager/hacer/issues/438"
+      }
+    ],
+    "comments": [
+      {
+        "id": "IC_kwDORdjPzc8AAAABWp6qXg",
+        "author": {
+          "login": "github-actions"
+        },
+        "authorAssociation": "CONTRIBUTOR",
+        "body": "",
+        "createdAt": "2026-09-24T13:45:06Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/461#issuecomment-5815315038",
+        "viewerDidAuthor": false
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWqHpxQ",
+        "author": {
+          "login": "mezivillager"
+        },
+        "authorAssociation": "OWNER",
+        "body": "**Verification interrupted — not a verdict.** The fresh-context verifier for this PR was stopped",
+        "createdAt": "2026-09-24T13:57:45Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/461#issuecomment-5815527877",
+        "viewerDidAuthor": true
+      }
+    ],
+    "createdAt": "2026-09-24T13:44:17Z",
+    "headRefName": "fix/438-ratchet-fail-closed",
+    "isDraft": false,
+    "labels": [
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZjXw",
+        "name": "project:harness",
+        "description": "Portfolio row: harness",
+        "color": "0E8A16"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZvRQ",
+        "name": "risk:2",
+        "description": "store / UI / R3F / architecture / harness paths",
+        "color": "F9D0C4"
+      }
+    ],
+    "mergedAt": null,
+    "number": 461,
+    "title": "fix(pr-hygiene): fail closed when the ratchet's config scan finds no rule names (#438)",
+    "url": "https://github.com/mezivillager/hacer/pull/461"
+  },
+  {
+    "author": {
+      "id": "MDQ6VXNlcjgzNjc2MDc1",
+      "is_bot": false,
+      "login": "mezivillager",
+      "name": ""
+    },
+    "closingIssuesReferences": [
+      {
+        "id": "I_kwDORdjPzc8AAAABSrQ8kQ",
+        "number": 403,
+        "repository": {
+          "id": "R_kgDORdjPzQ",
+          "name": "hacer",
+          "owner": {
+            "id": "MDQ6VXNlcjgzNjc2MDc1",
+            "login": "mezivillager"
+          }
+        },
+        "url": "https://github.com/mezivillager/hacer/issues/403"
+      }
+    ],
+    "comments": [
+      {
+        "id": "IC_kwDORdjPzc8AAAABWp3g_w",
+        "author": {
+          "login": "github-actions"
+        },
+        "authorAssociation": "CONTRIBUTOR",
+        "body": "",
+        "createdAt": "2026-09-24T13:41:50Z",
+        "includesCreatedEdit": true,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/459#issuecomment-5815263487",
+        "viewerDidAuthor": false
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWqHm4A",
+        "author": {
+          "login": "mezivillager"
+        },
+        "authorAssociation": "OWNER",
+        "body": "**Verification interrupted — not a verdict.** The fresh-context verifier for this PR was stopped",
+        "createdAt": "2026-09-24T13:57:43Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/459#issuecomment-5815527136",
+        "viewerDidAuthor": true
+      }
+    ],
+    "createdAt": "2026-09-24T13:41:03Z",
+    "headRefName": "fix/403-remove-junction-keeps-standalone-wires",
+    "isDraft": false,
+    "labels": [
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZvRQ",
+        "name": "risk:2",
+        "description": "store / UI / R3F / architecture / harness paths",
+        "color": "F9D0C4"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZw9w",
+        "name": "sev:high",
+        "description": "Blocks a user flow",
+        "color": "D93F0B"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC3H__Jg",
+        "name": "project:foundation",
+        "description": "Foundation plan (#318): guards, the read-only pipeline, removals",
+        "color": "5319e7"
+      }
+    ],
+    "mergedAt": null,
+    "number": 459,
+    "title": "fix(store): removeJunction deletes only the wires that would dangle (#403)",
+    "url": "https://github.com/mezivillager/hacer/pull/459"
+  },
+  {
+    "author": {
+      "is_bot": true,
+      "login": "app/dependabot"
+    },
+    "closingIssuesReferences": [],
+    "comments": [
+      {
+        "id": "IC_kwDORdjPzc8AAAABWRkBIQ",
+        "author": {
+          "login": "github-actions"
+        },
+        "authorAssociation": "CONTRIBUTOR",
+        "body": "",
+        "createdAt": "2026-09-23T05:49:51Z",
+        "includesCreatedEdit": true,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/410#issuecomment-5789778209",
+        "viewerDidAuthor": false
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWpJsgg",
+        "author": {
+          "login": "mezivillager"
+        },
+        "authorAssociation": "OWNER",
+        "body": "",
+        "createdAt": "2026-09-24T12:54:19Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [
+          {
+            "content": "THUMBS_UP",
+            "users": {
+              "totalCount": 1
+            }
+          }
+        ],
+        "url": "https://github.com/mezivillager/hacer/pull/410#issuecomment-5814512770",
+        "viewerDidAuthor": true
+      }
+    ],
+    "createdAt": "2026-09-23T05:48:59Z",
+    "headRefName": "dependabot/npm_and_yarn/react-and-react-three-445dd59498",
+    "isDraft": false,
+    "labels": [
+      {
+        "id": "LA_kwDORdjPzc8AAAACcBK4Ig",
+        "name": "dependencies",
+        "description": "Pull requests that update a dependency file",
+        "color": "0366d6"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAACcBLIPw",
+        "name": "javascript",
+        "description": "Pull requests that update javascript code",
+        "color": "168700"
+      }
+    ],
+    "mergedAt": null,
+    "number": 410,
+    "title": "chore(deps): bump the react-and-react-three group across 1 directory with 5 updates",
+    "url": "https://github.com/mezivillager/hacer/pull/410"
+  }
+]

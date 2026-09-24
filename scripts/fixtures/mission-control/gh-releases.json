@@ -1,0 +1,32 @@
+[
+  {
+    "isLatest": true,
+    "publishedAt": "2026-09-24T13:43:55Z",
+    "tagName": "v2.29.1"
+  },
+  {
+    "isLatest": false,
+    "publishedAt": "2026-09-24T12:59:00Z",
+    "tagName": "v2.29.0"
+  },
+  {
+    "isLatest": false,
+    "publishedAt": "2026-09-24T09:56:57Z",
+    "tagName": "v2.28.1"
+  },
+  {
+    "isLatest": false,
+    "publishedAt": "2026-09-24T01:17:53Z",
+    "tagName": "v2.28.0"
+  },
+  {
+    "isLatest": false,
+    "publishedAt": "2026-09-24T01:13:25Z",
+    "tagName": "v2.27.0"
+  },
+  {
+    "isLatest": false,
+    "publishedAt": "2026-09-24T01:02:10Z",
+    "tagName": "v2.26.0"
+  }
+]

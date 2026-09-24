@@ -1,0 +1,1553 @@
+[
+  {
+    "author": {
+      "id": "MDQ6VXNlcjgzNjc2MDc1",
+      "is_bot": false,
+      "login": "mezivillager",
+      "name": ""
+    },
+    "closingIssuesReferences": [],
+    "comments": [
+      {
+        "id": "IC_kwDORdjPzc8AAAABWwcSgQ",
+        "author": {
+          "login": "github-actions"
+        },
+        "authorAssociation": "CONTRIBUTOR",
+        "body": "",
+        "createdAt": "2026-09-24T20:59:41Z",
+        "includesCreatedEdit": true,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/464#issuecomment-5822157441",
+        "viewerDidAuthor": false
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWwlHig",
+        "author": {
+          "login": "mezivillager"
+        },
+        "authorAssociation": "OWNER",
+        "body": "",
+        "createdAt": "2026-09-24T21:10:38Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/464#issuecomment-5822302090",
+        "viewerDidAuthor": true
+      }
+    ],
+    "createdAt": "2026-09-24T20:58:49Z",
+    "headRefName": "docs/research-lineage-mission-control",
+    "isDraft": false,
+    "labels": [
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZjXw",
+        "name": "project:harness",
+        "description": "Portfolio row: harness",
+        "color": "0E8A16"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZuFw",
+        "name": "risk:0",
+        "description": "docs, tests-only, dependency patches",
+        "color": "C2E0C6"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZvyA",
+        "name": "research",
+        "description": "Output is an ADR or note, no product code",
+        "color": "5319E7"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2iKA5Q",
+        "name": "size-override",
+        "description": "Human-applied: this PR may exceed the reviewable-lines budget (reason in the PR body)",
+        "color": "E4E669"
+      }
+    ],
+    "mergedAt": "2026-09-24T21:12:04Z",
+    "number": 464,
+    "title": "docs(research): Decision Lineage and Mission Control — shaping #457 and #458 into projects",
+    "url": "https://github.com/mezivillager/hacer/pull/464"
+  },
+  {
+    "author": {
+      "id": "MDQ6VXNlcjgzNjc2MDc1",
+      "is_bot": false,
+      "login": "mezivillager",
+      "name": ""
+    },
+    "closingIssuesReferences": [
+      {
+        "id": "I_kwDORdjPzc8AAAABR7Uo1Q",
+        "number": 180,
+        "repository": {
+          "id": "R_kgDORdjPzQ",
+          "name": "hacer",
+          "owner": {
+            "id": "MDQ6VXNlcjgzNjc2MDc1",
+            "login": "mezivillager"
+          }
+        },
+        "url": "https://github.com/mezivillager/hacer/issues/180"
+      },
+      {
+        "id": "I_kwDORdjPzc8AAAABS-lJfg",
+        "number": 450,
+        "repository": {
+          "id": "R_kgDORdjPzQ",
+          "name": "hacer",
+          "owner": {
+            "id": "MDQ6VXNlcjgzNjc2MDc1",
+            "login": "mezivillager"
+          }
+        },
+        "url": "https://github.com/mezivillager/hacer/issues/450"
+      }
+    ],
+    "comments": [
+      {
+        "id": "IC_kwDORdjPzc8AAAABWpNgUA",
+        "author": {
+          "login": "github-actions"
+        },
+        "authorAssociation": "CONTRIBUTOR",
+        "body": "",
+        "createdAt": "2026-09-24T12:58:29Z",
+        "includesCreatedEdit": true,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/451#issuecomment-5814575184",
+        "viewerDidAuthor": false
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWp1wfQ",
+        "author": {
+          "login": "mezivillager"
+        },
+        "authorAssociation": "OWNER",
+        "body": "## Verifier verdict: PASS\n**Verified on:** Claude Opus 5.5 (`claude-opus-5-5[1m]`) · **Reviewable lines:** 15 (budget 400) · **Tests:** 0 added (19 moved byte-identical; 1 assertion rewritten + 1 guard added in an existing case), suite 2344 passed / 0 failed (145 files) · **DoD:** lint ✔ test:run ✔ build ✔ lint:docs ✔ · issue commands ✔\n**It cannot be mistaken for anything else.** `added` is empty, so the verdict cannot be `absorbed`, `armed` or `swapped`. I also ran variants of this PR through `evaluate()`:",
+        "createdAt": "2026-09-24T13:40:03Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/451#issuecomment-5815234685",
+        "viewerDidAuthor": true
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWp5kmg",
+        "author": {
+          "login": "github-actions"
+        },
+        "authorAssociation": "CONTRIBUTOR",
+        "body": "",
+        "createdAt": "2026-09-24T13:43:59Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/451#issuecomment-5815297178",
+        "viewerDidAuthor": false
+      }
+    ],
+    "createdAt": "2026-09-24T12:49:18Z",
+    "headRefName": "fix/180-signal-display-layering",
+    "isDraft": false,
+    "labels": [
+      {
+        "id": "LA_kwDORdjPzc8AAAACbXzzBg",
+        "name": "released",
+        "description": "",
+        "color": "ededed"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZuvA",
+        "name": "risk:1",
+        "description": "pure logic under conformance (src/core, src/simulation)",
+        "color": "FEF2C0"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC3H__Jg",
+        "name": "project:foundation",
+        "description": "Foundation plan (#318): guards, the read-only pipeline, removals",
+        "color": "5319e7"
+      }
+    ],
+    "mergedAt": "2026-09-24T13:41:36Z",
+    "number": 451,
+    "title": "fix(simulation): move multiBitFormat below the UI layer",
+    "url": "https://github.com/mezivillager/hacer/pull/451"
+  },
+  {
+    "author": {
+      "id": "MDQ6VXNlcjgzNjc2MDc1",
+      "is_bot": false,
+      "login": "mezivillager",
+      "name": ""
+    },
+    "closingIssuesReferences": [
+      {
+        "id": "I_kwDORdjPzc8AAAABR7VebA",
+        "number": 199,
+        "repository": {
+          "id": "R_kgDORdjPzQ",
+          "name": "hacer",
+          "owner": {
+            "id": "MDQ6VXNlcjgzNjc2MDc1",
+            "login": "mezivillager"
+          }
+        },
+        "url": "https://github.com/mezivillager/hacer/issues/199"
+      }
+    ],
+    "comments": [
+      {
+        "id": "IC_kwDORdjPzc8AAAABWgrlxA",
+        "author": {
+          "login": "github-actions"
+        },
+        "authorAssociation": "CONTRIBUTOR",
+        "body": "",
+        "createdAt": "2026-09-24T01:08:54Z",
+        "includesCreatedEdit": true,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/444#issuecomment-5805630916",
+        "viewerDidAuthor": false
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWgr6VQ",
+        "author": {
+          "login": "mezivillager"
+        },
+        "authorAssociation": "OWNER",
+        "body": "",
+        "createdAt": "2026-09-24T01:09:27Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/444#issuecomment-5805636181",
+        "viewerDidAuthor": true
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWpAfCg",
+        "author": {
+          "login": "mezivillager"
+        },
+        "authorAssociation": "OWNER",
+        "body": "## Verifier verdict: BLOCK\n**Verified on:** Claude Opus 5.5 (`claude-opus-5-5`) · **Reviewable lines:** 0 (budget 400; the only change is `src/core/hdl/parser.fuzz.test.ts`, 401 test lines) · **Tests:** 6 added, suite 2337 passed / 0 failed (145 files) · **DoD** (PR head merged with `origin/main` @ `2d90994`): lint ✔ test:run ✔ build ✔ lint:docs ✔ `vitest run src/core/hdl/parser.fuzz.test.ts` ✔ (6/6)",
+        "createdAt": "2026-09-24T12:44:27Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/444#issuecomment-5814361866",
+        "viewerDidAuthor": true
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWpFG8Q",
+        "author": {
+          "login": "mezivillager"
+        },
+        "authorAssociation": "OWNER",
+        "body": "",
+        "createdAt": "2026-09-24T12:49:24Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/444#issuecomment-5814437617",
+        "viewerDidAuthor": true
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWpOOhg",
+        "author": {
+          "login": "github-actions"
+        },
+        "authorAssociation": "CONTRIBUTOR",
+        "body": "",
+        "createdAt": "2026-09-24T12:59:13Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/444#issuecomment-5814587014",
+        "viewerDidAuthor": false
+      }
+    ],
+    "createdAt": "2026-09-24T01:07:47Z",
+    "headRefName": "test/199-hdl-parser-fuzz",
+    "isDraft": false,
+    "labels": [
+      {
+        "id": "LA_kwDORdjPzc8AAAACbXzzBg",
+        "name": "released",
+        "description": "",
+        "color": "ededed"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZliQ",
+        "name": "project:verify",
+        "description": "Portfolio row: verify",
+        "color": "0E8A16"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZuvA",
+        "name": "risk:1",
+        "description": "pure logic under conformance (src/core, src/simulation)",
+        "color": "FEF2C0"
+      }
+    ],
+    "mergedAt": "2026-09-24T12:52:04Z",
+    "number": 444,
+    "title": "HDL parser fuzz: never throws; diagnostic spans stay in range",
+    "url": "https://github.com/mezivillager/hacer/pull/444"
+  },
+  {
+    "author": {
+      "id": "MDQ6VXNlcjgzNjc2MDc1",
+      "is_bot": false,
+      "login": "mezivillager",
+      "name": ""
+    },
+    "closingIssuesReferences": [
+      {
+        "id": "I_kwDORdjPzc8AAAABR7VNLA",
+        "number": 193,
+        "repository": {
+          "id": "R_kgDORdjPzQ",
+          "name": "hacer",
+          "owner": {
+            "id": "MDQ6VXNlcjgzNjc2MDc1",
+            "login": "mezivillager"
+          }
+        },
+        "url": "https://github.com/mezivillager/hacer/issues/193"
+      }
+    ],
+    "comments": [
+      {
+        "id": "IC_kwDORdjPzc8AAAABWgs-Hw",
+        "author": {
+          "login": "mezivillager"
+        },
+        "authorAssociation": "OWNER",
+        "body": "",
+        "createdAt": "2026-09-24T01:11:20Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/443#issuecomment-5805653535",
+        "viewerDidAuthor": true
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWguAyw",
+        "author": {
+          "login": "github-actions"
+        },
+        "authorAssociation": "CONTRIBUTOR",
+        "body": "",
+        "createdAt": "2026-09-24T01:13:02Z",
+        "includesCreatedEdit": true,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/443#issuecomment-5805670603",
+        "viewerDidAuthor": false
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWgvfQQ",
+        "author": {
+          "login": "mezivillager"
+        },
+        "authorAssociation": "OWNER",
+        "body": "",
+        "createdAt": "2026-09-24T01:15:22Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/443#issuecomment-5805694785",
+        "viewerDidAuthor": true
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWgw3oQ",
+        "author": {
+          "login": "github-actions"
+        },
+        "authorAssociation": "CONTRIBUTOR",
+        "body": "",
+        "createdAt": "2026-09-24T01:17:56Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/443#issuecomment-5805717409",
+        "viewerDidAuthor": false
+      }
+    ],
+    "createdAt": "2026-09-24T01:07:33Z",
+    "headRefName": "feat/193-vendor-vectors",
+    "isDraft": false,
+    "labels": [
+      {
+        "id": "LA_kwDORdjPzc8AAAACbXzzBg",
+        "name": "released",
+        "description": "",
+        "color": "ededed"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZliQ",
+        "name": "project:verify",
+        "description": "Portfolio row: verify",
+        "color": "0E8A16"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZvRQ",
+        "name": "risk:2",
+        "description": "store / UI / R3F / architecture / harness paths",
+        "color": "F9D0C4"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC3H__Jg",
+        "name": "project:foundation",
+        "description": "Foundation plan (#318): guards, the read-only pipeline, removals",
+        "color": "5319e7"
+      }
+    ],
+    "mergedAt": "2026-09-24T01:15:23Z",
+    "number": 443,
+    "title": "Vendor Project 1 nand2tetris vectors at a pinned web-ide commit",
+    "url": "https://github.com/mezivillager/hacer/pull/443"
+  },
+  {
+    "author": {
+      "id": "MDQ6VXNlcjgzNjc2MDc1",
+      "is_bot": false,
+      "login": "mezivillager",
+      "name": ""
+    },
+    "closingIssuesReferences": [
+      {
+        "id": "I_kwDORdjPzc8AAAABSVkpyg",
+        "number": 313,
+        "repository": {
+          "id": "R_kgDORdjPzQ",
+          "name": "hacer",
+          "owner": {
+            "id": "MDQ6VXNlcjgzNjc2MDc1",
+            "login": "mezivillager"
+          }
+        },
+        "url": "https://github.com/mezivillager/hacer/issues/313"
+      }
+    ],
+    "comments": [
+      {
+        "id": "IC_kwDORdjPzc8AAAABWgKd5g",
+        "author": {
+          "login": "github-actions"
+        },
+        "authorAssociation": "CONTRIBUTOR",
+        "body": "",
+        "createdAt": "2026-09-24T00:13:24Z",
+        "includesCreatedEdit": true,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/434#issuecomment-5805088230",
+        "viewerDidAuthor": false
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWgSimw",
+        "author": {
+          "login": "mezivillager"
+        },
+        "authorAssociation": "OWNER",
+        "body": "## Verifier verdict: PASS\n**Verified on:** Sonnet 5 (Claude, `claude-sonnet-5`) — matches the brief's `risk:1`, non-`src/core`/`src/simulation`-touching → Sonnet tier (the one `.test.ts` change is a test-only edit, not a `src/core` production edge). · **Reviewable lines:** 128 raw (95 ins / 33 del across 8 files); with test-file diffs excluded per `implementer-brief.md`'s budget line, actually-reviewable = 9 (vite.config.ts 8, ledger.md 1) — far under 400. · **Tests:** 0 added, 6 existing tests given explicit timeouts; suite 2251 passed / 0 failed (140/140 files). · **DoD:** lint ✔ test:run ✔ build ✔ lint:docs ✔ (issue verification command `pnpm run test:run` ✔, same run)",
+        "createdAt": "2026-09-24T00:27:01Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/434#issuecomment-5805220507",
+        "viewerDidAuthor": true
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWgUmeA",
+        "author": {
+          "login": "github-actions"
+        },
+        "authorAssociation": "CONTRIBUTOR",
+        "body": "",
+        "createdAt": "2026-09-24T00:30:26Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/434#issuecomment-5805254264",
+        "viewerDidAuthor": false
+      }
+    ],
+    "createdAt": "2026-09-24T00:12:43Z",
+    "headRefName": "fix/313-explicit-timeouts",
+    "isDraft": false,
+    "labels": [
+      {
+        "id": "LA_kwDORdjPzc8AAAACbXzzBg",
+        "name": "released",
+        "description": "",
+        "color": "ededed"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZuvA",
+        "name": "risk:1",
+        "description": "pure logic under conformance (src/core, src/simulation)",
+        "color": "FEF2C0"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC3H__Jg",
+        "name": "project:foundation",
+        "description": "Foundation plan (#318): guards, the read-only pipeline, removals",
+        "color": "5319e7"
+      }
+    ],
+    "mergedAt": "2026-09-24T00:27:55Z",
+    "number": 434,
+    "title": "fix(vitest): explicit timeouts for measured-slow tests, not the 5s default",
+    "url": "https://github.com/mezivillager/hacer/pull/434"
+  },
+  {
+    "author": {
+      "id": "MDQ6VXNlcjgzNjc2MDc1",
+      "is_bot": false,
+      "login": "mezivillager",
+      "name": ""
+    },
+    "closingIssuesReferences": [],
+    "comments": [
+      {
+        "id": "IC_kwDORdjPzc8AAAABWV-gxQ",
+        "author": {
+          "login": "github-actions"
+        },
+        "authorAssociation": "CONTRIBUTOR",
+        "body": "",
+        "createdAt": "2026-09-23T12:00:11Z",
+        "includesCreatedEdit": true,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/423#issuecomment-5794406597",
+        "viewerDidAuthor": false
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWV_shQ",
+        "author": {
+          "login": "mezivillager"
+        },
+        "authorAssociation": "OWNER",
+        "body": "",
+        "createdAt": "2026-09-23T12:01:32Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/423#issuecomment-5794425989",
+        "viewerDidAuthor": true
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWWD1OA",
+        "author": {
+          "login": "mezivillager"
+        },
+        "authorAssociation": "OWNER",
+        "body": "- CI snapshot: `pr-hygiene`, `browser-qa`, `deploy-preview`, and GitGuardian passed; `ci` and CodeQL analysis were still in progress. No need to wait for them for this docs verdict.",
+        "createdAt": "2026-09-23T12:06:34Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/423#issuecomment-5794493752",
+        "viewerDidAuthor": true
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWWETBg",
+        "author": {
+          "login": "mezivillager"
+        },
+        "authorAssociation": "OWNER",
+        "body": "",
+        "createdAt": "2026-09-23T12:07:07Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/423#issuecomment-5794501382",
+        "viewerDidAuthor": true
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWWGSNg",
+        "author": {
+          "login": "mezivillager"
+        },
+        "authorAssociation": "OWNER",
+        "body": "**VERDICT: PASS**",
+        "createdAt": "2026-09-23T12:09:34Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/423#issuecomment-5794533942",
+        "viewerDidAuthor": true
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWf2xIQ",
+        "author": {
+          "login": "github-actions"
+        },
+        "authorAssociation": "CONTRIBUTOR",
+        "body": "",
+        "createdAt": "2026-09-23T23:39:24Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/423#issuecomment-5804765473",
+        "viewerDidAuthor": false
+      }
+    ],
+    "createdAt": "2026-09-23T11:59:19Z",
+    "headRefName": "cursor/cloud-queue-convention-3ec3",
+    "isDraft": false,
+    "labels": [
+      {
+        "id": "LA_kwDORdjPzc8AAAACbXzzBg",
+        "name": "released",
+        "description": "",
+        "color": "ededed"
+      }
+    ],
+    "mergedAt": "2026-09-23T12:09:49Z",
+    "number": 423,
+    "title": "docs(harness): standing Claude → Grok Bot cloud queue",
+    "url": "https://github.com/mezivillager/hacer/pull/423"
+  },
+  {
+    "author": {
+      "id": "MDQ6VXNlcjgzNjc2MDc1",
+      "is_bot": false,
+      "login": "mezivillager",
+      "name": ""
+    },
+    "closingIssuesReferences": [],
+    "comments": [
+      {
+        "id": "IC_kwDORdjPzc8AAAABWVml9g",
+        "author": {
+          "login": "github-actions"
+        },
+        "authorAssociation": "CONTRIBUTOR",
+        "body": "",
+        "createdAt": "2026-09-23T11:29:31Z",
+        "includesCreatedEdit": true,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/422#issuecomment-5794014710",
+        "viewerDidAuthor": false
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWVsBaw",
+        "author": {
+          "login": "mezivillager"
+        },
+        "authorAssociation": "OWNER",
+        "body": "## Verifier verdict: PASS\n**Verified on:** Grok Bot (executor subagent)",
+        "createdAt": "2026-09-23T11:36:37Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/422#issuecomment-5794103659",
+        "viewerDidAuthor": true
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWf2zOg",
+        "author": {
+          "login": "github-actions"
+        },
+        "authorAssociation": "CONTRIBUTOR",
+        "body": "",
+        "createdAt": "2026-09-23T23:39:27Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/422#issuecomment-5804766010",
+        "viewerDidAuthor": false
+      }
+    ],
+    "createdAt": "2026-09-23T11:28:43Z",
+    "headRefName": "cursor/grok-bot-trial-handoff-done-a33f",
+    "isDraft": false,
+    "labels": [
+      {
+        "id": "LA_kwDORdjPzc8AAAACbXzzBg",
+        "name": "released",
+        "description": "",
+        "color": "ededed"
+      }
+    ],
+    "mergedAt": "2026-09-23T11:37:09Z",
+    "number": 422,
+    "title": "docs(harness): close the Grok Bot cloud-builder trial handoff",
+    "url": "https://github.com/mezivillager/hacer/pull/422"
+  },
+  {
+    "author": {
+      "id": "MDQ6VXNlcjgzNjc2MDc1",
+      "is_bot": false,
+      "login": "mezivillager",
+      "name": ""
+    },
+    "closingIssuesReferences": [
+      {
+        "id": "I_kwDORdjPzc8AAAABR7Ur2Q",
+        "number": 181,
+        "repository": {
+          "id": "R_kgDORdjPzQ",
+          "name": "hacer",
+          "owner": {
+            "id": "MDQ6VXNlcjgzNjc2MDc1",
+            "login": "mezivillager"
+          }
+        },
+        "url": "https://github.com/mezivillager/hacer/issues/181"
+      }
+    ],
+    "comments": [
+      {
+        "id": "IC_kwDORdjPzc8AAAABWQNS9A",
+        "author": {
+          "login": "github-actions"
+        },
+        "authorAssociation": "CONTRIBUTOR",
+        "body": "",
+        "createdAt": "2026-09-23T03:15:06Z",
+        "includesCreatedEdit": true,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/399#issuecomment-5788357364",
+        "viewerDidAuthor": false
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWQYY_g",
+        "author": {
+          "login": "mezivillager"
+        },
+        "authorAssociation": "OWNER",
+        "body": "## Verifier verdict: BLOCK\n**Verified on:** Opus 5 (`claude-opus-5[1m]`) · **Reviewable lines:** 313 non-test (+212 test, generated baseline excluded; budget 400) · **Tests:** 1 file / 6 tests added, suite 2204 passed / 0 failed · **DoD:** lint ✔ test:run ✔ build ✔ lint:docs ✔ (+ `vitest run src/core/serialization` ✔)",
+        "createdAt": "2026-09-23T03:37:07Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/399#issuecomment-5788539134",
+        "viewerDidAuthor": true
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWQjWDg",
+        "author": {
+          "login": "mezivillager"
+        },
+        "authorAssociation": "OWNER",
+        "body": "Fixed, rebased on fresh `main` (`f306a50`) and force-pushed to the same branch — head `8e90ed7`. The verdict was right; the ruling to restore warn-and-drop was taken as given and I agree with it after reading the code: the fail-loud counter-argument is real, but a person importing a file with one malformed gate should not lose the whole circuit, and #181's own criterion is that user-visible behaviour is unchanged — this PR moves *where* warnings are produced, not *what* a person gets.",
+        "createdAt": "2026-09-23T03:57:00Z",
+        "includesCreatedEdit": true,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/399#issuecomment-5788718606",
+        "viewerDidAuthor": true
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWQqF0A",
+        "author": {
+          "login": "mezivillager"
+        },
+        "authorAssociation": "OWNER",
+        "body": "",
+        "createdAt": "2026-09-23T04:05:37Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/399#issuecomment-5788829136",
+        "viewerDidAuthor": true
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWQxb_w",
+        "author": {
+          "login": "mezivillager"
+        },
+        "authorAssociation": "OWNER",
+        "body": "## Verifier verdict (round 2, `e8ba8c2`): BLOCK\n**Verified on:** Opus 5 (`claude-opus-5[1m]`) · **Reviewable lines:** 385 non-test (+337 test; generated baseline excluded; budget 400) · **Tests:** 2221 passed / 0 failed · **DoD:** lint ✔ test:run ✔ build ✔ lint:docs ✔",
+        "createdAt": "2026-09-23T04:16:44Z",
+        "includesCreatedEdit": true,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/399#issuecomment-5788949503",
+        "viewerDidAuthor": true
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWQ9GSA",
+        "author": {
+          "login": "mezivillager"
+        },
+        "authorAssociation": "OWNER",
+        "body": "",
+        "createdAt": "2026-09-23T04:37:21Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/399#issuecomment-5789140552",
+        "viewerDidAuthor": true
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWRJDIQ",
+        "author": {
+          "login": "mezivillager"
+        },
+        "authorAssociation": "OWNER",
+        "body": "",
+        "createdAt": "2026-09-23T04:59:44Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/399#issuecomment-5789336353",
+        "viewerDidAuthor": true
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWROQsA",
+        "author": {
+          "login": "mezivillager"
+        },
+        "authorAssociation": "OWNER",
+        "body": "## Verifier verdict (round 3, `2bbfbdc`): PASS\n**Verified on:** Opus 5 (`claude-opus-5[1m]`) · **Reviewable lines:** 423 non-test (+411 test; budget 400, `size-override` applied) · **Tests:** 2242 passed / 0 failed · **DoD:** lint ✔ test:run ✔ build ✔ lint:docs ✔",
+        "createdAt": "2026-09-23T05:08:47Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/399#issuecomment-5789421744",
+        "viewerDidAuthor": true
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWRQi9w",
+        "author": {
+          "login": "github-actions"
+        },
+        "authorAssociation": "CONTRIBUTOR",
+        "body": "",
+        "createdAt": "2026-09-23T05:12:41Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/399#issuecomment-5789459191",
+        "viewerDidAuthor": false
+      }
+    ],
+    "createdAt": "2026-09-23T03:14:18Z",
+    "headRefName": "fix/181-deserialize-warnings-as-data",
+    "isDraft": false,
+    "labels": [
+      {
+        "id": "LA_kwDORdjPzc8AAAACbXzzBg",
+        "name": "released",
+        "description": "",
+        "color": "ededed"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZkug",
+        "name": "project:core",
+        "description": "Portfolio row: core",
+        "color": "0E8A16"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZuvA",
+        "name": "risk:1",
+        "description": "pure logic under conformance (src/core, src/simulation)",
+        "color": "FEF2C0"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2iKA5Q",
+        "name": "size-override",
+        "description": "Human-applied: this PR may exceed the reviewable-lines budget (reason in the PR body)",
+        "color": "E4E669"
+      }
+    ],
+    "mergedAt": "2026-09-23T05:10:02Z",
+    "number": 399,
+    "title": "fix(core): deserialize returns warnings as data, with version dispatch",
+    "url": "https://github.com/mezivillager/hacer/pull/399"
+  },
+  {
+    "author": {
+      "id": "MDQ6VXNlcjgzNjc2MDc1",
+      "is_bot": false,
+      "login": "mezivillager",
+      "name": ""
+    },
+    "closingIssuesReferences": [
+      {
+        "id": "I_kwDORdjPzc8AAAABSqBqvw",
+        "number": 364,
+        "repository": {
+          "id": "R_kgDORdjPzQ",
+          "name": "hacer",
+          "owner": {
+            "id": "MDQ6VXNlcjgzNjc2MDc1",
+            "login": "mezivillager"
+          }
+        },
+        "url": "https://github.com/mezivillager/hacer/issues/364"
+      }
+    ],
+    "comments": [
+      {
+        "id": "IC_kwDORdjPzc8AAAABWQEonw",
+        "author": {
+          "login": "github-actions"
+        },
+        "authorAssociation": "CONTRIBUTOR",
+        "body": "",
+        "createdAt": "2026-09-23T03:00:04Z",
+        "includesCreatedEdit": true,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/396#issuecomment-5788215455",
+        "viewerDidAuthor": false
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWQNm2Q",
+        "author": {
+          "login": "mezivillager"
+        },
+        "authorAssociation": "OWNER",
+        "body": "## Verifier verdict: BLOCK\n**Verified on:** Opus 5 (`claude-opus-5[1m]`) · **Reviewable lines:** 212 added / 13 removed over 4 files, 20 of them production (budget 400) · **Tests:** 6 added, suite 2204 passed / 0 failed · **DoD:** lint ✔ test:run ✔ build ✔ lint:docs ✔",
+        "createdAt": "2026-09-23T03:15:41Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/396#issuecomment-5788362457",
+        "viewerDidAuthor": true
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWQYJiw",
+        "author": {
+          "login": "mezivillager"
+        },
+        "authorAssociation": "OWNER",
+        "body": "The verdict is right, and I reproduced it before changing anything: same reproduction, branches given the gesture's `from`, run at `2f52456` and at `e2f6f87` — survivors `[branch1]` on **both**. `TRUNK'` and `branch2` deleted, no change. I also ran the contrast (`from: junction` branches → `[TRUNK']` here, `[branch1]` on main), which confirms the hand-written endpoints are what make the suite green.\nNo existing assertion weakened; the four pre-existing `removeJunction` tests are untouched. Pushed to the same branch (`9a415cf`); `177e31c` and `e2f6f87` are unrewritten so the verdict's SHAs stay reachable.",
+        "createdAt": "2026-09-23T03:36:39Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/396#issuecomment-5788535179",
+        "viewerDidAuthor": true
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWQcVYw",
+        "author": {
+          "login": "mezivillager"
+        },
+        "authorAssociation": "OWNER",
+        "body": "## Verifier verdict (re-review of `9a415cf`): PASS\n**Verified on:** Opus 5 (`claude-opus-5[1m]`) · **Reviewable lines this round:** 160 added / 21 removed over 4 files, **0 of them behavioural** (comments only in `signalActions.ts` and `topologicalEval.ts`) · **Tests:** 2 added, suite 2206 passed / 0 failed · **DoD:** lint ✔ test:run ✔ build ✔ lint:docs ✔\n_Independent fresh-context review (same reviewer as the `e2f6f87` verdict); the verifier did not see the author's session._",
+        "createdAt": "2026-09-23T03:45:02Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/396#issuecomment-5788603747",
+        "viewerDidAuthor": true
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWQkBMA",
+        "author": {
+          "login": "github-actions"
+        },
+        "authorAssociation": "CONTRIBUTOR",
+        "body": "",
+        "createdAt": "2026-09-23T03:57:48Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/396#issuecomment-5788729648",
+        "viewerDidAuthor": false
+      }
+    ],
+    "createdAt": "2026-09-23T02:59:15Z",
+    "headRefName": "fix/364-remove-junction-trunk",
+    "isDraft": false,
+    "labels": [
+      {
+        "id": "LA_kwDORdjPzc8AAAACbXzzBg",
+        "name": "released",
+        "description": "",
+        "color": "ededed"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZuvA",
+        "name": "risk:1",
+        "description": "pure logic under conformance (src/core, src/simulation)",
+        "color": "FEF2C0"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC3H__Jg",
+        "name": "project:foundation",
+        "description": "Foundation plan (#318): guards, the read-only pipeline, removals",
+        "color": "5319e7"
+      }
+    ],
+    "mergedAt": "2026-09-23T03:55:10Z",
+    "number": 396,
+    "title": "fix(store): removeJunction keeps the feed wire, not wireIds[0]",
+    "url": "https://github.com/mezivillager/hacer/pull/396"
+  },
+  {
+    "author": {
+      "id": "MDQ6VXNlcjgzNjc2MDc1",
+      "is_bot": false,
+      "login": "mezivillager",
+      "name": ""
+    },
+    "closingIssuesReferences": [
+      {
+        "id": "I_kwDORdjPzc8AAAABR7U_Hw",
+        "number": 188,
+        "repository": {
+          "id": "R_kgDORdjPzQ",
+          "name": "hacer",
+          "owner": {
+            "id": "MDQ6VXNlcjgzNjc2MDc1",
+            "login": "mezivillager"
+          }
+        },
+        "url": "https://github.com/mezivillager/hacer/issues/188"
+      },
+      {
+        "id": "I_kwDORdjPzc8AAAABSW9Isw",
+        "number": 340,
+        "repository": {
+          "id": "R_kgDORdjPzQ",
+          "name": "hacer",
+          "owner": {
+            "id": "MDQ6VXNlcjgzNjc2MDc1",
+            "login": "mezivillager"
+          }
+        },
+        "url": "https://github.com/mezivillager/hacer/issues/340"
+      }
+    ],
+    "comments": [
+      {
+        "id": "IC_kwDORdjPzc8AAAABWPX0sg",
+        "author": {
+          "login": "github-actions"
+        },
+        "authorAssociation": "CONTRIBUTOR",
+        "body": "",
+        "createdAt": "2026-09-23T01:40:08Z",
+        "includesCreatedEdit": true,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/387#issuecomment-5787481266",
+        "viewerDidAuthor": false
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWPi3aw",
+        "author": {
+          "login": "mezivillager"
+        },
+        "authorAssociation": "OWNER",
+        "body": "## Verifier verdict: PASS\nVerified on: Sonnet 5 (claude-sonnet-5)",
+        "createdAt": "2026-09-23T01:59:39Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/387#issuecomment-5787662187",
+        "viewerDidAuthor": true
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWPwd-A",
+        "author": {
+          "login": "github-actions"
+        },
+        "authorAssociation": "CONTRIBUTOR",
+        "body": "",
+        "createdAt": "2026-09-23T02:26:25Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/387#issuecomment-5787885048",
+        "viewerDidAuthor": false
+      }
+    ],
+    "createdAt": "2026-09-23T01:39:20Z",
+    "headRefName": "docs/340-backlog-sweep",
+    "isDraft": false,
+    "labels": [
+      {
+        "id": "LA_kwDORdjPzc8AAAACbXzzBg",
+        "name": "released",
+        "description": "",
+        "color": "ededed"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZjXw",
+        "name": "project:harness",
+        "description": "Portfolio row: harness",
+        "color": "0E8A16"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZuFw",
+        "name": "risk:0",
+        "description": "docs, tests-only, dependency patches",
+        "color": "C2E0C6"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC3H__Jg",
+        "name": "project:foundation",
+        "description": "Foundation plan (#318): guards, the read-only pipeline, removals",
+        "color": "5319e7"
+      }
+    ],
+    "mergedAt": "2026-09-23T02:21:59Z",
+    "number": 387,
+    "title": "docs(harness): backlog sweep against the read-only direction, and Phase N filed",
+    "url": "https://github.com/mezivillager/hacer/pull/387"
+  },
+  {
+    "author": {
+      "id": "MDQ6VXNlcjgzNjc2MDc1",
+      "is_bot": false,
+      "login": "mezivillager",
+      "name": ""
+    },
+    "closingIssuesReferences": [
+      {
+        "id": "I_kwDORdjPzc8AAAABSW12KQ",
+        "number": 327,
+        "repository": {
+          "id": "R_kgDORdjPzQ",
+          "name": "hacer",
+          "owner": {
+            "id": "MDQ6VXNlcjgzNjc2MDc1",
+            "login": "mezivillager"
+          }
+        },
+        "url": "https://github.com/mezivillager/hacer/issues/327"
+      }
+    ],
+    "comments": [
+      {
+        "id": "IC_kwDORdjPzc8AAAABWOL9tA",
+        "author": {
+          "login": "mezivillager"
+        },
+        "authorAssociation": "OWNER",
+        "body": "",
+        "createdAt": "2026-09-22T23:40:25Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/358#issuecomment-5786238388",
+        "viewerDidAuthor": true
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWOMDmg",
+        "author": {
+          "login": "github-actions"
+        },
+        "authorAssociation": "CONTRIBUTOR",
+        "body": "",
+        "createdAt": "2026-09-22T23:40:30Z",
+        "includesCreatedEdit": true,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/358#issuecomment-5786239898",
+        "viewerDidAuthor": false
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWOXuFA",
+        "author": {
+          "login": "mezivillager"
+        },
+        "authorAssociation": "OWNER",
+        "body": "**Verdict: `sound with corrections`.**\n`Verified on:` Claude Opus 5 (`claude-opus-5[1m]`), fresh-context review, worktree at fe97b55, 2026-09-23.",
+        "createdAt": "2026-09-22T23:53:40Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/358#issuecomment-5786430996",
+        "viewerDidAuthor": true
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWOs06Q",
+        "author": {
+          "login": "mezivillager"
+        },
+        "authorAssociation": "OWNER",
+        "body": "verdict holds: the spine is right and unchanged — spec-only writes, read-only projections, pure\nits verdict was `sound with corrections`, and the corrections are in. Four decisions changed *after*",
+        "createdAt": "2026-09-23T00:22:31Z",
+        "includesCreatedEdit": true,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/358#issuecomment-5786776809",
+        "viewerDidAuthor": true
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWO4MMg",
+        "author": {
+          "login": "mezivillager"
+        },
+        "authorAssociation": "OWNER",
+        "body": "**Verdict: `accept with corrections`.**\n`Verified on:` Claude Opus 5 (`claude-opus-5[1m]`), second-pass review of the four post-review deltas,",
+        "createdAt": "2026-09-23T00:37:40Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/358#issuecomment-5786962994",
+        "viewerDidAuthor": true
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWPA5SQ",
+        "author": {
+          "login": "mezivillager"
+        },
+        "authorAssociation": "OWNER",
+        "body": "",
+        "createdAt": "2026-09-23T00:54:30Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/358#issuecomment-5787105609",
+        "viewerDidAuthor": true
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWPnLAQ",
+        "author": {
+          "login": "github-actions"
+        },
+        "authorAssociation": "CONTRIBUTOR",
+        "body": "",
+        "createdAt": "2026-09-23T02:08:28Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/358#issuecomment-5787732737",
+        "viewerDidAuthor": false
+      }
+    ],
+    "createdAt": "2026-09-22T23:39:45Z",
+    "headRefName": "docs/327-read-only-adr",
+    "isDraft": false,
+    "labels": [
+      {
+        "id": "LA_kwDORdjPzc8AAAACbXzzBg",
+        "name": "released",
+        "description": "",
+        "color": "ededed"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZvRQ",
+        "name": "risk:2",
+        "description": "store / UI / R3F / architecture / harness paths",
+        "color": "F9D0C4"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2iKA5Q",
+        "name": "size-override",
+        "description": "Human-applied: this PR may exceed the reviewable-lines budget (reason in the PR body)",
+        "color": "E4E669"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC3H__Jg",
+        "name": "project:foundation",
+        "description": "Foundation plan (#318): guards, the read-only pipeline, removals",
+        "color": "5319e7"
+      }
+    ],
+    "mergedAt": "2026-09-23T01:32:30Z",
+    "number": 358,
+    "title": "docs(adr): ADR-0020 — spec-only writes, read-only projections",
+    "url": "https://github.com/mezivillager/hacer/pull/358"
+  },
+  {
+    "author": {
+      "id": "MDQ6VXNlcjgzNjc2MDc1",
+      "is_bot": false,
+      "login": "mezivillager",
+      "name": ""
+    },
+    "closingIssuesReferences": [
+      {
+        "id": "I_kwDORdjPzc8AAAABSYgYJg",
+        "number": 352,
+        "repository": {
+          "id": "R_kgDORdjPzQ",
+          "name": "hacer",
+          "owner": {
+            "id": "MDQ6VXNlcjgzNjc2MDc1",
+            "login": "mezivillager"
+          }
+        },
+        "url": "https://github.com/mezivillager/hacer/issues/352"
+      }
+    ],
+    "comments": [
+      {
+        "id": "IC_kwDORdjPzc8AAAABV3aQSA",
+        "author": {
+          "login": "github-actions"
+        },
+        "authorAssociation": "CONTRIBUTOR",
+        "body": "",
+        "createdAt": "2026-09-21T14:41:46Z",
+        "includesCreatedEdit": true,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/351#issuecomment-5762355272",
+        "viewerDidAuthor": false
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABV3jDKA",
+        "author": {
+          "login": "mezivillager"
+        },
+        "authorAssociation": "OWNER",
+        "body": "## Verifier verdict: BLOCK\nVerified on **Opus**. This PR touches no `src/core`/`src/simulation` code and would, under its own new rule, be a Sonnet job — but Sonnet approving its own promotion is circular, so the higher tier is deliberate, not a mis-tiered dispatch. Flagging per `.claude/agents/hacer-verifier.md:16`.\n**The direction of this change is supported.** I re-derived the argument and it holds: `main`'s bar was *\"a second measured pair, history hidden past the reviewed commit, where Sonnet again reproduces the blocker\"* (`model-tiering.md:59` on `main`). A live outing strictly dominates that bar on both axes — there is no later history to leak (the verdict precedes any fix commit), and *finding* an unknown defect is stronger than *reproducing* a known one. Three of the four produced real defects, each with a red-then-fix commit and an Opus coordinator second pass confirming it. I am not blocking on the merits.\n| #312 | **cannot establish** — 0 model references in any comment | **yes** — `browser-qa` failed for real: run `35586513124` @ `93850f46`, job conclusion `failure`. Body was edited at 10:56:26Z, *after* the 10:24:20Z verdict, so the current body's description of it is a consequence, not a pre-disclosure | yes — `fa80f44` + coordinator PASS 10:53:31Z |\n| #320 | **yes** — the verdict says so itself: *\"this review ran on Sonnet — flagged to the dispatcher\"* | **yes** — `fetch_origin` mis-diagnosis; red `c03eb3a` | yes — `eadbb09` + coordinator PASS 11:43:02Z |\n**Two of the four cannot be tied to Sonnet by anything in this repo or on GitHub.** The prior bar asked for n=2; if either #312 or #319 was in fact an Opus verdict, the new evidence base is 2 live outings, not 4, and the claimed margin over the bar disappears. The dispatch prompts are not in the repo, so I also **cannot establish whether any of the four was dispatched with a hint** (\"check CI\", \"look at the fetch handler\") — which would falsify §1a:46's *\"could not look the answer up\"*. I note the #312 verdict's own \"Not covered\" says the CI blocker came from `gh run view --log`, which is consistent with but does not prove an unhinted find.\n- **`docs/harness/verifier-brief.md:15` — the operative sentence is ambiguous for exactly the case the PR is protecting.** It reads: *\"`risk:0` and `risk:1` PRs are verified on **Sonnet**; `risk:2`, and any PR touching `src/core/` or `src/simulation/`, on **Opus**\"*. A `risk:1` PR touching `src/simulation` matches **both** clauses, and the sentence has no `otherwise`/`elsewhere` to break the tie. `model-tiering.md:60` does have that qualifier (\"`risk:0` / `risk:1` **elsewhere**\"); the brief — the file `hacer-verifier.md:9` tells the agent to *\"read it first\"* — does not. `main` had no such overlap (a `risk:0` docs-only PR cannot touch `src/core`), so this PR introduces it. Concrete scenario: **#312 is precisely this case** — `risk:1` + `src/simulation/topologicalEval.ts`. A coordinator reading only the brief has a coin-flip on the engine path this PR says must never be tiered down. Fix: add \"otherwise\" / \"elsewhere\" to the first clause, or order the clauses engine-first.\n- **`docs/harness/model-tiering.md:48` — \"Every one is `risk:1`\" is false, and the error hides the one fact most relevant to this decision.** #320 carries **`risk:2`** (`gh api repos/mezivillager/hacer/issues/320/labels` → `[\"released\",\"project:harness\",\"risk:2\"]`; applied 2026-09-21T11:01:21Z, *before* the verdict at 11:25:34Z), and #320's own verdict says so: *\"this PR carries `risk:2`, which `model-tiering.md` routes to an Opus verifier; this review ran on Sonnet.\"* Two consequences the doc gets backwards: (1) *\"There is no live Sonnet `risk:2` verdict\"* (`:48`) is untrue, and §2:59's counter — *\"three live `risk:2` pairs where a Sonnet verdict and an Opus second pass agree\"* — already stands at **1/3**, not 0/3, since the coordinator's 11:43:02Z review is that second pass. (2) More importantly, the sentence conceals that the only live `risk:2` Sonnet verification happened **against the tier policy in force at the time, and was merged anyway**. That is evidence about how well this boundary is *enforced*, not just about what Sonnet can do — and it is the single most load-bearing fact for a PR that draws a new boundary.\n1. **The `model-per-risk-tier` invariant pins token *order*, not the mapping** — `scripts/skills.logic.mjs:137-141`. The comment claims \"The tier split itself, not just that a Model line exists,\" and the PR body says it \"pin[s] the mapping.\" `containsPhrases` (`:91-101`) is an ordered-subsequence match, so I ran both experiments against the real test: a naive `Sonnet`↔`Opus` swap **fails 1/109** (good, and stricter than `main`'s 5-phrase version); but an *order-preserving* rewrite — `\"risk:0 and risk:1 PRs are NEVER to be verified on **Sonnet** … only risk:2, and any PR touching src/core/ or src/simulation/, may skip **Opus** and run cheap\"` — **passes 109/109** while stating the exact opposite policy. The tiers can still be swapped with the test green. Net improvement over `main`, but the claim overstates it; worth softening the comment or asserting on a normalised single line.\n- #320's label timeline pulled from the events API to rule out a post-hoc relabel: `risk:2` applied 11:01:21Z, verdict 11:25:34Z — the label was on the PR while it was being verified.\n- PR-body edit timestamps for #312/#319/#320 all post-date their verdicts, confirming the defects were not pre-disclosed in the bodies the verifiers read.",
+        "createdAt": "2026-09-21T14:51:34Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/351#issuecomment-5762499368",
+        "viewerDidAuthor": true
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABV3pS_Q",
+        "author": {
+          "login": "mezivillager"
+        },
+        "authorAssociation": "OWNER",
+        "body": "- The brief's sentence is rewritten so the engine clause comes **first and wins**: *\"a PR touching `src/core/` or `src/simulation/`, or labelled `risk:2`, is verified on **Opus**; every other PR, at `risk:0` or `risk:1`, on **Sonnet**\"*. #312 — `risk:1` and `src/simulation` — now matches exactly one clause.\n**The finding that mattered most was the one about attribution**, and it is now the fix rather than a caveat. Nothing recorded which tier verified which PR — which is why half the evidence is unattributable *and* why a `risk:2` PR was reviewed a tier low unnoticed. New §1b: every verdict carries `Verified on:`, and a verifier off its rule says so **in either direction** — the agent definition says the unsafe direction is running low on the engine, and names #320 as the case that already happened. Until a verdict names its model it cannot count as tier evidence, so §2's `risk:2` row still reads 0 of 3 and #320 is explicitly excluded from it.",
+        "createdAt": "2026-09-21T14:58:39Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/351#issuecomment-5762601725",
+        "viewerDidAuthor": true
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWN0U7g",
+        "author": {
+          "login": "mezivillager"
+        },
+        "authorAssociation": "OWNER",
+        "body": "## Verifier verdict: BLOCK\n**Verified on:** Opus 5 (`claude-opus-5`) · **Reviewable lines:** 77 (budget 400) · **Tests:** 0 added (`scripts/skills.logic.test.mjs` is untouched; the red commit tightens invariant *data* in `scripts/skills.logic.mjs`, which the data-driven test iterates) · suite **134 files / 2080 tests passed, 0 failed** · **DoD:** lint ✔ test:run ✔ build ✔ lint:docs ✔ · `vitest run scripts/skills.logic.test.mjs` ✔ **110 passed** · CI `ci` **success** at `efd4726` (run [35615749662](https://github.com/mezivillager/hacer/actions/runs/35615749662), job 106385883365); all 10 checks green, `pr-hygiene` now `PASS reviewable=77 test=0 files=5 issue=#352`.\n*Off-tier, per the rule this PR introduces:* #351 is `risk:1` and touches neither `src/core/` nor `src/simulation/`, so its own new row makes it a **Sonnet** review. This ran on **Opus** — the safe direction, deliberate (a Sonnet verdict on its own promotion is circular).\n| 2 | *\"flagged the tier mismatch, unprompted\"* misattributed to #324 | **fixed.** Removed, not moved. Re-checked: 0 occurrences of `Opus`/`Sonnet`/`Haiku` in #324's, #312's and #319's comments; #320's verdict does carry it verbatim |\n**The evidence, re-derived.** Every finding in §1a is real and checkable: #312's `browser-qa` run `35586513124` is `conclusion=failure` at `93850f46`, fixed by `fa80f44` (\"drive signal-propagation specs from input nodes\" — exactly the retarget its verdict prescribed); #319 red `d1f807a` → `eff901c` (\"charge killed runs, refuse future-dated readings\"); #320 red `c03eb3a` → `eadbb09` (\"a real timeout, not any git failure, says retry\"); #324's PASS matches its row word for word. **I am not blocking on the merits, and I think the tier change is justified** — see the closing note.\n- [_] **every verdict states its model … *\"Same for the builder's PR body.\"*** — half done. `verifier-brief.md:31,37` covers the verifier. `docs/harness/implementer-brief.md` is **untouched by this PR** and states no such requirement — **Blocker 2**\n- **`.claude/agents/hacer-verifier.md:3` (and `:13-14`) — the fix to `verifier-brief.md:15` was not applied to the file that actually governs the dispatch, and the text there resolves the engine case the wrong way.** The description reads *\"Dispatch `risk:0` and `risk:1` PRs with model sonnet instead; the opus default here is the fail-safe for `risk:2` and for `src/core` / `src/simulation`.\"* That is the **same two-clause shape** blocked last round, and `:14` closes the escape hatch: *\"this frontmatter is what applies when the coordinator passes no model.\"* Concrete scenario, the one this PR exists to prevent: **#312** — `risk:1`, touches `src/simulation/topologicalEval.ts`, and its Sonnet-class verdict caught a real CI regression 4 E2E tests deep. A coordinator dispatching a #312-class PR reads clause 1, matches `risk:1`, passes `model: sonnet` — and because a model *was* passed, the `model: opus` fail-safe never engages. The engine review is silently tiered down, and by this PR's own words *\"nothing looks.\"* This is not a hypothetical reading path: `docs/harness/README.md:89` names the enforcement point as *\"an explicit `model: sonnet` per dispatch (or agent `model:` frontmatter)\"*, and the agent description is the only per-PR tier rule a coordinator sees at selection time — `:9`'s \"read it first\" instructs the *verifier*, after the model is already chosen. Fix: give `:3` and `:13-14` the same engine-first ordering as `verifier-brief.md:15` — \"a PR touching `src/core/` or `src/simulation/`, or labelled `risk:2`, keeps Opus; dispatch **every other** `risk:0`/`risk:1` PR with `model: sonnet`.\"\n- **`docs/harness/implementer-brief.md:28` — the builder half of the PR's own compensating control was never built.** #352's first acceptance criterion ends *\"Same for the builder's PR body\"*, and lists `implementer-brief.md` under \"Files likely touched\". It is not in the diff (`git diff --name-only origin/main...HEAD` → 5 files, not this one), and `grep -i 'verified on\\|model you ran\\|ran on'` over it returns nothing. `:28` enumerates exactly what a PR body must carry — `Fixes #n`, what/why, deviations, DoD results, `project:`/`risk:` labels — and the model is not among them. This is not a cosmetic omission: §2:72-73 tiers **builders** by risk too, and §5:122-123 already concedes *\"No builder was replayed at any tier. Every builder row is inference.\"* The next attempt to move a builder row will hit exactly the wall §1b was written to remove, because nothing will have recorded which tier built what in the interim. The verifier-side rule starts accruing evidence today; the builder-side rule accrues none.\n1. **`scripts/skills.logic.mjs:148` — the new `verdict-names-its-model` invariant repeats, in the same commit, the defect `ledger.md:46` was written to record.** It is `['Name the model you ran on', '**Verified on:**']` — a list of short phrases, which that ledger row says \"all … survive any re-tiering\". Measured against the real test: rewriting `verifier-brief.md:31` to *\"**Name the model you ran on** only when you were dispatched off-tier; on a routine PASS, omit the field\"* **passes 110/110**, as does deleting the either-direction disclosure sentence outright — the safety-critical half, and the one `hacer-verifier.md:17-21` calls \"the unsafe one\". Conversely it *is* order-fragile on an innocent edit: moving the `## Output` block above `## Verdict rules` — a pure reorganisation — **fails**, reporting `verifier-brief.md still says: verdict-names-its-model`, a message that names the wrong cause. Pin the unconditional clause as one sentence, the way `model-per-risk-tier` now is.\n2. **`model-tiering.md:74` — \"#320 … had no Opus second pass\" asserts a negative this document says is unknowable, and #320 shows the opposite.** #320 carries a comment at `2026-09-21T11:43:02Z`: *\"**Coordinator review of the fix (`eadbb09`): PASS.**\"* — a second pass, agreeing with the Sonnet verdict, by the role §2:71 defines as Opus. Whether it *ran* on Opus is unrecorded, which is precisely §1b's point; so the establishable reason for excluding #320 is *\"its second pass does not name its model\"*, not *\"it had no Opus second pass\"*. §1b:64-65 then gives a **third**, non-sequitur reason for the same number — *\"including the two rows above, which is why §2's `risk:2` row still reads 0 of 3\"* — where \"the two rows above\" are #312 and #319, both `risk:1`, which cannot affect a `risk:2` count. The conclusion (0 of 3) is right and conservative; two of the three stated reasons are not. An auditor who checks #320, as the row invites, finds a PASS the doc says isn't there.\n3. **§1a:41 describes #320 as \"BLOCK, two real defects\", but its verdict had one blocker and three nits** — the allowlist/arbitrary-shell finding was Nit 2, not a blocker. It was real and was acted on (the coordinator's `eadbb09` review confirms the proposal was withdrawn), so the substance holds; \"two real defects\" in a row headed BLOCK reads as two blockers. In a table whose stated job is to be checked, prefer \"one blocker and one nit, both acted on\".\n  - **the previous round's exploit** — order-preserving negation, *\"is NEVER to be verified on **Opus**; every other PR … may also skip **Sonnet** and run cheaper\"* → **caught**. This is the hole the last verifier demonstrated passing 109/109; it is genuinely closed.\n- Four rewrites of the `verdict-names-its-model` anchors and one innocent section reorder — results in Nit 1.\n**On the merits, which is the real question: the tier change is justified, and I would merge it once the three blockers are closed.** §1's replay is a genuine measurement, all four live findings are real and I verified each one's fix commit myself, and #320 — a self-attributed Sonnet BLOCK on a `risk:2` PR, found by running a repro — is a strong data point precisely because it is the *harder* category. The one thing worth naming that the doc does not: **of the four live outings, only #319 and #324 actually fall inside the row being lowered** (#320 is `risk:2`, #312 is an engine PR — both stay on Opus), and neither of those two carries a first-hand attribution. So the direct evidence for the moved row is §1's replay plus one second-hand outing; the rest is an *a fortiori* argument from harder categories. That argument is sound, the change is reversible, and `:75` names a real trip-wire (\"one `overturned` Sonnet verdict\"). It is enough. What it is not enough for is the claim that the evidence is four outings deep — and §1a, to its credit, no longer makes it.",
+        "createdAt": "2026-09-22T23:13:13Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/351#issuecomment-5785851118",
+        "viewerDidAuthor": true
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWPpAHQ",
+        "author": {
+          "login": "mezivillager"
+        },
+        "authorAssociation": "OWNER",
+        "body": "## Verifier verdict: PASS\n**Verified on:** Opus 5 (`claude-opus-5[1m]`) · **Scope:** round 2 only (`926dc1a..46b37ec`, 6 files, 36+/12-); the first two reviews settled the rest · **Whole PR:** 96+/13- across 7 files · **Tests:** 0 added (`scripts/skills.logic.test.mjs` untouched; the change is invariant *data* the data-driven test iterates) · **DoD, run here:** `lint` **0** · `test:run` **0** (134 files / **2082** tests passed, 0 failed) · `build` **0** · `lint:docs` **0** · `pnpm exec vitest run scripts/skills.logic.test.mjs` **0** (**112** passed) · CI all 10 checks green, `pr-hygiene` pass.\n*Off-tier, per the rule this PR introduces:* #351 is `risk:1` and touches neither `src/core/` nor `src/simulation/`, so its own new row makes it a **Sonnet** review. This ran on **Opus** — the safe direction, deliberate (a Sonnet verdict on its own promotion is circular).\n| 4 | `verdict-names-its-model` was weak | **fixed** — both demonstrated exploits now caught, the innocent reorder now passes |\n`model-tiering.md:80` now reads *\"#320's fix did get a coordinator review (a PASS at 11:43:02Z), but that review names no model either — the same gap, one layer up — so it counts once both halves are attributable.\"* Both halves check out: `gh api repos/mezivillager/hacer/issues/320/comments` returns a comment at exactly `2026-09-21T11:43:02Z` beginning *\"**Coordinator review of the fix (`eadbb09`): PASS.**\"*, and filtering that PR's comments for `opus|sonnet|haiku|verified on` matches **only** the 11:25:34Z verdict — the 11:43:02Z review names no model. The false negative is gone and the replacement reason is the establishable one. The non-sequitur at §1b is also gone: *\"including the two rows above\"* (two `risk:1` rows, which cannot affect a `risk:2` count) is now two parallel consequences of one stated principle.\n- **The round-2 exploit A** — *\"**Name the model you ran on** only when you were dispatched off-tier; on a routine PASS, omit the field\"* → **2 failed / 110 passed**, naming `verdict-names-its-model` *and* `off-tier-disclosed-both-ways`. Closed.\n- *Mine:* strip `**Verified on:**` from the Output template at `:37` while leaving the prose rule intact → **caught**, `verdict-has-a-model-field`. (The prose says \"the `Verified on:` field\" in backticks, so the bold template token is the only carrier — the split makes this detectable, which it was not before.)\n- The innocent section reorder (`## Output` above `## Verdict rules`) → **112 passed**. This is the edit that failed last round with a message naming the wrong cause.\n2. **`implementer-brief.md:10` gives no grep-able token.** AC1 asks for the model *\"in a fixed form a grep can find… **Same for the builder's PR body**\"*. The verifier side has `**Verified on:**`, pinned by `verdict-has-a-model-field`; the builder side has prose only, so builder attribution will accrue in whatever form each agent picks — the wall §1b was written to remove, one layer over, as §5:128-129 already concedes (*\"Every builder row is inference\"*). One sentence — \"as `Built on: <model>`\" — closes it.\nPlus 4 similar: `:56` lists #319 inside *\"the direct evidence\"* although §1b:67-69 says an unattributed verdict *\"cannot be counted as evidence for or against a tier\"* — the inline \"(model unrecorded)\" means no reader is misled, but by its own rule it should be excluded rather than listed with a caveat; §5:119-121 still reads *\"only two can be attributed to a model at all; that is what moved `risk:0`/`risk:1`\"* without §1a:54's \"and only one of those two is inside the row\", so the calibration section is a step behind §2; `:98` (§3) still points *\"docs-only verification | **Sonnet** (§2)\"* at a §2 row that no longer exists by that name (raised last round, unchanged, harmless); and the PR body's counts say `test:run` 2079 and 110 skills tests where the head gives **2082** and **112** — the round-2 commit added two invariants.\n- **PR #387** — reported to me as verified on Sonnet earlier today under the *existing* `risk:0` rule, and a strong outing: I confirmed from its verdict that it read **all 19** closing comments in full rather than sampling and recounted all **127** classification rows itself (89+15+4+19). The Sonnet attribution I can only cite **second-hand** — its verdict comment carries no model line, because this PR is not merged yet. So #387 is at once a fifth outing inside the lowered row and a fifth demonstration that the compensating control is needed. Not decisive either way, and I did not weight it in the verdict.",
+        "createdAt": "2026-09-23T02:12:16Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/351#issuecomment-5787762717",
+        "viewerDidAuthor": true
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABWPq_gQ",
+        "author": {
+          "login": "github-actions"
+        },
+        "authorAssociation": "CONTRIBUTOR",
+        "body": "",
+        "createdAt": "2026-09-23T02:16:26Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/351#issuecomment-5787795329",
+        "viewerDidAuthor": false
+      }
+    ],
+    "createdAt": "2026-09-21T14:41:00Z",
+    "headRefName": "feat/231-verifier-tier",
+    "isDraft": false,
+    "labels": [
+      {
+        "id": "LA_kwDORdjPzc8AAAACbXzzBg",
+        "name": "released",
+        "description": "",
+        "color": "ededed"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZjXw",
+        "name": "project:harness",
+        "description": "Portfolio row: harness",
+        "color": "0E8A16"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZuvA",
+        "name": "risk:1",
+        "description": "pure logic under conformance (src/core, src/simulation)",
+        "color": "FEF2C0"
+      }
+    ],
+    "mergedAt": "2026-09-23T02:13:37Z",
+    "number": 351,
+    "title": "feat(harness): tier risk:0 and risk:1 verification to Sonnet; the engine keeps Opus",
+    "url": "https://github.com/mezivillager/hacer/pull/351"
+  },
+  {
+    "author": {
+      "id": "MDQ6VXNlcjgzNjc2MDc1",
+      "is_bot": false,
+      "login": "mezivillager",
+      "name": ""
+    },
+    "closingIssuesReferences": [
+      {
+        "id": "I_kwDORdjPzc8AAAABSW20ag",
+        "number": 330,
+        "repository": {
+          "id": "R_kgDORdjPzQ",
+          "name": "hacer",
+          "owner": {
+            "id": "MDQ6VXNlcjgzNjc2MDc1",
+            "login": "mezivillager"
+          }
+        },
+        "url": "https://github.com/mezivillager/hacer/issues/330"
+      }
+    ],
+    "comments": [
+      {
+        "id": "IC_kwDORdjPzc8AAAABV2lrKQ",
+        "author": {
+          "login": "github-actions"
+        },
+        "authorAssociation": "CONTRIBUTOR",
+        "body": "",
+        "createdAt": "2026-09-21T13:44:26Z",
+        "includesCreatedEdit": true,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/347#issuecomment-5761493801",
+        "viewerDidAuthor": false
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABV21b5Q",
+        "author": {
+          "login": "mezivillager"
+        },
+        "authorAssociation": "OWNER",
+        "body": "## Verifier verdict: PASS",
+        "createdAt": "2026-09-21T14:03:08Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/347#issuecomment-5761752037",
+        "viewerDidAuthor": true
+      },
+      {
+        "id": "IC_kwDORdjPzc8AAAABV24ISA",
+        "author": {
+          "login": "github-actions"
+        },
+        "authorAssociation": "CONTRIBUTOR",
+        "body": "",
+        "createdAt": "2026-09-21T14:06:13Z",
+        "includesCreatedEdit": false,
+        "isMinimized": false,
+        "minimizedReason": "",
+        "reactionGroups": [],
+        "url": "https://github.com/mezivillager/hacer/pull/347#issuecomment-5761796168",
+        "viewerDidAuthor": false
+      }
+    ],
+    "createdAt": "2026-09-21T13:43:34Z",
+    "headRefName": "feat/330-foundation-gate",
+    "isDraft": false,
+    "labels": [
+      {
+        "id": "LA_kwDORdjPzc8AAAACbXzzBg",
+        "name": "released",
+        "description": "",
+        "color": "ededed"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZjXw",
+        "name": "project:harness",
+        "description": "Portfolio row: harness",
+        "color": "0E8A16"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZuvA",
+        "name": "risk:1",
+        "description": "pure logic under conformance (src/core, src/simulation)",
+        "color": "FEF2C0"
+      }
+    ],
+    "mergedAt": "2026-09-21T14:04:04Z",
+    "number": 347,
+    "title": "The foundation gate: a portfolio row and a pick rotation that put foundation first",
+    "url": "https://github.com/mezivillager/hacer/pull/347"
+  }
+]
