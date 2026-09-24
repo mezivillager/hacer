@@ -1,0 +1,433 @@
+[
+  {
+    "type": "cycle",
+    "from": "src/gates/common/BaseGate.tsx",
+    "to": "src/gates/common/index.ts",
+    "unresolvedTo": "./index",
+    "dependencyTypes": [
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "no-circular"
+    },
+    "cycle": [
+      {
+        "name": "src/gates/common/index.ts",
+        "dependencyTypes": [
+          "local",
+          "import"
+        ]
+      },
+      {
+        "name": "src/gates/common/BaseGate.tsx",
+        "dependencyTypes": [
+          "local",
+          "export"
+        ]
+      }
+    ]
+  },
+  {
+    "type": "cycle",
+    "from": "src/store/actions/gateActions/gateActions.ts",
+    "to": "src/store/circuitStore.ts",
+    "unresolvedTo": "../../circuitStore",
+    "dependencyTypes": [
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "no-circular"
+    },
+    "cycle": [
+      {
+        "name": "src/store/circuitStore.ts",
+        "dependencyTypes": [
+          "local",
+          "import"
+        ]
+      },
+      {
+        "name": "src/store/actions/gateActions/gateActions.ts",
+        "dependencyTypes": [
+          "local",
+          "import"
+        ]
+      }
+    ]
+  },
+  {
+    "type": "cycle",
+    "from": "src/store/actions/persistenceActions/autosave.ts",
+    "to": "src/store/circuitStore.ts",
+    "unresolvedTo": "@/store/circuitStore",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "no-circular"
+    },
+    "cycle": [
+      {
+        "name": "src/store/circuitStore.ts",
+        "dependencyTypes": [
+          "aliased",
+          "aliased-tsconfig",
+          "aliased-tsconfig-paths",
+          "local",
+          "import"
+        ]
+      },
+      {
+        "name": "src/store/actions/persistenceActions/autosave.ts",
+        "dependencyTypes": [
+          "local",
+          "import"
+        ]
+      }
+    ]
+  },
+  {
+    "type": "cycle",
+    "from": "src/store/actions/persistenceActions/persistenceActions.ts",
+    "to": "src/store/circuitStore.ts",
+    "unresolvedTo": "@/store/circuitStore",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "no-circular"
+    },
+    "cycle": [
+      {
+        "name": "src/store/circuitStore.ts",
+        "dependencyTypes": [
+          "aliased",
+          "aliased-tsconfig",
+          "aliased-tsconfig-paths",
+          "local",
+          "import"
+        ]
+      },
+      {
+        "name": "src/store/actions/persistenceActions/persistenceActions.ts",
+        "dependencyTypes": [
+          "local",
+          "import"
+        ]
+      }
+    ]
+  },
+  {
+    "type": "cycle",
+    "from": "src/store/actions/placementActions/placementActions.ts",
+    "to": "src/store/actions/gateActions/gateActions.ts",
+    "unresolvedTo": "../gateActions/gateActions",
+    "dependencyTypes": [
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "no-circular"
+    },
+    "cycle": [
+      {
+        "name": "src/store/actions/gateActions/gateActions.ts",
+        "dependencyTypes": [
+          "local",
+          "import"
+        ]
+      },
+      {
+        "name": "src/store/circuitStore.ts",
+        "dependencyTypes": [
+          "local",
+          "import"
+        ]
+      },
+      {
+        "name": "src/store/actions/placementActions/placementActions.ts",
+        "dependencyTypes": [
+          "local",
+          "import"
+        ]
+      }
+    ]
+  },
+  {
+    "type": "cycle",
+    "from": "src/store/actions/placementActions/placementActions.ts",
+    "to": "src/store/circuitStore.ts",
+    "unresolvedTo": "../../circuitStore",
+    "dependencyTypes": [
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "no-circular"
+    },
+    "cycle": [
+      {
+        "name": "src/store/circuitStore.ts",
+        "dependencyTypes": [
+          "local",
+          "import"
+        ]
+      },
+      {
+        "name": "src/store/actions/placementActions/placementActions.ts",
+        "dependencyTypes": [
+          "local",
+          "import"
+        ]
+      }
+    ]
+  },
+  {
+    "type": "cycle",
+    "from": "src/store/types.ts",
+    "to": "src/utils/wiringScheme/types.ts",
+    "unresolvedTo": "@/utils/wiringScheme/types",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "type-import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "no-circular"
+    },
+    "cycle": [
+      {
+        "name": "src/utils/wiringScheme/types.ts",
+        "dependencyTypes": [
+          "aliased",
+          "aliased-tsconfig",
+          "aliased-tsconfig-paths",
+          "local",
+          "type-import"
+        ]
+      },
+      {
+        "name": "src/store/types.ts",
+        "dependencyTypes": [
+          "aliased",
+          "aliased-tsconfig",
+          "aliased-tsconfig-paths",
+          "local",
+          "type-only",
+          "import"
+        ]
+      }
+    ]
+  },
+  {
+    "type": "dependency",
+    "from": "src/components/canvas/Scene/SceneReadyBridge.tsx",
+    "to": "e2e/types/globals.ts",
+    "unresolvedTo": "../../../../e2e/types/globals",
+    "dependencyTypes": [
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "src-no-e2e"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/store/circuitStore.ts",
+    "to": "e2e/types/globals.ts",
+    "unresolvedTo": "../../e2e/types/globals",
+    "dependencyTypes": [
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "src-no-e2e"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/store/actions/pinHelpers/pinHelpers.test.ts",
+    "to": "node_modules/three/build/three.cjs",
+    "unresolvedTo": "three",
+    "dependencyTypes": [
+      "npm",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "state-no-3d"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/store/actions/pinHelpers/pinHelpers.ts",
+    "to": "node_modules/three/build/three.cjs",
+    "unresolvedTo": "three",
+    "dependencyTypes": [
+      "npm",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "state-no-3d"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/store/actions/busActions/busActions.ts",
+    "to": "src/nodes/config/index.ts",
+    "unresolvedTo": "@/nodes/config",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "state-no-ui"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/store/actions/junctionUtils.ts",
+    "to": "src/nodes/config/index.ts",
+    "unresolvedTo": "@/nodes/config",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "state-no-ui"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/store/actions/nodeActions/nodeActions.test.ts",
+    "to": "src/nodes/config/index.ts",
+    "unresolvedTo": "@/nodes/config",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "state-no-ui"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/store/actions/nodeActions/nodeActions.ts",
+    "to": "src/nodes/config/index.ts",
+    "unresolvedTo": "@/nodes/config",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "state-no-ui"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/store/actions/pinHelpers/pinHelpers.test.ts",
+    "to": "src/components/scene/chipBodyLayout.ts",
+    "unresolvedTo": "@/components/scene/chipBodyLayout",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "state-no-ui"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/store/actions/pinHelpers/pinHelpers.ts",
+    "to": "src/components/scene/busBodyLayout.ts",
+    "unresolvedTo": "@/components/scene/busBodyLayout",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "state-no-ui"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/store/actions/pinHelpers/pinHelpers.ts",
+    "to": "src/components/scene/chipBodyLayout.ts",
+    "unresolvedTo": "@/components/scene/chipBodyLayout",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "state-no-ui"
+    }
+  },
+  {
+    "type": "dependency",
+    "from": "src/store/actions/wiringActions/wiringActions.ts",
+    "to": "src/nodes/config/nodeConfig.ts",
+    "unresolvedTo": "@/nodes/config/nodeConfig",
+    "dependencyTypes": [
+      "aliased",
+      "aliased-tsconfig",
+      "aliased-tsconfig-paths",
+      "local",
+      "import"
+    ],
+    "rule": {
+      "severity": "error",
+      "name": "state-no-ui"
+    }
+  }
+]
