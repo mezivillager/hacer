@@ -20,6 +20,49 @@ and would otherwise be lost between Claude/Cursor sessions, silently polluting f
 At the end of a session (or when the docs-sync Stop hook prompts), run the **`docs-sync`** skill.
 It captures decisions here and then runs the author pass in [`../llm-docs-sync.md`](../llm-docs-sync.md).
 
+## Lineage
+Every decision is a node with a stable id, and the relations between decisions are fixed field
+lines in the markdown where each decision is written. `node scripts/lineage.mjs parse --json` reads
+them into one graph — nodes, edges, artefacts, errors (epic #457; design:
+`docs/research/2026-09-24-decision-lineage/REPORT.md` §6).
+
+| Node | What | Written in |
+|---|---|---|
+| `ADR-NNNN` | an architecture decision | `NNNN-*.md` here — the file number is the id |
+| `R<n>` | a coordinator ruling | a `## R<n> — <title>` block in [`rulings/`](rulings/README.md), one file per run |
+| `P-<n>` | a premise: a fact a decision rests on, with a command that checks it | a row of [`premises.md`](premises.md) |
+
+Issues, PRs, paths and ledger rows are **artefacts** — referenced, never nodes. `parse` lists every
+`#n` a decision's record cites, and every ledger row that carries an `Id` (`L001`).
+
+| Edge | Written as | Means |
+|---|---|---|
+| `builds-on` | `Builds on:` | rests on that decision — the default dependency |
+| `amends` | `Amends:` | changes that decision |
+| `supersedes` | `Superseded by [ADR-NNNN](…)` in the replaced ADR's Status | replaces that ADR |
+| `assumes` | `Assumes:` | rests on that premise (`P-<n>` only) |
+| `introduced-by` | on the defect's side: the ledger's `Decision` column, an issue's `Introduced by:` (#469) | the defect traces to that decision |
+
+A ruling's field block sits under its heading:
+
+```
+## R612 — <title>
+Builds on: R606, ADR-0020 §1.5, P-004
+Assumes: P-006
+Amends: R516
+Cost if wrong: …
+```
+
+An ADR carries the same three relations as bullets under `Date` (see the [template](0000-template.md)),
+and its Status carries no relation in prose — the one relation a Status still holds is the
+template's own `Superseded by` value. A value is a comma-separated list of ids, each optionally
+followed by a section (`ADR-0020 §1.5`), or one word:
+- `none` — an explicit claim that the decision rests on no recorded decision or premise;
+- `unknown` — an imported decision nobody has annotated. Both parse; only `unknown` counts as unlinked.
+
+A field may continue on indented lines. A duplicate id, a relation naming an id that does not exist,
+and a value that is not an id are **errors**: `parse` lists each with its `file:line` and exits 1.
+
 ## Index
 | ADR | Title | Status | Date |
 |-----|-------|--------|------|
