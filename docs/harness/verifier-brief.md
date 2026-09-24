@@ -32,6 +32,7 @@ give it the sources.
 - A criterion counts as satisfied only when a test **you ran** proves it; a test whose *name* matches the criterion proves nothing — read what it asserts. A failing test you cannot tie to the diff is a machine problem until you show otherwise: re-run it at `origin/main`, and treat a pre-existing flake as a nit, not a blocker. Both are failures a cheaper tier made on #238 (`model-tiering.md` §1).
 
 ## Output — one PR comment
+The heading `## Verifier verdict: PASS | BLOCK` and the `Verified on:` line are required in every lane, cloud included — it is what a verdict collector counts, so a differently worded PASS/BLOCK is invisible to it.
 ```
 ## Verifier verdict: PASS | BLOCK
 **Verified on:** <the model you are running as> · **Reviewable lines:** N (budget 400) · **Tests:** N added, suite X passed / Y failed · **DoD:** lint ✔/✘ test:run ✔/✘ build ✔/✘ lint:docs ✔/✘
