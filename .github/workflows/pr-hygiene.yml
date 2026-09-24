@@ -8,7 +8,8 @@ name: PR Hygiene
 #
 # Also checks the layer-ratchet baseline for growth (#406): when a PR touches
 # .dependency-cruiser-known-violations.json, its contents are read through the API at the merge
-# base and at the PR head, and a row added under a rule name that already existed fails the check —
+# base and at the PR head — and .dependency-cruiser.cjs's text too, when the PR edits it — and a
+# row that arrives under a rule name the PR does not newly declare in that config fails the check,
 # whatever the row count did, so fixing one violation while absorbing another is not a pass (#432).
 #
 # Runs on pull_request_target so the checkout — and therefore scripts/pr-hygiene.mjs — is

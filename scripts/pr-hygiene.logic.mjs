@@ -320,27 +320,50 @@ export function parseRatchetBaseline(text) {
 const ratchetRowKey = (row) => `${row.rule}\u0000${row.edge}`
 
 /**
+ * Every rule name a dependency-cruiser config declares, read as **text**. This runs under
+ * `pull_request_target`, so the PR's copy of the config is data here — never required, imported or
+ * executed — exactly like the baseline beside it.
+ *
+ * A `name:` inside a comment counts as a declaration. That is the harmless direction: in the *base*
+ * config an extra name can only make an arming harder to claim, and in the *head* config it is
+ * still an added, reviewable line in a file no one generates, which is the fence this rule leans on.
+ */
+export function parseRuleNames(text) {
+  return new Set([...(text ?? '').matchAll(/(?:^|[{,\s])name\s*:\s*(['"`])([^'"`\n]+)\1/g)].map((match) => match[2]))
+}
+
+/**
  * The verdict on one baseline against the PR's merge base. A row may only appear under a rule name
- * that is **new in this PR** — that is what tells an armed rule from an absorbed violation, and it
- * is the one thing a reviewer cannot see in a `linguist-generated` diff.
+ * this PR **declares in `.dependency-cruiser.cjs`** — that is what tells an armed rule from an
+ * absorbed violation, and it is the one thing a reviewer cannot see in a `linguist-generated` diff.
  *
  * Every verdict is a **set** difference. The row count judges nothing (#432): it went on gating the
  * fail/warn split, so "fix one violation and absorb another" stayed flat and warned — and that is
  * not an adversarial case but the ordinary shape of a refactor moving files between layers.
  *
- * - `armed` — every added row belongs to a rule name the base did not have, and nothing was
- *   removed. #404's shape (34 → 77, arming `core-through-index`).
- * - `absorbed` — at least one added row belongs to a rule that already existed, whatever the count
- *   did. Flat and falling counts included.
- * - `swapped` — rows left *and* arrived, all of them under rule names new in this PR. A rule armed
- *   while violations were fixed looks like this; so does a rule **renamed** in
- *   `.dependency-cruiser.cjs` to carry its old rows under a new name. The baseline cannot tell
- *   those apart — a genuinely new rule and a renamed one are the same shape in it — so this warns
- *   and points at the config diff rather than reading `armed` and passing in silence. The residual
- *   is real and stated: the fence on a rename is the reviewable line in the config.
- * @param {{base:string|null, head:string|null}} contents
+ * "New in this PR" is a claim about the **config**, not about the baseline rows (#432 round 3):
+ * declared in the head config, absent from the base config, and `.dependency-cruiser.cjs` among
+ * the PR's own changed files. Reading it off the rows instead made every rule with *zero* rows a
+ * silent free pass, and every invented rule name one too — measured, with the numbers, in the
+ * header of `.dependency-cruiser.cjs`.
+ *
+ * - `armed` — every added row belongs to a rule name this PR declares, and nothing was removed.
+ *   #404's shape (34 → 77, arming `core-through-index`; it touched the config, as any arming must).
+ * - `absorbed` — at least one added row belongs to a rule this PR did not declare, whatever the
+ *   count did. Flat and falling counts included, and fabricated rule names with them.
+ * - `swapped` — rows left *and* arrived, all of them under rule names this PR declares. A rule
+ *   armed while violations were fixed looks like this; so does a rule **renamed** in the config to
+ *   carry its old rows under a new name. The baseline cannot tell those apart — a genuinely new
+ *   rule and a renamed one are the same shape in it — so this warns and points at the config diff,
+ *   which the gate now guarantees exists, rather than reading `armed` and passing in silence.
+ *
+ * The residual, stated rather than left implicit: a rule **declared in the config in this PR** —
+ * renamed, duplicated, or widened to cover the edge being hidden — reads `armed` or `swapped`. No
+ * comparison of baseline rows can close that, and the fence on it is that the declaration is an
+ * added line in a reviewed file, which is what the round-2 hole cost nobody.
+ * @param {{base:string|null, head:string|null, baseConfig?:string|null, headConfig?:string|null, configTouched?:boolean}} contents
  */
-export function compareRatchetBaseline({ base, head }) {
+export function compareRatchetBaseline({ base, head, baseConfig = null, headConfig = null, configTouched = false }) {
   const parsedBase = parseRatchetBaseline(base)
   const parsedHead = parseRatchetBaseline(head)
   if (parsedHead.error) return { status: 'unreadable', detail: `\`${RATCHET_BASELINE_FILE}\` ${parsedHead.error}` }
@@ -350,11 +373,16 @@ export function compareRatchetBaseline({ base, head }) {
   const counts = { base: parsedBase.rows.length, head: parsedHead.rows.length }
   const baseKeys = new Set(parsedBase.rows.map(ratchetRowKey))
   const headKeys = new Set(parsedHead.rows.map(ratchetRowKey))
-  const baseRules = new Set(parsedBase.rows.map((row) => row.rule))
   const added = parsedHead.rows.filter((row) => !baseKeys.has(ratchetRowKey(row)))
   const removed = parsedBase.rows.filter((row) => !headKeys.has(ratchetRowKey(row)))
-  const armedRules = [...new Set(added.filter((row) => !baseRules.has(row.rule)).map((row) => row.rule))]
-  const absorbed = added.filter((row) => baseRules.has(row.rule))
+  // The rule names this PR brings into existence. Without a config edit there are none, so every
+  // added row is an absorption — which is what a zero-row rule and an invented name both are.
+  const baseConfigRules = parseRuleNames(baseConfig)
+  const declaredHere = configTouched
+    ? new Set([...parseRuleNames(headConfig)].filter((name) => !baseConfigRules.has(name)))
+    : new Set()
+  const armedRules = [...new Set(added.filter((row) => declaredHere.has(row.rule)).map((row) => row.rule))]
+  const absorbed = added.filter((row) => !declaredHere.has(row.rule))
   const status =
     added.length === 0
       ? removed.length > 0
@@ -390,14 +418,19 @@ function ratchetGrowth({ body, ratchet }) {
       : `${counts.base} → ${counts.head} baseline rows`
   if (status === 'shrank') return finding('pass', `${moved} — the ratchet shrank`)
   if (status === 'armed') {
-    return finding('pass', `${moved}, arming ${rules} (${plural(added.length, 'row')}) — growth is legitimate when a rule is armed in the same commit`)
+    return finding(
+      'pass',
+      `${moved}, arming ${rules} (${plural(added.length, 'row')}), declared in \`${RATCHET_CONFIG_FILE}\` by this PR ` +
+        '— growth is legitimate when a rule is armed in the same commit',
+    )
   }
   if (status === 'swapped') {
     return finding(
       'warn',
-      `${moved} — ${plural(removed.length, 'row')} left and ${plural(added.length, 'row')} arrived, all under ${rules}. ` +
-        'A rule armed while violations were fixed looks like this, and so does a rule **renamed** in ' +
-        '`.dependency-cruiser.cjs` to carry its old rows under a new name — the baseline cannot tell them apart, so read the config diff',
+      `${moved} — ${plural(removed.length, 'row')} left and ${plural(added.length, 'row')} arrived, all under ${rules}, ` +
+        `which this PR declares in \`${RATCHET_CONFIG_FILE}\`. A rule armed while violations were fixed looks like this, ` +
+        'and so does a rule **renamed** there to carry its old rows under a new name — the baseline cannot tell them ' +
+        'apart, so read those rules in the config diff',
     )
   }
   const what = `${moved} — no new rule armed, ${plural(absorbed.length, 'violation')} absorbed: ${nameRatchetRows(absorbed)}`
@@ -408,7 +441,7 @@ function ratchetGrowth({ body, ratchet }) {
   const unnamed = undeclared.length === absorbed.length ? '' : ` — ${nameRatchetRows(undeclared)} still undeclared`
   return finding(
     'fail',
-    `${what}${unnamed}. Fix the import, arm a rule in the same commit, or name every row in the PR body as ` +
+    `${what}${unnamed}. Fix the import, declare a rule in \`${RATCHET_CONFIG_FILE}\` in the same commit, or name every row in the PR body as ` +
       `\`Baseline-growth: ${undeclared[0].rule}: ${undeclared[0].edge} — <why>\``,
   )
 }
@@ -422,7 +455,10 @@ export const RULES = [sizeBudget, linkedIssue, ratchetGrowth]
  */
 export function evaluate({ body, author, labels = [], files, gitattributes, ratchet = null }, rules = RULES) {
   const measures = measure(files, parseGeneratedPatterns(gitattributes))
-  const verdict = ratchet ? compareRatchetBaseline(ratchet) : null
+  // Whether the config was edited is the PR's own file list, never something a caller asserts: a
+  // claim of arming has to cost a reviewable line in `.dependency-cruiser.cjs`.
+  const configTouched = files.some((entry) => entry.filename === RATCHET_CONFIG_FILE)
+  const verdict = ratchet ? compareRatchetBaseline({ ...ratchet, configTouched }) : null
   const findings = rules.flatMap((rule) => rule({ body, author, labels, files, measures, ratchet: verdict }))
   const worst = Math.max(0, ...findings.map((f) => LEVELS.indexOf(f.level)))
   const deletion = deletionWaiver(measures)

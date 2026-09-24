@@ -9,8 +9,10 @@
 // runs the PR's code. `.gitattributes` (linguist-generated) is read from the checkout, i.e. main.
 //
 // The one exception is the layer-ratchet baseline (#406): when a PR changes it, the file's
-// *contents* are read through the same API at the merge base and at the PR head, so the check can
-// tell an armed rule from an absorbed violation. Contents are data, never code that is run here.
+// *contents* are read through the same API at the merge base and at the PR head — and, when the PR
+// also edits `.dependency-cruiser.cjs`, that file's text too, because a rule name is only "new"
+// because the config declares it (#432). Contents are data, never code that is run here: the
+// config is scanned for `name:` as text and is never required.
 //
 // Prints one greppable `HYGIENE: PASS|WARN|FAIL …` line, appends a report to
 // $GITHUB_STEP_SUMMARY when set, and exits 1 on FAIL. Rules live in pr-hygiene.logic.mjs.
@@ -19,6 +21,7 @@ import { appendFileSync, existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import {
   RATCHET_BASELINE_FILE,
+  RATCHET_CONFIG_FILE,
   evaluate,
   formatConsole,
   formatSummary,
@@ -111,11 +114,18 @@ if (files.some((file) => file.filename === RATCHET_BASELINE_FILE)) {
   // answers 404 for an unresolvable ref too, and reading that as an empty baseline would make the
   // whole head file look like a legitimate arming. The extra request is only made on a 404.
   const io = { readPath: getContent, refExists }
-  const [base, head] = await Promise.all([
-    readAtRef(io, mergeBase, RATCHET_BASELINE_FILE),
-    readAtRef(io, pull.head.sha, RATCHET_BASELINE_FILE),
+  // The rule config is read alongside the baseline, and only when the PR edits it: a rule name is
+  // "new" because `.dependency-cruiser.cjs` declares it here, not because the baseline had no row
+  // under it (#432). Text on both sides, parsed for `name:` and never required or run.
+  const configEdited = files.some((file) => file.filename === RATCHET_CONFIG_FILE)
+  const at = (ref, filePath) => readAtRef(io, ref, filePath)
+  const [base, head, baseConfig, headConfig] = await Promise.all([
+    at(mergeBase, RATCHET_BASELINE_FILE),
+    at(pull.head.sha, RATCHET_BASELINE_FILE),
+    configEdited ? at(mergeBase, RATCHET_CONFIG_FILE) : null,
+    configEdited ? at(pull.head.sha, RATCHET_CONFIG_FILE) : null,
   ])
-  ratchet = { base, head }
+  ratchet = { base, head, baseConfig, headConfig }
 }
 
 const attributesPath = path.join(import.meta.dirname, '..', '.gitattributes')
