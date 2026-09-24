@@ -35,6 +35,13 @@
  * rows can separate them. What it does see is that rows *left* as well as arrived, which no real
  * arming does — that reads `swapped` and warns, pointing here. The fence on it is this file: the
  * declaration is an added line in a reviewed file, which is the cost round 2's hole did not carry.
+ * A rule name inside a **comment** or a **string literal** here counts as declared too — the rule
+ * reads this file as text and never runs it — so it also reaches `armed`. That is not a false pass:
+ * dependency-cruiser matches `knownViolations` by rule name, so a baseline row under a name no real
+ * rule emits suppresses nothing (measured on #432: still `1 new`, exit 1). It leans on the scan
+ * finding every rule the merge base's copy declares: a copy of this file, on either side, that it
+ * finds no names in fails closed (#438); one it reads only in part is #456 — so keep every rule's
+ * name written out as a literal.
  *
  * A guard that cries wolf makes agents argue with it, so every rule here is deliberately narrow:
  * it names the directions the audit measured and nothing more. Widen it only with a measurement.

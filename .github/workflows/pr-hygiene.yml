@@ -11,6 +11,14 @@ name: PR Hygiene
 # base and at the PR head — and .dependency-cruiser.cjs's text too, when the PR edits it — and a
 # row that arrives under a rule name the PR does not newly declare in that config fails the check,
 # whatever the row count did, so fixing one violation while absorbing another is not a pass (#432).
+# What it cannot see (the residual, stated alike in .dependency-cruiser.cjs, docs/harness/README.md
+# and compareRatchetBaseline): a rule declared in that config in the same PR — renamed, copied, or
+# widened to cover the edge — reads armed or swapped; the fence is that the declaration is an added
+# line in a reviewed file. A rule name in a comment or a string literal there counts too (the config
+# is scanned as text, never run), and that is no false pass: dependency-cruiser matches
+# knownViolations by rule name, so a row under a name no real rule emits suppresses nothing. It
+# leans on the scan finding every rule the base config declares: a config with text but no rule
+# names found fails closed (#438); one scanned only in part is #456.
 #
 # Runs on pull_request_target so the checkout — and therefore scripts/pr-hygiene.mjs — is
 # always the base branch's copy. The PR itself is read through the GitHub API and is never
