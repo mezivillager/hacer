@@ -114,6 +114,27 @@ export const BRIEF_INVARIANTS = [
       { id: 'reviewable-line-budget', phrases: ['400 reviewable changed lines'] },
       { id: 'red-is-a-compiling-stub', phrases: ['Red commit', 'smallest compiling stub'] },
       { id: 'no-ai-attribution', phrases: ['no AI attribution trailers'] },
+      // #483: no claim paragraph existed before this — #403 and #438 sat `in-progress` with no
+      // claim comment, so a second coordinator had nothing to read.
+      {
+        id: 'claim-before-building',
+        phrases: ['## Claim', 'before building', '`Claimed by`', 'docs/harness/sessions/COORDINATOR-HANDOFF.md'],
+      },
+      // #483, from the 2026-09-23 vacuous-generator ledger row: a property test that passes
+      // 400/400 against an unfixed engine proves nothing unless the red count is on record.
+      { id: 'property-test-records-failure-count', phrases: ['**Property tests:**', 'failure count', 'gone vacuous'] },
+      // #483, from #454: the brief had one TDD shape (test, then a production fix) and no path
+      // for a test-only deliverable, so a fuzz red commit broke production on #444.
+      {
+        id: 'test-only-issue-path',
+        phrases: ['**Test-only issues:**', 'never as a production change', '`fix:` stays for bugs that shipped'],
+      },
+      // #483, from the #149 ledger row: an exact new file path in a verification command broke
+      // on the repo's own `x.logic.test.mjs` convention.
+      {
+        id: 'verification-command-names-a-behaviour',
+        phrases: ['A verification command names a behaviour, not an exact new file path'],
+      },
       { id: 'model-per-risk-tier', phrases: ['**Model:**', '`risk:0`', 'Sonnet', '`risk:2`', 'Opus'] },
       {
         id: 'five-definition-of-done-commands',
@@ -149,6 +170,12 @@ export const BRIEF_INVARIANTS = [
       // phrases in one entry couple the rule to document order — an innocent section reorder then
       // fails with a misleading message. Split, each of these is order-independent.
       { id: 'verdict-has-a-model-field', phrases: ['**Verified on:**'] },
+      // #483: measured 2026-09-25 over the last 60 merged PRs, five non-docs cloud-lane merges
+      // (#441, #442, #443, #445, #449) posted a verdict as free text a regex cannot see.
+      {
+        id: 'verdict-heading-required-every-lane',
+        phrases: ['required in every lane, cloud included', 'what a verdict collector counts'],
+      },
       // "always" is the load-bearing word: a rewrite asking for the field only when off-tier passed
       // an earlier version of this invariant.
       { id: 'verdict-names-its-model', phrases: ['**Name the model you ran on**, in the `Verified on:` field, always.'] },
