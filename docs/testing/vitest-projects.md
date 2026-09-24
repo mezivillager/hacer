@@ -16,9 +16,10 @@ pnpm exec vitest run --project jsdom
 ## Why
 
 `node` is a guard, not an optimisation. HACER's pure logic (`src/core`, `src/simulation`), its state
-layer (`src/store`) and its own tooling (`scripts/`) are supposed to run with no browser anywhere in
-sight — that is what makes an agent able to drive the simulator headlessly, and what keeps the
-engine portable to a CLI or a worker. Before this split the claim was untested: `src/test/setup.ts`
+layer (`src/store`), its scenario module (`src/scenarios`) and its own tooling (`scripts/`) are
+supposed to run with no browser anywhere in sight — that is what makes an agent able to drive the
+simulator headlessly, and what keeps the engine portable to a CLI or a worker. Before this split the
+claim was untested: `src/test/setup.ts`
 patches `HTMLCanvasElement.prototype.getContext` at module scope, so every test imported a DOM
 whether it needed one or not and nothing noticed when a headless layer quietly grew a dependency
 on `window`.
@@ -36,7 +37,7 @@ suite (measured 2026-09-21, #323).
 Configured in `vite.config.ts`. A file is in the `node` project when **both** hold:
 
 1. it sits under one of `src/core`, `src/simulation`, `src/store`, `src/utils`, `src/lib`,
-   `scripts`; and
+   `src/scenarios`, `scripts`; and
 2. it ends in `.test.ts` / `.spec.ts` / `.test.mjs` / `.spec.mjs` — a `.tsx` test renders JSX, so it
    belongs with a DOM;
 

@@ -6,6 +6,8 @@
 // highest level any finding reaches. To add a rule (e.g. #151's tamper flag: protected
 // paths touched), append it to RULES — nothing else needs to change.
 
+import { isProtectedPath } from './protected-paths.logic.mjs'
+
 export const WARN_LINES = 200
 export const FAIL_LINES = 400
 export const WARN_FILES = 15
@@ -446,7 +448,26 @@ function ratchetGrowth({ body, ratchet }) {
   )
 }
 
-export const RULES = [sizeBudget, linkedIssue, ratchetGrowth]
+/**
+ * The held-out oracle (#193). Flagged, not gated: a PR that edits it still passes this
+ * check, and the finding names the files so the edit cannot be silent. #151 owns the
+ * sticky comment and the rest of the protected-path list.
+ */
+function protectedPath({ files }) {
+  const touched = files.map((entry) => entry.filename).filter((name) => isProtectedPath(name))
+  if (touched.length === 0) return []
+  const shown = touched.slice(0, 8)
+  const more = touched.length > shown.length ? ` (+${touched.length - shown.length} more)` : ''
+  return [
+    {
+      rule: 'protected-path',
+      level: 'warn',
+      message: `protected path touched: ${shown.join(', ')}${more}. conformance/vectors/** is the held-out oracle`,
+    },
+  ]
+}
+
+export const RULES = [sizeBudget, linkedIssue, ratchetGrowth, protectedPath]
 
 /**
  * Run every rule over one PR.

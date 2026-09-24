@@ -77,7 +77,7 @@ Pickable = open · `agent-ready` · no `in-progress` · every `blockedBy` closed
 2. **Acceptance criteria** — as *named tests or scenario ids to add*, not prose.
 3. **Verification command** — the exact command whose exit code proves it.
 4. **In scope / out of scope.**
-5. **Files likely touched.**
+5. **Files likely touched.** Run `node scripts/blast-radius.mjs` on them before `agent-ready` is applied (`docs/harness/README.md`).
 6. **Risk** label; **blocked-by**.
 7. *Added 2026-09-18 (#259):* a `surfaces` task also names the **scenario ids** it covers and the **drivers** it adds (`hdl` / `mcp` / `svg2d` / `cli`), and links its sibling issues for the other non-3D surfaces — `docs/portfolio.md` "Hand in hand".
 

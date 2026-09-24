@@ -104,6 +104,8 @@ src/
 │                     #   index.ts — the other half of the engine's front door: bus operations.
 │                     #   topologicalEval/truthTable/busLogic walk the canvas document and are
 │                     #   deliberately not exported; signalDisplay imports from components/.
+├── scenarios/        # Recovered circuits and truth tables, no browser imports (#195)
+│   └── drivers/      # core.ts runs every scenario via compileHDL. No store driver (ADR-0020).
 ├── store/           # Zustand state management
 │   ├── circuitStore.ts  # Store + circuitActions export + window globals for E2E
 │   ├── types.ts         # All store types (GateInstance, Wire, WireEndpoint, InputNode, etc.)
@@ -190,10 +192,18 @@ tasks/                # Task management for AI agents
 
 scripts/
 ├── backlog.mjs          # `ready` / `projects` — the backlog over GitHub Issues, pick rule from docs/portfolio.md (ADR-0013)
+├── blast-radius.mjs     # production importers and the reverse closure of seed files; the triage threshold is in blast-radius.logic.mjs (#333)
 ├── check-doc-paths.mjs  # lint:docs — no absolute paths (all docs) + cited paths exist (REPO_MAP, AGENTS)
 ├── check-test-files.sh  # Pre-commit TDD verification script
 ├── hooks/               # Pure logic + tests behind the hooks (docPaths, docPathExists, docsSyncStop)
-└── sync-superpowers.sh  # Sync skills from obra/superpowers (preserves hacer-patterns, docs-sync)
+├── sync-superpowers.sh  # Sync skills from obra/superpowers (preserves hacer-patterns, docs-sync)
+├── sync-vectors.sh      # Clone nand2tetris/web-ide at a pinned commit; write conformance/vectors/
+└── protected-paths.logic.mjs  # conformance/vectors/** is a protected path (#193, #151 extends it)
+
+conformance/
+└── vectors/             # Held-out nand2tetris oracle. Not covered by HACER's MIT license.
+    ├── LICENSE          # CC BY-NC-SA 3.0 notice + the pinned web-ide commit
+    └── 01/              # Project 1 .hdl/.tst/.cmp. Projects 2-5 are follow-ups.
 
 .github/
 ├── copilot-instructions.md       # GitHub Copilot quick-start
@@ -215,6 +225,9 @@ Landed and shown in the tree above: `src/core/chips/` (registry, builtins, `eval
 `src/components/scene/ChipBody3D.tsx` + `src/components/scene/chipBodyLayout.ts`, `src/components/ui/icons/ChipIcons.tsx`,
 `src/components/ui/TestResultsPanel.tsx`, `src/components/ui/PinoutPanel.tsx`, `src/components/ui/StatusBar.tsx`,
 `src/store/actions/persistenceActions/`, and the bus components under `src/nodes/`.
+Held-out oracle (#193): official Project 1 vectors in `conformance/vectors/01/`, refreshed by
+`scripts/sync-vectors.sh`. The licence notice is `conformance/vectors/LICENSE`.
+`conformance/vectors/` is a protected path (`scripts/protected-paths.logic.mjs`).
 
 **Still to come (no files yet — do not cite paths for these until they exist):** an HDL editor panel,
 a chip I/O definition panel, and a project/chip workflow browser. (User/composite chips already render
@@ -278,6 +291,7 @@ Future directory layouts are specified in `docs/roadmap/`.
   - `src/store/actions/testActions/` - `runChipTest(chipName, sourceId)` store action (AI-Agent-Parity surface) → writes `testResult`/`testColumns`/`completedChips`.
   - `src/components/ui/TestResultsPanel.tsx` - the Test Lab panel (RightActionBar `'tests'` drawer): chip/source selectors, Run, output table + diff highlight, ✓ on completed. Thin view over the store.
 - `src/simulation/topologicalEval.ts` - Topological sort for correct evaluation; `evaluateCircuit` return + `getSignalSourceValue`; routes chip evaluation through `evaluateChipWithCtx` so HDL/composite chips evaluate on the canvas.
+- `src/scenarios/` - Headless circuits lifted from the deleted e2e scenario files. `src/scenarios/drivers/core.ts` runs each one through `compileHDL` and the chip registry (#195). Layout fields stay on the scenario for later drivers.
 - `CircuitState.lastSimulationError` — combinational cycle metadata after a failed `simulationTick` (cleared on success / `clearCircuit`)
 - Multi-bit bus support (data model, simulation, 3D splitter/joiner)
 - Chip I/O definition workflow (node rename, name display, chip definition panel)

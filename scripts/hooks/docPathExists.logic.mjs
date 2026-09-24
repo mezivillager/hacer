@@ -10,7 +10,7 @@ import { posix } from 'node:path'
 import { OWNED_SKILLS } from './docPaths.logic.mjs'
 
 /** Top-level directories a citation may start with. */
-export const KNOWN_ROOTS = ['src', 'docs', 'scripts', 'e2e', 'tasks', 'public', '.claude', '.cursor', '.github', '.husky']
+export const KNOWN_ROOTS = ['src', 'docs', 'scripts', 'e2e', 'tasks', 'public', 'conformance', '.claude', '.cursor', '.github', '.husky']
 
 /** A line carrying this marker is skipped, for a doc that must cite a path that is not there yet. */
 export const MISSING_PATH_MARKER = 'allow-missing-path'

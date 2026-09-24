@@ -1,0 +1,21 @@
+Official nand2tetris project vectors, vendored for the HACER conformance oracle.
+
+Source checkout: https://github.com/nand2tetris/web-ide
+Pinned commit: 52611ad9bc2a30d329293b0cf58be672d672ac96
+Upstream form: TypeScript string modules (export const hdl / tst / cmp) under
+projects/src/project_<nn>/*.ts. This tree is the extracted text, not the modules.
+Projects included: 01. Projects 2-5 are follow-ups and are not in this tree yet.
+
+Licence of these .hdl / .tst / .cmp files:
+Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported
+(CC BY-NC-SA 3.0).
+https://creativecommons.org/licenses/by-nc-sa/3.0/
+The rights holders state that licence for all Nand to Tetris materials and tools:
+https://www.nand2tetris.org/license
+Copyright Noam Nisan and Shimon Schocken. Each file's header identifies the text as
+part of www.nand2tetris.org and the book "The Elements of Computing Systems" (MIT Press).
+
+What this is not: web-ide's MIT license (Copyright 2022 David Souther et al.) does not cover these files.
+HACER's MIT license does not cover them either. They stay under
+CC BY-NC-SA 3.0, including its NonCommercial and ShareAlike terms. Do not relicense
+them as MIT.
