@@ -4,6 +4,7 @@ import {
   serializeCircuit,
   type DeserializedCircuit,
   type DeserializeResult,
+  type DeserializeWarning,
   type SerializedCircuit,
 } from '@/core/serialization'
 import { useCircuitStore } from '@/store/circuitStore'
@@ -52,6 +53,33 @@ function storageKeyFor(name: string): string {
   return `${STORAGE_PREFIX}${name}`
 }
 
+/** The two codes summarised into one line instead of one toast each. Every other code keeps the
+ *  toast it has always raised, with its text and its place in document order untouched: #181
+ *  froze that set to exactly what already reached a person, and #402 does not reopen it. */
+const SUMMARISED_CODES = new Set<DeserializeWarning['code']>(['dropped-wire', 'dropped-junction'])
+
+/** `12 wires`, `1 junction`. */
+const countOf = (n: number, noun: string): string => `${String(n)} ${noun}${n === 1 ? '' : 's'}`
+
+/**
+ * One line naming how much wiring the load pruned, or `null` when it pruned none — so a document
+ * that drops nothing gains no toast it did not raise before. Only the counts reach the person;
+ * the per-entity ids stay in the warning objects, which is where a caller or a test wants them.
+ */
+function droppedWiringSummary(warnings: DeserializeWarning[]): string | null {
+  const wires = warnings.filter((w) => w.code === 'dropped-wire').length
+  const junctions = warnings.filter((w) => w.code === 'dropped-junction').length
+  if (wires === 0 && junctions === 0) return null
+  const counts = [
+    ...(wires > 0 ? [countOf(wires, 'wire')] : []),
+    ...(junctions > 0 ? [countOf(junctions, 'junction')] : []),
+  ]
+  return (
+    `Skipped ${counts.join(' and ')} while loading circuit — ` +
+    'wiring left dangling by gates or bus components that could not be loaded.'
+  )
+}
+
 /**
  * Turns a reader result into what the person sees. `deserializeCircuit` is pure
  * logic and returns its warnings as data (#181); this is the one place that
@@ -64,7 +92,11 @@ function storageKeyFor(name: string): string {
  * - **document + warnings** — every gate entry the reader could not rebuild was
  *   dropped and named: one warning toast each, in document order, then the circuit
  *   loads. Same count and order as the reader's own `notify.warning` calls used to
- *   produce; two of the texts changed (same information, better wording).
+ *   produce; two of the texts changed (same information, better wording). The wires
+ *   and junctions pruning took with those gates are the exception (#402): they are
+ *   reported one warning per entity, but shown as **one** line naming the counts —
+ *   a document that loses 40 wires must not raise 40 toasts, and the ids are for the
+ *   caller and its tests, not for the person.
  * - **a throw out of `deserializeCircuit`** — the document's own shape is wrong (a
  *   missing top-level array, a malformed wire/node/junction/bus record), so there is
  *   nothing to load. Unchanged: each caller's `try/catch` turns it into one error
@@ -77,7 +109,11 @@ function reportDeserialized(result: DeserializeResult, failurePrefix: string): D
     notify.error(`${failurePrefix}: ${result.warnings[0]?.message ?? 'unknown error'}`)
     return null
   }
-  for (const warning of result.warnings) notify.warning(warning.message)
+  for (const warning of result.warnings) {
+    if (!SUMMARISED_CODES.has(warning.code)) notify.warning(warning.message)
+  }
+  const summary = droppedWiringSummary(result.warnings)
+  if (summary) notify.warning(summary)
   return result.document
 }
 
