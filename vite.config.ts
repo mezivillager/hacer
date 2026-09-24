@@ -31,7 +31,7 @@ const NODE_TEST_FILE = /\.(test|spec)\.(ts|mjs)$/
 // each fails under `node` with `ReferenceError: localStorage is not defined`. They stay in `jsdom`
 // until the persistence they exercise reaches `localStorage` through a port instead of directly.
 const NEEDS_DOM = [
-  'src/core/testing/chipCompletion.test.ts', // localStorage: completed-chip persistence
+  'src/lib/chipCompletionStorage.test.ts', // localStorage: which chips this person has completed
   'src/lib/performanceModeStorage.test.ts', // localStorage: the performance-mode preference itself
   'src/store/circuitStore.autosave.test.ts', // localStorage: autosave slot round-trip
   'src/store/actions/persistenceActions/autosave.test.ts', // localStorage: debounced autosave writes

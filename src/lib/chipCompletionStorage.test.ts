@@ -1,7 +1,10 @@
-import { describe, it, expect, beforeEach } from 'vitest'
-import { readCompletedChips, markChipCompleted } from './chipCompletion'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { readCompletedChips, markChipCompleted } from './chipCompletionStorage'
 
-beforeEach(() => localStorage.clear())
+beforeEach(() => {
+  localStorage.clear()
+  vi.restoreAllMocks()
+})
 
 describe('chipCompletion', () => {
   it('reads an empty list when nothing is stored', () => {
@@ -22,5 +25,19 @@ describe('chipCompletion', () => {
   it('returns an empty list on corrupt storage', () => {
     localStorage.setItem('hacer-completed-chips', 'not json{')
     expect(readCompletedChips()).toEqual([])
+  })
+
+  it('degrades silently when storage refuses to be read', () => {
+    vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+      throw new Error('storage blocked')
+    })
+    expect(readCompletedChips()).toEqual([])
+  })
+
+  it('keeps the in-memory list when storage refuses a write', () => {
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('storage blocked')
+    })
+    expect(markChipCompleted('Not')).toEqual(['Not'])
   })
 })

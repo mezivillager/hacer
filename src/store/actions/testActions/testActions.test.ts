@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { useCircuitStore, circuitActions } from '@/store/circuitStore'
 import {
   registerImplementationSource,
@@ -91,5 +91,15 @@ describe('runChipTest', () => {
     expect(r?.error).toBeNull()
     expect(r?.passed).toBe(false)
     expect(r?.firstFailure).toMatchObject({ row: 0, column: 'out' })
+  })
+})
+
+describe('completed chips across a reload', () => {
+  it('a freshly loaded store starts from the chips a previous session completed', async () => {
+    circuitActions.runChipTest('Not', 'builtin')
+    // A reload is a fresh module graph over the same storage.
+    vi.resetModules()
+    const reloaded = await import('@/store/circuitStore')
+    expect(reloaded.useCircuitStore.getState().completedChips).toEqual(['Not'])
   })
 })
