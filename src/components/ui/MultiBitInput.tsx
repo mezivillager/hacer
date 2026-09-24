@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { formatValue, parseValue, type DisplayFormat } from './multiBitFormat'
+import { formatValue, parseValue, type DisplayFormat } from '@/simulation/multiBitFormat'
 
 interface MultiBitInputProps {
   nodeId: string

@@ -1,4 +1,4 @@
-import { formatValue } from '@/components/ui/multiBitFormat'
+import { formatValue } from './multiBitFormat'
 
 /**
  * Whether a numeric signal should be treated as logically high for visuals.
