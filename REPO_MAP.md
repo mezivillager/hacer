@@ -104,6 +104,8 @@ src/
 │                     #   index.ts — the other half of the engine's front door: bus operations.
 │                     #   topologicalEval/truthTable/busLogic walk the canvas document and are
 │                     #   deliberately not exported; signalDisplay imports from components/.
+├── scenarios/        # Recovered circuits and truth tables, no browser imports (#195)
+│   └── drivers/      # core.ts runs every scenario via compileHDL. No store driver (ADR-0020).
 ├── store/           # Zustand state management
 │   ├── circuitStore.ts  # Store + circuitActions export + window globals for E2E
 │   ├── types.ts         # All store types (GateInstance, Wire, WireEndpoint, InputNode, etc.)
@@ -278,6 +280,7 @@ Future directory layouts are specified in `docs/roadmap/`.
   - `src/store/actions/testActions/` - `runChipTest(chipName, sourceId)` store action (AI-Agent-Parity surface) → writes `testResult`/`testColumns`/`completedChips`.
   - `src/components/ui/TestResultsPanel.tsx` - the Test Lab panel (RightActionBar `'tests'` drawer): chip/source selectors, Run, output table + diff highlight, ✓ on completed. Thin view over the store.
 - `src/simulation/topologicalEval.ts` - Topological sort for correct evaluation; `evaluateCircuit` return + `getSignalSourceValue`; routes chip evaluation through `evaluateChipWithCtx` so HDL/composite chips evaluate on the canvas.
+- `src/scenarios/` - Headless circuits lifted from the deleted e2e scenario files. `src/scenarios/drivers/core.ts` runs each one through `compileHDL` and the chip registry (#195). Layout fields stay on the scenario for later drivers.
 - `CircuitState.lastSimulationError` — combinational cycle metadata after a failed `simulationTick` (cleared on success / `clearCircuit`)
 - Multi-bit bus support (data model, simulation, 3D splitter/joiner)
 - Chip I/O definition workflow (node rename, name display, chip definition panel)
