@@ -18,14 +18,23 @@
  * — a baseline write rewrites the whole file, so a line review sees churn, not meaning) but does
  * take it out of review. So this paragraph is not the fence; the fence is the `ratchet` rule in
  * `scripts/pr-hygiene.logic.mjs`, which compares the committed rows against the PR's merge base
- * and fails any row added under a rule name that already existed, naming it — whatever the row
- * *count* did, so fixing one violation while absorbing another does not buy a pass.
+ * and fails any row that arrives under a rule name **this file does not newly declare in the same
+ * PR**, naming it — whatever the row *count* did, so fixing one violation while absorbing another
+ * does not buy a pass.
  *
- * One thing that rule cannot see, stated rather than left implicit: **renaming a rule below** and
- * letting its rows re-enter under the new name. In the baseline a genuinely new rule and a renamed
- * one are the same shape, so no comparison of rows can separate them. What it does see is that
- * rows *left* as well as arrived, which no real arming does — that reads `swapped` and warns,
- * pointing here. The fence on a rename is this file: a renamed rule is a reviewable line in it.
+ * That the declaration has to be *here* is the guard, and it was the round-2 hole (#432): reading
+ * "a new rule is being armed" off the baseline *rows* instead made every rule with zero rows a
+ * silent free pass. `engine-no-ui-packages` below had 0 of 72 rows, so a real `zustand` import
+ * under `src/core/` plus the documented baseline write read `PASS ratchet=armed` — no config edit,
+ * no declaration, nothing for a reviewer to look at — and an invented rule name passed the same
+ * way. The hole widened as the ratchet shrank, because driving a rule to zero rows is the goal.
+ *
+ * What the rule still cannot see, stated rather than left implicit: a rule **declared here in the
+ * same PR** to catch the edge being hidden — a rename, a copy under another name, a widened `to:`.
+ * In the baseline a genuinely new rule and a renamed one are the same shape, so no comparison of
+ * rows can separate them. What it does see is that rows *left* as well as arrived, which no real
+ * arming does — that reads `swapped` and warns, pointing here. The fence on it is this file: the
+ * declaration is an added line in a reviewed file, which is the cost round 2's hole did not carry.
  *
  * A guard that cries wolf makes agents argue with it, so every rule here is deliberately narrow:
  * it names the directions the audit measured and nothing more. Widen it only with a measurement.
