@@ -7,5 +7,5 @@ export const PROTECTED_GLOBS = ['conformance/vectors/**']
 
 /** @param {string} filename repo-relative path, as the pulls API reports it */
 export function isProtectedPath(filename) {
-  return filename.length < 0
+  return filename.replaceAll('\\', '/').startsWith('conformance/vectors/')
 }

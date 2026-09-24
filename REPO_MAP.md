@@ -196,7 +196,14 @@ scripts/
 ├── check-doc-paths.mjs  # lint:docs — no absolute paths (all docs) + cited paths exist (REPO_MAP, AGENTS)
 ├── check-test-files.sh  # Pre-commit TDD verification script
 ├── hooks/               # Pure logic + tests behind the hooks (docPaths, docPathExists, docsSyncStop)
-└── sync-superpowers.sh  # Sync skills from obra/superpowers (preserves hacer-patterns, docs-sync)
+├── sync-superpowers.sh  # Sync skills from obra/superpowers (preserves hacer-patterns, docs-sync)
+├── sync-vectors.sh      # Clone nand2tetris/web-ide at a pinned commit; write conformance/vectors/
+└── protected-paths.logic.mjs  # conformance/vectors/** is a protected path (#193, #151 extends it)
+
+conformance/
+└── vectors/             # Held-out nand2tetris oracle. Not covered by HACER's MIT license.
+    ├── LICENSE          # CC BY-NC-SA 3.0 notice + the pinned web-ide commit
+    └── 01/              # Project 1 .hdl/.tst/.cmp. Projects 2-5 are follow-ups.
 
 .github/
 ├── copilot-instructions.md       # GitHub Copilot quick-start
@@ -218,6 +225,9 @@ Landed and shown in the tree above: `src/core/chips/` (registry, builtins, `eval
 `src/components/scene/ChipBody3D.tsx` + `src/components/scene/chipBodyLayout.ts`, `src/components/ui/icons/ChipIcons.tsx`,
 `src/components/ui/TestResultsPanel.tsx`, `src/components/ui/PinoutPanel.tsx`, `src/components/ui/StatusBar.tsx`,
 `src/store/actions/persistenceActions/`, and the bus components under `src/nodes/`.
+Held-out oracle (#193): official Project 1 vectors in `conformance/vectors/01/`, refreshed by
+`scripts/sync-vectors.sh`. The licence notice is `conformance/vectors/LICENSE`.
+`conformance/vectors/` is a protected path (`scripts/protected-paths.logic.mjs`).
 
 **Still to come (no files yet — do not cite paths for these until they exist):** an HDL editor panel,
 a chip I/O definition panel, and a project/chip workflow browser. (User/composite chips already render
