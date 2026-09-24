@@ -91,7 +91,7 @@ Open [http://localhost:5173](http://localhost:5173) to view the simulator locall
 | Technology | Purpose |
 |-----------|---------|
 | React 19 | UI framework |
-| TypeScript 5.9 | Type safety (strict mode) |
+| TypeScript 6.0 | Type safety (strict mode) |
 | Vite 8 | Build tool |
 | React Three Fiber 9 + Three.js | 3D rendering |
 | Zustand 5 + Immer | State management |
