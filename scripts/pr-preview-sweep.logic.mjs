@@ -2,10 +2,22 @@
 // longer belong to an open PR. No I/O — unit tested in pr-preview-sweep.logic.test.mjs. Listing
 // gh-pages, calling `gh pr list` and removing/committing live in scripts/pr-preview-sweep.mjs.
 
-export function parsePrNumber(_folderName) {
-  throw new Error('not implemented')
+const PR_FOLDER_PATTERN = /^pr-(\d+)$/
+
+/** The PR number a `pr-preview/` folder name encodes, or null when it isn't a `pr-<N>` folder. */
+export function parsePrNumber(folderName) {
+  const match = PR_FOLDER_PATTERN.exec(folderName)
+  return match ? Number(match[1]) : null
 }
 
-export function foldersToRemove(_folderNames, _openPrNumbers) {
-  throw new Error('not implemented')
+/**
+ * Folder names to remove: those whose PR number is not in `openPrNumbers`. A folder with no
+ * parseable PR number is left alone — it isn't this sweep's to touch either way.
+ */
+export function foldersToRemove(folderNames, openPrNumbers) {
+  const open = new Set(openPrNumbers)
+  return folderNames.filter((name) => {
+    const prNumber = parsePrNumber(name)
+    return prNumber !== null && !open.has(prNumber)
+  })
 }
