@@ -18,16 +18,21 @@ pick rule below decides what "next" means; `scripts/backlog.mjs ready` computes 
 | 10 | bugs | Bugs | [#145](https://github.com/mezivillager/hacer/issues/145) | aux | no `sev:high` open > 7 days |
 | 11 | upkeep | Maintenance & documentation | [#146](https://github.com/mezivillager/hacer/issues/146) | aux | 0 stale dependabot PRs; 0 dead doc paths |
 | 12 | horizon | Beyond nand2tetris (research notes only) | [#147](https://github.com/mezivillager/hacer/issues/147) | research | one open note at a time |
+| 13 | lineage | Decision Lineage: the decision graph, executable premises, and the correction workflow | [#457](https://github.com/mezivillager/hacer/issues/457) | process | `lint:lineage` green; every ruling since the cut-over carries lineage; the four chains in the report answer `trace`/`radius`; premises re-verified on a schedule and P-001 reported expired |
+| 14 | mission-control | Mission Control: the platform's status, process and roadmap as one site at `/control/` | [#458](https://github.com/mezivillager/hacer/issues/458) | process | `/control/` live and refreshed within the hour; each view answers its question from the snapshot; the coordinator's orient reads `collect --json` |
 
 ## Pick rule
 
 1. Any open `sev:critical` bug.
-2. Otherwise a six-slot cycle — **amended 2026-09-21 (#330), in force while the foundation plan
-   (#318) runs.** The owner: "we shouldn't build more on a wrong foundation that would crumble soon,
-   so we have to fix the foundation first, and have to keep maintaining the foundation … process
-   ironing prs can go hand in hand with that."
+2. Otherwise an eight-slot cycle — **amended 2026-09-21 (#330), in force while the foundation plan
+   (#318) runs; amended again 2026-09-25 (#482) to add `lineage` and `mission-control`.** The owner on
+   the foundation-first amendment: "we shouldn't build more on a wrong foundation that would crumble
+   soon, so we have to fix the foundation first, and have to keep maintaining the foundation … process
+   ironing prs can go hand in hand with that." The owner approved lineage and mission-control
+   (2026-09-25, "yes to all") for "equal footing as the other priority projects" — one slot each,
+   literally equal to `harness` and `spine`; `foundation` keeps its three picks, spaced.
 
-   `foundation → foundation → harness → foundation → spine → aux` (then repeat)
+   `foundation → lineage → harness → foundation → mission-control → spine → foundation → aux` (then repeat)
 
    - `aux` takes `verify → upkeep → bugs` in turn;
    - a slot whose bucket has nothing pickable is skipped;
@@ -40,9 +45,11 @@ pick rule below decides what "next" means; `scripts/backlog.mjs ready` computes 
      cancelled: the plan's Phase 0.6 *is* the surfaces work, and a `surfaces` slot takes the oldest
      pickable `surfaces` **or** `pubdocs` task again as soon as the amendment lifts.
 
-   It lifts when the default renderer switches (plan §6 phase C), and the cycle goes back to
-   `surfaces → harness → spine → aux → surfaces → harness` — set 2026-09-18, when the owner said
-   "the process ironing and other auxiliary items are of equal priority."
+   The #330 amendment lifts when the default renderer switches (plan §6 phase C), and that part of
+   the cycle goes back to `surfaces → harness → spine → aux → surfaces → harness` — set 2026-09-18,
+   when the owner said "the process ironing and other auxiliary items are of equal priority."
+   `lineage` and `mission-control` are a separate amendment (#482) and are unaffected by that
+   reversion.
 3. `polish` and `horizon` are picked only when the owner asks, or in dormant mode (`horizon` only).
 
 A task is **pickable** when it is open, labelled `agent-ready`, not `in-progress`, every issue it is
@@ -58,11 +65,13 @@ specification; these three rules are what `scripts/backlog.logic.mjs` computes.
   foundation row whatever else it carries — GitHub lists labels in creation order, which is an
   accident, so the row is chosen explicitly. The enablers the plan pulls forward keep their original
   `project:` label as well, so their epic's progress and the hand-in-hand rule still count them.
-- **`risk:2` waits, and says so.** A `risk:2` task outside `foundation` and `harness` is held and
-  `ready` prints `foundation-gate` as its reason: that label already marks the store, UI, R3F and
-  architecture paths this plan is replacing and the ADR (#327) will redefine, so the safe-to-proceed
-  test is a filter over it, not a second label. A `sev:critical` bug is never held — a defect that
-  corrupts evaluation is still fixed, in the evaluation layer, as #312 was.
+- **`risk:2` waits, and says so.** A `risk:2` task outside `foundation`, `harness`, `lineage` and
+  `mission-control` is held and `ready` prints `foundation-gate` as its reason: that label already
+  marks the store, UI, R3F and architecture paths this plan is replacing and the ADR (#327) will
+  redefine, so the safe-to-proceed test is a filter over it, not a second label. `lineage` and
+  `mission-control` join for the same reason `harness` does (#482): their `risk:2` work is CI checks,
+  not the paths this gate protects. A `sev:critical` bug is never held — a defect that corrupts
+  evaluation is still fixed, in the evaluation layer, as #312 was.
 - **New work on hand editing stops.** Wire drawing, junction placement, dragging, previews, and
   polish or fixes whose only beneficiary is that machinery: not `agent-ready` while the plan runs.
   All of it is `risk:2` store/UI/R3F work, so the same filter holds it with the same stated reason.
