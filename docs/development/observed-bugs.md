@@ -119,7 +119,7 @@ problem.
 | **Reachability** | No UI caller. `applyJunctionRelocations` (`src/store/actions/junctionUtils.ts`) reaches it when a gate, a node or a bus component is moved (or a gate rotated), and the programmatic actions facade (`circuitStore.ts`) exposes it. |
 | **Guard tests** | `signalActions.test.ts`: `through the real gesture: the re-drawn trunk and both branches survive (#403)` and `through the real gesture: every surviving wire still carries the signal (#403)` drive the issue's sequence through the real wiring actions. At the red commit `969c64f` they measured survivors `[branch1]` and sink inputs `[0, 1, 0]`. #396's reproduction is kept, updated, as `gesture-shaped branches: every user-drawn wire survives (#403 reproduction)`. |
 | **Residual** | The kept branches still share the trunk's prefix, now with no junction dot at the fork. That is a rendering question only; ADR-0020 §7.5b removes the junction as a domain entity. The [#376](https://github.com/mezivillager/hacer/issues/376) criterion (*capture the corpus before exercising `removeJunction`*) was written for this loss, and this fix leaves it to #376. |
-| **Fixed in** | [#403](https://github.com/mezivillager/hacer/issues/403) — PR pending. Partly fixed earlier by [#364](https://github.com/mezivillager/hacer/issues/364) / [#396](https://github.com/mezivillager/hacer/pull/396). |
+| **Fixed in** | [#403](https://github.com/mezivillager/hacer/issues/403) / [PR #459](https://github.com/mezivillager/hacer/pull/459). Partly fixed earlier by [#364](https://github.com/mezivillager/hacer/issues/364) / [#396](https://github.com/mezivillager/hacer/pull/396). |
 
 ### B-005 — `circuitStore.autosave.test.ts` bootstrap test times out under parallel full-suite load
 
