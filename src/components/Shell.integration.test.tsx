@@ -21,12 +21,23 @@ beforeEach(() => {
   if (useCircuitStore.getState().simulationRunning) circuitActions.toggleSimulation()
 })
 
+// #313: first test in the file pays the full `renderShell()` mount cost (Theme + Tooltip +
+// Shell + CompactToolbar + RightActionBar against the real store). Measured over 3 full
+// `pnpm run test:run` runs with 2 other agent processes active: 1453-2468ms, up to 49% of
+// vitest's 5000ms default — the exact test that produced a false 5s timeout and a wrong
+// verifier BLOCK (#313's issue body). 10000ms is ~4x that worst measured duration.
+const SLOW_MOUNT_TIMEOUT_MS = 10000
+
 describe('Shell integration (renderShell harness)', () => {
-  it('renders compact toolbar and right action bar together', () => {
-    renderShell()
-    expect(screen.getByTestId('compact-toolbar')).toBeInTheDocument()
-    expect(screen.getByTestId('right-action-bar')).toBeInTheDocument()
-  })
+  it(
+    'renders compact toolbar and right action bar together',
+    () => {
+      renderShell()
+      expect(screen.getByTestId('compact-toolbar')).toBeInTheDocument()
+      expect(screen.getByTestId('right-action-bar')).toBeInTheDocument()
+    },
+    SLOW_MOUNT_TIMEOUT_MS,
+  )
 
   it('simulation toggle starts in stopped state', () => {
     renderShell()

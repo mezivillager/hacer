@@ -299,6 +299,12 @@ describe('compileHDL — permutation invariance over generated slice-assembled c
     reg = joinerRegistry()
   })
 
+  // #313: this is exhaustive (every permutation of every depth pattern), not load-induced —
+  // measured 2053ms worst case over 3 full `pnpm run test:run` runs with 2 other agent
+  // processes active, 41% of vitest's 5000ms default already at that contention level.
+  // 8000ms is ~3.9x that worst measured duration.
+  const PERMUTATION_TIMEOUT_MS = 8000
+
   it('holds for EVERY permutation of the parts, over every depth pattern at N = 2', () => {
     const bits = [true, true]
     for (const depths of [[0, 0], [0, 1], [1, 0], [1, 1], [0, 2], [2, 1]]) {
@@ -311,7 +317,7 @@ describe('compileHDL — permutation invariance over generated slice-assembled c
         })
       }
     }
-  })
+  }, PERMUTATION_TIMEOUT_MS)
 
   it('holds for sampled permutations of N = 2..8 slice writes at mixed depths', () => {
     const next = mulberry32(0x355)

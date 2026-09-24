@@ -21,6 +21,15 @@ const wrap = () =>
     </TooltipProvider>,
   )
 
+// #313: this file's multi-click tests mount the full toolbar and drive real `userEvent`
+// interactions. Measured over 3 full `pnpm run test:run` runs on this machine with 2 other
+// agent processes active (light real contention, not synthetic load): the two tests below hit
+// 1632-2214ms and 2076-3052ms respectively, 44-61% of vitest's 5000ms default — the class the
+// default has already timed out on under load (#313). 10000ms is ~3.3x the worst individual
+// duration measured (3052ms), enough headroom for heavier contention than was measured without
+// masking a genuine hang.
+const SLOW_MOUNT_TIMEOUT_MS = 10000
+
 function placeGateAt(chipName: 'Nand' | 'And' | 'Or' | 'Not' | 'Xor', x: number, z: number) {
   circuitActions.startPlacement(chipName)
   circuitActions.placeGate({ x, y: 0.2, z })
@@ -65,7 +74,7 @@ describe('CompactToolbar', () => {
       for (const name of expected) {
         expect(screen.getByTestId(`gate-button-${name}`)).toBeInTheDocument()
       }
-    })
+    }, SLOW_MOUNT_TIMEOUT_MS)
 
     it('does NOT list legacy NOR/XNOR/uppercase variants', async () => {
       const user = userEvent.setup()
@@ -100,7 +109,7 @@ describe('CompactToolbar', () => {
       await user.click(screen.getByTestId('toolbar-gates-trigger'))
       await user.click(screen.getByTestId('gate-button-And'))
       expect(useCircuitStore.getState().placementMode).toBeNull()
-    })
+    }, SLOW_MOUNT_TIMEOUT_MS)
   })
 
   describe('I/O popover', () => {
