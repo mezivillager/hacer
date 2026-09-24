@@ -166,7 +166,9 @@ describe('deserializeCircuit: a gate entry it cannot rebuild', () => {
 
   it('reports each one as a warning naming that gate and why', () => {
     const { warnings } = deserializeCircuit(withUnreadableGates())
-    expect(warnings).toEqual([
+    // Gate warnings only: this document also loses a wire to the gate it drops, reported
+    // separately since #402 and pinned by its own tests below.
+    expect(warnings.filter((w) => w.code !== 'dropped-wire')).toEqual([
       {
         code: 'unreadable-gate',
         gateId: 'g-no-position',

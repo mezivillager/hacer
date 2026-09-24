@@ -362,8 +362,24 @@ export function deserializeCircuit(data: SerializedCircuit): DeserializeResult {
   const wires: Wire[] = []
   const droppedWireIds = new Set<string>()
   for (const s of data.wires) {
-    if (!isLiveGateRef(s.from) || !isLiveGateRef(s.to) || !isLiveBusRef(s.from) || !isLiveBusRef(s.to)) {
+    const missingGate = !isLiveGateRef(s.from) || !isLiveGateRef(s.to)
+    const missingBus = !isLiveBusRef(s.from) || !isLiveBusRef(s.to)
+    if (missingGate || missingBus) {
       droppedWireIds.add(s.id)
+      // A wire can be orphaned at both ends at once; `missing-gate` wins, because a gate this
+      // build skipped is the case the person can act on (#402).
+      const reason = missingGate ? 'missing-gate' : 'missing-bus'
+      warnings.push({
+        code: 'dropped-wire',
+        // `String` for the same reason the gate warnings use a stand-in: the declared
+        // `wireId: string` is a promise to the caller, and the file is untrusted. Pruning still
+        // keys on `s.id` as written, so a numeric id matches the junction `wireIds` that use it.
+        wireId: String(s.id),
+        reason,
+        message:
+          `Skipped wire "${String(s.id)}" while loading circuit — it connected to a ` +
+          `${missingGate ? 'gate' : 'bus component'} that could not be loaded.`,
+      })
       continue
     }
     wires.push(reconstructWire(s))
@@ -374,7 +390,16 @@ export function deserializeCircuit(data: SerializedCircuit): DeserializeResult {
   const junctions: JunctionNode[] = []
   for (const s of data.junctions) {
     const liveWireIds = s.wireIds.filter((id) => !droppedWireIds.has(id))
-    if (liveWireIds.length === 0) continue
+    if (liveWireIds.length === 0) {
+      // Includes the degenerate junction a document writes with no `wireIds` at all: it is still
+      // a junction the person will not find where they left it, so it is still reported.
+      warnings.push({
+        code: 'dropped-junction',
+        junctionId: String(s.id),
+        message: `Skipped junction "${String(s.id)}" while loading circuit — every wire it joined was skipped too.`,
+      })
+      continue
+    }
     junctions.push({
       id: s.id,
       position: cloneVec3(s.position),
