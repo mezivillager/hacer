@@ -155,7 +155,9 @@ launches the builder and where the row is tracked.
 5. **Await the PR.** Status `pr`. Fix labels and body the way the brief says (`Fixes #<n>` or
    `Part of #<n>`).
 6. **Fresh-context verify** with `docs/harness/verifier-brief.md`. You do not verify a PR you
-   built in the same context.
+   built in the same context. Post the verdict in its exact format — the `## Verifier verdict:
+   PASS | BLOCK` heading and `Verified on:` line, never a paraphrase — because that heading is
+   what a verdict collector counts.
 7. **Merge on green + PASS** when that is the standing grant for this coordinator. If it is
    not, stop after the verdict and report.
 8. **Release the claim** (`git push origin --delete claim/<n>`, remove `in-progress`).

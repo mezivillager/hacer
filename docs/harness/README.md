@@ -81,7 +81,7 @@ the moment it lands on `main`. Use the recovery above on any PR opened before it
 | You say | What happens |
 |---|---|
 | "list the priority projects" | `node scripts/backlog.mjs projects` — rows in portfolio order with open / ready / in-progress / needs-human counts and the next pick |
-| "what's open in *surfaces*?" | `gh issue view <epic#>` or `backlog.mjs tasks <slug>` (#149 follow-up) |
+| "what's open in *surfaces*?" | `gh issue view <epic#>` — `backlog.mjs tasks` doesn't exist yet, only `ready` and `projects` do (#149) |
 | "what can you do next?" | the **`ha-next`** skill: `backlog.mjs ready`, present the top pick with its why, claim it, build it through `ha-prompt-it`, PR, verifier, merge |
 | "work the next N" | locally: `/autonomous` over `ha-next` N times; in the cloud: N `claude --cloud` sessions, one issue each |
 | "queue up: …" | triage: shape the idea into issues in the form, split to fit the budget, `agent-ready` only if risk:0/1, the criteria are unambiguous, and the seeds are within the blast-radius threshold (*How wide is an issue?*); otherwise `needs-human` — *one exception:* product-role polish issues may be `agent-ready` at `risk:2` when the fix is concrete (owner's ruling on #269; `product-brief.md`) |
