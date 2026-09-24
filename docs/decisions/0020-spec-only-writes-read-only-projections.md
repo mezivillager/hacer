@@ -363,14 +363,37 @@ file:
    inputs) or a `chip-out` (the result record); there is no third place the value could be. Measured
    on the spike's round 3: whole-signal, sliced, 16-bit and OUT→OUT fixtures and a 3-long alias chain
    all evaluate correctly, and cycles and self-aliases are refused by name.
+   **"After `evaluate` returns" is one boundary, and the write-back belongs to that chip — not to
+   its caller.** It is invisible to nesting: measured, the V1 pass-through registered as a chip `P`
+   and then instantiated, `CHIP Q { IN x; OUT y; PARTS: P(a=x, out=y); }`, gives **`y=0`** for
+   `{x:1}`, because `evaluateChipWithCtx` (`src/core/chips/evaluateChip.ts`) calls `P`'s compiled
+   evaluator directly and nothing `compileSpec` wrapped around `P` is in that path — while the same
+   wrapper applied at the top level gives `out=1` for `{a:1}`. So the write-back has to live inside
+   the chip definition a spec registers — §9 /
+   [#190](https://github.com/mezivillager/hacer/issues/190)'s `'circuit'` composite evaluator,
+   *"a spec compiles into a chip definition and registers itself"* — and a composed chip pays it
+   again at its **own** boundary. Put in the caller of the outermost `evaluate`, it works once and
+   stops working the moment the spec is instantiated as a part; that is N.1's constraint to hold,
+   together with the engine-external one above.
 
 *Why this and not the injected writer* — `Or(a=x, b=x, out=y)` in the **document** lowering, which
-the spike measured correct on every fixture it ran. It puts a part in the part list that nobody
-declared, and three things then pay for it: 1.9's part ids shift unless synthetic parts are always
-appended last; the engine's cycle and clash messages name `Or` parts the author cannot see; and the
-buffer needs a chip of the net's width, which the registry has at 1 and 16 and nowhere between. The
-binding rewrite keeps all three intact, and costs one check (below). The injected writer stays
-exactly where this ADR already put it — the **export dialect**, where nothing is on a screen.
+the spike measured correct on every fixture it ran. Both lowerings work on every fixture either
+party ran, so this is a **chosen** trade and not a forced one, and three things pay for the injected
+part nobody declared: 1.9's part ids shift unless synthetic parts are always appended last; the
+engine's errors carry a synthetic part the author cannot see; and the buffer needs a chip of the
+net's width, which the registry has at 1 and 16 and nowhere between. **Two of the three are soft,
+and the third is the one that carries the decision.** The id shift is mitigable by exactly the rule
+1.9 already requires of the export printer — append injected parts last. The width gap is neutralised
+two paragraphs below by this ADR's own width-generic export rule, which is equally available to the
+document path. What is left is the diagnostics cost, stated as the engine actually reports it: the
+*printed* messages are in the author's own vocabulary — the cycle names signals
+(`Cyclic part dependency: … through "y" → "x"`, `edgeCarries` being keyed by signal) and the clash
+names the signal (`Signal "out" bit 0 is driven by more than one part`) — but the structured
+`HDLCompileError` carries `partName: "Or"`, a part that is in no document, no sidecar and no part id
+space, and 1.1's diagnostics are projected from that object and not from the string. That, plus the
+document/export split already being the accepted spine (review C5), is what decides it; the binding
+rewrite keeps all three intact and costs one check (below). The injected writer stays exactly where
+this ADR already put it — the **export dialect**, where nothing is on a screen.
 
 *What the document lowering gives up, and 1.8 pays for:* because no writer is injected, the engine
 never sees an alias as a driver, so a document with two drivers on one bit — one part, one alias —
@@ -383,8 +406,12 @@ and 1.8 now says so.
 not the rule. The registry has `Or` and `Or16` and nothing between (`src/core/chips/builtins/`), so a
 4- or 8-bit pass-through has no buffer to desugar to. The export desugar is **width-generic** — per
 bit, or the smallest covering buffer — and is carried by
-[#374](https://github.com/mezivillager/hacer/issues/374). An `Or4`/`Or8` per width is rejected: that
-is the per-case growth §1 exists to avoid.
+[#374](https://github.com/mezivillager/hacer/issues/374). An `Or4`/`Or8` per width is rejected, and
+the reason is stronger than per-case growth: `src/core/chips/builtins/project01.ts` registers
+**exactly the sixteen** nand2tetris Project-1 chips, and `Or4`/`Or8` are not among them, so adding
+them would put **invented chips into the compatibility baseline** the north star rests on — and after
+paying that, two more builtins still would not cover a width above 16, while a width-generic desugar
+needs no registry growth at any width.
 
 **That argument carries 1.5 and not 1.6 — and the spike narrowed exactly which part of 1.6 it fails
 to carry.** When bit 0 of `out` comes from `a` and bit 1 from a part, one read of `out` cannot be
@@ -419,7 +446,9 @@ the alias map in `parseSpec`: ~20 lines, O(nets), members in order (`["x", "y", 
 HDL, no registry and no parts, so the diagnostic is available exactly where 1.1 wants it — and a
 legal 3-long chain `x ← y ← z ← a` returns nothing and evaluates correctly. It has to be caught
 there: under the decided rewrite the engine never sees the cycle at all, and under the injected
-writer it does see it but names synthetic `Or` parts the author never declared.
+writer it does see it, but only once the HDL exists — too late for 1.1 — and the error it raises
+carries a synthetic part the author never declared in its `partName`, even though the printed
+message is in the author's own signals (`… through "y" → "x"`, measured).
 
 **What settled it, and what it was measured on.** The spike ran on 2026-09-24, after
 [#363](https://github.com/mezivillager/hacer/issues/363) landed and before N.1 — alias fixtures over
@@ -498,12 +527,18 @@ The **input** half arrived free: #367 landed as
 [#375](https://github.com/mezivillager/hacer/pull/375) (merged 2026-09-23), and `claimBits` keys a
 part's bound ranges by the *pin's own* bits, so a pin bit bound twice is now refused by the engine
 (`Part "Not" pin "in" bit 0 is bound by more than one connection`) — and 1.5's rewrite can neither
-create nor hide such a clash, because renaming or splitting an **external** never touches the pin
-side (measured: two aliases of one IN bound to two pins, and to two bits of one pin, both compile and
-evaluate correctly). The **output** half is `compileSpec`'s and stays `compileSpec`'s: `drivenRanges`
-is populated only from part *output* connections, and 1.5's decided lowering injects no part, so a
-bit driven by one part and one alias never reaches the engine as two drivers — it compiles clean, and
-the boundary write-back then overwrites the part's bit silently (measured, V4 in 1.5). So
+create nor hide such a clash. **Not because it leaves the pin side alone:** 1.5's rule 1 splits a
+straddling read into bindings on the part's **own** pin (`Any2(in=out)` →
+`Any2(in[0]=a, in[1]=out[1])`), which is a pin-side change, as the summary table says too. The
+reason is 1.5's own: #375 claims bits **per pin bit**, so the two pieces a split produces are
+**disjoint** claims over bits the one binding already claimed together — no bit gains a second
+claimant and none loses one. Measured both ways: a genuine double binding of `in` bit 0 is refused
+identically unsplit and split, and a legitimate split compiles and evaluates correctly (as do two
+aliases of one IN bound to two pins, and to two bits of one pin). The **output** half is
+`compileSpec`'s and stays `compileSpec`'s: `drivenRanges` is populated only from part *output*
+connections, and 1.5's decided lowering injects no part, so a bit driven by one part and one alias
+never reaches the engine as two drivers — it compiles clean, and the boundary write-back then
+overwrites the part's bit silently (measured, V4 in 1.5). So
 `compileSpec` runs the overlap check over **nets**, before lowering, counting an alias net as a
 driver of its sink's bits; the engine's part-side check is the second net, not the first.
 
@@ -1092,8 +1127,11 @@ once. This ADR fixes the rule it applies:
 - **Keep unchanged:** #166 and #168 (the scenario suite and the canonical HDL printer) — both are
   this work already filed. #172 (composite chip 3D rendering) is kept and *promoted*: it is where
   the 3D renderer's effort goes after N.8.
-- **Keep, newly blocking:** #355, #356, #357, #363, #367 (§10), and #181 (`deserialize` returns
-  data).
+- **Was: keep, newly blocking — now all closed.** #355, #356, #357, #363, #367 (§10) and #181
+  (`deserialize` returns data) were the six preconditions this sweep added; every one of them closed
+  on 2026-09-23, #367 as [#375](https://github.com/mezivillager/hacer/pull/375). None of them blocks
+  the sweep or N.1 any longer; what §10 still books is the **output** half of 1.8, which is
+  `compileSpec`'s permanently rather than a precondition.
 
 ## Consequences
 
