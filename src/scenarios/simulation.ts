@@ -1,6 +1,4 @@
-/**
- * Simulation Scenario
- */
+/** Two-gate propagation. The recorded vector is NAND's. */
 
 import { DEFAULT_POSITIONS } from './positions'
 import type { SimulationScenario } from './types'

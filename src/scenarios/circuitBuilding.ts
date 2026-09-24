@@ -1,9 +1,4 @@
-/**
- * Circuit Building Scenario
- *
- * A basic two-gate scenario for testing circuit building workflows.
- * Gate types can be parameterized in tests.
- */
+/** Two-gate and three-gate build sketches. One wire each; no recorded vector. */
 
 import { DEFAULT_POSITIONS } from './positions'
 import type { CircuitBuildScenario } from './types'

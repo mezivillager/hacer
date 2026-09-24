@@ -1,27 +1,17 @@
 /**
- * Scenario Type Definitions
- *
- * Types for defining test scenarios including gate placements,
- * wire plans, and expected outcomes.
+ * Recovered scenario shapes: placements, wires, and the vectors the old e2e
+ * scenarios recorded. Layout fields are for later drivers.
  */
-
 import type { Position3D } from './positions'
 
-/**
- * Describes a gate placement with optional rotation
- */
+/** A placed gate. `rotate` is layout; the core driver ignores it. */
 export interface GatePlacement {
   label: string
   position: Position3D
-  rotate?: {
-    direction: 'left' | 'right'
-    times: number
-  }
+  rotate?: { direction: 'left' | 'right'; times: number }
 }
 
-/**
- * Describes a wire connection between gates by index
- */
+/** A wire from one gate's output to another's input, by placement index. */
 export interface WirePlan {
   fromGate: number
   fromPin: 'out-0'
@@ -29,18 +19,14 @@ export interface WirePlan {
   toPin: 'in-0' | 'in-1'
 }
 
-/**
- * Describes an input toggle operation
- */
+/** Drive one unwired input for the scenario's vector. */
 export interface TogglePlan {
   gate: number
   pin: 'in-0' | 'in-1'
   value: number
 }
 
-/**
- * Full NAND circuit scenario descriptor
- */
+/** Three-NAND circuit and the vector its scenario recorded. */
 export interface NandScenario {
   name: string
   placements: GatePlacement[]
@@ -49,27 +35,18 @@ export interface NandScenario {
   expectations: {
     gates: number
     wires: number
-    outputs: {
-      gate1: number
-      gate2: number
-      gate3: number
-      gate3Inputs: [number, number]
-    }
+    outputs: { gate1: number; gate2: number; gate3: number; gate3Inputs: [number, number] }
   }
 }
 
-/**
- * Basic circuit building scenario descriptor
- */
+/** A build scenario: placements and a single wire, no vector. */
 export interface CircuitBuildScenario {
   name: string
   placements: GatePlacement[]
   wire: WirePlan
 }
 
-/**
- * Simulation scenario descriptor for 2+ gates
- */
+/** A propagation vector over two or more gates. */
 export interface SimulationScenario {
   name: string
   placements: GatePlacement[]
@@ -78,18 +55,10 @@ export interface SimulationScenario {
   expectations: {
     gates: number
     wires: number
-    outputs: Array<{
-      gateIndex: number
-      outputIndex: number
-      value: number
-    }>
-    inputs?: Array<{
-      gateIndex: number
-      inputIndex: number
-      value: number
-    }>
+    outputs: Array<{ gateIndex: number; outputIndex: number; value: number }>
+    inputs?: Array<{ gateIndex: number; inputIndex: number; value: number }>
   }
 }
 
-/** Every recovered scenario the core driver knows how to run. */
+/** Every recovered scenario the core driver runs. */
 export type Scenario = NandScenario | CircuitBuildScenario | SimulationScenario

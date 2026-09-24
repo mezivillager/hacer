@@ -1,10 +1,4 @@
-/**
- * Three-Gate Circuit Scenario
- *
- * A standard test scenario with 3 gates wired together
- * for verifying circuit building and simulation.
- * Gate types are parameterized - defaults to NAND for backward compatibility.
- */
+/** Three NAND gates wired into one circuit. The recorded vector is NAND's. */
 
 import { GATE_Y } from './positions'
 import type { NandScenario } from './types'
