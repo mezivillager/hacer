@@ -74,21 +74,7 @@ export function extractSpecifiers(source) {
 }
 
 function globToRegExp(pattern) {
-  let out = ''
-  for (let i = 0; i < pattern.length; i++) {
-    const ch = pattern[i]
-    if (ch === '*' && pattern[i + 1] === '*') {
-      out += '.*'
-      i += 1
-      continue
-    }
-    if (ch === '*') {
-      out += '[^/]*'
-      continue
-    }
-    out += '\\^$+?.()|{}[]'.includes(ch) ? `\\${ch}` : ch
-  }
-  return new RegExp(`^${out}$`)
+  throw new Error(`not implemented: ${pattern}`)
 }
 
 function matchSeed(file, seed) {

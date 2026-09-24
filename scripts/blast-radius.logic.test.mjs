@@ -190,6 +190,52 @@ describe('blastRadius', () => {
     expect(missing.unmatched).toEqual(['src/missing.ts'])
   })
 
+  it('treats regex metacharacters in a glob seed as literals, and still expands * and **', () => {
+    const files = {
+      'src/a.b.ts': '',
+      'src/axb.ts': '',
+      'src/a+b.ts': '',
+      'src/ab.ts': '',
+      'src/a(b).ts': '',
+      'src/a[b].ts': '',
+      'src/$a.ts': '',
+      'src/a?b.ts': '',
+      'src/a{b}.ts': '',
+      'src/a|b.ts': '',
+      'src/a^b.ts': '',
+      'src/a\\b.ts': '',
+      'src/foo/bar.ts': '',
+      'src/foo/bar.extra.ts': '',
+      'src/foo/nested/baz.ts': '',
+    }
+    const matched = (seed) => blastRadius({ files, seeds: [seed] }).seeds
+
+    // An unescaped `.` would also match `src/axb.ts` when `*` is empty.
+    expect(matched('src/*.b.ts')).toEqual(['src/a.b.ts'])
+    // An unescaped `+` would let `a+` match the `a` in `src/ab.ts`.
+    expect(matched('src/a+*.ts')).toEqual(['src/a+b.ts'])
+    // An unescaped `(` would let `(b)*` match `src/ab.ts`.
+    expect(matched('src/a(b)*.ts')).toEqual(['src/a(b).ts'])
+    // An unescaped `[b]` would match `src/ab.ts` and miss the brackets.
+    expect(matched('src/a[b]*.ts')).toEqual(['src/a[b].ts'])
+    // An unescaped `$` is an end anchor and would miss `src/$a.ts`.
+    expect(matched('src/$*.ts')).toEqual(['src/$a.ts'])
+    // `?`, `{`, `|`, `^`, and `\` stay literal. `?` is not a single-character glob.
+    expect(matched('src/a?*.ts')).toEqual(['src/a?b.ts'])
+    expect(matched('src/a{b}*.ts')).toEqual(['src/a{b}.ts'])
+    expect(matched('src/a|b*.ts')).toEqual(['src/a|b.ts'])
+    expect(matched('src/a^*.ts')).toEqual(['src/a^b.ts'])
+    expect(matched('src/a\\*.ts')).toEqual(['src/a\\b.ts'])
+
+    expect(matched('src/foo/*')).toEqual(['src/foo/bar.extra.ts', 'src/foo/bar.ts'])
+    expect(matched('src/foo/**')).toEqual([
+      'src/foo/bar.extra.ts',
+      'src/foo/bar.ts',
+      'src/foo/nested/baz.ts',
+    ])
+    expect(matched('src/foo/**/*.ts')).toEqual(['src/foo/nested/baz.ts'])
+  })
+
   it('is over the agent-ready threshold only when production direct importers exceed it', () => {
     expect(AGENT_READY_PRODUCTION_IMPORTER_THRESHOLD).toBe(20)
 
