@@ -33,8 +33,9 @@ export type EvaluateCircuitResult =
  *
  * One pass over `state.wires` — the same cost as the single `find` it replaces.
  *
- * Exported because the store needs the same notion of "which wire feeds this junction": `removeJunction`
- * keeps the feed wire and deletes the branches (#364). One definition, so the two cannot drift.
+ * Not exported: `removeJunction` used it to pick the one listed wire to keep (#364) until #403
+ * stopped it choosing — it now deletes only wires with an endpoint on the junction. The evaluator
+ * is the only caller.
  *
  * LIMIT (#403, measured 2026-09-23). The first test — "does the wire start at this junction?" — is
  * structural only for documents that carry junction endpoints: serialized, hand-authored, or from
@@ -49,7 +50,7 @@ export type EvaluateCircuitResult =
  * @param state - Current circuit state
  * @returns The feed wire, or `null` when the junction has none (a malformed document)
  */
-export function findJunctionFeedWire(junction: JunctionNode, state: CircuitDocument): Wire | null {
+function findJunctionFeedWire(junction: JunctionNode, state: CircuitDocument): Wire | null {
   let trunk: Wire | null = null
   for (const wire of state.wires) {
     // A wire that ends at the junction states the structure outright, so it wins.
