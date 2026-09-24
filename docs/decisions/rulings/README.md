@@ -7,7 +7,7 @@ lineage (`docs/research/2026-09-24-decision-lineage/REPORT.md` §6).
 
 **One file per run:** `<date>-<run>.md`, e.g. `2026-09-25-process-sweep.md` — the day the run
 started and its name. The file is **appended during the run**, one block per ruling in the order
-they were made, and is not rewritten afterwards.
+they were made.
 
 - The file opens with `# Rulings — <date> <run>`. Each ruling is a `## R<n> — <title>` heading, the
   field lines `Builds on:`, `Assumes:`, `Amends:` and `Cost if wrong:`, then the reasoning. The
