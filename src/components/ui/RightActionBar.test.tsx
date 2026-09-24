@@ -17,6 +17,12 @@ function placeGate(chipName: 'And' | 'Or' | 'Nand', x: number, z: number) {
   circuitActions.placeGate({ x, y: 0.2, z })
 }
 
+// #313: mounts the full action bar and then drives a real `userEvent` click through a
+// `findBy*` wait. Measured over 3 full `pnpm run test:run` runs with 2 other agent processes
+// active: 1121-2582ms, up to 52% of vitest's 5000ms default. 10000ms is ~3.9x that worst
+// measured duration.
+const SLOW_MOUNT_TIMEOUT_MS = 10000
+
 describe('RightActionBar', () => {
   beforeEach(() => {
     circuitActions.clearCircuit()
@@ -28,12 +34,16 @@ describe('RightActionBar', () => {
     expect(screen.queryByTestId('info-panel')).not.toBeInTheDocument()
   })
 
-  it('clicking Info trigger opens drawer with Info panel', async () => {
-    const user = userEvent.setup()
-    wrap()
-    await user.click(screen.getByTestId('right-bar-info-trigger'))
-    expect(await screen.findByTestId('info-panel')).toBeInTheDocument()
-  })
+  it(
+    'clicking Info trigger opens drawer with Info panel',
+    async () => {
+      const user = userEvent.setup()
+      wrap()
+      await user.click(screen.getByTestId('right-bar-info-trigger'))
+      expect(await screen.findByTestId('info-panel')).toBeInTheDocument()
+    },
+    SLOW_MOUNT_TIMEOUT_MS,
+  )
 
   it('Info panel shows correct counts from store', async () => {
     const user = userEvent.setup()
