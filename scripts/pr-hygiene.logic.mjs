@@ -326,12 +326,30 @@ const ratchetRowKey = (row) => `${row.rule}\u0000${row.edge}`
  * `pull_request_target`, so the PR's copy of the config is data here — never required, imported or
  * executed — exactly like the baseline beside it.
  *
- * A `name:` inside a comment counts as a declaration. That is the harmless direction: in the *base*
- * config an extra name can only make an arming harder to claim, and in the *head* config it is
- * still an added, reviewable line in a file no one generates, which is the fence this rule leans on.
+ * Only a literal `name: '…'` is seen, and one inside a comment or a string literal counts too —
+ * what that costs is stated with the residual on `compareRatchetBaseline`. A config written so the
+ * scan sees none of its names is refused by `unscannedConfig`, not read as declaring nothing (#438).
  */
 export function parseRuleNames(text) {
   return new Set([...(text ?? '').matchAll(/(?:^|[{,\s])name\s*:\s*(['"`])([^'"`\n]+)\1/g)].map((match) => match[2]))
+}
+
+/**
+ * Why a config's scan cannot be trusted, or null. Text that scans to no rule names is a config the
+ * scan cannot read — rules built by a helper, quoted or computed keys, identifier values — not one
+ * with no rules, which is no state worth passing on (#438). Trusted, an unread *base* makes every
+ * name in the head look newly declared, so a row absorbed under a long-armed rule read `PASS
+ * armed` (measured on #432). An unread *head* declares nothing, so it could only read `absorbed`
+ * — but it fails here too: once merged it is every later PR's base, and `absorbed` would tell its
+ * author to declare a rule they may well have declared. An absent config (`null`) is not unread.
+ */
+function unscannedConfig(text, whose, cost) {
+  if ((text ?? '').trim() === '' || parseRuleNames(text).size > 0) return null
+  return (
+    `${whose} \`${RATCHET_CONFIG_FILE}\` is not empty, yet the scan found no rule names in it — it reads only a ` +
+    `literal \`name: '…'\`, so this is a config it cannot read, not one with no rules. ${cost}, so the ratchet ` +
+    'fails closed: write each rule name literally, or teach `parseRuleNames` the new form in its own PR first'
+  )
 }
 
 /**
@@ -362,21 +380,36 @@ export function parseRuleNames(text) {
  * The residual, stated rather than left implicit: a rule **declared in the config in this PR** —
  * renamed, duplicated, or widened to cover the edge being hidden — reads `armed` or `swapped`. No
  * comparison of baseline rows can close that, and the fence on it is that the declaration is an
- * added line in a reviewed file, which is what the round-2 hole cost nobody.
+ * added line in a reviewed file, which is what the round-2 hole cost nobody. A rule name inside a
+ * **comment** or a **string literal** in the head config reaches `armed` too (measured, #432 round
+ * 3). That is not a false-pass path: dependency-cruiser's `knownViolations` matching is
+ * rule-name-sensitive, so a row under a name no real rule emits suppresses nothing — a real
+ * absorbed row renamed that way still printed `1 new`, exit 1. It leans on the base scan finding
+ * every rule `main` declares: a base that scans to no names fails closed (#438); one scanned only in
+ * part is #456.
  * @param {{base:string|null, head:string|null, baseConfig?:string|null, headConfig?:string|null, configTouched?:boolean}} contents
  */
 export function compareRatchetBaseline({ base, head, baseConfig = null, headConfig = null, configTouched = false }) {
   const parsedBase = parseRatchetBaseline(base)
   const parsedHead = parseRatchetBaseline(head)
-  if (parsedHead.error) return { status: 'unreadable', detail: `\`${RATCHET_BASELINE_FILE}\` ${parsedHead.error}` }
+  const growth = ' — its growth cannot be checked'
+  if (parsedHead.error) return { status: 'unreadable', detail: `\`${RATCHET_BASELINE_FILE}\` ${parsedHead.error}${growth}` }
   if (parsedBase.error) {
-    return { status: 'unreadable', detail: `the base copy of \`${RATCHET_BASELINE_FILE}\` ${parsedBase.error}` }
+    return { status: 'unreadable', detail: `the base copy of \`${RATCHET_BASELINE_FILE}\` ${parsedBase.error}${growth}` }
   }
   const counts = { base: parsedBase.rows.length, head: parsedHead.rows.length }
   const baseKeys = new Set(parsedBase.rows.map(ratchetRowKey))
   const headKeys = new Set(parsedHead.rows.map(ratchetRowKey))
   const added = parsedHead.rows.filter((row) => !baseKeys.has(ratchetRowKey(row)))
   const removed = parsedBase.rows.filter((row) => !headKeys.has(ratchetRowKey(row)))
+  // The scan decides a verdict only when rows arrived and the config was edited; then it has to
+  // have read something on both sides (#438). A shrink never consults it, so it is never refused.
+  const unscanned =
+    configTouched && added.length > 0
+      ? (unscannedConfig(baseConfig, "the merge base's", 'Trusted, it would read every name in this PR as newly declared and an absorbed row as `armed`') ??
+        unscannedConfig(headConfig, "this PR's", "Merged, it would be every later PR's base, where that reads an absorbed row as `armed`"))
+      : null
+  if (unscanned) return { status: 'unreadable', detail: unscanned }
   // The rule names this PR brings into existence. Without a config edit there are none, so every
   // added row is an absorption — which is what a zero-row rule and an invented name both are.
   const baseConfigRules = parseRuleNames(baseConfig)
@@ -409,7 +442,7 @@ function ratchetGrowth({ body, ratchet }) {
   const finding = (level, message) => [{ rule: 'ratchet', level, message }]
   if (!ratchet) return finding('pass', `\`${RATCHET_BASELINE_FILE}\` unchanged`)
   const { status, counts, added, absorbed, removed, armedRules, detail } = ratchet
-  if (status === 'unreadable') return finding('fail', `${detail} — its growth cannot be checked`)
+  if (status === 'unreadable') return finding('fail', detail)
   if (status === 'unchanged') return finding('pass', `${counts.head} baseline rows, unchanged`)
   const rules = armedRules.map((rule) => `\`${rule}\``).join(', ')
   // Never "flat" once the rows have changed: the count is the one number this rule does not judge
