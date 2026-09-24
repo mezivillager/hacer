@@ -20,7 +20,8 @@
  *     not the engine's chip model. The headless path to the same answer is `evaluateChip`.
  *   - `busLogic` (`evaluateSplitter` / `evaluateJoiner`) evaluates canvas bus components; its only
  *     caller is that canvas walk.
- *   - `signalDisplay` formats values for the UI and imports from `@/components`.
+ *   - `signalDisplay` and `multiBitFormat` turn values into display text for the renderers, which
+ *     import them directly. They are headless (#180), but presentation, not engine surface.
  */
 export { clampToWidth, maskForWidth, readSubBus, writeSubBus } from './busOps'
 export type { BusPin } from './busPins'

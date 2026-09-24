@@ -895,23 +895,6 @@
     }
   },
   {
-    "type": "dependency",
-    "from": "src/simulation/signalDisplay.ts",
-    "to": "src/components/ui/multiBitFormat.ts",
-    "unresolvedTo": "@/components/ui/multiBitFormat",
-    "dependencyTypes": [
-      "aliased",
-      "aliased-tsconfig",
-      "aliased-tsconfig-paths",
-      "local",
-      "import"
-    ],
-    "rule": {
-      "severity": "error",
-      "name": "engine-no-ui"
-    }
-  },
-  {
     "type": "cycle",
     "from": "src/gates/common/BaseGate.tsx",
     "to": "src/gates/common/index.ts",

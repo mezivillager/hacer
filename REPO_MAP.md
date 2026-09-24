@@ -103,7 +103,8 @@ src/
 ├── simulation/       # Circuit simulation engine (pure logic)
 │                     #   index.ts — the other half of the engine's front door: bus operations.
 │                     #   topologicalEval/truthTable/busLogic walk the canvas document and are
-│                     #   deliberately not exported; signalDisplay imports from components/.
+│                     #   deliberately not exported; signalDisplay/multiBitFormat format
+│                     #   values for display and are imported directly by the UI.
 ├── scenarios/        # Recovered circuits and truth tables, no browser imports (#195)
 │   └── drivers/      # core.ts runs every scenario via compileHDL. No store driver (ADR-0020).
 ├── store/           # Zustand state management
