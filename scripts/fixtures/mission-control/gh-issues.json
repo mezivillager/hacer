@@ -1,0 +1,1286 @@
+[
+  {
+    "author": {
+      "id": "MDQ6VXNlcjgzNjc2MDc1",
+      "is_bot": false,
+      "login": "mezivillager",
+      "name": ""
+    },
+    "blockedBy": {
+      "nodes": [
+        {
+          "id": "I_kwDORdjPzc8AAAABTEbzsw",
+          "number": 472,
+          "state": "OPEN",
+          "title": "Mission Control MC-1: snapshot v1 and the collector (`collect --json`)",
+          "url": "https://github.com/mezivillager/hacer/issues/472"
+        }
+      ],
+      "totalCount": 1
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "id": "I_kwDORdjPzc8AAAABTEcR7A",
+          "number": 480,
+          "state": "OPEN",
+          "title": "Mission Control MC-9: \"queue an improvement\" links and the needs-human list — the first editable step",
+          "url": "https://github.com/mezivillager/hacer/issues/480"
+        },
+        {
+          "id": "I_kwDORdjPzc8AAAABTEcN0w",
+          "number": 479,
+          "state": "OPEN",
+          "title": "Mission Control MC-8: Roadmap, Ledger and ADR views",
+          "url": "https://github.com/mezivillager/hacer/issues/479"
+        },
+        {
+          "id": "I_kwDORdjPzc8AAAABTEcKMg",
+          "number": 478,
+          "state": "OPEN",
+          "title": "Mission Control MC-7: charts — ratchet history, merges per day, open tasks by project, verdict coverage",
+          "url": "https://github.com/mezivillager/hacer/issues/478"
+        },
+        {
+          "id": "I_kwDORdjPzc8AAAABTEcDUA",
+          "number": 476,
+          "state": "OPEN",
+          "title": "Mission Control MC-5: hourly refresh workflow and the snapshot history archive",
+          "url": "https://github.com/mezivillager/hacer/issues/476"
+        },
+        {
+          "id": "I_kwDORdjPzc8AAAABTEb_wQ",
+          "number": 475,
+          "state": "OPEN",
+          "title": "Mission Control MC-4: the Timeline view — sessions, merges and releases on one axis",
+          "url": "https://github.com/mezivillager/hacer/issues/475"
+        },
+        {
+          "id": "I_kwDORdjPzc8AAAABTEb72A",
+          "number": 474,
+          "state": "OPEN",
+          "title": "Mission Control MC-3: the Process view — the loop with live counts, claims, the cloud lane",
+          "url": "https://github.com/mezivillager/hacer/issues/474"
+        },
+        {
+          "id": "I_kwDORdjPzc8AAAABTEcVQw",
+          "number": 481,
+          "state": "OPEN",
+          "title": "Lineage DL-7: the lineage graph as a Mission Control view",
+          "url": "https://github.com/mezivillager/hacer/issues/481"
+        }
+      ],
+      "totalCount": 7
+    },
+    "labels": [
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZrfQ",
+        "name": "agent-ready",
+        "description": "Shaped per the issue form; an agent may pick it up",
+        "color": "1D76DB"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZuvA",
+        "name": "risk:1",
+        "description": "pure logic under conformance (src/core, src/simulation)",
+        "color": "FEF2C0"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC4H9gsw",
+        "name": "project:mission-control",
+        "description": "Mission Control — the platform's status, process and roadmap as one site at /control/ (epic #458)",
+        "color": "0E8A16"
+      }
+    ],
+    "number": 473,
+    "parent": {
+      "id": "I_kwDORdjPzc8AAAABS-2DIQ",
+      "number": 458,
+      "state": "OPEN",
+      "title": "Epic: mission-control — Mission Control: the platform's status, process and roadmap as one site",
+      "url": "https://github.com/mezivillager/hacer/issues/458"
+    },
+    "subIssuesSummary": {
+      "completed": 0,
+      "percentCompleted": 0,
+      "total": 0
+    },
+    "title": "Mission Control MC-2: the site at /control/ — Overview and Projects, deployed with previews",
+    "url": "https://github.com/mezivillager/hacer/issues/473"
+  },
+  {
+    "author": {
+      "id": "MDQ6VXNlcjgzNjc2MDc1",
+      "is_bot": false,
+      "login": "mezivillager",
+      "name": ""
+    },
+    "blockedBy": {
+      "nodes": [],
+      "totalCount": 0
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "id": "I_kwDORdjPzc8AAAABTEb3yg",
+          "number": 473,
+          "state": "OPEN",
+          "title": "Mission Control MC-2: the site at /control/ — Overview and Projects, deployed with previews",
+          "url": "https://github.com/mezivillager/hacer/issues/473"
+        }
+      ],
+      "totalCount": 1
+    },
+    "labels": [
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZrfQ",
+        "name": "agent-ready",
+        "description": "Shaped per the issue form; an agent may pick it up",
+        "color": "1D76DB"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZsgQ",
+        "name": "in-progress",
+        "description": "Claimed by an agent (see comment for run/branch)",
+        "color": "FBCA04"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZuvA",
+        "name": "risk:1",
+        "description": "pure logic under conformance (src/core, src/simulation)",
+        "color": "FEF2C0"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC4H9gsw",
+        "name": "project:mission-control",
+        "description": "Mission Control — the platform's status, process and roadmap as one site at /control/ (epic #458)",
+        "color": "0E8A16"
+      }
+    ],
+    "number": 472,
+    "parent": {
+      "id": "I_kwDORdjPzc8AAAABS-2DIQ",
+      "number": 458,
+      "state": "OPEN",
+      "title": "Epic: mission-control — Mission Control: the platform's status, process and roadmap as one site",
+      "url": "https://github.com/mezivillager/hacer/issues/458"
+    },
+    "subIssuesSummary": {
+      "completed": 0,
+      "percentCompleted": 0,
+      "total": 0
+    },
+    "title": "Mission Control MC-1: snapshot v1 and the collector (`collect --json`)",
+    "url": "https://github.com/mezivillager/hacer/issues/472"
+  },
+  {
+    "author": {
+      "id": "MDQ6VXNlcjgzNjc2MDc1",
+      "is_bot": false,
+      "login": "mezivillager",
+      "name": ""
+    },
+    "blockedBy": {
+      "nodes": [],
+      "totalCount": 0
+    },
+    "blocking": {
+      "nodes": [],
+      "totalCount": 0
+    },
+    "labels": [
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZzDg",
+        "name": "epic",
+        "description": "Portfolio project (parent issue)",
+        "color": "0052CC"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC4H9gsw",
+        "name": "project:mission-control",
+        "description": "Mission Control — the platform's status, process and roadmap as one site at /control/ (epic #458)",
+        "color": "0E8A16"
+      }
+    ],
+    "number": 458,
+    "parent": null,
+    "subIssuesSummary": {
+      "completed": 0,
+      "percentCompleted": 0,
+      "total": 9
+    },
+    "title": "Epic: mission-control — Mission Control: the platform's status, process and roadmap as one site",
+    "url": "https://github.com/mezivillager/hacer/issues/458"
+  },
+  {
+    "author": {
+      "id": "MDQ6VXNlcjgzNjc2MDc1",
+      "is_bot": false,
+      "login": "mezivillager",
+      "name": ""
+    },
+    "blockedBy": {
+      "nodes": [],
+      "totalCount": 0
+    },
+    "blocking": {
+      "nodes": [],
+      "totalCount": 0
+    },
+    "labels": [
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZjXw",
+        "name": "project:harness",
+        "description": "Portfolio row: harness",
+        "color": "0E8A16"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZsgQ",
+        "name": "in-progress",
+        "description": "Claimed by an agent (see comment for run/branch)",
+        "color": "FBCA04"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZvRQ",
+        "name": "risk:2",
+        "description": "store / UI / R3F / architecture / harness paths",
+        "color": "F9D0C4"
+      }
+    ],
+    "number": 438,
+    "parent": null,
+    "subIssuesSummary": {
+      "completed": 0,
+      "percentCompleted": 0,
+      "total": 0
+    },
+    "title": "Ratchet growth guard: fail closed when the config scan finds no rule names, and finish the residual in pr-hygiene.yml",
+    "url": "https://github.com/mezivillager/hacer/issues/438"
+  },
+  {
+    "author": {
+      "id": "MDQ6VXNlcjgzNjc2MDc1",
+      "is_bot": false,
+      "login": "mezivillager",
+      "name": ""
+    },
+    "blockedBy": {
+      "nodes": [],
+      "totalCount": 0
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "id": "I_kwDORdjPzc8AAAABSqVR8g",
+          "number": 383,
+          "state": "OPEN",
+          "title": "N.8: the read-only 3D renderer on the shared meshes, behind the renderer selector",
+          "url": "https://github.com/mezivillager/hacer/issues/383"
+        }
+      ],
+      "totalCount": 1
+    },
+    "labels": [
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZrfQ",
+        "name": "agent-ready",
+        "description": "Shaped per the issue form; an agent may pick it up",
+        "color": "1D76DB"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZvRQ",
+        "name": "risk:2",
+        "description": "store / UI / R3F / architecture / harness paths",
+        "color": "F9D0C4"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC3H__Jg",
+        "name": "project:foundation",
+        "description": "Foundation plan (#318): guards, the read-only pipeline, removals",
+        "color": "5319e7"
+      }
+    ],
+    "number": 373,
+    "parent": {
+      "id": "I_kwDORdjPzc8AAAABSVvlow",
+      "number": 318,
+      "state": "OPEN",
+      "title": "Foundation audit: is the codebase structured for the autonomous loop? Measured audit, prioritized refactorings, fitness functions",
+      "url": "https://github.com/mezivillager/hacer/issues/318"
+    },
+    "subIssuesSummary": {
+      "completed": 0,
+      "percentCompleted": 0,
+      "total": 0
+    },
+    "title": "N.0: the six 3D mesh components become prop-only and store-free (six PRs, expand → migrate → contract)",
+    "url": "https://github.com/mezivillager/hacer/issues/373"
+  },
+  {
+    "author": {
+      "id": "MDQ6VXNlcjgzNjc2MDc1",
+      "is_bot": false,
+      "login": "mezivillager",
+      "name": ""
+    },
+    "blockedBy": {
+      "nodes": [],
+      "totalCount": 0
+    },
+    "blocking": {
+      "nodes": [],
+      "totalCount": 0
+    },
+    "labels": [
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZkug",
+        "name": "project:core",
+        "description": "Portfolio row: core",
+        "color": "0E8A16"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZrfQ",
+        "name": "agent-ready",
+        "description": "Shaped per the issue form; an agent may pick it up",
+        "color": "1D76DB"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZuvA",
+        "name": "risk:1",
+        "description": "pure logic under conformance (src/core, src/simulation)",
+        "color": "FEF2C0"
+      }
+    ],
+    "number": 371,
+    "parent": null,
+    "subIssuesSummary": {
+      "completed": 0,
+      "percentCompleted": 0,
+      "total": 0
+    },
+    "title": "compileHDL does not bounds-check a slice on the external side of a connection",
+    "url": "https://github.com/mezivillager/hacer/issues/371"
+  },
+  {
+    "author": {
+      "id": "MDQ6VXNlcjgzNjc2MDc1",
+      "is_bot": false,
+      "login": "mezivillager",
+      "name": ""
+    },
+    "blockedBy": {
+      "nodes": [
+        {
+          "id": "I_kwDORdjPzc8AAAABSWgEpA",
+          "number": 323,
+          "state": "CLOSED",
+          "title": "Vitest node project: run the ~36 already-headless test files without jsdom (foundation guard 0.2)",
+          "url": "https://github.com/mezivillager/hacer/issues/323"
+        }
+      ],
+      "totalCount": 1
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "id": "I_kwDORdjPzc8AAAABSqVPGw",
+          "number": 381,
+          "state": "OPEN",
+          "title": "N.6: describeScene — one serialisable scene description, goldens in Node, the fallback DOM tree; supersedes #217",
+          "url": "https://github.com/mezivillager/hacer/issues/381"
+        }
+      ],
+      "totalCount": 1
+    },
+    "labels": [
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZrfQ",
+        "name": "agent-ready",
+        "description": "Shaped per the issue form; an agent may pick it up",
+        "color": "1D76DB"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZuvA",
+        "name": "risk:1",
+        "description": "pure logic under conformance (src/core, src/simulation)",
+        "color": "FEF2C0"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC3H__Jg",
+        "name": "project:foundation",
+        "description": "Foundation plan (#318): guards, the read-only pipeline, removals",
+        "color": "5319e7"
+      }
+    ],
+    "number": 331,
+    "parent": {
+      "id": "I_kwDORdjPzc8AAAABSVvlow",
+      "number": 318,
+      "state": "OPEN",
+      "title": "Foundation audit: is the codebase structured for the autonomous loop? Measured audit, prioritized refactorings, fitness functions",
+      "url": "https://github.com/mezivillager/hacer/issues/318"
+    },
+    "subIssuesSummary": {
+      "completed": 0,
+      "percentCompleted": 0,
+      "total": 0
+    },
+    "title": "Characterize the legacy app before it is replaced: rendered geometry, evaluation fixtures, the 43 store actions",
+    "url": "https://github.com/mezivillager/hacer/issues/331"
+  },
+  {
+    "author": {
+      "id": "MDQ6VXNlcjgzNjc2MDc1",
+      "is_bot": false,
+      "login": "mezivillager",
+      "name": ""
+    },
+    "blockedBy": {
+      "nodes": [],
+      "totalCount": 0
+    },
+    "blocking": {
+      "nodes": [],
+      "totalCount": 0
+    },
+    "labels": [
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZkug",
+        "name": "project:core",
+        "description": "Portfolio row: core",
+        "color": "0E8A16"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZvRQ",
+        "name": "risk:2",
+        "description": "store / UI / R3F / architecture / harness paths",
+        "color": "F9D0C4"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZvyA",
+        "name": "research",
+        "description": "Output is an ADR or note, no product code",
+        "color": "5319E7"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZzDg",
+        "name": "epic",
+        "description": "Portfolio project (parent issue)",
+        "color": "0052CC"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC3H__Jg",
+        "name": "project:foundation",
+        "description": "Foundation plan (#318): guards, the read-only pipeline, removals",
+        "color": "5319e7"
+      }
+    ],
+    "number": 318,
+    "parent": {
+      "id": "I_kwDORdjPzc8AAAABR7S2ug",
+      "number": 138,
+      "state": "OPEN",
+      "title": "Epic: harness — autonomous-run improvements & agent-readiness",
+      "url": "https://github.com/mezivillager/hacer/issues/138"
+    },
+    "subIssuesSummary": {
+      "completed": 12,
+      "percentCompleted": 37,
+      "total": 32
+    },
+    "title": "Foundation audit: is the codebase structured for the autonomous loop? Measured audit, prioritized refactorings, fitness functions",
+    "url": "https://github.com/mezivillager/hacer/issues/318"
+  },
+  {
+    "author": {
+      "id": "MDQ6VXNlcjgzNjc2MDc1",
+      "is_bot": false,
+      "login": "mezivillager",
+      "name": ""
+    },
+    "blockedBy": {
+      "nodes": [],
+      "totalCount": 0
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "id": "I_kwDORdjPzc8AAAABSVtQyA",
+          "number": 316,
+          "state": "OPEN",
+          "title": "Canvas-less shell: a local @shell Playwright project and the first spec (ADR-0019 slice 2)",
+          "url": "https://github.com/mezivillager/hacer/issues/316"
+        }
+      ],
+      "totalCount": 1
+    },
+    "labels": [
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZmZw",
+        "name": "project:surfaces",
+        "description": "Portfolio row: surfaces",
+        "color": "0E8A16"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZrfQ",
+        "name": "agent-ready",
+        "description": "Shaped per the issue form; an agent may pick it up",
+        "color": "1D76DB"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZuvA",
+        "name": "risk:1",
+        "description": "pure logic under conformance (src/core, src/simulation)",
+        "color": "FEF2C0"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC3H__Jg",
+        "name": "project:foundation",
+        "description": "Foundation plan (#318): guards, the read-only pipeline, removals",
+        "color": "5319e7"
+      }
+    ],
+    "number": 315,
+    "parent": {
+      "id": "I_kwDORdjPzc8AAAABR7S2ug",
+      "number": 138,
+      "state": "OPEN",
+      "title": "Epic: harness — autonomous-run improvements & agent-readiness",
+      "url": "https://github.com/mezivillager/hacer/issues/138"
+    },
+    "subIssuesSummary": {
+      "completed": 0,
+      "percentCompleted": 0,
+      "total": 0
+    },
+    "title": "Canvas-less shell: the renderer selector (ADR-0019 slice 1)",
+    "url": "https://github.com/mezivillager/hacer/issues/315"
+  },
+  {
+    "author": {
+      "id": "MDQ6VXNlcjgzNjc2MDc1",
+      "is_bot": false,
+      "login": "mezivillager",
+      "name": ""
+    },
+    "blockedBy": {
+      "nodes": [],
+      "totalCount": 0
+    },
+    "blocking": {
+      "nodes": [],
+      "totalCount": 0
+    },
+    "labels": [
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZpuA",
+        "name": "project:upkeep",
+        "description": "Portfolio row: upkeep",
+        "color": "0E8A16"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZrfQ",
+        "name": "agent-ready",
+        "description": "Shaped per the issue form; an agent may pick it up",
+        "color": "1D76DB"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZuFw",
+        "name": "risk:0",
+        "description": "docs, tests-only, dependency patches",
+        "color": "C2E0C6"
+      }
+    ],
+    "number": 253,
+    "parent": {
+      "id": "I_kwDORdjPzc8AAAABR7TGcg",
+      "number": 146,
+      "state": "OPEN",
+      "title": "Epic: upkeep — maintenance & documentation",
+      "url": "https://github.com/mezivillager/hacer/issues/146"
+    },
+    "subIssuesSummary": {
+      "completed": 0,
+      "percentCompleted": 0,
+      "total": 0
+    },
+    "title": "Two living docs still describe the pre-chipName gate recipe (verifier nit on #248)",
+    "url": "https://github.com/mezivillager/hacer/issues/253"
+  },
+  {
+    "author": {
+      "id": "MDQ6VXNlcjgzNjc2MDc1",
+      "is_bot": false,
+      "login": "mezivillager",
+      "name": ""
+    },
+    "blockedBy": {
+      "nodes": [],
+      "totalCount": 0
+    },
+    "blocking": {
+      "nodes": [],
+      "totalCount": 0
+    },
+    "labels": [
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZqfQ",
+        "name": "project:horizon",
+        "description": "Portfolio row: horizon",
+        "color": "0E8A16"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZrfQ",
+        "name": "agent-ready",
+        "description": "Shaped per the issue form; an agent may pick it up",
+        "color": "1D76DB"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZuFw",
+        "name": "risk:0",
+        "description": "docs, tests-only, dependency patches",
+        "color": "C2E0C6"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZvyA",
+        "name": "research",
+        "description": "Output is an ADR or note, no product code",
+        "color": "5319E7"
+      }
+    ],
+    "number": 230,
+    "parent": {
+      "id": "I_kwDORdjPzc8AAAABR7TJmg",
+      "number": 147,
+      "state": "OPEN",
+      "title": "Epic: horizon — beyond nand2tetris (research notes only)",
+      "url": "https://github.com/mezivillager/hacer/issues/147"
+    },
+    "subIssuesSummary": {
+      "completed": 0,
+      "percentCompleted": 0,
+      "total": 0
+    },
+    "title": "Research note: below the NAND gate — switch-level / transistor-level simulation survey; tscircuit as an architectural twin",
+    "url": "https://github.com/mezivillager/hacer/issues/230"
+  },
+  {
+    "author": {
+      "id": "MDQ6VXNlcjgzNjc2MDc1",
+      "is_bot": false,
+      "login": "mezivillager",
+      "name": ""
+    },
+    "blockedBy": {
+      "nodes": [],
+      "totalCount": 0
+    },
+    "blocking": {
+      "nodes": [],
+      "totalCount": 0
+    },
+    "labels": [
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZncA",
+        "name": "project:3d",
+        "description": "Portfolio row: 3d",
+        "color": "0E8A16"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZrfQ",
+        "name": "agent-ready",
+        "description": "Shaped per the issue form; an agent may pick it up",
+        "color": "1D76DB"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZvRQ",
+        "name": "risk:2",
+        "description": "store / UI / R3F / architecture / harness paths",
+        "color": "F9D0C4"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC3H__Jg",
+        "name": "project:foundation",
+        "description": "Foundation plan (#318): guards, the read-only pipeline, removals",
+        "color": "5319e7"
+      }
+    ],
+    "number": 217,
+    "parent": {
+      "id": "I_kwDORdjPzc8AAAABR7TBDg",
+      "number": 143,
+      "state": "OPEN",
+      "title": "Epic: 3d — 3D surface sustainability",
+      "url": "https://github.com/mezivillager/hacer/issues/143"
+    },
+    "subIssuesSummary": {
+      "completed": 0,
+      "percentCompleted": 0,
+      "total": 0
+    },
+    "title": "__SCENE_HELPERS__.describe(): ids, world + screen positions, visible/selected/signal state",
+    "url": "https://github.com/mezivillager/hacer/issues/217"
+  },
+  {
+    "author": {
+      "id": "MDQ6VXNlcjgzNjc2MDc1",
+      "is_bot": false,
+      "login": "mezivillager",
+      "name": ""
+    },
+    "blockedBy": {
+      "nodes": [],
+      "totalCount": 0
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "id": "I_kwDORdjPzc8AAAABR7VqPQ",
+          "number": 203,
+          "state": "OPEN",
+          "title": "Weekly gardening routine (change-triggered, budgeted): doc drift, dependabot triage, stale claims",
+          "url": "https://github.com/mezivillager/hacer/issues/203"
+        }
+      ],
+      "totalCount": 1
+    },
+    "labels": [
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZliQ",
+        "name": "project:verify",
+        "description": "Portfolio row: verify",
+        "color": "0E8A16"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZrfQ",
+        "name": "agent-ready",
+        "description": "Shaped per the issue form; an agent may pick it up",
+        "color": "1D76DB"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZvRQ",
+        "name": "risk:2",
+        "description": "store / UI / R3F / architecture / harness paths",
+        "color": "F9D0C4"
+      }
+    ],
+    "number": 202,
+    "parent": {
+      "id": "I_kwDORdjPzc8AAAABR7S9Ow",
+      "number": 141,
+      "state": "OPEN",
+      "title": "Epic: verify — QA service",
+      "url": "https://github.com/mezivillager/hacer/issues/141"
+    },
+    "subIssuesSummary": {
+      "completed": 0,
+      "percentCompleted": 0,
+      "total": 0
+    },
+    "title": "Bot issue contract helper: fingerprint, open+closed dedupe, per-run cap, rolling overflow issue",
+    "url": "https://github.com/mezivillager/hacer/issues/202"
+  },
+  {
+    "author": {
+      "id": "MDQ6VXNlcjgzNjc2MDc1",
+      "is_bot": false,
+      "login": "mezivillager",
+      "name": ""
+    },
+    "blockedBy": {
+      "nodes": [],
+      "totalCount": 0
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "id": "I_kwDORdjPzc8AAAABR7VtIw",
+          "number": 204,
+          "state": "OPEN",
+          "title": "hacer CLI (Node entry): `hacer test <hdl> <tst> <cmp>` on real files",
+          "url": "https://github.com/mezivillager/hacer/issues/204"
+        },
+        {
+          "id": "I_kwDORdjPzc8AAAABSW9A7Q",
+          "number": 338,
+          "state": "OPEN",
+          "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
+          "url": "https://github.com/mezivillager/hacer/issues/338"
+        },
+        {
+          "id": "I_kwDORdjPzc8AAAABR7Vg_g",
+          "number": 200,
+          "state": "OPEN",
+          "title": "Change-triggered differential job vs web-ide's simulator on generated circuits (pinned clone built in CI only)",
+          "url": "https://github.com/mezivillager/hacer/issues/200"
+        },
+        {
+          "id": "I_kwDORdjPzc8AAAABR7VP7Q",
+          "number": 194,
+          "state": "OPEN",
+          "title": "File-based conformance suite for Project 1; pass count recorded and only allowed to rise",
+          "url": "https://github.com/mezivillager/hacer/issues/194"
+        },
+        {
+          "id": "I_kwDORdjPzc8AAAABR7Ugwg",
+          "number": 177,
+          "state": "OPEN",
+          "title": "Phase 0.6 epic to shape: Arithmetic & Sequential (Projects 2–3) — vectors → conformance red → ALU chips → clock/DFF only after the one-engine ADR",
+          "url": "https://github.com/mezivillager/hacer/issues/177"
+        }
+      ],
+      "totalCount": 5
+    },
+    "labels": [
+      {
+        "id": "LA_kwDORdjPzc8AAAACbXzzBg",
+        "name": "released",
+        "description": "",
+        "color": "ededed"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZliQ",
+        "name": "project:verify",
+        "description": "Portfolio row: verify",
+        "color": "0E8A16"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZrfQ",
+        "name": "agent-ready",
+        "description": "Shaped per the issue form; an agent may pick it up",
+        "color": "1D76DB"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZvRQ",
+        "name": "risk:2",
+        "description": "store / UI / R3F / architecture / harness paths",
+        "color": "F9D0C4"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC3H__Jg",
+        "name": "project:foundation",
+        "description": "Foundation plan (#318): guards, the read-only pipeline, removals",
+        "color": "5319e7"
+      }
+    ],
+    "number": 193,
+    "parent": {
+      "id": "I_kwDORdjPzc8AAAABR7S9Ow",
+      "number": 141,
+      "state": "OPEN",
+      "title": "Epic: verify — QA service",
+      "url": "https://github.com/mezivillager/hacer/issues/141"
+    },
+    "subIssuesSummary": {
+      "completed": 0,
+      "percentCompleted": 0,
+      "total": 0
+    },
+    "title": "Vendor the official nand2tetris vectors (projects 1–5) from web-ide via a sync script; confirm the licence that covers them",
+    "url": "https://github.com/mezivillager/hacer/issues/193"
+  },
+  {
+    "author": {
+      "id": "MDQ6VXNlcjgzNjc2MDc1",
+      "is_bot": false,
+      "login": "mezivillager",
+      "name": ""
+    },
+    "blockedBy": {
+      "nodes": [],
+      "totalCount": 0
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "id": "I_kwDORdjPzc8AAAABSW9Edw",
+          "number": 339,
+          "state": "OPEN",
+          "title": "After Phase 1: a refactor PR may not edit existing tests (pr-hygiene), and function length only shrinks (ESLint bulk suppressions) (foundation 1.5)",
+          "url": "https://github.com/mezivillager/hacer/issues/339"
+        }
+      ],
+      "totalCount": 1
+    },
+    "labels": [
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZkug",
+        "name": "project:core",
+        "description": "Portfolio row: core",
+        "color": "0E8A16"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZrfQ",
+        "name": "agent-ready",
+        "description": "Shaped per the issue form; an agent may pick it up",
+        "color": "1D76DB"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZsgQ",
+        "name": "in-progress",
+        "description": "Claimed by an agent (see comment for run/branch)",
+        "color": "FBCA04"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZuvA",
+        "name": "risk:1",
+        "description": "pure logic under conformance (src/core, src/simulation)",
+        "color": "FEF2C0"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC3H__Jg",
+        "name": "project:foundation",
+        "description": "Foundation plan (#318): guards, the read-only pipeline, removals",
+        "color": "5319e7"
+      }
+    ],
+    "number": 182,
+    "parent": {
+      "id": "I_kwDORdjPzc8AAAABR7S7pQ",
+      "number": 140,
+      "state": "OPEN",
+      "title": "Epic: core — headless core",
+      "url": "https://github.com/mezivillager/hacer/issues/140"
+    },
+    "subIssuesSummary": {
+      "completed": 0,
+      "percentCompleted": 0,
+      "total": 0
+    },
+    "title": "Completed-chip tracking moves out of the engine into session state (no localStorage in src/core)",
+    "url": "https://github.com/mezivillager/hacer/issues/182"
+  },
+  {
+    "author": {
+      "id": "MDQ6VXNlcjgzNjc2MDc1",
+      "is_bot": false,
+      "login": "mezivillager",
+      "name": ""
+    },
+    "blockedBy": {
+      "nodes": [
+        {
+          "id": "I_kwDORdjPzc8AAAABSpi-tg",
+          "number": 357,
+          "state": "CLOSED",
+          "title": "HDL parser rejects a slice on a part pin (Not16(in[0]=a)) — legal HDL, needed from Project 2 and by the importer",
+          "url": "https://github.com/mezivillager/hacer/issues/357"
+        }
+      ],
+      "totalCount": 1
+    },
+    "blocking": {
+      "nodes": [],
+      "totalCount": 0
+    },
+    "labels": [
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZkBw",
+        "name": "project:spine",
+        "description": "Portfolio row: spine",
+        "color": "0E8A16"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZrfQ",
+        "name": "agent-ready",
+        "description": "Shaped per the issue form; an agent may pick it up",
+        "color": "1D76DB"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZuvA",
+        "name": "risk:1",
+        "description": "pure logic under conformance (src/core, src/simulation)",
+        "color": "FEF2C0"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZvyA",
+        "name": "research",
+        "description": "Output is an ADR or note, no product code",
+        "color": "5319E7"
+      }
+    ],
+    "number": 175,
+    "parent": {
+      "id": "I_kwDORdjPzc8AAAABR7S4zg",
+      "number": 139,
+      "state": "OPEN",
+      "title": "Epic: spine — nand2tetris alignment 0.5 → 0.7",
+      "url": "https://github.com/mezivillager/hacer/issues/139"
+    },
+    "subIssuesSummary": {
+      "completed": 0,
+      "percentCompleted": 0,
+      "total": 0
+    },
+    "title": "P05-30: Splitter/joiner for bit-level access on placed chips — verify first, P05-12a may have delivered it",
+    "url": "https://github.com/mezivillager/hacer/issues/175"
+  },
+  {
+    "author": {
+      "id": "MDQ6VXNlcjgzNjc2MDc1",
+      "is_bot": false,
+      "login": "mezivillager",
+      "name": ""
+    },
+    "blockedBy": {
+      "nodes": [
+        {
+          "id": "I_kwDORdjPzc8AAAABSqVF9w",
+          "number": 378,
+          "state": "OPEN",
+          "title": "N.3: the spec evaluates through compileHDL — one engine, and the 'circuit' chip type becomes the composite-chip evaluator",
+          "url": "https://github.com/mezivillager/hacer/issues/378"
+        }
+      ],
+      "totalCount": 1
+    },
+    "blocking": {
+      "nodes": [],
+      "totalCount": 0
+    },
+    "labels": [
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZkBw",
+        "name": "project:spine",
+        "description": "Portfolio row: spine",
+        "color": "0E8A16"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZvRQ",
+        "name": "risk:2",
+        "description": "store / UI / R3F / architecture / harness paths",
+        "color": "F9D0C4"
+      }
+    ],
+    "number": 165,
+    "parent": {
+      "id": "I_kwDORdjPzc8AAAABR7S4zg",
+      "number": 139,
+      "state": "OPEN",
+      "title": "Epic: spine — nand2tetris alignment 0.5 → 0.7",
+      "url": "https://github.com/mezivillager/hacer/issues/139"
+    },
+    "subIssuesSummary": {
+      "completed": 0,
+      "percentCompleted": 0,
+      "total": 0
+    },
+    "title": "P05-18: User-chip authoring lifecycle + deeper composites (re-scoped per ADR-0004)",
+    "url": "https://github.com/mezivillager/hacer/issues/165"
+  },
+  {
+    "author": {
+      "id": "MDQ6VXNlcjgzNjc2MDc1",
+      "is_bot": false,
+      "login": "mezivillager",
+      "name": ""
+    },
+    "blockedBy": {
+      "nodes": [
+        {
+          "id": "I_kwDORdjPzc8AAAABR7TOjw",
+          "number": 149,
+          "state": "OPEN",
+          "title": "scripts/backlog.mjs: `ready`, `projects`, `tasks`, `next`, `claim` over gh issue JSON, with unit tests",
+          "url": "https://github.com/mezivillager/hacer/issues/149"
+        }
+      ],
+      "totalCount": 1
+    },
+    "blocking": {
+      "nodes": [],
+      "totalCount": 0
+    },
+    "labels": [
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZjXw",
+        "name": "project:harness",
+        "description": "Portfolio row: harness",
+        "color": "0E8A16"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZvRQ",
+        "name": "risk:2",
+        "description": "store / UI / R3F / architecture / harness paths",
+        "color": "F9D0C4"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC4H9gsw",
+        "name": "project:mission-control",
+        "description": "Mission Control — the platform's status, process and roadmap as one site at /control/ (epic #458)",
+        "color": "0E8A16"
+      }
+    ],
+    "number": 156,
+    "parent": {
+      "id": "I_kwDORdjPzc8AAAABR7S2ug",
+      "number": 138,
+      "state": "OPEN",
+      "title": "Epic: harness — autonomous-run improvements & agent-readiness",
+      "url": "https://github.com/mezivillager/hacer/issues/138"
+    },
+    "subIssuesSummary": {
+      "completed": 0,
+      "percentCompleted": 0,
+      "total": 0
+    },
+    "title": "scripts/agent-orient + SessionStart hook: phase, ready tasks, CI status, open agent PRs, ledger tail, three metrics",
+    "url": "https://github.com/mezivillager/hacer/issues/156"
+  },
+  {
+    "author": {
+      "id": "MDQ6VXNlcjgzNjc2MDc1",
+      "is_bot": false,
+      "login": "mezivillager",
+      "name": ""
+    },
+    "blockedBy": {
+      "nodes": [],
+      "totalCount": 0
+    },
+    "blocking": {
+      "nodes": [
+        {
+          "id": "I_kwDORdjPzc8AAAABR7TzEQ",
+          "number": 161,
+          "state": "CLOSED",
+          "title": "docs/harness/README.md + .claude/skills/ha-next: 'what can you do next?' → pick → PR → merge",
+          "url": "https://github.com/mezivillager/hacer/issues/161"
+        },
+        {
+          "id": "I_kwDORdjPzc8AAAABR7TjJA",
+          "number": 156,
+          "state": "OPEN",
+          "title": "scripts/agent-orient + SessionStart hook: phase, ready tasks, CI status, open agent PRs, ledger tail, three metrics",
+          "url": "https://github.com/mezivillager/hacer/issues/156"
+        }
+      ],
+      "totalCount": 2
+    },
+    "labels": [
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZjXw",
+        "name": "project:harness",
+        "description": "Portfolio row: harness",
+        "color": "0E8A16"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZrfQ",
+        "name": "agent-ready",
+        "description": "Shaped per the issue form; an agent may pick it up",
+        "color": "1D76DB"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZvRQ",
+        "name": "risk:2",
+        "description": "store / UI / R3F / architecture / harness paths",
+        "color": "F9D0C4"
+      }
+    ],
+    "number": 149,
+    "parent": {
+      "id": "I_kwDORdjPzc8AAAABR7S2ug",
+      "number": 138,
+      "state": "OPEN",
+      "title": "Epic: harness — autonomous-run improvements & agent-readiness",
+      "url": "https://github.com/mezivillager/hacer/issues/138"
+    },
+    "subIssuesSummary": {
+      "completed": 0,
+      "percentCompleted": 0,
+      "total": 0
+    },
+    "title": "scripts/backlog.mjs: `ready`, `projects`, `tasks`, `next`, `claim` over gh issue JSON, with unit tests",
+    "url": "https://github.com/mezivillager/hacer/issues/149"
+  },
+  {
+    "author": {
+      "id": "MDQ6VXNlcjgzNjc2MDc1",
+      "is_bot": false,
+      "login": "mezivillager",
+      "name": ""
+    },
+    "blockedBy": {
+      "nodes": [],
+      "totalCount": 0
+    },
+    "blocking": {
+      "nodes": [],
+      "totalCount": 0
+    },
+    "labels": [
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZjXw",
+        "name": "project:harness",
+        "description": "Portfolio row: harness",
+        "color": "0E8A16"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZrfQ",
+        "name": "agent-ready",
+        "description": "Shaped per the issue form; an agent may pick it up",
+        "color": "1D76DB"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZvRQ",
+        "name": "risk:2",
+        "description": "store / UI / R3F / architecture / harness paths",
+        "color": "F9D0C4"
+      }
+    ],
+    "number": 148,
+    "parent": {
+      "id": "I_kwDORdjPzc8AAAABR7S2ug",
+      "number": 138,
+      "state": "OPEN",
+      "title": "Epic: harness — autonomous-run improvements & agent-readiness",
+      "url": "https://github.com/mezivillager/hacer/issues/138"
+    },
+    "subIssuesSummary": {
+      "completed": 0,
+      "percentCompleted": 0,
+      "total": 0
+    },
+    "title": "Bootstrap the backlog: retire tasks/todo.md and the P05 checklist as history; AGENTS.md Step 1.0 points at GitHub Issues",
+    "url": "https://github.com/mezivillager/hacer/issues/148"
+  },
+  {
+    "author": {
+      "id": "MDQ6VXNlcjgzNjc2MDc1",
+      "is_bot": false,
+      "login": "mezivillager",
+      "name": ""
+    },
+    "blockedBy": {
+      "nodes": [],
+      "totalCount": 0
+    },
+    "blocking": {
+      "nodes": [],
+      "totalCount": 0
+    },
+    "labels": [
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZjXw",
+        "name": "project:harness",
+        "description": "Portfolio row: harness",
+        "color": "0E8A16"
+      },
+      {
+        "id": "LA_kwDORdjPzc8AAAAC2hZzDg",
+        "name": "epic",
+        "description": "Portfolio project (parent issue)",
+        "color": "0052CC"
+      }
+    ],
+    "number": 138,
+    "parent": null,
+    "subIssuesSummary": {
+      "completed": 19,
+      "percentCompleted": 42,
+      "total": 45
+    },
+    "title": "Epic: harness — autonomous-run improvements & agent-readiness",
+    "url": "https://github.com/mezivillager/hacer/issues/138"
+  }
+]

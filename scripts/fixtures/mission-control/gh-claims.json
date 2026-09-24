@@ -1,0 +1,448 @@
+{
+  "data": {
+    "repository": {
+      "i182": {
+        "number": 182,
+        "title": "Completed-chip tracking moves out of the engine into session state (no localStorage in src/core)",
+        "state": "OPEN",
+        "url": "https://github.com/mezivillager/hacer/issues/182",
+        "labels": {
+          "nodes": [
+            {
+              "name": "project:core"
+            },
+            {
+              "name": "agent-ready"
+            },
+            {
+              "name": "in-progress"
+            },
+            {
+              "name": "risk:1"
+            },
+            {
+              "name": "project:foundation"
+            }
+          ]
+        },
+        "comments": {
+          "nodes": [
+            {
+              "author": {
+                "login": "mezivillager"
+              },
+              "createdAt": "2026-09-24T13:57:40Z",
+              "url": "https://github.com/mezivillager/hacer/issues/182#issuecomment-5815526405",
+              "body": "Claimed by: claude-local\nIntent: paused:owner-stopped-run\nSession/run: 2026-09-24 hacer-loop-93\nBranch: fix/182-chip-completion-to-session\nHandoff: docs/harness/sessions/2026-09-24.md\n\nThe builder was stopped mid-task at the owner's request (local resources needed back). What exists:\nthe **red commit only** — `2ddfc4c` `test(session): pin completed-chip tracking at its session-state\nhome (#182)` — pushed to `fix/182-chip-completion-to-session`. No implementation, no PR. The builder was\nabout to move the test and write the stub. Resume from that branch (the red commit states the chosen\nhome), or discard it and restart; `claim/182` is still held so nobody starts a second builder.\n"
+            }
+          ]
+        }
+      },
+      "i193": {
+        "number": 193,
+        "title": "Vendor the official nand2tetris vectors (projects 1–5) from web-ide via a sync script; confirm the licence that covers them",
+        "state": "OPEN",
+        "url": "https://github.com/mezivillager/hacer/issues/193",
+        "labels": {
+          "nodes": [
+            {
+              "name": "released"
+            },
+            {
+              "name": "project:verify"
+            },
+            {
+              "name": "agent-ready"
+            },
+            {
+              "name": "risk:2"
+            },
+            {
+              "name": "project:foundation"
+            }
+          ]
+        },
+        "comments": {
+          "nodes": [
+            {
+              "author": {
+                "login": "mezivillager"
+              },
+              "createdAt": "2026-09-21T12:34:28Z",
+              "url": "https://github.com/mezivillager/hacer/issues/193#issuecomment-5760559284",
+              "body": "Foundation plan (#318) item 1.6 pulls this forward as **the held-out oracle**: vendored, pinned, on a protected path — tests no implementer may edit.\n\nWhat the testing audit measured, so the builder does not redo it: zero `.hdl`/`.tst`/`.cmp` files exist in the repo; the vectors live as TypeScript strings in `src/core/testing/project1{Tst,Cmp}Fixtures.ts` (16 keys each). Compared with `web-ide/projects/src/project_01/*.ts`, comments and whitespace normalised: **15 identical, 0 differ, 0 missing** (`Nand` is HACER's 16th and has no upstream stub). So vendoring Project 1 is a lock, not a change.\n\nAdditions to the criteria:\n- [ ] ship **Project 1 first**, in its own PR; Projects 2–5 follow in later PRs (the files are data and `conformance/vectors/` is already excluded from the size budget, but one project per PR keeps each reviewable)\n- [ ] a test asserts that the 16 hand-transcribed fixtures match the vendored files, so the two cannot drift until #194 retires the transcriptions\n- [ ] record the `web-ide` commit the files were taken from\n- [ ] this unblocks #204, whose verification command reads `conformance/vectors/01/Xor.*`, and the differential harness (#338)"
+            },
+            {
+              "author": {
+                "login": "mezivillager"
+              },
+              "createdAt": "2026-09-23T21:37:41Z",
+              "url": "https://github.com/mezivillager/hacer/issues/193#issuecomment-5803372966",
+              "body": "**Same path problem as #338, same fix.** Criterion 1 says `scripts/sync-vectors.sh` copies from `../web-ide` — a sibling checkout that exists only in the owner's local workspace. Any cloud agent or CI runner clones just `mezivillager/hacer` and would fail on a missing directory.\n\n`web-ide` is public (`https://github.com/nand2tetris/web-ide.git`). Amend the criterion to **clone it at a pinned commit and record that commit in the LICENSE notice** alongside the licence finding. The sync script then works anywhere, and re-running it later reproduces exactly the same vectors instead of whatever the laptop happened to hold.\n\nThis also matters for what the issue is *for*: these vectors are a **held-out oracle on a protected path**, and an oracle whose provenance is \"a directory on one machine\" is weaker than one pinned to a public commit."
+            },
+            {
+              "author": {
+                "login": "mezivillager"
+              },
+              "createdAt": "2026-09-23T23:15:56Z",
+              "url": "https://github.com/mezivillager/hacer/issues/193#issuecomment-5804520928",
+              "body": "Claimed by: grok-bot\nIntent: building\nSession/run: (cloud agent id pending launch)\nBranch: feat/193-vendor-vectors\nHandoff: docs/harness/sessions/cloud-queue-inbox.md\n\nClaim ref `claim/193` created. Spending before-shot in progress; Cloud Agent launches after clean meter. Will record agent id here and in the inbox."
+            },
+            {
+              "author": {
+                "login": "mezivillager"
+              },
+              "createdAt": "2026-09-24T00:55:59Z",
+              "url": "https://github.com/mezivillager/hacer/issues/193#issuecomment-5805504403",
+              "body": "Cloud Agent launched.\n\nSession/run: `bc-6de621f1-8e3c-50c5-9115-64ca2687696e`\nURL: https://cursor.com/agents/bc-6de621f1-8e3c-50c5-9115-64ca2687696e\nIntent: building\nBranch target: feat/193-vendor-vectors\n\nSpending before-shot (~03:54 EAT 2026-09-24): Cursor Models 5% · Other Models 94% · Grok Bot weekly 5% · Pro+ reset Oct 19. Will stop and report if a run stalls at the spending cap."
+            },
+            {
+              "author": {
+                "login": "github-actions"
+              },
+              "createdAt": "2026-09-24T01:18:02Z",
+              "url": "https://github.com/mezivillager/hacer/issues/193#issuecomment-5805718279",
+              "body": ":tada: This issue has been resolved in version 2.28.0 :tada:\n\nThe release is available on [GitHub release](https://github.com/mezivillager/hacer/releases/tag/v2.28.0)\n\nYour **[semantic-release](https://github.com/semantic-release/semantic-release)** bot :package::rocket:"
+            },
+            {
+              "author": {
+                "login": "mezivillager"
+              },
+              "createdAt": "2026-09-24T21:25:12Z",
+              "url": "https://github.com/mezivillager/hacer/issues/193#issuecomment-5822497737",
+              "body": "Reopened by the weekly process sweep: PR #443 vendored **Project 1 only** (its body says `Part of #193`), and the cloud-queue inbox row still reads *building — issue open for Projects 2–5*. Closing it hid the remaining scope from `backlog.mjs` and from Mission Control. `claim/193` is left in place as the inbox says it is Grok Bot's; the four other stale claim refs on closed issues (195, 199, 333, 427) were released today."
+            }
+          ]
+        }
+      },
+      "i195": {
+        "number": 195,
+        "title": "Pure scenario module src/scenarios with core and store drivers (lifted from e2e/scenarios)",
+        "state": "CLOSED",
+        "url": "https://github.com/mezivillager/hacer/issues/195",
+        "labels": {
+          "nodes": [
+            {
+              "name": "released"
+            },
+            {
+              "name": "project:verify"
+            },
+            {
+              "name": "agent-ready"
+            },
+            {
+              "name": "risk:1"
+            },
+            {
+              "name": "project:foundation"
+            }
+          ]
+        },
+        "comments": {
+          "nodes": [
+            {
+              "author": {
+                "login": "mezivillager"
+              },
+              "createdAt": "2026-09-23T01:58:54Z",
+              "url": "https://github.com/mezivillager/hacer/issues/195#issuecomment-5787656428",
+              "body": "`e2e/scenarios/` was deleted in #388 (commit `dffc0cb7bbd9`, `chore(e2e): delete the caller-less e2e helpers`): every export in it was caller-less, `src/scenarios` did not exist yet, and the new `lint:e2e-exports` check would have failed on it.\n\nNothing is lost for this issue — the five files are one command away:\n\n```bash\ngit show dffc0cb7bbd9^:e2e/scenarios/types.ts\ngit show dffc0cb7bbd9^:e2e/scenarios/nand3.ts\ngit show dffc0cb7bbd9^:e2e/scenarios/circuitBuilding.ts\ngit show dffc0cb7bbd9^:e2e/scenarios/simulation.ts\ngit show dffc0cb7bbd9^:e2e/scenarios/index.ts\n```\n\nThe third acceptance criterion (\"e2e/scenarios import from src/scenarios instead of duplicating\") now reads as: create `src/scenarios/*` from those definitions, and have the specs import from it directly — there is no `e2e/scenarios` left to de-duplicate."
+            },
+            {
+              "author": {
+                "login": "mezivillager"
+              },
+              "createdAt": "2026-09-23T23:15:59Z",
+              "url": "https://github.com/mezivillager/hacer/issues/195#issuecomment-5804521313",
+              "body": "Claimed by: grok-bot\nIntent: building\nSession/run: (cloud agent id pending launch)\nBranch: refactor/195-scenarios-module\nHandoff: docs/harness/sessions/cloud-queue-inbox.md\n\nClaim ref `claim/195` created. Will recover deleted e2e/scenarios from history if needed; follow the re-scoped issue body (core driver only; no legacy store driver)."
+            },
+            {
+              "author": {
+                "login": "mezivillager"
+              },
+              "createdAt": "2026-09-24T00:56:01Z",
+              "url": "https://github.com/mezivillager/hacer/issues/195#issuecomment-5805504836",
+              "body": "Cloud Agent launched.\n\nSession/run: `bc-5bb0afa6-713e-55b3-b63b-f0b184f6a03c`\nURL: https://cursor.com/agents/bc-5bb0afa6-713e-55b3-b63b-f0b184f6a03c\nIntent: building\nBranch target: refactor/195-scenarios-module\n\nRecover e2e/scenarios from history (dffc0cb^); core driver only; no legacy store driver."
+            },
+            {
+              "author": {
+                "login": "github-actions"
+              },
+              "createdAt": "2026-09-24T01:13:37Z",
+              "url": "https://github.com/mezivillager/hacer/issues/195#issuecomment-5805676881",
+              "body": ":tada: This issue has been resolved in version 2.27.0 :tada:\n\nThe release is available on [GitHub release](https://github.com/mezivillager/hacer/releases/tag/v2.27.0)\n\nYour **[semantic-release](https://github.com/semantic-release/semantic-release)** bot :package::rocket:"
+            }
+          ]
+        }
+      },
+      "i199": {
+        "number": 199,
+        "title": "HDL parser fuzz: never throws uncaught; error spans in range",
+        "state": "CLOSED",
+        "url": "https://github.com/mezivillager/hacer/issues/199",
+        "labels": {
+          "nodes": [
+            {
+              "name": "released"
+            },
+            {
+              "name": "project:verify"
+            },
+            {
+              "name": "agent-ready"
+            },
+            {
+              "name": "risk:1"
+            }
+          ]
+        },
+        "comments": {
+          "nodes": [
+            {
+              "author": {
+                "login": "mezivillager"
+              },
+              "createdAt": "2026-09-23T22:43:18Z",
+              "url": "https://github.com/mezivillager/hacer/issues/199#issuecomment-5804170068",
+              "body": "**Before anyone picks this up: `fast-check` is not a dependency.** `grep fast-check package.json` returns nothing, and it is absent from the lockfile. The issue's \"property:\" wording implies it; the library that would provide it arrives with **#198**, which is itself blocked by #385.\n\nThis is the same trap #355 hit on 2026-09-23 — its criteria asserted `fast-check` was already available, a builder discovered it was not, and the right answer was **not** to add the dependency. Two precedents now exist in this repo for doing property-style testing without it:\n- `src/core/hdl/compiler.test.ts` (#362): an **exhaustive permutation sweep** plus a seeded `mulberry32` sample. Over a small space an exhaustive sweep is a *proof*, not a sample — stronger than property testing, losing only shrinking.\n- #398's verifier went further with a **20,000-case differential sweep** against an independently built oracle.\n\nSo: do this with hand-rolled grammar mutation and a seeded PRNG, and **do not add `fast-check`** — that decision belongs to #198. Say in the PR which shape you used and what space it covers.\n\nOne more thing worth stating, because it is the failure mode here: **a fuzz test that never fails proves nothing about the fuzzer.** Show the generator failing against a deliberately broken parser (a reverted guard, a mutated span calculation) before trusting a green run — #362's first property generator was measured **vacuous**, 0 of 400 cases failing against the unfixed compiler, until the generator itself was fixed."
+            },
+            {
+              "author": {
+                "login": "mezivillager"
+              },
+              "createdAt": "2026-09-23T23:15:57Z",
+              "url": "https://github.com/mezivillager/hacer/issues/199#issuecomment-5804521088",
+              "body": "Claimed by: grok-bot\nIntent: building\nSession/run: (cloud agent id pending launch)\nBranch: test/199-hdl-parser-fuzz\nHandoff: docs/harness/sessions/cloud-queue-inbox.md\n\nClaim ref `claim/199` created. Will not add fast-check (#198 owns that). Engine verify returns to local Claude per queue notes."
+            },
+            {
+              "author": {
+                "login": "mezivillager"
+              },
+              "createdAt": "2026-09-24T00:55:59Z",
+              "url": "https://github.com/mezivillager/hacer/issues/199#issuecomment-5805504441",
+              "body": "Cloud Agent launched.\n\nSession/run: `bc-9878dded-2e89-59b3-9a71-83e34d10257b`\nURL: https://cursor.com/agents/bc-9878dded-2e89-59b3-9a71-83e34d10257b\nIntent: building\nBranch target: test/199-hdl-parser-fuzz\n\nConstraints in prompt: no fast-check; seeded PRNG; show generator failing against a broken parser first. Verify returns to local Claude per queue notes."
+            },
+            {
+              "author": {
+                "login": "mezivillager"
+              },
+              "createdAt": "2026-09-24T01:09:27Z",
+              "url": "https://github.com/mezivillager/hacer/issues/199#issuecomment-5805636260",
+              "body": "**PR open:** https://github.com/mezivillager/hacer/pull/444 (`test/199-hdl-parser-fuzz`).\n\nGrok Bot builder finished. **Verify returns to local Claude** (engine / `src/core/hdl`) — Grok Bot will not PASS/merge this row.\n\nInbox will be updated to `awaiting-claude-verify`. Builder claim released."
+            },
+            {
+              "author": {
+                "login": "github-actions"
+              },
+              "createdAt": "2026-09-24T12:59:19Z",
+              "url": "https://github.com/mezivillager/hacer/issues/199#issuecomment-5814588613",
+              "body": ":tada: This issue has been resolved in version 2.29.0 :tada:\n\nThe release is available on [GitHub release](https://github.com/mezivillager/hacer/releases/tag/v2.29.0)\n\nYour **[semantic-release](https://github.com/semantic-release/semantic-release)** bot :package::rocket:"
+            }
+          ]
+        }
+      },
+      "i333": {
+        "number": 333,
+        "title": "scripts/blast-radius.mjs: measure how wide an issue is before it is agent-ready, and a triage rule that uses it (foundation 0.3)",
+        "state": "CLOSED",
+        "url": "https://github.com/mezivillager/hacer/issues/333",
+        "labels": {
+          "nodes": [
+            {
+              "name": "released"
+            },
+            {
+              "name": "project:harness"
+            },
+            {
+              "name": "agent-ready"
+            },
+            {
+              "name": "risk:1"
+            },
+            {
+              "name": "project:foundation"
+            }
+          ]
+        },
+        "comments": {
+          "nodes": [
+            {
+              "author": {
+                "login": "mezivillager"
+              },
+              "createdAt": "2026-09-23T23:15:59Z",
+              "url": "https://github.com/mezivillager/hacer/issues/333#issuecomment-5804521310",
+              "body": "Claimed by: grok-bot\nIntent: building\nSession/run: (cloud agent id pending launch)\nBranch: feat/333-blast-radius\nHandoff: docs/harness/sessions/cloud-queue-inbox.md\n\nClaim ref `claim/333` created."
+            },
+            {
+              "author": {
+                "login": "mezivillager"
+              },
+              "createdAt": "2026-09-24T00:56:03Z",
+              "url": "https://github.com/mezivillager/hacer/issues/333#issuecomment-5805505123",
+              "body": "Cloud Agent launched.\n\nSession/run: `bc-13c35a23-5181-5655-9b07-8a8f6a9c6b67`\nURL: https://cursor.com/agents/bc-13c35a23-5181-5655-9b07-8a8f6a9c6b67\nIntent: building\nBranch target: feat/333-blast-radius"
+            },
+            {
+              "author": {
+                "login": "github-actions"
+              },
+              "createdAt": "2026-09-24T01:18:05Z",
+              "url": "https://github.com/mezivillager/hacer/issues/333#issuecomment-5805718710",
+              "body": ":tada: This issue has been resolved in version 2.28.0 :tada:\n\nThe release is available on [GitHub release](https://github.com/mezivillager/hacer/releases/tag/v2.28.0)\n\nYour **[semantic-release](https://github.com/semantic-release/semantic-release)** bot :package::rocket:"
+            }
+          ]
+        }
+      },
+      "i403": {
+        "number": 403,
+        "title": "removeJunction deletes valid user-drawn wires on gesture-written documents (trunk and branch share one `from`)",
+        "state": "OPEN",
+        "url": "https://github.com/mezivillager/hacer/issues/403",
+        "labels": {
+          "nodes": [
+            {
+              "name": "in-progress"
+            },
+            {
+              "name": "risk:2"
+            },
+            {
+              "name": "sev:high"
+            },
+            {
+              "name": "project:foundation"
+            }
+          ]
+        },
+        "comments": {
+          "nodes": [
+            {
+              "author": {
+                "login": "mezivillager"
+              },
+              "createdAt": "2026-09-23T03:51:04Z",
+              "url": "https://github.com/mezivillager/hacer/issues/403#issuecomment-5788655410",
+              "body": "**Three things measured during #396's re-review that belong in this issue's acceptance criteria.**\n\n1. **A naive option 2 (\"delete every listed wire\") also deletes a feed wire whose `to` IS the junction.** The re-viewer mutated `removeJunction` to option 2 and measured survivors `[]` on the junction-endpoint test — so option 2 needs a **stated policy for that endpoint**, not just \"delete them all\". Without it, option 2 trades a gesture-document bug for an imported-document one.\n2. **#396's \"undisturbed fan-out must not regress\" test does not survive option 2 either.** It pins the *current contract*, not an invariant. Name it explicitly in this issue's acceptance: whichever option is chosen must say what happens to that test — updated, replaced, or deliberately broken with a reason.\n3. **Reachability is wider than #396's B-009 row first said**: besides `applyJunctionRelocations` (gate/node drag) and the programmatic facade, `busActions.ts:268` — bus-component recalculation — also reaches `removeJunction`. B-009 is corrected; this issue's options should be judged against all three entry points.\n\nThe reframing this issue carries is the right one: in gesture documents **every listed wire is complete**, so the defect is a wrong *contract* — \"keep one, delete the rest\" — rather than a wrong trunk pick. Any option that still picks a survivor is answering the old question."
+            }
+          ]
+        }
+      },
+      "i427": {
+        "number": 427,
+        "title": "Evaluate the TypeScript 6.0 major (Dependabot #415) — land it or decline it with evidence",
+        "state": "CLOSED",
+        "url": "https://github.com/mezivillager/hacer/issues/427",
+        "labels": {
+          "nodes": [
+            {
+              "name": "released"
+            },
+            {
+              "name": "project:upkeep"
+            },
+            {
+              "name": "agent-ready"
+            },
+            {
+              "name": "risk:1"
+            }
+          ]
+        },
+        "comments": {
+          "nodes": [
+            {
+              "author": {
+                "login": "mezivillager"
+              },
+              "createdAt": "2026-09-23T23:15:58Z",
+              "url": "https://github.com/mezivillager/hacer/issues/427#issuecomment-5804521218",
+              "body": "Claimed by: grok-bot\nIntent: building\nSession/run: (cloud agent id pending launch)\nBranch: chore/427-typescript-6\nHandoff: docs/harness/sessions/cloud-queue-inbox.md\n\nClaim ref `claim/427` created. Decline-with-evidence is an acceptable outcome."
+            },
+            {
+              "author": {
+                "login": "mezivillager"
+              },
+              "createdAt": "2026-09-24T00:56:00Z",
+              "url": "https://github.com/mezivillager/hacer/issues/427#issuecomment-5805504670",
+              "body": "Cloud Agent launched.\n\nSession/run: `bc-e7a1f6f4-f504-5091-ad08-8b33c8da25ac`\nURL: https://cursor.com/agents/bc-e7a1f6f4-f504-5091-ad08-8b33c8da25ac\nIntent: building\nBranch target: chore/427-typescript-6\n\nDecline-with-evidence is an acceptable outcome. Do not regenerate layer ratchet baseline."
+            },
+            {
+              "author": {
+                "login": "mezivillager"
+              },
+              "createdAt": "2026-09-24T01:08:27Z",
+              "url": "https://github.com/mezivillager/hacer/issues/427#issuecomment-5805626123",
+              "body": "**Done — merged via #441** (TypeScript `~5.9.3` → `~6.0.3`, no `src/` edits).\n\nClaim released by grok-bot. Inbox row will be marked `done`.\n\nLeft out of scope (as noted on the PR): TS5101 root `baseUrl` deprecation (TS 7), and `design-system` still on TypeScript 5.7.3."
+            },
+            {
+              "author": {
+                "login": "github-actions"
+              },
+              "createdAt": "2026-09-24T01:13:40Z",
+              "url": "https://github.com/mezivillager/hacer/issues/427#issuecomment-5805677395",
+              "body": ":tada: This issue has been resolved in version 2.27.0 :tada:\n\nThe release is available on [GitHub release](https://github.com/mezivillager/hacer/releases/tag/v2.27.0)\n\nYour **[semantic-release](https://github.com/semantic-release/semantic-release)** bot :package::rocket:"
+            }
+          ]
+        }
+      },
+      "i438": {
+        "number": 438,
+        "title": "Ratchet growth guard: fail closed when the config scan finds no rule names, and finish the residual in pr-hygiene.yml",
+        "state": "OPEN",
+        "url": "https://github.com/mezivillager/hacer/issues/438",
+        "labels": {
+          "nodes": [
+            {
+              "name": "project:harness"
+            },
+            {
+              "name": "in-progress"
+            },
+            {
+              "name": "risk:2"
+            }
+          ]
+        },
+        "comments": {
+          "nodes": []
+        }
+      },
+      "i482": {
+        "number": 482,
+        "title": "Portfolio: rows for lineage and mission-control, and the eight-slot pick cycle",
+        "state": "OPEN",
+        "url": "https://github.com/mezivillager/hacer/issues/482",
+        "labels": {
+          "nodes": [
+            {
+              "name": "project:harness"
+            },
+            {
+              "name": "agent-ready"
+            },
+            {
+              "name": "in-progress"
+            },
+            {
+              "name": "risk:1"
+            }
+          ]
+        },
+        "comments": {
+          "nodes": [
+            {
+              "author": {
+                "login": "mezivillager"
+              },
+              "createdAt": "2026-09-24T21:21:20Z",
+              "url": "https://github.com/mezivillager/hacer/issues/482#issuecomment-5822445815",
+              "body": "Claimed by: claude-local\nIntent: building\nSession/run: 2026-09-25 process-sweep\nBranch: feat/portfolio-lineage-mission-control\n"
+            }
+          ]
+        }
+      }
+    }
+  }
+}
