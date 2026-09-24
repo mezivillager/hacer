@@ -28,6 +28,7 @@ merge. If a step below is wrong, fix it here — not in a chat.
 | Which PRs get a browser run, and which suites | ADR-0016 (critical = the PR changes the UI: `src/components`, `src/App.tsx`, `src/gates`, `src/nodes`, `src/store`, `src/utils`, `src/styles`, `index.html`, `e2e`, `playwright.config.ts`, later `src/surfaces`; or the `critical` / `sev:*` labels on the PR or an issue it links) — the `browser-qa` check (`scripts/browser-qa.logic.mjs`) runs `@store` only, cloud only, never a local gate; `@ui` (3D) runs only by hand via `e2e.yml`; locally, only suites that do not mount the 3D canvas — *amended 2026-09-19 (#282): was `src/store/actions` only, plus `@ui` on canvas paths* | the critical paths (`CRITICAL_PATHS`) |
 | What the human still does | `WORK-SYSTEM.md` §7 (merge tiers) | opt a tier into auto-merge |
 | What went wrong, and whether it was mechanised | `ledger.md` | second occurrence → a lint, test or hook |
+| Keeping `gh-pages` preview folders tidy | `pr-preview.yml`'s `sweep-previews` job (daily + `workflow_dispatch`, `gh-pages` concurrency group) calls `scripts/pr-preview-sweep.mjs`; the removal decision is the pure `scripts/pr-preview-sweep.logic.mjs` (#484) — safety net for what the PR's own `closed`-event cleanup misses | the schedule, `foldersToRemove`'s open-PR matching |
 
 ## When a required check is stuck
 
