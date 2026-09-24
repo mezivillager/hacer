@@ -30,7 +30,9 @@ const graph = lineage.parseLineage(readSources())
 if (command === 'parse') {
   console.log(JSON.stringify(graph, null, 2))
   for (const error of graph.errors) console.error(`${error.kind} ${error.where.join(', ')}: ${error.message}`)
-  process.exit(graph.errors.length > 0 ? 1 : 0)
+  // Not process.exit(): on a pipe stdout flushes asynchronously and exit() truncates at ~64 KiB —
+  // measured on #490 (165 KB graph, 65,406 chars captured). exitCode lets the write finish.
+  process.exitCode = graph.errors.length > 0 ? 1 : 0
 } else if (command === 'next-id') {
   // Until #466 imports them, the highest ruling ids live in the coordinator's run directories.
   if (!graph.nodes.some((node) => node.kind === 'ruling')) {

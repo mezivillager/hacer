@@ -169,3 +169,32 @@ Ruling: DL-1b = import all 321 rulings into `docs/decisions/rulings/`, normalise
 styles, give restatements new ids with `Amends:`, annotate R500–R611 with real lineage, `unknown`
 elsewhere; the ledger's ids are DL-4's, after #483 merges. #466's text is corrected to say so.
 Cost if wrong: the ledger's `Decision` column is filled one task later than planned.
+
+
+## R718 — MC-1 merges on PASS; its three nits go to MC-5, DL-4 and MC-2
+Builds on: R709
+The `--previous` crash is latent until MC-5 passes the flag → #476. The ledger-column collision with
+DL-4 → #469 (the #407 shape, pre-empted by naming it). The schema-doc gaps → #473, the first
+consumer. The verdict count moved (28 of the last 60, 4 of them cloud-lane code PRs) and matches R705.
+Cost if wrong: a nit that deserved its own fix lands one task later.
+
+
+## R719 — #491's predicate changes from "not in the open list" to "positively closed"
+Builds on: R706
+The verifier reproduced a total wipe from `gh pr list` returning `[]` with exit 0. For a scheduled
+destructive job the only safe predicate is positive evidence per item (`gh pr view <n>` says
+CLOSED/MERGED), with a refusal when the plan would remove everything and a removal cap. Round 2 on
+the same branch, resumed with the builder's own context.
+Cost if wrong: ~30 `gh pr view` calls a day and a slower sweep — negligible against one wrong run
+deleting every live preview.
+
+
+## R720 — owner steering: "Keep going until weekly usage is 99%"
+Amends: R712
+Assumes: P-006
+The ceiling for the **current** meter (93% at 22:38Z, reset at 2026-09-25T03:00Z) is now 99%. If the
+reset arrives first, the new week's meter starts near zero; the instruction is read as this week's
+remaining budget, so after the reset R712's 70% applies until he says otherwise — surfaced in the
+review, since "99% of the next week too" is a possible reading with a very different cost.
+Cost if wrong: one line from him either way; the expensive misreading (spending the whole next week)
+is the one avoided by default.

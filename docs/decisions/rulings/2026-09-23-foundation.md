@@ -200,9 +200,8 @@ the recovery under "When a required check is stuck", and `gh-merge-on-green` rer
 time. The combined-status `pending` I kept quoting is also a red herring — `commits/<sha>/status`
 is legacy statuses with `total_count=0` on every commit here.
 
-## R321 — The missing tamper sticky comment on a `.github/workflows/
+## R321 — The missing tamper sticky comment on a `.github/workflows/**` PR is not a regression
 Builds on: unknown
-` PR is not a regression.**
 #151 (the tamper flag) is still open and unbuilt, so there is nothing to post. Nothing filed; the
 verifier is asked to confirm rather than assume.
 

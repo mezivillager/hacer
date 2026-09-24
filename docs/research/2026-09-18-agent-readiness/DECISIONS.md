@@ -1,5 +1,7 @@
 # Decisions taken on the owner's behalf (2026-09-18)
 
+> **Canonical copies now live in `docs/decisions/rulings/`** (R1–R106 in the `2026-09-18-*` and `2026-09-19-*` files, imported by #466 with their ids kept); this file is the research-time record and is not maintained.
+
 Every judgment call made during the research run and the first execution run, with its cost if wrong and how to revert it. New decisions go to `docs/harness/ledger.md` once it exists; ADRs record the ones that become policy.
 
 

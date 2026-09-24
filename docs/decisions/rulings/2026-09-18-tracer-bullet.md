@@ -141,9 +141,8 @@ They contradict the corrected current tree and cannot be linted.
 Cost if wrong: the roadmap specs still carry that layout; nothing is lost.
 
 
-## R60 — Ledger row to land: the `gh` OAuth token cannot update a PR branch that changes `.github/workflows/
+## R60 — Ledger row to land: the `gh` OAuth token cannot update a PR branch that changes `.github/workflows/**` (`workflow` scope missing), so agent sessions cannot rebase such PRs; dependabot can (`@dependabot rebase`). For agent-authored workflow PRs, the fix is `gh auth refresh -s workflow` (owner action) — filed in the end-of-run review rather than done now (changes the token's scope)
 Builds on: unknown
-` (`workflow` scope missing), so agent sessions cannot rebase such PRs; dependabot can (`@dependabot rebase`). For agent-authored workflow PRs, the fix is `gh auth refresh -s workflow` (owner action) — filed in the end-of-run review rather than done now (changes the token's scope).
 
 
 ## R61 — Coordinator made a one-word doc fix directly on PR #245's verified branch
@@ -170,9 +169,9 @@ Removing the bypass made `@semantic-release/git`'s push fail on every release (5
 Cost if wrong: `CHANGELOG.md` and `package.json` version stop tracking releases on `main`. *Revert:* restore the two plugins and grant a bypass to a non-human actor.
 
 
-## R65 — Agent PRs must not touch `.github/workflows/
+## R65 — Agent PRs must not touch `.github/workflows/**` until the `gh` token has the `workflow` scope
 Builds on: unknown
-` until the `gh` token has the `workflow` scope** (owner action: `gh auth refresh -s workflow`). The cosmetic `ci.yml` step rename was dropped from #245 for this reason. Ledger row.
+(owner action: `gh auth refresh -s workflow`). The cosmetic `ci.yml` step rename was dropped from #245 for this reason. Ledger row.
 
 
 ## R66 — Item 12 (cloud spike) marked blocked, not forced
