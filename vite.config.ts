@@ -12,7 +12,13 @@ const pkg = JSON.parse(readFileSync(path.join(__dirname, 'package.json'), 'utf-8
 // ── Vitest projects ────────────────────────────────────────────────────────────────────────────
 // Every test file belongs to exactly one project: `node` (no browser environment, no setup file)
 // or `jsdom` (today's environment and setup). See docs/testing/vitest-projects.md.
-const ALL_TESTS = ['src/**/*.{test,spec}.{ts,tsx}', 'scripts/**/*.{test,spec}.mjs']
+// #313: `.mts`/`.js` test files anywhere in `src/` were collected by neither project (verified
+// with throwaway files) — this glob only matched `.ts`/`.tsx`, so such a file would silently
+// never run. Widening it here is a full fix for `.js`; `.mts` in a NODE_TEST_DIR still lands in
+// `jsdom` rather than `node` (the node-project regex below stays `.ts`/`.mjs` only, since
+// widening it too needs a `.mts` vs `.mtsx`-shaped rule this repo has no example of yet) — run,
+// just not in the strictest project, which is still strictly better than not run at all.
+const ALL_TESTS = ['src/**/*.{test,spec}.{ts,tsx,mts,js}', 'scripts/**/*.{test,spec}.mjs']
 
 // Membership is by directory: the layers that must stay headless — pure logic, state, and the
 // repo's own tooling — plus the `.ts`/`.mjs` extension rule (a `.tsx` test renders JSX, so it
