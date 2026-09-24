@@ -221,6 +221,12 @@ function linkedIssue({ body, author, labels, measures }) {
 export const RATCHET_BASELINE_FILE = '.dependency-cruiser-known-violations.json'
 
 /**
+ * The config the layer rules are declared in. A rule name exists because a line here says so, and
+ * that line is reviewable — unlike the baseline beside it, which is `linguist-generated`.
+ */
+export const RATCHET_CONFIG_FILE = '.dependency-cruiser.cjs'
+
+/**
  * A greppable claim in the PR body that a named absorption is deliberate.
  *
  * **What it is for** (corrected #432): *not* a plain rename — that was the PR body's claim and it
