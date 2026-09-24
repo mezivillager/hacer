@@ -988,3 +988,96 @@ describe('the rule that pays for `linguist-generated` (#432)', () => {
     expect(attributes).toContain(`${RATCHET_BASELINE_FILE} linguist-generated`)
   })
 })
+
+// ── The scan has to have read something before it decides (#438) ────────────────────────────────
+//
+// `parseRuleNames` reads rule names as text and sees only a literal `name: '…'`. #432's round-3
+// verifier measured the gap, and it reproduces here: a base config written any other way — a
+// helper, a list mapped into rules, a shorthand `{ name }` — scans to no names at all, so every
+// name in the head reads as newly declared, and one row absorbed under a long-armed rule read
+// `PASS ratchet=armed`. A config with text that scans to nothing is one the scan cannot read, not
+// one with no rules, so the ratchet refuses it. Counts here come from the files, never pinned (#450).
+
+describe('a config the rule-name scan cannot read fails closed (#438)', () => {
+  const ratchetFinding = (result) => result.findings.find((finding) => finding.rule === 'ratchet')
+  const edited = (ratchet, body = 'Fixes #438') =>
+    pr({ ratchet, body, files: [file('src/core/ratchetProbe.ts', 3, 0), configEdit()] })
+  const realNames = () => [...new Set([...REAL_CONFIG.matchAll(/name:\s*'([^']+)'/g)].map((match) => match[1]))]
+  /** The real rules, built by a helper: every name is still a string, none is a literal `name:`. */
+  const programmatic = () =>
+    `const rule = (name) => ({ name, severity: 'error' })\nmodule.exports = { forbidden: ${JSON.stringify(realNames())}.map(rule) }\n`
+  const absorbedRow = violation('engine-no-state', 'src/core/ratchetProbe.ts', 'src/store/circuitStore.ts')
+  const absorbing = () => JSON.stringify([...realRows(), absorbedRow], null, 2)
+
+  it('pins the premise: the helper-built config declares the real rules and scans to none', () => {
+    expect(realNames()).toContain('engine-no-state')
+    expect(programmatic()).not.toMatch(/name\s*:/)
+  })
+
+  it('fails the measured case — an unreadable base config plus one absorbed row read `PASS armed`', () => {
+    const result = evaluate(edited({ base: REAL_BASELINE, head: absorbing(), baseConfig: programmatic(), headConfig: REAL_CONFIG }))
+    expect(result.ratchet).toBe('unreadable')
+    expect(result.verdict).toBe('FAIL')
+    const { message } = ratchetFinding(result)
+    expect(message).toContain(`merge base's \`${RATCHET_CONFIG_FILE}\``)
+    expect(message).toMatch(/no rule names/)
+    expect(message).toMatch(/fails closed/)
+  })
+
+  it('fails it when the head only adds one comment naming the rule', () => {
+    const headConfig = `${programmatic()}// the ratchet is armed by name: 'engine-no-state'\n`
+    const result = evaluate(edited({ base: REAL_BASELINE, head: absorbing(), baseConfig: programmatic(), headConfig }))
+    expect(result.ratchet).toBe('unreadable')
+    expect(result.verdict).toBe('FAIL')
+  })
+
+  it("fails a head config the scan cannot read too — merged, it is every later PR's base", () => {
+    // An unread head declares nothing, so this could never read `armed`; it read `absorbed`, which
+    // tells the author to declare a rule they may well have declared, and which a Baseline-growth
+    // line turns into a warn — landing a config that makes the next PR's absorbed rows read armed.
+    const body = 'Fixes #438\n\nBaseline-growth: engine-no-state: src/core/ratchetProbe.ts → src/store/circuitStore.ts — why'
+    const result = evaluate(
+      edited({ base: REAL_BASELINE, head: absorbing(), baseConfig: REAL_CONFIG, headConfig: programmatic() }, body),
+    )
+    expect(result.ratchet).toBe('unreadable')
+    expect(result.verdict).toBe('FAIL')
+    expect(ratchetFinding(result).message).toContain(`this PR's \`${RATCHET_CONFIG_FILE}\``)
+  })
+
+  it('still arms a rule in a config this PR creates — absent at the base is not unreadable', () => {
+    const armed = violation('core-through-index', 'src/components/x.tsx', 'src/core/chips/y.ts')
+    const verdict = compareRatchetBaseline({
+      base: null,
+      head: baselineOf(armed),
+      baseConfig: null,
+      headConfig: configOf('core-through-index'),
+      configTouched: true,
+    })
+    expect(verdict.status).toBe('armed')
+  })
+
+  it('still reads a shrink as a shrink — with no row arriving, the scan decides nothing', () => {
+    const verdict = compareRatchetBaseline({
+      base: REAL_BASELINE,
+      head: JSON.stringify(realRows().slice(1)),
+      baseConfig: programmatic(),
+      headConfig: programmatic(),
+      configTouched: true,
+    })
+    expect(verdict.status).toBe('shrank')
+  })
+
+  it('still reads #404 as arming core-through-index when the real config is on both sides', () => {
+    const base = realRows().filter((row) => row.rule.name !== 'core-through-index')
+    const result = evaluate(
+      edited({
+        base: JSON.stringify(base),
+        head: REAL_BASELINE,
+        baseConfig: REAL_CONFIG.replace("name: 'core-through-index'", "name: 'core-through-index-was-not-here'"),
+        headConfig: REAL_CONFIG,
+      }),
+    )
+    expect(result.ratchet).toBe('armed')
+    expect(ratchetFinding(result).message).toContain(`declared in \`${RATCHET_CONFIG_FILE}\` by this PR`)
+  })
+})
