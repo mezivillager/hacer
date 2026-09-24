@@ -84,7 +84,15 @@ the moment it lands on `main`. Use the recovery above on any PR opened before it
 | "what's open in *surfaces*?" | `gh issue view <epic#>` or `backlog.mjs tasks <slug>` (#149 follow-up) |
 | "what can you do next?" | the **`ha-next`** skill: `backlog.mjs ready`, present the top pick with its why, claim it, build it through `ha-prompt-it`, PR, verifier, merge |
 | "work the next N" | locally: `/autonomous` over `ha-next` N times; in the cloud: N `claude --cloud` sessions, one issue each |
-| "queue up: …" | triage: shape the idea into issues in the form, split to fit the budget, `agent-ready` only if risk:0/1 and the criteria are unambiguous; otherwise `needs-human` — *one exception:* product-role polish issues may be `agent-ready` at `risk:2` when the fix is concrete (owner's ruling on #269; `product-brief.md`) |
+| "queue up: …" | triage: shape the idea into issues in the form, split to fit the budget, `agent-ready` only if risk:0/1, the criteria are unambiguous, and the seeds are within the blast-radius threshold (*How wide is an issue?*); otherwise `needs-human` — *one exception:* product-role polish issues may be `agent-ready` at `risk:2` when the fix is concrete (owner's ruling on #269; `product-brief.md`) |
+
+## How wide is an issue?
+
+An issue whose seed files have more than 20 production importers is not `agent-ready` as written — split it, or spike first and go expand → migrate → contract. The knob is `AGENT_READY_PRODUCTION_IMPORTER_THRESHOLD` in `scripts/blast-radius.logic.mjs`, and the evidence for 20 is recorded beside that constant. Do not move it without a new measurement.
+
+Run `node scripts/blast-radius.mjs` on the seeds before `agent-ready` is applied (`--issue <n>` reads them from the issue's "Files likely touched" section; `--json` prints the same report as JSON). The command resolves the `@/` alias and index re-exports, excludes `*.test.*` from the production count, and reports tests separately.
+
+Direct importers are a proxy for blast radius, not the real edit set. A throwaway spike is what shows which of those files the change actually touches.
 
 ## Standing roles
 
