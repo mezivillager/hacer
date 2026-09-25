@@ -1,0 +1,38 @@
+[
+  {
+    "number": 372,
+    "title": "Spike: the alias / pass-through through compileSpec — alias fixtures and a Kahn-ordering property (before N.1 lands)",
+    "url": "https://github.com/mezivillager/hacer/issues/372",
+    "body": "The spike ADR-0020 §1.5 schedules, before N.1 lands.\n"
+  },
+  {
+    "number": 374,
+    "title": "N.1: the spec model in src/core — parts, nets, sidecar; parseSpec / printSpec; versioned from day one",
+    "url": "https://github.com/mezivillager/hacer/issues/374",
+    "body": "Blocked by #372.\n"
+  },
+  {
+    "number": 403,
+    "title": "removeJunction deletes valid user-drawn wires on gesture-written documents (trunk and branch share one `from`)",
+    "url": "https://github.com/mezivillager/hacer/issues/403",
+    "body": "The remaining data loss after #396. Three options; the coordinator picks one.\n"
+  },
+  {
+    "number": 433,
+    "title": "docs(adr): 0020 §1.5 — the alias spike ran; substitution moves no value, so the lowering is a binding rewrite plus a boundary write-back",
+    "url": "https://github.com/mezivillager/hacer/pull/433",
+    "body": "Fixes #372\n"
+  },
+  {
+    "number": 459,
+    "title": "fix(store): removeJunction deletes only the wires that would dangle (#403)",
+    "url": "https://github.com/mezivillager/hacer/pull/459",
+    "body": "Fixes #403\n\n**Option 2, as decided:** `removeJunction` now deletes only the wires that would dangle.\n\nDecisions: R607\n"
+  },
+  {
+    "number": 462,
+    "title": "Removing a junction in an imported document still loses the source→sink connection that ran through it",
+    "url": "https://github.com/mezivillager/hacer/issues/462",
+    "body": "Raised by #459's builder (#403). This was already true before that PR.\n\n**Introduced by:** R607\n"
+  }
+]

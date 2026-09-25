@@ -223,3 +223,16 @@ export function nextRulingId(nodes) {
   const numbers = nodes.filter((node) => node.kind === 'ruling').map((node) => Number(node.id.slice(1)))
   return `R${Math.max(0, ...numbers) + 1}`
 }
+
+// #467 — the queries and the check, not yet implemented (the red commit).
+const notYet = () => { throw new Error('not implemented (#467)') }
+export const trace = notYet
+export const radius = notYet
+export const formatTree = notYet
+export const check = notYet
+export const cutOverDate = notYet
+export const formatCheck = notYet
+export const applyFixes = notYet
+export const subgraph = notYet
+export const toMermaid = notYet
+export const validateGraph = notYet
