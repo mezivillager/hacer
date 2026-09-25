@@ -2,7 +2,7 @@ import { readdirSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { AUX_ROTATION, PICK_ROTATION, parsePortfolio, planReady, summarizeProjects } from '../backlog.logic.mjs'
-import { SCHEMA_VERSION, buildSnapshot, claimsQuery, report, validateSnapshot } from './collect.logic.mjs'
+import { SCHEMA_VERSION, buildSnapshot, checksQuery, claimsQuery, report, validateSnapshot } from './collect.logic.mjs'
 
 // scripts/fixtures/mission-control/ holds recordings of the collector's own calls, taken 2026-09-25 at
 // origin/main ed7c983 (the commands are in collect.mjs), trimmed as follows:
@@ -21,6 +21,10 @@ import { SCHEMA_VERSION, buildSnapshot, claimsQuery, report, validateSnapshot } 
 //   portfolio.md       docs/portfolio.md at ed7c983, pinned so the pick-rule expectations do not move with it
 //   snapshot.json      `collect.mjs --json` whole, at origin/main 561dcf1 on 2026-09-25 (03:16Z): the fixture the
 //                      site renders in mission-control/src/*.test.tsx (#473); the last test keeps it valid v1
+//   gh-check-runs.json `gh api graphql` run with gh-check-runs.graphql, the query checksQuery builds, whole, at
+//                      04:51Z on 2026-09-25 (origin/main 1b01240, its ci still running): the required checks' runs
+//                      on main's head and on the 3 open PRs. #507 is MC-6's own PR: its ci and browser-qa runs ran
+//                      its code and published their lines; its pr-hygiene runs ran main's copy (pull_request_target)
 // The process records (ledger, sessions, ADRs, roadmap, cloud inbox) are read live, as
 // backlog.logic.test.mjs reads docs/portfolio.md: a format change there fails here, not silently in the site.
 
@@ -56,6 +60,7 @@ function inputs(overrides = {}) {
     roadmap: ok('docs/roadmap/README.md', repoText('docs/roadmap/README.md')),
     sessions: ok('docs/harness/sessions', repoDir('docs/harness/sessions')),
     adrs: ok('docs/decisions', repoDir('docs/decisions')),
+    checkRuns: ok('gh api graphql (check runs)', fixture('gh-check-runs.json')),
     ...overrides,
   }
 }
@@ -193,8 +198,8 @@ describe('collect.logic', () => {
     expect(good.freshness.prs).toEqual({
       source: 'gh pr list --state open · gh pr list --state merged --limit 60', fetchedAt: NOW, status: 'ok',
     })
-    expect(good.freshness.checks).toEqual({ source: 'none', fetchedAt: NOW, status: 'ok' })
-    expect(good.checks).toEqual({ until: 'MC-6', items: [] })
+    expect(good.freshness.checks).toEqual({ source: 'gh api graphql (check runs)', fetchedAt: NOW, status: 'ok' })
+    expect(good.checks.items).toHaveLength(10) // main's ci, and the three checks on each of 3 open PRs
     expect(good.lineage).toEqual({ until: 'DL-7', items: [] })
 
     // An hour later: the issue list is rate-limited, GraphQL answers 403, and the open-PR JSON has drifted.
@@ -376,5 +381,66 @@ describe('collect.logic', () => {
 
   it('the site\'s fixture, snapshot.json, is a valid schema v1 snapshot', () => {
     expect(validateSnapshot(fixture('snapshot.json'))).toEqual([])
+  })
+
+  // MC-6 (#477): each required check publishes its line as a notice — an annotation on its own check run.
+  it('reads each required check\'s published line from its newest run on main\'s head and on every open PR\'s', () => {
+    expect(checksQuery('mezivillager/hacer')).toBe(fixtureText('gh-check-runs.graphql').trim())
+    const { checks } = build()
+    // main's ci was still running; #410 and #496 ran before MC-6; #507's pr-hygiene runs were main's copy.
+    expect(checks.items.map(({ pr, check, conclusion, verdict }) => [pr, check, conclusion, verdict])).toEqual([
+      [null, 'ci', null, null],
+      [410, 'pr-hygiene', 'SUCCESS', null], [410, 'browser-qa', 'SUCCESS', null], [410, 'ci', 'SUCCESS', null],
+      [496, 'pr-hygiene', 'SUCCESS', null], [496, 'browser-qa', 'SUCCESS', null], [496, 'ci', 'SUCCESS', null],
+      [507, 'pr-hygiene', 'SUCCESS', null], [507, 'browser-qa', 'SUCCESS', 'SKIPPED'], [507, 'ci', 'SUCCESS', 'PASS'],
+    ])
+    const ratchet = 'LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · ' +
+      '8 engine globals suppressed · 0 new'
+    expect(checks.items.filter((item) => item.line !== null).map((item) => item.line))
+      .toEqual(['BROWSER-QA: skipped (no critical paths)', ratchet])
+    expect(checks.items.at(-1)).toEqual({
+      pr: 507, sha: 'a7ebb775729f1170cf88fce8a99b7285ebe1b012', check: 'ci', conclusion: 'SUCCESS', completedAt: '2026-09-25T04:51:05Z',
+      url: 'https://github.com/mezivillager/hacer/actions/runs/36095931702/job/107948090620',
+      line: ratchet, verdict: 'PASS', fields: { known: 71, new: 0 },
+    })
+    // A run still going has no conclusion and no line yet; main's head never runs pr-hygiene or browser-qa.
+    expect(checks.items[0]).toMatchObject({ pr: null, sha: '1b012400aa3dbcaa5ef9977c97f8ee389351326a', completedAt: null, line: null, fields: {} })
+  })
+
+  it('reads the newest run of each check, as GitHub judges a required context — and only that check\'s own line', () => {
+    const answer = fixture('gh-check-runs.json')
+    const runsOf = (number) => answer.data.repository.pullRequests.nodes.find((pr) => pr.number === number)
+      .commits.nodes[0].commit.statusCheckRollup.contexts.nodes
+    // The rollup lists #496's two browser-qa runs oldest first, so the obvious `find` would read the older one.
+    const [older, newer] = runsOf(496).filter((run) => run.name === 'browser-qa')
+    expect(older.databaseId).toBeLessThan(newer.databaseId)
+    expect(build().checks.items.find((item) => item.pr === 496 && item.check === 'browser-qa').url).toMatch(new RegExp(`/job/${newer.databaseId}$`))
+
+    // Once MC-6 is on main, #507's own pr-hygiene run carries what the run dispatched from its branch published
+    // (36095970389). Given that line on the newer of #507's two runs, it is read — not the older run's none.
+    const [first, latest] = runsOf(507).filter((run) => run.name === 'pr-hygiene')
+    latest.annotations.nodes.unshift({ message: 'HYGIENE: PASS reviewable=81 test=107 excluded=0 files=7 issue=#477 linked=fixes' })
+    // A HYGIENE line on the ci run is not pr-hygiene's, and the runner's own notice, on every run, is never a line.
+    runsOf(507).find((run) => run.name === 'ci').annotations.nodes.unshift({ message: 'HYGIENE: FAIL reviewable=999' })
+    expect(first.annotations.nodes.map((node) => node.message)).toEqual([expect.stringMatching(/^"The ubuntu-latest label/)])
+    const items = build({ checkRuns: ok('gh api graphql (check runs)', answer) }).checks.items.filter((item) => item.pr === 507)
+    expect(items.map(({ check, line }) => [check, line?.split(' ').slice(0, 2).join(' ') ?? null])).toEqual([
+      ['pr-hygiene', 'HYGIENE: PASS'], ['browser-qa', 'BROWSER-QA: skipped'], ['ci', 'LAYER-RATCHET: 71'],
+    ])
+    expect(items[0]).toMatchObject({
+      url: expect.stringMatching(new RegExp(`/job/${latest.databaseId}$`)), verdict: 'PASS',
+      fields: { reviewable: 81, test: 107, excluded: 0, files: 7, issue: '#477', linked: 'fixes' },
+    })
+  })
+
+  it('a failed check-runs query keeps the last-known lines, flagged — freshness, not failure', () => {
+    const good = build()
+    const next = build({ checkRuns: failed('gh api graphql (check runs)', 'HTTP 502: Bad Gateway') }, { now: LATER, previous: good })
+    expect(next.checks).toEqual(good.checks)
+    expect(next.freshness.checks).toEqual({
+      source: 'gh api graphql (check runs)', fetchedAt: NOW, status: 'error', error: 'checkRuns: HTTP 502: Bad Gateway',
+    })
+    expect(report(next).stdout).toBe('MISSION-CONTROL: VALID schema 1 · ok 12 · partial 0 · error 1 (checks)')
+    expect(build({ checkRuns: failed('gh api graphql (check runs)', 'HTTP 502: Bad Gateway') }).checks).toEqual({ items: [] })
   })
 })
