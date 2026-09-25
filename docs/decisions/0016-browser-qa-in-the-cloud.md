@@ -2,6 +2,7 @@
 
 - **Status:** Accepted — amends [ADR-0012](0012-e2e-tests-manual-only.md); amended 2026-09-19 (#282, see *Amendment* below)
 - **Date:** 2026-09-18
+- **Amends:** ADR-0012 §1
 - **Deciders:** Repo owner (issue #220; QA agent in #257)
 - **Phase:** Phase 0.5
 
