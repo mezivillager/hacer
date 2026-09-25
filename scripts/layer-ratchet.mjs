@@ -8,11 +8,14 @@
 // .dependency-cruiser-known-violations.json. Today's violations therefore pass; a NEW one exits 1.
 // The baseline is only ever rewritten with `--baseline-mode shrink-only`, so a violation that has
 // been fixed can never be re-added. Rules live in the config, counting in layer-ratchet.logic.mjs.
+// In GitHub Actions the `LAYER-RATCHET:` line is also published — a notice on the job's check run and the
+// job summary — so Mission Control reads `ci`'s count without log access (#477, check-lines.logic.mjs).
 
 import { cruise } from 'dependency-cruiser'
-import { existsSync, readFileSync } from 'node:fs'
+import { appendFileSync, existsSync, readFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import path from 'node:path'
+import { publishLine } from './check-lines.logic.mjs'
 import {
   CONFIG_FILE,
   ESLINT_SUPPRESSIONS_FILE,
@@ -57,5 +60,7 @@ const summary = summarise(cruised.output, {
   undeclared: undeclaredRules(knownViolations, config.forbidden),
 })
 
-console.log(formatReport(summary))
+const report = formatReport(summary)
+console.log(report)
+publishLine(report, { env: process.env, log: console.log, append: appendFileSync })
 process.exit(summary.ok ? EXIT.ok : EXIT.newViolations)

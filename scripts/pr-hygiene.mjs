@@ -16,10 +16,12 @@
 // read the same way, baseline and config (#489): a rule is gone once the config stops declaring it.
 //
 // Prints one greppable `HYGIENE: PASS|WARN|FAIL …` line, appends a report to
-// $GITHUB_STEP_SUMMARY when set, and exits 1 on FAIL. Rules live in pr-hygiene.logic.mjs.
+// $GITHUB_STEP_SUMMARY when set, publishes the line where Mission Control reads it (a notice on this
+// check run, #477 — check-lines.logic.mjs), and exits 1 on FAIL. Rules live in pr-hygiene.logic.mjs.
 
 import { appendFileSync, existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
+import { publishLine } from './check-lines.logic.mjs'
 import {
   RATCHET_BASELINE_FILE,
   RATCHET_CONFIG_FILE,
@@ -142,6 +144,8 @@ const result = evaluate({
   ratchet,
 })
 
-console.log(formatConsole(result))
+const report = formatConsole(result)
+console.log(report)
 if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, formatSummary(result))
+publishLine(report, { env: process.env, log: console.log, append: appendFileSync })
 process.exit(result.verdict === 'FAIL' ? 1 : 0)

@@ -6,10 +6,38 @@
 /** Each required check, by the name its check run carries, and the prefix of the line it publishes. */
 export const CHECK_LINES = Object.freeze({ 'pr-hygiene': 'HYGIENE', 'browser-qa': 'BROWSER-QA', ci: 'LAYER-RATCHET' })
 
-export function publishLine() {
-  throw new Error('not implemented')
+/** A workflow command's message, escaped as the runner decodes it (the Actions toolkit's escapeData). */
+const escapeData = (text) => text.replaceAll('%', '%25').replaceAll('\r', '%0D').replaceAll('\n', '%0A')
+
+/**
+ * Publishes the first line of a check's report when it runs in GitHub Actions: a `::notice` titled by the line's
+ * prefix, which the runner stores as an annotation on the job's own check run — readable through the Checks API and
+ * GraphQL, and written with no token permission at all — and the line in the job summary. Elsewhere it writes
+ * nothing. Returns whether it published.
+ * @param {string} report
+ * @param {{env: Record<string, string|undefined>, log: (text: string) => void, append: (file: string, text: string) => void}} io
+ */
+export function publishLine(report, { env, log, append }) {
+  const [line] = report.split('\n')
+  const title = /^([A-Z][A-Z-]*): /.exec(line)?.[1]
+  if (env.GITHUB_ACTIONS !== 'true' || !title) return false
+  log(`::notice title=${title}::${escapeData(line)}`)
+  if (env.GITHUB_STEP_SUMMARY) append(env.GITHUB_STEP_SUMMARY, `\n\`${line}\`\n`)
+  return true
 }
 
-export function parseCheckLine() {
-  throw new Error('not implemented')
+const value = (text) => (/^\d+$/.test(text) ? Number(text) : text)
+
+/**
+ * A published line as data: its `verdict` (PASS, WARN, FAIL or SKIPPED) and `fields`, its `key=value` pairs with
+ * numbers as numbers. LAYER-RATCHET's line has no verdict word and no pairs: its fields are the `known` and `new`
+ * counts, and its verdict is FAIL on any new violation, as layer-ratchet.mjs exits 1 on one.
+ * @param {string|null} line
+ */
+export function parseCheckLine(line) {
+  const ratchet = /^LAYER-RATCHET: (\d+) known violations? .* · (\d+) new$/.exec(line ?? '')
+  if (ratchet) return { verdict: ratchet[2] === '0' ? 'PASS' : 'FAIL', fields: { known: Number(ratchet[1]), new: Number(ratchet[2]) } }
+  const verdict = /^(?:HYGIENE|BROWSER-QA): (PASS|WARN|FAIL|skipped)\b/.exec(line ?? '')?.[1].toUpperCase() ?? null
+  if (verdict === null) return { verdict, fields: {} }
+  return { verdict, fields: Object.fromEntries([...line.matchAll(/\b(\w+)=(\S+)/g)].map(([, key, text]) => [key, value(text)])) }
 }
