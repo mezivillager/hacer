@@ -1,12 +1,7 @@
 #!/usr/bin/env node
-// Fail when an installed react, react-dom, three or @react-three/* package
-// declares a peer the installed tree does not satisfy (#455).
-//
-//   node scripts/peer-range.mjs
-//   node scripts/peer-range.mjs --modules <dir> --allow <file>
-//
-// Exit 0 passes. Exit 1 is a violation. Exit 2 is a tree or allow-list that
-// could not be read. Rules: peer-range.logic.mjs.
+// Fail when an installed react, react-dom, three or @react-three/* peer is unmet (#455).
+//   node scripts/peer-range.mjs [--modules <dir>] [--allow <file>]
+// Exit 0 passes, 1 is a violation, 2 means the tree or allow-list could not be read.
 
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import path from 'node:path'

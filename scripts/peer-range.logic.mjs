@@ -1,16 +1,7 @@
-// Peer ranges for react, react-dom, three and @react-three/* (#455).
-// No I/O — peer-range.mjs reads the installed tree and the allow-list.
-//
-// strict-peer-dependencies is not this gate. CI installs with --frozen-lockfile,
-// which skips resolution, and pnpm only checks peers while resolving (R403). The
-// flag stays exit 0 on a mismatched lockfile and would fail Dependabot's update
-// job instead of the PR (R404). This reads the package.json files the install wrote.
-//
-// Measured while this landed (react 19.2.6, react-dom 19.2.6, three 0.184.0,
-// @react-three/fiber 9.5.0, @react-three/drei 10.7.7, @react-three/test-renderer
-// 9.1.0): zero unmet peers, so scripts/peer-range.allow.json is []. An entry is
-// valid only with a non-empty reason, and only while that mismatch or missing
-// peer is still present — a stale entry fails.
+// Installed peer ranges for react, react-dom, three and @react-three/* (#455).
+// No I/O — peer-range.mjs reads the tree. strict-peer-dependencies cannot fail
+// CI's frozen install (R403, R404). peer-range.allow.json is [] because main was
+// clean; an entry needs a reason and must match a live mismatch or missing peer.
 
 export const USAGE = 'usage: node scripts/peer-range.mjs [--modules <dir>] [--allow <file>]'
 
@@ -21,7 +12,6 @@ const TOKEN = /^(>=|<=|>|<|=|\^|~)?(.+)$/
 
 const isWild = (part) => part === 'x' || part === 'X' || part === '*'
 
-/** react, react-dom, three, and every @react-three/* package. three-stdlib is outside. */
 export function inPeerSet(name) {
   return name === 'react' || name === 'react-dom' || name === 'three' || String(name).startsWith('@react-three/')
 }
@@ -33,14 +23,8 @@ function parseVersionToken(token) {
   const components = raw[2] !== undefined ? 3 : raw[1] !== undefined ? 2 : 1
   const wildAt = raw.findIndex((part, index) => index < components && isWild(part))
   const num = (part) => (part === undefined || isWild(part) ? 0 : Number(part))
-  return {
-    major: num(raw[0]),
-    minor: num(raw[1]),
-    patch: num(raw[2]),
-    prerelease: match[4] ? match[4].split('.') : [],
-    components,
-    wildAt: wildAt === -1 ? null : wildAt,
-  }
+  const prerelease = match[4] ? match[4].split('.') : []
+  return { major: num(raw[0]), minor: num(raw[1]), patch: num(raw[2]), prerelease, components, wildAt: wildAt === -1 ? null : wildAt }
 }
 
 function concrete(parsed) {
@@ -145,7 +129,6 @@ function setMatches(version, comparators) {
   return comparators.every((c) => cmpOp(c.op, version, c.version))
 }
 
-/** @returns {{ok: true, satisfies: boolean} | {ok: false, error: string}} */
 export function satisfiesRange(versionText, rangeText) {
   const parsedVersion = parseVersionToken(String(versionText).trim())
   if (!parsedVersion || parsedVersion.wildAt !== null) return { ok: false, error: `unreadable version ${versionText}` }
@@ -171,15 +154,7 @@ export function satisfiesRange(versionText, rangeText) {
 }
 
 function violation(pkg, peer, kind, resolved) {
-  return {
-    dependent: pkg.name,
-    dependentVersion: pkg.version,
-    peer: peer.name,
-    range: peer.range,
-    resolved,
-    optional: peer.optional === true,
-    kind,
-  }
+  return { dependent: pkg.name, dependentVersion: pkg.version, peer: peer.name, range: peer.range, resolved, optional: peer.optional === true, kind }
 }
 
 function normalizeAllow(entry) {
@@ -196,9 +171,6 @@ function normalizeAllow(entry) {
 
 const byName = (a, b) => a.dependent.localeCompare(b.dependent, 'en') || a.peer.localeCompare(b.peer, 'en')
 
-/**
- * @param {{packages: Array<{name: string, version: string, peers: Array<{name: string, range: string, optional?: boolean}>, resolved: Record<string, string | null>}>, allow: Array<{dependent: string, peer: string, range: string, reason: string}>}} input
- */
 export function checkPeerRanges({ packages, allow }) {
   const inSet = (packages ?? []).filter((pkg) => inPeerSet(pkg.name))
   const allowList = Array.isArray(allow) ? allow : []
@@ -245,14 +217,7 @@ export function checkPeerRanges({ packages, allow }) {
     suppressed.push({ ...match, reason: entry.reason })
   }
   const remaining = violations.filter((item) => !used.has(item))
-  return {
-    ok: remaining.length === 0 && allowErrors.length === 0,
-    packages: inSet.length,
-    checked,
-    violations: remaining,
-    suppressed,
-    allowErrors,
-  }
+  return { ok: remaining.length === 0 && allowErrors.length === 0, packages: inSet.length, checked, violations: remaining, suppressed, allowErrors }
 }
 
 function violationLine(item) {
@@ -262,7 +227,6 @@ function violationLine(item) {
   return `${item.dependent}@${item.dependentVersion} requires ${item.peer}@${item.resolved} to satisfy ${item.range}${optional}`
 }
 
-/** The CLI's stdout. A pass names the counts so a check of nothing cannot look like this. */
 export function formatReport(result) {
   if (result.ok) return `PEER-RANGE: PASS packages=${result.packages} checked=${result.checked} violations=0\n`
   const lines = ['PEER-RANGE: FAIL', ...result.violations.map(violationLine)]
@@ -271,7 +235,6 @@ export function formatReport(result) {
   return `${lines.join('\n')}\n`
 }
 
-/** @param {string[]} argv @param {{modules: string, allow: string}} defaults */
 export function parseArgs(argv, defaults) {
   let modules = defaults.modules
   let allow = defaults.allow
