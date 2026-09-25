@@ -1,0 +1,32 @@
+/* Mission Control's own styles: plain CSS, nothing from the app's (#473). Light or dark follows the reader's system. */
+:root {
+  color-scheme: light dark;
+  --text: #1d1d20; --muted: #676770; --page: #f5f5f7; --card: #fff; --line: #dfdfe5; --link: #2155c4;
+  --stale-text: #6b4a00; --stale-page: #fff0c4;
+  font: 15px/1.5 system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text: #e8e8ed; --muted: #9d9da7; --page: #111114; --card: #1b1b20; --line: #2e2e36; --link: #92b1ff;
+    --stale-text: #f2d27e; --stale-page: #3a2e0d;
+  }
+}
+body { margin: 0; background: var(--page); color: var(--text); }
+a { color: var(--link); }
+.mc { max-width: 76rem; margin: 0 auto; padding: 1rem; }
+.mc header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 1.5rem; }
+.mc h1 { font-size: 1.3rem; margin: 0; }
+.mc nav { display: flex; gap: 1rem; }
+.mc header p, .asof { color: var(--muted); font-size: 0.85rem; margin: 0; }
+.tiles { display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); }
+.tile { background: var(--card); border: 1px solid var(--line); border-radius: 0.5rem; padding: 0.75rem 1rem; }
+.tile h3 { font-size: 0.8rem; letter-spacing: 0.04em; text-transform: uppercase; margin: 0; }
+.tile h3 a { color: var(--muted); text-decoration: none; }
+.tile dl { margin: 0.5rem 0 0; }
+.tile dl div { display: flex; justify-content: space-between; gap: 1rem; }
+.tile dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+.stale { background: var(--stale-page); color: var(--stale-text); border-radius: 0.25rem; padding: 0.25rem 0.5rem; margin: 0.5rem 0; }
+.scroll { overflow-x: auto; margin-top: 0.75rem; }
+table { border-collapse: collapse; width: 100%; background: var(--card); font-variant-numeric: tabular-nums; }
+th, td { border-bottom: 1px solid var(--line); padding: 0.4rem 0.6rem; text-align: left; vertical-align: top; }
+progress { width: 4rem; margin-right: 0.4rem; }
