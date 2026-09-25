@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Overview } from './Overview'
+import { Process } from './Process'
 import { ProjectTasks } from './ProjectTasks'
 import { Projects } from './Projects'
 import { useRoute } from './route'
@@ -19,13 +20,14 @@ export function App({ load = loadSnapshot }: { load?: () => Promise<Snapshot> })
     <main className="mc">
       <header>
         <h1>Mission Control</h1>
-        <nav><a href="#/">Overview</a> <a href="#/projects">Projects</a></nav>
+        <nav><a href="#/">Overview</a> <a href="#/projects">Projects</a> <a href="#/process">Process</a></nav>
         <p>Snapshot {when(snapshot.generatedAt)} · <a href={`${REPO}/commit/${snapshot.head.sha}`} title={snapshot.head.subject}>
           {snapshot.head.sha.slice(0, 7)}</a></p>
       </header>
       {route.view === 'overview' && <Overview snapshot={snapshot} />}
       {route.view === 'projects' && <Projects snapshot={snapshot} />}
       {route.view === 'project' && <ProjectTasks snapshot={snapshot} slug={route.slug} />}
+      {route.view === 'process' && <Process snapshot={snapshot} />}
     </main>
   )
 }
