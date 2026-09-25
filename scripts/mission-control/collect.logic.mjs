@@ -4,7 +4,7 @@
 // pick-rule number comes from ../backlog.logic.mjs, so the snapshot cannot disagree with `backlog.mjs ready`.
 
 import { AUX_ROTATION, DEFAULT_ALLOWLIST, PICK_ROTATION, parsePortfolio, planReady, summarizeProjects } from '../backlog.logic.mjs'
-import { CHECK_LINES, parseCheckLine } from '../check-lines.logic.mjs'
+import { CHECK_LINES, readCheckRun } from '../check-lines.logic.mjs'
 
 export const SCHEMA_VERSION = 1
 const STATUSES = ['ok', 'partial', 'error']
@@ -103,14 +103,15 @@ export function checksQuery(repo) {
 }
 
 /** Each required check's newest run on one head — GitHub judges a required context by its newest check run — with the
- *  line it published, or null for a run that published none (still going, or run before MC-6). */
+ *  line it published, or null for a run that published none (still going, or run before MC-6), read under its
+ *  conclusion: a run that did not succeed never reads PASS (readCheckRun). */
 const checksOn = ([pr, commit]) => Object.entries(CHECK_LINES).flatMap(([check, prefix]) => {
   const run = (commit.statusCheckRollup?.contexts.nodes ?? []).filter((node) => node.name === check)
     .reduce((newest, node) => (newest?.databaseId > node.databaseId ? newest : node), null)
   if (!run) return []
-  const line = run.annotations.nodes.map((node) => node.message).findLast((message) => message.startsWith(`${prefix}: `)) ?? null
+  const line = (run.annotations?.nodes ?? []).map((node) => node.message).findLast((message) => message.startsWith(`${prefix}: `)) ?? null
   const { conclusion, completedAt, detailsUrl: url } = run
-  return [{ pr, sha: commit.oid, check, conclusion, completedAt, url, line, ...parseCheckLine(line) }]
+  return [{ pr, sha: commit.oid, check, conclusion, completedAt, url, line, ...readCheckRun({ conclusion, line }) }]
 })
 
 /** main's head (`pr: null`), then each open PR's, in the query's order. */
@@ -251,7 +252,7 @@ export const SCHEMA_V1 = {
   metrics: { ratchet: { count: 'number', byRule: 'object', history: [{ sha: 'sha', count: 'number' }] },
     releases: [{ tag: 'string', publishedAt: 'iso' }], mergesPerDay: [{ date: 'string', merges: 'number' }] },
   checks: { items: [{ pr: 'number?', sha: 'sha', check: 'string', conclusion: 'string?', completedAt: 'iso?', url: 'string?',
-    line: 'string?', verdict: 'string?', fields: 'object' }] },
+    line: 'string?', verdict: 'string?', fields: 'object', disagrees: 'boolean' }] },
   lineage: { items: 'array' },
 }
 
