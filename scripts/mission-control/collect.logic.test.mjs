@@ -19,6 +19,8 @@ import { SCHEMA_VERSION, buildSnapshot, claimsQuery, report, validateSnapshot } 
 //   git-ratchet.json   `git log --format=%H%x09%cI%x09%s -- .dependency-cruiser-known-violations.json`, and each
 //                      commit's baseline reduced to the one field read, `rule.name`
 //   portfolio.md       docs/portfolio.md at ed7c983, pinned so the pick-rule expectations do not move with it
+//   snapshot.json      `collect.mjs --json` whole, at origin/main 561dcf1 on 2026-09-25 (03:16Z): the fixture the
+//                      site renders in mission-control/src/*.test.tsx (#473); the last test keeps it valid v1
 // The process records (ledger, sessions, ADRs, roadmap, cloud inbox) are read live, as
 // backlog.logic.test.mjs reads docs/portfolio.md: a format change there fails here, not silently in the site.
 
@@ -334,5 +336,43 @@ describe('collect.logic', () => {
     const { unfiled, ...filed } = truth
     expect(unfiled).toBe(2)
     expect(open).toEqual(filed)
+  })
+  // 14648c7 changed three behaviours with no test (the MC-1 verifier's note, carried to #473). Each of the three tests
+  // below goes red with that commit's hunks in collect.logic.mjs reverted.
+  it('a section whose built data leaves schema v1 fails alone: flagged error, last-known data kept, the run still valid', () => {
+    const good = build()
+    // An open PR whose number arrives as a string: nothing throws, yet prs.open is out of schema.
+    const [pr] = fixture('gh-prs-open.json')
+    const drifted = build({ prsOpen: ok('gh pr list --state open', [{ ...pr, number: String(pr.number) }]) }, { now: LATER, previous: good })
+    expect(drifted.prs).toEqual(good.prs)
+    expect(drifted.freshness.prs).toEqual({
+      source: 'gh pr list --state open · gh pr list --state merged --limit 60', fetchedAt: NOW, status: 'error',
+      error: 'could not build: prs.open[0].number must be a number',
+    })
+    expect(report(drifted)).toEqual({
+      exitCode: 0, stderr: '', stdout: 'MISSION-CONTROL: VALID schema 1 · ok 12 · partial 0 · error 1 (prs)',
+    })
+  })
+
+  it('a verdict or a claim must open its comment: the heading or first field quoted further down is neither', () => {
+    const [pr] = fixture('gh-prs-open.json')
+    const quoting = comment('mezivillager', 'The brief asks the verifier to open with\n## Verifier verdict: PASS\nwhich this is not.')
+    expect(build({ prsOpen: ok('gh pr list --state open', [{ ...pr, comments: [quoting] }]) }).prs.open[0].verdicts).toEqual([])
+
+    const answer = fixture('gh-claims.json')
+    answer.data.repository.i182.comments.nodes.push(comment('mezivillager', 'Next time, claim with:\nClaimed by: grok-bot\nIntent: building'))
+    const { claim } = build({ claimIssues: ok('gh api graphql', answer) }).claims.items[0]
+    expect(claim).toMatchObject({ claimedBy: 'claude-local', intent: 'paused:owner-stopped-run' }) // still the real claim
+  })
+
+  it('a ref under claim/ that is not claim/<n> is skipped, in the GraphQL query and in the section', () => {
+    const refs = `${fixtureText('git-claim-refs.txt')}8909e66d525e0f6a60a9877d8cf5140594c20b65\trefs/heads/claim/notes\n`
+    expect(claimsQuery('mezivillager/hacer', refs)).toBe(fixtureText('gh-claims.graphql').trim())
+    expect(build({ claimRefs: ok('git ls-remote origin refs/heads/claim/*', refs) }).claims.items.map((item) => item.number))
+      .toEqual([182, 193, 195, 199, 333, 403, 427, 438, 482])
+  })
+
+  it('the site\'s fixture, snapshot.json, is a valid schema v1 snapshot', () => {
+    expect(validateSnapshot(fixture('snapshot.json'))).toEqual([])
   })
 })
