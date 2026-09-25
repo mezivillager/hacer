@@ -30,7 +30,8 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      # Catches: TypeScript type errors + ESLint violations.
+      # Catches: TypeScript type errors + ESLint violations. Its `LAYER-RATCHET:` line is also a
+      # `::notice` on this check run, which Mission Control reads without log access (#477).
       - name: Lint (TypeScript + ESLint)
         run: pnpm run lint
 

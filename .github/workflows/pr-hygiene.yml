@@ -38,6 +38,10 @@ name: PR Hygiene
 # from the default branch, so it cannot check the PR that introduces it. Once it is there, a
 # change to it can be tried from its branch, and any PR re-checked by hand:
 #   gh workflow run pr-hygiene.yml --ref <branch> -f pr=<n>
+#
+# The `HYGIENE:` line is published for Mission Control (#477) by the same step: printed as a
+# `::notice`, which the runner stores as an annotation on this job's check run. That is stdout, so it
+# needs no permission and no step (docs/harness/mission-control.md § Checks).
 
 on:
   pull_request_target:

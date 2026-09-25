@@ -11,7 +11,9 @@ name: browser-qa
 # prints one greppable `BROWSER-QA: PASS|FAIL suites=… passed=… failed=…` line. Browser suites
 # never run on a laptop as a gate; `e2e.yml` stays for manual runs.
 #
-# Decision and verdict: scripts/browser-qa.mjs (rules in browser-qa.logic.mjs, unit tested).
+# Decision and verdict: scripts/browser-qa.mjs (rules in browser-qa.logic.mjs, unit tested). Its
+# last line — the skip or the verdict — is also a `::notice` on this check run, which Mission Control
+# reads without log access (#477); that is stdout and needs no permission below.
 # Re-check a PR by hand: gh workflow run browser-qa.yml -f pr=<n> — it tests the PR's merge ref,
 # like the PR's own run, but reports in its log and job summary, not as the PR's check.
 
