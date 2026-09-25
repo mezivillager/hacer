@@ -45,9 +45,10 @@ function countCycles(cycleViolations) {
  * Fold a dependency-cruiser JSON result (cruised with `--ignore-known`, which re-labels baselined
  * violations `ignore`) into the ratchet's verdict.
  * @param {object} result the parsed `--output-type json` payload
- * @param {{suppressedGlobals?: number}} [options]
+ * @param {{suppressedGlobals?: number, undeclared?: {rule: string, rows: number}[]}} [options]
+ *   `undeclared` is {@link undeclaredRules}' answer — any entry fails the ratchet.
  */
-export function summarise(result, { suppressedGlobals = 0 } = {}) {
+export function summarise(result, { suppressedGlobals = 0, undeclared = [] } = {}) {
   const violations = result?.summary?.violations ?? []
   const known = violations.filter((violation) => violation.rule.severity === 'ignore')
   const added = violations.filter((violation) => violation.rule.severity !== 'ignore')
@@ -71,13 +72,27 @@ export function summarise(result, { suppressedGlobals = 0 } = {}) {
       to: violation.to,
     })),
     suppressedGlobals,
-    ok: added.length === 0,
+    undeclared,
+    ok: added.length === 0 && undeclared.length === 0,
   }
 }
 
-/** Red stub (#489): the rules the baseline records rows under that the config does not declare. */
-export function undeclaredRules() {
-  return []
+/**
+ * The rules the committed baseline records rows under that no rule in the config reports (#489),
+ * each with its row count. dependency-cruiser matches `knownViolations` by rule name, so such a row
+ * suppresses nothing — and nothing checks its edge any more, while the cruise still prints `0 new`:
+ * an emptied `.dependency-cruiser.cjs` read as `0 known violations … 0 new`. So a rule deleted,
+ * renamed without its rows, commented out or set to `ignore` fails here while it has rows.
+ * @param {{rule?: {name?: string}}[]} baselineRows the parsed known-violations file
+ * @param {{name?: string, severity?: string}[] | undefined} forbidden the config's `forbidden` rules
+ * @returns {{rule: string, rows: number}[]}
+ */
+export function undeclaredRules(baselineRows, forbidden) {
+  // The names dependency-cruiser's rule-set normalisation keeps: it drops a rule whose severity is
+  // `ignore`, and names a rule that has no name `unnamed`.
+  const reported = new Set((forbidden ?? []).filter((rule) => rule?.severity !== 'ignore').map((rule) => rule?.name ?? 'unnamed'))
+  const orphans = (baselineRows ?? []).map((row) => row?.rule?.name).filter((name) => !reported.has(name))
+  return [...new Set(orphans)].map((rule) => ({ rule, rows: orphans.filter((name) => name === rule).length }))
 }
 
 /** Sum the per-file, per-rule counts in an `eslint-suppressions.json`. Unreadable is zero, never a
@@ -114,6 +129,15 @@ export function formatReport(summary) {
     lines.push(
       '  Fix the import: move the shared code down a layer, invert the dependency, or pass the',
       '  value in. The baseline only ever shrinks — a new violation cannot be recorded as known.',
+    )
+  }
+  for (const { rule, rows } of summary.undeclared ?? []) {
+    lines.push(`  UNDECLARED  ${rule}: ${plural(rows, 'baseline row')}, and no rule in ${CONFIG_FILE} reports under that name`)
+  }
+  if (summary.undeclared?.length > 0) {
+    lines.push(
+      '  A rule deleted, renamed without its rows, commented out or set to `ignore` checks nothing, and its rows',
+      '  suppress nothing. Restore it, or rename it with its rows (`depcruise … --baseline` in the same commit).',
     )
   }
   return lines.join('\n')
