@@ -8,12 +8,12 @@
 // labels and per-file line counts — so this script, checked out from the base branch, never sees or
 // runs the PR's code. `.gitattributes` (linguist-generated) is read from the checkout, i.e. main.
 //
-// The one exception is the layer ratchet (#406): when a PR changes the baseline or
-// `.dependency-cruiser.cjs`, the baseline's *contents* are read through the same API at the merge
-// base and at the PR head — and the config's text too when the PR edits it, because a rule name is
-// "new" because the config declares it (#432), and gone because it no longer does (#489). Contents
-// are data, never code that is run here: the config is scanned for `name:` as text and is never
-// required.
+// The one exception is the layer-ratchet baseline (#406): when a PR changes it, the file's
+// *contents* are read through the same API at the merge base and at the PR head — and, when the PR
+// also edits `.dependency-cruiser.cjs`, that file's text too, because a rule name is only "new"
+// because the config declares it (#432). Contents are data, never code that is run here: the
+// config is scanned for `name:` as text and is never required. A PR that edits only the config is
+// read the same way, baseline and config (#489): a rule is gone once the config stops declaring it.
 //
 // Prints one greppable `HYGIENE: PASS|WARN|FAIL …` line, appends a report to
 // $GITHUB_STEP_SUMMARY when set, and exits 1 on FAIL. Rules live in pr-hygiene.logic.mjs.
@@ -102,10 +102,10 @@ async function getAll(url) {
 const pullUrl = `https://api.github.com/repos/${REPO}/pulls/${number}`
 const [{ json: pull }, files] = await Promise.all([get(pullUrl), getAll(`${pullUrl}/files?per_page=100`)])
 
-// The layer ratchet (#406), read only when the PR touches the baseline or the config (#489), and
-// only ever as *content* through the API — at the merge base (not `base.sha`, which drifts while a
-// PR is open) and at the PR head. Reading blobs is not checking out a PR: nothing from the head is
-// executed, and the copy of this script doing the reading is always main's.
+// The ratchet baseline (#406), read only when a PR touches it or the config, and only as *content*
+// through the API — at the merge base (not `base.sha`, which drifts while a PR is open) and at the
+// PR head. Reading two blobs is not checking out a PR: nothing from the head is executed, and the
+// copy of this script doing the reading is always main's.
 let ratchet = null
 const reads = ratchetReads(files)
 if (reads) {
@@ -119,8 +119,7 @@ if (reads) {
   const io = { readPath: getContent, refExists }
   // The rule config is read alongside the baseline, and only when the PR edits it: a rule name is
   // "new" because `.dependency-cruiser.cjs` declares it here, not because the baseline had no row
-  // under it (#432), and a rule is gone because it no longer does (#489). Text on both sides,
-  // parsed for `name:` and never required or run.
+  // under it (#432). Text on both sides, parsed for `name:` and never required or run.
   const at = (ref, filePath) => readAtRef(io, ref, filePath)
   const [base, head, baseConfig, headConfig] = await Promise.all([
     at(mergeBase, RATCHET_BASELINE_FILE),
