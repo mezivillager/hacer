@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { formatDecision, formatVerdict } from './browser-qa.logic.mjs'
-import { CHECK_LINES, parseCheckLine, publishLine } from './check-lines.logic.mjs'
+import { CHECK_LINES, parseCheckLine, publishLine, readCheckRun } from './check-lines.logic.mjs'
 import { formatReport } from './layer-ratchet.logic.mjs'
 import { evaluate, formatConsole } from './pr-hygiene.logic.mjs'
 import { REQUIRED_CONTEXTS } from './required-checks.logic.mjs'
@@ -85,6 +85,31 @@ describe('parseCheckLine', () => {
     expect(parseCheckLine(null)).toEqual({ verdict: null, fields: {} })
     expect(parseCheckLine('HYGIENE: ???')).toEqual({ verdict: null, fields: {} })
     expect(parseCheckLine('LAYER-RATCHET: unreadable baseline')).toEqual({ verdict: null, fields: {} })
+  })
+})
+
+describe('readCheckRun', () => {
+  it('lets the run\'s conclusion win: a run that did not succeed never reads PASS, and a line that says otherwise is flagged', () => {
+    const read = (conclusion, line) => {
+      const { verdict, disagrees } = readCheckRun({ conclusion, line })
+      return [verdict, disagrees]
+    }
+    // On a success the line refines the verdict; a run before MC-6 has no line, so its conclusion is all there is.
+    expect(read('SUCCESS', REAL.ratchet)).toEqual(['PASS', false])
+    expect(read('SUCCESS', REAL.hygiene)).toEqual(['WARN', false])
+    expect(read('SUCCESS', REAL.skipped)).toEqual(['SKIPPED', false])
+    expect(read('SUCCESS', null)).toEqual([null, false])
+    // #489: an undeclared rule fails lint:layers while its line still ends `0 new` — the conclusion wins, flagged.
+    expect(read('FAILURE', REAL.ratchet)).toEqual(['FAIL', true])
+    expect(read('TIMED_OUT', REAL.qa)).toEqual(['FAIL', true])
+    expect(read('FAILURE', 'HYGIENE: FAIL reviewable=450')).toEqual(['FAIL', false])
+    // Any other conclusion is its own word, and a run still going has no verdict yet, whatever its line says.
+    expect(read('CANCELLED', REAL.ratchet)).toEqual(['CANCELLED', true])
+    expect(read('SKIPPED', null)).toEqual(['SKIPPED', false])
+    expect(read(null, REAL.ratchet)).toEqual([null, false])
+    // A line's FAIL on a success stands, flagged; the line's numbers are kept whatever the verdict.
+    expect(read('SUCCESS', 'HYGIENE: FAIL reviewable=450')).toEqual(['FAIL', true])
+    expect(readCheckRun({ conclusion: 'FAILURE', line: REAL.ratchet }).fields).toEqual({ known: 71, new: 0 })
   })
 })
 

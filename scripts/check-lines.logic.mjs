@@ -41,3 +41,7 @@ export function parseCheckLine(line) {
   if (verdict === null) return { verdict, fields: {} }
   return { verdict, fields: Object.fromEntries([...line.matchAll(/\b(\w+)=(\S+)/g)].map(([, key, text]) => [key, value(text)])) }
 }
+
+export function readCheckRun() {
+  throw new Error('not implemented')
+}
