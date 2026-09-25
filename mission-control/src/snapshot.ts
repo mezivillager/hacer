@@ -41,6 +41,14 @@ export async function loadSnapshot(url = `${import.meta.env.BASE_URL}data/snapsh
 /** An ISO time as `YYYY-MM-DD HH:MM UTC`, the same wherever the page is read. */
 export const when = (iso: string) => `${new Date(iso).toISOString().slice(0, 16).replace('T', ' ')} UTC`
 
+/** The site is never meant to be more than an hour old (#476, MC-5's hourly refresh); the banner's threshold. */
+export const STALE_AFTER_MS = 2 * 60 * 60 * 1000
+
+/** Whether a snapshot's `generatedAt` is older than STALE_AFTER_MS as of `now` (injectable so App stays testable). */
+export function isStale(generatedAt: string, now: number): boolean {
+  throw new Error(`not implemented: ${generatedAt} ${now}`)
+}
+
 /** A row's next task exactly as `backlog.mjs ready` orders its picks (`pickRule.next`), and its place in that order. */
 export function nextPick({ pickRule }: Snapshot, slug: string) {
   const index = pickRule.next.findIndex((task) => task.project === slug)

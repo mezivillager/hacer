@@ -110,6 +110,17 @@ describe('App', () => {
       .toBe(`${GITHUB}/commit/561dcf13f2f82603bf933778b76e6f605f3785f4`)
   })
 
+  it('shows a freshness banner once the snapshot is more than two hours old (#476)', async () => {
+    const fresh = new Date(snapshot.generatedAt).getTime() + 60 * 60 * 1000 // 1h after generatedAt
+    render(<App load={async () => snapshot} now={() => fresh} />)
+    await screen.findByRole('heading', { name: 'Overview' })
+    expect(screen.queryByText(/^Stale: snapshot/)).toBeNull()
+
+    const old = new Date(snapshot.generatedAt).getTime() + 3 * 60 * 60 * 1000 // 3h after
+    render(<App load={async () => snapshot} now={() => old} />)
+    expect(await screen.findByText(/^Stale: snapshot is over 2 hours old — as of 2026-09-25 03:16 UTC\.$/)).toBeTruthy()
+  })
+
   it('loads data/snapshot.json beside the page, and refuses a missing file or another schema', async () => {
     const answer = (status: number, body: unknown) => vi.fn(async () => ({ ok: status === 200, status, json: async () => body }))
     const url = `${import.meta.env.BASE_URL}data/snapshot.json`
