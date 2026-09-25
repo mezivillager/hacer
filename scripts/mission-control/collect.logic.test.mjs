@@ -401,7 +401,7 @@ describe('collect.logic', () => {
     expect(checks.items.at(-1)).toEqual({
       pr: 507, sha: 'a7ebb775729f1170cf88fce8a99b7285ebe1b012', check: 'ci', conclusion: 'SUCCESS', completedAt: '2026-09-25T04:51:05Z',
       url: 'https://github.com/mezivillager/hacer/actions/runs/36095931702/job/107948090620',
-      line: ratchet, verdict: 'PASS', fields: { known: 71, new: 0 },
+      line: ratchet, verdict: 'PASS', fields: { known: 71, new: 0 }, disagrees: false,
     })
     // A run still going has no conclusion and no line yet; main's head never runs pr-hygiene or browser-qa.
     expect(checks.items[0]).toMatchObject({ pr: null, sha: '1b012400aa3dbcaa5ef9977c97f8ee389351326a', completedAt: null, line: null, fields: {} })
@@ -431,6 +431,32 @@ describe('collect.logic', () => {
       url: expect.stringMatching(new RegExp(`/job/${latest.databaseId}$`)), verdict: 'PASS',
       fields: { reviewable: 81, test: 107, excluded: 0, files: 7, issue: '#477', linked: 'fixes' },
     })
+  })
+
+  // #507's first verdict: with a rule set to `ignore`, lint:layers exits 1 on the rule's baseline rows (#489) yet still
+  // publishes `… 0 new` — this line, measured with core-through-index ignored on the tree rebased onto 77a0d74.
+  it('a run that did not succeed never reads PASS: its conclusion wins over its line, whose numbers are kept, flagged', () => {
+    const answer = fixture('gh-check-runs.json')
+    const ci = answer.data.repository.main.target.statusCheckRollup.contexts.nodes.find((run) => run.name === 'ci')
+    const line = 'LAYER-RATCHET: 28 known violations (13 production edges · 8 test-only · 7 cycle edges in 3 cycles) · ' +
+      '8 engine globals suppressed · 0 new'
+    Object.assign(ci, { conclusion: 'FAILURE', completedAt: '2026-09-25T05:40:00Z', annotations: { nodes: [{ message: line }] } })
+    const snapshot = build({ checkRuns: ok('gh api graphql (check runs)', answer) })
+    expect(snapshot.checks.items[0]).toMatchObject({
+      pr: null, check: 'ci', conclusion: 'FAILURE', line, verdict: 'FAIL', fields: { known: 28, new: 0 }, disagrees: true,
+    })
+    expect(snapshot.freshness.checks.status).toBe('ok')
+    expect(validateSnapshot(snapshot)).toEqual([])
+  })
+
+  it('a run whose annotations are null reads no line, and the rest of the section stands', () => {
+    const answer = fixture('gh-check-runs.json')
+    const runs = answer.data.repository.pullRequests.nodes.find((pr) => pr.number === 410).commits.nodes[0].commit.statusCheckRollup.contexts.nodes
+    runs.find((run) => run.name === 'ci').annotations = null // CheckRun.annotations is nullable in GitHub's schema
+    const { checks, freshness } = build({ checkRuns: ok('gh api graphql (check runs)', answer) })
+    expect(freshness.checks.status).toBe('ok')
+    expect(checks.items).toHaveLength(10)
+    expect(checks.items.find((item) => item.pr === 410 && item.check === 'ci')).toMatchObject({ conclusion: 'SUCCESS', line: null, verdict: null })
   })
 
   it('a failed check-runs query keeps the last-known lines, flagged — freshness, not failure', () => {
