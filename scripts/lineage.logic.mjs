@@ -483,11 +483,11 @@ export function correctionPlan(graph, id) {
   if (!tree) return null
   const items = new Map([...graph.artefacts, ...graph.nodes].map((item) => [item.id, item]))
   const where = (key) => (items.get(key)?.source ? ` (\`${items.get(key).source}\`)` : '')
-  const plan = new RegExp(`^(Correct ${id} |${id} (retracted|amended): correction plan\\b)`)
+  const planRecord = new RegExp(`^(Correct ${id} |${id} (retracted|amended): correction plan\\b)`)
   const found = `Introduced by: ${id}\n\n- **Found wrong:** ${id} — ${tree.title}${where(id)}`
   const done = `Drafted by \`node scripts/lineage.mjs correct ${id}\`.`
   const drafts = []
-  const walk = (node, rest) => node.children.filter((child) => !child.seen && !plan.test(child.title)).forEach((child) => {
+  const walk = (node, rest) => node.children.filter((child) => !child.seen && !planRecord.test(child.title)).forEach((child) => {
     const [kind, ...anchor] = child.via.split(' ')
     const how = [VERBS[kind] ?? kind, linked(node.label), ...anchor].join(' ') + (rest ? `, which ${rest}` : '')
     const artefacts = child.children.filter((next) => ['implements', 'introduced-by'].includes(next.via)).map((next) => linked(next.label))
@@ -501,14 +501,14 @@ export function correctionPlan(graph, id) {
     walk(child, how)
   })
   walk(tree, '')
-  const numbers = [...graph.artefacts.filter((artefact) => artefact.citedBy?.includes(id)), ...tree.children].map((item) => item.id)
+  const refs = [...graph.artefacts.filter((artefact) => artefact.citedBy?.includes(id)), ...tree.children].map((item) => item.id)
   const root = {
     id, next: nextRulingId(graph.nodes), title: `Correct ${id} — ${clip(tree.title)}`,
-    artefacts: [...new Set(numbers.filter((number) => number.startsWith('#')).map((number) => Number(number.slice(1))))].sort((a, b) => a - b),
+    artefacts: [...new Set(refs.filter((ref) => ref.startsWith('#')).map((ref) => Number(ref.slice(1))))].sort((a, b) => a - b),
     body: [found, '- **Correct it first:** every task resting on it is blocked by this issue —', ...drafts.map((draft) => `  - ${draft.how}`),
       '', done].join('\n'),
   }
-  return { root, drafts, planned: graph.nodes.find((node) => node.kind === 'ruling' && plan.test(node.title))?.id ?? null }
+  return { root, drafts, planned: graph.nodes.find((node) => node.kind === 'ruling' && planRecord.test(node.title))?.id ?? null }
 }
 
 /** `correct --dry-run`: the plan as text, each draft under its title — nothing at all when nothing rests on the root. */
