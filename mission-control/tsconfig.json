@@ -1,0 +1,12 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "../node_modules/.tmp/tsconfig.control.tsbuildinfo",
+    "jsx": "react-jsx",
+    "resolveJsonModule": true,
+    "types": ["vite/client"],
+    /* The app's aliases all point into src/, which this site never imports (#473). */
+    "paths": {}
+  },
+  "include": ["src"]
+}
