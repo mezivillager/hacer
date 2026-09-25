@@ -4,12 +4,12 @@
 //   node scripts/mission-control/collect.mjs --json [--previous <snapshot.json>]
 
 import { execFile } from 'node:child_process'
-import { existsSync, readdirSync, readFileSync } from 'node:fs'
+import { readdirSync, readFileSync } from 'node:fs'
 import { homedir } from 'node:os'
 import path from 'node:path'
 import { parseArgs, promisify } from 'node:util'
 import { KNOWN_VIOLATIONS_FILE as BASELINE } from '../layer-ratchet.logic.mjs'
-import { buildSnapshot, checksQuery, claimsQuery, report } from './collect.logic.mjs'
+import { buildSnapshot, checksQuery, claimsQuery, parsePrevious, report } from './collect.logic.mjs'
 
 const REPO = process.env.GITHUB_REPOSITORY ?? 'mezivillager/hacer'
 const ROOT = path.join(import.meta.dirname, '..', '..')
@@ -71,7 +71,10 @@ const query = claimsQuery(REPO, inputs.claimRefs.value ?? '')
 inputs.claimIssues = await settle('gh api graphql', () => (query ? gh('api', 'graphql', '-f', `query=${query}`) : null))
 
 const [sha, date, subject] = (await git('log', '-1', '--format=%H%x09%cI%x09%s')).trim().split('\t')
-const previous = flags.previous && existsSync(flags.previous) ? JSON.parse(readFileSync(flags.previous, 'utf8')) : null
+// A missing, empty or unparseable --previous file is never a crash, only "no previous" (#476): the file is read
+// defensively (a symlink race or permissions error throws the same as ENOENT), and parsePrevious owns the rest.
+const previousText = (() => { try { return flags.previous ? readFileSync(flags.previous, 'utf8') : '' } catch { return '' } })()
+const previous = parsePrevious(previousText)
 const logins = (process.env.BACKLOG_ALLOWLIST ?? '').split(',').map((login) => login.trim()).filter(Boolean)
 const snapshot = buildSnapshot(inputs, {
   now: new Date().toISOString(), head: { sha, date, subject }, previous, allowlist: logins.length > 0 ? logins : undefined,
