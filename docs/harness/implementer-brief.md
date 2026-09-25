@@ -33,6 +33,7 @@ A verification command names a behaviour, not an exact new file path — if the 
 
 ## Deliver
 - `git push -u origin <branch>`; `gh pr create` with: `Fixes #<n>` (or `Part of #<n>` when the issue has more slices), what/why in ≤ 10 lines, any deviation from the issue with the reason, the definition-of-done results, and labels `project:<slug>` + `risk:<tier>`.
+- **`Fixes` only when the whole issue is done; otherwise `Part of`** — GitHub closes an issue on the keyword alone, even in "this does not close #n", and `pr-hygiene` fails a closing keyword beside an in-part phrase (#485).
 - Do **not** merge, and do **not** keep watching CI after the PR is open — report and stop (a watcher costs tokens and adds nothing; the coordinator merges on green). Report: PR URL, reviewable line count (`git diff --numstat origin/main...HEAD`), test names added, and every open question — flag what you could not verify rather than guessing.
 
 ## Blocked exit
