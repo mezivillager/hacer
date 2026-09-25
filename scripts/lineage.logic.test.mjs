@@ -2,7 +2,10 @@ import { spawnSync } from 'node:child_process'
 import { readdirSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import { describe, it, expect } from 'vitest'
-import { nextRulingId, parseAdr, parseLedger, parseLineage, parsePremises, parseRulings } from './lineage.logic.mjs'
+import {
+  applyFixes, check, cutOverDate, formatCheck, formatTree, nextRulingId, parseAdr, parseLedger, parseLineage, parsePremises,
+  parseRulings, radius, subgraph, toMermaid, trace, validateGraph,
+} from './lineage.logic.mjs'
 
 // The fixtures under scripts/fixtures/lineage/ are small repos, laid out like this one:
 //   chains/        the four chains of docs/research/2026-09-24-decision-lineage/REPORT.md §3a, with
@@ -11,6 +14,11 @@ import { nextRulingId, parseAdr, parseLedger, parseLineage, parsePremises, parse
 //   adr/           two real ADR headers with the three lineage bullets
 //   duplicate-id/  R224 twice, the restatement REPORT §3 measured
 //   dangling-id/   a ruling that builds on R9999
+//   reverse-links/ the six live ADR headers of the four pairs the survey found without a reverse link
+//                  (0007/0008/0009 → 0020, 0012 → 0016), with the forward links typed on 0016 and 0020
+//   cut-over/      rulings dated either side of a recorded cut-over date, with and without Builds on:
+// chains/github.json holds PR and issue bodies in `gh … --json number,title,body,url` shape — the
+// `Decisions:` and `Introduced by:` lines #469 adds, present for chains (i) and (iii).
 const FIXTURES = path.join(import.meta.dirname, 'fixtures', 'lineage')
 const REPO = path.join(import.meta.dirname, '..')
 
@@ -258,5 +266,307 @@ describe('the lineage graph', () => {
     expect(graph.nodes.filter((node) => node.kind === 'premise')).toHaveLength(premiseRows.length)
     expect(graph.nodes.filter((node) => node.kind === 'ruling')).toHaveLength(rulingHeadings.length)
     expect(graph.edges.every((edge) => ['builds-on', 'amends', 'supersedes', 'assumes', 'introduced-by'].includes(edge.kind))).toBe(true)
+  })
+})
+
+const loadGithub = () => JSON.parse(fixtureText('chains', 'github.json'))
+/** One file's lines, out of a `{ path, text }` list. */
+const linesOf = (files, file) => files.find((source) => source.path === file).text.split('\n')
+const DECISIONS = 'docs/decisions'
+const ADR_0020 = `${DECISIONS}/0020-spec-only-writes-read-only-projections.md`
+
+describe('the schema, tightened (#467, from the DL-1 verification)', () => {
+  it('an ADR\'s "- **Supersedes:**" bullet is the forward link, and its Status is read only in the template\'s exact form', () => {
+    const adr = parseAdr(ADR_0020, '# 0020. Spec-only writes\n\n- **Status:** Accepted\n- **Date:** 2026-09-23\n- **Amends:** ADR-0008 §6, ADR-0009\n- **Supersedes:** ADR-0007\n')
+    expect(edgeLines(adr.edges)).toEqual(['ADR-0020 amends ADR-0008 §6', 'ADR-0020 amends ADR-0009', 'ADR-0020 supersedes ADR-0007'])
+    expect(adr.edges[2]).toEqual({ from: 'ADR-0020', to: 'ADR-0007', kind: 'supersedes', source: `${ADR_0020}:6` })
+    // The node keeps DL-1's shape: Supersedes is a relation, never a lineage claim like Builds on.
+    expect(Object.keys(adr.nodes[0])).toEqual(['id', 'kind', 'title', 'source', 'status', 'buildsOn', 'amends', 'assumes'])
+    expect(adr.errors).toEqual([])
+
+    // `- **Amended by:**` is the reverse `check --fix` writes: the same relation, stated by the ADR it changes.
+    const amended = `${DECISIONS}/0008-scene-graph-routing-testing-layer.md`
+    expect(parseAdr(amended, '# 0008. Scene graph\n\n- **Status:** Accepted\n- **Amended by:** ADR-0020\n').edges)
+      .toEqual([{ from: 'ADR-0020', to: 'ADR-0008', kind: 'amends', source: `${amended}:4` }])
+    // Supersedes names ADRs only.
+    expect(parseAdr(ADR_0020, '# 0020. X\n\n- **Supersedes:** R607\n').errors).toMatchObject([{ kind: 'malformed', where: [`${ADR_0020}:3`] }])
+
+    // The Status: only a value that opens with `Superseded by [ADR-NNNN]` is a supersession.
+    const status = (value) => edgeLines(parseAdr(`${DECISIONS}/0099-x.md`, `# 0099. X\n\n- **Status:** ${value}\n`).edges)
+    expect(status('Superseded by [ADR-0100](0100-y.md) — replaced whole')).toEqual(['ADR-0100 supersedes ADR-0099'])
+    expect(status('Accepted — not superseded by ADR-0021')).toEqual([])
+    expect(status('Superseded by 2026-10-01 review')).toEqual([])
+    // The old prose form names the replacement too late in the value to be read: `check` reports it
+    // once the replacement says `Supersedes:`, and `--fix` rewrites it (below).
+    expect(status('Accepted — Superseded by [ADR-0020](0020-x.md) (Stages 2–4 cancelled)')).toEqual([])
+  })
+
+  it('a relation field spelt any other way is an error, never silently dropped', () => {
+    const file = `${DECISIONS}/rulings/x.md`
+    // The verifier's input — ADR-style bullets inside a ruling — and a field only an ADR has.
+    const rulings = parseRulings(file, '## R1 — t\n- **Builds on:** R2\n- **Assumes:** P-9\nSupersedes: R3\n\n## R2 — u\nBuilds on: none\n')
+    expect(rulings.nodes.map((node) => [node.id, node.buildsOn])).toEqual([['R1', null], ['R2', 'none']])
+    const misspelt = (line) => `R1: "${line}" is not a relation field as this file writes one — see docs/decisions/README.md#lineage`
+    expect(rulings.errors).toEqual([
+      { kind: 'malformed', id: 'R1', where: [`${file}:2`], message: misspelt('- **Builds on:** R2') },
+      { kind: 'malformed', id: 'R1', where: [`${file}:3`], message: misspelt('- **Assumes:** P-9') },
+      { kind: 'malformed', id: 'R1', where: [`${file}:4`], message: misspelt('Supersedes: R3') },
+    ])
+    // An ADR header: the colon outside the bold, and a ruling-style bare line. Prose below the header is not a field.
+    const adr = `${DECISIONS}/0013-x.md`
+    const parsed = parseAdr(adr, '# 0013. X\n\n- **Status:** Accepted\n- **Builds on**: ADR-0012\nAmends: ADR-0011\n\n## Context\n- Amends: prose, never a field\n')
+    expect(parsed.edges).toEqual([])
+    expect(parsed.errors.map((error) => error.where)).toEqual([[`${adr}:4`], [`${adr}:5`]])
+  })
+})
+
+describe('lineage queries and check (#467)', () => {
+  it('trace <ruling> lists its upstream closure with each premise\'s status', () => {
+    const graph = parseLineage(loadFixture('chains'))
+    // Chain (iv): R520 → R518 → R517 → P-003. R520 also amends R517, which the tree has already shown.
+    expect(formatTree(trace(graph, 'R520')).split('\n')).toEqual([
+      'R520 — correction to R517: the red non-required checks were NOT a standing problem, and no issue is filed',
+      '├─ R518 (builds-on) — my own R517 fix shipped a safety hole; the tool\'s first live run caught it',
+      '│  └─ R517 (builds-on) — `gh-merge-on-green` treated every red check as fatal; scoped to required contexts',
+      '│     └─ P-003 (assumes) — `main-rules` requires exactly `ci`, `pr-hygiene`, `browser-qa` [holds]',
+      '└─ R517 (amends) — see above',
+    ])
+    // Chain (ii): the premise that expired, and where the record stops — R398 was imported unannotated.
+    expect(formatTree(trace(graph, 'R405')).split('\n')).toEqual([
+      'R405 — #409 is the first PR tiered under #351\'s new rule',
+      '└─ R400 (builds-on) — The real risk is bump ordering, not a version hold, and it survives the premise expiring',
+      '   ├─ R399 (builds-on) — #342 closed, not built: its premise expired before any builder opened it',
+      '   │  └─ R398 (builds-on) — #342 dispatched with "verify the premise first, and close the issue if it has moved" · Builds on: unknown',
+      '   │     └─ P-001 (assumes) — R3F\'s peer range excludes React 19.3 [expired 2026-09-22]',
+      '   └─ P-005 (assumes) — `pnpm install` only warns on a peer violation [holds]',
+    ])
+    expect(trace(graph, 'R9999')).toBeNull()
+  })
+
+  it('radius ADR-0020 lists at least #372, R513, PR#433, R514, R519 and #374, as a tree', () => {
+    const tree = formatTree(radius(parseLineage(loadFixture('chains'), loadGithub()), 'ADR-0020')).split('\n')
+    // Chain (i), and more: R501–R503 sit between the ADR and R513, and R607 (chain iii) rests on §7.5b.
+    // Each decision's artefacts: the #n its record cites (a PR shows as PR#n once GitHub says it is
+    // one), then — as children — the PRs whose Decisions: line and the issues whose Introduced by: line name it.
+    expect(tree).toEqual([
+      'ADR-0020 — Spec-only writes, read-only projections',
+      '├─ R501 (builds-on §1.5) — The #372 spike executed ADR-0020 §1.5\'s mechanism and found it does not work · cites #372',
+      '│  ├─ R502 (builds-on) — Substitution hides a genuine double drive from #362, and that is the sharper finding · cites #362',
+      '│  ├─ R503 (builds-on) — Two agents found the same live `main` bug independently, from opposite directions · cites #372, #397, #431',
+      '│  └─ R513 (builds-on) — The ADR amendment argued back against the spike and was right to · cites #374',
+      '│     └─ R514 (builds-on) — #433\'s nits go in as a briefed builder round, not a merge-as-is and not a fourth review · cites #374, PR#433',
+      '│        └─ R519 (builds-on) — #433 merges on its tightening round, with no fourth review · cites PR#433',
+      '├─ R502 (builds-on §1.8) — see above',
+      '├─ R607 (builds-on §7.5b) — #403 takes option 2, ruled in the brief · cites #403',
+      '│  ├─ PR#459 (implements) — fix(store): removeJunction deletes only the wires that would dangle (#403)',
+      '│  └─ #462 (introduced-by) — Removing a junction in an imported document still loses the source→sink connection that ran through it',
+      '└─ R513 (amends §1.5) — see above',
+    ])
+    for (const item of ['#372', 'R513', 'PR#433', 'R514', 'R519', '#374']) expect(tree.join('\n')).toContain(item)
+  })
+
+  it('radius R607 lists PR#459 and #462', () => {
+    // Chain (iii): the repo holds R607 and the #403 it cites; what rests on it is in GitHub bodies —
+    // PR #459's Decisions: line and #462's Introduced by: line, the links #469 adds.
+    expect(formatTree(radius(parseLineage(loadFixture('chains'), loadGithub()), 'R607')).split('\n')).toEqual([
+      'R607 — #403 takes option 2, ruled in the brief',
+      '├─ PR#459 (implements) — fix(store): removeJunction deletes only the wires that would dangle (#403)',
+      '└─ #462 (introduced-by) — Removing a junction in an imported document still loses the source→sink connection that ran through it',
+    ])
+    // Without the bodies nothing rests on it — faithful to the repo, and what `--github` is for.
+    expect(formatTree(radius(parseLineage(loadFixture('chains')), 'R607'))).toBe('R607 — #403 takes option 2, ruled in the brief')
+  })
+
+  it('check: every referenced id resolves; unresolved ids are listed with their file:line', () => {
+    const file = `${DECISIONS}/rulings/2026-09-25-fixture.md`
+    const report = check(parseLineage(loadFixture('dangling-id')))
+    expect(report.findings).toEqual([
+      { kind: 'dangling-id', id: 'R9999', where: [`${file}:9`], message: 'R611 builds-on R9999: no decision has the id R9999' },
+    ])
+    expect(formatCheck(report).split('\n')).toEqual([
+      `dangling-id ${file}:9: R611 builds-on R9999: no decision has the id R9999`,
+      'LINEAGE: 2 decisions · 0 unlinked · 1 unresolved · 0 superseded-cited',
+    ])
+    // A PR's Decisions: and an issue's Introduced by: are references too, resolved the same way.
+    const github = [
+      { number: 900, title: 'a PR', url: 'https://github.com/mezivillager/hacer/pull/900', body: 'Fixes #1\n\nDecisions: R610, R9998\n' },
+      { number: 901, title: 'an issue', url: 'https://github.com/mezivillager/hacer/issues/901', body: '- **Introduced by:** R611, not-an-id\n' },
+    ]
+    expect(check(parseLineage(loadFixture('dangling-id'), github)).findings.map((finding) => [finding.kind, finding.id, finding.where])).toEqual([
+      ['malformed', '#901', ['#901:1']],
+      ['dangling-id', 'R9999', [`${file}:9`]],
+      ['dangling-id', 'R9998', ['PR#900:3']],
+    ])
+    expect(check(parseLineage(loadFixture('chains'), loadGithub())).summary).toMatchObject({ unresolved: 0 })
+  })
+
+  it('check: reverse links agree, and --fix writes the missing amended-by lines', () => {
+    const [a7, a8, a9, a12] = [
+      '0007-wire-routing-engine-direction', '0008-scene-graph-routing-testing-layer',
+      '0009-bus-components-entity-and-wireendpoint-bus', '0012-e2e-tests-manual-only',
+    ].map((name) => `${DECISIONS}/${name}.md`)
+    const sources = loadFixture('reverse-links')
+    const report = check(parseLineage(sources))
+    // The four gaps the survey measured (REPORT §5): 0007/0008/0009 omit 0020, 0012 omits 0016.
+    expect(report.findings.map((finding) => [finding.kind, finding.id, finding.where])).toEqual([
+      ['reverse-link', 'ADR-0007', [`${a7}:1`]],
+      ['reverse-link', 'ADR-0008', [`${a8}:1`]],
+      ['reverse-link', 'ADR-0009', [`${a9}:1`]],
+      ['reverse-link', 'ADR-0012', [`${a12}:1`]],
+    ])
+    expect(report.findings[0].message).toBe(
+      `ADR-0007's Status does not open with "Superseded by [ADR-0020](…)", yet ADR-0020 supersedes it (${ADR_0020}:6) — --fix rewrites it`,
+    )
+    expect(report.findings[1].message).toBe(`ADR-0008 has no "Amended by: ADR-0020", yet ADR-0020 amends it (${ADR_0020}:5) — --fix writes it`)
+
+    const fixed = applyFixes(sources, report.findings)
+    expect(fixed.map((file) => file.path)).toEqual([a7, a8, a9, a12])
+    // A superseded ADR's reverse link is the template's Status value; an amended one gains the line.
+    expect(linesOf(fixed, a7)[2]).toBe(
+      '- **Status:** Superseded by [ADR-0020](0020-spec-only-writes-read-only-projections.md) (Stages 2–4 cancelled: they were designed ' +
+        'for interactive re-routing, and there is no drag; Stage 1 shipped and its findings survive inside channel routing)',
+    )
+    expect(linesOf(fixed, a8).slice(3, 6)).toEqual(['- **Date:** 2026-06-26', '- **Amended by:** ADR-0020', '- **Deciders:** Repo owner / scene-graph-routing-testing session'])
+    expect(linesOf(fixed, a9).slice(3, 6)).toEqual(['- **Date:** 2026-06-27', '- **Amended by:** ADR-0020', '- **Deciders:** P05-12a session (bus splitter/joiner)'])
+    expect(linesOf(fixed, a12).slice(3, 6)).toEqual(['- **Date:** 2026-09-17', '- **Amended by:** ADR-0016', '- **Deciders:** Repo owner'])
+    // Nothing else moves, and the fixed repo agrees with itself.
+    for (const { path: file, text } of fixed) {
+      expect(text.split('\n').length - linesOf(sources, file).length).toBe(file === a7 ? 0 : 1)
+    }
+    const after = sources.map((source) => fixed.find((file) => file.path === source.path) ?? source)
+    expect(check(parseLineage(after)).findings).toEqual([])
+
+    // A ruling that amends an ADR needs the pointer too — chain (i)'s missing one: R513 amends ADR-0020 §1.5.
+    const chains = loadFixture('chains')
+    const gaps = check(parseLineage(chains)).findings.filter((finding) => finding.kind === 'reverse-link')
+    expect(gaps.map((finding) => finding.message)).toEqual([
+      `ADR-0020 has no "Amended by: R513", yet R513 amends it (${LOOP}:24) — --fix writes it`,
+    ])
+    expect(linesOf(applyFixes(chains, gaps), ADR_0020).slice(4, 6)).toEqual(['- **Builds on:** unknown', '- **Amended by:** R513'])
+
+    // Agreement runs both ways: a reverse link with no forward one is a gap on the deciding side.
+    const inline = [
+      ['0030-a', '- **Status:** Accepted\n- **Date:** 2026-09-25\n- **Amended by:** ADR-0031'],
+      ['0031-b', '- **Status:** Accepted\n- **Date:** 2026-09-25\n- **Builds on:** none'],
+      ['0032-c', '- **Status:** Superseded by [ADR-0033](0033-d.md)\n- **Date:** 2026-09-25'],
+      ['0033-d', '- **Status:** Accepted\n- **Date:** 2026-09-25'],
+    ].map(([name, header]) => ({ path: `${DECISIONS}/${name}.md`, text: `# ${name.slice(0, 4)}. ${name.slice(5)}\n\n${header}\n` }))
+    const oneSided = check(parseLineage(inline)).findings
+    expect(oneSided.map((finding) => [finding.id, finding.where])).toEqual([
+      ['ADR-0031', [`${DECISIONS}/0031-b.md:1`]],
+      ['ADR-0033', [`${DECISIONS}/0033-d.md:1`]],
+    ])
+    const written = applyFixes(inline, oneSided)
+    expect(linesOf(written, `${DECISIONS}/0031-b.md`).slice(4, 6)).toEqual(['- **Builds on:** none', '- **Amends:** ADR-0030'])
+    expect(linesOf(written, `${DECISIONS}/0033-d.md`).slice(3, 5)).toEqual(['- **Date:** 2026-09-25', '- **Supersedes:** ADR-0032'])
+  })
+
+  it('check: a superseded ADR cited from src/ is reported', () => {
+    // ADR-0020 supersedes ADR-0007 (its Supersedes: line); ADR-0008 is amended, not superseded.
+    const graph = parseLineage(loadFixture('reverse-links'))
+    const code = [
+      { path: 'src/utils/wiringScheme/core.ts', text: '    // dense, closely-spaced pins on distinct lanes (B-003/B-004, ADR-0007).\nexport const core = 1\n' },
+      { path: 'src/utils/wiringScheme/lanes.ts', text: '/**\n * Lane assignment, as ADR-0020 projects it,\n * and docs/decisions/0007-wire-routing-engine-direction.md.\n */\n' },
+      { path: 'src/simulation/eval.test.ts', text: '// Not16: 0x0007 in; ADR-00070 and ADR-0008 cite no superseded ADR\n' },
+    ]
+    const report = check(graph, { code })
+    expect(report.findings.filter((finding) => finding.kind === 'superseded-cited')).toEqual([
+      { kind: 'superseded-cited', id: 'ADR-0007', where: ['src/utils/wiringScheme/core.ts:1'], message: 'cites ADR-0007, superseded by ADR-0020' },
+      { kind: 'superseded-cited', id: 'ADR-0007', where: ['src/utils/wiringScheme/lanes.ts:3'], message: 'cites ADR-0007, superseded by ADR-0020' },
+    ])
+    expect(report.summary.supersededCited).toBe(2)
+
+    // The live tree, through the CLI. REPORT §5 counted ADR-0007 nine times in seven files; the
+    // expectation here is found from the tree independently — every file under src/, whatever its
+    // extension — never pinned, so fixing a citation cannot turn this red (R606).
+    const run = spawnSync(process.execPath, ['scripts/lineage.mjs', 'check'], { cwd: REPO, encoding: 'utf8' })
+    expect(run.status).toBe(0)
+    const printed = run.stdout.split('\n').filter((line) => line.startsWith('superseded-cited ')).map((line) => line.split(' ')[1].replace(/:$/, ''))
+    const live = JSON.parse(spawnSync(process.execPath, ['scripts/lineage.mjs', 'parse', '--json'], { cwd: REPO, encoding: 'utf8' }).stdout)
+    const replaced = live.edges.filter((edge) => edge.kind === 'supersedes').map((edge) => live.nodes.find((node) => node.id === edge.to))
+    const names = replaced.flatMap((node) => [node.id, path.basename(node.source.replace(/:\d+$/, ''), '.md')])
+    const found = readdirSync(path.join(REPO, 'src'), { recursive: true, withFileTypes: true })
+      .filter((entry) => entry.isFile())
+      .map((entry) => path.relative(REPO, path.join(entry.parentPath, entry.name)).split(path.sep).join('/'))
+      .flatMap((file) => readFileSync(path.join(REPO, file), 'utf8').split('\n')
+        .flatMap((line, i) => (names.some((name) => new RegExp(`\\b${name}\\b`).test(line)) ? [`${file}:${i + 1}`] : [])))
+    expect([...new Set(printed)].sort()).toEqual(found.sort())
+    expect(printed).toHaveLength(found.length)
+  })
+
+  it('check: rulings dated after the cut-over without Builds on: are counted', () => {
+    const cutOver = cutOverDate(fixtureText('cut-over', `${DECISIONS}/README.md`))
+    expect(cutOver).toBe('2026-09-26')
+    // Until #469 records one there is no cut-over, and nothing is counted.
+    expect(cutOverDate('- **Cut-over:** none yet — #469 sets it to its merge date')).toBeNull()
+    const graph = parseLineage(loadFixture('cut-over'))
+    const report = check(graph, { cutOver })
+    // A ruling is dated by its file, `<date>-<run>.md`; from the cut-over date on it must carry
+    // Builds on:. R801 is older, R803 has the field, and R804's `unknown` has it too (it counts as unlinked).
+    const required = 'required from the cut-over, 2026-09-26'
+    expect(report.findings).toEqual([
+      { kind: 'no-builds-on', id: 'R802', where: [`${DECISIONS}/rulings/2026-09-26-cut-over-day.md:3`], message: `R802 (dated 2026-09-26) has no Builds on: — ${required}` },
+      { kind: 'no-builds-on', id: 'R805', where: [`${DECISIONS}/rulings/2026-09-27-after.md:6`], message: `R805 (dated 2026-09-27) has no Builds on: — ${required}` },
+    ])
+    // Warn mode: counted, not failing, and not one of the LINEAGE line's four numbers.
+    expect(report.summary).toMatchObject({ cutOver: '2026-09-26', withoutBuildsOn: 2, decisions: 5, unlinked: 1, unresolved: 0 })
+    expect(formatCheck(report).split('\n').at(-1)).toBe('LINEAGE: 5 decisions · 1 unlinked · 0 unresolved · 0 superseded-cited')
+    expect(check(graph).summary).toMatchObject({ cutOver: null, withoutBuildsOn: 0 })
+  })
+
+  it('graph --mermaid renders chain (iii); graph --json validates against the schema', () => {
+    const graph = parseLineage(loadFixture('chains'), loadGithub())
+    // Chain (iii) is R607's lineage: the ADR section it rests on, and the PR and issue that name it.
+    expect(toMermaid(subgraph(graph, 'R607')).split('\n')).toEqual([
+      'flowchart BT',
+      '  ADR_0020["ADR-0020 — Spec-only writes, read-only projections"]',
+      '  R607["R607 — #403 takes option 2, ruled in the brief"]',
+      '  gh459["PR#459 — fix(store): removeJunction deletes only the wires that would dangle (#403)"]',
+      '  gh462["#462 — Removing a junction in an imported document still loses the source→sink connection that ran through it"]',
+      '  R607 -->|builds-on §7.5b| ADR_0020',
+      '  gh459 -->|implements| R607',
+      '  gh462 -->|introduced-by| R607',
+    ])
+    // A quote in a title cannot close its label early.
+    const quoted = { nodes: [{ id: 'R1', kind: 'ruling', title: 'say "no"' }, { id: 'R2', kind: 'ruling', title: 't' }], edges: [{ from: 'R2', to: 'R1', kind: 'builds-on' }], artefacts: [] }
+    expect(toMermaid(quoted).split('\n')).toContain('  R1["R1 — say #quot;no#quot;"]')
+
+    // graph --json, as the CLI prints it for a whole fixture repo, has the schema's shape…
+    const run = spawnSync(process.execPath, ['scripts/lineage.mjs', 'graph', '--json', '--root', path.join(FIXTURES, 'chains')], { cwd: REPO, encoding: 'utf8' })
+    const printed = JSON.parse(run.stdout)
+    expect(Object.keys(printed)).toEqual(['nodes', 'edges', 'artefacts'])
+    expect(validateGraph(printed)).toEqual([])
+    expect(validateGraph(subgraph(graph))).toEqual([])
+    // …one edge per relation, however many sides write it…
+    expect(printed.edges).toHaveLength(new Set(printed.edges.map((edge) => `${edge.from} ${edge.kind} ${edge.to}`)).size)
+    // …and the validator is not vacuous.
+    expect(validateGraph({
+      nodes: [{ id: 'R-1', kind: 'ruling', title: 't', source: 'x.md:1' }],
+      edges: [{ from: 'R-1', to: 'R2', kind: 'depends-on', source: 'x.md:2' }],
+      artefacts: [{ id: '403', kind: 'github' }],
+    })).toEqual([
+      'node R-1: not a ruling id',
+      'artefact 403: not a github id',
+      'edge R-1 depends-on R2: depends-on is not an edge kind',
+      'edge R-1 depends-on R2: R2 is not a node',
+    ])
+  })
+
+  it('pnpm run lint:lineage exists, runs inside pnpm run lint, exits 0 in warn mode, and prints one line in the repo\'s style', () => {
+    const { scripts } = JSON.parse(readFileSync(path.join(REPO, 'package.json'), 'utf8'))
+    expect(scripts['lint:lineage']).toBe('node scripts/lineage.mjs check --summary')
+    expect(scripts.lint.split(' && ')).toContain('pnpm run lint:lineage')
+    const lint = (...args) => spawnSync(process.execPath, ['scripts/lineage.mjs', 'check', '--summary', ...args], { cwd: REPO, encoding: 'utf8' })
+    // Warn mode: an unresolved id is counted, and the exit is still 0 — failing is #471.
+    const dangling = lint('--root', path.join(FIXTURES, 'dangling-id'))
+    expect([dangling.status, dangling.stdout]).toEqual([0, 'LINEAGE: 2 decisions · 0 unlinked · 1 unresolved · 0 superseded-cited\n'])
+    // The live repo: one line, counting what `parse` reads — every decision, and every `unknown`.
+    const live = lint()
+    expect(live.status).toBe(0)
+    expect(live.stdout).toMatch(/^LINEAGE: \d+ decisions · \d+ unlinked · \d+ unresolved · \d+ superseded-cited\n$/)
+    const parsed = JSON.parse(spawnSync(process.execPath, ['scripts/lineage.mjs', 'parse', '--json'], { cwd: REPO, encoding: 'utf8' }).stdout)
+    const [, decisions, unlinked] = /^LINEAGE: (\d+) decisions · (\d+) unlinked/.exec(live.stdout)
+    expect(Number(decisions)).toBe(parsed.nodes.length)
+    expect(Number(unlinked)).toBe(parsed.nodes.filter((node) => node.buildsOn === 'unknown').length)
   })
 })
