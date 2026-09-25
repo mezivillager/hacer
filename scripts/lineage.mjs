@@ -7,13 +7,15 @@
 //   node scripts/lineage.mjs trace <id> | radius <id>      what <id> rests on | what rests on it, as a tree
 //   node scripts/lineage.mjs check [--fix] [--summary]     is the graph sound? --fix writes the missing reverse links
 //   node scripts/lineage.mjs graph [<id>] --mermaid|--json draw all of it, or one decision's lineage
+//   node scripts/lineage.mjs correct <id> [--file --retract|--amend]  its correction plan — a dry run unless --file
 //
 // Reads docs/decisions/** and docs/harness/ledger.md; all parsing is in lineage.logic.mjs. `parse`
 // exits 1 when the graph has errors, listing each on stderr; `check` (src/ too) exits 0 — warn mode
-// until #471. --github also reads every PR and issue body through `gh`, for Decisions: / Introduced by:.
+// until #471. --github also reads every PR and issue body through `gh`, for Decisions: / Introduced by:; so does
+// `correct --file`, which files its issues through `gh` and appends the root's status ruling to the newest rulings file.
 
 import { execFileSync } from 'node:child_process'
-import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { appendFileSync, existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import * as lineage from './lineage.logic.mjs'
 
@@ -22,6 +24,12 @@ const rootFlag = flags.indexOf('--root')
 const root = rootFlag >= 0 ? path.resolve(flags[rootFlag + 1] ?? '.') : path.join(import.meta.dirname, '..')
 const has = (flag) => flags.includes(flag)
 const id = flags.find((flag, k) => !flag.startsWith('--') && flags[k - 1] !== '--root')
+const filing = command === 'correct' && has('--file') && !has('--dry-run')
+const status = has('--retract') === has('--amend') ? null : has('--retract') ? 'retracted' : 'amended'
+if (filing && !status) {
+  console.error('correct --file needs one of --retract or --amend: the status the root ruling records')
+  process.exit(2)
+}
 
 /** Every file a parser reads, repo-relative and sorted, with its text. */
 function readSources() {
@@ -48,7 +56,7 @@ function readGithub() {
   return [...list('pr'), ...list('issue')]
 }
 
-const github = has('--github') ? readGithub() : []
+const github = has('--github') || filing ? readGithub() : []
 const graph = lineage.parseLineage(readSources(), github)
 if (id !== undefined && !graph.nodes.some((node) => node.id === id)) {
   console.error(`${command}: no decision has the id ${id}`)
@@ -84,8 +92,33 @@ if (command === 'parse') {
 } else if (command === 'graph' && (has('--json') || has('--mermaid'))) {
   const drawn = lineage.subgraph(graph, id)
   console.log(has('--json') ? JSON.stringify(drawn, null, 2) : lineage.toMermaid(drawn))
+} else if (command === 'correct' && id) {
+  const plan = lineage.correctionPlan(graph, id)
+  const dir = path.join(root, 'docs', 'decisions', 'rulings')
+  const newest = (existsSync(dir) ? readdirSync(dir) : []).filter((name) => /^\d{4}-\d{2}-\d{2}-.+\.md$/.test(name)).sort().at(-1)
+  const rulings = newest ? `docs/decisions/rulings/${newest}` : null
+  if (!filing && plan.drafts.length) console.log(lineage.formatPlan(plan, rulings))
+  if (filing && plan.drafts.length) {
+    const refused = plan.planned ? `${id} already has a correction plan, ${plan.planned}` : !rulings && 'no rulings file to record its status in'
+    if (refused) {
+      console.error(`correct: ${refused} — nothing filed`)
+      process.exit(1)
+    }
+    const gh = (...args) => execFileSync('gh', args, { cwd: root, encoding: 'utf8' })
+    const epic = lineage.rootEpic(plan.root.artefacts, (number) => JSON.parse(gh('issue', 'view', String(number), '--json', 'labels,parent')))
+    const parent = epic ? ['--parent', String(epic)] : []
+    const file = ({ title, body }, ...more) => {
+      const url = gh('issue', 'create', '--title', title, '--body', body, '--label', 'lineage:correction', ...parent, ...more).trim()
+      console.log(`filed ${url}: ${title}`)
+      return Number(/(\d+)$/.exec(url)[1])
+    }
+    const first = file(plan.root)
+    const ruling = lineage.statusRuling(plan.root, status, [first, ...plan.drafts.map((draft) => file(draft, '--blocked-by', String(first)))])
+    appendFileSync(path.join(root, rulings), `\n\n${ruling}\n`)
+    console.log(`wrote ${rulings}: ${ruling.split('\n')[0].slice(3)}`)
+  }
 } else {
   console.error('usage: node scripts/lineage.mjs <parse --json | next-id | trace <id> | radius <id> | check [--fix] [--summary]' +
-    ' | graph [<id>] --mermaid|--json> [--root <dir>] [--github]')
+    ' | graph [<id>] --mermaid|--json | correct <id> [--file --retract|--amend]> [--root <dir>] [--github]')
   process.exit(2)
 }

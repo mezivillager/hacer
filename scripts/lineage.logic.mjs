@@ -466,8 +466,80 @@ export function validateGraph({ nodes = [], edges = [], artefacts = [] }) {
   ].filter(Boolean).map((why) => `edge ${edge.from} ${edge.kind} ${edge.to}: ${why}`))]
 }
 
-/** `lineage correct` (#470): the correction plan, its dry-run text, the epic its issues go under, and the root's status ruling. */
-export function correctionPlan() { throw new Error('not implemented (#470)') }
-export function formatPlan() { throw new Error('not implemented (#470)') }
-export function rootEpic() { throw new Error('not implemented (#470)') }
-export function statusRuling() { throw new Error('not implemented (#470)') }
+/** How a relation reads in a correction task, where not as its kind: `R520 builds on R518`, `#462 was introduced by R607`. */
+const VERBS = { 'builds-on': 'builds on', 'introduced-by': 'was introduced by' }
+/** A label as a GitHub body links it — `PR #459`, where `PR#459` is plain text — and a title short enough to file. */
+const linked = (label) => label.replace(/^PR#/, 'PR #')
+const clip = (title) => (title.length > 120 ? `${title.slice(0, 119)}…` : title)
+
+/**
+ * What must change if `id` was wrong (REPORT §7): one draft issue per node `radius` reaches, each once — a decision, or a PR,
+ * issue or ledger row naming one — whose body names the root, the node's own statement, how it rests on the root and, for a
+ * decision, its artefacts; and the root's own correction issue, which blocks them. The plan's own records (its issues, and
+ * the ruling recording the root's status, `planned`) are not drafted again. null for an unknown id; no drafts when nothing rests on it.
+ */
+export function correctionPlan(graph, id) {
+  const tree = radius(graph, id)
+  if (!tree) return null
+  const items = new Map([...graph.artefacts, ...graph.nodes].map((item) => [item.id, item]))
+  const where = (key) => (items.get(key)?.source ? ` (\`${items.get(key).source}\`)` : '')
+  const plan = new RegExp(`^(Correct ${id} |${id} (retracted|amended): correction plan\\b)`)
+  const found = `Introduced by: ${id}\n\n- **Found wrong:** ${id} — ${tree.title}${where(id)}`
+  const done = `Drafted by \`node scripts/lineage.mjs correct ${id}\`.`
+  const drafts = []
+  const walk = (node, rest) => node.children.filter((child) => !child.seen && !plan.test(child.title)).forEach((child) => {
+    const [kind, ...anchor] = child.via.split(' ')
+    const how = [VERBS[kind] ?? kind, linked(node.label), ...anchor].join(' ') + (rest ? `, which ${rest}` : '')
+    const artefacts = child.children.filter((next) => ['implements', 'introduced-by'].includes(next.via)).map((next) => linked(next.label))
+    const cites = child.cites.length ? ` · its record cites ${child.cites.map(linked).join(', ')}` : ''
+    const decision = graph.nodes.some((candidate) => candidate.id === child.id)
+    drafts.push({ id: child.id, how: `${linked(child.label)} ${how}`, title: `Correct ${id} → ${child.label} — ${clip(child.title)}`, body: [
+      found, `- **Revisit:** ${linked(child.label)} — ${child.title}${where(child.id)}`, `- **Rests on it:** ${linked(child.label)} ${how}`,
+      ...(decision ? [`- **Its artefacts:** ${artefacts.join(', ') || 'none recorded'}${cites}`] : []),
+      '', `Blocked by ${id}'s own correction issue. ${done}`,
+    ].join('\n') })
+    walk(child, how)
+  })
+  walk(tree, '')
+  const numbers = [...graph.artefacts.filter((artefact) => artefact.citedBy?.includes(id)), ...tree.children].map((item) => item.id)
+  const root = {
+    id, next: nextRulingId(graph.nodes), title: `Correct ${id} — ${clip(tree.title)}`,
+    artefacts: [...new Set(numbers.filter((number) => number.startsWith('#')).map((number) => Number(number.slice(1))))].sort((a, b) => a - b),
+    body: [found, '- **Correct it first:** every task resting on it is blocked by this issue —', ...drafts.map((draft) => `  - ${draft.how}`),
+      '', done].join('\n'),
+  }
+  return { root, drafts, planned: graph.nodes.find((node) => node.kind === 'ruling' && plan.test(node.title))?.id ?? null }
+}
+
+/** `correct --dry-run`: the plan as text, each draft under its title — nothing at all when nothing rests on the root. */
+export function formatPlan(plan, rulings) {
+  if (!plan?.drafts.length) return ''
+  const { id, next } = plan.root
+  const count = `${plan.drafts.length} draft${plan.drafts.length === 1 ? '' : 's'}`
+  const status = rulings ? `appends ${next} to ${rulings}` : `needs a file in docs/decisions/rulings/ for ${next}`
+  const head = `Correction plan for ${id} — its own correction issue first, then ${count} it blocks, one per decision or artefact resting on it. ` +
+    `\`--file --retract|--amend\` files them and ${status}.`
+  return [head, ...[plan.root, ...plan.drafts].map((draft) => `## ${draft.title}\n${draft.body}`)].join('\n\n')
+}
+
+/** The parent for a plan's issues: the first of the root's artefacts, by number, that is an epic or has a parent — `view(n)`
+ *  answers as `gh issue view <n> --json labels,parent` does. null when none does. */
+export function rootEpic(numbers, view) {
+  for (const number of numbers) {
+    const { labels = [], parent = null } = view(number)
+    if (labels.some((label) => label.name === 'epic')) return number
+    if (parent) return parent.number
+  }
+  return null
+}
+
+/** The ruling `correct --file` appends: the root's status, retracted or amended. A ruling is append-only, so the status is a new
+ *  ruling that `Amends:` the root, with a pointer to the plan's issues — `filed`, the root's own first. */
+export function statusRuling({ id, next }, status, [first, ...rest]) {
+  return [
+    `## ${next} — ${id} ${status}: correction plan #${first}`, 'Builds on: none', `Amends: ${id}`,
+    `Cost if wrong: ${id} stood after all; the plan's issues close as not planned.`, '',
+    `Filed by \`lineage correct ${id} --file\`: #${first} corrects ${id} itself, and blocks ${rest.map((number) => `#${number}`).join(', ')}` +
+      ' — one per decision or artefact resting on it.',
+  ].join('\n')
+}
