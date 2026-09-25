@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-25T05:39:19.596Z",
+  "generatedAt": "2026-09-25T06:01:36.613Z",
   "head": {
-    "sha": "77a0d740003c26939749e8cc439c48e3a83898e6",
-    "date": "2026-09-25T08:38:24+03:00",
-    "subject": "docs(decisions): record the lineage cut-over date"
+    "sha": "a5c1dac037de6dd435ab88414e270482976df51c",
+    "date": "2026-09-25T09:00:48+03:00",
+    "subject": "docs(mission-control): the conclusion rule, and no checks permission needed"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-25T05:39:19.596Z",
+      "fetchedAt": "2026-09-25T06:01:36.613Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-25T05:39:19.596Z",
+      "fetchedAt": "2026-09-25T06:01:36.613Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-25T05:39:19.596Z",
+      "fetchedAt": "2026-09-25T06:01:36.613Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-25T05:39:19.596Z",
+      "fetchedAt": "2026-09-25T06:01:36.613Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-09-25T05:39:19.596Z",
+      "fetchedAt": "2026-09-25T06:01:36.613Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-09-25T05:39:19.596Z",
+      "fetchedAt": "2026-09-25T06:01:36.613Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-09-25T05:39:19.596Z",
+      "fetchedAt": "2026-09-25T06:01:36.613Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-09-25T05:39:19.596Z",
+      "fetchedAt": "2026-09-25T06:01:36.613Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-09-25T05:39:19.596Z",
+      "fetchedAt": "2026-09-25T06:01:36.613Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-09-25T05:39:19.596Z",
+      "fetchedAt": "2026-09-25T06:01:36.613Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-25T05:39:19.596Z",
+      "fetchedAt": "2026-09-25T06:01:36.613Z",
       "status": "ok"
     },
     "checks": {
-      "source": "none",
-      "fetchedAt": "2026-09-25T05:39:19.596Z",
+      "source": "gh api graphql (check runs)",
+      "fetchedAt": "2026-09-25T06:01:36.613Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-09-25T05:39:19.596Z",
+      "fetchedAt": "2026-09-25T06:01:36.613Z",
       "status": "ok"
     }
   },
@@ -328,18 +328,18 @@
         "lane": "process",
         "slug": "mission-control",
         "epicNumber": 458,
-        "open": 8,
-        "ready": 5,
-        "inProgress": 1,
+        "open": 7,
+        "ready": 3,
+        "inProgress": 2,
         "needsHuman": 0,
         "next": {
-          "number": 474,
-          "title": "Mission Control MC-3: the Process view — the loop with live counts, claims, the cloud lane"
+          "number": 475,
+          "title": "Mission Control MC-4: the Timeline view — sessions, merges and releases on one axis"
         },
         "title": "Epic: mission-control — Mission Control: the platform's status, process and roadmap as one site",
         "subIssues": {
-          "completed": 2,
-          "percentCompleted": 22,
+          "completed": 3,
+          "percentCompleted": 33,
           "total": 9
         }
       }
@@ -383,8 +383,8 @@
         "project": "foundation"
       },
       {
-        "number": 474,
-        "title": "Mission Control MC-3: the Process view — the loop with live counts, claims, the cloud lane",
+        "number": 475,
+        "title": "Mission Control MC-4: the Timeline view — sessions, merges and releases on one axis",
         "project": "mission-control"
       },
       {
@@ -423,8 +423,8 @@
         "project": "foundation"
       },
       {
-        "number": 475,
-        "title": "Mission Control MC-4: the Timeline view — sessions, merges and releases on one axis",
+        "number": 479,
+        "title": "Mission Control MC-8: Roadmap, Ledger and ADR views",
         "project": "mission-control"
       },
       {
@@ -458,8 +458,8 @@
         "project": "foundation"
       },
       {
-        "number": 476,
-        "title": "Mission Control MC-5: hourly refresh workflow and the snapshot history archive",
+        "number": 480,
+        "title": "Mission Control MC-9: \"queue an improvement\" links and the needs-human list — the first editable step",
         "project": "mission-control"
       },
       {
@@ -493,11 +493,6 @@
         "project": "foundation"
       },
       {
-        "number": 479,
-        "title": "Mission Control MC-8: Roadmap, Ledger and ADR views",
-        "project": "mission-control"
-      },
-      {
         "number": 429,
         "title": "The ESLint suppressions baseline can be reset the same way, and nothing detects it",
         "project": "foundation"
@@ -506,11 +501,6 @@
         "number": 155,
         "title": "De-duplicate vendored skills (tdd/test-driven-development, debugging/systematic-debugging, planning/writing-plans) and fix sync-superpowers.sh",
         "project": "harness"
-      },
-      {
-        "number": 480,
-        "title": "Mission Control MC-9: \"queue an improvement\" links and the needs-human list — the first editable step",
-        "project": "mission-control"
       },
       {
         "number": 159,
@@ -671,8 +661,8 @@
         "reason": null
       },
       {
-        "number": 474,
-        "title": "Mission Control MC-3: the Process view — the loop with live counts, claims, the cloud lane",
+        "number": 475,
+        "title": "Mission Control MC-4: the Timeline view — sessions, merges and releases on one axis",
         "labels": [
           "agent-ready",
           "risk:1",
@@ -800,8 +790,8 @@
         "reason": null
       },
       {
-        "number": 475,
-        "title": "Mission Control MC-4: the Timeline view — sessions, merges and releases on one axis",
+        "number": 479,
+        "title": "Mission Control MC-8: Roadmap, Ledger and ADR views",
         "labels": [
           "agent-ready",
           "risk:1",
@@ -909,16 +899,14 @@
         "reason": null
       },
       {
-        "number": 476,
-        "title": "Mission Control MC-5: hourly refresh workflow and the snapshot history archive",
+        "number": 480,
+        "title": "Mission Control MC-9: \"queue an improvement\" links and the needs-human list — the first editable step",
         "labels": [
           "agent-ready",
-          "risk:1",
+          "risk:0",
           "project:mission-control"
         ],
-        "blocking": [
-          478
-        ],
+        "blocking": [],
         "project": "mission-control",
         "rank": 14,
         "lane": "process",
@@ -1020,21 +1008,6 @@
         "reason": null
       },
       {
-        "number": 479,
-        "title": "Mission Control MC-8: Roadmap, Ledger and ADR views",
-        "labels": [
-          "agent-ready",
-          "risk:1",
-          "project:mission-control"
-        ],
-        "blocking": [],
-        "project": "mission-control",
-        "rank": 14,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
         "number": 429,
         "title": "The ESLint suppressions baseline can be reset the same way, and nothing detects it",
         "labels": [
@@ -1061,21 +1034,6 @@
         "blocking": [],
         "project": "harness",
         "rank": 2,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 480,
-        "title": "Mission Control MC-9: \"queue an improvement\" links and the needs-human list — the first editable step",
-        "labels": [
-          "agent-ready",
-          "risk:0",
-          "project:mission-control"
-        ],
-        "blocking": [],
-        "project": "mission-control",
-        "rank": 14,
         "lane": "process",
         "pickable": true,
         "reason": null
@@ -2645,15 +2603,33 @@
         "reason": "unshaped"
       },
       {
-        "number": 477,
-        "title": "Mission Control MC-6: the checks publish their summary lines somewhere a program can read them",
+        "number": 474,
+        "title": "Mission Control MC-3: the Process view — the loop with live counts, claims, the cloud lane",
         "labels": [
           "agent-ready",
           "in-progress",
-          "risk:2",
+          "risk:1",
           "project:mission-control"
         ],
         "blocking": [],
+        "project": "mission-control",
+        "rank": 14,
+        "lane": "process",
+        "pickable": false,
+        "reason": "in-progress"
+      },
+      {
+        "number": 476,
+        "title": "Mission Control MC-5: hourly refresh workflow and the snapshot history archive",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:mission-control"
+        ],
+        "blocking": [
+          478
+        ],
         "project": "mission-control",
         "rank": 14,
         "lane": "process",
@@ -2842,12 +2818,11 @@
         505
       ],
       "mission-control": [
-        474,
         475,
-        476,
         479,
         480,
-        477,
+        474,
+        476,
         478,
         509
       ],
@@ -2933,32 +2908,6 @@
   "prs": {
     "open": [
       {
-        "number": 507,
-        "title": "feat(checks): publish the required checks' summary lines where Mission Control reads them (MC-6)",
-        "url": "https://github.com/mezivillager/hacer/pull/507",
-        "author": "mezivillager",
-        "labels": [
-          "risk:2",
-          "project:mission-control"
-        ],
-        "headRefName": "feat/477-publish-check-summaries",
-        "isDraft": false,
-        "createdAt": "2026-09-25T04:48:25Z",
-        "mergedAt": null,
-        "closes": [
-          477
-        ],
-        "verdicts": [
-          {
-            "verdict": "BLOCK",
-            "round": 1,
-            "model": "Claude Opus 5.5 (claude-opus-5-5[1m])",
-            "at": "2026-09-25T05:29:17Z",
-            "url": "https://github.com/mezivillager/hacer/pull/507#issuecomment-5827322969"
-          }
-        ]
-      },
-      {
         "number": 496,
         "title": "chore(deps-dev): bump lint-staged from 16.4.0 to 17.5.1",
         "url": "https://github.com/mezivillager/hacer/pull/496",
@@ -2998,6 +2947,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/510",
         "author": "mezivillager",
         "labels": [
+          "released",
           "risk:1",
           "project:lineage"
         ],
@@ -3049,6 +2999,39 @@
             "model": "Claude Opus 5.5 (1M context), claude-opus-5-5[1m]",
             "at": "2026-09-25T05:27:34Z",
             "url": "https://github.com/mezivillager/hacer/pull/508#issuecomment-5827305706"
+          }
+        ]
+      },
+      {
+        "number": 507,
+        "title": "feat(checks): publish the required checks' summary lines where Mission Control reads them (MC-6)",
+        "url": "https://github.com/mezivillager/hacer/pull/507",
+        "author": "mezivillager",
+        "labels": [
+          "risk:2",
+          "project:mission-control"
+        ],
+        "headRefName": "feat/477-publish-check-summaries",
+        "isDraft": false,
+        "createdAt": "2026-09-25T04:48:25Z",
+        "mergedAt": "2026-09-25T06:00:49Z",
+        "closes": [
+          477
+        ],
+        "verdicts": [
+          {
+            "verdict": "BLOCK",
+            "round": 1,
+            "model": "Claude Opus 5.5 (claude-opus-5-5[1m])",
+            "at": "2026-09-25T05:29:17Z",
+            "url": "https://github.com/mezivillager/hacer/pull/507#issuecomment-5827322969"
+          },
+          {
+            "verdict": "PASS",
+            "round": 2,
+            "model": "Claude Opus 5.5 (claude-opus-5-5[1m])",
+            "at": "2026-09-25T05:59:24Z",
+            "url": "https://github.com/mezivillager/hacer/pull/507#issuecomment-5827604278"
           }
         ]
       },
@@ -4405,33 +4388,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/370#issuecomment-5787362069"
           }
         ]
-      },
-      {
-        "number": 366,
-        "title": "fix(harness): stop concurrency cancelling required checks (#295)",
-        "url": "https://github.com/mezivillager/hacer/pull/366",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:2"
-        ],
-        "headRefName": "fix/295-stuck-required-checks",
-        "isDraft": false,
-        "createdAt": "2026-09-23T00:33:17Z",
-        "mergedAt": "2026-09-23T00:41:49Z",
-        "closes": [
-          295
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Opus 5 (claude-opus-5[1m])",
-            "at": "2026-09-23T00:48:42Z",
-            "url": "https://github.com/mezivillager/hacer/pull/366#issuecomment-5787059658"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4497,16 +4453,16 @@
         }
       },
       {
-        "number": 477,
-        "ref": "refs/heads/claim/477",
-        "sha": "adde0aac1b8881b1ab8e2af95a9beb3d6d497ca8",
+        "number": 474,
+        "ref": "refs/heads/claim/474",
+        "sha": "77a0d740003c26939749e8cc439c48e3a83898e6",
         "state": "OPEN",
-        "title": "Mission Control MC-6: the checks publish their summary lines somewhere a program can read them",
-        "url": "https://github.com/mezivillager/hacer/issues/477",
+        "title": "Mission Control MC-3: the Process view — the loop with live counts, claims, the cloud lane",
+        "url": "https://github.com/mezivillager/hacer/issues/474",
         "labels": [
           "agent-ready",
           "in-progress",
-          "risk:2",
+          "risk:1",
           "project:mission-control"
         ],
         "onClosedIssue": false,
@@ -4514,11 +4470,36 @@
           "claimedBy": "claude-local",
           "intent": "building",
           "session": "2026-09-25 process-sweep",
-          "branch": "feat/477-publish-check-summaries",
+          "branch": "feat/474-mission-control-process-view",
           "handoff": null,
           "author": "mezivillager",
-          "at": "2026-09-25T04:23:00Z",
-          "url": "https://github.com/mezivillager/hacer/issues/477#issuecomment-5826671572"
+          "at": "2026-09-25T05:49:45Z",
+          "url": "https://github.com/mezivillager/hacer/issues/474#issuecomment-5827513684"
+        }
+      },
+      {
+        "number": 476,
+        "ref": "refs/heads/claim/476",
+        "sha": "77a0d740003c26939749e8cc439c48e3a83898e6",
+        "state": "OPEN",
+        "title": "Mission Control MC-5: hourly refresh workflow and the snapshot history archive",
+        "url": "https://github.com/mezivillager/hacer/issues/476",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:mission-control"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "2026-09-25 process-sweep",
+          "branch": "feat/476-mission-control-refresh",
+          "handoff": null,
+          "author": "mezivillager",
+          "at": "2026-09-25T05:42:51Z",
+          "url": "https://github.com/mezivillager/hacer/issues/476#issuecomment-5827447775"
         }
       }
     ],
@@ -5496,9 +5477,14 @@
     },
     "releases": [
       {
+        "tag": "v2.38.0",
+        "publishedAt": "2026-09-25T05:41:08Z",
+        "isLatest": true
+      },
+      {
         "tag": "v2.37.0",
         "publishedAt": "2026-09-25T05:31:19Z",
-        "isLatest": true
+        "isLatest": false
       },
       {
         "tag": "v2.36.1",
@@ -5929,7 +5915,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-23",
-        "merges": 21
+        "merges": 20
       },
       {
         "date": "2026-09-24",
@@ -5937,13 +5923,97 @@
       },
       {
         "date": "2026-09-25",
-        "merges": 7
+        "merges": 8
       }
     ]
   },
   "checks": {
-    "until": "MC-6",
-    "items": []
+    "items": [
+      {
+        "pr": null,
+        "sha": "a5c1dac037de6dd435ab88414e270482976df51c",
+        "check": "ci",
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36100979258/job/107963193448",
+        "line": null,
+        "verdict": null,
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 410,
+        "sha": "7459d4fcd579d8695682629cc1c5d55d7ccba818",
+        "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-24T23:50:44Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36074712429/job/107883255833",
+        "line": null,
+        "verdict": null,
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 410,
+        "sha": "7459d4fcd579d8695682629cc1c5d55d7ccba818",
+        "check": "browser-qa",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-24T23:50:43Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36074715141/job/107883241232",
+        "line": null,
+        "verdict": null,
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 410,
+        "sha": "7459d4fcd579d8695682629cc1c5d55d7ccba818",
+        "check": "ci",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-24T23:52:41Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36074718192/job/107883242099",
+        "line": null,
+        "verdict": null,
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 496,
+        "sha": "0e5c12d5af4faae6c780d63806e509481b6870f0",
+        "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-24T23:49:20Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36074605581/job/107882909274",
+        "line": null,
+        "verdict": null,
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 496,
+        "sha": "0e5c12d5af4faae6c780d63806e509481b6870f0",
+        "check": "browser-qa",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-24T23:49:36Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36074605725/job/107882938557",
+        "line": null,
+        "verdict": null,
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 496,
+        "sha": "0e5c12d5af4faae6c780d63806e509481b6870f0",
+        "check": "ci",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-24T23:50:47Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36074604402/job/107882892940",
+        "line": null,
+        "verdict": null,
+        "fields": {},
+        "disagrees": false
+      }
+    ]
   },
   "lineage": {
     "until": "DL-7",
