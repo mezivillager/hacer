@@ -42,6 +42,19 @@ export function parseCheckLine(line) {
   return { verdict, fields: Object.fromEntries([...line.matchAll(/\b(\w+)=(\S+)/g)].map(([, key, text]) => [key, value(text)])) }
 }
 
-export function readCheckRun() {
-  throw new Error('not implemented')
+/** GitHub's conclusions that mean the check failed; any other that is not SUCCESS is reported as itself. */
+const FAILED = ['FAILURE', 'TIMED_OUT', 'STARTUP_FAILURE']
+
+/**
+ * A check run read as data: the line it published, parsed, under a verdict in which the run's conclusion wins. A run
+ * that did not succeed never reads PASS — FAIL for a failure, its conclusion otherwise (CANCELLED, SKIPPED, …) — and
+ * one still running has no verdict yet. On a success the line refines it (PASS, WARN, SKIPPED). `disagrees` marks a
+ * line whose own verdict says otherwise than the conclusion — as LAYER-RATCHET's `0 new` does when `lint:layers`
+ * fails on an undeclared rule (#489) — and the line's numbers are kept either way.
+ * @param {{conclusion: string|null, line: string|null}} run
+ */
+export function readCheckRun({ conclusion, line }) {
+  const { verdict: said, fields } = parseCheckLine(line)
+  const verdict = conclusion === null ? null : conclusion === 'SUCCESS' ? said : FAILED.includes(conclusion) ? 'FAIL' : conclusion
+  return { verdict, fields, disagrees: conclusion !== null && said !== null && (conclusion === 'SUCCESS') === (said === 'FAIL') }
 }
