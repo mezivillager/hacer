@@ -1,6 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { cruise } from 'dependency-cruiser'
 import { createRequire } from 'node:module'
+import { readFileSync } from 'node:fs'
 import fs from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
@@ -10,6 +11,7 @@ import {
   countSuppressions,
   formatReport,
   summarise,
+  undeclaredRules,
 } from './layer-ratchet.logic.mjs'
 
 const require = createRequire(import.meta.url)
@@ -178,5 +180,57 @@ describe('formatReport', () => {
     expect(report).toContain('engine-no-ui')
     expect(report).toContain('src/core/new.ts -> src/components/x.ts')
     expect(report).not.toContain(KNOWN_VIOLATIONS_FILE)
+  })
+})
+
+// ── The rules the baseline names have to be declared (#489) ────────────────────────────────────
+//
+// Measured on a scratch copy of this repo, 2026-09-25: `.dependency-cruiser.cjs` emptied — a 0-byte
+// file, or `forbidden: []` — printed `LAYER-RATCHET: 0 known violations … 0 new` and exited 0. So did
+// the config with `state-no-ui` deleted (63 known) and with `engine-no-state` set to `severity:
+// 'ignore'` (62 known). A row under a rule name no config rule reports suppresses nothing, and nothing
+// checks its edge any more, so the cruise read a disarmed wall as a clean run. Counts come from the
+// files, never pinned (#450).
+describe('the rules the committed baseline names have to be declared (#489)', () => {
+  const realRows = () => JSON.parse(readFileSync(path.join(REPO_ROOT, KNOWN_VIOLATIONS_FILE), 'utf8'))
+  const recorded = () => [...new Set(realRows().map((row) => row.rule.name))]
+  const realRules = () => require(path.join(REPO_ROOT, CONFIG_FILE)).forbidden
+
+  it('lint:layers fails when the config declares fewer forbidden rules than the committed baseline references', () => {
+    expect(recorded().length).toBeGreaterThan(0)
+    // Emptied: a 0-byte file exports `{}`, so there is no `forbidden` at all; or `forbidden: []`.
+    for (const forbidden of [undefined, []]) {
+      const undeclared = undeclaredRules(realRows(), forbidden)
+      expect(undeclared.map((entry) => entry.rule).sort()).toEqual(recorded().sort())
+      expect(undeclared.reduce((sum, entry) => sum + entry.rows, 0)).toBe(realRows().length)
+      expect(summarise(result([]), { undeclared }).ok).toBe(false)
+    }
+    // One rule with rows deleted from the real config: that rule, and only it, with its row count.
+    const [rule] = recorded()
+    const rows = realRows().filter((row) => row.rule.name === rule).length
+    expect(undeclaredRules(realRows(), realRules().filter((entry) => entry.name !== rule))).toEqual([{ rule, rows }])
+  })
+
+  it("counts a rule as declared only when dependency-cruiser keeps it — `severity: 'ignore'` is dropped, no name is `unnamed`", () => {
+    // Its rule-set normalisation: node_modules/dependency-cruiser/src/main/rule-set/normalize.mjs.
+    const rows = [dep('engine-no-state', 'src/core/a.ts', 'src/store/b.ts'), dep('unnamed', 'src/core/c.ts', 'src/store/b.ts')]
+    expect(undeclaredRules(rows, [{ name: 'engine-no-state', severity: 'ignore' }, { severity: 'error' }])).toEqual([
+      { rule: 'engine-no-state', rows: 1 },
+    ])
+  })
+
+  it('passes the real config against the real baseline — every rule the baseline names is declared', () => {
+    expect(undeclaredRules(realRows(), realRules())).toEqual([])
+  })
+
+  it('fails the report on an undeclared rule, naming it and its rows, with the metric line as it was', () => {
+    const summary = summarise(result([dep('engine-no-state', 'src/core/a.ts', 'src/store/b.ts')]), {
+      undeclared: [{ rule: 'state-no-ui', rows: 8 }],
+    })
+    expect(summary.ok).toBe(false)
+    const [metric, ...rest] = formatReport(summary).split('\n')
+    expect(metric).toMatch(/^LAYER-RATCHET: 1 known violation \(.*\) · 0 engine globals suppressed · 0 new$/)
+    expect(rest.join('\n')).toContain('state-no-ui: 8 baseline rows')
+    expect(rest.join('\n')).toContain(CONFIG_FILE)
   })
 })
