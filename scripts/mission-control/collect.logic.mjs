@@ -90,7 +90,7 @@ function buildClaims({ claimRefs: lsRemote = '', claimIssues }, { allowlist }) {
 }
 
 // Checks (MC-6, #477): each required check publishes its line as a notice, an annotation on its own check run. The
-// rollup is what a PR's merge box judges: it leaves out a workflow_dispatch re-check, which is not the PR's check.
+// rollup holds a head's own checks, as `gh pr checks` shows them, and leaves out a workflow_dispatch re-check.
 const RUNS = 'statusCheckRollup { contexts(first: 50) { nodes { ... on CheckRun { databaseId name conclusion completedAt detailsUrl ' +
   'annotations(first: 50) { nodes { message } } } } } }'
 
