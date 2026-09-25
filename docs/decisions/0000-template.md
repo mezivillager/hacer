@@ -2,8 +2,9 @@
 
 - **Status:** Proposed | Accepted | Superseded by [ADR-XXXX](XXXX-...md) | Deprecated
 - **Date:** YYYY-MM-DD
-- **Builds on:** <what this rests on: ADR-NNNN (optionally §section), R<n>, P-<n> — or `none`>
+- **Builds on:** <what this rests on: ADR-NNNN (optionally §section), R<n> — or `none`>
 - **Amends:** <the decisions this one changes — or delete the line>
+- **Supersedes:** <the ADRs this one replaces, whose Status then reads `Superseded by` it — or delete the line>
 - **Assumes:** <the premises it rests on, P-<n> from premises.md — or delete the line>
 - **Deciders:** <who / which session>
 - **Phase:** <e.g. Phase 0.5>

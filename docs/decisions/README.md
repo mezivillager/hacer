@@ -33,27 +33,28 @@ them into one graph — nodes, edges, artefacts, errors (epic #457; design:
 | `P-<n>` | a premise: a fact a decision rests on, with a command that checks it | a row of [`premises.md`](premises.md) |
 
 Issues, PRs, paths and ledger rows are **artefacts** — referenced, never nodes. `parse` lists every
-`#n` a decision's record cites, and every ledger row that carries an `Id` (`L001`).
+`#n` a decision's record cites, every ledger row that carries an `Id` (`L001`) and, with `--github`, every PR and issue.
 
 | Edge | Written as | Means |
 |---|---|---|
 | `builds-on` | `Builds on:` | rests on that decision — the default dependency |
-| `amends` | `Amends:` | changes that decision |
-| `supersedes` | `Superseded by [ADR-NNNN](…)` in the replaced ADR's Status | replaces that ADR |
+| `amends` | `Amends:`; the amended ADR says `Amended by:` | changes that decision |
+| `supersedes` | `Supersedes:`; the replaced ADR's Status **opens** with `Superseded by [ADR-NNNN](…)` | replaces that ADR |
 | `assumes` | `Assumes:` | rests on that premise (`P-<n>` only) |
 | `introduced-by` | on the defect's side: the ledger's `Decision` column, an issue's `Introduced by:` (#469) | the defect traces to that decision |
+| `implements` | a PR's or issue's `Decisions:` line (#469) | carries that decision out |
 
 A ruling's field block sits under its heading:
 
 ```
 ## R612 — <title>
-Builds on: R606, ADR-0020 §1.5, P-004
-Assumes: P-006
+Builds on: R606, ADR-0020 §1.5
+Assumes: P-004, P-006
 Amends: R516
 Cost if wrong: …
 ```
 
-An ADR carries the same three relations as bullets under `Date` (see the [template](0000-template.md)),
+An ADR carries the same three relations, and `Supersedes:`, as bullets under `Date` (see the [template](0000-template.md)),
 and its Status carries no relation in prose — the one relation a Status still holds is the
 template's own `Superseded by` value. A value is a comma-separated list of ids, each optionally
 followed by a section (`ADR-0020 §1.5`), or one word:
@@ -61,7 +62,26 @@ followed by a section (`ADR-0020 §1.5`), or one word:
 - `unknown` — an imported decision nobody has annotated. Both parse; only `unknown` counts as unlinked.
 
 A field may continue on indented lines. A duplicate id, a relation naming an id that does not exist,
-and a value that is not an id are **errors**: `parse` lists each with its `file:line` and exits 1.
+a value that is not an id, and a relation field spelt any other way (an ADR's `- **…:**` bullet in a
+ruling) are **errors**: `parse` lists each with its `file:line` and exits 1.
+
+**Both ends agree:** an ADR that another decision amends or supersedes says so too — `Amended by:`, or
+its Status. `check --fix` writes a missing end into the ADR; never into a ruling, which is append-only.
+
+- **Cut-over:** none yet — #469 records its merge date here; from that date, every ruling carries `Builds on:`
+
+`node scripts/lineage.mjs <command>` — each takes `--root <dir>`, and `--github` to read PR and issue bodies through `gh`:
+
+| Command | Answers |
+|---|---|
+| `parse --json` · `next-id` | the graph · the id a new ruling takes |
+| `trace <id>` | what it rests on — its upstream closure, each premise with its status |
+| `radius <id>` | what rests on it — its downstream closure as a tree, each decision with the `#n` it cites and the PRs and issues naming it |
+| `check [--fix]` | is it sound: every id resolves; both ends agree; no superseded ADR is cited from `src/`; rulings since the cut-over without `Builds on:`, counted |
+| `graph [<id>] --mermaid` · `--json` | all of it or one decision's lineage, for GitHub · for Mission Control |
+
+`pnpm run lint:lineage` (in `pnpm run lint`) is `check --summary`: `LINEAGE: N decisions · M unlinked · K unresolved ·
+J superseded-cited`, `unresolved` being every `parse` error — and exit 0, warn mode, until #471 makes it fail.
 
 ## Index
 | ADR | Title | Status | Date |
