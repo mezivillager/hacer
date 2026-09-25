@@ -1,11 +1,9 @@
-// Premise commands for docs/decisions/premises.md (#468). Exit 0 when the check ran; non-zero is unverifiable.
 import { execFileSync, spawnSync } from 'node:child_process'
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
-
+import { peerInstallExit } from '../lineage.logic.mjs'
 const gh = (args) => execFileSync('gh', args, { encoding: 'utf8' })
-
 function fastCheck() {
   const pkg = JSON.parse(readFileSync('package.json', 'utf8'))
   const bags = ['dependencies', 'devDependencies', 'optionalDependencies', 'peerDependencies']
@@ -13,7 +11,6 @@ function fastCheck() {
   const inLock = /(^|\n)  fast-check@/.test(readFileSync('pnpm-lock.yaml', 'utf8'))
   process.stdout.write(inPkg || inLock ? 'present' : 'absent')
 }
-
 function mainRules() {
   const ruleset = JSON.parse(gh(['api', 'repos/mezivillager/hacer/rulesets/13907542']))
   const contexts = ruleset.rules
@@ -22,7 +19,6 @@ function mainRules() {
     .sort()
   process.stdout.write(contexts.join() === ['browser-qa', 'ci', 'pr-hygiene'].join() ? 'those three' : contexts.join(','))
 }
-
 function bogusRef() {
   let out = ''
   try {
@@ -35,7 +31,6 @@ function bogusRef() {
   if (!status) process.exit(1)
   process.stdout.write(status[1])
 }
-
 function peerInstall() {
   const dir = mkdtempSync(path.join(tmpdir(), 'hacer-peer-'))
   try {
@@ -45,16 +40,17 @@ function peerInstall() {
       devDependencies: { '@react-three/fiber': '9.7.0' },
     }))
     const result = spawnSync('pnpm', ['install', '--ignore-workspace'], { cwd: dir, encoding: 'utf8' })
-    if (result.error || result.status === null) {
-      console.error(result.error?.message ?? result.stderr)
-      process.exit(1)
+    const output = `${result.stdout ?? ''}\n${result.stderr ?? ''}`
+    const code = peerInstallExit(result.status, output, result.error)
+    if (code !== 0) {
+      process.stderr.write(result.error?.message ?? output)
+      process.exit(code)
     }
     process.stdout.write(`exit ${result.status}`)
   } finally {
     rmSync(dir, { recursive: true, force: true })
   }
 }
-
 const commands = { 'fast-check': fastCheck, 'main-rules': mainRules, 'bogus-ref': bogusRef, 'peer-install': peerInstall }
 const run = commands[process.argv[2]]
 if (!run) {

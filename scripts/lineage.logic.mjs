@@ -104,10 +104,22 @@ function relate(graph, node, fields, file, relations = RELATIONS) {
   }
 }
 
+function crossRepoMap(text) {
+  const map = new Map()
+  let repo = null
+  for (const match of String(text).matchAll(/([\w.-]+\/[\w.-]+)#(\d+)\b|(?<![\w&/])#(\d+)\b|\n\s*\n|[.!?]/g)) {
+    if (match[1]) repo = match[1]
+    else if (match[3] && repo) map.set(match[3], repo)
+    else repo = null
+  }
+  return map
+}
 /** Every `#n` in a decision's record, as artefacts citing back to it. */
 function cited(lines, id) {
-  const numbers = new Set(Array.from(lines.join('\n').matchAll(GITHUB_REF), (match) => match[1]))
-  return [...numbers].map((number) => ({ id: `#${number}`, kind: 'github', citedBy: [id] }))
+  const text = lines.join('\n')
+  const repos = crossRepoMap(text)
+  const numbers = new Set(Array.from(text.matchAll(GITHUB_REF), (match) => match[1]))
+  return [...numbers].map((number) => ({ id: `#${number}`, kind: 'github', citedBy: [id], ...(repos.get(number) && { repo: repos.get(number) }) }))
 }
 
 /** One ADR: the bullets above its first `##` section, and the supersedes edge its Status names. */
@@ -466,7 +478,6 @@ export function validateGraph({ nodes = [], edges = [], artefacts = [] }) {
   ].filter(Boolean).map((why) => `edge ${edge.from} ${edge.kind} ${edge.to}: ${why}`))]
 }
 
-// `lineage verify` (#468). Pure: the CLI runs commands. Manual and a token-less `gh` premise are neither expired nor holding.
 
 const cmpVer = (a, b) => {
   for (let i = 0; i < 3; i++) if (a[i] !== b[i]) return a[i] < b[i] ? -1 : 1
@@ -486,7 +497,6 @@ const tightenMax = (range, version, inclusive) => {
     Object.assign(range, { max: version, maxInc: inclusive })
   }
 }
-
 function parseComparatorRange(text) {
   const parts = text.trim().split(/\s+/).filter(Boolean)
   if (parts.length === 0) return null
@@ -519,7 +529,6 @@ function parseComparatorRange(text) {
   }
   return range
 }
-
 const satisfies = (version, range) => {
   if (range.min && (cmpVer(version, range.min) < 0 || (cmpVer(version, range.min) === 0 && !range.minInc))) return false
   if (range.max && (cmpVer(version, range.max) > 0 || (cmpVer(version, range.max) === 0 && !range.maxInc))) return false
@@ -541,7 +550,6 @@ const semverHolds = (output, expect) => {
   const got = parseComparatorRange(output)
   return Boolean(got) && inside(got, want)
 }
-
 export function matchesExpect(output, expect) {
   const out = String(output ?? '').trim()
   const exp = String(expect ?? '').trim()
@@ -553,14 +561,12 @@ export function matchesExpect(output, expect) {
   }
   return isSemverRange(exp) ? semverHolds(out, exp) : false
 }
-
 export function commandDisposition(verify, { token = false } = {}) {
   const text = String(verify ?? '').trim()
   if (/^manual\b/i.test(text)) return 'manual'
   if (/\bgh\b/.test(text) && !token) return 'skipped'
   return 'run'
 }
-
 export function classifyPremise(premise, run = {}) {
   const base = { id: premise.id, title: premise.title }
   if (commandDisposition(premise.verify, { token: true }) === 'manual') return { ...base, status: 'manual', reason: 'not an automatic command' }
@@ -570,18 +576,16 @@ export function classifyPremise(premise, run = {}) {
     return { ...base, status: 'unverifiable', reason }
   }
   const output = String(run.stdout ?? '')
+  if (output.trim() === '') return { ...base, status: 'unverifiable', reason: 'empty output' }
   const holds = matchesExpect(output, premise.expect ?? '')
   return { ...base, status: holds ? 'holds' : 'expired', expect: premise.expect, output: output.trim() }
 }
-
 export function markPulls(graph, pullIds) {
   const pulls = new Set(pullIds)
   return { ...graph, artefacts: graph.artefacts.map((artefact) => (pulls.has(artefact.id) ? { ...artefact, type: 'pr' } : artefact)) }
 }
-
 const RESTS_ON = ['builds-on', 'assumes']
-const citeLabel = (item, fallback) => (item?.type === 'pr' ? `PR${item.id}` : item?.id ?? fallback)
-
+const citeLabel = (item, fallback) => (item?.repo ? `${item.repo}#${String(item.id).slice(1)}` : item?.type === 'pr' ? `PR${item.id}` : item?.id ?? fallback)
 export function downstream(graph, id) {
   const items = new Map([...graph.nodes, ...graph.artefacts].map((item) => [item.id, item]))
   const incoming = (key) => graph.edges
@@ -601,7 +605,6 @@ export function downstream(graph, id) {
   for (const edge of incoming(id)) visit(edge.from)
   return labels
 }
-
 export function premisesFor(graph, issue) {
   const id = String(issue).startsWith('#') ? String(issue) : `#${issue}`
   const roots = new Set()
@@ -618,9 +621,7 @@ export function premisesFor(graph, issue) {
   for (const root of roots) walk(root)
   return [...premises].sort(byNumber)
 }
-
 export const verifyExitCode = (rows, strict) => (strict && rows.some((row) => row.status === 'expired') ? 1 : 0)
-
 export function formatVerify(rows) {
   const count = (status) => rows.filter((row) => row.status === status).length
   const lines = rows.map((row) => {
@@ -632,7 +633,6 @@ export function formatVerify(rows) {
   lines.push(`VERIFY: ${count('holds')} holds · ${count('expired')} expired · ${count('unverifiable')} unverifiable · ${count('manual')} manual · ${count('skipped')} skipped`)
   return `${lines.join('\n')}\n`
 }
-
 export function expiryIssue(premise, downstreamLabels) {
   const body = [
     `Premise ${premise.id} no longer holds.`,
@@ -645,7 +645,11 @@ export function expiryIssue(premise, downstreamLabels) {
   ].join('\n')
   return { title: `Premise expired: ${premise.id} — ${premise.title}`, body, labels: ['project:lineage'] }
 }
-
+export function peerInstallExit(status, output, error) {
+  if (error || status == null) return 1
+  if (status !== 0 && !String(output).includes('ERR_PNPM_PEER_DEP_ISSUES')) return status || 1
+  return 0
+}
 export function planExpiryUpserts(existing, issues) {
   return issues.map((issue) => {
     const open = existing.filter((item) => item.state !== 'closed' && item.title === issue.title)

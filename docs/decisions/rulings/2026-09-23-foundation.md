@@ -1039,6 +1039,7 @@ work it replaced.
 
 ## R400 — The real risk is bump *ordering*, not a version hold, and it survives the premise
 Builds on: R399
+Assumes: P-005
 expiring.** The lockfile still resolves R3F **9.5.0** (peer `>=19 <19.3`) while `react@latest` is
 **19.3.0**, and `.github/dependabot.yml` has **no `groups:`** — so the weekly run opens react,
 react-dom and @react-three/fiber as three PRs. Merge the React pair first and the repo lands

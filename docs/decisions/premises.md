@@ -7,7 +7,8 @@ command and compares its stdout with **Expect**: exact text, a `/regex/` or `^an
 a semver range (a version must satisfy it; a range must be a subset — `<19.2` holds `<19.3`, and
 `>=19 <19.4` does not).
 
-A command that fails or times out is **unverifiable**, never expired. A Verify cell that starts with
+A command that fails, times out, or prints nothing is **unverifiable**, never expired. So is a non-zero
+`pnpm install` unless its output contains `ERR_PNPM_PEER_DEP_ISSUES` (that signal can still expire). A Verify cell that starts with
 `manual` is not a command: it is reported **manual**, not run, and it counts as neither a failure,
 nor expired, nor holding (P-006 needs an authenticated browser tab). A Verify command whose text
 contains the word `gh` (P-007) is **skipped** the same way when no `GITHUB_TOKEN`, `GH_TOKEN`, or
