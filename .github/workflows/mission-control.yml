@@ -19,11 +19,14 @@ on:
       - 'mission-control/**'
 
 # contents:write pushes gh-pages (the site and the archive); issues:read and pull-requests:read are what
-# `gh issue list`/`gh pr list` (collect.mjs's SOURCES) need, measured directly from those calls. actions:read is
-# the issue's own stated minimum (#476's acceptance criteria) — granted as specified; nothing in collect.mjs today
-# reads the Actions API, so this PR could not find a call that exercises it.
+# `gh issue list`/`gh pr list` (collect.mjs's SOURCES) need, measured directly from those calls. No `actions`
+# permission: issue #476 lists actions:read as part of "the minimum", but every external call collect.mjs and
+# prune.mjs make (gh issue list, gh pr list x2, gh release list, gh api graphql x2, git ls-remote, git log, plus
+# local file reads) was re-derived twice over — once by this PR, again independently by its verifier — and none
+# of them touch the Actions API. Requesting it anyway would be exactly the kind of unverified, speculative grant
+# this workflow's own checks:read reasoning (below) already caught and reversed once.
 #
-# No `checks` permission: MC-6 (#477, merged while this PR was in progress — rebased in) added a checkRuns source
+# No `checks` permission either: MC-6 (#477, merged while this PR was in progress — rebased in) added a checkRuns source
 # reading each head's statusCheckRollup CheckRun nodes and their annotations over `gh api graphql`. #476 asked this
 # PR to measure whether that needs checks:read; it does not, on a public repo — already measured empirically, not
 # by this PR: pr-preview.yml's own run collected the checks section `ok`, annotations included, with a token that
@@ -35,7 +38,6 @@ permissions:
   contents: write
   issues: read
   pull-requests: read
-  actions: read
 
 concurrency:
   group: gh-pages
