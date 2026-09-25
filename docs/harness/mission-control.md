@@ -11,7 +11,8 @@ projection (`docs/research/2026-09-24-mission-control/REPORT.md` §5) and holds 
 - GitHub is read with `gh` (`GH_TOKEN` or `GITHUB_TOKEN` when set, else gh's login): six calls, all GraphQL, seven
   requests while over 100 issues are open, no REST — 7–8 s over three runs on 2026-09-25. Without a token `gh` calls
   nothing, and the GitHub sections go stale rather than fail the run. The ratchet's history needs a full clone
-  (`fetch-depth: 0`). `checks` reads check runs: in a workflow, grant `checks: read` (unmeasured until MC-5 runs it).
+  (`fetch-depth: 0`). `checks` needs no `checks` permission while the repo is public: #507's preview build collected
+  it `ok`, annotations included, with a token that has none (`pr-preview.yml`, 2026-09-25).
 - The transforms are pure, in `collect.logic.mjs`, tested over recorded `gh` JSON in `scripts/fixtures/mission-control/`.
 
 ## Freshness, not failure
@@ -65,7 +66,7 @@ Every field, by section. `?` marks one that can be `null`; `[]` an array.
 - **`adrs.items[]`** — `number` · `file` · `title`? · `status`? (as written)
 - **`roadmap`** — `lastUpdated`? · `phases[]` {`phase`, `doc`?, `group` (the table's heading), and the table's other columns (today `status`, `scope`)}
 - **`metrics`** — `ratchet` {`count`, `byRule` {rule: count}, `history[]` {`sha`, `date`, `subject`, `count`}, oldest first} · `releases[]` {`tag`, `publishedAt`, `isLatest`}, newest first · `mergesPerDay[]` {`date`, `merges`}
-- **`checks.items[]`** — `pr`? (`null` for main's head) · `sha` · `check` (`pr-hygiene` · `browser-qa` · `ci`) · `conclusion`? (`null` while it runs) · `completedAt`? · `url`? (the job) · `line`? (as published; `null` when that run published none: still running, run before MC-6, or stopped before printing it) · `verdict`? (`PASS` · `WARN` · `FAIL` · `SKIPPED`; the ratchet's is `FAIL` on a new violation) · `fields` (the line's `key=value` pairs, numbers as numbers; the ratchet's `known` and `new`)
+- **`checks.items[]`** — `pr`? (`null` for main's head) · `sha` · `check` (`pr-hygiene` · `browser-qa` · `ci`) · `conclusion`? (`null` while it runs) · `completedAt`? · `url`? (the job) · `line`? (as published; `null` when that run published none: still running, run before MC-6, or stopped before printing it) · `verdict`? (the conclusion wins: `FAIL` for a failure or time-out, the conclusion itself for any other that is not `SUCCESS` — `CANCELLED`, `SKIPPED`, … — and `null` while it runs; on a success, the line's: `PASS` · `WARN` · `SKIPPED`, the ratchet's `FAIL` on a new violation) · `fields` (the line's `key=value` pairs, numbers as numbers; the ratchet's `known` and `new`) · `disagrees` (the line's own verdict says otherwise than the conclusion; its `fields` are kept)
 - **`lineage`** — {`until`, `items[]`}
 
 ## Checks: where the summary lines are published (MC-6)
@@ -77,7 +78,9 @@ the job's own check run, where GraphQL and the Checks API serve it; the REST end
 `pr-hygiene` publishes `HYGIENE:`; `browser-qa` its last line, the skip or the verdict; `ci` the ratchet's
 `LAYER-RATCHET:` from inside `pnpm run lint`. The collector reads each head's status rollup and takes each check's
 newest run — the run `gh pr checks` shows. The rollup leaves out a `workflow_dispatch` re-check: that run publishes
-on itself, but it is not the PR's check, so it is not read (measured on #507, dispatch run 36095970389).
+on itself, but it is not the PR's check, so it is not read (measured on #507, dispatch run 36095970389). A run's
+conclusion wins over its line: `lint:layers` fails on a rule the config no longer declares (#489) while its line still
+ends `0 new`, so a run that did not succeed never reads `PASS`, and `disagrees` marks the line (`readCheckRun`).
 
 Why a notice (measured 2026-09-25 by a throwaway run under pr-hygiene's own permissions, `contents: read` and
 `pull-requests: read`: run 36094881378):
@@ -91,7 +94,7 @@ Why a notice (measured 2026-09-25 by a throwaway run under pr-hygiene's own perm
 
 `pr-hygiene` runs main's copy of its script (`pull_request_target`), so a PR's `HYGIENE:` line reads `null` until
 MC-6 is on main — #507, which brought it, included. What stays in the log (and the job summary) only: the findings
-under `HYGIENE:`, the paths that made a PR critical, and the ratchet's `by rule` and `NEW` lines.
+under `HYGIENE:`, the paths that made a PR critical, and the ratchet's `by rule`, `NEW` and `UNDECLARED` lines.
 
 ## Adding a section
 
