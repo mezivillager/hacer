@@ -1018,6 +1018,7 @@ thing to revert. Cost if wrong: #405 carries one more criterion than it was file
 
 ## R398 — #342 dispatched with "verify the premise first, and close the issue if it has moved."
 Builds on: unknown
+Assumes: P-001
 It was written on 2026-09-21 from a research note; several issues today have had stated facts
 that no longer held. The builder checks four things live — R3F's peer range, npm's `react`
 `latest`, the lockfile and the manifest — and if the range has widened, **closing #342 with that
@@ -1026,7 +1027,7 @@ before work starts rather than after a builder trips on it. Cost if wrong: a few
 checking against a pin nobody needed.
 
 ## R399 — #342 closed, not built: its premise expired 36 hours after it was filed, and the builder
-Builds on: unknown
+Builds on: R398
 checked before acting.** Upstream moved on 2026-09-22 — pmndrs/react-three-fiber#3916 merged at
 17:05Z, #3915 closed, v9.8.0 shipped at 19:46Z with "R3F is now compatible with React 19.3.0" —
 so `peerDependencies.react` is now `>=19 <19.4`. The issue's **own lift condition** (`npm view
@@ -1037,7 +1038,8 @@ met, then held HACER back from a release upstream supports. This is the instruct
 work it replaced.
 
 ## R400 — The real risk is bump *ordering*, not a version hold, and it survives the premise
-Builds on: unknown
+Builds on: R399
+Assumes: P-005
 expiring.** The lockfile still resolves R3F **9.5.0** (peer `>=19 <19.3`) while `react@latest` is
 **19.3.0**, and `.github/dependabot.yml` has **no `groups:`** — so the weekly run opens react,
 react-dom and @react-three/fiber as three PRs. Merge the React pair first and the repo lands
@@ -1089,7 +1091,7 @@ result **expires**. Cost if wrong: a setting that would have caught the case at 
 stays off.
 
 ## R405 — #409 is the first PR tiered under #351's new rule
-Builds on: unknown
+Builds on: R400
 `risk:0`, no `src/` code, 23
 reviewable lines → **Sonnet**, with a `Verified on:` line required of the verdict. Both halves of
 today's tiering change are now live and exercised: the tier itself, and the attribution that made

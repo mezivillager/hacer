@@ -3,8 +3,9 @@ import { readdirSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import { describe, it, expect } from 'vitest'
 import {
-  applyFixes, check, cutOverDate, formatCheck, formatTree, nextRulingId, parseAdr, parseLedger, parseLineage, parsePremises,
-  parseRulings, radius, subgraph, toMermaid, trace, validateGraph,
+  applyFixes, check, classifyPremise, commandDisposition, cutOverDate, downstream, expiryIssue, formatCheck, formatTree,
+  markPulls, matchesExpect, nextRulingId, parseAdr, parseLedger, parseLineage, parsePremises, parseRulings, peerInstallExit,
+  planExpiryUpserts, premisesFor, radius, subgraph, toMermaid, trace, validateGraph, verifyExitCode,
 } from './lineage.logic.mjs'
 
 // The fixtures under scripts/fixtures/lineage/ are small repos, laid out like this one:
@@ -568,5 +569,213 @@ describe('lineage queries and check (#467)', () => {
     const [, decisions, unlinked] = /^LINEAGE: (\d+) decisions · (\d+) unlinked/.exec(live.stdout)
     expect(Number(decisions)).toBe(parsed.nodes.length)
     expect(Number(unlinked)).toBe(parsed.nodes.filter((node) => node.buildsOn === 'unknown').length)
+  })
+})
+
+const verifyCli = (...args) => spawnSync(process.execPath, ['scripts/lineage.mjs', 'verify', '--root', path.join(FIXTURES, 'verify'), ...args], { cwd: REPO, encoding: 'utf8' })
+
+describe('lineage verify (#468)', () => {
+  const premise = (expect, extra = {}) => ({ id: 'P-001', title: 'range', verify: 'npm view x', expect, ...extra })
+
+  it('verify: a premise whose Verify output does not match Expect is EXPIRED', () => {
+    // The day-one shape: the registry answers a wider peer range than the premise recorded.
+    expect(classifyPremise(premise('<19.3'), { stdout: '>=19 <19.4\n', code: 0 }).status).toBe('expired')
+    expect(classifyPremise(premise('absent'), { stdout: 'present\n', code: 0 }).status).toBe('expired')
+  })
+
+  it('verify: a premise whose Verify command fails or times out is UNVERIFIABLE, never EXPIRED', () => {
+    const failing = { id: 'P-004', title: 'status', verify: 'gh api …', expect: '422' }
+    expect(classifyPremise(failing, { stdout: '500', code: 1 }).status).toBe('unverifiable')
+    expect(classifyPremise(failing, { stdout: '422', code: null, timedOut: true }).status).toBe('unverifiable')
+    expect(classifyPremise(failing, { stdout: '', code: 0, error: 'spawn ENOENT' }).status).toBe('unverifiable')
+    expect(classifyPremise(failing, { stdout: 'wrong', code: 2 }).status).not.toBe('expired')
+  })
+
+  it('verify: Expect supports exact, regex and semver-range matching', () => {
+    expect(matchesExpect('absent', 'absent')).toBe(true)
+    expect(matchesExpect(' present ', 'present')).toBe(true)
+    expect(matchesExpect('present', 'absent')).toBe(false)
+    expect(matchesExpect('those three', 'those three')).toBe(true)
+    expect(matchesExpect('422', '422')).toBe(true)
+    expect(matchesExpect('27', '^[1-9][0-9]*$')).toBe(true)
+    expect(matchesExpect('0', '^[1-9][0-9]*$')).toBe(false)
+    expect(matchesExpect('foo', '/^fo+$/')).toBe(true)
+    expect(matchesExpect('19.2.0', '<19.3')).toBe(true)
+    expect(matchesExpect('19.3.0', '<19.3')).toBe(false)
+    expect(matchesExpect('>=19 <19.4', '<19.3')).toBe(false)
+    expect(matchesExpect('<19.2', '<19.3')).toBe(true)
+    expect(matchesExpect('<19.3', '<19.3')).toBe(true)
+    expect(matchesExpect('1.2.3', '^1.2.0')).toBe(true)
+    expect(matchesExpect('2.0.0', '^1.2.0')).toBe(false)
+    expect(matchesExpect('0.2.9', '^0.2.3')).toBe(true)
+    expect(matchesExpect('0.3.0', '^0.2.3')).toBe(false)
+    expect(matchesExpect('1.2.9', '~1.2.3')).toBe(true)
+    expect(matchesExpect('1.3.0', '~1.2.3')).toBe(false)
+  })
+
+  it('verify: an expired premise lists its dependents transitively through builds-on and assumes', () => {
+    const graph = {
+      nodes: [
+        { id: 'P-001', kind: 'premise', title: 'range' },
+        { id: 'R1', kind: 'ruling', title: 'assumes the premise' },
+        { id: 'R2', kind: 'ruling', title: 'builds on the assumer' },
+        { id: 'R3', kind: 'ruling', title: 'amends only' },
+      ],
+      edges: [
+        { from: 'R1', to: 'P-001', kind: 'assumes' },
+        { from: 'R2', to: 'R1', kind: 'builds-on' },
+        { from: 'R3', to: 'R1', kind: 'amends' },
+      ],
+      artefacts: [
+        { id: '#342', kind: 'github', citedBy: ['R1'] },
+        { id: '#408', kind: 'github', citedBy: ['R2'] },
+        { id: '#409', kind: 'github', title: 'group', citedBy: ['R2'] },
+      ],
+      errors: [],
+    }
+    // Amends is not a "rests on" edge. A pull request is labelled once GitHub says it is one.
+    expect(downstream(markPulls(graph, ['#409']), 'P-001')).toEqual(['R1', '#342', 'R2', '#408', 'PR#409'])
+  })
+
+  it('verify --for #<issue> checks only the premises the issue\'s decisions rest on', () => {
+    const graph = {
+      nodes: [
+        { id: 'P-001', kind: 'premise', title: 'a' },
+        { id: 'P-002', kind: 'premise', title: 'b' },
+        { id: 'P-005', kind: 'premise', title: 'c' },
+        { id: 'R1', kind: 'ruling', title: 'root' },
+        { id: 'R2', kind: 'ruling', title: 'child' },
+      ],
+      edges: [
+        { from: 'R1', to: 'P-001', kind: 'assumes' },
+        { from: 'R2', to: 'R1', kind: 'builds-on' },
+        { from: 'R2', to: 'P-005', kind: 'assumes' },
+        { from: 'R9', to: 'P-002', kind: 'assumes' },
+        { from: '#342', to: 'R2', kind: 'introduced-by' },
+      ],
+      artefacts: [{ id: '#342', kind: 'github', citedBy: ['R2'] }],
+      errors: [],
+    }
+    expect(premisesFor(graph, '#342')).toEqual(['P-001', 'P-005'])
+    expect(premisesFor(graph, '342')).toEqual(['P-001', 'P-005'])
+    expect(premisesFor(graph, '#999')).toEqual([])
+    const scoped = verifyCli('--for', '#342')
+    expect(scoped.status).toBe(0)
+    expect(scoped.stdout).toContain('P-001 EXPIRED')
+    expect(scoped.stdout).not.toContain('P-002')
+  })
+
+  it('verify --strict exits 1 when anything is expired; plain verify exits 0 and prints the report', () => {
+    const plain = verifyCli()
+    expect(plain.status).toBe(0)
+    expect(plain.stdout).toContain('P-001 EXPIRED')
+    expect(plain.stdout).toContain('P-002 HOLDS')
+    expect(plain.stdout).toContain('P-009 UNVERIFIABLE')
+    expect(plain.stdout).toContain('P-006 MANUAL')
+    expect(plain.stdout).toContain('VERIFY: 1 holds · 1 expired · 1 unverifiable · 1 manual · 0 skipped')
+    expect(verifyExitCode([{ status: 'expired' }, { status: 'manual' }, { status: 'skipped' }], false)).toBe(0)
+    const strict = verifyCli('--strict')
+    expect(strict.status).toBe(1)
+    expect(strict.stdout).toContain('P-001 EXPIRED')
+    expect(verifyExitCode([{ status: 'expired' }], true)).toBe(1)
+    expect(verifyExitCode([{ status: 'manual' }, { status: 'unverifiable' }, { status: 'skipped' }], true)).toBe(0)
+  })
+
+  it('verify: a manual premise is manual — not expired, not holding, and not a failure', () => {
+    const manual = { id: 'P-006', title: 'meter', verify: 'manual — read the tab', expect: '2026-09-25T03:00:00Z' }
+    expect(commandDisposition(manual.verify, { token: true })).toBe('manual')
+    expect(commandDisposition(manual.verify, { token: false })).toBe('manual')
+    const row = classifyPremise(manual, { stdout: 'no', code: 1 })
+    expect(row.status).toBe('manual')
+    expect(['expired', 'holds', 'unverifiable']).not.toContain(row.status)
+    expect(verifyExitCode([row], true)).toBe(0)
+  })
+
+  it('verify: a gh premise with no token is skipped — not expired, not holding, and not unverifiable', () => {
+    const verify = 'gh pr list --state merged --limit 60'
+    expect(commandDisposition(verify, { token: false })).toBe('skipped')
+    expect(commandDisposition(verify, { token: true })).toBe('run')
+    expect(commandDisposition('npm view react version', { token: false })).toBe('run')
+    const row = classifyPremise({ id: 'P-007', title: 'verdicts', verify, expect: '^[1-9][0-9]*$' }, { skipped: true, reason: 'no token' })
+    expect(row.status).toBe('skipped')
+    expect(['expired', 'holds', 'unverifiable']).not.toContain(row.status)
+    expect(verifyExitCode([row], true)).toBe(0)
+  })
+
+  it('verify: expiry opens or updates one issue per premise, idempotently', () => {
+    const issue = expiryIssue(
+      { id: 'P-001', title: "R3F's peer range excludes React 19.3", expect: '<19.3', output: '>=19 <19.4' },
+      ['#342', '#408', 'PR#409'],
+    )
+    expect(issue.title).toBe("Premise expired: P-001 — R3F's peer range excludes React 19.3")
+    expect(issue.labels).toEqual(['project:lineage'])
+    expect(issue.body).toContain('#342')
+    expect(issue.body).toContain('#408')
+    expect(issue.body).toContain('PR#409')
+    const created = planExpiryUpserts([], [issue])
+    expect(created).toEqual([{ action: 'create', title: issue.title, body: issue.body, labels: ['project:lineage'] }])
+    const again = planExpiryUpserts([{ number: 12, title: issue.title, state: 'open' }], [issue])
+    expect(again).toEqual([{ action: 'update', number: 12, body: issue.body }])
+    const duplicate = planExpiryUpserts([
+      { number: 12, title: issue.title, state: 'open' },
+      { number: 13, title: issue.title, state: 'open' },
+    ], [issue])
+    expect(duplicate).toEqual([{ action: 'update', number: 12, body: issue.body }])
+  })
+
+  it('lineage-verify.yml runs on a weekly schedule and workflow_dispatch, never on pull_request', () => {
+    const yml = readFileSync(path.join(REPO, '.github/workflows/lineage-verify.yml'), 'utf8')
+    const cron = /cron:\s*'([^']+)'/.exec(yml)?.[1]
+    expect(cron?.split(/\s+/)).toHaveLength(5)
+    expect(cron.split(/\s+/)[4]).not.toBe('*')
+    expect(yml).toMatch(/workflow_dispatch:/)
+    expect(yml).not.toMatch(/pull_request/)
+    expect(yml).toMatch(/concurrency:\s*\n\s*group:\s*lineage-verify/)
+    expect(yml).toMatch(/cancel-in-progress:\s*false/)
+  })
+
+  it('verify: a failed package lookup is UNVERIFIABLE, never EXPIRED', () => {
+    const peer = { id: 'P-005', title: 'peer', verify: 'node scripts/premises/checks.mjs peer-install', expect: 'exit 0' }
+    const output = 'ERR_PNPM_META_FETCH_FAIL'
+    const code = peerInstallExit(1, output, null)
+    expect(code).not.toBe(0)
+    const row = classifyPremise(peer, { stdout: output, code })
+    expect(row.status).toBe('unverifiable')
+    expect(row.status).not.toBe('expired')
+    // A real peer-dependency failure still exits 0 from the wrapper, so a mismatch can expire.
+    expect(peerInstallExit(1, 'ERR_PNPM_PEER_DEP_ISSUES', null)).toBe(0)
+    expect(classifyPremise(peer, { stdout: 'exit 1', code: 0 }).status).toBe('expired')
+  })
+
+  it('verify: a command that exits 0 with empty output is UNVERIFIABLE, never EXPIRED', () => {
+    const row = classifyPremise(premise('<19.3'), { stdout: '', code: 0 })
+    expect(row.status).toBe('unverifiable')
+    expect(row.status).not.toBe('expired')
+    expect(classifyPremise(premise('absent'), { stdout: '  \n', code: 0 }).status).toBe('unverifiable')
+  })
+
+  it('verify: a cross-repo continuation is qualified, never a bare hacer link', () => {
+    const parsed = parseRulings('r.md', [
+      '## R1 — note',
+      'Assumes: P-001',
+      'Upstream — pmndrs/react-three-fiber#3916 merged at 17:05Z, #3915 closed.',
+      '',
+      '## R2 — local',
+      'Builds on: R1',
+      'Filed #408.',
+    ].join('\n'))
+    expect(parsed.artefacts.find((item) => item.id === '#3915').repo).toBe('pmndrs/react-three-fiber')
+    expect(parsed.artefacts.find((item) => item.id === '#408').repo).toBeUndefined()
+    const labels = downstream({
+      nodes: [{ id: 'P-001', kind: 'premise' }, ...parsed.nodes],
+      edges: parsed.edges,
+      artefacts: parsed.artefacts,
+    }, 'P-001')
+    expect(labels).toContain('pmndrs/react-three-fiber#3915')
+    expect(labels).not.toContain('#3915')
+    const body = expiryIssue({ id: 'P-001', title: 't', expect: 'a', output: 'b' }, labels).body
+    expect(body).toContain('pmndrs/react-three-fiber#3915')
+    expect(body).not.toMatch(/(?<![\w/])#3915\b/)
+    expect(body).toContain('#408')
   })
 })
