@@ -28,11 +28,13 @@ function testFilesUnder(dir) {
 }
 
 describe('vite.config.ts collects every mission-control test file', () => {
+  // Spawns a whole second Vitest process to resolve config and collect files — measured 6-21s depending on load,
+  // well past the default 5s per-test timeout; this is the one test in the suite genuinely slower than that.
   it('every mission-control/**/*.test.* or *.spec.* file on disk is one `vitest list` actually reports', () => {
     const onDisk = testFilesUnder('mission-control')
     expect(onDisk.length).toBeGreaterThan(0) // otherwise the check below is vacuous, not green
 
     const listed = execFileSync('pnpm', ['exec', 'vitest', 'list', 'mission-control'], { cwd: ROOT, encoding: 'utf8' })
     for (const file of onDisk) expect(listed, `${file} was not collected by any vitest project`).toContain(file)
-  })
+  }, 45_000)
 })

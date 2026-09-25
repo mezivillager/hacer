@@ -50,6 +50,15 @@ files would pass under `node` today (the pure handler and layout tests under `sr
 example); they are left where they are because the directory around them is DOM-bound and an
 exception list long enough to carve them out would stop being readable.
 
+`mission-control/` (its own Vite root, #473) is a third root inside `ALL_TESTS`, always `jsdom` —
+never a `node` candidate, since it sits outside the directories in point 1 above. Its own glob,
+`mission-control/**/*.{test,spec}.{ts,tsx,mjs}`, was `.{tsx,mjs}` only until #512: a plain `.ts`
+test file under `mission-control/` was silently collected by neither project — #313's exact failure
+mode (above), recurring one PR later in a place that fix did not cover.
+`scripts/mission-control/vitest-collects.cli.test.mjs` guards this specific glob going forward, by
+asking Vitest itself (`vitest list`) rather than re-deriving its matching rules. #436 (open) tracks
+this same page's remaining gap for `src/`'s own glob (`.mts`/`.js`, and the node/jsdom asymmetry).
+
 ## Exceptions — in a `node` directory, but still need a DOM
 
 Each fails with `ReferenceError: localStorage is not defined` (measured 2026-09-21, #323). They go
