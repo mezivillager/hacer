@@ -18,7 +18,8 @@ const pkg = JSON.parse(readFileSync(path.join(__dirname, 'package.json'), 'utf-8
 // `jsdom` rather than `node` (the node-project regex below stays `.ts`/`.mjs` only, since
 // widening it too needs a `.mts` vs `.mtsx`-shaped rule this repo has no example of yet) — run,
 // just not in the strictest project, which is still strictly better than not run at all.
-const ALL_TESTS = ['src/**/*.{test,spec}.{ts,tsx,mts,js}', 'scripts/**/*.{test,spec}.mjs']
+// Mission Control's site (#473) is its own Vite root; its tests join the `jsdom` project here.
+const ALL_TESTS = ['src/**/*.{test,spec}.{ts,tsx,mts,js}', 'scripts/**/*.{test,spec}.mjs', 'mission-control/**/*.{test,spec}.{tsx,mjs}']
 
 // Membership is by directory: the layers that must stay headless — pure logic, state, scenarios,
 // and the repo's own tooling — plus the `.ts`/`.mjs` extension rule (a `.tsx` test renders JSX, so it
