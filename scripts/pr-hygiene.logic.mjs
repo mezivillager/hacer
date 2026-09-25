@@ -299,9 +299,16 @@ export const RATCHET_BASELINE_FILE = '.dependency-cruiser-known-violations.json'
  */
 export const RATCHET_CONFIG_FILE = '.dependency-cruiser.cjs'
 
-/** Red stub (#489): what the ratchet has to read for this PR's files, or null when it reads nothing. */
-export function ratchetReads() {
-  return null
+/**
+ * What the ratchet reads for this PR, or null when it reads nothing — a PR that edits neither file
+ * (#396's shape) makes no content request at all. The baseline is read at both refs when either
+ * file changed, and the config's text as well when it did: a rule is declared there, and taken out
+ * there (#489), so a PR that edits only the config is read too.
+ * @param {{filename:string}[]} files
+ */
+export function ratchetReads(files) {
+  const edited = (name) => files.some((entry) => entry.filename === name)
+  return edited(RATCHET_BASELINE_FILE) || edited(RATCHET_CONFIG_FILE) ? { config: edited(RATCHET_CONFIG_FILE) } : null
 }
 
 /**
@@ -429,6 +436,24 @@ function unscannedConfig(text, whose, cost) {
 }
 
 /**
+ * The rules this PR takes out of the config (#489). A name the merge base's copy declares and this
+ * PR's does not is a disarmed rule — every edge it checked goes unguarded, rows or none — unless
+ * every one of its rows moved to a name this PR declares: a rename its rows vouch for, which reads
+ * `swapped`. A name the scan can no longer see reads as taken out too, which fails closed.
+ */
+function disarmedRules(baseRules, headRules, declaredHere, baseRows, headRows) {
+  const movedEdges = new Set(headRows.filter((row) => declaredHere.has(row.rule)).map((row) => row.edge))
+  return [...baseRules]
+    .filter((rule) => !headRules.has(rule))
+    .map((rule) => {
+      const rows = baseRows.filter((row) => row.rule === rule)
+      const left = headRows.filter((row) => row.rule === rule).length
+      return { rule, rows: rows.length, left, unmoved: rows.filter((row) => !movedEdges.has(row.edge)).length }
+    })
+    .filter(({ rows, left, unmoved }) => rows === 0 || left > 0 || unmoved > 0)
+}
+
+/**
  * The verdict on one baseline against the PR's merge base. A row may only appear under a rule name
  * this PR **declares in `.dependency-cruiser.cjs`** — that is what tells an armed rule from an
  * absorbed violation, and it is the one thing a reviewer cannot see in a `linguist-generated` diff.
@@ -489,9 +514,15 @@ export function compareRatchetBaseline({ base, head, baseConfig = null, headConf
   // The rule names this PR brings into existence. Without a config edit there are none, so every
   // added row is an absorption — which is what a zero-row rule and an invented name both are.
   const baseConfigRules = parseRuleNames(baseConfig)
+  const headConfigRules = parseRuleNames(headConfig)
   const declaredHere = configTouched
-    ? new Set([...parseRuleNames(headConfig)].filter((name) => !baseConfigRules.has(name)))
+    ? new Set([...headConfigRules].filter((name) => !baseConfigRules.has(name)))
     : new Set()
+  // The rules themselves, read on every PR that edits the config — its rows do not have to move (#489).
+  const disarmed = configTouched
+    ? disarmedRules(baseConfigRules, headConfigRules, declaredHere, parsedBase.rows, parsedHead.rows)
+    : []
+  if (disarmed.length > 0) return { status: 'disarmed', counts, disarmed }
   const armedRules = [...new Set(added.filter((row) => declaredHere.has(row.rule)).map((row) => row.rule))]
   const absorbed = added.filter((row) => !declaredHere.has(row.rule))
   const status =
@@ -504,7 +535,8 @@ export function compareRatchetBaseline({ base, head, baseConfig = null, headConf
         : removed.length > 0
           ? 'swapped'
           : 'armed'
-  return { status, counts, added, absorbed, removed, armedRules }
+  const ruleNames = configTouched ? baseConfigRules.size : undefined
+  return { status, counts, added, absorbed, removed, armedRules, ruleNames }
 }
 
 /** Added rows, named — "the baseline grew" on its own is not something anyone can act on. */
@@ -517,9 +549,28 @@ function nameRatchetRows(rows) {
 function ratchetGrowth({ body, ratchet }) {
   const finding = (level, message) => [{ rule: 'ratchet', level, message }]
   if (!ratchet) return finding('pass', `\`${RATCHET_BASELINE_FILE}\` unchanged`)
-  const { status, counts, added, absorbed, removed, armedRules, detail } = ratchet
+  const { status, counts, added, absorbed, removed, armedRules, detail, disarmed, ruleNames } = ratchet
   if (status === 'unreadable') return finding('fail', detail)
-  if (status === 'unchanged') return finding('pass', `${counts.head} baseline rows, unchanged`)
+  if (status === 'disarmed') {
+    const why = ({ rows, left, unmoved }) =>
+      rows === 0
+        ? 'no baseline rows'
+        : left > 0
+          ? `${plural(left, 'row')} left behind`
+          : `${unmoved === rows ? `${plural(rows, 'row')}, none` : `${unmoved} of ${rows} rows not`} moved to a rule this PR declares`
+    const [them, they] = disarmed.length === 1 ? ['it', 'it'] : ['them', 'they']
+    return finding(
+      'fail',
+      `this PR takes ${disarmed.map((entry) => `\`${entry.rule}\` (${why(entry)})`).join(', ')} out of ` +
+        `\`${RATCHET_CONFIG_FILE}\`, and its merge base declares ${them} — the edges ${they} checked go unguarded, and a row ` +
+        `under a name no rule reports suppresses nothing. Restore ${them}; a rename passes only with all its rows moved to ` +
+        "the new name in the same PR. The scan reads only a literal `name: '…'`, so a name written any other way reads as taken out",
+    )
+  }
+  if (status === 'unchanged') {
+    const read = ruleNames === undefined ? '' : ` — \`${RATCHET_CONFIG_FILE}\` edited, still declaring all ${plural(ruleNames, 'rule name')} its merge base does`
+    return finding('pass', `${counts.head} baseline rows, unchanged${read}`)
+  }
   const rules = armedRules.map((rule) => `\`${rule}\``).join(', ')
   // Never "flat" once the rows have changed: the count is the one number this rule does not judge
   // on, and "71 baseline rows, flat" after 72 was a false statement in a required check's output.
