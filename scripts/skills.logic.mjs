@@ -141,6 +141,9 @@ export const BRIEF_INVARIANTS = [
         phrases: ['pnpm run lint', 'pnpm run test:run', 'pnpm run build', 'pnpm run lint:docs', 'verification command'],
       },
       { id: 'stop-after-the-pr', phrases: ['do **not** keep watching CI'] },
+      // #485: twice a PR that finished only part of an issue closed it on merge (#396, #443) — GitHub
+      // acts on a closing keyword alone. One phrase, so the rule is pinned as the whole sentence.
+      { id: 'fixes-only-when-the-whole-issue-is-done', phrases: ['`Fixes` only when the whole issue is done; otherwise `Part of`'] },
     ],
     absent: [
       { id: 'e2e-in-the-definition-of-done', phrases: ['test:e2e'], why: 'ADR-0012 took E2E out of the definition of done' },
