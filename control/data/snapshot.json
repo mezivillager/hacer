@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-25T07:07:45.960Z",
+  "generatedAt": "2026-09-25T07:26:23.164Z",
   "head": {
-    "sha": "4f09a10ae66714b779a74fb92cf3647440b9b0f7",
-    "date": "2026-09-25T10:06:14+03:00",
-    "subject": "fix(mission-control): drop actions:read — verifier re-derived every call, none touch the Actions API"
+    "sha": "79e512352133368fa6f2f3f87de744801c97cb2c",
+    "date": "2026-09-25T10:25:31+03:00",
+    "subject": "feat(mission-control): the timeline view — sessions, merges, releases (#475)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-25T07:07:45.960Z",
+      "fetchedAt": "2026-09-25T07:26:23.164Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-25T07:07:45.960Z",
+      "fetchedAt": "2026-09-25T07:26:23.164Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-25T07:07:45.960Z",
+      "fetchedAt": "2026-09-25T07:26:23.164Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-25T07:07:45.960Z",
+      "fetchedAt": "2026-09-25T07:26:23.164Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-09-25T07:07:45.960Z",
+      "fetchedAt": "2026-09-25T07:26:23.164Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-09-25T07:07:45.960Z",
+      "fetchedAt": "2026-09-25T07:26:23.164Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-09-25T07:07:45.960Z",
+      "fetchedAt": "2026-09-25T07:26:23.164Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-09-25T07:07:45.960Z",
+      "fetchedAt": "2026-09-25T07:26:23.164Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-09-25T07:07:45.960Z",
+      "fetchedAt": "2026-09-25T07:26:23.164Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-09-25T07:07:45.960Z",
+      "fetchedAt": "2026-09-25T07:26:23.164Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-25T07:07:45.960Z",
+      "fetchedAt": "2026-09-25T07:26:23.164Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-09-25T07:07:45.960Z",
+      "fetchedAt": "2026-09-25T07:26:23.164Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-09-25T07:07:45.960Z",
+      "fetchedAt": "2026-09-25T07:26:23.164Z",
       "status": "ok"
     }
   },
@@ -100,8 +100,8 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 31,
-        "ready": 22,
+        "open": 32,
+        "ready": 23,
         "inProgress": 0,
         "needsHuman": 0,
         "next": {
@@ -111,8 +111,8 @@
         "title": "Epic: harness — autonomous-run improvements & agent-readiness",
         "subIssues": {
           "completed": 24,
-          "percentCompleted": 51,
-          "total": 47
+          "percentCompleted": 50,
+          "total": 48
         }
       },
       {
@@ -328,9 +328,9 @@
         "lane": "process",
         "slug": "mission-control",
         "epicNumber": 458,
-        "open": 6,
+        "open": 5,
         "ready": 4,
-        "inProgress": 1,
+        "inProgress": 0,
         "needsHuman": 0,
         "next": {
           "number": 478,
@@ -338,8 +338,8 @@
         },
         "title": "Epic: mission-control — Mission Control: the platform's status, process and roadmap as one site",
         "subIssues": {
-          "completed": 5,
-          "percentCompleted": 50,
+          "completed": 6,
+          "percentCompleted": 60,
           "total": 10
         }
       }
@@ -585,6 +585,11 @@
       {
         "number": 455,
         "title": "CI does not fail on peer-range violations — #410 installs React 19.3 with an R3F whose peer range excludes it, all green",
+        "project": "harness"
+      },
+      {
+        "number": 516,
+        "title": "A lint for case-only filename collisions — two Mission Control PRs hit it in one day (macOS resolves the wrong module, CI on Linux passes)",
         "project": "harness"
       }
     ]
@@ -1288,6 +1293,21 @@
       {
         "number": 455,
         "title": "CI does not fail on peer-range violations — #410 installs React 19.3 with an R3F whose peer range excludes it, all green",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:1"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 516,
+        "title": "A lint for case-only filename collisions — two Mission Control PRs hit it in one day (macOS resolves the wrong module, CI on Linux passes)",
         "labels": [
           "project:harness",
           "agent-ready",
@@ -2619,22 +2639,6 @@
         "reason": "in-progress"
       },
       {
-        "number": 475,
-        "title": "Mission Control MC-4: the Timeline view — sessions, merges and releases on one axis",
-        "labels": [
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:mission-control"
-        ],
-        "blocking": [],
-        "project": "mission-control",
-        "rank": 14,
-        "lane": "process",
-        "pickable": false,
-        "reason": "in-progress"
-      },
-      {
         "number": 500,
         "title": "pr-hygiene: the ratchet's Baseline-growth reader models a fence by a line's first characters (#499 verifier)",
         "labels": [
@@ -2790,6 +2794,7 @@
         394,
         418,
         455,
+        516,
         154,
         156,
         270,
@@ -2805,7 +2810,6 @@
         479,
         480,
         513,
-        475,
         509
       ],
       "spine": [
@@ -2890,21 +2894,19 @@
   "prs": {
     "open": [
       {
-        "number": 515,
-        "title": "feat(mission-control): the timeline view — sessions, merges, releases (#475)",
-        "url": "https://github.com/mezivillager/hacer/pull/515",
+        "number": 517,
+        "title": "docs(harness): session record for 2026-09-25; rulings R700–R740",
+        "url": "https://github.com/mezivillager/hacer/pull/517",
         "author": "mezivillager",
         "labels": [
-          "risk:1",
-          "project:mission-control"
+          "project:harness",
+          "risk:0"
         ],
-        "headRefName": "feat/475-mission-control-timeline",
+        "headRefName": "docs/session-record-2026-09-25",
         "isDraft": false,
-        "createdAt": "2026-09-25T06:58:15Z",
+        "createdAt": "2026-09-25T07:20:13Z",
         "mergedAt": null,
-        "closes": [
-          475
-        ],
+        "closes": [],
         "verdicts": []
       },
       {
@@ -2923,7 +2925,15 @@
         "closes": [
           470
         ],
-        "verdicts": []
+        "verdicts": [
+          {
+            "verdict": "BLOCK",
+            "round": 1,
+            "model": "claude-sonnet-5 (Sonnet 5)",
+            "at": "2026-09-25T07:17:00Z",
+            "url": "https://github.com/mezivillager/hacer/pull/514#issuecomment-5828483483"
+          }
+        ]
       },
       {
         "number": 496,
@@ -2960,11 +2970,38 @@
     ],
     "merged": [
       {
+        "number": 515,
+        "title": "feat(mission-control): the timeline view — sessions, merges, releases (#475)",
+        "url": "https://github.com/mezivillager/hacer/pull/515",
+        "author": "mezivillager",
+        "labels": [
+          "risk:1",
+          "project:mission-control"
+        ],
+        "headRefName": "feat/475-mission-control-timeline",
+        "isDraft": false,
+        "createdAt": "2026-09-25T06:58:15Z",
+        "mergedAt": "2026-09-25T07:25:32Z",
+        "closes": [
+          475
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Claude Sonnet 5 (claude-sonnet-5)",
+            "at": "2026-09-25T07:14:50Z",
+            "url": "https://github.com/mezivillager/hacer/pull/515#issuecomment-5828459133"
+          }
+        ]
+      },
+      {
         "number": 512,
         "title": "feat(mission-control): hourly refresh workflow and the snapshot history archive (MC-5)",
         "url": "https://github.com/mezivillager/hacer/pull/512",
         "author": "mezivillager",
         "labels": [
+          "released",
           "risk:1",
           "project:mission-control"
         ],
@@ -4384,35 +4421,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/388#issuecomment-5787853160"
           }
         ]
-      },
-      {
-        "number": 387,
-        "title": "docs(harness): backlog sweep against the read-only direction, and Phase N filed",
-        "url": "https://github.com/mezivillager/hacer/pull/387",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:0",
-          "project:foundation"
-        ],
-        "headRefName": "docs/340-backlog-sweep",
-        "isDraft": false,
-        "createdAt": "2026-09-23T01:39:20Z",
-        "mergedAt": "2026-09-23T02:21:59Z",
-        "closes": [
-          188,
-          340
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Sonnet 5 (claude-sonnet-5)",
-            "at": "2026-09-23T01:59:39Z",
-            "url": "https://github.com/mezivillager/hacer/pull/387#issuecomment-5787662187"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4500,31 +4508,6 @@
           "author": "mezivillager",
           "at": "2026-09-25T06:02:35Z",
           "url": "https://github.com/mezivillager/hacer/issues/470#issuecomment-5827635352"
-        }
-      },
-      {
-        "number": 475,
-        "ref": "refs/heads/claim/475",
-        "sha": "fe2e867d081609f33ad5c33ea51913c912f1b9a5",
-        "state": "OPEN",
-        "title": "Mission Control MC-4: the Timeline view — sessions, merges and releases on one axis",
-        "url": "https://github.com/mezivillager/hacer/issues/475",
-        "labels": [
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:mission-control"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-09-25 process-sweep",
-          "branch": "feat/475-mission-control-timeline",
-          "handoff": null,
-          "author": "mezivillager",
-          "at": "2026-09-25T06:39:48Z",
-          "url": "https://github.com/mezivillager/hacer/issues/475#issuecomment-5828072195"
         }
       }
     ],
@@ -5502,9 +5485,14 @@
     },
     "releases": [
       {
+        "tag": "v2.41.0",
+        "publishedAt": "2026-09-25T07:09:00Z",
+        "isLatest": true
+      },
+      {
         "tag": "v2.40.0",
         "publishedAt": "2026-09-25T06:40:30Z",
-        "isLatest": true
+        "isLatest": false
       },
       {
         "tag": "v2.39.0",
@@ -5950,7 +5938,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-23",
-        "merges": 18
+        "merges": 17
       },
       {
         "date": "2026-09-24",
@@ -5958,7 +5946,7 @@
       },
       {
         "date": "2026-09-25",
-        "merges": 10
+        "merges": 11
       }
     ]
   },
@@ -5966,11 +5954,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "4f09a10ae66714b779a74fb92cf3647440b9b0f7",
+        "sha": "79e512352133368fa6f2f3f87de744801c97cb2c",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36105984094/job/107978478318",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36107567262/job/107983489320",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -6095,43 +6083,42 @@
         "disagrees": false
       },
       {
-        "pr": 515,
-        "sha": "11be18dc92e2e02bd651425e4070faed8a4f672e",
+        "pr": 517,
+        "sha": "ce3e920a6414164989dbdb8b9d45d8ead2ac1bbc",
         "check": "pr-hygiene",
         "conclusion": "SUCCESS",
-        "completedAt": "2026-09-25T06:58:41Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36105318241/job/107976490321",
-        "line": "HYGIENE: PASS reviewable=93 test=54 excluded=0 files=6 issue=#475 linked=fixes",
-        "verdict": "PASS",
+        "completedAt": "2026-09-25T07:20:38Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36107120130/job/107982129037",
+        "line": "HYGIENE: WARN reviewable=341 test=0 excluded=0 files=2 issue=docs-only",
+        "verdict": "WARN",
         "fields": {
-          "reviewable": 93,
-          "test": 54,
+          "reviewable": 341,
+          "test": 0,
           "excluded": 0,
-          "files": 6,
-          "issue": "#475",
-          "linked": "fixes"
+          "files": 2,
+          "issue": "docs-only"
         },
         "disagrees": false
       },
       {
-        "pr": 515,
-        "sha": "11be18dc92e2e02bd651425e4070faed8a4f672e",
+        "pr": 517,
+        "sha": "ce3e920a6414164989dbdb8b9d45d8ead2ac1bbc",
         "check": "browser-qa",
         "conclusion": "SUCCESS",
-        "completedAt": "2026-09-25T06:58:44Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36105317450/job/107976494942",
+        "completedAt": "2026-09-25T07:20:38Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36107120031/job/107982139989",
         "line": "BROWSER-QA: skipped (no critical paths)",
         "verdict": "SKIPPED",
         "fields": {},
         "disagrees": false
       },
       {
-        "pr": 515,
-        "sha": "11be18dc92e2e02bd651425e4070faed8a4f672e",
+        "pr": 517,
+        "sha": "ce3e920a6414164989dbdb8b9d45d8ead2ac1bbc",
         "check": "ci",
         "conclusion": "SUCCESS",
-        "completedAt": "2026-09-25T07:00:56Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36105316954/job/107976439814",
+        "completedAt": "2026-09-25T07:22:16Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36107119291/job/107982088772",
         "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
         "verdict": "PASS",
         "fields": {
