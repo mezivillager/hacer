@@ -10,15 +10,16 @@ a { color: var(--link); }
 .mc h1 { font-size: 1.3rem; margin: 0; }
 .mc nav { display: flex; gap: 1rem; }
 .mc header p, .asof { color: var(--muted); font-size: 0.85rem; margin: 0; }
-.tiles { display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); }
+.tiles { display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); }
 .tile { background: var(--card); border: 1px solid var(--line); border-radius: 0.5rem; padding: 0.75rem 1rem; }
 .tile h3 { font-size: 0.8rem; letter-spacing: 0.04em; text-transform: uppercase; margin: 0; }
 .tile h3 a { color: var(--muted); text-decoration: none; }
 .tile dl { margin: 0.5rem 0 0; }
-.tile dl div { display: flex; justify-content: space-between; gap: 1rem; }
-.tile dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+.tile dl div { display: flex; flex-wrap: wrap; justify-content: space-between; column-gap: 1rem; }
+.tile dt { white-space: nowrap; }
+.tile dd { margin: 0 0 0 auto; text-align: right; font-variant-numeric: tabular-nums; }
 .stale { background: var(--stale-page); color: var(--stale-text); border-radius: 0.25rem; padding: 0.25rem 0.5rem; margin: 0.5rem 0; }
 .scroll { overflow-x: auto; margin-top: 0.75rem; }
 table { border-collapse: collapse; width: 100%; background: var(--card); font-variant-numeric: tabular-nums; }
 th, td { border-bottom: 1px solid var(--line); padding: 0.4rem 0.6rem; text-align: left; vertical-align: top; }
-progress { width: 4rem; margin-right: 0.4rem; }
+progress { width: 4rem; margin-right: 0.4rem; accent-color: var(--link); }
