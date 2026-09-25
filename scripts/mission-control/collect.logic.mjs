@@ -202,6 +202,12 @@ const SECTIONS = {
   lineage: { build: () => ({ until: 'DL-7', items: [] }) }, // the decision graph, once DL-7 draws it
 }
 
+/** The `--previous` file's text as a snapshot, or null for "no previous" — a missing, empty or unparseable file
+ *  (collect.mjs:73, #476) is never a crash, only ever this. collect.mjs reads the file; this only parses its text. */
+export function parsePrevious(text) {
+  throw new Error(`not implemented: ${typeof text}`)
+}
+
 /** A section whose required input failed, or whose data came out of schema (a changed API shape), keeps the previous
  *  snapshot's data, flagged `error` and dated when it was fetched; a failed optional input leaves it `partial`. */
 export function buildSnapshot(inputs, { now, head, previous = null, allowlist = DEFAULT_ALLOWLIST }) {

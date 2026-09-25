@@ -2,7 +2,7 @@ import { readdirSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { AUX_ROTATION, PICK_ROTATION, parsePortfolio, planReady, summarizeProjects } from '../backlog.logic.mjs'
-import { SCHEMA_VERSION, buildSnapshot, checksQuery, claimsQuery, report, validateSnapshot } from './collect.logic.mjs'
+import { SCHEMA_VERSION, buildSnapshot, checksQuery, claimsQuery, parsePrevious, report, validateSnapshot } from './collect.logic.mjs'
 
 // scripts/fixtures/mission-control/ holds recordings of the collector's own calls, taken 2026-09-25 at
 // origin/main ed7c983 (the commands are in collect.mjs), trimmed as follows:
@@ -468,5 +468,35 @@ describe('collect.logic', () => {
     })
     expect(report(next).stdout).toBe('MISSION-CONTROL: VALID schema 1 · ok 12 · partial 0 · error 1 (checks)')
     expect(build({ checkRuns: failed('gh api graphql (check runs)', 'HTTP 502: Bad Gateway') }).checks).toEqual({ items: [] })
+  })
+})
+
+// #476 (MC-5), carried from the MC-1 verifier: an empty or truncated --previous file crashed the collector with an
+// uncaught SyntaxError at collect.mjs:73, even though every section was otherwise ok. Missing, empty and unparseable
+// text must all read as "no previous" — never a crash — so buildSnapshot's own `previous = null` default applies.
+describe('parsePrevious', () => {
+  it('no text at all — undefined, or the --previous flag omitted — is no previous', () => {
+    expect(parsePrevious(undefined)).toBeNull()
+  })
+
+  it('an empty file is no previous, not a JSON.parse crash', () => {
+    expect(parsePrevious('')).toBeNull()
+  })
+
+  it('a file of only whitespace is no previous', () => {
+    expect(parsePrevious('   \n\t  ')).toBeNull()
+  })
+
+  it('a truncated file — cut off mid-write, the reported crash — is no previous, not a thrown SyntaxError', () => {
+    expect(parsePrevious('{"schemaVersion": 1, "portfolio')).toBeNull()
+  })
+
+  it('text that parses but is not JSON at all (e.g. an error page) is no previous', () => {
+    expect(parsePrevious('<html>404 not found</html>')).toBeNull()
+  })
+
+  it('valid JSON text parses through unchanged', () => {
+    const snapshot = fixture('snapshot.json')
+    expect(parsePrevious(JSON.stringify(snapshot))).toEqual(snapshot)
   })
 })
