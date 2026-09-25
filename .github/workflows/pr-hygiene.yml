@@ -9,11 +9,13 @@ name: PR Hygiene
 # Reviewable excludes tests, the lockfile, snapshots, vendored vectors, fixtures and
 # linguist-generated files.
 #
-# Also checks the layer-ratchet baseline for growth (#406): when a PR touches
-# .dependency-cruiser-known-violations.json, its contents are read through the API at the merge
-# base and at the PR head — and .dependency-cruiser.cjs's text too, when the PR edits it — and a
-# row that arrives under a rule name the PR does not newly declare in that config fails the check,
-# whatever the row count did, so fixing one violation while absorbing another is not a pass (#432).
+# Also guards the layer ratchet (#406): when a PR touches .dependency-cruiser-known-violations.json
+# or .dependency-cruiser.cjs, the baseline's contents are read through the API at the merge base and
+# at the PR head — and the config's text too, when the PR edits it. A row that arrives under a rule
+# name the PR does not newly declare in that config fails the check, whatever the row count did, so
+# fixing one violation while absorbing another is not a pass (#432). So does a rule name the merge
+# base's config declares and the PR's does not, rows or none (ratchet=disarmed, #489): a rename
+# gets past it only with all its rows moved to the new name, and still warns as swapped.
 # What it cannot see (the residual, stated alike in .dependency-cruiser.cjs, docs/harness/README.md
 # and compareRatchetBaseline): a rule declared in that config in the same PR — renamed, copied, or
 # widened to cover the edge — reads armed or swapped; the fence is that the declaration is an added
@@ -21,7 +23,10 @@ name: PR Hygiene
 # is scanned as text, never run), and that is no false pass: dependency-cruiser matches
 # knownViolations by rule name, so a row under a name no real rule emits suppresses nothing. It
 # leans on the scan finding every rule the base config declares: a config with text but no rule
-# names found fails closed (#438); one scanned only in part is #456.
+# names found fails closed (#438), and so does a missed rule that has baseline rows (#456). A rule
+# with no rows that keeps its name while it stops checking — commented out, set to ignore,
+# narrowed — or that is added in a form the scan cannot read is fenced by review alone (#505);
+# lint:layers fails the first two once the rule has rows.
 #
 # Runs on pull_request_target so the checkout — and therefore scripts/pr-hygiene.mjs — is
 # always the base branch's copy. The PR itself is read through the GitHub API and is never
