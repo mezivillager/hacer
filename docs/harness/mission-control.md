@@ -1,4 +1,4 @@
-# Mission Control — the snapshot, schema v1
+# Mission Control — the snapshot (schema v1) and the site
 
 Mission Control (epic [#458](https://github.com/mezivillager/hacer/issues/458)) shows the platform's state from one
 file, the **snapshot**, built by `scripts/mission-control/collect.mjs` from GitHub, git and this repo's files. The
@@ -46,6 +46,42 @@ A verdict is a comment by an allowlisted author (`BACKLOG_ALLOWLIST`, as for `ba
 and a bold word allowed; any other shape counts as none, which is how drift from the brief shows. `round` is the
 heading's number, else the verdict's position on the PR; `model` is the `Verified on` field to its first ` · `, ` — `
 or full stop. Claim comments are read by their fields, from the same authors.
+
+## Fields
+
+Every field, by section. `?` marks one that can be `null`; `[]` an array.
+
+- **Top level** — `schemaVersion` (`1`) · `generatedAt` · `head` {`sha`, `date`, `subject`} · `freshness.<section>` {`source`, `fetchedAt`?, `status`, `error` (only when not `ok`)}
+- **`portfolio.projects[]`** — `rank` · `lane` · `slug` · `epicNumber` · `open` · `ready` · `inProgress` · `needsHuman` · `next`? {`number`, `title`}, the row's first *pickable* task, which `ready` may not pick (`on-request`, `not-pulled`): the pick itself is in `pickRule.next` · `title`? (the epic's) · `subIssues`? {`total`, `completed`, `percentCompleted`}
+- **`pickRule`** — `rotation[]` · `auxRotation[]` · `next[]` {`number`, `title`, `project`?}: `ready`'s picks, in its order
+- **`tasks`** — `items[]` {`number`, `title`, `labels[]`, `blocking[]`, `project`?, `rank`?, `lane`?, `pickable`, `reason`?} in `ready`'s order: the picks (`reason: null`) first, then the rest by number with the reason `ready` prints (`author`, `in-progress`, `needs-human`, `unshaped`, `blocked:#n,…`, `foundation-gate`, `on-request`, `not-pulled`) · `byProject` {slug: issue numbers}
+- **`prs`** — `open[]` and `merged[]` {`number`, `title`, `url`, `author`?, `labels[]`, `headRefName`, `isDraft`, `createdAt`, `mergedAt`?, `closes[]`, `verdicts[]` {`verdict`, `round`, `model`?, `at`, `url`}} · `coverage` {`merged`, `withVerdict`, `withoutVerdict`, `pass`, `block`}
+- **`claims`** — `items[]` {`number`, `ref`, `sha`, `state`?, `title`?, `url`?, `labels[]`?, `onClosedIssue`?, `claim`? {`claimedBy`?, `intent`?, `session`?, `branch`?, `handoff`?, `author`, `at`, `url`}}, where every `?` above is `null` without GraphQL · `onClosedIssues`
+- **`cloudLane.items[]`** — `number`? and one field per column of the inbox table, its header camelCased (today `issue`, `whyCloud`, `successCriteria`, `claimStatus`, `queuedBy`, `status`, `cloudAgentId`, `notes`)
+- **`sessions.items[]`** — `file` · `date` · `kind` (`record` | `handoff`) · `title`? · `status`? · `lines`
+- **`ledger`** — `items[]`, one field per column of the ledger's table (today `date`, `whatWentWrong`, `shouldHaveBeenCaughtBy`, `mechanised`) · `byMechanised` {`yes`, `no`, `partly`, `other`}
+- **`adrs.items[]`** — `number` · `file` · `title`? · `status`? (as written)
+- **`roadmap`** — `lastUpdated`? · `phases[]` {`phase`, `doc`?, `group` (the table's heading), and the table's other columns (today `status`, `scope`)}
+- **`metrics`** — `ratchet` {`count`, `byRule` {rule: count}, `history[]` {`sha`, `date`, `subject`, `count`}, oldest first} · `releases[]` {`tag`, `publishedAt`, `isLatest`}, newest first · `mergesPerDay[]` {`date`, `merges`}
+- **`checks`** · **`lineage`** — {`until`, `items[]`}
+
+## Adding a section
+
+1. **Read** — a source in `SOURCES` (`collect.mjs`): `id: [label, () => value]`, I/O only; a failure is caught for you.
+2. **Build** — a section in `SECTIONS` (`collect.logic.mjs`): `{ needs, optional, build }`. `build(values, { allowlist })` is pure and must also run on `{}`: that is the empty section a failed required input leaves when there is no `--previous`.
+3. **Contract** — its shape in `SCHEMA_V1`; `freshness` gains its entry by itself. A new section or field keeps v1.
+4. **Test** — a recording of the source in `scripts/fixtures/mission-control/` and a test in `collect.logic.test.mjs`, shown red first; the section counts in the existing tests (`ok 13`) move by one.
+5. **Document** — a row in *Sections* and a line in *Fields*.
+6. **Show** — for a view: the fields it reads in `mission-control/src/snapshot.ts`, the view, and a recaptured site fixture (below).
+
+## The site: `/control/`
+
+[`/control/`](https://mezivillager.github.io/hacer/control/) renders the snapshot (#473). **Overview**: seven tiles, each from one section and dated by its `fetchedAt`. **Projects**: the portfolio with each epic's progress and "next" from `pickRule.next` (what `ready` picks, not `portfolio.projects[].next`); a row drills into its tasks, in `ready`'s order, at `#/projects/<slug>`. A section `partial` or `error` keeps its data under a stale banner; one never fetched says so rather than show zeros it did not count.
+
+- **Build** — `pnpm run build:control`: `collect.mjs --json` into `mission-control/public/data/snapshot.json` (git-ignored), then `vite build` of the second root `mission-control/` (`base`: `BASE_PATH` + `control/`). The page fetches `data/snapshot.json` from beside itself, so `/control/data/snapshot.json` is the one file people and agents read.
+- **Deploy** — `deploy.yml` builds it after the app and deploys it to `control/` on `gh-pages`, which the app's deploy leaves alone (`clean-exclude`). `pr-preview.yml` builds it into `pr-preview/pr-<n>/control/` when a PR touches `mission-control/**` or `scripts/mission-control/**`, and links it from the preview comment.
+- **Boundary** — it imports nothing from `src/`: `mission-control/imports.test.mjs` runs a dependency-cruiser rule over it, resolving as the app does. Plain CSS, plain React state, hand-rolled hash routes; no router or chart library (charts are MC-7).
+- **Tests** — `pnpm exec vitest run mission-control`, in the `jsdom` project, over `scripts/fixtures/mission-control/snapshot.json`: the real collector's output, kept valid v1 by `collect.logic.test.mjs`. The Overview's numbers are pinned against it, so a recaptured fixture means re-pinning them.
 
 **The contract.** `SCHEMA_V1` in `collect.logic.mjs` is the checked shape, and this page its meaning. Adding a field
 keeps v1; renaming, removing or retyping one bumps `schemaVersion`, and a `--previous` of another version is not kept.
