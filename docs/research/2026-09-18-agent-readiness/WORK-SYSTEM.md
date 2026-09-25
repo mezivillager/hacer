@@ -80,6 +80,10 @@ Pickable = open · `agent-ready` · no `in-progress` · every `blockedBy` closed
 5. **Files likely touched.** Run `node scripts/blast-radius.mjs` on them before `agent-ready` is applied (`docs/harness/README.md`).
 6. **Risk** label; **blocked-by**.
 7. *Added 2026-09-18 (#259):* a `surfaces` task also names the **scenario ids** it covers and the **drivers** it adds (`hdl` / `mcp` / `svg2d` / `cli`), and links its sibling issues for the other non-3D surfaces — `docs/portfolio.md` "Hand in hand".
+8. *Added 2026-09-25 (#469), both optional:* **Introduced by:** the decision (`ADR-NNNN`, `R<n>` or
+   `P-<n>`) this issue traces to, when it is a defect a decision caused. **Decisions:** the decision
+   ids this issue exists to carry out, when it is scoped from one — mirrors the PR body's
+   `Decisions:` line (`docs/harness/implementer-brief.md`). Most issues carry neither.
 
 Evidence: across 3,180 agent PRs, well-scoped (+16.4%), self-contained (+16.7%) and reproduction-bearing (+11.5%) issues merged markedly more often (track 3). An issue whose estimate exceeds the PR budget is split into sub-issues before it is ready.
 

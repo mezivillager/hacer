@@ -2,6 +2,8 @@
 
 <!-- Brief description of what this PR does -->
 
+Decisions: <!-- decision ids this PR implements (ADR-NNNN, R<n> or P-<n>, comma-separated), or `none` -->
+
 ## TDD Checklist
 
 **All items must be checked for PR approval:**
