@@ -88,6 +88,10 @@ function buildClaims({ claimRefs: lsRemote = '', claimIssues }, { allowlist }) {
   return { items, onClosedIssues: items.filter((item) => item.onClosedIssue).length }
 }
 
+export function checksQuery() {
+  throw new Error('not implemented')
+}
+
 // Portfolio, pick rule and tasks: all three from one planReady over the one issue list.
 function planOf({ issues = [], portfolio = '' }, { allowlist }) {
   const rows = parsePortfolio(portfolio)

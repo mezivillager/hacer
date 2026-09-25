@@ -1,0 +1,512 @@
+{
+  "data": {
+    "repository": {
+      "main": {
+        "target": {
+          "oid": "1b012400aa3dbcaa5ef9977c97f8ee389351326a",
+          "statusCheckRollup": {
+            "contexts": {
+              "nodes": [
+                {
+                  "databaseId": 107948289921,
+                  "name": "ci",
+                  "conclusion": null,
+                  "completedAt": null,
+                  "detailsUrl": "https://github.com/mezivillager/hacer/actions/runs/36095999184/job/107948289921",
+                  "annotations": {
+                    "nodes": []
+                  }
+                },
+                {
+                  "databaseId": 107948289956,
+                  "name": "Release",
+                  "conclusion": null,
+                  "completedAt": null,
+                  "detailsUrl": "https://github.com/mezivillager/hacer/actions/runs/36095999118/job/107948289956",
+                  "annotations": {
+                    "nodes": []
+                  }
+                },
+                {
+                  "databaseId": 107948291777,
+                  "name": "Analyze (actions)",
+                  "conclusion": "SUCCESS",
+                  "completedAt": "2026-09-25T04:50:21Z",
+                  "detailsUrl": "https://github.com/mezivillager/hacer/actions/runs/36095998520/job/107948291777",
+                  "annotations": {
+                    "nodes": [
+                      {
+                        "message": "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\""
+                      }
+                    ]
+                  }
+                },
+                {
+                  "databaseId": 107948343580,
+                  "name": "deploy",
+                  "conclusion": "SUCCESS",
+                  "completedAt": "2026-09-25T04:50:30Z",
+                  "detailsUrl": "https://github.com/mezivillager/hacer/actions/runs/36095999101/job/107948343580",
+                  "annotations": {
+                    "nodes": [
+                      {
+                        "message": "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\""
+                      }
+                    ]
+                  }
+                },
+                {
+                  "databaseId": 107948291663,
+                  "name": "Analyze (javascript-typescript)",
+                  "conclusion": "SUCCESS",
+                  "completedAt": "2026-09-25T04:51:13Z",
+                  "detailsUrl": "https://github.com/mezivillager/hacer/actions/runs/36095998520/job/107948291663",
+                  "annotations": {
+                    "nodes": [
+                      {
+                        "message": "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\""
+                      }
+                    ]
+                  }
+                },
+                {
+                  "databaseId": 107948291500,
+                  "name": "Analyze (python)",
+                  "conclusion": "SUCCESS",
+                  "completedAt": "2026-09-25T04:50:28Z",
+                  "detailsUrl": "https://github.com/mezivillager/hacer/actions/runs/36095998520/job/107948291500",
+                  "annotations": {
+                    "nodes": [
+                      {
+                        "message": "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\""
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "pullRequests": {
+        "nodes": [
+          {
+            "number": 410,
+            "commits": {
+              "nodes": [
+                {
+                  "commit": {
+                    "oid": "7459d4fcd579d8695682629cc1c5d55d7ccba818",
+                    "statusCheckRollup": {
+                      "contexts": {
+                        "nodes": [
+                          {
+                            "databaseId": 107883242099,
+                            "name": "ci",
+                            "conclusion": "SUCCESS",
+                            "completedAt": "2026-09-24T23:52:41Z",
+                            "detailsUrl": "https://github.com/mezivillager/hacer/actions/runs/36074718192/job/107883242099",
+                            "annotations": {
+                              "nodes": [
+                                {
+                                  "message": "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\""
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "databaseId": 107883241668,
+                            "name": "deploy-preview",
+                            "conclusion": "SUCCESS",
+                            "completedAt": "2026-09-24T23:51:20Z",
+                            "detailsUrl": "https://github.com/mezivillager/hacer/actions/runs/36074715170/job/107883241668",
+                            "annotations": {
+                              "nodes": [
+                                {
+                                  "message": "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\""
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "databaseId": 107883255833,
+                            "name": "pr-hygiene",
+                            "conclusion": "SUCCESS",
+                            "completedAt": "2026-09-24T23:50:44Z",
+                            "detailsUrl": "https://github.com/mezivillager/hacer/actions/runs/36074712429/job/107883255833",
+                            "annotations": {
+                              "nodes": [
+                                {
+                                  "message": "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\""
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "databaseId": 107883241232,
+                            "name": "browser-qa",
+                            "conclusion": "SUCCESS",
+                            "completedAt": "2026-09-24T23:50:43Z",
+                            "detailsUrl": "https://github.com/mezivillager/hacer/actions/runs/36074715141/job/107883241232",
+                            "annotations": {
+                              "nodes": [
+                                {
+                                  "message": "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\""
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "databaseId": 107883243019,
+                            "name": "cleanup-preview",
+                            "conclusion": "SKIPPED",
+                            "completedAt": "2026-09-24T23:50:32Z",
+                            "detailsUrl": "https://github.com/mezivillager/hacer/actions/runs/36074715170/job/107883243019",
+                            "annotations": {
+                              "nodes": []
+                            }
+                          },
+                          {
+                            "databaseId": 107883222094,
+                            "name": "CodeQL",
+                            "conclusion": "NEUTRAL",
+                            "completedAt": "2026-09-24T23:50:28Z",
+                            "detailsUrl": "https://github.com/mezivillager/hacer/runs/107883222094",
+                            "annotations": {
+                              "nodes": []
+                            }
+                          },
+                          {
+                            "databaseId": 107883222445,
+                            "name": "GitGuardian Security Checks",
+                            "conclusion": "SUCCESS",
+                            "completedAt": "2026-09-24T23:50:28Z",
+                            "detailsUrl": "https://dashboard.gitguardian.com",
+                            "annotations": {
+                              "nodes": []
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "number": 496,
+            "commits": {
+              "nodes": [
+                {
+                  "commit": {
+                    "oid": "0e5c12d5af4faae6c780d63806e509481b6870f0",
+                    "statusCheckRollup": {
+                      "contexts": {
+                        "nodes": [
+                          {
+                            "databaseId": 107882892940,
+                            "name": "ci",
+                            "conclusion": "SUCCESS",
+                            "completedAt": "2026-09-24T23:50:47Z",
+                            "detailsUrl": "https://github.com/mezivillager/hacer/actions/runs/36074604402/job/107882892940",
+                            "annotations": {
+                              "nodes": [
+                                {
+                                  "message": "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\""
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "databaseId": 107882893619,
+                            "name": "deploy-preview",
+                            "conclusion": "SUCCESS",
+                            "completedAt": "2026-09-24T23:49:51Z",
+                            "detailsUrl": "https://github.com/mezivillager/hacer/actions/runs/36074604422/job/107882893619",
+                            "annotations": {
+                              "nodes": [
+                                {
+                                  "message": "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\""
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "databaseId": 107882909274,
+                            "name": "pr-hygiene",
+                            "conclusion": "SUCCESS",
+                            "completedAt": "2026-09-24T23:49:20Z",
+                            "detailsUrl": "https://github.com/mezivillager/hacer/actions/runs/36074605581/job/107882909274",
+                            "annotations": {
+                              "nodes": [
+                                {
+                                  "message": "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\""
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "databaseId": 107882892817,
+                            "name": "browser-qa",
+                            "conclusion": "SUCCESS",
+                            "completedAt": "2026-09-24T23:49:18Z",
+                            "detailsUrl": "https://github.com/mezivillager/hacer/actions/runs/36074604281/job/107882892817",
+                            "annotations": {
+                              "nodes": [
+                                {
+                                  "message": "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\""
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "databaseId": 107882938557,
+                            "name": "browser-qa",
+                            "conclusion": "SUCCESS",
+                            "completedAt": "2026-09-24T23:49:36Z",
+                            "detailsUrl": "https://github.com/mezivillager/hacer/actions/runs/36074605725/job/107882938557",
+                            "annotations": {
+                              "nodes": [
+                                {
+                                  "message": "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\""
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "databaseId": 107882894635,
+                            "name": "cleanup-preview",
+                            "conclusion": "SKIPPED",
+                            "completedAt": "2026-09-24T23:49:08Z",
+                            "detailsUrl": "https://github.com/mezivillager/hacer/actions/runs/36074604422/job/107882894635",
+                            "annotations": {
+                              "nodes": []
+                            }
+                          },
+                          {
+                            "databaseId": 107882876768,
+                            "name": "CodeQL",
+                            "conclusion": "NEUTRAL",
+                            "completedAt": "2026-09-24T23:49:04Z",
+                            "detailsUrl": "https://github.com/mezivillager/hacer/runs/107882876768",
+                            "annotations": {
+                              "nodes": []
+                            }
+                          },
+                          {
+                            "databaseId": 107882883435,
+                            "name": "GitGuardian Security Checks",
+                            "conclusion": "SUCCESS",
+                            "completedAt": "2026-09-24T23:49:06Z",
+                            "detailsUrl": "https://dashboard.gitguardian.com",
+                            "annotations": {
+                              "nodes": []
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "number": 507,
+            "commits": {
+              "nodes": [
+                {
+                  "commit": {
+                    "oid": "a7ebb775729f1170cf88fce8a99b7285ebe1b012",
+                    "statusCheckRollup": {
+                      "contexts": {
+                        "nodes": [
+                          {
+                            "databaseId": 107948090620,
+                            "name": "ci",
+                            "conclusion": "SUCCESS",
+                            "completedAt": "2026-09-25T04:51:05Z",
+                            "detailsUrl": "https://github.com/mezivillager/hacer/actions/runs/36095931702/job/107948090620",
+                            "annotations": {
+                              "nodes": [
+                                {
+                                  "message": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new"
+                                },
+                                {
+                                  "message": "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\""
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "databaseId": 107948086831,
+                            "name": "Analyze (actions)",
+                            "conclusion": "SUCCESS",
+                            "completedAt": "2026-09-25T04:49:11Z",
+                            "detailsUrl": "https://github.com/mezivillager/hacer/actions/runs/36095929726/job/107948086831",
+                            "annotations": {
+                              "nodes": [
+                                {
+                                  "message": "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\""
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "databaseId": 107948091123,
+                            "name": "deploy-preview",
+                            "conclusion": "SUCCESS",
+                            "completedAt": "2026-09-25T04:49:10Z",
+                            "detailsUrl": "https://github.com/mezivillager/hacer/actions/runs/36095931686/job/107948091123",
+                            "annotations": {
+                              "nodes": [
+                                {
+                                  "message": "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\""
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "databaseId": 107948091202,
+                            "name": "pr-hygiene",
+                            "conclusion": "SUCCESS",
+                            "completedAt": "2026-09-25T04:48:39Z",
+                            "detailsUrl": "https://github.com/mezivillager/hacer/actions/runs/36095931619/job/107948091202",
+                            "annotations": {
+                              "nodes": [
+                                {
+                                  "message": "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\""
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "databaseId": 107948128617,
+                            "name": "pr-hygiene",
+                            "conclusion": "SUCCESS",
+                            "completedAt": "2026-09-25T04:48:52Z",
+                            "detailsUrl": "https://github.com/mezivillager/hacer/actions/runs/36095932124/job/107948128617",
+                            "annotations": {
+                              "nodes": [
+                                {
+                                  "message": "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\""
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "databaseId": 107948089927,
+                            "name": "browser-qa",
+                            "conclusion": "SUCCESS",
+                            "completedAt": "2026-09-25T04:48:42Z",
+                            "detailsUrl": "https://github.com/mezivillager/hacer/actions/runs/36095931438/job/107948089927",
+                            "annotations": {
+                              "nodes": [
+                                {
+                                  "message": "BROWSER-QA: skipped (no critical paths)"
+                                },
+                                {
+                                  "message": "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\""
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "databaseId": 107948135927,
+                            "name": "browser-qa",
+                            "conclusion": "SUCCESS",
+                            "completedAt": "2026-09-25T04:48:52Z",
+                            "detailsUrl": "https://github.com/mezivillager/hacer/actions/runs/36095931853/job/107948135927",
+                            "annotations": {
+                              "nodes": [
+                                {
+                                  "message": "BROWSER-QA: skipped (no critical paths)"
+                                },
+                                {
+                                  "message": "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\""
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "databaseId": 107948086708,
+                            "name": "Analyze (javascript-typescript)",
+                            "conclusion": "SUCCESS",
+                            "completedAt": "2026-09-25T04:49:35Z",
+                            "detailsUrl": "https://github.com/mezivillager/hacer/actions/runs/36095929726/job/107948086708",
+                            "annotations": {
+                              "nodes": [
+                                {
+                                  "message": "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\""
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "databaseId": 107948086855,
+                            "name": "Analyze (python)",
+                            "conclusion": "SUCCESS",
+                            "completedAt": "2026-09-25T04:49:20Z",
+                            "detailsUrl": "https://github.com/mezivillager/hacer/actions/runs/36095929726/job/107948086855",
+                            "annotations": {
+                              "nodes": [
+                                {
+                                  "message": "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\""
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "databaseId": 107948092014,
+                            "name": "cleanup-preview",
+                            "conclusion": "SKIPPED",
+                            "completedAt": "2026-09-25T04:48:28Z",
+                            "detailsUrl": "https://github.com/mezivillager/hacer/actions/runs/36095931686/job/107948092014",
+                            "annotations": {
+                              "nodes": []
+                            }
+                          },
+                          {
+                            "databaseId": 107948091878,
+                            "name": "sweep-previews",
+                            "conclusion": "SKIPPED",
+                            "completedAt": "2026-09-25T04:48:28Z",
+                            "detailsUrl": "https://github.com/mezivillager/hacer/actions/runs/36095931686/job/107948091878",
+                            "annotations": {
+                              "nodes": []
+                            }
+                          },
+                          {
+                            "databaseId": 107948200060,
+                            "name": "CodeQL",
+                            "conclusion": "SUCCESS",
+                            "completedAt": "2026-09-25T04:49:05Z",
+                            "detailsUrl": "https://github.com/mezivillager/hacer/runs/107948200060",
+                            "annotations": {
+                              "nodes": []
+                            }
+                          },
+                          {
+                            "databaseId": 107948094185,
+                            "name": "GitGuardian Security Checks",
+                            "conclusion": "SUCCESS",
+                            "completedAt": "2026-09-25T04:48:30Z",
+                            "detailsUrl": "https://dashboard.gitguardian.com",
+                            "annotations": {
+                              "nodes": []
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}
