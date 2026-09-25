@@ -21,6 +21,7 @@ import {
   countSuppressions,
   formatReport,
   summarise,
+  undeclaredRules,
 } from './layer-ratchet.logic.mjs'
 
 const root = path.resolve(import.meta.dirname, '..')
@@ -33,6 +34,7 @@ if (baseline === null) {
   process.exit(EXIT.usage)
 }
 
+const knownViolations = JSON.parse(baseline)
 let cruised
 try {
   cruised = await cruise(['src'], {
@@ -40,7 +42,7 @@ try {
     ruleSet: { forbidden: config.forbidden },
     // Known violations are re-labelled `ignore` rather than dropped, so one cruise yields both
     // halves of the metric: what is known, and what is new.
-    knownViolations: JSON.parse(baseline),
+    knownViolations,
     validate: true,
     baseDir: root,
   })
@@ -51,6 +53,8 @@ try {
 
 const summary = summarise(cruised.output, {
   suppressedGlobals: countSuppressions(read(ESLINT_SUPPRESSIONS_FILE)),
+  // A baseline row under a rule the config no longer reports is an error, not a silent "known 0" (#489).
+  undeclared: undeclaredRules(knownViolations, config.forbidden),
 })
 
 console.log(formatReport(summary))
