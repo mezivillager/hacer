@@ -299,6 +299,11 @@ export const RATCHET_BASELINE_FILE = '.dependency-cruiser-known-violations.json'
  */
 export const RATCHET_CONFIG_FILE = '.dependency-cruiser.cjs'
 
+/** Red stub (#489): what the ratchet has to read for this PR's files, or null when it reads nothing. */
+export function ratchetReads() {
+  return null
+}
+
 /**
  * A greppable claim in the PR body that a named absorption is deliberate.
  *
