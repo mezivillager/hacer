@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-25T07:26:23.164Z",
+  "generatedAt": "2026-09-25T12:44:55.516Z",
   "head": {
     "sha": "79e512352133368fa6f2f3f87de744801c97cb2c",
     "date": "2026-09-25T10:25:31+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-25T07:26:23.164Z",
+      "fetchedAt": "2026-09-25T12:44:55.516Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-25T07:26:23.164Z",
+      "fetchedAt": "2026-09-25T12:44:55.516Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-25T07:26:23.164Z",
+      "fetchedAt": "2026-09-25T12:44:55.516Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-25T07:26:23.164Z",
+      "fetchedAt": "2026-09-25T12:44:55.516Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-09-25T07:26:23.164Z",
+      "fetchedAt": "2026-09-25T12:44:55.516Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-09-25T07:26:23.164Z",
+      "fetchedAt": "2026-09-25T12:44:55.516Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-09-25T07:26:23.164Z",
+      "fetchedAt": "2026-09-25T12:44:55.516Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-09-25T07:26:23.164Z",
+      "fetchedAt": "2026-09-25T12:44:55.516Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-09-25T07:26:23.164Z",
+      "fetchedAt": "2026-09-25T12:44:55.516Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-09-25T07:26:23.164Z",
+      "fetchedAt": "2026-09-25T12:44:55.516Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-25T07:26:23.164Z",
+      "fetchedAt": "2026-09-25T12:44:55.516Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-09-25T07:26:23.164Z",
+      "fetchedAt": "2026-09-25T12:44:55.516Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-09-25T07:26:23.164Z",
+      "fetchedAt": "2026-09-25T12:44:55.516Z",
       "status": "ok"
     }
   },
@@ -101,8 +101,8 @@
         "slug": "harness",
         "epicNumber": 138,
         "open": 32,
-        "ready": 23,
-        "inProgress": 0,
+        "ready": 22,
+        "inProgress": 1,
         "needsHuman": 0,
         "next": {
           "number": 148,
@@ -309,12 +309,12 @@
         "slug": "lineage",
         "epicNumber": 457,
         "open": 5,
-        "ready": 3,
-        "inProgress": 1,
+        "ready": 2,
+        "inProgress": 2,
         "needsHuman": 0,
         "next": {
-          "number": 468,
-          "title": "Lineage DL-3: executable premises — the register, `lineage verify`, and the scheduled check that files expiry"
+          "number": 471,
+          "title": "Lineage DL-6: lint:lineage from warn to fail — the lineage ratchet"
         },
         "title": "Epic: lineage — Decision Lineage: the decision graph, executable premises, and the correction workflow",
         "subIssues": {
@@ -368,8 +368,8 @@
         "project": "foundation"
       },
       {
-        "number": 468,
-        "title": "Lineage DL-3: executable premises — the register, `lineage verify`, and the scheduled check that files expiry",
+        "number": 471,
+        "title": "Lineage DL-6: lint:lineage from warn to fail — the lineage ratchet",
         "project": "lineage"
       },
       {
@@ -408,8 +408,8 @@
         "project": "foundation"
       },
       {
-        "number": 471,
-        "title": "Lineage DL-6: lint:lineage from warn to fail — the lineage ratchet",
+        "number": 481,
+        "title": "Lineage DL-7: the lineage graph as a Mission Control view",
         "project": "lineage"
       },
       {
@@ -441,11 +441,6 @@
         "number": 335,
         "title": "Move the HTMLCanvasElement patch out of the shared test setup, and move store/core tests to the node project (foundation 0.10)",
         "project": "foundation"
-      },
-      {
-        "number": 481,
-        "title": "Lineage DL-7: the lineage graph as a Mission Control view",
-        "project": "lineage"
       },
       {
         "number": 152,
@@ -583,11 +578,6 @@
         "project": "harness"
       },
       {
-        "number": 455,
-        "title": "CI does not fail on peer-range violations — #410 installs React 19.3 with an R3F whose peer range excludes it, all green",
-        "project": "harness"
-      },
-      {
         "number": 516,
         "title": "A lint for case-only filename collisions — two Mission Control PRs hit it in one day (macOS resolves the wrong module, CI on Linux passes)",
         "project": "harness"
@@ -620,11 +610,11 @@
         "reason": null
       },
       {
-        "number": 468,
-        "title": "Lineage DL-3: executable premises — the register, `lineage verify`, and the scheduled check that files expiry",
+        "number": 471,
+        "title": "Lineage DL-6: lint:lineage from warn to fail — the lineage ratchet",
         "labels": [
           "agent-ready",
-          "risk:1",
+          "risk:2",
           "project:lineage"
         ],
         "blocking": [],
@@ -746,11 +736,11 @@
         "reason": null
       },
       {
-        "number": 471,
-        "title": "Lineage DL-6: lint:lineage from warn to fail — the lineage ratchet",
+        "number": 481,
+        "title": "Lineage DL-7: the lineage graph as a Mission Control view",
         "labels": [
           "agent-ready",
-          "risk:2",
+          "risk:1",
           "project:lineage"
         ],
         "blocking": [],
@@ -852,21 +842,6 @@
         "project": "foundation",
         "rank": 1,
         "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 481,
-        "title": "Lineage DL-7: the lineage graph as a Mission Control view",
-        "labels": [
-          "agent-ready",
-          "risk:1",
-          "project:lineage"
-        ],
-        "blocking": [],
-        "project": "lineage",
-        "rank": 13,
-        "lane": "process",
         "pickable": true,
         "reason": null
       },
@@ -1282,21 +1257,6 @@
           "project:harness",
           "agent-ready",
           "risk:0"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 455,
-        "title": "CI does not fail on peer-range violations — #410 installs React 19.3 with an R3F whose peer range excludes it, all green",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:1"
         ],
         "blocking": [],
         "project": "harness",
@@ -2609,6 +2569,22 @@
         "reason": "unshaped"
       },
       {
+        "number": 455,
+        "title": "CI does not fail on peer-range violations — #410 installs React 19.3 with an R3F whose peer range excludes it, all green",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:1"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "in-progress"
+      },
+      {
         "number": 462,
         "title": "Removing a junction in an imported document still loses the source→sink connection that ran through it",
         "labels": [
@@ -2621,6 +2597,22 @@
         "lane": "feature",
         "pickable": false,
         "reason": "unshaped"
+      },
+      {
+        "number": 468,
+        "title": "Lineage DL-3: executable premises — the register, `lineage verify`, and the scheduled check that files expiry",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:lineage"
+        ],
+        "blocking": [],
+        "project": "lineage",
+        "rank": 13,
+        "lane": "process",
+        "pickable": false,
+        "reason": "in-progress"
       },
       {
         "number": 470,
@@ -2765,9 +2757,9 @@
         506
       ],
       "lineage": [
-        468,
         471,
         481,
+        468,
         470,
         502
       ],
@@ -2793,7 +2785,6 @@
         392,
         394,
         418,
-        455,
         516,
         154,
         156,
@@ -2801,6 +2792,7 @@
         435,
         436,
         454,
+        455,
         500,
         504,
         505
@@ -2894,6 +2886,42 @@
   "prs": {
     "open": [
       {
+        "number": 519,
+        "title": "Lineage DL-3: executable premises, lineage verify, and the weekly expiry check",
+        "url": "https://github.com/mezivillager/hacer/pull/519",
+        "author": "mezivillager",
+        "labels": [
+          "risk:1",
+          "project:lineage"
+        ],
+        "headRefName": "feat/468-lineage-verify",
+        "isDraft": true,
+        "createdAt": "2026-09-25T08:39:13Z",
+        "mergedAt": null,
+        "closes": [
+          468
+        ],
+        "verdicts": []
+      },
+      {
+        "number": 518,
+        "title": "fix(ci): fail when a React, R3F or three peer range is unmet",
+        "url": "https://github.com/mezivillager/hacer/pull/518",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:1"
+        ],
+        "headRefName": "cursor/fix-455-peer-range-check-96b6",
+        "isDraft": false,
+        "createdAt": "2026-09-25T08:35:47Z",
+        "mergedAt": null,
+        "closes": [
+          455
+        ],
+        "verdicts": []
+      },
+      {
         "number": 517,
         "title": "docs(harness): session record for 2026-09-25; rulings R700–R740",
         "url": "https://github.com/mezivillager/hacer/pull/517",
@@ -2975,6 +3003,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/515",
         "author": "mezivillager",
         "labels": [
+          "released",
           "risk:1",
           "project:mission-control"
         ],
@@ -4486,6 +4515,56 @@
         }
       },
       {
+        "number": 455,
+        "ref": "refs/heads/claim/455",
+        "sha": "79e512352133368fa6f2f3f87de744801c97cb2c",
+        "state": "OPEN",
+        "title": "CI does not fail on peer-range violations — #410 installs React 19.3 with an R3F whose peer range excludes it, all green",
+        "url": "https://github.com/mezivillager/hacer/issues/455",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:1"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "grok-bot",
+          "intent": "building",
+          "session": "bc-ebaee483-e620-50da-be1f-15f9491a96b6",
+          "branch": "fix/455-peer-range-check",
+          "handoff": "docs/harness/sessions/cloud-queue-inbox.md",
+          "author": "mezivillager",
+          "at": "2026-09-25T08:18:19Z",
+          "url": "https://github.com/mezivillager/hacer/issues/455#issuecomment-5829228229"
+        }
+      },
+      {
+        "number": 468,
+        "ref": "refs/heads/claim/468",
+        "sha": "79e512352133368fa6f2f3f87de744801c97cb2c",
+        "state": "OPEN",
+        "title": "Lineage DL-3: executable premises — the register, `lineage verify`, and the scheduled check that files expiry",
+        "url": "https://github.com/mezivillager/hacer/issues/468",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:lineage"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "grok-bot",
+          "intent": "building",
+          "session": "bc-3b3822f2-583b-53b2-939c-b61bce76c8fc",
+          "branch": "feat/468-lineage-verify",
+          "handoff": "docs/harness/sessions/cloud-queue-inbox.md",
+          "author": "mezivillager",
+          "at": "2026-09-25T08:18:23Z",
+          "url": "https://github.com/mezivillager/hacer/issues/468#issuecomment-5829229121"
+        }
+      },
+      {
         "number": 470,
         "ref": "refs/heads/claim/470",
         "sha": "a5c1dac037de6dd435ab88414e270482976df51c",
@@ -5485,9 +5564,14 @@
     },
     "releases": [
       {
+        "tag": "v2.42.0",
+        "publishedAt": "2026-09-25T07:30:10Z",
+        "isLatest": true
+      },
+      {
         "tag": "v2.41.0",
         "publishedAt": "2026-09-25T07:09:00Z",
-        "isLatest": true
+        "isLatest": false
       },
       {
         "tag": "v2.40.0",
@@ -5956,12 +6040,15 @@
         "pr": null,
         "sha": "79e512352133368fa6f2f3f87de744801c97cb2c",
         "check": "ci",
-        "conclusion": null,
-        "completedAt": null,
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-25T07:28:16Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/36107567262/job/107983489320",
-        "line": null,
-        "verdict": null,
-        "fields": {},
+        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 71,
+          "new": 0
+        },
         "disagrees": false
       },
       {
@@ -6119,6 +6206,98 @@
         "conclusion": "SUCCESS",
         "completedAt": "2026-09-25T07:22:16Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/36107119291/job/107982088772",
+        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 71,
+          "new": 0
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 518,
+        "sha": "566a7710d80e44d5f04917cd17455ab309fc88c0",
+        "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-25T08:39:44Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36114109024/job/108004027798",
+        "line": "HYGIENE: WARN reviewable=388 test=435 excluded=38 files=8 issue=#455 linked=fixes",
+        "verdict": "WARN",
+        "fields": {
+          "reviewable": 388,
+          "test": 435,
+          "excluded": 38,
+          "files": 8,
+          "issue": "#455",
+          "linked": "fixes"
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 518,
+        "sha": "566a7710d80e44d5f04917cd17455ab309fc88c0",
+        "check": "browser-qa",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-25T08:39:41Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36114108587/job/108004024937",
+        "line": "BROWSER-QA: skipped (no critical paths)",
+        "verdict": "SKIPPED",
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 518,
+        "sha": "566a7710d80e44d5f04917cd17455ab309fc88c0",
+        "check": "ci",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-25T08:38:41Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36113792088/job/108003003344",
+        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 71,
+          "new": 0
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 519,
+        "sha": "1f0e724ff7ca4c2913186633d4479c8e4b74fecc",
+        "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-25T08:39:33Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36114101147/job/108004023210",
+        "line": "HYGIENE: WARN reviewable=392 test=166 excluded=23 files=8 issue=#468 linked=fixes",
+        "verdict": "WARN",
+        "fields": {
+          "reviewable": 392,
+          "test": 166,
+          "excluded": 23,
+          "files": 8,
+          "issue": "#468",
+          "linked": "fixes"
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 519,
+        "sha": "1f0e724ff7ca4c2913186633d4479c8e4b74fecc",
+        "check": "browser-qa",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-25T08:39:37Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36114100804/job/108004031418",
+        "line": "BROWSER-QA: skipped (no critical paths)",
+        "verdict": "SKIPPED",
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 519,
+        "sha": "1f0e724ff7ca4c2913186633d4479c8e4b74fecc",
+        "check": "ci",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-25T08:42:01Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36114097263/job/108003985398",
         "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
         "verdict": "PASS",
         "fields": {
