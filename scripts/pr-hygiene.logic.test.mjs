@@ -527,6 +527,130 @@ describe('formatSummary', () => {
 })
 
 
+// ── A closing keyword on a partial fix (#485) ──────────────────────────────────────────────────
+//
+// GitHub closes an issue on merge for any closing keyword in the PR body, whatever the sentence
+// around it says. Twice a PR that finished only part of an issue closed it: #396 on "Fixes #364
+// (in part …)", and #443, whose "Part of #193" sat beside "so this does not close #193" — GitHub's
+// `closingIssuesReferences` for #443 is [193], and #193's ClosedEvent names #443 as the closer. The
+// fixtures are real bodies, verbatim, with what GitHub itself closed on merge:
+//   gh pr view <n> --json number,body,closingIssuesReferences \
+//     --jq '{number, closingIssuesReferences: [.closingIssuesReferences[].number], body}'
+
+const realPr = (number) =>
+  JSON.parse(readFileSync(path.join(import.meta.dirname, 'fixtures', 'pr-hygiene', `pr-${number}.json`), 'utf8'))
+
+describe('a closing keyword on a partial fix (#485)', () => {
+  const linkedFindings = (result) => result.findings.filter((f) => f.rule === 'linked-issue')
+  const headOf = (result) => formatConsole(result).split('\n')[0]
+
+  it('a body with "Fixes #n" and an in-part phrase ("in part", "partial", "partly", "remaining", "Part of #n" for the same n) is a FAIL naming the issue and the phrase', () => {
+    const pr396 = evaluate(pr({ body: realPr(396).body }))
+    expect(pr396.verdict).toBe('FAIL')
+    expect(linkedFindings(pr396).map((f) => f.level)).toEqual(['fail'])
+    expect(linkedFindings(pr396)[0].message).toContain('#364')
+    expect(linkedFindings(pr396)[0].message).toContain('"in part"')
+
+    const pr443 = evaluate(pr({ body: realPr(443).body }))
+    expect(pr443.verdict).toBe('FAIL')
+    expect(linkedFindings(pr443).map((f) => f.level)).toEqual(['fail'])
+    expect(linkedFindings(pr443)[0].message).toContain('`close #193`')
+    expect(linkedFindings(pr443)[0].message).toContain('"Part of #193"')
+
+    for (const [body, phrase] of [
+      ['Fixes #12 (in part).', 'in part'],
+      ['Closes #12 — the partial fix; the rest is #13.', 'partial'],
+      ['Partially resolves #12.', 'Partially'],
+      ['Resolves #12, partly.', 'partly'],
+      ['Fixes #12. Remaining work: #13.', 'Remaining'],
+      ['Fixes #12\n\nPart of #12', 'Part of #12'],
+      ['Part of mezivillager/hacer#12\n\nFixes https://github.com/mezivillager/hacer/issues/12', 'Part of mezivillager/hacer#12'],
+    ]) {
+      const result = evaluate(pr({ body }))
+      expect(result.verdict, body).toBe('FAIL')
+      expect(linkedFindings(result).map((f) => f.level), body).toEqual(['fail'])
+      expect(linkedFindings(result)[0].message, body).toContain('#12')
+      expect(linkedFindings(result)[0].message, body).toContain(`"${phrase}"`)
+    }
+  })
+
+  it('a body with "Part of #n" alone passes the linked-issue rule and closes nothing', () => {
+    // #245 said "Part of #241 · Part of #153" and no closing keyword; GitHub closed nothing on merge.
+    expect(realPr(245).closingIssuesReferences).toEqual([])
+    for (const body of [realPr(245).body, 'Part of #193']) {
+      const result = evaluate(pr({ body }))
+      expect(result.verdict).toBe('PASS')
+      expect(linkedFindings(result).map((f) => f.level)).toEqual(['pass'])
+      expect(result.closingIssues).toEqual([])
+    }
+  })
+
+  it('the existing linked-issue cases are unchanged', () => {
+    const linked = (overrides) => linkedFindings(evaluate(pr(overrides))).map(({ level, message }) => [level, message])
+    for (const body of ['Fixes #150', 'closes #150', 'RESOLVES #150', 'Fixed #150', 'Part of #150', 'part of #150']) {
+      expect(linked({ body }), body).toEqual([['pass', 'linked #150']])
+    }
+    for (const body of ['Fixes: #12', 'Closes mezivillager/hacer#12', 'Resolves https://github.com/mezivillager/hacer/issues/12']) {
+      expect(linked({ body }), body).toEqual([['pass', 'linked #12']])
+    }
+    expect(linked({ body: 'Fixes #1, closes #2 and fixes #1 again' })).toEqual([['pass', 'linked #1, #2']])
+    const unlinked = ['fail', 'no linked issue — add `Fixes #n` / `Closes #n` / `Resolves #n` / `Part of #n` to the PR body']
+    for (const body of ['Just a change.', '', null, 'see #150 for context', 'prefixes #150']) {
+      expect(linked({ body }), String(body)).toEqual([unlinked])
+    }
+    expect(linked({ body: 'Typo.', files: [file('docs/x.md', 3, 1)] })).toEqual([['pass', 'docs-only PR — no linked issue required']])
+    expect(linked({ body: 'Bump x.', author: 'dependabot[bot]' })).toEqual([
+      ['pass', 'linked-issue rule skipped — bot author `dependabot[bot]`'],
+    ])
+    expect(linked({ body: 'Bump x.', labels: [DEPENDENCY_LABEL] })).toEqual([['pass', 'linked-issue rule skipped — `dependencies` label']])
+  })
+
+  it('reads the in-part words on the closing keyword line only, and "Part of" only for the same issue', () => {
+    // #434 says "Fixes #313" and, paragraphs later, "It's a partial fix" about a future case. Read
+    // across the whole body, the words misfired on 8 of the 73 real bodies carrying a closing
+    // keyword (measured 2026-09-25 over this repo's 241 PRs); read on the keyword line, on none.
+    for (const body of [realPr(434).body, 'Fixes #12\n\nThe remaining tests are unchanged.', 'Fixes #480 · Part of #138']) {
+      expect(evaluate(pr({ body })).verdict, body.slice(0, 40)).toBe('PASS')
+    }
+  })
+
+  it('closes exactly what GitHub closed on each real body — a negated keyword included', () => {
+    for (const number of [396, 443, 245, 434]) {
+      expect(evaluate(pr({ body: realPr(number).body })).closingIssues, `#${number}`).toEqual(realPr(number).closingIssuesReferences)
+    }
+  })
+
+  it('leaves both exemptions as they are: a bot is still skipped, and docs-only waives the link, not an early close', () => {
+    expect(linkedFindings(evaluate(pr({ body: 'Fixes #12 (in part).', author: 'dependabot[bot]' })))[0].level).toBe('pass')
+    expect(evaluate(pr({ body: 'Typo.', files: [file('docs/x.md', 3, 1)] })).verdict).toBe('PASS')
+    expect(evaluate(pr({ body: 'Fixes #12 (in part).', files: [file('docs/x.md', 3, 1)] })).verdict).toBe('FAIL')
+  })
+
+  it('the HYGIENE line carries linked=fixes or linked=part-of so Mission Control can count partial PRs', () => {
+    expect(headOf(evaluate(pr()))).toMatch(/^HYGIENE: PASS .* issue=#150 linked=fixes$/)
+    expect(headOf(evaluate(pr({ body: realPr(245).body })))).toMatch(/^HYGIENE: PASS .* issue=#241,#153 linked=part-of$/)
+    expect(headOf(evaluate(pr({ body: realPr(443).body })))).toMatch(/^HYGIENE: FAIL .* issue=#193 linked=fixes$/)
+    // Nothing linked, nothing to count: the field is absent, and the rest of the line is as it was.
+    expect(headOf(evaluate(pr({ body: '' })))).toMatch(/^HYGIENE: FAIL reviewable=12 test=0 excluded=0 files=1 issue=none$/)
+    expect(headOf(evaluate(pr({ body: null, author: 'dependabot[bot]' })))).toMatch(/ issue=skipped$/)
+    expect(headOf(evaluate(pr({ body: 'Typo.', files: [file('docs/x.md', 3, 1)] })))).toMatch(/ issue=docs-only$/)
+  })
+
+  it('keeps the pull_request_target discipline: the body arrives through the API as data, and the PR is never checked out', () => {
+    const read = (file) => readFileSync(path.join(import.meta.dirname, '..', file), 'utf8')
+    const workflow = read('.github/workflows/pr-hygiene.yml')
+      .split('\n')
+      .filter((line) => !line.trimStart().startsWith('#'))
+      .join('\n')
+    expect(workflow).toMatch(/^ {2}pull_request_target:/m)
+    expect(workflow).toContain('uses: actions/checkout@')
+    expect(workflow).not.toMatch(/^\s*ref:/m)
+    expect(workflow).not.toMatch(/\b(?:pnpm|npm|yarn) (?:install|ci)\b/)
+    expect(read('scripts/pr-hygiene.mjs')).toContain('body: pull.body,')
+  })
+})
+
+
 // ── The ratchet growth guard (#406) ────────────────────────────────────────────────────────────
 //
 // `pnpm run lint:layers` refuses a new violation, but the documented `depcruise … --baseline`
