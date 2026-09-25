@@ -1,0 +1,36 @@
+name: Lineage verify
+
+# Weekly re-check of docs/decisions/premises.md, and by hand. Expiry files an issue; the job stays green.
+
+on:
+  schedule:
+    # Mondays 06:17 UTC — weekly. The day-of-week field is what makes it weekly.
+    - cron: '17 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: read
+
+jobs:
+  verify:
+    name: lineage-verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+
+      - uses: pnpm/action-setup@v6
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Verify premises and file expiry
+        run: node scripts/lineage.mjs verify --file
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
