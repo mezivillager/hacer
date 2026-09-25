@@ -87,6 +87,7 @@ describe('App', () => {
     expect(['', '#', '#/', '#/nowhere'].map(routeOf)).toEqual(Array(4).fill({ view: 'overview' }))
     expect(['#/projects', '#/projects/'].map(routeOf)).toEqual(Array(2).fill({ view: 'projects' }))
     expect(routeOf('#/projects/mission-control')).toEqual({ view: 'project', slug: 'mission-control' })
+    expect(routeOf('#/process')).toEqual({ view: 'process' })
 
     render(<App load={async () => snapshot} />)
     expect(await screen.findByRole('heading', { name: 'Overview' })).toBeTruthy()
@@ -96,12 +97,14 @@ describe('App', () => {
     expect(await screen.findByRole('heading', { name: /^mission-control #458/ })).toBeTruthy()
     go('#/projects/no-such-project')
     expect(await screen.findByText('No open tasks for no-such-project in the snapshot.')).toBeTruthy()
+    go('#/process')
+    expect(await screen.findByRole('heading', { name: 'Process' })).toBeTruthy()
     go('#/')
     expect(await screen.findByRole('heading', { name: 'Overview' })).toBeTruthy()
 
     // Every view is one link away, and the header dates the snapshot and names the commit it was taken at.
     const nav = screen.getByRole('navigation')
-    expect(within(nav).getAllByRole('link').map((link) => link.getAttribute('href'))).toEqual(['#/', '#/projects'])
+    expect(within(nav).getAllByRole('link').map((link) => link.getAttribute('href'))).toEqual(['#/', '#/projects', '#/process'])
     expect(screen.getByText(/^Snapshot 2026-09-25 03:16 UTC/)).toBeTruthy()
     expect(screen.getByRole('link', { name: '561dcf1' }).getAttribute('href'))
       .toBe(`${GITHUB}/commit/561dcf13f2f82603bf933778b76e6f605f3785f4`)
