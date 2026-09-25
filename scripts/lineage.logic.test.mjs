@@ -4,8 +4,8 @@ import path from 'node:path'
 import { describe, it, expect } from 'vitest'
 import {
   applyFixes, check, classifyPremise, commandDisposition, cutOverDate, downstream, expiryIssue, formatCheck, formatTree,
-  markPulls, matchesExpect, nextRulingId, parseAdr, parseLedger, parseLineage, parsePremises, parseRulings, planExpiryUpserts,
-  premisesFor, radius, subgraph, toMermaid, trace, validateGraph, verifyExitCode,
+  markPulls, matchesExpect, nextRulingId, parseAdr, parseLedger, parseLineage, parsePremises, parseRulings, peerInstallExit,
+  planExpiryUpserts, premisesFor, radius, subgraph, toMermaid, trace, validateGraph, verifyExitCode,
 } from './lineage.logic.mjs'
 
 // The fixtures under scripts/fixtures/lineage/ are small repos, laid out like this one:
@@ -730,5 +730,52 @@ describe('lineage verify (#468)', () => {
     expect(cron.split(/\s+/)[4]).not.toBe('*')
     expect(yml).toMatch(/workflow_dispatch:/)
     expect(yml).not.toMatch(/pull_request/)
+    expect(yml).toMatch(/concurrency:\s*\n\s*group:\s*lineage-verify/)
+    expect(yml).toMatch(/cancel-in-progress:\s*false/)
+  })
+
+  it('verify: a failed package lookup is UNVERIFIABLE, never EXPIRED', () => {
+    const peer = { id: 'P-005', title: 'peer', verify: 'node scripts/premises/checks.mjs peer-install', expect: 'exit 0' }
+    const output = 'ERR_PNPM_META_FETCH_FAIL'
+    const code = peerInstallExit(1, output, null)
+    expect(code).not.toBe(0)
+    const row = classifyPremise(peer, { stdout: output, code })
+    expect(row.status).toBe('unverifiable')
+    expect(row.status).not.toBe('expired')
+    // A real peer-dependency failure still exits 0 from the wrapper, so a mismatch can expire.
+    expect(peerInstallExit(1, 'ERR_PNPM_PEER_DEP_ISSUES', null)).toBe(0)
+    expect(classifyPremise(peer, { stdout: 'exit 1', code: 0 }).status).toBe('expired')
+  })
+
+  it('verify: a command that exits 0 with empty output is UNVERIFIABLE, never EXPIRED', () => {
+    const row = classifyPremise(premise('<19.3'), { stdout: '', code: 0 })
+    expect(row.status).toBe('unverifiable')
+    expect(row.status).not.toBe('expired')
+    expect(classifyPremise(premise('absent'), { stdout: '  \n', code: 0 }).status).toBe('unverifiable')
+  })
+
+  it('verify: a cross-repo continuation is qualified, never a bare hacer link', () => {
+    const parsed = parseRulings('r.md', [
+      '## R1 — note',
+      'Assumes: P-001',
+      'Upstream — pmndrs/react-three-fiber#3916 merged at 17:05Z, #3915 closed.',
+      '',
+      '## R2 — local',
+      'Builds on: R1',
+      'Filed #408.',
+    ].join('\n'))
+    expect(parsed.artefacts.find((item) => item.id === '#3915').repo).toBe('pmndrs/react-three-fiber')
+    expect(parsed.artefacts.find((item) => item.id === '#408').repo).toBeUndefined()
+    const labels = downstream({
+      nodes: [{ id: 'P-001', kind: 'premise' }, ...parsed.nodes],
+      edges: parsed.edges,
+      artefacts: parsed.artefacts,
+    }, 'P-001')
+    expect(labels).toContain('pmndrs/react-three-fiber#3915')
+    expect(labels).not.toContain('#3915')
+    const body = expiryIssue({ id: 'P-001', title: 't', expect: 'a', output: 'b' }, labels).body
+    expect(body).toContain('pmndrs/react-three-fiber#3915')
+    expect(body).not.toMatch(/(?<![\w/])#3915\b/)
+    expect(body).toContain('#408')
   })
 })
