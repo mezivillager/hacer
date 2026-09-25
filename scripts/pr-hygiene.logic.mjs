@@ -153,8 +153,22 @@ const PART_OF_RE = linkRe('part of')
 /** Words that say an issue is done only in part, read on its closing keyword's own line (#485). */
 const IN_PART_RE = /\b(?:in part|partial(?:ly)?|partly|remaining)\b/gi
 
-/** The body without its code, fenced or inline — GitHub closes nothing on a keyword in a code span (#375). */
-const withoutCode = (body) => stripFencedCode(body).replace(/(`+)[^\n]*?\1/g, ' ')
+// What GitHub does not read as prose, so a keyword in it closes nothing: a fenced block, an HTML comment,
+// an inline code span (#375). A fence follows CommonMark, not a line's first characters (#485 round 2):
+// a backtick fence's info string holds no backtick, so a line like ```err``` is an inline span, and only
+// a bare run of the same character, at least as long, closes one, so ```diff inside it does not. An
+// unclosed fence runs to the end. Measured on kubernetes PRs 139623 and 137025, vscode PR 325145 and
+// next.js PR 96350, whose closing lists GitHub reports.
+const BACKTICK_FENCE = /^ {0,3}(?<tick>`{3,})[^`\n]*$[\s\S]*?(?:\n {0,3}\k<tick>`*[ \t]*$|(?![\s\S]))/
+const TILDE_FENCE = /^ {0,3}(?<tilde>~{3,}).*$[\s\S]*?(?:\n {0,3}\k<tilde>~*[ \t]*$|(?![\s\S]))/
+const HTML_COMMENT = /<!--[\s\S]*?-->/
+const CODE_SPAN = /(?<!`)(?<span>`+)(?!`)[^\n]*?(?<!`)\k<span>(?!`)/
+// One pass, so whichever opens first wins, as in CommonMark.
+const NOT_PROSE = new RegExp([BACKTICK_FENCE, TILDE_FENCE, HTML_COMMENT, CODE_SPAN].map((re) => re.source).join('|'), 'gm')
+
+/** The body as GitHub reads it for closing keywords: prose only, each dropped part keeping its line breaks. */
+const withoutCode = (body) =>
+  (body ?? '').replace(/\r\n?/g, '\n').replace(NOT_PROSE, (part) => part.replace(/[^\n]/g, '') || ' ')
 
 /** Distinct issue numbers the body links, in order of first mention. */
 export function findLinkedIssues(body) {
@@ -169,11 +183,11 @@ function findClosingIssues(body) {
 
 /**
  * Each issue a closing keyword closes while the body says it is done only in part (#485): `Part of`
- * the same issue anywhere in the body, or an in-part word on the keyword's own line; code is an
- * example, not a claim, and is skipped. Read across the whole body, the words misfired on 8 of the
- * repo's 73 real bodies with a closing keyword; on the keyword's line, on none — and both real early
- * closes still fail: #396's "Fixes #364 (in part …)", and #443's "Part of #193" beside a negated
- * keyword that GitHub closed #193 on all the same.
+ * the same issue anywhere in the body, or an in-part word on the keyword's own line; code and HTML
+ * comments are examples, not claims, and are skipped. Read across the whole body, the words misfired
+ * on 8 of the repo's 73 real bodies with a closing keyword; on the keyword's line, on none — and both
+ * real early closes still fail: #396's "Fixes #364 (in part …)", and #443's "Part of #193" beside a
+ * negated keyword that GitHub closed #193 on all the same.
  * @returns {{issue:number, keyword:string, phrases:string[]}[]}
  */
 function findPartialCloses(body) {
