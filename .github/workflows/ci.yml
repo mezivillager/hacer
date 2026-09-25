@@ -30,6 +30,11 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      # Peer checking runs only while pnpm resolves. --frozen-lockfile skips that, so a
+      # React / R3F mismatch installs clean (R403, R404). This reads the installed tree.
+      - name: Peer ranges (React, R3F, three)
+        run: node scripts/peer-range.mjs
+
       # Catches: TypeScript type errors + ESLint violations. Its `LAYER-RATCHET:` line is also a
       # `::notice` on this check run, which Mission Control reads without log access (#477).
       - name: Lint (TypeScript + ESLint)
