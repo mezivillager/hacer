@@ -1,0 +1,22 @@
+{
+  "name": "@react-three/fiber",
+  "version": "9.7.0",
+  "peerDependencies": {
+    "expo": ">=43.0",
+    "react": ">=19 <19.3",
+    "three": ">=0.156",
+    "expo-gl": ">=11.0",
+    "react-dom": ">=19 <19.3",
+    "expo-asset": ">=8.4",
+    "react-native": ">=0.78",
+    "expo-file-system": ">=11.0"
+  },
+  "peerDependenciesMeta": {
+    "expo": { "optional": true },
+    "expo-gl": { "optional": true },
+    "react-dom": { "optional": true },
+    "expo-asset": { "optional": true },
+    "react-native": { "optional": true },
+    "expo-file-system": { "optional": true }
+  }
+}
