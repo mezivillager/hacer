@@ -9,6 +9,7 @@ export interface Project {
   open: number; ready: number; inProgress: number; needsHuman: number
   subIssues: { total: number; completed: number; percentCompleted: number } | null
 }
+export interface PR { number: number; title: string; url: string; mergedAt: string | null; verdicts: { verdict: 'PASS' | 'BLOCK' }[] }
 export interface Claim {
   number: number; ref: string; title: string | null; url: string | null; state: string | null; onClosedIssue: boolean | null
   claim: { claimedBy: string | null; intent: string | null } | null
@@ -18,7 +19,7 @@ export interface Snapshot {
   schemaVersion: 1; generatedAt: string; head: { sha: string; subject: string }; freshness: Record<string, Freshness>
   portfolio: { projects: Project[] }; pickRule: { next: { number: number; title: string; project: string | null }[] }
   tasks: { items: Task[]; byProject: Record<string, number[]> }
-  prs: { open: { verdicts: { verdict: 'PASS' | 'BLOCK' }[] }[]; coverage: { merged: number; withVerdict: number; pass: number; block: number } }
+  prs: { open: PR[]; merged: PR[]; coverage: { merged: number; withVerdict: number; pass: number; block: number } }
   claims: { items: Claim[]; onClosedIssues: number }
   cloudLane: { items: CloudLaneItem[] }
   sessions: { items: { file: string; date: string; kind: string; title: string | null }[] }
