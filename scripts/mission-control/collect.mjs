@@ -9,7 +9,7 @@ import { homedir } from 'node:os'
 import path from 'node:path'
 import { parseArgs, promisify } from 'node:util'
 import { KNOWN_VIOLATIONS_FILE as BASELINE } from '../layer-ratchet.logic.mjs'
-import { buildSnapshot, claimsQuery, report } from './collect.logic.mjs'
+import { buildSnapshot, checksQuery, claimsQuery, report } from './collect.logic.mjs'
 
 const REPO = process.env.GITHUB_REPOSITORY ?? 'mezivillager/hacer'
 const ROOT = path.join(import.meta.dirname, '..', '..')
@@ -50,6 +50,7 @@ const SOURCES = {
   prsOpen: ['gh pr list --state open', () => list('pr', '--state', 'open', '--limit', '100', '--json', PR_FIELDS)],
   prsMerged: ['gh pr list --state merged --limit 60', () => list('pr', '--state', 'merged', '--limit', '60', '--json', PR_FIELDS)],
   releases: ['gh release list', () => list('release', '--limit', '1000', '--json', 'tagName,publishedAt,isLatest')],
+  checkRuns: ['gh api graphql (check runs)', () => gh('api', 'graphql', '-f', `query=${checksQuery(REPO)}`)],
   claimRefs: ['git ls-remote origin refs/heads/claim/*', () => git('ls-remote', 'origin', 'refs/heads/claim/*')],
   ratchetLog: [`git log -- ${BASELINE}`, ratchetHistory],
   baseline: [BASELINE, () => JSON.parse(read(BASELINE))],

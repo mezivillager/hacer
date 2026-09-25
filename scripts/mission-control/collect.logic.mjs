@@ -4,6 +4,7 @@
 // pick-rule number comes from ../backlog.logic.mjs, so the snapshot cannot disagree with `backlog.mjs ready`.
 
 import { AUX_ROTATION, DEFAULT_ALLOWLIST, PICK_ROTATION, parsePortfolio, planReady, summarizeProjects } from '../backlog.logic.mjs'
+import { CHECK_LINES, parseCheckLine } from '../check-lines.logic.mjs'
 
 export const SCHEMA_VERSION = 1
 const STATUSES = ['ok', 'partial', 'error']
@@ -88,8 +89,35 @@ function buildClaims({ claimRefs: lsRemote = '', claimIssues }, { allowlist }) {
   return { items, onClosedIssues: items.filter((item) => item.onClosedIssue).length }
 }
 
-export function checksQuery() {
-  throw new Error('not implemented')
+// Checks (MC-6, #477): each required check publishes its line as a notice, an annotation on its own check run. The
+// rollup is what a PR's merge box judges: it leaves out a workflow_dispatch re-check, which is not the PR's check.
+const RUNS = 'statusCheckRollup { contexts(first: 50) { nodes { ... on CheckRun { databaseId name conclusion completedAt detailsUrl ' +
+  'annotations(first: 50) { nodes { message } } } } } }'
+
+/** One GraphQL query: the check runs, with their annotations, on main's head commit and on every open PR's. */
+export function checksQuery(repo) {
+  const [owner, name] = repo.split('/')
+  return `query { repository(owner: "${owner}", name: "${name}") { ` +
+    `main: ref(qualifiedName: "refs/heads/main") { target { ... on Commit { oid ${RUNS} } } } ` +
+    `pullRequests(states: OPEN, first: 100) { nodes { number commits(last: 1) { nodes { commit { oid ${RUNS} } } } } } } }`
+}
+
+/** Each required check's newest run on one head — GitHub judges a required context by its newest check run — with the
+ *  line it published, or null for a run that published none (still going, or run before MC-6). */
+const checksOn = ([pr, commit]) => Object.entries(CHECK_LINES).flatMap(([check, prefix]) => {
+  const run = (commit.statusCheckRollup?.contexts.nodes ?? []).filter((node) => node.name === check)
+    .reduce((newest, node) => (newest?.databaseId > node.databaseId ? newest : node), null)
+  if (!run) return []
+  const line = run.annotations.nodes.map((node) => node.message).findLast((message) => message.startsWith(`${prefix}: `)) ?? null
+  const { conclusion, completedAt, detailsUrl: url } = run
+  return [{ pr, sha: commit.oid, check, conclusion, completedAt, url, line, ...parseCheckLine(line) }]
+})
+
+/** main's head (`pr: null`), then each open PR's, in the query's order. */
+function buildChecks({ checkRuns }) {
+  const { main, pullRequests } = checkRuns?.data?.repository ?? {}
+  const heads = [[null, main?.target], ...(pullRequests?.nodes ?? []).map((pr) => [pr.number, pr.commits.nodes[0]?.commit])]
+  return { items: heads.filter(([, commit]) => commit).flatMap(checksOn) }
 }
 
 // Portfolio, pick rule and tasks: all three from one planReady over the one issue list.
@@ -169,7 +197,7 @@ const SECTIONS = {
   adrs: { needs: ['adrs'], build: ({ adrs = [] }) => ({ items: adrs.flatMap(adrOf).sort((a, b) => a.number - b.number) }) },
   roadmap: { needs: ['roadmap'], build: buildRoadmap },
   metrics: { needs: ['baseline'], optional: ['ratchetLog', 'releases', 'prsMerged'], build: buildMetrics },
-  checks: { build: () => ({ until: 'MC-6', items: [] }) }, // the checks' summary lines, once MC-6 publishes them
+  checks: { needs: ['checkRuns'], build: buildChecks },
   lineage: { build: () => ({ until: 'DL-7', items: [] }) }, // the decision graph, once DL-7 draws it
 }
 
@@ -222,7 +250,9 @@ export const SCHEMA_V1 = {
   roadmap: { lastUpdated: 'string?', phases: [{ phase: 'string' }] },
   metrics: { ratchet: { count: 'number', byRule: 'object', history: [{ sha: 'sha', count: 'number' }] },
     releases: [{ tag: 'string', publishedAt: 'iso' }], mergesPerDay: [{ date: 'string', merges: 'number' }] },
-  checks: { items: 'array' }, lineage: { items: 'array' },
+  checks: { items: [{ pr: 'number?', sha: 'sha', check: 'string', conclusion: 'string?', completedAt: 'iso?', url: 'string?',
+    line: 'string?', verdict: 'string?', fields: 'object' }] },
+  lineage: { items: 'array' },
 }
 
 const isObject = (value) => typeof value === 'object' && value !== null && !Array.isArray(value)
