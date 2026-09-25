@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-25T05:06:52.692Z",
+  "generatedAt": "2026-09-25T05:47:09.020Z",
   "head": {
-    "sha": "397a7a160702136b28d814c3f451609e36cb3a55",
-    "date": "2026-09-25T05:06:07Z",
-    "subject": "Merge b251651ed8deb4d59eea2804df3812e2706c7f9a into 1b012400aa3dbcaa5ef9977c97f8ee389351326a"
+    "sha": "9b1d29acd90a7100c9bf9a5c8aef309671f41007",
+    "date": "2026-09-25T05:46:21Z",
+    "subject": "Merge 6b3dde8862c5d2044929cce7cd09cd23cf5c87e4 into 77a0d740003c26939749e8cc439c48e3a83898e6"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-25T05:06:52.692Z",
+      "fetchedAt": "2026-09-25T05:47:09.020Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-25T05:06:52.692Z",
+      "fetchedAt": "2026-09-25T05:47:09.020Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-25T05:06:52.692Z",
+      "fetchedAt": "2026-09-25T05:47:09.020Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-25T05:06:52.692Z",
+      "fetchedAt": "2026-09-25T05:47:09.020Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-09-25T05:06:52.692Z",
+      "fetchedAt": "2026-09-25T05:47:09.020Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-09-25T05:06:52.692Z",
+      "fetchedAt": "2026-09-25T05:47:09.020Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-09-25T05:06:52.692Z",
+      "fetchedAt": "2026-09-25T05:47:09.020Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-09-25T05:06:52.692Z",
+      "fetchedAt": "2026-09-25T05:47:09.020Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-09-25T05:06:52.692Z",
+      "fetchedAt": "2026-09-25T05:47:09.020Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-09-25T05:06:52.692Z",
+      "fetchedAt": "2026-09-25T05:47:09.020Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-25T05:06:52.692Z",
+      "fetchedAt": "2026-09-25T05:47:09.020Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-09-25T05:06:52.692Z",
+      "fetchedAt": "2026-09-25T05:47:09.020Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-09-25T05:06:52.692Z",
+      "fetchedAt": "2026-09-25T05:47:09.020Z",
       "status": "ok"
     }
   },
@@ -100,9 +100,9 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 33,
+        "open": 31,
         "ready": 22,
-        "inProgress": 1,
+        "inProgress": 0,
         "needsHuman": 0,
         "next": {
           "number": 148,
@@ -110,8 +110,8 @@
         },
         "title": "Epic: harness — autonomous-run improvements & agent-readiness",
         "subIssues": {
-          "completed": 23,
-          "percentCompleted": 48,
+          "completed": 24,
+          "percentCompleted": 51,
           "total": 47
         }
       },
@@ -308,7 +308,7 @@
         "lane": "process",
         "slug": "lineage",
         "epicNumber": 457,
-        "open": 6,
+        "open": 5,
         "ready": 4,
         "inProgress": 0,
         "needsHuman": 0,
@@ -318,8 +318,8 @@
         },
         "title": "Epic: lineage — Decision Lineage: the decision graph, executable premises, and the correction workflow",
         "subIssues": {
-          "completed": 3,
-          "percentCompleted": 33,
+          "completed": 4,
+          "percentCompleted": 44,
           "total": 9
         }
       },
@@ -329,8 +329,8 @@
         "slug": "mission-control",
         "epicNumber": 458,
         "open": 8,
-        "ready": 5,
-        "inProgress": 1,
+        "ready": 4,
+        "inProgress": 2,
         "needsHuman": 0,
         "next": {
           "number": 474,
@@ -408,8 +408,8 @@
         "project": "foundation"
       },
       {
-        "number": 469,
-        "title": "Lineage DL-4: harness integration — briefs, templates, the ledger's Id and Decision columns, pinned phrases",
+        "number": 470,
+        "title": "Lineage DL-5: `lineage correct` — the correction plan, one task per downstream decision",
         "project": "lineage"
       },
       {
@@ -443,8 +443,8 @@
         "project": "foundation"
       },
       {
-        "number": 470,
-        "title": "Lineage DL-5: `lineage correct` — the correction plan, one task per downstream decision",
+        "number": 471,
+        "title": "Lineage DL-6: lint:lineage from warn to fail — the lineage ratchet",
         "project": "lineage"
       },
       {
@@ -458,8 +458,8 @@
         "project": "foundation"
       },
       {
-        "number": 476,
-        "title": "Mission Control MC-5: hourly refresh workflow and the snapshot history archive",
+        "number": 479,
+        "title": "Mission Control MC-8: Roadmap, Ledger and ADR views",
         "project": "mission-control"
       },
       {
@@ -493,8 +493,8 @@
         "project": "foundation"
       },
       {
-        "number": 479,
-        "title": "Mission Control MC-8: Roadmap, Ledger and ADR views",
+        "number": 480,
+        "title": "Mission Control MC-9: \"queue an improvement\" links and the needs-human list — the first editable step",
         "project": "mission-control"
       },
       {
@@ -506,11 +506,6 @@
         "number": 155,
         "title": "De-duplicate vendored skills (tdd/test-driven-development, debugging/systematic-debugging, planning/writing-plans) and fix sync-superpowers.sh",
         "project": "harness"
-      },
-      {
-        "number": 480,
-        "title": "Mission Control MC-9: \"queue an improvement\" links and the needs-human list — the first editable step",
-        "project": "mission-control"
       },
       {
         "number": 159,
@@ -751,16 +746,14 @@
         "reason": null
       },
       {
-        "number": 469,
-        "title": "Lineage DL-4: harness integration — briefs, templates, the ledger's Id and Decision columns, pinned phrases",
+        "number": 470,
+        "title": "Lineage DL-5: `lineage correct` — the correction plan, one task per downstream decision",
         "labels": [
           "agent-ready",
           "risk:1",
           "project:lineage"
         ],
-        "blocking": [
-          471
-        ],
+        "blocking": [],
         "project": "lineage",
         "rank": 13,
         "lane": "process",
@@ -863,11 +856,11 @@
         "reason": null
       },
       {
-        "number": 470,
-        "title": "Lineage DL-5: `lineage correct` — the correction plan, one task per downstream decision",
+        "number": 471,
+        "title": "Lineage DL-6: lint:lineage from warn to fail — the lineage ratchet",
         "labels": [
           "agent-ready",
-          "risk:1",
+          "risk:2",
           "project:lineage"
         ],
         "blocking": [],
@@ -911,16 +904,14 @@
         "reason": null
       },
       {
-        "number": 476,
-        "title": "Mission Control MC-5: hourly refresh workflow and the snapshot history archive",
+        "number": 479,
+        "title": "Mission Control MC-8: Roadmap, Ledger and ADR views",
         "labels": [
           "agent-ready",
           "risk:1",
           "project:mission-control"
         ],
-        "blocking": [
-          478
-        ],
+        "blocking": [],
         "project": "mission-control",
         "rank": 14,
         "lane": "process",
@@ -1022,11 +1013,11 @@
         "reason": null
       },
       {
-        "number": 479,
-        "title": "Mission Control MC-8: Roadmap, Ledger and ADR views",
+        "number": 480,
+        "title": "Mission Control MC-9: \"queue an improvement\" links and the needs-human list — the first editable step",
         "labels": [
           "agent-ready",
-          "risk:1",
+          "risk:0",
           "project:mission-control"
         ],
         "blocking": [],
@@ -1063,21 +1054,6 @@
         "blocking": [],
         "project": "harness",
         "rank": 2,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 480,
-        "title": "Mission Control MC-9: \"queue an improvement\" links and the needs-human list — the first editable step",
-        "labels": [
-          "agent-ready",
-          "risk:0",
-          "project:mission-control"
-        ],
-        "blocking": [],
-        "project": "mission-control",
-        "rank": 14,
         "lane": "process",
         "pickable": true,
         "reason": null
@@ -2633,21 +2609,6 @@
         "reason": "unshaped"
       },
       {
-        "number": 456,
-        "title": "Ratchet growth guard: a base config the rule-name scan reads only in part still lets one comment arm a real rule",
-        "labels": [
-          "bug",
-          "project:harness",
-          "risk:2"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": false,
-        "reason": "unshaped"
-      },
-      {
         "number": 462,
         "title": "Removing a junction in an imported document still loses the source→sink connection that ran through it",
         "labels": [
@@ -2662,19 +2623,22 @@
         "reason": "unshaped"
       },
       {
-        "number": 471,
-        "title": "Lineage DL-6: lint:lineage from warn to fail — the lineage ratchet",
+        "number": 476,
+        "title": "Mission Control MC-5: hourly refresh workflow and the snapshot history archive",
         "labels": [
           "agent-ready",
-          "risk:2",
-          "project:lineage"
+          "in-progress",
+          "risk:1",
+          "project:mission-control"
         ],
-        "blocking": [],
-        "project": "lineage",
-        "rank": 13,
+        "blocking": [
+          478
+        ],
+        "project": "mission-control",
+        "rank": 14,
         "lane": "process",
         "pickable": false,
-        "reason": "blocked:#469"
+        "reason": "in-progress"
       },
       {
         "number": 477,
@@ -2706,22 +2670,6 @@
         "lane": "process",
         "pickable": false,
         "reason": "blocked:#476"
-      },
-      {
-        "number": 489,
-        "title": "The layer rules themselves are unguarded: an emptied .dependency-cruiser.cjs passes lint:layers and pr-hygiene never reads a config-only PR",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:2"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": false,
-        "reason": "in-progress"
       },
       {
         "number": 500,
@@ -2851,10 +2799,9 @@
       ],
       "lineage": [
         468,
-        469,
         470,
-        481,
         471,
+        481,
         502
       ],
       "harness": [
@@ -2886,8 +2833,6 @@
         435,
         436,
         454,
-        456,
-        489,
         500,
         504,
         505
@@ -2895,9 +2840,9 @@
       "mission-control": [
         474,
         475,
-        476,
         479,
         480,
+        476,
         477,
         478,
         509
@@ -2984,24 +2929,6 @@
   "prs": {
     "open": [
       {
-        "number": 508,
-        "title": "feat(harness): guard the layer rules themselves, not only their rows (#489)",
-        "url": "https://github.com/mezivillager/hacer/pull/508",
-        "author": "mezivillager",
-        "labels": [
-          "project:harness",
-          "risk:2"
-        ],
-        "headRefName": "feat/489-guard-layer-rules",
-        "isDraft": false,
-        "createdAt": "2026-09-25T05:02:23Z",
-        "mergedAt": null,
-        "closes": [
-          489
-        ],
-        "verdicts": []
-      },
-      {
         "number": 507,
         "title": "feat(checks): publish the required checks' summary lines where Mission Control reads them (MC-6)",
         "url": "https://github.com/mezivillager/hacer/pull/507",
@@ -3011,13 +2938,21 @@
           "project:mission-control"
         ],
         "headRefName": "feat/477-publish-check-summaries",
-        "isDraft": true,
+        "isDraft": false,
         "createdAt": "2026-09-25T04:48:25Z",
         "mergedAt": null,
         "closes": [
           477
         ],
-        "verdicts": []
+        "verdicts": [
+          {
+            "verdict": "BLOCK",
+            "round": 1,
+            "model": "Claude Opus 5.5 (claude-opus-5-5[1m])",
+            "at": "2026-09-25T05:29:17Z",
+            "url": "https://github.com/mezivillager/hacer/pull/507#issuecomment-5827322969"
+          }
+        ]
       },
       {
         "number": 496,
@@ -3053,6 +2988,67 @@
       }
     ],
     "merged": [
+      {
+        "number": 510,
+        "title": "feat(harness): Decision Lineage DL-4 — briefs, templates, ledger Id/Decision, pinned phrases",
+        "url": "https://github.com/mezivillager/hacer/pull/510",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "risk:1",
+          "project:lineage"
+        ],
+        "headRefName": "feat/469-lineage-harness-integration",
+        "isDraft": false,
+        "createdAt": "2026-09-25T05:11:27Z",
+        "mergedAt": "2026-09-25T05:38:25Z",
+        "closes": [
+          469
+        ],
+        "verdicts": [
+          {
+            "verdict": "BLOCK",
+            "round": 1,
+            "model": "claude-sonnet-5 (Sonnet 5)",
+            "at": "2026-09-25T05:29:04Z",
+            "url": "https://github.com/mezivillager/hacer/pull/510#issuecomment-5827320625"
+          },
+          {
+            "verdict": "PASS",
+            "round": 2,
+            "model": "claude-sonnet-5 (Sonnet 5)",
+            "at": "2026-09-25T05:36:55Z",
+            "url": "https://github.com/mezivillager/hacer/pull/510#issuecomment-5827393484"
+          }
+        ]
+      },
+      {
+        "number": 508,
+        "title": "feat(harness): guard the layer rules themselves, not only their rows (#489)",
+        "url": "https://github.com/mezivillager/hacer/pull/508",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "project:harness",
+          "risk:2"
+        ],
+        "headRefName": "feat/489-guard-layer-rules",
+        "isDraft": false,
+        "createdAt": "2026-09-25T05:02:23Z",
+        "mergedAt": "2026-09-25T05:29:13Z",
+        "closes": [
+          489
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Claude Opus 5.5 (1M context), claude-opus-5-5[1m]",
+            "at": "2026-09-25T05:27:34Z",
+            "url": "https://github.com/mezivillager/hacer/pull/508#issuecomment-5827305706"
+          }
+        ]
+      },
       {
         "number": 503,
         "title": "feat(lineage): trace, radius, check, graph — and lint:lineage in warn mode (DL-2)",
@@ -4433,60 +4429,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/366#issuecomment-5787059658"
           }
         ]
-      },
-      {
-        "number": 365,
-        "title": "fix(simulation): trace a junction through its feed wire, not wireIds[0]",
-        "url": "https://github.com/mezivillager/hacer/pull/365",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:core",
-          "risk:1"
-        ],
-        "headRefName": "fix/356-junction-structural-trace",
-        "isDraft": false,
-        "createdAt": "2026-09-23T00:23:14Z",
-        "mergedAt": "2026-09-23T00:45:29Z",
-        "closes": [
-          356
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Opus 5 (claude-opus-5[1m])",
-            "at": "2026-09-23T00:37:59Z",
-            "url": "https://github.com/mezivillager/hacer/pull/365#issuecomment-5786966345"
-          }
-        ]
-      },
-      {
-        "number": 362,
-        "title": "fix(hdl): give every producer of a slice-written signal a dependency edge",
-        "url": "https://github.com/mezivillager/hacer/pull/362",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:core",
-          "risk:1"
-        ],
-        "headRefName": "fix/355-multi-producer-signals",
-        "isDraft": false,
-        "createdAt": "2026-09-22T23:42:57Z",
-        "mergedAt": "2026-09-23T00:26:19Z",
-        "closes": [
-          355
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "claude-opus-5[1m] (Opus 5, 1M context)",
-            "at": "2026-09-22T23:59:43Z",
-            "url": "https://github.com/mezivillager/hacer/pull/362#issuecomment-5786492173"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4552,6 +4494,31 @@
         }
       },
       {
+        "number": 476,
+        "ref": "refs/heads/claim/476",
+        "sha": "77a0d740003c26939749e8cc439c48e3a83898e6",
+        "state": "OPEN",
+        "title": "Mission Control MC-5: hourly refresh workflow and the snapshot history archive",
+        "url": "https://github.com/mezivillager/hacer/issues/476",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:mission-control"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "2026-09-25 process-sweep",
+          "branch": "feat/476-mission-control-refresh",
+          "handoff": null,
+          "author": "mezivillager",
+          "at": "2026-09-25T05:42:51Z",
+          "url": "https://github.com/mezivillager/hacer/issues/476#issuecomment-5827447775"
+        }
+      },
+      {
         "number": 477,
         "ref": "refs/heads/claim/477",
         "sha": "adde0aac1b8881b1ab8e2af95a9beb3d6d497ca8",
@@ -4574,31 +4541,6 @@
           "author": "mezivillager",
           "at": "2026-09-25T04:23:00Z",
           "url": "https://github.com/mezivillager/hacer/issues/477#issuecomment-5826671572"
-        }
-      },
-      {
-        "number": 489,
-        "ref": "refs/heads/claim/489",
-        "sha": "005f81971256b72e9999ce196e4e1f413442c092",
-        "state": "OPEN",
-        "title": "The layer rules themselves are unguarded: an emptied .dependency-cruiser.cjs passes lint:layers and pr-hygiene never reads a config-only PR",
-        "url": "https://github.com/mezivillager/hacer/issues/489",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:2"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-09-25 process-sweep",
-          "branch": "feat/489-guard-layer-rules",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-09-25T04:12:18Z",
-          "url": "https://github.com/mezivillager/hacer/issues/489#issuecomment-5826565952"
         }
       }
     ],
@@ -4751,334 +4693,444 @@
   "ledger": {
     "items": [
       {
+        "id": "L001",
         "date": "2026-09-18",
         "whatWentWrong": "Four statements in the workspace `CLAUDE.md` were stale for months (HDL pipeline \"not wired\", `gateLogic.ts`, Stryker, E2E in the DoD); every session started from a wrong picture",
         "shouldHaveBeenCaughtBy": "a does-this-path-exist check on cited files (#153)",
-        "mechanised": "no — #153"
+        "mechanised": "no — #153",
+        "decision": "—"
       },
       {
+        "id": "L002",
         "date": "2026-09-18",
         "whatWentWrong": "The `main-rules` ruleset could only be merged through by admin bypass (1 approval a solo owner cannot give; `required_deployments` and `code_scanning` rules no PR could satisfy); AGENTS.md claimed CI was required — it was not",
         "shouldHaveBeenCaughtBy": "nothing; a settings audit",
-        "mechanised": "yes — ADR-0013; ruleset rewritten, bypass removed after #234"
+        "mechanised": "yes — ADR-0013; ruleset rewritten, bypass removed after #234",
+        "decision": "—"
       },
       {
+        "id": "L003",
         "date": "2026-09-18",
         "whatWentWrong": "First research draft kept the owner as the merge bottleneck and proposed label gates the owner's own identity defeats",
         "shouldHaveBeenCaughtBy": "an adversarial review before acting",
-        "mechanised": "yes — every research deliverable gets a fresh-context adversarial review + fact-check"
+        "mechanised": "yes — every research deliverable gets a fresh-context adversarial review + fact-check",
+        "decision": "—"
       },
       {
+        "id": "L004",
         "date": "2026-09-18",
         "whatWentWrong": "Research draft rested a goal-post exit test on a `lint:docs` capability that does not exist (it only rejects absolute paths)",
         "shouldHaveBeenCaughtBy": "fact-check",
-        "mechanised": "yes — reviews; the capability itself is #153"
+        "mechanised": "yes — reviews; the capability itself is #153",
+        "decision": "—"
       },
       {
+        "id": "L005",
         "date": "2026-09-18",
         "whatWentWrong": "Tracer PR #238: the pre-commit `tsc -b` makes a compile-broken \"red\" commit impossible; the builder committed the test file from a green tree instead",
         "shouldHaveBeenCaughtBy": "`ha-prompt-it` should say how to write a red that compiles",
-        "mechanised": "yes — `implementer-brief.md` TDD step 2: red is the tests *and* the smallest compiling stub that fails, `--no-verify` never used"
+        "mechanised": "yes — `implementer-brief.md` TDD step 2: red is the tests *and* the smallest compiling stub that fails, `--no-verify` never used",
+        "decision": "—"
       },
       {
+        "id": "L006",
         "date": "2026-09-18",
         "whatWentWrong": "`pnpm install` in every worktree prints `husky: command not found` (husky is not a devDependency; hooks still run via `core.hooksPath`)",
         "shouldHaveBeenCaughtBy": "the worktree script (#157)",
-        "mechanised": "yes — #157: `scripts/wt-new` prints a one-line note that the message is expected"
+        "mechanised": "yes — #157: `scripts/wt-new` prints a one-line note that the message is expected",
+        "decision": "—"
       },
       {
+        "id": "L007",
         "date": "2026-09-18",
         "whatWentWrong": "Tracer PR #238: 11 builder tests + a green DoD missed that the engine read leftover pin state (a table could differ before and after save/reload); the fresh-context verifier found it with a repro and a 2-line fix",
         "shouldHaveBeenCaughtBy": "the verifier — and it did",
-        "mechanised": "yes — `verifier-brief.md` step 6 (\"try to break it\") is why it was found; keep it"
+        "mechanised": "yes — `verifier-brief.md` step 6 (\"try to break it\") is why it was found; keep it",
+        "decision": "—"
       },
       {
+        "id": "L008",
         "date": "2026-09-18",
         "whatWentWrong": "Issue #149's verification command named an exact new test file (`scripts/backlog.test.mjs`); the builder followed the repo's `x.logic.test.mjs` convention, so the command as written exited 1",
         "shouldHaveBeenCaughtBy": "the issue form: verification commands should target a directory or pattern, not a file that does not exist yet",
-        "mechanised": "no — add to the issue-form guidance (#154)"
+        "mechanised": "no — add to the issue-form guidance (#154)",
+        "decision": "—"
       },
       {
+        "id": "L009",
         "date": "2026-09-18",
         "whatWentWrong": "Ticket P05-31 (6 h, engine + store + UI) would have been one ~600-line PR under the old rule; split into #164/#235/#236 it shipped as a 163-line PR in 34 minutes",
         "shouldHaveBeenCaughtBy": "ADR-0013 one-sub-issue-per-PR",
-        "mechanised": "yes — ADR-0013; `pr-hygiene` (#150) will enforce the budget"
+        "mechanised": "yes — ADR-0013; `pr-hygiene` (#150) will enforce the budget",
+        "decision": "—"
       },
       {
+        "id": "L010",
         "date": "2026-09-18",
         "whatWentWrong": "`strict` up-to-date policy: every PR needs a rebase + fresh CI (~2 min) once `main` moves; with three PRs landing in an hour that was three extra CI runs",
         "shouldHaveBeenCaughtBy": "expected; a cost, not a defect",
-        "mechanised": "n/a — revisit if it becomes the bottleneck"
+        "mechanised": "n/a — revisit if it becomes the bottleneck",
+        "decision": "—"
       },
       {
+        "id": "L011",
         "date": "2026-09-18",
         "whatWentWrong": "`pr-hygiene` was made a required check after being tried only on human PRs; every dependabot PR then failed its linked-issue rule",
         "shouldHaveBeenCaughtBy": "trying a new required check on every *kind* of PR that exists (human, agent, bot) before requiring it",
-        "mechanised": "yes — bot/`dependencies` exemption (#250); the rule itself: ADR-0013 amendment candidate"
+        "mechanised": "yes — bot/`dependencies` exemption (#250); the rule itself: ADR-0013 amendment candidate",
+        "decision": "—"
       },
       {
+        "id": "L012",
         "date": "2026-09-18",
         "whatWentWrong": "Removing the admin bypass broke every release: `@semantic-release/git` pushes a commit to `main`, now rejected (`GH013`); five release runs failed before anyone looked",
         "shouldHaveBeenCaughtBy": "an audit of every workflow that pushes to `main` before changing the ruleset; `agent-orient` showing the release workflow's status",
-        "mechanised": "partly — ADR-0015; release status is a Mission Control snapshot section (MC-1, #472)"
+        "mechanised": "partly — ADR-0015; release status is a Mission Control snapshot section (MC-1, #472)",
+        "decision": "—"
       },
       {
+        "id": "L013",
         "date": "2026-09-18",
         "whatWentWrong": "The agents' `gh` token lacked the `workflow` scope, so they could not update or auto-merge any PR touching `.github/workflows/**` (dependabot #118/#131, and a cosmetic `ci.yml` hunk in #245)",
         "shouldHaveBeenCaughtBy": "a token-scope check at session start",
-        "mechanised": "yes — owner ran `gh auth refresh -s workflow`; agent PRs still avoid incidental workflow edits"
+        "mechanised": "yes — owner ran `gh auth refresh -s workflow`; agent PRs still avoid incidental workflow edits",
+        "decision": "—"
       },
       {
+        "id": "L014",
         "date": "2026-09-18",
         "whatWentWrong": "`strict` required-status-checks made every merge put every other green PR `BEHIND`; ten PRs in two hours meant a rebase + CI cycle each, and dependabot PRs re-triggered each other",
         "shouldHaveBeenCaughtBy": "measuring merge throughput after the ruleset change",
-        "mechanised": "yes — `strict` off; `ci.yml` still runs on every push to `main`"
+        "mechanised": "yes — `strict` off; `ci.yml` still runs on every push to `main`",
+        "decision": "—"
       },
       {
+        "id": "L015",
         "date": "2026-09-18",
         "whatWentWrong": "PR #244 added an AGENTS.md line citing `pr-hygiene.logic.mjs` without its `scripts/` prefix; the path-exists check (#245) caught it as soon as its branch was rebased onto that `main`",
         "shouldHaveBeenCaughtBy": "the path-exists check — before it had even merged",
-        "mechanised": "yes — ADR-0014"
+        "mechanised": "yes — ADR-0014",
+        "decision": "—"
       },
       {
+        "id": "L016",
         "date": "2026-09-18",
         "whatWentWrong": "The eslint-plugin-react-hooks 7.1.1 bump (dependabot #114) failed lint with four real \"Cannot access refs during render\" findings",
         "shouldHaveBeenCaughtBy": "the React Compiler lint rules, on the bump itself",
-        "mechanised": "no — #256 fixes the code; the bump waits on it"
+        "mechanised": "no — #256 fixes the code; the bump waits on it",
+        "decision": "—"
       },
       {
+        "id": "L017",
         "date": "2026-09-18",
         "whatWentWrong": "The browser-qa builder kept polling its own CI after its PR merged (~300k tokens)",
         "shouldHaveBeenCaughtBy": "the implementer brief",
-        "mechanised": "yes — \"agents stop after opening their PR\" (Budgets, #292)"
+        "mechanised": "yes — \"agents stop after opening their PR\" (Budgets, #292)",
+        "decision": "—"
       },
       {
+        "id": "L018",
         "date": "2026-09-19",
         "whatWentWrong": "A builder's `git fetch` hung (a ref-lock race with another worktree fetching at the same moment); the agent sat idle until it was stopped and resumed",
         "shouldHaveBeenCaughtBy": "a fetch timeout in the worktree script",
-        "mechanised": "yes — #157: `scripts/wt-new` bounds `git fetch` to 60s (`timeout`/`gtimeout`) and names the likely cause instead of hanging"
+        "mechanised": "yes — #157: `scripts/wt-new` bounds `git fetch` to 60s (`timeout`/`gtimeout`) and names the likely cause instead of hanging",
+        "decision": "—"
       },
       {
+        "id": "L019",
         "date": "2026-09-19",
         "whatWentWrong": "The default subagent model was switched to Sonnet to cut cost without asking; the owner corrected it (Opus for significant work, Sonnet only for routine work)",
         "shouldHaveBeenCaughtBy": "asking before changing a cost-versus-quality knob",
-        "mechanised": "yes — Budgets table + `CLAUDE_CODE_SUBAGENT_MODEL=opus` (#292)"
+        "mechanised": "yes — Budgets table + `CLAUDE_CODE_SUBAGENT_MODEL=opus` (#292)",
+        "decision": "—"
       },
       {
+        "id": "L020",
         "date": "2026-09-19",
         "whatWentWrong": "#287 stayed `BLOCKED` with every required check green: a PR created with labels fires `opened` and `labeled` together, `cancel-in-progress` cancels one run per workflow, and the cancelled `pr-hygiene`/`browser-qa` contexts counted as failures",
         "shouldHaveBeenCaughtBy": "trying a new required check on a PR created with labels",
-        "mechanised": "yes, four days and five recurrences later — #295; see the 2026-09-23 row"
+        "mechanised": "yes, four days and five recurrences later — #295; see the 2026-09-23 row",
+        "decision": "—"
       },
       {
+        "id": "L021",
         "date": "2026-09-19",
         "whatWentWrong": "The first cloud-spike routine did all its work, then could not push (403: the Claude GitHub App had no write access), so its commit died with the container",
         "shouldHaveBeenCaughtBy": "a write-access check before a long cloud run",
-        "mechanised": "yes — a one-minute write-access routine now comes first; `docs/harness/cloud-session-spike.md`"
+        "mechanised": "yes — a one-minute write-access routine now comes first; `docs/harness/cloud-session-spike.md`",
+        "decision": "—"
       },
       {
+        "id": "L022",
         "date": "2026-09-19",
         "whatWentWrong": "Connecting Cursor to GitHub switched on Bugbot (billed per use) for every PR without the owner finding the setting; it reviewed #294",
         "shouldHaveBeenCaughtBy": "checking what an integration enables right after connecting it",
-        "mechanised": "no — the owner turns it off; the repo side goes with #258"
+        "mechanised": "no — the owner turns it off; the repo side goes with #258",
+        "decision": "—"
       },
       {
+        "id": "L023",
         "date": "2026-09-21",
         "whatWentWrong": "The definition of done had drifted past the three versions on record: a grep found ten live restatements (`CLAUDE.md` ×2, `AGENTS.md` ×2, `.cursorrules`, `.github/copilot-instructions.md`, `REPO_MAP.md`, `docs/llm-docs-sync.md`, `docs/roadmap/README.md`, `verifier-brief.md`), one down to two commands with `build` missing entirely",
         "shouldHaveBeenCaughtBy": "no map from rule to owning file existed to catch new restatements as they were added",
-        "mechanised": "yes — `docs/harness/COVERAGE.md` (#300); every site above now links to `implementer-brief.md` instead of restating"
+        "mechanised": "yes — `docs/harness/COVERAGE.md` (#300); every site above now links to `implementer-brief.md` instead of restating",
+        "decision": "—"
       },
       {
+        "id": "L024",
         "date": "2026-09-21",
         "whatWentWrong": "Nothing held the briefs to their own rules: a rewrite could drop \"no AI attribution trailers\", one of the five definition-of-done commands or \"BLOCK only with `file:line`\" and every later agent would read the weakened brief as the contract — the way the workspace `CLAUDE.md` carried Stryker and E2E-in-the-DoD for months (row 1)",
         "shouldHaveBeenCaughtBy": "a test that pins the live briefs, the way `scripts/backlog.logic.test.mjs` pins `docs/portfolio.md`",
-        "mechanised": "yes — #299: `scripts/skills.logic.mjs` + `scripts/skills.logic.test.mjs`; `lint:docs` now also checks citations in the briefs and in the skills we own"
+        "mechanised": "yes — #299: `scripts/skills.logic.mjs` + `scripts/skills.logic.test.mjs`; `lint:docs` now also checks citations in the briefs and in the skills we own",
+        "decision": "—"
       },
       {
+        "id": "L025",
         "date": "2026-09-21",
         "whatWentWrong": "A Haiku 4.5 verifier replay of #238 returned the right verdict *letter* while missing the defect entirely — it marked the broken criterion satisfied, citing a test whose name matched it — and blocked instead on a timeout in a UI test the PR never touches",
         "shouldHaveBeenCaughtBy": "nothing: verdict letters were all that was being compared, and the miss showed only because the replay was scored on the defect",
-        "mechanised": "yes — `model-tiering.md` (#255), plus two rules of evidence in `verifier-brief.md`: a criterion needs a test you ran, and a failure you cannot tie to the diff is a machine problem until re-run at `origin/main`"
+        "mechanised": "yes — `model-tiering.md` (#255), plus two rules of evidence in `verifier-brief.md`: a criterion needs a test you ran, and a failure you cannot tie to the diff is a machine problem until re-run at `origin/main`",
+        "decision": "—"
       },
       {
+        "id": "L026",
         "date": "2026-09-21",
         "whatWentWrong": "An unrationed research burst spent ~17M Cursor tokens in 40 minutes — about 49 reviews, or three days of even use at the measured 348K per review — against a pool whose size Cursor does not publish; nothing would have shown it until the lane simply stopped working",
         "shouldHaveBeenCaughtBy": "nothing: the per-run audit row existed (#296) but no one summed it, and there was no budget to sum it against",
-        "mechanised": "yes — #302: `docs/harness/usage-rationing.md` + `scripts/lane-budget.logic.mjs`, checked by `second-opinion.mjs` before every run (exit 7 = skip the lane)"
+        "mechanised": "yes — #302: `docs/harness/usage-rationing.md` + `scripts/lane-budget.logic.mjs`, checked by `second-opinion.mjs` before every run (exit 7 = skip the lane)",
+        "decision": "—"
       },
       {
+        "id": "L027",
         "date": "2026-09-21",
         "whatWentWrong": "Six rules the harness already relied on informally were never written down — measurement discipline, the worker-role framing, reuse-first, a Not-covered list and stopping condition in the review briefs, and an ADR reuse-considered section — so a rewrite or a fresh-context agent had no fixed text to be held to",
         "shouldHaveBeenCaughtBy": "nothing: each was a habit, not text an agent could be held to",
-        "mechanised": "yes — #301"
+        "mechanised": "yes — #301",
+        "decision": "—"
       },
       {
+        "id": "L028",
         "date": "2026-09-21",
         "whatWentWrong": "A plan draft made a reviewer's suggestion — freeze the legacy canvas, rank 2D ahead of 3D — the default, although the owner had said remove and had not ranked the surfaces; he overruled it the same day",
         "shouldHaveBeenCaughtBy": "the coordinator: a review can correct facts, it cannot change the owner's direction",
-        "mechanised": "no — a rule of judgment: `docs/harness/sessions/2026-09-21.md` §7"
+        "mechanised": "no — a rule of judgment: `docs/harness/sessions/2026-09-21.md` §7",
+        "decision": "—"
       },
       {
+        "id": "L029",
         "date": "2026-09-21",
         "whatWentWrong": "With the machine capped at 3 agents, one research agent forked helpers and held every slot for half an hour while a builder waited; a message asking it to stop arrived after it had forked again",
         "shouldHaveBeenCaughtBy": "the dispatch brief: say \"no helpers\" when the cap matters",
-        "mechanised": "no — first occurrence; briefs for research agents now say it"
+        "mechanised": "no — first occurrence; briefs for research agents now say it",
+        "decision": "—"
       },
       {
+        "id": "L030",
         "date": "2026-09-21",
         "whatWentWrong": "PR #322 repaired an e2e wait helper that has no caller and waits on a render tracker that cannot count (#321); its new spec then failed in CI `browser-qa`, which the builder could not run. 43 of 96 helper exports in `e2e/` turned out to have no caller",
         "shouldHaveBeenCaughtBy": "a no-dead-export check on `e2e/`; a caller audit before repairing a helper",
-        "mechanised": "yes — E2E-DEAD-EXPORTS (merged)"
+        "mechanised": "yes — E2E-DEAD-EXPORTS (merged)",
+        "decision": "—"
       },
       {
+        "id": "L031",
         "date": "2026-09-21",
         "whatWentWrong": "Eight agents created worktrees by hand today and every one repeated the same sequence, hitting the same failure modes each time: a branch cut from a stale base, `pnpm install` forgotten until a test failed, `husky: command not found`, Node resolving to the v14 binary",
         "shouldHaveBeenCaughtBy": "a single worktree-plus-install script (rows above already named #157 as the fix, filed after the fetch-hang and husky rows on 2026-09-18/19; today's repetition is the trigger that got it built)",
-        "mechanised": "yes — #157: `scripts/wt-new`"
+        "mechanised": "yes — #157: `scripts/wt-new`",
+        "decision": "—"
       },
       {
+        "id": "L032",
         "date": "2026-09-21",
         "whatWentWrong": "A builder's `origin/main` moved mid-task on a busy day; one fetch at the start wasn't enough, and the drift was noticed only indirectly, from phantom deletions in a `git diff --numstat`",
         "shouldHaveBeenCaughtBy": "a cheap way to check freshness without a full rebase",
-        "mechanised": "yes — #157: `scripts/wt-new --refresh` (fetch + ahead/behind, read-only)"
+        "mechanised": "yes — #157: `scripts/wt-new --refresh` (fetch + ahead/behind, read-only)",
+        "decision": "—"
       },
       {
+        "id": "L033",
         "date": "2026-09-21",
         "whatWentWrong": "Claude's weekly usage — a run's own stop condition — was read by looking at the rendered settings page, so it was re-read rarely, went stale for hours, and a wind-down was decided against a three-hour-old number",
         "shouldHaveBeenCaughtBy": "nothing: there was no known way to read it as data",
-        "mechanised": "yes — `usage-rationing.md`: the JSON endpoint behind that page, read from an authenticated tab"
+        "mechanised": "yes — `usage-rationing.md`: the JSON endpoint behind that page, read from an authenticated tab",
+        "decision": "—"
       },
       {
+        "id": "L034",
         "date": "2026-09-21",
         "whatWentWrong": "The size budget had no idea what a PR was made of: the foundation plan (#318) removes legacy capability by capability, and a 400-line ceiling would have sliced those deletions arbitrarily, while the first research set (#137) only landed because its ~1,500 lines of evidence predated the check — the second time the budget's shape, not its numbers, was the problem (row 11 was the bot/linked-issue version)",
         "shouldHaveBeenCaughtBy": "trying the check against every *kind* of PR that exists — a removal and a research set, not only feature PRs (the same lesson as row 11)",
-        "mechanised": "yes — #326: deletion-only PRs are exempt (adds ≤ 5 per file, ≤ 20 total, ≤ 5% of deletions — the fix-ups a removal forces) and `docs/research/*/evidence/` is excluded; ADR-0013 Decision 3 amended"
+        "mechanised": "yes — #326: deletion-only PRs are exempt (adds ≤ 5 per file, ≤ 20 total, ≤ 5% of deletions — the fix-ups a removal forces) and `docs/research/*/evidence/` is excluded; ADR-0013 Decision 3 amended",
+        "decision": "—"
       },
       {
+        "id": "L035",
         "date": "2026-09-21",
         "whatWentWrong": "Nothing recorded which model verified which PR, so a `risk:2` PR (#320) was verified a tier below its policy and merged unnoticed, and half the evidence later used to justify a tier change could not be attributed to a model at all",
         "shouldHaveBeenCaughtBy": "nothing looked: the tier was a dispatch-time choice with no trace in the PR, the repo or the API",
-        "mechanised": "yes — `verifier-brief.md`: every verdict carries `Verified on:`, and a verifier off its rule says so in either direction (#352)"
+        "mechanised": "yes — `verifier-brief.md`: every verdict carries `Verified on:`, and a verifier off its rule says so in either direction (#352)",
+        "decision": "—"
       },
       {
+        "id": "L036",
         "date": "2026-09-21",
         "whatWentWrong": "A brief invariant meant to pin the verifier's model-per-risk mapping pinned only word order: `containsPhrases` is an ordered-subsequence match, so a rewrite saying the exact opposite passed 109/109",
         "shouldHaveBeenCaughtBy": "the invariant itself — it was a list of short phrases, all of which survive any re-tiering",
-        "mechanised": "yes — the mapping is pinned as one whole sentence, and a swapped tier now fails (`scripts/skills.logic.mjs`)"
+        "mechanised": "yes — the mapping is pinned as one whole sentence, and a swapped tier now fails (`scripts/skills.logic.mjs`)",
+        "decision": "—"
       },
       {
+        "id": "L037",
         "date": "2026-09-23",
         "whatWentWrong": "A two-clause tier rule was made unambiguous in `verifier-brief.md` and **reintroduced in the same commit** in `.claude/agents/hacer-verifier.md`'s description — which is itself a dispatch surface, so the fix did not reach the place the coordinator actually reads",
         "shouldHaveBeenCaughtBy": "the fix touched the file the blocker named, not every file that states the rule",
-        "mechanised": "yes, on the second occurrence — #391; see the row below"
+        "mechanised": "yes, on the second occurrence — #391; see the row below",
+        "decision": "—"
       },
       {
+        "id": "L038",
         "date": "2026-09-23",
         "whatWentWrong": "An invariant listing several phrases in one entry coupled the rule to document order: an innocent section reorder failed it with a misleading message, while a rewrite that dropped the safety-critical half passed",
         "shouldHaveBeenCaughtBy": "`containsPhrases` is an ordered subsequence, and a multi-phrase entry silently asserts their order too",
-        "mechanised": "yes — one phrase per entry, each pinning a whole load-bearing sentence (`scripts/skills.logic.mjs`)"
+        "mechanised": "yes — one phrase per entry, each pinning a whole load-bearing sentence (`scripts/skills.logic.mjs`)",
+        "decision": "—"
       },
       {
+        "id": "L039",
         "date": "2026-09-21",
         "whatWentWrong": "All 134 unit test files ran in jsdom under `src/test/setup.ts`, including the 66 that need no browser at all — so \"the engine runs headless\" was a claim no command checked, and a new `localStorage` call inside `src/core` or `src/store` would have been invisible",
         "shouldHaveBeenCaughtBy": "a test project that gives the headless layers no DOM to fall back on",
-        "mechanised": "yes — #323: a Vitest `node` project (`pnpm run test:node`), membership by directory in `vite.config.ts`, exceptions listed with their reason in `docs/testing/vitest-projects.md`"
+        "mechanised": "yes — #323: a Vitest `node` project (`pnpm run test:node`), membership by directory in `vite.config.ts`, exceptions listed with their reason in `docs/testing/vitest-projects.md`",
+        "decision": "—"
       },
       {
+        "id": "L040",
         "date": "2026-09-21",
         "whatWentWrong": "The owner's \"fix the foundation first\" reached the backlog as a label and an epic, but the pick rule knew neither: `project:foundation` had no portfolio row, so the plan's own issues (#329, #331, #335, #336) read as `unshaped` — unpickable, with no reason a reader could act on — while every `risk:2` task the plan is about to replace still looked ready",
         "shouldHaveBeenCaughtBy": "the pick rule and `docs/portfolio.md` being one thing: a label with no row silently files work as `unshaped`, and `scripts/backlog.logic.test.mjs` only pins what the file already says",
-        "mechanised": "yes — #330: the `foundation` row, the amended rotation, `project:foundation` winning over label order, and the `risk:2` gate with `foundation-gate` as its stated reason"
+        "mechanised": "yes — #330: the `foundation` row, the amended rotation, `project:foundation` winning over label order, and the `risk:2` gate with `foundation-gate` as its stated reason",
+        "decision": "—"
       },
       {
+        "id": "L041",
         "date": "2026-09-23",
         "whatWentWrong": "HACER's three-layer rule — pure logic ← state ← rendering — was enforced by nothing: the foundation audit's 16 production cross-layer edges, 3 cycles and 33 `console.*` calls under `src/utils` all passed a green `lint`, and the foundation plan (#318) was about to move a great deal of code past them",
         "shouldHaveBeenCaughtBy": "a check on the import graph in `lint`: `tsc` guards types and `lint:docs` guards doc paths, neither looks at direction",
-        "mechanised": "yes — #329: `.dependency-cruiser.cjs` + `eslint.config.js` \"the engine layer\", both with shrink-only baselines, run by `pnpm run lint:layers` inside `pnpm run lint`"
+        "mechanised": "yes — #329: `.dependency-cruiser.cjs` + `eslint.config.js` \"the engine layer\", both with shrink-only baselines, run by `pnpm run lint:layers` inside `pnpm run lint`",
+        "decision": "—"
       },
       {
+        "id": "L042",
         "date": "2026-09-23",
         "whatWentWrong": "The same stuck-PR cause for the sixth time (#287, #314, #343, #351, #360, #362 — essentially every PR), each costing a manual intervention. The mechanism, read off the API rather than guessed: GitHub sends one webhook action **per label**, so `gh pr edit --add-label a,b` right after `gh pr create` delivers `opened`, `labeled`, `labeled` in the same second or two and starts three `pr-hygiene` and three `browser-qa` runs; `cancel-in-progress: true` cancels one mid-run, a run cancelled *in progress* posts a `cancelled` check run under the required context name, and GitHub judges a required context by the **newest** check run with that name — so `gh pr checks` reads all green while `mergeStateStatus` stays `BLOCKED`",
         "shouldHaveBeenCaughtBy": "the 2026-09-19 row above named the cause on the first occurrence and nothing turned it into a control for four days; the ledger rule (\"second occurrence → a mechanism\") was not applied",
-        "mechanised": "yes — #295: `cancel-in-progress: false` on `.github/workflows/pr-hygiene.yml` and `.github/workflows/browser-qa.yml`. A run cancelled while still *pending* creates no job and no check run (runs 35613803628 and 35613803591: `completed/cancelled`, `jobs: 0`, absent from the commit's check-runs), so GitHub still collapses the queue to one pending run per group and the failure mode is gone rather than rarer — at the cost of one extra run per PR and no cancellation of a superseded push. Narrowing `types:` was rejected: both checks genuinely depend on labels. Guarded by `scripts/required-checks.logic.mjs`; recovery for PRs opened before it landed is in `docs/harness/README.md` § When a required check is stuck"
+        "mechanised": "yes — #295: `cancel-in-progress: false` on `.github/workflows/pr-hygiene.yml` and `.github/workflows/browser-qa.yml`. A run cancelled while still *pending* creates no job and no check run (runs 35613803628 and 35613803591: `completed/cancelled`, `jobs: 0`, absent from the commit's check-runs), so GitHub still collapses the queue to one pending run per group and the failure mode is gone rather than rarer — at the cost of one extra run per PR and no cancellation of a superseded push. Narrowing `types:` was rejected: both checks genuinely depend on labels. Guarded by `scripts/required-checks.logic.mjs`; recovery for PRs opened before it landed is in `docs/harness/README.md` § When a required check is stuck",
+        "decision": "—"
       },
       {
+        "id": "L043",
         "date": "2026-09-23",
         "whatWentWrong": "#326's deletion-only exemption met its first real deletion (#321 + #332) and did not apply: the same issue that asks for ~1,050 deleted lines also asks for the guard that keeps them deleted, and that guard is 194 lines across two files — past the ≤ 5-lines-per-file fix-up proxy — so `pr-hygiene` read FAIL at 523 reviewable lines, 517 of them deletions",
         "shouldHaveBeenCaughtBy": "trying the exemption against every *kind* of deletion before relying on it: a removal that ships its own guard is the common shape, not an edge case (the same lesson as the bot/linked-issue row and the 2026-09-21 budget row)",
-        "mechanised": "no — `size-override` with the reason in the PR body this time; the real fix is for the exemption to tolerate an added guard the linked issue names"
+        "mechanised": "no — `size-override` with the reason in the PR body this time; the real fix is for the exemption to tolerate an added guard the linked issue names",
+        "decision": "—"
       },
       {
+        "id": "L044",
         "date": "2026-09-23",
         "whatWentWrong": "The same tier-rule defect appeared in `.claude/agents/hacer-verifier.md` a **second** time on the same PR (#351): round 1 reintroduced the two-clause ambiguity there in the commit that fixed `verifier-brief.md`, and round 2 was the same class again. `.claude/agents/*.md` is the one dispatch surface no invariant covers, and pinning more phrases would not have caught it — the defect is divergence between twins",
         "shouldHaveBeenCaughtBy": "`scripts/skills.logic.mjs` pins the briefs and the skills we own; it has never looked at the agent definitions that state the same rules",
-        "mechanised": "yes — #391: the load-bearing check is **cross-file agreement** (the tier sentence in the agent definition and in the brief are the same sentence), not a longer list of pinned phrases"
+        "mechanised": "yes — #391: the load-bearing check is **cross-file agreement** (the tier sentence in the agent definition and in the brief are the same sentence), not a longer list of pinned phrases",
+        "decision": "—"
       },
       {
+        "id": "L045",
         "date": "2026-09-23",
         "whatWentWrong": "Recovering #295's stuck required checks by rerunning every cancelled run at once **made it worse** — each rerun contends with its sibling under the same `concurrency` group, and on #362 one cancellation became three. The coordinator's own written recovery advice was the cause, and it had never been tried under contention before being written down",
         "shouldHaveBeenCaughtBy": "nothing: the recovery was reasoned, not measured, and the ledger row that named #295's cause carried it as advice",
-        "mechanised": "yes — `docs/harness/README.md` § *When a required check is stuck* now says one run at a time, waiting for each; `~/.local/bin/gh-merge-on-green` (local to the owner's laptop, not in this repo) does it that way"
+        "mechanised": "yes — `docs/harness/README.md` § *When a required check is stuck* now says one run at a time, waiting for each; `~/.local/bin/gh-merge-on-green` (local to the owner's laptop, not in this repo) does it that way",
+        "decision": "—"
       },
       {
+        "id": "L046",
         "date": "2026-09-23",
         "whatWentWrong": "Three times in one run the coordinator wrote a criterion or a recommendation from prose rather than from the artefact, and each cost a builder or a verifier real work: *\"`fast-check` is already a dependency\"* on #355 (it is in neither `package.json` nor the lockfile), *\"deleting `renderTracking` shrinks the layer-ratchet baseline\"* on #332 (34 → 34 — `src/utils` is not one of the three layers, so it was never a violation), and a net-negative exemption threshold recommended on #389 that fails on #388's own reviewable split (`194 ≤ max(20, 69)` is false)",
         "shouldHaveBeenCaughtBy": "the rule the repo already states for issue bodies — a criterion naming a measured fact is checked against the artefact before it is written — which was never applied to the coordinator's own briefs and comments",
-        "mechanised": "partly — #394, absorbed by Decision Lineage (#457); executable premises are DL-3 (#468)"
+        "mechanised": "partly — #394, absorbed by Decision Lineage (#457); executable premises are DL-3 (#468)",
+        "decision": "R310, R345, R350"
       },
       {
+        "id": "L047",
         "date": "2026-09-23",
         "whatWentWrong": "A property test over part orderings would have passed **400/400** against the unfixed compiler: its generator put every writer at the same dependency depth, so Kahn's queue drained them before the reader whatever the source order. Mixing the depths gave 105/400 wrong. The builder caught it itself. Second occurrence of a green assertion that could not fail (2026-09-21: `containsPhrases` passed a rewrite saying the exact opposite, 109/109)",
         "shouldHaveBeenCaughtBy": "the red-commit step in `implementer-brief.md` — and it did, because the builder ran the property against the red commit instead of only against the fix",
-        "mechanised": "no — the control that caught it already exists; what is missing is that a **property** test record the failure count it saw at red, so a later vacuous generator shows up as a changed number rather than as a pass"
+        "mechanised": "no — the control that caught it already exists; what is missing is that a **property** test record the failure count it saw at red, so a later vacuous generator shows up as a changed number rather than as a pass",
+        "decision": "—"
       },
       {
+        "id": "L048",
         "date": "2026-09-23",
         "whatWentWrong": "#342's criteria — hold React at 19.2.x because `@react-three/fiber`'s peer range excludes it — rested on an upstream fact that expired **~31 hours after the issue was written** (#342 created 2026-09-21T12:46:27Z; R3F 9.8.0 published 2026-09-22T19:43:58Z): `pmndrs/react-three-fiber#3916` merged 2026-09-22 and v9.8.0 widened `peerDependencies.react` to `>=19 <19.4`, so the issue's own documented lift condition was already satisfied before any builder opened it. Building it as written would have merged a pin whose stated removal condition was met, holding HACER back from a React release upstream supports. Fourth occurrence today of the class in `docs/harness/sessions/2026-09-23.md` §7",
         "shouldHaveBeenCaughtBy": "nothing re-checks an issue's **premise at dispatch time**. The existing rule fires when a criterion is *written*; an `agent-ready` issue then sits in the backlog while upstream moves under it, and every criterion quoting a registry or a release is perishable. #342's builder caught it only by re-running the check itself",
-        "mechanised": "partly — #394, absorbed by Decision Lineage (#457); executable premises are DL-3 (#468)"
+        "mechanised": "partly — #394, absorbed by Decision Lineage (#457); executable premises are DL-3 (#468)",
+        "decision": "P-001"
       },
       {
+        "id": "L049",
         "date": "2026-09-18…24",
         "whatWentWrong": "`pnpm run test:run` timed out under the vitest 5000ms default on tests unrelated to the diff under real load — three occurrences in one day, one produced a false verifier BLOCK on a PR that was fine (#313's issue body). Re-measured after #323/#324 split the suite into `node`/`jsdom` projects: the class is jsdom tests that mount the full `CompactToolbar`/`Shell`/`RightActionBar` tree and drive real `userEvent` interactions — over 3 full `pnpm run test:run` runs with 2 other agent processes active (light real contention), 7 tests across 6 files measured 1814-3052ms, 36-61% of the 5000ms default already at that load level",
         "shouldHaveBeenCaughtBy": "explicit per-test timeouts, sized from measurement, never the 5s default (the decision recorded in `docs/research/2026-09-21-foundation-audit/evidence/TESTING.md` §4)",
-        "mechanised": "yes — #313: `SLOW_MOUNT_TIMEOUT_MS = 10000` (≈3.3-4.1x the worst DOM-mount duration measured) on the 6 tests in `CompactToolbar.test.tsx`, `Shell.integration.test.tsx`, `TestResultsPanel.integration.test.tsx`, `RightActionBar.test.tsx` and `renderShell.test.tsx` that measured ≥2000ms; `PERMUTATION_TIMEOUT_MS = 8000` on `compiler.test.ts`'s exhaustive permutation test (2053ms measured — genuinely compute-heavy, not load-induced, so it gets its own constant and comment). No global `testTimeout` raise. Demonstrated green under real load: 3 concurrent full `pnpm run test:run` processes, all passed. `verifier-brief.md`'s \"re-run at `origin/main`\" advice is kept deliberately — it is a general safety net for flakes this fix does not claim to eliminate (unmeasured tests, environment hiccups), matching TESTING.md §4's point 2. Related, folded in cheaply: `.test.mts`/`.test.js` under `src/` were collected by neither vitest project (verified with throwaway files) — `vite.config.ts`'s `ALL_TESTS` glob now includes `mts`/`js`; `.mts` under a `NODE_TEST_DIR` still lands in `jsdom` rather than `node`, since widening the node-project regex too needs a `.mts`-vs-`.mtsx`-shaped rule this repo has no example of yet — left as is, not a one-line change"
+        "mechanised": "yes — #313: `SLOW_MOUNT_TIMEOUT_MS = 10000` (≈3.3-4.1x the worst DOM-mount duration measured) on the 6 tests in `CompactToolbar.test.tsx`, `Shell.integration.test.tsx`, `TestResultsPanel.integration.test.tsx`, `RightActionBar.test.tsx` and `renderShell.test.tsx` that measured ≥2000ms; `PERMUTATION_TIMEOUT_MS = 8000` on `compiler.test.ts`'s exhaustive permutation test (2053ms measured — genuinely compute-heavy, not load-induced, so it gets its own constant and comment). No global `testTimeout` raise. Demonstrated green under real load: 3 concurrent full `pnpm run test:run` processes, all passed. `verifier-brief.md`'s \"re-run at `origin/main`\" advice is kept deliberately — it is a general safety net for flakes this fix does not claim to eliminate (unmeasured tests, environment hiccups), matching TESTING.md §4's point 2. Related, folded in cheaply: `.test.mts`/`.test.js` under `src/` were collected by neither vitest project (verified with throwaway files) — `vite.config.ts`'s `ALL_TESTS` glob now includes `mts`/`js`; `.mts` under a `NODE_TEST_DIR` still lands in `jsdom` rather than `node`, since widening the node-project regex too needs a `.mts`-vs-`.mtsx`-shaped rule this repo has no example of yet — left as is, not a one-line change",
+        "decision": "—"
       },
       {
+        "id": "L050",
         "date": "2026-09-24",
         "whatWentWrong": "The layer ratchet — the foundation plan's one tracked metric and the guard the whole refactor leans on — could be reset by a documented command with nothing watching. Measured today on `main`: one new `src/core` → `src/store` import fails `pnpm run lint:layers`; `pnpm exec depcruise src --config .dependency-cruiser.cjs --baseline` then exits 0, the baseline goes 72 rows → 73, the edge is absorbed and `lint` is green again. `shrink-only` refuses the same edge (stays 72), but nothing exposed or blocked the full write, no CI job ran it, the file has no CODEOWNERS, and `.gitattributes` marks it `linguist-generated` so no one line-reviews its rows in a PR. The only fence was a prose paragraph in the config, and the command it warns about is the same one a legitimate rule-arming needs (#404 took the baseline 34 → 77 arming `core-through-index`)",
         "shouldHaveBeenCaughtBy": "nothing could: `lint` runs on the PR head and sees one baseline, so it cannot tell growth from a rewrite; the size budget deliberately excludes the file; and review cannot read a 737-line machine-written diff. The check had to be **base-aware**, which only the `pull_request_target` surface is",
-        "mechanised": "yes — #406: the `ratchet` rule in `scripts/pr-hygiene.logic.mjs` reads the baseline at the PR's merge base and at the head and fails any row added under a rule name that already existed, naming the rows. Growth under a new rule name with nothing removed passes (#404's real 34 → 77 is a test); the count gates nothing, so fixing one violation while absorbing another fails too (#432's verification — it warned at first, and that is the ordinary shape of a refactor that moves files between layers); rows leaving *and* arriving under a new rule name warns, since a rule renamed in the config is the same shape as an arming in the baseline and only the config line fences it; and a `Baseline-growth:` declaration that **names every row it excuses** turns a fail into a warn on the record. `linguist-generated` stays — the file is rewritten whole, so a line review sees churn — and `.gitattributes` and the config header now say that this rule is what pays for the lost review. `eslint-suppressions.json` has the same hole (#360's verifier) and is #429"
+        "mechanised": "yes — #406: the `ratchet` rule in `scripts/pr-hygiene.logic.mjs` reads the baseline at the PR's merge base and at the head and fails any row added under a rule name that already existed, naming the rows. Growth under a new rule name with nothing removed passes (#404's real 34 → 77 is a test); the count gates nothing, so fixing one violation while absorbing another fails too (#432's verification — it warned at first, and that is the ordinary shape of a refactor that moves files between layers); rows leaving *and* arriving under a new rule name warns, since a rule renamed in the config is the same shape as an arming in the baseline and only the config line fences it; and a `Baseline-growth:` declaration that **names every row it excuses** turns a fail into a warn on the record. `linguist-generated` stays — the file is rewritten whole, so a line review sees churn — and `.gitattributes` and the config header now say that this rule is what pays for the lost review. `eslint-suppressions.json` has the same hole (#360's verifier) and is #429",
+        "decision": "—"
       },
       {
+        "id": "L051",
         "date": "2026-09-24",
         "whatWentWrong": "The guard written for the row above passed its own attack. `#406`'s criterion was \"a row may only appear under a rule name **new in this PR**\"; the code derived \"new\" from the base *baseline rows*, and `engine-no-ui-packages` is armed in `.dependency-cruiser.cjs` with 0 of the 72 rows. So a real `zustand` import under `src/core/` plus the documented `depcruise … --baseline` write (72 → 73) read `PASS ratchet=armed`, \"arming `engine-no-ui-packages` (1 row)\", exit 0 — with **no config edit**, no declaration and nothing reviewable; an invented rule name passed the same way, and the same case plus one repaired violation read `WARN ratchet=swapped`, sending the reader to a config diff that did not exist. The channel widened as the ratchet succeeded: `engine-no-ui` is down to one row, `state-no-3d` and `src-no-e2e` to two",
         "shouldHaveBeenCaughtBy": "the test that claimed to cover it — `pr-hygiene.logic.test.mjs`'s \"growth under a rule name new in this PR\" — supplied no config at all, so it encoded the same conflation as the code and could never have failed on it. A criterion and its implementation used two different definitions of one term, and the only thing that could have caught the gap was a case where they disagree: a rule present in the config and absent from the baseline",
-        "mechanised": "yes — #432 round 3: `armed` and `swapped` now require the rule name to be declared in the head `.dependency-cruiser.cjs`, absent from the base copy, and that file to be among the PR's own changed files, so a claim of arming always costs a reviewable line. The contract stated in the row above is superseded. Five red-first tests, the first of them the measured 72 → 73 attack against this repo's real baseline **and** real config, plus a fix to the conflated case rather than a new one beside it. #404's real 34 → 77 still passes live, as any real arming must, because it edited the config"
+        "mechanised": "yes — #432 round 3: `armed` and `swapped` now require the rule name to be declared in the head `.dependency-cruiser.cjs`, absent from the base copy, and that file to be among the PR's own changed files, so a claim of arming always costs a reviewable line. The contract stated in the row above is superseded. Five red-first tests, the first of them the measured 72 → 73 attack against this repo's real baseline **and** real config, plus a fix to the conflated case rather than a new one beside it. #404's real 34 → 77 still passes live, as any real arming must, because it edited the config",
+        "decision": "—"
       },
       {
+        "id": "L052",
         "date": "2026-09-24",
         "whatWentWrong": "Issues were labelled `agent-ready` with no measurement of how many production files import their seeds. The foundation audit (2026-09-21, MEASUREMENTS.md §1) found 4 of 10 then-ready issues touching files with 84 or more direct importers (#186 105, #185 103, #188 86, #189 84) and 4 touching 6 or fewer. SWE-bench-Live solves 48% of single-file patches, under 10% at three or more files, and none at seven or more — and nothing in triage measured width before the label",
         "shouldHaveBeenCaughtBy": "nothing measured blast radius before `agent-ready`",
-        "mechanised": "yes — #333: `scripts/blast-radius.mjs` (logic in `scripts/blast-radius.logic.mjs`); the triage rule in `docs/harness/README.md` refuses `agent-ready` above 20 production direct importers"
+        "mechanised": "yes — #333: `scripts/blast-radius.mjs` (logic in `scripts/blast-radius.logic.mjs`); the triage rule in `docs/harness/README.md` refuses `agent-ready` above 20 production direct importers",
+        "decision": "—"
       },
       {
+        "id": "L053",
         "date": "2026-09-24",
         "whatWentWrong": "`deserializeCircuit` drops a wire whose endpoint references a gate or bus component that did not survive the load, and a junction whose `wireIds` all point at dropped wires — both correct, both **silent**. The person is told a gate was skipped and never told the wiring went with it, so a document comes back quietly less connected than it was saved",
         "shouldHaveBeenCaughtBy": "nothing: #181 deliberately froze the warning set to exactly the cases that already raised a toast, so user-visible behaviour would not change when warnings became data. That was the right call then and it left this gap open by construction",
-        "mechanised": "yes — #402: `dropped-wire` (carrying `wireId` and a `reason` of `missing-gate`/`missing-bus`) and `dropped-junction` (carrying `junctionId`) join `DeserializeWarning`. The caller summarises them into **one** line naming counts rather than one toast per entity — a load dropping 40 wires must not raise 40 toasts — while every pre-existing code keeps its toast, text and document-order position untouched. The per-entity ids still travel in the warning objects: the data is for callers and tests, the summary is for the person, which keeps a rewording cheap without touching the data shape"
+        "mechanised": "yes — #402: `dropped-wire` (carrying `wireId` and a `reason` of `missing-gate`/`missing-bus`) and `dropped-junction` (carrying `junctionId`) join `DeserializeWarning`. The caller summarises them into **one** line naming counts rather than one toast per entity — a load dropping 40 wires must not raise 40 toasts — while every pre-existing code keeps its toast, text and document-order position untouched. The per-entity ids still travel in the warning objects: the data is for callers and tests, the summary is for the person, which keeps a rewording cheap without touching the data shape",
+        "decision": "—"
       },
       {
+        "id": "L054",
         "date": "2026-09-24",
         "whatWentWrong": "The `ratchet` guard, even after #432 round 3, still did not check its own input, and #432's round-3 reply claimed its residual was written in four places when the fourth, `.github/workflows/pr-hygiene.yml`, stated only the gate. The scan: `parseRuleNames` sees only a literal `name: '…'`, so a base `.dependency-cruiser.cjs` whose rules are built by a helper scans to **no** names, every head name reads as newly declared, and one row absorbed under the long-armed `engine-no-state` read `PASS ratchet=armed`. #438's red commit reproduced it, and one comment line in the head was enough",
         "shouldHaveBeenCaughtBy": "the verifier's step 6, which caught it (#432 round 3, nits 2 and 3). The four-places claim was written from prose and never checked against the file — the class #394 tracks",
-        "mechanised": "yes — #438: when rows arrive and the config was edited, a config on either side that has text but scans to no rule names now reads `ratchet=unreadable`, which fails. A shrink never consults the scan, and a config that does not exist is not \"unread\". The residual is now in all four places, with the comment/string-literal fact and its reason (`knownViolations` matching is rule-name-sensitive), and each place was opened after editing. Still open: a base config the scan reads only **in part** lets one comment arm a real rule. Measured, filed as #456"
+        "mechanised": "yes — #438: when rows arrive and the config was edited, a config on either side that has text but scans to no rule names now reads `ratchet=unreadable`, which fails. A shrink never consults the scan, and a config that does not exist is not \"unread\". The residual is now in all four places, with the comment/string-literal fact and its reason (`knownViolations` matching is rule-name-sensitive), and each place was opened after editing. Still open: a base config the scan reads only **in part** lets one comment arm a real rule. Measured, filed as #456",
+        "decision": "—"
       },
       {
+        "id": "L055",
         "date": "2026-09-24",
         "whatWentWrong": "`removeJunction` deleted wires the user drew (B-009, #403), and its tests stayed green over it. #396's tests hand-wrote a shape no store action writes (branches whose `from` is the junction), which is the only shape its fix worked on. Two older tests pinned the loss outright: their wires were gesture-shaped (`input-a → gate-N`, two real endpoints each), and they asserted the extra wires were deleted. A third passed only because `wireIds` listed branches that started at `'j-placeholder'`, a junction that never existed. #396's verifier found it; the same kind of fixture had already overstated a fix on #365",
         "shouldHaveBeenCaughtBy": "a test that builds a junction through the actions the app uses (`startWiringFromJunction` → `completeWiringFromJunction`) rather than hand-written endpoints or `wireIds`",
-        "mechanised": "partly — #403's guard tests drive the real gesture; nothing stops the next hand-written fixture. Second occurrence (#365, #396), so it is due a mechanism"
+        "mechanised": "partly — #403's guard tests drive the real gesture; nothing stops the next hand-written fixture. Second occurrence (#365, #396), so it is due a mechanism",
+        "decision": "R607"
       }
     ],
     "byMechanised": {
@@ -5466,9 +5518,19 @@
     },
     "releases": [
       {
+        "tag": "v2.38.0",
+        "publishedAt": "2026-09-25T05:41:08Z",
+        "isLatest": true
+      },
+      {
+        "tag": "v2.37.0",
+        "publishedAt": "2026-09-25T05:31:19Z",
+        "isLatest": false
+      },
+      {
         "tag": "v2.36.1",
         "publishedAt": "2026-09-25T04:51:39Z",
-        "isLatest": true
+        "isLatest": false
       },
       {
         "tag": "v2.36.0",
@@ -5894,7 +5956,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-23",
-        "merges": 23
+        "merges": 21
       },
       {
         "date": "2026-09-24",
@@ -5902,7 +5964,7 @@
       },
       {
         "date": "2026-09-25",
-        "merges": 5
+        "merges": 7
       }
     ]
   },
@@ -5910,14 +5972,15 @@
     "items": [
       {
         "pr": null,
-        "sha": "1b012400aa3dbcaa5ef9977c97f8ee389351326a",
+        "sha": "77a0d740003c26939749e8cc439c48e3a83898e6",
         "check": "ci",
         "conclusion": "SUCCESS",
-        "completedAt": "2026-09-25T04:51:54Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36095999184/job/107948289921",
+        "completedAt": "2026-09-25T05:40:57Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36099403626/job/107958492696",
         "line": null,
         "verdict": null,
-        "fields": {}
+        "fields": {},
+        "disagrees": false
       },
       {
         "pr": 410,
@@ -5928,7 +5991,8 @@
         "url": "https://github.com/mezivillager/hacer/actions/runs/36074712429/job/107883255833",
         "line": null,
         "verdict": null,
-        "fields": {}
+        "fields": {},
+        "disagrees": false
       },
       {
         "pr": 410,
@@ -5939,7 +6003,8 @@
         "url": "https://github.com/mezivillager/hacer/actions/runs/36074715141/job/107883241232",
         "line": null,
         "verdict": null,
-        "fields": {}
+        "fields": {},
+        "disagrees": false
       },
       {
         "pr": 410,
@@ -5950,7 +6015,8 @@
         "url": "https://github.com/mezivillager/hacer/actions/runs/36074718192/job/107883242099",
         "line": null,
         "verdict": null,
-        "fields": {}
+        "fields": {},
+        "disagrees": false
       },
       {
         "pr": 496,
@@ -5961,7 +6027,8 @@
         "url": "https://github.com/mezivillager/hacer/actions/runs/36074605581/job/107882909274",
         "line": null,
         "verdict": null,
-        "fields": {}
+        "fields": {},
+        "disagrees": false
       },
       {
         "pr": 496,
@@ -5972,7 +6039,8 @@
         "url": "https://github.com/mezivillager/hacer/actions/runs/36074605725/job/107882938557",
         "line": null,
         "verdict": null,
-        "fields": {}
+        "fields": {},
+        "disagrees": false
       },
       {
         "pr": 496,
@@ -5983,73 +6051,44 @@
         "url": "https://github.com/mezivillager/hacer/actions/runs/36074604402/job/107882892940",
         "line": null,
         "verdict": null,
-        "fields": {}
+        "fields": {},
+        "disagrees": false
       },
       {
         "pr": 507,
-        "sha": "b251651ed8deb4d59eea2804df3812e2706c7f9a",
+        "sha": "6b3dde8862c5d2044929cce7cd09cd23cf5c87e4",
         "check": "pr-hygiene",
         "conclusion": "SUCCESS",
-        "completedAt": "2026-09-25T05:06:18Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36097141451/job/107951672685",
+        "completedAt": "2026-09-25T05:46:30Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36099962930/job/107960157517",
         "line": null,
         "verdict": null,
-        "fields": {}
+        "fields": {},
+        "disagrees": false
       },
       {
         "pr": 507,
-        "sha": "b251651ed8deb4d59eea2804df3812e2706c7f9a",
+        "sha": "6b3dde8862c5d2044929cce7cd09cd23cf5c87e4",
         "check": "browser-qa",
         "conclusion": "SUCCESS",
-        "completedAt": "2026-09-25T05:06:21Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36097143129/job/107951676803",
+        "completedAt": "2026-09-25T05:46:37Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36099964290/job/107960160510",
         "line": "BROWSER-QA: skipped (no critical paths)",
         "verdict": "SKIPPED",
-        "fields": {}
+        "fields": {},
+        "disagrees": false
       },
       {
         "pr": 507,
-        "sha": "b251651ed8deb4d59eea2804df3812e2706c7f9a",
+        "sha": "6b3dde8862c5d2044929cce7cd09cd23cf5c87e4",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36097143114/job/107951676712",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36099964312/job/107960160293",
         "line": null,
         "verdict": null,
-        "fields": {}
-      },
-      {
-        "pr": 508,
-        "sha": "1208ec8bb879429eb273a4029d95e8353db8a188",
-        "check": "pr-hygiene",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-09-25T05:02:46Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36096886864/job/107950938064",
-        "line": null,
-        "verdict": null,
-        "fields": {}
-      },
-      {
-        "pr": 508,
-        "sha": "1208ec8bb879429eb273a4029d95e8353db8a188",
-        "check": "browser-qa",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-09-25T05:02:50Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36096886994/job/107950936501",
-        "line": null,
-        "verdict": null,
-        "fields": {}
-      },
-      {
-        "pr": 508,
-        "sha": "1208ec8bb879429eb273a4029d95e8353db8a188",
-        "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-09-25T05:04:57Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36096886905/job/107950910532",
-        "line": null,
-        "verdict": null,
-        "fields": {}
+        "fields": {},
+        "disagrees": false
       }
     ]
   },
