@@ -620,6 +620,20 @@ describe('a closing keyword on a partial fix (#485)', () => {
     }
   })
 
+  it('reads no keyword inside code, as GitHub does not — #375 quoted `Fixes #357` and closed only #367', () => {
+    // GitHub lists an already-closed issue too (#387 lists #188, closed before #387 was opened), so
+    // it is the code span, not #357 being closed, that kept it out. Fenced blocks follow by analogy.
+    expect(realPr(375).closingIssuesReferences).toEqual([367])
+    expect(evaluate(pr({ body: realPr(375).body })).closingIssues).toEqual([367])
+    for (const body of [
+      'Fixes #480\n\n`Fixes #12 (in part)` is the shape the check refuses.',
+      'Fixes #12 — the rule lives in `partial.ts`.',
+      'Fixes #12\n\n```\nPart of #12\n```',
+    ]) {
+      expect(evaluate(pr({ body })).verdict, body).toBe('PASS')
+    }
+  })
+
   it('leaves both exemptions as they are: a bot is still skipped, and docs-only waives the link, not an early close', () => {
     expect(linkedFindings(evaluate(pr({ body: 'Fixes #12 (in part).', author: 'dependabot[bot]' })))[0].level).toBe('pass')
     expect(evaluate(pr({ body: 'Typo.', files: [file('docs/x.md', 3, 1)] })).verdict).toBe('PASS')
