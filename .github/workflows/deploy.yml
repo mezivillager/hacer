@@ -7,6 +7,8 @@ on:
 
 permissions:
   contents: write
+  issues: read # Mission Control's collector reads issues and pull requests (#473)
+  pull-requests: read
 
 concurrency:
   group: gh-pages
@@ -41,4 +43,24 @@ jobs:
         with:
           branch: gh-pages
           folder: dist
-          clean-exclude: pr-preview
+          # control/ is Mission Control's, deployed below (#473): the app's deploy leaves it alone.
+          clean-exclude: |
+            pr-preview
+            control
+
+      # Mission Control (#473), after the app, so a collector failure never holds the app back. The collector reads
+      # the layer ratchet's history from git log, so a shallow checkout is deepened first.
+      - name: Build Mission Control
+        run: |
+          [ "$(git rev-parse --is-shallow-repository)" = false ] || git fetch --unshallow --quiet
+          pnpm run build:control
+        env:
+          BASE_PATH: /hacer/
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Deploy Mission Control
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: mission-control/dist
+          target-folder: control
