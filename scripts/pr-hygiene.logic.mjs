@@ -499,6 +499,10 @@ function disarmedRules(baseRules, headRules, declaredHere, baseRows, headRows) {
  *   carry its old rows under a new name. The baseline cannot tell those apart — a genuinely new
  *   rule and a renamed one are the same shape in it — so this warns and points at the config diff,
  *   which the gate now guarantees exists, rather than reading `armed` and passing in silence.
+ * - `disarmed` — a rule name the merge base's config declares is gone from this PR's (#489), read
+ *   on every PR that edits the config, baseline or not: the edges it checked go unguarded. Only a
+ *   rename whose rows all moved to the new name escapes it, as `swapped`; a rule with no rows cannot
+ *   be renamed that way, because no row vouches for the new name.
  *
  * The residual, stated rather than left implicit: a rule **declared in the config in this PR** —
  * renamed, duplicated, or widened to cover the edge being hidden — reads `armed` or `swapped`. No
@@ -508,8 +512,11 @@ function disarmedRules(baseRules, headRules, declaredHere, baseRows, headRows) {
  * 3). That is not a false-pass path: dependency-cruiser's `knownViolations` matching is
  * rule-name-sensitive, so a row under a name no real rule emits suppresses nothing — a real
  * absorbed row renamed that way still printed `1 new`, exit 1. It leans on the base scan finding
- * every rule `main` declares: a base that scans to no names fails closed (#438); one scanned only in
- * part is #456.
+ * every rule `main` declares: a base that scans to no names fails closed (#438), and so does a name
+ * read as newly declared that has base rows, which only a missed rule can have (#456). What no name
+ * scan sees is a rule that keeps its name while it stops checking — commented out, set to
+ * `ignore`, narrowed — or one added in a form the scan cannot read: `lint:layers` fails the first
+ * two while the rule has baseline rows (#489); a rule with none is fenced by review alone (#505).
  * @param {{base:string|null, head:string|null, baseConfig?:string|null, headConfig?:string|null, configTouched?:boolean}} contents
  */
 export function compareRatchetBaseline({ base, head, baseConfig = null, headConfig = null, configTouched = false }) {

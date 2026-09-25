@@ -29,6 +29,13 @@
  * no declaration, nothing for a reviewer to look at — and an invented rule name passed the same
  * way. The hole widened as the ratchet shrank, because driving a rule to zero rows is the goal.
  *
+ * The rules themselves are guarded as well as their rows (#489). `pnpm run lint:layers` fails a
+ * baseline row under a rule name no rule here reports — deleted, renamed without its rows, commented
+ * out, set to `ignore` — where an emptied copy of this file read `0 known violations … 0 new`; and
+ * `pr-hygiene` reads every PR that edits this file, failing a rule name the merge base declares and
+ * the PR does not as `ratchet=disarmed`, rows or none. A rename gets past it only with all of its
+ * rows moved to the new name, and still warns as `swapped`.
+ *
  * What the rule still cannot see, stated rather than left implicit: a rule **declared here in the
  * same PR** to catch the edge being hidden — a rename, a copy under another name, a widened `to:`.
  * In the baseline a genuinely new rule and a renamed one are the same shape, so no comparison of
@@ -40,8 +47,10 @@
  * dependency-cruiser matches `knownViolations` by rule name, so a baseline row under a name no real
  * rule emits suppresses nothing (measured on #432: still `1 new`, exit 1). It leans on the scan
  * finding every rule the merge base's copy declares: a copy of this file, on either side, that it
- * finds no names in fails closed (#438); one it reads only in part is #456 — so keep every rule's
- * name written out as a literal.
+ * finds no names in fails closed (#438), and so does a missed rule that has baseline rows (#456). A
+ * rule with **no** rows that keeps its name while it stops checking — commented out, set to
+ * `ignore`, narrowed — or that is added in a form the scan cannot read is fenced by review alone
+ * (#505). So keep every rule's name written out as a literal.
  *
  * A guard that cries wolf makes agents argue with it, so every rule here is deliberately narrow:
  * it names the directions the audit measured and nothing more. Widen it only with a measurement.

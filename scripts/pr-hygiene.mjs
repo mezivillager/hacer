@@ -8,11 +8,12 @@
 // labels and per-file line counts — so this script, checked out from the base branch, never sees or
 // runs the PR's code. `.gitattributes` (linguist-generated) is read from the checkout, i.e. main.
 //
-// The one exception is the layer-ratchet baseline (#406): when a PR changes it, the file's
-// *contents* are read through the same API at the merge base and at the PR head — and, when the PR
-// also edits `.dependency-cruiser.cjs`, that file's text too, because a rule name is only "new"
-// because the config declares it (#432). Contents are data, never code that is run here: the
-// config is scanned for `name:` as text and is never required.
+// The one exception is the layer ratchet (#406): when a PR changes the baseline or
+// `.dependency-cruiser.cjs`, the baseline's *contents* are read through the same API at the merge
+// base and at the PR head — and the config's text too when the PR edits it, because a rule name is
+// "new" because the config declares it (#432), and gone because it no longer does (#489). Contents
+// are data, never code that is run here: the config is scanned for `name:` as text and is never
+// required.
 //
 // Prints one greppable `HYGIENE: PASS|WARN|FAIL …` line, appends a report to
 // $GITHUB_STEP_SUMMARY when set, and exits 1 on FAIL. Rules live in pr-hygiene.logic.mjs.
