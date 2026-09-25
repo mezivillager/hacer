@@ -26,6 +26,7 @@ import {
   formatConsole,
   formatSummary,
   nextPageUrl,
+  ratchetReads,
   readAtRef,
 } from './pr-hygiene.logic.mjs'
 
@@ -100,12 +101,13 @@ async function getAll(url) {
 const pullUrl = `https://api.github.com/repos/${REPO}/pulls/${number}`
 const [{ json: pull }, files] = await Promise.all([get(pullUrl), getAll(`${pullUrl}/files?per_page=100`)])
 
-// The layer-ratchet baseline (#406), read only when the PR touches it, and only ever as *content*
-// through the API — at the merge base (not `base.sha`, which drifts while a PR is open) and at the
-// PR head. Reading two blobs is not checking out a PR: nothing from the head is executed, and the
-// copy of this script doing the reading is always main's.
+// The layer ratchet (#406), read only when the PR touches the baseline or the config (#489), and
+// only ever as *content* through the API — at the merge base (not `base.sha`, which drifts while a
+// PR is open) and at the PR head. Reading blobs is not checking out a PR: nothing from the head is
+// executed, and the copy of this script doing the reading is always main's.
 let ratchet = null
-if (files.some((file) => file.filename === RATCHET_BASELINE_FILE)) {
+const reads = ratchetReads(files)
+if (reads) {
   const { json: comparison } = await get(
     `https://api.github.com/repos/${REPO}/compare/${pull.base.sha}...${pull.head.sha}?per_page=1`,
   )
@@ -116,14 +118,14 @@ if (files.some((file) => file.filename === RATCHET_BASELINE_FILE)) {
   const io = { readPath: getContent, refExists }
   // The rule config is read alongside the baseline, and only when the PR edits it: a rule name is
   // "new" because `.dependency-cruiser.cjs` declares it here, not because the baseline had no row
-  // under it (#432). Text on both sides, parsed for `name:` and never required or run.
-  const configEdited = files.some((file) => file.filename === RATCHET_CONFIG_FILE)
+  // under it (#432), and a rule is gone because it no longer does (#489). Text on both sides,
+  // parsed for `name:` and never required or run.
   const at = (ref, filePath) => readAtRef(io, ref, filePath)
   const [base, head, baseConfig, headConfig] = await Promise.all([
     at(mergeBase, RATCHET_BASELINE_FILE),
     at(pull.head.sha, RATCHET_BASELINE_FILE),
-    configEdited ? at(mergeBase, RATCHET_CONFIG_FILE) : null,
-    configEdited ? at(pull.head.sha, RATCHET_CONFIG_FILE) : null,
+    reads.config ? at(mergeBase, RATCHET_CONFIG_FILE) : null,
+    reads.config ? at(pull.head.sha, RATCHET_CONFIG_FILE) : null,
   ])
   ratchet = { base, head, baseConfig, headConfig }
 }
