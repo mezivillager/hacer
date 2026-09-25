@@ -48,3 +48,6 @@ package-lock.json
 
 # UI tour captures (e2e/tour, uploaded by ui-tour.yml)
 tour-output
+
+# Mission Control: `pnpm run build:control` writes the live snapshot here; tests render scripts/fixtures/mission-control/
+mission-control/public/data/snapshot.json

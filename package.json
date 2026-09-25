@@ -28,6 +28,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:control": "node scripts/mission-control/collect.mjs --json > mission-control/public/data/snapshot.json && vite build --config mission-control/vite.config.ts",
     "typecheck": "tsc -b",
     "lint": "pnpm run typecheck && eslint . && pnpm run lint:layers && pnpm run lint:e2e-exports",
     "lint:fix": "eslint . --fix",

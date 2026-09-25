@@ -19,7 +19,22 @@ export interface Snapshot {
   checks: { until?: string; items: unknown[] }
 }
 
+export const REPO = 'https://github.com/mezivillager/hacer'
+
 /** The snapshot `pnpm run build:control` put beside the page; one of another schema is refused, not half-rendered. */
 export async function loadSnapshot(url = `${import.meta.env.BASE_URL}data/snapshot.json`): Promise<Snapshot> {
-  throw new Error(`loadSnapshot(${url}): not implemented`)
+  const response = await fetch(url)
+  if (!response.ok) throw new Error(`${url}: HTTP ${response.status}`)
+  const snapshot = (await response.json()) as Snapshot
+  if (snapshot.schemaVersion !== 1) throw new Error(`snapshot schema ${String(snapshot.schemaVersion)}: this site reads schema 1`)
+  return snapshot
+}
+
+/** An ISO time as `YYYY-MM-DD HH:MM UTC`, the same wherever the page is read. */
+export const when = (iso: string) => `${new Date(iso).toISOString().slice(0, 16).replace('T', ' ')} UTC`
+
+/** A row's next task exactly as `backlog.mjs ready` orders its picks (`pickRule.next`), and its place in that order. */
+export function nextPick({ pickRule }: Snapshot, slug: string) {
+  const index = pickRule.next.findIndex((task) => task.project === slug)
+  return index < 0 ? null : { ...pickRule.next[index], place: index + 1 }
 }
