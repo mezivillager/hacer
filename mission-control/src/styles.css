@@ -23,3 +23,8 @@ a { color: var(--link); }
 table { border-collapse: collapse; width: 100%; background: var(--card); font-variant-numeric: tabular-nums; }
 th, td { border-bottom: 1px solid var(--line); padding: 0.4rem 0.6rem; text-align: left; vertical-align: top; }
 progress { width: 4rem; margin-right: 0.4rem; accent-color: var(--link); }
+.timeline { list-style: none; margin: 0.75rem 0 0; padding: 0; }
+.timeline > li { padding: 0.5rem 0; border-top: 1px solid var(--line); }
+.timeline h3 { font-size: 0.9rem; margin: 0 0 0.25rem; font-variant-numeric: tabular-nums; }
+.timeline ul { margin: 0; padding-left: 1.25rem; }
+.timeline .empty { color: var(--muted); margin: 0; }

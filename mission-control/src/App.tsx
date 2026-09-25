@@ -5,6 +5,7 @@ import { ProjectTasks } from './ProjectTasks'
 import { Projects } from './Projects'
 import { useRoute } from './route'
 import { REPO, isStale, loadSnapshot, when, type Snapshot } from './snapshot'
+import { Timeline } from './Timeline'
 
 /** Loads the snapshot once, then shows the view the hash names; a snapshot that will not load says why.
  *  `now` is injectable (default Date.now) so the freshness banner (#476) stays testable without a fake clock. */
@@ -21,7 +22,7 @@ export function App({ load = loadSnapshot, now = Date.now }: { load?: () => Prom
     <main className="mc">
       <header>
         <h1>Mission Control</h1>
-        <nav><a href="#/">Overview</a> <a href="#/projects">Projects</a> <a href="#/process">Process</a></nav>
+        <nav><a href="#/">Overview</a> <a href="#/projects">Projects</a> <a href="#/process">Process</a> <a href="#/timeline">Timeline</a></nav>
         <p>Snapshot {when(snapshot.generatedAt)} · <a href={`${REPO}/commit/${snapshot.head.sha}`} title={snapshot.head.subject}>
           {snapshot.head.sha.slice(0, 7)}</a></p>
       </header>
@@ -31,6 +32,7 @@ export function App({ load = loadSnapshot, now = Date.now }: { load?: () => Prom
       {route.view === 'projects' && <Projects snapshot={snapshot} />}
       {route.view === 'project' && <ProjectTasks snapshot={snapshot} slug={route.slug} />}
       {route.view === 'process' && <Process snapshot={snapshot} />}
+      {route.view === 'timeline' && <Timeline snapshot={snapshot} />}
     </main>
   )
 }
