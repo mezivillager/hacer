@@ -127,9 +127,11 @@ inbox gives its table, never the meter readings under it. Usage meters, org ids 
 
 Every `mission-control.yml` run appends the snapshot it just built to `control/history/<generatedAt>.json` on
 `gh-pages` — one file per run, named for the snapshot's own `generatedAt` (`Date#toISOString()`, so the names sort
-chronologically) — giving later work (charts, trend lines; MC-7) a series git history alone cannot give, since
-`gh-pages` is force-pushed history-free by the site deploys. The next run reads the newest of these as `--previous`,
-so a GitHub call that fails for one hour still shows that section's last-known data rather than going empty.
+chronologically) — so past snapshots accumulate into a series later work (charts, trend lines; MC-7) can read
+directly, rather than reconstructing one from `gh-pages`'s own commit history the way `metrics.ratchet.history`
+reconstructs the layer ratchet's from `git log` (a single, simple counter — not what a whole snapshot needs). The
+next run reads the newest of these as `--previous`, so a GitHub call that fails for one hour still shows that
+section's last-known data rather than going empty.
 
 A prune step keeps the last `KEEP_DAYS` (90) days: `planPrune` (`scripts/mission-control/prune.logic.mjs`, pure,
 unit-tested) decides, `prune.mjs` lists `control/history/` in the `gh-pages` checkout and removes what it names. Two

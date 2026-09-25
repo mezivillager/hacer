@@ -23,21 +23,19 @@ on:
 # the issue's own stated minimum (#476's acceptance criteria) — granted as specified; nothing in collect.mjs today
 # reads the Actions API, so this PR could not find a call that exercises it.
 #
-# checks:read is new, and #476 asks this PR to measure it rather than carry it forward unmeasured. MC-6 (#477,
-# still open as this PR opens — rebased in if it lands first) adds a checkRuns source: one more `gh api graphql`
-# call, reading each head's statusCheckRollup CheckRun nodes and their annotations. GitHub's Checks API/GraphQL
-# surface is gated by its own `checks` permission, distinct from contents/issues/pull-requests/actions — fetched
-# live from docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#permissions: "Work with
-# check runs and check suites" is `checks`, listed separately from the others — and #507's own write-side probe
-# found POST /check-runs answers 403 without checks:write. That is this PR's measurement: documented and code-
-# level, not a live restricted-token run, since building this workflow is explicitly not running it (the
-# coordinator dispatches the first run after merge); an actual 200-vs-403 in Actions is what that run confirms.
+# No `checks` permission: MC-6 (#477, merged while this PR was in progress — rebased in) added a checkRuns source
+# reading each head's statusCheckRollup CheckRun nodes and their annotations over `gh api graphql`. #476 asked this
+# PR to measure whether that needs checks:read; it does not, on a public repo — already measured empirically, not
+# by this PR: pr-preview.yml's own run collected the checks section `ok`, annotations included, with a token that
+# grants no `checks` permission at all (mission-control.md, "checks needs no checks permission while the repo is
+# public"; a5c1dac). That supersedes this PR's own first-pass reasoning (the Checks REST/GraphQL surface generally
+# needs its own permission — true, but not on a public repo's read side, where the annotations endpoint already
+# answers 200 unauthenticated per #507). Left unrequested rather than granted-and-unused.
 permissions:
   contents: write
   issues: read
   pull-requests: read
   actions: read
-  checks: read # gh api graphql (check runs) — collect.mjs's checkRuns source, once MC-6 (#477) is on main
 
 concurrency:
   group: gh-pages
