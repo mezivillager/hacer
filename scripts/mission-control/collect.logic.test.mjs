@@ -285,8 +285,10 @@ describe('collect.logic', () => {
 
     const { ledger } = snapshot
     expect(ledger.items.length).toBeGreaterThan(50)
-    expect(Object.keys(ledger.items[0])).toEqual(['date', 'whatWentWrong', 'shouldHaveBeenCaughtBy', 'mechanised'])
-    expect(ledger.items[0].date).toBe('2026-09-18')
+    // #469: the ledger gained Id and Decision columns — Id first, Decision last (docs/harness/ledger.md).
+    expect(Object.keys(ledger.items[0])).toEqual(['id', 'date', 'whatWentWrong', 'shouldHaveBeenCaughtBy', 'mechanised', 'decision'])
+    expect(ledger.items[0]).toMatchObject({ id: 'L001', date: '2026-09-18', decision: '—' })
+    expect(ledger.items.some((row) => row.decision !== '—')).toBe(true)
     expect(Object.values(ledger.byMechanised).reduce((sum, count) => sum + count, 0)).toBe(ledger.items.length)
     expect(ledger.byMechanised.yes).toBeGreaterThan(ledger.byMechanised.no)
 
