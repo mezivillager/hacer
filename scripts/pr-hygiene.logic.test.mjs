@@ -26,6 +26,7 @@ import {
   nextPageUrl,
   parseGeneratedPatterns,
   parseRatchetBaseline,
+  ratchetReads,
   readAtRef,
   stripFencedCode,
 } from './pr-hygiene.logic.mjs'
@@ -744,6 +745,13 @@ const REAL_CONFIG = readFileSync(path.join(import.meta.dirname, '..', RATCHET_CO
 const configOf = (...names) => `module.exports = {\n  forbidden: [\n${names.map((name) => `    { name: '${name}', severity: 'error' },`).join('\n')}\n  ],\n}\n`
 /** The config as the PR's changed-file list sees it: edited, or not. */
 const configEdit = () => file(RATCHET_CONFIG_FILE, 6, 0)
+/**
+ * The real config with one rule's `{ … }` entry taken out — the copy a merge base that never
+ * declared it holds, or a PR deleting it leaves. Not a rename: since #489 a name the base declares
+ * and the head does not is a disarmed rule, so "absent at the base" has to be absent.
+ */
+const realConfigWithout = (name) =>
+  REAL_CONFIG.replace(new RegExp(String.raw`\n {4}\{\n {6}name: '${name}',[\s\S]*?\n {4}\},`), '')
 
 describe('parseRatchetBaseline', () => {
   it('reads one comparable row per recorded violation', () => {
@@ -816,7 +824,7 @@ describe('compareRatchetBaseline', () => {
     const verdict = compareRatchetBaseline({
       base: JSON.stringify(base),
       head: REAL_BASELINE,
-      baseConfig: REAL_CONFIG.replace("name: 'core-through-index'", "name: 'core-through-index-was-not-here'"),
+      baseConfig: realConfigWithout('core-through-index'),
       headConfig: REAL_CONFIG,
       configTouched: true,
     })
@@ -1273,11 +1281,142 @@ describe('a config the rule-name scan cannot read fails closed (#438)', () => {
       edited({
         base: JSON.stringify(base),
         head: REAL_BASELINE,
-        baseConfig: REAL_CONFIG.replace("name: 'core-through-index'", "name: 'core-through-index-was-not-here'"),
+        baseConfig: realConfigWithout('core-through-index'),
         headConfig: REAL_CONFIG,
       }),
     )
     expect(result.ratchet).toBe('armed')
     expect(ratchetFinding(result).message).toContain(`declared in \`${RATCHET_CONFIG_FILE}\` by this PR`)
+  })
+})
+
+// ── The rules themselves are guarded, not only their rows (#489) ────────────────────────────────
+//
+// The growth guard protected the baseline's rows; nothing protected the rules that give them
+// meaning. This check read `.dependency-cruiser.cjs` only when a PR also edited the baseline, so a
+// PR that deleted a rule — or emptied the file — was never evaluated here (#461's verification,
+// item 9). A rule name the merge base's config declares and the head's does not is now a disarmed
+// rule, whether or not the PR touches the baseline; a rename passes only with its rows moved. The
+// config is still text here, read with the same `name:` scan — never required, imported or run.
+// Counts come from the files, never pinned (#450).
+
+describe('the layer rules themselves are guarded (#489)', () => {
+  const ratchetFinding = (result) => result.findings.find((finding) => finding.rule === 'ratchet')
+  const scanNames = (text) => [...new Set([...text.matchAll(/name:\s*'([^']+)'/g)].map((match) => match[1]))]
+  const recorded = () => [...new Set(realRows().map((row) => row.rule.name))]
+  const rowsOf = (rule) => realRows().filter((row) => row.rule.name === rule)
+  /** A PR whose only change is the config: the baseline is the same file at both refs. */
+  const configOnly = (headConfig) =>
+    pr({
+      body: 'Fixes #489',
+      files: [configEdit()],
+      ratchet: { base: REAL_BASELINE, head: REAL_BASELINE, baseConfig: REAL_CONFIG, headConfig },
+    })
+  /** A PR that edits the config and the baseline together. */
+  const withBaseline = (head, headConfig, baseConfig = REAL_CONFIG) =>
+    pr({
+      body: 'Fixes #489',
+      files: [configEdit(), file(RATCHET_BASELINE_FILE, 12, 12)],
+      ratchet: { base: REAL_BASELINE, head, baseConfig, headConfig },
+    })
+
+  it('a config-only PR is evaluated by pr-hygiene: forbidden rule names present in the base config but absent in the head config → FAIL ratchet=disarmed naming the rules', () => {
+    // A rule with no baseline rows is one `lint:layers` cannot see go, so it is the fixture.
+    const zeroRow = scanNames(REAL_CONFIG).find((name) => !recorded().includes(name))
+    expect(zeroRow).toBeDefined()
+    const headConfig = realConfigWithout(zeroRow)
+    expect(scanNames(headConfig)).toEqual(scanNames(REAL_CONFIG).filter((name) => name !== zeroRow))
+    const result = evaluate(configOnly(headConfig))
+    expect(result.ratchet).toBe('disarmed')
+    expect(result.verdict).toBe('FAIL')
+    expect(ratchetFinding(result).message).toContain(`\`${zeroRow}\``)
+    expect(formatConsole(result).split('\n')[0]).toMatch(/^HYGIENE: FAIL .* ratchet=disarmed$/)
+  })
+
+  it('reads a deleted or emptied config — absent, a 0-byte file, or `forbidden: []` — as every rule disarmed, each named', () => {
+    for (const headConfig of [null, '', 'module.exports = { forbidden: [] }\n']) {
+      const result = evaluate(configOnly(headConfig))
+      expect(result.ratchet).toBe('disarmed')
+      expect(result.verdict).toBe('FAIL')
+      for (const name of scanNames(REAL_CONFIG)) expect(ratchetFinding(result).message).toContain(`\`${name}\``)
+    }
+  })
+
+  it('renaming a rule with its baseline rows still FAILs disarmed unless the rows move with it', () => {
+    const [rule] = recorded()
+    expect(rowsOf(rule).length).toBeGreaterThan(0)
+    const renamedTo = `${rule}-renamed`
+    const headConfig = REAL_CONFIG.replace(`name: '${rule}'`, `name: '${renamedTo}'`)
+    expect(scanNames(headConfig)).toContain(renamedTo)
+    const relabel = (rows) =>
+      JSON.stringify(rows.map((row) => (row.rule.name === rule ? { ...row, rule: { ...row.rule, name: renamedTo } } : row)))
+
+    // Config only: its rows are left behind, under a name no rule emits any more.
+    const left = evaluate(configOnly(headConfig))
+    expect(left.ratchet).toBe('disarmed')
+    expect(ratchetFinding(left).message).toContain(`\`${rule}\``)
+    expect(ratchetFinding(left).message).toMatch(/left behind/)
+
+    // Every row moved with it: a rename its rows vouch for, which reads `swapped` and warns (#432).
+    const moved = evaluate(withBaseline(relabel(realRows()), headConfig))
+    expect(moved.ratchet).toBe('swapped')
+    expect(moved.verdict).toBe('WARN')
+
+    // One of its rows dropped on the way: no longer a rename its rows vouch for.
+    const [dropped] = rowsOf(rule)
+    const partly = realRows().filter((row) => !(row.rule.name === rule && row.from === dropped.from && row.to === dropped.to))
+    const part = evaluate(withBaseline(relabel(partly), headConfig))
+    expect(part.ratchet).toBe('disarmed')
+    expect(ratchetFinding(part).message).toMatch(/not moved/)
+  })
+
+  it('reads a rule with no baseline rows renamed as disarmed — no row can vouch for the new name', () => {
+    // Driving a rule to zero rows is the ratchet's goal, so a zero-row rule is the one a rename could
+    // gut unseen: nothing in the baseline moves, and `lint:layers` has no row to miss.
+    const zeroRow = scanNames(REAL_CONFIG).find((name) => !recorded().includes(name))
+    expect(zeroRow).toBeDefined()
+    const result = evaluate(configOnly(REAL_CONFIG.replace(`name: '${zeroRow}'`, `name: '${zeroRow}-renamed'`)))
+    expect(result.ratchet).toBe('disarmed')
+    expect(ratchetFinding(result).message).toContain(`\`${zeroRow}\` (no baseline rows)`)
+  })
+
+  it("passes a config-only PR that keeps every rule name — #432's comment-only edit — and says the config was read", () => {
+    const result = evaluate(configOnly(`${REAL_CONFIG}\n// a comment-only edit, as #432's was\n`))
+    expect(result.ratchet).toBe('unchanged')
+    expect(result.verdict).toBe('PASS')
+    expect(ratchetFinding(result).message).toContain(`all ${scanNames(REAL_CONFIG).length} rule names`)
+    expect(ratchetFinding(result).message).toContain(RATCHET_CONFIG_FILE)
+  })
+
+  it("folds in #456's check: a name read as newly declared that already has rows at the merge base was declared there, so the base scan missed it — FAIL unreadable, not PASS armed", () => {
+    // #456's measured shape, on a rule that has rows — picked from the file, so it does not decay
+    // as a rule reaches zero: the base writes that rule's name as an identifier the scan cannot
+    // see, the head adds one comment naming it, and one row is absorbed under it.
+    const [rule] = recorded()
+    expect(rowsOf(rule).length).toBeGreaterThan(0)
+    const baseConfig = REAL_CONFIG.replace(`name: '${rule}'`, 'name: MISSED_BY_THE_SCAN')
+    expect(scanNames(baseConfig)).toEqual(scanNames(REAL_CONFIG).filter((name) => name !== rule))
+    const headConfig = `${baseConfig}// name: '${rule}'\n`
+    const head = JSON.stringify([...realRows(), violation(rule, 'src/core/probe.ts', 'src/store/circuitStore.ts')], null, 2)
+    const result = evaluate(withBaseline(head, headConfig, baseConfig))
+    expect(result.ratchet).toBe('unreadable')
+    expect(result.verdict).toBe('FAIL')
+    expect(ratchetFinding(result).message).toContain(`\`${rule}\``)
+    expect(ratchetFinding(result).message).toMatch(new RegExp(`\\b${rowsOf(rule).length} base rows?\\b`))
+  })
+
+  it('reads nothing for a PR that edits neither file (#396) — and reads a config-only PR, baseline and config both', () => {
+    expect(ratchetReads([file('src/store/actions/junction.ts', 12, 3)])).toBeNull()
+    expect(ratchetReads([file(RATCHET_BASELINE_FILE, 0, 218)])).toEqual({ config: false })
+    expect(ratchetReads([configEdit()])).toEqual({ config: true })
+    expect(ratchetReads([file(RATCHET_BASELINE_FILE, 737, 0), configEdit()])).toEqual({ config: true })
+  })
+
+  it('keeps the pull_request_target discipline on this path: the config is text, never required, imported, evaluated or run', () => {
+    const source = (name) => readFileSync(path.join(import.meta.dirname, name), 'utf8')
+    for (const name of ['pr-hygiene.mjs', 'pr-hygiene.logic.mjs']) {
+      expect(source(name)).not.toMatch(/\brequire\s*\(|\bimport\s*\(|\beval\s*\(|\bnew Function\b|node:vm|child_process|createRequire/)
+    }
+    expect(source('pr-hygiene.mjs')).toContain('ratchetReads(files)')
   })
 })
