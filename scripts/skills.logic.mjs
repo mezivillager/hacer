@@ -144,6 +144,14 @@ export const BRIEF_INVARIANTS = [
       // #485: twice a PR that finished only part of an issue closed it on merge (#396, #443) — GitHub
       // acts on a closing keyword alone. One phrase, so the rule is pinned as the whole sentence.
       { id: 'fixes-only-when-the-whole-issue-is-done', phrases: ['`Fixes` only when the whole issue is done; otherwise `Part of`'] },
+      // #469 (Decision Lineage DL-4): the PR body names the decisions it carries out, so an
+      // `implements` edge exists for `lineage radius` to walk from that decision back to this PR.
+      {
+        id: 'pr-body-names-decisions',
+        phrases: [
+          'a `Decisions:` line (the decision ids this PR implements — `ADR-NNNN`, `R<n>` or `P-<n>`, comma-separated — or `none`',
+        ],
+      },
     ],
     absent: [
       { id: 'e2e-in-the-definition-of-done', phrases: ['test:e2e'], why: 'ADR-0012 took E2E out of the definition of done' },
@@ -184,6 +192,17 @@ export const BRIEF_INVARIANTS = [
       { id: 'verdict-names-its-model', phrases: ['**Name the model you ran on**, in the `Verified on:` field, always.'] },
       // The unsafe direction is running low on the engine; a rewrite that dropped this half passed.
       { id: 'off-tier-disclosed-both-ways', phrases: ['whichever direction it is wrong in'] },
+      // #469 (Decision Lineage DL-4): a BLOCK that means a past decision was wrong, not just that
+      // the code needs a fix, must name it — this is what starts `lineage correct` (REPORT.md §7).
+      {
+        id: 'block-names-invalidates',
+        phrases: [
+          "a past decision (`ADR-NNNN`, `R<n>` or `P-<n>`) was wrong, not just that the code needs a fix, name it here — `none` otherwise, and on every PASS.",
+        ],
+      },
+      // The rule above says to name it; this pins that the fixed-format block a collector parses
+      // actually carries the field, not only the prose above it.
+      { id: 'verdict-format-shows-invalidates', phrases: ['**Invalidates:** <on BLOCK, the decision the finding invalidates, or `none`>'] },
     ],
     absent: [
       { id: 'stryker-mutation-testing', phrases: ['Stryker'], why: 'ADR-0011 removed Stryker' },
