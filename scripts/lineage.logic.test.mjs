@@ -666,7 +666,9 @@ const DRY_RUN_R607 = [
   "Blocked by R607's own correction issue. Drafted by `node scripts/lineage.mjs correct R607`.",
 ].join('\n')
 
-describe('lineage correct (#470)', () => {
+// Every `gh` call the CLI makes is a node process (the stub), ~16 per test: 1–2.5 s alone, past vitest's 5 s default on a
+// loaded full-suite run (measured). The precedent for a spawn-heavy test is layer-ratchet.logic.test.mjs's explicit timeout.
+describe('lineage correct (#470)', { timeout: 30_000 }, () => {
   it('correct R607 --dry-run prints one draft per downstream node (PR#459, #462), each body naming the root and the node\'s artefacts', () => {
     // Chain (iii): R607 → PR#459 (its Decisions: line) and #462 (its Introduced by: line). The plan opens with R607's
     // own correction issue, which blocks one draft per node `radius R607` reaches.
