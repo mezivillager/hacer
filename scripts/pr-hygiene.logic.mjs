@@ -153,6 +153,9 @@ const PART_OF_RE = linkRe('part of')
 /** Words that say an issue is done only in part, read on its closing keyword's own line (#485). */
 const IN_PART_RE = /\b(?:in part|partial(?:ly)?|partly|remaining)\b/gi
 
+/** The body without its code, fenced or inline — GitHub closes nothing on a keyword in a code span (#375). */
+const withoutCode = (body) => stripFencedCode(body).replace(/(`+)[^\n]*?\1/g, ' ')
+
 /** Distinct issue numbers the body links, in order of first mention. */
 export function findLinkedIssues(body) {
   const numbers = Array.from((body ?? '').matchAll(LINK_RE), (m) => Number(m[1]))
@@ -161,19 +164,20 @@ export function findLinkedIssues(body) {
 
 /** Distinct issue numbers GitHub closes when the PR merges: its closing keywords', never `Part of`'s. */
 function findClosingIssues(body) {
-  return [...new Set(Array.from((body ?? '').matchAll(CLOSING_RE), (m) => Number(m[1])))]
+  return [...new Set(Array.from(withoutCode(body).matchAll(CLOSING_RE), (m) => Number(m[1])))]
 }
 
 /**
  * Each issue a closing keyword closes while the body says it is done only in part (#485): `Part of`
- * the same issue anywhere in the body, or an in-part word on the keyword's own line. Read across the
- * whole body, those words misfired on 8 of the repo's 73 real bodies with a closing keyword; on the
- * keyword's line, on none — and both real early closes still fail: #396's "Fixes #364 (in part …)",
- * and #443's "Part of #193" beside a negated keyword that GitHub closed #193 on all the same.
+ * the same issue anywhere in the body, or an in-part word on the keyword's own line; code is an
+ * example, not a claim, and is skipped. Read across the whole body, the words misfired on 8 of the
+ * repo's 73 real bodies with a closing keyword; on the keyword's line, on none — and both real early
+ * closes still fail: #396's "Fixes #364 (in part …)", and #443's "Part of #193" beside a negated
+ * keyword that GitHub closed #193 on all the same.
  * @returns {{issue:number, keyword:string, phrases:string[]}[]}
  */
 function findPartialCloses(body) {
-  const text = body ?? ''
+  const text = withoutCode(body)
   const partOf = Array.from(text.matchAll(PART_OF_RE), (m) => ({ issue: Number(m[1]), phrase: m[0] }))
   const found = new Map()
   for (const line of text.split('\n')) {
