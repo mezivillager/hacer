@@ -4,7 +4,7 @@
 [![Node.js 22+](https://img.shields.io/badge/node-%3E%3D22-brightgreen)](https://nodejs.org)
 [![CI](https://github.com/mezivillager/hacer/actions/workflows/ci.yml/badge.svg)](https://github.com/mezivillager/hacer/actions/workflows/ci.yml)
 
-**[Play With It](https://mezivillager.github.io/hacer/)**
+**[Play With It](https://mezivillager.github.io/hacer/)** · **[Mission Control](https://mezivillager.github.io/hacer/control/)**, the project's status as it is built
 ![hacer-demo](public/hacer-demo.gif)
 
 
