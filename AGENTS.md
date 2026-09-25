@@ -211,7 +211,7 @@ File: `.github/workflows/pr-hygiene.yml` → `scripts/pr-hygiene.mjs` (rules in 
 | Rule | Verdict | What it catches |
 |------|---------|-----------------|
 | Size budget (ADR-0013) | warn > 200, **fail > 400** reviewable lines; `size-override` label reports and passes | Bulky PRs — tests, lockfile, snapshots, vectors, fixtures and `linguist-generated` files are not counted |
-| Linked issue | **fail** without `Fixes #n` / `Closes #n` / `Resolves #n` / `Part of #n` (exempt: docs-only PRs, a `*[bot]` author such as dependabot, the `dependencies` label) | Work with no issue behind it |
+| Linked issue | **fail** without `Fixes #n` / `Closes #n` / `Resolves #n` / `Part of #n` (exempt: docs-only PRs, a `*[bot]` author such as dependabot, the `dependencies` label); also **fail** when a closing keyword names an issue the body says is done only in part — `Part of` the same issue, or *in part* / *partial* / *partly* / *remaining* on the keyword's line, outside code and HTML comments — docs-only PRs included (#485) | Work with no issue behind it, and an issue closed on merge before it is done |
 
 Runs under `pull_request_target` from the base branch and reads the PR through the API only — a PR cannot edit its own guard. Locally: `GITHUB_TOKEN=$(gh auth token) node scripts/pr-hygiene.mjs <pr>`.
 

@@ -2,7 +2,10 @@ name: PR Hygiene
 
 # Linked issue + size budget (ADR-0013): warn above 200 reviewable changed lines, fail above
 # 400 unless the PR carries the `size-override` label; fail when the body links no issue
-# (exempt: docs-only PRs, a `*[bot]` author such as dependabot, the `dependencies` label).
+# (exempt: docs-only PRs, a `*[bot]` author such as dependabot, the `dependencies` label). It also
+# fails a closing keyword on an issue the body says is done only in part (`Part of` the same issue,
+# or in part / partial / partly / remaining on the keyword's line, outside code and HTML comments),
+# docs-only PRs included, because GitHub closes on the keyword alone (#485).
 # Reviewable excludes tests, the lockfile, snapshots, vendored vectors, fixtures and
 # linguist-generated files.
 #
