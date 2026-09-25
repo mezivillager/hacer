@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-25T12:44:55.516Z",
+  "generatedAt": "2026-09-25T14:44:07.073Z",
   "head": {
-    "sha": "79e512352133368fa6f2f3f87de744801c97cb2c",
-    "date": "2026-09-25T10:25:31+03:00",
-    "subject": "feat(mission-control): the timeline view — sessions, merges, releases (#475)"
+    "sha": "f1418aca7a6b58337aab83186931df91d1a35c88",
+    "date": "2026-09-25T17:43:33+03:00",
+    "subject": "refactor(ci): shorten the peer-range check"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-25T12:44:55.516Z",
+      "fetchedAt": "2026-09-25T14:44:07.073Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-25T12:44:55.516Z",
+      "fetchedAt": "2026-09-25T14:44:07.073Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-25T12:44:55.516Z",
+      "fetchedAt": "2026-09-25T14:44:07.073Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-25T12:44:55.516Z",
+      "fetchedAt": "2026-09-25T14:44:07.073Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-09-25T12:44:55.516Z",
+      "fetchedAt": "2026-09-25T14:44:07.073Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-09-25T12:44:55.516Z",
+      "fetchedAt": "2026-09-25T14:44:07.073Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-09-25T12:44:55.516Z",
+      "fetchedAt": "2026-09-25T14:44:07.073Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-09-25T12:44:55.516Z",
+      "fetchedAt": "2026-09-25T14:44:07.073Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-09-25T12:44:55.516Z",
+      "fetchedAt": "2026-09-25T14:44:07.073Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-09-25T12:44:55.516Z",
+      "fetchedAt": "2026-09-25T14:44:07.073Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-25T12:44:55.516Z",
+      "fetchedAt": "2026-09-25T14:44:07.073Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-09-25T12:44:55.516Z",
+      "fetchedAt": "2026-09-25T14:44:07.073Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-09-25T12:44:55.516Z",
+      "fetchedAt": "2026-09-25T14:44:07.073Z",
       "status": "ok"
     }
   },
@@ -100,9 +100,9 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 32,
+        "open": 31,
         "ready": 22,
-        "inProgress": 1,
+        "inProgress": 0,
         "needsHuman": 0,
         "next": {
           "number": 148,
@@ -2569,22 +2569,6 @@
         "reason": "unshaped"
       },
       {
-        "number": 455,
-        "title": "CI does not fail on peer-range violations — #410 installs React 19.3 with an R3F whose peer range excludes it, all green",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:1"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": false,
-        "reason": "in-progress"
-      },
-      {
         "number": 462,
         "title": "Removing a junction in an imported document still loses the source→sink connection that ran through it",
         "labels": [
@@ -2792,7 +2776,6 @@
         435,
         436,
         454,
-        455,
         500,
         504,
         505
@@ -2901,25 +2884,15 @@
         "closes": [
           468
         ],
-        "verdicts": []
-      },
-      {
-        "number": 518,
-        "title": "fix(ci): fail when a React, R3F or three peer range is unmet",
-        "url": "https://github.com/mezivillager/hacer/pull/518",
-        "author": "mezivillager",
-        "labels": [
-          "project:harness",
-          "risk:1"
-        ],
-        "headRefName": "cursor/fix-455-peer-range-check-96b6",
-        "isDraft": false,
-        "createdAt": "2026-09-25T08:35:47Z",
-        "mergedAt": null,
-        "closes": [
-          455
-        ],
-        "verdicts": []
+        "verdicts": [
+          {
+            "verdict": "BLOCK",
+            "round": 1,
+            "model": "Grok (Grok Bot executor subagent; exact model version not exposed)",
+            "at": "2026-09-25T14:43:09Z",
+            "url": "https://github.com/mezivillager/hacer/pull/519#issuecomment-5834291362"
+          }
+        ]
       },
       {
         "number": 517,
@@ -2997,6 +2970,32 @@
       }
     ],
     "merged": [
+      {
+        "number": 518,
+        "title": "fix(ci): fail when a React, R3F or three peer range is unmet",
+        "url": "https://github.com/mezivillager/hacer/pull/518",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:1"
+        ],
+        "headRefName": "cursor/fix-455-peer-range-check-96b6",
+        "isDraft": false,
+        "createdAt": "2026-09-25T08:35:47Z",
+        "mergedAt": "2026-09-25T14:43:33Z",
+        "closes": [
+          455
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Grok (Grok Bot executor subagent; exact model version not exposed)",
+            "at": "2026-09-25T14:42:52Z",
+            "url": "https://github.com/mezivillager/hacer/pull/518#issuecomment-5834287156"
+          }
+        ]
+      },
       {
         "number": 515,
         "title": "feat(mission-control): the timeline view — sessions, merges, releases (#475)",
@@ -4421,35 +4420,6 @@
         "mergedAt": "2026-09-23T02:44:03Z",
         "closes": [],
         "verdicts": []
-      },
-      {
-        "number": 388,
-        "title": "chore: delete the dead render tracker, 46 caller-less e2e exports and the crossing console noise",
-        "url": "https://github.com/mezivillager/hacer/pull/388",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:1",
-          "size-override",
-          "project:foundation"
-        ],
-        "headRefName": "chore/321-332-delete-dead-code",
-        "isDraft": false,
-        "createdAt": "2026-09-23T01:58:23Z",
-        "mergedAt": "2026-09-23T02:24:24Z",
-        "closes": [
-          321,
-          332
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Claude Opus 5 (claude-opus-5[1m])",
-            "at": "2026-09-23T02:23:09Z",
-            "url": "https://github.com/mezivillager/hacer/pull/388#issuecomment-5787853160"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4518,16 +4488,15 @@
         "number": 455,
         "ref": "refs/heads/claim/455",
         "sha": "79e512352133368fa6f2f3f87de744801c97cb2c",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "CI does not fail on peer-range violations — #410 installs React 19.3 with an R3F whose peer range excludes it, all green",
         "url": "https://github.com/mezivillager/hacer/issues/455",
         "labels": [
           "project:harness",
           "agent-ready",
-          "in-progress",
           "risk:1"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "grok-bot",
           "intent": "building",
@@ -4590,7 +4559,7 @@
         }
       }
     ],
-    "onClosedIssues": 0
+    "onClosedIssues": 1
   },
   "cloudLane": {
     "items": [
@@ -6022,7 +5991,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-23",
-        "merges": 17
+        "merges": 16
       },
       {
         "date": "2026-09-24",
@@ -6030,7 +5999,7 @@
       },
       {
         "date": "2026-09-25",
-        "merges": 11
+        "merges": 12
       }
     ]
   },
@@ -6038,26 +6007,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "79e512352133368fa6f2f3f87de744801c97cb2c",
+        "sha": "f1418aca7a6b58337aab83186931df91d1a35c88",
         "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-09-25T07:28:16Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36107567262/job/107983489320",
-        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 71,
-          "new": 0
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 410,
-        "sha": "7459d4fcd579d8695682629cc1c5d55d7ccba818",
-        "check": "pr-hygiene",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-09-24T23:50:44Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36074712429/job/107883255833",
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36149405821/job/108118577402",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -6066,12 +6020,30 @@
       {
         "pr": 410,
         "sha": "7459d4fcd579d8695682629cc1c5d55d7ccba818",
+        "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-25T14:43:53Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36149416214/job/108118615881",
+        "line": "HYGIENE: PASS reviewable=14 test=0 excluded=2070 files=1 issue=skipped",
+        "verdict": "PASS",
+        "fields": {
+          "reviewable": 14,
+          "test": 0,
+          "excluded": 2070,
+          "files": 1,
+          "issue": "skipped"
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 410,
+        "sha": "7459d4fcd579d8695682629cc1c5d55d7ccba818",
         "check": "browser-qa",
         "conclusion": "SUCCESS",
-        "completedAt": "2026-09-24T23:50:43Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36074715141/job/107883241232",
-        "line": null,
-        "verdict": null,
+        "completedAt": "2026-09-25T14:43:55Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36149415600/job/108118610885",
+        "line": "BROWSER-QA: skipped (no critical paths)",
+        "verdict": "SKIPPED",
         "fields": {},
         "disagrees": false
       },
@@ -6206,52 +6178,6 @@
         "conclusion": "SUCCESS",
         "completedAt": "2026-09-25T07:22:16Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/36107119291/job/107982088772",
-        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 71,
-          "new": 0
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 518,
-        "sha": "566a7710d80e44d5f04917cd17455ab309fc88c0",
-        "check": "pr-hygiene",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-09-25T08:39:44Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36114109024/job/108004027798",
-        "line": "HYGIENE: WARN reviewable=388 test=435 excluded=38 files=8 issue=#455 linked=fixes",
-        "verdict": "WARN",
-        "fields": {
-          "reviewable": 388,
-          "test": 435,
-          "excluded": 38,
-          "files": 8,
-          "issue": "#455",
-          "linked": "fixes"
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 518,
-        "sha": "566a7710d80e44d5f04917cd17455ab309fc88c0",
-        "check": "browser-qa",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-09-25T08:39:41Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36114108587/job/108004024937",
-        "line": "BROWSER-QA: skipped (no critical paths)",
-        "verdict": "SKIPPED",
-        "fields": {},
-        "disagrees": false
-      },
-      {
-        "pr": 518,
-        "sha": "566a7710d80e44d5f04917cd17455ab309fc88c0",
-        "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-09-25T08:38:41Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36113792088/job/108003003344",
         "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
         "verdict": "PASS",
         "fields": {
