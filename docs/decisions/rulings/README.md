@@ -10,7 +10,8 @@ started and its name. The file is **appended during the run**, one block per rul
 they were made.
 
 - The file opens with `# Rulings — <date> <run>`. Each ruling is a `## R<n> — <title>` heading, the
-  field lines `Builds on:`, `Assumes:`, `Amends:` and `Cost if wrong:`, then the reasoning. The
+  field lines `Builds on:`, `Assumes:`, `Amends:` and `Cost if wrong:` — bare lines, never an ADR's
+  `- **…:**` bullets, which are an error here — then the reasoning. The
   fields and the difference between `none` and `unknown` are defined in
   [../README.md](../README.md#lineage).
 - **Ids are allocated by the tool, never by hand:** `node scripts/lineage.mjs next-id` prints one
