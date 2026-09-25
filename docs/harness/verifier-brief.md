@@ -28,6 +28,10 @@ give it the sources.
 - **BLOCK** only with `file:line` plus a failing command or a concrete input/output. Never for taste.
 - **NIT** ≤ 3; the rest as "plus N similar". Nits never block; the coordinator files the ones worth keeping as follow-up issues (depth 1, ≤ 3).
 - **PASS** when there are no blockers.
+- **Invalidates:** when a BLOCK's finding means a past decision (`ADR-NNNN`, `R<n>` or `P-<n>`) was
+  wrong, not just that the code needs a fix, name it here — `none` otherwise, and on every PASS.
+  This is what starts the correction workflow (`docs/research/2026-09-24-decision-lineage/REPORT.md`
+  §7): the coordinator runs `lineage radius <id>` on the name to find every decision resting on it.
 - **Name the model you ran on**, in the `Verified on:` field, always. It is the only record that exists: nothing in the repository, the PR or the API says which tier reviewed a PR, so an unnamed verdict cannot be counted as evidence for or against a tier later — and a mis-tiered dispatch stays invisible. If the tier you are running on is not the one the rule above gives for this PR, say so in one line under the verdict, whichever direction it is wrong in.
 - A criterion counts as satisfied only when a test **you ran** proves it; a test whose *name* matches the criterion proves nothing — read what it asserts. A failing test you cannot tie to the diff is a machine problem until you show otherwise: re-run it at `origin/main`, and treat a pre-existing flake as a nit, not a blocker. Both are failures a cheaper tier made on #238 (`model-tiering.md` §1).
 
@@ -36,6 +40,7 @@ The heading `## Verifier verdict: PASS | BLOCK` and the `Verified on:` line are 
 ```
 ## Verifier verdict: PASS | BLOCK
 **Verified on:** <the model you are running as> · **Reviewable lines:** N (budget 400) · **Tests:** N added, suite X passed / Y failed · **DoD:** lint ✔/✘ test:run ✔/✘ build ✔/✘ lint:docs ✔/✘
+**Invalidates:** <on BLOCK, the decision the finding invalidates, or `none`>
 ### Acceptance criteria
 - [x|_] <criterion> — <file:line or "unproven">
 ### Blockers
