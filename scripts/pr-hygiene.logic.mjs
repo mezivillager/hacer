@@ -436,6 +436,28 @@ function unscannedConfig(text, whose, cost) {
 }
 
 /**
+ * A rule name with rows in the merge base's baseline was declared in the merge base's config:
+ * dependency-cruiser records a row only under a rule it ran, and `lint:layers` fails a row under any
+ * other name (#489). So a name that reads as newly declared here while it has base rows is one the
+ * base scan missed, and trusting it reads a row absorbed under a long-armed rule as `armed` (#456).
+ * A missed rule with no rows is invisible to this — the residual on `compareRatchetBaseline`.
+ */
+function missedByBaseScan(declaredHere, baseRows) {
+  const missed = [...declaredHere]
+    .map((rule) => ({ rule, rows: baseRows.filter((row) => row.rule === rule).length }))
+    .filter(({ rows }) => rows > 0)
+  if (missed.length === 0) return null
+  const [it, reads] = missed.length === 1 ? ['it', 'reads'] : ['them', 'read']
+  return (
+    `${missed.map(({ rule, rows }) => `\`${rule}\` (${plural(rows, 'base row')})`).join(', ')} ${reads} as newly declared ` +
+    `in this PR, yet the merge base's baseline already records rows under ${it} — so the merge base's ` +
+    `\`${RATCHET_CONFIG_FILE}\` declares ${it} too, and the scan, which reads only a literal \`name: '…'\`, missed ${it}. ` +
+    'Trusted, that reads a row absorbed under a long-armed rule as `armed`, so the ratchet fails closed: write the ' +
+    'name literally at the merge base first, in its own PR'
+  )
+}
+
+/**
  * The rules this PR takes out of the config (#489). A name the merge base's copy declares and this
  * PR's does not is a disarmed rule — every edge it checked goes unguarded, rows or none — unless
  * every one of its rows moved to a name this PR declares: a rename its rows vouch for, which reads
@@ -518,6 +540,8 @@ export function compareRatchetBaseline({ base, head, baseConfig = null, headConf
   const declaredHere = configTouched
     ? new Set([...headConfigRules].filter((name) => !baseConfigRules.has(name)))
     : new Set()
+  const missed = added.length > 0 ? missedByBaseScan(declaredHere, parsedBase.rows) : null
+  if (missed) return { status: 'unreadable', detail: missed }
   // The rules themselves, read on every PR that edits the config — its rows do not have to move (#489).
   const disarmed = configTouched
     ? disarmedRules(baseConfigRules, headConfigRules, declaredHere, parsedBase.rows, parsedHead.rows)
