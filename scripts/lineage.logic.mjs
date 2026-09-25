@@ -465,3 +465,9 @@ export function validateGraph({ nodes = [], edges = [], artefacts = [] }) {
     !known.has(edge.from) && `${edge.from} is neither a node nor an artefact`,
   ].filter(Boolean).map((why) => `edge ${edge.from} ${edge.kind} ${edge.to}: ${why}`))]
 }
+
+/** `lineage correct` (#470): the correction plan, its dry-run text, the epic its issues go under, and the root's status ruling. */
+export function correctionPlan() { throw new Error('not implemented (#470)') }
+export function formatPlan() { throw new Error('not implemented (#470)') }
+export function rootEpic() { throw new Error('not implemented (#470)') }
+export function statusRuling() { throw new Error('not implemented (#470)') }
