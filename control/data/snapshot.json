@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-25T04:50:25.146Z",
+  "generatedAt": "2026-09-25T05:30:12.866Z",
   "head": {
-    "sha": "1b012400aa3dbcaa5ef9977c97f8ee389351326a",
-    "date": "2026-09-25T07:49:26+03:00",
-    "subject": "docs: point B-009 at PR #459 (#403)"
+    "sha": "5c4ede36759106ea178a798375660c7d77b26b08",
+    "date": "2026-09-25T08:29:12+03:00",
+    "subject": "docs(pr-hygiene): say the config-only read in one sentence, not a rewrite (#489)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-25T04:50:25.146Z",
+      "fetchedAt": "2026-09-25T05:30:12.866Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-25T04:50:25.146Z",
+      "fetchedAt": "2026-09-25T05:30:12.866Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-25T04:50:25.146Z",
+      "fetchedAt": "2026-09-25T05:30:12.866Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-25T04:50:25.146Z",
+      "fetchedAt": "2026-09-25T05:30:12.866Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-09-25T04:50:25.146Z",
+      "fetchedAt": "2026-09-25T05:30:12.866Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-09-25T04:50:25.146Z",
+      "fetchedAt": "2026-09-25T05:30:12.866Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-09-25T04:50:25.146Z",
+      "fetchedAt": "2026-09-25T05:30:12.866Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-09-25T04:50:25.146Z",
+      "fetchedAt": "2026-09-25T05:30:12.866Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-09-25T04:50:25.146Z",
+      "fetchedAt": "2026-09-25T05:30:12.866Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-09-25T04:50:25.146Z",
+      "fetchedAt": "2026-09-25T05:30:12.866Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-25T04:50:25.146Z",
+      "fetchedAt": "2026-09-25T05:30:12.866Z",
       "status": "ok"
     },
     "checks": {
       "source": "none",
-      "fetchedAt": "2026-09-25T04:50:25.146Z",
+      "fetchedAt": "2026-09-25T05:30:12.866Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-09-25T04:50:25.146Z",
+      "fetchedAt": "2026-09-25T05:30:12.866Z",
       "status": "ok"
     }
   },
@@ -100,9 +100,9 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 33,
+        "open": 31,
         "ready": 22,
-        "inProgress": 1,
+        "inProgress": 0,
         "needsHuman": 0,
         "next": {
           "number": 148,
@@ -110,8 +110,8 @@
         },
         "title": "Epic: harness — autonomous-run improvements & agent-readiness",
         "subIssues": {
-          "completed": 23,
-          "percentCompleted": 48,
+          "completed": 24,
+          "percentCompleted": 51,
           "total": 47
         }
       },
@@ -309,8 +309,8 @@
         "slug": "lineage",
         "epicNumber": 457,
         "open": 6,
-        "ready": 4,
-        "inProgress": 0,
+        "ready": 3,
+        "inProgress": 1,
         "needsHuman": 0,
         "next": {
           "number": 468,
@@ -328,7 +328,7 @@
         "lane": "process",
         "slug": "mission-control",
         "epicNumber": 458,
-        "open": 7,
+        "open": 8,
         "ready": 5,
         "inProgress": 1,
         "needsHuman": 0,
@@ -408,8 +408,8 @@
         "project": "foundation"
       },
       {
-        "number": 469,
-        "title": "Lineage DL-4: harness integration — briefs, templates, the ledger's Id and Decision columns, pinned phrases",
+        "number": 470,
+        "title": "Lineage DL-5: `lineage correct` — the correction plan, one task per downstream decision",
         "project": "lineage"
       },
       {
@@ -443,8 +443,8 @@
         "project": "foundation"
       },
       {
-        "number": 470,
-        "title": "Lineage DL-5: `lineage correct` — the correction plan, one task per downstream decision",
+        "number": 481,
+        "title": "Lineage DL-7: the lineage graph as a Mission Control view",
         "project": "lineage"
       },
       {
@@ -476,11 +476,6 @@
         "number": 373,
         "title": "N.0: the six 3D mesh components become prop-only and store-free (six PRs, expand → migrate → contract)",
         "project": "foundation"
-      },
-      {
-        "number": 481,
-        "title": "Lineage DL-7: the lineage graph as a Mission Control view",
-        "project": "lineage"
       },
       {
         "number": 153,
@@ -751,16 +746,14 @@
         "reason": null
       },
       {
-        "number": 469,
-        "title": "Lineage DL-4: harness integration — briefs, templates, the ledger's Id and Decision columns, pinned phrases",
+        "number": 470,
+        "title": "Lineage DL-5: `lineage correct` — the correction plan, one task per downstream decision",
         "labels": [
           "agent-ready",
           "risk:1",
           "project:lineage"
         ],
-        "blocking": [
-          471
-        ],
+        "blocking": [],
         "project": "lineage",
         "rank": 13,
         "lane": "process",
@@ -863,8 +856,8 @@
         "reason": null
       },
       {
-        "number": 470,
-        "title": "Lineage DL-5: `lineage correct` — the correction plan, one task per downstream decision",
+        "number": 481,
+        "title": "Lineage DL-7: the lineage graph as a Mission Control view",
         "labels": [
           "agent-ready",
           "risk:1",
@@ -972,21 +965,6 @@
         "project": "foundation",
         "rank": 1,
         "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 481,
-        "title": "Lineage DL-7: the lineage graph as a Mission Control view",
-        "labels": [
-          "agent-ready",
-          "risk:1",
-          "project:lineage"
-        ],
-        "blocking": [],
-        "project": "lineage",
-        "rank": 13,
-        "lane": "process",
         "pickable": true,
         "reason": null
       },
@@ -2633,21 +2611,6 @@
         "reason": "unshaped"
       },
       {
-        "number": 456,
-        "title": "Ratchet growth guard: a base config the rule-name scan reads only in part still lets one comment arm a real rule",
-        "labels": [
-          "bug",
-          "project:harness",
-          "risk:2"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": false,
-        "reason": "unshaped"
-      },
-      {
         "number": 462,
         "title": "Removing a junction in an imported document still loses the source→sink connection that ran through it",
         "labels": [
@@ -2660,6 +2623,24 @@
         "lane": "feature",
         "pickable": false,
         "reason": "unshaped"
+      },
+      {
+        "number": 469,
+        "title": "Lineage DL-4: harness integration — briefs, templates, the ledger's Id and Decision columns, pinned phrases",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:lineage"
+        ],
+        "blocking": [
+          471
+        ],
+        "project": "lineage",
+        "rank": 13,
+        "lane": "process",
+        "pickable": false,
+        "reason": "in-progress"
       },
       {
         "number": 471,
@@ -2706,22 +2687,6 @@
         "lane": "process",
         "pickable": false,
         "reason": "blocked:#476"
-      },
-      {
-        "number": 489,
-        "title": "The layer rules themselves are unguarded: an emptied .dependency-cruiser.cjs passes lint:layers and pr-hygiene never reads a config-only PR",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:2"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": false,
-        "reason": "in-progress"
       },
       {
         "number": 500,
@@ -2793,6 +2758,19 @@
         "lane": "feature",
         "pickable": false,
         "reason": "unshaped"
+      },
+      {
+        "number": 509,
+        "title": "Mission Control: the Overview's \"CI on main\" tile reads main's ci line from checks",
+        "labels": [
+          "project:mission-control"
+        ],
+        "blocking": [],
+        "project": "mission-control",
+        "rank": 14,
+        "lane": "process",
+        "pickable": false,
+        "reason": "unshaped"
       }
     ],
     "byProject": {
@@ -2838,9 +2816,9 @@
       ],
       "lineage": [
         468,
-        469,
         470,
         481,
+        469,
         471,
         502
       ],
@@ -2873,8 +2851,6 @@
         435,
         436,
         454,
-        456,
-        489,
         500,
         504,
         505
@@ -2886,7 +2862,8 @@
         479,
         480,
         477,
-        478
+        478,
+        509
       ],
       "spine": [
         175,
@@ -2970,6 +2947,32 @@
   "prs": {
     "open": [
       {
+        "number": 510,
+        "title": "feat(harness): Decision Lineage DL-4 — briefs, templates, ledger Id/Decision, pinned phrases",
+        "url": "https://github.com/mezivillager/hacer/pull/510",
+        "author": "mezivillager",
+        "labels": [
+          "risk:1",
+          "project:lineage"
+        ],
+        "headRefName": "feat/469-lineage-harness-integration",
+        "isDraft": false,
+        "createdAt": "2026-09-25T05:11:27Z",
+        "mergedAt": null,
+        "closes": [
+          469
+        ],
+        "verdicts": [
+          {
+            "verdict": "BLOCK",
+            "round": 1,
+            "model": "claude-sonnet-5 (Sonnet 5)",
+            "at": "2026-09-25T05:29:04Z",
+            "url": "https://github.com/mezivillager/hacer/pull/510#issuecomment-5827320625"
+          }
+        ]
+      },
+      {
         "number": 507,
         "title": "feat(checks): publish the required checks' summary lines where Mission Control reads them (MC-6)",
         "url": "https://github.com/mezivillager/hacer/pull/507",
@@ -2979,13 +2982,21 @@
           "project:mission-control"
         ],
         "headRefName": "feat/477-publish-check-summaries",
-        "isDraft": true,
+        "isDraft": false,
         "createdAt": "2026-09-25T04:48:25Z",
         "mergedAt": null,
         "closes": [
           477
         ],
-        "verdicts": []
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Claude Opus 5.5 (claude-opus-5-5[1m])",
+            "at": "2026-09-25T05:29:17Z",
+            "url": "https://github.com/mezivillager/hacer/pull/507#issuecomment-5827322969"
+          }
+        ]
       },
       {
         "number": 496,
@@ -3021,6 +3032,32 @@
       }
     ],
     "merged": [
+      {
+        "number": 508,
+        "title": "feat(harness): guard the layer rules themselves, not only their rows (#489)",
+        "url": "https://github.com/mezivillager/hacer/pull/508",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:2"
+        ],
+        "headRefName": "feat/489-guard-layer-rules",
+        "isDraft": false,
+        "createdAt": "2026-09-25T05:02:23Z",
+        "mergedAt": "2026-09-25T05:29:13Z",
+        "closes": [
+          489
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Claude Opus 5.5 (1M context), claude-opus-5-5[1m]",
+            "at": "2026-09-25T05:27:34Z",
+            "url": "https://github.com/mezivillager/hacer/pull/508#issuecomment-5827305706"
+          }
+        ]
+      },
       {
         "number": 503,
         "title": "feat(lineage): trace, radius, check, graph — and lint:lineage in warn mode (DL-2)",
@@ -3450,6 +3487,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/459",
         "author": "mezivillager",
         "labels": [
+          "released",
           "risk:2",
           "sev:high",
           "project:foundation"
@@ -4427,33 +4465,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/365#issuecomment-5786966345"
           }
         ]
-      },
-      {
-        "number": 362,
-        "title": "fix(hdl): give every producer of a slice-written signal a dependency edge",
-        "url": "https://github.com/mezivillager/hacer/pull/362",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:core",
-          "risk:1"
-        ],
-        "headRefName": "fix/355-multi-producer-signals",
-        "isDraft": false,
-        "createdAt": "2026-09-22T23:42:57Z",
-        "mergedAt": "2026-09-23T00:26:19Z",
-        "closes": [
-          355
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "claude-opus-5[1m] (Opus 5, 1M context)",
-            "at": "2026-09-22T23:59:43Z",
-            "url": "https://github.com/mezivillager/hacer/pull/362#issuecomment-5786492173"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4519,6 +4530,31 @@
         }
       },
       {
+        "number": 469,
+        "ref": "refs/heads/claim/469",
+        "sha": "1b012400aa3dbcaa5ef9977c97f8ee389351326a",
+        "state": "OPEN",
+        "title": "Lineage DL-4: harness integration — briefs, templates, the ledger's Id and Decision columns, pinned phrases",
+        "url": "https://github.com/mezivillager/hacer/issues/469",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:lineage"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "2026-09-25 process-sweep",
+          "branch": "feat/469-lineage-harness-integration",
+          "handoff": null,
+          "author": "mezivillager",
+          "at": "2026-09-25T05:07:08Z",
+          "url": "https://github.com/mezivillager/hacer/issues/469#issuecomment-5827117956"
+        }
+      },
+      {
         "number": 477,
         "ref": "refs/heads/claim/477",
         "sha": "adde0aac1b8881b1ab8e2af95a9beb3d6d497ca8",
@@ -4541,31 +4577,6 @@
           "author": "mezivillager",
           "at": "2026-09-25T04:23:00Z",
           "url": "https://github.com/mezivillager/hacer/issues/477#issuecomment-5826671572"
-        }
-      },
-      {
-        "number": 489,
-        "ref": "refs/heads/claim/489",
-        "sha": "005f81971256b72e9999ce196e4e1f413442c092",
-        "state": "OPEN",
-        "title": "The layer rules themselves are unguarded: an emptied .dependency-cruiser.cjs passes lint:layers and pr-hygiene never reads a config-only PR",
-        "url": "https://github.com/mezivillager/hacer/issues/489",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:2"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-09-25 process-sweep",
-          "branch": "feat/489-guard-layer-rules",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-09-25T04:12:18Z",
-          "url": "https://github.com/mezivillager/hacer/issues/489#issuecomment-5826565952"
         }
       }
     ],
@@ -5433,9 +5444,14 @@
     },
     "releases": [
       {
+        "tag": "v2.36.1",
+        "publishedAt": "2026-09-25T04:51:39Z",
+        "isLatest": true
+      },
+      {
         "tag": "v2.36.0",
         "publishedAt": "2026-09-25T04:26:40Z",
-        "isLatest": true
+        "isLatest": false
       },
       {
         "tag": "v2.35.0",
@@ -5856,7 +5872,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-23",
-        "merges": 23
+        "merges": 22
       },
       {
         "date": "2026-09-24",
@@ -5864,7 +5880,7 @@
       },
       {
         "date": "2026-09-25",
-        "merges": 5
+        "merges": 6
       }
     ]
   },
