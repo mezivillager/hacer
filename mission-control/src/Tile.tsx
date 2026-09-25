@@ -3,14 +3,9 @@ import { Freshness } from './Freshness'
 import type { Snapshot } from './snapshot'
 
 interface Props {
-  snapshot: Snapshot
-  section: string
-  title: string
-  /** What the tile summarises, on GitHub. */
-  href: string
-  /** [term, value] pairs; a null value leaves its row out. */
-  rows: [string, ReactNode][]
-  empty?: string
+  snapshot: Snapshot; section: string; title: string; empty?: string
+  href: string // what the tile summarises, on GitHub
+  rows: [string, ReactNode][] // [term, value] pairs; a null value leaves its row out
 }
 
 /** One Overview tile: its facts, or why there are none (never a zero it did not count), dated by its section. */
