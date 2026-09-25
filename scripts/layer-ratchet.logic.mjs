@@ -75,6 +75,11 @@ export function summarise(result, { suppressedGlobals = 0 } = {}) {
   }
 }
 
+/** Red stub (#489): the rules the baseline records rows under that the config does not declare. */
+export function undeclaredRules() {
+  return []
+}
+
 /** Sum the per-file, per-rule counts in an `eslint-suppressions.json`. Unreadable is zero, never a
  *  throw: the guard prefers a false negative to blocking on its own bookkeeping. */
 export function countSuppressions(text) {
