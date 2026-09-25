@@ -466,14 +466,191 @@ export function validateGraph({ nodes = [], edges = [], artefacts = [] }) {
   ].filter(Boolean).map((why) => `edge ${edge.from} ${edge.kind} ${edge.to}: ${why}`))]
 }
 
-// #468 — executable premises. Stubs until the green commit; the tests name the behaviour.
-export function matchesExpect() { throw new Error('not implemented') }
-export function commandDisposition() { throw new Error('not implemented') }
-export function classifyPremise() { throw new Error('not implemented') }
-export function downstream() { throw new Error('not implemented') }
-export function markPulls() { throw new Error('not implemented') }
-export function premisesFor() { throw new Error('not implemented') }
-export function verifyExitCode() { throw new Error('not implemented') }
-export function formatVerify() { throw new Error('not implemented') }
-export function expiryIssue() { throw new Error('not implemented') }
-export function planExpiryUpserts() { throw new Error('not implemented') }
+// `lineage verify` (#468). Pure: the CLI runs commands. Manual and a token-less `gh` premise are neither expired nor holding.
+
+const cmpVer = (a, b) => {
+  for (let i = 0; i < 3; i++) if (a[i] !== b[i]) return a[i] < b[i] ? -1 : 1
+  return 0
+}
+const parseVer = (raw) => {
+  const match = /^v?(\d+)(?:\.(\d+))?(?:\.(\d+))?$/.exec(raw)
+  return match ? [Number(match[1]), Number(match[2] ?? 0), Number(match[3] ?? 0)] : null
+}
+const tightenMin = (range, version, inclusive) => {
+  if (!range.min || cmpVer(version, range.min) > 0 || (cmpVer(version, range.min) === 0 && range.minInc && !inclusive)) {
+    Object.assign(range, { min: version, minInc: inclusive })
+  }
+}
+const tightenMax = (range, version, inclusive) => {
+  if (!range.max || cmpVer(version, range.max) < 0 || (cmpVer(version, range.max) === 0 && range.maxInc && !inclusive)) {
+    Object.assign(range, { max: version, maxInc: inclusive })
+  }
+}
+
+function parseComparatorRange(text) {
+  const parts = text.trim().split(/\s+/).filter(Boolean)
+  if (parts.length === 0) return null
+  const range = { min: null, minInc: false, max: null, maxInc: false }
+  for (const part of parts) {
+    const caret = /^\^(\d+(?:\.\d+){0,2})$/.exec(part)
+    const tilde = /^~(\d+(?:\.\d+){0,2})$/.exec(part)
+    const comp = /^(<=|>=|<|>|=)?(\d+(?:\.\d+){0,2})$/.exec(part)
+    if (caret) {
+      const version = parseVer(caret[1])
+      const [major, minor, patch] = version
+      const upper = major > 0 ? [major + 1, 0, 0] : minor > 0 ? [0, minor + 1, 0] : [0, 0, patch + 1]
+      tightenMin(range, version, true)
+      tightenMax(range, upper, false)
+    } else if (tilde) {
+      const version = parseVer(tilde[1])
+      const upper = tilde[1].split('.').length === 1 ? [version[0] + 1, 0, 0] : [version[0], version[1] + 1, 0]
+      tightenMin(range, version, true)
+      tightenMax(range, upper, false)
+    } else if (comp) {
+      const version = parseVer(comp[2])
+      if (!version) return null
+      const op = comp[1] ?? '='
+      if (op === '<') tightenMax(range, version, false)
+      else if (op === '<=') tightenMax(range, version, true)
+      else if (op === '>') tightenMin(range, version, false)
+      else if (op === '>=') tightenMin(range, version, true)
+      else { tightenMin(range, version, true); tightenMax(range, version, true) }
+    } else return null
+  }
+  return range
+}
+
+const satisfies = (version, range) => {
+  if (range.min && (cmpVer(version, range.min) < 0 || (cmpVer(version, range.min) === 0 && !range.minInc))) return false
+  if (range.max && (cmpVer(version, range.max) > 0 || (cmpVer(version, range.max) === 0 && !range.maxInc))) return false
+  return true
+}
+const inside = (sub, dom) => {
+  if (dom.min && (!sub.min || cmpVer(sub.min, dom.min) < 0 || (cmpVer(sub.min, dom.min) === 0 && sub.minInc && !dom.minInc))) return false
+  if (dom.max && (!sub.max || cmpVer(sub.max, dom.max) > 0 || (cmpVer(sub.max, dom.max) === 0 && sub.maxInc && !dom.maxInc))) return false
+  return true
+}
+const isSemverRange = (expect) => /[\^~<>=]/.test(expect) && parseComparatorRange(expect) !== null
+const semverHolds = (output, expect) => {
+  const want = parseComparatorRange(expect)
+  if (!want) return false
+  if (!/[\^~<>=]/.test(output)) {
+    const version = parseVer(output)
+    if (version) return satisfies(version, want)
+  }
+  const got = parseComparatorRange(output)
+  return Boolean(got) && inside(got, want)
+}
+
+export function matchesExpect(output, expect) {
+  const out = String(output ?? '').trim()
+  const exp = String(expect ?? '').trim()
+  if (out === exp) return true
+  const wrapped = /^\/(.+)\/([a-z]*)$/.exec(exp)
+  const pattern = wrapped ? { source: wrapped[1], flags: wrapped[2] } : (/^\^/.test(exp) && /\$$/.test(exp) ? { source: exp, flags: '' } : null)
+  if (pattern) {
+    try { return new RegExp(pattern.source, pattern.flags).test(out) } catch { return false }
+  }
+  return isSemverRange(exp) ? semverHolds(out, exp) : false
+}
+
+export function commandDisposition(verify, { token = false } = {}) {
+  const text = String(verify ?? '').trim()
+  if (/^manual\b/i.test(text)) return 'manual'
+  if (/\bgh\b/.test(text) && !token) return 'skipped'
+  return 'run'
+}
+
+export function classifyPremise(premise, run = {}) {
+  const base = { id: premise.id, title: premise.title }
+  if (commandDisposition(premise.verify, { token: true }) === 'manual') return { ...base, status: 'manual', reason: 'not an automatic command' }
+  if (run.skipped) return { ...base, status: 'skipped', reason: run.reason ?? 'no token' }
+  if (run.timedOut || run.error || run.code !== 0) {
+    const reason = run.timedOut ? 'timed out' : run.error ? String(run.error) : `exit ${run.code}`
+    return { ...base, status: 'unverifiable', reason }
+  }
+  const output = String(run.stdout ?? '')
+  const holds = matchesExpect(output, premise.expect ?? '')
+  return { ...base, status: holds ? 'holds' : 'expired', expect: premise.expect, output: output.trim() }
+}
+
+export function markPulls(graph, pullIds) {
+  const pulls = new Set(pullIds)
+  return { ...graph, artefacts: graph.artefacts.map((artefact) => (pulls.has(artefact.id) ? { ...artefact, type: 'pr' } : artefact)) }
+}
+
+const RESTS_ON = ['builds-on', 'assumes']
+const citeLabel = (item, fallback) => (item?.type === 'pr' ? `PR${item.id}` : item?.id ?? fallback)
+
+export function downstream(graph, id) {
+  const items = new Map([...graph.nodes, ...graph.artefacts].map((item) => [item.id, item]))
+  const incoming = (key) => graph.edges
+    .filter((edge) => edge.to === key && RESTS_ON.includes(edge.kind))
+    .sort((a, b) => RESTS_ON.indexOf(a.kind) - RESTS_ON.indexOf(b.kind) || byNumber(a.from, b.from))
+  const cites = (key) => graph.artefacts.filter((artefact) => artefact.citedBy?.includes(key)).sort((a, b) => byNumber(a.id, b.id))
+  const labels = []
+  const seen = new Set([id])
+  const push = (text) => { if (!labels.includes(text)) labels.push(text) }
+  const visit = (key) => {
+    if (seen.has(key)) return
+    seen.add(key)
+    push(citeLabel(items.get(key), key))
+    for (const artefact of cites(key)) push(citeLabel(artefact, artefact.id))
+    for (const edge of incoming(key)) visit(edge.from)
+  }
+  for (const edge of incoming(id)) visit(edge.from)
+  return labels
+}
+
+export function premisesFor(graph, issue) {
+  const id = String(issue).startsWith('#') ? String(issue) : `#${issue}`
+  const roots = new Set()
+  for (const artefact of graph.artefacts) if (artefact.id === id) for (const cited of artefact.citedBy ?? []) roots.add(cited)
+  for (const edge of graph.edges) if (edge.from === id && (edge.kind === 'introduced-by' || edge.kind === 'implements')) roots.add(edge.to)
+  const premises = new Set()
+  const seen = new Set()
+  const walk = (key) => {
+    if (!key || seen.has(key)) return
+    seen.add(key)
+    if (graph.nodes.some((node) => node.id === key && node.kind === 'premise')) premises.add(key)
+    for (const edge of graph.edges) if (edge.from === key && RESTS_ON.includes(edge.kind)) walk(edge.to)
+  }
+  for (const root of roots) walk(root)
+  return [...premises].sort(byNumber)
+}
+
+export const verifyExitCode = (rows, strict) => (strict && rows.some((row) => row.status === 'expired') ? 1 : 0)
+
+export function formatVerify(rows) {
+  const count = (status) => rows.filter((row) => row.status === status).length
+  const lines = rows.map((row) => {
+    const head = `${row.id} ${row.status.toUpperCase()} — ${row.title}`
+    if (row.status !== 'expired') return row.reason ? `${head} (${row.reason})` : head
+    const down = row.downstream?.length ? row.downstream.join(', ') : 'none'
+    return `${head}\n  expect: ${row.expect}\n  output: ${row.output}\n  downstream: ${down}`
+  })
+  lines.push(`VERIFY: ${count('holds')} holds · ${count('expired')} expired · ${count('unverifiable')} unverifiable · ${count('manual')} manual · ${count('skipped')} skipped`)
+  return `${lines.join('\n')}\n`
+}
+
+export function expiryIssue(premise, downstreamLabels) {
+  const body = [
+    `Premise ${premise.id} no longer holds.`,
+    '',
+    `Expect: \`${premise.expect}\``,
+    `Output: \`${premise.output}\``,
+    '',
+    'Downstream:',
+    ...(downstreamLabels.length ? downstreamLabels.map((item) => `- ${item}`) : ['- none']),
+  ].join('\n')
+  return { title: `Premise expired: ${premise.id} — ${premise.title}`, body, labels: ['project:lineage'] }
+}
+
+export function planExpiryUpserts(existing, issues) {
+  return issues.map((issue) => {
+    const open = existing.filter((item) => item.state !== 'closed' && item.title === issue.title)
+    return open.length === 0
+      ? { action: 'create', title: issue.title, body: issue.body, labels: issue.labels }
+      : { action: 'update', number: open[0].number, body: issue.body }
+  })
+}
