@@ -587,8 +587,8 @@ function ratchetGrowth({ body, ratchet }) {
       'fail',
       `this PR takes ${disarmed.map((entry) => `\`${entry.rule}\` (${why(entry)})`).join(', ')} out of ` +
         `\`${RATCHET_CONFIG_FILE}\`, and its merge base declares ${them} — the edges ${they} checked go unguarded, and a row ` +
-        `under a name no rule reports suppresses nothing. Restore ${them}; a rename passes only with all its rows moved to ` +
-        "the new name in the same PR. The scan reads only a literal `name: '…'`, so a name written any other way reads as taken out",
+        `under a name no rule reports suppresses nothing. Restore ${them} — or, for a rename, move all its rows to the new ` +
+        "name in the same PR, which warns as `swapped`. The scan reads only a literal `name: '…'`, so a name written any other way reads as taken out",
     )
   }
   if (status === 'unchanged') {
