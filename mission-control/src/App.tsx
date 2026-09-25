@@ -4,12 +4,11 @@ import { Process } from './Process'
 import { ProjectTasks } from './ProjectTasks'
 import { Projects } from './Projects'
 import { useRoute } from './route'
-import { REPO, loadSnapshot, when, type Snapshot } from './snapshot'
+import { REPO, isStale, loadSnapshot, when, type Snapshot } from './snapshot'
 
 /** Loads the snapshot once, then shows the view the hash names; a snapshot that will not load says why.
  *  `now` is injectable (default Date.now) so the freshness banner (#476) stays testable without a fake clock. */
 export function App({ load = loadSnapshot, now = Date.now }: { load?: () => Promise<Snapshot>; now?: () => number }) {
-  void now // wired into the freshness banner below once isStale (snapshot.ts) is implemented (#476)
   const [loaded, setLoaded] = useState<{ snapshot?: Snapshot; error?: string }>({})
   const route = useRoute()
   useEffect(() => {
@@ -26,6 +25,8 @@ export function App({ load = loadSnapshot, now = Date.now }: { load?: () => Prom
         <p>Snapshot {when(snapshot.generatedAt)} · <a href={`${REPO}/commit/${snapshot.head.sha}`} title={snapshot.head.subject}>
           {snapshot.head.sha.slice(0, 7)}</a></p>
       </header>
+      {isStale(snapshot.generatedAt, now()) &&
+        <p className="stale">{`Stale: snapshot is over 2 hours old — as of ${when(snapshot.generatedAt)}.`}</p>}
       {route.view === 'overview' && <Overview snapshot={snapshot} />}
       {route.view === 'projects' && <Projects snapshot={snapshot} />}
       {route.view === 'project' && <ProjectTasks snapshot={snapshot} slug={route.slug} />}

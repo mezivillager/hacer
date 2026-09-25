@@ -46,7 +46,7 @@ export const STALE_AFTER_MS = 2 * 60 * 60 * 1000
 
 /** Whether a snapshot's `generatedAt` is older than STALE_AFTER_MS as of `now` (injectable so App stays testable). */
 export function isStale(generatedAt: string, now: number): boolean {
-  throw new Error(`not implemented: ${generatedAt} ${now}`)
+  return now - new Date(generatedAt).getTime() > STALE_AFTER_MS
 }
 
 /** A row's next task exactly as `backlog.mjs ready` orders its picks (`pickRule.next`), and its place in that order. */
