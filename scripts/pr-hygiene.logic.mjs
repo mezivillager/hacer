@@ -138,14 +138,55 @@ function deletionWaiver({ reviewable }) {
 
 // ---------------------------------------------------------------- linked issue
 
+// A keyword followed by #n, owner/repo#n or an issue URL.
+const ISSUE_REF = String.raw`\s*:?\s*(?:https:\/\/github\.com\/[\w.-]+\/[\w.-]+\/issues\/|(?:[\w.-]+\/[\w.-]+)?#)(\d+)`
+const linkRe = (keywords) => new RegExp(String.raw`\b(?:${keywords})${ISSUE_REF}`, 'gi')
+
+/** GitHub's closing keywords. It acts on the keyword alone: "this does not close #n" closes #n (#443). */
+const CLOSING_KEYWORDS = 'fix|fixes|fixed|close|closes|closed|resolve|resolves|resolved'
+
 // GitHub's closing keywords plus "Part of", followed by #n, owner/repo#n or an issue URL.
-const LINK_RE =
-  /\b(?:fix|fixes|fixed|close|closes|closed|resolve|resolves|resolved|part of)\s*:?\s*(?:https:\/\/github\.com\/[\w.-]+\/[\w.-]+\/issues\/|(?:[\w.-]+\/[\w.-]+)?#)(\d+)/gi
+const LINK_RE = linkRe(`${CLOSING_KEYWORDS}|part of`)
+const CLOSING_RE = linkRe(CLOSING_KEYWORDS)
+const PART_OF_RE = linkRe('part of')
+
+/** Words that say an issue is done only in part, read on its closing keyword's own line (#485). */
+const IN_PART_RE = /\b(?:in part|partial(?:ly)?|partly|remaining)\b/gi
 
 /** Distinct issue numbers the body links, in order of first mention. */
 export function findLinkedIssues(body) {
   const numbers = Array.from((body ?? '').matchAll(LINK_RE), (m) => Number(m[1]))
   return [...new Set(numbers)]
+}
+
+/** Distinct issue numbers GitHub closes when the PR merges: its closing keywords', never `Part of`'s. */
+function findClosingIssues(body) {
+  return [...new Set(Array.from((body ?? '').matchAll(CLOSING_RE), (m) => Number(m[1])))]
+}
+
+/**
+ * Each issue a closing keyword closes while the body says it is done only in part (#485): `Part of`
+ * the same issue anywhere in the body, or an in-part word on the keyword's own line. Read across the
+ * whole body, those words misfired on 8 of the repo's 73 real bodies with a closing keyword; on the
+ * keyword's line, on none — and both real early closes still fail: #396's "Fixes #364 (in part …)",
+ * and #443's "Part of #193" beside a negated keyword that GitHub closed #193 on all the same.
+ * @returns {{issue:number, keyword:string, phrases:string[]}[]}
+ */
+function findPartialCloses(body) {
+  const text = body ?? ''
+  const partOf = Array.from(text.matchAll(PART_OF_RE), (m) => ({ issue: Number(m[1]), phrase: m[0] }))
+  const found = new Map()
+  for (const line of text.split('\n')) {
+    const words = Array.from(line.matchAll(IN_PART_RE), (m) => m[0])
+    for (const m of line.matchAll(CLOSING_RE)) {
+      const issue = Number(m[1])
+      const phrases = [...partOf.filter((p) => p.issue === issue).map((p) => p.phrase), ...words]
+      if (phrases.length === 0) continue
+      const seen = found.get(issue) ?? { issue, keyword: m[0], phrases: [] }
+      found.set(issue, { ...seen, phrases: [...new Set([...seen.phrases, ...phrases])] })
+    }
+  }
+  return [...found.values()]
 }
 
 /** True when there is at least one reviewable file and all of them are documentation. */
@@ -193,6 +234,18 @@ function linkedIssue({ body, author, labels, measures }) {
   const exemption = linkedIssueExemption({ author, labels })
   if (exemption) {
     return [{ rule: 'linked-issue', level: 'pass', message: `linked-issue rule skipped — ${exemption}` }]
+  }
+  // Ahead of the docs-only pass: that exemption waives the link, and a docs PR closes an issue all the same.
+  const partial = findPartialCloses(body)
+  if (partial.length > 0) {
+    return partial.map(({ issue, keyword, phrases }) => ({
+      rule: 'linked-issue',
+      level: 'fail',
+      message:
+        `\`${keyword}\` closes #${issue} on merge, yet the body says it is done only in part ` +
+        `(${phrases.map((phrase) => `"${phrase}"`).join(', ')}) — GitHub acts on the keyword alone, whatever the ` +
+        `sentence around it says. \`Fixes\` only when the whole issue is done; otherwise \`Part of #${issue}\``,
+    }))
   }
   const issues = findLinkedIssues(body)
   if (issues.length > 0) {
@@ -505,7 +558,7 @@ export const RULES = [sizeBudget, linkedIssue, ratchetGrowth, protectedPath]
 /**
  * Run every rule over one PR.
  * @param {{body:string|null, author?:string, labels:string[], files:object[], gitattributes?:string}} input
- * @returns {{verdict:'PASS'|'WARN'|'FAIL', findings:object[], measures:object, linkedIssues:number[], docsOnly:boolean, linkedIssueExemption:string|null}}
+ * @returns {{verdict:'PASS'|'WARN'|'FAIL', findings:object[], measures:object, linkedIssues:number[], closingIssues:number[], docsOnly:boolean, linkedIssueExemption:string|null}}
  */
 export function evaluate({ body, author, labels = [], files, gitattributes, ratchet = null }, rules = RULES) {
   const measures = measure(files, parseGeneratedPatterns(gitattributes))
@@ -521,6 +574,7 @@ export function evaluate({ body, author, labels = [], files, gitattributes, ratc
     findings,
     measures,
     linkedIssues: findLinkedIssues(body),
+    closingIssues: findClosingIssues(body),
     docsOnly: isDocsOnly(measures.reviewable.files.map((f) => f.filename)),
     linkedIssueExemption: linkedIssueExemption({ author, labels }),
     sizeExemption: deletion?.exempt ? deletion.reason : null,
@@ -544,12 +598,18 @@ function issueLabel(result) {
   return result.docsOnly ? 'docs-only' : 'none'
 }
 
+/** What the links do on merge — `fixes` closes an issue, `part-of` closes none (#485) — or nothing when none is linked. */
+function linkKind(result) {
+  if (result.linkedIssueExemption || result.linkedIssues.length === 0) return ''
+  return result.closingIssues.length > 0 ? ' linked=fixes' : ' linked=part-of'
+}
+
 /** One greppable `HYGIENE:` line, then a line per finding. */
 export function formatConsole(result) {
   const { reviewable, test, excluded } = result.measures
   const head =
     `HYGIENE: ${result.verdict} reviewable=${reviewable.lines} test=${test.lines} ` +
-    `excluded=${excluded.lines} files=${reviewable.files.length} issue=${issueLabel(result)}` +
+    `excluded=${excluded.lines} files=${reviewable.files.length} issue=${issueLabel(result)}${linkKind(result)}` +
     (result.sizeExemption ? ' size=deletion-only' : '') +
     (result.ratchet ? ` ratchet=${result.ratchet}` : '')
   return [head, ...result.findings.map((f) => `  ${ICONS[f.level]} ${f.message}`)].join('\n')
