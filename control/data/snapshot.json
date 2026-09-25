@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-25T04:25:50.489Z",
+  "generatedAt": "2026-09-25T04:50:25.146Z",
   "head": {
-    "sha": "1705e3b80cc3c3a18a491dae766083eff502fff3",
-    "date": "2026-09-25T07:24:38+03:00",
-    "subject": "fix(mission-control): keep a tile's terms on one line; long values wrap beneath (#473)"
+    "sha": "1b012400aa3dbcaa5ef9977c97f8ee389351326a",
+    "date": "2026-09-25T07:49:26+03:00",
+    "subject": "docs: point B-009 at PR #459 (#403)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-25T04:25:50.489Z",
+      "fetchedAt": "2026-09-25T04:50:25.146Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-25T04:25:50.489Z",
+      "fetchedAt": "2026-09-25T04:50:25.146Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-25T04:25:50.489Z",
+      "fetchedAt": "2026-09-25T04:50:25.146Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-25T04:25:50.489Z",
+      "fetchedAt": "2026-09-25T04:50:25.146Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-09-25T04:25:50.489Z",
+      "fetchedAt": "2026-09-25T04:50:25.146Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-09-25T04:25:50.489Z",
+      "fetchedAt": "2026-09-25T04:50:25.146Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-09-25T04:25:50.489Z",
+      "fetchedAt": "2026-09-25T04:50:25.146Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-09-25T04:25:50.489Z",
+      "fetchedAt": "2026-09-25T04:50:25.146Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-09-25T04:25:50.489Z",
+      "fetchedAt": "2026-09-25T04:50:25.146Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-09-25T04:25:50.489Z",
+      "fetchedAt": "2026-09-25T04:50:25.146Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-25T04:25:50.489Z",
+      "fetchedAt": "2026-09-25T04:50:25.146Z",
       "status": "ok"
     },
     "checks": {
       "source": "none",
-      "fetchedAt": "2026-09-25T04:25:50.489Z",
+      "fetchedAt": "2026-09-25T04:50:25.146Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-09-25T04:25:50.489Z",
+      "fetchedAt": "2026-09-25T04:50:25.146Z",
       "status": "ok"
     }
   },
@@ -82,7 +82,7 @@
         "epicNumber": 318,
         "open": 38,
         "ready": 12,
-        "inProgress": 2,
+        "inProgress": 1,
         "needsHuman": 0,
         "next": {
           "number": 193,
@@ -91,8 +91,8 @@
         "title": "Foundation audit: is the codebase structured for the autonomous loop? Measured audit, prioritized refactorings, fitness functions",
         "subIssues": {
           "completed": 12,
-          "percentCompleted": 37,
-          "total": 32
+          "percentCompleted": 36,
+          "total": 33
         }
       },
       {
@@ -100,7 +100,7 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 32,
+        "open": 33,
         "ready": 22,
         "inProgress": 1,
         "needsHuman": 0,
@@ -2536,22 +2536,6 @@
         "reason": "unshaped"
       },
       {
-        "number": 403,
-        "title": "removeJunction deletes valid user-drawn wires on gesture-written documents (trunk and branch share one `from`)",
-        "labels": [
-          "in-progress",
-          "risk:2",
-          "sev:high",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "in-progress"
-      },
-      {
         "number": 405,
         "title": "deserialize loads a gate record with no id as id: undefined",
         "labels": [
@@ -2780,6 +2764,35 @@
         "lane": "process",
         "pickable": false,
         "reason": "unshaped"
+      },
+      {
+        "number": 505,
+        "title": "Layer rules: a zero-row rule switched off while its name stays in the config text passes both guards",
+        "labels": [
+          "bug",
+          "project:harness",
+          "risk:2"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "unshaped"
+      },
+      {
+        "number": 506,
+        "title": "A gate drag whose re-route fails deletes the wire (pre-existing; found probing #459)",
+        "labels": [
+          "risk:2",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "unshaped"
       }
     ],
     "byProject": {
@@ -2820,8 +2833,8 @@
         389,
         395,
         400,
-        403,
-        462
+        462,
+        506
       ],
       "lineage": [
         468,
@@ -2863,7 +2876,8 @@
         456,
         489,
         500,
-        504
+        504,
+        505
       ],
       "mission-control": [
         474,
@@ -2956,6 +2970,24 @@
   "prs": {
     "open": [
       {
+        "number": 507,
+        "title": "feat(checks): publish the required checks' summary lines where Mission Control reads them (MC-6)",
+        "url": "https://github.com/mezivillager/hacer/pull/507",
+        "author": "mezivillager",
+        "labels": [
+          "risk:2",
+          "project:mission-control"
+        ],
+        "headRefName": "feat/477-publish-check-summaries",
+        "isDraft": true,
+        "createdAt": "2026-09-25T04:48:25Z",
+        "mergedAt": null,
+        "closes": [
+          477
+        ],
+        "verdicts": []
+      },
+      {
         "number": 496,
         "title": "chore(deps-dev): bump lint-staged from 16.4.0 to 17.5.1",
         "url": "https://github.com/mezivillager/hacer/pull/496",
@@ -2969,25 +3001,6 @@
         "createdAt": "2026-09-24T23:14:47Z",
         "mergedAt": null,
         "closes": [],
-        "verdicts": []
-      },
-      {
-        "number": 459,
-        "title": "fix(store): removeJunction deletes only the wires that would dangle (#403)",
-        "url": "https://github.com/mezivillager/hacer/pull/459",
-        "author": "mezivillager",
-        "labels": [
-          "risk:2",
-          "sev:high",
-          "project:foundation"
-        ],
-        "headRefName": "fix/403-remove-junction-keeps-standalone-wires",
-        "isDraft": false,
-        "createdAt": "2026-09-24T13:41:03Z",
-        "mergedAt": null,
-        "closes": [
-          403
-        ],
         "verdicts": []
       },
       {
@@ -3041,6 +3054,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/501",
         "author": "mezivillager",
         "labels": [
+          "released",
           "risk:1",
           "project:mission-control"
         ],
@@ -3427,6 +3441,33 @@
             "model": "Claude Opus 5.5 (1M context)",
             "at": "2026-09-24T22:33:38Z",
             "url": "https://github.com/mezivillager/hacer/pull/461#issuecomment-5823329202"
+          }
+        ]
+      },
+      {
+        "number": 459,
+        "title": "fix(store): removeJunction deletes only the wires that would dangle (#403)",
+        "url": "https://github.com/mezivillager/hacer/pull/459",
+        "author": "mezivillager",
+        "labels": [
+          "risk:2",
+          "sev:high",
+          "project:foundation"
+        ],
+        "headRefName": "fix/403-remove-junction-keeps-standalone-wires",
+        "isDraft": false,
+        "createdAt": "2026-09-24T13:41:03Z",
+        "mergedAt": "2026-09-25T04:49:27Z",
+        "closes": [
+          403
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus 5.5 (claude-opus-5-5[1m])",
+            "at": "2026-09-25T04:44:05Z",
+            "url": "https://github.com/mezivillager/hacer/pull/459#issuecomment-5826882785"
           }
         ]
       },
@@ -4413,34 +4454,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/362#issuecomment-5786492173"
           }
         ]
-      },
-      {
-        "number": 360,
-        "title": "Layer rules as a shrink-only ratchet, wired into lint (#329)",
-        "url": "https://github.com/mezivillager/hacer/pull/360",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:1",
-          "size-override",
-          "project:foundation"
-        ],
-        "headRefName": "feat/329-layer-ratchet",
-        "isDraft": false,
-        "createdAt": "2026-09-22T23:41:03Z",
-        "mergedAt": "2026-09-23T00:15:54Z",
-        "closes": [
-          329
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Opus 5 (claude-opus-5[1m])",
-            "at": "2026-09-23T00:09:53Z",
-            "url": "https://github.com/mezivillager/hacer/pull/360#issuecomment-5786620597"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4504,22 +4517,6 @@
           "at": "2026-09-23T23:15:56Z",
           "url": "https://github.com/mezivillager/hacer/issues/193#issuecomment-5804520928"
         }
-      },
-      {
-        "number": 403,
-        "ref": "refs/heads/claim/403",
-        "sha": "ab32182afbc3869b4a394075d7c88d9457f16e33",
-        "state": "OPEN",
-        "title": "removeJunction deletes valid user-drawn wires on gesture-written documents (trunk and branch share one `from`)",
-        "url": "https://github.com/mezivillager/hacer/issues/403",
-        "labels": [
-          "in-progress",
-          "risk:2",
-          "sev:high",
-          "project:foundation"
-        ],
-        "onClosedIssue": false,
-        "claim": null
       },
       {
         "number": 477,
@@ -5043,13 +5040,19 @@
         "whatWentWrong": "The `ratchet` guard, even after #432 round 3, still did not check its own input, and #432's round-3 reply claimed its residual was written in four places when the fourth, `.github/workflows/pr-hygiene.yml`, stated only the gate. The scan: `parseRuleNames` sees only a literal `name: '…'`, so a base `.dependency-cruiser.cjs` whose rules are built by a helper scans to **no** names, every head name reads as newly declared, and one row absorbed under the long-armed `engine-no-state` read `PASS ratchet=armed`. #438's red commit reproduced it, and one comment line in the head was enough",
         "shouldHaveBeenCaughtBy": "the verifier's step 6, which caught it (#432 round 3, nits 2 and 3). The four-places claim was written from prose and never checked against the file — the class #394 tracks",
         "mechanised": "yes — #438: when rows arrive and the config was edited, a config on either side that has text but scans to no rule names now reads `ratchet=unreadable`, which fails. A shrink never consults the scan, and a config that does not exist is not \"unread\". The residual is now in all four places, with the comment/string-literal fact and its reason (`knownViolations` matching is rule-name-sensitive), and each place was opened after editing. Still open: a base config the scan reads only **in part** lets one comment arm a real rule. Measured, filed as #456"
+      },
+      {
+        "date": "2026-09-24",
+        "whatWentWrong": "`removeJunction` deleted wires the user drew (B-009, #403), and its tests stayed green over it. #396's tests hand-wrote a shape no store action writes (branches whose `from` is the junction), which is the only shape its fix worked on. Two older tests pinned the loss outright: their wires were gesture-shaped (`input-a → gate-N`, two real endpoints each), and they asserted the extra wires were deleted. A third passed only because `wireIds` listed branches that started at `'j-placeholder'`, a junction that never existed. #396's verifier found it; the same kind of fixture had already overstated a fix on #365",
+        "shouldHaveBeenCaughtBy": "a test that builds a junction through the actions the app uses (`startWiringFromJunction` → `completeWiringFromJunction`) rather than hand-written endpoints or `wireIds`",
+        "mechanised": "partly — #403's guard tests drive the real gesture; nothing stops the next hand-written fixture. Second occurrence (#365, #396), so it is due a mechanism"
       }
     ],
     "byMechanised": {
       "no": 8,
       "yes": 42,
       "other": 1,
-      "partly": 3
+      "partly": 4
     }
   },
   "adrs": {
@@ -5430,9 +5433,14 @@
     },
     "releases": [
       {
+        "tag": "v2.36.0",
+        "publishedAt": "2026-09-25T04:26:40Z",
+        "isLatest": true
+      },
+      {
         "tag": "v2.35.0",
         "publishedAt": "2026-09-25T04:22:07Z",
-        "isLatest": true
+        "isLatest": false
       },
       {
         "tag": "v2.34.0",
@@ -5848,7 +5856,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-23",
-        "merges": 24
+        "merges": 23
       },
       {
         "date": "2026-09-24",
@@ -5856,7 +5864,7 @@
       },
       {
         "date": "2026-09-25",
-        "merges": 4
+        "merges": 5
       }
     ]
   },
