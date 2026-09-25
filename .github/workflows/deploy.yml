@@ -64,3 +64,8 @@ jobs:
           branch: gh-pages
           folder: mission-control/dist
           target-folder: control
+          # Protects control/history/ (#476) from this step's own clean (rsync --delete, scoped to
+          # target-folder): every push to main runs this step, and without the exclusion it would empty the
+          # hourly workflow's archive on the next app deploy.
+          clean-exclude: |
+            history

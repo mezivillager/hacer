@@ -1,0 +1,112 @@
+name: Mission Control
+
+# The hourly refresh (#476, MC-5): keeps the site (docs/harness/mission-control.md) never more than an hour old,
+# and archives every run to control/history/<generatedAt>.json so later charts have a series git cannot give.
+# collect -> build -> archive + prune -> deploy, all inside the shared gh-pages concurrency group deploy.yml and
+# pr-preview.yml already use, so pushes to gh-pages never race.
+
+on:
+  schedule:
+    # Not :00 — GitHub's own guidance is to avoid the top of the hour, when scheduled runs queue up and can be
+    # delayed or dropped; pr-preview.yml's sweep does the same for the same reason.
+    - cron: '7 * * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/**'
+      - 'scripts/**'
+      - 'mission-control/**'
+
+# contents:write pushes gh-pages (the site and the archive); issues:read and pull-requests:read are what
+# `gh issue list`/`gh pr list` (collect.mjs's SOURCES) need, measured directly from those calls. actions:read is
+# the issue's own stated minimum (#476's acceptance criteria) — granted as specified; nothing in collect.mjs today
+# reads the Actions API, so this PR could not find a call that exercises it.
+#
+# checks:read is new, and #476 asks this PR to measure it rather than carry it forward unmeasured. MC-6 (#477,
+# still open as this PR opens — rebased in if it lands first) adds a checkRuns source: one more `gh api graphql`
+# call, reading each head's statusCheckRollup CheckRun nodes and their annotations. GitHub's Checks API/GraphQL
+# surface is gated by its own `checks` permission, distinct from contents/issues/pull-requests/actions — fetched
+# live from docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#permissions: "Work with
+# check runs and check suites" is `checks`, listed separately from the others — and #507's own write-side probe
+# found POST /check-runs answers 403 without checks:write. That is this PR's measurement: documented and code-
+# level, not a live restricted-token run, since building this workflow is explicitly not running it (the
+# coordinator dispatches the first run after merge); an actual 200-vs-403 in Actions is what that run confirms.
+permissions:
+  contents: write
+  issues: read
+  pull-requests: read
+  actions: read
+  checks: read # gh api graphql (check runs) — collect.mjs's checkRuns source, once MC-6 (#477) is on main
+
+concurrency:
+  group: gh-pages
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # The collector's ratchet-history source needs full git log (mission-control.md: "needs fetch-depth 0").
+          fetch-depth: 0
+
+      - uses: actions/checkout@v7
+        with:
+          ref: gh-pages
+          path: gh-pages
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+
+      - uses: pnpm/action-setup@v6
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Collect
+        run: |
+          previous="$(ls -1 gh-pages/control/history/*.json 2>/dev/null | sort | tail -1)"
+          if [ -n "$previous" ]; then
+            node scripts/mission-control/collect.mjs --json --previous "$previous" > mission-control/public/data/snapshot.json
+          else
+            node scripts/mission-control/collect.mjs --json > mission-control/public/data/snapshot.json
+          fi
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Build the site
+        run: pnpm exec vite build --config mission-control/vite.config.ts
+        env:
+          BASE_PATH: /hacer/
+
+      - name: Archive the snapshot
+        run: |
+          mkdir -p gh-pages/control/history
+          generated_at="$(jq -r .generatedAt mission-control/public/data/snapshot.json)"
+          cp mission-control/public/data/snapshot.json "gh-pages/control/history/${generated_at}.json"
+          node scripts/mission-control/prune.mjs --dir gh-pages
+
+      - name: Commit the archive
+        run: |
+          git -C gh-pages config user.name "github-actions[bot]"
+          git -C gh-pages config user.email "github-actions[bot]@users.noreply.github.com"
+          git -C gh-pages add control/history
+          if git -C gh-pages diff --cached --quiet; then
+            echo "No archive changes to commit."
+          else
+            git -C gh-pages commit -m "chore(mission-control): archive the $(date -u +%Y-%m-%dT%H:%MZ) snapshot"
+            git -C gh-pages push
+          fi
+
+      - name: Deploy Mission Control
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: mission-control/dist
+          target-folder: control
+          # Protects control/history from this step's own clean (rsync --delete), scoped to target-folder — the
+          # same reason deploy.yml's "Deploy Mission Control" step needs it too (MC-2 builder's note, #476).
+          clean-exclude: |
+            history
