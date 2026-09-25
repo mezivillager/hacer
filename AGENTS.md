@@ -198,6 +198,7 @@ File: `.github/workflows/ci.yml`
 
 | Step | Command | What it catches |
 |------|---------|-----------------|
+| Peer ranges | `node scripts/peer-range.mjs` | An installed react, react-dom, three or @react-three/* package whose peer range excludes the version next to it (#455). `scripts/peer-range.mjs` |
 | Lint | `pnpm run lint` | TypeScript errors + ESLint violations |
 | Docs paths | `pnpm run lint:docs` | Machine-specific absolute paths in documentation |
 | Unit tests | `pnpm run test:run` | Failing Vitest tests |
@@ -237,6 +238,7 @@ They are not part of the definition of done.
 ### How to Read a CI Failure
 
 ```
+CI fails at "Peer ranges" → an installed React, R3F or three peer range excludes the version beside it. Run `node scripts/peer-range.mjs`.
 CI fails at "Lint"       → TypeScript error or ESLint violation. Run `pnpm run lint` locally.
 CI fails at "Unit tests" → A Vitest test failed. Run `pnpm run test:run` locally.
 CI fails at "Build"      → Compilation error. Run `pnpm run build` locally.

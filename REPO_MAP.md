@@ -194,6 +194,7 @@ tasks/                # Task management for AI agents
 scripts/
 ├── backlog.mjs          # `ready` / `projects` — the backlog over GitHub Issues, pick rule from docs/portfolio.md (ADR-0013)
 ├── blast-radius.mjs     # production importers and the reverse closure of seed files; the triage threshold is in blast-radius.logic.mjs (#333)
+├── peer-range.mjs       # CI: installed react / react-dom / three / @react-three/* peer ranges (#455)
 ├── check-doc-paths.mjs  # lint:docs — no absolute paths (all docs) + cited paths exist (REPO_MAP, AGENTS)
 ├── check-test-files.sh  # Pre-commit TDD verification script
 ├── hooks/               # Pure logic + tests behind the hooks (docPaths, docPathExists, docsSyncStop)
