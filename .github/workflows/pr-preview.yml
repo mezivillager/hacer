@@ -44,6 +44,21 @@ jobs:
           touch dist/.nojekyll
           cp dist/index.html dist/404.html
 
+      # Mission Control (#473): built into the preview's control/ when the PR touches the site or its collector.
+      - name: Build Mission Control
+        id: control
+        run: |
+          files="$(gh api "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" --paginate --jq '.[].filename')"
+          if grep -qE '^(scripts/)?mission-control/' <<< "$files"; then
+            [ "$(git rev-parse --is-shallow-repository)" = false ] || git fetch --unshallow --quiet
+            pnpm run build:control
+            cp -R mission-control/dist dist/control
+            echo "row=| Mission Control | https://${{ github.repository_owner }}.github.io${BASE_PATH}control/ |" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          BASE_PATH: /${{ github.event.repository.name }}/pr-preview/pr-${{ github.event.pull_request.number }}/
+          GH_TOKEN: ${{ github.token }}
+
       - name: Deploy preview
         uses: JamesIves/github-pages-deploy-action@v4
         with:
@@ -73,6 +88,7 @@ jobs:
             |------|------|
             | Preview URL | https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/pr-preview/pr-${{ github.event.pull_request.number }}/ |
             | Commit | ${{ github.event.pull_request.head.sha }} |
+            ${{ steps.control.outputs.row }}
 
             _Updated: ${{ github.event.pull_request.updated_at }}_
 
