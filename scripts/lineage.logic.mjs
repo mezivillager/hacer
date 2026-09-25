@@ -465,3 +465,15 @@ export function validateGraph({ nodes = [], edges = [], artefacts = [] }) {
     !known.has(edge.from) && `${edge.from} is neither a node nor an artefact`,
   ].filter(Boolean).map((why) => `edge ${edge.from} ${edge.kind} ${edge.to}: ${why}`))]
 }
+
+// #468 — executable premises. Stubs until the green commit; the tests name the behaviour.
+export function matchesExpect() { throw new Error('not implemented') }
+export function commandDisposition() { throw new Error('not implemented') }
+export function classifyPremise() { throw new Error('not implemented') }
+export function downstream() { throw new Error('not implemented') }
+export function markPulls() { throw new Error('not implemented') }
+export function premisesFor() { throw new Error('not implemented') }
+export function verifyExitCode() { throw new Error('not implemented') }
+export function formatVerify() { throw new Error('not implemented') }
+export function expiryIssue() { throw new Error('not implemented') }
+export function planExpiryUpserts() { throw new Error('not implemented') }

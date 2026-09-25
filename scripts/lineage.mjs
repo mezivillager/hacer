@@ -21,7 +21,7 @@ const [command, ...flags] = process.argv.slice(2)
 const rootFlag = flags.indexOf('--root')
 const root = rootFlag >= 0 ? path.resolve(flags[rootFlag + 1] ?? '.') : path.join(import.meta.dirname, '..')
 const has = (flag) => flags.includes(flag)
-const id = flags.find((flag, k) => !flag.startsWith('--') && flags[k - 1] !== '--root')
+const id = flags.find((flag, k) => !flag.startsWith('--') && flags[k - 1] !== '--root' && flags[k - 1] !== '--for')
 
 /** Every file a parser reads, repo-relative and sorted, with its text. */
 function readSources() {
@@ -81,6 +81,8 @@ if (command === 'parse') {
     report = lineage.check(lineage.parseLineage(readSources(), github), options)
   }
   console.log(has('--summary') ? lineage.formatSummary(report.summary) : lineage.formatCheck(report))
+} else if (command === 'verify') {
+  throw new Error('not implemented')
 } else if (command === 'graph' && (has('--json') || has('--mermaid'))) {
   const drawn = lineage.subgraph(graph, id)
   console.log(has('--json') ? JSON.stringify(drawn, null, 2) : lineage.toMermaid(drawn))
