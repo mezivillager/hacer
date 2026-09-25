@@ -68,7 +68,9 @@ ruling) are **errors**: `parse` lists each with its `file:line` and exits 1.
 **Both ends agree:** an ADR that another decision amends or supersedes says so too — `Amended by:`, or
 its Status. `check --fix` writes a missing end into the ADR; never into a ruling, which is append-only.
 
-- **Cut-over:** none yet — #469 records its merge date here; from that date, every ruling carries `Builds on:`
+- **Cut-over:** 2026-09-25 — #469's open date, recorded here as a stand-in for its merge date (this
+  builder does not watch CI or merge); if the PR merges on a later date, correct this line to match.
+  From this date, every ruling carries `Builds on:`
 
 `node scripts/lineage.mjs <command>` — each takes `--root <dir>`, and `--github` to read PR and issue bodies through `gh`:
 
