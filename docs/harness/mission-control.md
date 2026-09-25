@@ -8,9 +8,10 @@ projection (`docs/research/2026-09-24-mission-control/REPORT.md` §5) and holds 
 
 - `--json` prints the snapshot and one stderr line, `MISSION-CONTROL: VALID schema 1 · ok 13 · partial 0 · error 0`;
   without it, only the line. It exits 1 only when the snapshot fails schema v1, and then prints no snapshot.
-- GitHub is read with `gh` (`GH_TOKEN` or `GITHUB_TOKEN` when set, else gh's login): five calls, all GraphQL, six
-  requests while over 100 issues are open, no REST — 6–7 s on 2026-09-25. Without a token `gh` calls nothing, and the
-  GitHub sections go stale rather than fail the run. The ratchet's history needs a full clone (`fetch-depth: 0`).
+- GitHub is read with `gh` (`GH_TOKEN` or `GITHUB_TOKEN` when set, else gh's login): six calls, all GraphQL, seven
+  requests while over 100 issues are open, no REST — 7–8 s over three runs on 2026-09-25. Without a token `gh` calls
+  nothing, and the GitHub sections go stale rather than fail the run. The ratchet's history needs a full clone
+  (`fetch-depth: 0`). `checks` reads check runs: in a workflow, grant `checks: read` (unmeasured until MC-5 runs it).
 - The transforms are pure, in `collect.logic.mjs`, tested over recorded `gh` JSON in `scripts/fixtures/mission-control/`.
 
 ## Freshness, not failure
@@ -39,7 +40,8 @@ Each section has `freshness.<section>` = `{ source, fetchedAt, status, error? }`
 | `adrs` | `items[]`, `docs/decisions/NNNN-*.md`: `number`, `title`, and the `Status` line as written | the files |
 | `roadmap` | `lastUpdated` as the README states it; `phases[]` from its tables (`phase`, `status`, `scope`, `group`, `doc`) | `docs/roadmap/README.md` |
 | `metrics` | `ratchet`: the baseline's `count` and `byRule`, and `history[]` from `git log` of it (34 → 77 → 72 → 71 on 2026-09-24); `releases[]`; `mergesPerDay[]` over `prs.merged`, in UTC days, a day without merges absent | baseline, git; releases and PRs optional |
-| `checks` · `lineage` | `{ until, items: [] }` — **empty until MC-6** (the checks' `HYGIENE:` / `BROWSER-QA:` / `LAYER-RATCHET:` lines) and **until DL-7** (the decision graph) | — |
+| `checks` | `items[]`, per required check on main's head and on each open PR's: its newest run's `conclusion` and the line it published — `HYGIENE:`, `BROWSER-QA:`, `LAYER-RATCHET:` — with the line's `verdict` and `fields` (see *Checks*) | `gh api graphql`: the check runs' annotations |
+| `lineage` | `{ until, items: [] }` — **empty until DL-7** (the decision graph) | — |
 
 A verdict is a comment by an allowlisted author (`BACKLOG_ALLOWLIST`, as for `backlog.mjs`) headed as
 `verifier-brief.md` prescribes — `## Verifier verdict: PASS | BLOCK`, a `(round N, …)` or `(re-review of …)` qualifier
@@ -63,7 +65,33 @@ Every field, by section. `?` marks one that can be `null`; `[]` an array.
 - **`adrs.items[]`** — `number` · `file` · `title`? · `status`? (as written)
 - **`roadmap`** — `lastUpdated`? · `phases[]` {`phase`, `doc`?, `group` (the table's heading), and the table's other columns (today `status`, `scope`)}
 - **`metrics`** — `ratchet` {`count`, `byRule` {rule: count}, `history[]` {`sha`, `date`, `subject`, `count`}, oldest first} · `releases[]` {`tag`, `publishedAt`, `isLatest`}, newest first · `mergesPerDay[]` {`date`, `merges`}
-- **`checks`** · **`lineage`** — {`until`, `items[]`}
+- **`checks.items[]`** — `pr`? (`null` for main's head) · `sha` · `check` (`pr-hygiene` · `browser-qa` · `ci`) · `conclusion`? (`null` while it runs) · `completedAt`? · `url`? (the job) · `line`? (as published; `null` when that run published none: still running, run before MC-6, or stopped before printing it) · `verdict`? (`PASS` · `WARN` · `FAIL` · `SKIPPED`; the ratchet's is `FAIL` on a new violation) · `fields` (the line's `key=value` pairs, numbers as numbers; the ratchet's `known` and `new`)
+- **`lineage`** — {`until`, `items[]`}
+
+## Checks: where the summary lines are published (MC-6)
+
+The required checks print one line each, and until #477 it lived only in the Actions log, which needs a token to read.
+In Actions each check now also prints its line as a workflow command, `::notice title=<PREFIX>::<line>`, and writes it
+into the job summary (`publishLine` in `scripts/check-lines.logic.mjs`). The runner stores a notice as an annotation on
+the job's own check run, where GraphQL and the Checks API serve it; the REST endpoint answers even unauthenticated.
+`pr-hygiene` publishes `HYGIENE:`; `browser-qa` its last line, the skip or the verdict; `ci` the ratchet's
+`LAYER-RATCHET:` from inside `pnpm run lint`. The collector reads each head's status rollup and takes each check's
+newest run — the run `gh pr checks` shows. The rollup leaves out a `workflow_dispatch` re-check: that run publishes
+on itself, but it is not the PR's check, so it is not read (measured on #507, dispatch run 36095970389).
+
+Why a notice (measured 2026-09-25 by a throwaway run under pr-hygiene's own permissions, `contents: read` and
+`pull-requests: read`: run 36094881378):
+
+| Route | To write | To read |
+|---|---|---|
+| **Notice → annotation** (chosen) | nothing: it is stdout, so no permission and no step (the probe's notice became an annotation) | GraphQL, or the Checks API; public |
+| Check-run output via the Checks API | `checks: write` — the probe's POST answered 403; a fork PR's `pull_request` token is read-only anyway | the same |
+| Artifact `<check>.json` | an upload step (the probe's worked) | a token even on a public repo (401 without), a zip, and it expires |
+| Job summary alone | already written | no API |
+
+`pr-hygiene` runs main's copy of its script (`pull_request_target`), so a PR's `HYGIENE:` line reads `null` until
+MC-6 is on main — #507, which brought it, included. What stays in the log (and the job summary) only: the findings
+under `HYGIENE:`, the paths that made a PR critical, and the ratchet's `by rule` and `NEW` lines.
 
 ## Adding a section
 
