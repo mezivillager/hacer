@@ -14,6 +14,9 @@ projection (`docs/research/2026-09-24-mission-control/REPORT.md` §5) and holds 
   (`fetch-depth: 0`). `checks` needs no `checks` permission while the repo is public: #507's preview build collected
   it `ok`, annotations included, with a token that has none (`pr-preview.yml`, 2026-09-25).
 - The transforms are pure, in `collect.logic.mjs`, tested over recorded `gh` JSON in `scripts/fixtures/mission-control/`.
+- `--previous` is best-effort: a missing, empty or unparseable file (`parsePrevious`, `collect.logic.mjs`) reads as
+  "no previous" — every section fresh, nothing to fall back on — never a crash (#476; was an uncaught `SyntaxError`
+  on an empty or truncated file, latent until the hourly workflow started passing one every run).
 
 ## Freshness, not failure
 
@@ -107,10 +110,10 @@ under `HYGIENE:`, the paths that made a PR critical, and the ratchet's `by rule`
 
 ## The site: `/control/`
 
-[`/control/`](https://mezivillager.github.io/hacer/control/) renders the snapshot (#473). **Overview**: seven tiles, each from one section and dated by its `fetchedAt`. **Projects**: the portfolio with each epic's progress and "next" from `pickRule.next` (what `ready` picks, not `portfolio.projects[].next`); a row drills into its tasks, in `ready`'s order, at `#/projects/<slug>`. **Process** (`#/process`, #474): the loop `ready → claimed → building → PR → verifying → merged` as an inline SVG diagram (no diagram library), live counts defined straight from the snapshot — `ready` is `tasks.items` where `pickable`; `claimed` is `claims.items.length` (every open `claim/*` ref, whatever the issue's state); `building` is `tasks.items` where `reason` is `'in-progress'`; `PR` is `prs.open.length`; `verifying` splits those same open PRs by whether `verdicts` is empty (no verdict yet) or not (with a verdict); `merged` is `prs.merged` whose `mergedAt` falls in the 7 days before `generatedAt`. Each stage drills into its items, linked to GitHub. The claims table renders `claims.items` — already joined to issue state by the collector — with a ref `onClosedIssue` flagged; the cloud lane renders `cloudLane.items` (status, claim status, agent id), each linked to its issue. A section `partial` or `error` keeps its data under a stale banner; one never fetched says so rather than show zeros it did not count.
+[`/control/`](https://mezivillager.github.io/hacer/control/) renders the snapshot (#473). **Overview**: seven tiles, each from one section and dated by its `fetchedAt`. **Projects**: the portfolio with each epic's progress and "next" from `pickRule.next` (what `ready` picks, not `portfolio.projects[].next`); a row drills into its tasks, in `ready`'s order, at `#/projects/<slug>`. **Process** (`#/process`, #474): the loop `ready → claimed → building → PR → verifying → merged` as an inline SVG diagram (no diagram library), live counts defined straight from the snapshot — `ready` is `tasks.items` where `pickable`; `claimed` is `claims.items.length` (every open `claim/*` ref, whatever the issue's state); `building` is `tasks.items` where `reason` is `'in-progress'`; `PR` is `prs.open.length`; `verifying` splits those same open PRs by whether `verdicts` is empty (no verdict yet) or not (with a verdict); `merged` is `prs.merged` whose `mergedAt` falls in the 7 days before `generatedAt`. Each stage drills into its items, linked to GitHub. The claims table renders `claims.items` — already joined to issue state by the collector — with a ref `onClosedIssue` flagged; the cloud lane renders `cloudLane.items` (status, claim status, agent id), each linked to its issue. A section `partial` or `error` keeps its data under a stale banner; one never fetched says so rather than show zeros it did not count. A second, page-level banner (`isStale`, `snapshot.ts`) reads the whole snapshot's own age: past `STALE_AFTER_MS` (two hours — the hourly refresh's own slack for a missed run) it shows `Stale: snapshot is over 2 hours old`, independently of any section's freshness.
 
 - **Build** — `pnpm run build:control`: `collect.mjs --json` into `mission-control/public/data/snapshot.json` (git-ignored), then `vite build` of the second root `mission-control/` (`base`: `BASE_PATH` + `control/`). The page fetches `data/snapshot.json` from beside itself, so `/control/data/snapshot.json` is the one file people and agents read.
-- **Deploy** — `deploy.yml` builds it after the app and deploys it to `control/` on `gh-pages`, which the app's deploy leaves alone (`clean-exclude`). `pr-preview.yml` builds it into `pr-preview/pr-<n>/control/` when a PR touches `mission-control/**` or `scripts/mission-control/**`, and links it from the preview comment.
+- **Deploy** — `mission-control.yml` (#476) refreshes `control/` hourly, on `workflow_dispatch`, and on a push to `docs/**`, `scripts/**` or `mission-control/**`: collect (with `--previous` the newest archived snapshot) → build → archive → deploy, sharing the `gh-pages` concurrency group with `deploy.yml` and `pr-preview.yml` so pushes never race. `deploy.yml` also builds and deploys it, after the app, on every push to `main`; both leave the app's own files alone (`clean-exclude`) and, since #476, leave `control/history/` alone too (below). `pr-preview.yml` builds it into `pr-preview/pr-<n>/control/` when a PR touches `mission-control/**` or `scripts/mission-control/**`, and links it from the preview comment.
 - **Boundary** — it imports nothing from `src/`: `mission-control/imports.test.mjs` runs a dependency-cruiser rule over it, resolving as the app does. Plain CSS, plain React state, hand-rolled hash routes; no router or chart library (charts are MC-7).
 - **Tests** — `pnpm exec vitest run mission-control`, in the `jsdom` project, over `scripts/fixtures/mission-control/snapshot.json`: the real collector's output, kept valid v1 by `collect.logic.test.mjs`. The Overview's and Process's numbers are pinned against it, so a recaptured fixture means re-pinning them; the fixture's claims are all on open issues, so the flagged-claim case is shown on a copy of the fixture with one claim's issue state overridden closed.
 
@@ -119,3 +122,25 @@ keeps v1; renaming, removing or retyping one bumps `schemaVersion`, and a `--pre
 
 **Privacy.** Public data only, and no issue, PR or comment body is copied — only verdict and claim fields; the cloud
 inbox gives its table, never the meter readings under it. Usage meters, org ids and lane files are never read.
+
+## The history archive: `control/history/`
+
+Every `mission-control.yml` run appends the snapshot it just built to `control/history/<generatedAt>.json` on
+`gh-pages` — one file per run, named for the snapshot's own `generatedAt` (`Date#toISOString()`, so the names sort
+chronologically) — giving later work (charts, trend lines; MC-7) a series git history alone cannot give, since
+`gh-pages` is force-pushed history-free by the site deploys. The next run reads the newest of these as `--previous`,
+so a GitHub call that fails for one hour still shows that section's last-known data rather than going empty.
+
+A prune step keeps the last `KEEP_DAYS` (90) days: `planPrune` (`scripts/mission-control/prune.logic.mjs`, pure,
+unit-tested) decides, `prune.mjs` lists `control/history/` in the `gh-pages` checkout and removes what it names. Two
+invariants hold regardless of input — **the newest archived snapshot is never removed**, even when a long-idle
+workflow leaves every file on disk outside the window, so the archive is never emptied outright; and **a name that
+is not exactly one snapshot's own `<Date#toISOString()>.json` is never a removal candidate**, only ever kept, so the
+step can never reach outside what it recognises as its own.
+
+Both `deploy.yml`'s and `mission-control.yml`'s "Deploy Mission Control" steps carry `clean-exclude: history`: each
+deploys `mission-control/dist` to `target-folder: control`, and `github-pages-deploy-action`'s clean (`rsync
+--delete`) is scoped to that step's own transfer root — `control/`'s own contents when `target-folder` is set, the
+branch root when it is not (why the app's root-level step already protects the whole `control/` tree with its own
+`clean-exclude: control`, and why `history`, not `control/history`, is the right value on a `target-folder: control`
+step). Without it, the next ordinary push to `main` would delete the archive `mission-control.yml` had built.
