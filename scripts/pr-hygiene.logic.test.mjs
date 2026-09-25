@@ -665,6 +665,63 @@ describe('a closing keyword on a partial fix (#485)', () => {
 })
 
 
+// ── A keyword counts only where GitHub reads prose (#485, round 2) ────────────────────────────────
+//
+// The verifier measured two shapes where the rule and GitHub disagreed on real bodies outside this
+// repo. A line that *starts* with a one-line code span (```…```) is not a fence: CommonMark forbids a
+// backtick in a backtick fence's info string. A closing fence carries no info string, so ```diff
+// inside a fence does not end it. And an HTML comment is not prose. The fixtures are real bodies,
+// verbatim, with GitHub's own closingIssuesReferences:
+//   gh pr view <n> --repo <owner>/<repo> --json number,body,closingIssuesReferences
+
+const externalPr = (repo, number) =>
+  JSON.parse(
+    readFileSync(path.join(import.meta.dirname, 'fixtures', 'pr-hygiene', `${repo.replace('/', '-')}-${number}.json`), 'utf8'),
+  )
+
+describe('a keyword counts only where GitHub reads prose (#485, round 2)', () => {
+  it('closes what GitHub closed on four real bodies from other repos', () => {
+    for (const [repo, number] of [
+      ['kubernetes/kubernetes', 139623], // a line starting with a one-line ```…``` span, then a keyword GitHub closed on
+      ['vercel/next.js', 96350], // its only keyword sits inside a <!-- … --> template comment
+      ['kubernetes/kubernetes', 137025], // its only keyword sits inside a genuine fence
+      ['microsoft/vscode', 325145], // likewise, with a ```diff line inside that fence that does not end it
+    ]) {
+      const real = externalPr(repo, number)
+      expect(real.repo).toBe(repo)
+      expect(evaluate(pr({ body: real.body })).closingIssues, `${repo}#${number}`).toEqual(real.closingIssuesReferences)
+    }
+  })
+
+  it('passes a keyword GitHub would not close: one in an HTML comment, or in a fence that ```diff does not end', () => {
+    for (const body of [
+      '<!-- Fixes #12 --> Part of #12',
+      '<!-- Fixes #12 -->\nPart of #12 — slice 1 of 3.',
+      '<!--\nFixes #12 (in part)\n-->\nPart of #12',
+      'Part of #12\n\n```\n```diff\nFixes #12 (in part)\n```',
+      '```bind: invalid argument```\nPart of #12\n\n```\nFixes #12 (in part)\n```',
+    ]) {
+      const result = evaluate(pr({ body }))
+      expect(result.verdict, body).toBe('PASS')
+      expect(result.closingIssues, body).toEqual([])
+    }
+  })
+
+  it('still fails the #396 line after a one-line ```span```, and after a fence closed on a CRLF line', () => {
+    const line396 = 'Fixes #364 (in part — see **Scope**). Remaining data loss: #403.'
+    for (const body of [
+      `\`\`\`err\`\`\`\n${line396}\n\n\`\`\`\ncode\n\`\`\``,
+      `Part of #364\r\n\r\n\`\`\`\r\ncode\r\n\`\`\`\r\n${line396}`,
+    ]) {
+      const result = evaluate(pr({ body }))
+      expect(result.verdict, body).toBe('FAIL')
+      expect(result.closingIssues, body).toEqual([364])
+      expect(result.findings.find((f) => f.rule === 'linked-issue').message, body).toContain('"in part"')
+    }
+  })
+})
+
+
 // ── The ratchet growth guard (#406) ────────────────────────────────────────────────────────────
 //
 // `pnpm run lint:layers` refuses a new violation, but the documented `depcruise … --baseline`
