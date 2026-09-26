@@ -62,7 +62,7 @@ Waiting for status to be reported" and the PR is BLOCKED while every check *run*
 success; #511 and #486 merged only after a fresh-SHA re-push gave each workflow a single run
 (`evidence/2026-09-26-stuck-merge-box.md`). `gh pr checks --required` says `pass` on both stuck
 PRs, which is why the tool cannot see it. *Cost if unfixed:* one PR in three per workflow strands
-*(inferred from a 4-of-6 sample)*; each costs a force-push, which the coordinator's permission
+*(inferred; five PRs with the burst: two stuck, three clean, each explained by its newest suite)*; each costs a force-push, which the coordinator's permission
 classifier refused on 09-26, so #517 has waited 36 hours and #525 is waiting now.
 *Fix:* remove the `concurrency:` block from `.github/workflows/browser-qa.yml` and
 `pr-hygiene.yml` (or make the group unique per run), so no run is ever dropped and the newest suite
@@ -263,4 +263,9 @@ across 48 releases. **Not held:** "nobody has examined the flag" — examined he
 per-run token figures. From #525's "believed to work" list: 1, 3, 4, 5, 7 held on the traced
 sample; 2 (spikes) held by the record; 6 held with F4's caveat.
 
-**Live test of F1 on this report's own PR:** recorded below after the PR opened.
+**Live test of F1 on this report's own PR (#526):** opened 18:50:57Z, labelled 4 s later. Each
+required workflow got three runs, and the dropped one was the middle run for both (`browser-qa`
+success · cancelled · success; `PR Hygiene` success · cancelled · success), so the newest suite of
+each was green and the merge box read CLEAN at 18:53:44Z with no intervention. The prediction held
+in the clean direction as it did in the stuck one; the interim body-edit recovery was not needed
+and stays untested. Also observed at commit: husky's v9 deprecation warning (§5 of the brief, 11).
