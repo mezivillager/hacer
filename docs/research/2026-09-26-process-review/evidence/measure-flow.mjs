@@ -82,11 +82,21 @@ console.log(`VERDICTS (comments headed "## Verifier verdict:", the #492 contract
 console.log(`  PRs with a verdict ${verdicts.filter((p) => p.v.length).length} · without ${verdicts.filter((p) => !p.v.length).length}`)
 console.log(`  PASS ${all.filter((v) => v === 'PASS').length} · BLOCK ${all.filter((v) => v === 'BLOCK').length} · PRs blocked at least once ${blocked.length}`)
 console.log(`  blocked: ${blocked.map((p) => `#${p.number}`).join(' ')}`)
+// Which PRs merged without one, by what they touched: docs and Dependabot skip the verifier by design.
+const byNumber = new Map(merged.map((p) => [p.number, p]))
+const kindOf = (n) => (isBot(byNumber.get(n)) ? 'dependabot' : kind(byNumber.get(n).files.map((f) => f.path)))
+const bare = verdicts.filter((p) => !p.v.length && byNumber.has(p.number))
+console.log(`  without a verdict, by files touched: ${show(count(bare, (p) => kindOf(p.number)))}`)
+const CODE = new Set(['engine (src/core, src/simulation)', 'other src/', 'process tooling (scripts/, .github/)', 'mission-control app'])
+const bareCode = bare.filter((p) => CODE.has(kindOf(p.number))).map((p) => p.number).sort((a, b) => a - b)
+console.log(`  without a verdict and changing code: ${bareCode.map((n) => `#${n}`).join(' ')}`)
 
 // ---------------------------------------------------------------- issues
-const opened = json('issue', 'list', '-R', repo, '--state', 'all', '--search', `created:${range}`, '--limit', '2000', '--json', 'number')
+const opened = json('issue', 'list', '-R', repo, '--state', 'all', '--search', `created:${range}`, '--limit', '2000', '--json', 'number,createdAt')
 const closed = json('issue', 'list', '-R', repo, '--state', 'closed', '--search', `closed:${range}`, '--limit', '2000', '--json', 'number')
 const open = json('issue', 'list', '-R', repo, '--state', 'open', '--limit', '2000', '--json', 'number,labels')
 const has = (i, name) => i.labels.some((l) => l.name === name)
 console.log(`ISSUES ${range}: opened ${opened.length} · closed ${closed.length}`)
+// The first day is the backlog moving into GitHub Issues (ADR-0013), not steady-state filing.
+console.log(`  opened by day: ${count(opened, (i) => i.createdAt.slice(0, 10)).sort().map(([d, n]) => `${d.slice(5)} ${n}`).join(' · ')}`)
 console.log(`  open now: ${open.length} · agent-ready ${open.filter((i) => has(i, 'agent-ready')).length} · needs-human ${open.filter((i) => has(i, 'needs-human')).length} · idea ${open.filter((i) => has(i, 'idea')).length} · in-progress ${open.filter((i) => has(i, 'in-progress')).length}`)

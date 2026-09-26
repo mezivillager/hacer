@@ -10,5 +10,8 @@ VERDICTS (comments headed "## Verifier verdict:", the #492 contract; older forma
   PRs with a verdict 62 · without 63
   PASS 48 · BLOCK 20 · PRs blocked at least once 19
   blocked: #512 #510 #507 #499 #491 #490 #444 #432 #399 #396 #351 #320 #319 #312 #305 #294 #273 #248 #238
+  without a verdict, by files touched: docs only 32 · dependabot 12 · process tooling (scripts/, .github/) 10 · other non-src (config, .claude/, root docs) 8 · other src/ 1
+  without a verdict and changing code: #250 #285 #287 #288 #303 #306 #307 #442 #443 #445 #449
 ISSUES 2026-09-18..2026-09-25: opened 258 · closed 106
+  opened by day: 09-18 126 · 09-19 6 · 09-21 35 · 09-22 6 · 09-23 41 · 09-24 36 · 09-25 8
   open now: 152 · agent-ready 62 · needs-human 0 · idea 0 · in-progress 3
