@@ -217,12 +217,15 @@ The runs' end-of-run files are in their run directories, and their session recor
 
 - Every check is green, auto-merge is armed, and `gh pr merge` answers "the base branch policy
   prohibits the merge".
-- This is the third time (after #486 and #511).
-- The known fix re-pushes the same tree under a fresh SHA. That is a force-push, and the
-  coordinator's permission classifier refused it on 2026-09-26.
-- The ruleset's pull-request rule carries `require_extra_approval_for_unattributed_changes: true`.
-  Nobody has examined it as a cause. Under the same ruleset, this brief's own PR (#524) merged 2.5
-  minutes after it opened.
+- This is the third time (after #486 and #511). #525, this brief's own revision, stuck the same way
+  on 2026-09-26, making four. #524 merged 2.5 minutes after it opened, under the same ruleset.
+- The known fix re-pushes the same tree under a fresh SHA. For #517 that is a force-push, and the
+  coordinator's permission classifier refused it on 2026-09-26. #525 got a fresh head from the
+  ordinary commit that added these lines.
+- The ruleset's pull-request rule carries `require_extra_approval_for_unattributed_changes: true`,
+  which GitHub enables by default. Its documented trigger is a Copilot PR that is not attributed to
+  a person (GitHub Docs, "Available rules for rulesets"). That does not fit here: every stuck PR
+  was opened by the owner's account, with commits attributed to it. The cause is unknown.
 
 **Re-measure** with `node docs/research/2026-09-26-process-review/evidence/measure-flow.mjs`,
 `node scripts/mission-control/collect.mjs --json`, `node scripts/backlog.mjs projects`,
