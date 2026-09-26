@@ -198,3 +198,229 @@ remaining budget, so after the reset R712's 70% applies until he says otherwise 
 review, since "99% of the next week too" is a possible reading with a very different cost.
 Cost if wrong: one line from him either way; the expensive misreading (spending the whole next week)
 is the one avoided by default.
+
+
+## R721 — #490 round 2: the converter's title split and the CLI's exit flush were both real bugs
+Builds on: R713
+Amends: R713
+The verifier found four titles truncated at a `**` inside them (a glob or inner bold) and a
+`test:run` failure at `lineage.logic.test.mjs:243` — which was not the test's fault: `lineage.mjs`
+called `process.exit()` right after printing, and on a pipe Node truncates at ~64 KiB. Both fixed;
+the converter is now a file in the run directory (`import-rulings.py`) so a re-import is
+reproducible, and it refuses on a duplicate id instead of inventing one — which is how I found my
+own R714/R715/R718 colliding with the restatements' ids (renumbered to R718–R720).
+Cost if wrong: none left to find by the same method; the verifier re-reads.
+
+
+## R722 — Dependabot: three minors merge on green; the lint-staged major is held for a hook check
+Builds on: R608
+#493 (radix-ui 1.4.3 → 1.6.7), #494 (eslint-plugin-react-refresh), #495 (@rolldown/plugin-babel) go
+through `gh-merge-on-green` one at a time. #496 (lint-staged 16 → 17) is a major whose only consumer
+is the pre-commit hook — the one path CI never runs — so a green check proves nothing about it; held
+with the exact check to run written on the PR.
+Cost if wrong: a dev-dependency stays one major behind for a day. Cost of the opposite: every local
+commit in every worktree fails at the hook until someone notices which merge did it.
+
+
+## R723 — #491 merges on its round-2 PASS; the first sweep is run by dispatch and its result recorded
+Builds on: R719
+The round-2 verifier's residual — `gh` truthfully listing one PR open while `pr view` lies MERGED
+for it — needs GitHub to misreport a single PR while behaving normally otherwise; the ordinary
+failure (an empty or short list) is closed structurally. Accepted. The issue's acceptance includes
+"the first run is executed by `workflow_dispatch` after merge and its result recorded": the sweep
+writes only to `gh-pages`, the same branch `deploy.yml` rewrites on every merge, and the plan today
+is 28 removals of 33 folders with every open PR's folder kept — so the dispatch is inside the
+publishing grant, not a deploy of the product.
+Cost if wrong: a stale preview folder that should have stayed is gone; every open PR's folder is
+re-deployed by its own workflow on the next push anyway.
+
+
+## R724 — one more Opus item (#485) before the reset, against a ~97% meter and a 99% ceiling
+Builds on: R720
+The owner's instruction is literal ("until 99%"). #485 is process work with two real fixtures and a
+small surface. If the run hits the cap mid-build, the API pauses the agent; the retry hook wakes
+this session after the reset and the builder is re-dispatched from its branch — bounded by the
+reset itself, three hours away. #498 merges on PASS in the background; claim/460 released.
+Cost if wrong: a build interrupted at the cap and restarted after 03:00Z — one lost partial build.
+
+
+## R725 — #499's verification waits for the reset; the run sleeps in one-hour wakeups until 03:00Z
+Builds on: R724
+Assumes: P-006
+The last reading was 96% at 23:47Z; since then a Sonnet verification and an Opus build ran, and the
+browser extension is now disconnected so the meter cannot be read. #499's verifier is Opus
+(`risk:2`, a required check) — a cap hit mid-verification loses the whole read. So: no dispatch until
+03:00Z; `ScheduleWakeup` in one-hour steps; at the first wake after the reset, read the meter (if the
+browser is back), verify #499, then DL-2 (#467), MC-2 (#473), #489, MC-6 (#477), the owed #459
+verification, and the finish item, under the new week's 70% ceiling (R712) unless the owner says
+otherwise.
+Cost if wrong: two and a half hours in which one verification could have finished had the meter
+been lower than estimated; the estimate errs on the side of not wasting an Opus run.
+
+
+## R726 — the new week: meter 0% at 03:05Z (resets 2026-10-02); 70% ceiling stands until the owner says otherwise
+Builds on: R720, R712
+Assumes: P-006
+Last week's meter was 96% at 23:47Z and then took a Sonnet verification and an Opus build before the
+reset — so the run ended the week at or just under the owner's 99% with no cap hit (no retry-hook
+firings). This week: 70% (R712), re-read every ~3 hours or six agent completions. Dispatched at the
+reset: #499's verification (Opus, risk:2), DL-2 #467 (Opus), MC-2 #473 (Opus).
+Cost if wrong: the owner meant 99% again and says so in one line.
+
+
+## R727 — #499 round 2 inside `withoutCode`; the rule's Markdown model must equal GitHub's
+Builds on: R724
+The verifier proved the model wrong on two real bodies from other repos (a same-line triple-backtick
+span read as a fence; HTML comments not stripped) while confirming everything else — 0 disagreements
+in 242 of our own bodies, #443's failure correct, fenced blocks skipped by GitHub (kubernetes
+#137025, vscode #325145). A required check that parses Markdown must match GitHub on other repos'
+bodies too, since ours will eventually contain the same shapes. Round 2 with the four real bodies as
+fixtures; resumed with the builder's own context.
+Cost if wrong: a PR whose body hides a keyword in a comment is failed or passed differently from
+GitHub — the exact class this rule exists to remove.
+
+
+## R728 — #499 merges on its round-2 PASS; the six residual Markdown shapes and the link-form keyword are #504
+Builds on: R727
+The verifier matched the reader against GitHub's renderer on every edge case named and re-swept
+3,500 public bodies independently (3,443 agree; the 57 remainder are non-Markdown). Six shapes still
+disagree with zero occurrences in 3,744 bodies; `Fixes [#n](url)` is a pre-existing miss that can
+never produce a false FAIL. Filed as **#504** (`risk:2`, not urgent) rather than a third round.
+#489 dispatched into the freed slot (Opus, risk:2).
+Cost if wrong: a body in one of the six shapes is failed or passed differently from GitHub — none
+exists today, and #504 owns the fix.
+
+
+## R729 — DL-2 merges on PASS; the hand-typed forward links are a legitimate seed; #502 is cosmetic
+Builds on: R709
+The verifier reproduced the queries byte-identically, re-ran `--fix` to an empty diff against the
+shipped commit, and ruled that typing the forward links on ADR-0020/0016 by hand was the necessary
+seed: `check` compares fields, never invents a relation from prose (D-DL-2), which is exactly the
+ambiguity the Status regex now guards against. #502 (39 titles cut at the bolded clause) is
+cosmetic — a trailing clause lost, the claim intact — and two of its named cases are already whole;
+annotated, kept open, low priority. MC-6 (#477) dispatched into the freed slot.
+Cost if wrong: a truncated title misleads a reader once; the body below it is complete.
+
+
+## R730 — MC-2 merges on PASS; the owed #459 verification takes the freed slot
+Builds on: R709, R702
+#501's verifier reproduced the golden and no-`src/` tests by mutation, confirmed `dist/` byte-identical
+from a fresh worktree (its first comparison used a stale primary checkout — a 16 KB phantom it caught
+itself), exercised the stale-banner path on the live preview, and ruled `pickRule.next` the right
+source of "next". Two cosmetic nits. With the sweep's own items landed, the owed code verification
+(#459, engine, risk:2, Opus) is the last "coordinating queued code" item and goes now; #489 and
+MC-6 are building.
+Cost if wrong: an Opus verification spent on an engine PR the owner ranked below process work — it
+was owed from the previous run and is the last such item.
+
+
+## R731 — #459 merges on its third-attempt PASS; the drag-reroute deletion is #506; DL-4 dispatched
+Builds on: R730, R607
+The verifier tried every break-it case against `main` and the PR — feed wire, junction-to-junction,
+two junctions on one wire, a 16-bit bus, `applyJunctionRelocations` — and the PR beats `main` on each
+while creating no duplicate wires. R607's option 2 holds. Its saved probes found one pre-existing
+loss outside the PR (a gate drag whose re-route fails deletes the wire, `gateActions.ts:333-342`) →
+filed **#506** under the foundation epic, `risk:2`, with three options. The ledger conflict was a
+both-rows append; rebased and pushed. DL-4 (#469, Sonnet) takes the freed slot.
+Cost if wrong: a wire kept by option 2 overlaps its re-drawn twin — visible, deletable; the
+verifier found no path that renders or evaluates a duplicate wrongly.
+
+
+## R732 — #508 merges on PASS; #456 closes by hand; narrowing and `options.exclude` widen #505
+Builds on: R728
+Assumes: P-003
+The verifier reproduced every claimed reading, proved no execution at file:line, and found by
+attack that rule *narrowing* (any rule) and one `options.exclude` line still pass — territory #508
+never claimed, so #505 is widened rather than the PR blocked. #456 closes: all criteria met except
+the one #489 overrides by design. The retirement hatch is specified in #505, not built now. Nit 2
+(#507's `parseCheckLine` reading an `UNDECLARED` exit-1 run as PASS) went to #507's verifier as a
+possible BLOCK. MC-5 (#476, Sonnet) took the freed slot.
+Cost if wrong: a narrowed rule passes review unnoticed until #505 lands — the same exposure as
+before this PR, now written down in the issue that owns it.
+
+
+## R733 — #510's BLOCK was a rebase conflict; the coordinator resolved it and appended L055 → R607
+Builds on: R713
+The verifier confirmed every criterion and blocked only on `docs/harness/ledger.md` conflicting
+with `main`'s new four-column row from #459. A builder round for a mechanical conflict is waste; I
+rebased, converted that row to six columns as L055 with `Decision: R607` — the first ledger row
+whose decision is named at write time — and asked the verifier for a round-2 read of the rebase
+alone (mergeable; L055's cells; 55 artefacts / 5 edges; DoD).
+Cost if wrong: a coordinator edit to a ledger row lands with a typo that the verifier's diff would
+catch — and it re-reads before merge.
+
+
+## R734 — #507 round 2: the run's conclusion wins over the published line
+Builds on: R732
+The #508 verifier's nit became #507's blocker once tested: a `ci` run that failed on `UNDECLARED`
+still publishes a `… 0 new` line, and the collector read PASS. A status instrument that reports
+green for a failed required check is worse than none — the same shape as R518's "tool must state its
+premise" lesson, here "the tool must read the verdict, not the sentence". Round 2 resumed with the
+builder's own context; the fixture is the verifier's recorded failing run.
+Cost if wrong: none left in that direction — a disagreement between line and conclusion is now data.
+
+
+## R735 — MC-6 merges on its round-2 PASS; DL-5 takes the slot
+Builds on: R734
+The verifier reproduced its own failing case through the new rule (`FAIL`, `disagrees: true`), an
+unrelated failure and a time-out likewise, a cancelled run as CANCELLED, and `main`'s 2026-03-03
+failed run as FAIL where round 1 read null. Mission Control's `checks` section is now trustworthy in
+the one direction that matters. DL-5 (#470, Opus) — the correction plan — is the last kick-off task
+this run dispatches; MC-3 and MC-5 are building.
+Cost if wrong: none identified; the residual (log-only findings under HYGIENE) is documented.
+
+
+## R736 — MC-3 merges on PASS; its two nits are #513; MC-4 dispatched as the last kick-off build of the run
+Builds on: R735
+The verifier recomputed all six stage counts independently and found two presentation nits outside
+the acceptance (SVG labels shrink at 375 px; Verifying/PR drill into identical lists) → #513,
+`risk:0`, agent-ready. MC-4 (#475, Sonnet) is dispatched; after it and DL-5/MC-5 land, the run's
+kick-off phase stops — MC-7/MC-8/MC-9, DL-6 (two weeks after DL-4's cut-over) and DL-7 stay in the
+epics for the pick rule.
+Cost if wrong: one more Sonnet build near the natural end of the run; the meter is at ~10%.
+
+
+## R737 — the stuck merge box hit #511 (second occurrence); my R707a tool message had a shell bug
+Builds on: R707
+Amends: R707
+Two findings from one watcher log. (1) `#511` sat `BLOCKED` with everything green after a no-op
+`update-branch`, exactly as #486 did — the second occurrence, so by the ledger's rule it wants a
+mechanism, not advice: `gh-merge-on-green` should perform the fresh-SHA re-push itself when given a
+worktree, or the harness should stop calling `update-branch` when the head already contains `main`.
+Recorded for the session record and the next sweep; the manual re-push cleared it again. (2) The
+message I added in R707a put `update-branch` in backticks inside a double-quoted shell string, so the
+tool tried to run it as a command ("update-branch: command not found") — the same slip class as
+the 2026-09-24 `gh issue comment` backtick incident. Fixed; the remaining backticks in the file are
+in comments or single-quoted jq programs.
+Cost if wrong: a third stuck merge costs one more manual re-push.
+
+
+## R738 — MC-5 merges on its round-2 PASS; the first hourly run is dispatched and recorded
+Builds on: R723
+The round-1 BLOCK found a test file no project collected — the same class as #436 — and round 2
+closed it with a test that lists what vitest collects, so the class cannot recur silently. The
+workflow writes only to `gh-pages` (`control/` + `control/history/`), the branch `deploy.yml` already
+rewrites on every merge, inside the same concurrency group and clean-exclude — so the first dispatch
+is inside the publishing grant, as #491's was. No further builds this run (R736).
+Cost if wrong: an archive file written under the wrong name; the prune never touches anything but
+`<ISO>.json` under `history/`.
+
+
+## R739 — MC-4 merges on PASS; the case-only filename collision is the second occurrence → a lint issue
+Builds on: R736
+`timeline.ts`/`Timeline.tsx` after `process.ts`/`Process.tsx` the same day: on APFS the import can
+resolve to the wrong module while Linux CI passes — the exact "green in CI, broken on the owner's
+machine" shape. Ledger rule: mechanise on the second occurrence → filed with a fixture-first lint.
+Cost if wrong: a lint that fires on a legitimate pair — none exists in the tree today.
+
+
+## R740 — #514 round 2: `--file` must be resumable — reuse before create, record progress first
+Builds on: R735
+The verifier built a stub that fails the second `issue create` and showed a retry filing a duplicate
+root and orphaning the first — the guard was the ruling append, written last. A command that creates
+issues on the owner's public tracker must be idempotent under partial failure: look for existing
+correction issues for the root before creating any, write the plan record first and update it per
+issue, and prove with four stub scenarios that a retry converges and a second run creates nothing.
+The `epic` label check on the parent lookup rides along (one condition).
+Cost if wrong: a correction plan that is filed twice — visible, deletable, and the exact noise the
+tool exists to remove.
