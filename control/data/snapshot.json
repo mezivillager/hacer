@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-26T17:53:58.005Z",
+  "generatedAt": "2026-09-26T18:47:33.164Z",
   "head": {
-    "sha": "d1c307419a5fb68f97b5dbdff08251678f82363b",
-    "date": "2026-09-26T20:52:55+03:00",
-    "subject": "docs(research): process review brief — the autonomous flow, for a fresh-context review"
+    "sha": "88444c546164aa38f9d2940c72389f0f39df81da",
+    "date": "2026-09-26T21:46:39+03:00",
+    "subject": "docs(research): the stuck merge box, fourth time — and what the ruleset flag is not"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-26T17:53:58.005Z",
+      "fetchedAt": "2026-09-26T18:47:33.164Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-26T17:53:58.005Z",
+      "fetchedAt": "2026-09-26T18:47:33.164Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-26T17:53:58.005Z",
+      "fetchedAt": "2026-09-26T18:47:33.164Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-26T17:53:58.005Z",
+      "fetchedAt": "2026-09-26T18:47:33.164Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-09-26T17:53:58.005Z",
+      "fetchedAt": "2026-09-26T18:47:33.164Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-09-26T17:53:58.005Z",
+      "fetchedAt": "2026-09-26T18:47:33.164Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-09-26T17:53:58.005Z",
+      "fetchedAt": "2026-09-26T18:47:33.164Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-09-26T17:53:58.005Z",
+      "fetchedAt": "2026-09-26T18:47:33.164Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-09-26T17:53:58.005Z",
+      "fetchedAt": "2026-09-26T18:47:33.164Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-09-26T17:53:58.005Z",
+      "fetchedAt": "2026-09-26T18:47:33.164Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-26T17:53:58.005Z",
+      "fetchedAt": "2026-09-26T18:47:33.164Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-09-26T17:53:58.005Z",
+      "fetchedAt": "2026-09-26T18:47:33.164Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-09-26T17:53:58.005Z",
+      "fetchedAt": "2026-09-26T18:47:33.164Z",
       "status": "ok"
     }
   },
@@ -3019,6 +3019,22 @@
     ],
     "merged": [
       {
+        "number": 525,
+        "title": "docs(research): balance the process review brief",
+        "url": "https://github.com/mezivillager/hacer/pull/525",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/process-review-brief-balance",
+        "isDraft": false,
+        "createdAt": "2026-09-26T18:17:50Z",
+        "mergedAt": "2026-09-26T18:46:39Z",
+        "closes": [],
+        "verdicts": []
+      },
+      {
         "number": 524,
         "title": "docs(research): process review brief — the autonomous flow, for a fresh-context review",
         "url": "https://github.com/mezivillager/hacer/pull/524",
@@ -4420,40 +4436,13 @@
             "url": "https://github.com/mezivillager/hacer/pull/399#issuecomment-5789421744"
           }
         ]
-      },
-      {
-        "number": 398,
-        "title": "fix(hdl): key dependency edges by signal bits, not signal names",
-        "url": "https://github.com/mezivillager/hacer/pull/398",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:core",
-          "risk:1"
-        ],
-        "headRefName": "fix/363-per-bit-edges",
-        "isDraft": false,
-        "createdAt": "2026-09-23T03:06:22Z",
-        "mergedAt": "2026-09-23T03:22:17Z",
-        "closes": [
-          363
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Opus 5 (claude-opus-5[1m])",
-            "at": "2026-09-23T03:21:06Z",
-            "url": "https://github.com/mezivillager/hacer/pull/398#issuecomment-5788405911"
-          }
-        ]
       }
     ],
     "coverage": {
       "merged": 60,
-      "withVerdict": 34,
-      "withoutVerdict": 26,
-      "pass": 33,
+      "withVerdict": 33,
+      "withoutVerdict": 27,
+      "pass": 32,
       "block": 1
     }
   },
@@ -5999,7 +5988,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-23",
-        "merges": 14
+        "merges": 13
       },
       {
         "date": "2026-09-24",
@@ -6011,7 +6000,7 @@
       },
       {
         "date": "2026-09-26",
-        "merges": 1
+        "merges": 2
       }
     ]
   },
@@ -6019,11 +6008,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "d1c307419a5fb68f97b5dbdff08251678f82363b",
+        "sha": "88444c546164aa38f9d2940c72389f0f39df81da",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36260595801/job/108455515693",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36263742277/job/108464326163",
         "line": null,
         "verdict": null,
         "fields": {},
