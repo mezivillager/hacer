@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-26T16:17:35.700Z",
+  "generatedAt": "2026-09-26T17:53:58.005Z",
   "head": {
-    "sha": "60878a97df58c59620030262b807b7835021f6d1",
-    "date": "2026-09-25T18:01:08+03:00",
-    "subject": "docs(harness): cloud-queue inbox — #455 done, #468 handing off"
+    "sha": "d1c307419a5fb68f97b5dbdff08251678f82363b",
+    "date": "2026-09-26T20:52:55+03:00",
+    "subject": "docs(research): process review brief — the autonomous flow, for a fresh-context review"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-26T16:17:35.700Z",
+      "fetchedAt": "2026-09-26T17:53:58.005Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-26T16:17:35.700Z",
+      "fetchedAt": "2026-09-26T17:53:58.005Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-26T16:17:35.700Z",
+      "fetchedAt": "2026-09-26T17:53:58.005Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-26T16:17:35.700Z",
+      "fetchedAt": "2026-09-26T17:53:58.005Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-09-26T16:17:35.700Z",
+      "fetchedAt": "2026-09-26T17:53:58.005Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-09-26T16:17:35.700Z",
+      "fetchedAt": "2026-09-26T17:53:58.005Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-09-26T16:17:35.700Z",
+      "fetchedAt": "2026-09-26T17:53:58.005Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-09-26T16:17:35.700Z",
+      "fetchedAt": "2026-09-26T17:53:58.005Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-09-26T16:17:35.700Z",
+      "fetchedAt": "2026-09-26T17:53:58.005Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-09-26T16:17:35.700Z",
+      "fetchedAt": "2026-09-26T17:53:58.005Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-26T16:17:35.700Z",
+      "fetchedAt": "2026-09-26T17:53:58.005Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-09-26T16:17:35.700Z",
+      "fetchedAt": "2026-09-26T17:53:58.005Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-09-26T16:17:35.700Z",
+      "fetchedAt": "2026-09-26T17:53:58.005Z",
       "status": "ok"
     }
   },
@@ -3019,6 +3019,22 @@
     ],
     "merged": [
       {
+        "number": 524,
+        "title": "docs(research): process review brief — the autonomous flow, for a fresh-context review",
+        "url": "https://github.com/mezivillager/hacer/pull/524",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/process-review-brief",
+        "isDraft": false,
+        "createdAt": "2026-09-26T17:50:29Z",
+        "mergedAt": "2026-09-26T17:52:55Z",
+        "closes": [],
+        "verdicts": []
+      },
+      {
         "number": 523,
         "title": "docs(harness): cloud-queue inbox — #455 done, #468 handing off",
         "url": "https://github.com/mezivillager/hacer/pull/523",
@@ -4431,47 +4447,13 @@
             "url": "https://github.com/mezivillager/hacer/pull/398#issuecomment-5788405911"
           }
         ]
-      },
-      {
-        "number": 396,
-        "title": "fix(store): removeJunction keeps the feed wire, not wireIds[0]",
-        "url": "https://github.com/mezivillager/hacer/pull/396",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:1",
-          "project:foundation"
-        ],
-        "headRefName": "fix/364-remove-junction-trunk",
-        "isDraft": false,
-        "createdAt": "2026-09-23T02:59:15Z",
-        "mergedAt": "2026-09-23T03:55:10Z",
-        "closes": [
-          364
-        ],
-        "verdicts": [
-          {
-            "verdict": "BLOCK",
-            "round": 1,
-            "model": "Opus 5 (claude-opus-5[1m])",
-            "at": "2026-09-23T03:15:41Z",
-            "url": "https://github.com/mezivillager/hacer/pull/396#issuecomment-5788362457"
-          },
-          {
-            "verdict": "PASS",
-            "round": 2,
-            "model": "Opus 5 (claude-opus-5[1m])",
-            "at": "2026-09-23T03:45:02Z",
-            "url": "https://github.com/mezivillager/hacer/pull/396#issuecomment-5788603747"
-          }
-        ]
       }
     ],
     "coverage": {
       "merged": 60,
-      "withVerdict": 35,
-      "withoutVerdict": 25,
-      "pass": 34,
+      "withVerdict": 34,
+      "withoutVerdict": 26,
+      "pass": 33,
       "block": 1
     }
   },
@@ -6017,7 +5999,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-23",
-        "merges": 15
+        "merges": 14
       },
       {
         "date": "2026-09-24",
@@ -6026,6 +6008,10 @@
       {
         "date": "2026-09-25",
         "merges": 13
+      },
+      {
+        "date": "2026-09-26",
+        "merges": 1
       }
     ]
   },
@@ -6033,17 +6019,14 @@
     "items": [
       {
         "pr": null,
-        "sha": "60878a97df58c59620030262b807b7835021f6d1",
+        "sha": "d1c307419a5fb68f97b5dbdff08251678f82363b",
         "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-09-25T15:03:54Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36151369118/job/108125171243",
-        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 71,
-          "new": 0
-        },
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36260595801/job/108455515693",
+        "line": null,
+        "verdict": null,
+        "fields": {},
         "disagrees": false
       },
       {
