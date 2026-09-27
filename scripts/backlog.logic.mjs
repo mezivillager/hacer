@@ -225,3 +225,15 @@ export function formatProjects(summaries) {
   return summaries.map((s) => `${s.slug} · open ${s.open} · ready ${s.ready} · in-progress ${s.inProgress}` +
     ` · needs-human ${s.needsHuman} · next: ${nextLabel(s.next)}`).join('\n')
 }
+
+// Claims (#531) — red stubs; the green commit fills them in.
+export const STALE_CLAIM_HOURS = 48
+const notImplemented = () => {
+  throw new Error('not implemented')
+}
+export const latestClaim = notImplemented
+export const readClaims = notImplemented
+export const claimComment = notImplemented
+export const claimTaken = notImplemented
+export const releaseRefusal = notImplemented
+export const releaseComment = notImplemented

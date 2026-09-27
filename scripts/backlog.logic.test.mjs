@@ -6,10 +6,17 @@ import {
   DEFAULT_ALLOWLIST,
   DESIGN_FIRST_SLUGS,
   PICK_ROTATION,
+  STALE_CLAIM_HOURS,
+  claimComment,
+  claimTaken,
   formatProjects,
   formatReady,
+  latestClaim,
   parsePortfolio,
   planReady,
+  readClaims,
+  releaseComment,
+  releaseRefusal,
   summarizeProjects,
   triageTasks,
 } from './backlog.logic.mjs'
@@ -52,6 +59,23 @@ const open = (number, slug, { blocking = [], blockedBy = [], research = false } 
 const numbers = (tasks) => tasks.map((task) => task.number)
 const picks = (plan) => numbers(plan.filter((task) => task.reason === null))
 const reasonOf = (plan, number) => plan.find((task) => task.number === number).reason
+
+// #531: the claims are read from the recording Mission Control's tests use (scripts/fixtures/mission-control/, taken
+// 2026-09-25 at ~00:20 +03:00): `git ls-remote origin 'refs/heads/claim/*'`, the claimsQuery answer for those refs,
+// and `gh pr list --state open`. Nine refs: #403 and #438 have no claim comment, and an open PR carries #403, #438
+// and #482.
+const recordingText = (file) => readFileSync(path.join(import.meta.dirname, 'fixtures', 'mission-control', file), 'utf8')
+const recorded = {
+  lsRemote: recordingText('git-claim-refs.txt'),
+  answer: JSON.parse(recordingText('gh-claims.json')),
+  openPrs: JSON.parse(recordingText('gh-prs-open.json')),
+}
+const RECORDED_AT = '2026-09-25T00:30:00.000Z'
+
+/** A claim in readClaims' shape: held by claude-local, fresh, no open PR, unless overridden. */
+const held = (number, overrides = {}) =>
+  ({ number, claimedBy: 'claude-local', at: '2026-09-27T08:20:07Z', openPr: null, stale: false, ...overrides })
+const claimNote = (login, body, createdAt) => ({ author: { login }, body, createdAt, url: `https://example.test/${createdAt}` })
 
 describe('parsePortfolio', () => {
   it('reads every row of the live docs/portfolio.md in file order', () => {
@@ -100,6 +124,12 @@ describe('the rotation constants', () => {
 
   it('names the gate reason in docs/portfolio.md, so the output and the rule stay in step', () => {
     expect(livePortfolio).toContain('`foundation-gate`')
+  })
+
+  it('names the claim reasons and the stale-claim hours in docs/portfolio.md', () => {
+    expect(livePortfolio).toContain('`claimed`')
+    expect(livePortfolio).toContain('`stale-claim`')
+    expect(livePortfolio).toContain(`${STALE_CLAIM_HOURS} h`)
   })
 })
 
@@ -422,5 +452,197 @@ describe('formatProjects', () => {
     expect(lines[1]).toMatch(/^harness · open 6 · ready 2 · in-progress 1 · needs-human 1 · next: #148 Bootstrap the backlog/)
     expect(lines[3]).toMatch(/^pubdocs · open 1 · ready 1 · in-progress 0 · needs-human 0 · next: #263 docs\/public: HDL language reference/)
     expect(lines[7]).toBe('3d · open 0 · ready 0 · in-progress 0 · needs-human 0 · next: —')
+  })
+})
+
+// #531: a claim is the `claim/<n>` ref `backlog.mjs claim` creates exclusively; its holder is the `Claimed by` of the
+// issue's latest claim comment. FINDINGS F2 (2026-09-27): #193 held claim/193 without the `in-progress` label and was
+// the first row of `ready`.
+describe('latestClaim', () => {
+  it('reads the latest comment by an allowlisted author that opens with `Claimed by:`, field by field', () => {
+    const comments = [
+      claimNote('mezivillager', 'Claimed by: grok-bot\nIntent: building\nSession/run: bc-6de6', '2026-09-23T23:15:56Z'),
+      claimNote('mezivillager', 'Claimed by: claude-local   # taken back\nIntent: building\nHandoff: none', '2026-09-27T08:20:07Z'),
+      claimNote('mezivillager', 'Next time, claim with:\nClaimed by: someone', '2026-09-27T09:00:00Z'),
+      claimNote('outsider', 'Claimed by: outsider\nIntent: building', '2026-09-27T10:00:00Z'),
+    ]
+    expect(latestClaim(comments)).toEqual({
+      claimedBy: 'claude-local', intent: 'building', session: null, branch: null, handoff: 'none',
+      author: 'mezivillager', at: '2026-09-27T08:20:07Z', url: 'https://example.test/2026-09-27T08:20:07Z',
+    })
+    expect(latestClaim(comments, ['outsider'])).toMatchObject({ claimedBy: 'outsider', at: '2026-09-27T10:00:00Z' })
+    expect(latestClaim([])).toBeNull()
+  })
+})
+
+describe('readClaims', () => {
+  const byNumber = (claims) => new Map(claims.map((claim) => [claim.number, claim]))
+  const staleAt = (now, inputs = recorded) => numbers(readClaims({ ...inputs, now }).filter((claim) => claim.stale))
+
+  it('joins every recorded claim ref to its holder, its latest claim comment and the open PR that carries it', () => {
+    const claims = byNumber(readClaims({ ...recorded, now: RECORDED_AT }))
+    expect([...claims.keys()]).toEqual([182, 193, 195, 199, 333, 403, 427, 438, 482])
+    expect(claims.get(182)).toEqual({ number: 182, claimedBy: 'claude-local', at: '2026-09-24T13:57:40Z', openPr: null, stale: false })
+    expect(claims.get(193)).toEqual({ number: 193, claimedBy: 'grok-bot', at: '2026-09-23T23:15:56Z', openPr: null, stale: false })
+    expect(claims.get(403)).toEqual({ number: 403, claimedBy: null, at: null, openPr: 459, stale: false })
+    expect(claims.get(438)).toMatchObject({ claimedBy: null, openPr: 461, stale: false })
+    expect(claims.get(482)).toMatchObject({ claimedBy: 'claude-local', openPr: 486, stale: false })
+  })
+
+  it(`is stale ${STALE_CLAIM_HOURS} h after its latest claim comment, and only while no open PR carries the issue`, () => {
+    expect(staleAt(RECORDED_AT)).toEqual([])
+    // #193's claim comment is 2026-09-23T23:15:56Z: held at exactly 48 h, stale a millisecond later.
+    expect(staleAt('2026-09-25T23:15:56.000Z')).toEqual([])
+    expect(staleAt('2026-09-25T23:15:56.001Z')).toEqual([193])
+    // Two days on, every claim with no open PR is stale; the three an open PR carries are not.
+    expect(staleAt('2026-09-27T00:00:00.000Z')).toEqual([182, 193, 195, 199, 333, 427])
+  })
+
+  it('counts a claim with no claim comment as stale as soon as no open PR carries it', () => {
+    expect(staleAt(RECORDED_AT, { ...recorded, openPrs: [] })).toEqual([403, 438])
+  })
+
+  it('calls nothing stale without the comments or the open PRs to judge by: a failed read holds every claim', () => {
+    const later = '2026-09-27T00:00:00.000Z'
+    const unanswered = readClaims({ ...recorded, answer: null, now: later })
+    expect(unanswered.map(({ claimedBy, stale }) => [claimedBy, stale])).toEqual(Array(9).fill([null, false]))
+    expect(staleAt(later, { ...recorded, openPrs: null })).toEqual([])
+    expect(readClaims({ lsRemote: '', answer: null, openPrs: null, now: later })).toEqual([])
+  })
+
+  it('an open PR carries #n when it closes #n or its branch is <type>/<n>-…, not when a number merely starts with n', () => {
+    const lsRemote = `${'a'.repeat(40)}\trefs/heads/claim/193\n`
+    const answer = { data: { repository: { i193: { number: 193, comments: { nodes: [] } } } } }
+    const carrier = (pr) => readClaims({ lsRemote, answer, openPrs: [pr], now: RECORDED_AT })[0].openPr
+    expect(carrier({ number: 1, headRefName: 'feat/193-vectors-02', closingIssuesReferences: [] })).toBe(1)
+    expect(carrier({ number: 2, headRefName: 'docs/other-work', closingIssuesReferences: [{ number: 193 }] })).toBe(2)
+    expect(carrier({ number: 3, headRefName: 'feat/1930-other', closingIssuesReferences: [{ number: 19 }] })).toBeNull()
+  })
+})
+
+describe('claims in ready and projects', () => {
+  it('an open claim ref makes a task unpickable with reason `claimed`, label or no label', () => {
+    const issues = [open(1, 'foundation'), issue(2, { labels: ['agent-ready', 'in-progress', 'project:foundation'] }), open(3, 'foundation')]
+    const plan = planReady(issues, portfolioRows, DEFAULT_ALLOWLIST, [held(1), held(2)])
+    expect(picks(plan)).toEqual([3])
+    expect(plan.find((task) => task.number === 1)).toMatchObject({ pickable: false, reason: 'claimed' })
+    expect(reasonOf(plan, 2)).toBe('claimed')
+    expect(picks(planReady(issues, portfolioRows))).toEqual([1, 3]) // without the claims, #1 is picked
+  })
+
+  it('a stale claim reads `stale-claim`, and a claim wins over every other reason', () => {
+    const issues = [
+      open(1, 'spine'), issue(2, { labels: ['agent-ready', 'needs-human', 'project:spine'] }),
+      issue(3, { author: 'outsider', labels: ['agent-ready', 'project:spine'] }), open(4, 'spine', { blockedBy: [9] }),
+      issue(5, { labels: ['agent-ready', 'project:spine', 'risk:2'] }),
+    ]
+    const claims = [held(1, { stale: true }), held(2, { stale: true }), held(3), held(4), held(5), held(99)]
+    const plan = planReady(issues, portfolioRows, DEFAULT_ALLOWLIST, claims)
+    expect([1, 2, 3, 4, 5].map((number) => reasonOf(plan, number)))
+      .toEqual(['stale-claim', 'stale-claim', 'claimed', 'claimed', 'claimed'])
+    expect(numbers(plan)).toEqual([1, 2, 3, 4, 5]) // a claim on an issue not in the list (closed, say) changes nothing
+    expect(numbers(triageTasks(issues, portfolioRows, DEFAULT_ALLOWLIST, claims).filter((task) => task.pickable))).toEqual([])
+  })
+
+  it('prints the claim reasons in `ready` like any other', () => {
+    const plan = planReady([open(1, 'spine'), open(2, 'spine')], portfolioRows, DEFAULT_ALLOWLIST, [held(1), held(2, { stale: true })])
+    expect(formatReady(plan).split('\n')).toEqual(['#1 · spine · Task 1 · claimed', '#2 · spine · Task 2 · stale-claim'])
+  })
+
+  it('names each row’s stale claims in `projects`; a row without one prints as before', () => {
+    const issues = [open(1, 'harness'), open(2, 'harness'), open(3, 'spine')]
+    const summaries = summarizeProjects(issues, portfolioRows, DEFAULT_ALLOWLIST, [held(1, { stale: true }), held(2)])
+    expect(summaries.find((row) => row.slug === 'harness')).toMatchObject({ open: 2, ready: 0, staleClaims: [1], next: null })
+    expect(summaries.find((row) => row.slug === 'spine')).toMatchObject({ open: 1, ready: 1, staleClaims: [] })
+    const lines = formatProjects(summaries).split('\n')
+    expect(lines[1]).toBe('harness · open 2 · ready 0 · in-progress 0 · needs-human 0 · stale-claim #1 · next: —')
+    expect(lines.find((line) => line.startsWith('spine ·'))).toBe('spine · open 1 · ready 1 · in-progress 0 · needs-human 0 · next: #3 Task 3')
+  })
+})
+
+describe('the claim and release commands', () => {
+  const live = held(531)
+  const stale = held(193, { claimedBy: 'grok-bot', at: '2026-09-23T23:15:56Z', stale: true })
+  const unsigned = held(403, { claimedBy: null, at: null, stale: true })
+
+  it('writes the claim comment the handoff convention asks for, which latestClaim reads back', () => {
+    const body = claimComment({ by: 'claude-local', session: '2026-09-27 review-followups', branch: 'feat/531-exclusive-claims' })
+    expect(body).toBe([
+      'Claimed by: claude-local', 'Intent: building', 'Session/run: 2026-09-27 review-followups',
+      'Branch: feat/531-exclusive-claims', 'Handoff: none',
+    ].join('\n'))
+    expect(latestClaim([claimNote('mezivillager', body, '2026-09-27T09:00:00Z')])).toMatchObject({
+      claimedBy: 'claude-local', intent: 'building', session: '2026-09-27 review-followups',
+      branch: 'feat/531-exclusive-claims', handoff: 'none',
+    })
+    expect(claimComment({ by: 'grok-bot', intent: 'paused:metering', handoff: 'docs/harness/sessions/cloud-queue-inbox.md' }))
+      .toBe('Claimed by: grok-bot\nIntent: paused:metering\nHandoff: docs/harness/sessions/cloud-queue-inbox.md')
+  })
+
+  it('refuses a holder id that is not one word, and a field that would spill onto a second line', () => {
+    expect(() => claimComment({ by: '' })).toThrow(/--by/)
+    expect(() => claimComment({ by: 'claude local' })).toThrow(/--by/)
+    expect(() => claimComment({ by: 'claude-local', branch: 'feat/1-x\nClaimed by: grok-bot' })).toThrow(/one line/)
+  })
+
+  it('tells a second claimant who holds the claim, and how a stale one is freed', () => {
+    expect(claimTaken(live)).toMatch(/^claim\/531 is taken; holder: claude-local \(claimed 2026-09-27T08:20:07Z\)$/)
+    expect(claimTaken(stale)).toMatch(/grok-bot.*stale.*--force-stale/)
+    expect(claimTaken(unsigned)).toMatch(/no claim comment/)
+  })
+
+  it('lets the holder release, stale or not, and refuses anyone else by naming the holder', () => {
+    expect(releaseRefusal(live, { by: 'claude-local' })).toBeNull()
+    expect(releaseRefusal({ ...live, stale: true }, { by: 'claude-local' })).toBeNull()
+    expect(releaseRefusal(live, { by: 'grok-bot' })).toMatch(/holder is claude-local .*not grok-bot/)
+    expect(releaseRefusal(live, { by: 'grok-bot' })).not.toMatch(/--force-stale/)
+    expect(releaseRefusal({ ...live, openPr: 540 }, { by: 'grok-bot', forceStale: true })).toMatch(/not stale.*open PR #540/)
+  })
+
+  it('--force-stale releases a stale claim, even one no claim comment names, and nothing else', () => {
+    expect(releaseRefusal(stale, { by: 'claude-local' })).toMatch(/--force-stale/)
+    expect(releaseRefusal(stale, { by: 'claude-local', forceStale: true })).toBeNull()
+    expect(releaseRefusal(unsigned, { by: 'claude-local' })).toMatch(/--force-stale/)
+    expect(releaseRefusal(unsigned, { by: 'claude-local', forceStale: true })).toBeNull()
+    expect(releaseRefusal(live, { by: 'grok-bot', forceStale: true })).toMatch(/not stale/)
+  })
+
+  it('comments only when it frees another holder’s stale claim, saying whose, by whom and why', () => {
+    expect(releaseComment(live, { by: 'claude-local' })).toBeNull()
+    const body = releaseComment(stale, { by: 'claude-local', reason: 'no PR since the Project 1 slice' })
+    expect(body).toMatch(/claim\/193/)
+    expect(body).toMatch(/grok-bot/)
+    expect(body).toMatch(/claude-local/)
+    expect(body).toMatch(/no PR since the Project 1 slice/)
+    expect(body).not.toMatch(/^\s*Claimed by:/) // never read back as a claim
+    expect(releaseComment(unsigned, { by: 'claude-local' })).toMatch(/no claim comment/)
+  })
+})
+
+describe('the claim docs', () => {
+  const doc = (file) => readFileSync(path.join(import.meta.dirname, '..', file), 'utf8')
+
+  it.each([
+    '.claude/skills/ha-next/SKILL.md',
+    'docs/harness/implementer-brief.md',
+    'docs/harness/sessions/COORDINATOR-HANDOFF.md',
+  ])('%s claims with backlog.mjs, states the stale-claim hours, and never pushes or deletes a claim ref by hand', (file) => {
+    const text = doc(file)
+    expect(text).toContain('node scripts/backlog.mjs claim <n> --by')
+    expect(text).toContain(`${STALE_CLAIM_HOURS} h`)
+    expect(text).not.toMatch(/git push origin \S+:refs\/heads\/claim/)
+    expect(text).not.toMatch(/git push origin --delete claim/)
+  })
+
+  it('the builder agent claims with backlog.mjs too, not by pushing the ref', () => {
+    const text = doc('.claude/agents/hacer-builder.md')
+    expect(text).toContain('node scripts/backlog.mjs claim <n> --by')
+    expect(text).not.toMatch(/git push origin \S+:refs\/heads\/claim/)
+  })
+
+  it('releases with backlog.mjs where the docs release a claim', () => {
+    for (const file of ['.claude/skills/ha-next/SKILL.md', 'docs/harness/sessions/COORDINATOR-HANDOFF.md']) {
+      expect(doc(file)).toContain('node scripts/backlog.mjs release <n> --by')
+    }
   })
 })

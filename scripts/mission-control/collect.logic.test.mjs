@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { AUX_ROTATION, PICK_ROTATION, parsePortfolio, planReady, summarizeProjects } from '../backlog.logic.mjs'
+import { AUX_ROTATION, PICK_ROTATION, parsePortfolio, planReady, readClaims, summarizeProjects } from '../backlog.logic.mjs'
 import { SCHEMA_VERSION, buildSnapshot, checksQuery, claimsQuery, parsePrevious, report, validateSnapshot } from './collect.logic.mjs'
 
 // scripts/fixtures/mission-control/ holds recordings of the collector's own calls, taken 2026-09-25 at
@@ -73,12 +73,15 @@ describe('collect.logic', () => {
   it('builds the portfolio section by calling backlog.logic.mjs (projects + ready) — no second pick rule', () => {
     const issues = fixture('gh-issues.json')
     const rows = parsePortfolio(fixtureText('portfolio.md'))
-    const plan = planReady(issues, rows)
+    const claims = readClaims({
+      lsRemote: fixtureText('git-claim-refs.txt'), answer: fixture('gh-claims.json'), openPrs: fixture('gh-prs-open.json'), now: NOW,
+    })
+    const plan = planReady(issues, rows, undefined, claims)
     const snapshot = build()
 
-    const summaries = snapshot.portfolio.projects.map(({ slug, epicNumber, open, ready, inProgress, needsHuman, next }) =>
-      ({ slug, epicNumber, open, ready, inProgress, needsHuman, next }))
-    expect(summaries).toEqual(summarizeProjects(issues, rows))
+    const summaries = snapshot.portfolio.projects.map(({ slug, epicNumber, open, ready, inProgress, needsHuman, staleClaims, next }) =>
+      ({ slug, epicNumber, open, ready, inProgress, needsHuman, staleClaims, next }))
+    expect(summaries).toEqual(summarizeProjects(issues, rows, undefined, claims))
     expect(snapshot.portfolio.projects.map(({ rank, lane }) => ({ rank, lane }))).toEqual(rows.map(({ rank, lane }) => ({ rank, lane })))
     expect(snapshot.tasks.items).toEqual(plan)
     expect(snapshot.pickRule).toEqual({
@@ -94,6 +97,32 @@ describe('collect.logic', () => {
       subIssues: { completed: 19, percentCompleted: 42, total: 45 },
     })
     expect(snapshot.portfolio.projects.find((project) => project.slug === 'spine')).toMatchObject({ title: null, subIssues: null })
+  })
+
+  // #531 (FINDINGS F2): claim/193 stood without an `in-progress` label and #193 was the first row of `ready`. The
+  // pick sections read the claims `ready` reads, so the snapshot cannot offer a held issue either.
+  it('reads the claims ready reads: `claimed` label or no label, `stale-claim` 48 h on with no open PR', () => {
+    const reasons = (snapshot) => [182, 193, 438].map((number) => snapshot.tasks.items.find((task) => task.number === number).reason)
+    const unread = build({ claimRefs: ok('git ls-remote origin refs/heads/claim/*', '') })
+    expect(unread.pickRule.next[0].number).toBe(193)
+    expect(reasons(unread)).toEqual(['in-progress', null, 'in-progress'])
+
+    const snapshot = build()
+    expect(reasons(snapshot)).toEqual(['claimed', 'claimed', 'claimed'])
+    expect(snapshot.pickRule.next.map((task) => task.number)).not.toContain(193)
+    expect(snapshot.portfolio.projects.find((project) => project.slug === 'foundation').next.number).not.toBe(193)
+
+    // Two days on, #182 and #193 have no open PR and go stale; #438's open PR #461 keeps it held.
+    const later = build({}, { now: '2026-09-27T00:00:00.000Z' })
+    expect(reasons(later)).toEqual(['stale-claim', 'stale-claim', 'claimed'])
+    expect(later.portfolio.projects.find((project) => project.slug === 'foundation').staleClaims).toEqual([182, 193])
+
+    // Without the claim comments nothing can be judged stale, and the pick sections say what they could not read.
+    const unanswered = build({ claimIssues: failed('gh api graphql', 'HTTP 403') }, { now: '2026-09-27T00:00:00.000Z' })
+    expect(reasons(unanswered)).toEqual(['claimed', 'claimed', 'claimed'])
+    for (const name of ['portfolio', 'pickRule', 'tasks']) {
+      expect(unanswered.freshness[name]).toMatchObject({ status: 'partial', error: 'claimIssues: HTTP 403' })
+    }
   })
 
   it('parses verdicts from the "## Verifier verdict:" heading, including round and model, and counts merged PRs without one', () => {
@@ -211,8 +240,8 @@ describe('collect.logic', () => {
     const next = build(failing, { now: LATER, previous: good })
     for (const name of ['portfolio', 'pickRule', 'tasks', 'prs']) expect(next[name]).toEqual(good[name])
     expect(next.freshness.portfolio).toEqual({
-      source: 'docs/portfolio.md · gh issue list --state open', fetchedAt: NOW, status: 'error',
-      error: 'issues: HTTP 403: API rate limit exceeded',
+      source: 'docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open',
+      fetchedAt: NOW, status: 'error', error: 'issues: HTTP 403: API rate limit exceeded',
     })
     expect(next.freshness.prs).toMatchObject({ fetchedAt: NOW, status: 'error', error: expect.stringMatching(/^could not build: /) })
     // Claims still come from the refs, flagged partial: no issue state and no claim fields without GraphQL.
