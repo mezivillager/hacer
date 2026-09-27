@@ -108,13 +108,25 @@ with its scenario ids and drivers named. `foundation` is design-first for the sa
 
 ## Dormant mode
 
-At 5 open agent PRs, or 7 days without a human merge: no new PR-producing work; only `horizon`
-notes and issue shaping. Scheduled jobs stand down.
+At 5 open agent PRs: no new PR-producing work; only `horizon` notes and issue shaping. Scheduled jobs
+stand down. An agent PR is an open PR by the allowlist — the owner's identity, which agents share —
+drafts included, Dependabot's not; `ready` prints the banner (#540).
+
+The second trigger, "7 days without a human merge", is dropped. It cannot be computed while agents act
+as the owner: every PR, merge and comment is `mezivillager`'s, so a human merge and an agent's look the
+same. Nor does it measure what it was for: since the `on-green` publishing grant (2026-09-18/19) merges
+do not wait on a human, so a quiet week no longer means work piling up unreviewed. The open-PR cap
+replaces it — when merges stall (a red `main`, stranded checks), the open PRs pile up and the cap trips.
+
+## Row cap
+
+A row holding more than 12 open `agent-ready` issues has outgrown shaping (review 1 F12, 2026-09-26: 152
+open, 76 unshaped): `projects` marks it `over cap`, the signal for F12's close-or-shape pass on that row.
 
 ## Commands
 
-- `node scripts/backlog.mjs ready` — pickable tasks in pick order, then every other open task with its one-word reason (`--json` for the array); on stderr, the slot the cycle resumes at and the claim that puts it there.
-- `node scripts/backlog.mjs projects` — one line per row above: open · ready · in-progress · needs-human · stale claims, if any · next pick.
+- `node scripts/backlog.mjs ready` — pickable tasks in pick order, then every other open task with its one-word reason (`--json` for the array); on stderr, the dormant banner, the slot the cycle resumes at and the claim that puts it there, and `claim history exhausted` when the claims it reads — older pages only until one fixes the slot and the aux turn, at most 10 of 50 issues (#540) — leave that place a guess.
+- `node scripts/backlog.mjs projects` — one line per row above: open · ready (what `ready` picks: a task with a reason is not ready) · in-progress · needs-human · stale claims, if any · `over cap` past the row cap · next pick.
 - `node scripts/backlog.mjs claim <n> --by <id>` creates `claim/<n>` exclusively, posts the claim comment and labels `in-progress`; `release <n> --by <id>` is the holder's (`--force-stale` for anyone's stale claim).
 - The rule is pure logic in `scripts/backlog.logic.mjs` (`PICK_ROTATION` and `AUX_ROTATION` mirror the cycle above; a test keeps them in step with this file), tested against a recorded `gh issue list` fixture; `tasks` and `next` follow in [#149](https://github.com/mezivillager/hacer/issues/149).
 
