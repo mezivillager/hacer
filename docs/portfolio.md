@@ -52,9 +52,11 @@ pick rule below decides what "next" means; `scripts/backlog.mjs ready` computes 
    reversion.
 3. `polish` and `horizon` are picked only when the owner asks, or in dormant mode (`horizon` only).
 
-A task is **pickable** when it is open, labelled `agent-ready`, not `in-progress`, every issue it is
-blocked by is closed, its author is on the allowlist (the owner and the owner's bot identities), and
-the gate below does not hold it.
+A task is **pickable** when it is open, labelled `agent-ready`, not `in-progress`, holds no open
+`claim/<n>` ref, every issue it is blocked by is closed, its author is on the allowlist (the owner and
+the owner's bot identities), and the gate below does not hold it. A claim ref wins over every other
+reason: `ready` prints `claimed`, or `stale-claim` once no open PR carries the issue and its latest
+claim comment is more than 48 h old (#531, `docs/harness/sessions/COORDINATOR-HANDOFF.md`).
 
 ## The foundation gate
 
@@ -109,8 +111,9 @@ notes and issue shaping. Scheduled jobs stand down.
 ## Commands
 
 - `node scripts/backlog.mjs ready` — pickable tasks in pick order, then every other open task with its one-word reason (`--json` for the array).
-- `node scripts/backlog.mjs projects` — one line per row above: open · ready · in-progress · needs-human · next pick.
-- The rule is pure logic in `scripts/backlog.logic.mjs` (`PICK_ROTATION` and `AUX_ROTATION` mirror the cycle above; a test keeps them in step with this file), tested against a recorded `gh issue list` fixture; `tasks`, `next` and `claim` follow in [#149](https://github.com/mezivillager/hacer/issues/149).
+- `node scripts/backlog.mjs projects` — one line per row above: open · ready · in-progress · needs-human · stale claims, if any · next pick.
+- `node scripts/backlog.mjs claim <n> --by <id>` creates `claim/<n>` exclusively, posts the claim comment and labels `in-progress`; `release <n> --by <id>` is the holder's (`--force-stale` for anyone's stale claim).
+- The rule is pure logic in `scripts/backlog.logic.mjs` (`PICK_ROTATION` and `AUX_ROTATION` mirror the cycle above; a test keeps them in step with this file), tested against a recorded `gh issue list` fixture; `tasks` and `next` follow in [#149](https://github.com/mezivillager/hacer/issues/149).
 
 ## Where the rest of the process lives
 

@@ -20,7 +20,9 @@ phase in `.cursorrules`. Which tier builds which risk: `docs/harness/model-tieri
 - Stop when the PR is open: do not merge, and do not keep watching CI.
 
 ## Method, in order
-1. Claim: `git push origin origin/main:refs/heads/claim/<n>`, then label the issue `in-progress`.
+1. Claim, unless your dispatch says the coordinator holds it for you:
+   `node scripts/backlog.mjs claim <n> --by <id> --session <run>` — exclusive; it posts the claim comment
+   and labels the issue `in-progress`. If it exits 1, someone else holds the claim: stop and report.
 2. Worktree, `pnpm install --frozen-lockfile`, Node 22; baseline the relevant suite.
 3. Red: the tests plus the smallest compiling stub that fails them — `test(<scope>): …`.
 4. Green: the smallest implementation that passes. Test files do not change after red; if an

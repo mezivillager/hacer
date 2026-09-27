@@ -21,9 +21,9 @@ anything) and the next two. If nothing is pickable, say what would unblock the c
 (`needs-human`, a blocker, unshaped) and stop — that is the answer, not a failure.
 
 Also surface **open claims** and any `docs/harness/sessions/*-handoff.md` files: read the latest
-claim comment on each claimed issue (format in §2). A claim with `intent: paused:…` and no open PR,
-or `in-progress` with no PR and no push for a long stretch, is **stale or paused** — do not treat it
-as an active build; either resume it, follow the handoff, or release it (see
+claim comment on each claimed issue (format in §2). `ready` never offers a claimed issue: it prints
+`claimed`, or `stale-claim` under the 48 h rule in §2. A stale or `paused:…` claim is not an active
+build — resume it, follow the handoff, or release it (see
 `docs/harness/sessions/COORDINATOR-HANDOFF.md`). Until `scripts/agent-orient` (#156) prints this in
 one screen, the commands above are the orient.
 
@@ -36,21 +36,22 @@ will start soon. Claim when you are about to build (or immediately dispatch a bu
 or cost pause happens *before* claim, or the claim is released until the pause lifts.
 
 ```bash
-git push origin HEAD:refs/heads/claim/<n>            # atomic: a second creation is rejected
-gh issue edit <n> --add-label in-progress
-gh issue comment <n> --body "$(cat <<'EOF'
+node scripts/backlog.mjs claim <n> --by <coordinator-id> --session <id> [--branch <type>/<n>-<topic>]
+```
+It creates `refs/heads/claim/<n>` through GitHub's create-ref API, which refuses a ref that exists,
+then posts the claim comment and labels the issue `in-progress`. A second claimant exits 1 with the
+holder's name: take the next pick. The comment it posts (`--intent` and `--handoff` set the rest):
+```text
 Claimed by: <coordinator-id>   # e.g. claude-local / grok-bot / cursor-cloud
 Intent: building | paused:<reason> | handing-off
 Session/run: <id>
 Branch: <type>/<n>-<topic>     # omit until known
 Handoff: <path or none>        # required when intent is paused:* or handing-off
-EOF
-)"
 ```
-If the claim ref already exists, someone else has it: take the next pick.
 
 When intent changes (build starts, pause, handoff), **post a new claim comment** with the same
-fields — do not leave a stale `building` comment on an idle claim. Full convention:
+fields (`gh issue comment <n>`) — do not leave a stale `building` comment on an idle claim. A claim
+goes stale 48 h after its latest claim comment while no open PR carries the issue. Full convention:
 `docs/harness/sessions/COORDINATOR-HANDOFF.md`.
 
 ## 3. Build — `ha-prompt-it`, tier Light unless the issue says otherwise
@@ -75,7 +76,7 @@ dispatch `docs/harness/routines/fidelity-digest.md` once.
 ```bash
 gh pr checks <pr>                          # ci must be green; the ruleset enforces it
 gh pr merge <pr> --rebase --auto           # merges when checks pass; never --admin
-git push origin --delete claim/<n>         # release the claim
+node scripts/backlog.mjs release <n> --by <coordinator-id>   # the holder releases the claim
 ```
 A merge to `main` cuts a release (`feat`/`fix`) and deploys Pages — permitted (ADR-0013), so no
 extra ask. Prune the worktree when the PR is merged.

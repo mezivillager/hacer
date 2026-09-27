@@ -4,7 +4,8 @@ Given to a builder agent (or followed by a session) for a single `agent-ready` i
 `<n>` with the issue number. The issue body is the spec; this brief is the mechanics.
 
 ## Claim
-Push `refs/heads/claim/<n>`, label the issue `in-progress`, and post a comment — before building — with `Claimed by` / `Intent` / `Session/run` / `Branch`.
+Claim before building: `node scripts/backlog.mjs claim <n> --by <id> --session <run> --branch <type>/<n>-<topic>`. It creates `refs/heads/claim/<n>` exclusively — a second claimant exits 1 naming the holder — then posts the claim comment (`Claimed by` / `Intent` / `Session/run` / `Branch`) and labels the issue `in-progress`.
+A claim with no open PR reads `stale-claim` 48 h after its latest claim comment; release your own with `node scripts/backlog.mjs release <n> --by <id>`.
 Claim comment fields and the handoff convention: `docs/harness/sessions/COORDINATOR-HANDOFF.md`.
 
 ## Ground rules

@@ -22,7 +22,11 @@ Issues — never only in a handoff.
 
 ## Claim comment fields (required)
 
-Every claim comment (and every update comment) uses:
+Claim with `node scripts/backlog.mjs claim <n> --by <coordinator-id> --session <id>`: it creates
+`claim/<n>` through GitHub's create-ref API, which refuses a ref that exists (a second claimant exits
+1 naming the holder), then posts the first claim comment and labels the issue `in-progress`. The
+holder is the `Claimed by` of the latest claim comment. Every claim comment (and every update
+comment) uses:
 
 ```text
 Claimed by: <coordinator-id>   # e.g. claude-local / grok-bot / cursor-cloud
@@ -32,8 +36,8 @@ Branch: <type>/<n>-<topic>     # omit until known
 Handoff: <path or none>        # required when intent is paused:* or handing-off
 ```
 
-`ha-next` §2 repeats this. Post a **new** comment when intent changes; do not edit history as the
-only signal.
+`ha-next` §2 repeats this. Post a **new** comment when intent or holder changes — a claim comment
+naming a new holder is how a claim changes hands; do not edit history as the only signal.
 
 ## Do not claim across a pause (prefer)
 
@@ -47,15 +51,16 @@ If a claim must stay (e.g. you already claimed, then a pause landed): set
 
 ## Stale claims (orient)
 
-At orient, list `refs/heads/claim/*` and read each issue’s latest claim comment. Treat as stale or
-paused when:
+`node scripts/backlog.mjs ready` reads every `claim/*` ref: an issue holding one prints `claimed`,
+labelled `in-progress` or not, and never as a pick. It prints `stale-claim` (and `projects` names it
+on its row) when no open PR carries the issue and the latest claim comment is more than 48 h old — or
+there is none. A claim with `Intent: paused:…` and no open PR is idle before then; read its handoff.
 
-- `Intent: paused:…` and there is no open PR, or
-- `in-progress`, no open PR, and no branch push for a long stretch (use judgment; when unsure, ask
-  or follow the handoff)
-
-Then: resume, follow the handoff, or release (`git push origin --delete claim/<n>`, remove
-`in-progress`, comment that the claim was released and why).
+Then: resume, follow the handoff, or release. The holder releases with
+`node scripts/backlog.mjs release <n> --by <holder>`, which deletes the ref and removes
+`in-progress`. Anyone else can release only a stale claim:
+`node scripts/backlog.mjs release <n> --by <you> --force-stale --reason "<why>"` also comments whose
+claim it was and why it was released.
 
 ## Handoff template
 
