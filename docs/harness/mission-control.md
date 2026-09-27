@@ -33,8 +33,8 @@ Each section has `freshness.<section>` = `{ source, fetchedAt, status, error? }`
 | Section | What it holds | From |
 |---|---|---|
 | `schemaVersion` · `generatedAt` · `head` | `1`; when the run finished; the commit it ran at (`sha`, `date`, `subject`) | git |
-| `portfolio` | `projects[]`, one per `docs/portfolio.md` row: `backlog.mjs projects`' counts, stale claims and next pick, the epic's `title` and `subIssues` (`total`, `completed`, `percentCompleted`) | portfolio + `gh issue list`; the claim refs, `gh api graphql` and `gh pr list --state open` optional, as `ready` reads claims |
-| `pickRule` | `rotation`, `auxRotation`, and `next[]` — `backlog.mjs ready`'s picks, in its order | the same |
+| `portfolio` | `projects[]`, one per `docs/portfolio.md` row: `backlog.mjs projects`' counts, stale claims and next pick, the epic's `title` and `subIssues` (`total`, `completed`, `percentCompleted`) | portfolio + `gh issue list`; the claim refs, `gh api graphql` and `gh pr list --state open` optional, as `ready` reads claims; the claim history (`gh api graphql`, `claimHistoryQuery`) optional, as `ready` resumes the cycle from it (#535) |
+| `pickRule` | `rotation`, `auxRotation`, and `next[]` — `backlog.mjs ready`'s picks, in its order, the cycle resumed after the latest claim | the same |
 | `tasks` | `items[]`, each open non-epic issue as `backlog.logic.mjs` triages it (`project`, `pickable`, `reason`); `byProject`, issue numbers per row, `unfiled` for none | the same |
 | `prs` | `open[]` and the last 60 `merged[]`, with `closes[]` and `verdicts[]` (`verdict`, `round`, `model`, `at`, `url`); `coverage`: merged, with and without a verdict, latest `PASS` / `BLOCK` | `gh pr list` |
 | `claims` | `items[]` per `claim/<n>` ref: the issue's `state` and `labels`, its latest claim comment's fields (`claimedBy`, `intent`, `session`, `branch`, `handoff`); `onClosedIssue` marks a stale ref, `onClosedIssues` counts them | `git ls-remote`; `gh api graphql` optional |
