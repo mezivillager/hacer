@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-27T12:10:03.739Z",
+  "generatedAt": "2026-09-27T12:31:47.142Z",
   "head": {
-    "sha": "87fed0a6cc43aaa3fc8f9f9d39c9c8e5b4be80a0",
-    "date": "2026-09-27T15:09:27+03:00",
-    "subject": "chore(ci): add an advisory OpenSSF Scorecard workflow (#542)"
+    "sha": "61c4fe9523651b4782f01cee506865ac6626f18a",
+    "date": "2026-09-27T15:30:55+03:00",
+    "subject": "docs(harness): Mission Control's flow and conformance fields, their definitions and cost (#539)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-27T12:10:03.739Z",
+      "fetchedAt": "2026-09-27T12:31:47.142Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-27T12:10:03.739Z",
+      "fetchedAt": "2026-09-27T12:31:47.142Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-27T12:10:03.739Z",
+      "fetchedAt": "2026-09-27T12:31:47.142Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-27T12:10:03.739Z",
+      "fetchedAt": "2026-09-27T12:31:47.142Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-09-27T12:10:03.739Z",
+      "fetchedAt": "2026-09-27T12:31:47.142Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-09-27T12:10:03.739Z",
+      "fetchedAt": "2026-09-27T12:31:47.142Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-09-27T12:10:03.739Z",
+      "fetchedAt": "2026-09-27T12:31:47.142Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-09-27T12:10:03.739Z",
+      "fetchedAt": "2026-09-27T12:31:47.142Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-09-27T12:10:03.739Z",
+      "fetchedAt": "2026-09-27T12:31:47.142Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-09-27T12:10:03.739Z",
+      "fetchedAt": "2026-09-27T12:31:47.142Z",
       "status": "ok"
     },
     "metrics": {
-      "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-27T12:10:03.739Z",
+      "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors",
+      "fetchedAt": "2026-09-27T12:31:47.142Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-09-27T12:10:03.739Z",
+      "fetchedAt": "2026-09-27T12:31:47.142Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-09-27T12:10:03.739Z",
+      "fetchedAt": "2026-09-27T12:31:47.142Z",
       "status": "ok"
     }
   },
@@ -356,20 +356,20 @@
         "lane": "process",
         "slug": "mission-control",
         "epicNumber": 458,
-        "open": 8,
+        "open": 7,
         "ready": 6,
-        "inProgress": 1,
+        "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 7,
+        "agentReady": 6,
         "next": {
           "number": 478,
           "title": "Mission Control MC-7: charts — ratchet history, merges per day, open tasks by project, verdict coverage"
         },
         "title": "Epic: mission-control — Mission Control: the platform's status, process and roadmap as one site",
         "subIssues": {
-          "completed": 6,
-          "percentCompleted": 50,
+          "completed": 7,
+          "percentCompleted": 58,
           "total": 12
         }
       }
@@ -616,6 +616,7 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
+        566,
         514
       ]
     }
@@ -2712,22 +2713,6 @@
         "reason": "unshaped"
       },
       {
-        "number": 539,
-        "title": "Mission Control shows the flow numbers and the product's measures",
-        "labels": [
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:mission-control"
-        ],
-        "blocking": [],
-        "project": "mission-control",
-        "rank": 14,
-        "lane": "process",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 550,
         "title": "merge-on-green: disarm auto-merge when a required check fails",
         "labels": [
@@ -2789,8 +2774,7 @@
         513,
         545,
         560,
-        509,
-        539
+        509
       ],
       "spine": [
         175,
@@ -2913,6 +2897,24 @@
   "prs": {
     "open": [
       {
+        "number": 566,
+        "title": "Slim AGENTS.md to a <=120-line table of contents; one definition of done; stop citing .cursor/ in precedence",
+        "url": "https://github.com/mezivillager/hacer/pull/566",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:2"
+        ],
+        "headRefName": "docs/152-slim-agents",
+        "isDraft": false,
+        "createdAt": "2026-09-27T12:28:42Z",
+        "mergedAt": null,
+        "closes": [
+          152
+        ],
+        "verdicts": []
+      },
+      {
         "number": 522,
         "title": "chore(deps): bump @radix-ui/react-switch from 1.2.6 to 1.3.7",
         "url": "https://github.com/mezivillager/hacer/pull/522",
@@ -3004,6 +3006,32 @@
       }
     ],
     "merged": [
+      {
+        "number": 565,
+        "title": "chore(mission-control): the snapshot and the Overview show the flow numbers and the conformance vectors (#539)",
+        "url": "https://github.com/mezivillager/hacer/pull/565",
+        "author": "mezivillager",
+        "labels": [
+          "risk:1",
+          "project:mission-control"
+        ],
+        "headRefName": "chore/539-mc-flow",
+        "isDraft": false,
+        "createdAt": "2026-09-27T12:11:25Z",
+        "mergedAt": "2026-09-27T12:30:56Z",
+        "closes": [
+          539
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Claude Sonnet 5 (claude-sonnet-5)",
+            "at": "2026-09-27T12:29:48Z",
+            "url": "https://github.com/mezivillager/hacer/pull/565#issuecomment-5855827104"
+          }
+        ]
+      },
       {
         "number": 564,
         "title": "docs(harness): retire tasks/todo.md and the P05 checklist as history",
@@ -4402,33 +4430,13 @@
           193
         ],
         "verdicts": []
-      },
-      {
-        "number": 442,
-        "title": "Pure scenario module with a core driver (Fixes #195)",
-        "url": "https://github.com/mezivillager/hacer/pull/442",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:verify",
-          "risk:1",
-          "project:foundation"
-        ],
-        "headRefName": "refactor/195-scenarios-module",
-        "isDraft": false,
-        "createdAt": "2026-09-24T01:07:15Z",
-        "mergedAt": "2026-09-24T01:11:39Z",
-        "closes": [
-          195
-        ],
-        "verdicts": []
       }
     ],
     "coverage": {
       "merged": 60,
-      "withVerdict": 36,
-      "withoutVerdict": 24,
-      "pass": 35,
+      "withVerdict": 37,
+      "withoutVerdict": 23,
+      "pass": 36,
       "block": 1
     }
   },
@@ -4720,7 +4728,7 @@
         "number": 539,
         "ref": "refs/heads/claim/539",
         "sha": "bf1dd6c24193c2a241a393808af5ded812cdd784",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "Mission Control shows the flow numbers and the product's measures",
         "url": "https://github.com/mezivillager/hacer/issues/539",
         "labels": [
@@ -4729,7 +4737,7 @@
           "risk:1",
           "project:mission-control"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -4817,7 +4825,7 @@
         }
       }
     ],
-    "onClosedIssues": 11
+    "onClosedIssues": 12
   },
   "cloudLane": {
     "items": [
@@ -6295,7 +6303,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-24",
-        "merges": 21
+        "merges": 20
       },
       {
         "date": "2026-09-25",
@@ -6307,19 +6315,198 @@
       },
       {
         "date": "2026-09-27",
-        "merges": 23
+        "merges": 24
       }
-    ]
+    ],
+    "flow": {
+      "days": 14,
+      "since": "2026-09-13T12:31:47.142Z",
+      "merged": 157,
+      "openToMergeHours": {
+        "median": 0.3,
+        "p90": 11.7
+      },
+      "blockedOnce": {
+        "count": 19,
+        "of": 78,
+        "prs": [
+          238,
+          248,
+          273,
+          294,
+          305,
+          312,
+          319,
+          320,
+          351,
+          396,
+          399,
+          432,
+          444,
+          490,
+          491,
+          499,
+          507,
+          510,
+          512
+        ]
+      },
+      "coverage": {
+        "code": {
+          "merged": 80,
+          "withVerdict": 64,
+          "without": [
+            133,
+            134,
+            135,
+            136,
+            250,
+            285,
+            287,
+            288,
+            303,
+            306,
+            307,
+            442,
+            443,
+            445,
+            449,
+            553
+          ]
+        },
+        "nonCode": {
+          "merged": 77,
+          "withVerdict": 14,
+          "without": [
+            113,
+            115,
+            116,
+            117,
+            118,
+            131,
+            132,
+            137,
+            234,
+            237,
+            240,
+            243,
+            254,
+            272,
+            276,
+            277,
+            283,
+            286,
+            292,
+            293,
+            297,
+            298,
+            310,
+            314,
+            341,
+            343,
+            346,
+            348,
+            350,
+            354,
+            358,
+            393,
+            411,
+            412,
+            413,
+            414,
+            416,
+            423,
+            425,
+            426,
+            428,
+            439,
+            440,
+            441,
+            446,
+            447,
+            463,
+            464,
+            493,
+            494,
+            495,
+            496,
+            497,
+            517,
+            523,
+            524,
+            525,
+            526,
+            527,
+            529,
+            532,
+            534,
+            543
+          ]
+        }
+      }
+    },
+    "conformance": {
+      "projects": [
+        {
+          "project": "01",
+          "files": 48,
+          "byExtension": {
+            "cmp": 16,
+            "hdl": 16,
+            "tst": 16
+          }
+        },
+        {
+          "project": "02",
+          "files": 17,
+          "byExtension": {
+            "cmp": 6,
+            "tst": 6,
+            "hdl": 5
+          }
+        },
+        {
+          "project": "03",
+          "files": 25,
+          "byExtension": {
+            "cmp": 8,
+            "hdl": 9,
+            "tst": 8
+          }
+        },
+        {
+          "project": "04",
+          "files": 7,
+          "byExtension": {
+            "asm": 2,
+            "tst": 3,
+            "cmp": 2
+          }
+        },
+        {
+          "project": "05",
+          "files": 23,
+          "byExtension": {
+            "hdl": 8,
+            "hack": 3,
+            "cmp": 6,
+            "tst": 6
+          }
+        }
+      ],
+      "files": 120,
+      "runner": null
+    }
   },
   "checks": {
     "items": [
       {
         "pr": null,
-        "sha": "87fed0a6cc43aaa3fc8f9f9d39c9c8e5b4be80a0",
+        "sha": "61c4fe9523651b4782f01cee506865ac6626f18a",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36318052996/job/108616408700",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36319242331/job/108619747967",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -6543,6 +6730,52 @@
         "conclusion": "SUCCESS",
         "completedAt": "2026-09-25T14:48:26Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/36149664191/job/108119435683",
+        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 71,
+          "new": 0
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 566,
+        "sha": "25a57c31ccef34d51d5d03cb8f08b25c27e34a49",
+        "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-27T12:29:32Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36319148043/job/108619485579",
+        "line": "HYGIENE: WARN reviewable=380 test=74 excluded=0 files=6 issue=#152 linked=fixes",
+        "verdict": "WARN",
+        "fields": {
+          "reviewable": 380,
+          "test": 74,
+          "excluded": 0,
+          "files": 6,
+          "issue": "#152",
+          "linked": "fixes"
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 566,
+        "sha": "25a57c31ccef34d51d5d03cb8f08b25c27e34a49",
+        "check": "browser-qa",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-27T12:29:40Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36319147826/job/108619484183",
+        "line": "BROWSER-QA: skipped (no critical paths)",
+        "verdict": "SKIPPED",
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 566,
+        "sha": "25a57c31ccef34d51d5d03cb8f08b25c27e34a49",
+        "check": "ci",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-27T12:31:18Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36319114552/job/108619388912",
         "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
         "verdict": "PASS",
         "fields": {
