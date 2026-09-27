@@ -4,9 +4,10 @@
 //   node scripts/check-doc-paths.mjs --staged   # pre-commit: only staged docs
 //   node scripts/check-doc-paths.mjs            # CI: every tracked doc
 //
-// Two checks, each a pure function with its own unit tests under scripts/hooks/:
+// Three checks, each a pure function with its own unit tests under scripts/hooks/:
 //   1. no machine-specific absolute paths, in every doc we author (docPaths.logic.mjs)
 //   2. every cited repo-relative path exists, in PATH_EXISTENCE_FILES (docPathExists.logic.mjs)
+//   3. a hard line-count ceiling for the docs listed in LINE_BUDGETS (docLineBudget.logic.mjs)
 // Exits 1 and prints one line per violation.
 
 import { execFileSync } from 'node:child_process'
@@ -25,6 +26,7 @@ import {
   formatDeadPaths,
   isPathExistenceFile,
 } from './hooks/docPathExists.logic.mjs'
+import { findLineBudgetViolations, formatLineBudgetViolations } from './hooks/docLineBudget.logic.mjs'
 
 const staged = process.argv.includes('--staged')
 
@@ -47,6 +49,7 @@ let absoluteFailures = 0
 let deadFailures = 0
 const absoluteReport = []
 const deadReport = []
+const budgetCandidates = []
 
 for (const file of files) {
   if (!existsSync(file)) continue // staged deletion racing the hook
@@ -66,9 +69,13 @@ for (const file of files) {
       deadReport.push(formatDeadPaths(file, dead))
     }
   }
+
+  budgetCandidates.push({ path: file, text })
 }
 
-if (absoluteFailures === 0 && deadFailures === 0) {
+const budgetViolations = findLineBudgetViolations(budgetCandidates)
+
+if (absoluteFailures === 0 && deadFailures === 0 && budgetViolations.length === 0) {
   process.exit(0)
 }
 
@@ -99,6 +106,17 @@ if (deadFailures > 0) {
   console.error('   only planned — do not invent files.')
   console.error('')
   console.error(`   To cite a path deliberately ahead of its file, mark that line:  <!-- ${MISSING_PATH_MARKER} -->`)
+  console.error('')
+}
+
+if (budgetViolations.length > 0) {
+  console.error('')
+  console.error(`❌ ${budgetViolations.length} doc(s) over their line-count budget:`)
+  console.error('')
+  console.error(formatLineBudgetViolations(budgetViolations))
+  console.error('')
+  console.error('   These are meant to stay a table of contents — point to the file that owns')
+  console.error('   the full detail instead of restating it here.')
   console.error('')
 }
 
