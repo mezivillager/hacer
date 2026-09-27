@@ -132,19 +132,69 @@ function buildPortfolio(values, options) {
     title: epic(summary.epicNumber)?.title ?? null, subIssues: epic(summary.epicNumber)?.subIssuesSummary ?? null })) }
 }
 
-// Flow (#539): stub — the red commit's; the next commit implements it.
-export const FLOW_PAGES = 10
-export function flowQuery() {
-  throw new Error('not implemented (#539)')
-}
-export async function readFlowPages() {
-  throw new Error('not implemented (#539)')
-}
-
 const tasksOf = (plan) => ({ items: plan, byProject: Object.fromEntries(Object.entries(Object.groupBy(plan, (task) => task.project ?? 'unfiled'))
   .map(([slug, tasks]) => [slug, tasks.map((task) => task.number)])) })
 
-function buildMetrics({ baseline = [], ratchetLog, releases = [], prsMerged = [] }) {
+// Flow (#539): the numbers docs/harness/reviews/2026-09-26/evidence/brief-measure-flow.mjs counted by hand, by its
+// definitions, over the PRs merged in the FLOW_DAYS to the run; a verdict is the one `prs` reads.
+export const FLOW_DAYS = 14
+/** The most pages readFlowPages reads: 1,000 PRs, as many as GitHub's search serves. */
+export const FLOW_PAGES = 10
+const flowSince = (now) => new Date(Date.parse(now) - FLOW_DAYS * 864e5).toISOString()
+
+/** One page of the PRs merged in the FLOW_DAYS to `now`: when each opened and merged, its author, files and comments. */
+export function flowQuery(repo, now, after = null) {
+  const since = flowSince(now).replace(/\.\d{3}Z$/, '+00:00')
+  return `query { search(query: "repo:${repo} is:pr is:merged merged:>=${since}", type: ISSUE, first: 100` +
+    `${after ? `, after: ${JSON.stringify(after)}` : ''}) { pageInfo { hasNextPage endCursor } nodes { ... on PullRequest { ` +
+    'number createdAt mergedAt author { login } files(first: 100) { nodes { path } } ' +
+    'comments(first: 100) { nodes { author { login } body createdAt url } } } } } }'
+}
+
+/** flowQuery's pages, each read by `fetchPage(after)` (`after` null for the first), to the last or FLOW_PAGES. */
+export async function readFlowPages(fetchPage) {
+  const pages = [await fetchPage(null)]
+  const next = () => pages.at(-1)?.data?.search?.pageInfo
+  while (next()?.hasNextPage && pages.length < FLOW_PAGES) pages.push(await fetchPage(next().endCursor))
+  return pages
+}
+
+// brief-measure-flow.mjs's `kind`, folded into its CODE set: code touches src/ (engine, other src/), mission-control/
+// (the app), scripts/ or .github/ (process tooling); docs only, other non-src (config, .claude/, root docs) and
+// Dependabot's PRs are not.
+const CODE_PATH = /^(src|mission-control|scripts|\.github)\//
+const isCode = (pr) => !/dependabot/.test(pr.author?.login ?? '') && (pr.files?.nodes ?? []).some((file) => CODE_PATH.test(file.path))
+
+function buildFlow(pages, { allowlist, now }) {
+  const [since, from, to] = [flowSince(now), Date.parse(flowSince(now)), Date.parse(now)]
+  const nodes = new Map(pages.flatMap((page) => page?.data?.search?.nodes ?? []).map((pr) => [pr.number, pr]))
+  const prs = [...nodes.values()].filter((pr) => Date.parse(pr.mergedAt) >= from && Date.parse(pr.mergedAt) <= to)
+    .sort((a, b) => a.number - b.number)
+    .map((pr) => ({ ...pr, verdicts: verdictsOf(pr.comments.nodes, allowlist).map((each) => each.verdict) }))
+  // The value at floor(n × p) of the sorted hours, as brief-measure-flow.mjs's `pct`, in tenths of an hour.
+  const hours = prs.map((pr) => (Date.parse(pr.mergedAt) - Date.parse(pr.createdAt)) / 36e5).sort((a, b) => a - b)
+  const rank = (p) => (hours.length > 0 ? Math.round(hours[Math.min(hours.length - 1, Math.floor(hours.length * p))] * 10) / 10 : null)
+  const verified = prs.filter((pr) => pr.verdicts.length > 0)
+  const blocked = verified.filter((pr) => pr.verdicts.includes('BLOCK')).map((pr) => pr.number)
+  const coverage = (code) => {
+    const kind = prs.filter((pr) => isCode(pr) === code)
+    return { merged: kind.length, withVerdict: kind.filter((pr) => pr.verdicts.length > 0).length,
+      without: kind.filter((pr) => pr.verdicts.length === 0).map((pr) => pr.number) }
+  }
+  return { days: FLOW_DAYS, since, merged: prs.length, openToMergeHours: { median: rank(0.5), p90: rank(0.9) },
+    blockedOnce: { count: blocked.length, of: verified.length, prs: blocked }, coverage: { code: coverage(true), nonCode: coverage(false) } }
+}
+
+/** The vendored nand2tetris projects (#539): each directory under conformance/vectors/, its files counted by extension.
+ *  Nothing runs them yet (#194), so `runner` is null: a pass count arrives with a runner, never before. */
+function buildConformance(files) {
+  const byProject = Object.groupBy(files.filter((file) => file.includes('/')), (file) => file.split('/')[0])
+  const projects = Object.entries(byProject).sort(([a], [b]) => a.localeCompare(b)).map(([project, names]) =>
+    ({ project, files: names.length, byExtension: countBy(names.map((name) => /\.([^./]+)$/.exec(name)?.[1] ?? 'none')) }))
+  return { projects, files: projects.reduce((sum, project) => sum + project.files, 0), runner: null }
+}
+
+function buildMetrics({ baseline = [], ratchetLog, releases = [], prsMerged = [], flowPrs, vectors }, options) {
   const history = (ratchetLog?.log ?? '').split('\n').filter(Boolean).map((line) => {
     const [sha, date, ...subject] = line.split('\t')
     return { sha, date, subject: subject.join('\t'), count: ratchetLog.rows[sha].length }
@@ -154,6 +204,8 @@ function buildMetrics({ baseline = [], ratchetLog, releases = [], prsMerged = []
     ratchet: { count: baseline.length, byRule: countBy(baseline.map((row) => row.rule?.name)), history: history.reverse() },
     releases: releases.map(({ tagName, publishedAt, isLatest }) => ({ tag: tagName, publishedAt, isLatest })),
     mergesPerDay: merges.map(([date, count]) => ({ date, merges: count })),
+    flow: flowPrs ? buildFlow(flowPrs, options) : null,
+    conformance: vectors ? buildConformance(vectors) : null,
   }
 }
 
@@ -213,7 +265,7 @@ const SECTIONS = {
   },
   adrs: { needs: ['adrs'], build: ({ adrs = [] }) => ({ items: adrs.flatMap(adrOf).sort((a, b) => a.number - b.number) }) },
   roadmap: { needs: ['roadmap'], build: buildRoadmap },
-  metrics: { needs: ['baseline'], optional: ['ratchetLog', 'releases', 'prsMerged'], build: buildMetrics },
+  metrics: { needs: ['baseline'], optional: ['ratchetLog', 'releases', 'prsMerged', 'flowPrs', 'vectors'], build: buildMetrics },
   checks: { needs: ['checkRuns'], build: buildChecks },
   lineage: { build: () => ({ until: 'DL-7', items: [] }) }, // the decision graph, once DL-7 draws it
 }
@@ -230,7 +282,8 @@ export function parsePrevious(text) {
 }
 
 /** A section whose required input failed, or whose data came out of schema (a changed API shape), keeps the previous
- *  snapshot's data, flagged `error` and dated when it was fetched; a failed optional input, or a caveat, leaves it `partial`. */
+ *  snapshot's data, flagged `error` and dated when it was fetched; a failed optional input, or a caveat, leaves it `partial`
+ *  (an optional input's own field, where it has one, null). */
 export function buildSnapshot(inputs, { now, head, previous = null, allowlist = DEFAULT_ALLOWLIST }) {
   const values = Object.fromEntries(Object.entries(inputs).filter(([, input]) => !('error' in input)).map(([id, input]) => [id, input.value]))
   const broken = (ids) => ids.filter((id) => !(id in values)).map((id) => `${id}: ${inputs[id]?.error ?? 'not collected'}`)
@@ -253,8 +306,10 @@ export function buildSnapshot(inputs, { now, head, previous = null, allowlist = 
         errors = [`could not build: ${error.message}`]
       }
     }
-    snapshot[name] = kept?.[name] ?? build({}, { allowlist, now })
-    const fetchedAt = kept?.[name] ? kept.freshness?.[name]?.fetchedAt ?? null : null
+    // Last-known data is kept only while it is still v1: a section written before a field was declared is not.
+    const last = conform(kept?.[name], SCHEMA_V1[name], name, []).length === 0 ? kept[name] : null
+    snapshot[name] = last ?? build({}, { allowlist, now })
+    const fetchedAt = last ? kept.freshness?.[name]?.fetchedAt ?? null : null
     snapshot.freshness[name] = { source, fetchedAt, status: 'error', error: errors.join('; ') }
   }
   return snapshot
@@ -262,13 +317,19 @@ export function buildSnapshot(inputs, { now, head, previous = null, allowlist = 
 
 const PR = { number: 'number', title: 'string', verdicts: [{ verdict: 'verdict', round: 'number', model: 'string?' }] }
 const FRESHNESS = { source: 'string', fetchedAt: 'iso?', status: 'status' }
+const OR_NULL = Symbol('or null')
+/** A field an optional input fills: its shape, or null when that input failed. */
+const orNull = (spec) => ({ [OR_NULL]: spec })
+const COVERAGE = { merged: 'number', withVerdict: 'number', without: ['number'] }
 
 /** Schema v1 — the contract the site and the coordinator read; docs/harness/mission-control.md gives the meaning. */
 export const SCHEMA_V1 = {
   schemaVersion: 'v1', generatedAt: 'iso', head: { sha: 'sha', date: 'iso', subject: 'string' },
   freshness: Object.fromEntries(Object.keys(SECTIONS).map((name) => [name, FRESHNESS])),
-  portfolio: { projects: [{ slug: 'string', epicNumber: 'number', open: 'number', ready: 'number', inProgress: 'number', needsHuman: 'number' }] },
-  pickRule: { rotation: ['string'], auxRotation: ['string'], next: [{ number: 'number', title: 'string' }] },
+  portfolio: { projects: [{ slug: 'string', epicNumber: 'number', open: 'number', ready: 'number', inProgress: 'number', needsHuman: 'number',
+    agentReady: 'number' }] },
+  pickRule: { rotation: ['string'], auxRotation: ['string'], next: [{ number: 'number', title: 'string' }],
+    dormant: { dormant: 'boolean', agentPrs: ['number'] } },
   tasks: { items: [{ number: 'number', title: 'string', pickable: 'boolean' }], byProject: 'object' },
   prs: { open: [PR], merged: [PR], coverage: { merged: 'number', withVerdict: 'number', withoutVerdict: 'number', pass: 'number', block: 'number' } },
   claims: { items: [{ number: 'number', sha: 'sha' }], onClosedIssues: 'number' },
@@ -278,7 +339,10 @@ export const SCHEMA_V1 = {
   adrs: { items: [{ number: 'number', file: 'string' }] },
   roadmap: { lastUpdated: 'string?', phases: [{ phase: 'string' }] },
   metrics: { ratchet: { count: 'number', byRule: 'object', history: [{ sha: 'sha', count: 'number' }] },
-    releases: [{ tag: 'string', publishedAt: 'iso' }], mergesPerDay: [{ date: 'string', merges: 'number' }] },
+    releases: [{ tag: 'string', publishedAt: 'iso' }], mergesPerDay: [{ date: 'string', merges: 'number' }],
+    flow: orNull({ days: 'number', since: 'iso', merged: 'number', openToMergeHours: { median: 'number?', p90: 'number?' },
+      blockedOnce: { count: 'number', of: 'number', prs: ['number'] }, coverage: { code: COVERAGE, nonCode: COVERAGE } }),
+    conformance: orNull({ projects: [{ project: 'string', files: 'number', byExtension: 'object' }], files: 'number', runner: 'object?' }) },
   checks: { items: [{ pr: 'number?', sha: 'sha', check: 'string', conclusion: 'string?', completedAt: 'iso?', url: 'string?',
     line: 'string?', verdict: 'string?', fields: 'object', disagrees: 'boolean' }] },
   lineage: { items: 'array' },
@@ -296,6 +360,7 @@ const TYPES = {
 for (const [type, [test, what]] of Object.entries(TYPES)) TYPES[`${type}?`] = [(value) => value === null || test(value), `${what} or null`]
 
 function conform(value, spec, path, errors) {
+  if (spec?.[OR_NULL]) return value === null ? errors : conform(value, spec[OR_NULL], path, errors)
   const [test, what] = typeof spec === 'string' ? TYPES[spec] : TYPES[Array.isArray(spec) ? 'array' : 'object']
   if (!test(value)) errors.push(`${path || 'the snapshot'} must be ${what}`)
   else if (Array.isArray(spec)) value.forEach((item, index) => conform(item, spec[0], `${path}[${index}]`, errors))
