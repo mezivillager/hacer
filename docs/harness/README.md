@@ -98,7 +98,7 @@ Direct importers are a proxy for blast radius, not the real edit set. A throwawa
 
 ## Standing roles
 
-Four fresh-context roles judge work; none of them builds it, and none decides strategy for the owner.
+Five fresh-context roles judge work; none of them builds it, and none decides strategy for the owner.
 
 | Role | Judges | Brief | Writes |
 |---|---|---|---|
@@ -106,6 +106,7 @@ Four fresh-context roles judge work; none of them builds it, and none decides st
 | **QA** (browser) | a critical PR's changed flow, in a browser against the preview | `qa-brief.md` (#257, in flight) | one QA verdict |
 | **fidelity** (engineering truth) | an epic, ADR, spec or semantic PR against physics, digital logic and the domain's oracle | `fidelity-brief.md` · ADR-0018 · agent `.claude/agents/hacer-fidelity.md` | one verdict comment; proposals queued in `fidelity-inbox.md` for the owner's approval, never filed as issues |
 | **product** (usability & design) | the app's screens and flows, from the cloud UI tour (`.github/workflows/ui-tour.yml`) and the code, or one UI-facing PR or issue | `product-brief.md` · agent `.claude/agents/hacer-product.md` | at most five `project:polish` issues per review under #144, filed directly (owner, 2026-09-19); strategy proposals queued in `product-inbox.md` for the owner's approval |
+| **process** (the flow itself) | the autonomous flow — how the platform moves forward without the owner — at least every two weeks | `process-review-brief.md`, issued per cycle in `reviews/<date>/BRIEF.md` | one numbered review per reviewer in `reviews/<date>/reviews/`; the coordinator consolidates them in `SYNTHESIS.md` and files what survives |
 
 ## Rules that are conventions, not controls (yet)
 
@@ -206,5 +207,6 @@ PRs, and `ledger.md`. **Who is coordinating, and why a claim is idle**, is not �
 - `../research/2026-09-18-agent-readiness/` — why the process looks like this.
 - `sessions/` — dated session records: the goal, the owner's rulings, what was built, the state at close, how to resume. Start with the latest one when picking the work back up.
 - `sessions/COORDINATOR-HANDOFF.md` — claim-comment fields, when to write a `*-handoff.md`, and how a second coordinator resumes or releases idle claims. Product “what’s next” still comes from `docs/portfolio.md` and Issues; handoffs carry **coordinator meta-state** only.
+- `process-review-brief.md` — the standing brief for the fortnightly process review; `reviews/` holds every cycle in one layout (`reviews/README.md`).
 - `cloud-queue.md` — standing Claude → Grok Bot queue for cloud-heavy work that nothing else waits on (verification, second opinions, differential runs, large install/build/test; R742). Local Claude enqueues; Grok Bot runs those rows when the owner triggers it; what it reports becomes a local follow-up. Not a second picker for ordinary local work.
 - `sessions/cloud-queue-inbox.md` — the live inbox for that queue. Append rows; do not invent state.

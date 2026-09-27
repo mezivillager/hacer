@@ -12,7 +12,7 @@ projects, or to suggest different priority of current projects"*.
 | `reviews/2.md` | review 2: F13–F16 and a bounded priority reversal; notes `evidence/2-controls.md`, `evidence/2-product.md` | 2026-09-27 (#527) |
 | `reviews/3.md` | review 3: verdict, scorecard, F1–F8; measurements `evidence/3-measurements.md` | 2026-09-27 (#529) |
 | `evidence/` | `brief-measure-flow.mjs` re-measures the brief's GitHub numbers (`brief-measurements.txt`); `1-stuck-merge-box.md` is review 1's merge-box data | — |
-| `SYNTHESIS.md` | the three reviews consolidated: every finding once, its validity, the decision, and what carries it | written in #533's second PR |
+| `SYNTHESIS.md` | the three reviews consolidated: 22 findings, each with its validity, the decision, and what carries it | 2026-09-27 |
 
 **Consolidated on 2026-09-27 (#533).** The files moved here from
 `docs/research/2026-09-26-process-review/`. Only paths changed:

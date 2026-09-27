@@ -77,3 +77,19 @@ now parses each project's upstream `index.ts` map as text, fails closed on anyth
 and must regenerate Project 1 byte-identically. Files an official `.tst` loads (`.asm`, `.hack`) are in
 scope for the slices that need them.
 Cost if wrong: a parser that a future pinned commit may break — loudly, by design.
+
+## R750 — process reviews get one home, one layout and one report shape
+Builds on: R742
+The owner, 2026-09-27: "i don't want non-uniform sacttered review docs, especially given this will
+happen every two weeks at least, would be good to organize it properly." The first cycle sat in
+`docs/research/` in three shapes, and a later PR overwrote one review and relabelled its notes as
+another's. Reviews now live in `docs/harness/reviews/<date>/`, with:
+- the brief as issued;
+- one numbered file per review, never edited by another;
+- evidence prefixed by review;
+- a SYNTHESIS.md, where the coordinator consolidates and triages.
+
+A standing brief (`docs/harness/process-review-brief.md`) carries the parts that do not change, so a
+cycle brief is only its evidence and hypotheses. The process review becomes the fifth standing role.
+Reviews are numbered, not named by model, because the owner judges findings, not authors.
+Cost if wrong: a moved directory breaks links in old PR bodies; the history keeps them.
