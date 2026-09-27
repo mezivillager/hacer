@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-27T08:43:22.135Z",
+  "generatedAt": "2026-09-27T09:07:51.656Z",
   "head": {
-    "sha": "8243a8a4a8b2448b0e766d1d4bf2c5dbe13905b6",
-    "date": "2026-09-27T11:42:34+03:00",
-    "subject": "docs(harness): the 2026-09-26 reviews consolidated, and a standing brief for every cycle"
+    "sha": "e5a3d38eff5b57620dcee782fda10c00a4d96ce2",
+    "date": "2026-09-27T12:06:48+03:00",
+    "subject": "feat(conformance): vendor the Project 2 nand2tetris vectors at the pinned web-ide commit"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-27T08:43:22.135Z",
+      "fetchedAt": "2026-09-27T09:07:51.656Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-27T08:43:22.135Z",
+      "fetchedAt": "2026-09-27T09:07:51.656Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-27T08:43:22.135Z",
+      "fetchedAt": "2026-09-27T09:07:51.656Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-27T08:43:22.135Z",
+      "fetchedAt": "2026-09-27T09:07:51.656Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-09-27T08:43:22.135Z",
+      "fetchedAt": "2026-09-27T09:07:51.656Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-09-27T08:43:22.135Z",
+      "fetchedAt": "2026-09-27T09:07:51.656Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-09-27T08:43:22.135Z",
+      "fetchedAt": "2026-09-27T09:07:51.656Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-09-27T08:43:22.135Z",
+      "fetchedAt": "2026-09-27T09:07:51.656Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-09-27T08:43:22.135Z",
+      "fetchedAt": "2026-09-27T09:07:51.656Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-09-27T08:43:22.135Z",
+      "fetchedAt": "2026-09-27T09:07:51.656Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-27T08:43:22.135Z",
+      "fetchedAt": "2026-09-27T09:07:51.656Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-09-27T08:43:22.135Z",
+      "fetchedAt": "2026-09-27T09:07:51.656Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-09-27T08:43:22.135Z",
+      "fetchedAt": "2026-09-27T09:07:51.656Z",
       "status": "ok"
     }
   },
@@ -101,8 +101,8 @@
         "slug": "harness",
         "epicNumber": 138,
         "open": 38,
-        "ready": 25,
-        "inProgress": 2,
+        "ready": 24,
+        "inProgress": 3,
         "needsHuman": 0,
         "next": {
           "number": 148,
@@ -590,11 +590,6 @@
       {
         "number": 516,
         "title": "A lint for case-only filename collisions — two Mission Control PRs hit it in one day (macOS resolves the wrong module, CI on Linux passes)",
-        "project": "harness"
-      },
-      {
-        "number": 536,
-        "title": "The merge-on-green tool moves into the repo, with tests",
         "project": "harness"
       },
       {
@@ -1315,21 +1310,6 @@
       {
         "number": 516,
         "title": "A lint for case-only filename collisions — two Mission Control PRs hit it in one day (macOS resolves the wrong module, CI on Linux passes)",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:1"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 536,
-        "title": "The merge-on-green tool moves into the repo, with tests",
         "labels": [
           "project:harness",
           "agent-ready",
@@ -2866,6 +2846,22 @@
         "reason": "blocked:#531"
       },
       {
+        "number": 536,
+        "title": "The merge-on-green tool moves into the repo, with tests",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:1"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "in-progress"
+      },
+      {
         "number": 540,
         "title": "Backlog reporting: on-request tasks are not counted ready; dormant mode and a per-row cap are computed",
         "labels": [
@@ -2952,7 +2948,6 @@
         394,
         418,
         516,
-        536,
         537,
         538,
         154,
@@ -2967,6 +2962,7 @@
         530,
         531,
         535,
+        536,
         540
       ],
       "mission-control": [
@@ -3194,6 +3190,30 @@
       }
     ],
     "merged": [
+      {
+        "number": 544,
+        "title": "feat(conformance): vendor the Project 2 nand2tetris vectors at the pinned web-ide commit",
+        "url": "https://github.com/mezivillager/hacer/pull/544",
+        "author": "mezivillager",
+        "labels": [
+          "risk:2",
+          "project:foundation"
+        ],
+        "headRefName": "feat/193-vectors-02",
+        "isDraft": false,
+        "createdAt": "2026-09-27T08:49:11Z",
+        "mergedAt": "2026-09-27T09:06:49Z",
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus 5.5 (claude-opus-5-5)",
+            "at": "2026-09-27T09:04:46Z",
+            "url": "https://github.com/mezivillager/hacer/pull/544#issuecomment-5854479177"
+          }
+        ]
+      },
       {
         "number": 543,
         "title": "docs(harness): the 2026-09-26 reviews consolidated, and a standing brief for every cycle",
@@ -4539,30 +4559,13 @@
             "url": "https://github.com/mezivillager/hacer/pull/417#issuecomment-5793407267"
           }
         ]
-      },
-      {
-        "number": 416,
-        "title": "docs(development): record L-001 — the legacy corpus is hand-built, no real document exists",
-        "url": "https://github.com/mezivillager/hacer/pull/416",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:0",
-          "project:foundation"
-        ],
-        "headRefName": "docs/376-no-real-corpus",
-        "isDraft": false,
-        "createdAt": "2026-09-23T07:55:12Z",
-        "mergedAt": "2026-09-24T00:06:08Z",
-        "closes": [],
-        "verdicts": []
       }
     ],
     "coverage": {
       "merged": 60,
-      "withVerdict": 30,
-      "withoutVerdict": 30,
-      "pass": 29,
+      "withVerdict": 31,
+      "withoutVerdict": 29,
+      "pass": 30,
       "block": 1
     }
   },
@@ -4719,6 +4722,31 @@
           "author": "mezivillager",
           "at": "2026-09-27T08:27:54Z",
           "url": "https://github.com/mezivillager/hacer/issues/531#issuecomment-5854203110"
+        }
+      },
+      {
+        "number": 536,
+        "ref": "refs/heads/claim/536",
+        "sha": "8243a8a4a8b2448b0e766d1d4bf2c5dbe13905b6",
+        "state": "OPEN",
+        "title": "The merge-on-green tool moves into the repo, with tests",
+        "url": "https://github.com/mezivillager/hacer/issues/536",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:1"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "2026-09-27 review-followups",
+          "branch": "feat/536-merge-on-green",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-09-27T09:07:02Z",
+          "url": "https://github.com/mezivillager/hacer/issues/536#issuecomment-5854497619"
         }
       }
     ],
@@ -6171,7 +6199,7 @@
       },
       {
         "date": "2026-09-24",
-        "merges": 29
+        "merges": 28
       },
       {
         "date": "2026-09-25",
@@ -6183,7 +6211,7 @@
       },
       {
         "date": "2026-09-27",
-        "merges": 6
+        "merges": 7
       }
     ]
   },
@@ -6191,11 +6219,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "8243a8a4a8b2448b0e766d1d4bf2c5dbe13905b6",
+        "sha": "e5a3d38eff5b57620dcee782fda10c00a4d96ce2",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36307051878/job/108585641715",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36308334207/job/108589251382",
         "line": null,
         "verdict": null,
         "fields": {},
