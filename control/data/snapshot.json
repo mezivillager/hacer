@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-27T10:08:37.443Z",
+  "generatedAt": "2026-09-27T10:19:56.906Z",
   "head": {
-    "sha": "aa4d75ac17f912e5222cfbc8132451c86411c2bb",
-    "date": "2026-09-27T13:08:02+03:00",
-    "subject": "docs(harness): claim and release with backlog.mjs, and the 48 h stale-claim rule (#531)"
+    "sha": "eca3e3c08efe9f09daed31d68d54715135a81db0",
+    "date": "2026-09-27T13:19:08+03:00",
+    "subject": "chore(scripts): merge-on-green waits a pass before acting without a stuck suite (#536)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open",
-      "fetchedAt": "2026-09-27T10:08:37.443Z",
+      "fetchedAt": "2026-09-27T10:19:56.906Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open",
-      "fetchedAt": "2026-09-27T10:08:37.443Z",
+      "fetchedAt": "2026-09-27T10:19:56.906Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open",
-      "fetchedAt": "2026-09-27T10:08:37.443Z",
+      "fetchedAt": "2026-09-27T10:19:56.906Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-27T10:08:37.443Z",
+      "fetchedAt": "2026-09-27T10:19:56.906Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-09-27T10:08:37.443Z",
+      "fetchedAt": "2026-09-27T10:19:56.906Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-09-27T10:08:37.443Z",
+      "fetchedAt": "2026-09-27T10:19:56.906Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-09-27T10:08:37.443Z",
+      "fetchedAt": "2026-09-27T10:19:56.906Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-09-27T10:08:37.443Z",
+      "fetchedAt": "2026-09-27T10:19:56.906Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-09-27T10:08:37.443Z",
+      "fetchedAt": "2026-09-27T10:19:56.906Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-09-27T10:08:37.443Z",
+      "fetchedAt": "2026-09-27T10:19:56.906Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-27T10:08:37.443Z",
+      "fetchedAt": "2026-09-27T10:19:56.906Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-09-27T10:08:37.443Z",
+      "fetchedAt": "2026-09-27T10:19:56.906Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-09-27T10:08:37.443Z",
+      "fetchedAt": "2026-09-27T10:19:56.906Z",
       "status": "ok"
     }
   },
@@ -103,9 +103,9 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 37,
-        "ready": 24,
-        "inProgress": 1,
+        "open": 36,
+        "ready": 23,
+        "inProgress": 2,
         "needsHuman": 0,
         "staleClaims": [],
         "next": {
@@ -114,8 +114,8 @@
         },
         "title": "Epic: harness — autonomous-run improvements & agent-readiness",
         "subIssues": {
-          "completed": 27,
-          "percentCompleted": 47,
+          "completed": 28,
+          "percentCompleted": 49,
           "total": 57
         }
       },
@@ -606,11 +606,6 @@
       {
         "number": 516,
         "title": "A lint for case-only filename collisions — two Mission Control PRs hit it in one day (macOS resolves the wrong module, CI on Linux passes)",
-        "project": "harness"
-      },
-      {
-        "number": 537,
-        "title": "Write the loop's rules as practised: verification, commit types, run bounds, one close record, P-008",
         "project": "harness"
       },
       {
@@ -1335,21 +1330,6 @@
           "project:harness",
           "agent-ready",
           "risk:1"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 537,
-        "title": "Write the loop's rules as practised: verification, commit types, run bounds, one close record, P-008",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:0"
         ],
         "blocking": [],
         "project": "harness",
@@ -2836,6 +2816,7 @@
         "labels": [
           "project:harness",
           "agent-ready",
+          "in-progress",
           "risk:1"
         ],
         "blocking": [
@@ -2848,13 +2829,13 @@
         "reason": "claimed"
       },
       {
-        "number": 536,
-        "title": "The merge-on-green tool moves into the repo, with tests",
+        "number": 537,
+        "title": "Write the loop's rules as practised: verification, commit types, run bounds, one close record, P-008",
         "labels": [
           "project:harness",
           "agent-ready",
           "in-progress",
-          "risk:1"
+          "risk:0"
         ],
         "blocking": [],
         "project": "harness",
@@ -2963,7 +2944,6 @@
         394,
         418,
         516,
-        537,
         538,
         547,
         154,
@@ -2976,7 +2956,7 @@
         504,
         505,
         535,
-        536,
+        537,
         540,
         550
       ],
@@ -3073,21 +3053,19 @@
   "prs": {
     "open": [
       {
-        "number": 551,
-        "title": "chore(scripts): merge-on-green moves into the repo, with tests (#536)",
-        "url": "https://github.com/mezivillager/hacer/pull/551",
+        "number": 552,
+        "title": "feat(conformance): vendor the Project 4 nand2tetris vectors; refuse once for every directory, disregard dotfiles",
+        "url": "https://github.com/mezivillager/hacer/pull/552",
         "author": "mezivillager",
         "labels": [
-          "project:harness",
-          "risk:1"
+          "risk:2",
+          "project:foundation"
         ],
-        "headRefName": "feat/536-merge-on-green",
+        "headRefName": "feat/193-vectors-04",
         "isDraft": false,
-        "createdAt": "2026-09-27T09:59:56Z",
+        "createdAt": "2026-09-27T10:14:48Z",
         "mergedAt": null,
-        "closes": [
-          536
-        ],
+        "closes": [],
         "verdicts": []
       },
       {
@@ -3224,6 +3202,24 @@
       }
     ],
     "merged": [
+      {
+        "number": 553,
+        "title": "chore(scripts): merge-on-green moves into the repo, with tests (#536)",
+        "url": "https://github.com/mezivillager/hacer/pull/553",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:1"
+        ],
+        "headRefName": "feat/536-merge-on-green-r2",
+        "isDraft": false,
+        "createdAt": "2026-09-27T10:16:13Z",
+        "mergedAt": "2026-09-27T10:19:09Z",
+        "closes": [
+          536
+        ],
+        "verdicts": []
+      },
       {
         "number": 549,
         "title": "chore(backlog): exclusive claims; ready reports claimed and stale-claim (#531)",
@@ -4585,36 +4581,13 @@
         "mergedAt": "2026-09-23T12:09:49Z",
         "closes": [],
         "verdicts": []
-      },
-      {
-        "number": 422,
-        "title": "docs(harness): close the Grok Bot cloud-builder trial handoff",
-        "url": "https://github.com/mezivillager/hacer/pull/422",
-        "author": "mezivillager",
-        "labels": [
-          "released"
-        ],
-        "headRefName": "cursor/grok-bot-trial-handoff-done-a33f",
-        "isDraft": false,
-        "createdAt": "2026-09-23T11:28:43Z",
-        "mergedAt": "2026-09-23T11:37:09Z",
-        "closes": [],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Grok Bot (executor subagent)",
-            "at": "2026-09-23T11:36:37Z",
-            "url": "https://github.com/mezivillager/hacer/pull/422#issuecomment-5794103659"
-          }
-        ]
       }
     ],
     "coverage": {
       "merged": 60,
-      "withVerdict": 31,
-      "withoutVerdict": 29,
-      "pass": 30,
+      "withVerdict": 30,
+      "withoutVerdict": 30,
+      "pass": 29,
       "block": 1
     }
   },
@@ -4803,7 +4776,7 @@
         "number": 536,
         "ref": "refs/heads/claim/536",
         "sha": "8243a8a4a8b2448b0e766d1d4bf2c5dbe13905b6",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "The merge-on-green tool moves into the repo, with tests",
         "url": "https://github.com/mezivillager/hacer/issues/536",
         "labels": [
@@ -4812,7 +4785,7 @@
           "in-progress",
           "risk:1"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -4823,9 +4796,34 @@
           "at": "2026-09-27T09:07:02Z",
           "url": "https://github.com/mezivillager/hacer/issues/536#issuecomment-5854497619"
         }
+      },
+      {
+        "number": 537,
+        "ref": "refs/heads/claim/537",
+        "sha": "aa4d75ac17f912e5222cfbc8132451c86411c2bb",
+        "state": "OPEN",
+        "title": "Write the loop's rules as practised: verification, commit types, run bounds, one close record, P-008",
+        "url": "https://github.com/mezivillager/hacer/issues/537",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:0"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "2026-09-27 review-followups",
+          "branch": "docs/537-rules-as-practised",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-09-27T10:16:48Z",
+          "url": "https://github.com/mezivillager/hacer/issues/537#issuecomment-5854968363"
+        }
       }
     ],
-    "onClosedIssues": 2
+    "onClosedIssues": 3
   },
   "cloudLane": {
     "items": [
@@ -6285,7 +6283,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-23",
-        "merges": 6
+        "merges": 5
       },
       {
         "date": "2026-09-24",
@@ -6301,7 +6299,7 @@
       },
       {
         "date": "2026-09-27",
-        "merges": 10
+        "merges": 11
       }
     ]
   },
@@ -6309,11 +6307,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "aa4d75ac17f912e5222cfbc8132451c86411c2bb",
+        "sha": "eca3e3c08efe9f09daed31d68d54715135a81db0",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36311558591/job/108598363125",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36312147370/job/108600044752",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -6625,43 +6623,43 @@
         "disagrees": false
       },
       {
-        "pr": 551,
-        "sha": "fb7f139d6b8843b26ea3e133b4501fccda844996",
+        "pr": 552,
+        "sha": "3199f3a917684fd116d437985531cf62dcbde40b",
         "check": "pr-hygiene",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-09-27T10:00:09Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36311114793/job/108597105910",
-        "line": "HYGIENE: WARN reviewable=330 test=303 excluded=1798 files=4 issue=#536 linked=fixes",
-        "verdict": "WARN",
+        "conclusion": "FAILURE",
+        "completedAt": "2026-09-27T10:15:02Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36311916317/job/108599401365",
+        "line": "HYGIENE: FAIL reviewable=133 test=162 excluded=196 files=4 issue=#193,#548 linked=fixes",
+        "verdict": "FAIL",
         "fields": {
-          "reviewable": 330,
-          "test": 303,
-          "excluded": 1798,
+          "reviewable": 133,
+          "test": 162,
+          "excluded": 196,
           "files": 4,
-          "issue": "#536",
+          "issue": "#193,#548",
           "linked": "fixes"
         },
         "disagrees": false
       },
       {
-        "pr": 551,
-        "sha": "fb7f139d6b8843b26ea3e133b4501fccda844996",
+        "pr": 552,
+        "sha": "3199f3a917684fd116d437985531cf62dcbde40b",
         "check": "browser-qa",
         "conclusion": "SUCCESS",
-        "completedAt": "2026-09-27T10:00:09Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36311114592/job/108597105139",
+        "completedAt": "2026-09-27T10:15:05Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36311916173/job/108599400315",
         "line": "BROWSER-QA: skipped (no critical paths)",
         "verdict": "SKIPPED",
         "fields": {},
         "disagrees": false
       },
       {
-        "pr": 551,
-        "sha": "fb7f139d6b8843b26ea3e133b4501fccda844996",
+        "pr": 552,
+        "sha": "3199f3a917684fd116d437985531cf62dcbde40b",
         "check": "ci",
         "conclusion": "SUCCESS",
-        "completedAt": "2026-09-27T10:02:40Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36311114645/job/108597105028",
+        "completedAt": "2026-09-27T10:16:57Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36311915969/job/108599399176",
         "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
         "verdict": "PASS",
         "fields": {
