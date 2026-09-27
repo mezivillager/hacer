@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-27T08:33:40.693Z",
+  "generatedAt": "2026-09-27T08:37:57.968Z",
   "head": {
-    "sha": "30ff96593a7b85b08b361b3e38c86a1e4051c07a",
-    "date": "2026-09-27T11:32:54+03:00",
-    "subject": "docs(harness): the cloud lane takes only work nothing else waits on"
+    "sha": "3604dd2edbd13e7de7fdfcd00490d62b3dbcf547",
+    "date": "2026-09-27T11:37:09+03:00",
+    "subject": "docs(harness): process reviews get one home and one layout"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-27T08:33:40.693Z",
+      "fetchedAt": "2026-09-27T08:37:57.968Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-27T08:33:40.693Z",
+      "fetchedAt": "2026-09-27T08:37:57.968Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-27T08:33:40.693Z",
+      "fetchedAt": "2026-09-27T08:37:57.968Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-27T08:33:40.693Z",
+      "fetchedAt": "2026-09-27T08:37:57.968Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-09-27T08:33:40.693Z",
+      "fetchedAt": "2026-09-27T08:37:57.968Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-09-27T08:33:40.693Z",
+      "fetchedAt": "2026-09-27T08:37:57.968Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-09-27T08:33:40.693Z",
+      "fetchedAt": "2026-09-27T08:37:57.968Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-09-27T08:33:40.693Z",
+      "fetchedAt": "2026-09-27T08:37:57.968Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-09-27T08:33:40.693Z",
+      "fetchedAt": "2026-09-27T08:37:57.968Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-09-27T08:33:40.693Z",
+      "fetchedAt": "2026-09-27T08:37:57.968Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-27T08:33:40.693Z",
+      "fetchedAt": "2026-09-27T08:37:57.968Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-09-27T08:33:40.693Z",
+      "fetchedAt": "2026-09-27T08:37:57.968Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-09-27T08:33:40.693Z",
+      "fetchedAt": "2026-09-27T08:37:57.968Z",
       "status": "ok"
     }
   },
@@ -100,8 +100,8 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 34,
-        "ready": 22,
+        "open": 39,
+        "ready": 25,
         "inProgress": 2,
         "needsHuman": 0,
         "next": {
@@ -111,8 +111,8 @@
         "title": "Epic: harness — autonomous-run improvements & agent-readiness",
         "subIssues": {
           "completed": 24,
-          "percentCompleted": 47,
-          "total": 51
+          "percentCompleted": 42,
+          "total": 56
         }
       },
       {
@@ -268,8 +268,8 @@
         "lane": "aux",
         "slug": "upkeep",
         "epicNumber": 146,
-        "open": 5,
-        "ready": 3,
+        "open": 7,
+        "ready": 5,
         "inProgress": 0,
         "needsHuman": 0,
         "next": {
@@ -279,8 +279,8 @@
         "title": "Epic: upkeep — maintenance & documentation",
         "subIssues": {
           "completed": 4,
-          "percentCompleted": 50,
-          "total": 8
+          "percentCompleted": 40,
+          "total": 10
         }
       },
       {
@@ -328,8 +328,8 @@
         "lane": "process",
         "slug": "mission-control",
         "epicNumber": 458,
-        "open": 5,
-        "ready": 4,
+        "open": 6,
+        "ready": 5,
         "inProgress": 0,
         "needsHuman": 0,
         "next": {
@@ -339,8 +339,8 @@
         "title": "Epic: mission-control — Mission Control: the platform's status, process and roadmap as one site",
         "subIssues": {
           "completed": 6,
-          "percentCompleted": 60,
-          "total": 10
+          "percentCompleted": 54,
+          "total": 11
         }
       }
     ]
@@ -488,9 +488,24 @@
         "project": "mission-control"
       },
       {
+        "number": 541,
+        "title": "husky's deprecated hook lines go, and #496 is checked against the real hooks",
+        "project": "upkeep"
+      },
+      {
         "number": 155,
         "title": "De-duplicate vendored skills (tdd/test-driven-development, debugging/systematic-debugging, planning/writing-plans) and fix sync-superpowers.sh",
         "project": "harness"
+      },
+      {
+        "number": 539,
+        "title": "Mission Control shows the flow numbers and the product's measures",
+        "project": "mission-control"
+      },
+      {
+        "number": 542,
+        "title": "OpenSSF Scorecard, advisory",
+        "project": "upkeep"
       },
       {
         "number": 159,
@@ -575,6 +590,21 @@
       {
         "number": 516,
         "title": "A lint for case-only filename collisions — two Mission Control PRs hit it in one day (macOS resolves the wrong module, CI on Linux passes)",
+        "project": "harness"
+      },
+      {
+        "number": 536,
+        "title": "The merge-on-green tool moves into the repo, with tests",
+        "project": "harness"
+      },
+      {
+        "number": 537,
+        "title": "Write the loop's rules as practised: verification, commit types, run bounds, one close record, P-008",
+        "project": "harness"
+      },
+      {
+        "number": 538,
+        "title": "Session records list the PRs a run merged, from merge times",
         "project": "harness"
       }
     ]
@@ -976,6 +1006,21 @@
         "reason": null
       },
       {
+        "number": 541,
+        "title": "husky's deprecated hook lines go, and #496 is checked against the real hooks",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
         "number": 155,
         "title": "De-duplicate vendored skills (tdd/test-driven-development, debugging/systematic-debugging, planning/writing-plans) and fix sync-superpowers.sh",
         "labels": [
@@ -987,6 +1032,36 @@
         "project": "harness",
         "rank": 2,
         "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 539,
+        "title": "Mission Control shows the flow numbers and the product's measures",
+        "labels": [
+          "agent-ready",
+          "risk:1",
+          "project:mission-control"
+        ],
+        "blocking": [],
+        "project": "mission-control",
+        "rank": 14,
+        "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 542,
+        "title": "OpenSSF Scorecard, advisory",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:1"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
         "pickable": true,
         "reason": null
       },
@@ -1244,6 +1319,51 @@
           "project:harness",
           "agent-ready",
           "risk:1"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 536,
+        "title": "The merge-on-green tool moves into the repo, with tests",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:1"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 537,
+        "title": "Write the loop's rules as practised: verification, commit types, run bounds, one close record, P-008",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:0"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 538,
+        "title": "Session records list the PRs a run merged, from merge times",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:0"
         ],
         "blocking": [],
         "project": "harness",
@@ -2719,7 +2839,9 @@
           "in-progress",
           "risk:1"
         ],
-        "blocking": [],
+        "blocking": [
+          535
+        ],
         "project": "harness",
         "rank": 2,
         "lane": "process",
@@ -2739,6 +2861,38 @@
         "lane": "process",
         "pickable": false,
         "reason": "unshaped"
+      },
+      {
+        "number": 535,
+        "title": "Successive top picks follow the eight-slot cycle",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:1"
+        ],
+        "blocking": [
+          540
+        ],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "blocked:#531"
+      },
+      {
+        "number": 540,
+        "title": "Backlog reporting: on-request tasks are not counted ready; dormant mode and a per-row cap are computed",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:1"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "blocked:#535"
       }
     ],
     "byProject": {
@@ -2812,6 +2966,9 @@
         394,
         418,
         516,
+        536,
+        537,
+        538,
         154,
         156,
         270,
@@ -2823,13 +2980,16 @@
         505,
         530,
         531,
-        533
+        533,
+        535,
+        540
       ],
       "mission-control": [
         478,
         479,
         480,
         513,
+        539,
         509
       ],
       "spine": [
@@ -2853,6 +3013,8 @@
         253,
         290,
         421,
+        541,
+        542,
         229,
         256
       ],
@@ -3047,6 +3209,22 @@
       }
     ],
     "merged": [
+      {
+        "number": 534,
+        "title": "docs(harness): process reviews get one home and one layout",
+        "url": "https://github.com/mezivillager/hacer/pull/534",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/reviews-home",
+        "isDraft": false,
+        "createdAt": "2026-09-27T08:34:26Z",
+        "mergedAt": "2026-09-27T08:37:10Z",
+        "closes": [],
+        "verdicts": []
+      },
       {
         "number": 532,
         "title": "docs(harness): the cloud lane takes only work nothing else waits on",
@@ -4390,23 +4568,6 @@
         "isDraft": false,
         "createdAt": "2026-09-23T05:49:55Z",
         "mergedAt": "2026-09-24T12:56:15Z",
-        "closes": [],
-        "verdicts": []
-      },
-      {
-        "number": 413,
-        "title": "chore(deps): bump @radix-ui/react-toggle-group from 1.1.11 to 1.1.19",
-        "url": "https://github.com/mezivillager/hacer/pull/413",
-        "author": "app/dependabot",
-        "labels": [
-          "released",
-          "dependencies",
-          "javascript"
-        ],
-        "headRefName": "dependabot/npm_and_yarn/radix-ui/react-toggle-group-1.1.19",
-        "isDraft": false,
-        "createdAt": "2026-09-23T05:49:39Z",
-        "mergedAt": "2026-09-24T12:55:19Z",
         "closes": [],
         "verdicts": []
       }
@@ -6024,7 +6185,7 @@
       },
       {
         "date": "2026-09-24",
-        "merges": 31
+        "merges": 30
       },
       {
         "date": "2026-09-25",
@@ -6036,7 +6197,7 @@
       },
       {
         "date": "2026-09-27",
-        "merges": 4
+        "merges": 5
       }
     ]
   },
@@ -6044,11 +6205,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "30ff96593a7b85b08b361b3e38c86a1e4051c07a",
+        "sha": "3604dd2edbd13e7de7fdfcd00490d62b3dbcf547",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36306544638/job/108584207820",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36306765204/job/108584831950",
         "line": null,
         "verdict": null,
         "fields": {},
