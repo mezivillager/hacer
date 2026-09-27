@@ -1,10 +1,10 @@
 #!/usr/bin/env node
-// Extract .hdl/.tst/.cmp text from a web-ide checkout that sync-vectors.sh has already
+// Extract .hdl/.tst/.cmp/.asm text from a web-ide checkout that sync-vectors.sh has already
 // pinned. The checkout is data: each project's index.ts is read as text for the files it
 // ships, and this process imports the upstream string modules those files come from and
-// writes their template text. It does not run web-ide. Every file is read, and every vendored
-// project directory checked for files upstream does not ship, before any is written, so a
-// refusal leaves the tree as it was. It never deletes a vector.
+// writes their template text. It does not run web-ide. Every vendored project directory is
+// checked for files upstream does not ship, and one refusal names them all, before any file is
+// read or written, so a refusal leaves the tree as it was. It never deletes a vector.
 //
 //   node --experimental-strip-types scripts/sync-vectors.mjs <web-ide-root> <vectors-root>
 
@@ -19,13 +19,22 @@ if (!webIdeRoot || !vectorsRoot) {
   process.exit(2)
 }
 
-const writes = []
-for (const project of VENDORED_PROJECTS) {
+const projects = VENDORED_PROJECTS.map((project) => {
   const sourceDir = path.join(webIdeRoot, 'projects', 'src', `project_${project}`)
   const entries = shippedFiles(readFileSync(path.join(sourceDir, 'index.ts'), 'utf8'))
   if (entries.length === 0) throw new Error(`${sourceDir}/index.ts ships no files`)
-  const targetDir = path.join(vectorsRoot, project)
-  refuseUnshipped(project, existsSync(targetDir) ? readdirSync(targetDir) : [], entries.map((entry) => entry.file))
+  return { project, sourceDir, targetDir: path.join(vectorsRoot, project), entries }
+})
+refuseUnshipped(
+  projects.map(({ project, targetDir, entries }) => ({
+    project,
+    onDisk: existsSync(targetDir) ? readdirSync(targetDir) : [],
+    shipped: entries.map((entry) => entry.file),
+  })),
+)
+
+const writes = []
+for (const { sourceDir, targetDir, entries } of projects) {
   for (const entry of entries) {
     const mod = await import(pathToFileURL(path.join(sourceDir, entry.module)).href)
     writes.push({ file: path.join(targetDir, entry.file), text: exportText(mod, entry) })

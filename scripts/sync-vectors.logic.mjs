@@ -94,28 +94,37 @@ export function shippedFiles(indexSource) {
 }
 
 /**
- * Throws when a vendored project directory holds a file its upstream index.ts does not ship.
- * The sync refuses rather than deletes: the tree is a held-out oracle, so a vector leaves it only
- * by a reviewed `git rm`, never as a side effect of a run, including one whose parser reads a
- * later index.ts short. Files that are shipped but missing are fine; the sync writes them.
- * @param {string} project
- * @param {string[]} onDisk names in conformance/vectors/<project>/, [] before the first sync
- * @param {string[]} shipped
+ * The names in a vendored directory that the exact-files check reads: all but dotfiles, such as
+ * Finder's .DS_Store or an editor's swap file. Disregarding them cannot hide a vector: FILE_NAME
+ * makes shippedFiles refuse a name that does not start with a letter or digit, so the sync never
+ * ships a dotfile, and no index.ts under web-ide's projects/src names one at the pin.
+ * @param {string[]} names
  */
-export function refuseUnshipped(project, onDisk, shipped) {
-  const wanted = new Set(shipped)
-  const extra = onDisk.filter((name) => !wanted.has(name)).sort()
-  if (extra.length > 0) {
-    throw new Error(
-      `conformance/vectors/${project} holds ${extra.join(', ')}, which upstream does not ship at ${WEB_IDE_COMMIT}. ` +
-        'If upstream dropped it, git rm it in its own commit and re-run.',
-    )
-  }
+export function vendoredNames(names) {
+  return names.filter((name) => !name.startsWith('.'))
 }
 
-/** Red stub for #193's Project 4 slice: the dotfile rule is not implemented yet. */
-export function vendoredNames(names) {
-  return names
+/**
+ * Throws once, naming every vendored project directory that holds a file its upstream index.ts
+ * does not ship, so one run shows them all. The sync refuses rather than deletes (R754): the tree
+ * is a held-out oracle, so a vector leaves it only by a reviewed `git rm`, never as a side effect
+ * of a run, including one whose parser reads a later index.ts short. Files that are shipped but
+ * missing are fine; the sync writes them. Dotfiles are disregarded (vendoredNames).
+ * @param {{project: string, onDisk: string[], shipped: string[]}[]} directories onDisk is the
+ *   names in conformance/vectors/<project>/, [] before the first sync
+ */
+export function refuseUnshipped(directories) {
+  const strays = directories.flatMap(({ project, onDisk, shipped }) => {
+    const wanted = new Set(shipped)
+    const extra = vendoredNames(onDisk).filter((name) => !wanted.has(name)).sort()
+    return extra.length > 0 ? [`conformance/vectors/${project} holds ${extra.join(', ')}`] : []
+  })
+  if (strays.length > 0) {
+    throw new Error(
+      `${strays.join('; ')}. Upstream does not ship them at ${WEB_IDE_COMMIT}. If upstream dropped one, ` +
+        'remove it and re-run: git rm it in a commit of its own if git tracks it, or delete it if not.',
+    )
+  }
 }
 
 function withTrailingNewline(text) {
