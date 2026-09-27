@@ -1,0 +1,1 @@
+query { search(query: "repo:mezivillager/hacer is:pr is:merged merged:>=2026-09-11T00:30:00+00:00", type: ISSUE, first: 100) { pageInfo { hasNextPage endCursor } nodes { ... on PullRequest { number createdAt mergedAt author { login } files(first: 100) { nodes { path } } comments(first: 100) { nodes { author { login } body createdAt url } } } } } }

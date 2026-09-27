@@ -84,6 +84,7 @@
         "ready": 12,
         "inProgress": 2,
         "needsHuman": 0,
+        "agentReady": 15,
         "next": {
           "number": 193,
           "title": "Vendor the official nand2tetris vectors (projects 1–5) from web-ide via a sync script; confirm the licence that covers them"
@@ -104,6 +105,7 @@
         "ready": 23,
         "inProgress": 1,
         "needsHuman": 0,
+        "agentReady": 24,
         "next": {
           "number": 148,
           "title": "Bootstrap the backlog: retire tasks/todo.md and the P05 checklist as history; AGENTS.md Step 1.0 points at GitHub Issues"
@@ -124,6 +126,7 @@
         "ready": 1,
         "inProgress": 0,
         "needsHuman": 0,
+        "agentReady": 1,
         "next": {
           "number": 206,
           "title": "Register user HDL into the user chip registry (no getUserChipRegistry().register call exists today) — sub-task of P05-18"
@@ -144,6 +147,7 @@
         "ready": 1,
         "inProgress": 0,
         "needsHuman": 0,
+        "agentReady": 3,
         "next": {
           "number": 263,
           "title": "docs/public: HDL language reference (the nand2tetris subset HACER accepts today, and what it rejects)"
@@ -164,6 +168,7 @@
         "ready": 2,
         "inProgress": 0,
         "needsHuman": 0,
+        "agentReady": 2,
         "next": {
           "number": 371,
           "title": "compileHDL does not bounds-check a slice on the external side of a connection"
@@ -184,6 +189,7 @@
         "ready": 0,
         "inProgress": 0,
         "needsHuman": 0,
+        "agentReady": 2,
         "next": null,
         "title": "Epic: verify — QA service",
         "subIssues": {
@@ -201,6 +207,7 @@
         "ready": 1,
         "inProgress": 0,
         "needsHuman": 0,
+        "agentReady": 1,
         "next": {
           "number": 175,
           "title": "P05-30: Splitter/joiner for bit-level access on placed chips — verify first, P05-12a may have delivered it"
@@ -221,6 +228,7 @@
         "ready": 0,
         "inProgress": 0,
         "needsHuman": 0,
+        "agentReady": 3,
         "next": null,
         "title": "Epic: 3d — 3D surface sustainability",
         "subIssues": {
@@ -238,6 +246,7 @@
         "ready": 0,
         "inProgress": 0,
         "needsHuman": 0,
+        "agentReady": 0,
         "next": null,
         "title": "Epic: polish — UI polish",
         "subIssues": {
@@ -255,6 +264,7 @@
         "ready": 0,
         "inProgress": 0,
         "needsHuman": 0,
+        "agentReady": 0,
         "next": null,
         "title": "Epic: bugs",
         "subIssues": {
@@ -272,6 +282,7 @@
         "ready": 3,
         "inProgress": 0,
         "needsHuman": 0,
+        "agentReady": 4,
         "next": {
           "number": 253,
           "title": "Two living docs still describe the pre-chipName gate recipe (verifier nit on #248)"
@@ -292,6 +303,7 @@
         "ready": 1,
         "inProgress": 0,
         "needsHuman": 0,
+        "agentReady": 1,
         "next": {
           "number": 230,
           "title": "Research note: below the NAND gate — switch-level / transistor-level simulation survey; tscircuit as an architectural twin"
@@ -312,6 +324,7 @@
         "ready": 2,
         "inProgress": 0,
         "needsHuman": 0,
+        "agentReady": 6,
         "next": {
           "number": 467,
           "title": "Lineage DL-2: trace, radius, check, graph — and lint:lineage in warn mode"
@@ -332,6 +345,7 @@
         "ready": 1,
         "inProgress": 1,
         "needsHuman": 0,
+        "agentReady": 8,
         "next": {
           "number": 477,
           "title": "Mission Control MC-6: the checks publish their summary lines somewhere a program can read them"
@@ -572,7 +586,14 @@
         "title": "The layer rules themselves are unguarded: an emptied .dependency-cruiser.cjs passes lint:layers and pr-hygiene never reads a config-only PR",
         "project": "harness"
       }
-    ]
+    ],
+    "dormant": {
+      "dormant": false,
+      "agentPrs": [
+        499,
+        459
+      ]
+    }
   },
   "tasks": {
     "items": [
@@ -5851,7 +5872,133 @@
         "date": "2026-09-25",
         "merges": 1
       }
-    ]
+    ],
+    "flow": {
+      "days": 14,
+      "since": "2026-09-11T03:16:09.339Z",
+      "merged": 118,
+      "openToMergeHours": {
+        "median": 0.3,
+        "p90": 12.1
+      },
+      "blockedOnce": {
+        "count": 15,
+        "of": 51,
+        "prs": [
+          238,
+          248,
+          273,
+          294,
+          305,
+          312,
+          319,
+          320,
+          351,
+          396,
+          399,
+          432,
+          444,
+          490,
+          491
+        ]
+      },
+      "coverage": {
+        "code": {
+          "merged": 56,
+          "withVerdict": 41,
+          "without": [
+            133,
+            134,
+            135,
+            136,
+            250,
+            285,
+            287,
+            288,
+            303,
+            306,
+            307,
+            442,
+            443,
+            445,
+            449
+          ]
+        },
+        "nonCode": {
+          "merged": 62,
+          "withVerdict": 10,
+          "without": [
+            113,
+            115,
+            116,
+            117,
+            118,
+            131,
+            132,
+            137,
+            234,
+            237,
+            240,
+            243,
+            254,
+            272,
+            276,
+            277,
+            283,
+            286,
+            292,
+            293,
+            297,
+            298,
+            310,
+            314,
+            341,
+            343,
+            346,
+            348,
+            350,
+            354,
+            358,
+            393,
+            411,
+            412,
+            413,
+            414,
+            416,
+            423,
+            425,
+            426,
+            428,
+            439,
+            440,
+            441,
+            446,
+            447,
+            463,
+            464,
+            493,
+            494,
+            495,
+            497
+          ]
+        }
+      }
+    },
+    "conformance": {
+      "projects": [
+        {
+          "project": "01",
+          "files": 48,
+          "byExtension": {
+            "cmp": 16,
+            "hdl": 16,
+            "tst": 16
+          }
+        }
+      ],
+      "files": 48,
+      "runner": null
+    }
   },
   "checks": {
     "until": "MC-6",

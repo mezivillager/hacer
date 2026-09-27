@@ -15,6 +15,17 @@ export interface Claim {
   claim: { claimedBy: string | null; intent: string | null } | null
 }
 export interface CloudLaneItem { number: number | null; status: string; claimStatus: string; cloudAgentId: string }
+/** Verdict coverage of one kind of merged PR: how many, how many with a verdict, and the numbers of those without. */
+export interface Coverage { merged: number; withVerdict: number; without: number[] }
+/** `metrics.flow` (#539): the PRs merged in the `days` to the snapshot; null when the collector could not read them. */
+export interface Flow {
+  days: number; since: string; merged: number; openToMergeHours: { median: number | null; p90: number | null }
+  blockedOnce: { count: number; of: number; prs: number[] }; coverage: { code: Coverage; nonCode: Coverage }
+}
+/** `metrics.conformance` (#539): the vendored projects' files; `runner` stays null until something runs them (#194). */
+export interface Conformance {
+  projects: { project: string; files: number; byExtension: Record<string, number> }[]; files: number; runner: null
+}
 export interface Snapshot {
   schemaVersion: 1; generatedAt: string; head: { sha: string; subject: string }; freshness: Record<string, Freshness>
   portfolio: { projects: Project[] }; pickRule: { next: { number: number; title: string; project: string | null }[] }
@@ -23,7 +34,10 @@ export interface Snapshot {
   claims: { items: Claim[]; onClosedIssues: number }
   cloudLane: { items: CloudLaneItem[] }
   sessions: { items: { file: string; date: string; kind: string; title: string | null }[] }
-  metrics: { ratchet: { count: number; history: { count: number }[] }; releases: { tag: string; publishedAt: string; isLatest: boolean }[] }
+  metrics: {
+    ratchet: { count: number; history: { count: number }[] }; releases: { tag: string; publishedAt: string; isLatest: boolean }[]
+    flow: Flow | null; conformance: Conformance | null
+  }
   checks: { until?: string; items: unknown[] }
 }
 
