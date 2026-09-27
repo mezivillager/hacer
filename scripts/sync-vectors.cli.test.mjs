@@ -60,4 +60,33 @@ describe('sync-vectors.mjs', () => {
     expect(readdirSync(path.join(checkout.vectors, seeded))).toEqual(['Stale.tst'])
     expect(existsSync(path.join(checkout.vectors, 'LICENSE'))).toBe(false)
   })
+
+  it('refuses once, naming the stray files in every vendored directory, before it writes anything', () => {
+    const checkout = disposableCheckout()
+    const [first, last] = [VENDORED_PROJECTS[0], VENDORED_PROJECTS.at(-1)]
+    for (const [project, stray] of [[first, 'Stale.tst'], [last, 'Extra.cmp']]) {
+      mkdirSync(path.join(checkout.vectors, project), { recursive: true })
+      writeFileSync(path.join(checkout.vectors, project, stray), '| stray |\n')
+    }
+
+    const result = sync(checkout)
+
+    expect(result.status).not.toBe(0)
+    expect(result.stderr).toMatch(new RegExp(`vectors/${first} holds Stale\\.tst; conformance/vectors/${last} holds Extra\\.cmp`))
+    expect(readdirSync(checkout.vectors).sort()).toEqual([first, last])
+    expect(readdirSync(path.join(checkout.vectors, first))).toEqual(['Stale.tst'])
+    expect(readdirSync(path.join(checkout.vectors, last))).toEqual(['Extra.cmp'])
+  })
+
+  it("disregards a dotfile such as Finder's .DS_Store, syncing around it and leaving it in place", () => {
+    const checkout = disposableCheckout()
+    const project = VENDORED_PROJECTS[0]
+    mkdirSync(path.join(checkout.vectors, project), { recursive: true })
+    writeFileSync(path.join(checkout.vectors, project, '.DS_Store'), 'Finder\n')
+
+    const result = sync(checkout)
+
+    expect(result.status, result.stderr).toBe(0)
+    expect(readdirSync(path.join(checkout.vectors, project)).sort()).toEqual(['.DS_Store', `P${project}.hdl`])
+  })
 })
