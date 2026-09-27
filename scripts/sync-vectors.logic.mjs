@@ -13,6 +13,16 @@ export const WEB_IDE_COMMIT = '52611ad9bc2a30d329293b0cf58be672d672ac96'
 /** Project 1 only. Projects 2–5 are follow-ups to #193. */
 export const VENDORED_PROJECTS = ['01']
 
+/** Red stub (#193): the files a project's upstream index.ts ships. */
+export function shippedFiles() {
+  throw new Error('not implemented')
+}
+
+/** Red stub (#193): one shipped file's text, read from its module export. */
+export function exportText() {
+  throw new Error('not implemented')
+}
+
 /** @param {string[]} [projects] */
 export function sparsePaths(projects = VENDORED_PROJECTS) {
   return projects.map((project) => `projects/src/project_${project}`)
