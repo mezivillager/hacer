@@ -10,7 +10,8 @@ import path from 'node:path'
 import { parseArgs, promisify } from 'node:util'
 import { KNOWN_VIOLATIONS_FILE as BASELINE } from '../layer-ratchet.logic.mjs'
 import {
-  buildSnapshot, checksQuery, claimHistoryQuery, claimsQuery, parsePortfolio, parsePrevious, readClaimHistory, report,
+  buildSnapshot, checksQuery, claimHistoryQuery, claimsQuery, flowQuery, parsePortfolio, parsePrevious, readClaimHistory, readFlowPages,
+  report,
 } from './collect.logic.mjs'
 
 const REPO = process.env.GITHUB_REPOSITORY ?? 'mezivillager/hacer'
@@ -20,6 +21,7 @@ const PR_FIELDS = 'number,title,url,author,labels,headRefName,createdAt,mergedAt
 const exec = promisify(execFile)
 const OPTIONS = { cwd: ROOT, maxBuffer: 256 * 1024 * 1024 }
 const { values: flags } = parseArgs({ options: { json: { type: 'boolean' }, previous: { type: 'string' } } })
+const STARTED = new Date().toISOString() // the flow window's end; the build's own `now` is a few seconds on, inside it
 
 /** `gh … --json` from PATH, else the release binary in ~/.local/bin (as backlog.mjs); an error carries gh's message. */
 async function gh(...args) {
@@ -36,6 +38,9 @@ const git = async (...args) => (await exec('git', args, OPTIONS)).stdout
 const read = (file) => readFileSync(path.join(ROOT, file), 'utf8')
 const readDir = (dir) => readdirSync(path.join(ROOT, dir)).filter((file) => file.endsWith('.md')).sort()
   .map((file) => ({ file: `${dir}/${file}`, text: read(`${dir}/${file}`) }))
+/** Every file under a directory, relative to it, forward-slashed. */
+const listFiles = (dir) => readdirSync(path.join(ROOT, dir), { recursive: true, withFileTypes: true }).filter((entry) => entry.isFile())
+  .map((entry) => path.relative(path.join(ROOT, dir), path.join(entry.parentPath, entry.name)).split(path.sep).join('/'))
 
 async function ratchetHistory() {
   if ((await git('rev-parse', '--is-shallow-repository')).trim() === 'true') throw new Error('shallow clone: needs fetch-depth 0')
@@ -53,6 +58,7 @@ const SOURCES = {
   prsMerged: ['gh pr list --state merged --limit 60', () => list('pr', '--state', 'merged', '--limit', '60', '--json', PR_FIELDS)],
   releases: ['gh release list', () => list('release', '--limit', '1000', '--json', 'tagName,publishedAt,isLatest')],
   checkRuns: ['gh api graphql (check runs)', () => gh('api', 'graphql', '-f', `query=${checksQuery(REPO)}`)],
+  flowPrs: ['gh api graphql (flow)', () => readFlowPages((after) => gh('api', 'graphql', '-f', `query=${flowQuery(REPO, STARTED, after)}`))],
   claimRefs: ['git ls-remote origin refs/heads/claim/*', () => git('ls-remote', 'origin', 'refs/heads/claim/*')],
   ratchetLog: [`git log -- ${BASELINE}`, ratchetHistory],
   baseline: [BASELINE, () => JSON.parse(read(BASELINE))],
@@ -62,6 +68,7 @@ const SOURCES = {
   roadmap: file('docs/roadmap/README.md'),
   sessions: ['docs/harness/sessions', () => readDir('docs/harness/sessions')],
   adrs: ['docs/decisions', () => readDir('docs/decisions')],
+  vectors: ['conformance/vectors', () => listFiles('conformance/vectors')],
 }
 
 /** Every source settles to {source, value} or {source, error}, all at once: one failure stops nothing else. */
