@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // The flow numbers BRIEF.md §4 cites, re-measurable by the reviewer rather than taken on trust.
-// Usage: node measure-flow.mjs [--from 2026-09-18] [--to 2026-09-25] [--repo mezivillager/hacer]
+// Usage: node brief-measure-flow.mjs [--from 2026-09-18] [--to 2026-09-25] [--repo mezivillager/hacer]
 // Needs an authenticated `gh`. Read-only. Every number comes from GitHub at run time; "open now"
 // counts move, the dated ranges do not.
 import { execFileSync } from 'node:child_process'
