@@ -14,11 +14,11 @@ export const WEB_IDE_COMMIT = '52611ad9bc2a30d329293b0cf58be672d672ac96'
 /** Projects 1–5 are #193's scope; the ones not in VENDORED_PROJECTS yet are follow-ups. */
 const PLANNED_PROJECTS = ['01', '02', '03', '04', '05']
 
-/** Projects 1 to 3. Projects 4 and 5 are follow-ups to #193. */
-export const VENDORED_PROJECTS = ['01', '02', '03']
+/** Projects 1 to 4. Project 5 is a follow-up to #193. */
+export const VENDORED_PROJECTS = ['01', '02', '03', '04']
 
-/** Extensions a vendored file may have. The .asm (04) and .hack (05) slices widen this. */
-const VENDORED_EXTENSIONS = ['hdl', 'tst', 'cmp']
+/** Extensions a vendored file may have: Project 04's .tst files load .asm programs. The .hack (05) slice widens this. */
+const VENDORED_EXTENSIONS = ['hdl', 'tst', 'cmp', 'asm']
 
 const IDENTIFIER = '[A-Za-z_$][\\w$]*'
 /** `import * as X from "./NN_x.js";`, a string module in the project's own directory. */
@@ -27,6 +27,8 @@ const MODULE_IMPORT = new RegExp(`^import \\* as (${IDENTIFIER}) from "\\./([\\w
 const CHIPS_ENTRY = new RegExp(`^"([^"]+)"\\s*:\\s*(${IDENTIFIER})\\.(${IDENTIFIER})$`)
 /** `Name: X.export` in BUILTIN_CHIPS, shipped as Name.hdl. */
 const BUILTIN_ENTRY = new RegExp(`^(${IDENTIFIER})\\s*:\\s*(${IDENTIFIER})\\.(${IDENTIFIER})$`)
+/** `Name: { ... },`, one group of a TESTS map, whose body holds no brace. */
+const TESTS_GROUP = new RegExp(`^\\s*(${IDENTIFIER})\\s*:\\s*\\{([^{}]*)\\}\\s*,?`)
 const FILE_NAME = new RegExp(`^[A-Za-z0-9][\\w-]*\\.(?:${VENDORED_EXTENSIONS.join('|')})$`)
 const EXTENSION_LIST = VENDORED_EXTENSIONS.map((ext) => `.${ext}`).join(', ').replace(/, ([^,]+)$/, ' or $1')
 
@@ -63,11 +65,32 @@ function mapEntries(body, name, pattern) {
 }
 
 /**
+ * The entries of a TESTS map, Project 04's shape: `Name: { "File.ext": X.export, ... }` groups,
+ * which upstream writes one directory per Name. Each .tst loads its siblings by bare name and no
+ * name repeats across groups (shippedFiles throws on a repeat), so the groups flatten into the
+ * project's one directory, as every other project is laid out. Null when index.ts has no TESTS
+ * map; a map that is anything but such groups throws.
+ */
+function testsEntries(source) {
+  const open = /^export const TESTS\s*=\s*\{/m.exec(source)
+  if (!open) return null
+  let rest = source.slice(open.index + open[0].length)
+  const entries = []
+  for (let group = TESTS_GROUP.exec(rest); group; group = TESTS_GROUP.exec(rest)) {
+    entries.push(...mapEntries(group[2], `TESTS.${group[1]}`, CHIPS_ENTRY))
+    rest = rest.slice(group[0].length)
+  }
+  if (!/^\s*\}/.test(rest)) throw new Error('index.ts TESTS map is not a list of Name: { ... } groups')
+  return entries
+}
+
+/**
  * The files a project's upstream index.ts ships, in its order. index.ts imports web-ide's own
  * dependencies, so a sparse checkout cannot import it: it is read as text. Its CHIPS map gives
- * `"File.ext": X.export`, its BUILTIN_CHIPS map `Name: X.export` (shipped as Name.hdl), and X
- * must be one of its `import * as X from "./NN_x.js"` modules. Anything else throws, as does a
- * file shipped twice: the sync fails closed and never guesses (#193).
+ * `"File.ext": X.export`, or its TESTS map groups of those (Project 04); its BUILTIN_CHIPS map
+ * gives `Name: X.export` (shipped as Name.hdl); and X must be one of its
+ * `import * as X from "./NN_x.js"` modules. Anything else throws, as do both maps or neither and
+ * a file shipped twice: the sync fails closed and never guesses (#193).
  * @param {string} indexSource
  * @returns {{file: string, module: string, exportName: string}[]}
  */
@@ -76,10 +99,12 @@ export function shippedFiles(indexSource) {
     Array.from(indexSource.matchAll(MODULE_IMPORT), ([, alias, name]) => [alias, `${name}.ts`]),
   )
   const chips = mapBody(indexSource, 'CHIPS')
-  if (chips === null) throw new Error('index.ts has no CHIPS map')
+  const tests = testsEntries(indexSource)
+  if (chips === null && tests === null) throw new Error('index.ts has no CHIPS or TESTS map')
+  if (chips !== null && tests !== null) throw new Error('index.ts has both a CHIPS and a TESTS map')
   const builtins = mapEntries(mapBody(indexSource, 'BUILTIN_CHIPS') ?? '', 'BUILTIN_CHIPS', BUILTIN_ENTRY)
   const entries = [
-    ...mapEntries(chips, 'CHIPS', CHIPS_ENTRY),
+    ...(tests ?? mapEntries(chips, 'CHIPS', CHIPS_ENTRY)),
     ...builtins.map(([name, alias, exportName]) => [`${name}.hdl`, alias, exportName]),
   ]
   const seen = new Set()
@@ -148,7 +173,12 @@ export function exportText(mod, { file, module, exportName }) {
 export function licenseNotice() {
   const projects = VENDORED_PROJECTS.join(', ')
   const pending = PLANNED_PROJECTS.filter((project) => !VENDORED_PROJECTS.includes(project))
-  const followUps = pending.length > 0 ? ` Projects ${pending.join(', ')} are follow-ups and are not in this tree yet.` : ''
+  const followUps =
+    pending.length === 0
+      ? ''
+      : pending.length === 1
+        ? ` Project ${pending[0]} is a follow-up and is not in this tree yet.`
+        : ` Projects ${pending.join(', ')} are follow-ups and are not in this tree yet.`
   return (
     'Official nand2tetris project vectors, vendored for the HACER conformance oracle.\n' +
     '\n' +
@@ -159,13 +189,13 @@ export function licenseNotice() {
     'tree is that extracted text, not the modules.\n' +
     `Projects included: ${projects}.${followUps}\n` +
     '\n' +
-    'Licence of these .hdl / .tst / .cmp files:\n' +
+    `Licence of these ${VENDORED_EXTENSIONS.map((ext) => `.${ext}`).join(' / ')} files:\n` +
     'Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported\n' +
     '(CC BY-NC-SA 3.0).\n' +
     'https://creativecommons.org/licenses/by-nc-sa/3.0/\n' +
     'The rights holders state that licence for all Nand to Tetris materials and tools:\n' +
     'https://www.nand2tetris.org/license\n' +
-    'Copyright Noam Nisan and Shimon Schocken. Each .hdl and .tst file\'s header identifies the\n' +
+    'Copyright Noam Nisan and Shimon Schocken. Each .hdl, .tst and .asm file\'s header identifies the\n' +
     'text as part of www.nand2tetris.org and the book "The Elements of Computing Systems" (MIT Press).\n' +
     '\n' +
     'What this is not: web-ide\'s MIT license (Copyright 2022 David Souther et al.) does not cover these files.\n' +
