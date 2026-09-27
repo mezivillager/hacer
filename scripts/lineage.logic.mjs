@@ -494,7 +494,7 @@ function parseComparatorRange(text) {
   for (const part of parts) {
     const caret = /^\^(\d+(?:\.\d+){0,2})$/.exec(part)
     const tilde = /^~(\d+(?:\.\d+){0,2})$/.exec(part)
-    const comp = /^(<=|>=|<|>|=)?(\d+(?:\.\d+){0,2})$/.exec(part)
+    const comp = /^(<=|>=|<|>|=)?v?(\d+(?:\.\d+){0,2})$/.exec(part)
     if (caret) {
       const version = parseVer(caret[1])
       const [major, minor, patch] = version
@@ -520,11 +520,7 @@ function parseComparatorRange(text) {
   return range
 }
 
-const satisfies = (version, range) => {
-  if (range.min && (cmpVer(version, range.min) < 0 || (cmpVer(version, range.min) === 0 && !range.minInc))) return false
-  if (range.max && (cmpVer(version, range.max) > 0 || (cmpVer(version, range.max) === 0 && !range.maxInc))) return false
-  return true
-}
+// A bare version parses as the range `=v`, so "satisfies" and "is a subset of" are one test.
 const inside = (sub, dom) => {
   if (dom.min && (!sub.min || cmpVer(sub.min, dom.min) < 0 || (cmpVer(sub.min, dom.min) === 0 && sub.minInc && !dom.minInc))) return false
   if (dom.max && (!sub.max || cmpVer(sub.max, dom.max) > 0 || (cmpVer(sub.max, dom.max) === 0 && sub.maxInc && !dom.maxInc))) return false
@@ -534,10 +530,6 @@ const isSemverRange = (expect) => /[\^~<>=]/.test(expect) && parseComparatorRang
 const semverHolds = (output, expect) => {
   const want = parseComparatorRange(expect)
   if (!want) return false
-  if (!/[\^~<>=]/.test(output)) {
-    const version = parseVer(output)
-    if (version) return satisfies(version, want)
-  }
   const got = parseComparatorRange(output)
   return Boolean(got) && inside(got, want)
 }
