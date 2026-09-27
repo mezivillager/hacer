@@ -205,7 +205,8 @@ scripts/
 conformance/
 └── vectors/             # Held-out nand2tetris oracle. Not covered by HACER's MIT license.
     ├── LICENSE          # CC BY-NC-SA 3.0 notice + the pinned web-ide commit
-    └── 01/              # Project 1 .hdl/.tst/.cmp. Projects 2-5 are follow-ups.
+    ├── 01/              # Project 1 .hdl/.tst/.cmp
+    └── 02/              # Project 2 .hdl/.tst/.cmp. Projects 3-5 are follow-ups.
 
 .github/
 ├── copilot-instructions.md       # GitHub Copilot quick-start
@@ -227,8 +228,9 @@ Landed and shown in the tree above: `src/core/chips/` (registry, builtins, `eval
 `src/components/scene/ChipBody3D.tsx` + `src/components/scene/chipBodyLayout.ts`, `src/components/ui/icons/ChipIcons.tsx`,
 `src/components/ui/TestResultsPanel.tsx`, `src/components/ui/PinoutPanel.tsx`, `src/components/ui/StatusBar.tsx`,
 `src/store/actions/persistenceActions/`, and the bus components under `src/nodes/`.
-Held-out oracle (#193): official Project 1 vectors in `conformance/vectors/01/`, refreshed by
-`scripts/sync-vectors.sh`. The licence notice is `conformance/vectors/LICENSE`.
+Held-out oracle (#193): official Project 1 and 2 vectors in `conformance/vectors/01/` and
+`conformance/vectors/02/`, refreshed by `scripts/sync-vectors.sh` from the files each project's
+upstream index.ts in web-ide ships. The licence notice is `conformance/vectors/LICENSE`.
 `conformance/vectors/` is a protected path (`scripts/protected-paths.logic.mjs`).
 
 **Still to come (no files yet — do not cite paths for these until they exist):** an HDL editor panel,
