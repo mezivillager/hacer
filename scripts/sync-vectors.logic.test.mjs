@@ -8,6 +8,7 @@ import {
   WEB_IDE_URL,
   exportText,
   licenseNotice,
+  refuseUnshipped,
   shippedFiles,
   sparsePaths,
 } from './sync-vectors.logic.mjs'
@@ -49,11 +50,22 @@ function withoutLineComments(text) {
 }
 
 describe('sync pin', () => {
-  it('clones the public web-ide repo at one recorded commit, projects 01 and 02', () => {
+  it('clones the public web-ide repo at one recorded commit, projects 01 to 03', () => {
     expect(WEB_IDE_URL).toBe('https://github.com/nand2tetris/web-ide.git')
     expect(WEB_IDE_COMMIT).toMatch(/^[0-9a-f]{40}$/)
-    expect(VENDORED_PROJECTS).toEqual(['01', '02'])
-    expect(sparsePaths()).toEqual(['projects/src/project_01', 'projects/src/project_02'])
+    expect(VENDORED_PROJECTS).toEqual(['01', '02', '03'])
+    expect(sparsePaths()).toEqual(['projects/src/project_01', 'projects/src/project_02', 'projects/src/project_03'])
+  })
+
+  it('keeps one upstream index.ts fixture per vendored project, each recorded at WEB_IDE_COMMIT', () => {
+    const fixtures = readdirSync(FIXTURES).sort()
+    expect(fixtures).toEqual(VENDORED_PROJECTS.map((project) => `project_${project}.index.ts.txt`))
+    for (const project of VENDORED_PROJECTS) {
+      const [provenance] = upstreamIndex(project).split('\n')
+      expect(provenance, `project_${project}`).toBe(
+        `// Test fixture: nand2tetris/web-ide projects/src/project_${project}/index.ts at ${WEB_IDE_COMMIT}`,
+      )
+    }
   })
 })
 
@@ -86,6 +98,17 @@ describe('shipped files, read from upstream index.ts', () => {
     expect(files.map((entry) => entry.file).sort()).toEqual(readdirSync(new URL('01/', VECTORS)).sort())
   })
 
+  it('reads the 25 files Project 03 ships: its 24 CHIPS entries, then DFF.hdl from BUILTIN_CHIPS', () => {
+    const files = shippedFiles(upstreamIndex('03'))
+    const chips = ['Bit', 'Register', 'PC', 'RAM8', 'RAM64', 'RAM512', 'RAM4K', 'RAM16K']
+    expect(files.map((entry) => entry.file)).toEqual([
+      ...chips.flatMap((chip) => ['hdl', 'tst', 'cmp'].map((ext) => `${chip}.${ext}`)),
+      'DFF.hdl',
+    ])
+    expect(files).toContainEqual({ file: 'RAM4K.tst', module: '07_ram4k.ts', exportName: 'tst' })
+    expect(files.at(-1)).toEqual({ file: 'DFF.hdl', module: '00_dff.ts', exportName: 'hdl' })
+  })
+
   it("refuses an entry that is not a plain X.export reference (Project 05's RAM16K .replace)", () => {
     expect(() => shippedFiles(PROJECT_05_BUILTINS)).toThrow(/BUILTIN_CHIPS entry is not a plain X\.export reference/)
   })
@@ -116,6 +139,27 @@ describe('shipped files, read from upstream index.ts', () => {
   })
 })
 
+describe('exact files', () => {
+  it('refuses a vendored directory that holds a file upstream does not ship, and names every one', () => {
+    const shipped = ['Bit.hdl', 'Bit.tst', 'Bit.cmp']
+    expect(() => refuseUnshipped('03', ['Bit.cmp', 'Stale.tst', 'Bit.hdl', 'Bit.tst', '.DS_Store'], shipped))
+      .toThrow(/conformance\/vectors\/03 holds \.DS_Store, Stale\.tst, which upstream does not ship/)
+    expect(() => refuseUnshipped('03', ['Bit.hdl', 'Bit.tst', 'Bit.cmp'], shipped)).not.toThrow()
+  })
+
+  it('accepts a directory missing shipped files, or not there yet: the sync writes those', () => {
+    expect(() => refuseUnshipped('03', ['Bit.hdl'], ['Bit.hdl', 'Bit.tst', 'Bit.cmp'])).not.toThrow()
+    expect(() => refuseUnshipped('03', [], ['Bit.hdl'])).not.toThrow()
+  })
+
+  it('each vendored project directory holds exactly the files its upstream index.ts ships', () => {
+    for (const project of VENDORED_PROJECTS) {
+      const shipped = shippedFiles(upstreamIndex(project)).map((entry) => entry.file)
+      expect(readdirSync(new URL(`${project}/`, VECTORS)).sort(), project).toEqual([...shipped].sort())
+    }
+  })
+})
+
 describe('licence notice', () => {
   it('records the pinned commit and the licence of the vector content, not web-ide MIT', () => {
     const notice = licenseNotice()
@@ -132,9 +176,9 @@ describe('licence notice', () => {
     expect(notice.endsWith('\n')).toBe(true)
   })
 
-  it('names the vendored projects, 01 and 02', () => {
+  it('names the vendored projects, 01 to 03, and 04 and 05 as still to come', () => {
     const notice = licenseNotice()
-    expect(notice).toContain('Projects included: 01, 02.')
+    expect(notice).toContain('Projects included: 01, 02, 03. Projects 04, 05 are follow-ups and are not in this tree yet.')
     expect(notice).not.toContain('Projects 2-5')
   })
 
@@ -181,6 +225,26 @@ describe('Project 2 vectors', () => {
       } else {
         expect(text, file).toContain('This file is part of www.nand2tetris.org')
         expect(text, file).toContain(`File name: projects/2/${file}`)
+      }
+    }
+  })
+})
+
+describe('Project 3 vectors', () => {
+  it('conformance/vectors/03 is exactly the 25 shipped files, each .hdl and .tst under the nand2tetris header', () => {
+    const shipped = shippedFiles(upstreamIndex('03')).map((entry) => entry.file)
+    const onDisk = readdirSync(new URL('03/', VECTORS)).sort()
+    expect(onDisk).toEqual([...shipped].sort())
+    expect(onDisk).toHaveLength(25)
+    for (const file of onDisk) {
+      const text = readFileSync(new URL(`03/${file}`, VECTORS), 'utf8')
+      if (file.endsWith('.cmp')) {
+        expect(text.startsWith('|'), file).toBe(true)
+      } else {
+        expect(text, file).toContain('This file is part of www.nand2tetris.org')
+        expect(text, file).toContain('by Nisan and Schocken, MIT Press.')
+        // Upstream's headers name projects/3/a/Bit.hdl, but projects/03/a/PC.tst and projects/03/DFF.hdl.
+        expect(text, file).toMatch(new RegExp(`File name: projects/0?3/(?:[ab]/)?${file.replace('.', '\\.')}\n`))
       }
     }
   })

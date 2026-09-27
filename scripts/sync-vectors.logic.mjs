@@ -93,6 +93,9 @@ export function shippedFiles(indexSource) {
   })
 }
 
+/** Not implemented yet: the red commit's stub. */
+export function refuseUnshipped() {}
+
 function withTrailingNewline(text) {
   return text.endsWith('\n') ? text : `${text}\n`
 }
