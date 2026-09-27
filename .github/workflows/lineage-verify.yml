@@ -8,6 +8,13 @@ on:
     - cron: '17 6 * * 1'
   workflow_dispatch:
 
+# One group for every run, whatever the ref: a manual dispatch queues behind the cron run instead of
+# filing the same expiry beside it. This job posts no required context, so #530's rule against
+# shared groups (scripts/required-checks.logic.mjs) does not reach it.
+concurrency:
+  group: lineage-verify
+  cancel-in-progress: false
+
 permissions:
   contents: read
   issues: write

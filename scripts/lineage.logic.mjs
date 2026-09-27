@@ -570,6 +570,8 @@ export function classifyPremise(premise, run = {}) {
     return { ...base, status: 'unverifiable', reason }
   }
   const output = String(run.stdout ?? '')
+  // An answer of nothing (`npm view` on a field that is gone) is a lookup that did not answer.
+  if (output.trim() === '') return { ...base, status: 'unverifiable', reason: 'no output' }
   const holds = matchesExpect(output, premise.expect ?? '')
   return { ...base, status: holds ? 'holds' : 'expired', expect: premise.expect, output: output.trim() }
 }

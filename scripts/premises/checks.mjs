@@ -38,24 +38,29 @@ function bogusRef() {
 
 function peerInstall() {
   const dir = mkdtempSync(path.join(tmpdir(), 'hacer-peer-'))
+  let result
   try {
     writeFileSync(path.join(dir, 'package.json'), JSON.stringify({
       name: 'peer-warning', private: true,
       dependencies: { react: '19.3.0' },
       devDependencies: { '@react-three/fiber': '9.7.0' },
     }))
-    const result = spawnSync('pnpm', ['install', '--ignore-workspace'], { cwd: dir, encoding: 'utf8' })
-    if (result.error || result.status === null) {
-      console.error(result.error?.message ?? result.stderr)
-      process.exit(1)
-    }
-    process.stdout.write(`exit ${result.status}`)
+    result = spawnSync('pnpm', ['install', '--ignore-workspace'], { cwd: dir, encoding: 'utf8' })
   } finally {
     rmSync(dir, { recursive: true, force: true })
   }
+  // Only a peer refusal answers the premise. Any other failure (a registry fetch, a rate limit, no
+  // pnpm) is a lookup that did not happen: unverifiable, never a false `exit 1`.
+  const said = `${result.stdout ?? ''}${result.stderr ?? ''}`
+  if (result.error || result.status === null || (result.status !== 0 && !said.includes('ERR_PNPM_PEER_DEP_ISSUES'))) {
+    console.error(result.error?.message ?? said)
+    process.exit(1)
+  }
+  process.stdout.write(`exit ${result.status}`)
 }
 
-const commands = { 'fast-check': fastCheck, 'main-rules': mainRules, 'bogus-ref': bogusRef, 'peer-install': peerInstall }
+// A command that calls `gh` carries it in its name, so its Verify text shows it and `verify` skips it with no token.
+const commands = { 'fast-check': fastCheck, 'gh-main-rules': mainRules, 'gh-bogus-ref': bogusRef, 'peer-install': peerInstall }
 const run = commands[process.argv[2]]
 if (!run) {
   console.error(`usage: node scripts/premises/checks.mjs <${Object.keys(commands).join('|')}>`)
