@@ -1,7 +1,9 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { AUX_ROTATION, PICK_ROTATION, claimHistory, parsePortfolio, planReady, readClaims, summarizeProjects } from '../backlog.logic.mjs'
+import {
+  AUX_ROTATION, PICK_ROTATION, claimHistory, dormantMode, parsePortfolio, planReady, readClaims, summarizeProjects,
+} from '../backlog.logic.mjs'
 import {
   SCHEMA_VERSION, buildSnapshot, checksQuery, claimHistoryQuery, claimsQuery, parsePrevious, report, validateSnapshot,
 } from './collect.logic.mjs'
@@ -86,8 +88,8 @@ describe('collect.logic', () => {
     const plan = planReady(issues, rows, undefined, claims, history)
     const snapshot = build()
 
-    const summaries = snapshot.portfolio.projects.map(({ slug, epicNumber, open, ready, inProgress, needsHuman, staleClaims, next }) =>
-      ({ slug, epicNumber, open, ready, inProgress, needsHuman, staleClaims, next }))
+    // Every field but the four the collector adds is summarizeProjects' own, whatever fields it grows (#540: agentReady).
+    const summaries = snapshot.portfolio.projects.map(({ rank, lane, title, subIssues, ...summary }) => summary)
     expect(summaries).toEqual(summarizeProjects(issues, rows, undefined, claims, history))
     expect(snapshot.portfolio.projects.map(({ rank, lane }) => ({ rank, lane }))).toEqual(rows.map(({ rank, lane }) => ({ rank, lane })))
     expect(snapshot.tasks.items).toEqual(plan)
@@ -95,6 +97,7 @@ describe('collect.logic', () => {
       rotation: PICK_ROTATION,
       auxRotation: AUX_ROTATION,
       next: plan.filter((task) => task.reason === null).map(({ number, title, project }) => ({ number, title, project })),
+      dormant: dormantMode(fixture('gh-prs-open.json')),
     })
     expect(snapshot.pickRule.next.length).toBeGreaterThan(5) // the fixture exercises the rotation, not an empty plan
 
@@ -134,7 +137,9 @@ describe('collect.logic', () => {
 
   // #535: the cycle continues across calls from the claims made before, and the snapshot resumes it where `ready` does.
   it('resumes the cycle where ready does, from the claim history; without it, starts at slot 1 and says partial', () => {
-    expect(claimHistoryQuery('mezivillager/hacer')).toBe(fixtureText('gh-claim-history.graphql').trim())
+    // The recording predates the page info (#540); the query is otherwise the one it was run with.
+    expect(claimHistoryQuery('mezivillager/hacer').replace(' pageInfo { hasNextPage endCursor }', ''))
+      .toBe(fixtureText('gh-claim-history.graphql').trim())
     const next = (snapshot) => snapshot.pickRule.next.map((task) => `${task.number} ${task.project}`)
     const snapshot = build()
     // The recording's latest claim is #537, harness, the cycle's third slot: it resumes at the fourth, foundation.
@@ -148,6 +153,23 @@ describe('collect.logic', () => {
     for (const name of ['portfolio', 'pickRule', 'tasks']) {
       expect(unread.freshness[name]).toMatchObject({ status: 'partial', error: 'claimHistory: HTTP 502' })
     }
+  })
+
+  // #540: ready's dormant banner and its claim-history warning reach the snapshot too.
+  it('carries ready’s dormant mode in pickRule, and marks the pick sections partial when the claim history cannot fix the place', () => {
+    const recordedPrs = fixture('gh-prs-open.json')
+    expect(build().pickRule.dormant).toEqual({ dormant: false, agentPrs: [486, 461, 459] }) // #410 is Dependabot's
+    const five = [...recordedPrs, { ...recordedPrs[0], number: 900 }, { ...recordedPrs[0], number: 901 }]
+    expect(build({ prsOpen: ok('gh pr list --state open', five) }).pickRule.dormant).toEqual({ dormant: true, agentPrs: [486, 461, 459, 900, 901] })
+
+    const recording = fixture('gh-claim-history.json')
+    const unclaimed = { data: { repository: { issues: { nodes: recording.data.repository.issues.nodes.map((issue) => ({ ...issue, comments: { nodes: [] } })) } } } }
+    const blind = build({ claimHistory: ok('gh api graphql (claim history)', unclaimed) })
+    for (const name of ['portfolio', 'pickRule', 'tasks']) {
+      expect(blind.freshness[name]).toMatchObject({ status: 'partial', error: 'claimHistory: no claim in the 50 most recently updated issues fixes the slot' })
+    }
+    // The recording's claims fix the slot, and only upkeep holds a task in the aux slot: nothing is a guess.
+    expect(build().freshness.pickRule).toMatchObject({ status: 'ok' })
   })
 
   it('parses verdicts from the "## Verifier verdict:" heading, including round and model, and counts merged PRs without one', () => {
