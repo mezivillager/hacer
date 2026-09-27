@@ -5,7 +5,7 @@ forward without the owner's involvement. **Produces:** `REPORT.md` beside this f
 **Written by** the coordinator whose runs are under review, so every framing here is a claim to
 test, not a finding to adopt. That includes what the brief says works, not only what it doubts.
 Numbers were measured on 2026-09-26 at `origin/main` `60878a9`. They are a snapshot:
-`evidence/measure-flow.mjs` re-measures the GitHub ones (§4 lists the rest).
+`evidence/brief-measure-flow.mjs` re-measures the GitHub ones (§4 lists the rest).
 
 ## 1. The ask, and what to hold it against
 
@@ -120,7 +120,7 @@ The runs' end-of-run files are in their run directories, and their session recor
 
 ## 4. The evidence
 
-**Throughput and mix**, 2026-09-18..25, from `evidence/2026-09-26-measurements.txt`:
+**Throughput and mix**, 2026-09-18..25, from `evidence/brief-measurements.txt`:
 
 - 125 PRs merged: 113 by agents acting as the owner on GitHub, and 12 by Dependabot.
 - Time from open to merge: median 0.3 h, p90 12.1 h.
@@ -227,7 +227,7 @@ The runs' end-of-run files are in their run directories, and their session recor
   a person (GitHub Docs, "Available rules for rulesets"). That does not fit here: every stuck PR
   was opened by the owner's account, with commits attributed to it. The cause is unknown.
 
-**Re-measure** with `node docs/research/2026-09-26-process-review/evidence/measure-flow.mjs`,
+**Re-measure** with `node docs/harness/reviews/2026-09-26/evidence/brief-measure-flow.mjs`,
 `node scripts/mission-control/collect.mjs --json`, `node scripts/backlog.mjs projects`,
 `pnpm run lint:lineage` and `gh api repos/mezivillager/hacer/rules/branches/main`.
 
@@ -489,7 +489,7 @@ The first seven entries are the orientation; the rest are for tracing.
 
 The owner, from the workspace root, in a fresh session:
 
-> Read `hacer/docs/research/2026-09-26-process-review/BRIEF.md` and carry out the review it
+> Read `hacer/docs/harness/reviews/2026-09-26/BRIEF.md` and carry out the review it
 > describes. Stop at N% weekly usage.
 
 The model is the owner's choice. The recent runs were coordinated by Opus 5, Opus 5.5 and

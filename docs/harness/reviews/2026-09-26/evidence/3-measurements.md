@@ -1,4 +1,4 @@
-# Measurements behind FINDINGS.md
+# Measurements behind review 3
 
 Captured 2026-09-27 from `hacer-wt-process-review-findings`. GitHub numbers are from
 `mezivillager/hacer`. Local reproducers used temporary repositories and a pure import of
@@ -6,7 +6,7 @@ Captured 2026-09-27 from `hacer-wt-process-review-findings`. GitHub numbers are 
 
 ## Flow script
 
-`node docs/research/2026-09-26-process-review/evidence/measure-flow.mjs` (range 2026-09-18..2026-09-25):
+`node docs/harness/reviews/2026-09-26/evidence/brief-measure-flow.mjs` (range 2026-09-18..2026-09-25):
 
 ```text
 MERGED: 125 PRs (113 non-Dependabot, 12 Dependabot)

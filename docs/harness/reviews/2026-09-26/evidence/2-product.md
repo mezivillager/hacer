@@ -1,7 +1,7 @@
 # Independent product, priorities and verification assessment
 
 Measured 2026-09-27 on `eeb925320d50a1ef23c20aa12e6e67c9b411cdb9`. This assessment was formed
-without reading the existing process-review `REPORT.md`. It distinguishes observations from
+without reading the existing process review (`../reviews/1.md`). It distinguishes observations from
 recommendations; no portfolio policy, issues, product code or external state were changed.
 
 ## Finding: useful foundation work, insufficient evidence of product progress
