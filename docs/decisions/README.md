@@ -81,9 +81,24 @@ its Status. `check --fix` writes a missing end into the ADR; never into a ruling
 | `radius <id>` | what rests on it — its downstream closure as a tree, each decision with the `#n` it cites and the PRs and issues naming it |
 | `check [--fix]` | is it sound: every id resolves; both ends agree; no superseded ADR is cited from `src/`; rulings since the cut-over without `Builds on:`, counted |
 | `graph [<id>] --mermaid` · `--json` | all of it or one decision's lineage, for GitHub · for Mission Control |
+| `correct <id>` · `--file --retract\|--amend` | what must change if it was wrong: its correction plan, as a dry run · filed (below) |
 
 `pnpm run lint:lineage` (in `pnpm run lint`) is `check --summary`: `LINEAGE: N decisions · M unlinked · K unresolved ·
 J superseded-cited`, `unresolved` being every `parse` error — and exit 0, warn mode, until #471 makes it fail.
+
+**The correction workflow**, end to end — the fix starts at the decision found wrong and covers everything resting on it:
+1. A verifier BLOCK whose finding means a past decision was wrong names it: `**Invalidates:** R607`
+   ([verifier brief](../harness/verifier-brief.md)).
+2. `radius R607 --github` lists what rests on it.
+3. `correct R607 --github` prints the plan: R607's own correction issue, then one draft per decision or artefact the
+   radius reaches, each naming R607, the node's own statement, how it rests on R607 and — a decision's — its artefacts
+   (PRs via `Decisions:`, issues via `Introduced by:`, ledger rows via `Decision`). Nothing rests on it: nothing prints.
+4. `correct R607 --file --retract` (or `--amend`) files them — label `lineage:correction`, `Introduced by: R607`, the
+   root's epic as parent (the first of its artefacts that is an epic or has a parent), each blocked by R607's own — and
+   records R607's status. A ruling is append-only, so that is a new ruling, `R<next> — R607 retracted: correction plan
+   #n`, with `Amends: R607` and a line naming the issues, appended to the newest file in `rulings/` (an ADR root then
+   needs its `Amended by:` — `check --fix`). `--file` reads GitHub as `--github` does, and refuses a root already planned.
+5. The ledger row recording the failure carries `R607` in its `Decision` column.
 
 ## Index
 | ADR | Title | Status | Date |
