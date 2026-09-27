@@ -3,8 +3,12 @@
 // Out: one snapshot, schema v1 (docs/harness/mission-control.md), with a freshness record per section. Every
 // pick-rule number comes from ../backlog.logic.mjs, so the snapshot cannot disagree with `backlog.mjs ready`.
 
-import { AUX_ROTATION, DEFAULT_ALLOWLIST, PICK_ROTATION, parsePortfolio, planReady, summarizeProjects } from '../backlog.logic.mjs'
+import {
+  AUX_ROTATION, DEFAULT_ALLOWLIST, PICK_ROTATION, claimRefs, latestClaim, parsePortfolio, planReady, readClaims, summarizeProjects,
+} from '../backlog.logic.mjs'
 import { CHECK_LINES, readCheckRun } from '../check-lines.logic.mjs'
+
+export { claimsQuery } from '../backlog.logic.mjs'
 
 export const SCHEMA_VERSION = 1
 const STATUSES = ['ok', 'partial', 'error']
@@ -55,35 +59,17 @@ function buildPrs({ prsOpen = [], prsMerged = [] }, { allowlist }) {
   return { open, merged, coverage }
 }
 
-// Claims: a `claim/<n>` ref plus the issue's latest claim comment (sessions/COORDINATOR-HANDOFF.md).
-const claimRefs = (lsRemote) => lsRemote.split('\n').filter(Boolean).map((line) => line.split('\t'))
-  .map(([sha, ref]) => ({ sha, ref, number: Number(ref.split('/').pop()) })).filter((claim) => Number.isInteger(claim.number))
-
-/** One GraphQL query for every claimed issue: its state, labels, and the comments that carry the claim fields. */
-export function claimsQuery(repo, lsRemote) {
-  const numbers = claimRefs(lsRemote).map((claim) => claim.number)
-  if (numbers.length === 0) return null
-  const [owner, name] = repo.split('/')
-  const issue = (number) => `i${number}: issue(number: ${number}) { number title state url ` +
-    'labels(first: 30) { nodes { name } } comments(last: 50) { nodes { author { login } createdAt url body } } }'
-  return `query { repository(owner: "${owner}", name: "${name}") { ${numbers.map(issue).join(' ')} } }`
-}
-
-const CLAIM_FIELDS = { claimedBy: 'Claimed by', intent: 'Intent', session: 'Session/run', branch: 'Branch', handoff: 'Handoff' }
-const claimFields = (body) => Object.fromEntries(Object.entries(CLAIM_FIELDS).map(([key, label]) =>
-  [key, new RegExp(`^${label}:[ \\t]*(.*?)(?:[ \\t]+#.*)?[ \\t]*$`, 'm').exec(body)?.[1] || null]))
-
+// Claims: a `claim/<n>` ref plus the issue's latest claim comment (sessions/COORDINATOR-HANDOFF.md), both read by
+// ../backlog.logic.mjs, so this section and `backlog.mjs release` agree on who holds a claim.
 function buildClaims({ claimRefs: lsRemote = '', claimIssues }, { allowlist }) {
   const answered = Object.values(claimIssues?.data?.repository ?? {}).filter(Boolean)
   const issues = new Map(answered.map((issue) => [issue.number, issue]))
   const items = claimRefs(lsRemote).map(({ sha, ref, number }) => {
     const issue = issues.get(number)
-    const comment = issue?.comments.nodes
-      .filter((node) => allowlist.includes(node.author?.login) && /^\s*Claimed by:/.test(node.body)).at(-1)
     return {
       number, ref, sha, state: issue?.state ?? null, title: issue?.title ?? null, url: issue?.url ?? null,
       labels: issue?.labels.nodes.map((label) => label.name) ?? null, onClosedIssue: issue ? issue.state === 'CLOSED' : null,
-      claim: comment ? { ...claimFields(comment.body), author: comment.author.login, at: comment.createdAt, url: comment.url } : null,
+      claim: issue ? latestClaim(issue.comments.nodes, allowlist) : null,
     }
   })
   return { items, onClosedIssues: items.filter((item) => item.onClosedIssue).length }
@@ -121,10 +107,13 @@ function buildChecks({ checkRuns }) {
   return { items: heads.filter(([, commit]) => commit).flatMap(checksOn) }
 }
 
-// Portfolio, pick rule and tasks: all three from one planReady over the one issue list.
-function planOf({ issues = [], portfolio = '' }, { allowlist }) {
+// Portfolio, pick rule and tasks: all three from one planReady over the one issue list and the claims `ready` reads
+// (#531): an issue holding a claim ref is `claimed` or `stale-claim`, never a pick.
+const CLAIM_INPUTS = ['claimRefs', 'claimIssues', 'prsOpen']
+function planOf({ issues = [], portfolio = '', claimRefs: lsRemote, claimIssues: answer, prsOpen: openPrs }, { allowlist, now }) {
   const rows = parsePortfolio(portfolio)
-  return { rows, plan: planReady(issues, rows, allowlist), projects: summarizeProjects(issues, rows, allowlist) }
+  const claims = readClaims({ lsRemote, answer, openPrs, allowlist, now })
+  return { rows, plan: planReady(issues, rows, allowlist, claims), projects: summarizeProjects(issues, rows, allowlist, claims) }
 }
 
 function buildPortfolio(values, options) {
@@ -177,13 +166,14 @@ const adrOf = ({ file, text }) => {
 
 /** Each section: the inputs it cannot do without, those it can, and how it is built from their values. */
 const SECTIONS = {
-  portfolio: { needs: ['portfolio', 'issues'], build: buildPortfolio },
+  portfolio: { needs: ['portfolio', 'issues'], optional: CLAIM_INPUTS, build: buildPortfolio },
   pickRule: {
     needs: ['portfolio', 'issues'],
+    optional: CLAIM_INPUTS,
     build: (values, options) => ({ rotation: PICK_ROTATION, auxRotation: AUX_ROTATION, next: planOf(values, options).plan
       .filter((task) => task.reason === null).map(({ number, title, project }) => ({ number, title, project })) }),
   },
-  tasks: { needs: ['portfolio', 'issues'], build: (values, options) => tasksOf(planOf(values, options).plan) },
+  tasks: { needs: ['portfolio', 'issues'], optional: CLAIM_INPUTS, build: (values, options) => tasksOf(planOf(values, options).plan) },
   prs: { needs: ['prsOpen', 'prsMerged'], build: buildPrs },
   claims: { needs: ['claimRefs'], optional: ['claimIssues'], build: buildClaims },
   cloudLane: {
@@ -225,7 +215,7 @@ export function buildSnapshot(inputs, { now, head, previous = null, allowlist = 
     let errors = broken(needs)
     if (errors.length === 0) {
       try {
-        snapshot[name] = build(values, { allowlist })
+        snapshot[name] = build(values, { allowlist, now })
         const invalid = conform(snapshot[name], SCHEMA_V1[name], name, [])
         if (invalid.length > 0) throw new Error(invalid.join('; '))
         const missing = broken(optional)
@@ -236,7 +226,7 @@ export function buildSnapshot(inputs, { now, head, previous = null, allowlist = 
         errors = [`could not build: ${error.message}`]
       }
     }
-    snapshot[name] = kept?.[name] ?? build({}, { allowlist })
+    snapshot[name] = kept?.[name] ?? build({}, { allowlist, now })
     const fetchedAt = kept?.[name] ? kept.freshness?.[name]?.fetchedAt ?? null : null
     snapshot.freshness[name] = { source, fetchedAt, status: 'error', error: errors.join('; ') }
   }
