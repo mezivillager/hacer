@@ -1,12 +1,14 @@
 import { spawnSync } from 'node:child_process'
-import { readdirSync, readFileSync } from 'node:fs'
+import { chmodSync, existsSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
 import path from 'node:path'
-import { describe, it, expect } from 'vitest'
+import { afterAll, describe, it, expect } from 'vitest'
 import {
   applyFixes, check, classifyPremise, commandDisposition, cutOverDate, downstream, expiryIssue, formatCheck, formatTree,
   markPulls, matchesExpect, nextRulingId, parseAdr, parseLedger, parseLineage, parsePremises, parseRulings, planExpiryUpserts,
   premisesFor, radius, subgraph, toMermaid, trace, validateGraph, verifyExitCode,
 } from './lineage.logic.mjs'
+import { checkWorkflow, concurrencyGroups } from './required-checks.logic.mjs'
 
 // The fixtures under scripts/fixtures/lineage/ are small repos, laid out like this one:
 //   chains/        the four chains of docs/research/2026-09-24-decision-lineage/REPORT.md §3a, with
@@ -574,6 +576,44 @@ describe('lineage queries and check (#467)', () => {
 
 const verifyCli = (...args) => spawnSync(process.execPath, ['scripts/lineage.mjs', 'verify', '--root', path.join(FIXTURES, 'verify'), ...args], { cwd: REPO, encoding: 'utf8' })
 
+/** A premise row of the live register, docs/decisions/premises.md. */
+const livePremise = (id) => parsePremises('docs/decisions/premises.md', readFileSync(path.join(REPO, 'docs/decisions/premises.md'), 'utf8'))
+  .nodes.find((node) => node.id === id)
+
+/**
+ * Stub `gh`, `npm` and `pnpm`, made once: each logs its name to $STUB_LOG; `gh` and `npm` fail as
+ * they do with no token or no registry; `pnpm` prints $STUB_PNPM_SAY and exits $STUB_PNPM_CODE.
+ */
+let stubDir = null
+function stubs() {
+  if (stubDir) return stubDir
+  stubDir = mkdtempSync(path.join(tmpdir(), 'lineage-stub-'))
+  const stub = (name, body) => {
+    writeFileSync(path.join(stubDir, name), `#!/bin/sh\necho ${name} >> "$STUB_LOG"\n${body}\n`)
+    chmodSync(path.join(stubDir, name), 0o755)
+  }
+  stub('gh', "echo 'gh: To use GitHub CLI in a GitHub Actions workflow, set the GH_TOKEN environment variable.' >&2\nexit 4")
+  stub('npm', "echo 'npm error code ENOTFOUND' >&2\nexit 1")
+  stub('pnpm', 'echo "$STUB_PNPM_SAY" >&2\nexit "${STUB_PNPM_CODE:-0}"')
+  return stubDir
+}
+afterAll(() => { if (stubDir) rmSync(stubDir, { recursive: true, force: true }) })
+
+/**
+ * Run a Verify command offline, the stubs first on PATH and no token: what `classifyPremise` reads,
+ * and the calls. Each run spawns bash and node, so the tests using it allow 60 s under a full suite.
+ */
+function runStubbed(verify, pnpm = { code: 0, say: '' }) {
+  const log = path.join(stubs(), `calls-${Math.random().toString(36).slice(2)}.log`)
+  const env = {
+    ...process.env, PATH: `${stubs()}${path.delimiter}${process.env.PATH}`, GITHUB_TOKEN: '', GH_TOKEN: '',
+    STUB_LOG: log, STUB_PNPM_CODE: String(pnpm.code), STUB_PNPM_SAY: pnpm.say,
+  }
+  const result = spawnSync('bash', ['-c', verify], { cwd: REPO, encoding: 'utf8', env, timeout: 30_000 })
+  const calls = existsSync(log) ? readFileSync(log, 'utf8').split('\n').filter(Boolean) : []
+  return { stdout: result.stdout ?? '', code: result.status, timedOut: result.error?.code === 'ETIMEDOUT', calls }
+}
+
 describe('lineage verify (#468)', () => {
   const premise = (expect, extra = {}) => ({ id: 'P-001', title: 'range', verify: 'npm view x', expect, ...extra })
 
@@ -730,5 +770,56 @@ describe('lineage verify (#468)', () => {
     expect(cron.split(/\s+/)[4]).not.toBe('*')
     expect(yml).toMatch(/workflow_dispatch:/)
     expect(yml).not.toMatch(/pull_request/)
+  })
+
+  it('verify: a failed registry lookup in P-005\'s check is UNVERIFIABLE, never EXPIRED', () => {
+    const peer = livePremise('P-005')
+    for (const say of [
+      'ERR_PNPM_META_FETCH_FAIL  GET https://registry.npmjs.org/react: request to https://registry.npmjs.org/react failed',
+      'ERR_PNPM_FETCH_429  GET https://registry.npmjs.org/react: Too Many Requests - 429',
+    ]) {
+      const run = runStubbed(peer.verify, { code: 1, say })
+      expect(run.calls).toContain('pnpm')
+      expect(run.code).not.toBe(0)
+      expect(classifyPremise(peer, run).status).toBe('unverifiable')
+    }
+  }, 60_000)
+
+  it('verify: a peer-dependency failure in P-005\'s check is EXPIRED, and a clean install holds', () => {
+    const peer = livePremise('P-005')
+    const refused = runStubbed(peer.verify, { code: 1, say: 'ERR_PNPM_PEER_DEP_ISSUES  Unmet peer dependencies' })
+    expect([refused.code, refused.stdout]).toEqual([0, 'exit 1'])
+    expect(classifyPremise(peer, refused).status).toBe('expired')
+    const clean = runStubbed(peer.verify, { code: 0, say: 'Done' })
+    expect(classifyPremise(peer, clean).status).toBe('holds')
+  }, 60_000)
+
+  it('verify: a command that exits 0 with empty output is UNVERIFIABLE, never EXPIRED', () => {
+    // `npm view` on a field the package no longer has prints nothing and exits 0.
+    expect(classifyPremise(premise('<19.3'), { stdout: '', code: 0 }).status).toBe('unverifiable')
+    expect(classifyPremise(premise('absent'), { stdout: '  \n', code: 0 }).status).toBe('unverifiable')
+    expect(classifyPremise(premise('absent'), { stdout: 'present', code: 0 }).status).toBe('expired')
+  })
+
+  it('verify: every register premise whose check calls gh is skipped without a token, not unverifiable', () => {
+    const premises = parsePremises('docs/decisions/premises.md', readFileSync(path.join(REPO, 'docs/decisions/premises.md'), 'utf8')).nodes
+    const callsGh = premises
+      .filter((premise) => commandDisposition(premise.verify, { token: true }) === 'run')
+      .filter((premise) => runStubbed(premise.verify).calls.includes('gh'))
+      .map((premise) => premise.id)
+    // Not vacuous: P-003 and P-004 call gh inside checks.mjs, P-007 and P-008 in the Verify text.
+    expect(callsGh).toEqual(expect.arrayContaining(['P-003', 'P-004', 'P-007', 'P-008']))
+    for (const id of callsGh) expect([id, commandDisposition(livePremise(id).verify, { token: false })]).toEqual([id, 'skipped'])
+    expect(commandDisposition(livePremise('P-002').verify, { token: false })).toBe('run')
+    expect(commandDisposition(livePremise('P-005').verify, { token: false })).toBe('run')
+  }, 60_000)
+
+  it('lineage-verify.yml queues an overlapping run in one concurrency group, so an expiry is filed once', () => {
+    const yml = readFileSync(path.join(REPO, '.github/workflows/lineage-verify.yml'), 'utf8')
+    // One group for every run, whatever the ref: a manual dispatch waits for the cron run, and is not cancelled by it.
+    expect(concurrencyGroups(yml)).toEqual(['lineage-verify'])
+    expect(yml).toMatch(/cancel-in-progress:\s*false/)
+    // It posts no required context, so #530's rule against shared groups does not reach it.
+    expect(checkWorkflow('lineage-verify.yml', yml)).toEqual([])
   })
 })
