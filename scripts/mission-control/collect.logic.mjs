@@ -4,12 +4,12 @@
 // pick-rule number comes from ../backlog.logic.mjs, so the snapshot cannot disagree with `backlog.mjs ready`.
 
 import {
-  AUX_ROTATION, DEFAULT_ALLOWLIST, PICK_ROTATION, claimHistory, claimRefs, latestClaim, parsePortfolio, planReady, readClaims,
-  summarizeProjects,
+  AUX_ROTATION, DEFAULT_ALLOWLIST, PICK_ROTATION, claimHistory, claimRefs, dormantMode, historyGap, latestClaim, parsePortfolio,
+  planReady, readClaims, summarizeProjects,
 } from '../backlog.logic.mjs'
 import { CHECK_LINES, readCheckRun } from '../check-lines.logic.mjs'
 
-export { claimHistoryQuery, claimsQuery } from '../backlog.logic.mjs'
+export { claimHistoryQuery, claimsQuery, parsePortfolio, readClaimHistory } from '../backlog.logic.mjs'
 
 export const SCHEMA_VERSION = 1
 const STATUSES = ['ok', 'partial', 'error']
@@ -119,6 +119,12 @@ function planOf(values, { allowlist, now }) {
   return { rows, plan: planReady(issues, rows, allowlist, claims, history), projects: summarizeProjects(issues, rows, allowlist, claims, history) }
 }
 
+/** What the claim history leaves a guess (historyGap, as `ready` warns of it): the pick sections read `partial` with it. */
+function historyCaveat({ issues = [], portfolio = '', claimHistory: recent }, { allowlist }) {
+  const gap = recent ? historyGap(recent, issues, parsePortfolio(portfolio), allowlist) : null
+  return gap && `claimHistory: ${gap}`
+}
+
 function buildPortfolio(values, options) {
   const { rows, projects } = planOf(values, options)
   const epic = (number) => (values.issues ?? []).find((issue) => issue.number === number)
@@ -167,16 +173,24 @@ const adrOf = ({ file, text }) => {
   return number > 0 ? [{ number, file, title, status }] : []
 }
 
-/** Each section: the inputs it cannot do without, those it can, and how it is built from their values. */
+/** Each section: the inputs it cannot do without, those it can, how it is built from their values, and what can leave
+ *  its data a guess though every input was read (`caveat`: a reason, or null). */
 const SECTIONS = {
-  portfolio: { needs: ['portfolio', 'issues'], optional: CLAIM_INPUTS, build: buildPortfolio },
+  portfolio: { needs: ['portfolio', 'issues'], optional: CLAIM_INPUTS, caveat: historyCaveat, build: buildPortfolio },
   pickRule: {
     needs: ['portfolio', 'issues'],
     optional: CLAIM_INPUTS,
-    build: (values, options) => ({ rotation: PICK_ROTATION, auxRotation: AUX_ROTATION, next: planOf(values, options).plan
-      .filter((task) => task.reason === null).map(({ number, title, project }) => ({ number, title, project })) }),
+    caveat: historyCaveat,
+    build: (values, options) => ({
+      rotation: PICK_ROTATION,
+      auxRotation: AUX_ROTATION,
+      next: planOf(values, options).plan.filter((task) => task.reason === null).map(({ number, title, project }) => ({ number, title, project })),
+      dormant: dormantMode(values.prsOpen, options.allowlist),
+    }),
   },
-  tasks: { needs: ['portfolio', 'issues'], optional: CLAIM_INPUTS, build: (values, options) => tasksOf(planOf(values, options).plan) },
+  tasks: {
+    needs: ['portfolio', 'issues'], optional: CLAIM_INPUTS, caveat: historyCaveat, build: (values, options) => tasksOf(planOf(values, options).plan),
+  },
   prs: { needs: ['prsOpen', 'prsMerged'], build: buildPrs },
   claims: { needs: ['claimRefs'], optional: ['claimIssues'], build: buildClaims },
   cloudLane: {
@@ -207,13 +221,13 @@ export function parsePrevious(text) {
 }
 
 /** A section whose required input failed, or whose data came out of schema (a changed API shape), keeps the previous
- *  snapshot's data, flagged `error` and dated when it was fetched; a failed optional input leaves it `partial`. */
+ *  snapshot's data, flagged `error` and dated when it was fetched; a failed optional input, or a caveat, leaves it `partial`. */
 export function buildSnapshot(inputs, { now, head, previous = null, allowlist = DEFAULT_ALLOWLIST }) {
   const values = Object.fromEntries(Object.entries(inputs).filter(([, input]) => !('error' in input)).map(([id, input]) => [id, input.value]))
   const broken = (ids) => ids.filter((id) => !(id in values)).map((id) => `${id}: ${inputs[id]?.error ?? 'not collected'}`)
   const kept = previous?.schemaVersion === SCHEMA_VERSION ? previous : null
   const snapshot = { schemaVersion: SCHEMA_VERSION, generatedAt: now, head, freshness: {} }
-  for (const [name, { needs = [], optional = [], build }] of Object.entries(SECTIONS)) {
+  for (const [name, { needs = [], optional = [], caveat, build }] of Object.entries(SECTIONS)) {
     const source = [...needs, ...optional].map((id) => inputs[id]?.source ?? id).join(' · ') || 'none'
     let errors = broken(needs)
     if (errors.length === 0) {
@@ -221,7 +235,8 @@ export function buildSnapshot(inputs, { now, head, previous = null, allowlist = 
         snapshot[name] = build(values, { allowlist, now })
         const invalid = conform(snapshot[name], SCHEMA_V1[name], name, [])
         if (invalid.length > 0) throw new Error(invalid.join('; '))
-        const missing = broken(optional)
+        const guess = caveat?.(values, { allowlist, now })
+        const missing = [...broken(optional), ...(guess ? [guess] : [])]
         const status = missing.length > 0 ? { status: 'partial', error: missing.join('; ') } : { status: 'ok' }
         snapshot.freshness[name] = { source, fetchedAt: now, ...status }
         continue

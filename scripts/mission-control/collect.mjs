@@ -9,7 +9,9 @@ import { homedir } from 'node:os'
 import path from 'node:path'
 import { parseArgs, promisify } from 'node:util'
 import { KNOWN_VIOLATIONS_FILE as BASELINE } from '../layer-ratchet.logic.mjs'
-import { buildSnapshot, checksQuery, claimHistoryQuery, claimsQuery, parsePrevious, report } from './collect.logic.mjs'
+import {
+  buildSnapshot, checksQuery, claimHistoryQuery, claimsQuery, parsePortfolio, parsePrevious, readClaimHistory, report,
+} from './collect.logic.mjs'
 
 const REPO = process.env.GITHUB_REPOSITORY ?? 'mezivillager/hacer'
 const ROOT = path.join(import.meta.dirname, '..', '..')
@@ -52,7 +54,6 @@ const SOURCES = {
   releases: ['gh release list', () => list('release', '--limit', '1000', '--json', 'tagName,publishedAt,isLatest')],
   checkRuns: ['gh api graphql (check runs)', () => gh('api', 'graphql', '-f', `query=${checksQuery(REPO)}`)],
   claimRefs: ['git ls-remote origin refs/heads/claim/*', () => git('ls-remote', 'origin', 'refs/heads/claim/*')],
-  claimHistory: ['gh api graphql (claim history)', () => gh('api', 'graphql', '-f', `query=${claimHistoryQuery(REPO)}`)],
   ratchetLog: [`git log -- ${BASELINE}`, ratchetHistory],
   baseline: [BASELINE, () => JSON.parse(read(BASELINE))],
   portfolio: file('docs/portfolio.md'),
@@ -70,16 +71,19 @@ const settled = await Promise.all(Object.entries(SOURCES).map(async ([id, [sourc
 const inputs = Object.fromEntries(settled)
 const query = claimsQuery(REPO, inputs.claimRefs.value ?? '')
 inputs.claimIssues = await settle('gh api graphql', () => (query ? gh('api', 'graphql', '-f', `query=${query}`) : null))
+const logins = (process.env.BACKLOG_ALLOWLIST ?? '').split(',').map((login) => login.trim()).filter(Boolean)
+const allowlist = logins.length > 0 ? logins : undefined
+// The claim history's pages, older ones only while the newest leave the cycle's place a guess, as `ready` reads them (#540).
+inputs.claimHistory = await settle('gh api graphql (claim history)', () => readClaimHistory(
+  (after) => gh('api', 'graphql', '-f', `query=${claimHistoryQuery(REPO, after)}`),
+  inputs.issues.value ?? [], parsePortfolio(inputs.portfolio.value ?? ''), allowlist))
 
 const [sha, date, subject] = (await git('log', '-1', '--format=%H%x09%cI%x09%s')).trim().split('\t')
 // A missing, empty or unparseable --previous file is never a crash, only "no previous" (#476): the file is read
 // defensively (a symlink race or permissions error throws the same as ENOENT), and parsePrevious owns the rest.
 const previousText = (() => { try { return flags.previous ? readFileSync(flags.previous, 'utf8') : '' } catch { return '' } })()
 const previous = parsePrevious(previousText)
-const logins = (process.env.BACKLOG_ALLOWLIST ?? '').split(',').map((login) => login.trim()).filter(Boolean)
-const snapshot = buildSnapshot(inputs, {
-  now: new Date().toISOString(), head: { sha, date, subject }, previous, allowlist: logins.length > 0 ? logins : undefined,
-})
+const snapshot = buildSnapshot(inputs, { now: new Date().toISOString(), head: { sha, date, subject }, previous, allowlist })
 const { exitCode, stdout, stderr } = report(snapshot, { json: flags.json })
 if (stderr) console.error(stderr)
 if (stdout) console.log(stdout)
