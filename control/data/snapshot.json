@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-27T01:20:29.832Z",
+  "generatedAt": "2026-09-27T07:39:13.824Z",
   "head": {
-    "sha": "eeb925320d50a1ef23c20aa12e6e67c9b411cdb9",
-    "date": "2026-09-26T21:58:03+03:00",
-    "subject": "docs(research): record the live merge-box test on the report's own PR"
+    "sha": "3e4ed2f517ebdb8b3da5c6f294e01c242b81f436",
+    "date": "2026-09-27T10:38:34+03:00",
+    "subject": "docs(research): add independent process review follow-up"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-27T01:20:29.832Z",
+      "fetchedAt": "2026-09-27T07:39:13.824Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-27T01:20:29.832Z",
+      "fetchedAt": "2026-09-27T07:39:13.824Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-27T01:20:29.832Z",
+      "fetchedAt": "2026-09-27T07:39:13.824Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-27T01:20:29.832Z",
+      "fetchedAt": "2026-09-27T07:39:13.824Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-09-27T01:20:29.832Z",
+      "fetchedAt": "2026-09-27T07:39:13.824Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-09-27T01:20:29.832Z",
+      "fetchedAt": "2026-09-27T07:39:13.824Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-09-27T01:20:29.832Z",
+      "fetchedAt": "2026-09-27T07:39:13.824Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-09-27T01:20:29.832Z",
+      "fetchedAt": "2026-09-27T07:39:13.824Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-09-27T01:20:29.832Z",
+      "fetchedAt": "2026-09-27T07:39:13.824Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-09-27T01:20:29.832Z",
+      "fetchedAt": "2026-09-27T07:39:13.824Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-27T01:20:29.832Z",
+      "fetchedAt": "2026-09-27T07:39:13.824Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-09-27T01:20:29.832Z",
+      "fetchedAt": "2026-09-27T07:39:13.824Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-09-27T01:20:29.832Z",
+      "fetchedAt": "2026-09-27T07:39:13.824Z",
       "status": "ok"
     }
   },
@@ -3019,6 +3019,19 @@
     ],
     "merged": [
       {
+        "number": 527,
+        "title": "docs(research): independent process review follow-up",
+        "url": "https://github.com/mezivillager/hacer/pull/527",
+        "author": "mezivillager",
+        "labels": [],
+        "headRefName": "docs/process-review-findings",
+        "isDraft": false,
+        "createdAt": "2026-09-27T07:35:06Z",
+        "mergedAt": "2026-09-27T07:38:35Z",
+        "closes": [],
+        "verdicts": []
+      },
+      {
         "number": 526,
         "title": "docs(research): process review report — the autonomous flow, reviewed 2026-09-26",
         "url": "https://github.com/mezivillager/hacer/pull/526",
@@ -4383,40 +4396,13 @@
             "url": "https://github.com/mezivillager/hacer/pull/409#issuecomment-5789740522"
           }
         ]
-      },
-      {
-        "number": 404,
-        "title": "feat(core): the engine's front door, with a node test that proves it is headless",
-        "url": "https://github.com/mezivillager/hacer/pull/404",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:1",
-          "project:foundation"
-        ],
-        "headRefName": "feat/336-engine-entry-points",
-        "isDraft": false,
-        "createdAt": "2026-09-23T03:52:14Z",
-        "mergedAt": "2026-09-23T04:13:12Z",
-        "closes": [
-          336
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Opus 5 (claude-opus-5[1m])",
-            "at": "2026-09-23T04:11:37Z",
-            "url": "https://github.com/mezivillager/hacer/pull/404#issuecomment-5788894194"
-          }
-        ]
       }
     ],
     "coverage": {
       "merged": 60,
-      "withVerdict": 32,
-      "withoutVerdict": 28,
-      "pass": 31,
+      "withVerdict": 31,
+      "withoutVerdict": 29,
+      "pass": 30,
       "block": 1
     }
   },
@@ -5962,7 +5948,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-23",
-        "merges": 12
+        "merges": 11
       },
       {
         "date": "2026-09-24",
@@ -5975,6 +5961,10 @@
       {
         "date": "2026-09-26",
         "merges": 3
+      },
+      {
+        "date": "2026-09-27",
+        "merges": 1
       }
     ]
   },
@@ -5982,17 +5972,14 @@
     "items": [
       {
         "pr": null,
-        "sha": "eeb925320d50a1ef23c20aa12e6e67c9b411cdb9",
+        "sha": "3e4ed2f517ebdb8b3da5c6f294e01c242b81f436",
         "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-09-26T19:00:34Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36264393542/job/108466169584",
-        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 71,
-          "new": 0
-        },
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36303730182/job/108576167117",
+        "line": null,
+        "verdict": null,
+        "fields": {},
         "disagrees": false
       },
       {
