@@ -34,13 +34,42 @@ merge. If a step below is wrong, fix it here — not in a chat.
 ## When a required check is stuck
 
 `gh pr checks` reports everything green, `gh pr view <n> --json mergeStateStatus` says `BLOCKED`,
-and nothing on the PR explains it. Two things look like that and only one is a fault.
+and nothing on the PR explains it. Three things look like that, and two of them are faults.
 
 **Not a signal:** `gh api repos/mezivillager/hacer/commits/<sha>/status` returning `pending`. That
 endpoint reports *legacy commit statuses*, which this repo never posts — it answers
 `state=pending total_count=0` on every commit, merged ones included. Read the check runs instead.
 
-**The fault (#295):** a `cancelled` check run under a required context.
+**Fault 1 (#530): a required workflow's newest check suite is empty.** The merge box lists the
+context as "Expected — Waiting for status to be reported" while every check run of that name is
+green, and `gh pr checks --required` says `pass`, because it reads check runs, not suites. A run
+that its concurrency group dropped while still *pending* creates no job and no check run, but it
+leaves a check suite, `completed/cancelled` with nothing in it, and the merge box judges a workflow
+by its newest suite. In suite order, that workflow's last run on the head is `cancelled`, with no
+jobs:
+
+```sh
+gh api "repos/mezivillager/hacer/actions/runs?head_sha=<sha>&per_page=100" --jq \
+  '.workflow_runs | sort_by(.check_suite_id)[]
+   | "\(.name) \(.conclusion) run=\(.id) suite=\(.check_suite_id)"'
+gh api repos/mezivillager/hacer/actions/runs/<run>/jobs --jq .total_count   # 0: the empty suite
+```
+
+Recovery, on the same SHA: an `edited` event. Append an HTML comment to the PR body — a reader
+sees nothing — and `pr-hygiene` and `browser-qa`, which both run on `edited`, each get one fresh
+run whose suite is now the newest. Keep issue numbers out of the comment; both workflows read the
+body's links.
+
+```sh
+gh pr edit <n> --body "$(gh pr view <n> --json body --jq .body)
+
+<!-- re-run the required checks $(date -u +%FT%TZ) -->"
+```
+
+Proven on #517, `BLOCKED` since 2026-09-25: its body edit on 2026-09-27 started one run of each
+workflow (36305841051, 36305840748), both green within 13 s, and the PR merged 18 s after the edit.
+
+**Fault 2 (#295): a `cancelled` check run under a required context.**
 
 ```sh
 gh api repos/mezivillager/hacer/commits/<sha>/check-runs --jq \
@@ -58,25 +87,35 @@ gh run list -R mezivillager/hacer --branch <branch> --json databaseId,name,concl
 gh run rerun <id> -R mezivillager/hacer      # one cancelled run, then wait for it
 ```
 
-Re-run them **one at a time**: the re-runs join the same concurrency group, and before #295 they
-cancelled each other exactly as the originals had — that is what the second round of `cancelled`
-runs on #360 was. `gh pr update-branch --rebase` also clears it, but usually no-ops (`PR branch
-already up-to-date`), since an agent's branch is normally current with `main`.
+Re-run them **one at a time**: before #530 the re-runs joined the workflow's concurrency group,
+and before #295 they cancelled each other there exactly as the originals had — that is what the
+second round of `cancelled` runs on #360 was.
 
-**Why it happens, and what now stops it.** GitHub sends one webhook action *per label*, so
+**A force-push is never the recovery**, for either fault. A new SHA does clear both — #486 and
+#511 were recovered that way — but it replaces the commit every check and verdict was given on,
+and the coordinator's permission classifier refused it on 2026-09-26, which left #517 waiting 36
+hours. Both recoveries above keep the SHA. Nor is `gh pr update-branch --rebase`, which rewrites
+the branch the same way.
+
+**Why they happened, and what now stops them.** GitHub sends one webhook action *per label*, so
 `gh pr edit --add-label a,b` on a fresh PR delivers `opened`, `labeled`, `labeled` within seconds;
 every workflow listing `labeled` starts a run per action. `.github/workflows/pr-hygiene.yml` and
-`.github/workflows/browser-qa.yml` now set `cancel-in-progress: false`, so a run that has started
-always finishes — GitHub still keeps only one *pending* run per group, and a pending run creates no
-job and therefore no check run. `scripts/required-checks.logic.mjs` fails the unit suite if either
-is turned back on. Both workflows genuinely need the `labeled` trigger, so narrowing `types:`
-was not an option: `size-override` and `dependencies` change the `pr-hygiene` verdict (#360's
+`.github/workflows/browser-qa.yml` used to put those runs in one concurrency group per PR, and the
+group cancelled some of them: in progress while it set `cancel-in-progress: true` (fault 2, until
+#295), and still pending once it set `false` (fault 1, until #530). Which run was dropped was a
+race, so fault 1 stranded some PRs and not others (#486, #511, #517, #525).
+Since #530 neither workflow declares a concurrency group: every run finishes, and a workflow's
+newest suite is always one that ran. `scripts/required-checks.logic.mjs` fails the unit suite if a
+workflow that posts a required context declares a group its runs share. The price is the extra
+runs — seconds each, ~4 minutes when `browser-qa` runs Playwright — and a superseded push is no
+longer cancelled. Both workflows genuinely need the `labeled` trigger, so narrowing `types:` was
+not an option: `size-override` and `dependencies` change the `pr-hygiene` verdict (#360's
 `pr-hygiene` went red, then green when `size-override` was applied) and `critical` / `sev:*`
 change `browser-qa`'s.
 
 **One gap.** `pr-hygiene.yml` runs on `pull_request_target`, so GitHub always uses **`main`'s** copy
 of it. A PR that changes that file cannot test its own change; the change takes effect for every PR
-the moment it lands on `main`. Use the recovery above on any PR opened before it landed.
+the moment it lands on `main`. Use the recoveries above on any PR whose runs predate it.
 
 ## The five sentences it answers
 
