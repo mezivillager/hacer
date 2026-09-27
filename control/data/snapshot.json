@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-27T08:20:21.453Z",
+  "generatedAt": "2026-09-27T08:33:40.693Z",
   "head": {
-    "sha": "a24ad4624daf2ea7bcc41a129eed6181938b681f",
-    "date": "2026-09-27T11:19:50+03:00",
-    "subject": "docs(harness): session record for 2026-09-25; this run's rulings R700–R740 in the repo"
+    "sha": "30ff96593a7b85b08b361b3e38c86a1e4051c07a",
+    "date": "2026-09-27T11:32:54+03:00",
+    "subject": "docs(harness): the cloud lane takes only work nothing else waits on"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-27T08:20:21.453Z",
+      "fetchedAt": "2026-09-27T08:33:40.693Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-27T08:20:21.453Z",
+      "fetchedAt": "2026-09-27T08:33:40.693Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-27T08:20:21.453Z",
+      "fetchedAt": "2026-09-27T08:33:40.693Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-27T08:20:21.453Z",
+      "fetchedAt": "2026-09-27T08:33:40.693Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-09-27T08:20:21.453Z",
+      "fetchedAt": "2026-09-27T08:33:40.693Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-09-27T08:20:21.453Z",
+      "fetchedAt": "2026-09-27T08:33:40.693Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-09-27T08:20:21.453Z",
+      "fetchedAt": "2026-09-27T08:33:40.693Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-09-27T08:20:21.453Z",
+      "fetchedAt": "2026-09-27T08:33:40.693Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-09-27T08:20:21.453Z",
+      "fetchedAt": "2026-09-27T08:33:40.693Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-09-27T08:20:21.453Z",
+      "fetchedAt": "2026-09-27T08:33:40.693Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-27T08:20:21.453Z",
+      "fetchedAt": "2026-09-27T08:33:40.693Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-09-27T08:20:21.453Z",
+      "fetchedAt": "2026-09-27T08:33:40.693Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-09-27T08:20:21.453Z",
+      "fetchedAt": "2026-09-27T08:33:40.693Z",
       "status": "ok"
     }
   },
@@ -100,9 +100,9 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 31,
+        "open": 34,
         "ready": 22,
-        "inProgress": 0,
+        "inProgress": 2,
         "needsHuman": 0,
         "next": {
           "number": 148,
@@ -111,8 +111,8 @@
         "title": "Epic: harness — autonomous-run improvements & agent-readiness",
         "subIssues": {
           "completed": 24,
-          "percentCompleted": 50,
-          "total": 48
+          "percentCompleted": 47,
+          "total": 51
         }
       },
       {
@@ -2693,6 +2693,52 @@
         "lane": "process",
         "pickable": false,
         "reason": "unshaped"
+      },
+      {
+        "number": 530,
+        "title": "A dropped pending run leaves an empty cancelled suite that strands green PRs in the merge box",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:1"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "in-progress"
+      },
+      {
+        "number": 531,
+        "title": "Claims are not exclusive, and ready offers a claimed issue as the next pick",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:1"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "in-progress"
+      },
+      {
+        "number": 533,
+        "title": "Process reviews: one standing home and one format, every cycle",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "unshaped"
       }
     ],
     "byProject": {
@@ -2774,7 +2820,10 @@
         454,
         500,
         504,
-        505
+        505,
+        530,
+        531,
+        533
       ],
       "mission-control": [
         478,
@@ -2998,6 +3047,22 @@
       }
     ],
     "merged": [
+      {
+        "number": 532,
+        "title": "docs(harness): the cloud lane takes only work nothing else waits on",
+        "url": "https://github.com/mezivillager/hacer/pull/532",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/cloud-lane-non-blocking",
+        "isDraft": false,
+        "createdAt": "2026-09-27T08:30:53Z",
+        "mergedAt": "2026-09-27T08:32:54Z",
+        "closes": [],
+        "verdicts": []
+      },
       {
         "number": 529,
         "title": "docs(research): process review findings, 2026-09-27",
@@ -4344,23 +4409,6 @@
         "mergedAt": "2026-09-24T12:55:19Z",
         "closes": [],
         "verdicts": []
-      },
-      {
-        "number": 412,
-        "title": "docs(harness): close the 2026-09-23 run and correct a number in the ledger",
-        "url": "https://github.com/mezivillager/hacer/pull/412",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:0"
-        ],
-        "headRefName": "docs/close-2026-09-23",
-        "isDraft": false,
-        "createdAt": "2026-09-23T05:49:24Z",
-        "mergedAt": "2026-09-23T05:52:32Z",
-        "closes": [],
-        "verdicts": []
       }
     ],
     "coverage": {
@@ -4475,6 +4523,56 @@
           "at": "2026-09-25T06:02:35Z",
           "url": "https://github.com/mezivillager/hacer/issues/470#issuecomment-5827635352"
         }
+      },
+      {
+        "number": 530,
+        "ref": "refs/heads/claim/530",
+        "sha": "a24ad4624daf2ea7bcc41a129eed6181938b681f",
+        "state": "OPEN",
+        "title": "A dropped pending run leaves an empty cancelled suite that strands green PRs in the merge box",
+        "url": "https://github.com/mezivillager/hacer/issues/530",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:1"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "2026-09-27 review-followups",
+          "branch": "fix/530-no-dropped-required-runs",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-09-27T08:26:56Z",
+          "url": "https://github.com/mezivillager/hacer/issues/530#issuecomment-5854197140"
+        }
+      },
+      {
+        "number": 531,
+        "ref": "refs/heads/claim/531",
+        "sha": "a24ad4624daf2ea7bcc41a129eed6181938b681f",
+        "state": "OPEN",
+        "title": "Claims are not exclusive, and ready offers a claimed issue as the next pick",
+        "url": "https://github.com/mezivillager/hacer/issues/531",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:1"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "2026-09-27 review-followups",
+          "branch": "feat/531-exclusive-claims",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-09-27T08:27:54Z",
+          "url": "https://github.com/mezivillager/hacer/issues/531#issuecomment-5854203110"
+        }
       }
     ],
     "onClosedIssues": 0
@@ -4486,11 +4584,11 @@
         "issue": "[#193](https://github.com/mezivillager/hacer/issues/193)",
         "whyCloud": "Large install/build loop: clone `nand2tetris/web-ide` at a pinned commit and extract the Project 1–5 `.hdl`/`.tst`/`.cmp` content (they are TS string modules upstream) into `conformance/vectors/`. Not a laptop job, and the result is a protected held-out oracle.",
         "successCriteria": "`ls conformance/vectors/01 \\| wc -l` non-zero; LICENSE notice records the licence **and the pinned web-ide commit**; Project 1 lands in its own PR; PR merged.",
-        "claimStatus": "claimed-by-grok-bot",
+        "claimStatus": "taken back by claude-local 2026-09-27 (R743)",
         "queuedBy": "claude-local",
-        "status": "building",
+        "status": "local",
         "cloudAgentId": "bc-6de621f1-8e3c-50c5-9115-64ca2687696e",
-        "notes": "Grok Bot please claim as `grok-bot`. **Read the 2026-09-23 comment first** — the issue as filed reads `../web-ide`, a sibling checkout that does not exist on a cloud VM; clone the public repo instead. Blocks #338. P1 done via [PR #443](https://github.com/mezivillager/hacer/pull/443); issue open for Projects 2–5."
+        "notes": "Project 1 landed in #443. Projects 2–5 are critical-path work for the spine, so they came back local under R742; see the 2026-09-27 claim comment on the issue. Grok Bot please claim as `grok-bot`. **Read the 2026-09-23 comment first** — the issue as filed reads `../web-ide`, a sibling checkout that does not exist on a cloud VM; clone the public repo instead. Blocks #338. P1 done via [PR #443](https://github.com/mezivillager/hacer/pull/443); issue open for Projects 2–5."
       },
       {
         "number": 338,
@@ -4501,7 +4599,7 @@
         "queuedBy": "claude-local",
         "status": "queued",
         "cloudAgentId": "",
-        "notes": "Grok Bot please claim as `grok-bot`. **Blocked by #193 — do not start until #193 fully closes.** [PR #443](https://github.com/mezivillager/hacer/pull/443) alone does not unblock it. Same `../web-ide` correction applies (2026-09-23 comment)."
+        "notes": "Stays here as verification (R744): nothing waits on it, and it waits on #193's Projects 2–5 vectors. Grok Bot please claim as `grok-bot`. **Blocked by #193 — do not start until #193 fully closes.** [PR #443](https://github.com/mezivillager/hacer/pull/443) alone does not unblock it. Same `../web-ide` correction applies (2026-09-23 comment)."
       },
       {
         "number": 199,
@@ -4556,7 +4654,7 @@
         "queuedBy": "claude-local",
         "status": "pr",
         "cloudAgentId": "bc-3b3822f2-583b-53b2-939c-b61bce76c8fc",
-        "notes": "Grok Bot please claim as `grok-bot`. Verify: **grok-bot** (scripts + workflow, no `src/core`) — the verdict comment must carry the `## Verifier verdict:` heading and a `Verified on:` line (the cross-lane contract, `cloud-queue.md` step 6). Intent: handing-off to local Claude. Claim still `claimed-by-grok-bot` pending Claude's re-claim. Draft [PR #519](https://github.com/mezivillager/hacer/pull/519) head 3753bd1, agent bc-3b3822f2-583b-53b2-939c-b61bce76c8fc; first verify BLOCK (P-005 false-expired) fixed, needs re-verify; coordinator must accept backfilled R398–R405 fields (R405→R400 doubtful); expect conflicts with #514; details in the handing-off comment on #468."
+        "notes": "PR #519 got a BLOCK from the lane's verifier on 2026-09-25; under R742 the fix round moved local (R745). Grok Bot please claim as `grok-bot`. Verify: **grok-bot** (scripts + workflow, no `src/core`) — the verdict comment must carry the `## Verifier verdict:` heading and a `Verified on:` line (the cross-lane contract, `cloud-queue.md` step 6). Intent: handing-off to local Claude. Claim still `claimed-by-grok-bot` pending Claude's re-claim. Draft [PR #519](https://github.com/mezivillager/hacer/pull/519) head 3753bd1, agent bc-3b3822f2-583b-53b2-939c-b61bce76c8fc; first verify BLOCK (P-005 false-expired) fixed, needs re-verify; coordinator must accept backfilled R398–R405 fields (R405→R400 doubtful); expect conflicts with #514; details in the handing-off comment on #468."
       },
       {
         "number": 455,
@@ -5922,7 +6020,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-23",
-        "merges": 10
+        "merges": 9
       },
       {
         "date": "2026-09-24",
@@ -5938,7 +6036,7 @@
       },
       {
         "date": "2026-09-27",
-        "merges": 3
+        "merges": 4
       }
     ]
   },
@@ -5946,11 +6044,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "a24ad4624daf2ea7bcc41a129eed6181938b681f",
+        "sha": "30ff96593a7b85b08b361b3e38c86a1e4051c07a",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36305855144/job/108582263600",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36306544638/job/108584207820",
         "line": null,
         "verdict": null,
         "fields": {},
