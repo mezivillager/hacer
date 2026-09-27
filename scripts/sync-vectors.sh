@@ -25,7 +25,9 @@ process.stdout.write([WEB_IDE_URL, WEB_IDE_COMMIT, ...sparsePaths()].join('\n'))
 ")"
 URL="$(printf '%s\n' "$META" | sed -n '1p')"
 COMMIT="$(printf '%s\n' "$META" | sed -n '2p')"
-mapfile -t SPARSE < <(printf '%s\n' "$META" | tail -n +3)
+# A read loop, not a bash 4 builtin: macOS ships bash 3.2.
+SPARSE=()
+while IFS= read -r SPARSE_PATH; do SPARSE+=("$SPARSE_PATH"); done < <(printf '%s\n' "$META" | tail -n +3)
 
 WORKDIR="$(mktemp -d)"
 trap 'rm -rf "$WORKDIR"' EXIT
