@@ -5,8 +5,6 @@
 // docs/harness/reviews/2026-09-26/SYNTHESIS.md), and prose accumulates there once nothing stops
 // it (#152). A budget keeps it a table of contents that points to the file owning each rule's
 // full detail, rather than restating that detail itself.
-//
-// Red stub (#152): compiles, not implemented yet.
 
 /**
  * Docs with a hard line-count ceiling, keyed by exact repo-relative path. A doc opts in by being
@@ -17,8 +15,10 @@ export const LINE_BUDGETS = {
 }
 
 /** The number of lines in `text`, the same count `wc -l` reports for a file. */
-export function countLines() {
-  throw new Error('not implemented')
+export function countLines(text) {
+  if (!text) return 0
+  const trimmed = text.endsWith('\n') ? text.slice(0, -1) : text
+  return trimmed === '' ? 0 : trimmed.split('\n').length
 }
 
 /**
@@ -27,11 +27,15 @@ export function countLines() {
  * @param {Record<string, number>} [budgets]
  * @returns {{path: string, lines: number, limit: number}[]}
  */
-export function findLineBudgetViolations() {
-  throw new Error('not implemented')
+export function findLineBudgetViolations(files, budgets = LINE_BUDGETS) {
+  return files
+    .filter((f) => Object.prototype.hasOwnProperty.call(budgets, f.path))
+    .map((f) => ({ path: f.path, lines: countLines(f.text), limit: budgets[f.path] }))
+    .filter((v) => v.lines > v.limit)
 }
 
 /** Render one `OVER BUDGET path: N lines (limit M)` per hit, for grep. */
-export function formatLineBudgetViolations() {
-  throw new Error('not implemented')
+export function formatLineBudgetViolations(violations) {
+  if (!violations || violations.length === 0) return ''
+  return violations.map((v) => `OVER BUDGET ${v.path}: ${v.lines} lines (limit ${v.limit})`).join('\n')
 }
