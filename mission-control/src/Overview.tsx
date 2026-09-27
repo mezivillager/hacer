@@ -1,9 +1,14 @@
 import { Tile } from './Tile'
 import { REPO, when, type Snapshot } from './snapshot'
 
-/** Seven tiles, each read from one section of the snapshot and dated by that section's freshness. */
+/** A share as `<part> of <whole><of> (<n>%)`; of none, 0%. */
+const share = (part: number, whole: number, of = '') => `${part} of ${whole}${of} (${whole ? Math.round((part / whole) * 100) : 0}%)`
+const hours = (value: number | null) => (value === null ? null : `${value} h`)
+
+/** Nine tiles, each read from one section of the snapshot and dated by that section's freshness. */
 export function Overview({ snapshot }: { snapshot: Snapshot }) {
   const { tasks, prs, sessions, checks, metrics } = snapshot
+  const { flow, conformance } = metrics
   const byProject = Object.entries(tasks.byProject).map(([slug, numbers]): [string, number] => [slug, numbers.length])
     .sort(([a, x], [b, y]) => y - x || a.localeCompare(b))
   const merging = prs.open.filter(({ verdicts }) => verdicts[verdicts.length - 1]?.verdict === 'PASS').length
@@ -32,6 +37,17 @@ export function Overview({ snapshot }: { snapshot: Snapshot }) {
         <Tile snapshot={snapshot} section="prs" title="Verdict coverage" href={`${REPO}/pulls?q=is%3Apr+is%3Amerged`}
           rows={[['merged PRs', merged], ['with a verdict', `${withVerdict} (${merged ? Math.round((withVerdict / merged) * 100) : 0}%)`],
             ['latest PASS', pass], ['latest BLOCK', block]]} />
+        <Tile snapshot={snapshot} section="metrics" title="Flow" empty="No flow numbers in the snapshot."
+          href={`${REPO}/pulls?q=is%3Apr+is%3Amerged${flow ? `+merged%3A%3E%3D${flow.since.slice(0, 10)}` : ''}`}
+          rows={flow ? [[`merged in ${flow.days} days`, flow.merged], ['open → merge, median', hours(flow.openToMergeHours.median)],
+            ['open → merge, p90', hours(flow.openToMergeHours.p90)],
+            ['blocked at least once', share(flow.blockedOnce.count, flow.blockedOnce.of, ' with a verdict')],
+            ['verdicts on code', share(flow.coverage.code.withVerdict, flow.coverage.code.merged)],
+            ['on docs, Dependabot, config', share(flow.coverage.nonCode.withVerdict, flow.coverage.nonCode.merged)]] : []} />
+        <Tile snapshot={snapshot} section="metrics" title="Conformance vectors" href={`${REPO}/tree/main/conformance/vectors`}
+          empty="No conformance vectors in the snapshot."
+          rows={conformance ? [...conformance.projects.map(({ project, files, byExtension }): [string, string] =>
+            [`project ${project}`, `${files} files, ${byExtension.tst ?? 0} test scripts`]), ['pass count', 'no runner yet']] : []} />
       </div>
     </>
   )
