@@ -93,3 +93,61 @@ A standing brief (`docs/harness/process-review-brief.md`) carries the parts that
 cycle brief is only its evidence and hypotheses. The process review becomes the fifth standing role.
 Reviews are numbered, not named by model, because the owner judges findings, not authors.
 Cost if wrong: a moved directory breaks links in old PR bodies; the history keeps them.
+
+## R751 — #517 merged 18 s after its body edit, not 60 s
+Builds on: R746
+Amends: R746
+R746 said #517 merged "60 s later". The edit landed at 08:19:33Z, the fresh runs started at 08:19:36Z
+and were green by 08:19:49Z, and the PR merged at 08:19:51Z: 18 s (#546's builder found it, and its
+verifier re-derived it). The 60 came from a 30-second polling loop's rounding — a number written from
+the loop's granularity instead of the event times, the #394 class again.
+Cost if wrong: none — the recovery stands; only the figure changes.
+
+## R752 — the weekly guard for today's session is 30%
+Builds on: R747
+Amends: R747
+The owner, mid-run: "30% is the weekly usage guard for today's session." It replaces R747's 75%. The
+meter read 23% when it was set.
+Cost if wrong: findings not reached today carry to the next run.
+
+## R753 — no early wind-down under the guard
+Builds on: R752
+The coordinator first answered R752 by deferring every remaining builder. The owner: "don't rush on
+changing direction, it's gonna be a while before you hit 30%." The queue continues in order; the
+meter is read before each dispatch, and only reaching 30% stops dispatch.
+Cost if wrong: a dispatch that starts at 29% can run a point or two past the guard before it lands.
+
+## R754 — the vector sync refuses, never deletes, a file upstream does not ship
+Builds on: R749
+#544's verifier found a stale vendored file survived a sync. The Project 3 builder chose to refuse —
+exit 1, naming every stray, deleting nothing — over deleting, and its verifier agreed.
+`conformance/vectors/` is the held-out oracle on a protected path, so a vector should leave it only
+through a reviewed `git rm`, never as a side effect of a parser that might read a later `index.ts`
+short. #552 made the refusal name the strays in every directory at once, and ignore dotfiles.
+Cost if wrong: a pin bump that drops a file needs one `git rm` commit per affected directory.
+
+## R755 — built-in chip texts are vendored like the course files
+Builds on: R749
+Upstream ships built-in chip texts through `BUILTIN_CHIPS` — `01/Nand.hdl`, `03/DFF.hdl`, and five in
+05. Each carries the nand2tetris header, so they are vendored. Open question for a later cycle: 01's
+`Nand.tst` / `Nand.cmp` were added to web-ide in 2024 (its #297) and may be web-ide-authored despite
+their header.
+Cost if wrong: a few non-course files in the oracle, removable by `git rm` under R754.
+
+## R756 — both lanes claim with the same command
+Builds on: R742
+#549 made `node scripts/backlog.mjs claim|release` the claim mechanism. The cloud lane clones this
+repo and has `gh`, so `cloud-queue.md` and `COVERAGE.md` move to the same command (#547, now
+`agent-ready`). One mechanism, so a claim excludes across lanes.
+Cost if wrong: the cloud lane cannot run the command, and #547 is reworded to the API call it wraps.
+
+## R757 — files upstream ships that are not course material are excluded by a named table
+Builds on: R749, ADR-0021
+The Project 5 builder stopped before building. Upstream's map ships `MaxRam.tst` and `MaxRam.cmp` —
+web-ide's own e2e fixtures (its #652, MIT, no course header) — and a `RAM16K` derived by a
+`.replace(…)` over Project 3's stub. Vendoring them would put MIT web-ide files under a notice that
+says CC BY-NC-SA course material; moving the pin before them would change 01–04. So the sync keeps
+reading the full map, strictly, and then applies a named, tested exclusion table: each entry keyed by
+project and file with its reason. An exclusion that no longer matches a shipped entry throws, so a
+later pin is noticed. Excluded files count as not shipped, so a hand-copied one is refused (R754).
+Cost if wrong: a three-entry deny-list to remove later.
