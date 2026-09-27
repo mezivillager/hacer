@@ -2,8 +2,9 @@
 # Vendor nand2tetris .hdl/.tst/.cmp files into conformance/vectors/<project>/.
 #
 # Clones https://github.com/nand2tetris/web-ide.git at the commit named in
-# scripts/sync-vectors.logic.mjs (never a sibling ../web-ide checkout) and extracts
-# the hdl/tst/cmp string exports. Project 1 only; projects 2-5 are follow-ups (#193).
+# scripts/sync-vectors.logic.mjs (never a sibling ../web-ide checkout) and writes the
+# files each project's upstream index.ts ships. The projects are VENDORED_PROJECTS
+# there; the rest of projects 1-5 are follow-ups (#193).
 #
 #   bash scripts/sync-vectors.sh
 
