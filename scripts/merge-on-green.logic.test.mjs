@@ -159,6 +159,18 @@ describe('decide — the rules between the states', () => {
     expect(decide(withPr(load('pending'), fields))).toMatchObject({ kind: 'give-up', exit: 4 })
   })
 
+  it('waits one pass before acting on a BLOCKED box with no stuck suite in sight: GitHub may still be settling', () => {
+    // Auto-merge lands ~3 s after the last required check (#517, #524, #362); a pass inside that
+    // window must not spend the body edit, or give up. #524 at 17:52:54, every check green:
+    const green = withPr(load('behind'), { mergeStateStatus: 'BLOCKED' })
+    const first = decide(green)
+    expect(first.kind).toBe('wait')
+    expect(decide(green, { settled: first.settle }).kind).toBe('edit-body')
+    const edited = withPr(green, { body: withRerunMarker(green.pr.body, green.pr.headRefOid, '2026-09-26T17:53:00Z') })
+    expect(decide(edited).kind).toBe('wait')
+    expect(decide(edited, { settled: first.settle })).toMatchObject({ kind: 'give-up', exit: 4 })
+  })
+
   it('never proposes a force-push or a rewrite, in any premise', () => {
     const histories = [{}, { reruns: [35798747995] }, { edits: ['ce3e920a6414164989dbdb8b9d45d8ead2ac1bbc'] }]
     for (const state of STATES) {
