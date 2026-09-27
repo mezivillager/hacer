@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-27T10:19:56.906Z",
+  "generatedAt": "2026-09-27T10:27:32.596Z",
   "head": {
-    "sha": "eca3e3c08efe9f09daed31d68d54715135a81db0",
-    "date": "2026-09-27T13:19:08+03:00",
-    "subject": "chore(scripts): merge-on-green waits a pass before acting without a stuck suite (#536)"
+    "sha": "3f268d63280bd08c31684145f50203299fce7bd3",
+    "date": "2026-09-27T13:26:40+03:00",
+    "subject": "feat(conformance): vendor the Project 4 nand2tetris vectors at the pinned web-ide commit"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open",
-      "fetchedAt": "2026-09-27T10:19:56.906Z",
+      "fetchedAt": "2026-09-27T10:27:32.596Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open",
-      "fetchedAt": "2026-09-27T10:19:56.906Z",
+      "fetchedAt": "2026-09-27T10:27:32.596Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open",
-      "fetchedAt": "2026-09-27T10:19:56.906Z",
+      "fetchedAt": "2026-09-27T10:27:32.596Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-27T10:19:56.906Z",
+      "fetchedAt": "2026-09-27T10:27:32.596Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-09-27T10:19:56.906Z",
+      "fetchedAt": "2026-09-27T10:27:32.596Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-09-27T10:19:56.906Z",
+      "fetchedAt": "2026-09-27T10:27:32.596Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-09-27T10:19:56.906Z",
+      "fetchedAt": "2026-09-27T10:27:32.596Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-09-27T10:19:56.906Z",
+      "fetchedAt": "2026-09-27T10:27:32.596Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-09-27T10:19:56.906Z",
+      "fetchedAt": "2026-09-27T10:27:32.596Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-09-27T10:19:56.906Z",
+      "fetchedAt": "2026-09-27T10:27:32.596Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-27T10:19:56.906Z",
+      "fetchedAt": "2026-09-27T10:27:32.596Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-09-27T10:19:56.906Z",
+      "fetchedAt": "2026-09-27T10:27:32.596Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-09-27T10:19:56.906Z",
+      "fetchedAt": "2026-09-27T10:27:32.596Z",
       "status": "ok"
     }
   },
@@ -104,8 +104,8 @@
         "slug": "harness",
         "epicNumber": 138,
         "open": 36,
-        "ready": 23,
-        "inProgress": 2,
+        "ready": 22,
+        "inProgress": 3,
         "needsHuman": 0,
         "staleClaims": [],
         "next": {
@@ -606,11 +606,6 @@
       {
         "number": 516,
         "title": "A lint for case-only filename collisions — two Mission Control PRs hit it in one day (macOS resolves the wrong module, CI on Linux passes)",
-        "project": "harness"
-      },
-      {
-        "number": 538,
-        "title": "Session records list the PRs a run merged, from merge times",
         "project": "harness"
       },
       {
@@ -1330,21 +1325,6 @@
           "project:harness",
           "agent-ready",
           "risk:1"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 538,
-        "title": "Session records list the PRs a run merged, from merge times",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:0"
         ],
         "blocking": [],
         "project": "harness",
@@ -2845,6 +2825,22 @@
         "reason": "claimed"
       },
       {
+        "number": 538,
+        "title": "Session records list the PRs a run merged, from merge times",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:0"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 540,
         "title": "Backlog reporting: on-request tasks are not counted ready; dormant mode and a per-row cap are computed",
         "labels": [
@@ -2944,7 +2940,6 @@
         394,
         418,
         516,
-        538,
         547,
         154,
         156,
@@ -2957,6 +2952,7 @@
         505,
         535,
         537,
+        538,
         540,
         550
       ],
@@ -3052,22 +3048,6 @@
   },
   "prs": {
     "open": [
-      {
-        "number": 552,
-        "title": "feat(conformance): vendor the Project 4 nand2tetris vectors; refuse once for every directory, disregard dotfiles",
-        "url": "https://github.com/mezivillager/hacer/pull/552",
-        "author": "mezivillager",
-        "labels": [
-          "risk:2",
-          "project:foundation"
-        ],
-        "headRefName": "feat/193-vectors-04",
-        "isDraft": false,
-        "createdAt": "2026-09-27T10:14:48Z",
-        "mergedAt": null,
-        "closes": [],
-        "verdicts": []
-      },
       {
         "number": 522,
         "title": "chore(deps): bump @radix-ui/react-switch from 1.2.6 to 1.3.7",
@@ -3219,6 +3199,30 @@
           536
         ],
         "verdicts": []
+      },
+      {
+        "number": 552,
+        "title": "feat(conformance): vendor the Project 4 nand2tetris vectors; refuse once for every directory, disregard dotfiles",
+        "url": "https://github.com/mezivillager/hacer/pull/552",
+        "author": "mezivillager",
+        "labels": [
+          "risk:2",
+          "project:foundation"
+        ],
+        "headRefName": "feat/193-vectors-04",
+        "isDraft": false,
+        "createdAt": "2026-09-27T10:14:48Z",
+        "mergedAt": "2026-09-27T10:26:41Z",
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus 5.5 (claude-opus-5-5)",
+            "at": "2026-09-27T10:25:36Z",
+            "url": "https://github.com/mezivillager/hacer/pull/552#issuecomment-5855021603"
+          }
+        ]
       },
       {
         "number": 549,
@@ -4566,28 +4570,13 @@
           424
         ],
         "verdicts": []
-      },
-      {
-        "number": 423,
-        "title": "docs(harness): standing Claude → Grok Bot cloud queue",
-        "url": "https://github.com/mezivillager/hacer/pull/423",
-        "author": "mezivillager",
-        "labels": [
-          "released"
-        ],
-        "headRefName": "cursor/cloud-queue-convention-3ec3",
-        "isDraft": false,
-        "createdAt": "2026-09-23T11:59:19Z",
-        "mergedAt": "2026-09-23T12:09:49Z",
-        "closes": [],
-        "verdicts": []
       }
     ],
     "coverage": {
       "merged": 60,
-      "withVerdict": 30,
-      "withoutVerdict": 30,
-      "pass": 29,
+      "withVerdict": 31,
+      "withoutVerdict": 29,
+      "pass": 30,
       "block": 1
     }
   },
@@ -4820,6 +4809,31 @@
           "author": "mezivillager",
           "at": "2026-09-27T10:16:48Z",
           "url": "https://github.com/mezivillager/hacer/issues/537#issuecomment-5854968363"
+        }
+      },
+      {
+        "number": 538,
+        "ref": "refs/heads/claim/538",
+        "sha": "3f268d63280bd08c31684145f50203299fce7bd3",
+        "state": "OPEN",
+        "title": "Session records list the PRs a run merged, from merge times",
+        "url": "https://github.com/mezivillager/hacer/issues/538",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:0"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "2026-09-27 review-followups",
+          "branch": "chore/538-run-prs",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-09-27T10:27:01Z",
+          "url": "https://github.com/mezivillager/hacer/issues/538#issuecomment-5855030275"
         }
       }
     ],
@@ -6283,7 +6297,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-23",
-        "merges": 5
+        "merges": 4
       },
       {
         "date": "2026-09-24",
@@ -6299,7 +6313,7 @@
       },
       {
         "date": "2026-09-27",
-        "merges": 11
+        "merges": 12
       }
     ]
   },
@@ -6307,11 +6321,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "eca3e3c08efe9f09daed31d68d54715135a81db0",
+        "sha": "3f268d63280bd08c31684145f50203299fce7bd3",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36312147370/job/108600044752",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36312553620/job/108601157677",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -6614,52 +6628,6 @@
         "conclusion": "SUCCESS",
         "completedAt": "2026-09-25T14:48:26Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/36149664191/job/108119435683",
-        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 71,
-          "new": 0
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 552,
-        "sha": "3199f3a917684fd116d437985531cf62dcbde40b",
-        "check": "pr-hygiene",
-        "conclusion": "FAILURE",
-        "completedAt": "2026-09-27T10:15:02Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36311916317/job/108599401365",
-        "line": "HYGIENE: FAIL reviewable=133 test=162 excluded=196 files=4 issue=#193,#548 linked=fixes",
-        "verdict": "FAIL",
-        "fields": {
-          "reviewable": 133,
-          "test": 162,
-          "excluded": 196,
-          "files": 4,
-          "issue": "#193,#548",
-          "linked": "fixes"
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 552,
-        "sha": "3199f3a917684fd116d437985531cf62dcbde40b",
-        "check": "browser-qa",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-09-27T10:15:05Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36311916173/job/108599400315",
-        "line": "BROWSER-QA: skipped (no critical paths)",
-        "verdict": "SKIPPED",
-        "fields": {},
-        "disagrees": false
-      },
-      {
-        "pr": 552,
-        "sha": "3199f3a917684fd116d437985531cf62dcbde40b",
-        "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-09-27T10:16:57Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36311915969/job/108599399176",
         "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
         "verdict": "PASS",
         "fields": {
