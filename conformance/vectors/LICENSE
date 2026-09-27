@@ -5,9 +5,13 @@ Pinned commit: 52611ad9bc2a30d329293b0cf58be672d672ac96
 Upstream form: TypeScript string modules under projects/src/project_<nn>/*.ts. Each
 project's index.ts names the files it ships and the export each is read from; this
 tree is that extracted text, not the modules.
-Projects included: 01, 02, 03, 04. Project 05 is a follow-up and is not in this tree yet.
+Projects included: 01, 02, 03, 04, 05.
+Not vendored, although upstream ships them:
+- 05/MaxRam.tst: web-ide's own e2e fixture (web-ide #652, MIT), not course material.
+- 05/MaxRam.cmp: web-ide's own e2e fixture (web-ide #652, MIT), not course material.
+- 05/RAM16K.hdl: web-ide's derived built-in, RAM16K.hdl.replace() over Project 3's stub: not course material, and 03/RAM16K.hdl but for its one new line.
 
-Licence of these .hdl / .tst / .cmp / .asm files:
+Licence of these .hdl / .tst / .cmp / .asm / .hack files:
 Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported
 (CC BY-NC-SA 3.0).
 https://creativecommons.org/licenses/by-nc-sa/3.0/
