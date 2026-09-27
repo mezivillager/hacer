@@ -161,6 +161,13 @@ describe('Project 1 fixtures', () => {
   })
 })
 
+describe('sync-vectors.sh', () => {
+  it('runs under the bash 3.2 macOS ships: no mapfile or readarray, which need bash 4', () => {
+    const script = readFileSync(new URL('./sync-vectors.sh', import.meta.url), 'utf8')
+    expect(script).not.toMatch(/\b(?:mapfile|readarray)\b/)
+  })
+})
+
 describe('Project 2 vectors', () => {
   it('conformance/vectors/02 is exactly the 17 shipped files, each .hdl and .tst under the nand2tetris header', () => {
     const shipped = shippedFiles(upstreamIndex('02')).map((entry) => entry.file)
