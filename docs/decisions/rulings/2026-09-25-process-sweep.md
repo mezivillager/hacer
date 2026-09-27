@@ -424,3 +424,15 @@ issue, and prove with four stub scenarios that a retry converges and a second ru
 The `epic` label check on the parent lookup rides along (one condition).
 Cost if wrong: a correction plan that is filed twice — visible, deletable, and the exact noise the
 tool exists to remove.
+
+## R741 — owner's correction: the run should have ended at the ceiling, not continued into the new week
+Builds on: R720
+Amends: R726
+The owner: "you were told to stop at 97%, and you are now into the next week's usage." R720 read
+"keep going until weekly usage is 99%" as this-week-only, and R726 then continued under a 70% ceiling
+after the reset — a reading the owner did not intend. Stopped on the owner's message: the last
+builder (#514 round 2) halted; #515's rebase finished because it was half-done in a worktree; nothing
+new was dispatched. The new week's meter read 7% at the last reading (05:40Z); the "near 12%" in the
+session record was an estimate, not a reading.
+Cost if wrong: none further — the run is closed. Lesson for the next hand-over: a usage ceiling ends
+the run when reached; a reset is not permission to continue.
