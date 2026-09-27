@@ -27,8 +27,9 @@ phase in `.cursorrules`. Which tier builds which risk: `docs/harness/model-tieri
 3. Red: the tests plus the smallest compiling stub that fails them — `test(<scope>): …`.
 4. Green: the smallest implementation that passes. Test files do not change after red; if an
    assertion looks wrong, stop and say so on the issue.
-5. Prove: `pnpm run lint`, `pnpm run test:run`, `pnpm run build`, `pnpm run lint:docs` and the
-   issue's verification command — all exit 0, pasted into the PR body.
+5. Prove: the definition of done, stated once in full at `docs/harness/implementer-brief.md` §
+   Definition of done — `pnpm run lint`, `pnpm run test:run`, `pnpm run build`,
+   `pnpm run lint:docs` and the issue's verification command — all exit 0, pasted into the PR body.
 6. PR: `Fixes #<n>`, ≤ 400 reviewable lines (aim ≤ 200), labels `project:<slug>` and `risk:<tier>`,
    conventional commits, no AI attribution trailers.
 7. Report: the PR URL, the reviewable line count, the tests added, and everything you could not

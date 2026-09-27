@@ -378,16 +378,18 @@ is a dispatched remote run, not a lane you own), and anything touching
 
 ## Phase 4 — Closing.
 
-**Definition of done, all exiting 0** (hacer `CLAUDE.md`), run in the worktree:
+**Definition of done:** stated once, in full, at `docs/harness/implementer-brief.md` §
+Definition of done — five commands, all exiting 0, run in the worktree:
 
 ```
 pnpm run lint          # typecheck + eslint
 pnpm run test:run      # vitest
 pnpm run build
 pnpm run lint:docs     # no machine-specific absolute paths — CI enforces it
+# + the issue's verification command
 ```
 
-Those four are exactly what `ci.yml` runs, so a green local gate predicts a
+The first four are exactly what `ci.yml` runs, so a green local gate predicts a
 green PR.
 
 **E2E is not in the gate — local or CI.** `e2e.yml` is manual-dispatch only, so

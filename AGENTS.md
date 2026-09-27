@@ -26,7 +26,7 @@
 
 ## 1. Start every session here
 
-Read in order: `llms.txt`. Task jump table → `REPO_MAP.md` § *Common tasks*. Patterns/examples → `HACER_LLM_GUIDE.md`. Cognitive protocols → §2 below. Current plan → `tasks/todo.md`; past mistakes → `tasks/lessons.md`. Claude Code skill map → `.claude/CLAUDE.md`. Cursor MCP/ECC hook tuning → `docs/llm-harness.md`.
+Read in order: `llms.txt`. Task jump table → `REPO_MAP.md` § *Common tasks*. Patterns/examples → `HACER_LLM_GUIDE.md`. Cognitive protocols → §2 below. Past mistakes → `tasks/lessons.md` (`tasks/todo.md` is historical, #148). Claude Code skill map → `.claude/CLAUDE.md`. Cursor MCP/ECC hook tuning → `docs/llm-harness.md`.
 
 **Git hygiene:** never commit to `main` — feature branch + worktree per workstream: `.cursor/rules/020-git-worktree-no-main.mdc`.
 
@@ -90,7 +90,7 @@ Enforced in layers, all without human involvement: the pre-commit hook (`.husky/
 | File layout, "add X" jump table | `REPO_MAP.md` |
 | Testing patterns + templates | `docs/testing/` |
 | Skills (TDD, debug, plan, review) | `.claude/skills/*/SKILL.md` |
-| Current task plan / past mistakes | `tasks/todo.md` · `tasks/lessons.md` |
+| Past mistakes (`tasks/todo.md` is historical, #148) | `tasks/lessons.md` |
 | Design specs / implementation plans | `docs/specs/` · `docs/plans/` |
 | Decisions (ADR log) | `docs/decisions/` |
 | Session failure patterns (kitchen-sink sessions, over-specified docs, …) | `docs/llm-workflow.md` § Failure patterns |

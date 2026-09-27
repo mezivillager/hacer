@@ -13,9 +13,8 @@ Before calling any task "Done", you must execute the full local verification sui
 
 <rules>
 ### 1. Verification Requirements
-- **Linting**: `pnpm run lint` must exit with code 0 (ESLint + Typecheck).
-- **Unit Tests**: `pnpm run test:run` must pass all Vitest tests.
-- **Build**: `pnpm run build` must succeed without errors.
+**Definition of done:** stated once, in full, at `docs/harness/implementer-brief.md` § Definition
+of done — run it and confirm every command exits 0 before calling anything "Done".
 
 ### 2. TDD Iron Law
 - **Red Phase**: Every production function must be written *after* a failing test.

@@ -129,7 +129,7 @@ Use [tasks/todo.md](../tasks/todo.md) and [tasks/lessons.md](../tasks/lessons.md
 |---------|-----|
 | **Kitchen sink session** — one task, then unrelated questions, then back to the first | Clear context between unrelated tasks. Start fresh for each distinct workstream. |
 | **Correcting over and over** — same issue, multiple failed corrections, context polluted | After 2+ failed corrections on the same issue, clear context and re-prompt with a better initial prompt that incorporates what you learned. |
-| **Trust-then-verify gap** — plausible-looking implementation that doesn't handle edge cases | Always provide verification (tests, lint, build). Run `pnpm run lint`, `pnpm run test:run`, `pnpm run build` before marking done. Never ship without proof. |
+| **Trust-then-verify gap** — plausible-looking implementation that doesn't handle edge cases | Always provide verification: run the definition of done, stated once at `docs/harness/implementer-brief.md` § Definition of done, before marking done. Never ship without proof. |
 | **Infinite exploration** — "investigate" without scoping; reads hundreds of files | Scope investigations narrowly. Use subagents so exploration doesn't consume your main context. One focused task per subagent. |
 | **Over-specified docs** — rules get lost in noise, agent ignores half of them | Keep `AGENTS.md` and `.cursorrules` concise. Ruthlessly prune. If the agent already does something correctly without the instruction, delete it. |
 
@@ -139,7 +139,7 @@ Use [tasks/todo.md](../tasks/todo.md) and [tasks/lessons.md](../tasks/lessons.md
 
 | Practice | HACER Integration |
 |----------|-------------------|
-| **Verification** | Run `pnpm run test:run`, `pnpm run lint`, `pnpm run typecheck` before marking done. See [.cursorrules](../.cursorrules) AI Agent Completion Checklist. |
+| **Verification** | Definition of done: stated once, in full, at [`docs/harness/implementer-brief.md`](../docs/harness/implementer-brief.md) § Definition of done. |
 | **TDD** | Follow [docs/testing/](./testing/) — write tests first, Red-Green-Refactor. |
 | **Elegance** | Follow [HACER_LLM_GUIDE.md](../HACER_LLM_GUIDE.md) patterns; avoid anti-patterns. |
 | **Bug Fixing** | Reach for store E2E (`pnpm run test:e2e:store`, manual) when a bug is browser-level; fix CI without being asked. |
