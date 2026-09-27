@@ -94,9 +94,10 @@ const markedHeads = (body) => [...(body ?? '').matchAll(MARKER)].map((match) => 
  *   `checkRuns` are {id, name, status, conclusion, suite}; `workflowRuns` are {id, name,
  *   workflow_id, event, status, conclusion, suite, attempt}, both for the head SHA.
  * @param history what this run of the tool already did: {reruns: run ids, edits: head SHAs,
- *   refusals: {kind: count}, lastError}. A refusal is a gh command that failed.
+ *   refusals: {kind: count}, lastError, settled: the `settle` head of the previous pass's action}.
+ *   A refusal is a gh command that failed.
  * @returns {{kind: 'merged'|'fail'|'give-up'|'merge'|'wait'|'rerun'|'update-branch'|'edit-body',
- *   reason: string, exit?: number, runId?: number}}
+ *   reason: string, exit?: number, runId?: number, settle?: string}}
  */
 export function decide(snapshot, history = {}) {
   const { pr } = snapshot
@@ -146,7 +147,13 @@ export function decide(snapshot, history = {}) {
     )
   }
 
+  // A stuck suite is proof the box will not clear on its own. Without one, the box may just be
+  // settling: auto-merge lands ~3 s after the last required check (#517, #524, #362).
   const why = blockers(states, head)
+  const stuck = states.some((s) => s.verdict === 'expected' || s.verdict === 'cancelled')
+  if (!stuck && history.settled !== pr.headRefOid) {
+    return act('wait', `BLOCKED with nothing running: ${why}. Waiting one pass for GitHub to settle`, { settle: pr.headRefOid })
+  }
   const edited = (history.edits ?? []).includes(pr.headRefOid) || markedHeads(pr.body).includes(pr.headRefOid)
   if (!edited) {
     return act(
