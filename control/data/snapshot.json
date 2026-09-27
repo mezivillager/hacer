@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-27T11:42:50.051Z",
+  "generatedAt": "2026-09-27T11:45:48.478Z",
   "head": {
-    "sha": "76bd9bb19255eb155fc88bf4aba2366a7e3f4f8c",
-    "date": "2026-09-27T14:41:38+03:00",
-    "subject": "chore(hooks): drop husky v10-deprecated bootstrap lines from commit-msg"
+    "sha": "790d524d3714eb305721bd563ff62d11b0df2ccb",
+    "date": "2026-09-27T14:44:53+03:00",
+    "subject": "docs(lineage): the premises register says what verify does in one paragraph"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-27T11:42:50.051Z",
+      "fetchedAt": "2026-09-27T11:45:48.478Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-27T11:42:50.051Z",
+      "fetchedAt": "2026-09-27T11:45:48.478Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-27T11:42:50.051Z",
+      "fetchedAt": "2026-09-27T11:45:48.478Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-27T11:42:50.051Z",
+      "fetchedAt": "2026-09-27T11:45:48.478Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-09-27T11:42:50.051Z",
+      "fetchedAt": "2026-09-27T11:45:48.478Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-09-27T11:42:50.051Z",
+      "fetchedAt": "2026-09-27T11:45:48.478Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-09-27T11:42:50.051Z",
+      "fetchedAt": "2026-09-27T11:45:48.478Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-09-27T11:42:50.051Z",
+      "fetchedAt": "2026-09-27T11:45:48.478Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-09-27T11:42:50.051Z",
+      "fetchedAt": "2026-09-27T11:45:48.478Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-09-27T11:42:50.051Z",
+      "fetchedAt": "2026-09-27T11:45:48.478Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-27T11:42:50.051Z",
+      "fetchedAt": "2026-09-27T11:45:48.478Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-09-27T11:42:50.051Z",
+      "fetchedAt": "2026-09-27T11:45:48.478Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-09-27T11:42:50.051Z",
+      "fetchedAt": "2026-09-27T11:45:48.478Z",
       "status": "ok"
     }
   },
@@ -105,14 +105,14 @@
         "slug": "harness",
         "epicNumber": 138,
         "open": 32,
-        "ready": 22,
-        "inProgress": 0,
+        "ready": 21,
+        "inProgress": 1,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 22,
         "next": {
-          "number": 148,
-          "title": "Bootstrap the backlog: retire tasks/todo.md and the P05 checklist as history; AGENTS.md Step 1.0 points at GitHub Issues"
+          "number": 149,
+          "title": "scripts/backlog.mjs: `ready`, `projects`, `tasks`, `next`, `claim` over gh issue JSON, with unit tests"
         },
         "title": "Epic: harness — autonomous-run improvements & agent-readiness",
         "subIssues": {
@@ -334,20 +334,20 @@
         "lane": "process",
         "slug": "lineage",
         "epicNumber": 457,
-        "open": 5,
+        "open": 4,
         "ready": 2,
-        "inProgress": 2,
+        "inProgress": 1,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 4,
+        "agentReady": 3,
         "next": {
           "number": 471,
           "title": "Lineage DL-6: lint:lineage from warn to fail — the lineage ratchet"
         },
         "title": "Epic: lineage — Decision Lineage: the decision graph, executable premises, and the correction workflow",
         "subIssues": {
-          "completed": 4,
-          "percentCompleted": 44,
+          "completed": 5,
+          "percentCompleted": 55,
           "total": 9
         }
       },
@@ -398,21 +398,6 @@
         "project": "foundation"
       },
       {
-        "number": 471,
-        "title": "Lineage DL-6: lint:lineage from warn to fail — the lineage ratchet",
-        "project": "lineage"
-      },
-      {
-        "number": 148,
-        "title": "Bootstrap the backlog: retire tasks/todo.md and the P05 checklist as history; AGENTS.md Step 1.0 points at GitHub Issues",
-        "project": "harness"
-      },
-      {
-        "number": 279,
-        "title": "Shape the surfaces issues for the hand-in-hand rule: scenario ids + drivers (hdl/mcp/svg2d/cli) + docs/public page, before agent-ready",
-        "project": "foundation"
-      },
-      {
         "number": 478,
         "title": "Mission Control MC-7: charts — ratchet history, merges per day, open tasks by project, verdict coverage",
         "project": "mission-control"
@@ -423,8 +408,8 @@
         "project": "spine"
       },
       {
-        "number": 315,
-        "title": "Canvas-less shell: the renderer selector (ADR-0019 slice 1)",
+        "number": 279,
+        "title": "Shape the surfaces issues for the hand-in-hand rule: scenario ids + drivers (hdl/mcp/svg2d/cli) + docs/public page, before agent-ready",
         "project": "foundation"
       },
       {
@@ -433,13 +418,13 @@
         "project": "upkeep"
       },
       {
-        "number": 331,
-        "title": "Characterize the legacy app before it is replaced: rendered geometry, evaluation fixtures, the 43 store actions",
+        "number": 315,
+        "title": "Canvas-less shell: the renderer selector (ADR-0019 slice 1)",
         "project": "foundation"
       },
       {
-        "number": 481,
-        "title": "Lineage DL-7: the lineage graph as a Mission Control view",
+        "number": 471,
+        "title": "Lineage DL-6: lint:lineage from warn to fail — the lineage ratchet",
         "project": "lineage"
       },
       {
@@ -448,8 +433,8 @@
         "project": "harness"
       },
       {
-        "number": 334,
-        "title": "Harness: ledger rows stop conflicting (merge=union), and the verifier reads the PR's own CI logs (foundation 0.7, 0.10)",
+        "number": 331,
+        "title": "Characterize the legacy app before it is replaced: rendered geometry, evaluation fixtures, the 43 store actions",
         "project": "foundation"
       },
       {
@@ -458,8 +443,8 @@
         "project": "mission-control"
       },
       {
-        "number": 335,
-        "title": "Move the HTMLCanvasElement patch out of the shared test setup, and move store/core tests to the node project (foundation 0.10)",
+        "number": 334,
+        "title": "Harness: ledger rows stop conflicting (merge=union), and the verifier reads the PR's own CI logs (foundation 0.7, 0.10)",
         "project": "foundation"
       },
       {
@@ -468,9 +453,14 @@
         "project": "upkeep"
       },
       {
-        "number": 338,
-        "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
+        "number": 335,
+        "title": "Move the HTMLCanvasElement patch out of the shared test setup, and move store/core tests to the node project (foundation 0.10)",
         "project": "foundation"
+      },
+      {
+        "number": 481,
+        "title": "Lineage DL-7: the lineage graph as a Mission Control view",
+        "project": "lineage"
       },
       {
         "number": 152,
@@ -478,8 +468,8 @@
         "project": "harness"
       },
       {
-        "number": 345,
-        "title": "pr-hygiene nits from #344: deletionOnlyExemption fails open on missing fields; refusals should name the file; the evidence rule is case-sensitive",
+        "number": 338,
+        "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
         "project": "foundation"
       },
       {
@@ -488,8 +478,8 @@
         "project": "mission-control"
       },
       {
-        "number": 349,
-        "title": "backlog.mjs reporting nits from #347: pulled-forward issues vanish from their original row's totals; gate reason shadows on-request",
+        "number": 345,
+        "title": "pr-hygiene nits from #344: deletionOnlyExemption fails open on missing fields; refusals should name the file; the evidence rule is case-sensitive",
         "project": "foundation"
       },
       {
@@ -498,8 +488,8 @@
         "project": "upkeep"
       },
       {
-        "number": 373,
-        "title": "N.0: the six 3D mesh components become prop-only and store-free (six PRs, expand → migrate → contract)",
+        "number": 349,
+        "title": "backlog.mjs reporting nits from #347: pulled-forward issues vanish from their original row's totals; gate reason shadows on-request",
         "project": "foundation"
       },
       {
@@ -508,14 +498,19 @@
         "project": "harness"
       },
       {
-        "number": 407,
-        "title": "Two PRs can be green alone and red merged, and nothing detects it before main",
+        "number": 373,
+        "title": "N.0: the six 3D mesh components become prop-only and store-free (six PRs, expand → migrate → contract)",
         "project": "foundation"
       },
       {
         "number": 513,
         "title": "Mission Control Process view: stage labels shrink with the SVG at phone width; Verifying and PR drill into the same list",
         "project": "mission-control"
+      },
+      {
+        "number": 407,
+        "title": "Two PRs can be green alone and red merged, and nothing detects it before main",
+        "project": "foundation"
       },
       {
         "number": 429,
@@ -626,8 +621,6 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
-        559,
-        519,
         514
       ]
     }
@@ -641,52 +634,6 @@
           "project:3d",
           "agent-ready",
           "risk:2",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 471,
-        "title": "Lineage DL-6: lint:lineage from warn to fail — the lineage ratchet",
-        "labels": [
-          "agent-ready",
-          "risk:2",
-          "project:lineage"
-        ],
-        "blocking": [],
-        "project": "lineage",
-        "rank": 13,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 148,
-        "title": "Bootstrap the backlog: retire tasks/todo.md and the P05 checklist as history; AGENTS.md Step 1.0 points at GitHub Issues",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:2"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 279,
-        "title": "Shape the surfaces issues for the hand-in-hand rule: scenario ids + drivers (hdl/mcp/svg2d/cli) + docs/public page, before agent-ready",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:0",
           "project:foundation"
         ],
         "blocking": [],
@@ -728,17 +675,15 @@
         "reason": null
       },
       {
-        "number": 315,
-        "title": "Canvas-less shell: the renderer selector (ADR-0019 slice 1)",
+        "number": 279,
+        "title": "Shape the surfaces issues for the hand-in-hand rule: scenario ids + drivers (hdl/mcp/svg2d/cli) + docs/public page, before agent-ready",
         "labels": [
-          "project:surfaces",
+          "project:harness",
           "agent-ready",
-          "risk:1",
+          "risk:0",
           "project:foundation"
         ],
-        "blocking": [
-          316
-        ],
+        "blocking": [],
         "project": "foundation",
         "rank": 1,
         "lane": "feature",
@@ -761,15 +706,16 @@
         "reason": null
       },
       {
-        "number": 331,
-        "title": "Characterize the legacy app before it is replaced: rendered geometry, evaluation fixtures, the 43 store actions",
+        "number": 315,
+        "title": "Canvas-less shell: the renderer selector (ADR-0019 slice 1)",
         "labels": [
+          "project:surfaces",
           "agent-ready",
           "risk:1",
           "project:foundation"
         ],
         "blocking": [
-          381
+          316
         ],
         "project": "foundation",
         "rank": 1,
@@ -778,11 +724,11 @@
         "reason": null
       },
       {
-        "number": 481,
-        "title": "Lineage DL-7: the lineage graph as a Mission Control view",
+        "number": 471,
+        "title": "Lineage DL-6: lint:lineage from warn to fail — the lineage ratchet",
         "labels": [
           "agent-ready",
-          "risk:1",
+          "risk:2",
           "project:lineage"
         ],
         "blocking": [],
@@ -810,15 +756,16 @@
         "reason": null
       },
       {
-        "number": 334,
-        "title": "Harness: ledger rows stop conflicting (merge=union), and the verifier reads the PR's own CI logs (foundation 0.7, 0.10)",
+        "number": 331,
+        "title": "Characterize the legacy app before it is replaced: rendered geometry, evaluation fixtures, the 43 store actions",
         "labels": [
-          "project:harness",
           "agent-ready",
-          "risk:0",
+          "risk:1",
           "project:foundation"
         ],
-        "blocking": [],
+        "blocking": [
+          381
+        ],
         "project": "foundation",
         "rank": 1,
         "lane": "feature",
@@ -841,11 +788,12 @@
         "reason": null
       },
       {
-        "number": 335,
-        "title": "Move the HTMLCanvasElement patch out of the shared test setup, and move store/core tests to the node project (foundation 0.10)",
+        "number": 334,
+        "title": "Harness: ledger rows stop conflicting (merge=union), and the verifier reads the PR's own CI logs (foundation 0.7, 0.10)",
         "labels": [
+          "project:harness",
           "agent-ready",
-          "risk:1",
+          "risk:0",
           "project:foundation"
         ],
         "blocking": [],
@@ -871,8 +819,8 @@
         "reason": null
       },
       {
-        "number": 338,
-        "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
+        "number": 335,
+        "title": "Move the HTMLCanvasElement patch out of the shared test setup, and move store/core tests to the node project (foundation 0.10)",
         "labels": [
           "agent-ready",
           "risk:1",
@@ -882,6 +830,21 @@
         "project": "foundation",
         "rank": 1,
         "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 481,
+        "title": "Lineage DL-7: the lineage graph as a Mission Control view",
+        "labels": [
+          "agent-ready",
+          "risk:1",
+          "project:lineage"
+        ],
+        "blocking": [],
+        "project": "lineage",
+        "rank": 13,
+        "lane": "process",
         "pickable": true,
         "reason": null
       },
@@ -903,10 +866,9 @@
         "reason": null
       },
       {
-        "number": 345,
-        "title": "pr-hygiene nits from #344: deletionOnlyExemption fails open on missing fields; refusals should name the file; the evidence rule is case-sensitive",
+        "number": 338,
+        "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
         "labels": [
-          "project:harness",
           "agent-ready",
           "risk:1",
           "project:foundation"
@@ -934,8 +896,8 @@
         "reason": null
       },
       {
-        "number": 349,
-        "title": "backlog.mjs reporting nits from #347: pulled-forward issues vanish from their original row's totals; gate reason shadows on-request",
+        "number": 345,
+        "title": "pr-hygiene nits from #344: deletionOnlyExemption fails open on missing fields; refusals should name the file; the evidence rule is case-sensitive",
         "labels": [
           "project:harness",
           "agent-ready",
@@ -965,16 +927,15 @@
         "reason": null
       },
       {
-        "number": 373,
-        "title": "N.0: the six 3D mesh components become prop-only and store-free (six PRs, expand → migrate → contract)",
+        "number": 349,
+        "title": "backlog.mjs reporting nits from #347: pulled-forward issues vanish from their original row's totals; gate reason shadows on-request",
         "labels": [
+          "project:harness",
           "agent-ready",
-          "risk:2",
+          "risk:1",
           "project:foundation"
         ],
-        "blocking": [
-          383
-        ],
+        "blocking": [],
         "project": "foundation",
         "rank": 1,
         "lane": "feature",
@@ -997,15 +958,16 @@
         "reason": null
       },
       {
-        "number": 407,
-        "title": "Two PRs can be green alone and red merged, and nothing detects it before main",
+        "number": 373,
+        "title": "N.0: the six 3D mesh components become prop-only and store-free (six PRs, expand → migrate → contract)",
         "labels": [
-          "project:harness",
           "agent-ready",
-          "risk:1",
+          "risk:2",
           "project:foundation"
         ],
-        "blocking": [],
+        "blocking": [
+          383
+        ],
         "project": "foundation",
         "rank": 1,
         "lane": "feature",
@@ -1024,6 +986,22 @@
         "project": "mission-control",
         "rank": 14,
         "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 407,
+        "title": "Two PRs can be green alone and red merged, and nothing detects it before main",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
         "pickable": true,
         "reason": null
       },
@@ -1349,6 +1327,22 @@
         "lane": "process",
         "pickable": true,
         "reason": null
+      },
+      {
+        "number": 148,
+        "title": "Bootstrap the backlog: retire tasks/todo.md and the P05 checklist as history; AGENTS.md Step 1.0 points at GitHub Issues",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:2"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "claimed"
       },
       {
         "number": 151,
@@ -2638,22 +2632,6 @@
         "reason": "unshaped"
       },
       {
-        "number": 468,
-        "title": "Lineage DL-3: executable premises — the register, `lineage verify`, and the scheduled check that files expiry",
-        "labels": [
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:lineage"
-        ],
-        "blocking": [],
-        "project": "lineage",
-        "rank": 13,
-        "lane": "process",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 470,
         "title": "Lineage DL-5: `lineage correct` — the correction plan, one task per downstream decision",
         "labels": [
@@ -2840,47 +2818,6 @@
         462,
         506
       ],
-      "lineage": [
-        471,
-        481,
-        468,
-        470,
-        502
-      ],
-      "harness": [
-        148,
-        149,
-        152,
-        153,
-        155,
-        159,
-        160,
-        247,
-        251,
-        257,
-        269,
-        271,
-        280,
-        304,
-        308,
-        368,
-        391,
-        392,
-        394,
-        418,
-        516,
-        547,
-        154,
-        156,
-        270,
-        435,
-        436,
-        454,
-        500,
-        504,
-        505,
-        550
-      ],
       "mission-control": [
         478,
         479,
@@ -2915,6 +2852,46 @@
         229,
         256,
         542
+      ],
+      "lineage": [
+        471,
+        481,
+        470,
+        502
+      ],
+      "harness": [
+        149,
+        152,
+        153,
+        155,
+        159,
+        160,
+        247,
+        251,
+        257,
+        269,
+        271,
+        280,
+        304,
+        308,
+        368,
+        391,
+        392,
+        394,
+        418,
+        516,
+        547,
+        148,
+        154,
+        156,
+        270,
+        435,
+        436,
+        454,
+        500,
+        504,
+        505,
+        550
       ],
       "core": [
         179,
@@ -2974,24 +2951,6 @@
   "prs": {
     "open": [
       {
-        "number": 559,
-        "title": "chore(lineage): verify premises and file expiry weekly — supersedes #519 (#468)",
-        "url": "https://github.com/mezivillager/hacer/pull/559",
-        "author": "mezivillager",
-        "labels": [
-          "risk:1",
-          "project:lineage"
-        ],
-        "headRefName": "feat/468-lineage-verify-r2",
-        "isDraft": false,
-        "createdAt": "2026-09-27T11:18:37Z",
-        "mergedAt": null,
-        "closes": [
-          468
-        ],
-        "verdicts": []
-      },
-      {
         "number": 522,
         "title": "chore(deps): bump @radix-ui/react-switch from 1.2.6 to 1.3.7",
         "url": "https://github.com/mezivillager/hacer/pull/522",
@@ -3038,32 +2997,6 @@
         "mergedAt": null,
         "closes": [],
         "verdicts": []
-      },
-      {
-        "number": 519,
-        "title": "Lineage DL-3: executable premises, lineage verify, and the weekly expiry check",
-        "url": "https://github.com/mezivillager/hacer/pull/519",
-        "author": "mezivillager",
-        "labels": [
-          "risk:1",
-          "project:lineage"
-        ],
-        "headRefName": "feat/468-lineage-verify",
-        "isDraft": true,
-        "createdAt": "2026-09-25T08:39:13Z",
-        "mergedAt": null,
-        "closes": [
-          468
-        ],
-        "verdicts": [
-          {
-            "verdict": "BLOCK",
-            "round": 1,
-            "model": "Grok (Grok Bot executor subagent; exact model version not exposed)",
-            "at": "2026-09-25T14:43:09Z",
-            "url": "https://github.com/mezivillager/hacer/pull/519#issuecomment-5834291362"
-          }
-        ]
       },
       {
         "number": 514,
@@ -3158,6 +3091,32 @@
             "model": "claude-sonnet-5",
             "at": "2026-09-27T11:39:25Z",
             "url": "https://github.com/mezivillager/hacer/pull/561#issuecomment-5855497797"
+          }
+        ]
+      },
+      {
+        "number": 559,
+        "title": "chore(lineage): verify premises and file expiry weekly — supersedes #519 (#468)",
+        "url": "https://github.com/mezivillager/hacer/pull/559",
+        "author": "mezivillager",
+        "labels": [
+          "risk:1",
+          "project:lineage"
+        ],
+        "headRefName": "feat/468-lineage-verify-r2",
+        "isDraft": false,
+        "createdAt": "2026-09-27T11:18:37Z",
+        "mergedAt": "2026-09-27T11:44:54Z",
+        "closes": [
+          468
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Sonnet 5 (claude-sonnet-5)",
+            "at": "2026-09-27T11:44:09Z",
+            "url": "https://github.com/mezivillager/hacer/pull/559#issuecomment-5855527958"
           }
         ]
       },
@@ -4483,35 +4442,43 @@
         "mergedAt": "2026-09-24T01:00:09Z",
         "closes": [],
         "verdicts": []
-      },
-      {
-        "number": 439,
-        "title": "docs(harness): session record for 2026-09-24",
-        "url": "https://github.com/mezivillager/hacer/pull/439",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:0"
-        ],
-        "headRefName": "docs/session-record-2026-09-24",
-        "isDraft": false,
-        "createdAt": "2026-09-24T00:51:52Z",
-        "mergedAt": "2026-09-24T01:02:39Z",
-        "closes": [],
-        "verdicts": []
       }
     ],
     "coverage": {
       "merged": 60,
-      "withVerdict": 33,
-      "withoutVerdict": 27,
-      "pass": 32,
+      "withVerdict": 34,
+      "withoutVerdict": 26,
+      "pass": 33,
       "block": 1
     }
   },
   "claims": {
     "items": [
+      {
+        "number": 148,
+        "ref": "refs/heads/claim/148",
+        "sha": "790d524d3714eb305721bd563ff62d11b0df2ccb",
+        "state": "OPEN",
+        "title": "Bootstrap the backlog: retire tasks/todo.md and the P05 checklist as history; AGENTS.md Step 1.0 points at GitHub Issues",
+        "url": "https://github.com/mezivillager/hacer/issues/148",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:2"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "2026-09-27 review-followups",
+          "branch": "docs/148-retire-todo",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-09-27T11:45:25Z",
+          "url": "https://github.com/mezivillager/hacer/issues/148#issuecomment-5855535989"
+        }
+      },
       {
         "number": 182,
         "ref": "refs/heads/claim/182",
@@ -4542,7 +4509,7 @@
         "number": 468,
         "ref": "refs/heads/claim/468",
         "sha": "79e512352133368fa6f2f3f87de744801c97cb2c",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "Lineage DL-3: executable premises — the register, `lineage verify`, and the scheduled check that files expiry",
         "url": "https://github.com/mezivillager/hacer/issues/468",
         "labels": [
@@ -4551,7 +4518,7 @@
           "risk:1",
           "project:lineage"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -4845,7 +4812,7 @@
         }
       }
     ],
-    "onClosedIssues": 8
+    "onClosedIssues": 9
   },
   "cloudLane": {
     "items": [
@@ -6323,7 +6290,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-24",
-        "merges": 24
+        "merges": 23
       },
       {
         "date": "2026-09-25",
@@ -6335,7 +6302,7 @@
       },
       {
         "date": "2026-09-27",
-        "merges": 20
+        "merges": 21
       }
     ]
   },
@@ -6343,11 +6310,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "76bd9bb19255eb155fc88bf4aba2366a7e3f4f8c",
+        "sha": "790d524d3714eb305721bd563ff62d11b0df2ccb",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36316561293/job/108612252912",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36316730582/job/108612732167",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -6436,52 +6403,6 @@
         "conclusion": "SUCCESS",
         "completedAt": "2026-09-25T06:48:18Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/36104338672/job/107973412518",
-        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 71,
-          "new": 0
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 519,
-        "sha": "3753bd10a123d0c98529d8d5c26c63254bdef9cd",
-        "check": "pr-hygiene",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-09-25T14:52:59Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36150434819/job/108122031254",
-        "line": "HYGIENE: WARN reviewable=399 test=213 excluded=23 files=8 issue=#468 linked=fixes",
-        "verdict": "WARN",
-        "fields": {
-          "reviewable": 399,
-          "test": 213,
-          "excluded": 23,
-          "files": 8,
-          "issue": "#468",
-          "linked": "fixes"
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 519,
-        "sha": "3753bd10a123d0c98529d8d5c26c63254bdef9cd",
-        "check": "browser-qa",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-09-25T14:53:05Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36150434243/job/108122026036",
-        "line": "BROWSER-QA: skipped (no critical paths)",
-        "verdict": "SKIPPED",
-        "fields": {},
-        "disagrees": false
-      },
-      {
-        "pr": 519,
-        "sha": "3753bd10a123d0c98529d8d5c26c63254bdef9cd",
-        "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-09-25T14:53:23Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36150209615/job/108121265518",
         "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
         "verdict": "PASS",
         "fields": {
@@ -6617,52 +6538,6 @@
         "conclusion": "SUCCESS",
         "completedAt": "2026-09-25T14:48:26Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/36149664191/job/108119435683",
-        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 71,
-          "new": 0
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 559,
-        "sha": "236b9d2e167e478e32750e84c2c5ca08758332e5",
-        "check": "pr-hygiene",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-09-27T11:19:08Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36315332357/job/108608855203",
-        "line": "HYGIENE: WARN reviewable=394 test=261 excluded=23 files=8 issue=#468 linked=fixes",
-        "verdict": "WARN",
-        "fields": {
-          "reviewable": 394,
-          "test": 261,
-          "excluded": 23,
-          "files": 8,
-          "issue": "#468",
-          "linked": "fixes"
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 559,
-        "sha": "236b9d2e167e478e32750e84c2c5ca08758332e5",
-        "check": "browser-qa",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-09-27T11:19:09Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36315332102/job/108608854076",
-        "line": "BROWSER-QA: skipped (no critical paths)",
-        "verdict": "SKIPPED",
-        "fields": {},
-        "disagrees": false
-      },
-      {
-        "pr": 559,
-        "sha": "236b9d2e167e478e32750e84c2c5ca08758332e5",
-        "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-09-27T11:21:16Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36315316935/job/108608809969",
         "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
         "verdict": "PASS",
         "fields": {
