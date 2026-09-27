@@ -207,7 +207,8 @@ conformance/
     ├── LICENSE          # CC BY-NC-SA 3.0 notice + the pinned web-ide commit
     ├── 01/              # Project 1 .hdl/.tst/.cmp
     ├── 02/              # Project 2 .hdl/.tst/.cmp
-    └── 03/              # Project 3 .hdl/.tst/.cmp, with the builtin DFF.hdl. Projects 4-5 are follow-ups.
+    ├── 03/              # Project 3 .hdl/.tst/.cmp, with the builtin DFF.hdl
+    └── 04/              # Project 4 .asm/.tst/.cmp (Mult, Fill), flattened from upstream's TESTS map. Project 5 is a follow-up.
 
 .github/
 ├── copilot-instructions.md       # GitHub Copilot quick-start
@@ -229,10 +230,11 @@ Landed and shown in the tree above: `src/core/chips/` (registry, builtins, `eval
 `src/components/scene/ChipBody3D.tsx` + `src/components/scene/chipBodyLayout.ts`, `src/components/ui/icons/ChipIcons.tsx`,
 `src/components/ui/TestResultsPanel.tsx`, `src/components/ui/PinoutPanel.tsx`, `src/components/ui/StatusBar.tsx`,
 `src/store/actions/persistenceActions/`, and the bus components under `src/nodes/`.
-Held-out oracle (#193): official Project 1 to 3 vectors in `conformance/vectors/01/`,
-`conformance/vectors/02/` and `conformance/vectors/03/`, refreshed by `scripts/sync-vectors.sh`
-from the files each project's upstream index.ts in web-ide ships. The sync refuses a project
-directory that holds any other file; a vector leaves only by `git rm`. The licence notice is
+Held-out oracle (#193): official Project 1 to 4 vectors in `conformance/vectors/01/`,
+`conformance/vectors/02/`, `conformance/vectors/03/` and `conformance/vectors/04/`, refreshed by
+`scripts/sync-vectors.sh` from the files each project's upstream index.ts in web-ide ships. The
+sync refuses, in one run naming them all, project directories that hold any other file (dotfiles
+such as Finder's .DS_Store aside); a vector leaves only by `git rm`. The licence notice is
 `conformance/vectors/LICENSE`.
 `conformance/vectors/` is a protected path (`scripts/protected-paths.logic.mjs`).
 

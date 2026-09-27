@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Vendor nand2tetris .hdl/.tst/.cmp files into conformance/vectors/<project>/.
+# Vendor nand2tetris .hdl/.tst/.cmp/.asm files into conformance/vectors/<project>/.
 #
 # Clones https://github.com/nand2tetris/web-ide.git at the commit named in
 # scripts/sync-vectors.logic.mjs (never a sibling ../web-ide checkout) and writes the
