@@ -1,0 +1,199 @@
+{
+  "_recorded": "PR #416 first head 1f4e5b9, recorded as it stands: the head R517 measured. deploy-preview and Analyze (javascript-typescript) are red and not required; ci, pr-hygiene and browser-qa are green, and the newest browser-qa suite 97027094218 is cancelled with no check runs. Set by hand: state OPEN, mergeStateStatus BLOCKED (as R517 measured it).",
+  "pr": {
+    "number": 416,
+    "state": "OPEN",
+    "isDraft": false,
+    "mergeStateStatus": "BLOCKED",
+    "headRefOid": "1f4e5b91d16e3e929a38cbd243aca0872c2c75c3",
+    "baseRefName": "main",
+    "autoMergeRequest": {
+      "enabledAt": "2026-09-23T07:55:16Z",
+      "mergeMethod": "REBASE"
+    },
+    "body": "## What / why\nThe owner answered #376 on 2026-09-23: **\"No real circuits.\"**\n\nADR-0020 §7.2 made capturing a corpus of real version-1 documents a **hard precondition** on §7.5d (deleting `serialize.ts`) and on C.1 — with an exit clause if none exist, precisely so the precondition could not block the switch silently. The exit now applies.\n\nThis records it as **L-001** in a new *Stated limits* section of `docs/development/observed-bugs.md`, which is where §7.2 says it must go. A limit recorded there is not a bug — it is something the project knows it cannot evidence, written down so a later reader does not mistake the absence of a finding for the absence of a problem.\n\n## The limit, stated plainly\nThe eleven cases in the #328 spike were constructed by **reading `serialize.ts`'s writer**, so they cannot contain anything the writer's *observed* output would have had but its code does not obviously produce — a stale `crossesWireIds`, an arc segment, an orphaned junction, a `'bus'` endpoint in an unexpected combination, a multi-driven pin. A real save could have carried a shape none of them has, and now none ever will.\n\n**Nothing is blocked and nothing needs re-deciding.** But the importer's parity evidence (N.2, #377) now rests entirely on documents written by the same reasoning that will write the importer — the classic weak-oracle shape. The mitigation was already in the plan and simply matters more now: the **held-out oracle** — the official nand2tetris vectors (#193) and the differential harness against `web-ide`'s reference simulator (#338), neither of which HACER authored.\n\n## Verification\n`pnpm run lint:docs` — exit 0. Docs-only; `test:run` and `build` left to CI.\n\nCloses the §7.2 precondition. #376 closes with this PR.\n"
+  },
+  "requiredContexts": [
+    "ci",
+    "pr-hygiene",
+    "browser-qa"
+  ],
+  "checkRuns": [
+    {
+      "id": 107093827013,
+      "name": "Analyze (javascript-typescript)",
+      "status": "completed",
+      "conclusion": "failure",
+      "suite": 97027085303
+    },
+    {
+      "id": 107093827305,
+      "name": "Analyze (actions)",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97027085303
+    },
+    {
+      "id": 107093827319,
+      "name": "Analyze (python)",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97027085303
+    },
+    {
+      "id": 107093829183,
+      "name": "ci",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97027090676
+    },
+    {
+      "id": 107093829716,
+      "name": "browser-qa",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97027090581
+    },
+    {
+      "id": 107093829853,
+      "name": "deploy-preview",
+      "status": "completed",
+      "conclusion": "failure",
+      "suite": 97027090577
+    },
+    {
+      "id": 107093830962,
+      "name": "cleanup-preview",
+      "status": "completed",
+      "conclusion": "skipped",
+      "suite": 97027090577
+    },
+    {
+      "id": 107093831158,
+      "name": "pr-hygiene",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97027091087
+    },
+    {
+      "id": 107093841971,
+      "name": "GitGuardian Security Checks",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97027006724
+    },
+    {
+      "id": 107093866985,
+      "name": "pr-hygiene",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97027094704
+    },
+    {
+      "id": 107093882515,
+      "name": "browser-qa",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97027094214
+    },
+    {
+      "id": 107094012767,
+      "name": "CodeQL",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97027248564
+    }
+  ],
+  "workflowRuns": [
+    {
+      "id": 35834260766,
+      "name": "PR #416",
+      "workflow_id": 362189662,
+      "event": "dynamic",
+      "status": "completed",
+      "conclusion": "failure",
+      "suite": 97027085303,
+      "attempt": 1
+    },
+    {
+      "id": 35834262675,
+      "name": "PR Deploy Preview",
+      "workflow_id": 255347039,
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "failure",
+      "suite": 97027090577,
+      "attempt": 1
+    },
+    {
+      "id": 35834262677,
+      "name": "browser-qa",
+      "workflow_id": 361351329,
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97027090581,
+      "attempt": 1
+    },
+    {
+      "id": 35834262722,
+      "name": "CI",
+      "workflow_id": 241098938,
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97027090676,
+      "attempt": 1
+    },
+    {
+      "id": 35834262881,
+      "name": "PR Hygiene",
+      "workflow_id": 361294170,
+      "event": "pull_request_target",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97027091087,
+      "attempt": 1
+    },
+    {
+      "id": 35834263964,
+      "name": "browser-qa",
+      "workflow_id": 361351329,
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97027094214,
+      "attempt": 1
+    },
+    {
+      "id": 35834263965,
+      "name": "browser-qa",
+      "workflow_id": 361351329,
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "suite": 97027094218,
+      "attempt": 1
+    },
+    {
+      "id": 35834264072,
+      "name": "PR Hygiene",
+      "workflow_id": 361294170,
+      "event": "pull_request_target",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "suite": 97027094528,
+      "attempt": 1
+    },
+    {
+      "id": 35834264138,
+      "name": "PR Hygiene",
+      "workflow_id": 361294170,
+      "event": "pull_request_target",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97027094704,
+      "attempt": 1
+    }
+  ]
+}

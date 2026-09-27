@@ -1,0 +1,206 @@
+{
+  "_recorded": "As empty-cancelled-suite.json (PR #517 replayed to 2026-09-26T18:40:00Z), with this tool's marker for ce3e920 appended to the body by hand: the body edit was tried, and the PR is still BLOCKED with nothing running. On the real #517 the edit cleared it (R746); this is the case where it does not.",
+  "pr": {
+    "number": 517,
+    "state": "OPEN",
+    "isDraft": false,
+    "mergeStateStatus": "BLOCKED",
+    "headRefOid": "ce3e920a6414164989dbdb8b9d45d8ead2ac1bbc",
+    "baseRefName": "main",
+    "autoMergeRequest": {
+      "enabledAt": "2026-09-25T07:20:17Z",
+      "mergeMethod": "REBASE"
+    },
+    "body": "The committed memory of the 2026-09-25 session: the weekly process sweep (seven defects fixed, eleven filed) and the two projects kicked off from parked idea to live — Decision Lineage and Mission Control (https://mezivillager.github.io/hacer/control/). §4 records what recurred and what caught it; §6 the state at close and the owner's open questions.\n\nAlso replaces `docs/decisions/rulings/2026-09-25-process-sweep.md` with the full run (R700–R740, every ruling with `Builds on:`) — the first run recorded in the format it built. `lineage parse`: 390 nodes, 98 edges, 0 errors; `lint:lineage` unlinked count unchanged at 299.\n\nDecisions: R700–R740. Docs only; `lint:docs` exits 0.\n\n<!-- re-run the required checks after a dropped run left an empty cancelled suite (process review F1), 2026-09-27 -->\n\n\n<!-- merge-on-green: edited to re-run the required checks on ce3e920a6414164989dbdb8b9d45d8ead2ac1bbc at 2026-09-26T18:41:00Z -->"
+  },
+  "requiredContexts": [
+    "ci",
+    "pr-hygiene",
+    "browser-qa"
+  ],
+  "checkRuns": [
+    {
+      "id": 107982082966,
+      "name": "GitGuardian Security Checks",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97776628871
+    },
+    {
+      "id": 107982084756,
+      "name": "Analyze (actions)",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97776642403
+    },
+    {
+      "id": 107982085038,
+      "name": "Analyze (javascript-typescript)",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97776642403
+    },
+    {
+      "id": 107982085051,
+      "name": "Analyze (python)",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97776642403
+    },
+    {
+      "id": 107982088192,
+      "name": "browser-qa",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97776648114
+    },
+    {
+      "id": 107982088772,
+      "name": "ci",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97776648219
+    },
+    {
+      "id": 107982089149,
+      "name": "deploy-preview",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97776648276
+    },
+    {
+      "id": 107982089443,
+      "name": "pr-hygiene",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97776648266
+    },
+    {
+      "id": 107982090404,
+      "name": "cleanup-preview",
+      "status": "completed",
+      "conclusion": "skipped",
+      "suite": 97776648276
+    },
+    {
+      "id": 107982090405,
+      "name": "sweep-previews",
+      "status": "completed",
+      "conclusion": "skipped",
+      "suite": 97776648276
+    },
+    {
+      "id": 107982129037,
+      "name": "pr-hygiene",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97776650604
+    },
+    {
+      "id": 107982139989,
+      "name": "browser-qa",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97776650426
+    },
+    {
+      "id": 107982259564,
+      "name": "CodeQL",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97776799452
+    }
+  ],
+  "workflowRuns": [
+    {
+      "id": 36107117226,
+      "name": "PR #517",
+      "workflow_id": 362189662,
+      "event": "dynamic",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97776642403,
+      "attempt": 1
+    },
+    {
+      "id": 36107119240,
+      "name": "browser-qa",
+      "workflow_id": 361351329,
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97776648114,
+      "attempt": 1
+    },
+    {
+      "id": 36107119291,
+      "name": "CI",
+      "workflow_id": 241098938,
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97776648219,
+      "attempt": 1
+    },
+    {
+      "id": 36107119322,
+      "name": "PR Hygiene",
+      "workflow_id": 361294170,
+      "event": "pull_request_target",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97776648266,
+      "attempt": 1
+    },
+    {
+      "id": 36107119324,
+      "name": "PR Deploy Preview",
+      "workflow_id": 255347039,
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97776648276,
+      "attempt": 1
+    },
+    {
+      "id": 36107119839,
+      "name": "browser-qa",
+      "workflow_id": 361351329,
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "suite": 97776649913,
+      "attempt": 1
+    },
+    {
+      "id": 36107120031,
+      "name": "browser-qa",
+      "workflow_id": 361351329,
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97776650426,
+      "attempt": 1
+    },
+    {
+      "id": 36107120130,
+      "name": "PR Hygiene",
+      "workflow_id": 361294170,
+      "event": "pull_request_target",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97776650604,
+      "attempt": 1
+    },
+    {
+      "id": 36107120124,
+      "name": "PR Hygiene",
+      "workflow_id": 361294170,
+      "event": "pull_request_target",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "suite": 97776650607,
+      "attempt": 1
+    }
+  ]
+}

@@ -1,0 +1,267 @@
+{
+  "_recorded": "PR #362 head f7ae03d: check runs (filter=all) and workflow runs, earlier attempts included, replayed to 2026-09-23T00:10:00Z. After a bulk re-run the newest PR Hygiene suite 96932343143 holds a cancelled pr-hygiene check run, while an older suite holds a green one with a higher id. #362 merged at 00:26:19, 3 s after that suite went green on attempt 4. Set by hand: state OPEN, mergeStateStatus BLOCKED.",
+  "pr": {
+    "number": 362,
+    "state": "OPEN",
+    "isDraft": false,
+    "mergeStateStatus": "BLOCKED",
+    "headRefOid": "f7ae03d8b3580e12d24c9eb58eebd8f0f488fb4f",
+    "baseRefName": "main",
+    "autoMergeRequest": {
+      "enabledAt": "2026-09-23T00:01:08Z",
+      "mergeMethod": "REBASE"
+    },
+    "body": "Fixes #355\n\n**What.** `compileHDL` step 4 recorded producers with `producerOf.set(signal, i)`, which overwrites, so a signal assembled from several slice writes only forced its *last* writer to run before the read. The earlier writers could be scheduled after it, and the read saw a half-assembled value — silently. `producersOf` now maps a signal to **every** part that writes it and the read takes an edge from each, so the topological order covers all of them.\n\n**Repro, derived here rather than taken from the spike** (`src/core/hdl/compiler.test.ts`): a four-part chip where `t` is assembled from `t[0]` and `t[1]` and then read whole by `Not16`, with the `t[0]` writer made to depend on a third part so that permuting the parts really does permute the topological order. With `a=0`, `t = 0b11` and the correct `out` is `~3 & 0xffff = 65532`. Before the fix, the orderings `tLow,read,tHigh,k` and `tLow,tHigh,read,k` gave **65533** (bit 0 lost) while `read,tHigh,k,tLow` gave **65532** — the same 65533/65532 the spike measured. All 24 orderings now agree on 65532.\n\n**Same-slice-twice: a compile error** (`Signal \"t\" bit 0 is driven by more than one part`), not last-wins-with-a-warning. Three reasons: two parts driving one bit is a short circuit, not a value; last-wins would preserve exactly the order-dependence this PR removes, since which write survived would still depend on the part order; and it is what the reference simulator does (`Cannot write to pin x[i] multiple times`, `../web-ide/simulator/src/chip/builder.ts`). `HDLCompileResult` has no warning channel, and adding one for this would have been new surface area for a case that is never meaningful. Overlap is checked in both directions, so a whole-signal write that overlaps a slice write is rejected too; disjoint slice writes are unaffected.\n\n**Deviation — the property test does not use `fast-check`.** The issue says it \"is already a dependency\"; it is not, in `package.json` or the lockfile. Introducing it is #198's job, so per AGENTS.md §1.0 (\"trust the code over the ticket\") the property is expressed with an exhaustive permutation sweep plus a seeded `mulberry32` sample, no new dependency. The generator puts writers at *mixed* dependency depths on purpose: a generator with every writer at the same depth is vacuous here, because Kahn's queue happens to drain them all before the reader whatever the source order — measured on the unfixed compiler, uniform depth 1 gave 0/400 wrong permutations and mixed depths 0–2 gave 105/400. Recommend moving these two tests to `fast-check` when #198 lands.\n\n**Project-1 vectors still pass** — `src/core/testing/{engine,implementationSources}.test.ts` and `src/core/hdl/project1-bottom-up.test.ts`, 66 tests, green; no Project-1 chip drives a bit twice.\n\n**Follow-up filed:** #361 — the total width of a slice-assembled signal is never inferred, so an unsliced read of one is not width-checked. Adjacent, not fixed here.\n\n### Definition of done\n| Command | Result |\n|---|---|\n| `pnpm run lint` | exit 0 |\n| `pnpm run test:run` | exit 0 — 134 files, 2087 tests passed |\n| `pnpm run build` | exit 0 |\n| `pnpm run lint:docs` | exit 0 |\n| `pnpm exec vitest run --project node src/core/hdl` | exit 0 — 3 files, 92 tests passed |\n\nReviewable changed lines: **40** (`src/core/hdl/compiler.ts`, +33 −7); the 193 added test lines are excluded per the implementer brief.\n"
+  },
+  "requiredContexts": [
+    "ci",
+    "pr-hygiene",
+    "browser-qa"
+  ],
+  "checkRuns": [
+    {
+      "id": 106983961471,
+      "name": "Analyze (javascript-typescript)",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 96932308830
+    },
+    {
+      "id": 106983961640,
+      "name": "Analyze (python)",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 96932308830
+    },
+    {
+      "id": 106983961699,
+      "name": "Analyze (actions)",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 96932308830
+    },
+    {
+      "id": 106983968292,
+      "name": "browser-qa",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "suite": 96932317222
+    },
+    {
+      "id": 106983995234,
+      "name": "ci",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 96932338802
+    },
+    {
+      "id": 106983995471,
+      "name": "deploy-preview",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 96932338714
+    },
+    {
+      "id": 106983996926,
+      "name": "cleanup-preview",
+      "status": "completed",
+      "conclusion": "skipped",
+      "suite": 96932338714
+    },
+    {
+      "id": 106983998746,
+      "name": "GitGuardian Security Checks",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 96932142631
+    },
+    {
+      "id": 106984016552,
+      "name": "pr-hygiene",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 96932340910
+    },
+    {
+      "id": 106984085703,
+      "name": "CodeQL",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 96932414602
+    },
+    {
+      "id": 106984360139,
+      "name": "browser-qa",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 96932342287
+    },
+    {
+      "id": 106988667337,
+      "name": "pr-hygiene",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "suite": 96932343143
+    },
+    {
+      "id": 106988674261,
+      "name": "browser-qa",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "suite": 96932338782
+    },
+    {
+      "id": 106988707286,
+      "name": "pr-hygiene",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "suite": 96932317220
+    },
+    {
+      "id": 106988716407,
+      "name": "pr-hygiene",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 96932316712
+    },
+    {
+      "id": 106989061323,
+      "name": "browser-qa",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 96932317499
+    }
+  ],
+  "workflowRuns": [
+    {
+      "id": 35798735048,
+      "name": "PR #362",
+      "workflow_id": 362189662,
+      "event": "dynamic",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 96932308830,
+      "attempt": 1
+    },
+    {
+      "id": 35798738036,
+      "name": "PR Hygiene",
+      "workflow_id": 361294170,
+      "event": "pull_request_target",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 96932316712,
+      "attempt": 2
+    },
+    {
+      "id": 35798738223,
+      "name": "PR Hygiene",
+      "workflow_id": 361294170,
+      "event": "pull_request_target",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "suite": 96932317220,
+      "attempt": 2
+    },
+    {
+      "id": 35798738221,
+      "name": "browser-qa",
+      "workflow_id": 361351329,
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "suite": 96932317222,
+      "attempt": 2
+    },
+    {
+      "id": 35798738311,
+      "name": "browser-qa",
+      "workflow_id": 361351329,
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 96932317499,
+      "attempt": 2
+    },
+    {
+      "id": 35798746264,
+      "name": "PR Deploy Preview",
+      "workflow_id": 255347039,
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 96932338714,
+      "attempt": 1
+    },
+    {
+      "id": 35798746289,
+      "name": "browser-qa",
+      "workflow_id": 361351329,
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "suite": 96932338782,
+      "attempt": 2
+    },
+    {
+      "id": 35798746299,
+      "name": "CI",
+      "workflow_id": 241098938,
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 96932338802,
+      "attempt": 1
+    },
+    {
+      "id": 35798746558,
+      "name": "PR Hygiene",
+      "workflow_id": 361294170,
+      "event": "pull_request_target",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "suite": 96932339512,
+      "attempt": 2
+    },
+    {
+      "id": 35798746853,
+      "name": "browser-qa",
+      "workflow_id": 361351329,
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "suite": 96932340240,
+      "attempt": 2
+    },
+    {
+      "id": 35798747116,
+      "name": "PR Hygiene",
+      "workflow_id": 361294170,
+      "event": "pull_request_target",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 96932340910,
+      "attempt": 1
+    },
+    {
+      "id": 35798747667,
+      "name": "browser-qa",
+      "workflow_id": 361351329,
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 96932342287,
+      "attempt": 1
+    },
+    {
+      "id": 35798747995,
+      "name": "PR Hygiene",
+      "workflow_id": 361294170,
+      "event": "pull_request_target",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "suite": 96932343143,
+      "attempt": 2
+    }
+  ]
+}
