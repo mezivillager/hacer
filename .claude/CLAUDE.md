@@ -39,7 +39,7 @@ Full list: `.claude/skills/` — each skill has a `SKILL.md` with frontmatter `n
 
 ## Task Management
 
-- **Plan & track**: [tasks/todo.md](../tasks/todo.md)
+- **Plan & track**: `docs/portfolio.md` (priority projects) + GitHub Issues — `node scripts/backlog.mjs ready` lists what's pickable; [tasks/todo.md](../tasks/todo.md) is historical (#148)
 - **Capture lessons**: [tasks/lessons.md](../tasks/lessons.md)
 - **Design specs**: [docs/specs/](../docs/specs/)
 - **Implementation plans**: [docs/plans/](../docs/plans/)

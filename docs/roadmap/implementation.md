@@ -1,20 +1,17 @@
 # HACER Implementation Guide
 
 **Part of:** [Development Roadmap](README.md)  
-**Focus:** Live status, stack truth, phase gates, and implementation checklists  
-**Last aligned:** 2026-05-12 - keep in sync with `README.md`, `REPO_MAP.md`, and `.cursorrules`
+**Focus:** Stack truth, quality gates, and success metrics — live phase/ticket status lives elsewhere now  
+**Last aligned:** 2026-09-27 - phase/ticket status retired to `docs/portfolio.md` + Mission Control (#148);
+keep stack/metrics in sync with `README.md`, `REPO_MAP.md`, and `.cursorrules`
 
 ---
 
-## AI Agent Phase Sync
+## Live Status
 
-| Field | Value |
-|-------|-------|
-| Completed product work | Phase 0, Phase 0.25 |
-| Completed infrastructure | Tailwind/shadcn design shell, CI, hooks, mutation workflow, scheduled UI E2E, semantic-release |
-| In progress | Phase 0.5 - nand2tetris Project 1 foundation |
-| Next product phase | Phase 0.6 - Projects 2-3 arithmetic and sequential logic |
-| Ticket tracker | `docs/plans/phase-0.5-tickets-CHECKLIST.md` |
+Phase and ticket status is tracked outside this file now (ADR-0013): `docs/portfolio.md` for priority
+projects and the pick rule (`node scripts/backlog.mjs ready` lists what's pickable), and
+[Mission Control](https://mezivillager.github.io/hacer/control/) for the live dashboard.
 
 ## Current Stack
 
@@ -62,121 +59,6 @@ Removed or unselected tooling should not appear in active implementation tasks.
 | Documentation drift | Medium | Medium | Update `README.md`, `REPO_MAP.md`, roadmap pages, and agent guides when paths or phase state change |
 | Performance pressure from buses/chips | Medium | Medium | Keep evaluation deterministic and add benchmarks when circuits grow beyond Project 1 scale |
 
-## Implementation Checklist
-
-### Phase 0: Critical Fixes - Complete
-
-- [x] Correct stack documentation after state-management migration
-- [x] Add React Compiler ESLint coverage
-- [x] Create `.cursorrules`
-- [x] Update README and repository map
-
-### Phase 0.25: UI/UX Improvements and Circuit Editing - Complete
-
-- [x] Grid-based gate placement
-- [x] Flat gate orientation with readable labels
-- [x] Gate dragging and movement
-- [x] 90-degree rotation
-- [x] Grid-aligned wire routing
-- [x] Wire stub removal when connected
-- [x] Wire selection and deletion
-- [x] E2E store test reorganization
-- [x] Circuit input/output nodes
-- [x] Junction nodes and fan-out wiring
-
-### Phase 0.5: Project 1 Boolean Logic - In Progress
-
-Ticket-level truth lives in `docs/plans/phase-0.5-tickets-CHECKLIST.md`.
-
-- [x] Chip definition and registry foundation
-- [x] Multi-bit bus data model and simulation propagation foundation
-- [x] HDL lexer/parser foundation
-- [x] Test-script and comparison-file parser foundation
-- [x] Topological simulation evaluation and cycle error reporting
-- [x] Node rename/display workflow
-- [x] Status/error feedback foundation
-- [ ] Chip definition panel and package workflow
-- [ ] Pinout panel
-- [ ] HDL compiler and chip-part resolution
-- [ ] HDL editor panel
-- [ ] Test execution engine
-- [ ] Test results panel
-- [ ] Chip workflow browser
-- [ ] Composite chip 3D rendering
-- [ ] Bus splitter/joiner 3D components
-- [ ] Circuit persistence
-- [ ] Built-in Project 1 implementations and toggle
-- [ ] Project 1 integration validation
-
-### Phase 0.6: Projects 2-3 Arithmetic and Sequential Logic - Planned
-
-- [ ] DFF gate definition and built-in implementation
-- [ ] Clock system and visualization
-- [ ] Two-phase simulation for clocked chips
-- [ ] Register, PC, RAM8 through RAM16K
-- [ ] HalfAdder, FullAdder, Add16, Inc16, ALU
-- [ ] Tick/tock-compatible test execution
-- [ ] Project 2-3 compatibility fixture packs
-
-### Phase 0.7: Projects 4-5 Computer Architecture - Planned
-
-- [ ] Hack CPU and instruction decode
-- [ ] Memory chip with RAM, screen, and keyboard map
-- [ ] ROM32K and `.hack` program loading
-- [ ] Computer chip integration
-- [ ] Step/run debugging UI
-- [ ] Project 4-5 compatibility fixture packs
-
-### Phase 1.5: Design System and Visual Consistency - Complete / Maintain
-
-- [x] Tailwind CSS v4 app styling
-- [x] shadcn/ui-style primitives copied into `src/components/ui-kit/`
-- [x] Radix primitives, lucide-react icons, and Sonner feedback
-- [x] `next-themes` light/dark/system support
-- [x] Compact HACER shell components in `src/components/ui/`
-- [ ] Continue documenting new primitives as they are added
-- [ ] Add accessibility audits for new interactive panels
-
-### Phase 2.5: Developer Tooling and DX - Complete / Maintain
-
-- [x] GitHub Actions CI
-- [x] Local commit hooks through Husky/lint-staged
-- [x] Conventional commit linting
-- [x] Node 22 workflow/runtime alignment
-- [x] Agent-facing workflow docs
-- [ ] Keep new automation small and tied to active delivery needs
-
-### Phase 3.5: Testing and Quality Infrastructure - Partial
-
-- [x] Vitest unit test suite
-- [x] Playwright store E2E suite
-- [x] Scheduled Playwright UI suite
-- [x] Testing standards and templates
-- [ ] Property-testing library selection and invariant suite
-- [ ] Visual regression strategy
-- [ ] Coverage thresholds after Phase 0.5 stabilizes
-- [ ] Compatibility corpus expansion beyond Project 1 parser fixtures
-
-### Phase 4.5: Release Management and Automation - Complete / Maintain
-
-- [x] `.releaserc.json`
-- [x] `commitlint.config.js`
-- [x] `.github/workflows/release.yml`
-- [x] `CHANGELOG.md`
-- [x] `docs/semantic-release.md`
-- [ ] Keep branch/channel strategy intentionally simple until there is a real beta or prerelease need
-
-### Phase 5+: Future Platform Work
-
-Future phases remain useful directionally, but do not supersede Phase 0.5-0.7 product work. Revalidate scope before starting any of the following:
-
-- Core/API/plugin architecture hardening
-- AI agent APIs and examples
-- Worker-based simulation and benchmark dashboards
-- Software stack integration
-- Component library and backend collaboration
-- Production platform, auth, API ecosystem, mobile, analytics, i18n, PWA, documentation automation, and AI-assisted review
-
 ## Quality Assurance Process
 
 ### Automated Gates
@@ -195,11 +77,12 @@ Future phases remain useful directionally, but do not supersede Phase 0.5-0.7 pr
 
 ## Documentation Maintenance
 
-Update these together when phase status changes:
+Update these together when stack, metrics, or process wording changes:
 
 - `README.md`
 - `.cursorrules`
 - `REPO_MAP.md`
 - `docs/roadmap/README.md`
-- This file
-- `docs/plans/phase-0.5-tickets-CHECKLIST.md` while Phase 0.5 is active
+
+Phase and ticket status itself is edited in `docs/portfolio.md` and GitHub Issues — not here, and not
+in the retired `docs/plans/phase-0.5-tickets-CHECKLIST.md`.
