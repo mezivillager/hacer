@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-27T10:27:32.596Z",
+  "generatedAt": "2026-09-27T10:30:24.573Z",
   "head": {
-    "sha": "3f268d63280bd08c31684145f50203299fce7bd3",
-    "date": "2026-09-27T13:26:40+03:00",
-    "subject": "feat(conformance): vendor the Project 4 nand2tetris vectors at the pinned web-ide commit"
+    "sha": "a1db797b9b754e7abcb015a32b992ea0dc6dd36d",
+    "date": "2026-09-27T13:29:52+03:00",
+    "subject": "docs(harness): write the loop's rules as practised"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open",
-      "fetchedAt": "2026-09-27T10:27:32.596Z",
+      "fetchedAt": "2026-09-27T10:30:24.573Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open",
-      "fetchedAt": "2026-09-27T10:27:32.596Z",
+      "fetchedAt": "2026-09-27T10:30:24.573Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open",
-      "fetchedAt": "2026-09-27T10:27:32.596Z",
+      "fetchedAt": "2026-09-27T10:30:24.573Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-27T10:27:32.596Z",
+      "fetchedAt": "2026-09-27T10:30:24.573Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-09-27T10:27:32.596Z",
+      "fetchedAt": "2026-09-27T10:30:24.573Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-09-27T10:27:32.596Z",
+      "fetchedAt": "2026-09-27T10:30:24.573Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-09-27T10:27:32.596Z",
+      "fetchedAt": "2026-09-27T10:30:24.573Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-09-27T10:27:32.596Z",
+      "fetchedAt": "2026-09-27T10:30:24.573Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-09-27T10:27:32.596Z",
+      "fetchedAt": "2026-09-27T10:30:24.573Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-09-27T10:27:32.596Z",
+      "fetchedAt": "2026-09-27T10:30:24.573Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-27T10:27:32.596Z",
+      "fetchedAt": "2026-09-27T10:30:24.573Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-09-27T10:27:32.596Z",
+      "fetchedAt": "2026-09-27T10:30:24.573Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-09-27T10:27:32.596Z",
+      "fetchedAt": "2026-09-27T10:30:24.573Z",
       "status": "ok"
     }
   },
@@ -103,9 +103,9 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 36,
+        "open": 35,
         "ready": 22,
-        "inProgress": 3,
+        "inProgress": 2,
         "needsHuman": 0,
         "staleClaims": [],
         "next": {
@@ -114,8 +114,8 @@
         },
         "title": "Epic: harness — autonomous-run improvements & agent-readiness",
         "subIssues": {
-          "completed": 28,
-          "percentCompleted": 49,
+          "completed": 29,
+          "percentCompleted": 50,
           "total": 57
         }
       },
@@ -2809,22 +2809,6 @@
         "reason": "claimed"
       },
       {
-        "number": 537,
-        "title": "Write the loop's rules as practised: verification, commit types, run bounds, one close record, P-008",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:0"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 538,
         "title": "Session records list the PRs a run merged, from merge times",
         "labels": [
@@ -2951,7 +2935,6 @@
         504,
         505,
         535,
-        537,
         538,
         540,
         550
@@ -3183,11 +3166,38 @@
     ],
     "merged": [
       {
+        "number": 554,
+        "title": "docs(harness): write the loop's rules as practised",
+        "url": "https://github.com/mezivillager/hacer/pull/554",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/537-rules-as-practised",
+        "isDraft": false,
+        "createdAt": "2026-09-27T10:27:52Z",
+        "mergedAt": "2026-09-27T10:29:53Z",
+        "closes": [
+          537
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (Opus 5.5)",
+            "at": "2026-09-27T10:29:15Z",
+            "url": "https://github.com/mezivillager/hacer/pull/554#issuecomment-5855043463"
+          }
+        ]
+      },
+      {
         "number": 553,
         "title": "chore(scripts): merge-on-green moves into the repo, with tests (#536)",
         "url": "https://github.com/mezivillager/hacer/pull/553",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:1"
         ],
@@ -3206,6 +3216,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/552",
         "author": "mezivillager",
         "labels": [
+          "released",
           "risk:2",
           "project:foundation"
         ],
@@ -3230,6 +3241,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/549",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:1"
         ],
@@ -4553,30 +4565,13 @@
         "mergedAt": "2026-09-23T21:41:44Z",
         "closes": [],
         "verdicts": []
-      },
-      {
-        "number": 425,
-        "title": "docs(skills): red-first is the mutation; flips only for tests that never went red",
-        "url": "https://github.com/mezivillager/hacer/pull/425",
-        "author": "mezivillager",
-        "labels": [
-          "released"
-        ],
-        "headRefName": "docs/424-red-first-is-the-mutation",
-        "isDraft": false,
-        "createdAt": "2026-09-23T18:07:58Z",
-        "mergedAt": "2026-09-23T18:10:27Z",
-        "closes": [
-          424
-        ],
-        "verdicts": []
       }
     ],
     "coverage": {
       "merged": 60,
-      "withVerdict": 31,
-      "withoutVerdict": 29,
-      "pass": 30,
+      "withVerdict": 32,
+      "withoutVerdict": 28,
+      "pass": 31,
       "block": 1
     }
   },
@@ -4719,6 +4714,7 @@
         "title": "Claims are not exclusive, and ready offers a claimed issue as the next pick",
         "url": "https://github.com/mezivillager/hacer/issues/531",
         "labels": [
+          "released",
           "project:harness",
           "agent-ready",
           "in-progress",
@@ -4769,6 +4765,7 @@
         "title": "The merge-on-green tool moves into the repo, with tests",
         "url": "https://github.com/mezivillager/hacer/issues/536",
         "labels": [
+          "released",
           "project:harness",
           "agent-ready",
           "in-progress",
@@ -4790,7 +4787,7 @@
         "number": 537,
         "ref": "refs/heads/claim/537",
         "sha": "aa4d75ac17f912e5222cfbc8132451c86411c2bb",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "Write the loop's rules as practised: verification, commit types, run bounds, one close record, P-008",
         "url": "https://github.com/mezivillager/hacer/issues/537",
         "labels": [
@@ -4799,7 +4796,7 @@
           "in-progress",
           "risk:0"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -4837,7 +4834,7 @@
         }
       }
     ],
-    "onClosedIssues": 3
+    "onClosedIssues": 4
   },
   "cloudLane": {
     "items": [
@@ -5819,9 +5816,14 @@
     },
     "releases": [
       {
+        "tag": "v2.45.0",
+        "publishedAt": "2026-09-27T10:28:44Z",
+        "isLatest": true
+      },
+      {
         "tag": "v2.44.0",
         "publishedAt": "2026-09-27T09:54:42Z",
-        "isLatest": true
+        "isLatest": false
       },
       {
         "tag": "v2.43.1",
@@ -6297,7 +6299,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-23",
-        "merges": 4
+        "merges": 3
       },
       {
         "date": "2026-09-24",
@@ -6313,7 +6315,7 @@
       },
       {
         "date": "2026-09-27",
-        "merges": 12
+        "merges": 13
       }
     ]
   },
@@ -6321,11 +6323,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "3f268d63280bd08c31684145f50203299fce7bd3",
+        "sha": "a1db797b9b754e7abcb015a32b992ea0dc6dd36d",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36312553620/job/108601157677",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36312717176/job/108601609353",
         "line": null,
         "verdict": null,
         "fields": {},
