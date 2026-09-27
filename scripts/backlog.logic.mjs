@@ -1,7 +1,8 @@
 // Pure pick-rule logic for scripts/backlog.mjs — no I/O, unit-tested in backlog.logic.test.mjs.
 //
 // Input: the open issues from one `gh issue list --json …` call plus the rows of the table in
-// docs/portfolio.md, whose "Pick rule" section is what this file computes. Output: plain data.
+// docs/portfolio.md, whose "Pick rule" section is what this file computes, and the open claims (#531,
+// `readClaims` at the foot of this file). Output: plain data.
 
 export const DEFAULT_ALLOWLIST = ['mezivillager']
 
@@ -95,8 +96,9 @@ function portfolioRowOf(issue, labels, rowBySlug, rowByEpic) {
 const openNumbers = (relation) =>
   (relation?.nodes ?? []).filter((node) => node.state !== 'CLOSED').map((node) => node.number)
 
-/** Why a task is not pickable — first match wins — or null when it is. */
-function unpickableReason(issue, labels, row, allowlist) {
+/** Why a task is not pickable — first match wins — or null when it is. An open claim ref wins over every label. */
+function unpickableReason(issue, labels, row, allowlist, claim) {
+  if (claim) return claim.stale ? 'stale-claim' : 'claimed'
   if (!allowlist.includes(issue.author?.login)) return 'author'
   if (labels.includes('in-progress')) return 'in-progress'
   if (labels.includes('needs-human')) return 'needs-human'
@@ -106,7 +108,8 @@ function unpickableReason(issue, labels, row, allowlist) {
 }
 
 /** Every open non-epic issue as a task, by number: its portfolio row, whether it is pickable, and why not. */
-export function triageTasks(issues, portfolioRows, allowlist = DEFAULT_ALLOWLIST) {
+export function triageTasks(issues, portfolioRows, allowlist = DEFAULT_ALLOWLIST, claims = []) {
+  const claimByNumber = new Map(claims.map((claim) => [claim.number, claim]))
   const rowBySlug = new Map(portfolioRows.map((row) => [row.slug, row]))
   const rowByEpic = new Map(portfolioRows.map((row) => [row.epicNumber, row]))
   const tasks = []
@@ -114,7 +117,7 @@ export function triageTasks(issues, portfolioRows, allowlist = DEFAULT_ALLOWLIST
     const labels = (issue.labels ?? []).map((label) => label.name)
     if (labels.includes('epic')) continue
     const row = portfolioRowOf(issue, labels, rowBySlug, rowByEpic)
-    const reason = unpickableReason(issue, labels, row, allowlist)
+    const reason = unpickableReason(issue, labels, row, allowlist, claimByNumber.get(issue.number))
     tasks.push({
       number: issue.number, title: issue.title, labels, blocking: openNumbers(issue.blocking),
       project: row?.slug ?? null, rank: row?.rank ?? null, lane: row?.lane ?? null,
@@ -164,8 +167,8 @@ function rotate(buckets) {
  * exactly once — the picks in pick order with `reason: null`, then the rest by number, each with
  * its one-word reason.
  */
-export function planReady(issues, portfolioRows, allowlist = DEFAULT_ALLOWLIST) {
-  const tasks = triageTasks(issues, portfolioRows, allowlist)
+export function planReady(issues, portfolioRows, allowlist = DEFAULT_ALLOWLIST, claims = []) {
+  const tasks = triageTasks(issues, portfolioRows, allowlist, claims)
   const bucketByNumber = new Map(tasks.map((task) => [task.number, bucketOf(task.project)]))
   /** The bucket a pulled enabler takes a slot of: the earliest in the cycle holding an open task it blocks. */
   const pulledInto = (task) => {
@@ -192,9 +195,9 @@ export function planReady(issues, portfolioRows, allowlist = DEFAULT_ALLOWLIST) 
   return [...critical, ...rotate(buckets), ...unpicked.sort(byNumber)]
 }
 
-/** One summary per portfolio row, in file order: live counts and the next pick for that row. */
-export function summarizeProjects(issues, portfolioRows, allowlist = DEFAULT_ALLOWLIST) {
-  const plan = planReady(issues, portfolioRows, allowlist)
+/** One summary per portfolio row, in file order: live counts, its stale claims and the next pick for that row. */
+export function summarizeProjects(issues, portfolioRows, allowlist = DEFAULT_ALLOWLIST, claims = []) {
+  const plan = planReady(issues, portfolioRows, allowlist, claims)
   return portfolioRows.map((row) => {
     const tasks = plan.filter((task) => task.project === row.slug)
     const next = tasks.find((task) => task.pickable) ?? null
@@ -205,6 +208,7 @@ export function summarizeProjects(issues, portfolioRows, allowlist = DEFAULT_ALL
       ready: tasks.filter((task) => task.pickable).length,
       inProgress: tasks.filter((task) => task.labels.includes('in-progress')).length,
       needsHuman: tasks.filter((task) => task.labels.includes('needs-human')).length,
+      staleClaims: tasks.filter((task) => task.reason === 'stale-claim').map((task) => task.number),
       next: next && { number: next.number, title: next.title },
     }
   })
@@ -219,21 +223,97 @@ export function formatReady(plan) {
   return [...picks, ...(picks.length > 0 && rest.length > 0 ? [''] : []), ...rest].join('\n')
 }
 
-/** `slug · open N · ready N · in-progress N · needs-human N · next: #n title`, one row per line. */
+/** `slug · open N · ready N · in-progress N · needs-human N [· stale-claim #n,…] · next: #n title`, one row per line. */
 export function formatProjects(summaries) {
   const nextLabel = (next) => (next ? `#${next.number} ${next.title}` : '—')
+  const stale = (numbers) => (numbers.length > 0 ? ` · stale-claim ${numbers.map((number) => `#${number}`).join(',')}` : '')
   return summaries.map((s) => `${s.slug} · open ${s.open} · ready ${s.ready} · in-progress ${s.inProgress}` +
-    ` · needs-human ${s.needsHuman} · next: ${nextLabel(s.next)}`).join('\n')
+    ` · needs-human ${s.needsHuman}${stale(s.staleClaims)} · next: ${nextLabel(s.next)}`).join('\n')
 }
 
-// Claims (#531) — red stubs; the green commit fills them in.
+// Claims (#531, sessions/COORDINATOR-HANDOFF.md). A claim is a `claim/<n>` ref that `backlog.mjs claim` creates through
+// GitHub's create-ref API, which refuses a ref that exists; its holder is the `Claimed by` of the issue's latest claim
+// comment — the latest comment by an allowlisted author that opens with that field.
+
+/** A claim with no open PR is stale this long after its latest claim comment; `ready` then prints `stale-claim`. */
 export const STALE_CLAIM_HOURS = 48
-const notImplemented = () => {
-  throw new Error('not implemented')
+const STALE_CLAIM_MS = STALE_CLAIM_HOURS * 60 * 60 * 1000
+
+/** `git ls-remote origin 'refs/heads/claim/*'` as {sha, ref, number}; a ref that is not `claim/<n>` is skipped. */
+export const claimRefs = (lsRemote = '') => lsRemote.split('\n').filter(Boolean).map((line) => line.split('\t'))
+  .map(([sha, ref]) => ({ sha, ref, number: Number(ref.split('/').pop()) })).filter((claim) => Number.isInteger(claim.number))
+
+/** One GraphQL query for every claimed issue: its state, labels, and the comments that carry the claim fields. */
+export function claimsQuery(repo, lsRemote) {
+  const numbers = claimRefs(lsRemote).map((claim) => claim.number)
+  if (numbers.length === 0) return null
+  const [owner, name] = repo.split('/')
+  const issue = (number) => `i${number}: issue(number: ${number}) { number title state url ` +
+    'labels(first: 30) { nodes { name } } comments(last: 50) { nodes { author { login } createdAt url body } } }'
+  return `query { repository(owner: "${owner}", name: "${name}") { ${numbers.map(issue).join(' ')} } }`
 }
-export const latestClaim = notImplemented
-export const readClaims = notImplemented
-export const claimComment = notImplemented
-export const claimTaken = notImplemented
-export const releaseRefusal = notImplemented
-export const releaseComment = notImplemented
+
+const CLAIM_FIELDS = { claimedBy: 'Claimed by', intent: 'Intent', session: 'Session/run', branch: 'Branch', handoff: 'Handoff' }
+const claimFields = (body) => Object.fromEntries(Object.entries(CLAIM_FIELDS).map(([key, label]) =>
+  [key, new RegExp(`^${label}:[ \\t]*(.*?)(?:[ \\t]+#.*)?[ \\t]*$`, 'm').exec(body)?.[1] || null]))
+
+/** The latest claim comment's fields, `author`, `at` and `url`; null when the issue has none. */
+export function latestClaim(comments = [], allowlist = DEFAULT_ALLOWLIST) {
+  const comment = comments.filter((node) => allowlist.includes(node.author?.login) && /^\s*Claimed by:/.test(node.body)).at(-1)
+  return comment ? { ...claimFields(comment.body), author: comment.author.login, at: comment.createdAt, url: comment.url } : null
+}
+
+/** An open PR carries issue n when it closes #n or its head branch is `<type>/<n>-…` (scripts/wt-new's convention). */
+const carries = (pr, number) => (pr.closingIssuesReferences ?? []).some((issue) => issue.number === number) ||
+  new RegExp(`^[^/]+/${number}(?:-|$)`).test(pr.headRefName ?? '')
+
+/**
+ * Every claim ref with its holder, the open PR carrying its issue, and whether it is stale: no open PR, and its latest
+ * claim comment older than STALE_CLAIM_HOURS — or no claim comment at all, since `claim` posts one the moment the ref
+ * exists. Without the comments (`answer`, claimsQuery's) or the open PRs, nothing is stale: a claim holds until shown
+ * otherwise. `now` is a time or an ISO date.
+ * @returns {{number:number, claimedBy:string|null, at:string|null, openPr:number|null, stale:boolean}[]}
+ */
+export function readClaims({ lsRemote = '', answer = null, openPrs = null, allowlist = DEFAULT_ALLOWLIST, now }) {
+  const answered = new Map(Object.values(answer?.data?.repository ?? {}).filter(Boolean).map((issue) => [issue.number, issue]))
+  const nowMs = new Date(now).getTime()
+  return claimRefs(lsRemote).map(({ number }) => {
+    const issue = answered.get(number)
+    const claim = issue ? latestClaim(issue.comments.nodes, allowlist) : null
+    const openPr = openPrs?.find((pr) => carries(pr, number))?.number ?? null
+    const old = claim === null || nowMs - Date.parse(claim.at) > STALE_CLAIM_MS
+    return { number, claimedBy: claim?.claimedBy ?? null, at: claim?.at ?? null, openPr, stale: Boolean(issue && openPrs) && openPr === null && old }
+  })
+}
+
+/** The claim comment `claim` posts: the handoff convention's fields, one per line, `Claimed by` first. */
+export function claimComment({ by, intent = 'building', session, branch, handoff = 'none' }) {
+  if (!/^[\w.-]+$/.test(by ?? '')) throw new Error(`--by must be one word, like claude-local (got ${JSON.stringify(by ?? '')})`)
+  const fields = [['Claimed by', by], ['Intent', intent], ['Session/run', session], ['Branch', branch], ['Handoff', handoff]]
+  if (fields.some(([, value]) => /[\r\n]/.test(value ?? ''))) throw new Error('every claim field must be one line')
+  return fields.filter(([, value]) => value).map(([label, value]) => `${label}: ${value}`).join('\n')
+}
+
+const holderOf = (claim) => (claim.claimedBy === null ? 'none named (no claim comment)' : `${claim.claimedBy} (claimed ${claim.at})`)
+
+/** What a second claimant is told: the ref exists, who holds it, and how a stale one is freed. */
+export const claimTaken = (claim) => `claim/${claim.number} is taken; holder: ${holderOf(claim)}` +
+  (claim.stale ? `; it is stale, so \`release ${claim.number} --by <you> --force-stale\` frees it` : '')
+
+/** Why `release` refuses, or null to go ahead: the holder releases a claim; anyone else only a stale one, with --force-stale. */
+export function releaseRefusal(claim, { by, forceStale = false }) {
+  if (claim.claimedBy !== null && claim.claimedBy === by) return null
+  if (claim.stale && forceStale) return null
+  if (forceStale) {
+    return `claim/${claim.number} is not stale — holder: ${holderOf(claim)}${claim.openPr ? `, open PR #${claim.openPr}` : ''}; only its holder releases it`
+  }
+  return `claim/${claim.number}'s holder is ${holderOf(claim)}, not ${by}: only the holder releases it` +
+    (claim.stale ? ', or anyone with --force-stale now that it is stale' : '')
+}
+
+/** The comment `release` posts when it frees another holder's stale claim, as the handoff convention asks; null otherwise. */
+export function releaseComment(claim, { by, reason }) {
+  if (claim.claimedBy !== null && claim.claimedBy === by) return null
+  return [`Released a stale claim: claim/${claim.number}, holder ${holderOf(claim)}, with no open PR.`,
+    `Released by: ${by}`, ...(reason ? [`Reason: ${reason}`] : [])].join('\n')
+}
