@@ -269,3 +269,47 @@ success · cancelled · success; `PR Hygiene` success · cancelled · success), 
 each was green and the merge box read CLEAN at 18:53:44Z with no intervention. The prediction held
 in the clean direction as it did in the stuck one; the interim body-edit recovery was not needed
 and stays untested. Also observed at commit: husky's v9 deprecation warning (§5 of the brief, 11).
+
+## 11. Independent follow-up checks — 2026-09-27
+
+The review was repeated against `eeb9253` with two focused, read-only passes. Their full
+evidence is in `evidence/2026-09-27-controls.md` and `evidence/2026-09-27-product.md`.
+
+- **F13 · high · Claim refs are atomic updates, not exclusive claims.** A local bare-repository
+  reproducer measured the documented push succeeding for a second claimant at the same HEAD and
+  for a descendant HEAD. The existing list-before-push convention reduces ordinary collisions but
+  cannot close a check-then-create race. Fix with create-if-absent plus a unique claimant identity,
+  and require the owner when releasing. Effort S; coordinator. Strongest case against: no duplicate
+  production build was demonstrated, so this is a latent control failure rather than an observed
+  incident.
+- **F14 · high · The eight-slot cycle is not persisted between picks.** `planReady` resets its
+  rotation on every call; eight sequential top-picks in a fixture produced
+  `foundation,foundation,foundation,lineage,lineage,lineage,harness,harness`, rather than the
+  declared cycle. This makes the allocation depend on coordinator memory. Persist a cursor or
+  derive it from successful claims, while retaining the critical-bug and foundation-gate rules.
+  Effort M; coordinator. Strongest case against: a single full listing is correctly ordered, and
+  the actual runs do not prove starvation.
+- **F15 · medium · The current product signal is narrower than PR throughput.** The focused audit
+  passed 176 tests across six engine, scenario, vector-fidelity and picker suites. The repository
+  has 16 Project-1 builtin cases and 15 composite variants, not 31 distinct curriculum chips;
+  Project-1 is meaningful current-phase progress, but it does not prove a learner-facing surface,
+  the replacement spec compiler, or the full North Star. Effort M; coordinator. The approved
+  foundation chain `#279 → #204 → #205 → #208` already provides the next product path: file-based
+  test, CLI driver and read-only MCP, before the renderer-switch trigger.
+- **F16 · medium · The 09-23 run total needs correction.** Its session record and public merge
+  list contain 17 distinct merged PRs, or 15 excluding the two record PRs, while the brief reports
+  13. Re-derive the run sum from PR metadata before using it as throughput evidence. Effort S;
+  coordinator.
+
+The strongest autonomy risk remains missing transition state at boundaries: ownership, pick cursor,
+run expiry and merged-tree validity are each partly supplied by the coordinator. The next two-week
+test should therefore report product exits separately from process counts: a file-based Project-1
+CLI/MCP workflow, the first replacement-spec lowering fixture, and exact conformance cases retained
+from the focused baseline. No new broad property-testing or mutation framework is justified by this
+pass; existing compiler properties, parser fuzzing and negative controls are already substantive.
+
+The recommended bounded priority change is three foundation slots, three current-product slots,
+one shared process slot, and one auxiliary slot for the next two weeks. That is an explicit reversal
+of the 2026-09-25 equal-footing amendment, so the owner decides it; if unanswered, retain the current
+cycle. Keep a fortnightly fresh-context review, and stop adding dashboard or record ceremony unless
+it closes one of F1/F2/F3/F13/F14 or produces a product exit.
