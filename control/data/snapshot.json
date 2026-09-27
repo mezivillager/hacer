@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-27T09:24:15.228Z",
+  "generatedAt": "2026-09-27T09:53:11.130Z",
   "head": {
-    "sha": "5e69376c353b8b84ec0ef3d3dda67fd6737fed99",
-    "date": "2026-09-27T12:23:26+03:00",
-    "subject": "docs(harness): the stuck merge box's second shape, and a recovery that keeps the SHA (#530)"
+    "sha": "c9622b2d82dc7627a20d14b68eb867dc263af179",
+    "date": "2026-09-27T12:51:47+03:00",
+    "subject": "feat(conformance): vendor the Project 3 nand2tetris vectors at the pinned web-ide commit"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-27T09:24:15.228Z",
+      "fetchedAt": "2026-09-27T09:53:11.130Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-27T09:24:15.228Z",
+      "fetchedAt": "2026-09-27T09:53:11.130Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-27T09:24:15.228Z",
+      "fetchedAt": "2026-09-27T09:53:11.130Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-27T09:24:15.228Z",
+      "fetchedAt": "2026-09-27T09:53:11.130Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-09-27T09:24:15.228Z",
+      "fetchedAt": "2026-09-27T09:53:11.130Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-09-27T09:24:15.228Z",
+      "fetchedAt": "2026-09-27T09:53:11.130Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-09-27T09:24:15.228Z",
+      "fetchedAt": "2026-09-27T09:53:11.130Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-09-27T09:24:15.228Z",
+      "fetchedAt": "2026-09-27T09:53:11.130Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-09-27T09:24:15.228Z",
+      "fetchedAt": "2026-09-27T09:53:11.130Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-09-27T09:24:15.228Z",
+      "fetchedAt": "2026-09-27T09:53:11.130Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-27T09:24:15.228Z",
+      "fetchedAt": "2026-09-27T09:53:11.130Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-09-27T09:24:15.228Z",
+      "fetchedAt": "2026-09-27T09:53:11.130Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-09-27T09:24:15.228Z",
+      "fetchedAt": "2026-09-27T09:53:11.130Z",
       "status": "ok"
     }
   },
@@ -111,8 +111,8 @@
         "title": "Epic: harness — autonomous-run improvements & agent-readiness",
         "subIssues": {
           "completed": 26,
-          "percentCompleted": 46,
-          "total": 56
+          "percentCompleted": 45,
+          "total": 57
         }
       },
       {
@@ -568,11 +568,6 @@
         "project": "harness"
       },
       {
-        "number": 369,
-        "title": "required-checks guard misses three spellings of cancel-in-progress: expression, quoted, and True",
-        "project": "harness"
-      },
-      {
         "number": 391,
         "title": "Nothing pins .claude/agents/*.md — the same tier-rule defect appeared twice in the file the briefs' invariants do not cover",
         "project": "harness"
@@ -605,6 +600,11 @@
       {
         "number": 538,
         "title": "Session records list the PRs a run merged, from merge times",
+        "project": "harness"
+      },
+      {
+        "number": 547,
+        "title": "cloud-queue.md and COVERAGE.md still claim and release by pushing the ref",
         "project": "harness"
       }
     ]
@@ -1252,21 +1252,6 @@
         "reason": null
       },
       {
-        "number": 369,
-        "title": "required-checks guard misses three spellings of cancel-in-progress: expression, quoted, and True",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:0"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
         "number": 391,
         "title": "Nothing pins .claude/agents/*.md — the same tier-rule defect appeared twice in the file the briefs' invariants do not cover",
         "labels": [
@@ -1360,6 +1345,21 @@
       {
         "number": 538,
         "title": "Session records list the PRs a run merged, from merge times",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:0"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 547,
+        "title": "cloud-queue.md and COVERAGE.md still claim and release by pushing the ref",
         "labels": [
           "project:harness",
           "agent-ready",
@@ -2946,7 +2946,6 @@
         304,
         308,
         368,
-        369,
         391,
         392,
         394,
@@ -2954,6 +2953,7 @@
         516,
         537,
         538,
+        547,
         154,
         156,
         270,
@@ -3060,6 +3060,24 @@
   },
   "prs": {
     "open": [
+      {
+        "number": 549,
+        "title": "chore(backlog): exclusive claims; ready reports claimed and stale-claim (#531)",
+        "url": "https://github.com/mezivillager/hacer/pull/549",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:1"
+        ],
+        "headRefName": "feat/531-exclusive-claims",
+        "isDraft": false,
+        "createdAt": "2026-09-27T09:48:37Z",
+        "mergedAt": null,
+        "closes": [
+          531
+        ],
+        "verdicts": []
+      },
       {
         "number": 522,
         "title": "chore(deps): bump @radix-ui/react-switch from 1.2.6 to 1.3.7",
@@ -3195,11 +3213,36 @@
     ],
     "merged": [
       {
+        "number": 548,
+        "title": "feat(conformance): vendor the Project 3 nand2tetris vectors, and refuse files upstream does not ship",
+        "url": "https://github.com/mezivillager/hacer/pull/548",
+        "author": "mezivillager",
+        "labels": [
+          "risk:2",
+          "project:foundation"
+        ],
+        "headRefName": "feat/193-vectors-03",
+        "isDraft": false,
+        "createdAt": "2026-09-27T09:40:47Z",
+        "mergedAt": "2026-09-27T09:51:48Z",
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus 5.5 (claude-opus-5-5)",
+            "at": "2026-09-27T09:51:10Z",
+            "url": "https://github.com/mezivillager/hacer/pull/548#issuecomment-5854809762"
+          }
+        ]
+      },
+      {
         "number": 546,
         "title": "fix(ci): let no required workflow drop a pending run (#530)",
         "url": "https://github.com/mezivillager/hacer/pull/546",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:1"
         ],
@@ -4553,33 +4596,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/420#issuecomment-5793644039"
           }
         ]
-      },
-      {
-        "number": 419,
-        "title": "docs(repo-map): remove fenced future trees",
-        "url": "https://github.com/mezivillager/hacer/pull/419",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:upkeep",
-          "risk:0"
-        ],
-        "headRefName": "docs/252-repo-map-future-trees",
-        "isDraft": false,
-        "createdAt": "2026-09-23T10:53:24Z",
-        "mergedAt": "2026-09-23T10:58:22Z",
-        "closes": [
-          252
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Grok (executor subagent; not Sonnet)",
-            "at": "2026-09-23T10:57:46Z",
-            "url": "https://github.com/mezivillager/hacer/pull/419#issuecomment-5793605144"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4703,6 +4719,7 @@
         "title": "A dropped pending run leaves an empty cancelled suite that strands green PRs in the merge box",
         "url": "https://github.com/mezivillager/hacer/issues/530",
         "labels": [
+          "released",
           "project:harness",
           "agent-ready",
           "in-progress",
@@ -5753,9 +5770,14 @@
     },
     "releases": [
       {
+        "tag": "v2.43.1",
+        "publishedAt": "2026-09-27T09:25:36Z",
+        "isLatest": true
+      },
+      {
         "tag": "v2.43.0",
         "publishedAt": "2026-09-27T09:08:43Z",
-        "isLatest": true
+        "isLatest": false
       },
       {
         "tag": "v2.42.1",
@@ -6221,7 +6243,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-23",
-        "merges": 8
+        "merges": 7
       },
       {
         "date": "2026-09-24",
@@ -6237,7 +6259,7 @@
       },
       {
         "date": "2026-09-27",
-        "merges": 8
+        "merges": 9
       }
     ]
   },
@@ -6245,11 +6267,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "5e69376c353b8b84ec0ef3d3dda67fd6737fed99",
+        "sha": "c9622b2d82dc7627a20d14b68eb867dc263af179",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36309214543/job/108591784864",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36310715234/job/108595963950",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -6552,6 +6574,52 @@
         "conclusion": "SUCCESS",
         "completedAt": "2026-09-25T14:48:26Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/36149664191/job/108119435683",
+        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 71,
+          "new": 0
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 549,
+        "sha": "93fd7c02bb344d4dbcbc9d636ae5d7ca0cec400f",
+        "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-27T09:49:24Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36310548784/job/108595502096",
+        "line": "HYGIENE: WARN reviewable=355 test=285 excluded=0 files=10 issue=#531 linked=fixes",
+        "verdict": "WARN",
+        "fields": {
+          "reviewable": 355,
+          "test": 285,
+          "excluded": 0,
+          "files": 10,
+          "issue": "#531",
+          "linked": "fixes"
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 549,
+        "sha": "93fd7c02bb344d4dbcbc9d636ae5d7ca0cec400f",
+        "check": "browser-qa",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-27T09:48:53Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36310548774/job/108595501472",
+        "line": "BROWSER-QA: skipped (no critical paths)",
+        "verdict": "SKIPPED",
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 549,
+        "sha": "93fd7c02bb344d4dbcbc9d636ae5d7ca0cec400f",
+        "check": "ci",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-27T09:50:49Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36310547844/job/108595499068",
         "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
         "verdict": "PASS",
         "fields": {
