@@ -5,7 +5,7 @@ Pinned commit: 52611ad9bc2a30d329293b0cf58be672d672ac96
 Upstream form: TypeScript string modules under projects/src/project_<nn>/*.ts. Each
 project's index.ts names the files it ships and the export each is read from; this
 tree is that extracted text, not the modules.
-Projects included: 01, 02. Projects 03, 04, 05 are follow-ups and are not in this tree yet.
+Projects included: 01, 02, 03. Projects 04, 05 are follow-ups and are not in this tree yet.
 
 Licence of these .hdl / .tst / .cmp files:
 Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported

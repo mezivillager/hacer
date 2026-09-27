@@ -14,8 +14,8 @@ export const WEB_IDE_COMMIT = '52611ad9bc2a30d329293b0cf58be672d672ac96'
 /** Projects 1–5 are #193's scope; the ones not in VENDORED_PROJECTS yet are follow-ups. */
 const PLANNED_PROJECTS = ['01', '02', '03', '04', '05']
 
-/** Projects 1 and 2. Projects 3–5 are follow-ups to #193. */
-export const VENDORED_PROJECTS = ['01', '02']
+/** Projects 1 to 3. Projects 4 and 5 are follow-ups to #193. */
+export const VENDORED_PROJECTS = ['01', '02', '03']
 
 /** Extensions a vendored file may have. The .asm (04) and .hack (05) slices widen this. */
 const VENDORED_EXTENSIONS = ['hdl', 'tst', 'cmp']
