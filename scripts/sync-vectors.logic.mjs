@@ -11,8 +11,8 @@ export const WEB_IDE_URL = 'https://github.com/nand2tetris/web-ide.git'
  */
 export const WEB_IDE_COMMIT = '52611ad9bc2a30d329293b0cf58be672d672ac96'
 
-/** Projects 1 to 4. Project 5 is the next commit. */
-export const VENDORED_PROJECTS = ['01', '02', '03', '04']
+/** Projects 1 to 5, #193's scope. */
+export const VENDORED_PROJECTS = ['01', '02', '03', '04', '05']
 
 /** Extensions a vendored file may have: .tst files load .asm (04) and .hack (05) programs. */
 const VENDORED_EXTENSIONS = ['hdl', 'tst', 'cmp', 'asm', 'hack']
