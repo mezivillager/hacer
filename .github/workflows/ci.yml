@@ -2,7 +2,7 @@ name: CI
 
 # Runs on every push to main AND on every pull request targeting main.
 # All steps must pass before a PR can be merged (enforced via branch protection).
-# See AGENTS.md § "How GitHub Actions Enforce Quality" for a full explanation.
+# See AGENTS.md § 4 "Quality gates" and docs/harness/README.md for a full explanation.
 
 on:
   push:
