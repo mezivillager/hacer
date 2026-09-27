@@ -14,11 +14,7 @@ export const LINE_BUDGETS = {
   'AGENTS.md': 120,
 }
 
-/**
- * The number of lines in `text`. Matches `wc -l` for a file with a final newline; a file
- * missing one still counts its last line, so the result is one higher than `wc -l` there — the
- * stricter direction for a budget, never the one that lets an over-long file slip through.
- */
+/** The number of lines in `text` — matches `wc -l`, except one higher (the stricter direction) when `text` has no final newline. */
 export function countLines(text) {
   if (!text) return 0
   const trimmed = text.endsWith('\n') ? text.slice(0, -1) : text
