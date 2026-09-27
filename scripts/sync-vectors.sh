@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# Vendor nand2tetris .hdl/.tst/.cmp/.asm files into conformance/vectors/<project>/.
+# Vendor nand2tetris .hdl/.tst/.cmp/.asm/.hack files into conformance/vectors/<project>/.
 #
 # Clones https://github.com/nand2tetris/web-ide.git at the commit named in
 # scripts/sync-vectors.logic.mjs (never a sibling ../web-ide checkout) and writes the
-# files each project's upstream index.ts ships. The projects are VENDORED_PROJECTS
-# there; the rest of projects 1-5 are follow-ups (#193).
+# files each project's upstream index.ts ships, less the ones EXCLUDED there leaves out
+# as not course material (R757). The projects are VENDORED_PROJECTS there, 1-5 (#193).
 #
 #   bash scripts/sync-vectors.sh
 
