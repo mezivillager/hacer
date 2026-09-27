@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // The backlog over GitHub Issues — answers "what can you pick up?" from the shell, and holds the claims (#531).
 //
-//   node scripts/backlog.mjs ready    [--json]   pickable tasks in pick order, then the rest with a reason
+//   node scripts/backlog.mjs ready    [--json]   pickable tasks in pick order, then the rest with a reason; the slot the
+//                                               cycle resumes at, after the latest claim, goes to stderr (#535)
 //   node scripts/backlog.mjs projects [--json]   one line per docs/portfolio.md row: counts + next pick
 //   node scripts/backlog.mjs claim <n> --by <id> [--session <id>] [--branch <b>] [--intent <i>] [--handoff <h>]
 //   node scripts/backlog.mjs release <n> --by <id> [--force-stale --reason <why>]
@@ -110,7 +111,9 @@ try {
   if (command) {
     const [allowlist, portfolioRows] = [allowlistFromEnv(), backlog.parsePortfolio(readFileSync(PORTFOLIO_PATH, 'utf8'))]
     const issues = ghJson('issue', 'list', '-R', REPO, '--state', 'open', '--limit', '500', '--json', ISSUE_FIELDS)
-    const result = command.plan(issues, portfolioRows, allowlist, fetchClaims(allowlist).claims)
+    const history = backlog.claimHistory(graphql(backlog.claimHistoryQuery(REPO)), allowlist) // the cycle resumes from it
+    const result = command.plan(issues, portfolioRows, allowlist, fetchClaims(allowlist).claims, history)
+    if (commandName === 'ready') console.error(backlog.formatResume(backlog.resumePoint(issues, portfolioRows, history, allowlist)))
     console.log(flags.json ? JSON.stringify(result, null, 2) : command.format(result))
   } else if (action && Number.isInteger(number) && number > 0 && flags.by) {
     console.log(action(number, flags, allowlistFromEnv()))
