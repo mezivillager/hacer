@@ -388,3 +388,15 @@ export function releaseComment(claim, { by, reason }) {
   return [`Released a stale claim: claim/${claim.number}, holder ${holderOf(claim)}, with no open PR.`,
     `Released by: ${by}`, ...(reason ? [`Reason: ${reason}`] : [])].join('\n')
 }
+
+// #540 — red stubs: the reporting the tests describe is not built yet.
+export const DORMANT_OPEN_PRS = 5
+export const ROW_AGENT_READY_CAP = 12
+export const CLAIM_HISTORY_PAGES = 10
+const notYet = () => {
+  throw new Error('not implemented (#540)')
+}
+export const dormantMode = notYet
+export const formatDormant = notYet
+export const historyGap = notYet
+export const readClaimHistory = notYet

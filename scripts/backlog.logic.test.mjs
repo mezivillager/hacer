@@ -3,20 +3,28 @@ import path from 'node:path'
 import { describe, it, expect } from 'vitest'
 import {
   AUX_ROTATION,
+  CLAIM_HISTORY_PAGES,
   CLAIM_HISTORY_WINDOW,
   DEFAULT_ALLOWLIST,
   DESIGN_FIRST_SLUGS,
+  DORMANT_OPEN_PRS,
   PICK_ROTATION,
+  ROW_AGENT_READY_CAP,
   STALE_CLAIM_HOURS,
   claimComment,
   claimHistory,
+  claimHistoryQuery,
   claimTaken,
+  dormantMode,
+  formatDormant,
   formatProjects,
   formatReady,
   formatResume,
+  historyGap,
   latestClaim,
   parsePortfolio,
   planReady,
+  readClaimHistory,
   readClaims,
   releaseComment,
   releaseRefusal,
@@ -545,8 +553,9 @@ describe('summarizeProjects', () => {
   it('counts open, ready, in-progress and needs-human per project', () => {
     expect(rowFor('foundation')).toMatchObject({ epicNumber: 318, open: 3, ready: 3, inProgress: 0, needsHuman: 0 })
     expect(rowFor('harness')).toMatchObject({ epicNumber: 138, open: 6, ready: 2, inProgress: 1, needsHuman: 1 })
-    expect(rowFor('surfaces')).toMatchObject({ open: 3, ready: 2, inProgress: 0, needsHuman: 0 })
-    expect(rowFor('pubdocs')).toMatchObject({ epicNumber: 260, open: 1, ready: 1 })
+    // #540: surfaces and pubdocs are on-request while #330's rotation runs, so none of their tasks is ready
+    expect(rowFor('surfaces')).toMatchObject({ open: 3, ready: 0, inProgress: 0, needsHuman: 0 })
+    expect(rowFor('pubdocs')).toMatchObject({ epicNumber: 260, open: 1, ready: 0 })
     // the gate holds all three `core` tasks: every one of them is risk:2 outside the plan
     expect(rowFor('core')).toMatchObject({ open: 3, ready: 0, inProgress: 0, needsHuman: 0, next: null })
     expect(rowFor('verify')).toMatchObject({ open: 1, ready: 0 })
@@ -588,7 +597,7 @@ describe('formatProjects', () => {
     expect(lines).toHaveLength(portfolioRows.length)
     expect(lines[0]).toMatch(/^foundation · open 3 · ready 3 · in-progress 0 · needs-human 0 · next: #315 Canvas-less shell/)
     expect(lines[1]).toMatch(/^harness · open 6 · ready 2 · in-progress 1 · needs-human 1 · next: #148 Bootstrap the backlog/)
-    expect(lines[3]).toMatch(/^pubdocs · open 1 · ready 1 · in-progress 0 · needs-human 0 · next: #263 docs\/public: HDL language reference/)
+    expect(lines[3]).toMatch(/^pubdocs · open 1 · ready 0 · in-progress 0 · needs-human 0 · next: #263 docs\/public: HDL language reference/)
     expect(lines[7]).toBe('3d · open 0 · ready 0 · in-progress 0 · needs-human 0 · next: —')
   })
 })
@@ -799,5 +808,151 @@ describe('the claim docs', () => {
     for (const file of ['.claude/skills/ha-next/SKILL.md', 'docs/harness/sessions/COORDINATOR-HANDOFF.md']) {
       expect(doc(file)).toContain('node scripts/backlog.mjs release <n> --by')
     }
+  })
+})
+
+// #540 (docs/harness/reviews/2026-09-26/evidence/2-controls.md; reviews/1.md F12): `projects` counts ready what `ready`
+// picks, dormant mode is computed, and a row's open agent-ready pile has a cap.
+describe('backlog reporting', () => {
+  const rowOf = (summaries, slug) => summaries.find((summary) => summary.slug === slug)
+
+  it('counts a task ready only when ready picks it: on-request and not-pulled carry a reason, and are not', () => {
+    const issues = [open(1, 'horizon'), open(2, 'surfaces'), open(3, 'core'), open(4, 'spine'),
+      open(5, 'core', { blocking: [6] }), open(6, 'spine', { blockedBy: [5] })]
+    const summaries = summarizeProjects(issues, portfolioRows)
+    // `next` still names the row's first pickable task — what the owner gets on request (docs/harness/mission-control.md)
+    expect(rowOf(summaries, 'horizon')).toMatchObject({ open: 1, ready: 0, next: { number: 1, title: 'Task 1' } })
+    expect(rowOf(summaries, 'surfaces')).toMatchObject({ open: 1, ready: 0 })
+    expect(rowOf(summaries, 'core')).toMatchObject({ open: 2, ready: 1 }) // #5 is pulled by spine's #6; #3 is not-pulled
+    expect(rowOf(summaries, 'spine')).toMatchObject({ open: 2, ready: 1 })
+    // Across the rows, ready adds up to the picks `ready` lists — on the recorded backlog too.
+    for (const backlog of [issues, fixtureIssues]) {
+      const total = summarizeProjects(backlog, portfolioRows).reduce((sum, summary) => sum + summary.ready, 0)
+      expect(total).toBe(picks(planReady(backlog, portfolioRows)).length)
+    }
+  })
+
+  it(`is dormant at ${DORMANT_OPEN_PRS} open agent PRs — the allowlist's, drafts too, never Dependabot's — and says so in one banner`, () => {
+    const pr = (number, login = DEFAULT_ALLOWLIST[0]) => ({ number, author: { login }, isDraft: number === 2, headRefName: `chore/${number}-x` })
+    const four = [pr(1), pr(2), pr(3), pr(4), pr(5, 'app/dependabot')]
+    expect(dormantMode(four)).toEqual({ dormant: false, agentPrs: [1, 2, 3, 4] })
+    expect(formatDormant(dormantMode(four))).toBeNull()
+    expect(dormantMode([...four, pr(6)])).toEqual({ dormant: true, agentPrs: [1, 2, 3, 4, 6] })
+    expect(formatDormant(dormantMode([...four, pr(6)]))).toBe('DORMANT MODE — 5 open agent PRs (#1, #2, #3, #4, #6), cap 5: ' +
+      'no new PR-producing work; only horizon notes and issue shaping (docs/portfolio.md § Dormant mode)')
+    expect(dormantMode([...four, pr(6)], ['bot'])).toEqual({ dormant: false, agentPrs: [] })
+    expect(dormantMode(null)).toEqual({ dormant: false, agentPrs: [] })
+    // The recorded open PRs: three by the owner's identity, which agents share, and one by Dependabot.
+    expect(dormantMode(recorded.openPrs)).toEqual({ dormant: false, agentPrs: [486, 461, 459] })
+  })
+
+  it(`counts each row's open agent-ready issues and warns on a row with more than ${ROW_AGENT_READY_CAP}`, () => {
+    const many = (count, from, slug) => Array.from({ length: count }, (_, index) => open(from + index, slug))
+    const issues = [...many(13, 100, 'harness'), ...many(12, 200, 'spine'), issue(300, { labels: ['project:upkeep'] }),
+      issue(301, { labels: ['agent-ready', 'in-progress', 'project:upkeep'] })]
+    const summaries = summarizeProjects(issues, portfolioRows)
+    expect(rowOf(summaries, 'harness')).toMatchObject({ open: 13, agentReady: 13 })
+    expect(rowOf(summaries, 'spine')).toMatchObject({ open: 12, agentReady: 12 })
+    expect(rowOf(summaries, 'upkeep')).toMatchObject({ open: 2, ready: 0, agentReady: 1 }) // #300 is unshaped; #301 is taken, still agent-ready
+    const lines = formatProjects(summaries).split('\n')
+    expect(lines[1]).toBe('harness · open 13 · ready 13 · in-progress 0 · needs-human 0 · over cap: 13 agent-ready > 12 · next: #100 Task 100')
+    expect(lines.find((line) => line.startsWith('spine ·'))).toBe('spine · open 12 · ready 12 · in-progress 0 · needs-human 0 · next: #200 Task 200')
+    expect(rowOf(summarizeProjects(fixtureIssues, portfolioRows), 'harness').agentReady).toBe(4)
+  })
+
+  it('docs/portfolio.md states the dormant cap, why the 7-day half is gone and what replaces it, and the row cap', () => {
+    const start = livePortfolio.indexOf('## Dormant mode')
+    const dormant = livePortfolio.slice(start, livePortfolio.indexOf('\n## ', start + 1))
+    expect(dormant).toContain(`${DORMANT_OPEN_PRS} open agent PRs`)
+    expect(dormant).toMatch(/7 days without a human merge/)
+    expect(dormant).toMatch(/cannot be computed/)
+    expect(dormant).toMatch(/replaces it/)
+    expect(livePortfolio).toContain(`more than ${ROW_AGENT_READY_CAP} open \`agent-ready\``)
+  })
+})
+
+// #555's verifier, nit 3: past a full window the replay starts from a guess, so it can take the wrong one of the three
+// foundation slots — and, as the recorded history shows, the wrong aux bucket. readClaimHistory reads older pages until a
+// claim fixes the place; historyGap says when none does.
+describe('claim history past one window', () => {
+  const at = (minute) => new Date(Date.UTC(2026, 8, 27, 12, minute)).toISOString()
+  const node = (number, updatedAt, labels = [], comments = []) =>
+    ({ number, updatedAt, parent: null, labels: { nodes: labels.map((name) => ({ name })) }, blocking: { nodes: [] }, comments: { nodes: comments } })
+  const claimed = (number, slug, when) => node(number, when, ['agent-ready', `project:${slug}`], [claimNote('mezivillager', 'Claimed by: claude-local', when)])
+  const page = (nodes, endCursor = null) => ({ data: { repository: { issues: { pageInfo: { hasNextPage: endCursor !== null, endCursor }, nodes } } } })
+  /** A full window: the claimed issues, then quiet ones updated at `oldest`, numbered from `from`. */
+  const full = (claims, from, oldest) =>
+    [...claims, ...Array.from({ length: CLAIM_HISTORY_WINDOW - claims.length }, (_, index) => node(from + index, oldest))]
+  const issues = [open(11, 'foundation'), open(21, 'lineage'), open(31, 'harness'), open(41, 'mission-control'),
+    open(51, 'spine'), open(61, 'verify')]
+  // The verifier's repro: lineage, harness, then foundation claimed; a busy day pushed the first two out of the newest window.
+  const newest = page(full([claimed(3, 'foundation', at(50))], 1000, at(40)), 'c1')
+  const older = page(full([claimed(2, 'harness', at(30)), claimed(1, 'lineage', at(20))], 2000, at(10)), 'c2')
+  const resumed = (answer) => picks(planReady(issues, portfolioRows, DEFAULT_ALLOWLIST, [], claimHistory(answer)))
+  const recording = JSON.parse(recordingText('gh-claim-history.json'))
+
+  it('claimHistoryQuery asks for the page info, and for the page after a cursor', () => {
+    expect(claimHistoryQuery('mezivillager/hacer')).toContain('pageInfo { hasNextPage endCursor }')
+    expect(claimHistoryQuery('mezivillager/hacer')).not.toContain('after:')
+    expect(claimHistoryQuery('mezivillager/hacer', 'Y3Vyc29yOnYy'))
+      .toContain(`issues(first: ${CLAIM_HISTORY_WINDOW}, after: "Y3Vyc29yOnYy", orderBy: {field: UPDATED_AT, direction: DESC})`)
+  })
+
+  it('claimHistory reads pages as one window, kept from the oldest update of them all; an issue listed twice counts once', () => {
+    expect(numbers(claimHistory(newest))).toEqual([3])
+    expect(numbers(claimHistory([newest, older]))).toEqual([1, 2, 3])
+    const repeated = page([claimed(3, 'foundation', at(50)), ...older.data.repository.issues.nodes.slice(0, -1)], 'c2')
+    expect(numbers(claimHistory([newest, repeated]))).toEqual([1, 2, 3])
+  })
+
+  it('one full window holding only a foundation claim cannot tell which foundation slot, and historyGap says so', () => {
+    expect(resumed(newest)).toEqual([21, 31, 11, 41, 51, 61]) // replayed from slot 1: a guess
+    expect(historyGap(newest, issues, portfolioRows)).toBe('no claim in the 50 most recently updated issues fixes the slot')
+    expect(resumed([newest, older])).toEqual([41, 51, 11, 61, 21, 31]) // the true place, after the lineage and harness claims
+    expect(historyGap([newest, older], issues, portfolioRows)).toBeNull()
+    expect(historyGap(newest, fixtureIssues, portfolioRows)).toMatch(/fixes the slot or the aux turn$/)
+  })
+
+  it('pages that reach the oldest issue hold every claim, so the replay from slot 1 is no guess', () => {
+    expect(historyGap(page(full([claimed(3, 'foundation', at(50))], 1000, at(40))), issues, portfolioRows)).toBeNull()
+    expect(historyGap({ data: { repository: { issues: { nodes: [claimed(3, 'foundation', at(50))] } } } }, issues, portfolioRows)).toBeNull()
+    expect(historyGap(null, issues, portfolioRows)).toBeNull()
+    expect(historyGap([], issues, portfolioRows)).toBeNull()
+  })
+
+  it('the aux turn is fixed by an aux claim, and unknown only matters while two aux buckets hold a task', () => {
+    // The recorded window's claims are harness, lineage and mission-control: they fix the slot, never the aux turn.
+    expect(historyGap(recording, fixtureIssues, portfolioRows)) // upkeep and bugs both hold a task
+      .toBe('no claim in the 50 most recently updated issues fixes the aux turn')
+    expect(historyGap(recording, issues, portfolioRows)).toBeNull() // only verify does
+    const auxClaimed = page(full([claimed(4, 'upkeep', at(55)), claimed(2, 'harness', at(30))], 1000, at(10)), 'c1')
+    expect(historyGap(auxClaimed, fixtureIssues, portfolioRows)).toBeNull()
+  })
+
+  it('readClaimHistory reads older pages until a claim fixes the place, the pages end, or CLAIM_HISTORY_PAGES are read', async () => {
+    const reader = (pages) => {
+      const asked = []
+      return { asked, fetchPage: async (after) => pages[asked.push(after) - 1] }
+    }
+    const paged = reader([newest, older, page(full([], 3000, at(0)))])
+    const read = await readClaimHistory(paged.fetchPage, issues, portfolioRows)
+    expect(paged.asked).toEqual([null, 'c1'])
+    expect(read).toEqual([newest, older])
+    expect(resumePoint(issues, portfolioRows, claimHistory(read))).toMatchObject({ slot: 4, after: { number: 3, bucket: 'foundation' } })
+
+    const fixedAtOnce = reader([older])
+    expect(await readClaimHistory(fixedAtOnce.fetchPage, issues, portfolioRows)).toEqual([older])
+    expect(fixedAtOnce.asked).toEqual([null])
+
+    const ends = reader([newest, page(full([], 2000, at(10)))])
+    const all = await readClaimHistory(ends.fetchPage, issues, portfolioRows)
+    expect(ends.asked).toEqual([null, 'c1'])
+    expect(historyGap(all, issues, portfolioRows)).toBeNull()
+
+    const endless = reader(Array.from({ length: 20 }, (_, index) => page(full([], (index + 1) * 1000, at(0)), `p${index}`)))
+    const capped = await readClaimHistory(endless.fetchPage, issues, portfolioRows)
+    expect(capped).toHaveLength(CLAIM_HISTORY_PAGES)
+    expect(historyGap(capped, issues, portfolioRows))
+      .toBe(`no claim in the ${CLAIM_HISTORY_PAGES * CLAIM_HISTORY_WINDOW} most recently updated issues fixes the slot`)
   })
 })
