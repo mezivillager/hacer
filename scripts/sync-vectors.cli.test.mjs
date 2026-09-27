@@ -3,7 +3,7 @@ import { spawnSync } from 'node:child_process'
 import { existsSync, mkdirSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
-import { VENDORED_PROJECTS } from './sync-vectors.logic.mjs'
+import { EXCLUDED, VENDORED_PROJECTS } from './sync-vectors.logic.mjs'
 
 // #544's verifier seeded a stale 02/Stale.tst and the sync kept it, exiting 0: after a pin bump
 // that drops a file, the oracle would keep the old vector and `git diff` would stay clean. The gap
@@ -16,16 +16,20 @@ afterEach(() => {
   while (cleanupDirs.length > 0) rmSync(cleanupDirs.pop(), { recursive: true, force: true })
 })
 
-/** A web-ide checkout in miniature: each vendored project's index.ts ships one P<nn>.hdl. */
+/**
+ * A web-ide checkout in miniature: each vendored project's index.ts ships one P<nn>.hdl, plus
+ * the files EXCLUDED names for it, since an exclusion that matches nothing shipped is refused.
+ */
 function disposableCheckout() {
   const root = mkdtempSync(path.join(tmpdir(), 'sync-vectors-'))
   cleanupDirs.push(root)
   for (const project of VENDORED_PROJECTS) {
     const dir = path.join(root, 'web-ide', 'projects', 'src', `project_${project}`)
     mkdirSync(dir, { recursive: true })
+    const excluded = Object.keys(EXCLUDED[project] ?? {}).map((file) => `  "${file}": Chip.hdl,\n`).join('')
     writeFileSync(
       path.join(dir, 'index.ts'),
-      `import * as Chip from "./01_chip.js";\n\nexport const CHIPS = {\n  "P${project}.hdl": Chip.hdl,\n};\n`,
+      `import * as Chip from "./01_chip.js";\n\nexport const CHIPS = {\n  "P${project}.hdl": Chip.hdl,\n${excluded}};\n`,
     )
     writeFileSync(path.join(dir, '01_chip.ts'), `export const hdl = \`CHIP P${project} {}\`;\n`)
   }
@@ -37,7 +41,7 @@ function sync({ webIde, vectors }) {
 }
 
 describe('sync-vectors.mjs', () => {
-  it('leaves each vendored project directory holding exactly the files upstream ships', () => {
+  it('leaves each vendored project directory holding exactly the files upstream ships, less its exclusions', () => {
     const checkout = disposableCheckout()
     const result = sync(checkout)
     expect(result.status, result.stderr).toBe(0)
@@ -76,6 +80,19 @@ describe('sync-vectors.mjs', () => {
     expect(readdirSync(checkout.vectors).sort()).toEqual([first, last])
     expect(readdirSync(path.join(checkout.vectors, first))).toEqual(['Stale.tst'])
     expect(readdirSync(path.join(checkout.vectors, last))).toEqual(['Extra.cmp'])
+  })
+
+  it('refuses a hand-copied excluded file such as 05/MaxRam.tst, and neither writes nor deletes anything', () => {
+    const checkout = disposableCheckout()
+    mkdirSync(path.join(checkout.vectors, '05'), { recursive: true })
+    writeFileSync(path.join(checkout.vectors, '05', 'MaxRam.tst'), 'load Max.hack,\n')
+
+    const result = sync(checkout)
+
+    expect(result.status).not.toBe(0)
+    expect(result.stderr).toMatch(/conformance\/vectors\/05 holds MaxRam\.tst\. Upstream does not ship them at [0-9a-f]{40}, or EXCLUDED/)
+    expect(readdirSync(checkout.vectors)).toEqual(['05'])
+    expect(readdirSync(path.join(checkout.vectors, '05'))).toEqual(['MaxRam.tst'])
   })
 
   it("disregards a dotfile such as Finder's .DS_Store, syncing around it and leaving it in place", () => {

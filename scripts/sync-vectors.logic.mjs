@@ -118,6 +118,14 @@ export function shippedFiles(indexSource) {
   })
 }
 
+/** Red stub (R757): the exclusion table, empty until the green commit. */
+export const EXCLUDED = {}
+
+/** Red stub (R757): returns the entries unchanged until the green commit. */
+export function vendoredEntries(project, entries) {
+  return entries
+}
+
 /**
  * The names in a vendored directory that the exact-files check reads: all but dotfiles, such as
  * Finder's .DS_Store or an editor's swap file. Disregarding them cannot hide a vector: FILE_NAME
