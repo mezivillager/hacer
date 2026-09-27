@@ -9,8 +9,9 @@ projection (`docs/research/2026-09-24-mission-control/REPORT.md` §5) and holds 
 - `--json` prints the snapshot and one stderr line, `MISSION-CONTROL: VALID schema 1 · ok 13 · partial 0 · error 0`;
   without it, only the line. It exits 1 only when the snapshot fails schema v1, and then prints no snapshot.
 - GitHub is read with `gh` (`GH_TOKEN` or `GITHUB_TOKEN` when set, else gh's login): six calls, all GraphQL, seven
-  requests while over 100 issues are open, no REST — 7–8 s over three runs on 2026-09-25. Without a token `gh` calls
-  nothing, and the GitHub sections go stale rather than fail the run. The ratchet's history needs a full clone
+  requests while over 100 issues are open, no REST — 7–8 s over three runs on 2026-09-25. The claim history reads one
+  more page only while the newer ones leave the cycle's place a guess (`readClaimHistory`, #540). Without a token `gh`
+  calls nothing, and the GitHub sections go stale rather than fail the run. The ratchet's history needs a full clone
   (`fetch-depth: 0`). `checks` needs no `checks` permission while the repo is public: #507's preview build collected
   it `ok`, annotations included, with a token that has none (`pr-preview.yml`, 2026-09-25).
 - The transforms are pure, in `collect.logic.mjs`, tested over recorded `gh` JSON in `scripts/fixtures/mission-control/`.
@@ -25,7 +26,7 @@ Each section has `freshness.<section>` = `{ source, fetchedAt, status, error? }`
 | `status` | Means | The section holds |
 |---|---|---|
 | `ok` | every input was read | this run's data; `fetchedAt` is `generatedAt` |
-| `partial` | an optional input failed, named in `error` | this run's data, without that input's fields |
+| `partial` | an optional input failed, named in `error` — or, for the pick sections, the claim history leaves the cycle's place a guess (`claimHistory: no claim in the N most recently updated issues fixes …`, #540) | this run's data, without that input's fields |
 | `error` | a required input failed, or its JSON changed shape (`could not build: …`) | the `--previous` snapshot's data and its `fetchedAt`; with none, empty data and `fetchedAt: null` |
 
 ## Sections
@@ -34,7 +35,7 @@ Each section has `freshness.<section>` = `{ source, fetchedAt, status, error? }`
 |---|---|---|
 | `schemaVersion` · `generatedAt` · `head` | `1`; when the run finished; the commit it ran at (`sha`, `date`, `subject`) | git |
 | `portfolio` | `projects[]`, one per `docs/portfolio.md` row: `backlog.mjs projects`' counts, stale claims and next pick, the epic's `title` and `subIssues` (`total`, `completed`, `percentCompleted`) | portfolio + `gh issue list`; the claim refs, `gh api graphql` and `gh pr list --state open` optional, as `ready` reads claims; the claim history (`gh api graphql`, `claimHistoryQuery`) optional, as `ready` resumes the cycle from it (#535) |
-| `pickRule` | `rotation`, `auxRotation`, and `next[]` — `backlog.mjs ready`'s picks, in its order, the cycle resumed after the latest claim | the same |
+| `pickRule` | `rotation`, `auxRotation`, and `next[]` — `backlog.mjs ready`'s picks, in its order, the cycle resumed after the latest claim; `dormant`, as `ready`'s banner reads it | the same |
 | `tasks` | `items[]`, each open non-epic issue as `backlog.logic.mjs` triages it (`project`, `pickable`, `reason`); `byProject`, issue numbers per row, `unfiled` for none | the same |
 | `prs` | `open[]` and the last 60 `merged[]`, with `closes[]` and `verdicts[]` (`verdict`, `round`, `model`, `at`, `url`); `coverage`: merged, with and without a verdict, latest `PASS` / `BLOCK` | `gh pr list` |
 | `claims` | `items[]` per `claim/<n>` ref: the issue's `state` and `labels`, its latest claim comment's fields (`claimedBy`, `intent`, `session`, `branch`, `handoff`); `onClosedIssue` marks a stale ref, `onClosedIssues` counts them | `git ls-remote`; `gh api graphql` optional |
@@ -58,8 +59,8 @@ or full stop. Claim comments are read by their fields, from the same authors.
 Every field, by section. `?` marks one that can be `null`; `[]` an array.
 
 - **Top level** — `schemaVersion` (`1`) · `generatedAt` · `head` {`sha`, `date`, `subject`} · `freshness.<section>` {`source`, `fetchedAt`?, `status`, `error` (only when not `ok`)}
-- **`portfolio.projects[]`** — `rank` · `lane` · `slug` · `epicNumber` · `open` · `ready` · `inProgress` · `needsHuman` · `staleClaims[]` (issue numbers) · `next`? {`number`, `title`}, the row's first *pickable* task, which `ready` may not pick (`on-request`, `not-pulled`): the pick itself is in `pickRule.next` · `title`? (the epic's) · `subIssues`? {`total`, `completed`, `percentCompleted`}
-- **`pickRule`** — `rotation[]` · `auxRotation[]` · `next[]` {`number`, `title`, `project`?}: `ready`'s picks, in its order
+- **`portfolio.projects[]`** — `rank` · `lane` · `slug` · `epicNumber` · `open` · `ready` (the row's tasks `ready` picks: none with a reason, #540) · `inProgress` · `needsHuman` · `staleClaims[]` (issue numbers) · `agentReady` (open `agent-ready` issues; `projects` warns past 12) · `next`? {`number`, `title`}, the row's first *pickable* task, which `ready` may not pick (`on-request`, `not-pulled`): the pick itself is in `pickRule.next` · `title`? (the epic's) · `subIssues`? {`total`, `completed`, `percentCompleted`}
+- **`pickRule`** — `rotation[]` · `auxRotation[]` · `next[]` {`number`, `title`, `project`?}: `ready`'s picks, in its order · `dormant` {`dormant`, `agentPrs[]`}: dormant mode, `true` at 5 open PRs by the allowlist
 - **`tasks`** — `items[]` {`number`, `title`, `labels[]`, `blocking[]`, `project`?, `rank`?, `lane`?, `pickable`, `reason`?} in `ready`'s order: the picks (`reason: null`) first, then the rest by number with the reason `ready` prints (`claimed`, `stale-claim`, `author`, `in-progress`, `needs-human`, `unshaped`, `blocked:#n,…`, `foundation-gate`, `on-request`, `not-pulled`) · `byProject` {slug: issue numbers}
 - **`prs`** — `open[]` and `merged[]` {`number`, `title`, `url`, `author`?, `labels[]`, `headRefName`, `isDraft`, `createdAt`, `mergedAt`?, `closes[]`, `verdicts[]` {`verdict`, `round`, `model`?, `at`, `url`}} · `coverage` {`merged`, `withVerdict`, `withoutVerdict`, `pass`, `block`}
 - **`claims`** — `items[]` {`number`, `ref`, `sha`, `state`?, `title`?, `url`?, `labels[]`?, `onClosedIssue`?, `claim`? {`claimedBy`?, `intent`?, `session`?, `branch`?, `handoff`?, `author`, `at`, `url`}}, where every `?` above is `null` without GraphQL · `onClosedIssues`
