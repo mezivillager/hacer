@@ -12,6 +12,18 @@ The door this page relies on is the one that worked in the 2026-09-23 trial with
 disabled**: Grok Bot launches Cursor Cloud Agents. That trial is **done**. Its handoff is
 evidence, not a live claim list — do not revive anything from it.
 
+## What belongs in this queue
+
+Only work nothing else waits on (R742, the owner, 2026-09-27): verification and fresh-context
+verifies, second opinions, differential and conformance runs, fuzzing, and heavy optional checks.
+Anything on the critical path — work another issue is blocked by, or the spine's next step — stays
+local. The owner triggers Grok Bot by hand, so a row may wait days; the loop never waits on it:
+
+- **A row that turns out to block other work comes back local.** Post a claim comment naming the new
+  holder (`COORDINATOR-HANDOFF.md`) and mark the inbox row, as with #193 on 2026-09-27 (R743).
+- **What the lane reports becomes a local follow-up.** A BLOCK, a finding or a failing run is fixed
+  or filed by the local lane, not queued back to wait for the next trigger (R745).
+
 ## Roles
 
 | Who | Owns | Does not |
@@ -32,7 +44,9 @@ For every queued issue, all of these are true at once:
 
 `ha-next` must not steal queued work. At orient, read `docs/harness/sessions/cloud-queue-inbox.md`
 and skip every issue whose row is not `done`. Do not claim it, build it, or release it to “free”
-it for a local pick. A row Claude left unclaimed on purpose is still queued.
+it for a local pick. A row Claude left unclaimed on purpose is still queued. The one exception is a
+row that blocks other work: it comes back local through a claim comment (see *What belongs in this
+queue*).
 
 ## Queue contract
 
