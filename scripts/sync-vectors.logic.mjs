@@ -113,6 +113,11 @@ export function refuseUnshipped(project, onDisk, shipped) {
   }
 }
 
+/** Red stub for #193's Project 4 slice: the dotfile rule is not implemented yet. */
+export function vendoredNames(names) {
+  return names
+}
+
 function withTrailingNewline(text) {
   return text.endsWith('\n') ? text : `${text}\n`
 }
