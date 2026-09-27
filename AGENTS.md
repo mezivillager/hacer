@@ -95,10 +95,11 @@ Validate Ticket  →  Brainstorm  →  Worktree  →  Plan  →  Execute (Subage
 - Present the design; get approval; then proceed.
 
 #### Step 1.0 — Ticket Freshness check (READ-ONLY validation, before you design)
-Most `docs/plans/phase-0.5-tickets/*` were authored early and **drift from the code** — wrong APIs,
-references to superseded designs, or dependencies on re-scoped/never-built sibling tickets. Before you
-design, reconcile the ticket you are picking up against reality. This is expected, routine work — not a
-detour.
+Tickets are GitHub Issues (ADR-0013) — `node scripts/backlog.mjs ready` lists what's pickable; project
+order is `docs/portfolio.md`. Most `docs/plans/phase-0.5-tickets/*` specs were authored early and
+**drift from the code** — wrong APIs, references to superseded designs, or dependencies on
+re-scoped/never-built sibling tickets. Before you design, reconcile the spec behind the issue you
+picked up against reality. This is expected, routine work — not a detour.
 
 **At pickup — read-only (you may still be in the main checkout, so do NOT edit files yet):**
 - **Validate** the ticket's claims (APIs, file paths, dependencies, "files to create") against the
@@ -114,7 +115,8 @@ detour.
 - **Record material re-scopes as an ADR** (`docs/decisions/`, via `docs-sync`) — as
   [ADR-0004](docs/decisions/0004-p05-18-boundary-evaluatechip-seam-landed-in-p05-16.md) did when P05-16
   absorbed P05-18's seam.
-- Keep the phase checklist (`docs/plans/phase-0.5-tickets-CHECKLIST.md`) in sync with any merge/split.
+- Keep the GitHub issue (and `docs/portfolio.md` if the project row changes) in sync with any
+  merge/split — not the retired checklist (`docs/plans/phase-0.5-tickets-CHECKLIST.md`, historical, #148).
 
 ### Step 2 — Branching / Worktrees
 **Do NOT push directly to main without isolating your work.**

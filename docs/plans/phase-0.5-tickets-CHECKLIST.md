@@ -1,4 +1,11 @@
-# Phase 0.5 — Ticket checklist (Project 1)
+# Phase 0.5 — Ticket checklist (Project 1) (historical)
+
+**New tracking is a GitHub issue, not a checkbox here.** What's next: `docs/portfolio.md` (priority
+projects) and the issue tracker — `node scripts/backlog.mjs ready` lists what's pickable
+([ADR-0013](../decisions/0013-backlog-in-github-issues-and-portfolio.md)). This file is kept for
+reference; it is not maintained.
+
+---
 
 **Purpose:** Single place to check off tickets as they land.  
 **Specs:** Each row links to `docs/plans/phase-0.5-tickets/P05-NN.md`.  

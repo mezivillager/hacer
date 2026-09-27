@@ -1,3 +1,12 @@
+# Task plan (historical)
+
+**New work is a GitHub issue, not a row here.** What's next: [`docs/portfolio.md`](../docs/portfolio.md)
+(priority projects) and the issue tracker — `node scripts/backlog.mjs ready` lists what's pickable
+([ADR-0013](../docs/decisions/0013-backlog-in-github-issues-and-portfolio.md)). This file is kept for
+reference; it is not maintained.
+
+---
+
 # Current Focus
 
 ## Documentation Refresh (2026-05-12)
