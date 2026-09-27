@@ -8,7 +8,7 @@ import {
 } from '../backlog.logic.mjs'
 import { CHECK_LINES, readCheckRun } from '../check-lines.logic.mjs'
 
-export { claimsQuery } from '../backlog.logic.mjs'
+export { claimHistoryQuery, claimsQuery } from '../backlog.logic.mjs'
 
 export const SCHEMA_VERSION = 1
 const STATUSES = ['ok', 'partial', 'error']

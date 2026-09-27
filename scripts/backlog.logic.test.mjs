@@ -3,20 +3,24 @@ import path from 'node:path'
 import { describe, it, expect } from 'vitest'
 import {
   AUX_ROTATION,
+  CLAIM_HISTORY_WINDOW,
   DEFAULT_ALLOWLIST,
   DESIGN_FIRST_SLUGS,
   PICK_ROTATION,
   STALE_CLAIM_HOURS,
   claimComment,
+  claimHistory,
   claimTaken,
   formatProjects,
   formatReady,
+  formatResume,
   latestClaim,
   parsePortfolio,
   planReady,
   readClaims,
   releaseComment,
   releaseRefusal,
+  resumePoint,
   summarizeProjects,
   triageTasks,
 } from './backlog.logic.mjs'
@@ -396,6 +400,140 @@ describe('the foundation gate', () => {
   })
 })
 
+// #535 (2026-09-26 reviews: 3.md F3, 2.md F14, evidence/2-controls.md): the cycle held inside one listing and reset on
+// the next call, so eight successive top picks were `foundation ×3, lineage ×3, harness ×2`. The place now comes from
+// the claims made before the call — claimHistory's record, not a coordinator's memory.
+describe('the cycle across calls', () => {
+  /** Take the top pick, claim it — it joins the history — and remove it before the next call, `count` times. */
+  function successiveTopPicks(issues, count) {
+    const history = []
+    let remaining = issues
+    for (let call = 0; call < count; call++) {
+      const [top] = planReady(remaining, portfolioRows, DEFAULT_ALLOWLIST, [], history).filter((task) => task.reason === null)
+      if (!top) break
+      history.push(remaining.find((candidate) => candidate.number === top.number))
+      remaining = remaining.filter((candidate) => candidate.number !== top.number)
+    }
+    return numbers(history)
+  }
+  const IN_THE_CYCLE = ['foundation', 'lineage', 'harness', 'mission-control', 'spine', 'verify', 'upkeep', 'bugs']
+  /** Three agent-ready tasks in every bucket of the cycle — #101-103 foundation … #801-803 bugs — and one on-request. */
+  const everyBucket = [...IN_THE_CYCLE.flatMap((slug, index) => [1, 2, 3].map((k) => open((index + 1) * 100 + k, slug))), open(901, 'horizon')]
+  const projectOf = (issues) => (number) => triageTasks(issues, portfolioRows).find((task) => task.number === number).project
+
+  it('eight successive top picks, each removed before the next call, equal the first eight of one listing', () => {
+    const listing = picks(planReady(everyBucket, portfolioRows))
+    expect(listing.slice(0, 8).map(projectOf(everyBucket))).toEqual([
+      'foundation', 'lineage', 'harness', 'foundation', 'mission-control', 'spine', 'foundation', 'verify',
+    ])
+    expect(successiveTopPicks(everyBucket, 8)).toEqual(listing.slice(0, 8))
+    // …and on through the whole listing, aux taking verify → upkeep → bugs in turn.
+    expect(successiveTopPicks(everyBucket, listing.length)).toEqual(listing)
+    // The recorded backlog too: a drained slot skipped, the gate holding verify, aux carrying on at bugs.
+    expect(successiveTopPicks(fixtureIssues, 8)).toEqual(picks(planReady(fixtureIssues, portfolioRows)))
+  })
+
+  it('holds with a sev:critical bug and a pulled enabler in the backlog: both go where one listing puts them', () => {
+    const issues = [
+      ...everyBucket.filter((candidate) => candidate.number !== 102),
+      open(102, 'foundation', { blockedBy: [9] }), open(9, 'core', { blocking: [102] }),
+      issue(2, { labels: ['agent-ready', 'bug', 'sev:critical', 'project:bugs'] }),
+    ]
+    const listing = picks(planReady(issues, portfolioRows))
+    expect(listing.slice(0, 5)).toEqual([2, 9, 201, 301, 101]) // critical first; the enabler takes foundation's slot
+    expect(successiveTopPicks(issues, listing.length)).toEqual(listing)
+  })
+
+  it('resumes after the latest pick that took a slot; the three foundation slots told apart by the picks before', () => {
+    const issues = [open(11, 'foundation'), open(21, 'lineage'), open(31, 'harness'), open(41, 'mission-control'),
+      open(51, 'spine'), open(61, 'verify')]
+    const after = (...history) => picks(planReady(issues, portfolioRows, DEFAULT_ALLOWLIST, [], history))
+    expect(after()).toEqual([11, 21, 31, 41, 51, 61])
+    expect(after(open(1, 'harness'))).toEqual([11, 41, 51, 61, 21, 31])
+    expect(after(open(1, 'foundation'))).toEqual([21, 31, 11, 41, 51, 61])
+    expect(after(open(1, 'lineage'), open(2, 'harness'), open(3, 'foundation'))).toEqual([41, 51, 11, 61, 21, 31])
+    expect(after(open(1, 'mission-control'), open(2, 'spine'), open(3, 'foundation'))).toEqual([61, 11, 21, 31, 41, 51])
+    // Aux carries on from the bucket it took last: after an upkeep pick, bugs comes before verify.
+    expect(picks(planReady([open(61, 'verify'), open(81, 'bugs')], portfolioRows, DEFAULT_ALLOWLIST, [], [open(7, 'upkeep')])))
+      .toEqual([81, 61])
+  })
+
+  it('a claim that took no slot leaves the place: sev:critical, the gate, on-request, unfiled, an enabler pulled by nothing', () => {
+    const issues = [open(11, 'foundation'), open(21, 'lineage'), open(31, 'harness'), open(51, 'spine')]
+    const after = (...history) => picks(planReady(issues, portfolioRows, DEFAULT_ALLOWLIST, [], history))
+    const afterHarness = after(open(1, 'harness'))
+    expect(afterHarness).toEqual([11, 51, 21, 31])
+    for (const detour of [
+      issue(2, { labels: ['agent-ready', 'sev:critical', 'project:bugs'] }),
+      issue(3, { labels: ['agent-ready', 'risk:2', 'project:spine'] }),
+      open(4, 'surfaces'), open(5, 'horizon'), issue(6, { labels: ['agent-ready'] }), open(7, 'core'),
+    ]) {
+      expect(after(open(1, 'harness'), detour)).toEqual(afterHarness)
+    }
+  })
+
+  it('never moves sev:critical off the front, nor lets the gate go', () => {
+    const issues = [open(11, 'foundation'), issue(12, { labels: ['agent-ready', 'risk:2', 'project:spine'] }),
+      issue(13, { labels: ['agent-ready', 'sev:critical', 'project:bugs'] }), open(14, 'spine')]
+    const plan = planReady(issues, portfolioRows, DEFAULT_ALLOWLIST, [], [open(1, 'mission-control')])
+    expect(picks(plan)).toEqual([13, 14, 11])
+    expect(reasonOf(plan, 12)).toBe('foundation-gate')
+  })
+})
+
+// #535: gh-claim-history.json is `gh api graphql` run with gh-claim-history.graphql — the query claimHistoryQuery builds
+// — on 2026-09-27 at 10:20Z (origin/main aa4d75a): the 50 most recently updated issues, every comment body cut to its
+// first non-blank line, the line a claim opens with.
+describe('claimHistory', () => {
+  const recording = JSON.parse(recordingText('gh-claim-history.json'))
+  const history = claimHistory(recording)
+
+  it('reads each recorded claim at its first claim comment, oldest first, as issues ready can file', () => {
+    expect(numbers(history)).toEqual([
+      465, 472, 483, 484, 460, 485, 473, 467, 489, 477, 469, 476, 474, 470, 475, 455, 468, 530, 531, 536, 535, 537,
+    ])
+    // #468 was claimed again at 14:53; its pick is the first claim. #193 and #482 were claimed before the window's
+    // oldest update (2026-09-24T21:21:34Z), where a claim can be missing, so they are left out.
+    expect(history.find((pick) => pick.number === 468).claimedAt).toBe('2026-09-25T08:18:23Z')
+    expect(history.at(-1)).toEqual({
+      number: 537, parent: { number: 138 }, blocking: { nodes: [] }, claimedAt: '2026-09-27T10:16:48Z',
+      labels: [{ name: 'project:harness' }, { name: 'agent-ready' }, { name: 'in-progress' }, { name: 'risk:0' }],
+    })
+    expect(triageTasks(history, portfolioRows).map((task) => task.project))
+      .toEqual(expect.arrayContaining(['harness', 'lineage', 'mission-control']))
+  })
+
+  it('keeps every claim of a window that is not full, and only the allowlist’s claims', () => {
+    const issues = recording.data.repository.issues.nodes
+    expect(issues).toHaveLength(CLAIM_HISTORY_WINDOW)
+    const partial = { data: { repository: { issues: { nodes: issues.slice(0, CLAIM_HISTORY_WINDOW - 1) } } } }
+    expect(numbers(claimHistory(partial)).slice(0, 2)).toEqual([193, 482])
+    expect(claimHistory(recording, ['outsider'])).toEqual([])
+    expect(claimHistory(null)).toEqual([])
+  })
+
+  it('puts the recorded backlog’s cycle after #537, the latest claim — harness — at the fourth slot, foundation', () => {
+    expect(resumePoint(fixtureIssues, portfolioRows, history)).toEqual({
+      slot: 3, aux: 0, after: { number: 537, bucket: 'harness', at: '2026-09-27T10:16:48Z' },
+    })
+    expect(formatResume(resumePoint(fixtureIssues, portfolioRows, history)))
+      .toBe('cycle: slot 4 of 8 (foundation), after #537 · harness, claimed 2026-09-27T10:16:48Z')
+    expect(formatResume(resumePoint(fixtureIssues, portfolioRows, []))).toBe('cycle: slot 1 of 8 (foundation), no earlier claim on record')
+    // foundation → mission-control (empty) → spine → foundation → aux (verify held, so upkeep) → foundation → …
+    expect(picks(planReady(fixtureIssues, portfolioRows, DEFAULT_ALLOWLIST, [], history))).toEqual([315, 175, 329, 226, 331, 148, 222, 150])
+    expect(summarizeProjects(fixtureIssues, portfolioRows, DEFAULT_ALLOWLIST, [], history))
+      .toEqual(summarizeProjects(fixtureIssues, portfolioRows))
+  })
+
+  it('ha-next §1 and the pick rule say the pick continues the cycle, from the latest claim', () => {
+    const skill = readFileSync(path.join(import.meta.dirname, '..', '.claude', 'skills', 'ha-next', 'SKILL.md'), 'utf8')
+    const orient = skill.slice(skill.indexOf('## 1.'), skill.indexOf('## 2.'))
+    expect(orient).toMatch(/continues the cycle/)
+    expect(orient).toMatch(/latest claim/)
+    expect(livePortfolio).toMatch(/continues across calls/)
+  })
+})
+
 describe('summarizeProjects', () => {
   const summaries = summarizeProjects(fixtureIssues, portfolioRows)
   const rowFor = (slug) => summaries.find((summary) => summary.slug === slug)
@@ -472,6 +610,23 @@ describe('latestClaim', () => {
     })
     expect(latestClaim(comments, ['outsider'])).toMatchObject({ claimedBy: 'outsider', at: '2026-09-27T10:00:00Z' })
     expect(latestClaim([])).toBeNull()
+  })
+
+  // #549's verifier, nit 1: the filter took ` Claimed by: x` for a claim while the field reader found no holder in it,
+  // so the true holder was refused release.
+  it('names the holder of every comment it takes for a claim — indented or after blank lines too — so the holder releases it', () => {
+    const at = '2026-09-27T11:00:00Z'
+    for (const body of [' Claimed by: claude-local\nIntent: building', '\tClaimed by: claude-local', '\n\n  Claimed by: claude-local   # back\n  Intent: building']) {
+      expect(latestClaim([claimNote('mezivillager', body, at)])).toMatchObject({ claimedBy: 'claude-local', at })
+    }
+    expect(latestClaim([claimNote('mezivillager', '\n  Claimed by: claude-local\n  Intent: building', at)])).toMatchObject({ intent: 'building' })
+    const lsRemote = `${'a'.repeat(40)}\trefs/heads/claim/7\n`
+    const answer = { data: { repository: { i7: { number: 7, comments: { nodes: [claimNote('mezivillager', ' Claimed by: claude-local', at)] } } } } }
+    const [claim] = readClaims({ lsRemote, answer, openPrs: [], now: at })
+    expect(claim).toMatchObject({ claimedBy: 'claude-local', at })
+    expect(releaseRefusal(claim, { by: 'claude-local' })).toBeNull()
+    // A comment that does not open with the field is still no claim, however the field is indented further down.
+    expect(latestClaim([claimNote('mezivillager', 'Next time, claim with:\n  Claimed by: someone', at)])).toBeNull()
   })
 })
 
