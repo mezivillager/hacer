@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-27T09:07:51.656Z",
+  "generatedAt": "2026-09-27T09:24:15.228Z",
   "head": {
-    "sha": "e5a3d38eff5b57620dcee782fda10c00a4d96ce2",
-    "date": "2026-09-27T12:06:48+03:00",
-    "subject": "feat(conformance): vendor the Project 2 nand2tetris vectors at the pinned web-ide commit"
+    "sha": "5e69376c353b8b84ec0ef3d3dda67fd6737fed99",
+    "date": "2026-09-27T12:23:26+03:00",
+    "subject": "docs(harness): the stuck merge box's second shape, and a recovery that keeps the SHA (#530)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-27T09:07:51.656Z",
+      "fetchedAt": "2026-09-27T09:24:15.228Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-27T09:07:51.656Z",
+      "fetchedAt": "2026-09-27T09:24:15.228Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-27T09:07:51.656Z",
+      "fetchedAt": "2026-09-27T09:24:15.228Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-27T09:07:51.656Z",
+      "fetchedAt": "2026-09-27T09:24:15.228Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-09-27T09:07:51.656Z",
+      "fetchedAt": "2026-09-27T09:24:15.228Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-09-27T09:07:51.656Z",
+      "fetchedAt": "2026-09-27T09:24:15.228Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-09-27T09:07:51.656Z",
+      "fetchedAt": "2026-09-27T09:24:15.228Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-09-27T09:07:51.656Z",
+      "fetchedAt": "2026-09-27T09:24:15.228Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-09-27T09:07:51.656Z",
+      "fetchedAt": "2026-09-27T09:24:15.228Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-09-27T09:07:51.656Z",
+      "fetchedAt": "2026-09-27T09:24:15.228Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-27T09:07:51.656Z",
+      "fetchedAt": "2026-09-27T09:24:15.228Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-09-27T09:07:51.656Z",
+      "fetchedAt": "2026-09-27T09:24:15.228Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-09-27T09:07:51.656Z",
+      "fetchedAt": "2026-09-27T09:24:15.228Z",
       "status": "ok"
     }
   },
@@ -100,9 +100,9 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 38,
+        "open": 37,
         "ready": 24,
-        "inProgress": 3,
+        "inProgress": 2,
         "needsHuman": 0,
         "next": {
           "number": 148,
@@ -110,8 +110,8 @@
         },
         "title": "Epic: harness — autonomous-run improvements & agent-readiness",
         "subIssues": {
-          "completed": 25,
-          "percentCompleted": 44,
+          "completed": 26,
+          "percentCompleted": 46,
           "total": 56
         }
       },
@@ -328,8 +328,8 @@
         "lane": "process",
         "slug": "mission-control",
         "epicNumber": 458,
-        "open": 6,
-        "ready": 5,
+        "open": 7,
+        "ready": 6,
         "inProgress": 0,
         "needsHuman": 0,
         "next": {
@@ -339,8 +339,8 @@
         "title": "Epic: mission-control — Mission Control: the platform's status, process and roadmap as one site",
         "subIssues": {
           "completed": 6,
-          "percentCompleted": 54,
-          "total": 11
+          "percentCompleted": 50,
+          "total": 12
         }
       }
     ]
@@ -511,6 +511,11 @@
         "number": 159,
         "title": "docs/harness/ledger.md failure ledger + retro step: second occurrence → lint, test or hook",
         "project": "harness"
+      },
+      {
+        "number": 545,
+        "title": "Timeline.test.tsx mounts the whole snapshot on vitest's 5 s default and times out under load",
+        "project": "mission-control"
       },
       {
         "number": 160,
@@ -1071,6 +1076,21 @@
         "blocking": [],
         "project": "harness",
         "rank": 2,
+        "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 545,
+        "title": "Timeline.test.tsx mounts the whole snapshot on vitest's 5 s default and times out under load",
+        "labels": [
+          "agent-ready",
+          "risk:0",
+          "project:mission-control"
+        ],
+        "blocking": [],
+        "project": "mission-control",
+        "rank": 14,
         "lane": "process",
         "pickable": true,
         "reason": null
@@ -2795,22 +2815,6 @@
         "reason": "unshaped"
       },
       {
-        "number": 530,
-        "title": "A dropped pending run leaves an empty cancelled suite that strands green PRs in the merge box",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:1"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": false,
-        "reason": "in-progress"
-      },
-      {
         "number": 531,
         "title": "Claims are not exclusive, and ready offers a claimed issue as the next pick",
         "labels": [
@@ -2959,7 +2963,6 @@
         500,
         504,
         505,
-        530,
         531,
         535,
         536,
@@ -2971,6 +2974,7 @@
         480,
         513,
         539,
+        545,
         509
       ],
       "spine": [
@@ -3191,11 +3195,38 @@
     ],
     "merged": [
       {
+        "number": 546,
+        "title": "fix(ci): let no required workflow drop a pending run (#530)",
+        "url": "https://github.com/mezivillager/hacer/pull/546",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:1"
+        ],
+        "headRefName": "fix/530-no-dropped-required-runs",
+        "isDraft": false,
+        "createdAt": "2026-09-27T09:09:21Z",
+        "mergedAt": "2026-09-27T09:23:27Z",
+        "closes": [
+          530
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "claude-sonnet-5 (Sonnet 5)",
+            "at": "2026-09-27T09:22:46Z",
+            "url": "https://github.com/mezivillager/hacer/pull/546#issuecomment-5854610077"
+          }
+        ]
+      },
+      {
         "number": 544,
         "title": "feat(conformance): vendor the Project 2 nand2tetris vectors at the pinned web-ide commit",
         "url": "https://github.com/mezivillager/hacer/pull/544",
         "author": "mezivillager",
         "labels": [
+          "released",
           "risk:2",
           "project:foundation"
         ],
@@ -3220,6 +3251,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/543",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0"
         ],
@@ -3238,6 +3270,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/534",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0"
         ],
@@ -3254,6 +3287,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/532",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0"
         ],
@@ -3269,7 +3303,9 @@
         "title": "docs(research): process review findings, 2026-09-27",
         "url": "https://github.com/mezivillager/hacer/pull/529",
         "author": "mezivillager",
-        "labels": [],
+        "labels": [
+          "released"
+        ],
         "headRefName": "docs/process-review-findings-2",
         "isDraft": false,
         "createdAt": "2026-09-27T07:56:28Z",
@@ -3282,7 +3318,9 @@
         "title": "docs(research): independent process review follow-up",
         "url": "https://github.com/mezivillager/hacer/pull/527",
         "author": "mezivillager",
-        "labels": [],
+        "labels": [
+          "released"
+        ],
         "headRefName": "docs/process-review-findings",
         "isDraft": false,
         "createdAt": "2026-09-27T07:35:06Z",
@@ -3296,6 +3334,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/526",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0"
         ],
@@ -3312,6 +3351,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/525",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0"
         ],
@@ -3328,6 +3368,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/524",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0"
         ],
@@ -3343,7 +3384,9 @@
         "title": "docs(harness): cloud-queue inbox — #455 done, #468 handing off",
         "url": "https://github.com/mezivillager/hacer/pull/523",
         "author": "mezivillager",
-        "labels": [],
+        "labels": [
+          "released"
+        ],
         "headRefName": "docs/inbox-455-468-2026-09-25",
         "isDraft": false,
         "createdAt": "2026-09-25T14:56:24Z",
@@ -3384,6 +3427,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/517",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0"
         ],
@@ -4536,29 +4580,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/419#issuecomment-5793605144"
           }
         ]
-      },
-      {
-        "number": 417,
-        "title": "docs(harness): multi-coordinator claim comments and handoffs",
-        "url": "https://github.com/mezivillager/hacer/pull/417",
-        "author": "mezivillager",
-        "labels": [
-          "released"
-        ],
-        "headRefName": "docs/coordinator-claim-handoff",
-        "isDraft": false,
-        "createdAt": "2026-09-23T10:39:07Z",
-        "mergedAt": "2026-09-23T10:44:25Z",
-        "closes": [],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Cursor executor (Grok Bot)",
-            "at": "2026-09-23T10:44:06Z",
-            "url": "https://github.com/mezivillager/hacer/pull/417#issuecomment-5793407267"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4678,7 +4699,7 @@
         "number": 530,
         "ref": "refs/heads/claim/530",
         "sha": "a24ad4624daf2ea7bcc41a129eed6181938b681f",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "A dropped pending run leaves an empty cancelled suite that strands green PRs in the merge box",
         "url": "https://github.com/mezivillager/hacer/issues/530",
         "labels": [
@@ -4687,7 +4708,7 @@
           "in-progress",
           "risk:1"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -4750,7 +4771,7 @@
         }
       }
     ],
-    "onClosedIssues": 0
+    "onClosedIssues": 1
   },
   "cloudLane": {
     "items": [
@@ -5732,9 +5753,14 @@
     },
     "releases": [
       {
+        "tag": "v2.43.0",
+        "publishedAt": "2026-09-27T09:08:43Z",
+        "isLatest": true
+      },
+      {
         "tag": "v2.42.1",
         "publishedAt": "2026-09-25T14:46:28Z",
-        "isLatest": true
+        "isLatest": false
       },
       {
         "tag": "v2.42.0",
@@ -6195,7 +6221,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-23",
-        "merges": 9
+        "merges": 8
       },
       {
         "date": "2026-09-24",
@@ -6211,7 +6237,7 @@
       },
       {
         "date": "2026-09-27",
-        "merges": 7
+        "merges": 8
       }
     ]
   },
@@ -6219,11 +6245,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "e5a3d38eff5b57620dcee782fda10c00a4d96ce2",
+        "sha": "5e69376c353b8b84ec0ef3d3dda67fd6737fed99",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36308334207/job/108589251382",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36309214543/job/108591784864",
         "line": null,
         "verdict": null,
         "fields": {},
