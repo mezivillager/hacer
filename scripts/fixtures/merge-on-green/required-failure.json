@@ -1,0 +1,222 @@
+{
+  "_recorded": "PR #451 first head 1e27f29, recorded as it stands (a later push superseded it): ci failed, pr-hygiene and browser-qa green. Set by hand: state OPEN, mergeStateStatus BLOCKED, autoMergeRequest null (the live values are post-merge, on a later head).",
+  "pr": {
+    "number": 451,
+    "state": "OPEN",
+    "isDraft": false,
+    "mergeStateStatus": "BLOCKED",
+    "headRefOid": "1e27f294c18b4b516ba41be66068b09161df78a2",
+    "baseRefName": "main",
+    "autoMergeRequest": null,
+    "body": "Fixes #180\nFixes #450\n\n## What / why\n- `multiBitFormat` (`formatValue`, `parseValue`, `DisplayFormat`) imports nothing: no React, no DOM. So it moves from `src/components/ui/` to `src/simulation/`. `signalDisplay` now imports it from the same directory (`./multiBitFormat`), and `MultiBitInput` imports it downward (`@/simulation/multiBitFormat`). There is still one copy of the logic.\n- Why `src/simulation` and not `src/core`: under `core-through-index`, both callers could reach a `src/core` module only through `src/core/index.ts`, and that would widen the pinned engine surface. `src/simulation` has no such rule and already holds the width helpers (`busOps`). The module stays out of `src/simulation/index.ts` because it is presentation, not engine surface. That file's comment and the `REPO_MAP.md` line said `signalDisplay` imports from `components/`, so both now say what is true.\n- The test file moved without a byte changed (`R100`), and it now runs in the `node` Vitest project.\n- **Ratchet:** `pnpm run lint:layers:shrink` took the baseline from **72 → 71 rows**. It removed exactly one row, `engine-no-ui: src/simulation/signalDisplay.ts → src/components/ui/multiBitFormat.ts`, and added none; `compareRatchetBaseline` run locally on the two files reads `shrank`. `engine-no-ui` now has 0 rows, so any new `src/simulation` → UI import fails `lint:layers`. That guard covers acceptance criterion 1. The script's `eslint --prune-suppressions` step also rewrote `eslint-suppressions.json`, but only to drop its trailing newline, so I reverted that file.\n\n## Also in this PR: #450 (coordinator's ruling)\nThis is the first PR that shrinks the ratchet, and it broke one test from #432. `scripts/pr-hygiene.logic.test.mjs` (\"reproduces the measured reset\") reads the **live** baseline but pinned `{ base: 72, head: 73 }`. It now derives the count from `realRows().length` and first asserts that count is `> 0`, so it cannot pass vacuously. It still asserts `absorbed` and names the absorbed row. I checked it three ways: it passes on a 71-row baseline (this branch), passes on a 72-row one (`main`), and fails on `[]` with `expected 0 to be greater than 0`. That fix is its own commit (`test(pr-hygiene)`): 2 lines added, 1 removed. I grepped `scripts/pr-hygiene.*` and `scripts/layer-ratchet.logic.test.mjs` and found no other count pinned on the live file. The remaining pins (`{2,1}`, `{2,2}`, `{3,2}`, `28`) are all on fixtures.\n\n## Definition of done (run in the worktree after rebasing on `5576338`, Node v22.19.0)\n| Command | Exit | Result |\n|---|---|---|\n| `pnpm run lint` | 0 | `LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new` |\n| `pnpm run test:run` | 0 | `Test Files 145 passed (145)` · `Tests 2344 passed (2344)` |\n| `pnpm run build` | 0 | `✓ built in 34.50s` |\n| `pnpm run lint:docs` | 0 | |\n| `pnpm exec vitest run src/simulation` | 0 | `Test Files 8 passed (8)` · `Tests 111 passed (111)` (before: 7 files, 92 tests) |\n\nTDD: the red commit (`test(simulation)`) moved the test next to a stub that throws, and all 19 cases failed with `not implemented`. The green commit (`fix(simulation)`) moved the implementation and shrank the baseline. No new test names: the 19 existing `multiBitFormat` cases moved unchanged.\n\nModel: Claude Opus 5.5 (`claude-opus-5-5[1m]`).\n"
+  },
+  "requiredContexts": [
+    "ci",
+    "pr-hygiene",
+    "browser-qa"
+  ],
+  "checkRuns": [
+    {
+      "id": 107639023028,
+      "name": "Analyze (python)",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97486464540
+    },
+    {
+      "id": 107639023244,
+      "name": "Analyze (javascript-typescript)",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97486464540
+    },
+    {
+      "id": 107639023399,
+      "name": "Analyze (actions)",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97486464540
+    },
+    {
+      "id": 107639030093,
+      "name": "ci",
+      "status": "completed",
+      "conclusion": "failure",
+      "suite": 97486474492
+    },
+    {
+      "id": 107639030915,
+      "name": "browser-qa",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97486474483
+    },
+    {
+      "id": 107639033031,
+      "name": "pr-hygiene",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97486475105
+    },
+    {
+      "id": 107639044256,
+      "name": "GitGuardian Security Checks",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97486452420
+    },
+    {
+      "id": 107639104348,
+      "name": "pr-hygiene",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97486478262
+    },
+    {
+      "id": 107639217129,
+      "name": "CodeQL",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97486639165
+    },
+    {
+      "id": 107640571993,
+      "name": "browser-qa",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97486478009
+    }
+  ],
+  "workflowRuns": [
+    {
+      "id": 36001505834,
+      "name": "PR #451",
+      "workflow_id": 362189662,
+      "event": "dynamic",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97486464540,
+      "attempt": 1
+    },
+    {
+      "id": 36001509561,
+      "name": "browser-qa",
+      "workflow_id": 361351329,
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97486474483,
+      "attempt": 1
+    },
+    {
+      "id": 36001509583,
+      "name": "CI",
+      "workflow_id": 241098938,
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "failure",
+      "suite": 97486474492,
+      "attempt": 1
+    },
+    {
+      "id": 36001509683,
+      "name": "browser-qa",
+      "workflow_id": 361351329,
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "suite": 97486474913,
+      "attempt": 1
+    },
+    {
+      "id": 36001509733,
+      "name": "PR Hygiene",
+      "workflow_id": 361294170,
+      "event": "pull_request_target",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97486475105,
+      "attempt": 1
+    },
+    {
+      "id": 36001509751,
+      "name": "PR Deploy Preview",
+      "workflow_id": 255347039,
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "suite": 97486475135,
+      "attempt": 1
+    },
+    {
+      "id": 36001509895,
+      "name": "browser-qa",
+      "workflow_id": 361351329,
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "suite": 97486475627,
+      "attempt": 1
+    },
+    {
+      "id": 36001509949,
+      "name": "PR Hygiene",
+      "workflow_id": 361294170,
+      "event": "pull_request_target",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "suite": 97486475693,
+      "attempt": 1
+    },
+    {
+      "id": 36001510061,
+      "name": "PR Hygiene",
+      "workflow_id": 361294170,
+      "event": "pull_request_target",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "suite": 97486476179,
+      "attempt": 1
+    },
+    {
+      "id": 36001510264,
+      "name": "browser-qa",
+      "workflow_id": 361351329,
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "suite": 97486476782,
+      "attempt": 1
+    },
+    {
+      "id": 36001510625,
+      "name": "browser-qa",
+      "workflow_id": 361351329,
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97486478009,
+      "attempt": 1
+    },
+    {
+      "id": 36001510751,
+      "name": "PR Hygiene",
+      "workflow_id": 361294170,
+      "event": "pull_request_target",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 97486478262,
+      "attempt": 1
+    },
+    {
+      "id": 36001510740,
+      "name": "PR Hygiene",
+      "workflow_id": 361294170,
+      "event": "pull_request_target",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "suite": 97486478310,
+      "attempt": 1
+    }
+  ]
+}
