@@ -3,25 +3,16 @@
 A **premise** is a fact a decision rests on, with a command that checks it. A decision names the
 premises it rests on in `Assumes:`; `node scripts/lineage.mjs parse` reads each row here as a `P-<n>`
 node (schema: [README.md](README.md#lineage)). `node scripts/lineage.mjs verify` runs each **Verify**
-command and compares its stdout with **Expect**: exact text, a `/regex/` or `^anchored$` pattern, or
-a semver range (a version must satisfy it; a range must be a subset — `<19.2` holds `<19.3`, and
-`>=19 <19.4` does not).
-
-A command that fails, times out or prints nothing is **unverifiable**, never expired: a lookup that
-did not answer. P-005's check exits non-zero when `pnpm install` fails for any reason but a peer
-refusal (`ERR_PNPM_PEER_DEP_ISSUES`), so a registry outage or a rate limit is not read as the premise
-expiring. A Verify cell that starts with `manual` is not a command: it is reported **manual**, not
-run, and it counts as neither a failure, nor expired, nor holding (P-006 needs an authenticated
-browser tab). A Verify command whose text contains the word `gh` (P-003, P-004, P-007, P-008) is
-**skipped** the same way when no `GITHUB_TOKEN`, `GH_TOKEN`, or `gh auth token` is available; a
-`checks.mjs` command that calls `gh` carries it in its name (`gh-main-rules`), and a test runs every
-premise against a stub `gh` to hold that. The weekly workflow (`.github/workflows/lineage-verify.yml`)
-sets `GITHUB_TOKEN`, so those commands run there.
-`--strict` exits 1 only when something is expired. `--for #<issue>` checks the premises that issue's
-decisions rest on. `--file` opens or updates one `project:lineage` issue per expired premise
-(`Premise expired: P-nnn — …`), matched on that title so a later run edits it.
-
-The **Status** column is what was recorded when the row was written. `verify` does not rewrite it.
+command and matches its stdout against **Expect**: exact text, a `/regex/` or `^anchored$` pattern, or
+a semver range (a version must satisfy it; a range must be a subset: `<19.2` holds `<19.3`,
+`>=19 <19.4` does not). A command that fails, times out or prints nothing is **unverifiable**, never
+expired; P-005's check fails unless `pnpm install` exits 0 or refuses a peer (`ERR_PNPM_PEER_DEP_ISSUES`),
+so a registry outage is not an expiry. A `manual` Verify cell is reported **manual** and not run; a
+command whose text names `gh` is **skipped** with no token (a `checks.mjs` command that calls `gh`
+carries it in its name; the weekly workflow sets `GITHUB_TOKEN`). Neither counts as failed, expired
+or holding. `--strict` exits 1 only on an expired premise; `--for #<issue>` checks the premises that
+issue's decisions rest on; `--file` opens or updates one `project:lineage` issue per expired premise,
+titled `Premise expired: P-nnn — …`. The **Status** column is as recorded; `verify` never rewrites it.
 
 | Id | Premise | Verify | Expect | Recorded | Status |
 |---|---|---|---|---|---|
