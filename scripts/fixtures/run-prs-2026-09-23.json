@@ -1,0 +1,409 @@
+[
+  {
+    "number": 360,
+    "title": "Layer rules as a shrink-only ratchet, wired into lint (#329)",
+    "mergedAt": "2026-09-23T00:15:54Z",
+    "labels": [
+      {
+        "name": "released"
+      },
+      {
+        "name": "risk:1"
+      },
+      {
+        "name": "size-override"
+      },
+      {
+        "name": "project:foundation"
+      }
+    ]
+  },
+  {
+    "number": 362,
+    "title": "fix(hdl): give every producer of a slice-written signal a dependency edge",
+    "mergedAt": "2026-09-23T00:26:19Z",
+    "labels": [
+      {
+        "name": "released"
+      },
+      {
+        "name": "project:core"
+      },
+      {
+        "name": "risk:1"
+      }
+    ]
+  },
+  {
+    "number": 366,
+    "title": "fix(harness): stop concurrency cancelling required checks (#295)",
+    "mergedAt": "2026-09-23T00:41:49Z",
+    "labels": [
+      {
+        "name": "released"
+      },
+      {
+        "name": "project:harness"
+      },
+      {
+        "name": "risk:2"
+      }
+    ]
+  },
+  {
+    "number": 365,
+    "title": "fix(simulation): trace a junction through its feed wire, not wireIds[0]",
+    "mergedAt": "2026-09-23T00:45:29Z",
+    "labels": [
+      {
+        "name": "released"
+      },
+      {
+        "name": "project:core"
+      },
+      {
+        "name": "risk:1"
+      }
+    ]
+  },
+  {
+    "number": 370,
+    "title": "fix(hdl): accept a slice on a part's own pin, on both sides of a wire",
+    "mergedAt": "2026-09-23T01:26:49Z",
+    "labels": [
+      {
+        "name": "released"
+      },
+      {
+        "name": "project:core"
+      },
+      {
+        "name": "risk:1"
+      }
+    ]
+  },
+  {
+    "number": 358,
+    "title": "docs(adr): ADR-0020 — spec-only writes, read-only projections",
+    "mergedAt": "2026-09-23T01:32:30Z",
+    "labels": [
+      {
+        "name": "released"
+      },
+      {
+        "name": "risk:2"
+      },
+      {
+        "name": "size-override"
+      },
+      {
+        "name": "project:foundation"
+      }
+    ]
+  },
+  {
+    "number": 375,
+    "title": "fix(hdl): a part input pin bit may be bound only once — the input-side twin of #355",
+    "mergedAt": "2026-09-23T02:05:54Z",
+    "labels": [
+      {
+        "name": "released"
+      },
+      {
+        "name": "project:core"
+      },
+      {
+        "name": "risk:1"
+      }
+    ]
+  },
+  {
+    "number": 351,
+    "title": "feat(harness): tier risk:0 and risk:1 verification to Sonnet; the engine keeps Opus",
+    "mergedAt": "2026-09-23T02:13:37Z",
+    "labels": [
+      {
+        "name": "released"
+      },
+      {
+        "name": "project:harness"
+      },
+      {
+        "name": "risk:1"
+      }
+    ]
+  },
+  {
+    "number": 387,
+    "title": "docs(harness): backlog sweep against the read-only direction, and Phase N filed",
+    "mergedAt": "2026-09-23T02:21:59Z",
+    "labels": [
+      {
+        "name": "released"
+      },
+      {
+        "name": "project:harness"
+      },
+      {
+        "name": "risk:0"
+      },
+      {
+        "name": "project:foundation"
+      }
+    ]
+  },
+  {
+    "number": 388,
+    "title": "chore: delete the dead render tracker, 46 caller-less e2e exports and the crossing console noise",
+    "mergedAt": "2026-09-23T02:24:24Z",
+    "labels": [
+      {
+        "name": "released"
+      },
+      {
+        "name": "risk:1"
+      },
+      {
+        "name": "size-override"
+      },
+      {
+        "name": "project:foundation"
+      }
+    ]
+  },
+  {
+    "number": 393,
+    "title": "docs(harness): session record for 2026-09-23 + four ledger rows",
+    "mergedAt": "2026-09-23T02:44:03Z",
+    "labels": [
+      {
+        "name": "released"
+      },
+      {
+        "name": "project:harness"
+      },
+      {
+        "name": "risk:0"
+      }
+    ]
+  },
+  {
+    "number": 398,
+    "title": "fix(hdl): key dependency edges by signal bits, not signal names",
+    "mergedAt": "2026-09-23T03:22:17Z",
+    "labels": [
+      {
+        "name": "released"
+      },
+      {
+        "name": "project:core"
+      },
+      {
+        "name": "risk:1"
+      }
+    ]
+  },
+  {
+    "number": 396,
+    "title": "fix(store): removeJunction keeps the feed wire, not wireIds[0]",
+    "mergedAt": "2026-09-23T03:55:10Z",
+    "labels": [
+      {
+        "name": "released"
+      },
+      {
+        "name": "risk:1"
+      },
+      {
+        "name": "project:foundation"
+      }
+    ]
+  },
+  {
+    "number": 404,
+    "title": "feat(core): the engine's front door, with a node test that proves it is headless",
+    "mergedAt": "2026-09-23T04:13:12Z",
+    "labels": [
+      {
+        "name": "released"
+      },
+      {
+        "name": "risk:1"
+      },
+      {
+        "name": "project:foundation"
+      }
+    ]
+  },
+  {
+    "number": 399,
+    "title": "fix(core): deserialize returns warnings as data, with version dispatch",
+    "mergedAt": "2026-09-23T05:10:02Z",
+    "labels": [
+      {
+        "name": "released"
+      },
+      {
+        "name": "project:core"
+      },
+      {
+        "name": "risk:1"
+      },
+      {
+        "name": "size-override"
+      }
+    ]
+  },
+  {
+    "number": 409,
+    "title": "ci(deps): group react, react-dom and @react-three/* in one Dependabot PR",
+    "mergedAt": "2026-09-23T05:46:43Z",
+    "labels": [
+      {
+        "name": "released"
+      },
+      {
+        "name": "project:upkeep"
+      },
+      {
+        "name": "risk:0"
+      }
+    ]
+  },
+  {
+    "number": 412,
+    "title": "docs(harness): close the 2026-09-23 run and correct a number in the ledger",
+    "mergedAt": "2026-09-23T05:52:32Z",
+    "labels": [
+      {
+        "name": "released"
+      },
+      {
+        "name": "project:harness"
+      },
+      {
+        "name": "risk:0"
+      }
+    ]
+  },
+  {
+    "number": 417,
+    "title": "docs(harness): multi-coordinator claim comments and handoffs",
+    "mergedAt": "2026-09-23T10:44:25Z",
+    "labels": [
+      {
+        "name": "released"
+      }
+    ]
+  },
+  {
+    "number": 419,
+    "title": "docs(repo-map): remove fenced future trees",
+    "mergedAt": "2026-09-23T10:58:22Z",
+    "labels": [
+      {
+        "name": "released"
+      },
+      {
+        "name": "project:upkeep"
+      },
+      {
+        "name": "risk:0"
+      }
+    ]
+  },
+  {
+    "number": 420,
+    "title": "docs(development): make observed-bugs historical",
+    "mergedAt": "2026-09-23T11:01:18Z",
+    "labels": [
+      {
+        "name": "released"
+      },
+      {
+        "name": "project:bugs"
+      },
+      {
+        "name": "risk:0"
+      }
+    ]
+  },
+  {
+    "number": 422,
+    "title": "docs(harness): close the Grok Bot cloud-builder trial handoff",
+    "mergedAt": "2026-09-23T11:37:09Z",
+    "labels": [
+      {
+        "name": "released"
+      }
+    ]
+  },
+  {
+    "number": 423,
+    "title": "docs(harness): standing Claude → Grok Bot cloud queue",
+    "mergedAt": "2026-09-23T12:09:49Z",
+    "labels": [
+      {
+        "name": "released"
+      }
+    ]
+  },
+  {
+    "number": 425,
+    "title": "docs(skills): red-first is the mutation; flips only for tests that never went red",
+    "mergedAt": "2026-09-23T18:10:27Z",
+    "labels": [
+      {
+        "name": "released"
+      }
+    ]
+  },
+  {
+    "number": 426,
+    "title": "docs(harness): queue the first two cloud rows and the metering question they answer",
+    "mergedAt": "2026-09-23T21:41:44Z",
+    "labels": [
+      {
+        "name": "released"
+      },
+      {
+        "name": "project:harness"
+      },
+      {
+        "name": "risk:0"
+      }
+    ]
+  },
+  {
+    "number": 428,
+    "title": "docs(harness): the cloud lane is access arbitrage — widen the queue and split verification",
+    "mergedAt": "2026-09-23T22:47:47Z",
+    "labels": [
+      {
+        "name": "released"
+      },
+      {
+        "name": "project:harness"
+      },
+      {
+        "name": "risk:0"
+      }
+    ]
+  },
+  {
+    "number": 430,
+    "title": "fix(hdl): give a part the dependency edge to itself",
+    "mergedAt": "2026-09-23T23:36:40Z",
+    "labels": [
+      {
+        "name": "released"
+      },
+      {
+        "name": "project:core"
+      },
+      {
+        "name": "risk:1"
+      }
+    ]
+  }
+]
