@@ -1,0 +1,62 @@
+name: Scorecard
+
+# OpenSSF Scorecard (#542): measures the repo's supply-chain posture (pinned dependencies, token
+# permissions, dangerous workflow patterns, branch protection, code review, …) and uploads the
+# result as SARIF to code scanning, where it shows as the "Scorecard" tool. Advisory only:
+# - Not a required check. Its one job posts `scorecard`, not `ci`, `pr-hygiene` or `browser-qa`
+#   (scripts/required-checks.logic.mjs, #546), and nothing here listens on pull_request, so it
+#   never runs on a PR and cannot hold one.
+# - `publish_results: false`: nothing goes to the OpenSSF API (api.scorecard.dev), an outside
+#   service. The results stay in this run's log and in code scanning. Publishing would also need
+#   `id-token: write` and the action's workflow restrictions: a decision, not a toggle.
+# Every action is pinned by full commit SHA with its release in a comment, which is what Scorecard's
+# own Pinned-Dependencies check asks for; Dependabot's github-actions updates move both together.
+# Guarded by scripts/scorecard.workflow.test.mjs.
+
+on:
+  schedule:
+    # Weekly, Monday 05:23 UTC. Not :00: GitHub's guidance is to avoid the top of the hour, when
+    # scheduled runs queue up and can be dropped.
+    - cron: '23 5 * * 1'
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Read-only at workflow level (CodeQL actions/missing-workflow-permissions). The job below states
+# its own block, which replaces this one.
+permissions:
+  contents: read
+
+# No concurrency group, on purpose. A run is read-only and takes about a minute, and each one
+# scores the commit it ran on; code scanning keeps the newest analysis per ref. Cancelling an
+# older run would only leave a `cancelled` check run on a main commit for nothing.
+
+jobs:
+  scorecard:
+    name: scorecard
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      # The one write: uploading the SARIF to code scanning.
+      security-events: write
+      # Checkout reads the repo; restated because a job-level block replaces the workflow's.
+      contents: read
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Leave no token in .git/config for the steps after this one.
+          persist-credentials: false
+
+      - name: Run Scorecard
+        uses: ossf/scorecard-action@2d1146689b8cda280b9bc96326124645441f03bc # v2.4.4
+        with:
+          results_file: results.sarif
+          results_format: sarif
+          # No upload to the OpenSSF API, so no `id-token: write` either (see the header).
+          publish_results: false
+
+      - name: Upload SARIF to code scanning
+        uses: github/codeql-action/upload-sarif@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4.38.2
+        with:
+          sarif_file: results.sarif
