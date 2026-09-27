@@ -2,9 +2,7 @@
 
 **HACER** = Hardware Architecture and Constraints Explorer & Researcher. A 3D logic-gate simulator built with React 19, React Three Fiber, Zustand, and Vitest/Playwright.
 
-> This file is read automatically by OpenAI Codex, GitHub Copilot, and other AI agents.  
-> Claude Code users: also see `.claude/CLAUDE.md` and `.claude/skills/`.  
-> Cursor users: also see `.cursorrules`, `.cursor/rules/000-hacer-precedence.mdc`, and `.cursor/AGENTS.md` (trimmed ECC hints).
+**This file is a table of contents** — it points to the file that owns each rule's full detail rather than restating it. Read automatically by OpenAI Codex, GitHub Copilot, and other AI agents; Claude Code users also read `.claude/CLAUDE.md` and `.claude/skills/`.
 
 ---
 
@@ -12,289 +10,87 @@
 
 **When instructions conflict, follow this order (highest wins):**
 
-1. The **user’s current message**  
-2. **`.cursorrules`** — HACER stack (React 19, Zustand, React Compiler, no Valtio)  
-3. **This `AGENTS.md`** — workflow, CI, protocols  
-4. **`HACER_LLM_GUIDE.md`** — codebase patterns and examples  
-5. **`REPO_MAP.md`** — file locations; do not assume directories that are not documented here  
-6. **`.cursor/rules/`** (ECC-derived) — general quality only where it does **not** contradict 2–5  
+1. The **user's current message**
+2. **`.cursorrules`** — HACER stack (React 19, Zustand, React Compiler, no Valtio)
+3. **This `AGENTS.md`** — workflow, CI, protocols
+4. **`HACER_LLM_GUIDE.md`** — codebase patterns and examples
+5. **`REPO_MAP.md`** — file locations; do not assume a directory that is not documented here
 
-**Definition of done — mandatory before claiming work is complete:** stated once, in full, at
-`docs/harness/implementer-brief.md` § Definition of done. No waivers. If a step fails, the task is
-**not** done.
+**Definition of done — mandatory before claiming work complete:** stated once, in full, at `docs/harness/implementer-brief.md` § Definition of done. No waivers — if a step fails, the task is **not** done.
 
-**Documentation sync:** Before claiming work complete, completing agents must run the **author pass** in **`docs/llm-docs-sync.md`** whenever the change affects phase status, public behavior, repo layout, or Phase 0.5 tickets. Reviewers run the **reviewer pass** from the same doc before approving merges that materially affect product or structure. Additionally, capture emergent decisions or new directions as ADRs in **`docs/decisions/`** via the **`docs-sync`** skill; a Claude Code Stop hook (`scripts/hooks/docsSyncStop.mjs`) prompts when code changed but no docs were touched.
+**Documentation sync & ADRs:** author/reviewer passes → `docs/llm-docs-sync.md`; capture emergent decisions as ADRs in `docs/decisions/` via the `docs-sync` skill.
 
-**Harness / MCP / hooks (Cursor):** see **`docs/llm-harness.md`**.
+**Harness / MCP / hooks (Cursor):** `docs/llm-harness.md`.
 
 ---
 
 ## 1. Start every session here
 
-### All agents
+Read in order: `llms.txt`. Task jump table → `REPO_MAP.md` § *Common tasks*. Patterns/examples → `HACER_LLM_GUIDE.md`. Cognitive protocols → §2 below. Current plan → `tasks/todo.md`; past mistakes → `tasks/lessons.md`. Claude Code skill map → `.claude/CLAUDE.md`. Cursor MCP/ECC hook tuning → `docs/llm-harness.md`.
 
-- **Patterns & examples** → `HACER_LLM_GUIDE.md`  
-- **Where files live + task jump table** → `REPO_MAP.md` (section *Common tasks → start here*)  
-- **Living docs aligned with code (author / reviewer)** → `docs/llm-docs-sync.md`  
-- **Recent decisions & new directions** → `docs/decisions/` (ADR log; capture via the `docs-sync` skill)  
-- **Planning / verification workflow** → `docs/llm-workflow.md`  
-- **Current task plan** → `tasks/todo.md`  
-- **Past mistakes** → `tasks/lessons.md`  
-
-### Claude Code track
-
-```
-0. Read .claude/CONSTITUTION.md     → if present: foundational rules of engagement (skip if missing)
-1. Read AGENTS.md (this file)
-2. Read .cursorrules
-3. Read docs/llm-workflow.md
-4. Read tasks/todo.md
-5. Read tasks/lessons.md
-```
-
-### Cursor track
-
-```
-1. Read .cursorrules
-2. Read AGENTS.md (this file)
-3. Read docs/llm-harness.md          → MCP + ECC hook tuning, session hygiene
-4. Read docs/llm-workflow.md         → when planning / multi-step work
-5. Read tasks/todo.md and tasks/lessons.md
-```
-
-**Git hygiene for agents:** `.cursor/rules/020-git-worktree-no-main.mdc` — do not commit directly to `main`; use a **feature branch** and preferably a **git worktree** per workstream.
-
-Do **not** require missing paths: if `.claude/CONSTITUTION.md` or other Claude-only files are absent, continue with the Cursor track.
+**Git hygiene:** never commit to `main` — feature branch + worktree per workstream: `.cursor/rules/020-git-worktree-no-main.mdc`.
 
 ---
 
-## 2. Cognitive Protocols
+## 2. Cognitive protocols & the design tie-breaker
 
-On every non-trivial task, follow: **ReAct** (Reason → Act → Observe), **Chain-of-Thought** (explicit numbered steps), **Tree-of-Thoughts** (propose 2–3 alternatives before committing), **Reflexion** (capture lessons in `tasks/lessons.md`), **Toolformer** (cheapest tool that works).
+ReAct, Chain-of-Thought, Tree-of-Thoughts, Reflexion, the Generative-Agents memory model, and Toolformer — full detail with paper citations: `docs/cognitive-protocols.md`.
 
-**Decision priority — long-term goal over ease of shipping.** When options trade off, optimize for what
-best serves HACER's long-term arc (extensibility, configurability, AI-native first-principles platform —
-the North Star), **not** for whatever is quickest to ship. Prefer the flexible, future-proof option and
-build seams for what's coming, accepting reasonable near-term cost. This is the standing tie-breaker for
-every design, scoping, and review decision; see [ADR-0003](docs/decisions/0003-design-for-longevity.md).
-
-Full details with paper citations: **[`docs/cognitive-protocols.md`](docs/cognitive-protocols.md)**
+**Decision tie-breaker, for every design/scoping/review call:** favor HACER's long-term arc (extensibility, configurability, the AI-native North Star) over ease of shipping — [ADR-0003](docs/decisions/0003-design-for-longevity.md); also stated in `.claude/CONSTITUTION.md` §1.
 
 ---
 
-## 3. Mandatory Development Workflow (Superpowers Pipeline)
+## 3. Mandatory development workflow (Superpowers pipeline)
 
 ```
 Validate Ticket  →  Brainstorm  →  Worktree  →  Plan  →  Execute (Subagents + TDD)  →  Review  →  Finish Branch
 ```
 
-### Step 1 — Brainstorming & Spec First (HARD GATE)
-**Do NOT write code until a design is approved.**
-- For any task with 3+ implementation steps, trigger the `brainstorming` skill.
-- Save specs to `docs/specs/YYYY-MM-DD-<topic>.md`.
-- Present the design; get approval; then proceed.
+### Step 1 — Brainstorming & spec first (hard gate)
+No code before an approved design. Any task with 3+ implementation steps → trigger `brainstorming`; save specs to `docs/specs/YYYY-MM-DD-<topic>.md`.
 
-#### Step 1.0 — Ticket Freshness check (READ-ONLY validation, before you design)
-Tickets are GitHub Issues (ADR-0013) — `node scripts/backlog.mjs ready` lists what's pickable; project
-order is `docs/portfolio.md`. Most `docs/plans/phase-0.5-tickets/*` specs were authored early and
-**drift from the code** — wrong APIs, references to superseded designs, or dependencies on
-re-scoped/never-built sibling tickets. Before you design, reconcile the spec behind the issue you
-picked up against reality. This is expected, routine work — not a detour.
+#### Step 1.0 — Ticket freshness (read-only validation, before you design)
+Tickets are GitHub Issues (ADR-0013): `node scripts/backlog.mjs ready` lists what's pickable, order is `docs/portfolio.md`. Most `docs/plans/phase-0.5-tickets/*` specs were authored early and drift from the code — **trust the code over the ticket.** At pickup, read-only: validate the issue's claims (APIs, paths, dependencies) against the current codebase. In the worktree: revise the ticket file in place (merge/split as needed, never renumber), record a material re-scope as an ADR via `docs-sync`, and keep the issue plus `docs/portfolio.md` in sync — never the retired `docs/plans/phase-0.5-tickets-CHECKLIST.md` (#148).
 
-**At pickup — read-only (you may still be in the main checkout, so do NOT edit files yet):**
-- **Validate** the ticket's claims (APIs, file paths, dependencies, "files to create") against the
-  *current* codebase. **Trust the code over the ticket.** Note every stale point and decide whether the
-  ticket needs revising, merging with a sibling, or splitting — then carry those findings into the design.
+### Step 2 — Branching / worktrees
+Dedicated worktree **outside** the repo, named `hacer-wt-<topic>` — never nested inside the repo: `.cursor/rules/020-git-worktree-no-main.mdc`.
 
-**In the worktree (Step 2+) — commit the ticket reconciliation alongside the design spec:**
-- **Revise the ticket file in place** — correct it, delete dead references, note what's superseded.
-  **Merge** tickets that have collapsed into one; **split** a ticket that has grown into separable
-  deliverables. Never renumber — cross-link instead.
-- The **`docs/specs/` design doc is the source of truth on conflict** — update the ticket to match the
-  approved design, not the reverse.
-- **Record material re-scopes as an ADR** (`docs/decisions/`, via `docs-sync`) — as
-  [ADR-0004](docs/decisions/0004-p05-18-boundary-evaluatechip-seam-landed-in-p05-16.md) did when P05-16
-  absorbed P05-18's seam.
-- Keep the GitHub issue (and `docs/portfolio.md` if the project row changes) in sync with any
-  merge/split — not the retired checklist (`docs/plans/phase-0.5-tickets-CHECKLIST.md`, historical, #148).
+#### Step 2b — Writing docs
+No machine-specific absolute paths in docs; every cited path must exist. Enforced by `scripts/check-doc-paths.mjs` in pre-commit and CI. Full rule and exemptions: `.cursor/rules/021-no-absolute-paths-in-docs.mdc`; ADR-0010 (absolute paths), ADR-0014 (path existence).
 
-### Step 2 — Branching / Worktrees
-**Do NOT push directly to main without isolating your work.**
-- Trigger `using-git-worktrees` to establish a parallel dev stream.
-- **All new work goes in a dedicated worktree placed OUTSIDE the repo** as a sibling folder named `hacer-wt-<topic>` — e.g. `git worktree add ../hacer-wt-<topic> -b <type>/<topic>`. Never nest worktrees inside the repo. See `.cursor/rules/020-git-worktree-no-main.mdc`.
+### Step 3 — Write a plan
+Trigger `planning`. Break work into atomic tasks (2–5 min), each with an exact file path and a verification command. Save plans to `docs/plans/YYYY-MM-DD-<feature>.md`.
 
-### Step 2b — Writing Docs
-**Never write a machine-specific absolute path into documentation.** No `/Users/<name>/…`, <!-- allow-abs-path -->
-`/home/<name>/…`, `/root/…`, `C:\…`, or `~/`-rooted paths outside the portable dotfile roots <!-- allow-abs-path -->
-(`~/.claude`, `~/.config`, `~/.cursor`, `~/.local`, `~/.ssh`). Use repo-relative paths
-(`src/simulation/topologicalEval.ts`), reference workspace siblings as `../web-ide/…`, and say
-"from the repo root" instead of `cd`-ing to a fixed location. Enforced by
-`scripts/check-doc-paths.mjs` in pre-commit and CI; mark a deliberate exception with
-`<!-- allow-abs-path -->`. See `.cursor/rules/021-no-absolute-paths-in-docs.mdc` and ADR-0010.
+### Step 4 — Execution & TDD (iron law)
+No production code without a failing test first. Trigger `subagent-driven-development` or `dispatching-parallel-agents` for concurrent tasks; enforce `test-driven-development` (Red → Green → Refactor), no exceptions. Templates: `docs/testing/`.
 
-**Cite only paths that exist.** In `REPO_MAP.md` and this file, every backticked path and link
-target is checked against the tree by the same script (`DEAD PATH file:line path`, ADR-0014).
-Describe a planned file without a path, or mark the line `<!-- allow-missing-path -->`.
+#### Step 4.1 — Non-3D UX testing rigor (mandatory for DOM-shell work)
+Two areas share the Zustand store as their contract: the 3D scene (R3F `<Canvas>`) and the non-3D DOM shell (`<Shell>`), which is fully testable in jsdom via `renderShell()` (`src/test/renderShell.tsx`). For any non-3D UX feature or change: component RTL for each new/changed component, RTL integration tests for the user scenarios (the primary correctness gate here), and `@store` Playwright for store-contract behavior. Reserve full-Canvas `@ui` Playwright for genuinely 3D-dependent flows only. Full strategy and the store-vs-UI test split: `docs/testing/standards.md` § E2E Test Strategy.
 
-### Step 3 — Write a Plan
-- Trigger the `planning` skill.
-- Break implementation into 2–5 minute atomic tasks.
-- Each task: exact file path, complete code snippet, verification command.
-- Save plans to `docs/plans/YYYY-MM-DD-<feature>.md`.
+### Step 5 — Systematic debugging
+No fix without root-cause investigation first — trigger `debugging` or `systematic-debugging` and let its 4-phase process run before suggesting code.
 
-### Step 4 — Execution & TDD (IRON LAW)
-```
-NO production code without a failing test first.
-```
-- Trigger `subagent-driven-development` or `dispatching-parallel-agents` for concurrent tasks.
-- Enforce the `test-driven-development` skill loop (Red → Green → Refactor). No exceptions.
-- See `docs/testing/` for HACER-specific templates.
-
-#### Step 4.1 — Non-3D UX testing rigor (MANDATORY for DOM-shell work)
-The app has two areas with the Zustand store as their contract: the **3D scene** (R3F `<Canvas>`)
-and the **non-3D DOM shell** (`<Shell>` — toolbar, panels, status bar, overlays). The shell renders
-the scene as an injected prop, so it is fully testable in jsdom with no WebGL. For **any** non-3D UX
-feature or change:
-- **Component RTL** for each new/changed component (isolated render).
-- **RTL integration tests** for the user scenarios the feature enables — render the real shell via
-  `renderShell()` (`src/test/renderShell.tsx`) and drive the store through `circuitActions`. Capture
-  requirements/user flows here, not just isolated widgets. This is the primary correctness gate for
-  non-3D UX.
-- **`@store` Playwright** for store-contract behavior.
-- Reserve **full-Canvas `@ui` Playwright** for genuinely 3D-dependent flows only — it is flaky and slow
-  (several suites are currently skipped for that reason; see [P05-32](docs/plans/phase-0.5-tickets/P05-32.md)).
-  Do not add a `@ui` spec for something an RTL integration test can cover.
-
-### Step 5 — Systematic Debugging
-```
-NO fix without root-cause investigation first.
-```
-- Upon bugs or failure, trigger the `debugging` skill. Let it run its 4-phase root cause process before suggesting code.
-
-### Step 6 — Review & Finish
-- Trigger `requesting-code-review` and `finishing-a-development-branch` when implementations meet the spec (Claude Code / Superpowers).
-- Code must pass the definition of done — see §0.
+### Step 6 — Review & finish
+Trigger `requesting-code-review` and `finishing-a-development-branch` once the implementation meets the spec. Must pass §0's definition of done.
 
 ---
 
-## 4. How GitHub Actions Enforce Quality
+## 4. Quality gates
 
-This section directly answers: *"How does the GitHub Action enforce quality?"*
-
-Quality is enforced in **five automated layers**, all of which run without human involvement:
-
-### Layer 1 — Pre-commit Hook (local, every `git commit`)
-File: `.husky/pre-commit`
-
-| Check | Command | Blocks commit? |
-|-------|---------|---------------|
-| ESLint auto-fix + verify | `lint-staged` | ✅ Hard — commit fails |
-| TypeScript type check | `pnpm run typecheck` | ✅ Hard — commit fails |
-| Test file presence check | `./scripts/check-test-files.sh` | ⚠️ Soft — warns only |
-| Absolute paths in docs | `node scripts/check-doc-paths.mjs --staged` | ✅ Hard — commit fails |
-
-**What it catches:** Style violations, type errors, missing test files, and machine-specific absolute paths in docs — *before the code ever leaves your machine.*
-
-### Layer 2 — CI Workflow (remote, every push + every PR to `main`)
-File: `.github/workflows/ci.yml`
-
-| Step | Command | What it catches |
-|------|---------|-----------------|
-| Peer ranges | `node scripts/peer-range.mjs` | An installed react, react-dom, three or @react-three/* package whose peer range excludes the version next to it (#455). `scripts/peer-range.mjs` |
-| Lint | `pnpm run lint` | TypeScript errors + ESLint violations |
-| Docs paths | `pnpm run lint:docs` | Machine-specific absolute paths in documentation |
-| Unit tests | `pnpm run test:run` | Failing Vitest tests |
-| Build | `pnpm run build` | Compilation errors, broken imports |
-
-**Enforcement mechanism:** If *any* of these steps returns a non-zero exit code, the workflow fails. With branch protection rules requiring the `CI` status check, the PR **cannot be merged** until all steps pass.
-
-### Layer 2b — PR hygiene (remote, every PR to `main`)
-File: `.github/workflows/pr-hygiene.yml` → `scripts/pr-hygiene.mjs` (rules in `scripts/pr-hygiene.logic.mjs`)
-
-| Rule | Verdict | What it catches |
-|------|---------|-----------------|
-| Size budget (ADR-0013) | warn > 200, **fail > 400** reviewable lines; `size-override` label reports and passes | Bulky PRs — tests, lockfile, snapshots, vectors, fixtures and `linguist-generated` files are not counted |
-| Linked issue | **fail** without `Fixes #n` / `Closes #n` / `Resolves #n` / `Part of #n` (exempt: docs-only PRs, a `*[bot]` author such as dependabot, the `dependencies` label); also **fail** when a closing keyword names an issue the body says is done only in part — `Part of` the same issue, or *in part* / *partial* / *partly* / *remaining* on the keyword's line, outside code and HTML comments — docs-only PRs included (#485) | Work with no issue behind it, and an issue closed on merge before it is done |
-
-Runs under `pull_request_target` from the base branch and reads the PR through the API only — a PR cannot edit its own guard. Locally: `GITHUB_TOKEN=$(gh auth token) node scripts/pr-hygiene.mjs <pr>`.
-
-### Layer 2c — Browser QA in the cloud (remote, every PR; runs the suites only for critical PRs)
-File: `.github/workflows/browser-qa.yml` → `scripts/browser-qa.mjs` (rules in `scripts/browser-qa.logic.mjs`)
-
-| PR | What runs | Result line |
-|----|-----------|-------------|
-| Touches no critical path; neither it nor an issue its body links (`Fixes` / `Part of #n`) carries `critical` / `sev:high` / `sev:critical` | nothing — green in seconds | `BROWSER-QA: skipped (no critical paths)` |
-| Changes the UI — touches `src/components/`, `src/App.tsx`, `src/gates/`, `src/nodes/`, `src/store/`, `src/utils/`, `src/styles/`, `index.html`, `e2e/`, `playwright.config.ts` or, later, `src/surfaces/**` (renames by old path too) — or it or a linked issue carries one of those labels | build → `vite preview` → Playwright `@store` only (`--workers 1`, retries 2, SwiftShader) | `BROWSER-QA: PASS\|FAIL suites=store passed=… failed=…` |
-
-ADR-0016 (amended 2026-09-19, #282): browser suites run automatically **in GitHub Actions only**, never as a local gate, and only `@store`: the `@ui` (3D canvas) suite never runs automatically — 3D browser testing is far-future, cloud-only research (#284). `src/core/` and `src/simulation/` stay out; the conformance oracle covers them. The HTML report is uploaded as an artifact; a run in which no test ran is a FAIL. Re-check a PR by hand: `gh workflow run browser-qa.yml -f pr=<n>`. Critical PRs also need the independent QA agent's verdict (#257).
-
-### Layer 3 — E2E (manual, any suite)
-File: `.github/workflows/e2e.yml`
-
-Outside `browser-qa`, Playwright never runs automatically — not on push, not on a schedule. Run any suite deliberately from the Actions tab, or `gh workflow run e2e.yml -f suite=store` (`store` | `ui` | `all`) — the only way `@ui` (3D) runs. Locally, only a browser suite that does not mount the 3D canvas may run, by choice (the future 2D surface, the DOM shell); every Playwright suite today, `@store` included, loads the whole app and mounts the canvas, so none runs on a laptop (ADR-0016, amended 2026-09-19).
-
-They are not part of the definition of done.
+Enforced in layers, all without human involvement: the pre-commit hook (`.husky/pre-commit`), CI (`.github/workflows/ci.yml`), PR hygiene (`.github/workflows/pr-hygiene.yml`), browser QA (`.github/workflows/browser-qa.yml`, ADR-0016), and manual E2E (`.github/workflows/e2e.yml`, never automatic). What runs on which PR, what blocks a merge, and how to unstick a required check that reports green but won't merge: `docs/harness/README.md`. A CI failure names the failing step — reproduce that one command from §0's definition of done, locally.
 
 ---
 
-### How to Read a CI Failure
-
-```
-CI fails at "Peer ranges" → an installed React, R3F or three peer range excludes the version beside it. Run `node scripts/peer-range.mjs`.
-CI fails at "Lint"       → TypeScript error or ESLint violation. Run `pnpm run lint` locally.
-CI fails at "Unit tests" → A Vitest test failed. Run `pnpm run test:run` locally.
-CI fails at "Build"      → Compilation error. Run `pnpm run build` locally.
-```
-
----
-
-## 5. HACER-Specific Quick Reference
+## 5. Quick reference
 
 | Concern | Where to look |
-|---------|--------------|
-| Stack rules (React 19, Zustand, R3F) | `.cursorrules` → Stack section |
-| Rule precedence (Cursor) | `.cursor/rules/000-hacer-precedence.mdc` |
-| Phase tracking | `.cursorrules` → Phase Tracking; `REPO_MAP.md`; `docs/roadmap/implementation.md` → *AI agent phase sync* |
+|---|---|
+| Stack rules, current phase, TDD protocol | `.cursorrules` |
+| Code patterns & examples | `HACER_LLM_GUIDE.md` |
+| File layout, "add X" jump table | `REPO_MAP.md` |
 | Testing patterns + templates | `docs/testing/` |
-| File organization + task entry points | `REPO_MAP.md` |
-| Detailed code examples | `HACER_LLM_GUIDE.md` |
-| Skills (TDD, debug, plan, review) | `.claude/skills/*/SKILL.md` · `.cursor/skills/` (project) |
-| MCP, ECC hooks, session hygiene | `docs/llm-harness.md` |
-
-### Key Commands
-```bash
-pnpm run dev              # Dev server
-pnpm run lint             # TypeScript + ESLint (MANDATORY before commit)
-pnpm run typecheck        # TypeScript only
-pnpm run test             # Vitest watch mode
-pnpm run test:run         # Vitest (single run)
-pnpm run test:node        # Vitest, headless half only — no jsdom (docs/testing/vitest-projects.md)
-pnpm run test:coverage    # Vitest + coverage report
-pnpm run test:e2e:store   # Playwright store tests — manual only, not a done-criterion
-pnpm run test:e2e:ui      # Playwright UI tests — manual only, slow
-pnpm run build            # Production build
-```
-
----
-
-## 6. Task Management
-
-- `tasks/todo.md` → current task plan (update before and during work)
-- `tasks/lessons.md` → lessons from corrections (always read at session start; always update after mistakes)
-- `docs/specs/` → design documents (output of brainstorming)
-- `docs/plans/` → implementation plans (output of planning)
-- `docs/decisions/` → ADR log of cross-cutting decisions & direction changes (run the `docs-sync` skill to add)
-
----
-
-## 7. Session Management and Failure Patterns
-
-*From Claude Code Best Practices: avoid common failure modes.*
-
-| Pattern | Fix |
-|---------|-----|
-| **Kitchen sink session** — one task, then unrelated questions, then back to the first | Clear context between unrelated tasks. Start fresh for each distinct workstream. |
-| **Correcting over and over** — same issue, multiple failed corrections, context polluted | After 2+ failed corrections on the same issue, clear context and re-prompt with a better initial prompt that incorporates what you learned. |
-| **Trust-then-verify gap** — plausible-looking implementation that doesn't handle edge cases | Always provide verification (tests, lint, build). Run `pnpm run lint`, `pnpm run test:run`, `pnpm run build` before marking done. Never ship without proof. |
-| **Infinite exploration** — "investigate" without scoping; reads hundreds of files | Scope investigations narrowly. Use subagents so exploration doesn't consume your main context. One focused task per subagent. |
-| **Over-specified docs** — rules get lost in noise, agent ignores half of them | Keep AGENTS.md and .cursorrules concise. Ruthlessly prune. If the agent already does something correctly without the instruction, delete it. |
+| Skills (TDD, debug, plan, review) | `.claude/skills/*/SKILL.md` |
+| Current task plan / past mistakes | `tasks/todo.md` · `tasks/lessons.md` |
+| Design specs / implementation plans | `docs/specs/` · `docs/plans/` |
+| Decisions (ADR log) | `docs/decisions/` |
+| Session failure patterns (kitchen-sink sessions, over-specified docs, …) | `docs/llm-workflow.md` § Failure patterns |
