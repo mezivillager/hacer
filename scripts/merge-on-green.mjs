@@ -1,15 +1,11 @@
 #!/usr/bin/env node
-// Merge a PR once its required checks are green, and recover the stuck merge box on the way (#536).
-// The coordinator's ~/.local/bin/gh-merge-on-green, moved into the repo so any session can finish
-// a PR. The decisions, and why each is right, live in merge-on-green.logic.mjs; this file reads
-// GitHub through gh, does what the logic decides, and prints the premise behind each action.
+// Merge a PR once its required checks are green, and recover the stuck merge box on the way (#536):
+// the coordinator's ~/.local/bin/gh-merge-on-green, moved into the repo so any session can finish a
+// PR. Every pass reads the PR and its head's runs, asks merge-on-green.logic.mjs for the next action
+// (the decisions and why live there), prints the premise, and does it. It never pushes to the branch.
 //
 //   node scripts/merge-on-green.mjs <pr> [owner/repo] [max-minutes]     (defaults: this repo, 30)
 //
-// Each pass reads the PR, and the check runs and workflow runs of its head. Then one of: arm
-// auto-merge (gh merges at once when GitHub already reports the PR mergeable); re-run one
-// cancelled run; merge the base into a branch that is BEHIND; append an HTML comment to the body,
-// once per head (R746); or wait. It never pushes to the branch.
 // Exit: 0 merged · 2 a required check failed · 3 timed out · 4 needs a person (reason printed) ·
 // 1 usage. GH_BIN picks the gh binary (default: gh on PATH).
 
@@ -85,7 +81,7 @@ function readSnapshot() {
   }
 }
 
-const history = { reruns: [], edits: [], refusals: {}, lastError: '' }
+const history = { reruns: [], edits: [], refusals: {}, lastError: '', settled: null }
 
 /** Runs one gh command for an action; a failure is counted, so the logic can stop repeating it. */
 function attempt(kind, args) {
@@ -120,6 +116,7 @@ function act(action, snapshot) {
   }
 }
 
+// Exits by setting process.exitCode and leaving the loop, so the last premise is never cut off.
 const deadline = Date.now() + minutes * 60_000
 let last = ''
 for (let pass = 1; ; pass += 1) {
@@ -129,21 +126,27 @@ for (let pass = 1; ; pass += 1) {
   } catch (error) {
     if (pass === 1) {
       say(`give-up: cannot read #${pr} in ${repo}: ${failure(error)}`)
-      process.exit(EXIT['give-up'])
+      process.exitCode = EXIT['give-up']
+      break
     }
     say(`wait: could not read #${pr} this pass: ${failure(error)}`)
   }
   if (snapshot) {
     const action = decide(snapshot, history)
+    history.settled = action.settle ?? null
     const line = `${action.kind}: ${action.reason}`
     if (line !== last) say(line)
     last = line
-    if (action.exit !== undefined) process.exit(action.exit)
+    if (action.exit !== undefined) {
+      process.exitCode = action.exit
+      break
+    }
     act(action, snapshot)
   }
   if (Date.now() >= deadline) {
     say(`timeout: #${pr} is not merged after ${minutes} min; last premise: ${last}`)
-    process.exit(EXIT.timeout)
+    process.exitCode = EXIT.timeout
+    break
   }
   await sleep(POLL_MS)
 }
