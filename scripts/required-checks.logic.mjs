@@ -60,6 +60,16 @@ export function cancelInProgressSettings(source) {
   return [...source.matchAll(/^[ \t]*cancel-in-progress:[ \t]*([^\s#]+)/gm)].map((match) => match[1])
 }
 
+/** The group of every `concurrency:` a workflow source declares (#530). Not implemented yet. */
+export function concurrencyGroups() {
+  throw new Error('not implemented')
+}
+
+/** Whether a concurrency group expression names a single run (#530). Not implemented yet. */
+export function isUniquePerRun() {
+  throw new Error('not implemented')
+}
+
 /**
  * Findings for one workflow file. Empty means it cannot strand a required check: either it posts
  * none of them, or it never cancels a run that has already started.
