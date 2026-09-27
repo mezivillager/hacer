@@ -151,3 +151,29 @@ reading the full map, strictly, and then applies a named, tested exclusion table
 project and file with its reason. An exclusion that no longer matches a shipped entry throws, so a
 later pin is noticed. Excluded files count as not shipped, so a hand-copied one is refused (R754).
 Cost if wrong: a three-entry deny-list to remove later.
+
+## R758 — #519's lineage edits are accepted, and its fix round lands on a fresh branch
+Builds on: R745
+#519's verifier asked the coordinator to accept four `Builds on:` / `Assumes:` edits to R398–R405,
+since backfill of imported rulings is coordinator-owned. They copy the recorded chain fixture exactly,
+so they are accepted. R405 → R400 is the weakest edge, but it follows the recorded chain. The one edge
+the verifier found missing — R400 `Assumes: P-005` — is added. The fix round landed as #559 on a fresh
+branch carrying #519's build commits, because rebasing a two-day-old branch would need a force-push.
+Cost if wrong: one weak edge (R405 → R400) in the graph.
+
+## R759 — dormant mode's "no human merge" half is dropped
+Builds on: R742
+`docs/portfolio.md` put the loop into dormant mode at 5 open agent PRs or 7 days without a human
+merge. The second half cannot be computed while agents act as the owner's GitHub identity, since every
+merge is `mezivillager`'s. Under the on-green grant, merges do not wait on a human anyway. #561 dropped
+it and names the open-PR cap as the signal: when merges stall, open PRs pile up and the cap trips.
+The owner may restore a measurable form.
+Cost if wrong: an owner who stops attending goes unnoticed while agents keep merging their own work.
+
+## R760 — the first Scorecard run's zeros become one issue; the rest wait for the next review cycle
+Builds on: R742
+Scorecard's first run on `main` (run 36318052904) scored Pinned-Dependencies 0 and Token-Permissions 0:
+the other workflows pin by tag, and grant `contents` broadly. Both have concrete fixes, filed as #567.
+Branch-Protection (3) and Security-Policy (4) touch owner settings and policy, so they go to the next
+review cycle rather than a builder.
+Cost if wrong: one more upkeep issue.
