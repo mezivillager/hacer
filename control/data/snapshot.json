@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-27T10:40:07.641Z",
+  "generatedAt": "2026-09-27T10:55:26.402Z",
   "head": {
-    "sha": "4bef7d1b860dfd0e7131222d090987e4eca1e358",
-    "date": "2026-09-27T13:39:36+03:00",
-    "subject": "docs(decisions): the run's rulings R751-R757 and ledger row L056"
+    "sha": "69b05a0d4640cafe890bd292449eda36ccaf3f14",
+    "date": "2026-09-27T13:54:37+03:00",
+    "subject": "docs(harness): the session record's merged list comes from run-prs.mjs (#538)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open",
-      "fetchedAt": "2026-09-27T10:40:07.641Z",
+      "fetchedAt": "2026-09-27T10:55:26.402Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open",
-      "fetchedAt": "2026-09-27T10:40:07.641Z",
+      "fetchedAt": "2026-09-27T10:55:26.402Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open",
-      "fetchedAt": "2026-09-27T10:40:07.641Z",
+      "fetchedAt": "2026-09-27T10:55:26.402Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-27T10:40:07.641Z",
+      "fetchedAt": "2026-09-27T10:55:26.402Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-09-27T10:40:07.641Z",
+      "fetchedAt": "2026-09-27T10:55:26.402Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-09-27T10:40:07.641Z",
+      "fetchedAt": "2026-09-27T10:55:26.402Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-09-27T10:40:07.641Z",
+      "fetchedAt": "2026-09-27T10:55:26.402Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-09-27T10:40:07.641Z",
+      "fetchedAt": "2026-09-27T10:55:26.402Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-09-27T10:40:07.641Z",
+      "fetchedAt": "2026-09-27T10:55:26.402Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-09-27T10:40:07.641Z",
+      "fetchedAt": "2026-09-27T10:55:26.402Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-27T10:40:07.641Z",
+      "fetchedAt": "2026-09-27T10:55:26.402Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-09-27T10:40:07.641Z",
+      "fetchedAt": "2026-09-27T10:55:26.402Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-09-27T10:40:07.641Z",
+      "fetchedAt": "2026-09-27T10:55:26.402Z",
       "status": "ok"
     }
   },
@@ -103,9 +103,9 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 35,
+        "open": 34,
         "ready": 22,
-        "inProgress": 2,
+        "inProgress": 1,
         "needsHuman": 0,
         "staleClaims": [],
         "next": {
@@ -114,8 +114,8 @@
         },
         "title": "Epic: harness — autonomous-run improvements & agent-readiness",
         "subIssues": {
-          "completed": 29,
-          "percentCompleted": 50,
+          "completed": 30,
+          "percentCompleted": 52,
           "total": 57
         }
       },
@@ -2809,22 +2809,6 @@
         "reason": "claimed"
       },
       {
-        "number": 538,
-        "title": "Session records list the PRs a run merged, from merge times",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:0"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 540,
         "title": "Backlog reporting: on-request tasks are not counted ready; dormant mode and a per-row cap are computed",
         "labels": [
@@ -2935,7 +2919,6 @@
         504,
         505,
         535,
-        538,
         540,
         550
       ],
@@ -3183,6 +3166,32 @@
       }
     ],
     "merged": [
+      {
+        "number": 557,
+        "title": "A run's merged PRs, derived from mergedAt (#538)",
+        "url": "https://github.com/mezivillager/hacer/pull/557",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "chore/538-run-prs",
+        "isDraft": false,
+        "createdAt": "2026-09-27T10:40:54Z",
+        "mergedAt": "2026-09-27T10:54:38Z",
+        "closes": [
+          538
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "claude-sonnet-5 (Sonnet)",
+            "at": "2026-09-27T10:54:00Z",
+            "url": "https://github.com/mezivillager/hacer/pull/557#issuecomment-5855207893"
+          }
+        ]
+      },
       {
         "number": 556,
         "title": "docs(decisions): the run's rulings R751–R757 and ledger row L056",
@@ -4573,30 +4582,13 @@
             "url": "https://github.com/mezivillager/hacer/pull/430#issuecomment-5804719995"
           }
         ]
-      },
-      {
-        "number": 428,
-        "title": "docs(harness): the cloud lane is access arbitrage — widen the queue and split verification",
-        "url": "https://github.com/mezivillager/hacer/pull/428",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:0"
-        ],
-        "headRefName": "docs/widen-cloud-queue",
-        "isDraft": false,
-        "createdAt": "2026-09-23T22:45:08Z",
-        "mergedAt": "2026-09-23T22:47:47Z",
-        "closes": [],
-        "verdicts": []
       }
     ],
     "coverage": {
       "merged": 60,
-      "withVerdict": 33,
-      "withoutVerdict": 27,
-      "pass": 32,
+      "withVerdict": 34,
+      "withoutVerdict": 26,
+      "pass": 33,
       "block": 1
     }
   },
@@ -4837,7 +4829,7 @@
         "number": 538,
         "ref": "refs/heads/claim/538",
         "sha": "3f268d63280bd08c31684145f50203299fce7bd3",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "Session records list the PRs a run merged, from merge times",
         "url": "https://github.com/mezivillager/hacer/issues/538",
         "labels": [
@@ -4846,7 +4838,7 @@
           "in-progress",
           "risk:0"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -4859,7 +4851,7 @@
         }
       }
     ],
-    "onClosedIssues": 4
+    "onClosedIssues": 5
   },
   "cloudLane": {
     "items": [
@@ -6332,7 +6324,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-23",
-        "merges": 2
+        "merges": 1
       },
       {
         "date": "2026-09-24",
@@ -6348,7 +6340,7 @@
       },
       {
         "date": "2026-09-27",
-        "merges": 14
+        "merges": 15
       }
     ]
   },
@@ -6356,11 +6348,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "4bef7d1b860dfd0e7131222d090987e4eca1e358",
+        "sha": "69b05a0d4640cafe890bd292449eda36ccaf3f14",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36313243113/job/108603060123",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36314039205/job/108605251817",
         "line": null,
         "verdict": null,
         "fields": {},
