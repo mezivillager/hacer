@@ -10,8 +10,10 @@ projection (`docs/research/2026-09-24-mission-control/REPORT.md` §5) and holds 
   without it, only the line. It exits 1 only when the snapshot fails schema v1, and then prints no snapshot.
 - GitHub is read with `gh` (`GH_TOKEN` or `GITHUB_TOKEN` when set, else gh's login): six calls, all GraphQL, seven
   requests while over 100 issues are open, no REST — 7–8 s over three runs on 2026-09-25. The claim history reads one
-  more page only while the newer ones leave the cycle's place a guess (`readClaimHistory`, #540). Without a token `gh`
-  calls nothing, and the GitHub sections go stale rather than fail the run. The ratchet's history needs a full clone
+  more page only while the newer ones leave the cycle's place a guess (`readClaimHistory`, #540). The flow numbers
+  read one call more (`flowQuery`, #539), a page per 100 PRs merged in the last 14 days: two for 154 PRs on
+  2026-09-27, the first taking 7–10 s. The pages run one after another, so on 2026-09-27 a run took 13–17 s over
+  three runs, against 9–10 s without them. Without a token `gh` calls nothing, and the GitHub sections go stale rather than fail the run. The ratchet's history needs a full clone
   (`fetch-depth: 0`). `checks` needs no `checks` permission while the repo is public: #507's preview build collected
   it `ok`, annotations included, with a token that has none (`pr-preview.yml`, 2026-09-25).
 - The transforms are pure, in `collect.logic.mjs`, tested over recorded `gh` JSON in `scripts/fixtures/mission-control/`.
@@ -44,7 +46,7 @@ Each section has `freshness.<section>` = `{ source, fetchedAt, status, error? }`
 | `ledger` | `items[]`, the rows of `ledger.md`; `byMechanised`: `yes` / `no` / `partly` / `other` | the ledger |
 | `adrs` | `items[]`, `docs/decisions/NNNN-*.md`: `number`, `title`, and the `Status` line as written | the files |
 | `roadmap` | `lastUpdated` as the README states it; `phases[]` from its tables (`phase`, `status`, `scope`, `group`, `doc`) | `docs/roadmap/README.md` |
-| `metrics` | `ratchet`: the baseline's `count` and `byRule`, and `history[]` from `git log` of it (34 → 77 → 72 → 71 on 2026-09-24); `releases[]`; `mergesPerDay[]` over `prs.merged`, in UTC days, a day without merges absent | baseline, git; releases and PRs optional |
+| `metrics` | `ratchet`: the baseline's `count` and `byRule`, and `history[]` from `git log` of it (34 → 77 → 72 → 71 on 2026-09-24); `releases[]`; `mergesPerDay[]` over `prs.merged`, in UTC days, a day without merges absent; `flow`, the PRs merged in the 14 days to the run (see *Flow and conformance*); `conformance`, the files under `conformance/vectors/` by project | baseline, git; releases, PRs, the flow query (`gh api graphql`, `flowQuery`) and the vectors listing optional |
 | `checks` | `items[]`, per required check on main's head and on each open PR's: its newest run's `conclusion` and the line it published — `HYGIENE:`, `BROWSER-QA:`, `LAYER-RATCHET:` — with the line's `verdict` and `fields` (see *Checks*) | `gh api graphql`: the check runs' annotations |
 | `lineage` | `{ until, items: [] }` — **empty until DL-7** (the decision graph) | — |
 
@@ -53,6 +55,28 @@ A verdict is a comment by an allowlisted author (`BACKLOG_ALLOWLIST`, as for `ba
 and a bold word allowed; any other shape counts as none, which is how drift from the brief shows. `round` is the
 heading's number, else the verdict's position on the PR; `model` is the `Verified on` field to its first ` · `, ` — `
 or full stop. Claim comments are read by their fields, from the same authors.
+
+## Flow and conformance
+
+`metrics.flow` (#539) moves the numbers `docs/harness/reviews/2026-09-26/evidence/brief-measure-flow.mjs` counted by
+hand into the snapshot, by that script's definitions. On 2026-09-27 both printed the same numbers for the same window.
+The window is the 14 days to the run, to the millisecond (`since` to `generatedAt`), over every PR merged in it,
+Dependabot's included:
+
+- **Open to merge** — hours from `createdAt` to `mergedAt`; `median` and `p90` are the sorted value at `floor(n × p)`,
+  the script's `pct`, in tenths of an hour, and `null` with nothing merged.
+- **Blocked at least once** — a PR with a `BLOCK` among its verdicts, counted once however many it had, out of the PRs
+  with any verdict. A verdict is the one `prs` reads (above), so a `(round N, …)` heading counts and an author off the
+  allowlist does not.
+- **Coverage** — `code` is a PR touching `src/`, `mission-control/`, `scripts/` or `.github/` (the script's engine,
+  other `src/`, app and process-tooling kinds) that is not Dependabot's; `nonCode` is the rest: docs only, config,
+  `.claude/`, root docs, the vendored vectors, and Dependabot. The verifier skips docs and Dependabot by design;
+  `code.without` lists the PRs to look at.
+
+`metrics.conformance` is the product's own measure beside those process counts: each directory under
+`conformance/vectors/` (projects `01`–`05` on 2026-09-27) with its files counted by extension. `.tst` is the test
+scripts. No runner reads these files yet (#194 is the file-based suite), so `runner` is `null` and there is no pass
+count. It will carry one only once a runner exists; it never guesses one.
 
 ## Fields
 
@@ -69,7 +93,7 @@ Every field, by section. `?` marks one that can be `null`; `[]` an array.
 - **`ledger`** — `items[]`, one field per column of the ledger's table (today `date`, `whatWentWrong`, `shouldHaveBeenCaughtBy`, `mechanised`) · `byMechanised` {`yes`, `no`, `partly`, `other`}
 - **`adrs.items[]`** — `number` · `file` · `title`? · `status`? (as written)
 - **`roadmap`** — `lastUpdated`? · `phases[]` {`phase`, `doc`?, `group` (the table's heading), and the table's other columns (today `status`, `scope`)}
-- **`metrics`** — `ratchet` {`count`, `byRule` {rule: count}, `history[]` {`sha`, `date`, `subject`, `count`}, oldest first} · `releases[]` {`tag`, `publishedAt`, `isLatest`}, newest first · `mergesPerDay[]` {`date`, `merges`}
+- **`metrics`** — `ratchet` {`count`, `byRule` {rule: count}, `history[]` {`sha`, `date`, `subject`, `count`}, oldest first} · `releases[]` {`tag`, `publishedAt`, `isLatest`}, newest first · `mergesPerDay[]` {`date`, `merges`} · `flow`? {`days` (14), `since`, `merged`, `openToMergeHours` {`median`?, `p90`?}, `blockedOnce` {`count`, `of` (the PRs with a verdict), `prs[]`}, `coverage` {`code`, `nonCode`}, each {`merged`, `withVerdict`, `without[]` (PR numbers)}} · `conformance`? {`projects[]` {`project` (its directory: `01`…), `files`, `byExtension` {ext: count}}, `files`, `runner`? (`null`: no runner yet, #194)}. `flow` and `conformance` are `null` when their input failed, never zeros
 - **`checks.items[]`** — `pr`? (`null` for main's head) · `sha` · `check` (`pr-hygiene` · `browser-qa` · `ci`) · `conclusion`? (`null` while it runs) · `completedAt`? · `url`? (the job) · `line`? (as published; `null` when that run published none: still running, run before MC-6, or stopped before printing it) · `verdict`? (the conclusion wins: `FAIL` for a failure or time-out, the conclusion itself for any other that is not `SUCCESS` — `CANCELLED`, `SKIPPED`, … — and `null` while it runs; on a success, the line's: `PASS` · `WARN` · `SKIPPED`, the ratchet's `FAIL` on a new violation) · `fields` (the line's `key=value` pairs, numbers as numbers; the ratchet's `known` and `new`) · `disagrees` (the line's own verdict says otherwise than the conclusion; its `fields` are kept)
 - **`lineage`** — {`until`, `items[]`}
 
@@ -111,15 +135,22 @@ under `HYGIENE:`, the paths that made a PR critical, and the ratchet's `by rule`
 
 ## The site: `/control/`
 
-[`/control/`](https://mezivillager.github.io/hacer/control/) renders the snapshot (#473). **Overview**: seven tiles, each from one section and dated by its `fetchedAt`. **Projects**: the portfolio with each epic's progress and "next" from `pickRule.next` (what `ready` picks, not `portfolio.projects[].next`); a row drills into its tasks, in `ready`'s order, at `#/projects/<slug>`. **Process** (`#/process`, #474): the loop `ready → claimed → building → PR → verifying → merged` as an inline SVG diagram (no diagram library), live counts defined straight from the snapshot — `ready` is `tasks.items` where `pickable`; `claimed` is `claims.items.length` (every open `claim/*` ref, whatever the issue's state); `building` is `tasks.items` where `reason` is `'in-progress'` or `'claimed'` (a `stale-claim` is not building); `PR` is `prs.open.length`; `verifying` splits those same open PRs by whether `verdicts` is empty (no verdict yet) or not (with a verdict); `merged` is `prs.merged` whose `mergedAt` falls in the 7 days before `generatedAt`. Each stage drills into its items, linked to GitHub. The claims table renders `claims.items` — already joined to issue state by the collector — with a ref `onClosedIssue` flagged; the cloud lane renders `cloudLane.items` (status, claim status, agent id), each linked to its issue. **Timeline** (`#/timeline`, #475): `sessions.items`, `prs.merged` and `metrics.releases` merged onto one day-by-day axis (`timeline.ts`), newest first, over the 14 days ending `generatedAt`'s own day — fixed so the page stays a bounded size as sessions and releases keep accumulating, rather than one row per release back to the project's first tag; a day outside that window's data still renders, saying "No activity." A session's title links to its record on GitHub, a merge to its PR, a release to its tag. A section `partial` or `error` keeps its data under a stale banner; one never fetched says so rather than show zeros it did not count.
+[`/control/`](https://mezivillager.github.io/hacer/control/) renders the snapshot (#473). **Overview**: nine tiles, each from one section and dated by its `fetchedAt`. The last two, from `metrics`, are
+**Flow** (merged, open → merge median and p90, blocked at least once out of those with a verdict, verdict coverage on
+code and on docs, Dependabot and config) and **Conformance vectors** (files and test scripts per project, and the pass
+count as "no runner yet"). **Projects**: the portfolio with each epic's progress and "next" from `pickRule.next` (what `ready` picks, not `portfolio.projects[].next`); a row drills into its tasks, in `ready`'s order, at `#/projects/<slug>`. **Process** (`#/process`, #474): the loop `ready → claimed → building → PR → verifying → merged` as an inline SVG diagram (no diagram library), live counts defined straight from the snapshot — `ready` is `tasks.items` where `pickable`; `claimed` is `claims.items.length` (every open `claim/*` ref, whatever the issue's state); `building` is `tasks.items` where `reason` is `'in-progress'` or `'claimed'` (a `stale-claim` is not building); `PR` is `prs.open.length`; `verifying` splits those same open PRs by whether `verdicts` is empty (no verdict yet) or not (with a verdict); `merged` is `prs.merged` whose `mergedAt` falls in the 7 days before `generatedAt`. Each stage drills into its items, linked to GitHub. The claims table renders `claims.items` — already joined to issue state by the collector — with a ref `onClosedIssue` flagged; the cloud lane renders `cloudLane.items` (status, claim status, agent id), each linked to its issue. **Timeline** (`#/timeline`, #475): `sessions.items`, `prs.merged` and `metrics.releases` merged onto one day-by-day axis (`timeline.ts`), newest first, over the 14 days ending `generatedAt`'s own day — fixed so the page stays a bounded size as sessions and releases keep accumulating, rather than one row per release back to the project's first tag; a day outside that window's data still renders, saying "No activity." A session's title links to its record on GitHub, a merge to its PR, a release to its tag. A section `partial` or `error` keeps its data under a stale banner; one never fetched says so rather than show zeros it did not count.
 
 - **Build** — `pnpm run build:control`: `collect.mjs --json` into `mission-control/public/data/snapshot.json` (git-ignored), then `vite build` of the second root `mission-control/` (`base`: `BASE_PATH` + `control/`). The page fetches `data/snapshot.json` from beside itself, so `/control/data/snapshot.json` is the one file people and agents read.
 - **Deploy** — `mission-control.yml` (#476) refreshes `control/` hourly, on `workflow_dispatch`, and on a push to `docs/**`, `scripts/**` or `mission-control/**`: collect (with `--previous` the newest archived snapshot) → build → archive → deploy, sharing the `gh-pages` concurrency group with `deploy.yml` and `pr-preview.yml` so pushes never race. `deploy.yml` also builds and deploys it, after the app, on every push to `main`; both leave the app's own files alone (`clean-exclude`) and, since #476, leave `control/history/` alone too (below). `pr-preview.yml` builds it into `pr-preview/pr-<n>/control/` when a PR touches `mission-control/**` or `scripts/mission-control/**`, and links it from the preview comment.
 - **Boundary** — it imports nothing from `src/`: `mission-control/imports.test.mjs` runs a dependency-cruiser rule over it, resolving as the app does. Plain CSS, plain React state, hand-rolled hash routes; no router or chart library (charts are MC-7).
-- **Tests** — `pnpm exec vitest run mission-control`, in the `jsdom` project, over `scripts/fixtures/mission-control/snapshot.json`: the real collector's output, kept valid v1 by `collect.logic.test.mjs`. The Overview's and Process's numbers are pinned against it, so a recaptured fixture means re-pinning them; the fixture's claims are all on open issues, so the flagged-claim case is shown on a copy of the fixture with one claim's issue state overridden closed. The fixture's own `2026-09-20` — between two active days, with no session, merge or release — is the Timeline's empty-day case; no synthetic fixture needed.
+- **Tests** — `pnpm exec vitest run mission-control`, in the `jsdom` project, over `scripts/fixtures/mission-control/snapshot.json`: the real collector's output, kept valid v1 by `collect.logic.test.mjs`. The Overview's and Process's numbers are pinned against it, so a recaptured fixture means re-pinning them. The
+fields v1 declared after its capture are spliced in from its own data at its own time instead (the list is in
+`collect.logic.test.mjs`); the fixture's claims are all on open issues, so the flagged-claim case is shown on a copy of the fixture with one claim's issue state overridden closed. The fixture's own `2026-09-20` — between two active days, with no session, merge or release — is the Timeline's empty-day case; no synthetic fixture needed.
 
 **The contract.** `SCHEMA_V1` in `collect.logic.mjs` is the checked shape, and this page its meaning. Adding a field
 keeps v1; renaming, removing or retyping one bumps `schemaVersion`, and a `--previous` of another version is not kept.
+Nor is one of its sections that no longer conforms, such as one written before a field was declared. That section
+reads as having no previous: empty, `fetchedAt: null` (#539).
 
 **Privacy.** Public data only, and no issue, PR or comment body is copied — only verdict and claim fields; the cloud
 inbox gives its table, never the meter readings under it. Usage meters, org ids and lane files are never read.
