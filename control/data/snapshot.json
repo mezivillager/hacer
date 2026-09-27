@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-27T08:37:57.968Z",
+  "generatedAt": "2026-09-27T08:43:22.135Z",
   "head": {
-    "sha": "3604dd2edbd13e7de7fdfcd00490d62b3dbcf547",
-    "date": "2026-09-27T11:37:09+03:00",
-    "subject": "docs(harness): process reviews get one home and one layout"
+    "sha": "8243a8a4a8b2448b0e766d1d4bf2c5dbe13905b6",
+    "date": "2026-09-27T11:42:34+03:00",
+    "subject": "docs(harness): the 2026-09-26 reviews consolidated, and a standing brief for every cycle"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-27T08:37:57.968Z",
+      "fetchedAt": "2026-09-27T08:43:22.135Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-27T08:37:57.968Z",
+      "fetchedAt": "2026-09-27T08:43:22.135Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-27T08:37:57.968Z",
+      "fetchedAt": "2026-09-27T08:43:22.135Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-27T08:37:57.968Z",
+      "fetchedAt": "2026-09-27T08:43:22.135Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-09-27T08:37:57.968Z",
+      "fetchedAt": "2026-09-27T08:43:22.135Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-09-27T08:37:57.968Z",
+      "fetchedAt": "2026-09-27T08:43:22.135Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-09-27T08:37:57.968Z",
+      "fetchedAt": "2026-09-27T08:43:22.135Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-09-27T08:37:57.968Z",
+      "fetchedAt": "2026-09-27T08:43:22.135Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-09-27T08:37:57.968Z",
+      "fetchedAt": "2026-09-27T08:43:22.135Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-09-27T08:37:57.968Z",
+      "fetchedAt": "2026-09-27T08:43:22.135Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-27T08:37:57.968Z",
+      "fetchedAt": "2026-09-27T08:43:22.135Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-09-27T08:37:57.968Z",
+      "fetchedAt": "2026-09-27T08:43:22.135Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-09-27T08:37:57.968Z",
+      "fetchedAt": "2026-09-27T08:43:22.135Z",
       "status": "ok"
     }
   },
@@ -100,7 +100,7 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 39,
+        "open": 38,
         "ready": 25,
         "inProgress": 2,
         "needsHuman": 0,
@@ -110,8 +110,8 @@
         },
         "title": "Epic: harness — autonomous-run improvements & agent-readiness",
         "subIssues": {
-          "completed": 24,
-          "percentCompleted": 42,
+          "completed": 25,
+          "percentCompleted": 44,
           "total": 56
         }
       },
@@ -2849,20 +2849,6 @@
         "reason": "in-progress"
       },
       {
-        "number": 533,
-        "title": "Process reviews: one standing home and one format, every cycle",
-        "labels": [
-          "project:harness",
-          "risk:0"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": false,
-        "reason": "unshaped"
-      },
-      {
         "number": 535,
         "title": "Successive top picks follow the eight-slot cycle",
         "labels": [
@@ -2980,7 +2966,6 @@
         505,
         530,
         531,
-        533,
         535,
         540
       ],
@@ -3209,6 +3194,24 @@
       }
     ],
     "merged": [
+      {
+        "number": 543,
+        "title": "docs(harness): the 2026-09-26 reviews consolidated, and a standing brief for every cycle",
+        "url": "https://github.com/mezivillager/hacer/pull/543",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/reviews-synthesis",
+        "isDraft": false,
+        "createdAt": "2026-09-27T08:39:38Z",
+        "mergedAt": "2026-09-27T08:42:35Z",
+        "closes": [
+          533
+        ],
+        "verdicts": []
+      },
       {
         "number": 534,
         "title": "docs(harness): process reviews get one home and one layout",
@@ -4551,23 +4554,6 @@
         "isDraft": false,
         "createdAt": "2026-09-23T07:55:12Z",
         "mergedAt": "2026-09-24T00:06:08Z",
-        "closes": [],
-        "verdicts": []
-      },
-      {
-        "number": 414,
-        "title": "chore(deps): bump @radix-ui/react-dropdown-menu from 2.1.16 to 2.1.24",
-        "url": "https://github.com/mezivillager/hacer/pull/414",
-        "author": "app/dependabot",
-        "labels": [
-          "released",
-          "dependencies",
-          "javascript"
-        ],
-        "headRefName": "dependabot/npm_and_yarn/radix-ui/react-dropdown-menu-2.1.24",
-        "isDraft": false,
-        "createdAt": "2026-09-23T05:49:55Z",
-        "mergedAt": "2026-09-24T12:56:15Z",
         "closes": [],
         "verdicts": []
       }
@@ -6185,7 +6171,7 @@
       },
       {
         "date": "2026-09-24",
-        "merges": 30
+        "merges": 29
       },
       {
         "date": "2026-09-25",
@@ -6197,7 +6183,7 @@
       },
       {
         "date": "2026-09-27",
-        "merges": 5
+        "merges": 6
       }
     ]
   },
@@ -6205,11 +6191,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "3604dd2edbd13e7de7fdfcd00490d62b3dbcf547",
+        "sha": "8243a8a4a8b2448b0e766d1d4bf2c5dbe13905b6",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36306765204/job/108584831950",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36307051878/job/108585641715",
         "line": null,
         "verdict": null,
         "fields": {},
