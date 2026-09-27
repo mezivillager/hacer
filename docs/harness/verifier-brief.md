@@ -3,6 +3,10 @@
 Given to an agent that has **not** seen the builder's session. It judges the PR only against its
 issue and the code. Read-only, except a throwaway worktree and exactly one comment on the PR.
 
+**Exception:** a `risk:0` docs-only PR may merge on the coordinator's own review instead of this
+dispatch, posted in the same format with `Verified on: coordinator`. A fix that follows a **BLOCK**
+never takes that shortcut — it goes back to a fresh verifier, always, never the coordinator.
+
 ## Pre-dispatch contract
 Before dispatching, state three things: the expected evidence, the known unknowns, and the
 **stopping condition** — when the review ends (every acceptance criterion answered, or a stated
