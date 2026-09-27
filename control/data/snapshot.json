@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-27T07:39:13.824Z",
+  "generatedAt": "2026-09-27T08:00:06.497Z",
   "head": {
-    "sha": "3e4ed2f517ebdb8b3da5c6f294e01c242b81f436",
-    "date": "2026-09-27T10:38:34+03:00",
-    "subject": "docs(research): add independent process review follow-up"
+    "sha": "cf77e887dcf6857e5f9127fa4392db5a59a5321a",
+    "date": "2026-09-27T10:59:32+03:00",
+    "subject": "docs(research): record the 2026-09-27 process-review findings"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-27T07:39:13.824Z",
+      "fetchedAt": "2026-09-27T08:00:06.497Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-27T07:39:13.824Z",
+      "fetchedAt": "2026-09-27T08:00:06.497Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open",
-      "fetchedAt": "2026-09-27T07:39:13.824Z",
+      "fetchedAt": "2026-09-27T08:00:06.497Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-27T07:39:13.824Z",
+      "fetchedAt": "2026-09-27T08:00:06.497Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-09-27T07:39:13.824Z",
+      "fetchedAt": "2026-09-27T08:00:06.497Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-09-27T07:39:13.824Z",
+      "fetchedAt": "2026-09-27T08:00:06.497Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-09-27T07:39:13.824Z",
+      "fetchedAt": "2026-09-27T08:00:06.497Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-09-27T07:39:13.824Z",
+      "fetchedAt": "2026-09-27T08:00:06.497Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-09-27T07:39:13.824Z",
+      "fetchedAt": "2026-09-27T08:00:06.497Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-09-27T07:39:13.824Z",
+      "fetchedAt": "2026-09-27T08:00:06.497Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-27T07:39:13.824Z",
+      "fetchedAt": "2026-09-27T08:00:06.497Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-09-27T07:39:13.824Z",
+      "fetchedAt": "2026-09-27T08:00:06.497Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-09-27T07:39:13.824Z",
+      "fetchedAt": "2026-09-27T08:00:06.497Z",
       "status": "ok"
     }
   },
@@ -3019,6 +3019,19 @@
     ],
     "merged": [
       {
+        "number": 529,
+        "title": "docs(research): process review findings, 2026-09-27",
+        "url": "https://github.com/mezivillager/hacer/pull/529",
+        "author": "mezivillager",
+        "labels": [],
+        "headRefName": "docs/process-review-findings-2",
+        "isDraft": false,
+        "createdAt": "2026-09-27T07:56:28Z",
+        "mergedAt": "2026-09-27T07:59:33Z",
+        "closes": [],
+        "verdicts": []
+      },
+      {
         "number": 527,
         "title": "docs(research): independent process review follow-up",
         "url": "https://github.com/mezivillager/hacer/pull/527",
@@ -4369,40 +4382,13 @@
         "mergedAt": "2026-09-24T13:00:57Z",
         "closes": [],
         "verdicts": []
-      },
-      {
-        "number": 409,
-        "title": "ci(deps): group react, react-dom and @react-three/* in one Dependabot PR",
-        "url": "https://github.com/mezivillager/hacer/pull/409",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:upkeep",
-          "risk:0"
-        ],
-        "headRefName": "fix/408-dependabot-grouping",
-        "isDraft": false,
-        "createdAt": "2026-09-23T05:29:39Z",
-        "mergedAt": "2026-09-23T05:46:43Z",
-        "closes": [
-          408
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Sonnet 5 (claude-sonnet-5)",
-            "at": "2026-09-23T05:45:29Z",
-            "url": "https://github.com/mezivillager/hacer/pull/409#issuecomment-5789740522"
-          }
-        ]
       }
     ],
     "coverage": {
       "merged": 60,
-      "withVerdict": 31,
-      "withoutVerdict": 29,
-      "pass": 30,
+      "withVerdict": 30,
+      "withoutVerdict": 30,
+      "pass": 29,
       "block": 1
     }
   },
@@ -5948,7 +5934,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-23",
-        "merges": 11
+        "merges": 10
       },
       {
         "date": "2026-09-24",
@@ -5964,7 +5950,7 @@
       },
       {
         "date": "2026-09-27",
-        "merges": 1
+        "merges": 2
       }
     ]
   },
@@ -5972,11 +5958,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "3e4ed2f517ebdb8b3da5c6f294e01c242b81f436",
+        "sha": "cf77e887dcf6857e5f9127fa4392db5a59a5321a",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36303730182/job/108576167117",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36304789197/job/108579179622",
         "line": null,
         "verdict": null,
         "fields": {},
