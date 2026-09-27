@@ -12,10 +12,11 @@ import { formatConsole, mergedInWindow, searchDateRange } from './run-prs.logic.
 const fixture = JSON.parse(readFileSync(path.join(import.meta.dirname, 'fixtures', 'run-prs-2026-09-23.json'), 'utf8'))
 
 // The 2026-09-23 run's window: its first PR (#360) merged 2026-09-23T00:15:54Z; #354, the last
-// merge before it, is named in the record as "before the run's first artefact" (2026-09-22T18:32Z),
-// so `from` sits just after that. Its last PR (#412, "close the 2026-09-23 run…") merged
-// 2026-09-23T05:52:32Z; `to` sits well before the next run's first PR (#417, 10:44:25Z).
-const RUN_FROM = '2026-09-22T18:32:00Z'
+// merge before it, is named in the record as "before the run's first artefact" and merged
+// 2026-09-22T18:32:15Z, so midnight is a clean `from` between the two. Its last PR (#412, "close
+// the 2026-09-23 run…") merged 2026-09-23T05:52:32Z; `to` sits well before the next run's first PR
+// (#417, 10:44:25Z).
+const RUN_FROM = '2026-09-23T00:00:00Z'
 const RUN_TO = '2026-09-23T06:00:00Z'
 
 // The 15 PRs docs/harness/sessions/2026-09-23.md names by number: ten in its "What was built" table
@@ -27,11 +28,11 @@ const RECORD_PRS = [393, 412]
 
 describe('searchDateRange', () => {
   it('spans every calendar day the window touches', () => {
-    expect(searchDateRange(RUN_FROM, RUN_TO)).toBe('2026-09-22..2026-09-23')
+    expect(searchDateRange('2026-09-22T18:32:16Z', '2026-09-23T06:00:00Z')).toBe('2026-09-22..2026-09-23')
   })
 
   it('is a single day when the window does not cross midnight', () => {
-    expect(searchDateRange('2026-09-23T00:15:54Z', '2026-09-23T05:52:32Z')).toBe('2026-09-23..2026-09-23')
+    expect(searchDateRange(RUN_FROM, RUN_TO)).toBe('2026-09-23..2026-09-23')
   })
 })
 
