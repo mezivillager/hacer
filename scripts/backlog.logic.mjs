@@ -2,8 +2,8 @@
 //
 // Input: the open issues from one `gh issue list --json …` call plus the rows of the table in
 // docs/portfolio.md, whose "Pick rule" section is what this file computes, the open claims (#531,
-// `readClaims` at the foot of this file) and the claims made before, from which the cycle resumes (#535,
-// `claimHistory`). Output: plain data.
+// `readClaims` at the foot of this file), the claims made before, from which the cycle resumes (#535,
+// `claimHistory`), and the open PRs, which set dormant mode (#540). Output: plain data.
 
 export const DEFAULT_ALLOWLIST = ['mezivillager']
 
@@ -175,12 +175,21 @@ function slotting(tasks) {
   }
 }
 
+/** The PICK_ROTATION slot that serves `bucket`: its own, or `aux` for an aux bucket. */
+const servingSlot = (bucket) => (AUX_ROTATION.includes(bucket) ? AUX_SLOT : bucket)
+
 /** The place after a pick from `bucket`: past the next slot from `place.slot` on that serves it, as rotate took it. */
 function advance(place, bucket) {
   const auxIndex = AUX_ROTATION.indexOf(bucket)
-  const serving = auxIndex < 0 ? bucket : AUX_SLOT
-  const step = PICK_ROTATION.findIndex((_, offset) => PICK_ROTATION[(place.slot + offset) % PICK_ROTATION.length] === serving)
+  const step = PICK_ROTATION.findIndex((_, offset) => PICK_ROTATION[(place.slot + offset) % PICK_ROTATION.length] === servingSlot(bucket))
   return { slot: (place.slot + step + 1) % PICK_ROTATION.length, aux: auxIndex < 0 ? place.aux : (auxIndex + 1) % AUX_ROTATION.length }
+}
+
+/** Each pick of `history` with the bucket whose slot it took by today's issues, or null for none (resumePoint's replay). */
+function slotsTaken(issues, portfolioRows, history, allowlist) {
+  const slotOf = slotting(triageTasks(issues, portfolioRows, allowlist))
+  const earlier = new Map(triageTasks(history, portfolioRows, allowlist).map((task) => [task.number, task]))
+  return history.map((pick) => ({ pick, bucket: earlier.has(pick.number) ? slotOf(earlier.get(pick.number)) : null }))
 }
 
 /**
@@ -191,11 +200,8 @@ function advance(place, bucket) {
  * @returns {{slot:number, aux:number, after:{number:number, bucket:string, at:string|null}|null}}
  */
 export function resumePoint(issues, portfolioRows, history = [], allowlist = DEFAULT_ALLOWLIST) {
-  const slotOf = slotting(triageTasks(issues, portfolioRows, allowlist))
-  const earlier = new Map(triageTasks(history, portfolioRows, allowlist).map((task) => [task.number, task]))
   let place = { slot: 0, aux: 0, after: null }
-  for (const pick of history) {
-    const bucket = earlier.has(pick.number) ? slotOf(earlier.get(pick.number)) : null
+  for (const { pick, bucket } of slotsTaken(issues, portfolioRows, history, allowlist)) {
     if (bucket) place = { ...advance(place, bucket), after: { number: pick.number, bucket, at: pick.claimedAt ?? null } }
   }
   return place
@@ -237,7 +243,14 @@ export function planReady(issues, portfolioRows, allowlist = DEFAULT_ALLOWLIST, 
   return [...critical, ...rotate(buckets, resumePoint(issues, portfolioRows, history, allowlist)), ...unpicked.sort(byNumber)]
 }
 
-/** One summary per portfolio row, in file order: live counts, its stale claims and the next pick for that row. */
+/** A row with more open `agent-ready` issues than this has outgrown shaping (reviews/2026-09-26 F12): `projects` warns. */
+export const ROW_AGENT_READY_CAP = 12
+
+/**
+ * One summary per portfolio row, in file order: live counts, its stale claims and the next pick for that row. `ready`
+ * counts what `ready` picks — a task with a reason (`on-request`, `not-pulled`, …) is not ready (#540); `next` is still
+ * the row's first pickable task, what the owner gets on request. `agentReady` counts its open `agent-ready` issues.
+ */
 export function summarizeProjects(issues, portfolioRows, allowlist = DEFAULT_ALLOWLIST, claims = [], history = []) {
   const plan = planReady(issues, portfolioRows, allowlist, claims, history)
   return portfolioRows.map((row) => {
@@ -247,10 +260,11 @@ export function summarizeProjects(issues, portfolioRows, allowlist = DEFAULT_ALL
       slug: row.slug,
       epicNumber: row.epicNumber,
       open: tasks.length,
-      ready: tasks.filter((task) => task.pickable).length,
+      ready: tasks.filter((task) => task.reason === null).length,
       inProgress: tasks.filter((task) => task.labels.includes('in-progress')).length,
       needsHuman: tasks.filter((task) => task.labels.includes('needs-human')).length,
       staleClaims: tasks.filter((task) => task.reason === 'stale-claim').map((task) => task.number),
+      agentReady: tasks.filter((task) => task.labels.includes('agent-ready')).length,
       next: next && { number: next.number, title: next.title },
     }
   })
@@ -265,13 +279,29 @@ export function formatReady(plan) {
   return [...picks, ...(picks.length > 0 && rest.length > 0 ? [''] : []), ...rest].join('\n')
 }
 
-/** `slug · open N · ready N · in-progress N · needs-human N [· stale-claim #n,…] · next: #n title`, one row per line. */
+/** `slug · open N · ready N · in-progress N · needs-human N [· stale-claim #n,…] [· over cap: N agent-ready > 12] · next: #n title`. */
 export function formatProjects(summaries) {
   const nextLabel = (next) => (next ? `#${next.number} ${next.title}` : '—')
   const stale = (numbers) => (numbers.length > 0 ? ` · stale-claim ${numbers.map((number) => `#${number}`).join(',')}` : '')
+  const overCap = (count) => (count > ROW_AGENT_READY_CAP ? ` · over cap: ${count} agent-ready > ${ROW_AGENT_READY_CAP}` : '')
   return summaries.map((s) => `${s.slug} · open ${s.open} · ready ${s.ready} · in-progress ${s.inProgress}` +
-    ` · needs-human ${s.needsHuman}${stale(s.staleClaims)} · next: ${nextLabel(s.next)}`).join('\n')
+    ` · needs-human ${s.needsHuman}${stale(s.staleClaims)}${overCap(s.agentReady)} · next: ${nextLabel(s.next)}`).join('\n')
 }
+
+/** Dormant mode (docs/portfolio.md): at this many open agent PRs, no new PR-producing work. */
+export const DORMANT_OPEN_PRS = 5
+
+/** The open agent PRs — by the allowlist, whose identity agents share; drafts count, Dependabot's do not — and whether
+ *  there are DORMANT_OPEN_PRS of them. `openPrs` is `gh pr list --state open --json number,author,…`. */
+export function dormantMode(openPrs, allowlist = DEFAULT_ALLOWLIST) {
+  const agentPrs = (openPrs ?? []).filter((pr) => allowlist.includes(pr.author?.login)).map((pr) => pr.number)
+  return { dormant: agentPrs.length >= DORMANT_OPEN_PRS, agentPrs }
+}
+
+/** The banner `ready` prints first in dormant mode; null otherwise. */
+export const formatDormant = ({ dormant, agentPrs }) => (dormant ? `DORMANT MODE — ${agentPrs.length} open agent PRs ` +
+  `(${agentPrs.map((number) => `#${number}`).join(', ')}), cap ${DORMANT_OPEN_PRS}: no new PR-producing work; ` +
+  'only horizon notes and issue shaping (docs/portfolio.md § Dormant mode)' : null)
 
 // Claims (#531, sessions/COORDINATOR-HANDOFF.md). A claim is a `claim/<n>` ref that `backlog.mjs claim` creates through
 // GitHub's create-ref API, which refuses a ref that exists; its holder is the `Claimed by` of the issue's latest claim
@@ -308,30 +338,79 @@ export function latestClaim(comments = [], allowlist = DEFAULT_ALLOWLIST) {
   return comment ? { ...claimFields(comment.body), author: comment.author.login, at: comment.createdAt, url: comment.url } : null
 }
 
-/** The issues whose claim comments claimHistory reads: the most recently updated, open or closed. */
+/** The issues whose claim comments claimHistory reads: the most recently updated, open or closed — one page of them. */
 export const CLAIM_HISTORY_WINDOW = 50
+/** The most pages readClaimHistory reads before it leaves the rest to historyGap. */
+export const CLAIM_HISTORY_PAGES = 10
 
-/** One GraphQL query for the CLAIM_HISTORY_WINDOW most recently updated issues: how each files, and its comments. */
-export function claimHistoryQuery(repo) {
+/** One GraphQL query for a page of the CLAIM_HISTORY_WINDOW most recently updated issues — the first, or the one after
+ *  cursor `after` — how each files, and its comments. */
+export function claimHistoryQuery(repo, after = null) {
   const [owner, name] = repo.split('/')
   return `query { repository(owner: "${owner}", name: "${name}") { issues(first: ${CLAIM_HISTORY_WINDOW}, ` +
-    'orderBy: {field: UPDATED_AT, direction: DESC}) { nodes { number updatedAt parent { number } labels(first: 30) { nodes { name } } ' +
+    `${after ? `after: ${JSON.stringify(after)}, ` : ''}orderBy: {field: UPDATED_AT, direction: DESC}) { pageInfo { hasNextPage endCursor } ` +
+    'nodes { number updatedAt parent { number } labels(first: 30) { nodes { name } } ' +
     'blocking(first: 20) { nodes { number state } } comments(last: 50) { nodes { author { login } createdAt body } } } } } }'
 }
 
+/** claimHistoryQuery's answer, or its pages newest first, as the issue connections they hold. */
+const historyPages = (answer) => [answer].flat().map((page) => page?.data?.repository?.issues).filter(Boolean)
+/** Whether the pages reach the oldest issue: the last has no next page, or (a page without pageInfo) is not full. */
+const reachesEnd = (pages) => pages.length > 0 &&
+  (pages.at(-1).pageInfo ? !pages.at(-1).pageInfo.hasNextPage : pages.at(-1).nodes.length < CLAIM_HISTORY_WINDOW)
+
 /**
- * The picks resumePoint replays (#535), oldest first: every issue of claimHistoryQuery's answer with a claim comment,
- * in the gh issue shape plus `claimedAt`, its first claim comment — the pick; later ones change intent or resume it.
- * A claim posts a comment, which updates the issue, so the window holds every claim made since its oldest update; a
- * full window drops the claims before that, which it cannot show complete.
+ * The picks resumePoint replays (#535), oldest first: every issue of claimHistoryQuery's answer — or its pages, read as
+ * one window — with a claim comment, in the gh issue shape plus `claimedAt`, its first claim comment — the pick; later
+ * ones change intent or resume it. A claim posts a comment, which updates the issue, so the window holds every claim
+ * made since its oldest update; until it reaches the oldest issue, it drops the claims before that, which it cannot
+ * show complete.
  */
 export function claimHistory(answer, allowlist = DEFAULT_ALLOWLIST) {
-  const nodes = answer?.data?.repository?.issues?.nodes ?? []
-  const since = nodes.length < CLAIM_HISTORY_WINDOW ? -Infinity : Math.min(...nodes.map((issue) => Date.parse(issue.updatedAt)))
+  const pages = historyPages(answer)
+  const nodes = [...new Map(pages.flatMap((page) => page.nodes).map((issue) => [issue.number, issue])).values()]
+  const since = reachesEnd(pages) ? -Infinity : Math.min(...nodes.map((issue) => Date.parse(issue.updatedAt)))
   return nodes.flatMap(({ number, parent, labels, blocking, comments }) => {
     const first = comments.nodes.find(isClaim(allowlist))
     return first && Date.parse(first.createdAt) > since ? [{ number, parent, labels: labels.nodes, blocking, claimedAt: first.createdAt }] : []
   }).sort((a, b) => Date.parse(a.claimedAt) - Date.parse(b.claimedAt))
+}
+
+/**
+ * What resumePoint's place leaves a guess, or null when nothing (#540; #555's verifier, nit 3). Short of the oldest
+ * issue the replay starts from slot 1 unseen: a pick of a one-slot bucket fixes the slot from there on — foundation's
+ * three do not — and an aux pick fixes the aux turn. Each matters only while two slots (two aux buckets) have a task
+ * to order; claims aside, so it errs toward reading further.
+ */
+export function historyGap(answer, issues, portfolioRows, allowlist = DEFAULT_ALLOWLIST) {
+  const pages = historyPages(answer)
+  if (pages.length === 0 || reachesEnd(pages)) return null
+  const taken = slotsTaken(issues, portfolioRows, claimHistory(answer, allowlist), allowlist).map(({ bucket }) => bucket).filter(Boolean)
+  const tasks = triageTasks(issues, portfolioRows, allowlist)
+  const live = [...new Set(tasks.filter((task) => task.pickable).map(slotting(tasks)).filter(Boolean))]
+  const oneSlot = (bucket) => PICK_ROTATION.filter((slot) => slot === servingSlot(bucket)).length === 1
+  const isAux = (bucket) => AUX_ROTATION.includes(bucket)
+  const unknown = [
+    new Set(live.map(servingSlot)).size > 1 && !taken.some(oneSlot) && 'the slot',
+    live.filter(isAux).length > 1 && !taken.some(isAux) && 'the aux turn',
+  ].filter(Boolean)
+  const count = pages.reduce((sum, page) => sum + page.nodes.length, 0)
+  return unknown.length > 0 ? `no claim in the ${count} most recently updated issues fixes ${unknown.join(' or ')}` : null
+}
+
+/**
+ * claimHistoryQuery's pages, newest first, each read by `fetchPage(after)` (`after` null for the first) until
+ * historyGap has nothing to say, the pages reach the oldest issue, or CLAIM_HISTORY_PAGES are read. `fetchPage` does
+ * the only I/O; backlog.mjs and the Mission Control collector both read through here.
+ */
+export async function readClaimHistory(fetchPage, issues, portfolioRows, allowlist = DEFAULT_ALLOWLIST) {
+  const pages = [await fetchPage(null)]
+  const next = () => {
+    const info = pages.at(-1)?.data?.repository?.issues?.pageInfo
+    return info?.hasNextPage && pages.length < CLAIM_HISTORY_PAGES && historyGap(pages, issues, portfolioRows, allowlist) ? info.endCursor : null
+  }
+  for (let after = next(); after; after = next()) pages.push(await fetchPage(after))
+  return pages
 }
 
 /** An open PR carries issue n when it closes #n or its head branch is `<type>/<n>-…` (scripts/wt-new's convention). */
@@ -389,14 +468,3 @@ export function releaseComment(claim, { by, reason }) {
     `Released by: ${by}`, ...(reason ? [`Reason: ${reason}`] : [])].join('\n')
 }
 
-// #540 — red stubs: the reporting the tests describe is not built yet.
-export const DORMANT_OPEN_PRS = 5
-export const ROW_AGENT_READY_CAP = 12
-export const CLAIM_HISTORY_PAGES = 10
-const notYet = () => {
-  throw new Error('not implemented (#540)')
-}
-export const dormantMode = notYet
-export const formatDormant = notYet
-export const historyGap = notYet
-export const readClaimHistory = notYet
