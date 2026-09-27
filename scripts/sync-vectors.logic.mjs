@@ -93,8 +93,25 @@ export function shippedFiles(indexSource) {
   })
 }
 
-/** Not implemented yet: the red commit's stub. */
-export function refuseUnshipped() {}
+/**
+ * Throws when a vendored project directory holds a file its upstream index.ts does not ship.
+ * The sync refuses rather than deletes: the tree is a held-out oracle, so a vector leaves it only
+ * by a reviewed `git rm`, never as a side effect of a run, including one whose parser reads a
+ * later index.ts short. Files that are shipped but missing are fine; the sync writes them.
+ * @param {string} project
+ * @param {string[]} onDisk names in conformance/vectors/<project>/, [] before the first sync
+ * @param {string[]} shipped
+ */
+export function refuseUnshipped(project, onDisk, shipped) {
+  const wanted = new Set(shipped)
+  const extra = onDisk.filter((name) => !wanted.has(name)).sort()
+  if (extra.length > 0) {
+    throw new Error(
+      `conformance/vectors/${project} holds ${extra.join(', ')}, which upstream does not ship at ${WEB_IDE_COMMIT}. ` +
+        'If upstream dropped it, git rm it in its own commit and re-run.',
+    )
+  }
+}
 
 function withTrailingNewline(text) {
   return text.endsWith('\n') ? text : `${text}\n`

@@ -2,15 +2,16 @@
 // Extract .hdl/.tst/.cmp text from a web-ide checkout that sync-vectors.sh has already
 // pinned. The checkout is data: each project's index.ts is read as text for the files it
 // ships, and this process imports the upstream string modules those files come from and
-// writes their template text. It does not run web-ide. Every file is read before any is
-// written, so a refusal leaves the tree as it was.
+// writes their template text. It does not run web-ide. Every file is read, and every vendored
+// project directory checked for files upstream does not ship, before any is written, so a
+// refusal leaves the tree as it was. It never deletes a vector.
 //
 //   node --experimental-strip-types scripts/sync-vectors.mjs <web-ide-root> <vectors-root>
 
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
-import { VENDORED_PROJECTS, exportText, licenseNotice, shippedFiles } from './sync-vectors.logic.mjs'
+import { VENDORED_PROJECTS, exportText, licenseNotice, refuseUnshipped, shippedFiles } from './sync-vectors.logic.mjs'
 
 const [webIdeRoot, vectorsRoot] = process.argv.slice(2)
 if (!webIdeRoot || !vectorsRoot) {
@@ -23,9 +24,11 @@ for (const project of VENDORED_PROJECTS) {
   const sourceDir = path.join(webIdeRoot, 'projects', 'src', `project_${project}`)
   const entries = shippedFiles(readFileSync(path.join(sourceDir, 'index.ts'), 'utf8'))
   if (entries.length === 0) throw new Error(`${sourceDir}/index.ts ships no files`)
+  const targetDir = path.join(vectorsRoot, project)
+  refuseUnshipped(project, existsSync(targetDir) ? readdirSync(targetDir) : [], entries.map((entry) => entry.file))
   for (const entry of entries) {
     const mod = await import(pathToFileURL(path.join(sourceDir, entry.module)).href)
-    writes.push({ file: path.join(vectorsRoot, project, entry.file), text: exportText(mod, entry) })
+    writes.push({ file: path.join(targetDir, entry.file), text: exportText(mod, entry) })
   }
 }
 
