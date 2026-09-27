@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-27T12:02:22.347Z",
+  "generatedAt": "2026-09-27T12:10:03.739Z",
   "head": {
-    "sha": "b3325e8583db9443f95df082873d199348f5bf2e",
-    "date": "2026-09-27T15:01:34+03:00",
-    "subject": "docs(harness): retire tasks/todo.md and the P05 checklist as history"
+    "sha": "87fed0a6cc43aaa3fc8f9f9d39c9c8e5b4be80a0",
+    "date": "2026-09-27T15:09:27+03:00",
+    "subject": "chore(ci): add an advisory OpenSSF Scorecard workflow (#542)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-27T12:02:22.347Z",
+      "fetchedAt": "2026-09-27T12:10:03.739Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-27T12:02:22.347Z",
+      "fetchedAt": "2026-09-27T12:10:03.739Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-27T12:02:22.347Z",
+      "fetchedAt": "2026-09-27T12:10:03.739Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-27T12:02:22.347Z",
+      "fetchedAt": "2026-09-27T12:10:03.739Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-09-27T12:02:22.347Z",
+      "fetchedAt": "2026-09-27T12:10:03.739Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-09-27T12:02:22.347Z",
+      "fetchedAt": "2026-09-27T12:10:03.739Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-09-27T12:02:22.347Z",
+      "fetchedAt": "2026-09-27T12:10:03.739Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-09-27T12:02:22.347Z",
+      "fetchedAt": "2026-09-27T12:10:03.739Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-09-27T12:02:22.347Z",
+      "fetchedAt": "2026-09-27T12:10:03.739Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-09-27T12:02:22.347Z",
+      "fetchedAt": "2026-09-27T12:10:03.739Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-27T12:02:22.347Z",
+      "fetchedAt": "2026-09-27T12:10:03.739Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-09-27T12:02:22.347Z",
+      "fetchedAt": "2026-09-27T12:10:03.739Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-09-27T12:02:22.347Z",
+      "fetchedAt": "2026-09-27T12:10:03.739Z",
       "status": "ok"
     }
   },
@@ -290,20 +290,20 @@
         "lane": "aux",
         "slug": "upkeep",
         "epicNumber": 146,
-        "open": 6,
+        "open": 5,
         "ready": 3,
-        "inProgress": 1,
+        "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 5,
+        "agentReady": 4,
         "next": {
           "number": 253,
           "title": "Two living docs still describe the pre-chipName gate recipe (verifier nit on #248)"
         },
         "title": "Epic: upkeep — maintenance & documentation",
         "subIssues": {
-          "completed": 5,
-          "percentCompleted": 50,
+          "completed": 6,
+          "percentCompleted": 60,
           "total": 10
         }
       },
@@ -616,7 +616,6 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
-        563,
         514
       ]
     }
@@ -2729,22 +2728,6 @@
         "reason": "claimed"
       },
       {
-        "number": 542,
-        "title": "OpenSSF Scorecard, advisory",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:1"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 550,
         "title": "merge-on-green: disarm auto-merge when a required check fails",
         "labels": [
@@ -2831,8 +2814,7 @@
         290,
         421,
         229,
-        256,
-        542
+        256
       ],
       "lineage": [
         471,
@@ -2930,24 +2912,6 @@
   },
   "prs": {
     "open": [
-      {
-        "number": 563,
-        "title": "chore(ci): advisory OpenSSF Scorecard workflow (#542)",
-        "url": "https://github.com/mezivillager/hacer/pull/563",
-        "author": "mezivillager",
-        "labels": [
-          "project:upkeep",
-          "risk:1"
-        ],
-        "headRefName": "chore/542-scorecard",
-        "isDraft": false,
-        "createdAt": "2026-09-27T11:57:18Z",
-        "mergedAt": null,
-        "closes": [
-          542
-        ],
-        "verdicts": []
-      },
       {
         "number": 522,
         "title": "chore(deps): bump @radix-ui/react-switch from 1.2.6 to 1.3.7",
@@ -3063,6 +3027,32 @@
             "model": "coordinator (Opus 5.5)",
             "at": "2026-09-27T11:59:43Z",
             "url": "https://github.com/mezivillager/hacer/pull/564#issuecomment-5855626015"
+          }
+        ]
+      },
+      {
+        "number": 563,
+        "title": "chore(ci): advisory OpenSSF Scorecard workflow (#542)",
+        "url": "https://github.com/mezivillager/hacer/pull/563",
+        "author": "mezivillager",
+        "labels": [
+          "project:upkeep",
+          "risk:1"
+        ],
+        "headRefName": "chore/542-scorecard",
+        "isDraft": false,
+        "createdAt": "2026-09-27T11:57:18Z",
+        "mergedAt": "2026-09-27T12:09:28Z",
+        "closes": [
+          542
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "claude-sonnet-5",
+            "at": "2026-09-27T12:08:55Z",
+            "url": "https://github.com/mezivillager/hacer/pull/563#issuecomment-5855686139"
           }
         ]
       },
@@ -4432,32 +4422,13 @@
           195
         ],
         "verdicts": []
-      },
-      {
-        "number": 441,
-        "title": "chore(deps-dev): bump typescript from 5.9.3 to 6.0.3",
-        "url": "https://github.com/mezivillager/hacer/pull/441",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:upkeep",
-          "risk:1"
-        ],
-        "headRefName": "chore/427-typescript-6",
-        "isDraft": false,
-        "createdAt": "2026-09-24T01:05:23Z",
-        "mergedAt": "2026-09-24T01:08:21Z",
-        "closes": [
-          427
-        ],
-        "verdicts": []
       }
     ],
     "coverage": {
       "merged": 60,
-      "withVerdict": 35,
-      "withoutVerdict": 25,
-      "pass": 34,
+      "withVerdict": 36,
+      "withoutVerdict": 24,
+      "pass": 35,
       "block": 1
     }
   },
@@ -4824,7 +4795,7 @@
         "number": 542,
         "ref": "refs/heads/claim/542",
         "sha": "76bd9bb19255eb155fc88bf4aba2366a7e3f4f8c",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "OpenSSF Scorecard, advisory",
         "url": "https://github.com/mezivillager/hacer/issues/542",
         "labels": [
@@ -4833,7 +4804,7 @@
           "in-progress",
           "risk:1"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -4846,7 +4817,7 @@
         }
       }
     ],
-    "onClosedIssues": 10
+    "onClosedIssues": 11
   },
   "cloudLane": {
     "items": [
@@ -6324,7 +6295,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-24",
-        "merges": 22
+        "merges": 21
       },
       {
         "date": "2026-09-25",
@@ -6336,7 +6307,7 @@
       },
       {
         "date": "2026-09-27",
-        "merges": 22
+        "merges": 23
       }
     ]
   },
@@ -6344,11 +6315,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "b3325e8583db9443f95df082873d199348f5bf2e",
+        "sha": "87fed0a6cc43aaa3fc8f9f9d39c9c8e5b4be80a0",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36317625070/job/108615216288",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36318052996/job/108616408700",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -6572,52 +6543,6 @@
         "conclusion": "SUCCESS",
         "completedAt": "2026-09-25T14:48:26Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/36149664191/job/108119435683",
-        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 71,
-          "new": 0
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 563,
-        "sha": "9ce7e0adde13bfd43d5cdc6c057ea7ecc2270ccb",
-        "check": "pr-hygiene",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-09-27T11:57:31Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36317388924/job/108614568612",
-        "line": "HYGIENE: PASS reviewable=62 test=91 excluded=0 files=1 issue=#542 linked=fixes",
-        "verdict": "PASS",
-        "fields": {
-          "reviewable": 62,
-          "test": 91,
-          "excluded": 0,
-          "files": 1,
-          "issue": "#542",
-          "linked": "fixes"
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 563,
-        "sha": "9ce7e0adde13bfd43d5cdc6c057ea7ecc2270ccb",
-        "check": "browser-qa",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-09-27T11:57:33Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36317388906/job/108614568119",
-        "line": "BROWSER-QA: skipped (no critical paths)",
-        "verdict": "SKIPPED",
-        "fields": {},
-        "disagrees": false
-      },
-      {
-        "pr": 563,
-        "sha": "9ce7e0adde13bfd43d5cdc6c057ea7ecc2270ccb",
-        "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-09-27T12:00:14Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36317388836/job/108614567904",
         "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
         "verdict": "PASS",
         "fields": {
