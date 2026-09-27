@@ -47,4 +47,4 @@ docs/harness/reviews/
 
 | Cycle | Reviews | Status |
 |---|---|---|
-| [2026-09-26](2026-09-26/README.md) | 3 | triaged 2026-09-27; follow-through in the review-followups run (`docs/decisions/rulings/2026-09-27-review-followups.md`) |
+| [2026-09-26](2026-09-26/README.md) | 3 | followed through 2026-09-27: S1–S20 carried by merged PRs; see `docs/harness/sessions/2026-09-27.md` §3 |
