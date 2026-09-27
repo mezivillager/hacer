@@ -1,0 +1,206 @@
+{
+  "_recorded": "PR #524 head 73d1536 replayed to 2026-09-26T17:52:54Z, every check complete. Set by hand: state OPEN, mergeStateStatus BEHIND. main-rules does not require an up-to-date branch today (strict off, #407), so no PR here has reported it yet.",
+  "pr": {
+    "number": 524,
+    "state": "OPEN",
+    "isDraft": false,
+    "mergeStateStatus": "BEHIND",
+    "headRefOid": "73d1536d07172f546f932f97b23d58e98fd45730",
+    "baseRefName": "main",
+    "autoMergeRequest": {
+      "enabledAt": "2026-09-26T17:50:40Z",
+      "mergeMethod": "REBASE"
+    },
+    "body": "The owner asked for a review brief so that a fresh session, with no memory of the runs, can evaluate the process that moves the platform forward. It covers:\n\n- flaws;\n- improvements;\n- tools, judged against best practice;\n- new projects;\n- changes to project priority.\n\nThis PR adds the brief. It changes no process.\n\n- `docs/research/2026-09-26-process-review/BRIEF.md` has nine sections:\n  - the flow stage by stage, with **what enforces each step: a machine, or only a brief**;\n  - eight days of runs, and the measured evidence (at `origin/main` `60878a9`);\n  - the review's questions and method, plus the coordinator's own suspicions, to be read after the reviewer's first pass;\n  - hard constraints: read-only on the process, one report PR, no issues filed, and a budget;\n  - the shape of `REPORT.md`, a reading map, and the launch line.\n- `evidence/measure-flow.mjs` re-measures every GitHub number the brief cites; its output is `evidence/2026-09-26-measurements.txt`.\n- `README.md` indexes the directory; `REPORT.md` will be written by the reviewing session.\n\nFive draft claims failed a check against their sources while this was written, and were corrected before commit (brief §5, method 4). The brief tells the reviewer to expect more.\n\nDecisions: none\n\n**Verification**\n\n| Check | Result |\n|---|---|\n| `pnpm run lint:docs` | exit 0 |\n| `eslint` on the evidence script | exit 0 |\n| pre-commit (`tsc -b`, doc paths) | passed |\n| `evidence/measure-flow.mjs` | exit 0 |\n| Leak scan (absolute paths, account ids) | clean |\n\nDocs-only. The size is 384 reviewable lines; `evidence/` is excluded."
+  },
+  "requiredContexts": [
+    "ci",
+    "pr-hygiene",
+    "browser-qa"
+  ],
+  "checkRuns": [
+    {
+      "id": 108455129405,
+      "name": "Analyze (actions)",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 98193293536
+    },
+    {
+      "id": 108455129501,
+      "name": "Analyze (python)",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 98193293536
+    },
+    {
+      "id": 108455129513,
+      "name": "Analyze (javascript-typescript)",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 98193293536
+    },
+    {
+      "id": 108455129790,
+      "name": "browser-qa",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 98193295874
+    },
+    {
+      "id": 108455130792,
+      "name": "pr-hygiene",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 98193296324
+    },
+    {
+      "id": 108455131083,
+      "name": "GitGuardian Security Checks",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 98193282265
+    },
+    {
+      "id": 108455131310,
+      "name": "ci",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 98193297767
+    },
+    {
+      "id": 108455131638,
+      "name": "deploy-preview",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 98193297925
+    },
+    {
+      "id": 108455132229,
+      "name": "sweep-previews",
+      "status": "completed",
+      "conclusion": "skipped",
+      "suite": 98193297925
+    },
+    {
+      "id": 108455132323,
+      "name": "cleanup-preview",
+      "status": "completed",
+      "conclusion": "skipped",
+      "suite": 98193297925
+    },
+    {
+      "id": 108455158472,
+      "name": "browser-qa",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 98193297824
+    },
+    {
+      "id": 108455159150,
+      "name": "pr-hygiene",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 98193297858
+    },
+    {
+      "id": 108455198509,
+      "name": "CodeQL",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 98193362972
+    }
+  ],
+  "workflowRuns": [
+    {
+      "id": 36260452077,
+      "name": "PR #524",
+      "workflow_id": 362189662,
+      "event": "dynamic",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 98193293536,
+      "attempt": 1
+    },
+    {
+      "id": 36260453041,
+      "name": "browser-qa",
+      "workflow_id": 361351329,
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 98193295874,
+      "attempt": 1
+    },
+    {
+      "id": 36260453230,
+      "name": "PR Hygiene",
+      "workflow_id": 361294170,
+      "event": "pull_request_target",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 98193296324,
+      "attempt": 1
+    },
+    {
+      "id": 36260453434,
+      "name": "browser-qa",
+      "workflow_id": 361351329,
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "suite": 98193296893,
+      "attempt": 1
+    },
+    {
+      "id": 36260453504,
+      "name": "PR Hygiene",
+      "workflow_id": 361294170,
+      "event": "pull_request_target",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "suite": 98193297070,
+      "attempt": 1
+    },
+    {
+      "id": 36260453772,
+      "name": "CI",
+      "workflow_id": 241098938,
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 98193297767,
+      "attempt": 1
+    },
+    {
+      "id": 36260453791,
+      "name": "browser-qa",
+      "workflow_id": 361351329,
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 98193297824,
+      "attempt": 1
+    },
+    {
+      "id": 36260453804,
+      "name": "PR Hygiene",
+      "workflow_id": 361294170,
+      "event": "pull_request_target",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 98193297858,
+      "attempt": 1
+    },
+    {
+      "id": 36260453824,
+      "name": "PR Deploy Preview",
+      "workflow_id": 255347039,
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "suite": 98193297925,
+      "attempt": 1
+    }
+  ]
+}
