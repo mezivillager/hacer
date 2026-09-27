@@ -1,0 +1,1961 @@
+{
+  "data": {
+    "repository": {
+      "issues": {
+        "nodes": [
+          {
+            "number": 536,
+            "updatedAt": "2026-09-27T10:19:10Z",
+            "parent": {
+              "number": 138
+            },
+            "labels": {
+              "nodes": [
+                {
+                  "name": "project:harness"
+                },
+                {
+                  "name": "agent-ready"
+                },
+                {
+                  "name": "in-progress"
+                },
+                {
+                  "name": "risk:1"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": []
+            },
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-27T09:07:02Z",
+                  "body": "Claimed by: claude-local"
+                }
+              ]
+            }
+          },
+          {
+            "number": 537,
+            "updatedAt": "2026-09-27T10:16:50Z",
+            "parent": {
+              "number": 138
+            },
+            "labels": {
+              "nodes": [
+                {
+                  "name": "project:harness"
+                },
+                {
+                  "name": "agent-ready"
+                },
+                {
+                  "name": "in-progress"
+                },
+                {
+                  "name": "risk:0"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": []
+            },
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-27T10:16:48Z",
+                  "body": "Claimed by: claude-local"
+                }
+              ]
+            }
+          },
+          {
+            "number": 407,
+            "updatedAt": "2026-09-27T10:14:30Z",
+            "parent": null,
+            "labels": {
+              "nodes": [
+                {
+                  "name": "project:harness"
+                },
+                {
+                  "name": "agent-ready"
+                },
+                {
+                  "name": "risk:1"
+                },
+                {
+                  "name": "project:foundation"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": []
+            },
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-27T10:14:30Z",
+                  "body": "Note for whoever makes required checks strict here: `scripts/merge-on-green.mjs` (#551) answers BEHIND with `gh pr update-branch`, which adds a merge commit. `main-rules` requires linear history and allows only rebase merges, so once BEHIND is reachable that recovery must use `--rebase`, or give up and name the step for a person. #551's verifier (issuecomment-5854948839) raised it; the path is unreachable while `strict` is off."
+                }
+              ]
+            }
+          },
+          {
+            "number": 535,
+            "updatedAt": "2026-09-27T10:08:35Z",
+            "parent": {
+              "number": 138
+            },
+            "labels": {
+              "nodes": [
+                {
+                  "name": "project:harness"
+                },
+                {
+                  "name": "agent-ready"
+                },
+                {
+                  "name": "in-progress"
+                },
+                {
+                  "name": "risk:1"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": [
+                {
+                  "number": 540,
+                  "state": "OPEN"
+                }
+              ]
+            },
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-27T10:08:32Z",
+                  "body": "Claimed by: claude-local"
+                }
+              ]
+            }
+          },
+          {
+            "number": 531,
+            "updatedAt": "2026-09-27T10:08:04Z",
+            "parent": {
+              "number": 138
+            },
+            "labels": {
+              "nodes": [
+                {
+                  "name": "project:harness"
+                },
+                {
+                  "name": "agent-ready"
+                },
+                {
+                  "name": "in-progress"
+                },
+                {
+                  "name": "risk:1"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": [
+                {
+                  "number": 535,
+                  "state": "OPEN"
+                }
+              ]
+            },
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-27T08:27:54Z",
+                  "body": "Claimed by: claude-local"
+                }
+              ]
+            }
+          },
+          {
+            "number": 550,
+            "updatedAt": "2026-09-27T09:59:35Z",
+            "parent": null,
+            "labels": {
+              "nodes": [
+                {
+                  "name": "project:harness"
+                },
+                {
+                  "name": "risk:1"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": []
+            },
+            "comments": {
+              "nodes": []
+            }
+          },
+          {
+            "number": 547,
+            "updatedAt": "2026-09-27T09:49:33Z",
+            "parent": {
+              "number": 138
+            },
+            "labels": {
+              "nodes": [
+                {
+                  "name": "project:harness"
+                },
+                {
+                  "name": "agent-ready"
+                },
+                {
+                  "name": "risk:0"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": []
+            },
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-27T09:49:33Z",
+                  "body": "Coordinator ruling (R756, 2026-09-27): yes — the cloud lane clones this repo and has `gh`, so `cloud-queue.md` steps 2 and 8 and `COVERAGE.md` should use `node scripts/backlog.mjs claim|release` like the local lane. One claim mechanism for both lanes. Marked `agent-ready`."
+                }
+              ]
+            }
+          },
+          {
+            "number": 530,
+            "updatedAt": "2026-09-27T09:25:44Z",
+            "parent": {
+              "number": 138
+            },
+            "labels": {
+              "nodes": [
+                {
+                  "name": "released"
+                },
+                {
+                  "name": "project:harness"
+                },
+                {
+                  "name": "agent-ready"
+                },
+                {
+                  "name": "in-progress"
+                },
+                {
+                  "name": "risk:1"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": []
+            },
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-27T08:26:56Z",
+                  "body": "Claimed by: claude-local"
+                },
+                {
+                  "author": {
+                    "login": "github-actions"
+                  },
+                  "createdAt": "2026-09-27T09:25:43Z",
+                  "body": ":tada: This issue has been resolved in version 2.43.1 :tada:"
+                }
+              ]
+            }
+          },
+          {
+            "number": 368,
+            "updatedAt": "2026-09-27T09:24:42Z",
+            "parent": null,
+            "labels": {
+              "nodes": [
+                {
+                  "name": "project:harness"
+                },
+                {
+                  "name": "agent-ready"
+                },
+                {
+                  "name": "risk:1"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": []
+            },
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-27T09:24:42Z",
+                  "body": "Note from #546 (merged 2026-09-27): required workflows may no longer share a concurrency group between runs, so option (a) here — a manual dispatch sharing the PR's group — is foreclosed. Only the other option remains."
+                }
+              ]
+            }
+          },
+          {
+            "number": 369,
+            "updatedAt": "2026-09-27T09:24:38Z",
+            "parent": null,
+            "labels": {
+              "nodes": [
+                {
+                  "name": "project:harness"
+                },
+                {
+                  "name": "agent-ready"
+                },
+                {
+                  "name": "risk:0"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": []
+            },
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-27T09:24:37Z",
+                  "body": "Moot after #546 (merged 2026-09-27): the guard in `scripts/required-checks.logic.mjs` now refuses any concurrency group shared between runs of a required workflow, whatever `cancel-in-progress` says. It catches all three spellings this issue said the old guard missed; the #546 builder checked by mutating the real workflow text 19 ways."
+                }
+              ]
+            }
+          },
+          {
+            "number": 533,
+            "updatedAt": "2026-09-27T09:09:20Z",
+            "parent": {
+              "number": 138
+            },
+            "labels": {
+              "nodes": [
+                {
+                  "name": "released"
+                },
+                {
+                  "name": "project:harness"
+                },
+                {
+                  "name": "risk:0"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": []
+            },
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "login": "github-actions"
+                  },
+                  "createdAt": "2026-09-27T09:09:20Z",
+                  "body": ":tada: This issue has been resolved in version 2.43.0 :tada:"
+                }
+              ]
+            }
+          },
+          {
+            "number": 545,
+            "updatedAt": "2026-09-27T09:08:00Z",
+            "parent": {
+              "number": 458
+            },
+            "labels": {
+              "nodes": [
+                {
+                  "name": "agent-ready"
+                },
+                {
+                  "name": "risk:0"
+                },
+                {
+                  "name": "project:mission-control"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": []
+            },
+            "comments": {
+              "nodes": []
+            }
+          },
+          {
+            "number": 542,
+            "updatedAt": "2026-09-27T08:36:40Z",
+            "parent": {
+              "number": 146
+            },
+            "labels": {
+              "nodes": [
+                {
+                  "name": "project:upkeep"
+                },
+                {
+                  "name": "agent-ready"
+                },
+                {
+                  "name": "risk:1"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": []
+            },
+            "comments": {
+              "nodes": []
+            }
+          },
+          {
+            "number": 541,
+            "updatedAt": "2026-09-27T08:36:36Z",
+            "parent": {
+              "number": 146
+            },
+            "labels": {
+              "nodes": [
+                {
+                  "name": "project:upkeep"
+                },
+                {
+                  "name": "agent-ready"
+                },
+                {
+                  "name": "risk:0"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": []
+            },
+            "comments": {
+              "nodes": []
+            }
+          },
+          {
+            "number": 540,
+            "updatedAt": "2026-09-27T08:36:33Z",
+            "parent": {
+              "number": 138
+            },
+            "labels": {
+              "nodes": [
+                {
+                  "name": "project:harness"
+                },
+                {
+                  "name": "agent-ready"
+                },
+                {
+                  "name": "risk:1"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": []
+            },
+            "comments": {
+              "nodes": []
+            }
+          },
+          {
+            "number": 539,
+            "updatedAt": "2026-09-27T08:36:29Z",
+            "parent": {
+              "number": 458
+            },
+            "labels": {
+              "nodes": [
+                {
+                  "name": "agent-ready"
+                },
+                {
+                  "name": "risk:1"
+                },
+                {
+                  "name": "project:mission-control"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": []
+            },
+            "comments": {
+              "nodes": []
+            }
+          },
+          {
+            "number": 538,
+            "updatedAt": "2026-09-27T08:36:25Z",
+            "parent": {
+              "number": 138
+            },
+            "labels": {
+              "nodes": [
+                {
+                  "name": "project:harness"
+                },
+                {
+                  "name": "agent-ready"
+                },
+                {
+                  "name": "risk:0"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": []
+            },
+            "comments": {
+              "nodes": []
+            }
+          },
+          {
+            "number": 193,
+            "updatedAt": "2026-09-27T08:20:07Z",
+            "parent": {
+              "number": 141
+            },
+            "labels": {
+              "nodes": [
+                {
+                  "name": "released"
+                },
+                {
+                  "name": "project:verify"
+                },
+                {
+                  "name": "agent-ready"
+                },
+                {
+                  "name": "in-progress"
+                },
+                {
+                  "name": "risk:2"
+                },
+                {
+                  "name": "project:foundation"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": [
+                {
+                  "number": 204,
+                  "state": "OPEN"
+                },
+                {
+                  "number": 338,
+                  "state": "OPEN"
+                },
+                {
+                  "number": 200,
+                  "state": "OPEN"
+                },
+                {
+                  "number": 194,
+                  "state": "OPEN"
+                },
+                {
+                  "number": 177,
+                  "state": "OPEN"
+                }
+              ]
+            },
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-21T12:34:28Z",
+                  "body": "Foundation plan (#318) item 1.6 pulls this forward as **the held-out oracle**: vendored, pinned, on a protected path — tests no implementer may edit."
+                },
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-23T21:37:41Z",
+                  "body": "**Same path problem as #338, same fix.** Criterion 1 says `scripts/sync-vectors.sh` copies from `../web-ide` — a sibling checkout that exists only in the owner's local workspace. Any cloud agent or CI runner clones just `mezivillager/hacer` and would fail on a missing directory."
+                },
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-23T23:15:56Z",
+                  "body": "Claimed by: grok-bot"
+                },
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-24T00:55:59Z",
+                  "body": "Cloud Agent launched."
+                },
+                {
+                  "author": {
+                    "login": "github-actions"
+                  },
+                  "createdAt": "2026-09-24T01:18:02Z",
+                  "body": ":tada: This issue has been resolved in version 2.28.0 :tada:"
+                },
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-24T21:25:12Z",
+                  "body": "Reopened by the weekly process sweep: PR #443 vendored **Project 1 only** (its body says `Part of #193`), and the cloud-queue inbox row still reads *building — issue open for Projects 2–5*. Closing it hid the remaining scope from `backlog.mjs` and from Mission Control. `claim/193` is left in place as the inbox says it is Grok Bot's; the four other stale claim refs on closed issues (195, 199, 333, 427) were released today."
+                },
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-27T08:20:07Z",
+                  "body": "Claimed by: claude-local"
+                }
+              ]
+            }
+          },
+          {
+            "number": 468,
+            "updatedAt": "2026-09-25T15:01:13Z",
+            "parent": {
+              "number": 457
+            },
+            "labels": {
+              "nodes": [
+                {
+                  "name": "agent-ready"
+                },
+                {
+                  "name": "in-progress"
+                },
+                {
+                  "name": "risk:1"
+                },
+                {
+                  "name": "project:lineage"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": []
+            },
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-25T08:18:23Z",
+                  "body": "Claimed by: grok-bot"
+                },
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-25T14:53:15Z",
+                  "body": "Claimed by: grok-bot"
+                },
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-25T15:01:13Z",
+                  "body": "Spending after-shot for the 2026-09-25 grok-bot batch (#455, #468), ~17:53 EAT, on-demand disabled: Cursor Models 13%, Other Models 99%, Grok Bot weekly 11% (before: 10% / 99% / 10%). Note: the small inbox-doc agent (PR #523) was still running when this was taken."
+                }
+              ]
+            }
+          },
+          {
+            "number": 455,
+            "updatedAt": "2026-09-25T14:46:36Z",
+            "parent": null,
+            "labels": {
+              "nodes": [
+                {
+                  "name": "released"
+                },
+                {
+                  "name": "project:harness"
+                },
+                {
+                  "name": "agent-ready"
+                },
+                {
+                  "name": "risk:1"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": []
+            },
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-25T08:18:19Z",
+                  "body": "Claimed by: grok-bot"
+                },
+                {
+                  "author": {
+                    "login": "github-actions"
+                  },
+                  "createdAt": "2026-09-25T14:46:35Z",
+                  "body": ":tada: This issue has been resolved in version 2.42.1 :tada:"
+                }
+              ]
+            }
+          },
+          {
+            "number": 475,
+            "updatedAt": "2026-09-25T07:30:17Z",
+            "parent": {
+              "number": 458
+            },
+            "labels": {
+              "nodes": [
+                {
+                  "name": "released"
+                },
+                {
+                  "name": "agent-ready"
+                },
+                {
+                  "name": "risk:1"
+                },
+                {
+                  "name": "project:mission-control"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": []
+            },
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-25T06:39:48Z",
+                  "body": "Claimed by: claude-local"
+                },
+                {
+                  "author": {
+                    "login": "github-actions"
+                  },
+                  "createdAt": "2026-09-25T07:30:16Z",
+                  "body": ":tada: This issue has been resolved in version 2.42.0 :tada:"
+                }
+              ]
+            }
+          },
+          {
+            "number": 516,
+            "updatedAt": "2026-09-25T07:16:03Z",
+            "parent": {
+              "number": 138
+            },
+            "labels": {
+              "nodes": [
+                {
+                  "name": "project:harness"
+                },
+                {
+                  "name": "agent-ready"
+                },
+                {
+                  "name": "risk:1"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": []
+            },
+            "comments": {
+              "nodes": []
+            }
+          },
+          {
+            "number": 476,
+            "updatedAt": "2026-09-25T07:09:06Z",
+            "parent": {
+              "number": 458
+            },
+            "labels": {
+              "nodes": [
+                {
+                  "name": "released"
+                },
+                {
+                  "name": "agent-ready"
+                },
+                {
+                  "name": "risk:1"
+                },
+                {
+                  "name": "project:mission-control"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": [
+                {
+                  "number": 478,
+                  "state": "OPEN"
+                }
+              ]
+            },
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-24T23:01:47Z",
+                  "body": "Carried from the MC-1 (#488) verification, for this task (MC-5): **an empty or truncated `--previous` file crashes the collector** (`collect.mjs:73`, SyntaxError, exit 1) even when all 13 sections are ok — latent until this workflow passes `--previous`. Treat a missing, empty or unparseable previous snapshot as \"no previous\" (all sections fresh), never as a crash; add the test. Also: the workflow needs `fetch-depth: 0` for the ratchet history."
+                },
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-25T05:42:51Z",
+                  "body": "Claimed by: claude-local"
+                },
+                {
+                  "author": {
+                    "login": "github-actions"
+                  },
+                  "createdAt": "2026-09-25T07:09:06Z",
+                  "body": ":tada: This issue has been resolved in version 2.41.0 :tada:"
+                }
+              ]
+            }
+          },
+          {
+            "number": 474,
+            "updatedAt": "2026-09-25T06:40:36Z",
+            "parent": {
+              "number": 458
+            },
+            "labels": {
+              "nodes": [
+                {
+                  "name": "released"
+                },
+                {
+                  "name": "agent-ready"
+                },
+                {
+                  "name": "risk:1"
+                },
+                {
+                  "name": "project:mission-control"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": []
+            },
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-25T05:49:45Z",
+                  "body": "Claimed by: claude-local"
+                },
+                {
+                  "author": {
+                    "login": "github-actions"
+                  },
+                  "createdAt": "2026-09-25T06:40:36Z",
+                  "body": ":tada: This issue has been resolved in version 2.40.0 :tada:"
+                }
+              ]
+            }
+          },
+          {
+            "number": 513,
+            "updatedAt": "2026-09-25T06:32:13Z",
+            "parent": {
+              "number": 458
+            },
+            "labels": {
+              "nodes": [
+                {
+                  "name": "agent-ready"
+                },
+                {
+                  "name": "risk:0"
+                },
+                {
+                  "name": "project:mission-control"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": []
+            },
+            "comments": {
+              "nodes": []
+            }
+          },
+          {
+            "number": 477,
+            "updatedAt": "2026-09-25T06:02:51Z",
+            "parent": {
+              "number": 458
+            },
+            "labels": {
+              "nodes": [
+                {
+                  "name": "released"
+                },
+                {
+                  "name": "agent-ready"
+                },
+                {
+                  "name": "risk:2"
+                },
+                {
+                  "name": "project:mission-control"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": []
+            },
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-25T04:23:00Z",
+                  "body": "Claimed by: claude-local"
+                },
+                {
+                  "author": {
+                    "login": "github-actions"
+                  },
+                  "createdAt": "2026-09-25T06:02:50Z",
+                  "body": ":tada: This issue has been resolved in version 2.39.0 :tada:"
+                }
+              ]
+            }
+          },
+          {
+            "number": 470,
+            "updatedAt": "2026-09-25T06:02:35Z",
+            "parent": {
+              "number": 457
+            },
+            "labels": {
+              "nodes": [
+                {
+                  "name": "agent-ready"
+                },
+                {
+                  "name": "in-progress"
+                },
+                {
+                  "name": "risk:1"
+                },
+                {
+                  "name": "project:lineage"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": []
+            },
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-25T06:02:35Z",
+                  "body": "Claimed by: claude-local"
+                }
+              ]
+            }
+          },
+          {
+            "number": 469,
+            "updatedAt": "2026-09-25T05:41:14Z",
+            "parent": {
+              "number": 457
+            },
+            "labels": {
+              "nodes": [
+                {
+                  "name": "released"
+                },
+                {
+                  "name": "agent-ready"
+                },
+                {
+                  "name": "risk:1"
+                },
+                {
+                  "name": "project:lineage"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": [
+                {
+                  "number": 471,
+                  "state": "OPEN"
+                }
+              ]
+            },
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-24T23:01:49Z",
+                  "body": "Carried from the MC-1 (#488) verification, for this task (DL-4): adding the ledger's `Id`/`Decision` columns will turn `scripts/mission-control/collect.logic.test.mjs:286` red (its ledger fixture and parser expect the four-column table). Update the collector's ledger parsing and fixture in the same PR, or it is the #407 shape again."
+                },
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-25T05:07:08Z",
+                  "body": "Claimed by: claude-local"
+                },
+                {
+                  "author": {
+                    "login": "github-actions"
+                  },
+                  "createdAt": "2026-09-25T05:41:14Z",
+                  "body": ":tada: This issue has been resolved in version 2.38.0 :tada:"
+                }
+              ]
+            }
+          },
+          {
+            "number": 489,
+            "updatedAt": "2026-09-25T05:31:27Z",
+            "parent": {
+              "number": 138
+            },
+            "labels": {
+              "nodes": [
+                {
+                  "name": "released"
+                },
+                {
+                  "name": "project:harness"
+                },
+                {
+                  "name": "agent-ready"
+                },
+                {
+                  "name": "risk:2"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": []
+            },
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-25T04:12:18Z",
+                  "body": "Claimed by: claude-local"
+                },
+                {
+                  "author": {
+                    "login": "github-actions"
+                  },
+                  "createdAt": "2026-09-25T05:31:26Z",
+                  "body": ":tada: This issue has been resolved in version 2.37.0 :tada:"
+                }
+              ]
+            }
+          },
+          {
+            "number": 456,
+            "updatedAt": "2026-09-25T05:29:24Z",
+            "parent": null,
+            "labels": {
+              "nodes": [
+                {
+                  "name": "bug"
+                },
+                {
+                  "name": "project:harness"
+                },
+                {
+                  "name": "risk:2"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": []
+            },
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-24T22:35:46Z",
+                  "body": "From the #461 verification (2026-09-25): **reproduced** — a base config the scan reads only in part (7 of 8 names) plus one comment line naming the missed rule gives `PASS armed`, \"71 → 72, arming engine-no-state (1 row)\", and that row does suppress the edge (`0 new`). **Latent today**: the live config scans 8 of 8 names, equal to its 8 `forbidden` rules; one config-only refactor — which the ratchet never reads — would make it live. Cheap check confirmed: *a newly declared name that already has base rows means the scan missed it* closes this case with no false refusals on #404, a rename, or a new rule; it misses zero-row rules (now two: `engine-no-ui`, `engine-no-ui-packages`), and a single literal `name:` in a base comment also defeats #438's zero-name check. The broader hole — the rules themselves are unguarded — is filed separately from the same verification."
+                },
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-25T05:29:23Z",
+                  "body": "Closed by the coordinator on #508's merge, per its verifier's ruling: every criterion here is met except \"no config fetch without a baseline edit\", which #489 overrides by design (a config-only PR is now read). What remains — a zero-row rule switched off in a form the scan cannot read, rule **narrowing**, and the `options.exclude` route — is #505."
+                }
+              ]
+            }
+          },
+          {
+            "number": 505,
+            "updatedAt": "2026-09-25T05:29:08Z",
+            "parent": null,
+            "labels": {
+              "nodes": [
+                {
+                  "name": "bug"
+                },
+                {
+                  "name": "project:harness"
+                },
+                {
+                  "name": "risk:2"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": []
+            },
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-25T05:29:08Z",
+                  "body": "Widened by the #508 verification (2026-09-25): besides a zero-row rule switched off in an unreadable form, **rule narrowing is unguarded for any rule** — measured: `state-no-ui` (8 rows) narrowed gives `63 known … 0 new`, exit 0, and `PASS ratchet=unchanged`; all 8 rules narrowed, or a single `options.exclude` line, gives `0 known … 0 new`, exit 0, `PASS`. (Widening is caught by `ci` — `1196 new`.) Also: a name left in a comment is today's way around `disarmed`, so the retirement hatch (`Rule-removed:`, not built in #508 because no retirement is planned) should be specified here when this closes the comment route. The four residual locations (`.dependency-cruiser.cjs:50-53`, `pr-hygiene.yml`, README row, JSDoc) currently say narrowing is unguarded only for zero-row rules and do not mention `options` — correct them in the same PR."
+                }
+              ]
+            }
+          },
+          {
+            "number": 509,
+            "updatedAt": "2026-09-25T05:06:22Z",
+            "parent": null,
+            "labels": {
+              "nodes": [
+                {
+                  "name": "project:mission-control"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": []
+            },
+            "comments": {
+              "nodes": []
+            }
+          },
+          {
+            "number": 403,
+            "updatedAt": "2026-09-25T04:51:45Z",
+            "parent": null,
+            "labels": {
+              "nodes": [
+                {
+                  "name": "released"
+                },
+                {
+                  "name": "risk:2"
+                },
+                {
+                  "name": "sev:high"
+                },
+                {
+                  "name": "project:foundation"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": []
+            },
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-23T03:51:04Z",
+                  "body": "**Three things measured during #396's re-review that belong in this issue's acceptance criteria.**"
+                },
+                {
+                  "author": {
+                    "login": "github-actions"
+                  },
+                  "createdAt": "2026-09-25T04:51:45Z",
+                  "body": ":tada: This issue has been resolved in version 2.36.1 :tada:"
+                }
+              ]
+            }
+          },
+          {
+            "number": 506,
+            "updatedAt": "2026-09-25T04:46:40Z",
+            "parent": {
+              "number": 318
+            },
+            "labels": {
+              "nodes": [
+                {
+                  "name": "risk:2"
+                },
+                {
+                  "name": "project:foundation"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": []
+            },
+            "comments": {
+              "nodes": []
+            }
+          },
+          {
+            "number": 458,
+            "updatedAt": "2026-09-25T04:26:50Z",
+            "parent": null,
+            "labels": {
+              "nodes": [
+                {
+                  "name": "epic"
+                },
+                {
+                  "name": "project:mission-control"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": []
+            },
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-25T04:26:50Z",
+                  "body": "**Live:** https://mezivillager.github.io/hacer/control/ — Overview and Projects (MC-2, #501, merged 2026-09-25T04:24Z), fed by the MC-1 collector (#488). Built at deploy time from the snapshot; hourly refresh is MC-5 (#476), the Process and Timeline views are MC-3/MC-4 (#474/#475), and the checks' summary lines are MC-6 (#477, building)."
+                }
+              ]
+            }
+          },
+          {
+            "number": 473,
+            "updatedAt": "2026-09-25T04:26:47Z",
+            "parent": {
+              "number": 458
+            },
+            "labels": {
+              "nodes": [
+                {
+                  "name": "released"
+                },
+                {
+                  "name": "agent-ready"
+                },
+                {
+                  "name": "risk:1"
+                },
+                {
+                  "name": "project:mission-control"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": [
+                {
+                  "number": 480,
+                  "state": "OPEN"
+                },
+                {
+                  "number": 479,
+                  "state": "OPEN"
+                },
+                {
+                  "number": 478,
+                  "state": "OPEN"
+                },
+                {
+                  "number": 476,
+                  "state": "CLOSED"
+                },
+                {
+                  "number": 475,
+                  "state": "CLOSED"
+                },
+                {
+                  "number": 474,
+                  "state": "CLOSED"
+                },
+                {
+                  "number": 481,
+                  "state": "OPEN"
+                }
+              ]
+            },
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-24T23:01:50Z",
+                  "body": "Carried from the MC-1 (#488) verification, for this task (MC-2): `docs/harness/mission-control.md` lacks the full per-section field lists and a how-to-add-a-section recipe; the site is the first consumer, so add them as you read the schema. The verifier also noted the collector's last commit (`14648c7`) changed behaviour with no test — cover it when you touch the collector."
+                },
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-25T03:06:45Z",
+                  "body": "Claimed by: claude-local"
+                },
+                {
+                  "author": {
+                    "login": "github-actions"
+                  },
+                  "createdAt": "2026-09-25T04:26:46Z",
+                  "body": ":tada: This issue has been resolved in version 2.36.0 :tada:"
+                }
+              ]
+            }
+          },
+          {
+            "number": 467,
+            "updatedAt": "2026-09-25T04:22:14Z",
+            "parent": {
+              "number": 457
+            },
+            "labels": {
+              "nodes": [
+                {
+                  "name": "released"
+                },
+                {
+                  "name": "agent-ready"
+                },
+                {
+                  "name": "risk:1"
+                },
+                {
+                  "name": "project:lineage"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": [
+                {
+                  "number": 481,
+                  "state": "OPEN"
+                },
+                {
+                  "number": 470,
+                  "state": "OPEN"
+                },
+                {
+                  "number": 469,
+                  "state": "CLOSED"
+                }
+              ]
+            },
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-24T22:35:47Z",
+                  "body": "Carried from the DL-1 (#487) verification, for this task:"
+                },
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-25T03:20:44Z",
+                  "body": "Claimed by: claude-local"
+                },
+                {
+                  "author": {
+                    "login": "github-actions"
+                  },
+                  "createdAt": "2026-09-25T04:22:13Z",
+                  "body": ":tada: This issue has been resolved in version 2.35.0 :tada:"
+                }
+              ]
+            }
+          },
+          {
+            "number": 502,
+            "updatedAt": "2026-09-25T04:19:33Z",
+            "parent": {
+              "number": 457
+            },
+            "labels": {
+              "nodes": [
+                {
+                  "name": "project:lineage"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": []
+            },
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-25T04:19:32Z",
+                  "body": "From the #503 verification (2026-09-25): sampled R501, R103 and R313 — each is genuinely cut at the end of the bolded clause, but only a trailing clause is lost and the substantive claim survives, so this is **cosmetic, not a correctness defect**. Also: R60 and R65, named in this issue, read complete in the current tree (the round-2 import fixed those two). Keep this as a low-priority cleanup: extend each cut title to the end of its first sentence, from the source run files, in one pass — do not re-import."
+                }
+              ]
+            }
+          },
+          {
+            "number": 485,
+            "updatedAt": "2026-09-25T04:12:56Z",
+            "parent": {
+              "number": 138
+            },
+            "labels": {
+              "nodes": [
+                {
+                  "name": "released"
+                },
+                {
+                  "name": "project:harness"
+                },
+                {
+                  "name": "agent-ready"
+                },
+                {
+                  "name": "risk:2"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": []
+            },
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-25T00:07:20Z",
+                  "body": "Claimed by: claude-local"
+                },
+                {
+                  "author": {
+                    "login": "github-actions"
+                  },
+                  "createdAt": "2026-09-25T04:12:55Z",
+                  "body": ":tada: This issue has been resolved in version 2.34.0 :tada:"
+                }
+              ]
+            }
+          },
+          {
+            "number": 504,
+            "updatedAt": "2026-09-25T04:10:44Z",
+            "parent": {
+              "number": 138
+            },
+            "labels": {
+              "nodes": [
+                {
+                  "name": "project:harness"
+                },
+                {
+                  "name": "risk:2"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": []
+            },
+            "comments": {
+              "nodes": []
+            }
+          },
+          {
+            "number": 500,
+            "updatedAt": "2026-09-25T03:49:01Z",
+            "parent": null,
+            "labels": {
+              "nodes": [
+                {
+                  "name": "bug"
+                },
+                {
+                  "name": "project:harness"
+                },
+                {
+                  "name": "risk:2"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": []
+            },
+            "comments": {
+              "nodes": []
+            }
+          },
+          {
+            "number": 460,
+            "updatedAt": "2026-09-25T00:08:19Z",
+            "parent": null,
+            "labels": {
+              "nodes": [
+                {
+                  "name": "released"
+                },
+                {
+                  "name": "project:harness"
+                },
+                {
+                  "name": "risk:1"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": []
+            },
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-24T23:27:41Z",
+                  "body": "Claimed by: claude-local"
+                },
+                {
+                  "author": {
+                    "login": "github-actions"
+                  },
+                  "createdAt": "2026-09-25T00:08:19Z",
+                  "body": ":tada: This issue has been resolved in version 2.33.1 :tada:"
+                }
+              ]
+            }
+          },
+          {
+            "number": 484,
+            "updatedAt": "2026-09-24T23:57:57Z",
+            "parent": {
+              "number": 138
+            },
+            "labels": {
+              "nodes": [
+                {
+                  "name": "released"
+                },
+                {
+                  "name": "project:harness"
+                },
+                {
+                  "name": "agent-ready"
+                },
+                {
+                  "name": "risk:1"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": []
+            },
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-24T22:45:27Z",
+                  "body": "Claimed by: claude-local"
+                },
+                {
+                  "author": {
+                    "login": "github-actions"
+                  },
+                  "createdAt": "2026-09-24T23:57:56Z",
+                  "body": ":tada: This issue has been resolved in version 2.33.0 :tada:"
+                }
+              ]
+            }
+          },
+          {
+            "number": 483,
+            "updatedAt": "2026-09-24T23:53:42Z",
+            "parent": {
+              "number": 138
+            },
+            "labels": {
+              "nodes": [
+                {
+                  "name": "released"
+                },
+                {
+                  "name": "project:harness"
+                },
+                {
+                  "name": "agent-ready"
+                },
+                {
+                  "name": "risk:0"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": []
+            },
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-24T22:38:12Z",
+                  "body": "Claimed by: claude-local"
+                },
+                {
+                  "author": {
+                    "login": "github-actions"
+                  },
+                  "createdAt": "2026-09-24T23:53:42Z",
+                  "body": ":tada: This issue has been resolved in version 2.32.1 :tada:"
+                }
+              ]
+            }
+          },
+          {
+            "number": 466,
+            "updatedAt": "2026-09-24T23:53:39Z",
+            "parent": {
+              "number": 457
+            },
+            "labels": {
+              "nodes": [
+                {
+                  "name": "released"
+                },
+                {
+                  "name": "risk:0"
+                },
+                {
+                  "name": "project:lineage"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": []
+            },
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "login": "github-actions"
+                  },
+                  "createdAt": "2026-09-24T23:53:39Z",
+                  "body": ":tada: This issue has been resolved in version 2.32.1 :tada:"
+                }
+              ]
+            }
+          },
+          {
+            "number": 472,
+            "updatedAt": "2026-09-24T23:04:38Z",
+            "parent": {
+              "number": 458
+            },
+            "labels": {
+              "nodes": [
+                {
+                  "name": "released"
+                },
+                {
+                  "name": "agent-ready"
+                },
+                {
+                  "name": "risk:1"
+                },
+                {
+                  "name": "project:mission-control"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": [
+                {
+                  "number": 473,
+                  "state": "CLOSED"
+                }
+              ]
+            },
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-24T21:22:45Z",
+                  "body": "Claimed by: claude-local"
+                },
+                {
+                  "author": {
+                    "login": "github-actions"
+                  },
+                  "createdAt": "2026-09-24T23:04:37Z",
+                  "body": ":tada: This issue has been resolved in version 2.32.0 :tada:"
+                }
+              ]
+            }
+          },
+          {
+            "number": 438,
+            "updatedAt": "2026-09-24T22:38:45Z",
+            "parent": null,
+            "labels": {
+              "nodes": [
+                {
+                  "name": "released"
+                },
+                {
+                  "name": "project:harness"
+                },
+                {
+                  "name": "risk:2"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": []
+            },
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "login": "github-actions"
+                  },
+                  "createdAt": "2026-09-24T22:38:44Z",
+                  "body": ":tada: This issue has been resolved in version 2.31.0 :tada:"
+                }
+              ]
+            }
+          },
+          {
+            "number": 465,
+            "updatedAt": "2026-09-24T22:38:42Z",
+            "parent": {
+              "number": 457
+            },
+            "labels": {
+              "nodes": [
+                {
+                  "name": "released"
+                },
+                {
+                  "name": "agent-ready"
+                },
+                {
+                  "name": "risk:1"
+                },
+                {
+                  "name": "project:lineage"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": [
+                {
+                  "number": 468,
+                  "state": "OPEN"
+                },
+                {
+                  "number": 467,
+                  "state": "CLOSED"
+                },
+                {
+                  "number": 466,
+                  "state": "CLOSED"
+                }
+              ]
+            },
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-24T21:22:39Z",
+                  "body": "Claimed by: claude-local"
+                },
+                {
+                  "author": {
+                    "login": "github-actions"
+                  },
+                  "createdAt": "2026-09-24T22:38:41Z",
+                  "body": ":tada: This issue has been resolved in version 2.31.0 :tada:"
+                }
+              ]
+            }
+          },
+          {
+            "number": 482,
+            "updatedAt": "2026-09-24T22:05:12Z",
+            "parent": {
+              "number": 138
+            },
+            "labels": {
+              "nodes": [
+                {
+                  "name": "released"
+                },
+                {
+                  "name": "project:harness"
+                },
+                {
+                  "name": "agent-ready"
+                },
+                {
+                  "name": "risk:1"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": []
+            },
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-24T21:21:20Z",
+                  "body": "Claimed by: claude-local"
+                },
+                {
+                  "author": {
+                    "login": "github-actions"
+                  },
+                  "createdAt": "2026-09-24T22:05:11Z",
+                  "body": ":tada: This issue has been resolved in version 2.30.0 :tada:"
+                }
+              ]
+            }
+          },
+          {
+            "number": 271,
+            "updatedAt": "2026-09-24T21:21:34Z",
+            "parent": {
+              "number": 138
+            },
+            "labels": {
+              "nodes": [
+                {
+                  "name": "project:harness"
+                },
+                {
+                  "name": "agent-ready"
+                },
+                {
+                  "name": "risk:2"
+                },
+                {
+                  "name": "research"
+                }
+              ]
+            },
+            "blocking": {
+              "nodes": []
+            },
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "login": "mezivillager"
+                  },
+                  "createdAt": "2026-09-24T21:21:34Z",
+                  "body": "Related: Mission Control MC-9 (#480) opens prefilled issue forms from the site — the harness inbox this issue proposes, in practice — and the retro role reads `lineage verify`'s output (Decision Lineage, #457)."
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

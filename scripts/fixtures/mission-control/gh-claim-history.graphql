@@ -1,0 +1,1 @@
+query { repository(owner: "mezivillager", name: "hacer") { issues(first: 50, orderBy: {field: UPDATED_AT, direction: DESC}) { nodes { number updatedAt parent { number } labels(first: 30) { nodes { name } } blocking(first: 20) { nodes { number state } } comments(last: 50) { nodes { author { login } createdAt body } } } } } }

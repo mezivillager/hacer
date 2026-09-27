@@ -317,3 +317,10 @@ export function releaseComment(claim, { by, reason }) {
   return [`Released a stale claim: claim/${claim.number}, holder ${holderOf(claim)}, with no open PR.`,
     `Released by: ${by}`, ...(reason ? [`Reason: ${reason}`] : [])].join('\n')
 }
+
+// #535, red: stubs — the cycle does not yet resume across calls.
+export const CLAIM_HISTORY_WINDOW = 50
+export const claimHistoryQuery = () => ''
+export const claimHistory = () => []
+export const resumePoint = () => ({ slot: 0, aux: 0, after: null })
+export const formatResume = () => ''

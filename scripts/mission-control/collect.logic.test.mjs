@@ -1,8 +1,10 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { AUX_ROTATION, PICK_ROTATION, parsePortfolio, planReady, readClaims, summarizeProjects } from '../backlog.logic.mjs'
-import { SCHEMA_VERSION, buildSnapshot, checksQuery, claimsQuery, parsePrevious, report, validateSnapshot } from './collect.logic.mjs'
+import { AUX_ROTATION, PICK_ROTATION, claimHistory, parsePortfolio, planReady, readClaims, summarizeProjects } from '../backlog.logic.mjs'
+import {
+  SCHEMA_VERSION, buildSnapshot, checksQuery, claimHistoryQuery, claimsQuery, parsePrevious, report, validateSnapshot,
+} from './collect.logic.mjs'
 
 // scripts/fixtures/mission-control/ holds recordings of the collector's own calls, taken 2026-09-25 at
 // origin/main ed7c983 (the commands are in collect.mjs), trimmed as follows:
@@ -25,6 +27,9 @@ import { SCHEMA_VERSION, buildSnapshot, checksQuery, claimsQuery, parsePrevious,
 //                      04:51Z on 2026-09-25 (origin/main 1b01240, its ci still running): the required checks' runs
 //                      on main's head and on the 3 open PRs. #507 is MC-6's own PR: its ci and browser-qa runs ran
 //                      its code and published their lines; its pr-hygiene runs ran main's copy (pull_request_target)
+//   gh-claim-history.json `gh api graphql` run with gh-claim-history.graphql, the query claimHistoryQuery builds, at
+//                      10:20Z on 2026-09-27 (origin/main aa4d75a): the 50 most recently updated issues, each comment
+//                      body cut to its first non-blank line, the line a claim opens with (#535)
 // The process records (ledger, sessions, ADRs, roadmap, cloud inbox) are read live, as
 // backlog.logic.test.mjs reads docs/portfolio.md: a format change there fails here, not silently in the site.
 
@@ -51,6 +56,7 @@ function inputs(overrides = {}) {
     prsMerged: ok('gh pr list --state merged --limit 60', fixture('gh-prs-merged.json')),
     claimRefs: ok('git ls-remote origin refs/heads/claim/*', fixtureText('git-claim-refs.txt')),
     claimIssues: ok('gh api graphql', fixture('gh-claims.json')),
+    claimHistory: ok('gh api graphql (claim history)', fixture('gh-claim-history.json')),
     releases: ok('gh release list', fixture('gh-releases.json')),
     ratchetLog: ok('git log -- .dependency-cruiser-known-violations.json', ratchet),
     baseline: ok('.dependency-cruiser-known-violations.json', ratchet.rows['d9ce783867491b811fceaf225e3dad54479483da']),
@@ -76,12 +82,13 @@ describe('collect.logic', () => {
     const claims = readClaims({
       lsRemote: fixtureText('git-claim-refs.txt'), answer: fixture('gh-claims.json'), openPrs: fixture('gh-prs-open.json'), now: NOW,
     })
-    const plan = planReady(issues, rows, undefined, claims)
+    const history = claimHistory(fixture('gh-claim-history.json'))
+    const plan = planReady(issues, rows, undefined, claims, history)
     const snapshot = build()
 
     const summaries = snapshot.portfolio.projects.map(({ slug, epicNumber, open, ready, inProgress, needsHuman, staleClaims, next }) =>
       ({ slug, epicNumber, open, ready, inProgress, needsHuman, staleClaims, next }))
-    expect(summaries).toEqual(summarizeProjects(issues, rows, undefined, claims))
+    expect(summaries).toEqual(summarizeProjects(issues, rows, undefined, claims, history))
     expect(snapshot.portfolio.projects.map(({ rank, lane }) => ({ rank, lane }))).toEqual(rows.map(({ rank, lane }) => ({ rank, lane })))
     expect(snapshot.tasks.items).toEqual(plan)
     expect(snapshot.pickRule).toEqual({
@@ -122,6 +129,24 @@ describe('collect.logic', () => {
     expect(reasons(unanswered)).toEqual(['claimed', 'claimed', 'claimed'])
     for (const name of ['portfolio', 'pickRule', 'tasks']) {
       expect(unanswered.freshness[name]).toMatchObject({ status: 'partial', error: 'claimIssues: HTTP 403' })
+    }
+  })
+
+  // #535: the cycle continues across calls from the claims made before, and the snapshot resumes it where `ready` does.
+  it('resumes the cycle where ready does, from the claim history; without it, starts at slot 1 and says partial', () => {
+    expect(claimHistoryQuery('mezivillager/hacer')).toBe(fixtureText('gh-claim-history.graphql').trim())
+    const next = (snapshot) => snapshot.pickRule.next.map((task) => `${task.number} ${task.project}`)
+    const snapshot = build()
+    // The recording's latest claim is #537, harness, the cycle's third slot: it resumes at the fourth, foundation.
+    expect(next(snapshot)).toEqual(['217 foundation', '175 spine', '315 foundation', '253 upkeep', '331 foundation',
+      '148 harness', '373 foundation', '149 harness'])
+
+    const unread = build({ claimHistory: failed('gh api graphql (claim history)', 'HTTP 502') })
+    expect(next(unread)).toEqual(['217 foundation', '148 harness', '315 foundation', '175 spine', '331 foundation',
+      '253 upkeep', '373 foundation', '149 harness'])
+    expect(unread.tasks.items.map((task) => task.number).sort()).toEqual(snapshot.tasks.items.map((task) => task.number).sort())
+    for (const name of ['portfolio', 'pickRule', 'tasks']) {
+      expect(unread.freshness[name]).toMatchObject({ status: 'partial', error: 'claimHistory: HTTP 502' })
     }
   })
 
@@ -240,7 +265,8 @@ describe('collect.logic', () => {
     const next = build(failing, { now: LATER, previous: good })
     for (const name of ['portfolio', 'pickRule', 'tasks', 'prs']) expect(next[name]).toEqual(good[name])
     expect(next.freshness.portfolio).toEqual({
-      source: 'docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open',
+      source: 'docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · ' +
+        'gh pr list --state open · gh api graphql (claim history)',
       fetchedAt: NOW, status: 'error', error: 'issues: HTTP 403: API rate limit exceeded',
     })
     expect(next.freshness.prs).toMatchObject({ fetchedAt: NOW, status: 'error', error: expect.stringMatching(/^could not build: /) })
