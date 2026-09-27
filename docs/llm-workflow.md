@@ -121,6 +121,20 @@ Use [tasks/todo.md](../tasks/todo.md) and [tasks/lessons.md](../tasks/lessons.md
 
 ---
 
+## Failure Patterns
+
+*From Claude Code Best Practices: avoid common failure modes.* Referenced from [AGENTS.md](../AGENTS.md) § Quick reference.
+
+| Pattern | Fix |
+|---------|-----|
+| **Kitchen sink session** — one task, then unrelated questions, then back to the first | Clear context between unrelated tasks. Start fresh for each distinct workstream. |
+| **Correcting over and over** — same issue, multiple failed corrections, context polluted | After 2+ failed corrections on the same issue, clear context and re-prompt with a better initial prompt that incorporates what you learned. |
+| **Trust-then-verify gap** — plausible-looking implementation that doesn't handle edge cases | Always provide verification (tests, lint, build). Run `pnpm run lint`, `pnpm run test:run`, `pnpm run build` before marking done. Never ship without proof. |
+| **Infinite exploration** — "investigate" without scoping; reads hundreds of files | Scope investigations narrowly. Use subagents so exploration doesn't consume your main context. One focused task per subagent. |
+| **Over-specified docs** — rules get lost in noise, agent ignores half of them | Keep `AGENTS.md` and `.cursorrules` concise. Ruthlessly prune. If the agent already does something correctly without the instruction, delete it. |
+
+---
+
 ## HACER-Specific Tie-ins
 
 | Practice | HACER Integration |

@@ -20,6 +20,8 @@ done, straight at its owner. Update this map in the same PR that moves a rule; i
 | **Worker-role rule** — four fresh-context judge roles; none builds, none decides strategy | `docs/harness/README.md` § Standing roles | |
 | **Claim refs** — `refs/heads/claim/<issue#>`, atomic, then label `in-progress` | `docs/research/2026-09-18-agent-readiness/WORK-SYSTEM.md` §4 (The loop an agent follows for every task) | implemented in `.claude/skills/ha-next/SKILL.md` |
 | **Never commit to `main`** | `.cursor/rules/020-git-worktree-no-main.mdc` | worktrees live outside the repo as `hacer-wt-<topic>` siblings |
+| **Docs use repo-relative paths; every cited path must exist** | `.cursor/rules/021-no-absolute-paths-in-docs.mdc` | mechanics in ADR-0010 (absolute paths) and ADR-0014 (path existence); enforced by `scripts/check-doc-paths.mjs` |
+| **`AGENTS.md` stays ≤ 120 lines — a table of contents, not a restatement** | `scripts/hooks/docLineBudget.logic.mjs` (`LINE_BUDGETS`) | enforced by `scripts/check-doc-paths.mjs` via `pnpm run lint:docs` (#152) |
 
 ## Deliberate duplication, and why
 
@@ -43,3 +45,8 @@ done, straight at its owner. Update this map in the same PR that moves a rule; i
   solely by `implementer-brief.md`. The one-liner is the universal law every doc's audience needs on
   first read; the compiling-stub enforcement detail is specific to the harness's pre-commit hook and
   only the builder needs it.
+- **The design-for-longevity tie-breaker** is owned by
+  [ADR-0003](../decisions/0003-design-for-longevity.md) and restated in one line in both `AGENTS.md`
+  §2 and `.claude/CONSTITUTION.md` §1 — `llms.txt` reads the Constitution first and `AGENTS.md`
+  second, so the tie-breaker needs to be visible from whichever of the two a session opens, not
+  behind a link neither states.
