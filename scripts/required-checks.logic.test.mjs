@@ -3,9 +3,10 @@ import { readFileSync, readdirSync } from 'node:fs'
 import path from 'node:path'
 import {
   REQUIRED_CONTEXTS,
-  cancelInProgressSettings,
   checkWorkflow,
+  concurrencyGroups,
   formatFindings,
+  isUniquePerRun,
   jobContexts,
 } from './required-checks.logic.mjs'
 
@@ -15,6 +16,10 @@ const WORKFLOW_DIR = path.join(REPO_ROOT, '.github/workflows')
 const workflowFiles = readdirSync(WORKFLOW_DIR)
   .filter((file) => file.endsWith('.yml') || file.endsWith('.yaml'))
   .map((file) => [file, readFileSync(path.join(WORKFLOW_DIR, file), 'utf-8')])
+
+const requiredWorkflows = workflowFiles.filter(([, source]) =>
+  jobContexts(source).some((context) => REQUIRED_CONTEXTS.includes(context)),
+)
 
 describe('jobContexts', () => {
   it('names a job by its id when it declares no name', () => {
@@ -52,43 +57,98 @@ describe('jobContexts', () => {
   })
 })
 
-describe('cancelInProgressSettings', () => {
-  it('reads the value at workflow and at job level, in file order', () => {
+describe('concurrencyGroups', () => {
+  it('reads the group at workflow and at job level, in file order', () => {
     const source = [
       'concurrency:',
-      '  group: a',
+      '  group: pr-${{ github.event.pull_request.number }}',
       '  cancel-in-progress: false',
       'jobs:',
       '  ci:',
       '    concurrency:',
       '      cancel-in-progress: true',
+      '      group: job-${{ github.run_id }}',
+      '    runs-on: x',
     ].join('\n')
-    expect(cancelInProgressSettings(source)).toEqual(['false', 'true'])
+    expect(concurrencyGroups(source)).toEqual(['pr-${{ github.event.pull_request.number }}', 'job-${{ github.run_id }}'])
   })
 
-  it('ignores a commented-out setting and keeps a trailing comment out of the value', () => {
-    const source = ['# cancel-in-progress: true', 'concurrency:', '  cancel-in-progress: false # see #295'].join('\n')
-    expect(cancelInProgressSettings(source)).toEqual(['false'])
+  it('reads the one-line form, whose value is the group', () => {
+    const source = ['concurrency: ci-${{ github.ref }}', 'jobs:', '  ci:', '    runs-on: x'].join('\n')
+    expect(concurrencyGroups(source)).toEqual(['ci-${{ github.ref }}'])
+  })
+
+  it('keeps quotes and trailing comments out of the group, and skips a commented-out key', () => {
+    const source = ['# concurrency: old-group', 'concurrency: # see #530', "  group: 'g' # per PR", 'jobs:'].join('\n')
+    expect(concurrencyGroups(source)).toEqual(['g'])
+  })
+
+  it('reads null for a declaration whose group it cannot read: a flow mapping, or no group key', () => {
+    const source = [
+      'concurrency: { group: g, cancel-in-progress: false }',
+      'jobs:',
+      '  ci:',
+      '    concurrency:',
+      '      cancel-in-progress: true',
+      '    runs-on: x',
+    ].join('\n')
+    expect(concurrencyGroups(source)).toEqual([null, null])
   })
 
   it('returns nothing when the workflow declares no concurrency', () => {
-    expect(cancelInProgressSettings('jobs:\n  ci:\n    runs-on: x\n')).toEqual([])
+    expect(concurrencyGroups('jobs:\n  ci:\n    runs-on: x\n')).toEqual([])
+  })
+})
+
+describe('isUniquePerRun', () => {
+  it('accepts a group that interpolates the run id on its own', () => {
+    expect(isUniquePerRun('pr-hygiene-${{ github.run_id }}')).toBe(true)
+    expect(isUniquePerRun('${{github.run_id}}-${{ github.run_attempt }}')).toBe(true)
+  })
+
+  it('rejects a group that runs share: keyed by the PR, the event or a constant', () => {
+    expect(isUniquePerRun('pr-hygiene-${{ github.event.pull_request.number || inputs.pr }}')).toBe(false)
+    expect(isUniquePerRun('browser-qa-${{ github.event_name }}-${{ github.event.pull_request.number || inputs.pr }}')).toBe(false)
+    expect(isUniquePerRun('gh-pages')).toBe(false)
+  })
+
+  it('rejects the run id as a fallback, which a pull request event never reaches', () => {
+    expect(isUniquePerRun('${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}')).toBe(false)
+  })
+
+  it('rejects a group it could not read', () => {
+    expect(isUniquePerRun(null)).toBe(false)
   })
 })
 
 describe('checkWorkflow', () => {
   const required = ['ci']
-  const withSetting = (value) =>
-    ['concurrency:', '  group: g', `  cancel-in-progress: ${value}`, 'jobs:', '  ci:', '    runs-on: x'].join('\n')
+  const withGroup = (group, cancel = 'false') =>
+    ['concurrency:', `  group: ${group}`, `  cancel-in-progress: ${cancel}`, 'jobs:', '  ci:', '    runs-on: x'].join('\n')
 
-  it('flags a workflow that posts a required context and cancels in-progress runs', () => {
-    const findings = checkWorkflow('ci.yml', withSetting('true'), required)
+  it('flags a group the runs share even with cancel-in-progress off, since a pending run is dropped (#530)', () => {
+    const findings = checkWorkflow('ci.yml', withGroup('ci-${{ github.event.pull_request.number }}'), required)
     expect(findings).toHaveLength(1)
-    expect(findings[0]).toMatchObject({ file: 'ci.yml', contexts: ['ci'] })
+    expect(findings[0]).toMatchObject({
+      file: 'ci.yml',
+      contexts: ['ci'],
+      rule: 'concurrency',
+      group: 'ci-${{ github.event.pull_request.number }}',
+    })
   })
 
-  it('passes the same workflow once cancellation is off', () => {
-    expect(checkWorkflow('ci.yml', withSetting('false'), required)).toEqual([])
+  it('flags a shared group at job level too', () => {
+    const source = ['jobs:', '  ci:', '    concurrency: ci-${{ github.ref }}', '    runs-on: x'].join('\n')
+    expect(checkWorkflow('ci.yml', source, required)).toMatchObject([{ rule: 'concurrency', group: 'ci-${{ github.ref }}' }])
+  })
+
+  it('flags a concurrency declaration whose group it cannot read', () => {
+    const source = ['concurrency: { group: g }', 'jobs:', '  ci:', '    runs-on: x'].join('\n')
+    expect(checkWorkflow('ci.yml', source, required)).toMatchObject([{ rule: 'concurrency', group: null }])
+  })
+
+  it('passes a group unique per run, whatever cancel-in-progress says', () => {
+    expect(checkWorkflow('ci.yml', withGroup('ci-${{ github.run_id }}', 'true'), required)).toEqual([])
   })
 
   it('passes a workflow with no concurrency block at all', () => {
@@ -96,16 +156,17 @@ describe('checkWorkflow', () => {
   })
 
   it('leaves a workflow that posts no required context alone', () => {
-    const source = withSetting('true').replace('  ci:', '  preview:')
+    const source = withGroup('gh-pages').replace('  ci:', '  preview:')
     expect(checkWorkflow('pr-preview.yml', source, required)).toEqual([])
   })
 })
 
 describe('formatFindings', () => {
-  it('names the file, the contexts and the fix', () => {
-    const report = formatFindings(checkWorkflow('ci.yml', 'concurrency:\n  cancel-in-progress: true\njobs:\n  ci:\n    runs-on: x\n', ['ci']))
+  it('names the file, the group and the fix', () => {
+    const report = formatFindings(checkWorkflow('ci.yml', 'concurrency: ci-${{ github.ref }}\njobs:\n  ci:\n    runs-on: x\n', ['ci']))
     expect(report).toContain('ci.yml')
-    expect(report).toContain('cancel-in-progress')
+    expect(report).toContain('ci-${{ github.ref }}')
+    expect(report).toContain('${{ github.run_id }}')
   })
 
   it('says so when there is nothing to report', () => {
@@ -113,17 +174,18 @@ describe('formatFindings', () => {
   })
 })
 
-// The guard itself (#295): a cancelled run of a required context posts a `cancelled` check run,
-// and GitHub counts the newest check run per context — so one cancellation strands the PR at
-// `mergeStateStatus: BLOCKED` with every check reported green.
+// The guard itself. A concurrency group that the runs of a required workflow share strands a PR at
+// `mergeStateStatus: BLOCKED` with every check reported green: a run it cancels in progress posts a
+// `cancelled` check run (#295), and a run it drops while pending leaves a check suite with no check
+// run, which the merge box reads when that suite is the workflow's newest (#530).
 describe('the repo .github/workflows', () => {
   it('has a workflow for every required context', () => {
     const produced = new Set(workflowFiles.flatMap(([, source]) => jobContexts(source)))
     for (const context of REQUIRED_CONTEXTS) expect([...produced]).toContain(context)
   })
 
-  it('never lets a required check be cancelled by concurrency', () => {
-    const findings = workflowFiles.flatMap(([file, source]) => checkWorkflow(file, source))
-    expect(formatFindings(findings)).toMatch(/no required workflow/i)
+  it.each(requiredWorkflows)('%s shares no concurrency group between its runs', (file, source) => {
+    const shared = concurrencyGroups(source).filter((group) => !isUniquePerRun(group))
+    expect(shared, formatFindings(checkWorkflow(file, source))).toEqual([])
   })
 })
