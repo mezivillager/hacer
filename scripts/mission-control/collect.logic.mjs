@@ -4,7 +4,8 @@
 // pick-rule number comes from ../backlog.logic.mjs, so the snapshot cannot disagree with `backlog.mjs ready`.
 
 import {
-  AUX_ROTATION, DEFAULT_ALLOWLIST, PICK_ROTATION, claimRefs, latestClaim, parsePortfolio, planReady, readClaims, summarizeProjects,
+  AUX_ROTATION, DEFAULT_ALLOWLIST, PICK_ROTATION, claimHistory, claimRefs, latestClaim, parsePortfolio, planReady, readClaims,
+  summarizeProjects,
 } from '../backlog.logic.mjs'
 import { CHECK_LINES, readCheckRun } from '../check-lines.logic.mjs'
 
@@ -108,12 +109,14 @@ function buildChecks({ checkRuns }) {
 }
 
 // Portfolio, pick rule and tasks: all three from one planReady over the one issue list and the claims `ready` reads
-// (#531): an issue holding a claim ref is `claimed` or `stale-claim`, never a pick.
-const CLAIM_INPUTS = ['claimRefs', 'claimIssues', 'prsOpen']
-function planOf({ issues = [], portfolio = '', claimRefs: lsRemote, claimIssues: answer, prsOpen: openPrs }, { allowlist, now }) {
-  const rows = parsePortfolio(portfolio)
+// (#531): an issue holding a claim ref is `claimed` or `stale-claim`, never a pick; the cycle resumes after the latest
+// claim in the claim history, as `ready` does (#535).
+const CLAIM_INPUTS = ['claimRefs', 'claimIssues', 'prsOpen', 'claimHistory']
+function planOf(values, { allowlist, now }) {
+  const { issues = [], portfolio = '', claimRefs: lsRemote, claimIssues: answer, prsOpen: openPrs, claimHistory: recent } = values
+  const [rows, history] = [parsePortfolio(portfolio), claimHistory(recent, allowlist)]
   const claims = readClaims({ lsRemote, answer, openPrs, allowlist, now })
-  return { rows, plan: planReady(issues, rows, allowlist, claims), projects: summarizeProjects(issues, rows, allowlist, claims) }
+  return { rows, plan: planReady(issues, rows, allowlist, claims, history), projects: summarizeProjects(issues, rows, allowlist, claims, history) }
 }
 
 function buildPortfolio(values, options) {
