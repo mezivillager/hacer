@@ -74,7 +74,7 @@ dispatch `docs/harness/routines/fidelity-digest.md` once.
 ## 5. Merge on green + PASS
 ```bash
 gh pr checks <pr>                          # ci must be green; the ruleset enforces it
-gh pr merge <pr> --rebase --auto           # merges when checks pass; never --admin
+node scripts/merge-on-green.mjs <pr>       # merges on green, recovers a stuck box; exit 4 = needs a person
 git push origin --delete claim/<n>         # release the claim
 ```
 A merge to `main` cuts a release (`feat`/`fix`) and deploys Pages — permitted (ADR-0013), so no
