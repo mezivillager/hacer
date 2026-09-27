@@ -49,8 +49,7 @@ function peerInstall() {
   } finally {
     rmSync(dir, { recursive: true, force: true })
   }
-  // Only a peer refusal answers the premise. Any other failure (a registry fetch, a rate limit, no
-  // pnpm) is a lookup that did not happen: unverifiable, never a false `exit 1`.
+  // Only a peer refusal answers the premise; any other failure (registry, rate limit) is unverifiable.
   const said = `${result.stdout ?? ''}${result.stderr ?? ''}`
   if (result.error || result.status === null || (result.status !== 0 && !said.includes('ERR_PNPM_PEER_DEP_ISSUES'))) {
     console.error(result.error?.message ?? said)
