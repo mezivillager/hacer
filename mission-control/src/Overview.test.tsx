@@ -4,7 +4,8 @@ import fixture from '../../scripts/fixtures/mission-control/snapshot.json'
 import { Overview } from './Overview'
 import type { Snapshot } from './snapshot'
 
-// `collect.mjs --json` at origin/main 561dcf1, 2026-09-25 03:16Z, whole — see scripts/mission-control/collect.logic.test.mjs.
+// `collect.mjs --json` at origin/main 561dcf1, 2026-09-25 03:16Z, whole, with the fields v1 declared since spliced in from
+// its own data at its own time (#539's flow and conformance among them) — see scripts/mission-control/collect.logic.test.mjs.
 const snapshot = fixture as Snapshot
 const GITHUB = 'https://github.com/mezivillager/hacer'
 
@@ -13,7 +14,7 @@ const facts = (tile: HTMLElement) =>
   [...tile.querySelectorAll('dt')].map((term) => [term.textContent, term.nextElementSibling?.textContent])
 
 describe('Overview', () => {
-  it('Overview renders the tiles: open tasks by project, PRs open/merging, last session, CI on main, ratchet count, version, verdict coverage — each with generatedAt shown', () => {
+  it('Overview renders the tiles: open tasks by project, PRs open/merging, last session, CI on main, ratchet count, version, verdict coverage, flow, conformance — each with generatedAt shown', () => {
     render(<Overview snapshot={snapshot} />)
     const tile = (name: string) => screen.getByRole('region', { name })
 
@@ -34,10 +35,17 @@ describe('Overview', () => {
     expect(facts(tile('Verdict coverage'))).toEqual([
       ['merged PRs', '60'], ['with a verdict', '33 (55%)'], ['latest PASS', '32'], ['latest BLOCK', '1'],
     ])
+    // #539: the flow numbers over the 14 days to the snapshot, and the product's own measure beside them.
+    expect(facts(tile('Flow'))).toEqual([
+      ['merged in 14 days', '118'], ['open → merge, median', '0.3 h'], ['open → merge, p90', '12.1 h'],
+      ['blocked at least once', '15 of 51 with a verdict (29%)'], ['verdicts on code', '41 of 56 (73%)'],
+      ['on docs, Dependabot, config', '10 of 62 (16%)'],
+    ])
+    expect(facts(tile('Conformance vectors'))).toEqual([['project 01', '48 files, 16 test scripts'], ['pass count', 'no runner yet']])
 
     // Each tile is dated by its section; every section is ok here, so each shows the snapshot's generatedAt.
     const tiles = screen.getAllByRole('region')
-    expect(tiles).toHaveLength(7)
+    expect(tiles).toHaveLength(9)
     for (const each of tiles) expect(within(each).getByText('as of 2026-09-25 03:16 UTC')).toBeTruthy()
     expect(screen.queryByText(/^Stale/)).toBeNull()
 
@@ -46,11 +54,20 @@ describe('Overview', () => {
       `${GITHUB}/issues`, `${GITHUB}/pulls`, `${GITHUB}/tree/main/docs/harness/sessions`,
       `${GITHUB}/actions/workflows/ci.yml?query=branch%3Amain`,
       `${GITHUB}/blob/main/.dependency-cruiser-known-violations.json`, `${GITHUB}/releases`,
-      `${GITHUB}/pulls?q=is%3Apr+is%3Amerged`,
+      `${GITHUB}/pulls?q=is%3Apr+is%3Amerged`, `${GITHUB}/pulls?q=is%3Apr+is%3Amerged+merged%3A%3E%3D2026-09-11`,
+      `${GITHUB}/tree/main/conformance/vectors`,
     ])
     expect(within(tile('Last session')).getByRole('link', { name: /^Session record/ }).getAttribute('href'))
       .toBe(`${GITHUB}/blob/main/docs/harness/sessions/2026-09-24.md`)
     expect(within(tile('Version')).getByRole('link', { name: 'v2.33.1' }).getAttribute('href'))
       .toBe(`${GITHUB}/releases/tag/v2.33.1`)
+  })
+
+  it('a flow or conformance the collector could not read says so, never zeros it did not count', () => {
+    render(<Overview snapshot={{ ...snapshot, metrics: { ...snapshot.metrics, flow: null, conformance: null } }} />)
+    const tile = (name: string) => screen.getByRole('region', { name })
+    expect(within(tile('Flow')).getByText('No flow numbers in the snapshot.')).toBeTruthy()
+    expect(within(tile('Conformance vectors')).getByText('No conformance vectors in the snapshot.')).toBeTruthy()
+    expect(tile('Flow').querySelector('h3 a')?.getAttribute('href')).toBe(`${GITHUB}/pulls?q=is%3Apr+is%3Amerged`)
   })
 })

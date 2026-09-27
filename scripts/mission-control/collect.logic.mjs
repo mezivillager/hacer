@@ -132,6 +132,15 @@ function buildPortfolio(values, options) {
     title: epic(summary.epicNumber)?.title ?? null, subIssues: epic(summary.epicNumber)?.subIssuesSummary ?? null })) }
 }
 
+// Flow (#539): stub — the red commit's; the next commit implements it.
+export const FLOW_PAGES = 10
+export function flowQuery() {
+  throw new Error('not implemented (#539)')
+}
+export async function readFlowPages() {
+  throw new Error('not implemented (#539)')
+}
+
 const tasksOf = (plan) => ({ items: plan, byProject: Object.fromEntries(Object.entries(Object.groupBy(plan, (task) => task.project ?? 'unfiled'))
   .map(([slug, tasks]) => [slug, tasks.map((task) => task.number)])) })
 

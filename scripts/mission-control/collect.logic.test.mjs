@@ -4,8 +4,10 @@ import { describe, expect, it } from 'vitest'
 import {
   AUX_ROTATION, PICK_ROTATION, claimHistory, dormantMode, parsePortfolio, planReady, readClaims, summarizeProjects,
 } from '../backlog.logic.mjs'
+import { VENDORED_PROJECTS } from '../sync-vectors.logic.mjs'
 import {
-  SCHEMA_VERSION, buildSnapshot, checksQuery, claimHistoryQuery, claimsQuery, parsePrevious, report, validateSnapshot,
+  FLOW_PAGES, SCHEMA_VERSION, buildSnapshot, checksQuery, claimHistoryQuery, claimsQuery, flowQuery, parsePrevious, readFlowPages, report,
+  validateSnapshot,
 } from './collect.logic.mjs'
 
 // scripts/fixtures/mission-control/ holds recordings of the collector's own calls, taken 2026-09-25 at
@@ -24,7 +26,11 @@ import {
 //                      commit's baseline reduced to the one field read, `rule.name`
 //   portfolio.md       docs/portfolio.md at ed7c983, pinned so the pick-rule expectations do not move with it
 //   snapshot.json      `collect.mjs --json` whole, at origin/main 561dcf1 on 2026-09-25 (03:16Z): the fixture the
-//                      site renders in mission-control/src/*.test.tsx (#473); the last test keeps it valid v1
+//                      site renders in mission-control/src/*.test.tsx (#473); the last test keeps it valid v1. The
+//                      fields v1 declared after it (#540, #539) are spliced in from its own data at its own time, so
+//                      its other pins hold: `portfolio.projects[].agentReady` counted from its `tasks.items`,
+//                      `pickRule.dormant` from its `prs.open`, `metrics.flow` this collector over gh-flow.json at its
+//                      `generatedAt` (a test below holds that), `metrics.conformance` from `git ls-tree 561dcf1`
 //   gh-check-runs.json `gh api graphql` run with gh-check-runs.graphql, the query checksQuery builds, whole, at
 //                      04:51Z on 2026-09-25 (origin/main 1b01240, its ci still running): the required checks' runs
 //                      on main's head and on the 3 open PRs. #507 is MC-6's own PR: its ci and browser-qa runs ran
@@ -32,6 +38,10 @@ import {
 //   gh-claim-history.json `gh api graphql` run with gh-claim-history.graphql, the query claimHistoryQuery builds, at
 //                      10:20Z on 2026-09-27 (origin/main aa4d75a): the 50 most recently updated issues, each comment
 //                      body cut to its first non-blank line, the line a claim opens with (#535)
+//   gh-flow.json       `gh api graphql` run with gh-flow.graphql, the query flowQuery builds for NOW, both pages, at
+//                      11:51Z on 2026-09-27 (origin/main 76bd9bb): all 154 merged PRs, 2026-09-17 to 09-27 — the 118
+//                      merged by NOW are the window — one per line, each comment body cut to its first non-blank line,
+//                      the line a verdict opens with (#539)
 // The process records (ledger, sessions, ADRs, roadmap, cloud inbox) are read live, as
 // backlog.logic.test.mjs reads docs/portfolio.md: a format change there fails here, not silently in the site.
 
@@ -42,6 +52,10 @@ const fixture = (file) => JSON.parse(fixtureText(file))
 const repoText = (file) => readFileSync(path.join(ROOT, file), 'utf8')
 const repoDir = (dir) => readdirSync(path.join(ROOT, dir)).filter((file) => file.endsWith('.md'))
   .map((file) => ({ file: `${dir}/${file}`, text: repoText(`${dir}/${file}`) }))
+
+/** conformance/vectors/, read live as collect.mjs reads it: every file, relative to it. */
+const vectorFiles = (dir = path.join(ROOT, 'conformance', 'vectors')) => readdirSync(dir, { recursive: true, withFileTypes: true })
+  .filter((entry) => entry.isFile()).map((entry) => path.relative(dir, path.join(entry.parentPath, entry.name)).split(path.sep).join('/'))
 
 const ratchet = fixture('git-ratchet.json')
 const ok = (source, value) => ({ source, value })
@@ -69,6 +83,8 @@ function inputs(overrides = {}) {
     sessions: ok('docs/harness/sessions', repoDir('docs/harness/sessions')),
     adrs: ok('docs/decisions', repoDir('docs/decisions')),
     checkRuns: ok('gh api graphql (check runs)', fixture('gh-check-runs.json')),
+    flowPrs: ok('gh api graphql (flow)', fixture('gh-flow.json')),
+    vectors: ok('conformance/vectors', vectorFiles()),
     ...overrides,
   }
 }
@@ -433,8 +449,11 @@ describe('collect.logic', () => {
       source: 'gh pr list --state open · gh pr list --state merged --limit 60', fetchedAt: NOW, status: 'error',
       error: 'could not build: prs.open[0].number must be a number',
     })
+    // pickRule reads the open PRs too, for dormant mode (#540): once v1 declares `dormant` (#539), its numbers leave
+    // schema with them and pickRule keeps its last-known data as well; every other section stands.
+    expect(drifted.pickRule).toEqual(good.pickRule)
     expect(report(drifted)).toEqual({
-      exitCode: 0, stderr: '', stdout: 'MISSION-CONTROL: VALID schema 1 · ok 12 · partial 0 · error 1 (prs)',
+      exitCode: 0, stderr: '', stdout: 'MISSION-CONTROL: VALID schema 1 · ok 11 · partial 0 · error 2 (pickRule, prs)',
     })
   })
 
@@ -457,7 +476,10 @@ describe('collect.logic', () => {
   })
 
   it('the site\'s fixture, snapshot.json, is a valid schema v1 snapshot', () => {
-    expect(validateSnapshot(fixture('snapshot.json'))).toEqual([])
+    const site = fixture('snapshot.json')
+    expect(validateSnapshot(site)).toEqual([])
+    // Its metrics.flow, spliced in, is this collector's over the recording at the fixture's own time (#539).
+    expect(site.metrics.flow).toEqual(build({}, { now: site.generatedAt }).metrics.flow)
   })
 
   // MC-6 (#477): each required check publishes its line as a notice — an annotation on its own check run.
@@ -545,6 +567,137 @@ describe('collect.logic', () => {
     })
     expect(report(next).stdout).toBe('MISSION-CONTROL: VALID schema 1 · ok 12 · partial 0 · error 1 (checks)')
     expect(build({ checkRuns: failed('gh api graphql (check runs)', 'HTTP 502: Bad Gateway') }).checks).toEqual({ items: [] })
+  })
+})
+
+// #539: the flow numbers brief-measure-flow.mjs computes by hand (docs/harness/reviews/2026-09-26/evidence/), and the
+// product's own measure, now in the snapshot.
+describe('metrics.flow and metrics.conformance', () => {
+  /** A merged PR in flowQuery's shape: merged `hours` after it opened, touching `paths`. */
+  const pr = (number, { hours = 1, mergedAt = '2026-09-24T00:00:00.000Z', paths = ['src/core/x.ts'], login = 'mezivillager', comments = [] } = {}) => ({
+    number, createdAt: new Date(Date.parse(mergedAt) - hours * 36e5).toISOString(), mergedAt, author: { login },
+    files: { nodes: paths.map((file) => ({ path: file })) }, comments: { nodes: comments },
+  })
+  const flowOf = (nodes) => build({ flowPrs: ok('gh api graphql (flow)', [{ data: { search: { pageInfo: { hasNextPage: false }, nodes } } }]) }).metrics.flow
+  const verdict = (word) => comment('mezivillager', `## Verifier verdict: ${word}`)
+
+  it('reads the PRs merged in the 14 days to now in one paged GraphQL query, every page and no more than search serves', async () => {
+    expect(flowQuery('mezivillager/hacer', NOW)).toBe(fixtureText('gh-flow.graphql').trim())
+    expect(flowQuery('mezivillager/hacer', NOW, 'Y3Vyc29yOjEwMA==')).toContain('type: ISSUE, first: 100, after: "Y3Vyc29yOjEwMA==") {')
+
+    const [first, second] = fixture('gh-flow.json')
+    const asked = []
+    const pages = await readFlowPages(async (after) => {
+      asked.push(after)
+      return after ? second : first
+    })
+    expect(asked).toEqual([null, 'Y3Vyc29yOjEwMA=='])
+    expect(pages).toEqual([first, second])
+    // A page that always says there is more stops at search's own ceiling, 1,000 results.
+    expect(FLOW_PAGES).toBe(10)
+    expect(await readFlowPages(async () => first)).toHaveLength(FLOW_PAGES)
+  })
+
+  it('metrics.flow: open-to-merge hours, PRs blocked at least once, verdict coverage split code / docs, Dependabot, config', () => {
+    // Pinned from a separate count over the same recording by brief-measure-flow.mjs's definitions (its `kind`, its
+    // percentile) with the snapshot's verdict (an allowlisted author, the brief's heading): the reference script's own
+    // heading reads the same 51 PRs with a verdict and the same 15 blocked in this window.
+    expect(build().metrics.flow).toEqual({
+      days: 14, since: '2026-09-11T00:30:00.000Z', merged: 118,
+      openToMergeHours: { median: 0.3, p90: 12.1 },
+      blockedOnce: { count: 15, of: 51, prs: [238, 248, 273, 294, 305, 312, 319, 320, 351, 396, 399, 432, 444, 490, 491] },
+      coverage: {
+        code: { merged: 56, withVerdict: 41, without: [133, 134, 135, 136, 250, 285, 287, 288, 303, 306, 307, 442, 443, 445, 449] },
+        nonCode: {
+          merged: 62, withVerdict: 10,
+          without: [113, 115, 116, 117, 118, 131, 132, 137, 234, 237, 240, 243, 254, 272, 276, 277, 283, 286, 292, 293, 297, 298, 310,
+            314, 341, 343, 346, 348, 350, 354, 358, 393, 411, 412, 413, 414, 416, 423, 425, 426, 428, 439, 440, 441, 446, 447, 463, 464,
+            493, 494, 495, 497],
+        },
+      },
+    })
+  })
+
+  it('flow definitions: the window, the nearest-rank percentiles, what counts as code, and a PR blocked once however often', () => {
+    // [now − 14 days, now], to the millisecond; a PR merged after now (the recording runs to 09-27) is not in it.
+    const edges = flowOf([pr(1, { mergedAt: '2026-09-11T00:30:00.000Z' }), pr(2, { mergedAt: '2026-09-11T00:29:59.999Z' }),
+      pr(3, { mergedAt: '2026-09-25T00:30:00.001Z' }), pr(4, { mergedAt: NOW })])
+    expect([edges.merged, edges.coverage.code.without]).toEqual([2, [1, 4]])
+
+    // Code: anything under src/, mission-control/, scripts/ or .github/, unless Dependabot's; docs only, config,
+    // .claude/ and the vendored vectors are not.
+    const kinds = flowOf([pr(10, { paths: ['docs/a.md'] }), pr(11, { paths: ['package.json', '.claude/b.md'] }),
+      pr(12, { paths: ['package.json'], login: 'dependabot' }), pr(13, { paths: ['.github/workflows/ci.yml'], login: 'dependabot' }),
+      pr(14, { paths: ['docs/a.md', 'scripts/c.mjs'] }), pr(15, { paths: ['mission-control/src/App.tsx'] }),
+      pr(16, { paths: ['src/components/d.tsx', 'docs/e.md'] }), pr(17, { paths: ['conformance/vectors/01/And.tst'] })])
+    expect(kinds.coverage).toEqual({
+      code: { merged: 3, withVerdict: 0, without: [14, 15, 16] }, nonCode: { merged: 5, withVerdict: 0, without: [10, 11, 12, 13, 17] },
+    })
+
+    // The value at floor(n × p) of the sorted hours, in tenths: of ten, the 6th for the median and the 10th for p90.
+    const ten = flowOf([3, 1, 4, 10, 5, 9, 2, 6, 8, 7].map((hours) => pr(hours, { hours: hours + 0.04 })))
+    expect(ten.openToMergeHours).toEqual({ median: 6, p90: 10 })
+    expect(flowOf([]).openToMergeHours).toEqual({ median: null, p90: null }) // nothing merged: no hours, not zero
+
+    // BLOCK then PASS, or BLOCK twice, is one PR blocked; a BLOCK off the allowlist is none; a qualified heading counts.
+    const blocked = flowOf([pr(20, { comments: [verdict('BLOCK'), verdict('PASS')] }),
+      pr(21, { comments: [verdict('BLOCK'), verdict('BLOCK'), verdict('PASS')] }),
+      pr(22, { comments: [comment('outsider', '## Verifier verdict: BLOCK'), verdict('PASS')] }),
+      pr(23, { comments: [comment('mezivillager', '## Verifier verdict (round 2, `abc1234`): BLOCK')] }), pr(24)])
+    expect(blocked.blockedOnce).toEqual({ count: 3, of: 4, prs: [20, 21, 23] })
+    expect(blocked.coverage.code).toEqual({ merged: 5, withVerdict: 4, without: [24] })
+  })
+
+  it('metrics.conformance: the vendored projects under conformance/vectors/ and their files by extension; no runner, so no pass count', () => {
+    const listing = ['LICENSE', '01/And.hdl', '01/And.tst', '01/And.cmp', '04/Mult.asm', '04/Mult.tst', '04/Mult.cmp', '04/Fill.tst']
+    expect(build({ vectors: ok('conformance/vectors', listing) }).metrics.conformance).toEqual({
+      projects: [
+        { project: '01', files: 3, byExtension: { hdl: 1, tst: 1, cmp: 1 } },
+        { project: '04', files: 4, byExtension: { asm: 1, tst: 2, cmp: 1 } },
+      ],
+      files: 7, runner: null,
+    })
+    // Live: the tree holds the projects the sync script vendors, each with its test scripts and compare files.
+    const { projects } = build().metrics.conformance
+    expect(projects.map((project) => project.project)).toEqual(VENDORED_PROJECTS)
+    for (const { byExtension } of projects) expect(byExtension).toMatchObject({ tst: expect.any(Number), cmp: expect.any(Number) })
+  })
+
+  it('a failed flow query or vectors listing leaves its field null — never zeros — and metrics partial; the run stays valid', () => {
+    const snapshot = build({ flowPrs: failed('gh api graphql (flow)', 'HTTP 502'), vectors: failed('conformance/vectors', 'ENOENT') })
+    expect([snapshot.metrics.flow, snapshot.metrics.conformance, snapshot.metrics.ratchet.count]).toEqual([null, null, 71])
+    expect(snapshot.freshness.metrics).toMatchObject({ fetchedAt: NOW, status: 'partial', error: 'flowPrs: HTTP 502; vectors: ENOENT' })
+    expect(validateSnapshot(snapshot)).toEqual([])
+  })
+
+  it('schema v1 declares metrics.flow and metrics.conformance, each an object or null, and #540\'s agentReady and dormant', () => {
+    const snapshot = build()
+    const { agentReady, ...project } = snapshot.portfolio.projects[0]
+    const { dormant, ...pickRule } = snapshot.pickRule
+    const { flow, conformance } = snapshot.metrics
+    expect([typeof agentReady, dormant]).toEqual(['number', { dormant: false, agentPrs: [486, 461, 459] }])
+    expect(validateSnapshot({
+      ...snapshot, portfolio: { projects: [project] }, pickRule,
+      metrics: { ...snapshot.metrics, flow: { ...flow, openToMergeHours: { median: '0.3', p90: null } }, conformance: { ...conformance, runner: 0 } },
+    })).toEqual([
+      'portfolio.projects[0].agentReady must be a number',
+      'pickRule.dormant must be an object',
+      'metrics.flow.openToMergeHours.median must be a number or null',
+      'metrics.conformance.runner must be an object or null',
+    ])
+  })
+
+  it('a last-known section that predates a field v1 now declares is not kept: the section is empty, and the run stays valid', () => {
+    const good = build()
+    const { flow, ...older } = good.metrics // metrics as written before #539
+    const noBaseline = { baseline: failed('.dependency-cruiser-known-violations.json', 'ENOENT') }
+    const next = build(noBaseline, { now: LATER, previous: { ...good, metrics: older } })
+    expect(next.metrics).toEqual({ ratchet: { count: 0, byRule: {}, history: [] }, releases: [], mergesPerDay: [], flow: null, conformance: null })
+    expect(next.freshness.metrics).toMatchObject({ fetchedAt: null, status: 'error' })
+    expect(validateSnapshot(next)).toEqual([])
+    // One that conforms is still kept, dated when it was fetched.
+    const kept = build(noBaseline, { now: LATER, previous: good })
+    expect([kept.metrics, kept.freshness.metrics.fetchedAt]).toEqual([good.metrics, NOW])
   })
 })
 
