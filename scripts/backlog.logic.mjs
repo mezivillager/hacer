@@ -1,8 +1,9 @@
 // Pure pick-rule logic for scripts/backlog.mjs — no I/O, unit-tested in backlog.logic.test.mjs.
 //
 // Input: the open issues from one `gh issue list --json …` call plus the rows of the table in
-// docs/portfolio.md, whose "Pick rule" section is what this file computes, and the open claims (#531,
-// `readClaims` at the foot of this file). Output: plain data.
+// docs/portfolio.md, whose "Pick rule" section is what this file computes, the open claims (#531,
+// `readClaims` at the foot of this file) and the claims made before, from which the cycle resumes (#535,
+// `claimHistory`). Output: plain data.
 
 export const DEFAULT_ALLOWLIST = ['mezivillager']
 
@@ -136,15 +137,16 @@ function nextAux(buckets, from) {
   return -1
 }
 
-/** One pick per PICK_ROTATION slot, an empty slot skipped, repeated until every bucket is drained. */
-function rotate(buckets) {
+/** One pick per PICK_ROTATION slot from `start` on, an empty slot skipped, repeated until every bucket is drained. */
+function rotate(buckets, start) {
   const picks = []
-  let aux = 0
+  let aux = start.aux
   const take = (name) => {
     if (buckets.get(name).length > 0) picks.push(buckets.get(name).shift())
   }
   while ([...buckets.values()].some((bucket) => bucket.length > 0)) {
-    for (const slot of PICK_ROTATION) {
+    for (let step = 0; step < PICK_ROTATION.length; step++) {
+      const slot = PICK_ROTATION[(start.slot + step) % PICK_ROTATION.length]
       if (slot !== AUX_SLOT) {
         take(slot)
         continue
@@ -159,23 +161,63 @@ function rotate(buckets) {
 }
 
 /**
+ * The bucket whose slot a task takes, or null for none: `sev:critical` goes ahead of the cycle, the gate holds, an
+ * enabler takes the slot of the earliest bucket holding an open task it blocks (pull, don't push), and a row outside
+ * the cycle is on-request.
+ */
+function slotting(tasks) {
+  const bucketByNumber = new Map(tasks.map((task) => [task.number, bucketOf(task.project)]))
+  return (task) => {
+    if (task.labels.includes('sev:critical') || heldByGate(task)) return null
+    const blocked = new Set(task.blocking.map((number) => bucketByNumber.get(number)))
+    const bucket = task.lane === 'enabler' ? BUCKET_ORDER.find((name) => blocked.has(name)) : bucketOf(task.project)
+    return BUCKET_ORDER.includes(bucket) ? bucket : null
+  }
+}
+
+/** The place after a pick from `bucket`: past the next slot from `place.slot` on that serves it, as rotate took it. */
+function advance(place, bucket) {
+  const auxIndex = AUX_ROTATION.indexOf(bucket)
+  const serving = auxIndex < 0 ? bucket : AUX_SLOT
+  const step = PICK_ROTATION.findIndex((_, offset) => PICK_ROTATION[(place.slot + offset) % PICK_ROTATION.length] === serving)
+  return { slot: (place.slot + step + 1) % PICK_ROTATION.length, aux: auxIndex < 0 ? place.aux : (auxIndex + 1) % AUX_ROTATION.length }
+}
+
+/**
+ * Where the cycle resumes (#535): each earlier pick in `history` (claimHistory's, oldest claim first) advances to the
+ * next slot serving its bucket, as rotate took it. A bucket with one slot pins the place, so the replay is exact from
+ * the first such pick on. A pick that took no slot — `sev:critical`, held by the gate, an on-request row, unfiled, an
+ * enabler pulled by nothing — leaves the place where it was. With no history, the cycle starts at its first slot.
+ * @returns {{slot:number, aux:number, after:{number:number, bucket:string, at:string|null}|null}}
+ */
+export function resumePoint(issues, portfolioRows, history = [], allowlist = DEFAULT_ALLOWLIST) {
+  const slotOf = slotting(triageTasks(issues, portfolioRows, allowlist))
+  const earlier = new Map(triageTasks(history, portfolioRows, allowlist).map((task) => [task.number, task]))
+  let place = { slot: 0, aux: 0, after: null }
+  for (const pick of history) {
+    const bucket = earlier.has(pick.number) ? slotOf(earlier.get(pick.number)) : null
+    if (bucket) place = { ...advance(place, bucket), after: { number: pick.number, bucket, at: pick.claimedAt ?? null } }
+  }
+  return place
+}
+
+/** The line `ready` prints beside its list: the slot the cycle resumes at, and the claim that put it there. */
+export const formatResume = ({ slot, after }) => `cycle: slot ${slot + 1} of ${PICK_ROTATION.length} (${PICK_ROTATION[slot]}), ` +
+  (after ? `after #${after.number} · ${after.bucket}, claimed ${after.at}` : 'no earlier claim on record')
+
+/**
  * The pick rule over the pickable tasks: any `sev:critical` first; then the foundation gate holds
  * what is not safe to proceed on; then the eight-slot cycle over the buckets, `pubdocs` sharing the
  * `surfaces` slot, an enabler only while it blocks an open task of a bucket and then in that
- * bucket's slot (pull, don't push); on-request rows never. Inside a slot,
+ * bucket's slot (pull, don't push); on-request rows never. The cycle resumes after the latest pick
+ * in `history`, the claims before this call (resumePoint), so successive top picks follow it too. Inside a slot,
  * `research` tasks of DESIGN_FIRST_SLUGS come first, then the oldest issue. Every task comes back
  * exactly once — the picks in pick order with `reason: null`, then the rest by number, each with
  * its one-word reason.
  */
-export function planReady(issues, portfolioRows, allowlist = DEFAULT_ALLOWLIST, claims = []) {
+export function planReady(issues, portfolioRows, allowlist = DEFAULT_ALLOWLIST, claims = [], history = []) {
   const tasks = triageTasks(issues, portfolioRows, allowlist, claims)
-  const bucketByNumber = new Map(tasks.map((task) => [task.number, bucketOf(task.project)]))
-  /** The bucket a pulled enabler takes a slot of: the earliest in the cycle holding an open task it blocks. */
-  const pulledInto = (task) => {
-    const blocked = new Set(task.blocking.map((number) => bucketByNumber.get(number)))
-    return BUCKET_ORDER.find((name) => blocked.has(name)) ?? null
-  }
-
+  const slotOf = slotting(tasks)
   const critical = []
   const buckets = new Map(BUCKET_ORDER.map((name) => [name, []]))
   const unpicked = tasks.filter((task) => !task.pickable)
@@ -188,16 +230,16 @@ export function planReady(issues, portfolioRows, allowlist = DEFAULT_ALLOWLIST, 
       unpicked.push({ ...task, pickable: false, reason: GATE_REASON })
       continue
     }
-    const bucket = task.lane === 'enabler' ? pulledInto(task) : bucketOf(task.project)
-    if (buckets.has(bucket)) buckets.get(bucket).push(task)
+    const bucket = slotOf(task)
+    if (bucket) buckets.get(bucket).push(task)
     else unpicked.push({ ...task, reason: task.lane === 'enabler' ? 'not-pulled' : 'on-request' })
   }
-  return [...critical, ...rotate(buckets), ...unpicked.sort(byNumber)]
+  return [...critical, ...rotate(buckets, resumePoint(issues, portfolioRows, history, allowlist)), ...unpicked.sort(byNumber)]
 }
 
 /** One summary per portfolio row, in file order: live counts, its stale claims and the next pick for that row. */
-export function summarizeProjects(issues, portfolioRows, allowlist = DEFAULT_ALLOWLIST, claims = []) {
-  const plan = planReady(issues, portfolioRows, allowlist, claims)
+export function summarizeProjects(issues, portfolioRows, allowlist = DEFAULT_ALLOWLIST, claims = [], history = []) {
+  const plan = planReady(issues, portfolioRows, allowlist, claims, history)
   return portfolioRows.map((row) => {
     const tasks = plan.filter((task) => task.project === row.slug)
     const next = tasks.find((task) => task.pickable) ?? null
@@ -255,12 +297,41 @@ export function claimsQuery(repo, lsRemote) {
 
 const CLAIM_FIELDS = { claimedBy: 'Claimed by', intent: 'Intent', session: 'Session/run', branch: 'Branch', handoff: 'Handoff' }
 const claimFields = (body) => Object.fromEntries(Object.entries(CLAIM_FIELDS).map(([key, label]) =>
-  [key, new RegExp(`^${label}:[ \\t]*(.*?)(?:[ \\t]+#.*)?[ \\t]*$`, 'm').exec(body)?.[1] || null]))
+  [key, new RegExp(`^[ \\t]*${label}:[ \\t]*(.*?)(?:[ \\t]+#.*)?[ \\t]*$`, 'm').exec(body)?.[1] || null]))
+/** A claim comment is by an allowlisted author and opens with the `Claimed by:` line — blank lines and indentation
+ *  aside, which claimFields skips as well, so every claim it accepts names the holder that line names. */
+const isClaim = (allowlist) => (node) => allowlist.includes(node.author?.login) && /^[ \t\r\n]*Claimed by:/.test(node.body ?? '')
 
 /** The latest claim comment's fields, `author`, `at` and `url`; null when the issue has none. */
 export function latestClaim(comments = [], allowlist = DEFAULT_ALLOWLIST) {
-  const comment = comments.filter((node) => allowlist.includes(node.author?.login) && /^\s*Claimed by:/.test(node.body)).at(-1)
+  const comment = comments.filter(isClaim(allowlist)).at(-1)
   return comment ? { ...claimFields(comment.body), author: comment.author.login, at: comment.createdAt, url: comment.url } : null
+}
+
+/** The issues whose claim comments claimHistory reads: the most recently updated, open or closed. */
+export const CLAIM_HISTORY_WINDOW = 50
+
+/** One GraphQL query for the CLAIM_HISTORY_WINDOW most recently updated issues: how each files, and its comments. */
+export function claimHistoryQuery(repo) {
+  const [owner, name] = repo.split('/')
+  return `query { repository(owner: "${owner}", name: "${name}") { issues(first: ${CLAIM_HISTORY_WINDOW}, ` +
+    'orderBy: {field: UPDATED_AT, direction: DESC}) { nodes { number updatedAt parent { number } labels(first: 30) { nodes { name } } ' +
+    'blocking(first: 20) { nodes { number state } } comments(last: 50) { nodes { author { login } createdAt body } } } } } }'
+}
+
+/**
+ * The picks resumePoint replays (#535), oldest first: every issue of claimHistoryQuery's answer with a claim comment,
+ * in the gh issue shape plus `claimedAt`, its first claim comment — the pick; later ones change intent or resume it.
+ * A claim posts a comment, which updates the issue, so the window holds every claim made since its oldest update; a
+ * full window drops the claims before that, which it cannot show complete.
+ */
+export function claimHistory(answer, allowlist = DEFAULT_ALLOWLIST) {
+  const nodes = answer?.data?.repository?.issues?.nodes ?? []
+  const since = nodes.length < CLAIM_HISTORY_WINDOW ? -Infinity : Math.min(...nodes.map((issue) => Date.parse(issue.updatedAt)))
+  return nodes.flatMap(({ number, parent, labels, blocking, comments }) => {
+    const first = comments.nodes.find(isClaim(allowlist))
+    return first && Date.parse(first.createdAt) > since ? [{ number, parent, labels: labels.nodes, blocking, claimedAt: first.createdAt }] : []
+  }).sort((a, b) => Date.parse(a.claimedAt) - Date.parse(b.claimedAt))
 }
 
 /** An open PR carries issue n when it closes #n or its head branch is `<type>/<n>-…` (scripts/wt-new's convention). */
@@ -317,10 +388,3 @@ export function releaseComment(claim, { by, reason }) {
   return [`Released a stale claim: claim/${claim.number}, holder ${holderOf(claim)}, with no open PR.`,
     `Released by: ${by}`, ...(reason ? [`Reason: ${reason}`] : [])].join('\n')
 }
-
-// #535, red: stubs — the cycle does not yet resume across calls.
-export const CLAIM_HISTORY_WINDOW = 50
-export const claimHistoryQuery = () => ''
-export const claimHistory = () => []
-export const resumePoint = () => ({ slot: 0, aux: 0, after: null })
-export const formatResume = () => ''
