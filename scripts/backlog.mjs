@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 // The backlog over GitHub Issues — answers "what can you pick up?" from the shell, and holds the claims (#531).
 //
-//   node scripts/backlog.mjs ready    [--json]   pickable tasks in pick order, then the rest with a reason; the slot the
-//                                               cycle resumes at, after the latest claim, goes to stderr (#535)
-//   node scripts/backlog.mjs projects [--json]   one line per docs/portfolio.md row: counts + next pick
+//   node scripts/backlog.mjs ready    [--json]   pickable tasks in pick order, then the rest with a reason; to stderr, the
+//                                               dormant banner at 5 open agent PRs (#540), the slot the cycle resumes
+//                                               at, after the latest claim (#535), and what the claim history leaves a guess
+//   node scripts/backlog.mjs projects [--json]   one line per docs/portfolio.md row: counts + next pick, `over cap` past 12
 //   node scripts/backlog.mjs claim <n> --by <id> [--session <id>] [--branch <b>] [--intent <i>] [--handoff <h>]
 //   node scripts/backlog.mjs release <n> --by <id> [--force-stale --reason <why>]
 //
@@ -51,14 +52,14 @@ function graphql(query) {
   }
 }
 
-/** Every claim ref as readClaims joins them; `answer` also carries each claimed issue's labels. */
+/** Every claim ref as readClaims joins them; `answer` also carries each claimed issue's labels; `openPrs` set dormant mode. */
 function fetchClaims(allowlist) {
   const refs = ghJson('api', `repos/${REPO}/git/matching-refs/heads/claim/`)
   const lsRemote = refs.map((ref) => `${ref.object.sha}\t${ref.ref}`).join('\n') // as `git ls-remote` prints them
   const query = backlog.claimsQuery(REPO, lsRemote)
   const answer = query ? graphql(query) : null
-  const openPrs = ghJson('pr', 'list', '-R', REPO, '--state', 'open', '--limit', '100', '--json', 'number,headRefName,closingIssuesReferences')
-  return { answer, claims: backlog.readClaims({ lsRemote, answer, openPrs, allowlist, now: Date.now() }) }
+  const openPrs = ghJson('pr', 'list', '-R', REPO, '--state', 'open', '--limit', '100', '--json', 'number,author,headRefName,closingIssuesReferences')
+  return { answer, openPrs, claims: backlog.readClaims({ lsRemote, answer, openPrs, allowlist, now: Date.now() }) }
 }
 
 function claim(number, flags, allowlist) {
@@ -111,9 +112,17 @@ try {
   if (command) {
     const [allowlist, portfolioRows] = [allowlistFromEnv(), backlog.parsePortfolio(readFileSync(PORTFOLIO_PATH, 'utf8'))]
     const issues = ghJson('issue', 'list', '-R', REPO, '--state', 'open', '--limit', '500', '--json', ISSUE_FIELDS)
-    const history = backlog.claimHistory(graphql(backlog.claimHistoryQuery(REPO)), allowlist) // the cycle resumes from it
-    const result = command.plan(issues, portfolioRows, allowlist, fetchClaims(allowlist).claims, history)
-    if (commandName === 'ready') console.error(backlog.formatResume(backlog.resumePoint(issues, portfolioRows, history, allowlist)))
+    const { claims, openPrs } = fetchClaims(allowlist)
+    const fetchPage = (after) => graphql(backlog.claimHistoryQuery(REPO, after))
+    const pages = await backlog.readClaimHistory(fetchPage, issues, portfolioRows, allowlist) // the cycle resumes from them
+    const history = backlog.claimHistory(pages, allowlist)
+    const result = command.plan(issues, portfolioRows, allowlist, claims, history)
+    if (commandName === 'ready') {
+      const gap = backlog.historyGap(pages, issues, portfolioRows, allowlist)
+      for (const line of [backlog.formatDormant(backlog.dormantMode(openPrs, allowlist)),
+        backlog.formatResume(backlog.resumePoint(issues, portfolioRows, history, allowlist)),
+        gap && `cycle: claim history exhausted — ${gap}; the place above is a guess`]) if (line) console.error(line)
+    }
     console.log(flags.json ? JSON.stringify(result, null, 2) : command.format(result))
   } else if (action && Number.isInteger(number) && number > 0 && flags.by) {
     console.log(action(number, flags, allowlistFromEnv()))
