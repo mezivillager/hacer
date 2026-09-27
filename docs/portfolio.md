@@ -36,6 +36,9 @@ pick rule below decides what "next" means; `scripts/backlog.mjs ready` computes 
 
    - `aux` takes `verify → upkeep → bugs` in turn;
    - a slot whose bucket has nothing pickable is skipped;
+   - the cycle continues across calls: `ready` resumes after the latest claim (#535), so successive
+     top picks follow it as one listing does; a claim that took no slot (`sev:critical`, held by the
+     gate, on-request) leaves the place where it was;
    - an enabler (`core`, `3d`) is pulled, never pushed: eligible only while it blocks an open task of
      one of the buckets above, and it takes a slot of that bucket;
    - inside a slot, `research` tasks of `foundation`, `surfaces` and `core` come first (design first,
@@ -110,7 +113,7 @@ notes and issue shaping. Scheduled jobs stand down.
 
 ## Commands
 
-- `node scripts/backlog.mjs ready` — pickable tasks in pick order, then every other open task with its one-word reason (`--json` for the array).
+- `node scripts/backlog.mjs ready` — pickable tasks in pick order, then every other open task with its one-word reason (`--json` for the array); on stderr, the slot the cycle resumes at and the claim that puts it there.
 - `node scripts/backlog.mjs projects` — one line per row above: open · ready · in-progress · needs-human · stale claims, if any · next pick.
 - `node scripts/backlog.mjs claim <n> --by <id>` creates `claim/<n>` exclusively, posts the claim comment and labels `in-progress`; `release <n> --by <id>` is the holder's (`--force-stale` for anyone's stale claim).
 - The rule is pure logic in `scripts/backlog.logic.mjs` (`PICK_ROTATION` and `AUX_ROTATION` mirror the cycle above; a test keeps them in step with this file), tested against a recorded `gh issue list` fixture; `tasks` and `next` follow in [#149](https://github.com/mezivillager/hacer/issues/149).

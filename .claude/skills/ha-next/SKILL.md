@@ -20,6 +20,11 @@ Show the top pick with its *why* (portfolio row, why it is pickable, what it is 
 anything) and the next two. If nothing is pickable, say what would unblock the closest one
 (`needs-human`, a blocker, unshaped) and stop — that is the answer, not a failure.
 
+The pick continues the cycle: `ready` resumes the eight-slot cycle after the latest claim (each
+issue's first claim comment, read from the most recently updated issues) and prints where to
+stderr — `cycle: slot 4 of 8 (foundation), after #537 · harness, …`. So claim a pick before calling
+`ready` again: the next top pick is then the next slot, not more of the same bucket (#535).
+
 Also surface **open claims** and any `docs/harness/sessions/*-handoff.md` files: read the latest
 claim comment on each claimed issue (format in §2). `ready` never offers a claimed issue: it prints
 `claimed`, or `stale-claim` under the 48 h rule in §2. A stale or `paused:…` claim is not an active
