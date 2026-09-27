@@ -15,6 +15,11 @@ merge. If a step below is wrong, fix it here — not in a chat.
                                                                                  ≤ 400 reviewable lines)
 ```
 
+Exception: a `risk:0` docs-only PR may merge on the coordinator's own review instead of a fresh
+verifier, posted with the verdict heading and `Verified on: coordinator`. A fix after a **BLOCK**
+always goes back to a fresh verifier — never the coordinator (`verifier-brief.md`,
+`.claude/skills/ha-next/SKILL.md` §4).
+
 | Step | Where the knob lives | What you can adjust |
 |---|---|---|
 | Which projects, in what order, how picks rotate | `docs/portfolio.md` | row order, the eight-slot cycle (`foundation → lineage → harness → foundation → mission-control → spine → foundation → aux`), the foundation gate, the hand-in-hand rule, dormant-mode caps — *amended 2026-09-18 (#259): was the 2:2:1 ratio; amended 2026-09-21 (#330) while the foundation plan (#318) runs: was `surfaces → harness → spine → aux → surfaces → harness`; amended again 2026-09-25 (#482): added `lineage` and `mission-control`, one slot each, "equal footing as the other priority projects"* |
@@ -188,6 +193,7 @@ Change them here, in a PR, like any other knob.
 | Sonnet for | routine, easy work: docs-only edits and their review, mechanical changes, issue/label housekeeping, gardening — **and verifying any PR that is not `risk:2` and touches neither `src/core/` nor `src/simulation/`** (`model-tiering.md` §2) | an explicit `model: sonnet` per dispatch (or agent `model:` frontmatter) |
 | Concurrent subagents per session | **4** (`CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS=4`; default is 20) | `.claude/settings.json` `env` |
 | Subagent tokens per coordinator run | stop dispatching new work and report at **~2M** (summed from task notifications), unless the owner asked for a longer run | the coordinator (`ha-next`, `/autonomous`) |
+| Run length | bounded by **outcomes** — the queue exhausted, or a stated N merges — never by calendar time alone; the weekly Claude meter is a guard, re-read at each pick. A meter that will not read is retried once; if it is still unreadable, dispatch stops and in-flight work finishes. A weekly reset is not permission to continue (R741, R747) | the coordinator, at the run's start |
 | Agents after their PR | report and **stop** — never keep watching CI | `implementer-brief.md` |
 | Cloud routines | **Sonnet** for routine runs (spikes, gardening), Opus when the run does significant work; one-off or at most weekly, change-triggered; at most **1** recurring routine until #255 reports | routine config |
 | Cursor second opinion (local `cursor-agent`) | advisory, never a gate; standard `composer-2.5`, one run per PR head on `risk:1`/`risk:2` or `src/core`, `src/simulation`, `.github/workflows`, `scripts` changes; read-only config and 15-min timeout from `cursor-lane.md` §1. Bugbot is **not** used (owner, 2026-09-19: usage-based, not cost-effective) | the coordinator (wrapper: #296) |
@@ -245,7 +251,7 @@ PRs, and `ledger.md`. **Who is coordinating, and why a claim is idle**, is not �
 - `usage-rationing.md` — the Cursor lane's daily token ration, how a run is measured, and the dashboard reading the "Included" guard rests on (`cursor-usage.json`).
 - `mission-control.md` — the snapshot `scripts/mission-control/collect.mjs --json` prints (schema v1): every section, where it comes from, and how a failed source is flagged rather than fatal — what Mission Control's site and the coordinator's orient step both read.
 - `../research/2026-09-18-agent-readiness/` — why the process looks like this.
-- `sessions/` — dated session records: the goal, the owner's rulings, what was built, the state at close, how to resume. Start with the latest one when picking the work back up.
+- `sessions/` — dated session records: the goal, the owner's rulings, what was built, the state at close, how to resume. **The one close record — no separate end-of-run file:** a run's close lives here, and lists the PRs the run merged, from a command once #538 lands. Start with the latest one when picking the work back up.
 - `sessions/COORDINATOR-HANDOFF.md` — claim-comment fields, when to write a `*-handoff.md`, and how a second coordinator resumes or releases idle claims. Product “what’s next” still comes from `docs/portfolio.md` and Issues; handoffs carry **coordinator meta-state** only.
 - `process-review-brief.md` — the standing brief for the fortnightly process review; `reviews/` holds every cycle in one layout (`reviews/README.md`).
 - `cloud-queue.md` — standing Claude → Grok Bot queue for cloud-heavy work that nothing else waits on (verification, second opinions, differential runs, large install/build/test; R742). Local Claude enqueues; Grok Bot runs those rows when the owner triggers it; what it reports becomes a local follow-up. Not a second picker for ordinary local work.

@@ -62,8 +62,12 @@ the issue number); verifying it yourself is not — step 4 is always a *differen
 
 ## 4. Verify
 Dispatch a **fresh-context** agent with `docs/harness/verifier-brief.md` and the PR number. It posts
-one verdict comment. `BLOCK` → fix in the same branch, push, re-run the verifier. Nits → file the
-ones worth keeping as follow-up issues (`--parent` the epic, depth 1, ≤ 3).
+one verdict comment. `BLOCK` → fix in the same branch, push, re-run the verifier — always a **fresh**
+one, never the coordinator, whatever tier the PR is. Nits → file the ones worth keeping as follow-up
+issues (`--parent` the epic, depth 1, ≤ 3).
+
+**Exception:** a `risk:0` docs-only PR may merge on the coordinator's own review instead of
+dispatching step 4, posted with the verdict heading and `Verified on: coordinator`.
 
 **Fidelity review (ADR-0018).** If the PR changes semantics under `src/core/**` or
 `src/simulation/**` (evaluator, HDL compiler, test engine, builtins, clocking), also dispatch a
