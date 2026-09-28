@@ -298,7 +298,9 @@ milestone, rule and proceed, ledger every ruling, never stall.
   transcripts, and runs no suite itself: its context is the run's latency
   multiplier. The one exception is the integration run after a lane merge
   (lane condition 4, below), which goes to a file — exit code checked, summary
-  line read, never through a pipe.
+  line read, never through a pipe. Scripted checks (probes, smoke calls, comparators) belong to a data lane
+  as well; a coordinator runs one only when it is a single command whose output goes to
+  a file and only its summary line is read.
 
 - **Red tests are COMMITTED** before any green work exists. A test that passes
   before the implementation is a vacuous passer: name it at the gate with the
@@ -408,6 +410,17 @@ tasks, dispatched in one message. **Never parallel:** red-writing inside a
 milestone, `@ui` Playwright (flaky, and headed runs are single-worker — and it
 is a dispatched remote run, not a lane you own), and anything touching
 `circuitActions` or the store slices.
+
+**Split verification by resource, not by step order.** QA and evidence work divides by what
+each check needs, not by the order the steps were written in. Scriptable checks — vitest suites, headless core runs, comparators —
+go to a data lane (or one per backend); browser checks — a Claude in Chrome pass or a local Playwright run — share one browser lane,
+because only one agent can drive the browser at a time. Run the variants side by side
+(branch, baseline, simulated) on separate ports instead of restarting one server per
+variant, and name the real limits in the brief's Parallel-with slot (one browser driver; `@ui` Playwright stays a dispatched remote run; the store slices and `circuitActions` as one shared surface). Latency is
+not contention: a read-only call that waits tens of seconds on a remote backend runs
+concurrently with its siblings, so fan the requests out. What runs one at a time is what
+writes or holds an exclusive handle — the singletons above, and the browser. (Measured
+2026-09-28: one serial QA brief ran over an hour; split this way it was about 30–35 min.)
 
 ## Phase 4 — Closing.
 
