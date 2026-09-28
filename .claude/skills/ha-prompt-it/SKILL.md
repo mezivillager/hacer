@@ -281,7 +281,9 @@ milestone, rule and proceed, ledger every ruling, never stall.
 - **One review per milestone, none per task.** When a milestone's tasks are all
   green, dispatch ONE fresh reviewer, Opus or better, handed the milestone's
   brief, the implementers' reports and the milestone diff as file paths,
-  returning both verdicts (spec compliance AND quality) over the whole milestone.
+  returning both verdicts (spec compliance AND quality) over the whole milestone. Quality includes duplicated logic introduced by the milestone — across its lanes
+  and against code the repository already has; a duplication finding is fixed in
+  the milestone, never parked.
   Task completions still land with their hash in the ledger; they do not each
   buy a reviewer. The verifier brief (`docs/harness/verifier-brief.md`) is that
   reviewer's brief when the work is a harness ticket.
@@ -291,7 +293,8 @@ milestone, rule and proceed, ledger every ruling, never stall.
   are the milestone review or the whole-branch review.
 - **The whole-branch review is never skipped, in any tier:** one fresh reviewer
   over the whole diff before the definition of done runs, pointed at the
-  ledger's parked findings. Its fix wave ends with the coordinator's delta-read.
+  ledger's parked findings. It checks the branch for duplicated logic as a named item; duplication is fixed
+before closing, never parked as a follow-up. Its fix wave ends with the coordinator's delta-read.
 - **No parked agents, no coordinator-run suites.** An agent whose handback you
   have read is resumed or stopped in that same turn — an agent waiting on a
   `SendMessage` is dead wall time. The coordinator reads reports and diffs, not
@@ -386,7 +389,7 @@ milestone's red contract is committed and its green work divides into disjoint
 one message; doing it serially instead needs a one-line reason in the ledger (a
 single file, the shared store surface, judgment-heavy work kept in-session). The
 split — the lanes and their `Writes` sets — is declared before dispatch: in the
-plan's waves (Full) or in the ledger (Light). Every lane still needs all four:
+plan's waves (Full) or in the ledger (Light). Every lane still needs all five:
 
 1. the milestone's **red contract is committed** — a fixed contract is what stops
    two lanes making conflicting implicit decisions;
@@ -397,6 +400,28 @@ plan's waves (Full) or in the ledger (Light). Every lane still needs all four:
 4. **integration is serial and mine**: merge lane by lane, run the unit suite
    after each, the full definition of done after the last. A conflict ends
    parallel mode for that milestone — finish it serially and ledger why.
+5. **shared code is settled before the lanes start.** List every helper, type,
+   constant or fixture two lanes would each need, and build it first as a serial
+   task committed before dispatch — or give it to one lane whose interface the
+   others consume, with the commit they wait for named in the lane split. Each
+   brief's Parallel-with slot names that shared code and its owner. If two lanes
+   would still end up writing the same logic, do not split — unless duplicating
+   now and consolidating in the pass below is genuinely faster, which is then a
+   ruling in the ledger (Mezi 2026-09-28: duplication that is never consolidated
+   is unacceptable).
+
+**Consolidation pass — mandatory after any milestone that ran two or more
+implementer lanes**, after the last merge and before the milestone review; it is
+the safety net for condition 5, never a substitute for it. One fresh agent, Opus
+or better, gets the lanes' combined diff, the lane split and the shared-able code
+each lane listed in its report, and folds every piece of logic written twice —
+across the lanes, or between the new code and what the repository already has —
+into one implementation. It reads the lanes' diffs side by side: a clone detector
+finds only near-literal copies (measured 2026-09-28: `npx jscpd` missed a planted
+duplicate whose only change was a renamed parameter), so it may seed the pass but
+never is the check. It refactors production code and shared test helpers, never
+an assertion, and runs the milestone's suite before and after (to a file, summary
+line). A pass that finds nothing says what it compared.
 
 **Suite runs at integration** go to a file in the run folder: check the exit
 code, then read the summary line from the file — never the full output, never
