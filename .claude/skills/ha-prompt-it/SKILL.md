@@ -283,7 +283,8 @@ milestone, rule and proceed, ledger every ruling, never stall.
   brief, the implementers' reports and the milestone diff as file paths,
   returning both verdicts (spec compliance AND quality) over the whole milestone. Quality includes duplicated logic introduced by the milestone — across its lanes
   and against code the repository already has; a duplication finding is fixed in
-  the milestone, never parked.
+  the milestone, never parked. It also includes comments that are verbose or point at
+  anything not committed in the repo.
   Task completions still land with their hash in the ledger; they do not each
   buy a reviewer. The verifier brief (`docs/harness/verifier-brief.md`) is that
   reviewer's brief when the work is a harness ticket.
@@ -294,7 +295,8 @@ milestone, rule and proceed, ledger every ruling, never stall.
 - **The whole-branch review is never skipped, in any tier:** one fresh reviewer
   over the whole diff before the definition of done runs, pointed at the
   ledger's parked findings. It checks the branch for duplicated logic as a named item; duplication is fixed
-before closing, never parked as a follow-up. Its fix wave ends with the coordinator's delta-read.
+before closing, never parked as a follow-up. Comments are a named item too: verbose ones,
+and ones that point outside the committed repo, are fixed before closing. Its fix wave ends with the coordinator's delta-read.
 - **No parked agents, no coordinator-run suites.** An agent whose handback you
   have read is resumed or stopped in that same turn — an agent waiting on a
   `SendMessage` is dead wall time. The coordinator reads reports and diffs, not
@@ -520,6 +522,13 @@ suite=store` is the useful move.
 - **Descriptive names over short ones.** A bare generic word as a whole name
   (`data`, `result`, `item`, `handle`) is a red flag: name the domain concept —
   gate, pin, wire, junction, bus.
+- **Comments are short and self-contained** (Mezi 2026-09-28). A comment says why the code
+  is the way it is, in a line or two a reader of this repository alone can follow; it does
+  not narrate or restate the code. It never points at anything outside the committed repo —
+  a plan, prompt, ruling, ledger, review, milestone or task id, a personal-docs path, a PR or
+  Slack thread, an uncommitted file. When the reason needs a document, the document belongs
+  in the repo (an ADR, a docs page) and the comment cites that. The dispatch guard's order 8
+  carries this to every agent that writes code; the milestone and whole-branch reviews check it.
 
 ## Staffing table (Full tier: produced in Phase 1, kept current)
 
