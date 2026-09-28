@@ -106,12 +106,16 @@ close); a tier named in the hand-over is the answer.
 - **Light** — about one milestone's worth, no new cross-system seam. The spec,
   its fresh-eyes review and the publish decision, then TDD in this session with
   Gate 2 before implementing, then ONE whole-branch review before the definition
-  of done. No plan document, no staffing table, no implementer agents; the spec
-  reviewer and the whole-branch reviewer are the only seats. **AGENTS.md Step 1
-  is still a hard gate:** anything with 3+ implementation steps gets a
-  `docs/specs/` design approved before code, at every tier above one-liner.
-- **Full** — several milestones, a new seam, or parallel agents: the whole
-  pipeline below.
+  of done. No plan document and no staffing table. Implementer lanes are
+  allowed once the reds are committed and the lanes' files are disjoint (Mezi
+  2026-09-28, narrowing his 2026-09-22 "no implementer agents"): the lane split
+  — the lanes and their `Writes` sets — is declared in the ledger before
+  dispatch, since there is no plan to declare it. The spec reviewer (plus a
+  delta reviewer for a contract revision after Gate 1) and the whole-branch
+  reviewer are the only review seats. **AGENTS.md Step 1 is still a hard
+  gate:** anything with 3+ implementation steps gets a `docs/specs/` design
+  approved before code, at every tier above one-liner.
+- **Full** — several milestones or a new seam: the whole pipeline below.
 
 Mezi can change the tier with "light" or "full" at any point.
 
@@ -174,6 +178,19 @@ must-fixes before presenting. When the spec changes semantics under `src/core/**
 same review includes the fidelity check (`docs/harness/fidelity-brief.md`, ADR-0018):
 the contract is checked against the oracle vectors and the book, not only against the
 code. Its proposals go to `docs/harness/fidelity-inbox.md`; they are never applied here.
+
+**A contract revision after Gate 1 gets a delta review, not a second full
+review** (Mezi 2026-09-28; measured that day: two full fresh-eyes re-reviews
+after stakeholder changes, 21 minutes each). Dispatch a fresh reviewer, Opus or
+better, that attacks only the change: it receives the changed items, their
+success criteria, the code they touch and the previous review's findings, plus
+the full current contract read-only, to catch knock-on effects on the items
+that did not change. When the changed items meet the fidelity condition above,
+the delta review carries the fidelity check for them. A full fresh-eyes
+re-review runs instead when the revision changes the goal or more than a third
+of the contract's items. The initial fresh-eyes review is unchanged, and so is
+the fix-round rule: a fix round ends with the coordinator's delta-read, never a
+re-review agent.
 
 **The spec is the prompt.** Save it as `docs/specs/YYYY-MM-DD-<topic>.md` — one
 artifact, not two. Its contract section is the authority every later ruling
@@ -301,7 +318,7 @@ milestone, rule and proceed, ledger every ruling, never stall.
   persisted state — and only when its silent failure would corrupt a decision
   or persisted data. When you do: the single test node (`pnpm vitest run <file> -t "<name>"`),
   never a suite; restore with `git checkout -- <file>`; report the test's NAME;
-  a handful per PR at most. Reviewers name flips; they do not run them.
+  a handful per PR at most. Reviewers name flips; they do not run them. When a flip is warranted, the brief carries a line `flip-exception: <test> — <why>`; without it the dispatch guard's standing orders tell the agent not to flip.
   (Measured 2026-09-23: after the 09-19 selection memo, mutation-style runs
   rose from 216 to 302 with 20–46 suite-wide runs a day — the trigger, not the
   selection, is what costs.)
@@ -355,8 +372,14 @@ milestone, rule and proceed, ledger every ruling, never stall.
   gate or propose it as evidence; if coverage of a branch-heavy function is the
   worry, write the missing cases as ordinary unit tests.
 
-**Parallel lanes are earned, not assumed.** Serialized on one worktree by default,
-until all four hold and the plan said so:
+**Parallel lanes are the default once the contract is fixed** (Mezi 2026-09-28,
+replacing "earned, not assumed; serialized on one worktree by default"). When a
+milestone's red contract is committed and its green work divides into disjoint
+`Writes` sets, that work splits into concurrent implementer lanes dispatched in
+one message; doing it serially instead needs a one-line reason in the ledger (a
+single file, the shared store surface, judgment-heavy work kept in-session). The
+split — the lanes and their `Writes` sets — is declared before dispatch: in the
+plan's waves (Full) or in the ledger (Light). Every lane still needs all four:
 
 1. the milestone's **red contract is committed** — a fixed contract is what stops
    two lanes making conflicting implicit decisions;
@@ -367,6 +390,10 @@ until all four hold and the plan said so:
 4. **integration is serial and mine**: merge lane by lane, run the unit suite
    after each, the full definition of done after the last. A conflict ends
    parallel mode for that milestone — finish it serially and ledger why.
+
+**Suite runs at integration** go to a file in the run folder: check the exit code, then read the summary
+line from the file — never the full output, never through a pipe. This is the one suite a coordinator
+runs itself; every other run belongs to a lane or a verification agent.
 
 Cap at **three or four implementer lanes**: the limit is how many lanes' evidence
 I can verify before the next wave lands. **Always parallel:** read-only fan-out
@@ -423,6 +450,18 @@ suite=store` is the useful move.
 
 - **Evidence over claims** (Constitution §1). Never call something done without
   the command and its output. "Should pass" is not evidence.
+- **Measure a premise before agreeing with it** (Mezi 2026-09-28: "if I assumed
+  wrong, don't take my words for it … challenge them"). A claim from Mezi, a
+  reviewer or an agent about what is broken or what is costing time is checked
+  against the transcript, the code or the data before the session acts on it,
+  and the reply says what was measured. A premise the measurement contradicts
+  is said so, with the numbers, before any work builds on it.
+- **Reuse a harness before building one.** Before building a local stack, a
+  fixture seeder or a probe kit, check `scripts/` (`REPO_MAP.md` lists what is
+  there) and extend what is there. A new one is built in `scripts/`,
+  parameterised — paths and labels as arguments or env vars, never hardcoded —
+  in its neighbours' shape (a thin `<name>.mjs` over a tested
+  `<name>.logic.mjs`), with its runtime output kept out of the working tree.
 - **No absolute machine paths in docs** (AGENTS.md Step 2b) — repo-relative
   paths, `../web-ide/…` for siblings, `<!-- allow-abs-path -->` for a deliberate
   exception. `pnpm run lint:docs` is the gate.
@@ -448,6 +487,29 @@ decisions, never delegated); implementer agents (Opus or better); Explore
 (read-only fan-out). Independent dispatches go out in one message so they run
 concurrently; same wave means dispatched together. Every inter-stage artifact —
 spec, plan, brief, report, diff — travels as a FILE PATH, never pasted text.
+
+**A general-purpose brief, in every tier, is written from
+`~/.claude/hooks/agent-brief-template.md`** — reviewers' briefs included — with
+its slots in order: Goal; Read (anchors: `file:line`, function and test names);
+Writes (exact files, or `none — read-only`); Measured facts; Parallel with (the
+sibling agents running now, or `none — <reason>`); Tests (exact commands,
+narrowest first); Report (its shape, and where to write it). A slot with nothing
+to say reads `none — <reason>`; lanes may share one brief file, named by path in
+each prompt. hacer's own agents — `hacer-builder`, `hacer-verifier`,
+`hacer-fidelity`, `hacer-product` — keep their briefs in `docs/harness/*-brief.md`.
+The dispatch hook (`~/.claude/hooks/dispatch-guard.sh`) holds this at the moment
+of dispatch: in this workspace a `general-purpose`, `claude` or untyped dispatch
+missing a slot is bounced once, naming the missing slots, and re-dispatching
+with the same description proceeds as-is; hacer's own agents are never bounced.
+It also appends standing orders to every dispatch, theirs included — the hook's
+text is canonical, and a brief must not contradict it. The scope order reads:
+"the brief's measured facts are given and its Read anchors are where to start —
+do not re-derive the facts or survey the repository. Read what the work itself
+needs: the code you change and what calls it, or, as a reviewer, wherever a
+finding leads. If a fact the brief should have given you is missing, measure it
+once and say so in the report." And an agent runs a whole suite only when the
+Tests slot names it, so **name the suite there whenever an implementer must run
+it before committing**.
 
 **Every brief carries a measured-facts table**, not prose about state: one row
 per fact the agent will lean on — the value, the exact command that produced it,
