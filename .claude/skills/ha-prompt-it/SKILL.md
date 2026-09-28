@@ -106,11 +106,11 @@ close); a tier named in the hand-over is the answer.
 - **Light** — about one milestone's worth, no new cross-system seam. The spec,
   its fresh-eyes review and the publish decision, then TDD in this session with
   Gate 2 before implementing, then ONE whole-branch review before the definition
-  of done. No plan document and no staffing table. Implementer lanes are
-  allowed once the reds are committed and the lanes' files are disjoint (Mezi
-  2026-09-28, narrowing his 2026-09-22 "no implementer agents"): the lane split
-  — the lanes and their `Writes` sets — is declared in the ledger before
-  dispatch, since there is no plan to declare it. The spec reviewer (plus a
+  of done. No plan document and no staffing table. Phase 3's lanes-by-default
+  rule applies once the red contract is committed (Mezi 2026-09-28, narrowing
+  his 2026-09-22 "no implementer agents"): the lane split — the lanes and
+  their `Writes` sets — is declared in the ledger before dispatch, since there
+  is no plan to declare it. The spec reviewer (plus a
   delta reviewer for a contract revision after Gate 1) and the whole-branch
   reviewer are the only review seats. **AGENTS.md Step 1 is still a hard
   gate:** anything with 3+ implementation steps gets a `docs/specs/` design
@@ -296,7 +296,9 @@ milestone, rule and proceed, ledger every ruling, never stall.
   have read is resumed or stopped in that same turn — an agent waiting on a
   `SendMessage` is dead wall time. The coordinator reads reports and diffs, not
   transcripts, and runs no suite itself: its context is the run's latency
-  multiplier.
+  multiplier. The one exception is the integration run after a lane merge
+  (lane condition 4, below), which goes to a file — exit code checked, summary
+  line read, never through a pipe.
 
 - **Red tests are COMMITTED** before any green work exists. A test that passes
   before the implementation is a vacuous passer: name it at the gate with the
@@ -318,7 +320,10 @@ milestone, rule and proceed, ledger every ruling, never stall.
   persisted state — and only when its silent failure would corrupt a decision
   or persisted data. When you do: the single test node (`pnpm vitest run <file> -t "<name>"`),
   never a suite; restore with `git checkout -- <file>`; report the test's NAME;
-  a handful per PR at most. Reviewers name flips; they do not run them. When a flip is warranted, the brief carries a line `flip-exception: <test> — <why>`; without it the dispatch guard's standing orders tell the agent not to flip.
+  a handful per PR at most. Reviewers name flips; they do not run them. When
+  a flip is warranted, the brief carries a line
+  `flip-exception: <test> — <why>`; without it the dispatch guard's standing
+  orders tell the agent not to flip.
   (Measured 2026-09-23: after the 09-19 selection memo, mutation-style runs
   rose from 216 to 302 with 20–46 suite-wide runs a day — the trigger, not the
   selection, is what costs.)
@@ -391,9 +396,10 @@ plan's waves (Full) or in the ledger (Light). Every lane still needs all four:
    after each, the full definition of done after the last. A conflict ends
    parallel mode for that milestone — finish it serially and ledger why.
 
-**Suite runs at integration** go to a file in the run folder: check the exit code, then read the summary
-line from the file — never the full output, never through a pipe. This is the one suite a coordinator
-runs itself; every other run belongs to a lane or a verification agent.
+**Suite runs at integration** go to a file in the run folder: check the exit
+code, then read the summary line from the file — never the full output, never
+through a pipe. This is the one suite a coordinator runs itself; every other
+run belongs to a lane or a verification agent.
 
 Cap at **three or four implementer lanes**: the limit is how many lanes' evidence
 I can verify before the next wave lands. **Always parallel:** read-only fan-out
@@ -494,22 +500,28 @@ its slots in order: Goal; Read (anchors: `file:line`, function and test names);
 Writes (exact files, or `none — read-only`); Measured facts; Parallel with (the
 sibling agents running now, or `none — <reason>`); Tests (exact commands,
 narrowest first); Report (its shape, and where to write it). A slot with nothing
-to say reads `none — <reason>`; lanes may share one brief file, named by path in
-each prompt. hacer's own agents — `hacer-builder`, `hacer-verifier`,
-`hacer-fidelity`, `hacer-product` — keep their briefs in `docs/harness/*-brief.md`.
-The dispatch hook (`~/.claude/hooks/dispatch-guard.sh`) holds this at the moment
-of dispatch: in this workspace a `general-purpose`, `claude` or untyped dispatch
-missing a slot is bounced once, naming the missing slots, and re-dispatching
-with the same description proceeds as-is; hacer's own agents are never bounced.
-It also appends standing orders to every dispatch, theirs included — the hook's
-text is canonical, and a brief must not contradict it. The scope order reads:
-"the brief's measured facts are given and its Read anchors are where to start —
-do not re-derive the facts or survey the repository. Read what the work itself
-needs: the code you change and what calls it, or, as a reviewer, wherever a
-finding leads. If a fact the brief should have given you is missing, measure it
-once and say so in the report." And an agent runs a whole suite only when the
-Tests slot names it, so **name the suite there whenever an implementer must run
-it before committing**.
+to say reads `none — <reason>`. Lanes may share one brief file, named by path in
+each prompt; the hook counts a referenced file's slots only when its name
+contains `brief` (`lanes-brief.md`), and naming the template fills none.
+hacer's own agents — `hacer-builder`, `hacer-verifier`, `hacer-fidelity`,
+`hacer-product` — keep their briefs in `docs/harness/*-brief.md`. The dispatch
+hook (`~/.claude/hooks/dispatch-guard.sh`) holds this at the moment of
+dispatch: in this workspace a `general-purpose`, `claude` or untyped dispatch
+missing a slot is bounced, naming the missing slots, once per description (it
+re-arms after a complete brief passes); re-dispatching with the same
+description proceeds as-is, and hacer's own agents are never bounced. It also
+appends standing orders to every dispatch, theirs included, and read-only
+agent types (Explore, Plan, claude-code-guide) get orders 2, 6 and 7 only. The
+hook's text is canonical, and a brief must not contradict it. The scope order
+reads: "the brief's measured facts are given and its Read anchors are where to
+start — do not re-derive the facts or survey the repository. Read what the
+work itself needs: the code you change and what calls it, or, as a reviewer
+or a search, wherever a finding leads. If a fact the brief should have given
+you is missing, measure it once and say so in the report." The tests order
+says "Run a whole suite only when the brief's Tests slot names it, once", so
+**name the suite there whenever an implementer must run it before
+committing**; without a Tests slot, as in hacer's own agents' briefs, "the
+checks your own instructions require still run as they say".
 
 **Every brief carries a measured-facts table**, not prose about state: one row
 per fact the agent will lean on — the value, the exact command that produced it,
