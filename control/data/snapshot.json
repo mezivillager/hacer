@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-28T18:34:27.138Z",
+  "generatedAt": "2026-09-28T18:49:32.522Z",
   "head": {
-    "sha": "b36883b69fa3ad8cdce097c7f102e4e0a4fbb625",
-    "date": "2026-09-28T21:33:16+03:00",
-    "subject": "docs(skills): whole-branch review follow-ups to the dispatch discipline (#573)"
+    "sha": "f8d6c6f127c158b2f3789035f99e9bd956ead61b",
+    "date": "2026-09-28T21:48:17+03:00",
+    "subject": "docs(skills): split verification by resource; scripted checks in a data lane (#575)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-28T18:34:27.138Z",
+      "fetchedAt": "2026-09-28T18:49:32.522Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-28T18:34:27.138Z",
+      "fetchedAt": "2026-09-28T18:49:32.522Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-28T18:34:27.138Z",
+      "fetchedAt": "2026-09-28T18:49:32.522Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-28T18:34:27.138Z",
+      "fetchedAt": "2026-09-28T18:49:32.522Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-09-28T18:34:27.138Z",
+      "fetchedAt": "2026-09-28T18:49:32.522Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-09-28T18:34:27.138Z",
+      "fetchedAt": "2026-09-28T18:49:32.522Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-09-28T18:34:27.138Z",
+      "fetchedAt": "2026-09-28T18:49:32.522Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-09-28T18:34:27.138Z",
+      "fetchedAt": "2026-09-28T18:49:32.522Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-09-28T18:34:27.138Z",
+      "fetchedAt": "2026-09-28T18:49:32.522Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-09-28T18:34:27.138Z",
+      "fetchedAt": "2026-09-28T18:49:32.522Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors",
-      "fetchedAt": "2026-09-28T18:34:27.138Z",
+      "fetchedAt": "2026-09-28T18:49:32.522Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-09-28T18:34:27.138Z",
+      "fetchedAt": "2026-09-28T18:49:32.522Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-09-28T18:34:27.138Z",
+      "fetchedAt": "2026-09-28T18:49:32.522Z",
       "status": "ok"
     }
   },
@@ -3018,6 +3018,21 @@
     ],
     "merged": [
       {
+        "number": 576,
+        "title": "docs(skills): split verification by resource; scripted checks in a data lane",
+        "url": "https://github.com/mezivillager/hacer/pull/576",
+        "author": "mezivillager",
+        "labels": [],
+        "headRefName": "docs/575-verification-by-resource",
+        "isDraft": false,
+        "createdAt": "2026-09-28T18:45:19Z",
+        "mergedAt": "2026-09-28T18:48:18Z",
+        "closes": [
+          575
+        ],
+        "verdicts": []
+      },
+      {
         "number": 574,
         "title": "docs(skills): whole-branch review follow-ups to the dispatch discipline",
         "url": "https://github.com/mezivillager/hacer/pull/574",
@@ -4437,21 +4452,6 @@
         "closes": [
           448
         ],
-        "verdicts": []
-      },
-      {
-        "number": 447,
-        "title": "docs(harness): cloud-queue inbox after #442/#443/#445",
-        "url": "https://github.com/mezivillager/hacer/pull/447",
-        "author": "mezivillager",
-        "labels": [
-          "released"
-        ],
-        "headRefName": "cursor/cloud-queue-inbox-442-443-445-0090",
-        "isDraft": false,
-        "createdAt": "2026-09-24T01:20:18Z",
-        "mergedAt": "2026-09-24T01:26:13Z",
-        "closes": [],
         "verdicts": []
       }
     ],
@@ -6353,7 +6353,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-24",
-        "merges": 16
+        "merges": 15
       },
       {
         "date": "2026-09-25",
@@ -6369,13 +6369,13 @@
       },
       {
         "date": "2026-09-28",
-        "merges": 2
+        "merges": 3
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-14T18:34:27.138Z",
-      "merged": 161,
+      "since": "2026-09-14T18:49:32.522Z",
+      "merged": 162,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 8.9
@@ -6430,7 +6430,7 @@
           ]
         },
         "nonCode": {
-          "merged": 80,
+          "merged": 81,
           "withVerdict": 15,
           "without": [
             113,
@@ -6497,7 +6497,8 @@
             534,
             543,
             571,
-            574
+            574,
+            576
           ]
         }
       }
@@ -6559,11 +6560,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "b36883b69fa3ad8cdce097c7f102e4e0a4fbb625",
+        "sha": "f8d6c6f127c158b2f3789035f99e9bd956ead61b",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36466004753/job/109076130183",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36467778648/job/109082071587",
         "line": null,
         "verdict": null,
         "fields": {},
