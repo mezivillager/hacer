@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-28T06:42:37.491Z",
+  "generatedAt": "2026-09-28T15:20:10.828Z",
   "head": {
     "sha": "9686b21aeb06bf8f38381c1cca3a961bf0579074",
     "date": "2026-09-27T16:06:10+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-28T06:42:37.491Z",
+      "fetchedAt": "2026-09-28T15:20:10.828Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-28T06:42:37.491Z",
+      "fetchedAt": "2026-09-28T15:20:10.828Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-28T06:42:37.491Z",
+      "fetchedAt": "2026-09-28T15:20:10.828Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-28T06:42:37.491Z",
+      "fetchedAt": "2026-09-28T15:20:10.828Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-09-28T06:42:37.491Z",
+      "fetchedAt": "2026-09-28T15:20:10.828Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-09-28T06:42:37.491Z",
+      "fetchedAt": "2026-09-28T15:20:10.828Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-09-28T06:42:37.491Z",
+      "fetchedAt": "2026-09-28T15:20:10.828Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-09-28T06:42:37.491Z",
+      "fetchedAt": "2026-09-28T15:20:10.828Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-09-28T06:42:37.491Z",
+      "fetchedAt": "2026-09-28T15:20:10.828Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-09-28T06:42:37.491Z",
+      "fetchedAt": "2026-09-28T15:20:10.828Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors",
-      "fetchedAt": "2026-09-28T06:42:37.491Z",
+      "fetchedAt": "2026-09-28T15:20:10.828Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-09-28T06:42:37.491Z",
+      "fetchedAt": "2026-09-28T15:20:10.828Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-09-28T06:42:37.491Z",
+      "fetchedAt": "2026-09-28T15:20:10.828Z",
       "status": "ok"
     }
   },
@@ -334,7 +334,7 @@
         "lane": "process",
         "slug": "lineage",
         "epicNumber": 457,
-        "open": 4,
+        "open": 5,
         "ready": 2,
         "inProgress": 1,
         "needsHuman": 0,
@@ -2726,6 +2726,19 @@
         "lane": "process",
         "pickable": false,
         "reason": "unshaped"
+      },
+      {
+        "number": 569,
+        "title": "Premise expired: P-001 — R3F's peer range excludes React 19.3",
+        "labels": [
+          "project:lineage"
+        ],
+        "blocking": [],
+        "project": "lineage",
+        "rank": 13,
+        "lane": "process",
+        "pickable": false,
+        "reason": "author"
       }
     ],
     "byProject": {
@@ -2806,7 +2819,8 @@
         471,
         481,
         470,
-        502
+        502,
+        569
       ],
       "harness": [
         149,
@@ -6347,7 +6361,7 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-14T06:42:37.491Z",
+      "since": "2026-09-14T15:20:10.828Z",
       "merged": 159,
       "openToMergeHours": {
         "median": 0.3,
