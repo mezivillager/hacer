@@ -325,9 +325,12 @@ test.describe('Feature @ui', () => {
 ### Running E2E Tests
 
 ```bash
-# Every Playwright suite mounts the 3D canvas: CI/cloud only, never on a laptop (ADR-0016).
+# @store and @ui mount the 3D canvas: CI/cloud only, never on a laptop (ADR-0016).
 # By hand (not a done-criterion):
-gh workflow run e2e.yml -f suite=store   # or ui, or all
+gh workflow run e2e.yml -f suite=store   # or ui, shell, or all
+
+# The one exception, canvas-less @shell: a local pre-flight, never a gate (ADR-0016 amendment 2026-09-29).
+pnpm exec playwright test --project shell
 
 # All tests
 npm run test:e2e

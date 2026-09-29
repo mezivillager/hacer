@@ -39,6 +39,8 @@ This folder contains all testing-related documentation for the HACER project.
 - Location: `e2e/specs/`
 - **Store tests** (`@store`): Run in CI or the cloud only. They mount the 3D canvas, so they never run on a laptop (ADR-0016)
   - By hand: `gh workflow run e2e.yml -f suite=store` (not a done-criterion)
+- **Shell tests** (`@shell`, `e2e/shell/`): canvas-less (`?renderer=none`, WebGL off), so they may run on a laptop as a pre-flight, never a gate (ADR-0016 amendment 2026-09-29)
+  - `pnpm exec playwright test --project shell`
 - **UI tests** (`@ui`): Slow, run manually or CI (2x/week)
   - `pnpm run test:e2e:ui`
 

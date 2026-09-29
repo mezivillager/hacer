@@ -792,7 +792,8 @@ test.describe('@store Gate Placement', () => {
 > **Note:** HACER E2E tests use a fixture system in `e2e/fixtures/` and helper library
 > in `e2e/helpers/`. Use `@store` tag for fast direct-store tests and `@ui` tag for
 > full browser interaction tests. See `e2e/specs/` for real examples.
-> - Every Playwright suite mounts the 3D canvas, so none runs on a laptop (ADR-0016). Run them in CI, or by hand in the cloud: `gh workflow run e2e.yml -f suite=store|ui|all`. Not a done-criterion.
+> - `@store` and `@ui` mount the 3D canvas, so they never run on a laptop (ADR-0016). Run them in CI, or by hand in the cloud: `gh workflow run e2e.yml -f suite=store|ui|all`. Not a done-criterion.
+> - The one exception is the canvas-less `@shell` suite (`e2e/shell/`): `pnpm exec playwright test --project shell` locally, a pre-flight and never a gate (ADR-0016 amendment 2026-09-29).
 
 ```typescript
 // playwright.config.ts
@@ -1505,6 +1506,7 @@ pnpm run test             # Run Vitest in watch mode
 pnpm run test:coverage    # Generate coverage report
 # Playwright suites (@store, @ui) mount the 3D canvas: CI/cloud only, never on a laptop (ADR-0016).
 # By hand: gh workflow run e2e.yml -f suite=store|ui|all
+# Canvas-less @shell may run locally, a pre-flight, never a gate: pnpm exec playwright test --project shell
 pnpm run build            # Production build (tsc + Vite)
 ```
 
