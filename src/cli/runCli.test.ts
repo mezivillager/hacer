@@ -152,6 +152,20 @@ describe('runCli run-tst', () => {
     expect(out.stderr).toMatch(/^ERROR Xor: .*Nope/)
   })
 
+  it('exits 1 under test and run-tst when the .tst sets a pin the chip does not have', () => {
+    // Apart from `set zzz 0`, the script matches Not.cmp row for row.
+    const files = {
+      'Not.hdl': project1HdlSources.Not,
+      'Not.tst': 'load Not.hdl,\ncompare-to Not.cmp,\noutput-list in out;\n\nset zzz 0,\nset in 0,\neval,\noutput;\n\nset in 1,\neval,\noutput;\n',
+    }
+    const tested = runCli(vectorArgs('Not'), reader(files))
+    expect(tested.exitCode).toBe(1)
+    expect(tested.stdout).toMatch(/^ERROR Not: line 5\b.*"zzz"/)
+    const ran = runCli(['run-tst', 'Not.hdl', 'Not.tst'], reader(files))
+    expect(ran.exitCode).toBe(1)
+    expect(ran.stderr).toMatch(/^ERROR Not: line 5\b.*"zzz"/)
+  })
+
   it('refuses a .tst that loads a chip other than the one the .hdl defines', () => {
     const out = runCli(['run-tst', 'Xor.hdl', 'And.tst'], reader({ 'Xor.hdl': project1HdlSources.Xor }))
     expect(out).toEqual({ exitCode: 1, stdout: '', stderr: 'ERROR Xor: And.tst loads And.hdl, but Xor.hdl defines Xor\n' })
