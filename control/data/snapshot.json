@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-29T08:21:27.364Z",
+  "generatedAt": "2026-09-29T11:46:57.893Z",
   "head": {
-    "sha": "dd6f3383ec9a775e90b3803afe3322fdba5a7fe5",
-    "date": "2026-09-29T10:46:50+03:00",
-    "subject": "docs(skills): suggest ultracode for investigations, audits and large reviews (#581)"
+    "sha": "08843cc803535b3f7cdff96aeeec797a68c51f09",
+    "date": "2026-09-29T14:45:37+03:00",
+    "subject": "feat(mission-control): charts of ratchet, merges, verdict coverage and open tasks (#478)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-29T08:21:27.364Z",
+      "fetchedAt": "2026-09-29T11:46:57.893Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-29T08:21:27.364Z",
+      "fetchedAt": "2026-09-29T11:46:57.893Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-29T08:21:27.364Z",
+      "fetchedAt": "2026-09-29T11:46:57.893Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-29T08:21:27.364Z",
+      "fetchedAt": "2026-09-29T11:46:57.893Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-09-29T08:21:27.364Z",
+      "fetchedAt": "2026-09-29T11:46:57.893Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-09-29T08:21:27.364Z",
+      "fetchedAt": "2026-09-29T11:46:57.893Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-09-29T08:21:27.364Z",
+      "fetchedAt": "2026-09-29T11:46:57.893Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-09-29T08:21:27.364Z",
+      "fetchedAt": "2026-09-29T11:46:57.893Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-09-29T08:21:27.364Z",
+      "fetchedAt": "2026-09-29T11:46:57.893Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-09-29T08:21:27.364Z",
+      "fetchedAt": "2026-09-29T11:46:57.893Z",
       "status": "ok"
     },
     "metrics": {
-      "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors",
-      "fetchedAt": "2026-09-29T08:21:27.364Z",
+      "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
+      "fetchedAt": "2026-09-29T11:46:57.893Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-09-29T08:21:27.364Z",
+      "fetchedAt": "2026-09-29T11:46:57.893Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-09-29T08:21:27.364Z",
+      "fetchedAt": "2026-09-29T11:46:57.893Z",
       "status": "ok"
     }
   },
@@ -80,17 +80,17 @@
         "lane": "feature",
         "slug": "foundation",
         "epicNumber": 318,
-        "open": 37,
-        "ready": 12,
-        "inProgress": 1,
+        "open": 36,
+        "ready": 9,
+        "inProgress": 3,
         "needsHuman": 0,
         "staleClaims": [
           182
         ],
-        "agentReady": 14,
+        "agentReady": 16,
         "next": {
-          "number": 217,
-          "title": "__SCENE_HELPERS__.describe(): ids, world + screen positions, visible/selected/signal state"
+          "number": 334,
+          "title": "Harness: ledger rows stop conflicting (merge=union), and the verifier reads the PR's own CI logs (foundation 0.7, 0.10)"
         },
         "title": "Foundation audit: is the codebase structured for the autonomous loop? Measured audit, prioritized refactorings, fitness functions",
         "subIssues": {
@@ -131,15 +131,12 @@
         "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 1,
-        "next": {
-          "number": 206,
-          "title": "Register user HDL into the user chip registry (no getUserChipRegistry().register call exists today) — sub-task of P05-18"
-        },
+        "agentReady": 0,
+        "next": null,
         "title": "Epic: surfaces — renderer surfaces: CLI/HDL · MCP · 2D",
         "subIssues": {
-          "completed": 5,
-          "percentCompleted": 38,
+          "completed": 6,
+          "percentCompleted": 46,
           "total": 13
         }
       },
@@ -212,15 +209,12 @@
         "slug": "spine",
         "epicNumber": 139,
         "open": 15,
-        "ready": 1,
+        "ready": 0,
         "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 1,
-        "next": {
-          "number": 175,
-          "title": "P05-30: Splitter/joiner for bit-level access on placed chips — verify first, P05-12a may have delivered it"
-        },
+        "next": null,
         "title": "Epic: spine — nand2tetris alignment 0.5 → 0.7",
         "subIssues": {
           "completed": 1,
@@ -242,8 +236,8 @@
         "next": null,
         "title": "Epic: 3d — 3D surface sustainability",
         "subIssues": {
-          "completed": 1,
-          "percentCompleted": 14,
+          "completed": 2,
+          "percentCompleted": 28,
           "total": 7
         }
       },
@@ -291,14 +285,14 @@
         "slug": "upkeep",
         "epicNumber": 146,
         "open": 6,
-        "ready": 4,
-        "inProgress": 0,
+        "ready": 3,
+        "inProgress": 1,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 5,
         "next": {
-          "number": 253,
-          "title": "Two living docs still describe the pre-chipName gate recipe (verifier nit on #248)"
+          "number": 290,
+          "title": "Docs sweep: stale 'run test:e2e:store locally' lines contradict ADR-0016 as amended"
         },
         "title": "Epic: upkeep — maintenance & documentation",
         "subIssues": {
@@ -357,19 +351,19 @@
         "slug": "mission-control",
         "epicNumber": 458,
         "open": 7,
-        "ready": 6,
+        "ready": 5,
         "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 6,
+        "agentReady": 5,
         "next": {
-          "number": 478,
-          "title": "Mission Control MC-7: charts — ratchet history, merges per day, open tasks by project, verdict coverage"
+          "number": 479,
+          "title": "Mission Control MC-8: Roadmap, Ledger and ADR views"
         },
         "title": "Epic: mission-control — Mission Control: the platform's status, process and roadmap as one site",
         "subIssues": {
-          "completed": 7,
-          "percentCompleted": 58,
+          "completed": 8,
+          "percentCompleted": 66,
           "total": 12
         }
       }
@@ -393,51 +387,6 @@
     ],
     "next": [
       {
-        "number": 217,
-        "title": "__SCENE_HELPERS__.describe(): ids, world + screen positions, visible/selected/signal state",
-        "project": "foundation"
-      },
-      {
-        "number": 478,
-        "title": "Mission Control MC-7: charts — ratchet history, merges per day, open tasks by project, verdict coverage",
-        "project": "mission-control"
-      },
-      {
-        "number": 175,
-        "title": "P05-30: Splitter/joiner for bit-level access on placed chips — verify first, P05-12a may have delivered it",
-        "project": "spine"
-      },
-      {
-        "number": 279,
-        "title": "Shape the surfaces issues for the hand-in-hand rule: scenario ids + drivers (hdl/mcp/svg2d/cli) + docs/public page, before agent-ready",
-        "project": "foundation"
-      },
-      {
-        "number": 253,
-        "title": "Two living docs still describe the pre-chipName gate recipe (verifier nit on #248)",
-        "project": "upkeep"
-      },
-      {
-        "number": 315,
-        "title": "Canvas-less shell: the renderer selector (ADR-0019 slice 1)",
-        "project": "foundation"
-      },
-      {
-        "number": 471,
-        "title": "Lineage DL-6: lint:lineage from warn to fail — the lineage ratchet",
-        "project": "lineage"
-      },
-      {
-        "number": 149,
-        "title": "scripts/backlog.mjs: `ready`, `projects`, `tasks`, `next`, `claim` over gh issue JSON, with unit tests",
-        "project": "harness"
-      },
-      {
-        "number": 331,
-        "title": "Characterize the legacy app before it is replaced: rendered geometry, evaluation fixtures, the 43 store actions",
-        "project": "foundation"
-      },
-      {
         "number": 479,
         "title": "Mission Control MC-8: Roadmap, Ledger and ADR views",
         "project": "mission-control"
@@ -458,13 +407,13 @@
         "project": "foundation"
       },
       {
-        "number": 481,
-        "title": "Lineage DL-7: the lineage graph as a Mission Control view",
+        "number": 471,
+        "title": "Lineage DL-6: lint:lineage from warn to fail — the lineage ratchet",
         "project": "lineage"
       },
       {
-        "number": 153,
-        "title": "REPO_MAP dead paths (~45/118), the 'add a gate' recipe in 5 places, and a does-this-path-exist check in lint:docs",
+        "number": 149,
+        "title": "scripts/backlog.mjs: `ready`, `projects`, `tasks`, `next`, `claim` over gh issue JSON, with unit tests",
         "project": "harness"
       },
       {
@@ -493,8 +442,13 @@
         "project": "foundation"
       },
       {
-        "number": 155,
-        "title": "De-duplicate vendored skills (tdd/test-driven-development, debugging/systematic-debugging, planning/writing-plans) and fix sync-superpowers.sh",
+        "number": 481,
+        "title": "Lineage DL-7: the lineage graph as a Mission Control view",
+        "project": "lineage"
+      },
+      {
+        "number": 153,
+        "title": "REPO_MAP dead paths (~45/118), the 'add a gate' recipe in 5 places, and a does-this-path-exist check in lint:docs",
         "project": "harness"
       },
       {
@@ -523,9 +477,14 @@
         "project": "foundation"
       },
       {
-        "number": 159,
-        "title": "docs/harness/ledger.md failure ledger + retro step: second occurrence → lint, test or hook",
+        "number": 155,
+        "title": "De-duplicate vendored skills (tdd/test-driven-development, debugging/systematic-debugging, planning/writing-plans) and fix sync-superpowers.sh",
         "project": "harness"
+      },
+      {
+        "number": 587,
+        "title": "describe(): settle the scene/project(id) shape against ADR-0020 §9 and lock it to the rendered meshes (verifier nits on #583)",
+        "project": "foundation"
       },
       {
         "number": 545,
@@ -533,14 +492,19 @@
         "project": "mission-control"
       },
       {
-        "number": 160,
-        "title": "One source of truth for phase status (implementation.md vs checklist vs .cursorrules header dated 2026-05-12)",
+        "number": 159,
+        "title": "docs/harness/ledger.md failure ledger + retro step: second occurrence → lint, test or hook",
         "project": "harness"
       },
       {
         "number": 560,
         "title": "Mission Control Process view: the Ready stage counts on-request and not-pulled tasks as ready",
         "project": "mission-control"
+      },
+      {
+        "number": 160,
+        "title": "One source of truth for phase status (implementation.md vs checklist vs .cursorrules header dated 2026-05-12)",
+        "project": "harness"
       },
       {
         "number": 247,
@@ -621,157 +585,13 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
+        586,
         514
       ]
     }
   },
   "tasks": {
     "items": [
-      {
-        "number": 217,
-        "title": "__SCENE_HELPERS__.describe(): ids, world + screen positions, visible/selected/signal state",
-        "labels": [
-          "project:3d",
-          "agent-ready",
-          "risk:2",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 478,
-        "title": "Mission Control MC-7: charts — ratchet history, merges per day, open tasks by project, verdict coverage",
-        "labels": [
-          "agent-ready",
-          "risk:1",
-          "project:mission-control"
-        ],
-        "blocking": [],
-        "project": "mission-control",
-        "rank": 14,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 175,
-        "title": "P05-30: Splitter/joiner for bit-level access on placed chips — verify first, P05-12a may have delivered it",
-        "labels": [
-          "project:spine",
-          "agent-ready",
-          "risk:1",
-          "research"
-        ],
-        "blocking": [],
-        "project": "spine",
-        "rank": 7,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 279,
-        "title": "Shape the surfaces issues for the hand-in-hand rule: scenario ids + drivers (hdl/mcp/svg2d/cli) + docs/public page, before agent-ready",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:0",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 253,
-        "title": "Two living docs still describe the pre-chipName gate recipe (verifier nit on #248)",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "risk:0"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 315,
-        "title": "Canvas-less shell: the renderer selector (ADR-0019 slice 1)",
-        "labels": [
-          "project:surfaces",
-          "agent-ready",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [
-          316
-        ],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 471,
-        "title": "Lineage DL-6: lint:lineage from warn to fail — the lineage ratchet",
-        "labels": [
-          "agent-ready",
-          "risk:2",
-          "project:lineage"
-        ],
-        "blocking": [],
-        "project": "lineage",
-        "rank": 13,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 149,
-        "title": "scripts/backlog.mjs: `ready`, `projects`, `tasks`, `next`, `claim` over gh issue JSON, with unit tests",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:2"
-        ],
-        "blocking": [
-          156
-        ],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 331,
-        "title": "Characterize the legacy app before it is replaced: rendered geometry, evaluation fixtures, the 43 store actions",
-        "labels": [
-          "agent-ready",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [
-          381
-        ],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
       {
         "number": 479,
         "title": "Mission Control MC-8: Roadmap, Ledger and ADR views",
@@ -834,11 +654,11 @@
         "reason": null
       },
       {
-        "number": 481,
-        "title": "Lineage DL-7: the lineage graph as a Mission Control view",
+        "number": 471,
+        "title": "Lineage DL-6: lint:lineage from warn to fail — the lineage ratchet",
         "labels": [
           "agent-ready",
-          "risk:1",
+          "risk:2",
           "project:lineage"
         ],
         "blocking": [],
@@ -849,14 +669,16 @@
         "reason": null
       },
       {
-        "number": 153,
-        "title": "REPO_MAP dead paths (~45/118), the 'add a gate' recipe in 5 places, and a does-this-path-exist check in lint:docs",
+        "number": 149,
+        "title": "scripts/backlog.mjs: `ready`, `projects`, `tasks`, `next`, `claim` over gh issue JSON, with unit tests",
         "labels": [
           "project:harness",
           "agent-ready",
           "risk:2"
         ],
-        "blocking": [],
+        "blocking": [
+          156
+        ],
         "project": "harness",
         "rank": 2,
         "lane": "process",
@@ -941,8 +763,23 @@
         "reason": null
       },
       {
-        "number": 155,
-        "title": "De-duplicate vendored skills (tdd/test-driven-development, debugging/systematic-debugging, planning/writing-plans) and fix sync-superpowers.sh",
+        "number": 481,
+        "title": "Lineage DL-7: the lineage graph as a Mission Control view",
+        "labels": [
+          "agent-ready",
+          "risk:1",
+          "project:lineage"
+        ],
+        "blocking": [],
+        "project": "lineage",
+        "rank": 13,
+        "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 153,
+        "title": "REPO_MAP dead paths (~45/118), the 'add a gate' recipe in 5 places, and a does-this-path-exist check in lint:docs",
         "labels": [
           "project:harness",
           "agent-ready",
@@ -1035,17 +872,34 @@
         "reason": null
       },
       {
-        "number": 159,
-        "title": "docs/harness/ledger.md failure ledger + retro step: second occurrence → lint, test or hook",
+        "number": 155,
+        "title": "De-duplicate vendored skills (tdd/test-driven-development, debugging/systematic-debugging, planning/writing-plans) and fix sync-superpowers.sh",
         "labels": [
           "project:harness",
           "agent-ready",
-          "risk:0"
+          "risk:2"
         ],
         "blocking": [],
         "project": "harness",
         "rank": 2,
         "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 587,
+        "title": "describe(): settle the scene/project(id) shape against ADR-0020 §9 and lock it to the rendered meshes (verifier nits on #583)",
+        "labels": [
+          "agent-ready",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [
+          331
+        ],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
         "pickable": true,
         "reason": null
       },
@@ -1065,8 +919,8 @@
         "reason": null
       },
       {
-        "number": 160,
-        "title": "One source of truth for phase status (implementation.md vs checklist vs .cursorrules header dated 2026-05-12)",
+        "number": 159,
+        "title": "docs/harness/ledger.md failure ledger + retro step: second occurrence → lint, test or hook",
         "labels": [
           "project:harness",
           "agent-ready",
@@ -1090,6 +944,21 @@
         "blocking": [],
         "project": "mission-control",
         "rank": 14,
+        "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 160,
+        "title": "One source of truth for phase status (implementation.md vs checklist vs .cursorrules header dated 2026-05-12)",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:0"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
         "lane": "process",
         "pickable": true,
         "reason": null
@@ -1511,6 +1380,22 @@
         "reason": "unshaped"
       },
       {
+        "number": 175,
+        "title": "P05-30: Splitter/joiner for bit-level access on placed chips — verify first, P05-12a may have delivered it",
+        "labels": [
+          "project:spine",
+          "agent-ready",
+          "risk:1",
+          "research"
+        ],
+        "blocking": [],
+        "project": "spine",
+        "rank": 7,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "blocked:#377,#374"
+      },
+      {
         "number": 176,
         "title": "P05-28: Phase 0.5 documentation",
         "labels": [
@@ -1709,6 +1594,8 @@
         "title": "hacer CLI (Node entry): `hacer test <hdl> <tst> <cmp>` on real files",
         "labels": [
           "project:surfaces",
+          "agent-ready",
+          "in-progress",
           "risk:1",
           "project:foundation"
         ],
@@ -1721,37 +1608,39 @@
         "rank": 1,
         "lane": "feature",
         "pickable": false,
-        "reason": "unshaped"
+        "reason": "claimed"
       },
       {
         "number": 205,
         "title": "CLI run-tst / export; cli scenario driver (third driver → matrix becomes a check)",
         "labels": [
           "project:surfaces",
+          "agent-ready",
           "risk:1",
           "project:foundation"
         ],
-        "blocking": [],
+        "blocking": [
+          208
+        ],
         "project": "foundation",
         "rank": 1,
         "lane": "feature",
         "pickable": false,
-        "reason": "unshaped"
+        "reason": "blocked:#204"
       },
       {
         "number": 206,
         "title": "Register user HDL into the user chip registry (no getUserChipRegistry().register call exists today) — sub-task of P05-18",
         "labels": [
           "project:surfaces",
-          "agent-ready",
           "risk:1"
         ],
         "blocking": [],
         "project": "surfaces",
         "rank": 3,
         "lane": "feature",
-        "pickable": true,
-        "reason": "on-request"
+        "pickable": false,
+        "reason": "unshaped"
       },
       {
         "number": 207,
@@ -1772,6 +1661,7 @@
         "title": "Hand-written MCP tool hacer_hdl (load HDL → simulate → run .tst), stdio, in-memory-transport tests; committed .mcp.json",
         "labels": [
           "project:surfaces",
+          "agent-ready",
           "risk:2",
           "project:foundation"
         ],
@@ -1783,7 +1673,7 @@
         "rank": 1,
         "lane": "feature",
         "pickable": false,
-        "reason": "unshaped"
+        "reason": "blocked:#205,#204"
       },
       {
         "number": 209,
@@ -1981,6 +1871,22 @@
         "reason": "unshaped"
       },
       {
+        "number": 253,
+        "title": "Two living docs still describe the pre-chipName gate recipe (verifier nit on #248)",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 256,
         "title": "eslint-plugin-react-hooks 7.1.1 blocks: 'Cannot access refs during render' (4 sites) — fix, then re-open the bump",
         "labels": [
@@ -2158,6 +2064,25 @@
         "reason": "unshaped"
       },
       {
+        "number": 315,
+        "title": "Canvas-less shell: the renderer selector (ADR-0019 slice 1)",
+        "labels": [
+          "project:surfaces",
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [
+          316
+        ],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 316,
         "title": "Canvas-less shell: a local @shell Playwright project and the first spec (ADR-0019 slice 2)",
         "labels": [
@@ -2188,6 +2113,23 @@
         "lane": "feature",
         "pickable": false,
         "reason": "unshaped"
+      },
+      {
+        "number": 331,
+        "title": "Characterize the legacy app before it is replaced: rendered geometry, evaluation fixtures, the 43 store actions",
+        "labels": [
+          "agent-ready",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [
+          381
+        ],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "blocked:#587"
       },
       {
         "number": 339,
@@ -2241,6 +2183,7 @@
           "project:foundation"
         ],
         "blocking": [
+          175,
           168,
           197,
           176,
@@ -2262,7 +2205,9 @@
           "risk:2",
           "project:foundation"
         ],
-        "blocking": [],
+        "blocking": [
+          175
+        ],
         "project": "foundation",
         "rank": 1,
         "lane": "feature",
@@ -2750,14 +2695,32 @@
         "lane": null,
         "pickable": false,
         "reason": "unshaped"
+      },
+      {
+        "number": 584,
+        "title": "Mission Control: merges and verdict-coverage charts span only the last 60 merged PRs",
+        "labels": [
+          "project:mission-control"
+        ],
+        "blocking": [],
+        "project": "mission-control",
+        "rank": 14,
+        "lane": "process",
+        "pickable": false,
+        "reason": "unshaped"
       }
     ],
     "byProject": {
+      "mission-control": [
+        479,
+        480,
+        513,
+        545,
+        560,
+        509,
+        584
+      ],
       "foundation": [
-        217,
-        279,
-        315,
-        331,
         334,
         335,
         338,
@@ -2766,14 +2729,17 @@
         373,
         407,
         429,
+        587,
         151,
         182,
         184,
         204,
         205,
         208,
+        315,
         316,
         325,
+        331,
         339,
         374,
         377,
@@ -2792,38 +2758,12 @@
         462,
         506
       ],
-      "mission-control": [
-        478,
-        479,
-        480,
-        513,
-        545,
-        560,
-        509
-      ],
-      "spine": [
-        175,
-        165,
-        166,
-        167,
-        168,
-        169,
-        170,
-        171,
-        172,
-        173,
-        174,
-        176,
-        177,
-        235,
-        236
-      ],
       "upkeep": [
-        253,
         290,
         421,
         567,
         229,
+        253,
         256
       ],
       "lineage": [
@@ -2864,6 +2804,23 @@
         504,
         505,
         550
+      ],
+      "spine": [
+        165,
+        166,
+        167,
+        168,
+        169,
+        170,
+        171,
+        172,
+        173,
+        174,
+        175,
+        176,
+        177,
+        235,
+        236
       ],
       "core": [
         179,
@@ -2925,6 +2882,39 @@
   },
   "prs": {
     "open": [
+      {
+        "number": 586,
+        "title": "docs: point stale gate recipe lines at the chipName guide",
+        "url": "https://github.com/mezivillager/hacer/pull/586",
+        "author": "mezivillager",
+        "labels": [
+          "project:upkeep",
+          "risk:0"
+        ],
+        "headRefName": "docs/253-chipname-recipe-sweep",
+        "isDraft": false,
+        "createdAt": "2026-09-29T11:40:06Z",
+        "mergedAt": null,
+        "closes": [
+          253
+        ],
+        "verdicts": [
+          {
+            "verdict": "BLOCK",
+            "round": 1,
+            "model": "coordinator (risk:0 docs-only, #554)",
+            "at": "2026-09-29T11:43:08Z",
+            "url": "https://github.com/mezivillager/hacer/pull/586#issuecomment-5889558020"
+          },
+          {
+            "verdict": "PASS",
+            "round": 2,
+            "model": "Sonnet 5.5 (fresh context)",
+            "at": "2026-09-29T11:46:05Z",
+            "url": "https://github.com/mezivillager/hacer/pull/586#issuecomment-5889606774"
+          }
+        ]
+      },
       {
         "number": 522,
         "title": "chore(deps): bump @radix-ui/react-switch from 1.2.6 to 1.3.7",
@@ -3018,11 +3008,66 @@
     ],
     "merged": [
       {
+        "number": 585,
+        "title": "feat(mission-control): charts — ratchet history, merges per day, open tasks by project, verdict coverage (#478)",
+        "url": "https://github.com/mezivillager/hacer/pull/585",
+        "author": "mezivillager",
+        "labels": [
+          "risk:1",
+          "project:mission-control"
+        ],
+        "headRefName": "feat/478-mc-charts",
+        "isDraft": false,
+        "createdAt": "2026-09-29T11:38:02Z",
+        "mergedAt": "2026-09-29T11:45:38Z",
+        "closes": [
+          478
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Sonnet 5.5 (fresh context)",
+            "at": "2026-09-29T11:44:38Z",
+            "url": "https://github.com/mezivillager/hacer/pull/585#issuecomment-5889582928"
+          }
+        ]
+      },
+      {
+        "number": 583,
+        "title": "feat(scene): __SCENE_HELPERS__.describe() returns every gate, pin, wire and node as JSON",
+        "url": "https://github.com/mezivillager/hacer/pull/583",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "risk:2",
+          "project:foundation"
+        ],
+        "headRefName": "feat/217-scene-describe",
+        "isDraft": false,
+        "createdAt": "2026-09-29T11:27:18Z",
+        "mergedAt": "2026-09-29T11:40:29Z",
+        "closes": [
+          217
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus 5.5 (fresh context)",
+            "at": "2026-09-29T11:39:22Z",
+            "url": "https://github.com/mezivillager/hacer/pull/583#issuecomment-5889497460"
+          }
+        ]
+      },
+      {
         "number": 582,
         "title": "docs(skills): suggest ultracode for investigations, audits and large reviews",
         "url": "https://github.com/mezivillager/hacer/pull/582",
         "author": "mezivillager",
-        "labels": [],
+        "labels": [
+          "released"
+        ],
         "headRefName": "docs/581-suggest-ultracode",
         "isDraft": false,
         "createdAt": "2026-09-29T07:43:48Z",
@@ -3037,7 +3082,9 @@
         "title": "docs(skills): keep comments short and self-contained",
         "url": "https://github.com/mezivillager/hacer/pull/580",
         "author": "mezivillager",
-        "labels": [],
+        "labels": [
+          "released"
+        ],
         "headRefName": "docs/579-self-contained-comments",
         "isDraft": false,
         "createdAt": "2026-09-28T20:07:49Z",
@@ -3052,7 +3099,9 @@
         "title": "docs(skills): no duplicated code across lanes; consolidation pass after",
         "url": "https://github.com/mezivillager/hacer/pull/578",
         "author": "mezivillager",
-        "labels": [],
+        "labels": [
+          "released"
+        ],
         "headRefName": "docs/577-no-duplication-across-lanes",
         "isDraft": false,
         "createdAt": "2026-09-28T20:00:02Z",
@@ -3067,7 +3116,9 @@
         "title": "docs(skills): split verification by resource; scripted checks in a data lane",
         "url": "https://github.com/mezivillager/hacer/pull/576",
         "author": "mezivillager",
-        "labels": [],
+        "labels": [
+          "released"
+        ],
         "headRefName": "docs/575-verification-by-resource",
         "isDraft": false,
         "createdAt": "2026-09-28T18:45:19Z",
@@ -3082,7 +3133,9 @@
         "title": "docs(skills): whole-branch review follow-ups to the dispatch discipline",
         "url": "https://github.com/mezivillager/hacer/pull/574",
         "author": "mezivillager",
-        "labels": [],
+        "labels": [
+          "released"
+        ],
         "headRefName": "docs/573-dispatch-review-followups",
         "isDraft": false,
         "createdAt": "2026-09-28T18:30:40Z",
@@ -3097,7 +3150,9 @@
         "title": "docs(skills): lanes by default, delta review, measured premises, slot-shaped briefs",
         "url": "https://github.com/mezivillager/hacer/pull/571",
         "author": "mezivillager",
-        "labels": [],
+        "labels": [
+          "released"
+        ],
         "headRefName": "docs/570-dispatch-discipline",
         "isDraft": false,
         "createdAt": "2026-09-28T18:02:11Z",
@@ -3113,6 +3168,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/568",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0"
         ],
@@ -3137,6 +3193,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/566",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:2"
         ],
@@ -4378,57 +4435,13 @@
         "mergedAt": "2026-09-24T21:12:04Z",
         "closes": [],
         "verdicts": []
-      },
-      {
-        "number": 463,
-        "title": "docs(harness): record the second 2026-09-24 run; mark the #199 cloud row done",
-        "url": "https://github.com/mezivillager/hacer/pull/463",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:0"
-        ],
-        "headRefName": "docs/session-record-2026-09-24b",
-        "isDraft": false,
-        "createdAt": "2026-09-24T13:59:36Z",
-        "mergedAt": "2026-09-24T14:02:42Z",
-        "closes": [],
-        "verdicts": []
-      },
-      {
-        "number": 461,
-        "title": "fix(pr-hygiene): fail closed when the ratchet's config scan finds no rule names (#438)",
-        "url": "https://github.com/mezivillager/hacer/pull/461",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:2"
-        ],
-        "headRefName": "fix/438-ratchet-fail-closed",
-        "isDraft": false,
-        "createdAt": "2026-09-24T13:44:17Z",
-        "mergedAt": "2026-09-24T22:35:46Z",
-        "closes": [
-          438
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Claude Opus 5.5 (1M context)",
-            "at": "2026-09-24T22:33:38Z",
-            "url": "https://github.com/mezivillager/hacer/pull/461#issuecomment-5823329202"
-          }
-        ]
       }
     ],
     "coverage": {
       "merged": 60,
-      "withVerdict": 36,
-      "withoutVerdict": 24,
-      "pass": 36,
+      "withVerdict": 37,
+      "withoutVerdict": 23,
+      "pass": 37,
       "block": 0
     }
   },
@@ -4468,6 +4481,7 @@
         "title": "Slim AGENTS.md to a ≤120-line table of contents; one definition of done; stop citing .cursor/",
         "url": "https://github.com/mezivillager/hacer/issues/152",
         "labels": [
+          "released",
           "project:harness",
           "agent-ready",
           "in-progress",
@@ -4509,6 +4523,110 @@
           "author": "mezivillager",
           "at": "2026-09-24T13:57:40Z",
           "url": "https://github.com/mezivillager/hacer/issues/182#issuecomment-5815526405"
+        }
+      },
+      {
+        "number": 204,
+        "ref": "refs/heads/claim/204",
+        "sha": "13d756bd1f793d5914df0528d0ed60ff6734fcb8",
+        "state": "OPEN",
+        "title": "hacer CLI (Node entry): `hacer test <hdl> <tst> <cmp>` on real files",
+        "url": "https://github.com/mezivillager/hacer/issues/204",
+        "labels": [
+          "project:surfaces",
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:foundation"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-60",
+          "branch": null,
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-09-29T11:41:45Z",
+          "url": "https://github.com/mezivillager/hacer/issues/204#issuecomment-5889535566"
+        }
+      },
+      {
+        "number": 217,
+        "ref": "refs/heads/claim/217",
+        "sha": "dd6f3383ec9a775e90b3803afe3322fdba5a7fe5",
+        "state": "CLOSED",
+        "title": "__SCENE_HELPERS__.describe(): ids, world + screen positions, visible/selected/signal state",
+        "url": "https://github.com/mezivillager/hacer/issues/217",
+        "labels": [
+          "released",
+          "project:3d",
+          "agent-ready",
+          "in-progress",
+          "risk:2",
+          "project:foundation"
+        ],
+        "onClosedIssue": true,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "2026-09-29 hacer-loop-60",
+          "branch": null,
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-09-29T11:02:29Z",
+          "url": "https://github.com/mezivillager/hacer/issues/217#issuecomment-5888925219"
+        }
+      },
+      {
+        "number": 253,
+        "ref": "refs/heads/claim/253",
+        "sha": "dd6f3383ec9a775e90b3803afe3322fdba5a7fe5",
+        "state": "CLOSED",
+        "title": "Two living docs still describe the pre-chipName gate recipe (verifier nit on #248)",
+        "url": "https://github.com/mezivillager/hacer/issues/253",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0"
+        ],
+        "onClosedIssue": true,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-60",
+          "branch": null,
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-09-29T11:35:47Z",
+          "url": "https://github.com/mezivillager/hacer/issues/253#issuecomment-5889439828"
+        }
+      },
+      {
+        "number": 315,
+        "ref": "refs/heads/claim/315",
+        "sha": "13d756bd1f793d5914df0528d0ed60ff6734fcb8",
+        "state": "OPEN",
+        "title": "Canvas-less shell: the renderer selector (ADR-0019 slice 1)",
+        "url": "https://github.com/mezivillager/hacer/issues/315",
+        "labels": [
+          "project:surfaces",
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:foundation"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-60",
+          "branch": null,
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-09-29T11:41:55Z",
+          "url": "https://github.com/mezivillager/hacer/issues/315#issuecomment-5889538300"
         }
       },
       {
@@ -4560,6 +4678,31 @@
           "author": "mezivillager",
           "at": "2026-09-25T06:02:35Z",
           "url": "https://github.com/mezivillager/hacer/issues/470#issuecomment-5827635352"
+        }
+      },
+      {
+        "number": 478,
+        "ref": "refs/heads/claim/478",
+        "sha": "dd6f3383ec9a775e90b3803afe3322fdba5a7fe5",
+        "state": "CLOSED",
+        "title": "Mission Control MC-7: charts — ratchet history, merges per day, open tasks by project, verdict coverage",
+        "url": "https://github.com/mezivillager/hacer/issues/478",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:mission-control"
+        ],
+        "onClosedIssue": true,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "2026-09-29 hacer-loop-60",
+          "branch": null,
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-09-29T11:02:38Z",
+          "url": "https://github.com/mezivillager/hacer/issues/478#issuecomment-5888928075"
         }
       },
       {
@@ -4823,7 +4966,7 @@
         }
       }
     ],
-    "onClosedIssues": 13
+    "onClosedIssues": 16
   },
   "cloudLane": {
     "items": [
@@ -5829,9 +5972,14 @@
     },
     "releases": [
       {
+        "tag": "v2.48.0",
+        "publishedAt": "2026-09-29T11:43:21Z",
+        "isLatest": true
+      },
+      {
         "tag": "v2.47.0",
         "publishedAt": "2026-09-27T12:33:36Z",
-        "isLatest": true
+        "isLatest": false
       },
       {
         "tag": "v2.46.0",
@@ -6322,7 +6470,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-24",
-        "merges": 13
+        "merges": 11
       },
       {
         "date": "2026-09-25",
@@ -6342,20 +6490,20 @@
       },
       {
         "date": "2026-09-29",
-        "merges": 1
+        "merges": 3
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-15T08:21:27.364Z",
-      "merged": 165,
+      "since": "2026-09-15T11:46:57.893Z",
+      "merged": 167,
       "openToMergeHours": {
-        "median": 0.3,
+        "median": 0.2,
         "p90": 8.9
       },
       "blockedOnce": {
         "count": 20,
-        "of": 80,
+        "of": 82,
         "prs": [
           238,
           248,
@@ -6381,8 +6529,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 81,
-          "withVerdict": 65,
+          "merged": 83,
+          "withVerdict": 67,
           "without": [
             133,
             134,
@@ -6530,23 +6678,880 @@
       ],
       "files": 120,
       "runner": null
-    }
+    },
+    "openTasks": [
+      {
+        "date": "2026-09-25",
+        "at": "2026-09-25T21:29:17.561Z",
+        "byProject": {
+          "foundation": [
+            193,
+            217,
+            279,
+            315,
+            331,
+            334,
+            335,
+            345,
+            349,
+            373,
+            407,
+            429,
+            151,
+            182,
+            184,
+            204,
+            205,
+            208,
+            316,
+            325,
+            338,
+            339,
+            374,
+            377,
+            378,
+            379,
+            380,
+            381,
+            382,
+            383,
+            384,
+            385,
+            386,
+            389,
+            395,
+            400,
+            462,
+            506
+          ],
+          "lineage": [
+            471,
+            481,
+            468,
+            470,
+            502
+          ],
+          "harness": [
+            148,
+            149,
+            152,
+            153,
+            155,
+            159,
+            160,
+            247,
+            251,
+            257,
+            269,
+            271,
+            280,
+            304,
+            308,
+            368,
+            369,
+            391,
+            392,
+            394,
+            418,
+            516,
+            154,
+            156,
+            270,
+            435,
+            436,
+            454,
+            500,
+            504,
+            505
+          ],
+          "mission-control": [
+            478,
+            479,
+            480,
+            513,
+            509
+          ],
+          "spine": [
+            175,
+            165,
+            166,
+            167,
+            168,
+            169,
+            170,
+            171,
+            172,
+            173,
+            174,
+            176,
+            177,
+            235,
+            236
+          ],
+          "upkeep": [
+            253,
+            290,
+            421,
+            229,
+            256
+          ],
+          "core": [
+            179,
+            361,
+            371,
+            390,
+            401,
+            405,
+            431,
+            452,
+            453
+          ],
+          "verify": [
+            194,
+            196,
+            197,
+            198,
+            200,
+            201,
+            202,
+            203,
+            289
+          ],
+          "surfaces": [
+            206,
+            207,
+            209,
+            214
+          ],
+          "3d": [
+            215,
+            216,
+            218,
+            219,
+            284
+          ],
+          "horizon": [
+            230,
+            231,
+            232,
+            233
+          ],
+          "pubdocs": [
+            261,
+            262,
+            263,
+            264,
+            265,
+            266,
+            275
+          ],
+          "bugs": [
+            311
+          ]
+        }
+      },
+      {
+        "date": "2026-09-26",
+        "at": "2026-09-26T22:41:12.046Z",
+        "byProject": {
+          "foundation": [
+            193,
+            217,
+            279,
+            315,
+            331,
+            334,
+            335,
+            345,
+            349,
+            373,
+            407,
+            429,
+            151,
+            182,
+            184,
+            204,
+            205,
+            208,
+            316,
+            325,
+            338,
+            339,
+            374,
+            377,
+            378,
+            379,
+            380,
+            381,
+            382,
+            383,
+            384,
+            385,
+            386,
+            389,
+            395,
+            400,
+            462,
+            506
+          ],
+          "lineage": [
+            471,
+            481,
+            468,
+            470,
+            502
+          ],
+          "harness": [
+            148,
+            149,
+            152,
+            153,
+            155,
+            159,
+            160,
+            247,
+            251,
+            257,
+            269,
+            271,
+            280,
+            304,
+            308,
+            368,
+            369,
+            391,
+            392,
+            394,
+            418,
+            516,
+            154,
+            156,
+            270,
+            435,
+            436,
+            454,
+            500,
+            504,
+            505
+          ],
+          "mission-control": [
+            478,
+            479,
+            480,
+            513,
+            509
+          ],
+          "spine": [
+            175,
+            165,
+            166,
+            167,
+            168,
+            169,
+            170,
+            171,
+            172,
+            173,
+            174,
+            176,
+            177,
+            235,
+            236
+          ],
+          "upkeep": [
+            253,
+            290,
+            421,
+            229,
+            256
+          ],
+          "core": [
+            179,
+            361,
+            371,
+            390,
+            401,
+            405,
+            431,
+            452,
+            453
+          ],
+          "verify": [
+            194,
+            196,
+            197,
+            198,
+            200,
+            201,
+            202,
+            203,
+            289
+          ],
+          "surfaces": [
+            206,
+            207,
+            209,
+            214
+          ],
+          "3d": [
+            215,
+            216,
+            218,
+            219,
+            284
+          ],
+          "horizon": [
+            230,
+            231,
+            232,
+            233
+          ],
+          "pubdocs": [
+            261,
+            262,
+            263,
+            264,
+            265,
+            266,
+            275
+          ],
+          "bugs": [
+            311
+          ]
+        }
+      },
+      {
+        "date": "2026-09-27",
+        "at": "2026-09-27T22:02:34.881Z",
+        "byProject": {
+          "foundation": [
+            217,
+            279,
+            315,
+            331,
+            334,
+            335,
+            338,
+            345,
+            349,
+            373,
+            407,
+            429,
+            151,
+            182,
+            184,
+            204,
+            205,
+            208,
+            316,
+            325,
+            339,
+            374,
+            377,
+            378,
+            379,
+            380,
+            381,
+            382,
+            383,
+            384,
+            385,
+            386,
+            389,
+            395,
+            400,
+            462,
+            506
+          ],
+          "mission-control": [
+            478,
+            479,
+            480,
+            513,
+            545,
+            560,
+            509
+          ],
+          "spine": [
+            175,
+            165,
+            166,
+            167,
+            168,
+            169,
+            170,
+            171,
+            172,
+            173,
+            174,
+            176,
+            177,
+            235,
+            236
+          ],
+          "upkeep": [
+            253,
+            290,
+            421,
+            567,
+            229,
+            256
+          ],
+          "lineage": [
+            471,
+            481,
+            470,
+            502
+          ],
+          "harness": [
+            149,
+            153,
+            155,
+            159,
+            160,
+            247,
+            251,
+            257,
+            269,
+            271,
+            280,
+            304,
+            308,
+            368,
+            391,
+            392,
+            394,
+            418,
+            516,
+            547,
+            154,
+            156,
+            270,
+            435,
+            436,
+            454,
+            500,
+            504,
+            505,
+            550
+          ],
+          "core": [
+            179,
+            361,
+            371,
+            390,
+            401,
+            405,
+            431,
+            452,
+            453
+          ],
+          "verify": [
+            194,
+            196,
+            197,
+            198,
+            200,
+            201,
+            202,
+            203,
+            289
+          ],
+          "surfaces": [
+            206,
+            207,
+            209,
+            214
+          ],
+          "3d": [
+            215,
+            216,
+            218,
+            219,
+            284
+          ],
+          "horizon": [
+            230,
+            231,
+            232,
+            233
+          ],
+          "pubdocs": [
+            261,
+            262,
+            263,
+            264,
+            265,
+            266,
+            275
+          ],
+          "bugs": [
+            311
+          ]
+        }
+      },
+      {
+        "date": "2026-09-28",
+        "at": "2026-09-28T21:52:06.501Z",
+        "byProject": {
+          "foundation": [
+            217,
+            279,
+            315,
+            331,
+            334,
+            335,
+            338,
+            345,
+            349,
+            373,
+            407,
+            429,
+            151,
+            182,
+            184,
+            204,
+            205,
+            208,
+            316,
+            325,
+            339,
+            374,
+            377,
+            378,
+            379,
+            380,
+            381,
+            382,
+            383,
+            384,
+            385,
+            386,
+            389,
+            395,
+            400,
+            462,
+            506
+          ],
+          "mission-control": [
+            478,
+            479,
+            480,
+            513,
+            545,
+            560,
+            509
+          ],
+          "spine": [
+            175,
+            165,
+            166,
+            167,
+            168,
+            169,
+            170,
+            171,
+            172,
+            173,
+            174,
+            176,
+            177,
+            235,
+            236
+          ],
+          "upkeep": [
+            253,
+            290,
+            421,
+            567,
+            229,
+            256
+          ],
+          "lineage": [
+            471,
+            481,
+            470,
+            502,
+            569
+          ],
+          "harness": [
+            149,
+            153,
+            155,
+            159,
+            160,
+            247,
+            251,
+            257,
+            269,
+            271,
+            280,
+            304,
+            308,
+            368,
+            391,
+            392,
+            394,
+            418,
+            516,
+            547,
+            154,
+            156,
+            270,
+            435,
+            436,
+            454,
+            500,
+            504,
+            505,
+            550
+          ],
+          "core": [
+            179,
+            361,
+            371,
+            390,
+            401,
+            405,
+            431,
+            452,
+            453
+          ],
+          "verify": [
+            194,
+            196,
+            197,
+            198,
+            200,
+            201,
+            202,
+            203,
+            289
+          ],
+          "surfaces": [
+            206,
+            207,
+            209,
+            214
+          ],
+          "3d": [
+            215,
+            216,
+            218,
+            219,
+            284
+          ],
+          "horizon": [
+            230,
+            231,
+            232,
+            233
+          ],
+          "pubdocs": [
+            261,
+            262,
+            263,
+            264,
+            265,
+            266,
+            275
+          ],
+          "bugs": [
+            311
+          ],
+          "unfiled": [
+            572
+          ]
+        }
+      },
+      {
+        "date": "2026-09-29",
+        "at": "2026-09-29T08:21:27.364Z",
+        "byProject": {
+          "foundation": [
+            217,
+            279,
+            315,
+            331,
+            334,
+            335,
+            338,
+            345,
+            349,
+            373,
+            407,
+            429,
+            151,
+            182,
+            184,
+            204,
+            205,
+            208,
+            316,
+            325,
+            339,
+            374,
+            377,
+            378,
+            379,
+            380,
+            381,
+            382,
+            383,
+            384,
+            385,
+            386,
+            389,
+            395,
+            400,
+            462,
+            506
+          ],
+          "mission-control": [
+            478,
+            479,
+            480,
+            513,
+            545,
+            560,
+            509
+          ],
+          "spine": [
+            175,
+            165,
+            166,
+            167,
+            168,
+            169,
+            170,
+            171,
+            172,
+            173,
+            174,
+            176,
+            177,
+            235,
+            236
+          ],
+          "upkeep": [
+            253,
+            290,
+            421,
+            567,
+            229,
+            256
+          ],
+          "lineage": [
+            471,
+            481,
+            470,
+            502,
+            569
+          ],
+          "harness": [
+            149,
+            153,
+            155,
+            159,
+            160,
+            247,
+            251,
+            257,
+            269,
+            271,
+            280,
+            304,
+            308,
+            368,
+            391,
+            392,
+            394,
+            418,
+            516,
+            547,
+            154,
+            156,
+            270,
+            435,
+            436,
+            454,
+            500,
+            504,
+            505,
+            550
+          ],
+          "core": [
+            179,
+            361,
+            371,
+            390,
+            401,
+            405,
+            431,
+            452,
+            453
+          ],
+          "verify": [
+            194,
+            196,
+            197,
+            198,
+            200,
+            201,
+            202,
+            203,
+            289
+          ],
+          "surfaces": [
+            206,
+            207,
+            209,
+            214
+          ],
+          "3d": [
+            215,
+            216,
+            218,
+            219,
+            284
+          ],
+          "horizon": [
+            230,
+            231,
+            232,
+            233
+          ],
+          "pubdocs": [
+            261,
+            262,
+            263,
+            264,
+            265,
+            266,
+            275
+          ],
+          "bugs": [
+            311
+          ],
+          "unfiled": [
+            572
+          ]
+        }
+      }
+    ]
   },
   "checks": {
     "items": [
       {
         "pr": null,
-        "sha": "dd6f3383ec9a775e90b3803afe3322fdba5a7fe5",
+        "sha": "08843cc803535b3f7cdff96aeeec797a68c51f09",
         "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-09-29T07:49:19Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36538680537/job/109308623564",
-        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 71,
-          "new": 0
-        },
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36563743824/job/109390546929",
+        "line": null,
+        "verdict": null,
+        "fields": {},
         "disagrees": false
       },
       {
@@ -6767,6 +7772,52 @@
         "conclusion": "SUCCESS",
         "completedAt": "2026-09-25T14:48:26Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/36149664191/job/108119435683",
+        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 71,
+          "new": 0
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 586,
+        "sha": "dff71cc6a9e6953817c33131349a2faf3c663d59",
+        "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-29T11:44:28Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36563596943/job/109390068383",
+        "line": "HYGIENE: PASS reviewable=10 test=0 excluded=0 files=4 issue=#253 linked=fixes",
+        "verdict": "PASS",
+        "fields": {
+          "reviewable": 10,
+          "test": 0,
+          "excluded": 0,
+          "files": 4,
+          "issue": "#253",
+          "linked": "fixes"
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 586,
+        "sha": "dff71cc6a9e6953817c33131349a2faf3c663d59",
+        "check": "browser-qa",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-29T11:44:28Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36563600766/job/109390079190",
+        "line": "BROWSER-QA: skipped (no critical paths)",
+        "verdict": "SKIPPED",
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 586,
+        "sha": "dff71cc6a9e6953817c33131349a2faf3c663d59",
+        "check": "ci",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-29T11:45:59Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36563600822/job/109390079522",
         "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
         "verdict": "PASS",
         "fields": {
