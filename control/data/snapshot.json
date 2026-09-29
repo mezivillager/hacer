@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-29T12:39:30.612Z",
+  "generatedAt": "2026-09-29T12:44:42.037Z",
   "head": {
-    "sha": "eaba40da844780d75ed84f4a1825245a1c518305",
-    "date": "2026-09-29T15:38:30+03:00",
-    "subject": "fix(scene): split describe() into scene() and project(id); hop midpoints sit on the drawn arc"
+    "sha": "804e1d501141cd7f57316c8066571017c6ec4c22",
+    "date": "2026-09-29T15:43:40+03:00",
+    "subject": "feat(mission-control): roadmap, ledger and ADR views (#479)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-29T12:39:30.612Z",
+      "fetchedAt": "2026-09-29T12:44:42.037Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-29T12:39:30.612Z",
+      "fetchedAt": "2026-09-29T12:44:42.037Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-29T12:39:30.612Z",
+      "fetchedAt": "2026-09-29T12:44:42.037Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-29T12:39:30.612Z",
+      "fetchedAt": "2026-09-29T12:44:42.037Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-09-29T12:39:30.612Z",
+      "fetchedAt": "2026-09-29T12:44:42.037Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-09-29T12:39:30.612Z",
+      "fetchedAt": "2026-09-29T12:44:42.037Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-09-29T12:39:30.612Z",
+      "fetchedAt": "2026-09-29T12:44:42.037Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-09-29T12:39:30.612Z",
+      "fetchedAt": "2026-09-29T12:44:42.037Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-09-29T12:39:30.612Z",
+      "fetchedAt": "2026-09-29T12:44:42.037Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-09-29T12:39:30.612Z",
+      "fetchedAt": "2026-09-29T12:44:42.037Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-09-29T12:39:30.612Z",
+      "fetchedAt": "2026-09-29T12:44:42.037Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-09-29T12:39:30.612Z",
+      "fetchedAt": "2026-09-29T12:44:42.037Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-09-29T12:39:30.612Z",
+      "fetchedAt": "2026-09-29T12:44:42.037Z",
       "status": "ok"
     }
   },
@@ -285,14 +285,14 @@
         "slug": "upkeep",
         "epicNumber": 146,
         "open": 5,
-        "ready": 3,
-        "inProgress": 0,
+        "ready": 2,
+        "inProgress": 1,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 4,
         "next": {
-          "number": 290,
-          "title": "Docs sweep: stale 'run test:e2e:store locally' lines contradict ADR-0016 as amended"
+          "number": 421,
+          "title": "docs(repo-map): Phase 5+ sample still cites @/core/gates/registry"
         },
         "title": "Epic: upkeep — maintenance & documentation",
         "subIssues": {
@@ -350,20 +350,20 @@
         "lane": "process",
         "slug": "mission-control",
         "epicNumber": 458,
-        "open": 7,
+        "open": 6,
         "ready": 4,
-        "inProgress": 1,
+        "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 5,
+        "agentReady": 4,
         "next": {
           "number": 480,
           "title": "Mission Control MC-9: \"queue an improvement\" links and the needs-human list — the first editable step"
         },
         "title": "Epic: mission-control — Mission Control: the platform's status, process and roadmap as one site",
         "subIssues": {
-          "completed": 8,
-          "percentCompleted": 66,
+          "completed": 9,
+          "percentCompleted": 75,
           "total": 12
         }
       }
@@ -386,11 +386,6 @@
       "bugs"
     ],
     "next": [
-      {
-        "number": 290,
-        "title": "Docs sweep: stale 'run test:e2e:store locally' lines contradict ADR-0016 as amended",
-        "project": "upkeep"
-      },
       {
         "number": 316,
         "title": "Canvas-less shell: a local @shell Playwright project and the first spec (ADR-0019 slice 2)",
@@ -585,28 +580,12 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
-        593,
         514
       ]
     }
   },
   "tasks": {
     "items": [
-      {
-        "number": 290,
-        "title": "Docs sweep: stale 'run test:e2e:store locally' lines contradict ADR-0016 as amended",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "risk:0"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": true,
-        "reason": null
-      },
       {
         "number": 316,
         "title": "Canvas-less shell: a local @shell Playwright project and the first spec (ADR-0019 slice 2)",
@@ -2019,6 +1998,22 @@
         "reason": "foundation-gate"
       },
       {
+        "number": 290,
+        "title": "Docs sweep: stale 'run test:e2e:store locally' lines contradict ADR-0016 as amended",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 311,
         "title": "Output nodes keep a stale value when their wire is removed",
         "labels": [
@@ -2493,22 +2488,6 @@
         "reason": "claimed"
       },
       {
-        "number": 479,
-        "title": "Mission Control MC-8: Roadmap, Ledger and ADR views",
-        "labels": [
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:mission-control"
-        ],
-        "blocking": [],
-        "project": "mission-control",
-        "rank": 14,
-        "lane": "process",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 500,
         "title": "pr-hygiene: the ratchet's Baseline-growth reader models a fence by a line's first characters (#499 verifier)",
         "labels": [
@@ -2645,13 +2624,6 @@
       }
     ],
     "byProject": {
-      "upkeep": [
-        290,
-        421,
-        567,
-        229,
-        256
-      ],
       "foundation": [
         316,
         331,
@@ -2731,9 +2703,15 @@
         513,
         545,
         560,
-        479,
         509,
         584
+      ],
+      "upkeep": [
+        421,
+        567,
+        229,
+        256,
+        290
       ],
       "spine": [
         165,
@@ -2813,24 +2791,6 @@
   "prs": {
     "open": [
       {
-        "number": 593,
-        "title": "feat(mission-control): roadmap, ledger and ADR views",
-        "url": "https://github.com/mezivillager/hacer/pull/593",
-        "author": "mezivillager",
-        "labels": [
-          "risk:1",
-          "project:mission-control"
-        ],
-        "headRefName": "feat/479-mc-roadmap-ledger-adrs",
-        "isDraft": false,
-        "createdAt": "2026-09-29T12:34:53Z",
-        "mergedAt": null,
-        "closes": [
-          479
-        ],
-        "verdicts": []
-      },
-      {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
         "url": "https://github.com/mezivillager/hacer/pull/514",
@@ -2859,11 +2819,38 @@
     ],
     "merged": [
       {
+        "number": 593,
+        "title": "feat(mission-control): roadmap, ledger and ADR views",
+        "url": "https://github.com/mezivillager/hacer/pull/593",
+        "author": "mezivillager",
+        "labels": [
+          "risk:1",
+          "project:mission-control"
+        ],
+        "headRefName": "feat/479-mc-roadmap-ledger-adrs",
+        "isDraft": false,
+        "createdAt": "2026-09-29T12:34:53Z",
+        "mergedAt": "2026-09-29T12:43:41Z",
+        "closes": [
+          479
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Sonnet 5.5 (fresh context)",
+            "at": "2026-09-29T12:42:57Z",
+            "url": "https://github.com/mezivillager/hacer/pull/593#issuecomment-5890538581"
+          }
+        ]
+      },
+      {
         "number": 592,
         "title": "fix(scene): split describe() into scene() and project(id); hop midpoints sit on the drawn arc",
         "url": "https://github.com/mezivillager/hacer/pull/592",
         "author": "mezivillager",
         "labels": [
+          "released",
           "risk:1",
           "project:foundation"
         ],
@@ -4249,30 +4236,13 @@
         "mergedAt": "2026-09-24T23:46:37Z",
         "closes": [],
         "verdicts": []
-      },
-      {
-        "number": 494,
-        "title": "chore(deps-dev): bump eslint-plugin-react-refresh from 0.5.2 to 0.5.7",
-        "url": "https://github.com/mezivillager/hacer/pull/494",
-        "author": "app/dependabot",
-        "labels": [
-          "released",
-          "dependencies",
-          "javascript"
-        ],
-        "headRefName": "dependabot/npm_and_yarn/eslint-plugin-react-refresh-0.5.7",
-        "isDraft": false,
-        "createdAt": "2026-09-24T23:14:06Z",
-        "mergedAt": "2026-09-24T23:43:43Z",
-        "closes": [],
-        "verdicts": []
       }
     ],
     "coverage": {
       "merged": 60,
-      "withVerdict": 36,
-      "withoutVerdict": 24,
-      "pass": 36,
+      "withVerdict": 37,
+      "withoutVerdict": 23,
+      "pass": 37,
       "block": 0
     }
   },
@@ -4489,6 +4459,31 @@
         }
       },
       {
+        "number": 290,
+        "ref": "refs/heads/claim/290",
+        "sha": "eaba40da844780d75ed84f4a1825245a1c518305",
+        "state": "OPEN",
+        "title": "Docs sweep: stale 'run test:e2e:store locally' lines contradict ADR-0016 as amended",
+        "url": "https://github.com/mezivillager/hacer/issues/290",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-60",
+          "branch": null,
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-09-29T12:39:47Z",
+          "url": "https://github.com/mezivillager/hacer/issues/290#issuecomment-5890489165"
+        }
+      },
+      {
         "number": 315,
         "ref": "refs/heads/claim/315",
         "sha": "13d756bd1f793d5914df0528d0ed60ff6734fcb8",
@@ -4596,7 +4591,7 @@
         "number": 479,
         "ref": "refs/heads/claim/479",
         "sha": "1c65764d52b31b211ec7ee69668b34a1547c81b0",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "Mission Control MC-8: Roadmap, Ledger and ADR views",
         "url": "https://github.com/mezivillager/hacer/issues/479",
         "labels": [
@@ -4605,7 +4600,7 @@
           "risk:1",
           "project:mission-control"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -4885,6 +4880,7 @@
         "title": "describe(): settle the scene/project(id) shape against ADR-0020 §9 and lock it to the rendered meshes (verifier nits on #583)",
         "url": "https://github.com/mezivillager/hacer/issues/587",
         "labels": [
+          "released",
           "agent-ready",
           "in-progress",
           "risk:1",
@@ -4903,7 +4899,7 @@
         }
       }
     ],
-    "onClosedIssues": 20
+    "onClosedIssues": 21
   },
   "cloudLane": {
     "items": [
@@ -5909,9 +5905,14 @@
     },
     "releases": [
       {
+        "tag": "v2.51.1",
+        "publishedAt": "2026-09-29T12:41:42Z",
+        "isLatest": true
+      },
+      {
         "tag": "v2.51.0",
         "publishedAt": "2026-09-29T12:25:19Z",
-        "isLatest": true
+        "isLatest": false
       },
       {
         "tag": "v2.50.0",
@@ -6422,7 +6423,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-24",
-        "merges": 3
+        "merges": 2
       },
       {
         "date": "2026-09-25",
@@ -6442,20 +6443,20 @@
       },
       {
         "date": "2026-09-29",
-        "merges": 11
+        "merges": 12
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-15T12:39:30.612Z",
-      "merged": 176,
+      "since": "2026-09-15T12:44:42.037Z",
+      "merged": 177,
       "openToMergeHours": {
-        "median": 0.3,
+        "median": 0.2,
         "p90": 15.1
       },
       "blockedOnce": {
         "count": 21,
-        "of": 87,
+        "of": 88,
         "prs": [
           238,
           248,
@@ -6482,8 +6483,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 87,
-          "withVerdict": 71,
+          "merged": 88,
+          "withVerdict": 72,
           "without": [
             133,
             134,
@@ -7497,11 +7498,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "eaba40da844780d75ed84f4a1825245a1c518305",
+        "sha": "804e1d501141cd7f57316c8066571017c6ec4c22",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36569473075/job/109409565919",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36570060956/job/109411534317",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -7545,52 +7546,6 @@
         "conclusion": "SUCCESS",
         "completedAt": "2026-09-25T06:48:18Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/36104338672/job/107973412518",
-        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 71,
-          "new": 0
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 593,
-        "sha": "8fd7783add8035920e5a1e782a15a9274a5b7b9f",
-        "check": "pr-hygiene",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-09-29T12:35:08Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36569068377/job/109408203187",
-        "line": "HYGIENE: PASS reviewable=151 test=158 excluded=62 files=7 issue=#479 linked=fixes",
-        "verdict": "PASS",
-        "fields": {
-          "reviewable": 151,
-          "test": 158,
-          "excluded": 62,
-          "files": 7,
-          "issue": "#479",
-          "linked": "fixes"
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 593,
-        "sha": "8fd7783add8035920e5a1e782a15a9274a5b7b9f",
-        "check": "browser-qa",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-09-29T12:35:14Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36569068404/job/109408200523",
-        "line": "BROWSER-QA: skipped (no critical paths)",
-        "verdict": "SKIPPED",
-        "fields": {},
-        "disagrees": false
-      },
-      {
-        "pr": 593,
-        "sha": "8fd7783add8035920e5a1e782a15a9274a5b7b9f",
-        "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-09-29T12:37:52Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36569067056/job/109408196081",
         "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
         "verdict": "PASS",
         "fields": {
