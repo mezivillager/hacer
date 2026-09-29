@@ -2,6 +2,7 @@
 import type { ChipDefinition } from '../chips/types'
 import type { ChipRegistry } from '../chips/registry'
 import { evaluateChip } from '../chips/evaluateChip'
+import { parseHDL } from '../hdl/parser'
 import type { TSTScript } from './types'
 import type { CmpFile } from './cmpParser'
 import { compareCmpRow } from './cmpParser'
@@ -44,10 +45,26 @@ export function stripExt(filename: string): string {
   return dot > 0 ? filename.slice(0, dot) : filename
 }
 
-/** A `.tst` may name only the chip's own input and output pins. */
-function hasPin(chip: ChipDefinition, name: string): boolean {
-  return chip.inputs.some((p) => p.name === name) || chip.outputs.some((p) => p.name === name)
+/**
+ * Names a `.tst` may use for a chip: its input and output pins and, for an HDL chip, the wires
+ * between its parts, which the reference IDE resolves as well. The evaluator returns only the
+ * outputs, so an internal wire's column still prints 0.
+ */
+function knownNames(chip: ChipDefinition): Set<string> {
+  const names = new Set([...chip.inputs, ...chip.outputs].map((p) => p.name))
+  if (chip.implementation.type !== 'hdl') return names
+  const parsed = parseHDL(chip.implementation.source)
+  if (!parsed.success) return names
+  for (const part of parsed.chip.parts) {
+    for (const conn of part.connections) {
+      if (conn.external !== 'true' && conn.external !== 'false') names.add(conn.external)
+    }
+  }
+  return names
 }
+
+/** The reference's clock column: any `output-list` may name it (Project 3 onward). */
+const TIME_COLUMN = 'time'
 
 export function runTest(script: TSTScript, options: RunTestOptions): TestResult {
   const { registry, maxDepth } = options
@@ -69,6 +86,15 @@ export function runTest(script: TSTScript, options: RunTestOptions): TestResult 
     error,
   })
 
+  const known = new Map<ChipDefinition, Set<string>>()
+  const hasPin = (chip: ChipDefinition, name: string): boolean => {
+    let names = known.get(chip)
+    if (!names) {
+      names = knownNames(chip)
+      known.set(chip, names)
+    }
+    return names.has(name)
+  }
   // The reference web IDE skips an unknown name without a word, so a typo in a script
   // passes unnoticed; here it fails the run instead.
   const unknownPin = (chip: ChipDefinition, command: 'set' | 'output-list', pin: string, line: number | undefined): TestResult =>
@@ -96,8 +122,10 @@ export function runTest(script: TSTScript, options: RunTestOptions): TestResult 
         break
       }
       case 'output-list': {
+        // Builtin-state reads such as `DRegister[]` (Project 5 CPU.tst) do not parse yet; they
+        // become known names with #207 and the Project 3–5 conformance work.
         const chip = activeChip
-        const unknown = chip ? cmd.columns.find((c) => !hasPin(chip, c.name)) : undefined
+        const unknown = chip ? cmd.columns.find((c) => c.name !== TIME_COLUMN && !hasPin(chip, c.name)) : undefined
         if (chip && unknown) return unknownPin(chip, 'output-list', unknown.name, cmd.line)
         outputColumns = cmd.columns.map((c) => c.name)
         break
