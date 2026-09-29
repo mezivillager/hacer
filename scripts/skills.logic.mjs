@@ -166,6 +166,8 @@ export const BRIEF_INVARIANTS = [
       { id: 'nits-never-block', phrases: ['**NIT** ≤ 3', 'Nits never block'] },
       { id: 'pass-without-blockers', phrases: ['**PASS** when there are no blockers'] },
       { id: 'try-to-break-it', phrases: ['Try to break it:', 'Do not commit them.'] },
+      // A green summary does not show the specs ran; only the PR's own logs do (#312's browser-qa failure).
+      { id: 'reads-pr-ci-logs', phrases: ['Read the PR\'s own CI logs', '`browser-qa`', 'A green summary is not evidence the specs ran.'] },
       // The tier split itself, as ONE phrase. `containsPhrases` is an ordered-subsequence match, so a
       // list of short phrases pins only their order: a rewrite that preserves word order while saying
       // the opposite passes (verified on #351). A whole sentence is an exact substring match, which is
