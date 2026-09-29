@@ -16,6 +16,7 @@ import type { CircuitStore, Wire } from '@/store/types'
 import type { WireSegment } from '@/utils/wiringScheme/types'
 import { resetCircuitStore, wireGatePins, wireInputNodeToPin } from '@/test/r3f/seedCircuit'
 import { describeCircuitScene } from '@/components/canvas/Scene/sceneDescribe'
+import { expectOneGoldenPerCase } from '@/test/characterizationGoldens'
 
 const GOLDEN_DIR = '__snapshots__/characterization/scene'
 /** The router's own collinearity tolerance. */
@@ -200,9 +201,9 @@ function characterize(scenario: Scenario): string {
 
 describe('legacy renderer, ADR-0008 circuits as scene + routed-path goldens (characterization)', () => {
   it('has one golden per scenario and no golden without a scenario', () => {
-    // Keys only, so nothing is loaded; `import.meta.glob` takes a literal, hence GOLDEN_DIR spelled out.
-    const onDisk = Object.keys(import.meta.glob('./__snapshots__/characterization/scene/*'))
-    expect(onDisk.sort()).toEqual(SCENARIOS.map((sc) => `./${GOLDEN_DIR}/${sc.name}.json`).sort())
+    // `import.meta.glob` takes a literal, hence GOLDEN_DIR spelled out.
+    const onDisk = import.meta.glob('./__snapshots__/characterization/scene/*')
+    expectOneGoldenPerCase(onDisk, SCENARIOS.map((sc) => sc.name))
   })
 
   it.each(SCENARIOS.map((sc) => [sc.name, sc] as const))('%s', async (name, scenario) => {
