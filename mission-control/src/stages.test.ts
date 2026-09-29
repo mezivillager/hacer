@@ -6,7 +6,7 @@ import { stagesOf } from './stages'
 // `collect.mjs --json` at origin/main 561dcf1, 2026-09-25 03:16Z — see scripts/mission-control/collect.logic.test.mjs.
 const snapshot = fixture as Snapshot
 const task = (number: number, reason: string | null): Task =>
-  ({ number, title: `Task ${number}`, project: 'harness', pickable: reason === null, reason })
+  ({ number, title: `Task ${number}`, labels: [], project: 'harness', pickable: reason === null, reason })
 
 describe('stagesOf', () => {
   // #531: `ready` gives an issue holding an open claim ref the reason `claimed`, labelled `in-progress` or not, and
