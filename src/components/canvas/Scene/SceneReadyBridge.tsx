@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
-import { Vector3 } from 'three'
 import { useCircuitStore } from '@/store/circuitStore'
 import { describeCircuitScene, projectToCanvas } from './sceneDescribe'
 import '../../../../e2e/types/globals' // Import for Window augmentation side-effect
@@ -31,14 +30,9 @@ export function SceneReadyBridge() {
     window.__SCENE_READY__ = true
     window.__SCENE_HELPERS__ = {
       projectToScreen: (position: { x: number; y: number; z: number }) => {
-        // Get fresh domRect on each call to handle window resizes
-        const domRect = gl.domElement.getBoundingClientRect()
-        const vec = new Vector3(position.x, position.y, position.z)
-        vec.project(camera)
-        return {
-          x: ((vec.x + 1) / 2) * domRect.width + domRect.left,
-          y: ((-vec.y + 1) / 2) * domRect.height + domRect.top,
-        }
+        // Fresh rect on each call so window resizes are honoured
+        const { x, y } = projectToCanvas(camera, gl.domElement.getBoundingClientRect(), position)
+        return { x, y }
       },
       canvasRect: () => gl.domElement.getBoundingClientRect(),
       describe: () => {
