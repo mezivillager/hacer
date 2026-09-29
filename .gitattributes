@@ -13,3 +13,9 @@
 # reads the rows against the PR's merge base — for the first file only; #429 covers the second.
 .dependency-cruiser-known-violations.json linguist-generated
 eslint-suppressions.json linguist-generated
+
+# Append-only records whose rows are independent single lines: two PRs that each add a row merge
+# by keeping both, so a local rebase or `gh pr update-branch` no longer stops on them (#334).
+# Not for DECISIONS.md or docs/decisions/rulings/*.md: those hold multi-line sections, and a union
+# merge would interleave two edits of one section without warning.
+docs/harness/ledger.md merge=union
