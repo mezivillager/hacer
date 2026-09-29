@@ -113,6 +113,9 @@ describe('classifyFile', () => {
     ['CHANGELOG.md', 'changelog'],
     ['docs/research/2026-09-18-agent-readiness/evidence/transcript.md', 'evidence'],
     ['docs/research/2026-09-18-agent-readiness/evidence/raw/timings.json', 'evidence'],
+    ['docs/research/2026-09-18-agent-readiness/evidence/measure.mjs', 'evidence'],
+    ['docs/research/2026-09-18-agent-readiness/Evidence/transcript.md', 'evidence'],
+    ['docs/research/2026-09-18-agent-readiness/EVIDENCE/run.sh', 'evidence'],
   ])('excludes %s as %s', (filename, reason) => {
     expect(classifyFile(filename)).toEqual({ kind: 'excluded', reason })
   })
@@ -214,6 +217,35 @@ describe('deletionOnlyExemption', () => {
     const over = deletionOnlyExemption(at([4, 4, 4, 4]))
     expect(over.exempt).toBe(false)
     expect(over.reason).toContain('300')
+  })
+
+  it('names the largest contributor when the total cap refuses (#345)', () => {
+    const fixups = [file('src/i1.ts', 4, 0), file('src/index.ts', 5, 0), ...[2, 3, 4].map((i) => file(`src/i${i}.ts`, 4, 0))]
+    const over = deletionOnlyExemption(reviewable(file('src/legacy.ts', 0, 9000), ...fixups))
+    expect(over.exempt).toBe(false)
+    expect(over.reason).toContain(String(FIXUP_MAX_LINES))
+    expect(over.reason).toContain('`src/index.ts`')
+    expect(over.reason).not.toContain('src/i1.ts')
+  })
+
+  it('names the largest contributor when the share cap refuses (#345)', () => {
+    const fixups = [file('src/i1.ts', 4, 0), file('src/index.ts', 5, 0), file('src/i2.ts', 4, 0), file('src/i3.ts', 3, 0)]
+    const over = deletionOnlyExemption(reviewable(file('src/legacy.ts', 0, 300), ...fixups))
+    expect(over.exempt).toBe(false)
+    expect(over.reason).toContain('300')
+    expect(over.reason).toContain('`src/index.ts`')
+    expect(over.reason).not.toContain('src/i1.ts')
+  })
+
+  it('never waives a PR because a raw file entry is missing `additions` or `deletions` (#345)', () => {
+    // Raw API entries, not measure()'s: a missing count read as NaN failed every cap and passed as exempt.
+    const fixup = (i, counts) => ({ filename: `src/i${i}.ts`, ...counts })
+    const noAdditions = [{ filename: 'src/legacy.ts', deletions: 9000 }, ...[0, 1, 2, 3, 4].map((i) => fixup(i, { additions: 5, deletions: 0 }))]
+    const noDeletions = [{ filename: 'src/legacy.ts', additions: 0, deletions: 300 }, ...[0, 1, 2, 3].map((i) => fixup(i, { additions: 4 }))]
+    const addOnly = [0, 1, 2, 3].map((i) => fixup(i, { additions: 5 }))
+    expect(deletionOnlyExemption({ files: noAdditions })).toMatchObject({ exempt: false })
+    expect(deletionOnlyExemption({ files: noDeletions })).toMatchObject({ exempt: false })
+    expect(deletionOnlyExemption({ files: addOnly })).toBeNull()
   })
 
   it('says nothing about a PR that is not deletion-shaped', () => {
