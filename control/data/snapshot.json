@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-29T15:15:11.917Z",
+  "generatedAt": "2026-09-29T15:17:06.442Z",
   "head": {
-    "sha": "89cc0b57a700dc8546321ab87ea00d3b39fb7623",
-    "date": "2026-09-29T18:13:57+03:00",
-    "subject": "fix(core): accept internal HDL pins and the time column in a .tst (#603)"
+    "sha": "5f4a7c6038edf2900e0162327f53a70cdea80392",
+    "date": "2026-09-29T18:15:42+03:00",
+    "subject": "test(test-utils): every characterization suite uses one guard that also catches nested orphans"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-29T15:15:11.917Z",
+      "fetchedAt": "2026-09-29T15:17:06.442Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-29T15:15:11.917Z",
+      "fetchedAt": "2026-09-29T15:17:06.442Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-29T15:15:11.917Z",
+      "fetchedAt": "2026-09-29T15:17:06.442Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-29T15:15:11.917Z",
+      "fetchedAt": "2026-09-29T15:17:06.442Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-09-29T15:15:11.917Z",
+      "fetchedAt": "2026-09-29T15:17:06.442Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-09-29T15:15:11.917Z",
+      "fetchedAt": "2026-09-29T15:17:06.442Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-09-29T15:15:11.917Z",
+      "fetchedAt": "2026-09-29T15:17:06.442Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-09-29T15:15:11.917Z",
+      "fetchedAt": "2026-09-29T15:17:06.442Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-09-29T15:15:11.917Z",
+      "fetchedAt": "2026-09-29T15:17:06.442Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-09-29T15:15:11.917Z",
+      "fetchedAt": "2026-09-29T15:17:06.442Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-09-29T15:15:11.917Z",
+      "fetchedAt": "2026-09-29T15:17:06.442Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-09-29T15:15:11.917Z",
+      "fetchedAt": "2026-09-29T15:17:06.442Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-09-29T15:15:11.917Z",
+      "fetchedAt": "2026-09-29T15:17:06.442Z",
       "status": "ok"
     }
   },
@@ -80,17 +80,17 @@
         "lane": "feature",
         "slug": "foundation",
         "epicNumber": 318,
-        "open": 32,
-        "ready": 7,
+        "open": 31,
+        "ready": 6,
         "inProgress": 3,
         "needsHuman": 0,
         "staleClaims": [
           182
         ],
-        "agentReady": 10,
+        "agentReady": 9,
         "next": {
-          "number": 335,
-          "title": "Move the HTMLCanvasElement patch out of the shared test setup, and move store/core tests to the node project (foundation 0.10)"
+          "number": 338,
+          "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)"
         },
         "title": "Foundation audit: is the codebase structured for the autonomous loop? Measured audit, prioritized refactorings, fitness functions",
         "subIssues": {
@@ -387,11 +387,6 @@
     ],
     "next": [
       {
-        "number": 335,
-        "title": "Move the HTMLCanvasElement patch out of the shared test setup, and move store/core tests to the node project (foundation 0.10)",
-        "project": "foundation"
-      },
-      {
         "number": 567,
         "title": "Scorecard's first run: pin the other workflows' actions by SHA and narrow their top-level token",
         "project": "upkeep"
@@ -540,28 +535,12 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
-        623,
         514
       ]
     }
   },
   "tasks": {
     "items": [
-      {
-        "number": 335,
-        "title": "Move the HTMLCanvasElement patch out of the shared test setup, and move store/core tests to the node project (foundation 0.10)",
-        "labels": [
-          "agent-ready",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
       {
         "number": 567,
         "title": "Scorecard's first run: pin the other workflows' actions by SHA and narrow their top-level token",
@@ -1847,6 +1826,22 @@
         "reason": "unshaped"
       },
       {
+        "number": 335,
+        "title": "Move the HTMLCanvasElement patch out of the shared test setup, and move store/core tests to the node project (foundation 0.10)",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 339,
         "title": "After Phase 1: a refactor PR may not edit existing tests (pr-hygiene), and function length only shrinks (ESLint bulk suppressions) (foundation 1.5)",
         "labels": [
@@ -2496,27 +2491,15 @@
         "lane": "enabler",
         "pickable": false,
         "reason": "unshaped"
-      },
-      {
-        "number": 622,
-        "title": "Characterization suites share one golden guard, and it catches nested orphans (consolidation after #331)",
-        "labels": [
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "claimed"
       }
     ],
     "byProject": {
+      "upkeep": [
+        567,
+        229,
+        256
+      ],
       "foundation": [
-        335,
         338,
         345,
         349,
@@ -2528,6 +2511,7 @@
         184,
         208,
         325,
+        335,
         339,
         374,
         377,
@@ -2546,13 +2530,7 @@
         462,
         506,
         599,
-        613,
-        622
-      ],
-      "upkeep": [
-        567,
-        229,
-        256
+        613
       ],
       "lineage": [
         471,
@@ -2678,24 +2656,6 @@
   "prs": {
     "open": [
       {
-        "number": 623,
-        "title": "test(test-utils): characterization suites share one golden guard that catches nested orphans",
-        "url": "https://github.com/mezivillager/hacer/pull/623",
-        "author": "mezivillager",
-        "labels": [
-          "risk:0",
-          "project:foundation"
-        ],
-        "headRefName": "test/consolidate-golden-guards",
-        "isDraft": false,
-        "createdAt": "2026-09-29T15:05:06Z",
-        "mergedAt": null,
-        "closes": [
-          622
-        ],
-        "verdicts": []
-      },
-      {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
         "url": "https://github.com/mezivillager/hacer/pull/514",
@@ -2723,6 +2683,32 @@
       }
     ],
     "merged": [
+      {
+        "number": 623,
+        "title": "test(test-utils): characterization suites share one golden guard that catches nested orphans",
+        "url": "https://github.com/mezivillager/hacer/pull/623",
+        "author": "mezivillager",
+        "labels": [
+          "risk:0",
+          "project:foundation"
+        ],
+        "headRefName": "test/consolidate-golden-guards",
+        "isDraft": false,
+        "createdAt": "2026-09-29T15:05:06Z",
+        "mergedAt": "2026-09-29T15:15:43Z",
+        "closes": [
+          622
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Sonnet 5.5 (fresh context)",
+            "at": "2026-09-29T15:15:05Z",
+            "url": "https://github.com/mezivillager/hacer/pull/623#issuecomment-5893106021"
+          }
+        ]
+      },
       {
         "number": 621,
         "title": "chore(harness): protected-path warning names each glob and its reason",
@@ -4131,30 +4117,13 @@
         "mergedAt": "2026-09-29T11:59:33Z",
         "closes": [],
         "verdicts": []
-      },
-      {
-        "number": 520,
-        "title": "chore(deps-dev): bump @testing-library/user-event from 14.6.1 to 14.6.7",
-        "url": "https://github.com/mezivillager/hacer/pull/520",
-        "author": "app/dependabot",
-        "labels": [
-          "released",
-          "dependencies",
-          "javascript"
-        ],
-        "headRefName": "dependabot/npm_and_yarn/testing-library/user-event-14.6.7",
-        "isDraft": false,
-        "createdAt": "2026-09-25T14:45:04Z",
-        "mergedAt": "2026-09-29T11:54:30Z",
-        "closes": [],
-        "verdicts": []
       }
     ],
     "coverage": {
       "merged": 60,
-      "withVerdict": 41,
-      "withoutVerdict": 19,
-      "pass": 41,
+      "withVerdict": 42,
+      "withoutVerdict": 18,
+      "pass": 42,
       "block": 0
     }
   },
@@ -4527,6 +4496,31 @@
           "author": "mezivillager",
           "at": "2026-09-29T13:20:07Z",
           "url": "https://github.com/mezivillager/hacer/issues/334#issuecomment-5891138285"
+        }
+      },
+      {
+        "number": 335,
+        "ref": "refs/heads/claim/335",
+        "sha": "5f4a7c6038edf2900e0162327f53a70cdea80392",
+        "state": "OPEN",
+        "title": "Move the HTMLCanvasElement patch out of the shared test setup, and move store/core tests to the node project (foundation 0.10)",
+        "url": "https://github.com/mezivillager/hacer/issues/335",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:foundation"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-60",
+          "branch": null,
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-09-29T15:16:15Z",
+          "url": "https://github.com/mezivillager/hacer/issues/335#issuecomment-5893126070"
         }
       },
       {
@@ -5206,7 +5200,7 @@
         "number": 622,
         "ref": "refs/heads/claim/622",
         "sha": "75d705b364fc915c97655c8fa0510dde720295a7",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "Characterization suites share one golden guard, and it catches nested orphans (consolidation after #331)",
         "url": "https://github.com/mezivillager/hacer/issues/622",
         "labels": [
@@ -5215,7 +5209,7 @@
           "risk:0",
           "project:foundation"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -5228,7 +5222,7 @@
         }
       }
     ],
-    "onClosedIssues": 36
+    "onClosedIssues": 37
   },
   "cloudLane": {
     "items": [
@@ -6801,15 +6795,15 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-15T15:15:11.917Z",
-      "merged": 192,
+      "since": "2026-09-15T15:17:06.442Z",
+      "merged": 193,
       "openToMergeHours": {
         "median": 0.2,
         "p90": 11.7
       },
       "blockedOnce": {
         "count": 21,
-        "of": 103,
+        "of": 104,
         "prs": [
           238,
           248,
@@ -6836,8 +6830,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 100,
-          "withVerdict": 84,
+          "merged": 101,
+          "withVerdict": 85,
           "without": [
             133,
             134,
@@ -7846,11 +7840,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "89cc0b57a700dc8546321ab87ea00d3b39fb7623",
+        "sha": "5f4a7c6038edf2900e0162327f53a70cdea80392",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36588615724/job/109475509118",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36588841619/job/109476283195",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -7894,58 +7888,6 @@
         "conclusion": "SUCCESS",
         "completedAt": "2026-09-25T06:48:18Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/36104338672/job/107973412518",
-        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 71,
-          "new": 0
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 623,
-        "sha": "e0faf98e7163736ba37f5bcc73e7ad30889987d9",
-        "check": "pr-hygiene",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-09-29T15:05:26Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36587485829/job/109471571738",
-        "line": "HYGIENE: PASS reviewable=15 test=48 excluded=0 files=1 issue=#622 linked=fixes",
-        "verdict": "PASS",
-        "fields": {
-          "reviewable": 15,
-          "test": 48,
-          "excluded": 0,
-          "files": 1,
-          "issue": "#622",
-          "linked": "fixes"
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 623,
-        "sha": "e0faf98e7163736ba37f5bcc73e7ad30889987d9",
-        "check": "browser-qa",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-09-29T15:08:13Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36587485947/job/109471567415",
-        "line": "BROWSER-QA: PASS suites=store passed=107 failed=0 flaky=0 skipped=0",
-        "verdict": "PASS",
-        "fields": {
-          "suites": "store",
-          "passed": 107,
-          "failed": 0,
-          "flaky": 0,
-          "skipped": 0
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 623,
-        "sha": "e0faf98e7163736ba37f5bcc73e7ad30889987d9",
-        "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-09-29T15:08:11Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36587481003/job/109471551676",
         "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
         "verdict": "PASS",
         "fields": {
