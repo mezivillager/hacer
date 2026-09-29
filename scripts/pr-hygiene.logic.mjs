@@ -58,7 +58,9 @@ const EXCLUSIONS = [
   ['changelog', (p) => p === 'CHANGELOG.md'],
   // A research deliverable's appendices — measurements, outside research, review transcripts — are
   // evidence a reader consults, not prose anyone line-reviews. The report beside them still counts.
-  ['evidence', (p) => /^docs\/research\/[^/]+\/evidence\//.test(p)],
+  // Decided (#345): a directory rule, so an appendix's scripts are evidence too, whatever the
+  // extension; matched in any case, since a case-insensitive checkout cannot tell `Evidence/` apart.
+  ['evidence', (p) => /^docs\/research\/[^/]+\/evidence\//.test(p.toLowerCase())],
 ]
 
 /**
@@ -105,25 +107,32 @@ export function measure(files, generatedPatterns = []) {
  * {@link FIXUP_MAX_LINES} in total, and no more than {@link FIXUP_MAX_SHARE} of what it deletes.
  * Test and excluded files are outside the budget already, so only the reviewable bucket is weighed.
  *
- * @param {{files:{filename:string,additions:number,deletions:number}[]}} reviewable
+ * A missing count reads as 0, as in `measure()`: read as `undefined` it made every sum NaN, NaN
+ * fails every comparison, and a malformed entry passed as exempt (#345). Every refusal names a file.
+ *
+ * @param {{files:{filename:string,additions?:number,deletions?:number}[]}} reviewable raw
+ *   `pulls/{n}/files` entries or `measure()`'s reviewable bucket
  * @returns {{exempt:boolean, reason:string}|null} null when the PR is not deletion-shaped at all.
  */
 export function deletionOnlyExemption({ files }) {
-  const added = files.reduce((n, f) => n + f.additions, 0)
-  const deleted = files.reduce((n, f) => n + f.deletions, 0)
+  const counted = files.map((f) => ({ filename: f.filename, additions: f.additions ?? 0, deletions: f.deletions ?? 0 }))
+  const added = counted.reduce((n, f) => n + f.additions, 0)
+  const deleted = counted.reduce((n, f) => n + f.deletions, 0)
   if (deleted === 0 || added >= deleted) return null
   const no = (reason) => ({ exempt: false, reason })
-  const blocker = files.find((f) => f.additions > FIXUP_MAX_LINES_PER_FILE)
+  const blocker = counted.find((f) => f.additions > FIXUP_MAX_LINES_PER_FILE)
   if (blocker) {
     return no(
       `\`${blocker.filename}\` adds ${blocker.additions} lines — a forced fix-up adds at most ` +
         `${FIXUP_MAX_LINES_PER_FILE} to a file, so this PR adds behaviour`,
     )
   }
-  if (added > FIXUP_MAX_LINES) return no(`${added} added lines exceed the ${FIXUP_MAX_LINES}-line fix-up allowance`)
+  const largest = counted.reduce((top, f) => (f.additions > top.additions ? f : top))
+  const most = ` — the most from \`${largest.filename}\` (${largest.additions})`
+  if (added > FIXUP_MAX_LINES) return no(`${added} added lines exceed the ${FIXUP_MAX_LINES}-line fix-up allowance${most}`)
   const share = Math.floor(deleted * FIXUP_MAX_SHARE)
   if (added > share) {
-    return no(`${added} added lines exceed ${FIXUP_MAX_SHARE * 100}% of the ${deleted} deleted (${share})`)
+    return no(`${added} added lines exceed ${FIXUP_MAX_SHARE * 100}% of the ${deleted} deleted (${share})${most}`)
   }
   return {
     exempt: true,
