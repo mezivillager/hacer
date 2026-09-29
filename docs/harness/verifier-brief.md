@@ -22,7 +22,7 @@ give it the sources.
 ## Method
 1. Worktree from the PR head: `git fetch origin && git worktree add ../hacer-wt-verify-<pr> origin/<branch>`, `rm -rf node_modules && pnpm install --frozen-lockfile`, Node 22.
 2. Run the issue's verification command and the definition of done (`docs/harness/implementer-brief.md`); record exit codes and counts.
-3. Read the PR's own CI logs, including `browser-qa`: `gh run list --branch <branch>`, then `gh run view <id> --log`. Cite the run id and what the log shows for each required job. A green summary is not evidence the specs ran; a skipped or empty job is "unproven".
+3. Read the PR's own CI logs, including `browser-qa`: `gh run list --branch <branch>`, then `gh run view <id> --log`. Cite the run id and what the log shows for each required job. A green summary is not evidence the specs ran. A skipped or empty job is "unproven".
 4. Read every changed file in full. For each acceptance criterion, cite the test (`file:line`) that proves it, or write "unproven".
 5. Check the commit sequence: tests committed before the implementation; the red commit fails on its own (check it out; never `git stash`).
 6. Check scope and layering: nothing outside the issue; no new imports across the layer walls; changes to shared files (store types, evaluator, configs) are minimal and justified.
