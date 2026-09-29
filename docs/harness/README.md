@@ -235,6 +235,22 @@ PRs, and `ledger.md`. **Who is coordinating, and why a claim is idle**, is not â
   or mark `paused:` if a claim already exists.
 - At orient, list open `claim/*` refs and any `sessions/*-handoff.md` (until #156 prints them).
 
+## Ledger rows and merge conflicts
+
+`docs/harness/ledger.md` is append-at-end, so two open PRs that each add a row conflict. `.gitattributes`
+gives it `merge=union` (keep both sides), which a local rebase and `gh pr update-branch` honour.
+
+**GitHub's own mergeability check does not honour it.** Measured 2026-09-29 with two throwaway PRs (#604, #605,
+closed unmerged) that each appended one row, the attribute present on the base branch: the PR that
+merges into the other reported `mergeable: CONFLICTING`, `mergeStateStatus: DIRTY`, while a local
+`git merge-tree` merged the same two heads clean. So a PR can still show a conflict in the merge box:
+rebase locally, or `gh pr update-branch`. The fallback, one file per row under `docs/harness/ledger.d/`
+assembled by a script, is filed as #607 and not built.
+
+The attribute is applied only where rows are independent single lines. `DECISIONS.md` and
+`docs/decisions/rulings/*.md` hold multi-line sections, and a union merge would interleave two edits of
+one section without warning, so they keep the default merge.
+
 ## Files
 
 - `README.md` â€” this page.
