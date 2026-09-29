@@ -40,3 +40,11 @@ describe('**/__snapshots__/characterization/**', () => {
     expect(isProtectedPath('src/__snapshots__/characterization.json')).toBe(false)
   })
 })
+
+describe('protectedEntryFor', () => {
+  it('gives each glob its own reason', () => {
+    expect(protectedEntryFor('conformance/vectors/01/Xor.tst').reason).toContain('held-out oracle')
+    expect(protectedEntryFor('a/__snapshots__/characterization/x.json').reason).toContain('characterization golden')
+    expect(protectedEntryFor('src/a.ts')).toBeUndefined()
+  })
+})
