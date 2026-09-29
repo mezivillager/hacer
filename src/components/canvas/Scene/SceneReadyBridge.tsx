@@ -35,10 +35,8 @@ export function SceneReadyBridge() {
         return { x, y }
       },
       canvasRect: () => gl.domElement.getBoundingClientRect(),
-      describe: () => {
-        const rect = gl.domElement.getBoundingClientRect()
-        return describeCircuitScene(useCircuitStore.getState(), (world) => projectToCanvas(camera, rect, world))
-      },
+      scene: () => describeCircuitScene(useCircuitStore.getState()),
+      project: () => null,
     }
 
     window.dispatchEvent(new Event('scene-ready'))

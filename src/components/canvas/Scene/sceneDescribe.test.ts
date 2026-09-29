@@ -3,7 +3,9 @@ import { useCircuitStore } from '@/store/circuitStore'
 import { resetCircuitStore } from '@/test/r3f/seedCircuit'
 import { calculateNodePinPosition } from '@/nodes/config'
 import type { Position } from '@/store/types'
-import { describeCircuitScene, type Projector, type SceneEntity } from './sceneDescribe'
+import { generateHopArc } from '@/utils/wiringScheme/crossing'
+import { HOP_HEIGHT, HOP_RADIUS, WIRE_HEIGHT, type WireSegment } from '@/utils/wiringScheme/types'
+import { describeCircuitScene, projectSceneEntity, type Projector, type SceneEntity } from './sceneDescribe'
 
 const getState = () => useCircuitStore.getState()
 
@@ -140,19 +142,36 @@ describe('describeCircuitScene (store → JSON)', () => {
     expect(entity(describeCircuitScene(getState()).entities, wire.id).state.signal).toBe(1)
   })
 
-  it('leaves screen and visible null without a projector, and takes both from one', () => {
-    const { gate, a } = seed()
+  it('describes only what needs no camera: no screen position and no visibility', () => {
+    seed()
 
     for (const e of describeCircuitScene(getState()).entities) {
-      expect(e.screen).toBeNull()
-      expect(e.state.visible).toBeNull()
+      expect(Object.keys(e).sort()).toEqual(['id', 'kind', 'name', 'ownerId', 'pinId', 'state', 'world'])
+      expect(Object.keys(e.state).sort()).toEqual(['selected', 'signal'])
     }
+  })
 
+  it('projects one entity by id through the projector, and returns null for an id it does not describe', () => {
+    const { gate, a } = seed()
     const project: Projector = (world) => ({ x: world.x * 10, y: world.z * 10, visible: world.x >= 0 })
-    const { entities } = describeCircuitScene(getState(), project)
-    expect(entity(entities, gate.id).screen).toEqual({ x: 20, y: 20 })
-    expect(entity(entities, gate.id).state.visible).toBe(true)
-    expect(entity(entities, a.id).state.visible).toBe(false)
+
+    expect(projectSceneEntity(getState(), gate.id, project)).toEqual({ screen: { x: 20, y: 20 }, visible: true })
+    expect(projectSceneEntity(getState(), a.id, project)).toEqual({ screen: { x: -60, y: 20 }, visible: false })
+    expect(projectSceneEntity(getState(), 'no-such-entity', project)).toBeNull()
+  })
+
+  it('projects the world position the scene publishes, so both agree', () => {
+    const { gate } = seed()
+    const pin = `${gate.id}:${gate.inputs[0].name}`
+    const published = entity(describeCircuitScene(getState()).entities, pin).world
+
+    const seen: Position[] = []
+    projectSceneEntity(getState(), pin, (world) => {
+      seen.push(world)
+      return { x: 0, y: 0, visible: true }
+    })
+
+    expect(seen).toEqual([published])
   })
 
   it('never reports a wire the renderer cannot draw as visible, and places it between its endpoints', () => {
@@ -162,27 +181,65 @@ describe('describeCircuitScene (store → JSON)', () => {
       { type: 'gate', entityId: gate.id, pinId: gate.inputs[1].id },
       [],
     )
-    const { entities } = describeCircuitScene(getState(), () => ({ x: 1, y: 1, visible: true }))
 
-    const described = entity(entities, bare.id)
-    expect(described.state.visible).toBe(false)
+    expect(projectSceneEntity(getState(), bare.id, () => ({ x: 1, y: 1, visible: true }))?.visible).toBe(false)
     const inputOffset = calculateNodePinPosition('input')
     const to = getState().getPinWorldPosition(gate.id, gate.inputs[1].id)
     if (!to) throw new Error('gate pin has no world position')
     const from = { x: a.position.x + inputOffset.x, y: 0.2, z: a.position.z + inputOffset.z }
-    expectNear(described.world, {
+    expectNear(entity(describeCircuitScene(getState()).entities, bare.id).world, {
       x: (from.x + to.x) / 2,
       y: (from.y + to.y) / 2,
       z: (from.z + to.z) / 2,
     })
   })
 
-  it('rounds coordinates to four decimals so goldens do not churn on float noise', () => {
-    seed()
-    const { entities } = describeCircuitScene(getState(), () => ({ x: 1 / 3, y: -2 / 3, visible: true }))
+  it('places a wire whose halfway point falls inside a crossing hop on the drawn arc, not on its chord', () => {
+    const { gate, a } = seed()
+    const at = (x: number, z: number) => ({ x, y: WIRE_HEIGHT, z })
+    const hop = getState().addWire(
+      { type: 'input', entityId: a.id },
+      { type: 'gate', entityId: gate.id, pinId: gate.inputs[1].id },
+      [
+        { start: at(-4, 6), end: at(-HOP_RADIUS, 6), type: 'horizontal' },
+        generateHopArc(at(-HOP_RADIUS, 6), at(HOP_RADIUS, 6), at(0, 6), 'crossed-wire'),
+        { start: at(HOP_RADIUS, 6), end: at(4, 6), type: 'horizontal' },
+      ],
+    )
 
-    expect(entities[0].screen).toEqual({ x: 0.3333, y: -0.6667 })
-    for (const e of entities) {
+    expectNear(entity(describeCircuitScene(getState()).entities, hop.id).world, { x: 0, y: HOP_HEIGHT, z: 6 })
+  })
+
+  it('follows the curve of a hop along z where the halfway point is off its centre', () => {
+    const { gate, a } = seed()
+    const at = (z: number) => ({ x: -3, y: WIRE_HEIGHT, z })
+    // Lead-out is one hop radius shorter than lead-in, so the halfway point is a quarter into the hop.
+    const lead = 4 - HOP_RADIUS
+    const segments: WireSegment[] = [
+      { start: at(6 - HOP_RADIUS - lead), end: at(6 - HOP_RADIUS), type: 'vertical' },
+      generateHopArc(at(6 - HOP_RADIUS), at(6 + HOP_RADIUS), at(6), 'crossed-wire'),
+      { start: at(6 + HOP_RADIUS), end: at(6 + lead), type: 'vertical' },
+    ]
+    const hop = getState().addWire(
+      { type: 'input', entityId: a.id },
+      { type: 'gate', entityId: gate.id, pinId: gate.inputs[1].id },
+      segments,
+    )
+
+    // Wire3D draws a hop as a half-ellipse: at half its radius from the centre it has risen sin(60°).
+    expectNear(entity(describeCircuitScene(getState()).entities, hop.id).world, {
+      x: -3,
+      y: WIRE_HEIGHT + (HOP_HEIGHT - WIRE_HEIGHT) * Math.sin(Math.PI / 3),
+      z: 6 - HOP_RADIUS / 2,
+    })
+  })
+
+  it('rounds coordinates to four decimals so goldens do not churn on float noise', () => {
+    const { gate } = seed()
+
+    const projected = projectSceneEntity(getState(), gate.id, () => ({ x: 1 / 3, y: -2 / 3, visible: true }))
+    expect(projected?.screen).toEqual({ x: 0.3333, y: -0.6667 })
+    for (const e of describeCircuitScene(getState()).entities) {
       for (const v of [e.world.x, e.world.y, e.world.z]) {
         expect(Math.round(v * 1e4) / 1e4).toBe(v)
       }
@@ -191,9 +248,9 @@ describe('describeCircuitScene (store → JSON)', () => {
 
   it('is JSON-serialisable: a JSON round trip returns an equal description', () => {
     seed()
-    const description = describeCircuitScene(getState(), (w) => ({ x: w.x, y: w.z, visible: true }))
+    const description = describeCircuitScene(getState())
 
-    expect(description.schemaVersion).toBe(1)
+    expect(description.schemaVersion).toBe(2)
     expect(description.entities.length).toBeGreaterThan(0)
     expect(JSON.parse(JSON.stringify(description))).toEqual(description)
   })
