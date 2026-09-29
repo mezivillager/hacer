@@ -33,6 +33,11 @@ export interface TasksReading { date: string; at: string; byProject: Record<stri
 export interface LedgerRow {
   id?: string; date: string; whatWentWrong: string; shouldHaveBeenCaughtBy: string; mechanised: string; decision?: string
 }
+/** One required check on a head (`pr: null` is main's), as `checks.items` carries it; `verdict` is the line it published. */
+export interface Check {
+  pr: number | null; sha: string; check: string; conclusion: string | null; completedAt: string | null; url: string | null
+  line: string | null; verdict: string | null; disagrees: boolean
+}
 export interface Adr { number: number; file: string; title: string | null; status: string | null }
 export interface Phase { phase: string; status: string; scope: string; doc: string | null; group: string }
 export interface Snapshot {
@@ -51,8 +56,11 @@ export interface Snapshot {
   ledger: { items: LedgerRow[]; byMechanised: Record<string, number> }
   adrs: { items: Adr[] }
   roadmap: { lastUpdated: string | null; phases: Phase[] }
-  checks: { until?: string; items: unknown[] }
+  checks: { until?: string; items: Check[] }
 }
+
+/** A check that failed, or whose published line says BLOCK: the ones worth queueing an improvement against. */
+export const isRedCheck = (check: Check) => check.verdict === 'BLOCK' || !['SUCCESS', 'SKIPPED', 'NEUTRAL', null].includes(check.conclusion)
 
 export const REPO = 'https://github.com/mezivillager/hacer'
 
