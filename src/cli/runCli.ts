@@ -10,8 +10,8 @@ import {
   registerProject1Builtins,
   runTest,
 } from '@/core'
-import type { ChipDefinition, ChipRegistry, HDLChip, TSTScript } from '@/core'
-import { outTable } from './outTable'
+import type { ChipDefinition, ChipRegistry, HDLChip, TSTOutputColumn, TSTScript } from '@/core'
+import { outRow, outTable } from './outTable'
 
 export interface CliOutcome {
   /** 0 pass, or run-tst ran · 1 the chip failed, or could not be tested or run · 2 usage error */
@@ -27,7 +27,7 @@ export interface TestReport {
   chip: string | null
   /** `.cmp` rows matched before the run stopped, of how many; null when it never started. */
   rows: { passed: number; expected: number } | null
-  /** The first mismatch. `row` counts the `.cmp`'s data rows from 1. */
+  /** The first mismatch. `row` counts the `.cmp`'s data rows from 1; values read as the `.cmp` writes them. */
   failure: { row: number; column: string; expected: string; actual: string } | null
   error: string | null
 }
@@ -47,6 +47,35 @@ const errorReport = (chip: string | null, error: string): TestReport => ({
 
 const firstParseError = (file: SourceFile, errors: { line: number; column: number; message: string }[]): string =>
   `${file.path}:${errors[0].line}:${errors[0].column}: ${errors[0].message}`
+
+/**
+ * The chips nand2tetris gives rather than asks for: the reference IDE ships each as a `BUILTIN`
+ * `.hdl`. It ships RAM16K that way too, but Project 3 asks for it, so it is left out.
+ */
+const PRIMITIVES = new Set(['Nand', 'DFF', 'ARegister', 'DRegister', 'Screen', 'Keyboard', 'ROM32K'])
+
+/** A green must come from the design under test, so only a primitive may be BUILTIN, and only as itself. */
+function builtinStandIn({ name, builtin }: HDLChip): string | null {
+  if (builtin === undefined || (builtin === name && PRIMITIVES.has(name))) return null
+  return `BUILTIN ${builtin} in ${name}: hacer test needs ${name} built from parts; only a primitive (${[...PRIMITIVES].join(', ')}) may be BUILTIN, as itself`
+}
+
+/** The output-list column in force at the script's `row`-th `output`, counted from 0. */
+function listedColumn(script: TSTScript, row: number, name: string): TSTOutputColumn | undefined {
+  let columns: TSTOutputColumn[] = []
+  let outputs = 0
+  for (const cmd of script.commands) {
+    if (cmd.type === 'output-list') columns = cmd.columns
+    else if (cmd.type === 'output' && outputs++ === row) break
+  }
+  return columns.find((column) => column.name === name)
+}
+
+/** A value as the `.tst`'s output-list writes it, which is how its `.cmp` holds it. */
+function asListed(column: TSTOutputColumn | undefined, value: string): string {
+  const number = Number(value)
+  return column && Number.isInteger(number) ? outRow([column], [number]).slice(1, -1).trim() : value
+}
 
 /** `load Xor.hdl` names the chip `Xor`. */
 const loadedChip = (filename: string): string => filename.replace(/\.[^.]*$/, '')
@@ -102,6 +131,8 @@ export function testChip(hdlFile: SourceFile, tstFile: SourceFile, cmpFile: Sour
   const parsed = parseSources(hdlFile, tstFile)
   if (isReport(parsed)) return parsed
   const { chip } = parsed
+  const standIn = builtinStandIn(parsed.ast)
+  if (standIn !== null) return errorReport(chip, standIn)
   const cmp = parseCmp(cmpFile.source)
   if (!cmp.success) return errorReport(chip, firstParseError(cmpFile, cmp.errors))
   const loaded = loadChip(parsed, hdlFile, tstFile)
@@ -111,7 +142,9 @@ export function testChip(hdlFile: SourceFile, tstFile: SourceFile, cmpFile: Sour
   const rows = { passed: result.passedSteps, expected: cmp.file.rows.length }
   if (result.passed) return { status: 'pass', chip, rows, failure: null, error: null }
   if (result.firstFailure) {
-    const failure = { ...result.firstFailure, row: result.firstFailure.row + 1 }
+    const { row, column, expected, actual } = result.firstFailure
+    const listed = listedColumn(parsed.script, row, column)
+    const failure = { row: row + 1, column, expected: asListed(listed, expected), actual: asListed(listed, actual) }
     return { status: 'fail', chip, rows, failure, error: null }
   }
   return { status: 'error', chip, rows, failure: null, error: result.error ?? 'the test did not pass' }
@@ -123,6 +156,12 @@ function formatLine(report: TestReport): string {
   if (failure) return `FAIL ${chip} row ${failure.row}: ${failure.column} expected ${failure.expected}, got ${failure.actual}`
   return chip === null ? `ERROR ${error}` : `ERROR ${chip}: ${error}`
 }
+
+/** Exit 2; under `--json` the usage comes as a report on stdout, like every other `--json` outcome. */
+const usageError = (json: boolean): CliOutcome =>
+  json
+    ? { exitCode: 2, stdout: `${JSON.stringify(errorReport(null, USAGE.trimEnd()))}\n`, stderr: '' }
+    : { exitCode: 2, stdout: '', stderr: USAGE }
 
 /** `hacer run-tst`: the `.out` table on stdout, compared with nothing; exit 1 only when the script fails to run. */
 function runTst(hdlPath: string, tstPath: string, readFile: (path: string) => string): CliOutcome {
@@ -154,7 +193,7 @@ export function runCli(argv: readonly string[], readFile: (path: string) => stri
     return runTst(paths[0], paths[1], readFile)
   }
   if (command !== 'test' || paths.length !== 3 || !paths.every((p, i) => p.endsWith(EXTENSIONS[i]))) {
-    return { exitCode: 2, stdout: '', stderr: USAGE }
+    return usageError(json)
   }
 
   let report: TestReport
