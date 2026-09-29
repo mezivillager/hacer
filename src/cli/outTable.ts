@@ -3,7 +3,7 @@
  * `padLeft + width + padRight` characters, names centred, B/X/S values left and D values right.
  * For a correct chip it is the chip's `.cmp`, byte for byte.
  */
-import type { OutputRow, TSTOutputColumn, TSTScript } from '@/core'
+import { formatColumnValue, type OutputRow, type TSTOutputColumn, type TSTScript } from '@/core'
 
 const line = (cells: readonly string[]): string => `|${cells.join('|')}|`
 
@@ -13,18 +13,9 @@ function headerCell({ name, padLeft, width, padRight }: TSTOutputColumn): string
   return (' '.repeat(left) + name).padEnd(space).slice(0, space)
 }
 
-/** A Hack word is 16 bits: B and X show its low digits, D reads it as two's complement. */
-function digits(value: number, { format, width }: TSTOutputColumn): string {
-  const word = value & 0xffff
-  if (format === 'B') return word.toString(2).padStart(16, '0').slice(-width)
-  if (format === 'X') return `0x${word.toString(16).toUpperCase().padStart(4, '0')}`.slice(-width)
-  if (format === 'D') return String(word >= 0x8000 ? word - 0x10000 : word)
-  return String(value)
-}
-
 function valueCell(column: TSTOutputColumn, value: number): string {
   const { format, padLeft, width, padRight } = column
-  const text = digits(value, column).slice(0, width)
+  const text = formatColumnValue(value, column)
   return ' '.repeat(padLeft) + (format === 'D' ? text.padStart(width) : text.padEnd(width)) + ' '.repeat(padRight)
 }
 
