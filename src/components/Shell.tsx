@@ -26,7 +26,7 @@ export function Shell({ scene = null }: ShellProps) {
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-background text-foreground">
       <CompactToolbar />
-      <div className="flex-1 relative">
+      <div className="flex-1 relative" data-testid="scene-slot">
         {scene}
         <RightActionBar />
         <PropertiesPanel />
