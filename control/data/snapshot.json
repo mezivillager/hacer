@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-29T13:50:55.157Z",
+  "generatedAt": "2026-09-29T13:54:04.009Z",
   "head": {
-    "sha": "9971b0dbdd453e014bfaf8cfe06a66fa4dd97cc9",
-    "date": "2026-09-29T16:49:56+03:00",
-    "subject": "fix(cli): refuse a BUILTIN stand-in, JSON usage errors, bus values in the .cmp's format"
+    "sha": "bad58db7c834bb6c343db4f89373f89dd8425040",
+    "date": "2026-09-29T16:52:58+03:00",
+    "subject": "test(serialization): record the legacy evaluation goldens"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-29T13:50:55.157Z",
+      "fetchedAt": "2026-09-29T13:54:04.009Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-29T13:50:55.157Z",
+      "fetchedAt": "2026-09-29T13:54:04.009Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-29T13:50:55.157Z",
+      "fetchedAt": "2026-09-29T13:54:04.009Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-29T13:50:55.157Z",
+      "fetchedAt": "2026-09-29T13:54:04.009Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-09-29T13:50:55.157Z",
+      "fetchedAt": "2026-09-29T13:54:04.009Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-09-29T13:50:55.157Z",
+      "fetchedAt": "2026-09-29T13:54:04.009Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-09-29T13:50:55.157Z",
+      "fetchedAt": "2026-09-29T13:54:04.009Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-09-29T13:50:55.157Z",
+      "fetchedAt": "2026-09-29T13:54:04.009Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-09-29T13:50:55.157Z",
+      "fetchedAt": "2026-09-29T13:54:04.009Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-09-29T13:50:55.157Z",
+      "fetchedAt": "2026-09-29T13:54:04.009Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-09-29T13:50:55.157Z",
+      "fetchedAt": "2026-09-29T13:54:04.009Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-09-29T13:50:55.157Z",
+      "fetchedAt": "2026-09-29T13:54:04.009Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-09-29T13:50:55.157Z",
+      "fetchedAt": "2026-09-29T13:54:04.009Z",
       "status": "ok"
     }
   },
@@ -82,7 +82,7 @@
         "epicNumber": 318,
         "open": 36,
         "ready": 11,
-        "inProgress": 3,
+        "inProgress": 4,
         "needsHuman": 0,
         "staleClaims": [
           182
@@ -387,16 +387,6 @@
     ],
     "next": [
       {
-        "number": 567,
-        "title": "Scorecard's first run: pin the other workflows' actions by SHA and narrow their top-level token",
-        "project": "upkeep"
-      },
-      {
-        "number": 208,
-        "title": "Hand-written MCP tool hacer_hdl (load HDL → simulate → run .tst), stdio; committed .mcp.json",
-        "project": "foundation"
-      },
-      {
         "number": 471,
         "title": "Lineage DL-6: lint:lineage from warn to fail — the lineage ratchet",
         "project": "lineage"
@@ -407,8 +397,8 @@
         "project": "harness"
       },
       {
-        "number": 335,
-        "title": "Move the HTMLCanvasElement patch out of the shared test setup, and move store/core tests to the node project (foundation 0.10)",
+        "number": 208,
+        "title": "Hand-written MCP tool hacer_hdl (load HDL → simulate → run .tst), stdio; committed .mcp.json",
         "project": "foundation"
       },
       {
@@ -417,13 +407,18 @@
         "project": "mission-control"
       },
       {
-        "number": 338,
-        "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
+        "number": 335,
+        "title": "Move the HTMLCanvasElement patch out of the shared test setup, and move store/core tests to the node project (foundation 0.10)",
         "project": "foundation"
       },
       {
-        "number": 345,
-        "title": "pr-hygiene nits from #344: deletionOnlyExemption fails open on missing fields; refusals should name the file; the evidence rule is case-sensitive",
+        "number": 567,
+        "title": "Scorecard's first run: pin the other workflows' actions by SHA and narrow their top-level token",
+        "project": "upkeep"
+      },
+      {
+        "number": 338,
+        "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
         "project": "foundation"
       },
       {
@@ -437,8 +432,8 @@
         "project": "harness"
       },
       {
-        "number": 349,
-        "title": "backlog.mjs reporting nits from #347: pulled-forward issues vanish from their original row's totals; gate reason shadows on-request",
+        "number": 345,
+        "title": "pr-hygiene nits from #344: deletionOnlyExemption fails open on missing fields; refusals should name the file; the evidence rule is case-sensitive",
         "project": "foundation"
       },
       {
@@ -447,13 +442,13 @@
         "project": "mission-control"
       },
       {
-        "number": 373,
-        "title": "N.0: the six 3D mesh components become prop-only and store-free (six PRs, expand → migrate → contract)",
+        "number": 349,
+        "title": "backlog.mjs reporting nits from #347: pulled-forward issues vanish from their original row's totals; gate reason shadows on-request",
         "project": "foundation"
       },
       {
-        "number": 407,
-        "title": "Two PRs can be green alone and red merged, and nothing detects it before main",
+        "number": 373,
+        "title": "N.0: the six 3D mesh components become prop-only and store-free (six PRs, expand → migrate → contract)",
         "project": "foundation"
       },
       {
@@ -462,8 +457,8 @@
         "project": "harness"
       },
       {
-        "number": 429,
-        "title": "The ESLint suppressions baseline can be reset the same way, and nothing detects it",
+        "number": 407,
+        "title": "Two PRs can be green alone and red merged, and nothing detects it before main",
         "project": "foundation"
       },
       {
@@ -472,13 +467,13 @@
         "project": "mission-control"
       },
       {
-        "number": 597,
-        "title": "Characterize the legacy store: the actions the @store suite drives, as Node fixtures",
+        "number": 429,
+        "title": "The ESLint suppressions baseline can be reset the same way, and nothing detects it",
         "project": "foundation"
       },
       {
-        "number": 598,
-        "title": "Characterize the legacy renderer: ADR-0008's circuits as scene + routed-path goldens, headless in Node",
+        "number": 597,
+        "title": "Characterize the legacy store: the actions the @store suite drives, as Node fixtures",
         "project": "foundation"
       },
       {
@@ -489,6 +484,11 @@
       {
         "number": 603,
         "title": ".tst engine: set/output-list on an unknown pin fails like the reference IDE instead of being ignored (verifier nit on #600)",
+        "project": "foundation"
+      },
+      {
+        "number": 611,
+        "title": "Characterization: evaluate 'after' from the deserialized document alone, and fail on an orphaned golden (verifier nits on #606)",
         "project": "foundation"
       },
       {
@@ -570,47 +570,12 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
-        606,
         514
       ]
     }
   },
   "tasks": {
     "items": [
-      {
-        "number": 567,
-        "title": "Scorecard's first run: pin the other workflows' actions by SHA and narrow their top-level token",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "risk:1"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 208,
-        "title": "Hand-written MCP tool hacer_hdl (load HDL → simulate → run .tst), stdio; committed .mcp.json",
-        "labels": [
-          "project:surfaces",
-          "agent-ready",
-          "risk:2",
-          "project:foundation"
-        ],
-        "blocking": [
-          264,
-          214
-        ],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
       {
         "number": 471,
         "title": "Lineage DL-6: lint:lineage from warn to fail — the lineage ratchet",
@@ -642,14 +607,18 @@
         "reason": null
       },
       {
-        "number": 335,
-        "title": "Move the HTMLCanvasElement patch out of the shared test setup, and move store/core tests to the node project (foundation 0.10)",
+        "number": 208,
+        "title": "Hand-written MCP tool hacer_hdl (load HDL → simulate → run .tst), stdio; committed .mcp.json",
         "labels": [
+          "project:surfaces",
           "agent-ready",
-          "risk:1",
+          "risk:2",
           "project:foundation"
         ],
-        "blocking": [],
+        "blocking": [
+          264,
+          214
+        ],
         "project": "foundation",
         "rank": 1,
         "lane": "feature",
@@ -672,8 +641,8 @@
         "reason": null
       },
       {
-        "number": 338,
-        "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
+        "number": 335,
+        "title": "Move the HTMLCanvasElement patch out of the shared test setup, and move store/core tests to the node project (foundation 0.10)",
         "labels": [
           "agent-ready",
           "risk:1",
@@ -687,10 +656,24 @@
         "reason": null
       },
       {
-        "number": 345,
-        "title": "pr-hygiene nits from #344: deletionOnlyExemption fails open on missing fields; refusals should name the file; the evidence rule is case-sensitive",
+        "number": 567,
+        "title": "Scorecard's first run: pin the other workflows' actions by SHA and narrow their top-level token",
         "labels": [
-          "project:harness",
+          "project:upkeep",
+          "agent-ready",
+          "risk:1"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 338,
+        "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
+        "labels": [
           "agent-ready",
           "risk:1",
           "project:foundation"
@@ -733,8 +716,8 @@
         "reason": null
       },
       {
-        "number": 349,
-        "title": "backlog.mjs reporting nits from #347: pulled-forward issues vanish from their original row's totals; gate reason shadows on-request",
+        "number": 345,
+        "title": "pr-hygiene nits from #344: deletionOnlyExemption fails open on missing fields; refusals should name the file; the evidence rule is case-sensitive",
         "labels": [
           "project:harness",
           "agent-ready",
@@ -764,6 +747,22 @@
         "reason": null
       },
       {
+        "number": 349,
+        "title": "backlog.mjs reporting nits from #347: pulled-forward issues vanish from their original row's totals; gate reason shadows on-request",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
+      {
         "number": 373,
         "title": "N.0: the six 3D mesh components become prop-only and store-free (six PRs, expand → migrate → contract)",
         "labels": [
@@ -774,22 +773,6 @@
         "blocking": [
           383
         ],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 407,
-        "title": "Two PRs can be green alone and red merged, and nothing detects it before main",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [],
         "project": "foundation",
         "rank": 1,
         "lane": "feature",
@@ -812,8 +795,8 @@
         "reason": null
       },
       {
-        "number": 429,
-        "title": "The ESLint suppressions baseline can be reset the same way, and nothing detects it",
+        "number": 407,
+        "title": "Two PRs can be green alone and red merged, and nothing detects it before main",
         "labels": [
           "project:harness",
           "agent-ready",
@@ -843,9 +826,10 @@
         "reason": null
       },
       {
-        "number": 597,
-        "title": "Characterize the legacy store: the actions the @store suite drives, as Node fixtures",
+        "number": 429,
+        "title": "The ESLint suppressions baseline can be reset the same way, and nothing detects it",
         "labels": [
+          "project:harness",
           "agent-ready",
           "risk:1",
           "project:foundation"
@@ -858,8 +842,8 @@
         "reason": null
       },
       {
-        "number": 598,
-        "title": "Characterize the legacy renderer: ADR-0008's circuits as scene + routed-path goldens, headless in Node",
+        "number": 597,
+        "title": "Characterize the legacy store: the actions the @store suite drives, as Node fixtures",
         "labels": [
           "agent-ready",
           "risk:1",
@@ -894,6 +878,21 @@
           "project:core",
           "agent-ready",
           "risk:2",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 611,
+        "title": "Characterization: evaluate 'after' from the deserialized document alone, and fail on an orphaned golden (verifier nits on #606)",
+        "labels": [
+          "agent-ready",
+          "risk:1",
           "project:foundation"
         ],
         "blocking": [],
@@ -2564,8 +2563,8 @@
         "reason": "unshaped"
       },
       {
-        "number": 595,
-        "title": "Characterize the legacy evaluator: fixture circuits evaluated before and after serialize → deserialize",
+        "number": 598,
+        "title": "Characterize the legacy renderer: ADR-0008's circuits as scene + routed-path goldens, headless in Node",
         "labels": [
           "agent-ready",
           "in-progress",
@@ -2600,6 +2599,7 @@
         "labels": [
           "project:surfaces",
           "agent-ready",
+          "in-progress",
           "risk:1",
           "project:foundation"
         ],
@@ -2626,49 +2626,6 @@
       }
     ],
     "byProject": {
-      "upkeep": [
-        567,
-        229,
-        256
-      ],
-      "foundation": [
-        208,
-        335,
-        338,
-        345,
-        349,
-        373,
-        407,
-        429,
-        597,
-        598,
-        603,
-        151,
-        182,
-        184,
-        325,
-        331,
-        339,
-        374,
-        377,
-        378,
-        379,
-        380,
-        381,
-        382,
-        383,
-        384,
-        385,
-        386,
-        389,
-        395,
-        400,
-        462,
-        506,
-        595,
-        599,
-        602
-      ],
       "lineage": [
         471,
         481,
@@ -2708,6 +2665,44 @@
         550,
         607
       ],
+      "foundation": [
+        208,
+        335,
+        338,
+        345,
+        349,
+        373,
+        407,
+        429,
+        597,
+        603,
+        611,
+        151,
+        182,
+        184,
+        325,
+        331,
+        339,
+        374,
+        377,
+        378,
+        379,
+        380,
+        381,
+        382,
+        383,
+        384,
+        385,
+        386,
+        389,
+        395,
+        400,
+        462,
+        506,
+        598,
+        599,
+        602
+      ],
       "mission-control": [
         480,
         513,
@@ -2715,6 +2710,11 @@
         509,
         545,
         584
+      ],
+      "upkeep": [
+        567,
+        229,
+        256
       ],
       "spine": [
         165,
@@ -2794,24 +2794,6 @@
   "prs": {
     "open": [
       {
-        "number": 606,
-        "title": "test(serialization): characterize legacy evaluation before and after a round trip",
-        "url": "https://github.com/mezivillager/hacer/pull/606",
-        "author": "mezivillager",
-        "labels": [
-          "risk:1",
-          "project:foundation"
-        ],
-        "headRefName": "test/331-a-eval-roundtrip-fixtures",
-        "isDraft": false,
-        "createdAt": "2026-09-29T13:27:43Z",
-        "mergedAt": null,
-        "closes": [
-          595
-        ],
-        "verdicts": []
-      },
-      {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
         "url": "https://github.com/mezivillager/hacer/pull/514",
@@ -2845,6 +2827,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/610",
         "author": "mezivillager",
         "labels": [
+          "released",
           "risk:1",
           "project:foundation"
         ],
@@ -2871,6 +2854,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/609",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0"
         ],
@@ -2888,6 +2872,32 @@
             "model": "Sonnet 5.5 (fresh context)",
             "at": "2026-09-29T13:47:51Z",
             "url": "https://github.com/mezivillager/hacer/pull/609#issuecomment-5891611307"
+          }
+        ]
+      },
+      {
+        "number": 606,
+        "title": "test(serialization): characterize legacy evaluation before and after a round trip",
+        "url": "https://github.com/mezivillager/hacer/pull/606",
+        "author": "mezivillager",
+        "labels": [
+          "risk:1",
+          "project:foundation"
+        ],
+        "headRefName": "test/331-a-eval-roundtrip-fixtures",
+        "isDraft": false,
+        "createdAt": "2026-09-29T13:27:43Z",
+        "mergedAt": "2026-09-29T13:52:59Z",
+        "closes": [
+          595
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus 5.5 (fresh context)",
+            "at": "2026-09-29T13:51:42Z",
+            "url": "https://github.com/mezivillager/hacer/pull/606#issuecomment-5891683576"
           }
         ]
       },
@@ -4252,33 +4262,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/507#issuecomment-5827604278"
           }
         ]
-      },
-      {
-        "number": 503,
-        "title": "feat(lineage): trace, radius, check, graph — and lint:lineage in warn mode (DL-2)",
-        "url": "https://github.com/mezivillager/hacer/pull/503",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:1",
-          "project:lineage"
-        ],
-        "headRefName": "feat/467-lineage-queries",
-        "isDraft": false,
-        "createdAt": "2026-09-25T04:01:37Z",
-        "mergedAt": "2026-09-25T04:19:37Z",
-        "closes": [
-          467
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Sonnet 5 (claude-sonnet-5)",
-            "at": "2026-09-25T04:17:59Z",
-            "url": "https://github.com/mezivillager/hacer/pull/503#issuecomment-5826619747"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4615,6 +4598,7 @@
         "title": "Harness: ledger rows stop conflicting (merge=union), and the verifier reads the PR's own CI logs (foundation 0.7, 0.10)",
         "url": "https://github.com/mezivillager/hacer/issues/334",
         "labels": [
+          "released",
           "project:harness",
           "agent-ready",
           "in-progress",
@@ -5081,6 +5065,7 @@
         "title": "hacer test: flag or refuse a BUILTIN stand-in for the chip under test; JSON usage errors; bus values in the .cmp's format (verifier nits on #589)",
         "url": "https://github.com/mezivillager/hacer/issues/591",
         "labels": [
+          "released",
           "project:surfaces",
           "agent-ready",
           "in-progress",
@@ -5103,9 +5088,34 @@
         "number": 595,
         "ref": "refs/heads/claim/595",
         "sha": "e9c0f63f3ae405c0d2f7048a06a04e5bc97cc1cf",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "Characterize the legacy evaluator: fixture circuits evaluated before and after serialize → deserialize",
         "url": "https://github.com/mezivillager/hacer/issues/595",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:foundation"
+        ],
+        "onClosedIssue": true,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-60",
+          "branch": "test/331-a-eval-roundtrip-fixtures",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-09-29T13:02:13Z",
+          "url": "https://github.com/mezivillager/hacer/issues/595#issuecomment-5890844445"
+        }
+      },
+      {
+        "number": 598,
+        "ref": "refs/heads/claim/598",
+        "sha": "bad58db7c834bb6c343db4f89373f89dd8425040",
+        "state": "OPEN",
+        "title": "Characterize the legacy renderer: ADR-0008's circuits as scene + routed-path goldens, headless in Node",
+        "url": "https://github.com/mezivillager/hacer/issues/598",
         "labels": [
           "agent-ready",
           "in-progress",
@@ -5117,11 +5127,11 @@
           "claimedBy": "claude-local",
           "intent": "building",
           "session": "hacer-loop-60",
-          "branch": "test/331-a-eval-roundtrip-fixtures",
+          "branch": null,
           "handoff": "none",
           "author": "mezivillager",
-          "at": "2026-09-29T13:02:13Z",
-          "url": "https://github.com/mezivillager/hacer/issues/595#issuecomment-5890844445"
+          "at": "2026-09-29T13:53:48Z",
+          "url": "https://github.com/mezivillager/hacer/issues/598#issuecomment-5891719762"
         }
       },
       {
@@ -5151,7 +5161,7 @@
         }
       }
     ],
-    "onClosedIssues": 27
+    "onClosedIssues": 28
   },
   "cloudLane": {
     "items": [
@@ -6165,9 +6175,14 @@
     },
     "releases": [
       {
+        "tag": "v2.53.1",
+        "publishedAt": "2026-09-29T13:53:01Z",
+        "isLatest": true
+      },
+      {
         "tag": "v2.53.0",
         "publishedAt": "2026-09-29T13:22:47Z",
-        "isLatest": true
+        "isLatest": false
       },
       {
         "tag": "v2.52.0",
@@ -6693,7 +6708,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-25",
-        "merges": 9
+        "merges": 8
       },
       {
         "date": "2026-09-26",
@@ -6709,20 +6724,20 @@
       },
       {
         "date": "2026-09-29",
-        "merges": 18
+        "merges": 19
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-15T13:50:55.157Z",
-      "merged": 183,
+      "since": "2026-09-15T13:54:04.009Z",
+      "merged": 184,
       "openToMergeHours": {
         "median": 0.2,
         "p90": 12.1
       },
       "blockedOnce": {
         "count": 21,
-        "of": 94,
+        "of": 95,
         "prs": [
           238,
           248,
@@ -6749,8 +6764,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 92,
-          "withVerdict": 76,
+          "merged": 93,
+          "withVerdict": 77,
           "without": [
             133,
             134,
@@ -7764,11 +7779,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "9971b0dbdd453e014bfaf8cfe06a66fa4dd97cc9",
+        "sha": "bad58db7c834bb6c343db4f89373f89dd8425040",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36578031511/job/109438623479",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36578422593/job/109439953911",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -7812,52 +7827,6 @@
         "conclusion": "SUCCESS",
         "completedAt": "2026-09-25T06:48:18Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/36104338672/job/107973412518",
-        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 71,
-          "new": 0
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 606,
-        "sha": "efcc4a4596eeacb948ca1e482787c23b7c8bb605",
-        "check": "pr-hygiene",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-09-29T13:28:01Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36575263897/job/109429131592",
-        "line": "HYGIENE: PASS reviewable=12 test=410 excluded=3659 files=2 issue=#595 linked=fixes",
-        "verdict": "PASS",
-        "fields": {
-          "reviewable": 12,
-          "test": 410,
-          "excluded": 3659,
-          "files": 2,
-          "issue": "#595",
-          "linked": "fixes"
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 606,
-        "sha": "efcc4a4596eeacb948ca1e482787c23b7c8bb605",
-        "check": "browser-qa",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-09-29T13:28:00Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36575263758/job/109429128434",
-        "line": "BROWSER-QA: skipped (no critical paths)",
-        "verdict": "SKIPPED",
-        "fields": {},
-        "disagrees": false
-      },
-      {
-        "pr": 606,
-        "sha": "efcc4a4596eeacb948ca1e482787c23b7c8bb605",
-        "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-09-29T13:30:44Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36575262516/job/109429123328",
         "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
         "verdict": "PASS",
         "fields": {
