@@ -466,6 +466,30 @@ describe('protected path: conformance/vectors/**', () => {
     expect(result.verdict).toBe('WARN')
   })
 
+  const messageFor = (...names) =>
+    evaluate(pr({ files: names.map((name) => file(name, 5, 0)) })).findings.find((f) => f.rule === 'protected-path').message
+
+  it('names the oracle glob and its reason for a vector file', () => {
+    const message = messageFor('conformance/vectors/01/Xor.tst')
+    expect(message).toContain('conformance/vectors/**')
+    expect(message).toContain('held-out oracle (#193)')
+    expect(message).not.toContain('characterization golden')
+  })
+
+  it('names the characterization glob and its reason for a golden', () => {
+    const message = messageFor('src/store/__snapshots__/characterization/actions.json')
+    expect(message).toContain('**/__snapshots__/characterization/**')
+    expect(message).toContain('characterization golden: records legacy behaviour deleted after capture (#331)')
+    expect(message).not.toContain('held-out oracle')
+  })
+
+  it('groups files from both globs under their own reason', () => {
+    const message = messageFor('conformance/vectors/01/Xor.tst', 'src/store/__snapshots__/characterization/actions.json')
+    expect(message).toMatch(/conformance\/vectors\/\*\*[^;]*held-out oracle \(#193\)[^;]*conformance\/vectors\/01\/Xor\.tst/)
+    expect(message).toMatch(/characterization golden[^;]*actions\.json/)
+    expect(message.indexOf('Xor.tst')).toBeLessThan(message.indexOf('characterization golden'))
+  })
+
   it('stays quiet when the oracle is left alone', () => {
     const result = evaluate(pr())
     expect(levelsOf(result, 'protected-path')).toEqual([])
