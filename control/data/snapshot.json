@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-29T16:27:58.006Z",
+  "generatedAt": "2026-09-29T20:41:58.574Z",
   "head": {
     "sha": "5ba09985914fd1c556e2e94c40dda34465e0bfa8",
     "date": "2026-09-29T19:26:46+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-29T16:27:58.006Z",
+      "fetchedAt": "2026-09-29T20:41:58.574Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-29T16:27:58.006Z",
+      "fetchedAt": "2026-09-29T20:41:58.574Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-29T16:27:58.006Z",
+      "fetchedAt": "2026-09-29T20:41:58.574Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-29T16:27:58.006Z",
+      "fetchedAt": "2026-09-29T20:41:58.574Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-09-29T16:27:58.006Z",
+      "fetchedAt": "2026-09-29T20:41:58.574Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-09-29T16:27:58.006Z",
+      "fetchedAt": "2026-09-29T20:41:58.574Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-09-29T16:27:58.006Z",
+      "fetchedAt": "2026-09-29T20:41:58.574Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-09-29T16:27:58.006Z",
+      "fetchedAt": "2026-09-29T20:41:58.574Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-09-29T16:27:58.006Z",
+      "fetchedAt": "2026-09-29T20:41:58.574Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-09-29T16:27:58.006Z",
+      "fetchedAt": "2026-09-29T20:41:58.574Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-09-29T16:27:58.006Z",
+      "fetchedAt": "2026-09-29T20:41:58.574Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-09-29T16:27:58.006Z",
+      "fetchedAt": "2026-09-29T20:41:58.574Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-09-29T16:27:58.006Z",
+      "fetchedAt": "2026-09-29T20:41:58.574Z",
       "status": "ok"
     }
   },
@@ -4171,32 +4171,6 @@
         }
       },
       {
-        "number": 149,
-        "ref": "refs/heads/claim/149",
-        "sha": "b9d302391beb85ed7785334345652f569f21de28",
-        "state": "CLOSED",
-        "title": "scripts/backlog.mjs: `ready`, `projects`, `tasks`, `next`, `claim` over gh issue JSON, with unit tests",
-        "url": "https://github.com/mezivillager/hacer/issues/149",
-        "labels": [
-          "released",
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:2"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-60",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-09-29T11:48:07Z",
-          "url": "https://github.com/mezivillager/hacer/issues/149#issuecomment-5889639480"
-        }
-      },
-      {
         "number": 152,
         "ref": "refs/heads/claim/152",
         "sha": "b3325e8583db9443f95df082873d199348f5bf2e",
@@ -4249,324 +4223,6 @@
         }
       },
       {
-        "number": 204,
-        "ref": "refs/heads/claim/204",
-        "sha": "13d756bd1f793d5914df0528d0ed60ff6734fcb8",
-        "state": "CLOSED",
-        "title": "hacer CLI (Node entry): `hacer test <hdl> <tst> <cmp>` on real files",
-        "url": "https://github.com/mezivillager/hacer/issues/204",
-        "labels": [
-          "released",
-          "project:surfaces",
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:foundation"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-60",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-09-29T11:41:45Z",
-          "url": "https://github.com/mezivillager/hacer/issues/204#issuecomment-5889535566"
-        }
-      },
-      {
-        "number": 205,
-        "ref": "refs/heads/claim/205",
-        "sha": "a3f00e7ed4eb56d886935f32d3beff4460c6e9a1",
-        "state": "CLOSED",
-        "title": "CLI run-tst: the cli scenario driver over the four scenarios",
-        "url": "https://github.com/mezivillager/hacer/issues/205",
-        "labels": [
-          "released",
-          "project:surfaces",
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:foundation"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-60",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-09-29T12:23:21Z",
-          "url": "https://github.com/mezivillager/hacer/issues/205#issuecomment-5890232223"
-        }
-      },
-      {
-        "number": 208,
-        "ref": "refs/heads/claim/208",
-        "sha": "1368ea7d61a81ecb31cae1afe946896fd075ff91",
-        "state": "CLOSED",
-        "title": "Hand-written MCP tool hacer_hdl (load HDL → simulate → run .tst), stdio; committed .mcp.json",
-        "url": "https://github.com/mezivillager/hacer/issues/208",
-        "labels": [
-          "released",
-          "project:surfaces",
-          "agent-ready",
-          "in-progress",
-          "risk:2",
-          "project:foundation"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-60",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-09-29T15:10:35Z",
-          "url": "https://github.com/mezivillager/hacer/issues/208#issuecomment-5893028622"
-        }
-      },
-      {
-        "number": 217,
-        "ref": "refs/heads/claim/217",
-        "sha": "dd6f3383ec9a775e90b3803afe3322fdba5a7fe5",
-        "state": "CLOSED",
-        "title": "__SCENE_HELPERS__.describe(): ids, world + screen positions, visible/selected/signal state",
-        "url": "https://github.com/mezivillager/hacer/issues/217",
-        "labels": [
-          "released",
-          "project:3d",
-          "agent-ready",
-          "in-progress",
-          "risk:2",
-          "project:foundation"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-09-29 hacer-loop-60",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-09-29T11:02:29Z",
-          "url": "https://github.com/mezivillager/hacer/issues/217#issuecomment-5888925219"
-        }
-      },
-      {
-        "number": 253,
-        "ref": "refs/heads/claim/253",
-        "sha": "dd6f3383ec9a775e90b3803afe3322fdba5a7fe5",
-        "state": "CLOSED",
-        "title": "Two living docs still describe the pre-chipName gate recipe (verifier nit on #248)",
-        "url": "https://github.com/mezivillager/hacer/issues/253",
-        "labels": [
-          "released",
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-60",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-09-29T11:35:47Z",
-          "url": "https://github.com/mezivillager/hacer/issues/253#issuecomment-5889439828"
-        }
-      },
-      {
-        "number": 290,
-        "ref": "refs/heads/claim/290",
-        "sha": "eaba40da844780d75ed84f4a1825245a1c518305",
-        "state": "CLOSED",
-        "title": "Docs sweep: stale 'run test:e2e:store locally' lines contradict ADR-0016 as amended",
-        "url": "https://github.com/mezivillager/hacer/issues/290",
-        "labels": [
-          "released",
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-60",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-09-29T12:39:47Z",
-          "url": "https://github.com/mezivillager/hacer/issues/290#issuecomment-5890489165"
-        }
-      },
-      {
-        "number": 315,
-        "ref": "refs/heads/claim/315",
-        "sha": "13d756bd1f793d5914df0528d0ed60ff6734fcb8",
-        "state": "CLOSED",
-        "title": "Canvas-less shell: the renderer selector (ADR-0019 slice 1)",
-        "url": "https://github.com/mezivillager/hacer/issues/315",
-        "labels": [
-          "released",
-          "project:surfaces",
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:foundation"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-60",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-09-29T11:41:55Z",
-          "url": "https://github.com/mezivillager/hacer/issues/315#issuecomment-5889538300"
-        }
-      },
-      {
-        "number": 316,
-        "ref": "refs/heads/claim/316",
-        "sha": "804e1d501141cd7f57316c8066571017c6ec4c22",
-        "state": "CLOSED",
-        "title": "Canvas-less shell: a local @shell Playwright project and the first spec (ADR-0019 slice 2)",
-        "url": "https://github.com/mezivillager/hacer/issues/316",
-        "labels": [
-          "released",
-          "project:surfaces",
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:foundation"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-60",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-09-29T12:44:51Z",
-          "url": "https://github.com/mezivillager/hacer/issues/316#issuecomment-5890569013"
-        }
-      },
-      {
-        "number": 331,
-        "ref": "refs/heads/claim/331",
-        "sha": "804e1d501141cd7f57316c8066571017c6ec4c22",
-        "state": "CLOSED",
-        "title": "Characterize the legacy app before it is replaced: rendered geometry, evaluation fixtures, the 43 store actions",
-        "url": "https://github.com/mezivillager/hacer/issues/331",
-        "labels": [
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:foundation"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-60",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-09-29T12:47:50Z",
-          "url": "https://github.com/mezivillager/hacer/issues/331#issuecomment-5890615427"
-        }
-      },
-      {
-        "number": 334,
-        "ref": "refs/heads/claim/334",
-        "sha": "010fb7b17d424e829e5e46a390ae3699145fa298",
-        "state": "CLOSED",
-        "title": "Harness: ledger rows stop conflicting (merge=union), and the verifier reads the PR's own CI logs (foundation 0.7, 0.10)",
-        "url": "https://github.com/mezivillager/hacer/issues/334",
-        "labels": [
-          "released",
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "project:foundation"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-60",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-09-29T13:20:07Z",
-          "url": "https://github.com/mezivillager/hacer/issues/334#issuecomment-5891138285"
-        }
-      },
-      {
-        "number": 345,
-        "ref": "refs/heads/claim/345",
-        "sha": "97cde443b718e2f15acb1e487a57f4dc8cd76b0b",
-        "state": "CLOSED",
-        "title": "pr-hygiene nits from #344: deletionOnlyExemption fails open on missing fields; refusals should name the file; the evidence rule is case-sensitive",
-        "url": "https://github.com/mezivillager/hacer/issues/345",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:foundation"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-60",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-09-29T15:54:48Z",
-          "url": "https://github.com/mezivillager/hacer/issues/345#issuecomment-5893785907"
-        }
-      },
-      {
-        "number": 421,
-        "ref": "refs/heads/claim/421",
-        "sha": "fd0dbd35bf52c9d5f7eb7cb007bdbd12a6fcc2d8",
-        "state": "CLOSED",
-        "title": "docs(repo-map): Phase 5+ sample still cites @/core/gates/registry",
-        "url": "https://github.com/mezivillager/hacer/issues/421",
-        "labels": [
-          "released",
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-60",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-09-29T13:14:10Z",
-          "url": "https://github.com/mezivillager/hacer/issues/421#issuecomment-5891041433"
-        }
-      },
-      {
         "number": 468,
         "ref": "refs/heads/claim/468",
         "sha": "79e512352133368fa6f2f3f87de744801c97cb2c",
@@ -4615,84 +4271,6 @@
           "author": "mezivillager",
           "at": "2026-09-25T06:02:35Z",
           "url": "https://github.com/mezivillager/hacer/issues/470#issuecomment-5827635352"
-        }
-      },
-      {
-        "number": 478,
-        "ref": "refs/heads/claim/478",
-        "sha": "dd6f3383ec9a775e90b3803afe3322fdba5a7fe5",
-        "state": "CLOSED",
-        "title": "Mission Control MC-7: charts — ratchet history, merges per day, open tasks by project, verdict coverage",
-        "url": "https://github.com/mezivillager/hacer/issues/478",
-        "labels": [
-          "released",
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:mission-control"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-09-29 hacer-loop-60",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-09-29T11:02:38Z",
-          "url": "https://github.com/mezivillager/hacer/issues/478#issuecomment-5888928075"
-        }
-      },
-      {
-        "number": 479,
-        "ref": "refs/heads/claim/479",
-        "sha": "1c65764d52b31b211ec7ee69668b34a1547c81b0",
-        "state": "CLOSED",
-        "title": "Mission Control MC-8: Roadmap, Ledger and ADR views",
-        "url": "https://github.com/mezivillager/hacer/issues/479",
-        "labels": [
-          "released",
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:mission-control"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-60",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-09-29T12:20:22Z",
-          "url": "https://github.com/mezivillager/hacer/issues/479#issuecomment-5890186519"
-        }
-      },
-      {
-        "number": 480,
-        "ref": "refs/heads/claim/480",
-        "sha": "89cc0b57a700dc8546321ab87ea00d3b39fb7623",
-        "state": "CLOSED",
-        "title": "Mission Control MC-9: \"queue an improvement\" links and the needs-human list — the first editable step",
-        "url": "https://github.com/mezivillager/hacer/issues/480",
-        "labels": [
-          "released",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "project:mission-control"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-60",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-09-29T15:14:47Z",
-          "url": "https://github.com/mezivillager/hacer/issues/480#issuecomment-5893100849"
         }
       },
       {
@@ -4954,349 +4532,9 @@
           "at": "2026-09-27T11:42:29Z",
           "url": "https://github.com/mezivillager/hacer/issues/542#issuecomment-5855517267"
         }
-      },
-      {
-        "number": 545,
-        "ref": "refs/heads/claim/545",
-        "sha": "010fb7b17d424e829e5e46a390ae3699145fa298",
-        "state": "CLOSED",
-        "title": "Timeline.test.tsx mounts the whole snapshot on vitest's 5 s default and times out under load",
-        "url": "https://github.com/mezivillager/hacer/issues/545",
-        "labels": [
-          "released",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "project:mission-control"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-60",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-09-29T13:48:29Z",
-          "url": "https://github.com/mezivillager/hacer/issues/545#issuecomment-5891622191"
-        }
-      },
-      {
-        "number": 567,
-        "ref": "refs/heads/claim/567",
-        "sha": "5f4a7c6038edf2900e0162327f53a70cdea80392",
-        "state": "CLOSED",
-        "title": "Scorecard's first run: pin the other workflows' actions by SHA and narrow their top-level token",
-        "url": "https://github.com/mezivillager/hacer/issues/567",
-        "labels": [
-          "released",
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:1"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-60",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-09-29T15:27:23Z",
-          "url": "https://github.com/mezivillager/hacer/issues/567#issuecomment-5893319311"
-        }
-      },
-      {
-        "number": 587,
-        "ref": "refs/heads/claim/587",
-        "sha": "2e408e6e815063bbe6f77625849e2f8634e81cf1",
-        "state": "CLOSED",
-        "title": "describe(): settle the scene/project(id) shape against ADR-0020 §9 and lock it to the rendered meshes (verifier nits on #583)",
-        "url": "https://github.com/mezivillager/hacer/issues/587",
-        "labels": [
-          "released",
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:foundation"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-60",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-09-29T12:01:18Z",
-          "url": "https://github.com/mezivillager/hacer/issues/587#issuecomment-5889836575"
-        }
-      },
-      {
-        "number": 591,
-        "ref": "refs/heads/claim/591",
-        "sha": "010fb7b17d424e829e5e46a390ae3699145fa298",
-        "state": "CLOSED",
-        "title": "hacer test: flag or refuse a BUILTIN stand-in for the chip under test; JSON usage errors; bus values in the .cmp's format (verifier nits on #589)",
-        "url": "https://github.com/mezivillager/hacer/issues/591",
-        "labels": [
-          "released",
-          "project:surfaces",
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:foundation"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-60",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-09-29T13:19:57Z",
-          "url": "https://github.com/mezivillager/hacer/issues/591#issuecomment-5891135473"
-        }
-      },
-      {
-        "number": 595,
-        "ref": "refs/heads/claim/595",
-        "sha": "e9c0f63f3ae405c0d2f7048a06a04e5bc97cc1cf",
-        "state": "CLOSED",
-        "title": "Characterize the legacy evaluator: fixture circuits evaluated before and after serialize → deserialize",
-        "url": "https://github.com/mezivillager/hacer/issues/595",
-        "labels": [
-          "released",
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:foundation"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-60",
-          "branch": "test/331-a-eval-roundtrip-fixtures",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-09-29T13:02:13Z",
-          "url": "https://github.com/mezivillager/hacer/issues/595#issuecomment-5890844445"
-        }
-      },
-      {
-        "number": 597,
-        "ref": "refs/heads/claim/597",
-        "sha": "93b700314173aacedad393eb0ba275ab772338a9",
-        "state": "CLOSED",
-        "title": "Characterize the legacy store: the actions the @store suite drives, as Node fixtures",
-        "url": "https://github.com/mezivillager/hacer/issues/597",
-        "labels": [
-          "released",
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:foundation"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-60",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-09-29T14:04:01Z",
-          "url": "https://github.com/mezivillager/hacer/issues/597#issuecomment-5891897185"
-        }
-      },
-      {
-        "number": 598,
-        "ref": "refs/heads/claim/598",
-        "sha": "bad58db7c834bb6c343db4f89373f89dd8425040",
-        "state": "CLOSED",
-        "title": "Characterize the legacy renderer: ADR-0008's circuits as scene + routed-path goldens, headless in Node",
-        "url": "https://github.com/mezivillager/hacer/issues/598",
-        "labels": [
-          "released",
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:foundation"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-60",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-09-29T13:53:48Z",
-          "url": "https://github.com/mezivillager/hacer/issues/598#issuecomment-5891719762"
-        }
-      },
-      {
-        "number": 602,
-        "ref": "refs/heads/claim/602",
-        "sha": "9971b0dbdd453e014bfaf8cfe06a66fa4dd97cc9",
-        "state": "CLOSED",
-        "title": "One .out formatter (outTable.ts vs formatColumnValue) and a cli driver that reports a missing bin (verifier nits on #600)",
-        "url": "https://github.com/mezivillager/hacer/issues/602",
-        "labels": [
-          "released",
-          "project:surfaces",
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:foundation"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-60",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-09-29T13:50:39Z",
-          "url": "https://github.com/mezivillager/hacer/issues/602#issuecomment-5891664734"
-        }
-      },
-      {
-        "number": 603,
-        "ref": "refs/heads/claim/603",
-        "sha": "78d664457b7b29a577026ba63294c15711800a49",
-        "state": "CLOSED",
-        "title": ".tst engine: set/output-list on an unknown pin fails like the reference IDE instead of being ignored (verifier nit on #600)",
-        "url": "https://github.com/mezivillager/hacer/issues/603",
-        "labels": [
-          "released",
-          "project:core",
-          "agent-ready",
-          "in-progress",
-          "risk:2",
-          "project:foundation"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-60",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-09-29T14:24:11Z",
-          "url": "https://github.com/mezivillager/hacer/issues/603#issuecomment-5892239988"
-        }
-      },
-      {
-        "number": 608,
-        "ref": "refs/heads/claim/608",
-        "sha": "6d9f1e362532465e3d29a74e39e023d919482fe5",
-        "state": "CLOSED",
-        "title": "pr-hygiene: the protected-path message names the matched glob and its reason (goldens are not the held-out oracle)",
-        "url": "https://github.com/mezivillager/hacer/issues/608",
-        "labels": [
-          "released",
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:0"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-60",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-09-29T14:47:45Z",
-          "url": "https://github.com/mezivillager/hacer/issues/608#issuecomment-5892648464"
-        }
-      },
-      {
-        "number": 611,
-        "ref": "refs/heads/claim/611",
-        "sha": "379195c64aaeb01d11180cd5f3d4900b8dbc3c85",
-        "state": "CLOSED",
-        "title": "Characterization: evaluate 'after' from the deserialized document alone, and fail on an orphaned golden (verifier nits on #606)",
-        "url": "https://github.com/mezivillager/hacer/issues/611",
-        "labels": [
-          "released",
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:foundation"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-60",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-09-29T14:26:59Z",
-          "url": "https://github.com/mezivillager/hacer/issues/611#issuecomment-5892287433"
-        }
-      },
-      {
-        "number": 622,
-        "ref": "refs/heads/claim/622",
-        "sha": "75d705b364fc915c97655c8fa0510dde720295a7",
-        "state": "CLOSED",
-        "title": "Characterization suites share one golden guard, and it catches nested orphans (consolidation after #331)",
-        "url": "https://github.com/mezivillager/hacer/issues/622",
-        "labels": [
-          "released",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "project:foundation"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-60",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-09-29T14:58:53Z",
-          "url": "https://github.com/mezivillager/hacer/issues/622#issuecomment-5892826691"
-        }
-      },
-      {
-        "number": 633,
-        "ref": "refs/heads/claim/633",
-        "sha": "7fb179105c777e5945ff22f2b03bb9412297147e",
-        "state": "CLOSED",
-        "title": "Layer rule: src/mcp (and src/cli) import the engine only through @/core",
-        "url": "https://github.com/mezivillager/hacer/issues/633",
-        "labels": [
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "project:foundation"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-60",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-09-29T16:02:17Z",
-          "url": "https://github.com/mezivillager/hacer/issues/633#issuecomment-5893909447"
-        }
       }
     ],
-    "onClosedIssues": 42
+    "onClosedIssues": 13
   },
   "cloudLane": {
     "items": [
@@ -6906,7 +6144,7 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-15T16:27:58.006Z",
+      "since": "2026-09-15T20:41:58.574Z",
       "merged": 201,
       "openToMergeHours": {
         "median": 0.2,
@@ -7949,12 +7187,15 @@
         "pr": null,
         "sha": "5ba09985914fd1c556e2e94c40dda34465e0bfa8",
         "check": "ci",
-        "conclusion": null,
-        "completedAt": null,
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-29T16:29:21Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/36597770153/job/109507003878",
-        "line": null,
-        "verdict": null,
-        "fields": {},
+        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 71,
+          "new": 0
+        },
         "disagrees": false
       },
       {
