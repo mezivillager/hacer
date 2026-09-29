@@ -22,11 +22,12 @@ give it the sources.
 ## Method
 1. Worktree from the PR head: `git fetch origin && git worktree add ../hacer-wt-verify-<pr> origin/<branch>`, `rm -rf node_modules && pnpm install --frozen-lockfile`, Node 22.
 2. Run the issue's verification command and the definition of done (`docs/harness/implementer-brief.md`); record exit codes and counts.
-3. Read every changed file in full. For each acceptance criterion, cite the test (`file:line`) that proves it, or write "unproven".
-4. Check the commit sequence: tests committed before the implementation; the red commit fails on its own (check it out; never `git stash`).
-5. Check scope and layering: nothing outside the issue; no new imports across the layer walls; changes to shared files (store types, evaluator, configs) are minimal and justified.
-6. **Try to break it:** 2–3 throwaway tests for edge cases the author is likely to have missed. Do not commit them.
-7. Remove the worktree.
+3. Read the PR's own CI logs, including `browser-qa`: `gh run list --branch <branch>`, then `gh run view <id> --log`. Cite the run id and what the log shows for each required job. A green summary is not evidence the specs ran; a skipped or empty job is "unproven".
+4. Read every changed file in full. For each acceptance criterion, cite the test (`file:line`) that proves it, or write "unproven".
+5. Check the commit sequence: tests committed before the implementation; the red commit fails on its own (check it out; never `git stash`).
+6. Check scope and layering: nothing outside the issue; no new imports across the layer walls; changes to shared files (store types, evaluator, configs) are minimal and justified.
+7. **Try to break it:** 2–3 throwaway tests for edge cases the author is likely to have missed. Do not commit them.
+8. Remove the worktree.
 
 ## Verdict rules
 - **BLOCK** only with `file:line` plus a failing command or a concrete input/output. Never for taste.
