@@ -119,6 +119,17 @@ close); a tier named in the hand-over is the answer.
 
 Mezi can change the tier with "light" or "full" at any point.
 
+**Ultracode — suggest it for discovery work, never switch it on** (Mezi 2026-09-29). When the
+task is an investigation, an audit or a sweep ("is X safe everywhere"), forensics across many
+files, repos or transcripts, or a review of a large diff, add one line to the sizing message: why
+ultracode fits, and how to launch with it while keeping the effort level —
+`claude --settings '{"ultracode": true}'` (per the CLI's code the `/effort ultracode` shorthand
+sets effort to xhigh; `/effort` shows what is active). Build work stays as it is: ultracode's
+default of a workflow for every substantive task fights in-session TDD and the single-author red
+contract. If ultracode is on anyway, single-author steps stay single-author, verification attaches
+to the existing review seats' findings rather than adding seats, and the lane cap stands. Workflow
+agents get the standing orders too: the dispatch guard wraps each script's `agent()`.
+
 ## Phase 1 — The spec. Do not write code.
 
 1. **Ticket freshness first** (AGENTS.md Step 1.0), read-only, before designing:
