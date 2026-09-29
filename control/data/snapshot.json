@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-29T16:15:41.370Z",
+  "generatedAt": "2026-09-29T16:21:55.010Z",
   "head": {
-    "sha": "a0f23eab7034d31198d408d9391112eef677b751",
-    "date": "2026-09-29T19:14:57+03:00",
-    "subject": "chore(layers): surfaces-through-core keeps cli and mcp off the store and UI"
+    "sha": "c5291c69ace2916d5a0d2164536e0b5adb17ca3e",
+    "date": "2026-09-29T19:20:56+03:00",
+    "subject": "chore(harness): pr-hygiene refuses the deletion exemption on a missing or NaN count"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-29T16:15:41.370Z",
+      "fetchedAt": "2026-09-29T16:21:55.010Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-29T16:15:41.370Z",
+      "fetchedAt": "2026-09-29T16:21:55.010Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-29T16:15:41.370Z",
+      "fetchedAt": "2026-09-29T16:21:55.010Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-29T16:15:41.370Z",
+      "fetchedAt": "2026-09-29T16:21:55.010Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-09-29T16:15:41.370Z",
+      "fetchedAt": "2026-09-29T16:21:55.010Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-09-29T16:15:41.370Z",
+      "fetchedAt": "2026-09-29T16:21:55.010Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-09-29T16:15:41.370Z",
+      "fetchedAt": "2026-09-29T16:21:55.010Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-09-29T16:15:41.370Z",
+      "fetchedAt": "2026-09-29T16:21:55.010Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-09-29T16:15:41.370Z",
+      "fetchedAt": "2026-09-29T16:21:55.010Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-09-29T16:15:41.370Z",
+      "fetchedAt": "2026-09-29T16:21:55.010Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-09-29T16:15:41.370Z",
+      "fetchedAt": "2026-09-29T16:21:55.010Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-09-29T16:15:41.370Z",
+      "fetchedAt": "2026-09-29T16:21:55.010Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-09-29T16:15:41.370Z",
+      "fetchedAt": "2026-09-29T16:21:55.010Z",
       "status": "ok"
     }
   },
@@ -80,22 +80,22 @@
         "lane": "feature",
         "slug": "foundation",
         "epicNumber": 318,
-        "open": 30,
+        "open": 29,
         "ready": 6,
-        "inProgress": 2,
+        "inProgress": 1,
         "needsHuman": 0,
         "staleClaims": [
           182
         ],
-        "agentReady": 8,
+        "agentReady": 7,
         "next": {
           "number": 338,
           "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)"
         },
         "title": "Foundation audit: is the codebase structured for the autonomous loop? Measured audit, prioritized refactorings, fitness functions",
         "subIssues": {
-          "completed": 15,
-          "percentCompleted": 45,
+          "completed": 16,
+          "percentCompleted": 48,
           "total": 33
         }
       },
@@ -527,7 +527,6 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
-        634,
         514
       ]
     }
@@ -1799,23 +1798,6 @@
         "reason": "unshaped"
       },
       {
-        "number": 345,
-        "title": "pr-hygiene nits from #344: deletionOnlyExemption fails open on missing fields; refusals should name the file; the evidence rule is case-sensitive",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 361,
         "title": "compileHDL never infers the width of a slice-assembled signal, so an unsliced read of one is not width-checked",
         "labels": [
@@ -2455,7 +2437,6 @@
         184,
         325,
         339,
-        345,
         374,
         377,
         378,
@@ -2596,32 +2577,6 @@
   "prs": {
     "open": [
       {
-        "number": 634,
-        "title": "chore(harness): pr-hygiene deletion exemption fails closed; refusals name the file",
-        "url": "https://github.com/mezivillager/hacer/pull/634",
-        "author": "mezivillager",
-        "labels": [
-          "project:harness",
-          "risk:1"
-        ],
-        "headRefName": "fix/345-pr-hygiene-nits",
-        "isDraft": false,
-        "createdAt": "2026-09-29T16:04:45Z",
-        "mergedAt": null,
-        "closes": [
-          345
-        ],
-        "verdicts": [
-          {
-            "verdict": "BLOCK",
-            "round": 1,
-            "model": "Sonnet 5.5 (fresh context)",
-            "at": "2026-09-29T16:09:24Z",
-            "url": "https://github.com/mezivillager/hacer/pull/634#issuecomment-5894028330"
-          }
-        ]
-      },
-      {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
         "url": "https://github.com/mezivillager/hacer/pull/514",
@@ -2672,6 +2627,39 @@
             "model": "Sonnet 5.5 (fresh context)",
             "at": "2026-09-29T16:13:59Z",
             "url": "https://github.com/mezivillager/hacer/pull/635#issuecomment-5894103384"
+          }
+        ]
+      },
+      {
+        "number": 634,
+        "title": "chore(harness): pr-hygiene deletion exemption fails closed; refusals name the file",
+        "url": "https://github.com/mezivillager/hacer/pull/634",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:1"
+        ],
+        "headRefName": "fix/345-pr-hygiene-nits",
+        "isDraft": false,
+        "createdAt": "2026-09-29T16:04:45Z",
+        "mergedAt": "2026-09-29T16:20:57Z",
+        "closes": [
+          345
+        ],
+        "verdicts": [
+          {
+            "verdict": "BLOCK",
+            "round": 1,
+            "model": "Sonnet 5.5 (fresh context)",
+            "at": "2026-09-29T16:09:24Z",
+            "url": "https://github.com/mezivillager/hacer/pull/634#issuecomment-5894028330"
+          },
+          {
+            "verdict": "PASS",
+            "round": 2,
+            "model": "Sonnet 5.5 (fresh context)",
+            "at": "2026-09-29T16:20:28Z",
+            "url": "https://github.com/mezivillager/hacer/pull/634#issuecomment-5894208860"
           }
         ]
       },
@@ -4135,28 +4123,13 @@
         "mergedAt": "2026-09-27T07:59:33Z",
         "closes": [],
         "verdicts": []
-      },
-      {
-        "number": 527,
-        "title": "docs(research): independent process review follow-up",
-        "url": "https://github.com/mezivillager/hacer/pull/527",
-        "author": "mezivillager",
-        "labels": [
-          "released"
-        ],
-        "headRefName": "docs/process-review-findings",
-        "isDraft": false,
-        "createdAt": "2026-09-27T07:35:06Z",
-        "mergedAt": "2026-09-27T07:38:35Z",
-        "closes": [],
-        "verdicts": []
       }
     ],
     "coverage": {
       "merged": 60,
-      "withVerdict": 48,
-      "withoutVerdict": 12,
-      "pass": 48,
+      "withVerdict": 49,
+      "withoutVerdict": 11,
+      "pass": 49,
       "block": 0
     }
   },
@@ -4536,7 +4509,7 @@
         "number": 345,
         "ref": "refs/heads/claim/345",
         "sha": "97cde443b718e2f15acb1e487a57f4dc8cd76b0b",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "pr-hygiene nits from #344: deletionOnlyExemption fails open on missing fields; refusals should name the file; the evidence rule is case-sensitive",
         "url": "https://github.com/mezivillager/hacer/issues/345",
         "labels": [
@@ -4546,7 +4519,7 @@
           "risk:1",
           "project:foundation"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -5314,7 +5287,7 @@
         }
       }
     ],
-    "onClosedIssues": 41
+    "onClosedIssues": 42
   },
   "cloudLane": {
     "items": [
@@ -6887,7 +6860,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-27",
-        "merges": 24
+        "merges": 23
       },
       {
         "date": "2026-09-28",
@@ -6895,20 +6868,20 @@
       },
       {
         "date": "2026-09-29",
-        "merges": 31
+        "merges": 32
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-15T16:15:41.370Z",
-      "merged": 199,
+      "since": "2026-09-15T16:21:55.010Z",
+      "merged": 200,
       "openToMergeHours": {
         "median": 0.2,
         "p90": 11.7
       },
       "blockedOnce": {
-        "count": 21,
-        "of": 110,
+        "count": 22,
+        "of": 111,
         "prs": [
           238,
           248,
@@ -6930,13 +6903,14 @@
           510,
           512,
           566,
-          586
+          586,
+          634
         ]
       },
       "coverage": {
         "code": {
-          "merged": 106,
-          "withVerdict": 90,
+          "merged": 107,
+          "withVerdict": 91,
           "without": [
             133,
             134,
@@ -7776,21 +7750,27 @@
       },
       {
         "date": "2026-09-29",
-        "at": "2026-09-29T15:54:43.249Z",
+        "at": "2026-09-29T16:15:41.370Z",
         "byProject": {
+          "mission-control": [
+            513,
+            560,
+            509,
+            584
+          ],
           "foundation": [
             338,
-            345,
             349,
             373,
             407,
             429,
+            632,
             151,
             182,
             184,
-            208,
             325,
             339,
+            345,
             374,
             377,
             378,
@@ -7808,9 +7788,7 @@
             462,
             506,
             599,
-            613,
-            624,
-            625
+            613
           ],
           "lineage": [
             471,
@@ -7849,12 +7827,6 @@
             505,
             550,
             607
-          ],
-          "mission-control": [
-            513,
-            560,
-            509,
-            584
           ],
           "spine": [
             165,
@@ -7942,11 +7914,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "a0f23eab7034d31198d408d9391112eef677b751",
+        "sha": "c5291c69ace2916d5a0d2164536e0b5adb17ca3e",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36596324266/job/109502052148",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36597057601/job/109504569358",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -7996,42 +7968,6 @@
           "known": 71,
           "new": 0
         },
-        "disagrees": false
-      },
-      {
-        "pr": 634,
-        "sha": "670257733949733d021701dd062a7bf2ad4a7f01",
-        "check": "pr-hygiene",
-        "conclusion": null,
-        "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36596371801/job/109502216351",
-        "line": null,
-        "verdict": null,
-        "fields": {},
-        "disagrees": false
-      },
-      {
-        "pr": 634,
-        "sha": "670257733949733d021701dd062a7bf2ad4a7f01",
-        "check": "browser-qa",
-        "conclusion": null,
-        "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36596369943/job/109502208651",
-        "line": null,
-        "verdict": null,
-        "fields": {},
-        "disagrees": false
-      },
-      {
-        "pr": 634,
-        "sha": "670257733949733d021701dd062a7bf2ad4a7f01",
-        "check": "ci",
-        "conclusion": null,
-        "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36596337361/job/109502093522",
-        "line": null,
-        "verdict": null,
-        "fields": {},
         "disagrees": false
       }
     ]
