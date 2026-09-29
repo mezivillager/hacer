@@ -38,6 +38,7 @@ const NEEDS_DOM = [
   'src/core/testing/chipCompletion.test.ts', // localStorage: completed-chip persistence
   'src/lib/performanceModeStorage.test.ts', // localStorage: the performance-mode preference itself
   'src/store/circuitStore.autosave.test.ts', // localStorage: autosave slot round-trip
+  'src/store/legacyActions.dom.characterization.test.ts', // localStorage: goldens of the @store actions that persist
   'src/store/actions/persistenceActions/autosave.test.ts', // localStorage: debounced autosave writes
   'src/store/actions/persistenceActions/persistenceActions.test.ts', // localStorage + Blob/document: save, load, export
   'src/store/actions/testActions/testActions.test.ts', // localStorage: marks a chip completed on a passing run
