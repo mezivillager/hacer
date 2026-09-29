@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { PROTECTED_GLOBS, isProtectedPath } from './protected-paths.logic.mjs'
+import { PROTECTED_GLOBS, isProtectedPath, protectedEntryFor } from './protected-paths.logic.mjs'
 
 describe('conformance/vectors/**', () => {
   it('is the protected-path glob', () => {
