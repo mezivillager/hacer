@@ -10,7 +10,7 @@ import path from 'node:path'
 import { parseArgs, promisify } from 'node:util'
 import { KNOWN_VIOLATIONS_FILE as BASELINE } from '../layer-ratchet.logic.mjs'
 import {
-  buildSnapshot, checksQuery, claimHistoryQuery, claimsQuery, flowQuery, parsePortfolio, parsePrevious, readClaimHistory, readFlowPages,
+  archiveDays, buildSnapshot, checksQuery, claimHistoryQuery, claimsQuery, flowQuery, parsePortfolio, parsePrevious, readClaimHistory, readFlowPages,
   report,
 } from './collect.logic.mjs'
 
@@ -50,6 +50,14 @@ async function ratchetHistory() {
   return { log, rows: Object.fromEntries(rows) }
 }
 
+/** The history archive as this clone last fetched gh-pages: each UTC day's last snapshot (archiveDays). A missing
+ *  control/history/ lists nothing; a clone without the gh-pages ref fails this input, and metrics reads partial. */
+async function archive() {
+  const listing = await git('ls-tree', '--name-only', 'origin/gh-pages', 'control/history/')
+  const names = listing.split('\n').filter(Boolean).map((name) => path.posix.basename(name))
+  return Promise.all(archiveDays(names, STARTED).map(async (name) => JSON.parse(await git('show', `origin/gh-pages:control/history/${name}`))))
+}
+
 const list = (kind, ...args) => gh(kind, 'list', '-R', REPO, ...args)
 const file = (name) => [name, () => read(name)]
 const SOURCES = {
@@ -61,6 +69,7 @@ const SOURCES = {
   flowPrs: ['gh api graphql (flow)', () => readFlowPages((after) => gh('api', 'graphql', '-f', `query=${flowQuery(REPO, STARTED, after)}`))],
   claimRefs: ['git ls-remote origin refs/heads/claim/*', () => git('ls-remote', 'origin', 'refs/heads/claim/*')],
   ratchetLog: [`git log -- ${BASELINE}`, ratchetHistory],
+  archive: ['git show origin/gh-pages:control/history', archive],
   baseline: [BASELINE, () => JSON.parse(read(BASELINE))],
   portfolio: file('docs/portfolio.md'),
   ledger: file('docs/harness/ledger.md'),

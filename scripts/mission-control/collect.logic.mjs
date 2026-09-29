@@ -8,6 +8,7 @@ import {
   planReady, readClaims, summarizeProjects,
 } from '../backlog.logic.mjs'
 import { CHECK_LINES, readCheckRun } from '../check-lines.logic.mjs'
+import { parseSnapshotTime } from './prune.logic.mjs'
 
 export { claimHistoryQuery, claimsQuery, parsePortfolio, readClaimHistory } from '../backlog.logic.mjs'
 
@@ -185,7 +186,20 @@ function buildFlow(pages, { allowlist, now }) {
     blockedOnce: { count: blocked.length, of: verified.length, prs: blocked }, coverage: { code: coverage(true), nonCode: coverage(false) } }
 }
 
-export const archiveDays = () => []
+// The history archive (#476): gh-pages' control/history/, a snapshot per workflow run, named for its generatedAt.
+/** The archive files collect.mjs reads: each UTC day's last snapshot from before `now`, oldest first. A name that is not
+ *  exactly one snapshot's own is never read. */
+export function archiveDays(names, now) {
+  const times = names.map(parseSnapshotTime).filter((at) => at !== null && at < now).sort()
+  return Object.values(Object.fromEntries(times.map((at) => [at.slice(0, 10), `${at}.json`])))
+}
+
+/** Each archived day's reading of `tasks.byProject`, oldest first, none from after `now`. A reading whose tasks section
+ *  was in error holds an earlier run's data, so it is not that day's. */
+const openTasksOf = (snapshots, now) => snapshots
+  .filter((snapshot) => snapshot.generatedAt < now && snapshot.freshness?.tasks?.status !== 'error' && isObject(snapshot.tasks?.byProject))
+  .sort((a, b) => a.generatedAt.localeCompare(b.generatedAt))
+  .map(({ generatedAt: at, tasks }) => ({ date: at.slice(0, 10), at, byProject: tasks.byProject }))
 
 /** The vendored nand2tetris projects (#539): each directory under conformance/vectors/, its files counted by extension.
  *  Nothing runs them yet (#194), so `runner` is null: a pass count arrives with a runner, never before. */
@@ -196,7 +210,7 @@ function buildConformance(files) {
   return { projects, files: projects.reduce((sum, project) => sum + project.files, 0), runner: null }
 }
 
-function buildMetrics({ baseline = [], ratchetLog, releases = [], prsMerged = [], flowPrs, vectors }, options) {
+function buildMetrics({ baseline = [], ratchetLog, releases = [], prsMerged = [], flowPrs, vectors, archive }, options) {
   const history = (ratchetLog?.log ?? '').split('\n').filter(Boolean).map((line) => {
     const [sha, date, ...subject] = line.split('\t')
     return { sha, date, subject: subject.join('\t'), count: ratchetLog.rows[sha].length }
@@ -208,6 +222,7 @@ function buildMetrics({ baseline = [], ratchetLog, releases = [], prsMerged = []
     mergesPerDay: merges.map(([date, count]) => ({ date, merges: count })),
     flow: flowPrs ? buildFlow(flowPrs, options) : null,
     conformance: vectors ? buildConformance(vectors) : null,
+    openTasks: archive ? openTasksOf(archive, options.now) : null,
   }
 }
 
@@ -267,7 +282,7 @@ const SECTIONS = {
   },
   adrs: { needs: ['adrs'], build: ({ adrs = [] }) => ({ items: adrs.flatMap(adrOf).sort((a, b) => a.number - b.number) }) },
   roadmap: { needs: ['roadmap'], build: buildRoadmap },
-  metrics: { needs: ['baseline'], optional: ['ratchetLog', 'releases', 'prsMerged', 'flowPrs', 'vectors'], build: buildMetrics },
+  metrics: { needs: ['baseline'], optional: ['ratchetLog', 'releases', 'prsMerged', 'flowPrs', 'vectors', 'archive'], build: buildMetrics },
   checks: { needs: ['checkRuns'], build: buildChecks },
   lineage: { build: () => ({ until: 'DL-7', items: [] }) }, // the decision graph, once DL-7 draws it
 }
@@ -344,7 +359,8 @@ export const SCHEMA_V1 = {
     releases: [{ tag: 'string', publishedAt: 'iso' }], mergesPerDay: [{ date: 'string', merges: 'number' }],
     flow: orNull({ days: 'number', since: 'iso', merged: 'number', openToMergeHours: { median: 'number?', p90: 'number?' },
       blockedOnce: { count: 'number', of: 'number', prs: ['number'] }, coverage: { code: COVERAGE, nonCode: COVERAGE } }),
-    conformance: orNull({ projects: [{ project: 'string', files: 'number', byExtension: 'object' }], files: 'number', runner: 'object?' }) },
+    conformance: orNull({ projects: [{ project: 'string', files: 'number', byExtension: 'object' }], files: 'number', runner: 'object?' }),
+    openTasks: orNull([{ date: 'string', at: 'iso', byProject: 'object' }]) },
   checks: { items: [{ pr: 'number?', sha: 'sha', check: 'string', conclusion: 'string?', completedAt: 'iso?', url: 'string?',
     line: 'string?', verdict: 'string?', fields: 'object', disagrees: 'boolean' }] },
   lineage: { items: 'array' },
