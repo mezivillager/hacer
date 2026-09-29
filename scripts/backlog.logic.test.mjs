@@ -1,3 +1,4 @@
+import { spawnSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { describe, it, expect } from 'vitest'
@@ -8,6 +9,7 @@ import {
   DEFAULT_ALLOWLIST,
   DESIGN_FIRST_SLUGS,
   DORMANT_OPEN_PRS,
+  NOTHING_PICKABLE_EXIT,
   PICK_ROTATION,
   ROW_AGENT_READY_CAP,
   STALE_CLAIM_HOURS,
@@ -16,10 +18,12 @@ import {
   claimHistoryQuery,
   claimTaken,
   dormantMode,
+  epicTree,
   formatDormant,
   formatProjects,
   formatReady,
   formatResume,
+  formatTasks,
   historyGap,
   latestClaim,
   parsePortfolio,
@@ -28,6 +32,8 @@ import {
   readClaims,
   releaseComment,
   releaseRefusal,
+  reportNext,
+  requirePortfolioRows,
   resumePoint,
   summarizeProjects,
   triageTasks,
@@ -599,6 +605,107 @@ describe('formatProjects', () => {
     expect(lines[1]).toMatch(/^harness · open 6 · ready 2 · in-progress 1 · needs-human 1 · next: #148 Bootstrap the backlog/)
     expect(lines[3]).toMatch(/^pubdocs · open 1 · ready 0 · in-progress 0 · needs-human 0 · next: #263 docs\/public: HDL language reference/)
     expect(lines[7]).toBe('3d · open 0 · ready 0 · in-progress 0 · needs-human 0 · next: —')
+  })
+})
+
+describe('the portfolio guard', () => {
+  it('a zero-row portfolio table fails loudly', () => {
+    const headerOnly = ['| # | slug | Project | Epic | Lane | Progress is… |', '|---|---|---|---|---|---|', '', 'prose'].join('\n')
+    for (const markdown of ['', headerOnly]) expect(() => requirePortfolioRows(markdown)).toThrow(/no portfolio rows.*unshaped/)
+    expect(requirePortfolioRows(livePortfolio)).toEqual(portfolioRows)
+  })
+})
+
+describe('next', () => {
+  it('next prints the head of the pick order', () => {
+    const plan = planReady(fixtureIssues, portfolioRows)
+    expect(reportNext(plan)).toEqual({ exitCode: 0, stdout: formatReady(plan).split('\n')[0], stderr: '' })
+    expect(reportNext(plan).stdout).toMatch(/^#315 · foundation · Canvas-less shell/)
+    expect(JSON.parse(reportNext(plan, { json: true }).stdout)).toEqual(plan[0])
+  })
+
+  it('next exits non-zero when nothing is pickable, apart from an error (1) or a usage error (2)', () => {
+    const plan = planReady([open(1, 'harness', { blockedBy: [2] }), issue(3, { labels: ['project:harness'] })], portfolioRows)
+    const nothing = { exitCode: NOTHING_PICKABLE_EXIT, stderr: expect.stringContaining('nothing is pickable') }
+    expect(reportNext(plan)).toEqual({ ...nothing, stdout: '' })
+    expect(reportNext([], { json: true })).toEqual({ ...nothing, stdout: 'null' })
+    expect([0, 1, 2]).not.toContain(NOTHING_PICKABLE_EXIT)
+  })
+})
+
+// `tasks` reads the Mission Control recording (21 real rows, with the portfolio.md pinned beside it), where foundation's
+// epic #318 is itself a sub-issue of harness's #138 and four foundation tasks sit under other epics.
+describe('tasks <slug>', () => {
+  const treeIssues = JSON.parse(recordingText('gh-issues.json'))
+  const pinnedRows = parsePortfolio(recordingText('portfolio.md'))
+  const titleOf = (number) => treeIssues.find((each) => each.number === number).title
+  const line = (depth, number, project, status) => `${'  '.repeat(depth)}#${number} · ${project} · ${titleOf(number)} · ${status}`
+  const tasks = (slug) => formatTasks(epicTree(slug, treeIssues, pinnedRows)).split('\n')
+
+  it("tasks <slug> prints the epic's tree", () => {
+    expect(tasks('harness')).toEqual([
+      line(0, 138, 'epic', '19/45 closed'),
+      line(1, 148, 'harness', 'pick 2'),
+      line(1, 149, 'harness', 'pick 8'),
+      line(1, 156, 'harness', 'unshaped'),
+      line(1, 315, 'foundation', 'pick 5'),
+      line(1, 318, 'epic', '12/32 closed'),
+      line(2, 331, 'foundation', 'pick 7'),
+      line(2, 373, 'foundation', 'pick 9'),
+      'outside #138, filed under harness by label:',
+      line(1, 438, 'harness', 'in-progress'),
+    ])
+  })
+
+  it('tasks <slug> lists the tasks a project: label files under the row from outside its epic', () => {
+    expect(tasks('foundation')).toEqual([
+      line(0, 318, 'epic', '12/32 closed'),
+      line(1, 331, 'foundation', 'pick 7'),
+      line(1, 373, 'foundation', 'pick 9'),
+      'outside #318, filed under foundation by label:',
+      line(1, 182, 'foundation', 'in-progress'),
+      line(1, 193, 'foundation', 'pick 1'),
+      line(1, 217, 'foundation', 'pick 3'),
+      line(1, 315, 'foundation', 'pick 5'),
+    ])
+  })
+
+  it('numbers each pick as ready orders it and gives every other task its reason', () => {
+    const plan = planReady(treeIssues, pinnedRows)
+    const { epic, outside } = epicTree('foundation', treeIssues, pinnedRows)
+    for (const node of [...epic.children, ...outside]) {
+      expect(node.pick).toBe(picks(plan).includes(node.number) ? picks(plan).indexOf(node.number) + 1 : null)
+      expect(node.reason).toBe(reasonOf(plan, node.number))
+    }
+  })
+
+  it('roots the tree at an epic missing from the open list, and prints no outside section when nothing is', () => {
+    expect(tasks('spine')).toEqual(['#139 · epic · (not open)', line(1, 165, 'spine', 'unshaped'), line(1, 175, 'spine', 'pick 4')])
+  })
+
+  it('names the portfolio rows for a slug that is none of them', () => {
+    expect(() => epicTree('mission-control', treeIssues, pinnedRows)).toThrow(/no portfolio row 'mission-control'.*foundation, harness, surfaces/)
+  })
+})
+
+describe('the command line', () => {
+  const SCRIPT = path.join(import.meta.dirname, 'backlog.mjs')
+  // No gh on PATH or in ~/.local/bin: a command that got past its arguments fails to find gh and never reaches GitHub.
+  const run = (...args) => spawnSync(process.execPath, [SCRIPT, ...args],
+    { encoding: 'utf8', env: { PATH: '/nonexistent-backlog-test/bin', HOME: '/nonexistent-backlog-test' } })
+
+  // `--by` is claim's and release's flag, so it is unknown to `ready`.
+  it.each([
+    ['ready --jsonn', '--jsonn'],
+    ['projects --jsonn', '--jsonn'],
+    ['tasks harness --bogus', '--bogus'],
+    ['ready --by me', '--by'],
+  ])('an unknown flag exits 2 with usage: %s', (command, flag) => {
+    const { status, stdout, stderr } = run(...command.split(' '))
+    expect({ status, stdout }).toEqual({ status: 2, stdout: '' })
+    expect(stderr).toContain(`'${flag}'`)
+    expect(stderr).toContain('usage: node scripts/backlog.mjs <ready|projects|next> [--json]')
+    expect(stderr).toContain('node scripts/backlog.mjs tasks <slug> [--json]')
   })
 })
 
