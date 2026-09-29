@@ -239,13 +239,27 @@ describe('deletionOnlyExemption', () => {
 
   it('never waives a PR because a raw file entry is missing `additions` or `deletions` (#345)', () => {
     // Raw API entries, not measure()'s: a missing count read as NaN failed every cap and passed as exempt.
+    // A count the rule does not have cannot show a PR is not deletion-shaped either, so none of these is null.
     const fixup = (i, counts) => ({ filename: `src/i${i}.ts`, ...counts })
     const noAdditions = [{ filename: 'src/legacy.ts', deletions: 9000 }, ...[0, 1, 2, 3, 4].map((i) => fixup(i, { additions: 5, deletions: 0 }))]
     const noDeletions = [{ filename: 'src/legacy.ts', additions: 0, deletions: 300 }, ...[0, 1, 2, 3].map((i) => fixup(i, { additions: 4 }))]
     const addOnly = [0, 1, 2, 3].map((i) => fixup(i, { additions: 5 }))
     expect(deletionOnlyExemption({ files: noAdditions })).toMatchObject({ exempt: false })
     expect(deletionOnlyExemption({ files: noDeletions })).toMatchObject({ exempt: false })
-    expect(deletionOnlyExemption({ files: addOnly })).toBeNull()
+    expect(deletionOnlyExemption({ files: addOnly })).toMatchObject({ exempt: false })
+  })
+
+  it.each([
+    ['`additions` missing', { deletions: 900 }],
+    ['`deletions` missing', { additions: 0 }],
+    ['`additions` NaN', { additions: NaN, deletions: 900 }],
+    ['`deletions` NaN', { additions: 0, deletions: NaN }],
+  ])('refuses a lone file with %s, naming it (#345)', (_, counts) => {
+    // No other file trips a cap here: the refusal has to come from the count itself.
+    const result = deletionOnlyExemption({ files: [{ filename: 'src/a.ts', ...counts }] })
+    expect(result).toMatchObject({ exempt: false })
+    expect(result.reason).toContain('`src/a.ts`')
+    expect(result.reason).toMatch(/missing or not finite/)
   })
 
   it('says nothing about a PR that is not deletion-shaped', () => {
