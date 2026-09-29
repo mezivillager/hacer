@@ -58,20 +58,23 @@ function runTool(state, { rules = true, args = ['1'] } = {}) {
   return { ...result, fixture, calls: saved('calls.log'), body: saved('edited-body.md') }
 }
 
+// Explicit timeout, not the 5 s default: each test spawns the CLI, measured up to 4.8 s under load (1.3 s alone).
+const SPAWN_TIMEOUT_MS = 15000
+
 describe('merge-on-green.mjs (gh is a test double)', () => {
   it('exits 0 for a merged PR, after printing the required set it read', () => {
     const result = runTool('merged')
     expect(result.status).toBe(0)
     expect(result.stdout).toMatch(/required on main \(rulesets\): ci, pr-hygiene, browser-qa/)
     expect(result.stdout).toMatch(/merged/)
-  })
+  }, SPAWN_TIMEOUT_MS)
 
   it('never reads an API error body on stdout as a required context (R518)', () => {
     const result = runTool('non-required-failure', { rules: false })
     expect(result.stdout).not.toContain('Branch not protected')
     expect(result.stdout).toMatch(/every check counts as required/)
     expect(result.status).toBe(2) // deploy-preview now counts as required, and it failed
-  })
+  }, SPAWN_TIMEOUT_MS)
 
   it('appends its marker to the body once, keeps the body, and exits 3 at the deadline', () => {
     const result = runTool('empty-cancelled-suite', { args: ['517', 'mezivillager/hacer', '0'] })
@@ -81,7 +84,7 @@ describe('merge-on-green.mjs (gh is a test double)', () => {
     expect(result.body).toMatch(
       /<!-- merge-on-green: edited to re-run the required checks on ce3e920a6414164989dbdb8b9d45d8ead2ac1bbc at .+ -->$/,
     )
-  })
+  }, SPAWN_TIMEOUT_MS)
 
   it('exits 1 with the usage line when no PR is given', () => {
     const result = runTool('merged', { args: [] })

@@ -11,6 +11,9 @@ const GITHUB = 'https://github.com/mezivillager/hacer'
 const chart = (name: string) => screen.getByRole('figure', { name })
 const links = (region: HTMLElement) => within(region).getAllByRole('link').map((link) => [link.textContent, link.getAttribute('href')])
 
+// Explicit timeout, not the 5 s default: full-snapshot chart mounts measured up to 2.0 s under load (0.4 s alone).
+const SLOW_MOUNT_TIMEOUT_MS = 10000
+
 describe('Charts', () => {
   it('draws the four charts: a point per day or commit, named for its values, a legend past one series, and a table view', () => {
     render(<Charts snapshot={snapshot} />)
@@ -32,7 +35,7 @@ describe('Charts', () => {
     // Focus shows what hover shows: the point's values.
     fireEvent.focus(within(chart('Layer ratchet')).getAllByRole('button')[1])
     expect(within(chart('Layer ratchet')).getByRole('tooltip').textContent).toBe('2026-09-23 04:13 · 77 known violations')
-  })
+  }, SLOW_MOUNT_TIMEOUT_MS)
 
   it('clicking a point lists that day\'s PRs or tasks', () => {
     render(<Charts snapshot={snapshot} />)
@@ -52,5 +55,5 @@ describe('Charts', () => {
       ['d9ce783 fix(simulation): move multiBitFormat below the UI layer (#180)', `${GITHUB}/commit/d9ce783867491b811fceaf225e3dad54479483da`],
       ['PR #180', `${GITHUB}/pull/180`],
     ])
-  })
+  }, SLOW_MOUNT_TIMEOUT_MS)
 })

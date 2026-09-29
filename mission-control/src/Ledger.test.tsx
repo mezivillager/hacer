@@ -9,6 +9,9 @@ const BLOB = 'https://github.com/mezivillager/hacer/blob/main'
 const ids = () => within(screen.getByRole('table', { name: 'Ledger' })).getAllByRole('row').slice(1)
   .map((row) => within(row).getAllByRole('cell')[0].textContent)
 
+// Explicit timeout, not the 5 s default: 57 rows re-queried by role after each filter change measured up to 7.5 s under load (1.5 s alone).
+const SLOW_MOUNT_TIMEOUT_MS = 20000
+
 describe('Ledger', () => {
   it('Ledger renders rows filterable by Mechanised (yes / no / partly)', () => {
     render(<Ledger snapshot={snapshot} />)
@@ -34,7 +37,7 @@ describe('Ledger', () => {
 
     fireEvent.change(filter, { target: { value: 'all' } })
     expect(ids()).toHaveLength(57)
-  })
+  }, SLOW_MOUNT_TIMEOUT_MS)
 
   it('says so when the filter leaves no row', () => {
     render(<Ledger snapshot={{ ...snapshot, ledger: { items: [], byMechanised: {} } }} />)
