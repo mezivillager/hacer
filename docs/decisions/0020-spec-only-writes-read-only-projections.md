@@ -1,7 +1,8 @@
 # 0020. Spec-only writes, read-only projections
 
 - **Status:** Accepted — the fresh-context adversarial review [#359](https://github.com/mezivillager/hacer/issues/359) required by #327 returned `sound with corrections`, and the second pass over the four post-review deltas returned `accept with corrections` (both on [#358](https://github.com/mezivillager/hacer/pull/358), 2026-09-23). Both sets of corrections are applied below — the second pass's seven under "What the second pass changed" — and no further review round is required. **Amended 2026-09-24** by the spike this ADR scheduled for 1.5/1.6 ([#372](https://github.com/mezivillager/hacer/issues/372)), which ran, found the mechanism 1.5 describes does not work, and replaced it — "What the spike changed". The status does **not** move: the spine, the review's acceptance and every decision stand, and correcting a mechanism is what a scheduled spike is for.
-- **Date:** 2026-09-23 · mechanism amended 2026-09-24 ([#372](https://github.com/mezivillager/hacer/issues/372))
+- **Date:** 2026-09-23 · mechanism amended 2026-09-24 ([#372](https://github.com/mezivillager/hacer/issues/372)) · §7.1 and §9 amended 2026-09-29 ([#598](https://github.com/mezivillager/hacer/issues/598))
+- **Amended by:** R769
 - **Amends:** ADR-0008 §6, ADR-0009
 - **Supersedes:** ADR-0007
 - **Deciders:** Builder agent for [#327](https://github.com/mezivillager/hacer/issues/327), on the owner's directions of 2026-09-21 (quoted below) and the measurements of spikes [#328](https://github.com/mezivillager/hacer/issues/328) and [#210](https://github.com/mezivillager/hacer/issues/210); revised by a second fresh context against #359's review; mechanism amended by the builder agent for [#372](https://github.com/mezivillager/hacer/issues/372), on that spike's measurements and its own re-measurement against `origin/main`
@@ -936,6 +937,16 @@ that emits `setInput`.
    the *legacy* app, which mounts the canvas, which ADR-0016 as amended (2026-09-19) forbids on the
    owner's laptop. Naming #331 "first" without naming that constraint hides the one thing that
    decides when it can happen; the run is a cloud job, and the plan waits on it.
+   *Amended by R769 ([#598](https://github.com/mezivillager/hacer/issues/598), 2026-09-29): the rendered-geometry golden is produced
+   headless, in the `node` Vitest project, on the owner's laptop.* Since
+   [#592](https://github.com/mezivillager/hacer/pull/592), `__SCENE_HELPERS__.scene()` is
+   `describeCircuitScene(state)`, a pure read of the store, and `SceneReadyBridge.test.tsx` checks
+   that it places every entity on what the renderer draws. #598 measured ADR-0008's six circuits with
+   no `window` and no `document`: `describeCircuitScene` plus each wire's stored segments, with
+   `approach` and `confluenceCoord`, serialise byte-identically across two builds once ids are renamed
+   by creation order, and the overlap oracle over those segments finds 0 violations, as
+   `routingScene.test.tsx` does in jsdom. `src/utils/legacyScene.characterization.test.ts` records
+   them. What only a real WebGL frame would show is outside the golden; #592's parity test bounds it.
 2. **A corpus of real version-1 documents is captured and committed as fixtures** before
    `serialize.ts` is deleted — **the second point of no return**, which is the whole reason this
    precondition exists. **No real saved circuit file exists anywhere in the repository today** —
@@ -1055,6 +1066,9 @@ Their index rows mirror the change, and all three are listed under "Affected liv
   and in Node — which a scene-graph reader cannot. One split survives the supersession: the bridge
   publishes `scene` (pure, golden-able) plus an optional `project(id)` that only the 3D renderer
   supplies, because projected *screen* coordinates need a camera.
+  *Amended by R769 ([#598](https://github.com/mezivillager/hacer/issues/598), 2026-09-29):* a scene-graph reader is no longer the only
+  way to get the baseline. It is `describeCircuitScene` over the legacy store plus each wire's stored
+  segments, taken in Node (§7.1).
 
 ### 10. N.2's acceptance test, restated
 
