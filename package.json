@@ -32,6 +32,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "build:cli": "vite build --config vite.cli.config.ts",
+    "mcp": "pnpm --silent run build:cli >&2 && node dist/cli/mcp.js",
     "build:control": "node scripts/mission-control/collect.mjs --json > mission-control/public/data/snapshot.json && vite build --config mission-control/vite.config.ts",
     "typecheck": "tsc -b",
     "lint": "pnpm run typecheck && eslint . && pnpm run lint:layers && pnpm run lint:e2e-exports && pnpm run lint:lineage && pnpm run lint:peers",
