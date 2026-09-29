@@ -10,6 +10,7 @@
  */
 import { describe, it, expect } from 'vitest'
 import { createBusPins } from '@/simulation'
+import { expectOneGoldenPerCase } from '@/test/characterizationGoldens'
 import { evaluateCircuit, type EvaluateCircuitResult } from '@/simulation/topologicalEval'
 import { serializeCircuit } from './serialize'
 import { deserializeCircuit, type DeserializedCircuit } from './deserialize'
@@ -387,6 +388,11 @@ function characterize(fixture: Fixture, roundTrip: Save = save) {
 }
 
 describe('legacy evaluation, before and after serialize → deserialize (characterization)', () => {
+  it('has one golden per fixture and no golden without a fixture', () => {
+    const onDisk = import.meta.glob('./__snapshots__/characterization/evaluation/*')
+    expectOneGoldenPerCase(onDisk, FIXTURES.map((f) => f.name))
+  })
+
   it.each(FIXTURES.map((f) => [f.name, f] as const))('%s', async (name, fixture) => {
     const golden = `${JSON.stringify(characterize(fixture), null, 2)}\n`
     await expect(golden).toMatchFileSnapshot(`__snapshots__/characterization/evaluation/${name}.json`)
