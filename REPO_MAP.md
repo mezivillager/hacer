@@ -200,7 +200,7 @@ scripts/
 ├── hooks/               # Pure logic + tests behind the hooks (docPaths, docPathExists, docsSyncStop)
 ├── sync-superpowers.sh  # Sync skills from obra/superpowers (preserves hacer-patterns, docs-sync)
 ├── sync-vectors.sh      # Clone nand2tetris/web-ide at a pinned commit; write conformance/vectors/
-└── protected-paths.logic.mjs  # conformance/vectors/** is a protected path (#193, #151 extends it)
+└── protected-paths.logic.mjs  # protected paths: conformance/vectors/** (#193), **/__snapshots__/characterization/** (#331); #151 extends it
 
 conformance/
 └── vectors/             # Held-out nand2tetris oracle. Not covered by HACER's MIT license.
