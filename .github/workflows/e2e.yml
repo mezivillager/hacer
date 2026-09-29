@@ -14,6 +14,7 @@ on:
           - all
           - store
           - ui
+          - shell
 
 # Read-only job token (CodeQL actions/missing-workflow-permissions): the run only reads the repo
 # and uploads an artifact.
@@ -44,6 +45,7 @@ jobs:
           case "${{ inputs.suite }}" in
             store) pnpm run test:e2e:store ;;
             ui)    pnpm run test:e2e:ui ;;
+            shell) pnpm exec playwright test --project shell ;;
             *)     pnpm run test:e2e ;;
           esac
 
