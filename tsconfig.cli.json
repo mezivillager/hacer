@@ -2,9 +2,16 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.cli.tsbuildinfo",
-    // A Node program: Node's types and no DOM, which also proves the engine it bundles needs none.
+    // Node programs: Node's types and no DOM, which also proves the engine they bundle needs none.
     "lib": ["ES2023"],
     "types": ["node", "vitest/globals"]
   },
-  "include": ["src/cli", "src/scenarios/drivers/cli.ts", "src/scenarios/drivers/cli.test.ts"]
+  "include": [
+    "src/cli",
+    "src/mcp",
+    "src/scenarios/drivers/cli.ts",
+    "src/scenarios/drivers/cli.test.ts",
+    "src/scenarios/drivers/mcp.ts",
+    "src/scenarios/drivers/mcp.test.ts"
+  ]
 }
