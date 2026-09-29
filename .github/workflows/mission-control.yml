@@ -18,26 +18,9 @@ on:
       - 'scripts/**'
       - 'mission-control/**'
 
-# contents:write pushes gh-pages (the site and the archive); issues:read and pull-requests:read are what
-# `gh issue list`/`gh pr list` (collect.mjs's SOURCES) need, measured directly from those calls. No `actions`
-# permission: issue #476 lists actions:read as part of "the minimum", but every external call collect.mjs and
-# prune.mjs make (gh issue list, gh pr list x2, gh release list, gh api graphql x2, git ls-remote, git log, plus
-# local file reads) was re-derived twice over — once by this PR, again independently by its verifier — and none
-# of them touch the Actions API. Requesting it anyway would be exactly the kind of unverified, speculative grant
-# this workflow's own checks:read reasoning (below) already caught and reversed once.
-#
-# No `checks` permission either: MC-6 (#477, merged while this PR was in progress — rebased in) added a checkRuns source
-# reading each head's statusCheckRollup CheckRun nodes and their annotations over `gh api graphql`. #476 asked this
-# PR to measure whether that needs checks:read; it does not, on a public repo — already measured empirically, not
-# by this PR: pr-preview.yml's own run collected the checks section `ok`, annotations included, with a token that
-# grants no `checks` permission at all (mission-control.md, "checks needs no checks permission while the repo is
-# public"; a5c1dac). That supersedes this PR's own first-pass reasoning (the Checks REST/GraphQL surface generally
-# needs its own permission — true, but not on a public repo's read side, where the annotations endpoint already
-# answers 200 unauthenticated per #507). Left unrequested rather than granted-and-unused.
+# Read-only at workflow level. The job below states its own block, which replaces this one.
 permissions:
-  contents: write
-  issues: read
-  pull-requests: read
+  contents: read
 
 concurrency:
   group: gh-pages
@@ -46,22 +29,42 @@ concurrency:
 jobs:
   refresh:
     runs-on: ubuntu-latest
+    permissions:
+      # contents:write pushes gh-pages (the site and the archive); issues:read and pull-requests:read are what
+      # `gh issue list`/`gh pr list` (collect.mjs's SOURCES) need, measured directly from those calls. No `actions`
+      # permission: issue #476 lists actions:read as part of "the minimum", but every external call collect.mjs and
+      # prune.mjs make (gh issue list, gh pr list x2, gh release list, gh api graphql x2, git ls-remote, git log, plus
+      # local file reads) was re-derived twice over — once by this PR, again independently by its verifier — and none
+      # of them touch the Actions API. Requesting it anyway would be exactly the kind of unverified, speculative grant
+      # this workflow's own checks:read reasoning (below) already caught and reversed once.
+      #
+      # No `checks` permission either: MC-6 (#477, merged while this PR was in progress — rebased in) added a checkRuns source
+      # reading each head's statusCheckRollup CheckRun nodes and their annotations over `gh api graphql`. #476 asked this
+      # PR to measure whether that needs checks:read; it does not, on a public repo — already measured empirically, not
+      # by this PR: pr-preview.yml's own run collected the checks section `ok`, annotations included, with a token that
+      # grants no `checks` permission at all (mission-control.md, "checks needs no checks permission while the repo is
+      # public"; a5c1dac). That supersedes this PR's own first-pass reasoning (the Checks REST/GraphQL surface generally
+      # needs its own permission — true, but not on a public repo's read side, where the annotations endpoint already
+      # answers 200 unauthenticated per #507). Left unrequested rather than granted-and-unused.
+      contents: write
+      issues: read
+      pull-requests: read
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           # The collector's ratchet-history source needs full git log (mission-control.md: "needs fetch-depth 0").
           fetch-depth: 0
 
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: gh-pages
           path: gh-pages
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: '22'
 
-      - uses: pnpm/action-setup@v6
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
 
       - run: pnpm install --frozen-lockfile
 
@@ -101,7 +104,7 @@ jobs:
           fi
 
       - name: Deploy Mission Control
-        uses: JamesIves/github-pages-deploy-action@v4
+        uses: JamesIves/github-pages-deploy-action@fa24774553152dd7873cd16ebd8d959b010c5445 # v4.9.0
         with:
           branch: gh-pages
           folder: mission-control/dist

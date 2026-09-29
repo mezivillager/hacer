@@ -10,10 +10,9 @@ on:
     - cron: '17 4 * * *'
   workflow_dispatch:
 
+# Read-only at workflow level. Each job below states its own block, which replaces this one.
 permissions:
-  contents: write
-  pull-requests: write
-  issues: write
+  contents: read
 
 concurrency:
   group: gh-pages
@@ -23,14 +22,18 @@ jobs:
   deploy-preview:
     if: github.event.action != 'closed' && github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # the deploy step pushes the preview to gh-pages
+      issues: write # the preview comment; create-or-update-comment asks for both of these on GITHUB_TOKEN
+      pull-requests: write # the preview comment, and the PR's file list the Mission Control step reads
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: '22'
 
-      - uses: pnpm/action-setup@v6
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
 
       - run: pnpm install --frozen-lockfile
 
@@ -60,7 +63,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
 
       - name: Deploy preview
-        uses: JamesIves/github-pages-deploy-action@v4
+        uses: JamesIves/github-pages-deploy-action@fa24774553152dd7873cd16ebd8d959b010c5445 # v4.9.0
         with:
           branch: gh-pages
           folder: dist
@@ -68,7 +71,7 @@ jobs:
           clean: true
 
       - name: Find existing comment
-        uses: peter-evans/find-comment@v4
+        uses: peter-evans/find-comment@b30e6a3c0ed37e7c023ccd3f1db5c6c0b0c23aad # v4.0.0
         id: find-comment
         with:
           issue-number: ${{ github.event.pull_request.number }}
@@ -76,7 +79,7 @@ jobs:
           body-includes: '## 🚀 Deploy Preview'
 
       - name: Create or update comment
-        uses: peter-evans/create-or-update-comment@v5
+        uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9 # v5.0.0
         with:
           issue-number: ${{ github.event.pull_request.number }}
           comment-id: ${{ steps.find-comment.outputs.comment-id }}
@@ -95,8 +98,12 @@ jobs:
   cleanup-preview:
     if: github.event.action == 'closed'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # removes the preview directory from gh-pages and pushes
+      issues: write # rewrites the preview comment; create-or-update-comment asks for both of these on GITHUB_TOKEN
+      pull-requests: write # the same comment
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         id: checkout-gh-pages
         continue-on-error: true
         with:
@@ -120,7 +127,7 @@ jobs:
           fi
 
       - name: Find existing comment
-        uses: peter-evans/find-comment@v4
+        uses: peter-evans/find-comment@b30e6a3c0ed37e7c023ccd3f1db5c6c0b0c23aad # v4.0.0
         id: find-comment
         with:
           issue-number: ${{ github.event.pull_request.number }}
@@ -129,7 +136,7 @@ jobs:
 
       - name: Update comment on cleanup
         if: steps.find-comment.outputs.comment-id != ''
-        uses: peter-evans/create-or-update-comment@v5
+        uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9 # v5.0.0
         with:
           issue-number: ${{ github.event.pull_request.number }}
           comment-id: ${{ steps.find-comment.outputs.comment-id }}
@@ -144,17 +151,17 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
-      contents: write
+      contents: write # scripts/pr-preview-sweep.mjs pushes the removals to gh-pages
       pull-requests: read
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: gh-pages
           path: gh-pages
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: '22'
 
