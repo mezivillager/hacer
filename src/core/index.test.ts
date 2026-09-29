@@ -56,6 +56,7 @@ const CORE_EXPORTS = [
   'parseHDL',
   'parseTST',
   'printHDL',
+  'project1HdlSources',
   'registerBuiltin',
   'registerProject1Builtins',
   'runTest',

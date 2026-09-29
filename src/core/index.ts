@@ -16,7 +16,9 @@
  *   - `testing/chipCompletion` — `localStorage`; it belongs behind a port, not in the engine's API.
  *   - `testing/implementationSources`, `testing/formatColumnValue` — the Test Lab's "what to test
  *     against" picker and its column formatting: app concerns built ON this surface.
- *   - the Project-1 `.hdl`/`.tst`/`.cmp` fixture corpora — test data, not API.
+ *   - the Project-1 `.tst`/`.cmp` corpora and the HDL parser stubs — test data, not API. The correct
+ *     implementations, `project1HdlSources`, ARE exported: surfaces outside src/core test against
+ *     them, and the layer rule lets them reach it only through here.
  *   - `resetAppRegistriesForTests`, `stripExt`, `printPinRef` — internal helpers.
  * Bus operations live in `@/simulation`, the other half of the engine's surface.
  */
@@ -35,7 +37,7 @@ export type {
   HDLPin,
   HDLSlice,
 } from './hdl'
-export { compileHDL, hdlChipDefinition, parseHDL, printHDL } from './hdl'
+export { compileHDL, hdlChipDefinition, parseHDL, printHDL, project1HdlSources } from './hdl'
 
 // ── The chip registry, and evaluation ───────────────────────────────────────────────────────────
 export type {
