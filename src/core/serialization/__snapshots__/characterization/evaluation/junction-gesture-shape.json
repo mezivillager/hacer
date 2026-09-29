@@ -1,1 +1,234 @@
-{}
+{
+  "fixture": "junction-gesture-shape",
+  "about": "The shape the live wiring gesture writes (#403): every wire listed on the junction copies the trunk's source, so evaluation never consults the junction.",
+  "document": {
+    "version": 1,
+    "name": "junction-gesture-shape",
+    "savedAt": "2026-09-29T00:00:00.000Z",
+    "gates": [
+      {
+        "id": "g1",
+        "type": "Not",
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": -2
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "width": 1
+      }
+    ],
+    "wires": [
+      {
+        "id": "w1",
+        "from": {
+          "type": "input",
+          "entityId": "ia"
+        },
+        "to": {
+          "type": "gate",
+          "entityId": "g1",
+          "pinId": "g1-in-0"
+        },
+        "segments": [],
+        "crossesWireIds": []
+      },
+      {
+        "id": "w2",
+        "from": {
+          "type": "input",
+          "entityId": "ia"
+        },
+        "to": {
+          "type": "output",
+          "entityId": "o2"
+        },
+        "segments": [],
+        "crossesWireIds": []
+      },
+      {
+        "id": "w3",
+        "from": {
+          "type": "gate",
+          "entityId": "g1",
+          "pinId": "g1-out-0"
+        },
+        "to": {
+          "type": "output",
+          "entityId": "o1"
+        },
+        "segments": [],
+        "crossesWireIds": []
+      }
+    ],
+    "inputNodes": [
+      {
+        "id": "ia",
+        "name": "a",
+        "position": {
+          "x": -12,
+          "y": 0,
+          "z": 0
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "value": 0,
+        "width": 1
+      }
+    ],
+    "outputNodes": [
+      {
+        "id": "o1",
+        "name": "inverted",
+        "position": {
+          "x": 12,
+          "y": 0,
+          "z": -2
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "value": 0,
+        "width": 1
+      },
+      {
+        "id": "o2",
+        "name": "direct",
+        "position": {
+          "x": 12,
+          "y": 0,
+          "z": 2
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "value": 0,
+        "width": 1
+      }
+    ],
+    "junctions": [
+      {
+        "id": "j1",
+        "position": {
+          "x": -6,
+          "y": 0,
+          "z": 0
+        },
+        "signalId": "signal-j1",
+        "wireIds": [
+          "w1",
+          "w2"
+        ]
+      }
+    ],
+    "busComponents": []
+  },
+  "loadWarnings": [],
+  "vectors": [
+    {
+      "inputs": {
+        "a": 0
+      },
+      "before": {
+        "result": {
+          "status": "ok"
+        },
+        "outputs": {
+          "inverted": 1,
+          "direct": 0
+        },
+        "gates": {
+          "g1": {
+            "in": {
+              "in": 0
+            },
+            "out": {
+              "out": 1
+            }
+          }
+        },
+        "buses": {}
+      },
+      "after": {
+        "result": {
+          "status": "ok"
+        },
+        "outputs": {
+          "inverted": 1,
+          "direct": 0
+        },
+        "gates": {
+          "g1": {
+            "in": {
+              "in": 0
+            },
+            "out": {
+              "out": 1
+            }
+          }
+        },
+        "buses": {}
+      },
+      "unchangedByRoundTrip": true,
+      "roundTripWarnings": []
+    },
+    {
+      "inputs": {
+        "a": 1
+      },
+      "before": {
+        "result": {
+          "status": "ok"
+        },
+        "outputs": {
+          "inverted": 0,
+          "direct": 1
+        },
+        "gates": {
+          "g1": {
+            "in": {
+              "in": 1
+            },
+            "out": {
+              "out": 0
+            }
+          }
+        },
+        "buses": {}
+      },
+      "after": {
+        "result": {
+          "status": "ok"
+        },
+        "outputs": {
+          "inverted": 0,
+          "direct": 1
+        },
+        "gates": {
+          "g1": {
+            "in": {
+              "in": 1
+            },
+            "out": {
+              "out": 0
+            }
+          }
+        },
+        "buses": {}
+      },
+      "unchangedByRoundTrip": true,
+      "roundTripWarnings": []
+    }
+  ]
+}

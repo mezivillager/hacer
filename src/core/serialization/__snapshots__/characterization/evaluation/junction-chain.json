@@ -1,1 +1,308 @@
-{}
+{
+  "fixture": "junction-chain",
+  "about": "A signal through two junctions in a row: the input wire ends at j1, j1 feeds a wire that ends at j2, and each junction branches on. A wire that ends at a junction is its feed.",
+  "document": {
+    "version": 1,
+    "name": "junction-chain",
+    "savedAt": "2026-09-29T00:00:00.000Z",
+    "gates": [
+      {
+        "id": "g1",
+        "type": "Not",
+        "position": {
+          "x": 4,
+          "y": 0,
+          "z": 3
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "width": 1
+      }
+    ],
+    "wires": [
+      {
+        "id": "w1",
+        "from": {
+          "type": "input",
+          "entityId": "ia"
+        },
+        "to": {
+          "type": "junction",
+          "entityId": "j1"
+        },
+        "segments": [],
+        "crossesWireIds": []
+      },
+      {
+        "id": "w2",
+        "from": {
+          "type": "junction",
+          "entityId": "j1"
+        },
+        "to": {
+          "type": "junction",
+          "entityId": "j2"
+        },
+        "segments": [],
+        "crossesWireIds": []
+      },
+      {
+        "id": "w3",
+        "from": {
+          "type": "junction",
+          "entityId": "j1"
+        },
+        "to": {
+          "type": "output",
+          "entityId": "o1"
+        },
+        "segments": [],
+        "crossesWireIds": []
+      },
+      {
+        "id": "w4",
+        "from": {
+          "type": "junction",
+          "entityId": "j2"
+        },
+        "to": {
+          "type": "output",
+          "entityId": "o2"
+        },
+        "segments": [],
+        "crossesWireIds": []
+      },
+      {
+        "id": "w5",
+        "from": {
+          "type": "junction",
+          "entityId": "j2"
+        },
+        "to": {
+          "type": "gate",
+          "entityId": "g1",
+          "pinId": "g1-in-0"
+        },
+        "segments": [],
+        "crossesWireIds": []
+      },
+      {
+        "id": "w6",
+        "from": {
+          "type": "gate",
+          "entityId": "g1",
+          "pinId": "g1-out-0"
+        },
+        "to": {
+          "type": "output",
+          "entityId": "o3"
+        },
+        "segments": [],
+        "crossesWireIds": []
+      }
+    ],
+    "inputNodes": [
+      {
+        "id": "ia",
+        "name": "a",
+        "position": {
+          "x": -12,
+          "y": 0,
+          "z": 0
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "value": 0,
+        "width": 1
+      }
+    ],
+    "outputNodes": [
+      {
+        "id": "o1",
+        "name": "atJ1",
+        "position": {
+          "x": 12,
+          "y": 0,
+          "z": -3
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "value": 0,
+        "width": 1
+      },
+      {
+        "id": "o2",
+        "name": "atJ2",
+        "position": {
+          "x": 12,
+          "y": 0,
+          "z": 0
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "value": 0,
+        "width": 1
+      },
+      {
+        "id": "o3",
+        "name": "notJ2",
+        "position": {
+          "x": 12,
+          "y": 0,
+          "z": 3
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "value": 0,
+        "width": 1
+      }
+    ],
+    "junctions": [
+      {
+        "id": "j1",
+        "position": {
+          "x": -6,
+          "y": 0,
+          "z": 0
+        },
+        "signalId": "signal-j1",
+        "wireIds": [
+          "w1",
+          "w2",
+          "w3"
+        ]
+      },
+      {
+        "id": "j2",
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "signalId": "signal-j2",
+        "wireIds": [
+          "w2",
+          "w4",
+          "w5"
+        ]
+      }
+    ],
+    "busComponents": []
+  },
+  "loadWarnings": [],
+  "vectors": [
+    {
+      "inputs": {
+        "a": 0
+      },
+      "before": {
+        "result": {
+          "status": "ok"
+        },
+        "outputs": {
+          "atJ1": 0,
+          "atJ2": 0,
+          "notJ2": 1
+        },
+        "gates": {
+          "g1": {
+            "in": {
+              "in": 0
+            },
+            "out": {
+              "out": 1
+            }
+          }
+        },
+        "buses": {}
+      },
+      "after": {
+        "result": {
+          "status": "ok"
+        },
+        "outputs": {
+          "atJ1": 0,
+          "atJ2": 0,
+          "notJ2": 1
+        },
+        "gates": {
+          "g1": {
+            "in": {
+              "in": 0
+            },
+            "out": {
+              "out": 1
+            }
+          }
+        },
+        "buses": {}
+      },
+      "unchangedByRoundTrip": true,
+      "roundTripWarnings": []
+    },
+    {
+      "inputs": {
+        "a": 1
+      },
+      "before": {
+        "result": {
+          "status": "ok"
+        },
+        "outputs": {
+          "atJ1": 1,
+          "atJ2": 1,
+          "notJ2": 0
+        },
+        "gates": {
+          "g1": {
+            "in": {
+              "in": 1
+            },
+            "out": {
+              "out": 0
+            }
+          }
+        },
+        "buses": {}
+      },
+      "after": {
+        "result": {
+          "status": "ok"
+        },
+        "outputs": {
+          "atJ1": 1,
+          "atJ2": 1,
+          "notJ2": 0
+        },
+        "gates": {
+          "g1": {
+            "in": {
+              "in": 1
+            },
+            "out": {
+              "out": 0
+            }
+          }
+        },
+        "buses": {}
+      },
+      "unchangedByRoundTrip": true,
+      "roundTripWarnings": []
+    }
+  ]
+}

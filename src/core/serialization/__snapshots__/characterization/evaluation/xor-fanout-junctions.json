@@ -1,1 +1,707 @@
-{}
+{
+  "fixture": "xor-fanout-junctions",
+  "about": "Xor from four Nands. Each fan-out is a junction on a trunk that runs on to its own destination, with branches starting at the junction; jn1 lists its branch before its trunk (#356).",
+  "document": {
+    "version": 1,
+    "name": "xor-fanout-junctions",
+    "savedAt": "2026-09-29T00:00:00.000Z",
+    "gates": [
+      {
+        "id": "n1",
+        "type": "Nand",
+        "position": {
+          "x": -4,
+          "y": 0,
+          "z": 0
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "width": 1
+      },
+      {
+        "id": "n2",
+        "type": "Nand",
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": -3
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "width": 1
+      },
+      {
+        "id": "n3",
+        "type": "Nand",
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": 3
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "width": 1
+      },
+      {
+        "id": "n4",
+        "type": "Nand",
+        "position": {
+          "x": 4,
+          "y": 0,
+          "z": 0
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "width": 1
+      }
+    ],
+    "wires": [
+      {
+        "id": "wa",
+        "from": {
+          "type": "input",
+          "entityId": "ia"
+        },
+        "to": {
+          "type": "gate",
+          "entityId": "n1",
+          "pinId": "n1-in-0"
+        },
+        "segments": [],
+        "crossesWireIds": []
+      },
+      {
+        "id": "wa-branch",
+        "from": {
+          "type": "junction",
+          "entityId": "ja"
+        },
+        "to": {
+          "type": "gate",
+          "entityId": "n2",
+          "pinId": "n2-in-0"
+        },
+        "segments": [],
+        "crossesWireIds": []
+      },
+      {
+        "id": "wb",
+        "from": {
+          "type": "input",
+          "entityId": "ib"
+        },
+        "to": {
+          "type": "gate",
+          "entityId": "n1",
+          "pinId": "n1-in-1"
+        },
+        "segments": [],
+        "crossesWireIds": []
+      },
+      {
+        "id": "wb-branch",
+        "from": {
+          "type": "junction",
+          "entityId": "jb"
+        },
+        "to": {
+          "type": "gate",
+          "entityId": "n3",
+          "pinId": "n3-in-1"
+        },
+        "segments": [],
+        "crossesWireIds": []
+      },
+      {
+        "id": "wn1",
+        "from": {
+          "type": "gate",
+          "entityId": "n1",
+          "pinId": "n1-out-0"
+        },
+        "to": {
+          "type": "gate",
+          "entityId": "n2",
+          "pinId": "n2-in-1"
+        },
+        "segments": [],
+        "crossesWireIds": []
+      },
+      {
+        "id": "wn1-branch",
+        "from": {
+          "type": "junction",
+          "entityId": "jn1"
+        },
+        "to": {
+          "type": "gate",
+          "entityId": "n3",
+          "pinId": "n3-in-0"
+        },
+        "segments": [],
+        "crossesWireIds": []
+      },
+      {
+        "id": "w2",
+        "from": {
+          "type": "gate",
+          "entityId": "n2",
+          "pinId": "n2-out-0"
+        },
+        "to": {
+          "type": "gate",
+          "entityId": "n4",
+          "pinId": "n4-in-0"
+        },
+        "segments": [],
+        "crossesWireIds": []
+      },
+      {
+        "id": "w3",
+        "from": {
+          "type": "gate",
+          "entityId": "n3",
+          "pinId": "n3-out-0"
+        },
+        "to": {
+          "type": "gate",
+          "entityId": "n4",
+          "pinId": "n4-in-1"
+        },
+        "segments": [],
+        "crossesWireIds": []
+      },
+      {
+        "id": "wo",
+        "from": {
+          "type": "gate",
+          "entityId": "n4",
+          "pinId": "n4-out-0"
+        },
+        "to": {
+          "type": "output",
+          "entityId": "oo"
+        },
+        "segments": [],
+        "crossesWireIds": []
+      }
+    ],
+    "inputNodes": [
+      {
+        "id": "ia",
+        "name": "a",
+        "position": {
+          "x": -12,
+          "y": 0,
+          "z": -2
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "value": 0,
+        "width": 1
+      },
+      {
+        "id": "ib",
+        "name": "b",
+        "position": {
+          "x": -12,
+          "y": 0,
+          "z": 2
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "value": 0,
+        "width": 1
+      }
+    ],
+    "outputNodes": [
+      {
+        "id": "oo",
+        "name": "out",
+        "position": {
+          "x": 12,
+          "y": 0,
+          "z": 0
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "value": 0,
+        "width": 1
+      }
+    ],
+    "junctions": [
+      {
+        "id": "ja",
+        "position": {
+          "x": -8,
+          "y": 0,
+          "z": -2
+        },
+        "signalId": "signal-ja",
+        "wireIds": [
+          "wa",
+          "wa-branch"
+        ]
+      },
+      {
+        "id": "jb",
+        "position": {
+          "x": -8,
+          "y": 0,
+          "z": 2
+        },
+        "signalId": "signal-jb",
+        "wireIds": [
+          "wb",
+          "wb-branch"
+        ]
+      },
+      {
+        "id": "jn1",
+        "position": {
+          "x": -2,
+          "y": 0,
+          "z": 0
+        },
+        "signalId": "signal-jn1",
+        "wireIds": [
+          "wn1-branch",
+          "wn1"
+        ]
+      }
+    ],
+    "busComponents": []
+  },
+  "loadWarnings": [],
+  "vectors": [
+    {
+      "inputs": {
+        "a": 0,
+        "b": 0
+      },
+      "before": {
+        "result": {
+          "status": "ok"
+        },
+        "outputs": {
+          "out": 0
+        },
+        "gates": {
+          "n1": {
+            "in": {
+              "a": 0,
+              "b": 0
+            },
+            "out": {
+              "out": 1
+            }
+          },
+          "n2": {
+            "in": {
+              "a": 0,
+              "b": 1
+            },
+            "out": {
+              "out": 1
+            }
+          },
+          "n3": {
+            "in": {
+              "a": 1,
+              "b": 0
+            },
+            "out": {
+              "out": 1
+            }
+          },
+          "n4": {
+            "in": {
+              "a": 1,
+              "b": 1
+            },
+            "out": {
+              "out": 0
+            }
+          }
+        },
+        "buses": {}
+      },
+      "after": {
+        "result": {
+          "status": "ok"
+        },
+        "outputs": {
+          "out": 0
+        },
+        "gates": {
+          "n1": {
+            "in": {
+              "a": 0,
+              "b": 0
+            },
+            "out": {
+              "out": 1
+            }
+          },
+          "n2": {
+            "in": {
+              "a": 0,
+              "b": 1
+            },
+            "out": {
+              "out": 1
+            }
+          },
+          "n3": {
+            "in": {
+              "a": 1,
+              "b": 0
+            },
+            "out": {
+              "out": 1
+            }
+          },
+          "n4": {
+            "in": {
+              "a": 1,
+              "b": 1
+            },
+            "out": {
+              "out": 0
+            }
+          }
+        },
+        "buses": {}
+      },
+      "unchangedByRoundTrip": true,
+      "roundTripWarnings": []
+    },
+    {
+      "inputs": {
+        "a": 0,
+        "b": 1
+      },
+      "before": {
+        "result": {
+          "status": "ok"
+        },
+        "outputs": {
+          "out": 1
+        },
+        "gates": {
+          "n1": {
+            "in": {
+              "a": 0,
+              "b": 1
+            },
+            "out": {
+              "out": 1
+            }
+          },
+          "n2": {
+            "in": {
+              "a": 0,
+              "b": 1
+            },
+            "out": {
+              "out": 1
+            }
+          },
+          "n3": {
+            "in": {
+              "a": 1,
+              "b": 1
+            },
+            "out": {
+              "out": 0
+            }
+          },
+          "n4": {
+            "in": {
+              "a": 1,
+              "b": 0
+            },
+            "out": {
+              "out": 1
+            }
+          }
+        },
+        "buses": {}
+      },
+      "after": {
+        "result": {
+          "status": "ok"
+        },
+        "outputs": {
+          "out": 1
+        },
+        "gates": {
+          "n1": {
+            "in": {
+              "a": 0,
+              "b": 1
+            },
+            "out": {
+              "out": 1
+            }
+          },
+          "n2": {
+            "in": {
+              "a": 0,
+              "b": 1
+            },
+            "out": {
+              "out": 1
+            }
+          },
+          "n3": {
+            "in": {
+              "a": 1,
+              "b": 1
+            },
+            "out": {
+              "out": 0
+            }
+          },
+          "n4": {
+            "in": {
+              "a": 1,
+              "b": 0
+            },
+            "out": {
+              "out": 1
+            }
+          }
+        },
+        "buses": {}
+      },
+      "unchangedByRoundTrip": true,
+      "roundTripWarnings": []
+    },
+    {
+      "inputs": {
+        "a": 1,
+        "b": 0
+      },
+      "before": {
+        "result": {
+          "status": "ok"
+        },
+        "outputs": {
+          "out": 1
+        },
+        "gates": {
+          "n1": {
+            "in": {
+              "a": 1,
+              "b": 0
+            },
+            "out": {
+              "out": 1
+            }
+          },
+          "n2": {
+            "in": {
+              "a": 1,
+              "b": 1
+            },
+            "out": {
+              "out": 0
+            }
+          },
+          "n3": {
+            "in": {
+              "a": 1,
+              "b": 0
+            },
+            "out": {
+              "out": 1
+            }
+          },
+          "n4": {
+            "in": {
+              "a": 0,
+              "b": 1
+            },
+            "out": {
+              "out": 1
+            }
+          }
+        },
+        "buses": {}
+      },
+      "after": {
+        "result": {
+          "status": "ok"
+        },
+        "outputs": {
+          "out": 1
+        },
+        "gates": {
+          "n1": {
+            "in": {
+              "a": 1,
+              "b": 0
+            },
+            "out": {
+              "out": 1
+            }
+          },
+          "n2": {
+            "in": {
+              "a": 1,
+              "b": 1
+            },
+            "out": {
+              "out": 0
+            }
+          },
+          "n3": {
+            "in": {
+              "a": 1,
+              "b": 0
+            },
+            "out": {
+              "out": 1
+            }
+          },
+          "n4": {
+            "in": {
+              "a": 0,
+              "b": 1
+            },
+            "out": {
+              "out": 1
+            }
+          }
+        },
+        "buses": {}
+      },
+      "unchangedByRoundTrip": true,
+      "roundTripWarnings": []
+    },
+    {
+      "inputs": {
+        "a": 1,
+        "b": 1
+      },
+      "before": {
+        "result": {
+          "status": "ok"
+        },
+        "outputs": {
+          "out": 0
+        },
+        "gates": {
+          "n1": {
+            "in": {
+              "a": 1,
+              "b": 1
+            },
+            "out": {
+              "out": 0
+            }
+          },
+          "n2": {
+            "in": {
+              "a": 1,
+              "b": 0
+            },
+            "out": {
+              "out": 1
+            }
+          },
+          "n3": {
+            "in": {
+              "a": 0,
+              "b": 1
+            },
+            "out": {
+              "out": 1
+            }
+          },
+          "n4": {
+            "in": {
+              "a": 1,
+              "b": 1
+            },
+            "out": {
+              "out": 0
+            }
+          }
+        },
+        "buses": {}
+      },
+      "after": {
+        "result": {
+          "status": "ok"
+        },
+        "outputs": {
+          "out": 0
+        },
+        "gates": {
+          "n1": {
+            "in": {
+              "a": 1,
+              "b": 1
+            },
+            "out": {
+              "out": 0
+            }
+          },
+          "n2": {
+            "in": {
+              "a": 1,
+              "b": 0
+            },
+            "out": {
+              "out": 1
+            }
+          },
+          "n3": {
+            "in": {
+              "a": 0,
+              "b": 1
+            },
+            "out": {
+              "out": 1
+            }
+          },
+          "n4": {
+            "in": {
+              "a": 1,
+              "b": 1
+            },
+            "out": {
+              "out": 0
+            }
+          }
+        },
+        "buses": {}
+      },
+      "unchangedByRoundTrip": true,
+      "roundTripWarnings": []
+    }
+  ]
+}
