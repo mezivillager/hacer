@@ -126,9 +126,11 @@ open, 76 unshaped): `projects` marks it `over cap`, the signal for F12's close-o
 ## Commands
 
 - `node scripts/backlog.mjs ready` — pickable tasks in pick order, then every other open task with its one-word reason (`--json` for the array); on stderr, the dormant banner, the slot the cycle resumes at and the claim that puts it there, and `claim history exhausted` when the claims it reads — older pages only until one fixes the slot and the aux turn, at most 10 of 50 issues (#540) — leave that place a guess.
+- `node scripts/backlog.mjs next` — the head of `ready`'s pick order, one line, with `ready`'s stderr; exit 3 when nothing is pickable.
 - `node scripts/backlog.mjs projects` — one line per row above: open · ready (what `ready` picks: a task with a reason is not ready) · in-progress · needs-human · stale claims, if any · `over cap` past the row cap · next pick.
+- `node scripts/backlog.mjs tasks <slug>` — the row's epic and its open sub-issues as a tree, each task with its `pick` number or its reason, then the tasks a `project:` label files under the row from outside that epic.
 - `node scripts/backlog.mjs claim <n> --by <id>` creates `claim/<n>` exclusively, posts the claim comment and labels `in-progress`; `release <n> --by <id>` is the holder's (`--force-stale` for anyone's stale claim).
-- The rule is pure logic in `scripts/backlog.logic.mjs` (`PICK_ROTATION` and `AUX_ROTATION` mirror the cycle above; a test keeps them in step with this file), tested against a recorded `gh issue list` fixture; `tasks` and `next` follow in [#149](https://github.com/mezivillager/hacer/issues/149).
+- The rule is pure logic in `scripts/backlog.logic.mjs` (`PICK_ROTATION` and `AUX_ROTATION` mirror the cycle above; a test keeps them in step with this file), tested against a recorded `gh issue list` fixture. A flag the command does not take exits 2 with the usage, and a portfolio table with no row fails rather than filing every task `unshaped`.
 
 ## Where the rest of the process lives
 
