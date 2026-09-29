@@ -118,6 +118,14 @@ module.exports = {
       to: { path: '^src/core/', pathNot: '^src/core/index\\.ts$' },
     },
     {
+      name: 'surfaces-through-core',
+      severity: 'error',
+      comment:
+        'The CLI and MCP surfaces reach the engine only through src/core, never the store or anything that renders: they must run headless in Node.',
+      from: { path: '^src/(cli|mcp)/' },
+      to: { path: `${STATE}|${UI}` },
+    },
+    {
       name: 'src-no-e2e',
       severity: 'error',
       comment: 'Production code may not import test-harness types from e2e/.',
