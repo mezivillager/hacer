@@ -72,10 +72,13 @@ export type {
   CmpParseError,
   CmpParseResult,
   CmpRow,
+  ChipTest,
   OutputRow,
   RunTestOptions,
   TestFailure,
+  TestReport,
   TestResult,
+  TestSource,
   TSTCommand,
   TSTOutputColumn,
   TSTParseError,
@@ -84,3 +87,5 @@ export type {
 } from './testing'
 // One `.out` cell's text, as the reference IDE writes it: the CLI's `.out` and the Test Lab share it.
 export { compareCmpRow, formatColumnValue, parseCmp, parseTST, runTest } from './testing'
+// A chip tested from its own `.hdl`, never a builtin namesake: every surface that tests sources.
+export { chipTestError, loadChipTest, testChip } from './testing'
