@@ -1,0 +1,759 @@
+{
+  "scenario": "mixed-sweep",
+  "about": "ADR-0008 assertion 7: And, Or and Xor into a Mux's a, b and sel, and the Mux into a Not.",
+  "b004b": {
+    "note": "B-004b (CASE2), docs/development/observed-bugs.md: a confluence is identified only by its confluenceCoord, so wires into two different entities whose input sides snap to one section line share an approach backbone, and ADR-0008's overlap oracle, keyed on the same coordinate, passes it. Each sharedTracks entry below is that bug, not intended routing.",
+    "sharedTracks": []
+  },
+  "scene": {
+    "schemaVersion": 2,
+    "entities": [
+      {
+        "id": "gate-0",
+        "kind": "gate",
+        "ownerId": null,
+        "name": "And",
+        "pinId": null,
+        "world": {
+          "x": -8,
+          "y": 0,
+          "z": -4
+        },
+        "state": {
+          "selected": false,
+          "signal": null
+        }
+      },
+      {
+        "id": "gate-0:a",
+        "kind": "pin",
+        "ownerId": "gate-0",
+        "name": "a",
+        "pinId": "gate-0-in-0",
+        "world": {
+          "x": -8.6,
+          "y": 0,
+          "z": -4.2
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "gate-0:b",
+        "kind": "pin",
+        "ownerId": "gate-0",
+        "name": "b",
+        "pinId": "gate-0-in-1",
+        "world": {
+          "x": -8.6,
+          "y": 0,
+          "z": -3.8
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "gate-0:out",
+        "kind": "pin",
+        "ownerId": "gate-0",
+        "name": "out",
+        "pinId": "gate-0-out-0",
+        "world": {
+          "x": -7.4,
+          "y": 0,
+          "z": -4
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "gate-1",
+        "kind": "gate",
+        "ownerId": null,
+        "name": "Or",
+        "pinId": null,
+        "world": {
+          "x": -8,
+          "y": 0,
+          "z": 0
+        },
+        "state": {
+          "selected": false,
+          "signal": null
+        }
+      },
+      {
+        "id": "gate-1:a",
+        "kind": "pin",
+        "ownerId": "gate-1",
+        "name": "a",
+        "pinId": "gate-1-in-0",
+        "world": {
+          "x": -8.6,
+          "y": 0,
+          "z": -0.2
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "gate-1:b",
+        "kind": "pin",
+        "ownerId": "gate-1",
+        "name": "b",
+        "pinId": "gate-1-in-1",
+        "world": {
+          "x": -8.6,
+          "y": 0,
+          "z": 0.2
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "gate-1:out",
+        "kind": "pin",
+        "ownerId": "gate-1",
+        "name": "out",
+        "pinId": "gate-1-out-0",
+        "world": {
+          "x": -7.4,
+          "y": 0,
+          "z": 0
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "gate-2",
+        "kind": "gate",
+        "ownerId": null,
+        "name": "Xor",
+        "pinId": null,
+        "world": {
+          "x": -8,
+          "y": 0,
+          "z": 4
+        },
+        "state": {
+          "selected": false,
+          "signal": null
+        }
+      },
+      {
+        "id": "gate-2:a",
+        "kind": "pin",
+        "ownerId": "gate-2",
+        "name": "a",
+        "pinId": "gate-2-in-0",
+        "world": {
+          "x": -8.6,
+          "y": 0,
+          "z": 3.8
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "gate-2:b",
+        "kind": "pin",
+        "ownerId": "gate-2",
+        "name": "b",
+        "pinId": "gate-2-in-1",
+        "world": {
+          "x": -8.6,
+          "y": 0,
+          "z": 4.2
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "gate-2:out",
+        "kind": "pin",
+        "ownerId": "gate-2",
+        "name": "out",
+        "pinId": "gate-2-out-0",
+        "world": {
+          "x": -7.4,
+          "y": 0,
+          "z": 4
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "gate-3",
+        "kind": "gate",
+        "ownerId": null,
+        "name": "Mux",
+        "pinId": null,
+        "world": {
+          "x": 6,
+          "y": 0,
+          "z": 0
+        },
+        "state": {
+          "selected": false,
+          "signal": null
+        }
+      },
+      {
+        "id": "gate-3:a",
+        "kind": "pin",
+        "ownerId": "gate-3",
+        "name": "a",
+        "pinId": "gate-3-in-0",
+        "world": {
+          "x": 5.375,
+          "y": 0,
+          "z": -0.4
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "gate-3:b",
+        "kind": "pin",
+        "ownerId": "gate-3",
+        "name": "b",
+        "pinId": "gate-3-in-1",
+        "world": {
+          "x": 5.375,
+          "y": 0,
+          "z": 0
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "gate-3:sel",
+        "kind": "pin",
+        "ownerId": "gate-3",
+        "name": "sel",
+        "pinId": "gate-3-in-2",
+        "world": {
+          "x": 5.375,
+          "y": 0,
+          "z": 0.4
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "gate-3:out",
+        "kind": "pin",
+        "ownerId": "gate-3",
+        "name": "out",
+        "pinId": "gate-3-out-0",
+        "world": {
+          "x": 6.625,
+          "y": 0,
+          "z": 0
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "gate-4",
+        "kind": "gate",
+        "ownerId": null,
+        "name": "Not",
+        "pinId": null,
+        "world": {
+          "x": 14,
+          "y": 0,
+          "z": 2
+        },
+        "state": {
+          "selected": false,
+          "signal": null
+        }
+      },
+      {
+        "id": "gate-4:in",
+        "kind": "pin",
+        "ownerId": "gate-4",
+        "name": "in",
+        "pinId": "gate-4-in-0",
+        "world": {
+          "x": 13.425,
+          "y": 0,
+          "z": 2
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "gate-4:out",
+        "kind": "pin",
+        "ownerId": "gate-4",
+        "name": "out",
+        "pinId": "gate-4-out-0",
+        "world": {
+          "x": 14.575,
+          "y": 0,
+          "z": 2
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "wire-0",
+        "kind": "wire",
+        "ownerId": null,
+        "name": null,
+        "pinId": null,
+        "world": {
+          "x": 0.7875,
+          "y": 0.2,
+          "z": -4
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "wire-1",
+        "kind": "wire",
+        "ownerId": null,
+        "name": null,
+        "pinId": null,
+        "world": {
+          "x": -1.0125,
+          "y": 0.2,
+          "z": 0
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "wire-2",
+        "kind": "wire",
+        "ownerId": null,
+        "name": null,
+        "pinId": null,
+        "world": {
+          "x": 0.7875,
+          "y": 0.2,
+          "z": 4
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "wire-3",
+        "kind": "wire",
+        "ownerId": null,
+        "name": null,
+        "pinId": null,
+        "world": {
+          "x": 11.025,
+          "y": 0.2,
+          "z": 0
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      }
+    ]
+  },
+  "wires": [
+    {
+      "id": "wire-0",
+      "from": {
+        "type": "gate",
+        "entityId": "gate-0",
+        "pinId": "gate-0-out-0"
+      },
+      "to": {
+        "type": "gate",
+        "entityId": "gate-3",
+        "pinId": "gate-3-in-0"
+      },
+      "segments": [
+        {
+          "start": {
+            "x": -7.4,
+            "y": 0.2,
+            "z": -4
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": -4
+          },
+          "type": "exit"
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": -4
+          },
+          "end": {
+            "x": 0,
+            "y": 0.2,
+            "z": -4
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": 0,
+            "y": 0.2,
+            "z": -4
+          },
+          "end": {
+            "x": 4,
+            "y": 0.2,
+            "z": -4
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": 4,
+            "y": 0.2,
+            "z": -4
+          },
+          "end": {
+            "x": 4,
+            "y": 0.2,
+            "z": -0.4
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": 4
+        },
+        {
+          "start": {
+            "x": 4,
+            "y": 0.2,
+            "z": -0.4
+          },
+          "end": {
+            "x": 4.275,
+            "y": 0.2,
+            "z": -0.4
+          },
+          "type": "horizontal",
+          "approach": true
+        },
+        {
+          "start": {
+            "x": 4.275,
+            "y": 0.2,
+            "z": -0.4
+          },
+          "end": {
+            "x": 5.375,
+            "y": 0.2,
+            "z": -0.4
+          },
+          "type": "entry",
+          "approach": true
+        }
+      ]
+    },
+    {
+      "id": "wire-1",
+      "from": {
+        "type": "gate",
+        "entityId": "gate-1",
+        "pinId": "gate-1-out-0"
+      },
+      "to": {
+        "type": "gate",
+        "entityId": "gate-3",
+        "pinId": "gate-3-in-1"
+      },
+      "segments": [
+        {
+          "start": {
+            "x": -7.4,
+            "y": 0.2,
+            "z": 0
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 0
+          },
+          "type": "exit"
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 0
+          },
+          "end": {
+            "x": 0,
+            "y": 0.2,
+            "z": 0
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": 0,
+            "y": 0.2,
+            "z": 0
+          },
+          "end": {
+            "x": 4,
+            "y": 0.2,
+            "z": 0
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": 4,
+            "y": 0.2,
+            "z": 0
+          },
+          "end": {
+            "x": 5.075,
+            "y": 0.2,
+            "z": 0
+          },
+          "type": "horizontal",
+          "approach": true
+        },
+        {
+          "start": {
+            "x": 5.075,
+            "y": 0.2,
+            "z": 0
+          },
+          "end": {
+            "x": 5.375,
+            "y": 0.2,
+            "z": 0
+          },
+          "type": "entry",
+          "approach": true
+        }
+      ]
+    },
+    {
+      "id": "wire-2",
+      "from": {
+        "type": "gate",
+        "entityId": "gate-2",
+        "pinId": "gate-2-out-0"
+      },
+      "to": {
+        "type": "gate",
+        "entityId": "gate-3",
+        "pinId": "gate-3-in-2"
+      },
+      "segments": [
+        {
+          "start": {
+            "x": -7.4,
+            "y": 0.2,
+            "z": 4
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 4
+          },
+          "type": "exit"
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 4
+          },
+          "end": {
+            "x": 0,
+            "y": 0.2,
+            "z": 4
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": 0,
+            "y": 0.2,
+            "z": 4
+          },
+          "end": {
+            "x": 4,
+            "y": 0.2,
+            "z": 4
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": 4,
+            "y": 0.2,
+            "z": 4
+          },
+          "end": {
+            "x": 4,
+            "y": 0.2,
+            "z": 0.4
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": 4
+        },
+        {
+          "start": {
+            "x": 4,
+            "y": 0.2,
+            "z": 0.4
+          },
+          "end": {
+            "x": 4.675,
+            "y": 0.2,
+            "z": 0.4
+          },
+          "type": "horizontal",
+          "approach": true
+        },
+        {
+          "start": {
+            "x": 4.675,
+            "y": 0.2,
+            "z": 0.4
+          },
+          "end": {
+            "x": 5.375,
+            "y": 0.2,
+            "z": 0.4
+          },
+          "type": "entry",
+          "approach": true
+        }
+      ]
+    },
+    {
+      "id": "wire-3",
+      "from": {
+        "type": "gate",
+        "entityId": "gate-3",
+        "pinId": "gate-3-out-0"
+      },
+      "to": {
+        "type": "gate",
+        "entityId": "gate-4",
+        "pinId": "gate-4-in-0"
+      },
+      "segments": [
+        {
+          "start": {
+            "x": 6.625,
+            "y": 0.2,
+            "z": 0
+          },
+          "end": {
+            "x": 8,
+            "y": 0.2,
+            "z": 0
+          },
+          "type": "exit"
+        },
+        {
+          "start": {
+            "x": 8,
+            "y": 0.2,
+            "z": 0
+          },
+          "end": {
+            "x": 12,
+            "y": 0.2,
+            "z": 0
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": 12,
+            "y": 0.2,
+            "z": 0
+          },
+          "end": {
+            "x": 12,
+            "y": 0.2,
+            "z": 2
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": 12
+        },
+        {
+          "start": {
+            "x": 12,
+            "y": 0.2,
+            "z": 2
+          },
+          "end": {
+            "x": 12.7125,
+            "y": 0.2,
+            "z": 2
+          },
+          "type": "horizontal",
+          "approach": true
+        },
+        {
+          "start": {
+            "x": 12.7125,
+            "y": 0.2,
+            "z": 2
+          },
+          "end": {
+            "x": 13.425,
+            "y": 0.2,
+            "z": 2
+          },
+          "type": "entry",
+          "approach": true
+        }
+      ]
+    }
+  ]
+}
