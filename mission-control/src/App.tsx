@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Charts } from './Charts'
 import { Overview } from './Overview'
 import { Process } from './Process'
 import { ProjectTasks } from './ProjectTasks'
@@ -22,7 +23,7 @@ export function App({ load = loadSnapshot, now = Date.now }: { load?: () => Prom
     <main className="mc">
       <header>
         <h1>Mission Control</h1>
-        <nav><a href="#/">Overview</a> <a href="#/projects">Projects</a> <a href="#/process">Process</a> <a href="#/timeline">Timeline</a></nav>
+        <nav><a href="#/">Overview</a> <a href="#/projects">Projects</a> <a href="#/process">Process</a> <a href="#/timeline">Timeline</a> <a href="#/charts">Charts</a></nav>
         <p>Snapshot {when(snapshot.generatedAt)} · <a href={`${REPO}/commit/${snapshot.head.sha}`} title={snapshot.head.subject}>
           {snapshot.head.sha.slice(0, 7)}</a></p>
       </header>
@@ -33,6 +34,7 @@ export function App({ load = loadSnapshot, now = Date.now }: { load?: () => Prom
       {route.view === 'project' && <ProjectTasks snapshot={snapshot} slug={route.slug} />}
       {route.view === 'process' && <Process snapshot={snapshot} />}
       {route.view === 'timeline' && <Timeline snapshot={snapshot} />}
+      {route.view === 'charts' && <Charts snapshot={snapshot} />}
     </main>
   )
 }
