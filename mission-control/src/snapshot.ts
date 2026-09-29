@@ -3,7 +3,7 @@
 
 export type Status = 'ok' | 'partial' | 'error'
 export interface Freshness { source: string; fetchedAt: string | null; status: Status; error?: string }
-export interface Task { number: number; title: string; project: string | null; pickable: boolean; reason: string | null }
+export interface Task { number: number; title: string; labels: string[]; project: string | null; pickable: boolean; reason: string | null }
 export interface Project {
   rank: number; slug: string; lane: string; epicNumber: number; title: string | null
   open: number; ready: number; inProgress: number; needsHuman: number
