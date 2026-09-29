@@ -6,7 +6,7 @@ import {
 } from '../backlog.logic.mjs'
 import { VENDORED_PROJECTS } from '../sync-vectors.logic.mjs'
 import {
-  FLOW_PAGES, SCHEMA_VERSION, buildSnapshot, checksQuery, claimHistoryQuery, claimsQuery, flowQuery, parsePrevious, readFlowPages, report,
+  FLOW_PAGES, SCHEMA_VERSION, archiveDays, buildSnapshot, checksQuery, claimHistoryQuery, claimsQuery, flowQuery, parsePrevious, readFlowPages, report,
   validateSnapshot,
 } from './collect.logic.mjs'
 
@@ -42,6 +42,12 @@ import {
 //                      11:51Z on 2026-09-27 (origin/main 76bd9bb): all 154 merged PRs, 2026-09-17 to 09-27 — the 118
 //                      merged by NOW are the window — one per line, each comment body cut to its first non-blank line,
 //                      the line a verdict opens with (#539)
+//   gh-pages-history.json `git ls-tree --name-only origin/gh-pages control/history/` at 11:14Z on 2026-09-29 (`names`,
+//                      all 37), and `git show` of the archived snapshots archiveDays picks for 2026-09-29T08:21:27.364Z,
+//                      each reduced to the fields read: `generatedAt`, `freshness.tasks`, `tasks.byProject` (#478)
+//   snapshot-2026-09-29.json the newest of those names, whole, as archived: the fixture the charts render (#478), since
+//                      snapshot.json predates the archive. Its `metrics.openTasks` is spliced in, this collector over
+//                      gh-pages-history.json at its own `generatedAt`; snapshot.json's is [], the archive not yet begun
 // The process records (ledger, sessions, ADRs, roadmap, cloud inbox) are read live, as
 // backlog.logic.test.mjs reads docs/portfolio.md: a format change there fails here, not silently in the site.
 
@@ -85,6 +91,7 @@ function inputs(overrides = {}) {
     checkRuns: ok('gh api graphql (check runs)', fixture('gh-check-runs.json')),
     flowPrs: ok('gh api graphql (flow)', fixture('gh-flow.json')),
     vectors: ok('conformance/vectors', vectorFiles()),
+    archive: ok('git show origin/gh-pages:control/history', fixture('gh-pages-history.json').snapshots),
     ...overrides,
   }
 }
@@ -480,6 +487,13 @@ describe('collect.logic', () => {
     expect(validateSnapshot(site)).toEqual([])
     // Its metrics.flow, spliced in, is this collector's over the recording at the fixture's own time (#539).
     expect(site.metrics.flow).toEqual(build({}, { now: site.generatedAt }).metrics.flow)
+    expect(site.metrics.openTasks).toEqual(build({}, { now: site.generatedAt }).metrics.openTasks)
+  })
+
+  it('the charts\' fixture, snapshot-2026-09-29.json, is a valid schema v1 snapshot; its openTasks is this collector\'s', () => {
+    const site = fixture('snapshot-2026-09-29.json')
+    expect(validateSnapshot(site)).toEqual([])
+    expect(site.metrics.openTasks).toEqual(build({}, { now: site.generatedAt }).metrics.openTasks)
   })
 
   // MC-6 (#477): each required check publishes its line as a notice — an annotation on its own check run.
@@ -692,12 +706,56 @@ describe('metrics.flow and metrics.conformance', () => {
     const { flow, ...older } = good.metrics // metrics as written before #539
     const noBaseline = { baseline: failed('.dependency-cruiser-known-violations.json', 'ENOENT') }
     const next = build(noBaseline, { now: LATER, previous: { ...good, metrics: older } })
-    expect(next.metrics).toEqual({ ratchet: { count: 0, byRule: {}, history: [] }, releases: [], mergesPerDay: [], flow: null, conformance: null })
+    expect(next.metrics).toEqual({
+      ratchet: { count: 0, byRule: {}, history: [] }, releases: [], mergesPerDay: [], flow: null, conformance: null, openTasks: null,
+    })
     expect(next.freshness.metrics).toMatchObject({ fetchedAt: null, status: 'error' })
     expect(validateSnapshot(next)).toEqual([])
     // One that conforms is still kept, dated when it was fetched.
     const kept = build(noBaseline, { now: LATER, previous: good })
     expect([kept.metrics, kept.freshness.metrics.fetchedAt]).toEqual([good.metrics, NOW])
+  })
+})
+
+describe('metrics.openTasks, from the history archive (#478)', () => {
+  const history = fixture('gh-pages-history.json')
+  const AT = '2026-09-29T08:21:27.364Z' // the newest archived snapshot's own time
+  const counts = (points) => points.map(({ date, at, byProject }) => [date, at, byProject.foundation.length, Object.values(byProject).flat().length])
+
+  it('archiveDays: the last archived snapshot of each UTC day before now; a name not a snapshot\'s own is never read', () => {
+    expect(archiveDays(history.names, AT)).toEqual([
+      '2026-09-25T21:29:17.561Z.json', '2026-09-26T22:41:12.046Z.json', '2026-09-27T22:02:34.881Z.json',
+      '2026-09-28T21:52:06.501Z.json', '2026-09-29T01:49:13.340Z.json',
+    ])
+    expect(archiveDays([...history.names, 'index.json', '2026-09-30.json', '../2026-09-28T23:00:00.000Z.json'], AT))
+      .toEqual(archiveDays(history.names, AT))
+    expect(archiveDays(history.names, '2026-09-25T07:07:45.960Z')).toEqual([]) // the archive's first run read none
+  })
+
+  it('one point per UTC day: that day\'s last archived reading of tasks.byProject, oldest first, none from after now', () => {
+    const { metrics, freshness } = build({}, { now: AT })
+    expect(counts(metrics.openTasks)).toEqual([
+      ['2026-09-25', '2026-09-25T21:29:17.561Z', 38, 138], ['2026-09-26', '2026-09-26T22:41:12.046Z', 38, 138],
+      ['2026-09-27', '2026-09-27T22:02:34.881Z', 37, 138], ['2026-09-28', '2026-09-28T21:52:06.501Z', 37, 140],
+      ['2026-09-29', '2026-09-29T01:49:13.340Z', 37, 140],
+    ])
+    expect(metrics.openTasks[4].byProject.unfiled).toEqual(history.snapshots[4].tasks.byProject.unfiled)
+    expect(freshness.metrics.status).toBe('ok')
+    expect(counts(build({}, { now: '2026-09-27T00:00:00.000Z' }).metrics.openTasks).map(([date]) => date)).toEqual(['2026-09-25', '2026-09-26'])
+  })
+
+  it('a reading whose tasks section was in error is not that day\'s; a failed archive read leaves openTasks null, metrics partial', () => {
+    const [first, ...rest] = history.snapshots
+    const stale = { ...first, freshness: { tasks: { fetchedAt: null, status: 'error' } } }
+    const skipped = build({ archive: ok('git show origin/gh-pages:control/history', [stale, ...rest]) }, { now: AT })
+    expect(counts(skipped.metrics.openTasks)[0][0]).toBe('2026-09-26')
+
+    const failedRead = build({ archive: failed('git show origin/gh-pages:control/history', 'fatal: Not a valid object name origin/gh-pages') })
+    expect(failedRead.metrics.openTasks).toBeNull()
+    expect(failedRead.freshness.metrics).toMatchObject({ status: 'partial', error: 'archive: fatal: Not a valid object name origin/gh-pages' })
+    expect(validateSnapshot(failedRead)).toEqual([])
+    expect(validateSnapshot({ ...failedRead, metrics: { ...failedRead.metrics, openTasks: [{ date: '2026-09-25', at: 'x', byProject: [] }] } }))
+      .toEqual(['metrics.openTasks[0].at must be an ISO date', 'metrics.openTasks[0].byProject must be an object'])
   })
 })
 
