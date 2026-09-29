@@ -4,12 +4,32 @@
  * oracle is a protected path today, plus the legacy app's characterization
  * goldens (#331), which record behaviour that is deleted after they are taken.
  */
-export const PROTECTED_GLOBS = ['conformance/vectors/**', '**/__snapshots__/characterization/**']
+/** Each protected glob with the reason it is protected, for the warning that names it. */
+export const PROTECTED_PATHS = [
+  {
+    glob: 'conformance/vectors/**',
+    reason: 'held-out oracle (#193)',
+    matches: (path) => path.startsWith('conformance/vectors/'),
+  },
+  {
+    glob: '**/__snapshots__/characterization/**',
+    reason: 'characterization golden: records legacy behaviour deleted after capture (#331)',
+    matches: (path) => /(^|\/)__snapshots__\/characterization\//.test(path),
+  },
+]
 
-const CHARACTERIZATION = /(^|\/)__snapshots__\/characterization\//
+export const PROTECTED_GLOBS = PROTECTED_PATHS.map((entry) => entry.glob)
+
+/**
+ * The protected entry a file falls under, or undefined.
+ * @param {string} filename repo-relative path, as the pulls API reports it
+ */
+export function protectedEntryFor(filename) {
+  const path = filename.replaceAll('\\', '/')
+  return PROTECTED_PATHS.find((entry) => entry.matches(path))
+}
 
 /** @param {string} filename repo-relative path, as the pulls API reports it */
 export function isProtectedPath(filename) {
-  const path = filename.replaceAll('\\', '/')
-  return path.startsWith('conformance/vectors/') || CHARACTERIZATION.test(path)
+  return protectedEntryFor(filename) !== undefined
 }

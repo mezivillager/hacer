@@ -6,7 +6,7 @@
 // highest level any finding reaches. To add a rule (e.g. #151's tamper flag: protected
 // paths touched), append it to RULES — nothing else needs to change.
 
-import { isProtectedPath } from './protected-paths.logic.mjs'
+import { PROTECTED_PATHS, protectedEntryFor } from './protected-paths.logic.mjs'
 
 export const WARN_LINES = 200
 export const FAIL_LINES = 400
@@ -645,17 +645,19 @@ function ratchetGrowth({ body, ratchet }) {
  * sticky comment and the rest of the protected-path list.
  */
 function protectedPath({ files }) {
-  const touched = files.map((entry) => entry.filename).filter((name) => isProtectedPath(name))
+  const groups = PROTECTED_PATHS.map((entry) => ({ entry, names: [] }))
+  for (const { filename } of files) {
+    const entry = protectedEntryFor(filename)
+    if (entry) groups.find((group) => group.entry === entry).names.push(filename)
+  }
+  const touched = groups.filter((group) => group.names.length > 0)
   if (touched.length === 0) return []
-  const shown = touched.slice(0, 8)
-  const more = touched.length > shown.length ? ` (+${touched.length - shown.length} more)` : ''
-  return [
-    {
-      rule: 'protected-path',
-      level: 'warn',
-      message: `protected path touched: ${shown.join(', ')}${more}. conformance/vectors/** is the held-out oracle`,
-    },
-  ]
+  const parts = touched.map(({ entry, names }) => {
+    const shown = names.slice(0, 8)
+    const more = names.length > shown.length ? ` (+${names.length - shown.length} more)` : ''
+    return `${entry.glob} is protected as ${entry.reason}: ${shown.join(', ')}${more}`
+  })
+  return [{ rule: 'protected-path', level: 'warn', message: `protected path touched — ${parts.join('; ')}` }]
 }
 
 export const RULES = [sizeBudget, linkedIssue, ratchetGrowth, protectedPath]
