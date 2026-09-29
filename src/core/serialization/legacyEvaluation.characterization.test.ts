@@ -2,7 +2,8 @@
  * Characterization of the legacy evaluator (#331): what `evaluateCircuit` computes
  * on hand-built version-1 documents, before and after `serializeCircuit` → `deserializeCircuit`.
  *
- * It records today's behaviour, including what looks wrong, so it asserts nothing but the goldens.
+ * It records today's behaviour, including what looks wrong, so it asserts nothing about the evaluator
+ * but the goldens; the other tests check that the goldens can catch a change.
  * ADR-0020 §7.5d deletes `topologicalEval.ts` and `serialize.ts`; from then on these goldens are
  * the importer's acceptance test, so each one carries its own document. They sit on a protected
  * path (`scripts/protected-paths.logic.mjs`): re-recording one with `vitest -u` is flagged on the PR.
@@ -353,10 +354,13 @@ function load(saved: SerializedCircuit) {
   return { doc, warnings }
 }
 
-// `serializeCircuit` reads only the six document fields; its parameter is typed as the whole store.
-const asSaveable = (doc: DeserializedCircuit) => doc as Parameters<typeof serializeCircuit>[0]
+/** Writes a loaded document back out; a test swaps in a lossy one to prove the round-trip flag. */
+type Save = (doc: DeserializedCircuit, name: string) => SerializedCircuit
 
-function characterize(fixture: Fixture) {
+// `serializeCircuit` reads only the six document fields; its parameter is typed as the whole store.
+const save: Save = (doc, name) => serializeCircuit(doc as Parameters<typeof serializeCircuit>[0], name)
+
+function characterize(fixture: Fixture, roundTrip: Save = save) {
   return {
     fixture: fixture.name,
     about: fixture.about,
@@ -369,7 +373,7 @@ function characterize(fixture: Fixture) {
         if (value !== undefined) node.value = value
       }
       const before = observe(doc, evaluateCircuit(doc))
-      const reloaded = load(serializeCircuit(asSaveable(doc), fixture.name))
+      const reloaded = load(roundTrip(doc, fixture.name))
       const after = observe(reloaded.doc, evaluateCircuit(reloaded.doc))
       return {
         inputs,
@@ -386,5 +390,17 @@ describe('legacy evaluation, before and after serialize → deserialize (charact
   it.each(FIXTURES.map((f) => [f.name, f] as const))('%s', async (name, fixture) => {
     const golden = `${JSON.stringify(characterize(fixture), null, 2)}\n`
     await expect(golden).toMatchFileSnapshot(`__snapshots__/characterization/evaluation/${name}.json`)
+  })
+
+  it('flags a round trip that drops the wire into an output', () => {
+    const xor = FIXTURES.find((f) => f.name === 'xor-fanout-junctions')
+    if (!xor) throw new Error('xor-fanout-junctions is not in FIXTURES')
+    const dropOutputWires: Save = (doc, name) => {
+      const saved = save(doc, name)
+      return { ...saved, wires: saved.wires.filter((w) => w.to.type !== 'output') }
+    }
+    // Only the vectors whose Xor is 1 lose a value.
+    const flags = characterize(xor, dropOutputWires).vectors.map((v) => v.unchangedByRoundTrip)
+    expect(flags).toEqual([true, false, false, true])
   })
 })
