@@ -46,6 +46,7 @@ const CORE_EXPORTS = [
   'createChipRegistry',
   'evaluateChip',
   'evaluateChipWithCtx',
+  'formatColumnValue',
   'getBuiltinChipRegistry',
   'getUserChipRegistry',
   'hdlChipDefinition',
