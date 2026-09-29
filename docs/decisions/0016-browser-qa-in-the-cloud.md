@@ -1,6 +1,6 @@
 # 0016. Browser QA in the cloud is required for critical changes
 
-- **Status:** Accepted — amends [ADR-0012](0012-e2e-tests-manual-only.md); amended 2026-09-19 (#282, see *Amendment* below)
+- **Status:** Accepted — amends [ADR-0012](0012-e2e-tests-manual-only.md); amended 2026-09-19 (#282) and 2026-09-29 (#316), see the *Amendment* sections below
 - **Date:** 2026-09-18
 - **Amends:** ADR-0012 §1
 - **Deciders:** Repo owner (issue #220; QA agent in #257)
@@ -49,6 +49,7 @@ policy: the other half is an *independent* QA that drives the changed flow in a 
    developer machine. 2D and other browser tests *may* be run locally by choice; **3D (`@ui`)
    never runs on the owner's laptop** — CI or a cloud session only.
    *Amended 2026-09-19 (#282): locally, only suites that do not mount the 3D canvas — see below.*
+   *Amended 2026-09-29 (#316): the canvas-less `@shell` suite may run locally, as a pre-flight — see below.*
 4. **Playwright in CI tests what ships** (#218 folded in): with `CI` set, the `webServer` in
    `playwright.config.ts` runs `vite build` and serves the bundle with `vite preview`; locally
    it keeps the dev server and reuses one already running.
@@ -99,6 +100,7 @@ stands.
    suites that do not mount the 3D canvas — the future 2D surface and the DOM shell — and never
    as a gate. Every Playwright suite today, `@store` included, loads the whole app, and `App`
    mounts the canvas (`<Shell scene={<CanvasArea />} />`), so none of them runs on a laptop.
+   *Amended 2026-09-29 (#316): `@shell` mounts no canvas and may — see below.*
 4. **3D browser testing is a separate, far-future, cloud-only research task** (#284), to start
    once the other surfaces have caught up with the 3D one.
 
@@ -108,13 +110,42 @@ cloud run); a canvas, gate or node change no longer gets `@ui`, so its browser-l
 `scripts/browser-qa.logic.mjs`, the `browser-qa.yml` header, `docs/harness/README.md` (checks
 row) and `AGENTS.md` §4.
 
+## Amendment 2026-09-29 (#316)
+ADR-0019 gave the app a canvas-less mode (`?renderer=none`, #315), so a suite that mounts no canvas
+now exists. This replaces the last sentence of the 2026-09-19 amendment's point 3; the rest stands.
+
+1. **`@shell` is the canvas-less suite.** Its specs live in `e2e/shell/` and run only in the `shell`
+   project of `playwright.config.ts`, which launches Chromium with WebGL switched off. Each spec
+   boots `/?notour=1&renderer=none` and fails if `__SCENE_READY__` is set. The `chromium` project
+   ignores `e2e/shell/`, so `@shell` runs in one configuration in CI and locally (ADR-0019).
+2. **It may run on a laptop, as a pre-flight and never as a gate:**
+   `pnpm exec playwright test --project shell`. No definition of done, hook, skill or required
+   check asks for it or reads its result. The merge gate is still `browser-qa`'s `@store` run in
+   CI against the built bundle (§2, §4). In CI, `@shell` runs by hand:
+   `gh workflow run e2e.yml -f suite=shell`.
+3. **What a local run may conclude:** the DOM shell (toolbar, panels, status bar, overlays) mounts
+   with no canvas, and the flows its specs drive through the DOM and the store bridge work in a
+   real browser against the dev server. A local failure is a real finding, to fix before pushing.
+4. **What it may not conclude:** anything about the 3D scene (ADR-0019, *What is not available
+   under `renderer=none`*); anything about the shipped bundle, since a local run uses the dev
+   server and CI uses `vite preview` (§4); anything about `@store` or `@ui`, which still mount the
+   canvas and still never run on a laptop. ADR-0019's local `@store` pre-flight needs a
+   canvas-less `@store` configuration, which does not exist yet.
+
+Consequences: the DOM shell, and later the 2D surface (#211), get a browser loop on the owner's
+laptop. The cost is that every `@shell` spec must hold without a canvas; the project enforces that
+by switching WebGL off rather than trusting each spec. Updated alongside: `playwright.config.ts`,
+`.github/workflows/e2e.yml` (the `shell` suite), `docs/harness/README.md` (checks row), and the
+local-run notes in `docs/testing/README.md`, `docs/testing/standards.md`, `HACER_LLM_GUIDE.md`,
+`docs/llm-workflow.md` and `docs/cognitive-protocols.md`.
+
 ## Affected living docs
 `docs/decisions/0012-e2e-tests-manual-only.md` (status), `docs/decisions/README.md` (index),
 `docs/harness/README.md` (checks table), `AGENTS.md` (§4 CI layers), `playwright.config.ts` —
 updated alongside this ADR.
 
 ## Links
-- [[0012-e2e-tests-manual-only]] · [[0013-backlog-in-github-issues-and-portfolio]]
+- [[0012-e2e-tests-manual-only]] · [[0013-backlog-in-github-issues-and-portfolio]] · [[0019-canvas-less-shell-mode]]
 - Issues #220 (this ADR + workflow), #218 (built bundle, folded in), #257 (QA agent), #282 (the
-  2026-09-19 amendment), #284 (3D browser-testing research)
+  2026-09-19 amendment), #284 (3D browser-testing research), #316 (the 2026-09-29 amendment)
 - `.github/workflows/browser-qa.yml`, `scripts/browser-qa.mjs`, `scripts/browser-qa.logic.mjs`
