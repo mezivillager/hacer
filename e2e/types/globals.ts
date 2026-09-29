@@ -19,7 +19,12 @@ import type { SceneDescription, SceneProjection } from '../../src/components/can
 export interface SceneHelpers {
   projectToScreen: (position: { x: number; y: number; z: number }) => { x: number; y: number }
   canvasRect: () => DOMRect
+  /**
+   * Every gate, bus, I/O node, junction, pin and wire: id, kind, world position, selected, signal.
+   * Needs no camera, so it can be kept as a golden (ADR-0020 §9).
+   */
   scene: () => SceneDescription
+  /** Where `scene()`'s entity `id` lands on the canvas; `null` for an id it does not list. Only a renderer with a camera supplies it. */
   project?: (id: string) => SceneProjection | null
 }
 

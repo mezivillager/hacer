@@ -1,12 +1,12 @@
 import { Vector3, type Camera } from 'three'
 import type { CircuitStore, InputNode, OutputNode, Pin, Position } from '@/store/types'
-import type { WireSegment } from '@/utils/wiringScheme/types'
+import { HOP_HEIGHT, WIRE_HEIGHT, type WireSegment } from '@/utils/wiringScheme/types'
 import { calculateNodePinPosition } from '@/nodes/config'
 import { getSignalSourceValue } from '@/simulation/topologicalEval'
 import { deriveWire3DProps } from '../deriveWire3DProps'
 
 /** Bumped whenever the shape of {@link SceneDescription} changes. */
-export const SCENE_DESCRIPTION_SCHEMA_VERSION = 1
+export const SCENE_DESCRIPTION_SCHEMA_VERSION = 2
 
 /** What a described entity is. `input` / `output` are the circuit's I/O nodes. */
 export type SceneEntityKind = 'gate' | 'bus' | 'input' | 'output' | 'junction' | 'pin' | 'wire'
@@ -18,8 +18,6 @@ export interface ScreenPoint {
 }
 
 export interface SceneEntityState {
-  /** In front of the camera and inside the canvas; `null` when nothing projected it. */
-  visible: boolean | null
   /** Selected as the app shows it. Pins and junctions cannot be selected. */
   selected: boolean
   /** The value the scene draws; `null` for gates and buses, whose values sit on their pins. */
@@ -37,11 +35,14 @@ export interface SceneEntity {
   /** The store's pin id, which wire endpoints reference; `null` for non-pins and I/O-node pins. */
   pinId: string | null
   world: Position
-  /** `null` when nothing projected it, or it projects to no finite point. */
-  screen: ScreenPoint | null
   state: SceneEntityState
 }
 
+/**
+ * The scene as data. It needs no camera, so it can be kept as a golden; where an entity lands on
+ * the canvas is a {@link SceneProjection}. A wire with no segments and an endpoint that cannot be
+ * resolved has no position and is left out.
+ */
 export interface SceneDescription {
   schemaVersion: typeof SCENE_DESCRIPTION_SCHEMA_VERSION
   entities: SceneEntity[]
@@ -58,13 +59,12 @@ export interface CanvasProjection extends ScreenPoint {
   visible: boolean
 }
 
+/** Where one entity lands on the canvas, which only a renderer with a camera can say. */
 export interface SceneProjection {
+  /** `null` when the entity projects to no finite point. */
   screen: ScreenPoint | null
+  /** Drawn, in front of the camera and inside the canvas. */
   visible: boolean
-}
-
-export function projectSceneEntity(_state: CircuitStore, _id: string, _project: Projector): SceneProjection | null {
-  return null
 }
 
 /** Maps a world position to the canvas; supplied only where a camera exists. */
@@ -106,9 +106,7 @@ interface EntityFacts {
   drawn?: boolean
 }
 
-function toEntity(facts: EntityFacts, project: Projector | undefined): SceneEntity {
-  const projected = project?.(facts.world)
-  const onCanvas = projected !== undefined && Number.isFinite(projected.x) && Number.isFinite(projected.y)
+function toEntity(facts: EntityFacts): SceneEntity {
   return {
     id: facts.id,
     kind: facts.kind,
@@ -116,12 +114,7 @@ function toEntity(facts: EntityFacts, project: Projector | undefined): SceneEnti
     name: facts.name ?? null,
     pinId: facts.pinId ?? null,
     world: roundPoint(facts.world),
-    screen: onCanvas ? { x: round(projected.x), y: round(projected.y) } : null,
-    state: {
-      visible: projected === undefined ? null : onCanvas && projected.visible && (facts.drawn ?? true),
-      selected: facts.selected ?? false,
-      signal: facts.signal,
-    },
+    state: { selected: facts.selected ?? false, signal: facts.signal },
   }
 }
 
@@ -152,27 +145,33 @@ function lerp(a: Position, b: Position, t: number): Position {
   return { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t, z: a.z + (b.z - a.z) * t }
 }
 
-/** The point half the path length along the segments; `null` when there are none. */
+/**
+ * The point `t` of the way along a segment's chord, on the segment as Wire3D draws it. Wire3D draws
+ * a hop as a half-ellipse over its chord, from WIRE_HEIGHT at the ends to HOP_HEIGHT at the centre,
+ * and an arc without its centre or radius as the chord itself.
+ */
+function onDrawnSegment(segment: WireSegment, t: number): Position {
+  const onChord = lerp(segment.start, segment.end, t)
+  const { arcCenter: centre, arcRadius: radius } = segment
+  if (segment.type !== 'arc' || !centre || radius === undefined || radius <= 0) return onChord
+  const alongX = Math.abs(segment.start.z - segment.end.z) < 0.001
+  const offset = Math.min(1, Math.abs(alongX ? onChord.x - centre.x : onChord.z - centre.z) / radius)
+  return { ...onChord, y: WIRE_HEIGHT + (HOP_HEIGHT - WIRE_HEIGHT) * Math.sqrt(1 - offset * offset) }
+}
+
+/** Half the path length along the segments, a hop measured by its chord; `null` when there are none. */
 function halfwayAlong(segments: WireSegment[]): Position | null {
   const lengths = segments.map((s) => Math.hypot(s.end.x - s.start.x, s.end.y - s.start.y, s.end.z - s.start.z))
   let remaining = lengths.reduce((sum, length) => sum + length, 0) / 2
   for (const [i, segment] of segments.entries()) {
     const length = lengths[i]
-    if (remaining <= length) return lerp(segment.start, segment.end, length === 0 ? 0 : remaining / length)
+    if (remaining <= length) return onDrawnSegment(segment, length === 0 ? 0 : remaining / length)
     remaining -= length
   }
   return segments.length > 0 ? segments[segments.length - 1].end : null
 }
 
-/**
- * Describes every gate, bus, I/O node, junction, pin and wire in the store as JSON-serialisable
- * data, in store order with each owner's pins after it. Signals follow what CanvasArea draws:
- * wires and junctions read 0 while the simulation is stopped. Reads the store, never writes it.
- * A wire with no segments and an unresolvable endpoint has no position and is left out.
- *
- * @param project - maps world positions to the canvas; without it `screen` and `visible` are null
- */
-export function describeCircuitScene(state: CircuitStore, project?: Projector): SceneDescription {
+function sceneFacts(state: CircuitStore): EntityFacts[] {
   const running = state.simulationRunning
   const facts: EntityFacts[] = []
 
@@ -212,5 +211,29 @@ export function describeCircuitScene(state: CircuitStore, project?: Projector): 
     })
   }
 
-  return { schemaVersion: SCENE_DESCRIPTION_SCHEMA_VERSION, entities: facts.map((f) => toEntity(f, project)) }
+  return facts
+}
+
+/**
+ * Describes every gate, bus, I/O node, junction, pin and wire in the store as JSON-serialisable
+ * data, in store order with each owner's pins after it. Signals follow what CanvasArea draws:
+ * wires and junctions read 0 while the simulation is stopped. Reads the store, never writes it.
+ */
+export function describeCircuitScene(state: CircuitStore): SceneDescription {
+  return { schemaVersion: SCENE_DESCRIPTION_SCHEMA_VERSION, entities: sceneFacts(state).map(toEntity) }
+}
+
+/**
+ * Projects the entity `id` from the world position {@link describeCircuitScene} publishes for it,
+ * so the two agree. Returns `null` when the scene has no entity with that id.
+ */
+export function projectSceneEntity(state: CircuitStore, id: string, project: Projector): SceneProjection | null {
+  const facts = sceneFacts(state).find((f) => f.id === id)
+  if (!facts) return null
+  const projected = project(roundPoint(facts.world))
+  const onCanvas = Number.isFinite(projected.x) && Number.isFinite(projected.y)
+  return {
+    screen: onCanvas ? { x: round(projected.x), y: round(projected.y) } : null,
+    visible: onCanvas && projected.visible && (facts.drawn ?? true),
+  }
 }
