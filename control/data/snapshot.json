@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-29T14:27:17.137Z",
+  "generatedAt": "2026-09-29T14:47:36.668Z",
   "head": {
-    "sha": "379195c64aaeb01d11180cd5f3d4900b8dbc3c85",
-    "date": "2026-09-29T17:26:13+03:00",
-    "subject": "docs(decisions): the rendered-geometry golden is produced headless, not in CI"
+    "sha": "6d9f1e362532465e3d29a74e39e023d919482fe5",
+    "date": "2026-09-29T17:46:32+03:00",
+    "subject": "test(store): record the @store-action goldens and drop the orphan placeholders"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-29T14:27:17.137Z",
+      "fetchedAt": "2026-09-29T14:47:36.668Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-29T14:27:17.137Z",
+      "fetchedAt": "2026-09-29T14:47:36.668Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-29T14:27:17.137Z",
+      "fetchedAt": "2026-09-29T14:47:36.668Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-29T14:27:17.137Z",
+      "fetchedAt": "2026-09-29T14:47:36.668Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-09-29T14:27:17.137Z",
+      "fetchedAt": "2026-09-29T14:47:36.668Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-09-29T14:27:17.137Z",
+      "fetchedAt": "2026-09-29T14:47:36.668Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-09-29T14:27:17.137Z",
+      "fetchedAt": "2026-09-29T14:47:36.668Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-09-29T14:27:17.137Z",
+      "fetchedAt": "2026-09-29T14:47:36.668Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-09-29T14:27:17.137Z",
+      "fetchedAt": "2026-09-29T14:47:36.668Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-09-29T14:27:17.137Z",
+      "fetchedAt": "2026-09-29T14:47:36.668Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-09-29T14:27:17.137Z",
+      "fetchedAt": "2026-09-29T14:47:36.668Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-09-29T14:27:17.137Z",
+      "fetchedAt": "2026-09-29T14:47:36.668Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-09-29T14:27:17.137Z",
+      "fetchedAt": "2026-09-29T14:47:36.668Z",
       "status": "ok"
     }
   },
@@ -80,14 +80,14 @@
         "lane": "feature",
         "slug": "foundation",
         "epicNumber": 318,
-        "open": 35,
+        "open": 34,
         "ready": 8,
-        "inProgress": 5,
+        "inProgress": 4,
         "needsHuman": 0,
         "staleClaims": [
           182
         ],
-        "agentReady": 13,
+        "agentReady": 12,
         "next": {
           "number": 208,
           "title": "Hand-written MCP tool hacer_hdl (load HDL → simulate → run .tst), stdio; committed .mcp.json"
@@ -555,6 +555,8 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
+        619,
+        618,
         514
       ]
     }
@@ -2486,22 +2488,6 @@
         "reason": "unshaped"
       },
       {
-        "number": 597,
-        "title": "Characterize the legacy store: the actions the @store suite drives, as Node fixtures",
-        "labels": [
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 599,
         "title": "run-tst: a bare output-list name gets the pin's width, as the reference IDE gives it",
         "labels": [
@@ -2649,7 +2635,6 @@
         400,
         462,
         506,
-        597,
         599,
         603,
         611,
@@ -2745,6 +2730,42 @@
   "prs": {
     "open": [
       {
+        "number": 619,
+        "title": "fix(core): fail a .tst that names a pin the chip lacks",
+        "url": "https://github.com/mezivillager/hacer/pull/619",
+        "author": "mezivillager",
+        "labels": [
+          "project:core",
+          "risk:2"
+        ],
+        "headRefName": "fix/603-tst-unknown-pin",
+        "isDraft": false,
+        "createdAt": "2026-09-29T14:43:11Z",
+        "mergedAt": null,
+        "closes": [
+          603
+        ],
+        "verdicts": []
+      },
+      {
+        "number": 618,
+        "title": "test(core): characterization catches a lossy round trip and an orphaned golden",
+        "url": "https://github.com/mezivillager/hacer/pull/618",
+        "author": "mezivillager",
+        "labels": [
+          "risk:1",
+          "project:foundation"
+        ],
+        "headRefName": "test/611-characterization-integrity",
+        "isDraft": false,
+        "createdAt": "2026-09-29T14:43:01Z",
+        "mergedAt": null,
+        "closes": [
+          611
+        ],
+        "verdicts": []
+      },
+      {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
         "url": "https://github.com/mezivillager/hacer/pull/514",
@@ -2773,11 +2794,38 @@
     ],
     "merged": [
       {
+        "number": 617,
+        "title": "test(store): characterize the legacy store actions the @store suite drives",
+        "url": "https://github.com/mezivillager/hacer/pull/617",
+        "author": "mezivillager",
+        "labels": [
+          "risk:1",
+          "project:foundation"
+        ],
+        "headRefName": "test/331-b-store-actions",
+        "isDraft": false,
+        "createdAt": "2026-09-29T14:35:21Z",
+        "mergedAt": "2026-09-29T14:46:33Z",
+        "closes": [
+          597
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Sonnet 5.5 (fresh context)",
+            "at": "2026-09-29T14:45:51Z",
+            "url": "https://github.com/mezivillager/hacer/pull/617#issuecomment-5892615857"
+          }
+        ]
+      },
+      {
         "number": 616,
         "title": "docs(rulings): R761–R772 from the 2026-09-29 hacer-loop-60 run",
         "url": "https://github.com/mezivillager/hacer/pull/616",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0"
         ],
@@ -2802,6 +2850,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/615",
         "author": "mezivillager",
         "labels": [
+          "released",
           "risk:1",
           "project:foundation"
         ],
@@ -2828,6 +2877,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/614",
         "author": "mezivillager",
         "labels": [
+          "released",
           "risk:1",
           "project:foundation"
         ],
@@ -2854,6 +2904,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/612",
         "author": "mezivillager",
         "labels": [
+          "released",
           "risk:0",
           "project:mission-control"
         ],
@@ -2934,6 +2985,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/606",
         "author": "mezivillager",
         "labels": [
+          "released",
           "risk:1",
           "project:foundation"
         ],
@@ -4159,40 +4211,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/515#issuecomment-5828459133"
           }
         ]
-      },
-      {
-        "number": 512,
-        "title": "feat(mission-control): hourly refresh workflow and the snapshot history archive (MC-5)",
-        "url": "https://github.com/mezivillager/hacer/pull/512",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:1",
-          "project:mission-control"
-        ],
-        "headRefName": "feat/476-mission-control-refresh",
-        "isDraft": false,
-        "createdAt": "2026-09-25T06:15:31Z",
-        "mergedAt": "2026-09-25T07:06:15Z",
-        "closes": [
-          476
-        ],
-        "verdicts": [
-          {
-            "verdict": "BLOCK",
-            "round": 1,
-            "model": "Sonnet 5 (claude-sonnet-5)",
-            "at": "2026-09-25T06:33:17Z",
-            "url": "https://github.com/mezivillager/hacer/pull/512#issuecomment-5827998511"
-          },
-          {
-            "verdict": "PASS",
-            "round": 2,
-            "model": "Sonnet 5 (claude-sonnet-5)",
-            "at": "2026-09-25T07:05:21Z",
-            "url": "https://github.com/mezivillager/hacer/pull/512#issuecomment-5828355897"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4945,6 +4963,7 @@
         "title": "Timeline.test.tsx mounts the whole snapshot on vitest's 5 s default and times out under load",
         "url": "https://github.com/mezivillager/hacer/issues/545",
         "labels": [
+          "released",
           "agent-ready",
           "in-progress",
           "risk:0",
@@ -5023,6 +5042,7 @@
         "title": "Characterize the legacy evaluator: fixture circuits evaluated before and after serialize → deserialize",
         "url": "https://github.com/mezivillager/hacer/issues/595",
         "labels": [
+          "released",
           "agent-ready",
           "in-progress",
           "risk:1",
@@ -5044,7 +5064,7 @@
         "number": 597,
         "ref": "refs/heads/claim/597",
         "sha": "93b700314173aacedad393eb0ba275ab772338a9",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "Characterize the legacy store: the actions the @store suite drives, as Node fixtures",
         "url": "https://github.com/mezivillager/hacer/issues/597",
         "labels": [
@@ -5053,7 +5073,7 @@
           "risk:1",
           "project:foundation"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -5073,6 +5093,7 @@
         "title": "Characterize the legacy renderer: ADR-0008's circuits as scene + routed-path goldens, headless in Node",
         "url": "https://github.com/mezivillager/hacer/issues/598",
         "labels": [
+          "released",
           "agent-ready",
           "in-progress",
           "risk:1",
@@ -5098,6 +5119,7 @@
         "title": "One .out formatter (outTable.ts vs formatColumnValue) and a cli driver that reports a missing bin (verifier nits on #600)",
         "url": "https://github.com/mezivillager/hacer/issues/602",
         "labels": [
+          "released",
           "project:surfaces",
           "agent-ready",
           "in-progress",
@@ -5168,7 +5190,7 @@
         }
       }
     ],
-    "onClosedIssues": 31
+    "onClosedIssues": 32
   },
   "cloudLane": {
     "items": [
@@ -6182,9 +6204,14 @@
     },
     "releases": [
       {
+        "tag": "v2.53.2",
+        "publishedAt": "2026-09-29T14:29:26Z",
+        "isLatest": true
+      },
+      {
         "tag": "v2.53.1",
         "publishedAt": "2026-09-29T13:53:01Z",
-        "isLatest": true
+        "isLatest": false
       },
       {
         "tag": "v2.53.0",
@@ -6715,7 +6742,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-25",
-        "merges": 4
+        "merges": 3
       },
       {
         "date": "2026-09-26",
@@ -6731,20 +6758,20 @@
       },
       {
         "date": "2026-09-29",
-        "merges": 23
+        "merges": 24
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-15T14:27:17.137Z",
-      "merged": 188,
+      "since": "2026-09-15T14:47:36.668Z",
+      "merged": 189,
       "openToMergeHours": {
         "median": 0.2,
         "p90": 12.1
       },
       "blockedOnce": {
         "count": 21,
-        "of": 99,
+        "of": 100,
         "prs": [
           238,
           248,
@@ -6771,8 +6798,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 96,
-          "withVerdict": 80,
+          "merged": 97,
+          "withVerdict": 81,
           "without": [
             133,
             134,
@@ -7784,11 +7811,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "379195c64aaeb01d11180cd5f3d4900b8dbc3c85",
+        "sha": "6d9f1e362532465e3d29a74e39e023d919482fe5",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36582662104/job/109454608780",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36585197575/job/109463522167",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -7832,6 +7859,104 @@
         "conclusion": "SUCCESS",
         "completedAt": "2026-09-25T06:48:18Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/36104338672/job/107973412518",
+        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 71,
+          "new": 0
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 618,
+        "sha": "c80359f90e94237cbe146022a83778f0d10e64bf",
+        "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-29T14:43:24Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36584751824/job/109461969006",
+        "line": "HYGIENE: PASS reviewable=14 test=38 excluded=0 files=1 issue=#611 linked=fixes",
+        "verdict": "PASS",
+        "fields": {
+          "reviewable": 14,
+          "test": 38,
+          "excluded": 0,
+          "files": 1,
+          "issue": "#611",
+          "linked": "fixes"
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 618,
+        "sha": "c80359f90e94237cbe146022a83778f0d10e64bf",
+        "check": "browser-qa",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-29T14:46:47Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36584751675/job/109461966537",
+        "line": "BROWSER-QA: PASS suites=store passed=107 failed=0 flaky=0 skipped=0",
+        "verdict": "PASS",
+        "fields": {
+          "suites": "store",
+          "passed": 107,
+          "failed": 0,
+          "flaky": 0,
+          "skipped": 0
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 618,
+        "sha": "c80359f90e94237cbe146022a83778f0d10e64bf",
+        "check": "ci",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-29T14:45:32Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36584749530/job/109461958115",
+        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 71,
+          "new": 0
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 619,
+        "sha": "9ffdce386d4bd035439765fd92b8f2d422bab441",
+        "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-29T14:43:26Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36584774471/job/109462046926",
+        "line": "HYGIENE: PASS reviewable=26 test=48 excluded=0 files=3 issue=#603 linked=fixes",
+        "verdict": "PASS",
+        "fields": {
+          "reviewable": 26,
+          "test": 48,
+          "excluded": 0,
+          "files": 3,
+          "issue": "#603",
+          "linked": "fixes"
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 619,
+        "sha": "9ffdce386d4bd035439765fd92b8f2d422bab441",
+        "check": "browser-qa",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-29T14:43:26Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36584774263/job/109462043878",
+        "line": "BROWSER-QA: skipped (no critical paths)",
+        "verdict": "SKIPPED",
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 619,
+        "sha": "9ffdce386d4bd035439765fd92b8f2d422bab441",
+        "check": "ci",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-29T14:46:06Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36584770810/job/109462033060",
         "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
         "verdict": "PASS",
         "fields": {
