@@ -44,6 +44,11 @@ export function stripExt(filename: string): string {
   return dot > 0 ? filename.slice(0, dot) : filename
 }
 
+/** A `.tst` may name only the chip's own input and output pins. */
+function hasPin(chip: ChipDefinition, name: string): boolean {
+  return chip.inputs.some((p) => p.name === name) || chip.outputs.some((p) => p.name === name)
+}
+
 export function runTest(script: TSTScript, options: RunTestOptions): TestResult {
   const { registry, maxDepth } = options
   const inputs: Record<string, number> = {}
@@ -63,6 +68,11 @@ export function runTest(script: TSTScript, options: RunTestOptions): TestResult 
     firstFailure: null,
     error,
   })
+
+  // The reference web IDE skips an unknown name without a word, so a typo in a script
+  // passes unnoticed; here it fails the run instead.
+  const unknownPin = (chip: ChipDefinition, command: 'set' | 'output-list', pin: string, line: number | undefined): TestResult =>
+    fail(`${line === undefined ? '' : `line ${line}: `}${command} names pin "${pin}", but chip ${chip.name} has no such pin`)
 
   for (const cmd of script.commands) {
     switch (cmd.type) {
@@ -85,10 +95,15 @@ export function runTest(script: TSTScript, options: RunTestOptions): TestResult 
         }
         break
       }
-      case 'output-list':
+      case 'output-list': {
+        const chip = activeChip
+        const unknown = chip ? cmd.columns.find((c) => !hasPin(chip, c.name)) : undefined
+        if (chip && unknown) return unknownPin(chip, 'output-list', unknown.name, cmd.line)
         outputColumns = cmd.columns.map((c) => c.name)
         break
+      }
       case 'set':
+        if (activeChip && !hasPin(activeChip, cmd.pin)) return unknownPin(activeChip, 'set', cmd.pin, cmd.line)
         inputs[cmd.pin] = cmd.value
         break
       case 'eval':
