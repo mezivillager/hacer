@@ -159,6 +159,27 @@ describe('runTest — pins the chip does not have', () => {
     expect(result.passed).toBe(false)
     expect(result.error).toMatch(/"zzz"/)
   })
+
+  it('an internal HDL pin is a known name for set and output-list', () => {
+    const reg = createChipRegistry()
+    registerBuiltin(reg, 'Nand', [{ name: 'a', width: 1 }, { name: 'b', width: 1 }], [{ name: 'out', width: 1 }], (i) => ({ out: i.a & i.b ? 0 : 1 }))
+    const src = 'CHIP AndVia { IN a, b; OUT out; PARTS: Nand(a=a, b=b, out=nab); Nand(a=nab, b=nab, out=out); }'
+    const parsed = parseHDL(src)
+    if (!parsed.success) throw new Error('hdl parse failed')
+    reg.register(hdlChipDefinition(parsed.chip, src))
+    const s = script('load AndVia.hdl,\noutput-list a b nab out;\nset nab 0,\nset a 1,\nset b 1,\neval,\noutput;')
+    const result = runTest(s, { registry: reg })
+    expect(result.error).toBeNull()
+    expect(result.passed).toBe(true)
+    expect(result.outputRows[0].values.out).toBe(1)
+  })
+
+  it('the time column is a known name for output-list', () => {
+    const s = script('load Not.hdl,\noutput-list time%S1.4.1 in out;\nset in 0,\neval,\noutput;')
+    const result = runTest(s, { registry: builtinNot() })
+    expect(result.error).toBeNull()
+    expect(result.passed).toBe(true)
+  })
 })
 
 describe('gold standard A — all 16 Project-1 .tst pass against builtins', () => {
