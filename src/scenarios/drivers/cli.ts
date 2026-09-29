@@ -15,6 +15,16 @@ import type { CoreScenarioResult } from './core'
 /** The verdict half of the core driver's result; `errors` holds the CLI's first mismatch or error. */
 export type CliScenarioResult = Pick<CoreScenarioResult, 'name' | 'ok' | 'errors'>
 
+/** The `--json` report on stdout, or null when there is none: a missing bin prints nothing. */
+function readReport(stdout: string): TestReport | null {
+  try {
+    const parsed: unknown = JSON.parse(stdout)
+    return typeof parsed === 'object' && parsed !== null && 'status' in parsed ? (parsed as TestReport) : null
+  } catch {
+    return null
+  }
+}
+
 /** Run one scenario through the `hacer` bin. One that does not translate never spawns it. */
 export function runCliScenario(scenario: Scenario, bin: string): CliScenarioResult {
   const name = scenario.name
@@ -33,7 +43,12 @@ export function runCliScenario(scenario: Scenario, bin: string): CliScenarioResu
     if (run.status !== 0 && run.status !== 1) {
       return { name, ok: false, errors: [`hacer exited ${String(run.status)}: ${run.stderr || String(run.error)}`] }
     }
-    const { failure, error } = JSON.parse(run.stdout) as TestReport
+    const report = readReport(run.stdout)
+    if (!report) {
+      const printed = (run.stderr || run.stdout).trim()
+      return { name, ok: false, errors: [`hacer exited ${String(run.status)} with no JSON report: ${printed}`] }
+    }
+    const { failure, error } = report
     const found = failure ? `row ${failure.row}: ${failure.column} expected ${failure.expected}, got ${failure.actual}` : error
     return { name, ok: run.status === 0, errors: found === null ? [] : [found] }
   } finally {

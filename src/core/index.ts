@@ -14,8 +14,8 @@
  *   - `./serialization` — the canvas document's save format. `deserialize` imports the store, so
  *     exporting it would make this index non-headless on its own.
  *   - `testing/chipCompletion` — `localStorage`; it belongs behind a port, not in the engine's API.
- *   - `testing/implementationSources`, `testing/formatColumnValue` — the Test Lab's "what to test
- *     against" picker and its column formatting: app concerns built ON this surface.
+ *   - `testing/implementationSources` — the Test Lab's "what to test against" picker: an app
+ *     concern built ON this surface.
  *   - the Project-1 `.tst`/`.cmp` corpora and the HDL parser stubs — test data, not API. The correct
  *     implementations, `project1HdlSources`, ARE exported: surfaces outside src/core test against
  *     them, and the layer rule lets them reach it only through here.
@@ -82,4 +82,5 @@ export type {
   TSTParseResult,
   TSTScript,
 } from './testing'
-export { compareCmpRow, parseCmp, parseTST, runTest } from './testing'
+// One `.out` cell's text, as the reference IDE writes it: the CLI's `.out` and the Test Lab share it.
+export { compareCmpRow, formatColumnValue, parseCmp, parseTST, runTest } from './testing'
