@@ -1,5 +1,7 @@
 # Phase 0: Critical Fixes (Week 1)
 
+> Historical plan (2026-05); the current "add a chip" recipe is HACER_LLM_GUIDE.md → Adding a builtin chip.
+
 **Part of:** [Comprehensive Development Roadmap](../README.md)  
 **Priority:** 🔴 CRITICAL  
 **Timeline:** Week 1  

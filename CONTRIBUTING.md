@@ -147,7 +147,7 @@ HACER is organized in layers that separate pure logic from UI:
 ```
 src/
 ├── core/             Chip definitions + registries, HDL parser/compiler, .tst/.cmp engine (pure)
-├── simulation/       Pure gate logic (no React/browser deps)
+├── simulation/       Circuit evaluation: topological sort, one pass (chip logic is ChipDefinition.evaluate in core/chips/)
 ├── store/actions/    State mutations organized by domain
 ├── components/       React UI and 3D canvas (scene/ChipBody3D renders any registered chip)
 ├── gates/            GateRenderer (dispatches to ChipBody3D), shared 3D primitives, handlers

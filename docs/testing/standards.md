@@ -412,9 +412,9 @@ Before submitting AI-generated tests, verify:
 HACER does not currently install a property-testing library. When Phase 3.5 work resumes, choose and install a library first, then add invariant suites for behavior that should hold across many generated inputs.
 
 ```typescript
-// Example shape only; replace `propertyTool` with the selected library.
+// Example shape only (chip recipe: HACER_LLM_GUIDE.md → Adding a builtin chip); replace `propertyTool` with the selected library.
 
-describe('gateLogic invariants', () => {
+describe('Nand builtin invariants', () => {
   it('NAND is self-dual', () => {
     propertyTool.assert(propertyTool.property(propertyTool.boolean(), propertyTool.boolean(), (a, b) => {
       // NAND(a,b) = NOT(AND(a,b))

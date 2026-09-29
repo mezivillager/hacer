@@ -169,7 +169,7 @@ FOLLOW-UPS (UX / labeling — optional ordering; does not block P05-11–28)
 
 ## Codebase Conventions (for all tickets)
 
-**Imports:** Use `@/` path aliases (`@/store/types`, `@/simulation/gateLogic`).
+**Imports:** Use `@/` path aliases (`@/store/types`, `@/core/chips`; chip logic recipe: `HACER_LLM_GUIDE.md` → "Adding a builtin chip").
 
 **Store tests:** `useCircuitStore` has **no** `getInitialState()` — mirror `initialState` in `src/store/circuitStore.ts` (and any new slices, e.g. `statusMessages` after P05-09):
 
