@@ -1,6 +1,6 @@
 // The `cli` column of the scenario × driver suite: each scenario through the built `hacer` bin.
 import { spawnSync } from 'node:child_process'
-import { mkdtempSync, readFileSync, rmSync } from 'node:fs'
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -65,5 +65,27 @@ describe('cli scenario driver', { timeout: SPAWN_TIMEOUT }, () => {
     const cli = runCliScenario(doubled, path.join(work, 'no-such-bin.js'))
     expect(cli).toEqual({ name: doubled.name, ok: false, errors: ['gate 2 pin in-0 has 2 drivers'] })
     expect(cli.errors).toEqual(runScenario(doubled).errors)
+  })
+
+  it('reports a missing bin as a failed result instead of throwing', () => {
+    const cli = runCliScenario(threeGateScenario, path.join(work, 'no-such-bin.js'))
+    expect(cli).toEqual({
+      name: threeGateScenario.name,
+      ok: false,
+      errors: [expect.stringMatching(/^hacer exited 1 with no JSON report: [\s\S]*Cannot find module/)],
+    })
+  })
+
+  it.each([
+    ['prints non-JSON', "console.log('not json')", 'not json'],
+    ['prints JSON that is not a report', 'console.log(null)', 'null'],
+  ])('reports a bin that %s as a failed result instead of throwing', (_, script, printed) => {
+    const fake = path.join(work, 'fake-bin.js')
+    writeFileSync(fake, `${script}\n`)
+    expect(runCliScenario(threeGateScenario, fake)).toEqual({
+      name: threeGateScenario.name,
+      ok: false,
+      errors: [`hacer exited 0 with no JSON report: ${printed}`],
+    })
   })
 })
