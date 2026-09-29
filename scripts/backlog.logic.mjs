@@ -86,6 +86,14 @@ export function parsePortfolio(markdown) {
   return rows
 }
 
+/** parsePortfolio for the commands that plan: with no row every task reads `unshaped` and nothing looks wrong, so it throws. */
+export function requirePortfolioRows(markdown) {
+  const rows = parsePortfolio(markdown)
+  if (rows.length > 0) return rows
+  throw new Error('docs/portfolio.md has no portfolio rows (`| rank | slug | Project | [#epic](…) | lane | … |`): ' +
+    'every task would read unshaped')
+}
+
 /** The row an issue files under: a PRIORITY_ROWS label, else its first `project:<slug>` label, else its parent epic. */
 function portfolioRowOf(issue, labels, rowBySlug, rowByEpic) {
   const slugs = labels.filter((name) => name.startsWith('project:')).map((name) => name.slice('project:'.length))
@@ -288,22 +296,62 @@ export function formatProjects(summaries) {
     ` · needs-human ${s.needsHuman}${stale(s.staleClaims)}${overCap(s.agentReady)} · next: ${nextLabel(s.next)}`).join('\n')
 }
 
-export function requirePortfolioRows() {
-  throw new Error('not implemented')
+/** `next`'s exit status when nothing is pickable: apart from 1 (an error) and 2 (usage), so a loop can tell them apart. */
+export const NOTHING_PICKABLE_EXIT = 3
+
+/** `next`: the head of the plan's pick order as `ready` prints it (or the task as JSON); NOTHING_PICKABLE_EXIT without one. */
+export function reportNext(plan, { json = false } = {}) {
+  const head = plan.find((task) => task.reason === null)
+  if (head) return { exitCode: 0, stdout: json ? JSON.stringify(head, null, 2) : taskLine(head), stderr: '' }
+  return { exitCode: NOTHING_PICKABLE_EXIT, stdout: json ? 'null' : '', stderr: 'nothing is pickable now; `ready` gives every open task its reason' }
 }
 
-export const NOTHING_PICKABLE_EXIT = 0
+/** The plan's tasks by the row each files under, `unfiled` for none, in plan order: a row's tasks, for `tasks` and Mission Control. */
+export const tasksByProject = (plan) => Object.groupBy(plan, (task) => task.project ?? 'unfiled')
 
-export function reportNext() {
-  throw new Error('not implemented')
+/** The row `slug` names; an unknown slug throws, naming the rows. */
+export function portfolioRow(portfolioRows, slug) {
+  const row = portfolioRows.find((candidate) => candidate.slug === slug)
+  if (!row) throw new Error(`no portfolio row '${slug}' — the rows are ${portfolioRows.map((each) => each.slug).join(', ')}`)
+  return row
 }
 
-export function epicTree() {
-  throw new Error('not implemented')
+/**
+ * `tasks <slug>`: the row's epic with its open sub-issues, nested as GitHub parents them, then `outside`, the tasks a
+ * `project:` label files under the row from elsewhere. A task carries its place in `ready` — `pick` k for its k-th pick,
+ * else its `reason` — and an epic, which `ready` never lists, its sub-issue counts (`closed`, from `subIssuesSummary`).
+ */
+export function epicTree(slug, issues, portfolioRows, allowlist = DEFAULT_ALLOWLIST, claims = [], history = []) {
+  const { epicNumber } = portfolioRow(portfolioRows, slug)
+  const plan = planReady(issues, portfolioRows, allowlist, claims, history)
+  const pickOf = new Map(plan.filter((task) => task.reason === null).map((task, index) => [task.number, index + 1]))
+  const [taskOf, issueOf] = [plan, issues].map((list) => new Map(list.map((item) => [item.number, item])))
+  const childrenOf = Map.groupBy(issues, (issue) => issue.parent?.number)
+  const seen = new Set()
+  const node = (number, nested) => {
+    seen.add(number)
+    const [issue, task] = [issueOf.get(number), taskOf.get(number)]
+    const summary = task ? null : issue?.subIssuesSummary
+    const children = nested ? (childrenOf.get(number) ?? []).map((child) => child.number).filter((child) => !seen.has(child)) : []
+    return {
+      number, title: issue?.title ?? null, epic: !task, project: task?.project ?? null, pick: pickOf.get(number) ?? null,
+      reason: task?.reason ?? null, closed: summary ? { completed: summary.completed, total: summary.total } : null,
+      children: children.sort((a, b) => a - b).map((child) => node(child, true)),
+    }
+  }
+  const epic = node(epicNumber, true)
+  const outside = (tasksByProject(plan)[slug] ?? []).filter((task) => !seen.has(task.number)).sort(byNumber)
+  return { slug, epic, outside: outside.map((task) => node(task.number, false)) }
 }
 
-export function formatTasks() {
-  throw new Error('not implemented')
+/** The tree two spaces a level, `#n · project · title · pick k` or `· reason`, an epic `#n · epic · title · c/t closed`. */
+export function formatTasks({ slug, epic, outside }) {
+  const status = (node) => (node.epic ? node.closed && `${node.closed.completed}/${node.closed.total} closed` : node.pick ? `pick ${node.pick}` : node.reason)
+  const line = (node, depth) => [`${'  '.repeat(depth)}#${node.number}`, node.epic ? 'epic' : node.project ?? '-',
+    node.title ?? '(not open)', status(node)].filter(Boolean).join(' · ')
+  const tree = (node, depth) => [line(node, depth), ...node.children.flatMap((child) => tree(child, depth + 1))]
+  const rest = outside.length > 0 ? [`outside #${epic.number}, filed under ${slug} by label:`, ...outside.map((node) => line(node, 1))] : []
+  return [...tree(epic, 0), ...rest].join('\n')
 }
 
 /** Dormant mode (docs/portfolio.md): at this many open agent PRs, no new PR-producing work. */

@@ -5,7 +5,7 @@
 
 import {
   AUX_ROTATION, DEFAULT_ALLOWLIST, PICK_ROTATION, claimHistory, claimRefs, dormantMode, historyGap, latestClaim, parsePortfolio,
-  planReady, readClaims, summarizeProjects,
+  planReady, readClaims, summarizeProjects, tasksByProject,
 } from '../backlog.logic.mjs'
 import { CHECK_LINES, readCheckRun } from '../check-lines.logic.mjs'
 import { parseSnapshotTime } from './prune.logic.mjs'
@@ -133,7 +133,7 @@ function buildPortfolio(values, options) {
     title: epic(summary.epicNumber)?.title ?? null, subIssues: epic(summary.epicNumber)?.subIssuesSummary ?? null })) }
 }
 
-const tasksOf = (plan) => ({ items: plan, byProject: Object.fromEntries(Object.entries(Object.groupBy(plan, (task) => task.project ?? 'unfiled'))
+const tasksOf = (plan) => ({ items: plan, byProject: Object.fromEntries(Object.entries(tasksByProject(plan))
   .map(([slug, tasks]) => [slug, tasks.map((task) => task.number)])) })
 
 // Flow (#539): the numbers docs/harness/reviews/2026-09-26/evidence/brief-measure-flow.mjs counted by hand, by its
