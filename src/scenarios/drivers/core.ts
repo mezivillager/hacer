@@ -29,7 +29,7 @@ export interface CoreScenarioResult {
   pins: Array<[number, number]>
 }
 
-const SCENARIOS: readonly Scenario[] = [
+export const SCENARIOS: readonly Scenario[] = [
   threeGateScenario,
   circuitBuildScenario,
   chainCircuitScenario,

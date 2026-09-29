@@ -6,5 +6,5 @@
     "lib": ["ES2023"],
     "types": ["node", "vitest/globals"]
   },
-  "include": ["src/cli"]
+  "include": ["src/cli", "src/scenarios/drivers/cli.ts", "src/scenarios/drivers/cli.test.ts"]
 }

@@ -79,3 +79,59 @@ describe('runCli', () => {
     expect(out.stderr).toMatch(/^usage: hacer test /)
   })
 })
+
+describe('runCli run-tst', () => {
+  const CHIPS = readdirSync(VECTORS)
+    .filter((file) => file.endsWith('.hdl'))
+    .map((file) => file.slice(0, -'.hdl'.length))
+
+  it.each(CHIPS)('prints the table a correct %s writes, which is its .cmp', (chip) => {
+    // Nand.hdl is vendored as `BUILTIN Nand;`, already correct.
+    const hdl = chip === 'Nand' ? {} : { [`${chip}.hdl`]: project1HdlSources[chip] }
+    const out = runCli(['run-tst', `${chip}.hdl`, `${chip}.tst`], reader(hdl))
+    expect(out).toEqual({ exitCode: 0, stdout: reader()(`${chip}.cmp`), stderr: '' })
+  })
+
+  it('prints the empty Xor template\'s outputs without comparing them, and exits 0', () => {
+    const out = runCli(['run-tst', 'Xor.hdl', 'Xor.tst'], reader())
+    expect(out).toEqual({
+      exitCode: 0,
+      stdout: '| a | b |out|\n| 0 | 0 | 0 |\n| 0 | 1 | 0 |\n| 1 | 0 | 0 |\n| 1 | 1 | 0 |\n',
+      stderr: '',
+    })
+  })
+
+  it('exits 1 with the rows so far and the error on stderr when the script fails to run', () => {
+    const broken = 'CHIP Xor {\n  IN a, b;\n  OUT out;\n  PARTS:\n  Nope(a=a, out=out);\n}'
+    const out = runCli(['run-tst', 'Xor.hdl', 'Xor.tst'], reader({ 'Xor.hdl': broken }))
+    expect(out.exitCode).toBe(1)
+    expect(out.stdout).toBe('| a | b |out|\n')
+    expect(out.stderr).toMatch(/^ERROR Xor: .*Nope/)
+  })
+
+  it('refuses a .tst that loads a chip other than the one the .hdl defines', () => {
+    const out = runCli(['run-tst', 'Xor.hdl', 'And.tst'], reader({ 'Xor.hdl': project1HdlSources.Xor }))
+    expect(out).toEqual({ exitCode: 1, stdout: '', stderr: 'ERROR Xor: And.tst loads And.hdl, but Xor.hdl defines Xor\n' })
+  })
+
+  it('reports an unreadable file as an error, not a crash', () => {
+    const out = runCli(['run-tst', 'Missing.hdl', 'Xor.tst'], reader())
+    expect(out.exitCode).toBe(1)
+    expect(out.stderr).toMatch(/^ERROR .*Missing\.hdl/)
+  })
+
+  it('is listed by --help', () => {
+    expect(runCli(['--help'], reader()).stdout).toContain('hacer run-tst <chip.hdl> <chip.tst>')
+  })
+
+  it.each([
+    [['run-tst', 'Xor.hdl']],
+    [['run-tst', 'Xor.tst', 'Xor.hdl']],
+    [['run-tst', 'Xor.hdl', 'Xor.tst', 'Xor.cmp']],
+    [['run-tst', '--json', 'Xor.hdl', 'Xor.tst']],
+  ])('exits 2 with usage on stderr for %j', (argv: string[]) => {
+    const out = runCli(argv, reader())
+    expect(out).toMatchObject({ exitCode: 2, stdout: '' })
+    expect(out.stderr).toContain('hacer run-tst <chip.hdl> <chip.tst>')
+  })
+})
