@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-29T14:54:51.860Z",
+  "generatedAt": "2026-09-29T15:10:14.359Z",
   "head": {
-    "sha": "75d705b364fc915c97655c8fa0510dde720295a7",
-    "date": "2026-09-29T17:53:27+03:00",
-    "subject": "test(utils): share the one-golden-per-case guard with the evaluation characterization"
+    "sha": "1368ea7d61a81ecb31cae1afe946896fd075ff91",
+    "date": "2026-09-29T18:09:27+03:00",
+    "subject": "chore(harness): import protectedEntryFor in its test"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-29T14:54:51.860Z",
+      "fetchedAt": "2026-09-29T15:10:14.359Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-29T14:54:51.860Z",
+      "fetchedAt": "2026-09-29T15:10:14.359Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-29T14:54:51.860Z",
+      "fetchedAt": "2026-09-29T15:10:14.359Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-29T14:54:51.860Z",
+      "fetchedAt": "2026-09-29T15:10:14.359Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-09-29T14:54:51.860Z",
+      "fetchedAt": "2026-09-29T15:10:14.359Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-09-29T14:54:51.860Z",
+      "fetchedAt": "2026-09-29T15:10:14.359Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-09-29T14:54:51.860Z",
+      "fetchedAt": "2026-09-29T15:10:14.359Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-09-29T14:54:51.860Z",
+      "fetchedAt": "2026-09-29T15:10:14.359Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-09-29T14:54:51.860Z",
+      "fetchedAt": "2026-09-29T15:10:14.359Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-09-29T14:54:51.860Z",
+      "fetchedAt": "2026-09-29T15:10:14.359Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-09-29T14:54:51.860Z",
+      "fetchedAt": "2026-09-29T15:10:14.359Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-09-29T14:54:51.860Z",
+      "fetchedAt": "2026-09-29T15:10:14.359Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-09-29T14:54:51.860Z",
+      "fetchedAt": "2026-09-29T15:10:14.359Z",
       "status": "ok"
     }
   },
@@ -80,14 +80,14 @@
         "lane": "feature",
         "slug": "foundation",
         "epicNumber": 318,
-        "open": 32,
+        "open": 33,
         "ready": 8,
-        "inProgress": 2,
+        "inProgress": 3,
         "needsHuman": 0,
         "staleClaims": [
           182
         ],
-        "agentReady": 10,
+        "agentReady": 11,
         "next": {
           "number": 208,
           "title": "Hand-written MCP tool hacer_hdl (load HDL → simulate → run .tst), stdio; committed .mcp.json"
@@ -104,12 +104,12 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 30,
+        "open": 29,
         "ready": 18,
-        "inProgress": 1,
+        "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 19,
+        "agentReady": 18,
         "next": {
           "number": 155,
           "title": "De-duplicate vendored skills (tdd/test-driven-development, debugging/systematic-debugging, planning/writing-plans) and fix sync-superpowers.sh"
@@ -387,18 +387,13 @@
     ],
     "next": [
       {
-        "number": 208,
-        "title": "Hand-written MCP tool hacer_hdl (load HDL → simulate → run .tst), stdio; committed .mcp.json",
-        "project": "foundation"
-      },
-      {
         "number": 480,
         "title": "Mission Control MC-9: \"queue an improvement\" links and the needs-human list — the first editable step",
         "project": "mission-control"
       },
       {
-        "number": 335,
-        "title": "Move the HTMLCanvasElement patch out of the shared test setup, and move store/core tests to the node project (foundation 0.10)",
+        "number": 208,
+        "title": "Hand-written MCP tool hacer_hdl (load HDL → simulate → run .tst), stdio; committed .mcp.json",
         "project": "foundation"
       },
       {
@@ -407,8 +402,8 @@
         "project": "upkeep"
       },
       {
-        "number": 338,
-        "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
+        "number": 335,
+        "title": "Move the HTMLCanvasElement patch out of the shared test setup, and move store/core tests to the node project (foundation 0.10)",
         "project": "foundation"
       },
       {
@@ -422,8 +417,8 @@
         "project": "harness"
       },
       {
-        "number": 345,
-        "title": "pr-hygiene nits from #344: deletionOnlyExemption fails open on missing fields; refusals should name the file; the evidence rule is case-sensitive",
+        "number": 338,
+        "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
         "project": "foundation"
       },
       {
@@ -432,13 +427,13 @@
         "project": "mission-control"
       },
       {
-        "number": 349,
-        "title": "backlog.mjs reporting nits from #347: pulled-forward issues vanish from their original row's totals; gate reason shadows on-request",
+        "number": 345,
+        "title": "pr-hygiene nits from #344: deletionOnlyExemption fails open on missing fields; refusals should name the file; the evidence rule is case-sensitive",
         "project": "foundation"
       },
       {
-        "number": 373,
-        "title": "N.0: the six 3D mesh components become prop-only and store-free (six PRs, expand → migrate → contract)",
+        "number": 349,
+        "title": "backlog.mjs reporting nits from #347: pulled-forward issues vanish from their original row's totals; gate reason shadows on-request",
         "project": "foundation"
       },
       {
@@ -452,14 +447,19 @@
         "project": "harness"
       },
       {
-        "number": 407,
-        "title": "Two PRs can be green alone and red merged, and nothing detects it before main",
+        "number": 373,
+        "title": "N.0: the six 3D mesh components become prop-only and store-free (six PRs, expand → migrate → contract)",
         "project": "foundation"
       },
       {
         "number": 560,
         "title": "Mission Control Process view: the Ready stage counts on-request and not-pulled tasks as ready",
         "project": "mission-control"
+      },
+      {
+        "number": 407,
+        "title": "Two PRs can be green alone and red merged, and nothing detects it before main",
+        "project": "foundation"
       },
       {
         "number": 429,
@@ -550,6 +550,7 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
+        623,
         619,
         514
       ]
@@ -557,25 +558,6 @@
   },
   "tasks": {
     "items": [
-      {
-        "number": 208,
-        "title": "Hand-written MCP tool hacer_hdl (load HDL → simulate → run .tst), stdio; committed .mcp.json",
-        "labels": [
-          "project:surfaces",
-          "agent-ready",
-          "risk:2",
-          "project:foundation"
-        ],
-        "blocking": [
-          264,
-          214
-        ],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
       {
         "number": 480,
         "title": "Mission Control MC-9: \"queue an improvement\" links and the needs-human list — the first editable step",
@@ -592,14 +574,18 @@
         "reason": null
       },
       {
-        "number": 335,
-        "title": "Move the HTMLCanvasElement patch out of the shared test setup, and move store/core tests to the node project (foundation 0.10)",
+        "number": 208,
+        "title": "Hand-written MCP tool hacer_hdl (load HDL → simulate → run .tst), stdio; committed .mcp.json",
         "labels": [
+          "project:surfaces",
           "agent-ready",
-          "risk:1",
+          "risk:2",
           "project:foundation"
         ],
-        "blocking": [],
+        "blocking": [
+          264,
+          214
+        ],
         "project": "foundation",
         "rank": 1,
         "lane": "feature",
@@ -622,8 +608,8 @@
         "reason": null
       },
       {
-        "number": 338,
-        "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
+        "number": 335,
+        "title": "Move the HTMLCanvasElement patch out of the shared test setup, and move store/core tests to the node project (foundation 0.10)",
         "labels": [
           "agent-ready",
           "risk:1",
@@ -667,10 +653,9 @@
         "reason": null
       },
       {
-        "number": 345,
-        "title": "pr-hygiene nits from #344: deletionOnlyExemption fails open on missing fields; refusals should name the file; the evidence rule is case-sensitive",
+        "number": 338,
+        "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
         "labels": [
-          "project:harness",
           "agent-ready",
           "risk:1",
           "project:foundation"
@@ -698,8 +683,8 @@
         "reason": null
       },
       {
-        "number": 349,
-        "title": "backlog.mjs reporting nits from #347: pulled-forward issues vanish from their original row's totals; gate reason shadows on-request",
+        "number": 345,
+        "title": "pr-hygiene nits from #344: deletionOnlyExemption fails open on missing fields; refusals should name the file; the evidence rule is case-sensitive",
         "labels": [
           "project:harness",
           "agent-ready",
@@ -714,16 +699,15 @@
         "reason": null
       },
       {
-        "number": 373,
-        "title": "N.0: the six 3D mesh components become prop-only and store-free (six PRs, expand → migrate → contract)",
+        "number": 349,
+        "title": "backlog.mjs reporting nits from #347: pulled-forward issues vanish from their original row's totals; gate reason shadows on-request",
         "labels": [
+          "project:harness",
           "agent-ready",
-          "risk:2",
+          "risk:1",
           "project:foundation"
         ],
-        "blocking": [
-          383
-        ],
+        "blocking": [],
         "project": "foundation",
         "rank": 1,
         "lane": "feature",
@@ -761,15 +745,16 @@
         "reason": null
       },
       {
-        "number": 407,
-        "title": "Two PRs can be green alone and red merged, and nothing detects it before main",
+        "number": 373,
+        "title": "N.0: the six 3D mesh components become prop-only and store-free (six PRs, expand → migrate → contract)",
         "labels": [
-          "project:harness",
           "agent-ready",
-          "risk:1",
+          "risk:2",
           "project:foundation"
         ],
-        "blocking": [],
+        "blocking": [
+          383
+        ],
         "project": "foundation",
         "rank": 1,
         "lane": "feature",
@@ -788,6 +773,22 @@
         "project": "mission-control",
         "rank": 14,
         "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 407,
+        "title": "Two PRs can be green alone and red merged, and nothing detects it before main",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
         "pickable": true,
         "reason": null
       },
@@ -2495,22 +2496,6 @@
         "reason": "unshaped"
       },
       {
-        "number": 608,
-        "title": "pr-hygiene: the protected-path message names the matched glob and its reason (goldens are not the held-out oracle)",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:0"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 613,
         "title": "TestResultsPanel: import formatColumnValue through @/core and shrink the layer baseline",
         "labels": [
@@ -2537,9 +2522,32 @@
         "lane": "enabler",
         "pickable": false,
         "reason": "unshaped"
+      },
+      {
+        "number": 622,
+        "title": "Characterization suites share one golden guard, and it catches nested orphans (consolidation after #331)",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "claimed"
       }
     ],
     "byProject": {
+      "mission-control": [
+        480,
+        513,
+        560,
+        509,
+        584
+      ],
       "foundation": [
         208,
         335,
@@ -2572,14 +2580,8 @@
         506,
         599,
         603,
-        613
-      ],
-      "mission-control": [
-        480,
-        513,
-        560,
-        509,
-        584
+        613,
+        622
       ],
       "upkeep": [
         567,
@@ -2622,8 +2624,7 @@
         504,
         505,
         550,
-        607,
-        608
+        607
       ],
       "spine": [
         165,
@@ -2704,6 +2705,24 @@
   "prs": {
     "open": [
       {
+        "number": 623,
+        "title": "test(test-utils): characterization suites share one golden guard that catches nested orphans",
+        "url": "https://github.com/mezivillager/hacer/pull/623",
+        "author": "mezivillager",
+        "labels": [
+          "risk:0",
+          "project:foundation"
+        ],
+        "headRefName": "test/consolidate-golden-guards",
+        "isDraft": false,
+        "createdAt": "2026-09-29T15:05:06Z",
+        "mergedAt": null,
+        "closes": [
+          622
+        ],
+        "verdicts": []
+      },
+      {
         "number": 619,
         "title": "fix(core): fail a .tst that names a pin the chip lacks",
         "url": "https://github.com/mezivillager/hacer/pull/619",
@@ -2749,6 +2768,32 @@
       }
     ],
     "merged": [
+      {
+        "number": 621,
+        "title": "chore(harness): protected-path warning names each glob and its reason",
+        "url": "https://github.com/mezivillager/hacer/pull/621",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "chore/608-protected-path-reasons",
+        "isDraft": false,
+        "createdAt": "2026-09-29T14:58:27Z",
+        "mergedAt": "2026-09-29T15:09:28Z",
+        "closes": [
+          608
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Sonnet 5.5 (fresh context)",
+            "at": "2026-09-29T15:08:11Z",
+            "url": "https://github.com/mezivillager/hacer/pull/621#issuecomment-5892987366"
+          }
+        ]
+      },
       {
         "number": 618,
         "title": "test(core): characterization catches a lossy round trip and an orphaned golden",
@@ -4149,30 +4194,13 @@
             "url": "https://github.com/mezivillager/hacer/pull/518#issuecomment-5834287156"
           }
         ]
-      },
-      {
-        "number": 517,
-        "title": "docs(harness): session record for 2026-09-25; rulings R700–R740",
-        "url": "https://github.com/mezivillager/hacer/pull/517",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:0"
-        ],
-        "headRefName": "docs/session-record-2026-09-25",
-        "isDraft": false,
-        "createdAt": "2026-09-25T07:20:13Z",
-        "mergedAt": "2026-09-27T08:19:51Z",
-        "closes": [],
-        "verdicts": []
       }
     ],
     "coverage": {
       "merged": 60,
-      "withVerdict": 40,
-      "withoutVerdict": 20,
-      "pass": 40,
+      "withVerdict": 41,
+      "withoutVerdict": 19,
+      "pass": 41,
       "block": 0
     }
   },
@@ -5123,7 +5151,7 @@
         "number": 608,
         "ref": "refs/heads/claim/608",
         "sha": "6d9f1e362532465e3d29a74e39e023d919482fe5",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "pr-hygiene: the protected-path message names the matched glob and its reason (goldens are not the held-out oracle)",
         "url": "https://github.com/mezivillager/hacer/issues/608",
         "labels": [
@@ -5132,7 +5160,7 @@
           "in-progress",
           "risk:0"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -5168,9 +5196,34 @@
           "at": "2026-09-29T14:26:59Z",
           "url": "https://github.com/mezivillager/hacer/issues/611#issuecomment-5892287433"
         }
+      },
+      {
+        "number": 622,
+        "ref": "refs/heads/claim/622",
+        "sha": "75d705b364fc915c97655c8fa0510dde720295a7",
+        "state": "OPEN",
+        "title": "Characterization suites share one golden guard, and it catches nested orphans (consolidation after #331)",
+        "url": "https://github.com/mezivillager/hacer/issues/622",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "project:foundation"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-60",
+          "branch": null,
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-09-29T14:58:53Z",
+          "url": "https://github.com/mezivillager/hacer/issues/622#issuecomment-5892826691"
+        }
       }
     ],
-    "onClosedIssues": 34
+    "onClosedIssues": 35
   },
   "cloudLane": {
     "items": [
@@ -6730,7 +6783,7 @@
       },
       {
         "date": "2026-09-27",
-        "merges": 25
+        "merges": 24
       },
       {
         "date": "2026-09-28",
@@ -6738,20 +6791,20 @@
       },
       {
         "date": "2026-09-29",
-        "merges": 25
+        "merges": 26
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-15T14:54:51.860Z",
-      "merged": 190,
+      "since": "2026-09-15T15:10:14.359Z",
+      "merged": 191,
       "openToMergeHours": {
         "median": 0.2,
-        "p90": 12.1
+        "p90": 11.7
       },
       "blockedOnce": {
         "count": 21,
-        "of": 101,
+        "of": 102,
         "prs": [
           238,
           248,
@@ -6778,8 +6831,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 98,
-          "withVerdict": 82,
+          "merged": 99,
+          "withVerdict": 83,
           "without": [
             133,
             134,
@@ -7789,11 +7842,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "75d705b364fc915c97655c8fa0510dde720295a7",
+        "sha": "1368ea7d61a81ecb31cae1afe946896fd075ff91",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36586015543/job/109466414214",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36588038679/job/109473501700",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -7850,8 +7903,8 @@
         "sha": "a6474769be1c1aa282ba70f11118511b8957b0dd",
         "check": "pr-hygiene",
         "conclusion": "SUCCESS",
-        "completedAt": "2026-09-29T14:54:14Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36586075423/job/109466634610",
+        "completedAt": "2026-09-29T14:54:58Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36586165782/job/109466957354",
         "line": "HYGIENE: PASS reviewable=54 test=69 excluded=0 files=3 issue=#603 linked=fixes",
         "verdict": "PASS",
         "fields": {
@@ -7869,8 +7922,8 @@
         "sha": "a6474769be1c1aa282ba70f11118511b8957b0dd",
         "check": "browser-qa",
         "conclusion": "SUCCESS",
-        "completedAt": "2026-09-29T14:54:17Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36586082031/job/109466655612",
+        "completedAt": "2026-09-29T14:54:59Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36586165204/job/109466953233",
         "line": "BROWSER-QA: skipped (no critical paths)",
         "verdict": "SKIPPED",
         "fields": {},
@@ -7880,12 +7933,67 @@
         "pr": 619,
         "sha": "a6474769be1c1aa282ba70f11118511b8957b0dd",
         "check": "ci",
-        "conclusion": null,
-        "completedAt": null,
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-29T14:56:33Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/36586081996/job/109466655283",
-        "line": null,
-        "verdict": null,
-        "fields": {},
+        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 71,
+          "new": 0
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 623,
+        "sha": "e0faf98e7163736ba37f5bcc73e7ad30889987d9",
+        "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-29T15:05:26Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36587485829/job/109471571738",
+        "line": "HYGIENE: PASS reviewable=15 test=48 excluded=0 files=1 issue=#622 linked=fixes",
+        "verdict": "PASS",
+        "fields": {
+          "reviewable": 15,
+          "test": 48,
+          "excluded": 0,
+          "files": 1,
+          "issue": "#622",
+          "linked": "fixes"
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 623,
+        "sha": "e0faf98e7163736ba37f5bcc73e7ad30889987d9",
+        "check": "browser-qa",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-29T15:08:13Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36587485947/job/109471567415",
+        "line": "BROWSER-QA: PASS suites=store passed=107 failed=0 flaky=0 skipped=0",
+        "verdict": "PASS",
+        "fields": {
+          "suites": "store",
+          "passed": 107,
+          "failed": 0,
+          "flaky": 0,
+          "skipped": 0
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 623,
+        "sha": "e0faf98e7163736ba37f5bcc73e7ad30889987d9",
+        "check": "ci",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-29T15:08:11Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36587481003/job/109471551676",
+        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 71,
+          "new": 0
+        },
         "disagrees": false
       }
     ]
