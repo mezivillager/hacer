@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-29T13:54:04.009Z",
+  "generatedAt": "2026-09-29T14:03:37.271Z",
   "head": {
-    "sha": "bad58db7c834bb6c343db4f89373f89dd8425040",
-    "date": "2026-09-29T16:52:58+03:00",
-    "subject": "test(serialization): record the legacy evaluation goldens"
+    "sha": "93b700314173aacedad393eb0ba275ab772338a9",
+    "date": "2026-09-29T17:02:52+03:00",
+    "subject": "test: explicit timeouts for tests that time out at 5 s under load (#545)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-29T13:54:04.009Z",
+      "fetchedAt": "2026-09-29T14:03:37.271Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-29T13:54:04.009Z",
+      "fetchedAt": "2026-09-29T14:03:37.271Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-29T13:54:04.009Z",
+      "fetchedAt": "2026-09-29T14:03:37.271Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-29T13:54:04.009Z",
+      "fetchedAt": "2026-09-29T14:03:37.271Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-09-29T13:54:04.009Z",
+      "fetchedAt": "2026-09-29T14:03:37.271Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-09-29T13:54:04.009Z",
+      "fetchedAt": "2026-09-29T14:03:37.271Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-09-29T13:54:04.009Z",
+      "fetchedAt": "2026-09-29T14:03:37.271Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-09-29T13:54:04.009Z",
+      "fetchedAt": "2026-09-29T14:03:37.271Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-09-29T13:54:04.009Z",
+      "fetchedAt": "2026-09-29T14:03:37.271Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-09-29T13:54:04.009Z",
+      "fetchedAt": "2026-09-29T14:03:37.271Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-09-29T13:54:04.009Z",
+      "fetchedAt": "2026-09-29T14:03:37.271Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-09-29T13:54:04.009Z",
+      "fetchedAt": "2026-09-29T14:03:37.271Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-09-29T13:54:04.009Z",
+      "fetchedAt": "2026-09-29T14:03:37.271Z",
       "status": "ok"
     }
   },
@@ -350,20 +350,20 @@
         "lane": "process",
         "slug": "mission-control",
         "epicNumber": 458,
-        "open": 6,
+        "open": 5,
         "ready": 3,
-        "inProgress": 1,
+        "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 4,
+        "agentReady": 3,
         "next": {
           "number": 480,
           "title": "Mission Control MC-9: \"queue an improvement\" links and the needs-human list — the first editable step"
         },
         "title": "Epic: mission-control — Mission Control: the platform's status, process and roadmap as one site",
         "subIssues": {
-          "completed": 9,
-          "percentCompleted": 75,
+          "completed": 10,
+          "percentCompleted": 83,
           "total": 12
         }
       }
@@ -2496,22 +2496,6 @@
         "reason": "unshaped"
       },
       {
-        "number": 545,
-        "title": "Timeline.test.tsx mounts the whole snapshot on vitest's 5 s default and times out under load",
-        "labels": [
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "project:mission-control"
-        ],
-        "blocking": [],
-        "project": "mission-control",
-        "rank": 14,
-        "lane": "process",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 550,
         "title": "merge-on-green: disarm auto-merge when a required check fails",
         "labels": [
@@ -2708,7 +2692,6 @@
         513,
         560,
         509,
-        545,
         584
       ],
       "upkeep": [
@@ -2821,6 +2804,32 @@
       }
     ],
     "merged": [
+      {
+        "number": 612,
+        "title": "test: explicit timeouts for tests that time out at 5 s under load",
+        "url": "https://github.com/mezivillager/hacer/pull/612",
+        "author": "mezivillager",
+        "labels": [
+          "risk:0",
+          "project:mission-control"
+        ],
+        "headRefName": "test/545-explicit-slow-timeouts",
+        "isDraft": false,
+        "createdAt": "2026-09-29T13:56:51Z",
+        "mergedAt": "2026-09-29T14:02:53Z",
+        "closes": [
+          545
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Sonnet 5.5 (fresh context)",
+            "at": "2026-09-29T14:02:22Z",
+            "url": "https://github.com/mezivillager/hacer/pull/612#issuecomment-5891869338"
+          }
+        ]
+      },
       {
         "number": 610,
         "title": "fix(cli): refuse a BUILTIN stand-in, JSON usage errors, bus values in the .cmp's format",
@@ -4228,40 +4237,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/508#issuecomment-5827305706"
           }
         ]
-      },
-      {
-        "number": 507,
-        "title": "feat(checks): publish the required checks' summary lines where Mission Control reads them (MC-6)",
-        "url": "https://github.com/mezivillager/hacer/pull/507",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:2",
-          "project:mission-control"
-        ],
-        "headRefName": "feat/477-publish-check-summaries",
-        "isDraft": false,
-        "createdAt": "2026-09-25T04:48:25Z",
-        "mergedAt": "2026-09-25T06:00:49Z",
-        "closes": [
-          477
-        ],
-        "verdicts": [
-          {
-            "verdict": "BLOCK",
-            "round": 1,
-            "model": "Claude Opus 5.5 (claude-opus-5-5[1m])",
-            "at": "2026-09-25T05:29:17Z",
-            "url": "https://github.com/mezivillager/hacer/pull/507#issuecomment-5827322969"
-          },
-          {
-            "verdict": "PASS",
-            "round": 2,
-            "model": "Claude Opus 5.5 (claude-opus-5-5[1m])",
-            "at": "2026-09-25T05:59:24Z",
-            "url": "https://github.com/mezivillager/hacer/pull/507#issuecomment-5827604278"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -5010,7 +4985,7 @@
         "number": 545,
         "ref": "refs/heads/claim/545",
         "sha": "010fb7b17d424e829e5e46a390ae3699145fa298",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "Timeline.test.tsx mounts the whole snapshot on vitest's 5 s default and times out under load",
         "url": "https://github.com/mezivillager/hacer/issues/545",
         "labels": [
@@ -5019,7 +4994,7 @@
           "risk:0",
           "project:mission-control"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -5161,7 +5136,7 @@
         }
       }
     ],
-    "onClosedIssues": 28
+    "onClosedIssues": 29
   },
   "cloudLane": {
     "items": [
@@ -6708,7 +6683,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-25",
-        "merges": 8
+        "merges": 7
       },
       {
         "date": "2026-09-26",
@@ -6724,20 +6699,20 @@
       },
       {
         "date": "2026-09-29",
-        "merges": 19
+        "merges": 20
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-15T13:54:04.009Z",
-      "merged": 184,
+      "since": "2026-09-15T14:03:37.271Z",
+      "merged": 185,
       "openToMergeHours": {
         "median": 0.2,
         "p90": 12.1
       },
       "blockedOnce": {
         "count": 21,
-        "of": 95,
+        "of": 96,
         "prs": [
           238,
           248,
@@ -6764,8 +6739,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 93,
-          "withVerdict": 77,
+          "merged": 94,
+          "withVerdict": 78,
           "without": [
             133,
             134,
@@ -7779,11 +7754,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "bad58db7c834bb6c343db4f89373f89dd8425040",
+        "sha": "93b700314173aacedad393eb0ba275ab772338a9",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36578422593/job/109439953911",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36579698141/job/109444299916",
         "line": null,
         "verdict": null,
         "fields": {},
