@@ -1,0 +1,2339 @@
+{
+  "scenario": "mux8way16-fan-in",
+  "about": "ADR-0008 assertion 3: all 9 inputs of a Mux8Way16, each wired from its own Not.",
+  "b004b": {
+    "note": "B-004b (CASE2), docs/development/observed-bugs.md: a confluence is identified only by its confluenceCoord, so wires into two different entities whose input sides snap to one section line share an approach backbone, and ADR-0008's overlap oracle, keyed on the same coordinate, passes it. Each sharedTracks entry below is that bug, not intended routing.",
+    "sharedTracks": []
+  },
+  "scene": {
+    "schemaVersion": 2,
+    "entities": [
+      {
+        "id": "gate-0",
+        "kind": "gate",
+        "ownerId": null,
+        "name": "Mux8Way16",
+        "pinId": null,
+        "world": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "state": {
+          "selected": false,
+          "signal": null
+        }
+      },
+      {
+        "id": "gate-0:a",
+        "kind": "pin",
+        "ownerId": "gate-0",
+        "name": "a",
+        "pinId": "gate-0-in-0",
+        "world": {
+          "x": -0.775,
+          "y": 0,
+          "z": -1.6
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "gate-0:b",
+        "kind": "pin",
+        "ownerId": "gate-0",
+        "name": "b",
+        "pinId": "gate-0-in-1",
+        "world": {
+          "x": -0.775,
+          "y": 0,
+          "z": -1.2
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "gate-0:c",
+        "kind": "pin",
+        "ownerId": "gate-0",
+        "name": "c",
+        "pinId": "gate-0-in-2",
+        "world": {
+          "x": -0.775,
+          "y": 0,
+          "z": -0.8
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "gate-0:d",
+        "kind": "pin",
+        "ownerId": "gate-0",
+        "name": "d",
+        "pinId": "gate-0-in-3",
+        "world": {
+          "x": -0.775,
+          "y": 0,
+          "z": -0.4
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "gate-0:e",
+        "kind": "pin",
+        "ownerId": "gate-0",
+        "name": "e",
+        "pinId": "gate-0-in-4",
+        "world": {
+          "x": -0.775,
+          "y": 0,
+          "z": 0
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "gate-0:f",
+        "kind": "pin",
+        "ownerId": "gate-0",
+        "name": "f",
+        "pinId": "gate-0-in-5",
+        "world": {
+          "x": -0.775,
+          "y": 0,
+          "z": 0.4
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "gate-0:g",
+        "kind": "pin",
+        "ownerId": "gate-0",
+        "name": "g",
+        "pinId": "gate-0-in-6",
+        "world": {
+          "x": -0.775,
+          "y": 0,
+          "z": 0.8
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "gate-0:h",
+        "kind": "pin",
+        "ownerId": "gate-0",
+        "name": "h",
+        "pinId": "gate-0-in-7",
+        "world": {
+          "x": -0.775,
+          "y": 0,
+          "z": 1.2
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "gate-0:sel",
+        "kind": "pin",
+        "ownerId": "gate-0",
+        "name": "sel",
+        "pinId": "gate-0-in-8",
+        "world": {
+          "x": -0.775,
+          "y": 0,
+          "z": 1.6
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "gate-0:out",
+        "kind": "pin",
+        "ownerId": "gate-0",
+        "name": "out",
+        "pinId": "gate-0-out-0",
+        "world": {
+          "x": 0.775,
+          "y": 0,
+          "z": 0
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "gate-1",
+        "kind": "gate",
+        "ownerId": null,
+        "name": "Not",
+        "pinId": null,
+        "world": {
+          "x": -8,
+          "y": 0,
+          "z": 0
+        },
+        "state": {
+          "selected": false,
+          "signal": null
+        }
+      },
+      {
+        "id": "gate-1:in",
+        "kind": "pin",
+        "ownerId": "gate-1",
+        "name": "in",
+        "pinId": "gate-1-in-0",
+        "world": {
+          "x": -8.575,
+          "y": 0,
+          "z": 0
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "gate-1:out",
+        "kind": "pin",
+        "ownerId": "gate-1",
+        "name": "out",
+        "pinId": "gate-1-out-0",
+        "world": {
+          "x": -7.425,
+          "y": 0,
+          "z": 0
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "gate-2",
+        "kind": "gate",
+        "ownerId": null,
+        "name": "Not",
+        "pinId": null,
+        "world": {
+          "x": -12,
+          "y": 0,
+          "z": 4
+        },
+        "state": {
+          "selected": false,
+          "signal": null
+        }
+      },
+      {
+        "id": "gate-2:in",
+        "kind": "pin",
+        "ownerId": "gate-2",
+        "name": "in",
+        "pinId": "gate-2-in-0",
+        "world": {
+          "x": -12.575,
+          "y": 0,
+          "z": 4
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "gate-2:out",
+        "kind": "pin",
+        "ownerId": "gate-2",
+        "name": "out",
+        "pinId": "gate-2-out-0",
+        "world": {
+          "x": -11.425,
+          "y": 0,
+          "z": 4
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "gate-3",
+        "kind": "gate",
+        "ownerId": null,
+        "name": "Not",
+        "pinId": null,
+        "world": {
+          "x": -16,
+          "y": 0,
+          "z": 8
+        },
+        "state": {
+          "selected": false,
+          "signal": null
+        }
+      },
+      {
+        "id": "gate-3:in",
+        "kind": "pin",
+        "ownerId": "gate-3",
+        "name": "in",
+        "pinId": "gate-3-in-0",
+        "world": {
+          "x": -16.575,
+          "y": 0,
+          "z": 8
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "gate-3:out",
+        "kind": "pin",
+        "ownerId": "gate-3",
+        "name": "out",
+        "pinId": "gate-3-out-0",
+        "world": {
+          "x": -15.425,
+          "y": 0,
+          "z": 8
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "gate-4",
+        "kind": "gate",
+        "ownerId": null,
+        "name": "Not",
+        "pinId": null,
+        "world": {
+          "x": -20,
+          "y": 0,
+          "z": 12
+        },
+        "state": {
+          "selected": false,
+          "signal": null
+        }
+      },
+      {
+        "id": "gate-4:in",
+        "kind": "pin",
+        "ownerId": "gate-4",
+        "name": "in",
+        "pinId": "gate-4-in-0",
+        "world": {
+          "x": -20.575,
+          "y": 0,
+          "z": 12
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "gate-4:out",
+        "kind": "pin",
+        "ownerId": "gate-4",
+        "name": "out",
+        "pinId": "gate-4-out-0",
+        "world": {
+          "x": -19.425,
+          "y": 0,
+          "z": 12
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "gate-5",
+        "kind": "gate",
+        "ownerId": null,
+        "name": "Not",
+        "pinId": null,
+        "world": {
+          "x": -24,
+          "y": 0,
+          "z": 16
+        },
+        "state": {
+          "selected": false,
+          "signal": null
+        }
+      },
+      {
+        "id": "gate-5:in",
+        "kind": "pin",
+        "ownerId": "gate-5",
+        "name": "in",
+        "pinId": "gate-5-in-0",
+        "world": {
+          "x": -24.575,
+          "y": 0,
+          "z": 16
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "gate-5:out",
+        "kind": "pin",
+        "ownerId": "gate-5",
+        "name": "out",
+        "pinId": "gate-5-out-0",
+        "world": {
+          "x": -23.425,
+          "y": 0,
+          "z": 16
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "gate-6",
+        "kind": "gate",
+        "ownerId": null,
+        "name": "Not",
+        "pinId": null,
+        "world": {
+          "x": -28,
+          "y": 0,
+          "z": 20
+        },
+        "state": {
+          "selected": false,
+          "signal": null
+        }
+      },
+      {
+        "id": "gate-6:in",
+        "kind": "pin",
+        "ownerId": "gate-6",
+        "name": "in",
+        "pinId": "gate-6-in-0",
+        "world": {
+          "x": -28.575,
+          "y": 0,
+          "z": 20
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "gate-6:out",
+        "kind": "pin",
+        "ownerId": "gate-6",
+        "name": "out",
+        "pinId": "gate-6-out-0",
+        "world": {
+          "x": -27.425,
+          "y": 0,
+          "z": 20
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "gate-7",
+        "kind": "gate",
+        "ownerId": null,
+        "name": "Not",
+        "pinId": null,
+        "world": {
+          "x": -32,
+          "y": 0,
+          "z": 24
+        },
+        "state": {
+          "selected": false,
+          "signal": null
+        }
+      },
+      {
+        "id": "gate-7:in",
+        "kind": "pin",
+        "ownerId": "gate-7",
+        "name": "in",
+        "pinId": "gate-7-in-0",
+        "world": {
+          "x": -32.575,
+          "y": 0,
+          "z": 24
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "gate-7:out",
+        "kind": "pin",
+        "ownerId": "gate-7",
+        "name": "out",
+        "pinId": "gate-7-out-0",
+        "world": {
+          "x": -31.425,
+          "y": 0,
+          "z": 24
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "gate-8",
+        "kind": "gate",
+        "ownerId": null,
+        "name": "Not",
+        "pinId": null,
+        "world": {
+          "x": -36,
+          "y": 0,
+          "z": 28
+        },
+        "state": {
+          "selected": false,
+          "signal": null
+        }
+      },
+      {
+        "id": "gate-8:in",
+        "kind": "pin",
+        "ownerId": "gate-8",
+        "name": "in",
+        "pinId": "gate-8-in-0",
+        "world": {
+          "x": -36.575,
+          "y": 0,
+          "z": 28
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "gate-8:out",
+        "kind": "pin",
+        "ownerId": "gate-8",
+        "name": "out",
+        "pinId": "gate-8-out-0",
+        "world": {
+          "x": -35.425,
+          "y": 0,
+          "z": 28
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "gate-9",
+        "kind": "gate",
+        "ownerId": null,
+        "name": "Not",
+        "pinId": null,
+        "world": {
+          "x": -40,
+          "y": 0,
+          "z": 32
+        },
+        "state": {
+          "selected": false,
+          "signal": null
+        }
+      },
+      {
+        "id": "gate-9:in",
+        "kind": "pin",
+        "ownerId": "gate-9",
+        "name": "in",
+        "pinId": "gate-9-in-0",
+        "world": {
+          "x": -40.575,
+          "y": 0,
+          "z": 32
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "gate-9:out",
+        "kind": "pin",
+        "ownerId": "gate-9",
+        "name": "out",
+        "pinId": "gate-9-out-0",
+        "world": {
+          "x": -39.425,
+          "y": 0,
+          "z": 32
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "wire-0",
+        "kind": "wire",
+        "ownerId": null,
+        "name": null,
+        "pinId": null,
+        "world": {
+          "x": -4,
+          "y": 0.2,
+          "z": -0.7
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "wire-1",
+        "kind": "wire",
+        "ownerId": null,
+        "name": null,
+        "pinId": null,
+        "world": {
+          "x": -4,
+          "y": 0.2,
+          "z": 3.5
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "wire-2",
+        "kind": "wire",
+        "ownerId": null,
+        "name": null,
+        "pinId": null,
+        "world": {
+          "x": -4,
+          "y": 0.2,
+          "z": 7.7
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "wire-3",
+        "kind": "wire",
+        "ownerId": null,
+        "name": null,
+        "pinId": null,
+        "world": {
+          "x": -4,
+          "y": 0.2,
+          "z": 11.9
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "wire-4",
+        "kind": "wire",
+        "ownerId": null,
+        "name": null,
+        "pinId": null,
+        "world": {
+          "x": -4.1,
+          "y": 0.2,
+          "z": 16
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "wire-5",
+        "kind": "wire",
+        "ownerId": null,
+        "name": null,
+        "pinId": null,
+        "world": {
+          "x": -4.3,
+          "y": 0.2,
+          "z": 20
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "wire-6",
+        "kind": "wire",
+        "ownerId": null,
+        "name": null,
+        "pinId": null,
+        "world": {
+          "x": -4.5,
+          "y": 0.2,
+          "z": 24
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "wire-7",
+        "kind": "wire",
+        "ownerId": null,
+        "name": null,
+        "pinId": null,
+        "world": {
+          "x": -4.7,
+          "y": 0.2,
+          "z": 28
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      },
+      {
+        "id": "wire-8",
+        "kind": "wire",
+        "ownerId": null,
+        "name": null,
+        "pinId": null,
+        "world": {
+          "x": -4.9,
+          "y": 0.2,
+          "z": 32
+        },
+        "state": {
+          "selected": false,
+          "signal": 0
+        }
+      }
+    ]
+  },
+  "wires": [
+    {
+      "id": "wire-0",
+      "from": {
+        "type": "gate",
+        "entityId": "gate-1",
+        "pinId": "gate-1-out-0"
+      },
+      "to": {
+        "type": "gate",
+        "entityId": "gate-0",
+        "pinId": "gate-0-in-0"
+      },
+      "segments": [
+        {
+          "start": {
+            "x": -7.425,
+            "y": 0.2,
+            "z": 0
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 0
+          },
+          "type": "exit"
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 0
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": -1.6
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": -4
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": -1.6
+          },
+          "end": {
+            "x": -2.3875,
+            "y": 0.2,
+            "z": -1.6
+          },
+          "type": "horizontal",
+          "approach": true
+        },
+        {
+          "start": {
+            "x": -2.3875,
+            "y": 0.2,
+            "z": -1.6
+          },
+          "end": {
+            "x": -0.775,
+            "y": 0.2,
+            "z": -1.6
+          },
+          "type": "entry",
+          "approach": true
+        }
+      ]
+    },
+    {
+      "id": "wire-1",
+      "from": {
+        "type": "gate",
+        "entityId": "gate-2",
+        "pinId": "gate-2-out-0"
+      },
+      "to": {
+        "type": "gate",
+        "entityId": "gate-0",
+        "pinId": "gate-0-in-1"
+      },
+      "segments": [
+        {
+          "start": {
+            "x": -11.425,
+            "y": 0.2,
+            "z": 4
+          },
+          "end": {
+            "x": -8,
+            "y": 0.2,
+            "z": 4
+          },
+          "type": "exit"
+        },
+        {
+          "start": {
+            "x": -8,
+            "y": 0.2,
+            "z": 4
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 4
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 4
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 0
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": -4
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 0
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": -1.2
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": -4
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": -1.2
+          },
+          "end": {
+            "x": -3.475,
+            "y": 0.2,
+            "z": -1.2
+          },
+          "type": "horizontal",
+          "approach": true
+        },
+        {
+          "start": {
+            "x": -3.475,
+            "y": 0.2,
+            "z": -1.2
+          },
+          "end": {
+            "x": -0.775,
+            "y": 0.2,
+            "z": -1.2
+          },
+          "type": "entry",
+          "approach": true
+        }
+      ]
+    },
+    {
+      "id": "wire-2",
+      "from": {
+        "type": "gate",
+        "entityId": "gate-3",
+        "pinId": "gate-3-out-0"
+      },
+      "to": {
+        "type": "gate",
+        "entityId": "gate-0",
+        "pinId": "gate-0-in-2"
+      },
+      "segments": [
+        {
+          "start": {
+            "x": -15.425,
+            "y": 0.2,
+            "z": 8
+          },
+          "end": {
+            "x": -12,
+            "y": 0.2,
+            "z": 8
+          },
+          "type": "exit"
+        },
+        {
+          "start": {
+            "x": -12,
+            "y": 0.2,
+            "z": 8
+          },
+          "end": {
+            "x": -8,
+            "y": 0.2,
+            "z": 8
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": -8,
+            "y": 0.2,
+            "z": 8
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 8
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 8
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 4
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": -4
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 4
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 0
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": -4
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 0
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": -0.8
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": -4
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": -0.8
+          },
+          "end": {
+            "x": -2.675,
+            "y": 0.2,
+            "z": -0.8
+          },
+          "type": "horizontal",
+          "approach": true
+        },
+        {
+          "start": {
+            "x": -2.675,
+            "y": 0.2,
+            "z": -0.8
+          },
+          "end": {
+            "x": -0.775,
+            "y": 0.2,
+            "z": -0.8
+          },
+          "type": "entry",
+          "approach": true
+        }
+      ]
+    },
+    {
+      "id": "wire-3",
+      "from": {
+        "type": "gate",
+        "entityId": "gate-4",
+        "pinId": "gate-4-out-0"
+      },
+      "to": {
+        "type": "gate",
+        "entityId": "gate-0",
+        "pinId": "gate-0-in-3"
+      },
+      "segments": [
+        {
+          "start": {
+            "x": -19.425,
+            "y": 0.2,
+            "z": 12
+          },
+          "end": {
+            "x": -16,
+            "y": 0.2,
+            "z": 12
+          },
+          "type": "exit"
+        },
+        {
+          "start": {
+            "x": -16,
+            "y": 0.2,
+            "z": 12
+          },
+          "end": {
+            "x": -12,
+            "y": 0.2,
+            "z": 12
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": -12,
+            "y": 0.2,
+            "z": 12
+          },
+          "end": {
+            "x": -8,
+            "y": 0.2,
+            "z": 12
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": -8,
+            "y": 0.2,
+            "z": 12
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 12
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 12
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 8
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": -4
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 8
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 4
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": -4
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 4
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 0
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": -4
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 0
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": -0.4
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": -4
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": -0.4
+          },
+          "end": {
+            "x": -1.875,
+            "y": 0.2,
+            "z": -0.4
+          },
+          "type": "horizontal",
+          "approach": true
+        },
+        {
+          "start": {
+            "x": -1.875,
+            "y": 0.2,
+            "z": -0.4
+          },
+          "end": {
+            "x": -0.775,
+            "y": 0.2,
+            "z": -0.4
+          },
+          "type": "entry",
+          "approach": true
+        }
+      ]
+    },
+    {
+      "id": "wire-4",
+      "from": {
+        "type": "gate",
+        "entityId": "gate-5",
+        "pinId": "gate-5-out-0"
+      },
+      "to": {
+        "type": "gate",
+        "entityId": "gate-0",
+        "pinId": "gate-0-in-4"
+      },
+      "segments": [
+        {
+          "start": {
+            "x": -23.425,
+            "y": 0.2,
+            "z": 16
+          },
+          "end": {
+            "x": -20,
+            "y": 0.2,
+            "z": 16
+          },
+          "type": "exit"
+        },
+        {
+          "start": {
+            "x": -20,
+            "y": 0.2,
+            "z": 16
+          },
+          "end": {
+            "x": -16,
+            "y": 0.2,
+            "z": 16
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": -16,
+            "y": 0.2,
+            "z": 16
+          },
+          "end": {
+            "x": -12,
+            "y": 0.2,
+            "z": 16
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": -12,
+            "y": 0.2,
+            "z": 16
+          },
+          "end": {
+            "x": -8,
+            "y": 0.2,
+            "z": 16
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": -8,
+            "y": 0.2,
+            "z": 16
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 16
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 16
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 12
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": -4
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 12
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 8
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": -4
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 8
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 4
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": -4
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 4
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 0
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": -4
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 0
+          },
+          "end": {
+            "x": -1.075,
+            "y": 0.2,
+            "z": 0
+          },
+          "type": "horizontal",
+          "approach": true
+        },
+        {
+          "start": {
+            "x": -1.075,
+            "y": 0.2,
+            "z": 0
+          },
+          "end": {
+            "x": -0.775,
+            "y": 0.2,
+            "z": 0
+          },
+          "type": "entry",
+          "approach": true
+        }
+      ]
+    },
+    {
+      "id": "wire-5",
+      "from": {
+        "type": "gate",
+        "entityId": "gate-6",
+        "pinId": "gate-6-out-0"
+      },
+      "to": {
+        "type": "gate",
+        "entityId": "gate-0",
+        "pinId": "gate-0-in-5"
+      },
+      "segments": [
+        {
+          "start": {
+            "x": -27.425,
+            "y": 0.2,
+            "z": 20
+          },
+          "end": {
+            "x": -24,
+            "y": 0.2,
+            "z": 20
+          },
+          "type": "exit"
+        },
+        {
+          "start": {
+            "x": -24,
+            "y": 0.2,
+            "z": 20
+          },
+          "end": {
+            "x": -20,
+            "y": 0.2,
+            "z": 20
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": -20,
+            "y": 0.2,
+            "z": 20
+          },
+          "end": {
+            "x": -16,
+            "y": 0.2,
+            "z": 20
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": -16,
+            "y": 0.2,
+            "z": 20
+          },
+          "end": {
+            "x": -12,
+            "y": 0.2,
+            "z": 20
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": -12,
+            "y": 0.2,
+            "z": 20
+          },
+          "end": {
+            "x": -8,
+            "y": 0.2,
+            "z": 20
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": -8,
+            "y": 0.2,
+            "z": 20
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 20
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 20
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 16
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": -4
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 16
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 12
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": -4
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 12
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 8
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": -4
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 8
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 4
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": -4
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 4
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 0.4
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": -4
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 0.4
+          },
+          "end": {
+            "x": -1.475,
+            "y": 0.2,
+            "z": 0.4
+          },
+          "type": "horizontal",
+          "approach": true
+        },
+        {
+          "start": {
+            "x": -1.475,
+            "y": 0.2,
+            "z": 0.4
+          },
+          "end": {
+            "x": -0.775,
+            "y": 0.2,
+            "z": 0.4
+          },
+          "type": "entry",
+          "approach": true
+        }
+      ]
+    },
+    {
+      "id": "wire-6",
+      "from": {
+        "type": "gate",
+        "entityId": "gate-7",
+        "pinId": "gate-7-out-0"
+      },
+      "to": {
+        "type": "gate",
+        "entityId": "gate-0",
+        "pinId": "gate-0-in-6"
+      },
+      "segments": [
+        {
+          "start": {
+            "x": -31.425,
+            "y": 0.2,
+            "z": 24
+          },
+          "end": {
+            "x": -28,
+            "y": 0.2,
+            "z": 24
+          },
+          "type": "exit"
+        },
+        {
+          "start": {
+            "x": -28,
+            "y": 0.2,
+            "z": 24
+          },
+          "end": {
+            "x": -24,
+            "y": 0.2,
+            "z": 24
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": -24,
+            "y": 0.2,
+            "z": 24
+          },
+          "end": {
+            "x": -20,
+            "y": 0.2,
+            "z": 24
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": -20,
+            "y": 0.2,
+            "z": 24
+          },
+          "end": {
+            "x": -16,
+            "y": 0.2,
+            "z": 24
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": -16,
+            "y": 0.2,
+            "z": 24
+          },
+          "end": {
+            "x": -12,
+            "y": 0.2,
+            "z": 24
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": -12,
+            "y": 0.2,
+            "z": 24
+          },
+          "end": {
+            "x": -8,
+            "y": 0.2,
+            "z": 24
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": -8,
+            "y": 0.2,
+            "z": 24
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 24
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 24
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 20
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": -4
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 20
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 16
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": -4
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 16
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 12
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": -4
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 12
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 8
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": -4
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 8
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 4
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": -4
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 4
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 0.8
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": -4
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 0.8
+          },
+          "end": {
+            "x": -2.275,
+            "y": 0.2,
+            "z": 0.8
+          },
+          "type": "horizontal",
+          "approach": true
+        },
+        {
+          "start": {
+            "x": -2.275,
+            "y": 0.2,
+            "z": 0.8
+          },
+          "end": {
+            "x": -0.775,
+            "y": 0.2,
+            "z": 0.8
+          },
+          "type": "entry",
+          "approach": true
+        }
+      ]
+    },
+    {
+      "id": "wire-7",
+      "from": {
+        "type": "gate",
+        "entityId": "gate-8",
+        "pinId": "gate-8-out-0"
+      },
+      "to": {
+        "type": "gate",
+        "entityId": "gate-0",
+        "pinId": "gate-0-in-7"
+      },
+      "segments": [
+        {
+          "start": {
+            "x": -35.425,
+            "y": 0.2,
+            "z": 28
+          },
+          "end": {
+            "x": -32,
+            "y": 0.2,
+            "z": 28
+          },
+          "type": "exit"
+        },
+        {
+          "start": {
+            "x": -32,
+            "y": 0.2,
+            "z": 28
+          },
+          "end": {
+            "x": -28,
+            "y": 0.2,
+            "z": 28
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": -28,
+            "y": 0.2,
+            "z": 28
+          },
+          "end": {
+            "x": -24,
+            "y": 0.2,
+            "z": 28
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": -24,
+            "y": 0.2,
+            "z": 28
+          },
+          "end": {
+            "x": -20,
+            "y": 0.2,
+            "z": 28
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": -20,
+            "y": 0.2,
+            "z": 28
+          },
+          "end": {
+            "x": -16,
+            "y": 0.2,
+            "z": 28
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": -16,
+            "y": 0.2,
+            "z": 28
+          },
+          "end": {
+            "x": -12,
+            "y": 0.2,
+            "z": 28
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": -12,
+            "y": 0.2,
+            "z": 28
+          },
+          "end": {
+            "x": -8,
+            "y": 0.2,
+            "z": 28
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": -8,
+            "y": 0.2,
+            "z": 28
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 28
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 28
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 24
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": -4
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 24
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 20
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": -4
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 20
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 16
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": -4
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 16
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 12
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": -4
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 12
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 8
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": -4
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 8
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 4
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": -4
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 4
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 1.2
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": -4
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 1.2
+          },
+          "end": {
+            "x": -3.075,
+            "y": 0.2,
+            "z": 1.2
+          },
+          "type": "horizontal",
+          "approach": true
+        },
+        {
+          "start": {
+            "x": -3.075,
+            "y": 0.2,
+            "z": 1.2
+          },
+          "end": {
+            "x": -0.775,
+            "y": 0.2,
+            "z": 1.2
+          },
+          "type": "entry",
+          "approach": true
+        }
+      ]
+    },
+    {
+      "id": "wire-8",
+      "from": {
+        "type": "gate",
+        "entityId": "gate-9",
+        "pinId": "gate-9-out-0"
+      },
+      "to": {
+        "type": "gate",
+        "entityId": "gate-0",
+        "pinId": "gate-0-in-8"
+      },
+      "segments": [
+        {
+          "start": {
+            "x": -39.425,
+            "y": 0.2,
+            "z": 32
+          },
+          "end": {
+            "x": -36,
+            "y": 0.2,
+            "z": 32
+          },
+          "type": "exit"
+        },
+        {
+          "start": {
+            "x": -36,
+            "y": 0.2,
+            "z": 32
+          },
+          "end": {
+            "x": -32,
+            "y": 0.2,
+            "z": 32
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": -32,
+            "y": 0.2,
+            "z": 32
+          },
+          "end": {
+            "x": -28,
+            "y": 0.2,
+            "z": 32
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": -28,
+            "y": 0.2,
+            "z": 32
+          },
+          "end": {
+            "x": -24,
+            "y": 0.2,
+            "z": 32
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": -24,
+            "y": 0.2,
+            "z": 32
+          },
+          "end": {
+            "x": -20,
+            "y": 0.2,
+            "z": 32
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": -20,
+            "y": 0.2,
+            "z": 32
+          },
+          "end": {
+            "x": -16,
+            "y": 0.2,
+            "z": 32
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": -16,
+            "y": 0.2,
+            "z": 32
+          },
+          "end": {
+            "x": -12,
+            "y": 0.2,
+            "z": 32
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": -12,
+            "y": 0.2,
+            "z": 32
+          },
+          "end": {
+            "x": -8,
+            "y": 0.2,
+            "z": 32
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": -8,
+            "y": 0.2,
+            "z": 32
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 32
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 32
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 28
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": -4
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 28
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 24
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": -4
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 24
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 20
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": -4
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 20
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 16
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": -4
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 16
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 12
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": -4
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 12
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 8
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": -4
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 8
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 4
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": -4
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 4
+          },
+          "end": {
+            "x": -4,
+            "y": 0.2,
+            "z": 1.6
+          },
+          "type": "vertical",
+          "approach": true,
+          "confluenceCoord": -4
+        },
+        {
+          "start": {
+            "x": -4,
+            "y": 0.2,
+            "z": 1.6
+          },
+          "end": {
+            "x": -3.875,
+            "y": 0.2,
+            "z": 1.6
+          },
+          "type": "horizontal",
+          "approach": true
+        },
+        {
+          "start": {
+            "x": -3.875,
+            "y": 0.2,
+            "z": 1.6
+          },
+          "end": {
+            "x": -0.775,
+            "y": 0.2,
+            "z": 1.6
+          },
+          "type": "entry",
+          "approach": true
+        }
+      ]
+    }
+  ]
+}
