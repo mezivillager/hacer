@@ -28,6 +28,13 @@ export interface Conformance {
 }
 /** `metrics.openTasks` (#478): one day's last archived reading of `tasks.byProject`, taken at `at`. */
 export interface TasksReading { date: string; at: string; byProject: Record<string, number[]> }
+/** A row of `docs/harness/ledger.md`, one field per column; `mechanised` is the cell as written (`yes — <link>`).
+ *  `id` and `decision` are columns of the ledger since #469, so a snapshot taken before it has none. */
+export interface LedgerRow {
+  id?: string; date: string; whatWentWrong: string; shouldHaveBeenCaughtBy: string; mechanised: string; decision?: string
+}
+export interface Adr { number: number; file: string; title: string | null; status: string | null }
+export interface Phase { phase: string; status: string; scope: string; doc: string | null; group: string }
 export interface Snapshot {
   schemaVersion: 1; generatedAt: string; head: { sha: string; subject: string }; freshness: Record<string, Freshness>
   portfolio: { projects: Project[] }; pickRule: { next: { number: number; title: string; project: string | null }[] }
@@ -41,6 +48,9 @@ export interface Snapshot {
     releases: { tag: string; publishedAt: string; isLatest: boolean }[]; mergesPerDay: { date: string; merges: number }[]
     flow: Flow | null; conformance: Conformance | null; openTasks: TasksReading[] | null
   }
+  ledger: { items: LedgerRow[]; byMechanised: Record<string, number> }
+  adrs: { items: Adr[] }
+  roadmap: { lastUpdated: string | null; phases: Phase[] }
   checks: { until?: string; items: unknown[] }
 }
 
@@ -71,3 +81,11 @@ export function nextPick({ pickRule }: Snapshot, slug: string) {
   const index = pickRule.next.findIndex((task) => task.project === slug)
   return index < 0 ? null : { ...pickRule.next[index], place: index + 1 }
 }
+
+/** A document in the repo, on main: what each of the roadmap, ledger and ADR views opens. */
+export const docUrl = (path: string) => `${REPO}/blob/main/${path}`
+
+/** Which of the ledger's Mechanised? answers a cell gives, by its first word (as the collector's `byMechanised` counts). */
+export const MECHANISED = ['yes', 'no', 'partly'] as const
+export const mechanisedOf = (cell: string) =>
+  MECHANISED.find((word) => cell.replace(/[*_`]/g, '').trim().toLowerCase().startsWith(word)) ?? 'other'

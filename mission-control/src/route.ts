@@ -1,9 +1,10 @@
 import { useSyncExternalStore } from 'react'
 
-// Hash routes, so a static sub-folder needs no 404 tricks: #/ · #/projects · #/projects/<slug> · #/process · #/timeline · #/charts.
+// Hash routes, so a static sub-folder needs no 404 tricks: #/ · #/projects · #/projects/<slug> · #/process · #/timeline · #/charts · #/roadmap · #/ledger · #/adrs.
 
 export type Route =
   | { view: 'overview' } | { view: 'projects' } | { view: 'project'; slug: string } | { view: 'process' } | { view: 'timeline' } | { view: 'charts' }
+  | { view: 'roadmap' } | { view: 'ledger' } | { view: 'adrs' }
 
 /** Anything unrecognised is the Overview: a mistyped link lands on a view, never on a blank page. */
 export function routeOf(hash: string): Route {
@@ -11,6 +12,7 @@ export function routeOf(hash: string): Route {
   if (view === 'process') return { view: 'process' }
   if (view === 'timeline') return { view: 'timeline' }
   if (view === 'charts') return { view: 'charts' }
+  if (view === 'roadmap' || view === 'ledger' || view === 'adrs') return { view }
   if (view !== 'projects') return { view: 'overview' }
   return slug ? { view: 'project', slug } : { view: 'projects' }
 }
