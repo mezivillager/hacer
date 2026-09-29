@@ -127,6 +127,40 @@ describe('runTest — error paths', () => {
   })
 })
 
+describe('runTest — pins the chip does not have', () => {
+  function builtinNot() {
+    const reg = createChipRegistry()
+    registerBuiltin(reg, 'Not', [{ name: 'in', width: 1 }], [{ name: 'out', width: 1 }], (i) => ({ out: i.in === 0 ? 1 : 0 }))
+    return reg
+  }
+
+  it('set on an unknown pin fails naming the pin and line', () => {
+    const s = script('load Not.hdl,\noutput-list in out;\nset in 0,\nset zzz 0,\neval,\noutput;')
+    const result = runTest(s, { registry: builtinNot() })
+    expect(result.passed).toBe(false)
+    expect(result.error).toMatch(/"zzz"/)
+    expect(result.error).toMatch(/line 4\b/)
+    expect(result.outputRows).toHaveLength(0)
+  })
+
+  it('an unknown output-list name fails naming the pin and line', () => {
+    const s = script('load Not.hdl,\n\noutput-list in zzz out;\nset in 0,\neval,\noutput;')
+    const result = runTest(s, { registry: builtinNot() })
+    expect(result.passed).toBe(false)
+    expect(result.error).toMatch(/"zzz"/)
+    expect(result.error).toMatch(/line 3\b/)
+    expect(result.outputRows).toHaveLength(0)
+  })
+
+  it('checks pins against a chip passed in options when the script has no load', () => {
+    const not = builtinNot().get('Not')
+    const s = script('output-list in out;\nset zzz 1,\neval,\noutput;')
+    const result = runTest(s, { registry: builtinNot(), chip: not })
+    expect(result.passed).toBe(false)
+    expect(result.error).toMatch(/"zzz"/)
+  })
+})
+
 describe('gold standard A — all 16 Project-1 .tst pass against builtins', () => {
   beforeEach(() => resetAppRegistriesForTests())
 
