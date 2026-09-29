@@ -1,9 +1,11 @@
+import { useState } from 'react'
 import { ThemeProvider } from '@/components/ui-kit/theme-provider'
 import { TooltipProvider } from '@/components/ui-kit/tooltip'
 import { Toaster } from 'sonner'
 import { CanvasArea } from '@/components/canvas/CanvasArea'
 import { Shell } from '@/components/Shell'
 import { useCircuitStore } from '@/store/circuitStore'
+import { resolveRendererFromSearchParams } from '@/lib/renderer'
 
 // Icon column: w-8 (32px) + px-1.5*2 (12px) + 1px border ≈ 44px. Use 60px for a clear gap.
 const ICON_COL_OFFSET = '60px'
@@ -12,11 +14,18 @@ const DRAWER_OPEN_OFFSET = '360px'
 
 function App() {
   const rightPanelOpen = useCircuitStore((s) => s.rightPanelOpen)
+  // Read once at boot, so the canvas never mounts or unmounts as a state change.
+  const [renderer] = useState(() => resolveRendererFromSearchParams(window.location.search))
 
   return (
     <ThemeProvider>
       <TooltipProvider>
-        <Shell scene={<CanvasArea />} />
+        {/*
+         * `?renderer=none` passes no scene, so no WebGL context is ever created. What that mode
+         * cannot do is listed in docs/decisions/0019-canvas-less-shell-mode.md, under
+         * "What is not available under `renderer=none`".
+         */}
+        <Shell scene={renderer === 'none' ? null : <CanvasArea />} />
         {/*
          * offset.right reactively clears both RightActionBar states (B-002):
          *  - Closed: 60 px clears the ~44 px icon column with a comfortable gap.
