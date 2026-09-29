@@ -20,3 +20,23 @@ describe('conformance/vectors/**', () => {
     expect(isProtectedPath('scripts/sync-vectors.sh')).toBe(false)
   })
 })
+
+describe('**/__snapshots__/characterization/**', () => {
+  it('is a protected-path glob', () => {
+    expect(PROTECTED_GLOBS).toContain('**/__snapshots__/characterization/**')
+  })
+
+  it('matches the legacy characterization goldens, at any depth', () => {
+    expect(isProtectedPath('src/core/serialization/__snapshots__/characterization/evaluation/junction-chain.json')).toBe(true)
+    expect(isProtectedPath('src/store/__snapshots__/characterization/actions.json')).toBe(true)
+    expect(isProtectedPath('__snapshots__/characterization/scene.json')).toBe(true)
+    expect(isProtectedPath('src\\utils\\__snapshots__\\characterization\\scene.json')).toBe(true)
+  })
+
+  it('does not match ordinary snapshots or the characterization tests themselves', () => {
+    expect(isProtectedPath('src/core/serialization/__snapshots__/serialization.test.ts.snap')).toBe(false)
+    expect(isProtectedPath('src/core/serialization/legacyEvaluation.characterization.test.ts')).toBe(false)
+    expect(isProtectedPath('src/characterization/evaluation.json')).toBe(false)
+    expect(isProtectedPath('src/__snapshots__/characterization.json')).toBe(false)
+  })
+})
