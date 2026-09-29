@@ -1,4 +1,4 @@
-/** `hacer test <hdl> <tst> <cmp>` as a pure function: argv and a file reader in, exit code and text out. */
+/** `hacer test` and `hacer run-tst` as a pure function: argv and a file reader in, exit code and text out. */
 import {
   combineRegistries,
   createChipRegistry,
@@ -10,10 +10,11 @@ import {
   registerProject1Builtins,
   runTest,
 } from '@/core'
-import type { ChipDefinition, ChipRegistry, HDLChip } from '@/core'
+import type { ChipDefinition, ChipRegistry, HDLChip, TSTScript } from '@/core'
+import { outTable } from './outTable'
 
 export interface CliOutcome {
-  /** 0 pass · 1 the chip failed or could not be tested · 2 usage error */
+  /** 0 pass, or run-tst ran · 1 the chip failed, or could not be tested or run · 2 usage error */
   exitCode: 0 | 1 | 2
   stdout: string
   stderr: string
@@ -33,7 +34,7 @@ export interface TestReport {
 
 type SourceFile = { path: string; source: string }
 
-const USAGE = 'usage: hacer test [--json] <chip.hdl> <chip.tst> <chip.cmp>\n'
+const USAGE = 'usage: hacer test [--json] <chip.hdl> <chip.tst> <chip.cmp>\n       hacer run-tst <chip.hdl> <chip.tst>\n'
 const EXTENSIONS = ['.hdl', '.tst', '.cmp']
 
 const errorReport = (chip: string | null, error: string): TestReport => ({
@@ -62,18 +63,24 @@ function ownChip(ast: HDLChip, source: string, builtins: ChipRegistry): ChipDefi
   return { ...def, implementation: builtin.implementation }
 }
 
-export function testChip(hdlFile: SourceFile, tstFile: SourceFile, cmpFile: SourceFile): TestReport {
+type Parsed = { ast: HDLChip; chip: string; script: TSTScript }
+type Loaded = { own: ChipDefinition; registry: ChipRegistry }
+
+const isReport = (value: object): value is TestReport => 'status' in value
+
+function parseSources(hdlFile: SourceFile, tstFile: SourceFile): Parsed | TestReport {
   const hdl = parseHDL(hdlFile.source)
   if (!hdl.success) return errorReport(null, firstParseError(hdlFile, hdl.errors))
   const chip = hdl.chip.name
   const tst = parseTST(tstFile.source)
   if (!tst.success) return errorReport(chip, firstParseError(tstFile, tst.errors))
-  const cmp = parseCmp(cmpFile.source)
-  if (!cmp.success) return errorReport(chip, firstParseError(cmpFile, cmp.errors))
+  return { ast: hdl.chip, chip, script: tst.script }
+}
 
+function loadChip({ ast, chip, script }: Parsed, hdlFile: SourceFile, tstFile: SourceFile): Loaded | TestReport {
   // `load` swaps in whatever the registry holds under the name it gives, so a `.tst` naming
   // another chip would test that chip's builtin, not this file.
-  for (const cmd of tst.script.commands) {
+  for (const cmd of script.commands) {
     if (cmd.type === 'load' && loadedChip(cmd.filename) !== chip) {
       return errorReport(chip, `${tstFile.path} loads ${cmd.filename}, but ${hdlFile.path} defines ${chip}`)
     }
@@ -81,15 +88,26 @@ export function testChip(hdlFile: SourceFile, tstFile: SourceFile, cmpFile: Sour
 
   const builtins = createChipRegistry()
   registerProject1Builtins(builtins)
-  const own = ownChip(hdl.chip, hdlFile.source, builtins)
+  const own = ownChip(ast, hdlFile.source, builtins)
   if (typeof own === 'string') return errorReport(chip, own)
   const ownRegistry = createChipRegistry()
   ownRegistry.register(own)
 
   // The file's chip first, so `load` never reaches the builtin of the same name; its parts
   // still resolve to the builtins.
-  const registry = combineRegistries(ownRegistry, builtins)
-  const result = runTest(tst.script, { registry, chip: own, cmpData: cmp.file })
+  return { own, registry: combineRegistries(ownRegistry, builtins) }
+}
+
+export function testChip(hdlFile: SourceFile, tstFile: SourceFile, cmpFile: SourceFile): TestReport {
+  const parsed = parseSources(hdlFile, tstFile)
+  if (isReport(parsed)) return parsed
+  const { chip } = parsed
+  const cmp = parseCmp(cmpFile.source)
+  if (!cmp.success) return errorReport(chip, firstParseError(cmpFile, cmp.errors))
+  const loaded = loadChip(parsed, hdlFile, tstFile)
+  if (isReport(loaded)) return loaded
+
+  const result = runTest(parsed.script, { registry: loaded.registry, chip: loaded.own, cmpData: cmp.file })
   const rows = { passed: result.passedSteps, expected: cmp.file.rows.length }
   if (result.passed) return { status: 'pass', chip, rows, failure: null, error: null }
   if (result.firstFailure) {
@@ -106,10 +124,35 @@ function formatLine(report: TestReport): string {
   return chip === null ? `ERROR ${error}` : `ERROR ${chip}: ${error}`
 }
 
+/** `hacer run-tst`: the `.out` table on stdout, compared with nothing; exit 1 only when the script fails to run. */
+function runTst(hdlPath: string, tstPath: string, readFile: (path: string) => string): CliOutcome {
+  const failed = (table: string, report: TestReport): CliOutcome => ({ exitCode: 1, stdout: table, stderr: `${formatLine(report)}\n` })
+  let hdlFile: SourceFile, tstFile: SourceFile
+  try {
+    hdlFile = { path: hdlPath, source: readFile(hdlPath) }
+    tstFile = { path: tstPath, source: readFile(tstPath) }
+  } catch (e) {
+    return failed('', errorReport(null, e instanceof Error ? e.message : String(e)))
+  }
+  const parsed = parseSources(hdlFile, tstFile)
+  if (isReport(parsed)) return failed('', parsed)
+  const loaded = loadChip(parsed, hdlFile, tstFile)
+  if (isReport(loaded)) return failed('', loaded)
+  // Without its `compare-to`, the engine never looks for a `.cmp`.
+  const script = { commands: parsed.script.commands.filter((cmd) => cmd.type !== 'compare-to') }
+  const result = runTest(script, { registry: loaded.registry, chip: loaded.own })
+  const table = outTable(script, result.outputRows)
+  if (result.error !== null) return failed(table, errorReport(parsed.chip, result.error))
+  return { exitCode: 0, stdout: table, stderr: '' }
+}
+
 export function runCli(argv: readonly string[], readFile: (path: string) => string): CliOutcome {
   const json = argv.includes('--json')
   const [command, ...paths] = argv.filter((arg) => arg !== '--json')
   if (command === '--help' || command === '-h') return { exitCode: 0, stdout: USAGE, stderr: '' }
+  if (command === 'run-tst' && !json && paths.length === 2 && paths.every((p, i) => p.endsWith(EXTENSIONS[i]))) {
+    return runTst(paths[0], paths[1], readFile)
+  }
   if (command !== 'test' || paths.length !== 3 || !paths.every((p, i) => p.endsWith(EXTENSIONS[i]))) {
     return { exitCode: 2, stdout: '', stderr: USAGE }
   }
