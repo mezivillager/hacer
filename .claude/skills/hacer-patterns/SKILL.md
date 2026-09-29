@@ -102,8 +102,8 @@ TSX files export React components only; constants and helpers live in sibling `.
 
 ```bash
 pnpm run test:run           # All Vitest tests (fast, use during TDD)
-pnpm run test:e2e:store     # Playwright @store tests — manual only
-pnpm run test:e2e:ui        # Playwright @ui tests (slow, skip unless needed)
+# Playwright suites mount the 3D canvas: CI/cloud only, never on a laptop (ADR-0016).
+# By hand: gh workflow run e2e.yml -f suite=store|ui|all
 pnpm run test:coverage      # Coverage report
 pnpm run lint               # TypeScript + ESLint (must exit 0)
 pnpm run typecheck          # TypeScript only

@@ -142,4 +142,4 @@ Use [tasks/todo.md](../tasks/todo.md) and [tasks/lessons.md](../tasks/lessons.md
 | **Verification** | Definition of done: stated once, in full, at [`docs/harness/implementer-brief.md`](../docs/harness/implementer-brief.md) § Definition of done. |
 | **TDD** | Follow [docs/testing/](./testing/) — write tests first, Red-Green-Refactor. |
 | **Elegance** | Follow [HACER_LLM_GUIDE.md](../HACER_LLM_GUIDE.md) patterns; avoid anti-patterns. |
-| **Bug Fixing** | Reach for store E2E (`pnpm run test:e2e:store`, manual) when a bug is browser-level; fix CI without being asked. |
+| **Bug Fixing** | Trigger the store E2E in the cloud (`gh workflow run e2e.yml -f suite=store`; never on a laptop, ADR-0016) when a bug is browser-level; fix CI without being asked. |

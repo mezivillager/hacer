@@ -792,8 +792,7 @@ test.describe('@store Gate Placement', () => {
 > **Note:** HACER E2E tests use a fixture system in `e2e/fixtures/` and helper library
 > in `e2e/helpers/`. Use `@store` tag for fast direct-store tests and `@ui` tag for
 > full browser interaction tests. See `e2e/specs/` for real examples.
-> - Fast: `pnpm run test:e2e:store` (manual — not a done-criterion)
-> - Slow: `pnpm run test:e2e:ui` (manual)
+> - Every Playwright suite mounts the 3D canvas, so none runs on a laptop (ADR-0016). Run them in CI, or by hand in the cloud: `gh workflow run e2e.yml -f suite=store|ui|all`. Not a done-criterion.
 
 ```typescript
 // playwright.config.ts
@@ -1504,8 +1503,8 @@ ppnpm run typecheck        # TypeScript only
 pnpm run test:run         # Run Vitest unit/component tests (single run)
 pnpm run test             # Run Vitest in watch mode
 pnpm run test:coverage    # Generate coverage report
-pnpm run test:e2e:store   # Fast E2E — store tests only (@store tag) — manual only
-pnpm run test:e2e:ui      # Slow E2E — UI tests (@ui tag) — manual only
+# Playwright suites (@store, @ui) mount the 3D canvas: CI/cloud only, never on a laptop (ADR-0016).
+# By hand: gh workflow run e2e.yml -f suite=store|ui|all
 pnpm run build            # Production build (tsc + Vite)
 ```
 
