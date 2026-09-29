@@ -42,5 +42,5 @@ Treat context as a memory hierarchy:
 Use the cheapest tool that gets the job done. Tool use has costs (tokens, latency, side-effects):
 - Reading a file → use `view` or `grep`, not `bash cat`
 - Finding a pattern → use `grep`, not opening every file
-- Running tests → `pnpm run test:run` for fast; Playwright suites mount the 3D canvas, so they run only in CI or the cloud (`gh workflow run e2e.yml -f suite=store|ui|all`), never on a laptop (ADR-0016)
+- Running tests → `pnpm run test:run` for fast; `@store` and `@ui` mount the 3D canvas, so they run only in CI or the cloud (`gh workflow run e2e.yml -f suite=store|ui|all`), never on a laptop (ADR-0016); the canvas-less `@shell` suite may run locally as a pre-flight, never a gate (`pnpm exec playwright test --project shell`)
 - Exploring directories → `glob`, not `find`
