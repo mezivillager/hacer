@@ -1,1 +1,320 @@
-{}
+{
+  "fixture": "dangling-endpoints",
+  "about": "Malformed: wires whose endpoints name nothing in the document. The reader keeps them (it prunes only wires to gates it skipped) and the evaluator reads a missing source as 0.",
+  "document": {
+    "version": 1,
+    "name": "dangling-endpoints",
+    "savedAt": "2026-09-29T00:00:00.000Z",
+    "gates": [
+      {
+        "id": "g1",
+        "type": "Or",
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": 4
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "width": 1
+      }
+    ],
+    "wires": [
+      {
+        "id": "w1",
+        "from": {
+          "type": "gate",
+          "entityId": "missing-gate",
+          "pinId": "missing-gate-out-0"
+        },
+        "to": {
+          "type": "output",
+          "entityId": "o1"
+        },
+        "segments": [],
+        "crossesWireIds": []
+      },
+      {
+        "id": "w2",
+        "from": {
+          "type": "input",
+          "entityId": "missing-input"
+        },
+        "to": {
+          "type": "output",
+          "entityId": "o2"
+        },
+        "segments": [],
+        "crossesWireIds": []
+      },
+      {
+        "id": "w3",
+        "from": {
+          "type": "junction",
+          "entityId": "missing-junction"
+        },
+        "to": {
+          "type": "output",
+          "entityId": "o3"
+        },
+        "segments": [],
+        "crossesWireIds": []
+      },
+      {
+        "id": "w4",
+        "from": {
+          "type": "input",
+          "entityId": "ia"
+        },
+        "to": {
+          "type": "gate",
+          "entityId": "g1",
+          "pinId": "g1-in-0"
+        },
+        "segments": [],
+        "crossesWireIds": []
+      },
+      {
+        "id": "w5",
+        "from": {
+          "type": "gate",
+          "entityId": "missing-gate",
+          "pinId": "missing-gate-out-0"
+        },
+        "to": {
+          "type": "gate",
+          "entityId": "g1",
+          "pinId": "g1-in-1"
+        },
+        "segments": [],
+        "crossesWireIds": []
+      },
+      {
+        "id": "w6",
+        "from": {
+          "type": "gate",
+          "entityId": "g1",
+          "pinId": "g1-out-0"
+        },
+        "to": {
+          "type": "output",
+          "entityId": "o4"
+        },
+        "segments": [],
+        "crossesWireIds": []
+      },
+      {
+        "id": "w7",
+        "from": {
+          "type": "input",
+          "entityId": "ia"
+        },
+        "to": {
+          "type": "gate",
+          "entityId": "missing-sink",
+          "pinId": "missing-sink-in-0"
+        },
+        "segments": [],
+        "crossesWireIds": []
+      }
+    ],
+    "inputNodes": [
+      {
+        "id": "ia",
+        "name": "a",
+        "position": {
+          "x": -12,
+          "y": 0,
+          "z": 0
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "value": 0,
+        "width": 1
+      }
+    ],
+    "outputNodes": [
+      {
+        "id": "o1",
+        "name": "fromMissingGate",
+        "position": {
+          "x": 12,
+          "y": 0,
+          "z": -4
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "value": 0,
+        "width": 1
+      },
+      {
+        "id": "o2",
+        "name": "fromMissingInput",
+        "position": {
+          "x": 12,
+          "y": 0,
+          "z": -2
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "value": 0,
+        "width": 1
+      },
+      {
+        "id": "o3",
+        "name": "fromMissingJunction",
+        "position": {
+          "x": 12,
+          "y": 0,
+          "z": 2
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "value": 0,
+        "width": 1
+      },
+      {
+        "id": "o4",
+        "name": "orWithMissing",
+        "position": {
+          "x": 12,
+          "y": 0,
+          "z": 4
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "value": 0,
+        "width": 1
+      }
+    ],
+    "junctions": [],
+    "busComponents": []
+  },
+  "loadWarnings": [],
+  "vectors": [
+    {
+      "inputs": {
+        "a": 0
+      },
+      "before": {
+        "result": {
+          "status": "ok"
+        },
+        "outputs": {
+          "fromMissingGate": 0,
+          "fromMissingInput": 0,
+          "fromMissingJunction": 0,
+          "orWithMissing": 0
+        },
+        "gates": {
+          "g1": {
+            "in": {
+              "a": 0,
+              "b": 0
+            },
+            "out": {
+              "out": 0
+            }
+          }
+        },
+        "buses": {}
+      },
+      "after": {
+        "result": {
+          "status": "ok"
+        },
+        "outputs": {
+          "fromMissingGate": 0,
+          "fromMissingInput": 0,
+          "fromMissingJunction": 0,
+          "orWithMissing": 0
+        },
+        "gates": {
+          "g1": {
+            "in": {
+              "a": 0,
+              "b": 0
+            },
+            "out": {
+              "out": 0
+            }
+          }
+        },
+        "buses": {}
+      },
+      "unchangedByRoundTrip": true,
+      "roundTripWarnings": []
+    },
+    {
+      "inputs": {
+        "a": 1
+      },
+      "before": {
+        "result": {
+          "status": "ok"
+        },
+        "outputs": {
+          "fromMissingGate": 0,
+          "fromMissingInput": 0,
+          "fromMissingJunction": 0,
+          "orWithMissing": 1
+        },
+        "gates": {
+          "g1": {
+            "in": {
+              "a": 1,
+              "b": 0
+            },
+            "out": {
+              "out": 1
+            }
+          }
+        },
+        "buses": {}
+      },
+      "after": {
+        "result": {
+          "status": "ok"
+        },
+        "outputs": {
+          "fromMissingGate": 0,
+          "fromMissingInput": 0,
+          "fromMissingJunction": 0,
+          "orWithMissing": 1
+        },
+        "gates": {
+          "g1": {
+            "in": {
+              "a": 1,
+              "b": 0
+            },
+            "out": {
+              "out": 1
+            }
+          }
+        },
+        "buses": {}
+      },
+      "unchangedByRoundTrip": true,
+      "roundTripWarnings": []
+    }
+  ]
+}

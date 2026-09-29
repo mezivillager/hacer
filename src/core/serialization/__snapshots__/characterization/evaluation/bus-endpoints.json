@@ -1,1 +1,709 @@
-{}
+{
+  "fixture": "bus-endpoints",
+  "about": "A 4-bit value through a splitter, bit 0 inverted by a gate, and back through a joiner, with 'bus' endpoints on both sides of the gate. A wire to a bus component the document lacks is dropped on load.",
+  "document": {
+    "version": 1,
+    "name": "bus-endpoints",
+    "savedAt": "2026-09-29T00:00:00.000Z",
+    "gates": [
+      {
+        "id": "inv",
+        "type": "Not",
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": -2
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "width": 1
+      }
+    ],
+    "wires": [
+      {
+        "id": "w1",
+        "from": {
+          "type": "input",
+          "entityId": "ibus"
+        },
+        "to": {
+          "type": "bus",
+          "entityId": "s1",
+          "pinId": "in"
+        },
+        "segments": [],
+        "crossesWireIds": [],
+        "width": 4
+      },
+      {
+        "id": "w2",
+        "from": {
+          "type": "bus",
+          "entityId": "s1",
+          "pinId": "out0"
+        },
+        "to": {
+          "type": "gate",
+          "entityId": "inv",
+          "pinId": "inv-in-0"
+        },
+        "segments": [],
+        "crossesWireIds": []
+      },
+      {
+        "id": "w3",
+        "from": {
+          "type": "gate",
+          "entityId": "inv",
+          "pinId": "inv-out-0"
+        },
+        "to": {
+          "type": "bus",
+          "entityId": "j1",
+          "pinId": "in0"
+        },
+        "segments": [],
+        "crossesWireIds": []
+      },
+      {
+        "id": "w4",
+        "from": {
+          "type": "bus",
+          "entityId": "s1",
+          "pinId": "out1"
+        },
+        "to": {
+          "type": "bus",
+          "entityId": "j1",
+          "pinId": "in1"
+        },
+        "segments": [],
+        "crossesWireIds": []
+      },
+      {
+        "id": "w5",
+        "from": {
+          "type": "bus",
+          "entityId": "s1",
+          "pinId": "out2"
+        },
+        "to": {
+          "type": "bus",
+          "entityId": "j1",
+          "pinId": "in2"
+        },
+        "segments": [],
+        "crossesWireIds": []
+      },
+      {
+        "id": "w6",
+        "from": {
+          "type": "bus",
+          "entityId": "s1",
+          "pinId": "out3"
+        },
+        "to": {
+          "type": "bus",
+          "entityId": "j1",
+          "pinId": "in3"
+        },
+        "segments": [],
+        "crossesWireIds": []
+      },
+      {
+        "id": "w7",
+        "from": {
+          "type": "bus",
+          "entityId": "j1",
+          "pinId": "out"
+        },
+        "to": {
+          "type": "output",
+          "entityId": "o1"
+        },
+        "segments": [],
+        "crossesWireIds": [],
+        "width": 4
+      },
+      {
+        "id": "w8",
+        "from": {
+          "type": "bus",
+          "entityId": "s1",
+          "pinId": "out3"
+        },
+        "to": {
+          "type": "output",
+          "entityId": "o2"
+        },
+        "segments": [],
+        "crossesWireIds": []
+      },
+      {
+        "id": "w9",
+        "from": {
+          "type": "input",
+          "entityId": "ibus"
+        },
+        "to": {
+          "type": "bus",
+          "entityId": "missing-bus",
+          "pinId": "in"
+        },
+        "segments": [],
+        "crossesWireIds": [],
+        "width": 4
+      }
+    ],
+    "inputNodes": [
+      {
+        "id": "ibus",
+        "name": "bus",
+        "position": {
+          "x": -12,
+          "y": 0,
+          "z": 0
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "value": 0,
+        "width": 4
+      }
+    ],
+    "outputNodes": [
+      {
+        "id": "o1",
+        "name": "joined",
+        "position": {
+          "x": 12,
+          "y": 0,
+          "z": 0
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "value": 0,
+        "width": 4
+      },
+      {
+        "id": "o2",
+        "name": "bit3",
+        "position": {
+          "x": 12,
+          "y": 0,
+          "z": 4
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "value": 0,
+        "width": 1
+      }
+    ],
+    "junctions": [],
+    "busComponents": [
+      {
+        "id": "s1",
+        "kind": "splitter",
+        "position": {
+          "x": -6,
+          "y": 0,
+          "z": 0
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "width": 4,
+        "inputs": [
+          {
+            "id": "in",
+            "name": "in",
+            "type": "input",
+            "value": 0,
+            "width": 4
+          }
+        ],
+        "outputs": [
+          {
+            "id": "out0",
+            "name": "out0",
+            "type": "output",
+            "value": 0,
+            "width": 1
+          },
+          {
+            "id": "out1",
+            "name": "out1",
+            "type": "output",
+            "value": 0,
+            "width": 1
+          },
+          {
+            "id": "out2",
+            "name": "out2",
+            "type": "output",
+            "value": 0,
+            "width": 1
+          },
+          {
+            "id": "out3",
+            "name": "out3",
+            "type": "output",
+            "value": 0,
+            "width": 1
+          }
+        ],
+        "selected": false
+      },
+      {
+        "id": "j1",
+        "kind": "joiner",
+        "position": {
+          "x": 6,
+          "y": 0,
+          "z": 0
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "width": 4,
+        "inputs": [
+          {
+            "id": "in0",
+            "name": "in0",
+            "type": "input",
+            "value": 0,
+            "width": 1
+          },
+          {
+            "id": "in1",
+            "name": "in1",
+            "type": "input",
+            "value": 0,
+            "width": 1
+          },
+          {
+            "id": "in2",
+            "name": "in2",
+            "type": "input",
+            "value": 0,
+            "width": 1
+          },
+          {
+            "id": "in3",
+            "name": "in3",
+            "type": "input",
+            "value": 0,
+            "width": 1
+          }
+        ],
+        "outputs": [
+          {
+            "id": "out",
+            "name": "out",
+            "type": "output",
+            "value": 0,
+            "width": 4
+          }
+        ],
+        "selected": false
+      }
+    ]
+  },
+  "loadWarnings": [
+    {
+      "code": "dropped-wire",
+      "wireId": "w9",
+      "reason": "missing-bus",
+      "message": "Skipped wire \"w9\" while loading circuit — it connected to a bus component that could not be loaded."
+    }
+  ],
+  "vectors": [
+    {
+      "inputs": {
+        "bus": 0
+      },
+      "before": {
+        "result": {
+          "status": "ok"
+        },
+        "outputs": {
+          "joined": 1,
+          "bit3": 0
+        },
+        "gates": {
+          "inv": {
+            "in": {
+              "in": 0
+            },
+            "out": {
+              "out": 1
+            }
+          }
+        },
+        "buses": {
+          "s1": {
+            "in": {
+              "in": 0
+            },
+            "out": {
+              "out0": 0,
+              "out1": 0,
+              "out2": 0,
+              "out3": 0
+            }
+          },
+          "j1": {
+            "in": {
+              "in0": 1,
+              "in1": 0,
+              "in2": 0,
+              "in3": 0
+            },
+            "out": {
+              "out": 1
+            }
+          }
+        }
+      },
+      "after": {
+        "result": {
+          "status": "ok"
+        },
+        "outputs": {
+          "joined": 1,
+          "bit3": 0
+        },
+        "gates": {
+          "inv": {
+            "in": {
+              "in": 0
+            },
+            "out": {
+              "out": 1
+            }
+          }
+        },
+        "buses": {
+          "s1": {
+            "in": {
+              "in": 0
+            },
+            "out": {
+              "out0": 0,
+              "out1": 0,
+              "out2": 0,
+              "out3": 0
+            }
+          },
+          "j1": {
+            "in": {
+              "in0": 1,
+              "in1": 0,
+              "in2": 0,
+              "in3": 0
+            },
+            "out": {
+              "out": 1
+            }
+          }
+        }
+      },
+      "unchangedByRoundTrip": true,
+      "roundTripWarnings": []
+    },
+    {
+      "inputs": {
+        "bus": 5
+      },
+      "before": {
+        "result": {
+          "status": "ok"
+        },
+        "outputs": {
+          "joined": 4,
+          "bit3": 0
+        },
+        "gates": {
+          "inv": {
+            "in": {
+              "in": 1
+            },
+            "out": {
+              "out": 0
+            }
+          }
+        },
+        "buses": {
+          "s1": {
+            "in": {
+              "in": 5
+            },
+            "out": {
+              "out0": 1,
+              "out1": 0,
+              "out2": 1,
+              "out3": 0
+            }
+          },
+          "j1": {
+            "in": {
+              "in0": 0,
+              "in1": 0,
+              "in2": 1,
+              "in3": 0
+            },
+            "out": {
+              "out": 4
+            }
+          }
+        }
+      },
+      "after": {
+        "result": {
+          "status": "ok"
+        },
+        "outputs": {
+          "joined": 4,
+          "bit3": 0
+        },
+        "gates": {
+          "inv": {
+            "in": {
+              "in": 1
+            },
+            "out": {
+              "out": 0
+            }
+          }
+        },
+        "buses": {
+          "s1": {
+            "in": {
+              "in": 5
+            },
+            "out": {
+              "out0": 1,
+              "out1": 0,
+              "out2": 1,
+              "out3": 0
+            }
+          },
+          "j1": {
+            "in": {
+              "in0": 0,
+              "in1": 0,
+              "in2": 1,
+              "in3": 0
+            },
+            "out": {
+              "out": 4
+            }
+          }
+        }
+      },
+      "unchangedByRoundTrip": true,
+      "roundTripWarnings": []
+    },
+    {
+      "inputs": {
+        "bus": 10
+      },
+      "before": {
+        "result": {
+          "status": "ok"
+        },
+        "outputs": {
+          "joined": 11,
+          "bit3": 1
+        },
+        "gates": {
+          "inv": {
+            "in": {
+              "in": 0
+            },
+            "out": {
+              "out": 1
+            }
+          }
+        },
+        "buses": {
+          "s1": {
+            "in": {
+              "in": 10
+            },
+            "out": {
+              "out0": 0,
+              "out1": 1,
+              "out2": 0,
+              "out3": 1
+            }
+          },
+          "j1": {
+            "in": {
+              "in0": 1,
+              "in1": 1,
+              "in2": 0,
+              "in3": 1
+            },
+            "out": {
+              "out": 11
+            }
+          }
+        }
+      },
+      "after": {
+        "result": {
+          "status": "ok"
+        },
+        "outputs": {
+          "joined": 11,
+          "bit3": 1
+        },
+        "gates": {
+          "inv": {
+            "in": {
+              "in": 0
+            },
+            "out": {
+              "out": 1
+            }
+          }
+        },
+        "buses": {
+          "s1": {
+            "in": {
+              "in": 10
+            },
+            "out": {
+              "out0": 0,
+              "out1": 1,
+              "out2": 0,
+              "out3": 1
+            }
+          },
+          "j1": {
+            "in": {
+              "in0": 1,
+              "in1": 1,
+              "in2": 0,
+              "in3": 1
+            },
+            "out": {
+              "out": 11
+            }
+          }
+        }
+      },
+      "unchangedByRoundTrip": true,
+      "roundTripWarnings": []
+    },
+    {
+      "inputs": {
+        "bus": 15
+      },
+      "before": {
+        "result": {
+          "status": "ok"
+        },
+        "outputs": {
+          "joined": 14,
+          "bit3": 1
+        },
+        "gates": {
+          "inv": {
+            "in": {
+              "in": 1
+            },
+            "out": {
+              "out": 0
+            }
+          }
+        },
+        "buses": {
+          "s1": {
+            "in": {
+              "in": 15
+            },
+            "out": {
+              "out0": 1,
+              "out1": 1,
+              "out2": 1,
+              "out3": 1
+            }
+          },
+          "j1": {
+            "in": {
+              "in0": 0,
+              "in1": 1,
+              "in2": 1,
+              "in3": 1
+            },
+            "out": {
+              "out": 14
+            }
+          }
+        }
+      },
+      "after": {
+        "result": {
+          "status": "ok"
+        },
+        "outputs": {
+          "joined": 14,
+          "bit3": 1
+        },
+        "gates": {
+          "inv": {
+            "in": {
+              "in": 1
+            },
+            "out": {
+              "out": 0
+            }
+          }
+        },
+        "buses": {
+          "s1": {
+            "in": {
+              "in": 15
+            },
+            "out": {
+              "out0": 1,
+              "out1": 1,
+              "out2": 1,
+              "out3": 1
+            }
+          },
+          "j1": {
+            "in": {
+              "in0": 0,
+              "in1": 1,
+              "in2": 1,
+              "in3": 1
+            },
+            "out": {
+              "out": 14
+            }
+          }
+        }
+      },
+      "unchangedByRoundTrip": true,
+      "roundTripWarnings": []
+    }
+  ]
+}

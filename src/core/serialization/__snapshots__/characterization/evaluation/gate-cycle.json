@@ -1,1 +1,361 @@
-{}
+{
+  "fixture": "gate-cycle",
+  "about": "Malformed: two Nots that feed each other. topologicalSort reports the cycle and evaluateCircuit writes nothing at all, not even the gate outside the loop.",
+  "document": {
+    "version": 1,
+    "name": "gate-cycle",
+    "savedAt": "2026-09-29T00:00:00.000Z",
+    "gates": [
+      {
+        "id": "c1",
+        "type": "Not",
+        "position": {
+          "x": -2,
+          "y": 0,
+          "z": -2
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "width": 1
+      },
+      {
+        "id": "c2",
+        "type": "Not",
+        "position": {
+          "x": 2,
+          "y": 0,
+          "z": -2
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "width": 1
+      },
+      {
+        "id": "g1",
+        "type": "Not",
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": 4
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "width": 1
+      }
+    ],
+    "wires": [
+      {
+        "id": "w1",
+        "from": {
+          "type": "gate",
+          "entityId": "c1",
+          "pinId": "c1-out-0"
+        },
+        "to": {
+          "type": "gate",
+          "entityId": "c2",
+          "pinId": "c2-in-0"
+        },
+        "segments": [],
+        "crossesWireIds": []
+      },
+      {
+        "id": "w2",
+        "from": {
+          "type": "gate",
+          "entityId": "c2",
+          "pinId": "c2-out-0"
+        },
+        "to": {
+          "type": "gate",
+          "entityId": "c1",
+          "pinId": "c1-in-0"
+        },
+        "segments": [],
+        "crossesWireIds": []
+      },
+      {
+        "id": "w3",
+        "from": {
+          "type": "gate",
+          "entityId": "c1",
+          "pinId": "c1-out-0"
+        },
+        "to": {
+          "type": "output",
+          "entityId": "o1"
+        },
+        "segments": [],
+        "crossesWireIds": []
+      },
+      {
+        "id": "w4",
+        "from": {
+          "type": "input",
+          "entityId": "ia"
+        },
+        "to": {
+          "type": "gate",
+          "entityId": "g1",
+          "pinId": "g1-in-0"
+        },
+        "segments": [],
+        "crossesWireIds": []
+      },
+      {
+        "id": "w5",
+        "from": {
+          "type": "gate",
+          "entityId": "g1",
+          "pinId": "g1-out-0"
+        },
+        "to": {
+          "type": "output",
+          "entityId": "o2"
+        },
+        "segments": [],
+        "crossesWireIds": []
+      }
+    ],
+    "inputNodes": [
+      {
+        "id": "ia",
+        "name": "a",
+        "position": {
+          "x": -12,
+          "y": 0,
+          "z": 4
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "value": 0,
+        "width": 1
+      }
+    ],
+    "outputNodes": [
+      {
+        "id": "o1",
+        "name": "loop",
+        "position": {
+          "x": 12,
+          "y": 0,
+          "z": -2
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "value": 0,
+        "width": 1
+      },
+      {
+        "id": "o2",
+        "name": "free",
+        "position": {
+          "x": 12,
+          "y": 0,
+          "z": 4
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "value": 0,
+        "width": 1
+      }
+    ],
+    "junctions": [],
+    "busComponents": []
+  },
+  "loadWarnings": [],
+  "vectors": [
+    {
+      "inputs": {
+        "a": 0
+      },
+      "before": {
+        "result": {
+          "status": "cycle",
+          "involvedGateIds": [
+            "c1",
+            "c2"
+          ]
+        },
+        "outputs": {
+          "loop": 0,
+          "free": 0
+        },
+        "gates": {
+          "c1": {
+            "in": {
+              "in": 0
+            },
+            "out": {
+              "out": 0
+            }
+          },
+          "c2": {
+            "in": {
+              "in": 0
+            },
+            "out": {
+              "out": 0
+            }
+          },
+          "g1": {
+            "in": {
+              "in": 0
+            },
+            "out": {
+              "out": 0
+            }
+          }
+        },
+        "buses": {}
+      },
+      "after": {
+        "result": {
+          "status": "cycle",
+          "involvedGateIds": [
+            "c1",
+            "c2"
+          ]
+        },
+        "outputs": {
+          "loop": 0,
+          "free": 0
+        },
+        "gates": {
+          "c1": {
+            "in": {
+              "in": 0
+            },
+            "out": {
+              "out": 0
+            }
+          },
+          "c2": {
+            "in": {
+              "in": 0
+            },
+            "out": {
+              "out": 0
+            }
+          },
+          "g1": {
+            "in": {
+              "in": 0
+            },
+            "out": {
+              "out": 0
+            }
+          }
+        },
+        "buses": {}
+      },
+      "unchangedByRoundTrip": true,
+      "roundTripWarnings": []
+    },
+    {
+      "inputs": {
+        "a": 1
+      },
+      "before": {
+        "result": {
+          "status": "cycle",
+          "involvedGateIds": [
+            "c1",
+            "c2"
+          ]
+        },
+        "outputs": {
+          "loop": 0,
+          "free": 0
+        },
+        "gates": {
+          "c1": {
+            "in": {
+              "in": 0
+            },
+            "out": {
+              "out": 0
+            }
+          },
+          "c2": {
+            "in": {
+              "in": 0
+            },
+            "out": {
+              "out": 0
+            }
+          },
+          "g1": {
+            "in": {
+              "in": 0
+            },
+            "out": {
+              "out": 0
+            }
+          }
+        },
+        "buses": {}
+      },
+      "after": {
+        "result": {
+          "status": "cycle",
+          "involvedGateIds": [
+            "c1",
+            "c2"
+          ]
+        },
+        "outputs": {
+          "loop": 0,
+          "free": 0
+        },
+        "gates": {
+          "c1": {
+            "in": {
+              "in": 0
+            },
+            "out": {
+              "out": 0
+            }
+          },
+          "c2": {
+            "in": {
+              "in": 0
+            },
+            "out": {
+              "out": 0
+            }
+          },
+          "g1": {
+            "in": {
+              "in": 0
+            },
+            "out": {
+              "out": 0
+            }
+          }
+        },
+        "buses": {}
+      },
+      "unchangedByRoundTrip": true,
+      "roundTripWarnings": []
+    }
+  ]
+}

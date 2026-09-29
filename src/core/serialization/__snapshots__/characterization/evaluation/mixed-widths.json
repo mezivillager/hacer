@@ -1,1 +1,544 @@
-{}
+{
+  "fixture": "mixed-widths",
+  "about": "Values crossing wires and pins of different widths. The value delivered is clamped to min(wire width, destination width), and a wire saved without a width counts as 1 bit.",
+  "document": {
+    "version": 1,
+    "name": "mixed-widths",
+    "savedAt": "2026-09-29T00:00:00.000Z",
+    "gates": [
+      {
+        "id": "n16",
+        "type": "Not16",
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": -4
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "width": 1
+      },
+      {
+        "id": "n1",
+        "type": "Not",
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": 4
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "width": 1
+      }
+    ],
+    "wires": [
+      {
+        "id": "w1",
+        "from": {
+          "type": "input",
+          "entityId": "i16"
+        },
+        "to": {
+          "type": "gate",
+          "entityId": "n16",
+          "pinId": "n16-in-0"
+        },
+        "segments": [],
+        "crossesWireIds": [],
+        "width": 16
+      },
+      {
+        "id": "w2",
+        "from": {
+          "type": "gate",
+          "entityId": "n16",
+          "pinId": "n16-out-0"
+        },
+        "to": {
+          "type": "output",
+          "entityId": "o1"
+        },
+        "segments": [],
+        "crossesWireIds": [],
+        "width": 16
+      },
+      {
+        "id": "w3",
+        "from": {
+          "type": "input",
+          "entityId": "i16"
+        },
+        "to": {
+          "type": "output",
+          "entityId": "o2"
+        },
+        "segments": [],
+        "crossesWireIds": [],
+        "width": 16
+      },
+      {
+        "id": "w4",
+        "from": {
+          "type": "input",
+          "entityId": "i16"
+        },
+        "to": {
+          "type": "output",
+          "entityId": "o3"
+        },
+        "segments": [],
+        "crossesWireIds": []
+      },
+      {
+        "id": "w5",
+        "from": {
+          "type": "input",
+          "entityId": "i1"
+        },
+        "to": {
+          "type": "output",
+          "entityId": "o4"
+        },
+        "segments": [],
+        "crossesWireIds": [],
+        "width": 1
+      },
+      {
+        "id": "w6",
+        "from": {
+          "type": "input",
+          "entityId": "i16"
+        },
+        "to": {
+          "type": "gate",
+          "entityId": "n1",
+          "pinId": "n1-in-0"
+        },
+        "segments": [],
+        "crossesWireIds": [],
+        "width": 16
+      },
+      {
+        "id": "w7",
+        "from": {
+          "type": "gate",
+          "entityId": "n1",
+          "pinId": "n1-out-0"
+        },
+        "to": {
+          "type": "output",
+          "entityId": "o5"
+        },
+        "segments": [],
+        "crossesWireIds": []
+      }
+    ],
+    "inputNodes": [
+      {
+        "id": "i16",
+        "name": "a16",
+        "position": {
+          "x": -12,
+          "y": 0,
+          "z": -2
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "value": 0,
+        "width": 16
+      },
+      {
+        "id": "i1",
+        "name": "b1",
+        "position": {
+          "x": -12,
+          "y": 0,
+          "z": 4
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "value": 0,
+        "width": 1
+      }
+    ],
+    "outputNodes": [
+      {
+        "id": "o1",
+        "name": "not16",
+        "position": {
+          "x": 12,
+          "y": 0,
+          "z": -4
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "value": 0,
+        "width": 16
+      },
+      {
+        "id": "o2",
+        "name": "narrow8",
+        "position": {
+          "x": 12,
+          "y": 0,
+          "z": -2
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "value": 0,
+        "width": 8
+      },
+      {
+        "id": "o3",
+        "name": "noWidthWire",
+        "position": {
+          "x": 12,
+          "y": 0,
+          "z": 0
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "value": 0,
+        "width": 16
+      },
+      {
+        "id": "o4",
+        "name": "widened",
+        "position": {
+          "x": 12,
+          "y": 0,
+          "z": 2
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "value": 0,
+        "width": 16
+      },
+      {
+        "id": "o5",
+        "name": "notLsb",
+        "position": {
+          "x": 12,
+          "y": 0,
+          "z": 4
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "value": 0,
+        "width": 1
+      }
+    ],
+    "junctions": [],
+    "busComponents": []
+  },
+  "loadWarnings": [],
+  "vectors": [
+    {
+      "inputs": {
+        "a16": 0,
+        "b1": 0
+      },
+      "before": {
+        "result": {
+          "status": "ok"
+        },
+        "outputs": {
+          "not16": 65535,
+          "narrow8": 0,
+          "noWidthWire": 0,
+          "widened": 0,
+          "notLsb": 1
+        },
+        "gates": {
+          "n16": {
+            "in": {
+              "in": 0
+            },
+            "out": {
+              "out": 65535
+            }
+          },
+          "n1": {
+            "in": {
+              "in": 0
+            },
+            "out": {
+              "out": 1
+            }
+          }
+        },
+        "buses": {}
+      },
+      "after": {
+        "result": {
+          "status": "ok"
+        },
+        "outputs": {
+          "not16": 65535,
+          "narrow8": 0,
+          "noWidthWire": 0,
+          "widened": 0,
+          "notLsb": 1
+        },
+        "gates": {
+          "n16": {
+            "in": {
+              "in": 0
+            },
+            "out": {
+              "out": 65535
+            }
+          },
+          "n1": {
+            "in": {
+              "in": 0
+            },
+            "out": {
+              "out": 1
+            }
+          }
+        },
+        "buses": {}
+      },
+      "unchangedByRoundTrip": true,
+      "roundTripWarnings": []
+    },
+    {
+      "inputs": {
+        "a16": 43981,
+        "b1": 1
+      },
+      "before": {
+        "result": {
+          "status": "ok"
+        },
+        "outputs": {
+          "not16": 21554,
+          "narrow8": 205,
+          "noWidthWire": 1,
+          "widened": 1,
+          "notLsb": 0
+        },
+        "gates": {
+          "n16": {
+            "in": {
+              "in": 43981
+            },
+            "out": {
+              "out": 21554
+            }
+          },
+          "n1": {
+            "in": {
+              "in": 1
+            },
+            "out": {
+              "out": 0
+            }
+          }
+        },
+        "buses": {}
+      },
+      "after": {
+        "result": {
+          "status": "ok"
+        },
+        "outputs": {
+          "not16": 21554,
+          "narrow8": 205,
+          "noWidthWire": 1,
+          "widened": 1,
+          "notLsb": 0
+        },
+        "gates": {
+          "n16": {
+            "in": {
+              "in": 43981
+            },
+            "out": {
+              "out": 21554
+            }
+          },
+          "n1": {
+            "in": {
+              "in": 1
+            },
+            "out": {
+              "out": 0
+            }
+          }
+        },
+        "buses": {}
+      },
+      "unchangedByRoundTrip": true,
+      "roundTripWarnings": []
+    },
+    {
+      "inputs": {
+        "a16": 65535,
+        "b1": 0
+      },
+      "before": {
+        "result": {
+          "status": "ok"
+        },
+        "outputs": {
+          "not16": 0,
+          "narrow8": 255,
+          "noWidthWire": 1,
+          "widened": 0,
+          "notLsb": 0
+        },
+        "gates": {
+          "n16": {
+            "in": {
+              "in": 65535
+            },
+            "out": {
+              "out": 0
+            }
+          },
+          "n1": {
+            "in": {
+              "in": 1
+            },
+            "out": {
+              "out": 0
+            }
+          }
+        },
+        "buses": {}
+      },
+      "after": {
+        "result": {
+          "status": "ok"
+        },
+        "outputs": {
+          "not16": 0,
+          "narrow8": 255,
+          "noWidthWire": 1,
+          "widened": 0,
+          "notLsb": 0
+        },
+        "gates": {
+          "n16": {
+            "in": {
+              "in": 65535
+            },
+            "out": {
+              "out": 0
+            }
+          },
+          "n1": {
+            "in": {
+              "in": 1
+            },
+            "out": {
+              "out": 0
+            }
+          }
+        },
+        "buses": {}
+      },
+      "unchangedByRoundTrip": true,
+      "roundTripWarnings": []
+    },
+    {
+      "inputs": {
+        "a16": 109517,
+        "b1": 1
+      },
+      "before": {
+        "result": {
+          "status": "ok"
+        },
+        "outputs": {
+          "not16": 21554,
+          "narrow8": 205,
+          "noWidthWire": 1,
+          "widened": 1,
+          "notLsb": 0
+        },
+        "gates": {
+          "n16": {
+            "in": {
+              "in": 43981
+            },
+            "out": {
+              "out": 21554
+            }
+          },
+          "n1": {
+            "in": {
+              "in": 1
+            },
+            "out": {
+              "out": 0
+            }
+          }
+        },
+        "buses": {}
+      },
+      "after": {
+        "result": {
+          "status": "ok"
+        },
+        "outputs": {
+          "not16": 21554,
+          "narrow8": 205,
+          "noWidthWire": 1,
+          "widened": 1,
+          "notLsb": 0
+        },
+        "gates": {
+          "n16": {
+            "in": {
+              "in": 43981
+            },
+            "out": {
+              "out": 21554
+            }
+          },
+          "n1": {
+            "in": {
+              "in": 1
+            },
+            "out": {
+              "out": 0
+            }
+          }
+        },
+        "buses": {}
+      },
+      "unchangedByRoundTrip": true,
+      "roundTripWarnings": []
+    }
+  ]
+}
