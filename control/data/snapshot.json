@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-29T13:30:48.602Z",
+  "generatedAt": "2026-09-29T13:49:37.331Z",
   "head": {
-    "sha": "010fb7b17d424e829e5e46a390ae3699145fa298",
-    "date": "2026-09-29T16:19:34+03:00",
-    "subject": "docs(repo-map): point Phase 5+ sample at the real chips registry"
+    "sha": "ac1a829fd6f3be1895362417620a5f61f6d1ab02",
+    "date": "2026-09-29T16:48:30+03:00",
+    "subject": "chore(harness): record the merge=union measurement, ledger row L058"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-29T13:30:48.602Z",
+      "fetchedAt": "2026-09-29T13:49:37.331Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-29T13:30:48.602Z",
+      "fetchedAt": "2026-09-29T13:49:37.331Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-29T13:30:48.602Z",
+      "fetchedAt": "2026-09-29T13:49:37.331Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-29T13:30:48.602Z",
+      "fetchedAt": "2026-09-29T13:49:37.331Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-09-29T13:30:48.602Z",
+      "fetchedAt": "2026-09-29T13:49:37.331Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-09-29T13:30:48.602Z",
+      "fetchedAt": "2026-09-29T13:49:37.331Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-09-29T13:30:48.602Z",
+      "fetchedAt": "2026-09-29T13:49:37.331Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-09-29T13:30:48.602Z",
+      "fetchedAt": "2026-09-29T13:49:37.331Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-09-29T13:30:48.602Z",
+      "fetchedAt": "2026-09-29T13:49:37.331Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-09-29T13:30:48.602Z",
+      "fetchedAt": "2026-09-29T13:49:37.331Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-09-29T13:30:48.602Z",
+      "fetchedAt": "2026-09-29T13:49:37.331Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-09-29T13:30:48.602Z",
+      "fetchedAt": "2026-09-29T13:49:37.331Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-09-29T13:30:48.602Z",
+      "fetchedAt": "2026-09-29T13:49:37.331Z",
       "status": "ok"
     }
   },
@@ -80,22 +80,22 @@
         "lane": "feature",
         "slug": "foundation",
         "epicNumber": 318,
-        "open": 38,
+        "open": 37,
         "ready": 12,
-        "inProgress": 5,
+        "inProgress": 4,
         "needsHuman": 0,
         "staleClaims": [
           182
         ],
-        "agentReady": 17,
+        "agentReady": 16,
         "next": {
           "number": 208,
           "title": "Hand-written MCP tool hacer_hdl (load HDL → simulate → run .tst), stdio; committed .mcp.json"
         },
         "title": "Foundation audit: is the codebase structured for the autonomous loop? Measured audit, prioritized refactorings, fitness functions",
         "subIssues": {
-          "completed": 12,
-          "percentCompleted": 36,
+          "completed": 13,
+          "percentCompleted": 39,
           "total": 33
         }
       },
@@ -351,8 +351,8 @@
         "slug": "mission-control",
         "epicNumber": 458,
         "open": 6,
-        "ready": 4,
-        "inProgress": 0,
+        "ready": 3,
+        "inProgress": 1,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 4,
@@ -387,11 +387,6 @@
     ],
     "next": [
       {
-        "number": 480,
-        "title": "Mission Control MC-9: \"queue an improvement\" links and the needs-human list — the first editable step",
-        "project": "mission-control"
-      },
-      {
         "number": 208,
         "title": "Hand-written MCP tool hacer_hdl (load HDL → simulate → run .tst), stdio; committed .mcp.json",
         "project": "foundation"
@@ -422,8 +417,8 @@
         "project": "foundation"
       },
       {
-        "number": 513,
-        "title": "Mission Control Process view: stage labels shrink with the SVG at phone width; Verifying and PR drill into the same list",
+        "number": 480,
+        "title": "Mission Control MC-9: \"queue an improvement\" links and the needs-human list — the first editable step",
         "project": "mission-control"
       },
       {
@@ -452,8 +447,8 @@
         "project": "foundation"
       },
       {
-        "number": 545,
-        "title": "Timeline.test.tsx mounts the whole snapshot on vitest's 5 s default and times out under load",
+        "number": 513,
+        "title": "Mission Control Process view: stage labels shrink with the SVG at phone width; Verifying and PR drill into the same list",
         "project": "mission-control"
       },
       {
@@ -580,6 +575,7 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
+        610,
         606,
         514
       ]
@@ -587,21 +583,6 @@
   },
   "tasks": {
     "items": [
-      {
-        "number": 480,
-        "title": "Mission Control MC-9: \"queue an improvement\" links and the needs-human list — the first editable step",
-        "labels": [
-          "agent-ready",
-          "risk:0",
-          "project:mission-control"
-        ],
-        "blocking": [],
-        "project": "mission-control",
-        "rank": 14,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
       {
         "number": 208,
         "title": "Hand-written MCP tool hacer_hdl (load HDL → simulate → run .tst), stdio; committed .mcp.json",
@@ -697,8 +678,8 @@
         "reason": null
       },
       {
-        "number": 513,
-        "title": "Mission Control Process view: stage labels shrink with the SVG at phone width; Verifying and PR drill into the same list",
+        "number": 480,
+        "title": "Mission Control MC-9: \"queue an improvement\" links and the needs-human list — the first editable step",
         "labels": [
           "agent-ready",
           "risk:0",
@@ -791,8 +772,8 @@
         "reason": null
       },
       {
-        "number": 545,
-        "title": "Timeline.test.tsx mounts the whole snapshot on vitest's 5 s default and times out under load",
+        "number": 513,
+        "title": "Mission Control Process view: stage labels shrink with the SVG at phone width; Verifying and PR drill into the same list",
         "labels": [
           "agent-ready",
           "risk:0",
@@ -2011,23 +1992,6 @@
         "reason": "claimed"
       },
       {
-        "number": 334,
-        "title": "Harness: ledger rows stop conflicting (merge=union), and the verifier reads the PR's own CI logs (foundation 0.7, 0.10)",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 339,
         "title": "After Phase 1: a refactor PR may not edit existing tests (pr-hygiene), and function length only shrinks (ESLint bulk suppressions) (foundation 1.5)",
         "labels": [
@@ -2555,6 +2519,22 @@
         "reason": "unshaped"
       },
       {
+        "number": 545,
+        "title": "Timeline.test.tsx mounts the whole snapshot on vitest's 5 s default and times out under load",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "project:mission-control"
+        ],
+        "blocking": [],
+        "project": "mission-control",
+        "rank": 14,
+        "lane": "process",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 550,
         "title": "merge-on-green: disarm auto-merge when a required check fails",
         "labels": [
@@ -2669,14 +2649,6 @@
       }
     ],
     "byProject": {
-      "mission-control": [
-        480,
-        513,
-        545,
-        560,
-        509,
-        584
-      ],
       "foundation": [
         208,
         335,
@@ -2695,7 +2667,6 @@
         184,
         325,
         331,
-        334,
         339,
         374,
         377,
@@ -2760,6 +2731,14 @@
         505,
         550,
         607
+      ],
+      "mission-control": [
+        480,
+        513,
+        560,
+        509,
+        545,
+        584
       ],
       "spine": [
         165,
@@ -2839,6 +2818,32 @@
   "prs": {
     "open": [
       {
+        "number": 610,
+        "title": "fix(cli): refuse a BUILTIN stand-in, JSON usage errors, bus values in the .cmp's format",
+        "url": "https://github.com/mezivillager/hacer/pull/610",
+        "author": "mezivillager",
+        "labels": [
+          "risk:1",
+          "project:foundation"
+        ],
+        "headRefName": "fix/591-builtin-standin",
+        "isDraft": false,
+        "createdAt": "2026-09-29T13:37:38Z",
+        "mergedAt": null,
+        "closes": [
+          591
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Sonnet 5.5 (fresh context)",
+            "at": "2026-09-29T13:48:57Z",
+            "url": "https://github.com/mezivillager/hacer/pull/610#issuecomment-5891631628"
+          }
+        ]
+      },
+      {
         "number": 606,
         "title": "test(serialization): characterize legacy evaluation before and after a round trip",
         "url": "https://github.com/mezivillager/hacer/pull/606",
@@ -2884,6 +2889,32 @@
       }
     ],
     "merged": [
+      {
+        "number": 609,
+        "title": "chore(harness): ledger merges by union; verifier reads the PR's own CI logs",
+        "url": "https://github.com/mezivillager/hacer/pull/609",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "chore/334-ledger-union-ci-logs",
+        "isDraft": false,
+        "createdAt": "2026-09-29T13:36:54Z",
+        "mergedAt": "2026-09-29T13:48:31Z",
+        "closes": [
+          334
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Sonnet 5.5 (fresh context)",
+            "at": "2026-09-29T13:47:51Z",
+            "url": "https://github.com/mezivillager/hacer/pull/609#issuecomment-5891611307"
+          }
+        ]
+      },
       {
         "number": 601,
         "title": "docs(repo-map): point Phase 5+ sample at the real chips registry",
@@ -4299,40 +4330,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/501#issuecomment-5826668463"
           }
         ]
-      },
-      {
-        "number": 499,
-        "title": "feat(pr-hygiene): fail a closing keyword on a partial fix; HYGIENE line gains linked= (#485)",
-        "url": "https://github.com/mezivillager/hacer/pull/499",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:2"
-        ],
-        "headRefName": "feat/485-fixes-in-part",
-        "isDraft": false,
-        "createdAt": "2026-09-25T00:35:04Z",
-        "mergedAt": "2026-09-25T04:10:49Z",
-        "closes": [
-          485
-        ],
-        "verdicts": [
-          {
-            "verdict": "BLOCK",
-            "round": 1,
-            "model": "Claude Opus 5.5 (claude-opus-5-5[1m]); risk:2 means the Opus tier, which is what ran",
-            "at": "2026-09-25T03:31:36Z",
-            "url": "https://github.com/mezivillager/hacer/pull/499#issuecomment-5826215699"
-          },
-          {
-            "verdict": "PASS",
-            "round": 2,
-            "model": "Claude Opus 5.5 (claude-opus-5-5[1m]); risk:2 means the Opus tier, which is what ran",
-            "at": "2026-09-25T04:09:35Z",
-            "url": "https://github.com/mezivillager/hacer/pull/499#issuecomment-5826541346"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4665,7 +4662,7 @@
         "number": 334,
         "ref": "refs/heads/claim/334",
         "sha": "010fb7b17d424e829e5e46a390ae3699145fa298",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "Harness: ledger rows stop conflicting (merge=union), and the verifier reads the PR's own CI logs (foundation 0.7, 0.10)",
         "url": "https://github.com/mezivillager/hacer/issues/334",
         "labels": [
@@ -4675,7 +4672,7 @@
           "risk:0",
           "project:foundation"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -5077,6 +5074,31 @@
         }
       },
       {
+        "number": 545,
+        "ref": "refs/heads/claim/545",
+        "sha": "010fb7b17d424e829e5e46a390ae3699145fa298",
+        "state": "OPEN",
+        "title": "Timeline.test.tsx mounts the whole snapshot on vitest's 5 s default and times out under load",
+        "url": "https://github.com/mezivillager/hacer/issues/545",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "project:mission-control"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-60",
+          "branch": null,
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-09-29T13:48:29Z",
+          "url": "https://github.com/mezivillager/hacer/issues/545#issuecomment-5891622191"
+        }
+      },
+      {
         "number": 587,
         "ref": "refs/heads/claim/587",
         "sha": "2e408e6e815063bbe6f77625849e2f8634e81cf1",
@@ -5154,7 +5176,7 @@
         }
       }
     ],
-    "onClosedIssues": 25
+    "onClosedIssues": 26
   },
   "cloudLane": {
     "items": [
@@ -5773,11 +5795,19 @@
         "shouldHaveBeenCaughtBy": "the builder, before opening: `node scripts/pr-hygiene.mjs` on the drafted body — #558's and #565's builders ran it and passed first time",
         "mechanised": "partly — the run's builder briefs now say to run it and to avoid those words; the implementer brief does not yet",
         "decision": "R748"
+      },
+      {
+        "id": "L058",
+        "date": "2026-09-29",
+        "whatWentWrong": "Any two PRs that each append a ledger row conflict (#310, #322 on 2026-09-21), and on #312 nothing told the verifier to read the PR's own CI logs, so only a lucky read saw the `browser-qa` failure",
+        "shouldHaveBeenCaughtBy": "the merge attribute; the verifier brief",
+        "mechanised": "yes — `.gitattributes` `merge=union` (local rebase and `update-branch` only: GitHub's mergeability check ignores it, measured, fallback #607); `verifier-brief.md` step 3, pinned in `scripts/skills.logic.mjs`",
+        "decision": "—"
       }
     ],
     "byMechanised": {
       "no": 8,
-      "yes": 43,
+      "yes": 44,
       "other": 1,
       "partly": 5
     }
@@ -6688,7 +6718,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-25",
-        "merges": 11
+        "merges": 10
       },
       {
         "date": "2026-09-26",
@@ -6704,20 +6734,20 @@
       },
       {
         "date": "2026-09-29",
-        "merges": 16
+        "merges": 17
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-15T13:30:48.602Z",
-      "merged": 181,
+      "since": "2026-09-15T13:49:37.331Z",
+      "merged": 182,
       "openToMergeHours": {
         "median": 0.2,
         "p90": 12.1
       },
       "blockedOnce": {
         "count": 21,
-        "of": 92,
+        "of": 93,
         "prs": [
           238,
           248,
@@ -6744,8 +6774,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 90,
-          "withVerdict": 74,
+          "merged": 91,
+          "withVerdict": 75,
           "without": [
             133,
             134,
@@ -7759,11 +7789,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "010fb7b17d424e829e5e46a390ae3699145fa298",
+        "sha": "ac1a829fd6f3be1895362417620a5f61f6d1ab02",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36575512164/job/109429985195",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36577853354/job/109438001665",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -7850,12 +7880,61 @@
         "pr": 606,
         "sha": "efcc4a4596eeacb948ca1e482787c23b7c8bb605",
         "check": "ci",
-        "conclusion": null,
-        "completedAt": null,
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-29T13:30:44Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/36575262516/job/109429123328",
-        "line": null,
-        "verdict": null,
+        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 71,
+          "new": 0
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 610,
+        "sha": "61310888d77ecc7729c0e43a6c9b4ae7f499cd3d",
+        "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-29T13:37:59Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36576494640/job/109433352989",
+        "line": "HYGIENE: PASS reviewable=49 test=44 excluded=0 files=1 issue=#591 linked=fixes",
+        "verdict": "PASS",
+        "fields": {
+          "reviewable": 49,
+          "test": 44,
+          "excluded": 0,
+          "files": 1,
+          "issue": "#591",
+          "linked": "fixes"
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 610,
+        "sha": "61310888d77ecc7729c0e43a6c9b4ae7f499cd3d",
+        "check": "browser-qa",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-29T13:38:00Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36576493451/job/109433343840",
+        "line": "BROWSER-QA: skipped (no critical paths)",
+        "verdict": "SKIPPED",
         "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 610,
+        "sha": "61310888d77ecc7729c0e43a6c9b4ae7f499cd3d",
+        "check": "ci",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-29T13:40:48Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36576489831/job/109433331965",
+        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 71,
+          "new": 0
+        },
         "disagrees": false
       }
     ]
