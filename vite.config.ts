@@ -90,6 +90,10 @@ export default defineConfig({
   assetsInclude: ['**/*.glb', '**/*.gltf'],
   test: {
     globals: true,
+    // Unset, vitest starts one worker per logical CPU minus one (11 on the owner's laptop). With up
+    // to three agents testing at once that was ~33 workers on 6 cores and thermal throttling. Three
+    // per run fits the laptop and CI's 4-vCPU runners; `--maxWorkers=<n>` overrides it for one run.
+    maxWorkers: 3,
     // `include` lives on each project, never here: `extends: true` concatenates arrays, so a root
     // `include` would be merged back into the `node` project and hand it every test file again.
     projects: [
