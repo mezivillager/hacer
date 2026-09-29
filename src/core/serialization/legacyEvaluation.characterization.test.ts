@@ -373,8 +373,9 @@ function characterize(fixture: Fixture, roundTrip: Save = save) {
         const value = inputs[node.name]
         if (value !== undefined) node.value = value
       }
-      const before = observe(doc, evaluateCircuit(doc))
+      // Saved before either run, so "after" sees only what the document carries, not values "before" wrote.
       const reloaded = load(roundTrip(doc, fixture.name))
+      const before = observe(doc, evaluateCircuit(doc))
       const after = observe(reloaded.doc, evaluateCircuit(reloaded.doc))
       return {
         inputs,
