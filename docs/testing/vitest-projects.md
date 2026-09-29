@@ -36,8 +36,8 @@ suite (measured 2026-09-21, #323).
 
 Configured in `vite.config.ts`. A file is in the `node` project when **both** hold:
 
-1. it sits under one of `src/core`, `src/simulation`, `src/store`, `src/utils`, `src/lib`,
-   `src/scenarios`, `scripts`; and
+1. it sits under one of `src/cli`, `src/mcp`, `src/core`, `src/simulation`, `src/store`, `src/utils`,
+   `src/lib`, `src/scenarios`, `scripts`; and
 2. it ends in `.test.ts` / `.spec.ts` / `.test.mjs` / `.spec.mjs` — a `.tsx` test renders JSX, so it
    belongs with a DOM;
 
