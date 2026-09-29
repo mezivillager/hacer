@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { useCircuitStore } from '@/store/circuitStore'
-import { describeCircuitScene, projectToCanvas } from './sceneDescribe'
+import { describeCircuitScene, projectSceneEntity, projectToCanvas } from './sceneDescribe'
 import '../../../../e2e/types/globals' // Import for Window augmentation side-effect
 
 /**
@@ -36,7 +36,10 @@ export function SceneReadyBridge() {
       },
       canvasRect: () => gl.domElement.getBoundingClientRect(),
       scene: () => describeCircuitScene(useCircuitStore.getState()),
-      project: () => null,
+      project: (id: string) => {
+        const rect = gl.domElement.getBoundingClientRect()
+        return projectSceneEntity(useCircuitStore.getState(), id, (world) => projectToCanvas(camera, rect, world))
+      },
     }
 
     window.dispatchEvent(new Event('scene-ready'))
