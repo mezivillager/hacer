@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-29T12:44:42.037Z",
+  "generatedAt": "2026-09-29T12:50:26.641Z",
   "head": {
-    "sha": "804e1d501141cd7f57316c8066571017c6ec4c22",
-    "date": "2026-09-29T15:43:40+03:00",
-    "subject": "feat(mission-control): roadmap, ledger and ADR views (#479)"
+    "sha": "e9c0f63f3ae405c0d2f7048a06a04e5bc97cc1cf",
+    "date": "2026-09-29T15:49:33+03:00",
+    "subject": "docs: E2E suites run in CI or the cloud only, never on a laptop (ADR-0016)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-29T12:44:42.037Z",
+      "fetchedAt": "2026-09-29T12:50:26.641Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-29T12:44:42.037Z",
+      "fetchedAt": "2026-09-29T12:50:26.641Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-29T12:44:42.037Z",
+      "fetchedAt": "2026-09-29T12:50:26.641Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-29T12:44:42.037Z",
+      "fetchedAt": "2026-09-29T12:50:26.641Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-09-29T12:44:42.037Z",
+      "fetchedAt": "2026-09-29T12:50:26.641Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-09-29T12:44:42.037Z",
+      "fetchedAt": "2026-09-29T12:50:26.641Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-09-29T12:44:42.037Z",
+      "fetchedAt": "2026-09-29T12:50:26.641Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-09-29T12:44:42.037Z",
+      "fetchedAt": "2026-09-29T12:50:26.641Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-09-29T12:44:42.037Z",
+      "fetchedAt": "2026-09-29T12:50:26.641Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-09-29T12:44:42.037Z",
+      "fetchedAt": "2026-09-29T12:50:26.641Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-09-29T12:44:42.037Z",
+      "fetchedAt": "2026-09-29T12:50:26.641Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-09-29T12:44:42.037Z",
+      "fetchedAt": "2026-09-29T12:50:26.641Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-09-29T12:44:42.037Z",
+      "fetchedAt": "2026-09-29T12:50:26.641Z",
       "status": "ok"
     }
   },
@@ -81,16 +81,16 @@
         "slug": "foundation",
         "epicNumber": 318,
         "open": 34,
-        "ready": 11,
-        "inProgress": 2,
+        "ready": 9,
+        "inProgress": 4,
         "needsHuman": 0,
         "staleClaims": [
           182
         ],
         "agentReady": 14,
         "next": {
-          "number": 316,
-          "title": "Canvas-less shell: a local @shell Playwright project and the first spec (ADR-0019 slice 2)"
+          "number": 334,
+          "title": "Harness: ledger rows stop conflicting (merge=union), and the verifier reads the PR's own CI logs (foundation 0.7, 0.10)"
         },
         "title": "Foundation audit: is the codebase structured for the autonomous loop? Measured audit, prioritized refactorings, fitness functions",
         "subIssues": {
@@ -284,20 +284,20 @@
         "lane": "aux",
         "slug": "upkeep",
         "epicNumber": 146,
-        "open": 5,
+        "open": 4,
         "ready": 2,
-        "inProgress": 1,
+        "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 4,
+        "agentReady": 3,
         "next": {
           "number": 421,
           "title": "docs(repo-map): Phase 5+ sample still cites @/core/gates/registry"
         },
         "title": "Epic: upkeep — maintenance & documentation",
         "subIssues": {
-          "completed": 7,
-          "percentCompleted": 63,
+          "completed": 8,
+          "percentCompleted": 72,
           "total": 11
         }
       },
@@ -387,26 +387,6 @@
     ],
     "next": [
       {
-        "number": 316,
-        "title": "Canvas-less shell: a local @shell Playwright project and the first spec (ADR-0019 slice 2)",
-        "project": "foundation"
-      },
-      {
-        "number": 471,
-        "title": "Lineage DL-6: lint:lineage from warn to fail — the lineage ratchet",
-        "project": "lineage"
-      },
-      {
-        "number": 153,
-        "title": "REPO_MAP dead paths (~45/118), the 'add a gate' recipe in 5 places, and a does-this-path-exist check in lint:docs",
-        "project": "harness"
-      },
-      {
-        "number": 331,
-        "title": "Characterize the legacy app before it is replaced: rendered geometry, evaluation fixtures, the 43 store actions",
-        "project": "foundation"
-      },
-      {
         "number": 480,
         "title": "Mission Control MC-9: \"queue an improvement\" links and the needs-human list — the first editable step",
         "project": "mission-control"
@@ -427,13 +407,13 @@
         "project": "foundation"
       },
       {
-        "number": 481,
-        "title": "Lineage DL-7: the lineage graph as a Mission Control view",
+        "number": 471,
+        "title": "Lineage DL-6: lint:lineage from warn to fail — the lineage ratchet",
         "project": "lineage"
       },
       {
-        "number": 155,
-        "title": "De-duplicate vendored skills (tdd/test-driven-development, debugging/systematic-debugging, planning/writing-plans) and fix sync-superpowers.sh",
+        "number": 153,
+        "title": "REPO_MAP dead paths (~45/118), the 'add a gate' recipe in 5 places, and a does-this-path-exist check in lint:docs",
         "project": "harness"
       },
       {
@@ -462,8 +442,13 @@
         "project": "foundation"
       },
       {
-        "number": 159,
-        "title": "docs/harness/ledger.md failure ledger + retro step: second occurrence → lint, test or hook",
+        "number": 481,
+        "title": "Lineage DL-7: the lineage graph as a Mission Control view",
+        "project": "lineage"
+      },
+      {
+        "number": 155,
+        "title": "De-duplicate vendored skills (tdd/test-driven-development, debugging/systematic-debugging, planning/writing-plans) and fix sync-superpowers.sh",
         "project": "harness"
       },
       {
@@ -487,8 +472,8 @@
         "project": "foundation"
       },
       {
-        "number": 160,
-        "title": "One source of truth for phase status (implementation.md vs checklist vs .cursorrules header dated 2026-05-12)",
+        "number": 159,
+        "title": "docs/harness/ledger.md failure ledger + retro step: second occurrence → lint, test or hook",
         "project": "harness"
       },
       {
@@ -500,6 +485,11 @@
         "number": 560,
         "title": "Mission Control Process view: the Ready stage counts on-request and not-pulled tasks as ready",
         "project": "mission-control"
+      },
+      {
+        "number": 160,
+        "title": "One source of truth for phase status (implementation.md vs checklist vs .cursorrules header dated 2026-05-12)",
+        "project": "harness"
       },
       {
         "number": 247,
@@ -587,69 +577,6 @@
   "tasks": {
     "items": [
       {
-        "number": 316,
-        "title": "Canvas-less shell: a local @shell Playwright project and the first spec (ADR-0019 slice 2)",
-        "labels": [
-          "project:surfaces",
-          "agent-ready",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 471,
-        "title": "Lineage DL-6: lint:lineage from warn to fail — the lineage ratchet",
-        "labels": [
-          "agent-ready",
-          "risk:2",
-          "project:lineage"
-        ],
-        "blocking": [],
-        "project": "lineage",
-        "rank": 13,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 153,
-        "title": "REPO_MAP dead paths (~45/118), the 'add a gate' recipe in 5 places, and a does-this-path-exist check in lint:docs",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:2"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 331,
-        "title": "Characterize the legacy app before it is replaced: rendered geometry, evaluation fixtures, the 43 store actions",
-        "labels": [
-          "agent-ready",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [
-          381
-        ],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
-      {
         "number": 480,
         "title": "Mission Control MC-9: \"queue an improvement\" links and the needs-human list — the first editable step",
         "labels": [
@@ -711,11 +638,11 @@
         "reason": null
       },
       {
-        "number": 481,
-        "title": "Lineage DL-7: the lineage graph as a Mission Control view",
+        "number": 471,
+        "title": "Lineage DL-6: lint:lineage from warn to fail — the lineage ratchet",
         "labels": [
           "agent-ready",
-          "risk:1",
+          "risk:2",
           "project:lineage"
         ],
         "blocking": [],
@@ -726,8 +653,8 @@
         "reason": null
       },
       {
-        "number": 155,
-        "title": "De-duplicate vendored skills (tdd/test-driven-development, debugging/systematic-debugging, planning/writing-plans) and fix sync-superpowers.sh",
+        "number": 153,
+        "title": "REPO_MAP dead paths (~45/118), the 'add a gate' recipe in 5 places, and a does-this-path-exist check in lint:docs",
         "labels": [
           "project:harness",
           "agent-ready",
@@ -818,12 +745,27 @@
         "reason": null
       },
       {
-        "number": 159,
-        "title": "docs/harness/ledger.md failure ledger + retro step: second occurrence → lint, test or hook",
+        "number": 481,
+        "title": "Lineage DL-7: the lineage graph as a Mission Control view",
+        "labels": [
+          "agent-ready",
+          "risk:1",
+          "project:lineage"
+        ],
+        "blocking": [],
+        "project": "lineage",
+        "rank": 13,
+        "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 155,
+        "title": "De-duplicate vendored skills (tdd/test-driven-development, debugging/systematic-debugging, planning/writing-plans) and fix sync-superpowers.sh",
         "labels": [
           "project:harness",
           "agent-ready",
-          "risk:0"
+          "risk:2"
         ],
         "blocking": [],
         "project": "harness",
@@ -897,8 +839,8 @@
         "reason": null
       },
       {
-        "number": 160,
-        "title": "One source of truth for phase status (implementation.md vs checklist vs .cursorrules header dated 2026-05-12)",
+        "number": 159,
+        "title": "docs/harness/ledger.md failure ledger + retro step: second occurrence → lint, test or hook",
         "labels": [
           "project:harness",
           "agent-ready",
@@ -938,6 +880,21 @@
         "blocking": [],
         "project": "mission-control",
         "rank": 14,
+        "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 160,
+        "title": "One source of truth for phase status (implementation.md vs checklist vs .cursorrules header dated 2026-05-12)",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:0"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
         "lane": "process",
         "pickable": true,
         "reason": null
@@ -1998,22 +1955,6 @@
         "reason": "foundation-gate"
       },
       {
-        "number": 290,
-        "title": "Docs sweep: stale 'run test:e2e:store locally' lines contradict ADR-0016 as amended",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 311,
         "title": "Output nodes keep a stale value when their wire is removed",
         "labels": [
@@ -2027,6 +1968,23 @@
         "lane": "aux",
         "pickable": false,
         "reason": "unshaped"
+      },
+      {
+        "number": 316,
+        "title": "Canvas-less shell: a local @shell Playwright project and the first spec (ADR-0019 slice 2)",
+        "labels": [
+          "project:surfaces",
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "claimed"
       },
       {
         "number": 325,
@@ -2043,6 +2001,24 @@
         "lane": "feature",
         "pickable": false,
         "reason": "unshaped"
+      },
+      {
+        "number": 331,
+        "title": "Characterize the legacy app before it is replaced: rendered geometry, evaluation fixtures, the 43 store actions",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [
+          381
+        ],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "claimed"
       },
       {
         "number": 339,
@@ -2624,9 +2600,15 @@
       }
     ],
     "byProject": {
+      "mission-control": [
+        480,
+        513,
+        545,
+        560,
+        509,
+        584
+      ],
       "foundation": [
-        316,
-        331,
         334,
         335,
         338,
@@ -2641,7 +2623,9 @@
         184,
         205,
         208,
+        316,
         325,
+        331,
         339,
         374,
         377,
@@ -2659,6 +2643,12 @@
         400,
         462,
         506
+      ],
+      "upkeep": [
+        421,
+        567,
+        229,
+        256
       ],
       "lineage": [
         471,
@@ -2697,21 +2687,6 @@
         504,
         505,
         550
-      ],
-      "mission-control": [
-        480,
-        513,
-        545,
-        560,
-        509,
-        584
-      ],
-      "upkeep": [
-        421,
-        567,
-        229,
-        256,
-        290
       ],
       "spine": [
         165,
@@ -2819,11 +2794,38 @@
     ],
     "merged": [
       {
+        "number": 594,
+        "title": "docs: E2E suites run in CI or the cloud only (ADR-0016)",
+        "url": "https://github.com/mezivillager/hacer/pull/594",
+        "author": "mezivillager",
+        "labels": [
+          "project:upkeep",
+          "risk:0"
+        ],
+        "headRefName": "docs/290-e2e-cloud-only-sweep",
+        "isDraft": false,
+        "createdAt": "2026-09-29T12:46:25Z",
+        "mergedAt": "2026-09-29T12:49:34Z",
+        "closes": [
+          290
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (risk:0 docs-only, #554)",
+            "at": "2026-09-29T12:47:31Z",
+            "url": "https://github.com/mezivillager/hacer/pull/594#issuecomment-5890610614"
+          }
+        ]
+      },
+      {
         "number": 593,
         "title": "feat(mission-control): roadmap, ledger and ADR views",
         "url": "https://github.com/mezivillager/hacer/pull/593",
         "author": "mezivillager",
         "labels": [
+          "released",
           "risk:1",
           "project:mission-control"
         ],
@@ -4219,30 +4221,13 @@
         "mergedAt": "2026-09-27T11:27:11Z",
         "closes": [],
         "verdicts": []
-      },
-      {
-        "number": 495,
-        "title": "chore(deps-dev): bump @rolldown/plugin-babel from 0.2.3 to 0.2.4",
-        "url": "https://github.com/mezivillager/hacer/pull/495",
-        "author": "app/dependabot",
-        "labels": [
-          "released",
-          "dependencies",
-          "javascript"
-        ],
-        "headRefName": "dependabot/npm_and_yarn/rolldown/plugin-babel-0.2.4",
-        "isDraft": false,
-        "createdAt": "2026-09-24T23:14:26Z",
-        "mergedAt": "2026-09-24T23:46:37Z",
-        "closes": [],
-        "verdicts": []
       }
     ],
     "coverage": {
       "merged": 60,
-      "withVerdict": 37,
-      "withoutVerdict": 23,
-      "pass": 37,
+      "withVerdict": 38,
+      "withoutVerdict": 22,
+      "pass": 38,
       "block": 0
     }
   },
@@ -4462,7 +4447,7 @@
         "number": 290,
         "ref": "refs/heads/claim/290",
         "sha": "eaba40da844780d75ed84f4a1825245a1c518305",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "Docs sweep: stale 'run test:e2e:store locally' lines contradict ADR-0016 as amended",
         "url": "https://github.com/mezivillager/hacer/issues/290",
         "labels": [
@@ -4471,7 +4456,7 @@
           "in-progress",
           "risk:0"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -4508,6 +4493,57 @@
           "author": "mezivillager",
           "at": "2026-09-29T11:41:55Z",
           "url": "https://github.com/mezivillager/hacer/issues/315#issuecomment-5889538300"
+        }
+      },
+      {
+        "number": 316,
+        "ref": "refs/heads/claim/316",
+        "sha": "804e1d501141cd7f57316c8066571017c6ec4c22",
+        "state": "OPEN",
+        "title": "Canvas-less shell: a local @shell Playwright project and the first spec (ADR-0019 slice 2)",
+        "url": "https://github.com/mezivillager/hacer/issues/316",
+        "labels": [
+          "project:surfaces",
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:foundation"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-60",
+          "branch": null,
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-09-29T12:44:51Z",
+          "url": "https://github.com/mezivillager/hacer/issues/316#issuecomment-5890569013"
+        }
+      },
+      {
+        "number": 331,
+        "ref": "refs/heads/claim/331",
+        "sha": "804e1d501141cd7f57316c8066571017c6ec4c22",
+        "state": "OPEN",
+        "title": "Characterize the legacy app before it is replaced: rendered geometry, evaluation fixtures, the 43 store actions",
+        "url": "https://github.com/mezivillager/hacer/issues/331",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:foundation"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-60",
+          "branch": null,
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-09-29T12:47:50Z",
+          "url": "https://github.com/mezivillager/hacer/issues/331#issuecomment-5890615427"
         }
       },
       {
@@ -4595,6 +4631,7 @@
         "title": "Mission Control MC-8: Roadmap, Ledger and ADR views",
         "url": "https://github.com/mezivillager/hacer/issues/479",
         "labels": [
+          "released",
           "agent-ready",
           "in-progress",
           "risk:1",
@@ -4899,7 +4936,7 @@
         }
       }
     ],
-    "onClosedIssues": 21
+    "onClosedIssues": 22
   },
   "cloudLane": {
     "items": [
@@ -5905,9 +5942,14 @@
     },
     "releases": [
       {
+        "tag": "v2.52.0",
+        "publishedAt": "2026-09-29T12:46:07Z",
+        "isLatest": true
+      },
+      {
         "tag": "v2.51.1",
         "publishedAt": "2026-09-29T12:41:42Z",
-        "isLatest": true
+        "isLatest": false
       },
       {
         "tag": "v2.51.0",
@@ -6423,7 +6465,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-24",
-        "merges": 2
+        "merges": 1
       },
       {
         "date": "2026-09-25",
@@ -6443,20 +6485,20 @@
       },
       {
         "date": "2026-09-29",
-        "merges": 12
+        "merges": 13
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-15T12:44:42.037Z",
-      "merged": 177,
+      "since": "2026-09-15T12:50:26.641Z",
+      "merged": 178,
       "openToMergeHours": {
         "median": 0.2,
         "p90": 15.1
       },
       "blockedOnce": {
         "count": 21,
-        "of": 88,
+        "of": 89,
         "prs": [
           238,
           248,
@@ -6505,8 +6547,8 @@
           ]
         },
         "nonCode": {
-          "merged": 89,
-          "withVerdict": 16,
+          "merged": 90,
+          "withVerdict": 17,
           "without": [
             113,
             115,
@@ -7324,10 +7366,11 @@
       },
       {
         "date": "2026-09-29",
-        "at": "2026-09-29T12:21:03.005Z",
+        "at": "2026-09-29T12:44:42.037Z",
         "byProject": {
           "foundation": [
             316,
+            331,
             334,
             335,
             338,
@@ -7336,14 +7379,13 @@
             373,
             407,
             429,
+            591,
             151,
             182,
             184,
-            204,
             205,
             208,
             325,
-            331,
             339,
             374,
             377,
@@ -7360,15 +7402,7 @@
             395,
             400,
             462,
-            506,
-            587
-          ],
-          "upkeep": [
-            290,
-            421,
-            567,
-            229,
-            256
+            506
           ],
           "lineage": [
             471,
@@ -7413,9 +7447,15 @@
             513,
             545,
             560,
-            479,
             509,
             584
+          ],
+          "upkeep": [
+            421,
+            567,
+            229,
+            256,
+            290
           ],
           "spine": [
             165,
@@ -7498,11 +7538,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "804e1d501141cd7f57316c8066571017c6ec4c22",
+        "sha": "e9c0f63f3ae405c0d2f7048a06a04e5bc97cc1cf",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36570060956/job/109411534317",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36570731726/job/109413783553",
         "line": null,
         "verdict": null,
         "fields": {},
