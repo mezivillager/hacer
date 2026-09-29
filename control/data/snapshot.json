@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-29T12:50:26.641Z",
+  "generatedAt": "2026-09-29T13:12:06.396Z",
   "head": {
-    "sha": "e9c0f63f3ae405c0d2f7048a06a04e5bc97cc1cf",
-    "date": "2026-09-29T15:49:33+03:00",
-    "subject": "docs: E2E suites run in CI or the cloud only, never on a laptop (ADR-0016)"
+    "sha": "fd0dbd35bf52c9d5f7eb7cb007bdbd12a6fcc2d8",
+    "date": "2026-09-29T16:11:08+03:00",
+    "subject": "docs: name @shell as the one Playwright suite that may run locally"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-29T12:50:26.641Z",
+      "fetchedAt": "2026-09-29T13:12:06.396Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-29T12:50:26.641Z",
+      "fetchedAt": "2026-09-29T13:12:06.396Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-29T12:50:26.641Z",
+      "fetchedAt": "2026-09-29T13:12:06.396Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-29T12:50:26.641Z",
+      "fetchedAt": "2026-09-29T13:12:06.396Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-09-29T12:50:26.641Z",
+      "fetchedAt": "2026-09-29T13:12:06.396Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-09-29T12:50:26.641Z",
+      "fetchedAt": "2026-09-29T13:12:06.396Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-09-29T12:50:26.641Z",
+      "fetchedAt": "2026-09-29T13:12:06.396Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-09-29T12:50:26.641Z",
+      "fetchedAt": "2026-09-29T13:12:06.396Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-09-29T12:50:26.641Z",
+      "fetchedAt": "2026-09-29T13:12:06.396Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-09-29T12:50:26.641Z",
+      "fetchedAt": "2026-09-29T13:12:06.396Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-09-29T12:50:26.641Z",
+      "fetchedAt": "2026-09-29T13:12:06.396Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-09-29T12:50:26.641Z",
+      "fetchedAt": "2026-09-29T13:12:06.396Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-09-29T12:50:26.641Z",
+      "fetchedAt": "2026-09-29T13:12:06.396Z",
       "status": "ok"
     }
   },
@@ -80,14 +80,14 @@
         "lane": "feature",
         "slug": "foundation",
         "epicNumber": 318,
-        "open": 34,
-        "ready": 9,
+        "open": 37,
+        "ready": 11,
         "inProgress": 4,
         "needsHuman": 0,
         "staleClaims": [
           182
         ],
-        "agentReady": 14,
+        "agentReady": 16,
         "next": {
           "number": 334,
           "title": "Harness: ledger rows stop conflicting (merge=union), and the verifier reads the PR's own CI logs (foundation 0.7, 0.10)"
@@ -116,8 +116,8 @@
         },
         "title": "Epic: harness — autonomous-run improvements & agent-readiness",
         "subIssues": {
-          "completed": 36,
-          "percentCompleted": 63,
+          "completed": 37,
+          "percentCompleted": 64,
           "total": 57
         }
       },
@@ -387,23 +387,13 @@
     ],
     "next": [
       {
-        "number": 480,
-        "title": "Mission Control MC-9: \"queue an improvement\" links and the needs-human list — the first editable step",
-        "project": "mission-control"
-      },
-      {
-        "number": 334,
-        "title": "Harness: ledger rows stop conflicting (merge=union), and the verifier reads the PR's own CI logs (foundation 0.7, 0.10)",
-        "project": "foundation"
-      },
-      {
         "number": 421,
         "title": "docs(repo-map): Phase 5+ sample still cites @/core/gates/registry",
         "project": "upkeep"
       },
       {
-        "number": 335,
-        "title": "Move the HTMLCanvasElement patch out of the shared test setup, and move store/core tests to the node project (foundation 0.10)",
+        "number": 334,
+        "title": "Harness: ledger rows stop conflicting (merge=union), and the verifier reads the PR's own CI logs (foundation 0.7, 0.10)",
         "project": "foundation"
       },
       {
@@ -417,18 +407,18 @@
         "project": "harness"
       },
       {
-        "number": 338,
-        "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
+        "number": 335,
+        "title": "Move the HTMLCanvasElement patch out of the shared test setup, and move store/core tests to the node project (foundation 0.10)",
         "project": "foundation"
       },
       {
-        "number": 513,
-        "title": "Mission Control Process view: stage labels shrink with the SVG at phone width; Verifying and PR drill into the same list",
+        "number": 480,
+        "title": "Mission Control MC-9: \"queue an improvement\" links and the needs-human list — the first editable step",
         "project": "mission-control"
       },
       {
-        "number": 345,
-        "title": "pr-hygiene nits from #344: deletionOnlyExemption fails open on missing fields; refusals should name the file; the evidence rule is case-sensitive",
+        "number": 338,
+        "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
         "project": "foundation"
       },
       {
@@ -437,8 +427,8 @@
         "project": "upkeep"
       },
       {
-        "number": 349,
-        "title": "backlog.mjs reporting nits from #347: pulled-forward issues vanish from their original row's totals; gate reason shadows on-request",
+        "number": 345,
+        "title": "pr-hygiene nits from #344: deletionOnlyExemption fails open on missing fields; refusals should name the file; the evidence rule is case-sensitive",
         "project": "foundation"
       },
       {
@@ -452,23 +442,23 @@
         "project": "harness"
       },
       {
+        "number": 349,
+        "title": "backlog.mjs reporting nits from #347: pulled-forward issues vanish from their original row's totals; gate reason shadows on-request",
+        "project": "foundation"
+      },
+      {
+        "number": 513,
+        "title": "Mission Control Process view: stage labels shrink with the SVG at phone width; Verifying and PR drill into the same list",
+        "project": "mission-control"
+      },
+      {
         "number": 373,
         "title": "N.0: the six 3D mesh components become prop-only and store-free (six PRs, expand → migrate → contract)",
         "project": "foundation"
       },
       {
-        "number": 545,
-        "title": "Timeline.test.tsx mounts the whole snapshot on vitest's 5 s default and times out under load",
-        "project": "mission-control"
-      },
-      {
         "number": 407,
         "title": "Two PRs can be green alone and red merged, and nothing detects it before main",
-        "project": "foundation"
-      },
-      {
-        "number": 429,
-        "title": "The ESLint suppressions baseline can be reset the same way, and nothing detects it",
         "project": "foundation"
       },
       {
@@ -477,19 +467,39 @@
         "project": "harness"
       },
       {
+        "number": 429,
+        "title": "The ESLint suppressions baseline can be reset the same way, and nothing detects it",
+        "project": "foundation"
+      },
+      {
+        "number": 545,
+        "title": "Timeline.test.tsx mounts the whole snapshot on vitest's 5 s default and times out under load",
+        "project": "mission-control"
+      },
+      {
         "number": 591,
         "title": "hacer test: flag or refuse a BUILTIN stand-in for the chip under test; JSON usage errors; bus values in the .cmp's format (verifier nits on #589)",
+        "project": "foundation"
+      },
+      {
+        "number": 597,
+        "title": "Characterize the legacy store: the actions the @store suite drives, as Node fixtures",
+        "project": "foundation"
+      },
+      {
+        "number": 160,
+        "title": "One source of truth for phase status (implementation.md vs checklist vs .cursorrules header dated 2026-05-12)",
+        "project": "harness"
+      },
+      {
+        "number": 598,
+        "title": "Characterize the legacy renderer: ADR-0008's circuits as scene + routed-path goldens, headless in Node",
         "project": "foundation"
       },
       {
         "number": 560,
         "title": "Mission Control Process view: the Ready stage counts on-request and not-pulled tasks as ready",
         "project": "mission-control"
-      },
-      {
-        "number": 160,
-        "title": "One source of truth for phase status (implementation.md vs checklist vs .cursorrules header dated 2026-05-12)",
-        "project": "harness"
       },
       {
         "number": 247,
@@ -570,43 +580,13 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
+        600,
         514
       ]
     }
   },
   "tasks": {
     "items": [
-      {
-        "number": 480,
-        "title": "Mission Control MC-9: \"queue an improvement\" links and the needs-human list — the first editable step",
-        "labels": [
-          "agent-ready",
-          "risk:0",
-          "project:mission-control"
-        ],
-        "blocking": [],
-        "project": "mission-control",
-        "rank": 14,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 334,
-        "title": "Harness: ledger rows stop conflicting (merge=union), and the verifier reads the PR's own CI logs (foundation 0.7, 0.10)",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:0",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
       {
         "number": 421,
         "title": "docs(repo-map): Phase 5+ sample still cites @/core/gates/registry",
@@ -623,11 +603,12 @@
         "reason": null
       },
       {
-        "number": 335,
-        "title": "Move the HTMLCanvasElement patch out of the shared test setup, and move store/core tests to the node project (foundation 0.10)",
+        "number": 334,
+        "title": "Harness: ledger rows stop conflicting (merge=union), and the verifier reads the PR's own CI logs (foundation 0.7, 0.10)",
         "labels": [
+          "project:harness",
           "agent-ready",
-          "risk:1",
+          "risk:0",
           "project:foundation"
         ],
         "blocking": [],
@@ -668,8 +649,8 @@
         "reason": null
       },
       {
-        "number": 338,
-        "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
+        "number": 335,
+        "title": "Move the HTMLCanvasElement patch out of the shared test setup, and move store/core tests to the node project (foundation 0.10)",
         "labels": [
           "agent-ready",
           "risk:1",
@@ -683,8 +664,8 @@
         "reason": null
       },
       {
-        "number": 513,
-        "title": "Mission Control Process view: stage labels shrink with the SVG at phone width; Verifying and PR drill into the same list",
+        "number": 480,
+        "title": "Mission Control MC-9: \"queue an improvement\" links and the needs-human list — the first editable step",
         "labels": [
           "agent-ready",
           "risk:0",
@@ -698,10 +679,9 @@
         "reason": null
       },
       {
-        "number": 345,
-        "title": "pr-hygiene nits from #344: deletionOnlyExemption fails open on missing fields; refusals should name the file; the evidence rule is case-sensitive",
+        "number": 338,
+        "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
         "labels": [
-          "project:harness",
           "agent-ready",
           "risk:1",
           "project:foundation"
@@ -729,8 +709,8 @@
         "reason": null
       },
       {
-        "number": 349,
-        "title": "backlog.mjs reporting nits from #347: pulled-forward issues vanish from their original row's totals; gate reason shadows on-request",
+        "number": 345,
+        "title": "pr-hygiene nits from #344: deletionOnlyExemption fails open on missing fields; refusals should name the file; the evidence rule is case-sensitive",
         "labels": [
           "project:harness",
           "agent-ready",
@@ -775,6 +755,37 @@
         "reason": null
       },
       {
+        "number": 349,
+        "title": "backlog.mjs reporting nits from #347: pulled-forward issues vanish from their original row's totals; gate reason shadows on-request",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 513,
+        "title": "Mission Control Process view: stage labels shrink with the SVG at phone width; Verifying and PR drill into the same list",
+        "labels": [
+          "agent-ready",
+          "risk:0",
+          "project:mission-control"
+        ],
+        "blocking": [],
+        "project": "mission-control",
+        "rank": 14,
+        "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
         "number": 373,
         "title": "N.0: the six 3D mesh components become prop-only and store-free (six PRs, expand → migrate → contract)",
         "labels": [
@@ -792,39 +803,8 @@
         "reason": null
       },
       {
-        "number": 545,
-        "title": "Timeline.test.tsx mounts the whole snapshot on vitest's 5 s default and times out under load",
-        "labels": [
-          "agent-ready",
-          "risk:0",
-          "project:mission-control"
-        ],
-        "blocking": [],
-        "project": "mission-control",
-        "rank": 14,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
         "number": 407,
         "title": "Two PRs can be green alone and red merged, and nothing detects it before main",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 429,
-        "title": "The ESLint suppressions baseline can be reset the same way, and nothing detects it",
         "labels": [
           "project:harness",
           "agent-ready",
@@ -854,10 +834,86 @@
         "reason": null
       },
       {
+        "number": 429,
+        "title": "The ESLint suppressions baseline can be reset the same way, and nothing detects it",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 545,
+        "title": "Timeline.test.tsx mounts the whole snapshot on vitest's 5 s default and times out under load",
+        "labels": [
+          "agent-ready",
+          "risk:0",
+          "project:mission-control"
+        ],
+        "blocking": [],
+        "project": "mission-control",
+        "rank": 14,
+        "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
         "number": 591,
         "title": "hacer test: flag or refuse a BUILTIN stand-in for the chip under test; JSON usage errors; bus values in the .cmp's format (verifier nits on #589)",
         "labels": [
           "project:surfaces",
+          "agent-ready",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 597,
+        "title": "Characterize the legacy store: the actions the @store suite drives, as Node fixtures",
+        "labels": [
+          "agent-ready",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 160,
+        "title": "One source of truth for phase status (implementation.md vs checklist vs .cursorrules header dated 2026-05-12)",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:0"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 598,
+        "title": "Characterize the legacy renderer: ADR-0008's circuits as scene + routed-path goldens, headless in Node",
+        "labels": [
           "agent-ready",
           "risk:1",
           "project:foundation"
@@ -880,21 +936,6 @@
         "blocking": [],
         "project": "mission-control",
         "rank": 14,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 160,
-        "title": "One source of truth for phase status (implementation.md vs checklist vs .cursorrules header dated 2026-05-12)",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:0"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
         "lane": "process",
         "pickable": true,
         "reason": null
@@ -1970,23 +2011,6 @@
         "reason": "unshaped"
       },
       {
-        "number": 316,
-        "title": "Canvas-less shell: a local @shell Playwright project and the first spec (ADR-0019 slice 2)",
-        "labels": [
-          "project:surfaces",
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 325,
         "title": "Standing role: rendering R&D — continual research into 3D browser rendering suited to an AI-built product",
         "labels": [
@@ -2597,16 +2621,45 @@
         "lane": "process",
         "pickable": false,
         "reason": "unshaped"
+      },
+      {
+        "number": 595,
+        "title": "Characterize the legacy evaluator: fixture circuits evaluated before and after serialize → deserialize",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
+        "number": 599,
+        "title": "run-tst: a bare output-list name gets the pin's width, as the reference IDE gives it",
+        "labels": [
+          "project:surfaces",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "unshaped"
       }
     ],
     "byProject": {
-      "mission-control": [
-        480,
-        513,
-        545,
-        560,
-        509,
-        584
+      "upkeep": [
+        421,
+        567,
+        229,
+        256
       ],
       "foundation": [
         334,
@@ -2618,12 +2671,13 @@
         407,
         429,
         591,
+        597,
+        598,
         151,
         182,
         184,
         205,
         208,
-        316,
         325,
         331,
         339,
@@ -2642,13 +2696,9 @@
         395,
         400,
         462,
-        506
-      ],
-      "upkeep": [
-        421,
-        567,
-        229,
-        256
+        506,
+        595,
+        599
       ],
       "lineage": [
         471,
@@ -2687,6 +2737,14 @@
         504,
         505,
         550
+      ],
+      "mission-control": [
+        480,
+        513,
+        545,
+        560,
+        509,
+        584
       ],
       "spine": [
         165,
@@ -2766,6 +2824,24 @@
   "prs": {
     "open": [
       {
+        "number": 600,
+        "title": "feat(cli): hacer run-tst and the cli scenario driver",
+        "url": "https://github.com/mezivillager/hacer/pull/600",
+        "author": "mezivillager",
+        "labels": [
+          "risk:1",
+          "project:foundation"
+        ],
+        "headRefName": "feat/205-cli-run-tst-driver",
+        "isDraft": false,
+        "createdAt": "2026-09-29T13:08:11Z",
+        "mergedAt": null,
+        "closes": [
+          205
+        ],
+        "verdicts": []
+      },
+      {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
         "url": "https://github.com/mezivillager/hacer/pull/514",
@@ -2793,6 +2869,32 @@
       }
     ],
     "merged": [
+      {
+        "number": 596,
+        "title": "test(e2e): canvas-less @shell Playwright project and first spec",
+        "url": "https://github.com/mezivillager/hacer/pull/596",
+        "author": "mezivillager",
+        "labels": [
+          "risk:1",
+          "project:foundation"
+        ],
+        "headRefName": "feat/316-shell-playwright",
+        "isDraft": false,
+        "createdAt": "2026-09-29T13:02:10Z",
+        "mergedAt": "2026-09-29T13:11:10Z",
+        "closes": [
+          316
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Sonnet 5.5 (fresh context)",
+            "at": "2026-09-29T13:10:27Z",
+            "url": "https://github.com/mezivillager/hacer/pull/596#issuecomment-5890979354"
+          }
+        ]
+      },
       {
         "number": 594,
         "title": "docs: E2E suites run in CI or the cloud only (ADR-0016)",
@@ -4204,30 +4306,13 @@
         "mergedAt": "2026-09-24T23:37:38Z",
         "closes": [],
         "verdicts": []
-      },
-      {
-        "number": 496,
-        "title": "chore(deps-dev): bump lint-staged from 16.4.0 to 17.5.1",
-        "url": "https://github.com/mezivillager/hacer/pull/496",
-        "author": "app/dependabot",
-        "labels": [
-          "released",
-          "dependencies",
-          "javascript"
-        ],
-        "headRefName": "dependabot/npm_and_yarn/lint-staged-17.5.1",
-        "isDraft": false,
-        "createdAt": "2026-09-24T23:14:47Z",
-        "mergedAt": "2026-09-27T11:27:11Z",
-        "closes": [],
-        "verdicts": []
       }
     ],
     "coverage": {
       "merged": 60,
-      "withVerdict": 38,
-      "withoutVerdict": 22,
-      "pass": 38,
+      "withVerdict": 39,
+      "withoutVerdict": 21,
+      "pass": 39,
       "block": 0
     }
   },
@@ -4499,7 +4584,7 @@
         "number": 316,
         "ref": "refs/heads/claim/316",
         "sha": "804e1d501141cd7f57316c8066571017c6ec4c22",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "Canvas-less shell: a local @shell Playwright project and the first spec (ADR-0019 slice 2)",
         "url": "https://github.com/mezivillager/hacer/issues/316",
         "labels": [
@@ -4509,7 +4594,7 @@
           "risk:1",
           "project:foundation"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -4934,9 +5019,34 @@
           "at": "2026-09-29T12:01:18Z",
           "url": "https://github.com/mezivillager/hacer/issues/587#issuecomment-5889836575"
         }
+      },
+      {
+        "number": 595,
+        "ref": "refs/heads/claim/595",
+        "sha": "e9c0f63f3ae405c0d2f7048a06a04e5bc97cc1cf",
+        "state": "OPEN",
+        "title": "Characterize the legacy evaluator: fixture circuits evaluated before and after serialize → deserialize",
+        "url": "https://github.com/mezivillager/hacer/issues/595",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:foundation"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-60",
+          "branch": "test/331-a-eval-roundtrip-fixtures",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-09-29T13:02:13Z",
+          "url": "https://github.com/mezivillager/hacer/issues/595#issuecomment-5890844445"
+        }
       }
     ],
-    "onClosedIssues": 22
+    "onClosedIssues": 23
   },
   "cloudLane": {
     "items": [
@@ -5660,7 +5770,7 @@
         "number": 16,
         "file": "docs/decisions/0016-browser-qa-in-the-cloud.md",
         "title": "Browser QA in the cloud is required for critical changes",
-        "status": "Accepted — amends [ADR-0012](0012-e2e-tests-manual-only.md); amended 2026-09-19 (#282, see *Amendment* below)"
+        "status": "Accepted — amends [ADR-0012](0012-e2e-tests-manual-only.md); amended 2026-09-19 (#282) and 2026-09-29 (#316), see the *Amendment* sections below"
       },
       {
         "number": 17,
@@ -6477,7 +6587,7 @@
       },
       {
         "date": "2026-09-27",
-        "merges": 26
+        "merges": 25
       },
       {
         "date": "2026-09-28",
@@ -6485,20 +6595,20 @@
       },
       {
         "date": "2026-09-29",
-        "merges": 13
+        "merges": 14
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-15T12:50:26.641Z",
-      "merged": 178,
+      "since": "2026-09-15T13:12:06.396Z",
+      "merged": 179,
       "openToMergeHours": {
         "median": 0.2,
         "p90": 15.1
       },
       "blockedOnce": {
         "count": 21,
-        "of": 89,
+        "of": 90,
         "prs": [
           238,
           248,
@@ -6525,8 +6635,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 88,
-          "withVerdict": 72,
+          "merged": 89,
+          "withVerdict": 73,
           "without": [
             133,
             134,
@@ -7366,11 +7476,17 @@
       },
       {
         "date": "2026-09-29",
-        "at": "2026-09-29T12:44:42.037Z",
+        "at": "2026-09-29T12:50:26.641Z",
         "byProject": {
+          "mission-control": [
+            480,
+            513,
+            545,
+            560,
+            509,
+            584
+          ],
           "foundation": [
-            316,
-            331,
             334,
             335,
             338,
@@ -7385,7 +7501,9 @@
             184,
             205,
             208,
+            316,
             325,
+            331,
             339,
             374,
             377,
@@ -7403,6 +7521,12 @@
             400,
             462,
             506
+          ],
+          "upkeep": [
+            421,
+            567,
+            229,
+            256
           ],
           "lineage": [
             471,
@@ -7441,21 +7565,6 @@
             504,
             505,
             550
-          ],
-          "mission-control": [
-            480,
-            513,
-            545,
-            560,
-            509,
-            584
-          ],
-          "upkeep": [
-            421,
-            567,
-            229,
-            256,
-            290
           ],
           "spine": [
             165,
@@ -7538,11 +7647,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "e9c0f63f3ae405c0d2f7048a06a04e5bc97cc1cf",
+        "sha": "fd0dbd35bf52c9d5f7eb7cb007bdbd12a6fcc2d8",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36570731726/job/109413783553",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36573276674/job/109422320305",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -7586,6 +7695,52 @@
         "conclusion": "SUCCESS",
         "completedAt": "2026-09-25T06:48:18Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/36104338672/job/107973412518",
+        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 71,
+          "new": 0
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 600,
+        "sha": "f1b1f5a3540620b90a435acf66c4349a8f4f30bc",
+        "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-29T13:08:31Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36572927072/job/109421128351",
+        "line": "HYGIENE: WARN reviewable=391 test=393 excluded=0 files=7 issue=#205 linked=fixes",
+        "verdict": "WARN",
+        "fields": {
+          "reviewable": 391,
+          "test": 393,
+          "excluded": 0,
+          "files": 7,
+          "issue": "#205",
+          "linked": "fixes"
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 600,
+        "sha": "f1b1f5a3540620b90a435acf66c4349a8f4f30bc",
+        "check": "browser-qa",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-29T13:08:27Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36572926727/job/109421125353",
+        "line": "BROWSER-QA: skipped (no critical paths)",
+        "verdict": "SKIPPED",
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 600,
+        "sha": "f1b1f5a3540620b90a435acf66c4349a8f4f30bc",
+        "check": "ci",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-29T13:10:36Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36572926266/job/109421123590",
         "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
         "verdict": "PASS",
         "fields": {
