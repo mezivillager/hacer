@@ -22,3 +22,11 @@ body:
       description: What would make it mechanical, cheaper or safer
     validations:
       required: false
+  - type: textarea
+    id: files
+    attributes:
+      label: Files likely touched
+      description: |
+        Repo-relative files this change is likely to touch. Run `node scripts/blast-radius.mjs` on them before `agent-ready` is applied. Direct importers are a proxy for blast radius; the triage rule is in docs/harness/README.md.
+    validations:
+      required: false
