@@ -1,1 +1,214 @@
-{}
+{
+  "fixture": "importCircuitJSON",
+  "from": "persistence/circuit-persistence.store.spec.ts",
+  "setup": [
+    {
+      "action": "addGate",
+      "args": [
+        "Nand",
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        }
+      ]
+    },
+    {
+      "action": "saveCircuit",
+      "args": [
+        "export-source"
+      ]
+    },
+    {
+      "action": "clearCircuit",
+      "args": []
+    }
+  ],
+  "before": {
+    "state": {
+      "busComponents": [],
+      "busPlacementMode": null,
+      "completedChips": [],
+      "gates": [],
+      "hoveredGateId": null,
+      "inputNodes": [],
+      "isDragActive": false,
+      "junctionPlacementMode": null,
+      "junctionPreviewPosition": null,
+      "junctionPreviewWireId": null,
+      "junctions": [],
+      "lastSimulationError": null,
+      "nodePlacementMode": null,
+      "outputNodes": [],
+      "performanceMode": "normal",
+      "placementMode": null,
+      "placementPreviewPosition": null,
+      "propertiesPanelOpen": false,
+      "rightPanelOpen": false,
+      "selectedBusId": null,
+      "selectedGateId": null,
+      "selectedNodeId": null,
+      "selectedNodeType": null,
+      "selectedWireId": null,
+      "showAxes": false,
+      "simulationRunning": false,
+      "simulationSpeed": 100,
+      "statusMessages": [],
+      "testColumns": [],
+      "testResult": null,
+      "wires": [],
+      "wiringFrom": null
+    },
+    "storage": {
+      "hacer-circuit-export-source": {
+        "busComponents": [],
+        "gates": [
+          {
+            "id": "gate#1",
+            "position": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "rotation": {
+              "x": 1.5707963267948966,
+              "y": 0,
+              "z": 0
+            },
+            "type": "Nand",
+            "width": 1
+          }
+        ],
+        "inputNodes": [],
+        "junctions": [],
+        "name": "export-source",
+        "outputNodes": [],
+        "savedAt": "2026-09-29T00:00:01.000Z",
+        "version": 1,
+        "wires": []
+      }
+    }
+  },
+  "calls": [
+    {
+      "action": "importCircuitJSON",
+      "args": [
+        "{\"version\":1,\"name\":\"export-source\",\"savedAt\":\"2026-09-29T00:00:01.000Z\",\"gates\":[{\"id\":\"gate#1\",\"type\":\"Nand\",\"position\":{\"x\":0,\"y\":0,\"z\":0},\"rotation\":{\"x\":1.5707963267948966,\"y\":0,\"z\":0},\"width\":1}],\"wires\":[],\"inputNodes\":[],\"outputNodes\":[],\"junctions\":[],\"busComponents\":[]}"
+      ],
+      "returned": true
+    }
+  ],
+  "notified": [
+    [
+      "success",
+      "Imported \"export-source\""
+    ]
+  ],
+  "after": {
+    "state": {
+      "busComponents": [],
+      "busPlacementMode": null,
+      "completedChips": [],
+      "gates": [
+        {
+          "chipName": "Nand",
+          "id": "gate#1",
+          "inputs": [
+            {
+              "id": "gate#1-in-0",
+              "name": "a",
+              "type": "input",
+              "value": 0,
+              "width": 1
+            },
+            {
+              "id": "gate#1-in-1",
+              "name": "b",
+              "type": "input",
+              "value": 0,
+              "width": 1
+            }
+          ],
+          "outputs": [
+            {
+              "id": "gate#1-out-0",
+              "name": "out",
+              "type": "output",
+              "value": 1,
+              "width": 1
+            }
+          ],
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "rotation": {
+            "x": 1.5707963267948966,
+            "y": 0,
+            "z": 0
+          },
+          "selected": false,
+          "width": 1
+        }
+      ],
+      "hoveredGateId": null,
+      "inputNodes": [],
+      "isDragActive": false,
+      "junctionPlacementMode": null,
+      "junctionPreviewPosition": null,
+      "junctionPreviewWireId": null,
+      "junctions": [],
+      "lastSimulationError": null,
+      "nodePlacementMode": null,
+      "outputNodes": [],
+      "performanceMode": "normal",
+      "placementMode": null,
+      "placementPreviewPosition": null,
+      "propertiesPanelOpen": false,
+      "rightPanelOpen": false,
+      "selectedBusId": null,
+      "selectedGateId": null,
+      "selectedNodeId": null,
+      "selectedNodeType": null,
+      "selectedWireId": null,
+      "showAxes": false,
+      "simulationRunning": false,
+      "simulationSpeed": 100,
+      "statusMessages": [],
+      "testColumns": [],
+      "testResult": null,
+      "wires": [],
+      "wiringFrom": null
+    },
+    "storage": {
+      "hacer-circuit-export-source": {
+        "busComponents": [],
+        "gates": [
+          {
+            "id": "gate#1",
+            "position": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "rotation": {
+              "x": 1.5707963267948966,
+              "y": 0,
+              "z": 0
+            },
+            "type": "Nand",
+            "width": 1
+          }
+        ],
+        "inputNodes": [],
+        "junctions": [],
+        "name": "export-source",
+        "outputNodes": [],
+        "savedAt": "2026-09-29T00:00:01.000Z",
+        "version": 1,
+        "wires": []
+      }
+    }
+  }
+}

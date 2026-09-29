@@ -1,1 +1,137 @@
-{}
+{
+  "fixture": "runChipTest.builtinPasses",
+  "from": "testing/test-results.store.spec.ts",
+  "setup": [],
+  "before": {
+    "state": {
+      "busComponents": [],
+      "busPlacementMode": null,
+      "completedChips": [],
+      "gates": [],
+      "hoveredGateId": null,
+      "inputNodes": [],
+      "isDragActive": false,
+      "junctionPlacementMode": null,
+      "junctionPreviewPosition": null,
+      "junctionPreviewWireId": null,
+      "junctions": [],
+      "lastSimulationError": null,
+      "nodePlacementMode": null,
+      "outputNodes": [],
+      "performanceMode": "normal",
+      "placementMode": null,
+      "placementPreviewPosition": null,
+      "propertiesPanelOpen": false,
+      "rightPanelOpen": false,
+      "selectedBusId": null,
+      "selectedGateId": null,
+      "selectedNodeId": null,
+      "selectedNodeType": null,
+      "selectedWireId": null,
+      "showAxes": false,
+      "simulationRunning": false,
+      "simulationSpeed": 100,
+      "statusMessages": [],
+      "testColumns": [],
+      "testResult": null,
+      "wires": [],
+      "wiringFrom": null
+    },
+    "storage": {}
+  },
+  "calls": [
+    {
+      "action": "runChipTest",
+      "args": [
+        "Not",
+        "builtin"
+      ]
+    }
+  ],
+  "notified": [],
+  "after": {
+    "state": {
+      "busComponents": [],
+      "busPlacementMode": null,
+      "completedChips": [
+        "Not"
+      ],
+      "gates": [],
+      "hoveredGateId": null,
+      "inputNodes": [],
+      "isDragActive": false,
+      "junctionPlacementMode": null,
+      "junctionPreviewPosition": null,
+      "junctionPreviewWireId": null,
+      "junctions": [],
+      "lastSimulationError": null,
+      "nodePlacementMode": null,
+      "outputNodes": [],
+      "performanceMode": "normal",
+      "placementMode": null,
+      "placementPreviewPosition": null,
+      "propertiesPanelOpen": false,
+      "rightPanelOpen": false,
+      "selectedBusId": null,
+      "selectedGateId": null,
+      "selectedNodeId": null,
+      "selectedNodeType": null,
+      "selectedWireId": null,
+      "showAxes": false,
+      "simulationRunning": false,
+      "simulationSpeed": 100,
+      "statusMessages": [
+        {
+          "id": "status#1",
+          "severity": "info",
+          "text": "Not: comparison ended successfully",
+          "timestamp": 1790640000000
+        }
+      ],
+      "testColumns": [
+        {
+          "format": "B",
+          "name": "in",
+          "padLeft": 1,
+          "padRight": 1,
+          "width": 1
+        },
+        {
+          "format": "B",
+          "name": "out",
+          "padLeft": 1,
+          "padRight": 1,
+          "width": 1
+        }
+      ],
+      "testResult": {
+        "error": null,
+        "firstFailure": null,
+        "outputRows": [
+          {
+            "values": {
+              "in": 0,
+              "out": 1
+            }
+          },
+          {
+            "values": {
+              "in": 1,
+              "out": 0
+            }
+          }
+        ],
+        "passed": true,
+        "passedSteps": 2,
+        "totalSteps": 2
+      },
+      "wires": [],
+      "wiringFrom": null
+    },
+    "storage": {
+      "hacer-completed-chips": [
+        "Not"
+      ]
+    }
+  }
+}
