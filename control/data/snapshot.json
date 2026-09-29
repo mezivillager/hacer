@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-29T13:21:00.801Z",
+  "generatedAt": "2026-09-29T13:30:48.602Z",
   "head": {
     "sha": "010fb7b17d424e829e5e46a390ae3699145fa298",
     "date": "2026-09-29T16:19:34+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-29T13:21:00.801Z",
+      "fetchedAt": "2026-09-29T13:30:48.602Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-29T13:21:00.801Z",
+      "fetchedAt": "2026-09-29T13:30:48.602Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-29T13:21:00.801Z",
+      "fetchedAt": "2026-09-29T13:30:48.602Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-29T13:21:00.801Z",
+      "fetchedAt": "2026-09-29T13:30:48.602Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-09-29T13:21:00.801Z",
+      "fetchedAt": "2026-09-29T13:30:48.602Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-09-29T13:21:00.801Z",
+      "fetchedAt": "2026-09-29T13:30:48.602Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-09-29T13:21:00.801Z",
+      "fetchedAt": "2026-09-29T13:30:48.602Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-09-29T13:21:00.801Z",
+      "fetchedAt": "2026-09-29T13:30:48.602Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-09-29T13:21:00.801Z",
+      "fetchedAt": "2026-09-29T13:30:48.602Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-09-29T13:21:00.801Z",
+      "fetchedAt": "2026-09-29T13:30:48.602Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-09-29T13:21:00.801Z",
+      "fetchedAt": "2026-09-29T13:30:48.602Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-09-29T13:21:00.801Z",
+      "fetchedAt": "2026-09-29T13:30:48.602Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-09-29T13:21:00.801Z",
+      "fetchedAt": "2026-09-29T13:30:48.602Z",
       "status": "ok"
     }
   },
@@ -104,12 +104,12 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 28,
-        "ready": 18,
+        "open": 30,
+        "ready": 19,
         "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 18,
+        "agentReady": 19,
         "next": {
           "number": 155,
           "title": "De-duplicate vendored skills (tdd/test-driven-development, debugging/systematic-debugging, planning/writing-plans) and fix sync-superpowers.sh"
@@ -570,11 +570,17 @@
         "number": 547,
         "title": "cloud-queue.md and COVERAGE.md still claim and release by pushing the ref",
         "project": "harness"
+      },
+      {
+        "number": 608,
+        "title": "pr-hygiene: the protected-path message names the matched glob and its reason (goldens are not the held-out oracle)",
+        "project": "harness"
       }
     ],
     "dormant": {
       "dormant": false,
       "agentPrs": [
+        606,
         514
       ]
     }
@@ -1143,6 +1149,21 @@
       {
         "number": 547,
         "title": "cloud-queue.md and COVERAGE.md still claim and release by pushing the ref",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:0"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 608,
+        "title": "pr-hygiene: the protected-path message names the matched glob and its reason (goldens are not the held-out oracle)",
         "labels": [
           "project:harness",
           "agent-ready",
@@ -2631,6 +2652,20 @@
         "lane": "feature",
         "pickable": false,
         "reason": "unshaped"
+      },
+      {
+        "number": 607,
+        "title": "Harness: ledger.d/ one file per row, so GitHub's mergeability check stops flagging the ledger",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "unshaped"
       }
     ],
     "byProject": {
@@ -2713,6 +2748,7 @@
         418,
         516,
         547,
+        608,
         154,
         156,
         270,
@@ -2722,7 +2758,8 @@
         500,
         504,
         505,
-        550
+        550,
+        607
       ],
       "spine": [
         165,
@@ -2802,6 +2839,24 @@
   "prs": {
     "open": [
       {
+        "number": 606,
+        "title": "test(serialization): characterize legacy evaluation before and after a round trip",
+        "url": "https://github.com/mezivillager/hacer/pull/606",
+        "author": "mezivillager",
+        "labels": [
+          "risk:1",
+          "project:foundation"
+        ],
+        "headRefName": "test/331-a-eval-roundtrip-fixtures",
+        "isDraft": false,
+        "createdAt": "2026-09-29T13:27:43Z",
+        "mergedAt": null,
+        "closes": [
+          595
+        ],
+        "verdicts": []
+      },
+      {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
         "url": "https://github.com/mezivillager/hacer/pull/514",
@@ -2835,6 +2890,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/601",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:upkeep",
           "risk:0"
         ],
@@ -2861,6 +2917,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/600",
         "author": "mezivillager",
         "labels": [
+          "released",
           "risk:1",
           "project:foundation"
         ],
@@ -2887,6 +2944,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/596",
         "author": "mezivillager",
         "labels": [
+          "released",
           "risk:1",
           "project:foundation"
         ],
@@ -2913,6 +2971,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/594",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:upkeep",
           "risk:0"
         ],
@@ -4425,6 +4484,7 @@
         "title": "CLI run-tst: the cli scenario driver over the four scenarios",
         "url": "https://github.com/mezivillager/hacer/issues/205",
         "labels": [
+          "released",
           "project:surfaces",
           "agent-ready",
           "in-progress",
@@ -4504,6 +4564,7 @@
         "title": "Docs sweep: stale 'run test:e2e:store locally' lines contradict ADR-0016 as amended",
         "url": "https://github.com/mezivillager/hacer/issues/290",
         "labels": [
+          "released",
           "project:upkeep",
           "agent-ready",
           "in-progress",
@@ -4556,6 +4617,7 @@
         "title": "Canvas-less shell: a local @shell Playwright project and the first spec (ADR-0019 slice 2)",
         "url": "https://github.com/mezivillager/hacer/issues/316",
         "labels": [
+          "released",
           "project:surfaces",
           "agent-ready",
           "in-progress",
@@ -4633,6 +4695,7 @@
         "title": "docs(repo-map): Phase 5+ sample still cites @/core/gates/registry",
         "url": "https://github.com/mezivillager/hacer/issues/421",
         "labels": [
+          "released",
           "project:upkeep",
           "agent-ready",
           "in-progress",
@@ -6097,9 +6160,14 @@
     },
     "releases": [
       {
+        "tag": "v2.53.0",
+        "publishedAt": "2026-09-29T13:22:47Z",
+        "isLatest": true
+      },
+      {
         "tag": "v2.52.0",
         "publishedAt": "2026-09-29T12:46:07Z",
-        "isLatest": true
+        "isLatest": false
       },
       {
         "tag": "v2.51.1",
@@ -6641,7 +6709,7 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-15T13:21:00.801Z",
+      "since": "2026-09-15T13:30:48.602Z",
       "merged": 181,
       "openToMergeHours": {
         "median": 0.2,
@@ -7695,7 +7763,7 @@
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36574270225/job/109425721355",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36575512164/job/109429985195",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -7745,6 +7813,49 @@
           "known": 71,
           "new": 0
         },
+        "disagrees": false
+      },
+      {
+        "pr": 606,
+        "sha": "efcc4a4596eeacb948ca1e482787c23b7c8bb605",
+        "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-29T13:28:01Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36575263897/job/109429131592",
+        "line": "HYGIENE: PASS reviewable=12 test=410 excluded=3659 files=2 issue=#595 linked=fixes",
+        "verdict": "PASS",
+        "fields": {
+          "reviewable": 12,
+          "test": 410,
+          "excluded": 3659,
+          "files": 2,
+          "issue": "#595",
+          "linked": "fixes"
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 606,
+        "sha": "efcc4a4596eeacb948ca1e482787c23b7c8bb605",
+        "check": "browser-qa",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-09-29T13:28:00Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36575263758/job/109429128434",
+        "line": "BROWSER-QA: skipped (no critical paths)",
+        "verdict": "SKIPPED",
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 606,
+        "sha": "efcc4a4596eeacb948ca1e482787c23b7c8bb605",
+        "check": "ci",
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36575262516/job/109429123328",
+        "line": null,
+        "verdict": null,
+        "fields": {},
         "disagrees": false
       }
     ]
