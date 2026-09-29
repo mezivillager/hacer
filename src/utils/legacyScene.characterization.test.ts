@@ -202,8 +202,8 @@ function characterize(scenario: Scenario): string {
 describe('legacy renderer, ADR-0008 circuits as scene + routed-path goldens (characterization)', () => {
   it('has one golden per scenario and no golden without a scenario', () => {
     // `import.meta.glob` takes a literal, hence GOLDEN_DIR spelled out.
-    const onDisk = import.meta.glob('./__snapshots__/characterization/scene/*')
-    expectOneGoldenPerCase(onDisk, SCENARIOS.map((sc) => sc.name))
+    const onDisk = import.meta.glob('./__snapshots__/characterization/scene/**/*')
+    expectOneGoldenPerCase(onDisk, SCENARIOS.map((sc) => sc.name), './__snapshots__/characterization/scene')
   })
 
   it.each(SCENARIOS.map((sc) => [sc.name, sc] as const))('%s', async (name, scenario) => {

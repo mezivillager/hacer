@@ -4,6 +4,7 @@
  * rules as `legacyActions.characterization.test.ts`; each golden also records `localStorage`.
  */
 import { beforeEach, describe, it, expect } from 'vitest'
+import { expectOneGoldenPerCase } from '@/test/characterizationGoldens'
 import { characterize, fixture, type Actions } from './legacyActions.characterization.harness'
 
 function parsed(raw: string | null): unknown {
@@ -72,9 +73,9 @@ describe('legacy store actions the @store suite drives, with localStorage (chara
   })
 
   it('has one golden per fixture and no golden without a fixture', () => {
-    // Keys only, so nothing is loaded; `import.meta.glob` takes a literal, hence GOLDENS spelled out.
-    const onDisk = Object.keys(import.meta.glob('./__snapshots__/characterization/store-actions-storage/*'))
-    expect(onDisk.sort()).toEqual(FIXTURES.map((f) => `./${GOLDENS}/${f.name}.json`).sort())
+    // `import.meta.glob` takes a literal, hence GOLDENS spelled out.
+    const onDisk = import.meta.glob('./__snapshots__/characterization/store-actions-storage/**/*')
+    expectOneGoldenPerCase(onDisk, FIXTURES.map((f) => f.name), `./${GOLDENS}`)
   })
 
   it.each(FIXTURES.map((f) => [f.name, f] as const))('%s', async (name, f) => {
