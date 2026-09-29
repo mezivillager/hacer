@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-29T12:20:20.683Z",
+  "generatedAt": "2026-09-29T12:21:03.005Z",
   "head": {
     "sha": "1c65764d52b31b211ec7ee69668b34a1547c81b0",
     "date": "2026-09-29T15:19:17+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-29T12:20:20.683Z",
+      "fetchedAt": "2026-09-29T12:21:03.005Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-29T12:20:20.683Z",
+      "fetchedAt": "2026-09-29T12:21:03.005Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-29T12:20:20.683Z",
+      "fetchedAt": "2026-09-29T12:21:03.005Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-29T12:20:20.683Z",
+      "fetchedAt": "2026-09-29T12:21:03.005Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-09-29T12:20:20.683Z",
+      "fetchedAt": "2026-09-29T12:21:03.005Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-09-29T12:20:20.683Z",
+      "fetchedAt": "2026-09-29T12:21:03.005Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-09-29T12:20:20.683Z",
+      "fetchedAt": "2026-09-29T12:21:03.005Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-09-29T12:20:20.683Z",
+      "fetchedAt": "2026-09-29T12:21:03.005Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-09-29T12:20:20.683Z",
+      "fetchedAt": "2026-09-29T12:21:03.005Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-09-29T12:20:20.683Z",
+      "fetchedAt": "2026-09-29T12:21:03.005Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-09-29T12:20:20.683Z",
+      "fetchedAt": "2026-09-29T12:21:03.005Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-09-29T12:20:20.683Z",
+      "fetchedAt": "2026-09-29T12:21:03.005Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-09-29T12:20:20.683Z",
+      "fetchedAt": "2026-09-29T12:21:03.005Z",
       "status": "ok"
     }
   },
@@ -351,14 +351,14 @@
         "slug": "mission-control",
         "epicNumber": 458,
         "open": 7,
-        "ready": 5,
-        "inProgress": 0,
+        "ready": 4,
+        "inProgress": 1,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 5,
         "next": {
-          "number": 479,
-          "title": "Mission Control MC-8: Roadmap, Ledger and ADR views"
+          "number": 480,
+          "title": "Mission Control MC-9: \"queue an improvement\" links and the needs-human list — the first editable step"
         },
         "title": "Epic: mission-control — Mission Control: the platform's status, process and roadmap as one site",
         "subIssues": {
@@ -386,11 +386,6 @@
       "bugs"
     ],
     "next": [
-      {
-        "number": 479,
-        "title": "Mission Control MC-8: Roadmap, Ledger and ADR views",
-        "project": "mission-control"
-      },
       {
         "number": 316,
         "title": "Canvas-less shell: a local @shell Playwright project and the first spec (ADR-0019 slice 2)",
@@ -587,21 +582,6 @@
   },
   "tasks": {
     "items": [
-      {
-        "number": 479,
-        "title": "Mission Control MC-8: Roadmap, Ledger and ADR views",
-        "labels": [
-          "agent-ready",
-          "risk:1",
-          "project:mission-control"
-        ],
-        "blocking": [],
-        "project": "mission-control",
-        "rank": 14,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
       {
         "number": 316,
         "title": "Canvas-less shell: a local @shell Playwright project and the first spec (ADR-0019 slice 2)",
@@ -2507,6 +2487,22 @@
         "reason": "claimed"
       },
       {
+        "number": 479,
+        "title": "Mission Control MC-8: Roadmap, Ledger and ADR views",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:mission-control"
+        ],
+        "blocking": [],
+        "project": "mission-control",
+        "rank": 14,
+        "lane": "process",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 500,
         "title": "pr-hygiene: the ratchet's Baseline-growth reader models a fence by a line's first characters (#499 verifier)",
         "labels": [
@@ -2661,15 +2657,6 @@
       }
     ],
     "byProject": {
-      "mission-control": [
-        479,
-        480,
-        513,
-        545,
-        560,
-        509,
-        584
-      ],
       "foundation": [
         316,
         334,
@@ -2751,6 +2738,15 @@
         504,
         505,
         550
+      ],
+      "mission-control": [
+        480,
+        513,
+        545,
+        560,
+        479,
+        509,
+        584
       ],
       "spine": [
         165,
@@ -4568,6 +4564,31 @@
           "author": "mezivillager",
           "at": "2026-09-29T11:02:38Z",
           "url": "https://github.com/mezivillager/hacer/issues/478#issuecomment-5888928075"
+        }
+      },
+      {
+        "number": 479,
+        "ref": "refs/heads/claim/479",
+        "sha": "1c65764d52b31b211ec7ee69668b34a1547c81b0",
+        "state": "OPEN",
+        "title": "Mission Control MC-8: Roadmap, Ledger and ADR views",
+        "url": "https://github.com/mezivillager/hacer/issues/479",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:mission-control"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-60",
+          "branch": null,
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-09-29T12:20:22Z",
+          "url": "https://github.com/mezivillager/hacer/issues/479#issuecomment-5890186519"
         }
       },
       {
@@ -6395,7 +6416,7 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-15T12:20:20.683Z",
+      "since": "2026-09-15T12:21:03.005Z",
       "merged": 174,
       "openToMergeHours": {
         "median": 0.3,
