@@ -288,6 +288,24 @@ export function formatProjects(summaries) {
     ` · needs-human ${s.needsHuman}${stale(s.staleClaims)}${overCap(s.agentReady)} · next: ${nextLabel(s.next)}`).join('\n')
 }
 
+export function requirePortfolioRows() {
+  throw new Error('not implemented')
+}
+
+export const NOTHING_PICKABLE_EXIT = 0
+
+export function reportNext() {
+  throw new Error('not implemented')
+}
+
+export function epicTree() {
+  throw new Error('not implemented')
+}
+
+export function formatTasks() {
+  throw new Error('not implemented')
+}
+
 /** Dormant mode (docs/portfolio.md): at this many open agent PRs, no new PR-producing work. */
 export const DORMANT_OPEN_PRS = 5
 
