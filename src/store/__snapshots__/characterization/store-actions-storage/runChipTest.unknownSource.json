@@ -1,1 +1,103 @@
-{}
+{
+  "fixture": "runChipTest.unknownSource",
+  "from": "testing/test-results.store.spec.ts",
+  "setup": [],
+  "before": {
+    "state": {
+      "busComponents": [],
+      "busPlacementMode": null,
+      "completedChips": [],
+      "gates": [],
+      "hoveredGateId": null,
+      "inputNodes": [],
+      "isDragActive": false,
+      "junctionPlacementMode": null,
+      "junctionPreviewPosition": null,
+      "junctionPreviewWireId": null,
+      "junctions": [],
+      "lastSimulationError": null,
+      "nodePlacementMode": null,
+      "outputNodes": [],
+      "performanceMode": "normal",
+      "placementMode": null,
+      "placementPreviewPosition": null,
+      "propertiesPanelOpen": false,
+      "rightPanelOpen": false,
+      "selectedBusId": null,
+      "selectedGateId": null,
+      "selectedNodeId": null,
+      "selectedNodeType": null,
+      "selectedWireId": null,
+      "showAxes": false,
+      "simulationRunning": false,
+      "simulationSpeed": 100,
+      "statusMessages": [],
+      "testColumns": [],
+      "testResult": null,
+      "wires": [],
+      "wiringFrom": null
+    },
+    "storage": {}
+  },
+  "calls": [
+    {
+      "action": "runChipTest",
+      "args": [
+        "Not",
+        "nope"
+      ]
+    }
+  ],
+  "notified": [],
+  "after": {
+    "state": {
+      "busComponents": [],
+      "busPlacementMode": null,
+      "completedChips": [],
+      "gates": [],
+      "hoveredGateId": null,
+      "inputNodes": [],
+      "isDragActive": false,
+      "junctionPlacementMode": null,
+      "junctionPreviewPosition": null,
+      "junctionPreviewWireId": null,
+      "junctions": [],
+      "lastSimulationError": null,
+      "nodePlacementMode": null,
+      "outputNodes": [],
+      "performanceMode": "normal",
+      "placementMode": null,
+      "placementPreviewPosition": null,
+      "propertiesPanelOpen": false,
+      "rightPanelOpen": false,
+      "selectedBusId": null,
+      "selectedGateId": null,
+      "selectedNodeId": null,
+      "selectedNodeType": null,
+      "selectedWireId": null,
+      "showAxes": false,
+      "simulationRunning": false,
+      "simulationSpeed": 100,
+      "statusMessages": [
+        {
+          "id": "status#1",
+          "severity": "error",
+          "text": "Not: unknown implementation source \"nope\"",
+          "timestamp": 1790640000000
+        }
+      ],
+      "testColumns": [],
+      "testResult": {
+        "error": "unknown implementation source \"nope\"",
+        "firstFailure": null,
+        "outputRows": [],
+        "passed": false,
+        "passedSteps": 0,
+        "totalSteps": 0
+      },
+      "wires": [],
+      "wiringFrom": null
+    },
+    "storage": {}
+  }
+}

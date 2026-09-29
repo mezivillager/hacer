@@ -1,1 +1,519 @@
-{}
+{
+  "fixture": "simulationTick.nandChain",
+  "from": "simulation/signal-propagation.store.spec.ts",
+  "setup": [
+    {
+      "action": "addGate",
+      "args": [
+        "Nand",
+        {
+          "x": -2,
+          "y": 0.2,
+          "z": 2
+        }
+      ]
+    },
+    {
+      "action": "addGate",
+      "args": [
+        "Nand",
+        {
+          "x": 6,
+          "y": 0.2,
+          "z": 2
+        }
+      ]
+    },
+    {
+      "action": "addWire",
+      "args": [
+        {
+          "entityId": "gate#1",
+          "pinId": "gate#1-out-0",
+          "type": "gate"
+        },
+        {
+          "entityId": "gate#2",
+          "pinId": "gate#2-in-0",
+          "type": "gate"
+        },
+        []
+      ]
+    },
+    {
+      "action": "addInputNode",
+      "args": [
+        "drv-0",
+        {
+          "x": -8,
+          "y": 0,
+          "z": 0
+        }
+      ]
+    },
+    {
+      "action": "addWire",
+      "args": [
+        {
+          "entityId": "input#1",
+          "type": "input"
+        },
+        {
+          "entityId": "gate#1",
+          "pinId": "gate#1-in-0",
+          "type": "gate"
+        },
+        []
+      ]
+    },
+    {
+      "action": "updateInputNodeValue",
+      "args": [
+        "input#1",
+        1
+      ]
+    },
+    {
+      "action": "addInputNode",
+      "args": [
+        "drv-1",
+        {
+          "x": -8,
+          "y": 2,
+          "z": 0
+        }
+      ]
+    },
+    {
+      "action": "addWire",
+      "args": [
+        {
+          "entityId": "input#2",
+          "type": "input"
+        },
+        {
+          "entityId": "gate#1",
+          "pinId": "gate#1-in-1",
+          "type": "gate"
+        },
+        []
+      ]
+    },
+    {
+      "action": "updateInputNodeValue",
+      "args": [
+        "input#2",
+        1
+      ]
+    },
+    {
+      "action": "toggleSimulation",
+      "args": []
+    }
+  ],
+  "before": {
+    "state": {
+      "busComponents": [],
+      "busPlacementMode": null,
+      "completedChips": [],
+      "gates": [
+        {
+          "chipName": "Nand",
+          "id": "gate#1",
+          "inputs": [
+            {
+              "id": "gate#1-in-0",
+              "name": "a",
+              "type": "input",
+              "value": 0,
+              "width": 1
+            },
+            {
+              "id": "gate#1-in-1",
+              "name": "b",
+              "type": "input",
+              "value": 0,
+              "width": 1
+            }
+          ],
+          "outputs": [
+            {
+              "id": "gate#1-out-0",
+              "name": "out",
+              "type": "output",
+              "value": 0,
+              "width": 1
+            }
+          ],
+          "position": {
+            "x": -2,
+            "y": 0.2,
+            "z": 2
+          },
+          "rotation": {
+            "x": 1.5707963267948966,
+            "y": 0,
+            "z": 0
+          },
+          "selected": false,
+          "width": 1
+        },
+        {
+          "chipName": "Nand",
+          "id": "gate#2",
+          "inputs": [
+            {
+              "id": "gate#2-in-0",
+              "name": "a",
+              "type": "input",
+              "value": 0,
+              "width": 1
+            },
+            {
+              "id": "gate#2-in-1",
+              "name": "b",
+              "type": "input",
+              "value": 0,
+              "width": 1
+            }
+          ],
+          "outputs": [
+            {
+              "id": "gate#2-out-0",
+              "name": "out",
+              "type": "output",
+              "value": 0,
+              "width": 1
+            }
+          ],
+          "position": {
+            "x": 6,
+            "y": 0.2,
+            "z": 2
+          },
+          "rotation": {
+            "x": 1.5707963267948966,
+            "y": 0,
+            "z": 0
+          },
+          "selected": false,
+          "width": 1
+        }
+      ],
+      "hoveredGateId": null,
+      "inputNodes": [
+        {
+          "id": "input#1",
+          "name": "drv-0",
+          "position": {
+            "x": -8,
+            "y": 0,
+            "z": 0
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "value": 1,
+          "width": 1
+        },
+        {
+          "id": "input#2",
+          "name": "drv-1",
+          "position": {
+            "x": -8,
+            "y": 2,
+            "z": 0
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "value": 1,
+          "width": 1
+        }
+      ],
+      "isDragActive": false,
+      "junctionPlacementMode": null,
+      "junctionPreviewPosition": null,
+      "junctionPreviewWireId": null,
+      "junctions": [],
+      "lastSimulationError": null,
+      "nodePlacementMode": null,
+      "outputNodes": [],
+      "performanceMode": "normal",
+      "placementMode": null,
+      "placementPreviewPosition": null,
+      "propertiesPanelOpen": false,
+      "rightPanelOpen": false,
+      "selectedBusId": null,
+      "selectedGateId": null,
+      "selectedNodeId": null,
+      "selectedNodeType": null,
+      "selectedWireId": null,
+      "showAxes": false,
+      "simulationRunning": true,
+      "simulationSpeed": 100,
+      "statusMessages": [],
+      "testColumns": [],
+      "testResult": null,
+      "wires": [
+        {
+          "crossesWireIds": [],
+          "from": {
+            "entityId": "gate#1",
+            "pinId": "gate#1-out-0",
+            "type": "gate"
+          },
+          "id": "wire#1",
+          "segments": [],
+          "to": {
+            "entityId": "gate#2",
+            "pinId": "gate#2-in-0",
+            "type": "gate"
+          },
+          "width": 1
+        },
+        {
+          "crossesWireIds": [],
+          "from": {
+            "entityId": "input#1",
+            "type": "input"
+          },
+          "id": "wire#2",
+          "segments": [],
+          "to": {
+            "entityId": "gate#1",
+            "pinId": "gate#1-in-0",
+            "type": "gate"
+          },
+          "width": 1
+        },
+        {
+          "crossesWireIds": [],
+          "from": {
+            "entityId": "input#2",
+            "type": "input"
+          },
+          "id": "wire#3",
+          "segments": [],
+          "to": {
+            "entityId": "gate#1",
+            "pinId": "gate#1-in-1",
+            "type": "gate"
+          },
+          "width": 1
+        }
+      ],
+      "wiringFrom": null
+    }
+  },
+  "calls": [
+    {
+      "action": "simulationTick",
+      "args": []
+    }
+  ],
+  "notified": [],
+  "after": {
+    "state": {
+      "busComponents": [],
+      "busPlacementMode": null,
+      "completedChips": [],
+      "gates": [
+        {
+          "chipName": "Nand",
+          "id": "gate#1",
+          "inputs": [
+            {
+              "id": "gate#1-in-0",
+              "name": "a",
+              "type": "input",
+              "value": 1,
+              "width": 1
+            },
+            {
+              "id": "gate#1-in-1",
+              "name": "b",
+              "type": "input",
+              "value": 1,
+              "width": 1
+            }
+          ],
+          "outputs": [
+            {
+              "id": "gate#1-out-0",
+              "name": "out",
+              "type": "output",
+              "value": 0,
+              "width": 1
+            }
+          ],
+          "position": {
+            "x": -2,
+            "y": 0.2,
+            "z": 2
+          },
+          "rotation": {
+            "x": 1.5707963267948966,
+            "y": 0,
+            "z": 0
+          },
+          "selected": false,
+          "width": 1
+        },
+        {
+          "chipName": "Nand",
+          "id": "gate#2",
+          "inputs": [
+            {
+              "id": "gate#2-in-0",
+              "name": "a",
+              "type": "input",
+              "value": 0,
+              "width": 1
+            },
+            {
+              "id": "gate#2-in-1",
+              "name": "b",
+              "type": "input",
+              "value": 0,
+              "width": 1
+            }
+          ],
+          "outputs": [
+            {
+              "id": "gate#2-out-0",
+              "name": "out",
+              "type": "output",
+              "value": 1,
+              "width": 1
+            }
+          ],
+          "position": {
+            "x": 6,
+            "y": 0.2,
+            "z": 2
+          },
+          "rotation": {
+            "x": 1.5707963267948966,
+            "y": 0,
+            "z": 0
+          },
+          "selected": false,
+          "width": 1
+        }
+      ],
+      "hoveredGateId": null,
+      "inputNodes": [
+        {
+          "id": "input#1",
+          "name": "drv-0",
+          "position": {
+            "x": -8,
+            "y": 0,
+            "z": 0
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "value": 1,
+          "width": 1
+        },
+        {
+          "id": "input#2",
+          "name": "drv-1",
+          "position": {
+            "x": -8,
+            "y": 2,
+            "z": 0
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "value": 1,
+          "width": 1
+        }
+      ],
+      "isDragActive": false,
+      "junctionPlacementMode": null,
+      "junctionPreviewPosition": null,
+      "junctionPreviewWireId": null,
+      "junctions": [],
+      "lastSimulationError": null,
+      "nodePlacementMode": null,
+      "outputNodes": [],
+      "performanceMode": "normal",
+      "placementMode": null,
+      "placementPreviewPosition": null,
+      "propertiesPanelOpen": false,
+      "rightPanelOpen": false,
+      "selectedBusId": null,
+      "selectedGateId": null,
+      "selectedNodeId": null,
+      "selectedNodeType": null,
+      "selectedWireId": null,
+      "showAxes": false,
+      "simulationRunning": true,
+      "simulationSpeed": 100,
+      "statusMessages": [],
+      "testColumns": [],
+      "testResult": null,
+      "wires": [
+        {
+          "crossesWireIds": [],
+          "from": {
+            "entityId": "gate#1",
+            "pinId": "gate#1-out-0",
+            "type": "gate"
+          },
+          "id": "wire#1",
+          "segments": [],
+          "to": {
+            "entityId": "gate#2",
+            "pinId": "gate#2-in-0",
+            "type": "gate"
+          },
+          "width": 1
+        },
+        {
+          "crossesWireIds": [],
+          "from": {
+            "entityId": "input#1",
+            "type": "input"
+          },
+          "id": "wire#2",
+          "segments": [],
+          "to": {
+            "entityId": "gate#1",
+            "pinId": "gate#1-in-0",
+            "type": "gate"
+          },
+          "width": 1
+        },
+        {
+          "crossesWireIds": [],
+          "from": {
+            "entityId": "input#2",
+            "type": "input"
+          },
+          "id": "wire#3",
+          "segments": [],
+          "to": {
+            "entityId": "gate#1",
+            "pinId": "gate#1-in-1",
+            "type": "gate"
+          },
+          "width": 1
+        }
+      ],
+      "wiringFrom": null
+    }
+  }
+}

@@ -1,1 +1,124 @@
-{}
+{
+  "fixture": "addInputNode",
+  "from": "wiring/node-wiring.store.spec.ts",
+  "setup": [],
+  "before": {
+    "state": {
+      "busComponents": [],
+      "busPlacementMode": null,
+      "completedChips": [],
+      "gates": [],
+      "hoveredGateId": null,
+      "inputNodes": [],
+      "isDragActive": false,
+      "junctionPlacementMode": null,
+      "junctionPreviewPosition": null,
+      "junctionPreviewWireId": null,
+      "junctions": [],
+      "lastSimulationError": null,
+      "nodePlacementMode": null,
+      "outputNodes": [],
+      "performanceMode": "normal",
+      "placementMode": null,
+      "placementPreviewPosition": null,
+      "propertiesPanelOpen": false,
+      "rightPanelOpen": false,
+      "selectedBusId": null,
+      "selectedGateId": null,
+      "selectedNodeId": null,
+      "selectedNodeType": null,
+      "selectedWireId": null,
+      "showAxes": false,
+      "simulationRunning": false,
+      "simulationSpeed": 100,
+      "statusMessages": [],
+      "testColumns": [],
+      "testResult": null,
+      "wires": [],
+      "wiringFrom": null
+    }
+  },
+  "calls": [
+    {
+      "action": "addInputNode",
+      "args": [
+        "a",
+        {
+          "x": -2,
+          "y": 0.2,
+          "z": 2
+        }
+      ],
+      "returned": {
+        "id": "input#1",
+        "name": "a",
+        "position": {
+          "x": -2,
+          "y": 0.2,
+          "z": 2
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "value": 1,
+        "width": 1
+      }
+    }
+  ],
+  "notified": [],
+  "after": {
+    "state": {
+      "busComponents": [],
+      "busPlacementMode": null,
+      "completedChips": [],
+      "gates": [],
+      "hoveredGateId": null,
+      "inputNodes": [
+        {
+          "id": "input#1",
+          "name": "a",
+          "position": {
+            "x": -2,
+            "y": 0.2,
+            "z": 2
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "value": 1,
+          "width": 1
+        }
+      ],
+      "isDragActive": false,
+      "junctionPlacementMode": null,
+      "junctionPreviewPosition": null,
+      "junctionPreviewWireId": null,
+      "junctions": [],
+      "lastSimulationError": null,
+      "nodePlacementMode": null,
+      "outputNodes": [],
+      "performanceMode": "normal",
+      "placementMode": null,
+      "placementPreviewPosition": null,
+      "propertiesPanelOpen": false,
+      "rightPanelOpen": false,
+      "selectedBusId": null,
+      "selectedGateId": null,
+      "selectedNodeId": null,
+      "selectedNodeType": null,
+      "selectedWireId": null,
+      "showAxes": false,
+      "simulationRunning": false,
+      "simulationSpeed": 100,
+      "statusMessages": [],
+      "testColumns": [],
+      "testResult": null,
+      "wires": [],
+      "wiringFrom": null
+    }
+  }
+}

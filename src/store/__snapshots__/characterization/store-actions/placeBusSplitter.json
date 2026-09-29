@@ -1,1 +1,370 @@
-{}
+{
+  "fixture": "placeBusSplitter",
+  "from": "bus/bus-placement.store.spec.ts",
+  "setup": [],
+  "before": {
+    "state": {
+      "busComponents": [],
+      "busPlacementMode": null,
+      "completedChips": [],
+      "gates": [],
+      "hoveredGateId": null,
+      "inputNodes": [],
+      "isDragActive": false,
+      "junctionPlacementMode": null,
+      "junctionPreviewPosition": null,
+      "junctionPreviewWireId": null,
+      "junctions": [],
+      "lastSimulationError": null,
+      "nodePlacementMode": null,
+      "outputNodes": [],
+      "performanceMode": "normal",
+      "placementMode": null,
+      "placementPreviewPosition": null,
+      "propertiesPanelOpen": false,
+      "rightPanelOpen": false,
+      "selectedBusId": null,
+      "selectedGateId": null,
+      "selectedNodeId": null,
+      "selectedNodeType": null,
+      "selectedWireId": null,
+      "showAxes": false,
+      "simulationRunning": false,
+      "simulationSpeed": 100,
+      "statusMessages": [],
+      "testColumns": [],
+      "testResult": null,
+      "wires": [],
+      "wiringFrom": null
+    }
+  },
+  "calls": [
+    {
+      "action": "placeBusSplitter",
+      "args": [
+        16,
+        {
+          "x": 2,
+          "y": 0.2,
+          "z": 2
+        }
+      ],
+      "returned": {
+        "id": "bus#1",
+        "inputs": [
+          {
+            "id": "in",
+            "name": "in",
+            "type": "input",
+            "value": 0,
+            "width": 16
+          }
+        ],
+        "kind": "splitter",
+        "outputs": [
+          {
+            "id": "out0",
+            "name": "out0",
+            "type": "output",
+            "value": 0,
+            "width": 1
+          },
+          {
+            "id": "out1",
+            "name": "out1",
+            "type": "output",
+            "value": 0,
+            "width": 1
+          },
+          {
+            "id": "out2",
+            "name": "out2",
+            "type": "output",
+            "value": 0,
+            "width": 1
+          },
+          {
+            "id": "out3",
+            "name": "out3",
+            "type": "output",
+            "value": 0,
+            "width": 1
+          },
+          {
+            "id": "out4",
+            "name": "out4",
+            "type": "output",
+            "value": 0,
+            "width": 1
+          },
+          {
+            "id": "out5",
+            "name": "out5",
+            "type": "output",
+            "value": 0,
+            "width": 1
+          },
+          {
+            "id": "out6",
+            "name": "out6",
+            "type": "output",
+            "value": 0,
+            "width": 1
+          },
+          {
+            "id": "out7",
+            "name": "out7",
+            "type": "output",
+            "value": 0,
+            "width": 1
+          },
+          {
+            "id": "out8",
+            "name": "out8",
+            "type": "output",
+            "value": 0,
+            "width": 1
+          },
+          {
+            "id": "out9",
+            "name": "out9",
+            "type": "output",
+            "value": 0,
+            "width": 1
+          },
+          {
+            "id": "out10",
+            "name": "out10",
+            "type": "output",
+            "value": 0,
+            "width": 1
+          },
+          {
+            "id": "out11",
+            "name": "out11",
+            "type": "output",
+            "value": 0,
+            "width": 1
+          },
+          {
+            "id": "out12",
+            "name": "out12",
+            "type": "output",
+            "value": 0,
+            "width": 1
+          },
+          {
+            "id": "out13",
+            "name": "out13",
+            "type": "output",
+            "value": 0,
+            "width": 1
+          },
+          {
+            "id": "out14",
+            "name": "out14",
+            "type": "output",
+            "value": 0,
+            "width": 1
+          },
+          {
+            "id": "out15",
+            "name": "out15",
+            "type": "output",
+            "value": 0,
+            "width": 1
+          }
+        ],
+        "position": {
+          "x": 2,
+          "y": 0.2,
+          "z": 2
+        },
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "selected": false,
+        "width": 16
+      }
+    }
+  ],
+  "notified": [],
+  "after": {
+    "state": {
+      "busComponents": [
+        {
+          "id": "bus#1",
+          "inputs": [
+            {
+              "id": "in",
+              "name": "in",
+              "type": "input",
+              "value": 0,
+              "width": 16
+            }
+          ],
+          "kind": "splitter",
+          "outputs": [
+            {
+              "id": "out0",
+              "name": "out0",
+              "type": "output",
+              "value": 0,
+              "width": 1
+            },
+            {
+              "id": "out1",
+              "name": "out1",
+              "type": "output",
+              "value": 0,
+              "width": 1
+            },
+            {
+              "id": "out2",
+              "name": "out2",
+              "type": "output",
+              "value": 0,
+              "width": 1
+            },
+            {
+              "id": "out3",
+              "name": "out3",
+              "type": "output",
+              "value": 0,
+              "width": 1
+            },
+            {
+              "id": "out4",
+              "name": "out4",
+              "type": "output",
+              "value": 0,
+              "width": 1
+            },
+            {
+              "id": "out5",
+              "name": "out5",
+              "type": "output",
+              "value": 0,
+              "width": 1
+            },
+            {
+              "id": "out6",
+              "name": "out6",
+              "type": "output",
+              "value": 0,
+              "width": 1
+            },
+            {
+              "id": "out7",
+              "name": "out7",
+              "type": "output",
+              "value": 0,
+              "width": 1
+            },
+            {
+              "id": "out8",
+              "name": "out8",
+              "type": "output",
+              "value": 0,
+              "width": 1
+            },
+            {
+              "id": "out9",
+              "name": "out9",
+              "type": "output",
+              "value": 0,
+              "width": 1
+            },
+            {
+              "id": "out10",
+              "name": "out10",
+              "type": "output",
+              "value": 0,
+              "width": 1
+            },
+            {
+              "id": "out11",
+              "name": "out11",
+              "type": "output",
+              "value": 0,
+              "width": 1
+            },
+            {
+              "id": "out12",
+              "name": "out12",
+              "type": "output",
+              "value": 0,
+              "width": 1
+            },
+            {
+              "id": "out13",
+              "name": "out13",
+              "type": "output",
+              "value": 0,
+              "width": 1
+            },
+            {
+              "id": "out14",
+              "name": "out14",
+              "type": "output",
+              "value": 0,
+              "width": 1
+            },
+            {
+              "id": "out15",
+              "name": "out15",
+              "type": "output",
+              "value": 0,
+              "width": 1
+            }
+          ],
+          "position": {
+            "x": 2,
+            "y": 0.2,
+            "z": 2
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "selected": false,
+          "width": 16
+        }
+      ],
+      "busPlacementMode": null,
+      "completedChips": [],
+      "gates": [],
+      "hoveredGateId": null,
+      "inputNodes": [],
+      "isDragActive": false,
+      "junctionPlacementMode": null,
+      "junctionPreviewPosition": null,
+      "junctionPreviewWireId": null,
+      "junctions": [],
+      "lastSimulationError": null,
+      "nodePlacementMode": null,
+      "outputNodes": [],
+      "performanceMode": "normal",
+      "placementMode": null,
+      "placementPreviewPosition": null,
+      "propertiesPanelOpen": false,
+      "rightPanelOpen": false,
+      "selectedBusId": null,
+      "selectedGateId": null,
+      "selectedNodeId": null,
+      "selectedNodeType": null,
+      "selectedWireId": null,
+      "showAxes": false,
+      "simulationRunning": false,
+      "simulationSpeed": 100,
+      "statusMessages": [],
+      "testColumns": [],
+      "testResult": null,
+      "wires": [],
+      "wiringFrom": null
+    }
+  }
+}

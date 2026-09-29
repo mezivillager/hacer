@@ -1,1 +1,437 @@
-{}
+{
+  "fixture": "listSavedCircuits",
+  "from": "persistence/circuit-persistence.store.spec.ts",
+  "setup": [
+    {
+      "action": "addGate",
+      "args": [
+        "Nand",
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        }
+      ]
+    },
+    {
+      "action": "saveCircuit",
+      "args": [
+        "alpha"
+      ]
+    },
+    {
+      "action": "addGate",
+      "args": [
+        "And",
+        {
+          "x": 4,
+          "y": 0,
+          "z": 0
+        }
+      ]
+    },
+    {
+      "action": "saveCircuit",
+      "args": [
+        "beta"
+      ]
+    }
+  ],
+  "before": {
+    "state": {
+      "busComponents": [],
+      "busPlacementMode": null,
+      "completedChips": [],
+      "gates": [
+        {
+          "chipName": "Nand",
+          "id": "gate#1",
+          "inputs": [
+            {
+              "id": "gate#1-in-0",
+              "name": "a",
+              "type": "input",
+              "value": 0,
+              "width": 1
+            },
+            {
+              "id": "gate#1-in-1",
+              "name": "b",
+              "type": "input",
+              "value": 0,
+              "width": 1
+            }
+          ],
+          "outputs": [
+            {
+              "id": "gate#1-out-0",
+              "name": "out",
+              "type": "output",
+              "value": 0,
+              "width": 1
+            }
+          ],
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "rotation": {
+            "x": 1.5707963267948966,
+            "y": 0,
+            "z": 0
+          },
+          "selected": false,
+          "width": 1
+        },
+        {
+          "chipName": "And",
+          "id": "gate#2",
+          "inputs": [
+            {
+              "id": "gate#2-in-0",
+              "name": "a",
+              "type": "input",
+              "value": 0,
+              "width": 1
+            },
+            {
+              "id": "gate#2-in-1",
+              "name": "b",
+              "type": "input",
+              "value": 0,
+              "width": 1
+            }
+          ],
+          "outputs": [
+            {
+              "id": "gate#2-out-0",
+              "name": "out",
+              "type": "output",
+              "value": 0,
+              "width": 1
+            }
+          ],
+          "position": {
+            "x": 4,
+            "y": 0,
+            "z": 0
+          },
+          "rotation": {
+            "x": 1.5707963267948966,
+            "y": 0,
+            "z": 0
+          },
+          "selected": false,
+          "width": 1
+        }
+      ],
+      "hoveredGateId": null,
+      "inputNodes": [],
+      "isDragActive": false,
+      "junctionPlacementMode": null,
+      "junctionPreviewPosition": null,
+      "junctionPreviewWireId": null,
+      "junctions": [],
+      "lastSimulationError": null,
+      "nodePlacementMode": null,
+      "outputNodes": [],
+      "performanceMode": "normal",
+      "placementMode": null,
+      "placementPreviewPosition": null,
+      "propertiesPanelOpen": false,
+      "rightPanelOpen": false,
+      "selectedBusId": null,
+      "selectedGateId": null,
+      "selectedNodeId": null,
+      "selectedNodeType": null,
+      "selectedWireId": null,
+      "showAxes": false,
+      "simulationRunning": false,
+      "simulationSpeed": 100,
+      "statusMessages": [],
+      "testColumns": [],
+      "testResult": null,
+      "wires": [],
+      "wiringFrom": null
+    },
+    "storage": {
+      "hacer-circuit-alpha": {
+        "busComponents": [],
+        "gates": [
+          {
+            "id": "gate#1",
+            "position": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "rotation": {
+              "x": 1.5707963267948966,
+              "y": 0,
+              "z": 0
+            },
+            "type": "Nand",
+            "width": 1
+          }
+        ],
+        "inputNodes": [],
+        "junctions": [],
+        "name": "alpha",
+        "outputNodes": [],
+        "savedAt": "2026-09-29T00:00:01.000Z",
+        "version": 1,
+        "wires": []
+      },
+      "hacer-circuit-beta": {
+        "busComponents": [],
+        "gates": [
+          {
+            "id": "gate#1",
+            "position": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "rotation": {
+              "x": 1.5707963267948966,
+              "y": 0,
+              "z": 0
+            },
+            "type": "Nand",
+            "width": 1
+          },
+          {
+            "id": "gate#2",
+            "position": {
+              "x": 4,
+              "y": 0,
+              "z": 0
+            },
+            "rotation": {
+              "x": 1.5707963267948966,
+              "y": 0,
+              "z": 0
+            },
+            "type": "And",
+            "width": 1
+          }
+        ],
+        "inputNodes": [],
+        "junctions": [],
+        "name": "beta",
+        "outputNodes": [],
+        "savedAt": "2026-09-29T00:00:03.000Z",
+        "version": 1,
+        "wires": []
+      }
+    }
+  },
+  "calls": [
+    {
+      "action": "listSavedCircuits",
+      "args": [],
+      "returned": [
+        {
+          "name": "beta",
+          "savedAt": "2026-09-29T00:00:03.000Z"
+        },
+        {
+          "name": "alpha",
+          "savedAt": "2026-09-29T00:00:01.000Z"
+        }
+      ]
+    }
+  ],
+  "notified": [],
+  "after": {
+    "state": {
+      "busComponents": [],
+      "busPlacementMode": null,
+      "completedChips": [],
+      "gates": [
+        {
+          "chipName": "Nand",
+          "id": "gate#1",
+          "inputs": [
+            {
+              "id": "gate#1-in-0",
+              "name": "a",
+              "type": "input",
+              "value": 0,
+              "width": 1
+            },
+            {
+              "id": "gate#1-in-1",
+              "name": "b",
+              "type": "input",
+              "value": 0,
+              "width": 1
+            }
+          ],
+          "outputs": [
+            {
+              "id": "gate#1-out-0",
+              "name": "out",
+              "type": "output",
+              "value": 0,
+              "width": 1
+            }
+          ],
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "rotation": {
+            "x": 1.5707963267948966,
+            "y": 0,
+            "z": 0
+          },
+          "selected": false,
+          "width": 1
+        },
+        {
+          "chipName": "And",
+          "id": "gate#2",
+          "inputs": [
+            {
+              "id": "gate#2-in-0",
+              "name": "a",
+              "type": "input",
+              "value": 0,
+              "width": 1
+            },
+            {
+              "id": "gate#2-in-1",
+              "name": "b",
+              "type": "input",
+              "value": 0,
+              "width": 1
+            }
+          ],
+          "outputs": [
+            {
+              "id": "gate#2-out-0",
+              "name": "out",
+              "type": "output",
+              "value": 0,
+              "width": 1
+            }
+          ],
+          "position": {
+            "x": 4,
+            "y": 0,
+            "z": 0
+          },
+          "rotation": {
+            "x": 1.5707963267948966,
+            "y": 0,
+            "z": 0
+          },
+          "selected": false,
+          "width": 1
+        }
+      ],
+      "hoveredGateId": null,
+      "inputNodes": [],
+      "isDragActive": false,
+      "junctionPlacementMode": null,
+      "junctionPreviewPosition": null,
+      "junctionPreviewWireId": null,
+      "junctions": [],
+      "lastSimulationError": null,
+      "nodePlacementMode": null,
+      "outputNodes": [],
+      "performanceMode": "normal",
+      "placementMode": null,
+      "placementPreviewPosition": null,
+      "propertiesPanelOpen": false,
+      "rightPanelOpen": false,
+      "selectedBusId": null,
+      "selectedGateId": null,
+      "selectedNodeId": null,
+      "selectedNodeType": null,
+      "selectedWireId": null,
+      "showAxes": false,
+      "simulationRunning": false,
+      "simulationSpeed": 100,
+      "statusMessages": [],
+      "testColumns": [],
+      "testResult": null,
+      "wires": [],
+      "wiringFrom": null
+    },
+    "storage": {
+      "hacer-circuit-alpha": {
+        "busComponents": [],
+        "gates": [
+          {
+            "id": "gate#1",
+            "position": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "rotation": {
+              "x": 1.5707963267948966,
+              "y": 0,
+              "z": 0
+            },
+            "type": "Nand",
+            "width": 1
+          }
+        ],
+        "inputNodes": [],
+        "junctions": [],
+        "name": "alpha",
+        "outputNodes": [],
+        "savedAt": "2026-09-29T00:00:01.000Z",
+        "version": 1,
+        "wires": []
+      },
+      "hacer-circuit-beta": {
+        "busComponents": [],
+        "gates": [
+          {
+            "id": "gate#1",
+            "position": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "rotation": {
+              "x": 1.5707963267948966,
+              "y": 0,
+              "z": 0
+            },
+            "type": "Nand",
+            "width": 1
+          },
+          {
+            "id": "gate#2",
+            "position": {
+              "x": 4,
+              "y": 0,
+              "z": 0
+            },
+            "rotation": {
+              "x": 1.5707963267948966,
+              "y": 0,
+              "z": 0
+            },
+            "type": "And",
+            "width": 1
+          }
+        ],
+        "inputNodes": [],
+        "junctions": [],
+        "name": "beta",
+        "outputNodes": [],
+        "savedAt": "2026-09-29T00:00:03.000Z",
+        "version": 1,
+        "wires": []
+      }
+    }
+  }
+}
