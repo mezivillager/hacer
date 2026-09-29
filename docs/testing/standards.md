@@ -325,11 +325,9 @@ test.describe('Feature @ui', () => {
 ### Running E2E Tests
 
 ```bash
-# TDD workflow (fast) — manual only, not a done-criterion
-npm run test:e2e:store
-
-# Full validation (slow) — manual only
-npm run test:e2e:ui
+# Every Playwright suite mounts the 3D canvas: CI/cloud only, never on a laptop (ADR-0016).
+# By hand (not a done-criterion):
+gh workflow run e2e.yml -f suite=store   # or ui, or all
 
 # All tests
 npm run test:e2e

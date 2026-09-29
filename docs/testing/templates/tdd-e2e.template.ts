@@ -132,15 +132,14 @@ test.describe('Feature Name (UI) @ui', () => {
  * - [ ] UI tests verified manually (not required for commit)
  *
  * Running E2E tests:
- * - npm run test:e2e:store     # FAST - manual only, not a done-criterion
- * - npm run test:e2e:ui        # SLOW - manual only
- * - npm run test:e2e           # All tests (slow)
- * - npm run test:e2e:headed    # With browser visible
+ * Every Playwright suite mounts the 3D canvas, so none runs on a laptop (ADR-0016).
+ * Run them in CI, or in the cloud by hand (not a done-criterion):
+ * - gh workflow run e2e.yml -f suite=store|ui|all
  *
  * AI Agent Workflow:
  * 1. Write the shared setup as a helper in e2e/helpers/
  * 2. Write store test first (fast TDD iteration)
  * 3. Implement feature
  * 4. Create matching UI test
- * 5. Run: npm run test:e2e:store when the change warrants browser-level checking
+ * 5. Trigger the store suite in the cloud when the change warrants browser-level checking
  */
