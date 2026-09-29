@@ -16,6 +16,8 @@ const pkg = JSON.parse(readFileSync(path.join(ROOT, 'package.json'), 'utf8')) as
   bin: Record<string, string>
   scripts: Record<string, string>
 }
+// Each test spawns node; under a loaded machine that outruns vitest's 5 s default.
+const SPAWN_TIMEOUT = 30_000
 
 let work = ''
 let bin = ''
@@ -42,7 +44,7 @@ afterAll(() => {
 const hacer = (...args: string[]) => spawnSync(process.execPath, [bin, ...args], { encoding: 'utf8' })
 const vector = (chip: string, ext: 'hdl' | 'tst' | 'cmp'): string => path.join(VECTORS, `${chip}.${ext}`)
 
-describe('the hacer bin under plain node', () => {
+describe('the hacer bin under plain node', { timeout: SPAWN_TIMEOUT }, () => {
   it('is the package bin', () => {
     expect(pkg.bin.hacer).toBe('dist/cli/index.js')
   })
@@ -70,6 +72,12 @@ describe('the hacer bin under plain node', () => {
     const run = hacer('test', hdl, vector(chip, 'tst'), vector(chip, 'cmp'))
     expect(run.stderr).toBe('')
     expect(run.stdout).toMatch(new RegExp(`^PASS ${chip} (\\d+)/\\1 rows\\n$`))
+    expect(run.status).toBe(0)
+  })
+
+  it('prints the Xor template\'s output table with run-tst, without comparing', () => {
+    const run = hacer('run-tst', vector('Xor', 'hdl'), vector('Xor', 'tst'))
+    expect(run.stdout).toBe('| a | b |out|\n| 0 | 0 | 0 |\n| 0 | 1 | 0 |\n| 1 | 0 | 0 |\n| 1 | 1 | 0 |\n')
     expect(run.status).toBe(0)
   })
 

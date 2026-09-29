@@ -6,6 +6,6 @@
     "jsx": "react-jsx"
   },
   "include": ["src"],
-  // src/cli is a Node program with its own types (tsconfig.cli.json); the app never sees Node's.
-  "exclude": ["src/cli"]
+  // src/cli and the scenario driver that spawns it are a Node program with its own types (tsconfig.cli.json); the app never sees Node's.
+  "exclude": ["src/cli", "src/scenarios/drivers/cli.ts", "src/scenarios/drivers/cli.test.ts"]
 }

@@ -1,6 +1,51 @@
 import { describe, expect, it } from 'vitest'
 import { nand3Scenario, threeGateScenario } from '../nand3'
-import { runAllScenarios } from './core'
+import { runAllScenarios, runScenario, SCENARIOS, type CoreScenarioResult } from './core'
+
+const EXPECTED: CoreScenarioResult[] = [
+  {
+    name: 'three-gate circuit',
+    ok: true,
+    errors: [],
+    outputs: [0, 1, 1],
+    pins: [
+      [1, 1],
+      [1, 0],
+      [0, 1],
+    ],
+  },
+  {
+    name: 'two-gate build and cleanup',
+    ok: true,
+    errors: [],
+    outputs: [1, 1],
+    pins: [
+      [0, 0],
+      [1, 0],
+    ],
+  },
+  {
+    name: 'three-gate chain',
+    ok: true,
+    errors: [],
+    outputs: [1, 1, 1],
+    pins: [
+      [0, 0],
+      [1, 0],
+      [0, 0],
+    ],
+  },
+  {
+    name: 'two-gate propagation',
+    ok: true,
+    errors: [],
+    outputs: [0, 1],
+    pins: [
+      [1, 1],
+      [0, 0],
+    ],
+  },
+]
 
 describe('core scenario driver', () => {
   it('keeps the recovered three-gate circuit', () => {
@@ -16,50 +61,11 @@ describe('core scenario driver', () => {
     ])
   })
 
-  it('runs every recovered scenario as NAND through the engine', () => {
-    expect(runAllScenarios()).toEqual([
-      {
-        name: 'three-gate circuit',
-        ok: true,
-        errors: [],
-        outputs: [0, 1, 1],
-        pins: [
-          [1, 1],
-          [1, 0],
-          [0, 1],
-        ],
-      },
-      {
-        name: 'two-gate build and cleanup',
-        ok: true,
-        errors: [],
-        outputs: [1, 1],
-        pins: [
-          [0, 0],
-          [1, 0],
-        ],
-      },
-      {
-        name: 'three-gate chain',
-        ok: true,
-        errors: [],
-        outputs: [1, 1, 1],
-        pins: [
-          [0, 0],
-          [1, 0],
-          [0, 0],
-        ],
-      },
-      {
-        name: 'two-gate propagation',
-        ok: true,
-        errors: [],
-        outputs: [0, 1],
-        pins: [
-          [1, 1],
-          [0, 0],
-        ],
-      },
-    ])
+  it('runs every recovered scenario, in order', () => {
+    expect(runAllScenarios().map((result) => result.name)).toEqual(EXPECTED.map((result) => result.name))
+  })
+
+  it.each(SCENARIOS)('$name: runs as NAND through the engine', (scenario) => {
+    expect(runScenario(scenario)).toEqual(EXPECTED.find((result) => result.name === scenario.name))
   })
 })
