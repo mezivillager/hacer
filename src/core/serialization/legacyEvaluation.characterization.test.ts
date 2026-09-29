@@ -390,8 +390,8 @@ function characterize(fixture: Fixture, roundTrip: Save = save) {
 
 describe('legacy evaluation, before and after serialize → deserialize (characterization)', () => {
   it('has one golden per fixture and no golden without a fixture', () => {
-    const onDisk = import.meta.glob('./__snapshots__/characterization/evaluation/*')
-    expectOneGoldenPerCase(onDisk, FIXTURES.map((f) => f.name))
+    const onDisk = import.meta.glob('./__snapshots__/characterization/evaluation/**/*')
+    expectOneGoldenPerCase(onDisk, FIXTURES.map((f) => f.name), './__snapshots__/characterization/evaluation')
   })
 
   it.each(FIXTURES.map((f) => [f.name, f] as const))('%s', async (name, fixture) => {

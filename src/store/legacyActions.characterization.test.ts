@@ -8,6 +8,7 @@ import { describe, it, expect } from 'vitest'
 import { useCircuitStore } from './circuitStore'
 import type { Position, WireEndpoint } from './types'
 import type { WireSegment } from '@/utils/wiringScheme/types'
+import { expectOneGoldenPerCase } from '@/test/characterizationGoldens'
 import { characterize, fixture, type Actions, type Ids } from './legacyActions.characterization.harness'
 
 // ── What the specs build with ─────────────────────────────────────────────────────────────────────
@@ -179,9 +180,9 @@ const GOLDENS = '__snapshots__/characterization/store-actions'
 
 describe('legacy store actions the @store suite drives (characterization)', () => {
   it('has one golden per fixture and no golden without a fixture', () => {
-    // Keys only, so nothing is loaded; `import.meta.glob` takes a literal, hence GOLDENS spelled out.
-    const onDisk = Object.keys(import.meta.glob('./__snapshots__/characterization/store-actions/*'))
-    expect(onDisk.sort()).toEqual(FIXTURES.map((f) => `./${GOLDENS}/${f.name}.json`).sort())
+    // `import.meta.glob` takes a literal, hence GOLDENS spelled out.
+    const onDisk = import.meta.glob('./__snapshots__/characterization/store-actions/**/*')
+    expectOneGoldenPerCase(onDisk, FIXTURES.map((f) => f.name), `./${GOLDENS}`)
   })
 
   it.each(FIXTURES.map((f) => [f.name, f] as const))('%s', async (name, f) => {
