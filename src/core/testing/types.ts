@@ -10,8 +10,9 @@ export type TSTCommand =
   | { type: 'load'; filename: string }
   | { type: 'output-file'; filename: string }
   | { type: 'compare-to'; filename: string }
-  | { type: 'output-list'; columns: TSTOutputColumn[] }
-  | { type: 'set'; pin: string; value: number }
+  // `line` is where the statement starts in the script, so a run-time error about a pin can point at it.
+  | { type: 'output-list'; columns: TSTOutputColumn[]; line?: number }
+  | { type: 'set'; pin: string; value: number; line?: number }
   | { type: 'eval' }
   | { type: 'output' }
 

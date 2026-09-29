@@ -377,7 +377,7 @@ function parseStatement(statement: Statement): TSTCommand | TSTParseError {
       columns.push(parsed)
     }
 
-    return { type: 'output-list', columns }
+    return { type: 'output-list', columns, line: statement.line }
   }
 
   if (name === 'set') {
@@ -416,7 +416,7 @@ function parseStatement(statement: Statement): TSTCommand | TSTParseError {
       }
     }
 
-    return { type: 'set', pin, value: parsedValue }
+    return { type: 'set', pin, value: parsedValue, line: statement.line }
   }
 
   if (name === 'eval') {
