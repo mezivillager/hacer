@@ -719,7 +719,7 @@ describe('lineage verify (#468)', () => {
     expect(strict.stdout).toContain('P-001 EXPIRED')
     expect(verifyExitCode([{ status: 'expired' }], true)).toBe(1)
     expect(verifyExitCode([{ status: 'manual' }, { status: 'unverifiable' }, { status: 'skipped' }], true)).toBe(0)
-  })
+  }, 60_000)
 
   it('verify: a manual premise is manual — not expired, not holding, and not a failure', () => {
     const manual = { id: 'P-006', title: 'meter', verify: 'manual — read the tab', expect: '2026-09-25T03:00:00Z' }

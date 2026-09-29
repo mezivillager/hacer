@@ -12,6 +12,9 @@ const wrap = () =>
     </TooltipProvider>,
   )
 
+// Explicit timeout, not the 5 s default: userEvent tests mounting the bar measured up to 0.6 s under load (0.14 s alone).
+const SLOW_INTERACTION_TIMEOUT_MS = 10000
+
 describe('HelpBar', () => {
   beforeEach(() => {
     circuitActions.clearCircuit()
@@ -79,7 +82,7 @@ describe('HelpBar', () => {
       expect(screen.queryByTestId('help-bar')).not.toBeInTheDocument()
       expect(screen.getByTestId('help-bar-expand-button')).toBeInTheDocument()
     })
-  })
+  }, SLOW_INTERACTION_TIMEOUT_MS)
 
   it('expand button restores the strip; collapsed state persists across remount', async () => {
     const user = userEvent.setup()
@@ -92,21 +95,21 @@ describe('HelpBar', () => {
     wrap()
     expect(screen.queryByTestId('help-bar')).not.toBeInTheDocument()
     expect(screen.getByTestId('help-bar-expand-button')).toBeInTheDocument()
-  })
+  }, SLOW_INTERACTION_TIMEOUT_MS)
 
   it('"All shortcuts" button opens modal', async () => {
     const user = userEvent.setup()
     wrap()
     await user.click(screen.getByTestId('help-bar-all-shortcuts'))
     expect(await screen.findByTestId('shortcuts-modal')).toBeInTheDocument()
-  })
+  }, SLOW_INTERACTION_TIMEOUT_MS)
 
   it('? key opens modal', async () => {
     const user = userEvent.setup()
     wrap()
     await user.keyboard('?')
     expect(await screen.findByTestId('shortcuts-modal')).toBeInTheDocument()
-  })
+  }, SLOW_INTERACTION_TIMEOUT_MS)
 
   it('? key does NOT open modal when input is focused', async () => {
     const user = userEvent.setup()

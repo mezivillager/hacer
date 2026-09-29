@@ -56,6 +56,9 @@ function disposableGhPagesRepo(folders) {
   return dir
 }
 
+// Explicit timeout, not the 5 s default: the test builds a git repo and spawns the CLI, measured up to 4.3 s under load (0.9 s alone).
+const SPAWN_TIMEOUT_MS = 15000
+
 describe('pr-preview-sweep.mjs (subprocess, gh stubbed)', () => {
   it('an empty gh pr list, with every gh pr view also unavailable, removes nothing', () => {
     const ghBinDir = fakeGhBin()
@@ -74,5 +77,5 @@ describe('pr-preview-sweep.mjs (subprocess, gh stubbed)', () => {
     expect(log).toHaveLength(1) // only the seed commit — no destructive sweep commit landed
     expect(result.status).toBe(0)
     expect(result.stdout).not.toMatch(/^SWEEP: removed/m)
-  })
+  }, SPAWN_TIMEOUT_MS)
 })

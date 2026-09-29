@@ -10,6 +10,9 @@ const GITHUB = 'https://github.com/mezivillager/hacer'
 
 const day = (date: string) => screen.getByRole('heading', { level: 3, name: date }).closest('li')!
 
+// Explicit timeout, not the 5 s default: a full-snapshot mount measured up to 1.7 s under load (0.3 s alone).
+const SLOW_MOUNT_TIMEOUT_MS = 10000
+
 describe('Timeline', () => {
   it('renders sessions, merges and releases on one axis, newest first, over the 14 days to the snapshot', () => {
     render(<Timeline snapshot={snapshot} />)
@@ -31,7 +34,7 @@ describe('Timeline', () => {
     const quiet = within(day('2026-09-21')).getAllByRole('listitem')
     expect(quiet).toHaveLength(1 + 0 + 7)
     expect(quiet[0].textContent).toBe('record · Session record — 2026-09-21: the foundation question, and a change of direction')
-  })
+  }, SLOW_MOUNT_TIMEOUT_MS)
 
   it("a session's title opens its record on GitHub", () => {
     render(<Timeline snapshot={snapshot} />)

@@ -20,6 +20,9 @@ const NEXT = {
 
 beforeEach(() => history.replaceState(null, '', '#/projects'))
 
+// Explicit timeout, not the 5 s default: a full-app mount measured up to 2.4 s under load (0.5 s alone).
+const SLOW_MOUNT_TIMEOUT_MS = 10000
+
 describe('Projects', () => {
   it('Projects renders the portfolio rows with progress and "next" exactly as the snapshot\'s ready section says; a row drills into its tasks; every row links to GitHub', async () => {
     render(<App load={async () => snapshot} />)
@@ -65,5 +68,5 @@ describe('Projects', () => {
       expect(within(item).getByRole('link').getAttribute('href')).toBe(`${GITHUB}/issues/${harness[index].number}`)
     }
     expect(screen.getByRole('heading', { name: /^harness/ }).querySelector('a')?.getAttribute('href')).toBe(`${GITHUB}/issues/138`)
-  })
+  }, SLOW_MOUNT_TIMEOUT_MS)
 })
