@@ -42,7 +42,20 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
+      // e2e/shell/ belongs to the `shell` project alone, so @shell never runs with a canvas.
+      testIgnore: '**/e2e/shell/**',
       use: { ...devices['Desktop Chrome'] },
+    },
+    {
+      // Canvas-less DOM shell (ADR-0019), identical in CI and locally (ADR-0016 amendment
+      // 2026-09-29). The specs boot `?renderer=none`; WebGL is switched off as well, so a spec
+      // that mounts the scene fails instead of rendering 3D.
+      name: 'shell',
+      testDir: './e2e/shell',
+      use: {
+        ...devices['Desktop Chrome'],
+        launchOptions: { args: ['--disable-webgl', '--disable-3d-apis'] },
+      },
     },
   ],
   webServer: {
