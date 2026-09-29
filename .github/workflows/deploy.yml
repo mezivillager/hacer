@@ -5,10 +5,9 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# Read-only at workflow level. The job below states its own block, which replaces this one.
 permissions:
-  contents: write
-  issues: read # Mission Control's collector reads issues and pull requests (#473)
-  pull-requests: read
+  contents: read
 
 concurrency:
   group: gh-pages
@@ -17,14 +16,18 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # both deploy steps push to the gh-pages branch
+      issues: read # Mission Control's collector reads issues and pull requests (#473)
+      pull-requests: read
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: '22'
 
-      - uses: pnpm/action-setup@v6
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
 
       - run: pnpm install --frozen-lockfile
 
@@ -39,7 +42,7 @@ jobs:
           cp dist/index.html dist/404.html
 
       - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4
+        uses: JamesIves/github-pages-deploy-action@fa24774553152dd7873cd16ebd8d959b010c5445 # v4.9.0
         with:
           branch: gh-pages
           folder: dist
@@ -59,7 +62,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
 
       - name: Deploy Mission Control
-        uses: JamesIves/github-pages-deploy-action@v4
+        uses: JamesIves/github-pages-deploy-action@fa24774553152dd7873cd16ebd8d959b010c5445 # v4.9.0
         with:
           branch: gh-pages
           folder: mission-control/dist

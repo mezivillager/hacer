@@ -32,6 +32,12 @@ test file joins the exception list below with its reason.
 Running without jsdom is also much faster: 66 files / 1583 tests in ~5s, against ~47s for the whole
 suite (measured 2026-09-21, #323).
 
+## Workers
+
+`vite.config.ts` sets `test.maxWorkers: 3`. Unset, vitest starts one worker per logical CPU minus one,
+and three agents testing at once on the owner's 6-core laptop meant ~33 workers and thermal throttling
+(2026-09-29). Pass `--maxWorkers=<n>` to override it for a single run.
+
 ## Membership
 
 Configured in `vite.config.ts`. A file is in the `node` project when **both** hold:
