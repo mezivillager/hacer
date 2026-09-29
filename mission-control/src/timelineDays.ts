@@ -10,13 +10,13 @@ export interface TimelineDay {
 const WINDOW_DAYS = 14
 const dayOf = (iso: string) => iso.slice(0, 10)
 
-function addDays(date: string, delta: number): string {
+export function addDays(date: string, delta: number): string {
   const at = new Date(`${date}T00:00:00Z`)
   at.setUTCDate(at.getUTCDate() + delta)
   return at.toISOString().slice(0, 10)
 }
 
-function groupBy<T>(items: T[], keyOf: (item: T) => string): Map<string, T[]> {
+export function groupBy<T>(items: T[], keyOf: (item: T) => string): Map<string, T[]> {
   const groups = new Map<string, T[]>()
   for (const item of items) {
     const key = keyOf(item)
