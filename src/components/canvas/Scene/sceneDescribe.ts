@@ -58,6 +58,15 @@ export interface CanvasProjection extends ScreenPoint {
   visible: boolean
 }
 
+export interface SceneProjection {
+  screen: ScreenPoint | null
+  visible: boolean
+}
+
+export function projectSceneEntity(_state: CircuitStore, _id: string, _project: Projector): SceneProjection | null {
+  return null
+}
+
 /** Maps a world position to the canvas; supplied only where a camera exists. */
 export type Projector = (world: Position) => CanvasProjection
 

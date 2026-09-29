@@ -14,13 +14,13 @@ import type {
   WireEndpointType,
 } from '../../src/store/types'
 import type { WireSegment } from '../../src/utils/wiringScheme/types'
-import type { SceneDescription } from '../../src/components/canvas/Scene/sceneDescribe'
+import type { SceneDescription, SceneProjection } from '../../src/components/canvas/Scene/sceneDescribe'
 
 export interface SceneHelpers {
   projectToScreen: (position: { x: number; y: number; z: number }) => { x: number; y: number }
   canvasRect: () => DOMRect
-  /** Every gate, pin, wire and node: id, kind, world and screen position, visible/selected/signal. */
-  describe: () => SceneDescription
+  scene: () => SceneDescription
+  project?: (id: string) => SceneProjection | null
 }
 
 export interface CircuitStoreGate {
