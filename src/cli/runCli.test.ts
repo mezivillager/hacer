@@ -68,6 +68,49 @@ describe('runCli', () => {
   })
 
   it.each([
+    ['Xor', 'BUILTIN Xor;'],
+    ['Xor', 'BUILTIN And;'],
+    ['Xor', 'BUILTIN Nand;'],
+  ])('refuses %s.hdl as `%s`: a builtin stands in for the design, so it can never pass', (chip, parts) => {
+    const hdl = `CHIP ${chip} {\n  IN a, b;\n  OUT out;\n  PARTS:\n  ${parts}\n}`
+    const out = runCli(vectorArgs(chip), reader({ [`${chip}.hdl`]: hdl }))
+    expect(out.exitCode).toBe(1)
+    expect(out.stdout).toMatch(new RegExp(`^ERROR ${chip}: ${parts.slice(0, -1)} in ${chip}: .*built from parts`))
+    const json = runCli(['test', '--json', ...vectorArgs(chip).slice(1)], reader({ [`${chip}.hdl`]: hdl }))
+    expect(JSON.parse(json.stdout)).toMatchObject({ status: 'error', chip, rows: null })
+  })
+
+  it('passes the vendored Nand.hdl, `BUILTIN Nand;`: a primitive may be its own builtin', () => {
+    expect(runCli(vectorArgs('Nand'), reader())).toEqual({ exitCode: 0, stdout: 'PASS Nand 4/4 rows\n', stderr: '' })
+  })
+
+  it('prints bus values in a mismatch as the .cmp writes them, not in decimal', () => {
+    const out = runCli(vectorArgs('Mux16'), reader())
+    expect(out.stdout).toBe('FAIL Mux16 row 4: out expected 0001001000110100, got 0000000000000000\n')
+    const json = runCli(['test', '--json', ...vectorArgs('Mux16').slice(1)], reader())
+    expect(JSON.parse(json.stdout)).toMatchObject({
+      failure: { row: 4, column: 'out', expected: '0001001000110100', actual: '0000000000000000' },
+    })
+  })
+
+  it.each([
+    [['--json']],
+    [['test', '--json', 'Xor.hdl', 'Xor.tst']],
+    [['run', '--json', 'Xor.hdl', 'Xor.tst', 'Xor.cmp']],
+    [['run-tst', '--json', 'Xor.hdl', 'Xor.tst']],
+  ])('exits 2 with the usage as a JSON report on stdout for %j', (argv: string[]) => {
+    const out = runCli(argv, reader())
+    expect(out).toMatchObject({ exitCode: 2, stderr: '' })
+    expect(JSON.parse(out.stdout)).toEqual({
+      status: 'error',
+      chip: null,
+      rows: null,
+      failure: null,
+      error: expect.stringMatching(/^usage: hacer test /),
+    })
+  })
+
+  it.each([
     [[]],
     [['test', 'Xor.hdl', 'Xor.tst']],
     [['test', 'Xor.tst', 'Xor.hdl', 'Xor.cmp']],
@@ -128,7 +171,6 @@ describe('runCli run-tst', () => {
     [['run-tst', 'Xor.hdl']],
     [['run-tst', 'Xor.tst', 'Xor.hdl']],
     [['run-tst', 'Xor.hdl', 'Xor.tst', 'Xor.cmp']],
-    [['run-tst', '--json', 'Xor.hdl', 'Xor.tst']],
   ])('exits 2 with usage on stderr for %j', (argv: string[]) => {
     const out = runCli(argv, reader())
     expect(out).toMatchObject({ exitCode: 2, stdout: '' })
