@@ -40,6 +40,7 @@ import { clampToWidth, maskForWidth, readSubBus, writeSubBus } from '@/simulatio
 /** `src/core/index.ts`'s runtime exports, in namespace order (ESM namespace keys are sorted). */
 const CORE_EXPORTS = [
   'DEFAULT_MAX_DEPTH',
+  'chipTestError',
   'combineRegistries',
   'compareCmpRow',
   'compileHDL',
@@ -53,6 +54,7 @@ const CORE_EXPORTS = [
   'isBuiltinChip',
   'isCircuitChip',
   'isHDLChip',
+  'loadChipTest',
   'parseCmp',
   'parseHDL',
   'parseTST',
@@ -61,6 +63,7 @@ const CORE_EXPORTS = [
   'registerBuiltin',
   'registerProject1Builtins',
   'runTest',
+  'testChip',
   'validateChipDefinition',
 ]
 
