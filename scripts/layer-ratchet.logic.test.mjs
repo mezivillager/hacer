@@ -76,6 +76,7 @@ describe('the rules in .dependency-cruiser.cjs', () => {
     ['engine-no-ui-packages', 'src/core importing react'],
     ['state-no-ui', 'src/store importing src/components'],
     ['state-no-3d', 'src/store importing three'],
+    ['surfaces-through-core', 'src/cli and src/mcp importing src/store or src/components'],
     ['src-no-e2e', 'src/core importing e2e/types'],
     ['core-through-index', 'src/components importing src/core/internal instead of src/core/index'],
     ['no-circular', 'src/simulation/cycleA ↔ cycleB'],

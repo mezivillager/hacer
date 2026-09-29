@@ -10,3 +10,5 @@ at `src`. Keep the imports deliberately wrong.
 
 `src/core/index.ts` is the one deliberately *right* import here: `core-through-index` must flag
 `src/components/widget.ts` reaching into `src/core/internal.ts` and must leave the front door alone.
+
+`src/cli` and `src/mcp` each hold one import of the store or the UI: `surfaces-through-core`.
