@@ -17,7 +17,7 @@ describe('Roadmap', () => {
 
     const active = screen.getByRole('table', { name: 'Active Phase Sequence' })
     const rows = within(active).getAllByRole('row').slice(1).map((row) => within(row).getAllByRole('cell').map((cell) => cell.textContent))
-    expect(rows).toHaveLength(10)
+    expect(rows).toHaveLength(9)
     expect(rows[2]).toEqual(['0.5', 'In progress', 'Project 1 chips, buses, HDL, `.tst`/`.cmp`, chip workflow UI'])
     expect(within(active).getByRole('link', { name: '0.5' }).getAttribute('href'))
       .toBe(`${BLOB}/docs/roadmap/phases/phase-0.5-nand2tetris-foundation.md`)

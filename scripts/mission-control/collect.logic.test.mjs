@@ -48,6 +48,7 @@ import {
 //   snapshot-2026-09-29.json the newest of those names, whole, as archived: the fixture the charts render (#478), since
 //                      snapshot.json predates the archive. Its `metrics.openTasks` is spliced in, this collector over
 //                      gh-pages-history.json at its own `generatedAt`; snapshot.json's is [], the archive not yet begun
+//   roadmap.md, ledger.md, decisions/  the roadmap README, the failure ledger and three ADRs (and the template), trimmed by hand (#479)
 // The process records (ledger, sessions, ADRs, roadmap, cloud inbox) are read live, as
 // backlog.logic.test.mjs reads docs/portfolio.md: a format change there fails here, not silently in the site.
 
@@ -368,6 +369,44 @@ describe('collect.logic', () => {
       '  invalid: freshness.ledger.status must be ok|partial|error',
       '  invalid: prs.coverage.merged must be a number',
       '  invalid: claims must be an object',
+    ])
+  })
+
+  it('parses the roadmap, ledger and ADRs from small recorded files: date, phase tables, Mechanised? words, Status bullets', () => {
+    // fixtures/{roadmap,ledger}.md and decisions/ are trimmed from docs/roadmap/README.md, docs/harness/ledger.md and docs/decisions/.
+    const decisions = readdirSync(path.join(FIXTURES, 'decisions')).sort()
+      .map((file) => ({ file: `docs/decisions/${file}`, text: fixtureText(`decisions/${file}`) }))
+    const snapshot = build({
+      roadmap: ok('docs/roadmap/README.md', fixtureText('roadmap.md')),
+      ledger: ok('docs/harness/ledger.md', fixtureText('ledger.md')),
+      adrs: ok('docs/decisions', decisions),
+    })
+
+    // Only tables with a Phase column are phases; each keeps the heading it sits under and links its phase doc.
+    expect(snapshot.roadmap.lastUpdated).toBe('2026-05-12')
+    expect(snapshot.roadmap.phases.map((phase) => [phase.phase, phase.group, phase.status])).toEqual([
+      ['0', 'Active Phase Sequence', 'Complete'], ['0.5', 'Active Phase Sequence', 'In progress'],
+      ['0.6', 'Active Phase Sequence', 'Planned'], ['5', 'Future Platform Phases', 'Future'], ['7', 'Future Platform Phases', 'Future'],
+    ])
+    expect(snapshot.roadmap.phases[1]).toMatchObject({ doc: 'docs/roadmap/phases/phase-0.5-nand2tetris-foundation.md' })
+    expect(build({ roadmap: ok('docs/roadmap/README.md', '# Roadmap\n\nNo date here.\n') }).roadmap)
+      .toEqual({ lastUpdated: null, phases: [] })
+
+    // A cell counts by its first word, bold or not; an escaped pipe stays inside its cell.
+    expect(snapshot.ledger.items.map((row) => [row.id, row.mechanised.split(' ')[0].replace(/\*/g, ''), row.decision])).toEqual([
+      ['L001', 'no', '—'], ['L002', 'yes', 'R12'], ['L003', 'partly', 'ADR-0019, P-3'], ['L004', 'yes', '—'], ['L005', 'n/a', '—'],
+    ])
+    expect(snapshot.ledger.items[3].whatWentWrong).toBe('A row whose cell escapes a pipe: `a \\| b`')
+    expect(snapshot.ledger.byMechanised).toEqual({ no: 1, yes: 2, partly: 1, other: 1 })
+
+    // The Status bullet as written; the template (0000) is not a decision, and the list is in number order.
+    expect(snapshot.adrs.items).toEqual([
+      { number: 1, file: 'docs/decisions/0001-adopt-adr-log.md', title: 'Adopt an ADR log and enforce docs-sync at session end', status: 'Accepted' },
+      {
+        number: 7, file: 'docs/decisions/0007-superseded-example.md', title: 'An example that a later ADR replaced',
+        status: 'Superseded by [ADR-0020](0020-spec-only-writes-read-only-projections.md) (Stages 2–4 cancelled)',
+      },
+      { number: 19, file: 'docs/decisions/0019-canvas-less-shell-mode.md', title: 'Canvas-less shell mode selected by `?renderer=none`', status: 'Accepted' },
     ])
   })
 
