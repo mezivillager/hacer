@@ -118,7 +118,7 @@ describe('App', () => {
     // Every view is one link away, and the header dates the snapshot and names the commit it was taken at.
     const nav = screen.getByRole('navigation')
     expect(within(nav).getAllByRole('link').map((link) => link.getAttribute('href')))
-      .toEqual(['#/', '#/projects', '#/process', '#/timeline', '#/charts', '#/roadmap', '#/ledger', '#/adrs'])
+      .toEqual(['#/', '#/projects', '#/process', '#/timeline', '#/charts', '#/roadmap', '#/ledger', '#/adrs', '#/needs-human'])
     expect(screen.getByText(/^Snapshot 2026-09-25 03:16 UTC/)).toBeTruthy()
     expect(screen.getByRole('link', { name: '561dcf1' }).getAttribute('href'))
       .toBe(`${GITHUB}/commit/561dcf13f2f82603bf933778b76e6f605f3785f4`)

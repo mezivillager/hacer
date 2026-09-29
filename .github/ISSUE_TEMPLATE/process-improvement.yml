@@ -1,0 +1,24 @@
+name: Process improvement
+description: Queue an improvement to the agent work system (the harness inbox)
+title: "[Process]: "
+labels: ["project:harness"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Opened from Mission Control or by hand. The issue is the queue: a coordinator shapes it before anyone builds it.
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: What went wrong or could be better, with the ids and links involved
+      placeholder: Ledger row L0xx, PR #n, a red check…
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed improvement
+      description: What would make it mechanical, cheaper or safer
+    validations:
+      required: false

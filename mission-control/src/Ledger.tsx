@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Freshness } from './Freshness'
+import { QueueImprovement } from './QueueImprovement'
 import { MECHANISED, docUrl, mechanisedOf, type Snapshot } from './snapshot'
 
 const LEDGER = 'docs/harness/ledger.md'
@@ -27,11 +28,13 @@ export function Ledger({ snapshot }: { snapshot: Snapshot }) {
           </p>
           <div className="scroll">
             <table aria-label="Ledger">
-              <thead><tr><th>Id</th><th>Date</th><th>What went wrong</th><th>Mechanised?</th><th>Should have been caught by</th><th>Decision</th></tr></thead>
+              <thead><tr><th>Id</th><th>Date</th><th>What went wrong</th><th>Mechanised?</th><th>Should have been caught by</th><th>Decision</th><th>Improve</th></tr></thead>
               <tbody>{shown.map((row, index) => (
                 <tr key={row.id ?? index}>
                   <td><a href={docUrl(LEDGER)}>{row.id ?? '—'}</a></td><td>{row.date}</td><td>{row.whatWentWrong}</td>
                   <td>{row.mechanised}</td><td>{row.shouldHaveBeenCaughtBy}</td><td>{row.decision ?? '—'}</td>
+                  <td><QueueImprovement title={`Ledger ${row.id ?? row.date}: mechanise the fix`}
+                    context={`Ledger row ${row.id ?? row.date}: ${row.whatWentWrong}\n${docUrl(LEDGER)}`} /></td>
                 </tr>
               ))}</tbody>
             </table>
