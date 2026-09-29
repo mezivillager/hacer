@@ -446,7 +446,7 @@ import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'; // 90° rot
 ### ⏸️ Phase 5+ (Future - Not Yet Active)
 ```typescript
 // Core logic (pure, no React)
-import { getGateDefinition } from '@/core/gates/registry';
+import { getBuiltinChipRegistry } from '@/core/chips/appRegistry';
 import { evaluateCircuit } from '@/core/simulation/evaluate';
 import { parseHDL } from '@/core/hdl'; // or `@/core/hdl/parser`
 import type { GateId, WireId } from '@/core/types/branded';
