@@ -185,6 +185,8 @@ function buildFlow(pages, { allowlist, now }) {
     blockedOnce: { count: blocked.length, of: verified.length, prs: blocked }, coverage: { code: coverage(true), nonCode: coverage(false) } }
 }
 
+export const archiveDays = () => []
+
 /** The vendored nand2tetris projects (#539): each directory under conformance/vectors/, its files counted by extension.
  *  Nothing runs them yet (#194), so `runner` is null: a pass count arrives with a runner, never before. */
 function buildConformance(files) {

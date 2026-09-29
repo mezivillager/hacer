@@ -26,6 +26,8 @@ export interface Flow {
 export interface Conformance {
   projects: { project: string; files: number; byExtension: Record<string, number> }[]; files: number; runner: null
 }
+/** `metrics.openTasks` (#478): one day's last archived reading of `tasks.byProject`, taken at `at`. */
+export interface TasksReading { date: string; at: string; byProject: Record<string, number[]> }
 export interface Snapshot {
   schemaVersion: 1; generatedAt: string; head: { sha: string; subject: string }; freshness: Record<string, Freshness>
   portfolio: { projects: Project[] }; pickRule: { next: { number: number; title: string; project: string | null }[] }
@@ -35,8 +37,9 @@ export interface Snapshot {
   cloudLane: { items: CloudLaneItem[] }
   sessions: { items: { file: string; date: string; kind: string; title: string | null }[] }
   metrics: {
-    ratchet: { count: number; history: { count: number }[] }; releases: { tag: string; publishedAt: string; isLatest: boolean }[]
-    flow: Flow | null; conformance: Conformance | null
+    ratchet: { count: number; history: { sha: string; date: string; subject: string; count: number }[] }
+    releases: { tag: string; publishedAt: string; isLatest: boolean }[]; mergesPerDay: { date: string; merges: number }[]
+    flow: Flow | null; conformance: Conformance | null; openTasks: TasksReading[] | null
   }
   checks: { until?: string; items: unknown[] }
 }
