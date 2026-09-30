@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-30T13:36:38.382Z",
+  "generatedAt": "2026-09-30T14:24:26.159Z",
   "head": {
-    "sha": "5ba09985914fd1c556e2e94c40dda34465e0bfa8",
-    "date": "2026-09-29T19:26:46+03:00",
-    "subject": "docs(harness): session record 2026-09-29, rulings R773–R778, ledger L059–L060"
+    "sha": "7c3f9e21a7423b2573995a64e68d7064323f417b",
+    "date": "2026-09-30T17:23:20+03:00",
+    "subject": "docs(skills): one Current state block; keep a topic binding only while live (#637)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-30T13:36:38.382Z",
+      "fetchedAt": "2026-09-30T14:24:26.159Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-30T13:36:38.382Z",
+      "fetchedAt": "2026-09-30T14:24:26.159Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-09-30T13:36:38.382Z",
+      "fetchedAt": "2026-09-30T14:24:26.159Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-09-30T13:36:38.382Z",
+      "fetchedAt": "2026-09-30T14:24:26.159Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-09-30T13:36:38.382Z",
+      "fetchedAt": "2026-09-30T14:24:26.159Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-09-30T13:36:38.382Z",
+      "fetchedAt": "2026-09-30T14:24:26.159Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-09-30T13:36:38.382Z",
+      "fetchedAt": "2026-09-30T14:24:26.159Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-09-30T13:36:38.382Z",
+      "fetchedAt": "2026-09-30T14:24:26.159Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-09-30T13:36:38.382Z",
+      "fetchedAt": "2026-09-30T14:24:26.159Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-09-30T13:36:38.382Z",
+      "fetchedAt": "2026-09-30T14:24:26.159Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-09-30T13:36:38.382Z",
+      "fetchedAt": "2026-09-30T14:24:26.159Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-09-30T13:36:38.382Z",
+      "fetchedAt": "2026-09-30T14:24:26.159Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-09-30T13:36:38.382Z",
+      "fetchedAt": "2026-09-30T14:24:26.159Z",
       "status": "ok"
     }
   },
@@ -2416,6 +2416,17 @@
         "lane": "enabler",
         "pickable": false,
         "reason": "unshaped"
+      },
+      {
+        "number": 637,
+        "title": "ha-prompt-it: one Current state block; keep a binding only while its run is live",
+        "labels": [],
+        "blocking": [],
+        "project": null,
+        "rank": null,
+        "lane": null,
+        "pickable": false,
+        "reason": "unshaped"
       }
     ],
     "byProject": {
@@ -2570,7 +2581,8 @@
         311
       ],
       "unfiled": [
-        572
+        572,
+        637
       ]
     }
   },
@@ -2604,6 +2616,19 @@
       }
     ],
     "merged": [
+      {
+        "number": 638,
+        "title": "docs(skills): one Current state block; keep a topic binding only while live",
+        "url": "https://github.com/mezivillager/hacer/pull/638",
+        "author": "mezivillager",
+        "labels": [],
+        "headRefName": "docs/637-topic-binding-live",
+        "isDraft": false,
+        "createdAt": "2026-09-30T14:19:43Z",
+        "mergedAt": "2026-09-30T14:23:21Z",
+        "closes": [],
+        "verdicts": []
+      },
       {
         "number": 636,
         "title": "docs(harness): session record 2026-09-29, rulings R773–R778, ledger L059–L060",
@@ -4113,23 +4138,6 @@
         "isDraft": false,
         "createdAt": "2026-09-27T08:34:26Z",
         "mergedAt": "2026-09-27T08:37:10Z",
-        "closes": [],
-        "verdicts": []
-      },
-      {
-        "number": 532,
-        "title": "docs(harness): the cloud lane takes only work nothing else waits on",
-        "url": "https://github.com/mezivillager/hacer/pull/532",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:0"
-        ],
-        "headRefName": "docs/cloud-lane-non-blocking",
-        "isDraft": false,
-        "createdAt": "2026-09-27T08:30:53Z",
-        "mergedAt": "2026-09-27T08:32:54Z",
         "closes": [],
         "verdicts": []
       }
@@ -6131,7 +6139,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-27",
-        "merges": 22
+        "merges": 21
       },
       {
         "date": "2026-09-28",
@@ -6140,12 +6148,16 @@
       {
         "date": "2026-09-29",
         "merges": 33
+      },
+      {
+        "date": "2026-09-30",
+        "merges": 1
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-16T13:36:38.382Z",
-      "merged": 201,
+      "since": "2026-09-16T14:24:26.159Z",
+      "merged": 202,
       "openToMergeHours": {
         "median": 0.2,
         "p90": 8.9
@@ -6202,7 +6214,7 @@
           ]
         },
         "nonCode": {
-          "merged": 94,
+          "merged": 95,
           "withVerdict": 21,
           "without": [
             113,
@@ -6277,7 +6289,8 @@
             576,
             578,
             580,
-            582
+            582,
+            638
           ]
         }
       }
@@ -7180,7 +7193,7 @@
       },
       {
         "date": "2026-09-30",
-        "at": "2026-09-30T06:37:23.375Z",
+        "at": "2026-09-30T13:36:38.382Z",
         "byProject": {
           "mission-control": [
             513,
@@ -7343,17 +7356,14 @@
     "items": [
       {
         "pr": null,
-        "sha": "5ba09985914fd1c556e2e94c40dda34465e0bfa8",
+        "sha": "7c3f9e21a7423b2573995a64e68d7064323f417b",
         "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-09-29T16:29:21Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36597770153/job/109507003878",
-        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 71,
-          "new": 0
-        },
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36728739530/job/109932357089",
+        "line": null,
+        "verdict": null,
+        "fields": {},
         "disagrees": false
       },
       {
