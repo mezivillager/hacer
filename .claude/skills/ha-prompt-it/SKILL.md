@@ -211,15 +211,18 @@ resolves against.
 `docs/harness/sessions/YYYY-MM-DD.md`, is already this repo's committed memory of
 a session; bind it: `topic-bind docs/harness/sessions/YYYY-MM-DD.md --label
 <topic>` (or `topic-bind --new …` for a new day, then reshape it to the session
-record's sections). Keep a `## Current state` block at its head — rewritten as
-the run moves, with the next action, in-flight work and the paths to spec, plan
-and PR — and append the owner's rulings below it. The topic hooks
+record's sections). Keep one `## Current state` block at its head — rewritten in
+place as the run moves, never a second one appended, with the next action,
+in-flight work and the paths to spec, plan and PR — and append the owner's
+rulings and what happened below it. The topic hooks
 (`~/.claude/hooks/topic-*.sh`) nudge, gate and re-orient from that file: a turn
 that does work without touching it is blocked once, and after every compaction
-the session is re-oriented from it. The spec is never the binding — approved at
-Gate 1, then mostly static. **If `topic-bind --show` already reports a binding**
+the whole file is pushed back to the session. The spec is never the binding — approved at
+Gate 1, then mostly static. **If `topic-bind --show` reports a live binding**
 (an autonomous run bound its `state.md` at arm time), keep it and link the
-session record from the bound file's Paths instead of re-binding.
+session record from the bound file's Paths instead of re-binding. A binding it
+reports as `complete` belongs to a finished run: bind the day's session record
+instead.
 
 ## Phase 2 — The plan.
 
