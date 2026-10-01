@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-01T22:48:21.867Z",
+  "generatedAt": "2026-10-01T23:05:54.555Z",
   "head": {
     "sha": "ff4a6f87f42bf08f7aa87dd04ea14fec53412bd7",
     "date": "2026-10-02T01:47:23+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-01T22:48:21.867Z",
+      "fetchedAt": "2026-10-01T23:05:54.555Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-01T22:48:21.867Z",
+      "fetchedAt": "2026-10-01T23:05:54.555Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-01T22:48:21.867Z",
+      "fetchedAt": "2026-10-01T23:05:54.555Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-01T22:48:21.867Z",
+      "fetchedAt": "2026-10-01T23:05:54.555Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-01T22:48:21.867Z",
+      "fetchedAt": "2026-10-01T23:05:54.555Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-01T22:48:21.867Z",
+      "fetchedAt": "2026-10-01T23:05:54.555Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-01T22:48:21.867Z",
+      "fetchedAt": "2026-10-01T23:05:54.555Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-01T22:48:21.867Z",
+      "fetchedAt": "2026-10-01T23:05:54.555Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-01T22:48:21.867Z",
+      "fetchedAt": "2026-10-01T23:05:54.555Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-01T22:48:21.867Z",
+      "fetchedAt": "2026-10-01T23:05:54.555Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-01T22:48:21.867Z",
+      "fetchedAt": "2026-10-01T23:05:54.555Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-01T22:48:21.867Z",
+      "fetchedAt": "2026-10-01T23:05:54.555Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-10-01T22:48:21.867Z",
+      "fetchedAt": "2026-10-01T23:05:54.555Z",
       "status": "ok"
     }
   },
@@ -105,25 +105,25 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 30,
-        "ready": 17,
+        "open": 29,
+        "ready": 16,
         "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 17,
+        "agentReady": 16,
         "filedElsewhere": [
           151,
           339,
           407
         ],
         "next": {
-          "number": 159,
-          "title": "docs/harness/ledger.md failure ledger + retro step: second occurrence → lint, test or hook"
+          "number": 160,
+          "title": "One source of truth for phase status (implementation.md vs checklist vs .cursorrules header dated 2026-05-12)"
         },
         "title": "Epic: harness — autonomous-run improvements & agent-readiness",
         "subIssues": {
-          "completed": 39,
-          "percentCompleted": 68,
+          "completed": 40,
+          "percentCompleted": 70,
           "total": 57
         }
       },
@@ -350,8 +350,8 @@
         "slug": "lineage",
         "epicNumber": 457,
         "open": 5,
-        "ready": 2,
-        "inProgress": 1,
+        "ready": 1,
+        "inProgress": 2,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 3,
@@ -411,19 +411,14 @@
     ],
     "next": [
       {
+        "number": 160,
+        "title": "One source of truth for phase status (implementation.md vs checklist vs .cursorrules header dated 2026-05-12)",
+        "project": "harness"
+      },
+      {
         "number": 338,
         "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
         "project": "foundation"
-      },
-      {
-        "number": 471,
-        "title": "Lineage DL-6: lint:lineage from warn to fail — the lineage ratchet",
-        "project": "lineage"
-      },
-      {
-        "number": 159,
-        "title": "docs/harness/ledger.md failure ledger + retro step: second occurrence → lint, test or hook",
-        "project": "harness"
       },
       {
         "number": 373,
@@ -431,14 +426,9 @@
         "project": "foundation"
       },
       {
-        "number": 481,
-        "title": "Lineage DL-7: the lineage graph as a Mission Control view",
+        "number": 471,
+        "title": "Lineage DL-6: lint:lineage from warn to fail — the lineage ratchet",
         "project": "lineage"
-      },
-      {
-        "number": 160,
-        "title": "One source of truth for phase status (implementation.md vs checklist vs .cursorrules header dated 2026-05-12)",
-        "project": "harness"
       },
       {
         "number": 247,
@@ -519,6 +509,7 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
+        653,
         651,
         514
       ]
@@ -526,6 +517,21 @@
   },
   "tasks": {
     "items": [
+      {
+        "number": 160,
+        "title": "One source of truth for phase status (implementation.md vs checklist vs .cursorrules header dated 2026-05-12)",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:0"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
       {
         "number": 338,
         "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
@@ -538,36 +544,6 @@
         "project": "foundation",
         "rank": 1,
         "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 471,
-        "title": "Lineage DL-6: lint:lineage from warn to fail — the lineage ratchet",
-        "labels": [
-          "agent-ready",
-          "risk:2",
-          "project:lineage"
-        ],
-        "blocking": [],
-        "project": "lineage",
-        "rank": 13,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 159,
-        "title": "docs/harness/ledger.md failure ledger + retro step: second occurrence → lint, test or hook",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:0"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
         "pickable": true,
         "reason": null
       },
@@ -589,31 +565,16 @@
         "reason": null
       },
       {
-        "number": 481,
-        "title": "Lineage DL-7: the lineage graph as a Mission Control view",
+        "number": 471,
+        "title": "Lineage DL-6: lint:lineage from warn to fail — the lineage ratchet",
         "labels": [
           "agent-ready",
-          "risk:1",
+          "risk:2",
           "project:lineage"
         ],
         "blocking": [],
         "project": "lineage",
         "rank": 13,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 160,
-        "title": "One source of truth for phase status (implementation.md vs checklist vs .cursorrules header dated 2026-05-12)",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:0"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
         "lane": "process",
         "pickable": true,
         "reason": null
@@ -2127,6 +2088,22 @@
         "reason": "claimed"
       },
       {
+        "number": 481,
+        "title": "Lineage DL-7: the lineage graph as a Mission Control view",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:lineage"
+        ],
+        "blocking": [],
+        "project": "lineage",
+        "rank": 13,
+        "lane": "process",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 500,
         "title": "pr-hygiene: the ratchet's Baseline-growth reader models a fence by a line's first characters (#499 verifier)",
         "labels": [
@@ -2348,6 +2325,37 @@
       }
     ],
     "byProject": {
+      "harness": [
+        160,
+        247,
+        251,
+        257,
+        269,
+        271,
+        280,
+        304,
+        308,
+        368,
+        391,
+        392,
+        394,
+        418,
+        516,
+        547,
+        154,
+        156,
+        270,
+        435,
+        436,
+        454,
+        500,
+        504,
+        505,
+        550,
+        607,
+        648,
+        649
+      ],
       "foundation": [
         338,
         373,
@@ -2378,42 +2386,10 @@
       ],
       "lineage": [
         471,
-        481,
         470,
+        481,
         502,
         569
-      ],
-      "harness": [
-        159,
-        160,
-        247,
-        251,
-        257,
-        269,
-        271,
-        280,
-        304,
-        308,
-        368,
-        391,
-        392,
-        394,
-        418,
-        516,
-        547,
-        154,
-        156,
-        270,
-        435,
-        436,
-        454,
-        500,
-        504,
-        505,
-        550,
-        607,
-        648,
-        649
       ],
       "spine": [
         165,
@@ -2501,6 +2477,24 @@
   },
   "prs": {
     "open": [
+      {
+        "number": 653,
+        "title": "feat(mission-control): the lineage graph as a view (DL-7)",
+        "url": "https://github.com/mezivillager/hacer/pull/653",
+        "author": "mezivillager",
+        "labels": [
+          "risk:1",
+          "project:lineage"
+        ],
+        "headRefName": "feat/481-lineage-view",
+        "isDraft": false,
+        "createdAt": "2026-10-01T23:03:31Z",
+        "mergedAt": null,
+        "closes": [
+          481
+        ],
+        "verdicts": []
+      },
       {
         "number": 651,
         "title": "chore(harness): merge-on-green refuses a stale green (#407)",
@@ -4257,6 +4251,31 @@
           "author": "mezivillager",
           "at": "2026-09-25T06:02:35Z",
           "url": "https://github.com/mezivillager/hacer/issues/470#issuecomment-5827635352"
+        }
+      },
+      {
+        "number": 481,
+        "ref": "refs/heads/claim/481",
+        "sha": "ff4a6f87f42bf08f7aa87dd04ea14fec53412bd7",
+        "state": "OPEN",
+        "title": "Lineage DL-7: the lineage graph as a Mission Control view",
+        "url": "https://github.com/mezivillager/hacer/issues/481",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:lineage"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-92",
+          "branch": null,
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-01T22:48:44Z",
+          "url": "https://github.com/mezivillager/hacer/issues/481#issuecomment-5942218066"
         }
       },
       {
@@ -6153,7 +6172,7 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-17T22:48:21.867Z",
+      "since": "2026-09-17T23:05:54.555Z",
       "merged": 207,
       "openToMergeHours": {
         "median": 0.2,
@@ -7506,12 +7525,15 @@
         "pr": null,
         "sha": "ff4a6f87f42bf08f7aa87dd04ea14fec53412bd7",
         "check": "ci",
-        "conclusion": null,
-        "completedAt": null,
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-01T22:50:21Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/36937149969/job/110619968947",
-        "line": null,
-        "verdict": null,
-        "fields": {},
+        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 71,
+          "new": 0
+        },
         "disagrees": false
       },
       {
@@ -7604,6 +7626,49 @@
           "known": 71,
           "new": 0
         },
+        "disagrees": false
+      },
+      {
+        "pr": 653,
+        "sha": "bbda2909762761f933670b1960cb109bafe76bba",
+        "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-01T23:03:47Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36938687459/job/110624874385",
+        "line": "HYGIENE: WARN reviewable=225 test=57 excluded=967 files=12 issue=#481 linked=fixes",
+        "verdict": "WARN",
+        "fields": {
+          "reviewable": 225,
+          "test": 57,
+          "excluded": 967,
+          "files": 12,
+          "issue": "#481",
+          "linked": "fixes"
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 653,
+        "sha": "bbda2909762761f933670b1960cb109bafe76bba",
+        "check": "browser-qa",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-01T23:03:45Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36938687285/job/110624872264",
+        "line": "BROWSER-QA: skipped (no critical paths)",
+        "verdict": "SKIPPED",
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 653,
+        "sha": "bbda2909762761f933670b1960cb109bafe76bba",
+        "check": "ci",
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36938686892/job/110624872212",
+        "line": null,
+        "verdict": null,
+        "fields": {},
         "disagrees": false
       }
     ]
