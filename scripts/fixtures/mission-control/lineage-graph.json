@@ -1,0 +1,480 @@
+{
+  "nodes": [
+    {
+      "id": "ADR-0007",
+      "kind": "adr",
+      "title": "Wire routing engine direction: gridless orthogonal-visibility-graph (staged)",
+      "source": "docs/decisions/0007-wire-routing-engine-direction.md:1",
+      "status": "Superseded by [ADR-0020](0020-spec-only-writes-read-only-projections.md) (Stages 2–4 cancelled: they were designed for interactive re-routing, and there is no drag; Stage 1 shipped and its findings survive inside channel routing)",
+      "buildsOn": null,
+      "amends": null,
+      "assumes": null
+    },
+    {
+      "id": "ADR-0008",
+      "kind": "adr",
+      "title": "Scene-graph routing testing layer as DoD enforcer",
+      "source": "docs/decisions/0008-scene-graph-routing-testing-layer.md:1",
+      "status": "Accepted — Amended by [ADR-0020](0020-spec-only-writes-read-only-projections.md) (§8: assertion 6's node-drag re-route does not survive read-only; it is replaced by `route` totality plus a re-route minimality property. The layer, the suite and the overlap oracle are kept and re-pointed at `describeScene`)",
+      "buildsOn": null,
+      "amends": null,
+      "assumes": null
+    },
+    {
+      "id": "ADR-0009",
+      "kind": "adr",
+      "title": "Bus components as a separate entity; `'bus'` WireEndpoint",
+      "source": "docs/decisions/0009-bus-components-entity-and-wireendpoint-bus.md:1",
+      "status": "Accepted — Superseded in the document by [ADR-0020](0020-spec-only-writes-read-only-projections.md) (§1.2: `BusComponent` and `WireEndpointType: 'bus'` leave the spec, dissolved into slices). Kept in the projection: `computeBusPinLayout` stays the single source of width-dependent pin geometry",
+      "buildsOn": null,
+      "amends": null,
+      "assumes": null
+    },
+    {
+      "id": "ADR-0020",
+      "kind": "adr",
+      "title": "Spec-only writes, read-only projections",
+      "source": "docs/decisions/0020-spec-only-writes-read-only-projections.md:1",
+      "status": "Accepted — the fresh-context adversarial review [#359](https://github.com/mezivillager/hacer/issues/359) required by #327 returned `sound with corrections`, and the second pass over the four post-review deltas returned `accept with corrections` (both on [#358](https://github.com/mezivillager/hacer/pull/358), 2026-09-23). Both sets of corrections are applied below — the second pass's seven under \"What the second pass changed\" — and no further review round is required. **Amended 2026-09-24** by the spike this ADR scheduled for 1.5/1.6 ([#372](https://github.com/mezivillager/hacer/issues/372)), which ran, found the mechanism 1.5 describes does not work, and replaced it — \"What the spike changed\". The status does **not** move: the spine, the review's acceptance and every decision stand, and correcting a mechanism is what a scheduled spike is for.",
+      "buildsOn": null,
+      "amends": [
+        "ADR-0008 §6",
+        "ADR-0009"
+      ],
+      "assumes": null
+    },
+    {
+      "id": "ADR-0022",
+      "kind": "adr",
+      "title": "Node entries build together, beside the app",
+      "source": "docs/decisions/0022-node-entries.md:1",
+      "status": "Accepted",
+      "buildsOn": [
+        "R766",
+        "ADR-0020 §4"
+      ],
+      "amends": null,
+      "assumes": null
+    },
+    {
+      "id": "P-001",
+      "kind": "premise",
+      "title": "R3F's peer range excludes React 19.3",
+      "source": "docs/decisions/premises.md:19",
+      "verify": "npm view @react-three/fiber peerDependencies.react",
+      "expect": "<19.3",
+      "recorded": "2026-09-21 (#342)",
+      "status": "expired 2026-09-22"
+    },
+    {
+      "id": "R398",
+      "kind": "ruling",
+      "title": "#342 dispatched with \"verify the premise first, and close the issue if it has moved.\"",
+      "source": "docs/decisions/rulings/2026-09-23-foundation.md:1019",
+      "buildsOn": "unknown",
+      "amends": null,
+      "assumes": [
+        "P-001"
+      ],
+      "costIfWrong": null
+    },
+    {
+      "id": "R399",
+      "kind": "ruling",
+      "title": "#342 closed, not built: its premise expired 36 hours after it was filed, and the builder",
+      "source": "docs/decisions/rulings/2026-09-23-foundation.md:1029",
+      "buildsOn": [
+        "R398"
+      ],
+      "amends": null,
+      "assumes": null,
+      "costIfWrong": null
+    },
+    {
+      "id": "R607",
+      "kind": "ruling",
+      "title": "#403 takes option 2, ruled in the brief",
+      "source": "docs/decisions/rulings/2026-09-24-loop-93.md:91",
+      "buildsOn": [
+        "ADR-0020 §7.5b"
+      ],
+      "amends": null,
+      "assumes": null,
+      "costIfWrong": "a kept wire overlaps its re-drawn twin; visible, recoverable by deleting it, and far"
+    },
+    {
+      "id": "R608",
+      "kind": "ruling",
+      "title": "Dependabot: merge the three leaf bumps on green, hold the React group",
+      "source": "docs/decisions/rulings/2026-09-24-loop-93.md:102",
+      "buildsOn": "none",
+      "amends": null,
+      "assumes": [
+        "P-001"
+      ],
+      "costIfWrong": null
+    },
+    {
+      "id": "R501",
+      "kind": "ruling",
+      "title": "The #372 spike executed ADR-0020 §1.5's mechanism and found it does not work. That is the",
+      "source": "docs/decisions/rulings/2026-09-24-loop.md:13",
+      "buildsOn": [
+        "ADR-0020 §1.5"
+      ],
+      "amends": null,
+      "assumes": null,
+      "costIfWrong": null
+    },
+    {
+      "id": "R502",
+      "kind": "ruling",
+      "title": "Substitution hides a genuine double drive from #362, and that is the sharper finding",
+      "source": "docs/decisions/rulings/2026-09-24-loop.md:26",
+      "buildsOn": [
+        "ADR-0020 §1.5"
+      ],
+      "amends": null,
+      "assumes": null,
+      "costIfWrong": null
+    },
+    {
+      "id": "R503",
+      "kind": "ruling",
+      "title": "Two agents found the same live `main` bug independently, from opposite directions",
+      "source": "docs/decisions/rulings/2026-09-24-loop.md:34",
+      "buildsOn": [
+        "ADR-0020 §1.5"
+      ],
+      "amends": null,
+      "assumes": null,
+      "costIfWrong": null
+    },
+    {
+      "id": "R514",
+      "kind": "ruling",
+      "title": "#433's nits go in as a briefed builder round, not a merge-as-is and not a fourth review",
+      "source": "docs/decisions/rulings/2026-09-24-loop.md:155",
+      "buildsOn": [
+        "R513",
+        "ADR-0020 §1.5"
+      ],
+      "amends": null,
+      "assumes": null,
+      "costIfWrong": "one extra small docs round (~20 min of agent time) on a document that has already"
+    },
+    {
+      "id": "R769",
+      "kind": "ruling",
+      "title": "the rendered-geometry golden can be produced headless, in Node",
+      "source": "docs/decisions/rulings/2026-09-29-hacer-loop-60.md:83",
+      "buildsOn": "none",
+      "amends": [
+        "ADR-0020 §7.1",
+        "ADR-0020 §9"
+      ],
+      "assumes": null,
+      "costIfWrong": "a Node golden misses something only a real WebGL frame shows; #592's parity test bounds"
+    }
+  ],
+  "edges": [
+    {
+      "from": "ADR-0020",
+      "to": "ADR-0007",
+      "kind": "supersedes",
+      "source": "docs/decisions/0007-wire-routing-engine-direction.md:3"
+    },
+    {
+      "from": "ADR-0020",
+      "to": "ADR-0008",
+      "kind": "amends",
+      "anchor": "§6",
+      "source": "docs/decisions/0020-spec-only-writes-read-only-projections.md:6"
+    },
+    {
+      "from": "ADR-0020",
+      "to": "ADR-0009",
+      "kind": "amends",
+      "source": "docs/decisions/0009-bus-components-entity-and-wireendpoint-bus.md:5"
+    },
+    {
+      "from": "R769",
+      "to": "ADR-0020",
+      "kind": "amends",
+      "anchor": "§7.1, §9",
+      "source": "docs/decisions/rulings/2026-09-29-hacer-loop-60.md:85"
+    },
+    {
+      "from": "ADR-0022",
+      "to": "ADR-0020",
+      "kind": "builds-on",
+      "anchor": "§4",
+      "source": "docs/decisions/0022-node-entries.md:5"
+    },
+    {
+      "from": "R398",
+      "to": "P-001",
+      "kind": "assumes",
+      "source": "docs/decisions/rulings/2026-09-23-foundation.md:1021"
+    },
+    {
+      "from": "R399",
+      "to": "R398",
+      "kind": "builds-on",
+      "source": "docs/decisions/rulings/2026-09-23-foundation.md:1030"
+    },
+    {
+      "from": "R607",
+      "to": "ADR-0020",
+      "kind": "builds-on",
+      "anchor": "§7.5b",
+      "source": "docs/decisions/rulings/2026-09-24-loop-93.md:92"
+    },
+    {
+      "from": "R608",
+      "to": "P-001",
+      "kind": "assumes",
+      "source": "docs/decisions/rulings/2026-09-24-loop-93.md:104"
+    },
+    {
+      "from": "R501",
+      "to": "ADR-0020",
+      "kind": "builds-on",
+      "anchor": "§1.5",
+      "source": "docs/decisions/rulings/2026-09-24-loop.md:14"
+    },
+    {
+      "from": "R502",
+      "to": "ADR-0020",
+      "kind": "builds-on",
+      "anchor": "§1.5",
+      "source": "docs/decisions/rulings/2026-09-24-loop.md:27"
+    },
+    {
+      "from": "R503",
+      "to": "ADR-0020",
+      "kind": "builds-on",
+      "anchor": "§1.5",
+      "source": "docs/decisions/rulings/2026-09-24-loop.md:35"
+    },
+    {
+      "from": "R514",
+      "to": "ADR-0020",
+      "kind": "builds-on",
+      "anchor": "§1.5",
+      "source": "docs/decisions/rulings/2026-09-24-loop.md:156"
+    },
+    {
+      "from": "L048",
+      "to": "P-001",
+      "kind": "introduced-by",
+      "source": "docs/harness/ledger.md:63"
+    }
+  ],
+  "artefacts": [
+    {
+      "id": "#128",
+      "kind": "github",
+      "citedBy": [
+        "ADR-0008"
+      ]
+    },
+    {
+      "id": "#318",
+      "kind": "github",
+      "citedBy": [
+        "ADR-0020"
+      ]
+    },
+    {
+      "id": "#190",
+      "kind": "github",
+      "citedBy": [
+        "ADR-0020"
+      ]
+    },
+    {
+      "id": "#217",
+      "kind": "github",
+      "citedBy": [
+        "ADR-0020",
+        "R769"
+      ]
+    },
+    {
+      "id": "#372",
+      "kind": "github",
+      "citedBy": [
+        "ADR-0020",
+        "R501",
+        "R503"
+      ]
+    },
+    {
+      "id": "#598",
+      "kind": "github",
+      "citedBy": [
+        "ADR-0020",
+        "R769"
+      ]
+    },
+    {
+      "id": "#362",
+      "kind": "github",
+      "citedBy": [
+        "ADR-0020",
+        "R502"
+      ]
+    },
+    {
+      "id": "#375",
+      "kind": "github",
+      "citedBy": [
+        "ADR-0020",
+        "R502"
+      ]
+    },
+    {
+      "id": "#431",
+      "kind": "github",
+      "citedBy": [
+        "ADR-0020",
+        "R503"
+      ]
+    },
+    {
+      "id": "#374",
+      "kind": "github",
+      "citedBy": [
+        "ADR-0020",
+        "R514"
+      ]
+    },
+    {
+      "id": "#208",
+      "kind": "github",
+      "citedBy": [
+        "ADR-0020",
+        "ADR-0022"
+      ]
+    },
+    {
+      "id": "#331",
+      "kind": "github",
+      "citedBy": [
+        "ADR-0020",
+        "R769"
+      ]
+    },
+    {
+      "id": "#592",
+      "kind": "github",
+      "citedBy": [
+        "ADR-0020",
+        "R769"
+      ]
+    },
+    {
+      "id": "#342",
+      "kind": "github",
+      "citedBy": [
+        "P-001",
+        "R398",
+        "R399",
+        "R608"
+      ]
+    },
+    {
+      "id": "#455",
+      "kind": "github",
+      "citedBy": [
+        "R608"
+      ]
+    },
+    {
+      "id": "#394",
+      "kind": "github",
+      "citedBy": [
+        "R398",
+        "R608"
+      ]
+    },
+    {
+      "id": "#398",
+      "kind": "github",
+      "citedBy": [
+        "R503"
+      ]
+    },
+    {
+      "id": "#397",
+      "kind": "github",
+      "citedBy": [
+        "R503"
+      ]
+    },
+    {
+      "id": "#403",
+      "kind": "github",
+      "citedBy": [
+        "R607"
+      ]
+    },
+    {
+      "id": "#3915",
+      "kind": "github",
+      "citedBy": [
+        "R399"
+      ]
+    },
+    {
+      "id": "#413",
+      "kind": "github",
+      "citedBy": [
+        "R608"
+      ]
+    },
+    {
+      "id": "#414",
+      "kind": "github",
+      "citedBy": [
+        "R608"
+      ]
+    },
+    {
+      "id": "#411",
+      "kind": "github",
+      "citedBy": [
+        "R608"
+      ]
+    },
+    {
+      "id": "#410",
+      "kind": "github",
+      "citedBy": [
+        "R608"
+      ]
+    },
+    {
+      "id": "#433",
+      "kind": "github",
+      "citedBy": [
+        "R514"
+      ]
+    },
+    {
+      "id": "#615",
+      "kind": "github",
+      "citedBy": [
+        "R769"
+      ]
+    },
+    {
+      "id": "L048",
+      "kind": "ledger-row",
+      "date": "2026-09-23",
+      "title": "#342's criteria — hold React at 19.2.x because `@react-three/fiber`'s peer range excludes it — rested on an upstream fact that expired **~31 hours after the issue was written** (#342 created 2026-09-21T12:46:27Z; R3F 9.8.0 published 2026-09-22T19:43:58Z): `pmndrs/react-three-fiber#3916` merged 2026-09-22 and v9.8.0 widened `peerDependencies.react` to `>=19 <19.4`, so the issue's own documented lift condition was already satisfied before any builder opened it. Building it as written would have merged a pin whose stated removal condition was met, holding HACER back from a React release upstream supports. Fourth occurrence today of the class in `docs/harness/sessions/2026-09-23.md` §7",
+      "source": "docs/harness/ledger.md:63"
+    }
+  ]
+}

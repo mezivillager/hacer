@@ -39,6 +39,9 @@ export interface Check {
   line: string | null; verdict: string | null; disagrees: boolean
 }
 export interface Adr { number: number; file: string; title: string | null; status: string | null }
+export interface LineageNode { id: string; kind: 'adr' | 'ruling' | 'premise'; title: string; source: string; status?: string | null }
+export interface LineageEdge { from: string; to: string; kind: string; anchor?: string }
+export interface LineageArtefact { id: string; kind: 'github' | 'ledger-row'; title?: string; source?: string; citedBy?: string[] }
 export interface Phase { phase: string; status: string; scope: string; doc: string | null; group: string }
 export interface Snapshot {
   schemaVersion: 1; generatedAt: string; head: { sha: string; subject: string }; freshness: Record<string, Freshness>
@@ -57,6 +60,7 @@ export interface Snapshot {
   adrs: { items: Adr[] }
   roadmap: { lastUpdated: string | null; phases: Phase[] }
   checks: { until?: string; items: Check[] }
+  lineage: { nodes: LineageNode[]; edges: LineageEdge[]; artefacts: LineageArtefact[] }
 }
 
 /** A check that failed, or whose published line says BLOCK: the ones worth queueing an improvement against. */
