@@ -2,7 +2,8 @@ import { REPO, type Snapshot } from './snapshot'
 
 export interface Item { number: number; title: string; url: string }
 export interface Count { label: string; value: number }
-export interface Stage { id: string; name: string; counts: Count[]; items: Item[] }
+export interface Group { label: string; items: Item[] }
+export interface Stage { id: string; name: string; counts: Count[]; items: Item[]; groups?: Group[] }
 
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000
 const issueOf = ({ number, title }: { number: number; title: string }): Item => ({ number, title, url: `${REPO}/issues/${number}` })
@@ -27,7 +28,8 @@ export function stagesOf({ tasks, claims, prs, generatedAt }: Snapshot): Stage[]
     { id: 'building', name: 'Building', counts: [{ label: 'building', value: building.length }], items: building.map(issueOf) },
     { id: 'pr', name: 'PR', counts: [{ label: 'open', value: prs.open.length }], items: prs.open.map(prOf) },
     {
-      id: 'verifying', name: 'Verifying', items: prs.open.map(prOf),
+      id: 'verifying', name: 'Verifying', items: [...noVerdict, ...withVerdict].map(prOf),
+      groups: [{ label: 'no verdict', items: noVerdict.map(prOf) }, { label: 'with verdict', items: withVerdict.map(prOf) }],
       counts: [{ label: 'no verdict', value: noVerdict.length }, { label: 'with verdict', value: withVerdict.length }],
     },
     { id: 'merged', name: 'Merged (7d)', counts: [{ label: 'merged', value: merged.length }], items: merged.map(prOf) },
