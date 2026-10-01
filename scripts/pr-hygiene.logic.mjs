@@ -155,7 +155,7 @@ function deletionWaiver({ reviewable }) {
 // ---------------------------------------------------------------- linked issue
 
 // A keyword followed by #n, owner/repo#n or an issue URL.
-const ISSUE_REF = String.raw`\s*:?\s*(?:https:\/\/github\.com\/[\w.-]+\/[\w.-]+\/issues\/|(?:[\w.-]+\/[\w.-]+)?#)(\d+)`
+const ISSUE_REF = String.raw`\s*:?\s*(?:https:\/\/github\.com\/[\w.-]+\/[\w.-]+\/issues\/|(?:[\w.-]+\/[\w.-]+)?#)(\d+)\b`
 const linkRe = (keywords) => new RegExp(String.raw`\b(?:${keywords})${ISSUE_REF}`, 'gi')
 
 /** GitHub's closing keywords. It acts on the keyword alone: "this does not close #n" closes #n (#443). */
@@ -223,9 +223,17 @@ function findPartialCloses(body) {
   return [...found.values()]
 }
 
+const isDoc = (p) => p.startsWith('docs/') || p.endsWith('.md')
+
 /** True when there is at least one reviewable file and all of them are documentation. */
 export function isDocsOnly(reviewableFilenames) {
-  return reviewableFilenames.length > 0 && reviewableFilenames.every((p) => p.startsWith('docs/') || p.endsWith('.md'))
+  return reviewableFilenames.length > 0 && reviewableFilenames.every(isDoc)
+}
+
+/** A docs-only PR: docs among its reviewable files, and nothing in any bucket that is not documentation. */
+function isDocsOnlyPr(measures) {
+  const names = (bucket) => measures[bucket].files.map((f) => f.filename)
+  return isDocsOnly(names('reviewable')) && [...names('test'), ...names('excluded')].every(isDoc)
 }
 
 /**
@@ -285,7 +293,7 @@ function linkedIssue({ body, author, labels, measures }) {
   if (issues.length > 0) {
     return [{ rule: 'linked-issue', level: 'pass', message: `linked ${issues.map((n) => `#${n}`).join(', ')}` }]
   }
-  if (isDocsOnly(measures.reviewable.files.map((f) => f.filename))) {
+  if (isDocsOnlyPr(measures)) {
     return [{ rule: 'linked-issue', level: 'pass', message: 'docs-only PR — no linked issue required' }]
   }
   return [
@@ -797,7 +805,7 @@ export function evaluate(input, rules = RULES) {
     measures,
     linkedIssues: findLinkedIssues(body),
     closingIssues: findClosingIssues(body),
-    docsOnly: isDocsOnly(measures.reviewable.files.map((f) => f.filename)),
+    docsOnly: isDocsOnlyPr(measures),
     linkedIssueExemption: linkedIssueExemption({ author, labels }),
     sizeExemption: deletion?.exempt ? deletion.reason : null,
     ...Object.fromEntries(ratchets.map(({ kind, verdict }) => [kind.input, verdict?.status ?? null])),
