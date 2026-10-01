@@ -182,13 +182,10 @@ tasks/                # Task management for AI agents
     ├── receiving-code-review/
     ├── requesting-code-review/
     ├── subagent-driven-development/
-    ├── systematic-debugging/
     ├── tdd/
-    ├── test-driven-development/
     ├── using-git-worktrees/
     ├── using-superpowers/
     ├── verification-before-completion/
-    ├── writing-plans/
     └── writing-skills/
 
 scripts/
@@ -198,7 +195,7 @@ scripts/
 ├── check-doc-paths.mjs  # lint:docs — no absolute paths (all docs) + cited paths exist (REPO_MAP, AGENTS)
 ├── check-test-files.sh  # Pre-commit TDD verification script
 ├── hooks/               # Pure logic + tests behind the hooks (docPaths, docPathExists, docsSyncStop)
-├── sync-superpowers.sh  # Sync skills from obra/superpowers (preserves hacer-patterns, docs-sync)
+├── sync-superpowers.sh  # Sync skills from obra/superpowers; skips the skills HACER owns or edited and never re-adds removed duplicates (--dry-run)
 ├── sync-vectors.sh      # Clone nand2tetris/web-ide at a pinned commit; write conformance/vectors/
 └── protected-paths.logic.mjs  # protected paths: conformance/vectors/** (#193), **/__snapshots__/characterization/** (#331); #151 extends it
 

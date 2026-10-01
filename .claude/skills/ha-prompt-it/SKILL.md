@@ -49,8 +49,7 @@ a doc and the code disagree, the code wins and the doc gets fixed in the same
 branch.
 
 **Prefer this repo's own skills** in `.claude/skills/` — `planning`,
-`writing-plans`, `executing-plans`, `tdd`, `test-driven-development`,
-`dispatching-parallel-agents`, `code-review`, `docs-sync`, `hacer-patterns`,
+`executing-plans`, `tdd`, `debugging`, `dispatching-parallel-agents`,, `code-review`, `docs-sync`, `hacer-patterns`,
 `verification-before-completion`, `finishing-a-development-branch` — over the
 global superpowers equivalents wherever both exist.
 
@@ -231,7 +230,7 @@ instead.
 
 ## Phase 2 — The plan.
 
-Use the repo's `planning` / `writing-plans` skills, with these amendments:
+Use the repo's `planning` skill, with these amendments:
 
 - **Spec header:** point `Spec:` at the approved `docs/specs/` path.
 - **Atomic tasks:** 2–5 minutes each, with exact file path, complete code, and the

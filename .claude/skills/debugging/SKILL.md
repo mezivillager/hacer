@@ -14,7 +14,7 @@ Random fixes waste time and create new bugs. If you haven't identified the root 
 1. Read error messages completely. Stack traces contain line numbers and file paths. Do not skim.
 2. Reproduce the failure consistently. (`pnpm run test:run`, `pnpm run lint`)
 3. Check recent changes (`git diff HEAD~1`).
-4. Gather evidence before guessing. Use Root-Cause-Tracing. Trace data flow backward.
+4. Gather evidence before guessing. Trace data flow backward to the original trigger: `root-cause-tracing.md` (and `find-polluter.sh` for a test that pollutes another).
 5. In multi-layer systems (React component -> store action -> simulation logic), add diagnostic output at each boundary to see where data breaks down.
 
 ## Phase 2: Pattern Analysis
@@ -28,10 +28,10 @@ Random fixes waste time and create new bugs. If you haven't identified the root 
 3. Verify the result. If the fix didn't work -> form a new hypothesis.
 
 ## Phase 4: Implementation & Defense-in-Depth
-1. Write a failing test that reproduces the bug before fixing it (TDD).
+1. Write a failing test that reproduces the bug before fixing it (the `tdd` skill).
 2. Fix the root cause (not the symptom).
-3. If applicable, implement Defense-in-Depth: add assertions or throw explicit errors early to catch this class of bug sooner next time.
-4. For async UI or Playwright tests, utilize Condition-Based Waiting. Do not use random `waitForTimeout` delays. Wait for specific DOM node states or text.
+3. If applicable, implement Defense-in-Depth (`defense-in-depth.md`): add assertions or throw explicit errors early to catch this class of bug sooner next time.
+4. For async UI or Playwright tests, utilize Condition-Based Waiting (`condition-based-waiting.md`). Do not use random `waitForTimeout` delays. Wait for specific DOM node states or text.
 </instructions>
 
 <examples>

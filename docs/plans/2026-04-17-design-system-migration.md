@@ -89,10 +89,10 @@ If any gate fails for a chunk, fix the failure inside that chunk's commit (or fo
 
 Per `.cursorrules` and `AGENTS.md`:
 
-- **@tdd / @test-driven-development** — every step that adds production code must be preceded by a failing test
+- **@tdd** — every step that adds production code must be preceded by a failing test
 - **@hacer-patterns** — for store selectors, action dispatch, R3F patterns
 - **@verification-before-completion** — before claiming any chunk is complete
-- **@systematic-debugging** — if a step fails unexpectedly, do not propose a fix without root cause investigation
+- **@debugging** — if a step fails unexpectedly, do not propose a fix without root cause investigation
 - **@code-review** — invoke before opening the PR (chunk 10)
 
 ---

@@ -964,4 +964,4 @@ Phase 0.5 panels · undo/redo · layers · gate duplication · export/import cir
 
 ## Next step
 
-Implementation plan via the writing-plans skill. The plan will break each commit (1 → 2 → 3a → 3b → 3c → 3d → 3e → 3f → 4 → 5 → 6) into 2–5 minute atomic tasks with exact file paths, complete code snippets, and verification commands.
+Implementation plan via the planning skill. The plan will break each commit (1 → 2 → 3a → 3b → 3c → 3d → 3e → 3f → 4 → 5 → 6) into 2–5 minute atomic tasks with exact file paths, complete code snippets, and verification commands.
