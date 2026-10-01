@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-01T21:53:31.254Z",
+  "generatedAt": "2026-10-01T22:01:18.213Z",
   "head": {
-    "sha": "3056f1493bd1033347368f910f4589ee5636353e",
-    "date": "2026-10-02T00:52:30+03:00",
-    "subject": "chore(backlog): name filed-elsewhere issues, on-request before the gate (#349)"
+    "sha": "0c37a1e54b6370ad9d0324b3efa0723960f17974",
+    "date": "2026-10-02T01:00:34+03:00",
+    "subject": "fix(mission-control): scroll the loop diagram at its natural width and split Verifying by verdict"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-01T21:53:31.254Z",
+      "fetchedAt": "2026-10-01T22:01:18.213Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-01T21:53:31.254Z",
+      "fetchedAt": "2026-10-01T22:01:18.213Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-01T21:53:31.254Z",
+      "fetchedAt": "2026-10-01T22:01:18.213Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-01T21:53:31.254Z",
+      "fetchedAt": "2026-10-01T22:01:18.213Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-01T21:53:31.254Z",
+      "fetchedAt": "2026-10-01T22:01:18.213Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-01T21:53:31.254Z",
+      "fetchedAt": "2026-10-01T22:01:18.213Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-01T21:53:31.254Z",
+      "fetchedAt": "2026-10-01T22:01:18.213Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-01T21:53:31.254Z",
+      "fetchedAt": "2026-10-01T22:01:18.213Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-01T21:53:31.254Z",
+      "fetchedAt": "2026-10-01T22:01:18.213Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-01T21:53:31.254Z",
+      "fetchedAt": "2026-10-01T22:01:18.213Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-01T21:53:31.254Z",
+      "fetchedAt": "2026-10-01T22:01:18.213Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-01T21:53:31.254Z",
+      "fetchedAt": "2026-10-01T22:01:18.213Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-10-01T21:53:31.254Z",
+      "fetchedAt": "2026-10-01T22:01:18.213Z",
       "status": "ok"
     }
   },
@@ -376,12 +376,12 @@
         "lane": "process",
         "slug": "mission-control",
         "epicNumber": 458,
-        "open": 4,
+        "open": 3,
         "ready": 1,
-        "inProgress": 1,
+        "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 2,
+        "agentReady": 1,
         "filedElsewhere": [
           156
         ],
@@ -391,8 +391,8 @@
         },
         "title": "Epic: mission-control — Mission Control: the platform's status, process and roadmap as one site",
         "subIssues": {
-          "completed": 11,
-          "percentCompleted": 91,
+          "completed": 12,
+          "percentCompleted": 100,
           "total": 12
         }
       }
@@ -2281,22 +2281,6 @@
         "reason": "unshaped"
       },
       {
-        "number": 513,
-        "title": "Mission Control Process view: stage labels shrink with the SVG at phone width; Verifying and PR drill into the same list",
-        "labels": [
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "project:mission-control"
-        ],
-        "blocking": [],
-        "project": "mission-control",
-        "rank": 14,
-        "lane": "process",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 550,
         "title": "merge-on-green: disarm auto-merge when a required check fails",
         "labels": [
@@ -2494,7 +2478,6 @@
       "mission-control": [
         560,
         509,
-        513,
         584
       ],
       "spine": [
@@ -2633,6 +2616,32 @@
       }
     ],
     "merged": [
+      {
+        "number": 645,
+        "title": "fix(mission-control): Process view labels at 375 px, Verifying drill-down",
+        "url": "https://github.com/mezivillager/hacer/pull/645",
+        "author": "mezivillager",
+        "labels": [
+          "risk:0",
+          "project:mission-control"
+        ],
+        "headRefName": "fix/513-process-view-nits",
+        "isDraft": false,
+        "createdAt": "2026-10-01T21:55:43Z",
+        "mergedAt": "2026-10-01T22:00:35Z",
+        "closes": [
+          513
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Sonnet 5.5 (fresh context)",
+            "at": "2026-10-01T21:59:59Z",
+            "url": "https://github.com/mezivillager/hacer/pull/645#issuecomment-5941507672"
+          }
+        ]
+      },
       {
         "number": 644,
         "title": "chore(backlog): name filed-elsewhere issues, on-request before the gate (#349)",
@@ -4129,31 +4138,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/549#issuecomment-5854907260"
           }
         ]
-      },
-      {
-        "number": 548,
-        "title": "feat(conformance): vendor the Project 3 nand2tetris vectors, and refuse files upstream does not ship",
-        "url": "https://github.com/mezivillager/hacer/pull/548",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:2",
-          "project:foundation"
-        ],
-        "headRefName": "feat/193-vectors-03",
-        "isDraft": false,
-        "createdAt": "2026-09-27T09:40:47Z",
-        "mergedAt": "2026-09-27T09:51:48Z",
-        "closes": [],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Opus 5.5 (claude-opus-5-5)",
-            "at": "2026-09-27T09:51:10Z",
-            "url": "https://github.com/mezivillager/hacer/pull/548#issuecomment-5854809762"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4293,31 +4277,6 @@
           "author": "mezivillager",
           "at": "2026-09-25T06:02:35Z",
           "url": "https://github.com/mezivillager/hacer/issues/470#issuecomment-5827635352"
-        }
-      },
-      {
-        "number": 513,
-        "ref": "refs/heads/claim/513",
-        "sha": "5500422a9a3d983976c25d6520129a4020617604",
-        "state": "OPEN",
-        "title": "Mission Control Process view: stage labels shrink with the SVG at phone width; Verifying and PR drill into the same list",
-        "url": "https://github.com/mezivillager/hacer/issues/513",
-        "labels": [
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "project:mission-control"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-92",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-01T21:26:09Z",
-          "url": "https://github.com/mezivillager/hacer/issues/513#issuecomment-5940949244"
         }
       },
       {
@@ -6204,7 +6163,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-27",
-        "merges": 17
+        "merges": 16
       },
       {
         "date": "2026-09-28",
@@ -6220,20 +6179,20 @@
       },
       {
         "date": "2026-10-01",
-        "merges": 4
+        "merges": 5
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-17T21:53:31.254Z",
-      "merged": 201,
+      "since": "2026-09-17T22:01:18.213Z",
+      "merged": 202,
       "openToMergeHours": {
         "median": 0.2,
         "p90": 8.9
       },
       "blockedOnce": {
         "count": 22,
-        "of": 115,
+        "of": 116,
         "prs": [
           238,
           248,
@@ -6261,8 +6220,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 104,
-          "withVerdict": 92,
+          "merged": 105,
+          "withVerdict": 93,
           "without": [
             250,
             285,
@@ -7580,11 +7539,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "3056f1493bd1033347368f910f4589ee5636353e",
+        "sha": "0c37a1e54b6370ad9d0324b3efa0723960f17974",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36931537039/job/110601677035",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36932384457/job/110604615108",
         "line": null,
         "verdict": null,
         "fields": {},
