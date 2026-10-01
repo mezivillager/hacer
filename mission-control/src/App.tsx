@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Adrs } from './Adrs'
 import { Charts } from './Charts'
 import { Ledger } from './Ledger'
+import { Lineage } from './Lineage'
 import { NeedsHuman } from './NeedsHuman'
 import { Overview } from './Overview'
 import { Process } from './Process'
@@ -27,7 +28,7 @@ export function App({ load = loadSnapshot, now = Date.now }: { load?: () => Prom
     <main className="mc">
       <header>
         <h1>Mission Control</h1>
-        <nav><a href="#/">Overview</a> <a href="#/projects">Projects</a> <a href="#/process">Process</a> <a href="#/timeline">Timeline</a> <a href="#/charts">Charts</a> <a href="#/roadmap">Roadmap</a> <a href="#/ledger">Ledger</a> <a href="#/adrs">ADRs</a> <a href="#/needs-human">Needs human</a></nav>
+        <nav><a href="#/">Overview</a> <a href="#/projects">Projects</a> <a href="#/process">Process</a> <a href="#/timeline">Timeline</a> <a href="#/charts">Charts</a> <a href="#/roadmap">Roadmap</a> <a href="#/ledger">Ledger</a> <a href="#/adrs">ADRs</a> <a href="#/lineage">Lineage</a> <a href="#/needs-human">Needs human</a></nav>
         <p>Snapshot {when(snapshot.generatedAt)} · <a href={`${REPO}/commit/${snapshot.head.sha}`} title={snapshot.head.subject}>
           {snapshot.head.sha.slice(0, 7)}</a></p>
       </header>
@@ -42,6 +43,7 @@ export function App({ load = loadSnapshot, now = Date.now }: { load?: () => Prom
       {route.view === 'roadmap' && <Roadmap snapshot={snapshot} />}
       {route.view === 'ledger' && <Ledger snapshot={snapshot} />}
       {route.view === 'adrs' && <Adrs snapshot={snapshot} />}
+      {route.view === 'lineage' && <Lineage snapshot={snapshot} />}
       {route.view === 'needs-human' && <NeedsHuman snapshot={snapshot} />}
     </main>
   )
