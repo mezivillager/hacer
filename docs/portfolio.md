@@ -136,5 +136,5 @@ open, 76 unshaped): `projects` marks it `over cap`, the signal for F12's close-o
 
 ## Where the rest of the process lives
 
-Labels, the issue form, the agent loop, PR budget, checks and merge tiers:
-`docs/research/2026-09-18-agent-readiness/WORK-SYSTEM.md` (to be superseded by `docs/harness/README.md`).
+Labels and the issue form: `docs/harness/issue-form.md`. The agent loop, PR budget, checks and merging:
+`docs/harness/README.md`.

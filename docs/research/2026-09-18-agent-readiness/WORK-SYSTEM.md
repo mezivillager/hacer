@@ -1,5 +1,11 @@
 # HACER work system — how work is queued, picked up, gated and merged
 
+> **Historical design (2026-10-02, #280).** Not the live rules. Pick rule: `docs/portfolio.md` (the 2:2:1
+> rotation below was replaced by the eight-slot cycle). Labels, issue form and bot issue contract:
+> `docs/harness/issue-form.md`. Loop, checks, merging and measures: `docs/harness/README.md`. §7's merge
+> tiers are superseded by merge-on-green (`scripts/merge-on-green.mjs`, publishing grant `on-green`);
+> §9's three numbers are now four (README "What to measure").
+
 Revision 3 · 2026-09-18 · companion to `REPORT.md`. This is the design that makes these sentences work:
 
 > "Claude, list the priority projects." · "What's open in *surfaces*?" · "What can you pick up?" · "Work the next five items." · "Queue up: a truth-table export for the CLI."

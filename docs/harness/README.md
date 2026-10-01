@@ -23,7 +23,7 @@ always goes back to a fresh verifier — never the coordinator (`verifier-brief.
 | Step | Where the knob lives | What you can adjust |
 |---|---|---|
 | Which projects, in what order, how picks rotate | `docs/portfolio.md` | row order, the eight-slot cycle (`foundation → lineage → harness → foundation → mission-control → spine → foundation → aux`), the foundation gate, the hand-in-hand rule, dormant-mode caps — *amended 2026-09-18 (#259): was the 2:2:1 ratio; amended 2026-09-21 (#330) while the foundation plan (#318) runs: was `surfaces → harness → spine → aux → surfaces → harness`; amended again 2026-09-25 (#482): added `lineage` and `mission-control`, one slot each, "equal footing as the other priority projects"* |
-| What a task must contain before an agent may take it | `WORK-SYSTEM.md` §2 (issue form) and the labels | acceptance criteria as tests, verification command, risk |
+| What a task must contain before an agent may take it | `issue-form.md` (issue form and labels) | acceptance criteria as tests, verification command, risk |
 | Who may author pickable tasks | `scripts/backlog.mjs` allowlist (`BACKLOG_ALLOWLIST`) | the identities agents trust on a public repo |
 | How a task is built | `.claude/skills/ha-prompt-it/SKILL.md` + `implementer-brief.md` · agent `.claude/agents/hacer-builder.md` | tiers, TDD mechanics, worktree rules |
 | How a PR is judged | `verifier-brief.md` | what blocks, what is a nit, what must be tried |
@@ -34,7 +34,7 @@ always goes back to a fresh verifier — never the coordinator (`verifier-brief.
 | Whether the decision graph is sound | `pnpm run lint:lineage`, which `pnpm run lint` runs: `node scripts/lineage.mjs check --summary` (rules in `scripts/lineage.logic.mjs`) prints `LINEAGE: N decisions · M unlinked · K unresolved · J superseded-cited` and exits 0 whatever it finds — **warn mode** until #471 makes it fail and adds the ratchet. `check` without `--summary` lists every finding with its `file:line`; `check --fix` writes a missing reverse link. Commands and schema: `docs/decisions/README.md` § Lineage | the checks themselves; the cut-over date in `docs/decisions/README.md` (#469) |
 | Whether a premise still holds | `node scripts/lineage.mjs verify` (weekly `.github/workflows/lineage-verify.yml`, plus `workflow_dispatch`). Expired premises file one `project:lineage` issue each. A `manual` Verify cell and a `gh` command with no token are reported and do not fail the run. Register: `docs/decisions/premises.md` | the Verify commands and Expect matchers |
 | Which PRs get a browser run, and which suites | ADR-0016 (critical = the PR changes the UI: `src/components`, `src/App.tsx`, `src/gates`, `src/nodes`, `src/store`, `src/utils`, `src/styles`, `index.html`, `e2e`, `playwright.config.ts`, later `src/surfaces`; or the `critical` / `sev:*` labels on the PR or an issue it links) — the `browser-qa` check (`scripts/browser-qa.logic.mjs`) runs `@store` only, cloud only, never a local gate; `@ui` (3D) runs only by hand via `e2e.yml`; locally, only suites that do not mount the 3D canvas: today the canvas-less `@shell`, `pnpm exec playwright test --project shell`, a pre-flight and never a gate (ADR-0016 amendment 2026-09-29, #316) — *amended 2026-09-19 (#282): was `src/store/actions` only, plus `@ui` on canvas paths* | the critical paths (`CRITICAL_PATHS`) |
-| What the human still does | `WORK-SYSTEM.md` §7 (merge tiers) | opt a tier into auto-merge |
+| What the human still does | the `on-green` publishing grant in the workspace `CLAUDE.md`; `needs-human` issues | revoke or narrow the grant |
 | What went wrong, and whether it was mechanised | `ledger.md` | second occurrence → a lint, test or hook |
 | Keeping `gh-pages` preview folders tidy | `pr-preview.yml`'s `sweep-previews` job (daily + `workflow_dispatch`, `gh-pages` concurrency group) calls `scripts/pr-preview-sweep.mjs`; the removal decision is the pure `scripts/pr-preview-sweep.logic.mjs` (#484) — safety net for what the PR's own `closed`-event cleanup misses | the schedule, `foldersToRemove`'s open-PR matching |
 
@@ -260,7 +260,7 @@ Read it before dispatching a batch of agents — the meter does not move linearl
 Median reviewable lines per PR · the owner's minutes per merged PR · escaped defects, found after
 the gates passed (each adds a test at the layer that missed it) · **tokens per merged PR**, summed
 from the subagent usage reports of every agent that touched it. The conformance pass count is
-already a gate. The first three come from `WORK-SYSTEM.md` §9; the fourth was added by #255 —
+already a gate. The fourth was added by #255 —
 the first reading is ~1.4M subagent tokens for 8 verified PRs (~175k each) on the first execution
 run. `scripts/agent-orient` (#156) prints all four once it exists; until then the coordinator
 reports the number when it reports the run.
