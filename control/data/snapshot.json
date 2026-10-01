@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-01T11:27:08.940Z",
+  "generatedAt": "2026-10-01T13:02:37.139Z",
   "head": {
     "sha": "e96553fad7fcb80fb66bbfec765a36bfa75a2cbb",
     "date": "2026-10-01T14:26:01+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-01T11:27:08.940Z",
+      "fetchedAt": "2026-10-01T13:02:37.139Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-01T11:27:08.940Z",
+      "fetchedAt": "2026-10-01T13:02:37.139Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-01T11:27:08.940Z",
+      "fetchedAt": "2026-10-01T13:02:37.139Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-01T11:27:08.940Z",
+      "fetchedAt": "2026-10-01T13:02:37.139Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-01T11:27:08.940Z",
+      "fetchedAt": "2026-10-01T13:02:37.139Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-01T11:27:08.940Z",
+      "fetchedAt": "2026-10-01T13:02:37.139Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-01T11:27:08.940Z",
+      "fetchedAt": "2026-10-01T13:02:37.139Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-01T11:27:08.940Z",
+      "fetchedAt": "2026-10-01T13:02:37.139Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-01T11:27:08.940Z",
+      "fetchedAt": "2026-10-01T13:02:37.139Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-01T11:27:08.940Z",
+      "fetchedAt": "2026-10-01T13:02:37.139Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-01T11:27:08.940Z",
+      "fetchedAt": "2026-10-01T13:02:37.139Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-01T11:27:08.940Z",
+      "fetchedAt": "2026-10-01T13:02:37.139Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-10-01T11:27:08.940Z",
+      "fetchedAt": "2026-10-01T13:02:37.139Z",
       "status": "ok"
     }
   },
@@ -6150,7 +6150,7 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-17T11:27:08.940Z",
+      "since": "2026-09-17T13:02:37.139Z",
       "merged": 200,
       "openToMergeHours": {
         "median": 0.2,
@@ -7508,12 +7508,15 @@
         "pr": null,
         "sha": "e96553fad7fcb80fb66bbfec765a36bfa75a2cbb",
         "check": "ci",
-        "conclusion": null,
-        "completedAt": null,
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-01T11:29:16Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/36855336816/job/110346386215",
-        "line": null,
-        "verdict": null,
-        "fields": {},
+        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 71,
+          "new": 0
+        },
         "disagrees": false
       },
       {
