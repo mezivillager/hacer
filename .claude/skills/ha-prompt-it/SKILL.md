@@ -315,7 +315,7 @@ milestone, rule and proceed, ledger every ruling, never stall.
   code and its red test; a prose cut or a behaviour-preserving simplification carries
   none, the suite staying green being its evidence. The explanation is one line per
   finding in the commit message and the PR body, never a new comment block, and the
-  delta-read runs `diff-size-report` on the fix diff.
+  delta-read runs `diff-size-report` on the fix diff (`--direct <old> <new>` across an amend).
 - **The whole-branch review is never skipped, in any tier:** one fresh reviewer
   over the whole diff before the definition of done runs, pointed at the
   ledger's parked findings. It checks the branch for duplicated logic as a named item; duplication is fixed
@@ -566,8 +566,8 @@ suite=store` is the useful move.
   files in a category, whether it splits into separately reviewable changes; at a test:prod ratio above 2:1, the
   properties proven more than once; after the diff has grown more than 50% since the first review, a consolidation
   pass. Prose above 25% of added production lines or 15% of added test lines, in a category with at least 200 added
-  lines, is a should-fix "justify or cut"; a prompt may override the defaults with a reason; in this workspace they
-  are provisional until a baseline has been measured once. When `diff-size-report` is absent, report
+  lines, is a should-fix "justify or cut"; a prompt may override the defaults with a reason (hacer's tree
+  measures 15–17% production prose and 8% in tests, 2026-10-01). When `diff-size-report` is absent, report
   `git diff --numstat` by category and mark the prose share owed. A reviewer that proposes no cut says what it compared.
 
 ## Staffing table (Full tier: produced in Phase 1, kept current)
