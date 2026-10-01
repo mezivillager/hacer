@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-01T10:42:38.212Z",
+  "generatedAt": "2026-10-01T11:27:08.940Z",
   "head": {
-    "sha": "61ab98e5fea18c4eaf8ef3406280e30806f020a6",
-    "date": "2026-10-01T13:41:24+03:00",
-    "subject": "docs(skills): measured thresholds; direct mode across an amend"
+    "sha": "e96553fad7fcb80fb66bbfec765a36bfa75a2cbb",
+    "date": "2026-10-01T14:26:01+03:00",
+    "subject": "docs(skills): keep red commits for the verifier; merge after its PASS"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-01T10:42:38.212Z",
+      "fetchedAt": "2026-10-01T11:27:08.940Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-01T10:42:38.212Z",
+      "fetchedAt": "2026-10-01T11:27:08.940Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-01T10:42:38.212Z",
+      "fetchedAt": "2026-10-01T11:27:08.940Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-01T10:42:38.212Z",
+      "fetchedAt": "2026-10-01T11:27:08.940Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-01T10:42:38.212Z",
+      "fetchedAt": "2026-10-01T11:27:08.940Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-01T10:42:38.212Z",
+      "fetchedAt": "2026-10-01T11:27:08.940Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-01T10:42:38.212Z",
+      "fetchedAt": "2026-10-01T11:27:08.940Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-01T10:42:38.212Z",
+      "fetchedAt": "2026-10-01T11:27:08.940Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-01T10:42:38.212Z",
+      "fetchedAt": "2026-10-01T11:27:08.940Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-01T10:42:38.212Z",
+      "fetchedAt": "2026-10-01T11:27:08.940Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-01T10:42:38.212Z",
+      "fetchedAt": "2026-10-01T11:27:08.940Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-01T10:42:38.212Z",
+      "fetchedAt": "2026-10-01T11:27:08.940Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-10-01T10:42:38.212Z",
+      "fetchedAt": "2026-10-01T11:27:08.940Z",
       "status": "ok"
     }
   },
@@ -2605,6 +2605,27 @@
     ],
     "merged": [
       {
+        "number": 641,
+        "title": "docs(skills): squash before the PR; merge on green through merge-on-green.mjs",
+        "url": "https://github.com/mezivillager/hacer/pull/641",
+        "author": "mezivillager",
+        "labels": [],
+        "headRefName": "docs/docs-push-and-squash",
+        "isDraft": false,
+        "createdAt": "2026-10-01T11:07:32Z",
+        "mergedAt": "2026-10-01T11:26:02Z",
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (risk:0 docs-only exception)",
+            "at": "2026-10-01T11:25:24Z",
+            "url": "https://github.com/mezivillager/hacer/pull/641#issuecomment-5930339307"
+          }
+        ]
+      },
+      {
         "number": 640,
         "title": "docs(skills): comments none by default; size check in every review",
         "url": "https://github.com/mezivillager/hacer/pull/640",
@@ -4109,32 +4130,13 @@
             "url": "https://github.com/mezivillager/hacer/pull/544#issuecomment-5854479177"
           }
         ]
-      },
-      {
-        "number": 543,
-        "title": "docs(harness): the 2026-09-26 reviews consolidated, and a standing brief for every cycle",
-        "url": "https://github.com/mezivillager/hacer/pull/543",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:0"
-        ],
-        "headRefName": "docs/reviews-synthesis",
-        "isDraft": false,
-        "createdAt": "2026-09-27T08:39:38Z",
-        "mergedAt": "2026-09-27T08:42:35Z",
-        "closes": [
-          533
-        ],
-        "verdicts": []
       }
     ],
     "coverage": {
       "merged": 60,
-      "withVerdict": 50,
-      "withoutVerdict": 10,
-      "pass": 50,
+      "withVerdict": 51,
+      "withoutVerdict": 9,
+      "pass": 51,
       "block": 0
     }
   },
@@ -6127,7 +6129,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-27",
-        "merges": 20
+        "merges": 19
       },
       {
         "date": "2026-09-28",
@@ -6143,20 +6145,20 @@
       },
       {
         "date": "2026-10-01",
-        "merges": 1
+        "merges": 2
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-17T10:42:38.212Z",
-      "merged": 202,
+      "since": "2026-09-17T11:27:08.940Z",
+      "merged": 200,
       "openToMergeHours": {
         "median": 0.2,
-        "p90": 8.9
+        "p90": 11.7
       },
       "blockedOnce": {
         "count": 22,
-        "of": 112,
+        "of": 113,
         "prs": [
           238,
           248,
@@ -6184,12 +6186,9 @@
       },
       "coverage": {
         "code": {
-          "merged": 107,
+          "merged": 104,
           "withVerdict": 91,
           "without": [
-            133,
-            134,
-            135,
             136,
             250,
             285,
@@ -6206,8 +6205,8 @@
           ]
         },
         "nonCode": {
-          "merged": 95,
-          "withVerdict": 21,
+          "merged": 96,
+          "withVerdict": 22,
           "without": [
             113,
             115,
@@ -7507,11 +7506,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "61ab98e5fea18c4eaf8ef3406280e30806f020a6",
+        "sha": "e96553fad7fcb80fb66bbfec765a36bfa75a2cbb",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36850703109/job/110331393198",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36855336816/job/110346386215",
         "line": null,
         "verdict": null,
         "fields": {},
