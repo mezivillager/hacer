@@ -5,6 +5,7 @@
 // (the decisions and why live there), prints the premise, and does it. It never pushes to the branch.
 //
 //   node scripts/merge-on-green.mjs <pr> [owner/repo] [max-minutes]     (defaults: this repo, 30)
+//   --dry-run: read the PR once, print the premise and the action it would take, and exit 0.
 //
 // Exit: 0 merged · 2 a required check failed · 3 timed out · 4 needs a person (reason printed) ·
 // 1 usage. GH_BIN picks the gh binary (default: gh on PATH).
@@ -16,10 +17,12 @@ import path from 'node:path'
 import { setTimeout as sleep } from 'node:timers/promises'
 import { EXIT, decide, requiredContexts, withRerunMarker } from './merge-on-green.logic.mjs'
 
-const [pr, repo = 'mezivillager/hacer', minutesArg = '30'] = process.argv.slice(2)
+const args = process.argv.slice(2)
+const dryRun = args.includes('--dry-run')
+const [pr, repo = 'mezivillager/hacer', minutesArg = '30'] = args.filter((arg) => arg !== '--dry-run')
 const minutes = Number(minutesArg)
 if (!/^\d+$/.test(pr ?? '') || !Number.isFinite(minutes) || minutes < 0) {
-  console.error('usage: node scripts/merge-on-green.mjs <pr> [owner/repo] [max-minutes]')
+  console.error('usage: node scripts/merge-on-green.mjs <pr> [owner/repo] [max-minutes] [--dry-run]')
   process.exit(1)
 }
 const GH = process.env.GH_BIN || 'gh'
@@ -76,12 +79,31 @@ function readSnapshot() {
     ),
     workflowRuns: ghPages(
       `repos/${repo}/actions/runs?head_sha=${sha}&per_page=100`,
-      '[.workflow_runs[] | {id, name, workflow_id, event, status, conclusion, suite: .check_suite_id, attempt: .run_attempt}]',
+      '[.workflow_runs[] | {id, name, workflow_id, event, status, conclusion, suite: .check_suite_id, attempt: .run_attempt, created_at}]',
+    ),
+    basePushes: JSON.parse(
+      gh(['api', `repos/${repo}/activity?ref=refs/heads/${snapshotPr.baseRefName}&per_page=30`, '--jq', '[.[] | {after, timestamp}]']),
     ),
   }
 }
 
-const history = { reruns: [], edits: [], refusals: {}, lastError: '', settled: null }
+const history = { reruns: [], edits: [], updates: [], refusals: {}, lastError: '', settled: null }
+
+/** The log of each failed run, and the steps that failed in it. */
+function sayFailedRuns(runIds) {
+  for (const id of runIds) {
+    let steps = []
+    try {
+      steps = ghPages(
+        `repos/${repo}/actions/runs/${id}/jobs?per_page=100`,
+        '[.jobs[] | .name as $job | .steps[]? | select(.conclusion == "failure") | "\\($job): \\(.name)"]',
+      )
+    } catch {
+      // the URL below is enough to find the step
+    }
+    say(`log: https://github.com/${repo}/actions/runs/${id}${steps.length > 0 ? ` (failed step: ${steps.join('; ')})` : ''}`)
+  }
+}
 
 /** Runs one gh command for an action; a failure is counted, so the logic can stop repeating it. */
 function attempt(kind, args) {
@@ -96,8 +118,13 @@ function attempt(kind, args) {
 }
 
 function act(action, snapshot) {
-  if (action.kind === 'merge') attempt('merge', ['pr', 'merge', pr, '-R', repo, '--rebase', '--auto'])
-  if (action.kind === 'update-branch') attempt('update-branch', ['pr', 'update-branch', pr, '-R', repo])
+  const head = snapshot.pr.headRefOid
+  if (action.kind === 'merge') attempt('merge', ['pr', 'merge', pr, '-R', repo, '--rebase', '--match-head-commit', head])
+  if (action.kind === 'disable-auto') attempt('disable-auto', ['pr', 'merge', pr, '-R', repo, '--disable-auto'])
+  if (action.kind === 'update-branch') {
+    history.updates.push(head)
+    attempt('update-branch', ['pr', 'update-branch', pr, '-R', repo])
+  }
   if (action.kind === 'rerun') {
     history.reruns.push(action.runId)
     attempt('rerun', ['run', 'rerun', String(action.runId), '-R', repo])
@@ -137,6 +164,11 @@ for (let pass = 1; ; pass += 1) {
     const line = `${action.kind}: ${action.reason}`
     if (line !== last) say(line)
     last = line
+    if (action.runs) sayFailedRuns(action.runs)
+    if (dryRun) {
+      say('dry run: nothing was done')
+      break
+    }
     if (action.exit !== undefined) {
       process.exitCode = action.exit
       break

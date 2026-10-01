@@ -30,6 +30,8 @@ case "$2" in
   *rules/branches/*) if [ -f "$STUB/rules.json" ]; then cat "$STUB/rules.json"; exit 0; fi; cat "$STUB/404.json"; exit 1 ;;
   */protection) cat "$STUB/404.json"; exit 1 ;;
   *check-runs*) cat "$STUB/checks.json"; exit 0 ;;
+  */activity*) cat "$STUB/pushes.json"; exit 0 ;;
+  */jobs*) echo '[]'; exit 0 ;;
   *actions/runs*) cat "$STUB/runs.json"; exit 0 ;;
 esac
 echo "gh double: unexpected call: $*" >&2
@@ -37,11 +39,12 @@ exit 1
 `
 
 /** Runs the tool once against a recorded state. `rules: false` makes the rulesets call fail too. */
-function runTool(state, { rules = true, args = ['1'] } = {}) {
+function runTool(state, { rules = true, args = ['1'], pr = {} } = {}) {
   const stub = mkdtempSync(path.join(tmpdir(), 'merge-on-green-'))
   cleanup.push(stub)
   const fixture = JSON.parse(read(`${state}.json`))
-  writeFileSync(path.join(stub, 'pr.json'), JSON.stringify(fixture.pr))
+  writeFileSync(path.join(stub, 'pr.json'), JSON.stringify({ ...fixture.pr, ...pr }))
+  writeFileSync(path.join(stub, 'pushes.json'), JSON.stringify(fixture.basePushes ?? []))
   writeFileSync(path.join(stub, 'checks.json'), `${JSON.stringify(fixture.checkRuns)}\n`)
   writeFileSync(path.join(stub, 'runs.json'), `${JSON.stringify(fixture.workflowRuns)}\n`)
   writeFileSync(path.join(stub, '404.json'), read('protection-404.json'))
@@ -77,13 +80,34 @@ describe('merge-on-green.mjs (gh is a test double)', () => {
   }, SPAWN_TIMEOUT_MS)
 
   it('appends its marker to the body once, keeps the body, and exits 3 at the deadline', () => {
-    const result = runTool('empty-cancelled-suite', { args: ['517', 'mezivillager/hacer', '0'] })
+    const result = runTool('empty-cancelled-suite', { args: ['517', 'mezivillager/hacer', '0'], pr: { autoMergeRequest: null } })
     expect(result.status).toBe(3)
     expect(result.calls.match(/^pr edit /gm)).toHaveLength(1)
     expect(result.body.startsWith(result.fixture.pr.body.trimEnd())).toBe(true)
     expect(result.body).toMatch(
       /<!-- merge-on-green: edited to re-run the required checks on ce3e920a6414164989dbdb8b9d45d8ead2ac1bbc at .+ -->$/,
     )
+  }, SPAWN_TIMEOUT_MS)
+
+  it('updates the branch on a stale green, and says why (#407)', () => {
+    const result = runTool('stale-green', { args: ['646', 'mezivillager/hacer', '0'] })
+    expect(result.status).toBe(3)
+    expect(result.calls).toMatch(/^pr update-branch 646 /m)
+    expect(result.calls).not.toMatch(/^pr merge /m)
+    expect(result.stdout).toContain('main moved to 59cc2f0 since')
+  }, SPAWN_TIMEOUT_MS)
+
+  it('merges a fresh green itself, pinned to the head it judged, never through auto-merge', () => {
+    const result = runTool('fresh-green', { args: ['645', 'mezivillager/hacer', '0'] })
+    expect(result.calls).toMatch(/^pr merge 645 -R mezivillager\/hacer --rebase --match-head-commit a75b5930bb8a8e9f6541ccacd957a919d96d2ab9$/m)
+    expect(result.calls).not.toMatch(/--auto/)
+  }, SPAWN_TIMEOUT_MS)
+
+  it('--dry-run prints the action and does nothing', () => {
+    const result = runTool('stale-green', { args: ['646', '--dry-run'] })
+    expect(result.status).toBe(0)
+    expect(result.stdout).toMatch(/update-branch: ci ran at/)
+    expect(result.calls).not.toMatch(/^pr (update-branch|merge|edit) /m)
   }, SPAWN_TIMEOUT_MS)
 
   it('exits 1 with the usage line when no PR is given', () => {

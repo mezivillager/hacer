@@ -14,7 +14,7 @@ import { decide, requiredContexts, withRerunMarker } from './merge-on-green.logi
 const FIXTURES = path.join(import.meta.dirname, 'fixtures/merge-on-green')
 const load = (name) => JSON.parse(readFileSync(path.join(FIXTURES, `${name}.json`), 'utf8'))
 const withPr = (snapshot, fields) => ({ ...snapshot, pr: { ...snapshot.pr, ...fields } })
-// Recorded before #407, when this tool armed auto-merge; it now disarms it first.
+// For fixtures whose PR had auto-merge armed: the tool disarms that before anything else.
 const unarmed = (name) => withPr(load(name), { autoMergeRequest: null })
 const STATES = [
   'pending',
