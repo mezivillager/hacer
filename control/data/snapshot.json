@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-01T23:45:08.890Z",
+  "generatedAt": "2026-10-01T23:53:59.782Z",
   "head": {
-    "sha": "fb69a0877371f8451a9543b12c97baedd7b91e80",
-    "date": "2026-10-02T02:43:53+03:00",
-    "subject": "chore(harness): harden lint:docs fence tracking, line:col suffixes, titled links"
+    "sha": "c3a1e1388e62b963138ce4f3e1ed8c7e7baf9dec",
+    "date": "2026-10-02T02:52:10+03:00",
+    "subject": "docs: the README sample in the phase-0 plan is a four-backtick fence around its bash block"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-01T23:45:08.890Z",
+      "fetchedAt": "2026-10-01T23:53:59.782Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-01T23:45:08.890Z",
+      "fetchedAt": "2026-10-01T23:53:59.782Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-01T23:45:08.890Z",
+      "fetchedAt": "2026-10-01T23:53:59.782Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-01T23:45:08.890Z",
+      "fetchedAt": "2026-10-01T23:53:59.782Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-01T23:45:08.890Z",
+      "fetchedAt": "2026-10-01T23:53:59.782Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-01T23:45:08.890Z",
+      "fetchedAt": "2026-10-01T23:53:59.782Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-01T23:45:08.890Z",
+      "fetchedAt": "2026-10-01T23:53:59.782Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-01T23:45:08.890Z",
+      "fetchedAt": "2026-10-01T23:53:59.782Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-01T23:45:08.890Z",
+      "fetchedAt": "2026-10-01T23:53:59.782Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-01T23:45:08.890Z",
+      "fetchedAt": "2026-10-01T23:53:59.782Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-01T23:45:08.890Z",
+      "fetchedAt": "2026-10-01T23:53:59.782Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-01T23:45:08.890Z",
+      "fetchedAt": "2026-10-01T23:53:59.782Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-01T23:45:08.890Z",
+      "fetchedAt": "2026-10-01T23:53:59.782Z",
       "status": "ok"
     }
   },
@@ -105,12 +105,12 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 26,
+        "open": 27,
         "ready": 12,
-        "inProgress": 1,
+        "inProgress": 2,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 13,
+        "agentReady": 14,
         "filedElsewhere": [
           151,
           339
@@ -440,11 +440,6 @@
         "project": "harness"
       },
       {
-        "number": 280,
-        "title": "Retire WORK-SYSTEM.md's live sections: pick rule, labels and loop now live in docs/portfolio.md and docs/harness/README.md",
-        "project": "harness"
-      },
-      {
         "number": 304,
         "title": "Decide which .claude/skills are ours, then opt them into lint:docs",
         "project": "harness"
@@ -483,12 +478,17 @@
         "number": 547,
         "title": "cloud-queue.md and COVERAGE.md still claim and release by pushing the ref",
         "project": "harness"
+      },
+      {
+        "number": 665,
+        "title": "Agent frontmatter: a ' #144' in hacer-product.md's description reads as a YAML comment and truncates it; parse every role file strictly",
+        "project": "harness"
       }
     ],
     "dormant": {
       "dormant": false,
       "agentPrs": [
-        663,
+        664,
         514
       ]
     }
@@ -594,21 +594,6 @@
         "reason": null
       },
       {
-        "number": 280,
-        "title": "Retire WORK-SYSTEM.md's live sections: pick rule, labels and loop now live in docs/portfolio.md and docs/harness/README.md",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:0"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
         "number": 304,
         "title": "Decide which .claude/skills are ours, then opt them into lint:docs",
         "labels": [
@@ -717,6 +702,21 @@
       {
         "number": 547,
         "title": "cloud-queue.md and COVERAGE.md still claim and release by pushing the ref",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:0"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 665,
+        "title": "Agent frontmatter: a ' #144' in hacer-product.md's description reads as a YAML comment and truncates it; parse every role file strictly",
         "labels": [
           "project:harness",
           "agent-ready",
@@ -1484,6 +1484,22 @@
         "lane": "feature",
         "pickable": false,
         "reason": "unshaped"
+      },
+      {
+        "number": 280,
+        "title": "Retire WORK-SYSTEM.md's live sections: pick rule, labels and loop now live in docs/portfolio.md and docs/harness/README.md",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:0"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "claimed"
       },
       {
         "number": 284,
@@ -2263,7 +2279,6 @@
         257,
         269,
         271,
-        280,
         304,
         308,
         368,
@@ -2272,9 +2287,11 @@
         418,
         516,
         547,
+        665,
         154,
         156,
         270,
+        280,
         391,
         435,
         436,
@@ -2374,19 +2391,21 @@
   "prs": {
     "open": [
       {
-        "number": 663,
-        "title": "docs: close the three malformed code fences the fence check reports",
-        "url": "https://github.com/mezivillager/hacer/pull/663",
+        "number": 664,
+        "title": "chore(harness): pin agent definitions; verifier tier sentence must match its brief",
+        "url": "https://github.com/mezivillager/hacer/pull/664",
         "author": "mezivillager",
         "labels": [
           "project:harness",
-          "risk:0"
+          "risk:1"
         ],
-        "headRefName": "docs/fence-warnings",
+        "headRefName": "chore/391-pin-agent-defs",
         "isDraft": false,
-        "createdAt": "2026-10-01T23:42:54Z",
+        "createdAt": "2026-10-01T23:52:05Z",
         "mergedAt": null,
-        "closes": [],
+        "closes": [
+          391
+        ],
         "verdicts": []
       },
       {
@@ -2513,6 +2532,30 @@
       }
     ],
     "merged": [
+      {
+        "number": 663,
+        "title": "docs: close the three malformed code fences the fence check reports",
+        "url": "https://github.com/mezivillager/hacer/pull/663",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/fence-warnings",
+        "isDraft": false,
+        "createdAt": "2026-10-01T23:42:54Z",
+        "mergedAt": "2026-10-01T23:52:11Z",
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (risk:0 docs-only, #554)",
+            "at": "2026-10-01T23:47:46Z",
+            "url": "https://github.com/mezivillager/hacer/pull/663#issuecomment-5942865652"
+          }
+        ]
+      },
       {
         "number": 662,
         "title": "chore(harness): harden lint:docs fence tracking, line:col suffixes, titled links",
@@ -4032,33 +4075,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/563#issuecomment-5855686139"
           }
         ]
-      },
-      {
-        "number": 562,
-        "title": "chore(hooks): drop husky's v10-deprecated bootstrap lines",
-        "url": "https://github.com/mezivillager/hacer/pull/562",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:upkeep",
-          "risk:0"
-        ],
-        "headRefName": "chore/541-husky-v9-hooks",
-        "isDraft": false,
-        "createdAt": "2026-09-27T11:25:05Z",
-        "mergedAt": "2026-09-27T11:41:39Z",
-        "closes": [
-          541
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "claude-sonnet-5 (Sonnet 5)",
-            "at": "2026-09-27T11:39:43Z",
-            "url": "https://github.com/mezivillager/hacer/pull/562#issuecomment-5855499621"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4147,6 +4163,31 @@
           "author": "mezivillager",
           "at": "2026-09-24T13:57:40Z",
           "url": "https://github.com/mezivillager/hacer/issues/182#issuecomment-5815526405"
+        }
+      },
+      {
+        "number": 280,
+        "ref": "refs/heads/claim/280",
+        "sha": "fb69a0877371f8451a9543b12c97baedd7b91e80",
+        "state": "OPEN",
+        "title": "Retire WORK-SYSTEM.md's live sections: pick rule, labels and loop now live in docs/portfolio.md and docs/harness/README.md",
+        "url": "https://github.com/mezivillager/hacer/issues/280",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:0"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-92",
+          "branch": null,
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-01T23:48:18Z",
+          "url": "https://github.com/mezivillager/hacer/issues/280#issuecomment-5942871007"
         }
       },
       {
@@ -6111,7 +6152,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-27",
-        "merges": 6
+        "merges": 5
       },
       {
         "date": "2026-09-28",
@@ -6127,20 +6168,20 @@
       },
       {
         "date": "2026-10-01",
-        "merges": 15
+        "merges": 16
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-17T23:45:08.890Z",
-      "merged": 212,
+      "since": "2026-09-17T23:53:59.782Z",
+      "merged": 213,
       "openToMergeHours": {
         "median": 0.2,
         "p90": 6.1
       },
       "blockedOnce": {
         "count": 22,
-        "of": 126,
+        "of": 127,
         "prs": [
           238,
           248,
@@ -6186,8 +6227,8 @@
           ]
         },
         "nonCode": {
-          "merged": 99,
-          "withVerdict": 25,
+          "merged": 100,
+          "withVerdict": 26,
           "without": [
             113,
             115,
@@ -7481,11 +7522,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "fb69a0877371f8451a9543b12c97baedd7b91e80",
+        "sha": "c3a1e1388e62b963138ce4f3e1ed8c7e7baf9dec",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36942340880/job/110636515131",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36943075256/job/110638836866",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -7808,42 +7849,43 @@
         "disagrees": false
       },
       {
-        "pr": 663,
-        "sha": "6390e825376ce6a2f9a106377f317fa30e78d653",
+        "pr": 664,
+        "sha": "fc2a9eef918b99e0035cca85a30ad29a783d8716",
         "check": "pr-hygiene",
         "conclusion": "SUCCESS",
-        "completedAt": "2026-10-01T23:43:11Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36942260017/job/110636255297",
-        "line": "HYGIENE: PASS reviewable=6 test=0 excluded=0 files=2 issue=docs-only",
+        "completedAt": "2026-10-01T23:52:23Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36943066613/job/110638811586",
+        "line": "HYGIENE: PASS reviewable=96 test=99 excluded=0 files=4 issue=#391 linked=fixes",
         "verdict": "PASS",
         "fields": {
-          "reviewable": 6,
-          "test": 0,
+          "reviewable": 96,
+          "test": 99,
           "excluded": 0,
-          "files": 2,
-          "issue": "docs-only"
+          "files": 4,
+          "issue": "#391",
+          "linked": "fixes"
         },
         "disagrees": false
       },
       {
-        "pr": 663,
-        "sha": "6390e825376ce6a2f9a106377f317fa30e78d653",
+        "pr": 664,
+        "sha": "fc2a9eef918b99e0035cca85a30ad29a783d8716",
         "check": "browser-qa",
         "conclusion": "SUCCESS",
-        "completedAt": "2026-10-01T23:43:13Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36942259947/job/110636254254",
+        "completedAt": "2026-10-01T23:52:21Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36943066670/job/110638810670",
         "line": "BROWSER-QA: skipped (no critical paths)",
         "verdict": "SKIPPED",
         "fields": {},
         "disagrees": false
       },
       {
-        "pr": 663,
-        "sha": "6390e825376ce6a2f9a106377f317fa30e78d653",
+        "pr": 664,
+        "sha": "fc2a9eef918b99e0035cca85a30ad29a783d8716",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36942259712/job/110636253479",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36943065975/job/110638808808",
         "line": null,
         "verdict": null,
         "fields": {},
