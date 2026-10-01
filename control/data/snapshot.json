@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-01T23:05:54.555Z",
+  "generatedAt": "2026-10-01T23:14:31.405Z",
   "head": {
-    "sha": "ff4a6f87f42bf08f7aa87dd04ea14fec53412bd7",
-    "date": "2026-10-02T01:47:23+03:00",
-    "subject": "chore(harness): hold eslint-suppressions.json to the ratchet as a second baseline (#429)"
+    "sha": "23380a6b57ec63194606ceaa6dc3fe6cafd72da9",
+    "date": "2026-10-02T02:13:03+03:00",
+    "subject": "chore(harness): merge-on-green's comments match a tool that never arms auto-merge; 19 of 40 (#407)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-01T23:05:54.555Z",
+      "fetchedAt": "2026-10-01T23:14:31.405Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-01T23:05:54.555Z",
+      "fetchedAt": "2026-10-01T23:14:31.405Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-01T23:05:54.555Z",
+      "fetchedAt": "2026-10-01T23:14:31.405Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-01T23:05:54.555Z",
+      "fetchedAt": "2026-10-01T23:14:31.405Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-01T23:05:54.555Z",
+      "fetchedAt": "2026-10-01T23:14:31.405Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-01T23:05:54.555Z",
+      "fetchedAt": "2026-10-01T23:14:31.405Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-01T23:05:54.555Z",
+      "fetchedAt": "2026-10-01T23:14:31.405Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-01T23:05:54.555Z",
+      "fetchedAt": "2026-10-01T23:14:31.405Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-01T23:05:54.555Z",
+      "fetchedAt": "2026-10-01T23:14:31.405Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-01T23:05:54.555Z",
+      "fetchedAt": "2026-10-01T23:14:31.405Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-01T23:05:54.555Z",
+      "fetchedAt": "2026-10-01T23:14:31.405Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-01T23:05:54.555Z",
+      "fetchedAt": "2026-10-01T23:14:31.405Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-10-01T23:05:54.555Z",
+      "fetchedAt": "2026-10-01T23:14:31.405Z",
       "status": "ok"
     }
   },
@@ -80,14 +80,14 @@
         "lane": "feature",
         "slug": "foundation",
         "epicNumber": 318,
-        "open": 26,
+        "open": 25,
         "ready": 2,
-        "inProgress": 2,
+        "inProgress": 1,
         "needsHuman": 0,
         "staleClaims": [
           182
         ],
-        "agentReady": 4,
+        "agentReady": 3,
         "filedElsewhere": [],
         "next": {
           "number": 338,
@@ -113,8 +113,7 @@
         "agentReady": 16,
         "filedElsewhere": [
           151,
-          339,
-          407
+          339
         ],
         "next": {
           "number": 160,
@@ -510,7 +509,6 @@
       "dormant": false,
       "agentPrs": [
         653,
-        651,
         514
       ]
     }
@@ -1958,23 +1956,6 @@
         "reason": "unshaped"
       },
       {
-        "number": 407,
-        "title": "Two PRs can be green alone and red merged, and nothing detects it before main",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 431,
         "title": "compileHDL checks dangling signals by name, so a read of a never-driven bit is silently 0",
         "labels": [
@@ -2378,7 +2359,6 @@
         389,
         395,
         400,
-        407,
         462,
         506,
         599,
@@ -2493,25 +2473,15 @@
         "closes": [
           481
         ],
-        "verdicts": []
-      },
-      {
-        "number": 651,
-        "title": "chore(harness): merge-on-green refuses a stale green (#407)",
-        "url": "https://github.com/mezivillager/hacer/pull/651",
-        "author": "mezivillager",
-        "labels": [
-          "project:harness",
-          "risk:1"
-        ],
-        "headRefName": "fix/407-stale-merge-check",
-        "isDraft": false,
-        "createdAt": "2026-10-01T22:40:49Z",
-        "mergedAt": null,
-        "closes": [
-          407
-        ],
-        "verdicts": []
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Sonnet 5.5 (fresh context)",
+            "at": "2026-10-01T23:09:45Z",
+            "url": "https://github.com/mezivillager/hacer/pull/653#issuecomment-5942448858"
+          }
+        ]
       },
       {
         "number": 514,
@@ -2564,6 +2534,32 @@
             "model": "Sonnet 5.5 (fresh context)",
             "at": "2026-10-01T22:46:51Z",
             "url": "https://github.com/mezivillager/hacer/pull/652#issuecomment-5942197767"
+          }
+        ]
+      },
+      {
+        "number": 651,
+        "title": "chore(harness): merge-on-green refuses a stale green (#407)",
+        "url": "https://github.com/mezivillager/hacer/pull/651",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:1"
+        ],
+        "headRefName": "fix/407-stale-merge-check",
+        "isDraft": false,
+        "createdAt": "2026-10-01T22:40:49Z",
+        "mergedAt": "2026-10-01T23:13:04Z",
+        "closes": [
+          407
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus 5.5 (fresh context)",
+            "at": "2026-10-01T23:07:27Z",
+            "url": "https://github.com/mezivillager/hacer/pull/651#issuecomment-5942423370"
           }
         ]
       },
@@ -4061,31 +4057,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/557#issuecomment-5855207893"
           }
         ]
-      },
-      {
-        "number": 556,
-        "title": "docs(decisions): the run's rulings R751–R757 and ledger row L056",
-        "url": "https://github.com/mezivillager/hacer/pull/556",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:0"
-        ],
-        "headRefName": "docs/run-rulings-r751",
-        "isDraft": false,
-        "createdAt": "2026-09-27T10:36:44Z",
-        "mergedAt": "2026-09-27T10:39:36Z",
-        "closes": [],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "coordinator (Opus 5.5)",
-            "at": "2026-09-27T10:36:57Z",
-            "url": "https://github.com/mezivillager/hacer/pull/556#issuecomment-5855091444"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4174,32 +4145,6 @@
           "author": "mezivillager",
           "at": "2026-09-24T13:57:40Z",
           "url": "https://github.com/mezivillager/hacer/issues/182#issuecomment-5815526405"
-        }
-      },
-      {
-        "number": 407,
-        "ref": "refs/heads/claim/407",
-        "sha": "f9fcb34b427ce5f55fe1070461170bd188347bbc",
-        "state": "OPEN",
-        "title": "Two PRs can be green alone and red merged, and nothing detects it before main",
-        "url": "https://github.com/mezivillager/hacer/issues/407",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:foundation"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-92",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-01T22:19:51Z",
-          "url": "https://github.com/mezivillager/hacer/issues/407#issuecomment-5941807184"
         }
       },
       {
@@ -5190,11 +5135,19 @@
         "shouldHaveBeenCaughtBy": "a worker cap in the repo's test config",
         "mechanised": "yes — `test.maxWorkers: 3` (#627, PR #628)",
         "decision": "R776, R777"
+      },
+      {
+        "id": "L061",
+        "date": "2026-10-01",
+        "whatWentWrong": "Two PRs green alone, red merged: #404 armed the `core-through-index` rule and #399 added three imports it forbids; each `ci` ran before the other landed, `gh pr view` said `MERGEABLE` throughout, and only #399's builder, trial-merging by hand, saw `3 new core-through-index`. Not a one-off: 19 of the 40 PRs merged up to #647 merged after `main` had moved past their last `ci` run (`strict` is off, L014, so GitHub reports `CLEAN`, never `BEHIND`). The second occurrence of *the loop's checks did not see the state that ships* — the first was #295, required checks judged on cancelled runs",
+        "shouldHaveBeenCaughtBy": "the merge tool: compare when the green started with the base branch's last move",
+        "mechanised": "yes — #407: `scripts/merge-on-green.mjs` updates the branch on a stale green, merges only on the fresh one, and no longer arms auto-merge; which checks see the merge result is in `docs/harness/README.md` § *When a required check is stuck*",
+        "decision": "—"
       }
     ],
     "byMechanised": {
       "no": 9,
-      "yes": 45,
+      "yes": 46,
       "other": 1,
       "partly": 5
     }
@@ -6151,7 +6104,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-27",
-        "merges": 11
+        "merges": 10
       },
       {
         "date": "2026-09-28",
@@ -6167,20 +6120,20 @@
       },
       {
         "date": "2026-10-01",
-        "merges": 10
+        "merges": 11
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-17T23:05:54.555Z",
-      "merged": 207,
+      "since": "2026-09-17T23:14:31.405Z",
+      "merged": 208,
       "openToMergeHours": {
         "median": 0.2,
         "p90": 8.9
       },
       "blockedOnce": {
         "count": 22,
-        "of": 121,
+        "of": 122,
         "prs": [
           238,
           248,
@@ -6208,8 +6161,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 109,
-          "withVerdict": 97,
+          "merged": 110,
+          "withVerdict": 98,
           "without": [
             250,
             285,
@@ -7364,13 +7317,42 @@
       },
       {
         "date": "2026-10-01",
-        "at": "2026-10-01T22:18:45.900Z",
+        "at": "2026-10-01T23:05:54.555Z",
         "byProject": {
+          "harness": [
+            160,
+            247,
+            251,
+            257,
+            269,
+            271,
+            280,
+            304,
+            308,
+            368,
+            391,
+            392,
+            394,
+            418,
+            516,
+            547,
+            154,
+            156,
+            270,
+            435,
+            436,
+            454,
+            500,
+            504,
+            505,
+            550,
+            607,
+            648,
+            649
+          ],
           "foundation": [
             338,
             373,
-            407,
-            429,
             151,
             182,
             184,
@@ -7390,6 +7372,7 @@
             389,
             395,
             400,
+            407,
             462,
             506,
             599,
@@ -7397,41 +7380,10 @@
           ],
           "lineage": [
             471,
-            481,
             470,
+            481,
             502,
             569
-          ],
-          "harness": [
-            159,
-            160,
-            247,
-            251,
-            257,
-            269,
-            271,
-            280,
-            304,
-            308,
-            368,
-            391,
-            392,
-            394,
-            418,
-            516,
-            547,
-            154,
-            155,
-            156,
-            270,
-            435,
-            436,
-            454,
-            500,
-            504,
-            505,
-            550,
-            607
           ],
           "spine": [
             165,
@@ -7523,17 +7475,14 @@
     "items": [
       {
         "pr": null,
-        "sha": "ff4a6f87f42bf08f7aa87dd04ea14fec53412bd7",
+        "sha": "23380a6b57ec63194606ceaa6dc3fe6cafd72da9",
         "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-01T22:50:21Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36937149969/job/110619968947",
-        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 71,
-          "new": 0
-        },
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36939589505/job/110627714968",
+        "line": null,
+        "verdict": null,
+        "fields": {},
         "disagrees": false
       },
       {
@@ -7583,52 +7532,6 @@
         "disagrees": false
       },
       {
-        "pr": 651,
-        "sha": "42263e28bebc45d885ffc528a7d7f38a78fb9851",
-        "check": "pr-hygiene",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-01T22:41:05Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36936513795/job/110617937986",
-        "line": "HYGIENE: PASS reviewable=150 test=113 excluded=792 files=4 issue=#407 linked=fixes",
-        "verdict": "PASS",
-        "fields": {
-          "reviewable": 150,
-          "test": 113,
-          "excluded": 792,
-          "files": 4,
-          "issue": "#407",
-          "linked": "fixes"
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 651,
-        "sha": "42263e28bebc45d885ffc528a7d7f38a78fb9851",
-        "check": "browser-qa",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-01T22:41:07Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36936513201/job/110617935112",
-        "line": "BROWSER-QA: skipped (no critical paths)",
-        "verdict": "SKIPPED",
-        "fields": {},
-        "disagrees": false
-      },
-      {
-        "pr": 651,
-        "sha": "42263e28bebc45d885ffc528a7d7f38a78fb9851",
-        "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-01T22:44:10Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36936510426/job/110617925126",
-        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 71,
-          "new": 0
-        },
-        "disagrees": false
-      },
-      {
         "pr": 653,
         "sha": "bbda2909762761f933670b1960cb109bafe76bba",
         "check": "pr-hygiene",
@@ -7663,12 +7566,15 @@
         "pr": 653,
         "sha": "bbda2909762761f933670b1960cb109bafe76bba",
         "check": "ci",
-        "conclusion": null,
-        "completedAt": null,
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-01T23:06:51Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/36938686892/job/110624872212",
-        "line": null,
-        "verdict": null,
-        "fields": {},
+        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 71,
+          "new": 0
+        },
         "disagrees": false
       }
     ]
