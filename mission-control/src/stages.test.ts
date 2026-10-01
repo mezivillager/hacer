@@ -17,4 +17,11 @@ describe('stagesOf', () => {
     expect(building?.counts).toEqual([{ label: 'building', value: 2 }])
     expect(building?.items.map((item) => item.number)).toEqual([1, 2])
   })
+
+  it('counts only tasks with no reason as ready, even when pickable', () => {
+    const items = [{ ...task(1, null) }, { ...task(2, 'on-request'), pickable: true }, { ...task(3, 'not-pulled'), pickable: true }]
+    const ready = stagesOf({ ...snapshot, tasks: { ...snapshot.tasks, items } }).find((stage) => stage.id === 'ready')
+    expect(ready?.counts).toEqual([{ label: 'ready', value: 1 }])
+    expect(ready?.items.map((item) => item.number)).toEqual([1])
+  })
 })
