@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-01T22:19:56.476Z",
+  "generatedAt": "2026-10-01T22:30:44.223Z",
   "head": {
-    "sha": "f9fcb34b427ce5f55fe1070461170bd188347bbc",
-    "date": "2026-10-02T01:18:06+03:00",
-    "subject": "fix(mission-control): Ready counts only tasks with no reason (#560)"
+    "sha": "48bf6a52c3f77891df0abfd44fef5895428157ed",
+    "date": "2026-10-02T01:29:45+03:00",
+    "subject": "chore(docs): one home for specs and plans"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-01T22:19:56.476Z",
+      "fetchedAt": "2026-10-01T22:30:44.223Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-01T22:19:56.476Z",
+      "fetchedAt": "2026-10-01T22:30:44.223Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-01T22:19:56.476Z",
+      "fetchedAt": "2026-10-01T22:30:44.223Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-01T22:19:56.476Z",
+      "fetchedAt": "2026-10-01T22:30:44.223Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-01T22:19:56.476Z",
+      "fetchedAt": "2026-10-01T22:30:44.223Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-01T22:19:56.476Z",
+      "fetchedAt": "2026-10-01T22:30:44.223Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-01T22:19:56.476Z",
+      "fetchedAt": "2026-10-01T22:30:44.223Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-01T22:19:56.476Z",
+      "fetchedAt": "2026-10-01T22:30:44.223Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-01T22:19:56.476Z",
+      "fetchedAt": "2026-10-01T22:30:44.223Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-01T22:19:56.476Z",
+      "fetchedAt": "2026-10-01T22:30:44.223Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-01T22:19:56.476Z",
+      "fetchedAt": "2026-10-01T22:30:44.223Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-01T22:19:56.476Z",
+      "fetchedAt": "2026-10-01T22:30:44.223Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-10-01T22:19:56.476Z",
+      "fetchedAt": "2026-10-01T22:30:44.223Z",
       "status": "ok"
     }
   },
@@ -81,8 +81,8 @@
         "slug": "foundation",
         "epicNumber": 318,
         "open": 27,
-        "ready": 4,
-        "inProgress": 1,
+        "ready": 2,
+        "inProgress": 3,
         "needsHuman": 0,
         "staleClaims": [
           182
@@ -105,12 +105,12 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 29,
+        "open": 30,
         "ready": 17,
-        "inProgress": 1,
+        "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 18,
+        "agentReady": 17,
         "filedElsewhere": [
           151,
           339,
@@ -123,8 +123,8 @@
         },
         "title": "Epic: harness — autonomous-run improvements & agent-readiness",
         "subIssues": {
-          "completed": 38,
-          "percentCompleted": 66,
+          "completed": 39,
+          "percentCompleted": 68,
           "total": 57
         }
       },
@@ -417,11 +417,6 @@
         "project": "foundation"
       },
       {
-        "number": 373,
-        "title": "N.0: the six 3D mesh components become prop-only and store-free (six PRs, expand → migrate → contract)",
-        "project": "foundation"
-      },
-      {
         "number": 471,
         "title": "Lineage DL-6: lint:lineage from warn to fail — the lineage ratchet",
         "project": "lineage"
@@ -432,13 +427,8 @@
         "project": "harness"
       },
       {
-        "number": 407,
-        "title": "Two PRs can be green alone and red merged, and nothing detects it before main",
-        "project": "foundation"
-      },
-      {
-        "number": 429,
-        "title": "The ESLint suppressions baseline can be reset the same way, and nothing detects it",
+        "number": 373,
+        "title": "N.0: the six 3D mesh components become prop-only and store-free (six PRs, expand → migrate → contract)",
         "project": "foundation"
       },
       {
@@ -552,23 +542,6 @@
         "reason": null
       },
       {
-        "number": 373,
-        "title": "N.0: the six 3D mesh components become prop-only and store-free (six PRs, expand → migrate → contract)",
-        "labels": [
-          "agent-ready",
-          "risk:2",
-          "project:foundation"
-        ],
-        "blocking": [
-          383
-        ],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
-      {
         "number": 471,
         "title": "Lineage DL-6: lint:lineage from warn to fail — the lineage ratchet",
         "labels": [
@@ -599,31 +572,16 @@
         "reason": null
       },
       {
-        "number": 407,
-        "title": "Two PRs can be green alone and red merged, and nothing detects it before main",
+        "number": 373,
+        "title": "N.0: the six 3D mesh components become prop-only and store-free (six PRs, expand → migrate → contract)",
         "labels": [
-          "project:harness",
           "agent-ready",
-          "risk:1",
+          "risk:2",
           "project:foundation"
         ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 429,
-        "title": "The ESLint suppressions baseline can be reset the same way, and nothing detects it",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:1",
-          "project:foundation"
+        "blocking": [
+          383
         ],
-        "blocking": [],
         "project": "foundation",
         "rank": 1,
         "lane": "feature",
@@ -920,22 +878,6 @@
         "lane": "process",
         "pickable": false,
         "reason": "unshaped"
-      },
-      {
-        "number": 155,
-        "title": "De-duplicate vendored skills (tdd/test-driven-development, debugging/systematic-debugging, planning/writing-plans) and fix sync-superpowers.sh",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:2"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": false,
-        "reason": "claimed"
       },
       {
         "number": 156,
@@ -2055,6 +1997,40 @@
         "reason": "unshaped"
       },
       {
+        "number": 407,
+        "title": "Two PRs can be green alone and red merged, and nothing detects it before main",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
+        "number": 429,
+        "title": "The ESLint suppressions baseline can be reset the same way, and nothing detects it",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 431,
         "title": "compileHDL checks dangling signals by name, so a read of a never-driven bit is silently 0",
         "labels": [
@@ -2358,14 +2334,40 @@
         "lane": "enabler",
         "pickable": false,
         "reason": "unshaped"
+      },
+      {
+        "number": 648,
+        "title": "src/utils/wiringScheme: comments cite docs/superpowers/specs paths that moved to docs/specs",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "unshaped"
+      },
+      {
+        "number": 649,
+        "title": "docPaths OWNED_SKILLS: follow sync-superpowers.sh's owned-skill list (ADR-0010 coupling)",
+        "labels": [
+          "project:harness",
+          "risk:1"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "unshaped"
       }
     ],
     "byProject": {
       "foundation": [
         338,
         373,
-        407,
-        429,
         151,
         182,
         184,
@@ -2385,6 +2387,8 @@
         389,
         395,
         400,
+        407,
+        429,
         462,
         506,
         599,
@@ -2416,7 +2420,6 @@
         516,
         547,
         154,
-        155,
         156,
         270,
         435,
@@ -2426,7 +2429,9 @@
         504,
         505,
         550,
-        607
+        607,
+        648,
+        649
       ],
       "spine": [
         165,
@@ -2543,11 +2548,39 @@
     ],
     "merged": [
       {
+        "number": 650,
+        "title": "chore(skills): one skill per job, a sync that cannot re-add, one spec/plan home",
+        "url": "https://github.com/mezivillager/hacer/pull/650",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:2",
+          "size-override"
+        ],
+        "headRefName": "chore/155-skill-dedup",
+        "isDraft": false,
+        "createdAt": "2026-10-01T22:21:48Z",
+        "mergedAt": "2026-10-01T22:29:46Z",
+        "closes": [
+          155
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus 5.5 (fresh context)",
+            "at": "2026-10-01T22:27:45Z",
+            "url": "https://github.com/mezivillager/hacer/pull/650#issuecomment-5941930918"
+          }
+        ]
+      },
+      {
         "number": 647,
         "title": "fix(mission-control): Ready counts only tasks with no reason",
         "url": "https://github.com/mezivillager/hacer/pull/647",
         "author": "mezivillager",
         "labels": [
+          "released",
           "risk:0",
           "project:mission-control"
         ],
@@ -2574,6 +2607,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/646",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0",
           "fidelity"
@@ -4059,33 +4093,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/555#issuecomment-5855221528"
           }
         ]
-      },
-      {
-        "number": 554,
-        "title": "docs(harness): write the loop's rules as practised",
-        "url": "https://github.com/mezivillager/hacer/pull/554",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:0"
-        ],
-        "headRefName": "docs/537-rules-as-practised",
-        "isDraft": false,
-        "createdAt": "2026-09-27T10:27:52Z",
-        "mergedAt": "2026-09-27T10:29:53Z",
-        "closes": [
-          537
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "coordinator (Opus 5.5)",
-            "at": "2026-09-27T10:29:15Z",
-            "url": "https://github.com/mezivillager/hacer/pull/554#issuecomment-5855043463"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4154,16 +4161,15 @@
         "number": 155,
         "ref": "refs/heads/claim/155",
         "sha": "59cc2f014da28cb1ec0f48600502b0b63da3237b",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "De-duplicate vendored skills (tdd/test-driven-development, debugging/systematic-debugging, planning/writing-plans) and fix sync-superpowers.sh",
         "url": "https://github.com/mezivillager/hacer/issues/155",
         "labels": [
           "project:harness",
           "agent-ready",
-          "in-progress",
           "risk:2"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -4199,6 +4205,58 @@
           "author": "mezivillager",
           "at": "2026-09-24T13:57:40Z",
           "url": "https://github.com/mezivillager/hacer/issues/182#issuecomment-5815526405"
+        }
+      },
+      {
+        "number": 407,
+        "ref": "refs/heads/claim/407",
+        "sha": "f9fcb34b427ce5f55fe1070461170bd188347bbc",
+        "state": "OPEN",
+        "title": "Two PRs can be green alone and red merged, and nothing detects it before main",
+        "url": "https://github.com/mezivillager/hacer/issues/407",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:foundation"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-92",
+          "branch": null,
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-01T22:19:51Z",
+          "url": "https://github.com/mezivillager/hacer/issues/407#issuecomment-5941807184"
+        }
+      },
+      {
+        "number": 429,
+        "ref": "refs/heads/claim/429",
+        "sha": "f9fcb34b427ce5f55fe1070461170bd188347bbc",
+        "state": "OPEN",
+        "title": "The ESLint suppressions baseline can be reset the same way, and nothing detects it",
+        "url": "https://github.com/mezivillager/hacer/issues/429",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:foundation"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-92",
+          "branch": null,
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-01T22:29:11Z",
+          "url": "https://github.com/mezivillager/hacer/issues/429#issuecomment-5941952793"
         }
       },
       {
@@ -4513,7 +4571,7 @@
         }
       }
     ],
-    "onClosedIssues": 13
+    "onClosedIssues": 14
   },
   "cloudLane": {
     "items": [
@@ -5557,9 +5615,14 @@
     },
     "releases": [
       {
+        "tag": "v2.55.3",
+        "publishedAt": "2026-10-01T22:21:26Z",
+        "isLatest": true
+      },
+      {
         "tag": "v2.55.2",
         "publishedAt": "2026-10-01T22:06:01Z",
-        "isLatest": true
+        "isLatest": false
       },
       {
         "tag": "v2.55.1",
@@ -6120,7 +6183,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-27",
-        "merges": 13
+        "merges": 12
       },
       {
         "date": "2026-09-28",
@@ -6136,20 +6199,20 @@
       },
       {
         "date": "2026-10-01",
-        "merges": 8
+        "merges": 9
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-17T22:19:56.476Z",
-      "merged": 205,
+      "since": "2026-09-17T22:30:44.223Z",
+      "merged": 206,
       "openToMergeHours": {
         "median": 0.2,
         "p90": 8.9
       },
       "blockedOnce": {
         "count": 22,
-        "of": 119,
+        "of": 120,
         "prs": [
           238,
           248,
@@ -6177,8 +6240,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 107,
-          "withVerdict": 95,
+          "merged": 108,
+          "withVerdict": 96,
           "without": [
             250,
             285,
@@ -7492,11 +7555,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "f9fcb34b427ce5f55fe1070461170bd188347bbc",
+        "sha": "48bf6a52c3f77891df0abfd44fef5895428157ed",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36934217799/job/110610554499",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36935405247/job/110614371683",
         "line": null,
         "verdict": null,
         "fields": {},
