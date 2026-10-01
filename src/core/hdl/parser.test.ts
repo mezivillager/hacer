@@ -655,3 +655,31 @@ describe('HDL Parser — part-pin slices (#357)', () => {
     expect(rangeError?.column).toBeGreaterThan(0)
   })
 })
+
+describe('HDL Parser — the reference builtin form, without PARTS:', () => {
+  it('reads a bare `BUILTIN;` as the chip\'s own builtin', () => {
+    const result = parseHDL('CHIP And16 {\n  IN a[16], b[16];\n  OUT out[16];\n  BUILTIN;\n}')
+    expect(result.success).toBe(true)
+    if (!result.success) return
+    expect(result.chip).toEqual({
+      name: 'And16',
+      inputs: [{ name: 'a', width: 16 }, { name: 'b', width: 16 }],
+      outputs: [{ name: 'out', width: 16 }],
+      parts: [],
+      builtin: 'And16',
+    })
+  })
+
+  it('reads `BUILTIN <Name>;` as that builtin', () => {
+    const result = parseHDL('CHIP Xor { IN a, b; OUT out; BUILTIN Nand; }')
+    expect(result.success).toBe(true)
+    if (!result.success) return
+    expect(result.chip.builtin).toBe('Nand')
+    expect(result.chip.parts).toEqual([])
+  })
+
+  it('rejects anything after the builtin but the closing brace', () => {
+    const result = parseHDL('CHIP Xor { IN a, b; OUT out; BUILTIN; Nand(a=a, b=b, out=out); }')
+    expect(result.success).toBe(false)
+  })
+})

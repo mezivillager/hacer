@@ -80,6 +80,17 @@ describe('runCli', () => {
     expect(JSON.parse(json.stdout)).toMatchObject({ status: 'error', chip, rows: null })
   })
 
+  it.each(['BUILTIN;', 'BUILTIN Xor;'])('refuses Xor.hdl as `%s` without PARTS: for the builtin, not a parse error', (body) => {
+    const out = runCli(vectorArgs('Xor'), reader({ 'Xor.hdl': `CHIP Xor {\n  IN a, b;\n  OUT out;\n  ${body}\n}` }))
+    expect(out).toMatchObject({ exitCode: 1, stderr: '' })
+    expect(out.stdout).toMatch(/^ERROR Xor: BUILTIN Xor in Xor: .*built from parts/)
+  })
+
+  it.each(['BUILTIN;', 'BUILTIN Nand;'])('passes Nand.hdl as `%s` without PARTS: a primitive runs on its builtin', (body) => {
+    const out = runCli(vectorArgs('Nand'), reader({ 'Nand.hdl': `CHIP Nand {\n  IN a, b;\n  OUT out;\n  ${body}\n}` }))
+    expect(out).toEqual({ exitCode: 0, stdout: 'PASS Nand 4/4 rows\n', stderr: '' })
+  })
+
   it('passes the vendored Nand.hdl, `BUILTIN Nand;`: a primitive may be its own builtin', () => {
     expect(runCli(vectorArgs('Nand'), reader())).toEqual({ exitCode: 0, stdout: 'PASS Nand 4/4 rows\n', stderr: '' })
   })
