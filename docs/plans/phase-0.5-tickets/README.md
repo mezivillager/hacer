@@ -1,5 +1,6 @@
 # Phase 0.5 — Ticket Index (Layers 0–4)
 
+**Phase status:** [`docs/roadmap/implementation.md`](../../roadmap/implementation.md) is the single source; this index is historical.  
 **Parent plan:** [`docs/plans/2026-03-22-phase-0.5-tickets.md`](../2026-03-22-phase-0.5-tickets.md)
 **Gap analysis:** [`docs/compatibility/nand2tetris/project1/gap-analysis.md`](../../compatibility/nand2tetris/project1/gap-analysis.md)
 

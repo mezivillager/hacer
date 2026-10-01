@@ -9,6 +9,8 @@ keep stack/metrics in sync with `README.md`, `REPO_MAP.md`, and `.cursorrules`
 
 ## Live Status
 
+**This file is the single source for phase status.** Current phase: **0.5** (nand2tetris Project 1 foundation, in progress); product spine 0.5 -> 0.6 -> 0.7. What is done is tracked in the epics [#139](https://github.com/mezivillager/hacer/issues/139) (spine), [#138](https://github.com/mezivillager/hacer/issues/138), [#140](https://github.com/mezivillager/hacer/issues/140)-[#147](https://github.com/mezivillager/hacer/issues/147) and [#260](https://github.com/mezivillager/hacer/issues/260), via `docs/portfolio.md`; do not restate it here. `.cursorrules`, the P05 ticket index and `tasks/todo.md` link here.
+
 Phase and ticket status is tracked outside this file now (ADR-0013): `docs/portfolio.md` for priority
 projects and the pick rule (`node scripts/backlog.mjs ready` lists what's pickable), and
 [Mission Control](https://mezivillager.github.io/hacer/control/) for the live dashboard.
