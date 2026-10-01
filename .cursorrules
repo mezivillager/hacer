@@ -9,7 +9,7 @@
 
 ## Phase Tracking
 
-**Last Updated:** 2026-05-12  
+**Status source:** [docs/roadmap/implementation.md](./docs/roadmap/implementation.md) (single source for phase status; this block is a summary)  
 **Current Phase:** Phase 0.5 (In Progress)  
 **Completed Infrastructure:** Phase 0.25 UI/canvas, Tailwind/shadcn design shell, semantic-release  
 **Next Product Phase:** Phase 0.6: Arithmetic & Sequential Logic
