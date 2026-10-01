@@ -2,10 +2,10 @@
    Chart series (#478): the dataviz skill's categorical slots in its fixed order, each mode its own validated steps. */
 :root { color-scheme: light dark; font: 15px/1.5 system-ui, -apple-system, 'Segoe UI', sans-serif;
   --text: #1d1d20; --muted: #676770; --page: #f5f5f7; --card: #fff; --line: #dfdfe5; --link: #2155c4; --stale-text: #6b4a00; --stale-page: #fff0c4;
-  --series-1: #2a78d6; --series-2: #eb6834; --series-3: #1baf7a; --series-4: #eda100; --series-5: #e87ba4; --series-other: #898781; --grid: #e1e0d9; }
+  --series-1: #2a78d6; --series-2: #eb6834; --series-3: #1baf7a; --series-4: #eda100; --series-5: #e87ba4; --series-other: #898781; --grid: #e1e0d9; --expired: #c0392b; }
 @media (prefers-color-scheme: dark) { :root {
   --text: #e8e8ed; --muted: #9d9da7; --page: #111114; --card: #1b1b20; --line: #2e2e36; --link: #92b1ff; --stale-text: #f2d27e; --stale-page: #3a2e0d;
-  --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500; --series-5: #d55181; --grid: #2c2c2a; } }
+  --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500; --series-5: #d55181; --grid: #2c2c2a; --expired: #ff7b72; } }
 body { margin: 0; background: var(--page); color: var(--text); }
 a { color: var(--link); }
 .mc { max-width: 76rem; margin: 0 auto; padding: 1rem; }
@@ -51,3 +51,21 @@ progress { width: 4rem; margin-right: 0.4rem; accent-color: var(--link); }
 .picked ul { margin: 0; padding-left: 1.25rem; max-height: 16rem; overflow-y: auto; font-size: 0.85rem; }
 .chart summary { cursor: pointer; color: var(--muted); font-size: 0.85rem; margin-top: 0.5rem; }
 .stages { overflow-x: auto; }
+
+.lineage-detail { background: var(--card); border: 1px solid var(--line); border-radius: 0.5rem; padding: 0.5rem 1rem; margin-top: 0.75rem; }
+.lineage-detail h4 { margin: 0.75rem 0 0.25rem; }
+.muted { color: var(--muted); }
+.expired { color: var(--expired); font-weight: 600; }
+.edge { stroke: var(--grid); stroke-width: 1; }
+.edge.up { stroke: var(--series-1); stroke-width: 2; }
+.edge.down { stroke: var(--series-2); stroke-width: 2; }
+.node { fill: var(--muted); cursor: pointer; outline: none; }
+.node.up { fill: var(--series-1); }
+.node.down { fill: var(--series-2); }
+.node.selected { fill: var(--text); }
+.node.expired polygon { fill: var(--expired); }
+.node:focus-visible .hit { stroke: var(--link); stroke-width: 2; }
+.node text { fill: var(--muted); stroke: none; }
+.key { display: inline-block; width: 1.5rem; border-top: 2px solid; vertical-align: middle; }
+.key.up { color: var(--series-1); }
+.key.down { color: var(--series-2); }
