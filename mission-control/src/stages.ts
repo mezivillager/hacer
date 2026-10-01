@@ -12,7 +12,7 @@ const prOf = ({ number, title, url }: { number: number; title: string; url: stri
 /** The loop's six stages, live from the snapshot — every count's definition is documented in
  *  docs/harness/mission-control.md. `verifying` is `PR`'s own open PRs, split by whether a verdict has landed. */
 export function stagesOf({ tasks, claims, prs, generatedAt }: Snapshot): Stage[] {
-  const ready = tasks.items.filter((task) => task.pickable)
+  const ready = tasks.items.filter((task) => task.reason === null)
   // An issue holding a claim ref reads `claimed`, labelled or not (#531); a `stale-claim` is one to release, not a build.
   const building = tasks.items.filter((task) => task.reason === 'in-progress' || task.reason === 'claimed')
   const cutoff = new Date(generatedAt).getTime() - WEEK_MS

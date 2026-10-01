@@ -17,7 +17,7 @@ describe('Process', () => {
   it('renders stages ready → claimed → building → PR → verifying → merged with counts from the snapshot', () => {
     render(<Process snapshot={snapshot} />)
     const stage = (label: RegExp) => screen.getByRole('button', { name: label })
-    expect(stage(/^Ready: 47 ready$/)).toBeTruthy()
+    expect(stage(/^Ready: 42 ready$/)).toBeTruthy()
     expect(stage(/^Claimed: 5 claimed$/)).toBeTruthy()
     expect(stage(/^Building: 4 building$/)).toBeTruthy()
     expect(stage(/^PR: 4 open$/)).toBeTruthy()
