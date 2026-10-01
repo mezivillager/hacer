@@ -79,7 +79,9 @@ specification; these three rules are what `scripts/backlog.logic.mjs` computes.
   evaluation is still fixed, in the evaluation layer, as #312 was.
 - **New work on hand editing stops.** Wire drawing, junction placement, dragging, previews, and
   polish or fixes whose only beneficiary is that machinery: not `agent-ready` while the plan runs.
-  All of it is `risk:2` store/UI/R3F work, so the same filter holds it with the same stated reason.
+  The filter holds only the `risk:2` part of it, with the same stated reason; work below `risk:2`
+  passes the gate (#223, wire-confluence merging, was `risk:1` with `sev:high` and was picked), so
+  what keeps the rest out is that it is not labelled `agent-ready`.
   Since [ADR-0020](decisions/0020-spec-only-writes-read-only-projections.md) those capabilities are
   **non-goals, not deferred work** (its §6), so the sweep (#340) closes them rather than holding
   them. Hand editing is reopenable only as alternative C of that ADR: a command writing a layout

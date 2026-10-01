@@ -65,7 +65,10 @@ const AUX_SLOT = 'aux'
 const SHARED_BUCKET = new Map([['pubdocs', 'surfaces']])
 /** Every bucket the cycle can draw from, in cycle order (the aux buckets last). */
 const BUCKET_ORDER = [...new Set(PICK_ROTATION.filter((slot) => slot !== AUX_SLOT)), ...AUX_ROTATION]
-const bucketOf = (slug) => SHARED_BUCKET.get(slug) ?? slug
+export const bucketOf = (slug) => SHARED_BUCKET.get(slug) ?? slug
+
+/** A non-enabler row the cycle never draws from: its tasks are on-request, and that reason wins over the gate's. */
+const outsideCycle = (task) => task.lane !== 'enabler' && !BUCKET_ORDER.includes(bucketOf(task.project))
 
 const byNumber = (a, b) => a.number - b.number
 const designFirst = (task) => (DESIGN_FIRST_SLUGS.includes(task.project) && task.labels.includes('research') ? 0 : 1)
@@ -241,7 +244,7 @@ export function planReady(issues, portfolioRows, allowlist = DEFAULT_ALLOWLIST, 
       continue
     }
     if (heldByGate(task)) {
-      unpicked.push({ ...task, pickable: false, reason: GATE_REASON })
+      unpicked.push({ ...task, pickable: false, reason: outsideCycle(task) ? 'on-request' : GATE_REASON })
       continue
     }
     const bucket = slotOf(task)
@@ -255,9 +258,10 @@ export function planReady(issues, portfolioRows, allowlist = DEFAULT_ALLOWLIST, 
 export const ROW_AGENT_READY_CAP = 12
 
 /**
- * One summary per portfolio row, in file order: live counts, its stale claims and the next pick for that row. `ready`
- * counts what `ready` picks — a task with a reason (`on-request`, `not-pulled`, …) is not ready (#540); `next` is still
- * the row's first pickable task, what the owner gets on request. `agentReady` counts its open `agent-ready` issues.
+ * One summary per portfolio row, in file order: live counts of the tasks it files, its stale claims and the next pick
+ * for that row. `ready` counts what `ready` picks — a task with a reason (`on-request`, `not-pulled`, …) is not ready
+ * (#540); `next` is still the row's first pickable task, what the owner gets on request. `agentReady` counts its open
+ * `agent-ready` issues; `filedElsewhere` names the tasks that carry its `project:` label but file under another row.
  */
 export function summarizeProjects(issues, portfolioRows, allowlist = DEFAULT_ALLOWLIST, claims = [], history = []) {
   const plan = planReady(issues, portfolioRows, allowlist, claims, history)
@@ -273,6 +277,8 @@ export function summarizeProjects(issues, portfolioRows, allowlist = DEFAULT_ALL
       needsHuman: tasks.filter((task) => task.labels.includes('needs-human')).length,
       staleClaims: tasks.filter((task) => task.reason === 'stale-claim').map((task) => task.number),
       agentReady: tasks.filter((task) => task.labels.includes('agent-ready')).length,
+      filedElsewhere: plan.filter((task) => task.project !== row.slug && task.labels.includes(`project:${row.slug}`))
+        .map((task) => task.number).sort((a, b) => a - b),
       next: next && { number: next.number, title: next.title },
     }
   })
@@ -287,13 +293,17 @@ export function formatReady(plan) {
   return [...picks, ...(picks.length > 0 && rest.length > 0 ? [''] : []), ...rest].join('\n')
 }
 
-/** `slug · open N · ready N · in-progress N · needs-human N [· stale-claim #n,…] [· over cap: N agent-ready > 12] · next: #n title`. */
+/**
+ * `slug · open N · ready N · in-progress N · needs-human N [· stale-claim #n,…] [· filed under another row #n,…]
+ * [· over cap: N agent-ready > 12] · next: #n title`.
+ */
 export function formatProjects(summaries) {
   const nextLabel = (next) => (next ? `#${next.number} ${next.title}` : '—')
-  const stale = (numbers) => (numbers.length > 0 ? ` · stale-claim ${numbers.map((number) => `#${number}`).join(',')}` : '')
+  const list = (label, numbers = []) => (numbers.length > 0 ? ` · ${label} ${numbers.map((number) => `#${number}`).join(',')}` : '')
   const overCap = (count) => (count > ROW_AGENT_READY_CAP ? ` · over cap: ${count} agent-ready > ${ROW_AGENT_READY_CAP}` : '')
   return summaries.map((s) => `${s.slug} · open ${s.open} · ready ${s.ready} · in-progress ${s.inProgress}` +
-    ` · needs-human ${s.needsHuman}${stale(s.staleClaims)}${overCap(s.agentReady)} · next: ${nextLabel(s.next)}`).join('\n')
+    ` · needs-human ${s.needsHuman}${list('stale-claim', s.staleClaims)}${list('filed under another row', s.filedElsewhere)}` +
+    `${overCap(s.agentReady)} · next: ${nextLabel(s.next)}`).join('\n')
 }
 
 /** `next`'s exit status when nothing is pickable: apart from 1 (an error) and 2 (usage), so a loop can tell them apart. */
