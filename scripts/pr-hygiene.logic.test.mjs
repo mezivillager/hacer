@@ -22,6 +22,7 @@ import {
   measure,
   RATCHET_BASELINE_FILE,
   RATCHET_CONFIG_FILE,
+  SUPPRESSION_RATCHET,
   compareRatchetBaseline,
   nextPageUrl,
   parseGeneratedPatterns,
@@ -1488,5 +1489,121 @@ describe('the layer rules themselves are guarded (#489)', () => {
       expect(source(name)).not.toMatch(/\brequire\s*\(|\bimport\s*\(|\beval\s*\(|\bnew Function\b|node:vm|child_process|createRequire/)
     }
     expect(source('pr-hygiene.mjs')).toContain('ratchetReads(files)')
+  })
+})
+
+// ── The ESLint half of the ratchet (#429) ──────────────────────────────────────────────────────
+//
+// `eslint . --suppress-all` rewrites `eslint-suppressions.json` and absorbs a new engine
+// `console.log` the way the dependency-cruiser baseline write does. Same mechanism, second data:
+// a row is `(file, rule id)`, and its `count` is growth the row set alone does not see.
+
+describe('the ESLint suppressions baseline is the same ratchet (#429)', () => {
+  const SUPPRESSIONS_FILE = 'eslint-suppressions.json'
+  const ESLINT_CONFIG = 'eslint.config.js'
+  const REAL_SUPPRESSIONS = readFileSync(path.join(import.meta.dirname, '..', SUPPRESSIONS_FILE), 'utf8')
+  const REAL_ESLINT_CONFIG = readFileSync(path.join(import.meta.dirname, '..', ESLINT_CONFIG), 'utf8')
+  const suppressionsOf = (entries) =>
+    JSON.stringify(
+      entries.reduce((all, [where, rule, count]) => ({ ...all, [where]: { ...all[where], [rule]: { count } } }), {}),
+      null,
+      2,
+    )
+  const eslintConfigOf = (...ids) => `export default [\n  {\n    rules: {\n${ids.map((id) => `      '${id}': 'error',`).join('\n')}\n    },\n  },\n]\n`
+  const base = suppressionsOf([['src/utils/a.ts', 'no-console', 1], ['src/core/b.ts', 'no-restricted-globals', 2]])
+  const suppressionsPr = (suppressions, overrides = {}) => pr({ suppressions, ...overrides })
+  const finding = (result) => result.findings.find((entry) => entry.rule === 'ratchet' && entry.message.includes(SUPPRESSIONS_FILE))
+
+  it('reads one row per file and rule id, carrying its count', () => {
+    expect(parseRatchetBaseline(base, SUPPRESSION_RATCHET)).toEqual({
+      rows: [
+        { rule: 'no-console', edge: 'src/utils/a.ts', count: 1 },
+        { rule: 'no-restricted-globals', edge: 'src/core/b.ts', count: 2 },
+      ],
+    })
+    expect(parseRatchetBaseline('[]', SUPPRESSION_RATCHET).error).toBeDefined()
+    expect(parseRatchetBaseline('{"src/a.ts":{"no-console":{}}}', SUPPRESSION_RATCHET).error).toMatch(/count/)
+    const real = parseRatchetBaseline(REAL_SUPPRESSIONS, SUPPRESSION_RATCHET)
+    expect(real.error).toBeUndefined()
+    expect(real.rows.length).toBeGreaterThan(0)
+  })
+
+  it('fails a new suppression under a rule id the merge base already has, naming the file and the rule id', () => {
+    const head = suppressionsOf([['src/utils/a.ts', 'no-console', 1], ['src/core/b.ts', 'no-restricted-globals', 2], ['src/core/new.ts', 'no-console', 1]])
+    const result = evaluate(suppressionsPr({ base, head }))
+    expect(result.verdict).toBe('FAIL')
+    expect(result.suppressions).toBe('absorbed')
+    expect(finding(result).level).toBe('fail')
+    expect(finding(result).message).toContain('no-console: src/core/new.ts')
+    expect(formatConsole(result).split('\n')[0]).toContain('suppressions=absorbed')
+  })
+
+  it('fails a count that rises from 1 to 4 in a file already suppressed — growth the row set alone does not see', () => {
+    const head = suppressionsOf([['src/utils/a.ts', 'no-console', 4], ['src/core/b.ts', 'no-restricted-globals', 2]])
+    const result = evaluate(suppressionsPr({ base, head }))
+    expect(result.verdict).toBe('FAIL')
+    expect(finding(result).message).toContain('no-console: src/utils/a.ts')
+    expect(finding(result).message).toContain('1 → 4')
+  })
+
+  it('passes a new suppression under a rule id this PR newly names in eslint.config.js', () => {
+    const head = suppressionsOf([['src/utils/a.ts', 'no-console', 1], ['src/core/b.ts', 'no-restricted-globals', 2], ['src/core/c.ts', 'no-alert', 3]])
+    const result = evaluate(
+      suppressionsPr(
+        { base, head, baseConfig: eslintConfigOf('no-console', 'no-restricted-globals'), headConfig: eslintConfigOf('no-console', 'no-restricted-globals', 'no-alert') },
+        { files: [file('src/core/thing.ts', 10, 2), file(ESLINT_CONFIG, 1, 0)] },
+      ),
+    )
+    expect(result.suppressions).toBe('armed')
+    expect(finding(result).level).toBe('pass')
+    expect(finding(result).message).toContain('no-alert')
+  })
+
+  it('fails a rule id merely absent from the base file — with no config edit, a zero-suppression rule is no free pass', () => {
+    const head = suppressionsOf([['src/utils/a.ts', 'no-console', 1], ['src/core/b.ts', 'no-restricted-globals', 2], ['src/core/c.ts', '@typescript-eslint/no-unused-vars', 1]])
+    const result = evaluate(suppressionsPr({ base, head }))
+    expect(result.verdict).toBe('FAIL')
+    expect(finding(result).message).toContain('@typescript-eslint/no-unused-vars: src/core/c.ts')
+  })
+
+  it('fails growth under a rule id the PR newly names in the config but the merge base already suppresses — it was armed already', () => {
+    const head = suppressionsOf([['src/utils/a.ts', 'no-console', 1], ['src/core/b.ts', 'no-restricted-globals', 2], ['src/core/c.ts', 'no-console', 1]])
+    const result = evaluate(
+      suppressionsPr(
+        { base, head, baseConfig: eslintConfigOf('no-restricted-globals'), headConfig: eslintConfigOf('no-restricted-globals', 'no-console') },
+        { files: [file('src/core/thing.ts', 10, 2), file(ESLINT_CONFIG, 1, 0)] },
+      ),
+    )
+    expect(result.verdict).toBe('FAIL')
+    expect(finding(result).message).toContain('no-console: src/core/c.ts')
+  })
+
+  it('passes a removed suppression and a falling count', () => {
+    const head = suppressionsOf([['src/core/b.ts', 'no-restricted-globals', 1]])
+    const result = evaluate(suppressionsPr({ base, head }))
+    expect(result.suppressions).toBe('shrank')
+    expect(result.verdict).toBe('PASS')
+  })
+
+  it('warns, rather than failing, when the PR body names the suppression it adds', () => {
+    const head = suppressionsOf([['src/utils/a.ts', 'no-console', 4], ['src/core/b.ts', 'no-restricted-globals', 2]])
+    const body = 'Fixes #150\n\nBaseline-growth: no-console: src/utils/a.ts — moved three calls in from a deleted file'
+    const result = evaluate(suppressionsPr({ base, head }, { body }))
+    expect(result.verdict).toBe('WARN')
+    expect(result.suppressions).toBe('absorbed')
+  })
+
+  it('reads the real files: the committed suppressions against themselves, and rule ids in the real config', () => {
+    const verdict = compareRatchetBaseline({ base: REAL_SUPPRESSIONS, head: REAL_SUPPRESSIONS, kind: SUPPRESSION_RATCHET })
+    expect(verdict.status).toBe('unchanged')
+    const ids = SUPPRESSION_RATCHET.ruleNames(REAL_ESLINT_CONFIG)
+    for (const { rule } of parseRatchetBaseline(REAL_SUPPRESSIONS, SUPPRESSION_RATCHET).rows) expect(ids.has(rule)).toBe(true)
+  })
+
+  it('is read when a PR touches the suppressions or the ESLint config, and only then', () => {
+    expect(ratchetReads([file('src/core/thing.ts')], SUPPRESSION_RATCHET)).toBeNull()
+    expect(ratchetReads([file(SUPPRESSIONS_FILE)], SUPPRESSION_RATCHET)).toEqual({ config: false })
+    expect(ratchetReads([file(ESLINT_CONFIG)], SUPPRESSION_RATCHET)).toEqual({ config: true })
+    expect(ratchetReads([file(RATCHET_BASELINE_FILE)], SUPPRESSION_RATCHET)).toBeNull()
   })
 })
