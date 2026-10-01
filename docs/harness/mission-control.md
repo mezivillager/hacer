@@ -150,7 +150,7 @@ fields v1 declared after its capture are spliced in from its own data at its own
 **The contract.** `SCHEMA_V1` in `collect.logic.mjs` is the checked shape, and this page its meaning. Adding a field
 keeps v1; renaming, removing or retyping one bumps `schemaVersion`, and a `--previous` of another version is not kept.
 Nor is one of its sections that no longer conforms, such as one written before a field was declared. That section
-reads as having no previous: empty, `fetchedAt: null` (#539).
+reads as having no previous: empty, `fetchedAt: null` (#539). A section the doc declares an empty placeholder ("empty until DL-n") may be filled in place without a version bump, because nothing reads the placeholder shape; `lineage` (#481) is the first case.
 
 **Privacy.** Public data only, and no issue, PR or comment body is copied — only verdict and claim fields; the cloud
 inbox gives its table, never the meter readings under it. Usage meters, org ids and lane files are never read.
