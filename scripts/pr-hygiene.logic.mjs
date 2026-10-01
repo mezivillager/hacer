@@ -315,6 +315,12 @@ export const RATCHET_BASELINE_FILE = '.dependency-cruiser-known-violations.json'
  */
 export const RATCHET_CONFIG_FILE = '.dependency-cruiser.cjs'
 
+/** The ESLint half of the ratchet (#429): `eslint . --suppress-all` absorbs a new violation the same way. */
+export const SUPPRESSIONS_BASELINE_FILE = 'eslint-suppressions.json'
+
+/** Where an ESLint rule id is configured — read as text, like the dependency-cruiser config. */
+export const SUPPRESSIONS_CONFIG_FILE = 'eslint.config.js'
+
 /**
  * What the ratchet reads for this PR, or null when it reads nothing — a PR that edits neither file
  * (#396's shape) makes no content request at all. The baseline is read at both refs when either
@@ -322,9 +328,9 @@ export const RATCHET_CONFIG_FILE = '.dependency-cruiser.cjs'
  * there (#489), so a PR that edits only the config is read too.
  * @param {{filename:string}[]} files
  */
-export function ratchetReads(files) {
+export function ratchetReads(files, kind = LAYER_RATCHET) {
   const edited = (name) => files.some((entry) => entry.filename === name)
-  return edited(RATCHET_BASELINE_FILE) || edited(RATCHET_CONFIG_FILE) ? { config: edited(RATCHET_CONFIG_FILE) } : null
+  return edited(kind.file) || edited(kind.config) ? { config: edited(kind.config) } : null
 }
 
 /**
@@ -403,9 +409,9 @@ export async function readAtRef(io, ref, filePath) {
  * One comparable row per recorded violation. A baseline write rewrites the whole file, so rows
  * have to compare as a set — never by position, and never by count alone.
  * @param {string|null|undefined} text the file at one commit, or null when it does not exist there
- * @returns {{rows:{rule:string,edge:string}[], error?:undefined}|{rows?:undefined, error:string}}
+ * @returns {{rows:{rule:string,edge:string,count?:number}[], error?:undefined}|{rows?:undefined, error:string}}
  */
-export function parseRatchetBaseline(text) {
+export function parseRatchetBaseline(text, kind = LAYER_RATCHET) {
   if (text === null || text === undefined) return { rows: [] }
   let parsed
   try {
@@ -413,12 +419,41 @@ export function parseRatchetBaseline(text) {
   } catch {
     return { error: 'is not valid JSON' }
   }
+  return kind.rows(parsed)
+}
+
+function violationRows(parsed) {
   if (!Array.isArray(parsed)) return { error: 'is not a JSON array of violation rows' }
   if (parsed.some((row) => typeof row?.rule?.name !== 'string')) return { error: 'has a row with no rule name' }
   return { rows: parsed.map((row) => ({ rule: row.rule.name, edge: `${row.from} → ${row.to}` })) }
 }
 
+/** `{ file: { ruleId: { count } } }` → one row per (file, rule id); the count is compared separately. */
+function suppressionRows(parsed) {
+  if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
+    return { error: 'is not a JSON object of files' }
+  }
+  const rows = Object.entries(parsed).flatMap(([edge, rules]) =>
+    Object.entries(rules ?? {}).map(([rule, entry]) => ({ rule, edge, count: entry?.count })),
+  )
+  if (rows.some((row) => !Number.isInteger(row.count) || row.count < 1)) return { error: 'has a suppression with no count' }
+  return { rows }
+}
+
 const ratchetRowKey = (row) => `${row.rule}\u0000${row.edge}`
+
+/** Rows in `to` that `from` lacks, or whose count rose — a count of 1 → 4 is growth no row set sees. */
+function grownRows(from, to) {
+  const before = new Map(from.map((row) => [ratchetRowKey(row), row]))
+  return to.flatMap((row) => {
+    const was = before.get(ratchetRowKey(row))
+    if (row.count === undefined) return was ? [] : [row]
+    const wasCount = was?.count ?? 0
+    return row.count > wasCount ? [{ ...row, was: wasCount }] : []
+  })
+}
+
+const rowTotal = (rows) => rows.reduce((total, row) => total + (row.count ?? 1), 0)
 
 /**
  * Every rule name a dependency-cruiser config declares, read as **text**. This runs under
@@ -433,6 +468,52 @@ export function parseRuleNames(text) {
   return new Set([...(text ?? '').matchAll(/(?:^|[{,\s])name\s*:\s*(['"`])([^'"`\n]+)\1/g)].map((match) => match[2]))
 }
 
+/** Every quoted key in an ESLint flat config — rule ids among them — read as text, like `parseRuleNames`. */
+export function parseRuleIds(text) {
+  return new Set([...(text ?? '').matchAll(/(['"`])([@\w][\w@/.-]*)\1\s*:/g)].map((match) => match[2]))
+}
+
+/** The dependency-cruiser baseline and the config its rule names are declared in (#406). */
+export const LAYER_RATCHET = {
+  input: 'ratchet',
+  file: RATCHET_BASELINE_FILE,
+  config: RATCHET_CONFIG_FILE,
+  rows: violationRows,
+  ruleNames: parseRuleNames,
+  scanName: 'parseRuleNames',
+  scanForm: "a literal `name: '…'`",
+  units: 'baseline rows',
+  fix: 'Fix the import',
+  disarm: true,
+  armedByBaseRows: false,
+}
+
+/**
+ * The ESLint suppressions (#429). A rule id is new in a PR when the PR's `eslint.config.js` names it
+ * as a quoted key, the merge base's does not, and the merge base suppresses nothing under it: most
+ * rules arrive through shared configs no text scan sees, so a base suppression means the rule was
+ * armed already, not that the scan missed it. Absence from the base file alone is not enough — that
+ * is #432's zero-row hole, and nearly every configured rule has no suppression. No `disarmed`
+ * check: ESLint itself fails a suppression its rule no longer reports, and a key leaving the file
+ * can be a rule handed back to its shared config.
+ */
+export const SUPPRESSION_RATCHET = {
+  input: 'suppressions',
+  file: SUPPRESSIONS_BASELINE_FILE,
+  config: SUPPRESSIONS_CONFIG_FILE,
+  rows: suppressionRows,
+  ruleNames: parseRuleIds,
+  scanName: 'parseRuleIds',
+  scanForm: "a quoted rule key `'…':`",
+  units: 'suppressions',
+  fix: 'Fix the code',
+  disarm: false,
+  armedByBaseRows: true,
+}
+
+/** Every baseline the ratchet reads — a second one is data here, not a second rule. */
+export const RATCHETS = [LAYER_RATCHET, SUPPRESSION_RATCHET]
+
 /**
  * Why a config's scan cannot be trusted, or null. Text that scans to no rule names is a config the
  * scan cannot read — rules built by a helper, quoted or computed keys, identifier values — not one
@@ -442,12 +523,12 @@ export function parseRuleNames(text) {
  * — but it fails here too: once merged it is every later PR's base, and `absorbed` would tell its
  * author to declare a rule they may well have declared. An absent config (`null`) is not unread.
  */
-function unscannedConfig(text, whose, cost) {
-  if ((text ?? '').trim() === '' || parseRuleNames(text).size > 0) return null
+function unscannedConfig(text, whose, cost, kind) {
+  if ((text ?? '').trim() === '' || kind.ruleNames(text).size > 0) return null
   return (
-    `${whose} \`${RATCHET_CONFIG_FILE}\` is not empty, yet the scan found no rule names in it — it reads only a ` +
-    `literal \`name: '…'\`, so this is a config it cannot read, not one with no rules. ${cost}, so the ratchet ` +
-    'fails closed: write each rule name literally, or teach `parseRuleNames` the new form in its own PR first'
+    `${whose} \`${kind.config}\` is not empty, yet the scan found no rule names in it — it reads only ` +
+    `${kind.scanForm}, so this is a config it cannot read, not one with no rules. ${cost}, so the ratchet ` +
+    `fails closed: write each rule name literally, or teach \`${kind.scanName}\` the new form in its own PR first`
   )
 }
 
@@ -458,7 +539,7 @@ function unscannedConfig(text, whose, cost) {
  * base scan missed, and trusting it reads a row absorbed under a long-armed rule as `armed` (#456).
  * A missed rule with no rows is invisible to this — the residual on `compareRatchetBaseline`.
  */
-function missedByBaseScan(declaredHere, baseRows) {
+function missedByBaseScan(declaredHere, baseRows, kind) {
   const missed = [...declaredHere]
     .map((rule) => ({ rule, rows: baseRows.filter((row) => row.rule === rule).length }))
     .filter(({ rows }) => rows > 0)
@@ -467,7 +548,7 @@ function missedByBaseScan(declaredHere, baseRows) {
   return (
     `${missed.map(({ rule, rows }) => `\`${rule}\` (${plural(rows, 'base row')})`).join(', ')} ${reads} as newly declared ` +
     `in this PR, yet the merge base's baseline already records rows under ${it} — so the merge base's ` +
-    `\`${RATCHET_CONFIG_FILE}\` declares ${it} too, and the scan, which reads only a literal \`name: '…'\`, missed ${it}. ` +
+    `\`${kind.config}\` declares ${it} too, and the scan, which reads only ${kind.scanForm}, missed ${it}. ` +
     'Trusted, that reads a row absorbed under a long-armed rule as `armed`, so the ratchet fails closed: write the ' +
     'name literally at the merge base first, in its own PR'
   )
@@ -535,40 +616,47 @@ function disarmedRules(baseRules, headRules, declaredHere, baseRows, headRows) {
  * two while the rule has baseline rows (#489); a rule with none is fenced by review alone (#505).
  * @param {{base:string|null, head:string|null, baseConfig?:string|null, headConfig?:string|null, configTouched?:boolean}} contents
  */
-export function compareRatchetBaseline({ base, head, baseConfig = null, headConfig = null, configTouched = false }) {
-  const parsedBase = parseRatchetBaseline(base)
-  const parsedHead = parseRatchetBaseline(head)
+export function compareRatchetBaseline({
+  base,
+  head,
+  baseConfig = null,
+  headConfig = null,
+  configTouched = false,
+  kind = LAYER_RATCHET,
+}) {
+  const parsedBase = parseRatchetBaseline(base, kind)
+  const parsedHead = parseRatchetBaseline(head, kind)
   const growth = ' — its growth cannot be checked'
-  if (parsedHead.error) return { status: 'unreadable', detail: `\`${RATCHET_BASELINE_FILE}\` ${parsedHead.error}${growth}` }
+  if (parsedHead.error) return { status: 'unreadable', detail: `\`${kind.file}\` ${parsedHead.error}${growth}` }
   if (parsedBase.error) {
-    return { status: 'unreadable', detail: `the base copy of \`${RATCHET_BASELINE_FILE}\` ${parsedBase.error}${growth}` }
+    return { status: 'unreadable', detail: `the base copy of \`${kind.file}\` ${parsedBase.error}${growth}` }
   }
-  const counts = { base: parsedBase.rows.length, head: parsedHead.rows.length }
-  const baseKeys = new Set(parsedBase.rows.map(ratchetRowKey))
-  const headKeys = new Set(parsedHead.rows.map(ratchetRowKey))
-  const added = parsedHead.rows.filter((row) => !baseKeys.has(ratchetRowKey(row)))
-  const removed = parsedBase.rows.filter((row) => !headKeys.has(ratchetRowKey(row)))
+  const counts = { base: rowTotal(parsedBase.rows), head: rowTotal(parsedHead.rows) }
+  const added = grownRows(parsedBase.rows, parsedHead.rows)
+  const removed = grownRows(parsedHead.rows, parsedBase.rows)
   // The scan decides a verdict only when rows arrived and the config was edited; then it has to
   // have read something on both sides (#438). A shrink never consults it, so it is never refused.
   const unscanned =
     configTouched && added.length > 0
-      ? (unscannedConfig(baseConfig, "the merge base's", 'Trusted, it would read every name in this PR as newly declared and an absorbed row as `armed`') ??
-        unscannedConfig(headConfig, "this PR's", "Merged, it would be every later PR's base, where every later arming would fail closed here"))
+      ? (unscannedConfig(baseConfig, "the merge base's", 'Trusted, it would read every name in this PR as newly declared and an absorbed row as `armed`', kind) ??
+        unscannedConfig(headConfig, "this PR's", "Merged, it would be every later PR's base, where every later arming would fail closed here", kind))
       : null
   if (unscanned) return { status: 'unreadable', detail: unscanned }
   // The rule names this PR brings into existence. Without a config edit there are none, so every
   // added row is an absorption — which is what a zero-row rule and an invented name both are.
-  const baseConfigRules = parseRuleNames(baseConfig)
-  const headConfigRules = parseRuleNames(headConfig)
+  const baseConfigRules = kind.ruleNames(baseConfig)
+  const headConfigRules = kind.ruleNames(headConfig)
+  const armedAtBase = new Set(kind.armedByBaseRows ? parsedBase.rows.map((row) => row.rule) : [])
   const declaredHere = configTouched
-    ? new Set([...headConfigRules].filter((name) => !baseConfigRules.has(name)))
+    ? new Set([...headConfigRules].filter((name) => !baseConfigRules.has(name) && !armedAtBase.has(name)))
     : new Set()
-  const missed = added.length > 0 ? missedByBaseScan(declaredHere, parsedBase.rows) : null
+  const missed = added.length > 0 ? missedByBaseScan(declaredHere, parsedBase.rows, kind) : null
   if (missed) return { status: 'unreadable', detail: missed }
   // The rules themselves, read on every PR that edits the config — its rows do not have to move (#489).
-  const disarmed = configTouched
-    ? disarmedRules(baseConfigRules, headConfigRules, declaredHere, parsedBase.rows, parsedHead.rows)
-    : []
+  const disarmed =
+    configTouched && kind.disarm
+      ? disarmedRules(baseConfigRules, headConfigRules, declaredHere, parsedBase.rows, parsedHead.rows)
+      : []
   if (disarmed.length > 0) return { status: 'disarmed', counts, disarmed }
   const armedRules = [...new Set(added.filter((row) => declaredHere.has(row.rule)).map((row) => row.rule))]
   const absorbed = added.filter((row) => !declaredHere.has(row.rule))
@@ -582,20 +670,27 @@ export function compareRatchetBaseline({ base, head, baseConfig = null, headConf
         : removed.length > 0
           ? 'swapped'
           : 'armed'
-  const ruleNames = configTouched ? baseConfigRules.size : undefined
+  const ruleNames = configTouched && kind.disarm ? baseConfigRules.size : undefined
   return { status, counts, added, absorbed, removed, armedRules, ruleNames }
 }
 
 /** Added rows, named — "the baseline grew" on its own is not something anyone can act on. */
 function nameRatchetRows(rows) {
-  const shown = rows.slice(0, RATCHET_MAX_NAMED_ROWS).map((row) => `\`${row.rule}: ${row.edge}\``)
+  const shown = rows
+    .slice(0, RATCHET_MAX_NAMED_ROWS)
+    .map((row) => `\`${row.rule}: ${row.edge}\`` + (row.was === undefined ? '' : ` (${row.was} → ${row.count})`))
   const rest = rows.length - shown.length
   return shown.join(', ') + (rest > 0 ? `, +${rest} more` : '')
 }
 
-function ratchetGrowth({ body, ratchet }) {
-  const finding = (level, message) => [{ rule: 'ratchet', level, message }]
-  if (!ratchet) return finding('pass', `\`${RATCHET_BASELINE_FILE}\` unchanged`)
+function ratchetGrowth({ body, ratchets }) {
+  return ratchets.flatMap(({ kind, verdict }) => baselineGrowth(body, kind, verdict))
+}
+
+function baselineGrowth(body, kind, ratchet) {
+  const named = (message) => (message.includes(`\`${kind.file}\``) ? message : `\`${kind.file}\`: ${message}`)
+  const finding = (level, message) => [{ rule: 'ratchet', level, message: named(message) }]
+  if (!ratchet) return finding('pass', `\`${kind.file}\` unchanged`)
   const { status, counts, added, absorbed, removed, armedRules, detail, disarmed, ruleNames } = ratchet
   if (status === 'unreadable') return finding('fail', detail)
   if (status === 'disarmed') {
@@ -609,27 +704,27 @@ function ratchetGrowth({ body, ratchet }) {
     return finding(
       'fail',
       `this PR takes ${disarmed.map((entry) => `\`${entry.rule}\` (${why(entry)})`).join(', ')} out of ` +
-        `\`${RATCHET_CONFIG_FILE}\`, and its merge base declares ${them} — the edges ${they} checked go unguarded, and a row ` +
+        `\`${kind.config}\`, and its merge base declares ${them} — the edges ${they} checked go unguarded, and a row ` +
         `under a name no rule reports suppresses nothing. Restore ${them} — or, for a rename, move all its rows to the new ` +
         "name in the same PR, which warns as `swapped`. The scan reads only a literal `name: '…'`, so a name written any other way reads as taken out",
     )
   }
   if (status === 'unchanged') {
-    const read = ruleNames === undefined ? '' : ` — \`${RATCHET_CONFIG_FILE}\` edited, still declaring all ${plural(ruleNames, 'rule name')} its merge base does`
-    return finding('pass', `${counts.head} baseline rows, unchanged${read}`)
+    const read = ruleNames === undefined ? '' : ` — \`${kind.config}\` edited, still declaring all ${plural(ruleNames, 'rule name')} its merge base does`
+    return finding('pass', `${counts.head} ${kind.units}, unchanged${read}`)
   }
   const rules = armedRules.map((rule) => `\`${rule}\``).join(', ')
   // Never "flat" once the rows have changed: the count is the one number this rule does not judge
   // on, and "71 baseline rows, flat" after 72 was a false statement in a required check's output.
   const moved =
     counts.head === counts.base
-      ? `${counts.head} baseline rows, count flat`
-      : `${counts.base} → ${counts.head} baseline rows`
+      ? `${counts.head} ${kind.units}, count flat`
+      : `${counts.base} → ${counts.head} ${kind.units}`
   if (status === 'shrank') return finding('pass', `${moved} — the ratchet shrank`)
   if (status === 'armed') {
     return finding(
       'pass',
-      `${moved}, arming ${rules} (${plural(added.length, 'row')}), declared in \`${RATCHET_CONFIG_FILE}\` by this PR ` +
+      `${moved}, arming ${rules} (${plural(added.length, 'row')}), declared in \`${kind.config}\` by this PR ` +
         '— growth is legitimate when a rule is armed in the same commit',
     )
   }
@@ -637,7 +732,7 @@ function ratchetGrowth({ body, ratchet }) {
     return finding(
       'warn',
       `${moved} — ${plural(removed.length, 'row')} left and ${plural(added.length, 'row')} arrived, all under ${rules}, ` +
-        `which this PR declares in \`${RATCHET_CONFIG_FILE}\`. A rule armed while violations were fixed looks like this, ` +
+        `which this PR declares in \`${kind.config}\`. A rule armed while violations were fixed looks like this, ` +
         'and so does a rule **renamed** there to carry its old rows under a new name — the baseline cannot tell them ' +
         'apart, so read those rules in the config diff',
     )
@@ -650,7 +745,7 @@ function ratchetGrowth({ body, ratchet }) {
   const unnamed = undeclared.length === absorbed.length ? '' : ` — ${nameRatchetRows(undeclared)} still undeclared`
   return finding(
     'fail',
-    `${what}${unnamed}. Fix the import, declare a rule in \`${RATCHET_CONFIG_FILE}\` in the same commit, or name every row in the PR body as ` +
+    `${what}${unnamed}. ${kind.fix}, declare a rule in \`${kind.config}\` in the same commit, or name every row in the PR body as ` +
       `\`Baseline-growth: ${undeclared[0].rule}: ${undeclared[0].edge} — <why>\``,
   )
 }
@@ -680,16 +775,20 @@ export const RULES = [sizeBudget, linkedIssue, ratchetGrowth, protectedPath]
 
 /**
  * Run every rule over one PR.
- * @param {{body:string|null, author?:string, labels:string[], files:object[], gitattributes?:string}} input
+ * @param {{body:string|null, author?:string, labels:string[], files:object[], gitattributes?:string, ratchet?:object, suppressions?:object}} input
  * @returns {{verdict:'PASS'|'WARN'|'FAIL', findings:object[], measures:object, linkedIssues:number[], closingIssues:number[], docsOnly:boolean, linkedIssueExemption:string|null}}
  */
-export function evaluate({ body, author, labels = [], files, gitattributes, ratchet = null }, rules = RULES) {
+export function evaluate(input, rules = RULES) {
+  const { body, author, labels = [], files, gitattributes } = input
   const measures = measure(files, parseGeneratedPatterns(gitattributes))
   // Whether the config was edited is the PR's own file list, never something a caller asserts: a
-  // claim of arming has to cost a reviewable line in `.dependency-cruiser.cjs`.
-  const configTouched = files.some((entry) => entry.filename === RATCHET_CONFIG_FILE)
-  const verdict = ratchet ? compareRatchetBaseline({ ...ratchet, configTouched }) : null
-  const findings = rules.flatMap((rule) => rule({ body, author, labels, files, measures, ratchet: verdict }))
+  // claim of arming has to cost a reviewable line in the config.
+  const ratchets = RATCHETS.map((kind) => {
+    const contents = input[kind.input]
+    const configTouched = files.some((entry) => entry.filename === kind.config)
+    return { kind, verdict: contents ? compareRatchetBaseline({ ...contents, configTouched, kind }) : null }
+  })
+  const findings = rules.flatMap((rule) => rule({ body, author, labels, files, measures, ratchets }))
   const worst = Math.max(0, ...findings.map((f) => LEVELS.indexOf(f.level)))
   const deletion = deletionWaiver(measures)
   return {
@@ -701,7 +800,7 @@ export function evaluate({ body, author, labels = [], files, gitattributes, ratc
     docsOnly: isDocsOnly(measures.reviewable.files.map((f) => f.filename)),
     linkedIssueExemption: linkedIssueExemption({ author, labels }),
     sizeExemption: deletion?.exempt ? deletion.reason : null,
-    ratchet: verdict?.status ?? null,
+    ...Object.fromEntries(ratchets.map(({ kind, verdict }) => [kind.input, verdict?.status ?? null])),
   }
 }
 
@@ -734,7 +833,7 @@ export function formatConsole(result) {
     `HYGIENE: ${result.verdict} reviewable=${reviewable.lines} test=${test.lines} ` +
     `excluded=${excluded.lines} files=${reviewable.files.length} issue=${issueLabel(result)}${linkKind(result)}` +
     (result.sizeExemption ? ' size=deletion-only' : '') +
-    (result.ratchet ? ` ratchet=${result.ratchet}` : '')
+    RATCHETS.map(({ input }) => (result[input] ? ` ${input}=${result[input]}` : '')).join('')
   return [head, ...result.findings.map((f) => `  ${ICONS[f.level]} ${f.message}`)].join('\n')
 }
 

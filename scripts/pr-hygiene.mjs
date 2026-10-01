@@ -14,6 +14,7 @@
 // because the config declares it (#432). Contents are data, never code that is run here: the
 // config is scanned for `name:` as text and is never required. A PR that edits only the config is
 // read the same way, baseline and config (#489): a rule is gone once the config stops declaring it.
+// `eslint-suppressions.json` and `eslint.config.js` are read the same way, as a second baseline (#429).
 //
 // Prints one greppable `HYGIENE: PASS|WARN|FAIL …` line, appends a report to
 // $GITHUB_STEP_SUMMARY when set, publishes the line where Mission Control reads it (a notice on this
@@ -23,8 +24,7 @@ import { appendFileSync, existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import { publishLine } from './check-lines.logic.mjs'
 import {
-  RATCHET_BASELINE_FILE,
-  RATCHET_CONFIG_FILE,
+  RATCHETS,
   evaluate,
   formatConsole,
   formatSummary,
@@ -104,32 +104,36 @@ async function getAll(url) {
 const pullUrl = `https://api.github.com/repos/${REPO}/pulls/${number}`
 const [{ json: pull }, files] = await Promise.all([get(pullUrl), getAll(`${pullUrl}/files?per_page=100`)])
 
-// The ratchet baseline (#406), read only when a PR touches it or the config, and only as *content*
+// The ratchet baselines (#406, #429), each read only when a PR touches it or its config, and only as *content*
 // through the API — at the merge base (not `base.sha`, which drifts while a PR is open) and at the
 // PR head. Reading two blobs is not checking out a PR: nothing from the head is executed, and the
 // copy of this script doing the reading is always main's.
-let ratchet = null
-const reads = ratchetReads(files)
-if (reads) {
-  const { json: comparison } = await get(
-    `https://api.github.com/repos/${REPO}/compare/${pull.base.sha}...${pull.head.sha}?per_page=1`,
-  )
-  const mergeBase = comparison.merge_base_commit?.sha ?? pull.base.sha
+const baselines = {}
+const io = { readPath: getContent, refExists }
+const at = (ref, filePath) => readAtRef(io, ref, filePath)
+let mergeBase = null
+for (const kind of RATCHETS) {
+  const reads = ratchetReads(files, kind)
+  if (!reads) continue
+  if (mergeBase === null) {
+    const { json: comparison } = await get(
+      `https://api.github.com/repos/${REPO}/compare/${pull.base.sha}...${pull.head.sha}?per_page=1`,
+    )
+    mergeBase = comparison.merge_base_commit?.sha ?? pull.base.sha
+  }
   // A 404 is only "the path is absent here" once the ref itself resolves (#432): the contents API
   // answers 404 for an unresolvable ref too, and reading that as an empty baseline would make the
   // whole head file look like a legitimate arming. The extra request is only made on a 404.
-  const io = { readPath: getContent, refExists }
   // The rule config is read alongside the baseline, and only when the PR edits it: a rule name is
-  // "new" because `.dependency-cruiser.cjs` declares it here, not because the baseline had no row
-  // under it (#432). Text on both sides, parsed for `name:` and never required or run.
-  const at = (ref, filePath) => readAtRef(io, ref, filePath)
+  // "new" because the config declares it here, not because the baseline had no row under it
+  // (#432). Text on both sides, scanned for rule names and never required or run.
   const [base, head, baseConfig, headConfig] = await Promise.all([
-    at(mergeBase, RATCHET_BASELINE_FILE),
-    at(pull.head.sha, RATCHET_BASELINE_FILE),
-    reads.config ? at(mergeBase, RATCHET_CONFIG_FILE) : null,
-    reads.config ? at(pull.head.sha, RATCHET_CONFIG_FILE) : null,
+    at(mergeBase, kind.file),
+    at(pull.head.sha, kind.file),
+    reads.config ? at(mergeBase, kind.config) : null,
+    reads.config ? at(pull.head.sha, kind.config) : null,
   ])
-  ratchet = { base, head, baseConfig, headConfig }
+  baselines[kind.input] = { base, head, baseConfig, headConfig }
 }
 
 const attributesPath = path.join(import.meta.dirname, '..', '.gitattributes')
@@ -141,7 +145,7 @@ const result = evaluate({
   labels: pull.labels.map((label) => label.name),
   files,
   gitattributes,
-  ratchet,
+  ...baselines,
 })
 
 const report = formatConsole(result)

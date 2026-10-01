@@ -1488,7 +1488,7 @@ describe('the layer rules themselves are guarded (#489)', () => {
     for (const name of ['pr-hygiene.mjs', 'pr-hygiene.logic.mjs']) {
       expect(source(name)).not.toMatch(/\brequire\s*\(|\bimport\s*\(|\beval\s*\(|\bnew Function\b|node:vm|child_process|createRequire/)
     }
-    expect(source('pr-hygiene.mjs')).toContain('ratchetReads(files)')
+    expect(source('pr-hygiene.mjs')).toContain('ratchetReads(files, kind)')
   })
 })
 
