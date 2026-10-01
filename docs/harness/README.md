@@ -136,7 +136,7 @@ imports it forbids; each PR was green, and the two merged together failed `pnpm 
 
 So `ci` would have caught #404 + #399 — had it run after the first of them landed. Since `strict`
 went off (ledger L014) nothing re-runs it when `main` moves, and GitHub keeps reporting `CLEAN`,
-never `BEHIND`. Of the 40 PRs merged up to #647, 21 merged after `main` had moved past their last
+never `BEHIND`. Of the 40 PRs merged up to #647, 19 merged after `main` had moved past their last
 `ci` run; #646's `ci` started at 22:01:13 against `0c37a1e`, `main` moved to `59cc2f0` at
 22:02:45, and #646 merged at 22:06:32.
 

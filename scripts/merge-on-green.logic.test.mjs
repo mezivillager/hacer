@@ -213,7 +213,7 @@ describe('decide — the rules between the states', () => {
   })
 
   it('waits one pass before acting on a BLOCKED box with no stuck suite in sight: GitHub may still be settling', () => {
-    // Auto-merge lands ~3 s after the last required check (#517, #524, #362); a pass inside that
+    // The box clears a few seconds after the last required check (#517, #524, #362); a pass inside that
     // window must not spend the body edit, or give up. #524 at 17:52:54, every check green:
     const green = withPr(unarmed('behind'), { mergeStateStatus: 'BLOCKED' })
     const first = decide(green)
