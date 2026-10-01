@@ -78,6 +78,7 @@ const SOURCES = {
   sessions: ['docs/harness/sessions', () => readDir('docs/harness/sessions')],
   adrs: ['docs/decisions', () => readDir('docs/decisions')],
   vectors: ['conformance/vectors', () => listFiles('conformance/vectors')],
+  lineage: ['node scripts/lineage.mjs graph --json', async () => JSON.parse((await exec('node', ['scripts/lineage.mjs', 'graph', '--json'], OPTIONS)).stdout)],
 }
 
 /** Every source settles to {source, value} or {source, error}, all at once: one failure stops nothing else. */

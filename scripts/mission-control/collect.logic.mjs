@@ -284,7 +284,10 @@ const SECTIONS = {
   roadmap: { needs: ['roadmap'], build: buildRoadmap },
   metrics: { needs: ['baseline'], optional: ['ratchetLog', 'releases', 'prsMerged', 'flowPrs', 'vectors', 'archive'], build: buildMetrics },
   checks: { needs: ['checkRuns'], build: buildChecks },
-  lineage: { build: () => ({ until: 'DL-7', items: [] }) }, // the decision graph, once DL-7 draws it
+  lineage: {
+    needs: ['lineage'],
+    build: ({ lineage = {} }) => ({ nodes: lineage.nodes ?? [], edges: lineage.edges ?? [], artefacts: lineage.artefacts ?? [] }),
+  },
 }
 
 /** The `--previous` file's text as a snapshot, or null for "no previous" — a missing, empty or unparseable file
@@ -363,7 +366,8 @@ export const SCHEMA_V1 = {
     openTasks: orNull([{ date: 'string', at: 'iso', byProject: 'object' }]) },
   checks: { items: [{ pr: 'number?', sha: 'sha', check: 'string', conclusion: 'string?', completedAt: 'iso?', url: 'string?',
     line: 'string?', verdict: 'string?', fields: 'object', disagrees: 'boolean' }] },
-  lineage: { items: 'array' },
+  lineage: { nodes: [{ id: 'string', kind: 'string', title: 'string' }], edges: [{ from: 'string', to: 'string', kind: 'string' }],
+    artefacts: [{ id: 'string', kind: 'string' }] },
 }
 
 const isObject = (value) => typeof value === 'object' && value !== null && !Array.isArray(value)

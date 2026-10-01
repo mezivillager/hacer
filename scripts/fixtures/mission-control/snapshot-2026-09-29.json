@@ -7638,7 +7638,8 @@
     ]
   },
   "lineage": {
-    "until": "DL-7",
-    "items": []
+    "nodes": [],
+    "edges": [],
+    "artefacts": []
   }
 }
