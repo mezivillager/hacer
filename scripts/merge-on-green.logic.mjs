@@ -18,11 +18,17 @@
 // that listen for it on the same SHA, once per head (R746); then stop and say why. Never a
 // force-push, and never a rebase of the branch: both replace the commits the checks and the
 // verdict were given on.
+//
+// A green is stale when the base branch moved after a check that tested the merge commit started:
+// with `strict` off GitHub still reports CLEAN, never BEHIND (docs/harness/README.md, #407).
 
 const PASSING = new Set(['success', 'neutral', 'skipped'])
 /** The states `gh pr merge --auto` merges at once instead of arming auto-merge (gh's own rule). */
 const MERGEABLE_NOW = new Set(['CLEAN', 'HAS_HOOKS', 'UNSTABLE'])
 const MAX_REFUSALS = 3
+const MAX_UPDATES = 3
+/** The event whose runs check out `refs/pull/<n>/merge`; pull_request_target runs check out the base. */
+const MERGE_EVENT = 'pull_request'
 const MARKER = /\n*<!-- merge-on-green: edited to re-run the required checks on ([0-9a-f]{40}) at [^>]*-->/g
 
 export const EXIT = Object.freeze({ merged: 0, fail: 2, timeout: 3, 'give-up': 4 })
@@ -84,6 +90,23 @@ function blockers(states, head) {
   return found.length > 0 ? found.join('; ') : `every required check is green on ${head}, so the merge box is stale (R716)`
 }
 
+/** The oldest passing required check that tested a merge commit, when the base moved after it started. */
+function staleGreen(snapshot, states) {
+  // A run checks out the merge commit GitHub built at its created_at, so the base it tested is the
+  // last push at or before that moment.
+  const pushes = asArray(snapshot.basePushes)
+    .filter((push) => push?.after && Number.isFinite(Date.parse(push.timestamp)))
+    .sort((a, b) => Date.parse(b.timestamp) - Date.parse(a.timestamp))
+  const tested = states
+    .filter((s) => s.verdict === 'pass' && s.workflowRun?.event === MERGE_EVENT && Number.isFinite(Date.parse(s.workflowRun.created_at)))
+    .sort((a, b) => Date.parse(a.workflowRun.created_at) - Date.parse(b.workflowRun.created_at))
+  if (pushes.length === 0 || tested.length === 0) return null
+  const ranAt = tested[0].workflowRun.created_at
+  if (Date.parse(pushes[0].timestamp) <= Date.parse(ranAt)) return null
+  const against = pushes.find((push) => Date.parse(push.timestamp) <= Date.parse(ranAt))
+  return { name: tested[0].name, ranAt, against: against?.after, now: pushes[0].after }
+}
+
 /** The heads this tool already edited the body for, read from its markers in the body. */
 const markedHeads = (body) => [...(body ?? '').matchAll(MARKER)].map((match) => match[1])
 
@@ -92,12 +115,14 @@ const markedHeads = (body) => [...(body ?? '').matchAll(MARKER)].map((match) => 
  * @param snapshot {pr, requiredContexts, checkRuns, workflowRuns}: `pr` is `gh pr view --json
  *   number,state,isDraft,mergeStateStatus,headRefOid,baseRefName,autoMergeRequest,body`;
  *   `checkRuns` are {id, name, status, conclusion, suite}; `workflowRuns` are {id, name,
- *   workflow_id, event, status, conclusion, suite, attempt}, both for the head SHA.
+ *   workflow_id, event, status, conclusion, suite, attempt, created_at}, both for the head SHA;
+ *   `basePushes` are the base ref's moves, {after, timestamp}.
  * @param history what this run of the tool already did: {reruns: run ids, edits: head SHAs,
- *   refusals: {kind: count}, lastError, settled: the `settle` head of the previous pass's action}.
+ *   updates: heads it asked GitHub to update, refusals: {kind: count}, lastError, settled: the
+ *   `settle` head of the previous pass's action}.
  *   A refusal is a gh command that failed.
- * @returns {{kind: 'merged'|'fail'|'give-up'|'merge'|'wait'|'rerun'|'update-branch'|'edit-body',
- *   reason: string, exit?: number, runId?: number, settle?: string}}
+ * @returns {{kind: 'merged'|'fail'|'give-up'|'merge'|'disable-auto'|'wait'|'rerun'|'update-branch'|'edit-body',
+ *   reason: string, exit?: number, runId?: number, runs?: number[], settle?: string}}
  */
 export function decide(snapshot, history = {}) {
   const { pr } = snapshot
@@ -120,19 +145,38 @@ export function decide(snapshot, history = {}) {
   if (refused) return giveUp(`GitHub refused ${refused[0]} ${refused[1]} times: ${history.lastError}`)
 
   const running = unique([...snapshot.checkRuns, ...snapshot.workflowRuns].filter((r) => r.status !== 'completed').map((r) => r.name))
-  const failing = states.filter((s) => s.verdict === 'fail').map((s) => `${s.name} (${s.run.conclusion})`)
+  const failed = states.filter((s) => s.verdict === 'fail')
+  const failing = failed.map((s) => `${s.name} (${s.run.conclusion})${s.workflowRun ? ` in run ${s.workflowRun.id}` : ''}`)
   if (failing.length > 0) {
     if (running.length > 0) {
       return act('wait', `${failing.join(', ')} failed on ${head}; the verdict waits for ${running.length} still running: ${running.join(', ')}`)
     }
-    return act('fail', `required check failed on ${head}: ${failing.join(', ')}`, { exit: EXIT.fail })
+    const runs = unique(failed.map((s) => s.workflowRun?.id).filter(Boolean))
+    return act('fail', `required check failed on ${head}: ${failing.join(', ')}`, { exit: EXIT.fail, runs })
   }
-  if (MERGEABLE_NOW.has(pr.mergeStateStatus)) return act('merge', `GitHub reports ${pr.mergeStateStatus} on ${head}: merging now (rebase)`)
-  if (!pr.autoMergeRequest) return act('merge', `arming auto-merge (rebase): GitHub merges once ${required.join(', ')} pass`)
+  if (pr.autoMergeRequest) {
+    return act('disable-auto', `auto-merge is armed on ${head}: GitHub would merge on the first green, stale or not (#407); disarming it so this tool judges the green it merges on`)
+  }
   if (running.length > 0) return act('wait', `${running.length} still running on ${head}: ${running.join(', ')}`)
   if (pr.mergeStateStatus === 'UNKNOWN') return act('wait', 'GitHub has not computed mergeability yet (UNKNOWN)')
+
+  const updates = history.updates ?? []
+  const updateOnce = (reason) => {
+    if (updates.includes(pr.headRefOid)) return act('wait', `asked GitHub to merge ${pr.baseRefName} into ${head}; waiting for the new head`)
+    return act('update-branch', reason)
+  }
+  const stale = staleGreen(snapshot, states)
+  if (stale) {
+    const base = pr.baseRefName
+    if (!updates.includes(pr.headRefOid) && updates.length >= MAX_UPDATES) {
+      return giveUp(`${base} moved after the checks started ${updates.length} times in a row; the last green on ${head} is stale again (${stale.name} ran at ${stale.ranAt}, ${base} is at ${stale.now.slice(0, 7)}). Run this again when ${base} is quiet${note}`)
+    }
+    const tested = stale.against ? stale.against.slice(0, 7) : `an older ${base}`
+    return updateOnce(`${stale.name} ran at ${stale.ranAt} against ${tested}; ${base} moved to ${stale.now.slice(0, 7)} since — updating the branch so the checks see the merge that would ship`)
+  }
+  if (MERGEABLE_NOW.has(pr.mergeStateStatus)) return act('merge', `GitHub reports ${pr.mergeStateStatus} on ${head}: merging now (rebase)`)
   if (pr.mergeStateStatus === 'BEHIND') {
-    return act('update-branch', `GitHub reports BEHIND: merging ${pr.baseRefName} into the branch, which keeps every commit that was checked`)
+    return updateOnce(`GitHub reports BEHIND: merging ${pr.baseRefName} into the branch, which keeps every commit that was checked`)
   }
   if (pr.mergeStateStatus !== 'BLOCKED') return act('wait', `GitHub reports ${pr.mergeStateStatus}`)
 
