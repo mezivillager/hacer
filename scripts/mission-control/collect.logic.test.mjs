@@ -48,6 +48,8 @@ import {
 //   snapshot-2026-09-29.json the newest of those names, whole, as archived: the fixture the charts render (#478), since
 //                      snapshot.json predates the archive. Its `metrics.openTasks` is spliced in, this collector over
 //                      gh-pages-history.json at its own `generatedAt`; snapshot.json's is [], the archive not yet begun
+//   lineage-graph.json `node scripts/lineage.mjs graph --json` at origin/main ff4a6f8, cut to ADR-0020, P-001 and what is
+//                      within two edges of them: 15 of 430 decisions, with the artefacts that cite them
 //   roadmap.md, ledger.md, decisions/  the roadmap README, the failure ledger and three ADRs (and the template), trimmed by hand (#479)
 // The process records (ledger, sessions, ADRs, roadmap, cloud inbox) are read live, as
 // backlog.logic.test.mjs reads docs/portfolio.md: a format change there fails here, not silently in the site.
@@ -93,6 +95,7 @@ function inputs(overrides = {}) {
     flowPrs: ok('gh api graphql (flow)', fixture('gh-flow.json')),
     vectors: ok('conformance/vectors', vectorFiles()),
     archive: ok('git show origin/gh-pages:control/history', fixture('gh-pages-history.json').snapshots),
+    lineage: ok('node scripts/lineage.mjs graph --json', fixture('lineage-graph.json')),
     ...overrides,
   }
 }
@@ -300,7 +303,8 @@ describe('collect.logic', () => {
     })
     expect(good.freshness.checks).toEqual({ source: 'gh api graphql (check runs)', fetchedAt: NOW, status: 'ok' })
     expect(good.checks.items).toHaveLength(10) // main's ci, and the three checks on each of 3 open PRs
-    expect(good.lineage).toEqual({ until: 'DL-7', items: [] })
+    expect(good.lineage).toEqual(fixture('lineage-graph.json'))
+    expect(good.freshness.lineage.source).toBe('node scripts/lineage.mjs graph --json')
 
     // An hour later: the issue list is rate-limited, GraphQL answers 403, and the open-PR JSON has drifted.
     const failing = {
