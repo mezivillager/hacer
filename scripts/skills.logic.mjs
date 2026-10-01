@@ -233,3 +233,21 @@ export const BRIEF_INVARIANTS = [
     absent: [],
   },
 ]
+
+export const VERIFIER_TIER_SENTENCE = ''
+
+export function stripFrontmatter(text) {
+  return text || ''
+}
+
+export function sentenceAfter() {
+  return null
+}
+
+export function checkTwinAgreement() {
+  return []
+}
+
+export const AGENT_INVARIANTS = []
+
+export const TWIN_SENTENCES = []
