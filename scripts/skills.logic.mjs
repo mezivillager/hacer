@@ -100,6 +100,10 @@ export function containsPhrases(text, phrases) {
   })
 }
 
+/** The verifier's tier rule, stated verbatim in its brief and in its agent definition. */
+export const VERIFIER_TIER_SENTENCE =
+  'a PR touching `src/core/` or `src/simulation/`, or labelled `risk:2`, is verified on **Opus**; every other PR, at `risk:0` or `risk:1`, on **Sonnet**.'
+
 /**
  * The rules each harness brief exists to state. `present` must still be there; `absent`
  * was deliberately taken out and must not come back.
@@ -174,9 +178,7 @@ export const BRIEF_INVARIANTS = [
       // what pinning a mapping requires. Owner's call, 2026-09-21; the evidence is model-tiering.md §1a.
       {
         id: 'model-per-risk-tier',
-        phrases: [
-          '**Model:** a PR touching `src/core/` or `src/simulation/`, or labelled `risk:2`, is verified on **Opus**; every other PR, at `risk:0` or `risk:1`, on **Sonnet**',
-        ],
+        phrases: [`**Model:** ${VERIFIER_TIER_SENTENCE}`],
       },
       // Without this the tier that reviewed a PR is unrecorded, so no future tier claim is auditable.
       // One phrase per entry on purpose: `containsPhrases` is an ordered subsequence, so several
@@ -234,20 +236,84 @@ export const BRIEF_INVARIANTS = [
   },
 ]
 
-export const VERIFIER_TIER_SENTENCE = ''
-
+/** The text after a markdown frontmatter block — the whole text when there is none. */
 export function stripFrontmatter(text) {
-  return text || ''
+  return (text || '').replace(FRONTMATTER_BLOCK, '')
 }
 
-export function sentenceAfter() {
-  return null
+/** The sentence after `anchor` through its full stop, whitespace collapsed; null when absent. */
+export function sentenceAfter(text, anchor) {
+  const prose = normaliseProse(text)
+  const at = prose.indexOf(anchor)
+  if (at === -1) return null
+  const rest = prose.slice(at + anchor.length)
+  const end = rest.search(/\.(\s|$)/)
+  return end === -1 ? null : rest.slice(0, end + 1)
 }
 
-export function checkTwinAgreement() {
-  return []
+/** One line per twin that does not carry, verbatim, the sentence its owner states after `anchor`. */
+export function checkTwinAgreement(ownerText, anchor, twins) {
+  const sentence = sentenceAfter(ownerText, anchor)
+  if (!sentence) return [`owner: no sentence after "${anchor}"`]
+  return twins
+    .filter((twin) => !normaliseProse(twin.text).includes(sentence))
+    .map((twin) => `${twin.label}: does not say "${sentence}"`)
 }
 
-export const AGENT_INVARIANTS = []
+// Not in BRIEF_INVARIANTS: the frontmatter `description` (what the coordinator dispatches from) and
+// the body (what the role reads) are pinned apart, which a whole-file match cannot do.
+// Known limit: a pin sees only its own text; a change around an unchanged sentence passes.
+export const AGENT_INVARIANTS = [
+  {
+    file: '.claude/agents/hacer-builder.md',
+    model: 'opus',
+    description: [{ id: 'model-per-risk-tier', phrases: ['Dispatch a risk:0 docs-only or mechanical issue with model sonnet instead.'] }],
+    body: [
+      { id: 'never-edit-main', phrases: ['Never edit the `main` checkout'] },
+      { id: 'stop-after-the-pr', phrases: ['Stop when the PR is open: do not merge, and do not keep watching CI.'] },
+    ],
+  },
+  {
+    file: '.claude/agents/hacer-verifier.md',
+    // The fail-safe for a dispatch that names no model.
+    model: 'opus',
+    description: [{ id: 'model-per-risk-tier', phrases: [VERIFIER_TIER_SENTENCE] }],
+    body: [
+      { id: 'model-per-risk-tier', phrases: [VERIFIER_TIER_SENTENCE] },
+      { id: 'verdict-names-its-model', phrases: ['**Name the model you ran on in every verdict**'] },
+      { id: 'read-only', phrases: ["Never push to the PR's branch, never fix what you find, never merge"] },
+    ],
+  },
+  {
+    file: '.claude/agents/hacer-product.md',
+    model: 'opus',
+    body: [
+      { id: 'never-render-locally', phrases: ['Never run the app, Playwright or a browser on the local machine (ADR-0016).'] },
+      { id: 'at-most-five-issues', phrases: ['At most five issues per review.'] },
+      { id: 'no-evidence-no-finding', phrases: ['No evidence, no finding.'] },
+    ],
+  },
+  {
+    file: '.claude/agents/hacer-fidelity.md',
+    model: 'opus',
+    body: [
+      { id: 'never-files-a-proposal', phrases: ['Never create an issue for a proposal'] },
+      { id: 'no-plausible-claim', phrases: ['Never fill a gap with a plausible claim.'] },
+      { id: 'vectors-decide', phrases: ['the vectors decide'] },
+    ],
+  },
+]
 
-export const TWIN_SENTENCES = []
+// A brief owns the sentence after `anchor`; each twin must carry it verbatim, so fixing one file and
+// not its twin fails. This catches divergence, which no single-file pin can.
+export const TWIN_SENTENCES = [
+  {
+    id: 'verifier-model-per-risk-tier',
+    owner: 'docs/harness/verifier-brief.md',
+    anchor: '**Model:** ',
+    twins: [
+      { file: '.claude/agents/hacer-verifier.md', part: 'description' },
+      { file: '.claude/agents/hacer-verifier.md', part: 'body' },
+    ],
+  },
+]
