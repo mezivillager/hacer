@@ -127,8 +127,8 @@ Mezi can change the tier with "light" or "full" at any point.
 task is an investigation, an audit or a sweep ("is X safe everywhere"), forensics across many
 files, repos or transcripts, or a review of a large diff, add one line to the sizing message: why
 ultracode fits, and how to launch with it while keeping the effort level —
-`claude --settings '{"ultracode": true}'` (per the CLI's code the `/effort ultracode` shorthand
-sets effort to xhigh; `/effort` shows what is active). Build work stays as it is: ultracode's
+`claude --settings '{"ultracode": true}'` (or `/effort ultracode on` in the session — since CLI 2.1.286 it
+no longer changes the effort level; `/effort` shows what is active). Build work stays as it is: ultracode's
 default of a workflow for every substantive task fights in-session TDD and the single-author red
 contract. If ultracode is on anyway, single-author steps stay single-author, verification attaches
 to the existing review seats' findings rather than adding seats, and the lane cap stands. Workflow
@@ -464,7 +464,7 @@ after (to a file, summary line). A pass that finds nothing says what it compared
 **Suite runs at integration** go to a file in the run folder: check the exit
 code, then read the summary line from the file — never the full output, never
 through a pipe. This is the one suite a coordinator runs itself; every other
-run belongs to a lane or a verification agent.
+run belongs to a lane or a verification agent (`subagent_type: data-lane`).
 
 Cap at **three or four implementer lanes**: the limit is how many lanes' evidence
 I can verify before the next wave lands. **Always parallel:** read-only fan-out
@@ -612,11 +612,10 @@ report, diff — travels as a FILE PATH, never pasted text.
 Effort comes from the seat definitions — max for `prompt-reviewer` and
 `researcher`, xhigh for `implementer`, `reviewer` and `data-lane`. The
 coordinator's own drafting and planning run at the session effort: the sizing
-message says what `/effort status` reports, and the owner sets `/effort max` for
-Phase 1 when they want it. If a seat type does not resolve — a session started
-before the definitions existed, or a cloud session, which has no user-level
-agents — dispatch `general-purpose` with `model: opus` and ledger the effort
-shortfall.
+message reports it (`$CLAUDE_EFFORT` in the Bash tool), and the owner sets
+`/effort max` for Phase 1 when they want it. If a seat type does not resolve (a
+cloud session has no user-level agents), dispatch `general-purpose` with
+`model: opus` and ledger the effort shortfall once.
 
 **A seat or general-purpose brief, in every tier, is written from
 `~/.claude/hooks/agent-brief-template.md`** — reviewers' briefs included — with
