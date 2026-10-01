@@ -1,0 +1,378 @@
+{
+  "_recorded": "PR #645 head a75b593: check runs (filter=all), workflow runs and the pushes to main replayed to 2026-10-01T22:00:20Z. ci started at 21:55:46 against 3056f14, and main did not move again before the merge at 22:00:35. Set by hand: state OPEN, mergeStateStatus CLEAN, autoMergeRequest null.",
+  "pr": {
+    "number": 645,
+    "state": "OPEN",
+    "isDraft": false,
+    "mergeStateStatus": "CLEAN",
+    "headRefOid": "a75b5930bb8a8e9f6541ccacd957a919d96d2ab9",
+    "baseRefName": "main",
+    "autoMergeRequest": null,
+    "body": "Fixes #513\n\nDecisions: none\n\n- Nit 1: the diagram SVG keeps its natural width (`min-width` = viewBox width) inside a `.stages` wrapper that scrolls sideways, so at 375 px the labels render at their full 12-13 px instead of ~5 px; the boxes still scale up on wider screens. Test asserts effective glyph size at 375 px and the scroll rule.\n- Nit 2: chose to split the Verifying drill-down by verdict presence (the count the box already shows) rather than merge stages: it uses data the snapshot has, and keeps the six-stage loop. Verifying now lists \"no verdict\" and \"with verdict\" separately; PR still lists all open PRs.\n- Model: Sonnet 5.5\n- Definition of done: lint exit 0; test:run 192 files / 3056 tests passed; build exit 0; lint:docs exit 0.\n- Size: see diff-size-report line below.\ndiff-size-report origin/main HEAD (merge-base 5500422a9a)\n\ncategory files   added removed   delta unclassified   +code +comment +docstring +blank  prose\n"
+  },
+  "requiredContexts": [
+    "ci",
+    "pr-hygiene",
+    "browser-qa"
+  ],
+  "checkRuns": [
+    {
+      "conclusion": "success",
+      "id": 110603086397,
+      "name": "CodeQL",
+      "status": "completed",
+      "suite": 100038660030
+    },
+    {
+      "conclusion": "success",
+      "id": 110602928893,
+      "name": "GitGuardian Security Checks",
+      "status": "completed",
+      "suite": 100038483821
+    },
+    {
+      "conclusion": "success",
+      "id": 110602904627,
+      "name": "browser-qa",
+      "status": "completed",
+      "suite": 100038514038
+    },
+    {
+      "conclusion": "success",
+      "id": 110602903449,
+      "name": "pr-hygiene",
+      "status": "completed",
+      "suite": 100038512574
+    },
+    {
+      "conclusion": "success",
+      "id": 110602903027,
+      "name": "pr-hygiene",
+      "status": "completed",
+      "suite": 100038512308
+    },
+    {
+      "conclusion": "success",
+      "id": 110602902261,
+      "name": "browser-qa",
+      "status": "completed",
+      "suite": 100038512203
+    },
+    {
+      "conclusion": "skipped",
+      "id": 110602900525,
+      "name": "cleanup-preview",
+      "status": "completed",
+      "suite": 100038508275
+    },
+    {
+      "conclusion": "skipped",
+      "id": 110602900202,
+      "name": "sweep-previews",
+      "status": "completed",
+      "suite": 100038508275
+    },
+    {
+      "conclusion": "success",
+      "id": 110602899706,
+      "name": "pr-hygiene",
+      "status": "completed",
+      "suite": 100038509100
+    },
+    {
+      "conclusion": "success",
+      "id": 110602898274,
+      "name": "deploy-preview",
+      "status": "completed",
+      "suite": 100038508275
+    },
+    {
+      "conclusion": "success",
+      "id": 110602896778,
+      "name": "browser-qa",
+      "status": "completed",
+      "suite": 100038508356
+    },
+    {
+      "conclusion": "success",
+      "id": 110602896655,
+      "name": "ci",
+      "status": "completed",
+      "suite": 100038508344
+    },
+    {
+      "conclusion": "success",
+      "id": 110602893857,
+      "name": "Analyze (actions)",
+      "status": "completed",
+      "suite": 100038502175
+    },
+    {
+      "conclusion": "success",
+      "id": 110602893763,
+      "name": "Analyze (javascript-typescript)",
+      "status": "completed",
+      "suite": 100038502175
+    },
+    {
+      "conclusion": "success",
+      "id": 110602893513,
+      "name": "Analyze (python)",
+      "status": "completed",
+      "suite": 100038502175
+    }
+  ],
+  "workflowRuns": [
+    {
+      "attempt": 1,
+      "conclusion": "success",
+      "created_at": "2026-10-01T21:55:48Z",
+      "event": "pull_request",
+      "id": 36931876510,
+      "name": "browser-qa",
+      "status": "completed",
+      "suite": 100038514038,
+      "workflow_id": 361351329
+    },
+    {
+      "attempt": 1,
+      "conclusion": "success",
+      "created_at": "2026-10-01T21:55:47Z",
+      "event": "pull_request_target",
+      "id": 36931875963,
+      "name": "PR Hygiene",
+      "status": "completed",
+      "suite": 100038512574,
+      "workflow_id": 361294170
+    },
+    {
+      "attempt": 1,
+      "conclusion": "success",
+      "created_at": "2026-10-01T21:55:47Z",
+      "event": "pull_request_target",
+      "id": 36931875863,
+      "name": "PR Hygiene",
+      "status": "completed",
+      "suite": 100038512308,
+      "workflow_id": 361294170
+    },
+    {
+      "attempt": 1,
+      "conclusion": "success",
+      "created_at": "2026-10-01T21:55:47Z",
+      "event": "pull_request",
+      "id": 36931875832,
+      "name": "browser-qa",
+      "status": "completed",
+      "suite": 100038512203,
+      "workflow_id": 361351329
+    },
+    {
+      "attempt": 1,
+      "conclusion": "success",
+      "created_at": "2026-10-01T21:55:46Z",
+      "event": "pull_request",
+      "id": 36931874376,
+      "name": "browser-qa",
+      "status": "completed",
+      "suite": 100038508356,
+      "workflow_id": 361351329
+    },
+    {
+      "attempt": 1,
+      "conclusion": "success",
+      "created_at": "2026-10-01T21:55:46Z",
+      "event": "pull_request_target",
+      "id": 36931874659,
+      "name": "PR Hygiene",
+      "status": "completed",
+      "suite": 100038509100,
+      "workflow_id": 361294170
+    },
+    {
+      "attempt": 1,
+      "conclusion": "success",
+      "created_at": "2026-10-01T21:55:46Z",
+      "event": "pull_request",
+      "id": 36931874341,
+      "name": "PR Deploy Preview",
+      "status": "completed",
+      "suite": 100038508275,
+      "workflow_id": 255347039
+    },
+    {
+      "attempt": 1,
+      "conclusion": "success",
+      "created_at": "2026-10-01T21:55:46Z",
+      "event": "pull_request",
+      "id": 36931874365,
+      "name": "CI",
+      "status": "completed",
+      "suite": 100038508344,
+      "workflow_id": 241098938
+    },
+    {
+      "attempt": 1,
+      "conclusion": "success",
+      "created_at": "2026-10-01T21:55:45Z",
+      "event": "dynamic",
+      "id": 36931871955,
+      "name": "PR #645",
+      "status": "completed",
+      "suite": 100038502175,
+      "workflow_id": 362189662
+    }
+  ],
+  "basePushes": [
+    {
+      "before": "5500422a9a3d983976c25d6520129a4020617604",
+      "after": "3056f1493bd1033347368f910f4589ee5636353e",
+      "timestamp": "2026-10-01T21:52:31Z"
+    },
+    {
+      "before": "e96553fad7fcb80fb66bbfec765a36bfa75a2cbb",
+      "after": "5500422a9a3d983976c25d6520129a4020617604",
+      "timestamp": "2026-10-01T20:29:57Z"
+    },
+    {
+      "before": "61ab98e5fea18c4eaf8ef3406280e30806f020a6",
+      "after": "e96553fad7fcb80fb66bbfec765a36bfa75a2cbb",
+      "timestamp": "2026-10-01T11:26:02Z"
+    },
+    {
+      "before": "7c3f9e21a7423b2573995a64e68d7064323f417b",
+      "after": "61ab98e5fea18c4eaf8ef3406280e30806f020a6",
+      "timestamp": "2026-10-01T10:41:25Z"
+    },
+    {
+      "before": "5ba09985914fd1c556e2e94c40dda34465e0bfa8",
+      "after": "7c3f9e21a7423b2573995a64e68d7064323f417b",
+      "timestamp": "2026-09-30T14:23:21Z"
+    },
+    {
+      "before": "c5291c69ace2916d5a0d2164536e0b5adb17ca3e",
+      "after": "5ba09985914fd1c556e2e94c40dda34465e0bfa8",
+      "timestamp": "2026-09-29T16:26:47Z"
+    },
+    {
+      "before": "a0f23eab7034d31198d408d9391112eef677b751",
+      "after": "c5291c69ace2916d5a0d2164536e0b5adb17ca3e",
+      "timestamp": "2026-09-29T16:20:57Z"
+    },
+    {
+      "before": "6e91f0361f89af895cf43d1f4506133533ebca93",
+      "after": "a0f23eab7034d31198d408d9391112eef677b751",
+      "timestamp": "2026-09-29T16:14:57Z"
+    },
+    {
+      "before": "7fb179105c777e5945ff22f2b03bb9412297147e",
+      "after": "6e91f0361f89af895cf43d1f4506133533ebca93",
+      "timestamp": "2026-09-29T16:05:13Z"
+    },
+    {
+      "before": "97cde443b718e2f15acb1e487a57f4dc8cd76b0b",
+      "after": "7fb179105c777e5945ff22f2b03bb9412297147e",
+      "timestamp": "2026-09-29T16:01:13Z"
+    },
+    {
+      "before": "22c16af485467d08792c14096c11d5cd02f9f4d1",
+      "after": "97cde443b718e2f15acb1e487a57f4dc8cd76b0b",
+      "timestamp": "2026-09-29T15:54:05Z"
+    },
+    {
+      "before": "89265d81e50d76010e00fd93b965c6ad4b979f89",
+      "after": "22c16af485467d08792c14096c11d5cd02f9f4d1",
+      "timestamp": "2026-09-29T15:41:19Z"
+    },
+    {
+      "before": "5f4a7c6038edf2900e0162327f53a70cdea80392",
+      "after": "89265d81e50d76010e00fd93b965c6ad4b979f89",
+      "timestamp": "2026-09-29T15:37:57Z"
+    },
+    {
+      "before": "89cc0b57a700dc8546321ab87ea00d3b39fb7623",
+      "after": "5f4a7c6038edf2900e0162327f53a70cdea80392",
+      "timestamp": "2026-09-29T15:15:43Z"
+    },
+    {
+      "before": "1368ea7d61a81ecb31cae1afe946896fd075ff91",
+      "after": "89cc0b57a700dc8546321ab87ea00d3b39fb7623",
+      "timestamp": "2026-09-29T15:13:58Z"
+    },
+    {
+      "before": "75d705b364fc915c97655c8fa0510dde720295a7",
+      "after": "1368ea7d61a81ecb31cae1afe946896fd075ff91",
+      "timestamp": "2026-09-29T15:09:28Z"
+    },
+    {
+      "before": "6d9f1e362532465e3d29a74e39e023d919482fe5",
+      "after": "75d705b364fc915c97655c8fa0510dde720295a7",
+      "timestamp": "2026-09-29T14:53:28Z"
+    },
+    {
+      "before": "379195c64aaeb01d11180cd5f3d4900b8dbc3c85",
+      "after": "6d9f1e362532465e3d29a74e39e023d919482fe5",
+      "timestamp": "2026-09-29T14:46:32Z"
+    },
+    {
+      "before": "78d664457b7b29a577026ba63294c15711800a49",
+      "after": "379195c64aaeb01d11180cd5f3d4900b8dbc3c85",
+      "timestamp": "2026-09-29T14:26:14Z"
+    },
+    {
+      "before": "bf7d2fcdd21d387f6a02b864be017a69def059c4",
+      "after": "78d664457b7b29a577026ba63294c15711800a49",
+      "timestamp": "2026-09-29T14:23:57Z"
+    },
+    {
+      "before": "93b700314173aacedad393eb0ba275ab772338a9",
+      "after": "bf7d2fcdd21d387f6a02b864be017a69def059c4",
+      "timestamp": "2026-09-29T14:23:07Z"
+    },
+    {
+      "before": "bad58db7c834bb6c343db4f89373f89dd8425040",
+      "after": "93b700314173aacedad393eb0ba275ab772338a9",
+      "timestamp": "2026-09-29T14:02:52Z"
+    },
+    {
+      "before": "9971b0dbdd453e014bfaf8cfe06a66fa4dd97cc9",
+      "after": "bad58db7c834bb6c343db4f89373f89dd8425040",
+      "timestamp": "2026-09-29T13:52:59Z"
+    },
+    {
+      "before": "ac1a829fd6f3be1895362417620a5f61f6d1ab02",
+      "after": "9971b0dbdd453e014bfaf8cfe06a66fa4dd97cc9",
+      "timestamp": "2026-09-29T13:49:56Z"
+    },
+    {
+      "before": "010fb7b17d424e829e5e46a390ae3699145fa298",
+      "after": "ac1a829fd6f3be1895362417620a5f61f6d1ab02",
+      "timestamp": "2026-09-29T13:48:30Z"
+    },
+    {
+      "before": "61fbe952434d4c9a1bf499adc33055e128e51e26",
+      "after": "010fb7b17d424e829e5e46a390ae3699145fa298",
+      "timestamp": "2026-09-29T13:19:34Z"
+    },
+    {
+      "before": "61fbe952434d4c9a1bf499adc33055e128e51e26",
+      "after": "010fb7b17d424e829e5e46a390ae3699145fa298",
+      "timestamp": "2026-09-29T13:19:34Z"
+    },
+    {
+      "before": "fd0dbd35bf52c9d5f7eb7cb007bdbd12a6fcc2d8",
+      "after": "61fbe952434d4c9a1bf499adc33055e128e51e26",
+      "timestamp": "2026-09-29T13:18:47Z"
+    },
+    {
+      "before": "e9c0f63f3ae405c0d2f7048a06a04e5bc97cc1cf",
+      "after": "fd0dbd35bf52c9d5f7eb7cb007bdbd12a6fcc2d8",
+      "timestamp": "2026-09-29T13:11:09Z"
+    },
+    {
+      "before": "804e1d501141cd7f57316c8066571017c6ec4c22",
+      "after": "e9c0f63f3ae405c0d2f7048a06a04e5bc97cc1cf",
+      "timestamp": "2026-09-29T12:49:34Z"
+    }
+  ]
+}

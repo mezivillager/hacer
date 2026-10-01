@@ -8,11 +8,14 @@ import { decide, requiredContexts, withRerunMarker } from './merge-on-green.logi
 // moment, and the PR-level fields set by hand (GitHub reports those only live).
 // rules-main.json is `gh api repos/mezivillager/hacer/rules/branches/main`; protection-404.json is
 // what `gh api repos/mezivillager/hacer/branches/main/protection` prints on stdout, exit 1. Both
-// were recorded on 2026-09-27.
+// were recorded on 2026-09-27. stale-green.json and fresh-green.json also carry `basePushes`, the
+// pushes to main as `gh api repos/mezivillager/hacer/activity?ref=refs/heads/main` lists them.
 
 const FIXTURES = path.join(import.meta.dirname, 'fixtures/merge-on-green')
 const load = (name) => JSON.parse(readFileSync(path.join(FIXTURES, `${name}.json`), 'utf8'))
 const withPr = (snapshot, fields) => ({ ...snapshot, pr: { ...snapshot.pr, ...fields } })
+// Recorded before #407, when this tool armed auto-merge; it now disarms it first.
+const unarmed = (name) => withPr(load(name), { autoMergeRequest: null })
 const STATES = [
   'pending',
   'required-failure',
@@ -22,6 +25,8 @@ const STATES = [
   'behind',
   'blocked-after-body-edit',
   'merged',
+  'stale-green',
+  'fresh-green',
 ]
 
 describe('requiredContexts', () => {
@@ -52,7 +57,7 @@ describe('requiredContexts', () => {
 
 describe('decide — one recorded state each', () => {
   it('pending: waits, and names what is still running', () => {
-    const action = decide(load('pending'))
+    const action = decide(unarmed('pending'))
     expect(action.kind).toBe('wait')
     expect(action.exit).toBeUndefined()
     expect(action.reason).toMatch(/still running/)
@@ -66,7 +71,7 @@ describe('decide — one recorded state each', () => {
   })
 
   it('a failure only in non-required checks does not fail the run (R517); #416 was held by an empty suite, so the body edit is next', () => {
-    const action = decide(load('non-required-failure'))
+    const action = decide(unarmed('non-required-failure'))
     expect(action.kind).toBe('edit-body')
     expect(action.reason).toMatch(/not required/)
     expect(action.reason).toContain('deploy-preview')
@@ -77,14 +82,14 @@ describe('decide — one recorded state each', () => {
   it('a cancelled check run in the newest suite of a required context: re-runs exactly that run (#295)', () => {
     // #362: an older PR Hygiene suite holds a green pr-hygiene run with a higher id. The merge box
     // reads the newest suite, so that is the run to re-run.
-    const action = decide(load('cancelled-run'))
+    const action = decide(unarmed('cancelled-run'))
     expect(action).toMatchObject({ kind: 'rerun', runId: 35798747995 })
     expect(action.reason).toContain('pr-hygiene')
     expect(action.reason).toContain('96932343143')
   })
 
   it('the empty cancelled suite as the newest (#530): edits the body (R746)', () => {
-    const action = decide(load('empty-cancelled-suite'))
+    const action = decide(unarmed('empty-cancelled-suite'))
     expect(action.kind).toBe('edit-body')
     expect(action.reason).toContain('PR Hygiene')
     expect(action.reason).toContain('97776650607')
@@ -92,11 +97,11 @@ describe('decide — one recorded state each', () => {
   })
 
   it('behind the base: updates the branch', () => {
-    expect(decide(load('behind')).kind).toBe('update-branch')
+    expect(decide(unarmed('behind')).kind).toBe('update-branch')
   })
 
   it('blocked with nothing pending after the body edit: gives up with the reason, exit 4', () => {
-    const action = decide(load('blocked-after-body-edit'))
+    const action = decide(unarmed('blocked-after-body-edit'))
     expect(action).toMatchObject({ kind: 'give-up', exit: 4 })
     expect(action.reason).toMatch(/body edit/)
     expect(action.reason).toContain('97776650607')
@@ -105,16 +110,64 @@ describe('decide — one recorded state each', () => {
   it('merged: exits 0', () => {
     expect(decide(load('merged'))).toMatchObject({ kind: 'merged', exit: 0 })
   })
+
+  it('a stale green (#646): ci tested a merge with a main that has moved since, so it updates the branch and says why', () => {
+    const action = decide(load('stale-green'))
+    expect(action.kind).toBe('update-branch')
+    expect(action.reason).toBe(
+      'ci ran at 2026-10-01T22:01:13Z against 0c37a1e; main moved to 59cc2f0 since — updating the branch so the checks see the merge that would ship',
+    )
+  })
+
+  it('a fresh green (#645): main has not moved since ci started, so it merges', () => {
+    expect(decide(load('fresh-green')).kind).toBe('merge')
+  })
 })
 
 describe('decide — the rules between the states', () => {
-  it('arms auto-merge before it waits', () => {
-    expect(decide(withPr(load('pending'), { autoMergeRequest: null })).kind).toBe('merge')
+  it('never arms auto-merge, and disarms one already armed: GitHub would merge on any green, stale or not (#407)', () => {
+    expect(decide(unarmed('pending')).kind).toBe('wait')
+    const action = decide(load('pending'))
+    expect(action.kind).toBe('disable-auto')
+    expect(action.reason).toMatch(/stale/)
+  })
+
+  it('updates the branch once per head, then waits for the new head', () => {
+    const stale = load('stale-green')
+    expect(decide(stale, { updates: [stale.pr.headRefOid] }).kind).toBe('wait')
+  })
+
+  it('stops after three updates when main keeps moving, exit 4, with the reason', () => {
+    const action = decide(load('stale-green'), { updates: ['a'.repeat(40), 'b'.repeat(40), 'c'.repeat(40)] })
+    expect(action).toMatchObject({ kind: 'give-up', exit: 4 })
+    expect(action.reason).toMatch(/main moved after the checks started 3 times/)
+  })
+
+  it('judges only the checks that tested a merge commit: pr-hygiene runs main’s copy on the PR head (pull_request_target)', () => {
+    const fresh = load('fresh-green')
+    const earlyHygiene = {
+      ...fresh,
+      workflowRuns: fresh.workflowRuns.map((run) =>
+        run.event === 'pull_request_target' ? { ...run, created_at: '2026-10-01T21:50:00Z' } : run,
+      ),
+    }
+    expect(decide(earlyHygiene).kind).toBe('merge')
+  })
+
+  it('a textual conflict stays the builder’s, stale or not', () => {
+    expect(decide(withPr(load('stale-green'), { mergeStateStatus: 'DIRTY' })).reason).toMatch(/conflicts with main/)
+  })
+
+  it('a failing check names the run whose log shows the failing step', () => {
+    const action = decide(load('required-failure'))
+    const ci = load('required-failure').workflowRuns.find((run) => run.name === 'CI')
+    expect(action.runs).toEqual([ci.id])
+    expect(action.reason).toContain(`run ${ci.id}`)
   })
 
   it('merges at once when GitHub already reports the PR mergeable', () => {
     for (const mergeStateStatus of ['CLEAN', 'HAS_HOOKS', 'UNSTABLE']) {
-      expect(decide(withPr(load('behind'), { mergeStateStatus })).kind).toBe('merge')
+      expect(decide(withPr(unarmed('behind'), { mergeStateStatus })).kind).toBe('merge')
     }
   })
 
@@ -129,14 +182,14 @@ describe('decide — the rules between the states', () => {
   })
 
   it('re-runs a run once; cancelled again, the body edit comes next', () => {
-    expect(decide(load('cancelled-run'), { reruns: [35798747995] }).kind).toBe('edit-body')
+    expect(decide(unarmed('cancelled-run'), { reruns: [35798747995] }).kind).toBe('edit-body')
   })
 
   it('edits the body once per head: a marker for an older head does not count', () => {
-    const snapshot = load('blocked-after-body-edit')
+    const snapshot = unarmed('blocked-after-body-edit')
     const olderHead = snapshot.pr.body.replace(snapshot.pr.headRefOid, 'a'.repeat(40))
     expect(decide(withPr(snapshot, { body: olderHead })).kind).toBe('edit-body')
-    expect(decide(load('empty-cancelled-suite'), { edits: [snapshot.pr.headRefOid] }).kind).toBe('give-up')
+    expect(decide(unarmed('empty-cancelled-suite'), { edits: [snapshot.pr.headRefOid] }).kind).toBe('give-up')
   })
 
   it('counts every check as required when the required set could not be read', () => {
@@ -162,7 +215,7 @@ describe('decide — the rules between the states', () => {
   it('waits one pass before acting on a BLOCKED box with no stuck suite in sight: GitHub may still be settling', () => {
     // Auto-merge lands ~3 s after the last required check (#517, #524, #362); a pass inside that
     // window must not spend the body edit, or give up. #524 at 17:52:54, every check green:
-    const green = withPr(load('behind'), { mergeStateStatus: 'BLOCKED' })
+    const green = withPr(unarmed('behind'), { mergeStateStatus: 'BLOCKED' })
     const first = decide(green)
     expect(first.kind).toBe('wait')
     expect(decide(green, { settled: first.settle }).kind).toBe('edit-body')
@@ -205,7 +258,7 @@ describe('withRerunMarker', () => {
   })
 
   it('is read by decide as the edit already tried for that head', () => {
-    const snapshot = load('empty-cancelled-suite')
+    const snapshot = unarmed('empty-cancelled-suite')
     const body = withRerunMarker(snapshot.pr.body, snapshot.pr.headRefOid, '2026-09-27T08:19:30Z')
     expect(decide(withPr(snapshot, { body })).kind).toBe('give-up')
   })
