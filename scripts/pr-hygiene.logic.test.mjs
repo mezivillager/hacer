@@ -288,6 +288,17 @@ describe('findLinkedIssues', () => {
     expect(findLinkedIssues('Fixes #1, closes #2 and fixes #1 again')).toEqual([1, 2])
   })
 
+  it('links nothing when the number runs on into a word', () => {
+    expect(findLinkedIssues('fixes #12abc')).toEqual([])
+    expect(findLinkedIssues('Closes mezivillager/hacer#12abc')).toEqual([])
+    expect(findLinkedIssues('Resolves https://github.com/mezivillager/hacer/issues/12abc')).toEqual([])
+    expect(evaluate(pr({ body: 'fixes #12abc' })).verdict).toBe('FAIL')
+  })
+
+  it.each(['fixes #12.', 'fixes #12,', '(fixes #12)', 'fixes #12', 'fixes #12\n'])('still links "%s"', (body) => {
+    expect(findLinkedIssues(body)).toEqual([12])
+  })
+
   it('ignores a bare #n, a keyword inside another word, and a missing body', () => {
     expect(findLinkedIssues('see #150 for context')).toEqual([])
     expect(findLinkedIssues('prefixes #150')).toEqual([])
@@ -448,6 +459,22 @@ describe('evaluate', () => {
   it('does not exempt a PR that touches docs and code', () => {
     const result = evaluate(pr({ body: 'Typo.', files: [file('docs/x.md', 3, 1), file('src/a.ts', 1, 0)] }))
     expect(result.verdict).toBe('FAIL')
+  })
+
+  it.each([
+    ['a test', 'src/a.test.ts'],
+    ['an e2e spec', 'e2e/store/a.spec.ts'],
+    ['the lockfile', 'pnpm-lock.yaml'],
+  ])('does not exempt docs beside %s', (_, other) => {
+    const result = evaluate(pr({ body: 'Typo.', files: [file('docs/x.md', 3, 1), file(other, 5, 0)] }))
+    expect(result.verdict).toBe('FAIL')
+    expect(result.docsOnly).toBe(false)
+    expect(levelsOf(result, 'linked-issue')).toEqual(['fail'])
+  })
+
+  it('still exempts docs beside research evidence and the changelog, which are documentation too', () => {
+    const files = [file('docs/research/r/REPORT.md', 3, 1), file('docs/research/r/evidence/probe.py', 9, 0), file('CHANGELOG.md', 2, 0)]
+    expect(evaluate(pr({ body: 'Typo.', files })).docsOnly).toBe(true)
   })
 
   it('does not exempt a PR whose only reviewable files are tests', () => {
