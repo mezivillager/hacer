@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-01T22:07:15.831Z",
+  "generatedAt": "2026-10-01T22:18:45.900Z",
   "head": {
-    "sha": "0651e7320f07f8e8abedd3eeac5322ce1680411d",
-    "date": "2026-10-02T01:06:32+03:00",
-    "subject": "docs(research): fidelity review of the BUILTIN form without PARTS: (#643); queue FID-006, FID-007"
+    "sha": "f9fcb34b427ce5f55fe1070461170bd188347bbc",
+    "date": "2026-10-02T01:18:06+03:00",
+    "subject": "fix(mission-control): Ready counts only tasks with no reason (#560)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-01T22:07:15.831Z",
+      "fetchedAt": "2026-10-01T22:18:45.900Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-01T22:07:15.831Z",
+      "fetchedAt": "2026-10-01T22:18:45.900Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-01T22:07:15.831Z",
+      "fetchedAt": "2026-10-01T22:18:45.900Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-01T22:07:15.831Z",
+      "fetchedAt": "2026-10-01T22:18:45.900Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-01T22:07:15.831Z",
+      "fetchedAt": "2026-10-01T22:18:45.900Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-01T22:07:15.831Z",
+      "fetchedAt": "2026-10-01T22:18:45.900Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-01T22:07:15.831Z",
+      "fetchedAt": "2026-10-01T22:18:45.900Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-01T22:07:15.831Z",
+      "fetchedAt": "2026-10-01T22:18:45.900Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-01T22:07:15.831Z",
+      "fetchedAt": "2026-10-01T22:18:45.900Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-01T22:07:15.831Z",
+      "fetchedAt": "2026-10-01T22:18:45.900Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-01T22:07:15.831Z",
+      "fetchedAt": "2026-10-01T22:18:45.900Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-01T22:07:15.831Z",
+      "fetchedAt": "2026-10-01T22:18:45.900Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-10-01T22:07:15.831Z",
+      "fetchedAt": "2026-10-01T22:18:45.900Z",
       "status": "ok"
     }
   },
@@ -375,12 +375,12 @@
         "lane": "process",
         "slug": "mission-control",
         "epicNumber": 458,
-        "open": 3,
+        "open": 2,
         "ready": 0,
-        "inProgress": 1,
+        "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 1,
+        "agentReady": 0,
         "filedElsewhere": [
           156
         ],
@@ -2266,22 +2266,6 @@
         "reason": "unshaped"
       },
       {
-        "number": 560,
-        "title": "Mission Control Process view: the Ready stage counts on-request and not-pulled tasks as ready",
-        "labels": [
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "project:mission-control"
-        ],
-        "blocking": [],
-        "project": "mission-control",
-        "rank": 14,
-        "lane": "process",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 569,
         "title": "Premise expired: P-001 — R3F's peer range excludes React 19.3",
         "labels": [
@@ -2521,7 +2505,6 @@
       ],
       "mission-control": [
         509,
-        560,
         584
       ],
       "unfiled": [
@@ -2559,6 +2542,32 @@
       }
     ],
     "merged": [
+      {
+        "number": 647,
+        "title": "fix(mission-control): Ready counts only tasks with no reason",
+        "url": "https://github.com/mezivillager/hacer/pull/647",
+        "author": "mezivillager",
+        "labels": [
+          "risk:0",
+          "project:mission-control"
+        ],
+        "headRefName": "fix/560-ready-stage",
+        "isDraft": false,
+        "createdAt": "2026-10-01T22:10:15Z",
+        "mergedAt": "2026-10-01T22:18:07Z",
+        "closes": [
+          560
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Sonnet 5.5 (fresh context)",
+            "at": "2026-10-01T22:17:16Z",
+            "url": "https://github.com/mezivillager/hacer/pull/647#issuecomment-5941763730"
+          }
+        ]
+      },
       {
         "number": 646,
         "title": "docs(research): fidelity review of the BUILTIN form without PARTS: (#643)",
@@ -4077,32 +4086,13 @@
             "url": "https://github.com/mezivillager/hacer/pull/554#issuecomment-5855043463"
           }
         ]
-      },
-      {
-        "number": 553,
-        "title": "chore(scripts): merge-on-green moves into the repo, with tests (#536)",
-        "url": "https://github.com/mezivillager/hacer/pull/553",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:1"
-        ],
-        "headRefName": "feat/536-merge-on-green-r2",
-        "isDraft": false,
-        "createdAt": "2026-09-27T10:16:13Z",
-        "mergedAt": "2026-09-27T10:19:09Z",
-        "closes": [
-          536
-        ],
-        "verdicts": []
       }
     ],
     "coverage": {
       "merged": 60,
-      "withVerdict": 51,
-      "withoutVerdict": 9,
-      "pass": 51,
+      "withVerdict": 52,
+      "withoutVerdict": 8,
+      "pass": 52,
       "block": 0
     }
   },
@@ -4526,16 +4516,15 @@
         "number": 560,
         "ref": "refs/heads/claim/560",
         "sha": "0c37a1e54b6370ad9d0324b3efa0723960f17974",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "Mission Control Process view: the Ready stage counts on-request and not-pulled tasks as ready",
         "url": "https://github.com/mezivillager/hacer/issues/560",
         "labels": [
           "agent-ready",
-          "in-progress",
           "risk:0",
           "project:mission-control"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -4548,7 +4537,7 @@
         }
       }
     ],
-    "onClosedIssues": 13
+    "onClosedIssues": 14
   },
   "cloudLane": {
     "items": [
@@ -6155,7 +6144,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-27",
-        "merges": 14
+        "merges": 13
       },
       {
         "date": "2026-09-28",
@@ -6171,20 +6160,20 @@
       },
       {
         "date": "2026-10-01",
-        "merges": 7
+        "merges": 8
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-17T22:07:15.831Z",
-      "merged": 204,
+      "since": "2026-09-17T22:18:45.900Z",
+      "merged": 205,
       "openToMergeHours": {
         "median": 0.2,
         "p90": 8.9
       },
       "blockedOnce": {
         "count": 22,
-        "of": 118,
+        "of": 119,
         "prs": [
           238,
           248,
@@ -6212,8 +6201,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 106,
-          "withVerdict": 94,
+          "merged": 107,
+          "withVerdict": 95,
           "without": [
             250,
             285,
@@ -7368,46 +7357,8 @@
       },
       {
         "date": "2026-10-01",
-        "at": "2026-10-01T22:01:18.213Z",
+        "at": "2026-10-01T22:07:15.831Z",
         "byProject": {
-          "lineage": [
-            471,
-            481,
-            470,
-            502,
-            569
-          ],
-          "harness": [
-            155,
-            159,
-            160,
-            247,
-            251,
-            257,
-            269,
-            271,
-            280,
-            304,
-            308,
-            368,
-            391,
-            392,
-            394,
-            418,
-            516,
-            547,
-            154,
-            156,
-            270,
-            435,
-            436,
-            454,
-            500,
-            504,
-            505,
-            550,
-            607
-          ],
           "foundation": [
             338,
             373,
@@ -7435,13 +7386,45 @@
             462,
             506,
             599,
-            613,
-            632
+            613
           ],
-          "mission-control": [
-            560,
-            509,
-            584
+          "lineage": [
+            471,
+            481,
+            470,
+            502,
+            569
+          ],
+          "harness": [
+            159,
+            160,
+            247,
+            251,
+            257,
+            269,
+            271,
+            280,
+            304,
+            308,
+            368,
+            391,
+            392,
+            394,
+            418,
+            516,
+            547,
+            154,
+            155,
+            156,
+            270,
+            435,
+            436,
+            454,
+            500,
+            504,
+            505,
+            550,
+            607
           ],
           "spine": [
             165,
@@ -7518,6 +7501,11 @@
           "bugs": [
             311
           ],
+          "mission-control": [
+            509,
+            560,
+            584
+          ],
           "unfiled": [
             572
           ]
@@ -7529,11 +7517,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "0651e7320f07f8e8abedd3eeac5322ce1680411d",
+        "sha": "f9fcb34b427ce5f55fe1070461170bd188347bbc",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36933013609/job/110606659461",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36934217799/job/110610554499",
         "line": null,
         "verdict": null,
         "fields": {},
