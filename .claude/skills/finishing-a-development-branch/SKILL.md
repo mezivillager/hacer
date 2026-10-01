@@ -23,13 +23,13 @@ Guide completion of development work by presenting clear options and handling ch
 
 | Project | Test command |
 |---------|--------------|
-| pnpm (`pnpm-lock.yaml` or `package.json` scripts) | `pnpm run test:run` (and `pnpm run test:e2e:store` if applicable) |
+| pnpm (`pnpm-lock.yaml` or `package.json` scripts) | `pnpm run test:run` (store E2E runs in CI or the cloud only: `gh workflow run e2e.yml -f suite=store`, ADR-0016) |
 | npm/yarn | `npm test` / `yarn test` |
 | Rust | `cargo test` |
 | Python | `pytest` / `poetry run pytest` |
 | Go | `go test ./...` |
 
-**HACER and similar projects:** Use `.cursorrules` AI Agent Completion Checklist: `pnpm run lint`, `pnpm run test:run`, `pnpm run test:e2e:store`, `pnpm run build`.
+**HACER and similar projects:** the definition of done is `pnpm run lint`, `pnpm run test:run`, `pnpm run build`. Store E2E mounts the 3D canvas, so it never runs on a laptop: trigger it in the cloud with `gh workflow run e2e.yml -f suite=store` (not a done-criterion, ADR-0016).
 
 **If tests fail:**
 ```
