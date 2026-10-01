@@ -3,14 +3,20 @@ import path from 'node:path'
 import { describe, it, expect } from 'vitest'
 import { findAbsolutePaths, isScannedFile } from './hooks/docPaths.logic.mjs'
 import {
+  AGENT_INVARIANTS,
   BRIEF_INVARIANTS,
   SECRET_PATTERNS,
   SKILL_FRONTMATTER_KEYS,
+  TWIN_SENTENCES,
+  VERIFIER_TIER_SENTENCE,
   checkSkillFrontmatter,
+  checkTwinAgreement,
   containsPhrases,
   findSecrets,
   normaliseProse,
   parseFrontmatter,
+  sentenceAfter,
+  stripFrontmatter,
 } from './skills.logic.mjs'
 
 // These tests read the LIVE briefs and skills, not fixtures: a rewrite that drops a
@@ -111,6 +117,7 @@ describe('no live skill or brief leaks a path or a secret', () => {
   const docs = [
     ...skillSlugs.map((slug) => [`.claude/skills/${slug}/SKILL.md`, () => readSkill(slug)]),
     ...BRIEF_INVARIANTS.map((invariant) => [invariant.file, () => readBrief(invariant.file)]),
+    ...AGENT_INVARIANTS.map((invariant) => [invariant.file, () => readBrief(invariant.file)]),
   ]
   // `.claude/skills/` is vendored (scripts/sync-superpowers.sh overwrites it), so the
   // house style is policed only where we own the file — isScannedFile knows which.
@@ -121,6 +128,7 @@ describe('no live skill or brief leaks a path or a secret', () => {
       '.claude/skills/docs-sync/SKILL.md',
       '.claude/skills/hacer-patterns/SKILL.md',
       ...BRIEF_INVARIANTS.map((invariant) => invariant.file),
+      ...AGENT_INVARIANTS.map((invariant) => invariant.file),
     ])
   })
 
@@ -186,5 +194,96 @@ describe('the harness briefs keep their load-bearing rules', () => {
 
   it.each(absent)('%s no longer says: %s', (file, _id, phrases) => {
     expect(containsPhrases(readBrief(file), phrases)).toBe(false)
+  })
+})
+
+describe('stripFrontmatter', () => {
+  it('drops the --- block and keeps the body', () => {
+    expect(stripFrontmatter(['---', 'name: x', '---', '# Body'].join('\n'))).toBe('\n# Body')
+  })
+
+  it('returns the whole text when there is no block', () => {
+    expect(stripFrontmatter('# Body')).toBe('# Body')
+  })
+})
+
+describe('sentenceAfter', () => {
+  it('returns the sentence after the anchor, through its full stop, whitespace collapsed', () => {
+    expect(sentenceAfter('- **Model:** a PR is\n  verified on **Opus**. The engine wins.', '**Model:** ')).toBe(
+      'a PR is verified on **Opus**.',
+    )
+  })
+
+  it('returns null when the anchor or the full stop is missing', () => {
+    expect(sentenceAfter('no anchor here.', '**Model:** ')).toBeNull()
+    expect(sentenceAfter('**Model:** never ends', '**Model:** ')).toBeNull()
+  })
+})
+
+describe('checkTwinAgreement', () => {
+  const owner = '**Model:** a PR touching `src/core/` is verified on **Opus**; every other PR on **Sonnet**. More.'
+
+  it('passes twins that carry the owner\'s sentence verbatim, re-wrapped or not', () => {
+    expect(checkTwinAgreement(owner, '**Model:** ', [
+      { label: 'description', text: 'Tier: a PR touching `src/core/` is verified on **Opus**; every other PR on **Sonnet**. Rest.' },
+      { label: 'body', text: 'a PR touching `src/core/` is verified\non **Opus**; every other PR on **Sonnet**.' },
+    ])).toEqual([])
+  })
+
+  it('flags a twin that differs by one word — the defect L037 and L044 record', () => {
+    const problems = checkTwinAgreement(owner, '**Model:** ', [
+      { label: 'body', text: 'a PR touching `src/core/` is verified on **Sonnet**; every other PR on **Sonnet**.' },
+    ])
+    expect(problems).toHaveLength(1)
+    expect(problems[0]).toMatch(/^body: /)
+  })
+
+  it('flags an owner that no longer states the sentence', () => {
+    expect(checkTwinAgreement('nothing here', '**Model:** ', [{ label: 'body', text: 'x' }])).toHaveLength(1)
+  })
+})
+
+describe('the agent definitions keep their load-bearing rules', () => {
+  const partOf = (text, part) => (part === 'description' ? parseFrontmatter(text)?.description ?? '' : stripFrontmatter(text))
+  const pins = AGENT_INVARIANTS.flatMap((i) =>
+    ['description', 'body'].flatMap((part) => (i[part] ?? []).map((rule) => [i.file, part, rule.id, rule.phrases])),
+  )
+
+  it('pins every agent definition in .claude/agents', () => {
+    expect(AGENT_INVARIANTS.map((i) => i.file)).toEqual([
+      '.claude/agents/hacer-builder.md',
+      '.claude/agents/hacer-verifier.md',
+      '.claude/agents/hacer-product.md',
+      '.claude/agents/hacer-fidelity.md',
+    ])
+    expect(AGENT_INVARIANTS.every((i) => (i.body ?? []).length > 0)).toBe(true)
+  })
+
+  it.each(AGENT_INVARIANTS.map((i) => [i.file, i.model]))('%s keeps model: %s', (file, model) => {
+    expect(parseFrontmatter(readBrief(file)).model).toBe(model)
+  })
+
+  it.each(pins)('%s %s still says: %s', (file, part, _id, phrases) => {
+    expect(containsPhrases(partOf(readBrief(file), part), phrases)).toBe(true)
+  })
+
+  it('pins the verifier\'s tier rule as one whole sentence in the description and the body', () => {
+    const verifier = AGENT_INVARIANTS.find((i) => i.file === '.claude/agents/hacer-verifier.md')
+    for (const part of ['description', 'body']) {
+      expect(verifier[part].map((rule) => rule.phrases)).toContainEqual([VERIFIER_TIER_SENTENCE])
+    }
+  })
+
+  it.each(TWIN_SENTENCES.map((t) => [t.id, t]))('%s: every twin carries the owner\'s sentence', (_id, twin) => {
+    const twins = twin.twins.map(({ file, part }) => ({ label: `${file} ${part}`, text: partOf(readBrief(file), part) }))
+    expect(checkTwinAgreement(readBrief(twin.owner), twin.anchor, twins)).toEqual([])
+  })
+
+  it('checks the verifier\'s tier sentence against its brief', () => {
+    expect(TWIN_SENTENCES.map((t) => [t.owner, ...t.twins.map((w) => `${w.file} ${w.part}`)])).toContainEqual([
+      'docs/harness/verifier-brief.md',
+      '.claude/agents/hacer-verifier.md description',
+      '.claude/agents/hacer-verifier.md body',
+    ])
   })
 })
