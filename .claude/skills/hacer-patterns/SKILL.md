@@ -177,13 +177,8 @@ export function GateIcon() { ... }  // put this in its own file
 ## TypeScript Conventions
 
 ```typescript
-// Use JSDoc on all exported functions
-/**
- * Places a gate at the given position.
- * @param chipName - Registered chip name, e.g. 'Nand' (see src/core/chips/appRegistry.ts)
- * @param position - World-space position (see Position in src/store/types.ts)
- * @returns The newly placed gate instance
- */
+// Exported: a one-line JSDoc summary plus what a caller needs; no @param/@returns that restate the signature
+/** Places a gate at the given world-space position; `chipName` must be registered in src/core/chips/appRegistry.ts. */
 export function addGate(chipName: string, position: Position): GateInstance { ... }
 ```
 

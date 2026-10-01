@@ -30,11 +30,11 @@ of done — run it and confirm every command exits 0 before calling anything "Do
 - **Optimization**: Do NOT use `useMemo`, `useCallback`, or `React.memo` (React Compiler handles this).
 - **Feedback**: Use Ant Design `message`/`notification` instead of `console.log`.
 - **Resources**: Explicitly dispose of Three.js resources on component unmount.
-- **Typing**: No `any` types; use strict interfaces; JSDoc (`@param`, `@returns`) on all exports.
+- **Typing**: No `any` types; use strict interfaces; an export gets at most a one-line JSDoc summary plus only what a caller needs — no `@param`/`@returns` that restate the signature.
 
 ### 4. Phase & Documentation
 - **Alignment**: Code must belong to the current development phase defined in `.cursorrules`.
-- **Docs**: Update JSDoc for public API changes and `REPO_MAP.md` for structural changes.
+- **Docs**: Keep an export's JSDoc summary true when its behaviour changes (one line plus what a caller needs; no `@param`/`@returns` that restate the signature), and update `REPO_MAP.md` for structural changes.
 - **Tracking**: Ensure `tasks/todo.md` accurately reflects the implementation state.
 </rules>
 

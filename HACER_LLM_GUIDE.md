@@ -118,7 +118,7 @@ TypeScript will tell you immediately if a type name or signature no longer match
 ✅ Write tests BEFORE or WITH new features (unit, component, or E2E)
 ✅ Run existing tests before committing (`pnpm run test:run`)
 ✅ Use TypeScript with strict types (no `any`, no missing interfaces)
-✅ Add JSDoc comments to all exported functions with `@param` and `@returns`
+✅ An exported function gets at most a one-line JSDoc summary plus only what a caller needs; no `@param`/`@returns` that restate the signature
 ✅ Call hooks only at the top level (never in loops, conditions, or callbacks)
 ✅ Keep components under 200 lines (split if larger)
 ✅ **One component per file** - each React component gets its own file
