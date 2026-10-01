@@ -8,6 +8,6 @@ alwaysApply: true
 1. **Do not commit directly to `main`.** All substantive work (features, fixes, docs batches, ticket updates that are part of a deliverable) happens on a **dedicated branch**.
 2. **Use a dedicated git worktree for every new effort** (`git worktree add`), so `main` stays clean and context-switch cost stays low. **Worktrees live OUTSIDE the repo as sibling folders named `hacer-wt-<topic>`** — e.g. `git worktree add ../hacer-wt-<topic> -b <type>/<topic>`. Never create worktrees inside the repo (no `.worktrees/`).
 3. **Before starting multi-file work**, create or attach to a branch: `git checkout -b <type>/<short-topic>` from current `origin/main` (or rebase per team policy).
-4. **Integrate via PR** (or explicit maintainer merge policy). Do not `git push origin main` from agent sessions unless the user explicitly orders an emergency hotfix and accepts the risk.
+4. **Integrate via PR** (or explicit maintainer merge policy). Do not `git push origin main` from agent sessions.
 
-This rule sits under HACER precedence: it does **not** override the user’s explicit instruction for a one-off operation, but agents should **warn** before direct `main` writes.
+**Escape hatch (the only one):** direct writes to `main` are allowed only for an emergency hotfix or the user’s explicit one-off instruction, which this rule does not override (HACER precedence); the user accepts the risk, and agents **warn** before any direct `main` write.
