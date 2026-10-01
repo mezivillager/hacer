@@ -1490,7 +1490,6 @@ const style = { color: 'blue' };
 ```
 
 > **⚠️ Note:** React Compiler automatically optimizes inline functions/objects, but extracting them improves code readability. Do NOT use `useCallback`/`useMemo` for this - React Compiler handles it.
-```
 
 ---
 
