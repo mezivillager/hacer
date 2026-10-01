@@ -64,7 +64,7 @@ Do **not** edit unless the task explicitly includes them:
 
 - `docs/specs/**` and dated archival migration plans marked “Do Not Modify”
 - `tasks/lessons.md` except when recording a new lesson per project convention
-- `docs/superpowers/plans/**` as historical execution artifacts (may add notes; avoid rewriting tasks unless superseding)
+- dated plans in `docs/plans/` as historical execution artifacts (may add notes; avoid rewriting tasks unless superseding)
 
 ---
 

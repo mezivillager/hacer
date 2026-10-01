@@ -20,7 +20,7 @@
 - **Float comparisons** use tolerance `0.001` (the router's `TOLERANCE`, exported context `TRANSIT_LANE_PITCH = 0.06` etc. live in `@/utils/wiringScheme/types`).
 - **Commits:** conventional-commit format (`feat:`/`test:`/`refactor:`/`docs:`/`chore:`) — the repo uses semantic-release. **NO AI attribution** (no `Co-Authored-By`, no "Generated with Claude"). **Never commit to `main`.** **Never** use `--no-verify`.
 - **Definition of Done (all must exit 0):** `pnpm run lint` · `pnpm run test:run` · `pnpm run test:e2e:store` · `pnpm run build`.
-- **Spec:** `docs/superpowers/specs/2026-06-21-scene-graph-routing-testing-design.md` (this plan implements it).
+- **Spec:** `docs/specs/2026-06-21-scene-graph-routing-testing-design.md` (this plan implements it).
 
 ---
 
@@ -669,7 +669,7 @@ describe('routing scene-graph: render contract', () => {
 - [ ] **Step 6: Run it to verify it fails, then passes**
 
 Run: `pnpm exec vitest run src/components/canvas/routingScene.test.tsx`
-Expected initially: FAIL if any harness wiring is off (e.g. group tag not found, or `addGate('And')`/routing returns no segments). Debug using the systematic-debugging skill until it passes — the failure must be a real harness fix, not a weakened assertion. Expected after: PASS, with exactly one wire and per-segment endpoint matches.
+Expected initially: FAIL if any harness wiring is off (e.g. group tag not found, or `addGate('And')`/routing returns no segments). Debug using the debugging skill until it passes — the failure must be a real harness fix, not a weakened assertion. Expected after: PASS, with exactly one wire and per-segment endpoint matches.
 
 - [ ] **Step 7: Commit**
 
@@ -931,7 +931,7 @@ export function expectNoWireOverlaps(
 - [ ] **Step 4: Run the tests to verify they pass**
 
 Run: `pnpm exec vitest run src/components/canvas/routingScene.test.tsx -t "Mux"`
-Expected: PASS for both Mux4Way16 and Mux8Way16. If `expectNoWireOverlaps` throws, that is a genuine routing discovery — switch to the systematic-debugging skill, confirm it is a real render-level merge (not an oracle false-positive on a legitimate shared corner), and if real, this is a NEW bug: capture it (it will be logged in Task 8's flow) and report to the controller before weakening anything.
+Expected: PASS for both Mux4Way16 and Mux8Way16. If `expectNoWireOverlaps` throws, that is a genuine routing discovery — switch to the debugging skill, confirm it is a real render-level merge (not an oracle false-positive on a legitimate shared corner), and if real, this is a NEW bug: capture it (it will be logged in Task 8's flow) and report to the controller before weakening anything.
 
 - [ ] **Step 5: Commit**
 
@@ -1013,7 +1013,7 @@ describe('routing scene-graph: B-004a / CASE1 + transit-vs-transit', () => {
 - [ ] **Step 3: Run it**
 
 Run: `pnpm exec vitest run src/components/canvas/routingScene.test.tsx -t "transit"`
-Expected: PASS (the fix is present on this branch). If a test passes *vacuously* (e.g. fewer than 2 wires rendered, or the two nets did not actually share a region), strengthen the seed geometry so the precondition genuinely holds — mirror the proven inputs from `laneExclusivity.test.ts`. If it FAILS, the fix has a render-level hole: switch to systematic-debugging, do not weaken the assertion.
+Expected: PASS (the fix is present on this branch). If a test passes *vacuously* (e.g. fewer than 2 wires rendered, or the two nets did not actually share a region), strengthen the seed geometry so the precondition genuinely holds — mirror the proven inputs from `laneExclusivity.test.ts`. If it FAILS, the fix has a render-level hole: switch to debugging, do not weaken the assertion.
 
 - [ ] **Step 4: Commit**
 
@@ -1121,7 +1121,7 @@ describe('routing scene-graph: node-drag re-route (B-003)', () => {
 - [ ] **Step 3: Run it**
 
 Run: `pnpm exec vitest run src/components/canvas/routingScene.test.tsx -t "node is moved"`
-Expected: PASS (B-003 fix present on this branch). If FAIL, switch to systematic-debugging. A vacuous pass guard is already present (`segments.length > 0` and the connectivity assertion against the *new* position).
+Expected: PASS (B-003 fix present on this branch). If FAIL, switch to debugging. A vacuous pass guard is already present (`segments.length > 0` and the connectivity assertion against the *new* position).
 
 - [ ] **Step 4: Commit**
 
@@ -1189,7 +1189,7 @@ Expected: PASS — or a genuine overlap discovery.
 
 - [ ] **Step 3: If the sweep finds a bug, log it (do NOT weaken the test to hide it)**
 
-If `expectNoWireOverlaps` throws, first confirm via systematic-debugging that it is a real render-level merge (read the named wires/track/range from the error; check it is not a legitimate shared corner of one wire's own segments — those are excluded by the distinct-wire guard). If real:
+If `expectNoWireOverlaps` throws, first confirm via debugging that it is a real render-level merge (read the named wires/track/range from the error; check it is not a legitimate shared corner of one wire's own segments — those are excluded by the distinct-wire guard). If real:
 - Add an entry to `docs/development/observed-bugs.md` under the open-bugs section: a new `B-0NN` id, the reproducing circuit, the overlapping wires/track from the error message, and a note that the scene-graph sweep surfaced it.
 - Report it to the controller. Decide with the controller whether to fix in this branch or mark the new test `it.fails(...)`/`it.skip(...)` with a comment linking the bug id (so the suite stays green and the discovery is not lost). Do not silently delete the assertion.
 

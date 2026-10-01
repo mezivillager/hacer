@@ -2,7 +2,7 @@
 
 **Purpose:** Keep **living** documentation aligned with the repo after code changes — without automated grep CI.
 
-**Design:** [`docs/superpowers/specs/2026-05-12-llm-docs-sync-design.md`](./superpowers/specs/2026-05-12-llm-docs-sync-design.md)
+**Design:** [`docs/specs/2026-05-12-llm-docs-sync-design.md`](./specs/2026-05-12-llm-docs-sync-design.md)
 
 ---
 
@@ -43,7 +43,7 @@ Unless the task explicitly includes them:
 
 - Archival specs/plans marked **Do Not Modify** (e.g. dated migration trees)
 - `tasks/lessons.md` except when recording a lesson per project convention
-- `docs/superpowers/plans/**` as historical execution artifacts
+- dated plans in `docs/plans/` as historical execution artifacts
 
 ---
 

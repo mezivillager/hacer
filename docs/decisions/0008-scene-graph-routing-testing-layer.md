@@ -75,7 +75,7 @@ A note on future coverage: an arc/hop render-only test (asserting that crossing-
 ## Links
 
 - [[0007-wire-routing-engine-direction]] — this layer gates every ADR-0007 routing-engine stage.
-- Spec: `docs/superpowers/specs/2026-06-21-scene-graph-routing-testing-design.md`
-- Plan: `docs/superpowers/plans/2026-06-26-scene-graph-routing-testing.md`
+- Spec: `docs/specs/2026-06-21-scene-graph-routing-testing-design.md`
+- Plan: `docs/plans/2026-06-26-scene-graph-routing-testing.md`
 - Key files: `src/test/r3f/` (harness), `src/components/canvas/routingScene.test.tsx` (core suite), `src/test/r3f/wireGeometry.test.tsx` (oracle classification tests), `src/components/canvas/deriveWire3DProps.ts` (shared wire→props extraction)
 - Bugs fixed: `docs/development/observed-bugs.md` (B-003, B-004)

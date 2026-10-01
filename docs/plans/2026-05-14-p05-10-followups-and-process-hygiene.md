@@ -422,7 +422,7 @@ Then open a PR titled e.g. `docs: P05-10 ticket fixes, P05-29 follow-up, observe
 ---
 
 **Plan complete and saved to**  
-`docs/superpowers/plans/2026-05-14-p05-10-followups-and-process-hygiene.md`  
+`docs/plans/2026-05-14-p05-10-followups-and-process-hygiene.md`  
 (on branch `docs/p05-10-followups-plan-2026-05-14` in worktree  
 `.worktrees/p05-10-followups-plan`).
 

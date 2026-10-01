@@ -1,12 +1,12 @@
 # Wire Routing — Stage 1 design (B-003/B-004 fix)
 
 - **Date:** 2026-06-21
-- **Status:** Design (implements [ADR-0007](../../decisions/0007-wire-routing-engine-direction.md), Stage 1)
+- **Status:** Design (implements [ADR-0007](../decisions/0007-wire-routing-engine-direction.md), Stage 1)
 - **Scope:** Fix the router so every input pin of dense multi-input chips (Mux4Way16, Mux8Way16)
   is routable, without widening pins. Repair the node-drag re-route so a routing failure never
   orphans a wire. Bounded to Stage 1 — no visibility-graph rewrite.
 
-## Confirmed root cause (systematic-debugging Phase 1)
+## Confirmed root cause (debugging Phase 1)
 
 Reproduced with `Mux4Way16` (5 inputs) at the origin:
 

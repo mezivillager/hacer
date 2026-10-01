@@ -66,7 +66,7 @@ in `src/core/testing/engine.ts`, with these binding design choices:
 - [[0003-design-for-longevity]] — functional design + the `loadCmpFile` provider seam are applications
   of the extensibility directive.
 - Design spec: `docs/specs/2026-06-20-p05-17-test-execution-engine-design.md`
-- Implementation plan: `docs/superpowers/plans/2026-06-20-p05-17-test-execution-engine.md`
+- Implementation plan: `docs/plans/2026-06-20-p05-17-test-execution-engine.md`
 - Ticket: `docs/plans/phase-0.5-tickets/P05-17.md`
 - PR: https://github.com/mezivillager/hacer/pull/121 (compare-to verification fix: commit 76d10cf)
 - Key files: `src/core/testing/engine.ts`, `src/core/testing/index.ts`,
