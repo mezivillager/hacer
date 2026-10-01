@@ -13,6 +13,7 @@ import {
   PICK_ROTATION,
   ROW_AGENT_READY_CAP,
   STALE_CLAIM_HOURS,
+  bucketOf,
   claimComment,
   claimHistory,
   claimHistoryQuery,
@@ -412,6 +413,19 @@ describe('the foundation gate', () => {
       issue(2, { labels: ['agent-ready', 'project:upkeep', 'risk:0'] })]
     expect(picks(planReady(issues, portfolioRows))).toEqual([1, 2])
   })
+
+  it('reports on-request before the gate for a risk:2 task of a row the rotation leaves out, still held', () => {
+    const plan = planReady([risky(262, 'surfaces'), risky(266, 'pubdocs'), risky(178, 'core')], portfolioRows)
+    expect(reasonOf(plan, 262)).toBe('on-request')
+    expect(reasonOf(plan, 266)).toBe('on-request')
+    expect(reasonOf(plan, 178)).toBe('foundation-gate')
+    expect(plan.every((task) => !task.pickable)).toBe(true)
+  })
+
+  it('says in docs/portfolio.md that the gate holds the risk:2 part of hand editing, not all of it', () => {
+    expect(livePortfolio).not.toContain('All of it is `risk:2`')
+    expect(livePortfolio).toContain('The filter holds only the `risk:2` part of it')
+  })
 })
 
 // #535 (2026-09-26 reviews: 3.md F3, 2.md F14, evidence/2-controls.md): the cycle held inside one listing and reset on
@@ -560,7 +574,7 @@ describe('summarizeProjects', () => {
     expect(rowFor('foundation')).toMatchObject({ epicNumber: 318, open: 3, ready: 3, inProgress: 0, needsHuman: 0 })
     expect(rowFor('harness')).toMatchObject({ epicNumber: 138, open: 6, ready: 2, inProgress: 1, needsHuman: 1 })
     // #540: surfaces and pubdocs are on-request while #330's rotation runs, so none of their tasks is ready
-    expect(rowFor('surfaces')).toMatchObject({ open: 3, ready: 0, inProgress: 0, needsHuman: 0 })
+    expect(rowFor('surfaces')).toMatchObject({ open: 3, ready: 0, inProgress: 0, needsHuman: 0, filedElsewhere: [315] })
     expect(rowFor('pubdocs')).toMatchObject({ epicNumber: 260, open: 1, ready: 0 })
     // the gate holds all three `core` tasks: every one of them is risk:2 outside the plan
     expect(rowFor('core')).toMatchObject({ open: 3, ready: 0, inProgress: 0, needsHuman: 0, next: null })
@@ -577,6 +591,24 @@ describe('summarizeProjects', () => {
     expect(rowFor('harness').next).toEqual({ number: 148, title: expect.stringContaining('Bootstrap the backlog') })
     expect(rowFor('surfaces').next.number).toBe(206)
     expect(rowFor('horizon').next.number).toBe(230)
+  })
+
+  it('names the issues that carry a row\'s label but file under its priority row, and counts and offers them there only', () => {
+    const pulled = issue(1, { labels: ['agent-ready', 'project:surfaces', 'project:foundation'] })
+    const rows = summarizeProjects([pulled, open(2, 'surfaces')], portfolioRows)
+    const row = (slug) => rows.find((summary) => summary.slug === slug)
+    expect(row('foundation')).toMatchObject({ open: 1, ready: 1, next: { number: 1 }, filedElsewhere: [] })
+    expect(row('surfaces')).toMatchObject({ open: 1, ready: 0, next: { number: 2 }, filedElsewhere: [1] })
+    expect(formatProjects(rows).split('\n')[2])
+      .toBe('surfaces · open 1 · ready 0 · in-progress 0 · needs-human 0 · filed under another row #1 · next: #2 Task 2')
+  })
+})
+
+describe('the shared bucket', () => {
+  it('queues pubdocs in the surfaces bucket, so a surfaces slot takes either once the amendment lifts', () => {
+    expect(bucketOf('pubdocs')).toBe('surfaces')
+    expect(bucketOf('surfaces')).toBe('surfaces')
+    expect(bucketOf('foundation')).toBe('foundation')
   })
 })
 
