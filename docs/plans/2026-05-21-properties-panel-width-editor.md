@@ -9,7 +9,7 @@
 **Tech Stack:** React 19, TypeScript, Zustand, Vitest + @testing-library/react, Tailwind + shadcn UI primitives.
 
 **Reference:**
-- P05-13 multi-bit I/O UI plan: [`docs/superpowers/plans/2026-05-19-p05-13-multi-bit-io-ui.md`](./2026-05-19-p05-13-multi-bit-io-ui.md)
+- P05-13 multi-bit I/O UI plan: [`docs/plans/2026-05-19-p05-13-multi-bit-io-ui.md`](./2026-05-19-p05-13-multi-bit-io-ui.md)
 - Width cap rationale (32): `src/components/ui/multiBitFormat.ts` `widthMask`
 
 ---

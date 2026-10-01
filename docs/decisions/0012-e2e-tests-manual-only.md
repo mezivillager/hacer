@@ -36,7 +36,7 @@ detached from the change that caused them.
 - `.claude/skills/finishing-a-development-branch/` still cites the old four-command checklist. It is
   vendored from obra/superpowers and `scripts/sync-superpowers.sh` overwrites it, so it is left alone
   deliberately; the HACER-authored skills (`code-review`, `planning`, `tdd`, `hacer-patterns`) are updated.
-- Historical documents (`docs/plans/`, `docs/specs/`, `docs/superpowers/`, `tasks/`, `CHANGELOG.md`)
+- Historical documents (`docs/plans/`, `docs/specs/`, `tasks/`, `CHANGELOG.md`)
   keep the old gate list as a dated record.
 
 ## Affected living docs

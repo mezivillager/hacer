@@ -785,7 +785,7 @@ Mount new Phase 0.5 panels into the existing shell:
 Replace its current scope summary with:
 
 ```markdown
-P05-28 captures completed Phase 0.5 state after implementation lands. The documentation refresh in `docs/superpowers/plans/2026-05-12-documentation-refresh.md` handles current truth debt before the rest of Phase 0.5 resumes. When P05-28 executes, it should update user-facing chip-building docs, not repeat the stack/tooling cleanup.
+P05-28 captures completed Phase 0.5 state after implementation lands. The documentation refresh in `docs/plans/2026-05-12-documentation-refresh.md` handles current truth debt before the rest of Phase 0.5 resumes. When P05-28 executes, it should update user-facing chip-building docs, not repeat the stack/tooling cleanup.
 ```
 
 - [ ] **Step 4.8: Run Phase 0.5 doc scan**
@@ -1045,7 +1045,7 @@ Residual decisions:
 
 ## Execution Handoff
 
-Plan complete and saved to `docs/superpowers/plans/2026-05-12-documentation-refresh.md`. Two execution options:
+Plan complete and saved to `docs/plans/2026-05-12-documentation-refresh.md`. Two execution options:
 
 **1. Subagent-Driven (recommended)** - dispatch a fresh subagent per task, review between tasks, fast iteration
 

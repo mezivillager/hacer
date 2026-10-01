@@ -8,7 +8,7 @@
 
 **Tech Stack:** React 19, TypeScript, Zustand, Vitest + @testing-library/react, Tailwind, shadcn/ui (`@/components/ui-kit/button`), React Three Fiber (`<Text>` from drei).
 
-**Reference Spec:** [`docs/plans/phase-0.5-tickets/P05-13.md`](../../plans/phase-0.5-tickets/P05-13.md)
+**Reference Spec:** [`docs/plans/phase-0.5-tickets/P05-13.md`](./phase-0.5-tickets/P05-13.md)
 
 ---
 

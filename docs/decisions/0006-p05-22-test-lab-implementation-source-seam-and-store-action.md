@@ -60,7 +60,7 @@ P05-22 wraps the P05-17 test engine in a UI ("Test Lab"). Two realities shaped t
 - [[0005-p05-17-test-execution-engine-design-and-verification-contract]] — the engine this UI drives.
 - [[0003-design-for-longevity]] — the source seam + AI-parity action apply the extensibility directive.
 - Design spec: `docs/specs/2026-06-20-p05-22-test-results-panel-design.md`
-- Plan: `docs/superpowers/plans/2026-06-20-p05-22-test-results-panel.md`
+- Plan: `docs/plans/2026-06-20-p05-22-test-results-panel.md`
 - Non-3D UX testing rigor: `AGENTS.md` §3 Step 4.1; follow-up `docs/plans/phase-0.5-tickets/P05-32.md`.
 - Key files: `src/core/testing/implementationSources.ts`, `src/store/actions/testActions/testActions.ts`,
   `src/components/ui/TestResultsPanel.tsx`.

@@ -12,6 +12,7 @@ See [lessons.md.template](./lessons.md.template) for the entry format.
 
 **What happened**: I moved all plan and ticket docs into `docs/superpowers/plans` after the user asked to move Superpowers plan docs.
 **Rule**: Only move docs authored through Superpowers planning or writing-plans into `docs/superpowers/plans`; leave existing project plans and ticket docs in `docs/plans` unless explicitly requested.
+**Superseded (#155)**: `docs/superpowers/` was folded into `docs/plans` and `docs/specs`, the single home for plans and specs.
 **Context**: P05-11 ticket-content plan relocation correction.
 
 ### 2026-03-15 - Verify Exact PR Context Before Comment Analysis

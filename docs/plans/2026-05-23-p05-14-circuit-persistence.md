@@ -8,7 +8,7 @@
 
 **Tech Stack:** React 19 + React Compiler (no manual `useMemo` / `useCallback`), TypeScript 5.9 strict, Zustand + immer + `subscribeWithSelector`, Vitest + @testing-library/react, Playwright store-fixture, Tailwind v4 + shadcn-style primitives from `@/components/ui-kit`, Sonner toasts via `@/lib/notify`, `lucide-react` icons.
 
-**Reference Spec:** [`docs/plans/phase-0.5-tickets/P05-14.md`](../../plans/phase-0.5-tickets/P05-14.md)
+**Reference Spec:** [`docs/plans/phase-0.5-tickets/P05-14.md`](./phase-0.5-tickets/P05-14.md)
 
 ---
 
@@ -2143,7 +2143,7 @@ Use the HACER pull-request template. Reference the gap (`GAP-3D-6`), the ticket 
 
 ## Execution Handoff
 
-Plan saved to `docs/superpowers/plans/2026-05-23-p05-14-circuit-persistence.md`. Two execution options:
+Plan saved to `docs/plans/2026-05-23-p05-14-circuit-persistence.md`. Two execution options:
 
 **1. Subagent-Driven (recommended)** — dispatch a fresh subagent per task, review between tasks, fast iteration. Use `superpowers:subagent-driven-development`.
 

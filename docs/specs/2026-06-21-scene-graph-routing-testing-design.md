@@ -3,7 +3,7 @@
 - **Date:** 2026-06-21
 - **Status:** Design (awaiting approval)
 - **Phase:** 0.5 (cross-cutting test infrastructure; routing-engine foundation)
-- **Related:** [ADR-0007](../../decisions/0007-wire-routing-engine-direction.md) (wire-routing engine direction), B-003/B-004/B-004a (observed-bugs.md), PR #128.
+- **Related:** [ADR-0007](../decisions/0007-wire-routing-engine-direction.md) (wire-routing engine direction), B-003/B-004/B-004a (observed-bugs.md), PR #128.
 
 ## Goal
 

@@ -38,7 +38,7 @@ We will model bus components as a **new first-class entity**, not as gates:
 
 ## Links
 
-- Spec: `docs/superpowers/specs/2026-06-27-bus-splitter-joiner-design.md`
-- Plan: `docs/superpowers/plans/2026-06-27-bus-splitter-joiner.md`
+- Spec: `docs/specs/2026-06-27-bus-splitter-joiner-design.md`
+- Plan: `docs/plans/2026-06-27-bus-splitter-joiner.md`
 - Related: [[0008-scene-graph-routing-testing-layer]] (the scene-graph render test validates bus pin wiring), P05-11 (`busOps`), B-003 (no-orphan re-route guard).
 - Key code: `src/store/types.ts` (`BusComponent`, `WireEndpointType`), `src/store/actions/busActions/`, `src/simulation/busLogic.ts` + `topologicalEval.ts`, `src/components/scene/busBodyLayout.ts`, `src/nodes/BusSplitter3D.tsx`/`BusJoiner3D.tsx`, `src/core/serialization/`.

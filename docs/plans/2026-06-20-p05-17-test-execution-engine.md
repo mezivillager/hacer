@@ -505,7 +505,7 @@ git commit -m "feat(testing): structured errors for unknown chip, eval-before-lo
 **Interfaces:**
 - Consumes: `getBuiltinChipRegistry()`, `resetAppRegistriesForTests()` from `../chips/appRegistry`; `project1TstFixtures`, `project1CmpFixtures` (already imported in Task 2).
 
-> Note: the engine is feature-complete after Task 3. This task adds an **acceptance** suite over the real corpus; it should pass immediately. If any chip fails, that is a genuine engine/parser bug to debug (use systematic-debugging), not an expected red.
+> Note: the engine is feature-complete after Task 3. This task adds an **acceptance** suite over the real corpus; it should pass immediately. If any chip fails, that is a genuine engine/parser bug to debug (use debugging), not an expected red.
 
 - [ ] **Step 1: Write the acceptance test**
 
@@ -564,7 +564,7 @@ git commit -m "test(testing): all 16 Project-1 .tst pass against builtins"
 **Interfaces:**
 - Consumes: `parseHDL(source) → { success; chip }` from `../hdl/parser`; `hdlChipDefinition(ast, source) → ChipDefinition` from `../hdl/compiler`; `project1HdlSources` (`Record<string,string>`) and `project1DependencyOrder` (`string[]`, the 15 composites in build order) from `../hdl/project1HdlSources`.
 
-> Note: acceptance suite over already-complete code — expect green. A failure here is a real regression in the engine or the compile pipeline; debug with systematic-debugging.
+> Note: acceptance suite over already-complete code — expect green. A failure here is a real regression in the engine or the compile pipeline; debug with debugging.
 
 - [ ] **Step 1: Write the acceptance test**
 

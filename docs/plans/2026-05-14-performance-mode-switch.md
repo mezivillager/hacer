@@ -1484,7 +1484,7 @@ Type consistency:
 
 ## Execution Handoff
 
-Plan complete and saved to `docs/superpowers/plans/2026-05-14-performance-mode-switch.md`. Two execution options:
+Plan complete and saved to `docs/plans/2026-05-14-performance-mode-switch.md`. Two execution options:
 
 1. Subagent-Driven (recommended) - dispatch a fresh subagent per task, review between tasks, fast iteration
 

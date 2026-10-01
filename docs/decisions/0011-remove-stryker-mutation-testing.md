@@ -28,8 +28,7 @@ hook, and CI (lint, docs paths, unit tests, build).
 - The repo loses its only automated check for vacuous tests. TDD discipline and code review now carry
   that weight alone. If a cheaper substitute is wanted later, coverage thresholds on `src/simulation/`
   and `src/core/` would be the natural first step — deliberately **not** adopted here.
-- Historical documents that mention Stryker (`docs/plans/`, `docs/specs/`, `docs/superpowers/plans/`,
-  `CHANGELOG.md`) are left untouched: they are dated records of what was true at the time, not living
+- Historical documents that mention Stryker (`docs/plans/`, `docs/specs/`, `CHANGELOG.md`) are left untouched: they are dated records of what was true at the time, not living
   guidance. Only living docs were reconciled.
 - `docs/testing/stryker-evaluation.md` is recoverable from git history if the decision is revisited.
 
