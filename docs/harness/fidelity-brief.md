@@ -71,7 +71,7 @@ conclusion — give it the sources.
   only then does the coordinator or triage file it, labelled `fidelity`.
 - **The one exception:** a verdict on *shipped* behaviour that is an actual defect (the evaluator
   or engine diverging from the oracle) is a bug, filed under the bot issue contract
-  (`docs/research/2026-09-18-agent-readiness/WORK-SYSTEM.md` §6: executable repro or no issue,
+  (`docs/harness/issue-form.md` "Bot issue contract": executable repro or no issue,
   fingerprint, `bot-filed`, `sev:critical` for oracle divergence, never `agent-ready` without the
   owner).
 

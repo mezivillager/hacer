@@ -25,7 +25,7 @@ so the same proposal is not made twice.
 ```
 
 Ids are sequential and never reused. An entry's draft body follows the agent-ready issue form in
-`docs/research/2026-09-18-agent-readiness/WORK-SYSTEM.md` §2 so filing it is a copy, not a rewrite.
+`docs/harness/issue-form.md` so filing it is a copy, not a rewrite.
 
 ## Queue
 
