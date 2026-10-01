@@ -328,7 +328,7 @@ class Parser {
     this.expect('LBRACE')
     if (this.errors.length > 0) return emptyChip()
 
-    // P05-04 grammar: ChipDecl = 'CHIP' Name '{' InDecl OutDecl PartsDecl '}'
+    // P05-04 grammar: ChipDecl = 'CHIP' Name '{' InDecl OutDecl (PartsDecl | BuiltinDecl) '}'
     const inputs = this.parseInDecl()
     if (this.errors.length > 0) return emptyChip()
 
@@ -340,7 +340,8 @@ class Parser {
       return emptyChip()
     }
 
-    const partsResult = this.parsePartsDecl()
+    const partsResult =
+      this.current().type === 'BUILTIN' ? this.parseBuiltinDecl(nameToken.value) : this.parsePartsDecl()
     if (this.errors.length > 0) return emptyChip()
     const parts = partsResult.parts
     const builtin = partsResult.builtin
@@ -403,6 +404,14 @@ class Parser {
       this.expect('RBRACKET')
     }
     return { name: nameToken.value, width }
+  }
+
+  /** The reference grammar's `BUILTIN;` in place of `PARTS:`; a bare one names the chip itself. */
+  private parseBuiltinDecl(chipName: string): { parts: HDLPart[]; builtin: string } {
+    this.expect('BUILTIN')
+    const builtin = this.current().type === 'IDENT' ? this.expect('IDENT').value : chipName
+    this.expect('SEMICOLON')
+    return { parts: [], builtin }
   }
 
   private parsePartsDecl(): { parts: HDLPart[]; builtin?: string } {
