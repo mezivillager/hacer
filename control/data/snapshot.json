@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-01T22:30:44.223Z",
+  "generatedAt": "2026-10-01T22:48:21.867Z",
   "head": {
-    "sha": "48bf6a52c3f77891df0abfd44fef5895428157ed",
-    "date": "2026-10-02T01:29:45+03:00",
-    "subject": "chore(docs): one home for specs and plans"
+    "sha": "ff4a6f87f42bf08f7aa87dd04ea14fec53412bd7",
+    "date": "2026-10-02T01:47:23+03:00",
+    "subject": "chore(harness): hold eslint-suppressions.json to the ratchet as a second baseline (#429)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-01T22:30:44.223Z",
+      "fetchedAt": "2026-10-01T22:48:21.867Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-01T22:30:44.223Z",
+      "fetchedAt": "2026-10-01T22:48:21.867Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-01T22:30:44.223Z",
+      "fetchedAt": "2026-10-01T22:48:21.867Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-01T22:30:44.223Z",
+      "fetchedAt": "2026-10-01T22:48:21.867Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-01T22:30:44.223Z",
+      "fetchedAt": "2026-10-01T22:48:21.867Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-01T22:30:44.223Z",
+      "fetchedAt": "2026-10-01T22:48:21.867Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-01T22:30:44.223Z",
+      "fetchedAt": "2026-10-01T22:48:21.867Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-01T22:30:44.223Z",
+      "fetchedAt": "2026-10-01T22:48:21.867Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-01T22:30:44.223Z",
+      "fetchedAt": "2026-10-01T22:48:21.867Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-01T22:30:44.223Z",
+      "fetchedAt": "2026-10-01T22:48:21.867Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-01T22:30:44.223Z",
+      "fetchedAt": "2026-10-01T22:48:21.867Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-01T22:30:44.223Z",
+      "fetchedAt": "2026-10-01T22:48:21.867Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-10-01T22:30:44.223Z",
+      "fetchedAt": "2026-10-01T22:48:21.867Z",
       "status": "ok"
     }
   },
@@ -80,14 +80,14 @@
         "lane": "feature",
         "slug": "foundation",
         "epicNumber": 318,
-        "open": 27,
+        "open": 26,
         "ready": 2,
-        "inProgress": 3,
+        "inProgress": 2,
         "needsHuman": 0,
         "staleClaims": [
           182
         ],
-        "agentReady": 5,
+        "agentReady": 4,
         "filedElsewhere": [],
         "next": {
           "number": 338,
@@ -114,8 +114,7 @@
         "filedElsewhere": [
           151,
           339,
-          407,
-          429
+          407
         ],
         "next": {
           "number": 159,
@@ -520,6 +519,7 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
+        651,
         514
       ]
     }
@@ -2014,23 +2014,6 @@
         "reason": "claimed"
       },
       {
-        "number": 429,
-        "title": "The ESLint suppressions baseline can be reset the same way, and nothing detects it",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 431,
         "title": "compileHDL checks dangling signals by name, so a read of a never-driven bit is silently 0",
         "labels": [
@@ -2388,7 +2371,6 @@
         395,
         400,
         407,
-        429,
         462,
         506,
         599,
@@ -2520,6 +2502,24 @@
   "prs": {
     "open": [
       {
+        "number": 651,
+        "title": "chore(harness): merge-on-green refuses a stale green (#407)",
+        "url": "https://github.com/mezivillager/hacer/pull/651",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:1"
+        ],
+        "headRefName": "fix/407-stale-merge-check",
+        "isDraft": false,
+        "createdAt": "2026-10-01T22:40:49Z",
+        "mergedAt": null,
+        "closes": [
+          407
+        ],
+        "verdicts": []
+      },
+      {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
         "url": "https://github.com/mezivillager/hacer/pull/514",
@@ -2547,6 +2547,32 @@
       }
     ],
     "merged": [
+      {
+        "number": 652,
+        "title": "chore(harness): hold eslint-suppressions.json to the ratchet as a second baseline",
+        "url": "https://github.com/mezivillager/hacer/pull/652",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:1"
+        ],
+        "headRefName": "chore/429-suppressions-ratchet",
+        "isDraft": false,
+        "createdAt": "2026-10-01T22:43:02Z",
+        "mergedAt": "2026-10-01T22:47:24Z",
+        "closes": [
+          429
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Sonnet 5.5 (fresh context)",
+            "at": "2026-10-01T22:46:51Z",
+            "url": "https://github.com/mezivillager/hacer/pull/652#issuecomment-5942197767"
+          }
+        ]
+      },
       {
         "number": 650,
         "title": "chore(skills): one skill per job, a sync that cannot re-add, one spec/plan home",
@@ -4066,33 +4092,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/556#issuecomment-5855091444"
           }
         ]
-      },
-      {
-        "number": 555,
-        "title": "chore(backlog): successive top picks follow the eight-slot cycle (#535)",
-        "url": "https://github.com/mezivillager/hacer/pull/555",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:1"
-        ],
-        "headRefName": "feat/535-pick-rotation",
-        "isDraft": false,
-        "createdAt": "2026-09-27T10:36:42Z",
-        "mergedAt": "2026-09-27T10:57:11Z",
-        "closes": [
-          535
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Claude Sonnet 5 (claude-sonnet-5)",
-            "at": "2026-09-27T10:56:19Z",
-            "url": "https://github.com/mezivillager/hacer/pull/555#issuecomment-5855221528"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4158,30 +4157,6 @@
         }
       },
       {
-        "number": 155,
-        "ref": "refs/heads/claim/155",
-        "sha": "59cc2f014da28cb1ec0f48600502b0b63da3237b",
-        "state": "CLOSED",
-        "title": "De-duplicate vendored skills (tdd/test-driven-development, debugging/systematic-debugging, planning/writing-plans) and fix sync-superpowers.sh",
-        "url": "https://github.com/mezivillager/hacer/issues/155",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:2"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-92",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-01T22:04:28Z",
-          "url": "https://github.com/mezivillager/hacer/issues/155#issuecomment-5941565997"
-        }
-      },
-      {
         "number": 182,
         "ref": "refs/heads/claim/182",
         "sha": "8909e66d525e0f6a60a9877d8cf5140594c20b65",
@@ -4231,32 +4206,6 @@
           "author": "mezivillager",
           "at": "2026-10-01T22:19:51Z",
           "url": "https://github.com/mezivillager/hacer/issues/407#issuecomment-5941807184"
-        }
-      },
-      {
-        "number": 429,
-        "ref": "refs/heads/claim/429",
-        "sha": "f9fcb34b427ce5f55fe1070461170bd188347bbc",
-        "state": "OPEN",
-        "title": "The ESLint suppressions baseline can be reset the same way, and nothing detects it",
-        "url": "https://github.com/mezivillager/hacer/issues/429",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:foundation"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-92",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-01T22:29:11Z",
-          "url": "https://github.com/mezivillager/hacer/issues/429#issuecomment-5941952793"
         }
       },
       {
@@ -4571,7 +4520,7 @@
         }
       }
     ],
-    "onClosedIssues": 14
+    "onClosedIssues": 13
   },
   "cloudLane": {
     "items": [
@@ -6183,7 +6132,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-27",
-        "merges": 12
+        "merges": 11
       },
       {
         "date": "2026-09-28",
@@ -6199,20 +6148,20 @@
       },
       {
         "date": "2026-10-01",
-        "merges": 9
+        "merges": 10
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-17T22:30:44.223Z",
-      "merged": 206,
+      "since": "2026-09-17T22:48:21.867Z",
+      "merged": 207,
       "openToMergeHours": {
         "median": 0.2,
         "p90": 8.9
       },
       "blockedOnce": {
         "count": 22,
-        "of": 120,
+        "of": 121,
         "prs": [
           238,
           248,
@@ -6240,8 +6189,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 108,
-          "withVerdict": 96,
+          "merged": 109,
+          "withVerdict": 97,
           "without": [
             250,
             285,
@@ -7555,11 +7504,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "48bf6a52c3f77891df0abfd44fef5895428157ed",
+        "sha": "ff4a6f87f42bf08f7aa87dd04ea14fec53412bd7",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36935405247/job/110614371683",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36937149969/job/110619968947",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -7603,6 +7552,52 @@
         "conclusion": "SUCCESS",
         "completedAt": "2026-09-25T06:48:18Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/36104338672/job/107973412518",
+        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 71,
+          "new": 0
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 651,
+        "sha": "42263e28bebc45d885ffc528a7d7f38a78fb9851",
+        "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-01T22:41:05Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36936513795/job/110617937986",
+        "line": "HYGIENE: PASS reviewable=150 test=113 excluded=792 files=4 issue=#407 linked=fixes",
+        "verdict": "PASS",
+        "fields": {
+          "reviewable": 150,
+          "test": 113,
+          "excluded": 792,
+          "files": 4,
+          "issue": "#407",
+          "linked": "fixes"
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 651,
+        "sha": "42263e28bebc45d885ffc528a7d7f38a78fb9851",
+        "check": "browser-qa",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-01T22:41:07Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36936513201/job/110617935112",
+        "line": "BROWSER-QA: skipped (no critical paths)",
+        "verdict": "SKIPPED",
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 651,
+        "sha": "42263e28bebc45d885ffc528a7d7f38a78fb9851",
+        "check": "ci",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-01T22:44:10Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36936510426/job/110617925126",
         "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
         "verdict": "PASS",
         "fields": {
