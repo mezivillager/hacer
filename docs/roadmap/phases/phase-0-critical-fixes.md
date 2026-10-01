@@ -169,7 +169,7 @@ Audit the codebase and remove all manual memoization since React Compiler handle
 
 ## 0.5 Update README.md
 
-```markdown
+````markdown
 ## Tech Stack
 
 - **Framework:** React 19 with React Compiler
@@ -196,7 +196,7 @@ npm run test:e2e # Run E2E tests
 4. Update documentation
 
 See `docs/ADDING_GATES.md` for detailed instructions.
-```
+````
 
 ---
 
@@ -204,7 +204,7 @@ See `docs/ADDING_GATES.md` for detailed instructions.
 
 Create `REPO_MAP.md` (at repository root) to help AI agents and developers understand the codebase structure:
 
-```markdown
+````markdown
 # HACER Repository Map
 
 ## Directory Structure
@@ -224,7 +224,7 @@ src/
 - `src/core/gates/registry.ts` - Single source of truth for gate definitions
 - `src/api/index.ts` - Public API entry point
 - `src/store/circuitStore.ts` - Main application state
-```
+````
 
 ---
 

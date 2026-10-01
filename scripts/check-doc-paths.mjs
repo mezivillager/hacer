@@ -8,7 +8,8 @@
 //   1. no machine-specific absolute paths, in every doc we author (docPaths.logic.mjs)
 //   2. every cited repo-relative path exists, in PATH_EXISTENCE_FILES (docPathExists.logic.mjs)
 //   3. a hard line-count ceiling for the docs listed in LINE_BUDGETS (docLineBudget.logic.mjs)
-// Exits 1 and prints one line per violation.
+// Exits 1 and prints one line per violation. Suspect code fences, in every doc, are a warning:
+// printed, exit code unchanged.
 
 import { execFileSync } from 'node:child_process'
 import { readFileSync, existsSync } from 'node:fs'
@@ -23,7 +24,9 @@ import {
   MISSING_PATH_MARKER,
   PATH_EXISTENCE_PATTERNS,
   findDeadPaths,
+  findFenceWarnings,
   formatDeadPaths,
+  formatFenceWarnings,
   isPathExistenceFile,
 } from './hooks/docPathExists.logic.mjs'
 import { findLineBudgetViolations, formatLineBudgetViolations } from './hooks/docLineBudget.logic.mjs'
@@ -49,6 +52,7 @@ let absoluteFailures = 0
 let deadFailures = 0
 const absoluteReport = []
 const deadReport = []
+const fenceReport = []
 const budgetCandidates = []
 
 for (const file of files) {
@@ -60,6 +64,9 @@ for (const file of files) {
     absoluteFailures += violations.length
     absoluteReport.push(formatViolations(file, violations))
   }
+
+  const fenceWarnings = findFenceWarnings(text)
+  if (fenceWarnings.length > 0) fenceReport.push(formatFenceWarnings(file, fenceWarnings))
 
   if (isPathExistenceFile(file)) {
     const docDir = dirname(file) === '.' ? '' : dirname(file)
@@ -74,6 +81,17 @@ for (const file of files) {
 }
 
 const budgetViolations = findLineBudgetViolations(budgetCandidates)
+
+if (fenceReport.length > 0) {
+  console.error('')
+  console.error('⚠️  code fences that look broken (warning only):')
+  console.error('')
+  console.error(fenceReport.join('\n'))
+  console.error('')
+  console.error('   A fence left open, or a stray one, turns the prose after it into code: it renders')
+  console.error('   wrong and hides its path citations from this check. Nest a fence inside a longer one.')
+  console.error('')
+}
 
 if (absoluteFailures === 0 && deadFailures === 0 && budgetViolations.length === 0) {
   process.exit(0)
