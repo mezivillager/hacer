@@ -100,11 +100,13 @@ function UserCard({ user, onSelect }: UserCardProps) {
 
 ### JavaScript Files
 
-- In `.js` and `.jsx` files, use JSDoc when types improve clarity and a TypeScript migration is not practical
+- In `.js` and `.jsx` files, an exported function gets at most a one-line JSDoc summary plus only what a caller needs; no `@param`/`@returns` that restate the signature
+- A `.js` signature has no types, so `@param {type}`/`@returns {type}` tags carry them: use them when types improve clarity and a TypeScript migration is not practical
 - Keep JSDoc aligned with runtime behavior
 
 ```javascript
 /**
+ * Formats a user's display name.
  * @param {{ firstName: string, lastName: string }} user
  * @returns {string}
  */

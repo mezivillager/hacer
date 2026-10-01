@@ -58,8 +58,9 @@ global superpowers equivalents wherever both exist.
 > built, and confirms or overrides the publish default (below).
 > **GATE 2 — each milestone's red contract.** He approves the committed failing
 > tests before green work begins.
-> **GATE 3 — each milestone's completion.** He reviews the evidence before the
-> next milestone starts.
+> **GATE 3 — each milestone's completion.** He reviews the evidence — the test
+> output and the milestone's `diff-size-report` output — before the next milestone
+> starts.
 > **GATE 4 — the merge, and anything that speaks to people.** Canonical
 > statement in Standing rules.
 
@@ -247,6 +248,8 @@ Use the repo's `planning` / `writing-plans` skills, with these amendments:
 - **Names are locked in here** — treat naming as API design. Renaming after a red
   gate costs a review round; naming well in the plan costs nothing. When Mezi
   rules on vocabulary, propagate it to tests, plan, spec, code and docs at once.
+- **Plan code follows the comment rule** (Standing rules): the verbatim implementation and
+  test code in plan tasks carries no comment the rule would not allow.
 - **Plan and code never diverge.** Whenever a later ruling changes what ships,
   sync the plan in the same turn — a stale plan is worse than no plan, because
   the next agent believes it.
@@ -297,20 +300,28 @@ milestone, rule and proceed, ledger every ruling, never stall.
   brief, the implementers' reports and the milestone diff as file paths,
   returning both verdicts (spec compliance AND quality) over the whole milestone. Quality includes duplicated logic introduced by the milestone — across its lanes
   and against code the repository already has; a duplication finding is fixed in
-  the milestone, never parked. It also includes comments that are verbose or point at
-  anything not committed in the repo.
+  the milestone, never parked. It also includes the comment rule and the size check
+  (Standing rules), each under its own heading, from the `diff-size-report` output in
+  the reviewer's brief.
   Task completions still land with their hash in the ledger; they do not each
   buy a reviewer. The verifier brief (`docs/harness/verifier-brief.md`) is that
-  reviewer's brief when the work is a harness ticket.
+  reviewer's brief when the work is a harness ticket. When `docs/harness/verifier-brief.md`
+  is the reviewer's brief, the coordinator appends the `diff-size-report` output to its
+  inputs and maps a size should-fix to a Blocker or a Nit by ruling.
 - **Every fix round ends with the coordinator's delta-read, never a re-review
   agent:** the fix diff against the findings list, each finding marked addressed
   or open, the implementer resumed for what is still open. The next fresh eyes
-  are the milestone review or the whole-branch review.
+  are the milestone review or the whole-branch review. A behavioural fix carries
+  code and its red test; a prose cut or a behaviour-preserving simplification carries
+  none, the suite staying green being its evidence. The explanation is one line per
+  finding in the commit message and the PR body, never a new comment block, and the
+  delta-read runs `diff-size-report` on the fix diff.
 - **The whole-branch review is never skipped, in any tier:** one fresh reviewer
   over the whole diff before the definition of done runs, pointed at the
   ledger's parked findings. It checks the branch for duplicated logic as a named item; duplication is fixed
-before closing, never parked as a follow-up. Comments are a named item too: verbose ones,
-and ones that point outside the committed repo, are fixed before closing. Its fix wave ends with the coordinator's delta-read.
+before closing, never parked as a follow-up. The comment rule and the size check (Standing
+rules) are named items too, from `diff-size-report` over the whole branch; their should-fixes
+are fixed before closing. Its fix wave ends with the coordinator's delta-read.
 - **No parked agents, no coordinator-run suites.** An agent whose handback you
   have read is resumed or stopped in that same turn — an agent waiting on a
   `SendMessage` is dead wall time. The coordinator reads reports and diffs, not
@@ -325,7 +336,9 @@ and ones that point outside the committed repo, are fixed before closing. Its fi
   before the implementation is a vacuous passer: name it at the gate with the
   reason; never alter it to manufacture a red. Present every red with its failure
   line AND the single change that flips it — a red whose flipping change you
-  cannot name in one clause is testing something the plan does not build.
+  cannot name in one clause is testing something the plan does not build. Red
+  tests follow the comment rule too — no docstring unless the setup is unusual, no
+  provenance comment; a red's provenance goes in its commit message.
 - **Test files freeze at green.** An assertion that looks wrong is a BLOCKED
   report, not an adaptation. Rulings that change the contract land as honest new
   commits.
@@ -477,7 +490,8 @@ pnpm run lint:docs     # no machine-specific absolute paths — CI enforces it
 ```
 
 The first four are exactly what `ci.yml` runs, so a green local gate predicts a
-green PR.
+green PR. The closing evidence carries the branch's `diff-size-report origin/main HEAD`
+output beside them.
 
 **E2E is not in the gate — local or CI.** `e2e.yml` is manual-dispatch only, so
 Playwright evidence exists only when someone asks for a run; regular remote
@@ -495,7 +509,8 @@ suite=store` is the useful move.
   decisions as ADRs in `docs/decisions/`, update the living docs the change
   touched, and reconcile the ticket plus the phase checklist.
 - **Publish per the Gate 1 decision** — push the branch and open the PR under
-  `on-green`, naming the definition-of-done commands you ran and their results.
+  `on-green`, naming the definition-of-done commands you ran and their results, and
+  the branch's `diff-size-report` totals in one line (lines by category, prose share).
   **Then stop:** the merge is Gate 4.
 - **Prune the worktree** once its PR is merged or closed:
   `git worktree remove ../hacer-wt-<topic> && git worktree prune`.
@@ -536,13 +551,24 @@ suite=store` is the useful move.
 - **Descriptive names over short ones.** A bare generic word as a whole name
   (`data`, `result`, `item`, `handle`) is a red flag: name the domain concept —
   gate, pin, wire, junction, bus.
-- **Comments are short and self-contained** (Mezi 2026-09-28). A comment says why the code
-  is the way it is, in a line or two a reader of this repository alone can follow; it does
-  not narrate or restate the code. It never points at anything outside the committed repo —
-  a plan, prompt, ruling, ledger, review, milestone or task id, a personal-docs path, a PR or
-  Slack thread, an uncommitted file. When the reason needs a document, the document belongs
-  in the repo (an ADR, a docs page) and the comment cites that. The dispatch guard's order 8
-  carries this to every agent that writes code; the milestone and whole-branch reviews check it.
+- **Comments: none by default** (Mezi 2026-10-01; the dispatch guard's order 8 is the canonical text and reaches every
+  agent that writes code). Self-explanatory code gets no comment. One is written only for a non-obvious why, at most
+  two lines; longer reasoning goes into a committed document the comment names. No history or provenance — a past
+  bug's lesson stays as the present constraint, and the story goes in the commit message — and nothing not committed
+  in the repo is cited. Docstrings (JSDoc): none on a non-exported function, or one line; none on a test unless its
+  setup is unusual; an exported function gets none, or one summary line plus what a caller needs, never more than
+  three. Tests never assert the wording of comments, docstrings or READMEs. No ALL-CAPS emphasis, no multi-paragraph
+  prose.
+- **The size check** (Mezi 2026-10-01). Every milestone review and whole-branch review reports, under its own
+  heading and from the `diff-size-report <base> <head>` output in its brief's Measured facts: is the size justified by
+  the behaviour shipped (the behaviours, and the production lines each needs); what could be removed or simplified
+  without losing quality or robustness (each cut with file:line and a line estimate); above 400 changed lines or 20
+  files in a category, whether it splits into separately reviewable changes; at a test:prod ratio above 2:1, the
+  properties proven more than once; after the diff has grown more than 50% since the first review, a consolidation
+  pass. Prose above 25% of added production lines or 15% of added test lines, in a category with at least 200 added
+  lines, is a should-fix "justify or cut"; a prompt may override the defaults with a reason; in this workspace they
+  are provisional until a baseline has been measured once. When `diff-size-report` is absent, report
+  `git diff --numstat` by category and mark the prose share owed. A reviewer that proposes no cut says what it compared.
 
 ## Staffing table (Full tier: produced in Phase 1, kept current)
 
@@ -582,7 +608,10 @@ you is missing, measure it once and say so in the report." The tests order
 says "Run a whole suite only when the brief's Tests slot names it, once", so
 **name the suite there whenever an implementer must run it before
 committing**; without a Tests slot, as in hacer's own agents' briefs, "the
-checks your own instructions require still run as they say".
+checks your own instructions require still run as they say". Order 8 is the comment
+rule: a brief never restates it and never asks an agent to match the surrounding
+comment density. The template's Report slot asks every lane for its diff's
+`diff-size-report` output.
 
 **Every brief carries a measured-facts table**, not prose about state: one row
 per fact the agent will lean on — the value, the exact command that produced it,

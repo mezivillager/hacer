@@ -365,20 +365,13 @@ name = user.name
 
 ### JSDoc for Public APIs
 
+An exported function gets at most a one-line JSDoc summary plus only what a caller needs (side effects, units, errors worth
+catching); no `@param`/`@returns` that restate the signature.
+
 ```typescript
 /**
- * Searches markets using semantic similarity.
- *
- * @param query - Natural language search query
- * @param limit - Maximum number of results (default: 10)
- * @returns Array of markets sorted by similarity score
- * @throws {Error} If OpenAI API fails or Redis unavailable
- *
- * @example
- * ```typescript
- * const results = await searchMarkets('election', 5)
- * console.log(results[0].name) // "Trump vs Biden"
- * ```
+ * Searches markets by semantic similarity, best match first.
+ * @throws {Error} If OpenAI API fails or Redis is unavailable
  */
 export async function searchMarkets(
   query: string,
