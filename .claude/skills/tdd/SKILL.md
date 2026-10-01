@@ -70,6 +70,9 @@ it('renders label when visible', () => {
 - Generic logic: Co-located `src/utils/helpers.test.ts`
 - E2E Store tests: `e2e/specs/feature.spec.ts` (tagged `@store`)
 
+## Mocks and Test Utilities
+Before adding a mock or a test-only helper, read `testing-anti-patterns.md` in this directory.
+
 ## Common Rationalizations to Reject
 - "It's too simple to test" -> Simple code breaks. Test takes 30s.
 - "I'll write tests after" -> Tests written after pass immediately, proving nothing.

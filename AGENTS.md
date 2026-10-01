@@ -62,13 +62,13 @@ No machine-specific absolute paths in docs; every cited path must exist. Enforce
 Trigger `planning`. Break work into atomic tasks (2–5 min), each with an exact file path and a verification command. Save plans to `docs/plans/YYYY-MM-DD-<feature>.md`.
 
 ### Step 4 — Execution & TDD (iron law)
-No production code without a failing test first. Trigger `subagent-driven-development` or `dispatching-parallel-agents` for concurrent tasks; enforce `test-driven-development` (Red → Green → Refactor), no exceptions. Templates: `docs/testing/`.
+No production code without a failing test first. Trigger `subagent-driven-development` or `dispatching-parallel-agents` for concurrent tasks; enforce `tdd` (Red → Green → Refactor), no exceptions. Templates: `docs/testing/`.
 
 #### Step 4.1 — Non-3D UX testing rigor (mandatory for DOM-shell work)
 Two areas share the Zustand store as their contract: the 3D scene (R3F `<Canvas>`) and the non-3D DOM shell (`<Shell>`), which is fully testable in jsdom via `renderShell()` (`src/test/renderShell.tsx`). For any non-3D UX feature or change: component RTL for each new/changed component, RTL integration tests for the user scenarios (the primary correctness gate here), and `@store` Playwright for store-contract behavior. Reserve full-Canvas `@ui` Playwright for genuinely 3D-dependent flows only. Full strategy and the store-vs-UI test split: `docs/testing/standards.md` § E2E Test Strategy.
 
 ### Step 5 — Systematic debugging
-No fix without root-cause investigation first — trigger `debugging` or `systematic-debugging` and let its 4-phase process run before suggesting code.
+No fix without root-cause investigation first — trigger `debugging` and let its 4-phase process run before suggesting code.
 
 ### Step 6 — Review & finish
 Trigger `requesting-code-review` and `finishing-a-development-branch` once the implementation meets the spec. Must pass §0's definition of done.

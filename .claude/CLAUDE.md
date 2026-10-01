@@ -21,12 +21,11 @@ See [llms.txt](../llms.txt) for document discovery order.
 | Entry | `verification-before-completion` | Before claiming work complete — evidence before assertions |
 | Design | `brainstorming` | Before any feature — HARD GATE: design before code |
 | Plan | `planning` | After design approved — bite-sized task plans |
-| Plan | `writing-plans` | Multi-step task — create implementation plan from spec |
 | Execute | `using-git-worktrees` | Before feature work — isolated workspace |
 | Execute | `subagent-driven-development` | Execute plan with subagents (same session) |
 | Execute | `executing-plans` | Execute plan in current session (no subagents) |
-| Execute | `tdd` / `test-driven-development` | During implementation — Iron Law TDD |
-| Execute | `systematic-debugging` | On any bug or failure — root cause before fix |
+| Execute | `tdd` | During implementation — Iron Law TDD |
+| Execute | `debugging` | On any bug or failure — root cause before fix |
 | Review | `requesting-code-review` | After task or before merge — dispatch code reviewer |
 | Review | `code-review` | Before PR — full self-review checklist |
 | Finish | `finishing-a-development-branch` | Implementation complete — merge, PR, or cleanup |
@@ -35,7 +34,7 @@ See [llms.txt](../llms.txt) for document discovery order.
 
 Full list: `.claude/skills/` — each skill has a `SKILL.md` with frontmatter `name` and `description`.
 
-**Skill equivalence:** `tdd` and `test-driven-development` are equivalent for HACER — use either for TDD. `systematic-debugging` extends `debugging` with a stricter 4-phase process; use `systematic-debugging` for bugs and test failures.
+**One skill per job:** `tdd` for TDD, `debugging` for bugs and test failures, `planning` for plans. These are HACER-authored; `scripts/sync-superpowers.sh` never re-adds the upstream duplicates (`test-driven-development`, `systematic-debugging`, `writing-plans`).
 
 ## Task Management
 
