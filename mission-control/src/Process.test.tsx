@@ -1,3 +1,6 @@
+/// <reference types="node" />
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
@@ -6,6 +9,7 @@ import { Process } from './Process'
 import type { Snapshot } from './snapshot'
 
 // `collect.mjs --json` at origin/main 561dcf1, 2026-09-25 03:16Z — see scripts/mission-control/collect.logic.test.mjs.
+const css = readFileSync(resolve(process.cwd(), 'mission-control/src/styles.css'), 'utf8')
 const snapshot = fixture as Snapshot
 const GITHUB = 'https://github.com/mezivillager/hacer'
 
@@ -80,5 +84,27 @@ describe('Process', () => {
       .toEqual(['#193', 'building', 'claimed-by-grok-bot', 'bc-6de621f1-8e3c-50c5-9115-64ca2687696e'])
     // A queued, unclaimed row shows its status and no agent id yet — never a blank cell.
     expect(within(rows[1]).getAllByRole('cell').map((cell) => cell.textContent)).toEqual(['#338', 'queued', 'unclaimed', '—'])
+  })
+
+  it('Verifying drills into its two counts, not the PR stage\'s list', async () => {
+    render(<Process snapshot={snapshot} />)
+    const user = userEvent.setup()
+    await user.click(screen.getByRole('button', { name: /^Verifying: /}))
+    const noVerdict = await screen.findByRole('list', { name: 'Verifying: no verdict items' })
+    expect(within(noVerdict).getAllByRole('listitem')).toHaveLength(4)
+    expect(screen.getByText('No items with verdict.')).toBeTruthy()
+    expect(screen.queryByRole('list', { name: 'Verifying items' })).toBeNull()
+  })
+
+  it('keeps stage labels readable at a 375 px viewport', () => {
+    const { container } = render(<Process snapshot={snapshot} />)
+    const svg = container.querySelector('svg') as SVGSVGElement
+    const viewBoxWidth = Number(svg.getAttribute('viewBox')?.split(' ')[2])
+    const rendered = Math.max(375, parseFloat(svg.style.minWidth || '0'))
+    for (const text of Array.from(svg.querySelectorAll('text'))) {
+      expect(Number(text.getAttribute('fontSize') ?? text.getAttribute('font-size')) * rendered / viewBoxWidth).toBeGreaterThanOrEqual(12)
+    }
+    expect(svg.parentElement?.className).toBe('stages')
+    expect(css).toMatch(/\.stages\s*\{[^}]*overflow-x:\s*auto/)
   })
 })
