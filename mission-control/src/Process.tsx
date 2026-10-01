@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Freshness } from './Freshness'
-import { stagesOf } from './stages'
+import { stagesOf, type Item } from './stages'
 import { QueueImprovement } from './QueueImprovement'
 import { StageDiagram } from './StageDiagram'
 import { REPO, isRedCheck, type Snapshot } from './snapshot'
@@ -18,13 +18,9 @@ export function Process({ snapshot }: { snapshot: Snapshot }) {
       <Freshness snapshot={snapshot} sections={['tasks', 'claims', 'prs', 'cloudLane']} />
       <p><QueueImprovement title="Process improvement" context={`From the Process view: ${REPO}/blob/main/docs/harness/README.md`} label="Queue an improvement" /></p>
       <StageDiagram stages={stages} selected={selected} onSelect={(id) => setSelected(id === selected ? null : id)} />
-      {stage && (stage.items.length === 0
-        ? <p>No items in {stage.name}.</p>
-        : (
-          <ul aria-label={`${stage.name} items`}>
-            {stage.items.map((item) => <li key={item.number}><a href={item.url}>#{item.number}</a> {item.title}</li>)}
-          </ul>
-        ))}
+      {stage && (stage.groups
+        ? stage.groups.map((group) => <ItemList key={group.label} name={`${stage.name}: ${group.label}`} empty={`No items ${group.label}.`} items={group.items} />)
+        : <ItemList name={stage.name} empty={`No items in ${stage.name}.`} items={stage.items} />)}
 
       <h3>Claims</h3>
       {snapshot.claims.items.length === 0 ? <p>No open claim refs in the snapshot.</p> : (
@@ -74,5 +70,13 @@ export function Process({ snapshot }: { snapshot: Snapshot }) {
         </table>
       )}
     </>
+  )
+}
+
+function ItemList({ name, empty, items }: { name: string; empty: string; items: Item[] }) {
+  return items.length === 0 ? <p>{empty}</p> : (
+    <ul aria-label={`${name} items`}>
+      {items.map((item) => <li key={item.number}><a href={item.url}>#{item.number}</a> {item.title}</li>)}
+    </ul>
   )
 }

@@ -3,12 +3,14 @@ import type { Stage } from './stages'
 const W = 150 // box width
 const GAP = 24 // gap between boxes, and the arrow's length
 const H = 92 // box height, and the SVG's height
+const widthOf = (count: number) => count * (W + GAP) - GAP
 
 /** The loop as inline SVG — one box per stage with its live counts, clickable to drill into its items. No diagram
  *  library: plain rects, text and a shared arrowhead marker, coloured from the page's own CSS variables. */
 export function StageDiagram({ stages, selected, onSelect }: { stages: Stage[]; selected: string | null; onSelect: (id: string) => void }) {
   return (
-    <svg viewBox={`0 0 ${stages.length * (W + GAP) - GAP} ${H}`}>
+    <div className="stages">
+    <svg viewBox={`0 0 ${widthOf(stages.length)} ${H}`} style={{ minWidth: widthOf(stages.length) }}>
       <defs>
         <marker id="mc-arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
           <path d="M0,0 L8,4 L0,8 z" fill="var(--muted)" />
@@ -33,5 +35,6 @@ export function StageDiagram({ stages, selected, onSelect }: { stages: Stage[]; 
         )
       })}
     </svg>
+    </div>
   )
 }

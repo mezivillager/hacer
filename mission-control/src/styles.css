@@ -50,3 +50,4 @@ progress { width: 4rem; margin-right: 0.4rem; accent-color: var(--link); }
 .picked h4 { font-size: 0.85rem; margin: 0.5rem 0 0.25rem; }
 .picked ul { margin: 0; padding-left: 1.25rem; max-height: 16rem; overflow-y: auto; font-size: 0.85rem; }
 .chart summary { cursor: pointer; color: var(--muted); font-size: 0.85rem; margin-top: 0.5rem; }
+.stages { overflow-x: auto; }
