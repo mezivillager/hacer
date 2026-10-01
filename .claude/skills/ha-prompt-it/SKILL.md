@@ -79,11 +79,11 @@ it in the first execution message, and treat an unanswered question as **hold**.
 hacer's `docs/` travels with the branch and its PR under that decision and is
 never pushed on its own.
 
-**Merging is Gate 4.** A push to `main` runs `release.yml`
-(semantic-release cuts a version and a changelog from the conventional-commit
-types) and `deploy.yml` (GitHub Pages). Merge is therefore a release and a
-deployment: on green it goes through `node scripts/merge-on-green.mjs`; any
-other merge needs its own explicit go, every time, however Gate 1 was answered.
+**Merging is Gate 4.** A push to `main` runs `release.yml` (semantic-release cuts
+a version and a changelog from the conventional-commit types) and `deploy.yml`
+(GitHub Pages). Merge is therefore a release and a deployment: it waits for the
+verifier's PASS, then goes on green through `node scripts/merge-on-green.mjs <pr>`;
+any other merge needs its own explicit go, every time, however Gate 1 was answered.
 
 **Delegated gates.** When Mezi hands a task over to run autonomously — the
 `autonomous` skill (`~/.claude/skills/autonomous/`) does this for a whole queue —
@@ -342,9 +342,9 @@ are fixed before closing. Its fix wave ends with the coordinator's delta-read.
   line AND the single change that flips it — a red whose flipping change you
   cannot name in one clause is testing something the plan does not build. Red
   tests follow the comment rule too — no docstring unless the setup is unusual, no
-  provenance comment; a red's provenance goes in the ledger, and in its commit message
-  until the squash. The red commit is history until the final squash (Phase 4): every
-  red's failing line is recorded in the ledger first, the red-first proof afterwards.
+  provenance comment; a red's provenance goes in its commit message, and its failing
+  line in the ledger. The red commit stays through the final squash (Phase 4) as its
+  own `test(<scope>):` commit, because the verifier checks it out.
 - **Test files freeze at green.** An assertion that looks wrong is a BLOCKED
   report, not an adaptation. A ruling that changes the contract lands as an honest
   red→green pair in working history and in the ledger; the final squash folds it into
@@ -516,23 +516,24 @@ suite=store` is the useful move.
 - **Docs-sync before finishing:** run the `docs-sync` skill, record material
   decisions as ADRs in `docs/decisions/`, update the living docs the change
   touched, and reconcile the ticket plus the phase checklist.
-- **Squash before the PR is opened or marked ready** (Mezi 2026-10-01), so CI and the verdict run on the commits
-  that merge. Rewrite the branch into a handful of logical commits — one per milestone or coherent change, the red
-  contract folded into the green it proves, every fix folded into the commit it fixes — with messages that describe
-  the change, never the review process. `merge-on-green.mjs` merges with `--rebase`, so each kept commit lands on
-  `main` and its conventional type is its release line. First `git branch backup/<topic>-pre-squash HEAD`; after the
-  rewrite `git diff --quiet backup/<topic>-pre-squash HEAD` must exit 0, or restore from the backup and ledger a
-  finding, never push. The ledger records old head → new head and each task hash → its new commit, and already holds
-  every red's failing line, the red-first proof after the squash. Per-finding lines from fix rounds live in the PR
-  body. A branch pushed earlier is rewritten only when every commit on `origin/<branch>` is this run's own
-  (`git log --format='%h %ae %s' $(git merge-base origin/main origin/<branch>)..origin/<branch>` names no other
-  author or agent; otherwise keep the history and ledger why): record the remote head and push with
-  `git push --force-with-lease=<branch>:<recorded-sha> --force-if-includes` — a bare lease is defeated by any fetch
-  in between. Once the PR is ready and its checks have run, a rewrite is Gate 4.
+- **Squash before the PR is opened** (Mezi 2026-10-01), so CI and the verdict run on the commits that merge. Rewrite
+  the branch into a handful of logical commits — one per milestone or coherent change, each red kept as its own
+  `test(<scope>):` commit before the green it proves (`test` cuts no release; the verifier checks it out), every fix
+  folded into the commit it fixes — with messages that describe the change, never the review process.
+  `merge-on-green.mjs` merges with `--rebase`, so each kept commit lands on `main` and its conventional type is its
+  release line. First `git branch backup/<topic>-pre-squash HEAD`; after the rewrite
+  `git diff --quiet backup/<topic>-pre-squash HEAD` must exit 0, or restore from the backup and ledger a finding,
+  never push. Delete the backup branch once the push has landed. The ledger records old head → new head and each task
+  hash → its new commit. A branch pushed earlier is rewritten only when every commit on `origin/<branch>` is this
+  run's own (`git log --format='%h %ae %s' $(git merge-base origin/main origin/<branch>)..origin/<branch>` names no
+  other author or agent; otherwise keep the history and ledger why): record the remote head and push with
+  `git push --force-with-lease=<branch>:<recorded-sha> --force-if-includes` — a bare lease is defeated by any fetch in
+  between. Once the PR is opened, a rewrite is Gate 4.
 - **Publish per the Gate 1 decision** — push the branch and open the PR under
   `on-green`, naming the definition-of-done commands you ran and their results, and
   the branch's `diff-size-report` totals in one line (lines by category, prose share).
-  **Then** merge on green with `node scripts/merge-on-green.mjs <pr>` (Gate 4).
+  **Then stop:** the verifier's PASS comes first; after it, merge on green with
+  `node scripts/merge-on-green.mjs <pr>` (Gate 4).
 - **Prune the worktree** once its PR is merged or closed:
   `git worktree remove ../hacer-wt-<topic> && git worktree prune`.
 
@@ -540,12 +541,12 @@ suite=store` is the useful move.
 
 > **GATE 4 — the merge, the release, and anything a person reads.** Merging to
 > `main` (or `beta`/`alpha`) cuts a semantic-release version and deploys Pages. A
-> merge on green through `node scripts/merge-on-green.mjs` needs no per-merge go
-> (the owner's standing grant); any other merge needs an explicit go for that
-> specific merge, every time. So does any message a human reads, and anything
+> merge on green through `node scripts/merge-on-green.mjs` after the verifier's
+> PASS needs no per-merge go (ADR-0013); any other merge needs an explicit go for
+> that specific merge, every time. So does any message a human reads, and anything
 > destructive (a hard reset, deleting major files, rewriting published history
-> other than squashing this run's own PR branch before its checks run). A prior
-> go never carries forward.
+> other than squashing this run's own branch before its PR is opened). A prior go
+> never carries forward.
 
 - **Evidence over claims** (Constitution §1). Never call something done without
   the command and its output. "Should pass" is not evidence.
