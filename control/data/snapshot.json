@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-01T22:18:45.900Z",
+  "generatedAt": "2026-10-01T22:19:56.476Z",
   "head": {
     "sha": "f9fcb34b427ce5f55fe1070461170bd188347bbc",
     "date": "2026-10-02T01:18:06+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-01T22:18:45.900Z",
+      "fetchedAt": "2026-10-01T22:19:56.476Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-01T22:18:45.900Z",
+      "fetchedAt": "2026-10-01T22:19:56.476Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-01T22:18:45.900Z",
+      "fetchedAt": "2026-10-01T22:19:56.476Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-01T22:18:45.900Z",
+      "fetchedAt": "2026-10-01T22:19:56.476Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-01T22:18:45.900Z",
+      "fetchedAt": "2026-10-01T22:19:56.476Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-01T22:18:45.900Z",
+      "fetchedAt": "2026-10-01T22:19:56.476Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-01T22:18:45.900Z",
+      "fetchedAt": "2026-10-01T22:19:56.476Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-01T22:18:45.900Z",
+      "fetchedAt": "2026-10-01T22:19:56.476Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-01T22:18:45.900Z",
+      "fetchedAt": "2026-10-01T22:19:56.476Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-01T22:18:45.900Z",
+      "fetchedAt": "2026-10-01T22:19:56.476Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-01T22:18:45.900Z",
+      "fetchedAt": "2026-10-01T22:19:56.476Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-01T22:18:45.900Z",
+      "fetchedAt": "2026-10-01T22:19:56.476Z",
       "status": "ok"
     },
     "lineage": {
       "source": "none",
-      "fetchedAt": "2026-10-01T22:18:45.900Z",
+      "fetchedAt": "2026-10-01T22:19:56.476Z",
       "status": "ok"
     }
   },
@@ -422,11 +422,6 @@
         "project": "foundation"
       },
       {
-        "number": 407,
-        "title": "Two PRs can be green alone and red merged, and nothing detects it before main",
-        "project": "foundation"
-      },
-      {
         "number": 471,
         "title": "Lineage DL-6: lint:lineage from warn to fail — the lineage ratchet",
         "project": "lineage"
@@ -435,6 +430,11 @@
         "number": 159,
         "title": "docs/harness/ledger.md failure ledger + retro step: second occurrence → lint, test or hook",
         "project": "harness"
+      },
+      {
+        "number": 407,
+        "title": "Two PRs can be green alone and red merged, and nothing detects it before main",
+        "project": "foundation"
       },
       {
         "number": 429,
@@ -569,22 +569,6 @@
         "reason": null
       },
       {
-        "number": 407,
-        "title": "Two PRs can be green alone and red merged, and nothing detects it before main",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
-      {
         "number": 471,
         "title": "Lineage DL-6: lint:lineage from warn to fail — the lineage ratchet",
         "labels": [
@@ -611,6 +595,22 @@
         "project": "harness",
         "rank": 2,
         "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 407,
+        "title": "Two PRs can be green alone and red merged, and nothing detects it before main",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
         "pickable": true,
         "reason": null
       },
@@ -4511,33 +4511,9 @@
           "at": "2026-09-27T11:42:29Z",
           "url": "https://github.com/mezivillager/hacer/issues/542#issuecomment-5855517267"
         }
-      },
-      {
-        "number": 560,
-        "ref": "refs/heads/claim/560",
-        "sha": "0c37a1e54b6370ad9d0324b3efa0723960f17974",
-        "state": "CLOSED",
-        "title": "Mission Control Process view: the Ready stage counts on-request and not-pulled tasks as ready",
-        "url": "https://github.com/mezivillager/hacer/issues/560",
-        "labels": [
-          "agent-ready",
-          "risk:0",
-          "project:mission-control"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-92",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-01T22:01:23Z",
-          "url": "https://github.com/mezivillager/hacer/issues/560#issuecomment-5941525534"
-        }
       }
     ],
-    "onClosedIssues": 14
+    "onClosedIssues": 13
   },
   "cloudLane": {
     "items": [
@@ -6165,7 +6141,7 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-17T22:18:45.900Z",
+      "since": "2026-09-17T22:19:56.476Z",
       "merged": 205,
       "openToMergeHours": {
         "median": 0.2,
@@ -7357,7 +7333,7 @@
       },
       {
         "date": "2026-10-01",
-        "at": "2026-10-01T22:07:15.831Z",
+        "at": "2026-10-01T22:18:45.900Z",
         "byProject": {
           "foundation": [
             338,
@@ -7503,7 +7479,6 @@
           ],
           "mission-control": [
             509,
-            560,
             584
           ],
           "unfiled": [
