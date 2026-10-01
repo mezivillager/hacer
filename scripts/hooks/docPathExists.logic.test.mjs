@@ -5,7 +5,9 @@ import {
   PATH_EXISTENCE_PATTERNS,
   extractPathCitations,
   findDeadPaths,
+  findFenceWarnings,
   formatDeadPaths,
+  formatFenceWarnings,
   isPathExistenceFile,
 } from './docPathExists.logic.mjs'
 
@@ -71,6 +73,10 @@ describe('extractPathCitations — what counts as a citation', () => {
     expect(paths('[x](./docs/roadmap/implementation.md#current-stack)')).toEqual([
       'docs/roadmap/implementation.md',
     ])
+  })
+
+  it('extracts a link target that carries a title', () => {
+    expect(paths('[x](docs/a.md "The A doc") and [y](./src/b.ts \'B\')')).toEqual(['docs/a.md', 'src/b.ts'])
   })
 
   it('resolves a link relative to the citing doc directory', () => {
@@ -141,6 +147,27 @@ describe('extractPathCitations — what is ignored', () => {
     expect(paths(text)).toEqual(['src/real.ts'])
   })
 
+  it('does not treat a one-line triple-backtick span as a fence', () => {
+    const text = ['run ```pnpm run lint``` first', '```js const x = 1 ```', '`src/after.ts`'].join('\n')
+    expect(paths(text)).toEqual(['src/after.ts'])
+  })
+
+  it('closes a fence only with a bare fence at least as long as the opener', () => {
+    const text = [
+      '````md',
+      '```bash',
+      '`src/inside.ts`',
+      '```',
+      '````',
+      '`src/after.ts`',
+      '~~~',
+      '```',
+      '~~~',
+      '`src/last.ts`',
+    ].join('\n')
+    expect(paths(text)).toEqual(['src/after.ts', 'src/last.ts'])
+  })
+
   it(`skips a line carrying the ${MISSING_PATH_MARKER} marker`, () => {
     expect(paths(`planned: \`src/api/index.ts\` <!-- ${MISSING_PATH_MARKER} -->`)).toEqual([])
   })
@@ -199,6 +226,53 @@ describe('findDeadPaths', () => {
       'src/simulation/topologicalEval.ts',
     ])
     expect(findDeadPaths('`src/simulation/topologicalEval.ts:42`', exists)).toEqual([])
+  })
+
+  it('ignores a :line:column suffix too', () => {
+    expect(paths('`src/App.tsx:12`, `src/App.tsx:12:3` and [x](src/main.tsx:4:1-9:2)')).toEqual([
+      'src/App.tsx',
+      'src/main.tsx',
+    ])
+  })
+
+  it('still reports a dead citation that follows a one-line fence span', () => {
+    expect(findDeadPaths(['```inline```', '`src/api/index.ts`'].join('\n'), exists)).toEqual([
+      { line: 2, path: 'src/api/index.ts', kind: 'code' },
+    ])
+  })
+})
+
+describe('findFenceWarnings', () => {
+  it('is silent on balanced fences', () => {
+    expect(findFenceWarnings(['```ts', 'x', '```', '~~~', 'y', '~~~'].join('\n'))).toEqual([])
+  })
+
+  it('warns when the file ends inside a fence', () => {
+    expect(findFenceWarnings(['a', '```', 'b'].join('\n'))).toEqual([
+      { line: 2, reason: 'unclosed' },
+    ])
+  })
+
+  it('warns at a fence with an info string inside an open block — a stray fence above it', () => {
+    const text = ['```', 'note', '```', 'prose', '```', '', '```bash', 'pnpm x', '```'].join('\n')
+    expect(findFenceWarnings(text)).toEqual([{ line: 7, reason: 'nested-opener', opener: 5 }])
+  })
+
+  it('does not warn about a deliberately nested fence inside a longer opener', () => {
+    expect(findFenceWarnings(['````md', '```bash', 'x', '```', '````'].join('\n'))).toEqual([])
+  })
+
+  it('renders one greppable FENCE line per warning', () => {
+    expect(
+      formatFenceWarnings('X.md', [
+        { line: 2, reason: 'unclosed' },
+        { line: 7, reason: 'nested-opener', opener: 5 },
+      ]).split('\n'),
+    ).toEqual([
+      'FENCE X.md:2 opens a code block that never closes',
+      'FENCE X.md:7 opens a code block inside the one opened at line 5 — a stray fence above?',
+    ])
+    expect(formatFenceWarnings('X.md', [])).toBe('')
   })
 })
 
