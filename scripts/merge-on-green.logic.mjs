@@ -23,7 +23,7 @@
 // with `strict` off GitHub still reports CLEAN, never BEHIND (docs/harness/README.md, #407).
 
 const PASSING = new Set(['success', 'neutral', 'skipped'])
-/** The states `gh pr merge --auto` merges at once instead of arming auto-merge (gh's own rule). */
+/** The states in which `gh pr merge` merges at once. */
 const MERGEABLE_NOW = new Set(['CLEAN', 'HAS_HOOKS', 'UNSTABLE'])
 const MAX_REFUSALS = 3
 const MAX_UPDATES = 3
@@ -192,7 +192,7 @@ export function decide(snapshot, history = {}) {
   }
 
   // A stuck suite is proof the box will not clear on its own. Without one, the box may just be
-  // settling: auto-merge lands ~3 s after the last required check (#517, #524, #362).
+  // settling: it clears a few seconds after the last required check (#517, #524, #362).
   const why = blockers(states, head)
   const stuck = states.some((s) => s.verdict === 'expected' || s.verdict === 'cancelled')
   if (!stuck && history.settled !== pr.headRefOid) {
