@@ -68,6 +68,24 @@ describe('hacer_hdl over an in-process client', () => {
     expect((result.structuredContent as { error: string }).error).toMatch(/^BUILTIN Xor in Xor: /)
   })
 
+  it.each(['BUILTIN;', 'BUILTIN Xor;'])('refuses Xor as `%s` without PARTS: for the builtin, not a parse error', async (body) => {
+    const result = await call({ ...xor, hdl: `CHIP Xor { IN a, b; OUT out; ${body} }` })
+    expect(result.structuredContent).toMatchObject({ status: 'error', chip: 'Xor', rows: null })
+    expect((result.structuredContent as { error: string }).error).toMatch(/^BUILTIN Xor in Xor: /)
+  })
+
+  it.each(['BUILTIN;', 'BUILTIN Nand;'])('passes Nand as `%s` without PARTS: a primitive runs on its builtin', async (body) => {
+    const nand = { tst: vector('Nand', 'tst'), cmp: vector('Nand', 'cmp') }
+    const result = await call({ ...nand, hdl: `CHIP Nand { IN a, b; OUT out; ${body} }` })
+    expect(result.structuredContent).toEqual({
+      status: 'pass',
+      chip: 'Nand',
+      rows: { passed: 4, expected: 4 },
+      failure: null,
+      error: null,
+    })
+  })
+
   it('names the argument a parse error is in', async () => {
     const result = await call({ ...xor, tst: 'load Xor.hdl, bogus;' })
     expect(result.structuredContent).toMatchObject({ status: 'error', chip: 'Xor' })
