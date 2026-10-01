@@ -169,7 +169,7 @@ Audit the codebase and remove all manual memoization since React Compiler handle
 
 ## 0.5 Update README.md
 
-```markdown
+````markdown
 ## Tech Stack
 
 - **Framework:** React 19 with React Compiler
@@ -196,6 +196,7 @@ npm run test:e2e # Run E2E tests
 4. Update documentation
 
 See `docs/ADDING_GATES.md` for detailed instructions.
+````
 
 ---
 
