@@ -113,3 +113,38 @@ Budgets are measured, and scale comes from a stated builtin-substitution policy 
 `pnpm exec vitest run src/simulation src/core/testing`
 ## Blocked by
 FID-002
+
+### FID-006 · The public HDL reference lists the three accepted builtin forms and who accepts each
+- **Date:** 2026-10-02 · **Target epic:** #142 surfaces
+- **Status:** proposed
+- **Why:** after #643 HACER accepts `BUILTIN;`, `BUILTIN <Name>;` and `PARTS: BUILTIN <Name>;`. Each matches a different nand2tetris parser and no reference parser accepts all three: the web IDE grammar takes only `BUILTIN;` (`../web-ide/simulator/src/languages/grammars/hdl.ohm:13`); the book's Appendix A and the Java simulator take only `BUILTIN <Java class name>;` (HUJI copy of Appendix A, fetched 2026-10-02; `nand2tetris_simulator` `BuiltInGateClass.java:37-40`); the course files ship `PARTS: BUILTIN <Name>;` (`../web-ide/projects/src/project_01/00_nand.ts:13-14`), which neither parses. The superset is stated only in PR #643's body and a docstring (`src/core/hdl/parser.ts:409`) that calls it "the reference grammar's". A student or agent checking a file against HACER cannot tell which forms are portable.
+- **Review note:** docs/research/2026-10-fidelity-review-builtin-form.md
+
+**Draft issue body**
+## Goal
+The HDL reference (#263) states each accepted builtin form, which nand2tetris tool accepts it, and that `hacer test` / `hacer_hdl` run a `BUILTIN` only for a primitive named as itself (R771).
+## Acceptance criteria
+- `docs/public/hdl-reference.md` has a builtin section with the three forms, a column for the web IDE, the book/Java simulator and HACER, and the R771 rule with its primitive list
+- the `parseBuiltinDecl` docstring no longer calls the named form the reference grammar's
+## Verification command
+`pnpm run lint:docs`
+## Blocked by
+#263 (the reference page itself); fold into it if it is still open.
+
+### FID-007 · Phase 0.6 accepts `CLOCKED` after all three builtin forms
+- **Date:** 2026-10-02 · **Target epic:** #139 spine
+- **Status:** proposed
+- **Why:** every reference puts `CLOCKED` after the builtin: web IDE `ChipBody = InList? OutList? PartList ClockedList?` (`hdl.ohm:6`); Appendix A's `CHIP DFF { … BUILTIN DFF; CLOCKED in,out; }` (HUJI copy, fetched 2026-10-02); the course file `PARTS: BUILTIN DFF; CLOCKED in;` (`../web-ide/projects/src/project_03/00_dff.ts:14-16`). HACER fails `CLOCKED` after every builtin form today with `Expected '}' but got 'CLOCKED'` (the `expect('RBRACE')` at `src/core/hdl/parser.ts:349` at `761ead1`; reproduced by #643's verifier), which is Phase 0.5 scope. The Project 3 work under #177 has to cover all three, or the vendored `conformance/vectors/03/DFF.hdl` and the web IDE's `BUILTIN; CLOCKED in;` fail to parse.
+- **Review note:** docs/research/2026-10-fidelity-review-builtin-form.md
+
+**Draft issue body**
+## Goal
+The HDL parser reads a `CLOCKED` pin list after `BUILTIN;`, `BUILTIN <Name>;` and `PARTS: BUILTIN <Name>;`, and records the clocked pins on the chip.
+## Acceptance criteria
+- `CHIP DFF { IN in; OUT out; BUILTIN; CLOCKED in; }`, `… BUILTIN DFF; CLOCKED in; }` and `… PARTS: BUILTIN DFF; CLOCKED in; }` parse to the same AST
+- the vendored `conformance/vectors/03/DFF.hdl` (`PARTS: BUILTIN DFF; CLOCKED in;`) parses
+- `CLOCKED` after a `PARTS:` list of parts follows `hdl.ohm:6`, which allows it there too
+## Verification command
+`pnpm exec vitest run src/core/hdl`
+## Blocked by
+#177 shaping (the clocked chip), the one-engine work it waits on.
