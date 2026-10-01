@@ -20,7 +20,7 @@ This constitution defines the non-negotiable behavioral boundaries, coding stand
 - Every new feature, hook, or store action must have corresponding unit tests.
 
 ## 4. Safety & Workflow
-- **No Rogue Execution:** Use `using-git-worktrees` for new features. Do not commit untested code to the main branch.
+- **No Rogue Execution:** Never commit to `main`; work on a branch in a worktree (`using-git-worktrees`). Owner, including the one escape hatch: `.cursor/rules/020-git-worktree-no-main.mdc`.
 - **Ask Before Destructive Actions:** Double-check before deleting major files or performing hard git resets.
 
 ## 5. Agent Communication
