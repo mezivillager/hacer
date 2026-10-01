@@ -185,27 +185,28 @@ every later ruling resolves against this section>
 ```
 
 **Fresh-eyes spec review.** Before Gate 1, dispatch a reviewer with NO prior
-context, Opus or better, that reads only the spec and the code it cites: does the
-contract match the code as it stands, is anything named that does not exist, does
-it build for the current phase, and is any success criterion unprovable? Fold its
-must-fixes before presenting. When the spec changes semantics under `src/core/**` or
-`src/simulation/**`, or shapes an epic or ADR in `spine`, `surfaces` or `horizon`, the
-same review includes the fidelity check (`docs/harness/fidelity-brief.md`, ADR-0018):
-the contract is checked against the oracle vectors and the book, not only against the
-code. Its proposals go to `docs/harness/fidelity-inbox.md`; they are never applied here.
+context (`subagent_type: prompt-reviewer`) that reads only the spec and the code
+it cites: does the contract match the code as it stands, is anything named that
+does not exist, does it build for the current phase, and is any success
+criterion unprovable? Fold its must-fixes before presenting. When the spec
+changes semantics under `src/core/**` or `src/simulation/**`, or shapes an epic
+or ADR in `spine`, `surfaces` or `horizon`, the same review includes the
+fidelity check (`docs/harness/fidelity-brief.md`, ADR-0018): the contract is
+checked against the oracle vectors and the book, not only against the code. Its
+proposals go to `docs/harness/fidelity-inbox.md`; they are never applied here.
 
 **A contract revision after Gate 1 gets a delta review, not a second full
 review** (Mezi 2026-09-28; measured that day: two full fresh-eyes re-reviews
-after stakeholder changes, 21 minutes each). Dispatch a fresh reviewer, Opus or
-better, that attacks only the change: it receives the changed items, their
-success criteria, the code they touch and the previous review's findings, plus
-the full current contract read-only, to catch knock-on effects on the items
-that did not change. When the changed items meet the fidelity condition above,
-the delta review carries the fidelity check for them. A full fresh-eyes
-re-review runs instead when the revision changes the goal or more than a third
-of the contract's items. The initial fresh-eyes review is unchanged, and so is
-the fix-round rule: a fix round ends with the coordinator's delta-read, never a
-re-review agent.
+after stakeholder changes, 21 minutes each). Dispatch a fresh reviewer
+(`subagent_type: prompt-reviewer`) that attacks only the change: it receives
+the changed items, their success criteria, the code they touch and the
+previous review's findings, plus the full current contract read-only, to catch
+knock-on effects on the items that did not change. When the changed items meet
+the fidelity condition above, the delta review carries the fidelity check for
+them. A full fresh-eyes re-review runs instead when the revision changes the
+goal or more than a third of the contract's items. The initial fresh-eyes
+review is unchanged, and so is the fix-round rule: a fix round ends with the
+coordinator's delta-read, never a re-review agent.
 
 **The spec is the prompt.** Save it as `docs/specs/YYYY-MM-DD-<topic>.md` — one
 artifact, not two. Its contract section is the authority every later ruling
@@ -299,8 +300,8 @@ Gates 2 and 3 are additional mandatory stops at milestone boundaries; inside a
 milestone, rule and proceed, ledger every ruling, never stall.
 
 - **One review per milestone, none per task.** When a milestone's tasks are all
-  green, dispatch ONE fresh reviewer, Opus or better, handed the milestone's
-  brief, the implementers' reports and the milestone diff as file paths,
+  green, dispatch ONE fresh reviewer (`subagent_type: reviewer`), handed the
+  milestone's brief, the implementers' reports and the milestone diff as file paths,
   returning both verdicts (spec compliance AND quality) over the whole milestone. Quality includes duplicated logic introduced by the milestone — across its lanes
   and against code the repository already has; a duplication finding is fixed in
   the milestone, never parked. It also includes the comment rule and the size check
@@ -321,8 +322,8 @@ milestone, rule and proceed, ledger every ruling, never stall.
   a new comment block, and the delta-read runs `diff-size-report` on the fix diff
   (`--direct <old> <new>` across an amend).
 - **The whole-branch review is never skipped, in any tier:** one fresh reviewer
-  over the whole diff before the definition of done runs, pointed at the
-  ledger's parked findings. It checks the branch for duplicated logic as a named item; duplication is fixed
+  (`subagent_type: reviewer`) over the whole diff before the definition of done
+  runs, pointed at the ledger's parked findings. It checks the branch for duplicated logic as a named item; duplication is fixed
 before closing, never parked as a follow-up. The comment rule and the size check (Standing
 rules) are named items too, from `diff-size-report` over the whole branch; their should-fixes
 are fixed before closing. Its fix wave ends with the coordinator's delta-read.
@@ -333,8 +334,8 @@ are fixed before closing. Its fix wave ends with the coordinator's delta-read.
   multiplier. The one exception is the integration run after a lane merge
   (lane condition 4, below), which goes to a file — exit code checked, summary
   line read, never through a pipe. Scripted checks (probes, smoke calls, comparators) belong to a data lane
-  as well; a coordinator runs one only when it is a single command whose output goes to
-  a file and only its summary line is read.
+  (`subagent_type: data-lane`) as well; a coordinator runs one only when it is a
+  single command whose output goes to a file and only its summary line is read.
 
 - **Red tests are COMMITTED** before any green work exists. A test that passes
   before the implementation is a vacuous passer: name it at the gate with the
@@ -422,10 +423,10 @@ are fixed before closing. Its fix wave ends with the coordinator's delta-read.
 **Parallel lanes are the default once the contract is fixed** (Mezi 2026-09-28,
 replacing "earned, not assumed; serialized on one worktree by default"). When a
 milestone's red contract is committed and its green work divides into disjoint
-`Writes` sets, that work splits into concurrent implementer lanes dispatched in
-one message; doing it serially instead needs a one-line reason in the ledger (a
-single file, the shared store surface, judgment-heavy work kept in-session). The
-split — the lanes and their `Writes` sets — is declared before dispatch: in the
+`Writes` sets, that work splits into concurrent `subagent_type: implementer` lanes
+dispatched in one message; doing it serially instead needs a one-line reason in the
+ledger (a single file, the shared store surface, judgment-heavy work kept in-session).
+The split — the lanes and their `Writes` sets — is declared before dispatch: in the
 plan's waves (Full) or in the ledger (Light). Every lane still needs all five:
 
 1. the milestone's **red contract is committed** — a fixed contract is what stops
@@ -449,16 +450,16 @@ plan's waves (Full) or in the ledger (Light). Every lane still needs all five:
 
 **Consolidation pass — mandatory after any milestone that ran two or more
 implementer lanes**, after the last merge and before the milestone review; it is
-the safety net for condition 5, never a substitute for it. One fresh agent, Opus
-or better, gets the lanes' combined diff, the lane split and the shared-able code
-each lane listed in its report, and folds every piece of logic written twice —
-across the lanes, or between the new code and what the repository already has —
-into one implementation. It reads the lanes' diffs side by side: a clone detector
-finds only near-literal copies (measured 2026-09-28: `npx jscpd` missed a planted
-duplicate whose only change was a renamed parameter), so it may seed the pass but
-never is the check. It refactors production code and shared test helpers, never
-an assertion, and runs the milestone's suite before and after (to a file, summary
-line). A pass that finds nothing says what it compared.
+the safety net for condition 5, never a substitute for it. One fresh agent
+(`subagent_type: implementer`) gets the lanes' combined diff, the lane split and
+the shared-able code each lane listed in its report, and folds every piece of
+logic written twice — across the lanes, or between the new code and what the
+repository already has — into one implementation. It reads the lanes' diffs side
+by side: a clone detector finds only near-literal copies (measured 2026-09-28:
+`npx jscpd` missed a planted duplicate whose only change was a renamed parameter),
+so it may seed the pass but never is the check. It refactors production code and
+shared test helpers, never an assertion, and runs the milestone's suite before and
+after (to a file, summary line). A pass that finds nothing says what it compared.
 
 **Suite runs at integration** go to a file in the run folder: check the exit
 code, then read the summary line from the file — never the full output, never
@@ -467,16 +468,16 @@ run belongs to a lane or a verification agent.
 
 Cap at **three or four implementer lanes**: the limit is how many lanes' evidence
 I can verify before the next wave lands. **Always parallel:** read-only fan-out
-(Explore, blast-radius enumeration, step-zero probes) and reviewers of *different*
-tasks, dispatched in one message. **Never parallel:** red-writing inside a
-milestone, `@ui` Playwright (flaky, and headed runs are single-worker — and it
-is a dispatched remote run, not a lane you own), and anything touching
-`circuitActions` or the store slices.
+(Explore for searches; `subagent_type: researcher` for blast-radius enumeration
+and step-zero probes) and reviewers of *different* tasks, dispatched in one
+message. **Never parallel:** red-writing inside a milestone, `@ui` Playwright
+(flaky, and headed runs are single-worker — and it is a dispatched remote run,
+not a lane you own), and anything touching `circuitActions` or the store slices.
 
 **Split verification by resource, not by step order.** QA and evidence work divides by what
 each check needs, not by the order the steps were written in. Scriptable checks — vitest suites, headless core runs, comparators —
 go to a data lane (or one per backend); browser checks — a Claude in Chrome pass or a local Playwright run — share one browser lane,
-because only one agent can drive the browser at a time. Run the variants side by side
+because only one agent can drive the browser at a time. Both are `subagent_type: data-lane`. Run the variants side by side
 (branch, baseline, simulated) on separate ports instead of restarting one server per
 variant, and name the real limits in the brief's Parallel-with slot (one browser driver; `@ui` Playwright stays a dispatched remote run; the store slices and `circuitActions` as one shared surface). Latency is
 not contention: a read-only call that waits tens of seconds on a remote backend runs
@@ -601,12 +602,23 @@ suite=store` is the useful move.
 |---|---|---|---|---|---|
 
 Lanes: Coordinator (main thread — judgment, architecture, phase and seam
-decisions, never delegated); implementer agents (Opus or better); Explore
-(read-only fan-out). Independent dispatches go out in one message so they run
-concurrently; same wave means dispatched together. Every inter-stage artifact —
-spec, plan, brief, report, diff — travels as a FILE PATH, never pasted text.
+decisions, never delegated); five seats, each dispatched by its `subagent_type`
+in place of `general-purpose`, a repo skill's template included —
+`prompt-reviewer`, `researcher` (research and code-facts lanes before Gate 1),
+`implementer`, `reviewer`, `data-lane`; Explore (read-only search fan-out).
+Independent dispatches go out in one message so they run concurrently; same wave
+means dispatched together. Every inter-stage artifact — spec, plan, brief,
+report, diff — travels as a FILE PATH, never pasted text.
+Effort comes from the seat definitions — max for `prompt-reviewer` and
+`researcher`, xhigh for `implementer`, `reviewer` and `data-lane`. The
+coordinator's own drafting and planning run at the session effort: the sizing
+message says what `/effort status` reports, and the owner sets `/effort max` for
+Phase 1 when they want it. If a seat type does not resolve — a session started
+before the definitions existed, or a cloud session, which has no user-level
+agents — dispatch `general-purpose` with `model: opus` and ledger the effort
+shortfall.
 
-**A general-purpose brief, in every tier, is written from
+**A seat or general-purpose brief, in every tier, is written from
 `~/.claude/hooks/agent-brief-template.md`** — reviewers' briefs included — with
 its slots in order: Goal; Read (anchors: `file:line`, function and test names);
 Writes (exact files, or `none — read-only`); Measured facts; Parallel with (the
@@ -618,10 +630,10 @@ contains `brief` (`lanes-brief.md`), and naming the template fills none.
 hacer's own agents — `hacer-builder`, `hacer-verifier`, `hacer-fidelity`,
 `hacer-product` — keep their briefs in `docs/harness/*-brief.md`. The dispatch
 hook (`~/.claude/hooks/dispatch-guard.sh`) holds this at the moment of
-dispatch: in this workspace a `general-purpose`, `claude` or untyped dispatch
-missing a slot is bounced, naming the missing slots, once per description (it
-re-arms after a complete brief passes); re-dispatching with the same
-description proceeds as-is, and hacer's own agents are never bounced. It also
+dispatch: in this workspace a `general-purpose`, `claude` or untyped dispatch, or
+one of the five seats, missing a slot is bounced, naming the missing slots, once
+per description (it re-arms after a complete brief passes); re-dispatching with the
+same description proceeds as-is, and hacer's own agents are never bounced. It also
 appends standing orders to every dispatch, theirs included, and read-only
 agent types (Explore, Plan, claude-code-guide) get orders 2, 6 and 7 only. The
 hook's text is canonical, and a brief must not contradict it. The scope order
