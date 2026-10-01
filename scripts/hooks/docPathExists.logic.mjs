@@ -43,8 +43,9 @@ const KNOWN_EXTENSIONS = [
 ]
 
 const CODE_SPAN = /`([^`\n]+)`/g
-const LINK_TARGET = /\]\(([^)\s]+)\)/g
-const FENCE = /^\s*(```|~~~)/
+const LINK_TARGET = /\]\(([^)\s]+)(?:\s+(?:"[^"]*"|'[^']*'))?\s*\)/g
+/** CommonMark: a backtick fence's info string has no backtick, so ```x``` on one line is a span. */
+const FENCE = /^ {0,3}(`{3,}(?!.*`)|~{3,})(.*)$/
 // A named file with a known extension — `x.ts`, not the bare `.ts` of `.tst/.cmp` prose.
 const EXTENSION = new RegExp(`(^|/)[^/.][^/]*\\.(${KNOWN_EXTENSIONS.join('|')})$`)
 /** A bare `.tst` or `.md` in prose names an extension, not a dotfile. */
@@ -56,8 +57,8 @@ const NOT_A_PATH = /[\s*{}<>…|=]|\.\.\./
  * @typedef {{ line: number, path: string, kind: 'code' | 'link' }} PathCitation
  */
 
-/** A `file:12` / `file:12-20` citation — the briefs require them, and the line is not the path. */
-const LINE_SUFFIX = /:\d+(?:-\d+)?$/
+/** A `file:12`, `file:12:3` or `file:12-20` citation: the line is not the path. */
+const LINE_SUFFIX = /:\d+(?::\d+)?(?:-\d+(?::\d+)?)?$/
 
 /** `./x/` → `x`; anchors and line suffixes dropped. Returns '' when nothing is left. */
 function normalise(raw) {
@@ -95,6 +96,55 @@ function linkTargetPath(target, docDir) {
 }
 
 /**
+ * @typedef {{ line: number, reason: 'unclosed' } | { line: number, reason: 'nested-opener', opener: number }} FenceWarning
+ */
+
+/** Which lines are fence or fenced content, and where the fences look broken. */
+function scanFences(lines) {
+  const fenced = new Array(lines.length).fill(false)
+  /** @type {FenceWarning[]} */
+  const warnings = []
+  let open = null
+  lines.forEach((line, index) => {
+    const m = FENCE.exec(line)
+    if (open === null) {
+      if (!m) return
+      open = { line: index + 1, char: m[1][0], length: m[1].length }
+      fenced[index] = true
+      return
+    }
+    fenced[index] = true
+    if (!m || m[1][0] !== open.char || m[1].length < open.length) return
+    if (m[2].trim() === '') open = null
+    else warnings.push({ line: index + 1, reason: 'nested-opener', opener: open.line })
+  })
+  if (open !== null) warnings.push({ line: open.line, reason: 'unclosed' })
+  return { fenced, warnings }
+}
+
+/**
+ * Fences that are probably typos: one left open at the end of the file, or an opener with an
+ * info string inside an open block, which a missing or extra fence above usually explains.
+ * @param {string} text
+ * @returns {FenceWarning[]}
+ */
+export function findFenceWarnings(text) {
+  return scanFences((text || '').split('\n')).warnings
+}
+
+/** Render one `FENCE file:line …` per warning, for grep. */
+export function formatFenceWarnings(file, warnings) {
+  if (!warnings || warnings.length === 0) return ''
+  return warnings
+    .map((w) =>
+      w.reason === 'unclosed'
+        ? `FENCE ${file}:${w.line} opens a code block that never closes`
+        : `FENCE ${file}:${w.line} opens a code block inside the one opened at line ${w.opener} — a stray fence above?`,
+    )
+    .join('\n')
+}
+
+/**
  * Extract every repo-relative path citation from markdown `text`.
  * @param {string} text
  * @param {{ docDir?: string }} [options] directory of the citing doc, for resolving links
@@ -103,14 +153,11 @@ function linkTargetPath(target, docDir) {
 export function extractPathCitations(text, options = {}) {
   const docDir = options.docDir || ''
   const citations = []
-  let inFence = false
+  const lines = (text || '').split('\n')
+  const { fenced } = scanFences(lines)
 
-  ;(text || '').split('\n').forEach((line, index) => {
-    if (FENCE.test(line)) {
-      inFence = !inFence
-      return
-    }
-    if (inFence || line.includes(MISSING_PATH_MARKER)) return
+  lines.forEach((line, index) => {
+    if (fenced[index] || line.includes(MISSING_PATH_MARKER)) return
 
     const seen = new Set()
     const push = (path, kind) => {
