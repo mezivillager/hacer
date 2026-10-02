@@ -243,6 +243,27 @@ describe('checkTwinAgreement', () => {
   })
 })
 
+describe('every agent frontmatter survives a strict YAML read', () => {
+  // The five prompt-it seats (prompt-reviewer, researcher, implementer, reviewer, data-lane) live in the owner's global ~/.claude/agents/, outside this repo.
+  const agentFiles = readdirSync('.claude/agents')
+    .filter((name) => name.endsWith('.md'))
+    .map((name) => `.claude/agents/${name}`)
+  const frontmatterLines = (file) => /^---\n([\s\S]*?)\n---/.exec(readBrief(file))[1].split('\n')
+
+  it.each(agentFiles)('%s has no " #" in a frontmatter value', (file) => {
+    expect(frontmatterLines(file).filter((line) => line.includes(' #'))).toEqual([])
+  })
+
+  it.each(agentFiles)('%s description and model equal the lines as written', (file) => {
+    const lines = frontmatterLines(file)
+    const fields = parseFrontmatter(readBrief(file))
+    for (const key of ['description', 'model']) {
+      const line = lines.find((l) => l.startsWith(`${key}:`))
+      if (line) expect(fields[key]).toBe(line.slice(key.length + 1).trim())
+    }
+  })
+})
+
 describe('the agent definitions keep their load-bearing rules', () => {
   const partOf = (text, part) => (part === 'description' ? parseFrontmatter(text)?.description ?? '' : stripFrontmatter(text))
   const pins = AGENT_INVARIANTS.flatMap((i) =>
