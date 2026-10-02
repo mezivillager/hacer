@@ -147,9 +147,23 @@ there, and neither does a stale green.
 What catches it now: `scripts/merge-on-green.mjs` compares when each required `pull_request` run
 started with the base branch's moves (`gh api "repos/mezivillager/hacer/activity?ref=refs/heads/main"`).
 If `main` moved since, it says so — `ci ran at <time> against <sha>; main moved to <sha> since` —
-runs `gh pr update-branch` (a merge of `main` into the branch, so every checked commit stays), waits
-for the fresh runs, and merges only on their green. When `main` keeps moving it updates at most
-three times, then exits 4. It no longer arms auto-merge, and disarms one it finds: GitHub's
+rebases the branch on `main` (GitHub's GraphQL `updatePullRequestBranch` with
+`updateMethod: REBASE`, pinned to the head it judged by `expectedHeadOid`), waits for the fresh
+runs, and merges only on their green. When `main` keeps moving it updates at most three times,
+then exits 4; when GitHub refuses the REBASE update (a fork or a protected head, for instance) it
+exits 4 at once, in GitHub's words.
+
+**A merge commit on the branch (#667, 2026-10-02).** The `main-rules` ruleset requires linear
+history, so the tool merges by rebase, and GitHub cannot rebase a branch that carries a merge
+commit. #667's builder had merged `origin/main` into it (`181b3c3`); the tool read `CLEAN`, and
+GitHub refused three times with `GraphQL: This branch can't be rebased (mergePullRequest)` before
+the tool gave up. Its own update was the same trap: until #669 it ran `gh pr update-branch`,
+GitHub's REST update, which merges `main` into the branch, so every stale green it updated would
+then have been refused. Since #669 the update is a rebase, and on `can't be rebased` the tool stops
+after the first refusal and names the merge commits (from
+`gh api repos/mezivillager/hacer/pulls/<n>/commits`, the commits with two parents). The fix is the
+builder's: rebase the branch on `main`, which drops the merge, and push. Recorded in
+`scripts/fixtures/merge-on-green/rebase-refused.json`. It no longer arms auto-merge, and disarms one it finds: GitHub's
 auto-merge merges on the first green, stale or not. Left open: a push to `main` in the seconds
 between the tool's last read and its merge (`--match-head-commit` pins the head, not the base). To
 check a PR by hand:

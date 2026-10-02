@@ -2,7 +2,8 @@
 // Merge a PR once its required checks are green, and recover the stuck merge box on the way (#536):
 // the coordinator's ~/.local/bin/gh-merge-on-green, moved into the repo so any session can finish a
 // PR. Every pass reads the PR and its head's runs, asks merge-on-green.logic.mjs for the next action
-// (the decisions and why live there), prints the premise, and does it. It never pushes to the branch.
+// (the decisions and why live there), prints the premise, and does it. It never pushes to the
+// branch; when main moved, it asks GitHub to rebase it.
 //
 //   node scripts/merge-on-green.mjs <pr> [owner/repo] [max-minutes]     (defaults: this repo, 30)
 //   --dry-run: read the PR once, print the premise and the action it would take, and exit 0.
@@ -15,7 +16,15 @@ import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { setTimeout as sleep } from 'node:timers/promises'
-import { EXIT, decide, requiredContexts, withRerunMarker } from './merge-on-green.logic.mjs'
+import {
+  CANNOT_REBASE,
+  EXIT,
+  decide,
+  mergeCommits,
+  requiredContexts,
+  stopOnRefusal,
+  withRerunMarker,
+} from './merge-on-green.logic.mjs'
 
 const args = process.argv.slice(2)
 const dryRun = args.includes('--dry-run')
@@ -27,7 +36,7 @@ if (!/^\d+$/.test(pr ?? '') || !Number.isFinite(minutes) || minutes < 0) {
 }
 const GH = process.env.GH_BIN || 'gh'
 const POLL_MS = 20_000
-const PR_FIELDS = 'number,state,isDraft,mergeStateStatus,headRefOid,baseRefName,autoMergeRequest,body'
+const PR_FIELDS = 'number,id,state,isDraft,mergeStateStatus,headRefOid,baseRefName,autoMergeRequest,body'
 
 const say = (line) => console.log(`[${new Date().toISOString().slice(11, 19)}Z] ${line}`)
 const gh = (args) =>
@@ -105,6 +114,18 @@ function sayFailedRuns(runIds) {
   }
 }
 
+const updateBranch = (method) =>
+  `mutation($id: ID!, $head: GitObjectID!) { updatePullRequestBranch(input: { pullRequestId: $id, expectedHeadOid: $head, updateMethod: ${method} }) { pullRequest { headRefOid } } }`
+
+/** The PR's merge commits, or null when they cannot be read. */
+function readMergeCommits() {
+  try {
+    return mergeCommits(ghPages(`repos/${repo}/pulls/${pr}/commits?per_page=100`, '[.[] | {sha, parents: [.parents[].sha]}]'))
+  } catch {
+    return null
+  }
+}
+
 /** Runs one gh command for an action; a failure is counted, so the logic can stop repeating it. */
 function attempt(kind, args) {
   try {
@@ -114,6 +135,7 @@ function attempt(kind, args) {
     history.refusals[kind] = (history.refusals[kind] ?? 0) + 1
     history.lastError = failure(error)
     say(`${kind} refused: ${history.lastError}`)
+    if (CANNOT_REBASE.test(history.lastError)) history.mergeCommits = readMergeCommits()
   }
 }
 
@@ -123,7 +145,7 @@ function act(action, snapshot) {
   if (action.kind === 'disable-auto') attempt('disable-auto', ['pr', 'merge', pr, '-R', repo, '--disable-auto'])
   if (action.kind === 'update-branch') {
     history.updates.push(head)
-    attempt('update-branch', ['pr', 'update-branch', pr, '-R', repo])
+    attempt('update-branch', ['api', 'graphql', '-f', `query=${updateBranch(action.method)}`, '-f', `id=${snapshot.pr.id}`, '-f', `head=${head}`])
   }
   if (action.kind === 'rerun') {
     history.reruns.push(action.runId)
@@ -174,6 +196,12 @@ for (let pass = 1; ; pass += 1) {
       break
     }
     act(action, snapshot)
+    const stop = stopOnRefusal(snapshot.pr, history)
+    if (stop) {
+      say(`${stop.kind}: ${stop.reason}`)
+      process.exitCode = stop.exit
+      break
+    }
   }
   if (Date.now() >= deadline) {
     say(`timeout: #${pr} is not merged after ${minutes} min; last premise: ${last}`)
