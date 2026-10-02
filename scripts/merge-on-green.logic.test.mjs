@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
-import { decide, mergeCommits, requiredContexts, stopOnRefusal, withRerunMarker } from './merge-on-green.logic.mjs'
+import { CANNOT_REBASE, decide, mergeCommits, requiredContexts, stopOnRefusal, withRerunMarker } from './merge-on-green.logic.mjs'
 
 // Each state is a recorded GitHub reading of a real PR on this repo: check runs (filter=all) and
 // workflow runs, replayed to the moment the state held. A fixture's `_recorded` names the PR, the
@@ -217,6 +217,11 @@ describe('decide — the rules between the states', () => {
     expect(action.reason).toContain('181b3c3')
     expect(action.reason).not.toContain('76f4096')
     expect(stopOnRefusal(fixture.pr, history)).toEqual(action)
+  })
+
+  it('reads GitHub’s refusal with a straight or a curly apostrophe', () => {
+    expect(CANNOT_REBASE.test("This branch can't be rebased")).toBe(true)
+    expect(CANNOT_REBASE.test('This branch can’t be rebased')).toBe(true)
   })
 
   it('names no merge commit it could not read, and still stops at the first refusal', () => {

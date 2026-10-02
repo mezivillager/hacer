@@ -17,7 +17,9 @@
 // itself, #295); append an HTML comment to the PR body, whose `edited` event re-runs the workflows
 // that listen for it on the same SHA, once per head (R746); then stop and say why. Never a
 // force-push. The one rewrite is GitHub's REBASE update of a stale or BEHIND branch: main
-// requires linear history, so a merge update leaves a branch the rebase merge refuses (#667).
+// requires linear history, so a merge update leaves a branch the rebase merge refuses (#667). Its
+// cost: the verdict was given on the commits before the rebase; the content is the same, the SHAs
+// are not, and the checks run again on the new head.
 //
 // A green is stale when the base branch moved after a check that tested the merge commit started:
 // with `strict` off GitHub still reports CLEAN, never BEHIND (docs/harness/README.md, #407).
@@ -29,7 +31,7 @@ const MAX_REFUSALS = 3
 const MAX_UPDATES = 3
 const UPDATE_METHOD = 'REBASE'
 /** GitHub's refusal of a rebase merge or update whose branch carries a merge commit (#667). */
-export const CANNOT_REBASE = /can(?:'|no)t be rebased/i
+export const CANNOT_REBASE = /can(?:['’]|no)t be rebased/i
 /** The event whose runs check out `refs/pull/<n>/merge`; pull_request_target runs check out the base. */
 const MERGE_EVENT = 'pull_request'
 const MARKER = /\n*<!-- merge-on-green: edited to re-run the required checks on ([0-9a-f]{40}) at [^>]*-->/g

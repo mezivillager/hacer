@@ -151,7 +151,17 @@ rebases the branch on `main` (GitHub's GraphQL `updatePullRequestBranch` with
 `updateMethod: REBASE`, pinned to the head it judged by `expectedHeadOid`), waits for the fresh
 runs, and merges only on their green. When `main` keeps moving it updates at most three times,
 then exits 4; when GitHub refuses the REBASE update (a fork or a protected head, for instance) it
-exits 4 at once, in GitHub's words.
+exits 4 at once, in GitHub's words. It no longer arms auto-merge, and disarms one it finds:
+GitHub's auto-merge merges on the first green, stale or not. Left open: a push to `main` in the
+seconds between the tool's last read and its merge (`--match-head-commit` pins the head, not the
+base). To check a PR by hand:
+
+```sh
+gh api "repos/mezivillager/hacer/actions/runs?head_sha=<sha>&event=pull_request" --jq \
+  '.workflow_runs[] | select(.name=="CI") | .created_at'          # when ci built its merge commit
+gh api "repos/mezivillager/hacer/activity?ref=refs/heads/main&per_page=5" --jq \
+  '.[] | "\(.timestamp) \(.after[0:7])"'                         # any move after that is unseen
+```
 
 **A merge commit on the branch (#667, 2026-10-02).** The `main-rules` ruleset requires linear
 history, so the tool merges by rebase, and GitHub cannot rebase a branch that carries a merge
@@ -163,17 +173,7 @@ then have been refused. Since #669 the update is a rebase, and on `can't be reba
 after the first refusal and names the merge commits (from
 `gh api repos/mezivillager/hacer/pulls/<n>/commits`, the commits with two parents). The fix is the
 builder's: rebase the branch on `main`, which drops the merge, and push. Recorded in
-`scripts/fixtures/merge-on-green/rebase-refused.json`. It no longer arms auto-merge, and disarms one it finds: GitHub's
-auto-merge merges on the first green, stale or not. Left open: a push to `main` in the seconds
-between the tool's last read and its merge (`--match-head-commit` pins the head, not the base). To
-check a PR by hand:
-
-```sh
-gh api "repos/mezivillager/hacer/actions/runs?head_sha=<sha>&event=pull_request" --jq \
-  '.workflow_runs[] | select(.name=="CI") | .created_at'          # when ci built its merge commit
-gh api "repos/mezivillager/hacer/activity?ref=refs/heads/main&per_page=5" --jq \
-  '.[] | "\(.timestamp) \(.after[0:7])"'                         # any move after that is unseen
-```
+`scripts/fixtures/merge-on-green/rebase-refused.json`.
 
 **One gap.** `pr-hygiene.yml` runs on `pull_request_target`, so GitHub always uses **`main`'s** copy
 of it. A PR that changes that file cannot test its own change; the change takes effect for every PR
