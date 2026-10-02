@@ -8,6 +8,7 @@ import {
   formatFindings,
   isUniquePerRun,
   jobContexts,
+  workflowEvents,
 } from './required-checks.logic.mjs'
 
 const REPO_ROOT = path.resolve(import.meta.dirname, '..')
@@ -54,6 +55,39 @@ describe('jobContexts', () => {
 
   it('returns nothing when there is no jobs block', () => {
     expect(jobContexts('on:\n  push:\n')).toEqual([])
+  })
+
+  const conditional = ['jobs:', '  qa:', "    name: ${{ github.event_name == 'workflow_dispatch' && 'qa (manual)' || 'qa' }}", '    runs-on: x'].join('\n')
+
+  it('resolves a name conditional on the event, for the event asked', () => {
+    expect(jobContexts(conditional, 'workflow_dispatch')).toEqual(['qa (manual)'])
+    expect(jobContexts(conditional, 'pull_request')).toEqual(['qa'])
+  })
+
+  it('reads the negated form too', () => {
+    const source = conditional.replace("== 'workflow_dispatch' && 'qa (manual)' || 'qa'", "!= 'workflow_dispatch' && 'qa' || 'qa (manual)'")
+    expect(jobContexts(source, 'workflow_dispatch')).toEqual(['qa (manual)'])
+    expect(jobContexts(source, 'pull_request')).toEqual(['qa'])
+  })
+
+  it('lists every name a conditional can take when no event is asked', () => {
+    expect(jobContexts(conditional)).toEqual(['qa (manual)', 'qa'])
+  })
+})
+
+describe('workflowEvents', () => {
+  it('reads the block form', () => {
+    const source = ['on:', '  pull_request:', '    types: [opened]', '  workflow_dispatch:', '    inputs:', '      pr:', '        type: number', 'jobs:'].join('\n')
+    expect(workflowEvents(source)).toEqual(['pull_request', 'workflow_dispatch'])
+  })
+
+  it('reads the one-line and list forms', () => {
+    expect(workflowEvents('on: push\njobs:\n')).toEqual(['push'])
+    expect(workflowEvents('on: [push, workflow_dispatch] # both\njobs:\n')).toEqual(['push', 'workflow_dispatch'])
+  })
+
+  it('returns nothing when there is no on key', () => {
+    expect(workflowEvents('jobs:\n  ci:\n    runs-on: x\n')).toEqual([])
   })
 })
 
@@ -155,6 +189,22 @@ describe('checkWorkflow', () => {
     expect(checkWorkflow('ci.yml', 'jobs:\n  ci:\n    runs-on: x\n', required)).toEqual([])
   })
 
+  const dispatchable = (name) =>
+    ['on:', '  pull_request:', '  workflow_dispatch:', 'jobs:', '  ci:', `    name: ${name}`, '    runs-on: x'].join('\n')
+
+  it('flags a required context a manual dispatch would post, outside the PR\'s own runs (#368)', () => {
+    expect(checkWorkflow('ci.yml', dispatchable('ci'), required)).toMatchObject([{ file: 'ci.yml', contexts: ['ci'], rule: 'dispatch' }])
+  })
+
+  it('passes a dispatch whose job takes another name on that event', () => {
+    const name = "${{ github.event_name == 'workflow_dispatch' && 'ci (manual)' || 'ci' }}"
+    expect(checkWorkflow('ci.yml', dispatchable(name), required)).toEqual([])
+  })
+
+  it('passes a required context posted by a workflow with no workflow_dispatch', () => {
+    expect(checkWorkflow('ci.yml', dispatchable('ci').replace('  workflow_dispatch:\n', ''), required)).toEqual([])
+  })
+
   it('leaves a workflow that posts no required context alone', () => {
     const source = withGroup('gh-pages').replace('  ci:', '  preview:')
     expect(checkWorkflow('pr-preview.yml', source, required)).toEqual([])
@@ -187,5 +237,16 @@ describe('the repo .github/workflows', () => {
   it.each(requiredWorkflows)('%s shares no concurrency group between its runs', (file, source) => {
     const shared = concurrencyGroups(source).filter((group) => !isUniquePerRun(group))
     expect(shared, formatFindings(checkWorkflow(file, source))).toEqual([])
+  })
+
+  it.each(requiredWorkflows)('%s posts no required context from a manual dispatch', (file, source) => {
+    const dispatched = workflowEvents(source).includes('workflow_dispatch') ? jobContexts(source, 'workflow_dispatch') : []
+    expect(dispatched.filter((context) => REQUIRED_CONTEXTS.includes(context)), formatFindings(checkWorkflow(file, source))).toEqual([])
+  })
+
+  it('still posts browser-qa and pr-hygiene under the required name from their PR events', () => {
+    const contextsOn = (file, event) => jobContexts(workflowFiles.find(([name]) => name === file)[1], event)
+    expect(contextsOn('browser-qa.yml', 'pull_request')).toEqual(['browser-qa'])
+    expect(contextsOn('pr-hygiene.yml', 'pull_request_target')).toEqual(['pr-hygiene'])
   })
 })

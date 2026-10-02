@@ -138,3 +138,7 @@ export function formatFindings(findings) {
   }
   return findings.map((finding) => `REQUIRED-CHECKS: ${finding.message}`).join('\n')
 }
+
+export function workflowEvents() {
+  throw new Error('not implemented')
+}
