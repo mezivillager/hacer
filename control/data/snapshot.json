@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-02T01:36:28.575Z",
+  "generatedAt": "2026-10-02T01:42:06.718Z",
   "head": {
-    "sha": "954fda724dd9359fbed7d1f9b0921f2a0972b65c",
-    "date": "2026-10-02T04:35:29+03:00",
-    "subject": "fix(harness): drop the ' #' from hacer-product's description (#665)"
+    "sha": "0a86bad1c4303eb8d76f07f5945228c1f629b611",
+    "date": "2026-10-02T04:40:50+03:00",
+    "subject": "docs(harness): session record for the 2026-10-02 run, rulings R779–R794, ledger rows in id order"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-02T01:36:28.575Z",
+      "fetchedAt": "2026-10-02T01:42:06.718Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-02T01:36:28.575Z",
+      "fetchedAt": "2026-10-02T01:42:06.718Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-02T01:36:28.575Z",
+      "fetchedAt": "2026-10-02T01:42:06.718Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-02T01:36:28.575Z",
+      "fetchedAt": "2026-10-02T01:42:06.718Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-02T01:36:28.575Z",
+      "fetchedAt": "2026-10-02T01:42:06.718Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-02T01:36:28.575Z",
+      "fetchedAt": "2026-10-02T01:42:06.718Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-02T01:36:28.575Z",
+      "fetchedAt": "2026-10-02T01:42:06.718Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-02T01:36:28.575Z",
+      "fetchedAt": "2026-10-02T01:42:06.718Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-02T01:36:28.575Z",
+      "fetchedAt": "2026-10-02T01:42:06.718Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-02T01:36:28.575Z",
+      "fetchedAt": "2026-10-02T01:42:06.718Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-02T01:36:28.575Z",
+      "fetchedAt": "2026-10-02T01:42:06.718Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-02T01:36:28.575Z",
+      "fetchedAt": "2026-10-02T01:42:06.718Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-02T01:36:28.575Z",
+      "fetchedAt": "2026-10-02T01:42:06.718Z",
       "status": "ok"
     }
   },
@@ -2342,11 +2342,36 @@
     ],
     "merged": [
       {
+        "number": 674,
+        "title": "docs(harness): session record for the 2026-10-02 run, rulings R779–R794, ledger rows in id order",
+        "url": "https://github.com/mezivillager/hacer/pull/674",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/session-2026-10-02",
+        "isDraft": false,
+        "createdAt": "2026-10-02T01:37:13Z",
+        "mergedAt": "2026-10-02T01:40:51Z",
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (risk:0 docs-only, #554)",
+            "at": "2026-10-02T01:37:43Z",
+            "url": "https://github.com/mezivillager/hacer/pull/674#issuecomment-5943968556"
+          }
+        ]
+      },
+      {
         "number": 673,
         "title": "fix(harness): agent frontmatter parses strictly",
         "url": "https://github.com/mezivillager/hacer/pull/673",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0"
         ],
@@ -2373,6 +2398,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/672",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:2"
         ],
@@ -2399,6 +2425,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/670",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:1"
         ],
@@ -2425,6 +2452,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/668",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:1"
         ],
@@ -2451,6 +2479,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/666",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0"
         ],
@@ -2477,6 +2506,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/664",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:1"
         ],
@@ -2503,6 +2533,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/663",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0"
         ],
@@ -2527,6 +2558,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/662",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:2"
         ],
@@ -2553,6 +2585,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/661",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:2"
         ],
@@ -2579,6 +2612,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/660",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0"
         ],
@@ -2605,6 +2639,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/659",
         "author": "app/dependabot",
         "labels": [
+          "released",
           "dependencies",
           "javascript"
         ],
@@ -2621,6 +2656,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/658",
         "author": "app/dependabot",
         "labels": [
+          "released",
           "dependencies",
           "javascript"
         ],
@@ -2637,6 +2673,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/657",
         "author": "app/dependabot",
         "labels": [
+          "released",
           "dependencies",
           "javascript"
         ],
@@ -2653,6 +2690,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/656",
         "author": "app/dependabot",
         "labels": [
+          "released",
           "dependencies",
           "javascript"
         ],
@@ -2669,6 +2707,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/655",
         "author": "app/dependabot",
         "labels": [
+          "released",
           "dependencies",
           "javascript"
         ],
@@ -2685,6 +2724,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/654",
         "author": "app/dependabot",
         "labels": [
+          "released",
           "dependencies",
           "github_actions"
         ],
@@ -3840,33 +3880,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/586#issuecomment-5889606774"
           }
         ]
-      },
-      {
-        "number": 585,
-        "title": "feat(mission-control): charts — ratchet history, merges per day, open tasks by project, verdict coverage (#478)",
-        "url": "https://github.com/mezivillager/hacer/pull/585",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:1",
-          "project:mission-control"
-        ],
-        "headRefName": "feat/478-mc-charts",
-        "isDraft": false,
-        "createdAt": "2026-09-29T11:38:02Z",
-        "mergedAt": "2026-09-29T11:45:38Z",
-        "closes": [
-          478
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Sonnet 5.5 (fresh context)",
-            "at": "2026-09-29T11:44:38Z",
-            "url": "https://github.com/mezivillager/hacer/pull/585#issuecomment-5889582928"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4436,6 +4449,14 @@
         "title": "Session record — 2026-09-29: the coordinator loop to 60% weekly usage",
         "status": null,
         "lines": 103
+      },
+      {
+        "file": "docs/harness/sessions/2026-10-02.md",
+        "date": "2026-10-02",
+        "kind": "record",
+        "title": "Session record — 2026-10-02: the coordinator loop to 92% weekly usage",
+        "status": null,
+        "lines": 108
       }
     ]
   },
@@ -4930,22 +4951,6 @@
         "decision": "—"
       },
       {
-        "id": "L065",
-        "date": "2026-10-02",
-        "whatWentWrong": "The stale-green mechanism from L061 could never complete on its first real use. #667's branch carried a merge commit (`181b3c3`), and the repo requires linear history, so GitHub refused the rebase merge three times (`GraphQL: This branch can't be rebased (mergePullRequest)`) before the tool gave up, exit 4. The tool's own update was the same trap: `gh pr update-branch`, GitHub's REST update, merges `main` into the branch, so every stale green it updated would then have been refused. #651's verifier had named that path as unproven",
-        "shouldHaveBeenCaughtBy": "a live run of the update path before #651 merged, or a fixture of a branch with a merge commit",
-        "mechanised": "yes — #669 (PR #672): the update is GraphQL `updatePullRequestBranch` with `updateMethod: REBASE`, and the tool stops after the first `can't be rebased` refusal, naming the merge commits",
-        "decision": "—"
-      },
-      {
-        "id": "L063",
-        "date": "2026-10-02",
-        "whatWentWrong": "Two live statements of the no-commit-to-main rule disagreed: the constitution said \"no untested code on main for new features\", the `.mdc` (cited by `AGENTS.md`) says no direct commits for all substantive work, with its escape hatch split across two places. Same family as L037/L044 (tier rule): one rule, two live statements",
-        "shouldHaveBeenCaughtBy": "`docs/harness/COVERAGE.md` ownership map, applied to this row (#300 built the map, nobody swept the constitution)",
-        "mechanised": "yes — the constitution line now states the consequence and links the owner `.cursor/rules/020-git-worktree-no-main.mdc`, which holds the one escape hatch (#308)",
-        "decision": "—"
-      },
-      {
         "id": "L062",
         "date": "2026-10-02",
         "whatWentWrong": "L037 and L044 are one defect seen twice, so the ledger's rule made it a mechanism. On 2026-10-02 the twins still differed: `.claude/agents/hacer-verifier.md` stated the tier rule in other words than `verifier-brief.md` in both its `description` and its body. The meaning matched but the wording did not, so nothing tied the next edit of one file to the other",
@@ -4954,7 +4959,7 @@
         "decision": "—"
       },
       {
-        "id": "L062",
+        "id": "L063",
         "date": "2026-10-02",
         "whatWentWrong": "Two live statements of the no-commit-to-main rule disagreed: the constitution said \"no untested code on main for new features\", the `.mdc` (cited by `AGENTS.md`) says no direct commits for all substantive work, with its escape hatch split across two places. Same family as L037/L044 (tier rule): one rule, two live statements",
         "shouldHaveBeenCaughtBy": "`docs/harness/COVERAGE.md` ownership map, applied to this row (#300 built the map, nobody swept the constitution)",
@@ -4968,11 +4973,19 @@
         "shouldHaveBeenCaughtBy": "a guard reading which events can post a required context, not only how runs of one event meet",
         "mechanised": "yes — #368: on `workflow_dispatch` both jobs are named `<context> (manual)`, and `scripts/required-checks.logic.mjs` fails a required context reachable from `workflow_dispatch`",
         "decision": "—"
+      },
+      {
+        "id": "L065",
+        "date": "2026-10-02",
+        "whatWentWrong": "The stale-green mechanism from L061 could never complete on its first real use. #667's branch carried a merge commit (`181b3c3`), and the repo requires linear history, so GitHub refused the rebase merge three times (`GraphQL: This branch can't be rebased (mergePullRequest)`) before the tool gave up, exit 4. The tool's own update was the same trap: `gh pr update-branch`, GitHub's REST update, merges `main` into the branch, so every stale green it updated would then have been refused. #651's verifier had named that path as unproven",
+        "shouldHaveBeenCaughtBy": "a live run of the update path before #651 merged, or a fixture of a branch with a merge commit",
+        "mechanised": "yes — #669 (PR #672): the update is GraphQL `updatePullRequestBranch` with `updateMethod: REBASE`, and the tool stops after the first `can't be rebased` refusal, naming the merge commits",
+        "decision": "—"
       }
     ],
     "byMechanised": {
       "no": 9,
-      "yes": 51,
+      "yes": 50,
       "other": 1,
       "partly": 5
     }
@@ -5361,9 +5374,14 @@
     },
     "releases": [
       {
+        "tag": "v2.56.1",
+        "publishedAt": "2026-10-02T01:39:00Z",
+        "isLatest": true
+      },
+      {
         "tag": "v2.56.0",
         "publishedAt": "2026-10-01T23:21:25Z",
-        "isLatest": true
+        "isLatest": false
       },
       {
         "tag": "v2.55.3",
@@ -5934,7 +5952,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-29",
-        "merges": 31
+        "merges": 30
       },
       {
         "date": "2026-09-30",
@@ -5946,20 +5964,20 @@
       },
       {
         "date": "2026-10-02",
-        "merges": 11
+        "merges": 12
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-18T01:36:28.575Z",
-      "merged": 225,
+      "since": "2026-09-18T01:42:06.718Z",
+      "merged": 226,
       "openToMergeHours": {
         "median": 0.2,
         "p90": 3.6
       },
       "blockedOnce": {
         "count": 22,
-        "of": 133,
+        "of": 134,
         "prs": [
           238,
           248,
@@ -6005,8 +6023,8 @@
           ]
         },
         "nonCode": {
-          "merged": 108,
-          "withVerdict": 28,
+          "merged": 109,
+          "withVerdict": 29,
           "without": [
             113,
             115,
@@ -7298,7 +7316,7 @@
       },
       {
         "date": "2026-10-02",
-        "at": "2026-10-02T00:58:55.790Z",
+        "at": "2026-10-02T01:36:28.575Z",
         "byProject": {
           "foundation": [
             338,
@@ -7343,7 +7361,6 @@
             418,
             516,
             547,
-            665,
             671,
             154,
             156,
@@ -7449,11 +7466,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "954fda724dd9359fbed7d1f9b0921f2a0972b65c",
+        "sha": "0a86bad1c4303eb8d76f07f5945228c1f629b611",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36951668281/job/110665741657",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36952092064/job/110667029722",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -12049,6 +12066,187 @@
         "amends": null,
         "assumes": null,
         "costIfWrong": "the next release fails on main; one permission line restores it."
+      },
+      {
+        "id": "R779",
+        "kind": "ruling",
+        "title": "the usage targets are this week's meter; the 03:00Z reset ends the run",
+        "source": "docs/decisions/rulings/2026-10-02-hacer-loop-92.md:8",
+        "buildsOn": [
+          "R741"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "the run ends earlier than the owner wanted; one re-issue restarts it on the new week."
+      },
+      {
+        "id": "R780",
+        "kind": "ruling",
+        "title": "the agent cap is 3 while the laptop is cool",
+        "source": "docs/decisions/rulings/2026-10-02-hacer-loop-92.md:16",
+        "buildsOn": [
+          "R777"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "heat; the owner's thermal report is the signal to drop."
+      },
+      {
+        "id": "R781",
+        "kind": "ruling",
+        "title": "the loop's build shape under the 2026-10-01 skill changes",
+        "source": "docs/decisions/rulings/2026-10-02-hacer-loop-92.md:22",
+        "buildsOn": "none",
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "one run's PRs lack a seat's xhigh effort; the verifier catches what that misses."
+      },
+      {
+        "id": "R782",
+        "kind": "ruling",
+        "title": "agent cap 2 until the owner goes to bed, then 3",
+        "source": "docs/decisions/rulings/2026-10-02-hacer-loop-92.md:32",
+        "buildsOn": [
+          "R777"
+        ],
+        "amends": [
+          "R780"
+        ],
+        "assumes": null,
+        "costIfWrong": "about 20 minutes at three agents while the stop took effect."
+      },
+      {
+        "id": "R783",
+        "kind": "ruling",
+        "title": "#349 criterion 1 takes the issue's second option",
+        "source": "docs/decisions/rulings/2026-10-02-hacer-loop-92.md:41",
+        "buildsOn": "none",
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "the portfolio totals under-count pulled-forward work; one follow-up changes `open`"
+      },
+      {
+        "id": "R784",
+        "kind": "ruling",
+        "title": "`size-override` on #650",
+        "source": "docs/decisions/rulings/2026-10-02-hacer-loop-92.md:49",
+        "buildsOn": "none",
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "a 6-line edit in a vendored skill merges without the size rule's second look."
+      },
+      {
+        "id": "R785",
+        "kind": "ruling",
+        "title": "`merge-on-green.mjs` no longer arms GitHub auto-merge, and disarms it on the PR it drives",
+        "source": "docs/decisions/rulings/2026-10-02-hacer-loop-92.md:57",
+        "buildsOn": "none",
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "a green PR waits for the next coordinator pass instead of merging on its own."
+      },
+      {
+        "id": "R786",
+        "kind": "ruling",
+        "title": "#651 is verified on Opus although `risk:1`",
+        "source": "docs/decisions/rulings/2026-10-02-hacer-loop-92.md:65",
+        "buildsOn": "none",
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "one Opus verification where Sonnet would have done."
+      },
+      {
+        "id": "R787",
+        "kind": "ruling",
+        "title": "a placeholder section may be filled in place without a schema bump",
+        "source": "docs/decisions/rulings/2026-10-02-hacer-loop-92.md:70",
+        "buildsOn": "none",
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "a reader of an old snapshot finds `lineage.items` gone; the collector marks the"
+      },
+      {
+        "id": "R788",
+        "kind": "ruling",
+        "title": "queue items gated on the usage stop condition are not \"ready\"",
+        "source": "docs/decisions/rulings/2026-10-02-hacer-loop-92.md:79",
+        "buildsOn": [
+          "R779"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "none; the gate is the owner's own instruction."
+      },
+      {
+        "id": "R789",
+        "kind": "ruling",
+        "title": "ledger id collisions between parallel PRs are resolved by renumbering the later PR",
+        "source": "docs/decisions/rulings/2026-10-02-hacer-loop-92.md:85",
+        "buildsOn": "none",
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "none."
+      },
+      {
+        "id": "R790",
+        "kind": "ruling",
+        "title": "a PR branch that carries a merge commit is re-opened from a clean cherry-pick",
+        "source": "docs/decisions/rulings/2026-10-02-hacer-loop-92.md:91",
+        "buildsOn": [
+          "R785"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "an extra PR number per affected branch; until #669 lands, a stale-green PR is"
+      },
+      {
+        "id": "R791",
+        "kind": "ruling",
+        "title": "#670 is verified on Opus although `risk:1`",
+        "source": "docs/decisions/rulings/2026-10-02-hacer-loop-92.md:104",
+        "buildsOn": [
+          "R786"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "one Opus verification where Sonnet would have done."
+      },
+      {
+        "id": "R792",
+        "kind": "ruling",
+        "title": "the duplicated ledger row on `main` is fixed in the close PR, which merges last",
+        "source": "docs/decisions/rulings/2026-10-02-hacer-loop-92.md:110",
+        "buildsOn": [
+          "R789"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "the duplicate stands about two hours longer; CI was unaffected (#668 merged green"
+      },
+      {
+        "id": "R793",
+        "kind": "ruling",
+        "title": "the six dependabot PRs are rebased by dependabot and merged on green one at a time",
+        "source": "docs/decisions/rulings/2026-10-02-hacer-loop-92.md:120",
+        "buildsOn": [
+          "R765"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "about ten minutes of CI per PR; a breaking bump is caught by CI before the merge."
+      },
+      {
+        "id": "R794",
+        "kind": "ruling",
+        "title": "the first live test of the REBASE update is the first stale dependabot PR under the new tool",
+        "source": "docs/decisions/rulings/2026-10-02-hacer-loop-92.md:129",
+        "buildsOn": [
+          "R790",
+          "R793"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "an exit 4 and a PR left open; nothing merges that CI did not pass on its final head."
       }
     ],
     "edges": [
@@ -12822,6 +13020,72 @@
         "to": "R776",
         "kind": "builds-on",
         "source": "docs/decisions/rulings/2026-09-29-hacer-loop-60.md:190"
+      },
+      {
+        "from": "R779",
+        "to": "R741",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-02-hacer-loop-92.md:9"
+      },
+      {
+        "from": "R780",
+        "to": "R777",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-02-hacer-loop-92.md:17"
+      },
+      {
+        "from": "R782",
+        "to": "R777",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-02-hacer-loop-92.md:33"
+      },
+      {
+        "from": "R782",
+        "to": "R780",
+        "kind": "amends",
+        "source": "docs/decisions/rulings/2026-10-02-hacer-loop-92.md:34"
+      },
+      {
+        "from": "R788",
+        "to": "R779",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-02-hacer-loop-92.md:80"
+      },
+      {
+        "from": "R790",
+        "to": "R785",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-02-hacer-loop-92.md:92"
+      },
+      {
+        "from": "R791",
+        "to": "R786",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-02-hacer-loop-92.md:105"
+      },
+      {
+        "from": "R792",
+        "to": "R789",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-02-hacer-loop-92.md:111"
+      },
+      {
+        "from": "R793",
+        "to": "R765",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-02-hacer-loop-92.md:121"
+      },
+      {
+        "from": "R794",
+        "to": "R790",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-02-hacer-loop-92.md:130"
+      },
+      {
+        "from": "R794",
+        "to": "R793",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-02-hacer-loop-92.md:130"
       },
       {
         "from": "L046",
@@ -13695,7 +13959,8 @@
         "kind": "github",
         "citedBy": [
           "R47",
-          "R767"
+          "R767",
+          "R786"
         ]
       },
       {
@@ -14344,7 +14609,8 @@
         "id": "#349",
         "kind": "github",
         "citedBy": [
-          "R271"
+          "R271",
+          "R783"
         ]
       },
       {
@@ -14678,7 +14944,8 @@
           "R610",
           "R522",
           "R713",
-          "R718"
+          "R718",
+          "R785"
         ]
       },
       {
@@ -15212,7 +15479,8 @@
         "id": "#513",
         "kind": "github",
         "citedBy": [
-          "R736"
+          "R736",
+          "R782"
         ]
       },
       {
@@ -15364,7 +15632,8 @@
         "id": "#471",
         "kind": "github",
         "citedBy": [
-          "R764"
+          "R764",
+          "R786"
         ]
       },
       {
@@ -15490,7 +15759,8 @@
         "id": "#628",
         "kind": "github",
         "citedBy": [
-          "R776"
+          "R776",
+          "R780"
         ]
       },
       {
@@ -15512,6 +15782,105 @@
         "kind": "github",
         "citedBy": [
           "R778"
+        ]
+      },
+      {
+        "id": "#650",
+        "kind": "github",
+        "citedBy": [
+          "R784"
+        ]
+      },
+      {
+        "id": "#651",
+        "kind": "github",
+        "citedBy": [
+          "R785",
+          "R786",
+          "R790"
+        ]
+      },
+      {
+        "id": "#481",
+        "kind": "github",
+        "citedBy": [
+          "R787"
+        ]
+      },
+      {
+        "id": "#653",
+        "kind": "github",
+        "citedBy": [
+          "R787"
+        ]
+      },
+      {
+        "id": "#664",
+        "kind": "github",
+        "citedBy": [
+          "R789"
+        ]
+      },
+      {
+        "id": "#667",
+        "kind": "github",
+        "citedBy": [
+          "R789",
+          "R790",
+          "R792"
+        ]
+      },
+      {
+        "id": "#668",
+        "kind": "github",
+        "citedBy": [
+          "R790",
+          "R792"
+        ]
+      },
+      {
+        "id": "#669",
+        "kind": "github",
+        "citedBy": [
+          "R790",
+          "R792",
+          "R793"
+        ]
+      },
+      {
+        "id": "#670",
+        "kind": "github",
+        "citedBy": [
+          "R791",
+          "R792"
+        ]
+      },
+      {
+        "id": "#654",
+        "kind": "github",
+        "citedBy": [
+          "R793"
+        ]
+      },
+      {
+        "id": "#659",
+        "kind": "github",
+        "citedBy": [
+          "R793"
+        ]
+      },
+      {
+        "id": "#672",
+        "kind": "github",
+        "citedBy": [
+          "R794"
+        ]
+      },
+      {
+        "id": "#655",
+        "kind": "github",
+        "citedBy": [
+          "R794"
         ]
       },
       {
@@ -15942,10 +16311,10 @@
         "source": "docs/harness/ledger.md:76"
       },
       {
-        "id": "L065",
+        "id": "L062",
         "kind": "ledger-row",
         "date": "2026-10-02",
-        "title": "The stale-green mechanism from L061 could never complete on its first real use. #667's branch carried a merge commit (`181b3c3`), and the repo requires linear history, so GitHub refused the rebase merge three times (`GraphQL: This branch can't be rebased (mergePullRequest)`) before the tool gave up, exit 4. The tool's own update was the same trap: `gh pr update-branch`, GitHub's REST update, merges `main` into the branch, so every stale green it updated would then have been refused. #651's verifier had named that path as unproven",
+        "title": "L037 and L044 are one defect seen twice, so the ledger's rule made it a mechanism. On 2026-10-02 the twins still differed: `.claude/agents/hacer-verifier.md` stated the tier rule in other words than `verifier-brief.md` in both its `description` and its body. The meaning matched but the wording did not, so nothing tied the next edit of one file to the other",
         "source": "docs/harness/ledger.md:77"
       },
       {
@@ -15956,18 +16325,18 @@
         "source": "docs/harness/ledger.md:78"
       },
       {
-        "id": "L062",
-        "kind": "ledger-row",
-        "date": "2026-10-02",
-        "title": "L037 and L044 are one defect seen twice, so the ledger's rule made it a mechanism. On 2026-10-02 the twins still differed: `.claude/agents/hacer-verifier.md` stated the tier rule in other words than `verifier-brief.md` in both its `description` and its body. The meaning matched but the wording did not, so nothing tied the next edit of one file to the other",
-        "source": "docs/harness/ledger.md:79"
-      },
-      {
         "id": "L064",
         "kind": "ledger-row",
         "date": "2026-10-02",
         "title": "A manual re-check could decide a PR's required check. `browser-qa.yml` said a `workflow_dispatch` run \"reports in its log… not as the PR's check\", but a dispatch with `--ref <PR branch>` posts its job's check run on the PR head under the job's name: run 35347165462 posted `browser-qa` on #273's head `2b197dbf`, and `pr-hygiene`'s documented re-check run 36592605152 posted `pr-hygiene` on #629's head `d223ca75` from the branch's own copy of the guard. The newest check run of a name is the verdict (L042), so a manual run could overrule the PR's own, or strand it when cancelled. Found by #366's verifier; the same family as L042 and L056",
-        "source": "docs/harness/ledger.md:81"
+        "source": "docs/harness/ledger.md:79"
+      },
+      {
+        "id": "L065",
+        "kind": "ledger-row",
+        "date": "2026-10-02",
+        "title": "The stale-green mechanism from L061 could never complete on its first real use. #667's branch carried a merge commit (`181b3c3`), and the repo requires linear history, so GitHub refused the rebase merge three times (`GraphQL: This branch can't be rebased (mergePullRequest)`) before the tool gave up, exit 4. The tool's own update was the same trap: `gh pr update-branch`, GitHub's REST update, merges `main` into the branch, so every stale green it updated would then have been refused. #651's verifier had named that path as unproven",
+        "source": "docs/harness/ledger.md:80"
       }
     ]
   }
