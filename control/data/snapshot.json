@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-02T00:06:09.195Z",
+  "generatedAt": "2026-10-02T00:18:59.539Z",
   "head": {
-    "sha": "696d66ac4b8fcc71f63c1e0f2766d98d889c493b",
-    "date": "2026-10-02T03:05:33+03:00",
-    "subject": "chore(harness): pin agent definitions; verifier tier sentence must match its brief (#391)"
+    "sha": "d5f9f2e61ad68919fd0941e3ae4fce9f786a08a6",
+    "date": "2026-10-02T03:17:57+03:00",
+    "subject": "docs: renumber ledger row to L063"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-02T00:06:09.195Z",
+      "fetchedAt": "2026-10-02T00:18:59.539Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-02T00:06:09.195Z",
+      "fetchedAt": "2026-10-02T00:18:59.539Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-02T00:06:09.195Z",
+      "fetchedAt": "2026-10-02T00:18:59.539Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-02T00:06:09.195Z",
+      "fetchedAt": "2026-10-02T00:18:59.539Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-02T00:06:09.195Z",
+      "fetchedAt": "2026-10-02T00:18:59.539Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-02T00:06:09.195Z",
+      "fetchedAt": "2026-10-02T00:18:59.539Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-02T00:06:09.195Z",
+      "fetchedAt": "2026-10-02T00:18:59.539Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-02T00:06:09.195Z",
+      "fetchedAt": "2026-10-02T00:18:59.539Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-02T00:06:09.195Z",
+      "fetchedAt": "2026-10-02T00:18:59.539Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-02T00:06:09.195Z",
+      "fetchedAt": "2026-10-02T00:18:59.539Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-02T00:06:09.195Z",
+      "fetchedAt": "2026-10-02T00:18:59.539Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-02T00:06:09.195Z",
+      "fetchedAt": "2026-10-02T00:18:59.539Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-02T00:06:09.195Z",
+      "fetchedAt": "2026-10-02T00:18:59.539Z",
       "status": "ok"
     }
   },
@@ -121,8 +121,8 @@
         },
         "title": "Epic: harness — autonomous-run improvements & agent-readiness",
         "subIssues": {
-          "completed": 44,
-          "percentCompleted": 77,
+          "completed": 45,
+          "percentCompleted": 78,
           "total": 57
         }
       },
@@ -445,11 +445,6 @@
         "project": "harness"
       },
       {
-        "number": 368,
-        "title": "A manual browser-qa dispatch posts a required check run outside the PR's concurrency group — the #295 door left open",
-        "project": "harness"
-      },
-      {
         "number": 392,
         "title": "lint:docs checks five named files, so the prescriptive docs that teach deleted APIs are exactly what it misses",
         "project": "harness"
@@ -478,12 +473,16 @@
         "number": 665,
         "title": "Agent frontmatter: a ' #144' in hacer-product.md's description reads as a YAML comment and truncates it; parse every role file strictly",
         "project": "harness"
+      },
+      {
+        "number": 669,
+        "title": "merge-on-green: update-branch adds a merge commit, which the rebase merge then refuses — use a REBASE update and stop on the first refusal",
+        "project": "harness"
       }
     ],
     "dormant": {
       "dormant": false,
       "agentPrs": [
-        667,
         514
       ]
     }
@@ -604,21 +603,6 @@
         "reason": null
       },
       {
-        "number": 368,
-        "title": "A manual browser-qa dispatch posts a required check run outside the PR's concurrency group — the #295 door left open",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:1"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
         "number": 392,
         "title": "lint:docs checks five named files, so the prescriptive docs that teach deleted APIs are exactly what it misses",
         "labels": [
@@ -701,6 +685,21 @@
           "project:harness",
           "agent-ready",
           "risk:0"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 669,
+        "title": "merge-on-green: update-branch adds a merge commit, which the rebase merge then refuses — use a REBASE update and stop on the first refusal",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:2"
         ],
         "blocking": [],
         "project": "harness",
@@ -1495,22 +1494,6 @@
         "reason": "foundation-gate"
       },
       {
-        "number": 308,
-        "title": "Two rule files disagree on when work may touch main: the constitution's git-hygiene line vs the worktree rule",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:1"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 311,
         "title": "Output nodes keep a stale value when their wire is removed",
         "labels": [
@@ -1569,6 +1552,22 @@
         "lane": "enabler",
         "pickable": false,
         "reason": "unshaped"
+      },
+      {
+        "number": 368,
+        "title": "A manual browser-qa dispatch posts a required check run outside the PR's concurrency group — the #295 door left open",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:1"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "claimed"
       },
       {
         "number": 371,
@@ -2244,17 +2243,17 @@
         269,
         271,
         304,
-        368,
         392,
         394,
         418,
         516,
         547,
         665,
+        669,
         154,
         156,
         270,
-        308,
+        368,
         435,
         436,
         454,
@@ -2352,24 +2351,6 @@
   },
   "prs": {
     "open": [
-      {
-        "number": 667,
-        "title": "docs: one owner and one escape hatch for the no-main rule",
-        "url": "https://github.com/mezivillager/hacer/pull/667",
-        "author": "mezivillager",
-        "labels": [
-          "project:harness",
-          "risk:1"
-        ],
-        "headRefName": "docs/308-no-main-rule",
-        "isDraft": false,
-        "createdAt": "2026-10-02T00:03:08Z",
-        "mergedAt": null,
-        "closes": [
-          308
-        ],
-        "verdicts": []
-      },
       {
         "number": 659,
         "title": "chore(deps-dev): bump @commitlint/cli from 21.0.1 to 21.2.3",
@@ -2494,6 +2475,32 @@
       }
     ],
     "merged": [
+      {
+        "number": 668,
+        "title": "docs: one owner and one escape hatch for the no-main rule",
+        "url": "https://github.com/mezivillager/hacer/pull/668",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:1"
+        ],
+        "headRefName": "docs/308-no-main-rule-2",
+        "isDraft": false,
+        "createdAt": "2026-10-02T00:14:41Z",
+        "mergedAt": "2026-10-02T00:17:57Z",
+        "closes": [
+          308
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (risk:0 docs-only, #554)",
+            "at": "2026-10-02T00:15:12Z",
+            "url": "https://github.com/mezivillager/hacer/pull/668#issuecomment-5943145284"
+          }
+        ]
+      },
       {
         "number": 666,
         "title": "docs: retire WORK-SYSTEM.md's live sections",
@@ -4008,33 +4015,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/566#issuecomment-5856091062"
           }
         ]
-      },
-      {
-        "number": 565,
-        "title": "chore(mission-control): the snapshot and the Overview show the flow numbers and the conformance vectors (#539)",
-        "url": "https://github.com/mezivillager/hacer/pull/565",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:1",
-          "project:mission-control"
-        ],
-        "headRefName": "chore/539-mc-flow",
-        "isDraft": false,
-        "createdAt": "2026-09-27T12:11:25Z",
-        "mergedAt": "2026-09-27T12:30:56Z",
-        "closes": [
-          539
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Claude Sonnet 5 (claude-sonnet-5)",
-            "at": "2026-09-27T12:29:48Z",
-            "url": "https://github.com/mezivillager/hacer/pull/565#issuecomment-5855827104"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4126,37 +4106,12 @@
         }
       },
       {
-        "number": 280,
-        "ref": "refs/heads/claim/280",
-        "sha": "fb69a0877371f8451a9543b12c97baedd7b91e80",
-        "state": "CLOSED",
-        "title": "Retire WORK-SYSTEM.md's live sections: pick rule, labels and loop now live in docs/portfolio.md and docs/harness/README.md",
-        "url": "https://github.com/mezivillager/hacer/issues/280",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:0"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-92",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-01T23:48:18Z",
-          "url": "https://github.com/mezivillager/hacer/issues/280#issuecomment-5942871007"
-        }
-      },
-      {
-        "number": 308,
-        "ref": "refs/heads/claim/308",
-        "sha": "c3a1e1388e62b963138ce4f3e1ed8c7e7baf9dec",
+        "number": 368,
+        "ref": "refs/heads/claim/368",
+        "sha": "696d66ac4b8fcc71f63c1e0f2766d98d889c493b",
         "state": "OPEN",
-        "title": "Two rule files disagree on when work may touch main: the constitution's git-hygiene line vs the worktree rule",
-        "url": "https://github.com/mezivillager/hacer/issues/308",
+        "title": "A manual browser-qa dispatch posts a required check run outside the PR's concurrency group — the #295 door left open",
+        "url": "https://github.com/mezivillager/hacer/issues/368",
         "labels": [
           "project:harness",
           "agent-ready",
@@ -4171,33 +4126,8 @@
           "branch": null,
           "handoff": "none",
           "author": "mezivillager",
-          "at": "2026-10-01T23:57:09Z",
-          "url": "https://github.com/mezivillager/hacer/issues/308#issuecomment-5942958479"
-        }
-      },
-      {
-        "number": 391,
-        "ref": "refs/heads/claim/391",
-        "sha": "1d2db790e5bf0d046a5aa8199a80266d8350e00f",
-        "state": "CLOSED",
-        "title": "Nothing pins .claude/agents/*.md — the same tier-rule defect appeared twice in the file the briefs' invariants do not cover",
-        "url": "https://github.com/mezivillager/hacer/issues/391",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:1"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-92",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-01T23:39:26Z",
-          "url": "https://github.com/mezivillager/hacer/issues/391#issuecomment-5942780513"
+          "at": "2026-10-02T00:08:56Z",
+          "url": "https://github.com/mezivillager/hacer/issues/368#issuecomment-5943080512"
         }
       },
       {
@@ -4512,7 +4442,7 @@
         }
       }
     ],
-    "onClosedIssues": 15
+    "onClosedIssues": 13
   },
   "cloudLane": {
     "items": [
@@ -5173,17 +5103,33 @@
         "decision": "—"
       },
       {
+        "id": "L063",
+        "date": "2026-10-02",
+        "whatWentWrong": "Two live statements of the no-commit-to-main rule disagreed: the constitution said \"no untested code on main for new features\", the `.mdc` (cited by `AGENTS.md`) says no direct commits for all substantive work, with its escape hatch split across two places. Same family as L037/L044 (tier rule): one rule, two live statements",
+        "shouldHaveBeenCaughtBy": "`docs/harness/COVERAGE.md` ownership map, applied to this row (#300 built the map, nobody swept the constitution)",
+        "mechanised": "yes — the constitution line now states the consequence and links the owner `.cursor/rules/020-git-worktree-no-main.mdc`, which holds the one escape hatch (#308)",
+        "decision": "—"
+      },
+      {
         "id": "L062",
         "date": "2026-10-02",
         "whatWentWrong": "L037 and L044 are one defect seen twice, so the ledger's rule made it a mechanism. On 2026-10-02 the twins still differed: `.claude/agents/hacer-verifier.md` stated the tier rule in other words than `verifier-brief.md` in both its `description` and its body. The meaning matched but the wording did not, so nothing tied the next edit of one file to the other",
         "shouldHaveBeenCaughtBy": "nothing pinned `.claude/agents/*.md`",
         "mechanised": "yes — #391: `AGENT_INVARIANTS` pins each agent definition's `model:` and rules in `scripts/skills.logic.mjs`, and `TWIN_SENTENCES` fails when the verifier's tier sentence differs from its brief's; the agent file now carries the brief's sentence",
         "decision": "—"
+      },
+      {
+        "id": "L062",
+        "date": "2026-10-02",
+        "whatWentWrong": "Two live statements of the no-commit-to-main rule disagreed: the constitution said \"no untested code on main for new features\", the `.mdc` (cited by `AGENTS.md`) says no direct commits for all substantive work, with its escape hatch split across two places. Same family as L037/L044 (tier rule): one rule, two live statements",
+        "shouldHaveBeenCaughtBy": "`docs/harness/COVERAGE.md` ownership map, applied to this row (#300 built the map, nobody swept the constitution)",
+        "mechanised": "yes — the constitution line now states the consequence and links the owner `.cursor/rules/020-git-worktree-no-main.mdc`, which holds the one escape hatch (#308)",
+        "decision": "—"
       }
     ],
     "byMechanised": {
       "no": 9,
-      "yes": 47,
+      "yes": 49,
       "other": 1,
       "partly": 5
     }
@@ -6145,7 +6091,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-27",
-        "merges": 3
+        "merges": 2
       },
       {
         "date": "2026-09-28",
@@ -6165,20 +6111,20 @@
       },
       {
         "date": "2026-10-02",
-        "merges": 1
+        "merges": 2
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-18T00:06:09.195Z",
-      "merged": 215,
+      "since": "2026-09-18T00:18:59.539Z",
+      "merged": 216,
       "openToMergeHours": {
         "median": 0.2,
         "p90": 6.1
       },
       "blockedOnce": {
         "count": 22,
-        "of": 129,
+        "of": 130,
         "prs": [
           238,
           248,
@@ -6224,8 +6170,8 @@
           ]
         },
         "nonCode": {
-          "merged": 101,
-          "withVerdict": 27,
+          "merged": 102,
+          "withVerdict": 28,
           "without": [
             113,
             115,
@@ -7508,6 +7454,154 @@
             572
           ]
         }
+      },
+      {
+        "date": "2026-10-02",
+        "at": "2026-10-02T00:06:09.195Z",
+        "byProject": {
+          "foundation": [
+            338,
+            373,
+            151,
+            182,
+            184,
+            325,
+            339,
+            374,
+            377,
+            378,
+            379,
+            380,
+            381,
+            382,
+            383,
+            384,
+            385,
+            386,
+            389,
+            395,
+            400,
+            462,
+            506,
+            599,
+            613
+          ],
+          "lineage": [
+            471,
+            470,
+            502,
+            569
+          ],
+          "harness": [
+            257,
+            269,
+            271,
+            304,
+            368,
+            392,
+            394,
+            418,
+            516,
+            547,
+            665,
+            154,
+            156,
+            270,
+            308,
+            435,
+            436,
+            454,
+            500,
+            504,
+            505,
+            550,
+            607,
+            648,
+            649
+          ],
+          "spine": [
+            165,
+            166,
+            167,
+            168,
+            169,
+            170,
+            171,
+            172,
+            173,
+            174,
+            175,
+            176,
+            177,
+            235,
+            236
+          ],
+          "core": [
+            179,
+            361,
+            371,
+            390,
+            401,
+            405,
+            431,
+            452,
+            453,
+            620
+          ],
+          "verify": [
+            194,
+            196,
+            197,
+            198,
+            200,
+            201,
+            202,
+            203,
+            289
+          ],
+          "surfaces": [
+            206,
+            207,
+            209,
+            214
+          ],
+          "3d": [
+            215,
+            216,
+            218,
+            219,
+            284
+          ],
+          "upkeep": [
+            229,
+            256
+          ],
+          "horizon": [
+            230,
+            231,
+            232,
+            233
+          ],
+          "pubdocs": [
+            261,
+            262,
+            263,
+            264,
+            265,
+            266,
+            275
+          ],
+          "bugs": [
+            311
+          ],
+          "mission-control": [
+            509,
+            584
+          ],
+          "unfiled": [
+            572
+          ]
+        }
       }
     ]
   },
@@ -7515,11 +7609,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "696d66ac4b8fcc71f63c1e0f2766d98d889c493b",
+        "sha": "d5f9f2e61ad68919fd0941e3ae4fce9f786a08a6",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36944228521/job/110642470967",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36945283675/job/110645881298",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -7839,49 +7933,6 @@
           "known": 71,
           "new": 0
         },
-        "disagrees": false
-      },
-      {
-        "pr": 667,
-        "sha": "76f4096933e85198c996875ee5854b4d7465ec4f",
-        "check": "pr-hygiene",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-02T00:03:25Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36944015026/job/110641801356",
-        "line": "HYGIENE: PASS reviewable=7 test=0 excluded=0 files=3 issue=#308 linked=fixes",
-        "verdict": "PASS",
-        "fields": {
-          "reviewable": 7,
-          "test": 0,
-          "excluded": 0,
-          "files": 3,
-          "issue": "#308",
-          "linked": "fixes"
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 667,
-        "sha": "76f4096933e85198c996875ee5854b4d7465ec4f",
-        "check": "browser-qa",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-02T00:03:22Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36944014979/job/110641799879",
-        "line": "BROWSER-QA: skipped (no critical paths)",
-        "verdict": "SKIPPED",
-        "fields": {},
-        "disagrees": false
-      },
-      {
-        "pr": 667,
-        "sha": "76f4096933e85198c996875ee5854b4d7465ec4f",
-        "check": "ci",
-        "conclusion": null,
-        "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36944013406/job/110641794974",
-        "line": null,
-        "verdict": null,
-        "fields": {},
         "disagrees": false
       }
     ]
@@ -16321,11 +16372,18 @@
         "source": "docs/harness/ledger.md:76"
       },
       {
+        "id": "L063",
+        "kind": "ledger-row",
+        "date": "2026-10-02",
+        "title": "Two live statements of the no-commit-to-main rule disagreed: the constitution said \"no untested code on main for new features\", the `.mdc` (cited by `AGENTS.md`) says no direct commits for all substantive work, with its escape hatch split across two places. Same family as L037/L044 (tier rule): one rule, two live statements",
+        "source": "docs/harness/ledger.md:77"
+      },
+      {
         "id": "L062",
         "kind": "ledger-row",
         "date": "2026-10-02",
         "title": "L037 and L044 are one defect seen twice, so the ledger's rule made it a mechanism. On 2026-10-02 the twins still differed: `.claude/agents/hacer-verifier.md` stated the tier rule in other words than `verifier-brief.md` in both its `description` and its body. The meaning matched but the wording did not, so nothing tied the next edit of one file to the other",
-        "source": "docs/harness/ledger.md:77"
+        "source": "docs/harness/ledger.md:78"
       }
     ]
   }
