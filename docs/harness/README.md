@@ -120,6 +120,20 @@ not an option: `size-override` and `dependencies` change the `pr-hygiene` verdic
 `pr-hygiene` went red, then green when `size-override` was applied) and `critical` / `sev:*`
 change `browser-qa`'s.
 
+**A hand re-check does not judge the PR (#368).** A `workflow_dispatch` run posts its check run on
+the head of the ref it was dispatched from, and GitHub judges a required context by the newest check
+run with that name (L042). Measured: a dispatch with `--ref ci/220-browser-qa` (run 35347165462,
+event `workflow_dispatch`) posted `browser-qa` on #273's head `2b197dbf`, beside its `pull_request`
+runs, and `pr-hygiene`'s documented re-check did the same on #629's head `d223ca75` (run
+36592605152) — using the branch's own copy of the guard. A manual run could
+therefore overrule the PR's verdict, or, cancelled, strand it. Since #368 both jobs are named
+`<context> (manual)` on `workflow_dispatch`, so only `pull_request` / `pull_request_target` runs
+post `browser-qa` and `pr-hygiene`; a manual run reports under its own name and decides nothing.
+Serialising it with the PR's runs instead was rejected: #530 forbids a group they share.
+`scripts/required-checks.logic.mjs` fails the unit suite if a required context is reachable from
+`workflow_dispatch`. A job-level `if:` is no substitute: a skipped job still posts its check run,
+and `skipped` satisfies a required check.
+
 **Green alone, red merged (#407): a check that saw an older `main`.** Not stuck — the opposite: the
 PR merges, and `main` goes red. #404 armed the `core-through-index` rule and #399 added three
 imports it forbids; each PR was green, and the two merged together failed `pnpm run lint` with
