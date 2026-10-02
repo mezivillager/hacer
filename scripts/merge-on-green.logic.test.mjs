@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
-import { decide, requiredContexts, withRerunMarker } from './merge-on-green.logic.mjs'
+import { decide, mergeCommits, requiredContexts, stopOnRefusal, withRerunMarker } from './merge-on-green.logic.mjs'
 
 // Each state is a recorded GitHub reading of a real PR on this repo: check runs (filter=all) and
 // workflow runs, replayed to the moment the state held. A fixture's `_recorded` names the PR, the
@@ -27,6 +27,7 @@ const STATES = [
   'merged',
   'stale-green',
   'fresh-green',
+  'rebase-refused',
 ]
 
 describe('requiredContexts', () => {
@@ -96,8 +97,8 @@ describe('decide — one recorded state each', () => {
     expect(action.reason).toMatch(/edited/)
   })
 
-  it('behind the base: updates the branch', () => {
-    expect(decide(unarmed('behind')).kind).toBe('update-branch')
+  it('behind the base: updates the branch by rebase', () => {
+    expect(decide(unarmed('behind'))).toMatchObject({ kind: 'update-branch', method: 'REBASE' })
   })
 
   it('blocked with nothing pending after the body edit: gives up with the reason, exit 4', () => {
@@ -113,14 +114,18 @@ describe('decide — one recorded state each', () => {
 
   it('a stale green (#646): ci tested a merge with a main that has moved since, so it updates the branch and says why', () => {
     const action = decide(load('stale-green'))
-    expect(action.kind).toBe('update-branch')
+    expect(action).toMatchObject({ kind: 'update-branch', method: 'REBASE' })
     expect(action.reason).toBe(
-      'ci ran at 2026-10-01T22:01:13Z against 0c37a1e; main moved to 59cc2f0 since — updating the branch so the checks see the merge that would ship',
+      'ci ran at 2026-10-01T22:01:13Z against 0c37a1e; main moved to 59cc2f0 since — rebasing the branch on main so the checks see what would ship, and the history stays linear',
     )
   })
 
   it('a fresh green (#645): main has not moved since ci started, so it merges', () => {
     expect(decide(load('fresh-green')).kind).toBe('merge')
+  })
+
+  it('a fresh green on a branch carrying a merge commit (#667): GitHub reports CLEAN, so it tries the merge', () => {
+    expect(decide(load('rebase-refused')).kind).toBe('merge')
   })
 })
 
@@ -204,6 +209,37 @@ describe('decide — the rules between the states', () => {
     expect(action.reason).toContain('the base branch policy prohibits the merge')
   })
 
+  it('stops at the first "can’t be rebased" refusal, naming the merge commit (#667)', () => {
+    const fixture = load('rebase-refused')
+    const history = { refusals: { merge: 1 }, lastError: fixture.refusal, mergeCommits: mergeCommits(fixture.commits) }
+    const action = decide(fixture, history)
+    expect(action).toMatchObject({ kind: 'give-up', exit: 4 })
+    expect(action.reason).toContain('181b3c3')
+    expect(action.reason).not.toContain('76f4096')
+    expect(stopOnRefusal(fixture.pr, history)).toEqual(action)
+  })
+
+  it('names no merge commit it could not read, and still stops at the first refusal', () => {
+    const fixture = load('rebase-refused')
+    const action = decide(fixture, { refusals: { merge: 1 }, lastError: fixture.refusal, mergeCommits: null })
+    expect(action).toMatchObject({ kind: 'give-up', exit: 4 })
+    expect(action.reason).toContain(fixture.refusal)
+  })
+
+  it('a REBASE update GitHub refuses (a fork, a protected head) stops at once, in GitHub’s words', () => {
+    const lastError = 'GraphQL: Resource not accessible by integration (updatePullRequestBranch)'
+    const action = decide(load('stale-green'), { refusals: { 'update-branch': 1 }, lastError })
+    expect(action).toMatchObject({ kind: 'give-up', exit: 4 })
+    expect(action.reason).toContain(lastError)
+    expect(action.reason).toMatch(/REBASE/)
+  })
+
+  it('lets one refusal of anything else be retried', () => {
+    const history = { refusals: { merge: 1 }, lastError: 'GraphQL: Base branch was modified (mergePullRequest)' }
+    expect(stopOnRefusal(load('fresh-green').pr, history)).toBeNull()
+    expect(decide(load('fresh-green'), history).kind).toBe('merge')
+  })
+
   it.each([
     ['closed', { state: 'CLOSED' }],
     ['a draft', { isDraft: true }],
@@ -231,6 +267,16 @@ describe('decide — the rules between the states', () => {
         expect(decide(load(state), history).reason).not.toMatch(/force|amend|rebase onto|reset/i)
       }
     }
+  })
+})
+
+describe('mergeCommits', () => {
+  it('lists the commits with more than one parent (#667)', () => {
+    expect(mergeCommits(load('rebase-refused').commits)).toEqual(['181b3c37d514456df9833ed773cc4aaced4cd2ae'])
+  })
+
+  it('reads nothing from an unreadable list', () => {
+    expect(mergeCommits(null)).toEqual([])
   })
 })
 

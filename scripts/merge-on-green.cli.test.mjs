@@ -21,7 +21,11 @@ const GH_DOUBLE = `#!/bin/sh
 printf '%s\\n' "$*" >> "$STUB/calls.log"
 case "$1 $2" in
   "pr view") cat "$STUB/pr.json"; exit 0 ;;
-  "pr merge"|"pr update-branch"|"run rerun") exit 0 ;;
+  "pr merge"|"api graphql")
+    error="$STUB/$2-error.txt"
+    if [ -f "$error" ]; then cat "$error" >&2; exit 1; fi
+    exit 0 ;;
+  "run rerun") exit 0 ;;
   "pr edit")
     while [ $# -gt 0 ]; do [ "$1" = "--body-file" ] && cp "$2" "$STUB/edited-body.md"; shift; done
     exit 0 ;;
@@ -31,6 +35,7 @@ case "$2" in
   */protection) cat "$STUB/404.json"; exit 1 ;;
   *check-runs*) cat "$STUB/checks.json"; exit 0 ;;
   */activity*) cat "$STUB/pushes.json"; exit 0 ;;
+  */pulls/*/commits*) cat "$STUB/commits.json"; exit 0 ;;
   */jobs*) echo '[]'; exit 0 ;;
   *actions/runs*) cat "$STUB/runs.json"; exit 0 ;;
 esac
@@ -38,8 +43,11 @@ echo "gh double: unexpected call: $*" >&2
 exit 1
 `
 
-/** Runs the tool once against a recorded state. `rules: false` makes the rulesets call fail too. */
-function runTool(state, { rules = true, args = ['1'], pr = {} } = {}) {
+/**
+ * Runs the tool once against a recorded state. `rules: false` makes the rulesets call fail too;
+ * `refuse` maps `merge` or `graphql` to the stderr line gh prints when GitHub refuses that call.
+ */
+function runTool(state, { rules = true, args = ['1'], pr = {}, refuse = {} } = {}) {
   const stub = mkdtempSync(path.join(tmpdir(), 'merge-on-green-'))
   cleanup.push(stub)
   const fixture = JSON.parse(read(`${state}.json`))
@@ -47,6 +55,8 @@ function runTool(state, { rules = true, args = ['1'], pr = {} } = {}) {
   writeFileSync(path.join(stub, 'pushes.json'), JSON.stringify(fixture.basePushes ?? []))
   writeFileSync(path.join(stub, 'checks.json'), `${JSON.stringify(fixture.checkRuns)}\n`)
   writeFileSync(path.join(stub, 'runs.json'), `${JSON.stringify(fixture.workflowRuns)}\n`)
+  writeFileSync(path.join(stub, 'commits.json'), `${JSON.stringify(fixture.commits ?? [])}\n`)
+  for (const [call, line] of Object.entries(refuse)) writeFileSync(path.join(stub, `${call}-error.txt`), `${line}\n`)
   writeFileSync(path.join(stub, '404.json'), read('protection-404.json'))
   if (rules) writeFileSync(path.join(stub, 'rules.json'), read('rules-main.json'))
   const gh = path.join(stub, 'gh')
@@ -56,10 +66,13 @@ function runTool(state, { rules = true, args = ['1'], pr = {} } = {}) {
   const result = spawnSync(process.execPath, [SCRIPT, ...args], {
     env: { ...process.env, GH_BIN: gh, STUB: stub },
     encoding: 'utf8',
+    timeout: SPAWN_TIMEOUT_MS - 2000,
   })
   const saved = (name) => (existsSync(path.join(stub, name)) ? readFileSync(path.join(stub, name), 'utf8') : '')
   return { ...result, fixture, calls: saved('calls.log'), body: saved('edited-body.md') }
 }
+
+const PR_646 = 'PR_kwDORdjPzc8AAAABGL8cJA'
 
 // Explicit timeout, not the 5 s default: each test spawns the CLI, measured up to 4.8 s under load (1.3 s alone).
 const SPAWN_TIMEOUT_MS = 15000
@@ -89,12 +102,33 @@ describe('merge-on-green.mjs (gh is a test double)', () => {
     )
   }, SPAWN_TIMEOUT_MS)
 
-  it('updates the branch on a stale green, and says why (#407)', () => {
-    const result = runTool('stale-green', { args: ['646', 'mezivillager/hacer', '0'] })
+  it('updates a stale green by REBASE, pinned to the head it judged, and says why (#407, #669)', () => {
+    const result = runTool('stale-green', { args: ['646', 'mezivillager/hacer', '0'], pr: { id: PR_646 } })
     expect(result.status).toBe(3)
-    expect(result.calls).toMatch(/^pr update-branch 646 /m)
-    expect(result.calls).not.toMatch(/^pr merge /m)
+    const update = result.calls.split('\n').filter((line) => line.startsWith('api graphql '))
+    expect(update).toHaveLength(1)
+    expect(update[0]).toMatch(/updatePullRequestBranch\(input: \{.*updateMethod: REBASE/)
+    expect(update[0]).toContain(`-f id=${PR_646}`)
+    expect(update[0]).toContain('-f head=f9ecfbda4bc8ba6f77359f1aeb024a1b4a0b8713')
+    expect(result.calls).not.toMatch(/^pr (update-branch|merge) /m)
     expect(result.stdout).toContain('main moved to 59cc2f0 since')
+  }, SPAWN_TIMEOUT_MS)
+
+  it('stops at once when GitHub refuses the REBASE update, exit 4, in its words', () => {
+    const refusal = 'GraphQL: Resource not accessible by integration (updatePullRequestBranch)'
+    const result = runTool('stale-green', { args: ['646', 'mezivillager/hacer', '5'], pr: { id: PR_646 }, refuse: { graphql: refusal } })
+    expect(result.status).toBe(4)
+    expect(result.calls.match(/^api graphql /gm)).toHaveLength(1)
+    expect(result.stdout).toContain(refusal)
+  }, SPAWN_TIMEOUT_MS)
+
+  it('stops after the first "can’t be rebased" refusal, naming the merge commit (#667)', () => {
+    const fixture = JSON.parse(read('rebase-refused.json'))
+    const result = runTool('rebase-refused', { args: ['667', 'mezivillager/hacer', '5'], refuse: { merge: fixture.refusal } })
+    expect(result.status).toBe(4)
+    expect(result.calls.match(/^pr merge /gm)).toHaveLength(1)
+    expect(result.calls).toMatch(/^api repos\/mezivillager\/hacer\/pulls\/667\/commits/m)
+    expect(result.stdout).toMatch(/give-up: .*181b3c3/)
   }, SPAWN_TIMEOUT_MS)
 
   it('merges a fresh green itself, pinned to the head it judged, never through auto-merge', () => {
