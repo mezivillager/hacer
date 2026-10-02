@@ -16,8 +16,8 @@
 // The recoveries, cheapest first: re-run one cancelled run at a time (a batch re-run cancels
 // itself, #295); append an HTML comment to the PR body, whose `edited` event re-runs the workflows
 // that listen for it on the same SHA, once per head (R746); then stop and say why. Never a
-// force-push, and never a rebase of the branch: both replace the commits the checks and the
-// verdict were given on.
+// force-push. The one rewrite is GitHub's REBASE update of a stale or BEHIND branch: main
+// requires linear history, so a merge update leaves a branch the rebase merge refuses (#667).
 //
 // A green is stale when the base branch moved after a check that tested the merge commit started:
 // with `strict` off GitHub still reports CLEAN, never BEHIND (docs/harness/README.md, #407).
@@ -27,6 +27,9 @@ const PASSING = new Set(['success', 'neutral', 'skipped'])
 const MERGEABLE_NOW = new Set(['CLEAN', 'HAS_HOOKS', 'UNSTABLE'])
 const MAX_REFUSALS = 3
 const MAX_UPDATES = 3
+const UPDATE_METHOD = 'REBASE'
+/** GitHub's refusal of a rebase merge or update whose branch carries a merge commit (#667). */
+export const CANNOT_REBASE = /can(?:'|no)t be rebased/i
 /** The event whose runs check out `refs/pull/<n>/merge`; pull_request_target runs check out the base. */
 const MERGE_EVENT = 'pull_request'
 const MARKER = /\n*<!-- merge-on-green: edited to re-run the required checks on ([0-9a-f]{40}) at [^>]*-->/g
@@ -107,6 +110,35 @@ function staleGreen(snapshot, states) {
   return { name: tested[0].name, ranAt, against: against?.after, now: pushes[0].after }
 }
 
+/** The commits with more than one parent, from `[{sha, parents: [sha]}]`. */
+export const mergeCommits = (commits) =>
+  asArray(commits)
+    .filter((commit) => asArray(commit?.parents).length > 1)
+    .map((commit) => commit.sha)
+
+/**
+ * The give-up a refusal settles at once, or null while it may be retried: GitHub cannot rebase a
+ * branch that carries a merge commit, and a REBASE update it refuses will not take on a retry.
+ */
+export function stopOnRefusal(pr, history = {}) {
+  const refusals = history.refusals ?? {}
+  const lastError = history.lastError ?? ''
+  if (CANNOT_REBASE.test(lastError) && Object.values(refusals).some((count) => count > 0)) {
+    const found = asArray(history.mergeCommits).map((sha) => sha.slice(0, 7))
+    const which = found.length > 0 ? `merge commit ${found.join(', ')}` : 'a merge commit (its commits could not be read)'
+    return giveUp(
+      `GitHub cannot rebase #${pr.number} on ${pr.baseRefName}: the branch carries ${which}, and ${pr.baseRefName} requires linear history (${lastError}). Its builder drops the merge from the branch and pushes`,
+    )
+  }
+  if ((refusals['update-branch'] ?? 0) > 0) {
+    return giveUp(
+      `GitHub refused the ${UPDATE_METHOD} update of #${pr.number}, so it is not available for this PR (a fork or a protected head, for instance): ${lastError}. Its builder rebases the branch on ${pr.baseRefName} and pushes`,
+    )
+  }
+  const refused = Object.entries(refusals).find(([, count]) => count >= MAX_REFUSALS)
+  return refused ? giveUp(`GitHub refused ${refused[0]} ${refused[1]} times: ${lastError}`) : null
+}
+
 /** The heads this tool already edited the body for, read from its markers in the body. */
 const markedHeads = (body) => [...(body ?? '').matchAll(MARKER)].map((match) => match[1])
 
@@ -118,11 +150,12 @@ const markedHeads = (body) => [...(body ?? '').matchAll(MARKER)].map((match) => 
  *   workflow_id, event, status, conclusion, suite, attempt, created_at}, both for the head SHA;
  *   `basePushes` are the base ref's moves, {after, timestamp}.
  * @param history what this run of the tool already did: {reruns: run ids, edits: head SHAs,
- *   updates: heads it asked GitHub to update, refusals: {kind: count}, lastError, settled: the
- *   `settle` head of the previous pass's action}.
+ *   updates: heads it asked GitHub to update, refusals: {kind: count}, lastError, mergeCommits:
+ *   the PR's merge commits, read after a can't-be-rebased refusal, settled: the `settle` head of
+ *   the previous pass's action}.
  *   A refusal is a gh command that failed.
  * @returns {{kind: 'merged'|'fail'|'give-up'|'merge'|'disable-auto'|'wait'|'rerun'|'update-branch'|'edit-body',
- *   reason: string, exit?: number, runId?: number, runs?: number[], settle?: string}}
+ *   reason: string, exit?: number, runId?: number, runs?: number[], settle?: string, method?: 'REBASE'}}
  */
 export function decide(snapshot, history = {}) {
   const { pr } = snapshot
@@ -141,8 +174,8 @@ export function decide(snapshot, history = {}) {
   const note = notRequired.length > 0 ? ` (failing, not required: ${notRequired.join(', ')})` : ''
   const act = (kind, reason, extra = {}) => ({ kind, reason: `${reason}${note}`, ...extra })
 
-  const refused = Object.entries(history.refusals ?? {}).find(([, count]) => count >= MAX_REFUSALS)
-  if (refused) return giveUp(`GitHub refused ${refused[0]} ${refused[1]} times: ${history.lastError}`)
+  const stop = stopOnRefusal(pr, history)
+  if (stop) return stop
 
   const running = unique([...snapshot.checkRuns, ...snapshot.workflowRuns].filter((r) => r.status !== 'completed').map((r) => r.name))
   const failed = states.filter((s) => s.verdict === 'fail')
@@ -162,8 +195,8 @@ export function decide(snapshot, history = {}) {
 
   const updates = history.updates ?? []
   const updateOnce = (reason) => {
-    if (updates.includes(pr.headRefOid)) return act('wait', `asked GitHub to merge ${pr.baseRefName} into ${head}; waiting for the new head`)
-    return act('update-branch', reason)
+    if (updates.includes(pr.headRefOid)) return act('wait', `asked GitHub to rebase ${head} on ${pr.baseRefName}; waiting for the new head`)
+    return act('update-branch', reason, { method: UPDATE_METHOD })
   }
   const stale = staleGreen(snapshot, states)
   if (stale) {
@@ -172,11 +205,11 @@ export function decide(snapshot, history = {}) {
       return giveUp(`${base} moved after the checks started ${updates.length} times in a row; the last green on ${head} is stale again (${stale.name} ran at ${stale.ranAt}, ${base} is at ${stale.now.slice(0, 7)}). Run this again when ${base} is quiet${note}`)
     }
     const tested = stale.against ? stale.against.slice(0, 7) : `an older ${base}`
-    return updateOnce(`${stale.name} ran at ${stale.ranAt} against ${tested}; ${base} moved to ${stale.now.slice(0, 7)} since — updating the branch so the checks see the merge that would ship`)
+    return updateOnce(`${stale.name} ran at ${stale.ranAt} against ${tested}; ${base} moved to ${stale.now.slice(0, 7)} since — rebasing the branch on ${base} so the checks see what would ship, and the history stays linear`)
   }
   if (MERGEABLE_NOW.has(pr.mergeStateStatus)) return act('merge', `GitHub reports ${pr.mergeStateStatus} on ${head}: merging now (rebase)`)
   if (pr.mergeStateStatus === 'BEHIND') {
-    return updateOnce(`GitHub reports BEHIND: merging ${pr.baseRefName} into the branch, which keeps every commit that was checked`)
+    return updateOnce(`GitHub reports BEHIND: rebasing the branch on ${pr.baseRefName}, which keeps the history linear`)
   }
   if (pr.mergeStateStatus !== 'BLOCKED') return act('wait', `GitHub reports ${pr.mergeStateStatus}`)
 
