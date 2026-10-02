@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-02T10:05:13.882Z",
+  "generatedAt": "2026-10-02T16:14:31.083Z",
   "head": {
     "sha": "847d915131b425a26f1982b52b438e5d33bd34bf",
     "date": "2026-10-02T13:03:50+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-02T10:05:13.882Z",
+      "fetchedAt": "2026-10-02T16:14:31.083Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-02T10:05:13.882Z",
+      "fetchedAt": "2026-10-02T16:14:31.083Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-02T10:05:13.882Z",
+      "fetchedAt": "2026-10-02T16:14:31.083Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-02T10:05:13.882Z",
+      "fetchedAt": "2026-10-02T16:14:31.083Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-02T10:05:13.882Z",
+      "fetchedAt": "2026-10-02T16:14:31.083Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-02T10:05:13.882Z",
+      "fetchedAt": "2026-10-02T16:14:31.083Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-02T10:05:13.882Z",
+      "fetchedAt": "2026-10-02T16:14:31.083Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-02T10:05:13.882Z",
+      "fetchedAt": "2026-10-02T16:14:31.083Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-02T10:05:13.882Z",
+      "fetchedAt": "2026-10-02T16:14:31.083Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-02T10:05:13.882Z",
+      "fetchedAt": "2026-10-02T16:14:31.083Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-02T10:05:13.882Z",
+      "fetchedAt": "2026-10-02T16:14:31.083Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-02T10:05:13.882Z",
+      "fetchedAt": "2026-10-02T16:14:31.083Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-02T10:05:13.882Z",
+      "fetchedAt": "2026-10-02T16:14:31.083Z",
       "status": "ok"
     }
   },
@@ -105,10 +105,10 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 23,
+        "open": 24,
         "ready": 10,
         "inProgress": 0,
-        "needsHuman": 0,
+        "needsHuman": 1,
         "staleClaims": [],
         "agentReady": 10,
         "filedElsewhere": [
@@ -2166,6 +2166,21 @@
         "lane": "process",
         "pickable": false,
         "reason": "unshaped"
+      },
+      {
+        "number": 677,
+        "title": "Standing rules: one file the orient step reads; rulings are decisions only",
+        "labels": [
+          "project:harness",
+          "needs-human",
+          "risk:2"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "needs-human"
       }
     ],
     "byProject": {
@@ -2225,7 +2240,8 @@
         550,
         607,
         648,
-        649
+        649,
+        677
       ],
       "spine": [
         165,
@@ -5953,19 +5969,16 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-18T10:05:13.882Z",
-      "merged": 225,
+      "since": "2026-09-18T16:14:31.083Z",
+      "merged": 201,
       "openToMergeHours": {
         "median": 0.2,
-        "p90": 3.6
+        "p90": 1.9
       },
       "blockedOnce": {
-        "count": 22,
-        "of": 136,
+        "count": 19,
+        "of": 126,
         "prs": [
-          238,
-          248,
-          273,
           294,
           305,
           312,
@@ -5989,10 +6002,9 @@
       },
       "coverage": {
         "code": {
-          "merged": 117,
-          "withVerdict": 105,
+          "merged": 109,
+          "withVerdict": 98,
           "without": [
-            250,
             285,
             287,
             288,
@@ -6007,22 +6019,9 @@
           ]
         },
         "nonCode": {
-          "merged": 108,
-          "withVerdict": 31,
+          "merged": 92,
+          "withVerdict": 28,
           "without": [
-            113,
-            115,
-            116,
-            117,
-            118,
-            131,
-            240,
-            243,
-            254,
-            272,
-            276,
-            277,
-            283,
             286,
             292,
             293,
@@ -7449,12 +7448,15 @@
         "pr": null,
         "sha": "847d915131b425a26f1982b52b438e5d33bd34bf",
         "check": "ci",
-        "conclusion": null,
-        "completedAt": null,
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-02T10:06:09Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/36993371940/job/110794442562",
-        "line": null,
-        "verdict": null,
-        "fields": {},
+        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 71,
+          "new": 0
+        },
         "disagrees": false
       },
       {
