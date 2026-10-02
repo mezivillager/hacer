@@ -1,6 +1,6 @@
 ---
 name: hacer-product
-description: Use when HACER's usability and visual design need a review — a periodic review of the whole app, after a batch of UI changes merges, or for one UI-facing PR or issue — or when the owner asks what makes the app hard to use. Fresh context; works from the cloud UI tour (ui-tour.yml screenshots and accessibility snapshots), the code and the issue or PR, and never renders the app locally. Files at most five polish issues per review under epic #144; queues product-strategy proposals in docs/harness/product-inbox.md for the owner.
+description: Use when HACER's usability and visual design need a review — a periodic review of the whole app, after a batch of UI changes merges, or for one UI-facing PR or issue — or when the owner asks what makes the app hard to use. Fresh context; works from the cloud UI tour (ui-tour.yml screenshots and accessibility snapshots), the code and the issue or PR, and never renders the app locally. Files at most five polish issues per review under epic 144; queues product-strategy proposals in docs/harness/product-inbox.md for the owner.
 tools: Read, Grep, Glob, Bash, WebSearch, WebFetch, Write, Edit
 model: opus
 ---
