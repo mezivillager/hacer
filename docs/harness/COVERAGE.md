@@ -22,6 +22,7 @@ done, straight at its owner. Update this map in the same PR that moves a rule; i
 | **Never commit to `main`** | `.cursor/rules/020-git-worktree-no-main.mdc` | worktrees live outside the repo as `hacer-wt-<topic>` siblings |
 | **Docs use repo-relative paths; every cited path must exist** | `.cursor/rules/021-no-absolute-paths-in-docs.mdc` | mechanics in ADR-0010 (absolute paths) and ADR-0014 (path existence); enforced by `scripts/check-doc-paths.mjs` |
 | **`AGENTS.md` stays ≤ 120 lines — a table of contents, not a restatement** | `scripts/hooks/docLineBudget.logic.mjs` (`LINE_BUDGETS`) | enforced by `scripts/check-doc-paths.mjs` via `pnpm run lint:docs` (#152) |
+| **Agent definitions keep their rules** — each `.claude/agents/hacer-*.md` keeps its `model:` fail-safe and its load-bearing rules, and the verifier's tier sentence is word for word the one in `verifier-brief.md` | `scripts/skills.logic.mjs` (`AGENT_INVARIANTS`, `TWIN_SENTENCES`) | the tier rule itself is owned by `docs/harness/verifier-brief.md`; the agent file restates it because its `description` is a dispatch surface (#391) |
 
 ## Deliberate duplication, and why
 

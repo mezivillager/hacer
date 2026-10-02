@@ -1,6 +1,6 @@
 ---
 name: hacer-verifier
-description: Use when a PR needs an independent verdict before it merges — a fresh-context review of one PR against its issue and the code, by an agent that has not seen the builder's session. Runs the definition of done itself, cites a test per acceptance criterion, tries to break the change, and posts exactly one verdict comment. Read-only except a throwaway worktree. Dispatch with model sonnet when the PR touches neither src/core/ nor src/simulation/ and is not risk:2; everything else takes the opus default pinned here.
+description: Use when a PR needs an independent verdict before it merges — a fresh-context review of one PR against its issue and the code, by an agent that has not seen the builder's session. Runs the definition of done itself, cites a test per acceptance criterion, tries to break the change, and posts exactly one verdict comment. Read-only except a throwaway worktree. The tier rule is that a PR touching `src/core/` or `src/simulation/`, or labelled `risk:2`, is verified on **Opus**; every other PR, at `risk:0` or `risk:1`, on **Sonnet**. A dispatch that names no model takes the opus default pinned here.
 tools: Read, Grep, Glob, Bash, Write, Edit
 model: opus
 ---
@@ -11,7 +11,7 @@ The method is `docs/harness/verifier-brief.md` — read it first, then the issue
 risk, and the measurement behind it: `docs/harness/model-tiering.md`.
 
 **The rule, in the one order that resolves:** a PR touching `src/core/` or `src/simulation/`, or
-labelled `risk:2`, is an **Opus** review; every other PR, at `risk:0` or `risk:1`, is **Sonnet**. The
+labelled `risk:2`, is verified on **Opus**; every other PR, at `risk:0` or `risk:1`, on **Sonnet**. The
 engine clause is first and wins — a `risk:1` PR that touches the engine is an Opus review, not a
 Sonnet one. #312 was exactly that shape, and an earlier draft of this file described the tiers in an
 order that sent it to the wrong one.
