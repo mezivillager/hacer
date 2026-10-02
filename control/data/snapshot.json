@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-02T01:22:18.843Z",
+  "generatedAt": "2026-10-02T01:36:28.575Z",
   "head": {
-    "sha": "15c31b7b275276d47d2e38d2449edaf07cb99cc1",
-    "date": "2026-10-02T04:21:19+03:00",
-    "subject": "chore(deps-dev): bump @commitlint/cli from 21.0.1 to 21.2.3"
+    "sha": "954fda724dd9359fbed7d1f9b0921f2a0972b65c",
+    "date": "2026-10-02T04:35:29+03:00",
+    "subject": "fix(harness): drop the ' #' from hacer-product's description (#665)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-02T01:22:18.843Z",
+      "fetchedAt": "2026-10-02T01:36:28.575Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-02T01:22:18.843Z",
+      "fetchedAt": "2026-10-02T01:36:28.575Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-02T01:22:18.843Z",
+      "fetchedAt": "2026-10-02T01:36:28.575Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-02T01:22:18.843Z",
+      "fetchedAt": "2026-10-02T01:36:28.575Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-02T01:22:18.843Z",
+      "fetchedAt": "2026-10-02T01:36:28.575Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-02T01:22:18.843Z",
+      "fetchedAt": "2026-10-02T01:36:28.575Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-02T01:22:18.843Z",
+      "fetchedAt": "2026-10-02T01:36:28.575Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-02T01:22:18.843Z",
+      "fetchedAt": "2026-10-02T01:36:28.575Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-02T01:22:18.843Z",
+      "fetchedAt": "2026-10-02T01:36:28.575Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-02T01:22:18.843Z",
+      "fetchedAt": "2026-10-02T01:36:28.575Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-02T01:22:18.843Z",
+      "fetchedAt": "2026-10-02T01:36:28.575Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-02T01:22:18.843Z",
+      "fetchedAt": "2026-10-02T01:36:28.575Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-02T01:22:18.843Z",
+      "fetchedAt": "2026-10-02T01:36:28.575Z",
       "status": "ok"
     }
   },
@@ -105,12 +105,12 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 24,
-        "ready": 11,
+        "open": 23,
+        "ready": 10,
         "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 11,
+        "agentReady": 10,
         "filedElsewhere": [
           151,
           339
@@ -470,11 +470,6 @@
         "project": "harness"
       },
       {
-        "number": 665,
-        "title": "Agent frontmatter: a ' #144' in hacer-product.md's description reads as a YAML comment and truncates it; parse every role file strictly",
-        "project": "harness"
-      },
-      {
         "number": 671,
         "title": "required-checks guard: an unresolvable ${{ }} job name passes silently; a trailing # comment slips past",
         "project": "harness"
@@ -666,21 +661,6 @@
       {
         "number": 547,
         "title": "cloud-queue.md and COVERAGE.md still claim and release by pushing the ref",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:0"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 665,
-        "title": "Agent frontmatter: a ' #144' in hacer-product.md's description reads as a YAML comment and truncates it; parse every role file strictly",
         "labels": [
           "project:harness",
           "agent-ready",
@@ -2232,7 +2212,6 @@
         418,
         516,
         547,
-        665,
         671,
         154,
         156,
@@ -2362,6 +2341,32 @@
       }
     ],
     "merged": [
+      {
+        "number": 673,
+        "title": "fix(harness): agent frontmatter parses strictly",
+        "url": "https://github.com/mezivillager/hacer/pull/673",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "fix/665-strict-agent-frontmatter",
+        "isDraft": false,
+        "createdAt": "2026-10-02T01:30:13Z",
+        "mergedAt": "2026-10-02T01:35:30Z",
+        "closes": [
+          665
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Sonnet 5.5",
+            "at": "2026-10-02T01:34:58Z",
+            "url": "https://github.com/mezivillager/hacer/pull/673#issuecomment-5943942999"
+          }
+        ]
+      },
       {
         "number": 672,
         "title": "fix(harness): merge-on-green rebases a stale branch and stops at the first can't-be-rebased refusal",
@@ -3860,33 +3865,6 @@
             "model": "Sonnet 5.5 (fresh context)",
             "at": "2026-09-29T11:44:38Z",
             "url": "https://github.com/mezivillager/hacer/pull/585#issuecomment-5889582928"
-          }
-        ]
-      },
-      {
-        "number": 583,
-        "title": "feat(scene): __SCENE_HELPERS__.describe() returns every gate, pin, wire and node as JSON",
-        "url": "https://github.com/mezivillager/hacer/pull/583",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:2",
-          "project:foundation"
-        ],
-        "headRefName": "feat/217-scene-describe",
-        "isDraft": false,
-        "createdAt": "2026-09-29T11:27:18Z",
-        "mergedAt": "2026-09-29T11:40:29Z",
-        "closes": [
-          217
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Opus 5.5 (fresh context)",
-            "at": "2026-09-29T11:39:22Z",
-            "url": "https://github.com/mezivillager/hacer/pull/583#issuecomment-5889497460"
           }
         ]
       }
@@ -5956,7 +5934,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-29",
-        "merges": 32
+        "merges": 31
       },
       {
         "date": "2026-09-30",
@@ -5968,20 +5946,20 @@
       },
       {
         "date": "2026-10-02",
-        "merges": 10
+        "merges": 11
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-18T01:22:18.843Z",
-      "merged": 224,
+      "since": "2026-09-18T01:36:28.575Z",
+      "merged": 225,
       "openToMergeHours": {
         "median": 0.2,
         "p90": 3.6
       },
       "blockedOnce": {
         "count": 22,
-        "of": 132,
+        "of": 133,
         "prs": [
           238,
           248,
@@ -6009,8 +5987,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 116,
-          "withVerdict": 104,
+          "merged": 117,
+          "withVerdict": 105,
           "without": [
             250,
             285,
@@ -7471,11 +7449,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "15c31b7b275276d47d2e38d2449edaf07cb99cc1",
+        "sha": "954fda724dd9359fbed7d1f9b0921f2a0972b65c",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36950535224/job/110662265501",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36951668281/job/110665741657",
         "line": null,
         "verdict": null,
         "fields": {},
