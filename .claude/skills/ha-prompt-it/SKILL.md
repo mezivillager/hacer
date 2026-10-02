@@ -49,7 +49,7 @@ a doc and the code disagree, the code wins and the doc gets fixed in the same
 branch.
 
 **Prefer this repo's own skills** in `.claude/skills/` — `planning`,
-`executing-plans`, `tdd`, `debugging`, `dispatching-parallel-agents`,, `code-review`, `docs-sync`, `hacer-patterns`,
+`executing-plans`, `tdd`, `debugging`, `dispatching-parallel-agents`, `code-review`, `docs-sync`, `hacer-patterns`,
 `verification-before-completion`, `finishing-a-development-branch` — over the
 global superpowers equivalents wherever both exist.
 
@@ -58,8 +58,9 @@ global superpowers equivalents wherever both exist.
 > **GATE 2 — each milestone's red contract.** He approves the committed failing
 > tests before green work begins.
 > **GATE 3 — each milestone's completion.** He reviews the evidence — the test
-> output and the milestone's `diff-size-report` output — before the next milestone
-> starts.
+> output, the milestone's `diff-size-report` output and the milestone review's verdicts
+> where a review ran (else the ledger's `review:` line with its trigger check) — before the
+> next milestone starts.
 > **GATE 4 — the merge, and anything that speaks to people.** Canonical
 > statement in Standing rules.
 
@@ -101,8 +102,9 @@ opens with as wide a first wave as the work allows.
 
 Recommend a tier in one line with the reason, then ask and wait for the answer.
 Never size silently. Under the `autonomous` skill the question goes in the run's
-opening message with the recommendation as the default (Light when the call is
-close); a tier named in the hand-over is the answer.
+opening message with the recommendation as the default (when the call is close, size
+down — Light over Standard, Standard over Full); a tier named in the hand-over is
+the answer.
 
 - **One-liner** — a single small edit, a question, a lookup. Do it directly, no
   question.
@@ -118,9 +120,21 @@ close); a tier named in the hand-over is the answer.
   reviewer are the only review seats. **AGENTS.md Step 1 is still a hard
   gate:** anything with 3+ implementation steps gets a `docs/specs/` design
   approved before code, at every tier above one-liner.
-- **Full** — several milestones or a new seam: the whole pipeline below.
+- **Standard** — several milestones, no new seam: Phase 1 and Gate 1 as in Full,
+  without the staffing table; the plan with milestones, waves, each milestone's
+  `review:` mark and the read-only plan review (Phase 2); Gates 2 and 3 at every
+  milestone boundary, and a milestone reviewer only where a trigger fires (Phase 3)
+  — a milestone that touches a named risk class buys its reviewer through trigger
+  (ii); Phase 4 in full. The spec reviewer (plus a delta reviewer for a contract
+  revision after Gate 1), the plan reviewer, the whole-branch reviewer and a
+  triggered milestone reviewer are the only review seats the run dispatches unasked.
+  A Standard run re-sizes when it changes class (Phase 3). Standing rules bind in
+  full.
+- **Full** — a new seam at any size, or when Mezi asks for it: the whole pipeline
+  below, a reviewer after every milestone.
 
-Mezi can change the tier with "light" or "full" at any point.
+Mezi can change the tier with "light", "standard" or "full" at any point; a tier
+named mid-run takes effect from the next milestone (Phase 3).
 
 **Ultracode — suggest it for discovery work, never switch it on** (Mezi 2026-09-29). When the
 task is an investigation, an audit or a sweep ("is X safe everywhere"), forensics across many
@@ -156,7 +170,7 @@ agents get the standing orders too: the dispatch guard wraps each script's `agen
 **Full tier only: also produce the staffing table** (format at the bottom of
 this file) at the end of Phase 1, with `Depends on`, `Writes` and `Wave` filled
 in — it is what makes the parallel schedule reviewable before a single agent is
-dispatched. Light has no staffing table.
+dispatched. Light and Standard have none.
 
 The spec's shape:
 
@@ -238,6 +252,8 @@ Use the repo's `planning` skill, with these amendments:
 - **Declare milestones**, and **hoist the reds**: each milestone opens with one
   task that writes and commits every failing test for it; later tasks are
   green-only and may not touch test files.
+- **Mark each milestone's review** (Standard): `review: yes <trigger>` or `review:
+  no` against Phase 3's triggers; the plan review checks the marks.
 - **Schedule for parallelism — while chunking, not at dispatch.** Annotate every
   task with `Depends on` and `Writes` (exact files), then lay them out in
   **waves**: wave 1 is everything with no unmet dependency and no file shared
@@ -257,13 +273,23 @@ Use the repo's `planning` skill, with these amendments:
   sync the plan in the same turn — a stale plan is worse than no plan, because
   the next agent believes it.
 
-Run the planning skill's self-review yourself (spec coverage, placeholder scan,
-type consistency), checking every cited selector, fixture and store shape against
-the tree as you go. **The plan gets no reviewer agent and is never built in a
-throwaway worktree** — the executable plan review was cut on 2026-09-22 (45–106
-minutes per run to type the plan in twice); the red contract and the milestone
-review are where plan errors surface. **The plan is not a gate** — present it in
-one line and proceed.
+Run the planning skill's self-review yourself (spec coverage, placeholder scan, type
+consistency), checking every cited selector, fixture and store shape against the
+tree as you go. Then dispatch **the plan review** (Standard and Full):
+`subagent_type: prompt-reviewer` with no prior context, its brief's Goal saying
+plainly that it reviews a plan, handed the plan's path, the spec's path and the
+paths the plan cites — read-only, runs no test and no project code, builds nothing
+(the *executable* plan review was cut on 2026-09-22 at 45–106 minutes per run), and
+runs to completion like the spec review. It checks the plan against the contract:
+every success criterion has a red in a milestone's hoisted contract; milestone
+boundaries and their `review:` marks follow Phase 3's triggers; the shared fixtures,
+helpers and interfaces a later milestone builds on are built first and named; names
+follow the naming rule; waves' `Writes` sets are disjoint; the verbatim test code
+tests what the plan builds. Findings return MUST-FIX / SHOULD-FIX / NIT and are
+ruled like the spec review's, in the ledger.
+
+**The plan is not a gate.** Present its path and the review verdict in one line and
+proceed — Gate 2 is where Mezi sees what the plan produced.
 
 ## Phase 3 — Gated execution.
 
@@ -298,8 +324,8 @@ Execute with the repo's `executing-plans` / `dispatching-parallel-agents` skills
 Gates 2 and 3 are additional mandatory stops at milestone boundaries; inside a
 milestone, rule and proceed, ledger every ruling, never stall.
 
-- **One review per milestone, none per task.** When a milestone's tasks are all
-  green, dispatch ONE fresh reviewer (`subagent_type: reviewer`), handed the
+- **One review per milestone in Full; in Standard only when a trigger fires; never per task.** In Full,
+  when a milestone's tasks are all green, dispatch ONE fresh reviewer (`subagent_type: reviewer`), handed the
   milestone's brief, the implementers' reports and the milestone diff as file paths,
   returning both verdicts (spec compliance AND quality) over the whole milestone. Quality includes duplicated logic introduced by the milestone — across its lanes
   and against code the repository already has; a duplication finding is fixed in
@@ -307,10 +333,44 @@ milestone, rule and proceed, ledger every ruling, never stall.
   (Standing rules), each under its own heading, from the `diff-size-report` output in
   the reviewer's brief.
   Task completions still land with their hash in the ledger; they do not each
-  buy a reviewer. The verifier brief (`docs/harness/verifier-brief.md`) is that
-  reviewer's brief when the work is a harness ticket. When `docs/harness/verifier-brief.md`
-  is the reviewer's brief, the coordinator appends the `diff-size-report` output to its
-  inputs and maps a size should-fix to a Blocker or a Nit by ruling.
+  buy a reviewer.
+
+  In Standard a milestone buys that reviewer when it is marked `review: yes <trigger>`. The plan
+  marks every milestone `review: yes <trigger>` or `review: no` against the triggers below, and the
+  plan review checks the marks. At green the coordinator re-checks the triggers against the
+  milestone's actual diff — (iii) always, (i) and (ii) whenever the green work added shared code or
+  touched the risk list beyond the plan — and a trigger found true there turns the mark to `review:
+  yes <trigger>` in the plan and the ledger before the review is dispatched. The triggers: (i) it
+  ships a shared fixture, helper, interface or schema that a later milestone's reds or code build
+  on; (ii) it touches a named risk class: an ADR'd seam in `spine`, `surfaces` or `horizon`;
+  semantics under `src/core/**` or `src/simulation/**` (the fidelity condition, ADR-0018); the
+  store's mutation surface (`circuitActions` and the store slices); or an issue labelled `risk:2`;
+  (iii) the unreviewed diff — every change since the head the ledger recorded when the last
+  milestone review's fix round closed, or since the branch base when none has run; the coordinator
+  ledgers HEAD when that fix round closes — exceeds 400 lines added plus removed, or 20 files, in
+  any one category of `diff-size-report <that head> HEAD`; (iv) the spec or Mezi asks for it. A
+  milestone review in Standard is handed that whole unreviewed diff, not only this milestone's, so
+  nothing before it counts toward (iii) again. On the last milestone a fired trigger is met by the
+  whole-branch review. Otherwise the ledger records `review: no` with the trigger check, (iii)'s
+  numbers included, and Gate 3 presents that line with the evidence and no review verdict; the
+  whole-branch review covers the milestone.
+  In every tier the PR-level `hacer-verifier` (`docs/harness/verifier-brief.md`) runs on every PR
+  Phase 4 opens, and its PASS is what merge-on-green waits for — `scripts/merge-on-green.mjs` checks
+  CI only, so the PASS stays the coordinator's precondition. It is not one of a tier's review seats.
+  Inside Phase 3 its brief is the milestone reviewer's brief for a harness ticket when a milestone
+  review runs; a Standard harness ticket with no fired trigger meets the verifier only at the PR.
+  When `docs/harness/verifier-brief.md` is the reviewer's brief, the coordinator appends the
+  `diff-size-report` output to its inputs and maps a size should-fix to a Blocker or a Nit by
+  ruling.
+- **A Standard run re-sizes when it changes class.** A contract revision after Gate 1 that
+  introduces a new seam — and green work that needs one is such a revision — makes the run Full from
+  the next milestone: the ledger records the re-size with its cost if wrong; every remaining
+  milestone is marked `review: yes (Full)` (the Full-only staffing table is not back-filled); the
+  milestones already closed without a reviewer stay on the whole-branch brief's list; the plan is
+  synced and its changed marks go to the delta reviewer with the changed items, with no second plan
+  review; and the next Gate 3 says so — under delegation, present, ledger, proceed. Work that newly
+  touches a named risk class changes that milestone's mark through (ii), not the tier. A tier Mezi
+  names mid-run takes effect from the next milestone the same way.
 - **Every fix round ends with the coordinator's delta-read, never a re-review
   agent:** the fix diff against the findings list, each finding marked addressed
   or open, the implementer resumed for what is still open. The next fresh eyes
@@ -320,9 +380,10 @@ milestone, rule and proceed, ledger every ruling, never stall.
   finding in the PR body, and in the commit message until the squash (Phase 4), never
   a new comment block, and the delta-read runs `diff-size-report` on the fix diff
   (`--direct <old> <new>` across an amend).
-- **The whole-branch review is never skipped, in any tier:** one fresh reviewer
-  (`subagent_type: reviewer`) over the whole diff before the definition of done
-  runs, pointed at the ledger's parked findings. It checks the branch for duplicated logic as a named item; duplication is fixed
+- **The whole-branch review is never skipped, in any tier:** one fresh reviewer (`subagent_type:
+  reviewer`) over the whole diff before the definition of done runs, pointed at the ledger's parked
+  findings (in Standard its brief lists each milestone no reviewer saw and the plan review's
+  findings ruled no-change or deferred, with the rulings).It checks the branch for duplicated logic as a named item; duplication is fixed
 before closing, never parked as a follow-up. The comment rule and the size check (Standing
 rules) are named items too, from `diff-size-report` over the whole branch; their should-fixes
 are fixed before closing. Its fix wave ends with the coordinator's delta-read.
@@ -426,7 +487,7 @@ milestone's red contract is committed and its green work divides into disjoint
 dispatched in one message; doing it serially instead needs a one-line reason in the
 ledger (a single file, the shared store surface, judgment-heavy work kept in-session).
 The split — the lanes and their `Writes` sets — is declared before dispatch: in the
-plan's waves (Full) or in the ledger (Light). Every lane still needs all five:
+plan's waves (Standard and Full) or in the ledger (Light). Every lane still needs all five:
 
 1. the milestone's **red contract is committed** — a fixed contract is what stops
    two lanes making conflicting implicit decisions;
@@ -448,7 +509,7 @@ plan's waves (Full) or in the ledger (Light). Every lane still needs all five:
    is unacceptable).
 
 **Consolidation pass — mandatory after any milestone that ran two or more
-implementer lanes**, after the last merge and before the milestone review; it is
+implementer lanes**, after the last merge and before the milestone review, or before Gate 3 when none runs; it is
 the safety net for condition 5, never a substitute for it. One fresh agent
 (`subagent_type: implementer`) gets the lanes' combined diff, the lane split and
 the shared-able code each lane listed in its report, and folds every piece of
