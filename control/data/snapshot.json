@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-01T23:53:59.782Z",
+  "generatedAt": "2026-10-01T23:59:57.596Z",
   "head": {
-    "sha": "c3a1e1388e62b963138ce4f3e1ed8c7e7baf9dec",
-    "date": "2026-10-02T02:52:10+03:00",
-    "subject": "docs: the README sample in the phase-0 plan is a four-backtick fence around its bash block"
+    "sha": "6672f8d9d3859bb6c6a97e96fbca35466c2c2593",
+    "date": "2026-10-02T02:58:52+03:00",
+    "subject": "docs: retire WORK-SYSTEM.md's live sections (#280)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-01T23:53:59.782Z",
+      "fetchedAt": "2026-10-01T23:59:57.596Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-01T23:53:59.782Z",
+      "fetchedAt": "2026-10-01T23:59:57.596Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-01T23:53:59.782Z",
+      "fetchedAt": "2026-10-01T23:59:57.596Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-01T23:53:59.782Z",
+      "fetchedAt": "2026-10-01T23:59:57.596Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-01T23:53:59.782Z",
+      "fetchedAt": "2026-10-01T23:59:57.596Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-01T23:53:59.782Z",
+      "fetchedAt": "2026-10-01T23:59:57.596Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-01T23:53:59.782Z",
+      "fetchedAt": "2026-10-01T23:59:57.596Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-01T23:53:59.782Z",
+      "fetchedAt": "2026-10-01T23:59:57.596Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-01T23:53:59.782Z",
+      "fetchedAt": "2026-10-01T23:59:57.596Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-01T23:53:59.782Z",
+      "fetchedAt": "2026-10-01T23:59:57.596Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-01T23:53:59.782Z",
+      "fetchedAt": "2026-10-01T23:59:57.596Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-01T23:53:59.782Z",
+      "fetchedAt": "2026-10-01T23:59:57.596Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-01T23:53:59.782Z",
+      "fetchedAt": "2026-10-01T23:59:57.596Z",
       "status": "ok"
     }
   },
@@ -105,12 +105,12 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 27,
-        "ready": 12,
+        "open": 26,
+        "ready": 11,
         "inProgress": 2,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 14,
+        "agentReady": 13,
         "filedElsewhere": [
           151,
           339
@@ -121,8 +121,8 @@
         },
         "title": "Epic: harness — autonomous-run improvements & agent-readiness",
         "subIssues": {
-          "completed": 43,
-          "percentCompleted": 75,
+          "completed": 44,
+          "percentCompleted": 77,
           "total": 57
         }
       },
@@ -445,11 +445,6 @@
         "project": "harness"
       },
       {
-        "number": 308,
-        "title": "Two rule files disagree on when work may touch main: the constitution's git-hygiene line vs the worktree rule",
-        "project": "harness"
-      },
-      {
         "number": 368,
         "title": "A manual browser-qa dispatch posts a required check run outside the PR's concurrency group — the #295 door left open",
         "project": "harness"
@@ -600,21 +595,6 @@
           "project:harness",
           "agent-ready",
           "risk:0"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 308,
-        "title": "Two rule files disagree on when work may touch main: the constitution's git-hygiene line vs the worktree rule",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:1"
         ],
         "blocking": [],
         "project": "harness",
@@ -1486,22 +1466,6 @@
         "reason": "unshaped"
       },
       {
-        "number": 280,
-        "title": "Retire WORK-SYSTEM.md's live sections: pick rule, labels and loop now live in docs/portfolio.md and docs/harness/README.md",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:0"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 284,
         "title": "Research (far future, cloud-only): how to browser-test the 3D surface — start only after the non-3D surfaces catch up",
         "labels": [
@@ -1529,6 +1493,22 @@
         "lane": "aux",
         "pickable": false,
         "reason": "foundation-gate"
+      },
+      {
+        "number": 308,
+        "title": "Two rule files disagree on when work may touch main: the constitution's git-hygiene line vs the worktree rule",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:1"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "claimed"
       },
       {
         "number": 311,
@@ -2280,7 +2260,6 @@
         269,
         271,
         304,
-        308,
         368,
         392,
         394,
@@ -2291,7 +2270,7 @@
         154,
         156,
         270,
-        280,
+        308,
         391,
         435,
         436,
@@ -2406,7 +2385,15 @@
         "closes": [
           391
         ],
-        "verdicts": []
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Sonnet 5.5 (fresh context)",
+            "at": "2026-10-01T23:58:12Z",
+            "url": "https://github.com/mezivillager/hacer/pull/664#issuecomment-5942968564"
+          }
+        ]
       },
       {
         "number": 659,
@@ -2532,6 +2519,32 @@
       }
     ],
     "merged": [
+      {
+        "number": 666,
+        "title": "docs: retire WORK-SYSTEM.md's live sections",
+        "url": "https://github.com/mezivillager/hacer/pull/666",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/280-retire-work-system",
+        "isDraft": false,
+        "createdAt": "2026-10-01T23:55:12Z",
+        "mergedAt": "2026-10-01T23:58:53Z",
+        "closes": [
+          280
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (risk:0 docs-only, #554)",
+            "at": "2026-10-01T23:56:36Z",
+            "url": "https://github.com/mezivillager/hacer/pull/666#issuecomment-5942953268"
+          }
+        ]
+      },
       {
         "number": 663,
         "title": "docs: close the three malformed code fences the fence check reports",
@@ -4048,33 +4061,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/564#issuecomment-5855626015"
           }
         ]
-      },
-      {
-        "number": 563,
-        "title": "chore(ci): advisory OpenSSF Scorecard workflow (#542)",
-        "url": "https://github.com/mezivillager/hacer/pull/563",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:upkeep",
-          "risk:1"
-        ],
-        "headRefName": "chore/542-scorecard",
-        "isDraft": false,
-        "createdAt": "2026-09-27T11:57:18Z",
-        "mergedAt": "2026-09-27T12:09:28Z",
-        "closes": [
-          542
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "claude-sonnet-5",
-            "at": "2026-09-27T12:08:55Z",
-            "url": "https://github.com/mezivillager/hacer/pull/563#issuecomment-5855686139"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4169,7 +4155,7 @@
         "number": 280,
         "ref": "refs/heads/claim/280",
         "sha": "fb69a0877371f8451a9543b12c97baedd7b91e80",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "Retire WORK-SYSTEM.md's live sections: pick rule, labels and loop now live in docs/portfolio.md and docs/harness/README.md",
         "url": "https://github.com/mezivillager/hacer/issues/280",
         "labels": [
@@ -4178,7 +4164,7 @@
           "in-progress",
           "risk:0"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -4188,6 +4174,31 @@
           "author": "mezivillager",
           "at": "2026-10-01T23:48:18Z",
           "url": "https://github.com/mezivillager/hacer/issues/280#issuecomment-5942871007"
+        }
+      },
+      {
+        "number": 308,
+        "ref": "refs/heads/claim/308",
+        "sha": "c3a1e1388e62b963138ce4f3e1ed8c7e7baf9dec",
+        "state": "OPEN",
+        "title": "Two rule files disagree on when work may touch main: the constitution's git-hygiene line vs the worktree rule",
+        "url": "https://github.com/mezivillager/hacer/issues/308",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:1"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-92",
+          "branch": null,
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-01T23:57:09Z",
+          "url": "https://github.com/mezivillager/hacer/issues/308#issuecomment-5942958479"
         }
       },
       {
@@ -4527,7 +4538,7 @@
         }
       }
     ],
-    "onClosedIssues": 13
+    "onClosedIssues": 14
   },
   "cloudLane": {
     "items": [
@@ -6152,7 +6163,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-27",
-        "merges": 5
+        "merges": 4
       },
       {
         "date": "2026-09-28",
@@ -6168,20 +6179,20 @@
       },
       {
         "date": "2026-10-01",
-        "merges": 16
+        "merges": 17
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-17T23:53:59.782Z",
-      "merged": 213,
+      "since": "2026-09-17T23:59:57.596Z",
+      "merged": 214,
       "openToMergeHours": {
         "median": 0.2,
         "p90": 6.1
       },
       "blockedOnce": {
         "count": 22,
-        "of": 127,
+        "of": 128,
         "prs": [
           238,
           248,
@@ -6227,8 +6238,8 @@
           ]
         },
         "nonCode": {
-          "merged": 100,
-          "withVerdict": 26,
+          "merged": 101,
+          "withVerdict": 27,
           "without": [
             113,
             115,
@@ -7522,11 +7533,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "c3a1e1388e62b963138ce4f3e1ed8c7e7baf9dec",
+        "sha": "6672f8d9d3859bb6c6a97e96fbca35466c2c2593",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36943075256/job/110638836866",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36943631731/job/110640623028",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -7850,11 +7861,11 @@
       },
       {
         "pr": 664,
-        "sha": "fc2a9eef918b99e0035cca85a30ad29a783d8716",
+        "sha": "af84158f3a5106f89e494b2564ee8bf229b43bef",
         "check": "pr-hygiene",
         "conclusion": "SUCCESS",
-        "completedAt": "2026-10-01T23:52:23Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36943066613/job/110638811586",
+        "completedAt": "2026-10-01T23:58:59Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36943622145/job/110640593053",
         "line": "HYGIENE: PASS reviewable=96 test=99 excluded=0 files=4 issue=#391 linked=fixes",
         "verdict": "PASS",
         "fields": {
@@ -7869,11 +7880,11 @@
       },
       {
         "pr": 664,
-        "sha": "fc2a9eef918b99e0035cca85a30ad29a783d8716",
+        "sha": "af84158f3a5106f89e494b2564ee8bf229b43bef",
         "check": "browser-qa",
         "conclusion": "SUCCESS",
-        "completedAt": "2026-10-01T23:52:21Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36943066670/job/110638810670",
+        "completedAt": "2026-10-01T23:59:06Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36943623088/job/110640594838",
         "line": "BROWSER-QA: skipped (no critical paths)",
         "verdict": "SKIPPED",
         "fields": {},
@@ -7881,11 +7892,11 @@
       },
       {
         "pr": 664,
-        "sha": "fc2a9eef918b99e0035cca85a30ad29a783d8716",
+        "sha": "af84158f3a5106f89e494b2564ee8bf229b43bef",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36943065975/job/110638808808",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36943623197/job/110640595384",
         "line": null,
         "verdict": null,
         "fields": {},
