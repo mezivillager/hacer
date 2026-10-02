@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-02T01:42:06.718Z",
+  "generatedAt": "2026-10-02T01:47:06.069Z",
   "head": {
-    "sha": "0a86bad1c4303eb8d76f07f5945228c1f629b611",
-    "date": "2026-10-02T04:40:50+03:00",
-    "subject": "docs(harness): session record for the 2026-10-02 run, rulings R779–R794, ledger rows in id order"
+    "sha": "baa3e3b77c1d3654029773d0230774543c4aae92",
+    "date": "2026-10-02T04:46:06+03:00",
+    "subject": "docs(harness): the 2026-10-02 run closed at 01:41Z, before the reset (R795)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-02T01:42:06.718Z",
+      "fetchedAt": "2026-10-02T01:47:06.069Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-02T01:42:06.718Z",
+      "fetchedAt": "2026-10-02T01:47:06.069Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-02T01:42:06.718Z",
+      "fetchedAt": "2026-10-02T01:47:06.069Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-02T01:42:06.718Z",
+      "fetchedAt": "2026-10-02T01:47:06.069Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-02T01:42:06.718Z",
+      "fetchedAt": "2026-10-02T01:47:06.069Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-02T01:42:06.718Z",
+      "fetchedAt": "2026-10-02T01:47:06.069Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-02T01:42:06.718Z",
+      "fetchedAt": "2026-10-02T01:47:06.069Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-02T01:42:06.718Z",
+      "fetchedAt": "2026-10-02T01:47:06.069Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-02T01:42:06.718Z",
+      "fetchedAt": "2026-10-02T01:47:06.069Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-02T01:42:06.718Z",
+      "fetchedAt": "2026-10-02T01:47:06.069Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-02T01:42:06.718Z",
+      "fetchedAt": "2026-10-02T01:47:06.069Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-02T01:42:06.718Z",
+      "fetchedAt": "2026-10-02T01:47:06.069Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-02T01:42:06.718Z",
+      "fetchedAt": "2026-10-02T01:47:06.069Z",
       "status": "ok"
     }
   },
@@ -2342,6 +2342,30 @@
     ],
     "merged": [
       {
+        "number": 675,
+        "title": "docs(harness): the 2026-10-02 run closed at 01:41Z, before the reset (R795)",
+        "url": "https://github.com/mezivillager/hacer/pull/675",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/session-2026-10-02-close-time",
+        "isDraft": false,
+        "createdAt": "2026-10-02T01:43:07Z",
+        "mergedAt": "2026-10-02T01:46:07Z",
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (risk:0 docs-only, #554)",
+            "at": "2026-10-02T01:43:26Z",
+            "url": "https://github.com/mezivillager/hacer/pull/675#issuecomment-5944022773"
+          }
+        ]
+      },
+      {
         "number": 674,
         "title": "docs(harness): session record for the 2026-10-02 run, rulings R779–R794, ledger rows in id order",
         "url": "https://github.com/mezivillager/hacer/pull/674",
@@ -3846,40 +3870,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/588#issuecomment-5889806353"
           }
         ]
-      },
-      {
-        "number": 586,
-        "title": "docs: point stale gate recipe lines at the chipName guide",
-        "url": "https://github.com/mezivillager/hacer/pull/586",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:upkeep",
-          "risk:0"
-        ],
-        "headRefName": "docs/253-chipname-recipe-sweep",
-        "isDraft": false,
-        "createdAt": "2026-09-29T11:40:06Z",
-        "mergedAt": "2026-09-29T11:46:46Z",
-        "closes": [
-          253
-        ],
-        "verdicts": [
-          {
-            "verdict": "BLOCK",
-            "round": 1,
-            "model": "coordinator (risk:0 docs-only, #554)",
-            "at": "2026-09-29T11:43:08Z",
-            "url": "https://github.com/mezivillager/hacer/pull/586#issuecomment-5889558020"
-          },
-          {
-            "verdict": "PASS",
-            "round": 2,
-            "model": "Sonnet 5.5 (fresh context)",
-            "at": "2026-09-29T11:46:05Z",
-            "url": "https://github.com/mezivillager/hacer/pull/586#issuecomment-5889606774"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4456,7 +4446,7 @@
         "kind": "record",
         "title": "Session record — 2026-10-02: the coordinator loop to 92% weekly usage",
         "status": null,
-        "lines": 108
+        "lines": 109
       }
     ]
   },
@@ -5952,7 +5942,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-29",
-        "merges": 30
+        "merges": 29
       },
       {
         "date": "2026-09-30",
@@ -5964,20 +5954,20 @@
       },
       {
         "date": "2026-10-02",
-        "merges": 12
+        "merges": 13
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-18T01:42:06.718Z",
-      "merged": 226,
+      "since": "2026-09-18T01:47:06.069Z",
+      "merged": 227,
       "openToMergeHours": {
         "median": 0.2,
         "p90": 3.6
       },
       "blockedOnce": {
         "count": 22,
-        "of": 134,
+        "of": 135,
         "prs": [
           238,
           248,
@@ -6023,8 +6013,8 @@
           ]
         },
         "nonCode": {
-          "merged": 109,
-          "withVerdict": 29,
+          "merged": 110,
+          "withVerdict": 30,
           "without": [
             113,
             115,
@@ -7466,11 +7456,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "0a86bad1c4303eb8d76f07f5945228c1f629b611",
+        "sha": "baa3e3b77c1d3654029773d0230774543c4aae92",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36952092064/job/110667029722",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36952511365/job/110668306964",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -12247,6 +12237,18 @@
         "amends": null,
         "assumes": null,
         "costIfWrong": "an exit 4 and a PR left open; nothing merges that CI did not pass on its final head."
+      },
+      {
+        "id": "R795",
+        "kind": "ruling",
+        "title": "the run closes 79 minutes before the reset rather than start a cycle it cannot finish",
+        "source": "docs/decisions/rulings/2026-10-02-hacer-loop-92.md:139",
+        "buildsOn": [
+          "R779"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "about one point of weekly budget left unused; nothing is lost, the next run picks"
       }
     ],
     "edges": [
@@ -13086,6 +13088,12 @@
         "to": "R793",
         "kind": "builds-on",
         "source": "docs/decisions/rulings/2026-10-02-hacer-loop-92.md:130"
+      },
+      {
+        "from": "R795",
+        "to": "R779",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-02-hacer-loop-92.md:140"
       },
       {
         "from": "L046",
