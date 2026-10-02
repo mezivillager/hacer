@@ -28,6 +28,9 @@
 // share — none at all, or one unique per run, which no other run can join. `cancel-in-progress`
 // is no longer read: a group unique per run holds nothing to cancel, and a shared group is refused
 // whatever it says.
+//
+// A second door (#368): a `workflow_dispatch` run started with `--ref <PR branch>` posts its job's
+// check run on the PR head, so a job named after a required context there can become the verdict.
 
 /** The contexts the `main-rules` ruleset requires on `main`
  *  (`gh api repos/:owner/:repo/rulesets/13907542` → `required_status_checks`). Keep in step with
@@ -40,15 +43,16 @@ const stripComment = (value) => value.replace(/(^|[ \t])#.*$/, '').trim()
 
 /**
  * The check-run names a workflow source can post: one per job, its `name:` when it declares one,
- * otherwise the job id. A deliberately narrow scanner rather than a YAML parser — the repo has no
- * YAML dependency, and these are small hand-written files in one house style.
+ * otherwise the job id. A name conditional on the event resolves for `event`; with no event, every
+ * name it can take is listed. A deliberately narrow scanner rather than a YAML parser — the repo has
+ * no YAML dependency, and these are small hand-written files in one house style.
  */
-export function jobContexts(source) {
+export function jobContexts(source, event) {
   const lines = source.split('\n')
   const start = lines.findIndex((line) => /^jobs:[ \t]*(#.*)?$/.test(line))
   if (start === -1) return []
 
-  const contexts = []
+  const names = []
   let jobIndent = null
   for (const line of lines.slice(start + 1)) {
     if (line.trim() === '' || line.trimStart().startsWith('#')) continue
@@ -57,15 +61,50 @@ export function jobContexts(source) {
     const entry = line.match(/^([ \t]+)([A-Za-z0-9_.-]+):[ \t]*(#.*)?$/)
     if (entry && (jobIndent === null || entry[1].length === jobIndent)) {
       jobIndent ??= entry[1].length
-      contexts.push(entry[2])
+      names.push(entry[2])
       continue
     }
     const named = line.match(/^([ \t]+)name:[ \t]+(.+?)[ \t]*$/)
-    if (named && jobIndent !== null && named[1].length === jobIndent + 2 && contexts.length > 0) {
-      contexts[contexts.length - 1] = stripQuotes(named[2])
+    if (named && jobIndent !== null && named[1].length === jobIndent + 2 && names.length > 0) {
+      names[names.length - 1] = stripQuotes(named[2])
     }
   }
-  return contexts
+  return names.flatMap((name) => resolveName(name, event))
+}
+
+const EVENT_CONDITIONAL =
+  /^\$\{\{\s*github\.event_name\s*(==|!=)\s*'([^']+)'\s*&&\s*'([^']+)'\s*\|\|\s*'([^']+)'\s*\}\}$/
+
+/** `${{ github.event_name == 'e' && 'a' || 'b' }}` (or `!=`) for `event`; any other name as written. */
+function resolveName(name, event) {
+  const conditional = name.match(EVENT_CONDITIONAL)
+  if (!conditional) return [name]
+  const [, operator, expected, whenTrue, whenFalse] = conditional
+  if (event === undefined) return [whenTrue, whenFalse]
+  return [(event === expected) === (operator === '==') ? whenTrue : whenFalse]
+}
+
+/** The events under a workflow's `on:` key, in its one-line, list or block form. */
+export function workflowEvents(source) {
+  const lines = source.split('\n')
+  const index = lines.findIndex((line) => /^['"]?on['"]?:/.test(line))
+  if (index === -1) return []
+  const value = stripComment(lines[index].replace(/^['"]?on['"]?:/, ''))
+  if (value.startsWith('[')) return value.slice(1, -1).split(',').map((event) => event.trim()).filter(Boolean)
+  if (value !== '') return [value]
+
+  const events = []
+  let depth = null
+  for (const line of lines.slice(index + 1)) {
+    if (line.trim() === '' || line.trimStart().startsWith('#')) continue
+    if (/^\S/.test(line)) break
+    const key = line.match(/^([ \t]+)([A-Za-z_]+):/)
+    if (key && (depth === null || key[1].length === depth)) {
+      depth ??= key[1].length
+      events.push(key[2])
+    }
+  }
+  return events
 }
 
 /**
@@ -107,15 +146,16 @@ export function isUniquePerRun(group) {
 }
 
 /**
- * Findings for one workflow file. Empty means it cannot strand a required check: it posts none of
- * them, or no two of its runs can meet in a concurrency group.
+ * Findings for one workflow file. Empty means it cannot strand or overrule a required check: it
+ * posts none of them, no two of its runs can meet in a concurrency group, and a manual dispatch
+ * posts none of them.
  */
 export function checkWorkflow(file, source, required = REQUIRED_CONTEXTS) {
   const contexts = jobContexts(source).filter((context) => required.includes(context))
   if (contexts.length === 0) return []
   const noun = contexts.length === 1 ? 'context' : 'contexts'
   const posts = `${file} posts the required ${noun} ${contexts.join(', ')}`
-  return concurrencyGroups(source)
+  const shared = concurrencyGroups(source)
     .filter((group) => !isUniquePerRun(group))
     .map((group) => ({
       file,
@@ -129,16 +169,32 @@ export function checkWorkflow(file, source, required = REQUIRED_CONTEXTS) {
         ' — a run the group cancels, in progress (#295) or still pending (#530), can strand a PR ' +
         'with every check green. Remove the block, or key the group on ${{ github.run_id }}.',
     }))
+  return [...shared, ...dispatchFindings(file, source, required)]
+}
+
+function dispatchFindings(file, source, required) {
+  if (!workflowEvents(source).includes('workflow_dispatch')) return []
+  const contexts = jobContexts(source, 'workflow_dispatch').filter((context) => required.includes(context))
+  if (contexts.length === 0) return []
+  const noun = contexts.length === 1 ? 'context' : 'contexts'
+  return [
+    {
+      file,
+      contexts,
+      group: null,
+      rule: 'dispatch',
+      message:
+        `${file} posts the required ${noun} ${contexts.join(', ')} from workflow_dispatch too — a ` +
+        'dispatch run on a PR branch posts it on the PR head, and the newest check run of that name ' +
+        "is the verdict (#368). Name the job ${{ github.event_name == 'workflow_dispatch' && '<name> (manual)' || '<name>' }}.",
+    },
+  ]
 }
 
 /** One line per finding, or the sentence the guard expects when there is nothing to report. */
 export function formatFindings(findings) {
   if (findings.length === 0) {
-    return 'REQUIRED-CHECKS: ok — no required workflow shares a concurrency group between runs'
+    return 'REQUIRED-CHECKS: ok — no required workflow shares a concurrency group between runs or posts from a dispatch'
   }
   return findings.map((finding) => `REQUIRED-CHECKS: ${finding.message}`).join('\n')
-}
-
-export function workflowEvents() {
-  throw new Error('not implemented')
 }

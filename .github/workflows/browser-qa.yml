@@ -15,7 +15,9 @@ name: browser-qa
 # last line — the skip or the verdict — is also a `::notice` on this check run, which Mission Control
 # reads without log access (#477); that is stdout and needs no permission below.
 # Re-check a PR by hand: gh workflow run browser-qa.yml -f pr=<n> — it tests the PR's merge ref,
-# like the PR's own run, but reports in its log and job summary, not as the PR's check.
+# like the PR's own run. Its check run lands on the head of the ref it was dispatched from (the PR
+# head, with `--ref <branch>`), so it is named `browser-qa (manual)`: only a `pull_request` run
+# posts the required `browser-qa`, which the newest check run of that name decides (#368).
 
 on:
   pull_request:
@@ -43,7 +45,7 @@ permissions:
 
 jobs:
   browser-qa:
-    name: browser-qa
+    name: ${{ github.event_name == 'workflow_dispatch' && 'browser-qa (manual)' || 'browser-qa' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -52,6 +54,7 @@ jobs:
     steps:
       # Both events test the PR merged into main: pull_request by default, workflow_dispatch by
       # number. The merge ref also carries main's scripts/browser-qa.mjs to a PR branched earlier.
+      # Only the pull_request run reports as the PR's required check (job name above).
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ github.event_name == 'workflow_dispatch' && format('refs/pull/{0}/merge', inputs.pr) || '' }}

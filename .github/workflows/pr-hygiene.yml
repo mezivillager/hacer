@@ -38,6 +38,8 @@ name: PR Hygiene
 # from the default branch, so it cannot check the PR that introduces it. Once it is there, a
 # change to it can be tried from its branch, and any PR re-checked by hand:
 #   gh workflow run pr-hygiene.yml --ref <branch> -f pr=<n>
+# That run uses the branch's copy and posts on the branch head, so it is named `pr-hygiene (manual)`:
+# only a `pull_request_target` run posts the required `pr-hygiene` (#368).
 #
 # The `HYGIENE:` line is published for Mission Control (#477) by the same step: printed as a
 # `::notice`, which the runner stores as an annotation on this job's check run. That is stdout, so it
@@ -67,7 +69,7 @@ permissions:
 
 jobs:
   pr-hygiene:
-    name: pr-hygiene
+    name: ${{ github.event_name == 'workflow_dispatch' && 'pr-hygiene (manual)' || 'pr-hygiene' }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
