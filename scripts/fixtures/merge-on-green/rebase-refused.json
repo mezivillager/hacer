@@ -1,0 +1,324 @@
+{
+  "_recorded": "PR #667 head 0c576d7: check runs (filter=all), workflow runs and the pushes to main replayed to 2026-10-02T00:12:00Z, when merge-on-green reported CLEAN and GitHub refused the rebase merge; `commits` is gh api repos/mezivillager/hacer/pulls/667/commits as {sha, parents}, and 181b3c3 merged origin/main into the branch. `refusal` is the first line gh printed on stderr for each of the three merge attempts. Set by hand: state OPEN, mergeStateStatus CLEAN, autoMergeRequest null.",
+  "pr": {
+    "number": 667,
+    "id": "PR_kwDORdjPzc8AAAABGMzQHg",
+    "state": "OPEN",
+    "isDraft": false,
+    "mergeStateStatus": "CLEAN",
+    "headRefOid": "0c576d750981d0e01e6855ebff05b24afdf6a6f9",
+    "baseRefName": "main",
+    "autoMergeRequest": null,
+    "body": "Fixes #308\n\nDecisions: none\n\nThe effective rule is the owner's (`.cursor/rules/020-git-worktree-no-main.mdc`, cited by `AGENTS.md`): no direct commits to `main` for all substantive work, not only untested new features. The constitution line was narrower; it now states the consequence in one line and links the owner. No rule substance changed. The escape hatch (emergency hotfix, or the user's explicit one-off instruction) was split across point 4 and the precedence note; it is now stated once, in the owner. Ledger row L062 added (the L037/L044 family: two live statements of one rule disagree).\n\nModel: Sonnet 5.5. Exit codes: check-doc-paths + COVERAGE 0, lint:docs 0, skills.logic.test 0, lint 0, test:run 0, build 0. Size: 4 added lines, docs only."
+  },
+  "requiredContexts": [
+    "ci",
+    "pr-hygiene",
+    "browser-qa"
+  ],
+  "checkRuns": [
+    {
+      "conclusion": "success",
+      "id": 110643399604,
+      "name": "CodeQL",
+      "status": "completed",
+      "suite": 100072444048
+    },
+    {
+      "conclusion": "skipped",
+      "id": 110643320178,
+      "name": "sweep-previews",
+      "status": "completed",
+      "suite": 100072345641
+    },
+    {
+      "conclusion": "skipped",
+      "id": 110643286244,
+      "name": "cleanup-preview",
+      "status": "completed",
+      "suite": 100072345641
+    },
+    {
+      "conclusion": "success",
+      "id": 110643285175,
+      "name": "ci",
+      "status": "completed",
+      "suite": 100072345763
+    },
+    {
+      "conclusion": "success",
+      "id": 110643285160,
+      "name": "deploy-preview",
+      "status": "completed",
+      "suite": 100072345641
+    },
+    {
+      "conclusion": "success",
+      "id": 110643284965,
+      "name": "browser-qa",
+      "status": "completed",
+      "suite": 100072345717
+    },
+    {
+      "conclusion": "success",
+      "id": 110643280491,
+      "name": "pr-hygiene",
+      "status": "completed",
+      "suite": 100072340623
+    },
+    {
+      "conclusion": "success",
+      "id": 110643279434,
+      "name": "Analyze (actions)",
+      "status": "completed",
+      "suite": 100072337607
+    },
+    {
+      "conclusion": "success",
+      "id": 110643279403,
+      "name": "Analyze (javascript-typescript)",
+      "status": "completed",
+      "suite": 100072337607
+    },
+    {
+      "conclusion": "success",
+      "id": 110643279094,
+      "name": "Analyze (python)",
+      "status": "completed",
+      "suite": 100072337607
+    },
+    {
+      "conclusion": "success",
+      "id": 110643275356,
+      "name": "GitGuardian Security Checks",
+      "status": "completed",
+      "suite": 100072332592
+    }
+  ],
+  "workflowRuns": [
+    {
+      "attempt": 1,
+      "conclusion": "success",
+      "created_at": "2026-10-02T00:08:32Z",
+      "event": "pull_request",
+      "id": 36944479999,
+      "name": "browser-qa",
+      "status": "completed",
+      "suite": 100072345717,
+      "workflow_id": 361351329
+    },
+    {
+      "attempt": 1,
+      "conclusion": "success",
+      "created_at": "2026-10-02T00:08:32Z",
+      "event": "pull_request",
+      "id": 36944479974,
+      "name": "PR Deploy Preview",
+      "status": "completed",
+      "suite": 100072345641,
+      "workflow_id": 255347039
+    },
+    {
+      "attempt": 1,
+      "conclusion": "success",
+      "created_at": "2026-10-02T00:08:32Z",
+      "event": "pull_request",
+      "id": 36944480030,
+      "name": "CI",
+      "status": "completed",
+      "suite": 100072345763,
+      "workflow_id": 241098938
+    },
+    {
+      "attempt": 1,
+      "conclusion": "success",
+      "created_at": "2026-10-02T00:08:31Z",
+      "event": "pull_request_target",
+      "id": 36944478258,
+      "name": "PR Hygiene",
+      "status": "completed",
+      "suite": 100072340623,
+      "workflow_id": 361294170
+    },
+    {
+      "attempt": 1,
+      "conclusion": "success",
+      "created_at": "2026-10-02T00:08:30Z",
+      "event": "dynamic",
+      "id": 36944477163,
+      "name": "PR #667",
+      "status": "completed",
+      "suite": 100072337607,
+      "workflow_id": 362189662
+    }
+  ],
+  "basePushes": [
+    {
+      "after": "696d66ac4b8fcc71f63c1e0f2766d98d889c493b",
+      "before": "6672f8d9d3859bb6c6a97e96fbca35466c2c2593",
+      "timestamp": "2026-10-02T00:05:33Z"
+    },
+    {
+      "after": "6672f8d9d3859bb6c6a97e96fbca35466c2c2593",
+      "before": "c3a1e1388e62b963138ce4f3e1ed8c7e7baf9dec",
+      "timestamp": "2026-10-01T23:58:53Z"
+    },
+    {
+      "after": "c3a1e1388e62b963138ce4f3e1ed8c7e7baf9dec",
+      "before": "fb69a0877371f8451a9543b12c97baedd7b91e80",
+      "timestamp": "2026-10-01T23:52:11Z"
+    },
+    {
+      "after": "fb69a0877371f8451a9543b12c97baedd7b91e80",
+      "before": "1d2db790e5bf0d046a5aa8199a80266d8350e00f",
+      "timestamp": "2026-10-01T23:43:54Z"
+    },
+    {
+      "after": "1d2db790e5bf0d046a5aa8199a80266d8350e00f",
+      "before": "e20e18192dc4dbe2f77f6ecd9112f843cfea27af",
+      "timestamp": "2026-10-01T23:37:57Z"
+    },
+    {
+      "after": "e20e18192dc4dbe2f77f6ecd9112f843cfea27af",
+      "before": "41ecee7d90626297684ba5f9d8e6cc8475fe1fb9",
+      "timestamp": "2026-10-01T23:24:52Z"
+    },
+    {
+      "after": "41ecee7d90626297684ba5f9d8e6cc8475fe1fb9",
+      "before": "23380a6b57ec63194606ceaa6dc3fe6cafd72da9",
+      "timestamp": "2026-10-01T23:18:38Z"
+    },
+    {
+      "after": "23380a6b57ec63194606ceaa6dc3fe6cafd72da9",
+      "before": "ff4a6f87f42bf08f7aa87dd04ea14fec53412bd7",
+      "timestamp": "2026-10-01T23:13:04Z"
+    },
+    {
+      "after": "ff4a6f87f42bf08f7aa87dd04ea14fec53412bd7",
+      "before": "48bf6a52c3f77891df0abfd44fef5895428157ed",
+      "timestamp": "2026-10-01T22:47:24Z"
+    },
+    {
+      "after": "48bf6a52c3f77891df0abfd44fef5895428157ed",
+      "before": "f9fcb34b427ce5f55fe1070461170bd188347bbc",
+      "timestamp": "2026-10-01T22:29:46Z"
+    },
+    {
+      "after": "f9fcb34b427ce5f55fe1070461170bd188347bbc",
+      "before": "0651e7320f07f8e8abedd3eeac5322ce1680411d",
+      "timestamp": "2026-10-01T22:18:07Z"
+    },
+    {
+      "after": "0651e7320f07f8e8abedd3eeac5322ce1680411d",
+      "before": "59cc2f014da28cb1ec0f48600502b0b63da3237b",
+      "timestamp": "2026-10-01T22:06:32Z"
+    },
+    {
+      "after": "59cc2f014da28cb1ec0f48600502b0b63da3237b",
+      "before": "0c37a1e54b6370ad9d0324b3efa0723960f17974",
+      "timestamp": "2026-10-01T22:02:45Z"
+    },
+    {
+      "after": "0c37a1e54b6370ad9d0324b3efa0723960f17974",
+      "before": "3056f1493bd1033347368f910f4589ee5636353e",
+      "timestamp": "2026-10-01T22:00:35Z"
+    },
+    {
+      "after": "3056f1493bd1033347368f910f4589ee5636353e",
+      "before": "5500422a9a3d983976c25d6520129a4020617604",
+      "timestamp": "2026-10-01T21:52:31Z"
+    },
+    {
+      "after": "5500422a9a3d983976c25d6520129a4020617604",
+      "before": "e96553fad7fcb80fb66bbfec765a36bfa75a2cbb",
+      "timestamp": "2026-10-01T20:29:57Z"
+    },
+    {
+      "after": "e96553fad7fcb80fb66bbfec765a36bfa75a2cbb",
+      "before": "61ab98e5fea18c4eaf8ef3406280e30806f020a6",
+      "timestamp": "2026-10-01T11:26:02Z"
+    },
+    {
+      "after": "61ab98e5fea18c4eaf8ef3406280e30806f020a6",
+      "before": "7c3f9e21a7423b2573995a64e68d7064323f417b",
+      "timestamp": "2026-10-01T10:41:25Z"
+    },
+    {
+      "after": "7c3f9e21a7423b2573995a64e68d7064323f417b",
+      "before": "5ba09985914fd1c556e2e94c40dda34465e0bfa8",
+      "timestamp": "2026-09-30T14:23:21Z"
+    },
+    {
+      "after": "5ba09985914fd1c556e2e94c40dda34465e0bfa8",
+      "before": "c5291c69ace2916d5a0d2164536e0b5adb17ca3e",
+      "timestamp": "2026-09-29T16:26:47Z"
+    },
+    {
+      "after": "c5291c69ace2916d5a0d2164536e0b5adb17ca3e",
+      "before": "a0f23eab7034d31198d408d9391112eef677b751",
+      "timestamp": "2026-09-29T16:20:57Z"
+    },
+    {
+      "after": "a0f23eab7034d31198d408d9391112eef677b751",
+      "before": "6e91f0361f89af895cf43d1f4506133533ebca93",
+      "timestamp": "2026-09-29T16:14:57Z"
+    },
+    {
+      "after": "6e91f0361f89af895cf43d1f4506133533ebca93",
+      "before": "7fb179105c777e5945ff22f2b03bb9412297147e",
+      "timestamp": "2026-09-29T16:05:13Z"
+    },
+    {
+      "after": "7fb179105c777e5945ff22f2b03bb9412297147e",
+      "before": "97cde443b718e2f15acb1e487a57f4dc8cd76b0b",
+      "timestamp": "2026-09-29T16:01:13Z"
+    },
+    {
+      "after": "97cde443b718e2f15acb1e487a57f4dc8cd76b0b",
+      "before": "22c16af485467d08792c14096c11d5cd02f9f4d1",
+      "timestamp": "2026-09-29T15:54:05Z"
+    },
+    {
+      "after": "22c16af485467d08792c14096c11d5cd02f9f4d1",
+      "before": "89265d81e50d76010e00fd93b965c6ad4b979f89",
+      "timestamp": "2026-09-29T15:41:19Z"
+    },
+    {
+      "after": "89265d81e50d76010e00fd93b965c6ad4b979f89",
+      "before": "5f4a7c6038edf2900e0162327f53a70cdea80392",
+      "timestamp": "2026-09-29T15:37:57Z"
+    },
+    {
+      "after": "5f4a7c6038edf2900e0162327f53a70cdea80392",
+      "before": "89cc0b57a700dc8546321ab87ea00d3b39fb7623",
+      "timestamp": "2026-09-29T15:15:43Z"
+    },
+    {
+      "after": "89cc0b57a700dc8546321ab87ea00d3b39fb7623",
+      "before": "1368ea7d61a81ecb31cae1afe946896fd075ff91",
+      "timestamp": "2026-09-29T15:13:58Z"
+    }
+  ],
+  "commits": [
+    {
+      "parents": [
+        "6672f8d9d3859bb6c6a97e96fbca35466c2c2593"
+      ],
+      "sha": "76f4096933e85198c996875ee5854b4d7465ec4f"
+    },
+    {
+      "parents": [
+        "76f4096933e85198c996875ee5854b4d7465ec4f",
+        "696d66ac4b8fcc71f63c1e0f2766d98d889c493b"
+      ],
+      "sha": "181b3c37d514456df9833ed773cc4aaced4cd2ae"
+    },
+    {
+      "parents": [
+        "181b3c37d514456df9833ed773cc4aaced4cd2ae"
+      ],
+      "sha": "0c576d750981d0e01e6855ebff05b24afdf6a6f9"
+    }
+  ],
+  "refusal": "GraphQL: This branch can't be rebased (mergePullRequest)"
+}
