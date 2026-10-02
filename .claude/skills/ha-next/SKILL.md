@@ -96,8 +96,7 @@ that fought you, a flaky check). Second occurrence of the same thing → mechani
 the `harness` epic). Then report: PR, evidence, follow-ups filed, ledger line.
 
 ## "Queue up: …"
-Shape the idea into issues in the form (`docs/research/2026-09-18-agent-readiness/WORK-SYSTEM.md`
-§2): goal, acceptance criteria as tests, verification command, scope, files, risk, blocked-by.
+Shape the idea into issues in the form (`docs/harness/issue-form.md`): goal, acceptance criteria as tests, verification command, scope, files, risk, blocked-by.
 `agent-ready` only if risk:0/1 and the criteria are unambiguous; otherwise `needs-human` with your
 recommended answer. Split anything over the budget before it is ready. An epic or ADR in `spine`,
 `surfaces` or `horizon` gets a fidelity verdict comment (`hacer-fidelity`, ADR-0018 §2) before
