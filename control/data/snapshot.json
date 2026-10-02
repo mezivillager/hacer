@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-01T23:59:57.596Z",
+  "generatedAt": "2026-10-02T00:06:09.195Z",
   "head": {
-    "sha": "6672f8d9d3859bb6c6a97e96fbca35466c2c2593",
-    "date": "2026-10-02T02:58:52+03:00",
-    "subject": "docs: retire WORK-SYSTEM.md's live sections (#280)"
+    "sha": "696d66ac4b8fcc71f63c1e0f2766d98d889c493b",
+    "date": "2026-10-02T03:05:33+03:00",
+    "subject": "chore(harness): pin agent definitions; verifier tier sentence must match its brief (#391)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-01T23:59:57.596Z",
+      "fetchedAt": "2026-10-02T00:06:09.195Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-01T23:59:57.596Z",
+      "fetchedAt": "2026-10-02T00:06:09.195Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-01T23:59:57.596Z",
+      "fetchedAt": "2026-10-02T00:06:09.195Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-01T23:59:57.596Z",
+      "fetchedAt": "2026-10-02T00:06:09.195Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-01T23:59:57.596Z",
+      "fetchedAt": "2026-10-02T00:06:09.195Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-01T23:59:57.596Z",
+      "fetchedAt": "2026-10-02T00:06:09.195Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-01T23:59:57.596Z",
+      "fetchedAt": "2026-10-02T00:06:09.195Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-01T23:59:57.596Z",
+      "fetchedAt": "2026-10-02T00:06:09.195Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-01T23:59:57.596Z",
+      "fetchedAt": "2026-10-02T00:06:09.195Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-01T23:59:57.596Z",
+      "fetchedAt": "2026-10-02T00:06:09.195Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-01T23:59:57.596Z",
+      "fetchedAt": "2026-10-02T00:06:09.195Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-01T23:59:57.596Z",
+      "fetchedAt": "2026-10-02T00:06:09.195Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-01T23:59:57.596Z",
+      "fetchedAt": "2026-10-02T00:06:09.195Z",
       "status": "ok"
     }
   },
@@ -105,12 +105,12 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 26,
+        "open": 25,
         "ready": 11,
-        "inProgress": 2,
+        "inProgress": 1,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 13,
+        "agentReady": 12,
         "filedElsewhere": [
           151,
           339
@@ -483,7 +483,7 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
-        664,
+        667,
         514
       ]
     }
@@ -1814,22 +1814,6 @@
         "reason": "not-pulled"
       },
       {
-        "number": 391,
-        "title": "Nothing pins .claude/agents/*.md — the same tier-rule defect appeared twice in the file the briefs' invariants do not cover",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:1"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 395,
         "title": "computeJunctionRelocations deletes a junction based on wireIds[0] (document-mutating)",
         "labels": [
@@ -2271,7 +2255,6 @@
         156,
         270,
         308,
-        391,
         435,
         436,
         454,
@@ -2370,30 +2353,22 @@
   "prs": {
     "open": [
       {
-        "number": 664,
-        "title": "chore(harness): pin agent definitions; verifier tier sentence must match its brief",
-        "url": "https://github.com/mezivillager/hacer/pull/664",
+        "number": 667,
+        "title": "docs: one owner and one escape hatch for the no-main rule",
+        "url": "https://github.com/mezivillager/hacer/pull/667",
         "author": "mezivillager",
         "labels": [
           "project:harness",
           "risk:1"
         ],
-        "headRefName": "chore/391-pin-agent-defs",
+        "headRefName": "docs/308-no-main-rule",
         "isDraft": false,
-        "createdAt": "2026-10-01T23:52:05Z",
+        "createdAt": "2026-10-02T00:03:08Z",
         "mergedAt": null,
         "closes": [
-          391
+          308
         ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Sonnet 5.5 (fresh context)",
-            "at": "2026-10-01T23:58:12Z",
-            "url": "https://github.com/mezivillager/hacer/pull/664#issuecomment-5942968564"
-          }
-        ]
+        "verdicts": []
       },
       {
         "number": 659,
@@ -2542,6 +2517,32 @@
             "model": "coordinator (risk:0 docs-only, #554)",
             "at": "2026-10-01T23:56:36Z",
             "url": "https://github.com/mezivillager/hacer/pull/666#issuecomment-5942953268"
+          }
+        ]
+      },
+      {
+        "number": 664,
+        "title": "chore(harness): pin agent definitions; verifier tier sentence must match its brief",
+        "url": "https://github.com/mezivillager/hacer/pull/664",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:1"
+        ],
+        "headRefName": "chore/391-pin-agent-defs",
+        "isDraft": false,
+        "createdAt": "2026-10-01T23:52:05Z",
+        "mergedAt": "2026-10-02T00:05:34Z",
+        "closes": [
+          391
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Sonnet 5.5 (fresh context)",
+            "at": "2026-10-01T23:58:12Z",
+            "url": "https://github.com/mezivillager/hacer/pull/664#issuecomment-5942968564"
           }
         ]
       },
@@ -4034,33 +4035,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/565#issuecomment-5855827104"
           }
         ]
-      },
-      {
-        "number": 564,
-        "title": "docs(harness): retire tasks/todo.md and the P05 checklist as history",
-        "url": "https://github.com/mezivillager/hacer/pull/564",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:0"
-        ],
-        "headRefName": "docs/148-retire-todo",
-        "isDraft": false,
-        "createdAt": "2026-09-27T11:58:27Z",
-        "mergedAt": "2026-09-27T12:01:35Z",
-        "closes": [
-          148
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "coordinator (Opus 5.5)",
-            "at": "2026-09-27T11:59:43Z",
-            "url": "https://github.com/mezivillager/hacer/pull/564#issuecomment-5855626015"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4205,7 +4179,7 @@
         "number": 391,
         "ref": "refs/heads/claim/391",
         "sha": "1d2db790e5bf0d046a5aa8199a80266d8350e00f",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "Nothing pins .claude/agents/*.md — the same tier-rule defect appeared twice in the file the briefs' invariants do not cover",
         "url": "https://github.com/mezivillager/hacer/issues/391",
         "labels": [
@@ -4214,7 +4188,7 @@
           "in-progress",
           "risk:1"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -4538,7 +4512,7 @@
         }
       }
     ],
-    "onClosedIssues": 14
+    "onClosedIssues": 15
   },
   "cloudLane": {
     "items": [
@@ -5197,11 +5171,19 @@
         "shouldHaveBeenCaughtBy": "the merge tool: compare when the green started with the base branch's last move",
         "mechanised": "yes — #407: `scripts/merge-on-green.mjs` updates the branch on a stale green, merges only on the fresh one, and no longer arms auto-merge; which checks see the merge result is in `docs/harness/README.md` § *When a required check is stuck*",
         "decision": "—"
+      },
+      {
+        "id": "L062",
+        "date": "2026-10-02",
+        "whatWentWrong": "L037 and L044 are one defect seen twice, so the ledger's rule made it a mechanism. On 2026-10-02 the twins still differed: `.claude/agents/hacer-verifier.md` stated the tier rule in other words than `verifier-brief.md` in both its `description` and its body. The meaning matched but the wording did not, so nothing tied the next edit of one file to the other",
+        "shouldHaveBeenCaughtBy": "nothing pinned `.claude/agents/*.md`",
+        "mechanised": "yes — #391: `AGENT_INVARIANTS` pins each agent definition's `model:` and rules in `scripts/skills.logic.mjs`, and `TWIN_SENTENCES` fails when the verifier's tier sentence differs from its brief's; the agent file now carries the brief's sentence",
+        "decision": "—"
       }
     ],
     "byMechanised": {
       "no": 9,
-      "yes": 46,
+      "yes": 47,
       "other": 1,
       "partly": 5
     }
@@ -6163,7 +6145,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-27",
-        "merges": 4
+        "merges": 3
       },
       {
         "date": "2026-09-28",
@@ -6180,19 +6162,23 @@
       {
         "date": "2026-10-01",
         "merges": 17
+      },
+      {
+        "date": "2026-10-02",
+        "merges": 1
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-17T23:59:57.596Z",
-      "merged": 214,
+      "since": "2026-09-18T00:06:09.195Z",
+      "merged": 215,
       "openToMergeHours": {
         "median": 0.2,
         "p90": 6.1
       },
       "blockedOnce": {
         "count": 22,
-        "of": 128,
+        "of": 129,
         "prs": [
           238,
           248,
@@ -6220,8 +6206,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 113,
-          "withVerdict": 101,
+          "merged": 114,
+          "withVerdict": 102,
           "without": [
             250,
             285,
@@ -7376,39 +7362,8 @@
       },
       {
         "date": "2026-10-01",
-        "at": "2026-10-01T23:14:31.405Z",
+        "at": "2026-10-01T23:59:57.596Z",
         "byProject": {
-          "harness": [
-            160,
-            247,
-            251,
-            257,
-            269,
-            271,
-            280,
-            304,
-            308,
-            368,
-            391,
-            392,
-            394,
-            418,
-            516,
-            547,
-            154,
-            156,
-            270,
-            435,
-            436,
-            454,
-            500,
-            504,
-            505,
-            550,
-            607,
-            648,
-            649
-          ],
           "foundation": [
             338,
             373,
@@ -7439,9 +7394,36 @@
           "lineage": [
             471,
             470,
-            481,
             502,
             569
+          ],
+          "harness": [
+            257,
+            269,
+            271,
+            304,
+            368,
+            392,
+            394,
+            418,
+            516,
+            547,
+            665,
+            154,
+            156,
+            270,
+            308,
+            391,
+            435,
+            436,
+            454,
+            500,
+            504,
+            505,
+            550,
+            607,
+            648,
+            649
           ],
           "spine": [
             165,
@@ -7533,11 +7515,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "6672f8d9d3859bb6c6a97e96fbca35466c2c2593",
+        "sha": "696d66ac4b8fcc71f63c1e0f2766d98d889c493b",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36943631731/job/110640623028",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36944228521/job/110642470967",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -7860,43 +7842,43 @@
         "disagrees": false
       },
       {
-        "pr": 664,
-        "sha": "af84158f3a5106f89e494b2564ee8bf229b43bef",
+        "pr": 667,
+        "sha": "76f4096933e85198c996875ee5854b4d7465ec4f",
         "check": "pr-hygiene",
         "conclusion": "SUCCESS",
-        "completedAt": "2026-10-01T23:58:59Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36943622145/job/110640593053",
-        "line": "HYGIENE: PASS reviewable=96 test=99 excluded=0 files=4 issue=#391 linked=fixes",
+        "completedAt": "2026-10-02T00:03:25Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36944015026/job/110641801356",
+        "line": "HYGIENE: PASS reviewable=7 test=0 excluded=0 files=3 issue=#308 linked=fixes",
         "verdict": "PASS",
         "fields": {
-          "reviewable": 96,
-          "test": 99,
+          "reviewable": 7,
+          "test": 0,
           "excluded": 0,
-          "files": 4,
-          "issue": "#391",
+          "files": 3,
+          "issue": "#308",
           "linked": "fixes"
         },
         "disagrees": false
       },
       {
-        "pr": 664,
-        "sha": "af84158f3a5106f89e494b2564ee8bf229b43bef",
+        "pr": 667,
+        "sha": "76f4096933e85198c996875ee5854b4d7465ec4f",
         "check": "browser-qa",
         "conclusion": "SUCCESS",
-        "completedAt": "2026-10-01T23:59:06Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36943623088/job/110640594838",
+        "completedAt": "2026-10-02T00:03:22Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36944014979/job/110641799879",
         "line": "BROWSER-QA: skipped (no critical paths)",
         "verdict": "SKIPPED",
         "fields": {},
         "disagrees": false
       },
       {
-        "pr": 664,
-        "sha": "af84158f3a5106f89e494b2564ee8bf229b43bef",
+        "pr": 667,
+        "sha": "76f4096933e85198c996875ee5854b4d7465ec4f",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36943623197/job/110640595384",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36944013406/job/110641794974",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -16337,6 +16319,13 @@
         "date": "2026-10-01",
         "title": "Two PRs green alone, red merged: #404 armed the `core-through-index` rule and #399 added three imports it forbids; each `ci` ran before the other landed, `gh pr view` said `MERGEABLE` throughout, and only #399's builder, trial-merging by hand, saw `3 new core-through-index`. Not a one-off: 19 of the 40 PRs merged up to #647 merged after `main` had moved past their last `ci` run (`strict` is off, L014, so GitHub reports `CLEAN`, never `BEHIND`). The second occurrence of *the loop's checks did not see the state that ships* — the first was #295, required checks judged on cancelled runs",
         "source": "docs/harness/ledger.md:76"
+      },
+      {
+        "id": "L062",
+        "kind": "ledger-row",
+        "date": "2026-10-02",
+        "title": "L037 and L044 are one defect seen twice, so the ledger's rule made it a mechanism. On 2026-10-02 the twins still differed: `.claude/agents/hacer-verifier.md` stated the tier rule in other words than `verifier-brief.md` in both its `description` and its body. The meaning matched but the wording did not, so nothing tied the next edit of one file to the other",
+        "source": "docs/harness/ledger.md:77"
       }
     ]
   }
