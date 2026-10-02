@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-02T00:18:59.539Z",
+  "generatedAt": "2026-10-02T00:33:53.931Z",
   "head": {
-    "sha": "d5f9f2e61ad68919fd0941e3ae4fce9f786a08a6",
-    "date": "2026-10-02T03:17:57+03:00",
-    "subject": "docs: renumber ledger row to L063"
+    "sha": "934eb0f4c75e835d9cdbb0792697b44b473a12a9",
+    "date": "2026-10-02T03:33:14+03:00",
+    "subject": "chore(ci): a manual dispatch no longer posts a required check"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-02T00:18:59.539Z",
+      "fetchedAt": "2026-10-02T00:33:53.931Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-02T00:18:59.539Z",
+      "fetchedAt": "2026-10-02T00:33:53.931Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-02T00:18:59.539Z",
+      "fetchedAt": "2026-10-02T00:33:53.931Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-02T00:18:59.539Z",
+      "fetchedAt": "2026-10-02T00:33:53.931Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-02T00:18:59.539Z",
+      "fetchedAt": "2026-10-02T00:33:53.931Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-02T00:18:59.539Z",
+      "fetchedAt": "2026-10-02T00:33:53.931Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-02T00:18:59.539Z",
+      "fetchedAt": "2026-10-02T00:33:53.931Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-02T00:18:59.539Z",
+      "fetchedAt": "2026-10-02T00:33:53.931Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-02T00:18:59.539Z",
+      "fetchedAt": "2026-10-02T00:33:53.931Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-02T00:18:59.539Z",
+      "fetchedAt": "2026-10-02T00:33:53.931Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-02T00:18:59.539Z",
+      "fetchedAt": "2026-10-02T00:33:53.931Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-02T00:18:59.539Z",
+      "fetchedAt": "2026-10-02T00:33:53.931Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-02T00:18:59.539Z",
+      "fetchedAt": "2026-10-02T00:33:53.931Z",
       "status": "ok"
     }
   },
@@ -475,8 +475,8 @@
         "project": "harness"
       },
       {
-        "number": 669,
-        "title": "merge-on-green: update-branch adds a merge commit, which the rebase merge then refuses — use a REBASE update and stop on the first refusal",
+        "number": 671,
+        "title": "required-checks guard: an unresolvable ${{ }} job name passes silently; a trailing # comment slips past",
         "project": "harness"
       }
     ],
@@ -694,12 +694,12 @@
         "reason": null
       },
       {
-        "number": 669,
-        "title": "merge-on-green: update-branch adds a merge commit, which the rebase merge then refuses — use a REBASE update and stop on the first refusal",
+        "number": 671,
+        "title": "required-checks guard: an unresolvable ${{ }} job name passes silently; a trailing # comment slips past",
         "labels": [
           "project:harness",
           "agent-ready",
-          "risk:2"
+          "risk:1"
         ],
         "blocking": [],
         "project": "harness",
@@ -1554,22 +1554,6 @@
         "reason": "unshaped"
       },
       {
-        "number": 368,
-        "title": "A manual browser-qa dispatch posts a required check run outside the PR's concurrency group — the #295 door left open",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:1"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 371,
         "title": "compileHDL does not bounds-check a slice on the external side of a connection",
         "labels": [
@@ -2202,6 +2186,22 @@
         "lane": "process",
         "pickable": false,
         "reason": "unshaped"
+      },
+      {
+        "number": 669,
+        "title": "merge-on-green: update-branch adds a merge commit, which the rebase merge then refuses — use a REBASE update and stop on the first refusal",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:2"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "claimed"
       }
     ],
     "byProject": {
@@ -2249,11 +2249,10 @@
         516,
         547,
         665,
-        669,
+        671,
         154,
         156,
         270,
-        368,
         435,
         436,
         454,
@@ -2263,7 +2262,8 @@
         550,
         607,
         648,
-        649
+        649,
+        669
       ],
       "spine": [
         165,
@@ -2475,6 +2475,32 @@
       }
     ],
     "merged": [
+      {
+        "number": 670,
+        "title": "chore(ci): a manual dispatch no longer posts a required check",
+        "url": "https://github.com/mezivillager/hacer/pull/670",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:1"
+        ],
+        "headRefName": "fix/368-dispatch-check-run",
+        "isDraft": false,
+        "createdAt": "2026-10-02T00:20:48Z",
+        "mergedAt": "2026-10-02T00:33:15Z",
+        "closes": [
+          368
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus 5.5",
+            "at": "2026-10-02T00:32:16Z",
+            "url": "https://github.com/mezivillager/hacer/pull/670#issuecomment-5943320617"
+          }
+        ]
+      },
       {
         "number": 668,
         "title": "docs: one owner and one escape hatch for the no-main rule",
@@ -3981,40 +4007,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/568#issuecomment-5856107307"
           }
         ]
-      },
-      {
-        "number": 566,
-        "title": "Slim AGENTS.md to a <=120-line table of contents; one definition of done; stop citing .cursor/ in precedence",
-        "url": "https://github.com/mezivillager/hacer/pull/566",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:2"
-        ],
-        "headRefName": "docs/152-slim-agents",
-        "isDraft": false,
-        "createdAt": "2026-09-27T12:28:42Z",
-        "mergedAt": "2026-09-27T13:02:11Z",
-        "closes": [
-          152
-        ],
-        "verdicts": [
-          {
-            "verdict": "BLOCK",
-            "round": 1,
-            "model": "Claude Opus 5.5 (claude-opus-5-5), the right tier for risk:2",
-            "at": "2026-09-27T12:39:55Z",
-            "url": "https://github.com/mezivillager/hacer/pull/566#issuecomment-5855894484"
-          },
-          {
-            "verdict": "PASS",
-            "round": 2,
-            "model": "Claude Opus 5.5 (claude-opus-5-5), the right tier for risk:2",
-            "at": "2026-09-27T13:01:14Z",
-            "url": "https://github.com/mezivillager/hacer/pull/566#issuecomment-5856091062"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4109,7 +4101,7 @@
         "number": 368,
         "ref": "refs/heads/claim/368",
         "sha": "696d66ac4b8fcc71f63c1e0f2766d98d889c493b",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "A manual browser-qa dispatch posts a required check run outside the PR's concurrency group — the #295 door left open",
         "url": "https://github.com/mezivillager/hacer/issues/368",
         "labels": [
@@ -4118,7 +4110,7 @@
           "in-progress",
           "risk:1"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -4440,9 +4432,34 @@
           "at": "2026-09-27T11:42:29Z",
           "url": "https://github.com/mezivillager/hacer/issues/542#issuecomment-5855517267"
         }
+      },
+      {
+        "number": 669,
+        "ref": "refs/heads/claim/669",
+        "sha": "d5f9f2e61ad68919fd0941e3ae4fce9f786a08a6",
+        "state": "OPEN",
+        "title": "merge-on-green: update-branch adds a merge commit, which the rebase merge then refuses — use a REBASE update and stop on the first refusal",
+        "url": "https://github.com/mezivillager/hacer/issues/669",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:2"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-92",
+          "branch": null,
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-02T00:20:19Z",
+          "url": "https://github.com/mezivillager/hacer/issues/669#issuecomment-5943198674"
+        }
       }
     ],
-    "onClosedIssues": 13
+    "onClosedIssues": 14
   },
   "cloudLane": {
     "items": [
@@ -5125,11 +5142,19 @@
         "shouldHaveBeenCaughtBy": "`docs/harness/COVERAGE.md` ownership map, applied to this row (#300 built the map, nobody swept the constitution)",
         "mechanised": "yes — the constitution line now states the consequence and links the owner `.cursor/rules/020-git-worktree-no-main.mdc`, which holds the one escape hatch (#308)",
         "decision": "—"
+      },
+      {
+        "id": "L064",
+        "date": "2026-10-02",
+        "whatWentWrong": "A manual re-check could decide a PR's required check. `browser-qa.yml` said a `workflow_dispatch` run \"reports in its log… not as the PR's check\", but a dispatch with `--ref <PR branch>` posts its job's check run on the PR head under the job's name: run 35347165462 posted `browser-qa` on #273's head `2b197dbf`, and `pr-hygiene`'s documented re-check run 36592605152 posted `pr-hygiene` on #629's head `d223ca75` from the branch's own copy of the guard. The newest check run of a name is the verdict (L042), so a manual run could overrule the PR's own, or strand it when cancelled. Found by #366's verifier; the same family as L042 and L056",
+        "shouldHaveBeenCaughtBy": "a guard reading which events can post a required context, not only how runs of one event meet",
+        "mechanised": "yes — #368: on `workflow_dispatch` both jobs are named `<context> (manual)`, and `scripts/required-checks.logic.mjs` fails a required context reachable from `workflow_dispatch`",
+        "decision": "—"
       }
     ],
     "byMechanised": {
       "no": 9,
-      "yes": 49,
+      "yes": 50,
       "other": 1,
       "partly": 5
     }
@@ -6091,7 +6116,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-27",
-        "merges": 2
+        "merges": 1
       },
       {
         "date": "2026-09-28",
@@ -6111,20 +6136,20 @@
       },
       {
         "date": "2026-10-02",
-        "merges": 2
+        "merges": 3
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-18T00:18:59.539Z",
-      "merged": 216,
+      "since": "2026-09-18T00:33:53.931Z",
+      "merged": 217,
       "openToMergeHours": {
         "median": 0.2,
         "p90": 6.1
       },
       "blockedOnce": {
         "count": 22,
-        "of": 130,
+        "of": 131,
         "prs": [
           238,
           248,
@@ -6152,8 +6177,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 114,
-          "withVerdict": 102,
+          "merged": 115,
+          "withVerdict": 103,
           "without": [
             250,
             285,
@@ -7609,11 +7634,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "d5f9f2e61ad68919fd0941e3ae4fce9f786a08a6",
+        "sha": "934eb0f4c75e835d9cdbb0792697b44b473a12a9",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36945283675/job/110645881298",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/36946574646/job/110649958550",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -16384,6 +16409,13 @@
         "date": "2026-10-02",
         "title": "L037 and L044 are one defect seen twice, so the ledger's rule made it a mechanism. On 2026-10-02 the twins still differed: `.claude/agents/hacer-verifier.md` stated the tier rule in other words than `verifier-brief.md` in both its `description` and its body. The meaning matched but the wording did not, so nothing tied the next edit of one file to the other",
         "source": "docs/harness/ledger.md:78"
+      },
+      {
+        "id": "L064",
+        "kind": "ledger-row",
+        "date": "2026-10-02",
+        "title": "A manual re-check could decide a PR's required check. `browser-qa.yml` said a `workflow_dispatch` run \"reports in its log… not as the PR's check\", but a dispatch with `--ref <PR branch>` posts its job's check run on the PR head under the job's name: run 35347165462 posted `browser-qa` on #273's head `2b197dbf`, and `pr-hygiene`'s documented re-check run 36592605152 posted `pr-hygiene` on #629's head `d223ca75` from the branch's own copy of the guard. The newest check run of a name is the verdict (L042), so a manual run could overrule the PR's own, or strand it when cancelled. Found by #366's verifier; the same family as L042 and L056",
+        "source": "docs/harness/ledger.md:80"
       }
     ]
   }
