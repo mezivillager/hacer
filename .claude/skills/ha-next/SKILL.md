@@ -29,7 +29,7 @@ Also surface **open claims** and any `docs/harness/sessions/*-handoff.md` files:
 claim comment on each claimed issue (format in §2). `ready` never offers a claimed issue: it prints
 `claimed`, or `stale-claim` under the 48 h rule in §2. A stale or `paused:…` claim is not an active
 build — resume it, follow the handoff, or release it (see
-`docs/harness/sessions/COORDINATOR-HANDOFF.md`). Until `scripts/agent-orient` (#156) prints this in
+`docs/harness/sessions/COORDINATOR-HANDOFF.md`). Until `scripts/agent-orient` (#156) prints this in <!-- allow-missing-path -->
 one screen, the commands above are the orient.
 
 If Mezi said "what can you do next?" rather than "do it": present the pick and **stop**. If he
@@ -101,5 +101,5 @@ Shape the idea into issues in the form (`docs/harness/issue-form.md`): goal, acc
 `agent-ready` only if risk:0/1 and the criteria are unambiguous; otherwise `needs-human` with your
 recommended answer. Split anything over the budget before it is ready. An epic or ADR in `spine`,
 `surfaces` or `horizon` gets a fidelity verdict comment (`hacer-fidelity`, ADR-0018 §2) before
-sub-issues are shaped from it; an approved `fidelity-inbox.md` entry is filed here, labelled
+sub-issues are shaped from it; an approved `docs/harness/fidelity-inbox.md` entry is filed here, labelled
 `fidelity`, by you — never by the fidelity agent.
