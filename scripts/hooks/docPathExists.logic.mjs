@@ -28,6 +28,10 @@ export const PATH_EXISTENCE_PATTERNS = [
   ...OWNED_SKILLS.map((prefix) => `${prefix}SKILL.md`),
 ]
 
+export const PATH_EXISTENCE_HISTORY = []
+
+export const GRANDFATHERED_DOCS = []
+
 /** Does this repo-relative file opt in to the citation check? */
 export function isPathExistenceFile(file, patterns = PATH_EXISTENCE_PATTERNS) {
   return patterns.some((pattern) => {
