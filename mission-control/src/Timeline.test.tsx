@@ -21,6 +21,7 @@ describe('Timeline', () => {
       '2026-09-17', '2026-09-16', '2026-09-15', '2026-09-14', '2026-09-13', '2026-09-12',
     ])
     expect(screen.getByText('as of 2026-09-25 03:16 UTC')).toBeTruthy()
+    expect(screen.getByText('The 14 days 2026-09-12 to 2026-09-25 — older activity is not shown.')).toBeTruthy()
 
     // The busiest day merges all three series in one list: its session first, then its 32 merges, then its 12 releases.
     const items = within(day('2026-09-24')).getAllByRole('listitem')
