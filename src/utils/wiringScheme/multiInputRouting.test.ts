@@ -6,7 +6,7 @@
  * (Mux4Way16 = 5 inputs, Mux8Way16 = 9 inputs) is routable — including
  * concurrently, with previously-routed wires present in `existingSegments`.
  *
- * Root cause (see docs/superpowers/specs/2026-06-21-wire-routing-stage1-design.md):
+ * Root cause (see docs/specs/2026-06-21-wire-routing-stage1-design.md):
  * all input pins on a side share one world X and differ only in Z, so the
  * coarse-grid entry collapses them onto a single vertical section line and the
  * overlap check rejects the inner pins. Stage 1 gives each pin its own approach

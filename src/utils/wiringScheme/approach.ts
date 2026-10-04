@@ -20,7 +20,7 @@
  *    offsets), so node-exclusivity is preserved — distinct pins resolve to
  *    distinct lanes (Finding 10), never relaxed globally.
  *
- * See docs/superpowers/specs/2026-06-21-wire-routing-stage1-design.md and
+ * See docs/specs/2026-06-21-wire-routing-stage1-design.md and
  * docs/decisions/0007-wire-routing-engine-direction.md.
  */
 
