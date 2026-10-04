@@ -37,6 +37,7 @@ export const PATH_EXISTENCE_HISTORY = [
   'docs/plans/2*',
   'docs/plans/2*/**',
   'docs/specs/2*',
+  'docs/specs/2*/**',
 ]
 
 /**
