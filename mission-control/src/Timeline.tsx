@@ -11,6 +11,7 @@ export function Timeline({ snapshot }: { snapshot: Snapshot }) {
     <>
       <h2>Timeline</h2>
       <Freshness snapshot={snapshot} sections={['sessions', 'prs', 'metrics']} />
+      <p className="muted">The {days.length} days {days[days.length - 1]?.date} to {days[0]?.date} — older activity is not shown.</p>
       <ol className="timeline" aria-label="Timeline">
         {days.map(({ date, sessions, merges, releases }) => (
           <li key={date}>
