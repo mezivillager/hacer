@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-04T18:47:18.447Z",
+  "generatedAt": "2026-10-04T18:53:24.170Z",
   "head": {
-    "sha": "dae05b226a2632913120c07eafc96d74ff21ce9f",
-    "date": "2026-10-04T21:46:44+03:00",
-    "subject": "docs(harness): the ratchet row and pr-hygiene.mjs name the doc-path baseline as the third (#685)"
+    "sha": "1737e29009143995f1447659bca31bf79aa03506",
+    "date": "2026-10-04T21:52:08+03:00",
+    "subject": "docs(harness): session record for the 2026-10-04 run, rulings R796–R804"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-04T18:47:18.447Z",
+      "fetchedAt": "2026-10-04T18:53:24.170Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-04T18:47:18.447Z",
+      "fetchedAt": "2026-10-04T18:53:24.170Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-04T18:47:18.447Z",
+      "fetchedAt": "2026-10-04T18:53:24.170Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-04T18:47:18.447Z",
+      "fetchedAt": "2026-10-04T18:53:24.170Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-04T18:47:18.447Z",
+      "fetchedAt": "2026-10-04T18:53:24.170Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-04T18:47:18.447Z",
+      "fetchedAt": "2026-10-04T18:53:24.170Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-04T18:47:18.447Z",
+      "fetchedAt": "2026-10-04T18:53:24.170Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-04T18:47:18.447Z",
+      "fetchedAt": "2026-10-04T18:53:24.170Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-04T18:47:18.447Z",
+      "fetchedAt": "2026-10-04T18:53:24.170Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-04T18:47:18.447Z",
+      "fetchedAt": "2026-10-04T18:53:24.170Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-04T18:47:18.447Z",
+      "fetchedAt": "2026-10-04T18:53:24.170Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-04T18:47:18.447Z",
+      "fetchedAt": "2026-10-04T18:53:24.170Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-04T18:47:18.447Z",
+      "fetchedAt": "2026-10-04T18:53:24.170Z",
       "status": "ok"
     }
   },
@@ -2178,6 +2178,30 @@
     ],
     "merged": [
       {
+        "number": 691,
+        "title": "docs(harness): session record for the 2026-10-04 run, rulings R796–R804",
+        "url": "https://github.com/mezivillager/hacer/pull/691",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/session-2026-10-04",
+        "isDraft": false,
+        "createdAt": "2026-10-04T18:49:43Z",
+        "mergedAt": "2026-10-04T18:52:08Z",
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (risk:0 docs-only, #554)",
+            "at": "2026-10-04T18:50:01Z",
+            "url": "https://github.com/mezivillager/hacer/pull/691#issuecomment-5983241569"
+          }
+        ]
+      },
+      {
         "number": 690,
         "title": "chore(wiring): spec citations point at docs/specs after the move",
         "url": "https://github.com/mezivillager/hacer/pull/690",
@@ -3668,33 +3692,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/614#issuecomment-5892206723"
           }
         ]
-      },
-      {
-        "number": 612,
-        "title": "test: explicit timeouts for tests that time out at 5 s under load",
-        "url": "https://github.com/mezivillager/hacer/pull/612",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:0",
-          "project:mission-control"
-        ],
-        "headRefName": "test/545-explicit-slow-timeouts",
-        "isDraft": false,
-        "createdAt": "2026-09-29T13:56:51Z",
-        "mergedAt": "2026-09-29T14:02:53Z",
-        "closes": [
-          545
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Sonnet 5.5 (fresh context)",
-            "at": "2026-09-29T14:02:22Z",
-            "url": "https://github.com/mezivillager/hacer/pull/612#issuecomment-5891869338"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4095,58 +4092,9 @@
           "at": "2026-09-27T11:42:29Z",
           "url": "https://github.com/mezivillager/hacer/issues/542#issuecomment-5855517267"
         }
-      },
-      {
-        "number": 648,
-        "ref": "refs/heads/claim/648",
-        "sha": "ec448fd2ecdddfb62d082f9b03b30bc474c90028",
-        "state": "CLOSED",
-        "title": "src/utils/wiringScheme: comments cite docs/superpowers/specs paths that moved to docs/specs",
-        "url": "https://github.com/mezivillager/hacer/issues/648",
-        "labels": [
-          "project:harness",
-          "in-progress",
-          "risk:0"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-20",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-04T18:22:18Z",
-          "url": "https://github.com/mezivillager/hacer/issues/648#issuecomment-5983012757"
-        }
-      },
-      {
-        "number": 685,
-        "ref": "refs/heads/claim/685",
-        "sha": "4fde9ac0b0ba0e0d6429a3858eeca3ba404edd98",
-        "state": "CLOSED",
-        "title": "lint:docs grandfather list: per-citation counts, one copy, watched by pr-hygiene's ratchet",
-        "url": "https://github.com/mezivillager/hacer/issues/685",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:1"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-20",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-04T18:03:57Z",
-          "url": "https://github.com/mezivillager/hacer/issues/685#issuecomment-5982861474"
-        }
       }
     ],
-    "onClosedIssues": 15
+    "onClosedIssues": 13
   },
   "cloudLane": {
     "items": [
@@ -4321,6 +4269,14 @@
         "title": "Session record — 2026-10-02: the coordinator loop to 92% weekly usage",
         "status": null,
         "lines": 109
+      },
+      {
+        "file": "docs/harness/sessions/2026-10-04.md",
+        "date": "2026-10-04",
+        "kind": "record",
+        "title": "Session record — 2026-10-04: the coordinator loop toward 20% weekly usage",
+        "status": null,
+        "lines": 77
       }
     ]
   },
@@ -4859,8 +4815,8 @@
         "date": "2026-10-04",
         "whatWentWrong": "`docs/testing/standards.md` kept teaching `e2e/scenarios/` and `waitForSceneStable` after #388 deleted both. The TDD template that mirrors it was caught because it is a `.ts` file; the prescriptive doc was not, because `lint:docs`'s path-existence check covered five named docs and nothing else under `docs/`. Widening the scope alone would still have missed these sites: they sit in fenced code samples, which the check skips by design (ADR-0014) <!-- allow-missing-path -->",
         "shouldHaveBeenCaughtBy": "a path check over every living doc",
-        "mechanised": "yes — #392: `lint:docs` checks every doc under `docs/` (`scripts/hooks/docPathExists.logic.mjs`), less dated history and dated plans/specs (`PATH_EXISTENCE_HISTORY`); the 62 docs still red (475 citations) are in a shrink-only `GRANDFATHERED_DOCS`. Fenced samples stay unchecked",
-        "decision": "—"
+        "mechanised": "yes — #392: `lint:docs` checks every doc under `docs/` (`scripts/hooks/docPathExists.logic.mjs`), less dated history and dated plans/specs (`PATH_EXISTENCE_HISTORY`); the 62 docs still red (475 citations) are in a shrink-only the per-doc baseline in `scripts/hooks/docPathExists.baseline.json` (#685). Fenced samples stay unchecked",
+        "decision": "R799, R801"
       }
     ],
     "byMechanised": {
@@ -5837,7 +5793,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-29",
-        "merges": 17
+        "merges": 16
       },
       {
         "date": "2026-09-30",
@@ -5853,20 +5809,20 @@
       },
       {
         "date": "2026-10-04",
-        "merges": 11
+        "merges": 12
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-20T18:47:18.447Z",
-      "merged": 203,
+      "since": "2026-09-20T18:53:24.170Z",
+      "merged": 204,
       "openToMergeHours": {
         "median": 0.2,
         "p90": 1.9
       },
       "blockedOnce": {
         "count": 18,
-        "of": 136,
+        "of": 137,
         "prs": [
           305,
           312,
@@ -5904,8 +5860,8 @@
           ]
         },
         "nonCode": {
-          "merged": 90,
-          "withVerdict": 31,
+          "merged": 91,
+          "withVerdict": 32,
           "without": [
             310,
             314,
@@ -7470,7 +7426,7 @@
       },
       {
         "date": "2026-10-04",
-        "at": "2026-10-04T18:42:35.148Z",
+        "at": "2026-10-04T18:47:18.447Z",
         "byProject": {
           "foundation": [
             338,
@@ -7520,8 +7476,7 @@
             505,
             550,
             607,
-            677,
-            685
+            677
           ],
           "spine": [
             165,
@@ -7613,11 +7568,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "dae05b226a2632913120c07eafc96d74ff21ce9f",
+        "sha": "1737e29009143995f1447659bca31bf79aa03506",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/37225742030/job/111504895975",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/37226082978/job/111505894894",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -12406,6 +12361,104 @@
         "amends": null,
         "assumes": null,
         "costIfWrong": "about one point of weekly budget left unused; nothing is lost, the next run picks"
+      },
+      {
+        "id": "R796",
+        "kind": "ruling",
+        "title": "#338 and #373 are skipped although the cycle's slot is foundation",
+        "source": "docs/decisions/rulings/2026-10-04-hacer-loop-20.md:7",
+        "buildsOn": [
+          "R742"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "the foundation slot waits one more run."
+      },
+      {
+        "id": "R797",
+        "kind": "ruling",
+        "title": "the cloud lane claims and releases through `scripts/backlog.mjs`",
+        "source": "docs/decisions/rulings/2026-10-04-hacer-loop-20.md:14",
+        "buildsOn": "none",
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "one doc line if the cloud agent cannot run Node; the fallback is already written."
+      },
+      {
+        "id": "R798",
+        "kind": "ruling",
+        "title": "the two-agent cap carries over",
+        "source": "docs/decisions/rulings/2026-10-04-hacer-loop-20.md:21",
+        "buildsOn": [
+          "R782"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "slower throughput."
+      },
+      {
+        "id": "R799",
+        "kind": "ruling",
+        "title": "the widened doc-path check grandfathers existing red docs in a shrink-only list",
+        "source": "docs/decisions/rulings/2026-10-04-hacer-loop-20.md:26",
+        "buildsOn": "none",
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "grandfathered docs stay unchecked until someone shrinks the list — still more than"
+      },
+      {
+        "id": "R800",
+        "kind": "ruling",
+        "title": "#418 is done by the coordinator, and its third criterion closed by measurement",
+        "source": "docs/decisions/rulings/2026-10-04-hacer-loop-20.md:35",
+        "buildsOn": "none",
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "one more docs line if the owner wants a TTL stated anyway."
+      },
+      {
+        "id": "R801",
+        "kind": "ruling",
+        "title": "dated plans and specs leave the doc-path check like other dated records",
+        "source": "docs/decisions/rulings/2026-10-04-hacer-loop-20.md:41",
+        "buildsOn": [
+          "R799"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "a stale citation in a dated plan goes unflagged."
+      },
+      {
+        "id": "R802",
+        "kind": "ruling",
+        "title": "the owned-skills list is pinned, and the sync refuses an empty one",
+        "source": "docs/decisions/rulings/2026-10-04-hacer-loop-20.md:50",
+        "buildsOn": "none",
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "one more line to edit when the owner adds an owned skill."
+      },
+      {
+        "id": "R803",
+        "kind": "ruling",
+        "title": "#648 is triaged and done by the coordinator",
+        "source": "docs/decisions/rulings/2026-10-04-hacer-loop-20.md:58",
+        "buildsOn": "none",
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "none; the comments name files that exist."
+      },
+      {
+        "id": "R804",
+        "kind": "ruling",
+        "title": "the large ready items are not started in this run",
+        "source": "docs/decisions/rulings/2026-10-04-hacer-loop-20.md:64",
+        "buildsOn": [
+          "R796"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "the run ends below 20%; the next run picks them with a full budget."
       }
     ],
     "edges": [
@@ -13253,6 +13306,30 @@
         "source": "docs/decisions/rulings/2026-10-02-hacer-loop-92.md:140"
       },
       {
+        "from": "R796",
+        "to": "R742",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-04-hacer-loop-20.md:8"
+      },
+      {
+        "from": "R798",
+        "to": "R782",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-04-hacer-loop-20.md:22"
+      },
+      {
+        "from": "R801",
+        "to": "R799",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-04-hacer-loop-20.md:42"
+      },
+      {
+        "from": "R804",
+        "to": "R796",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-04-hacer-loop-20.md:65"
+      },
+      {
         "from": "L046",
         "to": "R310",
         "kind": "introduced-by",
@@ -13305,6 +13382,18 @@
         "to": "R777",
         "kind": "introduced-by",
         "source": "docs/harness/ledger.md:75"
+      },
+      {
+        "from": "L067",
+        "to": "R799",
+        "kind": "introduced-by",
+        "source": "docs/harness/ledger.md:82"
+      },
+      {
+        "from": "L067",
+        "to": "R801",
+        "kind": "introduced-by",
+        "source": "docs/harness/ledger.md:82"
       }
     ],
     "artefacts": [
@@ -13334,7 +13423,8 @@
         "id": "#649",
         "kind": "github",
         "citedBy": [
-          "ADR-0010"
+          "ADR-0010",
+          "R802"
         ]
       },
       {
@@ -13439,7 +13529,16 @@
         "kind": "github",
         "citedBy": [
           "ADR-0014",
-          "R351"
+          "R351",
+          "R799",
+          "R801"
+        ]
+      },
+      {
+        "id": "#685",
+        "kind": "github",
+        "citedBy": [
+          "ADR-0014"
         ]
       },
       {
@@ -13476,7 +13575,8 @@
         "citedBy": [
           "ADR-0016",
           "ADR-0019",
-          "R69"
+          "R69",
+          "R804"
         ]
       },
       {
@@ -13624,7 +13724,8 @@
         "kind": "github",
         "citedBy": [
           "ADR-0018",
-          "R100"
+          "R100",
+          "R804"
         ]
       },
       {
@@ -14657,7 +14758,9 @@
           "R603",
           "R500",
           "R743",
-          "R744"
+          "R744",
+          "R796",
+          "R804"
         ]
       },
       {
@@ -15762,7 +15865,8 @@
         "id": "#547",
         "kind": "github",
         "citedBy": [
-          "R756"
+          "R756",
+          "R797"
         ]
       },
       {
@@ -16054,6 +16158,42 @@
         "kind": "github",
         "citedBy": [
           "R794"
+        ]
+      },
+      {
+        "id": "#373",
+        "kind": "github",
+        "citedBy": [
+          "R796",
+          "R804"
+        ]
+      },
+      {
+        "id": "#418",
+        "kind": "github",
+        "citedBy": [
+          "R800"
+        ]
+      },
+      {
+        "id": "#687",
+        "kind": "github",
+        "citedBy": [
+          "R802"
+        ]
+      },
+      {
+        "id": "#648",
+        "kind": "github",
+        "citedBy": [
+          "R803"
+        ]
+      },
+      {
+        "id": "#271",
+        "kind": "github",
+        "citedBy": [
+          "R804"
         ]
       },
       {
