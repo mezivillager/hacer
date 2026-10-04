@@ -308,3 +308,16 @@ describe('the agent definitions keep their load-bearing rules', () => {
     ])
   })
 })
+
+describe('the measured-facts rule (#394)', () => {
+  const anchor = '**Measured facts before dispatch:** '
+  const readme = () => readBrief('docs/harness/README.md')
+
+  it('the harness README states the check and the checklist it leaves to the writer', () => {
+    expect(containsPhrases(readme(), [anchor, '`node scripts/issue-facts.mjs <n>`', 'a Measured-facts row'])).toBe(true)
+  })
+
+  it('ha-next carries the README\'s sentence verbatim', () => {
+    expect(checkTwinAgreement(readme(), anchor, [{ label: 'ha-next', text: readSkill('ha-next') }])).toEqual([])
+  })
+})
