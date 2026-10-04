@@ -3,7 +3,7 @@ import { REPO, type Snapshot } from './snapshot'
 import { timelineOf } from './timelineDays'
 
 /** Sessions, merges and releases on one axis (`#/timeline`, #475): a calendar day per row, newest first — see
- *  timeline.ts for the 14-day window. A session's title opens its record on GitHub, the same link Overview's "Last
+ *  timelineDays.ts for the 14-day window. A session's title opens its record on GitHub, the same link Overview's "Last
  *  session" tile uses; a merge opens its PR; a release opens its tag. */
 export function Timeline({ snapshot }: { snapshot: Snapshot }) {
   const days = timelineOf(snapshot)
