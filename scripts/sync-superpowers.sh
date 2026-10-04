@@ -32,6 +32,10 @@ cd "$ROOT"
 # doc-path checks read the same list (ADR-0010), so a skill kept here is also checked there.
 owned=$(node -p "require('./scripts/owned-skills.json').join(' ')")
 read -r -a OWNED_SKILLS <<< "$owned"
+if [ "${#OWNED_SKILLS[@]}" -eq 0 ]; then
+  echo "Error: scripts/owned-skills.json lists no skills; syncing now would overwrite every owned skill." >&2
+  exit 1
+fi
 
 EXCLUDES=()
 for skill in "${OWNED_SKILLS[@]}" "${REMOVED_SKILLS[@]}"; do
