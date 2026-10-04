@@ -1,6 +1,7 @@
 import { readFileSync, readdirSync, existsSync } from 'node:fs'
 import path from 'node:path'
 import { describe, it, expect } from 'vitest'
+import ownedSkills from './owned-skills.json' with { type: 'json' }
 import { findAbsolutePaths, isScannedFile } from './hooks/docPaths.logic.mjs'
 import {
   AGENT_INVARIANTS,
@@ -125,8 +126,7 @@ describe('no live skill or brief leaks a path or a secret', () => {
 
   it('polices the briefs and the skills this repo owns', () => {
     expect(authored.map(([file]) => file)).toEqual([
-      '.claude/skills/docs-sync/SKILL.md',
-      '.claude/skills/hacer-patterns/SKILL.md',
+      ...ownedSkills.toSorted().map((slug) => `.claude/skills/${slug}/SKILL.md`),
       ...BRIEF_INVARIANTS.map((invariant) => invariant.file),
       ...AGENT_INVARIANTS.map((invariant) => invariant.file),
     ])
