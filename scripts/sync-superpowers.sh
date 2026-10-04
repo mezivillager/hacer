@@ -12,13 +12,6 @@ REPO_URL="https://github.com/obra/superpowers.git"
 DEST_DIR=".claude/skills"
 TEMP_DIR=".tmp_superpowers"
 
-# Skills HACER authored, or vendored and then edited here: the sync never touches them.
-OWNED_SKILLS=(
-  code-review debugging docs-sync git-operations ha-next ha-prompt-it hacer-patterns
-  planning project-mapper tdd
-  brainstorming executing-plans finishing-a-development-branch requesting-code-review
-  subagent-driven-development using-superpowers writing-skills
-)
 # Upstream skills that duplicate an owned one (#155): the sync never re-adds them.
 REMOVED_SKILLS=(test-driven-development systematic-debugging writing-plans)
 
@@ -34,6 +27,11 @@ if ! ROOT=$(git rev-parse --show-toplevel 2>/dev/null); then
   exit 1
 fi
 cd "$ROOT"
+
+# Skills HACER authored, or vendored and then edited here: the sync never touches them. The
+# doc-path checks read the same list (ADR-0010), so a skill kept here is also checked there.
+owned=$(node -p "require('./scripts/owned-skills.json').join(' ')")
+read -r -a OWNED_SKILLS <<< "$owned"
 
 EXCLUDES=()
 for skill in "${OWNED_SKILLS[@]}" "${REMOVED_SKILLS[@]}"; do
