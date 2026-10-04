@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest'
+import { spawnSync } from 'node:child_process'
+import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import {
+  GRANDFATHERED_DOCS,
   KNOWN_ROOTS,
   MISSING_PATH_MARKER,
   PATH_EXISTENCE_PATTERNS,
@@ -296,22 +302,218 @@ describe('isPathExistenceFile', () => {
   })
 
   it.each([
-    'CONTRIBUTING.md',
-    'docs/harness/README.md',
-    'docs/harness/ledger.md',
+    'docs/testing/standards.md',
     'docs/roadmap/vision.md',
-  ])('leaves %s out until its citations are green', (file) => {
+    'docs/a-new-guide.md',
+    'docs/harness/sessions/COORDINATOR-HANDOFF.md',
+    'docs/harness/reviews/README.md',
+  ])('checks %s, like every doc under docs/ from birth', (file) => {
+    expect(isPathExistenceFile(file)).toBe(true)
+  })
+
+  it('leaves out docs that are neither entry docs nor under docs/', () => {
+    expect(isPathExistenceFile('CONTRIBUTING.md')).toBe(false)
+    expect(isPathExistenceFile('src/test/README.md')).toBe(false)
+  })
+
+  it.each([
+    'docs/research/2026-09-21-foundation-audit/REPORT.md',
+    'docs/research/2026-09-docs-platform.md',
+    'docs/harness/sessions/2026-09-18.md',
+    'docs/harness/reviews/2026-09-26/BRIEF.md',
+    'docs/harness/reviews/2026-09-26/reviews/1.md',
+    'docs/decisions/rulings/2026-09-18-agent-readiness.md',
+  ])('leaves out %s, a dated record of what was true on its date', (file) => {
     expect(isPathExistenceFile(file)).toBe(false)
   })
 
+  it('leaves out every grandfathered doc', () => {
+    expect(GRANDFATHERED_DOCS.filter((file) => isPathExistenceFile(file))).toEqual([])
+  })
+
   it('does not let * cross a directory boundary', () => {
-    expect(isPathExistenceFile('docs/harness/sessions/2026-09-19-brief.md')).toBe(false)
+    expect(isPathExistenceFile('docs/harness/sessions/x-brief.md', ['docs/harness/*-brief.md'])).toBe(false)
     expect(isPathExistenceFile('x/REPO_MAP.md')).toBe(false)
+  })
+
+  it('lets ** cross directory boundaries', () => {
+    expect(isPathExistenceFile('docs/a/b/c.md', ['docs/**'])).toBe(true)
   })
 
   it('takes the patterns as an argument, so a caller can narrow them', () => {
     expect(isPathExistenceFile('REPO_MAP.md', ['AGENTS.md'])).toBe(false)
     expect(isPathExistenceFile('docs/a.md', ['docs/*.md'])).toBe(true)
+  })
+})
+
+const REPO_ROOT = fileURLToPath(new URL('../../', import.meta.url))
+
+/** Every doc that was red when the check first covered all of docs/. Never add to this list. */
+const GRANDFATHERED_AT_START = [
+  'docs/compatibility/nand2tetris/project1/gap-analysis.md',
+  'docs/decisions/0001-adopt-adr-log-and-docs-sync-enforcement.md',
+  'docs/decisions/0002-commit-and-worktree-conventions.md',
+  'docs/decisions/0004-p05-18-boundary-evaluatechip-seam-landed-in-p05-16.md',
+  'docs/decisions/0006-p05-22-test-lab-implementation-source-seam-and-store-action.md',
+  'docs/decisions/0007-wire-routing-engine-direction.md',
+  'docs/decisions/0008-scene-graph-routing-testing-layer.md',
+  'docs/decisions/0009-bus-components-entity-and-wireendpoint-bus.md',
+  'docs/decisions/0010-no-absolute-paths-in-docs.md',
+  'docs/decisions/0011-remove-stryker-mutation-testing.md',
+  'docs/decisions/0012-e2e-tests-manual-only.md',
+  'docs/decisions/0013-backlog-in-github-issues-and-portfolio.md',
+  'docs/decisions/0014-cited-doc-paths-must-exist.md',
+  'docs/decisions/0015-releases-do-not-commit-to-main.md',
+  'docs/decisions/0016-browser-qa-in-the-cloud.md',
+  'docs/decisions/0017-documentation-platform.md',
+  'docs/decisions/0018-fidelity-gate.md',
+  'docs/decisions/0019-canvas-less-shell-mode.md',
+  'docs/decisions/0020-spec-only-writes-read-only-projections.md',
+  'docs/decisions/0022-node-entries.md',
+  'docs/development/observed-bugs.md',
+  'docs/harness/README.md',
+  'docs/harness/cloud-queue.md',
+  'docs/harness/cursor-lane.md',
+  'docs/harness/fidelity-inbox.md',
+  'docs/harness/ledger.md',
+  'docs/harness/mission-control.md',
+  'docs/harness/sessions/cloud-queue-inbox.md',
+  'docs/llm-harness.md',
+  'docs/llm-integration-proposal.md',
+  'docs/plans/2026-03-22-phase-0.5-tickets.md',
+  'docs/plans/2026-03-23-topological-sort-eval.md',
+  'docs/plans/2026-03-26-hdl-parser-parity-hardening.md',
+  'docs/plans/2026-04-17-design-system-migration.md',
+  'docs/plans/2026-04-17-design-system-migration/01-phase-a-ant-strip.md',
+  'docs/plans/2026-04-17-design-system-migration/02-phase-b-foundation.md',
+  'docs/plans/2026-04-17-design-system-migration/03-phase-c-3a-compact-toolbar.md',
+  'docs/plans/2026-04-17-design-system-migration/05-phase-c-3c-properties-panel.md',
+  'docs/plans/2026-04-17-design-system-migration/06-phase-c-3d-help-bar.md',
+  'docs/plans/2026-04-17-design-system-migration/07-phase-c-3e-3f-statusbar-demo-overlay.md',
+  'docs/plans/2026-04-17-design-system-migration/08-phase-d-r3f-retoken.md',
+  'docs/plans/2026-04-17-design-system-migration/09-phase-e-ui-spec-restoration.md',
+  'docs/plans/2026-04-17-design-system-migration/10-phase-f-polish.md',
+  'docs/plans/2026-05-12-documentation-refresh.md',
+  'docs/plans/2026-05-14-p05-10-followups-and-process-hygiene.md',
+  'docs/plans/2026-05-14-performance-mode-switch.md',
+  'docs/plans/2026-05-15-p05-10-pinout-panel.md',
+  'docs/plans/2026-05-18-p05-11-ticket-content-update.md',
+  'docs/plans/2026-05-19-p05-13-multi-bit-io-ui.md',
+  'docs/plans/2026-05-21-multi-bit-gates-and-floating-labels.md',
+  'docs/plans/2026-05-21-properties-panel-width-editor.md',
+  'docs/plans/2026-05-22-floating-label-polish.md',
+  'docs/plans/2026-05-23-p05-14-circuit-persistence.md',
+  'docs/plans/2026-05-24-builtin-chip-placement-standardization.md',
+  'docs/plans/2026-06-19-docs-cleanup-and-sync-enforcement.md',
+  'docs/plans/2026-06-19-p05-16-hdl-compiler.md',
+  'docs/plans/2026-06-20-p05-17-test-execution-engine.md',
+  'docs/plans/2026-06-20-p05-22-test-results-panel.md',
+  'docs/plans/2026-06-26-scene-graph-routing-testing.md',
+  'docs/plans/2026-06-27-bus-splitter-joiner.md',
+  'docs/plans/phase-0.5-tickets-CHECKLIST.md',
+  'docs/plans/phase-0.5-tickets/P05-01.md',
+  'docs/plans/phase-0.5-tickets/P05-02.md',
+  'docs/plans/phase-0.5-tickets/P05-03.md',
+  'docs/plans/phase-0.5-tickets/P05-04.md',
+  'docs/plans/phase-0.5-tickets/P05-05.md',
+  'docs/plans/phase-0.5-tickets/P05-08.md',
+  'docs/plans/phase-0.5-tickets/P05-09.md',
+  'docs/plans/phase-0.5-tickets/P05-10.md',
+  'docs/plans/phase-0.5-tickets/P05-11.md',
+  'docs/plans/phase-0.5-tickets/P05-12.md',
+  'docs/plans/phase-0.5-tickets/P05-13.md',
+  'docs/plans/phase-0.5-tickets/P05-14.md',
+  'docs/plans/phase-0.5-tickets/P05-15.md',
+  'docs/plans/phase-0.5-tickets/P05-16.md',
+  'docs/plans/phase-0.5-tickets/P05-17.md',
+  'docs/plans/phase-0.5-tickets/P05-18.md',
+  'docs/plans/phase-0.5-tickets/P05-19.md',
+  'docs/plans/phase-0.5-tickets/P05-20.md',
+  'docs/plans/phase-0.5-tickets/P05-21.md',
+  'docs/plans/phase-0.5-tickets/P05-22.md',
+  'docs/plans/phase-0.5-tickets/P05-23.md',
+  'docs/plans/phase-0.5-tickets/P05-24.md',
+  'docs/plans/phase-0.5-tickets/P05-26.md',
+  'docs/plans/phase-0.5-tickets/P05-27.md',
+  'docs/plans/phase-0.5-tickets/P05-28.md',
+  'docs/plans/phase-0.5-tickets/P05-29.md',
+  'docs/plans/phase-0.5-tickets/P05-31.md',
+  'docs/plans/phase-0.5-tickets/P05-32.md',
+  'docs/plans/phase-0.5-tickets/README.md',
+  'docs/roadmap/phases/phase-0.25-ui-improvements.md',
+  'docs/roadmap/phases/phase-2.5-developer-tooling.md',
+  'docs/specs/2026-04-17-design-system-migration-design.md',
+  'docs/specs/2026-04-18-properties-panel-as-drawer-tab.md',
+  'docs/specs/2026-05-12-llm-docs-sync-design.md',
+  'docs/specs/2026-06-19-p05-16-hdl-compiler-design.md',
+  'docs/specs/2026-06-20-non3d-ux-test-foundation-design.md',
+  'docs/specs/2026-06-20-p05-17-test-execution-engine-design.md',
+  'docs/specs/2026-06-20-p05-22-test-results-panel-design.md',
+  'docs/specs/2026-06-21-scene-graph-routing-testing-design.md',
+  'docs/specs/2026-06-21-wire-routing-lane-exclusivity-design.md',
+  'docs/specs/2026-06-21-wire-routing-stage1-design.md',
+  'docs/specs/2026-06-27-bus-splitter-joiner-design.md',
+]
+
+describe('GRANDFATHERED_DOCS — shrink-only', () => {
+  it('is sorted and has no duplicates', () => {
+    expect([...new Set(GRANDFATHERED_DOCS)].sort()).toEqual(GRANDFATHERED_DOCS)
+  })
+
+  it('names only docs under docs/', () => {
+    expect(GRANDFATHERED_DOCS.filter((file) => !file.startsWith('docs/'))).toEqual([])
+  })
+
+  it('names only docs that exist', () => {
+    expect(GRANDFATHERED_DOCS.filter((file) => !existsSync(join(REPO_ROOT, file)))).toEqual([])
+  })
+
+  it('never gains a doc: a doc that was green, or new, stays checked', () => {
+    expect(GRANDFATHERED_DOCS.filter((file) => !GRANDFATHERED_AT_START.includes(file))).toEqual([])
+  })
+})
+
+const CHECK_SCRIPT = join(REPO_ROOT, 'scripts/check-doc-paths.mjs')
+
+/** Run `lint:docs` in a throwaway git repo holding only `files`. */
+function runCheck(files) {
+  const repo = mkdtempSync(join(tmpdir(), 'doc-paths-'))
+  try {
+    spawnSync('git', ['init', '-q'], { cwd: repo })
+    for (const [path, text] of Object.entries(files)) {
+      mkdirSync(join(repo, dirname(path)), { recursive: true })
+      writeFileSync(join(repo, path), text)
+    }
+    const run = spawnSync(process.execPath, [CHECK_SCRIPT], { cwd: repo, encoding: 'utf8' })
+    return { status: run.status, output: `${run.stdout}${run.stderr}` }
+  } finally {
+    rmSync(repo, { recursive: true, force: true })
+  }
+}
+
+describe('check-doc-paths.mjs on a fixture repo', () => {
+  it('reports a doc under docs/ that cites a missing path', () => {
+    const { status, output } = runCheck({ 'docs/guide.md': '# Guide\n\nSee `src/gone.ts`.\n' })
+    expect(output).toContain('DEAD PATH docs/guide.md:3 src/gone.ts')
+    expect(status).toBe(1)
+  })
+
+  it('passes a doc under docs/ whose citations exist', () => {
+    const { status, output } = runCheck({ 'docs/guide.md': '# Guide\n\nSee `docs/guide.md`.\n' })
+    expect(output).toBe('')
+    expect(status).toBe(0)
+  })
+
+  it('passes a dated record that cites a path deleted since', () => {
+    const { status } = runCheck({ 'docs/research/2026-01-01-audit.md': 'See `src/gone.ts`.\n' })
+    expect(status).toBe(0)
+  })
+
+  it('fails on a grandfathered doc whose citations are all green, so it leaves the list', () => {
+    const [file] = GRANDFATHERED_DOCS
+    const { status, output } = runCheck({ [file]: `See \`${file}\`.\n` })
+    expect(output).toContain(`STALE GRANDFATHER ${file}`)
+    expect(status).toBe(1)
   })
 })
 
