@@ -38,8 +38,11 @@
 export const REQUIRED_CONTEXTS = Object.freeze(['ci', 'pr-hygiene', 'browser-qa'])
 
 const stripQuotes = (value) => value.replace(/^(['"])(.*)\1$/, '$2')
-/** A YAML value without its trailing comment (` # …`), trimmed. */
-const stripComment = (value) => value.replace(/(^|[ \t])#.*$/, '').trim()
+/** A YAML value without its trailing comment (` # …`), trimmed; a `#` inside a quoted scalar stays. */
+const stripComment = (value) => {
+  const quoted = value.trim().match(/^('(?:[^']|'')*'|"(?:[^"\\]|\\.)*")(?:[ \t]+#.*)?$/)
+  return quoted ? quoted[1] : value.replace(/(^|[ \t])#.*$/, '').trim()
+}
 
 /**
  * The check-run names a workflow source can post: one per job, its `name:` when it declares one,
@@ -48,6 +51,10 @@ const stripComment = (value) => value.replace(/(^|[ \t])#.*$/, '').trim()
  * no YAML dependency, and these are small hand-written files in one house style.
  */
 export function jobContexts(source, event) {
+  return jobNames(source).flatMap((name) => resolveName(name, event))
+}
+
+function jobNames(source) {
   const lines = source.split('\n')
   const start = lines.findIndex((line) => /^jobs:[ \t]*(#.*)?$/.test(line))
   if (start === -1) return []
@@ -66,10 +73,10 @@ export function jobContexts(source, event) {
     }
     const named = line.match(/^([ \t]+)name:[ \t]+(.+?)[ \t]*$/)
     if (named && jobIndent !== null && named[1].length === jobIndent + 2 && names.length > 0) {
-      names[names.length - 1] = stripQuotes(named[2])
+      names[names.length - 1] = stripQuotes(stripComment(named[2]))
     }
   }
-  return names.flatMap((name) => resolveName(name, event))
+  return names
 }
 
 const EVENT_CONDITIONAL =
@@ -146,13 +153,14 @@ export function isUniquePerRun(group) {
 }
 
 /**
- * Findings for one workflow file. Empty means it cannot strand or overrule a required check: it
- * posts none of them, no two of its runs can meet in a concurrency group, and a manual dispatch
- * posts none of them.
+ * Findings for one workflow file. Empty means it cannot strand or overrule a required check: every
+ * job name resolves, and it posts none of them, or no two of its runs can meet in a concurrency
+ * group and a manual dispatch posts none of them.
  */
 export function checkWorkflow(file, source, required = REQUIRED_CONTEXTS) {
+  const unresolved = unresolvedFindings(file, source, required)
   const contexts = jobContexts(source).filter((context) => required.includes(context))
-  if (contexts.length === 0) return []
+  if (contexts.length === 0) return unresolved
   const noun = contexts.length === 1 ? 'context' : 'contexts'
   const posts = `${file} posts the required ${noun} ${contexts.join(', ')}`
   const shared = concurrencyGroups(source)
@@ -169,7 +177,23 @@ export function checkWorkflow(file, source, required = REQUIRED_CONTEXTS) {
         ' — a run the group cancels, in progress (#295) or still pending (#530), can strand a PR ' +
         'with every check green. Remove the block, or key the group on ${{ github.run_id }}.',
     }))
-  return [...shared, ...dispatchFindings(file, source, required)]
+  return [...unresolved, ...shared, ...dispatchFindings(file, source, required)]
+}
+
+function unresolvedFindings(file, source, required) {
+  return jobNames(source)
+    .filter((name) => name.includes('${{') && !EVENT_CONDITIONAL.test(name))
+    .map((name) => ({
+      file,
+      contexts: [],
+      group: null,
+      name,
+      rule: 'unresolved-name',
+      message:
+        `${file} names a job ${name}, which this guard cannot resolve — it cannot tell whether that job ` +
+        `posts a required context (${required.join(', ')}). Name the job with a literal, or ` +
+        "${{ github.event_name == 'workflow_dispatch' && '<name> (manual)' || '<name>' }}.",
+    }))
 }
 
 function dispatchFindings(file, source, required) {
