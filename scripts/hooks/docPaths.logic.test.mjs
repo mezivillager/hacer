@@ -43,10 +43,23 @@ describe('isScannedFile', () => {
     expect(isScannedFile('.claude/skills/debugging/root-cause-tracing.md')).toBe(true)
   })
 
+  it('owns exactly these 17 skills — a change of ownership edits this test and owned-skills.json', () => {
+    expect(ownedSkills.toSorted()).toEqual([
+      'brainstorming', 'code-review', 'debugging', 'docs-sync', 'executing-plans',
+      'finishing-a-development-branch', 'git-operations', 'ha-next', 'ha-prompt-it', 'hacer-patterns',
+      'planning', 'project-mapper', 'requesting-code-review', 'subagent-driven-development', 'tdd',
+      'using-superpowers', 'writing-skills',
+    ])
+  })
+
   it('shares that list with sync-superpowers.sh, so the two cannot drift (ADR-0010)', () => {
     const sync = readFileSync(new URL('../sync-superpowers.sh', import.meta.url), 'utf8')
+    const ownList = /^\s*(?:(?:declare|typeset|readonly|local)(?:\s+-\w+)*\s+)?OWNED_SKILLS\+?=\(/m
+    for (const form of ['OWNED_SKILLS=(a)', 'declare -a OWNED_SKILLS=(a)', 'readonly -a OWNED_SKILLS=(a)', '  local OWNED_SKILLS=(a)', 'OWNED_SKILLS+=(a)']) {
+      expect(form).toMatch(ownList)
+    }
     expect(sync).toContain('scripts/owned-skills.json')
-    expect(sync).not.toMatch(/^OWNED_SKILLS=\(/m)
+    expect(sync).not.toMatch(ownList)
   })
 
   it('ignores node_modules and the sync temp dir', () => {
