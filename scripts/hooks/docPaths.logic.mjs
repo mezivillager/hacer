@@ -5,6 +5,8 @@
 // machine. It rots the moment a directory is renamed (see PR #132) and is useless
 // to any other contributor or agent. Docs should use repo-relative paths instead.
 
+import ownedSkillSlugs from '../owned-skills.json' with { type: 'json' }
+
 /** Tilde roots that mean the same thing on every machine, so they stay legal. */
 export const ALLOWED_TILDE_ROOTS = ['.claude', '.config', '.cursor', '.local', '.ssh']
 
@@ -14,11 +16,11 @@ export const OPT_OUT_MARKER = 'allow-abs-path'
 /**
  * Vendored trees we do not own. `scripts/sync-superpowers.sh` overwrites
  * `.claude/skills/` wholesale, so "fixing" a path there is reverted on the next
- * sync and would then fail CI forever — except for the two skills that script
- * explicitly preserves, which are ours and are checked.
+ * sync and would then fail CI forever — except for the skills in
+ * `scripts/owned-skills.json`, which that script preserves: they are ours and are checked.
  */
 const VENDORED_PREFIXES = ['.claude/skills/', '.cursor/', 'node_modules/', '.tmp_superpowers/']
-export const OWNED_SKILLS = ['.claude/skills/hacer-patterns/', '.claude/skills/docs-sync/']
+export const OWNED_SKILLS = ownedSkillSlugs.map((slug) => `.claude/skills/${slug}/`)
 
 /** Generated files nobody hand-edits. */
 const GENERATED_FILES = ['CHANGELOG.md']
