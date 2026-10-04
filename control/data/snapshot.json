@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-04T13:09:01.198Z",
+  "generatedAt": "2026-10-04T17:00:19.748Z",
   "head": {
-    "sha": "847d915131b425a26f1982b52b438e5d33bd34bf",
-    "date": "2026-10-02T13:03:50+03:00",
-    "subject": "docs(skills): ha-prompt-it — Standard tier, trigger-gated milestone reviews, read-only plan review"
+    "sha": "1b08a646380e754df7268c1ae279c54f1acf1593",
+    "date": "2026-10-04T19:59:16+03:00",
+    "subject": "docs(harness): claim and release the cloud lane's claims through backlog.mjs"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-04T13:09:01.198Z",
+      "fetchedAt": "2026-10-04T17:00:19.748Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-04T13:09:01.198Z",
+      "fetchedAt": "2026-10-04T17:00:19.748Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-04T13:09:01.198Z",
+      "fetchedAt": "2026-10-04T17:00:19.748Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-04T13:09:01.198Z",
+      "fetchedAt": "2026-10-04T17:00:19.748Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-04T13:09:01.198Z",
+      "fetchedAt": "2026-10-04T17:00:19.748Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-04T13:09:01.198Z",
+      "fetchedAt": "2026-10-04T17:00:19.748Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-04T13:09:01.198Z",
+      "fetchedAt": "2026-10-04T17:00:19.748Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-04T13:09:01.198Z",
+      "fetchedAt": "2026-10-04T17:00:19.748Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-04T13:09:01.198Z",
+      "fetchedAt": "2026-10-04T17:00:19.748Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-04T13:09:01.198Z",
+      "fetchedAt": "2026-10-04T17:00:19.748Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-04T13:09:01.198Z",
+      "fetchedAt": "2026-10-04T17:00:19.748Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-04T13:09:01.198Z",
+      "fetchedAt": "2026-10-04T17:00:19.748Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-04T13:09:01.198Z",
+      "fetchedAt": "2026-10-04T17:00:19.748Z",
       "status": "ok"
     }
   },
@@ -105,12 +105,12 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 24,
-        "ready": 10,
-        "inProgress": 0,
+        "open": 23,
+        "ready": 7,
+        "inProgress": 2,
         "needsHuman": 1,
         "staleClaims": [],
-        "agentReady": 10,
+        "agentReady": 9,
         "filedElsewhere": [
           151,
           339
@@ -121,8 +121,8 @@
         },
         "title": "Epic: harness — autonomous-run improvements & agent-readiness",
         "subIssues": {
-          "completed": 45,
-          "percentCompleted": 78,
+          "completed": 46,
+          "percentCompleted": 80,
           "total": 57
         }
       },
@@ -458,21 +458,6 @@
         "number": 418,
         "title": "docs(harness): tighten handoff nits from #417 verifier",
         "project": "harness"
-      },
-      {
-        "number": 516,
-        "title": "A lint for case-only filename collisions — two Mission Control PRs hit it in one day (macOS resolves the wrong module, CI on Linux passes)",
-        "project": "harness"
-      },
-      {
-        "number": 547,
-        "title": "cloud-queue.md and COVERAGE.md still claim and release by pushing the ref",
-        "project": "harness"
-      },
-      {
-        "number": 671,
-        "title": "required-checks guard: an unresolvable ${{ }} job name passes silently; a trailing # comment slips past",
-        "project": "harness"
       }
     ],
     "dormant": {
@@ -635,51 +620,6 @@
           "project:harness",
           "agent-ready",
           "risk:0"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 516,
-        "title": "A lint for case-only filename collisions — two Mission Control PRs hit it in one day (macOS resolves the wrong module, CI on Linux passes)",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:1"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 547,
-        "title": "cloud-queue.md and COVERAGE.md still claim and release by pushing the ref",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:0"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 671,
-        "title": "required-checks guard: an unresolvable ${{ }} job name passes silently; a trailing # comment slips past",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:1"
         ],
         "blocking": [],
         "project": "harness",
@@ -2032,6 +1972,22 @@
         "reason": "unshaped"
       },
       {
+        "number": 516,
+        "title": "A lint for case-only filename collisions — two Mission Control PRs hit it in one day (macOS resolves the wrong module, CI on Linux passes)",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:1"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 550,
         "title": "merge-on-green: disarm auto-merge when a required check fails",
         "labels": [
@@ -2168,6 +2124,22 @@
         "reason": "unshaped"
       },
       {
+        "number": 671,
+        "title": "required-checks guard: an unresolvable ${{ }} job name passes silently; a trailing # comment slips past",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:1"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 677,
         "title": "Standing rules: one file the orient step reads; rulings are decisions only",
         "labels": [
@@ -2225,9 +2197,6 @@
         392,
         394,
         418,
-        516,
-        547,
-        671,
         154,
         156,
         270,
@@ -2237,10 +2206,12 @@
         500,
         504,
         505,
+        516,
         550,
         607,
         648,
         649,
+        671,
         677
       ],
       "spine": [
@@ -2357,6 +2328,32 @@
       }
     ],
     "merged": [
+      {
+        "number": 678,
+        "title": "docs(harness): claim and release the cloud lane's claims through backlog.mjs",
+        "url": "https://github.com/mezivillager/hacer/pull/678",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/547-claim-through-backlog",
+        "isDraft": false,
+        "createdAt": "2026-10-04T16:55:58Z",
+        "mergedAt": "2026-10-04T16:59:17Z",
+        "closes": [
+          547
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (risk:0 docs-only, #554)",
+            "at": "2026-10-04T16:56:37Z",
+            "url": "https://github.com/mezivillager/hacer/pull/678#issuecomment-5982315207"
+          }
+        ]
+      },
       {
         "number": 676,
         "title": "docs(skills): ha-prompt-it — Standard tier, trigger-gated milestone reviews, read-only plan review",
@@ -3853,33 +3850,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/590#issuecomment-5890154917"
           }
         ]
-      },
-      {
-        "number": 589,
-        "title": "feat(cli): hacer test <hdl> <tst> <cmp> on real files",
-        "url": "https://github.com/mezivillager/hacer/pull/589",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:1",
-          "project:foundation"
-        ],
-        "headRefName": "feat/204-hacer-cli",
-        "isDraft": false,
-        "createdAt": "2026-09-29T12:05:01Z",
-        "mergedAt": "2026-09-29T12:22:09Z",
-        "closes": [
-          204
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Opus 5.5 (fresh context)",
-            "at": "2026-09-29T12:21:05Z",
-            "url": "https://github.com/mezivillager/hacer/pull/589#issuecomment-5890197624"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4019,6 +3989,31 @@
           "author": "mezivillager",
           "at": "2026-09-25T06:02:35Z",
           "url": "https://github.com/mezivillager/hacer/issues/470#issuecomment-5827635352"
+        }
+      },
+      {
+        "number": 516,
+        "ref": "refs/heads/claim/516",
+        "sha": "847d915131b425a26f1982b52b438e5d33bd34bf",
+        "state": "OPEN",
+        "title": "A lint for case-only filename collisions — two Mission Control PRs hit it in one day (macOS resolves the wrong module, CI on Linux passes)",
+        "url": "https://github.com/mezivillager/hacer/issues/516",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:1"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-20",
+          "branch": null,
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-04T16:57:02Z",
+          "url": "https://github.com/mezivillager/hacer/issues/516#issuecomment-5982318532"
         }
       },
       {
@@ -4279,6 +4274,31 @@
           "author": "mezivillager",
           "at": "2026-09-27T11:42:29Z",
           "url": "https://github.com/mezivillager/hacer/issues/542#issuecomment-5855517267"
+        }
+      },
+      {
+        "number": 671,
+        "ref": "refs/heads/claim/671",
+        "sha": "847d915131b425a26f1982b52b438e5d33bd34bf",
+        "state": "OPEN",
+        "title": "required-checks guard: an unresolvable ${{ }} job name passes silently; a trailing # comment slips past",
+        "url": "https://github.com/mezivillager/hacer/issues/671",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:1"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-20",
+          "branch": null,
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-04T16:53:18Z",
+          "url": "https://github.com/mezivillager/hacer/issues/671#issuecomment-5982288567"
         }
       }
     ],
@@ -5952,7 +5972,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-29",
-        "merges": 28
+        "merges": 27
       },
       {
         "date": "2026-09-30",
@@ -5965,19 +5985,23 @@
       {
         "date": "2026-10-02",
         "merges": 14
+      },
+      {
+        "date": "2026-10-04",
+        "merges": 1
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-20T13:09:01.198Z",
-      "merged": 192,
+      "since": "2026-09-20T17:00:19.748Z",
+      "merged": 193,
       "openToMergeHours": {
         "median": 0.2,
         "p90": 1.9
       },
       "blockedOnce": {
         "count": 18,
-        "of": 125,
+        "of": 126,
         "prs": [
           305,
           312,
@@ -6015,8 +6039,8 @@
           ]
         },
         "nonCode": {
-          "merged": 87,
-          "withVerdict": 28,
+          "merged": 88,
+          "withVerdict": 29,
           "without": [
             310,
             314,
@@ -7581,7 +7605,7 @@
       },
       {
         "date": "2026-10-04",
-        "at": "2026-10-04T06:46:13.607Z",
+        "at": "2026-10-04T13:09:01.198Z",
         "byProject": {
           "foundation": [
             338,
@@ -7732,17 +7756,14 @@
     "items": [
       {
         "pr": null,
-        "sha": "847d915131b425a26f1982b52b438e5d33bd34bf",
+        "sha": "1b08a646380e754df7268c1ae279c54f1acf1593",
         "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-02T10:06:09Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/36993371940/job/110794442562",
-        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 71,
-          "new": 0
-        },
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/37218793717/job/111484707392",
+        "line": null,
+        "verdict": null,
+        "fields": {},
         "disagrees": false
       },
       {
