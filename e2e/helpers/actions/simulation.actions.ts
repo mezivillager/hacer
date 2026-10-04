@@ -25,9 +25,9 @@ export async function runSimulationTick(page: Page): Promise<void> {
  * Drive gate input pins from freshly created input nodes, one node per pin,
  * wired to the pin and set to the requested value.
  *
- * Prefer this over {@link setInputsViaStore} for any pin that has no incoming
- * wire: `evaluateCircuit` clears an input pin that no wire drives (B-008), so a
- * value written straight onto an unconnected pin is erased by the next tick.
+ * Use this for any pin that has no incoming wire: `evaluateCircuit` clears an
+ * input pin that no wire drives (B-008), so a value written straight onto an
+ * unconnected pin is erased by the next tick.
  * Each call adds one input node and one wire per entry — assert wire counts
  * accordingly.
  */
