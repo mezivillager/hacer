@@ -26,6 +26,9 @@ upstream, so editing them would be reverted on the next sync — and would then 
    because those resolve identically on every machine and our own docs legitimately cite them.
 4. **Vendored trees are exempt**, mirroring what `sync-superpowers.sh` overwrites; the two skills it
    preserves (`hacer-patterns/`, `docs-sync/`) are ours and remain checked.
+   *Amended 2026-10-04 (#649): the skills the sync preserves are listed once, in
+   `scripts/owned-skills.json` (17 today), which both the sync and the checker read; all of them
+   are checked.*
 5. **A per-line escape hatch exists** (`<!-- allow-abs-path -->`) for the rare doc that must quote a
    real path, so the guard never forces a doc to lie.
 
@@ -35,6 +38,7 @@ upstream, so editing them would be reverted on the next sync — and would then 
   (warn-only). A blocked commit prints the offending `file:line:col` and the fix.
 - The exemption list is coupled to `sync-superpowers.sh`; if that script's `--exclude` set changes,
   `OWNED_SKILLS` in `docPaths.logic.mjs` must change with it.
+  *Since #649 the coupling is one file, `scripts/owned-skills.json`, so the two cannot drift.*
 
 ## Affected living docs
 `.cursor/rules/021-no-absolute-paths-in-docs.mdc`, `AGENTS.md`, `.husky/pre-commit`,

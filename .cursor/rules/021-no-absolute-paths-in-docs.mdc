@@ -16,7 +16,7 @@ alwaysApply: true
    `scripts/hooks/docPaths.logic.mjs` / `docPaths.logic.test.mjs`.
 4. **Escape hatch, used sparingly.** If a doc genuinely must quote a real absolute path, mark that
    line with `<!-- allow-abs-path -->` and it is skipped.
-5. **Vendored trees are exempt** (`.claude/skills/` except `hacer-patterns/` and `docs-sync/`,
+5. **Vendored trees are exempt** (`.claude/skills/` except the skills in `scripts/owned-skills.json`,
    `.cursor/`, `node_modules/`) because `scripts/sync-superpowers.sh` overwrites them upstream.
 6. **Cited paths must exist** in `REPO_MAP.md` and `AGENTS.md`: the same script checks every
    backticked path and link target against the tree (`DEAD PATH file:line path`). Describe a
