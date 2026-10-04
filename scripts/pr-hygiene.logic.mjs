@@ -519,10 +519,34 @@ export const SUPPRESSION_RATCHET = {
   armedByBaseRows: true,
 }
 
-export const DOC_PATH_RATCHET = { input: 'docPaths', file: null, rows: () => ({ error: 'not implemented' }), ruleNames: () => new Set() }
+/** `{ doc: count }` → one `dead-path` row per doc; nothing declares a dead citation, so every rule name is old. */
+function deadPathRows(parsed) {
+  if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
+    return { error: 'is not a JSON object of docs' }
+  }
+  const rows = Object.entries(parsed).map(([edge, count]) => ({ rule: 'dead-path', edge, count }))
+  if (rows.some((row) => !Number.isInteger(row.count) || row.count < 1)) return { error: 'has a doc with no count' }
+  return { rows }
+}
+
+/**
+ * The dead citations `lint:docs` lets each grandfathered doc keep (#685). Raising a count, or adding
+ * a doc, makes `lint:docs` pass again, and no config can arm one: every added row is absorbed.
+ */
+export const DOC_PATH_RATCHET = {
+  input: 'docPaths',
+  file: 'scripts/hooks/docPathExists.baseline.json',
+  config: null,
+  rows: deadPathRows,
+  ruleNames: () => new Set(),
+  units: 'dead citations',
+  fix: 'Fix the citation',
+  disarm: false,
+  armedByBaseRows: false,
+}
 
 /** Every baseline the ratchet reads — a second one is data here, not a second rule. */
-export const RATCHETS = [LAYER_RATCHET, SUPPRESSION_RATCHET]
+export const RATCHETS = [LAYER_RATCHET, SUPPRESSION_RATCHET, DOC_PATH_RATCHET]
 
 /**
  * Why a config's scan cannot be trusted, or null. Text that scans to no rule names is a config the
@@ -747,15 +771,17 @@ function baselineGrowth(body, kind, ratchet) {
         'apart, so read those rules in the config diff',
     )
   }
-  const what = `${moved} — no new rule armed, ${plural(absorbed.length, 'violation')} absorbed: ${nameRatchetRows(absorbed)}`
+  const armed = kind.config ? 'no new rule armed, ' : ''
+  const what = `${moved} — ${armed}${plural(absorbed.length, 'violation')} absorbed: ${nameRatchetRows(absorbed)}`
   const undeclared = undeclaredRatchetRows(body, absorbed)
   if (undeclared.length === 0) {
     return finding('warn', `${what} — declared: ${ratchetDeclarations(body).map((claim) => `"${claim}"`).join('; ')}`)
   }
   const unnamed = undeclared.length === absorbed.length ? '' : ` — ${nameRatchetRows(undeclared)} still undeclared`
+  const arm = kind.config ? `, declare a rule in \`${kind.config}\` in the same commit,` : ''
   return finding(
     'fail',
-    `${what}${unnamed}. ${kind.fix}, declare a rule in \`${kind.config}\` in the same commit, or name every row in the PR body as ` +
+    `${what}${unnamed}. ${kind.fix}${arm} or name every row in the PR body as ` +
       `\`Baseline-growth: ${undeclared[0].rule}: ${undeclared[0].edge} — <why>\``,
   )
 }
