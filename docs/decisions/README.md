@@ -11,7 +11,7 @@ and would otherwise be lost between Claude/Cursor sessions, silently polluting f
   often discovered while doing something else. An ADR records the "why we changed course."
 
 ## Conventions
-- Filename: `NNNN-kebab-title.md`, zero-padded sequential (`0001`, `0002`, …). **Never renumber.**
+- Filename: `<NNNN>-<kebab-title>.md`, zero-padded sequential (`0001`, `0002`, …). **Never renumber.**
 - Never delete an ADR — supersede it (set Status, link the replacement).
 - One decision per file. Use [`0000-template.md`](0000-template.md).
 - Each ADR lists the living docs it affects and whether they were reconciled.

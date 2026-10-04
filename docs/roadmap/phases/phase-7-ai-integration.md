@@ -37,7 +37,7 @@ This phase creates AI agent parity - every human action becomes programmatically
 - Performance monitoring and optimization
 
 ### 3.4 AI Context Files
-- `.ai/context.yaml`: Project metadata and architecture
+- `.ai/context.yaml`: Project metadata and architecture <!-- allow-missing-path -->
 - `llms.txt`: Quick reference for AI assistants
 - Comprehensive documentation for AI consumption
 

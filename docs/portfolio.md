@@ -9,7 +9,7 @@ pick rule below decides what "next" means; `scripts/backlog.mjs ready` computes 
 | 1 | foundation | Foundation plan: guards, the read-only pipeline, removals (`docs/research/2026-09-21-foundation-audit/REPORT.md`) | [#318](https://github.com/mezivillager/hacer/issues/318) | feature | the plan's phase exits (§6); `CircuitState` and `junction` gone from `src/` |
 | 2 | harness | Autonomous-run improvements & agent-readiness — *also the queue for maintaining and improving this process itself* | [#138](https://github.com/mezivillager/hacer/issues/138) | process | G0 + G1 exit tests pass (`docs/research/2026-09-18-agent-readiness/REPORT.md` §4) |
 | 3 | surfaces | Renderer surfaces: CLI/HDL · MCP · 2D | [#142](https://github.com/mezivillager/hacer/issues/142) | feature | scenarios pass through ≥3 headless drivers |
-| 4 | pubdocs | Public documentation for platform consumers (API · MCP · CLI · HDL · plugins) | [#260](https://github.com/mezivillager/hacer/issues/260) | feature | every shipped surface capability has its `docs/public/` page |
+| 4 | pubdocs | Public documentation for platform consumers (API · MCP · CLI · HDL · plugins) | [#260](https://github.com/mezivillager/hacer/issues/260) | feature | every shipped surface capability has its `docs/public/` page <!-- allow-missing-path --> |
 | 5 | core | Headless core | [#140](https://github.com/mezivillager/hacer/issues/140) | enabler | `vitest --project node` green; `hacer test` passes Project-1 vectors |
 | 6 | verify | QA service | [#141](https://github.com/mezivillager/hacer/issues/141) | aux | capability matrix generated; differential job green |
 | 7 | spine | nand2tetris alignment 0.5 → 0.7 | [#139](https://github.com/mezivillager/hacer/issues/139) | feature | conformance pass count for the current phase |
@@ -96,7 +96,7 @@ note the non-3d surfaces have to grow hand in hand."
   drivers it adds (`hdl` / `mcp` / `svg2d` / `cli`).
 - A capability landing on one non-3D surface has sibling issues for the others, linked with
   `blocked-by` or `Part of`.
-- A surface capability is not done until its `docs/public/` page exists or is updated in the same
+- A surface capability is not done until its `docs/public/` page exists or is updated in the same <!-- allow-missing-path -->
   PR, or a linked `pubdocs` sub-issue blocks the surface epic's exit.
 
 **Design first.** The owner: "that will mean a whole lot of core refactoring … lots of architectural

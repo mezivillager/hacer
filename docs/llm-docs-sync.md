@@ -75,7 +75,7 @@ Paste into your completion note or PR description.
 **Phase / ticket:** … *(files + evidence paths if completing checklist/ticket)*  
 ```
 
-**Minimum bar:** If the change affects **phase status**, **public features**, or **where code lives**, at least one of `implementation.md`, `REPO_MAP.md`, `README.md`, or Phase 0.5 checklist/ticket docs must be reconciled (or explicitly N/A with reason).
+**Minimum bar:** If the change affects **phase status**, **public features**, or **where code lives**, at least one of `docs/roadmap/implementation.md`, `REPO_MAP.md`, `README.md`, or Phase 0.5 checklist/ticket docs must be reconciled (or explicitly N/A with reason).
 
 ---
 

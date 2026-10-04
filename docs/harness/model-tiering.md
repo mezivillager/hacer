@@ -127,7 +127,7 @@ output and cache reads, so they are token-count ratios, not a measured bill.
   thing — but the missed defect stands on its own either way.
 - No builder was replayed at any tier. Every builder row is inference from the verifier measurement
   plus the Budgets ruling, not a measurement.
-- `scripts/agent-orient` (#156) does not exist yet, so the fourth metric is specified in `README.md`
+- `scripts/agent-orient` (#156) does not exist yet, so the fourth metric is specified in `README.md` <!-- allow-missing-path -->
   and must be printed there when that script is built.
 - The replay notes live in the coordinator's run directory, outside this repo; this note is the
   record of what they said.

@@ -35,10 +35,10 @@ docs/harness/reviews/
 
 ## Rules
 
-- **A review never edits another review or the brief.** A correction goes in `SYNTHESIS.md`.
+- **A review never edits another review or the brief.** A correction goes in `<date>/SYNTHESIS.md`.
 - **Reviews are numbered, not named by model.** The findings are judged, not their authors. A review
   may say what it ran on.
-- **A review files no issues and changes no process.** The coordinator triages in `SYNTHESIS.md`,
+- **A review files no issues and changes no process.** The coordinator triages in `<date>/SYNTHESIS.md`,
   files what survives, and puts the owner's decisions in its table.
 - **Numbers are measured or marked inferred,** and every review checks at least five of its brief's
   claims against their sources.

@@ -8,7 +8,7 @@ a semver range (a version must satisfy it; a range must be a subset: `<19.2` hol
 `>=19 <19.4` does not). A command that fails, times out or prints nothing is **unverifiable**, never
 expired; P-005's check fails unless `pnpm install` exits 0 or refuses a peer (`ERR_PNPM_PEER_DEP_ISSUES`),
 so a registry outage is not an expiry. A `manual` Verify cell is reported **manual** and not run; a
-command whose text names `gh` is **skipped** with no token (a `checks.mjs` command that calls `gh`
+command whose text names `gh` is **skipped** with no token (a `scripts/premises/checks.mjs` command that calls `gh`
 carries it in its name; the weekly workflow sets `GITHUB_TOKEN`). Neither counts as failed, expired
 or holding. `--strict` exits 1 only on an expired premise; `--for #<issue>` checks the premises that
 issue's decisions rest on; `--file` opens or updates one `project:lineage` issue per expired premise,

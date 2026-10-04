@@ -118,7 +118,7 @@ none); update `docs/harness/cursor-usage.json` and commit.
 ## When the ration is spent
 
 `node scripts/lane-budget.mjs` prints the state at any time and exits **7** when one more run does
-not fit; `second-opinion.mjs` runs the same check before it fetches or spawns anything, and exits
+not fit; `scripts/second-opinion.mjs` runs the same check before it fetches or spawns anything, and exits
 **7** with the reason. **Exit 7 is a skip, not a failure**: the coordinator drops the second opinion
 for that PR and proceeds without it — the lane was always advisory (`cursor-lane.md` §1.6). It never
 falls back to another model, another provider, or anything that bills. Changing a number here is a
