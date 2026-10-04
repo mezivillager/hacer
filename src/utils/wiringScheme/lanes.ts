@@ -23,7 +23,7 @@
  *
  * This is the libavoid *nudging* concept (research Finding 2) applied on top of
  * the existing coarse-grid + approach router — NOT the Stage-3 visibility-graph
- * rewrite. See docs/superpowers/specs/2026-06-21-wire-routing-lane-exclusivity-design.md
+ * rewrite. See docs/specs/2026-06-21-wire-routing-lane-exclusivity-design.md
  * and docs/decisions/0007-wire-routing-engine-direction.md.
  */
 

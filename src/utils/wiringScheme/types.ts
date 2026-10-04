@@ -18,7 +18,7 @@ export const SECTION_SIZE = 4.0
 
 /**
  * Per-pin approach-lane constants (wire-routing Stage 1 — see
- * docs/superpowers/specs/2026-06-21-wire-routing-stage1-design.md and ADR-0007).
+ * docs/specs/2026-06-21-wire-routing-stage1-design.md and ADR-0007).
  *
  * Dense multi-input chips (Mux4Way16, Mux8Way16) pack their pins ~0.4u apart,
  * far finer than {@link SECTION_SIZE}. Routing every pin to the same coarse
