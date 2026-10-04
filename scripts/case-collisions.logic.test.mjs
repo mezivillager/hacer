@@ -7,6 +7,8 @@ import { findCaseCollisions, formatReport, parseArgs } from './case-collisions.l
 
 const SCRIPT = path.join(import.meta.dirname, 'case-collisions.mjs')
 const CLEAN = { ok: true, file: [], directory: [], stem: [] }
+const NFC = '\u00e9'
+const NFD = 'e\u0301'
 
 describe('findCaseCollisions', () => {
   it('reports Foo.tsx beside foo.ts as a stem collision — import "./foo" resolves to either on macOS', () => {
@@ -61,10 +63,64 @@ describe('findCaseCollisions', () => {
     expect(findCaseCollisions(['src/Config.ts', 'src/config.json']).stem).toEqual([['src/Config.ts', 'src/config.json']])
   })
 
-  it('reports a path that collides through a colliding directory as a file collision too', () => {
+  it('still reports files below a colliding directory when their own names differ by case', () => {
     const result = findCaseCollisions(['A/x.ts', 'a/X.ts'])
     expect(result.directory).toEqual([['A/', 'a/']])
     expect(result.file).toEqual([['A/x.ts', 'a/X.ts']])
+  })
+
+  it('reports a colliding directory pair once, not each same-named file below it', () => {
+    expect(findCaseCollisions(['Foo/index.ts', 'foo/index.ts', 'Foo/util.ts', 'foo/util.ts'])).toEqual({
+      ok: false,
+      file: [],
+      directory: [['Foo/', 'foo/']],
+      stem: [],
+    })
+  })
+
+  it('reports a three-way directory collision once with its same-named files', () => {
+    const result = findCaseCollisions(['Foo/a.ts', 'foo/a.ts', 'FOO/a.ts'])
+    expect(result.file).toEqual([])
+    expect(result.directory).toEqual([['FOO/', 'Foo/', 'foo/']])
+  })
+
+  it('reports a same-named file pair in the same directory as a file collision, not a directory one', () => {
+    expect(findCaseCollisions(['src/A.ts', 'src/a.ts'])).toEqual({
+      ok: false,
+      file: [['src/A.ts', 'src/a.ts']],
+      directory: [],
+      stem: [],
+    })
+  })
+
+  it('treats an NFC name and its NFD form as one path, as APFS does', () => {
+    expect(NFC).not.toBe(NFD)
+    expect(NFC.normalize('NFD')).toBe(NFD)
+    expect(findCaseCollisions([`src/${NFC}.ts`, `src/${NFD}.ts`])).toEqual({
+      ok: false,
+      file: [[`src/${NFD}.ts`, `src/${NFC}.ts`]],
+      directory: [],
+      stem: [],
+    })
+  })
+
+  it('reports an NFC/NFD pair that also differs by case, and shows the names as tracked', () => {
+    const upper = `src/${NFC.toUpperCase()}.ts`
+    const lowerDecomposed = `src/${NFD}.ts`
+    expect(findCaseCollisions([upper, lowerDecomposed]).file).toEqual([[lowerDecomposed, upper]])
+  })
+
+  it('reports an NFC/NFD directory pair once, with the same-named file below it', () => {
+    expect(findCaseCollisions([`${NFC}/a.ts`, `${NFD}/a.ts`])).toEqual({
+      ok: false,
+      file: [],
+      directory: [[`${NFD}/`, `${NFC}/`]],
+      stem: [],
+    })
+  })
+
+  it('reports an NFC module beside an NFD module of another extension as a stem collision', () => {
+    expect(findCaseCollisions([`src/${NFC}.tsx`, `src/${NFD}.ts`]).stem).toEqual([[`src/${NFD}.ts`, `src/${NFC}.tsx`]])
   })
 
   it('passes the shapes that are not case collisions', () => {
