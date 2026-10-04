@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-04T17:10:22.737Z",
+  "generatedAt": "2026-10-04T17:15:37.181Z",
   "head": {
-    "sha": "d22be7de76f932547f688b58bd9ccd8c387ebeb0",
-    "date": "2026-10-04T20:09:46+03:00",
-    "subject": "chore(harness): required-checks guard refuses a job name it cannot read"
+    "sha": "d782d379919a63840c5f4064e71659e141c2593e",
+    "date": "2026-10-04T20:14:44+03:00",
+    "subject": "docs(harness): Handoff is required when a claim is paused or handed off"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-04T17:10:22.737Z",
+      "fetchedAt": "2026-10-04T17:15:37.181Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-04T17:10:22.737Z",
+      "fetchedAt": "2026-10-04T17:15:37.181Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-04T17:10:22.737Z",
+      "fetchedAt": "2026-10-04T17:15:37.181Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-04T17:10:22.737Z",
+      "fetchedAt": "2026-10-04T17:15:37.181Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-04T17:10:22.737Z",
+      "fetchedAt": "2026-10-04T17:15:37.181Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-04T17:10:22.737Z",
+      "fetchedAt": "2026-10-04T17:15:37.181Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-04T17:10:22.737Z",
+      "fetchedAt": "2026-10-04T17:15:37.181Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-04T17:10:22.737Z",
+      "fetchedAt": "2026-10-04T17:15:37.181Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-04T17:10:22.737Z",
+      "fetchedAt": "2026-10-04T17:15:37.181Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-04T17:10:22.737Z",
+      "fetchedAt": "2026-10-04T17:15:37.181Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-04T17:10:22.737Z",
+      "fetchedAt": "2026-10-04T17:15:37.181Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-04T17:10:22.737Z",
+      "fetchedAt": "2026-10-04T17:15:37.181Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-04T17:10:22.737Z",
+      "fetchedAt": "2026-10-04T17:15:37.181Z",
       "status": "ok"
     }
   },
@@ -105,12 +105,12 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 22,
-        "ready": 6,
+        "open": 21,
+        "ready": 5,
         "inProgress": 2,
         "needsHuman": 1,
         "staleClaims": [],
-        "agentReady": 8,
+        "agentReady": 7,
         "filedElsewhere": [
           151,
           339
@@ -445,11 +445,6 @@
         "project": "harness"
       },
       {
-        "number": 392,
-        "title": "lint:docs checks five named files, so the prescriptive docs that teach deleted APIs are exactly what it misses",
-        "project": "harness"
-      },
-      {
         "number": 394,
         "title": "A coordinator-authored criterion asserted a measured fact that was false — four times in one session, with no mechanism",
         "project": "harness"
@@ -458,6 +453,7 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
+        681,
         514
       ]
     }
@@ -569,21 +565,6 @@
           "project:harness",
           "agent-ready",
           "risk:0"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 392,
-        "title": "lint:docs checks five named files, so the prescriptive docs that teach deleted APIs are exactly what it misses",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:1"
         ],
         "blocking": [],
         "project": "harness",
@@ -1697,6 +1678,22 @@
         "reason": "not-pulled"
       },
       {
+        "number": 392,
+        "title": "lint:docs checks five named files, so the prescriptive docs that teach deleted APIs are exactly what it misses",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:1"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 395,
         "title": "computeJunctionRelocations deletes a junction based on wireIds[0] (document-mutating)",
         "labels": [
@@ -1753,22 +1750,6 @@
         "lane": "enabler",
         "pickable": false,
         "reason": "unshaped"
-      },
-      {
-        "number": 418,
-        "title": "docs(harness): tighten handoff nits from #417 verifier",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:0"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": false,
-        "reason": "claimed"
       },
       {
         "number": 431,
@@ -2174,12 +2155,11 @@
         269,
         271,
         304,
-        392,
         394,
         154,
         156,
         270,
-        418,
+        392,
         435,
         436,
         454,
@@ -2280,6 +2260,24 @@
   "prs": {
     "open": [
       {
+        "number": 681,
+        "title": "chore(harness): lint:case — fail on case-only path and module-stem collisions (#516)",
+        "url": "https://github.com/mezivillager/hacer/pull/681",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:1"
+        ],
+        "headRefName": "chore/516-case-collision-lint",
+        "isDraft": false,
+        "createdAt": "2026-10-04T17:12:58Z",
+        "mergedAt": null,
+        "closes": [
+          516
+        ],
+        "verdicts": []
+      },
+      {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
         "url": "https://github.com/mezivillager/hacer/pull/514",
@@ -2307,6 +2305,32 @@
       }
     ],
     "merged": [
+      {
+        "number": 680,
+        "title": "docs(harness): Handoff is required when a claim is paused or handed off",
+        "url": "https://github.com/mezivillager/hacer/pull/680",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/418-handoff-nits",
+        "isDraft": false,
+        "createdAt": "2026-10-04T17:11:25Z",
+        "mergedAt": "2026-10-04T17:14:45Z",
+        "closes": [
+          418
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (risk:0 docs-only, #554)",
+            "at": "2026-10-04T17:11:44Z",
+            "url": "https://github.com/mezivillager/hacer/pull/680#issuecomment-5982438259"
+          }
+        ]
+      },
       {
         "number": 679,
         "title": "chore(harness): required-checks guard refuses a job name it cannot read",
@@ -3801,33 +3825,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/593#issuecomment-5890538581"
           }
         ]
-      },
-      {
-        "number": 592,
-        "title": "fix(scene): split describe() into scene() and project(id); hop midpoints sit on the drawn arc",
-        "url": "https://github.com/mezivillager/hacer/pull/592",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:1",
-          "project:foundation"
-        ],
-        "headRefName": "fix/587-describe-shape-parity",
-        "isDraft": false,
-        "createdAt": "2026-09-29T12:29:35Z",
-        "mergedAt": "2026-09-29T12:38:30Z",
-        "closes": [
-          587
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Sonnet 5.5 (fresh context)",
-            "at": "2026-09-29T12:37:57Z",
-            "url": "https://github.com/mezivillager/hacer/pull/592#issuecomment-5890461237"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -3919,19 +3916,43 @@
         }
       },
       {
+        "number": 392,
+        "ref": "refs/heads/claim/392",
+        "sha": "d22be7de76f932547f688b58bd9ccd8c387ebeb0",
+        "state": "OPEN",
+        "title": "lint:docs checks five named files, so the prescriptive docs that teach deleted APIs are exactly what it misses",
+        "url": "https://github.com/mezivillager/hacer/issues/392",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:1"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-20",
+          "branch": null,
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-04T17:12:07Z",
+          "url": "https://github.com/mezivillager/hacer/issues/392#issuecomment-5982441350"
+        }
+      },
+      {
         "number": 418,
         "ref": "refs/heads/claim/418",
         "sha": "1b08a646380e754df7268c1ae279c54f1acf1593",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "docs(harness): tighten handoff nits from #417 verifier",
         "url": "https://github.com/mezivillager/hacer/issues/418",
         "labels": [
           "project:harness",
           "agent-ready",
-          "in-progress",
           "risk:0"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -4277,31 +4298,6 @@
           "author": "mezivillager",
           "at": "2026-09-27T11:42:29Z",
           "url": "https://github.com/mezivillager/hacer/issues/542#issuecomment-5855517267"
-        }
-      },
-      {
-        "number": 671,
-        "ref": "refs/heads/claim/671",
-        "sha": "847d915131b425a26f1982b52b438e5d33bd34bf",
-        "state": "CLOSED",
-        "title": "required-checks guard: an unresolvable ${{ }} job name passes silently; a trailing # comment slips past",
-        "url": "https://github.com/mezivillager/hacer/issues/671",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:1"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-20",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-04T16:53:18Z",
-          "url": "https://github.com/mezivillager/hacer/issues/671#issuecomment-5982288567"
         }
       }
     ],
@@ -5975,7 +5971,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-29",
-        "merges": 26
+        "merges": 25
       },
       {
         "date": "2026-09-30",
@@ -5991,20 +5987,20 @@
       },
       {
         "date": "2026-10-04",
-        "merges": 2
+        "merges": 3
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-20T17:10:22.737Z",
-      "merged": 194,
+      "since": "2026-09-20T17:15:37.181Z",
+      "merged": 195,
       "openToMergeHours": {
         "median": 0.2,
         "p90": 1.9
       },
       "blockedOnce": {
         "count": 18,
-        "of": 127,
+        "of": 128,
         "prs": [
           305,
           312,
@@ -6042,8 +6038,8 @@
           ]
         },
         "nonCode": {
-          "merged": 88,
-          "withVerdict": 29,
+          "merged": 89,
+          "withVerdict": 30,
           "without": [
             310,
             314,
@@ -7608,7 +7604,7 @@
       },
       {
         "date": "2026-10-04",
-        "at": "2026-10-04T17:01:00.518Z",
+        "at": "2026-10-04T17:10:22.737Z",
         "byProject": {
           "foundation": [
             338,
@@ -7650,10 +7646,10 @@
             304,
             392,
             394,
-            418,
             154,
             156,
             270,
+            418,
             435,
             436,
             454,
@@ -7665,7 +7661,6 @@
             607,
             648,
             649,
-            671,
             677
           ],
           "spine": [
@@ -7758,11 +7753,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "d22be7de76f932547f688b58bd9ccd8c387ebeb0",
+        "sha": "d782d379919a63840c5f4064e71659e141c2593e",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/37219456016/job/111486652646",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/37219773737/job/111487576326",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -7812,6 +7807,49 @@
           "known": 71,
           "new": 0
         },
+        "disagrees": false
+      },
+      {
+        "pr": 681,
+        "sha": "8ba0e14040e5906800121400e5ca046f5eb3d510",
+        "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-04T17:13:13Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/37219659267/job/111487247570",
+        "line": "HYGIENE: PASS reviewable=114 test=156 excluded=0 files=6 issue=#516 linked=fixes",
+        "verdict": "PASS",
+        "fields": {
+          "reviewable": 114,
+          "test": 156,
+          "excluded": 0,
+          "files": 6,
+          "issue": "#516",
+          "linked": "fixes"
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 681,
+        "sha": "8ba0e14040e5906800121400e5ca046f5eb3d510",
+        "check": "browser-qa",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-04T17:13:12Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/37219659071/job/111487246841",
+        "line": "BROWSER-QA: skipped (no critical paths)",
+        "verdict": "SKIPPED",
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 681,
+        "sha": "8ba0e14040e5906800121400e5ca046f5eb3d510",
+        "check": "ci",
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/37219658830/job/111487245652",
+        "line": null,
+        "verdict": null,
+        "fields": {},
         "disagrees": false
       }
     ]
