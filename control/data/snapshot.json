@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-04T17:50:11.856Z",
+  "generatedAt": "2026-10-04T18:03:45.989Z",
   "head": {
-    "sha": "b012c4bad78560555dc65186cb18a3d8662b65ca",
-    "date": "2026-10-04T20:49:06+03:00",
-    "subject": "chore(harness): dated spec folders are history too; L067 states the post-R801 count"
+    "sha": "4fde9ac0b0ba0e0d6429a3858eeca3ba404edd98",
+    "date": "2026-10-04T21:03:01+03:00",
+    "subject": "chore(harness): drop the live-tree CLI test from the lint:case unit suite (#682)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-04T17:50:11.856Z",
+      "fetchedAt": "2026-10-04T18:03:45.989Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-04T17:50:11.856Z",
+      "fetchedAt": "2026-10-04T18:03:45.989Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-04T17:50:11.856Z",
+      "fetchedAt": "2026-10-04T18:03:45.989Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-04T17:50:11.856Z",
+      "fetchedAt": "2026-10-04T18:03:45.989Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-04T17:50:11.856Z",
+      "fetchedAt": "2026-10-04T18:03:45.989Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-04T17:50:11.856Z",
+      "fetchedAt": "2026-10-04T18:03:45.989Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-04T17:50:11.856Z",
+      "fetchedAt": "2026-10-04T18:03:45.989Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-04T17:50:11.856Z",
+      "fetchedAt": "2026-10-04T18:03:45.989Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-04T17:50:11.856Z",
+      "fetchedAt": "2026-10-04T18:03:45.989Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-04T17:50:11.856Z",
+      "fetchedAt": "2026-10-04T18:03:45.989Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-04T17:50:11.856Z",
+      "fetchedAt": "2026-10-04T18:03:45.989Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-04T17:50:11.856Z",
+      "fetchedAt": "2026-10-04T18:03:45.989Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-04T17:50:11.856Z",
+      "fetchedAt": "2026-10-04T18:03:45.989Z",
       "status": "ok"
     }
   },
@@ -105,12 +105,12 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 21,
+        "open": 19,
         "ready": 5,
-        "inProgress": 2,
+        "inProgress": 1,
         "needsHuman": 1,
         "staleClaims": [],
-        "agentReady": 7,
+        "agentReady": 5,
         "filedElsewhere": [
           151,
           339
@@ -354,9 +354,7 @@
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 2,
-        "filedElsewhere": [
-          394
-        ],
+        "filedElsewhere": [],
         "next": {
           "number": 471,
           "title": "Lineage DL-6: lint:lineage from warn to fail — the lineage ratchet"
@@ -453,7 +451,7 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
-        684,
+        687,
         514
       ]
     }
@@ -1677,23 +1675,6 @@
         "reason": "not-pulled"
       },
       {
-        "number": 394,
-        "title": "A coordinator-authored criterion asserted a measured fact that was false — four times in one session, with no mechanism",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:lineage"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 395,
         "title": "computeJunctionRelocations deletes a junction based on wireIds[0] (document-mutating)",
         "labels": [
@@ -2075,6 +2056,7 @@
         "title": "docPaths OWNED_SKILLS: follow sync-superpowers.sh's owned-skill list (ADR-0010 coupling)",
         "labels": [
           "project:harness",
+          "in-progress",
           "risk:1"
         ],
         "blocking": [],
@@ -2082,7 +2064,7 @@
         "rank": 2,
         "lane": "process",
         "pickable": false,
-        "reason": "unshaped"
+        "reason": "claimed"
       },
       {
         "number": 677,
@@ -2098,22 +2080,6 @@
         "lane": "process",
         "pickable": false,
         "reason": "needs-human"
-      },
-      {
-        "number": 682,
-        "title": "lint:case: Unicode-normalization twins (NFC/NFD) collide on APFS too",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:1"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": false,
-        "reason": "claimed"
       }
     ],
     "byProject": {
@@ -2159,7 +2125,6 @@
         154,
         156,
         270,
-        394,
         435,
         436,
         454,
@@ -2170,8 +2135,7 @@
         607,
         648,
         649,
-        677,
-        682
+        677
       ],
       "spine": [
         165,
@@ -2260,30 +2224,22 @@
   "prs": {
     "open": [
       {
-        "number": 684,
-        "title": "chore(harness): issue-facts checks package and path claims before dispatch (#394)",
-        "url": "https://github.com/mezivillager/hacer/pull/684",
+        "number": 687,
+        "title": "chore(harness): one owned-skills list for the sync and the doc-path checks",
+        "url": "https://github.com/mezivillager/hacer/pull/687",
         "author": "mezivillager",
         "labels": [
           "project:harness",
           "risk:1"
         ],
-        "headRefName": "chore/394-measured-facts-check",
+        "headRefName": "chore/649-one-owned-skills-list",
         "isDraft": false,
-        "createdAt": "2026-10-04T17:36:27Z",
+        "createdAt": "2026-10-04T18:02:27Z",
         "mergedAt": null,
         "closes": [
-          394
+          649
         ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Sonnet 5.5",
-            "at": "2026-10-04T17:46:59Z",
-            "url": "https://github.com/mezivillager/hacer/pull/684#issuecomment-5982725411"
-          }
-        ]
+        "verdicts": []
       },
       {
         "number": 514,
@@ -2313,6 +2269,58 @@
       }
     ],
     "merged": [
+      {
+        "number": 686,
+        "title": "chore(harness): lint:case catches NFC/NFD twins and reports a colliding directory once",
+        "url": "https://github.com/mezivillager/hacer/pull/686",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:1"
+        ],
+        "headRefName": "chore/682-case-collisions-nfc",
+        "isDraft": false,
+        "createdAt": "2026-10-04T17:54:04Z",
+        "mergedAt": "2026-10-04T18:03:02Z",
+        "closes": [
+          682
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Sonnet 5.5",
+            "at": "2026-10-04T18:02:27Z",
+            "url": "https://github.com/mezivillager/hacer/pull/686#issuecomment-5982849130"
+          }
+        ]
+      },
+      {
+        "number": 684,
+        "title": "chore(harness): issue-facts checks package and path claims before dispatch (#394)",
+        "url": "https://github.com/mezivillager/hacer/pull/684",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:1"
+        ],
+        "headRefName": "chore/394-measured-facts-check",
+        "isDraft": false,
+        "createdAt": "2026-10-04T17:36:27Z",
+        "mergedAt": "2026-10-04T17:54:07Z",
+        "closes": [
+          394
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Sonnet 5.5",
+            "at": "2026-10-04T17:46:59Z",
+            "url": "https://github.com/mezivillager/hacer/pull/684#issuecomment-5982725411"
+          }
+        ]
+      },
       {
         "number": 683,
         "title": "chore(harness): lint:docs checks every cited path under docs/",
@@ -3785,60 +3793,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/601#issuecomment-5891094461"
           }
         ]
-      },
-      {
-        "number": 600,
-        "title": "feat(cli): hacer run-tst and the cli scenario driver",
-        "url": "https://github.com/mezivillager/hacer/pull/600",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:1",
-          "project:foundation"
-        ],
-        "headRefName": "feat/205-cli-run-tst-driver",
-        "isDraft": false,
-        "createdAt": "2026-09-29T13:08:11Z",
-        "mergedAt": "2026-09-29T13:18:47Z",
-        "closes": [
-          205
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Sonnet 5.5 (fresh context)",
-            "at": "2026-09-29T13:17:08Z",
-            "url": "https://github.com/mezivillager/hacer/pull/600#issuecomment-5891088634"
-          }
-        ]
-      },
-      {
-        "number": 596,
-        "title": "test(e2e): canvas-less @shell Playwright project and first spec",
-        "url": "https://github.com/mezivillager/hacer/pull/596",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:1",
-          "project:foundation"
-        ],
-        "headRefName": "feat/316-shell-playwright",
-        "isDraft": false,
-        "createdAt": "2026-09-29T13:02:10Z",
-        "mergedAt": "2026-09-29T13:11:10Z",
-        "closes": [
-          316
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Sonnet 5.5 (fresh context)",
-            "at": "2026-09-29T13:10:27Z",
-            "url": "https://github.com/mezivillager/hacer/pull/596#issuecomment-5890979354"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -3927,32 +3881,6 @@
           "author": "mezivillager",
           "at": "2026-09-24T13:57:40Z",
           "url": "https://github.com/mezivillager/hacer/issues/182#issuecomment-5815526405"
-        }
-      },
-      {
-        "number": 394,
-        "ref": "refs/heads/claim/394",
-        "sha": "d782d379919a63840c5f4064e71659e141c2593e",
-        "state": "OPEN",
-        "title": "A coordinator-authored criterion asserted a measured fact that was false — four times in one session, with no mechanism",
-        "url": "https://github.com/mezivillager/hacer/issues/394",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:lineage"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-20",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-04T17:20:51Z",
-          "url": "https://github.com/mezivillager/hacer/issues/394#issuecomment-5982513503"
         }
       },
       {
@@ -4267,10 +4195,34 @@
         }
       },
       {
+        "number": 649,
+        "ref": "refs/heads/claim/649",
+        "sha": "b012c4bad78560555dc65186cb18a3d8662b65ca",
+        "state": "OPEN",
+        "title": "docPaths OWNED_SKILLS: follow sync-superpowers.sh's owned-skill list (ADR-0010 coupling)",
+        "url": "https://github.com/mezivillager/hacer/issues/649",
+        "labels": [
+          "project:harness",
+          "in-progress",
+          "risk:1"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-20",
+          "branch": null,
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-04T17:50:20Z",
+          "url": "https://github.com/mezivillager/hacer/issues/649#issuecomment-5982751733"
+        }
+      },
+      {
         "number": 682,
         "ref": "refs/heads/claim/682",
         "sha": "1d12d59c186e98eee6ebdeca6b37f274be4bef04",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "lint:case: Unicode-normalization twins (NFC/NFD) collide on APFS too",
         "url": "https://github.com/mezivillager/hacer/issues/682",
         "labels": [
@@ -4279,7 +4231,7 @@
           "in-progress",
           "risk:1"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -4292,7 +4244,7 @@
         }
       }
     ],
-    "onClosedIssues": 13
+    "onClosedIssues": 14
   },
   "cloudLane": {
     "items": [
@@ -4837,7 +4789,7 @@
         "date": "2026-09-23",
         "whatWentWrong": "Three times in one run the coordinator wrote a criterion or a recommendation from prose rather than from the artefact, and each cost a builder or a verifier real work: *\"`fast-check` is already a dependency\"* on #355 (it is in neither `package.json` nor the lockfile), *\"deleting `renderTracking` shrinks the layer-ratchet baseline\"* on #332 (34 → 34 — `src/utils` is not one of the three layers, so it was never a violation), and a net-negative exemption threshold recommended on #389 that fails on #388's own reviewable split (`194 ≤ max(20, 69)` is false)",
         "shouldHaveBeenCaughtBy": "the rule the repo already states for issue bodies — a criterion naming a measured fact is checked against the artefact before it is written — which was never applied to the coordinator's own briefs and comments",
-        "mechanised": "partly — #394, absorbed by Decision Lineage (#457); executable premises are DL-3 (#468)",
+        "mechanised": "partly — #394: `scripts/issue-facts.mjs` checks each package and path an issue or brief names against the manifest and the tree, which catches #355's `fast-check`; the inferences and the arithmetic stay a Measured-facts row (`docs/harness/README.md`, *Measured facts before dispatch*); executable premises are DL-3 (#468)",
         "decision": "R310, R345, R350"
       },
       {
@@ -4941,7 +4893,7 @@
         "date": "2026-09-29",
         "whatWentWrong": "The coordinator wrote unmeasured claims into briefs and issues three times in one run. #253's brief dated a plan 2026-05 when git says 2025-12 (fixed after a BLOCK on #586). #603's issue asserted the reference IDE fails on unknown pins, when it ignores them (R773). #345's brief asked for a `fix` commit on loop-only scripts, which would cut an app release",
         "shouldHaveBeenCaughtBy": "the brief's Measured-facts table: every claim a brief or issue makes about code, history or a reference gets a row with the command that measured it",
-        "mechanised": "no — the dispatch guard checks that the slot exists, not that each claim has a row (the builders and a verifier caught all three)",
+        "mechanised": "partly — #394: none of the three names a package or a path, so `scripts/issue-facts.mjs` catches none of them; the rule that does apply, a Measured-facts row with its command for every claim, is now stated in `docs/harness/README.md` and `ha-next` §3, and the dispatch guard still checks only that the slot exists (the builders and a verifier caught all three)",
         "decision": "—"
       },
       {
@@ -5010,10 +4962,10 @@
       }
     ],
     "byMechanised": {
-      "no": 9,
+      "no": 8,
       "yes": 52,
       "other": 1,
-      "partly": 5
+      "partly": 6
     }
   },
   "adrs": {
@@ -5983,7 +5935,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-29",
-        "merges": 23
+        "merges": 21
       },
       {
         "date": "2026-09-30",
@@ -5999,20 +5951,20 @@
       },
       {
         "date": "2026-10-04",
-        "merges": 5
+        "merges": 7
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-20T17:50:11.856Z",
-      "merged": 197,
+      "since": "2026-09-20T18:03:45.989Z",
+      "merged": 199,
       "openToMergeHours": {
         "median": 0.2,
         "p90": 1.9
       },
       "blockedOnce": {
         "count": 18,
-        "of": 130,
+        "of": 132,
         "prs": [
           305,
           312,
@@ -6036,8 +5988,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 108,
-          "withVerdict": 100,
+          "merged": 110,
+          "withVerdict": 102,
           "without": [
             303,
             306,
@@ -7765,11 +7717,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "b012c4bad78560555dc65186cb18a3d8662b65ca",
+        "sha": "4fde9ac0b0ba0e0d6429a3858eeca3ba404edd98",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/37221954993/job/111493919727",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/37222872870/job/111496562692",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -7822,49 +7774,46 @@
         "disagrees": false
       },
       {
-        "pr": 684,
-        "sha": "d0488fc05ce30c732aee8c47afa5243155629713",
+        "pr": 687,
+        "sha": "5bc7425bc5ea12f36e49d0cfc9522250dad33179",
         "check": "pr-hygiene",
         "conclusion": "SUCCESS",
-        "completedAt": "2026-10-04T17:36:39Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/37221159712/job/111491609118",
-        "line": "HYGIENE: PASS reviewable=184 test=146 excluded=0 files=5 issue=#394 linked=fixes",
+        "completedAt": "2026-10-04T18:02:41Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/37222835525/job/111496457844",
+        "line": "HYGIENE: PASS reviewable=85 test=26 excluded=0 files=10 issue=#649 linked=fixes",
         "verdict": "PASS",
         "fields": {
-          "reviewable": 184,
-          "test": 146,
+          "reviewable": 85,
+          "test": 26,
           "excluded": 0,
-          "files": 5,
-          "issue": "#394",
+          "files": 10,
+          "issue": "#649",
           "linked": "fixes"
         },
         "disagrees": false
       },
       {
-        "pr": 684,
-        "sha": "d0488fc05ce30c732aee8c47afa5243155629713",
+        "pr": 687,
+        "sha": "5bc7425bc5ea12f36e49d0cfc9522250dad33179",
         "check": "browser-qa",
         "conclusion": "SUCCESS",
-        "completedAt": "2026-10-04T17:36:40Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/37221159726/job/111491608885",
+        "completedAt": "2026-10-04T18:02:46Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/37222835495/job/111496457307",
         "line": "BROWSER-QA: skipped (no critical paths)",
         "verdict": "SKIPPED",
         "fields": {},
         "disagrees": false
       },
       {
-        "pr": 684,
-        "sha": "d0488fc05ce30c732aee8c47afa5243155629713",
+        "pr": 687,
+        "sha": "5bc7425bc5ea12f36e49d0cfc9522250dad33179",
         "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-04T17:39:48Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/37221159061/job/111491606136",
-        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 71,
-          "new": 0
-        },
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/37222834498/job/111496454364",
+        "line": null,
+        "verdict": null,
+        "fields": {},
         "disagrees": false
       }
     ]
