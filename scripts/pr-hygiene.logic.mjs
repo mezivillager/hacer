@@ -519,6 +519,8 @@ export const SUPPRESSION_RATCHET = {
   armedByBaseRows: true,
 }
 
+export const DOC_PATH_RATCHET = { input: 'docPaths', file: null, rows: () => ({ error: 'not implemented' }), ruleNames: () => new Set() }
+
 /** Every baseline the ratchet reads — a second one is data here, not a second rule. */
 export const RATCHETS = [LAYER_RATCHET, SUPPRESSION_RATCHET]
 

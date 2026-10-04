@@ -3,11 +3,13 @@ import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import {
   DEPENDENCY_LABEL,
+  DOC_PATH_RATCHET,
   FAIL_LINES,
   FIXUP_MAX_LINES,
   FIXUP_MAX_LINES_PER_FILE,
   FIXUP_MAX_SHARE,
   OVERRIDE_LABEL,
+  RATCHETS,
   RULES,
   WARN_FILES,
   WARN_LINES,
@@ -1632,5 +1634,86 @@ describe('the ESLint suppressions baseline is the same ratchet (#429)', () => {
     expect(ratchetReads([file(SUPPRESSIONS_FILE)], SUPPRESSION_RATCHET)).toEqual({ config: false })
     expect(ratchetReads([file(ESLINT_CONFIG)], SUPPRESSION_RATCHET)).toEqual({ config: true })
     expect(ratchetReads([file(RATCHET_BASELINE_FILE)], SUPPRESSION_RATCHET)).toBeNull()
+  })
+})
+
+// ── The doc-path baseline (#685) ──────────────────────────────────────────────────────────────
+//
+// `lint:docs` lets a grandfathered doc keep the dead citations its baseline counts; raising a
+// count, or adding a doc, makes it pass again. Nothing declares a dead citation, so any growth fails.
+
+describe('the doc-path baseline is the same ratchet (#685)', () => {
+  const DOC_PATHS_FILE = 'scripts/hooks/docPathExists.baseline.json'
+  const REAL_DOC_PATHS = readFileSync(path.join(import.meta.dirname, '..', DOC_PATHS_FILE), 'utf8')
+  const countsOf = (entries) => JSON.stringify(Object.fromEntries(entries), null, 2)
+  const base = countsOf([['docs/a.md', 3], ['docs/b.md', 1]])
+  const docPathsPr = (docPaths, overrides = {}) => pr({ docPaths, files: [file(DOC_PATHS_FILE, 1, 1)], ...overrides })
+  const finding = (result) => result.findings.find((entry) => entry.rule === 'ratchet' && entry.message.includes(DOC_PATHS_FILE))
+
+  it('is one of the baselines the ratchet reads, at the path lint:docs reads it from', () => {
+    expect(RATCHETS).toContain(DOC_PATH_RATCHET)
+    expect(DOC_PATH_RATCHET.file).toBe(DOC_PATHS_FILE)
+  })
+
+  it('reads one row per doc, carrying its count of dead citations', () => {
+    expect(parseRatchetBaseline(base, DOC_PATH_RATCHET)).toEqual({
+      rows: [
+        { rule: 'dead-path', edge: 'docs/a.md', count: 3 },
+        { rule: 'dead-path', edge: 'docs/b.md', count: 1 },
+      ],
+    })
+    expect(parseRatchetBaseline('[]', DOC_PATH_RATCHET).error).toBeDefined()
+    expect(parseRatchetBaseline('{"docs/a.md":0}', DOC_PATH_RATCHET).error).toMatch(/count/)
+    expect(parseRatchetBaseline('{"docs/a.md":"3"}', DOC_PATH_RATCHET).error).toMatch(/count/)
+    const real = parseRatchetBaseline(REAL_DOC_PATHS, DOC_PATH_RATCHET)
+    expect(real.error).toBeUndefined()
+    expect(real.rows.length).toBeGreaterThan(0)
+  })
+
+  it('fails a count that rises, naming the doc and the counts', () => {
+    const result = evaluate(docPathsPr({ base, head: countsOf([['docs/a.md', 4], ['docs/b.md', 1]]) }))
+    expect(result.verdict).toBe('FAIL')
+    expect(result.docPaths).toBe('absorbed')
+    expect(finding(result).level).toBe('fail')
+    expect(finding(result).message).toContain('dead-path: docs/a.md')
+    expect(finding(result).message).toContain('3 → 4')
+    expect(formatConsole(result).split('\n')[0]).toContain('docPaths=absorbed')
+  })
+
+  it('fails a doc added to the baseline, and points at the citation rather than at a config', () => {
+    const result = evaluate(docPathsPr({ base, head: countsOf([['docs/a.md', 3], ['docs/b.md', 1], ['docs/c.md', 2]]) }))
+    expect(result.verdict).toBe('FAIL')
+    expect(finding(result).message).toContain('dead-path: docs/c.md')
+    expect(finding(result).message).not.toContain('declare a rule')
+  })
+
+  it('fails a swap — one doc fixed, another added — because the rows compare as a set', () => {
+    const result = evaluate(docPathsPr({ base, head: countsOf([['docs/a.md', 3], ['docs/c.md', 1]]) }))
+    expect(result.verdict).toBe('FAIL')
+    expect(finding(result).message).toContain('dead-path: docs/c.md')
+  })
+
+  it('passes a falling count and a doc leaving the baseline', () => {
+    const result = evaluate(docPathsPr({ base, head: countsOf([['docs/a.md', 2]]) }))
+    expect(result.docPaths).toBe('shrank')
+    expect(result.verdict).toBe('PASS')
+  })
+
+  it('warns, rather than failing, when the PR body names the row it adds', () => {
+    const head = countsOf([['docs/a.md', 3], ['docs/b.md', 1], ['docs/renamed.md', 2]])
+    const body = 'Fixes #150\n\nBaseline-growth: dead-path: docs/renamed.md — moved from docs/old.md, same two citations'
+    const result = evaluate(docPathsPr({ base, head }, { body }))
+    expect(result.verdict).toBe('WARN')
+    expect(result.docPaths).toBe('absorbed')
+  })
+
+  it('reads the real baseline against itself as unchanged', () => {
+    expect(compareRatchetBaseline({ base: REAL_DOC_PATHS, head: REAL_DOC_PATHS, kind: DOC_PATH_RATCHET }).status).toBe('unchanged')
+  })
+
+  it('is read when a PR touches the baseline, and only then', () => {
+    expect(ratchetReads([file('docs/harness/ledger.md')], DOC_PATH_RATCHET)).toBeNull()
+    expect(ratchetReads([file('scripts/hooks/docPathExists.logic.mjs')], DOC_PATH_RATCHET)).toBeNull()
+    expect(ratchetReads([file(DOC_PATHS_FILE)], DOC_PATH_RATCHET)).toEqual({ config: false })
   })
 })
