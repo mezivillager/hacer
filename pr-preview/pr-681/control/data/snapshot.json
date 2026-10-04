@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-04T17:13:53.809Z",
+  "generatedAt": "2026-10-04T17:21:48.007Z",
   "head": {
-    "sha": "6ab380419686d8220a245774db463cdac4bc2f66",
-    "date": "2026-10-04T20:12:59+03:00",
-    "subject": "Merge 8ba0e14040e5906800121400e5ca046f5eb3d510 into d22be7de76f932547f688b58bd9ccd8c387ebeb0"
+    "sha": "b6392622a683fc959da580d77495338a2dad4968",
+    "date": "2026-10-04T17:20:41Z",
+    "subject": "Merge a0666c25379685530d5a367a30d01861b5d82dd6 into d782d379919a63840c5f4064e71659e141c2593e"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-04T17:13:53.809Z",
+      "fetchedAt": "2026-10-04T17:21:48.007Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-04T17:13:53.809Z",
+      "fetchedAt": "2026-10-04T17:21:48.007Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-04T17:13:53.809Z",
+      "fetchedAt": "2026-10-04T17:21:48.007Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-04T17:13:53.809Z",
+      "fetchedAt": "2026-10-04T17:21:48.007Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-04T17:13:53.809Z",
+      "fetchedAt": "2026-10-04T17:21:48.007Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-04T17:13:53.809Z",
+      "fetchedAt": "2026-10-04T17:21:48.007Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-04T17:13:53.809Z",
+      "fetchedAt": "2026-10-04T17:21:48.007Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-04T17:13:53.809Z",
+      "fetchedAt": "2026-10-04T17:21:48.007Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-04T17:13:53.809Z",
+      "fetchedAt": "2026-10-04T17:21:48.007Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-04T17:13:53.809Z",
+      "fetchedAt": "2026-10-04T17:21:48.007Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-04T17:13:53.809Z",
+      "fetchedAt": "2026-10-04T17:21:48.007Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-04T17:13:53.809Z",
+      "fetchedAt": "2026-10-04T17:21:48.007Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-04T17:13:53.809Z",
+      "fetchedAt": "2026-10-04T17:21:48.007Z",
       "status": "ok"
     }
   },
@@ -445,8 +445,8 @@
         "project": "harness"
       },
       {
-        "number": 394,
-        "title": "A coordinator-authored criterion asserted a measured fact that was false — four times in one session, with no mechanism",
+        "number": 682,
+        "title": "lint:case: Unicode-normalization twins (NFC/NFD) collide on APFS too",
         "project": "harness"
       }
     ],
@@ -454,7 +454,6 @@
       "dormant": false,
       "agentPrs": [
         681,
-        680,
         514
       ]
     }
@@ -575,13 +574,12 @@
         "reason": null
       },
       {
-        "number": 394,
-        "title": "A coordinator-authored criterion asserted a measured fact that was false — four times in one session, with no mechanism",
+        "number": 682,
+        "title": "lint:case: Unicode-normalization twins (NFC/NFD) collide on APFS too",
         "labels": [
           "project:harness",
           "agent-ready",
-          "risk:1",
-          "project:lineage"
+          "risk:1"
         ],
         "blocking": [],
         "project": "harness",
@@ -1695,6 +1693,23 @@
         "reason": "claimed"
       },
       {
+        "number": 394,
+        "title": "A coordinator-authored criterion asserted a measured fact that was false — four times in one session, with no mechanism",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:lineage"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 395,
         "title": "computeJunctionRelocations deletes a junction based on wireIds[0] (document-mutating)",
         "labels": [
@@ -1751,22 +1766,6 @@
         "lane": "enabler",
         "pickable": false,
         "reason": "unshaped"
-      },
-      {
-        "number": 418,
-        "title": "docs(harness): tighten handoff nits from #417 verifier",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:0"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": false,
-        "reason": "claimed"
       },
       {
         "number": 431,
@@ -2172,12 +2171,12 @@
         269,
         271,
         304,
-        394,
+        682,
         154,
         156,
         270,
         392,
-        418,
+        394,
         435,
         436,
         454,
@@ -2293,31 +2292,13 @@
         "closes": [
           516
         ],
-        "verdicts": []
-      },
-      {
-        "number": 680,
-        "title": "docs(harness): Handoff is required when a claim is paused or handed off",
-        "url": "https://github.com/mezivillager/hacer/pull/680",
-        "author": "mezivillager",
-        "labels": [
-          "project:harness",
-          "risk:0"
-        ],
-        "headRefName": "docs/418-handoff-nits",
-        "isDraft": false,
-        "createdAt": "2026-10-04T17:11:25Z",
-        "mergedAt": null,
-        "closes": [
-          418
-        ],
         "verdicts": [
           {
             "verdict": "PASS",
             "round": 1,
-            "model": "coordinator (risk:0 docs-only, #554)",
-            "at": "2026-10-04T17:11:44Z",
-            "url": "https://github.com/mezivillager/hacer/pull/680#issuecomment-5982438259"
+            "model": "Sonnet 5.5",
+            "at": "2026-10-04T17:20:00Z",
+            "url": "https://github.com/mezivillager/hacer/pull/681#issuecomment-5982506658"
           }
         ]
       },
@@ -2349,6 +2330,32 @@
       }
     ],
     "merged": [
+      {
+        "number": 680,
+        "title": "docs(harness): Handoff is required when a claim is paused or handed off",
+        "url": "https://github.com/mezivillager/hacer/pull/680",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/418-handoff-nits",
+        "isDraft": false,
+        "createdAt": "2026-10-04T17:11:25Z",
+        "mergedAt": "2026-10-04T17:14:45Z",
+        "closes": [
+          418
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (risk:0 docs-only, #554)",
+            "at": "2026-10-04T17:11:44Z",
+            "url": "https://github.com/mezivillager/hacer/pull/680#issuecomment-5982438259"
+          }
+        ]
+      },
       {
         "number": 679,
         "title": "chore(harness): required-checks guard refuses a job name it cannot read",
@@ -3843,33 +3850,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/593#issuecomment-5890538581"
           }
         ]
-      },
-      {
-        "number": 592,
-        "title": "fix(scene): split describe() into scene() and project(id); hop midpoints sit on the drawn arc",
-        "url": "https://github.com/mezivillager/hacer/pull/592",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:1",
-          "project:foundation"
-        ],
-        "headRefName": "fix/587-describe-shape-parity",
-        "isDraft": false,
-        "createdAt": "2026-09-29T12:29:35Z",
-        "mergedAt": "2026-09-29T12:38:30Z",
-        "closes": [
-          587
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Sonnet 5.5 (fresh context)",
-            "at": "2026-09-29T12:37:57Z",
-            "url": "https://github.com/mezivillager/hacer/pull/592#issuecomment-5890461237"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -3986,17 +3966,18 @@
         }
       },
       {
-        "number": 418,
-        "ref": "refs/heads/claim/418",
-        "sha": "1b08a646380e754df7268c1ae279c54f1acf1593",
+        "number": 394,
+        "ref": "refs/heads/claim/394",
+        "sha": "d782d379919a63840c5f4064e71659e141c2593e",
         "state": "OPEN",
-        "title": "docs(harness): tighten handoff nits from #417 verifier",
-        "url": "https://github.com/mezivillager/hacer/issues/418",
+        "title": "A coordinator-authored criterion asserted a measured fact that was false — four times in one session, with no mechanism",
+        "url": "https://github.com/mezivillager/hacer/issues/394",
         "labels": [
           "project:harness",
           "agent-ready",
           "in-progress",
-          "risk:0"
+          "risk:1",
+          "project:lineage"
         ],
         "onClosedIssue": false,
         "claim": {
@@ -4006,8 +3987,8 @@
           "branch": null,
           "handoff": "none",
           "author": "mezivillager",
-          "at": "2026-10-04T17:09:43Z",
-          "url": "https://github.com/mezivillager/hacer/issues/418#issuecomment-5982421934"
+          "at": "2026-10-04T17:20:51Z",
+          "url": "https://github.com/mezivillager/hacer/issues/394#issuecomment-5982513503"
         }
       },
       {
@@ -6025,7 +6006,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-29",
-        "merges": 26
+        "merges": 25
       },
       {
         "date": "2026-09-30",
@@ -6041,20 +6022,20 @@
       },
       {
         "date": "2026-10-04",
-        "merges": 2
+        "merges": 3
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-20T17:13:53.809Z",
-      "merged": 194,
+      "since": "2026-09-20T17:21:48.007Z",
+      "merged": 195,
       "openToMergeHours": {
         "median": 0.2,
         "p90": 1.9
       },
       "blockedOnce": {
         "count": 18,
-        "of": 127,
+        "of": 128,
         "prs": [
           305,
           312,
@@ -6092,8 +6073,8 @@
           ]
         },
         "nonCode": {
-          "merged": 88,
-          "withVerdict": 29,
+          "merged": 89,
+          "withVerdict": 30,
           "without": [
             310,
             314,
@@ -7807,11 +7788,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "d22be7de76f932547f688b58bd9ccd8c387ebeb0",
+        "sha": "d782d379919a63840c5f4064e71659e141c2593e",
         "check": "ci",
         "conclusion": "SUCCESS",
-        "completedAt": "2026-10-04T17:13:34Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/37219456016/job/111486652646",
+        "completedAt": "2026-10-04T17:17:58Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/37219773737/job/111487576326",
         "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
         "verdict": "PASS",
         "fields": {
@@ -7867,55 +7848,12 @@
         "disagrees": false
       },
       {
-        "pr": 680,
-        "sha": "1821232515cf34ab324e22aa183030700865777d",
-        "check": "pr-hygiene",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-04T17:11:42Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/37219562662/job/111486966714",
-        "line": "HYGIENE: PASS reviewable=3 test=0 excluded=0 files=1 issue=#418 linked=fixes",
-        "verdict": "PASS",
-        "fields": {
-          "reviewable": 3,
-          "test": 0,
-          "excluded": 0,
-          "files": 1,
-          "issue": "#418",
-          "linked": "fixes"
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 680,
-        "sha": "1821232515cf34ab324e22aa183030700865777d",
-        "check": "browser-qa",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-04T17:11:42Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/37219562674/job/111486965754",
-        "line": "BROWSER-QA: skipped (no critical paths)",
-        "verdict": "SKIPPED",
-        "fields": {},
-        "disagrees": false
-      },
-      {
-        "pr": 680,
-        "sha": "1821232515cf34ab324e22aa183030700865777d",
-        "check": "ci",
-        "conclusion": null,
-        "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/37219561955/job/111486963195",
-        "line": null,
-        "verdict": null,
-        "fields": {},
-        "disagrees": false
-      },
-      {
         "pr": 681,
-        "sha": "8ba0e14040e5906800121400e5ca046f5eb3d510",
+        "sha": "a0666c25379685530d5a367a30d01861b5d82dd6",
         "check": "pr-hygiene",
         "conclusion": "SUCCESS",
-        "completedAt": "2026-10-04T17:13:13Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/37219659267/job/111487247570",
+        "completedAt": "2026-10-04T17:20:51Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/37220149975/job/111488669465",
         "line": "HYGIENE: PASS reviewable=114 test=156 excluded=0 files=6 issue=#516 linked=fixes",
         "verdict": "PASS",
         "fields": {
@@ -7930,11 +7868,11 @@
       },
       {
         "pr": 681,
-        "sha": "8ba0e14040e5906800121400e5ca046f5eb3d510",
+        "sha": "a0666c25379685530d5a367a30d01861b5d82dd6",
         "check": "browser-qa",
         "conclusion": "SUCCESS",
-        "completedAt": "2026-10-04T17:13:12Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/37219659071/job/111487246841",
+        "completedAt": "2026-10-04T17:21:00Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/37220151115/job/111488672664",
         "line": "BROWSER-QA: skipped (no critical paths)",
         "verdict": "SKIPPED",
         "fields": {},
@@ -7942,11 +7880,11 @@
       },
       {
         "pr": 681,
-        "sha": "8ba0e14040e5906800121400e5ca046f5eb3d510",
+        "sha": "a0666c25379685530d5a367a30d01861b5d82dd6",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/37219658830/job/111487245652",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/37220151043/job/111488672131",
         "line": null,
         "verdict": null,
         "fields": {},
