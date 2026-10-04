@@ -5,17 +5,20 @@ import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import ownedSkills from '../owned-skills.json' with { type: 'json' }
+import baseline from './docPathExists.baseline.json' with { type: 'json' }
 import {
-  GRANDFATHERED_DOCS,
+  DEAD_PATH_BASELINE,
   KNOWN_ROOTS,
   MISSING_PATH_MARKER,
   PATH_EXISTENCE_PATTERNS,
+  deadPathVerdict,
   extractPathCitations,
   findDeadPaths,
   findFenceWarnings,
   formatDeadPaths,
   formatFenceWarnings,
   isPathExistenceFile,
+  trackedPathExists,
 } from './docPathExists.logic.mjs'
 
 const paths = (text, opts) => extractPathCitations(text, opts).map((c) => c.path)
@@ -332,10 +335,6 @@ describe('isPathExistenceFile', () => {
     expect(isPathExistenceFile(file)).toBe(false)
   })
 
-  it('leaves out every grandfathered doc', () => {
-    expect(GRANDFATHERED_DOCS.filter((file) => isPathExistenceFile(file))).toEqual([])
-  })
-
   it('does not let * cross a directory boundary', () => {
     expect(isPathExistenceFile('docs/harness/sessions/x-brief.md', ['docs/harness/*-brief.md'])).toBe(false)
     expect(isPathExistenceFile('x/REPO_MAP.md')).toBe(false)
@@ -353,94 +352,79 @@ describe('isPathExistenceFile', () => {
 
 const REPO_ROOT = fileURLToPath(new URL('../../', import.meta.url))
 
-/** Every doc that was red when the check first covered all of docs/. Never add to this list. */
-const GRANDFATHERED_AT_START = [
-  'docs/compatibility/nand2tetris/project1/gap-analysis.md',
-  'docs/decisions/0001-adopt-adr-log-and-docs-sync-enforcement.md',
-  'docs/decisions/0002-commit-and-worktree-conventions.md',
-  'docs/decisions/0004-p05-18-boundary-evaluatechip-seam-landed-in-p05-16.md',
-  'docs/decisions/0006-p05-22-test-lab-implementation-source-seam-and-store-action.md',
-  'docs/decisions/0007-wire-routing-engine-direction.md',
-  'docs/decisions/0008-scene-graph-routing-testing-layer.md',
-  'docs/decisions/0009-bus-components-entity-and-wireendpoint-bus.md',
-  'docs/decisions/0010-no-absolute-paths-in-docs.md',
-  'docs/decisions/0011-remove-stryker-mutation-testing.md',
-  'docs/decisions/0012-e2e-tests-manual-only.md',
-  'docs/decisions/0013-backlog-in-github-issues-and-portfolio.md',
-  'docs/decisions/0014-cited-doc-paths-must-exist.md',
-  'docs/decisions/0015-releases-do-not-commit-to-main.md',
-  'docs/decisions/0016-browser-qa-in-the-cloud.md',
-  'docs/decisions/0017-documentation-platform.md',
-  'docs/decisions/0018-fidelity-gate.md',
-  'docs/decisions/0019-canvas-less-shell-mode.md',
-  'docs/decisions/0020-spec-only-writes-read-only-projections.md',
-  'docs/decisions/0022-node-entries.md',
-  'docs/development/observed-bugs.md',
-  'docs/harness/README.md',
-  'docs/harness/cloud-queue.md',
-  'docs/harness/cursor-lane.md',
-  'docs/harness/fidelity-inbox.md',
-  'docs/harness/ledger.md',
-  'docs/harness/mission-control.md',
-  'docs/harness/sessions/cloud-queue-inbox.md',
-  'docs/llm-harness.md',
-  'docs/llm-integration-proposal.md',
-  'docs/plans/phase-0.5-tickets-CHECKLIST.md',
-  'docs/plans/phase-0.5-tickets/P05-01.md',
-  'docs/plans/phase-0.5-tickets/P05-02.md',
-  'docs/plans/phase-0.5-tickets/P05-03.md',
-  'docs/plans/phase-0.5-tickets/P05-04.md',
-  'docs/plans/phase-0.5-tickets/P05-05.md',
-  'docs/plans/phase-0.5-tickets/P05-08.md',
-  'docs/plans/phase-0.5-tickets/P05-09.md',
-  'docs/plans/phase-0.5-tickets/P05-10.md',
-  'docs/plans/phase-0.5-tickets/P05-11.md',
-  'docs/plans/phase-0.5-tickets/P05-12.md',
-  'docs/plans/phase-0.5-tickets/P05-13.md',
-  'docs/plans/phase-0.5-tickets/P05-14.md',
-  'docs/plans/phase-0.5-tickets/P05-15.md',
-  'docs/plans/phase-0.5-tickets/P05-16.md',
-  'docs/plans/phase-0.5-tickets/P05-17.md',
-  'docs/plans/phase-0.5-tickets/P05-18.md',
-  'docs/plans/phase-0.5-tickets/P05-19.md',
-  'docs/plans/phase-0.5-tickets/P05-20.md',
-  'docs/plans/phase-0.5-tickets/P05-21.md',
-  'docs/plans/phase-0.5-tickets/P05-22.md',
-  'docs/plans/phase-0.5-tickets/P05-23.md',
-  'docs/plans/phase-0.5-tickets/P05-24.md',
-  'docs/plans/phase-0.5-tickets/P05-26.md',
-  'docs/plans/phase-0.5-tickets/P05-27.md',
-  'docs/plans/phase-0.5-tickets/P05-28.md',
-  'docs/plans/phase-0.5-tickets/P05-29.md',
-  'docs/plans/phase-0.5-tickets/P05-31.md',
-  'docs/plans/phase-0.5-tickets/P05-32.md',
-  'docs/plans/phase-0.5-tickets/README.md',
-  'docs/roadmap/phases/phase-0.25-ui-improvements.md',
-  'docs/roadmap/phases/phase-2.5-developer-tooling.md',
-]
+const GRANDFATHERED = Object.entries(baseline)
 
-describe('GRANDFATHERED_DOCS — shrink-only', () => {
-  it('is sorted and has no duplicates', () => {
-    expect([...new Set(GRANDFATHERED_DOCS)].sort()).toEqual(GRANDFATHERED_DOCS)
+describe('the dead-path baseline — one copy, in docPathExists.baseline.json', () => {
+  it('is what the check reads', () => {
+    expect(DEAD_PATH_BASELINE).toEqual(baseline)
   })
 
-  it('names only docs under docs/', () => {
-    expect(GRANDFATHERED_DOCS.filter((file) => !file.startsWith('docs/'))).toEqual([])
+  it('is sorted by doc', () => {
+    const docs = GRANDFATHERED.map(([file]) => file)
+    expect([...docs].sort()).toEqual(docs)
+  })
+
+  it('records a positive count of dead citations per doc', () => {
+    expect(GRANDFATHERED.filter(([, count]) => !Number.isInteger(count) || count < 1)).toEqual([])
   })
 
   it('names only docs that exist', () => {
-    expect(GRANDFATHERED_DOCS.filter((file) => !existsSync(join(REPO_ROOT, file)))).toEqual([])
+    expect(GRANDFATHERED.filter(([file]) => !existsSync(join(REPO_ROOT, file)))).toEqual([])
   })
 
-  it('never gains a doc: a doc that was green, or new, stays checked', () => {
-    expect(GRANDFATHERED_DOCS.filter((file) => !GRANDFATHERED_AT_START.includes(file))).toEqual([])
+  it('names only docs the check covers, so every grandfathered doc is still checked against its count', () => {
+    expect(GRANDFATHERED.filter(([file]) => !isPathExistenceFile(file))).toEqual([])
+  })
+})
+
+describe('deadPathVerdict', () => {
+  const counts = { 'docs/old.md': 3 }
+
+  it('passes a doc with no baseline entry and no dead citation', () => {
+    expect(deadPathVerdict('docs/new.md', 0, counts)).toEqual({ status: 'ok', allowed: 0 })
+  })
+
+  it('fails a doc with no baseline entry and one dead citation', () => {
+    expect(deadPathVerdict('docs/new.md', 1, counts)).toEqual({ status: 'grew', allowed: 0 })
+  })
+
+  it('passes a grandfathered doc at its count', () => {
+    expect(deadPathVerdict('docs/old.md', 3, counts)).toEqual({ status: 'ok', allowed: 3 })
+  })
+
+  it('fails a grandfathered doc that gains a dead citation', () => {
+    expect(deadPathVerdict('docs/old.md', 4, counts)).toEqual({ status: 'grew', allowed: 3 })
+  })
+
+  it('reports a grandfathered doc that lost one, so its count comes down in the same change', () => {
+    expect(deadPathVerdict('docs/old.md', 2, counts)).toEqual({ status: 'shrank', allowed: 3 })
+    expect(deadPathVerdict('docs/old.md', 0, counts)).toEqual({ status: 'shrank', allowed: 3 })
+  })
+
+  it('reads the committed baseline by default', () => {
+    const [[file, count]] = GRANDFATHERED
+    expect(deadPathVerdict(file, count)).toEqual({ status: 'ok', allowed: count })
+  })
+})
+
+describe('trackedPathExists', () => {
+  const tracked = ['src/core/chips/registry.ts', 'AGENTS.md', 'docs/harness/ledger.md']
+
+  it('knows every listed file and every directory above one', () => {
+    const exists = trackedPathExists(tracked)
+    expect(['src/core/chips/registry.ts', 'AGENTS.md', 'src', 'src/core', 'src/core/chips', 'docs/harness'].filter((p) => !exists(p))).toEqual([])
+  })
+
+  it('knows nothing else: no build output, no partial segment, no other case', () => {
+    const exists = trackedPathExists(tracked)
+    expect(['dist', 'dist/index.html', 'src/co', 'src/core/chips/registry', 'agents.md', 'src/Core'].filter(exists)).toEqual([])
   })
 })
 
 const CHECK_SCRIPT = join(REPO_ROOT, 'scripts/check-doc-paths.mjs')
 
-/** Run `lint:docs` in a throwaway git repo holding only `files`. */
-function runCheck(files) {
+/** Run `lint:docs` in a throwaway git repo holding only `files`, `stage`d ones added to the index. */
+function runCheck(files, { args = [], stage = [] } = {}) {
   const repo = mkdtempSync(join(tmpdir(), 'doc-paths-'))
   try {
     spawnSync('git', ['init', '-q'], { cwd: repo })
@@ -448,12 +432,16 @@ function runCheck(files) {
       mkdirSync(join(repo, dirname(path)), { recursive: true })
       writeFileSync(join(repo, path), text)
     }
-    const run = spawnSync(process.execPath, [CHECK_SCRIPT], { cwd: repo, encoding: 'utf8' })
+    if (stage.length > 0) spawnSync('git', ['add', '--', ...stage], { cwd: repo })
+    const run = spawnSync(process.execPath, [CHECK_SCRIPT, ...args], { cwd: repo, encoding: 'utf8' })
     return { status: run.status, output: `${run.stdout}${run.stderr}` }
   } finally {
     rmSync(repo, { recursive: true, force: true })
   }
 }
+
+/** A doc citing `count` missing paths, one per line. */
+const deadCitations = (count) => Array.from({ length: count }, (_, i) => `See \`src/gone-${i}.ts\`.`).join('\n') + '\n'
 
 describe('check-doc-paths.mjs on a fixture repo', () => {
   it('reports a doc under docs/ that cites a missing path', () => {
@@ -474,10 +462,55 @@ describe('check-doc-paths.mjs on a fixture repo', () => {
   })
 
   it('fails on a grandfathered doc whose citations are all green, so it leaves the list', () => {
-    const [file] = GRANDFATHERED_DOCS
+    const [[file]] = GRANDFATHERED
     const { status, output } = runCheck({ [file]: `See \`${file}\`.\n` })
     expect(output).toContain(`STALE GRANDFATHER ${file}`)
     expect(status).toBe(1)
+  })
+
+  it('passes a grandfathered doc that keeps exactly the dead citations its baseline counts', () => {
+    const [[file, count]] = GRANDFATHERED
+    const { status, output } = runCheck({ [file]: deadCitations(count) })
+    expect(output).toBe('')
+    expect(status).toBe(0)
+  })
+
+  it('fails a grandfathered doc that gains a dead citation, listing its dead citations', () => {
+    const [[file, count]] = GRANDFATHERED
+    const { status, output } = runCheck({ [file]: deadCitations(count + 1) })
+    expect(output).toContain(`GRANDFATHER GREW ${file} ${count} → ${count + 1}`)
+    expect(output).toContain(`DEAD PATH ${file}:${count + 1} src/gone-${count}.ts`)
+    expect(status).toBe(1)
+  })
+
+  it('fails a grandfathered doc that lost a dead citation until its count comes down', () => {
+    const [[file, count]] = GRANDFATHERED
+    const { status, output } = runCheck({ [file]: deadCitations(count - 1) })
+    expect(output).toContain(`STALE GRANDFATHER ${file} ${count} → ${count - 1}`)
+    expect(status).toBe(1)
+  })
+
+  it('resolves a citation against git, not the disk: ignored build output is not there', () => {
+    const { status, output } = runCheck({
+      '.gitignore': 'dist/\n',
+      'dist/index.html': '<html></html>\n',
+      'docs/guide.md': 'See `dist/index.html`.\n',
+    })
+    expect(output).toContain('DEAD PATH docs/guide.md:1 dist/index.html')
+    expect(status).toBe(1)
+  })
+
+  it('counts a file not yet added to git, like the sweep counts a doc not yet added', () => {
+    const { status } = runCheck({ 'src/new.ts': 'export {}\n', 'docs/guide.md': 'See `src/new.ts` in `src/`.\n' })
+    expect(status).toBe(0)
+  })
+
+  it('resolves against the index under --staged: a file left unstaged is not part of the commit', () => {
+    const files = { 'src/new.ts': 'export {}\n', 'docs/guide.md': 'See `src/new.ts`.\n' }
+    const unstaged = runCheck(files, { args: ['--staged'], stage: ['docs/guide.md'] })
+    expect(unstaged.output).toContain('DEAD PATH docs/guide.md:1 src/new.ts')
+    expect(unstaged.status).toBe(1)
+    expect(runCheck(files, { args: ['--staged'], stage: ['docs/guide.md', 'src/new.ts'] }).status).toBe(0)
   })
 })
 

@@ -109,6 +109,16 @@ export const GRANDFATHERED_DOCS = [
   'docs/roadmap/phases/phase-2.5-developer-tooling.md',
 ]
 
+export const DEAD_PATH_BASELINE = {}
+
+export function deadPathVerdict() {
+  throw new Error('not implemented')
+}
+
+export function trackedPathExists() {
+  throw new Error('not implemented')
+}
+
 function globMatches(file, pattern) {
   const source = pattern
     .replace(/[.+^${}()|[\]\\?]/g, '\\$&')
