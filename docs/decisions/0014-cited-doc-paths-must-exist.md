@@ -23,6 +23,7 @@ portable; nothing made them real.
 3. **Scope is an opt-in file list** (`PATH_EXISTENCE_FILES` in the script). A doc is added once its
    citations are green, so the check is never red on `main`: `AGENTS.md` with the check itself,
    `REPO_MAP.md` with the PR that fixes its citations.
+   *Amended 2026-10-04 (#392, R799, R801): the opt-in list became `docs/**` minus dated history and dated plans/specs (`PATH_EXISTENCE_HISTORY`), with a shrink-only `GRANDFATHERED_DOCS` list.*
 4. **Deliberately ignored:** fenced code blocks (tree diagrams and samples are illustrations, not
    citations), globs, `<placeholders>`, URLs, `@/` alias specifiers, `~`/absolute paths, and `../`
    sibling-repo paths (the ADR-0010 convention).
