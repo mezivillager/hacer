@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-04T17:25:01.646Z",
+  "generatedAt": "2026-10-04T17:50:11.856Z",
   "head": {
-    "sha": "1d12d59c186e98eee6ebdeca6b37f274be4bef04",
-    "date": "2026-10-04T20:24:01+03:00",
-    "subject": "docs(harness): lint:case in the checks table; L066 for the second case-collision (#516)"
+    "sha": "b012c4bad78560555dc65186cb18a3d8662b65ca",
+    "date": "2026-10-04T20:49:06+03:00",
+    "subject": "chore(harness): dated spec folders are history too; L067 states the post-R801 count"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-04T17:25:01.646Z",
+      "fetchedAt": "2026-10-04T17:50:11.856Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-04T17:25:01.646Z",
+      "fetchedAt": "2026-10-04T17:50:11.856Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-04T17:25:01.646Z",
+      "fetchedAt": "2026-10-04T17:50:11.856Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-04T17:25:01.646Z",
+      "fetchedAt": "2026-10-04T17:50:11.856Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-04T17:25:01.646Z",
+      "fetchedAt": "2026-10-04T17:50:11.856Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-04T17:25:01.646Z",
+      "fetchedAt": "2026-10-04T17:50:11.856Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-04T17:25:01.646Z",
+      "fetchedAt": "2026-10-04T17:50:11.856Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-04T17:25:01.646Z",
+      "fetchedAt": "2026-10-04T17:50:11.856Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-04T17:25:01.646Z",
+      "fetchedAt": "2026-10-04T17:50:11.856Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-04T17:25:01.646Z",
+      "fetchedAt": "2026-10-04T17:50:11.856Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-04T17:25:01.646Z",
+      "fetchedAt": "2026-10-04T17:50:11.856Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-04T17:25:01.646Z",
+      "fetchedAt": "2026-10-04T17:50:11.856Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-04T17:25:01.646Z",
+      "fetchedAt": "2026-10-04T17:50:11.856Z",
       "status": "ok"
     }
   },
@@ -445,14 +445,15 @@
         "project": "harness"
       },
       {
-        "number": 682,
-        "title": "lint:case: Unicode-normalization twins (NFC/NFD) collide on APFS too",
+        "number": 685,
+        "title": "lint:docs grandfather list: per-citation counts, one copy, watched by pr-hygiene's ratchet",
         "project": "harness"
       }
     ],
     "dormant": {
       "dormant": false,
       "agentPrs": [
+        684,
         514
       ]
     }
@@ -573,8 +574,8 @@
         "reason": null
       },
       {
-        "number": 682,
-        "title": "lint:case: Unicode-normalization twins (NFC/NFD) collide on APFS too",
+        "number": 685,
+        "title": "lint:docs grandfather list: per-citation counts, one copy, watched by pr-hygiene's ratchet",
         "labels": [
           "project:harness",
           "agent-ready",
@@ -1676,22 +1677,6 @@
         "reason": "not-pulled"
       },
       {
-        "number": 392,
-        "title": "lint:docs checks five named files, so the prescriptive docs that teach deleted APIs are exactly what it misses",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:1"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 394,
         "title": "A coordinator-authored criterion asserted a measured fact that was false — four times in one session, with no mechanism",
         "labels": [
@@ -2113,6 +2098,22 @@
         "lane": "process",
         "pickable": false,
         "reason": "needs-human"
+      },
+      {
+        "number": 682,
+        "title": "lint:case: Unicode-normalization twins (NFC/NFD) collide on APFS too",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:1"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "claimed"
       }
     ],
     "byProject": {
@@ -2154,11 +2155,10 @@
         269,
         271,
         304,
-        682,
+        685,
         154,
         156,
         270,
-        392,
         394,
         435,
         436,
@@ -2170,7 +2170,8 @@
         607,
         648,
         649,
-        677
+        677,
+        682
       ],
       "spine": [
         165,
@@ -2259,6 +2260,32 @@
   "prs": {
     "open": [
       {
+        "number": 684,
+        "title": "chore(harness): issue-facts checks package and path claims before dispatch (#394)",
+        "url": "https://github.com/mezivillager/hacer/pull/684",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:1"
+        ],
+        "headRefName": "chore/394-measured-facts-check",
+        "isDraft": false,
+        "createdAt": "2026-10-04T17:36:27Z",
+        "mergedAt": null,
+        "closes": [
+          394
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Sonnet 5.5",
+            "at": "2026-10-04T17:46:59Z",
+            "url": "https://github.com/mezivillager/hacer/pull/684#issuecomment-5982725411"
+          }
+        ]
+      },
+      {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
         "url": "https://github.com/mezivillager/hacer/pull/514",
@@ -2287,11 +2314,38 @@
     ],
     "merged": [
       {
+        "number": 683,
+        "title": "chore(harness): lint:docs checks every cited path under docs/",
+        "url": "https://github.com/mezivillager/hacer/pull/683",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:1"
+        ],
+        "headRefName": "chore/392-doc-paths-cover-docs",
+        "isDraft": false,
+        "createdAt": "2026-10-04T17:29:02Z",
+        "mergedAt": "2026-10-04T17:49:07Z",
+        "closes": [
+          392
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Sonnet 5.5",
+            "at": "2026-10-04T17:43:16Z",
+            "url": "https://github.com/mezivillager/hacer/pull/683#issuecomment-5982695571"
+          }
+        ]
+      },
+      {
         "number": 681,
         "title": "chore(harness): lint:case — fail on case-only path and module-stem collisions (#516)",
         "url": "https://github.com/mezivillager/hacer/pull/681",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:1"
         ],
@@ -2318,6 +2372,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/680",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0"
         ],
@@ -2344,6 +2399,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/679",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:1"
         ],
@@ -2370,6 +2426,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/678",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0"
         ],
@@ -2395,7 +2452,9 @@
         "title": "docs(skills): ha-prompt-it — Standard tier, trigger-gated milestone reviews, read-only plan review",
         "url": "https://github.com/mezivillager/hacer/pull/676",
         "author": "mezivillager",
-        "labels": [],
+        "labels": [
+          "released"
+        ],
         "headRefName": "docs/prompt-it-standard-tier",
         "isDraft": false,
         "createdAt": "2026-10-02T09:39:50Z",
@@ -2417,6 +2476,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/675",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0"
         ],
@@ -2441,6 +2501,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/674",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0"
         ],
@@ -3778,33 +3839,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/596#issuecomment-5890979354"
           }
         ]
-      },
-      {
-        "number": 594,
-        "title": "docs: E2E suites run in CI or the cloud only (ADR-0016)",
-        "url": "https://github.com/mezivillager/hacer/pull/594",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:upkeep",
-          "risk:0"
-        ],
-        "headRefName": "docs/290-e2e-cloud-only-sweep",
-        "isDraft": false,
-        "createdAt": "2026-09-29T12:46:25Z",
-        "mergedAt": "2026-09-29T12:49:34Z",
-        "closes": [
-          290
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "coordinator (risk:0 docs-only, #554)",
-            "at": "2026-09-29T12:47:31Z",
-            "url": "https://github.com/mezivillager/hacer/pull/594#issuecomment-5890610614"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -3893,31 +3927,6 @@
           "author": "mezivillager",
           "at": "2026-09-24T13:57:40Z",
           "url": "https://github.com/mezivillager/hacer/issues/182#issuecomment-5815526405"
-        }
-      },
-      {
-        "number": 392,
-        "ref": "refs/heads/claim/392",
-        "sha": "d22be7de76f932547f688b58bd9ccd8c387ebeb0",
-        "state": "OPEN",
-        "title": "lint:docs checks five named files, so the prescriptive docs that teach deleted APIs are exactly what it misses",
-        "url": "https://github.com/mezivillager/hacer/issues/392",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:1"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-20",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-04T17:12:07Z",
-          "url": "https://github.com/mezivillager/hacer/issues/392#issuecomment-5982441350"
         }
       },
       {
@@ -4255,6 +4264,31 @@
           "author": "mezivillager",
           "at": "2026-09-27T11:42:29Z",
           "url": "https://github.com/mezivillager/hacer/issues/542#issuecomment-5855517267"
+        }
+      },
+      {
+        "number": 682,
+        "ref": "refs/heads/claim/682",
+        "sha": "1d12d59c186e98eee6ebdeca6b37f274be4bef04",
+        "state": "OPEN",
+        "title": "lint:case: Unicode-normalization twins (NFC/NFD) collide on APFS too",
+        "url": "https://github.com/mezivillager/hacer/issues/682",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:1"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-20",
+          "branch": null,
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-04T17:45:43Z",
+          "url": "https://github.com/mezivillager/hacer/issues/682#issuecomment-5982715085"
         }
       }
     ],
@@ -4965,11 +4999,19 @@
         "shouldHaveBeenCaughtBy": "a lint over the tracked tree",
         "mechanised": "yes — #516: `pnpm run lint:case` (`scripts/case-collisions.logic.mjs`) fails whole-path, directory and extension-less module-stem collisions, inside `pnpm run lint`",
         "decision": "—"
+      },
+      {
+        "id": "L067",
+        "date": "2026-10-04",
+        "whatWentWrong": "`docs/testing/standards.md` kept teaching `e2e/scenarios/` and `waitForSceneStable` after #388 deleted both. The TDD template that mirrors it was caught because it is a `.ts` file; the prescriptive doc was not, because `lint:docs`'s path-existence check covered five named docs and nothing else under `docs/`. Widening the scope alone would still have missed these sites: they sit in fenced code samples, which the check skips by design (ADR-0014) <!-- allow-missing-path -->",
+        "shouldHaveBeenCaughtBy": "a path check over every living doc",
+        "mechanised": "yes — #392: `lint:docs` checks every doc under `docs/` (`scripts/hooks/docPathExists.logic.mjs`), less dated history and dated plans/specs (`PATH_EXISTENCE_HISTORY`); the 62 docs still red (475 citations) are in a shrink-only `GRANDFATHERED_DOCS`. Fenced samples stay unchecked",
+        "decision": "—"
       }
     ],
     "byMechanised": {
       "no": 9,
-      "yes": 51,
+      "yes": 52,
       "other": 1,
       "partly": 5
     }
@@ -5358,9 +5400,14 @@
     },
     "releases": [
       {
+        "tag": "v2.56.2",
+        "publishedAt": "2026-10-04T17:26:10Z",
+        "isLatest": true
+      },
+      {
         "tag": "v2.56.1",
         "publishedAt": "2026-10-02T01:39:00Z",
-        "isLatest": true
+        "isLatest": false
       },
       {
         "tag": "v2.56.0",
@@ -5936,7 +5983,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-29",
-        "merges": 24
+        "merges": 23
       },
       {
         "date": "2026-09-30",
@@ -5952,20 +5999,20 @@
       },
       {
         "date": "2026-10-04",
-        "merges": 4
+        "merges": 5
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-20T17:25:01.646Z",
-      "merged": 196,
+      "since": "2026-09-20T17:50:11.856Z",
+      "merged": 197,
       "openToMergeHours": {
         "median": 0.2,
         "p90": 1.9
       },
       "blockedOnce": {
         "count": 18,
-        "of": 129,
+        "of": 130,
         "prs": [
           305,
           312,
@@ -5989,8 +6036,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 107,
-          "withVerdict": 99,
+          "merged": 108,
+          "withVerdict": 100,
           "without": [
             303,
             306,
@@ -7718,11 +7765,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "1d12d59c186e98eee6ebdeca6b37f274be4bef04",
+        "sha": "b012c4bad78560555dc65186cb18a3d8662b65ca",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/37220366869/job/111489296536",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/37221954993/job/111493919727",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -7766,6 +7813,52 @@
         "conclusion": "SUCCESS",
         "completedAt": "2026-09-25T06:48:18Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/36104338672/job/107973412518",
+        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 71,
+          "new": 0
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 684,
+        "sha": "d0488fc05ce30c732aee8c47afa5243155629713",
+        "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-04T17:36:39Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/37221159712/job/111491609118",
+        "line": "HYGIENE: PASS reviewable=184 test=146 excluded=0 files=5 issue=#394 linked=fixes",
+        "verdict": "PASS",
+        "fields": {
+          "reviewable": 184,
+          "test": 146,
+          "excluded": 0,
+          "files": 5,
+          "issue": "#394",
+          "linked": "fixes"
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 684,
+        "sha": "d0488fc05ce30c732aee8c47afa5243155629713",
+        "check": "browser-qa",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-04T17:36:40Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/37221159726/job/111491608885",
+        "line": "BROWSER-QA: skipped (no critical paths)",
+        "verdict": "SKIPPED",
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 684,
+        "sha": "d0488fc05ce30c732aee8c47afa5243155629713",
+        "check": "ci",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-04T17:39:48Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/37221159061/job/111491606136",
         "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
         "verdict": "PASS",
         "fields": {
@@ -13533,6 +13626,14 @@
         ]
       },
       {
+        "id": "#392",
+        "kind": "github",
+        "citedBy": [
+          "ADR-0014",
+          "R351"
+        ]
+      },
+      {
         "id": "#282",
         "kind": "github",
         "citedBy": [
@@ -15045,13 +15146,6 @@
           "R348",
           "R349",
           "R505"
-        ]
-      },
-      {
-        "id": "#392",
-        "kind": "github",
-        "citedBy": [
-          "R351"
         ]
       },
       {
@@ -16614,6 +16708,13 @@
         "date": "2026-10-04",
         "title": "Two Mission Control PRs in one day nearly shipped a module whose name differs from a sibling's only by case: `process.ts` beside `Process.tsx` (#511) and `timeline.ts` beside `Timeline.tsx` (#515). On macOS's case-insensitive APFS, `import './timeline'` can resolve to the other file while Linux CI passes; both builders renamed by hand. A check of lower-cased full paths, the issue's first framing, would have passed both: the extensions differ",
         "source": "docs/harness/ledger.md:81"
+      },
+      {
+        "id": "L067",
+        "kind": "ledger-row",
+        "date": "2026-10-04",
+        "title": "`docs/testing/standards.md` kept teaching `e2e/scenarios/` and `waitForSceneStable` after #388 deleted both. The TDD template that mirrors it was caught because it is a `.ts` file; the prescriptive doc was not, because `lint:docs`'s path-existence check covered five named docs and nothing else under `docs/`. Widening the scope alone would still have missed these sites: they sit in fenced code samples, which the check skips by design (ADR-0014) <!-- allow-missing-path -->",
+        "source": "docs/harness/ledger.md:82"
       }
     ]
   }
