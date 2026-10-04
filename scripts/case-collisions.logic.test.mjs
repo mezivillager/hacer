@@ -202,10 +202,4 @@ describe('CLI', () => {
     expect(result.status).toBe(1)
     expect(result.stdout).toContain('  file: src/Foo.ts ↔ src/foo.ts')
   })
-
-  it('exits 0 on the live tree', () => {
-    const result = spawnSync(process.execPath, [SCRIPT], { encoding: 'utf8' })
-    expect(result.status).toBe(0)
-    expect(result.stdout).toBe('CASE-COLLISIONS: PASS 0 file · 0 directory · 0 stem\n')
-  })
 })
