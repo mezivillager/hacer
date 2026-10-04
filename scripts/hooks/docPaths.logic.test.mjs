@@ -1,4 +1,6 @@
+import { readFileSync } from 'node:fs'
 import { describe, it, expect } from 'vitest'
+import ownedSkills from '../owned-skills.json' with { type: 'json' }
 import {
   ALLOWED_TILDE_ROOTS,
   OPT_OUT_MARKER,
@@ -36,9 +38,15 @@ describe('isScannedFile', () => {
     expect(isScannedFile('.claude/skills/using-git-worktrees/SKILL.md')).toBe(false)
   })
 
-  it('still scans the two skills the sync explicitly preserves', () => {
-    expect(isScannedFile('.claude/skills/hacer-patterns/SKILL.md')).toBe(true)
-    expect(isScannedFile('.claude/skills/docs-sync/SKILL.md')).toBe(true)
+  it('still scans every skill scripts/owned-skills.json lists', () => {
+    expect(ownedSkills.filter((slug) => !isScannedFile(`.claude/skills/${slug}/SKILL.md`))).toEqual([])
+    expect(isScannedFile('.claude/skills/debugging/root-cause-tracing.md')).toBe(true)
+  })
+
+  it('shares that list with sync-superpowers.sh, so the two cannot drift (ADR-0010)', () => {
+    const sync = readFileSync(new URL('../sync-superpowers.sh', import.meta.url), 'utf8')
+    expect(sync).toContain('scripts/owned-skills.json')
+    expect(sync).not.toMatch(/^OWNED_SKILLS=\(/m)
   })
 
   it('ignores node_modules and the sync temp dir', () => {

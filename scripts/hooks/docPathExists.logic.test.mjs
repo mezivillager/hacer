@@ -4,6 +4,7 @@ import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import ownedSkills from '../owned-skills.json' with { type: 'json' }
 import {
   GRANDFATHERED_DOCS,
   KNOWN_ROOTS,
@@ -291,14 +292,13 @@ describe('isPathExistenceFile', () => {
       'AGENTS.md',
       'docs/harness/implementer-brief.md',
       'docs/harness/fidelity-brief.md',
-      '.claude/skills/hacer-patterns/SKILL.md',
-      '.claude/skills/docs-sync/SKILL.md',
-    ].every((file) => isPathExistenceFile(file))).toBe(true)
+      ...ownedSkills.map((slug) => `.claude/skills/${slug}/SKILL.md`),
+    ].filter((file) => !isPathExistenceFile(file))).toEqual([])
   })
 
   it('leaves the vendored skills out — sync-superpowers.sh would bring a dead citation back', () => {
     expect(isPathExistenceFile('.claude/skills/using-git-worktrees/SKILL.md')).toBe(false)
-    expect(isPathExistenceFile('.claude/skills/brainstorming/SKILL.md')).toBe(false)
+    expect(isPathExistenceFile('.claude/skills/dispatching-parallel-agents/SKILL.md')).toBe(false)
   })
 
   it.each([
