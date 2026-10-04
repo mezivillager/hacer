@@ -20,12 +20,10 @@ Each layer has its own utilities and types, kept separate to avoid confusion.
 
 ```
 src/
-├── test/                    # Unit test utilities (Vitest)
-│   ├── setup.ts            # Global Vitest setup (WebGL mocks, etc.)
-│   ├── testUtils.ts        # Unit test helper functions
-│   └── README.md           # Unit test documentation
-│
-└── types/                  # Production types (NO test types here)
+└── test/                    # Unit test utilities (Vitest)
+    ├── setup.ts            # Global Vitest setup (WebGL mocks, etc.)
+    ├── testUtils.ts        # Unit test helper functions
+    └── README.md           # Unit test documentation
 
 e2e/
 ├── types/                  # E2E test types (Playwright)
@@ -48,11 +46,11 @@ Utilities and setup for **Vitest unit tests**.
 
 ### Files
 
-- **`setup.ts`**: Global test setup (runs before all tests)
+- **`src/test/setup.ts`**: Global test setup (runs before all tests)
   - WebGL context mocks for Three.js
   - Testing Library setup
   
-- **`testUtils.ts`**: Helper functions for unit tests
+- **`src/test/testUtils.ts`**: Helper functions for unit tests
   - `createMockStore()` - Type-safe store mocking (replaces `as Partial<CircuitStore> as CircuitStore`)
 
 ### Usage
@@ -78,14 +76,14 @@ TypeScript types and Window interface augmentation for **Playwright E2E tests**.
 
 ### Files
 
-- **`globals.ts`**: 
+- **`e2e/types/globals.ts`**: 
   - Defines types for window globals (`__SCENE_HELPERS__`, `__CIRCUIT_ACTIONS__`, etc.)
   - Augments the global `Window` interface
   - **Imported in production code** for the side-effect of Window augmentation
 
-- **`window.ts`**: Re-exports types for convenience in E2E tests
+- **`e2e/types/window.ts`**: Re-exports types for convenience in E2E tests
 
-- **`window.d.ts`**: Ensures TypeScript picks up Window augmentation
+- **`e2e/types/window.d.ts`**: Ensures TypeScript picks up Window augmentation
 
 ### Usage
 
@@ -109,8 +107,8 @@ import type { CircuitActionsAPI, SceneHelpers } from '../types'
 ## Migration Notes
 
 ### Before (Old Structure)
-- ❌ `src/types/testingGlobals.ts` - Mixed location, unclear purpose
-- ❌ `e2e/types/` just re-exported from `src/types/`
+- ❌ `src/types/testingGlobals.ts` - Mixed location, unclear purpose <!-- allow-missing-path -->
+- ❌ `e2e/types/` just re-exported from `src/types/` <!-- allow-missing-path -->
 
 ### After (New Structure)
 - ✅ `e2e/types/globals.ts` - Clear location, E2E-specific
@@ -124,12 +122,12 @@ import type { CircuitActionsAPI, SceneHelpers } from '../types'
    - Unit test code → `src/test/`
    - E2E test code → `e2e/`
 3. **Types**:
-   - Production types → `src/types/` or co-located with code
+   - Production types → co-located with code (e.g. `src/store/types.ts`)
    - E2E test types → `e2e/types/`
 4. **Imports**:
    - Unit tests import from `@/test/testUtils`
    - E2E tests import from `../types` (relative to e2e/)
-   - Production code imports `e2e/types/globals` for Window augmentation
+   - Production code imports `e2e/types/globals.ts` for Window augmentation
 
 ## See Also
 

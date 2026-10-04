@@ -30,7 +30,7 @@ This folder contains all testing-related documentation for the HACER project.
 ## Test Types
 
 ### Unit Tests (Vitest)
-- Location: Co-located with source (`Component.test.tsx`)
+- Location: Co-located with source (`<Component>.test.tsx`)
 - Run: `pnpm run test:run`
 - Speed: Fast
 - Use for: Pure logic, components, hooks
@@ -47,7 +47,7 @@ This folder contains all testing-related documentation for the HACER project.
 ## AI Agent Notes
 
 When implementing features:
-1. Create test file FIRST (`.test.ts` or `.test.tsx`)
+1. Create test file FIRST (`*.test.ts` or `*.test.tsx`)
 2. Run tests to see them FAIL
 3. Implement minimal code to pass
 4. For E2E: Create store test first (fast), UI test second

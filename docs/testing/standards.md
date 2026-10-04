@@ -239,60 +239,47 @@ E2E tests come in **pairs**: Store tests (fast) and UI tests (slow).
 | Actions | Direct store calls | UI interactions |
 | When to run | Every commit, TDD | Manual, CI (2x/week) |
 | AI agents | Preferred | After store tests pass |
-| File suffix | `.store.spec.ts` | `.ui.spec.ts` |
+| File suffix | `*.store.spec.ts` | `*.ui.spec.ts` |
 
 ### File Structure
 
 ```
 e2e/
-├── scenarios/           # Shared test data (used by both store & UI)
-│   ├── circuitBuilding.ts
-│   ├── simulation.ts
-│   └── types.ts
-├── specs/
-│   ├── circuit-building.store.spec.ts  # FAST
-│   ├── circuit-building.ui.spec.ts     # SLOW (paired)
-│   ├── simulation.store.spec.ts        # FAST
-│   └── simulation.ui.spec.ts           # SLOW (paired)
+├── config/constants.ts      # Shared test data: DEFAULT_POSITIONS, ALL_GATE_TYPES, TIMEOUTS
+├── fixtures/                # storeTest (no scene wait) and uiTest (waits for the scene)
+├── helpers/
+│   ├── actions/             # addGateViaStore, addGateViaUI, driveInputsViaStore, …
+│   ├── assertions/          # expectGateCount, expectGateOutput, …
+│   └── waits/               # ensureGates, ensureWires, waitForSceneReady, …
+└── specs/
+    └── gates/
+        ├── gate-placement.store.spec.ts  # FAST
+        └── gate-placement.ui.spec.ts     # SLOW (paired)
 ```
 
-### Scenario Files
+### Shared Test Data
 
-Both store and UI tests import the same scenario:
+Both store and UI tests import the same constants from `e2e/config/constants.ts`:
 
 ```typescript
-// e2e/scenarios/featureName.ts
-export const featureScenario = {
-  placements: [
-    { label: 'g1', position: { x: 0, y: 0, z: 0 } },
-    { label: 'g2', position: { x: 2, y: 0, z: 0 } },
-  ],
-  wire: { fromGate: 0, fromPin: 'out-0', toGate: 1, toPin: 'in-0' },
-};
+import { DEFAULT_POSITIONS, ALL_GATE_TYPES } from '../../config/constants';
 ```
 
 ### Store Test Pattern (FAST)
 
 ```typescript
-// e2e/specs/feature.store.spec.ts
-import { featureScenario } from '../scenarios';
+// e2e/specs/gates/gate-placement.store.spec.ts
+import { storeTest as test, storeExpect as expect } from '../../fixtures';
+import { DEFAULT_POSITIONS } from '../../config/constants';
+import { addGateViaStore } from '../../helpers/actions';
+import { ensureGates } from '../../helpers/waits';
 
-test.describe('Feature @store', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto('/');
-    // NO waitForSceneStable - keep it fast
-  });
-
-  test('updates state correctly', async ({ page }) => {
-    const { placements } = featureScenario;
-    await page.evaluate((pos) => {
-      window.__STORE__.getState().actions.addGate('NAND', pos);
-    }, placements[0].position);
-
-    const count = await page.evaluate(() =>
-      Object.keys(window.__STORE__.getState().gates).length
-    );
-    expect(count).toBe(1);
+// storeTest opens the app and waits for the store only — no scene wait, so it stays fast.
+test.describe('Gate Placement @store @gates', () => {
+  test('places a gate', async ({ page }) => {
+    const gate = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.center);
+    await ensureGates(page, 1);
+    expect(gate).not.toBeNull();
   });
 });
 ```
@@ -300,23 +287,18 @@ test.describe('Feature @store', () => {
 ### UI Test Pattern (SLOW)
 
 ```typescript
-// e2e/specs/feature.ui.spec.ts
-import { featureScenario } from '../scenarios';
-import { addGateViaUI } from '../helpers/actions';
-import { waitForSceneStable } from '../helpers/waits';
+// e2e/specs/gates/gate-placement.ui.spec.ts
+import { uiTest as test } from '../../fixtures';
+import { DEFAULT_POSITIONS } from '../../config/constants';
+import { addGateViaUI } from '../../helpers/actions';
+import { ensureGates } from '../../helpers/waits';
+import { expectGateCount } from '../../helpers/assertions';
 
-test.describe('Feature @ui', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto('/');
-    await waitForSceneStable(page); // Required for UI tests
-  });
-
-  test('user can add gate via UI', async ({ page }) => {
-    const { placements } = featureScenario;
-    await addGateViaUI(page, {
-      type: 'NAND',
-      position: placements[0].position,
-    });
+// uiTest waits for the canvas and waitForSceneReady before the first test.
+test.describe('Gate Placement @ui @gates', () => {
+  test('user can add a gate via UI', async ({ page }) => {
+    await addGateViaUI(page, { chipName: 'Nand', position: DEFAULT_POSITIONS.center });
+    await ensureGates(page, 1);
     await expectGateCount(page, 1);
   });
 });
@@ -341,8 +323,8 @@ npm run test:e2e
 ## Test Structure
 
 ### File Organization
-- Co-locate tests with implementation: `Component.tsx` → `Component.test.tsx`
-- E2E tests in pairs: `feature.store.spec.ts` + `feature.ui.spec.ts`
+- Co-locate tests with implementation: `<Component>.tsx` → `<Component>.test.tsx`
+- E2E tests in pairs: `<feature>.store.spec.ts` + `<feature>.ui.spec.ts`
 - Use descriptive describe blocks for grouping
 - Order: setup → happy path → edge cases → error cases
 
