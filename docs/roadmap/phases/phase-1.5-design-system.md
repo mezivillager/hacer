@@ -17,7 +17,6 @@ This phase is no longer an unstarted future design-system effort. Treat it as a 
 - Reusable primitives live in `src/components/ui-kit/`.
 - Global tokens and Tailwind v4 configuration live in `src/styles/globals.css`.
 - 3D canvas color resolution lives in `src/components/canvas/hooks/useThemeColor.ts`.
-- Gate glyphs live in `src/components/ui/icons/GateGlyphs.tsx`.
 - The `design-system/` directory is a reference/source artifact for the migration, not the runtime primitive location.
 
 ## Completed

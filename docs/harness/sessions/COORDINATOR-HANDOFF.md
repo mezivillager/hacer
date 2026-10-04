@@ -1,7 +1,7 @@
 # Coordinator handoff — multi-coordinator claims and pauses
 
 The harness loop is **coordinator-agnostic for product work**: portfolio, Issues, `claim/<n>`
-refs, PRs, verifier comments, and `ledger.md` are the source of truth. Chat memory is not.
+refs, PRs, verifier comments, and `docs/harness/ledger.md` are the source of truth. Chat memory is not.
 
 **Coordinator meta-state** (who holds a claim, why a claim is idle, a metering pause, a foreign
 coordinator trial) is *not* recoverable from those alone unless it is written down. This page is
@@ -16,7 +16,7 @@ Write `docs/harness/sessions/YYYY-MM-DD-<coordinator-id>-handoff.md` when any of
 - you need another coordinator to resume, amend, or unwind without guessing
 
 Link that path from the issue’s claim comment (`Handoff:` field). Date session records in
-`sessions/YYYY-MM-DD.md` stay for owner/session narrative; handoffs are for **cross-coordinator**
+`docs/harness/sessions/<YYYY-MM-DD>.md` stay for owner/session narrative; handoffs are for **cross-coordinator**
 continuity. “What to do next” for product picks still lives in `docs/portfolio.md` and GitHub
 Issues — never only in a handoff.
 
