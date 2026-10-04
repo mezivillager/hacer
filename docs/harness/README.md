@@ -299,7 +299,8 @@ The loop does not assume a single chat. **Product progress** is in portfolio, Is
 PRs, and `ledger.md`. **Who is coordinating, and why a claim is idle**, is not — unless written down.
 
 - Claim comments name `Claimed by`, `Intent` (`building` | `paused:<reason>` | `handing-off`), and
-  an optional `Handoff:` path — see `sessions/COORDINATOR-HANDOFF.md` and `ha-next` §2.
+  `Handoff:` — a path, required when `Intent` is `paused:*` or `handing-off`, otherwise `none`. See
+  `sessions/COORDINATOR-HANDOFF.md` and `ha-next` §2.
 - Prefer **not claiming** while blocked on metering or other pauses that delay the builder; release
   or mark `paused:` if a claim already exists.
 - At orient, list open `claim/*` refs and any `sessions/*-handoff.md` (until #156 prints them).
