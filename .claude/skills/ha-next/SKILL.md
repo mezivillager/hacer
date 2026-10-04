@@ -60,6 +60,7 @@ goes stale 48 h after its latest claim comment while no open PR carries the issu
 `docs/harness/sessions/COORDINATOR-HANDOFF.md`.
 
 ## 3. Build — `ha-prompt-it`, tier Light unless the issue says otherwise
+**Measured facts before dispatch:** run `node scripts/issue-facts.mjs <n>` on the issue, or `--file` on the brief, and fix every package or path it reports that the text says exists; every other fact the text asserts, such as a count, a date, a behaviour or an inference, gets a Measured-facts row naming the command that measured it, because no scanner can tell which sentence is a claim or which command proves it.
 Follow `docs/harness/implementer-brief.md` exactly: own worktree, red commit (tests + compiling
 stub), green commits, definition of done, PR with `Fixes #<n>`, labels. The issue body is the spec —
 no `docs/specs/` file at Light tier. Delegating the build to a subagent is fine (give it the brief and
