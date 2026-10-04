@@ -44,7 +44,7 @@ Configured in `vite.config.ts`. A file is in the `node` project when **both** ho
 
 1. it sits under one of `src/cli`, `src/mcp`, `src/core`, `src/simulation`, `src/store`, `src/utils`,
    `src/lib`, `src/scenarios`, `scripts`; and
-2. it ends in `.test.ts` / `.spec.ts` / `.test.mjs` / `.spec.mjs` — a `.tsx` test renders JSX, so it
+2. it ends in `*.test.ts` / `*.spec.ts` / `*.test.mjs` / `*.spec.mjs` — a `.tsx` test renders JSX, so it
    belongs with a DOM;
 
 …unless it is listed as an exception. Membership is resolved from disk when the config loads, and
@@ -63,7 +63,7 @@ test file under `mission-control/` was silently collected by neither project —
 mode (above), recurring one PR later in a place that fix did not cover.
 `scripts/mission-control/vitest-collects.cli.test.mjs` guards this specific glob going forward, by
 asking Vitest itself (`vitest list`) rather than re-deriving its matching rules. #436 (open) tracks
-this same page's remaining gap for `src/`'s own glob (`.mts`/`.js`, and the node/jsdom asymmetry).
+this same page's remaining gap for `src/`'s own glob (`*.mts`/`*.js`, and the node/jsdom asymmetry).
 
 ## Exceptions — in a `node` directory, but still need a DOM
 
