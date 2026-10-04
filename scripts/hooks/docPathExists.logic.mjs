@@ -28,12 +28,15 @@ export const PATH_EXISTENCE_PATTERNS = [
   ...OWNED_SKILLS.map((prefix) => `${prefix}SKILL.md`),
 ]
 
-/** Dated records of what was true on their date: a path deleted since is history, not drift. */
+/** Dated records (research, sessions, reviews, rulings, plans, specs): a path deleted since is history. */
 export const PATH_EXISTENCE_HISTORY = [
   'docs/research/**',
   'docs/harness/sessions/2*',
   'docs/harness/reviews/2*/**',
   'docs/decisions/rulings/2*',
+  'docs/plans/2*',
+  'docs/plans/2*/**',
+  'docs/specs/2*',
 ]
 
 /**
@@ -71,36 +74,6 @@ export const GRANDFATHERED_DOCS = [
   'docs/harness/sessions/cloud-queue-inbox.md',
   'docs/llm-harness.md',
   'docs/llm-integration-proposal.md',
-  'docs/plans/2026-03-22-phase-0.5-tickets.md',
-  'docs/plans/2026-03-23-topological-sort-eval.md',
-  'docs/plans/2026-03-26-hdl-parser-parity-hardening.md',
-  'docs/plans/2026-04-17-design-system-migration.md',
-  'docs/plans/2026-04-17-design-system-migration/01-phase-a-ant-strip.md',
-  'docs/plans/2026-04-17-design-system-migration/02-phase-b-foundation.md',
-  'docs/plans/2026-04-17-design-system-migration/03-phase-c-3a-compact-toolbar.md',
-  'docs/plans/2026-04-17-design-system-migration/05-phase-c-3c-properties-panel.md',
-  'docs/plans/2026-04-17-design-system-migration/06-phase-c-3d-help-bar.md',
-  'docs/plans/2026-04-17-design-system-migration/07-phase-c-3e-3f-statusbar-demo-overlay.md',
-  'docs/plans/2026-04-17-design-system-migration/08-phase-d-r3f-retoken.md',
-  'docs/plans/2026-04-17-design-system-migration/09-phase-e-ui-spec-restoration.md',
-  'docs/plans/2026-04-17-design-system-migration/10-phase-f-polish.md',
-  'docs/plans/2026-05-12-documentation-refresh.md',
-  'docs/plans/2026-05-14-p05-10-followups-and-process-hygiene.md',
-  'docs/plans/2026-05-14-performance-mode-switch.md',
-  'docs/plans/2026-05-15-p05-10-pinout-panel.md',
-  'docs/plans/2026-05-18-p05-11-ticket-content-update.md',
-  'docs/plans/2026-05-19-p05-13-multi-bit-io-ui.md',
-  'docs/plans/2026-05-21-multi-bit-gates-and-floating-labels.md',
-  'docs/plans/2026-05-21-properties-panel-width-editor.md',
-  'docs/plans/2026-05-22-floating-label-polish.md',
-  'docs/plans/2026-05-23-p05-14-circuit-persistence.md',
-  'docs/plans/2026-05-24-builtin-chip-placement-standardization.md',
-  'docs/plans/2026-06-19-docs-cleanup-and-sync-enforcement.md',
-  'docs/plans/2026-06-19-p05-16-hdl-compiler.md',
-  'docs/plans/2026-06-20-p05-17-test-execution-engine.md',
-  'docs/plans/2026-06-20-p05-22-test-results-panel.md',
-  'docs/plans/2026-06-26-scene-graph-routing-testing.md',
-  'docs/plans/2026-06-27-bus-splitter-joiner.md',
   'docs/plans/phase-0.5-tickets-CHECKLIST.md',
   'docs/plans/phase-0.5-tickets/P05-01.md',
   'docs/plans/phase-0.5-tickets/P05-02.md',
@@ -133,17 +106,6 @@ export const GRANDFATHERED_DOCS = [
   'docs/plans/phase-0.5-tickets/README.md',
   'docs/roadmap/phases/phase-0.25-ui-improvements.md',
   'docs/roadmap/phases/phase-2.5-developer-tooling.md',
-  'docs/specs/2026-04-17-design-system-migration-design.md',
-  'docs/specs/2026-04-18-properties-panel-as-drawer-tab.md',
-  'docs/specs/2026-05-12-llm-docs-sync-design.md',
-  'docs/specs/2026-06-19-p05-16-hdl-compiler-design.md',
-  'docs/specs/2026-06-20-non3d-ux-test-foundation-design.md',
-  'docs/specs/2026-06-20-p05-17-test-execution-engine-design.md',
-  'docs/specs/2026-06-20-p05-22-test-results-panel-design.md',
-  'docs/specs/2026-06-21-scene-graph-routing-testing-design.md',
-  'docs/specs/2026-06-21-wire-routing-lane-exclusivity-design.md',
-  'docs/specs/2026-06-21-wire-routing-stage1-design.md',
-  'docs/specs/2026-06-27-bus-splitter-joiner-design.md',
 ]
 
 function globMatches(file, pattern) {
