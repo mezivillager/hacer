@@ -73,6 +73,15 @@ describe('jobContexts', () => {
   it('lists every name a conditional can take when no event is asked', () => {
     expect(jobContexts(conditional)).toEqual(['qa (manual)', 'qa'])
   })
+
+  it('reads a job name past its trailing comment, and keeps a # inside quotes', () => {
+    const named = (name) => ['jobs:', '  build:', `    name: ${name}`, '    runs-on: x'].join('\n')
+    expect(jobContexts(named('ci # the required context'))).toEqual(['ci'])
+    expect(jobContexts(named("'ci' # quoted"))).toEqual(['ci'])
+    expect(jobContexts(named('"ci # kept"'))).toEqual(['ci # kept'])
+    expect(jobContexts(named("'ci # kept'"))).toEqual(['ci # kept'])
+    expect(jobContexts(named("${{ github.event_name == 'workflow_dispatch' && 'ci (manual)' || 'ci' }} # see #368"), 'pull_request')).toEqual(['ci'])
+  })
 })
 
 describe('workflowEvents', () => {
@@ -205,6 +214,19 @@ describe('checkWorkflow', () => {
     expect(checkWorkflow('ci.yml', dispatchable('ci').replace('  workflow_dispatch:\n', ''), required)).toEqual([])
   })
 
+  it('reads a required context past a trailing comment on the job name', () => {
+    const source = ['concurrency: shared', 'jobs:', '  build:', '    name: ci # the required context', '    runs-on: x'].join('\n')
+    expect(checkWorkflow('ci.yml', source, required)).toMatchObject([{ rule: 'concurrency', contexts: ['ci'], group: 'shared' }])
+  })
+
+  it('flags a ${{ }} job name it cannot resolve instead of passing it', () => {
+    const name = "${{ inputs.pr && 'x' || 'ci' }}"
+    const source = ['concurrency: shared', 'jobs:', '  build:', `    name: ${name}`, '    runs-on: x'].join('\n')
+    const findings = checkWorkflow('ci.yml', source, required)
+    expect(findings).toMatchObject([{ file: 'ci.yml', rule: 'unresolved-name', name }])
+    expect(formatFindings(findings)).toContain(`ci.yml names a job ${name}`)
+  })
+
   it('leaves a workflow that posts no required context alone', () => {
     const source = withGroup('gh-pages').replace('  ci:', '  preview:')
     expect(checkWorkflow('pr-preview.yml', source, required)).toEqual([])
@@ -242,6 +264,11 @@ describe('the repo .github/workflows', () => {
   it.each(requiredWorkflows)('%s posts no required context from a manual dispatch', (file, source) => {
     const dispatched = workflowEvents(source).includes('workflow_dispatch') ? jobContexts(source, 'workflow_dispatch') : []
     expect(dispatched.filter((context) => REQUIRED_CONTEXTS.includes(context)), formatFindings(checkWorkflow(file, source))).toEqual([])
+  })
+
+  it.each(workflowFiles)('%s names every job in a shape the guard can resolve', (file, source) => {
+    const unresolved = checkWorkflow(file, source).filter((finding) => finding.rule === 'unresolved-name')
+    expect(unresolved, formatFindings(unresolved)).toEqual([])
   })
 
   it('still posts browser-qa and pr-hygiene under the required name from their PR events', () => {
