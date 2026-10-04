@@ -9,7 +9,7 @@ description: Use when creating new skills, editing existing skills, or verifying
 
 **Writing skills IS Test-Driven Development applied to process documentation.**
 
-**Personal skills live in agent-specific directories (`~/.claude/skills` for Claude Code, `~/.agents/skills/` for Codex)** 
+**Personal skills live in agent-specific directories (`~/.claude/skills` for Claude Code, `~/.agents/skills/` for Codex)** <!-- allow-abs-path -->
 
 You write test cases (pressure scenarios with subagents), watch them fail (baseline behavior), write the skill (documentation), watch tests pass (agents comply), and refactor (close loopholes).
 
@@ -283,7 +283,7 @@ Use skill name only, with explicit requirement markers:
 - ✅ Good: `**REQUIRED SUB-SKILL:** Use tdd`
 - ✅ Good: `**REQUIRED BACKGROUND:** You MUST understand debugging`
 - ❌ Bad: `See skills/testing/tdd` (unclear if required)
-- ❌ Bad: `@skills/testing/tdd/SKILL.md` (force-loads, burns context)
+- ❌ Bad: `@skills/testing/tdd/SKILL.md` (force-loads, burns context) <!-- allow-missing-path -->
 
 **Why no @ links:** `@` syntax force-loads files immediately, consuming 200k+ context before you need them.
 

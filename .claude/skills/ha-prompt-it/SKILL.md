@@ -5,7 +5,7 @@ description: "Use when Mezi says \"prompt it\" or answers yes to \"Prompt it?\" 
 
 # HA Prompt It — the full pipeline, hacer edition
 
-> **Moved into the repo 2026-09-18** (from the workspace `ha/.claude/skills/`) so cloud sessions and
+> **Moved into the repo 2026-09-18** (from the workspace `ha/.claude/skills/`) so cloud sessions and <!-- allow-missing-path -->
 > routines have it and it is versioned. Copied as-is; the v2 amendments (issue-driven start,
 > milestone = PR inside the size budget, plans without complete code, blocked exit, dormant mode,
 > ~200-line budget) are tracked in #154. Two facts have changed since it was written: merges are
@@ -71,7 +71,7 @@ question and the answer you will proceed on:
   `hacer-wt-<topic>` branch and open the PR, then report. *Recommended here:
   hacer is Mezi's own repo, CI is the real gate, and the PR's preview deploy is
   how a change gets looked at.* Note that opening the PR triggers
-  `pr-preview.yml`, a Pages preview — an artifact that leaves this machine.
+  `.github/workflows/pr-preview.yml`, a Pages preview — an artifact that leaves this machine.
 - **Hold** — commit in the worktree and draft the PR body; push nothing.
 
 Record the answer in the ledger as `publish: on-green` or `publish: hold`, restate
@@ -79,8 +79,8 @@ it in the first execution message, and treat an unanswered question as **hold**.
 hacer's `docs/` travels with the branch and its PR under that decision and is
 never pushed on its own.
 
-**Merging is Gate 4.** A push to `main` runs `release.yml` (semantic-release cuts
-a version and a changelog from the conventional-commit types) and `deploy.yml`
+**Merging is Gate 4.** A push to `main` runs `.github/workflows/release.yml` (semantic-release cuts
+a version and a changelog from the conventional-commit types) and `.github/workflows/deploy.yml`
 (GitHub Pages). Merge is therefore a release and a deployment: it waits for the
 verifier's PASS, then goes on green through `node scripts/merge-on-green.mjs <pr>`;
 any other merge needs its own explicit go, every time, however Gate 1 was answered.
@@ -226,7 +226,7 @@ artifact, not two. Its contract section is the authority every later ruling
 resolves against.
 
 **Bind the session's topic file in the same step.** The day's session record,
-`docs/harness/sessions/YYYY-MM-DD.md`, is already this repo's committed memory of
+`docs/harness/sessions/YYYY-MM-DD.md`, is already this repo's committed memory of <!-- allow-missing-path -->
 a session; bind it: `topic-bind docs/harness/sessions/YYYY-MM-DD.md --label
 <topic>` (or `topic-bind --new …` for a new day, then reshape it to the session
 record's sections). Keep one `## Current state` block at its head — rewritten in
@@ -237,7 +237,7 @@ rulings and what happened below it. The topic hooks
 that does work without touching it is blocked once, and after every compaction
 the whole file is pushed back to the session. The spec is never the binding — approved at
 Gate 1, then mostly static. **If `topic-bind --show` reports a live binding**
-(an autonomous run bound its `state.md` at arm time), keep it and link the
+(an autonomous run bound its `state.md` at arm time), keep it and link the <!-- allow-missing-path -->
 session record from the bound file's Paths instead of re-binding. A binding it
 reports as `complete` belongs to a finished run: bind the day's session record
 instead.
@@ -447,10 +447,10 @@ are fixed before closing. Its fix wave ends with the coordinator's delta-read.
 
   **Playwright runs remotely and on demand, not in your loop.** E2E is
   deliberately out of the local definition of done — too expensive to run per
-  change on this machine — and it is out of CI's automatic path too: `e2e.yml`
+  change on this machine — and it is out of CI's automatic path too: `.github/workflows/e2e.yml`
   has `workflow_dispatch` only, no push, PR or schedule trigger. So a suite runs
   when someone asks for it (`gh workflow run e2e.yml -f suite=store|ui|all`,
-  results in the uploaded `playwright-report/` artifact), and **how e2e coverage
+  results in the uploaded `playwright-report/` artifact), and **how e2e coverage <!-- allow-missing-path -->
   gets validated regularly is an open question — a daily remote cron is the
   current thinking, nothing is decided.** Don't design a milestone's evidence
   around e2e, and don't quietly re-add it to a gate to compensate. What you owe
@@ -558,11 +558,11 @@ pnpm run lint:docs     # no machine-specific absolute paths — CI enforces it
 # + the issue's verification command
 ```
 
-The first four are exactly what `ci.yml` runs, so a green local gate predicts a
+The first four are exactly what `.github/workflows/ci.yml` runs, so a green local gate predicts a
 green PR. The closing evidence carries the branch's `diff-size-report origin/main HEAD`
 output beside them.
 
-**E2E is not in the gate — local or CI.** `e2e.yml` is manual-dispatch only, so
+**E2E is not in the gate — local or CI.** `.github/workflows/e2e.yml` is manual-dispatch only, so
 Playwright evidence exists only when someone asks for a run; regular remote
 validation is TBD (see Phase 3). Report the commands you actually ran, and if a
 change plausibly moves store contracts or the canvas, say that e2e is unrun
@@ -581,7 +581,7 @@ suite=store` is the useful move.
   the branch into a handful of logical commits — one per milestone or coherent change, each red kept as its own
   `test(<scope>):` commit before the green it proves (`test` cuts no release; the verifier checks it out), every fix
   folded into the commit it fixes — with messages that describe the change, never the review process.
-  `merge-on-green.mjs` merges with `--rebase`, so each kept commit lands on `main` and its conventional type is its
+  `scripts/merge-on-green.mjs` merges with `--rebase`, so each kept commit lands on `main` and its conventional type is its
   release line. First `git branch backup/<topic>-pre-squash HEAD`; after the rewrite
   `git diff --quiet backup/<topic>-pre-squash HEAD` must exit 0, or restore from the backup and ledger a finding,
   never push. Delete the backup branch once the push has landed. The ledger records old head → new head and each task
@@ -685,7 +685,7 @@ sibling agents running now, or `none — <reason>`); Tests (exact commands,
 narrowest first); Report (its shape, and where to write it). A slot with nothing
 to say reads `none — <reason>`. Lanes may share one brief file, named by path in
 each prompt; the hook counts a referenced file's slots only when its name
-contains `brief` (`lanes-brief.md`), and naming the template fills none.
+contains `brief` (`lanes-brief.md`), and naming the template fills none. <!-- allow-missing-path -->
 hacer's own agents — `hacer-builder`, `hacer-verifier`, `hacer-fidelity`,
 `hacer-product` — keep their briefs in `docs/harness/*-brief.md`. The dispatch
 hook (`~/.claude/hooks/dispatch-guard.sh`) holds this at the moment of

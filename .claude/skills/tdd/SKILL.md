@@ -65,10 +65,10 @@ it('renders label when visible', () => {
 
 <rules>
 ## HACER Test File Conventions
-- Store actions: `src/store/actions/myAction.test.ts`
-- React components: Co-located `src/components/MyComponent.test.tsx`
-- Generic logic: Co-located `src/utils/helpers.test.ts`
-- E2E Store tests: `e2e/specs/feature.spec.ts` (tagged `@store`)
+- Store actions: `src/store/actions/myAction.test.ts` <!-- allow-missing-path -->
+- React components: Co-located `src/components/MyComponent.test.tsx` <!-- allow-missing-path -->
+- Generic logic: Co-located `src/utils/helpers.test.ts` <!-- allow-missing-path -->
+- E2E Store tests: `e2e/specs/feature.spec.ts` (tagged `@store`) <!-- allow-missing-path -->
 
 ## Mocks and Test Utilities
 Before adding a mock or a test-only helper, read `testing-anti-patterns.md` in this directory.

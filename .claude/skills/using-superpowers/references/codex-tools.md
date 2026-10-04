@@ -15,7 +15,7 @@ Skills use Claude Code tool names. When you encounter these in a skill, use your
 
 ## Subagent dispatch requires collab
 
-Add to your Codex config (`~/.codex/config.toml`):
+Add to your Codex config (`~/.codex/config.toml`): <!-- allow-abs-path -->
 
 ```toml
 [features]
