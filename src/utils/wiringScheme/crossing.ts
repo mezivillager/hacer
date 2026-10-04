@@ -545,7 +545,6 @@ export function resolveCrossings(
   newWireSegments: WireSegment[],
   existingWires: Wire[]
 ): CrossingResolutionResult {
-
   // Detect all crossings
   const allCrossings = detectCrossings(newWireSegments, existingWires)
 
