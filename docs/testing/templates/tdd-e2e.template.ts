@@ -23,14 +23,16 @@
  * AI Agents: Always work with STORE tests for speed. Create UI tests after.
  */
 
-// When using this template, copy to e2e/specs/ and use:
-// import { test, expect } from '../fixtures';
+// When using this template, copy each half to e2e/specs/<area>/ and import its fixture:
+//   store spec: import { storeTest as test, storeExpect as expect } from '../../fixtures';
+//   UI spec:    import { uiTest as test, uiExpect as expect } from '../../fixtures';
 import { test, expect } from '@playwright/test';
-// Import scenario:
-// Import helpers as needed:
-// import { addGateViaUI, connectWiresViaUI } from '../helpers/actions';
-// import { expectGateCount, expectWireCount } from '../helpers/assertions';
-// import { ensureGates, waitForSceneReady } from '../helpers/waits';
+// Import helpers as needed — they drive the app through window.__CIRCUIT_ACTIONS__ and
+// read window.__CIRCUIT_STORE__, so a spec rarely needs page.evaluate of its own:
+// import { DEFAULT_POSITIONS } from '../../config/constants';
+// import { addGateViaStore, addWireViaStore, addGateViaUI } from '../../helpers/actions';
+// import { expectGateCount, expectWireCount } from '../../helpers/assertions';
+// import { ensureGates, ensureWires, waitForSceneReady } from '../../helpers/waits';
 
 // ============================================================================
 // STORE TEST TEMPLATE (feature-name.store.spec.ts)
@@ -41,35 +43,31 @@ import { test, expect } from '@playwright/test';
 test.describe('Feature Name (Store) @store', () => {
   // Store tests are FAST - preferred for TDD iteration
   // Use shared setup from e2e/helpers/
-
-  test.beforeEach(async ({ page }) => {
-    await page.goto('/');
-    // NO scene wait - that's what makes store tests fast
-  });
+  // storeTest opens the app and waits for window.__CIRCUIT_STORE__ only: NO scene wait,
+  // which is what makes store tests fast. No beforeEach of your own is needed.
 
   test('can perform action via store', async ({ page }) => {
     // Use store actions directly (fast, no UI waits)
-    // const { placements } = yourScenario;
-    // await page.evaluate((pos) => {
-    //   window.__STORE__.getState().actions.addGate('NAND', pos);
-    // }, placements[0].position);
+    // const gate = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.center);
+    // await ensureGates(page, 1);
 
     // Assert on store state
-    // const gateCount = await page.evaluate(() =>
-    //   Object.keys(window.__STORE__.getState().gates).length
-    // );
-    // expect(gateCount).toBe(1);
+    // expect(gate).not.toBeNull();
+    // await expectGateCount(page, 1);
 
     // TODO: Replace with real test
     expect(true).toBe(false);
   });
 
   test('store state updates correctly', async ({ page }) => {
-    // Test state changes from scenario
-    // const { wire } = yourScenario;
-    // await page.evaluate((w) => {
-    //   window.__STORE__.getState().actions.connectWire(w);
-    // }, wire);
+    // Test state changes through the same helpers
+    // const a = await addGateViaStore(page, 'Nand', DEFAULT_POSITIONS.left);
+    // const b = await addGateViaStore(page, 'Not', DEFAULT_POSITIONS.right);
+    // await addWireViaStore(page, {
+    //   fromGateId: a!.id, fromPinId: a!.outputs[0].id,
+    //   toGateId: b!.id, toPinId: b!.inputs[0].id,
+    // });
+    // await ensureWires(page, 1);
 
     // TODO: Replace with real test
     expect(true).toBe(false);
@@ -84,20 +82,13 @@ test.describe('Feature Name (Store) @store', () => {
 
 test.describe('Feature Name (UI) @ui', () => {
   // UI tests are SLOW but realistic
-  // Share same scenario as store tests
-
-  test.beforeEach(async ({ page }) => {
-    await page.goto('/');
-    // await waitForSceneReady(page); // Required for UI tests
-  });
+  // Drive the same circuit as the store tests
+  // uiTest opens the app, waits for the store and then for waitForSceneReady.
 
   test('user can perform action via UI', async ({ page }) => {
     // Use UI helpers (slower, realistic)
-    // const { placements } = yourScenario;
-    // await addGateViaUI(page, {
-    //   type: 'NAND',
-    //   position: placements[0].position
-    // });
+    // await addGateViaUI(page, { chipName: 'Nand', position: DEFAULT_POSITIONS.center });
+    // await ensureGates(page, 1);
 
     // Assert on visible elements
     // await expectGateCount(page, 1);
@@ -123,10 +114,10 @@ test.describe('Feature Name (UI) @ui', () => {
  * - [ ] e2e/specs/feature-name.ui.spec.ts    (SLOW - @ui)
  *
  * Before committing:
- * - [ ] Scenario file exports typed test data
+ * - [ ] Shared setup lives in e2e/helpers/, shared data in e2e/config/constants.ts
  * - [ ] Store tests use direct store actions (no UI waits)
  * - [ ] UI tests use UI helpers with scene waits
- * - [ ] Both spec files import the SAME scenario
+ * - [ ] Both spec files drive the same circuit through the same helpers
  * - [ ] Store tests ran and FAILED before implementation
  * - [ ] Store tests pass after implementation
  * - [ ] UI tests verified manually (not required for commit)
