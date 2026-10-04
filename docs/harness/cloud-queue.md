@@ -159,11 +159,16 @@ for the fresh-context verify, the same as any other issue. This queue only chang
 launches the builder and where the row is tracked.
 
 1. **Orient** the inbox. Take a row that is `queued` or handed off to you. Skip `done`.
-2. **Claim or update.** Unclaimed → create `claim/<n>`, comment `Claimed by: grok-bot`. Held
-   by Claude with `handing-off` or `paused:cloud-queue` → post the `Intent: building` update.
-   Do not create a second claim. Set Status to `claimed-by-grok`.
-3. **Spending before-shot.** If you must stop, release the claim if you just created it, set
-   Status to `blocked`, report, and do not launch.
+2. **Claim or update.** Unclaimed → `node scripts/backlog.mjs claim <n> --by grok-bot`: it
+   creates `claim/<n>` exclusively, posts the `Claimed by: grok-bot` comment and labels the issue
+   `in-progress`. Held by Claude with `handing-off` or `paused:cloud-queue` → post the
+   `Intent: building` update. Do not create a second claim. Set Status to `claimed-by-grok`.
+   Without Node 22, create the ref with
+   `gh api repos/mezivillager/hacer/git/refs -f ref=refs/heads/claim/<n> -f sha=<main sha>`
+   (GitHub's create-ref API refuses a ref that exists), then post the claim comment in the format
+   `backlog.mjs` posts and add `in-progress`.
+3. **Spending before-shot.** If you must stop, release the claim if you just created it (as in
+   step 8), set Status to `blocked`, report, and do not launch.
 4. **Launch one Cloud Agent.** Record its id on the issue and in the inbox. Status `building`.
    The agent gets the issue and `docs/harness/implementer-brief.md`. It opens the PR and stops.
 5. **Await the PR.** Status `pr`. Fix labels and body the way the brief says (`Fixes #<n>` or
@@ -174,7 +179,8 @@ launches the builder and where the row is tracked.
    what a verdict collector counts.
 7. **Merge on green + PASS** when that is the standing grant for this coordinator. If it is
    not, stop after the verdict and report.
-8. **Release the claim** (`git push origin --delete claim/<n>`, remove `in-progress`).
+8. **Release the claim** with `node scripts/backlog.mjs release <n> --by grok-bot`: it deletes
+   `claim/<n>` and removes `in-progress`.
 9. **Mark the inbox row `done`.**
 10. **After-shot and a short report:** PR URL, agent id, Spending percents before and after,
     verifier result. No dollars as the spend signal.

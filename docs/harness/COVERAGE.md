@@ -18,7 +18,7 @@ done, straight at its owner. Update this map in the same PR that moves a rule; i
 | **Model tiers & cost budgets** | `docs/harness/README.md` § Budgets (cost limits) | self-contained; values are mirrored into `.claude/settings.json` env, not restated in prose elsewhere |
 | **Browser-QA scope** — which PRs get a browser run, which suites, where | `docs/decisions/0016-browser-qa-in-the-cloud.md` | amended 2026-09-19 (#282); `docs/harness/README.md`'s knob table paraphrases it (see below) |
 | **Worker-role rule** — four fresh-context judge roles; none builds, none decides strategy | `docs/harness/README.md` § Standing roles | |
-| **Claim refs** — `refs/heads/claim/<issue#>`, atomic, then label `in-progress` | `docs/harness/README.md` (the loop) | implemented in `.claude/skills/ha-next/SKILL.md` |
+| **Claim refs** — `refs/heads/claim/<issue#>`, created exclusively (GitHub's create-ref API refuses an existing ref), then label `in-progress` | `docs/harness/README.md` (the loop) | implemented in `scripts/backlog.mjs` (`claim` / `release`) |
 | **Never commit to `main`** | `.cursor/rules/020-git-worktree-no-main.mdc` | worktrees live outside the repo as `hacer-wt-<topic>` siblings |
 | **Docs use repo-relative paths; every cited path must exist** | `.cursor/rules/021-no-absolute-paths-in-docs.mdc` | mechanics in ADR-0010 (absolute paths) and ADR-0014 (path existence); enforced by `scripts/check-doc-paths.mjs` |
 | **`AGENTS.md` stays ≤ 120 lines — a table of contents, not a restatement** | `scripts/hooks/docLineBudget.logic.mjs` (`LINE_BUDGETS`) | enforced by `scripts/check-doc-paths.mjs` via `pnpm run lint:docs` (#152) |
