@@ -1,4 +1,4 @@
-// Tracked paths that are one path on a case-insensitive filesystem (#516). No I/O — case-collisions.mjs lists the tree.
+// Tracked paths that are one path on macOS: case and Unicode normalization are ignored (#516, #682). No I/O — case-collisions.mjs lists the tree.
 // An extension-less import resolves by stem, so Foo.tsx beside foo.ts collides though the two full paths do not.
 
 export const USAGE = 'usage: node scripts/case-collisions.mjs [--root <repo>]'
@@ -6,6 +6,7 @@ export const USAGE = 'usage: node scripts/case-collisions.mjs [--root <repo>]'
 // Vite's default resolve.extensions plus what TypeScript's bundler resolution reads; `.d.*` before `.ts`.
 const MODULE_EXTENSIONS = ['.d.ts', '.d.mts', '.d.cts', '.ts', '.tsx', '.mts', '.cts', '.js', '.jsx', '.mjs', '.cjs', '.json']
 
+const collisionKey = (name) => name.normalize('NFC').toLowerCase()
 const dirname = (file) => file.slice(0, Math.max(file.lastIndexOf('/'), 0))
 const basename = (file) => file.slice(file.lastIndexOf('/') + 1)
 
@@ -29,7 +30,7 @@ function directoriesOf(files) {
 function groupsOf(entries, keep = () => true) {
   const byKey = new Map()
   for (const entry of entries) {
-    const key = entry.name.toLowerCase()
+    const key = collisionKey(entry.name)
     byKey.set(key, [...(byKey.get(key) ?? []), entry])
   }
   return [...byKey.values()].filter((group) => new Set(group.map((entry) => entry.name)).size > 1 && keep(group))
@@ -44,14 +45,24 @@ export function findCaseCollisions(files) {
     ...files.map((file) => ({ name: file, shown: file })),
     ...[...directoriesOf(files)].map((dir) => ({ name: dir, shown: `${dir}/` })),
   ]
-  const file = []
-  const directory = []
+  const fileGroups = []
+  const directoryGroups = []
   for (const group of groupsOf(pathEntries)) {
-    const shown = sorted(group.map((entry) => entry.shown))
-    ;(shown.some((entry) => entry.endsWith('/')) ? directory : file).push(shown)
+    ;(group.some((entry) => entry.shown.endsWith('/')) ? directoryGroups : fileGroups).push(group)
   }
+  const directoryGroupOf = new Map()
+  directoryGroups.forEach((group, index) => {
+    for (const entry of group) if (entry.shown.endsWith('/')) directoryGroupOf.set(entry.name, index)
+  })
+  const explainedByDirectory = (group) => {
+    const parents = new Set(group.map((entry) => directoryGroupOf.get(dirname(entry.name))))
+    return new Set(group.map((entry) => basename(entry.name))).size === 1 && parents.size === 1 && !parents.has(undefined)
+  }
+  const showAll = (group) => sorted(group.map((entry) => entry.shown))
+  const file = fileGroups.filter((group) => !explainedByDirectory(group)).map(showAll)
+  const directory = directoryGroups.map(showAll)
   const stemEntries = files.flatMap((path) => moduleStems(path).map((stem) => ({ name: stem, shown: path })))
-  const stem = groupsOf(stemEntries, (group) => new Set(group.map((entry) => entry.shown.toLowerCase())).size > 1).map(
+  const stem = groupsOf(stemEntries, (group) => new Set(group.map((entry) => collisionKey(entry.shown))).size > 1).map(
     (group) => sorted(group.map((entry) => entry.shown)),
   )
   return {
