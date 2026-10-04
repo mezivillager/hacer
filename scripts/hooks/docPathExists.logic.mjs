@@ -7,6 +7,7 @@
 // scanned: tree diagrams and code samples are illustrations, not citations.
 
 import { posix } from 'node:path'
+import baseline from './docPathExists.baseline.json' with { type: 'json' }
 import { OWNED_SKILLS } from './docPaths.logic.mjs'
 
 /** Top-level directories a citation may start with. */
@@ -41,82 +42,28 @@ export const PATH_EXISTENCE_HISTORY = [
 ]
 
 /**
- * Docs still red, exempt until fixed, so the check is never red on `main`; sorted. Shrink-only:
- * `lint:docs` fails on an entry whose citations are all green, and a test refuses a new entry.
+ * The dead citations each still-red doc may keep, by doc. Only falls: `lint:docs` fails a doc above
+ * or below its count, and `pr-hygiene`'s ratchet fails a raised count or a new doc.
+ * @type {Record<string, number>}
  */
-export const GRANDFATHERED_DOCS = [
-  'docs/compatibility/nand2tetris/project1/gap-analysis.md',
-  'docs/decisions/0001-adopt-adr-log-and-docs-sync-enforcement.md',
-  'docs/decisions/0002-commit-and-worktree-conventions.md',
-  'docs/decisions/0004-p05-18-boundary-evaluatechip-seam-landed-in-p05-16.md',
-  'docs/decisions/0006-p05-22-test-lab-implementation-source-seam-and-store-action.md',
-  'docs/decisions/0007-wire-routing-engine-direction.md',
-  'docs/decisions/0008-scene-graph-routing-testing-layer.md',
-  'docs/decisions/0009-bus-components-entity-and-wireendpoint-bus.md',
-  'docs/decisions/0010-no-absolute-paths-in-docs.md',
-  'docs/decisions/0011-remove-stryker-mutation-testing.md',
-  'docs/decisions/0012-e2e-tests-manual-only.md',
-  'docs/decisions/0013-backlog-in-github-issues-and-portfolio.md',
-  'docs/decisions/0014-cited-doc-paths-must-exist.md',
-  'docs/decisions/0015-releases-do-not-commit-to-main.md',
-  'docs/decisions/0016-browser-qa-in-the-cloud.md',
-  'docs/decisions/0017-documentation-platform.md',
-  'docs/decisions/0018-fidelity-gate.md',
-  'docs/decisions/0019-canvas-less-shell-mode.md',
-  'docs/decisions/0020-spec-only-writes-read-only-projections.md',
-  'docs/decisions/0022-node-entries.md',
-  'docs/development/observed-bugs.md',
-  'docs/harness/README.md',
-  'docs/harness/cloud-queue.md',
-  'docs/harness/cursor-lane.md',
-  'docs/harness/fidelity-inbox.md',
-  'docs/harness/ledger.md',
-  'docs/harness/mission-control.md',
-  'docs/harness/sessions/cloud-queue-inbox.md',
-  'docs/llm-harness.md',
-  'docs/llm-integration-proposal.md',
-  'docs/plans/phase-0.5-tickets-CHECKLIST.md',
-  'docs/plans/phase-0.5-tickets/P05-01.md',
-  'docs/plans/phase-0.5-tickets/P05-02.md',
-  'docs/plans/phase-0.5-tickets/P05-03.md',
-  'docs/plans/phase-0.5-tickets/P05-04.md',
-  'docs/plans/phase-0.5-tickets/P05-05.md',
-  'docs/plans/phase-0.5-tickets/P05-08.md',
-  'docs/plans/phase-0.5-tickets/P05-09.md',
-  'docs/plans/phase-0.5-tickets/P05-10.md',
-  'docs/plans/phase-0.5-tickets/P05-11.md',
-  'docs/plans/phase-0.5-tickets/P05-12.md',
-  'docs/plans/phase-0.5-tickets/P05-13.md',
-  'docs/plans/phase-0.5-tickets/P05-14.md',
-  'docs/plans/phase-0.5-tickets/P05-15.md',
-  'docs/plans/phase-0.5-tickets/P05-16.md',
-  'docs/plans/phase-0.5-tickets/P05-17.md',
-  'docs/plans/phase-0.5-tickets/P05-18.md',
-  'docs/plans/phase-0.5-tickets/P05-19.md',
-  'docs/plans/phase-0.5-tickets/P05-20.md',
-  'docs/plans/phase-0.5-tickets/P05-21.md',
-  'docs/plans/phase-0.5-tickets/P05-22.md',
-  'docs/plans/phase-0.5-tickets/P05-23.md',
-  'docs/plans/phase-0.5-tickets/P05-24.md',
-  'docs/plans/phase-0.5-tickets/P05-26.md',
-  'docs/plans/phase-0.5-tickets/P05-27.md',
-  'docs/plans/phase-0.5-tickets/P05-28.md',
-  'docs/plans/phase-0.5-tickets/P05-29.md',
-  'docs/plans/phase-0.5-tickets/P05-31.md',
-  'docs/plans/phase-0.5-tickets/P05-32.md',
-  'docs/plans/phase-0.5-tickets/README.md',
-  'docs/roadmap/phases/phase-0.25-ui-improvements.md',
-  'docs/roadmap/phases/phase-2.5-developer-tooling.md',
-]
+export const DEAD_PATH_BASELINE = baseline
 
-export const DEAD_PATH_BASELINE = {}
-
-export function deadPathVerdict() {
-  throw new Error('not implemented')
+/**
+ * A doc's dead-citation count against its baseline: `grew` above it, `shrank` below it.
+ * @returns {{ status: 'ok' | 'grew' | 'shrank', allowed: number }}
+ */
+export function deadPathVerdict(file, count, counts = DEAD_PATH_BASELINE) {
+  const allowed = Object.hasOwn(counts, file) ? counts[file] : 0
+  return { status: count > allowed ? 'grew' : count < allowed ? 'shrank' : 'ok', allowed }
 }
 
-export function trackedPathExists() {
-  throw new Error('not implemented')
+/** An `exists` for `findDeadPaths` that knows `files` and every directory above one, nothing else. */
+export function trackedPathExists(files) {
+  const known = new Set()
+  for (const file of files) {
+    for (let path = file; path !== '.' && !known.has(path); path = posix.dirname(path)) known.add(path)
+  }
+  return (path) => known.has(path)
 }
 
 function globMatches(file, pattern) {
@@ -130,8 +77,7 @@ function globMatches(file, pattern) {
 export function isPathExistenceFile(file, patterns = PATH_EXISTENCE_PATTERNS) {
   return (
     patterns.some((pattern) => globMatches(file, pattern)) &&
-    !PATH_EXISTENCE_HISTORY.some((pattern) => globMatches(file, pattern)) &&
-    !GRANDFATHERED_DOCS.includes(file)
+    !PATH_EXISTENCE_HISTORY.some((pattern) => globMatches(file, pattern))
   )
 }
 

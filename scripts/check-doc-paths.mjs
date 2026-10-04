@@ -6,8 +6,8 @@
 //
 // Three checks, each a pure function with its own unit tests under scripts/hooks/:
 //   1. no machine-specific absolute paths, in every doc we author (docPaths.logic.mjs)
-//   2. every cited repo-relative path exists, in PATH_EXISTENCE_PATTERNS less dated history and
-//      GRANDFATHERED_DOCS, and no grandfathered doc is already green (docPathExists.logic.mjs)
+//   2. every cited repo-relative path is in git's file list, in PATH_EXISTENCE_PATTERNS less dated
+//      history; a doc in docPathExists.baseline.json keeps exactly its count (docPathExists.logic.mjs)
 //   3. a hard line-count ceiling for the docs listed in LINE_BUDGETS (docLineBudget.logic.mjs)
 // Exits 1 and prints one line per violation. Suspect code fences, in every doc, are a warning:
 // printed, exit code unchanged.
@@ -22,18 +22,20 @@ import {
   isScannedFile,
 } from './hooks/docPaths.logic.mjs'
 import {
-  GRANDFATHERED_DOCS,
   MISSING_PATH_MARKER,
   PATH_EXISTENCE_PATTERNS,
+  deadPathVerdict,
   findDeadPaths,
   findFenceWarnings,
   formatDeadPaths,
   formatFenceWarnings,
   isPathExistenceFile,
+  trackedPathExists,
 } from './hooks/docPathExists.logic.mjs'
 import { findLineBudgetViolations, formatLineBudgetViolations } from './hooks/docLineBudget.logic.mjs'
 
 const staged = process.argv.includes('--staged')
+const BASELINE_FILE = 'scripts/hooks/docPathExists.baseline.json'
 
 function git(args) {
   return execFileSync('git', args, { encoding: 'utf8' })
@@ -42,13 +44,11 @@ function git(args) {
     .filter(Boolean)
 }
 
-const files = (
-  staged
-    ? git(['diff', '--cached', '--name-only', '--diff-filter=ACM'])
-    : // --others picks up new, not-yet-committed docs; without it a fresh file
-      // would slip past the sweep and only fail CI after it was committed.
-      git(['ls-files', '--cached', '--others', '--exclude-standard'])
-).filter(isScannedFile)
+// Citations resolve against git's list, never the disk, where ignored dist/ appears after a build: the
+// index under --staged, as that is the commit; plus --others in the sweep, so a new doc fails before CI.
+const listed = git(['ls-files', '--cached', ...(staged ? [] : ['--others', '--exclude-standard'])])
+const exists = trackedPathExists(listed)
+const files = (staged ? git(['diff', '--cached', '--name-only', '--diff-filter=ACM']) : listed).filter(isScannedFile)
 
 let absoluteFailures = 0
 let deadFailures = 0
@@ -56,6 +56,7 @@ const absoluteReport = []
 const deadReport = []
 const fenceReport = []
 const staleGrandfathered = []
+const grownGrandfathered = []
 const budgetCandidates = []
 
 for (const file of files) {
@@ -73,13 +74,16 @@ for (const file of files) {
 
   const docDir = dirname(file) === '.' ? '' : dirname(file)
   if (isPathExistenceFile(file)) {
-    const dead = findDeadPaths(text, existsSync, { docDir })
-    if (dead.length > 0) {
+    const dead = findDeadPaths(text, exists, { docDir })
+    const { status, allowed } = deadPathVerdict(file, dead.length)
+    if (status === 'shrank') {
+      staleGrandfathered.push(`STALE GRANDFATHER ${file} ${allowed} → ${dead.length}`)
+    } else if (status === 'grew' && allowed > 0) {
+      grownGrandfathered.push(`GRANDFATHER GREW ${file} ${allowed} → ${dead.length}\n${formatDeadPaths(file, dead)}`)
+    } else if (status === 'grew') {
       deadFailures += dead.length
       deadReport.push(formatDeadPaths(file, dead))
     }
-  } else if (GRANDFATHERED_DOCS.includes(file) && findDeadPaths(text, existsSync, { docDir }).length === 0) {
-    staleGrandfathered.push(file)
   }
 
   budgetCandidates.push({ path: file, text })
@@ -98,7 +102,13 @@ if (fenceReport.length > 0) {
   console.error('')
 }
 
-if (absoluteFailures === 0 && deadFailures === 0 && staleGrandfathered.length === 0 && budgetViolations.length === 0) {
+if (
+  absoluteFailures === 0 &&
+  deadFailures === 0 &&
+  grownGrandfathered.length === 0 &&
+  staleGrandfathered.length === 0 &&
+  budgetViolations.length === 0
+) {
   process.exit(0)
 }
 
@@ -132,14 +142,26 @@ if (deadFailures > 0) {
   console.error('')
 }
 
+if (grownGrandfathered.length > 0) {
+  console.error('')
+  console.error(`❌ ${grownGrandfathered.length} grandfathered doc(s) gained a dead citation (baseline → now):`)
+  console.error('')
+  console.error(grownGrandfathered.join('\n'))
+  console.error('')
+  console.error('   A grandfathered doc keeps the dead citations it had and gains none. Every dead')
+  console.error('   citation in it is listed: correct the one this change added. Raising its count')
+  console.error(`   in ${BASELINE_FILE} fails pr-hygiene.`)
+  console.error('')
+}
+
 if (staleGrandfathered.length > 0) {
   console.error('')
-  console.error(`❌ ${staleGrandfathered.length} grandfathered doc(s) now cite only real paths:`)
+  console.error(`❌ ${staleGrandfathered.length} grandfathered doc(s) lost a dead citation (baseline → now):`)
   console.error('')
-  console.error(staleGrandfathered.map((file) => `STALE GRANDFATHER ${file}`).join('\n'))
+  console.error(staleGrandfathered.join('\n'))
   console.error('')
-  console.error('   Remove them from GRANDFATHERED_DOCS in scripts/hooks/docPathExists.logic.mjs,')
-  console.error('   so the check guards them from now on. The list only shrinks.')
+  console.error(`   Lower each count in ${BASELINE_FILE} to the new one, or remove the`)
+  console.error('   entry at 0, so the check holds the doc there. The baseline only shrinks.')
   console.error('')
 }
 
