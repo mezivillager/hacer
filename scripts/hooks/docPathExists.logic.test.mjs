@@ -327,6 +327,7 @@ describe('isPathExistenceFile', () => {
     'docs/plans/2026-03-22-phase-0.5-tickets.md',
     'docs/plans/2026-04-17-design-system-migration/01-phase-a-ant-strip.md',
     'docs/specs/2026-04-17-design-system-migration-design.md',
+    'docs/specs/2026-10-04-x/y.md',
   ])('leaves out %s, a dated record of what was true on its date', (file) => {
     expect(isPathExistenceFile(file)).toBe(false)
   })
