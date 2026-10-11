@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-11T12:32:46.386Z",
+  "generatedAt": "2026-10-11T13:22:33.124Z",
   "head": {
     "sha": "1737e29009143995f1447659bca31bf79aa03506",
     "date": "2026-10-04T21:52:08+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-11T12:32:46.386Z",
+      "fetchedAt": "2026-10-11T13:22:33.124Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-11T12:32:46.386Z",
+      "fetchedAt": "2026-10-11T13:22:33.124Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-11T12:32:46.386Z",
+      "fetchedAt": "2026-10-11T13:22:33.124Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-11T12:32:46.386Z",
+      "fetchedAt": "2026-10-11T13:22:33.124Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-11T12:32:46.386Z",
+      "fetchedAt": "2026-10-11T13:22:33.124Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-11T12:32:46.386Z",
+      "fetchedAt": "2026-10-11T13:22:33.124Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-11T12:32:46.386Z",
+      "fetchedAt": "2026-10-11T13:22:33.124Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-11T12:32:46.386Z",
+      "fetchedAt": "2026-10-11T13:22:33.124Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-11T12:32:46.386Z",
+      "fetchedAt": "2026-10-11T13:22:33.124Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-11T12:32:46.386Z",
+      "fetchedAt": "2026-10-11T13:22:33.124Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-11T12:32:46.386Z",
+      "fetchedAt": "2026-10-11T13:22:33.124Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-11T12:32:46.386Z",
+      "fetchedAt": "2026-10-11T13:22:33.124Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-11T12:32:46.386Z",
+      "fetchedAt": "2026-10-11T13:22:33.124Z",
       "status": "ok"
     }
   },
@@ -5894,30 +5894,29 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-27T12:32:46.386Z",
-      "merged": 88,
+      "since": "2026-09-27T13:22:33.124Z",
+      "merged": 86,
       "openToMergeHours": {
         "median": 0.2,
         "p90": 1.8
       },
       "blockedOnce": {
-        "count": 3,
-        "of": 70,
+        "count": 2,
+        "of": 68,
         "prs": [
-          566,
           586,
           634
         ]
       },
       "coverage": {
         "code": {
-          "merged": 49,
-          "withVerdict": 49,
+          "merged": 48,
+          "withVerdict": 48,
           "without": []
         },
         "nonCode": {
-          "merged": 39,
-          "withVerdict": 21,
+          "merged": 38,
+          "withVerdict": 20,
           "without": [
             410,
             520,
@@ -8407,7 +8406,7 @@
       },
       {
         "date": "2026-10-11",
-        "at": "2026-10-11T11:20:19.809Z",
+        "at": "2026-10-11T12:32:46.386Z",
         "byProject": {
           "foundation": [
             338,
