@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-12T11:25:33.171Z",
+  "generatedAt": "2026-10-12T12:50:26.394Z",
   "head": {
     "sha": "1737e29009143995f1447659bca31bf79aa03506",
     "date": "2026-10-04T21:52:08+03:00",
@@ -10,66 +10,71 @@
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
       "fetchedAt": "2026-10-12T11:25:33.171Z",
-      "status": "ok"
+      "status": "error",
+      "error": "issues: HTTP 502: 502 Bad Gateway (https://api.github.com/graphql)"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
       "fetchedAt": "2026-10-12T11:25:33.171Z",
-      "status": "ok"
+      "status": "error",
+      "error": "issues: HTTP 502: 502 Bad Gateway (https://api.github.com/graphql)"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
       "fetchedAt": "2026-10-12T11:25:33.171Z",
-      "status": "ok"
+      "status": "error",
+      "error": "issues: HTTP 502: 502 Bad Gateway (https://api.github.com/graphql)"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
       "fetchedAt": "2026-10-12T11:25:33.171Z",
-      "status": "ok"
+      "status": "error",
+      "error": "prsMerged: HTTP 502: 502 Bad Gateway (https://api.github.com/graphql)"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-12T11:25:33.171Z",
+      "fetchedAt": "2026-10-12T12:50:26.394Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-12T11:25:33.171Z",
+      "fetchedAt": "2026-10-12T12:50:26.394Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-12T11:25:33.171Z",
+      "fetchedAt": "2026-10-12T12:50:26.394Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-12T11:25:33.171Z",
+      "fetchedAt": "2026-10-12T12:50:26.394Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-12T11:25:33.171Z",
+      "fetchedAt": "2026-10-12T12:50:26.394Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-12T11:25:33.171Z",
+      "fetchedAt": "2026-10-12T12:50:26.394Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-12T11:25:33.171Z",
-      "status": "ok"
+      "fetchedAt": "2026-10-12T12:50:26.394Z",
+      "status": "partial",
+      "error": "prsMerged: HTTP 502: 502 Bad Gateway (https://api.github.com/graphql); flowPrs: gh: HTTP 502"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-12T11:25:33.171Z",
+      "fetchedAt": "2026-10-12T12:50:26.394Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-12T11:25:33.171Z",
+      "fetchedAt": "2026-10-12T12:50:26.394Z",
       "status": "ok"
     }
   },
@@ -5870,76 +5875,8 @@
         "isLatest": false
       }
     ],
-    "mergesPerDay": [
-      {
-        "date": "2026-09-29",
-        "merges": 16
-      },
-      {
-        "date": "2026-09-30",
-        "merges": 1
-      },
-      {
-        "date": "2026-10-01",
-        "merges": 17
-      },
-      {
-        "date": "2026-10-02",
-        "merges": 14
-      },
-      {
-        "date": "2026-10-04",
-        "merges": 12
-      }
-    ],
-    "flow": {
-      "days": 14,
-      "since": "2026-09-28T11:25:33.171Z",
-      "merged": 86,
-      "openToMergeHours": {
-        "median": 0.2,
-        "p90": 1.8
-      },
-      "blockedOnce": {
-        "count": 2,
-        "of": 68,
-        "prs": [
-          586,
-          634
-        ]
-      },
-      "coverage": {
-        "code": {
-          "merged": 48,
-          "withVerdict": 48,
-          "without": []
-        },
-        "nonCode": {
-          "merged": 38,
-          "withVerdict": 20,
-          "without": [
-            410,
-            520,
-            521,
-            522,
-            571,
-            574,
-            576,
-            578,
-            580,
-            582,
-            638,
-            640,
-            654,
-            655,
-            656,
-            657,
-            658,
-            659
-          ]
-        }
-      }
-    },
+    "mergesPerDay": [],
+    "flow": null,
     "conformance": {
       "projects": [
         {
@@ -8544,7 +8481,7 @@
       },
       {
         "date": "2026-10-12",
-        "at": "2026-10-12T10:29:51.803Z",
+        "at": "2026-10-12T11:25:33.171Z",
         "byProject": {
           "foundation": [
             338,
