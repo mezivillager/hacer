@@ -1,12 +1,12 @@
 import { spawnSync } from 'node:child_process'
-import { chmodSync, existsSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { chmodSync, cpSync, existsSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { afterAll, describe, it, expect } from 'vitest'
 import {
-  applyFixes, check, classifyPremise, commandDisposition, cutOverDate, downstream, expiryIssue, formatCheck, formatTree,
+  applyFixes, check, checkFailures, classifyPremise, commandDisposition, cutOverDate, downstream, expiryIssue, formatCheck, formatTree,
   markPulls, matchesExpect, nextRulingId, parseAdr, parseLedger, parseLineage, parsePremises, parseRulings, planExpiryUpserts,
-  premisesFor, radius, subgraph, toMermaid, trace, validateGraph, verifyExitCode,
+  premisesFor, radius, readUnlinkedBaseline, shrunkBaseline, subgraph, toMermaid, trace, validateGraph, verifyExitCode,
 } from './lineage.logic.mjs'
 import { checkWorkflow, concurrencyGroups } from './required-checks.logic.mjs'
 
@@ -20,6 +20,7 @@ import { checkWorkflow, concurrencyGroups } from './required-checks.logic.mjs'
 //   reverse-links/ the six live ADR headers of the four pairs the survey found without a reverse link
 //                  (0007/0008/0009 → 0020, 0012 → 0016), with the forward links typed on 0016 and 0020
 //   cut-over/      rulings dated either side of a recorded cut-over date, with and without Builds on:
+//   ratchet/       one ruling with Builds on: unknown, and the committed baseline holding that count
 // chains/github.json holds PR and issue bodies in `gh … --json number,title,body,url` shape — the
 // `Decisions:` and `Introduced by:` lines #469 adds, present for chains (i) and (iii).
 const FIXTURES = path.join(import.meta.dirname, 'fixtures', 'lineage')
@@ -511,7 +512,7 @@ describe('lineage queries and check (#467)', () => {
       { kind: 'no-builds-on', id: 'R802', where: [`${DECISIONS}/rulings/2026-09-26-cut-over-day.md:3`], message: `R802 (dated 2026-09-26) has no Builds on: — ${required}` },
       { kind: 'no-builds-on', id: 'R805', where: [`${DECISIONS}/rulings/2026-09-27-after.md:6`], message: `R805 (dated 2026-09-27) has no Builds on: — ${required}` },
     ])
-    // Warn mode: counted, not failing, and not one of the LINEAGE line's four numbers.
+    // Counted, and not one of the LINEAGE line's four numbers.
     expect(report.summary).toMatchObject({ cutOver: '2026-09-26', withoutBuildsOn: 2, decisions: 5, unlinked: 1, unresolved: 0 })
     expect(formatCheck(report).split('\n').at(-1)).toBe('LINEAGE: 5 decisions · 1 unlinked · 0 unresolved · 0 superseded-cited')
     expect(check(graph).summary).toMatchObject({ cutOver: null, withoutBuildsOn: 0 })
@@ -555,14 +556,14 @@ describe('lineage queries and check (#467)', () => {
     ])
   })
 
-  it('pnpm run lint:lineage exists, runs inside pnpm run lint, exits 0 in warn mode, and prints one line in the repo\'s style', () => {
+  it('LINEAGE: line unchanged in shape; pnpm run lint red/green follows it', () => {
     const { scripts } = JSON.parse(readFileSync(path.join(REPO, 'package.json'), 'utf8'))
     expect(scripts['lint:lineage']).toBe('node scripts/lineage.mjs check --summary')
     expect(scripts.lint.split(' && ')).toContain('pnpm run lint:lineage')
     const lint = (...args) => spawnSync(process.execPath, ['scripts/lineage.mjs', 'check', '--summary', ...args], { cwd: REPO, encoding: 'utf8' })
-    // Warn mode: an unresolved id is counted, and the exit is still 0 — failing is #471.
+    // An unresolved id fails it, and the line on stdout is the same one line.
     const dangling = lint('--root', path.join(FIXTURES, 'dangling-id'))
-    expect([dangling.status, dangling.stdout]).toEqual([0, 'LINEAGE: 2 decisions · 0 unlinked · 1 unresolved · 0 superseded-cited\n'])
+    expect([dangling.status, dangling.stdout]).toEqual([1, 'LINEAGE: 2 decisions · 0 unlinked · 1 unresolved · 0 superseded-cited\n'])
     // The live repo: one line, counting what `parse` reads — every decision, and every `unknown`.
     const live = lint()
     expect(live.status).toBe(0)
@@ -571,6 +572,81 @@ describe('lineage queries and check (#467)', () => {
     const [, decisions, unlinked] = /^LINEAGE: (\d+) decisions · (\d+) unlinked/.exec(live.stdout)
     expect(Number(decisions)).toBe(parsed.nodes.length)
     expect(Number(unlinked)).toBe(parsed.nodes.filter((node) => node.buildsOn === 'unknown').length)
+  })
+})
+
+describe('lint:lineage fails (#471)', () => {
+  const BASELINE = 'scripts/lineage-unlinked.baseline.json'
+  const lint = (root, ...args) => spawnSync(process.execPath, ['scripts/lineage.mjs', 'check', '--summary', '--root', root, ...args], { cwd: REPO, encoding: 'utf8' })
+  const summaryAt = (unlinked) => ({ decisions: 3, unlinked, unresolved: 0, supersededCited: 0, reverseLinks: 0, cutOver: null, withoutBuildsOn: 0 })
+  const above = (unlinked, allowed) =>
+    `${unlinked} unlinked, above the ${allowed} in ${BASELINE} — a decision's Builds on: names ids or none, never unknown; the baseline only falls`
+  const below = (unlinked, allowed) =>
+    `${unlinked} unlinked, below the ${allowed} in ${BASELINE} — \`node scripts/lineage.mjs check --shrink\` lowers it to ${unlinked}, so the count holds there`
+
+  it('lint:lineage fails when a ruling dated after the cut-over lacks Builds on:', () => {
+    const late = '2 rulings dated from the cut-over (2026-09-26) without Builds on: — `check` without --summary lists each'
+    // The fixture's baseline holds its one unlinked ruling (R804), so the cut-over is the only failure.
+    const run = lint(path.join(FIXTURES, 'cut-over'))
+    expect([run.status, run.stdout, run.stderr]).toEqual([1, 'LINEAGE: 5 decisions · 1 unlinked · 0 unresolved · 0 superseded-cited\n', `check: ${late}\n`])
+    const listed = spawnSync(process.execPath, ['scripts/lineage.mjs', 'check', '--root', path.join(FIXTURES, 'cut-over')], { cwd: REPO, encoding: 'utf8' })
+    expect(listed.status).toBe(1)
+    expect(listed.stdout).toContain('no-builds-on docs/decisions/rulings/2026-09-27-after.md:6: R805')
+    expect(checkFailures(check(parseLineage(loadFixture('cut-over')), { cutOver: '2026-09-26' }).summary, 1)).toEqual([late])
+    expect(checkFailures({ ...summaryAt(0), cutOver: '2026-09-26', withoutBuildsOn: 1 }, 0)).toEqual([late.replace('2 rulings', '1 ruling')])
+  })
+
+  it('lint:lineage fails on an unresolved id', () => {
+    const unresolved = '1 unresolved — every id must resolve; `check` without --summary lists each with its file:line'
+    const run = lint(path.join(FIXTURES, 'dangling-id'))
+    expect([run.status, run.stderr]).toEqual([1, `check: ${unresolved}\n`])
+    expect(checkFailures(check(parseLineage(loadFixture('dangling-id'))).summary, 0)).toEqual([unresolved])
+    // Every parse error is unresolved, a duplicate id as much as a dangling one.
+    expect(checkFailures(check(parseLineage(loadFixture('duplicate-id'))).summary, 3)).toEqual([unresolved])
+  })
+
+  it('the unknown count is a committed baseline; a PR that raises it fails', () => {
+    const repo = mkdtempSync(path.join(tmpdir(), 'lineage-ratchet-'))
+    try {
+      cpSync(path.join(FIXTURES, 'ratchet'), repo, { recursive: true })
+      const baseline = () => readFileSync(path.join(repo, BASELINE), 'utf8')
+      const rulings = path.join(repo, 'docs/decisions/rulings')
+      expect(lint(repo).status).toBe(0)
+
+      // The PR adds one ruling nobody annotated.
+      writeFileSync(path.join(rulings, '2026-10-16-pr.md'), '# Rulings — 2026-10-16 pr\n\n## R902 — added by the PR\nBuilds on: unknown\n')
+      const raised = lint(repo)
+      expect([raised.status, raised.stdout, raised.stderr])
+        .toEqual([1, 'LINEAGE: 3 decisions · 2 unlinked · 0 unresolved · 0 superseded-cited\n', `check: ${above(2, 1)}\n`])
+      expect(lint(repo, '--shrink').status).toBe(1)
+      expect(baseline()).toBe('{\n  "unlinked": 1\n}\n')
+
+      // A PR that lowers it fails until it rewrites the baseline, which then holds the new count.
+      rmSync(path.join(rulings, '2026-10-16-pr.md'))
+      const fixture = path.join(rulings, '2026-10-01-fixture.md')
+      writeFileSync(fixture, readFileSync(fixture, 'utf8').replace('Builds on: unknown', 'Builds on: none'))
+      expect([lint(repo).status, lint(repo).stderr]).toEqual([1, `check: ${below(0, 1)}\n`])
+      const shrunk = lint(repo, '--shrink')
+      expect([shrunk.status, shrunk.stdout])
+        .toEqual([0, `wrote ${BASELINE}: 1 → 0 unlinked\nLINEAGE: 2 decisions · 0 unlinked · 0 unresolved · 0 superseded-cited\n`])
+      expect(baseline()).toBe('{\n  "unlinked": 0\n}\n')
+      expect(lint(repo).status).toBe(0)
+    } finally {
+      rmSync(repo, { recursive: true, force: true })
+    }
+
+    // The count is `unlinked`: decisions whose Builds on: is `unknown`. No file grandfathers nothing.
+    expect(readUnlinkedBaseline(null)).toBe(0)
+    expect(readUnlinkedBaseline('{\n  "unlinked": 296\n}\n')).toBe(296)
+    for (const unreadable of ['', '{', '[]', '296', '{ "unlinked": -1 }', '{ "unlinked": 1.5 }', '{ "unknown": 3 }']) {
+      expect(readUnlinkedBaseline(unreadable)).toBeNull()
+    }
+    expect(checkFailures(summaryAt(1), 1)).toEqual([])
+    expect(checkFailures(summaryAt(2), 1)).toEqual([above(2, 1)])
+    expect(checkFailures(summaryAt(0), 1)).toEqual([below(0, 1)])
+    expect(checkFailures(summaryAt(0), null)).toEqual([`${BASELINE} is not { "unlinked": <count> }`])
+    expect(shrunkBaseline(0, 1)).toBe('{\n  "unlinked": 0\n}\n')
+    expect([shrunkBaseline(1, 1), shrunkBaseline(2, 1), shrunkBaseline(0, null)]).toEqual([null, null, null])
   })
 })
 
