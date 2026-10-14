@@ -665,7 +665,7 @@ describe('lint:lineage fails (#471)', () => {
     }
   })
 
-  it('lint:lineage fails on a ruling in a rulings file whose name opens with no date (#699)', () => {
+  it('lint:lineage fails on a ruling in a rulings file not named <YYYY-MM-DD>-<run>.md (#699)', () => {
     const ruling = (id, buildsOn) => `## ${id} — t\n${buildsOn ? `Builds on: ${buildsOn}\n` : ''}Cost if wrong: x\n`
     const files = [
       { path: `${DECISIONS}/rulings/2026-10-15-dated.md`, text: `# Rulings\n\n${ruling('R3', 'R1')}` },
@@ -673,7 +673,7 @@ describe('lint:lineage fails (#471)', () => {
       { path: `${DECISIONS}/rulings/README.md`, text: '# Rulings\n\nOne file per run: `<date>-<run>.md`.\n' },
       { path: `${DECISIONS}/rulings/notes.md`, text: `# Rulings — 2026-10-15 notes\n\n${ruling('R1')}` },
     ]
-    const named = 'is in a rulings file whose name does not open with its date, so the cut-over cannot date it — name the file <date>-<run>.md'
+    const named = 'is in a rulings file not named <YYYY-MM-DD>-<run>.md, so the cut-over cannot date it — rename the file'
     const report = check(parseLineage(files), { cutOver: '2026-09-26' })
     expect(report.findings).toEqual([
       { kind: 'undated', id: 'R2', where: [`${DECISIONS}/rulings/2026-10-15.md:3`], message: `R2 ${named}` },
@@ -682,10 +682,9 @@ describe('lint:lineage fails (#471)', () => {
     expect(report.summary).toMatchObject({ undated: 2, withoutBuildsOn: 0, unresolved: 0 })
     // The name is a ruling's only date, so it is required with no cut-over recorded too.
     expect(check(parseLineage(files)).summary).toMatchObject({ undated: 2 })
-    const undated = (n) => `${n} in a file whose name opens with no date — a rulings file is \`<date>-<run>.md\`; \`check\` without --summary lists each`
+    const undated = (n) => `${n} in a rulings file not named \`<YYYY-MM-DD>-<run>.md\`, which the cut-over cannot date — \`check\` without --summary lists each`
     expect(checkFailures(report.summary, 0)).toEqual([undated('2 rulings')])
 
-    // PR #697's verifier: an undated file holding a ruling with no Builds on: exited 0.
     const repo = mkdtempSync(path.join(tmpdir(), 'lineage-undated-'))
     try {
       cpSync(path.join(FIXTURES, 'ratchet'), repo, { recursive: true })

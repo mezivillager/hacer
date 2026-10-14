@@ -86,8 +86,8 @@ its Status. `check --fix` writes a missing end into the ADR; never into a ruling
 `pnpm run lint:lineage` (in `pnpm run lint`) is `check --summary`: `LINEAGE: N decisions · M unlinked · K unresolved ·
 J superseded-cited`, `unresolved` being every `parse` error. It **fails** (#471), naming each reason on stderr, on:
 - any unresolved id;
-- any ruling in a rulings file whose name does not open with its date: the name is a ruling's only date, so the
-  cut-over could not reach it (#699);
+- any ruling in a rulings file not named `<YYYY-MM-DD>-<run>.md`: the name is a ruling's only date, so the cut-over could
+  not reach it (#699);
 - any ruling dated from the cut-over without `Builds on:`;
 - an unlinked count other than the one committed in `scripts/lineage-unlinked.baseline.json` (a missing file allows
   0, and the message says so). Above it, the new `unknown` is the fault: write the ids it rests on, or `none`. Below
