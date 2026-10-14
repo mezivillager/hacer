@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-14T21:19:42.265Z",
+  "generatedAt": "2026-10-14T22:01:32.192Z",
   "head": {
-    "sha": "1737e29009143995f1447659bca31bf79aa03506",
-    "date": "2026-10-04T21:52:08+03:00",
-    "subject": "docs(harness): session record for the 2026-10-04 run, rulings R796–R804"
+    "sha": "720ab1f75548cd4e8d40a4ba87447b0199beee78",
+    "date": "2026-10-15T01:00:40+03:00",
+    "subject": "chore(deps): bump @radix-ui/react-label from 2.1.8 to 2.1.16"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-14T21:19:42.265Z",
+      "fetchedAt": "2026-10-14T22:01:32.192Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-14T21:19:42.265Z",
+      "fetchedAt": "2026-10-14T22:01:32.192Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-14T21:19:42.265Z",
+      "fetchedAt": "2026-10-14T22:01:32.192Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-14T21:19:42.265Z",
+      "fetchedAt": "2026-10-14T22:01:32.192Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-14T21:19:42.265Z",
+      "fetchedAt": "2026-10-14T22:01:32.192Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-14T21:19:42.265Z",
+      "fetchedAt": "2026-10-14T22:01:32.192Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-14T21:19:42.265Z",
+      "fetchedAt": "2026-10-14T22:01:32.192Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-14T21:19:42.265Z",
+      "fetchedAt": "2026-10-14T22:01:32.192Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-14T21:19:42.265Z",
+      "fetchedAt": "2026-10-14T22:01:32.192Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-14T21:19:42.265Z",
+      "fetchedAt": "2026-10-14T22:01:32.192Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-14T21:19:42.265Z",
+      "fetchedAt": "2026-10-14T22:01:32.192Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-14T21:19:42.265Z",
+      "fetchedAt": "2026-10-14T22:01:32.192Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-14T21:19:42.265Z",
+      "fetchedAt": "2026-10-14T22:01:32.192Z",
       "status": "ok"
     }
   },
@@ -84,14 +84,12 @@
         "ready": 2,
         "inProgress": 1,
         "needsHuman": 0,
-        "staleClaims": [
-          182
-        ],
+        "staleClaims": [],
         "agentReady": 3,
         "filedElsewhere": [],
         "next": {
-          "number": 338,
-          "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)"
+          "number": 182,
+          "title": "Completed-chip tracking moves out of the engine into session state (no localStorage in src/core)"
         },
         "title": "Foundation audit: is the codebase structured for the autonomous loop? Measured audit, prioritized refactorings, fitness functions",
         "subIssues": {
@@ -349,16 +347,13 @@
         "slug": "lineage",
         "epicNumber": 457,
         "open": 4,
-        "ready": 1,
-        "inProgress": 1,
+        "ready": 0,
+        "inProgress": 2,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 2,
         "filedElsewhere": [],
-        "next": {
-          "number": 471,
-          "title": "Lineage DL-6: lint:lineage from warn to fail — the lineage ratchet"
-        },
+        "next": null,
         "title": "Epic: lineage — Decision Lineage: the decision graph, executable premises, and the correction workflow",
         "subIssues": {
           "completed": 6,
@@ -408,19 +403,14 @@
     ],
     "next": [
       {
+        "number": 182,
+        "title": "Completed-chip tracking moves out of the engine into session state (no localStorage in src/core)",
+        "project": "foundation"
+      },
+      {
         "number": 338,
         "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
         "project": "foundation"
-      },
-      {
-        "number": 373,
-        "title": "N.0: the six 3D mesh components become prop-only and store-free (six PRs, expand → migrate → contract)",
-        "project": "foundation"
-      },
-      {
-        "number": 471,
-        "title": "Lineage DL-6: lint:lineage from warn to fail — the lineage ratchet",
-        "project": "lineage"
       },
       {
         "number": 257,
@@ -448,6 +438,24 @@
   "tasks": {
     "items": [
       {
+        "number": 182,
+        "title": "Completed-chip tracking moves out of the engine into session state (no localStorage in src/core)",
+        "labels": [
+          "project:core",
+          "agent-ready",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [
+          339
+        ],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
+      {
         "number": 338,
         "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
         "labels": [
@@ -459,38 +467,6 @@
         "project": "foundation",
         "rank": 1,
         "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 373,
-        "title": "N.0: the six 3D mesh components become prop-only and store-free (six PRs, expand → migrate → contract)",
-        "labels": [
-          "agent-ready",
-          "risk:2",
-          "project:foundation"
-        ],
-        "blocking": [
-          383
-        ],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 471,
-        "title": "Lineage DL-6: lint:lineage from warn to fail — the lineage ratchet",
-        "labels": [
-          "agent-ready",
-          "risk:2",
-          "project:lineage"
-        ],
-        "blocking": [],
-        "project": "lineage",
-        "rank": 13,
-        "lane": "process",
         "pickable": true,
         "reason": null
       },
@@ -786,25 +762,6 @@
         "lane": "enabler",
         "pickable": false,
         "reason": "unshaped"
-      },
-      {
-        "number": 182,
-        "title": "Completed-chip tracking moves out of the engine into session state (no localStorage in src/core)",
-        "labels": [
-          "project:core",
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [
-          339
-        ],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "stale-claim"
       },
       {
         "number": 184,
@@ -1406,6 +1363,24 @@
         "reason": "not-pulled"
       },
       {
+        "number": 373,
+        "title": "N.0: the six 3D mesh components become prop-only and store-free (six PRs, expand → migrate → contract)",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:2",
+          "project:foundation"
+        ],
+        "blocking": [
+          383
+        ],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 374,
         "title": "N.1: the spec model in src/core — parts, nets, sidecar; parseSpec / printSpec; versioned from day one",
         "labels": [
@@ -1805,6 +1780,22 @@
         "reason": "claimed"
       },
       {
+        "number": 471,
+        "title": "Lineage DL-6: lint:lineage from warn to fail — the lineage ratchet",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:2",
+          "project:lineage"
+        ],
+        "blocking": [],
+        "project": "lineage",
+        "rank": 13,
+        "lane": "process",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 500,
         "title": "pr-hygiene: the ratchet's Baseline-growth reader models a fence by a line's first characters (#499 verifier)",
         "labels": [
@@ -2014,13 +2005,13 @@
     ],
     "byProject": {
       "foundation": [
-        338,
-        373,
-        151,
         182,
+        338,
+        151,
         184,
         325,
         339,
+        373,
         374,
         377,
         378,
@@ -2039,12 +2030,6 @@
         506,
         599,
         613
-      ],
-      "lineage": [
-        471,
-        470,
-        502,
-        569
       ],
       "harness": [
         257,
@@ -2138,6 +2123,12 @@
       "bugs": [
         311
       ],
+      "lineage": [
+        470,
+        471,
+        502,
+        569
+      ],
       "mission-control": [
         509,
         584
@@ -2214,22 +2205,6 @@
         "verdicts": []
       },
       {
-        "number": 692,
-        "title": "chore(deps): bump @radix-ui/react-label from 2.1.8 to 2.1.16",
-        "url": "https://github.com/mezivillager/hacer/pull/692",
-        "author": "app/dependabot",
-        "labels": [
-          "dependencies",
-          "javascript"
-        ],
-        "headRefName": "dependabot/npm_and_yarn/radix-ui/react-label-2.1.16",
-        "isDraft": false,
-        "createdAt": "2026-10-08T23:14:53Z",
-        "mergedAt": null,
-        "closes": [],
-        "verdicts": []
-      },
-      {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
         "url": "https://github.com/mezivillager/hacer/pull/514",
@@ -2257,6 +2232,22 @@
       }
     ],
     "merged": [
+      {
+        "number": 692,
+        "title": "chore(deps): bump @radix-ui/react-label from 2.1.8 to 2.1.16",
+        "url": "https://github.com/mezivillager/hacer/pull/692",
+        "author": "app/dependabot",
+        "labels": [
+          "dependencies",
+          "javascript"
+        ],
+        "headRefName": "dependabot/npm_and_yarn/radix-ui/react-label-2.1.16",
+        "isDraft": false,
+        "createdAt": "2026-10-08T23:14:53Z",
+        "mergedAt": "2026-10-14T22:00:41Z",
+        "closes": [],
+        "verdicts": []
+      },
       {
         "number": 691,
         "title": "docs(harness): session record for the 2026-10-04 run, rulings R796–R804",
@@ -3745,147 +3736,41 @@
             "url": "https://github.com/mezivillager/hacer/pull/615#issuecomment-5892262399"
           }
         ]
-      },
-      {
-        "number": 614,
-        "title": "fix(core): one .out formatter, and a cli driver that reports a missing bin",
-        "url": "https://github.com/mezivillager/hacer/pull/614",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:1",
-          "project:foundation"
-        ],
-        "headRefName": "fix/602-one-out-formatter",
-        "isDraft": false,
-        "createdAt": "2026-09-29T14:10:41Z",
-        "mergedAt": "2026-09-29T14:23:07Z",
-        "closes": [
-          602
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Opus 5.5 (fresh context)",
-            "at": "2026-09-29T14:22:11Z",
-            "url": "https://github.com/mezivillager/hacer/pull/614#issuecomment-5892206723"
-          }
-        ]
       }
     ],
     "coverage": {
       "merged": 60,
-      "withVerdict": 52,
-      "withoutVerdict": 8,
-      "pass": 52,
+      "withVerdict": 51,
+      "withoutVerdict": 9,
+      "pass": 51,
       "block": 0
     }
   },
   "claims": {
     "items": [
       {
-        "number": 148,
-        "ref": "refs/heads/claim/148",
-        "sha": "790d524d3714eb305721bd563ff62d11b0df2ccb",
-        "state": "CLOSED",
-        "title": "Bootstrap the backlog: retire tasks/todo.md and the P05 checklist as history; AGENTS.md Step 1.0 points at GitHub Issues",
-        "url": "https://github.com/mezivillager/hacer/issues/148",
-        "labels": [
-          "released",
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:2"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-09-27 review-followups",
-          "branch": "docs/148-retire-todo",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-09-27T11:45:25Z",
-          "url": "https://github.com/mezivillager/hacer/issues/148#issuecomment-5855535989"
-        }
-      },
-      {
-        "number": 152,
-        "ref": "refs/heads/claim/152",
-        "sha": "b3325e8583db9443f95df082873d199348f5bf2e",
-        "state": "CLOSED",
-        "title": "Slim AGENTS.md to a ≤120-line table of contents; one definition of done; stop citing .cursor/",
-        "url": "https://github.com/mezivillager/hacer/issues/152",
-        "labels": [
-          "released",
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:2"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-09-27 review-followups",
-          "branch": "docs/152-slim-agents",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-09-27T12:02:04Z",
-          "url": "https://github.com/mezivillager/hacer/issues/152#issuecomment-5855641885"
-        }
-      },
-      {
-        "number": 182,
-        "ref": "refs/heads/claim/182",
-        "sha": "8909e66d525e0f6a60a9877d8cf5140594c20b65",
+        "number": 373,
+        "ref": "refs/heads/claim/373",
+        "sha": "1737e29009143995f1447659bca31bf79aa03506",
         "state": "OPEN",
-        "title": "Completed-chip tracking moves out of the engine into session state (no localStorage in src/core)",
-        "url": "https://github.com/mezivillager/hacer/issues/182",
+        "title": "N.0: the six 3D mesh components become prop-only and store-free (six PRs, expand → migrate → contract)",
+        "url": "https://github.com/mezivillager/hacer/issues/373",
         "labels": [
-          "project:core",
           "agent-ready",
           "in-progress",
-          "risk:1",
+          "risk:2",
           "project:foundation"
         ],
         "onClosedIssue": false,
         "claim": {
           "claimedBy": "claude-local",
-          "intent": "paused:owner-stopped-run",
-          "session": "2026-09-24 hacer-loop-93",
-          "branch": "fix/182-chip-completion-to-session",
-          "handoff": "docs/harness/sessions/2026-09-24.md",
-          "author": "mezivillager",
-          "at": "2026-09-24T13:57:40Z",
-          "url": "https://github.com/mezivillager/hacer/issues/182#issuecomment-5815526405"
-        }
-      },
-      {
-        "number": 468,
-        "ref": "refs/heads/claim/468",
-        "sha": "79e512352133368fa6f2f3f87de744801c97cb2c",
-        "state": "CLOSED",
-        "title": "Lineage DL-3: executable premises — the register, `lineage verify`, and the scheduled check that files expiry",
-        "url": "https://github.com/mezivillager/hacer/issues/468",
-        "labels": [
-          "released",
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:lineage"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
           "intent": "building",
-          "session": "2026-09-27 review-followups",
-          "branch": "feat/468-lineage-verify-r2 (supersedes PR",
+          "session": "hacer-loop-50",
+          "branch": null,
           "handoff": "none",
           "author": "mezivillager",
-          "at": "2026-09-27T10:55:30Z",
-          "url": "https://github.com/mezivillager/hacer/issues/468#issuecomment-5855216773"
+          "at": "2026-10-14T22:00:29Z",
+          "url": "https://github.com/mezivillager/hacer/issues/373#issuecomment-6179433732"
         }
       },
       {
@@ -3914,267 +3799,32 @@
         }
       },
       {
-        "number": 530,
-        "ref": "refs/heads/claim/530",
-        "sha": "a24ad4624daf2ea7bcc41a129eed6181938b681f",
-        "state": "CLOSED",
-        "title": "A dropped pending run leaves an empty cancelled suite that strands green PRs in the merge box",
-        "url": "https://github.com/mezivillager/hacer/issues/530",
+        "number": 471,
+        "ref": "refs/heads/claim/471",
+        "sha": "1737e29009143995f1447659bca31bf79aa03506",
+        "state": "OPEN",
+        "title": "Lineage DL-6: lint:lineage from warn to fail — the lineage ratchet",
+        "url": "https://github.com/mezivillager/hacer/issues/471",
         "labels": [
-          "released",
-          "project:harness",
           "agent-ready",
           "in-progress",
-          "risk:1"
+          "risk:2",
+          "project:lineage"
         ],
-        "onClosedIssue": true,
+        "onClosedIssue": false,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
-          "session": "2026-09-27 review-followups",
-          "branch": "fix/530-no-dropped-required-runs",
+          "session": "hacer-loop-50",
+          "branch": null,
           "handoff": "none",
           "author": "mezivillager",
-          "at": "2026-09-27T08:26:56Z",
-          "url": "https://github.com/mezivillager/hacer/issues/530#issuecomment-5854197140"
-        }
-      },
-      {
-        "number": 531,
-        "ref": "refs/heads/claim/531",
-        "sha": "a24ad4624daf2ea7bcc41a129eed6181938b681f",
-        "state": "CLOSED",
-        "title": "Claims are not exclusive, and ready offers a claimed issue as the next pick",
-        "url": "https://github.com/mezivillager/hacer/issues/531",
-        "labels": [
-          "released",
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:1"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-09-27 review-followups",
-          "branch": "feat/531-exclusive-claims",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-09-27T08:27:54Z",
-          "url": "https://github.com/mezivillager/hacer/issues/531#issuecomment-5854203110"
-        }
-      },
-      {
-        "number": 535,
-        "ref": "refs/heads/claim/535",
-        "sha": "aa4d75ac17f912e5222cfbc8132451c86411c2bb",
-        "state": "CLOSED",
-        "title": "Successive top picks follow the eight-slot cycle",
-        "url": "https://github.com/mezivillager/hacer/issues/535",
-        "labels": [
-          "released",
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:1"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-09-27 review-followups",
-          "branch": "feat/535-pick-rotation",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-09-27T10:08:32Z",
-          "url": "https://github.com/mezivillager/hacer/issues/535#issuecomment-5854916087"
-        }
-      },
-      {
-        "number": 536,
-        "ref": "refs/heads/claim/536",
-        "sha": "8243a8a4a8b2448b0e766d1d4bf2c5dbe13905b6",
-        "state": "CLOSED",
-        "title": "The merge-on-green tool moves into the repo, with tests",
-        "url": "https://github.com/mezivillager/hacer/issues/536",
-        "labels": [
-          "released",
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:1"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-09-27 review-followups",
-          "branch": "feat/536-merge-on-green",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-09-27T09:07:02Z",
-          "url": "https://github.com/mezivillager/hacer/issues/536#issuecomment-5854497619"
-        }
-      },
-      {
-        "number": 537,
-        "ref": "refs/heads/claim/537",
-        "sha": "aa4d75ac17f912e5222cfbc8132451c86411c2bb",
-        "state": "CLOSED",
-        "title": "Write the loop's rules as practised: verification, commit types, run bounds, one close record, P-008",
-        "url": "https://github.com/mezivillager/hacer/issues/537",
-        "labels": [
-          "released",
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:0"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-09-27 review-followups",
-          "branch": "docs/537-rules-as-practised",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-09-27T10:16:48Z",
-          "url": "https://github.com/mezivillager/hacer/issues/537#issuecomment-5854968363"
-        }
-      },
-      {
-        "number": 538,
-        "ref": "refs/heads/claim/538",
-        "sha": "3f268d63280bd08c31684145f50203299fce7bd3",
-        "state": "CLOSED",
-        "title": "Session records list the PRs a run merged, from merge times",
-        "url": "https://github.com/mezivillager/hacer/issues/538",
-        "labels": [
-          "released",
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:0"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-09-27 review-followups",
-          "branch": "chore/538-run-prs",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-09-27T10:27:01Z",
-          "url": "https://github.com/mezivillager/hacer/issues/538#issuecomment-5855030275"
-        }
-      },
-      {
-        "number": 539,
-        "ref": "refs/heads/claim/539",
-        "sha": "bf1dd6c24193c2a241a393808af5ded812cdd784",
-        "state": "CLOSED",
-        "title": "Mission Control shows the flow numbers and the product's measures",
-        "url": "https://github.com/mezivillager/hacer/issues/539",
-        "labels": [
-          "released",
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:mission-control"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-09-27 review-followups",
-          "branch": "chore/539-mc-flow",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-09-27T11:40:25Z",
-          "url": "https://github.com/mezivillager/hacer/issues/539#issuecomment-5855504094"
-        }
-      },
-      {
-        "number": 540,
-        "ref": "refs/heads/claim/540",
-        "sha": "0f93b59b4a2780c0d11ba629d0b32511a4701735",
-        "state": "CLOSED",
-        "title": "Backlog reporting: on-request tasks are not counted ready; dormant mode and a per-row cap are computed",
-        "url": "https://github.com/mezivillager/hacer/issues/540",
-        "labels": [
-          "released",
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:1"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-09-27 review-followups",
-          "branch": "chore/540-backlog-reporting",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-09-27T10:58:05Z",
-          "url": "https://github.com/mezivillager/hacer/issues/540#issuecomment-5855232392"
-        }
-      },
-      {
-        "number": 541,
-        "ref": "refs/heads/claim/541",
-        "sha": "9e4da8a0e5ea7bb81a8289976261de0352edcc09",
-        "state": "CLOSED",
-        "title": "husky's deprecated hook lines go, and #496 is checked against the real hooks",
-        "url": "https://github.com/mezivillager/hacer/issues/541",
-        "labels": [
-          "released",
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-09-27 review-followups",
-          "branch": "chore/541-husky-lint-staged",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-09-27T11:07:10Z",
-          "url": "https://github.com/mezivillager/hacer/issues/541#issuecomment-5855288518"
-        }
-      },
-      {
-        "number": 542,
-        "ref": "refs/heads/claim/542",
-        "sha": "76bd9bb19255eb155fc88bf4aba2366a7e3f4f8c",
-        "state": "CLOSED",
-        "title": "OpenSSF Scorecard, advisory",
-        "url": "https://github.com/mezivillager/hacer/issues/542",
-        "labels": [
-          "released",
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:1"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-09-27 review-followups",
-          "branch": "chore/542-scorecard",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-09-27T11:42:29Z",
-          "url": "https://github.com/mezivillager/hacer/issues/542#issuecomment-5855517267"
+          "at": "2026-10-14T22:00:20Z",
+          "url": "https://github.com/mezivillager/hacer/issues/471#issuecomment-6179431429"
         }
       }
     ],
-    "onClosedIssues": 13
+    "onClosedIssues": 0
   },
   "cloudLane": {
     "items": [
@@ -5873,7 +5523,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-29",
-        "merges": 16
+        "merges": 15
       },
       {
         "date": "2026-09-30",
@@ -5890,15 +5540,19 @@
       {
         "date": "2026-10-04",
         "merges": 12
+      },
+      {
+        "date": "2026-10-14",
+        "merges": 1
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-30T21:19:42.265Z",
-      "merged": 43,
+      "since": "2026-09-30T22:01:32.192Z",
+      "merged": 44,
       "openToMergeHours": {
         "median": 0.2,
-        "p90": 1.8
+        "p90": 1.9
       },
       "blockedOnce": {
         "count": 0,
@@ -5912,7 +5566,7 @@
           "without": []
         },
         "nonCode": {
-          "merged": 21,
+          "merged": 22,
           "withVerdict": 14,
           "without": [
             640,
@@ -5921,7 +5575,8 @@
             656,
             657,
             658,
-            659
+            659,
+            692
           ]
         }
       }
@@ -8806,7 +8461,7 @@
       },
       {
         "date": "2026-10-14",
-        "at": "2026-10-14T20:21:14.484Z",
+        "at": "2026-10-14T21:19:42.265Z",
         "byProject": {
           "foundation": [
             338,
@@ -8948,17 +8603,14 @@
     "items": [
       {
         "pr": null,
-        "sha": "1737e29009143995f1447659bca31bf79aa03506",
+        "sha": "720ab1f75548cd4e8d40a4ba87447b0199beee78",
         "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-04T18:55:32Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/37226082978/job/111505894894",
-        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 71,
-          "new": 0
-        },
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/38644574904/job/116128154005",
+        "line": null,
+        "verdict": null,
+        "fields": {},
         "disagrees": false
       },
       {
@@ -8999,51 +8651,6 @@
         "conclusion": "SUCCESS",
         "completedAt": "2026-09-25T06:48:18Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/36104338672/job/107973412518",
-        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 71,
-          "new": 0
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 692,
-        "sha": "7f9895a37aee55a6a4dadecc044b76c48a04e9b5",
-        "check": "pr-hygiene",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-08T23:15:07Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/37858354666/job/113587884882",
-        "line": "HYGIENE: PASS reviewable=2 test=0 excluded=94 files=1 issue=skipped",
-        "verdict": "PASS",
-        "fields": {
-          "reviewable": 2,
-          "test": 0,
-          "excluded": 94,
-          "files": 1,
-          "issue": "skipped"
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 692,
-        "sha": "7f9895a37aee55a6a4dadecc044b76c48a04e9b5",
-        "check": "browser-qa",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-08T23:15:08Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/37858354605/job/113587883265",
-        "line": "BROWSER-QA: skipped (no critical paths)",
-        "verdict": "SKIPPED",
-        "fields": {},
-        "disagrees": false
-      },
-      {
-        "pr": 692,
-        "sha": "7f9895a37aee55a6a4dadecc044b76c48a04e9b5",
-        "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-08T23:17:07Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/37858354228/job/113587881949",
         "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
         "verdict": "PASS",
         "fields": {
