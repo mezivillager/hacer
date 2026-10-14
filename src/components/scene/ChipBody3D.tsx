@@ -1,4 +1,6 @@
 import { BaseGate } from '@/gates/common/BaseGate'
+import { useGateDrag } from '@/hooks/useGateDrag'
+import { circuitActions, useCircuitStore } from '@/store/circuitStore'
 import type { PinConfig } from '@/gates/types'
 import { computeChipLayout } from './chipBodyLayout'
 import { getBuiltinChipRegistry, getUserChipRegistry } from '@/core/chips/appRegistry'
@@ -30,6 +32,14 @@ export function ChipBody3D({
   onPinClick,
   onInputToggle,
 }: ChipBody3DProps) {
+  const isWiringMode = useCircuitStore((s) => s.wiringFrom !== null)
+  const wiringSourcePinId = useCircuitStore((s) =>
+    s.wiringFrom?.fromGateId === gate.id ? s.wiringFrom.fromPinId : null,
+  )
+  // eslint-disable-next-line react-compiler/react-compiler -- getState() is valid for reading without subscribing
+  const isPlacing = useCircuitStore.getState().placementMode !== null
+  const drag = useGateDrag(gate.id)
+
   const chip =
     getBuiltinChipRegistry().get(gate.chipName) ??
     getUserChipRegistry().get(gate.chipName)
@@ -74,9 +84,16 @@ export function ChipBody3D({
         <boxGeometry args={[bodyDimensions.sizeX, bodyDimensions.sizeY, bodyDimensions.sizeZ]} />
       }
       textLabel={chip.name}
+      width={gate.width}
+      wiringSourcePinId={wiringSourcePinId}
+      canDrag={!isPlacing && !isWiringMode}
+      drag={drag}
       onClick={onClick}
       onPinClick={onPinClick}
       onInputToggle={onInputToggle}
+      onHover={(gateId) => circuitActions.setHoveredGate(gateId)}
+      onPinHover={isWiringMode ? (gateId, pinId) => circuitActions.setDestinationPin(gateId, pinId) : undefined}
+      onWirePreviewMove={(worldPosition) => circuitActions.updateWirePreviewPosition(worldPosition)}
     />
   )
 }
