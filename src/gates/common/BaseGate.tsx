@@ -207,8 +207,6 @@ export function BaseGate(props: BaseGateComponentProps) {
 
             const isConnected = pinConfig.connected ?? false
 
-            // Check if this pin is currently being wired (hide stub during wiring/preview)
-            // Compare both gate ID and pin ID to determine if this pin is the source of wiring
             const isBeingWired = wiringSourcePinId === pinConfig.pinId
 
             const shouldHide = isConnected || isBeingWired
