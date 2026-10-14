@@ -39,7 +39,9 @@ the window say about policy?
 3. **The four numbers** (`README.md` § *What to measure*), with where each one comes from today:
    - **Median reviewable lines:** `measure()` from `scripts/pr-hygiene.logic.mjs` over
      `gh api repos/mezivillager/hacer/pulls/<n>/files` for each merged PR, leaving dependabot out.
-     `pr-hygiene`'s `HYGIENE:` line in each PR's check log gives the same count.
+     `pr-hygiene`'s `HYGIENE:` line in each PR's check log gives the same count. The first run's
+     script, which also counts verdicts, is in
+     `docs/research/2026-09-continual-refinement/evidence/first-retro-run.md`.
    - **Owner minutes per merged PR:** no source yet. Report `unmeasured` and give the countable
      proxy: `needs-human` issues opened, plus the owner's comments on PRs in the window.
    - **Escaped defects:** issues opened in the window that fix a defect in an already-merged PR,
