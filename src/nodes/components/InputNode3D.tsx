@@ -6,6 +6,7 @@ import { colors, materials } from '@/theme'
 import { NODE_DIMENSIONS, NODE_COLORS, INPUT_NODE_CONFIG, calculateNodePinPosition } from '../config'
 import { useNodeDrag } from '@/hooks/useNodeDrag'
 import type { Position, Rotation } from '@/store/types'
+import type { DragBinding } from '@/gates/types'
 import { formatSignalLabel, isSignalHigh } from '@/simulation/signalDisplay'
 import { FloatingLabel } from '@/components/canvas/FloatingLabel'
 import { LABEL_GEOMETRY } from '@/components/canvas/labelGeometry'
@@ -33,6 +34,8 @@ interface InputNode3DProps {
   onToggle?: () => void
   /** Click handler for the output pin */
   onPinClick?: (nodeId: string, worldPosition: { x: number; y: number; z: number }) => void
+  canDrag?: boolean
+  drag?: DragBinding
 }
 
 /**
