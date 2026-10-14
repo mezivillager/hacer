@@ -6,6 +6,7 @@ import { NODE_DIMENSIONS, NODE_COLORS, OUTPUT_NODE_CONFIG, calculateNodePinPosit
 import { useCircuitStore, circuitActions } from '@/store/circuitStore'
 import { useNodeDrag } from '@/hooks/useNodeDrag'
 import type { Position, Rotation } from '@/store/types'
+import type { DragBinding } from '@/gates/types'
 import { formatSignalLabel, isSignalHigh } from '@/simulation/signalDisplay'
 import { FloatingLabel } from '@/components/canvas/FloatingLabel'
 import { LABEL_GEOMETRY } from '@/components/canvas/labelGeometry'
@@ -31,6 +32,12 @@ interface OutputNode3DProps {
   onClick?: () => void
   /** Click handler for the input pin */
   onPinClick?: (nodeId: string, worldPosition: { x: number; y: number; z: number }) => void
+  /** Whether a wire is being drawn; the hovered pin is highlighted. */
+  isWiring?: boolean
+  /** Called with the node id when the pointer enters the pin, and with null when it leaves. */
+  onPinHover?: (nodeId: string | null) => void
+  canDrag?: boolean
+  drag?: DragBinding
 }
 
 /**
