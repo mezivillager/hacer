@@ -3,8 +3,6 @@ import { useState, useRef } from 'react'
 import { Group } from 'three'
 import { colors, materials } from '@/theme'
 import { NODE_DIMENSIONS, NODE_COLORS, OUTPUT_NODE_CONFIG, calculateNodePinPosition } from '../config'
-import { useCircuitStore, circuitActions } from '@/store/circuitStore'
-import { useNodeDrag } from '@/hooks/useNodeDrag'
 import type { Position, Rotation } from '@/store/types'
 import type { DragBinding } from '@/gates/types'
 import { formatSignalLabel, isSignalHigh } from '@/simulation/signalDisplay'
@@ -58,26 +56,16 @@ export function OutputNode3D({
   inputConnected: _inputConnected = false,
   onClick,
   onPinClick,
-  isWiring: isWiringProp,
+  isWiring = false,
   onPinHover,
-  canDrag: canDragProp,
-  drag: dragProp,
+  canDrag = false,
+  drag,
 }: OutputNode3DProps) {
   const groupRef = useRef<Group>(null)
   const [hovered, setHovered] = useState(false)
   const [pinHovered, setPinHovered] = useState(false)
 
-  // Check if wiring is active
-  const wiringFrom = useCircuitStore((s) => s.wiringFrom)
-  const placementMode = useCircuitStore((s) => s.placementMode)
-  const nodePlacementMode = useCircuitStore((s) => s.nodePlacementMode)
-  const isJunctionPlacement = useCircuitStore((s) => s.junctionPlacementMode) !== null
-
-  const isWiringMode = isWiringProp ?? wiringFrom !== null
-  const canDrag = canDragProp ?? (placementMode === null && nodePlacementMode === null && !isJunctionPlacement && wiringFrom === null)
-
-  const ownDrag = useNodeDrag(id, 'output')
-  const { isDragging, shouldAllowClick, onPointerDown, onPointerMove, onPointerUp, onPointerLeave } = dragProp ?? ownDrag
+  const isDragging = drag?.isDragging ?? false
 
   const high = isSignalHigh(value)
 
@@ -89,7 +77,7 @@ export function OutputNode3D({
       : (high ? NODE_COLORS.output.bodyOn : NODE_COLORS.output.bodyOff)
 
   // Pin color based on value and hover state (highlight when wiring and hovered)
-  const pinColor = pinHovered && isWiringMode
+  const pinColor = pinHovered && isWiring
     ? colors.primary
     : (high ? colors.wire.active : colors.wire.default)
 
@@ -109,30 +97,20 @@ export function OutputNode3D({
     }
   }
 
-  // Handle pin hover - set destination when wiring is active
   const handlePinPointerOver = () => {
     setPinHovered(true)
-    if (onPinHover) {
-      onPinHover(id)
-    } else if (isWiringMode) {
-      circuitActions.setDestinationNode(id, 'output')
-    }
+    onPinHover?.(id)
   }
 
-  // Handle pin pointer out - clear destination when wiring is active
   const handlePinPointerOut = () => {
     setPinHovered(false)
-    if (onPinHover) {
-      onPinHover(null)
-    } else if (isWiringMode) {
-      circuitActions.setDestinationNode(null, null)
-    }
+    onPinHover?.(null)
   }
 
   // Handle body click
   const handleBodyClick = (e: React.MouseEvent) => {
     e.stopPropagation()
-    if (!shouldAllowClick()) return
+    if (drag && !drag.shouldAllowClick()) return
     if (onClick) {
       onClick()
     }
@@ -149,10 +127,10 @@ export function OutputNode3D({
         <mesh
           onClick={handleBodyClick}
           onPointerOver={() => setHovered(true)}
-          onPointerOut={() => { setHovered(false); if (canDrag && !isDragging) onPointerLeave() }}
-          onPointerDown={canDrag ? onPointerDown : undefined}
-          onPointerMove={canDrag ? onPointerMove : undefined}
-          onPointerUp={canDrag ? onPointerUp : undefined}
+          onPointerOut={() => { setHovered(false); if (canDrag && !isDragging) drag?.onPointerLeave() }}
+          onPointerDown={canDrag ? drag?.onPointerDown : undefined}
+          onPointerMove={canDrag ? drag?.onPointerMove : undefined}
+          onPointerUp={canDrag ? drag?.onPointerUp : undefined}
         >
           <boxGeometry args={OUTPUT_NODE_CONFIG.geometry.args} />
           <meshStandardMaterial
