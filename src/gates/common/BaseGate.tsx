@@ -80,16 +80,26 @@ export function BaseGate(props: BaseGateComponentProps) {
   const [hoveredPin, setHoveredPin] = useState<string | null>(null)
 
   // Subscribe to wiring state to reactively hide stubs during wiring
-  const wiringFrom = useCircuitStore((s) => s.wiringFrom)
-  const gateWidth = useCircuitStore((s) => s.gates.find((g) => g.id === id)?.width ?? 1)
+  const storeWiringFrom = useCircuitStore((s) => s.wiringFrom)
+  const storeGateWidth = useCircuitStore((s) => s.gates.find((g) => g.id === id)?.width ?? 1)
 
   // Drag functionality - use getState() to avoid subscriptions that cause re-renders
   // eslint-disable-next-line react-compiler/react-compiler -- getState() is valid for reading without subscribing
   const state = useCircuitStore.getState()
   const isPlacing = state.placementMode !== null
-  const isWiringMode = wiringFrom !== null
-  const canDrag = !isPlacing && !isWiringMode
-  const { isDragging, shouldAllowClick, onPointerDown, onPointerMove, onPointerUp, onPointerLeave } = useGateDrag(id)
+  const isWiringMode = storeWiringFrom !== null
+  const storeDrag = useGateDrag(id)
+
+  const gateWidth = props.width ?? storeGateWidth
+  const wiringSourcePinId = props.wiringSourcePinId !== undefined
+    ? props.wiringSourcePinId
+    : storeWiringFrom?.fromGateId === id ? storeWiringFrom.fromPinId : null
+  const canDrag = props.canDrag ?? (!isPlacing && !isWiringMode)
+  const { isDragging, shouldAllowClick, onPointerDown, onPointerMove, onPointerUp, onPointerLeave } = props.drag ?? storeDrag
+  const onHover = props.onHover ?? ((gateId: string | null) => circuitActions.setHoveredGate(gateId))
+  const onPinHover = props.onPinHover
+    ?? (isWiringMode ? (gateId: string | null, pinId: string | null) => circuitActions.setDestinationPin(gateId, pinId) : undefined)
+  const onWirePreviewMove = props.onWirePreviewMove ?? circuitActions.updateWirePreviewPosition
 
   // Gate body color based on state
   const currentBodyColor = selected ? bodySelectedColor : hovered ? bodyHoverColor : bodyColor
@@ -101,35 +111,29 @@ export function BaseGate(props: BaseGateComponentProps) {
 
   // Create handlers using factory functions
   const handleClick = createGateClickHandler(isWiring, shouldAllowClick, onClick)
-  const handlePinPointerMove = createPinPointerMoveHandler(isWiring, worldPositionHelper, circuitActions.updateWirePreviewPosition)
+  const handlePinPointerMove = createPinPointerMoveHandler(isWiring, worldPositionHelper, onWirePreviewMove)
   const handlePinClick = createPinClickHandler(id, worldPositionHelper, onInputToggle, onPinClick)
 
   // Create pin hover handlers
   const createPinHoverHandler = (pinName: string, pinId: string) => () => {
     setHoveredPin(pinName) // Local state for visual highlighting (uses pinName)
-    // Update store with destination pin when hovering during wiring
-    if (isWiringMode) {
-      circuitActions.setDestinationPin(id, pinId)
-    }
+    onPinHover?.(id, pinId)
   }
   const handlePinOut = () => {
     setHoveredPin(null)
-    // Clear destination pin in store when pointer leaves pin
-    if (isWiringMode) {
-      circuitActions.setDestinationPin(null, null)
-    }
+    onPinHover?.(null, null)
     handlePinPointerOut()
   }
 
   // Mesh pointer event handlers
   const handlePointerOver = () => {
     setHovered(true)
-    circuitActions.setHoveredGate(id)
+    onHover(id)
   }
 
   const handlePointerOut = () => {
     setHovered(false)
-    circuitActions.setHoveredGate(null)
+    onHover(null)
     // Don't cancel drag on pointer out - pointer capture handles this
     // Only call onPointerLeave if we're not dragging
     if (canDrag && !isDragging) {
@@ -217,9 +221,7 @@ export function BaseGate(props: BaseGateComponentProps) {
 
             // Check if this pin is currently being wired (hide stub during wiring/preview)
             // Compare both gate ID and pin ID to determine if this pin is the source of wiring
-            const isBeingWired = wiringFrom !== null &&
-              wiringFrom.fromGateId === id &&
-              wiringFrom.fromPinId === pinConfig.pinId
+            const isBeingWired = wiringSourcePinId === pinConfig.pinId
 
             const shouldHide = isConnected || isBeingWired
 
