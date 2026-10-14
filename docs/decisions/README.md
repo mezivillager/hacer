@@ -86,10 +86,21 @@ its Status. `check --fix` writes a missing end into the ADR; never into a ruling
 `pnpm run lint:lineage` (in `pnpm run lint`) is `check --summary`: `LINEAGE: N decisions · M unlinked · K unresolved ·
 J superseded-cited`, `unresolved` being every `parse` error. It **fails** (#471), naming each reason on stderr, on:
 - any unresolved id;
+- any ruling in a rulings file whose name does not open with its date: the name is a ruling's only date, so the
+  cut-over could not reach it (#699);
 - any ruling dated from the cut-over without `Builds on:`;
-- an unlinked count other than the one committed in `scripts/lineage-unlinked.baseline.json`. Above it, the new
-  `unknown` is the fault: write the ids it rests on, or `none`. Below it — a PR that annotated an `unknown` —
-  run `node scripts/lineage.mjs check --shrink` and commit the file it lowers; `--shrink` never raises it.
+- an unlinked count other than the one committed in `scripts/lineage-unlinked.baseline.json` (a missing file allows
+  0, and the message says so). Above it, the new `unknown` is the fault: write the ids it rests on, or `none`. Below
+  it — a PR that annotated an `unknown` — run `node scripts/lineage.mjs check --shrink` and commit the file it
+  lowers; `--shrink` never raises it. A PR that raises the file by hand passes `lint:lineage`, so `pr-hygiene`
+  ratchets the file too (#699): a higher count fails unless the PR body carries `Baseline-growth: Builds on: unknown — <why>`.
+
+**Two PRs that each lower the baseline race.** Each annotates a different `unknown` and writes the same lower
+count, say 295; git merges the identical hunks cleanly, and `main` then counts 294 against a committed 295, so
+`lint:lineage` is red on `main`. Branch protection does not require a branch to be up to date before it merges,
+so GitHub takes the second PR on a green that tested the older `main`. `scripts/merge-on-green.mjs` catches it: its
+stale-green re-check updates that branch and waits for the checks to run again, where `lint:lineage` fails until
+the second PR runs `check --shrink` once more. A hand merge has no such re-check.
 
 A superseded ADR cited from `src/` and a missing reverse link are listed and do not fail.
 
