@@ -3,33 +3,6 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { OutputNode3D } from './OutputNode3D'
 
-vi.mock('@/store/circuitStore', () => {
-  const mockState = {
-    placementMode: null,
-    wiringFrom: null,
-    nodePlacementMode: null,
-    junctionPlacementMode: null,
-  }
-
-  return {
-    useCircuitStore: <T,>(selector: (state: typeof mockState) => T) => selector(mockState),
-    circuitActions: {
-      setDestinationNode: vi.fn(),
-    },
-  }
-})
-
-vi.mock('@/hooks/useNodeDrag', () => ({
-  useNodeDrag: vi.fn(() => ({
-    isDragging: false,
-    shouldAllowClick: () => true,
-    onPointerDown: vi.fn(),
-    onPointerMove: vi.fn(),
-    onPointerUp: vi.fn(),
-    onPointerLeave: vi.fn(),
-  })),
-}))
-
 vi.mock('@react-three/drei', () => ({
   Html: ({ children }: { children: React.ReactNode }) => <div data-testid="node-label">{children}</div>,
 }))
