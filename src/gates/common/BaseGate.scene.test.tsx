@@ -85,7 +85,7 @@ function fakeDrag(isDragging = false): DragBinding {
 }
 
 afterEach(async () => {
-  await Promise.all(mounted.splice(0).map((renderer) => renderer.unmount()))
+  for (const renderer of mounted.splice(0)) await renderer.unmount()
 })
 
 describe('BaseGate under test-renderer, with no store and no gesture state', () => {
