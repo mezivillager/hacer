@@ -37,34 +37,19 @@ One row per retro run. The next run's window starts at the last row's `to` time.
 
 | Run | Window (`from` → `to`) | `main` at `to` | Merged | Numbers | Entries | Held |
 |---|---|---|---|---|---|---|
-| 2026-10-15 (first) | the three latest session records: 2026-09-29T09:00Z → 09-29T23:59Z, 2026-10-01T21:20Z → 10-02T03:00Z, 2026-10-04T16:50Z → 10-04T23:59Z | `1737e290` | 75 (65 + 10 dependabot) | see *First run* below | mechanise HRN-001–004 · policy HRN-005–009 | three, listed below |
+| 2026-10-15 (first) | the three latest session records: 2026-09-29T09:00Z → 09-29T23:59Z, 2026-10-01T21:20Z → 10-02T03:00Z, 2026-10-04T16:50Z → 10-04T23:59Z | `1737e290` | 75 (65 + 10 dependabot) | median reviewable 73 · 2 BLOCK · 0 overturned · 0 reruns | mechanise HRN-001–004 · policy HRN-005–009 | three, listed below |
 
 ### First run: 2026-10-15
 
-**Window and why.** #271 names the tracer-bullet day, 2026-09-18 (16 merged PRs, 12 ledger rows).
-This run uses the three latest completed runs instead. They hold 75 merges and ledger rows
-L058–L067, and they are what the process looks like now. Rows L001–L057 count only as earlier
-occurrences of a class.
-
-**Numbers.** Each is `measured` with its command, or marked otherwise.
-
-| Number | Value | How |
-|---|---|---|
-| merged PRs | 75: 36 · 27 · 12 per run, 10 of them dependabot | `node scripts/run-prs.mjs --from … --to … --json`, per window |
-| median reviewable lines | **73** (by run: 63.5 · 89 · 65.5); over 400: 1 (#650, `size-override`, R784) | `measure()` from `scripts/pr-hygiene.logic.mjs` over `pulls/<n>/files` for the 65 non-dependabot PRs |
-| verdicts | 65 of 65 with a verdict; 2 BLOCK (#586, #634), both fixed and passed by a fresh verifier | verdict headings in each PR's comments |
-| overturned | **0**: the `overturned` label has never been applied, to any issue or PR | `gh search issues --repo mezivillager/hacer --label overturned`; `gh pr list --state all --label overturned` |
-| escaped defects | **2, inferred**: #669 (in #651's merge path, L065) and #665 (`.claude/agents/hacer-product.md`'s frontmatter); no label marks them | reading the window's issues |
-| tokens per merged PR | **unmeasured**: none of the three records reports it | `grep -i token` over the three records |
-| owner minutes per merged PR | **unmeasured**; proxy: 1 `needs-human` issue opened (#677) | `gh issue list --search "created:2026-09-29..2026-10-05 label:needs-human"` |
-| follow-up volume | 31 issues opened 2026-09-29..10-05, 6 still open | `gh issue list --state all --search "created:2026-09-29..2026-10-05"` |
-| flake reruns | **0** workflow re-runs (`run_attempt > 1`) in 1,999 runs; 0 failed pushes to `main` | `gh api "repos/mezivillager/hacer/actions/runs?created=<day>"`, one query per day |
-| recurrences in the records | stale premises in all 3 records (13 issues); "already delivered" in all 3 (4 issues) | §3 and §2 of each record |
+#271 names the tracer-bullet day, 2026-09-18. This run uses the three latest completed runs
+instead, because they show the process as it is now: 75 merges and ledger rows L058–L067. Older
+rows count only as earlier occurrences of a class. The numbers, with their commands and the script
+that measured them, are in `docs/research/2026-09-continual-refinement/evidence/first-retro-run.md`.
 
 **Held** (found, but no entry this run):
 
-- **Ledger ids colliding between parallel PRs** (2026-10-02 §3, R789, R792): the failing
-  `lint:lineage` from #471, in flight as PR #697, makes this a check. No entry needed.
+- **Ledger ids colliding between parallel PRs** (2026-10-02 §3, R789, R792): `lint:lineage`, which
+  fails since #471 (PR #697), is the check. No entry needed.
 - **The ledger's merge fallback**, #607, open since 2026-09-29: an issue already exists, so it is a
   pick, not a proposal.
 - **L057's own gap:** the implementer brief does not say to run `node scripts/pr-hygiene.mjs` on a
