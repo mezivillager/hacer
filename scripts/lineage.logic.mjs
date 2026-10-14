@@ -356,14 +356,14 @@ function supersededCited(graph, code) {
     .map(({ from, to }) => ({ kind: 'superseded-cited', id: to, where: [at(path, i + 1)], message: `cites ${to}, superseded by ${from}` }))))
 }
 
-/** A ruling's date: its file's name, `<date>-<run>.md`, or null when the name opens with no date. */
+/** A ruling's date, from its file's name `<YYYY-MM-DD>-<run>.md`; null for any other name. */
 const rulingDate = (node) => /\/(\d{4}-\d{2}-\d{2})-[^/]*:\d+$/.exec(node.source)?.[1] ?? null
 
-/** Every ruling in a file named without a date: the cut-over cannot date it, so it is an error rather than a pass. */
+/** Every ruling in a file not named `<YYYY-MM-DD>-<run>.md`: the cut-over cannot date it, so it is an error rather than a pass. */
 function undated(graph) {
   return graph.nodes.filter((node) => node.kind === 'ruling' && rulingDate(node) === null).map((node) => ({
     kind: 'undated', id: node.id, where: [node.source],
-    message: `${node.id} is in a rulings file whose name does not open with its date, so the cut-over cannot date it — name the file <date>-<run>.md`,
+    message: `${node.id} is in a rulings file not named <YYYY-MM-DD>-<run>.md, so the cut-over cannot date it — rename the file`,
   }))
 }
 
@@ -379,7 +379,8 @@ function withoutBuildsOn(graph, cutOver) {
 export const cutOverDate = (text) => /^- \*\*Cut-over:\*\*\s*(\d{4}-\d{2}-\d{2})\b/m.exec(text)?.[1] ?? null
 
 /** Is the graph sound? Every parse error, every ADR relation written at one end only, every line of `code` (src/) citing
- *  a superseded ADR and, from the `cutOver` date, every ruling without Builds on:. The verdict is `checkFailures`. */
+ *  a superseded ADR, every ruling in a file not named `<YYYY-MM-DD>-<run>.md` and, from the `cutOver` date, every ruling without
+ *  Builds on:. The verdict is `checkFailures`. */
 export function check(graph, { code = [], cutOver = null } = {}) {
   const findings = [...graph.errors, ...reverseLinks(graph), ...supersededCited(graph, code), ...undated(graph), ...withoutBuildsOn(graph, cutOver)]
   const count = (kind) => findings.filter((finding) => finding.kind === kind).length
@@ -412,7 +413,7 @@ export function readUnlinkedBaseline(text) {
   }
 }
 
-/** Why `check` fails, one line each, empty when it passes: an unresolved id, a ruling in an undated file or since the
+/** Why `check` fails, one line each, empty when it passes: an unresolved id, a ruling in a misnamed file or since the
  *  cut-over without Builds on:, an unlinked count off the `allowed` baseline either way — below it fails too, so the
  *  lower count is committed. `missing`: there is no baseline file, so `allowed` is the 0 it is read as. */
 export function checkFailures({ unlinked, unresolved, cutOver, withoutBuildsOn, undated }, allowed, { missing = false } = {}) {
@@ -420,7 +421,7 @@ export function checkFailures({ unlinked, unresolved, cutOver, withoutBuildsOn, 
   const rulings = (n) => `${n} ruling${n === 1 ? '' : 's'}`
   if (unresolved > 0) failures.push(`${unresolved} unresolved — every id must resolve; \`check\` without --summary lists each with its file:line`)
   if (undated > 0) {
-    failures.push(`${rulings(undated)} in a file whose name opens with no date — a rulings file is \`<date>-<run>.md\`; ` +
+    failures.push(`${rulings(undated)} in a rulings file not named \`<YYYY-MM-DD>-<run>.md\`, which the cut-over cannot date — ` +
       '`check` without --summary lists each')
   }
   if (withoutBuildsOn > 0) {
