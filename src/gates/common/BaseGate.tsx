@@ -5,7 +5,7 @@ import { materials } from '@/theme'
 import { useGateDrag } from '@/hooks/useGateDrag'
 import { GatePin, WireStub } from './index'
 import { getPinColor, getWorldPosition, createGateClickHandler, createPinPointerMoveHandler, createPinClickHandler, handlePinPointerOut } from '../handlers/gateHandlers'
-import type { PinConfig } from '../types'
+import type { DragBinding, PinConfig } from '../types'
 import { FloatingLabel } from '@/components/canvas/FloatingLabel'
 import { LABEL_GEOMETRY } from '@/components/canvas/labelGeometry'
 
@@ -38,6 +38,18 @@ interface BaseGateComponentProps {
   onClick?: () => void
   onPinClick?: (gateId: string, pinId: string, pinType: 'input' | 'output', worldPosition: { x: number; y: number; z: number }) => void
   onInputToggle?: (gateId: string, pinId: string) => void
+  /** Bit width; above 1 the label reads `name:width`. */
+  width?: number
+  /** The pin of this gate a wire is being drawn from; its stub is hidden. */
+  wiringSourcePinId?: string | null
+  canDrag?: boolean
+  drag?: DragBinding
+  /** Called with the gate id when the pointer enters the body, and with null when it leaves. */
+  onHover?: (gateId: string | null) => void
+  /** Called with (gateId, pinId) when the pointer enters a pin, and with (null, null) when it leaves. */
+  onPinHover?: (gateId: string | null, pinId: string | null) => void
+  /** Called with the world position under the pointer as it moves over a pin while wiring. */
+  onWirePreviewMove?: (worldPosition: { x: number; y: number; z: number }) => void
 }
 
 export function BaseGate(props: BaseGateComponentProps) {
