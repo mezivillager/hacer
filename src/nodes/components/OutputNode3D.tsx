@@ -58,6 +58,10 @@ export function OutputNode3D({
   inputConnected: _inputConnected = false,
   onClick,
   onPinClick,
+  isWiring: isWiringProp,
+  onPinHover,
+  canDrag: canDragProp,
+  drag: dragProp,
 }: OutputNode3DProps) {
   const groupRef = useRef<Group>(null)
   const [hovered, setHovered] = useState(false)
@@ -69,10 +73,11 @@ export function OutputNode3D({
   const nodePlacementMode = useCircuitStore((s) => s.nodePlacementMode)
   const isJunctionPlacement = useCircuitStore((s) => s.junctionPlacementMode) !== null
 
-  const isWiringMode = wiringFrom !== null
-  const canDrag = placementMode === null && nodePlacementMode === null && !isJunctionPlacement && !isWiringMode
+  const isWiringMode = isWiringProp ?? wiringFrom !== null
+  const canDrag = canDragProp ?? (placementMode === null && nodePlacementMode === null && !isJunctionPlacement && wiringFrom === null)
 
-  const { isDragging, shouldAllowClick, onPointerDown, onPointerMove, onPointerUp, onPointerLeave } = useNodeDrag(id, 'output')
+  const ownDrag = useNodeDrag(id, 'output')
+  const { isDragging, shouldAllowClick, onPointerDown, onPointerMove, onPointerUp, onPointerLeave } = dragProp ?? ownDrag
 
   const high = isSignalHigh(value)
 
@@ -107,7 +112,9 @@ export function OutputNode3D({
   // Handle pin hover - set destination when wiring is active
   const handlePinPointerOver = () => {
     setPinHovered(true)
-    if (isWiringMode) {
+    if (onPinHover) {
+      onPinHover(id)
+    } else if (isWiringMode) {
       circuitActions.setDestinationNode(id, 'output')
     }
   }
@@ -115,7 +122,9 @@ export function OutputNode3D({
   // Handle pin pointer out - clear destination when wiring is active
   const handlePinPointerOut = () => {
     setPinHovered(false)
-    if (isWiringMode) {
+    if (onPinHover) {
+      onPinHover(null)
+    } else if (isWiringMode) {
       circuitActions.setDestinationNode(null, null)
     }
   }
