@@ -234,6 +234,17 @@ export const BRIEF_INVARIANTS = [
     // real removal backs it — an ADR or a ledger row — never a sentence nobody ever wrote.
     absent: [],
   },
+  {
+    file: 'docs/harness/retro-brief.md',
+    present: [
+      { id: 'proposes-never-changes-policy', phrases: ['**You propose; you never change policy.**'] },
+      { id: 'never-files-an-issue', phrases: ['**Never file an issue** and never claim one.'] },
+      { id: 'recurrence-names-both', phrases: ['**A recurrence names both occurrences**'] },
+      { id: 'policy-entries-capped', phrases: ['**At most five policy entries per run:**'] },
+      { id: 'prune-by-deletion', phrases: ['**Prune by deleting whole components, never by rewriting rules shorter.**'] },
+    ],
+    absent: [],
+  },
 ]
 
 /** The text after a markdown frontmatter block — the whole text when there is none. */
@@ -302,6 +313,15 @@ export const AGENT_INVARIANTS = [
       { id: 'vectors-decide', phrases: ['the vectors decide'] },
     ],
   },
+  {
+    file: '.claude/agents/hacer-retro.md',
+    model: 'opus',
+    body: [
+      { id: 'proposes-never-changes-policy', phrases: ['You propose; you never change policy.'] },
+      { id: 'never-files-an-issue', phrases: ['Never file an issue and never claim one.'] },
+      { id: 'one-write', phrases: ['Your one write is `docs/harness/harness-inbox.md`'] },
+    ],
+  },
 ]
 
 // A brief owns the sentence after `anchor`; each twin must carry it verbatim, so fixing one file and
@@ -314,6 +334,15 @@ export const TWIN_SENTENCES = [
     twins: [
       { file: '.claude/agents/hacer-verifier.md', part: 'description' },
       { file: '.claude/agents/hacer-verifier.md', part: 'body' },
+    ],
+  },
+  {
+    id: 'retro-cadence',
+    owner: 'docs/harness/retro-brief.md',
+    anchor: '**Cadence:** ',
+    twins: [
+      { file: '.claude/agents/hacer-retro.md', part: 'description' },
+      { file: '.claude/agents/hacer-retro.md', part: 'body' },
     ],
   },
 ]
