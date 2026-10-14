@@ -74,7 +74,7 @@ function fakeDrag(overrides: Partial<DragBinding> = {}): DragBinding {
 }
 
 afterEach(async () => {
-  await Promise.all(mounted.splice(0).map((renderer) => renderer.unmount()))
+  for (const renderer of mounted.splice(0)) await renderer.unmount()
 })
 
 describe('OutputNode3D under test-renderer, with no store and no gesture state', () => {
@@ -101,11 +101,15 @@ describe('OutputNode3D under test-renderer, with no store and no gesture state',
     expect(colourOf(body(selected))).toBe(hex(NODE_COLORS.output.selected))
   })
 
-  it('highlights the hovered pin only while wiring', async () => {
+  it('does not highlight the hovered pin when no wire is being drawn', async () => {
     const idle = await mount({ value: 0 })
-    await idle.fireEvent(pin(idle), 'onPointerOver')
-    expect(colourOf(pin(idle))).toBe(hex(colors.wire.default))
 
+    await idle.fireEvent(pin(idle), 'onPointerOver')
+
+    expect(colourOf(pin(idle))).toBe(hex(colors.wire.default))
+  })
+
+  it('highlights the hovered pin while wiring', async () => {
     const wiring = await mount({ value: 1, isWiring: true })
     expect(colourOf(pin(wiring))).toBe(hex(colors.wire.active))
     await wiring.fireEvent(pin(wiring), 'onPointerOver')
