@@ -648,6 +648,55 @@ describe('lint:lineage fails (#471)', () => {
     expect(shrunkBaseline(0, 1)).toBe('{\n  "unlinked": 0\n}\n')
     expect([shrunkBaseline(1, 1), shrunkBaseline(2, 1), shrunkBaseline(0, null)]).toEqual([null, null, null])
   })
+
+  it('a missing baseline file is named, and the count it allows is treated as 0 (#699)', () => {
+    const missing = `1 unlinked, above 0 — ${BASELINE} is missing, so the count it allows is treated as 0; ` +
+      'restore the file, or write the ids each unknown rests on, or none'
+    expect(checkFailures(summaryAt(1), 0, { missing: true })).toEqual([missing])
+    expect(checkFailures(summaryAt(0), 0, { missing: true })).toEqual([])
+    const repo = mkdtempSync(path.join(tmpdir(), 'lineage-missing-'))
+    try {
+      cpSync(path.join(FIXTURES, 'ratchet'), repo, { recursive: true })
+      rmSync(path.join(repo, BASELINE))
+      const run = lint(repo)
+      expect([run.status, run.stderr]).toEqual([1, `check: ${missing}\n`])
+    } finally {
+      rmSync(repo, { recursive: true, force: true })
+    }
+  })
+
+  it('lint:lineage fails on a ruling in a rulings file whose name opens with no date (#699)', () => {
+    const ruling = (id, buildsOn) => `## ${id} — t\n${buildsOn ? `Builds on: ${buildsOn}\n` : ''}Cost if wrong: x\n`
+    const files = [
+      { path: `${DECISIONS}/rulings/2026-10-15-dated.md`, text: `# Rulings\n\n${ruling('R3', 'R1')}` },
+      { path: `${DECISIONS}/rulings/2026-10-15.md`, text: `# Rulings\n\n${ruling('R2', 'none')}` },
+      { path: `${DECISIONS}/rulings/README.md`, text: '# Rulings\n\nOne file per run: `<date>-<run>.md`.\n' },
+      { path: `${DECISIONS}/rulings/notes.md`, text: `# Rulings — 2026-10-15 notes\n\n${ruling('R1')}` },
+    ]
+    const named = 'is in a rulings file whose name does not open with its date, so the cut-over cannot date it — name the file <date>-<run>.md'
+    const report = check(parseLineage(files), { cutOver: '2026-09-26' })
+    expect(report.findings).toEqual([
+      { kind: 'undated', id: 'R2', where: [`${DECISIONS}/rulings/2026-10-15.md:3`], message: `R2 ${named}` },
+      { kind: 'undated', id: 'R1', where: [`${DECISIONS}/rulings/notes.md:3`], message: `R1 ${named}` },
+    ])
+    expect(report.summary).toMatchObject({ undated: 2, withoutBuildsOn: 0, unresolved: 0 })
+    // The name is a ruling's only date, so it is required with no cut-over recorded too.
+    expect(check(parseLineage(files)).summary).toMatchObject({ undated: 2 })
+    const undated = (n) => `${n} in a file whose name opens with no date — a rulings file is \`<date>-<run>.md\`; \`check\` without --summary lists each`
+    expect(checkFailures(report.summary, 0)).toEqual([undated('2 rulings')])
+
+    // PR #697's verifier: an undated file holding a ruling with no Builds on: exited 0.
+    const repo = mkdtempSync(path.join(tmpdir(), 'lineage-undated-'))
+    try {
+      cpSync(path.join(FIXTURES, 'ratchet'), repo, { recursive: true })
+      writeFileSync(path.join(repo, 'docs/decisions/rulings/verify-undated.md'), `# Rulings\n\n${ruling('R902')}`)
+      const run = lint(repo)
+      expect([run.status, run.stdout, run.stderr])
+        .toEqual([1, 'LINEAGE: 3 decisions · 1 unlinked · 0 unresolved · 0 superseded-cited\n', `check: ${undated('1 ruling')}\n`])
+    } finally {
+      rmSync(repo, { recursive: true, force: true })
+    }
+  })
 })
 
 const verifyCli = (...args) => spawnSync(process.execPath, ['scripts/lineage.mjs', 'verify', '--root', path.join(FIXTURES, 'verify'), ...args], { cwd: REPO, encoding: 'utf8' })
