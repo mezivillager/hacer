@@ -38,6 +38,7 @@ always goes back to a fresh verifier — never the coordinator (`verifier-brief.
 | Which PRs get a browser run, and which suites | ADR-0016 (critical = the PR changes the UI: `src/components`, `src/App.tsx`, `src/gates`, `src/nodes`, `src/store`, `src/utils`, `src/styles`, `index.html`, `e2e`, `playwright.config.ts`, later `src/surfaces`; or the `critical` / `sev:*` labels on the PR or an issue it links) — the `browser-qa` check (`scripts/browser-qa.logic.mjs`) runs `@store` only, cloud only, never a local gate; `@ui` (3D) runs only by hand via `e2e.yml`; locally, only suites that do not mount the 3D canvas: today the canvas-less `@shell`, `pnpm exec playwright test --project shell`, a pre-flight and never a gate (ADR-0016 amendment 2026-09-29, #316) — *amended 2026-09-19 (#282): was `src/store/actions` only, plus `@ui` on canvas paths* | the critical paths (`CRITICAL_PATHS`) |
 | What the human still does | the `on-green` publishing grant in the workspace `CLAUDE.md`; `needs-human` issues | revoke or narrow the grant |
 | What went wrong, and whether it was mechanised | `ledger.md` | second occurrence → a lint, test or hook |
+| Whether the second-occurrence rule fired, and what the window says about policy | the retro role: `retro-brief.md` · agent `.claude/agents/hacer-retro.md` → `harness-inbox.md` | its cadence (`retro-brief.md` § Cadence), the five-per-run cap on policy entries |
 | Keeping `gh-pages` preview folders tidy | `pr-preview.yml`'s `sweep-previews` job (daily + `workflow_dispatch`, `gh-pages` concurrency group) calls `scripts/pr-preview-sweep.mjs`; the removal decision is the pure `scripts/pr-preview-sweep.logic.mjs` (#484) — safety net for what the PR's own `closed`-event cleanup misses | the schedule, `foldersToRemove`'s open-PR matching |
 
 ## When a required check is stuck
@@ -215,7 +216,7 @@ Direct importers are a proxy for blast radius, not the real edit set. A throwawa
 
 ## Standing roles
 
-Five fresh-context roles judge work; none of them builds it, and none decides strategy for the owner.
+Six fresh-context roles judge work; none of them builds it, and none decides strategy for the owner.
 
 | Role | Judges | Brief | Writes |
 |---|---|---|---|
@@ -224,6 +225,33 @@ Five fresh-context roles judge work; none of them builds it, and none decides st
 | **fidelity** (engineering truth) | an epic, ADR, spec or semantic PR against physics, digital logic and the domain's oracle | `fidelity-brief.md` · ADR-0018 · agent `.claude/agents/hacer-fidelity.md` | one verdict comment; proposals queued in `fidelity-inbox.md` for the owner's approval, never filed as issues |
 | **product** (usability & design) | the app's screens and flows, from the cloud UI tour (`.github/workflows/ui-tour.yml`) and the code, or one UI-facing PR or issue | `product-brief.md` · agent `.claude/agents/hacer-product.md` | at most five `project:polish` issues per review under #144, filed directly (owner, 2026-09-19); strategy proposals queued in `product-inbox.md` for the owner's approval |
 | **process** (the flow itself) | the autonomous flow — how the platform moves forward without the owner — at least every two weeks | `process-review-brief.md`, issued per cycle in `reviews/<date>/BRIEF.md` | one numbered review per reviewer in `reviews/<date>/reviews/`; the coordinator consolidates them in `SYNTHESIS.md` and files what survives |
+| **retro** (refinement) | a window of merged PRs: the ledger, the session records, the four numbers, verdicts, follow-ups, flake reruns and the three inboxes — after every 5 merges, or weekly once `main` has moved | `retro-brief.md` · agent `.claude/agents/hacer-retro.md` | mechanise drafts and policy proposals in `harness-inbox.md`, plus one run row; never an issue, never a policy edit |
+
+## How this process changes
+
+Four paths, from the smallest to the largest. Why they are shaped this way:
+`docs/research/2026-09-continual-refinement.md`.
+
+1. **A failure becomes a mechanism.** Each failure gets one line in `ledger.md` (`ha-next` §6). The
+   **second** time the same thing appears, it becomes a lint, test, hook or check. That rule is
+   stated once, in the ledger's header.
+2. **The retro checks the rule fired.** The retro role (`retro-brief.md`) runs on its cadence. A
+   class seen twice with no mechanism becomes a *mechanise* draft in `harness-inbox.md`, which the
+   coordinator files as an `agent-ready` `project:harness` issue unless the owner declines it.
+3. **Policy changes go through the owner.** A finding that a gate, brief, rotation, tier, budget or
+   cadence is wrong becomes a *policy* entry in `harness-inbox.md`. The owner approves or declines
+   it. An approved change lands as a PR, and if it outlives the run it is recorded as an ADR or an
+   ADR amendment (`docs/decisions/`). A call that binds only one run is a ruling. No role and no
+   coordinator changes a standing knob on its own (L019).
+4. **Prune, quarterly and when the default model changes.** Pick one component: a brief section, a
+   hook, a check, a skill or a rule. Delete it on a branch, and run the definition of done plus
+   whatever replay or window exercises it. If nothing breaks, propose the deletion as a policy entry,
+   with that evidence. Remove one component at a time, never a wholesale rewrite, and delete whole
+   rules rather than shortening them. The first retro run of each quarter carries the proposal; the
+   first is due in the week of 2026-12-18, one quarter after the loop's first run.
+
+The fortnightly process review (`process-review-brief.md`) sits above all four. It asks whether the
+flow moves the platform forward. The retro asks the narrower question, more often.
 
 ## Rules that are conventions, not controls (yet)
 
@@ -332,6 +360,8 @@ one section without warning, so they keep the default merge.
 - `verifier-brief.md` — the brief a fresh-context verifier receives for one PR.
 - `fidelity-brief.md` — the brief the fidelity role receives for one epic, ADR, spec or semantic PR.
 - `fidelity-inbox.md` — proposals from fidelity reviews, waiting for the owner's approval.
+- `retro-brief.md` — the brief the retro role receives for one window of merged PRs: cadence, inputs and the command for each number, outputs.
+- `harness-inbox.md` — mechanise drafts and policy proposals from retro runs, and the run log; policy entries wait for the owner's approval.
 - `routines/fidelity-digest.md` — the change-triggered re-check of the roadmap (ADR-0018 §5).
 - `product-brief.md` — the brief the product role receives for a usability and design review.
 - `product-inbox.md` — product-strategy proposals from product reviews, waiting for the owner's approval.
