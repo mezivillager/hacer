@@ -57,6 +57,8 @@ export function InputNode3D({
   onClick,
   onToggle,
   onPinClick,
+  canDrag: canDragProp,
+  drag: dragProp,
 }: InputNode3DProps) {
   const groupRef = useRef<Group>(null)
   const [hovered, setHovered] = useState(false)
@@ -66,9 +68,10 @@ export function InputNode3D({
   const nodePlacementMode = useCircuitStore((s) => s.nodePlacementMode)
   const isJunctionPlacement = useCircuitStore((s) => s.junctionPlacementMode) !== null
 
-  const canDrag = placementMode === null && nodePlacementMode === null && !isJunctionPlacement && wiringFrom === null
+  const canDrag = canDragProp ?? (placementMode === null && nodePlacementMode === null && !isJunctionPlacement && wiringFrom === null)
 
-  const { isDragging, shouldAllowClick, onPointerDown, onPointerMove, onPointerUp, onPointerLeave } = useNodeDrag(id, 'input')
+  const ownDrag = useNodeDrag(id, 'input')
+  const { isDragging, shouldAllowClick, onPointerDown, onPointerMove, onPointerUp, onPointerLeave } = dragProp ?? ownDrag
 
   const high = isSignalHigh(value)
 
