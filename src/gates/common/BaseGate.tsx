@@ -1,13 +1,14 @@
 import { useRef, useState } from 'react'
 import { Group, type BufferGeometry } from 'three'
-import { circuitActions, useCircuitStore } from '@/store/circuitStore'
 import { materials } from '@/theme'
-import { useGateDrag } from '@/hooks/useGateDrag'
 import { GatePin, WireStub } from './index'
 import { getPinColor, getWorldPosition, createGateClickHandler, createPinPointerMoveHandler, createPinClickHandler, handlePinPointerOut } from '../handlers/gateHandlers'
 import type { DragBinding, PinConfig } from '../types'
 import { FloatingLabel } from '@/components/canvas/FloatingLabel'
 import { LABEL_GEOMETRY } from '@/components/canvas/labelGeometry'
+
+const allowClick = () => true
+const ignore = () => {}
 
 interface BaseGateComponentProps {
   id: string
@@ -74,32 +75,19 @@ export function BaseGate(props: BaseGateComponentProps) {
     onClick,
     onPinClick,
     onInputToggle,
+    width = 1,
+    wiringSourcePinId = null,
+    canDrag = false,
+    drag,
+    onHover,
+    onPinHover,
+    onWirePreviewMove = ignore,
   } = props
   const groupRef = useRef<Group>(null)
   const [hovered, setHovered] = useState(false)
   const [hoveredPin, setHoveredPin] = useState<string | null>(null)
 
-  // Subscribe to wiring state to reactively hide stubs during wiring
-  const storeWiringFrom = useCircuitStore((s) => s.wiringFrom)
-  const storeGateWidth = useCircuitStore((s) => s.gates.find((g) => g.id === id)?.width ?? 1)
-
-  // Drag functionality - use getState() to avoid subscriptions that cause re-renders
-  // eslint-disable-next-line react-compiler/react-compiler -- getState() is valid for reading without subscribing
-  const state = useCircuitStore.getState()
-  const isPlacing = state.placementMode !== null
-  const isWiringMode = storeWiringFrom !== null
-  const storeDrag = useGateDrag(id)
-
-  const gateWidth = props.width ?? storeGateWidth
-  const wiringSourcePinId = props.wiringSourcePinId !== undefined
-    ? props.wiringSourcePinId
-    : storeWiringFrom?.fromGateId === id ? storeWiringFrom.fromPinId : null
-  const canDrag = props.canDrag ?? (!isPlacing && !isWiringMode)
-  const { isDragging, shouldAllowClick, onPointerDown, onPointerMove, onPointerUp, onPointerLeave } = props.drag ?? storeDrag
-  const onHover = props.onHover ?? ((gateId: string | null) => circuitActions.setHoveredGate(gateId))
-  const onPinHover = props.onPinHover
-    ?? (isWiringMode ? (gateId: string | null, pinId: string | null) => circuitActions.setDestinationPin(gateId, pinId) : undefined)
-  const onWirePreviewMove = props.onWirePreviewMove ?? circuitActions.updateWirePreviewPosition
+  const isDragging = drag?.isDragging ?? false
 
   // Gate body color based on state
   const currentBodyColor = selected ? bodySelectedColor : hovered ? bodyHoverColor : bodyColor
@@ -110,7 +98,7 @@ export function BaseGate(props: BaseGateComponentProps) {
   }
 
   // Create handlers using factory functions
-  const handleClick = createGateClickHandler(isWiring, shouldAllowClick, onClick)
+  const handleClick = createGateClickHandler(isWiring, drag?.shouldAllowClick ?? allowClick, onClick)
   const handlePinPointerMove = createPinPointerMoveHandler(isWiring, worldPositionHelper, onWirePreviewMove)
   const handlePinClick = createPinClickHandler(id, worldPositionHelper, onInputToggle, onPinClick)
 
@@ -128,16 +116,16 @@ export function BaseGate(props: BaseGateComponentProps) {
   // Mesh pointer event handlers
   const handlePointerOver = () => {
     setHovered(true)
-    onHover(id)
+    onHover?.(id)
   }
 
   const handlePointerOut = () => {
     setHovered(false)
-    onHover(null)
+    onHover?.(null)
     // Don't cancel drag on pointer out - pointer capture handles this
     // Only call onPointerLeave if we're not dragging
     if (canDrag && !isDragging) {
-      onPointerLeave()
+      drag?.onPointerLeave()
     }
   }
 
@@ -151,9 +139,9 @@ export function BaseGate(props: BaseGateComponentProps) {
           onClick={handleClick}
           onPointerOver={handlePointerOver}
           onPointerOut={handlePointerOut}
-          onPointerDown={canDrag ? onPointerDown : undefined}
-          onPointerMove={canDrag ? onPointerMove : undefined}
-          onPointerUp={canDrag ? onPointerUp : undefined}
+          onPointerDown={canDrag ? drag?.onPointerDown : undefined}
+          onPointerMove={canDrag ? drag?.onPointerMove : undefined}
+          onPointerUp={canDrag ? drag?.onPointerUp : undefined}
         >
           {bodyGeometry}
           <meshStandardMaterial
@@ -247,7 +235,7 @@ export function BaseGate(props: BaseGateComponentProps) {
       {textLabel && (
         <FloatingLabel
           position={position}
-          text={gateWidth > 1 ? `${textLabel}:${gateWidth}` : textLabel}
+          text={width > 1 ? `${textLabel}:${width}` : textLabel}
           offsetY={labelOffsetY ?? LABEL_GEOMETRY.GATE.offsetY}
         />
       )}
