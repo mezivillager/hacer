@@ -6,6 +6,7 @@
 // highest level any finding reaches. To add a rule (e.g. #151's tamper flag: protected
 // paths touched), append it to RULES — nothing else needs to change.
 
+import { UNLINKED_BASELINE_FILE } from './lineage.logic.mjs'
 import { PROTECTED_PATHS, protectedEntryFor } from './protected-paths.logic.mjs'
 
 export const WARN_LINES = 200
@@ -545,10 +546,31 @@ export const DOC_PATH_RATCHET = {
   armedByBaseRows: false,
 }
 
-export const LINEAGE_RATCHET = null
+/** `{ "unlinked": n }` → one row; 0 is a count, the one the baseline falls towards. */
+function unlinkedRows(parsed) {
+  const count = parsed?.unlinked
+  if (!Number.isInteger(count) || count < 0) return { error: 'is not { "unlinked": <count> }' }
+  return { rows: [{ rule: 'Builds on', edge: 'unknown', count }] }
+}
+
+/**
+ * The unlinked decisions `lint:lineage` holds the count to. `lint:lineage` compares the
+ * live count with the file alone, so a PR that raises both passes it; no config can arm an unknown.
+ */
+export const LINEAGE_RATCHET = {
+  input: 'lineage',
+  file: UNLINKED_BASELINE_FILE,
+  config: null,
+  rows: unlinkedRows,
+  ruleNames: () => new Set(),
+  units: 'unlinked decisions',
+  fix: 'Annotate each new `unknown`',
+  disarm: false,
+  armedByBaseRows: false,
+}
 
 /** Every baseline the ratchet reads — a second one is data here, not a second rule. */
-export const RATCHETS = [LAYER_RATCHET, SUPPRESSION_RATCHET, DOC_PATH_RATCHET]
+export const RATCHETS = [LAYER_RATCHET, SUPPRESSION_RATCHET, DOC_PATH_RATCHET, LINEAGE_RATCHET]
 
 /**
  * Why a config's scan cannot be trusted, or null. Text that scans to no rule names is a config the
