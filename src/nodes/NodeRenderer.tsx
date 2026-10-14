@@ -1,5 +1,5 @@
 // NodeRenderer - Dispatches to the correct node component based on node type
-import { useCircuitStore } from '@/store/circuitStore'
+import { circuitActions, useCircuitStore } from '@/store/circuitStore'
 import { useNodeDrag } from '@/hooks/useNodeDrag'
 import type { InputNode, OutputNode, JunctionNode } from '@/store/types'
 import { InputNode3D, OutputNode3D, JunctionNode3D } from './components'
@@ -43,7 +43,9 @@ export function NodeRenderer({
   const canDrag = useCircuitStore((s) =>
     s.placementMode === null && s.nodePlacementMode === null && s.junctionPlacementMode === null && s.wiringFrom === null,
   )
-  // Hooks run for every node type; only the input case binds the drag.
+  const isWiring = useCircuitStore((s) => s.wiringFrom !== null)
+  // Rules of hooks: every node type gets a drag hook, and only inputs and outputs bind it.
+  // A junction's id matches no input node, so its hook would find nothing to drag.
   const drag = useNodeDrag(renderableNode.node.id, renderableNode.type === 'output' ? 'output' : 'input')
 
   switch (renderableNode.type) {
@@ -82,6 +84,10 @@ export function NodeRenderer({
           inputConnected={isConnected}
           onClick={onClick}
           onPinClick={onPinClick}
+          isWiring={isWiring}
+          onPinHover={isWiring ? (nodeId) => circuitActions.setDestinationNode(nodeId, nodeId === null ? null : 'output') : undefined}
+          canDrag={canDrag}
+          drag={drag}
         />
       )
     }
