@@ -79,12 +79,19 @@ its Status. `check --fix` writes a missing end into the ADR; never into a ruling
 | `parse --json` · `next-id` | the graph · the id a new ruling takes |
 | `trace <id>` | what it rests on — its upstream closure, each premise with its status |
 | `radius <id>` | what rests on it — its downstream closure as a tree, each decision with the `#n` it cites and the PRs and issues naming it |
-| `check [--fix]` | is it sound: every id resolves; both ends agree; no superseded ADR is cited from `src/`; rulings since the cut-over without `Builds on:`, counted |
+| `check [--fix] [--shrink]` | is it sound: every id resolves; both ends agree; no superseded ADR is cited from `src/`; rulings since the cut-over without `Builds on:`. `--shrink` lowers the committed unlinked count |
 | `verify [--strict] [--for #<issue>] [--file]` | do the premises in [`premises.md`](premises.md) still hold? An expired one lists what rests on it through `builds-on` and `assumes`. `--strict` exits 1 only then. `--file` upserts one `project:lineage` issue per expired premise |
 | `graph [<id>] --mermaid` · `--json` | all of it or one decision's lineage, for GitHub · for Mission Control |
 
 `pnpm run lint:lineage` (in `pnpm run lint`) is `check --summary`: `LINEAGE: N decisions · M unlinked · K unresolved ·
-J superseded-cited`, `unresolved` being every `parse` error — and exit 0, warn mode, until #471 makes it fail.
+J superseded-cited`, `unresolved` being every `parse` error. It **fails** (#471), naming each reason on stderr, on:
+- any unresolved id;
+- any ruling dated from the cut-over without `Builds on:`;
+- an unlinked count other than the one committed in `scripts/lineage-unlinked.baseline.json`. Above it, the new
+  `unknown` is the fault: write the ids it rests on, or `none`. Below it — a PR that annotated an `unknown` —
+  run `node scripts/lineage.mjs check --shrink` and commit the file it lowers; `--shrink` never raises it.
+
+A superseded ADR cited from `src/` and a missing reverse link are listed and do not fail.
 
 ## Index
 | ADR | Title | Status | Date |
