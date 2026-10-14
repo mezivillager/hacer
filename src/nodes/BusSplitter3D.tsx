@@ -33,7 +33,14 @@ interface BusSplitter3DProps {
  * outputs on the right) from computeBusPinLayout. React-Compiler clean: no
  * memo hooks; pin layout computed inline.
  */
-export function BusSplitter3D({ component, onPinClick, onClick, selected = false }: BusSplitter3DProps) {
+export function BusSplitter3D({
+  component,
+  onPinClick,
+  onClick,
+  selected = false,
+  canDrag: canDragProp,
+  drag: dragProp,
+}: BusSplitter3DProps) {
   const { position, rotation, width } = component
   const dims = computeBusBodyDimensions(component)
   const slots = computeBusPinLayout(component)
@@ -45,9 +52,10 @@ export function BusSplitter3D({ component, onPinClick, onClick, selected = false
   const [hovered, setHovered] = useState(false)
   const wiringFrom = useCircuitStore((s) => s.wiringFrom)
   const busPlacementMode = useCircuitStore((s) => s.busPlacementMode)
-  const canDrag = wiringFrom === null && busPlacementMode === null
+  const canDrag = canDragProp ?? (wiringFrom === null && busPlacementMode === null)
 
-  const { isDragging, shouldAllowClick, onPointerDown, onPointerMove, onPointerUp, onPointerLeave } = useBusDrag(component.id)
+  const ownDrag = useBusDrag(component.id)
+  const { isDragging, shouldAllowClick, onPointerDown, onPointerMove, onPointerUp, onPointerLeave } = dragProp ?? ownDrag
 
   const bodyColor = selected
     ? colors.gate.bodySelected
