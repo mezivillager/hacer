@@ -8,6 +8,7 @@ import {
   FIXUP_MAX_LINES,
   FIXUP_MAX_LINES_PER_FILE,
   FIXUP_MAX_SHARE,
+  LINEAGE_RATCHET,
   OVERRIDE_LABEL,
   RATCHETS,
   RULES,
@@ -33,6 +34,7 @@ import {
   readAtRef,
   stripFencedCode,
 } from './pr-hygiene.logic.mjs'
+import { UNLINKED_BASELINE_FILE } from './lineage.logic.mjs'
 
 /** A file entry in the shape of GET /repos/{owner}/{repo}/pulls/{n}/files. */
 function file(filename, additions = 1, deletions = 0, status = 'modified') {
@@ -1715,5 +1717,65 @@ describe('the doc-path baseline is the same ratchet (#685)', () => {
     expect(ratchetReads([file('docs/harness/ledger.md')], DOC_PATH_RATCHET)).toBeNull()
     expect(ratchetReads([file('scripts/hooks/docPathExists.logic.mjs')], DOC_PATH_RATCHET)).toBeNull()
     expect(ratchetReads([file(DOC_PATHS_FILE)], DOC_PATH_RATCHET)).toEqual({ config: false })
+  })
+})
+
+// ── The lineage baseline (#699) ───────────────────────────────────────────────────────────────
+//
+// `lint:lineage` holds the unlinked count (`Builds on: unknown`) to the one in its baseline; a PR
+// that raises the number together with a new `unknown` passes it. Nothing declares an unknown.
+
+describe('the lineage baseline is the same ratchet (#699)', () => {
+  const LINEAGE_FILE = 'scripts/lineage-unlinked.baseline.json'
+  const REAL_LINEAGE = readFileSync(path.join(import.meta.dirname, '..', LINEAGE_FILE), 'utf8')
+  const unlinked = (count) => `${JSON.stringify({ unlinked: count }, null, 2)}\n`
+  const lineagePr = (lineage, overrides = {}) => pr({ lineage, files: [file(LINEAGE_FILE, 1, 1)], ...overrides })
+  const finding = (result) => result.findings.find((entry) => entry.rule === 'ratchet' && entry.message.includes(LINEAGE_FILE))
+
+  it('is one of the baselines the ratchet reads, at the path lint:lineage reads it from', () => {
+    expect(RATCHETS).toContain(LINEAGE_RATCHET)
+    expect(LINEAGE_RATCHET.file).toBe(UNLINKED_BASELINE_FILE)
+    expect(LINEAGE_RATCHET.file).toBe(LINEAGE_FILE)
+  })
+
+  it('reads the one count as one row, 0 included, and refuses any other shape', () => {
+    expect(parseRatchetBaseline(unlinked(296), LINEAGE_RATCHET)).toEqual({ rows: [{ rule: 'Builds on', edge: 'unknown', count: 296 }] })
+    expect(parseRatchetBaseline(unlinked(0), LINEAGE_RATCHET)).toEqual({ rows: [{ rule: 'Builds on', edge: 'unknown', count: 0 }] })
+    for (const text of ['[]', 'null', '296', '{"unlinked":-1}', '{"unlinked":1.5}', '{"unlinked":"296"}', '{"unknown":3}']) {
+      expect(parseRatchetBaseline(text, LINEAGE_RATCHET).error).toMatch(/unlinked/)
+    }
+    expect(parseRatchetBaseline(REAL_LINEAGE, LINEAGE_RATCHET).error).toBeUndefined()
+    const unreadable = evaluate(lineagePr({ base: unlinked(296), head: '{"unlinked":"297"}' }))
+    expect([unreadable.verdict, unreadable.lineage]).toEqual(['FAIL', 'unreadable'])
+  })
+
+  it('fails a raised count, naming the counts and the line that would excuse it', () => {
+    const result = evaluate(lineagePr({ base: unlinked(296), head: unlinked(297) }))
+    expect(result.verdict).toBe('FAIL')
+    expect(result.lineage).toBe('absorbed')
+    expect(finding(result).level).toBe('fail')
+    expect(finding(result).message).toContain('296 → 297 unlinked decisions')
+    expect(finding(result).message).toContain('`Baseline-growth: Builds on: unknown — <why>`')
+    expect(finding(result).message).not.toContain('declare a rule')
+    expect(formatConsole(result).split('\n')[0]).toContain('lineage=absorbed')
+  })
+
+  it('warns, rather than failing, when the PR body carries Baseline-growth: for it — in prose, not in a fence', () => {
+    const line = 'Baseline-growth: Builds on: unknown — R902 is imported from an off-repo run, its basis not yet traced'
+    const declared = evaluate(lineagePr({ base: unlinked(296), head: unlinked(297) }, { body: `Fixes #699\n\n${line}` }))
+    expect([declared.verdict, declared.lineage]).toEqual(['WARN', 'absorbed'])
+    const fenced = evaluate(lineagePr({ base: unlinked(296), head: unlinked(297) }, { body: `Fixes #699\n\n\`\`\`\n${line}\n\`\`\`` }))
+    expect(fenced.verdict).toBe('FAIL')
+  })
+
+  it('passes a lowered count, and reads the real baseline against itself as unchanged', () => {
+    const lowered = evaluate(lineagePr({ base: unlinked(296), head: unlinked(295) }))
+    expect([lowered.verdict, lowered.lineage]).toEqual(['PASS', 'shrank'])
+    expect(compareRatchetBaseline({ base: REAL_LINEAGE, head: REAL_LINEAGE, kind: LINEAGE_RATCHET }).status).toBe('unchanged')
+  })
+
+  it('is read when a PR touches the baseline, and only then', () => {
+    expect(ratchetReads([file('docs/decisions/rulings/2026-10-15-x.md')], LINEAGE_RATCHET)).toBeNull()
+    expect(ratchetReads([file(LINEAGE_FILE)], LINEAGE_RATCHET)).toEqual({ config: false })
   })
 })

@@ -545,6 +545,8 @@ export const DOC_PATH_RATCHET = {
   armedByBaseRows: false,
 }
 
+export const LINEAGE_RATCHET = null
+
 /** Every baseline the ratchet reads — a second one is data here, not a second rule. */
 export const RATCHETS = [LAYER_RATCHET, SUPPRESSION_RATCHET, DOC_PATH_RATCHET]
 
