@@ -16,7 +16,8 @@
 // read the same way, baseline and config (#489): a rule is gone once the config stops declaring it.
 // `eslint-suppressions.json` and `eslint.config.js` are read the same way, as a second baseline (#429).
 // `scripts/hooks/docPathExists.baseline.json` is a third (#685), with no config: any growth fails unless
-// a `Baseline-growth:` line in the PR body names it. Each baseline is one `RATCHETS` entry.
+// a `Baseline-growth:` line in the PR body names it. `scripts/lineage-unlinked.baseline.json` is a fourth,
+// read the same way. Each baseline is one `RATCHETS` entry.
 //
 // Prints one greppable `HYGIENE: PASS|WARN|FAIL …` line, appends a report to
 // $GITHUB_STEP_SUMMARY when set, publishes the line where Mission Control reads it (a notice on this
