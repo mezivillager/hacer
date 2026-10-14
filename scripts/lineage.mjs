@@ -123,7 +123,7 @@ if (command === 'parse') {
     allowed = report.summary.unlinked
   }
   console.log(has('--summary') ? lineage.formatSummary(report.summary) : lineage.formatCheck(report))
-  const failures = lineage.checkFailures(report.summary, allowed)
+  const failures = lineage.checkFailures(report.summary, allowed, { missing: !existsSync(baseline) })
   for (const failure of failures) console.error(`check: ${failure}`)
   process.exitCode = failures.length > 0 ? 1 : 0
 } else if (command === 'verify') {
