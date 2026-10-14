@@ -8,8 +8,6 @@ import { computeBusPinLayout, computeBusBodyDimensions } from '@/components/scen
 import { isSignalHigh } from '@/simulation/signalDisplay'
 import { FloatingLabel } from '@/components/canvas/FloatingLabel'
 import { LABEL_GEOMETRY } from '@/components/canvas/labelGeometry'
-import { useBusDrag } from '@/hooks/useBusDrag'
-import { useCircuitStore } from '@/store/circuitStore'
 
 export type BusPinClickHandler = (
   componentId: string,
@@ -38,8 +36,8 @@ export function BusSplitter3D({
   onPinClick,
   onClick,
   selected = false,
-  canDrag: canDragProp,
-  drag: dragProp,
+  canDrag = false,
+  drag,
 }: BusSplitter3DProps) {
   const { position, rotation, width } = component
   const dims = computeBusBodyDimensions(component)
@@ -50,12 +48,7 @@ export function BusSplitter3D({
     0
 
   const [hovered, setHovered] = useState(false)
-  const wiringFrom = useCircuitStore((s) => s.wiringFrom)
-  const busPlacementMode = useCircuitStore((s) => s.busPlacementMode)
-  const canDrag = canDragProp ?? (wiringFrom === null && busPlacementMode === null)
-
-  const ownDrag = useBusDrag(component.id)
-  const { isDragging, shouldAllowClick, onPointerDown, onPointerMove, onPointerUp, onPointerLeave } = dragProp ?? ownDrag
+  const isDragging = drag?.isDragging ?? false
 
   const bodyColor = selected
     ? colors.gate.bodySelected
@@ -69,14 +62,14 @@ export function BusSplitter3D({
         <mesh
           onClick={(e) => {
             e.stopPropagation()
-            if (!shouldAllowClick()) return
+            if (drag && !drag.shouldAllowClick()) return
             if (onClick) onClick()
           }}
           onPointerOver={() => setHovered(true)}
-          onPointerOut={() => { setHovered(false); if (canDrag && !isDragging) onPointerLeave() }}
-          onPointerDown={canDrag ? onPointerDown : undefined}
-          onPointerMove={canDrag ? onPointerMove : undefined}
-          onPointerUp={canDrag ? onPointerUp : undefined}
+          onPointerOut={() => { setHovered(false); if (canDrag && !isDragging) drag?.onPointerLeave() }}
+          onPointerDown={canDrag ? drag?.onPointerDown : undefined}
+          onPointerMove={canDrag ? drag?.onPointerMove : undefined}
+          onPointerUp={canDrag ? drag?.onPointerUp : undefined}
         >
           <boxGeometry args={[dims.sizeX, dims.sizeY, dims.sizeZ]} />
           <meshStandardMaterial
