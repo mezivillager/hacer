@@ -35,9 +35,9 @@ times over four days because "the ledger rule … was not applied".
 - Google's SRE book says: "An unreviewed postmortem might as well never have existed." It calls for
   "regular review sessions for postmortems", and shares one postmortem a month across the
   organisation. Blameless review is "a tenet of SRE culture". [S6]
-- Anthropic's evals guide builds the regression suite from the failure record: "20-50 simple tasks
-  drawn from real failures is a great start". Regression evals should hold "a nearly 100% pass rate".
-  [S7]
+- Anthropic's evals guide starts a new eval suite from the failure record: "20-50 simple tasks
+  drawn from real failures is a great start". Regression evals, which check that the agent still
+  handles what it used to, should hold "a nearly 100% pass rate". [S7]
 
 The ledger is HACER's failure record. Nobody reviews it as a whole: each row is written once, by the
 coordinator that hit the failure. Rows marked `partly` or `no` stay that way unless a later failure
@@ -76,9 +76,9 @@ model changes. HACER has no prune step. Every component added since 2026-09-18 i
 - Claude Code's guide gives a test for each line: "Would removing this cause Claude to make
   mistakes?" If not, cut it. Its warning: "Bloated CLAUDE.md files cause Claude to ignore your actual
   instructions!" It also says to "prune it regularly". [S4]
-- HumanLayer reports a consensus that under 300 lines "is best". It also says frontier models follow
-  "~ 150-200 instructions with reasonable consistency". Both are practitioner claims, and neither has
-  been measured here. [S5]
+- HumanLayer reports a consensus that under 300 lines "is best", a practitioner claim. It also says
+  frontier models follow "~ 150-200 instructions with reasonable consistency", a figure it attributes
+  to a paper, arXiv:2507.11538, which this note did not read. Neither has been measured here. [S5]
 - **A counterweight:** the ACE paper names two failure modes of self-editing contexts. "Brevity bias"
   drops domain insights in favour of concise summaries. "Context collapse" is "where iterative
   rewriting erodes details over time". Its fix is "structured, incremental updates". [S11]
@@ -97,8 +97,8 @@ append-only by design, which matches ACE's advice.
 - **The OpenAI account is second-hand** (403 on fetch, 2026-10-15).
 - **No controlled study** shows that a retro role improves an agent loop. Every source reports its
   own practice.
-- **Line budgets** rest on practitioner consensus. The 150–200 instruction figure is one blog's
-  claim.
+- **Line budgets** rest on practitioner consensus. The 150–200 instruction figure comes from one
+  paper, read here only through S5's citation of it.
 
 ## 3. What HACER has, and the gap
 

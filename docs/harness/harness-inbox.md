@@ -232,7 +232,7 @@ A merge's outcome can be read from its log alone.
   file. 2026-09-29 §5 recorded the same root cause for `.mcp.json`. Both records call it "the
   owner's call", and nothing tracks it. This role is affected too: `retro-brief.md` § *Cadence*
   carries the general-purpose fallback.
-- **Proposal:** a workspace-level link from the parent workspace's agents folder to the six `hacer-*` files, set up
+- **Proposal:** a workspace-level link from the parent workspace's agents folder to the five `hacer-*` files, set up
   on the owner's machine, outside this repo.
 - **Cost if wrong:** a stale link dispatches an old role file. Without it, every role keeps running
   through the hand-the-file fallback.
@@ -242,8 +242,8 @@ A merge's outcome can be read from its log alone.
 - **Date:** 2026-10-15 · **Kind:** policy · **Retro run:** 2026-10-15
 - **Status:** proposed
 - **Evidence:** at the measured rate (36, 27 and 12 merges in the three runs), "every 5 merged PRs"
-  means 7, 5 and 2 retros per run. Each run spends ~150–200k tokens on Opus, if it costs what one
-  verifier does (`model-tiering.md` §4); that is inferred, not measured. A recurrence inside a run is
+  means 7, 5 and 2 retros per run. Each run spends ~110–190k tokens on Opus, if it costs what one
+  Opus verifier does (`model-tiering.md` §4); that is inferred, not measured. A recurrence inside a run is
   already caught by the one-line retro after each PR (`ha-next` §6).
 - **Proposal:** the coordinator runs one retro at each run's close, over that run's merges. It also
   runs one after 7 days whenever `main` has moved, which covers cloud-lane merges between runs. The
