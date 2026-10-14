@@ -648,3 +648,7 @@ export function planExpiryUpserts(existing, issues) {
       : { action: 'update', number: open[0].number, body: issue.body }
   })
 }
+
+export const readUnlinkedBaseline = () => { throw new Error('not implemented') }
+export const checkFailures = () => { throw new Error('not implemented') }
+export const shrunkBaseline = () => { throw new Error('not implemented') }
