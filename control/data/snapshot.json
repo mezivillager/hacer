@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-14T22:28:23.286Z",
+  "generatedAt": "2026-10-14T22:31:36.829Z",
   "head": {
-    "sha": "84cc6625c585bccf1e75cf4a096d14a2b9c815ba",
-    "date": "2026-10-15T01:27:19+03:00",
-    "subject": "chore(deps): bump @radix-ui/react-toggle from 1.1.10 to 1.1.19"
+    "sha": "7a493c5083eed4a9d02d02aaadb6c087ac8e617f",
+    "date": "2026-10-15T01:30:45+03:00",
+    "subject": "chore(deps-dev): bump jsdom from 30.1.1 to 30.1.2"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-14T22:28:23.286Z",
+      "fetchedAt": "2026-10-14T22:31:36.829Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-14T22:28:23.286Z",
+      "fetchedAt": "2026-10-14T22:31:36.829Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-14T22:28:23.286Z",
+      "fetchedAt": "2026-10-14T22:31:36.829Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-14T22:28:23.286Z",
+      "fetchedAt": "2026-10-14T22:31:36.829Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-14T22:28:23.286Z",
+      "fetchedAt": "2026-10-14T22:31:36.829Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-14T22:28:23.286Z",
+      "fetchedAt": "2026-10-14T22:31:36.829Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-14T22:28:23.286Z",
+      "fetchedAt": "2026-10-14T22:31:36.829Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-14T22:28:23.286Z",
+      "fetchedAt": "2026-10-14T22:31:36.829Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-14T22:28:23.286Z",
+      "fetchedAt": "2026-10-14T22:31:36.829Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-14T22:28:23.286Z",
+      "fetchedAt": "2026-10-14T22:31:36.829Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-14T22:28:23.286Z",
+      "fetchedAt": "2026-10-14T22:31:36.829Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-14T22:28:23.286Z",
+      "fetchedAt": "2026-10-14T22:31:36.829Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-14T22:28:23.286Z",
+      "fetchedAt": "2026-10-14T22:31:36.829Z",
       "status": "ok"
     }
   },
@@ -2174,23 +2174,15 @@
         "closes": [
           471
         ],
-        "verdicts": []
-      },
-      {
-        "number": 696,
-        "title": "chore(deps-dev): bump jsdom from 30.1.1 to 30.1.2",
-        "url": "https://github.com/mezivillager/hacer/pull/696",
-        "author": "app/dependabot",
-        "labels": [
-          "dependencies",
-          "javascript"
-        ],
-        "headRefName": "dependabot/npm_and_yarn/jsdom-30.1.2",
-        "isDraft": false,
-        "createdAt": "2026-10-08T23:16:18Z",
-        "mergedAt": null,
-        "closes": [],
-        "verdicts": []
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus 5.5",
+            "at": "2026-10-14T22:30:26Z",
+            "url": "https://github.com/mezivillager/hacer/pull/697#issuecomment-6179957426"
+          }
+        ]
       },
       {
         "number": 514,
@@ -2220,6 +2212,22 @@
       }
     ],
     "merged": [
+      {
+        "number": 696,
+        "title": "chore(deps-dev): bump jsdom from 30.1.1 to 30.1.2",
+        "url": "https://github.com/mezivillager/hacer/pull/696",
+        "author": "app/dependabot",
+        "labels": [
+          "dependencies",
+          "javascript"
+        ],
+        "headRefName": "dependabot/npm_and_yarn/jsdom-30.1.2",
+        "isDraft": false,
+        "createdAt": "2026-10-08T23:16:18Z",
+        "mergedAt": "2026-10-14T22:30:47Z",
+        "closes": [],
+        "verdicts": []
+      },
       {
         "number": 695,
         "title": "chore(deps): bump @radix-ui/react-toggle from 1.1.10 to 1.1.19",
@@ -3666,40 +3674,13 @@
             "url": "https://github.com/mezivillager/hacer/pull/619#issuecomment-5893067000"
           }
         ]
-      },
-      {
-        "number": 618,
-        "title": "test(core): characterization catches a lossy round trip and an orphaned golden",
-        "url": "https://github.com/mezivillager/hacer/pull/618",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:1",
-          "project:foundation"
-        ],
-        "headRefName": "test/611-characterization-integrity",
-        "isDraft": false,
-        "createdAt": "2026-09-29T14:43:01Z",
-        "mergedAt": "2026-09-29T14:53:28Z",
-        "closes": [
-          611
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Opus 5.5 (fresh context)",
-            "at": "2026-09-29T14:52:13Z",
-            "url": "https://github.com/mezivillager/hacer/pull/618#issuecomment-5892720612"
-          }
-        ]
       }
     ],
     "coverage": {
       "merged": 60,
-      "withVerdict": 48,
-      "withoutVerdict": 12,
-      "pass": 48,
+      "withVerdict": 47,
+      "withoutVerdict": 13,
+      "pass": 47,
       "block": 0
     }
   },
@@ -5480,7 +5461,7 @@
     "mergesPerDay": [
       {
         "date": "2026-09-29",
-        "merges": 12
+        "merges": 11
       },
       {
         "date": "2026-09-30",
@@ -5500,16 +5481,16 @@
       },
       {
         "date": "2026-10-14",
-        "merges": 4
+        "merges": 5
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-09-30T22:28:23.286Z",
-      "merged": 47,
+      "since": "2026-09-30T22:31:36.829Z",
+      "merged": 48,
       "openToMergeHours": {
-        "median": 0.2,
-        "p90": 2
+        "median": 0.3,
+        "p90": 142.8
       },
       "blockedOnce": {
         "count": 0,
@@ -5523,7 +5504,7 @@
           "without": []
         },
         "nonCode": {
-          "merged": 25,
+          "merged": 26,
           "withVerdict": 14,
           "without": [
             640,
@@ -5536,7 +5517,8 @@
             692,
             693,
             694,
-            695
+            695,
+            696
           ]
         }
       }
@@ -8563,11 +8545,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "84cc6625c585bccf1e75cf4a096d14a2b9c815ba",
+        "sha": "7a493c5083eed4a9d02d02aaadb6c087ac8e617f",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38647761550/job/116138765587",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/38648160085/job/116140081621",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -8617,42 +8599,6 @@
           "known": 71,
           "new": 0
         },
-        "disagrees": false
-      },
-      {
-        "pr": 696,
-        "sha": "6a4523ca1fd72bc04be56e17b0ef2bc88003a0ce",
-        "check": "pr-hygiene",
-        "conclusion": null,
-        "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38647855700/job/116139083051",
-        "line": null,
-        "verdict": null,
-        "fields": {},
-        "disagrees": false
-      },
-      {
-        "pr": 696,
-        "sha": "6a4523ca1fd72bc04be56e17b0ef2bc88003a0ce",
-        "check": "browser-qa",
-        "conclusion": null,
-        "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38647858613/job/116139089731",
-        "line": null,
-        "verdict": null,
-        "fields": {},
-        "disagrees": false
-      },
-      {
-        "pr": 696,
-        "sha": "6a4523ca1fd72bc04be56e17b0ef2bc88003a0ce",
-        "check": "ci",
-        "conclusion": null,
-        "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38647858551/job/116139089463",
-        "line": null,
-        "verdict": null,
-        "fields": {},
         "disagrees": false
       },
       {
