@@ -24,8 +24,8 @@ the window say about policy?
   `git rev-parse origin/main` against the row's SHA says whether `main` moved.
 - **Who checks:** the coordinator, after each merge and at each run's close. The first run proposes
   automating this check (HRN-009).
-- **Dispatch:** `hacer-retro`, on Opus. A window with no new ledger row, no BLOCK and no new inbox
-  entry anywhere may run on Sonnet (`model-tiering.md` §2, the retro row). The agent type is not
+- **Dispatch:** `hacer-retro`, on Opus. `model-tiering.md` has no row for this role yet: its retro
+  row covers the one-line ledger entry after each PR. The agent type is not
   registered when a session starts in the parent workspace. In that case hand a general-purpose
   agent this line, with paths from the parent workspace:
   "Read `hacer/.claude/agents/hacer-retro.md` and `hacer/docs/harness/retro-brief.md`, then do one retro run over `<from>`..`<to>`." <!-- allow-missing-path -->
@@ -37,10 +37,12 @@ the window say about policy?
 2. **The session records** in the window (`sessions/`), especially §3 *What recurred* and §5 *State
    at close*. A recurrence named there but never ledgered still counts.
 3. **The four numbers** (`README.md` § *What to measure*), with where each one comes from today:
-   - **Median reviewable lines:** `measure()` from `scripts/pr-hygiene.logic.mjs` over
-     `gh api repos/mezivillager/hacer/pulls/<n>/files` for each merged PR, leaving dependabot out.
-     `pr-hygiene`'s `HYGIENE:` line in each PR's check log gives the same count. The first run's
-     script, which also counts verdicts, is in
+   - **Median reviewable lines:** each merged PR's `reviewable=` count from the `HYGIENE:` line in
+     its `pr-hygiene` check log, leaving dependabot out. Where a log is gone, use `measure()` from
+     `scripts/pr-hygiene.logic.mjs` over
+     `gh api --paginate --slurp "repos/mezivillager/hacer/pulls/<n>/files?per_page=100"`. Without
+     `--paginate` the call returns the first 30 files only. The first run's script, which also
+     counts verdicts, is in
      `docs/research/2026-09-continual-refinement/evidence/first-retro-run.md`.
    - **Owner minutes per merged PR:** no source yet. Report `unmeasured` and give the countable
      proxy: `needs-human` issues opened, plus the owner's comments on PRs in the window.
@@ -49,20 +51,24 @@ the window say about policy?
    - **Tokens per merged PR:** the session record's figure. When the record has none, say
      `unmeasured`, never `0`.
 4. **Verdicts:** BLOCKs, from the verdict headings on each PR (`## Verifier verdict: PASS | BLOCK`).
-   Overturned verdicts come from
-   `gh search issues --repo mezivillager/hacer --label overturned`, and from any PASS whose defect a
-   later PR fixed.
+   Overturned verdicts come from `gh pr list --state all --label overturned --limit 200`, because
+   the label goes on PRs (`verifier-brief.md`), and from any PASS whose defect a later PR fixed.
+   `gh search issues` leaves PRs out, so it always reads 0 here.
 5. **Follow-up volume:**
    `gh issue list --state all --search "created:<from-day>..<to-day>" --limit 200`, with the share
    still open.
 6. **Flake reruns:** workflow runs whose `run_attempt > 1`, from
-   `gh api "repos/mezivillager/hacer/actions/runs?created=<day>&per_page=100"`. Query one day at a
-   time: the API returns at most 1,000 runs per query. Add the local re-runs the session records
-   name.
+   `gh api --paginate "repos/mezivillager/hacer/actions/runs?created=<day>&per_page=100" --jq '.workflow_runs[] | select(.run_attempt > 1) | .id'`.
+   Without `--paginate` the call returns only the first 100 runs. Query one day at a time, because
+   the API stops at 1,000 runs per query, and a busy day here has had 775. Add the local re-runs
+   the session records name.
 7. **The inboxes:** `fidelity-inbox.md`, `product-inbox.md` and `harness-inbox.md`. List every entry
    still `proposed` more than 14 days after its date.
 8. **Mission Control:** `node scripts/mission-control/collect.mjs --json`, `metrics.flow`
    (open-to-merge hours, `blockedOnce`, verdict coverage), when it reads.
+9. **Premises:** `node scripts/lineage.mjs verify`, without `--file`, which would file issues. It
+   lists the premises in `docs/decisions/premises.md` that no longer hold. An expired premise behind
+   a standing rule is a policy finding.
 
 ## Method
 
