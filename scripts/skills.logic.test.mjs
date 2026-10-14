@@ -183,6 +183,7 @@ describe('the harness briefs keep their load-bearing rules', () => {
       'docs/harness/verifier-brief.md',
       'docs/harness/product-brief.md',
       'docs/harness/fidelity-brief.md',
+      'docs/harness/retro-brief.md',
     ])
     expect(BRIEF_INVARIANTS.every((i) => i.present.length > 0)).toBe(true)
     expect(absent.length).toBeGreaterThan(0)
@@ -276,6 +277,7 @@ describe('the agent definitions keep their load-bearing rules', () => {
       '.claude/agents/hacer-verifier.md',
       '.claude/agents/hacer-product.md',
       '.claude/agents/hacer-fidelity.md',
+      '.claude/agents/hacer-retro.md',
     ])
     expect(AGENT_INVARIANTS.every((i) => (i.body ?? []).length > 0)).toBe(true)
   })
@@ -305,6 +307,15 @@ describe('the agent definitions keep their load-bearing rules', () => {
       'docs/harness/verifier-brief.md',
       '.claude/agents/hacer-verifier.md description',
       '.claude/agents/hacer-verifier.md body',
+    ])
+  })
+
+  it('checks the retro role\'s cadence against its brief', () => {
+    expect(TWIN_SENTENCES.map((t) => [t.owner, t.anchor, ...t.twins.map((w) => `${w.file} ${w.part}`)])).toContainEqual([
+      'docs/harness/retro-brief.md',
+      '**Cadence:** ',
+      '.claude/agents/hacer-retro.md description',
+      '.claude/agents/hacer-retro.md body',
     ])
   })
 })
