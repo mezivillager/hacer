@@ -5,13 +5,15 @@
 //   node scripts/lineage.mjs parse --json [--root <dir>]   the graph as JSON: nodes, edges, artefacts, errors
 //   node scripts/lineage.mjs next-id [--root <dir>]        the id a new ruling takes
 //   node scripts/lineage.mjs trace <id> | radius <id>      what <id> rests on | what rests on it, as a tree
-//   node scripts/lineage.mjs check [--fix] [--summary]     is the graph sound? --fix writes the missing reverse links
+//   node scripts/lineage.mjs check [--fix] [--shrink] [--summary]   is the graph sound? --fix writes the missing
+//                                                          reverse links; --shrink lowers the committed unlinked count
 //   node scripts/lineage.mjs graph [<id>] --mermaid|--json draw all of it, or one decision's lineage
 //   node scripts/lineage.mjs verify [--strict] [--for #<issue>] [--file]   do the premises still hold?
 //
 // Reads docs/decisions/** and docs/harness/ledger.md; all parsing is in lineage.logic.mjs. `parse`
-// exits 1 when the graph has errors, listing each on stderr; `check` (src/ too) exits 0 — warn mode
-// until #471. --github also reads every PR and issue body through `gh`, for Decisions: / Introduced by:.
+// exits 1 when the graph has errors, listing each on stderr; `check` (src/ too) exits 1 on each failure
+// checkFailures names, printed on stderr. --github also reads every PR and issue body through `gh`,
+// for Decisions: / Introduced by:.
 
 import { execFileSync, spawnSync } from 'node:child_process'
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
@@ -112,7 +114,18 @@ if (command === 'parse') {
     }
     report = lineage.check(lineage.parseLineage(readSources(), github), options)
   }
+  const baseline = path.join(root, lineage.UNLINKED_BASELINE_FILE)
+  let allowed = lineage.readUnlinkedBaseline(existsSync(baseline) ? readFileSync(baseline, 'utf8') : null)
+  const shrunk = has('--shrink') ? lineage.shrunkBaseline(report.summary.unlinked, allowed) : null
+  if (shrunk !== null) {
+    writeFileSync(baseline, shrunk)
+    console.log(`wrote ${lineage.UNLINKED_BASELINE_FILE}: ${allowed} → ${report.summary.unlinked} unlinked`)
+    allowed = report.summary.unlinked
+  }
   console.log(has('--summary') ? lineage.formatSummary(report.summary) : lineage.formatCheck(report))
+  const failures = lineage.checkFailures(report.summary, allowed)
+  for (const failure of failures) console.error(`check: ${failure}`)
+  process.exitCode = failures.length > 0 ? 1 : 0
 } else if (command === 'verify') {
   let parsed = graph
   // Pull numbers label a citation `PR#n`. A fixture `--root` stays offline; a failed `gh` does not hide expiry.
@@ -144,7 +157,7 @@ if (command === 'parse') {
   const drawn = lineage.subgraph(graph, id)
   console.log(has('--json') ? JSON.stringify(drawn, null, 2) : lineage.toMermaid(drawn))
 } else {
-  console.error('usage: node scripts/lineage.mjs <parse --json | next-id | trace <id> | radius <id> | check [--fix] [--summary]' +
+  console.error('usage: node scripts/lineage.mjs <parse --json | next-id | trace <id> | radius <id> | check [--fix] [--shrink] [--summary]' +
     ' | graph [<id>] --mermaid|--json | verify [--strict] [--for #<issue>] [--file]> [--root <dir>] [--github]')
   process.exit(2)
 }

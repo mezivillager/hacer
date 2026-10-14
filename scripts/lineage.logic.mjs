@@ -5,7 +5,7 @@
 //
 // Each parser turns one file into a partial graph { nodes, edges, artefacts, errors }; parseLineage
 // merges them and adds the two checks only the whole set can make: duplicate ids and dangling ids.
-// The operations of REPORT §7 follow: trace, radius, check (warn mode — #471 makes it fail), graph.
+// The operations of REPORT §7 follow: trace, radius, check (and the verdict it exits with), graph.
 
 /** A decision id as a relation writes it, optionally followed by a section: `ADR-0020 §1.5`. */
 const REF = /^(ADR-\d{4}|R\d+|P-\d+)(?:\s+(§\S+))?$/
@@ -369,7 +369,7 @@ function withoutBuildsOn(graph, cutOver) {
 export const cutOverDate = (text) => /^- \*\*Cut-over:\*\*\s*(\d{4}-\d{2}-\d{2})\b/m.exec(text)?.[1] ?? null
 
 /** Is the graph sound? Every parse error, every ADR relation written at one end only, every line of `code` (src/) citing
- *  a superseded ADR and, from the `cutOver` date, every ruling without Builds on:. Warn mode: never a verdict (#471). */
+ *  a superseded ADR and, from the `cutOver` date, every ruling without Builds on:. The verdict is `checkFailures`. */
 export function check(graph, { code = [], cutOver = null } = {}) {
   const findings = [...graph.errors, ...reverseLinks(graph), ...supersededCited(graph, code), ...withoutBuildsOn(graph, cutOver)]
   const count = (kind) => findings.filter((finding) => finding.kind === kind).length
@@ -387,6 +387,43 @@ export const formatSummary = ({ decisions, unlinked, unresolved, supersededCited
 /** `check`'s report: `<kind> <file:line>: <message>` per finding, then the LINEAGE line. */
 export const formatCheck = ({ findings, summary }) =>
   [...findings.map((finding) => `${finding.kind} ${finding.where.join(', ')}: ${finding.message}`), formatSummary(summary)].join('\n')
+
+/** The committed unlinked count, repo-relative: it only falls. */
+export const UNLINKED_BASELINE_FILE = 'scripts/lineage-unlinked.baseline.json'
+
+/** The unlinked count a baseline file allows: 0 when there is none, null when its text is not `{ "unlinked": <n> }`. */
+export function readUnlinkedBaseline(text) {
+  if (text === null) return 0
+  try {
+    const { unlinked } = JSON.parse(text) ?? {}
+    return Number.isInteger(unlinked) && unlinked >= 0 ? unlinked : null
+  } catch {
+    return null
+  }
+}
+
+/** Why `check` fails, one line each, empty when it passes: an unresolved id, a ruling since the cut-over without
+ *  Builds on:, an unlinked count off the `allowed` baseline either way — below it fails too, so the lower count is committed. */
+export function checkFailures({ unlinked, unresolved, cutOver, withoutBuildsOn }, allowed) {
+  const failures = []
+  if (unresolved > 0) failures.push(`${unresolved} unresolved — every id must resolve; \`check\` without --summary lists each with its file:line`)
+  if (withoutBuildsOn > 0) {
+    failures.push(`${withoutBuildsOn} ruling${withoutBuildsOn === 1 ? '' : 's'} dated from the cut-over (${cutOver}) without Builds on: — ` +
+      '`check` without --summary lists each')
+  }
+  if (allowed === null) failures.push(`${UNLINKED_BASELINE_FILE} is not { "unlinked": <count> }`)
+  else if (unlinked > allowed) {
+    failures.push(`${unlinked} unlinked, above the ${allowed} in ${UNLINKED_BASELINE_FILE} — a decision's Builds on: names ids or none, ` +
+      'never unknown; the baseline only falls')
+  } else if (unlinked < allowed) {
+    failures.push(`${unlinked} unlinked, below the ${allowed} in ${UNLINKED_BASELINE_FILE} — \`node scripts/lineage.mjs check --shrink\` ` +
+      `lowers it to ${unlinked}, so the count holds there`)
+  }
+  return failures
+}
+
+/** The baseline text `check --shrink` writes, or null unless `unlinked` is below what it allows: it never rises. */
+export const shrunkBaseline = (unlinked, allowed) => (allowed !== null && unlinked < allowed ? `${JSON.stringify({ unlinked }, null, 2)}\n` : null)
 
 /** An ADR's header bullets: the fields above its first `##` section. */
 function headerFields(text) {
@@ -648,7 +685,3 @@ export function planExpiryUpserts(existing, issues) {
       : { action: 'update', number: open[0].number, body: issue.body }
   })
 }
-
-export const readUnlinkedBaseline = () => { throw new Error('not implemented') }
-export const checkFailures = () => { throw new Error('not implemented') }
-export const shrunkBaseline = () => { throw new Error('not implemented') }
