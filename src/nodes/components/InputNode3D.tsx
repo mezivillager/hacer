@@ -1,10 +1,8 @@
 // InputNode3D - Visual representation of a circuit input node
 import { useState, useRef } from 'react'
 import { Group } from 'three'
-import { useCircuitStore } from '@/store/circuitStore'
 import { colors, materials } from '@/theme'
 import { NODE_DIMENSIONS, NODE_COLORS, INPUT_NODE_CONFIG, calculateNodePinPosition } from '../config'
-import { useNodeDrag } from '@/hooks/useNodeDrag'
 import type { Position, Rotation } from '@/store/types'
 import type { DragBinding } from '@/gates/types'
 import { formatSignalLabel, isSignalHigh } from '@/simulation/signalDisplay'
@@ -57,21 +55,13 @@ export function InputNode3D({
   onClick,
   onToggle,
   onPinClick,
-  canDrag: canDragProp,
-  drag: dragProp,
+  canDrag = false,
+  drag,
 }: InputNode3DProps) {
   const groupRef = useRef<Group>(null)
   const [hovered, setHovered] = useState(false)
 
-  const placementMode = useCircuitStore((s) => s.placementMode)
-  const wiringFrom = useCircuitStore((s) => s.wiringFrom)
-  const nodePlacementMode = useCircuitStore((s) => s.nodePlacementMode)
-  const isJunctionPlacement = useCircuitStore((s) => s.junctionPlacementMode) !== null
-
-  const canDrag = canDragProp ?? (placementMode === null && nodePlacementMode === null && !isJunctionPlacement && wiringFrom === null)
-
-  const ownDrag = useNodeDrag(id, 'input')
-  const { isDragging, shouldAllowClick, onPointerDown, onPointerMove, onPointerUp, onPointerLeave } = dragProp ?? ownDrag
+  const isDragging = drag?.isDragging ?? false
 
   const high = isSignalHigh(value)
 
@@ -98,7 +88,7 @@ export function InputNode3D({
 
   const handleBodyClick = (e: React.MouseEvent) => {
     e.stopPropagation()
-    if (!shouldAllowClick()) return
+    if (drag && !drag.shouldAllowClick()) return
     if (e.shiftKey && onToggle) {
       onToggle()
     } else if (onClick) {
@@ -116,10 +106,10 @@ export function InputNode3D({
         <mesh
           onClick={handleBodyClick}
           onPointerOver={() => setHovered(true)}
-          onPointerOut={() => { setHovered(false); if (canDrag && !isDragging) onPointerLeave() }}
-          onPointerDown={canDrag ? onPointerDown : undefined}
-          onPointerMove={canDrag ? onPointerMove : undefined}
-          onPointerUp={canDrag ? onPointerUp : undefined}
+          onPointerOut={() => { setHovered(false); if (canDrag && !isDragging) drag?.onPointerLeave() }}
+          onPointerDown={canDrag ? drag?.onPointerDown : undefined}
+          onPointerMove={canDrag ? drag?.onPointerMove : undefined}
+          onPointerUp={canDrag ? drag?.onPointerUp : undefined}
         >
           <boxGeometry args={INPUT_NODE_CONFIG.geometry.args} />
           <meshStandardMaterial
