@@ -63,7 +63,7 @@ export interface Sidecar {
 export type SpecDiagnosticCode =
   | 'syntax' | 'unknown-schema-version' | 'invalid-sidecar' | 'builtin-chip' | 'unknown-chip'
   | 'unknown-pin' | 'multiple-drivers' | 'undriven' | 'duplicate-part-id' | 'invalid-part-id' | 'part-id-assigned'
-  | 'invalid-wire' | 'alias-cycle' | 'literal-output'
+  | 'invalid-wire' | 'alias-cycle' | 'literal-output' | 'duplicate-net-id' | 'compile'
 
 export interface SpecDiagnostic {
   code: SpecDiagnosticCode

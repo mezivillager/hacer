@@ -2,8 +2,10 @@
 import { describe, it, expect, beforeAll } from 'vitest'
 import { createChipRegistry, registerBuiltin } from '../chips/registry'
 import type { ChipRegistry } from '../chips/registry'
-import { evaluateChip } from '../chips/evaluateChip'
+import { DEFAULT_MAX_DEPTH, evaluateChip, evaluateChipWithCtx } from '../chips/evaluateChip'
 import { getBuiltinChipRegistry } from '../chips/appRegistry'
+import { compileSpec } from '../spec/compileSpec'
+import { parseSpec } from '../spec/parseSpec'
 import { parseHDL } from './parser'
 import { hdlChipDefinition } from './compiler'
 import { project1HdlSources, project1DependencyOrder } from './project1HdlSources'
@@ -106,6 +108,28 @@ describe('Project-1 bottom-up from NAND', () => {
         const got = evaluateChip(hdlChip, inputs, hdlReg)
         const want = evaluateChip(ref, inputs, builtinReg)
         expect({ name, inputs, got }).toEqual({ name, inputs, got: want })
+      }
+    })
+  }
+})
+
+describe('Project-1 through compileSpec', () => {
+  const builtins = getBuiltinChipRegistry()
+  const ctx = { registry: builtins, depth: 0, maxDepth: DEFAULT_MAX_DEPTH, evalChip: evaluateChipWithCtx }
+
+  for (const name of project1DependencyOrder) {
+    it(`${name} matches the builtin reference and the 'hdl' evaluation of the same source`, () => {
+      const source = project1HdlSources[name]
+      const result = compileSpec(parseSpec(source), builtins)
+      if (!result.success) throw new Error(`${name}: ${result.diagnostics.map((d) => d.message).join('; ')}`)
+      const parsed = parseHDL(source)
+      if (!parsed.success) throw new Error(`fixture ${name} failed to parse`)
+      const hdl = hdlChipDefinition(parsed.chip, source)
+      const ref = builtins.get(name)!
+      for (const inputs of inputVectors(ref.inputs)) {
+        const got = result.evaluate(inputs, ctx)
+        expect({ name, inputs, got }).toEqual({ name, inputs, got: evaluateChip(ref, inputs, builtins) })
+        expect({ name, inputs, got }).toEqual({ name, inputs, got: evaluateChip(hdl, inputs, builtins) })
       }
     })
   }
