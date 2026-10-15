@@ -1,5 +1,4 @@
 import { Line } from '@react-three/drei'
-import { useCircuitStore } from '@/store/circuitStore'
 import { colors } from '@/theme'
 import type { WireSegment, WirePath } from '@/utils/wiringScheme/types'
 import type { PerformanceMode } from '@/store/types'
@@ -37,10 +36,8 @@ export function Wire3D({
   isActive = false,
   isPreview = false,
   isSelected = false,
-  performanceMode: performanceModeProp,
+  performanceMode = 'normal',
 }: Wire3DProps) {
-  const storePerformanceMode = useCircuitStore((s) => s.performanceMode)
-  const performanceMode = performanceModeProp ?? storePerformanceMode
 
   // Guard against undefined positions
   if (!start || !end) return null
