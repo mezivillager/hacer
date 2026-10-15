@@ -8,6 +8,7 @@ import { HDL_TOOL } from '@/mcp/server'
 import { scenarioTest, scenarioToHdl } from '../toHdl'
 import type { ChipScenario, Scenario } from '../types'
 import type { CoreScenarioResult } from './core'
+import { testReportErrors } from './report'
 
 /** The verdict half of the core driver's result; `errors` holds the tool's first mismatch or error. */
 export type McpScenarioResult = Pick<CoreScenarioResult, 'name' | 'ok' | 'errors'>
@@ -24,7 +25,6 @@ export async function runMcpScenario(scenario: Scenario | ChipScenario, client: 
   if (result.isError || !result.structuredContent) {
     return { name, ok: false, errors: [`${HDL_TOOL} failed: ${JSON.stringify(result.content)}`] }
   }
-  const { status, failure, error } = result.structuredContent as unknown as TestReport
-  const found = failure ? `row ${failure.row}: ${failure.column} expected ${failure.expected}, got ${failure.actual}` : error
-  return { name, ok: status === 'pass', errors: found === null ? [] : [found] }
+  const report = result.structuredContent as unknown as TestReport
+  return { name, ok: report.status === 'pass', errors: testReportErrors(report) }
 }
