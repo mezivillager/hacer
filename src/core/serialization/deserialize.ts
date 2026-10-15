@@ -5,6 +5,7 @@ import type { WireSegment } from '@/utils/wiringScheme/types'
 import {
   CIRCUIT_FORMAT_VERSION,
   type SerializedCircuit,
+  type SerializedEndpointType,
   type SerializedGate,
   type SerializedInputNode,
   type SerializedOutputNode,
@@ -92,6 +93,16 @@ export type DeserializeWarning =
       busKind: string
     }
   | {
+      code: 'unknown-endpoint-type'
+      message: string
+      /** Id of the wire that was dropped. */
+      wireId: string
+      /** The first end whose `type` this build does not know. */
+      end: 'from' | 'to'
+      /** That end's `type` field as saved, e.g. `'probe'`. */
+      endpointType: string
+    }
+  | {
       code: 'dropped-wire'
       message: string
       /** Id of the wire that was pruned. */
@@ -147,6 +158,21 @@ function migrateGateTypeName(raw: string): string | null {
 }
 
 const BUS_KINDS: Record<BusComponentKind, true> = { splitter: true, joiner: true }
+
+const ENDPOINT_TYPES: Record<SerializedEndpointType, true> = {
+  gate: true,
+  input: true,
+  output: true,
+  junction: true,
+  bus: true,
+}
+
+const isKnownEndpointType = (type: unknown): boolean =>
+  typeof type === 'string' && Object.prototype.hasOwnProperty.call(ENDPOINT_TYPES, type)
+
+/** A saved value for a warning: a string verbatim, anything else as its JSON. */
+const asSaved = (value: unknown): string =>
+  typeof value === 'string' ? value : (JSON.stringify(value) ?? String(value))
 
 const cloneVec3 = (v: { x: number; y: number; z: number }) => ({ x: v.x, y: v.y, z: v.z })
 
@@ -357,7 +383,7 @@ export function deserializeCircuit(data: SerializedCircuit): DeserializeResult {
     const kind: unknown = s.kind
     if (typeof kind !== 'string' || !Object.prototype.hasOwnProperty.call(BUS_KINDS, kind)) {
       const busId = typeof s.id === 'string' ? s.id : UNIDENTIFIED
-      const busKind = typeof kind === 'string' ? kind : (JSON.stringify(kind) ?? String(kind))
+      const busKind = asSaved(kind)
       warnings.push({
         code: 'unknown-bus-kind',
         busId,
@@ -389,6 +415,21 @@ export function deserializeCircuit(data: SerializedCircuit): DeserializeResult {
   const wires: Wire[] = []
   const droppedWireIds = new Set<string>()
   for (const s of data.wires) {
+    const unknownEnd = !isKnownEndpointType(s.from.type) ? 'from' : !isKnownEndpointType(s.to.type) ? 'to' : null
+    if (unknownEnd !== null) {
+      droppedWireIds.add(s.id)
+      const endpointType = asSaved(s[unknownEnd].type)
+      warnings.push({
+        code: 'unknown-endpoint-type',
+        wireId: String(s.id),
+        end: unknownEnd,
+        endpointType,
+        message:
+          `Skipped wire "${String(s.id)}" while loading circuit — ` +
+          `this build has no wire endpoint of type "${endpointType}" (its "${unknownEnd}" end).`,
+      })
+      continue
+    }
     const missingGate = !isLiveGateRef(s.from) || !isLiveGateRef(s.to)
     const missingBus = !isLiveBusRef(s.from) || !isLiveBusRef(s.to)
     if (missingGate || missingBus) {
