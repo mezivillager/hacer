@@ -16,6 +16,8 @@ describe('the sidecar', () => {
     ['no version at all', '{ "hints": { "3d": {}, "2d": {} }, "meta": {}, "tests": [], "notes": [] }', 'unknown-schema-version'],
     ['a missing surface', '{ "schemaVersion": 1, "hints": { "3d": {} }, "meta": {}, "tests": [], "notes": [] }', 'invalid-sidecar'],
     ['text that is not JSON', '{ schemaVersion: 1 }', 'invalid-sidecar'],
+    ['JSON that is not an object', '[]', 'invalid-sidecar'],
+    ['a hint that is not a hint', '{ "schemaVersion": 1, "hints": { "3d": { "p1": "nope" }, "2d": {} }, "meta": {}, "tests": [], "notes": [] }', 'invalid-sidecar'],
   ])('refuses %s by name', (_what, json, code) => {
     const result = parseSidecar(json)
     expect('diagnostics' in result && result.diagnostics.map((d) => d.code)).toEqual([code])
