@@ -37,8 +37,10 @@ export function Wire3D({
   isActive = false,
   isPreview = false,
   isSelected = false,
+  performanceMode: performanceModeProp,
 }: Wire3DProps) {
-  const performanceMode = useCircuitStore((s) => s.performanceMode)
+  const storePerformanceMode = useCircuitStore((s) => s.performanceMode)
+  const performanceMode = performanceModeProp ?? storePerformanceMode
 
   // Guard against undefined positions
   if (!start || !end) return null
