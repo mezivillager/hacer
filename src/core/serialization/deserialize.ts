@@ -30,11 +30,14 @@ export interface DeserializedCircuit {
  * **Where the line falls.** A warning is always about *one entry*, and only ever an
  * entry this reader *chose* to drop: a gate it could not rebuild, a bus component of
  * a kind it does not know, and (#402) the wires and junctions that pruning then takes
- * with it. Anything wrong with the *document itself* — a missing top-level array, or a
- * malformed wire, node, junction or bus record — is not one bad entry but nothing to
- * load, and it still throws out of `deserializeCircuit` for the caller to catch,
- * exactly as it did before warnings became data. Widening recovery to those records
- * would change what a person sees, which #181 deliberately does not do.
+ * with it. A bus entry with no readable `kind` (an empty object, an array, a number or
+ * a string) is a kind it does not know, so it is one warning too; a `null` bus entry,
+ * or a malformed bus of a known kind, still throws. Anything else wrong with the
+ * *document itself* — a missing top-level array, or a malformed wire, node or junction
+ * record — is not one bad entry but nothing to load, and it still throws out of
+ * `deserializeCircuit` for the caller to catch, exactly as it did before warnings
+ * became data. Widening recovery to those records would change what a person sees,
+ * which #181 deliberately does not do.
  *
  * **Counts, not a wall of toasts.** `dropped-wire` and `dropped-junction` are emitted
  * one per entity, because a caller or a test wants the ids — but a document that drops
