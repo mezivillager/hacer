@@ -58,6 +58,7 @@ const WRITES_INTERNAL = doc('E2', [port('a')], [port('out')], [{ id: 'p1', chip:
   { id: 'out', driver: partPin('p1', 'out'), sinks: [chipOut('out')] },
 ])
 const READS_NO_PORT = doc('E3', [port('a')], [port('out')], [], [{ id: 'out', driver: chipIn('zz'), sinks: [chipOut('out')] }])
+const WIDTH_ALIAS = doc('E4', [port('a', 2)], [port('out')], [], [{ id: 'out', driver: chipIn('a'), sinks: [chipOut('out')] }])
 const UNDRIVEN_ROOT = 'CHIP F { IN a; OUT o0, o2, y; PARTS: wire o2 = o0; Not(in=o2, out=y); }'
 const UNREAD_ROOT = 'CHIP F { IN a; OUT o0, o2; PARTS: wire o2 = o0; }'
 const TWO_CYCLE = doc('X', [port('a')], [port('x'), port('y')], [], [
@@ -178,6 +179,10 @@ describe('compileSpec — refusals (§1.1, §1.8)', () => {
     expect(refusal({ doc: READS_NO_PORT, diagnostics: [] })).toEqual([expect.objectContaining({ code: 'invalid-wire', netId: 'out', message: expect.stringContaining('"zz" is not a chip IN') })])
   })
 
+  it('refuses an alias whose target and source differ in width', () => {
+    expect(refusal({ doc: WIDTH_ALIAS, diagnostics: [] })).toEqual([expect.objectContaining({ code: 'invalid-wire', netId: 'out', message: 'wire out = a: target is 1 bits wide but its source is 2' })])
+  })
+
   it('refuses a read of an alias whose root nothing drives, naming the signal the part bound', () => {
     expect(parseSpec(UNDRIVEN_ROOT).diagnostics.filter((d) => d.severity === 'error')).toEqual([])
     expect(refusal(parseSpec(UNDRIVEN_ROOT))).toEqual([expect.objectContaining({ code: 'undriven', severity: 'error', netId: 'o2', message: expect.stringMatching(/^Signal "o2" .*"o0"/) })])
@@ -217,7 +222,7 @@ describe('compileSpec — refusals (§1.1, §1.8)', () => {
       expect(parsed).toEqual(before)
       expect(parseSpec(source)).toEqual(before)
     }
-    const documents = [PART_AND_ALIAS, REPEATED_ID, REPEATED_READ, WRITES_IN, WRITES_INTERNAL, READS_NO_PORT, TWO_CYCLE, SELF_CYCLE, documentOf(C8), documentOf(SLICED_UNDRIVEN)]
+    const documents = [PART_AND_ALIAS, REPEATED_ID, REPEATED_READ, WRITES_IN, WRITES_INTERNAL, READS_NO_PORT, WIDTH_ALIAS, TWO_CYCLE, SELF_CYCLE, documentOf(C8), documentOf(SLICED_UNDRIVEN)]
     for (const document of documents) {
       const input = deepFreeze({ doc: structuredClone(document), diagnostics: [] })
       expect(() => compileSpec(input, chips)).not.toThrow()
