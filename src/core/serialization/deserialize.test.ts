@@ -469,14 +469,35 @@ describe('deserializeCircuit: a bus component of a kind it does not know', () =>
     ])
   })
 
-  it.each([[undefined], [7], ['Splitter']])('drops one saved with kind %j', (kind) => {
+  it.each([
+    [undefined, 'undefined'],
+    [7, '7'],
+    ['Splitter', 'Splitter'],
+    [['splitter'], '["splitter"]'],
+    [{}, '{}'],
+  ])('drops one saved with kind %j', (kind, busKind) => {
     const { document: restored, warnings } = deserializeCircuit({
       ...emptyDocument(CIRCUIT_FORMAT_VERSION),
       busComponents: [{ ...BUS_SPLITTER, kind } as unknown as SerializedBusComponent],
     })
     expect(restored?.busComponents).toEqual([])
     expect(warnings).toEqual([
-      { code: 'unknown-bus-kind', busId: BUS_SPLITTER.id, busKind: String(kind), message: expect.any(String) as string },
+      { code: 'unknown-bus-kind', busId: BUS_SPLITTER.id, busKind, message: expect.any(String) as string },
+    ])
+  })
+
+  it('names a component saved without an id the way it names such a gate', () => {
+    const { warnings } = deserializeCircuit({
+      ...emptyDocument(CIRCUIT_FORMAT_VERSION),
+      busComponents: [{ ...MUX_BUS, id: undefined } as unknown as SerializedBusComponent],
+    })
+    expect(warnings).toEqual([
+      {
+        code: 'unknown-bus-kind',
+        busId: '(unidentified)',
+        busKind: 'mux',
+        message: expect.stringContaining('"(unidentified)"'),
+      },
     ])
   })
 })
