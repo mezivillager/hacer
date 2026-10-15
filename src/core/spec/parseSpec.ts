@@ -1,5 +1,6 @@
 import { getBuiltinChipRegistry } from '../chips/appRegistry'
 import type { ChipRegistry } from '../chips/registry'
+import { subBusOutOfRange } from '../hdl/compiler'
 import { parseHDL } from '../hdl/parser'
 import { printPinRef } from '../hdl/printer'
 import type { HDLChip, HDLPart, HDLSlice } from '../hdl/types'
@@ -70,6 +71,8 @@ function wireProblem(wire: WireStatement, ins: Set<string>, outs: Set<string>, w
   if (wire.malformed) return `wire ${wire.target} has a malformed slice`
   if (!outs.has(wire.target)) return `wire target "${wire.target}" is not a chip OUT`
   if (!ins.has(wire.source) && !outs.has(wire.source)) return `wire source "${wire.source}" is not a chip IN or OUT`
+  const pastEnd = subBusOutOfRange(wire.target, wire.targetSlice, width.get(wire.target)) ?? subBusOutOfRange(wire.source, wire.sourceSlice, width.get(wire.source))
+  if (pastEnd !== null) return `wire ${printPinRef(wire.target, wire.targetSlice)} = ${printPinRef(wire.source, wire.sourceSlice)}: ${pastEnd}`
   const targetWidth = wire.targetSlice ? sliceWidth(wire.targetSlice) : width.get(wire.target)
   const sourceWidth = wire.sourceSlice ? sliceWidth(wire.sourceSlice) : width.get(wire.source)
   return targetWidth === sourceWidth ? null : `wire ${wire.target} is ${targetWidth} bits wide but its source is ${sourceWidth}`
