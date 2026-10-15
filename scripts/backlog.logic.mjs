@@ -576,6 +576,22 @@ export function releaseComment(claim, { by, reason }) {
 }
 
 
-export const claimDrift = () => ''
+const plural = (count, noun) => `${count} ${noun}${count === 1 ? '' : 's'}`
 
-export const readClaimDrift = async () => ({ drift: null, warning: null })
+/** What `claim` prints of `git log --oneline`'s commits on main under the issue's seed files since it was written. */
+export function claimDrift(seeds, since, log = '') {
+  if (seeds.length === 0) return 'claim-drift: no seed files named'
+  const commits = log.split('\n').map((line) => line.trim()).filter(Boolean)
+  return [`claim-drift: ${plural(commits.length, 'commit')} on main since ${since} under ${plural(seeds.length, 'seed path')}`,
+    ...commits.map((commit) => `  ${commit}`)].join('\n')
+}
+
+/** claimDrift over `readSeeds()` and, given seeds, `readLog(seeds)`; a read that throws leaves only a `warning` line. */
+export async function readClaimDrift(since, readSeeds, readLog) {
+  try {
+    const seeds = await readSeeds()
+    return { drift: claimDrift(seeds, since, seeds.length === 0 ? '' : await readLog(seeds)), warning: null }
+  } catch (error) {
+    return { drift: null, warning: `claim-drift: skipped — ${String(error?.message ?? error).split('\n')[0]}` }
+  }
+}

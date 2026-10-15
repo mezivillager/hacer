@@ -15,8 +15,9 @@
 //
 // `claim` creates refs/heads/claim/<n> with GitHub's create-ref API, which refuses a ref that exists, then posts the
 // claim comment and labels the issue `in-progress`; `release` is the holder's, or anyone's with --force-stale once the
-// claim is stale. A flag the command does not take is a usage error: exit 2. Only `gh` does I/O; every rule lives in
-// backlog.logic.mjs. BACKLOG_ALLOWLIST=login,login overrides the author allowlist.
+// claim is stale. `claim` then prints `claim-drift:`, the commits on origin/main under the issue's "Files likely touched"
+// since it was written (#703). A flag the command does not take is a usage error: exit 2. Only `gh` and `git` do I/O;
+// every rule lives in backlog.logic.mjs. BACKLOG_ALLOWLIST=login,login overrides the author allowlist.
 
 import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
@@ -27,7 +28,8 @@ import * as backlog from './backlog.logic.mjs'
 
 const REPO = 'mezivillager/hacer'
 const ISSUE_FIELDS = 'number,title,labels,author,blockedBy,blocking,parent,subIssuesSummary'
-const PORTFOLIO_PATH = path.join(import.meta.dirname, '..', 'docs', 'portfolio.md')
+const ROOT = path.join(import.meta.dirname, '..')
+const PORTFOLIO_PATH = path.join(ROOT, 'docs', 'portfolio.md')
 
 const JSON_FLAG = { json: { type: 'boolean' } }
 const text = (...names) => Object.fromEntries(names.map((name) => [name, { type: 'string' }]))
@@ -80,6 +82,23 @@ function gh(...args) {
 }
 const ghJson = (...args) => JSON.parse(gh(...args))
 
+function git(...args) {
+  try {
+    return execFileSync('git', args, { cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], maxBuffer: 64 * 1024 * 1024 })
+  } catch (error) {
+    throw new Error(String(error.stderr ?? '').trim() || error.message)
+  }
+}
+
+/** The commits on origin/main under the issue's seed files since it was written; never throws. */
+function claimDriftOf(issue) {
+  const readSeeds = async () => (await import('./blast-radius.logic.mjs')).parseFilesLikelyTouched(issue.body)
+  return backlog.readClaimDrift(issue.createdAt, readSeeds, (seeds) => {
+    git('fetch', '--quiet', 'origin', 'main')
+    return git('log', `--since=${issue.createdAt}`, '--oneline', 'origin/main', '--', ...seeds)
+  })
+}
+
 /** A `claim/<n>` whose n is no issue makes GraphQL answer `data` beside `errors`, and gh exit 1: keep the data. */
 function graphql(query) {
   try {
@@ -100,10 +119,11 @@ function fetchClaims(allowlist) {
   return { answer, openPrs, claims: backlog.readClaims({ lsRemote, answer, openPrs, allowlist, now: Date.now() }) }
 }
 
-function claim(number, flags, allowlist) {
+async function claim(number, flags, allowlist) {
   const body = backlog.claimComment(flags)
-  const state = gh('api', `repos/${REPO}/issues/${number}`, '--jq', 'if .pull_request then "a pull request" else .state end').trim()
-  if (state !== 'open') throw new Error(`#${number} is ${state}: only an open issue is claimed`)
+  const issue = ghJson('api', `repos/${REPO}/issues/${number}`, '--jq',
+    '{state: (if .pull_request then "a pull request" else .state end), createdAt: .created_at, body: (.body // "")}')
+  if (issue.state !== 'open') throw new Error(`#${number} is ${issue.state}: only an open issue is claimed`)
   const sha = gh('api', `repos/${REPO}/git/ref/heads/main`, '--jq', '.object.sha').trim()
   try {
     gh('api', `repos/${REPO}/git/refs`, '-f', `ref=refs/heads/claim/${number}`, '-f', `sha=${sha}`)
@@ -118,7 +138,10 @@ function claim(number, flags, allowlist) {
   } catch (error) {
     throw new Error(`claim/${number} is yours, but the claim comment or the label did not land (${error.message}); add them by hand`)
   }
-  return `claimed #${number} for ${flags.by}: refs/heads/claim/${number} at ${sha.slice(0, 7)}, labelled in-progress`
+  const { drift, warning } = await claimDriftOf(issue)
+  if (warning) console.error(warning)
+  return [`claimed #${number} for ${flags.by}: refs/heads/claim/${number} at ${sha.slice(0, 7)}, labelled in-progress`, drift]
+    .filter(Boolean).join('\n')
 }
 
 function release(number, flags, allowlist) {
@@ -181,7 +204,7 @@ async function view(name, slug, flags) {
 
 try {
   const { name, operand, flags } = parseCommandLine(process.argv.slice(2))
-  if (Object.hasOwn(ACTIONS, name)) console.log(ACTIONS[name](Number(operand), flags, allowlistFromEnv()))
+  if (Object.hasOwn(ACTIONS, name)) console.log(await ACTIONS[name](Number(operand), flags, allowlistFromEnv()))
   else await view(name, operand, flags)
 } catch (error) {
   console.error(`backlog: ${error.message}`)
