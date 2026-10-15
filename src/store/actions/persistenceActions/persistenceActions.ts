@@ -89,9 +89,10 @@ function droppedWiringSummary(warnings: DeserializeWarning[]): string | null {
  * - **`null` document** — not readable at all (today: a version this build does not
  *   know). The first warning says why, shown as one error, exactly as the thrown
  *   version used to be.
- * - **document + warnings** — every gate entry the reader could not rebuild, and
- *   every bus component of a kind it does not know, was dropped and named: one
- *   warning toast each, in document order, then the circuit loads. Same count and
+ * - **document + warnings** — every gate entry the reader could not rebuild, every
+ *   bus component of a kind it does not know, and every wire with an endpoint of a
+ *   type it does not know, was dropped and named: one warning toast each, in
+ *   document order, then the circuit loads. Same count and
  *   order as the reader's own `notify.warning` calls used to produce; two of the
  *   texts changed (same information, better wording). The wires and junctions
  *   pruning took with those entries are the exception (#402): they are
@@ -101,7 +102,8 @@ function droppedWiringSummary(warnings: DeserializeWarning[]): string | null {
  * - **a throw out of `deserializeCircuit`** — the document's own shape is wrong (a
  *   missing top-level array, a malformed wire/node/junction/bus record), so there is
  *   nothing to load. Unchanged: each caller's `try/catch` turns it into one error
- *   toast. Recovery is per *gate or bus-component* entry only — see `DeserializeWarning`.
+ *   toast. Recovery is per *gate or bus-component* entry, and per *wire* only for an
+ *   endpoint type it does not know — see `DeserializeWarning`.
  *
  * @returns the restored circuit, or `null` when there is nothing to load.
  */

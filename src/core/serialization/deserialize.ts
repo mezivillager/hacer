@@ -25,17 +25,19 @@ export interface DeserializedCircuit {
 /**
  * A single thing the reader could not do, returned as data. `deserializeCircuit`
  * never shows anything to a person — the caller decides that. Every warning names
- * what was wrong *and where*: the version of the document, or the id and saved
- * type of the gate that was dropped.
+ * what was wrong *and where*: the version of the document, or the id of the entry
+ * that was dropped and what it was saved as.
  *
  * **Where the line falls.** A warning is always about *one entry*, and only ever an
  * entry this reader *chose* to drop: a gate it could not rebuild, a bus component of
- * a kind it does not know, and (#402) the wires and junctions that pruning then takes
- * with it. A bus entry with no readable `kind` (an empty object, an array, a number or
- * a string) is a kind it does not know, so it is one warning too; a `null` bus entry,
- * or a malformed bus of a known kind, still throws. Anything else wrong with the
- * *document itself* — a missing top-level array, or a malformed wire, node or junction
- * record — is not one bad entry but nothing to load, and it still throws out of
+ * a kind it does not know, a wire with an endpoint of a type it does not know, and
+ * (#402) the wires and junctions that pruning then takes with it. A bus entry with no
+ * readable `kind`, or a wire endpoint with no readable `type` (an empty object, an
+ * array, a number or a string), is one it does not know, so it is one warning too; a
+ * `null` bus entry, a malformed bus of a known kind, or a wire with no endpoint object,
+ * still throws. Anything else wrong with the *document itself* — a missing top-level
+ * array, or a malformed wire, node or junction record — is not one bad entry but
+ * nothing to load, and it still throws out of
  * `deserializeCircuit` for the caller to catch, exactly as it did before warnings
  * became data. Widening recovery to those records would change what a person sees,
  * which #181 deliberately does not do.
