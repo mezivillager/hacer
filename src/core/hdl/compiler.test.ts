@@ -944,3 +944,54 @@ describe('compileHDL — a slice on the signal side must fit the signal (#371)',
     expect(errorsOf('CHIP C { IN a; OUT o; PARTS: Not(in=x[5], out=o); }')).toEqual([expect.objectContaining({ message: 'Signal "x" is read by part "Not" but no part produces it' })])
   })
 })
+
+describe('compileHDL — a read must touch a bit some part drives (#746, #431)', () => {
+  let reg: ChipRegistry
+  beforeEach(() => {
+    reg = perBitRegistry()
+  })
+  function errorsOf(src: string) {
+    const ast = parseHDL(src)
+    if (!ast.success) throw new Error(`parse failed: ${src}`)
+    const r = compileHDL(ast.chip, reg)
+    return r.success ? [] : r.errors
+  }
+  const undriven = (part: string, bits: string): unknown =>
+    expect.objectContaining({ partName: part, message: `Signal "t"${bits} is read by part "${part}" but no part drives it` })
+
+  it("refuses #746's read of t[2] when only t[0] and t[1] are driven", () => {
+    expect(errorsOf('CHIP C { IN a, b; OUT o; PARTS: Not(in=a, out=t[0]); Not(in=b, out=t[1]); Not(in=t[2], out=o); }')).toEqual([undriven('Not', ' bit 2')])
+  })
+
+  it("refuses #431's read of t[3] beside a whole-signal read that stays legal", () => {
+    expect(errorsOf('CHIP C { IN a; OUT out[16]; PARTS: Not(in=a, out=t[0]); Not8(in[0]=t[3], out[1]=t[1]); Not16(in=t, out=out); }')).toEqual([undriven('Not8', ' bit 3')])
+  })
+
+  it('names every bit of a sliced read that touches no driven bit', () => {
+    expect(errorsOf('CHIP C { IN a; OUT out[4]; PARTS: Not(in=a, out=t[0]); Not(in=a, out=t[1]); Not4(in[0..1]=t[2..3], out=out); }')).toEqual([undriven('Not4', ' bits 2..3')])
+  })
+
+  it('refuses only the undriven read when one part reads a driven and an undriven bit', () => {
+    expect(errorsOf('CHIP C { IN a; OUT o; PARTS: Not(in=a, out=t[1]); And(a=t[0], b=t[1], out=o); }')).toEqual([undriven('And', ' bit 0')])
+  })
+
+  it('reports one part reading the same undriven bit twice once', () => {
+    expect(errorsOf('CHIP C { IN a; OUT o; PARTS: Not(in=a, out=t[0]); And(a=t[1], b=t[1], out=o); }')).toEqual([undriven('And', ' bit 1')])
+  })
+
+  it('unions the driven bits across every writer before the check', () => {
+    expect(evaluateHdl('CHIP C { IN a; OUT out[8]; PARTS: Not(in=a, out=t[0]); Not(in=a, out=t[1]); Not8(in[0..1]=t[0..1], out=out); }', { a: 0 }, reg)).toEqual({ out: 0xfc })
+  })
+
+  it('accepts t[0..2] with only t[0] and t[2] driven, reading the gap as 0', () => {
+    expect(evaluateHdl('CHIP C { IN a; OUT out[4]; PARTS: Not(in=a, out=t[0]); Not(in=a, out=t[2]); Not4(in[0..2]=t[0..2], out=out); }', { a: 0 }, reg)).toEqual({ out: 0b1010 })
+  })
+
+  it('accepts a whole-signal read of t with only t[0..1] driven (#355)', () => {
+    expect(evaluateHdl('CHIP C { IN a; OUT out[16]; PARTS: Not(in=a, out=t[0]); Not(in=a, out=t[1]); Not16(in=t, out=out); }', { a: 0 }, reg)).toEqual({ out: 65532 })
+  })
+
+  it('accepts a read that runs past the driven bits once it overlaps one of them', () => {
+    expect(evaluateHdl('CHIP C { IN a; OUT out[4]; PARTS: Not(in=a, out=t[0]); Not(in=a, out=t[1]); Not4(in=t[0..3], out=out); }', { a: 0 }, reg)).toEqual({ out: 0b1100 })
+  })
+})
