@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-15T06:36:34.354Z",
+  "generatedAt": "2026-10-15T06:54:06.453Z",
   "head": {
-    "sha": "e26c58f5a24dda90330b5149416ca45e0de3fc80",
-    "date": "2026-10-15T09:32:09+03:00",
-    "subject": "test(fixtures): drawBranch draws a branch into a bus input pin"
+    "sha": "482b5286e3e32ee67d436cf7d883132bd2901952",
+    "date": "2026-10-15T09:52:59+03:00",
+    "subject": "docs(decisions): ADR-0020 §1.10 — where a wire stands, its §1.8 claim, and the header's whitespace"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-15T06:36:34.354Z",
+      "fetchedAt": "2026-10-15T06:54:06.453Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-15T06:36:34.354Z",
+      "fetchedAt": "2026-10-15T06:54:06.453Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-15T06:36:34.354Z",
+      "fetchedAt": "2026-10-15T06:54:06.453Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-15T06:36:34.354Z",
+      "fetchedAt": "2026-10-15T06:54:06.453Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-15T06:36:34.354Z",
+      "fetchedAt": "2026-10-15T06:54:06.453Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-15T06:36:34.354Z",
+      "fetchedAt": "2026-10-15T06:54:06.453Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-15T06:36:34.354Z",
+      "fetchedAt": "2026-10-15T06:54:06.453Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-15T06:36:34.354Z",
+      "fetchedAt": "2026-10-15T06:54:06.453Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-15T06:36:34.354Z",
+      "fetchedAt": "2026-10-15T06:54:06.453Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-15T06:36:34.354Z",
+      "fetchedAt": "2026-10-15T06:54:06.453Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-15T06:36:34.354Z",
+      "fetchedAt": "2026-10-15T06:54:06.453Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-15T06:36:34.354Z",
+      "fetchedAt": "2026-10-15T06:54:06.453Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-15T06:36:34.354Z",
+      "fetchedAt": "2026-10-15T06:54:06.453Z",
       "status": "ok"
     }
   },
@@ -80,12 +80,12 @@
         "lane": "feature",
         "slug": "foundation",
         "epicNumber": 318,
-        "open": 28,
-        "ready": 2,
+        "open": 27,
+        "ready": 1,
         "inProgress": 2,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 4,
+        "agentReady": 3,
         "filedElsewhere": [],
         "next": {
           "number": 338,
@@ -93,8 +93,8 @@
         },
         "title": "Foundation audit: is the codebase structured for the autonomous loop? Measured audit, prioritized refactorings, fitness functions",
         "subIssues": {
-          "completed": 18,
-          "percentCompleted": 54,
+          "completed": 19,
+          "percentCompleted": 57,
           "total": 33
         }
       },
@@ -222,13 +222,16 @@
         "slug": "spine",
         "epicNumber": 139,
         "open": 14,
-        "ready": 0,
+        "ready": 1,
         "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 2,
         "filedElsewhere": [],
-        "next": null,
+        "next": {
+          "number": 168,
+          "title": "P05-26: 3D/HDL interoperability (re-cut): canonical HDL printer + round-trip property"
+        },
         "title": "Epic: spine — nand2tetris alignment 0.5 → 0.7",
         "subIssues": {
           "completed": 2,
@@ -403,13 +406,13 @@
     ],
     "next": [
       {
-        "number": 338,
-        "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
-        "project": "foundation"
+        "number": 168,
+        "title": "P05-26: 3D/HDL interoperability (re-cut): canonical HDL printer + round-trip property",
+        "project": "spine"
       },
       {
-        "number": 734,
-        "title": "Drawing from a junction fails when its first listed wire starts at it",
+        "number": 338,
+        "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
         "project": "foundation"
       },
       {
@@ -426,7 +429,7 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
-        732,
+        735,
         514
       ]
     }
@@ -434,23 +437,23 @@
   "tasks": {
     "items": [
       {
-        "number": 338,
-        "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
+        "number": 168,
+        "title": "P05-26: 3D/HDL interoperability (re-cut): canonical HDL printer + round-trip property",
         "labels": [
+          "project:spine",
           "agent-ready",
-          "risk:1",
-          "project:foundation"
+          "risk:1"
         ],
         "blocking": [],
-        "project": "foundation",
-        "rank": 1,
+        "project": "spine",
+        "rank": 7,
         "lane": "feature",
         "pickable": true,
         "reason": null
       },
       {
-        "number": 734,
-        "title": "Drawing from a junction fails when its first listed wire starts at it",
+        "number": 338,
+        "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
         "labels": [
           "agent-ready",
           "risk:1",
@@ -571,21 +574,6 @@
         "reason": "unshaped"
       },
       {
-        "number": 168,
-        "title": "P05-26: 3D/HDL interoperability (re-cut): canonical HDL printer + round-trip property",
-        "labels": [
-          "project:spine",
-          "agent-ready",
-          "risk:1"
-        ],
-        "blocking": [],
-        "project": "spine",
-        "rank": 7,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "blocked:#374"
-      },
-      {
         "number": 169,
         "title": "P05-19: Chip workflow browser UI",
         "labels": [
@@ -683,7 +671,7 @@
         "rank": 7,
         "lane": "feature",
         "pickable": false,
-        "reason": "blocked:#377,#374"
+        "reason": "blocked:#377"
       },
       {
         "number": 176,
@@ -1330,31 +1318,6 @@
         "reason": "not-pulled"
       },
       {
-        "number": 374,
-        "title": "N.1: the spec model in src/core — parts, nets, sidecar; parseSpec / printSpec; versioned from day one",
-        "labels": [
-          "agent-ready",
-          "in-progress",
-          "risk:2",
-          "project:foundation"
-        ],
-        "blocking": [
-          175,
-          168,
-          197,
-          176,
-          382,
-          379,
-          378,
-          377
-        ],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 377,
         "title": "N.2: fromLegacyCircuit — the one-way importer, with §10's structurally-traced parity as its acceptance test",
         "labels": [
@@ -1978,18 +1941,48 @@
         "lane": "feature",
         "pickable": false,
         "reason": "unshaped"
+      },
+      {
+        "number": 734,
+        "title": "Drawing from a junction fails when its first listed wire starts at it",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "claimed"
       }
     ],
     "byProject": {
+      "spine": [
+        168,
+        165,
+        167,
+        169,
+        170,
+        171,
+        172,
+        173,
+        174,
+        175,
+        176,
+        177,
+        235,
+        236
+      ],
       "foundation": [
         338,
-        734,
         151,
         182,
         184,
         325,
         339,
-        374,
         377,
         378,
         379,
@@ -2009,7 +2002,8 @@
         613,
         719,
         722,
-        728
+        728,
+        734
       ],
       "harness": [
         257,
@@ -2026,22 +2020,6 @@
         550,
         607,
         677
-      ],
-      "spine": [
-        165,
-        167,
-        168,
-        169,
-        170,
-        171,
-        172,
-        173,
-        174,
-        175,
-        176,
-        177,
-        235,
-        236
       ],
       "core": [
         179,
@@ -2117,37 +2095,22 @@
   "prs": {
     "open": [
       {
-        "number": 732,
-        "title": "feat(core): the spec model's print side — printSpec, the nand2tetris dialect, wire, the v1 fixture (N.1, part B)",
-        "url": "https://github.com/mezivillager/hacer/pull/732",
+        "number": 735,
+        "title": "refactor(session): completed-chip tracking leaves the engine for src/lib (#182)",
+        "url": "https://github.com/mezivillager/hacer/pull/735",
         "author": "mezivillager",
         "labels": [
-          "risk:2",
+          "risk:1",
           "project:foundation"
         ],
-        "headRefName": "feat/374b-spec-print",
+        "headRefName": "fix/182-chip-completion-session",
         "isDraft": false,
-        "createdAt": "2026-10-15T05:41:28Z",
+        "createdAt": "2026-10-15T06:50:05Z",
         "mergedAt": null,
         "closes": [
-          374
+          182
         ],
-        "verdicts": [
-          {
-            "verdict": "BLOCK",
-            "round": 1,
-            "model": "Opus 5.5",
-            "at": "2026-10-15T06:01:27Z",
-            "url": "https://github.com/mezivillager/hacer/pull/732#issuecomment-6185604063"
-          },
-          {
-            "verdict": "PASS",
-            "round": 2,
-            "model": "Opus 5.5",
-            "at": "2026-10-15T06:35:24Z",
-            "url": "https://github.com/mezivillager/hacer/pull/732#issuecomment-6186069574"
-          }
-        ]
+        "verdicts": []
       },
       {
         "number": 514,
@@ -2200,6 +2163,39 @@
             "model": "Sonnet 5.5",
             "at": "2026-10-15T06:31:34Z",
             "url": "https://github.com/mezivillager/hacer/pull/733#issuecomment-6186014913"
+          }
+        ]
+      },
+      {
+        "number": 732,
+        "title": "feat(core): the spec model's print side — printSpec, the nand2tetris dialect, wire, the v1 fixture (N.1, part B)",
+        "url": "https://github.com/mezivillager/hacer/pull/732",
+        "author": "mezivillager",
+        "labels": [
+          "risk:2",
+          "project:foundation"
+        ],
+        "headRefName": "feat/374b-spec-print",
+        "isDraft": false,
+        "createdAt": "2026-10-15T05:41:28Z",
+        "mergedAt": "2026-10-15T06:53:00Z",
+        "closes": [
+          374
+        ],
+        "verdicts": [
+          {
+            "verdict": "BLOCK",
+            "round": 1,
+            "model": "Opus 5.5",
+            "at": "2026-10-15T06:01:27Z",
+            "url": "https://github.com/mezivillager/hacer/pull/732#issuecomment-6185604063"
+          },
+          {
+            "verdict": "PASS",
+            "round": 2,
+            "model": "Opus 5.5",
+            "at": "2026-10-15T06:35:24Z",
+            "url": "https://github.com/mezivillager/hacer/pull/732#issuecomment-6186069574"
           }
         ]
       },
@@ -3635,33 +3631,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/652#issuecomment-5942197767"
           }
         ]
-      },
-      {
-        "number": 651,
-        "title": "chore(harness): merge-on-green refuses a stale green (#407)",
-        "url": "https://github.com/mezivillager/hacer/pull/651",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:1"
-        ],
-        "headRefName": "fix/407-stale-merge-check",
-        "isDraft": false,
-        "createdAt": "2026-10-01T22:40:49Z",
-        "mergedAt": "2026-10-01T23:13:04Z",
-        "closes": [
-          407
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Opus 5.5 (fresh context)",
-            "at": "2026-10-01T23:07:27Z",
-            "url": "https://github.com/mezivillager/hacer/pull/651#issuecomment-5942423370"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -3701,31 +3670,6 @@
         }
       },
       {
-        "number": 374,
-        "ref": "refs/heads/claim/374",
-        "sha": "a6edac48224c00f4e8cddabd8c7a0764f5f43a40",
-        "state": "OPEN",
-        "title": "N.1: the spec model in src/core — parts, nets, sidecar; parseSpec / printSpec; versioned from day one",
-        "url": "https://github.com/mezivillager/hacer/issues/374",
-        "labels": [
-          "agent-ready",
-          "in-progress",
-          "risk:2",
-          "project:foundation"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-50",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-15T02:01:31Z",
-          "url": "https://github.com/mezivillager/hacer/issues/374#issuecomment-6182682587"
-        }
-      },
-      {
         "number": 470,
         "ref": "refs/heads/claim/470",
         "sha": "a5c1dac037de6dd435ab88414e270482976df51c",
@@ -3748,6 +3692,31 @@
           "author": "mezivillager",
           "at": "2026-09-25T06:02:35Z",
           "url": "https://github.com/mezivillager/hacer/issues/470#issuecomment-5827635352"
+        }
+      },
+      {
+        "number": 734,
+        "ref": "refs/heads/claim/734",
+        "sha": "e26c58f5a24dda90330b5149416ca45e0de3fc80",
+        "state": "OPEN",
+        "title": "Drawing from a junction fails when its first listed wire starts at it",
+        "url": "https://github.com/mezivillager/hacer/issues/734",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:foundation"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-50",
+          "branch": null,
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-15T06:49:59Z",
+          "url": "https://github.com/mezivillager/hacer/issues/734#issuecomment-6186275503"
         }
       }
     ],
@@ -5450,7 +5419,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-01",
-        "merges": 8
+        "merges": 7
       },
       {
         "date": "2026-10-02",
@@ -5466,30 +5435,31 @@
       },
       {
         "date": "2026-10-15",
-        "merges": 15
+        "merges": 16
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-01T06:36:34.354Z",
-      "merged": 69,
+      "since": "2026-10-01T06:54:06.453Z",
+      "merged": 70,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 2
       },
       "blockedOnce": {
-        "count": 3,
-        "of": 57,
+        "count": 4,
+        "of": 58,
         "prs": [
           700,
           725,
-          727
+          727,
+          732
         ]
       },
       "coverage": {
         "code": {
-          "merged": 43,
-          "withVerdict": 43,
+          "merged": 44,
+          "withVerdict": 44,
           "without": []
         },
         "nonCode": {
@@ -8529,12 +8499,13 @@
       },
       {
         "date": "2026-10-15",
-        "at": "2026-10-15T05:22:26.929Z",
+        "at": "2026-10-15T06:36:34.354Z",
         "byProject": {
           "foundation": [
-            182,
             338,
+            734,
             151,
+            182,
             184,
             325,
             339,
@@ -8558,8 +8529,7 @@
             613,
             719,
             722,
-            728,
-            729
+            728
           ],
           "harness": [
             257,
@@ -8575,8 +8545,7 @@
             505,
             550,
             607,
-            677,
-            717
+            677
           ],
           "spine": [
             165,
@@ -8671,17 +8640,14 @@
     "items": [
       {
         "pr": null,
-        "sha": "e26c58f5a24dda90330b5149416ca45e0de3fc80",
+        "sha": "482b5286e3e32ee67d436cf7d883132bd2901952",
         "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-15T06:34:29Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38692994902/job/116282990249",
-        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 71,
-          "new": 0
-        },
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/38695123427/job/116289786504",
+        "line": null,
+        "verdict": null,
+        "fields": {},
         "disagrees": false
       },
       {
@@ -8731,47 +8697,49 @@
         "disagrees": false
       },
       {
-        "pr": 732,
-        "sha": "30a85ff5e591dd80cd000661767cda3b0f0c391f",
+        "pr": 735,
+        "sha": "0536799bb01dfec054830ef07501b4217621bd7a",
         "check": "pr-hygiene",
         "conclusion": "SUCCESS",
-        "completedAt": "2026-10-15T06:14:53Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38691263519/job/116277460368",
-        "line": "HYGIENE: WARN reviewable=342 test=425 excluded=0 files=8 issue=#374 linked=fixes",
-        "verdict": "WARN",
+        "completedAt": "2026-10-15T06:51:03Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/38694894735/job/116289053501",
+        "line": "HYGIENE: PASS reviewable=22 test=84 excluded=39 files=8 issue=#182 linked=fixes ratchet=shrank suppressions=shrank",
+        "verdict": "PASS",
         "fields": {
-          "reviewable": 342,
-          "test": 425,
-          "excluded": 0,
+          "reviewable": 22,
+          "test": 84,
+          "excluded": 39,
           "files": 8,
-          "issue": "#374",
-          "linked": "fixes"
+          "issue": "#182",
+          "linked": "fixes",
+          "ratchet": "shrank",
+          "suppressions": "shrank"
         },
         "disagrees": false
       },
       {
-        "pr": 732,
-        "sha": "30a85ff5e591dd80cd000661767cda3b0f0c391f",
+        "pr": 735,
+        "sha": "0536799bb01dfec054830ef07501b4217621bd7a",
         "check": "browser-qa",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-15T06:14:51Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38691263758/job/116277459561",
-        "line": "BROWSER-QA: skipped (no critical paths)",
-        "verdict": "SKIPPED",
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/38694894231/job/116289050033",
+        "line": null,
+        "verdict": null,
         "fields": {},
         "disagrees": false
       },
       {
-        "pr": 732,
-        "sha": "30a85ff5e591dd80cd000661767cda3b0f0c391f",
+        "pr": 735,
+        "sha": "0536799bb01dfec054830ef07501b4217621bd7a",
         "check": "ci",
         "conclusion": "SUCCESS",
-        "completedAt": "2026-10-15T06:18:08Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38691262596/job/116277455609",
-        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
+        "completedAt": "2026-10-15T06:53:33Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/38694818020/job/116288811635",
+        "line": "LAYER-RATCHET: 69 known violations (37 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
         "verdict": "PASS",
         "fields": {
-          "known": 71,
+          "known": 69,
           "new": 0
         },
         "disagrees": false
@@ -14997,6 +14965,17 @@
         ]
       },
       {
+        "id": "#374",
+        "kind": "github",
+        "citedBy": [
+          "ADR-0020",
+          "R513",
+          "R514",
+          "R761",
+          "R763"
+        ]
+      },
+      {
         "id": "#328",
         "kind": "github",
         "citedBy": [
@@ -15091,17 +15070,6 @@
           "ADR-0020",
           "R503",
           "R513"
-        ]
-      },
-      {
-        "id": "#374",
-        "kind": "github",
-        "citedBy": [
-          "ADR-0020",
-          "R513",
-          "R514",
-          "R761",
-          "R763"
         ]
       },
       {
