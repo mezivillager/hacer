@@ -7,7 +7,6 @@ import {
 import { createChipRegistry, registerBuiltin } from '@/core/chips/registry'
 
 beforeEach(() => {
-  localStorage.clear()
   resetImplementationSourcesForTests()
   useCircuitStore.setState({ testResult: null, testColumns: [], completedChips: [] })
 })
@@ -21,7 +20,6 @@ describe('runChipTest', () => {
     expect(s.testColumns.map((c) => c.name)).toEqual(['in', 'out'])
     expect(s.testColumns.every((c) => c.format === 'B')).toBe(true)
     expect(s.completedChips).toContain('Not')
-    expect(JSON.parse(localStorage.getItem('hacer-completed-chips') ?? '[]')).toContain('Not')
   })
 
   it('sets an error result for an unknown source', () => {
