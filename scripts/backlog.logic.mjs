@@ -306,6 +306,10 @@ export function formatProjects(summaries) {
     `${overCap(s.agentReady)} · next: ${nextLabel(s.next)}`).join('\n')
 }
 
+export function possiblyDelivered(plan) {
+  return plan
+}
+
 /** `next`'s exit status when nothing is pickable: apart from 1 (an error) and 2 (usage), so a loop can tell them apart. */
 export const NOTHING_PICKABLE_EXIT = 3
 

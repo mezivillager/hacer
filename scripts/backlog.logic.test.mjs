@@ -29,6 +29,7 @@ import {
   latestClaim,
   parsePortfolio,
   planReady,
+  possiblyDelivered,
   readClaimHistory,
   readClaims,
   releaseComment,
@@ -662,6 +663,50 @@ describe('next', () => {
     expect(reportNext(plan)).toEqual({ ...nothing, stdout: '' })
     expect(reportNext([], { json: true })).toEqual({ ...nothing, stdout: 'null' })
     expect([0, 1, 2]).not.toContain(NOTHING_PICKABLE_EXIT)
+  })
+})
+
+// #702: #153 and #159 were each found delivered by a merged PR's `Part of #n` only after they were picked.
+describe('possibly delivered', () => {
+  const merged = (number, body, overrides = {}) => ({ number, title: `PR ${number}`, body, mergedAt: '2026-10-15T00:00:00Z', ...overrides })
+  const citedBy = (plan, number) => plan.find((task) => task.number === number).possiblyDelivered
+
+  it('flags a task a merged PR cites with `Part of #n`, and keeps it where it was in the plan', () => {
+    const plan = planReady([open(1, 'spine'), open(2, 'spine')], portfolioRows)
+    const marked = possiblyDelivered(plan, [merged(11, 'Part of #1 — PR 2 of 2'), merged(10, 'Part of #1 — PR 1 of 2')])
+    expect(numbers(marked)).toEqual(numbers(plan))
+    expect(marked[0]).toMatchObject({ number: 1, pickable: true, reason: null })
+    expect(citedBy(marked, 1)).toEqual([10, 11])
+    expect(citedBy(marked, 2)).toEqual([])
+  })
+
+  it('does not flag a task only an open PR cites', () => {
+    const marked = possiblyDelivered(planReady([open(1, 'spine')], portfolioRows), [merged(10, 'Fixes #1', { mergedAt: null })])
+    expect(citedBy(marked, 1)).toEqual([])
+  })
+
+  it('#1530 does not cite task 153', () => {
+    const marked = possiblyDelivered(planReady([open(153, 'spine')], portfolioRows), [merged(10, 'Part of #1530'), merged(11, 'Fixes #1530.')])
+    expect(citedBy(marked, 153)).toEqual([])
+  })
+
+  it('reads the title too; a bare mention or a fenced example of `ready` output is no citation', () => {
+    const plan = planReady([open(1, 'spine'), open(2, 'spine'), open(3, 'spine')], portfolioRows)
+    const marked = possiblyDelivered(plan, [
+      merged(10, '', { title: 'chore(x): the rest of it, fixes #1' }),
+      merged(11, 'Filed #2 as a follow-up; see #3.'),
+      merged(12, '```text\nfoundation · 12/33 closed\n  #3 · spine · Task 3\n```'),
+    ])
+    expect([1, 2, 3].map((number) => citedBy(marked, number))).toEqual([[10], [], []])
+  })
+
+  it('ready and next print `possibly-delivered: #<pr>` beside the task, after its reason', () => {
+    const plan = planReady([open(1, 'spine'), open(2, 'spine')], portfolioRows, DEFAULT_ALLOWLIST, [held(2)])
+    const marked = possiblyDelivered(plan, [merged(10, 'Part of #1'), merged(11, 'Part of #1\nPart of #2')])
+    expect(formatReady(marked).split('\n')).toEqual([
+      '#1 · spine · Task 1 · possibly-delivered: #10,#11', '', '#2 · spine · Task 2 · claimed · possibly-delivered: #11',
+    ])
+    expect(reportNext(marked).stdout).toBe('#1 · spine · Task 1 · possibly-delivered: #10,#11')
   })
 })
 
