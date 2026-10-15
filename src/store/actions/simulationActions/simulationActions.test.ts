@@ -3,6 +3,7 @@ import { notify } from '@/lib/notify'
 import { useCircuitStore } from '../../circuitStore'
 import { getSignalSourceValue } from './simulationActions'
 import { placeJunction, zSegments, Z_CORNER } from '@/test/junctionFixtures'
+import { importDocument, wireRecord } from '@/test/documentFixtures'
 import { SECTION_SIZE, WIRE_HEIGHT } from '@/utils/wiringScheme/types'
 
 vi.mock('@/lib/notify', () => ({
@@ -385,47 +386,39 @@ describe('simulationActions', () => {
     })
 
     it('handles deeply nested junctions correctly', () => {
-      // Chain: input -> wire1 (j1) -> wire2 (j2) -> wire3 (j3)
-      // Each junction's wireIds[0] points to the wire that carries the signal
+      // Chain: input -> wire1 (j1) -> wire2 (j2) -> wire3 (j3), each branch drawn from the junction before it
       const inputNode = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
-      const j1 = getState().addJunction('sig-a', { x: 2, y: 0, z: 0 })
-      const j2 = getState().addJunction('sig-a', { x: 4, y: 0, z: 0 })
-      const j3 = getState().addJunction('sig-a', { x: 6, y: 0, z: 0 })
+      const [out1, out2, out3] = ['o1', 'o2', 'o3'].map((name, i) =>
+        getState().addOutputNode(name, { x: 4 * SECTION_SIZE, y: 0, z: -i * SECTION_SIZE })
+      )
+      const at = (x: number, z: number) => ({ x: x * SECTION_SIZE, y: WIRE_HEIGHT, z: -z * SECTION_SIZE })
 
-      // Original wire from input (j1 sits on this wire)
       const wire1 = getState().addWire(
         { type: 'input', entityId: inputNode.id },
-        { type: 'gate', entityId: 'gate-1', pinId: 'in' },
-        [], [], 'sig-a'
+        { type: 'output', entityId: out1.id },
+        zSegments()
       )
-      // Branch wire from j1 (j2 sits on this wire)
-      const wire2 = getState().addWire(
-        { type: 'input', entityId: inputNode.id },
-        { type: 'gate', entityId: 'gate-2', pinId: 'in' },
-        [], [], 'sig-a'
-      )
-      // Branch wire from j2 (j3 sits on this wire)
-      const wire3 = getState().addWire(
-        { type: 'input', entityId: inputNode.id },
-        { type: 'gate', entityId: 'gate-3', pinId: 'in' },
-        [], [], 'sig-a'
-      )
-
-      // Update wireIds to set up the chain
-      useCircuitStore.setState((state) => {
-        const jn1 = state.junctions.find((j) => j.id === j1.id)
-        if (jn1) jn1.wireIds = [wire1.id]
-        const jn2 = state.junctions.find((j) => j.id === j2.id)
-        if (jn2) jn2.wireIds = [wire2.id]
-        const jn3 = state.junctions.find((j) => j.id === j3.id)
-        if (jn3) jn3.wireIds = [wire3.id]
-      })
+      const j1 = placeJunction(wire1.id, Z_CORNER, [{
+        to: { type: 'output', nodeId: out2.id },
+        tail: [
+          { type: 'vertical', start: at(1, 1), end: at(1, 2) },
+          { type: 'horizontal', start: at(1, 2), end: at(0, 2) },
+        ],
+      }])
+      const j2 = placeJunction(j1.branchIds[0], at(1, 2), [{
+        to: { type: 'output', nodeId: out3.id },
+        tail: [
+          { type: 'vertical', start: at(1, 2), end: at(1, 3) },
+          { type: 'horizontal', start: at(1, 3), end: at(2, 3) },
+        ],
+      }])
+      const j3 = placeJunction(j2.branchIds[0], at(1, 3))
 
       getState().updateInputNodeValue(inputNode.id, 1)
 
-      // j3 -> wireIds[0] = wire3 -> from = input node (value=true)
+      // j3 -> wire3 -> from = input node (value=true)
       const value = getSignalSourceValue(
-        { type: 'junction', entityId: j3.id },
+        { type: 'junction', entityId: j3.junctionId },
         getState()
       )
 
@@ -467,14 +460,12 @@ describe('simulationActions', () => {
     })
 
     it('returns false for junction with non-existent wire', () => {
-      const junction = getState().addJunction('sig-test', { x: 0, y: 0, z: 0 })
-      useCircuitStore.setState((state) => {
-        const j = state.junctions.find((j) => j.id === junction.id)
-        if (j) j.wireIds = ['non-existent-wire']
+      importDocument({
+        junctions: [{ id: 'j-1', position: { x: 0, y: 0, z: 0 }, signalId: 'sig-test', wireIds: ['non-existent-wire'] }],
       })
 
       const value = getSignalSourceValue(
-        { type: 'junction', entityId: junction.id },
+        { type: 'junction', entityId: 'j-1' },
         getState()
       )
 
@@ -482,37 +473,20 @@ describe('simulationActions', () => {
     })
 
     it('handles cycle detection', () => {
-      const junctionA = getState().addJunction('sig-a', { x: 0, y: 0, z: 0 })
-      const junctionB = getState().addJunction('sig-a', { x: 4, y: 0, z: 0 })
-
-      // Wire from junctionB -> junctionA
-      const wireBA = getState().addWire(
-        { type: 'junction', entityId: junctionB.id },
-        { type: 'junction', entityId: junctionA.id },
-        [],
-        [],
-        'sig-a'
-      )
-
-      // Wire from junctionA -> junctionB
-      const wireAB = getState().addWire(
-        { type: 'junction', entityId: junctionA.id },
-        { type: 'junction', entityId: junctionB.id },
-        [],
-        [],
-        'sig-a'
-      )
-
-      // Set wireIds so each junction traces to the other
-      useCircuitStore.setState((state) => {
-        const jA = state.junctions.find((j) => j.id === junctionA.id)
-        const jB = state.junctions.find((j) => j.id === junctionB.id)
-        if (jA) jA.wireIds = [wireBA.id]
-        if (jB) jB.wireIds = [wireAB.id]
+      // Each junction is fed by a wire from the other
+      importDocument({
+        wires: [
+          wireRecord('w-ba', { type: 'junction', entityId: 'j-b' }, { type: 'junction', entityId: 'j-a' }),
+          wireRecord('w-ab', { type: 'junction', entityId: 'j-a' }, { type: 'junction', entityId: 'j-b' }),
+        ],
+        junctions: [
+          { id: 'j-a', position: { x: 0, y: 0, z: 0 }, signalId: 'sig-a', wireIds: ['w-ba'] },
+          { id: 'j-b', position: { x: 4, y: 0, z: 0 }, signalId: 'sig-a', wireIds: ['w-ab'] },
+        ],
       })
 
       const value = getSignalSourceValue(
-        { type: 'junction', entityId: junctionA.id },
+        { type: 'junction', entityId: 'j-a' },
         getState()
       )
 
