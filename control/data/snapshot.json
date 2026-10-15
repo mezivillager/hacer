@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-15T07:36:35.529Z",
+  "generatedAt": "2026-10-15T07:40:46.749Z",
   "head": {
-    "sha": "ae8bf566e68c93107e7af733506c077d10ee44f3",
-    "date": "2026-10-15T10:35:12+03:00",
-    "subject": "fix(store): a passing chip joins the store's completed list, not just what storage returns (#736)"
+    "sha": "18d8e1a6644790187bfc2be2b6f583ed104c4611",
+    "date": "2026-10-15T10:39:48+03:00",
+    "subject": "test(core): the spec round trip and nand2tetris export as seeded properties over generated documents"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-15T07:36:35.529Z",
+      "fetchedAt": "2026-10-15T07:40:46.749Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-15T07:36:35.529Z",
+      "fetchedAt": "2026-10-15T07:40:46.749Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-15T07:36:35.529Z",
+      "fetchedAt": "2026-10-15T07:40:46.749Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-15T07:36:35.529Z",
+      "fetchedAt": "2026-10-15T07:40:46.749Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-15T07:36:35.529Z",
+      "fetchedAt": "2026-10-15T07:40:46.749Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-15T07:36:35.529Z",
+      "fetchedAt": "2026-10-15T07:40:46.749Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-15T07:36:35.529Z",
+      "fetchedAt": "2026-10-15T07:40:46.749Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-15T07:36:35.529Z",
+      "fetchedAt": "2026-10-15T07:40:46.749Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-15T07:36:35.529Z",
+      "fetchedAt": "2026-10-15T07:40:46.749Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-15T07:36:35.529Z",
+      "fetchedAt": "2026-10-15T07:40:46.749Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-15T07:36:35.529Z",
+      "fetchedAt": "2026-10-15T07:40:46.749Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-15T07:36:35.529Z",
+      "fetchedAt": "2026-10-15T07:40:46.749Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-15T07:36:35.529Z",
+      "fetchedAt": "2026-10-15T07:40:46.749Z",
       "status": "ok"
     }
   },
@@ -220,18 +220,18 @@
         "lane": "feature",
         "slug": "spine",
         "epicNumber": 139,
-        "open": 14,
+        "open": 13,
         "ready": 0,
-        "inProgress": 1,
+        "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 2,
+        "agentReady": 1,
         "filedElsewhere": [],
         "next": null,
         "title": "Epic: spine — nand2tetris alignment 0.5 → 0.7",
         "subIssues": {
-          "completed": 2,
-          "percentCompleted": 12,
+          "completed": 3,
+          "percentCompleted": 18,
           "total": 16
         }
       },
@@ -420,7 +420,6 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
-        739,
         514
       ]
     }
@@ -548,22 +547,6 @@
         "lane": "feature",
         "pickable": false,
         "reason": "unshaped"
-      },
-      {
-        "number": 168,
-        "title": "P05-26: 3D/HDL interoperability (re-cut): canonical HDL printer + round-trip property",
-        "labels": [
-          "project:spine",
-          "agent-ready",
-          "in-progress",
-          "risk:1"
-        ],
-        "blocking": [],
-        "project": "spine",
-        "rank": 7,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "claimed"
       },
       {
         "number": 169,
@@ -1963,7 +1946,6 @@
       "spine": [
         165,
         167,
-        168,
         169,
         170,
         171,
@@ -2050,32 +2032,6 @@
   "prs": {
     "open": [
       {
-        "number": 739,
-        "title": "test(core): the spec round trip and nand2tetris export as seeded properties (#168)",
-        "url": "https://github.com/mezivillager/hacer/pull/739",
-        "author": "mezivillager",
-        "labels": [
-          "project:spine",
-          "risk:1"
-        ],
-        "headRefName": "test/168-spec-roundtrip-property",
-        "isDraft": false,
-        "createdAt": "2026-10-15T07:25:46Z",
-        "mergedAt": null,
-        "closes": [
-          168
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Sonnet 5.5",
-            "at": "2026-10-15T07:35:32Z",
-            "url": "https://github.com/mezivillager/hacer/pull/739#issuecomment-6186989498"
-          }
-        ]
-      },
-      {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
         "url": "https://github.com/mezivillager/hacer/pull/514",
@@ -2103,6 +2059,32 @@
       }
     ],
     "merged": [
+      {
+        "number": 739,
+        "title": "test(core): the spec round trip and nand2tetris export as seeded properties (#168)",
+        "url": "https://github.com/mezivillager/hacer/pull/739",
+        "author": "mezivillager",
+        "labels": [
+          "project:spine",
+          "risk:1"
+        ],
+        "headRefName": "test/168-spec-roundtrip-property",
+        "isDraft": false,
+        "createdAt": "2026-10-15T07:25:46Z",
+        "mergedAt": "2026-10-15T07:39:49Z",
+        "closes": [
+          168
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Sonnet 5.5",
+            "at": "2026-10-15T07:35:32Z",
+            "url": "https://github.com/mezivillager/hacer/pull/739#issuecomment-6186989498"
+          }
+        ]
+      },
       {
         "number": 738,
         "title": "fix(store): completed chips survive when storage is unavailable (#736)",
@@ -3584,60 +3566,18 @@
         "mergedAt": "2026-10-02T01:08:57Z",
         "closes": [],
         "verdicts": []
-      },
-      {
-        "number": 655,
-        "title": "chore(deps-dev): bump jsdom from 30.1.0 to 30.1.1",
-        "url": "https://github.com/mezivillager/hacer/pull/655",
-        "author": "app/dependabot",
-        "labels": [
-          "released",
-          "dependencies",
-          "javascript"
-        ],
-        "headRefName": "dependabot/npm_and_yarn/jsdom-30.1.1",
-        "isDraft": false,
-        "createdAt": "2026-10-01T23:16:59Z",
-        "mergedAt": "2026-10-02T01:03:52Z",
-        "closes": [],
-        "verdicts": []
       }
     ],
     "coverage": {
       "merged": 60,
-      "withVerdict": 50,
-      "withoutVerdict": 10,
-      "pass": 50,
+      "withVerdict": 51,
+      "withoutVerdict": 9,
+      "pass": 51,
       "block": 0
     }
   },
   "claims": {
     "items": [
-      {
-        "number": 168,
-        "ref": "refs/heads/claim/168",
-        "sha": "482b5286e3e32ee67d436cf7d883132bd2901952",
-        "state": "OPEN",
-        "title": "P05-26: 3D/HDL interoperability (re-cut): canonical HDL printer + round-trip property",
-        "url": "https://github.com/mezivillager/hacer/issues/168",
-        "labels": [
-          "project:spine",
-          "agent-ready",
-          "in-progress",
-          "risk:1"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-50",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-15T07:05:58Z",
-          "url": "https://github.com/mezivillager/hacer/issues/168#issuecomment-6186511073"
-        }
-      },
       {
         "number": 470,
         "ref": "refs/heads/claim/470",
@@ -5373,7 +5313,7 @@
       },
       {
         "date": "2026-10-02",
-        "merges": 13
+        "merges": 12
       },
       {
         "date": "2026-10-04",
@@ -5385,20 +5325,20 @@
       },
       {
         "date": "2026-10-15",
-        "merges": 19
+        "merges": 20
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-01T07:36:35.529Z",
-      "merged": 73,
+      "since": "2026-10-01T07:40:46.749Z",
+      "merged": 74,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 2
       },
       "blockedOnce": {
         "count": 4,
-        "of": 61,
+        "of": 62,
         "prs": [
           700,
           725,
@@ -5408,8 +5348,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 47,
-          "withVerdict": 47,
+          "merged": 48,
+          "withVerdict": 48,
           "without": []
         },
         "nonCode": {
@@ -8588,11 +8528,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "ae8bf566e68c93107e7af733506c077d10ee44f3",
+        "sha": "18d8e1a6644790187bfc2be2b6f583ed104c4611",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38699755754/job/116304800910",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/38700265687/job/116306486632",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -8640,52 +8580,6 @@
         "verdict": "PASS",
         "fields": {
           "known": 71,
-          "new": 0
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 739,
-        "sha": "853b40262197e7e1307a8a2416c9cb7c52830ded",
-        "check": "pr-hygiene",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-15T07:25:59Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38698686947/job/116301297071",
-        "line": "HYGIENE: PASS reviewable=158 test=284 excluded=0 files=1 issue=#168 linked=fixes",
-        "verdict": "PASS",
-        "fields": {
-          "reviewable": 158,
-          "test": 284,
-          "excluded": 0,
-          "files": 1,
-          "issue": "#168",
-          "linked": "fixes"
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 739,
-        "sha": "853b40262197e7e1307a8a2416c9cb7c52830ded",
-        "check": "browser-qa",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-15T07:26:02Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38698686984/job/116301295611",
-        "line": "BROWSER-QA: skipped (no critical paths)",
-        "verdict": "SKIPPED",
-        "fields": {},
-        "disagrees": false
-      },
-      {
-        "pr": 739,
-        "sha": "853b40262197e7e1307a8a2416c9cb7c52830ded",
-        "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-15T07:28:45Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38698685413/job/116301289926",
-        "line": "LAYER-RATCHET: 69 known violations (37 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 69,
           "new": 0
         },
         "disagrees": false
