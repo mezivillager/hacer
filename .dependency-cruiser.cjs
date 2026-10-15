@@ -65,6 +65,10 @@ const ENGINE = '^src/(core|simulation)/'
 const STATE = '^src/store/'
 /** everything that draws: R3F components, the DOM shell, per-gate bodies, hooks, theme. */
 const UI = '^src/(components|gates|nodes|hooks|theme|styles)/|^src/(App|main)\\.tsx$'
+/** the mesh components that draw from props alone, named file by file: the renderers beside them
+ *  in the same folders read the store and pass props down, so a folder pattern would flag them. */
+const MESHES =
+  '^src/(gates/common/BaseGate|nodes/components/(Input|Output)Node3D|nodes/Bus(Splitter|Joiner)3D|components/canvas/Wire3D)\\.tsx$'
 /** `preserveSymlinks` keeps these as `node_modules/<pkg>/…` under pnpm instead of
  *  `.pnpm/<pkg>@<version>/…`, so neither the pattern nor the baseline breaks on a version bump.
  *  Left unanchored so a nested or hoisted `node_modules` matches too. */
@@ -108,6 +112,14 @@ module.exports = {
       comment: 'The store may not import a 3D library; geometry types belong to the renderer.',
       from: { path: STATE },
       to: { path: RENDERING_PACKAGES },
+    },
+    {
+      name: 'mesh-no-state',
+      severity: 'error',
+      comment:
+        'A mesh component draws from its props alone: no store import, not even a type. Its plain data types come from src/types/scene.ts.',
+      from: { path: MESHES },
+      to: { path: STATE },
     },
     {
       name: 'core-through-index',
