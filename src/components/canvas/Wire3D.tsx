@@ -2,6 +2,7 @@ import { Line } from '@react-three/drei'
 import { useCircuitStore } from '@/store/circuitStore'
 import { colors } from '@/theme'
 import type { WireSegment, WirePath } from '@/utils/wiringScheme/types'
+import type { PerformanceMode } from '@/store/types'
 import { WIRE_HEIGHT, HOP_HEIGHT } from '@/utils/wiringScheme/types'
 import { getWireArcPointCount, getWireLineWidth } from './wireRenderConfig'
 
@@ -18,6 +19,8 @@ interface Wire3DProps {
   isPreview?: boolean
   /** Whether the wire is selected */
   isSelected?: boolean
+  /** 'low-power' draws hops with fewer points and selected wires thinner. */
+  performanceMode?: PerformanceMode
 }
 
 /**
