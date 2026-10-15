@@ -42,10 +42,11 @@ export interface DeserializedCircuit {
  * became data. Widening recovery to those records would change what a person sees,
  * which #181 deliberately does not do.
  *
- * **Counts, not a wall of toasts.** `dropped-wire` and `dropped-junction` are emitted
- * one per entity, because a caller or a test wants the ids — but a document that drops
- * 40 wires must not raise 40 toasts, so the store's `reportDeserialized` summarises
- * exactly these two codes into one line and leaves every other code's toast alone.
+ * **Counts, not a wall of toasts.** `unknown-bus-kind`, `unknown-endpoint-type`,
+ * `dropped-wire` and `dropped-junction` are emitted one per entity, because a caller or
+ * a test wants the ids — but a document that drops 40 wires must not raise 40 toasts, so
+ * the store's `reportDeserialized` summarises exactly these four codes into one line and
+ * leaves every gate code's toast alone.
  *
  * **One deliberate widening, not parity.** A gate entry that is literally `null` used
  * to kill the whole load: the old reader read `s.type` *outside* its `try`, so it threw
