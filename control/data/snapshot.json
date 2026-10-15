@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-15T06:33:19.837Z",
+  "generatedAt": "2026-10-15T06:36:34.354Z",
   "head": {
     "sha": "e26c58f5a24dda90330b5149416ca45e0de3fc80",
     "date": "2026-10-15T09:32:09+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-15T06:33:19.837Z",
+      "fetchedAt": "2026-10-15T06:36:34.354Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-15T06:33:19.837Z",
+      "fetchedAt": "2026-10-15T06:36:34.354Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-15T06:33:19.837Z",
+      "fetchedAt": "2026-10-15T06:36:34.354Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-15T06:33:19.837Z",
+      "fetchedAt": "2026-10-15T06:36:34.354Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-15T06:33:19.837Z",
+      "fetchedAt": "2026-10-15T06:36:34.354Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-15T06:33:19.837Z",
+      "fetchedAt": "2026-10-15T06:36:34.354Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-15T06:33:19.837Z",
+      "fetchedAt": "2026-10-15T06:36:34.354Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-15T06:33:19.837Z",
+      "fetchedAt": "2026-10-15T06:36:34.354Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-15T06:33:19.837Z",
+      "fetchedAt": "2026-10-15T06:36:34.354Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-15T06:33:19.837Z",
+      "fetchedAt": "2026-10-15T06:36:34.354Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-15T06:33:19.837Z",
+      "fetchedAt": "2026-10-15T06:36:34.354Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-15T06:33:19.837Z",
+      "fetchedAt": "2026-10-15T06:36:34.354Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-15T06:33:19.837Z",
+      "fetchedAt": "2026-10-15T06:36:34.354Z",
       "status": "ok"
     }
   },
@@ -81,15 +81,15 @@
         "slug": "foundation",
         "epicNumber": 318,
         "open": 28,
-        "ready": 3,
-        "inProgress": 1,
+        "ready": 2,
+        "inProgress": 2,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 4,
         "filedElsewhere": [],
         "next": {
-          "number": 182,
-          "title": "Completed-chip tracking moves out of the engine into session state (no localStorage in src/core)"
+          "number": 338,
+          "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)"
         },
         "title": "Foundation audit: is the codebase structured for the autonomous loop? Measured audit, prioritized refactorings, fitness functions",
         "subIssues": {
@@ -403,11 +403,6 @@
     ],
     "next": [
       {
-        "number": 182,
-        "title": "Completed-chip tracking moves out of the engine into session state (no localStorage in src/core)",
-        "project": "foundation"
-      },
-      {
         "number": 338,
         "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
         "project": "foundation"
@@ -438,24 +433,6 @@
   },
   "tasks": {
     "items": [
-      {
-        "number": 182,
-        "title": "Completed-chip tracking moves out of the engine into session state (no localStorage in src/core)",
-        "labels": [
-          "project:core",
-          "agent-ready",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [
-          339
-        ],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
       {
         "number": 338,
         "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
@@ -749,6 +726,25 @@
         "lane": "enabler",
         "pickable": false,
         "reason": "unshaped"
+      },
+      {
+        "number": 182,
+        "title": "Completed-chip tracking moves out of the engine into session state (no localStorage in src/core)",
+        "labels": [
+          "project:core",
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [
+          339
+        ],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "claimed"
       },
       {
         "number": 184,
@@ -1986,10 +1982,10 @@
     ],
     "byProject": {
       "foundation": [
-        182,
         338,
         734,
         151,
+        182,
         184,
         325,
         339,
@@ -2143,6 +2139,13 @@
             "model": "Opus 5.5",
             "at": "2026-10-15T06:01:27Z",
             "url": "https://github.com/mezivillager/hacer/pull/732#issuecomment-6185604063"
+          },
+          {
+            "verdict": "PASS",
+            "round": 2,
+            "model": "Opus 5.5",
+            "at": "2026-10-15T06:35:24Z",
+            "url": "https://github.com/mezivillager/hacer/pull/732#issuecomment-6186069574"
           }
         ]
       },
@@ -3671,6 +3674,32 @@
   },
   "claims": {
     "items": [
+      {
+        "number": 182,
+        "ref": "refs/heads/claim/182",
+        "sha": "e26c58f5a24dda90330b5149416ca45e0de3fc80",
+        "state": "OPEN",
+        "title": "Completed-chip tracking moves out of the engine into session state (no localStorage in src/core)",
+        "url": "https://github.com/mezivillager/hacer/issues/182",
+        "labels": [
+          "project:core",
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:foundation"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-50",
+          "branch": null,
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-15T06:33:43Z",
+          "url": "https://github.com/mezivillager/hacer/issues/182#issuecomment-6186044910"
+        }
+      },
       {
         "number": 374,
         "ref": "refs/heads/claim/374",
@@ -5442,7 +5471,7 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-01T06:33:19.837Z",
+      "since": "2026-10-01T06:36:34.354Z",
       "merged": 69,
       "openToMergeHours": {
         "median": 0.3,
@@ -8644,12 +8673,15 @@
         "pr": null,
         "sha": "e26c58f5a24dda90330b5149416ca45e0de3fc80",
         "check": "ci",
-        "conclusion": null,
-        "completedAt": null,
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-15T06:34:29Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/38692994902/job/116282990249",
-        "line": null,
-        "verdict": null,
-        "fields": {},
+        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 71,
+          "new": 0
+        },
         "disagrees": false
       },
       {
