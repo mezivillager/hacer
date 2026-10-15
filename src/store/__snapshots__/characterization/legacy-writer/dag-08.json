@@ -1,0 +1,139 @@
+{
+  "version": 1,
+  "name": "dag-08",
+  "savedAt": "2026-10-16T00:00:00.000Z",
+  "gates": [
+    {
+      "id": "gate-1792108800000-k105gm65d",
+      "type": "Xor",
+      "position": {
+        "x": 0,
+        "y": 0.2,
+        "z": 0
+      },
+      "rotation": {
+        "x": 1.5707963267948966,
+        "y": 0,
+        "z": 0
+      },
+      "width": 1
+    }
+  ],
+  "wires": [
+    {
+      "id": "wire-1792108800000-a9l6f6hwb",
+      "from": {
+        "type": "input",
+        "entityId": "input-1792108800000-bh7kjb4x3"
+      },
+      "to": {
+        "type": "gate",
+        "entityId": "gate-1792108800000-k105gm65d",
+        "pinId": "gate-1792108800000-k105gm65d-in-0"
+      },
+      "segments": [],
+      "crossesWireIds": [],
+      "width": 1
+    },
+    {
+      "id": "wire-1792108800000-1no6wy74e",
+      "from": {
+        "type": "input",
+        "entityId": "input-1792108800000-ijnsva6nd"
+      },
+      "to": {
+        "type": "gate",
+        "entityId": "gate-1792108800000-k105gm65d",
+        "pinId": "gate-1792108800000-k105gm65d-in-1"
+      },
+      "segments": [],
+      "crossesWireIds": [],
+      "width": 1
+    },
+    {
+      "id": "wire-1792108800000-ug8xy5i1z",
+      "from": {
+        "type": "gate",
+        "entityId": "gate-1792108800000-k105gm65d",
+        "pinId": "gate-1792108800000-k105gm65d-out-0"
+      },
+      "to": {
+        "type": "output",
+        "entityId": "output-1792108800000-pgf3v4tat"
+      },
+      "segments": [],
+      "crossesWireIds": [],
+      "width": 1
+    }
+  ],
+  "inputNodes": [
+    {
+      "id": "input-1792108800000-ijnsva6nd",
+      "name": "a",
+      "position": {
+        "x": -8,
+        "y": 0.2,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "value": 1,
+      "width": 1
+    },
+    {
+      "id": "input-1792108800000-bh7kjb4x3",
+      "name": "b",
+      "position": {
+        "x": -8,
+        "y": 0.2,
+        "z": 3
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "value": 1,
+      "width": 1
+    },
+    {
+      "id": "input-1792108800000-4ch0xena5",
+      "name": "c",
+      "position": {
+        "x": -8,
+        "y": 0.2,
+        "z": 6
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "value": 1,
+      "width": 1
+    }
+  ],
+  "outputNodes": [
+    {
+      "id": "output-1792108800000-pgf3v4tat",
+      "name": "out0",
+      "position": {
+        "x": 8,
+        "y": 0.2,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "value": 0,
+      "width": 1
+    }
+  ],
+  "junctions": [],
+  "busComponents": []
+}

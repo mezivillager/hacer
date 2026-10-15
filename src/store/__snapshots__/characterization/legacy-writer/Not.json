@@ -1,0 +1,238 @@
+{
+  "version": 1,
+  "name": "Not",
+  "savedAt": "2026-10-16T00:00:00.000Z",
+  "gates": [
+    {
+      "id": "gate-1792108800000-bh7kjb4x3",
+      "type": "Nand",
+      "position": {
+        "x": 0,
+        "y": 0.2,
+        "z": 0
+      },
+      "rotation": {
+        "x": 1.5707963267948966,
+        "y": 0,
+        "z": 0
+      },
+      "width": 1
+    }
+  ],
+  "wires": [
+    {
+      "id": "wire-1792108800000-4ch0xena5",
+      "from": {
+        "type": "input",
+        "entityId": "input-1792108800000-ijnsva6nd"
+      },
+      "to": {
+        "type": "gate",
+        "entityId": "gate-1792108800000-bh7kjb4x3",
+        "pinId": "gate-1792108800000-bh7kjb4x3-in-0"
+      },
+      "segments": [
+        {
+          "start": {
+            "x": 0.7,
+            "y": 0.2,
+            "z": 0
+          },
+          "end": {
+            "x": 4,
+            "y": 0.2,
+            "z": 0
+          },
+          "type": "exit"
+        },
+        {
+          "start": {
+            "x": 4,
+            "y": 0.2,
+            "z": 0
+          },
+          "end": {
+            "x": 4,
+            "y": 0.2,
+            "z": -4
+          },
+          "type": "vertical"
+        },
+        {
+          "start": {
+            "x": 4,
+            "y": 0.2,
+            "z": -4
+          },
+          "end": {
+            "x": 8,
+            "y": 0.2,
+            "z": -4
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": 8,
+            "y": 0.2,
+            "z": -4
+          },
+          "end": {
+            "x": 8.7,
+            "y": 0.2,
+            "z": -4
+          },
+          "type": "entry"
+        }
+      ],
+      "crossesWireIds": [],
+      "signalId": "sig-input-1792108800000-ijnsva6nd",
+      "width": 1
+    },
+    {
+      "id": "wire-1792108800000-a9l6f6hwb",
+      "from": {
+        "type": "input",
+        "entityId": "input-1792108800000-ijnsva6nd"
+      },
+      "to": {
+        "type": "gate",
+        "entityId": "gate-1792108800000-bh7kjb4x3",
+        "pinId": "gate-1792108800000-bh7kjb4x3-in-1"
+      },
+      "segments": [
+        {
+          "start": {
+            "x": 0.7,
+            "y": 0.2,
+            "z": 0
+          },
+          "end": {
+            "x": 4,
+            "y": 0.2,
+            "z": 0
+          },
+          "type": "exit"
+        },
+        {
+          "start": {
+            "x": 4,
+            "y": 0.2,
+            "z": 0
+          },
+          "end": {
+            "x": 4,
+            "y": 0.2,
+            "z": -3.925
+          },
+          "type": "vertical"
+        },
+        {
+          "start": {
+            "x": 4,
+            "y": 0.2,
+            "z": -3.925
+          },
+          "end": {
+            "x": 4,
+            "y": 0.2,
+            "z": -4.075
+          },
+          "type": "arc",
+          "arcCenter": {
+            "x": 4,
+            "y": 0.2,
+            "z": -4
+          },
+          "arcRadius": 0.07500000000000018,
+          "crossedWireId": "wire-1792108800000-4ch0xena5"
+        },
+        {
+          "start": {
+            "x": 4,
+            "y": 0.2,
+            "z": -4.075
+          },
+          "end": {
+            "x": 11.5,
+            "y": 0.2,
+            "z": -4
+          },
+          "type": "horizontal"
+        }
+      ],
+      "crossesWireIds": [
+        "wire-1792108800000-4ch0xena5"
+      ],
+      "signalId": "sig-input-1792108800000-ijnsva6nd",
+      "width": 1
+    },
+    {
+      "id": "wire-1792108800000-1no6wy74e",
+      "from": {
+        "type": "gate",
+        "entityId": "gate-1792108800000-bh7kjb4x3",
+        "pinId": "gate-1792108800000-bh7kjb4x3-out-0"
+      },
+      "to": {
+        "type": "output",
+        "entityId": "output-1792108800000-pgf3v4tat"
+      },
+      "segments": [],
+      "crossesWireIds": [],
+      "width": 1
+    }
+  ],
+  "inputNodes": [
+    {
+      "id": "input-1792108800000-ijnsva6nd",
+      "name": "in",
+      "position": {
+        "x": -8,
+        "y": 0.2,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "value": 1,
+      "width": 1
+    }
+  ],
+  "outputNodes": [
+    {
+      "id": "output-1792108800000-pgf3v4tat",
+      "name": "out",
+      "position": {
+        "x": 8,
+        "y": 0.2,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "value": 0,
+      "width": 1
+    }
+  ],
+  "junctions": [
+    {
+      "id": "junction-1792108800000-k105gm65d",
+      "position": {
+        "x": 4,
+        "y": 0.2,
+        "z": -4
+      },
+      "signalId": "sig-input-1792108800000-ijnsva6nd",
+      "wireIds": [
+        "wire-1792108800000-4ch0xena5",
+        "wire-1792108800000-a9l6f6hwb"
+      ]
+    }
+  ],
+  "busComponents": []
+}
