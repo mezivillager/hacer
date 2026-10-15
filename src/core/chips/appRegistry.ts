@@ -25,8 +25,8 @@ export function getBuiltinChipRegistry(): ChipRegistry {
 }
 
 /**
- * Returns the app-wide user chip registry (compiled HDL + circuit chips).
- * Starts empty; populated by future tickets (P05-16, P05-24).
+ * Returns the app-wide user chip registry: HDL chips, and specs registered as `'circuit'` chips.
+ * Starts empty; nothing registers into it yet (#206).
  */
 export function getUserChipRegistry(): ChipRegistry {
   if (!userRegistry) userRegistry = initUserRegistry()
