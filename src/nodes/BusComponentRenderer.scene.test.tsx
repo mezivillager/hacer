@@ -75,7 +75,7 @@ const pointerDown = (r: Renderer) =>
 const pointerMovePastThreshold = (r: Renderer) =>
   r.fireEvent(body(r), 'onPointerMove', { point: { x: 6.1, y: 0.2, z: 2 } })
 
-describe('BusComponentRenderer as the store adapter for BusSplitter3D and BusJoiner3D', () => {
+describe('BusComponentRenderer as the store adapter for BusComponent3D', () => {
   it.each(KINDS)('selects the %s on pointer-down, drags past the threshold and drops it at the snapped position', async (kind) => {
     const bus = addBus(kind)
     const start = bus.position
