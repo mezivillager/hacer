@@ -36,6 +36,8 @@ const fromIn = (id: string): Endpoint => ({ type: 'input', entityId: id })
 const toOut = (id: string): Endpoint => ({ type: 'output', entityId: id })
 const pinIn = (gateId: string, i: number): Endpoint => ({ type: 'gate', entityId: gateId, pinId: `${gateId}-in-${i}` })
 const pinOut = (gateId: string): Endpoint => ({ type: 'gate', entityId: gateId, pinId: `${gateId}-out-0` })
+const busEnd = (id: string, pinId: string): Endpoint => ({ type: 'bus', entityId: id, pinId })
+const bus = (id: string, kind: 'splitter' | 'joiner', width: number) => ({ id, kind, position: ZERO, rotation: ZERO, width, inputs: [], outputs: [], selected: false })
 const circuit = (name: string, parts: Partial<SerializedCircuit>): SerializedCircuit => ({
   version: CIRCUIT_FORMAT_VERSION, name, savedAt: '2026-10-15T00:00:00.000Z',
   gates: [], wires: [], inputNodes: [], outputNodes: [], junctions: [], busComponents: [], ...parts,
@@ -107,8 +109,43 @@ const C8b = circuit('C8b', {
   wires: [wire('w1', fromIn('ia'), pinIn('g1', 0)), wire('w2', pinOut('g1'), toOut('oo')), wire('w3', fromIn('ib'), toOut('oo'))],
 })
 
+const C10 = circuit('C10', {
+  inputNodes: [node('ia', 'a'), node('ib', 'b')],
+  outputNodes: [node('oo', 'out', 2)],
+  gates: [gate('g1', 'Not'), gate('g2', 'Not')],
+  busComponents: [bus('join', 'joiner', 2)],
+  wires: [
+    wire('w1', fromIn('ia'), pinIn('g1', 0), 1), wire('w2', fromIn('ib'), pinIn('g2', 0), 1),
+    wire('w3', pinOut('g1'), busEnd('join', 'in0'), 1), wire('w4', pinOut('g2'), busEnd('join', 'in1'), 1),
+    wire('w5', busEnd('join', 'out'), toOut('oo'), 2),
+  ],
+})
+const C11 = circuit('C11', {
+  inputNodes: [node('ia', 'a'), node('ib', 'b')],
+  outputNodes: [node('oo', 'out', 2)],
+  gates: [gate('g1', 'Not')],
+  busComponents: [bus('join', 'joiner', 2)],
+  wires: [
+    wire('w1', fromIn('ia'), busEnd('join', 'in0'), 1), wire('w2', fromIn('ib'), pinIn('g1', 0), 1),
+    wire('w3', pinOut('g1'), busEnd('join', 'in1'), 1), wire('w4', busEnd('join', 'out'), toOut('oo'), 2),
+  ],
+})
+const JOINER_INTO_PART = circuit('JoinerIntoPart', {
+  inputNodes: [node('ix', 'x', 4)],
+  outputNodes: [node('oo', 'out', 16)],
+  gates: [gate('g1', 'Not'), gate('g2', 'Not16')],
+  busComponents: [bus('split', 'splitter', 4), bus('join', 'joiner', 4)],
+  wires: [
+    wire('w1', fromIn('ix'), busEnd('split', 'in'), 4), wire('w2', busEnd('split', 'out0'), pinIn('g1', 0), 1),
+    wire('w3', pinOut('g1'), busEnd('join', 'in0'), 1),
+    ...[1, 2, 3].map((i) => wire(`b${i}`, busEnd('split', `out${i}`), busEnd('join', `in${i}`), 1)),
+    wire('w4', busEnd('join', 'out'), pinIn('g2', 0), 4), wire('w5', pinOut('g2'), toOut('oo'), 16),
+  ],
+})
+
 const LOCAL = [WITH_NOR, PARTS, PLACED, NAMES, C7, OUTPUT_AS_SOURCE, FAN_OUT, DUPLICATE, C8b]
-const DOCUMENTS = [...GOLDENS.filter((g) => g.fixture !== 'bus-endpoints').map((g) => g.document), ...LOCAL]
+const WITH_BUSES = [golden('bus-endpoints'), C10, C11, JOINER_INTO_PART]
+const DOCUMENTS = [...GOLDENS.filter((g) => g.fixture !== 'bus-endpoints').map((g) => g.document), ...LOCAL, ...WITH_BUSES]
 
 function load(saved: SerializedCircuit) {
   const { doc, sidecar } = fromLegacyCircuit(saved)
@@ -313,6 +350,40 @@ describe('fromLegacyCircuit', () => {
         const shuffled = load({ ...saved, wires: shuffle(rng, saved.wires) })
         expect(printSpec(shuffled.doc, { sidecar: shuffled.sidecar }), saved.name).toBe(text)
       }
+    }
+  })
+
+  it('a joiner dissolves by rewriting its producers: C10 gives nets out[0] and out[1], each driven by a part pin', () => {
+    const { doc } = load(C10)
+    expect(doc.nets.filter((n) => n.sinks.some((s) => s.kind === 'chip-out'))).toEqual([
+      { id: 'out[0]', driver: { kind: 'part-pin', partId: 'p1', pin: 'out' }, sinks: [{ kind: 'chip-out', pin: 'out', slice: { start: 0, end: 0 } }] },
+      { id: 'out[1]', driver: { kind: 'part-pin', partId: 'p2', pin: 'out' }, sinks: [{ kind: 'chip-out', pin: 'out', slice: { start: 1, end: 1 } }] },
+    ])
+    expect(printSpec(doc)).toContain('    Not(in=a, out=out[0]); // #p1\n    Not(in=b, out=out[1]); // #p2\n}')
+  })
+
+  it('a joiner bit driven by an input node is wire out[0] = a (C11, §1.6)', () => {
+    const { doc } = load(C11)
+    expect(doc.nets.find((n) => n.id === 'out[0]')).toEqual({ id: 'out[0]', driver: { kind: 'chip-in', pin: 'a' }, sinks: [{ kind: 'chip-out', pin: 'out', slice: { start: 0, end: 0 } }] })
+    expect(printSpec(doc)).toContain('    Not(in=b, out=out[1]); // #p1\n    wire out[0] = a;\n}')
+  })
+
+  it('a bus feeding a part splits the reader\'s binding, and no internal signal is subscripted', () => {
+    const { doc } = load(JOINER_INTO_PART)
+    expect(printSpec(doc)).toContain('    Not(in=x[0], out=t1); // #p1\n    Not16(in[0]=t1, in[1..3]=x[1..3], out=out); // #p2\n}')
+    const internal = doc.nets.filter((n) => n.driver?.kind === 'part-pin' && !n.sinks.some((s) => s.kind === 'chip-out')).map((n) => n.id)
+    expect(internal).toEqual(['t1'])
+  })
+
+  it('no part, net or hint names a bus component', () => {
+    for (const saved of WITH_BUSES) {
+      const { doc, sidecar } = load(saved)
+      const ids = (saved.busComponents ?? []).map((b) => b.id)
+      expect(ids.length, saved.name).toBeGreaterThan(0)
+      expect(Object.keys(doc).sort(), saved.name).toEqual(['ins', 'name', 'nets', 'outs', 'parts', 'schemaVersion'])
+      const named = JSON.stringify([doc, sidecar.hints])
+      expect(ids.filter((id) => new RegExp(`\\b${id}\\b`).test(named)), saved.name).toEqual([])
+      expect(sidecar.notes.filter((n) => n.kind === 'bus-dissolved').map((n) => ids.find((id) => n.detail.includes(`"${id}"`))).sort(), saved.name).toEqual([...ids].sort())
     }
   })
 })
