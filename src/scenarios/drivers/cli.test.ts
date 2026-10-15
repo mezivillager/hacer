@@ -6,8 +6,9 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { threeGateScenario, type NandScenario, type Scenario } from '..'
+import { project1Scenario, project1Scenarios, project1Vector } from '../project1'
 import { runCliScenario } from './cli'
-import { runScenario, SCENARIOS } from './core'
+import { runChipScenario, runScenario, SCENARIOS } from './core'
 
 // Each test spawns node; under a loaded machine that outruns vitest's 5 s default.
 const SPAWN_TIMEOUT = 30_000
@@ -41,6 +42,18 @@ describe('cli scenario driver', { timeout: SPAWN_TIMEOUT }, () => {
   it.each(SCENARIOS)('$name: hacer test passes, as the core driver does', (scenario) => {
     expect(runScenario(scenario).ok).toBe(true)
     expect(runCliScenario(scenario, bin)).toEqual({ name: scenario.name, ok: true, errors: [] })
+  })
+
+  it.each(project1Scenarios())('$name: hacer test passes, as the core driver does', (scenario) => {
+    expect(runChipScenario(scenario).ok).toBe(true)
+    expect(runCliScenario(scenario, bin)).toEqual({ name: scenario.name, ok: true, errors: [] })
+  })
+
+  it('fails project1/Xor on the vendored empty template, as every driver does', () => {
+    const template = { ...project1Scenario('Xor'), hdl: project1Vector('Xor', 'hdl') }
+    const failed = { name: 'project1/Xor', ok: false, errors: ['row 2: out expected 1, got 0'] }
+    expect(runChipScenario(template)).toEqual(failed)
+    expect(runCliScenario(template, bin)).toEqual(failed)
   })
 
   it('fails with the core driver when the recorded vector is wrong', () => {

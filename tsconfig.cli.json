@@ -9,8 +9,11 @@
   "include": [
     "src/cli",
     "src/mcp",
+    "src/scenarios/project1.ts",
+    "src/scenarios/project1.test.ts",
     "src/scenarios/drivers/cli.ts",
     "src/scenarios/drivers/cli.test.ts",
+    "src/scenarios/drivers/core.test.ts",
     "src/scenarios/drivers/mcp.ts",
     "src/scenarios/drivers/mcp.test.ts"
   ]

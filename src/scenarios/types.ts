@@ -62,3 +62,12 @@ export interface SimulationScenario {
 
 /** Every recovered scenario the core driver runs. */
 export type Scenario = NandScenario | CircuitBuildScenario | SimulationScenario
+
+/** A chip and the vectors it must pass. `name` is the scenario id, e.g. `project1/Xor`. */
+export interface ChipScenario {
+  name: string
+  chip: string
+  hdl: string
+  tst: string
+  cmp: string
+}

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { nand3Scenario, threeGateScenario } from '../nand3'
-import { runAllScenarios, runScenario, SCENARIOS, type CoreScenarioResult } from './core'
+import { project1Scenario, project1Scenarios, project1Vector } from '../project1'
+import { runAllScenarios, runChipScenario, runScenario, SCENARIOS, type CoreScenarioResult } from './core'
 
 const EXPECTED: CoreScenarioResult[] = [
   {
@@ -67,5 +68,14 @@ describe('core scenario driver', () => {
 
   it.each(SCENARIOS)('$name: runs as NAND through the engine', (scenario) => {
     expect(runScenario(scenario)).toEqual(EXPECTED.find((result) => result.name === scenario.name))
+  })
+
+  it.each(project1Scenarios())('$name: testChip passes', (scenario) => {
+    expect(runChipScenario(scenario)).toEqual({ name: scenario.name, ok: true, errors: [] })
+  })
+
+  it('fails project1/Xor on the vendored empty template, as every driver does', () => {
+    const template = { ...project1Scenario('Xor'), hdl: project1Vector('Xor', 'hdl') }
+    expect(runChipScenario(template)).toEqual({ name: 'project1/Xor', ok: false, errors: ['row 2: out expected 1, got 0'] })
   })
 })
