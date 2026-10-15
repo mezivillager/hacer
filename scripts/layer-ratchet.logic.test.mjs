@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { cruise } from 'dependency-cruiser'
 import { createRequire } from 'node:module'
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import fs from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
@@ -96,6 +96,21 @@ describe('the rules in .dependency-cruiser.cjs', () => {
   it('fires every rule it declares — no rule is dead', () => {
     const declared = require(path.join(REPO_ROOT, CONFIG_FILE)).forbidden.map((r) => r.name)
     expect([...fired].sort()).toEqual([...declared].sort())
+  })
+})
+
+describe('the mesh files mesh-no-state names in this repo', () => {
+  const pattern = require(path.join(REPO_ROOT, CONFIG_FILE)).forbidden.find((r) => r.name === 'mesh-no-state').from.path
+  const listed = /^\^\((.+)\)\$$/.exec(pattern)?.[1].split('|') ?? []
+
+  it('are written out as literal paths', () => {
+    expect(listed.length).toBeGreaterThan(0)
+    for (const file of listed) expect(file).toMatch(/^(?:[\w/-]|\\\.)+$/)
+  })
+
+  it('each exist, so a renamed mesh cannot drop out of the rule unnoticed', () => {
+    const missing = listed.map((file) => file.replaceAll('\\.', '.')).filter((file) => !existsSync(path.join(REPO_ROOT, file)))
+    expect(missing).toEqual([])
   })
 })
 
