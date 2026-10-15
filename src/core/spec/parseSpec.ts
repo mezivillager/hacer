@@ -14,49 +14,55 @@ export interface ParseSpecOptions {
   chips?: ChipRegistry
 }
 
-const TAG = /hacer-(spec|sidecar)/gi
+const IGNORABLE = '[\\u00AD\\u034F\\u061C\\u180B-\\u180F\\u200B-\\u200F\\u202A-\\u202E\\u2060-\\u206F\\uFE00-\\uFE0F\\uFEFF]*'
+const spelled = (word: string): string => [...word].join(IGNORABLE)
+/** Either tag in any case, through invisible characters and lookalike dashes, ending where no letter follows. */
+const TAG = new RegExp(`${spelled('hacer')}${IGNORABLE}[-\\u00AD\\u2010-\\u2015\\u2212\\uFE63\\uFF0D]${IGNORABLE}(?:(${spelled('spec')})|${spelled('sidecar')})(?![a-z])`, 'gi')
+const CANONICAL_ID = /^p[1-9][0-9]*$/
 const HEADER = /\/\/[ \t]*hacer-spec[ \t]+(\S+)/y
 const SIDECAR_BLOCK = /\/\*[ \t]*hacer-sidecar\s([\s\S]*?)\*\/\s*$/
 const LITERALS = new Set(['true', 'false'])
 
 const describeRef = (ref: Ref): string => (ref.kind === 'part-pin' ? `${ref.partId}.${printPinRef(ref.pin, ref.slice)}` : printPinRef(ref.pin, ref.slice))
 
-/**
- * The version is read in two places only: a `// hacer-spec <v>` header as the first content, and a
- * hacer-sidecar block comment as the last. Any other occurrence of either tag, in any case, is refused.
- */
+/** The version lives in one canonical header first and one sidecar block last; any other tag is refused. */
 function readVersions(source: string): { sidecar: Sidecar } | { diagnostics: SpecDiagnostic[] } {
   const refuse = (code: 'unknown-schema-version' | 'invalid-sidecar', message: string) => ({ diagnostics: [{ code, severity: 'error' as const, message }] })
   HEADER.lastIndex = Math.max(0, source.search(/\S/))
   const header = HEADER.exec(source)
-  const block = SIDECAR_BLOCK.exec(source)
+  const found = SIDECAR_BLOCK.exec(source)
+  const block = found && source.slice(source.lastIndexOf('\n', found.index) + 1, found.index).trim() === '' ? found : null
   const headerTag = header ? header.index + header[0].indexOf('hacer') : -1
   const blockTag = block ? block.index + block[0].indexOf('hacer') : Number.POSITIVE_INFINITY
   for (const tag of source.matchAll(TAG)) {
     const at = tag.index ?? 0
     if (at === headerTag || at >= blockTag) continue
     const where = `line ${source.slice(0, at).split('\n').length}`
-    if (tag[1].toLowerCase() === 'spec') return refuse('unknown-schema-version', `"${tag[0]}" at ${where} is not a "// hacer-spec <version>" header on the file's first line`)
-    return refuse('invalid-sidecar', `"${tag[0]}" at ${where} is not a /* hacer-sidecar */ block at the end of the file`)
+    if (tag[1] !== undefined) return refuse('unknown-schema-version', `"${tag[0]}" at ${where} is not a "// hacer-spec <version>" header as the first thing in the file (after a BOM or blank lines)`)
+    return refuse('invalid-sidecar', `"${tag[0]}" at ${where} is not a /* hacer-sidecar */ block opening its own line at the end of the file`)
   }
   if (header && header[1] !== String(SPEC_SCHEMA_VERSION)) return refuse('unknown-schema-version', `Spec schemaVersion "${header[1]}" is not one this build reads (${SPEC_SCHEMA_VERSION})`)
   return block ? parseSidecar(block[1]) : { sidecar: emptySidecar() }
 }
 
-/** Marked parts keep their ids; an unmarked one is keyed by its position, and that is reported. */
+/** Keeps a marker p1..p(2^53 - 1) seen once; keys any other part by position, from a size-independent counter. */
 function assignPartIds(parts: HDLPart[], diagnostics: SpecDiagnostic[]): Part[] {
-  const marked = parts.map((part, i) => (parts.findIndex((other) => other.id === part.id) === i ? part.id : undefined))
-  const taken = new Set(marked.filter((id) => id !== undefined))
-  let next = Math.max(0, ...[...taken].map((id) => Number(id.slice(1)))) + 1
+  const taken = new Set<string>()
+  const lost = parts.map(({ id }): [SpecDiagnostic['code'], string] | null => {
+    if (id === undefined) return ['part-id-assigned', 'has no // #p<n> id']
+    if (!CANONICAL_ID.test(id) || Number(id.slice(1)) > Number.MAX_SAFE_INTEGER) return ['invalid-part-id', `has the id ${id.slice(0, 24)}, which is not p1 to p${Number.MAX_SAFE_INTEGER}`]
+    if (taken.has(id)) return ['duplicate-part-id', `repeats the id ${id}`]
+    taken.add(id)
+    return null
+  })
+  let next = 1
   return parts.map((part, i) => {
-    let id = marked[i]
-    if (id === undefined) {
-      id = `p${i + 1}`
-      while (taken.has(id)) id = `p${next++}`
-      taken.add(id)
-      const lost = part.id === undefined ? 'has no // #p<n> id' : `repeats the id ${part.id}`
-      diagnostics.push({ code: part.id === undefined ? 'part-id-assigned' : 'duplicate-part-id', severity: part.id === undefined ? 'info' : 'warning', partId: id as PartId, message: `${part.name} (part ${i + 1}) ${lost}; keyed by its position as ${id}` })
-    }
+    const reason = lost[i]
+    if (reason === null) return { id: part.id as PartId, chip: part.name }
+    let id = `p${i + 1}`
+    while (taken.has(id)) id = `p${next++}`
+    taken.add(id)
+    diagnostics.push({ code: reason[0], severity: part.id === undefined ? 'info' : 'warning', partId: id as PartId, message: `${part.name} (part ${i + 1}) ${reason[1]}; keyed by its position as ${id}` })
     return { id: id as PartId, chip: part.name }
   })
 }
