@@ -44,9 +44,11 @@ describe('chipCompletionStorage', () => {
 
 describe('completed chips across a reload', () => {
   it('a passing run is stored, and a freshly loaded store starts from it', async () => {
-    const { circuitActions } = await import('@/store/circuitStore')
+    const { circuitActions, useCircuitStore } = await import('@/store/circuitStore')
     circuitActions.runChipTest('Not', 'builtin')
     expect(JSON.parse(localStorage.getItem('hacer-completed-chips') ?? '[]')).toContain('Not')
+    // Emptied so that only a store re-created from storage can hold ['Not'] below.
+    useCircuitStore.setState({ completedChips: [] })
 
     // A reload is a fresh module graph over the same storage.
     vi.resetModules()
