@@ -11,10 +11,11 @@ interface CachedEvaluator {
   evaluate: CompiledEvaluator
   resolvedParts: ReadonlyArray<readonly [string, ChipDefinition | undefined]>
   checkedAgainst: ChipRegistry
+  checkedAtVersion: number
 }
 
-// Keyed by definition, not registry, because callers build a fresh registry view per tick. Each
-// registry is checked once: register refuses a duplicate, so a name it resolves never changes.
+// Keyed by definition, not registry, because callers build a fresh registry view per tick. The
+// parts are re-checked only when the registry object or its version differs from the last check.
 const compiledCache = new WeakMap<ChipDefinition, CachedEvaluator>()
 
 const stillResolves = (cached: CachedEvaluator, registry: ChipRegistry): boolean =>
@@ -48,9 +49,14 @@ export function evaluateChipWithCtx(
   }
   if (isHDLChip(chip)) {
     let cached = compiledCache.get(chip)
-    if (cached && cached.checkedAgainst !== ctx.registry) {
-      if (stillResolves(cached, ctx.registry)) cached.checkedAgainst = ctx.registry
-      else cached = undefined
+    const version = ctx.registry.version()
+    if (cached && (cached.checkedAgainst !== ctx.registry || cached.checkedAtVersion !== version)) {
+      if (stillResolves(cached, ctx.registry)) {
+        cached.checkedAgainst = ctx.registry
+        cached.checkedAtVersion = version
+      } else {
+        cached = undefined
+      }
     }
     if (!cached) {
       const parsed = parseHDL(chip.implementation.source)
@@ -63,7 +69,7 @@ export function evaluateChipWithCtx(
       }
       const partNames = new Set(parsed.chip.parts.map((part) => part.name))
       if (parsed.chip.builtin) partNames.add(parsed.chip.builtin)
-      cached = { evaluate: result.evaluate, resolvedParts: [...partNames].map((name) => [name, ctx.registry.get(name)] as const), checkedAgainst: ctx.registry }
+      cached = { evaluate: result.evaluate, resolvedParts: [...partNames].map((name) => [name, ctx.registry.get(name)] as const), checkedAgainst: ctx.registry, checkedAtVersion: version }
       compiledCache.set(chip, cached)
     }
     return cached.evaluate(inputs, ctx)

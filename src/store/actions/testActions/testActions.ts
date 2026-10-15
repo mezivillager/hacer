@@ -37,6 +37,9 @@ function makeSourceFirstRegistry(chipName: string, sourceChip: ChipDefinition, b
       }
       return out
     },
+    version(): number {
+      return baseRegistry.version()
+    },
     register(_chip: ChipDefinition): void {
       throw new Error('makeSourceFirstRegistry: read-only view')
     },
