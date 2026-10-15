@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-15T11:08:56.152Z",
+  "generatedAt": "2026-10-15T11:18:39.247Z",
   "head": {
-    "sha": "21117968e18aa700d99e52df5e8fe536b7a96fb9",
-    "date": "2026-10-15T14:07:48+03:00",
-    "subject": "fix(core): deserializeCircuit prunes a wire whose width is not a positive integer"
+    "sha": "61f43292d6bc51e14a755ae268f7cb1c239ba1dc",
+    "date": "2026-10-15T14:17:37+03:00",
+    "subject": "docs(decisions): R833, the records PR carries size-override"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-15T11:08:56.152Z",
+      "fetchedAt": "2026-10-15T11:18:39.247Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-15T11:08:56.152Z",
+      "fetchedAt": "2026-10-15T11:18:39.247Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-15T11:08:56.152Z",
+      "fetchedAt": "2026-10-15T11:18:39.247Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-15T11:08:56.152Z",
+      "fetchedAt": "2026-10-15T11:18:39.247Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-15T11:08:56.152Z",
+      "fetchedAt": "2026-10-15T11:18:39.247Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-15T11:08:56.152Z",
+      "fetchedAt": "2026-10-15T11:18:39.247Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-15T11:08:56.152Z",
+      "fetchedAt": "2026-10-15T11:18:39.247Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-15T11:08:56.152Z",
+      "fetchedAt": "2026-10-15T11:18:39.247Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-15T11:08:56.152Z",
+      "fetchedAt": "2026-10-15T11:18:39.247Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-15T11:08:56.152Z",
+      "fetchedAt": "2026-10-15T11:18:39.247Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-15T11:08:56.152Z",
+      "fetchedAt": "2026-10-15T11:18:39.247Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-15T11:08:56.152Z",
+      "fetchedAt": "2026-10-15T11:18:39.247Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-15T11:08:56.152Z",
+      "fetchedAt": "2026-10-15T11:18:39.247Z",
       "status": "ok"
     }
   },
@@ -81,8 +81,8 @@
         "slug": "foundation",
         "epicNumber": 318,
         "open": 26,
-        "ready": 2,
-        "inProgress": 1,
+        "ready": 3,
+        "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 3,
@@ -412,6 +412,11 @@
         "project": "harness"
       },
       {
+        "number": 377,
+        "title": "N.2: fromLegacyCircuit — the one-way importer, with §10's structurally-traced parity as its acceptance test",
+        "project": "foundation"
+      },
+      {
         "number": 749,
         "title": "deserializeCircuit loads bus components and nodes of any width (a huge bus width exhausts memory)",
         "project": "foundation"
@@ -460,6 +465,23 @@
         "project": "harness",
         "rank": 2,
         "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 377,
+        "title": "N.2: fromLegacyCircuit — the one-way importer, with §10's structurally-traced parity as its acceptance test",
+        "labels": [
+          "agent-ready",
+          "risk:2",
+          "project:foundation"
+        ],
+        "blocking": [
+          175
+        ],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
         "pickable": true,
         "reason": null
       },
@@ -1279,24 +1301,6 @@
         "reason": "unshaped"
       },
       {
-        "number": 377,
-        "title": "N.2: fromLegacyCircuit — the one-way importer, with §10's structurally-traced parity as its acceptance test",
-        "labels": [
-          "agent-ready",
-          "in-progress",
-          "risk:2",
-          "project:foundation"
-        ],
-        "blocking": [
-          175
-        ],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 379,
         "title": "N.4: layout(doc, surface, { previous }) — pure, deterministic, synchronous; barycentre first, then hold what is placed",
         "labels": [
@@ -1921,12 +1925,12 @@
     "byProject": {
       "foundation": [
         338,
+        377,
         749,
         151,
         184,
         325,
         339,
-        377,
         379,
         380,
         381,
@@ -2079,6 +2083,31 @@
       }
     ],
     "merged": [
+      {
+        "number": 750,
+        "title": "docs(harness): close the 2026-10-14 hacer-loop-50 run",
+        "url": "https://github.com/mezivillager/hacer/pull/750",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0",
+          "size-override"
+        ],
+        "headRefName": "docs/2026-10-14-hacer-loop-50-close",
+        "isDraft": false,
+        "createdAt": "2026-10-15T11:11:23Z",
+        "mergedAt": "2026-10-15T11:17:38Z",
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus 5.5 (coordinator)",
+            "at": "2026-10-15T11:14:12Z",
+            "url": "https://github.com/mezivillager/hacer/pull/750#issuecomment-6190729691"
+          }
+        ]
+      },
       {
         "number": 748,
         "title": "fix(core): deserializeCircuit prunes a wire whose width is not a positive integer",
@@ -3601,33 +3630,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/663#issuecomment-5942865652"
           }
         ]
-      },
-      {
-        "number": 662,
-        "title": "chore(harness): harden lint:docs fence tracking, line:col suffixes, titled links",
-        "url": "https://github.com/mezivillager/hacer/pull/662",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:2"
-        ],
-        "headRefName": "fix/251-docpath-robustness",
-        "isDraft": false,
-        "createdAt": "2026-10-01T23:32:32Z",
-        "mergedAt": "2026-10-01T23:43:54Z",
-        "closes": [
-          251
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Opus 5.5 (fresh context)",
-            "at": "2026-10-01T23:38:58Z",
-            "url": "https://github.com/mezivillager/hacer/pull/662#issuecomment-5942776115"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -3640,31 +3642,6 @@
   },
   "claims": {
     "items": [
-      {
-        "number": 377,
-        "ref": "refs/heads/claim/377",
-        "sha": "18d8e1a6644790187bfc2be2b6f583ed104c4611",
-        "state": "OPEN",
-        "title": "N.2: fromLegacyCircuit — the one-way importer, with §10's structurally-traced parity as its acceptance test",
-        "url": "https://github.com/mezivillager/hacer/issues/377",
-        "labels": [
-          "agent-ready",
-          "in-progress",
-          "risk:2",
-          "project:foundation"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-50",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-15T08:41:01Z",
-          "url": "https://github.com/mezivillager/hacer/issues/377#issuecomment-6188074122"
-        }
-      },
       {
         "number": 470,
         "ref": "refs/heads/claim/470",
@@ -3874,6 +3851,14 @@
         "title": "Session record — 2026-10-04: the coordinator loop toward 20% weekly usage",
         "status": null,
         "lines": 77
+      },
+      {
+        "file": "docs/harness/sessions/2026-10-14.md",
+        "date": "2026-10-14",
+        "kind": "record",
+        "title": "Session record — 2026-10-14: the coordinator loop toward 50% weekly usage",
+        "status": null,
+        "lines": 176
       }
     ]
   },
@@ -4316,7 +4301,7 @@
         "date": "2026-09-24",
         "whatWentWrong": "`removeJunction` deleted wires the user drew (B-009, #403), and its tests stayed green over it. #396's tests hand-wrote a shape no store action writes (branches whose `from` is the junction), which is the only shape its fix worked on. Two older tests pinned the loss outright: their wires were gesture-shaped (`input-a → gate-N`, two real endpoints each), and they asserted the extra wires were deleted. A third passed only because `wireIds` listed branches that started at `'j-placeholder'`, a junction that never existed. #396's verifier found it; the same kind of fixture had already overstated a fix on #365",
         "shouldHaveBeenCaughtBy": "a test that builds a junction through the actions the app uses (`startWiringFromJunction` → `completeWiringFromJunction`) rather than hand-written endpoints or `wireIds`",
-        "mechanised": "partly — #403's guard tests drive the real gesture; nothing stops the next hand-written fixture. Second occurrence (#365, #396), so it is due a mechanism",
+        "mechanised": "yes — #704 (PR #718): `src/test/junctionFixtures.ts` builds a junction through the store's own actions, and `src/store/handWrittenJunctions.test.ts` fails a store test that writes a junction's `wireIds` (12 sites migrated, 11 listed with a reason); #717 (PR #733) loads the import-shaped fixtures through the deserializer instead (`src/test/documentFixtures.ts`)",
         "decision": "R607"
       },
       {
@@ -4346,7 +4331,7 @@
       {
         "id": "L059",
         "date": "2026-09-29",
-        "whatWentWrong": "The coordinator wrote unmeasured claims into briefs and issues three times in one run. #253's brief dated a plan 2026-05 when git says 2025-12 (fixed after a BLOCK on #586). #603's issue asserted the reference IDE fails on unknown pins, when it ignores them (R773). #345's brief asked for a `fix` commit on loop-only scripts, which would cut an app release",
+        "whatWentWrong": "The coordinator wrote unmeasured claims into briefs and issues three times in one run. #253's brief dated a plan 2026-05 when git says 2025-12 (fixed after a BLOCK on #586). #603's issue asserted the reference IDE fails on unknown pins, when it ignores them (R773). #345's brief asked for a `fix` commit on loop-only scripts, which would cut an app release. It recurred four times in the 2026-10-14 run. #715, the coordinator's own issue, said to forbid whole folders from importing the store, though the adapters there import it by design; the coordinator measured it before dispatch and corrected the brief. #718's brief called #403 a PR (the fix was PR #459); #713's brief stated the node drag lock from memory, and it never checked bus placement (R819); #168's brief cited as committed a test that existed only in a verifier's scratch directory. The builder or the verifier caught each of the last three",
         "shouldHaveBeenCaughtBy": "the brief's Measured-facts table: every claim a brief or issue makes about code, history or a reference gets a row with the command that measured it",
         "mechanised": "partly — #394: none of the three names a package or a path, so `scripts/issue-facts.mjs` catches none of them; the rule that does apply, a Measured-facts row with its command for every claim, is now stated in `docs/harness/README.md` and `ha-next` §3, and the dispatch guard still checks only that the slot exists (the builders and a verifier caught all three)",
         "decision": "—"
@@ -4414,13 +4399,37 @@
         "shouldHaveBeenCaughtBy": "a path check over every living doc",
         "mechanised": "yes — #392: `lint:docs` checks every doc under `docs/` (`scripts/hooks/docPathExists.logic.mjs`), less dated history and dated plans/specs (`PATH_EXISTENCE_HISTORY`); the 62 docs still red (475 citations) are in a shrink-only the per-doc baseline in `scripts/hooks/docPathExists.baseline.json` (#685). Fenced samples stay unchecked",
         "decision": "R799, R801"
+      },
+      {
+        "id": "L068",
+        "date": "2026-10-15",
+        "whatWentWrong": "Hang probes killed by `timeout` left their vitest workers running: the killed parent's workers were re-parented to PID 1 and kept about 77% CPU each, for up to an hour. Five were found and killed at 05:01Z, with the load average at 32–45; seven minutes later it was 6.5. They were a large part of the heat R821 answered",
+        "shouldHaveBeenCaughtBy": "the agent that ran the probe: `timeout` kills its direct child, not the workers it forked, and nothing checked for survivors before the agent reported",
+        "mechanised": "no — first occurrence; from 05:01Z every dispatch brief asked the agent to check `ps` for vitest workers with PPID 1 before finishing, and none was found after. The committed briefs do not say it yet",
+        "decision": "—"
+      },
+      {
+        "id": "L069",
+        "date": "2026-10-15",
+        "whatWentWrong": "Two parallel builders wrote their PR bodies to the same scratchpad file, pr-body.md, so #740 showed #741's body for about a minute before it was restored; both bodies were verified afterwards",
+        "shouldHaveBeenCaughtBy": "the dispatch brief: a scratch file that parallel agents write needs a name unique to the task",
+        "mechanised": "no — first occurrence; briefs since name a unique scratch file for a PR body",
+        "decision": "—"
+      },
+      {
+        "id": "L070",
+        "date": "2026-10-15",
+        "whatWentWrong": "Twice in one run the coordinator dispatched a Sonnet verifier where the tier rule (`docs/harness/model-tiering.md` §2: any `src/core` or `src/simulation` change is Opus) and the verifier brief's engine clause give Opus. #739 was tests-only under `src/core/spec`, read as \"off the engine\", and merged on R824. #748 changes production code under `src/core/serialization` and was chosen by its `risk:1` label; an Opus second pass followed",
+        "shouldHaveBeenCaughtBy": "the dispatch: the tier is read from the verifier brief's engine clause, which names paths, not from the issue's risk label",
+        "mechanised": "no — second occurrence, so it is due a mechanism: the tier computed from the changed paths at dispatch",
+        "decision": "—"
       }
     ],
     "byMechanised": {
-      "no": 8,
-      "yes": 52,
+      "no": 11,
+      "yes": 53,
       "other": 1,
-      "partly": 6
+      "partly": 5
     }
   },
   "adrs": {
@@ -5396,7 +5405,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-01",
-        "merges": 3
+        "merges": 2
       },
       {
         "date": "2026-10-02",
@@ -5412,20 +5421,20 @@
       },
       {
         "date": "2026-10-15",
-        "merges": 26
+        "merges": 27
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-01T11:08:56.152Z",
-      "merged": 79,
+      "since": "2026-10-01T11:18:39.247Z",
+      "merged": 80,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 2
       },
       "blockedOnce": {
         "count": 5,
-        "of": 68,
+        "of": 69,
         "prs": [
           700,
           725,
@@ -5441,8 +5450,8 @@
           "without": []
         },
         "nonCode": {
-          "merged": 25,
-          "withVerdict": 14,
+          "merged": 26,
+          "withVerdict": 15,
           "without": [
             654,
             655,
@@ -8615,11 +8624,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "21117968e18aa700d99e52df5e8fe536b7a96fb9",
+        "sha": "61f43292d6bc51e14a755ae268f7cb1c239ba1dc",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38725149379/job/116389023315",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/38726300581/job/116392886466",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -13506,6 +13515,367 @@
         "amends": null,
         "assumes": null,
         "costIfWrong": "the run ends below 20%; the next run picks them with a full budget."
+      },
+      {
+        "id": "R805",
+        "kind": "ruling",
+        "title": "the run stops at 50% weekly usage or at the 2026-10-16T03:00Z reset, whichever comes first",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:7",
+        "buildsOn": [
+          "R741"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "the run ends earlier than the owner wanted; one re-issue restarts it on the new week."
+      },
+      {
+        "id": "R806",
+        "kind": "ruling",
+        "title": "with a full budget the large ready items are back in play, except the two that render the app",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:13",
+        "buildsOn": [
+          "R742",
+          "ADR-0016"
+        ],
+        "amends": [
+          "R804"
+        ],
+        "assumes": null,
+        "costIfWrong": "two roles wait longer; nothing renders on the laptop."
+      },
+      {
+        "id": "R807",
+        "kind": "ruling",
+        "title": "the coordinator releases its own stale claims",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:22",
+        "buildsOn": "none",
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "none; a release only deletes a ref its holder owns."
+      },
+      {
+        "id": "R808",
+        "kind": "ruling",
+        "title": "the five open dependabot PRs merge one at a time through the merge tool",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:28",
+        "buildsOn": [
+          "R793"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "ten minutes of CI per PR."
+      },
+      {
+        "id": "R809",
+        "kind": "ruling",
+        "title": "the coordinator shapes the next spine issues while builders run",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:33",
+        "buildsOn": "none",
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "an issue body the owner may want to rewrite; no code changes."
+      },
+      {
+        "id": "R810",
+        "kind": "ruling",
+        "title": "#471's cut-over moves from 2026-09-25 to 2026-09-26 instead of editing four old rulings",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:40",
+        "buildsOn": [
+          "R764"
+        ],
+        "amends": [
+          "R764"
+        ],
+        "assumes": null,
+        "costIfWrong": "a 2026-09-25 ruling written after #510's merge escapes the rule; it is history either way."
+      },
+      {
+        "id": "R811",
+        "kind": "ruling",
+        "title": "in #373's series, a type-only import of `Position`/`Rotation` from `@/store/types` is allowed",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:49",
+        "buildsOn": [
+          "ADR-0020"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "one more small PR that moves two type aliases and rewrites their imports."
+      },
+      {
+        "id": "R812",
+        "kind": "ruling",
+        "title": "`size-override` on #700 (#271)",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:57",
+        "buildsOn": [
+          "R784"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "a long docs PR merges without the size rule's second look; prose, not code."
+      },
+      {
+        "id": "R813",
+        "kind": "ruling",
+        "title": "#699 and the shaping item wait for a slot; the close waits on the stop condition",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:65",
+        "buildsOn": [
+          "R798",
+          "R805"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "a slot sits idle for the minutes until a verifier reports."
+      },
+      {
+        "id": "R814",
+        "kind": "ruling",
+        "title": "#702–#705 and shaping wait for a slot under the two-agent cap",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:72",
+        "buildsOn": [
+          "R798",
+          "R813"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "the queue drains at two agents' pace."
+      },
+      {
+        "id": "R815",
+        "kind": "ruling",
+        "title": "#374 (N.1, the spec model) becomes `agent-ready` and is built this run",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:79",
+        "buildsOn": [
+          "R809",
+          "ADR-0020",
+          "ADR-0018"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "the spec's v1 version boundary (its first committed fixture) is set without the owner"
+      },
+      {
+        "id": "R816",
+        "kind": "ruling",
+        "title": "coordinator-filed `risk:2` follow-ups carry `agent-ready` against the queue-up rule's wording",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:93",
+        "buildsOn": "none",
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "`risk:2` follow-ups were built without the owner's triage. The owner decides whether"
+      },
+      {
+        "id": "R817",
+        "kind": "ruling",
+        "title": "#723 (N.1) is split at the parse/print seam, with the v1 version boundary and an ADR-0020 amendment in the second PR",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:101",
+        "buildsOn": [
+          "R815"
+        ],
+        "amends": [
+          "ADR-0020 §1"
+        ],
+        "assumes": null,
+        "costIfWrong": "one more builder pass and a second verification (~1.5 h of a 23 h budget). In exchange"
+      },
+      {
+        "id": "R818",
+        "kind": "ruling",
+        "title": "buses lock dragging by the node rule",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:119",
+        "buildsOn": "none",
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "a user mid-placement must leave placement mode to move a bus; reversing it is one line"
+      },
+      {
+        "id": "R819",
+        "kind": "ruling",
+        "title": "the shared drag lock is the union of the two old locks",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:128",
+        "buildsOn": [
+          "R818"
+        ],
+        "amends": [
+          "R818"
+        ],
+        "assumes": null,
+        "costIfWrong": "a user must leave any placement mode before dragging; one clause in `canDragPart`"
+      },
+      {
+        "id": "R820",
+        "kind": "ruling",
+        "title": "#196 is closed as superseded and no longer blocks #166",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:139",
+        "buildsOn": "none",
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "a wanted report over the suite is filed afresh against #166's result."
+      },
+      {
+        "id": "R821",
+        "kind": "ruling",
+        "title": "while the load average is above ~20, verifiers take the full suite from CI's run on the exact head",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:147",
+        "buildsOn": [
+          "R776",
+          "R777"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "a defect that shows only on this machine and not on CI's Linux runner passes"
+      },
+      {
+        "id": "R822",
+        "kind": "ruling",
+        "title": "import warnings for unknown bus kinds and endpoint types are summarised into one toast with a count per kind",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:158",
+        "buildsOn": "none",
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "a user debugging one bad file reads the warning data, not the toast, for the ids."
+      },
+      {
+        "id": "R823",
+        "kind": "ruling",
+        "title": "completed-chip tracking lives in `src/lib/chipCompletionStorage.ts`, beside `performanceModeStorage`, not in a session slice",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:165",
+        "buildsOn": [
+          "ADR-0020 §5"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "when the session slice lands, two small storage modules move into it together."
+      },
+      {
+        "id": "R824",
+        "kind": "ruling",
+        "title": "PR #739 (#168) merges on its Sonnet verification, although the verifier brief's engine clause asks for Opus on `src/core`",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:174",
+        "buildsOn": "none",
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "a weak property merges and gives false confidence in the round trip until the next"
+      },
+      {
+        "id": "R825",
+        "kind": "ruling",
+        "title": "#378 (N.3) is `agent-ready` and built in the shaper's three PRs, each with an Opus builder, an Opus verifier and a fidelity review",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:187",
+        "buildsOn": [
+          "R815",
+          "R817"
+        ],
+        "amends": [
+          "ADR-0020 §1"
+        ],
+        "assumes": null,
+        "costIfWrong": "`risk:2` engine work merges without the owner's triage. Each PR still carries an Opus"
+      },
+      {
+        "id": "R826",
+        "kind": "ruling",
+        "title": "#377's importer rulings 1–4 are adopted as the shaper wrote them, #377 is `agent-ready`, and its PR 1 does not wait for `compileSpec`",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:206",
+        "buildsOn": [
+          "R815",
+          "R825"
+        ],
+        "amends": [
+          "ADR-0020 §1",
+          "ADR-0020 §10"
+        ],
+        "assumes": null,
+        "costIfWrong": "ruling 1 alone touches the model, and its alternative (`drivers: Ref[]`) changes only"
+      },
+      {
+        "id": "R827",
+        "kind": "ruling",
+        "title": "`evaluateChip`'s cache rule must be exact under every registry mutation the code allows, not only today's",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:230",
+        "buildsOn": [
+          "R825"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "one more builder pass (~30 min) for a case today's UI cannot reach."
+      },
+      {
+        "id": "R828",
+        "kind": "ruling",
+        "title": "#377's parity harness evaluates imports through `compileSpec` now that it is on `main`; the export path stays pinned to #742",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:240",
+        "buildsOn": [
+          "R826",
+          "ADR-0020 §1.11"
+        ],
+        "amends": [
+          "R826"
+        ],
+        "assumes": null,
+        "costIfWrong": "parity no longer exercises the export path; the export is covered by #739's properties"
+      },
+      {
+        "id": "R829",
+        "kind": "ruling",
+        "title": "the out-of-range-slice grading gap is not labelled `sev:critical`, and #371 is built now with the spec-path check in scope",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:253",
+        "buildsOn": [
+          "R825",
+          "ADR-0018 §3"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "if the owner reads §2 as covering acceptance, the label was owed for the hours until"
+      },
+      {
+        "id": "R830",
+        "kind": "ruling",
+        "title": "#371's clause on an internal signal whose width is inferred from the part-pin slice that writes it is superseded by #746; PR #747 still closes #371",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:264",
+        "buildsOn": [
+          "R829"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "an out-of-range read of an internal signal stays accepted on the HDL path until #746"
+      },
+      {
+        "id": "R831",
+        "kind": "ruling",
+        "title": "with weekly usage at 47%, #377 PR 2 and PR 3 are left for the next run; #745 is the last build, then the close",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:275",
+        "buildsOn": [
+          "R805"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "one more spine PR could have landed this run."
+      },
+      {
+        "id": "R832",
+        "kind": "ruling",
+        "title": "corrects R830: the clause #746 takes over is #371's first-comment fold-in, not criterion 2",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:284",
+        "buildsOn": [
+          "R830"
+        ],
+        "amends": [
+          "R830"
+        ],
+        "assumes": null,
+        "costIfWrong": "none beyond the record."
+      },
+      {
+        "id": "R833",
+        "kind": "ruling",
+        "title": "the run's records PR carries `size-override`",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:293",
+        "buildsOn": [
+          "R812"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "one long review instead of two shorter ones."
       }
     ],
     "edges": [
@@ -13541,6 +13911,27 @@
         "kind": "amends",
         "anchor": "§7.1, §9",
         "source": "docs/decisions/rulings/2026-09-29-hacer-loop-60.md:85"
+      },
+      {
+        "from": "R817",
+        "to": "ADR-0020",
+        "kind": "amends",
+        "anchor": "§1",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:103"
+      },
+      {
+        "from": "R825",
+        "to": "ADR-0020",
+        "kind": "amends",
+        "anchor": "§1",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:189"
+      },
+      {
+        "from": "R826",
+        "to": "ADR-0020",
+        "kind": "amends",
+        "anchor": "§1, §10",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:208"
       },
       {
         "from": "ADR-0022",
@@ -14377,6 +14768,231 @@
         "source": "docs/decisions/rulings/2026-10-04-hacer-loop-20.md:65"
       },
       {
+        "from": "R805",
+        "to": "R741",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:8"
+      },
+      {
+        "from": "R806",
+        "to": "R742",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:14"
+      },
+      {
+        "from": "R806",
+        "to": "ADR-0016",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:14"
+      },
+      {
+        "from": "R806",
+        "to": "R804",
+        "kind": "amends",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:15"
+      },
+      {
+        "from": "R808",
+        "to": "R793",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:29"
+      },
+      {
+        "from": "R810",
+        "to": "R764",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:41"
+      },
+      {
+        "from": "R810",
+        "to": "R764",
+        "kind": "amends",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:42"
+      },
+      {
+        "from": "R811",
+        "to": "ADR-0020",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:50"
+      },
+      {
+        "from": "R812",
+        "to": "R784",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:58"
+      },
+      {
+        "from": "R813",
+        "to": "R798",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:66"
+      },
+      {
+        "from": "R813",
+        "to": "R805",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:66"
+      },
+      {
+        "from": "R814",
+        "to": "R798",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:73"
+      },
+      {
+        "from": "R814",
+        "to": "R813",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:73"
+      },
+      {
+        "from": "R815",
+        "to": "R809",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:80"
+      },
+      {
+        "from": "R815",
+        "to": "ADR-0020",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:80"
+      },
+      {
+        "from": "R815",
+        "to": "ADR-0018",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:80"
+      },
+      {
+        "from": "R817",
+        "to": "R815",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:102"
+      },
+      {
+        "from": "R819",
+        "to": "R818",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:129"
+      },
+      {
+        "from": "R819",
+        "to": "R818",
+        "kind": "amends",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:130"
+      },
+      {
+        "from": "R821",
+        "to": "R776",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:148"
+      },
+      {
+        "from": "R821",
+        "to": "R777",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:148"
+      },
+      {
+        "from": "R823",
+        "to": "ADR-0020",
+        "kind": "builds-on",
+        "anchor": "§5",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:166"
+      },
+      {
+        "from": "R825",
+        "to": "R815",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:188"
+      },
+      {
+        "from": "R825",
+        "to": "R817",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:188"
+      },
+      {
+        "from": "R826",
+        "to": "R815",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:207"
+      },
+      {
+        "from": "R826",
+        "to": "R825",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:207"
+      },
+      {
+        "from": "R827",
+        "to": "R825",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:231"
+      },
+      {
+        "from": "R828",
+        "to": "R826",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:241"
+      },
+      {
+        "from": "R828",
+        "to": "ADR-0020",
+        "kind": "builds-on",
+        "anchor": "§1.11",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:241"
+      },
+      {
+        "from": "R828",
+        "to": "R826",
+        "kind": "amends",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:242"
+      },
+      {
+        "from": "R829",
+        "to": "R825",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:254"
+      },
+      {
+        "from": "R829",
+        "to": "ADR-0018",
+        "kind": "builds-on",
+        "anchor": "§3",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:254"
+      },
+      {
+        "from": "R830",
+        "to": "R829",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:265"
+      },
+      {
+        "from": "R831",
+        "to": "R805",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:276"
+      },
+      {
+        "from": "R832",
+        "to": "R830",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:285"
+      },
+      {
+        "from": "R832",
+        "to": "R830",
+        "kind": "amends",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:286"
+      },
+      {
+        "from": "R833",
+        "to": "R812",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:294"
+      },
+      {
         "from": "L046",
         "to": "R310",
         "kind": "introduced-by",
@@ -14503,7 +15119,8 @@
           "R226",
           "R250",
           "R272",
-          "R369"
+          "R369",
+          "R815"
         ]
       },
       {
@@ -14623,7 +15240,8 @@
           "ADR-0016",
           "ADR-0019",
           "R69",
-          "R804"
+          "R804",
+          "R806"
         ]
       },
       {
@@ -14772,7 +15390,8 @@
         "citedBy": [
           "ADR-0018",
           "R100",
-          "R804"
+          "R804",
+          "R806"
         ]
       },
       {
@@ -14880,7 +15499,8 @@
           "ADR-0020",
           "R352",
           "R501",
-          "R503"
+          "R503",
+          "R815"
         ]
       },
       {
@@ -14899,7 +15519,10 @@
           "R513",
           "R514",
           "R761",
-          "R763"
+          "R763",
+          "R815",
+          "R824",
+          "R825"
         ]
       },
       {
@@ -14908,7 +15531,10 @@
         "citedBy": [
           "ADR-0020",
           "R352",
-          "R763"
+          "R763",
+          "R825",
+          "R826",
+          "R827"
         ]
       },
       {
@@ -14996,7 +15622,8 @@
           "R323",
           "R350",
           "R353",
-          "R369"
+          "R369",
+          "R830"
         ]
       },
       {
@@ -15025,7 +15652,8 @@
         "citedBy": [
           "ADR-0020",
           "R303",
-          "R304"
+          "R304",
+          "R826"
         ]
       },
       {
@@ -15037,14 +15665,18 @@
           "R357",
           "R389",
           "R395",
-          "R761"
+          "R761",
+          "R826",
+          "R828",
+          "R831"
         ]
       },
       {
         "id": "#722",
         "kind": "github",
         "citedBy": [
-          "ADR-0020"
+          "ADR-0020",
+          "R826"
         ]
       },
       {
@@ -15142,7 +15774,8 @@
           "ADR-0020",
           "R251",
           "R254",
-          "R255"
+          "R255",
+          "R820"
         ]
       },
       {
@@ -15177,7 +15810,8 @@
         "id": "#176",
         "kind": "github",
         "citedBy": [
-          "ADR-0020"
+          "ADR-0020",
+          "R815"
         ]
       },
       {
@@ -15200,14 +15834,16 @@
         "kind": "github",
         "citedBy": [
           "ADR-0020",
-          "R761"
+          "R761",
+          "R815"
         ]
       },
       {
         "id": "#166",
         "kind": "github",
         "citedBy": [
-          "ADR-0020"
+          "ADR-0020",
+          "R820"
         ]
       },
       {
@@ -15216,7 +15852,9 @@
         "citedBy": [
           "ADR-0020",
           "R244",
-          "R342"
+          "R342",
+          "R815",
+          "R824"
         ]
       },
       {
@@ -15769,7 +16407,9 @@
           "R251",
           "R254",
           "R255",
-          "R610"
+          "R610",
+          "R807",
+          "R823"
         ]
       },
       {
@@ -15843,7 +16483,8 @@
           "R743",
           "R744",
           "R796",
-          "R804"
+          "R804",
+          "R806"
         ]
       },
       {
@@ -16075,7 +16716,10 @@
         "citedBy": [
           "R333",
           "R334",
-          "R344"
+          "R344",
+          "R829",
+          "R830",
+          "R832"
         ]
       },
       {
@@ -16325,7 +16969,8 @@
         "kind": "github",
         "citedBy": [
           "R601",
-          "R522"
+          "R522",
+          "R822"
         ]
       },
       {
@@ -16805,14 +17450,16 @@
         "id": "#510",
         "kind": "github",
         "citedBy": [
-          "R733"
+          "R733",
+          "R810"
         ]
       },
       {
         "id": "#470",
         "kind": "github",
         "citedBy": [
-          "R735"
+          "R735",
+          "R807"
         ]
       },
       {
@@ -16849,7 +17496,8 @@
         "kind": "github",
         "citedBy": [
           "R740",
-          "R741"
+          "R741",
+          "R807"
         ]
       },
       {
@@ -16967,7 +17615,9 @@
         "kind": "github",
         "citedBy": [
           "R764",
-          "R786"
+          "R786",
+          "R806",
+          "R810"
         ]
       },
       {
@@ -17178,7 +17828,8 @@
         "citedBy": [
           "R790",
           "R792",
-          "R793"
+          "R793",
+          "R816"
         ]
       },
       {
@@ -17207,7 +17858,8 @@
         "id": "#672",
         "kind": "github",
         "citedBy": [
-          "R794"
+          "R794",
+          "R808"
         ]
       },
       {
@@ -17222,7 +17874,12 @@
         "kind": "github",
         "citedBy": [
           "R796",
-          "R804"
+          "R804",
+          "R806",
+          "R811",
+          "R814",
+          "R815",
+          "R818"
         ]
       },
       {
@@ -17250,7 +17907,214 @@
         "id": "#271",
         "kind": "github",
         "citedBy": [
-          "R804"
+          "R804",
+          "R806",
+          "R812"
+        ]
+      },
+      {
+        "id": "#700",
+        "kind": "github",
+        "citedBy": [
+          "R812",
+          "R813"
+        ]
+      },
+      {
+        "id": "#699",
+        "kind": "github",
+        "citedBy": [
+          "R813",
+          "R816"
+        ]
+      },
+      {
+        "id": "#701",
+        "kind": "github",
+        "citedBy": [
+          "R813"
+        ]
+      },
+      {
+        "id": "#702",
+        "kind": "github",
+        "citedBy": [
+          "R814"
+        ]
+      },
+      {
+        "id": "#705",
+        "kind": "github",
+        "citedBy": [
+          "R814",
+          "R816"
+        ]
+      },
+      {
+        "id": "#707",
+        "kind": "github",
+        "citedBy": [
+          "R814"
+        ]
+      },
+      {
+        "id": "#703",
+        "kind": "github",
+        "citedBy": [
+          "R814"
+        ]
+      },
+      {
+        "id": "#704",
+        "kind": "github",
+        "citedBy": [
+          "R814"
+        ]
+      },
+      {
+        "id": "#713",
+        "kind": "github",
+        "citedBy": [
+          "R816",
+          "R818",
+          "R819"
+        ]
+      },
+      {
+        "id": "#714",
+        "kind": "github",
+        "citedBy": [
+          "R816"
+        ]
+      },
+      {
+        "id": "#715",
+        "kind": "github",
+        "citedBy": [
+          "R816"
+        ]
+      },
+      {
+        "id": "#723",
+        "kind": "github",
+        "citedBy": [
+          "R817"
+        ]
+      },
+      {
+        "id": "#196",
+        "kind": "github",
+        "citedBy": [
+          "R820"
+        ]
+      },
+      {
+        "id": "#729",
+        "kind": "github",
+        "citedBy": [
+          "R822"
+        ]
+      },
+      {
+        "id": "#731",
+        "kind": "github",
+        "citedBy": [
+          "R822"
+        ]
+      },
+      {
+        "id": "#735",
+        "kind": "github",
+        "citedBy": [
+          "R823"
+        ]
+      },
+      {
+        "id": "#739",
+        "kind": "github",
+        "citedBy": [
+          "R824",
+          "R828"
+        ]
+      },
+      {
+        "id": "#379",
+        "kind": "github",
+        "citedBy": [
+          "R826"
+        ]
+      },
+      {
+        "id": "#381",
+        "kind": "github",
+        "citedBy": [
+          "R826"
+        ]
+      },
+      {
+        "id": "#740",
+        "kind": "github",
+        "citedBy": [
+          "R827"
+        ]
+      },
+      {
+        "id": "#382",
+        "kind": "github",
+        "citedBy": [
+          "R827"
+        ]
+      },
+      {
+        "id": "#742",
+        "kind": "github",
+        "citedBy": [
+          "R828"
+        ]
+      },
+      {
+        "id": "#743",
+        "kind": "github",
+        "citedBy": [
+          "R828",
+          "R831"
+        ]
+      },
+      {
+        "id": "#741",
+        "kind": "github",
+        "citedBy": [
+          "R828"
+        ]
+      },
+      {
+        "id": "#744",
+        "kind": "github",
+        "citedBy": [
+          "R829"
+        ]
+      },
+      {
+        "id": "#746",
+        "kind": "github",
+        "citedBy": [
+          "R830",
+          "R832"
+        ]
+      },
+      {
+        "id": "#747",
+        "kind": "github",
+        "citedBy": [
+          "R830",
+          "R832"
+        ]
+      },
+      {
+        "id": "#745",
+        "kind": "github",
+        "citedBy": [
+          "R831"
         ]
       },
       {
@@ -17663,7 +18527,7 @@
         "id": "L059",
         "kind": "ledger-row",
         "date": "2026-09-29",
-        "title": "The coordinator wrote unmeasured claims into briefs and issues three times in one run. #253's brief dated a plan 2026-05 when git says 2025-12 (fixed after a BLOCK on #586). #603's issue asserted the reference IDE fails on unknown pins, when it ignores them (R773). #345's brief asked for a `fix` commit on loop-only scripts, which would cut an app release",
+        "title": "The coordinator wrote unmeasured claims into briefs and issues three times in one run. #253's brief dated a plan 2026-05 when git says 2025-12 (fixed after a BLOCK on #586). #603's issue asserted the reference IDE fails on unknown pins, when it ignores them (R773). #345's brief asked for a `fix` commit on loop-only scripts, which would cut an app release. It recurred four times in the 2026-10-14 run. #715, the coordinator's own issue, said to forbid whole folders from importing the store, though the adapters there import it by design; the coordinator measured it before dispatch and corrected the brief. #718's brief called #403 a PR (the fix was PR #459); #713's brief stated the node drag lock from memory, and it never checked bus placement (R819); #168's brief cited as committed a test that existed only in a verifier's scratch directory. The builder or the verifier caught each of the last three",
         "source": "docs/harness/ledger.md:74"
       },
       {
@@ -17721,6 +18585,27 @@
         "date": "2026-10-04",
         "title": "`docs/testing/standards.md` kept teaching `e2e/scenarios/` and `waitForSceneStable` after #388 deleted both. The TDD template that mirrors it was caught because it is a `.ts` file; the prescriptive doc was not, because `lint:docs`'s path-existence check covered five named docs and nothing else under `docs/`. Widening the scope alone would still have missed these sites: they sit in fenced code samples, which the check skips by design (ADR-0014) <!-- allow-missing-path -->",
         "source": "docs/harness/ledger.md:82"
+      },
+      {
+        "id": "L068",
+        "kind": "ledger-row",
+        "date": "2026-10-15",
+        "title": "Hang probes killed by `timeout` left their vitest workers running: the killed parent's workers were re-parented to PID 1 and kept about 77% CPU each, for up to an hour. Five were found and killed at 05:01Z, with the load average at 32–45; seven minutes later it was 6.5. They were a large part of the heat R821 answered",
+        "source": "docs/harness/ledger.md:83"
+      },
+      {
+        "id": "L069",
+        "kind": "ledger-row",
+        "date": "2026-10-15",
+        "title": "Two parallel builders wrote their PR bodies to the same scratchpad file, pr-body.md, so #740 showed #741's body for about a minute before it was restored; both bodies were verified afterwards",
+        "source": "docs/harness/ledger.md:84"
+      },
+      {
+        "id": "L070",
+        "kind": "ledger-row",
+        "date": "2026-10-15",
+        "title": "Twice in one run the coordinator dispatched a Sonnet verifier where the tier rule (`docs/harness/model-tiering.md` §2: any `src/core` or `src/simulation` change is Opus) and the verifier brief's engine clause give Opus. #739 was tests-only under `src/core/spec`, read as \"off the engine\", and merged on R824. #748 changes production code under `src/core/serialization` and was chosen by its `risk:1` label; an Opus second pass followed",
+        "source": "docs/harness/ledger.md:85"
       }
     ]
   }
