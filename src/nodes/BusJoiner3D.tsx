@@ -1,6 +1,7 @@
 // BusJoiner3D - N 1-bit inputs joined into 1 N-bit output
 import { useState } from 'react'
 import type { BusComponent } from '@/store/types'
+import type { DragBinding } from '@/gates/types'
 import { colors, materials } from '@/theme'
 import { NODE_DIMENSIONS } from './config'
 import { computeBusPinLayout, computeBusBodyDimensions } from '@/components/scene/busBodyLayout'
@@ -16,6 +17,8 @@ interface BusJoiner3DProps {
   onPinClick?: BusPinClickHandler
   onClick?: () => void
   selected?: boolean
+  canDrag?: boolean
+  drag?: DragBinding
 }
 
 /**
