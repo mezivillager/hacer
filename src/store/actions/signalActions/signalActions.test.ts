@@ -630,8 +630,8 @@ describe('removeJunction — deletes only the wires that would dangle (#364, #40
     getState().removeWire(FAN.trunk)
     expect(getState().junctions[0].wireIds).toEqual([FAN.branch1, FAN.branch2])
 
-    // The gesture cannot draw from a junction whose listed wires all start at it, so the re-drawn
-    // trunk comes in the saved document, appended last as `completeJunctionWiring` appends.
+    // Nothing feeds the junction now, so the gesture cannot draw from it: the re-drawn trunk comes
+    // in the saved document, appended last as `completeJunctionWiring` appends.
     const trunk2 = wireRecord('w-trunk-2', pinOut(FAN.source), pinIn(FAN.sink), zSegments())
     importDocument({
       gates: fanOut.gates,
