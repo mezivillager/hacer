@@ -230,3 +230,15 @@ describe('compileSpec — refusals (§1.1, §1.8)', () => {
     }
   })
 })
+
+describe('compileSpec — an alias slice must fit its port (#371)', () => {
+  const alias = (ins: Port[], outs: Port[], id: string, driver: Ref, sink: Ref): CompileSpecInput => ({ doc: doc('T', ins, outs, [], [{ id, driver, sinks: [sink] }]), diagnostics: [] })
+
+  it.each([
+    ['a target past the end of its OUT', alias([port('a')], [port('o', 2)], 'o[3]', chipIn('a'), chipOut('o', { start: 3, end: 3 })), 'o[3]', 'wire o[3] = a: sub-bus index out of range ("o" has width 2)'],
+    ['a source past the end of its IN', alias([port('a', 2)], [port('o')], 'o', chipIn('a', { start: 5, end: 5 }), chipOut('o')), 'o', 'wire o = a[5]: sub-bus index out of range ("a" has width 2)'],
+    ['a partial target that runs off its OUT', alias([port('a', 2)], [port('o', 2)], 'o[1..2]', chipIn('a'), chipOut('o', { start: 1, end: 2 })), 'o[1..2]', 'wire o[1..2] = a: sub-bus index out of range ("o" has width 2)'],
+  ])('refuses %s, when no parse diagnostics are given', (_, input, netId, message) => {
+    expect(refusal(input)).toEqual([{ code: 'invalid-wire', severity: 'error', netId, message }])
+  })
+})

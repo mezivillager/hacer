@@ -906,3 +906,41 @@ describe('compileHDL', () => {
     expect(r.errors).toEqual([expect.objectContaining({ partName: 'Not', message: expect.stringMatching(/Chip "Not".*itself/) })])
   })
 })
+
+describe('compileHDL — a slice on the signal side must fit the signal (#371)', () => {
+  function errorsOf(src: string) {
+    const ast = parseHDL(src)
+    if (!ast.success) throw new Error(`parse failed: ${src}`)
+    const r = compileHDL(ast.chip, getBuiltinChipRegistry())
+    return r.success ? [] : r.errors
+  }
+  const outOfRange = (part: string, pin: string, ref: string, signal: string, width: number): unknown =>
+    expect.objectContaining({ partName: part, pinName: pin.replace(/\[.*$/, ''), message: `Part "${part}" pin "${pin}" is wired to "${ref}": sub-bus index out of range ("${signal}" has width ${width})` })
+
+  it('refuses a read past the end of a chip input', () => {
+    expect(errorsOf('CHIP C { IN bus[16]; OUT o; PARTS: Not(in=bus[20], out=o); }')).toEqual([outOfRange('Not', 'in', 'bus[20]', 'bus', 16)])
+  })
+
+  it.each([
+    ['a write past the end of a chip output', 'CHIP T { IN a; OUT o[2]; PARTS: Not(in=a, out=o[3]); }', [['Not', 'out', 'o[3]', 'o', 2]]],
+    ['a read past the end of a chip input', 'CHIP T { IN a[2]; OUT o; PARTS: Not(in=a[5], out=o); }', [['Not', 'in', 'a[5]', 'a', 2]]],
+    ['a partial slice that runs off a chip output', 'CHIP T { IN a[2]; OUT o[2]; PARTS: Not16(in[0..1]=a, out[0..1]=o[1..2]); }', [['Not16', 'out[0..1]', 'o[1..2]', 'o', 2]]],
+    ['a write past the end, as the spec exports it', 'CHIP T { IN a; OUT o[2]; PARTS: Or(a=a, b=a, out=o[3]); }', [['Or', 'out', 'o[3]', 'o', 2]]],
+    ['two reads past the end, as the spec exports them', 'CHIP T { IN a[2]; OUT o; PARTS: Or(a=a[5], b=a[5], out=o); }', [['Or', 'a', 'a[5]', 'a', 2], ['Or', 'b', 'a[5]', 'a', 2]]],
+    ['one bit past the end of a two-part write, as the spec exports it', 'CHIP T { IN a[2]; OUT o[2]; PARTS: Or(a=a[0], b=a[0], out=o[1]); Or(a=a[1], b=a[1], out=o[2]); }', [['Or', 'out', 'o[2]', 'o', 2]]],
+  ] as const)('refuses %s, as the reference does', (_, src, expected) => {
+    expect(errorsOf(src)).toEqual(expected.map(([part, pin, ref, signal, width]) => outOfRange(part, pin, ref, signal, width)))
+  })
+
+  it('refuses a read past the width an internal signal took from the part-pin slice that wrote it', () => {
+    expect(errorsOf('CHIP C { IN a[16]; OUT o; PARTS: Not16(in=a, out[0..3]=nib); Not(in=nib[4], out=o); }')).toEqual([outOfRange('Not', 'in', 'nib[4]', 'nib', 4)])
+  })
+
+  it('accepts every slice that fits, up to the last bit', () => {
+    expect(errorsOf('CHIP C { IN bus[16]; OUT o[2]; PARTS: Not(in=bus[15], out=o[1]); Not(in=bus[0], out=o[0]); }')).toEqual([])
+  })
+
+  it('leaves a read of a signal no part writes to the dangling-signal error: its width is not known', () => {
+    expect(errorsOf('CHIP C { IN a; OUT o; PARTS: Not(in=x[5], out=o); }')).toEqual([expect.objectContaining({ message: 'Signal "x" is read by part "Not" but no part produces it' })])
+  })
+})
