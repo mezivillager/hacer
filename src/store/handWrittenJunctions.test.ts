@@ -1,0 +1,119 @@
+import { describe, it, expect } from 'vitest'
+import ts from 'typescript'
+
+// A store test builds a junction through the app's own actions (`@/test/junctionFixtures`), never by
+// writing its `wireIds`: a fix proven on a shape no action writes says nothing about the app's documents.
+
+interface JunctionWrite {
+  line: number
+  text: string
+}
+
+const MUTATORS = new Set(['push', 'unshift', 'splice'])
+
+const isWireIdsName = (name: ts.Node): boolean =>
+  (ts.isIdentifier(name) || ts.isStringLiteral(name)) && name.text === 'wireIds'
+
+const isWireIdsAccess = (node: ts.Node): boolean =>
+  (ts.isPropertyAccessExpression(node) && node.name.text === 'wireIds') ||
+  (ts.isElementAccessExpression(node) &&
+    ts.isStringLiteral(node.argumentExpression) &&
+    node.argumentExpression.text === 'wireIds')
+
+/** Every object-literal `wireIds` key, assignment to `.wireIds`, and in-place mutation of it in `source`. */
+function findJunctionWrites(fileName: string, source: string): JunctionWrite[] {
+  const file = ts.createSourceFile(fileName, source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS)
+  const writes: JunctionWrite[] = []
+  const record = (node: ts.Node) => {
+    const { line } = file.getLineAndCharacterOfPosition(node.getStart(file))
+    writes.push({ line: line + 1, text: node.getText(file).split('\n')[0].trim() })
+  }
+  const visit = (node: ts.Node) => {
+    if (
+      (ts.isPropertyAssignment(node) || ts.isShorthandPropertyAssignment(node)) &&
+      ts.isObjectLiteralExpression(node.parent) &&
+      isWireIdsName(node.name)
+    ) {
+      record(node)
+    } else if (
+      ts.isBinaryExpression(node) &&
+      node.operatorToken.kind === ts.SyntaxKind.EqualsToken &&
+      isWireIdsAccess(node.left)
+    ) {
+      record(node)
+    } else if (
+      ts.isCallExpression(node) &&
+      ts.isPropertyAccessExpression(node.expression) &&
+      MUTATORS.has(node.expression.name.text) &&
+      isWireIdsAccess(node.expression.expression)
+    ) {
+      record(node)
+    }
+    ts.forEachChild(node, visit)
+  }
+  visit(file)
+  return writes
+}
+
+// Exact site counts. Only for a shape the app reads but no action writes (a serialised or imported
+// document) or a test of the type itself; a store-action test on a hand-made shape migrates instead.
+const ALLOWED: Record<string, { sites: number; reason: string }> = {}
+
+const STORE_TESTS: Record<string, string> = Object.fromEntries(
+  Object.entries(
+    import.meta.glob<string>('./**/*.test.{ts,tsx}', { query: '?raw', import: 'default', eager: true }),
+  ).map(([key, source]) => [`src/store/${key.slice(2)}`, source]),
+)
+
+describe('findJunctionWrites', () => {
+  it('finds a wireIds key, an assignment and a mutation, and nothing else', () => {
+    const source = [
+      "const j = { id: 'j1', wireIds: ['w1'] }",
+      'const k = { wireIds }',
+      "j.wireIds = ['w2']",
+      "j['wireIds'] = []",
+      "j.wireIds.push('w3')",
+      'function attach(junctionId: string, wireIds: string[]) {}',
+      'type T = { wireIds: string[] }',
+      '// { wireIds: [] }',
+      "const s = '{ wireIds: [] }'",
+      'expect(j.wireIds).toEqual([])',
+      "const ids = j.wireIds.slice(1)",
+    ].join('\n')
+
+    expect(findJunctionWrites('sample.ts', source).map((w) => w.line)).toEqual([1, 2, 3, 4, 5])
+  })
+})
+
+describe('store tests build junctions through the store actions', () => {
+  it('scans the store test files', () => {
+    expect(Object.keys(STORE_TESTS).length).toBeGreaterThan(20)
+    expect(STORE_TESTS).toHaveProperty(['src/store/actions/signalActions/signalActions.test.ts'])
+  })
+
+  it('no store test writes a junction wireIds outside the allow-list', () => {
+    const offences: string[] = []
+    for (const [file, source] of Object.entries(STORE_TESTS)) {
+      const writes = findJunctionWrites(file, source)
+      const allowed = ALLOWED[file]?.sites ?? 0
+      if (writes.length !== allowed) {
+        offences.push(
+          `${file}: ${writes.length} hand-written junction site(s), allow-list says ${allowed}\n` +
+            writes.map((w) => `  ${file}:${w.line}  ${w.text}`).join('\n'),
+        )
+      }
+    }
+    expect(
+      offences,
+      'Build the junction with placeJunction/drawBranch from @/test/junctionFixtures. ' +
+        'A listed file whose count fell needs its ALLOWED entry lowered.',
+    ).toEqual([])
+  })
+
+  it('every allow-list entry names a store test file and a reason', () => {
+    for (const [file, entry] of Object.entries(ALLOWED)) {
+      expect(STORE_TESTS, file).toHaveProperty([file])
+      expect(entry.reason.length, file).toBeGreaterThan(20)
+    }
+  })
+})
