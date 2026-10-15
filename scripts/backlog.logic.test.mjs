@@ -15,6 +15,7 @@ import {
   STALE_CLAIM_HOURS,
   bucketOf,
   claimComment,
+  claimDrift,
   claimHistory,
   claimHistoryQuery,
   claimTaken,
@@ -30,6 +31,7 @@ import {
   parsePortfolio,
   planReady,
   possiblyDelivered,
+  readClaimDrift,
   readClaimHistory,
   readPossiblyDelivered,
   readClaims,
@@ -979,6 +981,56 @@ describe('the claim and release commands', () => {
     expect(body).toMatch(/no PR since the Project 1 slice/)
     expect(body).not.toMatch(/^\s*Claimed by:/) // never read back as a claim
     expect(releaseComment(unsigned, { by: 'claude-local' })).toMatch(/no claim comment/)
+  })
+})
+
+// #703: `claim` prints the commits `git log --since=<createdAt> --oneline origin/main -- <seeds>` finds.
+describe('claim drift', () => {
+  const since = '2026-10-01T09:30:00Z'
+  const seeds = ['src/store/types.ts', 'src/gates/**']
+
+  it('names no commits when the issue names no seed files', () => {
+    expect(claimDrift([], since)).toBe('claim-drift: no seed files named')
+  })
+
+  it('counts zero commits under the seeds since the issue was written', () => {
+    expect(claimDrift(seeds, since, '')).toBe(`claim-drift: 0 commits on main since ${since} under 2 seed paths`)
+    expect(claimDrift(['src/a.ts'], since, '\n')).toBe(`claim-drift: 0 commits on main since ${since} under 1 seed path`)
+  })
+
+  it('counts and lists each commit git log printed, one per line', () => {
+    const log = '28b8a46 chore(backlog): a failed fetch skips\n1a2b3c4 feat(store): Position moves to core\n'
+    expect(claimDrift(seeds, since, log).split('\n')).toEqual([
+      `claim-drift: 2 commits on main since ${since} under 2 seed paths`,
+      '  28b8a46 chore(backlog): a failed fetch skips',
+      '  1a2b3c4 feat(store): Position moves to core',
+    ])
+    expect(claimDrift(seeds, since, '28b8a46 chore(backlog): one').split('\n')[0]).toBe(`claim-drift: 1 commit on main since ${since} under 2 seed paths`)
+  })
+
+  it('reads the log for the seeds it read, and never reads one without seeds', async () => {
+    const asked = []
+    const readLog = (paths) => asked.push(paths) && '1a2b3c4 feat(store): one'
+    expect(await readClaimDrift(since, async () => seeds, readLog))
+      .toEqual({ drift: claimDrift(seeds, since, '1a2b3c4 feat(store): one'), warning: null })
+    expect(asked).toEqual([seeds])
+    expect(await readClaimDrift(since, () => [], readLog)).toEqual({ drift: 'claim-drift: no seed files named', warning: null })
+    expect(asked).toHaveLength(1)
+  })
+
+  it('a read that throws (no git, a failed fetch) prints nothing but one skipped line', async () => {
+    const noGit = () => {
+      throw new Error('spawnSync git ENOENT')
+    }
+    const offline = () => {
+      throw new Error("fatal: unable to access 'https://github.com/mezivillager/hacer/': Could not resolve host\nretry later")
+    }
+    expect(await readClaimDrift(since, () => seeds, noGit)).toEqual({ drift: null, warning: 'claim-drift: skipped — spawnSync git ENOENT' })
+    expect(await readClaimDrift(since, () => seeds, offline)).toEqual({
+      drift: null, warning: "claim-drift: skipped — fatal: unable to access 'https://github.com/mezivillager/hacer/': Could not resolve host",
+    })
+    expect(await readClaimDrift(since, async () => Promise.reject(new Error('no body')), offline))
+      .toEqual({ drift: null, warning: 'claim-drift: skipped — no body' })
   })
 })
 

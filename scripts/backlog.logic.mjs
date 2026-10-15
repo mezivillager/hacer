@@ -575,3 +575,7 @@ export function releaseComment(claim, { by, reason }) {
     `Released by: ${by}`, ...(reason ? [`Reason: ${reason}`] : [])].join('\n')
 }
 
+
+export const claimDrift = () => ''
+
+export const readClaimDrift = async () => ({ drift: null, warning: null })
