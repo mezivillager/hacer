@@ -437,3 +437,42 @@ describe('many entries of a kind this build does not know', () => {
     expect(useCircuitStore.getState().busComponents).toEqual([])
   })
 })
+
+describe('many wires with a width that is not a positive integer', () => {
+  const ZERO = { x: 0, y: 0, z: 0 }
+  const wire = (id: string, from: unknown, width: unknown) => ({
+    id,
+    from,
+    to: { type: 'output', entityId: 'o-1' },
+    segments: [],
+    crossesWireIds: [],
+    width,
+  })
+  const blob = JSON.stringify({
+    version: 1,
+    name: 'damaged',
+    savedAt: new Date().toISOString(),
+    gates: [],
+    wires: [
+      wire('w-1', { type: 'output', entityId: 'o-1' }, 2.5),
+      wire('w-2', { type: 'output', entityId: 'o-1' }, 0),
+      wire('w-3', { type: 'output', entityId: 'o-1' }, '4'),
+      wire('w-4', { type: 'probe', entityId: 'o-1' }, 1),
+    ],
+    inputNodes: [],
+    outputNodes: [{ id: 'o-1', name: 'out', position: ZERO, rotation: ZERO, value: 0, width: 1 }],
+    junctions: [],
+    busComponents: [],
+  })
+
+  it('raises one summary line for 3 bad widths and 1 unknown endpoint type, not 4 toasts', async () => {
+    const { notify } = await import('@/lib/notify')
+    vi.mocked(notify.warning).mockClear()
+    expect(circuitActions.importCircuitJSON(blob)).toBe(true)
+    expect(vi.mocked(notify.warning).mock.calls.map(([message]) => message)).toEqual([
+      'Skipped while loading circuit: 1 wire with an endpoint type this build does not know; ' +
+        '3 wires with a width that is not a positive whole number.',
+    ])
+    expect(useCircuitStore.getState().wires).toEqual([])
+  })
+})
