@@ -44,6 +44,8 @@ export function BusComponent3D({
     0
 
   const [hovered, setHovered] = useState(false)
+  // deserializeCircuit does not check kind, so an imported bus can carry one this has no label for.
+  if (!Object.prototype.hasOwnProperty.call(LABEL, component.kind)) return null
   const isDragging = drag?.isDragging ?? false
 
   const bodyColor = selected
