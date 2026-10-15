@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-15T08:30:40.015Z",
+  "generatedAt": "2026-10-15T08:54:00.622Z",
   "head": {
-    "sha": "18d8e1a6644790187bfc2be2b6f583ed104c4611",
-    "date": "2026-10-15T10:39:48+03:00",
-    "subject": "test(core): the spec round trip and nand2tetris export as seeded properties over generated documents"
+    "sha": "640a247ef803a97d4fc636a6886de8fdc0bcf9de",
+    "date": "2026-10-15T11:53:03+03:00",
+    "subject": "fix(core): a registry carries a version, and a cached evaluator re-checks when it moves"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-15T08:30:40.015Z",
+      "fetchedAt": "2026-10-15T08:54:00.622Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-15T08:30:40.015Z",
+      "fetchedAt": "2026-10-15T08:54:00.622Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-15T08:30:40.015Z",
+      "fetchedAt": "2026-10-15T08:54:00.622Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-15T08:30:40.015Z",
+      "fetchedAt": "2026-10-15T08:54:00.622Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-15T08:30:40.015Z",
+      "fetchedAt": "2026-10-15T08:54:00.622Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-15T08:30:40.015Z",
+      "fetchedAt": "2026-10-15T08:54:00.622Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-15T08:30:40.015Z",
+      "fetchedAt": "2026-10-15T08:54:00.622Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-15T08:30:40.015Z",
+      "fetchedAt": "2026-10-15T08:54:00.622Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-15T08:30:40.015Z",
+      "fetchedAt": "2026-10-15T08:54:00.622Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-15T08:30:40.015Z",
+      "fetchedAt": "2026-10-15T08:54:00.622Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-15T08:30:40.015Z",
+      "fetchedAt": "2026-10-15T08:54:00.622Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-15T08:30:40.015Z",
+      "fetchedAt": "2026-10-15T08:54:00.622Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-15T08:30:40.015Z",
+      "fetchedAt": "2026-10-15T08:54:00.622Z",
       "status": "ok"
     }
   },
@@ -81,8 +81,8 @@
         "slug": "foundation",
         "epicNumber": 318,
         "open": 25,
-        "ready": 2,
-        "inProgress": 1,
+        "ready": 1,
+        "inProgress": 2,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 3,
@@ -402,19 +402,14 @@
     ],
     "next": [
       {
-        "number": 257,
-        "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
-        "project": "harness"
-      },
-      {
         "number": 338,
         "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
         "project": "foundation"
       },
       {
-        "number": 377,
-        "title": "N.2: fromLegacyCircuit — the one-way importer, with §10's structurally-traced parity as its acceptance test",
-        "project": "foundation"
+        "number": 257,
+        "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
+        "project": "harness"
       },
       {
         "number": 269,
@@ -426,30 +421,12 @@
       "dormant": false,
       "agentPrs": [
         741,
-        740,
         514
       ]
     }
   },
   "tasks": {
     "items": [
-      {
-        "number": 257,
-        "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:2"
-        ],
-        "blocking": [
-          270
-        ],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
       {
         "number": 338,
         "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
@@ -466,19 +443,19 @@
         "reason": null
       },
       {
-        "number": 377,
-        "title": "N.2: fromLegacyCircuit — the one-way importer, with §10's structurally-traced parity as its acceptance test",
+        "number": 257,
+        "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
         "labels": [
+          "project:harness",
           "agent-ready",
-          "risk:2",
-          "project:foundation"
+          "risk:2"
         ],
         "blocking": [
-          175
+          270
         ],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
         "pickable": true,
         "reason": null
       },
@@ -1298,6 +1275,24 @@
         "reason": "not-pulled"
       },
       {
+        "number": 377,
+        "title": "N.2: fromLegacyCircuit — the one-way importer, with §10's structurally-traced parity as its acceptance test",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:2",
+          "project:foundation"
+        ],
+        "blocking": [
+          175
+        ],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 378,
         "title": "N.3: the spec evaluates through compileHDL — one engine, and the 'circuit' chip type becomes the composite-chip evaluator",
         "labels": [
@@ -1910,29 +1905,13 @@
       }
     ],
     "byProject": {
-      "harness": [
-        257,
-        269,
-        154,
-        156,
-        270,
-        435,
-        436,
-        454,
-        500,
-        504,
-        505,
-        550,
-        607,
-        677
-      ],
       "foundation": [
         338,
-        377,
         151,
         184,
         325,
         339,
+        377,
         378,
         379,
         380,
@@ -1952,6 +1931,22 @@
         719,
         722,
         728
+      ],
+      "harness": [
+        257,
+        269,
+        154,
+        156,
+        270,
+        435,
+        436,
+        454,
+        500,
+        504,
+        505,
+        550,
+        607,
+        677
       ],
       "spine": [
         165,
@@ -2055,23 +2050,15 @@
         "createdAt": "2026-10-15T08:16:51Z",
         "mergedAt": null,
         "closes": [],
-        "verdicts": []
-      },
-      {
-        "number": 740,
-        "title": "fix(core): refuse a chip-input write and a self-named part; recompile on a changed part",
-        "url": "https://github.com/mezivillager/hacer/pull/740",
-        "author": "mezivillager",
-        "labels": [
-          "risk:2",
-          "project:foundation"
-        ],
-        "headRefName": "fix/378a-engine-refusals",
-        "isDraft": false,
-        "createdAt": "2026-10-15T08:14:16Z",
-        "mergedAt": null,
-        "closes": [],
-        "verdicts": []
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus 5.5",
+            "at": "2026-10-15T08:40:18Z",
+            "url": "https://github.com/mezivillager/hacer/pull/741#issuecomment-6188061037"
+          }
+        ]
       },
       {
         "number": 514,
@@ -2101,6 +2088,30 @@
       }
     ],
     "merged": [
+      {
+        "number": 740,
+        "title": "fix(core): refuse a chip-input write and a self-named part; recompile on a changed part",
+        "url": "https://github.com/mezivillager/hacer/pull/740",
+        "author": "mezivillager",
+        "labels": [
+          "risk:2",
+          "project:foundation"
+        ],
+        "headRefName": "fix/378a-engine-refusals",
+        "isDraft": false,
+        "createdAt": "2026-10-15T08:14:16Z",
+        "mergedAt": "2026-10-15T08:53:04Z",
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus 5.5",
+            "at": "2026-10-15T08:39:00Z",
+            "url": "https://github.com/mezivillager/hacer/pull/740#issuecomment-6188037869"
+          }
+        ]
+      },
       {
         "number": 739,
         "title": "test(core): the spec round trip and nand2tetris export as seeded properties (#168)",
@@ -3591,35 +3602,43 @@
         "mergedAt": "2026-10-02T01:12:29Z",
         "closes": [],
         "verdicts": []
-      },
-      {
-        "number": 656,
-        "title": "chore(deps): bump @radix-ui/react-scroll-area from 1.2.10 to 1.2.18",
-        "url": "https://github.com/mezivillager/hacer/pull/656",
-        "author": "app/dependabot",
-        "labels": [
-          "released",
-          "dependencies",
-          "javascript"
-        ],
-        "headRefName": "dependabot/npm_and_yarn/radix-ui/react-scroll-area-1.2.18",
-        "isDraft": false,
-        "createdAt": "2026-10-01T23:17:32Z",
-        "mergedAt": "2026-10-02T01:08:57Z",
-        "closes": [],
-        "verdicts": []
       }
     ],
     "coverage": {
       "merged": 60,
-      "withVerdict": 51,
-      "withoutVerdict": 9,
-      "pass": 51,
+      "withVerdict": 52,
+      "withoutVerdict": 8,
+      "pass": 52,
       "block": 0
     }
   },
   "claims": {
     "items": [
+      {
+        "number": 377,
+        "ref": "refs/heads/claim/377",
+        "sha": "18d8e1a6644790187bfc2be2b6f583ed104c4611",
+        "state": "OPEN",
+        "title": "N.2: fromLegacyCircuit — the one-way importer, with §10's structurally-traced parity as its acceptance test",
+        "url": "https://github.com/mezivillager/hacer/issues/377",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:2",
+          "project:foundation"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-50",
+          "branch": null,
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-15T08:41:01Z",
+          "url": "https://github.com/mezivillager/hacer/issues/377#issuecomment-6188074122"
+        }
+      },
       {
         "number": 378,
         "ref": "refs/heads/claim/378",
@@ -5380,7 +5399,7 @@
       },
       {
         "date": "2026-10-02",
-        "merges": 12
+        "merges": 11
       },
       {
         "date": "2026-10-04",
@@ -5392,20 +5411,20 @@
       },
       {
         "date": "2026-10-15",
-        "merges": 20
+        "merges": 21
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-01T08:30:40.015Z",
-      "merged": 74,
+      "since": "2026-10-01T08:54:00.622Z",
+      "merged": 75,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 2
       },
       "blockedOnce": {
         "count": 4,
-        "of": 62,
+        "of": 63,
         "prs": [
           700,
           725,
@@ -5415,8 +5434,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 48,
-          "withVerdict": 48,
+          "merged": 49,
+          "withVerdict": 49,
           "without": []
         },
         "nonCode": {
@@ -8456,15 +8475,31 @@
       },
       {
         "date": "2026-10-15",
-        "at": "2026-10-15T07:27:15.835Z",
+        "at": "2026-10-15T08:30:40.015Z",
         "byProject": {
+          "harness": [
+            257,
+            269,
+            154,
+            156,
+            270,
+            435,
+            436,
+            454,
+            500,
+            504,
+            505,
+            550,
+            607,
+            677
+          ],
           "foundation": [
             338,
+            377,
             151,
             184,
             325,
             339,
-            377,
             378,
             379,
             380,
@@ -8483,29 +8518,11 @@
             613,
             719,
             722,
-            728,
-            736
-          ],
-          "harness": [
-            257,
-            269,
-            154,
-            156,
-            270,
-            435,
-            436,
-            454,
-            500,
-            504,
-            505,
-            550,
-            607,
-            677
+            728
           ],
           "spine": [
             165,
             167,
-            168,
             169,
             170,
             171,
@@ -8595,17 +8612,14 @@
     "items": [
       {
         "pr": null,
-        "sha": "18d8e1a6644790187bfc2be2b6f583ed104c4611",
+        "sha": "640a247ef803a97d4fc636a6886de8fdc0bcf9de",
         "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-15T07:43:16Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38700265687/job/116306486632",
-        "line": "LAYER-RATCHET: 69 known violations (37 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 69,
-          "new": 0
-        },
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/38708866427/job/116334981202",
+        "line": null,
+        "verdict": null,
+        "fields": {},
         "disagrees": false
       },
       {
@@ -8650,58 +8664,6 @@
         "verdict": "PASS",
         "fields": {
           "known": 71,
-          "new": 0
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 740,
-        "sha": "f4022a1d3037ecf088bfb126227b2b229c018be4",
-        "check": "pr-hygiene",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-15T08:24:37Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38705425390/job/116323530268",
-        "line": "HYGIENE: PASS reviewable=57 test=72 excluded=0 files=5 issue=#378 linked=part-of",
-        "verdict": "PASS",
-        "fields": {
-          "reviewable": 57,
-          "test": 72,
-          "excluded": 0,
-          "files": 5,
-          "issue": "#378",
-          "linked": "part-of"
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 740,
-        "sha": "f4022a1d3037ecf088bfb126227b2b229c018be4",
-        "check": "browser-qa",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-15T08:27:54Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38705425067/job/116323527904",
-        "line": "BROWSER-QA: PASS suites=store passed=107 failed=0 flaky=0 skipped=0",
-        "verdict": "PASS",
-        "fields": {
-          "suites": "store",
-          "passed": 107,
-          "failed": 0,
-          "flaky": 0,
-          "skipped": 0
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 740,
-        "sha": "f4022a1d3037ecf088bfb126227b2b229c018be4",
-        "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-15T08:26:13Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38705293513/job/116323096987",
-        "line": "LAYER-RATCHET: 69 known violations (37 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 69,
           "new": 0
         },
         "disagrees": false
