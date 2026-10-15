@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // The backlog over GitHub Issues — answers "what can you pick up?" from the shell, and holds the claims (#531).
 //
-//   node scripts/backlog.mjs ready    [--json]   pickable tasks in pick order, then the rest with a reason; to stderr, the
+//   node scripts/backlog.mjs ready    [--json]   pickable tasks in pick order, then the rest with a reason, each with the
+//                                               merged PRs that cite it as `possibly-delivered`; to stderr, the
 //                                               dormant banner at 5 open agent PRs (#540), the slot the cycle resumes
 //                                               at, after the latest claim (#535), and what the claim history leaves a guess
 //   node scripts/backlog.mjs next     [--json]   the head of ready's pick order, with ready's stderr; exit 3 when
@@ -70,7 +71,7 @@ function parseCommandLine([name, ...args]) {
 function gh(...args) {
   for (const bin of ['gh', path.join(homedir(), '.local', 'bin', 'gh')]) {
     try {
-      return execFileSync(bin, args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] })
+      return execFileSync(bin, args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], maxBuffer: 64 * 1024 * 1024 })
     } catch (error) {
       if (error.code !== 'ENOENT') throw Object.assign(new Error(String(error.stderr).trim() || error.message), { stdout: error.stdout })
     }
@@ -151,6 +152,8 @@ async function view(name, slug, flags) {
   const pages = await backlog.readClaimHistory(fetchPage, issues, portfolioRows, allowlist) // the cycle resumes from them
   const history = backlog.claimHistory(pages, allowlist)
   const inputs = [issues, portfolioRows, allowlist, claims, history]
+  const readyPlan = () => backlog.possiblyDelivered(backlog.planReady(...inputs), ghJson('pr', 'list', '-R', REPO,
+    '--state', 'merged', '--limit', String(backlog.MERGED_PR_WINDOW), '--json', 'number,title,body,mergedAt'))
   if (name === 'ready' || name === 'next') {
     const gap = backlog.historyGap(pages, issues, portfolioRows, allowlist)
     for (const line of [backlog.formatDormant(backlog.dormantMode(openPrs, allowlist)),
@@ -158,14 +161,14 @@ async function view(name, slug, flags) {
       gap && `cycle: claim history exhausted — ${gap}; the place above is a guess`]) if (line) console.error(line)
   }
   if (name === 'next') {
-    const { exitCode, stdout, stderr } = backlog.reportNext(backlog.planReady(...inputs), flags)
+    const { exitCode, stdout, stderr } = backlog.reportNext(readyPlan(), flags)
     if (stdout) console.log(stdout)
     if (stderr) console.error(`backlog: ${stderr}`)
     process.exitCode = exitCode
     return
   }
   const [result, format] = {
-    ready: () => [backlog.planReady(...inputs), backlog.formatReady],
+    ready: () => [readyPlan(), backlog.formatReady],
     projects: () => [backlog.summarizeProjects(...inputs), backlog.formatProjects],
     tasks: () => [backlog.epicTree(slug, ...inputs), backlog.formatTasks],
   }[name]()

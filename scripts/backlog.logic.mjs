@@ -3,7 +3,10 @@
 // Input: the open issues from one `gh issue list --json …` call plus the rows of the table in
 // docs/portfolio.md, whose "Pick rule" section is what this file computes, the open claims (#531,
 // `readClaims` at the foot of this file), the claims made before, from which the cycle resumes (#535,
-// `claimHistory`), and the open PRs, which set dormant mode (#540). Output: plain data.
+// `claimHistory`), the open PRs, which set dormant mode (#540), and the merged PRs that cite a task
+// (`possiblyDelivered`). Output: plain data.
+
+import { findLinkedIssues, stripFencedCode } from './pr-hygiene.logic.mjs'
 
 export const DEFAULT_ALLOWLIST = ['mezivillager']
 
@@ -285,11 +288,13 @@ export function summarizeProjects(issues, portfolioRows, allowlist = DEFAULT_ALL
 }
 
 const taskLine = (task) => `#${task.number} · ${task.project ?? '-'} · ${task.title}`
+const delivered = (numbers = []) => numbers.length > 0 && `possibly-delivered: ${numbers.map((number) => `#${number}`).join(',')}`
+const readyLine = (task) => [taskLine(task), task.reason, delivered(task.possiblyDelivered)].filter(Boolean).join(' · ')
 
-/** The picks, a blank line, then every other task with its reason as a trailing column. */
+/** The picks, a blank line, then every other task with its reason as a trailing column; `possibly-delivered` after it. */
 export function formatReady(plan) {
-  const picks = plan.filter((task) => task.reason === null).map(taskLine)
-  const rest = plan.filter((task) => task.reason !== null).map((task) => `${taskLine(task)} · ${task.reason}`)
+  const picks = plan.filter((task) => task.reason === null).map(readyLine)
+  const rest = plan.filter((task) => task.reason !== null).map(readyLine)
   return [...picks, ...(picks.length > 0 && rest.length > 0 ? [''] : []), ...rest].join('\n')
 }
 
@@ -306,8 +311,21 @@ export function formatProjects(summaries) {
     `${overCap(s.agentReady)} · next: ${nextLabel(s.next)}`).join('\n')
 }
 
-export function possiblyDelivered(plan) {
-  return plan
+/** How many of the most recently merged PRs `ready` and `next` read for possiblyDelivered. */
+export const MERGED_PR_WINDOW = 300
+
+/**
+ * The plan, each task with `possiblyDelivered`: the merged PRs whose title or prose links it (`Fixes #n`, `Part of #n`),
+ * by number. A hint to check before claiming, never a reason to drop the task; a PR without `mergedAt` is not merged.
+ */
+export function possiblyDelivered(plan, prs = []) {
+  const citing = new Map()
+  for (const pr of [...prs].filter((pr) => pr.mergedAt).sort(byNumber)) {
+    for (const number of findLinkedIssues(stripFencedCode(`${pr.title ?? ''}\n${pr.body ?? ''}`))) {
+      citing.set(number, [...(citing.get(number) ?? []), pr.number])
+    }
+  }
+  return plan.map((task) => ({ ...task, possiblyDelivered: citing.get(task.number) ?? [] }))
 }
 
 /** `next`'s exit status when nothing is pickable: apart from 1 (an error) and 2 (usage), so a loop can tell them apart. */
@@ -316,7 +334,7 @@ export const NOTHING_PICKABLE_EXIT = 3
 /** `next`: the head of the plan's pick order as `ready` prints it (or the task as JSON); NOTHING_PICKABLE_EXIT without one. */
 export function reportNext(plan, { json = false } = {}) {
   const head = plan.find((task) => task.reason === null)
-  if (head) return { exitCode: 0, stdout: json ? JSON.stringify(head, null, 2) : taskLine(head), stderr: '' }
+  if (head) return { exitCode: 0, stdout: json ? JSON.stringify(head, null, 2) : readyLine(head), stderr: '' }
   return { exitCode: NOTHING_PICKABLE_EXIT, stdout: json ? 'null' : '', stderr: 'nothing is pickable now; `ready` gives every open task its reason' }
 }
 
