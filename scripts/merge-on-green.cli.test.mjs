@@ -47,15 +47,16 @@ exit 1
 
 /**
  * Runs the tool once against a recorded state. `rules: false` makes the rulesets call fail too;
- * `refuse` maps `view`, `merge` or `graphql` to the stderr line gh prints when GitHub refuses that call.
+ * `refuse` maps `view`, `merge` or `graphql` to the stderr line gh prints when GitHub refuses that call;
+ * `checks` replaces the head's check runs.
  */
-function runTool(state, { rules = true, args = ['1'], pr = {}, refuse = {} } = {}) {
+function runTool(state, { rules = true, args = ['1'], pr = {}, refuse = {}, checks } = {}) {
   const stub = mkdtempSync(path.join(tmpdir(), 'merge-on-green-'))
   cleanup.push(stub)
   const fixture = JSON.parse(read(`${state}.json`))
   writeFileSync(path.join(stub, 'pr.json'), JSON.stringify({ ...fixture.pr, ...pr }))
   writeFileSync(path.join(stub, 'pushes.json'), JSON.stringify(fixture.basePushes ?? []))
-  writeFileSync(path.join(stub, 'checks.json'), `${JSON.stringify(fixture.checkRuns)}\n`)
+  writeFileSync(path.join(stub, 'checks.json'), `${JSON.stringify(checks ?? fixture.checkRuns)}\n`)
   writeFileSync(path.join(stub, 'runs.json'), `${JSON.stringify(fixture.workflowRuns)}\n`)
   writeFileSync(path.join(stub, 'commits.json'), `${JSON.stringify(fixture.commits ?? [])}\n`)
   for (const [call, line] of Object.entries(refuse)) writeFileSync(path.join(stub, `${call}-error.txt`), `${line}\n`)
@@ -159,6 +160,14 @@ describe('merge-on-green.mjs (gh is a test double)', () => {
     const result = runTool('fresh-green', { args: ['645', 'mezivillager/hacer', '0'] })
     expect(result.calls).toMatch(/^pr merge 645 -R mezivillager\/hacer --rebase --match-head-commit a75b5930bb8a8e9f6541ccacd957a919d96d2ab9$/m)
     expect(result.calls).not.toMatch(/--auto/)
+  }, SPAWN_TIMEOUT_MS)
+
+  it('ends with an error line, exit 1, when a malformed read throws inside the loop, and does nothing', () => {
+    const result = runTool('fresh-green', { args: ['645', 'mezivillager/hacer', '0'], checks: [null] })
+    expect(result.status).toBe(1)
+    expect(result.stderr).toMatch(/TypeError: Cannot read properties of null/)
+    expect(result.calls).not.toMatch(/^pr (merge|edit) /m)
+    expect(outcomeLine(result)).toBe('MERGE-ON-GREEN: error pr=645 head=a75b5930bb8a8e9f6541ccacd957a919d96d2ab9 exit=1')
   }, SPAWN_TIMEOUT_MS)
 
   it('--dry-run prints the action and does nothing', () => {
