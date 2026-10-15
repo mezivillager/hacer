@@ -1,6 +1,6 @@
 // BusSplitter3D - 1 N-bit input fanned out to N 1-bit outputs
 import { useState } from 'react'
-import type { BusComponent } from '@/store/types'
+import type { BusComponent } from '@/types/scene'
 import type { DragBinding } from '@/gates/types'
 import { colors, materials } from '@/theme'
 import { NODE_DIMENSIONS } from './config'
