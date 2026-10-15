@@ -15,5 +15,7 @@ export type {
 export { SPEC_SCHEMA_VERSION } from './types'
 export type { ParseSpecOptions } from './parseSpec'
 export { parseSpec } from './parseSpec'
+export type { PrintSpecOptions } from './printSpec'
+export { printSpec } from './printSpec'
 export { normalizeSpec } from './normalizeSpec'
 export { emptySidecar } from './sidecar'

@@ -3,7 +3,7 @@ import type { ChipRegistry } from '../chips/registry'
 import { parseHDL } from '../hdl/parser'
 import { printPinRef } from '../hdl/printer'
 import type { HDLChip, HDLPart, HDLSlice } from '../hdl/types'
-import { splitNetId } from './netId'
+import { sliceWidth, splitNetId } from './netId'
 import { normalizeSpec } from './normalizeSpec'
 import { emptySidecar, parseSidecar } from './sidecar'
 import { SPEC_SCHEMA_VERSION } from './types'
@@ -14,14 +14,95 @@ export interface ParseSpecOptions {
   chips?: ChipRegistry
 }
 
-const IGNORABLE = '[\\u00AD\\u034F\\u061C\\u180B-\\u180F\\u200B-\\u200F\\u202A-\\u202E\\u2060-\\u206F\\uFE00-\\uFE0F\\uFEFF]*'
+const IGNORABLE = '\\p{Default_Ignorable_Code_Point}*'
 const spelled = (word: string): string => [...word].join(IGNORABLE)
-/** Either tag in any case, through invisible characters and lookalike dashes, ending where no letter follows. */
-const TAG = new RegExp(`${spelled('hacer')}${IGNORABLE}[-\\u00AD\\u2010-\\u2015\\u2212\\uFE63\\uFF0D]${IGNORABLE}(?:(${spelled('spec')})|${spelled('sidecar')})(?![a-z])`, 'gi')
+/** Either tag in any case, through any default-ignorable character and lookalike dashes, ending where no letter follows. */
+const TAG = new RegExp(`${spelled('hacer')}${IGNORABLE}[-\\u2010-\\u2015\\u2212\\uFE63\\uFF0D]${IGNORABLE}(?:(${spelled('spec')})|${spelled('sidecar')})(?![a-z])`, 'giu')
 const CANONICAL_ID = /^p[1-9][0-9]*$/
 const HEADER = /\/\/[ \t]*hacer-spec[ \t]+(\S+)/y
 const SIDECAR_BLOCK = /\/\*[ \t]*hacer-sidecar\s([\s\S]*?)\*\/\s*$/
 const LITERALS = new Set(['true', 'false'])
+const COMMENT = /\/\*[\s\S]*?\*\/|\/\/[^\n]*/g
+const WIRE = /\bwire\s+([A-Za-z_]\w*)\s*(\[[^\]]*\])?\s*=\s*([A-Za-z_]\w*)\s*(\[[^\]]*\])?\s*;/g
+const SLICE = /^\[\s*(\d+)\s*(?:\.\.\s*(\d+)\s*)?\]$/
+
+interface WireStatement {
+  target: string
+  targetSlice?: HDLSlice
+  source: string
+  sourceSlice?: HDLSlice
+  line: number
+  column: number
+  malformed: boolean
+}
+
+const blank = (text: string): string => text.replace(/[^\n]/g, ' ')
+
+function readSlice(text: string | undefined): { slice?: HDLSlice; ok: boolean } {
+  if (text === undefined) return { ok: true }
+  const match = SLICE.exec(text)
+  if (!match) return { ok: false }
+  const slice = { start: Number(match[1]), end: Number(match[2] ?? match[1]) }
+  return { slice, ok: slice.start <= slice.end }
+}
+
+/** `wire` is the one statement plain HDL lacks (§1.5): lift each out, leaving the HDL to `parseHDL`. */
+function extractWires(source: string): { hdl: string; wires: WireStatement[] } {
+  const code = source.replace(COMMENT, blank)
+  const wires: WireStatement[] = []
+  let hdl = source
+  for (const match of code.matchAll(WIRE)) {
+    const at = match.index ?? 0
+    const before = source.slice(0, at)
+    const target = readSlice(match[2])
+    const origin = readSlice(match[4])
+    const line = before.split('\n').length
+    wires.push({ target: match[1], targetSlice: target.slice, source: match[3], sourceSlice: origin.slice, line, column: at - before.lastIndexOf('\n'), malformed: !target.ok || !origin.ok })
+    hdl = hdl.slice(0, at) + blank(match[0]) + hdl.slice(at + match[0].length)
+  }
+  return { hdl, wires }
+}
+
+function wireProblem(wire: WireStatement, ins: Set<string>, outs: Set<string>, width: Map<string, number>): string | null {
+  if (wire.malformed) return `wire ${wire.target} has a malformed slice`
+  if (!outs.has(wire.target)) return `wire target "${wire.target}" is not a chip OUT`
+  if (!ins.has(wire.source) && !outs.has(wire.source)) return `wire source "${wire.source}" is not a chip IN or OUT`
+  const targetWidth = wire.targetSlice ? sliceWidth(wire.targetSlice) : width.get(wire.target)
+  const sourceWidth = wire.sourceSlice ? sliceWidth(wire.sourceSlice) : width.get(wire.source)
+  return targetWidth === sourceWidth ? null : `wire ${wire.target} is ${targetWidth} bits wide but its source is ${sourceWidth}`
+}
+
+/**
+ * An alias rooted at a chip OUT can close a loop that never resolves (§1.5); walk it bit by bit.
+ * Classified by driver kind, so `wire x = x;` is a cycle of one rather than an identity to drop.
+ */
+function aliasCycles(nets: Net[], width: Map<string, number>): SpecDiagnostic[] {
+  const node = (signal: string, bit: number): string => (width.get(signal) === 1 ? signal : `${signal}[${bit}]`)
+  const next = new Map<string, string>()
+  for (const { id, driver } of nets) {
+    if (driver?.kind !== 'chip-out') continue
+    const { signal, slice } = splitNetId(id)
+    const count = slice ? sliceWidth(slice) : (width.get(signal) ?? 1)
+    for (let i = 0; i < count; i++) next.set(node(signal, (slice?.start ?? 0) + i), node(driver.pin, (driver.slice?.start ?? 0) + i))
+  }
+  const done = new Set<string>()
+  const found = new Map<string, string[]>()
+  for (const start of next.keys()) {
+    const path: string[] = []
+    let at: string | undefined = start
+    while (at !== undefined && !done.has(at) && !path.includes(at)) {
+      path.push(at)
+      at = next.get(at)
+    }
+    if (at !== undefined && path.includes(at)) {
+      const members = [...path.slice(path.indexOf(at)), at]
+      const signals = members.map((m) => splitNetId(m).signal).join()
+      if (!found.has(signals)) found.set(signals, members)
+    }
+    path.forEach((p) => done.add(p))
+  }
+  return [...found.values()].map((members) => ({ code: 'alias-cycle', severity: 'error', netId: members[0], members, message: `Alias cycle: ${members.join(' → ')}` }))
+}
 
 const describeRef = (ref: Ref): string => (ref.kind === 'part-pin' ? `${ref.partId}.${printPinRef(ref.pin, ref.slice)}` : printPinRef(ref.pin, ref.slice))
 
@@ -38,9 +119,10 @@ function readVersions(source: string): { sidecar: Sidecar } | { diagnostics: Spe
     const at = tag.index ?? 0
     if (at === headerTag || at >= blockTag) continue
     const where = `line ${source.slice(0, at).split('\n').length}`
-    if (tag[1] !== undefined) return refuse('unknown-schema-version', `"${tag[0]}" at ${where} is not a "// hacer-spec <version>" header as the first thing in the file (after a BOM or blank lines)`)
+    if (tag[1] !== undefined) return refuse('unknown-schema-version', `"${tag[0]}" at ${where} is not a "// hacer-spec <version>" header as the first thing in the file (after a BOM or blank lines); a tag anywhere else is refused, comments included`)
     return refuse('invalid-sidecar', `"${tag[0]}" at ${where} is not a /* hacer-sidecar */ block opening its own line at the end of the file`)
   }
+  if (block?.[1].includes('*/')) return refuse('invalid-sidecar', 'The sidecar JSON holds a raw */, which ends the comment early; write it as *\\/')
   if (header && header[1] !== String(SPEC_SCHEMA_VERSION)) return refuse('unknown-schema-version', `Spec schemaVersion "${header[1]}" is not one this build reads (${SPEC_SCHEMA_VERSION})`)
   return block ? parseSidecar(block[1]) : { sidecar: emptySidecar() }
 }
@@ -50,7 +132,7 @@ function assignPartIds(parts: HDLPart[], diagnostics: SpecDiagnostic[]): Part[] 
   const taken = new Set<string>()
   const lost = parts.map(({ id }): [SpecDiagnostic['code'], string] | null => {
     if (id === undefined) return ['part-id-assigned', 'has no // #p<n> id']
-    if (!CANONICAL_ID.test(id) || Number(id.slice(1)) > Number.MAX_SAFE_INTEGER) return ['invalid-part-id', `has the id ${id.slice(0, 24)}, which is not p1 to p${Number.MAX_SAFE_INTEGER}`]
+    if (!CANONICAL_ID.test(id) || Number(id.slice(1)) > Number.MAX_SAFE_INTEGER) return ['invalid-part-id', `has the id ${id.length > 24 ? `${id.slice(0, 24)}…` : id}, which is not p1 to p${Number.MAX_SAFE_INTEGER}`]
     if (taken.has(id)) return ['duplicate-part-id', `repeats the id ${id}`]
     taken.add(id)
     return null
@@ -110,9 +192,10 @@ function undriven(nets: Net[], unknownParts: Set<PartId>): SpecDiagnostic[] {
     .map((n) => ({ code: 'undriven', severity: 'error', netId: n.id, message: `Signal "${n.id}" is read but nothing drives it` }))
 }
 
-function lower(chip: HDLChip, chips: ChipRegistry, diagnostics: SpecDiagnostic[]): CircuitSpec {
+function lower(chip: HDLChip, wires: WireStatement[], chips: ChipRegistry, diagnostics: SpecDiagnostic[]): CircuitSpec {
   const ins = chip.inputs.map(({ name, width }) => ({ name, width }))
   const outs = chip.outputs.map(({ name, width }) => ({ name, width }))
+  const width = new Map([...ins, ...outs].map((p) => [p.name, p.width]))
   const inNames = new Set(ins.map((p) => p.name))
   const outNames = new Set(outs.map((p) => p.name))
   const parts = assignPartIds(chip.parts, diagnostics)
@@ -141,7 +224,8 @@ function lower(chip: HDLChip, chips: ChipRegistry, diagnostics: SpecDiagnostic[]
       const id = printPinRef(conn.external, conn.externalSlice)
       const ref: Ref = { kind: 'part-pin', partId, pin: conn.internal, ...(conn.internalSlice && { slice: conn.internalSlice }) }
       if (def?.outputs.some((p) => p.name === conn.internal)) {
-        drive(id, ref, partId)
+        if (LITERALS.has(id)) diagnostics.push({ code: 'literal-output', severity: 'error', partId, message: `${describeRef(ref)} is bound to ${id}; a part output cannot drive a constant, so the binding is dropped` })
+        else drive(id, ref, partId)
         continue
       }
       if (def && !def.inputs.some((p) => p.name === conn.internal)) {
@@ -150,6 +234,14 @@ function lower(chip: HDLChip, chips: ChipRegistry, diagnostics: SpecDiagnostic[]
       netOf(id).sinks.push(ref)
     }
   })
+
+  for (const wire of wires) {
+    const id = printPinRef(wire.target, wire.targetSlice)
+    netOf(id)
+    const problem = wireProblem(wire, inNames, outNames, width)
+    if (problem) diagnostics.push({ code: 'invalid-wire', severity: 'error', netId: id, line: wire.line, column: wire.column, message: problem })
+    else drive(id, { kind: inNames.has(wire.source) ? 'chip-in' : 'chip-out', pin: wire.source, ...(wire.sourceSlice && { slice: wire.sourceSlice }) })
+  }
 
   for (const net of nets.values()) {
     const { signal, slice } = splitNetId(net.id)
@@ -162,7 +254,7 @@ function lower(chip: HDLChip, chips: ChipRegistry, diagnostics: SpecDiagnostic[]
   }
 
   const doc = normalizeSpec({ schemaVersion: SPEC_SCHEMA_VERSION, name: chip.name, ins, outs, parts, nets: [...nets.values()] })
-  diagnostics.push(...undriven(doc.nets, unknownParts), ...doubleSourced(doc.nets, unknownParts))
+  diagnostics.push(...undriven(doc.nets, unknownParts), ...doubleSourced(doc.nets, unknownParts), ...aliasCycles(doc.nets, width))
   return doc
 }
 
@@ -175,12 +267,13 @@ export function parseSpec(source: string, options: ParseSpecOptions = {}): Parse
   const sidecar = readVersions(source)
   if ('diagnostics' in sidecar) return refuse(sidecar.diagnostics)
 
-  const parsed = parseHDL(source)
+  const { hdl, wires } = extractWires(source)
+  const parsed = parseHDL(hdl)
   if (!parsed.success) return refuse(parsed.errors.map((e) => ({ code: 'syntax', severity: 'error', line: e.line, column: e.column, message: e.message })))
   if (parsed.chip.builtin !== undefined) {
     return refuse([{ code: 'builtin-chip', severity: 'error', message: `${parsed.chip.name} is a BUILTIN chip: it has no parts and nets to be a spec of` }])
   }
   const diagnostics: SpecDiagnostic[] = []
-  const doc = lower(parsed.chip, options.chips ?? getBuiltinChipRegistry(), diagnostics)
+  const doc = lower(parsed.chip, wires, options.chips ?? getBuiltinChipRegistry(), diagnostics)
   return { doc, sidecar: sidecar.sidecar, diagnostics }
 }
