@@ -20,7 +20,9 @@ afterEach(() => {
 const GH_DOUBLE = `#!/bin/sh
 printf '%s\\n' "$*" >> "$STUB/calls.log"
 case "$1 $2" in
-  "pr view") cat "$STUB/pr.json"; exit 0 ;;
+  "pr view")
+    if [ -f "$STUB/view-error.txt" ]; then cat "$STUB/view-error.txt" >&2; exit 1; fi
+    cat "$STUB/pr.json"; exit 0 ;;
   "pr merge"|"api graphql")
     error="$STUB/$2-error.txt"
     if [ -f "$error" ]; then cat "$error" >&2; exit 1; fi
@@ -45,7 +47,7 @@ exit 1
 
 /**
  * Runs the tool once against a recorded state. `rules: false` makes the rulesets call fail too;
- * `refuse` maps `merge` or `graphql` to the stderr line gh prints when GitHub refuses that call.
+ * `refuse` maps `view`, `merge` or `graphql` to the stderr line gh prints when GitHub refuses that call.
  */
 function runTool(state, { rules = true, args = ['1'], pr = {}, refuse = {} } = {}) {
   const stub = mkdtempSync(path.join(tmpdir(), 'merge-on-green-'))
@@ -74,22 +76,33 @@ function runTool(state, { rules = true, args = ['1'], pr = {}, refuse = {} } = {
 
 const PR_646 = 'PR_kwDORdjPzc8AAAABGL8cJA'
 
+/** The outcome line: printed once, last, and stating the exit code the process ended with. */
+function outcomeLine(result) {
+  const lines = result.stdout.trimEnd().split('\n')
+  expect(lines.filter((line) => line.startsWith('MERGE-ON-GREEN:'))).toHaveLength(1)
+  expect(lines.at(-1)).toMatch(new RegExp(` exit=${result.status}$`))
+  return lines.at(-1)
+}
+
 // Explicit timeout, not the 5 s default: each test spawns the CLI, measured up to 4.8 s under load (1.3 s alone).
 const SPAWN_TIMEOUT_MS = 15000
 
 describe('merge-on-green.mjs (gh is a test double)', () => {
   it('exits 0 for a merged PR, after printing the required set it read', () => {
-    const result = runTool('merged')
+    const result = runTool('merged', { args: ['524'] })
     expect(result.status).toBe(0)
     expect(result.stdout).toMatch(/required on main \(rulesets\): ci, pr-hygiene, browser-qa/)
-    expect(result.stdout).toMatch(/merged/)
+    expect(outcomeLine(result)).toBe(
+      'MERGE-ON-GREEN: merged pr=524 head=73d1536d07172f546f932f97b23d58e98fd45730 merge=d1c307419a5fb68f97b5dbdff08251678f82363b exit=0',
+    )
   }, SPAWN_TIMEOUT_MS)
 
   it('never reads an API error body on stdout as a required context (R518)', () => {
-    const result = runTool('non-required-failure', { rules: false })
+    const result = runTool('non-required-failure', { rules: false, args: ['416'] })
     expect(result.stdout).not.toContain('Branch not protected')
     expect(result.stdout).toMatch(/every check counts as required/)
     expect(result.status).toBe(2) // deploy-preview now counts as required, and it failed
+    expect(outcomeLine(result)).toBe('MERGE-ON-GREEN: check-failed pr=416 head=1f4e5b91d16e3e929a38cbd243aca0872c2c75c3 exit=2')
   }, SPAWN_TIMEOUT_MS)
 
   it('appends its marker to the body once, keeps the body, and exits 3 at the deadline', () => {
@@ -100,6 +113,7 @@ describe('merge-on-green.mjs (gh is a test double)', () => {
     expect(result.body).toMatch(
       /<!-- merge-on-green: edited to re-run the required checks on ce3e920a6414164989dbdb8b9d45d8ead2ac1bbc at .+ -->$/,
     )
+    expect(outcomeLine(result)).toBe('MERGE-ON-GREEN: timeout pr=517 head=ce3e920a6414164989dbdb8b9d45d8ead2ac1bbc exit=3')
   }, SPAWN_TIMEOUT_MS)
 
   it('updates a stale green by REBASE, pinned to the head it judged, and says why (#407, #669)', () => {
@@ -120,6 +134,7 @@ describe('merge-on-green.mjs (gh is a test double)', () => {
     expect(result.status).toBe(4)
     expect(result.calls.match(/^api graphql /gm)).toHaveLength(1)
     expect(result.stdout).toContain(refusal)
+    expect(outcomeLine(result)).toBe('MERGE-ON-GREEN: needs-person pr=646 head=f9ecfbda4bc8ba6f77359f1aeb024a1b4a0b8713 exit=4')
   }, SPAWN_TIMEOUT_MS)
 
   it('stops after the first "can’t be rebased" refusal, naming the merge commit (#667)', () => {
@@ -129,6 +144,15 @@ describe('merge-on-green.mjs (gh is a test double)', () => {
     expect(result.calls.match(/^pr merge /gm)).toHaveLength(1)
     expect(result.calls).toMatch(/^api repos\/mezivillager\/hacer\/pulls\/667\/commits/m)
     expect(result.stdout).toMatch(/give-up: .*181b3c3/)
+    expect(outcomeLine(result)).toBe('MERGE-ON-GREEN: needs-person pr=667 head=0c576d750981d0e01e6855ebff05b24afdf6a6f9 exit=4')
+  }, SPAWN_TIMEOUT_MS)
+
+  it('needs a person when the PR cannot be read on the first pass, and names no head', () => {
+    const missing = 'GraphQL: Could not resolve to a PullRequest with the number of 99999. (repository.pullRequest)'
+    const result = runTool('merged', { args: ['99999'], refuse: { view: missing } })
+    expect(result.status).toBe(4)
+    expect(result.stdout).toContain(`give-up: cannot read #99999 in mezivillager/hacer: ${missing}`)
+    expect(outcomeLine(result)).toBe('MERGE-ON-GREEN: needs-person pr=99999 head=- exit=4')
   }, SPAWN_TIMEOUT_MS)
 
   it('merges a fresh green itself, pinned to the head it judged, never through auto-merge', () => {
@@ -142,11 +166,13 @@ describe('merge-on-green.mjs (gh is a test double)', () => {
     expect(result.status).toBe(0)
     expect(result.stdout).toMatch(/update-branch: ci ran at/)
     expect(result.calls).not.toMatch(/^pr (update-branch|merge|edit) /m)
+    expect(outcomeLine(result)).toBe('MERGE-ON-GREEN: dry-run pr=646 head=f9ecfbda4bc8ba6f77359f1aeb024a1b4a0b8713 next=update-branch exit=0')
   }, SPAWN_TIMEOUT_MS)
 
   it('exits 1 with the usage line when no PR is given', () => {
     const result = runTool('merged', { args: [] })
     expect(result.status).toBe(1)
     expect(result.stderr).toMatch(/usage/)
+    expect(outcomeLine(result)).toBe('MERGE-ON-GREEN: usage pr=- head=- exit=1')
   })
 })

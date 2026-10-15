@@ -243,6 +243,10 @@ export function decide(snapshot, history = {}) {
   return giveUp(`BLOCKED on ${head} with nothing running and no required check failing, after the body edit: ${why}. It needs a person; read the base branch's rules${note}`)
 }
 
+export function outcome() {
+  return { exit: -1, line: '' }
+}
+
 /**
  * The body with this tool's hidden marker for `sha` at the end, replacing an earlier marker so
  * edits do not pile up. It carries no `#` reference: pr-hygiene and browser-qa read the body's links.
