@@ -6,10 +6,13 @@ export interface ChipRegistry {
   get(name: string): ChipDefinition | undefined
   has(name: string): boolean
   list(): ChipDefinition[]
+  /** Increases whenever what `get` returns for some name may have changed. */
+  version(): number
 }
 
 export function createChipRegistry(): ChipRegistry {
   const chips = new Map<string, ChipDefinition>()
+  let version = 0
 
   return {
     register(chip: ChipDefinition): void {
@@ -21,6 +24,7 @@ export function createChipRegistry(): ChipRegistry {
         throw new Error(`Chip "${chip.name}" is already registered`)
       }
       chips.set(chip.name, chip)
+      version++
     },
 
     get(name: string): ChipDefinition | undefined {
@@ -33,6 +37,10 @@ export function createChipRegistry(): ChipRegistry {
 
     list(): ChipDefinition[] {
       return [...chips.values()]
+    },
+
+    version(): number {
+      return version
     },
   }
 }

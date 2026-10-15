@@ -28,6 +28,9 @@ export function combineRegistries(...registries: ChipRegistry[]): ChipRegistry {
       }
       return out
     },
+    version(): number {
+      return registries.reduce((sum, r) => sum + r.version(), 0)
+    },
     register(_chip: ChipDefinition): void {
       throw new Error('combineRegistries: read-only view; register on a concrete registry instead')
     },
