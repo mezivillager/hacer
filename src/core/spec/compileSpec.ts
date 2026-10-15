@@ -79,11 +79,18 @@ function aliasBits(doc: CircuitSpec): AliasBits {
       bits.set(bitKey(signal, bit), { signal, bit, root: { signal: driver.pin, bit: (driver.slice?.start ?? 0) + i, fromInput: driver.kind === 'chip-in' } })
     }
   }
-  for (const alias of bits.values()) {
-    for (let hops = bits.size; hops > 0; hops--) {
-      const next = alias.root.fromInput ? undefined : bits.get(bitKey(alias.root.signal, alias.root.bit))
-      if (!next) break
-      alias.root = next.root
+  const resolved = new Set<AliasBit>()
+  for (const start of bits.values()) {
+    const path: AliasBit[] = []
+    let at: AliasBit | undefined = start
+    while (at !== undefined && !resolved.has(at) && path.length <= bits.size) {
+      path.push(at)
+      at = at.root.fromInput ? undefined : bits.get(bitKey(at.root.signal, at.root.bit))
+    }
+    const root = at !== undefined && resolved.has(at) ? at.root : path[path.length - 1].root
+    for (const alias of path) {
+      alias.root = root
+      resolved.add(alias)
     }
   }
   return bits
