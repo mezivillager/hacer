@@ -40,6 +40,22 @@ describe('chipCompletionStorage', () => {
     })
     expect(markChipCompleted('Not')).toEqual(['Not'])
   })
+
+  it('merges the caller\'s known list when storage can be neither read nor written', () => {
+    const blocked = () => {
+      throw new Error('storage blocked')
+    }
+    vi.spyOn(Storage.prototype, 'getItem').mockImplementation(blocked)
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(blocked)
+    expect(markChipCompleted('And', ['Not'])).toEqual(['Not', 'And'])
+  })
+
+  it('does not duplicate a chip the caller already knows', () => {
+    vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+      throw new Error('storage blocked')
+    })
+    expect(markChipCompleted('Not', ['Not'])).toEqual(['Not'])
+  })
 })
 
 describe('completed chips across a reload', () => {

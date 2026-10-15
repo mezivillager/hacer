@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { useCircuitStore, circuitActions } from '@/store/circuitStore'
 import {
   registerImplementationSource,
@@ -89,5 +89,24 @@ describe('runChipTest', () => {
     expect(r?.error).toBeNull()
     expect(r?.passed).toBe(false)
     expect(r?.firstFailure).toMatchObject({ row: 0, column: 'out' })
+  })
+})
+
+describe('runChipTest without usable storage', () => {
+  beforeEach(() => {
+    const blocked = () => {
+      throw new Error('storage blocked')
+    }
+    vi.stubGlobal('localStorage', { getItem: blocked, setItem: blocked })
+  })
+
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
+  it('keeps an earlier completion when a second chip passes', () => {
+    circuitActions.runChipTest('Not', 'builtin')
+    circuitActions.runChipTest('And', 'builtin')
+    expect(useCircuitStore.getState().completedChips).toEqual(['Not', 'And'])
   })
 })
