@@ -1,6 +1,10 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { notify } from '@/lib/notify'
 import { useCircuitStore } from '../../circuitStore'
+import type { Wire, WireEndpoint } from '../../types'
+import { SECTION_SIZE, WIRE_HEIGHT } from '@/utils/wiringScheme/types'
+import { drawBranch, placeJunction, zSegments, Z_CORNER } from '@/test/junctionFixtures'
+import { gateRecord, importDocument, wireRecord } from '@/test/documentFixtures'
 
 // Helper to get store state
 const getState = () => useCircuitStore.getState()
@@ -797,6 +801,84 @@ describe('wiringActions', () => {
       if (wiringFrom?.source?.type === 'junction') {
         expect(wiringFrom.source.junctionId).toBe(junction2.id)
       }
+    })
+  })
+
+  // Loaded documents with junction endpoints (#734): no store action writes a wire that ends or starts at
+  // a junction, so each junction is placed by the app and the document reloads only its wires.
+  describe('startWiringFromJunction on a loaded document with junction endpoints', () => {
+    const SOURCE = 'g-source'
+    const GATES = [
+      gateRecord(SOURCE),
+      gateRecord('g-sink-0', { x: 2 * SECTION_SIZE, y: 0, z: -SECTION_SIZE }),
+      gateRecord('g-sink-1', { x: 2 * SECTION_SIZE, y: 0, z: 2 * SECTION_SIZE }),
+      gateRecord('g-branch-sink', { x: SECTION_SIZE, y: 0, z: -3 * SECTION_SIZE }),
+    ]
+    const UNSUPPORTED = 'Unsupported wire source type after tracing through junctions'
+    const pinOut = (gateId: string): WireEndpoint => ({ type: 'gate', entityId: gateId, pinId: `${gateId}-out-0` })
+    const pinIn = (gateId: string): WireEndpoint => ({ type: 'gate', entityId: gateId, pinId: `${gateId}-in-0` })
+    const at = (junctionId: string): WireEndpoint => ({ type: 'junction', entityId: junctionId })
+
+    /** Places a junction on the corner of each named wire, then reloads the circuit as `rewire(junctionIds)` beside them. */
+    function loadJunctions(wireIds: string[], rewire: (junctionIds: string[]) => Wire[]): string[] {
+      importDocument({
+        gates: GATES,
+        wires: wireIds.map((id, i) => wireRecord(id, pinOut(SOURCE), pinIn(`g-sink-${i}`), zSegments())),
+      })
+      const junctionIds = wireIds.map((id) => placeJunction(id, Z_CORNER).junctionId)
+      importDocument({ gates: GATES, wires: rewire(junctionIds), junctions: getState().junctions })
+      return junctionIds
+    }
+
+    it('draws from a junction whose listed wires all start at it, through the wire that ends there', () => {
+      const [junction] = loadJunctions(['w-out'], ([j]) => [
+        wireRecord('w-feed', pinOut(SOURCE), at(j), zSegments().slice(0, 2)),
+        wireRecord('w-out', at(j), pinIn('g-sink-0'), zSegments().slice(2)),
+      ])
+      expect(getState().junctions[0].wireIds).toEqual(['w-out'])
+
+      const branch = drawBranch(junction, {
+        to: { type: 'gate', gateId: 'g-branch-sink', pinId: 'g-branch-sink-in-0' },
+        tail: [{ type: 'vertical', start: Z_CORNER, end: { x: SECTION_SIZE, y: WIRE_HEIGHT, z: -2 * SECTION_SIZE } }],
+      })
+
+      expect(getState().wires.find((w) => w.id === branch)?.from).toEqual(pinOut(SOURCE))
+    })
+
+    it('traces a chained junction to the source through the wire that ends at each junction', () => {
+      const [, junction] = loadJunctions(['w-up', 'w-mid'], ([up, j]) => [
+        wireRecord('w-feed', pinOut(SOURCE), at(up), zSegments().slice(0, 2)),
+        wireRecord('w-up', at(up), pinIn('g-sink-0'), zSegments().slice(2)),
+        wireRecord('w-mid', at(up), at(j), zSegments().slice(0, 2)),
+      ])
+
+      getState().startWiringFromJunction(junction, Z_CORNER)
+
+      expect(notify.warning).not.toHaveBeenCalled()
+      expect(getState().wiringFrom?.fromPosition).toEqual(getState().getPinWorldPosition(SOURCE, `${SOURCE}-out-0`))
+    })
+
+    it('gives the named warning when nothing ends at the junction and no listed wire leads to a source', () => {
+      const [junction] = loadJunctions(['w-out'], ([j]) => [
+        wireRecord('w-out', at(j), pinIn('g-sink-0'), zSegments().slice(2)),
+      ])
+
+      getState().startWiringFromJunction(junction, Z_CORNER)
+
+      expect(vi.mocked(notify.warning).mock.calls).toEqual([[UNSUPPORTED]])
+      expect(getState().wiringFrom).toBeNull()
+    })
+
+    it('ends a junction cycle with the named warning', () => {
+      const [junction] = loadJunctions(['w-ba', 'w-ab'], ([a, b]) => [
+        wireRecord('w-ba', at(b), at(a)),
+        wireRecord('w-ab', at(a), at(b)),
+      ])
+
+      getState().startWiringFromJunction(junction, Z_CORNER)
+
+      expect(vi.mocked(notify.warning).mock.calls).toEqual([[UNSUPPORTED]])
+      expect(getState().wiringFrom).toBeNull()
     })
   })
 
