@@ -8,7 +8,7 @@ import { parseCmp } from '@/core/testing/cmpParser'
 import { project1TstFixtures } from '@/core/testing/project1TstFixtures'
 import { project1CmpFixtures } from '@/core/testing/project1CmpFixtures'
 import { getImplementationSource } from '@/core/testing/implementationSources'
-import { markChipCompleted } from '@/core/testing/chipCompletion'
+import { markChipCompleted } from '@/lib/chipCompletionStorage'
 import type { ChipRegistry } from '@/core/chips/registry'
 import type { ChipDefinition } from '@/core/chips/types'
 

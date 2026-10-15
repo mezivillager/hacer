@@ -1,9 +1,4 @@
 {
-  "src/core/testing/chipCompletion.ts": {
-    "no-restricted-globals": {
-      "count": 2
-    }
-  },
   "src/utils/wiringScheme/branching.ts": {
     "no-console": {
       "count": 1

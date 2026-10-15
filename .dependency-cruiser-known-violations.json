@@ -516,23 +516,6 @@
   {
     "type": "dependency",
     "from": "src/store/actions/testActions/testActions.ts",
-    "to": "src/core/testing/chipCompletion.ts",
-    "unresolvedTo": "@/core/testing/chipCompletion",
-    "dependencyTypes": [
-      "aliased",
-      "aliased-tsconfig",
-      "aliased-tsconfig-paths",
-      "local",
-      "import"
-    ],
-    "rule": {
-      "severity": "error",
-      "name": "core-through-index"
-    }
-  },
-  {
-    "type": "dependency",
-    "from": "src/store/actions/testActions/testActions.ts",
     "to": "src/core/testing/cmpParser.ts",
     "unresolvedTo": "@/core/testing/cmpParser",
     "dependencyTypes": [
@@ -637,23 +620,6 @@
     "from": "src/store/actions/wireActions/wireActions.test.ts",
     "to": "src/core/serialization/index.ts",
     "unresolvedTo": "@/core/serialization",
-    "dependencyTypes": [
-      "aliased",
-      "aliased-tsconfig",
-      "aliased-tsconfig-paths",
-      "local",
-      "import"
-    ],
-    "rule": {
-      "severity": "error",
-      "name": "core-through-index"
-    }
-  },
-  {
-    "type": "dependency",
-    "from": "src/store/circuitStore.ts",
-    "to": "src/core/testing/chipCompletion.ts",
-    "unresolvedTo": "@/core/testing/chipCompletion",
     "dependencyTypes": [
       "aliased",
       "aliased-tsconfig",

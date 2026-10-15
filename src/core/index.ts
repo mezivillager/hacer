@@ -13,7 +13,6 @@
  * Deliberately NOT exported, each for a reason:
  *   - `./serialization` — the canvas document's save format. `deserialize` imports the store, so
  *     exporting it would make this index non-headless on its own.
- *   - `testing/chipCompletion` — `localStorage`; it belongs behind a port, not in the engine's API.
  *   - `testing/implementationSources` — the Test Lab's "what to test against" picker: an app
  *     concern built ON this surface.
  *   - the Project-1 `.tst`/`.cmp` corpora and the HDL parser stubs — test data, not API. The correct
