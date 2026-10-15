@@ -31,22 +31,24 @@ export interface DeserializedCircuit {
  * **Where the line falls.** A warning is always about *one entry*, and only ever an
  * entry this reader *chose* to drop: a gate it could not rebuild, a bus component of
  * a kind it does not know, a wire with an endpoint of a type it does not know, a wire
- * whose width is not a positive integer, and (#402) the wires and junctions that pruning
- * then takes with it. A bus entry with no readable `kind`, or a wire endpoint with no
- * readable `type` (an empty object, an array, a number or a string), is one it does not
- * know, so it is one warning too; a `null` bus entry, a malformed bus of a known kind, or
- * a wire with no endpoint object, still throws. Anything else wrong with the *document
- * itself* — a missing top-level array, or a malformed wire, node or junction record — is
- * not one bad entry but nothing to load, and it still throws out of `deserializeCircuit`
- * for the caller to catch, exactly as it did before warnings became data. Widening
- * recovery to those records would change what a person sees, which #181 deliberately
- * does not do.
+ * whose width is not a positive integer, a bus component or input or output node whose
+ * width is not a positive integer within `MAX_PIN_WIDTH`, and (#402) the wires and
+ * junctions that pruning then takes with it. A bus entry with no readable `kind`, or a
+ * wire endpoint with no readable `type` (an empty object, an array, a number or a
+ * string), is one it does not know, so it is one warning too; a `null` bus entry, a
+ * malformed bus of a known kind, or a wire with no endpoint object, still throws.
+ * Anything else wrong with the *document itself* — a missing top-level array, or a
+ * malformed wire, node or junction record — is not one bad entry but nothing to load,
+ * and it still throws out of `deserializeCircuit` for the caller to catch, exactly as it
+ * did before warnings became data. Widening recovery to those records would change what
+ * a person sees, which #181 deliberately does not do.
  *
  * **Counts, not a wall of toasts.** `unknown-bus-kind`, `unknown-endpoint-type`,
- * `invalid-wire-width`, `dropped-wire` and `dropped-junction` are emitted one per entity,
- * because a caller or a test wants the ids — but a document that drops 40 wires must not
- * raise 40 toasts, so the store's `reportDeserialized` summarises exactly these five codes
- * into one line and leaves every gate code's toast alone.
+ * `invalid-wire-width`, `invalid-bus-width`, `invalid-node-width`, `dropped-wire` and
+ * `dropped-junction` are emitted one per entity, because a caller or a test wants the ids —
+ * but a document that drops 40 wires must not raise 40 toasts, so the store's
+ * `reportDeserialized` summarises exactly these seven codes into one line and leaves every
+ * gate code's toast alone.
  *
  * **One deliberate widening, not parity.** A gate entry that is literally `null` used
  * to kill the whole load: the old reader read `s.type` *outside* its `try`, so it threw
@@ -204,8 +206,17 @@ const asSaved = (value: unknown): string =>
     ? String(value)
     : (JSON.stringify(value) ?? String(value))
 
-const isValidWireWidth = (width: unknown): boolean =>
-  width === undefined || (typeof width === 'number' && Number.isInteger(width) && width > 0)
+/** The widest pin the app can create: the Properties Panel offers nodes 1 to 32 bits, and a signal
+ *  value is held as 32 bits. */
+export const MAX_PIN_WIDTH = 32
+
+const isPositiveInteger = (width: unknown): width is number =>
+  typeof width === 'number' && Number.isInteger(width) && width > 0
+
+const isValidWireWidth = (width: unknown): boolean => width === undefined || isPositiveInteger(width)
+
+const isValidPinWidth = (width: unknown): boolean =>
+  width === undefined || (isPositiveInteger(width) && width <= MAX_PIN_WIDTH)
 
 const cloneVec3 = (v: { x: number; y: number; z: number }) => ({ x: v.x, y: v.y, z: v.z })
 
@@ -427,6 +438,19 @@ export function deserializeCircuit(data: SerializedCircuit): DeserializeResult {
       })
       continue
     }
+    if (!isValidPinWidth(s.width)) {
+      const busId = typeof s.id === 'string' ? s.id : UNIDENTIFIED
+      const busWidth = asSaved(s.width)
+      warnings.push({
+        code: 'invalid-bus-width',
+        busId,
+        busWidth,
+        message:
+          `Skipped bus component "${busId}" while loading circuit — ` +
+          `its width "${busWidth}" is not a whole number from 1 to ${String(MAX_PIN_WIDTH)}.`,
+      })
+      continue
+    }
     const { inputs, outputs } = createBusPins(s.kind, s.width)
     busComponents.push({
       id: s.id,
@@ -444,6 +468,40 @@ export function deserializeCircuit(data: SerializedCircuit): DeserializeResult {
   /** Prunes a wire whose 'bus' endpoint references a bus component not in the restored set. */
   const isLiveBusRef = (endpoint: SerializedWire['from']): boolean =>
     endpoint.type !== 'bus' || liveBusIds.has(endpoint.entityId)
+
+  const skippedNodeIds: Record<'input' | 'output', Set<unknown>> = { input: new Set(), output: new Set() }
+
+  const isLiveNodeRef = (endpoint: SerializedWire['from']): boolean =>
+    (endpoint.type !== 'input' && endpoint.type !== 'output') || !skippedNodeIds[endpoint.type].has(endpoint.entityId)
+
+  const readNodes = <S extends SerializedInputNode | SerializedOutputNode, N>(
+    entries: S[],
+    nodeType: 'input' | 'output',
+    reconstruct: (s: S) => N,
+  ): N[] => {
+    const nodes: N[] = []
+    for (const s of entries) {
+      if (!isValidPinWidth(s.width)) {
+        skippedNodeIds[nodeType].add(s.id)
+        const nodeId = typeof s.id === 'string' ? s.id : UNIDENTIFIED
+        const nodeWidth = asSaved(s.width)
+        warnings.push({
+          code: 'invalid-node-width',
+          nodeId,
+          nodeType,
+          nodeWidth,
+          message:
+            `Skipped ${nodeType} node "${nodeId}" while loading circuit — ` +
+            `its width "${nodeWidth}" is not a whole number from 1 to ${String(MAX_PIN_WIDTH)}.`,
+        })
+        continue
+      }
+      nodes.push(reconstruct(s))
+    }
+    return nodes
+  }
+  const inputNodes = readNodes(data.inputNodes, 'input', reconstructInputNode)
+  const outputNodes = readNodes(data.outputNodes, 'output', reconstructOutputNode)
 
   const wires: Wire[] = []
   const droppedWireIds = new Set<string>()
@@ -478,11 +536,13 @@ export function deserializeCircuit(data: SerializedCircuit): DeserializeResult {
     }
     const missingGate = !isLiveGateRef(s.from) || !isLiveGateRef(s.to)
     const missingBus = !isLiveBusRef(s.from) || !isLiveBusRef(s.to)
-    if (missingGate || missingBus) {
+    const missingNode = !isLiveNodeRef(s.from) || !isLiveNodeRef(s.to)
+    if (missingGate || missingBus || missingNode) {
       droppedWireIds.add(s.id)
       // A wire can be orphaned at both ends at once; `missing-gate` wins, because a gate this
       // build skipped is the case the person can act on (#402).
-      const reason = missingGate ? 'missing-gate' : 'missing-bus'
+      const reason = missingGate ? 'missing-gate' : missingBus ? 'missing-bus' : 'missing-node'
+      const lost = { 'missing-gate': 'gate', 'missing-bus': 'bus component', 'missing-node': 'input or output node' }[reason]
       warnings.push({
         code: 'dropped-wire',
         // `String` for the same reason the gate warnings use a stand-in: the declared
@@ -492,7 +552,7 @@ export function deserializeCircuit(data: SerializedCircuit): DeserializeResult {
         reason,
         message:
           `Skipped wire "${String(s.id)}" while loading circuit — it connected to a ` +
-          `${missingGate ? 'gate' : 'bus component'} that could not be loaded.`,
+          `${lost} that could not be loaded.`,
       })
       continue
     }
@@ -526,8 +586,8 @@ export function deserializeCircuit(data: SerializedCircuit): DeserializeResult {
     document: {
       gates,
       wires,
-      inputNodes: data.inputNodes.map(reconstructInputNode),
-      outputNodes: data.outputNodes.map(reconstructOutputNode),
+      inputNodes,
+      outputNodes,
       junctions,
       busComponents,
     },
