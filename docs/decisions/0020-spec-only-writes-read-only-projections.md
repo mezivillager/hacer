@@ -656,8 +656,10 @@ the 15 Project 1 sources and 13 spec shapes:
 
 **1.11 `compileSpec`, as built. Amended 2026-10-15 ([#378](https://github.com/mezivillager/hacer/issues/378), R825, R826).**
 §1.1 and §1.5 named `compileSpec` and its two rules. It is built in `src/core/spec/compileSpec.ts`,
-and these rules are pinned by `src/core/spec/compileSpec.test.ts` and by "Project-1 through
-compileSpec" in `src/core/hdl/project1-bottom-up.test.ts`.
+and these rules are pinned by `src/core/spec/compileSpec.test.ts`,
+`src/core/spec/compileSpec.nesting.test.ts` and `src/core/spec/compileSpec.vectors.test.ts`, and by
+"Project-1 through compileSpec" and "Project-1 bottom-up from NAND as registered specs" in
+`src/core/hdl/project1-bottom-up.test.ts`.
 
 1. **The input is the parse result, not the bare document.** `compileSpec(parsed, registry)` takes
    `{ doc, diagnostics }`, so `compileSpec(parseSpec(text, { chips }), chips)` is the whole path from
@@ -666,16 +668,28 @@ compileSpec" in `src/core/hdl/project1-bottom-up.test.ts`.
      the second, leaving only a `multiple-drivers` diagnostic that names both. For
      `Not(in=a, out=out); Not(in=b, out=out);` the document alone would compile, silently, with the
      first driver.
-   - It refuses when `parsed` carries any `error` diagnostic, and returns those diagnostics.
+   - It refuses when `parsed` carries any `error` diagnostic, and returns only the errors. A
+     `multiple-drivers` error loses the parse's note of which driver the document dropped
+     (`; p2.out is dropped`): a run is refused for the clash, not for the drop.
    - It then re-runs `parseSpec`'s `doubleSourced`, `aliasCycles` and `undriven` over the document
-     itself, and refuses repeated net ids by name (`duplicate-net-id`). So a document built without
-     a parse (N.2's importer, N.10's commands) cannot skip them. Repeated ids are how N.2 imports a
+     itself, and refuses repeated net ids by name (`duplicate-net-id`), except where
+     `multiple-drivers` already names that net. So a document built without a parse (N.2's
+     importer, N.10's commands) cannot skip them.
+   - It also re-checks §1.10.6's wire shape over the nets (`invalid-wire`). An alias must target a
+     chip OUT from a chip IN or OUT of the same width, and a `chip-in` driver must name an IN.
+     `parseSpec` refuses all of these when it reads text (none got through in 56,882 parses); a
+     document built by hand could carry one. Repeated ids are how N.2 imports a
      chip OUT with two drivers ([#377](https://github.com/mezivillager/hacer/issues/377) ruling 1,
      R826).
 2. **The lowering is in memory.** The document becomes an `HDLChip` and goes to `compileHDL`. No
    text is printed and no part is injected (§1.5).
+   - An alias is what `printSpec` prints as a `wire`, and the two share one test (`isAlias`): any
+     `chip-out` driver, or a `chip-in` driver whose printed ref differs from the net id.
    - Every chip-OUT bit an alias writes is followed down its chain to a chip-IN bit, or to a bit no
-     alias writes.
+     alias writes, in one pass over the chain.
+   - A part that reads alias bits whose root nothing drives is refused as `undriven`, naming the
+     signal the part bound rather than the root. An alias of an undriven OUT that no part reads
+     evaluates to 0, as an OUT nothing writes does in the reference.
    - A part's read of alias bits binds those roots, split on the part's own pin wherever the root
      changes (§1.5 rule 1). A read whose width does not match its pin stays unsplit, so the engine's
      width refusal still fires.
@@ -685,8 +699,9 @@ compileSpec" in `src/core/hdl/project1-bottom-up.test.ts`.
    - An engine refusal becomes a `compile` diagnostic carrying `compileHDL`'s message verbatim.
    - `compileSpec` never throws and never changes its input. A refusal belongs to the run panel; the
      document and its parse diagnostics are unchanged (§1.1).
-3. **The cache rule,** in `evaluateChip`. A cached evaluator is reused only while `ctx.registry`
-   resolves each of its part names to the definition it was compiled against.
+3. **The cache rule,** in `evaluateChip`, for `'hdl'` and `'circuit'` chips alike. A cached evaluator
+   is reused only while `ctx.registry` resolves each of its part names, and an `'hdl'` chip's
+   `BUILTIN` name, to the definition it was compiled against.
    - `compileHDL` captures each part's definition when it compiles. A cache keyed by the definition
      alone returned the old part's value under a fresh registry: `Bar` = `Foo(a=a, out=out)` gave `0`
      under a registry where `Foo` is `Or`, where the truth is `1`.
@@ -704,10 +719,31 @@ compileSpec" in `src/core/hdl/project1-bottom-up.test.ts`.
    - A bit nothing drives reads 0 in the engine, silently
      ([#431](https://github.com/mezivillager/hacer/issues/431)). `undriven` over the document
      catches its sliced shape, and the split is tested rather than assumed.
+   - **`compileSpec` relies on the engine accepting a part that reads a chip OUT.** A read of an
+     OUT→OUT alias binds its root, which can be an OUT bit, and a read such as
+     `Or(a=out[0], b=out[1], …)` names one directly. The reference refuses both
+     (`Cannot use output pin as input`, `../web-ide/simulator/src/chip/builder.ts:477`), and Appendix A §5
+     lists only a chip IN, an internal pin and the constants as a part input's sources. If the
+     engine adopts that refusal, `compileSpec` must bind such a read to the OUT's driver instead.
+     The export's matching form, a second output binding on that driver, is
+     [#722](https://github.com/mezivillager/hacer/issues/722)'s.
 6. **Parity is measured on Project 1.** All 15 sources through `compileSpec` match the builtins and
    the `'hdl'` evaluation of the same source, on that test file's vectors. HACER ships no Project 2–3
    HDL to compare against; that parity comes with
    [#177](https://github.com/mezivillager/hacer/issues/177).
+7. **A spec is a chip.** The `'circuit'` variant of `ChipImplementation` is
+   `{ type: 'circuit'; spec: CircuitSpec }`. A successful `compileSpec` also returns `chip`, that
+   definition carrying its document, so registering a spec is `registry.register(result.chip)`.
+   - `evaluateChipWithCtx` compiles a `'circuit'` chip through `compileSpec` against `ctx.registry`
+     and caches it by rule 3. Each nested chip runs its own evaluator, so it writes its own alias
+     boundary back; wrapped around the outermost call instead, a pass-through gave `y = 0` once it
+     was a part (§1.5).
+   - Measured: three levels of specs with a pass-through at every boundary, and the 15 Project 1
+     chips registered from Nand alone, six levels deep, against the builtins and through the
+     official `.tst`/`.cmp` vectors in `conformance/vectors/01`.
+   - The legacy evaluator is unchanged. It already resolves every gate through
+     `evaluateChipWithCtx`, so a registered spec would evaluate there as it is; nothing registers
+     into the app's user registry yet ([#206](https://github.com/mezivillager/hacer/issues/206)).
 
 ### 2. The pipeline contracts
 
