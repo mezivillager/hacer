@@ -34,6 +34,7 @@ type TokenType =
   | 'EQUALS'
   | 'COLON'
   | 'DOTDOT'
+  | 'PART_ID'
   | 'EOF'
 
 interface Token {
@@ -46,6 +47,9 @@ interface Token {
 // ---------------------------------------------------------------------------
 // Tokenizer
 // ---------------------------------------------------------------------------
+
+/** `// #p3`, alone on the rest of its line: a part id (ADR-0020 §1.9). Any other comment is skipped. */
+const PART_ID_MARKER = /^\/\/[ \t]*#(p[0-9]+)[ \t\r]*$/
 
 const KEYWORDS: Record<string, TokenType> = {
   CHIP: 'CHIP',
@@ -95,6 +99,11 @@ function tokenize(
     }
   }
 
+  function partIdMarkerAt(): string | null {
+    const end = source.indexOf('\n', pos)
+    return PART_ID_MARKER.exec(source.slice(pos, end === -1 ? source.length : end))?.[1] ?? null
+  }
+
   function skipBlockComment(): HDLParseError | null {
     const startLine = line
     const startCol = column
@@ -120,6 +129,7 @@ function tokenize(
       if (/\s/.test(source[pos])) {
         skipWhitespace()
       } else if (source[pos] === '/' && peekAt(1) === '/') {
+        if (partIdMarkerAt() !== null) break
         skipLineComment()
       } else if (source[pos] === '/' && peekAt(1) === '*') {
         const err = skipBlockComment()
@@ -154,6 +164,12 @@ function tokenize(
 
     const startLine = line
     const startCol = column
+    const partId = source[pos] === '/' ? partIdMarkerAt() : null
+    if (partId !== null) {
+      tokens.push({ type: 'PART_ID', value: partId, line: startLine, column: startCol })
+      skipLineComment()
+      continue
+    }
     const ch = pos < source.length ? source[pos] : '\0'
 
     if (/[A-Za-z_]/.test(ch)) {
@@ -244,12 +260,17 @@ function tokenize(
 // ---------------------------------------------------------------------------
 
 class Parser {
-  private tokens: Token[]
+  private tokens: Token[] = []
   private pos = 0
   private errors: HDLParseError[] = []
+  /** Each PART_ID token, keyed by the index of the token it follows; the grammar never sees one. */
+  private partIdAfter = new Map<number, Token>()
 
   constructor(tokens: Token[]) {
-    this.tokens = tokens
+    for (const tok of tokens) {
+      if (tok.type !== 'PART_ID') this.tokens.push(tok)
+      else if (!this.partIdAfter.has(this.tokens.length - 1)) this.partIdAfter.set(this.tokens.length - 1, tok)
+    }
   }
 
   private current(): Token {
@@ -441,10 +462,13 @@ class Parser {
 
     const parts: HDLPart[] = []
     while (this.current().type === 'IDENT') {
-      parts.push(this.parsePart())
+      const part = this.parsePart()
+      parts.push(part)
       if (this.errors.length > 0) return { parts }
-      this.expect('SEMICOLON')
+      const semicolon = this.expect('SEMICOLON')
       if (this.errors.length > 0) return { parts }
+      const marker = this.partIdAfter.get(this.pos - 1)
+      if (marker?.line === semicolon.line) part.id = marker.value
     }
 
     return { parts }
