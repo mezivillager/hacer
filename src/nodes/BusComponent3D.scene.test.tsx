@@ -193,3 +193,13 @@ describe.each(KINDS)('BusComponent3D drawing a $kind under test-renderer, with n
     expect(drag.onPointerLeave).not.toHaveBeenCalled()
   })
 })
+
+describe('BusComponent3D given a kind it does not know', () => {
+  it('draws nothing', async () => {
+    const unknown = { ...makeBus('joiner'), kind: 'merger' as BusComponentKind }
+    const renderer = await ReactThreeTestRenderer.create(<BusComponent3D component={unknown} />)
+    mounted.push(renderer)
+
+    expect(renderer.scene.children).toEqual([])
+  })
+})
