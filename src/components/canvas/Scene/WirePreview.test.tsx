@@ -30,8 +30,8 @@ vi.mock('@/utils/wiringScheme/core', () => ({
 
 // Mock Wire3D component
 vi.mock('../Wire3D', () => ({
-  Wire3D: ({ start, end, isPreview }: { start: unknown; end: unknown; isPreview: boolean }) => (
-    <div data-testid="wire-3d" data-start={JSON.stringify(start)} data-end={JSON.stringify(end)} data-preview={isPreview}>
+  Wire3D: ({ start, end, isPreview, performanceMode }: { start: unknown; end: unknown; isPreview: boolean; performanceMode: string }) => (
+    <div data-testid="wire-3d" data-start={JSON.stringify(start)} data-end={JSON.stringify(end)} data-preview={isPreview} data-performance-mode={performanceMode}>
       Wire3D
     </div>
   ),
@@ -60,6 +60,7 @@ describe('WirePreview', () => {
     vi.clearAllMocks()
     setState({
       wiringFrom: null,
+      performanceMode: 'normal',
     })
     vi.mocked(calculateWirePath).mockReturnValue({
       segments: [
@@ -117,6 +118,27 @@ describe('WirePreview', () => {
     const wires = getAllByTestId('wire-3d')
     expect(wires.length).toBeGreaterThan(0)
     expect(wires[0].getAttribute('data-preview')).toBe('true')
+  })
+
+  it.each(['low-power', 'normal'] as const)('passes the store\'s %s performance mode to Wire3D', (mode) => {
+    setState({
+      performanceMode: mode,
+      wiringFrom: {
+        fromGateId: 'gate-1',
+        fromPinId: 'pin-1',
+        fromPinType: 'output',
+        fromPosition: { x: 0, y: 0.2, z: 0 },
+        previewEndPosition: { x: 2, y: 0.2, z: 2 },
+        destinationGateId: null,
+        destinationPinId: null,
+        destinationNodeId: null,
+        destinationNodeType: null,
+        segments: null,
+      },
+      gates: [],
+    })
+    const { getByTestId } = render(<WirePreview />)
+    expect(getByTestId('wire-3d').getAttribute('data-performance-mode')).toBe(mode)
   })
 
     it('renders segments from calculateWirePath', () => {
