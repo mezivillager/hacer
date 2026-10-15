@@ -60,7 +60,7 @@ that measured them, are in `docs/research/2026-09-continual-refinement/evidence/
 
 ### HRN-001 · `backlog.mjs ready` flags an issue that a merged PR already references, so "already delivered" is found at pick time
 - **Date:** 2026-10-15 · **Kind:** mechanise · **Retro run:** 2026-10-15
-- **Status:** proposed
+- **Status:** filed (#702), closed by PR #711 on 2026-10-15
 - **Evidence:** issues closed without a PR as already delivered, in all three records:
   #153 and #335 (2026-09-29 §2), #159 (2026-10-02 §2) and #304 (2026-10-04 §2). Each was found by
   a builder or the coordinator after the pick. None has a ledger row, because the session records'
@@ -86,7 +86,7 @@ coordinator checks for delivery before claiming, not after a builder has started
 
 ### HRN-002 · `backlog.mjs claim` prints what changed under the issue's "Files likely touched" since the issue was written
 - **Date:** 2026-10-15 · **Kind:** mechanise · **Retro run:** 2026-10-15
-- **Status:** proposed
+- **Status:** filed (#703), closed by PR #716 on 2026-10-15
 - **Evidence:** premises that no longer held, each found by a builder before building:
   - 2026-09-29 §3: R769, R770;
   - 2026-10-02 §3: #632, #407, #368, #481;
@@ -116,7 +116,7 @@ written, so a stale premise is measured first, not discovered mid-build.
 
 ### HRN-003 · L055 is due a mechanism: junction test fixtures are built through the store's own gesture
 - **Date:** 2026-10-15 · **Kind:** mechanise · **Retro run:** 2026-10-15
-- **Status:** proposed
+- **Status:** filed (#704), closed by PR #718 on 2026-10-15
 - **Evidence:** L055 says of itself, "Second occurrence (#365, #396), so it is due a mechanism". No
   open issue covers it. 12 test files under `src/` hand-write a `wireIds: [` literal
   (`command grep -rl "wireIds: \[" src --include=*.test.ts --include=*.test.tsx`). #403's guard
@@ -141,7 +141,7 @@ action writes.
 
 ### HRN-004 · `scripts/merge-on-green.mjs` ends with one greppable outcome line
 - **Date:** 2026-10-15 · **Kind:** mechanise · **Retro run:** 2026-10-15
-- **Status:** filed (#705)
+- **Status:** filed (#705), closed by PR #709 on 2026-10-15
 - **Evidence:** two coordinator slips in one run (2026-10-04 §3), both about reading a merge's
   outcome.
   - #688 was recorded as merged when its merge had failed: `pr-hygiene` found no linked issue.
