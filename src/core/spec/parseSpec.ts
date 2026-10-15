@@ -99,6 +99,28 @@ function wireProblem(wire: WireStatement, ins: Set<string>, outs: Set<string>, w
 }
 
 const bitsOf = (slice: HDLSlice | undefined) => ({ first: slice?.start ?? 0, last: slice?.end ?? Number.POSITIVE_INFINITY })
+const overlap = (a: HDLSlice | undefined, b: HDLSlice | undefined): boolean => bitsOf(a).first <= bitsOf(b).last && bitsOf(b).first <= bitsOf(a).last
+
+/** §1.8: one bit, one source — a signal bit written by two nets, or a part pin bit bound by two. */
+function doubleSourced(nets: Net[]): SpecDiagnostic[] {
+  const found: SpecDiagnostic[] = []
+  const claims = new Map<string, Array<{ netId: string; slice?: HDLSlice }>>()
+  const claim = (key: string, netId: string, slice: HDLSlice | undefined, describe: (other: string) => SpecDiagnostic): void => {
+    const held = claims.get(key) ?? []
+    const clash = held.find((c) => overlap(c.slice, slice))
+    if (clash) found.push(describe(clash.netId))
+    claims.set(key, [...held, { netId, slice }])
+  }
+  for (const net of nets) {
+    const { signal, slice } = splitNetId(net.id)
+    if (net.driver !== null) claim(`signal:${signal}`, net.id, slice, (other) => ({ code: 'multiple-drivers', severity: 'error', netId: net.id, message: `Nets "${other}" and "${net.id}" both drive bits of "${signal}"` }))
+    for (const sink of net.sinks) {
+      if (sink.kind !== 'part-pin') continue
+      claim(`pin:${sink.partId}.${sink.pin}`, net.id, sink.slice, (other) => ({ code: 'multiple-drivers', severity: 'error', netId: net.id, partId: sink.partId, message: `${sink.partId} pin "${sink.pin}" is bound by both "${other}" and "${net.id}"` }))
+    }
+  }
+  return found
+}
 
 /** A driverless net is unfinished (§1.1) unless another net's driver writes bits it reads. */
 function undriven(nets: Net[]): SpecDiagnostic[] {
@@ -107,8 +129,7 @@ function undriven(nets: Net[]): SpecDiagnostic[] {
     .filter((n) => n.driver === null && !LITERALS.has(n.id))
     .filter((n) => {
       const { signal, slice } = splitNetId(n.id)
-      const read = bitsOf(slice)
-      return !written.some((w) => w.signal === signal && bitsOf(w.slice).first <= read.last && read.first <= bitsOf(w.slice).last)
+      return !written.some((w) => w.signal === signal && overlap(w.slice, slice))
     })
     .map((n) => ({ code: 'undriven', severity: 'error', netId: n.id, message: `Signal "${n.id}" is read but nothing drives it` }))
 }
@@ -202,7 +223,7 @@ function lower(chip: HDLChip, wires: WireStatement[], chips: ChipRegistry, diagn
   }
 
   const doc = normalizeSpec({ schemaVersion: SPEC_SCHEMA_VERSION, name: chip.name, ins, outs, parts, nets: [...nets.values()] })
-  diagnostics.push(...undriven(doc.nets), ...aliasCycles(doc.nets, width))
+  diagnostics.push(...undriven(doc.nets), ...doubleSourced(doc.nets), ...aliasCycles(doc.nets, width))
   return doc
 }
 
