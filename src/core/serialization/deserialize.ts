@@ -114,12 +114,29 @@ export type DeserializeWarning =
       wireWidth: string
     }
   | {
+      code: 'invalid-bus-width'
+      message: string
+      /** Id of the bus component that was dropped. */
+      busId: string
+      /** The component's `width` field as saved, e.g. `'2.5'`. */
+      busWidth: string
+    }
+  | {
+      code: 'invalid-node-width'
+      message: string
+      /** Id of the input or output node that was dropped. */
+      nodeId: string
+      nodeType: 'input' | 'output'
+      /** The node's `width` field as saved, e.g. `'2.5'`. */
+      nodeWidth: string
+    }
+  | {
       code: 'dropped-wire'
       message: string
       /** Id of the wire that was pruned. */
       wireId: string
-      /** Which endpoint could not be restored: a gate this build skipped, or a bus component. */
-      reason: 'missing-gate' | 'missing-bus'
+      /** Which endpoint could not be restored: a gate or input/output node this build skipped, or a bus component. */
+      reason: 'missing-gate' | 'missing-bus' | 'missing-node'
     }
   | {
       code: 'dropped-junction'

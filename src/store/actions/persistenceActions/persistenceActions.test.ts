@@ -476,3 +476,56 @@ describe('many wires with a width that is not a positive integer', () => {
     expect(useCircuitStore.getState().wires).toEqual([])
   })
 })
+
+describe('many bus components and nodes with a width the pin limit does not allow', () => {
+  const ZERO = { x: 0, y: 0, z: 0 }
+  const bus = (id: string, width: unknown) => ({
+    id,
+    kind: 'splitter',
+    position: ZERO,
+    rotation: ZERO,
+    width,
+    inputs: [],
+    outputs: [],
+    selected: false,
+  })
+  const node = (id: string, width: unknown) => ({ id, name: id, position: ZERO, rotation: ZERO, value: 0, width })
+  const wire = (id: string, from: unknown) => ({
+    id,
+    from,
+    to: { type: 'bus', entityId: 'bus-ok' },
+    segments: [],
+    crossesWireIds: [],
+  })
+  const blob = JSON.stringify({
+    version: 1,
+    name: 'damaged',
+    savedAt: new Date().toISOString(),
+    gates: [],
+    wires: [
+      wire('w-1', { type: 'bus', entityId: 'bus-1' }),
+      wire('w-2', { type: 'input', entityId: 'i-1' }),
+      wire('w-3', { type: 'output', entityId: 'o-1' }),
+    ],
+    inputNodes: [node('i-1', 33), node('i-2', '4'), node('i-ok', 1)],
+    outputNodes: [node('o-1', 0)],
+    junctions: [],
+    busComponents: [bus('bus-1', 2.5), bus('bus-2', 0), bus('bus-ok', 4)],
+  })
+
+  it('raises one summary line for 2 buses, 3 nodes and the wires they took, not 8 toasts', async () => {
+    const { notify } = await import('@/lib/notify')
+    vi.mocked(notify.warning).mockClear()
+    expect(circuitActions.importCircuitJSON(blob)).toBe(true)
+    expect(vi.mocked(notify.warning).mock.calls.map(([message]) => message)).toEqual([
+      'Skipped while loading circuit: 2 bus components with a width that is not a whole number from 1 to 32; ' +
+        '3 input or output nodes with a width that is not a whole number from 1 to 32; ' +
+        '3 wires left dangling by parts that could not be loaded.',
+    ])
+    const state = useCircuitStore.getState()
+    expect(state.busComponents.map((b) => b.id)).toEqual(['bus-ok'])
+    expect(state.inputNodes.map((n) => n.id)).toEqual(['i-ok'])
+    expect(state.outputNodes).toEqual([])
+    expect(state.wires).toEqual([])
+  })
+})
