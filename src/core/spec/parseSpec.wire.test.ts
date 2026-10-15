@@ -63,3 +63,20 @@ describe('parseSpec — the wire statement', () => {
     })
   })
 })
+
+describe('parseSpec — a wire slice must fit its port (#371)', () => {
+  const rangeErrors = (ports: string, wire: string) => parsed(chip(ports, `    ${wire}`)).diagnostics.filter((d) => d.code === 'invalid-wire').map((d) => d.message)
+
+  it.each([
+    ['IN a; OUT o[2];', 'wire o[3] = a;', 'wire o[3] = a: sub-bus index out of range ("o" has width 2)'],
+    ['IN a[2]; OUT o;', 'wire o = a[5];', 'wire o = a[5]: sub-bus index out of range ("a" has width 2)'],
+    ['IN a[2]; OUT o[2];', 'wire o[1..2] = a;', 'wire o[1..2] = a: sub-bus index out of range ("o" has width 2)'],
+    ['IN a; OUT o1[2], o2;', 'wire o2 = o1[2];', 'wire o2 = o1[2]: sub-bus index out of range ("o1" has width 2)'],
+  ])('refuses %s %s, as the reference refuses the HDL it prints as', (ports, wire, message) => {
+    expect(rangeErrors(ports, wire)).toEqual([message])
+  })
+
+  it('accepts a slice that ends on the last bit', () => {
+    expect(rangeErrors('IN a[2]; OUT o[4];', 'wire o[2..3] = a[0..1];')).toEqual([])
+  })
+})

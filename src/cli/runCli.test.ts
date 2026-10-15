@@ -202,3 +202,20 @@ describe('runCli run-tst', () => {
     expect(out.stderr).toContain('hacer run-tst <chip.hdl> <chip.tst>')
   })
 })
+
+describe('runCli test — a slice past the end of a bus is refused, not graded (#371)', () => {
+  const OR8WAY_READS_IN8 = `CHIP Or8Way {
+    IN in[8];
+    OUT out;
+    PARTS:
+    Or(a=in[0], b=in[1], out=o1); Or(a=o1, b=in[2], out=o2); Or(a=o2, b=in[3], out=o3);
+    Or(a=o3, b=in[4], out=o4); Or(a=o4, b=in[5], out=o5); Or(a=o5, b=in[6], out=o6);
+    Or(a=o6, b=in[7], out=o7); Or(a=o7, b=in[8], out=out);
+}`
+
+  it('refuses an Or8Way that reads in[8], which the official vectors alone would pass', () => {
+    const out = runCli(vectorArgs('Or8Way'), reader({ 'Or8Way.hdl': OR8WAY_READS_IN8 }))
+    expect(out.exitCode).toBe(1)
+    expect(out.stdout).toMatch(/^ERROR Or8Way: .*Part "Or" pin "b" is wired to "in\[8\]": sub-bus index out of range \("in" has width 8\)/)
+  })
+})
