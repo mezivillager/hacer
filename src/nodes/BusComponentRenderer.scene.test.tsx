@@ -4,7 +4,7 @@ import type { Mesh } from 'three'
 import { BusComponentRenderer } from './BusComponentRenderer'
 import { computeBusPinLayout } from '@/components/scene/busBodyLayout'
 import { circuitActions, useCircuitStore } from '@/store/circuitStore'
-import type { BusComponent, CircuitStore } from '@/store/types'
+import type { BusComponent, BusComponentKind, CircuitStore } from '@/store/types'
 import { snapToGrid } from '@/utils/grid'
 import { resetCircuitStore } from '@/test/r3f/seedCircuit'
 
@@ -59,25 +59,35 @@ const body = (r: Renderer) => meshesWith(r, 'BoxGeometry')[0]
 const pins = (r: Renderer) => meshesWith(r, 'SphereGeometry')
 const inAct = (change: () => void) => ReactThreeTestRenderer.act(() => Promise.resolve(change()))
 
-function addSplitter(): BusComponent {
-  const splitter = useCircuitStore.getState().placeBusSplitter(4, { x: 2, y: 0.2, z: 2 })
-  if (!splitter) throw new Error('splitter not placed')
-  return splitter
+const KINDS: BusComponentKind[] = ['splitter', 'joiner']
+
+function addBus(kind: BusComponentKind): BusComponent {
+  const state = useCircuitStore.getState()
+  const bus = kind === 'splitter'
+    ? state.placeBusSplitter(4, { x: 2, y: 0.2, z: 2 })
+    : state.placeBusJoiner(4, { x: 2, y: 0.2, z: 2 })
+  if (!bus) throw new Error(`${kind} not placed`)
+  return bus
 }
 
-describe('BusComponentRenderer as the store adapter for BusSplitter3D', () => {
-  it('selects the splitter on pointer-down, drags past the threshold and drops it at the snapped position', async () => {
-    const splitter = addSplitter()
-    const start = splitter.position
-    const r = await mount(splitter)
+const pointerDown = (r: Renderer) =>
+  r.fireEvent(body(r), 'onPointerDown', { point: { x: 2, y: 0.2, z: 2 }, nativeEvent: { pointerId: 1, target: null } })
+const pointerMovePastThreshold = (r: Renderer) =>
+  r.fireEvent(body(r), 'onPointerMove', { point: { x: 6.1, y: 0.2, z: 2 } })
 
-    await r.fireEvent(body(r), 'onPointerDown', { point: { x: 2, y: 0.2, z: 2 }, nativeEvent: { pointerId: 1, target: null } })
-    expect(calls).toEqual([['selectBus', splitter.id]])
+describe('BusComponentRenderer as the store adapter for BusSplitter3D and BusJoiner3D', () => {
+  it.each(KINDS)('selects the %s on pointer-down, drags past the threshold and drops it at the snapped position', async (kind) => {
+    const bus = addBus(kind)
+    const start = bus.position
+    const r = await mount(bus)
 
-    await r.fireEvent(body(r), 'onPointerMove', { point: { x: 6.1, y: 0.2, z: 2 } })
+    await pointerDown(r)
+    expect(calls).toEqual([['selectBus', bus.id]])
+
+    await pointerMovePastThreshold(r)
     const preview = snapToGrid({ x: start.x + 4.1, y: start.y, z: start.z })
     expect(calls.slice(1)).toEqual([
-      ['selectBus', splitter.id],
+      ['selectBus', bus.id],
       ['setDragActive', true],
       ['updatePlacementPreviewPosition', preview],
     ])
@@ -85,13 +95,44 @@ describe('BusComponentRenderer as the store adapter for BusSplitter3D', () => {
     await r.fireEvent(body(r), 'onPointerUp')
     expect(calls.slice(4)).toEqual([
       ['setDragActive', false],
-      ['updateBusComponentPosition', splitter.id, preview],
+      ['updateBusComponentPosition', bus.id, preview],
       ['updatePlacementPreviewPosition', null],
     ])
   })
 
-  it('binds no drag to the body while a bus component is being placed, and binds it again after cancelBusPlacement', async () => {
-    const r = await mount(addSplitter())
+  it.each(KINDS)('lets the click after a tap on the %s through the drag hook to onClick', async (kind) => {
+    const bus = addBus(kind)
+    const onClick = vi.fn()
+    const r = await mount(bus, { onClick })
+
+    await pointerDown(r)
+    await r.fireEvent(body(r), 'onPointerUp')
+    await r.fireEvent(body(r), 'onClick')
+
+    expect(calls).toEqual([
+      ['selectBus', bus.id],
+      ['setDragActive', false],
+      ['updatePlacementPreviewPosition', null],
+    ])
+    expect(onClick).toHaveBeenCalledTimes(1)
+  })
+
+  it.each(KINDS)('lets the click after a drag and drop of the %s through the drag hook to onClick', async (kind) => {
+    const bus = addBus(kind)
+    const onClick = vi.fn()
+    const r = await mount(bus, { onClick })
+
+    await pointerDown(r)
+    await pointerMovePastThreshold(r)
+    await r.fireEvent(body(r), 'onPointerUp')
+    await r.fireEvent(body(r), 'onClick')
+
+    expect(useCircuitStore.getState().busComponents[0].position).toEqual({ x: 6, y: 0.2, z: 2 })
+    expect(onClick).toHaveBeenCalledTimes(1)
+  })
+
+  it.each(KINDS)('binds no drag to the %s body while a bus component is being placed, and binds it again after cancelBusPlacement', async (kind) => {
+    const r = await mount(addBus(kind))
     expect(body(r).props.onPointerDown).toBeTypeOf('function')
 
     await inAct(() => useCircuitStore.getState().startBusPlacement('joiner'))
@@ -103,8 +144,8 @@ describe('BusComponentRenderer as the store adapter for BusSplitter3D', () => {
     expect(body(r).props.onPointerDown).toBeTypeOf('function')
   })
 
-  it('binds no drag to the body while a wire is being drawn, and binds it again after cancelWiring', async () => {
-    const r = await mount(addSplitter())
+  it.each(KINDS)('binds no drag to the %s body while a wire is being drawn, and binds it again after cancelWiring', async (kind) => {
+    const r = await mount(addBus(kind))
     const source = useCircuitStore.getState().addInputNode('src', { x: 10, y: 0.2, z: 10 })
 
     await inAct(() => useCircuitStore.getState().startWiringFromNode(source.id, 'input', { x: 10.6, y: 0.2, z: 10 }))
@@ -114,35 +155,39 @@ describe('BusComponentRenderer as the store adapter for BusSplitter3D', () => {
     expect(body(r).props.onPointerDown).toBeTypeOf('function')
   })
 
-  it.each<[string, Partial<CircuitStore>]>([
+  const PLACING: [string, Partial<CircuitStore>][] = [
     ['a gate is being placed', { placementMode: 'Nand' }],
     ['a node is being placed', { nodePlacementMode: 'INPUT' }],
     ['a junction is being placed', { junctionPlacementMode: true }],
-  ])('keeps the drag bound to the body while %s', async (_, mode) => {
-    const r = await mount(addSplitter())
+  ]
+  it.each(KINDS.flatMap((kind) => PLACING.map(([what, mode]) => [kind, what, mode] as const)))(
+    'keeps the drag bound to the %s body while %s',
+    async (kind, _, mode) => {
+      const r = await mount(addBus(kind))
 
-    await inAct(() => useCircuitStore.setState(mode))
+      await inAct(() => useCircuitStore.setState(mode))
 
-    expect(body(r).props.onPointerDown).toBeTypeOf('function')
-  })
+      expect(body(r).props.onPointerDown).toBeTypeOf('function')
+    },
+  )
 
-  it('passes a body click to onClick and a pin click to onPinClick, calling no circuitActions', async () => {
-    const splitter = addSplitter()
+  it.each(KINDS)('passes a %s body click to onClick and a pin click to onPinClick, calling no circuitActions', async (kind) => {
+    const bus = addBus(kind)
     const onClick = vi.fn()
     const onPinClick = vi.fn()
-    const r = await mount(splitter, { onClick, onPinClick })
+    const r = await mount(bus, { onClick, onPinClick })
 
     await r.fireEvent(body(r), 'onPointerOver')
     await r.fireEvent(body(r), 'onClick')
     await r.fireEvent(pins(r)[0], 'onClick')
     await r.fireEvent(body(r), 'onPointerOut')
 
-    const slot = computeBusPinLayout(splitter)[0]
+    const slot = computeBusPinLayout(bus)[0]
     expect(onClick).toHaveBeenCalledTimes(1)
-    expect(onPinClick).toHaveBeenCalledWith(splitter.id, slot.pinId, 'input', {
-      x: splitter.position.x + slot.position[0],
-      y: splitter.position.y + slot.position[1],
-      z: splitter.position.z + slot.position[2],
+    expect(onPinClick).toHaveBeenCalledWith(bus.id, slot.pinId, 'input', {
+      x: bus.position.x + slot.position[0],
+      y: bus.position.y + slot.position[1],
+      z: bus.position.z + slot.position[2],
     })
     expect(calls).toEqual([])
   })
