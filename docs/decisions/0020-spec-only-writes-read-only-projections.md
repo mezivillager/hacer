@@ -1,7 +1,7 @@
 # 0020. Spec-only writes, read-only projections
 
 - **Status:** Accepted — the fresh-context adversarial review [#359](https://github.com/mezivillager/hacer/issues/359) required by #327 returned `sound with corrections`, and the second pass over the four post-review deltas returned `accept with corrections` (both on [#358](https://github.com/mezivillager/hacer/pull/358), 2026-09-23). Both sets of corrections are applied below — the second pass's seven under "What the second pass changed" — and no further review round is required. **Amended 2026-09-24** by the spike this ADR scheduled for 1.5/1.6 ([#372](https://github.com/mezivillager/hacer/issues/372)), which ran, found the mechanism 1.5 describes does not work, and replaced it — "What the spike changed". The status does **not** move: the spine, the review's acceptance and every decision stand, and correcting a mechanism is what a scheduled spike is for.
-- **Date:** 2026-09-23 · mechanism amended 2026-09-24 ([#372](https://github.com/mezivillager/hacer/issues/372)) · §7.1 and §9 amended 2026-09-29 ([#598](https://github.com/mezivillager/hacer/issues/598)) · §1.10 added 2026-10-15 ([#374](https://github.com/mezivillager/hacer/issues/374))
+- **Date:** 2026-09-23 · mechanism amended 2026-09-24 ([#372](https://github.com/mezivillager/hacer/issues/372)) · §7.1 and §9 amended 2026-09-29 ([#598](https://github.com/mezivillager/hacer/issues/598)) · §1.10 added 2026-10-15 ([#374](https://github.com/mezivillager/hacer/issues/374)) · §1.11 added 2026-10-15 ([#378](https://github.com/mezivillager/hacer/issues/378))
 - **Amended by:** R769
 - **Amends:** ADR-0008 §6, ADR-0009
 - **Supersedes:** ADR-0007
@@ -653,6 +653,61 @@ the 15 Project 1 sources and 13 spec shapes:
 - part ids are stable across two round trips in 28/28;
 - a hand edit (reordered parts, an added unmarked part, re-indentation, a comment) keeps every hint
   on its node.
+
+**1.11 `compileSpec`, as built. Amended 2026-10-15 ([#378](https://github.com/mezivillager/hacer/issues/378), R825, R826).**
+§1.1 and §1.5 named `compileSpec` and its two rules. It is built in `src/core/spec/compileSpec.ts`,
+and these rules are pinned by `src/core/spec/compileSpec.test.ts` and by "Project-1 through
+compileSpec" in `src/core/hdl/project1-bottom-up.test.ts`.
+
+1. **The input is the parse result, not the bare document.** `compileSpec(parsed, registry)` takes
+   `{ doc, diagnostics }`, so `compileSpec(parseSpec(text, { chips }), chips)` is the whole path from
+   text to an evaluator.
+   - The v1 document holds one driver per net id. `parseSpec` keeps a net's first driver and drops
+     the second, leaving only a `multiple-drivers` diagnostic that names both. For
+     `Not(in=a, out=out); Not(in=b, out=out);` the document alone would compile, silently, with the
+     first driver.
+   - It refuses when `parsed` carries any `error` diagnostic, and returns those diagnostics.
+   - It then re-runs `parseSpec`'s `doubleSourced`, `aliasCycles` and `undriven` over the document
+     itself, and refuses repeated net ids by name (`duplicate-net-id`). So a document built without
+     a parse (N.2's importer, N.10's commands) cannot skip them. Repeated ids are how N.2 imports a
+     chip OUT with two drivers ([#377](https://github.com/mezivillager/hacer/issues/377) ruling 1,
+     R826).
+2. **The lowering is in memory.** The document becomes an `HDLChip` and goes to `compileHDL`. No
+   text is printed and no part is injected (§1.5).
+   - Every chip-OUT bit an alias writes is followed down its chain to a chip-IN bit, or to a bit no
+     alias writes.
+   - A part's read of alias bits binds those roots, split on the part's own pin wherever the root
+     changes (§1.5 rule 1). A read whose width does not match its pin stays unsplit, so the engine's
+     width refusal still fires.
+   - The write-back (§1.5 rule 2) lives inside the evaluator `compileSpec` returns. Each alias bit is
+     copied from its root after the engine returns. Order does not matter, because a root is never an
+     alias bit.
+   - An engine refusal becomes a `compile` diagnostic carrying `compileHDL`'s message verbatim.
+   - `compileSpec` never throws and never changes its input. A refusal belongs to the run panel; the
+     document and its parse diagnostics are unchanged (§1.1).
+3. **The cache rule,** in `evaluateChip`. A cached evaluator is reused only while `ctx.registry`
+   resolves each of its part names to the definition it was compiled against.
+   - `compileHDL` captures each part's definition when it compiles. A cache keyed by the definition
+     alone returned the old part's value under a fresh registry: `Bar` = `Foo(a=a, out=out)` gave `0`
+     under a registry where `Foo` is `Or`, where the truth is `1`.
+   - Keying the cache by registry instead would recompile on every tick, because the legacy
+     evaluator builds a fresh registry view on each call.
+4. **Two engine refusals,** in `compileHDL`, so the `'hdl'` path and the spec path share them:
+   - a part output that writes a chip IN is refused, naming the part and the input. The reference
+     says `Cannot write to input pin`.
+   - a chip that names itself as a part is refused. The reference says
+     `Cannot use chip X to implement itself`. Registration is what makes it reachable.
+5. **Divergences from the reference, inherited rather than fixed:**
+   - An unconnected part input is refused, where the reference reads 0. That is §1.1's rule.
+   - `IN` and `OUT` lists are required. That is the parser's rule. A document with no IN compiles at
+     top level but cannot be registered (`validateChipDefinition`).
+   - A bit nothing drives reads 0 in the engine, silently
+     ([#431](https://github.com/mezivillager/hacer/issues/431)). `undriven` over the document
+     catches its sliced shape, and the split is tested rather than assumed.
+6. **Parity is measured on Project 1.** All 15 sources through `compileSpec` match the builtins and
+   the `'hdl'` evaluation of the same source, on that test file's vectors. HACER ships no Project 2–3
+   HDL to compare against; that parity comes with
+   [#177](https://github.com/mezivillager/hacer/issues/177).
 
 ### 2. The pipeline contracts
 
@@ -1340,6 +1395,7 @@ routing (§2). And the whole class of user-authored geometry (§6).
   [#372](https://github.com/mezivillager/hacer/issues/372) (the alias spike, which amended §1.5, §1.6,
   §1.8, §1.9 and §1's normalisation) ·
   [#374](https://github.com/mezivillager/hacer/issues/374) (N.1, which carries the lowering) ·
+  [#378](https://github.com/mezivillager/hacer/issues/378) (N.3, `compileSpec` as built, §1.11) ·
   [#375](https://github.com/mezivillager/hacer/pull/375) (the input-side rule, merged) ·
   [#431](https://github.com/mezivillager/hacer/issues/431) (the unproduced-bit defect the spike
   found) ·
