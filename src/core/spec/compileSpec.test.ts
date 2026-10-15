@@ -28,7 +28,7 @@ const NOT_HDL = 'this is not HDL'
 
 const port = (name: string, width = 1): Port => ({ name, width })
 const partPin = (partId: PartId, pin: string): Ref => ({ kind: 'part-pin', partId, pin })
-const chipIn = (pin: string): Ref => ({ kind: 'chip-in', pin })
+const chipIn = (pin: string, slice?: HDLSlice): Ref => ({ kind: 'chip-in', pin, ...(slice && { slice }) })
 const chipOut = (pin: string, slice?: HDLSlice): Ref => ({ kind: 'chip-out', pin, ...(slice && { slice }) })
 const doc = (name: string, ins: Port[], outs: Port[], parts: Part[], nets: Net[]): CircuitSpec => ({ schemaVersion: SPEC_SCHEMA_VERSION, name, ins, outs, parts, nets })
 
@@ -43,6 +43,23 @@ const REPEATED_ID = doc('R', [port('a'), port('b')], [port('out')], [{ id: 'p1',
   { id: 'out', driver: partPin('p1', 'out'), sinks: [chipOut('out')] },
   { id: 'out', driver: partPin('p2', 'out'), sinks: [chipOut('out')] },
 ])
+const REPEATED_READ = doc('T', [port('a')], [port('out')], [{ id: 'p1', chip: 'Not' }, { id: 'p2', chip: 'Not' }], [
+  { id: 'a', driver: chipIn('a'), sinks: [partPin('p1', 'in')] },
+  { id: 't', driver: partPin('p1', 'out'), sinks: [] },
+  { id: 't', driver: null, sinks: [partPin('p2', 'in')] },
+  { id: 'out', driver: partPin('p2', 'out'), sinks: [chipOut('out')] },
+])
+const WRITES_IN = doc('E1', [port('a', 2)], [port('out')], [{ id: 'p1', chip: 'Not' }], [
+  { id: 'a[0]', driver: chipIn('a', { start: 1, end: 1 }), sinks: [partPin('p1', 'in')] },
+  { id: 'out', driver: partPin('p1', 'out'), sinks: [chipOut('out')] },
+])
+const WRITES_INTERNAL = doc('E2', [port('a')], [port('out')], [{ id: 'p1', chip: 'Not' }], [
+  { id: 't', driver: chipIn('a'), sinks: [partPin('p1', 'in')] },
+  { id: 'out', driver: partPin('p1', 'out'), sinks: [chipOut('out')] },
+])
+const READS_NO_PORT = doc('E3', [port('a')], [port('out')], [], [{ id: 'out', driver: chipIn('zz'), sinks: [chipOut('out')] }])
+const UNDRIVEN_ROOT = 'CHIP F { IN a; OUT o0, o2, y; PARTS: wire o2 = o0; Not(in=o2, out=y); }'
+const UNREAD_ROOT = 'CHIP F { IN a; OUT o0, o2; PARTS: wire o2 = o0; }'
 const TWO_CYCLE = doc('X', [port('a')], [port('x'), port('y')], [], [
   { id: 'x', driver: chipOut('y'), sinks: [chipOut('x')] },
   { id: 'y', driver: chipOut('x'), sinks: [chipOut('y')] },
@@ -140,9 +157,31 @@ describe('compileSpec — refusals (§1.1, §1.8)', () => {
   })
 
   it('refuses a document with repeated net ids, naming the id', () => {
-    expect(refusal({ doc: REPEATED_ID, diagnostics: [] })).toEqual(
-      expect.arrayContaining([expect.objectContaining({ code: 'duplicate-net-id', severity: 'error', netId: 'out', message: expect.stringContaining('"out"') })]),
-    )
+    expect(refusal({ doc: REPEATED_READ, diagnostics: [] })).toEqual([
+      expect.objectContaining({ code: 'duplicate-net-id', severity: 'error', netId: 't', message: expect.stringContaining('"t"') }),
+    ])
+  })
+
+  it('reports two drivers of one repeated id as multiple-drivers alone', () => {
+    expect(refusal({ doc: REPEATED_ID, diagnostics: [] })).toEqual([
+      expect.objectContaining({ code: 'multiple-drivers', severity: 'error', netId: 'out', message: expect.stringMatching(/p1\.out.*p2\.out/) }),
+    ])
+  })
+
+  it('a refusal carries only error diagnostics, without the parse\'s note of what it dropped', () => {
+    expect(refusal(parseSpec(TWO_DRIVERS))).toEqual([{ code: 'multiple-drivers', severity: 'error', netId: 'out', partId: 'p2', message: 'Signal "out" is driven by p1.out and p2.out' }])
+  })
+
+  it('refuses a net whose alias writes a chip IN or an internal signal, or reads no port, by name', () => {
+    expect(refusal({ doc: WRITES_IN, diagnostics: [] })).toEqual([expect.objectContaining({ code: 'invalid-wire', netId: 'a[0]', message: expect.stringContaining('"a" is not a chip OUT') })])
+    expect(refusal({ doc: WRITES_INTERNAL, diagnostics: [] })).toEqual([expect.objectContaining({ code: 'invalid-wire', netId: 't', message: expect.stringContaining('"t" is not a chip OUT') })])
+    expect(refusal({ doc: READS_NO_PORT, diagnostics: [] })).toEqual([expect.objectContaining({ code: 'invalid-wire', netId: 'out', message: expect.stringContaining('"zz" is not a chip IN') })])
+  })
+
+  it('refuses a read of an alias whose root nothing drives, naming the signal the part bound', () => {
+    expect(parseSpec(UNDRIVEN_ROOT).diagnostics.filter((d) => d.severity === 'error')).toEqual([])
+    expect(refusal(parseSpec(UNDRIVEN_ROOT))).toEqual([expect.objectContaining({ code: 'undriven', severity: 'error', netId: 'o2', message: expect.stringMatching(/^Signal "o2" .*"o0"/) })])
+    for (const a of [0, 1]) expect(run(UNREAD_ROOT, { a })).toEqual({ o0: 0, o2: 0 })
   })
 
   it('refuses an alias cycle with its members, and terminates', () => {
@@ -169,7 +208,7 @@ describe('compileSpec — refusals (§1.1, §1.8)', () => {
   })
 
   it('never throws, and leaves the document it was given unchanged', () => {
-    const sources = [passThrough(1), passThrough(16), OUT_TO_OUT, CHAIN, ONE_BIT, MIXED, STRADDLE, TWO_DRIVERS, C8, SLICED_UNDRIVEN, WIDTH, LOOP, NOT_HDL]
+    const sources = [passThrough(1), passThrough(16), OUT_TO_OUT, CHAIN, ONE_BIT, MIXED, STRADDLE, TWO_DRIVERS, C8, SLICED_UNDRIVEN, UNDRIVEN_ROOT, WIDTH, LOOP, NOT_HDL]
     for (const source of sources) {
       const parsed = parseSpec(source)
       const before = structuredClone(parsed)
@@ -178,7 +217,7 @@ describe('compileSpec — refusals (§1.1, §1.8)', () => {
       expect(parsed).toEqual(before)
       expect(parseSpec(source)).toEqual(before)
     }
-    const documents = [PART_AND_ALIAS, REPEATED_ID, TWO_CYCLE, SELF_CYCLE, documentOf(C8), documentOf(SLICED_UNDRIVEN)]
+    const documents = [PART_AND_ALIAS, REPEATED_ID, REPEATED_READ, WRITES_IN, WRITES_INTERNAL, READS_NO_PORT, TWO_CYCLE, SELF_CYCLE, documentOf(C8), documentOf(SLICED_UNDRIVEN)]
     for (const document of documents) {
       const input = deepFreeze({ doc: structuredClone(document), diagnostics: [] })
       expect(() => compileSpec(input, chips)).not.toThrow()

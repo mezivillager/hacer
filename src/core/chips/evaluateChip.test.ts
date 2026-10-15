@@ -6,6 +6,7 @@ import { evaluateChip } from './evaluateChip'
 import { getBuiltinChipRegistry } from './appRegistry'
 import { combineRegistries } from './combineRegistries'
 import * as compilerModule from '../hdl/compiler'
+import { parseSpec } from '../spec/parseSpec'
 
 const ONE_IN_ONE_OUT = { inputs: [{ name: 'a', width: 1 }], outputs: [{ name: 'out', width: 1 }] }
 
@@ -33,9 +34,11 @@ describe('evaluateChip', () => {
     expect(evaluateChip(And, { a: 1, b: 0 }, registry)).toEqual({ out: 0 })
   })
 
-  it('throws a clear error for circuit implementation (not yet supported)', () => {
-    const chip = { name: 'C', inputs: [{ name: 'a', width: 1 }], outputs: [{ name: 'o', width: 1 }], implementation: { type: 'circuit' as const, circuitData: null } }
-    expect(() => evaluateChip(chip, { a: 1 }, registry)).toThrow(/circuit|not.*support/i)
+  it("evaluates a 'circuit' chip through compileSpec, write-back included", () => {
+    const parsed = parseSpec('CHIP C { IN a; OUT o, p; PARTS: Nand(a=a, b=a, out=o); wire p = a; }', { chips: registry })
+    if (parsed.doc === null) throw new Error(parsed.diagnostics.map((d) => d.message).join('; '))
+    const chip = { name: 'C', inputs: [{ name: 'a', width: 1 }], outputs: [{ name: 'o', width: 1 }, { name: 'p', width: 1 }], implementation: { type: 'circuit' as const, spec: parsed.doc } }
+    for (const a of [0, 1]) expect(evaluateChip(chip, { a }, registry)).toEqual({ o: 1 - a, p: a })
   })
 
   it('enforces the recursion depth guard', () => {

@@ -218,7 +218,7 @@ describe('type guards', () => {
   it('isCircuitChip returns true for circuit', () => {
     expect(isCircuitChip({
       name: 'And', inputs: [], outputs: [],
-      implementation: { type: 'circuit', circuitData: {} },
+      implementation: { type: 'circuit', spec: { schemaVersion: 1, name: 'And', ins: [], outs: [], parts: [], nets: [] } },
     })).toBe(true)
   })
 })
