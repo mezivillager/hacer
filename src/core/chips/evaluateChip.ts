@@ -10,9 +10,11 @@ export const DEFAULT_MAX_DEPTH = 100
 interface CachedEvaluator {
   evaluate: CompiledEvaluator
   resolvedParts: ReadonlyArray<readonly [string, ChipDefinition | undefined]>
+  checkedAgainst: ChipRegistry
 }
 
-// Keyed by definition, not registry: callers build a fresh registry view per tick.
+// Keyed by definition, not registry, because callers build a fresh registry view per tick. Each
+// registry is checked once: register refuses a duplicate, so a name it resolves never changes.
 const compiledCache = new WeakMap<ChipDefinition, CachedEvaluator>()
 
 const stillResolves = (cached: CachedEvaluator, registry: ChipRegistry): boolean =>
@@ -46,7 +48,11 @@ export function evaluateChipWithCtx(
   }
   if (isHDLChip(chip)) {
     let cached = compiledCache.get(chip)
-    if (!cached || !stillResolves(cached, ctx.registry)) {
+    if (cached && cached.checkedAgainst !== ctx.registry) {
+      if (stillResolves(cached, ctx.registry)) cached.checkedAgainst = ctx.registry
+      else cached = undefined
+    }
+    if (!cached) {
       const parsed = parseHDL(chip.implementation.source)
       if (!parsed.success) {
         throw new Error(`evaluateChip: chip "${chip.name}" HDL failed to parse: ${parsed.errors.map((e) => e.message).join('; ')}`)
@@ -57,7 +63,7 @@ export function evaluateChipWithCtx(
       }
       const partNames = new Set(parsed.chip.parts.map((part) => part.name))
       if (parsed.chip.builtin) partNames.add(parsed.chip.builtin)
-      cached = { evaluate: result.evaluate, resolvedParts: [...partNames].map((name) => [name, ctx.registry.get(name)] as const) }
+      cached = { evaluate: result.evaluate, resolvedParts: [...partNames].map((name) => [name, ctx.registry.get(name)] as const), checkedAgainst: ctx.registry }
       compiledCache.set(chip, cached)
     }
     return cached.evaluate(inputs, ctx)
