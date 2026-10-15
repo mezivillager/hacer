@@ -2,6 +2,8 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { notify } from '@/lib/notify'
 import { useCircuitStore } from '../../circuitStore'
 import { getSignalSourceValue } from './simulationActions'
+import { placeJunction, zSegments, Z_CORNER } from '@/test/junctionFixtures'
+import { SECTION_SIZE, WIRE_HEIGHT } from '@/utils/wiringScheme/types'
 
 vi.mock('@/lib/notify', () => ({
   notify: {
@@ -441,18 +443,12 @@ describe('simulationActions', () => {
       const wire = getState().addWire(
         { type: 'gate', entityId: gate.id, pinId: gate.outputs[0].id },
         { type: 'gate', entityId: 'dest-gate', pinId: 'dest-pin' },
-        []
+        zSegments()
       )
-
-      // Create junction with wireIds[0] pointing to the wire from the gate output
-      const junction = getState().addJunction('sig-test', { x: 2, y: 0, z: 0 })
-      useCircuitStore.setState((state) => {
-        const j = state.junctions.find((j) => j.id === junction.id)
-        if (j) j.wireIds = [wire.id]
-      })
+      const { junctionId } = placeJunction(wire.id, Z_CORNER)
 
       const value = getSignalSourceValue(
-        { type: 'junction', entityId: junction.id },
+        { type: 'junction', entityId: junctionId },
         getState()
       )
 
@@ -612,32 +608,20 @@ describe('simulationActions', () => {
       // Fan-out: input feeds two gates via shared segments through a junction
       // Both wires originate from input (junction just tracks which wires branch)
       const inputNode = getState().addInputNode('a', { x: 0, y: 0, z: 0 })
-      const junction = getState().addJunction('signal-a', { x: 2, y: 0, z: 0 })
       const gate1 = getState().addGate('Not', { x: 4, y: 0.2, z: -2 })
       const gate2 = getState().addGate('Not', { x: 4, y: 0.2, z: 2 })
 
-      // Original wire: input -> gate1
       const wire1 = getState().addWire(
         { type: 'input', entityId: inputNode.id },
         { type: 'gate', entityId: gate1.id, pinId: gate1.inputs[0].id },
-        [],
-        [],
-        'signal-a'
-      )
-      // Branch wire: input -> gate2 (shares segments up to junction)
-      const wire2 = getState().addWire(
-        { type: 'input', entityId: inputNode.id },
-        { type: 'gate', entityId: gate2.id, pinId: gate2.inputs[0].id },
-        [],
+        zSegments(),
         [],
         'signal-a'
       )
-
-      // Junction tracks both wires
-      useCircuitStore.setState((state) => {
-        const j = state.junctions.find((jn) => jn.id === junction.id)
-        if (j) j.wireIds = [wire1.id, wire2.id]
-      })
+      placeJunction(wire1.id, Z_CORNER, [{
+        to: { type: 'gate', gateId: gate2.id, pinId: gate2.inputs[0].id },
+        tail: [{ type: 'vertical', start: Z_CORNER, end: { x: SECTION_SIZE, y: WIRE_HEIGHT, z: -2 * SECTION_SIZE } }],
+      }])
 
       getState().updateInputNodeValue(inputNode.id, 1)
       getState().simulationTick()
