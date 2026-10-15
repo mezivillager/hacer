@@ -24,7 +24,7 @@ const printRef = (ref: Ref): string => printPinRef(ref.pin, ref.slice)
 const bit = (slice: HDLSlice | undefined, i: number): HDLSlice => ({ start: (slice?.start ?? 0) + i, end: (slice?.start ?? 0) + i })
 
 /** Classified by driver kind (§1): any chip-out driver is an alias, a chip-in one only if renamed. */
-function isAlias(net: Net): net is Net & { driver: Ref } {
+export function isAlias(net: Net): net is Net & { driver: Ref } {
   if (net.driver?.kind === 'chip-out') return true
   return net.driver?.kind === 'chip-in' && printRef(net.driver) !== net.id
 }
