@@ -1,4 +1,5 @@
 import type { ChipRegistry } from '../chips/registry'
+import type { ChipDefinition } from '../chips/types'
 import { compileHDL, type CompiledEvaluator } from '../hdl/compiler'
 import type { HDLChip, HDLConnection, HDLSlice } from '../hdl/types'
 import { readSubBus, writeSubBus } from '@/simulation/busOps'
@@ -13,7 +14,7 @@ export interface CompileSpecInput {
 }
 
 export type CompileSpecResult =
-  | { success: true; evaluate: CompiledEvaluator }
+  | { success: true; evaluate: CompiledEvaluator; chip: ChipDefinition }
   | { success: false; diagnostics: SpecDiagnostic[] }
 
 interface Bit {
@@ -114,10 +115,12 @@ export function compileSpec(parsed: CompileSpecInput, registry: ChipRegistry): C
   const compiled = compileHDL(lower(doc, registry, aliases), registry)
   if (!compiled.success) return { success: false, diagnostics: compiled.errors.map((e) => ({ code: 'compile', severity: 'error', message: e.message })) }
 
+  const chip: ChipDefinition = { name: doc.name, inputs: doc.ins.map((p) => ({ ...p })), outputs: doc.outs.map((p) => ({ ...p })), implementation: { type: 'circuit', spec: doc } }
   const writeBack = [...aliases.values()]
-  if (writeBack.length === 0) return { success: true, evaluate: compiled.evaluate }
+  if (writeBack.length === 0) return { success: true, evaluate: compiled.evaluate, chip }
   return {
     success: true,
+    chip,
     evaluate: (inputs, ctx) => {
       const out = compiled.evaluate(inputs, ctx)
       for (const { signal, bit, root } of writeBack) {

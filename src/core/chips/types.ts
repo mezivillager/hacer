@@ -1,3 +1,5 @@
+import type { CircuitSpec } from '../spec/types'
+
 export interface ChipPin {
   name: string
   width: number // 1 for single-bit, 16 for buses
@@ -8,7 +10,7 @@ export type BuiltinEvalFn = (inputs: Record<string, number>) => Record<string, n
 export type ChipImplementation =
   | { type: 'builtin'; evaluate: BuiltinEvalFn }
   | { type: 'hdl'; source: string }
-  | { type: 'circuit'; circuitData: unknown } // SerializedCircuit in later ticket
+  | { type: 'circuit'; spec: CircuitSpec }
 
 export interface ChipDefinition {
   name: string

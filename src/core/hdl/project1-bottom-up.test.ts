@@ -10,14 +10,19 @@ import { parseHDL } from './parser'
 import { hdlChipDefinition } from './compiler'
 import { project1HdlSources, project1DependencyOrder } from './project1HdlSources'
 
-// Build a registry that contains Nand (builtin) + each Project-1 chip registered as hdl,
-// in dependency order, so later chips can resolve earlier ones.
-function buildHdlRegistry(): ChipRegistry {
+function nandOnly(): ChipRegistry {
   const reg = createChipRegistry()
   registerBuiltin(reg, 'Nand',
     [{ name: 'a', width: 1 }, { name: 'b', width: 1 }],
     [{ name: 'out', width: 1 }],
     (i) => ({ out: ~(i.a & i.b) & 1 }))
+  return reg
+}
+
+// Build a registry that contains Nand (builtin) + each Project-1 chip registered as hdl,
+// in dependency order, so later chips can resolve earlier ones.
+function buildHdlRegistry(): ChipRegistry {
+  const reg = nandOnly()
   for (const name of project1DependencyOrder) {
     const src = project1HdlSources[name]
     const parsed = parseHDL(src)
@@ -130,6 +135,27 @@ describe('Project-1 through compileSpec', () => {
         const got = result.evaluate(inputs, ctx)
         expect({ name, inputs, got }).toEqual({ name, inputs, got: evaluateChip(ref, inputs, builtins) })
         expect({ name, inputs, got }).toEqual({ name, inputs, got: evaluateChip(hdl, inputs, builtins) })
+      }
+    })
+  }
+})
+
+describe('Project-1 bottom-up from NAND as registered specs', () => {
+  const builtins = getBuiltinChipRegistry()
+  const specs = nandOnly()
+  for (const name of project1DependencyOrder) {
+    const result = compileSpec(parseSpec(project1HdlSources[name], { chips: specs }), specs)
+    if (!result.success) throw new Error(`${name}: ${result.diagnostics.map((d) => d.message).join('; ')}`)
+    specs.register(result.chip)
+  }
+
+  for (const name of project1DependencyOrder) {
+    it(`${name} matches the builtin reference`, () => {
+      const chip = specs.get(name)!
+      expect(chip.implementation.type).toBe('circuit')
+      const ref = builtins.get(name)!
+      for (const inputs of inputVectors(ref.inputs)) {
+        expect({ name, inputs, got: evaluateChip(chip, inputs, specs) }).toEqual({ name, inputs, got: evaluateChip(ref, inputs, builtins) })
       }
     })
   }

@@ -36,6 +36,6 @@ describe('combineRegistries', () => {
 
   it('is read-only (register throws)', () => {
     const c = combineRegistries(createChipRegistry())
-    expect(() => c.register({ name: 'X', inputs: [{ name: 'a', width: 1 }], outputs: [{ name: 'o', width: 1 }], implementation: { type: 'circuit', circuitData: null } })).toThrow()
+    expect(() => c.register({ name: 'X', inputs: [{ name: 'a', width: 1 }], outputs: [{ name: 'o', width: 1 }], implementation: { type: 'circuit', spec: { schemaVersion: 1, name: 'X', ins: [{ name: 'a', width: 1 }], outs: [{ name: 'o', width: 1 }], parts: [], nets: [] } } })).toThrow()
   })
 })
