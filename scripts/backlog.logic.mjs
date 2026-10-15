@@ -328,8 +328,13 @@ export function possiblyDelivered(plan, prs = []) {
   return plan.map((task) => ({ ...task, possiblyDelivered: citing.get(task.number) ?? [] }))
 }
 
-export function readPossiblyDelivered(plan) {
-  return { plan, warning: null }
+/** possiblyDelivered over `fetchMergedPrs()`; a fetch that throws leaves the plan unmarked and names why in `warning`. */
+export function readPossiblyDelivered(plan, fetchMergedPrs) {
+  try {
+    return { plan: possiblyDelivered(plan, fetchMergedPrs()), warning: null }
+  } catch (error) {
+    return { plan, warning: `possibly-delivered: skipped — ${String(error?.message ?? error).split('\n')[0]}` }
+  }
 }
 
 /** `next`'s exit status when nothing is pickable: apart from 1 (an error) and 2 (usage), so a loop can tell them apart. */
