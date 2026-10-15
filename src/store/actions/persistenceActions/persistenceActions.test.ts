@@ -279,7 +279,7 @@ describe('importCircuitJSON', () => {
 // ── What a person is told when a load prunes wiring (#402) ─────────────────────────────────────
 // `reportDeserialized` raises one toast per warning, which is right for the codes #181 froze —
 // each is one gate the person placed. It is wrong for the wires and junctions pruning takes with
-// those gates: a document losing 40 wires would raise 40 toasts. Those two codes are summarised
+// those gates: a document losing 40 wires would raise 40 toasts. Those codes are summarised
 // into one line naming the counts; the per-entity ids stay in the warning data for callers.
 describe('loadCircuit: telling the person what the load pruned', () => {
   /** A document whose only NOR gate is always skipped, with `wires` wires into it — all pruned —
@@ -321,8 +321,7 @@ describe('loadCircuit: telling the person what the load pruned', () => {
   it('raises one summary line for 12 dropped wires and 2 dropped junctions, not 14 toasts', async () => {
     expect(await warningsFrom(withDanglingWiring(12, 2))).toEqual([
       'Skipped unsupported gate type "NOR" — NOR and XNOR are not supported in the builtin chip system.',
-      'Skipped 12 wires and 2 junctions while loading circuit — ' +
-        'wiring left dangling by gates or bus components that could not be loaded.',
+      'Skipped while loading circuit: 12 wires and 2 junctions left dangling by parts that could not be loaded.',
     ])
     expect(useCircuitStore.getState().wires).toEqual([])
     expect(useCircuitStore.getState().junctions).toEqual([])
@@ -330,10 +329,7 @@ describe('loadCircuit: telling the person what the load pruned', () => {
 
   it('counts in the singular, and names only what was actually dropped', async () => {
     const [, summary] = await warningsFrom(withDanglingWiring(1, 0))
-    expect(summary).toBe(
-      'Skipped 1 wire while loading circuit — ' +
-        'wiring left dangling by gates or bus components that could not be loaded.',
-    )
+    expect(summary).toBe('Skipped while loading circuit: 1 wire left dangling by parts that could not be loaded.')
   })
 
   it('says nothing extra when the load prunes no wiring', async () => {
@@ -374,9 +370,9 @@ describe('a bus component of a kind this build does not know', () => {
     junctions: [],
     busComponents: [bus('bus-mux', 'mux'), bus('bus-ok', 'splitter')],
   })
-  const BUS_TOAST = 'Skipped bus component "bus-mux" while loading circuit — this build has no bus component of kind "mux".'
-  const WIRE_TOAST =
-    'Skipped 1 wire while loading circuit — wiring left dangling by gates or bus components that could not be loaded.'
+  const SUMMARY =
+    'Skipped while loading circuit: 1 bus component of a kind this build does not know; ' +
+    '1 wire left dangling by parts that could not be loaded.'
 
   const toastsOf = async (load: () => boolean): Promise<string[]> => {
     const { notify } = await import('@/lib/notify')
@@ -385,15 +381,59 @@ describe('a bus component of a kind this build does not know', () => {
     return vi.mocked(notify.warning).mock.calls.map(([message]) => message)
   }
 
-  it('importCircuitJSON names it in a toast and loads the rest', async () => {
-    expect(await toastsOf(() => circuitActions.importCircuitJSON(blob))).toEqual([BUS_TOAST, WIRE_TOAST])
+  it('importCircuitJSON counts it in the summary line and loads the rest', async () => {
+    expect(await toastsOf(() => circuitActions.importCircuitJSON(blob))).toEqual([SUMMARY])
     expect(useCircuitStore.getState().busComponents.map((b) => b.id)).toEqual(['bus-ok'])
     expect(useCircuitStore.getState().wires).toEqual([])
   })
 
-  it('loadCircuit names it in a toast and loads the rest', async () => {
+  it('loadCircuit counts it in the summary line and loads the rest', async () => {
     localStorage.setItem('hacer-circuit-mux', blob)
-    expect(await toastsOf(() => circuitActions.loadCircuit('mux'))).toEqual([BUS_TOAST, WIRE_TOAST])
+    expect(await toastsOf(() => circuitActions.loadCircuit('mux'))).toEqual([SUMMARY])
     expect(useCircuitStore.getState().busComponents.map((b) => b.id)).toEqual(['bus-ok'])
+  })
+})
+
+describe('many entries of a kind this build does not know', () => {
+  const ZERO = { x: 0, y: 0, z: 0 }
+  const bus = (id: string, kind: string) => ({
+    id,
+    kind,
+    position: ZERO,
+    rotation: ZERO,
+    width: 4,
+    inputs: [],
+    outputs: [],
+    selected: false,
+  })
+  const wire = (id: string, type: unknown) => ({
+    id,
+    from: { type, entityId: 'o-1' },
+    to: { type: 'output', entityId: 'o-1' },
+    segments: [],
+    crossesWireIds: [],
+  })
+  const blob = JSON.stringify({
+    version: 1,
+    name: 'newer',
+    savedAt: new Date().toISOString(),
+    gates: [],
+    wires: [wire('w-1', ['gate']), wire('w-2', 'probe'), wire('w-3', 42)],
+    inputNodes: [],
+    outputNodes: [],
+    junctions: [],
+    busComponents: [bus('bus-mux', 'mux'), bus('bus-demux', 'demux')],
+  })
+
+  it('raises one summary line for 3 wires and 2 bus components it does not know, not 5 toasts', async () => {
+    const { notify } = await import('@/lib/notify')
+    vi.mocked(notify.warning).mockClear()
+    expect(circuitActions.importCircuitJSON(blob)).toBe(true)
+    expect(vi.mocked(notify.warning).mock.calls.map(([message]) => message)).toEqual([
+      'Skipped while loading circuit: 2 bus components of a kind this build does not know; ' +
+        '3 wires with an endpoint type this build does not know.',
+    ])
+    expect(useCircuitStore.getState().wires).toEqual([])
+    expect(useCircuitStore.getState().busComponents).toEqual([])
   })
 })
