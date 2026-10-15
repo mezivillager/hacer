@@ -7,8 +7,16 @@ import { compileHDL, type CompiledEvaluator, type EvalContext } from '../hdl/com
 
 export const DEFAULT_MAX_DEPTH = 100
 
-// Persistent compiled-evaluator cache (keyed by ChipDefinition identity; auto-evicts on GC).
-const compiledCache = new WeakMap<ChipDefinition, CompiledEvaluator>()
+interface CachedEvaluator {
+  evaluate: CompiledEvaluator
+  resolvedParts: ReadonlyArray<readonly [string, ChipDefinition | undefined]>
+}
+
+// Keyed by definition, not registry: callers build a fresh registry view per tick.
+const compiledCache = new WeakMap<ChipDefinition, CachedEvaluator>()
+
+const stillResolves = (cached: CachedEvaluator, registry: ChipRegistry): boolean =>
+  cached.resolvedParts.every(([name, def]) => registry.get(name) === def)
 
 export function evaluateChip(
   chip: ChipDefinition,
@@ -37,8 +45,8 @@ export function evaluateChipWithCtx(
     return chip.implementation.evaluate(inputs)
   }
   if (isHDLChip(chip)) {
-    let compiled = compiledCache.get(chip)
-    if (!compiled) {
+    let cached = compiledCache.get(chip)
+    if (!cached || !stillResolves(cached, ctx.registry)) {
       const parsed = parseHDL(chip.implementation.source)
       if (!parsed.success) {
         throw new Error(`evaluateChip: chip "${chip.name}" HDL failed to parse: ${parsed.errors.map((e) => e.message).join('; ')}`)
@@ -47,10 +55,12 @@ export function evaluateChipWithCtx(
       if (!result.success) {
         throw new Error(`evaluateChip: chip "${chip.name}" failed to compile: ${result.errors.map((e) => e.message).join('; ')}`)
       }
-      compiled = result.evaluate
-      compiledCache.set(chip, compiled)
+      const partNames = new Set(parsed.chip.parts.map((part) => part.name))
+      if (parsed.chip.builtin) partNames.add(parsed.chip.builtin)
+      cached = { evaluate: result.evaluate, resolvedParts: [...partNames].map((name) => [name, ctx.registry.get(name)] as const) }
+      compiledCache.set(chip, cached)
     }
-    return compiled(inputs, ctx)
+    return cached.evaluate(inputs, ctx)
   }
   throw new Error(`evaluateChip: chip "${chip.name}" implementation type "${chip.implementation.type}" is not supported yet`)
 }

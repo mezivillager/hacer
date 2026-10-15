@@ -156,6 +156,9 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
   }
 
   // 2. Resolve parts
+  if (ast.parts.some((part) => part.name === ast.name)) {
+    return { success: false, errors: [{ message: `Chip "${ast.name}" cannot use itself as a part`, partName: ast.name }] }
+  }
   const resolved: Array<{ part: HDLPart; def: ChipDefinition }> = []
   ast.parts.forEach((part) => {
     const def = registry.get(part.name)
@@ -250,6 +253,10 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
       } else {
         if (LITERALS.has(conn.external)) {
           errors.push({ message: `Part "${part.name}" output "${conn.internal}" cannot connect to literal "${conn.external}"`, partName: part.name, pinName: conn.internal })
+          continue
+        }
+        if (chipInputNames.has(conn.external)) {
+          errors.push({ message: `Part "${part.name}" output "${conn.internal}" cannot write to chip input "${conn.external}"`, partName: part.name, pinName: conn.internal })
           continue
         }
         // One bit, one driver. Two parts writing the same bit is a short circuit, not a value,
