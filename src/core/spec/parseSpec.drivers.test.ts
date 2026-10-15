@@ -76,3 +76,20 @@ describe('parseSpec — what an unknown chip and a written chip input report', (
     expect(result.diagnostics).toEqual([expect.objectContaining({ code: 'multiple-drivers', partId: 'p1', message: expect.stringContaining('p1.out') })])
   })
 })
+
+// A wire from a chip input writes the chip output it targets, so unlike a read it claims that output's bits.
+describe('parseSpec — a wire from a chip input is a source of its target', () => {
+  it.each([
+    ['a part and a whole wire', 'IN a, b[2]; OUT out[2];', '    Not(in=a, out=out[0]); // #p1\n    wire out = b;'],
+    ['a part and a sliced wire', 'IN a, b[2]; OUT out[2];', '    Not(in=a, out=out[0]); // #p1\n    wire out[0..1] = b;'],
+    ['a part writing a slice and a wire on one of its bits', 'IN a[2], b; OUT out[2];', '    Not16(in[0..1]=a, out[0..1]=out); // #p1\n    wire out[1] = b;'],
+    ['two wires on one bit', 'IN a[2], b; OUT out[2];', '    wire out = a;\n    wire out[0] = b;'],
+    ['a chip-input wire and an output alias', 'IN a, b[2]; OUT x[2], y[2];', '    Not16(in[0..1]=b, out[0..1]=y); // #p1\n    wire x[0] = a;\n    wire x = y;'],
+  ])('diagnoses %s on one output bit', (_shape, ports, parts) => {
+    expect(diagnosticsOf(chip(ports, parts))).toEqual([expect.objectContaining({ code: 'multiple-drivers', severity: 'error' })])
+  })
+
+  it('accepts a wire and a part on disjoint bits of one output, the dissolved joiner', () => {
+    expect(diagnosticsOf(chip('IN a, b; OUT out[2];', '    Not(in=a, out=out[0]); // #p1\n    wire out[1] = b;'))).toEqual([])
+  })
+})
