@@ -31,6 +31,7 @@ import {
   planReady,
   possiblyDelivered,
   readClaimHistory,
+  readPossiblyDelivered,
   readClaims,
   releaseComment,
   releaseRefusal,
@@ -666,7 +667,6 @@ describe('next', () => {
   })
 })
 
-// #702: #153 and #159 were each found delivered by a merged PR's `Part of #n` only after they were picked.
 describe('possibly delivered', () => {
   const merged = (number, body, overrides = {}) => ({ number, title: `PR ${number}`, body, mergedAt: '2026-10-15T00:00:00Z', ...overrides })
   const citedBy = (plan, number) => plan.find((task) => task.number === number).possiblyDelivered
@@ -707,6 +707,21 @@ describe('possibly delivered', () => {
       '#1 · spine · Task 1 · possibly-delivered: #10,#11', '', '#2 · spine · Task 2 · claimed · possibly-delivered: #11',
     ])
     expect(reportNext(marked).stdout).toBe('#1 · spine · Task 1 · possibly-delivered: #10,#11')
+  })
+
+  it('marks the plan from the fetched merged PRs', () => {
+    const plan = planReady([open(1, 'spine')], portfolioRows)
+    expect(readPossiblyDelivered(plan, () => [merged(10, 'Part of #1')])).toEqual({ plan: possiblyDelivered(plan, [merged(10, 'Part of #1')]), warning: null })
+  })
+
+  it('a failing fetch leaves ready’s and next’s output and exit unchanged, and says why in one stderr line', () => {
+    const plan = planReady([open(1, 'spine'), open(2, 'spine')], portfolioRows, DEFAULT_ALLOWLIST, [held(2)])
+    const { plan: unmarked, warning } = readPossiblyDelivered(plan, () => {
+      throw new Error('HTTP 502: Bad Gateway (https://api.github.com/graphql)\nretry later')
+    })
+    expect(formatReady(unmarked)).toBe(formatReady(plan))
+    expect(reportNext(unmarked)).toEqual(reportNext(plan))
+    expect(warning).toBe('possibly-delivered: skipped — HTTP 502: Bad Gateway (https://api.github.com/graphql)')
   })
 })
 
