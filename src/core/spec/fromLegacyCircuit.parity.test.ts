@@ -153,7 +153,7 @@ function webIdeRejected(doc: CircuitSpec): string[] {
 
 /** §10's named outcomes that are not a value: the note, and the refusal it must come with. */
 const REFUSALS = new Map([
-  ['multiple-drivers', /is bound by more than one connection|is driven by more than one part/],
+  ['multiple-drivers', /is bound by both|has bits driven by both|names more than one net/],
   ['unconnected-input', /input pin "\w+" is not connected/],
 ])
 
@@ -166,7 +166,7 @@ function parityFailures(saved: SerializedCircuit, vectors: Vector[], expected: O
   const named = sidecar.notes.map((n) => REFUSALS.get(n.kind)).find((r) => r !== undefined)
   return vectors.flatMap((vector, i) => {
     const inputs = Object.fromEntries(saved.inputNodes.map((n, k) => [doc.ins[k].name, vector[n.name] ?? 0]))
-    const run = viaExport(doc, inputs)
+    const run = viaCompileSpec(doc, inputs)
     const want = named ?? (expected[i].result.status === 'cycle' ? /^Cyclic part dependency/ : null)
     const at = `${JSON.stringify(vector)}: `
     if (want) return 'refused' in run && run.refused.some((m) => want.test(m)) ? [] : [`${at}expected a refusal matching ${want}, got ${JSON.stringify(run)}`]
