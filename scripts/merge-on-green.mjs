@@ -9,8 +9,9 @@
 //   --dry-run: read the PR once, print the premise and the action it would take, and exit 0.
 //
 // Exit: 0 merged · 2 a required check failed · 3 timed out · 4 needs a person (reason printed) ·
-// 1 usage. Every run ends with one `MERGE-ON-GREEN: <outcome> pr=… head=… exit=<code>` line, the
-// one to grep for (merge-on-green.logic.mjs `outcome`). GH_BIN picks the gh binary (default: gh on PATH).
+// 1 usage, or an unexpected error in the poll loop (on stderr). Every run ends with one
+// `MERGE-ON-GREEN: <outcome> pr=… head=… exit=<code>` line, an error included: the one to grep for
+// (merge-on-green.logic.mjs `outcome`). GH_BIN picks the gh binary (default: gh on PATH).
 
 import { execFileSync } from 'node:child_process'
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
@@ -163,11 +164,11 @@ function act(action, snapshot) {
   }
 }
 
+let head
 /** Polls until the run ends, and returns how: the kind it ended on and what the outcome line names. */
 async function watch() {
   const deadline = Date.now() + minutes * 60_000
   let last = ''
-  let head
   for (let pass = 1; ; pass += 1) {
     let snapshot = null
     try {
@@ -209,7 +210,15 @@ async function watch() {
 
 const usage = !isPr || !Number.isFinite(minutes) || minutes < 0
 if (usage) console.error('usage: node scripts/merge-on-green.mjs <pr> [owner/repo] [max-minutes] [--dry-run]')
-const end = usage ? { kind: 'usage' } : await watch()
+let end = { kind: 'usage' }
+if (!usage) {
+  try {
+    end = await watch()
+  } catch (error) {
+    console.error(`merge-on-green: ${error?.stack ?? error}`)
+    end = { kind: 'error', head }
+  }
+}
 const { exit, line } = outcome(end.kind, { ...end, pr: isPr ? pr : undefined })
 console.log(line)
 // exitCode, not process.exit(): on a pipe stdout flushes asynchronously, and exit() can cut this line off.

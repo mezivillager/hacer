@@ -36,13 +36,14 @@ export const CANNOT_REBASE = /can(?:['’]|no)t be rebased/i
 const MERGE_EVENT = 'pull_request'
 const MARKER = /\n*<!-- merge-on-green: edited to re-run the required checks on ([0-9a-f]{40}) at [^>]*-->/g
 
-export const EXIT = Object.freeze({ merged: 0, fail: 2, timeout: 3, 'give-up': 4, usage: 1, 'dry-run': 0 })
+export const EXIT = Object.freeze({ merged: 0, fail: 2, timeout: 3, 'give-up': 4, usage: 1, error: 1, 'dry-run': 0 })
 const OUTCOME = Object.freeze({
   merged: 'merged',
   fail: 'check-failed',
   timeout: 'timeout',
   'give-up': 'needs-person',
   usage: 'usage',
+  error: 'error',
   'dry-run': 'dry-run',
 })
 
