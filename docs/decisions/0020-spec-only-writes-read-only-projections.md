@@ -2,7 +2,7 @@
 
 - **Status:** Accepted — the fresh-context adversarial review [#359](https://github.com/mezivillager/hacer/issues/359) required by #327 returned `sound with corrections`, and the second pass over the four post-review deltas returned `accept with corrections` (both on [#358](https://github.com/mezivillager/hacer/pull/358), 2026-09-23). Both sets of corrections are applied below — the second pass's seven under "What the second pass changed" — and no further review round is required. **Amended 2026-09-24** by the spike this ADR scheduled for 1.5/1.6 ([#372](https://github.com/mezivillager/hacer/issues/372)), which ran, found the mechanism 1.5 describes does not work, and replaced it — "What the spike changed". The status does **not** move: the spine, the review's acceptance and every decision stand, and correcting a mechanism is what a scheduled spike is for.
 - **Date:** 2026-09-23 · mechanism amended 2026-09-24 ([#372](https://github.com/mezivillager/hacer/issues/372)) · §7.1 and §9 amended 2026-09-29 ([#598](https://github.com/mezivillager/hacer/issues/598)) · §1.10 added 2026-10-15 ([#374](https://github.com/mezivillager/hacer/issues/374)) · §1.11 added 2026-10-15 ([#378](https://github.com/mezivillager/hacer/issues/378))
-- **Amended by:** R769
+- **Amended by:** R769, R817, R825, R826
 - **Amends:** ADR-0008 §6, ADR-0009
 - **Supersedes:** ADR-0007
 - **Deciders:** Builder agent for [#327](https://github.com/mezivillager/hacer/issues/327), on the owner's directions of 2026-09-21 (quoted below) and the measurements of spikes [#328](https://github.com/mezivillager/hacer/issues/328) and [#210](https://github.com/mezivillager/hacer/issues/210); revised by a second fresh context against #359's review; mechanism amended by the builder agent for [#372](https://github.com/mezivillager/hacer/issues/372), on that spike's measurements and its own re-measurement against `origin/main`
@@ -674,13 +674,12 @@ and these rules are pinned by `src/core/spec/compileSpec.test.ts`,
    - It then re-runs `parseSpec`'s `doubleSourced`, `aliasCycles` and `undriven` over the document
      itself, and refuses repeated net ids by name (`duplicate-net-id`), except where
      `multiple-drivers` already names that net. So a document built without a parse (N.2's
-     importer, N.10's commands) cannot skip them.
+     importer, N.10's commands) cannot skip them. Repeated ids are how N.2 imports a chip OUT with
+     two drivers ([#377](https://github.com/mezivillager/hacer/issues/377) ruling 1, R826).
    - It also re-checks §1.10.6's wire shape over the nets (`invalid-wire`). An alias must target a
      chip OUT from a chip IN or OUT of the same width, and a `chip-in` driver must name an IN.
      `parseSpec` refuses all of these when it reads text (none got through in 56,882 parses); a
-     document built by hand could carry one. Repeated ids are how N.2 imports a
-     chip OUT with two drivers ([#377](https://github.com/mezivillager/hacer/issues/377) ruling 1,
-     R826).
+     document built by hand could carry one.
 2. **The lowering is in memory.** The document becomes an `HDLChip` and goes to `compileHDL`. No
    text is printed and no part is injected (§1.5).
    - An alias is what `printSpec` prints as a `wire`, and the two share one test (`isAlias`): any
