@@ -9,7 +9,8 @@
 //   --dry-run: read the PR once, print the premise and the action it would take, and exit 0.
 //
 // Exit: 0 merged · 2 a required check failed · 3 timed out · 4 needs a person (reason printed) ·
-// 1 usage. GH_BIN picks the gh binary (default: gh on PATH).
+// 1 usage. Every run ends with one `MERGE-ON-GREEN: <outcome> pr=… head=… exit=<code>` line, the
+// one to grep for (merge-on-green.logic.mjs `outcome`). GH_BIN picks the gh binary (default: gh on PATH).
 
 import { execFileSync } from 'node:child_process'
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
@@ -18,9 +19,9 @@ import path from 'node:path'
 import { setTimeout as sleep } from 'node:timers/promises'
 import {
   CANNOT_REBASE,
-  EXIT,
   decide,
   mergeCommits,
+  outcome,
   requiredContexts,
   stopOnRefusal,
   withRerunMarker,
@@ -30,13 +31,10 @@ const args = process.argv.slice(2)
 const dryRun = args.includes('--dry-run')
 const [pr, repo = 'mezivillager/hacer', minutesArg = '30'] = args.filter((arg) => arg !== '--dry-run')
 const minutes = Number(minutesArg)
-if (!/^\d+$/.test(pr ?? '') || !Number.isFinite(minutes) || minutes < 0) {
-  console.error('usage: node scripts/merge-on-green.mjs <pr> [owner/repo] [max-minutes] [--dry-run]')
-  process.exit(1)
-}
+const isPr = /^\d+$/.test(pr ?? '')
 const GH = process.env.GH_BIN || 'gh'
 const POLL_MS = 20_000
-const PR_FIELDS = 'number,id,state,isDraft,mergeStateStatus,headRefOid,baseRefName,autoMergeRequest,body'
+const PR_FIELDS = 'number,id,state,isDraft,mergeStateStatus,headRefOid,mergeCommit,baseRefName,autoMergeRequest,body'
 
 const say = (line) => console.log(`[${new Date().toISOString().slice(11, 19)}Z] ${line}`)
 const gh = (args) =>
@@ -165,48 +163,54 @@ function act(action, snapshot) {
   }
 }
 
-// Exits by setting process.exitCode and leaving the loop, so the last premise is never cut off.
-const deadline = Date.now() + minutes * 60_000
-let last = ''
-for (let pass = 1; ; pass += 1) {
-  let snapshot = null
-  try {
-    snapshot = readSnapshot()
-  } catch (error) {
-    if (pass === 1) {
-      say(`give-up: cannot read #${pr} in ${repo}: ${failure(error)}`)
-      process.exitCode = EXIT['give-up']
-      break
+/** Polls until the run ends, and returns how: the kind it ended on and what the outcome line names. */
+async function watch() {
+  const deadline = Date.now() + minutes * 60_000
+  let last = ''
+  let head
+  for (let pass = 1; ; pass += 1) {
+    let snapshot = null
+    try {
+      snapshot = readSnapshot()
+    } catch (error) {
+      if (pass === 1) {
+        say(`give-up: cannot read #${pr} in ${repo}: ${failure(error)}`)
+        return { kind: 'give-up' }
+      }
+      say(`wait: could not read #${pr} this pass: ${failure(error)}`)
     }
-    say(`wait: could not read #${pr} this pass: ${failure(error)}`)
+    if (snapshot) {
+      head = snapshot.pr.headRefOid
+      const action = decide(snapshot, history)
+      history.settled = action.settle ?? null
+      const line = `${action.kind}: ${action.reason}`
+      if (line !== last) say(line)
+      last = line
+      if (action.runs) sayFailedRuns(action.runs)
+      if (dryRun) {
+        say('dry run: nothing was done')
+        return { kind: 'dry-run', head, next: action.kind }
+      }
+      if (action.exit !== undefined) return { kind: action.kind, head, merge: snapshot.pr.mergeCommit?.oid }
+      act(action, snapshot)
+      const stop = stopOnRefusal(snapshot.pr, history)
+      if (stop) {
+        say(`${stop.kind}: ${stop.reason}`)
+        return { kind: stop.kind, head }
+      }
+    }
+    if (Date.now() >= deadline) {
+      say(`timeout: #${pr} is not merged after ${minutes} min; last premise: ${last}`)
+      return { kind: 'timeout', head }
+    }
+    await sleep(POLL_MS)
   }
-  if (snapshot) {
-    const action = decide(snapshot, history)
-    history.settled = action.settle ?? null
-    const line = `${action.kind}: ${action.reason}`
-    if (line !== last) say(line)
-    last = line
-    if (action.runs) sayFailedRuns(action.runs)
-    if (dryRun) {
-      say('dry run: nothing was done')
-      break
-    }
-    if (action.exit !== undefined) {
-      process.exitCode = action.exit
-      break
-    }
-    act(action, snapshot)
-    const stop = stopOnRefusal(snapshot.pr, history)
-    if (stop) {
-      say(`${stop.kind}: ${stop.reason}`)
-      process.exitCode = stop.exit
-      break
-    }
-  }
-  if (Date.now() >= deadline) {
-    say(`timeout: #${pr} is not merged after ${minutes} min; last premise: ${last}`)
-    process.exitCode = EXIT.timeout
-    break
-  }
-  await sleep(POLL_MS)
 }
+
+const usage = !isPr || !Number.isFinite(minutes) || minutes < 0
+if (usage) console.error('usage: node scripts/merge-on-green.mjs <pr> [owner/repo] [max-minutes] [--dry-run]')
+const end = usage ? { kind: 'usage' } : await watch()
+const { exit, line } = outcome(end.kind, { ...end, pr: isPr ? pr : undefined })
+console.log(line)
+// exitCode, not process.exit(): on a pipe stdout flushes asynchronously, and exit() can cut this line off.
+process.exitCode = exit

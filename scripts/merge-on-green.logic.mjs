@@ -36,7 +36,15 @@ export const CANNOT_REBASE = /can(?:['’]|no)t be rebased/i
 const MERGE_EVENT = 'pull_request'
 const MARKER = /\n*<!-- merge-on-green: edited to re-run the required checks on ([0-9a-f]{40}) at [^>]*-->/g
 
-export const EXIT = Object.freeze({ merged: 0, fail: 2, timeout: 3, 'give-up': 4 })
+export const EXIT = Object.freeze({ merged: 0, fail: 2, timeout: 3, 'give-up': 4, usage: 1, 'dry-run': 0 })
+const OUTCOME = Object.freeze({
+  merged: 'merged',
+  fail: 'check-failed',
+  timeout: 'timeout',
+  'give-up': 'needs-person',
+  usage: 'usage',
+  'dry-run': 'dry-run',
+})
 
 const asArray = (value) => (Array.isArray(value) ? value : [])
 const isName = (value) => typeof value === 'string' && value.trim() !== ''
@@ -243,8 +251,17 @@ export function decide(snapshot, history = {}) {
   return giveUp(`BLOCKED on ${head} with nothing running and no required check failing, after the body edit: ${why}. It needs a person; read the base branch's rules${note}`)
 }
 
-export function outcome() {
-  return { exit: -1, line: '' }
+/**
+ * The last stdout line of a run that ended on `kind`, and the exit code the process must end with.
+ * A field the run never read prints `-`; `merge` prints only on merged, `next` only on a dry run.
+ */
+export function outcome(kind, { pr, head, merge, next } = {}) {
+  if (!Object.hasOwn(OUTCOME, kind)) throw new Error(`merge-on-green: ${kind} does not end a run`)
+  const fields = [`pr=${pr ?? '-'}`, `head=${head ?? '-'}`]
+  if (kind === 'merged') fields.push(`merge=${merge ?? '-'}`)
+  if (kind === 'dry-run') fields.push(`next=${next ?? '-'}`)
+  const exit = EXIT[kind]
+  return { exit, line: `MERGE-ON-GREEN: ${OUTCOME[kind]} ${fields.join(' ')} exit=${exit}` }
 }
 
 /**
