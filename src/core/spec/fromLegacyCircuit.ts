@@ -159,11 +159,16 @@ export function fromLegacyCircuit(saved: SerializedCircuit): LegacyImport {
     return net
   }
   for (const { site, deliveries } of plan) {
+    const anchor = deliveries.find((d) => d.source !== null)
+    const anchorSink = anchor && narrowed(site.ref, site.width, anchor.width)
     for (const d of deliveries) {
       if (d.source === null) {
-        const outcome = site.ref.kind === 'part-pin' ? `${describe(site.ref)} is bound to false` : `OUT ${site.ref.pin} is left undriven`
+        const beside = site.ref.kind === 'chip-out' && anchorSink ? printPinRef(anchorSink.pin, anchorSink.slice) : null
+        const outcome = site.ref.kind === 'part-pin' ? `${describe(site.ref)} is bound to false` : beside ? `it is kept as a driverless net on ${beside} beside the other drivers` : `OUT ${site.ref.pin} is left undriven`
         note('floating-source', `Wire "${d.wire.id}" reads nothing at ${d.wire.from.type} "${d.wire.from.entityId}", so ${outcome}`, where(site.ref))
         if (site.ref.kind === 'part-pin') netFor('false', null).sinks.push(site.ref)
+        // Same id as a real driver's net, so compileSpec refuses the repeat; the export has no form for a driverless net.
+        else if (beside !== null && anchorSink) nets.push({ id: beside, driver: null, sinks: [anchorSink] })
         continue
       }
       const sink = narrowed(site.ref, site.width, d.width)
