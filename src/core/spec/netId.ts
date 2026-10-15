@@ -8,3 +8,5 @@ export function splitNetId(id: string): { signal: string; slice?: HDLSlice } {
   if (start === undefined) return { signal }
   return { signal, slice: { start: Number(start), end: Number(end ?? start) } }
 }
+
+export const sliceWidth = (slice: HDLSlice): number => slice.end - slice.start + 1

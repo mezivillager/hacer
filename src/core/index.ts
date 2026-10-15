@@ -47,6 +47,7 @@ export type {
   NodeId,
   ParseSpecOptions,
   ParseSpecResult,
+  PrintSpecOptions,
   Part,
   PartId,
   Port,
@@ -54,7 +55,7 @@ export type {
   Sidecar,
   SpecDiagnostic,
 } from './spec'
-export { emptySidecar, normalizeSpec, parseSpec, SPEC_SCHEMA_VERSION } from './spec'
+export { emptySidecar, normalizeSpec, parseSpec, printSpec, SPEC_SCHEMA_VERSION } from './spec'
 
 // ── The chip registry, and evaluation ───────────────────────────────────────────────────────────
 export type {
