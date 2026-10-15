@@ -1,0 +1,517 @@
+{
+  "version": 1,
+  "name": "dag-12",
+  "savedAt": "2026-10-16T00:00:00.000Z",
+  "gates": [
+    {
+      "id": "gate-1792108800000-1no6wy74e",
+      "type": "Xor",
+      "position": {
+        "x": 0,
+        "y": 0.2,
+        "z": 0
+      },
+      "rotation": {
+        "x": 1.5707963267948966,
+        "y": 0,
+        "z": 0
+      },
+      "width": 1
+    },
+    {
+      "id": "gate-1792108800000-ug8xy5i1z",
+      "type": "Or",
+      "position": {
+        "x": 4,
+        "y": 0.2,
+        "z": 3
+      },
+      "rotation": {
+        "x": 1.5707963267948966,
+        "y": 0,
+        "z": 0
+      },
+      "width": 1
+    },
+    {
+      "id": "gate-1792108800000-r0coqfmli",
+      "type": "DMux",
+      "position": {
+        "x": 8,
+        "y": 0.2,
+        "z": 6
+      },
+      "rotation": {
+        "x": 1.5707963267948966,
+        "y": 0,
+        "z": 0
+      },
+      "width": 1
+    },
+    {
+      "id": "gate-1792108800000-0txglp2bi",
+      "type": "Or",
+      "position": {
+        "x": 12,
+        "y": 0.2,
+        "z": 0
+      },
+      "rotation": {
+        "x": 1.5707963267948966,
+        "y": 0,
+        "z": 0
+      },
+      "width": 1
+    },
+    {
+      "id": "gate-1792108800000-049ouobbl",
+      "type": "Or",
+      "position": {
+        "x": 16,
+        "y": 0.2,
+        "z": 3
+      },
+      "rotation": {
+        "x": 1.5707963267948966,
+        "y": 0,
+        "z": 0
+      },
+      "width": 1
+    }
+  ],
+  "wires": [
+    {
+      "id": "wire-1792108800000-tktizom7k",
+      "from": {
+        "type": "input",
+        "entityId": "input-1792108800000-a9l6f6hwb"
+      },
+      "to": {
+        "type": "gate",
+        "entityId": "gate-1792108800000-1no6wy74e",
+        "pinId": "gate-1792108800000-1no6wy74e-in-0"
+      },
+      "segments": [
+        {
+          "start": {
+            "x": 0.7,
+            "y": 0.2,
+            "z": 0
+          },
+          "end": {
+            "x": 4,
+            "y": 0.2,
+            "z": 0
+          },
+          "type": "exit"
+        },
+        {
+          "start": {
+            "x": 4,
+            "y": 0.2,
+            "z": 0
+          },
+          "end": {
+            "x": 4,
+            "y": 0.2,
+            "z": -4
+          },
+          "type": "vertical"
+        },
+        {
+          "start": {
+            "x": 4,
+            "y": 0.2,
+            "z": -4
+          },
+          "end": {
+            "x": 8,
+            "y": 0.2,
+            "z": -4
+          },
+          "type": "horizontal"
+        },
+        {
+          "start": {
+            "x": 8,
+            "y": 0.2,
+            "z": -4
+          },
+          "end": {
+            "x": 8.7,
+            "y": 0.2,
+            "z": -4
+          },
+          "type": "entry"
+        }
+      ],
+      "crossesWireIds": [],
+      "signalId": "sig-input-1792108800000-a9l6f6hwb",
+      "width": 1
+    },
+    {
+      "id": "wire-1792108800000-jy839yszh",
+      "from": {
+        "type": "input",
+        "entityId": "input-1792108800000-4ch0xena5"
+      },
+      "to": {
+        "type": "gate",
+        "entityId": "gate-1792108800000-1no6wy74e",
+        "pinId": "gate-1792108800000-1no6wy74e-in-1"
+      },
+      "segments": [],
+      "crossesWireIds": [],
+      "width": 1
+    },
+    {
+      "id": "wire-1792108800000-rcockir9g",
+      "from": {
+        "type": "gate",
+        "entityId": "gate-1792108800000-1no6wy74e",
+        "pinId": "gate-1792108800000-1no6wy74e-out-0"
+      },
+      "to": {
+        "type": "gate",
+        "entityId": "gate-1792108800000-ug8xy5i1z",
+        "pinId": "gate-1792108800000-ug8xy5i1z-in-0"
+      },
+      "segments": [],
+      "crossesWireIds": [],
+      "width": 1
+    },
+    {
+      "id": "wire-1792108800000-0tc75yish",
+      "from": {
+        "type": "input",
+        "entityId": "input-1792108800000-a9l6f6hwb"
+      },
+      "to": {
+        "type": "gate",
+        "entityId": "gate-1792108800000-ug8xy5i1z",
+        "pinId": "gate-1792108800000-ug8xy5i1z-in-1"
+      },
+      "segments": [
+        {
+          "start": {
+            "x": 0.7,
+            "y": 0.2,
+            "z": 0
+          },
+          "end": {
+            "x": 4,
+            "y": 0.2,
+            "z": 0
+          },
+          "type": "exit"
+        },
+        {
+          "start": {
+            "x": 4,
+            "y": 0.2,
+            "z": 0
+          },
+          "end": {
+            "x": 4,
+            "y": 0.2,
+            "z": -3.925
+          },
+          "type": "vertical"
+        },
+        {
+          "start": {
+            "x": 4,
+            "y": 0.2,
+            "z": -3.925
+          },
+          "end": {
+            "x": 4,
+            "y": 0.2,
+            "z": -4.075
+          },
+          "type": "arc",
+          "arcCenter": {
+            "x": 4,
+            "y": 0.2,
+            "z": -4
+          },
+          "arcRadius": 0.07500000000000018,
+          "crossedWireId": "wire-1792108800000-tktizom7k"
+        },
+        {
+          "start": {
+            "x": 4,
+            "y": 0.2,
+            "z": -4.075
+          },
+          "end": {
+            "x": 11.5,
+            "y": 0.2,
+            "z": -4
+          },
+          "type": "horizontal"
+        }
+      ],
+      "crossesWireIds": [
+        "wire-1792108800000-tktizom7k"
+      ],
+      "signalId": "sig-input-1792108800000-a9l6f6hwb",
+      "width": 1
+    },
+    {
+      "id": "wire-1792108800000-13o42ju0m",
+      "from": {
+        "type": "input",
+        "entityId": "input-1792108800000-a9l6f6hwb"
+      },
+      "to": {
+        "type": "gate",
+        "entityId": "gate-1792108800000-r0coqfmli",
+        "pinId": "gate-1792108800000-r0coqfmli-in-0"
+      },
+      "segments": [],
+      "crossesWireIds": [],
+      "width": 1
+    },
+    {
+      "id": "wire-1792108800000-riflfs9yr",
+      "from": {
+        "type": "gate",
+        "entityId": "gate-1792108800000-ug8xy5i1z",
+        "pinId": "gate-1792108800000-ug8xy5i1z-out-0"
+      },
+      "to": {
+        "type": "gate",
+        "entityId": "gate-1792108800000-r0coqfmli",
+        "pinId": "gate-1792108800000-r0coqfmli-in-1"
+      },
+      "segments": [],
+      "crossesWireIds": [],
+      "width": 1
+    },
+    {
+      "id": "wire-1792108800000-cknfnv62g",
+      "from": {
+        "type": "input",
+        "entityId": "input-1792108800000-4ch0xena5"
+      },
+      "to": {
+        "type": "gate",
+        "entityId": "gate-1792108800000-0txglp2bi",
+        "pinId": "gate-1792108800000-0txglp2bi-in-0"
+      },
+      "segments": [],
+      "crossesWireIds": [],
+      "width": 1
+    },
+    {
+      "id": "wire-1792108800000-vcd6qbhfg",
+      "from": {
+        "type": "gate",
+        "entityId": "gate-1792108800000-1no6wy74e",
+        "pinId": "gate-1792108800000-1no6wy74e-out-0"
+      },
+      "to": {
+        "type": "gate",
+        "entityId": "gate-1792108800000-0txglp2bi",
+        "pinId": "gate-1792108800000-0txglp2bi-in-1"
+      },
+      "segments": [],
+      "crossesWireIds": [],
+      "width": 1
+    },
+    {
+      "id": "wire-1792108800000-dxjzo2cq9",
+      "from": {
+        "type": "gate",
+        "entityId": "gate-1792108800000-0txglp2bi",
+        "pinId": "gate-1792108800000-0txglp2bi-out-0"
+      },
+      "to": {
+        "type": "output",
+        "entityId": "output-1792108800000-bh7kjb4x3"
+      },
+      "segments": [],
+      "crossesWireIds": [],
+      "width": 1
+    },
+    {
+      "id": "wire-1792108800000-kvp2irkdh",
+      "from": {
+        "type": "gate",
+        "entityId": "gate-1792108800000-r0coqfmli",
+        "pinId": "gate-1792108800000-r0coqfmli-out-1"
+      },
+      "to": {
+        "type": "gate",
+        "entityId": "gate-1792108800000-049ouobbl",
+        "pinId": "gate-1792108800000-049ouobbl-in-0"
+      },
+      "segments": [],
+      "crossesWireIds": [],
+      "width": 1
+    },
+    {
+      "id": "wire-1792108800000-ye2twa8lz",
+      "from": {
+        "type": "gate",
+        "entityId": "gate-1792108800000-r0coqfmli",
+        "pinId": "gate-1792108800000-r0coqfmli-out-0"
+      },
+      "to": {
+        "type": "gate",
+        "entityId": "gate-1792108800000-049ouobbl",
+        "pinId": "gate-1792108800000-049ouobbl-in-1"
+      },
+      "segments": [],
+      "crossesWireIds": [],
+      "width": 1
+    },
+    {
+      "id": "wire-1792108800000-uamsc5o0n",
+      "from": {
+        "type": "gate",
+        "entityId": "gate-1792108800000-049ouobbl",
+        "pinId": "gate-1792108800000-049ouobbl-out-0"
+      },
+      "to": {
+        "type": "output",
+        "entityId": "output-1792108800000-pgf3v4tat"
+      },
+      "segments": [],
+      "crossesWireIds": [],
+      "width": 1
+    },
+    {
+      "id": "wire-1792108800000-tu980cqe7",
+      "from": {
+        "type": "gate",
+        "entityId": "gate-1792108800000-049ouobbl",
+        "pinId": "gate-1792108800000-049ouobbl-out-0"
+      },
+      "to": {
+        "type": "output",
+        "entityId": "output-1792108800000-ijnsva6nd"
+      },
+      "segments": [],
+      "crossesWireIds": [],
+      "width": 1
+    }
+  ],
+  "inputNodes": [
+    {
+      "id": "input-1792108800000-4ch0xena5",
+      "name": "a",
+      "position": {
+        "x": -8,
+        "y": 0.2,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "value": 1,
+      "width": 1
+    },
+    {
+      "id": "input-1792108800000-k105gm65d",
+      "name": "b",
+      "position": {
+        "x": -8,
+        "y": 0.2,
+        "z": 3
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "value": 1,
+      "width": 1
+    },
+    {
+      "id": "input-1792108800000-a9l6f6hwb",
+      "name": "c",
+      "position": {
+        "x": -8,
+        "y": 0.2,
+        "z": 6
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "value": 1,
+      "width": 1
+    }
+  ],
+  "outputNodes": [
+    {
+      "id": "output-1792108800000-pgf3v4tat",
+      "name": "out0",
+      "position": {
+        "x": 24,
+        "y": 0.2,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "value": 0,
+      "width": 1
+    },
+    {
+      "id": "output-1792108800000-ijnsva6nd",
+      "name": "out1",
+      "position": {
+        "x": 24,
+        "y": 0.2,
+        "z": 3
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "value": 0,
+      "width": 1
+    },
+    {
+      "id": "output-1792108800000-bh7kjb4x3",
+      "name": "out2",
+      "position": {
+        "x": 24,
+        "y": 0.2,
+        "z": 6
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "value": 0,
+      "width": 1
+    }
+  ],
+  "junctions": [
+    {
+      "id": "junction-1792108800000-o02ua2szx",
+      "position": {
+        "x": 4,
+        "y": 0.2,
+        "z": -4
+      },
+      "signalId": "sig-input-1792108800000-a9l6f6hwb",
+      "wireIds": [
+        "wire-1792108800000-tktizom7k",
+        "wire-1792108800000-0tc75yish"
+      ]
+    }
+  ],
+  "busComponents": []
+}
