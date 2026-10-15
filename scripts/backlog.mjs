@@ -152,8 +152,12 @@ async function view(name, slug, flags) {
   const pages = await backlog.readClaimHistory(fetchPage, issues, portfolioRows, allowlist) // the cycle resumes from them
   const history = backlog.claimHistory(pages, allowlist)
   const inputs = [issues, portfolioRows, allowlist, claims, history]
-  const readyPlan = () => backlog.possiblyDelivered(backlog.planReady(...inputs), ghJson('pr', 'list', '-R', REPO,
-    '--state', 'merged', '--limit', String(backlog.MERGED_PR_WINDOW), '--json', 'number,title,body,mergedAt'))
+  const readyPlan = () => {
+    const { plan, warning } = backlog.readPossiblyDelivered(backlog.planReady(...inputs), () => ghJson('pr', 'list', '-R', REPO,
+      '--state', 'merged', '--limit', String(backlog.MERGED_PR_WINDOW), '--json', 'number,title,body,mergedAt'))
+    if (warning) console.error(warning)
+    return plan
+  }
   if (name === 'ready' || name === 'next') {
     const gap = backlog.historyGap(pages, issues, portfolioRows, allowlist)
     for (const line of [backlog.formatDormant(backlog.dormantMode(openPrs, allowlist)),
