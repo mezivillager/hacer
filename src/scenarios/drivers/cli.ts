@@ -11,6 +11,7 @@ import type { TestReport } from '@/cli/runCli'
 import { SCENARIO_CHIP, scenarioTest, scenarioToHdl } from '../toHdl'
 import type { ChipScenario, Scenario } from '../types'
 import type { CoreScenarioResult } from './core'
+import { testReportErrors } from './report'
 
 /** The verdict half of the core driver's result; `errors` holds the CLI's first mismatch or error. */
 export type CliScenarioResult = Pick<CoreScenarioResult, 'name' | 'ok' | 'errors'>
@@ -49,9 +50,7 @@ export function runCliScenario(scenario: Scenario | ChipScenario, bin: string): 
       const printed = (run.stderr || run.stdout).trim()
       return { name, ok: false, errors: [`hacer exited ${String(run.status)} with no JSON report: ${printed}`] }
     }
-    const { failure, error } = report
-    const found = failure ? `row ${failure.row}: ${failure.column} expected ${failure.expected}, got ${failure.actual}` : error
-    return { name, ok: run.status === 0, errors: found === null ? [] : [found] }
+    return { name, ok: run.status === 0, errors: testReportErrors(report) }
   } finally {
     rmSync(dir, { recursive: true, force: true })
   }
