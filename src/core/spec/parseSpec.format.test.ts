@@ -12,7 +12,7 @@ const codes = (source: string): string[] => parseSpec(source).diagnostics.map((d
 describe('the .spec format: where the version is read from', () => {
   describe('the // hacer-spec header', () => {
     it.each([
-      ['after a BOM', '﻿'],
+      ['after a BOM', '\uFEFF'],
       ['after blank lines', '\n\n'],
       ['indented', '  '],
     ])('is read %s', (_where, lead) => {
@@ -60,7 +60,7 @@ describe('the .spec format: where the version is read from', () => {
 // canonical sidecar block last; anything else is refused by name (R817, the second #725 verdict).
 describe('the .spec format: a version tag is never read past', () => {
   const LAST = BODY.trimEnd()
-  const NBSP = ' '
+  const NBSP = '\u00A0'
 
   it('reads a header indented with any Unicode space, and refuses its unknown version', () => {
     expect(parseSpec(`${NBSP}// hacer-spec 1\n${BODY}`).doc?.schemaVersion).toBe(1)
@@ -91,5 +91,34 @@ describe('the .spec format: a version tag is never read past', () => {
     const result = parseSpec(`// hacer-spec 1\n${BODY}/* hacer-sidecar\n${sidecar}\n*/\n`)
     expect(result.diagnostics).toEqual([])
     expect(result.sidecar?.meta.description).toBe('from a hacer-spec 2 draft, hacer-sidecar and all')
+  })
+})
+
+// The third #725 verdict: a tag ends at a letter boundary, a disguised tag is still a tag, and only a
+// real block comment can be the sidecar.
+describe('the .spec format: what counts as a tag', () => {
+  it('reads an ordinary comment whose word merely begins with the tag, like HACER-specific', () => {
+    const result = parseSpec(`// hacer-spec 1\n${BODY}// HACER-specific: hacer-sidecars live at the end\n`)
+    expect(result.doc?.schemaVersion).toBe(1)
+    expect(result.diagnostics).toEqual([])
+  })
+
+  it.each([
+    ['a zero-width space', `// hacer\u200B-spec 1\n${BODY}`, 'unknown-schema-version'],
+    ['a non-breaking hyphen', `// hacer\u2011spec 2\n${BODY}`, 'unknown-schema-version'],
+    ['a soft hyphen', `// hacer-\u00ADspec 2\n${BODY}`, 'unknown-schema-version'],
+    ['a zero-width space in the sidecar tag', `${BODY}/* hacer\u200B-sidecar ${sidecarJson(2)} */\n`, 'invalid-sidecar'],
+  ])('recognises a tag disguised with %s, and refuses it rather than reading plain v1', (_disguise, source, code) => {
+    expect(codes(source)).toEqual([code])
+  })
+
+  it('does not read a sidecar block commented out with //', () => {
+    const result = parseSpec(`${BODY}// /* hacer-sidecar ${sidecarJson(1)} */\n`)
+    expect(result.doc).toBeNull()
+    expect(result.diagnostics.map((d) => d.code)).toEqual(['invalid-sidecar'])
+  })
+
+  it('says where a header belongs when it refuses one out of place', () => {
+    expect(parseSpec(`/* licence */\n// hacer-spec 1\n${BODY}`).diagnostics[0]?.message).toContain('first thing in the file (after a BOM or blank lines)')
   })
 })
