@@ -2,7 +2,6 @@
 export type {
   CircuitSpec,
   Hint,
-  ImportNote,
   Net,
   NodeId,
   ParseSpecResult,
@@ -12,9 +11,6 @@ export type {
   Ref,
   Sidecar,
   SpecDiagnostic,
-  SpecDiagnosticCode,
-  SpecSchemaVersion,
-  TestBinding,
 } from './types'
 export { SPEC_SCHEMA_VERSION } from './types'
 export type { ParseSpecOptions } from './parseSpec'

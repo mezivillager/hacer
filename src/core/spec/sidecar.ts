@@ -7,6 +7,12 @@ export function emptySidecar(): Sidecar {
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value)
 
+const isHint = (value: unknown): boolean =>
+  isRecord(value) &&
+  ['x', 'y', 'z'].every((axis) => typeof value[axis] === 'number') &&
+  (value.rotation === undefined || typeof value.rotation === 'number') &&
+  (value.origin === 'user' || value.origin === 'tidy')
+
 const refuse = (code: SpecDiagnostic['code'], message: string) => ({
   diagnostics: [{ code, severity: 'error' as const, message }],
 })
@@ -19,13 +25,17 @@ export function parseSidecar(json: string): { sidecar: Sidecar } | { diagnostics
   } catch (error) {
     return refuse('invalid-sidecar', `Sidecar is not valid JSON: ${error instanceof Error ? error.message : String(error)}`)
   }
-  if (!isRecord(value) || value.schemaVersion !== SPEC_SCHEMA_VERSION) {
-    const version = isRecord(value) ? JSON.stringify(value.schemaVersion) : 'missing'
-    return refuse('unknown-schema-version', `Sidecar schemaVersion ${version} is not one this build reads (${SPEC_SCHEMA_VERSION})`)
+  if (!isRecord(value)) return refuse('invalid-sidecar', 'Sidecar must be a JSON object')
+  if (value.schemaVersion !== SPEC_SCHEMA_VERSION) {
+    return refuse('unknown-schema-version', `Sidecar schemaVersion ${JSON.stringify(value.schemaVersion) ?? 'missing'} is not one this build reads (${SPEC_SCHEMA_VERSION})`)
   }
   const { hints, meta, tests, notes } = value
-  if (!isRecord(hints) || !isRecord(hints['3d']) || !isRecord(hints['2d']) || !isRecord(meta) || !Array.isArray(tests) || !Array.isArray(notes)) {
+  const surfaces = isRecord(hints) ? [hints['3d'], hints['2d']] : []
+  if (surfaces.length === 0 || !surfaces.every(isRecord) || !isRecord(meta) || !Array.isArray(tests) || !Array.isArray(notes)) {
     return refuse('invalid-sidecar', "Sidecar must carry hints['3d'], hints['2d'], meta, tests and notes")
+  }
+  if (!surfaces.every((surface) => Object.values(surface).every(isHint))) {
+    return refuse('invalid-sidecar', 'Every hint needs numeric x, y and z and an origin of user or tidy')
   }
   return { sidecar: value as unknown as Sidecar }
 }
