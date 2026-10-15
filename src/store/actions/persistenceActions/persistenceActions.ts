@@ -100,7 +100,7 @@ function droppedWiringSummary(warnings: DeserializeWarning[]): string | null {
  * - **a throw out of `deserializeCircuit`** — the document's own shape is wrong (a
  *   missing top-level array, a malformed wire/node/junction/bus record), so there is
  *   nothing to load. Unchanged: each caller's `try/catch` turns it into one error
- *   toast. Recovery is per *gate* entry only — see `DeserializeWarning`.
+ *   toast. Recovery is per *gate or bus-component* entry only — see `DeserializeWarning`.
  *
  * @returns the restored circuit, or `null` when there is nothing to load.
  */
