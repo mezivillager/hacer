@@ -88,7 +88,7 @@ export const createTestActions = (set: SetState, get: GetState): TestActions => 
     })
     const outputList = tst.script.commands.find((c) => c.type === 'output-list')
     const columns = outputList && outputList.type === 'output-list' ? outputList.columns : []
-    const completed = result.passed ? markChipCompleted(chipName) : get().completedChips
+    const completed = result.passed ? markChipCompleted(chipName, get().completedChips) : get().completedChips
 
     set((s) => {
       s.testResult = result

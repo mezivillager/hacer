@@ -12,8 +12,8 @@ export function readCompletedChips(): string[] {
   }
 }
 
-export function markChipCompleted(chipName: string, _known: readonly string[] = []): string[] {
-  const current = readCompletedChips()
+export function markChipCompleted(chipName: string, known: readonly string[] = []): string[] {
+  const current = [...new Set([...readCompletedChips(), ...known])]
   if (current.includes(chipName)) return current
   const next = [...current, chipName]
   try {
