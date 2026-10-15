@@ -6,7 +6,7 @@
   "docs/decisions/0006-p05-22-test-lab-implementation-source-seam-and-store-action.md": 5,
   "docs/decisions/0007-wire-routing-engine-direction.md": 4,
   "docs/decisions/0008-scene-graph-routing-testing-layer.md": 2,
-  "docs/decisions/0009-bus-components-entity-and-wireendpoint-bus.md": 2,
+  "docs/decisions/0009-bus-components-entity-and-wireendpoint-bus.md": 1,
   "docs/decisions/0010-no-absolute-paths-in-docs.md": 8,
   "docs/decisions/0011-remove-stryker-mutation-testing.md": 8,
   "docs/decisions/0012-e2e-tests-manual-only.md": 5,

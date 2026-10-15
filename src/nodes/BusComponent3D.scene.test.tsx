@@ -2,8 +2,7 @@ import { describe, it, expect, vi, afterEach } from 'vitest'
 import type { ComponentProps } from 'react'
 import ReactThreeTestRenderer from '@react-three/test-renderer'
 import { Color, type Mesh, type MeshStandardMaterial } from 'three'
-import { BusSplitter3D } from './BusSplitter3D'
-import { BusJoiner3D } from './BusJoiner3D'
+import { BusComponent3D } from './BusComponent3D'
 import { createBusPins } from '@/simulation/busPins'
 import { computeBusPinLayout } from '@/components/scene/busBodyLayout'
 import { colors } from '@/theme'
@@ -12,7 +11,7 @@ import type { BusComponent, BusComponentKind, Pin } from '@/types/scene'
 
 vi.mock('@/store/circuitStore', () => {
   const noStore = () => {
-    throw new Error('the bus mesh read the store')
+    throw new Error('BusComponent3D read the store')
   }
   return {
     useCircuitStore: Object.assign(noStore, { getState: noStore }),
@@ -22,7 +21,7 @@ vi.mock('@/store/circuitStore', () => {
 
 vi.mock('@/hooks/useBusDrag', () => ({
   useBusDrag: () => {
-    throw new Error('the bus mesh read gesture state')
+    throw new Error('BusComponent3D read gesture state')
   },
 }))
 
@@ -31,11 +30,10 @@ vi.mock('@/components/canvas/FloatingLabel', () => ({
 }))
 
 type Renderer = Awaited<ReturnType<typeof ReactThreeTestRenderer.create>>
-type MeshProps = ComponentProps<typeof BusSplitter3D>
+type MeshProps = ComponentProps<typeof BusComponent3D>
 
 interface Kind {
   kind: BusComponentKind
-  BusMesh: typeof BusSplitter3D
   label: string
   widePin: (bus: BusComponent) => Pin
   litAfterWidePinHigh: boolean[]
@@ -45,7 +43,6 @@ interface Kind {
 const KINDS: Kind[] = [
   {
     kind: 'splitter',
-    BusMesh: BusSplitter3D,
     label: 'label:SPLIT x4',
     widePin: (bus) => bus.inputs[0],
     litAfterWidePinHigh: [true, false, false, false, false],
@@ -53,7 +50,6 @@ const KINDS: Kind[] = [
   },
   {
     kind: 'joiner',
-    BusMesh: BusJoiner3D,
     label: 'label:JOIN x4',
     widePin: (bus) => bus.outputs[0],
     litAfterWidePinHigh: [false, false, false, false, true],
@@ -97,9 +93,9 @@ afterEach(async () => {
   for (const renderer of mounted.splice(0)) await renderer.unmount()
 })
 
-describe.each(KINDS)('the $kind mesh under test-renderer, with no store and no gesture state', ({ kind, BusMesh, label, widePin, litAfterWidePinHigh, outputPin }) => {
+describe.each(KINDS)('BusComponent3D drawing a $kind under test-renderer, with no store and no gesture state', ({ kind, label, widePin, litAfterWidePinHigh, outputPin }) => {
   async function mount(overrides: Partial<MeshProps> = {}): Promise<Renderer> {
-    const renderer = await ReactThreeTestRenderer.create(<BusMesh component={makeBus(kind)} {...overrides} />)
+    const renderer = await ReactThreeTestRenderer.create(<BusComponent3D component={makeBus(kind)} {...overrides} />)
     mounted.push(renderer)
     return renderer
   }

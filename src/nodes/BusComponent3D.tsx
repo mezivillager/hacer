@@ -1,6 +1,5 @@
-// BusSplitter3D - 1 N-bit input fanned out to N 1-bit outputs
 import { useState } from 'react'
-import type { BusComponent } from '@/types/scene'
+import type { BusComponent, BusComponentKind } from '@/types/scene'
 import type { DragBinding } from '@/gates/types'
 import { colors, materials } from '@/theme'
 import { NODE_DIMENSIONS } from './config'
@@ -16,7 +15,9 @@ export type BusPinClickHandler = (
   worldPosition: { x: number; y: number; z: number },
 ) => void
 
-interface BusSplitter3DProps {
+const LABEL: Record<BusComponentKind, string> = { splitter: 'SPLIT', joiner: 'JOIN' }
+
+interface BusComponent3DProps {
   component: BusComponent
   onPinClick?: BusPinClickHandler
   onClick?: () => void
@@ -25,20 +26,15 @@ interface BusSplitter3DProps {
   drag?: DragBinding
 }
 
-/**
- * Renders a bus splitter: a flat board whose depth scales with width, a
- * `SPLIT xN` label, and dynamically laid-out pins (1 input on the left, N
- * outputs on the right) from computeBusPinLayout. React-Compiler clean: no
- * memo hooks; pin layout computed inline.
- */
-export function BusSplitter3D({
+/** A bus splitter or joiner by `component.kind`: a flat board, a `SPLIT xN` or `JOIN xN` label, and its pins from computeBusPinLayout. */
+export function BusComponent3D({
   component,
   onPinClick,
   onClick,
   selected = false,
   canDrag = false,
   drag,
-}: BusSplitter3DProps) {
+}: BusComponent3DProps) {
   const { position, rotation, width } = component
   const dims = computeBusBodyDimensions(component)
   const slots = computeBusPinLayout(component)
@@ -113,10 +109,10 @@ export function BusSplitter3D({
 
       <FloatingLabel
         position={[position.x, position.y, position.z]}
-        text={`SPLIT x${width}`}
+        text={`${LABEL[component.kind]} x${width}`}
         offsetY={LABEL_GEOMETRY.NODE.offsetY}
       />
     </>
   )
 }
-BusSplitter3D.displayName = 'BusSplitter3D'
+BusComponent3D.displayName = 'BusComponent3D'
