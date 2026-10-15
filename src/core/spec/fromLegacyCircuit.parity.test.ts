@@ -3,11 +3,12 @@
 import { describe, expect, it } from 'vitest'
 import { evaluateCircuit } from '@/simulation/topologicalEval'
 import { getBuiltinChipRegistry } from '../chips/appRegistry'
-import { evaluateChip } from '../chips/evaluateChip'
-import { compileHDL, hdlChipDefinition } from '../hdl/compiler'
+import { DEFAULT_MAX_DEPTH, evaluateChip, evaluateChipWithCtx } from '../chips/evaluateChip'
+import { compileHDL, hdlChipDefinition, type EvalContext } from '../hdl/compiler'
 import { parseHDL } from '../hdl/parser'
 import { deserializeCircuit } from '../serialization/deserialize'
 import { CIRCUIT_FORMAT_VERSION, type SerializedCircuit, type SerializedWire } from '../serialization/types'
+import { compileSpec } from './compileSpec'
 import { fromLegacyCircuit } from './fromLegacyCircuit'
 import { splitNetId } from './netId'
 import { printSpec } from './printSpec'
@@ -29,8 +30,6 @@ const GOLDENS = Object.values(
   import.meta.glob<Golden>('../serialization/__snapshots__/characterization/evaluation/*.json', { eager: true, import: 'default' }),
 )
 const BUS_FREE = GOLDENS.filter((g) => g.fixture !== 'bus-endpoints')
-// parseHDL requires an IN line, which printSpec omits for a chip with no inputs (#742).
-const EVALUABLE = BUS_FREE.filter((g) => g.document.inputNodes.length > 0)
 
 function golden(name: string): Golden {
   const found = GOLDENS.find((g) => g.fixture === name)
@@ -109,6 +108,7 @@ const SPIKE: Array<[string, SerializedCircuit, Vector[]]> = [
 ]
 
 const registry = getBuiltinChipRegistry()
+const ctx: EvalContext = { registry, depth: 0, maxDepth: DEFAULT_MAX_DEPTH, evalChip: evaluateChipWithCtx }
 
 type Run = { outputs: Record<string, number> } | { refused: string[] }
 
@@ -120,6 +120,13 @@ function viaExport(doc: CircuitSpec, inputs: Vector): Run {
   const compiled = compileHDL(parsed.chip, registry)
   if (!compiled.success) return { refused: compiled.errors.map((e) => e.message) }
   return { outputs: evaluateChip(hdlChipDefinition(parsed.chip, text), inputs, registry) }
+}
+
+/** The import evaluated as a spec: no parse step precedes it, so `compileSpec` takes the document as built. */
+function viaCompileSpec(doc: CircuitSpec, inputs: Vector): Run {
+  const compiled = compileSpec({ doc, diagnostics: [] }, registry)
+  if (!compiled.success) return { refused: compiled.diagnostics.map((d) => d.message) }
+  return { outputs: compiled.evaluate(inputs, ctx) }
 }
 
 function legacy(saved: SerializedCircuit, inputs: Vector): Outcome {
@@ -178,14 +185,14 @@ describe('legacy parity', () => {
     ])
   })
 
-  it.each(EVALUABLE.map((g) => [g.fixture, g] as const))('%s: the import evaluates as its #331 golden recorded', (_name, g) => {
+  it.each(BUS_FREE.map((g) => [g.fixture, g] as const))('%s: the import evaluates as its #331 golden recorded', (_name, g) => {
     expect(parityFailures(g.document, g.vectors.map((v) => v.inputs), g.vectors.map((v) => v.before))).toEqual([])
   })
 
-  it('junction-floating: the export is refused for its missing IN line until #742, so its parity waits', () => {
-    const g = golden('junction-floating')
-    expect(BUS_FREE.filter((f) => !EVALUABLE.includes(f))).toEqual([g])
-    expect(() => parityFailures(g.document, g.vectors.map((v) => v.inputs), g.vectors.map((v) => v.before))).toThrow("Expected 'IN' but got 'OUT'")
+  it('junction-floating: the nand2tetris export is refused for its missing IN line until #742', () => {
+    const { doc } = fromLegacyCircuit(golden('junction-floating').document)
+    expect(doc?.ins).toEqual([])
+    expect(() => doc && viaExport(doc, {})).toThrow("Expected 'IN' but got 'OUT'")
   })
 
   it("the oracle reads xor-fanout-junctions' branch-first junction structurally", () => {
@@ -203,6 +210,7 @@ describe('legacy parity', () => {
     const { doc, sidecar } = fromLegacyCircuit(C6)
     expect(sidecar.notes).toEqual([{ kind: 'unconnected-input', partId: 'p1', pin: 'b', detail: expect.stringContaining('"b"') }])
     expect(doc && viaExport(doc, { a: 1 })).toEqual({ refused: ['Part "Nand" input pin "b" is not connected'] })
+    expect(doc && viaCompileSpec(doc, { a: 1 })).toEqual({ refused: ['Part "Nand" input pin "b" is not connected'] })
   })
 
   it('C8: two wires into one gate input keep both drivers, one multiple-drivers note names both, and the export is refused', () => {
@@ -212,6 +220,7 @@ describe('legacy parity', () => {
     expect(notes[0].detail).toContain('b (wire "w2")')
     expect(doc?.nets.filter((n) => n.sinks.some((s) => s.kind === 'part-pin' && s.pin === 'in')).map((n) => n.id).sort()).toEqual(['a', 'b'])
     expect(doc && viaExport(doc, { a: 1, b: 0 })).toEqual({ refused: ['Part "Not" pin "in" bit 0 is bound by more than one connection'] })
+    expect(doc && viaCompileSpec(doc, { a: 1, b: 0 })).toEqual({ refused: ['p1 pin "in" is bound by both "a" and "b"'] })
   })
 
   it('C8b: two wires into one output node keep both drivers, and the export is refused', () => {
@@ -223,6 +232,12 @@ describe('legacy parity', () => {
       { kind: 'part-pin', partId: 'p2', pin: 'out' },
     ])
     expect(doc && viaExport(doc, { a: 1, b: 0 })).toEqual({ refused: ['Signal "out" is driven by more than one part'] })
+    expect(doc && viaCompileSpec(doc, { a: 1, b: 0 })).toEqual({
+      refused: [
+        'Net id "out" names more than one net; a document holds one net per id',
+        'Signal "out" has bits driven by both p1.out (net "out") and p2.out (net "out")',
+      ],
+    })
   })
 
   it("a junction fed by two wires is C8's case", () => {
@@ -230,6 +245,7 @@ describe('legacy parity', () => {
     expect(sidecar.notes).toEqual([{ kind: 'multiple-drivers', partId: 'p1', pin: 'in', detail: expect.stringContaining('a (wire "w3")') }])
     expect(sidecar.notes[0].detail).toContain('b (wire "w3")')
     expect(doc && viaExport(doc, { a: 1, b: 0 })).toEqual({ refused: ['Part "Not" pin "in" bit 0 is bound by more than one connection'] })
+    expect(doc && viaCompileSpec(doc, { a: 1, b: 0 })).toEqual({ refused: ['p1 pin "in" is bound by both "a" and "b"'] })
     expect(parityFailures(TWO_FEEDS, BIT, BIT.map((v) => legacy(TWO_FEEDS, v)))).toEqual([])
   })
 
