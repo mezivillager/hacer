@@ -28,13 +28,13 @@ export interface DeserializedCircuit {
  * type of the gate that was dropped.
  *
  * **Where the line falls.** A warning is always about *one entry*, and only ever an
- * entry this reader *chose* to drop: a gate it could not rebuild, a bus component of a kind
- * it does not know, and (#402) the wires and junctions that pruning then takes with it. Anything wrong with the *document
- * itself* — a missing top-level array, or a malformed wire, node, junction or bus
- * record — is not one bad entry but nothing to load, and it still throws out of
- * `deserializeCircuit` for the caller to catch, exactly as it did before warnings
- * became data. Widening recovery to those records would change what a person sees,
- * which #181 deliberately does not do.
+ * entry this reader *chose* to drop: a gate it could not rebuild, a bus component of
+ * a kind it does not know, and (#402) the wires and junctions that pruning then takes
+ * with it. Anything wrong with the *document itself* — a missing top-level array, or a
+ * malformed wire, node, junction or bus record — is not one bad entry but nothing to
+ * load, and it still throws out of `deserializeCircuit` for the caller to catch,
+ * exactly as it did before warnings became data. Widening recovery to those records
+ * would change what a person sees, which #181 deliberately does not do.
  *
  * **Counts, not a wall of toasts.** `dropped-wire` and `dropped-junction` are emitted
  * one per entity, because a caller or a test wants the ids — but a document that drops
@@ -148,14 +148,14 @@ const BUS_KINDS: Record<BusComponentKind, true> = { splitter: true, joiner: true
 const cloneVec3 = (v: { x: number; y: number; z: number }) => ({ x: v.x, y: v.y, z: v.z })
 
 /** Stands in for `id`/`type` when the entry does not carry a readable one. Purely a
- *  display value: nothing keys off it, so a gate whose real id happens to be this
+ *  display value: nothing keys off it, so an entry whose real id happens to be this
  *  string is dropped and pruned like any other. */
-const UNIDENTIFIED_GATE = '(unidentified)'
+const UNIDENTIFIED = '(unidentified)'
 
 /** The entry's own id, or the stand-in — a warning's `gateId` is declared `string`.
  *  For showing a person, never for pruning: see the `catch` in `deserializeCircuit`. */
 const gateIdOf = (s: SerializedGate | null | undefined): string =>
-  typeof s?.id === 'string' ? s.id : UNIDENTIFIED_GATE
+  typeof s?.id === 'string' ? s.id : UNIDENTIFIED
 
 /** Rebuilds a saved gate, or `null` when no registry knows its chip. */
 function reconstructGate(s: SerializedGate, chipName: string): GateInstance | null {
@@ -322,7 +322,7 @@ export function deserializeCircuit(data: SerializedCircuit): DeserializeResult {
       // The entry is whatever the file said it was; read its identity defensively.
       const entry = s as SerializedGate | null | undefined
       const gateId = gateIdOf(entry)
-      const gateType = typeof entry?.type === 'string' ? entry.type : UNIDENTIFIED_GATE
+      const gateType = typeof entry?.type === 'string' ? entry.type : UNIDENTIFIED
       const reason = error instanceof Error ? error.message : String(error)
       warnings.push({
         code: 'unreadable-gate',
@@ -351,14 +351,17 @@ export function deserializeCircuit(data: SerializedCircuit): DeserializeResult {
   const liveBusIds = new Set<string>()
   const busComponents: BusComponent[] = []
   for (const s of data.busComponents ?? []) {
-    if (!Object.prototype.hasOwnProperty.call(BUS_KINDS, s.kind)) {
+    const kind: unknown = s.kind
+    if (typeof kind !== 'string' || !Object.prototype.hasOwnProperty.call(BUS_KINDS, kind)) {
+      const busId = typeof s.id === 'string' ? s.id : UNIDENTIFIED
+      const busKind = typeof kind === 'string' ? kind : (JSON.stringify(kind) ?? String(kind))
       warnings.push({
         code: 'unknown-bus-kind',
-        busId: String(s.id),
-        busKind: String(s.kind),
+        busId,
+        busKind,
         message:
-          `Skipped bus component "${String(s.id)}" while loading circuit — ` +
-          `this build has no bus component of kind "${String(s.kind)}".`,
+          `Skipped bus component "${busId}" while loading circuit — ` +
+          `this build has no bus component of kind "${busKind}".`,
       })
       continue
     }
