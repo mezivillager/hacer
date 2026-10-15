@@ -17,6 +17,7 @@ const PLACING: [string, Partial<CircuitStore>][] = [
   ['a gate is being placed', { placementMode: 'Nand' }],
   ['a node is being placed', { nodePlacementMode: 'INPUT' }],
   ['a junction is being placed', { junctionPlacementMode: true }],
+  ['a bus component is being placed', { busPlacementMode: 'splitter' }],
 ]
 
 const WATCHED = [
@@ -37,6 +38,7 @@ beforeEach(() => {
     placementMode: null,
     nodePlacementMode: null,
     junctionPlacementMode: null,
+    busPlacementMode: null,
     isDragActive: false,
     placementPreviewPosition: null,
   })
@@ -120,7 +122,7 @@ describe('NodeRenderer as the store adapter for InputNode3D and OutputNode3D', (
       expect(body(r).props.onPointerMove).toBeUndefined()
       expect(body(r).props.onPointerUp).toBeUndefined()
 
-      await inAct(() => useCircuitStore.setState({ placementMode: null, nodePlacementMode: null, junctionPlacementMode: null }))
+      await inAct(() => useCircuitStore.setState({ placementMode: null, nodePlacementMode: null, junctionPlacementMode: null, busPlacementMode: null }))
       expect(body(r).props.onPointerDown).toBeTypeOf('function')
     },
   )

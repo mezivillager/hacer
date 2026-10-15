@@ -161,12 +161,17 @@ describe('BusComponentRenderer as the store adapter for BusComponent3D', () => {
     ['a junction is being placed', { junctionPlacementMode: true }],
   ]
   it.each(KINDS.flatMap((kind) => PLACING.map(([what, mode]) => [kind, what, mode] as const)))(
-    'keeps the drag bound to the %s body while %s',
+    'binds no drag to the %s body while %s, as nodes do, and binds it again afterwards',
     async (kind, _, mode) => {
       const r = await mount(addBus(kind))
+      expect(body(r).props.onPointerDown).toBeTypeOf('function')
 
       await inAct(() => useCircuitStore.setState(mode))
+      expect(body(r).props.onPointerDown).toBeUndefined()
+      expect(body(r).props.onPointerMove).toBeUndefined()
+      expect(body(r).props.onPointerUp).toBeUndefined()
 
+      await inAct(() => useCircuitStore.setState({ placementMode: null, nodePlacementMode: null, junctionPlacementMode: null }))
       expect(body(r).props.onPointerDown).toBeTypeOf('function')
     },
   )
