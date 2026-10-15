@@ -120,7 +120,7 @@ function RenderedCircuit({ state }: { state: CircuitStore }) {
         const { start, end, precomputedPath } = deriveWire3DProps(wire, state)
         return (
           <group key={wire.id} userData={{ describedId: wire.id }}>
-            <Wire3D start={start} end={end} precomputedPath={precomputedPath} />
+            <Wire3D start={start} end={end} precomputedPath={precomputedPath} performanceMode={state.performanceMode} />
           </group>
         )
       })}
