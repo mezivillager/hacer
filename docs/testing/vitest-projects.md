@@ -72,13 +72,12 @@ away when persistence moves behind a port rather than touching `localStorage` di
 
 | File | Reason |
 |------|--------|
-| `src/core/testing/chipCompletion.test.ts` | `localStorage`: completed-chip persistence |
+| `src/lib/chipCompletionStorage.test.ts` | `localStorage`: which chips this person has completed, across a reload |
 | `src/lib/performanceModeStorage.test.ts` | `localStorage`: the performance-mode preference itself |
 | `src/store/circuitStore.autosave.test.ts` | `localStorage`: autosave slot round-trip |
 | `src/store/legacyActions.dom.characterization.test.ts` | `localStorage`: goldens of the `@store` actions that persist (saved circuits, performance mode, completed chips) |
 | `src/store/actions/persistenceActions/autosave.test.ts` | `localStorage`: debounced autosave writes |
 | `src/store/actions/persistenceActions/persistenceActions.test.ts` | `localStorage` + `Blob`/`document`: save, load, export |
-| `src/store/actions/testActions/testActions.test.ts` | `localStorage`: marks a chip completed on a passing run |
 | `src/store/actions/viewActions/viewActions.test.ts` | `localStorage`: persists the performance mode |
 
 To add one, put the path in `NEEDS_DOM` in `vite.config.ts` with a one-line reason. The config
