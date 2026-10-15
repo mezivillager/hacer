@@ -1,6 +1,7 @@
 import { notify } from '@/lib/notify'
 import {
   deserializeCircuit,
+  MAX_PIN_WIDTH,
   serializeCircuit,
   type DeserializedCircuit,
   type DeserializeResult,
@@ -59,6 +60,8 @@ const SUMMARISED_CODES = new Set<DeserializeWarning['code']>([
   'unknown-bus-kind',
   'unknown-endpoint-type',
   'invalid-wire-width',
+  'invalid-bus-width',
+  'invalid-node-width',
   'dropped-wire',
   'dropped-junction',
 ])
@@ -76,7 +79,10 @@ function droppedEntriesSummary(warnings: DeserializeWarning[]): string | null {
   const buses = count('unknown-bus-kind')
   const oddWires = count('unknown-endpoint-type')
   const badWidths = count('invalid-wire-width')
+  const badBusWidths = count('invalid-bus-width')
+  const badNodeWidths = count('invalid-node-width')
   const wires = count('dropped-wire')
+  const pinWidthRule = `that is not a whole number from 1 to ${String(MAX_PIN_WIDTH)}`
   const junctions = count('dropped-junction')
   const dangling = [
     ...(wires > 0 ? [countOf(wires, 'wire')] : []),
@@ -86,6 +92,8 @@ function droppedEntriesSummary(warnings: DeserializeWarning[]): string | null {
     ...(buses > 0 ? [`${countOf(buses, 'bus component')} of a kind this build does not know`] : []),
     ...(oddWires > 0 ? [`${countOf(oddWires, 'wire')} with an endpoint type this build does not know`] : []),
     ...(badWidths > 0 ? [`${countOf(badWidths, 'wire')} with a width that is not a positive whole number`] : []),
+    ...(badBusWidths > 0 ? [`${countOf(badBusWidths, 'bus component')} with a width ${pinWidthRule}`] : []),
+    ...(badNodeWidths > 0 ? [`${countOf(badNodeWidths, 'input or output node')} with a width ${pinWidthRule}`] : []),
     ...(dangling.length > 0 ? [`${dangling.join(' and ')} left dangling by parts that could not be loaded`] : []),
   ]
   return clauses.length === 0 ? null : `Skipped while loading circuit: ${clauses.join('; ')}.`
@@ -105,14 +113,15 @@ function droppedEntriesSummary(warnings: DeserializeWarning[]): string | null {
  *   loads. Same count and order as the reader's own `notify.warning` calls used to
  *   produce; two of the texts changed (same information, better wording). Bus
  *   components of a kind it does not know, wires with an endpoint type it does not
- *   know or a width that is not a positive integer, and the wires and junctions pruning took with dropped entries (#402) are
- *   reported one warning per entity, but shown as **one** line naming the count per
- *   kind — a document that loses 40 wires must not raise 40 toasts, and the ids are
- *   for the caller and its tests, not for the person.
+ *   know or a width that is not a positive integer, bus components and nodes with a width
+ *   outside 1 to `MAX_PIN_WIDTH`, and the wires and junctions pruning took with dropped
+ *   entries (#402) are reported one warning per entity, but shown as **one** line naming
+ *   the count per kind — a document that loses 40 wires must not raise 40 toasts, and the
+ *   ids are for the caller and its tests, not for the person.
  * - **a throw out of `deserializeCircuit`** — the document's own shape is wrong (a
  *   missing top-level array, a malformed wire/node/junction/bus record), so there is
  *   nothing to load. Unchanged: each caller's `try/catch` turns it into one error
- *   toast. Recovery is per *gate or bus-component* entry, and per *wire* only for an
+ *   toast. Recovery is per *gate, bus-component or node* entry, and per *wire* only for an
  *   endpoint type it does not know or a width that is not a positive integer — see
  *   `DeserializeWarning`.
  *
