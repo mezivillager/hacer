@@ -41,6 +41,8 @@ export { compileHDL, hdlChipDefinition, parseHDL, printHDL, project1HdlSources }
 // ── The spec document: HDL-shaped text and its sidecar (ADR-0020 §1) ──────────────────────────────
 export type {
   CircuitSpec,
+  CompileSpecInput,
+  CompileSpecResult,
   Hint,
   Net,
   NodeId,
@@ -54,7 +56,7 @@ export type {
   Sidecar,
   SpecDiagnostic,
 } from './spec'
-export { emptySidecar, normalizeSpec, parseSpec, printSpec, SPEC_SCHEMA_VERSION } from './spec'
+export { compileSpec, emptySidecar, normalizeSpec, parseSpec, printSpec, SPEC_SCHEMA_VERSION } from './spec'
 
 // ── The chip registry, and evaluation ───────────────────────────────────────────────────────────
 export type {
