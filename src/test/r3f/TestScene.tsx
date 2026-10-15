@@ -13,6 +13,7 @@ import { deriveWire3DProps } from '@/components/canvas/deriveWire3DProps'
 export function TestScene({ gates = false, wires = true }: { gates?: boolean; wires?: boolean }) {
   const wireList = useCircuitStore((s) => s.wires)
   const gateList = useCircuitStore((s) => s.gates)
+  const performanceMode = useCircuitStore((s) => s.performanceMode)
   // eslint-disable-next-line react-compiler/react-compiler -- getState() is valid for reading without subscribing
   const state = useCircuitStore.getState()
   return (
@@ -22,7 +23,7 @@ export function TestScene({ gates = false, wires = true }: { gates?: boolean; wi
           const { start, end, precomputedPath } = deriveWire3DProps(wire, state)
           return (
             <group key={wire.id} userData={{ hacerWire: true, wireId: wire.id }}>
-              <Wire3D start={start} end={end} precomputedPath={precomputedPath} />
+              <Wire3D start={start} end={end} precomputedPath={precomputedPath} performanceMode={performanceMode} />
             </group>
           )
         })}

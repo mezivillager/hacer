@@ -20,6 +20,7 @@ export function CanvasArea() {
   const placementPreviewPosition = useCircuitStore((s) => s.placementPreviewPosition)
   const isDragActive = useCircuitStore((s) => s.isDragActive)
   const selectedWireId = useCircuitStore((s) => s.selectedWireId)
+  const performanceMode = useCircuitStore((s) => s.performanceMode)
 
   const simulationRunning = useCircuitStore((s) => s.simulationRunning)
 
@@ -102,6 +103,7 @@ export function CanvasArea() {
               precomputedPath={path}
               isActive={isSignalHigh(signalValue)}
               isSelected={wire.id === selectedWireId}
+              performanceMode={performanceMode}
             />
           )
         })}
