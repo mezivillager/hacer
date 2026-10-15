@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-15T04:24:57.359Z",
+  "generatedAt": "2026-10-15T05:07:54.880Z",
   "head": {
-    "sha": "abfbb10fe374d311108d2f9ab521f9a446e744f5",
-    "date": "2026-10-15T07:21:35+03:00",
-    "subject": "docs(core): say which bus entries warn and which still throw on load"
+    "sha": "9016f44c44154d99b0edad793cbca491a9301548",
+    "date": "2026-10-15T08:07:22+03:00",
+    "subject": "docs(plans): P05-27 is superseded by the Project 1 scenario suite (#166)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-15T04:24:57.359Z",
+      "fetchedAt": "2026-10-15T05:07:54.880Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-15T04:24:57.359Z",
+      "fetchedAt": "2026-10-15T05:07:54.880Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-15T04:24:57.359Z",
+      "fetchedAt": "2026-10-15T05:07:54.880Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-15T04:24:57.359Z",
+      "fetchedAt": "2026-10-15T05:07:54.880Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-15T04:24:57.359Z",
+      "fetchedAt": "2026-10-15T05:07:54.880Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-15T04:24:57.359Z",
+      "fetchedAt": "2026-10-15T05:07:54.880Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-15T04:24:57.359Z",
+      "fetchedAt": "2026-10-15T05:07:54.880Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-15T04:24:57.359Z",
+      "fetchedAt": "2026-10-15T05:07:54.880Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-15T04:24:57.359Z",
+      "fetchedAt": "2026-10-15T05:07:54.880Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-15T04:24:57.359Z",
+      "fetchedAt": "2026-10-15T05:07:54.880Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-15T04:24:57.359Z",
+      "fetchedAt": "2026-10-15T05:07:54.880Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-15T04:24:57.359Z",
+      "fetchedAt": "2026-10-15T05:07:54.880Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-15T04:24:57.359Z",
+      "fetchedAt": "2026-10-15T05:07:54.880Z",
       "status": "ok"
     }
   },
@@ -81,8 +81,8 @@
         "slug": "foundation",
         "epicNumber": 318,
         "open": 28,
-        "ready": 3,
-        "inProgress": 1,
+        "ready": 2,
+        "inProgress": 2,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 4,
@@ -201,7 +201,7 @@
         "lane": "aux",
         "slug": "verify",
         "epicNumber": 141,
-        "open": 9,
+        "open": 8,
         "ready": 0,
         "inProgress": 0,
         "needsHuman": 0,
@@ -211,8 +211,8 @@
         "next": null,
         "title": "Epic: verify — QA service",
         "subIssues": {
-          "completed": 4,
-          "percentCompleted": 30,
+          "completed": 5,
+          "percentCompleted": 38,
           "total": 13
         }
       },
@@ -221,7 +221,7 @@
         "lane": "feature",
         "slug": "spine",
         "epicNumber": 139,
-        "open": 15,
+        "open": 14,
         "ready": 0,
         "inProgress": 0,
         "needsHuman": 0,
@@ -231,8 +231,8 @@
         "next": null,
         "title": "Epic: spine — nand2tetris alignment 0.5 → 0.7",
         "subIssues": {
-          "completed": 1,
-          "percentCompleted": 6,
+          "completed": 2,
+          "percentCompleted": 12,
           "total": 16
         }
       },
@@ -418,11 +418,6 @@
         "project": "foundation"
       },
       {
-        "number": 729,
-        "title": "deserializeCircuit: validate a wire endpoint's type (an array type keeps a wire to a dropped gate)",
-        "project": "foundation"
-      },
-      {
         "number": 269,
         "title": "Product role (usability & design): brief, hacer-product agent, a cloud UI-tour capture, and the first usability review — the agent finds polish itself",
         "project": "harness"
@@ -476,21 +471,6 @@
       {
         "number": 338,
         "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
-        "labels": [
-          "agent-ready",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 729,
-        "title": "deserializeCircuit: validate a wire endpoint's type (an array type keeps a wire to a dropped gate)",
         "labels": [
           "agent-ready",
           "risk:1",
@@ -571,20 +551,6 @@
         "labels": [
           "project:spine",
           "risk:2"
-        ],
-        "blocking": [],
-        "project": "spine",
-        "rank": 7,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "unshaped"
-      },
-      {
-        "number": 166,
-        "title": "P05-27: Scenario suite for Project 1 (re-cut of 'End-to-end integration testing')",
-        "labels": [
-          "project:spine",
-          "risk:1"
         ],
         "blocking": [],
         "project": "spine",
@@ -787,22 +753,6 @@
           "risk:1"
         ],
         "blocking": [],
-        "project": "verify",
-        "rank": 6,
-        "lane": "aux",
-        "pickable": false,
-        "reason": "unshaped"
-      },
-      {
-        "number": 196,
-        "title": "Scenario × driver matrix → capability-matrix.json (a report; becomes a required check at ≥3 drivers)",
-        "labels": [
-          "project:verify",
-          "risk:2"
-        ],
-        "blocking": [
-          166
-        ],
         "project": "verify",
         "rank": 6,
         "lane": "aux",
@@ -2026,13 +1976,28 @@
         "lane": "feature",
         "pickable": false,
         "reason": "unshaped"
+      },
+      {
+        "number": 729,
+        "title": "deserializeCircuit: validate a wire endpoint's type (an array type keeps a wire to a dropped gate)",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "claimed"
       }
     ],
     "byProject": {
       "foundation": [
         182,
         338,
-        729,
         151,
         184,
         325,
@@ -2057,7 +2022,8 @@
         613,
         719,
         722,
-        728
+        728,
+        729
       ],
       "harness": [
         257,
@@ -2078,7 +2044,6 @@
       ],
       "spine": [
         165,
-        166,
         167,
         168,
         169,
@@ -2107,7 +2072,6 @@
       ],
       "verify": [
         194,
-        196,
         197,
         198,
         200,
@@ -2202,6 +2166,13 @@
             "model": "Opus 5.5",
             "at": "2026-10-15T04:12:01Z",
             "url": "https://github.com/mezivillager/hacer/pull/725#issuecomment-6184227907"
+          },
+          {
+            "verdict": "PASS",
+            "round": 4,
+            "model": "Opus 5.5",
+            "at": "2026-10-15T04:59:56Z",
+            "url": "https://github.com/mezivillager/hacer/pull/725#issuecomment-6184785461"
           }
         ]
       },
@@ -2233,6 +2204,32 @@
       }
     ],
     "merged": [
+      {
+        "number": 730,
+        "title": "test(scenarios): Project 1 chips as scenarios through core, cli and mcp",
+        "url": "https://github.com/mezivillager/hacer/pull/730",
+        "author": "mezivillager",
+        "labels": [
+          "project:spine",
+          "risk:1"
+        ],
+        "headRefName": "test/166-project1-scenarios",
+        "isDraft": false,
+        "createdAt": "2026-10-15T04:59:15Z",
+        "mergedAt": "2026-10-15T05:07:24Z",
+        "closes": [
+          166
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Sonnet 5.5",
+            "at": "2026-10-15T05:06:47Z",
+            "url": "https://github.com/mezivillager/hacer/pull/730#issuecomment-6184874031"
+          }
+        ]
+      },
       {
         "number": 727,
         "title": "fix(core): deserializeCircuit skips a bus component whose kind it does not know",
@@ -3678,33 +3675,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/646#issuecomment-5941564545"
           }
         ]
-      },
-      {
-        "number": 645,
-        "title": "fix(mission-control): Process view labels at 375 px, Verifying drill-down",
-        "url": "https://github.com/mezivillager/hacer/pull/645",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:0",
-          "project:mission-control"
-        ],
-        "headRefName": "fix/513-process-view-nits",
-        "isDraft": false,
-        "createdAt": "2026-10-01T21:55:43Z",
-        "mergedAt": "2026-10-01T22:00:35Z",
-        "closes": [
-          513
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Sonnet 5.5 (fresh context)",
-            "at": "2026-10-01T21:59:59Z",
-            "url": "https://github.com/mezivillager/hacer/pull/645#issuecomment-5941507672"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -3717,6 +3687,31 @@
   },
   "claims": {
     "items": [
+      {
+        "number": 166,
+        "ref": "refs/heads/claim/166",
+        "sha": "abfbb10fe374d311108d2f9ab521f9a446e744f5",
+        "state": "CLOSED",
+        "title": "P05-27: Scenario suite for Project 1 (re-cut of 'End-to-end integration testing')",
+        "url": "https://github.com/mezivillager/hacer/issues/166",
+        "labels": [
+          "project:spine",
+          "agent-ready",
+          "in-progress",
+          "risk:1"
+        ],
+        "onClosedIssue": true,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-50",
+          "branch": null,
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-15T04:29:51Z",
+          "url": "https://github.com/mezivillager/hacer/issues/166#issuecomment-6184436799"
+        }
+      },
       {
         "number": 374,
         "ref": "refs/heads/claim/374",
@@ -3766,9 +3761,34 @@
           "at": "2026-09-25T06:02:35Z",
           "url": "https://github.com/mezivillager/hacer/issues/470#issuecomment-5827635352"
         }
+      },
+      {
+        "number": 729,
+        "ref": "refs/heads/claim/729",
+        "sha": "abfbb10fe374d311108d2f9ab521f9a446e744f5",
+        "state": "OPEN",
+        "title": "deserializeCircuit: validate a wire endpoint's type (an array type keeps a wire to a dropped gate)",
+        "url": "https://github.com/mezivillager/hacer/issues/729",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:foundation"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-50",
+          "branch": null,
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-15T05:07:27Z",
+          "url": "https://github.com/mezivillager/hacer/issues/729#issuecomment-6184882446"
+        }
       }
     ],
-    "onClosedIssues": 0
+    "onClosedIssues": 1
   },
   "cloudLane": {
     "items": [
@@ -5467,7 +5487,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-01",
-        "merges": 12
+        "merges": 11
       },
       {
         "date": "2026-10-02",
@@ -5483,20 +5503,20 @@
       },
       {
         "date": "2026-10-15",
-        "merges": 11
+        "merges": 12
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-01T04:24:57.359Z",
-      "merged": 65,
+      "since": "2026-10-01T05:07:54.880Z",
+      "merged": 66,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 2
       },
       "blockedOnce": {
         "count": 2,
-        "of": 53,
+        "of": 54,
         "prs": [
           700,
           727
@@ -5504,8 +5524,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 39,
-          "withVerdict": 39,
+          "merged": 40,
+          "withVerdict": 40,
           "without": []
         },
         "nonCode": {
@@ -8545,11 +8565,12 @@
       },
       {
         "date": "2026-10-15",
-        "at": "2026-10-15T03:26:17.485Z",
+        "at": "2026-10-15T04:24:57.359Z",
         "byProject": {
           "foundation": [
             182,
             338,
+            729,
             151,
             184,
             325,
@@ -8574,7 +8595,7 @@
             613,
             719,
             722,
-            724
+            728
           ],
           "harness": [
             257,
@@ -8688,11 +8709,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "abfbb10fe374d311108d2f9ab521f9a446e744f5",
+        "sha": "9016f44c44154d99b0edad793cbca491a9301548",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38681047757/job/116245456439",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/38685081188/job/116257968977",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -8746,16 +8767,16 @@
       },
       {
         "pr": 725,
-        "sha": "f3074a2e2dc1f368dff96755f5dffb4dbf1b06ec",
+        "sha": "d787da180265c4c95ad7abcda4b2f897aa968182",
         "check": "pr-hygiene",
         "conclusion": "SUCCESS",
-        "completedAt": "2026-10-15T03:49:32Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38678243181/job/116236648514",
-        "line": "HYGIENE: WARN reviewable=388 test=457 excluded=0 files=9 issue=#374,#723 linked=part-of",
+        "completedAt": "2026-10-15T04:38:28Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/38682513294/job/116249998351",
+        "line": "HYGIENE: WARN reviewable=394 test=568 excluded=0 files=9 issue=#374,#723 linked=part-of",
         "verdict": "WARN",
         "fields": {
-          "reviewable": 388,
-          "test": 457,
+          "reviewable": 394,
+          "test": 568,
           "excluded": 0,
           "files": 9,
           "issue": "#374,#723",
@@ -8765,11 +8786,11 @@
       },
       {
         "pr": 725,
-        "sha": "f3074a2e2dc1f368dff96755f5dffb4dbf1b06ec",
+        "sha": "d787da180265c4c95ad7abcda4b2f897aa968182",
         "check": "browser-qa",
         "conclusion": "SUCCESS",
-        "completedAt": "2026-10-15T03:49:31Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38678242717/job/116236645541",
+        "completedAt": "2026-10-15T04:38:30Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/38682512952/job/116249996481",
         "line": "BROWSER-QA: skipped (no critical paths)",
         "verdict": "SKIPPED",
         "fields": {},
@@ -8777,11 +8798,11 @@
       },
       {
         "pr": 725,
-        "sha": "f3074a2e2dc1f368dff96755f5dffb4dbf1b06ec",
+        "sha": "d787da180265c4c95ad7abcda4b2f897aa968182",
         "check": "ci",
         "conclusion": "SUCCESS",
-        "completedAt": "2026-10-15T03:52:34Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38678242732/job/116236646452",
+        "completedAt": "2026-10-15T04:41:29Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/38682510776/job/116249990548",
         "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
         "verdict": "PASS",
         "fields": {
