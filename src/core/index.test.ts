@@ -45,6 +45,7 @@ const CORE_EXPORTS = [
   'combineRegistries',
   'compareCmpRow',
   'compileHDL',
+  'compileSpec',
   'createChipRegistry',
   'emptySidecar',
   'evaluateChip',
