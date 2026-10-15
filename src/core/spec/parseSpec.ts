@@ -79,7 +79,7 @@ function wireProblem(wire: WireStatement, ins: Set<string>, outs: Set<string>, w
  * An alias rooted at a chip OUT can close a loop that never resolves (§1.5); walk it bit by bit.
  * Classified by driver kind, so `wire x = x;` is a cycle of one rather than an identity to drop.
  */
-function aliasCycles(nets: Net[], width: Map<string, number>): SpecDiagnostic[] {
+export function aliasCycles(nets: Net[], width: Map<string, number>): SpecDiagnostic[] {
   const node = (signal: string, bit: number): string => (width.get(signal) === 1 ? signal : `${signal}[${bit}]`)
   const next = new Map<string, string>()
   for (const { id, driver } of nets) {
@@ -159,7 +159,7 @@ const overlap = (a: HDLSlice | undefined, b: HDLSlice | undefined): boolean => b
  * §1.8: one bit, one source — a signal bit written by two nets, or a part pin bit bound by two.
  * A chip input read many ways is fan-out (§1), and an unknown chip's pins have no known direction.
  */
-function doubleSourced(nets: Net[], unknownParts: Set<PartId>): SpecDiagnostic[] {
+export function doubleSourced(nets: Net[], unknownParts: Set<PartId>): SpecDiagnostic[] {
   const found: SpecDiagnostic[] = []
   const claims = new Map<string, Array<{ label: string; slice?: HDLSlice }>>()
   const claim = (key: string, label: string, slice: HDLSlice | undefined, describe: (other: string) => SpecDiagnostic): void => {
@@ -184,7 +184,7 @@ function doubleSourced(nets: Net[], unknownParts: Set<PartId>): SpecDiagnostic[]
 }
 
 /** A driverless net is unfinished (§1.1) unless another net writes bits it reads, or an unknown chip may. */
-function undriven(nets: Net[], unknownParts: Set<PartId>): SpecDiagnostic[] {
+export function undriven(nets: Net[], unknownParts: Set<PartId>): SpecDiagnostic[] {
   const written = nets.filter((n) => n.driver !== null).map((n) => splitNetId(n.id))
   return nets
     .filter((n) => n.driver === null && !LITERALS.has(n.id) && !n.sinks.some((s) => s.kind === 'part-pin' && unknownParts.has(s.partId)))
