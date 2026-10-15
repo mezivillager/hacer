@@ -55,10 +55,11 @@ describe('parseSpec', () => {
       expect(errors(diagnostics)).toEqual([])
     })
 
-    it('drives a net reading a chip input, whole or sliced, from its chip-in ref', () => {
-      const { doc } = parsed(chip('IN a[4]; OUT out, o2[4];', '    Not(in=a[3], out=out); // #p1\n    Not16(in[0..3]=a, out[0..3]=o2); // #p2'))
+    it('drives a net reading a chip input, whole or sliced, from its chip-in ref, with no error', () => {
+      const { doc, diagnostics } = parsed(chip('IN a[4]; OUT out, o2[4];', '    Not(in=a[3], out=out); // #p1\n    Not16(in[0..3]=a, out[0..3]=o2); // #p2'))
       expect(net(doc, 'a[3]')?.driver).toEqual({ kind: 'chip-in', pin: 'a', slice: { start: 3, end: 3 } })
       expect(net(doc, 'a')?.driver).toEqual({ kind: 'chip-in', pin: 'a' })
+      expect(errors(diagnostics)).toEqual([])
     })
 
     it('keeps a literal as a net of its own, which nothing has to drive', () => {
@@ -105,7 +106,9 @@ describe('parseSpec', () => {
     it('diagnoses a second driver of one net and keeps the first', () => {
       const { doc, diagnostics } = parsed(chip('IN a, b; OUT out;', '    Not(in=a, out=out); // #p1\n    Not(in=b, out=out); // #p2'))
       expect(net(doc, 'out')?.driver).toEqual({ kind: 'part-pin', partId: 'p1', pin: 'out' })
-      expect(diagnostics).toEqual(expect.arrayContaining([expect.objectContaining({ code: 'multiple-drivers', netId: 'out' })]))
+      expect(errors(diagnostics)).toEqual([
+        expect.objectContaining({ code: 'multiple-drivers', netId: 'out', partId: 'p2', message: expect.stringMatching(/p1\.out.*p2\.out/) }),
+      ])
     })
 
     it('returns no document, only syntax diagnostics, for text that is not HDL-shaped', () => {
