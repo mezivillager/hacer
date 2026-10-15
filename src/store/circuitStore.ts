@@ -17,7 +17,7 @@ import { createPersistenceActions } from './actions/persistenceActions/persisten
 import { createTestActions } from './actions/testActions/testActions'
 import { createBusActions } from './actions/busActions/busActions'
 import { createBusPlacementActions } from './actions/busPlacementActions/busPlacementActions'
-import { readCompletedChips } from '@/core/testing/chipCompletion'
+import { readCompletedChips } from '@/lib/chipCompletionStorage'
 import { subscribeAutosave } from './actions/persistenceActions/autosave'
 import { readPerformanceMode } from '@/lib/performanceModeStorage'
 import { calculateWirePathFromConnection } from '@/utils/wiringScheme'
