@@ -1,7 +1,7 @@
 import { Line } from '@react-three/drei'
 import { colors } from '@/theme'
 import type { WireSegment, WirePath } from '@/utils/wiringScheme/types'
-import type { PerformanceMode } from '@/store/types'
+import type { PerformanceMode } from '@/types/scene'
 import { WIRE_HEIGHT, HOP_HEIGHT } from '@/utils/wiringScheme/types'
 import { getWireArcPointCount, getWireLineWidth } from './wireRenderConfig'
 
