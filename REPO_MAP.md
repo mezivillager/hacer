@@ -88,7 +88,7 @@ src/
 │   │   └── builtins/ # project01.ts — the 16 Project 1 builtins (definition + evaluate + test)
 │   ├── hdl/          # HACK HDL parser + compiler, Project 1 HDL sources/fixtures
 │   ├── serialization/ # Circuit document save/load format (wired via persistenceActions)
-│   └── testing/      # .tst/.cmp parsers, test engine, implementation sources, chip completion
+│   └── testing/      # .tst/.cmp parsers, test engine, implementation sources
 ├── lib/              # notify (Sonner-backed), utils (cn helper), demoTour, performanceModeStorage, chipCompletionStorage
 ├── styles/           # globals.css (Tailwind v4 + OKLch tokens + Geist fonts)
 ├── gates/            # Gate placement plumbing (per-chip components and icons live elsewhere — see core/chips/ and components/scene/)
@@ -294,9 +294,9 @@ Future directory layouts are specified in `docs/roadmap/`.
 - `src/core/testing/` - Test script execution (.tst/.cmp)
   - `src/core/testing/engine.ts` - `runTest(script, options)` runs a parsed `.tst` against a chip (via the `evaluateChip` seam), records output rows, and compares to `.cmp` data; returns a UI-agnostic `TestResult`. Never throws — structural problems (unknown chip, eval-before-load, eval throw, row-count mismatch, unresolvable `compare-to`) become `error`; value mismatches become `firstFailure` (P05-17, ADR-0005).
   - `src/core/testing/implementationSources.ts` - pluggable `ChipImplementationSource` registry (Test Lab's "what to test against"): `builtin` + `hdl-from-nand` today; user chips (P05-18) / canvas (P05-26) register later. (P05-22, ADR-0006)
-  - `src/lib/chipCompletionStorage.ts` - session state, not engine: persists passed chips to `localStorage['hacer-completed-chips']` (the P05-19 completion contract).
   - `src/store/actions/testActions/` - `runChipTest(chipName, sourceId)` store action (AI-Agent-Parity surface) → writes `testResult`/`testColumns`/`completedChips`.
   - `src/components/ui/TestResultsPanel.tsx` - the Test Lab panel (RightActionBar `'tests'` drawer): chip/source selectors, Run, output table + diff highlight, ✓ on completed. Thin view over the store.
+- `src/lib/chipCompletionStorage.ts` - session state, not engine: persists passed chips to `localStorage['hacer-completed-chips']` (the P05-19 completion contract).
 - `src/simulation/topologicalEval.ts` - Topological sort for correct evaluation; `evaluateCircuit` return + `getSignalSourceValue`; routes chip evaluation through `evaluateChipWithCtx` so HDL/composite chips evaluate on the canvas.
 - `src/scenarios/` - Headless circuits lifted from the deleted e2e scenario files. `src/scenarios/drivers/core.ts` runs each one through `compileHDL` and the chip registry (#195). Layout fields stay on the scenario for later drivers.
 - `CircuitState.lastSimulationError` — combinational cycle metadata after a failed `simulationTick` (cleared on success / `clearCircuit`)
