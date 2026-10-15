@@ -116,3 +116,11 @@ describe('printSpec', () => {
     })
   })
 })
+
+describe('printSpec — empty port lists', () => {
+  it('prints no IN line for a chip with no inputs, as the reference grammar allows, rather than IN ;', () => {
+    const text = printSpec({ ...passThrough(1), ins: [], nets: [] })
+    expect(text).not.toContain('IN')
+    expect(text).toContain('    OUT out;\n')
+  })
+})
