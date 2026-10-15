@@ -501,3 +501,65 @@ describe('deserializeCircuit: a bus component of a kind it does not know', () =>
     ])
   })
 })
+
+describe('deserializeCircuit: a wire endpoint of a type it does not know', () => {
+  const NOR_GATE = { id: 'g-nor', type: 'NOR', position: ZERO_VEC, rotation: ZERO_VEC, width: 1 }
+
+  /** A `from` end into the NOR this reader always drops, saved with `type` as given (absent for `undefined`). */
+  const oddEnd = (type: unknown) =>
+    ({ ...(type === undefined ? {} : { type }), entityId: NOR_GATE.id, pinId: 'g-nor-out-0' }) as unknown as SerializedWire['from']
+
+  const withOddEndpoint = (from: SerializedWire['from'], to: SerializedWire['to']): SerializedCircuit => ({
+    ...emptyDocument(CIRCUIT_FORMAT_VERSION),
+    gates: [NOR_GATE, GOOD_GATE],
+    wires: [
+      wireRecord('w-odd', from, to),
+      wireRecord('w-good', gateEnd(GOOD_GATE.id, 'out'), { type: 'output', entityId: 'o-1' }),
+    ],
+    junctions: [{ id: 'j-odd', position: ZERO_VEC, signalId: 'sig-odd', wireIds: ['w-odd'] }],
+  })
+
+  it.each([
+    [['gate'], '["gate"]'],
+    [{}, '{}'],
+    [42, '42'],
+    ['probe', 'probe'],
+    [undefined, 'undefined'],
+  ])('prunes a wire whose endpoint type is %j, naming it in its own warning', (type, endpointType) => {
+    const { document: restored, warnings } = deserializeCircuit(
+      withOddEndpoint(oddEnd(type), gateEnd(GOOD_GATE.id, 'in')),
+    )
+    expect(restored?.wires.map((w) => w.id)).toEqual(['w-good'])
+    expect(warnings.filter((w) => w.code !== 'unsupported-gate-type' && w.code !== 'dropped-junction')).toEqual([
+      { code: 'unknown-endpoint-type', wireId: 'w-odd', end: 'from', endpointType, message: expect.any(String) as string },
+    ])
+  })
+
+  it('names the wire, its end and the type as saved in the message', () => {
+    const { warnings } = deserializeCircuit(withOddEndpoint(oddEnd(['gate']), gateEnd(GOOD_GATE.id, 'in')))
+    const [warning] = warnings.filter((w) => w.code !== 'unsupported-gate-type' && w.code !== 'dropped-junction')
+    expect(warning.message).toContain('"w-odd"')
+    expect(warning.message).toContain('"from"')
+    expect(warning.message).toContain('["gate"]')
+  })
+
+  it('checks the `to` end as well', () => {
+    const { document: restored, warnings } = deserializeCircuit(
+      withOddEndpoint(gateEnd(GOOD_GATE.id, 'out'), { type: 'Gate', entityId: GOOD_GATE.id } as unknown as SerializedWire['to']),
+    )
+    expect(restored?.wires.map((w) => w.id)).toEqual(['w-good'])
+    expect(warnings.filter((w) => w.code !== 'unsupported-gate-type' && w.code !== 'dropped-junction')).toEqual([
+      { code: 'unknown-endpoint-type', wireId: 'w-odd', end: 'to', endpointType: 'Gate', message: expect.any(String) as string },
+    ])
+  })
+
+  it('takes a junction left joining nothing with it, as for any other pruned wire', () => {
+    const { document: restored, warnings } = deserializeCircuit(
+      withOddEndpoint(oddEnd(['gate']), gateEnd(GOOD_GATE.id, 'in')),
+    )
+    expect(restored?.junctions).toEqual([])
+    expect(warnings.filter((w) => w.code === 'dropped-junction')).toEqual([
+      { code: 'dropped-junction', junctionId: 'j-odd', message: expect.stringContaining('j-odd') },
+    ])
+  })
+})
