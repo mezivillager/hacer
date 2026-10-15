@@ -63,6 +63,7 @@ export interface Sidecar {
 export type SpecDiagnosticCode =
   | 'syntax' | 'unknown-schema-version' | 'invalid-sidecar' | 'builtin-chip' | 'unknown-chip'
   | 'unknown-pin' | 'multiple-drivers' | 'undriven' | 'duplicate-part-id' | 'invalid-part-id' | 'part-id-assigned'
+  | 'invalid-wire' | 'alias-cycle' | 'literal-output'
 
 export interface SpecDiagnostic {
   code: SpecDiagnosticCode
@@ -72,6 +73,8 @@ export interface SpecDiagnostic {
   column?: number
   partId?: PartId
   netId?: string
+  /** An alias cycle's signals in order, first repeated last: `["x", "y", "x"]`. */
+  members?: string[]
 }
 
 export type ParseSpecResult =

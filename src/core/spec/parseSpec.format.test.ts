@@ -57,7 +57,7 @@ describe('the .spec format: where the version is read from', () => {
 })
 
 // Every occurrence of either tag, in any case, is either the one canonical header first or the one
-// canonical sidecar block last; anything else is refused by name (R817, the second #725 verdict).
+// canonical sidecar block last; anything else is refused by name.
 describe('the .spec format: a version tag is never read past', () => {
   const LAST = BODY.trimEnd()
   const NBSP = '\u00A0'
@@ -94,8 +94,8 @@ describe('the .spec format: a version tag is never read past', () => {
   })
 })
 
-// The third #725 verdict: a tag ends at a letter boundary, a disguised tag is still a tag, and only a
-// real block comment can be the sidecar.
+// A tag ends at a letter boundary, a disguised tag is still a tag, and only a real block comment can
+// be the sidecar.
 describe('the .spec format: what counts as a tag', () => {
   it('reads an ordinary comment whose word merely begins with the tag, like HACER-specific', () => {
     const result = parseSpec(`// hacer-spec 1\n${BODY}// HACER-specific: hacer-sidecars live at the end\n`)
@@ -120,5 +120,30 @@ describe('the .spec format: what counts as a tag', () => {
 
   it('says where a header belongs when it refuses one out of place', () => {
     expect(parseSpec(`/* licence */\n// hacer-spec 1\n${BODY}`).diagnostics[0]?.message).toContain('first thing in the file (after a BOM or blank lines)')
+  })
+})
+
+describe('the .spec format: the tag scan in depth', () => {
+  it.each([
+    ['a Hangul filler (U+3164)', `// hacer\u3164-spec 2\n${BODY}`, 'unknown-schema-version'],
+    ['a tag character (U+E0020)', `// hacer\u{E0020}-spec 2\n${BODY}`, 'unknown-schema-version'],
+    ['a Hangul filler in the sidecar tag', `${BODY}/* hacer\u3164-sidecar ${sidecarJson(1)} */\n`, 'invalid-sidecar'],
+  ])('recognises a tag disguised with any Default_Ignorable_Code_Point, here %s, and refuses it', (_disguise, source, code) => {
+    expect(codes(source)).toEqual([code])
+  })
+
+  it('scans a long run of soft hyphens in linear time', () => {
+    const started = performance.now()
+    parseSpec(`// hacer${'\u00AD'.repeat(20000)}x\n${BODY}`)
+    expect(performance.now() - started).toBeLessThan(150)
+  })
+
+  it('says a tag in an ordinary comment is the cause when it refuses one', () => {
+    expect(parseSpec(`${BODY}// see hacer-spec 2\n`).diagnostics[0]?.message).toContain('comments included')
+  })
+
+  it("refuses a sidecar whose JSON carries a raw */, which would end the comment where the HDL reader ends it", () => {
+    const smuggled = JSON.stringify({ schemaVersion: 1, hints: { '3d': {}, '2d': {} }, meta: { title: '*/ CHIP Y { IN a; OUT out; PARTS: Not(in=a, out=out); } //' }, tests: [], notes: [] })
+    expect(codes(`/* hacer-sidecar ${smuggled} */\n`)).toEqual(['invalid-sidecar'])
   })
 })
