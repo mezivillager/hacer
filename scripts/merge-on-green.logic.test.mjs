@@ -313,6 +313,11 @@ describe('outcome — the last line of every run', () => {
     expect(outcome('usage')).toEqual({ exit: 1, line: 'MERGE-ON-GREEN: usage pr=- head=- exit=1' })
   })
 
+  it('an unexpected error: error, exit 1, with the head it last read', () => {
+    expect(outcome('error', { pr: '645', head })).toEqual({ exit: 1, line: `MERGE-ON-GREEN: error pr=645 head=${head} exit=1` })
+    expect(outcome('error', { pr: '645' }).line).toBe('MERGE-ON-GREEN: error pr=645 head=- exit=1')
+  })
+
   it('states the exit decide and stopOnRefusal gave, for every action that ends a run', () => {
     const refused = stopOnRefusal(load('stale-green').pr, { refusals: { 'update-branch': 1 }, lastError: 'GraphQL: refused' })
     const ending = [decide(load('merged')), decide(load('required-failure')), decide(unarmed('blocked-after-body-edit')), refused]
