@@ -1,7 +1,8 @@
 // ADR-0020 §10's acceptance test. The legacy oracle is `evaluateCircuit`, whose junction trace is structural
 // (`findJunctionFeedWire`), so this file writes no second trace.
 import { describe, expect, it } from 'vitest'
-import { evaluateCircuit } from '@/simulation/topologicalEval'
+import { clampToWidth } from '@/simulation/busOps'
+import { evaluateCircuit, getSignalSourceValue } from '@/simulation/topologicalEval'
 import { getBuiltinChipRegistry } from '../chips/appRegistry'
 import { DEFAULT_MAX_DEPTH, evaluateChip, evaluateChipWithCtx } from '../chips/evaluateChip'
 import { compileHDL, hdlChipDefinition, type EvalContext } from '../hdl/compiler'
@@ -194,6 +195,42 @@ const SPLITTER_FED_TWICE = circuit('SplitterFedTwice', {
   ],
 })
 
+const loop = (name: string, intoJoin: Endpoint, extra: Partial<SerializedCircuit> = {}): SerializedCircuit => circuit(name, {
+  inputNodes: [node('ia', 'a')],
+  outputNodes: [node('oo', 'out')],
+  gates: [gate('g1', 'Not')],
+  busComponents: [bus('join', 'joiner', 2), bus('split', 'splitter', 2)],
+  wires: [
+    wire('w1', intoJoin, busEnd('join', 'in0'), 1), wire('w2', busEnd('join', 'out'), busEnd('split', 'in'), 2),
+    wire('w3', busEnd('split', 'out0'), busEnd('join', 'in1'), 1), wire('w4', busEnd('split', 'out1'), pinIn('g1', 0), 1),
+    wire('w5', pinOut('g1'), toOut('oo'), 1),
+  ],
+  ...extra,
+})
+const FED_BACK = loop('FedBack', pinOut('g1'))
+const ROUND_THE_BUS = loop('RoundTheBus', fromIn('ia'))
+const INDEPENDENT_BITS = circuit('IndependentBits', {
+  inputNodes: [node('ix', 'x')],
+  outputNodes: [node('oo', 'out')],
+  gates: [gate('g1', 'Not')],
+  busComponents: [bus('join', 'joiner', 2), bus('split', 'splitter', 2)],
+  wires: [
+    wire('w1', fromIn('ix'), busEnd('join', 'in0'), 1), wire('w2', pinOut('g1'), busEnd('join', 'in1'), 1),
+    wire('w3', busEnd('join', 'out'), busEnd('split', 'in'), 2), wire('w4', busEnd('split', 'out0'), pinIn('g1', 0), 1),
+    wire('w5', pinOut('g1'), toOut('oo'), 1),
+  ],
+})
+const BUS_ONLY_LOOP = circuit('BusOnlyLoop', {
+  inputNodes: [node('ia', 'a')],
+  outputNodes: [node('oo', 'out'), node('ol', 'looped')],
+  busComponents: [bus('join', 'joiner', 2), bus('split', 'splitter', 2)],
+  wires: [
+    wire('w1', busEnd('join', 'out'), busEnd('split', 'in'), 2), wire('w2', busEnd('split', 'out0'), busEnd('join', 'in0'), 1),
+    wire('w3', fromIn('ia'), busEnd('join', 'in1'), 1), wire('w4', busEnd('split', 'out1'), toOut('oo'), 1),
+    wire('w5', busEnd('split', 'out0'), toOut('ol'), 1),
+  ],
+})
+
 const BIT: Vector[] = [{ a: 0 }, { a: 1 }]
 const every = (names: Record<string, number>): Vector[] =>
   Object.entries(names).reduce<Vector[]>((acc, [name, width]) => acc.flatMap((v) => Array.from({ length: 2 ** width }, (_, n) => ({ ...v, [name]: n }))), [{}])
@@ -205,6 +242,12 @@ const BUS: Array<[string, SerializedCircuit, Vector[]]> = [
   ['a splitter on a part\'s output', SPLITTER_ON_PART, [0, 1, 2, 6, 9, 0xf, 0xabcd, 0xfff0].map((x) => ({ x }))],
   ['a joiner bit fed by two wires', JOINER_BIT_TWICE, every({ a: 1, b: 1 })],
   ['a splitter fed by two wires', SPLITTER_FED_TWICE, every({ a: 2, b: 1 })],
+  ['a part fed back to itself through a joiner and a splitter, every bit carried', FED_BACK, BIT],
+]
+const BIT_LEVEL: Array<[string, SerializedCircuit, Vector[], (v: Vector) => Record<string, number>]> = [
+  ['a bit carried round a joiner and a splitter into a part', ROUND_THE_BUS, BIT, ({ a }) => ({ out: 1 - a })],
+  ['independent bits merged in a joiner and split back', INDEPENDENT_BITS, [{ x: 0 }, { x: 1 }], ({ x }) => ({ out: 1 - x })],
+  ['a bit that only loops through bus components', BUS_ONLY_LOOP, BIT, ({ a }) => ({ out: a, looped: 0 })],
 ]
 const ALIASES = ['junction-chain', 'xor-fanout-junctions', 'junction-loop', 'mixed-widths']
 const SPIKE: Array<[string, SerializedCircuit, Vector[]]> = [
@@ -305,43 +348,129 @@ function exportFailures(saved: SerializedCircuit, vectors: Vector[], expected: O
   if (rejected.length > 0 || sidecar.notes.some((n) => REFUSALS.has(n.kind))) return rejected
   return vectors.flatMap((vector, i) => {
     const run = viaExport(doc, Object.fromEntries(saved.inputNodes.map((n, k) => [doc.ins[k].name, vector[n.name] ?? 0])))
+    if (expected[i].result.status === 'cycle') return 'refused' in run && run.refused.some((m) => /^Cyclic part dependency/.test(m)) ? [] : [`${JSON.stringify(vector)}: expected the export to be refused as cyclic, got ${JSON.stringify(run)}`]
     if ('refused' in run) return [`${JSON.stringify(vector)}: the export is refused: ${run.refused.join('; ')}`]
     return saved.outputNodes.flatMap((n, k) => (run.outputs[doc.outs[k].name] === expected[i].outputs[n.name] ? [] : [`${JSON.stringify(vector)}: the export gives ${n.name} = ${run.outputs[doc.outs[k].name]}, legacy ${expected[i].outputs[n.name]}`]))
   })
 }
 
-/** A random DAG of 1-, 4- and 16-bit parts, 4-bit splitters and joiners, wired the way `addWire` writes widths. */
+/** Random parts, inputs and OUTs of 1–16 bits and buses of 2–16; a deferred pin is wired last, from any source, so loops form. */
 function randomBusDocument(rng: Rng, n: number): SerializedCircuit {
   const pick = <T,>(list: readonly T[]): T => list[Math.floor(rng() * list.length)]
-  const ins = Array.from({ length: 1 + Math.floor(rng() * 3) }, (_, k) => node(`i${k}`, `in${k}`, pick([1, 4, 4, 16])))
+  const ins = Array.from({ length: 1 + Math.floor(rng() * 3) }, (_, k) => node(`i${k}`, `in${k}`, pick([1, 2, 4, 8, 16])))
   const sources: Array<{ end: Endpoint; width: number }> = ins.map((x) => ({ end: fromIn(x.id), width: x.width }))
   const wires: SerializedWire[] = []
+  const deferred: Array<[Endpoint, number]> = []
   const connect = (to: Endpoint, width: number): void => {
     const from = pick(sources)
     wires.push(wire(`w${wires.length + 1}`, from.end, to, rng() < 0.1 ? undefined : Math.min(from.width, width)))
   }
+  const pin = (to: Endpoint, width: number, later: number): void => void (rng() < later ? deferred.push([to, width]) : connect(to, width))
   const gates: Array<ReturnType<typeof gate>> = []
   const buses: Array<ReturnType<typeof bus>> = []
   for (let k = 0; k < 2 + Math.floor(rng() * 6); k++) {
-    const kind = pick(['Not', 'And', 'Not16', 'splitter', 'joiner', 'splitter', 'joiner'] as const)
+    const kind = pick(['Not', 'And', 'Not16', 'splitter', 'joiner', 'splitter', 'joiner', 'ring'] as const)
+    if (kind === 'ring') {
+      const [j, s, g, width] = [`j${k}`, `s${k}`, `n${k}`, 2 + Math.floor(rng() * 4)]
+      buses.push(bus(j, 'joiner', width), bus(s, 'splitter', width))
+      gates.push(gate(g, 'Not'))
+      const split = Array.from({ length: width }, (_, i) => busEnd(s, `out${i}`))
+      wires.push(wire(`w${wires.length + 1}`, busEnd(j, 'out'), busEnd(s, 'in'), width))
+      for (let i = 0; i < width; i++) wires.push(wire(`w${wires.length + 1}`, rng() < 0.3 ? pinOut(g) : rng() < 0.6 ? pick(split) : pick(sources).end, busEnd(j, `in${i}`), 1))
+      wires.push(wire(`w${wires.length + 1}`, pick(split), pinIn(g, 0), 1))
+      sources.push({ end: pinOut(g), width: 1 }, ...split.map((end) => ({ end, width: 1 })))
+      continue
+    }
     if (kind === 'splitter' || kind === 'joiner') {
       const id = `b${k}`
-      buses.push(bus(id, kind, 4))
-      for (const pin of kind === 'splitter' ? ['in'] : ['in0', 'in1', 'in2', 'in3']) {
-        if (rng() < 0.9) connect(busEnd(id, pin), kind === 'splitter' ? 4 : 1)
-        if (rng() < 0.08) connect(busEnd(id, pin), kind === 'splitter' ? 4 : 1)
+      const width = pick([2, 3, 4, 8, 16])
+      buses.push(bus(id, kind, width))
+      for (const into of kind === 'splitter' ? ['in'] : Array.from({ length: width }, (_, i) => `in${i}`)) {
+        if (rng() < 0.9) pin(busEnd(id, into), kind === 'splitter' ? width : 1, 0.3)
+        if (rng() < 0.05) connect(busEnd(id, into), kind === 'splitter' ? width : 1)
       }
-      sources.push(...(kind === 'splitter' ? [0, 1, 2, 3].map((i) => ({ end: busEnd(id, `out${i}`), width: 1 })) : [{ end: busEnd(id, 'out'), width: 4 }]))
+      sources.push(...(kind === 'splitter' ? Array.from({ length: width }, (_, i) => ({ end: busEnd(id, `out${i}`), width: 1 })) : [{ end: busEnd(id, 'out'), width }]))
       continue
     }
     const id = `g${k}`
     gates.push(gate(id, kind))
-    for (let pin = 0; pin < (kind === 'And' ? 2 : 1); pin++) connect(pinIn(id, pin), kind === 'Not16' ? 16 : 1)
+    for (let p = 0; p < (kind === 'And' ? 2 : 1); p++) pin(pinIn(id, p), kind === 'Not16' ? 16 : 1, 0.2)
     sources.push({ end: pinOut(id), width: kind === 'Not16' ? 16 : 1 })
   }
-  const outs = Array.from({ length: 1 + Math.floor(rng() * 3) }, (_, k) => node(`o${k}`, `out${k}`, pick([1, 4, 16])))
+  for (const [to, width] of deferred) connect(to, width)
+  const outs = Array.from({ length: 1 + Math.floor(rng() * 3) }, (_, k) => node(`o${k}`, `out${k}`, pick([1, 2, 4, 8, 16])))
   for (const o of outs) connect(toOut(o.id), o.width)
   return circuit(`random${n}`, { inputNodes: ins, outputNodes: outs, gates, busComponents: buses, wires })
+}
+
+const bitKey = (end: Endpoint, bit: number): string => `${end.entityId}:${end.pinId ?? ''}:${bit}`
+
+/** Whether a part reads its own output, traced bit by bit through wires and bus components: the cycle the spec refuses. */
+function partCycle(saved: SerializedCircuit): boolean {
+  const { document } = deserializeCircuit(saved)
+  if (document === null) throw new Error(`${saved.name} does not load`)
+  const widthAt = (end: Endpoint, side: 'inputs' | 'outputs'): number => {
+    const owner = end.type === 'gate' ? document.gates.find((g) => g.id === end.entityId) : end.type === 'bus' ? document.busComponents.find((b) => b.id === end.entityId) : undefined
+    if (owner) return owner[side].find((p) => p.id === end.pinId)?.width ?? 1
+    return (end.type === 'input' ? document.inputNodes : document.outputNodes).find((x) => x.id === end.entityId)?.width ?? 0
+  }
+  const edges = new Map<string, string[]>()
+  const edge = (from: string, to: string): void => void edges.set(from, [...(edges.get(from) ?? []), to])
+  for (const w of document.wires) {
+    for (let b = 0; b < Math.min(w.width ?? 1, widthAt(w.to, 'inputs'), widthAt(w.from, 'outputs')); b++) edge(bitKey(w.from, b), bitKey(w.to, b))
+  }
+  for (const b of document.busComponents) {
+    for (let i = 0; i < b.width; i++) {
+      if (b.kind === 'splitter') edge(`${b.id}:in:${i}`, `${b.id}:out${i}:0`)
+      else edge(`${b.id}:in${i}:0`, `${b.id}:out:${i}`)
+    }
+  }
+  const bits = (pins: Array<{ id: string; width?: number }>, id: string): string[] => pins.flatMap((p) => Array.from({ length: p.width ?? 1 }, (_, b) => `${id}:${p.id}:${b}`))
+  for (const g of document.gates) for (const from of bits(g.inputs, g.id)) for (const to of bits(g.outputs, g.id)) edges.set(from, [...(edges.get(from) ?? []), to])
+  return document.gates.some((g) => {
+    const own = new Set(bits(g.inputs, g.id))
+    const seen = new Set<string>()
+    const stack = bits(g.outputs, g.id)
+    while (stack.length > 0) {
+      const at = stack.pop() as string
+      if (own.has(at)) return true
+      if (seen.has(at)) continue
+      seen.add(at)
+      stack.push(...(edges.get(at) ?? []))
+    }
+    return false
+  })
+}
+
+/** Legacy's own reads and clamps, repeated to a fixed point instead of run in order: the value each bit carries when no part loops. */
+function relaxed(saved: SerializedCircuit, inputs: Vector): Record<string, number> {
+  const { document } = deserializeCircuit(saved)
+  if (document === null) throw new Error(`${saved.name} does not load`)
+  for (const x of document.inputNodes) x.value = inputs[x.name] ?? 0
+  const last = (to: Endpoint, pinId?: string) => document.wires.filter((w) => w.to.entityId === to.entityId && w.to.type === to.type && w.to.pinId === pinId).pop()
+  const read = (to: Endpoint, pinId: string | undefined, width: number): number => {
+    const w = last(to, pinId)
+    return w ? clampToWidth(getSignalSourceValue(w.from, document), Math.min(w.width ?? 1, width)) : 0
+  }
+  let changed = true
+  for (let round = 0; changed && round < 500; round++) {
+    changed = false
+    const set = (p: { value: number }, value: number): void => {
+      if (p.value !== value) [p.value, changed] = [value, true]
+    }
+    for (const b of document.busComponents) {
+      for (const p of b.inputs) set(p, read({ type: 'bus', entityId: b.id }, p.id, p.width ?? 1))
+      if (b.kind === 'splitter') b.outputs.forEach((p, i) => set(p, (b.inputs[0].value >>> i) & 1))
+      else set(b.outputs[0], b.inputs.reduce((acc, p, i) => (acc | ((p.value & 1) << i)) >>> 0, 0))
+    }
+    for (const g of document.gates) {
+      for (const p of g.inputs) set(p, read({ type: 'gate', entityId: g.id }, p.id, p.width ?? 1))
+      const chip = registry.get(g.chipName)
+      const out = chip ? evaluateChip(chip, Object.fromEntries(g.inputs.map((p) => [p.name, p.value])), registry) : {}
+      for (const p of g.outputs) set(p, clampToWidth(out[p.name] ?? 0, p.width ?? 1))
+    }
+  }
+  return Object.fromEntries(document.outputNodes.map((o) => [o.name, read({ type: 'output', entityId: o.id }, undefined, o.width)]))
 }
 
 describe('legacy parity', () => {
@@ -464,15 +593,38 @@ describe('legacy parity', () => {
     }
   })
 
-  it('a seeded random corpus with splitters and joiners evaluates as evaluateCircuit does', () => {
+  it.each(BIT_LEVEL)('%s: legacy calls it a cycle, and the import evaluates as the bits flow', (_name, saved, vectors, truth) => {
+    expect(vectors.map((v) => legacy(saved, v).result.status)).toEqual(vectors.map(() => 'cycle'))
+    expect(partCycle(saved)).toBe(false)
+    const expected = vectors.map((v) => ({ result: { status: 'ok' as const }, outputs: truth(v) }))
+    expect(vectors.map((v) => relaxed(saved, v))).toEqual(expected.map((e) => e.outputs))
+    expect(parityFailures(saved, vectors, expected)).toEqual([])
+    expect(exportFailures(saved, vectors, expected)).toEqual([])
+  })
+
+  it('a bit is traced through a bus component by its index, so only a bit that loops onto itself reads nothing', () => {
+    expect(partCycle(FED_BACK)).toBe(true)
+    for (const saved of [FED_BACK, ROUND_THE_BUS]) expect(fromLegacyCircuit(saved).sidecar.notes.filter((n) => n.kind === 'floating-source'), saved.name).toEqual([])
+    expect(fromLegacyCircuit(BUS_ONLY_LOOP).sidecar.notes.filter((n) => n.kind === 'floating-source')).toEqual([
+      { kind: 'floating-source', pin: 'looped', detail: expect.stringContaining('loops back') },
+    ])
+  })
+
+  it('a seeded random corpus with splitters, joiners and loops evaluates as its bits flow', () => {
     const rng = mulberry32(0x377b)
     const corpus = Array.from({ length: 200 }, (_, n) => randomBusDocument(rng, n))
     const singly = corpus.filter((saved) => new Set(saved.wires.map((w) => JSON.stringify(w.to))).size === saved.wires.length)
+    const cyclic = corpus.filter((saved) => legacy(saved, {}).result.status === 'cycle')
+    const looping = cyclic.filter(partCycle)
     expect(singly.filter((saved) => saved.busComponents?.length).length).toBeGreaterThan(100)
+    expect(looping.length).toBeGreaterThan(30)
+    expect(cyclic.length - looping.length).toBeGreaterThan(40)
     const failures = corpus.flatMap((saved) => {
       const vectors = Array.from({ length: 8 }, () => Object.fromEntries(saved.inputNodes.map((x) => [x.name, Math.floor(rng() * 2 ** x.width)])))
-      const expected = vectors.map((v) => legacy(saved, v))
-      return [...parityFailures(saved, vectors, expected), ...exportFailures(saved, vectors, expected)].map((f) => `${saved.name}: ${f}`)
+      const ran = vectors.map((v) => legacy(saved, v))
+      const oracle = singly.includes(saved) ? ran.flatMap((r, i) => (r.result.status === 'ok' && JSON.stringify(relaxed(saved, vectors[i])) !== JSON.stringify(r.outputs) ? [`the relaxed oracle disagrees with evaluateCircuit on ${JSON.stringify(vectors[i])}`] : [])) : []
+      const expected = ran.map((r, i) => (r.result.status === 'ok' || looping.includes(saved) ? r : { result: { status: 'ok' as const }, outputs: relaxed(saved, vectors[i]) }))
+      return [...oracle, ...parityFailures(saved, vectors, expected), ...exportFailures(saved, vectors, expected)].map((f) => `${saved.name}: ${f}`)
     })
     expect(failures).toEqual([])
     const valued = corpus.filter((saved) => !fromLegacyCircuit(saved).sidecar.notes.some((n) => REFUSALS.has(n.kind)))
