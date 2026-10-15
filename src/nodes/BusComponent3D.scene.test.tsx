@@ -3,15 +3,16 @@ import type { ComponentProps } from 'react'
 import ReactThreeTestRenderer from '@react-three/test-renderer'
 import { Color, type Mesh, type MeshStandardMaterial } from 'three'
 import { BusSplitter3D } from './BusSplitter3D'
+import { BusJoiner3D } from './BusJoiner3D'
 import { createBusPins } from '@/simulation/busPins'
 import { computeBusPinLayout } from '@/components/scene/busBodyLayout'
 import { colors } from '@/theme'
 import type { DragBinding } from '@/gates/types'
-import type { BusComponent } from '@/store/types'
+import type { BusComponent, BusComponentKind, Pin } from '@/types/scene'
 
 vi.mock('@/store/circuitStore', () => {
   const noStore = () => {
-    throw new Error('BusSplitter3D read the store')
+    throw new Error('the bus mesh read the store')
   }
   return {
     useCircuitStore: Object.assign(noStore, { getState: noStore }),
@@ -21,7 +22,7 @@ vi.mock('@/store/circuitStore', () => {
 
 vi.mock('@/hooks/useBusDrag', () => ({
   useBusDrag: () => {
-    throw new Error('BusSplitter3D read gesture state')
+    throw new Error('the bus mesh read gesture state')
   },
 }))
 
@@ -30,19 +31,42 @@ vi.mock('@/components/canvas/FloatingLabel', () => ({
 }))
 
 type Renderer = Awaited<ReturnType<typeof ReactThreeTestRenderer.create>>
+type MeshProps = ComponentProps<typeof BusSplitter3D>
 
-function makeSplitter(width = 4): BusComponent {
-  const { inputs, outputs } = createBusPins('splitter', width)
-  return { id: 'bus-1', kind: 'splitter', position: { x: 1, y: 0.2, z: 2 }, rotation: { x: 0, y: 0, z: 0 }, width, inputs, outputs, selected: false }
+interface Kind {
+  kind: BusComponentKind
+  BusMesh: typeof BusSplitter3D
+  label: string
+  widePin: (bus: BusComponent) => Pin
+  litAfterWidePinHigh: boolean[]
+  outputPin: number
+}
+
+const KINDS: Kind[] = [
+  {
+    kind: 'splitter',
+    BusMesh: BusSplitter3D,
+    label: 'label:SPLIT x4',
+    widePin: (bus) => bus.inputs[0],
+    litAfterWidePinHigh: [true, false, false, false, false],
+    outputPin: 2,
+  },
+  {
+    kind: 'joiner',
+    BusMesh: BusJoiner3D,
+    label: 'label:JOIN x4',
+    widePin: (bus) => bus.outputs[0],
+    litAfterWidePinHigh: [false, false, false, false, true],
+    outputPin: 4,
+  },
+]
+
+function makeBus(kind: BusComponentKind, width = 4): BusComponent {
+  const { inputs, outputs } = createBusPins(kind, width)
+  return { id: 'bus-1', kind, position: { x: 1, y: 0.2, z: 2 }, rotation: { x: 0, y: 0, z: 0 }, width, inputs, outputs, selected: false }
 }
 
 const mounted: Renderer[] = []
-
-async function mount(overrides: Partial<ComponentProps<typeof BusSplitter3D>> = {}): Promise<Renderer> {
-  const renderer = await ReactThreeTestRenderer.create(<BusSplitter3D component={makeSplitter()} {...overrides} />)
-  mounted.push(renderer)
-  return renderer
-}
 
 function meshesWith(renderer: Renderer, geometryType: string) {
   return renderer.scene.findAll(
@@ -73,19 +97,25 @@ afterEach(async () => {
   for (const renderer of mounted.splice(0)) await renderer.unmount()
 })
 
-describe('BusSplitter3D under test-renderer, with no store and no gesture state', () => {
-  it('draws the body, one pin per bus pin and the SPLIT label from props alone', async () => {
+describe.each(KINDS)('the $kind mesh under test-renderer, with no store and no gesture state', ({ kind, BusMesh, label, widePin, litAfterWidePinHigh, outputPin }) => {
+  async function mount(overrides: Partial<MeshProps> = {}): Promise<Renderer> {
+    const renderer = await ReactThreeTestRenderer.create(<BusMesh component={makeBus(kind)} {...overrides} />)
+    mounted.push(renderer)
+    return renderer
+  }
+
+  it('draws the body, one pin per bus pin and its label from props alone', async () => {
     const renderer = await mount()
 
     expect(meshesWith(renderer, 'BoxGeometry')).toHaveLength(1)
     expect(pins(renderer)).toHaveLength(5)
-    expect(labels(renderer)).toEqual(['label:SPLIT x4'])
+    expect(labels(renderer)).toEqual([label])
   })
 
   it('colours the body by hover and selection, and each pin by its value', async () => {
-    const splitter = makeSplitter()
-    splitter.inputs[0].value = 1
-    const renderer = await mount({ component: splitter })
+    const bus = makeBus(kind)
+    widePin(bus).value = 1
+    const renderer = await mount({ component: bus })
 
     expect(material(body(renderer)).color.getHexString()).toBe(hex(colors.gate.body))
     await renderer.fireEvent(body(renderer), 'onPointerOver')
@@ -93,10 +123,9 @@ describe('BusSplitter3D under test-renderer, with no store and no gesture state'
     await renderer.fireEvent(body(renderer), 'onPointerOut')
     expect(material(body(renderer)).color.getHexString()).toBe(hex(colors.gate.body))
 
-    expect(pins(renderer).map((pin) => material(pin).color.getHexString())).toEqual([
-      hex(colors.pin.active),
-      ...splitter.outputs.map(() => hex(colors.pin.inactive)),
-    ])
+    expect(pins(renderer).map((pin) => material(pin).color.getHexString())).toEqual(
+      litAfterWidePinHigh.map((lit) => hex(lit ? colors.pin.active : colors.pin.inactive)),
+    )
   })
 
   it('draws the selected colour when selected', async () => {
@@ -108,13 +137,13 @@ describe('BusSplitter3D under test-renderer, with no store and no gesture state'
   it('reports a body click through onClick and a pin click with its side and world position through onPinClick', async () => {
     const onClick = vi.fn()
     const onPinClick = vi.fn()
-    const splitter = makeSplitter()
-    const renderer = await mount({ component: splitter, onClick, onPinClick })
+    const bus = makeBus(kind)
+    const renderer = await mount({ component: bus, onClick, onPinClick })
 
     await renderer.fireEvent(body(renderer), 'onClick')
-    await renderer.fireEvent(pins(renderer)[2], 'onClick')
+    await renderer.fireEvent(pins(renderer)[outputPin], 'onClick')
 
-    const slot = computeBusPinLayout(splitter)[2]
+    const slot = computeBusPinLayout(bus)[outputPin]
     expect(onClick).toHaveBeenCalledTimes(1)
     expect(onPinClick).toHaveBeenCalledWith('bus-1', slot.pinId, 'output', {
       x: 1 + slot.position[0],
