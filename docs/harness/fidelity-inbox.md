@@ -148,3 +148,214 @@ The HDL parser reads a `CLOCKED` pin list after `BUILTIN;`, `BUILTIN <Name>;` an
 `pnpm exec vitest run src/core/hdl`
 ## Blocked by
 #177 shaping (the clocked chip), the one-engine work it waits on.
+
+### FID-008 · An acceptance-parity corpus: each HDL shape carries the reference's verdict and is asserted against HACER's readers
+- **Date:** 2026-10-15 · **Target epic:** #140 core
+- **Status:** proposed
+- **Why:** HACER and the reference builder disagree on which HDL they accept, in both directions, and no test records which disagreements are intended. #725's review ran 26 shapes through the reference builder (`../web-ide/simulator/src/chip/builder.ts`), `compileHDL` and `parseSpec`. HACER accepts internal slice writes and reads and a part reading a chip OUT (`builder.ts:436, 477, 483` refuse them). It refuses an unconnected part input the reference reads as 0, and a slice followed by a whole binding the reference accepts. Later reviews added seeds:
+  - #740's 31 shapes, including the `XOr` alias the reference accepts (an intended divergence) and which error comes first;
+  - #732's identifier rows: `_` in a name, Unicode letters, and a buffer named like the exported chip;
+  - #747's verifier's 117 slice probes, each with the reference's verdict and message (issuecomment-6190087365). `hacer test` still accepts 9 of the 70 the reference refuses.
+- **Review note:** PR #725 issuecomment-6184961559, with seeds from PR #740 issuecomment-6188266196, PR #732 issuecomment-6186263400 and PR #747 issuecomment-6190213877. The probes were throwaway; the comments hold the tables.
+
+**Draft issue body**
+## Goal
+One committed corpus says, for every HDL shape the fidelity reviews measured, what the reference builder does (accept or refuse, and its message) and what `parseHDL`, `compileHDL` and `parseSpec` do. Each divergence is named as intended (#722's superset, the ADR-0020 §1.10.3 tag scan, the stricter slice-then-whole rule) or as a bug with its issue.
+## Acceptance criteria
+- A data file of shapes, each with the reference's recorded verdict and message, seeded from the tables in the #725, #740 and #732 reviews and from #747's 117 slice probes
+- A test asserts each HACER reader's verdict per shape. A divergence passes only when its row names it as intended or links an open issue, so a change on either side fails the test
+- The 9 slice shapes `hacer test` still accepts start as recorded expected failures
+## Verification command
+`pnpm exec vitest run --project node src/core`
+## Blocked by
+—
+
+### FID-009 · Literals become sources: a constant driver kind for `true` and `false`
+- **Date:** 2026-10-15 · **Target epic:** #140 core
+- **Status:** proposed
+- **Why:** literals are driverless nets keyed `true`/`false` (ADR-0020 §1.10.9, `src/core/spec/parseSpec.ts`), while ADR-0020 §1 reserves `driver: null` for an unfinished circuit. Appendix A lists the constants among the *sources* of a part input. Every consumer of the document must special-case the two ids, and no type records that. §1.10.9 leaves the question open, and adopting it later is a v1 → v2 migration.
+- **Review note:** PR #725 issuecomment-6184961559
+
+**Draft issue body**
+## Goal
+ADR-0020 §1 decides whether `Ref` gains a constant driver kind, so that `driver: null` means only "unfinished" and `out=true` is an ordinary two-driver clash.
+## Acceptance criteria
+- An ADR-0020 §1 amendment records the decision and, if it is adopted, the v1 → v2 migration and its fixture
+- If adopted: `parseSpec` gives the `true`/`false` nets a constant driver, a part output bound to a literal is a `multiple-drivers` clash, and the v1 fixture still reads through the migration
+## Verification command
+`pnpm exec vitest run --project node src/core/spec`
+## Blocked by
+—
+
+### FID-010 · `compileHDL` refuses a part that writes a chip input, and a chip built from itself
+- **Date:** 2026-10-15 · **Target epic:** #140 core
+- **Status:** filed (#378), closed by PR #740
+- **Why:** #725's review found both accepted by `compileHDL` and refused by the reference (`builder.ts:465`, `:270`). At `main`, a chip writing its own input passed the official `conformance/vectors/01/And.tst` vectors, a defect in shipped grading. #378's shaper put both into its PR 1 (R825). PR #740's review found both refusals match the reference on every shape where it gives a verdict.
+- **Review note:** PR #725 issuecomment-6184961559; PR #740 issuecomment-6188266196
+
+Filed as part of #378; the issue holds the criteria.
+
+### FID-011 · Name the unconnected-input divergence where the learner meets it, and offer to bind unwired inputs to `false`
+- **Date:** 2026-10-15 · **Target epic:** #142 surfaces
+- **Status:** proposed
+- **Why:** the reference builds `Nand(a=a, out=out)` and reads `b` as 0. M. Armbrust's *HDL Survival Guide*, "Unconnected Pins" (mirror at phoenix.goucher.edu/~jillz/cs220/hdlSurvivalGuide.pdf, fetched 2026-10-15), says "The Hardware Simulator does not consider unconnected pins to be errors". `compileHDL` refuses it (`Part "Nand" input pin "b" is not connected`), and ADR-0020 §1.1 states that refusal as a fact, not a decision (#725's review).
+  - #377's importer makes the divergence visible (R826 ruling 2). Before it, the canvas and the reference both read 0; after it, HACER alone refuses.
+  - #743's review measured 161 of 700 generated documents refused only for unconnected inputs. 141 of them build in the reference, which equals legacy on all 1,684 of their vectors.
+  - Rulings 2 and 3 are asymmetric: a wire from nothing becomes `false` and compiles, while no wire at all is refused.
+  - Current practice reports the case rather than assuming 0 (Yosys `check`, Verilator 5.052 `PINMISSING`), and Yosys `setundef -undriven -zero` ties such inputs to 0 explicitly.
+- **Review note:** PR #743 issuecomment-6189952616; PR #725 issuecomment-6184961559; re-measured in PR #740 issuecomment-6188266196
+
+**Draft issue body**
+## Goal
+The refusal stays (ADR-0020 §1.1). A learner who meets it learns that the official simulator reads the pin as 0, and has one step to make HACER do the same explicitly.
+## Acceptance criteria
+- The `unconnected-input` note and #386's import surface say that the nand2tetris simulator reads an unconnected input as 0 and HACER refuses it
+- One action binds every unwired part input of a document to `false`, turning ruling 2's shape into ruling 3's; a test shows the bound document compiles and evaluates as legacy did
+- ADR-0020 §1.1 records the refusal as a decision and names this divergence
+## Verification command
+`pnpm exec vitest run --project node src/core/spec`
+## Blocked by
+#386 for the surface half.
+
+### FID-012 · The HDL parser reads optional `IN` and `OUT` lists, as the reference does
+- **Date:** 2026-10-15 · **Target epic:** #140 core
+- **Status:** filed (#742)
+- **Why:** `src/core/hdl/parser.ts:353` and `:356` call `parseInDecl`/`parseOutDecl` unconditionally. The reference grammar has `ChipBody = InList? OutList? …` (`../web-ide/simulator/src/languages/grammars/hdl.ohm:6`) and refuses only an empty list. So the official `conformance/vectors/05/Computer.hdl`, which has no `OUT`, is refused, and so is `printSpec`'s own output for a chip with no inputs. #725's review found the `OUT` half and #732's the `IN` half, folding both into one item. #377 PR 1's builder filed #742 as a bug in shipped behaviour; R828 pins the export path's refusal to it.
+- **Review note:** PR #725 issuecomment-6184961559; PR #732 issuecomment-6186263400
+
+Filed as #742; the issue holds the body.
+
+### FID-013 · #722 gains the constructs the export prints that the reference refuses
+- **Date:** 2026-10-15 · **Target epic:** #140 core
+- **Status:** filed (#722)
+- **Why:** the reviews found more HDL that HACER's export can print and the web IDE refuses than #722's three constructs:
+  - a pass-through buffer named like the exported chip: `CHIP Or` exports `Or(a=a, b=a, out=copy)`, refused as `Cannot use chip Or to implement itself` (#732);
+  - `_` in identifiers, against `identifier := letter alnum*` (`hdl.ohm:3`) and Appendix A §2 (#732);
+  - an OUT alias, better exported as a second output binding on its root's driver, with the review's 99 reference-refused exports as fixtures (#741);
+  - the empty part `Name();`, which an unwired gate imports as, against `hdl.ohm:15-16` (#743).
+- **Review note:** PR #732 issuecomment-6186263400; PR #741 issuecomment-6188405900; PR #743 issuecomment-6189952616
+
+Added to #722 during the run: rows 4–5, the #741 addendum and the empty-part row.
+
+### FID-014 · Name a part cycle at compile time once user HDL is registered at runtime
+- **Date:** 2026-10-15 · **Target epic:** #140 core
+- **Status:** proposed
+- **Why:** a chip that uses itself through another (`A` uses `B`, `B` uses `A`) compiles in HACER, then throws `max recursion depth 100 exceeded at chip "B"` at its first evaluation. The reference never settles: more than 40,000 file reads in 15 s before the probe was killed. A learner cannot reach it today, because `src/core/testing/testChip.ts` registers only the file's own chip over the builtins. It becomes reachable when #206 registers user HDL at runtime.
+- **Review note:** PR #740 issuecomment-6188266196
+
+**Draft issue body**
+## Goal
+A part cycle through registered chips is refused at compile time, naming its path, for example `Chip "A" uses itself through "B"`.
+## Acceptance criteria
+- `compileHDL`, and `compileSpec` for a `'circuit'` chip, refuse a chip whose parts reach it again through the registry, naming each chip on the path
+- Tests: `A` → `B` → `A` and a three-chip cycle are refused by name at compile time; a Not.hdl using `And` beside an And.hdl using `Not` still resolves to the builtins and compiles
+## Verification command
+`pnpm exec vitest run --project node src/core/hdl src/core/chips`
+## Blocked by
+#206
+
+### FID-015 · Learner-facing compile errors use the reference's words and carry the line
+- **Date:** 2026-10-15 · **Target epic:** #140 core
+- **Status:** proposed
+- **Why:** HACER says `Chip "Not" cannot use itself as a part` where the reference says `Cannot use chip Not to implement itself`, so a learner searching for the reference's phrase finds nothing. Every compile error reaches a test report as `evaluateChip: chip "And" failed to compile: …` with no line, where the reference prints `Line N:`. #747's review found the new slice messages carry the reference's signal name and width (55 of 56 on the HDL path), with the same prefix and no line.
+- **Review note:** PR #740 issuecomment-6188266196; PR #747 issuecomment-6190213877
+
+**Draft issue body**
+## Goal
+A learner who moves between HACER and the web IDE recognises each compile error.
+## Acceptance criteria
+- The self-reference refusal reads `Chip "X" cannot be used to implement itself`
+- `hacer test` and `runTest` print a compile error without the `evaluateChip: chip "X" failed to compile:` prefix, and with `Line N:` for the part that caused it
+- Tests pin both against the reference's wording for the same HDL
+## Verification command
+`pnpm exec vitest run --project node src/core src/cli`
+## Blocked by
+—
+
+### FID-016 · `compileSpec` re-checks the wire shape, follows `undriven` through an alias, and names its engine dependence
+- **Date:** 2026-10-15 · **Target epic:** #140 core
+- **Status:** filed (#378), closed by PR #744
+- **Why:** #741's review proposed four changes. `compileSpec` should re-run ADR-0020 §1.10.6's wire-shape rule over a document built without a parse, before #377's importer builds one. `undriven` should name the signal the learner bound, not the alias root. A refusal should carry only error diagnostics, without the parse's "is dropped". And §1.11.5 should name `compileSpec`'s dependence on the engine accepting a part that reads a chip OUT. #378 PR 3 took all four into its scope; ADR-0020 §1.11.1, §1.11.2 and §1.11.5 record them.
+- **Review note:** PR #741 issuecomment-6188405900
+
+Filed as part of #378; the issue holds the criteria.
+
+### FID-017 · Out-of-range slices are refused on the HDL and spec paths, as the reference refuses them
+- **Date:** 2026-10-15 · **Target epic:** #140 core
+- **Status:** filed (#371), closed by PR #747
+- **Why:** #744's review measured that the reference refuses every out-of-range slice at build time (`Sub-bus index out of range`, `chip.ts:270-278`), while HACER accepted them on both paths, so an `Or8Way` reading `in[8]` passed the official `conformance/vectors/01/Or8Way.tst` vectors through `hacer test`. It proposed refusing an out-of-range `wire` on the spec path, extending #371 with the grading repro, the write side and the partial slice, and an owner ruling on `sev:critical`. The coordinator ruled it not `sev:critical` and built #371 at once with the spec path in scope (R829, surfaced for the owner). PR #747's review found the new refusals cover all 56 of the reference's out-of-range refusals on the HDL path, and all 14 `wire` forms on the spec path.
+- **Review note:** PR #744 issuecomment-6189447396; PR #747 issuecomment-6190213877
+
+Filed as part of #371; the issue holds the criteria.
+
+### FID-018 · `compileSpec` refuses a spec whose registered part does not compile, naming the chain
+- **Date:** 2026-10-15 · **Target epic:** #140 core
+- **Status:** proposed
+- **Why:** when a registered `Inn` stops compiling because its part `Foo` changed, `compileSpec(Outer)` still returns `success: true`. The refusal arrives only at the first evaluation or test run, as `evaluateChip: chip "Inn" failed to compile: …`, and does not name `Outer` or the part that led to `Inn`. The reference refuses `Outer` at build time (`Undefined chip name: Inn`, `builder.ts:262-264`), though it drops the inner error. HACER's message says more; only the timing diverges.
+- **Review note:** PR #744 issuecomment-6189447396
+
+**Draft issue body**
+## Goal
+A spec whose registered part does not compile under the same registry is refused when the spec is compiled, naming the chain.
+## Acceptance criteria
+- `compileSpec` compiles each registered part under the registry it is given, and refuses with `Outer › Inn: <inner message>` when one fails
+- Tests: the review's renamed-pin, missing-part and undriven-signal cases are refused at `compileSpec`, naming the chain; a part that compiles is unaffected, and the cache rule (R827) still holds
+## Verification command
+`pnpm exec vitest run --project node src/core/spec src/core/chips`
+## Blocked by
+—
+
+### FID-019 · `printSpec` refuses a document in which a driverless net shares its id with a driven net
+- **Date:** 2026-10-15 · **Target epic:** #140 core
+- **Status:** proposed
+- **Why:** R826 ruling 1 repeats a net id on a chip OUT with two drivers. When one of them is a floating source (`FloatingBesideInput`), the nand2tetris dialect prints `Or(a=a, b=a, out=out);` and the hacer dialect `wire out = a;`. `parseSpec(printSpec(doc, { sidecar }))` then gives no diagnostic and compiles `out=a`; only the sidecar's note survives. `compileSpec` refuses the document itself (`Net id "out" names more than one net`). It is unreachable today, because `fromLegacyCircuit` has no caller outside tests. The guard belongs where both dialects are printed, before #382 saves documents or #386 exports them.
+- **Review note:** PR #743 issuecomment-6189952616, confirming the re-verifier's nit in issuecomment-6189654080
+
+**Draft issue body**
+## Goal
+Neither dialect prints a document whose text would read back as a different circuit.
+## Acceptance criteria
+- `printSpec` refuses, in both dialects, a document in which a `driver: null` net shares its id with a driven net, and names that net
+- The hacer-dialect round trip of `FloatingBesideInput` is pinned beside `src/core/spec/fromLegacyCircuit.parity.test.ts`
+## Verification command
+`pnpm exec vitest run --project node src/core/spec`
+## Blocked by
+—
+
+### FID-020 · #338 lists the narrow-first multi-driven OUT as an expected disagreement
+- **Date:** 2026-10-15 · **Target epic:** #140 core
+- **Status:** proposed
+- **Why:** the reference accepts `Not(in=a, out=out[0]); Not16(in=b, out=out);` and evaluates it in part order (`out=65535` for `a=0, b=0`), but refuses the parts the other way round. `checkMultipleAssignments` (`builder.ts:157-167`) never checks a whole write after a sliced one. This is R343's known order dependence, on the output side, reached through the importer. HACER refuses both orders, which is right, so #338's differential harness will report the case as a disagreement. The same review asked that R826 ruling 1 say "every HACER evaluator", and the rulings file says so.
+- **Review note:** PR #743 issuecomment-6189952616
+
+**Draft issue body**
+## Goal
+The differential harness classes this case as a reference defect, not a HACER bug.
+## Acceptance criteria
+- #338's expected-disagreement list names the narrow-first multi-driven OUT, with R343 and `builder.ts:157-167` as the reason
+- A harness test feeds both part orders and expects the reference to accept one and refuse the other, while HACER refuses both
+## Verification command
+`pnpm run test:differential`
+## Blocked by
+#338
+
+### FID-021 · A strict acceptance mode for the grading path
+- **Date:** 2026-10-15 · **Target epic:** #140 core
+- **Status:** proposed
+- **Why:** after #747, `hacer test` refuses all 56 out-of-range slice shapes the reference refuses, but it still accepts 9 shapes the reference refuses for another reason: 7 subscripts of an internal signal (`Internal pins … cannot be subscripted or indexed`, `builder.ts:436, 483`) and 2 reads of a chip OUT (`Cannot use output pin as input`, `:477`).
+  - End to end, an `Or8Way` with `Not(in=out, out=spare)` added, or with an internal `t[0]`, passes the official vectors 5/5 through `hacer test`, while the reference refuses to build it.
+  - #722 only makes the export honest about these constructs, and FID-008 would only label them. Nothing decides what grading does with them.
+  - For 5 shapes HACER's message names an out-of-range index where the reference names the earlier cause, so a learner who fixes the index lands on a shape the reference still refuses.
+- **Review note:** PR #747 issuecomment-6190213877
+
+**Draft issue body**
+## Goal
+`hacer test`, `runTest` and `testChip` grade only HDL the reference builds, while the spec and canvas paths keep the superset and #722 lowers it on export.
+## Acceptance criteria
+- In grading mode, a subscript of an internal signal and a read of a chip OUT are refused with the reference's cause, checked before the width check
+- A test per row of the review's end-to-end table: the control passes, and each of its two PASS rows becomes a refusal
+- The 9 probes `hacer test` accepts today are refused in grading mode and still accepted by `compileSpec`
+## Verification command
+`pnpm exec vitest run --project node src/core/testing src/core/hdl`
+## Blocked by
+—
