@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-15T01:46:35.622Z",
+  "generatedAt": "2026-10-15T01:53:27.199Z",
   "head": {
-    "sha": "3aa319e8a4a67288b8e3de59dd5d7d9f40b0bb33",
-    "date": "2026-10-15T04:45:56+03:00",
-    "subject": "docs(portfolio): claim's claim-drift line in Commands"
+    "sha": "a6edac48224c00f4e8cddabd8c7a0764f5f43a40",
+    "date": "2026-10-15T04:52:13+03:00",
+    "subject": "test(store): allow-list the junction writes that model imported documents"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-15T01:46:35.622Z",
+      "fetchedAt": "2026-10-15T01:53:27.199Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-15T01:46:35.622Z",
+      "fetchedAt": "2026-10-15T01:53:27.199Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-15T01:46:35.622Z",
+      "fetchedAt": "2026-10-15T01:53:27.199Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-15T01:46:35.622Z",
+      "fetchedAt": "2026-10-15T01:53:27.199Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-15T01:46:35.622Z",
+      "fetchedAt": "2026-10-15T01:53:27.199Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-15T01:46:35.622Z",
+      "fetchedAt": "2026-10-15T01:53:27.199Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-15T01:46:35.622Z",
+      "fetchedAt": "2026-10-15T01:53:27.199Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-15T01:46:35.622Z",
+      "fetchedAt": "2026-10-15T01:53:27.199Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-15T01:46:35.622Z",
+      "fetchedAt": "2026-10-15T01:53:27.199Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-15T01:46:35.622Z",
+      "fetchedAt": "2026-10-15T01:53:27.199Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-15T01:46:35.622Z",
+      "fetchedAt": "2026-10-15T01:53:27.199Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-15T01:46:35.622Z",
+      "fetchedAt": "2026-10-15T01:53:27.199Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-15T01:46:35.622Z",
+      "fetchedAt": "2026-10-15T01:53:27.199Z",
       "status": "ok"
     }
   },
@@ -103,12 +103,12 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 16,
+        "open": 15,
         "ready": 2,
-        "inProgress": 1,
+        "inProgress": 0,
         "needsHuman": 1,
         "staleClaims": [],
-        "agentReady": 3,
+        "agentReady": 2,
         "filedElsewhere": [
           151,
           339
@@ -436,7 +436,6 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
-        718,
         514
       ]
     }
@@ -1989,22 +1988,6 @@
         "reason": "needs-human"
       },
       {
-        "number": 704,
-        "title": "L055 is due a mechanism: junction test fixtures are built through the store's own gesture",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:1"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 715,
         "title": "Mesh layer: plain data types from a neutral module, no store imports at all; Wire3D's render mode required",
         "labels": [
@@ -2080,7 +2063,6 @@
         550,
         607,
         677,
-        704,
         717
       ],
       "spine": [
@@ -2175,24 +2157,6 @@
   "prs": {
     "open": [
       {
-        "number": 718,
-        "title": "test(store): junction fixtures are built through the store's own gesture",
-        "url": "https://github.com/mezivillager/hacer/pull/718",
-        "author": "mezivillager",
-        "labels": [
-          "project:harness",
-          "risk:1"
-        ],
-        "headRefName": "test/704-junction-fixtures",
-        "isDraft": false,
-        "createdAt": "2026-10-15T01:35:56Z",
-        "mergedAt": null,
-        "closes": [
-          704
-        ],
-        "verdicts": []
-      },
-      {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
         "url": "https://github.com/mezivillager/hacer/pull/514",
@@ -2220,6 +2184,32 @@
       }
     ],
     "merged": [
+      {
+        "number": 718,
+        "title": "test(store): junction fixtures are built through the store's own gesture",
+        "url": "https://github.com/mezivillager/hacer/pull/718",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:1"
+        ],
+        "headRefName": "test/704-junction-fixtures",
+        "isDraft": false,
+        "createdAt": "2026-10-15T01:35:56Z",
+        "mergedAt": "2026-10-15T01:52:14Z",
+        "closes": [
+          704
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Sonnet 5.5",
+            "at": "2026-10-15T01:48:59Z",
+            "url": "https://github.com/mezivillager/hacer/pull/718#issuecomment-6182525384"
+          }
+        ]
+      },
       {
         "number": 716,
         "title": "chore(backlog): claim prints the commits on main under the issue's seed files",
@@ -3655,30 +3645,13 @@
             "url": "https://github.com/mezivillager/hacer/pull/641#issuecomment-5930339307"
           }
         ]
-      },
-      {
-        "number": 640,
-        "title": "docs(skills): comments none by default; size check in every review",
-        "url": "https://github.com/mezivillager/hacer/pull/640",
-        "author": "mezivillager",
-        "labels": [
-          "released"
-        ],
-        "headRefName": "docs/comment-discipline",
-        "isDraft": false,
-        "createdAt": "2026-10-01T09:55:16Z",
-        "mergedAt": "2026-10-01T10:41:25Z",
-        "closes": [
-          639
-        ],
-        "verdicts": []
       }
     ],
     "coverage": {
       "merged": 60,
-      "withVerdict": 48,
-      "withoutVerdict": 12,
-      "pass": 48,
+      "withVerdict": 49,
+      "withoutVerdict": 11,
+      "pass": 49,
       "block": 0
     }
   },
@@ -3710,56 +3683,6 @@
         }
       },
       {
-        "number": 703,
-        "ref": "refs/heads/claim/703",
-        "sha": "28b8a464eb4713a572b4cbc592813f260002f92e",
-        "state": "CLOSED",
-        "title": "backlog.mjs claim prints what changed under the issue's \"Files likely touched\" since the issue was written",
-        "url": "https://github.com/mezivillager/hacer/issues/703",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:1"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-50",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-15T01:16:09Z",
-          "url": "https://github.com/mezivillager/hacer/issues/703#issuecomment-6182122016"
-        }
-      },
-      {
-        "number": 704,
-        "ref": "refs/heads/claim/704",
-        "sha": "fc75e816c459e1ef6a664750f1c3b5ffd5770591",
-        "state": "OPEN",
-        "title": "L055 is due a mechanism: junction test fixtures are built through the store's own gesture",
-        "url": "https://github.com/mezivillager/hacer/issues/704",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:1"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-50",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-15T01:11:54Z",
-          "url": "https://github.com/mezivillager/hacer/issues/704#issuecomment-6182070828"
-        }
-      },
-      {
         "number": 715,
         "ref": "refs/heads/claim/715",
         "sha": "24a476412560d4104e24b49cc0ef55281e959762",
@@ -3785,7 +3708,7 @@
         }
       }
     ],
-    "onClosedIssues": 1
+    "onClosedIssues": 0
   },
   "cloudLane": {
     "items": [
@@ -5484,7 +5407,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-01",
-        "merges": 17
+        "merges": 16
       },
       {
         "date": "2026-10-02",
@@ -5500,28 +5423,28 @@
       },
       {
         "date": "2026-10-15",
-        "merges": 6
+        "merges": 7
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-01T01:46:35.622Z",
-      "merged": 60,
+      "since": "2026-10-01T01:53:27.199Z",
+      "merged": 61,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 2
       },
       "blockedOnce": {
         "count": 1,
-        "of": 48,
+        "of": 49,
         "prs": [
           700
         ]
       },
       "coverage": {
         "code": {
-          "merged": 34,
-          "withVerdict": 34,
+          "merged": 35,
+          "withVerdict": 35,
           "without": []
         },
         "nonCode": {
@@ -8561,14 +8484,13 @@
       },
       {
         "date": "2026-10-15",
-        "at": "2026-10-15T01:28:16.979Z",
+        "at": "2026-10-15T01:46:35.622Z",
         "byProject": {
           "foundation": [
             182,
             338,
             713,
             714,
-            715,
             151,
             184,
             325,
@@ -8590,7 +8512,8 @@
             462,
             506,
             599,
-            613
+            613,
+            715
           ],
           "harness": [
             257,
@@ -8607,8 +8530,8 @@
             550,
             607,
             677,
-            703,
-            704
+            704,
+            717
           ],
           "spine": [
             165,
@@ -8705,11 +8628,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "3aa319e8a4a67288b8e3de59dd5d7d9f40b0bb33",
+        "sha": "a6edac48224c00f4e8cddabd8c7a0764f5f43a40",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38667415473/job/116202412502",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/38667971525/job/116204163181",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -8753,58 +8676,6 @@
         "conclusion": "SUCCESS",
         "completedAt": "2026-09-25T06:48:18Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/36104338672/job/107973412518",
-        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 71,
-          "new": 0
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 718,
-        "sha": "6e7a9e8b5425224c76a26be723da37ab51e70720",
-        "check": "pr-hygiene",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-15T01:36:09Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38666525134/job/116199631772",
-        "line": "HYGIENE: PASS reviewable=66 test=570 excluded=0 files=1 issue=#704 linked=fixes",
-        "verdict": "PASS",
-        "fields": {
-          "reviewable": 66,
-          "test": 570,
-          "excluded": 0,
-          "files": 1,
-          "issue": "#704",
-          "linked": "fixes"
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 718,
-        "sha": "6e7a9e8b5425224c76a26be723da37ab51e70720",
-        "check": "browser-qa",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-15T01:38:50Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38666524314/job/116199627437",
-        "line": "BROWSER-QA: PASS suites=store passed=107 failed=0 flaky=0 skipped=0",
-        "verdict": "PASS",
-        "fields": {
-          "suites": "store",
-          "passed": 107,
-          "failed": 0,
-          "flaky": 0,
-          "skipped": 0
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 718,
-        "sha": "6e7a9e8b5425224c76a26be723da37ab51e70720",
-        "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-15T01:38:12Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38666523158/job/116199624079",
         "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
         "verdict": "PASS",
         "fields": {
