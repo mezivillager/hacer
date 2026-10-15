@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-15T21:20:56.829Z",
+  "generatedAt": "2026-10-15T22:21:20.602Z",
   "head": {
     "sha": "61f43292d6bc51e14a755ae268f7cb1c239ba1dc",
     "date": "2026-10-15T14:17:37+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-15T21:20:56.829Z",
+      "fetchedAt": "2026-10-15T22:21:20.602Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-15T21:20:56.829Z",
+      "fetchedAt": "2026-10-15T22:21:20.602Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-15T21:20:56.829Z",
+      "fetchedAt": "2026-10-15T22:21:20.602Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-15T21:20:56.829Z",
+      "fetchedAt": "2026-10-15T22:21:20.602Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-15T21:20:56.829Z",
+      "fetchedAt": "2026-10-15T22:21:20.602Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-15T21:20:56.829Z",
+      "fetchedAt": "2026-10-15T22:21:20.602Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-15T21:20:56.829Z",
+      "fetchedAt": "2026-10-15T22:21:20.602Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-15T21:20:56.829Z",
+      "fetchedAt": "2026-10-15T22:21:20.602Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-15T21:20:56.829Z",
+      "fetchedAt": "2026-10-15T22:21:20.602Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-15T21:20:56.829Z",
+      "fetchedAt": "2026-10-15T22:21:20.602Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-15T21:20:56.829Z",
+      "fetchedAt": "2026-10-15T22:21:20.602Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-15T21:20:56.829Z",
+      "fetchedAt": "2026-10-15T22:21:20.602Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-15T21:20:56.829Z",
+      "fetchedAt": "2026-10-15T22:21:20.602Z",
       "status": "ok"
     }
   },
@@ -81,8 +81,8 @@
         "slug": "foundation",
         "epicNumber": 318,
         "open": 26,
-        "ready": 3,
-        "inProgress": 0,
+        "ready": 1,
+        "inProgress": 2,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 3,
@@ -179,7 +179,7 @@
         "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 1,
+        "agentReady": 2,
         "filedElsewhere": [
           184,
           400
@@ -402,23 +402,13 @@
     ],
     "next": [
       {
-        "number": 338,
-        "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
-        "project": "foundation"
-      },
-      {
         "number": 257,
         "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
         "project": "harness"
       },
       {
-        "number": 377,
-        "title": "N.2: fromLegacyCircuit — the one-way importer, with §10's structurally-traced parity as its acceptance test",
-        "project": "foundation"
-      },
-      {
-        "number": 749,
-        "title": "deserializeCircuit loads bus components and nodes of any width (a huge bus width exhausts memory)",
+        "number": 338,
+        "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
         "project": "foundation"
       },
       {
@@ -430,27 +420,13 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
+        751,
         514
       ]
     }
   },
   "tasks": {
     "items": [
-      {
-        "number": 338,
-        "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
-        "labels": [
-          "agent-ready",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
       {
         "number": 257,
         "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
@@ -469,25 +445,8 @@
         "reason": null
       },
       {
-        "number": 377,
-        "title": "N.2: fromLegacyCircuit — the one-way importer, with §10's structurally-traced parity as its acceptance test",
-        "labels": [
-          "agent-ready",
-          "risk:2",
-          "project:foundation"
-        ],
-        "blocking": [
-          175
-        ],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 749,
-        "title": "deserializeCircuit loads bus components and nodes of any width (a huge bus width exhausts memory)",
+        "number": 338,
+        "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
         "labels": [
           "agent-ready",
           "risk:1",
@@ -1301,6 +1260,24 @@
         "reason": "unshaped"
       },
       {
+        "number": 377,
+        "title": "N.2: fromLegacyCircuit — the one-way importer, with §10's structurally-traced parity as its acceptance test",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:2",
+          "project:foundation"
+        ],
+        "blocking": [
+          175
+        ],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 379,
         "title": "N.4: layout(doc, surface, { previous }) — pure, deterministic, synchronous; barycentre first, then hold what is placed",
         "labels": [
@@ -1912,25 +1889,57 @@
         "title": "compileHDL accepts a read of signal bits no part drives; the spec path refuses it",
         "labels": [
           "project:core",
+          "agent-ready",
           "risk:1"
         ],
         "blocking": [],
         "project": "core",
         "rank": 5,
         "lane": "enabler",
+        "pickable": true,
+        "reason": "not-pulled"
+      },
+      {
+        "number": 749,
+        "title": "deserializeCircuit loads bus components and nodes of any width (a huge bus width exhausts memory)",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
         "pickable": false,
-        "reason": "unshaped"
+        "reason": "claimed"
       }
     ],
     "byProject": {
+      "harness": [
+        257,
+        269,
+        154,
+        156,
+        270,
+        435,
+        436,
+        454,
+        500,
+        504,
+        505,
+        550,
+        607,
+        677
+      ],
       "foundation": [
         338,
-        377,
-        749,
         151,
         184,
         325,
         339,
+        377,
         379,
         380,
         381,
@@ -1949,23 +1958,8 @@
         719,
         722,
         728,
-        742
-      ],
-      "harness": [
-        257,
-        269,
-        154,
-        156,
-        270,
-        435,
-        436,
-        454,
-        500,
-        504,
-        505,
-        550,
-        607,
-        677
+        742,
+        749
       ],
       "spine": [
         165,
@@ -2055,6 +2049,24 @@
   },
   "prs": {
     "open": [
+      {
+        "number": 751,
+        "title": "fix(core): skip bus components and nodes of a width the app cannot create",
+        "url": "https://github.com/mezivillager/hacer/pull/751",
+        "author": "mezivillager",
+        "labels": [
+          "risk:1",
+          "project:foundation"
+        ],
+        "headRefName": "fix/749-entity-widths",
+        "isDraft": false,
+        "createdAt": "2026-10-15T22:15:36Z",
+        "mergedAt": null,
+        "closes": [
+          749
+        ],
+        "verdicts": []
+      },
       {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
@@ -3643,6 +3655,31 @@
   "claims": {
     "items": [
       {
+        "number": 377,
+        "ref": "refs/heads/claim/377",
+        "sha": "61f43292d6bc51e14a755ae268f7cb1c239ba1dc",
+        "state": "OPEN",
+        "title": "N.2: fromLegacyCircuit — the one-way importer, with §10's structurally-traced parity as its acceptance test",
+        "url": "https://github.com/mezivillager/hacer/issues/377",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:2",
+          "project:foundation"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "PR 2: bus components dissolve into slices",
+          "session": "2026-10-15 hacer-loop-reset",
+          "branch": "feat/377b-bus-dissolve",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-15T22:03:52Z",
+          "url": "https://github.com/mezivillager/hacer/issues/377#issuecomment-6203220479"
+        }
+      },
+      {
         "number": 470,
         "ref": "refs/heads/claim/470",
         "sha": "a5c1dac037de6dd435ab88414e270482976df51c",
@@ -3665,6 +3702,31 @@
           "author": "mezivillager",
           "at": "2026-09-25T06:02:35Z",
           "url": "https://github.com/mezivillager/hacer/issues/470#issuecomment-5827635352"
+        }
+      },
+      {
+        "number": 749,
+        "ref": "refs/heads/claim/749",
+        "sha": "61f43292d6bc51e14a755ae268f7cb1c239ba1dc",
+        "state": "OPEN",
+        "title": "deserializeCircuit loads bus components and nodes of any width (a huge bus width exhausts memory)",
+        "url": "https://github.com/mezivillager/hacer/issues/749",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:foundation"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "build",
+          "session": "2026-10-15 hacer-loop-reset",
+          "branch": "fix/749-entity-widths",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-15T22:04:06Z",
+          "url": "https://github.com/mezivillager/hacer/issues/749#issuecomment-6203223928"
         }
       }
     ],
@@ -5426,15 +5488,15 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-01T21:20:56.829Z",
-      "merged": 78,
+      "since": "2026-10-01T22:21:20.602Z",
+      "merged": 73,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 2
       },
       "blockedOnce": {
         "count": 5,
-        "of": 67,
+        "of": 62,
         "prs": [
           700,
           725,
@@ -5445,13 +5507,13 @@
       },
       "coverage": {
         "code": {
-          "merged": 54,
-          "withVerdict": 54,
+          "merged": 50,
+          "withVerdict": 50,
           "without": []
         },
         "nonCode": {
-          "merged": 24,
-          "withVerdict": 13,
+          "merged": 23,
+          "withVerdict": 12,
           "without": [
             654,
             655,
@@ -8485,7 +8547,7 @@
       },
       {
         "date": "2026-10-15",
-        "at": "2026-10-15T20:20:28.570Z",
+        "at": "2026-10-15T21:20:56.829Z",
         "byProject": {
           "foundation": [
             338,
@@ -8678,6 +8740,58 @@
         "verdict": "PASS",
         "fields": {
           "known": 71,
+          "new": 0
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 751,
+        "sha": "c6f38cda1fa79393b5606738dbbe3ba81e3da47e",
+        "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-15T22:15:54Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/38815875891/job/116700277100",
+        "line": "HYGIENE: PASS reviewable=143 test=243 excluded=0 files=3 issue=#749 linked=fixes",
+        "verdict": "PASS",
+        "fields": {
+          "reviewable": 143,
+          "test": 243,
+          "excluded": 0,
+          "files": 3,
+          "issue": "#749",
+          "linked": "fixes"
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 751,
+        "sha": "c6f38cda1fa79393b5606738dbbe3ba81e3da47e",
+        "check": "browser-qa",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-15T22:19:06Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/38815875516/job/116700272724",
+        "line": "BROWSER-QA: PASS suites=store passed=107 failed=0 flaky=0 skipped=0",
+        "verdict": "PASS",
+        "fields": {
+          "suites": "store",
+          "passed": 107,
+          "failed": 0,
+          "flaky": 0,
+          "skipped": 0
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 751,
+        "sha": "c6f38cda1fa79393b5606738dbbe3ba81e3da47e",
+        "check": "ci",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-15T22:18:03Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/38815874320/job/116700268728",
+        "line": "LAYER-RATCHET: 69 known violations (37 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 69,
           "new": 0
         },
         "disagrees": false
