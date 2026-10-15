@@ -44,6 +44,8 @@ const result = (violations) => ({
 describe('the rules in .dependency-cruiser.cjs', () => {
   /** @type {Set<string>} */
   let fired
+  /** @type {{ from: string, rule: { name: string } }[]} */
+  let violations
   /** @type {string} */
   let sandbox
 
@@ -63,7 +65,8 @@ describe('the rules in .dependency-cruiser.cjs', () => {
       ruleSet: { forbidden: config.forbidden },
       validate: true,
     })
-    fired = new Set(cruised.output.summary.violations.map((v) => v.rule.name))
+    violations = cruised.output.summary.violations
+    fired = new Set(violations.map((v) => v.rule.name))
   }, 60_000)
 
   afterAll(async () => {
@@ -80,8 +83,14 @@ describe('the rules in .dependency-cruiser.cjs', () => {
     ['src-no-e2e', 'src/core importing e2e/types'],
     ['core-through-index', 'src/components importing src/core/internal instead of src/core/index'],
     ['no-circular', 'src/simulation/cycleA ↔ cycleB'],
+    ['mesh-no-state', 'a mesh component type-importing src/store'],
   ])('catches %s (%s)', (rule) => {
     expect([...fired]).toContain(rule)
+  })
+
+  it('flags the named mesh files only, never the store-reading adapter beside them', () => {
+    const flagged = violations.filter((v) => v.rule.name === 'mesh-no-state').map((v) => v.from)
+    expect(flagged).toEqual(['src/nodes/BusSplitter3D.tsx'])
   })
 
   it('fires every rule it declares — no rule is dead', () => {
