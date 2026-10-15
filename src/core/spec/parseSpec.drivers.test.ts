@@ -64,3 +64,15 @@ describe('parseSpec — reads of a chip input are fan-out, never a second source
     expect(diagnosticsOf(cpu)).toEqual([])
   })
 })
+
+describe('parseSpec — what an unknown chip and a written chip input report', () => {
+  it("does not call an unknown chip's outputs undriven, since the chip may drive them", () => {
+    const result = parseSpec(chip('IN in[16], load; OUT out[16];', '    RAM16K(in=in, load=load, address=in[0..13], out=ro); // #p1\n    Not16(in=ro, out=out); // #p2'))
+    expect(result.diagnostics.filter((d) => d.severity === 'error').map((d) => d.code)).toEqual(['unknown-chip'])
+  })
+
+  it('names the part that writes a chip input', () => {
+    const result = parseSpec(chip('IN a, b; OUT out;', '    Not(in=b, out=a); // #p1\n    Not(in=a, out=out); // #p2'))
+    expect(result.diagnostics).toEqual([expect.objectContaining({ code: 'multiple-drivers', partId: 'p1', message: expect.stringContaining('p1.out') })])
+  })
+})

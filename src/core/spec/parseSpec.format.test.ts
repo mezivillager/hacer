@@ -55,3 +55,41 @@ describe('the .spec format: where the version is read from', () => {
     })
   })
 })
+
+// Every occurrence of either tag, in any case, is either the one canonical header first or the one
+// canonical sidecar block last; anything else is refused by name (R817, the second #725 verdict).
+describe('the .spec format: a version tag is never read past', () => {
+  const LAST = BODY.trimEnd()
+  const NBSP = ' '
+
+  it('reads a header indented with any Unicode space, and refuses its unknown version', () => {
+    expect(parseSpec(`${NBSP}// hacer-spec 1\n${BODY}`).doc?.schemaVersion).toBe(1)
+    expect(codes(`${NBSP}// hacer-spec 2\n${BODY}`)).toEqual(['unknown-schema-version'])
+  })
+
+  it.each([
+    ['after the HDL, on the line of the closing brace', `${LAST} // hacer-spec 2\n`],
+    ['after a comment on its own first line', `/* licence */ // hacer-spec 2\n${BODY}`],
+    ['twice, the second after the HDL', `// hacer-spec 1\n${LAST} // hacer-spec 2\n`],
+    ['run together with its version', `// hacer-spec2\n${BODY}`],
+    ['in upper case', `// HACER-SPEC 2\n${BODY}`],
+    ['inside an ordinary comment', `${BODY}// see hacer-spec 2\n`],
+  ])('refuses a header %s', (_shape, source) => {
+    expect(codes(source)).toEqual(['unknown-schema-version'])
+  })
+
+  it.each([
+    ['opened with /**', `${BODY}/** hacer-sidecar ${sidecarJson(2)} */\n`],
+    ['with a newline after /*', `${BODY}/*\nhacer-sidecar\n${sidecarJson(1)}\n*/\n`],
+    ['in upper case', `${BODY}/* HACER-SIDECAR ${sidecarJson(2)} */\n`],
+  ])('refuses a sidecar block %s', (_shape, source) => {
+    expect(codes(source)).toEqual(['invalid-sidecar'])
+  })
+
+  it("reads a tag inside the sidecar's own data as data", () => {
+    const sidecar = JSON.stringify({ schemaVersion: 1, hints: { '3d': {}, '2d': {} }, meta: { description: 'from a hacer-spec 2 draft, hacer-sidecar and all' }, tests: [], notes: [] })
+    const result = parseSpec(`// hacer-spec 1\n${BODY}/* hacer-sidecar\n${sidecar}\n*/\n`)
+    expect(result.diagnostics).toEqual([])
+    expect(result.sidecar?.meta.description).toBe('from a hacer-spec 2 draft, hacer-sidecar and all')
+  })
+})
