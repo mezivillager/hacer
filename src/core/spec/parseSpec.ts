@@ -14,32 +14,33 @@ export interface ParseSpecOptions {
   chips?: ChipRegistry
 }
 
-const HEADER_LINE = /^\uFEFF?[ \t]*\/\/[ \t]*hacer-spec\b[ \t]*(\S*)/gm
-const SIDECAR_TAG = /\/\*[ \t]*hacer-sidecar\b/g
+const TAG = /hacer-(spec|sidecar)/gi
+const HEADER = /\/\/[ \t]*hacer-spec[ \t]+(\S+)/y
 const SIDECAR_BLOCK = /\/\*[ \t]*hacer-sidecar\s([\s\S]*?)\*\/\s*$/
 const LITERALS = new Set(['true', 'false'])
 
 const describeRef = (ref: Ref): string => (ref.kind === 'part-pin' ? `${ref.partId}.${printPinRef(ref.pin, ref.slice)}` : printPinRef(ref.pin, ref.slice))
 
-/** The header is the file's first content (a BOM and whitespace may precede it), once, or it is refused. */
-function headerProblem(source: string): SpecDiagnostic | null {
-  const headers = [...source.matchAll(HEADER_LINE)]
-  if (headers.length === 0) return null
-  const placed = headers.length === 1 && (headers[0].index ?? 0) + headers[0][0].indexOf('/') === source.search(/\S/)
-  if (placed && headers[0][1] === String(SPEC_SCHEMA_VERSION)) return null
-  const message = placed ? `Spec schemaVersion "${headers[0][1]}" is not one this build reads (${SPEC_SCHEMA_VERSION})` : 'A // hacer-spec header must come once, as the first line of the file'
-  return { code: 'unknown-schema-version', severity: 'error', message }
-}
-
-/** The sidecar block is the file's last content, once, on one line or several, or it is refused. */
-function readSidecar(source: string): { sidecar: Sidecar } | { diagnostics: SpecDiagnostic[] } {
-  const tags = [...source.matchAll(SIDECAR_TAG)]
-  if (tags.length === 0) return { sidecar: emptySidecar() }
+/**
+ * The version is read in two places only: a `// hacer-spec <v>` header as the first content, and a
+ * hacer-sidecar block comment as the last. Any other occurrence of either tag, in any case, is refused.
+ */
+function readVersions(source: string): { sidecar: Sidecar } | { diagnostics: SpecDiagnostic[] } {
+  const refuse = (code: 'unknown-schema-version' | 'invalid-sidecar', message: string) => ({ diagnostics: [{ code, severity: 'error' as const, message }] })
+  HEADER.lastIndex = Math.max(0, source.search(/\S/))
+  const header = HEADER.exec(source)
   const block = SIDECAR_BLOCK.exec(source)
-  if (tags.length > 1 || block === null || block.index !== tags[0].index) {
-    return { diagnostics: [{ code: 'invalid-sidecar', severity: 'error', message: 'A /* hacer-sidecar */ block must come once, as the last thing in the file' }] }
+  const headerTag = header ? header.index + header[0].indexOf('hacer') : -1
+  const blockTag = block ? block.index + block[0].indexOf('hacer') : Number.POSITIVE_INFINITY
+  for (const tag of source.matchAll(TAG)) {
+    const at = tag.index ?? 0
+    if (at === headerTag || at >= blockTag) continue
+    const where = `line ${source.slice(0, at).split('\n').length}`
+    if (tag[1].toLowerCase() === 'spec') return refuse('unknown-schema-version', `"${tag[0]}" at ${where} is not a "// hacer-spec <version>" header on the file's first line`)
+    return refuse('invalid-sidecar', `"${tag[0]}" at ${where} is not a /* hacer-sidecar */ block at the end of the file`)
   }
-  return parseSidecar(block[1])
+  if (header && header[1] !== String(SPEC_SCHEMA_VERSION)) return refuse('unknown-schema-version', `Spec schemaVersion "${header[1]}" is not one this build reads (${SPEC_SCHEMA_VERSION})`)
+  return block ? parseSidecar(block[1]) : { sidecar: emptySidecar() }
 }
 
 /** Marked parts keep their ids; an unmarked one is keyed by its position, and that is reported. */
@@ -91,11 +92,11 @@ function doubleSourced(nets: Net[], unknownParts: Set<PartId>): SpecDiagnostic[]
   return found
 }
 
-/** A driverless net is unfinished (§1.1) unless another net's driver writes bits it reads. */
-function undriven(nets: Net[]): SpecDiagnostic[] {
+/** A driverless net is unfinished (§1.1) unless another net writes bits it reads, or an unknown chip may. */
+function undriven(nets: Net[], unknownParts: Set<PartId>): SpecDiagnostic[] {
   const written = nets.filter((n) => n.driver !== null).map((n) => splitNetId(n.id))
   return nets
-    .filter((n) => n.driver === null && !LITERALS.has(n.id))
+    .filter((n) => n.driver === null && !LITERALS.has(n.id) && !n.sinks.some((s) => s.kind === 'part-pin' && unknownParts.has(s.partId)))
     .filter((n) => {
       const { signal, slice } = splitNetId(n.id)
       return !written.some((w) => w.signal === signal && overlap(w.slice, slice))
@@ -149,13 +150,13 @@ function lower(chip: HDLChip, chips: ChipRegistry, diagnostics: SpecDiagnostic[]
     const port = { pin: signal, ...(slice && { slice }) }
     if (inNames.has(signal)) {
       if (net.driver === null) net.driver = { kind: 'chip-in', ...port }
-      else diagnostics.push({ code: 'multiple-drivers', severity: 'error', netId: net.id, message: `Chip input "${signal}" is written by a part` })
+      else diagnostics.push({ code: 'multiple-drivers', severity: 'error', netId: net.id, ...(net.driver.kind === 'part-pin' && { partId: net.driver.partId }), message: `Chip input "${signal}" is written by ${describeRef(net.driver)}` })
     }
     if (outNames.has(signal) && net.driver !== null) net.sinks.push({ kind: 'chip-out', ...port })
   }
 
   const doc = normalizeSpec({ schemaVersion: SPEC_SCHEMA_VERSION, name: chip.name, ins, outs, parts, nets: [...nets.values()] })
-  diagnostics.push(...undriven(doc.nets), ...doubleSourced(doc.nets, unknownParts))
+  diagnostics.push(...undriven(doc.nets, unknownParts), ...doubleSourced(doc.nets, unknownParts))
   return doc
 }
 
@@ -165,9 +166,7 @@ function lower(chip: HDLChip, chips: ChipRegistry, diagnostics: SpecDiagnostic[]
  */
 export function parseSpec(source: string, options: ParseSpecOptions = {}): ParseSpecResult {
   const refuse = (diagnostics: SpecDiagnostic[]): ParseSpecResult => ({ doc: null, sidecar: null, diagnostics })
-  const header = headerProblem(source)
-  if (header) return refuse([header])
-  const sidecar = readSidecar(source)
+  const sidecar = readVersions(source)
   if ('diagnostics' in sidecar) return refuse(sidecar.diagnostics)
 
   const parsed = parseHDL(source)
