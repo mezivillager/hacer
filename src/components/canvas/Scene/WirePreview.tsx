@@ -18,6 +18,7 @@ import { useStoreWirePreviewSegments } from './hooks/useStoreWirePreviewSegments
 export function WirePreview() {
   const wiringFrom = useCircuitStore((s) => s.wiringFrom)
   const allGates = useCircuitStore((s) => s.gates)
+  const performanceMode = useCircuitStore((s) => s.performanceMode)
 
   const existingSegments = useExistingSegments()
   const destinationResult = useDestinationPin(wiringFrom)
@@ -111,6 +112,7 @@ export function WirePreview() {
       end={{ x: lastSegment.end.x, y: lastSegment.end.y, z: lastSegment.end.z }}
       precomputedPath={previewPath}
       isPreview
+      performanceMode={performanceMode}
     />
   )
 }
