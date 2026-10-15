@@ -563,3 +563,73 @@ describe('deserializeCircuit: a wire endpoint of a type it does not know', () =>
     ])
   })
 })
+
+describe('deserializeCircuit: a wire whose width is not a positive integer', () => {
+  const NOR_GATE = { id: 'g-nor', type: 'NOR', position: ZERO_VEC, rotation: ZERO_VEC, width: 1 }
+  const goodWire = () => wireRecord('w-good', gateEnd(GOOD_GATE.id, 'out'), { type: 'output', entityId: 'o-1' })
+
+  /** A wire between two live ends, saved with `width` as given (absent for `undefined`). */
+  const wideWire = (width: unknown): SerializedWire =>
+    ({
+      ...wireRecord('w-wide', gateEnd(GOOD_GATE.id, 'out'), gateEnd(GOOD_GATE.id, 'in')),
+      ...(width === undefined ? {} : { width }),
+    }) as unknown as SerializedWire
+
+  const withWire = (wire: SerializedWire): SerializedCircuit => ({
+    ...emptyDocument(CIRCUIT_FORMAT_VERSION),
+    gates: [NOR_GATE, GOOD_GATE],
+    wires: [wire, goodWire()],
+    junctions: [{ id: 'j-wide', position: ZERO_VEC, signalId: 'sig-wide', wireIds: ['w-wide'] }],
+  })
+
+  const widthWarnings = (warnings: ReturnType<typeof deserializeCircuit>['warnings']) =>
+    warnings.filter((w) => w.code !== 'unsupported-gate-type' && w.code !== 'dropped-junction')
+
+  it.each([
+    { saved: '2.5', width: 2.5 },
+    { saved: '0', width: 0 },
+    { saved: '-1', width: -1 },
+    { saved: '4', width: '4' },
+    { saved: 'NaN', width: Number.NaN },
+    { saved: 'Infinity', width: Number.POSITIVE_INFINITY },
+    { saved: '[4]', width: [4] },
+    { saved: 'null', width: null },
+  ])('prunes a wire whose width is $saved, naming it in its own warning', ({ saved, width }) => {
+    const { document: restored, warnings } = deserializeCircuit(withWire(wideWire(width)))
+    expect(restored?.wires.map((w) => w.id)).toEqual(['w-good'])
+    expect(widthWarnings(warnings)).toEqual([
+      { code: 'invalid-wire-width', wireId: 'w-wide', wireWidth: saved, message: expect.any(String) as string },
+    ])
+  })
+
+  it('names the wire and the width as saved in the message', () => {
+    const { warnings } = deserializeCircuit(withWire(wideWire(2.5)))
+    const [warning] = widthWarnings(warnings)
+    expect(warning.message).toContain('"w-wide"')
+    expect(warning.message).toContain('2.5')
+  })
+
+  it('takes a junction left joining nothing with it, as for any other pruned wire', () => {
+    const { document: restored, warnings } = deserializeCircuit(withWire(wideWire(2.5)))
+    expect(restored?.junctions).toEqual([])
+    expect(warnings.filter((w) => w.code === 'dropped-junction')).toEqual([
+      { code: 'dropped-junction', junctionId: 'j-wide', message: expect.stringContaining('j-wide') },
+    ])
+  })
+
+  it('warns once, for the width, when the wire also ends in a gate this build skipped', () => {
+    const { warnings } = deserializeCircuit(
+      withWire({ ...wideWire(2.5), from: gateEnd(NOR_GATE.id, 'out') }),
+    )
+    expect(widthWarnings(warnings)).toEqual([
+      { code: 'invalid-wire-width', wireId: 'w-wide', wireWidth: '2.5', message: expect.any(String) as string },
+    ])
+  })
+
+  it.each([undefined, 1, 4, 32])('loads a wire whose width is %j as saved', (width) => {
+    const { document: restored, warnings } = deserializeCircuit(withWire(wideWire(width)))
+    expect(restored?.wires.map((w) => w.id)).toEqual(['w-wide', 'w-good'])
+    expect(restored?.wires[0].width).toBe(width)
+    expect(warnings.filter((w) => w.code !== 'unsupported-gate-type')).toEqual([])
+  })
+})
