@@ -64,7 +64,7 @@ export interface ChipPin {
 export type ChipImplementation =
   | { type: 'builtin'; evaluate: (inputs: Record<string, number>) => Record<string, number> }
   | { type: 'hdl'; source: string } // HDL source code
-  | { type: 'circuit'; circuitData: SerializedCircuit } // 3D circuit
+  | { type: 'circuit'; spec: CircuitSpec } // a spec document, through compileSpec (ADR-0020 §1.11)
 
 // src/core/chips/registry.ts
 export interface ChipRegistry {
