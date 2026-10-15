@@ -5,6 +5,7 @@ import { GRID_SIZE } from '@/utils/grid'
 import type { WireSegment } from '@/utils/wiringScheme/types'
 import { calculateWirePathFromConnection } from '@/utils/wiringScheme'
 import { collectWireSegments } from '@/utils/wiringScheme/segments'
+import { placeJunction } from '@/test/junctionFixtures'
 
 vi.mock('@/lib/notify', () => ({
   notify: {
@@ -895,15 +896,7 @@ describe('gateActions', () => {
         ]
       )
 
-      // Place a junction on the wire
-      useCircuitStore.setState((state) => {
-        state.junctions.push({
-          id: 'junction-test-1',
-          position: { x: GRID_SIZE, y: 0.2, z: 0 },
-          signalId: 'signal-1',
-          wireIds: [wire.id],
-        })
-      })
+      const { junctionId } = placeJunction(wire.id, { x: GRID_SIZE, y: 0.2, z: 0 })
 
       expect(getState().junctions).toHaveLength(1)
 
@@ -917,7 +910,7 @@ describe('gateActions', () => {
       // Junction should still exist (preserved, possibly relocated)
       expect(getState().junctions).toHaveLength(1)
       const junctionAfter = getState().junctions[0]
-      expect(junctionAfter.id).toBe('junction-test-1')
+      expect(junctionAfter.id).toBe(junctionId)
     })
 
     it('preserves junction when gate is rotated', () => {
@@ -935,14 +928,7 @@ describe('gateActions', () => {
         ]
       )
 
-      useCircuitStore.setState((state) => {
-        state.junctions.push({
-          id: 'junction-test-2',
-          position: { x: GRID_SIZE, y: 0.2, z: 0 },
-          signalId: 'signal-1',
-          wireIds: [wire.id],
-        })
-      })
+      placeJunction(wire.id, { x: GRID_SIZE, y: 0.2, z: 0 })
 
       expect(getState().junctions).toHaveLength(1)
 
@@ -972,14 +958,7 @@ describe('gateActions', () => {
         ]
       )
 
-      useCircuitStore.setState((state) => {
-        state.junctions.push({
-          id: 'junction-test-3',
-          position: { x: GRID_SIZE, y: 0.2, z: 0 },
-          signalId: 'signal-1',
-          wireIds: [wire.id],
-        })
-      })
+      placeJunction(wire.id, { x: GRID_SIZE, y: 0.2, z: 0 })
 
       expect(getState().junctions).toHaveLength(1)
 
@@ -990,25 +969,26 @@ describe('gateActions', () => {
       expect(getState().junctions).toHaveLength(1)
     })
 
-    it('handles junction cleanup when recalculated wire has no corners', () => {
+    it('handles junction cleanup or relocation when the trunk is recalculated', () => {
       const gate1 = getState().addGate('Nand', { x: 0, y: 0, z: 0 })
       const gate2 = getState().addGate('Nand', { x: GRID_SIZE * 2, y: 0, z: 0 })
+      const gate3 = getState().addGate('Nand', { x: GRID_SIZE, y: 0, z: GRID_SIZE * 2 })
 
-      // Create wire with only a straight horizontal segment (no corners)
       const wire = getState().addWire(
         { type: 'gate', entityId: gate1.id, pinId: gate1.outputs[0].id },
         { type: 'gate', entityId: gate2.id, pinId: gate2.inputs[0].id },
-        [{ start: { x: 0, y: 0.2, z: 0 }, end: { x: 1, y: 0.2, z: 0 }, type: 'horizontal' }]
+        [
+          { start: { x: 0, y: 0.2, z: 0 }, end: { x: GRID_SIZE, y: 0.2, z: 0 }, type: 'exit' },
+          { start: { x: GRID_SIZE, y: 0.2, z: 0 }, end: { x: GRID_SIZE, y: 0.2, z: -GRID_SIZE }, type: 'vertical' },
+          { start: { x: GRID_SIZE, y: 0.2, z: -GRID_SIZE }, end: { x: GRID_SIZE * 2, y: 0.2, z: -GRID_SIZE }, type: 'horizontal' },
+          { start: { x: GRID_SIZE * 2, y: 0.2, z: -GRID_SIZE }, end: { x: GRID_SIZE * 2, y: 0.2, z: 0 }, type: 'entry' },
+        ]
       )
-
-      useCircuitStore.setState((state) => {
-        state.junctions.push({
-          id: 'junction-test-4',
-          position: { x: 0.5, y: 0.2, z: 0 },
-          signalId: 'signal-1',
-          wireIds: [wire.id, 'branch-wire-id'],
-        })
-      })
+      const corner = { x: GRID_SIZE, y: 0.2, z: 0 }
+      placeJunction(wire.id, corner, [{
+        to: { type: 'gate', gateId: gate3.id, pinId: gate3.inputs[0].id },
+        tail: [{ start: corner, end: { x: GRID_SIZE, y: 0.2, z: GRID_SIZE }, type: 'vertical' }],
+      }])
 
       expect(getState().junctions).toHaveLength(1)
 
@@ -1029,6 +1009,7 @@ describe('gateActions', () => {
         const hasExistingWire = j.wireIds.some((id) => remainingWires.some((w) => w.id === id))
         expect(hasExistingWire).toBe(true)
       }
+      expect(remainingWires.filter((w) => w.to.entityId === gate3.id)).toHaveLength(1)
     })
 
     it('allows gate move when no junctions are involved', () => {
@@ -1073,19 +1054,12 @@ describe('gateActions', () => {
 
       // Place junction on the other wire (not connected to gate1)
       const originalPosition = { x: GRID_SIZE * 3, y: 0.2, z: 0 }
-      useCircuitStore.setState((state) => {
-        state.junctions.push({
-          id: 'junction-other',
-          position: originalPosition,
-          signalId: 'signal-2',
-          wireIds: [otherWire.id],
-        })
-      })
+      const { junctionId } = placeJunction(otherWire.id, originalPosition)
 
       // Move gate1 - should not affect junction on other wire
       getState().updateGatePosition(gate1.id, { x: GRID_SIZE * -2, y: 0, z: 0 })
 
-      const junctionAfter = getState().junctions.find((j) => j.id === 'junction-other')
+      const junctionAfter = getState().junctions.find((j) => j.id === junctionId)
       expect(junctionAfter).toBeDefined()
       expect(junctionAfter!.position).toEqual(originalPosition)
     })
