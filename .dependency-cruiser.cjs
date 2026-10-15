@@ -67,8 +67,15 @@ const STATE = '^src/store/'
 const UI = '^src/(components|gates|nodes|hooks|theme|styles)/|^src/(App|main)\\.tsx$'
 /** the mesh components that draw from props alone, named file by file: the renderers beside them
  *  in the same folders read the store and pass props down, so a folder pattern would flag them. */
-const MESHES =
-  '^src/(gates/common/BaseGate|nodes/components/(Input|Output)Node3D|nodes/Bus(Splitter|Joiner)3D|components/canvas/Wire3D)\\.tsx$'
+const MESH_FILES = [
+  'src/gates/common/BaseGate.tsx',
+  'src/nodes/components/InputNode3D.tsx',
+  'src/nodes/components/OutputNode3D.tsx',
+  'src/nodes/BusSplitter3D.tsx',
+  'src/nodes/BusJoiner3D.tsx',
+  'src/components/canvas/Wire3D.tsx',
+]
+const MESHES = `^(${MESH_FILES.map((file) => file.replaceAll('.', '\\.')).join('|')})$`
 /** `preserveSymlinks` keeps these as `node_modules/<pkg>/…` under pnpm instead of
  *  `.pnpm/<pkg>@<version>/…`, so neither the pattern nor the baseline breaks on a version bump.
  *  Left unanchored so a nested or hoisted `node_modules` matches too. */
