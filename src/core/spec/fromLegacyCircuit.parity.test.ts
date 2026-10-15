@@ -96,6 +96,26 @@ const TWO_FEEDS = circuit('TwoFeeds', {
   junctions: [{ id: 'j1', position: ZERO, signalId: 'signal-j1', wireIds: ['w1', 'w2', 'w3'] }],
 })
 
+const ghost: Endpoint = { type: 'input', entityId: 'ghost' }
+const FLOATING_BESIDE_INPUT = circuit('FloatingBesideInput', {
+  inputNodes: [node('ia', 'a')],
+  outputNodes: [node('oo', 'out')],
+  wires: [wire('w1', fromIn('ia'), toOut('oo')), wire('w2', ghost, toOut('oo'))],
+})
+const FLOATING_JUNCTION_BESIDE_PART = circuit('FloatingJunctionBesidePart', {
+  inputNodes: [node('ia', 'a')],
+  outputNodes: [node('oo', 'out')],
+  gates: [gate('g1', 'Not')],
+  wires: [wire('w1', fromIn('ia'), pinIn('g1', 0)), wire('w2', pinOut('g1'), toOut('oo')), wire('w3', junctionEnd('j1'), toOut('oo'))],
+  junctions: [{ id: 'j1', position: ZERO, signalId: 'signal-j1', wireIds: ['w3'] }],
+})
+const FLOATING_INTO_PIN = circuit('FloatingIntoPin', {
+  inputNodes: [node('ia', 'a')],
+  outputNodes: [node('oo', 'out')],
+  gates: [gate('g1', 'Not')],
+  wires: [wire('w1', fromIn('ia'), pinIn('g1', 0)), wire('w2', ghost, pinIn('g1', 0)), wire('w3', pinOut('g1'), toOut('oo'))],
+})
+
 const BIT: Vector[] = [{ a: 0 }, { a: 1 }]
 const ALIASES = ['junction-chain', 'xor-fanout-junctions', 'junction-loop', 'mixed-widths']
 const SPIKE: Array<[string, SerializedCircuit, Vector[]]> = [
@@ -104,6 +124,9 @@ const SPIKE: Array<[string, SerializedCircuit, Vector[]]> = [
   ['C7 at width 4', C7(4), Array.from({ length: 16 }, (_, a) => ({ a }))],
   ['C7 at width 16', C7(16), [0, 1, 0x8000, 0xabcd, 0xffff].map((a) => ({ a }))],
   ['C9', C9, BIT],
+  ['an output node fed by an input and a missing entity', FLOATING_BESIDE_INPUT, BIT],
+  ['an output node fed by a part and a floating junction', FLOATING_JUNCTION_BESIDE_PART, BIT],
+  ['a part pin fed by an input and a missing entity', FLOATING_INTO_PIN, BIT],
   ...ALIASES.map((name, i): [string, SerializedCircuit, Vector[]] => [`C${i + 1} (${name})`, golden(name).document, golden(name).vectors.map((v) => v.inputs)]),
 ]
 
@@ -219,6 +242,7 @@ describe('legacy parity', () => {
     expect(notes).toEqual([{ kind: 'multiple-drivers', partId: 'p1', pin: 'in', detail: expect.stringContaining('a (wire "w1")') }])
     expect(notes[0].detail).toContain('b (wire "w2")')
     expect(doc?.nets.filter((n) => n.sinks.some((s) => s.kind === 'part-pin' && s.pin === 'in')).map((n) => n.id).sort()).toEqual(['a', 'b'])
+    expect(doc && webIdeRejected(doc)).toEqual([])
     expect(doc && viaExport(doc, { a: 1, b: 0 })).toEqual({ refused: ['Part "Not" pin "in" bit 0 is bound by more than one connection'] })
     expect(doc && viaCompileSpec(doc, { a: 1, b: 0 })).toEqual({ refused: ['p1 pin "in" is bound by both "a" and "b"'] })
   })
@@ -231,6 +255,7 @@ describe('legacy parity', () => {
       { kind: 'part-pin', partId: 'p1', pin: 'out' },
       { kind: 'part-pin', partId: 'p2', pin: 'out' },
     ])
+    expect(doc && webIdeRejected(doc)).toEqual([])
     expect(doc && viaExport(doc, { a: 1, b: 0 })).toEqual({ refused: ['Signal "out" is driven by more than one part'] })
     expect(doc && viaCompileSpec(doc, { a: 1, b: 0 })).toEqual({
       refused: [
@@ -247,6 +272,22 @@ describe('legacy parity', () => {
     expect(doc && viaExport(doc, { a: 1, b: 0 })).toEqual({ refused: ['Part "Not" pin "in" bit 0 is bound by more than one connection'] })
     expect(doc && viaCompileSpec(doc, { a: 1, b: 0 })).toEqual({ refused: ['p1 pin "in" is bound by both "a" and "b"'] })
     expect(parityFailures(TWO_FEEDS, BIT, BIT.map((v) => legacy(TWO_FEEDS, v)))).toEqual([])
+  })
+
+  it('an output node fed by a real wire and a floating one keeps both drivers, and compileSpec refuses it', () => {
+    const { doc, sidecar } = fromLegacyCircuit(FLOATING_BESIDE_INPUT)
+    expect(sidecar.notes).toEqual([
+      { kind: 'floating-source', pin: 'out', detail: expect.stringContaining('a driverless net on out') },
+      { kind: 'multiple-drivers', pin: 'out', detail: 'out has 2 drivers: a (wire "w1"), nothing (wire "w2"); every one is kept' },
+    ])
+    expect(doc?.nets.filter((n) => n.id === 'out').map((n) => n.driver)).toEqual([{ kind: 'chip-in', pin: 'a' }, null])
+    expect(doc && viaCompileSpec(doc, { a: 1 })).toEqual({ refused: ['Net id "out" names more than one net; a document holds one net per id'] })
+  })
+
+  it('the nand2tetris export has no form for a driverless net on an OUT, so it prints the real driver alone', () => {
+    const { doc } = fromLegacyCircuit(FLOATING_BESIDE_INPUT)
+    expect(doc && printSpec(doc, { dialect: 'nand2tetris' })).toContain('    Or(a=a, b=a, out=out);\n}')
+    expect(doc && viaExport(doc, { a: 1 })).toEqual({ outputs: { out: 1 } })
   })
 
   it('the comparator fails an import with one wire dropped', () => {
