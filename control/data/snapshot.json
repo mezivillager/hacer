@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-15T01:15:35.678Z",
+  "generatedAt": "2026-10-15T01:27:27.962Z",
   "head": {
-    "sha": "28b8a464eb4713a572b4cbc592813f260002f92e",
-    "date": "2026-10-15T04:14:56+03:00",
-    "subject": "chore(backlog): a failed merged-PR fetch skips possibly-delivered instead of failing ready"
+    "sha": "24a476412560d4104e24b49cc0ef55281e959762",
+    "date": "2026-10-15T04:26:29+03:00",
+    "subject": "refactor(canvas): Wire3D reads no store (contract)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-15T01:15:35.678Z",
+      "fetchedAt": "2026-10-15T01:27:27.962Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-15T01:15:35.678Z",
+      "fetchedAt": "2026-10-15T01:27:27.962Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-15T01:15:35.678Z",
+      "fetchedAt": "2026-10-15T01:27:27.962Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-15T01:15:35.678Z",
+      "fetchedAt": "2026-10-15T01:27:27.962Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-15T01:15:35.678Z",
+      "fetchedAt": "2026-10-15T01:27:27.962Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-15T01:15:35.678Z",
+      "fetchedAt": "2026-10-15T01:27:27.962Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-15T01:15:35.678Z",
+      "fetchedAt": "2026-10-15T01:27:27.962Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-15T01:15:35.678Z",
+      "fetchedAt": "2026-10-15T01:27:27.962Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-15T01:15:35.678Z",
+      "fetchedAt": "2026-10-15T01:27:27.962Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-15T01:15:35.678Z",
+      "fetchedAt": "2026-10-15T01:27:27.962Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-15T01:15:35.678Z",
+      "fetchedAt": "2026-10-15T01:27:27.962Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-15T01:15:35.678Z",
+      "fetchedAt": "2026-10-15T01:27:27.962Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-15T01:15:35.678Z",
+      "fetchedAt": "2026-10-15T01:27:27.962Z",
       "status": "ok"
     }
   },
@@ -80,12 +80,12 @@
         "lane": "feature",
         "slug": "foundation",
         "epicNumber": 318,
-        "open": 25,
+        "open": 24,
         "ready": 2,
-        "inProgress": 1,
+        "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 3,
+        "agentReady": 2,
         "filedElsewhere": [],
         "next": {
           "number": 182,
@@ -104,8 +104,8 @@
         "slug": "harness",
         "epicNumber": 138,
         "open": 16,
-        "ready": 3,
-        "inProgress": 1,
+        "ready": 2,
+        "inProgress": 2,
         "needsHuman": 1,
         "staleClaims": [],
         "agentReady": 4,
@@ -421,17 +421,11 @@
         "number": 269,
         "title": "Product role (usability & design): brief, hacer-product agent, a cloud UI-tour capture, and the first usability review — the agent finds polish itself",
         "project": "harness"
-      },
-      {
-        "number": 703,
-        "title": "backlog.mjs claim prints what changed under the issue's \"Files likely touched\" since the issue was written",
-        "project": "harness"
       }
     ],
     "dormant": {
       "dormant": false,
       "agentPrs": [
-        712,
         514
       ]
     }
@@ -500,21 +494,6 @@
         "blocking": [
           270
         ],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 703,
-        "title": "backlog.mjs claim prints what changed under the issue's \"Files likely touched\" since the issue was written",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:1"
-        ],
-        "blocking": [],
         "project": "harness",
         "rank": 2,
         "lane": "process",
@@ -1363,24 +1342,6 @@
         "reason": "not-pulled"
       },
       {
-        "number": 373,
-        "title": "N.0: the six 3D mesh components become prop-only and store-free (six PRs, expand → migrate → contract)",
-        "labels": [
-          "agent-ready",
-          "in-progress",
-          "risk:2",
-          "project:foundation"
-        ],
-        "blocking": [
-          383
-        ],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 374,
         "title": "N.1: the spec model in src/core — parts, nets, sidecar; parseSpec / printSpec; versioned from day one",
         "labels": [
@@ -1987,6 +1948,22 @@
         "reason": "needs-human"
       },
       {
+        "number": 703,
+        "title": "backlog.mjs claim prints what changed under the issue's \"Files likely touched\" since the issue was written",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:1"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 704,
         "title": "L055 is due a mechanism: junction test fixtures are built through the store's own gesture",
         "labels": [
@@ -2011,7 +1988,6 @@
         184,
         325,
         339,
-        373,
         374,
         377,
         378,
@@ -2034,7 +2010,6 @@
       "harness": [
         257,
         269,
-        703,
         154,
         156,
         270,
@@ -2047,6 +2022,7 @@
         550,
         607,
         677,
+        703,
         704
       ],
       "spine": [
@@ -2141,24 +2117,6 @@
   "prs": {
     "open": [
       {
-        "number": 712,
-        "title": "refactor(canvas): Wire3D renders from props alone (#373, 6 of 6)",
-        "url": "https://github.com/mezivillager/hacer/pull/712",
-        "author": "mezivillager",
-        "labels": [
-          "risk:2",
-          "project:foundation"
-        ],
-        "headRefName": "refactor/373-wire3d-props",
-        "isDraft": false,
-        "createdAt": "2026-10-15T01:08:53Z",
-        "mergedAt": null,
-        "closes": [
-          373
-        ],
-        "verdicts": []
-      },
-      {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
         "url": "https://github.com/mezivillager/hacer/pull/514",
@@ -2186,6 +2144,32 @@
       }
     ],
     "merged": [
+      {
+        "number": 712,
+        "title": "refactor(canvas): Wire3D renders from props alone (#373, 6 of 6)",
+        "url": "https://github.com/mezivillager/hacer/pull/712",
+        "author": "mezivillager",
+        "labels": [
+          "risk:2",
+          "project:foundation"
+        ],
+        "headRefName": "refactor/373-wire3d-props",
+        "isDraft": false,
+        "createdAt": "2026-10-15T01:08:53Z",
+        "mergedAt": "2026-10-15T01:26:30Z",
+        "closes": [
+          373
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus 5.5",
+            "at": "2026-10-15T01:21:05Z",
+            "url": "https://github.com/mezivillager/hacer/pull/712#issuecomment-6182183565"
+          }
+        ]
+      },
       {
         "number": 711,
         "title": "chore(backlog): ready and next mark a task a merged PR links as possibly-delivered",
@@ -3603,31 +3587,6 @@
           637
         ],
         "verdicts": []
-      },
-      {
-        "number": 636,
-        "title": "docs(harness): session record 2026-09-29, rulings R773–R778, ledger L059–L060",
-        "url": "https://github.com/mezivillager/hacer/pull/636",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:0"
-        ],
-        "headRefName": "docs/session-2026-09-29",
-        "isDraft": false,
-        "createdAt": "2026-09-29T16:23:25Z",
-        "mergedAt": "2026-09-29T16:26:47Z",
-        "closes": [],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "coordinator (risk:0 docs-only, #554)",
-            "at": "2026-09-29T16:23:44Z",
-            "url": "https://github.com/mezivillager/hacer/pull/636#issuecomment-5894261103"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -3644,7 +3603,7 @@
         "number": 373,
         "ref": "refs/heads/claim/373",
         "sha": "1737e29009143995f1447659bca31bf79aa03506",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "N.0: the six 3D mesh components become prop-only and store-free (six PRs, expand → migrate → contract)",
         "url": "https://github.com/mezivillager/hacer/issues/373",
         "labels": [
@@ -3653,7 +3612,7 @@
           "risk:2",
           "project:foundation"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -3691,19 +3650,19 @@
         }
       },
       {
-        "number": 702,
-        "ref": "refs/heads/claim/702",
-        "sha": "6e2402b18a58d9bbc2e0efdf77c928373509435a",
-        "state": "CLOSED",
-        "title": "backlog.mjs ready flags an issue that a merged PR already references, so \"already delivered\" is found at pick time",
-        "url": "https://github.com/mezivillager/hacer/issues/702",
+        "number": 703,
+        "ref": "refs/heads/claim/703",
+        "sha": "28b8a464eb4713a572b4cbc592813f260002f92e",
+        "state": "OPEN",
+        "title": "backlog.mjs claim prints what changed under the issue's \"Files likely touched\" since the issue was written",
+        "url": "https://github.com/mezivillager/hacer/issues/703",
         "labels": [
           "project:harness",
           "agent-ready",
           "in-progress",
           "risk:1"
         ],
-        "onClosedIssue": true,
+        "onClosedIssue": false,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -3711,8 +3670,8 @@
           "branch": null,
           "handoff": "none",
           "author": "mezivillager",
-          "at": "2026-10-15T00:36:05Z",
-          "url": "https://github.com/mezivillager/hacer/issues/702#issuecomment-6181626561"
+          "at": "2026-10-15T01:16:09Z",
+          "url": "https://github.com/mezivillager/hacer/issues/703#issuecomment-6182122016"
         }
       },
       {
@@ -5439,10 +5398,6 @@
     ],
     "mergesPerDay": [
       {
-        "date": "2026-09-29",
-        "merges": 1
-      },
-      {
         "date": "2026-09-30",
         "merges": 1
       },
@@ -5464,28 +5419,28 @@
       },
       {
         "date": "2026-10-15",
-        "merges": 4
+        "merges": 5
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-01T01:15:35.678Z",
-      "merged": 58,
+      "since": "2026-10-01T01:27:27.962Z",
+      "merged": 59,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 2
       },
       "blockedOnce": {
         "count": 1,
-        "of": 46,
+        "of": 47,
         "prs": [
           700
         ]
       },
       "coverage": {
         "code": {
-          "merged": 32,
-          "withVerdict": 32,
+          "merged": 33,
+          "withVerdict": 33,
           "without": []
         },
         "nonCode": {
@@ -8525,7 +8480,7 @@
       },
       {
         "date": "2026-10-15",
-        "at": "2026-10-15T00:50:46.011Z",
+        "at": "2026-10-15T01:15:35.678Z",
         "byProject": {
           "foundation": [
             182,
@@ -8558,7 +8513,6 @@
             257,
             269,
             703,
-            704,
             154,
             156,
             270,
@@ -8571,7 +8525,7 @@
             550,
             607,
             677,
-            702
+            704
           ],
           "spine": [
             165,
@@ -8668,11 +8622,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "28b8a464eb4713a572b4cbc592813f260002f92e",
+        "sha": "24a476412560d4104e24b49cc0ef55281e959762",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38664604484/job/116193519434",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/38665665080/job/116196930197",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -8716,58 +8670,6 @@
         "conclusion": "SUCCESS",
         "completedAt": "2026-09-25T06:48:18Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/36104338672/job/107973412518",
-        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 71,
-          "new": 0
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 712,
-        "sha": "e703aea950d209923813540c4a97c137a97f9b85",
-        "check": "pr-hygiene",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-15T01:09:08Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38664050445/job/116191757208",
-        "line": "HYGIENE: PASS reviewable=13 test=183 excluded=0 files=4 issue=#373 linked=fixes",
-        "verdict": "PASS",
-        "fields": {
-          "reviewable": 13,
-          "test": 183,
-          "excluded": 0,
-          "files": 4,
-          "issue": "#373",
-          "linked": "fixes"
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 712,
-        "sha": "e703aea950d209923813540c4a97c137a97f9b85",
-        "check": "browser-qa",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-15T01:11:44Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38664050430/job/116191746682",
-        "line": "BROWSER-QA: PASS suites=store passed=107 failed=0 flaky=0 skipped=0",
-        "verdict": "PASS",
-        "fields": {
-          "suites": "store",
-          "passed": 107,
-          "failed": 0,
-          "flaky": 0,
-          "skipped": 0
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 712,
-        "sha": "e703aea950d209923813540c4a97c137a97f9b85",
-        "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-15T01:11:30Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38664049755/job/116191744353",
         "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
         "verdict": "PASS",
         "fields": {
