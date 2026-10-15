@@ -1,7 +1,7 @@
 # 0020. Spec-only writes, read-only projections
 
 - **Status:** Accepted — the fresh-context adversarial review [#359](https://github.com/mezivillager/hacer/issues/359) required by #327 returned `sound with corrections`, and the second pass over the four post-review deltas returned `accept with corrections` (both on [#358](https://github.com/mezivillager/hacer/pull/358), 2026-09-23). Both sets of corrections are applied below — the second pass's seven under "What the second pass changed" — and no further review round is required. **Amended 2026-09-24** by the spike this ADR scheduled for 1.5/1.6 ([#372](https://github.com/mezivillager/hacer/issues/372)), which ran, found the mechanism 1.5 describes does not work, and replaced it — "What the spike changed". The status does **not** move: the spine, the review's acceptance and every decision stand, and correcting a mechanism is what a scheduled spike is for.
-- **Date:** 2026-09-23 · mechanism amended 2026-09-24 ([#372](https://github.com/mezivillager/hacer/issues/372)) · §7.1 and §9 amended 2026-09-29 ([#598](https://github.com/mezivillager/hacer/issues/598))
+- **Date:** 2026-09-23 · mechanism amended 2026-09-24 ([#372](https://github.com/mezivillager/hacer/issues/372)) · §7.1 and §9 amended 2026-09-29 ([#598](https://github.com/mezivillager/hacer/issues/598)) · §1.10 added 2026-10-15 ([#374](https://github.com/mezivillager/hacer/issues/374))
 - **Amended by:** R769
 - **Amends:** ADR-0008 §6, ADR-0009
 - **Supersedes:** ADR-0007
@@ -581,6 +581,73 @@ one. It is safe **only** while injected parts are appended last, which the expor
 guarantee and state — and that the document lowering injects nothing is one of the reasons it is the
 decided one. The tokenizer rule itself is still unmeasured: the round trip was measured with a
 spike-local printer and a regex reader over its output, so the parser change is N.1's to measure.
+
+**1.10 The spec file, as built. Amended 2026-10-15 ([#374](https://github.com/mezivillager/hacer/issues/374), R817).**
+§1 fixed the document's shape and its migration policy but not the file. The first committed
+fixture, `src/core/spec/fixtures/v1/PassThroughs.spec`, freezes the file as built, so these rules
+are v1's. Each is pinned by a test in `src/core/spec/`.
+
+1. **One file, two parts.** The HDL-shaped text opens with a `// hacer-spec <version>` header. It may
+   close with a `/* hacer-sidecar <json> */` block holding the sidecar, whose JSON carries the
+   sidecar's own `schemaVersion`.
+2. **Where each version is read:**
+   - The header must be the **first thing in the file**. Only a BOM, blank lines or any Unicode
+     whitespace may come before it. Its version is the first word after the tag, and any word but `1`
+     is refused as `unknown-schema-version`.
+   - The sidecar block must be the **last thing in the file**. It opens its own line, and only
+     whitespace may follow it. It may span one line or several, with LF or CRLF line ends.
+   - Each appears **at most once**.
+3. **Every other tag is refused.** The reader scans the whole text for `hacer-spec` and `hacer-sidecar`:
+   - case-insensitively;
+   - ending where no letter follows, so `HACER-specific` is not a tag;
+   - reading any `Default_Ignorable_Code_Point` inside the tag as absent;
+   - reading the dashes U+2010–U+2015, U+2212, U+FE63 and U+FF0D as `-`.
+
+   Any occurrence other than the canonical header and the canonical block is refused by name, and the
+   block's own JSON is exempt because it is data. A header-like tag is `unknown-schema-version`; a
+   sidecar-like one is `invalid-sidecar`. Neither is ever read past as plain HDL.
+
+   **This narrows §1.9's "ordinary comments stay ignorable".** An ordinary comment that contains
+   either tag, such as `// see hacer-spec 2`, gets its file refused, although the reference IDE
+   accepts that file. That is the cost of never best-effort-parsing a version, and the message says
+   that comments are included.
+4. **Plain `.hdl`, with no tag at all, reads as v1 text with an empty sidecar.** So reading official
+   HDL is unaffected (§1.5).
+5. **A raw `*/` in the sidecar JSON is refused** (`invalid-sidecar`), because the HDL reader would end
+   the comment there. `printSpec` writes it as `*\/`, which is the same JSON.
+6. **`wire` is lifted out before the HDL parser,** so `parseHDL` gains no statement. Its one addition
+   is §1.9's `PART_ID` token. A `wire` targets a chip OUT, whole or sliced, from a chip IN or OUT of
+   the same width.
+7. **Part ids:**
+   - A marker is kept if it is a canonical `p1` … `p9007199254740991` (2^53 − 1) and is not
+     repeated.
+   - Any other part is keyed by its position, from a counter that does not depend on marker size.
+   - That is reported as `part-id-assigned` (info), or as `invalid-part-id` or `duplicate-part-id`
+     (warnings).
+8. **Pin directions come from a `ChipRegistry` option**, the Project 1 builtins by default.
+   - An unknown chip is an `unknown-chip` error, and its bindings are kept as sinks.
+   - Those bindings claim no bits in §1.8's check, and its outputs are not reported undriven.
+9. **Literals are driverless nets keyed `true` / `false`.**
+   - They are never reported undriven.
+   - They never take a driver: a part output bound to one is a `literal-output` error.
+   - **Open, not decided:** whether a literal should be a constant driver kind on `Ref`. That would
+     keep `driver: null` meaning only "unfinished" and make `out=true` an ordinary two-driver clash.
+     Until it is decided, §1's `Ref` union is unchanged, and adopting it later is a v1 → v2
+     migration.
+10. **The canonical text and the export:**
+    - `printSpec` prints each part's bindings inputs first, then outputs, each ordered by pin and then
+      by slice, in the document's part order.
+    - The `nand2tetris` dialect lowers a pass-through to a buffer of the net's width:
+      `Or(a=x, b=x, out=y)` at one bit, `Or16` at sixteen, and one `Or` per bit at any other width.
+      The buffers come after every declared part, with no marker.
+
+**The round trip §1.9 asked N.1 to re-measure has been measured on the shipped printer.** It covers
+the 15 Project 1 sources and 13 spec shapes:
+- print → parse → print is a byte fixed point in 28/28;
+- the netlist comes back equal in 28/28;
+- part ids are stable across two round trips in 28/28;
+- a hand edit (reordered parts, an added unmarked part, re-indentation, a comment) keeps every hint
+  on its node.
 
 ### 2. The pipeline contracts
 
