@@ -9,7 +9,7 @@ import { tmpdir } from 'node:os'
 import path from 'node:path'
 import type { TestReport } from '@/cli/runCli'
 import { SCENARIO_CHIP, scenarioTest, scenarioToHdl } from '../toHdl'
-import type { Scenario } from '../types'
+import type { ChipScenario, Scenario } from '../types'
 import type { CoreScenarioResult } from './core'
 
 /** The verdict half of the core driver's result; `errors` holds the CLI's first mismatch or error. */
@@ -26,8 +26,9 @@ function readReport(stdout: string): TestReport | null {
 }
 
 /** Run one scenario through the `hacer` bin. One that does not translate never spawns it. */
-export function runCliScenario(scenario: Scenario, bin: string): CliScenarioResult {
+export function runCliScenario(scenario: Scenario | ChipScenario, bin: string): CliScenarioResult {
   const name = scenario.name
+  if ('tst' in scenario) return { name, ok: false, errors: ['not implemented'] }
   const translated = scenarioToHdl(scenario)
   if (!translated.ok) return { name, ok: false, errors: translated.errors }
 

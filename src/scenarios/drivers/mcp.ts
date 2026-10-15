@@ -6,15 +6,16 @@ import type { Client } from '@modelcontextprotocol/client'
 import type { TestReport } from '@/core'
 import { HDL_TOOL } from '@/mcp/server'
 import { scenarioTest, scenarioToHdl } from '../toHdl'
-import type { Scenario } from '../types'
+import type { ChipScenario, Scenario } from '../types'
 import type { CoreScenarioResult } from './core'
 
 /** The verdict half of the core driver's result; `errors` holds the tool's first mismatch or error. */
 export type McpScenarioResult = Pick<CoreScenarioResult, 'name' | 'ok' | 'errors'>
 
 /** Run one scenario through `hacer_hdl`. One that does not translate never calls the tool. */
-export async function runMcpScenario(scenario: Scenario, client: Client): Promise<McpScenarioResult> {
+export async function runMcpScenario(scenario: Scenario | ChipScenario, client: Client): Promise<McpScenarioResult> {
   const name = scenario.name
+  if ('tst' in scenario) return { name, ok: false, errors: ['not implemented'] }
   const translated = scenarioToHdl(scenario)
   if (!translated.ok) return { name, ok: false, errors: translated.errors }
 

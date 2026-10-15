@@ -17,7 +17,7 @@ import { chainCircuitScenario, circuitBuildScenario } from '../circuitBuilding'
 import { threeGateScenario } from '../nand3'
 import { simulationTwoGateScenario } from '../simulation'
 import { scenarioToHdl } from '../toHdl'
-import type { Scenario } from '../types'
+import type { ChipScenario, Scenario } from '../types'
 
 /** One scenario after the core driver has run it. */
 export interface CoreScenarioResult {
@@ -71,6 +71,14 @@ export function runScenario(scenario: Scenario): CoreScenarioResult {
   for (const { label, signal, value } of chip.expected) mismatch(errors, label, value, read(signal))
 
   return { name, ok: errors.length === 0, errors, outputs, pins }
+}
+
+/** A chip scenario's verdict; `errors` holds `testChip`'s first mismatch or error. */
+export type ChipScenarioResult = Pick<CoreScenarioResult, 'name' | 'ok' | 'errors'>
+
+/** Run one chip scenario in process, through `testChip`. */
+export function runChipScenario(scenario: ChipScenario): ChipScenarioResult {
+  return { name: scenario.name, ok: false, errors: ['not implemented'] }
 }
 
 /** Run every recovered scenario. */
