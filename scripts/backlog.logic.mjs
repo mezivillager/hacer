@@ -328,6 +328,10 @@ export function possiblyDelivered(plan, prs = []) {
   return plan.map((task) => ({ ...task, possiblyDelivered: citing.get(task.number) ?? [] }))
 }
 
+export function readPossiblyDelivered(plan) {
+  return { plan, warning: null }
+}
+
 /** `next`'s exit status when nothing is pickable: apart from 1 (an error) and 2 (usage), so a loop can tell them apart. */
 export const NOTHING_PICKABLE_EXIT = 3
 
