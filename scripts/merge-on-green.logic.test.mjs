@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
-import { CANNOT_REBASE, decide, mergeCommits, requiredContexts, stopOnRefusal, withRerunMarker } from './merge-on-green.logic.mjs'
+import { CANNOT_REBASE, decide, mergeCommits, outcome, requiredContexts, stopOnRefusal, withRerunMarker } from './merge-on-green.logic.mjs'
 
 // Each state is a recorded GitHub reading of a real PR on this repo: check runs (filter=all) and
 // workflow runs, replayed to the moment the state held. A fixture's `_recorded` names the PR, the
@@ -272,6 +272,56 @@ describe('decide — the rules between the states', () => {
         expect(decide(load(state), history).reason).not.toMatch(/force|amend|rebase onto|reset/i)
       }
     }
+  })
+})
+
+describe('outcome — the last line of every run', () => {
+  const head = '73d1536d07172f546f932f97b23d58e98fd45730'
+  const merge = 'd1c307419a5fb68f97b5dbdff08251678f82363b'
+
+  it('merged: exit 0, carrying the merge commit', () => {
+    expect(outcome('merged', { pr: '524', head, merge })).toEqual({
+      exit: 0,
+      line: `MERGE-ON-GREEN: merged pr=524 head=${head} merge=${merge} exit=0`,
+    })
+  })
+
+  it('a required check failed: check-failed, exit 2, and no merge commit', () => {
+    expect(outcome('fail', { pr: '451', head, merge })).toEqual({
+      exit: 2,
+      line: `MERGE-ON-GREEN: check-failed pr=451 head=${head} exit=2`,
+    })
+  })
+
+  it('the deadline passed: timeout, exit 3', () => {
+    expect(outcome('timeout', { pr: '517', head })).toEqual({ exit: 3, line: `MERGE-ON-GREEN: timeout pr=517 head=${head} exit=3` })
+  })
+
+  it('a give-up: needs-person, exit 4, with - for a head it never read', () => {
+    expect(outcome('give-up', { pr: '667', head })).toEqual({ exit: 4, line: `MERGE-ON-GREEN: needs-person pr=667 head=${head} exit=4` })
+    expect(outcome('give-up', { pr: '99999' }).line).toBe('MERGE-ON-GREEN: needs-person pr=99999 head=- exit=4')
+  })
+
+  it('a dry run: dry-run, exit 0, naming the action it would take', () => {
+    expect(outcome('dry-run', { pr: '646', head, next: 'update-branch' })).toEqual({
+      exit: 0,
+      line: `MERGE-ON-GREEN: dry-run pr=646 head=${head} next=update-branch exit=0`,
+    })
+  })
+
+  it('a usage error: usage, exit 1, with nothing read', () => {
+    expect(outcome('usage')).toEqual({ exit: 1, line: 'MERGE-ON-GREEN: usage pr=- head=- exit=1' })
+  })
+
+  it('states the exit decide and stopOnRefusal gave, for every action that ends a run', () => {
+    const refused = stopOnRefusal(load('stale-green').pr, { refusals: { 'update-branch': 1 }, lastError: 'GraphQL: refused' })
+    const ending = [decide(load('merged')), decide(load('required-failure')), decide(unarmed('blocked-after-body-edit')), refused]
+    expect(ending.map((action) => action.kind)).toEqual(['merged', 'fail', 'give-up', 'give-up'])
+    for (const action of ending) expect(outcome(action.kind, { pr: '1', head }).exit).toBe(action.exit)
+  })
+
+  it('has no line for an action that does not end a run', () => {
+    expect(() => outcome('wait', { pr: '1', head })).toThrow(/wait/)
   })
 })
 
