@@ -43,7 +43,6 @@ export { compileHDL, hdlChipDefinition, parseHDL, printHDL, project1HdlSources }
 export type {
   CircuitSpec,
   Hint,
-  ImportNote,
   Net,
   NodeId,
   ParseSpecOptions,
@@ -54,9 +53,6 @@ export type {
   Ref,
   Sidecar,
   SpecDiagnostic,
-  SpecDiagnosticCode,
-  SpecSchemaVersion,
-  TestBinding,
 } from './spec'
 export { emptySidecar, normalizeSpec, parseSpec, SPEC_SCHEMA_VERSION } from './spec'
 

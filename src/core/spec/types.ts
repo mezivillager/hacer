@@ -2,21 +2,13 @@ import type { HDLSlice } from '../hdl/types'
 
 /** The spec format's version: read on every load, and moved only with a `migrate(n → n+1)`. */
 export const SPEC_SCHEMA_VERSION = 1
-export type SpecSchemaVersion = typeof SPEC_SCHEMA_VERSION
 
 export type PartId = `p${number}`
 /** A part, or a chip I/O terminal named by its port. */
 export type NodeId = PartId | `in:${string}` | `out:${string}`
 
-export interface Port {
-  name: string
-  width: number
-}
-
-export interface Part {
-  id: PartId
-  chip: string
-}
+export interface Port { name: string; width: number }
+export interface Part { id: PartId; chip: string }
 
 /** One end of a net. `slice` is the pin's (or port's) own bits; the signal's are in the net id. */
 export type Ref =
@@ -31,7 +23,7 @@ export interface Net {
 }
 
 export interface CircuitSpec {
-  schemaVersion: SpecSchemaVersion
+  schemaVersion: typeof SPEC_SCHEMA_VERSION
   name: string
   ins: Port[]
   outs: Port[]
@@ -61,7 +53,7 @@ export interface ImportNote {
 }
 
 export interface Sidecar {
-  schemaVersion: SpecSchemaVersion
+  schemaVersion: typeof SPEC_SCHEMA_VERSION
   hints: { '3d': Partial<Record<NodeId, Hint>>; '2d': Partial<Record<NodeId, Hint>> }
   meta: { title?: string; description?: string; tags?: string[] }
   tests: TestBinding[]
@@ -69,16 +61,8 @@ export interface Sidecar {
 }
 
 export type SpecDiagnosticCode =
-  | 'syntax'
-  | 'unknown-schema-version'
-  | 'invalid-sidecar'
-  | 'builtin-chip'
-  | 'unknown-chip'
-  | 'unknown-pin'
-  | 'multiple-drivers'
-  | 'undriven'
-  | 'duplicate-part-id'
-  | 'part-id-assigned'
+  | 'syntax' | 'unknown-schema-version' | 'invalid-sidecar' | 'builtin-chip' | 'unknown-chip'
+  | 'unknown-pin' | 'multiple-drivers' | 'undriven' | 'duplicate-part-id' | 'part-id-assigned'
 
 export interface SpecDiagnostic {
   code: SpecDiagnosticCode
