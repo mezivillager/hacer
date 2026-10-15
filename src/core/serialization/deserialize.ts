@@ -1,6 +1,6 @@
 import { getBuiltinChipRegistry, getUserChipRegistry } from '@/core/chips/appRegistry'
 import { createBusPins } from '@/simulation'
-import type { BusComponent, GateInstance, InputNode, JunctionNode, OutputNode, Pin, Wire } from '@/store/types'
+import type { BusComponent, BusComponentKind, GateInstance, InputNode, JunctionNode, OutputNode, Pin, Wire } from '@/store/types'
 import type { WireSegment } from '@/utils/wiringScheme/types'
 import {
   CIRCUIT_FORMAT_VERSION,
@@ -28,8 +28,8 @@ export interface DeserializedCircuit {
  * type of the gate that was dropped.
  *
  * **Where the line falls.** A warning is always about *one entry*, and only ever an
- * entry this reader *chose* to drop: a gate it could not rebuild, and (#402) the wires
- * and junctions that pruning then takes with it. Anything wrong with the *document
+ * entry this reader *chose* to drop: a gate it could not rebuild, a bus component of a kind
+ * it does not know, and (#402) the wires and junctions that pruning then takes with it. Anything wrong with the *document
  * itself* — a missing top-level array, or a malformed wire, node, junction or bus
  * record — is not one bad entry but nothing to load, and it still throws out of
  * `deserializeCircuit` for the caller to catch, exactly as it did before warnings
@@ -79,6 +79,14 @@ export type DeserializeWarning =
       gateType: string
       /** What went wrong while rebuilding this one gate, verbatim. */
       reason: string
+    }
+  | {
+      code: 'unknown-bus-kind'
+      message: string
+      /** Id of the bus component that was dropped. */
+      busId: string
+      /** The component's `kind` field as saved, e.g. `'mux'`. */
+      busKind: string
     }
   | {
       code: 'dropped-wire'
@@ -134,6 +142,8 @@ function migrateGateTypeName(raw: string): string | null {
   if (UNSUPPORTED_LEGACY_TYPES.has(raw)) return null
   return raw
 }
+
+const BUS_KINDS: Record<BusComponentKind, true> = { splitter: true, joiner: true }
 
 const cloneVec3 = (v: { x: number; y: number; z: number }) => ({ x: v.x, y: v.y, z: v.z })
 
@@ -341,6 +351,17 @@ export function deserializeCircuit(data: SerializedCircuit): DeserializeResult {
   const liveBusIds = new Set<string>()
   const busComponents: BusComponent[] = []
   for (const s of data.busComponents ?? []) {
+    if (!Object.prototype.hasOwnProperty.call(BUS_KINDS, s.kind)) {
+      warnings.push({
+        code: 'unknown-bus-kind',
+        busId: String(s.id),
+        busKind: String(s.kind),
+        message:
+          `Skipped bus component "${String(s.id)}" while loading circuit — ` +
+          `this build has no bus component of kind "${String(s.kind)}".`,
+      })
+      continue
+    }
     const { inputs, outputs } = createBusPins(s.kind, s.width)
     busComponents.push({
       id: s.id,
