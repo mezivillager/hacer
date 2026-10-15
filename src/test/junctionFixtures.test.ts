@@ -21,7 +21,7 @@ function buildTrunk() {
 describe('junctionFixtures', () => {
   beforeEach(() => {
     useCircuitStore.setState({
-      gates: [], wires: [], junctions: [], inputNodes: [], outputNodes: [], wiringFrom: null,
+      gates: [], wires: [], junctions: [], inputNodes: [], outputNodes: [], busComponents: [], wiringFrom: null,
       junctionPlacementMode: null, junctionPreviewPosition: null, junctionPreviewWireId: null,
     })
   })
@@ -49,6 +49,25 @@ describe('junctionFixtures', () => {
       expect(branch?.segments[0]).toEqual(c.trunk.segments[0])
     }
     expect(branches.map((b) => b?.to.entityId)).toEqual([c.branchSink.id, c.output.id])
+    expect(getState().wiringFrom).toBeNull()
+  })
+
+  it('draws a branch into a bus input pin through the junction-to-bus gesture', () => {
+    const c = buildTrunk()
+    const joiner = getState().placeBusJoiner(4, { x: SECTION_SIZE, y: 0, z: -3 * SECTION_SIZE })
+    if (!joiner) throw new Error('placeBusJoiner placed nothing')
+
+    const placed = placeJunction(c.trunk.id, Z_CORNER, [
+      {
+        to: { type: 'bus', busId: joiner.id, pinId: 'in0' },
+        tail: [{ type: 'vertical', start: Z_CORNER, end: { x: SECTION_SIZE, y: WIRE_HEIGHT, z: -2 * SECTION_SIZE } }],
+      },
+    ])
+
+    const branch = getState().wires.find((w) => w.id === placed.branchIds[0])
+    expect(branch?.from).toEqual(c.trunk.from)
+    expect(branch?.to).toEqual({ type: 'bus', entityId: joiner.id, pinId: 'in0' })
+    expect(getState().junctions.find((j) => j.id === placed.junctionId)?.wireIds).toEqual([c.trunk.id, ...placed.branchIds])
     expect(getState().wiringFrom).toBeNull()
   })
 
