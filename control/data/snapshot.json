@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-15T01:27:27.962Z",
+  "generatedAt": "2026-10-15T01:28:16.979Z",
   "head": {
     "sha": "24a476412560d4104e24b49cc0ef55281e959762",
     "date": "2026-10-15T04:26:29+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-15T01:27:27.962Z",
+      "fetchedAt": "2026-10-15T01:28:16.979Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-15T01:27:27.962Z",
+      "fetchedAt": "2026-10-15T01:28:16.979Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-15T01:27:27.962Z",
+      "fetchedAt": "2026-10-15T01:28:16.979Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-15T01:27:27.962Z",
+      "fetchedAt": "2026-10-15T01:28:16.979Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-15T01:27:27.962Z",
+      "fetchedAt": "2026-10-15T01:28:16.979Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-15T01:27:27.962Z",
+      "fetchedAt": "2026-10-15T01:28:16.979Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-15T01:27:27.962Z",
+      "fetchedAt": "2026-10-15T01:28:16.979Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-15T01:27:27.962Z",
+      "fetchedAt": "2026-10-15T01:28:16.979Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-15T01:27:27.962Z",
+      "fetchedAt": "2026-10-15T01:28:16.979Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-15T01:27:27.962Z",
+      "fetchedAt": "2026-10-15T01:28:16.979Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-15T01:27:27.962Z",
+      "fetchedAt": "2026-10-15T01:28:16.979Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-15T01:27:27.962Z",
+      "fetchedAt": "2026-10-15T01:28:16.979Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-15T01:27:27.962Z",
+      "fetchedAt": "2026-10-15T01:28:16.979Z",
       "status": "ok"
     }
   },
@@ -80,12 +80,12 @@
         "lane": "feature",
         "slug": "foundation",
         "epicNumber": 318,
-        "open": 24,
-        "ready": 2,
+        "open": 27,
+        "ready": 5,
         "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 2,
+        "agentReady": 5,
         "filedElsewhere": [],
         "next": {
           "number": 182,
@@ -93,8 +93,8 @@
         },
         "title": "Foundation audit: is the codebase structured for the autonomous loop? Measured audit, prioritized refactorings, fitness functions",
         "subIssues": {
-          "completed": 17,
-          "percentCompleted": 51,
+          "completed": 18,
+          "percentCompleted": 54,
           "total": 33
         }
       },
@@ -413,9 +413,24 @@
         "project": "foundation"
       },
       {
+        "number": 713,
+        "title": "Nodes and buses lock dragging by one rule (one predicate for both renderers)",
+        "project": "foundation"
+      },
+      {
         "number": 257,
         "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
         "project": "harness"
+      },
+      {
+        "number": 714,
+        "title": "One bus-component mesh for the splitter and the joiner",
+        "project": "foundation"
+      },
+      {
+        "number": 715,
+        "title": "Mesh layer: plain data types from a neutral module, no store imports at all; Wire3D's render mode required",
+        "project": "foundation"
       },
       {
         "number": 269,
@@ -466,6 +481,21 @@
         "reason": null
       },
       {
+        "number": 713,
+        "title": "Nodes and buses lock dragging by one rule (one predicate for both renderers)",
+        "labels": [
+          "agent-ready",
+          "risk:2",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
+      {
         "number": 257,
         "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
         "labels": [
@@ -479,6 +509,36 @@
         "project": "harness",
         "rank": 2,
         "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 714,
+        "title": "One bus-component mesh for the splitter and the joiner",
+        "labels": [
+          "agent-ready",
+          "risk:2",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 715,
+        "title": "Mesh layer: plain data types from a neutral module, no store imports at all; Wire3D's render mode required",
+        "labels": [
+          "agent-ready",
+          "risk:2",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
         "pickable": true,
         "reason": null
       },
@@ -1984,6 +2044,9 @@
       "foundation": [
         182,
         338,
+        713,
+        714,
+        715,
         151,
         184,
         325,
@@ -3600,31 +3663,6 @@
   "claims": {
     "items": [
       {
-        "number": 373,
-        "ref": "refs/heads/claim/373",
-        "sha": "1737e29009143995f1447659bca31bf79aa03506",
-        "state": "CLOSED",
-        "title": "N.0: the six 3D mesh components become prop-only and store-free (six PRs, expand → migrate → contract)",
-        "url": "https://github.com/mezivillager/hacer/issues/373",
-        "labels": [
-          "agent-ready",
-          "in-progress",
-          "risk:2",
-          "project:foundation"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-50",
-          "branch": null,
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-14T22:00:29Z",
-          "url": "https://github.com/mezivillager/hacer/issues/373#issuecomment-6179433732"
-        }
-      },
-      {
         "number": 470,
         "ref": "refs/heads/claim/470",
         "sha": "a5c1dac037de6dd435ab88414e270482976df51c",
@@ -3700,7 +3738,7 @@
         }
       }
     ],
-    "onClosedIssues": 1
+    "onClosedIssues": 0
   },
   "cloudLane": {
     "items": [
@@ -5424,7 +5462,7 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-01T01:27:27.962Z",
+      "since": "2026-10-01T01:28:16.979Z",
       "merged": 59,
       "openToMergeHours": {
         "median": 0.3,
