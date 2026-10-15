@@ -3,6 +3,7 @@ import { circuitActions, useCircuitStore } from '@/store/circuitStore'
 import { useNodeDrag } from '@/hooks/useNodeDrag'
 import type { InputNode, OutputNode, JunctionNode } from '@/store/types'
 import { InputNode3D, OutputNode3D, JunctionNode3D } from './components'
+import { canDragPart } from './canDragPart'
 
 // Node types that can be rendered
 export type RenderableNode =
@@ -40,9 +41,7 @@ export function NodeRenderer({
   onToggle,
   onPinClick,
 }: NodeRendererProps) {
-  const canDrag = useCircuitStore((s) =>
-    s.placementMode === null && s.nodePlacementMode === null && s.junctionPlacementMode === null && s.wiringFrom === null,
-  )
+  const canDrag = useCircuitStore(canDragPart)
   const isWiring = useCircuitStore((s) => s.wiringFrom !== null)
   // Rules of hooks: every node type gets a drag hook, and only inputs and outputs bind it.
   // A junction's id matches no input node, so its hook would find nothing to drag.

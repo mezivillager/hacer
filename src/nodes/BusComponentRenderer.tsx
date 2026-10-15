@@ -2,6 +2,7 @@ import { useCircuitStore } from '@/store/circuitStore'
 import { useBusDrag } from '@/hooks/useBusDrag'
 import type { BusComponent } from '@/store/types'
 import { BusComponent3D, type BusPinClickHandler } from './BusComponent3D'
+import { canDragPart } from './canDragPart'
 
 interface BusComponentRendererProps {
   component: BusComponent
@@ -11,7 +12,7 @@ interface BusComponentRendererProps {
 }
 
 export function BusComponentRenderer({ component, onPinClick, onClick, selected = false }: BusComponentRendererProps) {
-  const canDrag = useCircuitStore((s) => s.wiringFrom === null && s.busPlacementMode === null)
+  const canDrag = useCircuitStore(canDragPart)
   const drag = useBusDrag(component.id)
 
   return (
