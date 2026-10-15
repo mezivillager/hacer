@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-15T02:30:33.256Z",
+  "generatedAt": "2026-10-15T02:56:16.196Z",
   "head": {
-    "sha": "b12ab5fb02c55fb44be15c33d8f079adf7406b6e",
-    "date": "2026-10-15T05:16:03+03:00",
-    "subject": "refactor(canvas): Wire3D's performanceMode is required, with no default"
+    "sha": "c8ac573b5bb89e075c1e1c4616ff64f6e4bce5db",
+    "date": "2026-10-15T05:55:34+03:00",
+    "subject": "refactor(nodes): BusComponent3D draws nothing for a kind it has no label for"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-15T02:30:33.256Z",
+      "fetchedAt": "2026-10-15T02:56:16.196Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-15T02:30:33.256Z",
+      "fetchedAt": "2026-10-15T02:56:16.196Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-15T02:30:33.256Z",
+      "fetchedAt": "2026-10-15T02:56:16.196Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-15T02:30:33.256Z",
+      "fetchedAt": "2026-10-15T02:56:16.196Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-15T02:30:33.256Z",
+      "fetchedAt": "2026-10-15T02:56:16.196Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-15T02:30:33.256Z",
+      "fetchedAt": "2026-10-15T02:56:16.196Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-15T02:30:33.256Z",
+      "fetchedAt": "2026-10-15T02:56:16.196Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-15T02:30:33.256Z",
+      "fetchedAt": "2026-10-15T02:56:16.196Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-15T02:30:33.256Z",
+      "fetchedAt": "2026-10-15T02:56:16.196Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-15T02:30:33.256Z",
+      "fetchedAt": "2026-10-15T02:56:16.196Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-15T02:30:33.256Z",
+      "fetchedAt": "2026-10-15T02:56:16.196Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-15T02:30:33.256Z",
+      "fetchedAt": "2026-10-15T02:56:16.196Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-15T02:30:33.256Z",
+      "fetchedAt": "2026-10-15T02:56:16.196Z",
       "status": "ok"
     }
   },
@@ -80,7 +80,7 @@
         "lane": "feature",
         "slug": "foundation",
         "epicNumber": 318,
-        "open": 27,
+        "open": 28,
         "ready": 3,
         "inProgress": 2,
         "needsHuman": 0,
@@ -403,11 +403,6 @@
     ],
     "next": [
       {
-        "number": 257,
-        "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
-        "project": "harness"
-      },
-      {
         "number": 182,
         "title": "Completed-chip tracking moves out of the engine into session state (no localStorage in src/core)",
         "project": "foundation"
@@ -418,8 +413,13 @@
         "project": "foundation"
       },
       {
-        "number": 713,
-        "title": "Nodes and buses lock dragging by one rule (one predicate for both renderers)",
+        "number": 257,
+        "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
+        "project": "harness"
+      },
+      {
+        "number": 724,
+        "title": "deserializeCircuit: reject a bus component with an unknown kind",
         "project": "foundation"
       },
       {
@@ -431,29 +431,13 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
+        725,
         514
       ]
     }
   },
   "tasks": {
     "items": [
-      {
-        "number": 257,
-        "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:2"
-        ],
-        "blocking": [
-          270
-        ],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
       {
         "number": 182,
         "title": "Completed-chip tracking moves out of the engine into session state (no localStorage in src/core)",
@@ -488,11 +472,28 @@
         "reason": null
       },
       {
-        "number": 713,
-        "title": "Nodes and buses lock dragging by one rule (one predicate for both renderers)",
+        "number": 257,
+        "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:2"
+        ],
+        "blocking": [
+          270
+        ],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 724,
+        "title": "deserializeCircuit: reject a bus component with an unknown kind",
         "labels": [
           "agent-ready",
-          "risk:2",
+          "risk:1",
           "project:foundation"
         ],
         "blocking": [],
@@ -1971,8 +1972,8 @@
         "reason": "needs-human"
       },
       {
-        "number": 714,
-        "title": "One bus-component mesh for the splitter and the joiner",
+        "number": 713,
+        "title": "Nodes and buses lock dragging by one rule (one predicate for both renderers)",
         "labels": [
           "agent-ready",
           "in-progress",
@@ -2013,30 +2014,27 @@
         "lane": "feature",
         "pickable": false,
         "reason": "unshaped"
+      },
+      {
+        "number": 722,
+        "title": "nand2tetris export: lower or report the HACER-only constructs web-ide rejects (OUT reads, OUT->OUT aliases, internal slices)",
+        "labels": [
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "unshaped"
       }
     ],
     "byProject": {
-      "harness": [
-        257,
-        269,
-        154,
-        156,
-        270,
-        435,
-        436,
-        454,
-        500,
-        504,
-        505,
-        550,
-        607,
-        677,
-        717
-      ],
       "foundation": [
         182,
         338,
-        713,
+        724,
         151,
         184,
         325,
@@ -2059,8 +2057,26 @@
         506,
         599,
         613,
-        714,
-        719
+        713,
+        719,
+        722
+      ],
+      "harness": [
+        257,
+        269,
+        154,
+        156,
+        270,
+        435,
+        436,
+        454,
+        500,
+        504,
+        505,
+        550,
+        607,
+        677,
+        717
       ],
       "spine": [
         165,
@@ -2154,6 +2170,22 @@
   "prs": {
     "open": [
       {
+        "number": 725,
+        "title": "feat(core): the spec model's read side — CircuitSpec, Sidecar, parseSpec, versioned from v1 (N.1, part A)",
+        "url": "https://github.com/mezivillager/hacer/pull/725",
+        "author": "mezivillager",
+        "labels": [
+          "risk:2",
+          "project:foundation"
+        ],
+        "headRefName": "feat/374a-spec-parse",
+        "isDraft": false,
+        "createdAt": "2026-10-15T02:53:37Z",
+        "mergedAt": null,
+        "closes": [],
+        "verdicts": []
+      },
+      {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
         "url": "https://github.com/mezivillager/hacer/pull/514",
@@ -2181,6 +2213,32 @@
       }
     ],
     "merged": [
+      {
+        "number": 721,
+        "title": "refactor(nodes): one BusComponent3D mesh for the bus splitter and joiner",
+        "url": "https://github.com/mezivillager/hacer/pull/721",
+        "author": "mezivillager",
+        "labels": [
+          "risk:2",
+          "project:foundation"
+        ],
+        "headRefName": "refactor/714-one-bus-mesh",
+        "isDraft": false,
+        "createdAt": "2026-10-15T02:32:26Z",
+        "mergedAt": "2026-10-15T02:55:35Z",
+        "closes": [
+          714
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus 5.5",
+            "at": "2026-10-15T02:45:55Z",
+            "url": "https://github.com/mezivillager/hacer/pull/721#issuecomment-6183225390"
+          }
+        ]
+      },
       {
         "number": 720,
         "title": "refactor(nodes): mesh types from src/types/scene.ts, no store imports; Wire3D mode required",
@@ -3622,29 +3680,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/643#issuecomment-5941400707"
           }
         ]
-      },
-      {
-        "number": 642,
-        "title": "docs(skills): dispatch prompt-it seats by name; effort from the seat definitions",
-        "url": "https://github.com/mezivillager/hacer/pull/642",
-        "author": "mezivillager",
-        "labels": [
-          "released"
-        ],
-        "headRefName": "docs/per-phase-effort",
-        "isDraft": false,
-        "createdAt": "2026-10-01T20:00:39Z",
-        "mergedAt": "2026-10-01T20:29:58Z",
-        "closes": [],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "coordinator (risk:0 docs-only exception)",
-            "at": "2026-10-01T20:29:46Z",
-            "url": "https://github.com/mezivillager/hacer/pull/642#issuecomment-5939958184"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -3708,12 +3743,12 @@
         }
       },
       {
-        "number": 714,
-        "ref": "refs/heads/claim/714",
-        "sha": "a6edac48224c00f4e8cddabd8c7a0764f5f43a40",
+        "number": 713,
+        "ref": "refs/heads/claim/713",
+        "sha": "b12ab5fb02c55fb44be15c33d8f079adf7406b6e",
         "state": "OPEN",
-        "title": "One bus-component mesh for the splitter and the joiner",
-        "url": "https://github.com/mezivillager/hacer/issues/714",
+        "title": "Nodes and buses lock dragging by one rule (one predicate for both renderers)",
+        "url": "https://github.com/mezivillager/hacer/issues/713",
         "labels": [
           "agent-ready",
           "in-progress",
@@ -3728,12 +3763,37 @@
           "branch": null,
           "handoff": "none",
           "author": "mezivillager",
+          "at": "2026-10-15T02:52:34Z",
+          "url": "https://github.com/mezivillager/hacer/issues/713#issuecomment-6183301459"
+        }
+      },
+      {
+        "number": 714,
+        "ref": "refs/heads/claim/714",
+        "sha": "a6edac48224c00f4e8cddabd8c7a0764f5f43a40",
+        "state": "CLOSED",
+        "title": "One bus-component mesh for the splitter and the joiner",
+        "url": "https://github.com/mezivillager/hacer/issues/714",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:2",
+          "project:foundation"
+        ],
+        "onClosedIssue": true,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-50",
+          "branch": null,
+          "handoff": "none",
+          "author": "mezivillager",
           "at": "2026-10-15T02:16:07Z",
           "url": "https://github.com/mezivillager/hacer/issues/714#issuecomment-6182875643"
         }
       }
     ],
-    "onClosedIssues": 0
+    "onClosedIssues": 1
   },
   "cloudLane": {
     "items": [
@@ -5432,7 +5492,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-01",
-        "merges": 15
+        "merges": 14
       },
       {
         "date": "2026-10-02",
@@ -5448,28 +5508,28 @@
       },
       {
         "date": "2026-10-15",
-        "merges": 8
+        "merges": 9
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-01T02:30:33.256Z",
-      "merged": 62,
+      "since": "2026-10-01T02:56:16.196Z",
+      "merged": 63,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 2
       },
       "blockedOnce": {
         "count": 1,
-        "of": 50,
+        "of": 51,
         "prs": [
           700
         ]
       },
       "coverage": {
         "code": {
-          "merged": 36,
-          "withVerdict": 36,
+          "merged": 37,
+          "withVerdict": 37,
           "without": []
         },
         "nonCode": {
@@ -8509,7 +8569,7 @@
       },
       {
         "date": "2026-10-15",
-        "at": "2026-10-15T02:16:38.360Z",
+        "at": "2026-10-15T02:30:33.256Z",
         "byProject": {
           "harness": [
             257,
@@ -8652,17 +8712,14 @@
     "items": [
       {
         "pr": null,
-        "sha": "b12ab5fb02c55fb44be15c33d8f079adf7406b6e",
+        "sha": "c8ac573b5bb89e075c1e1c4616ff64f6e4bce5db",
         "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-15T02:18:10Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38670083010/job/116210905304",
-        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 71,
-          "new": 0
-        },
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/38673565797/job/116221956964",
+        "line": null,
+        "verdict": null,
+        "fields": {},
         "disagrees": false
       },
       {
@@ -8703,6 +8760,52 @@
         "conclusion": "SUCCESS",
         "completedAt": "2026-09-25T06:48:18Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/36104338672/job/107973412518",
+        "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 71,
+          "new": 0
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 725,
+        "sha": "5b443cee65091b8bfa9002b2f569e99b881d1a07",
+        "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-15T02:53:51Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/38673396242/job/116221429105",
+        "line": "HYGIENE: WARN reviewable=378 test=308 excluded=0 files=9 issue=#374,#723 linked=part-of",
+        "verdict": "WARN",
+        "fields": {
+          "reviewable": 378,
+          "test": 308,
+          "excluded": 0,
+          "files": 9,
+          "issue": "#374,#723",
+          "linked": "part-of"
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 725,
+        "sha": "5b443cee65091b8bfa9002b2f569e99b881d1a07",
+        "check": "browser-qa",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-15T02:53:56Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/38673395868/job/116221426688",
+        "line": "BROWSER-QA: skipped (no critical paths)",
+        "verdict": "SKIPPED",
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 725,
+        "sha": "5b443cee65091b8bfa9002b2f569e99b881d1a07",
+        "check": "ci",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-15T02:55:45Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/38673395169/job/116221424746",
         "line": "LAYER-RATCHET: 71 known violations (39 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 8 engine globals suppressed · 0 new",
         "verdict": "PASS",
         "fields": {
