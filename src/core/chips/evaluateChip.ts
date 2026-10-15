@@ -1,9 +1,10 @@
 // src/core/chips/evaluateChip.ts
 import type { ChipDefinition } from './types'
 import type { ChipRegistry } from './registry'
-import { isBuiltinChip, isHDLChip } from './types'
+import { isBuiltinChip, isCircuitChip } from './types'
 import { parseHDL } from '../hdl'
 import { compileHDL, type CompiledEvaluator, type EvalContext } from '../hdl/compiler'
+import { compileSpec } from '../spec/compileSpec'
 
 export const DEFAULT_MAX_DEPTH = 100
 
@@ -20,6 +21,30 @@ const compiledCache = new WeakMap<ChipDefinition, CachedEvaluator>()
 
 const stillResolves = (cached: CachedEvaluator, registry: ChipRegistry): boolean =>
   cached.resolvedParts.every(([name, def]) => registry.get(name) === def)
+
+function compile(chip: ChipDefinition, registry: ChipRegistry): { evaluate: CompiledEvaluator; partNames: Set<string> } {
+  const refuse = (messages: string[]): never => {
+    throw new Error(`evaluateChip: chip "${chip.name}" failed to compile: ${messages.join('; ')}`)
+  }
+  if (isCircuitChip(chip)) {
+    const { spec } = chip.implementation
+    const result = compileSpec({ doc: spec, diagnostics: [] }, registry)
+    if (!result.success) return refuse(result.diagnostics.map((d) => d.message))
+    return { evaluate: result.evaluate, partNames: new Set(spec.parts.map((part) => part.chip)) }
+  }
+  if (chip.implementation.type !== 'hdl') {
+    throw new Error(`evaluateChip: chip "${chip.name}" implementation type "${chip.implementation.type}" is not supported yet`)
+  }
+  const parsed = parseHDL(chip.implementation.source)
+  if (!parsed.success) {
+    throw new Error(`evaluateChip: chip "${chip.name}" HDL failed to parse: ${parsed.errors.map((e) => e.message).join('; ')}`)
+  }
+  const result = compileHDL(parsed.chip, registry)
+  if (!result.success) return refuse(result.errors.map((e) => e.message))
+  const partNames = new Set(parsed.chip.parts.map((part) => part.name))
+  if (parsed.chip.builtin) partNames.add(parsed.chip.builtin)
+  return { evaluate: result.evaluate, partNames }
+}
 
 export function evaluateChip(
   chip: ChipDefinition,
@@ -47,32 +72,20 @@ export function evaluateChipWithCtx(
   if (isBuiltinChip(chip)) {
     return chip.implementation.evaluate(inputs)
   }
-  if (isHDLChip(chip)) {
-    let cached = compiledCache.get(chip)
-    const version = ctx.registry.version()
-    if (cached && (cached.checkedAgainst !== ctx.registry || cached.checkedAtVersion !== version)) {
-      if (stillResolves(cached, ctx.registry)) {
-        cached.checkedAgainst = ctx.registry
-        cached.checkedAtVersion = version
-      } else {
-        cached = undefined
-      }
+  let cached = compiledCache.get(chip)
+  const version = ctx.registry.version()
+  if (cached && (cached.checkedAgainst !== ctx.registry || cached.checkedAtVersion !== version)) {
+    if (stillResolves(cached, ctx.registry)) {
+      cached.checkedAgainst = ctx.registry
+      cached.checkedAtVersion = version
+    } else {
+      cached = undefined
     }
-    if (!cached) {
-      const parsed = parseHDL(chip.implementation.source)
-      if (!parsed.success) {
-        throw new Error(`evaluateChip: chip "${chip.name}" HDL failed to parse: ${parsed.errors.map((e) => e.message).join('; ')}`)
-      }
-      const result = compileHDL(parsed.chip, ctx.registry)
-      if (!result.success) {
-        throw new Error(`evaluateChip: chip "${chip.name}" failed to compile: ${result.errors.map((e) => e.message).join('; ')}`)
-      }
-      const partNames = new Set(parsed.chip.parts.map((part) => part.name))
-      if (parsed.chip.builtin) partNames.add(parsed.chip.builtin)
-      cached = { evaluate: result.evaluate, resolvedParts: [...partNames].map((name) => [name, ctx.registry.get(name)] as const), checkedAgainst: ctx.registry, checkedAtVersion: version }
-      compiledCache.set(chip, cached)
-    }
-    return cached.evaluate(inputs, ctx)
   }
-  throw new Error(`evaluateChip: chip "${chip.name}" implementation type "${chip.implementation.type}" is not supported yet`)
+  if (!cached) {
+    const { evaluate, partNames } = compile(chip, ctx.registry)
+    cached = { evaluate, resolvedParts: [...partNames].map((name) => [name, ctx.registry.get(name)] as const), checkedAgainst: ctx.registry, checkedAtVersion: version }
+    compiledCache.set(chip, cached)
+  }
+  return cached.evaluate(inputs, ctx)
 }
