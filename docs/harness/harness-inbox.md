@@ -141,7 +141,7 @@ action writes.
 
 ### HRN-004 · `scripts/merge-on-green.mjs` ends with one greppable outcome line
 - **Date:** 2026-10-15 · **Kind:** mechanise · **Retro run:** 2026-10-15
-- **Status:** proposed
+- **Status:** filed (#705)
 - **Evidence:** two coordinator slips in one run (2026-10-04 §3), both about reading a merge's
   outcome.
   - #688 was recorded as merged when its merge had failed: `pr-hygiene` found no linked issue.
