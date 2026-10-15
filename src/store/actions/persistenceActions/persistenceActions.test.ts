@@ -342,3 +342,58 @@ describe('loadCircuit: telling the person what the load pruned', () => {
     ])
   })
 })
+
+describe('a bus component of a kind this build does not know', () => {
+  const ZERO = { x: 0, y: 0, z: 0 }
+  const bus = (id: string, kind: string) => ({
+    id,
+    kind,
+    position: ZERO,
+    rotation: ZERO,
+    width: 4,
+    inputs: [],
+    outputs: [],
+    selected: false,
+  })
+  const blob = JSON.stringify({
+    version: 1,
+    name: 'mux',
+    savedAt: new Date().toISOString(),
+    gates: [],
+    wires: [
+      {
+        id: 'w-mux',
+        from: { type: 'bus', entityId: 'bus-mux', pinId: 'out' },
+        to: { type: 'bus', entityId: 'bus-ok', pinId: 'in' },
+        segments: [],
+        crossesWireIds: [],
+      },
+    ],
+    inputNodes: [],
+    outputNodes: [],
+    junctions: [],
+    busComponents: [bus('bus-mux', 'mux'), bus('bus-ok', 'splitter')],
+  })
+  const BUS_TOAST = 'Skipped bus component "bus-mux" while loading circuit — this build has no bus component of kind "mux".'
+  const WIRE_TOAST =
+    'Skipped 1 wire while loading circuit — wiring left dangling by gates or bus components that could not be loaded.'
+
+  const toastsOf = async (load: () => boolean): Promise<string[]> => {
+    const { notify } = await import('@/lib/notify')
+    vi.mocked(notify.warning).mockClear()
+    expect(load()).toBe(true)
+    return vi.mocked(notify.warning).mock.calls.map(([message]) => message)
+  }
+
+  it('importCircuitJSON names it in a toast and loads the rest', async () => {
+    expect(await toastsOf(() => circuitActions.importCircuitJSON(blob))).toEqual([BUS_TOAST, WIRE_TOAST])
+    expect(useCircuitStore.getState().busComponents.map((b) => b.id)).toEqual(['bus-ok'])
+    expect(useCircuitStore.getState().wires).toEqual([])
+  })
+
+  it('loadCircuit names it in a toast and loads the rest', async () => {
+    localStorage.setItem('hacer-circuit-mux', blob)
+    expect(await toastsOf(() => circuitActions.loadCircuit('mux'))).toEqual([BUS_TOAST, WIRE_TOAST])
+    expect(useCircuitStore.getState().busComponents.map((b) => b.id)).toEqual(['bus-ok'])
+  })
+})
