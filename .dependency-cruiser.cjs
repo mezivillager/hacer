@@ -71,8 +71,7 @@ const MESH_FILES = [
   'src/gates/common/BaseGate.tsx',
   'src/nodes/components/InputNode3D.tsx',
   'src/nodes/components/OutputNode3D.tsx',
-  'src/nodes/BusSplitter3D.tsx',
-  'src/nodes/BusJoiner3D.tsx',
+  'src/nodes/BusComponent3D.tsx',
   'src/components/canvas/Wire3D.tsx',
 ]
 const MESHES = `^(${MESH_FILES.map((file) => file.replaceAll('.', '\\.')).join('|')})$`
