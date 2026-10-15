@@ -16,7 +16,7 @@ This document helps AI agents and developers understand the codebase structure a
 | **Builtin chip definitions** | `src/core/chips/appRegistry.ts`, `src/core/chips/builtins/project01.ts` |
 | **3D chip body & icons** | `src/components/scene/ChipBody3D.tsx`, `src/components/scene/chipBodyLayout.ts`, `src/components/ui/icons/ChipIcons.tsx` |
 | **Gate placement / renderer** | `src/gates/GateRenderer.tsx`, `src/gates/common/BaseGate.tsx`, `HACER_LLM_GUIDE.md` |
-| **Bus splitter/joiner components** | entity: `src/store/types.ts` (`BusComponent`), actions `src/store/actions/busActions/` + `src/store/actions/busPlacementActions/`; logic `src/simulation/busLogic.ts`; layout `src/components/scene/busBodyLayout.ts`; render `src/nodes/BusSplitter3D.tsx`, `src/nodes/BusJoiner3D.tsx`, `src/nodes/BusComponentRenderer.tsx`; see ADR-0009 |
+| **Bus splitter/joiner components** | entity: `src/store/types.ts` (`BusComponent`), actions `src/store/actions/busActions/` + `src/store/actions/busPlacementActions/`; logic `src/simulation/busLogic.ts`; layout `src/components/scene/busBodyLayout.ts`; render `src/nodes/BusComponent3D.tsx`, `src/nodes/BusComponentRenderer.tsx`; see ADR-0009 |
 | **Simulation / boolean logic** | `src/simulation/topologicalEval.ts` (evaluates placed chips through `src/core/chips/evaluateChip.ts`) · specs: `src/simulation/topologicalEval.test.ts`, per-chip truth tables in `src/core/chips/builtins/project01.test.ts` |
 | **R3F canvas / scene** | `src/components/canvas/` |
 | **Non-3D DOM shell / 3D⇄2D boundary** | `src/components/Shell.tsx` (`App = providers → <Shell scene={<CanvasArea/>} />`); the store is the contract |
@@ -98,7 +98,7 @@ src/
 │   └── types.ts      # Gate-renderer prop types
 ├── nodes/            # Circuit I/O nodes, junctions (HDL-level pins), and bus components
 │   ├── components/   # InputNode3D, OutputNode3D, JunctionNode3D
-│   ├── BusSplitter3D.tsx / BusJoiner3D.tsx / BusComponentRenderer.tsx  # bus components (ADR-0009)
+│   ├── BusComponent3D.tsx / BusComponentRenderer.tsx  # bus components (ADR-0009)
 │   └── config/       # Node configuration (nodeConfig.ts)
 ├── simulation/       # Circuit simulation engine (pure logic)
 │                     #   index.ts — the other half of the engine's front door: bus operations.
