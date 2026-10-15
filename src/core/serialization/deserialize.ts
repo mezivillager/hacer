@@ -30,23 +30,23 @@ export interface DeserializedCircuit {
  *
  * **Where the line falls.** A warning is always about *one entry*, and only ever an
  * entry this reader *chose* to drop: a gate it could not rebuild, a bus component of
- * a kind it does not know, a wire with an endpoint of a type it does not know, and
- * (#402) the wires and junctions that pruning then takes with it. A bus entry with no
- * readable `kind`, or a wire endpoint with no readable `type` (an empty object, an
- * array, a number or a string), is one it does not know, so it is one warning too; a
- * `null` bus entry, a malformed bus of a known kind, or a wire with no endpoint object,
- * still throws. Anything else wrong with the *document itself* — a missing top-level
- * array, or a malformed wire, node or junction record — is not one bad entry but
- * nothing to load, and it still throws out of
- * `deserializeCircuit` for the caller to catch, exactly as it did before warnings
- * became data. Widening recovery to those records would change what a person sees,
- * which #181 deliberately does not do.
+ * a kind it does not know, a wire with an endpoint of a type it does not know, a wire
+ * whose width is not a positive integer, and (#402) the wires and junctions that pruning
+ * then takes with it. A bus entry with no readable `kind`, or a wire endpoint with no
+ * readable `type` (an empty object, an array, a number or a string), is one it does not
+ * know, so it is one warning too; a `null` bus entry, a malformed bus of a known kind, or
+ * a wire with no endpoint object, still throws. Anything else wrong with the *document
+ * itself* — a missing top-level array, or a malformed wire, node or junction record — is
+ * not one bad entry but nothing to load, and it still throws out of `deserializeCircuit`
+ * for the caller to catch, exactly as it did before warnings became data. Widening
+ * recovery to those records would change what a person sees, which #181 deliberately
+ * does not do.
  *
  * **Counts, not a wall of toasts.** `unknown-bus-kind`, `unknown-endpoint-type`,
- * `dropped-wire` and `dropped-junction` are emitted one per entity, because a caller or
- * a test wants the ids — but a document that drops 40 wires must not raise 40 toasts, so
- * the store's `reportDeserialized` summarises exactly these four codes into one line and
- * leaves every gate code's toast alone.
+ * `invalid-wire-width`, `dropped-wire` and `dropped-junction` are emitted one per entity,
+ * because a caller or a test wants the ids — but a document that drops 40 wires must not
+ * raise 40 toasts, so the store's `reportDeserialized` summarises exactly these five codes
+ * into one line and leaves every gate code's toast alone.
  *
  * **One deliberate widening, not parity.** A gate entry that is literally `null` used
  * to kill the whole load: the old reader read `s.type` *outside* its `try`, so it threw
@@ -104,6 +104,14 @@ export type DeserializeWarning =
       end: 'from' | 'to'
       /** That end's `type` field as saved, e.g. `'probe'`. */
       endpointType: string
+    }
+  | {
+      code: 'invalid-wire-width'
+      message: string
+      /** Id of the wire that was dropped. */
+      wireId: string
+      /** The wire's `width` field as saved, e.g. `'2.5'`. */
+      wireWidth: string
     }
   | {
       code: 'dropped-wire'
@@ -173,9 +181,14 @@ const ENDPOINT_TYPES: Record<SerializedEndpointType, true> = {
 const isKnownEndpointType = (type: unknown): boolean =>
   typeof type === 'string' && Object.prototype.hasOwnProperty.call(ENDPOINT_TYPES, type)
 
-/** A saved value for a warning: a string verbatim, anything else as its JSON. */
+/** A saved value for a warning: a string or number as written, anything else as its JSON. */
 const asSaved = (value: unknown): string =>
-  typeof value === 'string' ? value : (JSON.stringify(value) ?? String(value))
+  typeof value === 'string' || typeof value === 'number'
+    ? String(value)
+    : (JSON.stringify(value) ?? String(value))
+
+const isValidWireWidth = (width: unknown): boolean =>
+  width === undefined || (typeof width === 'number' && Number.isInteger(width) && width > 0)
 
 const cloneVec3 = (v: { x: number; y: number; z: number }) => ({ x: v.x, y: v.y, z: v.z })
 
@@ -430,6 +443,19 @@ export function deserializeCircuit(data: SerializedCircuit): DeserializeResult {
         message:
           `Skipped wire "${String(s.id)}" while loading circuit — ` +
           `this build has no wire endpoint of type "${endpointType}" (its "${unknownEnd}" end).`,
+      })
+      continue
+    }
+    if (!isValidWireWidth(s.width)) {
+      droppedWireIds.add(s.id)
+      const wireWidth = asSaved(s.width)
+      warnings.push({
+        code: 'invalid-wire-width',
+        wireId: String(s.id),
+        wireWidth,
+        message:
+          `Skipped wire "${String(s.id)}" while loading circuit — ` +
+          `its width "${wireWidth}" is not a positive whole number.`,
       })
       continue
     }

@@ -58,6 +58,7 @@ function storageKeyFor(name: string): string {
 const SUMMARISED_CODES = new Set<DeserializeWarning['code']>([
   'unknown-bus-kind',
   'unknown-endpoint-type',
+  'invalid-wire-width',
   'dropped-wire',
   'dropped-junction',
 ])
@@ -74,6 +75,7 @@ function droppedEntriesSummary(warnings: DeserializeWarning[]): string | null {
   const count = (code: DeserializeWarning['code']) => warnings.filter((w) => w.code === code).length
   const buses = count('unknown-bus-kind')
   const oddWires = count('unknown-endpoint-type')
+  const badWidths = count('invalid-wire-width')
   const wires = count('dropped-wire')
   const junctions = count('dropped-junction')
   const dangling = [
@@ -83,6 +85,7 @@ function droppedEntriesSummary(warnings: DeserializeWarning[]): string | null {
   const clauses = [
     ...(buses > 0 ? [`${countOf(buses, 'bus component')} of a kind this build does not know`] : []),
     ...(oddWires > 0 ? [`${countOf(oddWires, 'wire')} with an endpoint type this build does not know`] : []),
+    ...(badWidths > 0 ? [`${countOf(badWidths, 'wire')} with a width that is not a positive whole number`] : []),
     ...(dangling.length > 0 ? [`${dangling.join(' and ')} left dangling by parts that could not be loaded`] : []),
   ]
   return clauses.length === 0 ? null : `Skipped while loading circuit: ${clauses.join('; ')}.`
@@ -102,7 +105,7 @@ function droppedEntriesSummary(warnings: DeserializeWarning[]): string | null {
  *   loads. Same count and order as the reader's own `notify.warning` calls used to
  *   produce; two of the texts changed (same information, better wording). Bus
  *   components of a kind it does not know, wires with an endpoint type it does not
- *   know, and the wires and junctions pruning took with dropped entries (#402) are
+ *   know or a width that is not a positive integer, and the wires and junctions pruning took with dropped entries (#402) are
  *   reported one warning per entity, but shown as **one** line naming the count per
  *   kind — a document that loses 40 wires must not raise 40 toasts, and the ids are
  *   for the caller and its tests, not for the person.
@@ -110,7 +113,8 @@ function droppedEntriesSummary(warnings: DeserializeWarning[]): string | null {
  *   missing top-level array, a malformed wire/node/junction/bus record), so there is
  *   nothing to load. Unchanged: each caller's `try/catch` turns it into one error
  *   toast. Recovery is per *gate or bus-component* entry, and per *wire* only for an
- *   endpoint type it does not know — see `DeserializeWarning`.
+ *   endpoint type it does not know or a width that is not a positive integer — see
+ *   `DeserializeWarning`.
  *
  * @returns the restored circuit, or `null` when there is nothing to load.
  */
