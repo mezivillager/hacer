@@ -8,7 +8,7 @@
  *
  * Re-exports are named, never `export *`: each name here is a commitment the repo keeps, and a
  * wildcard would widen the public surface every time a sub-index grew. Exports come from the
- * module indexes (`./chips`, `./hdl`, `./testing`), so the front door never reaches past one either.
+ * module indexes (`./chips`, `./hdl`, `./spec`, `./testing`), so the front door never reaches past one either.
  *
  * Deliberately NOT exported, each for a reason:
  *   - `./serialization` — the canvas document's save format. `deserialize` imports the store, so
@@ -38,6 +38,28 @@ export type {
   HDLSlice,
 } from './hdl'
 export { compileHDL, hdlChipDefinition, parseHDL, printHDL, project1HdlSources } from './hdl'
+
+// ── The spec document: HDL-shaped text and its sidecar (ADR-0020 §1) ──────────────────────────────
+export type {
+  CircuitSpec,
+  Hint,
+  ImportNote,
+  Net,
+  NodeId,
+  ParseSpecOptions,
+  ParseSpecResult,
+  Part,
+  PartId,
+  Port,
+  PrintSpecOptions,
+  Ref,
+  Sidecar,
+  SpecDiagnostic,
+  SpecDiagnosticCode,
+  SpecSchemaVersion,
+  TestBinding,
+} from './spec'
+export { emptySidecar, normalizeSpec, parseSpec, printSpec, SPEC_SCHEMA_VERSION } from './spec'
 
 // ── The chip registry, and evaluation ───────────────────────────────────────────────────────────
 export type {
