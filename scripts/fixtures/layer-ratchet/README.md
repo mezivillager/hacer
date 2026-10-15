@@ -13,6 +13,6 @@ at `src`. Keep the imports deliberately wrong.
 
 `src/cli` and `src/mcp` each hold one import of the store or the UI: `surfaces-through-core`.
 
-`src/nodes/BusSplitter3D.tsx` is a mesh component with a type-only store import: `mesh-no-state`
+`src/nodes/BusComponent3D.tsx` is a mesh component with a type-only store import: `mesh-no-state`
 must catch it. `src/nodes/NodeRenderer.tsx` beside it is an adapter that reads the store, and the
 rule must leave it alone — it names the mesh files, not their folders.

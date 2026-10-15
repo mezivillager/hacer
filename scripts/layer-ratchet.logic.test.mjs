@@ -90,7 +90,7 @@ describe('the rules in .dependency-cruiser.cjs', () => {
 
   it('flags the named mesh files only, never the store-reading adapter beside them', () => {
     const flagged = violations.filter((v) => v.rule.name === 'mesh-no-state').map((v) => v.from)
-    expect(flagged).toEqual(['src/nodes/BusSplitter3D.tsx'])
+    expect(flagged).toEqual(['src/nodes/BusComponent3D.tsx'])
   })
 
   it('fires every rule it declares — no rule is dead', () => {
