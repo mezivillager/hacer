@@ -1,15 +1,16 @@
 /**
- * CLI driver (#205). Writes each scenario as `Scenario.hdl` plus the `.tst`/`.cmp` pair for its
- * recorded vector, and runs `hacer test --json` on them in a child process: the verdict is the
- * CLI's. `bin` is the built entry: `pnpm run build:cli`, or that build redirected to any directory.
+ * CLI driver (#205). Writes each scenario's `.hdl`/`.tst`/`.cmp` (a recovered circuit's as
+ * `Scenario.*`, from its recorded vector) and runs `hacer test --json` on them in a child process:
+ * the verdict is the CLI's. `bin` is the built entry: `pnpm run build:cli`, or that build
+ * redirected to any directory.
  */
 import { spawnSync } from 'node:child_process'
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import type { TestReport } from '@/cli/runCli'
-import { SCENARIO_CHIP, scenarioTest, scenarioToHdl } from '../toHdl'
 import type { ChipScenario, Scenario } from '../types'
+import { asChipScenario } from './asChipScenario'
 import type { CoreScenarioResult } from './core'
 import { testReportErrors } from './report'
 
@@ -29,15 +30,14 @@ function readReport(stdout: string): TestReport | null {
 /** Run one scenario through the `hacer` bin. One that does not translate never spawns it. */
 export function runCliScenario(scenario: Scenario | ChipScenario, bin: string): CliScenarioResult {
   const name = scenario.name
-  if ('tst' in scenario) return { name, ok: false, errors: ['not implemented'] }
-  const translated = scenarioToHdl(scenario)
-  if (!translated.ok) return { name, ok: false, errors: translated.errors }
+  const asChip = asChipScenario(scenario)
+  if (!asChip.ok) return { name, ok: false, errors: asChip.errors }
 
-  const files = { hdl: translated.chip.hdl, ...scenarioTest(translated.chip) }
+  const files = asChip.scenario
   const dir = mkdtempSync(path.join(tmpdir(), 'hacer-scenario-'))
   try {
     const paths = (['hdl', 'tst', 'cmp'] as const).map((ext) => {
-      const file = path.join(dir, `${SCENARIO_CHIP}.${ext}`)
+      const file = path.join(dir, `${files.chip}.${ext}`)
       writeFileSync(file, files[ext])
       return file
     })

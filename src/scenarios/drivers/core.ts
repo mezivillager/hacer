@@ -11,6 +11,7 @@ import {
   evaluateChipWithCtx,
   parseHDL,
   registerProject1Builtins,
+  testChip,
   type EvalContext,
 } from '@/core'
 import { chainCircuitScenario, circuitBuildScenario } from '../circuitBuilding'
@@ -18,6 +19,7 @@ import { threeGateScenario } from '../nand3'
 import { simulationTwoGateScenario } from '../simulation'
 import { scenarioToHdl } from '../toHdl'
 import type { ChipScenario, Scenario } from '../types'
+import { testReportErrors } from './report'
 
 /** One scenario after the core driver has run it. */
 export interface CoreScenarioResult {
@@ -77,8 +79,9 @@ export function runScenario(scenario: Scenario): CoreScenarioResult {
 export type ChipScenarioResult = Pick<CoreScenarioResult, 'name' | 'ok' | 'errors'>
 
 /** Run one chip scenario in process, through `testChip`. */
-export function runChipScenario(scenario: ChipScenario): ChipScenarioResult {
-  return { name: scenario.name, ok: false, errors: ['not implemented'] }
+export function runChipScenario({ name, chip, hdl, tst, cmp }: ChipScenario): ChipScenarioResult {
+  const report = testChip({ path: `${chip}.hdl`, source: hdl }, { path: `${chip}.tst`, source: tst }, { path: `${chip}.cmp`, source: cmp })
+  return { name, ok: report.status === 'pass', errors: testReportErrors(report) }
 }
 
 /** Run every recovered scenario. */
