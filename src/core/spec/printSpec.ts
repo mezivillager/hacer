@@ -68,7 +68,8 @@ export function printSpec(doc: CircuitSpec, options: PrintSpecOptions = {}): str
   const aliases = doc.nets.filter(isAlias).sort((a, b) => compare(a.id, b.id))
 
   const lines = plain ? [] : [`// hacer-spec ${SPEC_SCHEMA_VERSION}`]
-  lines.push(`CHIP ${doc.name} {`, `${INDENT}IN ${doc.ins.map(printPort).join(', ')};`, `${INDENT}OUT ${doc.outs.map(printPort).join(', ')};`, '', `${INDENT}PARTS:`)
+  const ports = (keyword: string, list: Port[]): string[] => (list.length > 0 ? [`${INDENT}${keyword} ${list.map(printPort).join(', ')};`] : [])
+  lines.push(`CHIP ${doc.name} {`, ...ports('IN', doc.ins), ...ports('OUT', doc.outs), '', `${INDENT}PARTS:`)
   for (const part of doc.parts) {
     const conns = (bindings.get(part.id) ?? []).sort(byPin).map((b) => `${printPinRef(b.pin, b.slice)}=${b.signal}`)
     lines.push(`${INDENT}${part.chip}(${conns.join(', ')}); // #${part.id}`)
