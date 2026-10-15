@@ -44,7 +44,7 @@ const mounted: Renderer[] = []
 
 async function mount(overrides: Partial<ComponentProps<typeof Wire3D>> = {}): Promise<Renderer> {
   const renderer = await ReactThreeTestRenderer.create(
-    <Wire3D start={{ x: 0, y: 0.2, z: 0 }} end={{ x: 3, y: 0.2, z: 0 }} precomputedPath={PATH} {...overrides} />,
+    <Wire3D start={{ x: 0, y: 0.2, z: 0 }} end={{ x: 3, y: 0.2, z: 0 }} precomputedPath={PATH} performanceMode="normal" {...overrides} />,
   )
   mounted.push(renderer)
   return renderer

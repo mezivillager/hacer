@@ -19,7 +19,7 @@ interface Wire3DProps {
   /** Whether the wire is selected */
   isSelected?: boolean
   /** 'low-power' draws hops with fewer points and selected wires thinner. */
-  performanceMode?: PerformanceMode
+  performanceMode: PerformanceMode
 }
 
 /**
@@ -36,7 +36,7 @@ export function Wire3D({
   isActive = false,
   isPreview = false,
   isSelected = false,
-  performanceMode = 'normal',
+  performanceMode,
 }: Wire3DProps) {
 
   // Guard against undefined positions
