@@ -57,7 +57,28 @@ function findJunctionWrites(fileName: string, source: string): JunctionWrite[] {
 
 // Exact site counts. Only for a shape the app reads but no action writes (a serialised or imported
 // document) or a test of the type itself; a store-action test on a hand-made shape migrates instead.
-const ALLOWED: Record<string, { sites: number; reason: string }> = {}
+const ALLOWED: Record<string, { sites: number; reason: string }> = {
+  'src/store/types.test.ts': {
+    sites: 1,
+    reason: 'A type-shape test: it builds a JunctionNode value to check the type itself and runs no store action.',
+  },
+  'src/store/actions/persistenceActions/persistenceActions.test.ts': {
+    sites: 1,
+    reason: 'A saved document fed to loadCircuit: the serialised junctions (left dangling by gates that cannot load) are the input under test.',
+  },
+  'src/store/actions/signalActions/signalActions.test.ts': {
+    sites: 3,
+    reason:
+      'removeJunction on imported documents (#377): branches whose endpoint is the junction, which no action writes, ' +
+      'and wireIds orders the gesture reaches only in several steps. The gesture shape is pinned beside them through drawBranch.',
+  },
+  'src/store/actions/simulationActions/simulationActions.test.ts': {
+    sites: 6,
+    reason:
+      'getSignalSourceValue resolving a junction endpoint, which only an imported document carries (no action writes a wire ' +
+      'that starts or ends at a junction): a junction chain, a wire id with no wire, and a junction cycle.',
+  },
+}
 
 const STORE_TESTS: Record<string, string> = Object.fromEntries(
   Object.entries(
