@@ -313,6 +313,12 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
   /** `producer->consumer` -> the signal and shared bits that edge carries, for the cycle message. */
   const edgeCarries = new Map<string, string>()
   const reportedDangling = new Set<string>()
+  const reportDangling = (i: number, message: string): void => {
+    const dangling = `${i}:${message}`
+    if (reportedDangling.has(dangling)) return
+    reportedDangling.add(dangling)
+    errors.push({ message, partName: resolved[i].part.name })
+  }
   reads.forEach((r, i) => {
     r.forEach((read) => {
       const producers = producersOf.get(read.signal)
@@ -320,10 +326,13 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
         // Not a chip input, not a literal, and no part writes it → dangling/typo'd signal. Once
         // per part, as before: `reads` was a Set of names and is now a list of ranges, so a part
         // reading two slices of one missing signal would otherwise say so twice.
-        const dangling = `${i}:${read.signal}`
-        if (reportedDangling.has(dangling)) return
-        reportedDangling.add(dangling)
-        errors.push({ message: `Signal "${read.signal}" is read by part "${resolved[i].part.name}" but no part produces it`, partName: resolved[i].part.name })
+        reportDangling(i, `Signal "${read.signal}" is read by part "${resolved[i].part.name}" but no part produces it`)
+        return
+      }
+      // Touching one driven bit is enough, as the spec path's `undriven` rule has it: a whole read
+      // of a slice-assembled signal stays legal (#355), and its unwritten bits read 0.
+      if (!producers.some((producer) => overlaps(read, producer.bits))) {
+        reportDangling(i, `Signal "${read.signal}"${describeBits(read)} is read by part "${resolved[i].part.name}" but no part drives it`)
         return
       }
       // An edge from EVERY producer whose bits this read actually touches. Every producer, because
