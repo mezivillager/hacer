@@ -12,6 +12,7 @@ import { compileSpec } from './compileSpec'
 import { fromLegacyCircuit } from './fromLegacyCircuit'
 import { splitNetId } from './netId'
 import { printSpec } from './printSpec'
+import { mulberry32, type Rng } from './specPrograms'
 import type { CircuitSpec } from './types'
 
 interface Outcome {
@@ -48,7 +49,9 @@ const toOut = (id: string): Endpoint => ({ type: 'output', entityId: id })
 const pinIn = (gateId: string, i: number): Endpoint => ({ type: 'gate', entityId: gateId, pinId: `${gateId}-in-${i}` })
 const pinOut = (gateId: string): Endpoint => ({ type: 'gate', entityId: gateId, pinId: `${gateId}-out-0` })
 const junctionEnd = (id: string): Endpoint => ({ type: 'junction', entityId: id })
-const circuit = (name: string, parts: Partial<SerializedCircuit>): SerializedCircuit => ({
+const busEnd = (id: string, pinId: string): Endpoint => ({ type: 'bus', entityId: id, pinId })
+const bus = (id: string, kind: 'splitter' | 'joiner', width: number) => ({ id, kind, position: ZERO, rotation: ZERO, width, inputs: [], outputs: [], selected: false })
+const circuit =(name: string, parts: Partial<SerializedCircuit>): SerializedCircuit => ({
   version: CIRCUIT_FORMAT_VERSION, name, savedAt: '2026-10-15T00:00:00.000Z',
   gates: [], wires: [], inputNodes: [], outputNodes: [], junctions: [], busComponents: [], ...parts,
 })
@@ -116,7 +119,93 @@ const FLOATING_INTO_PIN = circuit('FloatingIntoPin', {
   wires: [wire('w1', fromIn('ia'), pinIn('g1', 0)), wire('w2', ghost, pinIn('g1', 0)), wire('w3', pinOut('g1'), toOut('oo'))],
 })
 
+const C5 = circuit('C5', {
+  inputNodes: [node('ia', 'a', 4)],
+  outputNodes: [node('oo', 'out', 4)],
+  busComponents: [bus('split', 'splitter', 4), bus('join', 'joiner', 4)],
+  wires: [
+    wire('w1', fromIn('ia'), busEnd('split', 'in'), 4),
+    ...[0, 1, 2, 3].map((i) => wire(`b${i}`, busEnd('split', `out${i}`), busEnd('join', `in${i}`), 1)),
+    wire('w2', busEnd('join', 'out'), toOut('oo'), 4),
+  ],
+})
+const C10 = circuit('C10', {
+  inputNodes: [node('ia', 'a'), node('ib', 'b')],
+  outputNodes: [node('oo', 'out', 2)],
+  gates: [gate('g1', 'Not'), gate('g2', 'Not')],
+  busComponents: [bus('join', 'joiner', 2)],
+  wires: [
+    wire('w1', fromIn('ia'), pinIn('g1', 0), 1), wire('w2', fromIn('ib'), pinIn('g2', 0), 1),
+    wire('w3', pinOut('g1'), busEnd('join', 'in0'), 1), wire('w4', pinOut('g2'), busEnd('join', 'in1'), 1),
+    wire('w5', busEnd('join', 'out'), toOut('oo'), 2),
+  ],
+})
+const C11 = circuit('C11', {
+  inputNodes: [node('ia', 'a'), node('ib', 'b')],
+  outputNodes: [node('oo', 'out', 2)],
+  gates: [gate('g1', 'Not')],
+  busComponents: [bus('join', 'joiner', 2)],
+  wires: [
+    wire('w1', fromIn('ia'), busEnd('join', 'in0'), 1), wire('w2', fromIn('ib'), pinIn('g1', 0), 1),
+    wire('w3', pinOut('g1'), busEnd('join', 'in1'), 1), wire('w4', busEnd('join', 'out'), toOut('oo'), 2),
+  ],
+})
+const JOINER_INTO_PART = circuit('JoinerIntoPart', {
+  inputNodes: [node('ix', 'x', 4)],
+  outputNodes: [node('oo', 'out', 16)],
+  gates: [gate('g1', 'Not'), gate('g2', 'Not16')],
+  busComponents: [bus('split', 'splitter', 4), bus('join', 'joiner', 4)],
+  wires: [
+    wire('w1', fromIn('ix'), busEnd('split', 'in'), 4), wire('w2', busEnd('split', 'out0'), pinIn('g1', 0), 1),
+    wire('w3', pinOut('g1'), busEnd('join', 'in0'), 1),
+    ...[1, 2, 3].map((i) => wire(`b${i}`, busEnd('split', `out${i}`), busEnd('join', `in${i}`), 1)),
+    wire('w4', busEnd('join', 'out'), pinIn('g2', 0), 4), wire('w5', pinOut('g2'), toOut('oo'), 16),
+  ],
+})
+const SPLITTER_ON_PART = circuit('SplitterOnPart', {
+  inputNodes: [node('ix', 'x', 16)],
+  outputNodes: [node('ol', 'lo'), node('ob', 'both'), node('ot', 'top')],
+  gates: [gate('g1', 'Not16'), gate('g2', 'And')],
+  busComponents: [bus('split', 'splitter', 4)],
+  wires: [
+    wire('w1', fromIn('ix'), pinIn('g1', 0), 16), wire('w2', pinOut('g1'), busEnd('split', 'in'), 4),
+    wire('w3', busEnd('split', 'out0'), toOut('ol'), 1), wire('w4', busEnd('split', 'out1'), pinIn('g2', 0), 1),
+    wire('w5', busEnd('split', 'out2'), pinIn('g2', 1), 1), wire('w6', pinOut('g2'), toOut('ob'), 1),
+    wire('w7', busEnd('split', 'out3'), toOut('ot'), 1),
+  ],
+})
+const JOINER_BIT_TWICE = circuit('JoinerBitTwice', {
+  inputNodes: [node('ia', 'a'), node('ib', 'b')],
+  outputNodes: [node('oo', 'out', 2)],
+  busComponents: [bus('join', 'joiner', 2)],
+  wires: [
+    wire('w1', fromIn('ia'), busEnd('join', 'in0'), 1), wire('w2', fromIn('ib'), busEnd('join', 'in0'), 1),
+    wire('w3', fromIn('ib'), busEnd('join', 'in1'), 1), wire('w4', busEnd('join', 'out'), toOut('oo'), 2),
+  ],
+})
+const SPLITTER_FED_TWICE = circuit('SplitterFedTwice', {
+  inputNodes: [node('ia', 'a', 2), node('ib', 'b')],
+  outputNodes: [node('oo', 'top')],
+  gates: [gate('g1', 'Not')],
+  busComponents: [bus('split', 'splitter', 2)],
+  wires: [
+    wire('w1', fromIn('ia'), busEnd('split', 'in'), 2), wire('w2', fromIn('ib'), busEnd('split', 'in'), 1),
+    wire('w3', busEnd('split', 'out1'), pinIn('g1', 0), 1), wire('w4', pinOut('g1'), toOut('oo'), 1),
+  ],
+})
+
 const BIT: Vector[] = [{ a: 0 }, { a: 1 }]
+const every = (names: Record<string, number>): Vector[] =>
+  Object.entries(names).reduce<Vector[]>((acc, [name, width]) => acc.flatMap((v) => Array.from({ length: 2 ** width }, (_, n) => ({ ...v, [name]: n }))), [{}])
+const BUS: Array<[string, SerializedCircuit, Vector[]]> = [
+  ['C5, a 4-bit splitter and joiner', C5, every({ a: 4 })],
+  ['C10, a joiner fed by two parts', C10, every({ a: 1, b: 1 })],
+  ['C11, a joiner bit fed by an input node', C11, every({ a: 1, b: 1 })],
+  ['a joiner that feeds a part', JOINER_INTO_PART, every({ x: 4 })],
+  ['a splitter on a part\'s output', SPLITTER_ON_PART, [0, 1, 2, 6, 9, 0xf, 0xabcd, 0xfff0].map((x) => ({ x }))],
+  ['a joiner bit fed by two wires', JOINER_BIT_TWICE, every({ a: 1, b: 1 })],
+  ['a splitter fed by two wires', SPLITTER_FED_TWICE, every({ a: 2, b: 1 })],
+]
 const ALIASES = ['junction-chain', 'xor-fanout-junctions', 'junction-loop', 'mixed-widths']
 const SPIKE: Array<[string, SerializedCircuit, Vector[]]> = [
   ['C6', C6, BIT],
@@ -199,6 +288,60 @@ function parityFailures(saved: SerializedCircuit, vectors: Vector[], expected: O
       return got === expected[i].outputs[n.name] ? [] : [`${at}${n.name} is ${got}, legacy ${expected[i].outputs[n.name]}`]
     })
   })
+}
+
+/** The web-IDE-rejected constructs read off the nand2tetris export, then its values: what a learner takes to the web IDE. */
+function exportFailures(saved: SerializedCircuit, vectors: Vector[], expected: Outcome[]): string[] {
+  const { doc, sidecar } = fromLegacyCircuit(saved)
+  if (doc === null) return ['no document']
+  const parsed = parseHDL(printSpec(doc, { dialect: 'nand2tetris' }))
+  if (!parsed.success) return [`the export does not parse: ${parsed.errors.map((e) => e.message).join('; ')}`]
+  const outs = new Set(doc.outs.map((p) => p.name))
+  const ports = new Set([...doc.ins, ...doc.outs].map((p) => p.name))
+  const rejected = parsed.chip.parts.flatMap((part) => part.connections.flatMap((c) => [
+    ...(registry.get(part.name)?.inputs.some((p) => p.name === c.internal) && outs.has(c.external) ? [`${part.name}.${c.internal} reads OUT ${c.external}`] : []),
+    ...(c.externalSlice && !ports.has(c.external) ? [`subscripted internal signal ${c.external}`] : []),
+  ]))
+  if (rejected.length > 0 || sidecar.notes.some((n) => REFUSALS.has(n.kind))) return rejected
+  return vectors.flatMap((vector, i) => {
+    const run = viaExport(doc, Object.fromEntries(saved.inputNodes.map((n, k) => [doc.ins[k].name, vector[n.name] ?? 0])))
+    if ('refused' in run) return [`${JSON.stringify(vector)}: the export is refused: ${run.refused.join('; ')}`]
+    return saved.outputNodes.flatMap((n, k) => (run.outputs[doc.outs[k].name] === expected[i].outputs[n.name] ? [] : [`${JSON.stringify(vector)}: the export gives ${n.name} = ${run.outputs[doc.outs[k].name]}, legacy ${expected[i].outputs[n.name]}`]))
+  })
+}
+
+/** A random DAG of 1-, 4- and 16-bit parts, 4-bit splitters and joiners, wired the way `addWire` writes widths. */
+function randomBusDocument(rng: Rng, n: number): SerializedCircuit {
+  const pick = <T,>(list: readonly T[]): T => list[Math.floor(rng() * list.length)]
+  const ins = Array.from({ length: 1 + Math.floor(rng() * 3) }, (_, k) => node(`i${k}`, `in${k}`, pick([1, 4, 4, 16])))
+  const sources: Array<{ end: Endpoint; width: number }> = ins.map((x) => ({ end: fromIn(x.id), width: x.width }))
+  const wires: SerializedWire[] = []
+  const connect = (to: Endpoint, width: number): void => {
+    const from = pick(sources)
+    wires.push(wire(`w${wires.length + 1}`, from.end, to, rng() < 0.1 ? undefined : Math.min(from.width, width)))
+  }
+  const gates: Array<ReturnType<typeof gate>> = []
+  const buses: Array<ReturnType<typeof bus>> = []
+  for (let k = 0; k < 2 + Math.floor(rng() * 6); k++) {
+    const kind = pick(['Not', 'And', 'Not16', 'splitter', 'joiner', 'splitter', 'joiner'] as const)
+    if (kind === 'splitter' || kind === 'joiner') {
+      const id = `b${k}`
+      buses.push(bus(id, kind, 4))
+      for (const pin of kind === 'splitter' ? ['in'] : ['in0', 'in1', 'in2', 'in3']) {
+        if (rng() < 0.9) connect(busEnd(id, pin), kind === 'splitter' ? 4 : 1)
+        if (rng() < 0.08) connect(busEnd(id, pin), kind === 'splitter' ? 4 : 1)
+      }
+      sources.push(...(kind === 'splitter' ? [0, 1, 2, 3].map((i) => ({ end: busEnd(id, `out${i}`), width: 1 })) : [{ end: busEnd(id, 'out'), width: 4 }]))
+      continue
+    }
+    const id = `g${k}`
+    gates.push(gate(id, kind))
+    for (let pin = 0; pin < (kind === 'And' ? 2 : 1); pin++) connect(pinIn(id, pin), kind === 'Not16' ? 16 : 1)
+    sources.push({ end: pinOut(id), width: kind === 'Not16' ? 16 : 1 })
+  }
+  const outs = Array.from({ length: 1 + Math.floor(rng() * 3) }, (_, k) => node(`o${k}`, `out${k}`, pick([1, 4, 16])))
+  for (const o of outs) connect(toOut(o.id), o.width)
+  return circuit(`random${n}`, { inputNodes: ins, outputNodes: outs, gates, busComponents: buses, wires })
 }
 
 describe('legacy parity', () => {
@@ -299,12 +442,40 @@ describe('legacy parity', () => {
     ])
   })
 
-  it('bus-endpoints returns no document, with an unsupported-bus-component note', () => {
-    const { doc, sidecar } = fromLegacyCircuit(golden('bus-endpoints').document)
-    expect(doc).toBeNull()
-    expect(sidecar.notes.filter((n) => n.kind === 'unsupported-bus-component').map((n) => n.detail)).toEqual([
-      expect.stringContaining('"j1"'),
-      expect.stringContaining('"s1"'),
-    ])
+  it('bus-endpoints: the import evaluates as its #331 golden recorded', () => {
+    const g = golden('bus-endpoints')
+    const vectors = g.vectors.map((v) => v.inputs)
+    expect(vectors.length).toBeGreaterThan(0)
+    expect(parityFailures(g.document, vectors, g.vectors.map((v) => v.before))).toEqual([])
+    expect(exportFailures(g.document, vectors, g.vectors.map((v) => v.before))).toEqual([])
+  })
+
+  it.each(BUS)('%s: the import evaluates as evaluateCircuit does', (_name, saved, vectors) => {
+    const expected = vectors.map((v) => legacy(saved, v))
+    expect(parityFailures(saved, vectors, expected)).toEqual([])
+    expect(exportFailures(saved, vectors, expected)).toEqual([])
+  })
+
+  it('a joiner or splitter input fed by two wires keeps both drivers, and compileSpec refuses it', () => {
+    for (const saved of [JOINER_BIT_TWICE, SPLITTER_FED_TWICE]) {
+      const { doc, sidecar } = fromLegacyCircuit(saved)
+      expect(sidecar.notes.filter((n) => n.kind === 'multiple-drivers'), saved.name).toHaveLength(1)
+      expect(doc && viaCompileSpec(doc, {}), saved.name).toEqual({ refused: expect.arrayContaining([expect.stringMatching(/is bound by both|has bits driven by both|names more than one net/)]) })
+    }
+  })
+
+  it('a seeded random corpus with splitters and joiners evaluates as evaluateCircuit does', () => {
+    const rng = mulberry32(0x377b)
+    const corpus = Array.from({ length: 200 }, (_, n) => randomBusDocument(rng, n))
+    const singly = corpus.filter((saved) => new Set(saved.wires.map((w) => JSON.stringify(w.to))).size === saved.wires.length)
+    expect(singly.filter((saved) => saved.busComponents?.length).length).toBeGreaterThan(100)
+    const failures = corpus.flatMap((saved) => {
+      const vectors = Array.from({ length: 8 }, () => Object.fromEntries(saved.inputNodes.map((x) => [x.name, Math.floor(rng() * 2 ** x.width)])))
+      const expected = vectors.map((v) => legacy(saved, v))
+      return [...parityFailures(saved, vectors, expected), ...exportFailures(saved, vectors, expected)].map((f) => `${saved.name}: ${f}`)
+    })
+    expect(failures).toEqual([])
+    const valued = corpus.filter((saved) => !fromLegacyCircuit(saved).sidecar.notes.some((n) => REFUSALS.has(n.kind)))
+    expect(valued.length).toBeGreaterThanOrEqual(singly.length)
   })
 })
