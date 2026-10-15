@@ -76,6 +76,18 @@ describe('evaluateChip', () => {
     expect(evaluateChip(bar, { a: 1 }, withFoo('Or(a=a, b=a, out=out);'))).toEqual({ out: 1 })
   })
 
+  it('does not reuse a cached evaluator after a registry view starts resolving one of its parts differently', () => {
+    const bar = { name: 'Bar', ...ONE_IN_ONE_OUT, implementation: { type: 'hdl' as const, source: 'CHIP Bar { IN a; OUT out; PARTS: Foo(a=a, out=out); }' } }
+    const shadowing = createChipRegistry()
+    const base = createChipRegistry()
+    for (const def of getBuiltinChipRegistry().list()) base.register(def)
+    base.register({ name: 'Foo', ...ONE_IN_ONE_OUT, implementation: { type: 'hdl', source: 'CHIP Foo { IN a; OUT out; PARTS: Not(in=a, out=out); }' } })
+    const view = combineRegistries(shadowing, base)
+    expect(evaluateChip(bar, { a: 1 }, view)).toEqual({ out: 0 })
+    shadowing.register({ name: 'Foo', ...ONE_IN_ONE_OUT, implementation: { type: 'hdl', source: 'CHIP Foo { IN a; OUT out; PARTS: Or(a=a, b=a, out=out); }' } })
+    expect(evaluateChip(bar, { a: 1 }, view)).toEqual({ out: 1 })
+  })
+
   it('reuses a cached evaluator under a fresh registry view that resolves its parts the same', () => {
     const chip = { name: 'ViewNot', ...ONE_IN_ONE_OUT, implementation: { type: 'hdl' as const, source: 'CHIP ViewNot { IN a; OUT out; PARTS: Nand(a=a, b=a, out=out); }' } }
     registry.register(chip)
