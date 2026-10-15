@@ -46,17 +46,20 @@ function readSlice(text: string | undefined): { slice?: HDLSlice; ok: boolean } 
   return { slice, ok: slice.start <= slice.end }
 }
 
-/** `wire` is the one statement plain HDL lacks (§1.5): lift each out, leaving the HDL to `parseHDL`. */
-function extractWires(source: string): { hdl: string; wires: WireStatement[] } {
+/** `wire` is the one statement plain HDL lacks (§1.5): lift each out of PARTS:, leaving the HDL to `parseHDL`. */
+function extractWires(source: string): { hdl: string; wires: WireStatement[] } | { misplaced: number } {
   const code = source.replace(COMMENT, blank)
+  const partsAt = code.search(/\bPARTS\s*:/)
   const wires: WireStatement[] = []
   let hdl = source
   for (const match of code.matchAll(WIRE)) {
     const at = match.index ?? 0
     const before = source.slice(0, at)
+    const opened = code.slice(partsAt, at).split('(').length - code.slice(partsAt, at).split(')').length
+    const line = before.split('\n').length
+    if (partsAt === -1 || at < partsAt || at > code.lastIndexOf('}') || opened > 0) return { misplaced: line }
     const target = readSlice(match[2])
     const origin = readSlice(match[4])
-    const line = before.split('\n').length
     wires.push({ target: match[1], targetSlice: target.slice, source: match[3], sourceSlice: origin.slice, line, column: at - before.lastIndexOf('\n'), malformed: !target.ok || !origin.ok })
     hdl = hdl.slice(0, at) + blank(match[0]) + hdl.slice(at + match[0].length)
   }
@@ -168,7 +171,7 @@ function doubleSourced(nets: Net[], unknownParts: Set<PartId>): SpecDiagnostic[]
   for (const net of nets) {
     const { signal, slice } = splitNetId(net.id)
     const { driver } = net
-    if (driver !== null && driver.kind !== 'chip-in') {
+    if (driver !== null && !(driver.kind === 'chip-in' && driver.pin === signal)) {
       const label = `${describeRef(driver)} (net "${net.id}")`
       claim(`signal:${signal}`, label, slice, (other) => ({ code: 'multiple-drivers', severity: 'error', netId: net.id, message: `Signal "${signal}" has bits driven by both ${other} and ${label}` }))
     }
@@ -267,7 +270,11 @@ export function parseSpec(source: string, options: ParseSpecOptions = {}): Parse
   const sidecar = readVersions(source)
   if ('diagnostics' in sidecar) return refuse(sidecar.diagnostics)
 
-  const { hdl, wires } = extractWires(source)
+  const lifted = extractWires(source)
+  if ('misplaced' in lifted) {
+    return refuse([{ code: 'syntax', severity: 'error', line: lifted.misplaced, message: `The wire at line ${lifted.misplaced} stands outside PARTS: or inside a part's bindings; a wire goes between parts` }])
+  }
+  const { hdl, wires } = lifted
   const parsed = parseHDL(hdl)
   if (!parsed.success) return refuse(parsed.errors.map((e) => ({ code: 'syntax', severity: 'error', line: e.line, column: e.column, message: e.message })))
   if (parsed.chip.builtin !== undefined) {
