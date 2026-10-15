@@ -591,9 +591,10 @@ are v1's. Each is pinned by a test in `src/core/spec/`.
    close with a `/* hacer-sidecar <json> */` block holding the sidecar, whose JSON carries the
    sidecar's own `schemaVersion`.
 2. **Where each version is read:**
-   - The header must be the **first thing in the file**. Only a BOM, blank lines or any Unicode
-     whitespace may come before it. Its version is the first word after the tag, and any word but `1`
-     is refused as `unknown-schema-version`.
+   - The header must be the **first thing in the file**. Only a BOM or whitespace may come before
+     it. Whitespace here means what JavaScript's `\s` matches: Unicode `White_Space` except U+0085
+     (NEL), which the HDL reader rejects anyway. Its version is the first word after the tag, and
+     any word but `1` is refused as `unknown-schema-version`.
    - The sidecar block must be the **last thing in the file**. It opens its own line, and only
      whitespace may follow it. It may span one line or several, with LF or CRLF line ends.
    - Each appears **at most once**.
@@ -616,8 +617,12 @@ are v1's. Each is pinned by a test in `src/core/spec/`.
 5. **A raw `*/` in the sidecar JSON is refused** (`invalid-sidecar`), because the HDL reader would end
    the comment there. `printSpec` writes it as `*\/`, which is the same JSON.
 6. **`wire` is lifted out before the HDL parser,** so `parseHDL` gains no statement. Its one addition
-   is §1.9's `PART_ID` token. A `wire` targets a chip OUT, whole or sliced, from a chip IN or OUT of
-   the same width.
+   is §1.9's `PART_ID` token.
+   - A `wire` stands in `PARTS:`, before, between or after parts. Anywhere else, including inside a
+     part's bindings, it is a `syntax` error.
+   - It targets a chip OUT, whole or sliced, from a chip IN or OUT of the same width.
+   - In §1.8's check it is a source of its target's bits, even when it comes from a chip IN. Only
+     a net that reads its own chip IN is fan-out.
 7. **Part ids:**
    - A marker is kept if it is a canonical `p1` … `p9007199254740991` (2^53 − 1) and is not
      repeated.
@@ -636,7 +641,7 @@ are v1's. Each is pinned by a test in `src/core/spec/`.
      migration.
 10. **The canonical text and the export:**
     - `printSpec` prints each part's bindings inputs first, then outputs, each ordered by pin and then
-      by slice, in the document's part order.
+      by slice, in the document's part order. An empty port list prints no `IN` or `OUT` line.
     - The `nand2tetris` dialect lowers a pass-through to a buffer of the net's width:
       `Or(a=x, b=x, out=y)` at one bit, `Or16` at sixteen, and one `Or` per bit at any other width.
       The buffers come after every declared part, with no marker.
