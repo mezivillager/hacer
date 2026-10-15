@@ -30,7 +30,8 @@ claim comment on each claimed issue (format in §2). `ready` never offers a clai
 `claimed`, or `stale-claim` under the 48 h rule in §2. A stale or `paused:…` claim is not an active
 build — resume it, follow the handoff, or release it (see
 `docs/harness/sessions/COORDINATOR-HANDOFF.md`). Until `scripts/agent-orient` (#156) prints this in <!-- allow-missing-path -->
-one screen, the commands above are the orient.
+one screen, the commands above are the orient. A task a merged PR links with `Fixes`/`Part of` reads
+`possibly-delivered: #<pr>`: check that PR delivered nothing left before you claim it (#702).
 
 If Mezi said "what can you do next?" rather than "do it": present the pick and **stop**. If he
 said "work it" / "pick it up" / "next N": continue.
