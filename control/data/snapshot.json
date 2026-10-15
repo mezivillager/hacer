@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-15T23:26:39.433Z",
+  "generatedAt": "2026-10-15T23:54:09.243Z",
   "head": {
-    "sha": "90731daea84e0c1f4ff7deb5dd21c01c1d49c435",
-    "date": "2026-10-16T02:25:36+03:00",
-    "subject": "test(core): the writer corpus passes official Project 1 vectors and matches evaluateCircuit (#377)"
+    "sha": "ffdd7d93b70f73c6c53535eb983f1c0485a31f80",
+    "date": "2026-10-16T02:53:06+03:00",
+    "subject": "fix(core): refuse a read of an internal signal's bits that no part drives (#746)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-15T23:26:39.433Z",
+      "fetchedAt": "2026-10-15T23:54:09.243Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-15T23:26:39.433Z",
+      "fetchedAt": "2026-10-15T23:54:09.243Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-15T23:26:39.433Z",
+      "fetchedAt": "2026-10-15T23:54:09.243Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-15T23:26:39.433Z",
+      "fetchedAt": "2026-10-15T23:54:09.243Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-15T23:26:39.433Z",
+      "fetchedAt": "2026-10-15T23:54:09.243Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-15T23:26:39.433Z",
+      "fetchedAt": "2026-10-15T23:54:09.243Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-15T23:26:39.433Z",
+      "fetchedAt": "2026-10-15T23:54:09.243Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-15T23:26:39.433Z",
+      "fetchedAt": "2026-10-15T23:54:09.243Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-15T23:26:39.433Z",
+      "fetchedAt": "2026-10-15T23:54:09.243Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-15T23:26:39.433Z",
+      "fetchedAt": "2026-10-15T23:54:09.243Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-15T23:26:39.433Z",
+      "fetchedAt": "2026-10-15T23:54:09.243Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-15T23:26:39.433Z",
+      "fetchedAt": "2026-10-15T23:54:09.243Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-15T23:26:39.433Z",
+      "fetchedAt": "2026-10-15T23:54:09.243Z",
       "status": "ok"
     }
   },
@@ -174,12 +174,12 @@
         "lane": "enabler",
         "slug": "core",
         "epicNumber": 140,
-        "open": 10,
+        "open": 8,
         "ready": 0,
-        "inProgress": 1,
+        "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 2,
+        "agentReady": 1,
         "filedElsewhere": [
           184,
           400
@@ -302,7 +302,7 @@
         "lane": "aux",
         "slug": "upkeep",
         "epicNumber": 146,
-        "open": 2,
+        "open": 3,
         "ready": 0,
         "inProgress": 0,
         "needsHuman": 0,
@@ -425,6 +425,7 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
+        766,
         753,
         514
       ]
@@ -1527,19 +1528,6 @@
         "reason": "unshaped"
       },
       {
-        "number": 431,
-        "title": "compileHDL checks dangling signals by name, so a read of a never-driven bit is silently 0",
-        "labels": [
-          "project:core"
-        ],
-        "blocking": [],
-        "project": "core",
-        "rank": 5,
-        "lane": "enabler",
-        "pickable": false,
-        "reason": "unshaped"
-      },
-      {
         "number": 435,
         "title": "No mechanism detects a test getting slower; #434's timeouts widen the blind spot",
         "labels": [
@@ -1905,20 +1893,19 @@
         "reason": "unshaped"
       },
       {
-        "number": 746,
-        "title": "compileHDL accepts a read of signal bits no part drives; the spec path refuses it",
+        "number": 765,
+        "title": "Release workflow fails since 2026-10-15: the conventionalcommits preset 10.x needs conventional-changelog-writer 9",
         "labels": [
-          "project:core",
-          "agent-ready",
-          "in-progress",
+          "bug",
+          "project:upkeep",
           "risk:1"
         ],
         "blocking": [],
-        "project": "core",
-        "rank": 5,
-        "lane": "enabler",
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
         "pickable": false,
-        "reason": "claimed"
+        "reason": "unshaped"
       }
     ],
     "byProject": {
@@ -1987,11 +1974,9 @@
         390,
         401,
         405,
-        431,
         452,
         453,
-        620,
-        746
+        620
       ],
       "verify": [
         194,
@@ -2018,7 +2003,8 @@
       ],
       "upkeep": [
         229,
-        256
+        256,
+        765
       ],
       "horizon": [
         230,
@@ -2054,6 +2040,24 @@
   },
   "prs": {
     "open": [
+      {
+        "number": 766,
+        "title": "fix(deps): give the semantic-release plugins their own conventionalcommits preset",
+        "url": "https://github.com/mezivillager/hacer/pull/766",
+        "author": "mezivillager",
+        "labels": [
+          "project:upkeep",
+          "risk:1"
+        ],
+        "headRefName": "fix/765-release-preset",
+        "isDraft": false,
+        "createdAt": "2026-10-15T23:40:55Z",
+        "mergedAt": null,
+        "closes": [
+          765
+        ],
+        "verdicts": []
+      },
       {
         "number": 763,
         "title": "chore(deps): bump @radix-ui/react-switch from 1.3.7 to 1.4.1",
@@ -2250,6 +2254,33 @@
       }
     ],
     "merged": [
+      {
+        "number": 764,
+        "title": "fix(core): refuse a read of an internal signal's bits that no part drives",
+        "url": "https://github.com/mezivillager/hacer/pull/764",
+        "author": "mezivillager",
+        "labels": [
+          "project:core",
+          "risk:1"
+        ],
+        "headRefName": "fix/746-undriven-reads",
+        "isDraft": false,
+        "createdAt": "2026-10-15T23:33:22Z",
+        "mergedAt": "2026-10-15T23:53:06Z",
+        "closes": [
+          431,
+          746
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus 5.5",
+            "at": "2026-10-15T23:51:55Z",
+            "url": "https://github.com/mezivillager/hacer/pull/764#issuecomment-6204718010"
+          }
+        ]
+      },
       {
         "number": 754,
         "title": "test(core): the legacy writer's documents, official Project 1 vectors and L-001 (#377, PR 3 of 3)",
@@ -3768,33 +3799,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/668#issuecomment-5943145284"
           }
         ]
-      },
-      {
-        "number": 666,
-        "title": "docs: retire WORK-SYSTEM.md's live sections",
-        "url": "https://github.com/mezivillager/hacer/pull/666",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:0"
-        ],
-        "headRefName": "docs/280-retire-work-system",
-        "isDraft": false,
-        "createdAt": "2026-10-01T23:55:12Z",
-        "mergedAt": "2026-10-01T23:58:53Z",
-        "closes": [
-          280
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "coordinator (risk:0 docs-only, #554)",
-            "at": "2026-10-01T23:56:36Z",
-            "url": "https://github.com/mezivillager/hacer/pull/666#issuecomment-5942953268"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -3855,31 +3859,6 @@
           "author": "mezivillager",
           "at": "2026-09-25T06:02:35Z",
           "url": "https://github.com/mezivillager/hacer/issues/470#issuecomment-5827635352"
-        }
-      },
-      {
-        "number": 746,
-        "ref": "refs/heads/claim/746",
-        "sha": "e9fccf9e193bac7dcd3ab8eb15dc99f2fce175d2",
-        "state": "OPEN",
-        "title": "compileHDL accepts a read of signal bits no part drives; the spec path refuses it",
-        "url": "https://github.com/mezivillager/hacer/issues/746",
-        "labels": [
-          "project:core",
-          "agent-ready",
-          "in-progress",
-          "risk:1"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "build",
-          "session": "2026-10-15 hacer-loop-reset",
-          "branch": "fix/746-undriven-reads",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-15T23:21:33Z",
-          "url": "https://github.com/mezivillager/hacer/issues/746#issuecomment-6204331857"
         }
       }
     ],
@@ -5619,10 +5598,6 @@
     ],
     "mergesPerDay": [
       {
-        "date": "2026-10-01",
-        "merges": 1
-      },
-      {
         "date": "2026-10-02",
         "merges": 7
       },
@@ -5636,20 +5611,20 @@
       },
       {
         "date": "2026-10-15",
-        "merges": 29
+        "merges": 30
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-01T23:26:39.433Z",
-      "merged": 70,
+      "since": "2026-10-01T23:54:09.243Z",
+      "merged": 68,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 2
       },
       "blockedOnce": {
         "count": 5,
-        "of": 59,
+        "of": 57,
         "prs": [
           700,
           725,
@@ -5660,13 +5635,13 @@
       },
       "coverage": {
         "code": {
-          "merged": 48,
-          "withVerdict": 48,
+          "merged": 47,
+          "withVerdict": 47,
           "without": []
         },
         "nonCode": {
-          "merged": 22,
-          "withVerdict": 11,
+          "merged": 21,
+          "withVerdict": 10,
           "without": [
             654,
             655,
@@ -8838,11 +8813,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "90731daea84e0c1f4ff7deb5dd21c01c1d49c435",
+        "sha": "ffdd7d93b70f73c6c53535eb983f1c0485a31f80",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38823501856/job/116725413468",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/38826230128/job/116734223000",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -8896,16 +8871,16 @@
       },
       {
         "pr": 753,
-        "sha": "7c85d76192924381ee5973b822c4a3017dc410cc",
+        "sha": "3cad508ecdb83da93d8d5ca21adba7c82feca603",
         "check": "pr-hygiene",
         "conclusion": "SUCCESS",
-        "completedAt": "2026-10-15T22:42:45Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38818939799/job/116710479566",
-        "line": "HYGIENE: PASS reviewable=150 test=260 excluded=0 files=1 issue=#377 linked=part-of",
+        "completedAt": "2026-10-15T23:27:27Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/38823665292/job/116725959312",
+        "line": "HYGIENE: PASS reviewable=150 test=412 excluded=0 files=1 issue=#377 linked=part-of",
         "verdict": "PASS",
         "fields": {
           "reviewable": 150,
-          "test": 260,
+          "test": 412,
           "excluded": 0,
           "files": 1,
           "issue": "#377",
@@ -8915,11 +8890,11 @@
       },
       {
         "pr": 753,
-        "sha": "7c85d76192924381ee5973b822c4a3017dc410cc",
+        "sha": "3cad508ecdb83da93d8d5ca21adba7c82feca603",
         "check": "browser-qa",
         "conclusion": "SUCCESS",
-        "completedAt": "2026-10-15T22:42:53Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38818939160/job/116710475426",
+        "completedAt": "2026-10-15T23:27:29Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/38823664935/job/116725956275",
         "line": "BROWSER-QA: skipped (no critical paths)",
         "verdict": "SKIPPED",
         "fields": {},
@@ -8927,11 +8902,11 @@
       },
       {
         "pr": 753,
-        "sha": "7c85d76192924381ee5973b822c4a3017dc410cc",
+        "sha": "3cad508ecdb83da93d8d5ca21adba7c82feca603",
         "check": "ci",
         "conclusion": "SUCCESS",
-        "completedAt": "2026-10-15T22:46:07Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38818938512/job/116710473388",
+        "completedAt": "2026-10-15T23:29:41Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/38823622707/job/116725815997",
         "line": "LAYER-RATCHET: 69 known violations (37 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
         "verdict": "PASS",
         "fields": {
@@ -9334,6 +9309,52 @@
         "conclusion": "SUCCESS",
         "completedAt": "2026-10-15T23:19:25Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/38822544093/job/116722276239",
+        "line": "LAYER-RATCHET: 69 known violations (37 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 69,
+          "new": 0
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 766,
+        "sha": "9c0a484649a91cc2ba1460bd61f15638663d5dc1",
+        "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-15T23:41:08Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/38825032055/job/116730380059",
+        "line": "HYGIENE: PASS reviewable=14 test=0 excluded=12 files=1 issue=#765 linked=fixes",
+        "verdict": "PASS",
+        "fields": {
+          "reviewable": 14,
+          "test": 0,
+          "excluded": 12,
+          "files": 1,
+          "issue": "#765",
+          "linked": "fixes"
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 766,
+        "sha": "9c0a484649a91cc2ba1460bd61f15638663d5dc1",
+        "check": "browser-qa",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-15T23:41:08Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/38825031830/job/116730377603",
+        "line": "BROWSER-QA: skipped (no critical paths)",
+        "verdict": "SKIPPED",
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 766,
+        "sha": "9c0a484649a91cc2ba1460bd61f15638663d5dc1",
+        "check": "ci",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-15T23:44:29Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/38825030920/job/116730374921",
         "line": "LAYER-RATCHET: 69 known violations (37 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
         "verdict": "PASS",
         "fields": {
