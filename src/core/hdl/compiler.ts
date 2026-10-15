@@ -39,6 +39,9 @@ export function hdlChipDefinition(ast: HDLChip, source: string): ChipDefinition 
 const LITERALS = new Set(['true', 'false'])
 /** Bits carried by an inclusive slice: `[3]` is 1, `[0..7]` is 8. */
 const sliceBits = (slice: HDLSlice): number => slice.end - slice.start + 1
+/** `web-ide`'s refusal of a slice past a signal's last bit; `null` when the slice fits or the width is unknown. */
+export const subBusOutOfRange = (signal: string, slice: HDLSlice | undefined, width: number | undefined): string | null =>
+  slice !== undefined && width !== undefined && slice.end >= width ? `sub-bus index out of range ("${signal}" has width ${width})` : null
 /** An unsliced write covers a signal's whole width, however wide it later turns out to be. */
 const WHOLE_SIGNAL = Number.MAX_SAFE_INTEGER
 
@@ -215,8 +218,11 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
         continue
       }
       const pin = inPin ?? outPin
+      const pastEnd = subBusOutOfRange(conn.external, conn.externalSlice, signalWidth.get(conn.external))
       if (pin && conn.internalSlice && conn.internalSlice.end >= pin.width) {
         errors.push({ message: `Part "${part.name}" pin "${printPinRef(conn.internal, conn.internalSlice)}" is out of range; "${conn.internal}" has width ${pin.width}`, partName: part.name, pinName: conn.internal })
+      } else if (pin && pastEnd !== null) {
+        errors.push({ message: `Part "${part.name}" pin "${printPinRef(conn.internal, conn.internalSlice)}" is wired to "${printPinRef(conn.external, conn.externalSlice)}": ${pastEnd}`, partName: part.name, pinName: conn.internal })
       } else if (pin) {
         // The two sides are sized independently: the part's pin (sliced or whole) has to carry
         // exactly as many bits as the signal it is wired to (sliced, or whole when its width is

@@ -1,6 +1,6 @@
 import type { ChipRegistry } from '../chips/registry'
 import type { ChipDefinition } from '../chips/types'
-import { compileHDL, type CompiledEvaluator } from '../hdl/compiler'
+import { compileHDL, subBusOutOfRange, type CompiledEvaluator } from '../hdl/compiler'
 import { printPinRef } from '../hdl/printer'
 import type { HDLChip, HDLConnection, HDLSlice } from '../hdl/types'
 import { readSubBus, writeSubBus } from '@/simulation/busOps'
@@ -48,6 +48,8 @@ function invalidWires(doc: CircuitSpec): SpecDiagnostic[] {
     const { signal, slice } = splitNetId(net.id)
     const to = ports['chip-out'].get(signal)
     if (to === undefined) return `target "${signal}" is not a chip OUT`
+    const pastEnd = subBusOutOfRange(signal, slice, to) ?? subBusOutOfRange(driver.pin, driver.slice, from)
+    if (pastEnd !== null) return pastEnd
     const [targetWidth, sourceWidth] = [slice ? sliceWidth(slice) : to, driver.slice ? sliceWidth(driver.slice) : from]
     return targetWidth === sourceWidth ? null : `target is ${targetWidth} bits wide but its source is ${sourceWidth}`
   }
