@@ -2,6 +2,7 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { createChipRegistry, registerBuiltin } from '../chips/registry'
 import type { ChipRegistry } from '../chips/registry'
+import { getBuiltinChipRegistry } from '../chips/appRegistry'
 import type { ChipDefinition } from '../chips/types'
 import { isBuiltinChip } from '../chips/types'
 import { parseHDL } from './parser'
@@ -878,5 +879,30 @@ describe('compileHDL — a part may not read the bits it writes itself (#397)', 
     for (const src of eachOrdering(NIBBLE_PARTS, nibble)) {
       expect({ src, ...evaluateHdl(src, { a: 0b0101 }, reg) }).toEqual({ src, out: 5 })
     }
+  })
+})
+
+describe('compileHDL', () => {
+  it('refuses a part output that writes a chip input, naming the part and the input', () => {
+    for (const src of [
+      'CHIP W { IN a, b; OUT out; PARTS: Not(in=b, out=a); Not(in=a, out=out); }',
+      'CHIP W { IN a[2], b; OUT out; PARTS: Not(in=b, out=a[0]); Not(in=a[1], out=out); }',
+    ]) {
+      const ast = parseHDL(src)
+      if (!ast.success) throw new Error(`parse failed: ${src}`)
+      const r = compileHDL(ast.chip, getBuiltinChipRegistry())
+      expect(r.success).toBe(false)
+      if (r.success) continue
+      expect(r.errors).toEqual([expect.objectContaining({ partName: 'Not', pinName: 'out', message: expect.stringMatching(/Part "Not" output "out".*chip input "a"/) })])
+    }
+  })
+
+  it('refuses a chip that names itself as a part', () => {
+    const ast = parseHDL('CHIP Not { IN in; OUT out; PARTS: Not(in=in, out=out); }')
+    if (!ast.success) throw new Error('parse failed')
+    const r = compileHDL(ast.chip, getBuiltinChipRegistry())
+    expect(r.success).toBe(false)
+    if (r.success) return
+    expect(r.errors).toEqual([expect.objectContaining({ partName: 'Not', message: expect.stringMatching(/Chip "Not".*itself/) })])
   })
 })

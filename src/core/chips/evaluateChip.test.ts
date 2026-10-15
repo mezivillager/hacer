@@ -3,7 +3,11 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { createChipRegistry, registerBuiltin } from './registry'
 import type { ChipRegistry } from './registry'
 import { evaluateChip } from './evaluateChip'
+import { getBuiltinChipRegistry } from './appRegistry'
+import { combineRegistries } from './combineRegistries'
 import * as compilerModule from '../hdl/compiler'
+
+const ONE_IN_ONE_OUT = { inputs: [{ name: 'a', width: 1 }], outputs: [{ name: 'out', width: 1 }] }
 
 let registry: ChipRegistry
 beforeEach(() => {
@@ -35,10 +39,9 @@ describe('evaluateChip', () => {
   })
 
   it('enforces the recursion depth guard', () => {
-    // self-referential hdl chip → exceeds depth
-    registry.register({ name: 'Loop', inputs: [{ name: 'a', width: 1 }], outputs: [{ name: 'out', width: 1 }], implementation: { type: 'hdl', source: 'CHIP Loop { IN a; OUT out; PARTS: Loop(a=a, out=out); }' } })
-    const Loop = registry.get('Loop')!
-    expect(() => evaluateChip(Loop, { a: 1 }, registry, { maxDepth: 10 })).toThrow(/depth/i)
+    registry.register({ name: 'A', ...ONE_IN_ONE_OUT, implementation: { type: 'hdl', source: 'CHIP A { IN a; OUT out; PARTS: B(a=a, out=out); }' } })
+    registry.register({ name: 'B', ...ONE_IN_ONE_OUT, implementation: { type: 'hdl', source: 'CHIP B { IN a; OUT out; PARTS: A(a=a, out=out); }' } })
+    expect(() => evaluateChip(registry.get('A')!, { a: 1 }, registry, { maxDepth: 10 })).toThrow(/depth/i)
   })
 
   it('compiles an hdl chip once and reuses the cached evaluator', () => {
@@ -57,6 +60,29 @@ describe('evaluateChip', () => {
     // If the WeakMap cache were bypassed, compileHDL would be called twice.
     expect(spy).toHaveBeenCalledTimes(1)
 
+    spy.mockRestore()
+  })
+
+  it('does not reuse a cached evaluator under a registry that resolves one of its parts differently', () => {
+    const bar = { name: 'Bar', ...ONE_IN_ONE_OUT, implementation: { type: 'hdl' as const, source: 'CHIP Bar { IN a; OUT out; PARTS: Foo(a=a, out=out); }' } }
+    const withFoo = (fooParts: string): ChipRegistry => {
+      const r = createChipRegistry()
+      for (const def of getBuiltinChipRegistry().list()) r.register(def)
+      r.register({ name: 'Foo', ...ONE_IN_ONE_OUT, implementation: { type: 'hdl', source: `CHIP Foo { IN a; OUT out; PARTS: ${fooParts} }` } })
+      r.register(bar)
+      return r
+    }
+    expect(evaluateChip(bar, { a: 1 }, withFoo('Not(in=a, out=out);'))).toEqual({ out: 0 })
+    expect(evaluateChip(bar, { a: 1 }, withFoo('Or(a=a, b=a, out=out);'))).toEqual({ out: 1 })
+  })
+
+  it('reuses a cached evaluator under a fresh registry view that resolves its parts the same', () => {
+    const chip = { name: 'ViewNot', ...ONE_IN_ONE_OUT, implementation: { type: 'hdl' as const, source: 'CHIP ViewNot { IN a; OUT out; PARTS: Nand(a=a, b=a, out=out); }' } }
+    registry.register(chip)
+    const spy = vi.spyOn(compilerModule, 'compileHDL')
+    expect(evaluateChip(chip, { a: 0 }, combineRegistries(registry))).toEqual({ out: 1 })
+    expect(evaluateChip(chip, { a: 1 }, combineRegistries(registry))).toEqual({ out: 0 })
+    expect(spy).toHaveBeenCalledTimes(1)
     spy.mockRestore()
   })
 })
