@@ -29,7 +29,16 @@ export function BusComponentRenderer({ component, onPinClick, onClick, selected 
         />
       )
     case 'joiner':
-      return <BusJoiner3D component={component} onPinClick={onPinClick} onClick={onClick} selected={selected} />
+      return (
+        <BusJoiner3D
+          component={component}
+          onPinClick={onPinClick}
+          onClick={onClick}
+          selected={selected}
+          canDrag={canDrag}
+          drag={drag}
+        />
+      )
     default:
       return ((_: never) => null)(component.kind)
   }
