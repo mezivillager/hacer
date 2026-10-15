@@ -10,6 +10,8 @@ import {
   type SerializedBusComponent,
   type SerializedCircuit,
   type SerializedGate,
+  type SerializedInputNode,
+  type SerializedOutputNode,
   type SerializedWire,
 } from './types'
 
@@ -631,5 +633,193 @@ describe('deserializeCircuit: a wire whose width is not a positive integer', () 
     expect(restored?.wires.map((w) => w.id)).toEqual(['w-wide', 'w-good'])
     expect(restored?.wires[0].width).toBe(width)
     expect(warnings.filter((w) => w.code !== 'unsupported-gate-type')).toEqual([])
+  })
+})
+
+describe('deserializeCircuit: an entity whose width is not a positive integer within the pin limit', () => {
+  const BAD_WIDTHS = [
+    { saved: '2.5', width: 2.5 },
+    { saved: '0', width: 0 },
+    { saved: '-1', width: -1 },
+    { saved: '4', width: '4' },
+    { saved: 'NaN', width: Number.NaN },
+    { saved: 'Infinity', width: Number.POSITIVE_INFINITY },
+    { saved: '[4]', width: [4] },
+    { saved: 'null', width: null },
+    { saved: '33', width: 33 },
+  ]
+  const GOOD_WIDTHS = [1, 2, 16, 32]
+
+  const asWidth = <T>(record: T, width: unknown): T => ({ ...record, width })
+
+  const node = (id: string, width: unknown): SerializedInputNode & SerializedOutputNode =>
+    asWidth({ id, name: id, position: ZERO_VEC, rotation: ZERO_VEC, value: 0, width: 1 }, width)
+
+  const nodeWarnings = (warnings: ReturnType<typeof deserializeCircuit>['warnings']) =>
+    warnings.filter((w) => w.code === 'invalid-node-width')
+  const busWarnings = (warnings: ReturnType<typeof deserializeCircuit>['warnings']) =>
+    warnings.filter((w) => w.code === 'invalid-bus-width')
+
+  describe.each(['splitter', 'joiner'] as const)('a %s', (kind) => {
+    const withBus = (width: unknown): SerializedCircuit => ({
+      ...emptyDocument(CIRCUIT_FORMAT_VERSION),
+      gates: [GOOD_GATE],
+      busComponents: [asWidth({ ...BUS_SPLITTER, id: 'bus-wide', kind }, width), BUS_SPLITTER],
+      wires: [
+        wireRecord('w-into-wide', gateEnd(GOOD_GATE.id, 'out'), busEnd('bus-wide')),
+        wireRecord('w-good', gateEnd(GOOD_GATE.id, 'out'), busEnd(BUS_SPLITTER.id)),
+      ],
+    })
+
+    it.each(BAD_WIDTHS)('is skipped with one warning when its width is $saved', ({ saved, width }) => {
+      const { document: restored, warnings } = deserializeCircuit(withBus(width))
+      expect(restored?.busComponents.map((b) => b.id)).toEqual([BUS_SPLITTER.id])
+      expect(busWarnings(warnings)).toEqual([
+        { code: 'invalid-bus-width', busId: 'bus-wide', busWidth: saved, message: expect.any(String) as string },
+      ])
+      expect(warnings.map((w) => w.code)).toEqual(['invalid-bus-width', 'dropped-wire'])
+    })
+
+    it.each(BAD_WIDTHS)('takes the wires to it when its width is $saved, as for a missing bus', ({ width }) => {
+      const { document: restored, warnings } = deserializeCircuit(withBus(width))
+      expect(restored?.wires.map((w) => w.id)).toEqual(['w-good'])
+      expect(warnings.filter((w) => w.code === 'dropped-wire')).toEqual([
+        { code: 'dropped-wire', wireId: 'w-into-wide', reason: 'missing-bus', message: expect.any(String) as string },
+      ])
+    })
+
+    it.each([...GOOD_WIDTHS, undefined])('loads one whose width is %j as saved', (width) => {
+      const { document: restored, warnings } = deserializeCircuit(withBus(width))
+      expect(restored?.busComponents.map((b) => b.id)).toEqual(['bus-wide', BUS_SPLITTER.id])
+      expect(restored?.busComponents[0].width).toBe(width)
+      expect(restored?.wires.map((w) => w.id)).toEqual(['w-into-wide', 'w-good'])
+      expect(warnings).toEqual([])
+    })
+
+    it('builds its pins for the largest width the app can create', () => {
+      const { document: restored } = deserializeCircuit(withBus(32))
+      const [wide] = restored?.busComponents ?? []
+      expect(wide.inputs.length + wide.outputs.length).toBe(33)
+    })
+
+    it('returns quickly for a width that would build billions of pins', { timeout: 2_000 }, () => {
+      const started = performance.now()
+      const { document: restored, warnings } = deserializeCircuit(withBus(2 ** 31))
+      expect(performance.now() - started).toBeLessThan(500)
+      expect(restored?.busComponents.map((b) => b.id)).toEqual([BUS_SPLITTER.id])
+      expect(busWarnings(warnings)).toEqual([
+        { code: 'invalid-bus-width', busId: 'bus-wide', busWidth: '2147483648', message: expect.any(String) as string },
+      ])
+    })
+  })
+
+  it('names the bus component, its width as saved and the limit in the message', () => {
+    const { warnings } = deserializeCircuit({
+      ...emptyDocument(CIRCUIT_FORMAT_VERSION),
+      busComponents: [asWidth({ ...BUS_SPLITTER, id: 'bus-wide' }, 2.5)],
+    })
+    const [warning] = busWarnings(warnings)
+    expect(warning.message).toContain('"bus-wide"')
+    expect(warning.message).toContain('2.5')
+    expect(warning.message).toContain('32')
+  })
+
+  it('warns once, for the kind, when a bus component has an unknown kind and a bad width', () => {
+    const { warnings } = deserializeCircuit({
+      ...emptyDocument(CIRCUIT_FORMAT_VERSION),
+      busComponents: [asWidth({ ...BUS_SPLITTER, id: 'bus-mux', kind: 'mux' }, 2.5) as unknown as SerializedBusComponent],
+    })
+    expect(warnings.map((w) => w.code)).toEqual(['unknown-bus-kind'])
+  })
+
+  describe.each(['input', 'output'] as const)('an %s node', (nodeType) => {
+    const key = nodeType === 'input' ? 'inputNodes' : 'outputNodes'
+    const withNode = (width: unknown): SerializedCircuit => ({
+      ...emptyDocument(CIRCUIT_FORMAT_VERSION),
+      gates: [GOOD_GATE],
+      [key]: [node('n-wide', width), node('n-good', 1)],
+      wires: [
+        wireRecord('w-wide', gateEnd(GOOD_GATE.id, 'out'), { type: nodeType, entityId: 'n-wide' }),
+        wireRecord('w-good', gateEnd(GOOD_GATE.id, 'out'), { type: nodeType, entityId: 'n-good' }),
+      ],
+    })
+
+    it.each(BAD_WIDTHS)('is skipped with one warning when its width is $saved', ({ saved, width }) => {
+      const { document: restored, warnings } = deserializeCircuit(withNode(width))
+      expect(restored?.[key].map((n) => n.id)).toEqual(['n-good'])
+      expect(nodeWarnings(warnings)).toEqual([
+        { code: 'invalid-node-width', nodeId: 'n-wide', nodeType, nodeWidth: saved, message: expect.any(String) as string },
+      ])
+      expect(warnings.map((w) => w.code)).toEqual(['invalid-node-width', 'dropped-wire'])
+    })
+
+    it.each(BAD_WIDTHS)('takes the wires to it when its width is $saved, as for a missing entity', ({ width }) => {
+      const { document: restored, warnings } = deserializeCircuit(withNode(width))
+      expect(restored?.wires.map((w) => w.id)).toEqual(['w-good'])
+      expect(warnings.filter((w) => w.code === 'dropped-wire')).toEqual([
+        { code: 'dropped-wire', wireId: 'w-wide', reason: 'missing-node', message: expect.any(String) as string },
+      ])
+    })
+
+    it.each([...GOOD_WIDTHS, undefined])('loads one whose width is %j as saved', (width) => {
+      const { document: restored, warnings } = deserializeCircuit(withNode(width))
+      expect(restored?.[key].map((n) => n.id)).toEqual(['n-wide', 'n-good'])
+      expect(restored?.[key][0].width).toBe(width)
+      expect(restored?.wires.map((w) => w.id)).toEqual(['w-wide', 'w-good'])
+      expect(warnings).toEqual([])
+    })
+
+    it('keeps a wire to a node the document never defines, as before', () => {
+      const doc = withNode(1)
+      const { document: restored, warnings } = deserializeCircuit({
+        ...doc,
+        wires: [wireRecord('w-nowhere', gateEnd(GOOD_GATE.id, 'out'), { type: nodeType, entityId: 'n-never-saved' })],
+      })
+      expect(restored?.wires.map((w) => w.id)).toEqual(['w-nowhere'])
+      expect(warnings).toEqual([])
+    })
+
+    it('returns quickly for a width of 2 ** 31', { timeout: 2_000 }, () => {
+      const started = performance.now()
+      const { document: restored, warnings } = deserializeCircuit(withNode(2 ** 31))
+      expect(performance.now() - started).toBeLessThan(500)
+      expect(restored?.[key].map((n) => n.id)).toEqual(['n-good'])
+      expect(nodeWarnings(warnings)).toHaveLength(1)
+    })
+
+    it('names the node, its width as saved and the limit in the message', () => {
+      const { warnings } = deserializeCircuit(withNode(2.5))
+      const [warning] = nodeWarnings(warnings)
+      expect(warning.message).toContain('"n-wide"')
+      expect(warning.message).toContain('2.5')
+      expect(warning.message).toContain('32')
+    })
+
+    it('takes a junction left joining nothing with it, as for any other pruned wire', () => {
+      const { document: restored, warnings } = deserializeCircuit({
+        ...withNode(2.5),
+        junctions: [{ id: 'j-wide', position: ZERO_VEC, signalId: 'sig-wide', wireIds: ['w-wide'] }],
+      })
+      expect(restored?.junctions).toEqual([])
+      expect(warnings.filter((w) => w.code === 'dropped-junction')).toEqual([
+        { code: 'dropped-junction', junctionId: 'j-wide', message: expect.stringContaining('j-wide') },
+      ])
+    })
+  })
+
+  it('reports a node saved without an id the way it reports such a gate', () => {
+    const { warnings } = deserializeCircuit({
+      ...emptyDocument(CIRCUIT_FORMAT_VERSION),
+      inputNodes: [{ ...node('n-wide', 2.5), id: undefined } as unknown as SerializedInputNode],
+    })
+    expect(nodeWarnings(warnings)).toEqual([
+      {
+        code: 'invalid-node-width',
+        nodeId: '(unidentified)',
+        nodeType: 'input',
+        nodeWidth: '2.5',
+        message: expect.stringContaining('"(unidentified)"'),
+      },
+    ])
   })
 })
