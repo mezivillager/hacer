@@ -12,7 +12,7 @@ export function readCompletedChips(): string[] {
   }
 }
 
-export function markChipCompleted(chipName: string): string[] {
+export function markChipCompleted(chipName: string, _known: readonly string[] = []): string[] {
   const current = readCompletedChips()
   if (current.includes(chipName)) return current
   const next = [...current, chipName]
