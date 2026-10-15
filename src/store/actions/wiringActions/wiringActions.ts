@@ -1,5 +1,5 @@
 import { notify } from '@/lib/notify'
-import type { WiringActions, Position, CircuitStore, NodeType, WireEndpoint, WiringSource } from '../../types'
+import type { WiringActions, Position, CircuitStore, NodeType, WireEndpoint, WiringSource, JunctionNode, Wire } from '../../types'
 import type { WireSegment } from '@/utils/wiringScheme/types'
 import { resolveCrossings } from '@/utils/wiringScheme/crossing'
 import { getSegmentsUpToPosition } from '@/utils/wirePosition'
@@ -32,6 +32,17 @@ function resolveSourceEndpoint(source: WiringSource): WireEndpoint | null {
 
 function endpointsEqual(a: WireEndpoint, b: WireEndpoint): boolean {
   return a.type === b.type && a.entityId === b.entityId && a.pinId === b.pinId
+}
+
+/** The wire bringing the signal to `junction`: one that ends at it, else the first listed wire that does not start at it. */
+function findJunctionFeedWire(junction: JunctionNode, wires: Wire[]): Wire | null {
+  const endsHere = wires.find((w) => w.to.type === 'junction' && w.to.entityId === junction.id)
+  if (endsHere) return endsHere
+  for (const wireId of junction.wireIds) {
+    const wire = wires.find((w) => w.id === wireId)
+    if (wire && !(wire.from.type === 'junction' && wire.from.entityId === junction.id)) return wire
+  }
+  return null
 }
 
 /**
@@ -484,15 +495,14 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
       return
     }
 
-    const originalWireId = junction.wireIds[0]
-    if (!originalWireId) {
+    if (junction.wireIds.length === 0) {
       notify.warning('No wire passes through this junction')
       return
     }
 
-    const originalWire = state.wires.find((w) => w.id === originalWireId)
+    const originalWire = findJunctionFeedWire(junction, state.wires)
     if (!originalWire) {
-      notify.warning('Original wire not found')
+      notify.warning('Unsupported wire source type after tracing through junctions')
       return
     }
 
@@ -532,12 +542,8 @@ export const createWiringActions = (set: SetState, get: GetState): WiringActions
           return
         }
 
-        const sourceWireId = sourceJunction.wireIds[0]
-        const sourceWire = state.wires.find((w) => w.id === sourceWireId)
-        if (!sourceWire) {
-          notify.warning('Source wire not found when tracing through junctions')
-          return
-        }
+        const sourceWire = findJunctionFeedWire(sourceJunction, state.wires)
+        if (!sourceWire) break
 
         currentWire = sourceWire
         depth++
