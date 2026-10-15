@@ -89,11 +89,12 @@ function droppedWiringSummary(warnings: DeserializeWarning[]): string | null {
  * - **`null` document** — not readable at all (today: a version this build does not
  *   know). The first warning says why, shown as one error, exactly as the thrown
  *   version used to be.
- * - **document + warnings** — every gate entry the reader could not rebuild was
- *   dropped and named: one warning toast each, in document order, then the circuit
- *   loads. Same count and order as the reader's own `notify.warning` calls used to
- *   produce; two of the texts changed (same information, better wording). The wires
- *   and junctions pruning took with those gates are the exception (#402): they are
+ * - **document + warnings** — every gate entry the reader could not rebuild, and
+ *   every bus component of a kind it does not know, was dropped and named: one
+ *   warning toast each, in document order, then the circuit loads. Same count and
+ *   order as the reader's own `notify.warning` calls used to produce; two of the
+ *   texts changed (same information, better wording). The wires and junctions
+ *   pruning took with those entries are the exception (#402): they are
  *   reported one warning per entity, but shown as **one** line naming the counts —
  *   a document that loses 40 wires must not raise 40 toasts, and the ids are for the
  *   caller and its tests, not for the person.
