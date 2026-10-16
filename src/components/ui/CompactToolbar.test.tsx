@@ -271,4 +271,61 @@ describe('CompactToolbar', () => {
       expect(screen.getByTestId('low-power-mode-switch')).toHaveAttribute('aria-checked', 'true')
     })
   })
+
+  describe('Accessible names', () => {
+    const iconOnlyButtons = [
+      ['toolbar-gates-trigger', 'Gates'],
+      ['toolbar-io-trigger', 'Circuit I/O'],
+      ['toolbar-sim-toggle', 'Run Simulation'],
+      ['toolbar-axes-toggle', 'Show Axes'],
+      ['toolbar-properties-toggle', 'Show Properties'],
+      ['toolbar-delete-selected', 'Delete Selected'],
+      ['toolbar-clear-all', 'Clear All'],
+      ['toolbar-theme-trigger', 'Theme'],
+      ['toolbar-settings', 'Settings'],
+    ] as const
+
+    it('gives every button the toolbar renders a non-empty accessible name', () => {
+      wrap()
+      for (const button of screen.getAllByRole('button')) {
+        expect(button).toHaveAccessibleName()
+      }
+    })
+
+    it.each(iconOnlyButtons)(
+      '%s is named by the text its tooltip shows (%s)',
+      async (testId, name) => {
+        const user = userEvent.setup()
+        placeGateAt('And', 1, 1)
+        circuitActions.selectGate(useCircuitStore.getState().gates[0].id)
+        wrap()
+        const button = screen.getByTestId(testId)
+
+        await user.hover(button)
+
+        expect(await screen.findByRole('tooltip')).toHaveTextContent(name)
+        expect(screen.getByRole('button', { name })).toBe(button)
+      },
+      SLOW_MOUNT_TIMEOUT_MS,
+    )
+
+    it('renames the simulation toggle with its tooltip while the simulation runs', () => {
+      circuitActions.toggleSimulation()
+      wrap()
+      expect(screen.getByRole('button', { name: 'Pause Simulation' })).toBe(
+        screen.getByTestId('toolbar-sim-toggle'),
+      )
+      circuitActions.toggleSimulation()
+    })
+
+    it('renames the properties toggle with its tooltip while the panel is open', () => {
+      placeGateAt('And', 1, 1)
+      circuitActions.selectGate(useCircuitStore.getState().gates[0].id)
+      circuitActions.openPropertiesPanel()
+      wrap()
+      expect(screen.getByRole('button', { name: 'Hide Properties' })).toBe(
+        screen.getByTestId('toolbar-properties-toggle'),
+      )
+    })
+  })
 })
