@@ -37,6 +37,7 @@ const toOut = (id: string): Endpoint => ({ type: 'output', entityId: id })
 const pinIn = (gateId: string, i: number): Endpoint => ({ type: 'gate', entityId: gateId, pinId: `${gateId}-in-${i}` })
 const pinOut = (gateId: string): Endpoint => ({ type: 'gate', entityId: gateId, pinId: `${gateId}-out-0` })
 const busEnd = (id: string, pinId: string): Endpoint => ({ type: 'bus', entityId: id, pinId })
+const junctionEnd = (id: string): Endpoint => ({ type: 'junction', entityId: id })
 const bus = (id: string, kind: 'splitter' | 'joiner', width: number) => ({ id, kind, position: ZERO, rotation: ZERO, width, inputs: [], outputs: [], selected: false })
 const circuit = (name: string, parts: Partial<SerializedCircuit>): SerializedCircuit => ({
   version: CIRCUIT_FORMAT_VERSION, name, savedAt: '2026-10-15T00:00:00.000Z',
@@ -142,6 +143,52 @@ const JOINER_INTO_PART = circuit('JoinerIntoPart', {
     wire('w4', busEnd('join', 'out'), pinIn('g2', 0), 4), wire('w5', pinOut('g2'), toOut('oo'), 16),
   ],
 })
+
+const TWO_EMPTY_FEEDS = circuit('TwoEmptyFeeds', {
+  inputNodes: [node('ia', 'a')],
+  outputNodes: [node('oo', 'o', 16)],
+  gates: [gate('g1', 'Not16')],
+  busComponents: [bus('split', 'splitter', 2)],
+  wires: [
+    wire('w1', { type: 'input', entityId: 'ghost' }, junctionEnd('j1'), 4), wire('w2', busEnd('split', 'out0'), junctionEnd('j1'), 1),
+    wire('w3', junctionEnd('j1'), pinIn('g1', 0), 4), wire('w4', pinOut('g1'), toOut('oo'), 16),
+  ],
+  junctions: [{ id: 'j1', position: ZERO, signalId: 'signal-j1', wireIds: ['w1', 'w2', 'w3'] }],
+})
+const LOOP_BESIDE_INPUT = circuit('LoopBesideInput', {
+  inputNodes: [node('ia', 'a')],
+  outputNodes: [node('oo', 'out')],
+  busComponents: [bus('join', 'joiner', 2), bus('split', 'splitter', 2)],
+  wires: [
+    wire('w1', busEnd('join', 'out'), busEnd('split', 'in'), 2), wire('w2', busEnd('split', 'out0'), busEnd('join', 'in0'), 1),
+    wire('w3', fromIn('ia'), busEnd('join', 'in0'), 1), wire('w4', busEnd('split', 'out0'), toOut('oo'), 1),
+  ],
+})
+
+/** `a` into a Not through `stages` junctions or joiner/splitter pairs, each stage fed twice by the one before. */
+function chain(kind: 'junction' | 'bus', stages: number): SerializedCircuit {
+  const wires: SerializedWire[] = []
+  const add = (from: Endpoint, to: Endpoint, width?: number): void => void wires.push(wire(`w${wires.length + 1}`, from, to, width))
+  const busComponents: Array<ReturnType<typeof bus>> = []
+  let feeds = [fromIn('ia'), fromIn('ia')]
+  for (let s = 0; s < stages; s++) {
+    if (kind === 'junction') {
+      for (const from of feeds) add(from, junctionEnd(`j${s}`))
+      feeds = [junctionEnd(`j${s}`), junctionEnd(`j${s}`)]
+      continue
+    }
+    busComponents.push(bus(`join${s}`, 'joiner', 2), bus(`split${s}`, 'splitter', 2))
+    for (const into of ['in0', 'in1']) for (const from of feeds) add(from, busEnd(`join${s}`, into), 1)
+    add(busEnd(`join${s}`, 'out'), busEnd(`split${s}`, 'in'), 2)
+    feeds = [busEnd(`split${s}`, 'out0'), busEnd(`split${s}`, 'out1')]
+  }
+  add(feeds[0], pinIn('g1', 0))
+  add(pinOut('g1'), toOut('oo'))
+  const junctions = kind === 'bus' ? [] : Array.from({ length: stages }, (_, s) => ({
+    id: `j${s}`, position: ZERO, signalId: `signal-j${s}`, wireIds: wires.filter((w) => [w.from, w.to].some((e) => e.entityId === `j${s}`)).map((w) => w.id),
+  }))
+  return circuit(`Chain${stages}`, { inputNodes: [node('ia', 'a')], outputNodes: [node('oo', 'out')], gates: [gate('g1', 'Not')], busComponents, wires, junctions })
+}
 
 const LOCAL = [WITH_NOR, PARTS, PLACED, NAMES, C7, OUTPUT_AS_SOURCE, FAN_OUT, DUPLICATE, C8b]
 const WITH_BUSES = [golden('bus-endpoints'), C10, C11, JOINER_INTO_PART]
@@ -385,5 +432,29 @@ describe('fromLegacyCircuit', () => {
       expect(ids.filter((id) => new RegExp(`\\b${id}\\b`).test(named)), saved.name).toEqual([])
       expect(sidecar.notes.filter((n) => n.kind === 'bus-dissolved').map((n) => ids.find((id) => n.detail.includes(`"${id}"`))).sort(), saved.name).toEqual([...ids].sort())
     }
+  })
+
+  it('a junction whose two feeds both read nothing imports the same in either wire order', () => {
+    const [first, second, ...rest] = TWO_EMPTY_FEEDS.wires
+    const [saved, swapped] = [[first, second, ...rest], [second, first, ...rest]].map((wires) => load({ ...TWO_EMPTY_FEEDS, wires }))
+    expect(printSpec(swapped.doc, { sidecar: swapped.sidecar })).toBe(printSpec(saved.doc, { sidecar: saved.sidecar }))
+    expect(swapped.sidecar.notes).toEqual(saved.sidecar.notes)
+  })
+
+  it.each(['junction', 'bus'] as const)('a chain of 20 two-feed %s stages imports in under 100 ms', (kind) => {
+    const saved = chain(kind, 20)
+    const started = performance.now()
+    const { doc } = load(saved)
+    expect(performance.now() - started).toBeLessThan(100)
+    expect(printSpec(doc)).toContain('    Not(in=a, out=out); // #p1\n}')
+  })
+
+  it('a bit is noted as looping back to itself only when it has no other driver', () => {
+    const loopsBack = (saved: SerializedCircuit) => load(saved).sidecar.notes.filter((n) => n.detail.includes('loops back'))
+    expect(kinds(load(LOOP_BESIDE_INPUT).sidecar.notes)).toContain('multiple-drivers')
+    expect(loopsBack(LOOP_BESIDE_INPUT)).toEqual([])
+    expect(loopsBack({ ...LOOP_BESIDE_INPUT, wires: LOOP_BESIDE_INPUT.wires.filter((w) => w.id !== 'w3') })).toEqual([
+      { kind: 'floating-source', pin: 'out', detail: expect.stringContaining('whose bit 0 only loops back to itself') },
+    ])
   })
 })
