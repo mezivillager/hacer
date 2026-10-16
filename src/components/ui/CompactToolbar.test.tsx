@@ -232,6 +232,14 @@ describe('CompactToolbar', () => {
       expect(anchor?.getAttribute('href')).toContain('github.com/mezivillager/hacer')
     })
 
+    it('names the link GitHub and shows an icon in it', () => {
+      wrap()
+      const link = screen.getByRole('link', { name: 'GitHub' })
+      expect(link.getAttribute('href')).toContain('github.com/mezivillager/hacer')
+      expect(link.getAttribute('target')).toBe('_blank')
+      expect(link.querySelector('svg')).toBeTruthy()
+    })
+
     it('renders a version string', () => {
       wrap()
       expect(screen.getByTestId('toolbar-version').textContent).toMatch(/v?\d/)
