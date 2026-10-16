@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-16T01:14:47.762Z",
+  "generatedAt": "2026-10-16T01:27:57.463Z",
   "head": {
-    "sha": "34557154143ac8112f4d06fc2f7cbe97b0a0f24d",
-    "date": "2026-10-16T04:13:50+03:00",
-    "subject": "chore(deps): bump ossf/scorecard-action from 2.4.4 to 2.5.0"
+    "sha": "8421e33aad7bdbf751e061c8e9327892cdbdc170",
+    "date": "2026-10-16T04:26:50+03:00",
+    "subject": "test(release): run the preset-loading release plugins on every PR (#768)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-16T01:14:47.762Z",
+      "fetchedAt": "2026-10-16T01:27:57.463Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-16T01:14:47.762Z",
+      "fetchedAt": "2026-10-16T01:27:57.463Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-16T01:14:47.762Z",
+      "fetchedAt": "2026-10-16T01:27:57.463Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-16T01:14:47.762Z",
+      "fetchedAt": "2026-10-16T01:27:57.463Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-16T01:14:47.762Z",
+      "fetchedAt": "2026-10-16T01:27:57.463Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-16T01:14:47.762Z",
+      "fetchedAt": "2026-10-16T01:27:57.463Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-16T01:14:47.762Z",
+      "fetchedAt": "2026-10-16T01:27:57.463Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-16T01:14:47.762Z",
+      "fetchedAt": "2026-10-16T01:27:57.463Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-16T01:14:47.762Z",
+      "fetchedAt": "2026-10-16T01:27:57.463Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-16T01:14:47.762Z",
+      "fetchedAt": "2026-10-16T01:27:57.463Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-16T01:14:47.762Z",
+      "fetchedAt": "2026-10-16T01:27:57.463Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-16T01:14:47.762Z",
+      "fetchedAt": "2026-10-16T01:27:57.463Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-16T01:14:47.762Z",
+      "fetchedAt": "2026-10-16T01:27:57.463Z",
       "status": "ok"
     }
   },
@@ -103,12 +103,12 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 15,
+        "open": 14,
         "ready": 2,
-        "inProgress": 1,
+        "inProgress": 0,
         "needsHuman": 1,
         "staleClaims": [],
-        "agentReady": 3,
+        "agentReady": 2,
         "filedElsewhere": [
           151,
           339
@@ -305,12 +305,12 @@
         "lane": "aux",
         "slug": "upkeep",
         "epicNumber": 146,
-        "open": 2,
+        "open": 3,
         "ready": 0,
-        "inProgress": 0,
+        "inProgress": 1,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 1,
+        "agentReady": 2,
         "filedElsewhere": [],
         "next": null,
         "title": "Epic: upkeep — maintenance & documentation",
@@ -410,14 +410,14 @@
         "project": "foundation"
       },
       {
-        "number": 175,
-        "title": "P05-30: Splitter/joiner for bit-level access on placed chips — verify first, P05-12a may have delivered it",
-        "project": "spine"
-      },
-      {
         "number": 257,
         "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
         "project": "harness"
+      },
+      {
+        "number": 175,
+        "title": "P05-30: Splitter/joiner for bit-level access on placed chips — verify first, P05-12a may have delivered it",
+        "project": "spine"
       },
       {
         "number": 269,
@@ -430,7 +430,6 @@
       "agentPrs": [
         775,
         774,
-        772,
         514
       ]
     }
@@ -453,22 +452,6 @@
         "reason": null
       },
       {
-        "number": 175,
-        "title": "P05-30: Splitter/joiner for bit-level access on placed chips — verify first, P05-12a may have delivered it",
-        "labels": [
-          "project:spine",
-          "agent-ready",
-          "risk:1",
-          "research"
-        ],
-        "blocking": [],
-        "project": "spine",
-        "rank": 7,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
-      {
         "number": 257,
         "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
         "labels": [
@@ -482,6 +465,22 @@
         "project": "harness",
         "rank": 2,
         "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 175,
+        "title": "P05-30: Splitter/joiner for bit-level access on placed chips — verify first, P05-12a may have delivered it",
+        "labels": [
+          "project:spine",
+          "agent-ready",
+          "risk:1",
+          "research"
+        ],
+        "blocking": [],
+        "project": "spine",
+        "rank": 7,
+        "lane": "feature",
         "pickable": true,
         "reason": null
       },
@@ -1880,22 +1879,6 @@
         "reason": "claimed"
       },
       {
-        "number": 768,
-        "title": "Release pipeline has no PR-time check: a dependency bump broke 20 releases unseen (#765)",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:1"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 773,
         "title": "fromLegacyCircuit: a two-feed chain closed into a loop still traces 2^k paths",
         "labels": [
@@ -1908,6 +1891,22 @@
         "lane": "feature",
         "pickable": false,
         "reason": "unshaped"
+      },
+      {
+        "number": 776,
+        "title": "CompactToolbar: icon-only buttons have no accessible name (only the tooltip says what they do)",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": false,
+        "reason": "claimed"
       }
     ],
     "byProject": {
@@ -1939,21 +1938,6 @@
         767,
         773
       ],
-      "spine": [
-        175,
-        165,
-        167,
-        169,
-        170,
-        171,
-        172,
-        173,
-        174,
-        176,
-        177,
-        235,
-        236
-      ],
       "harness": [
         257,
         269,
@@ -1968,8 +1952,22 @@
         505,
         550,
         607,
-        677,
-        768
+        677
+      ],
+      "spine": [
+        175,
+        165,
+        167,
+        169,
+        170,
+        171,
+        172,
+        173,
+        174,
+        176,
+        177,
+        235,
+        236
       ],
       "core": [
         179,
@@ -2006,7 +2004,8 @@
       ],
       "upkeep": [
         229,
-        256
+        256,
+        776
       ],
       "horizon": [
         230,
@@ -2077,24 +2076,6 @@
         "verdicts": []
       },
       {
-        "number": 772,
-        "title": "test(release): run the preset-loading release plugins on every PR (#768)",
-        "url": "https://github.com/mezivillager/hacer/pull/772",
-        "author": "mezivillager",
-        "labels": [
-          "project:harness",
-          "risk:1"
-        ],
-        "headRefName": "test/768-release-config",
-        "isDraft": false,
-        "createdAt": "2026-10-16T00:52:44Z",
-        "mergedAt": null,
-        "closes": [
-          768
-        ],
-        "verdicts": []
-      },
-      {
         "number": 760,
         "title": "chore(deps): bump lucide-react from 0.564.0 to 1.55.0",
         "url": "https://github.com/mezivillager/hacer/pull/760",
@@ -2138,6 +2119,32 @@
       }
     ],
     "merged": [
+      {
+        "number": 772,
+        "title": "test(release): run the preset-loading release plugins on every PR (#768)",
+        "url": "https://github.com/mezivillager/hacer/pull/772",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:1"
+        ],
+        "headRefName": "test/768-release-config",
+        "isDraft": false,
+        "createdAt": "2026-10-16T00:52:44Z",
+        "mergedAt": "2026-10-16T01:26:51Z",
+        "closes": [
+          768
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Sonnet 5.5",
+            "at": "2026-10-16T01:21:42Z",
+            "url": "https://github.com/mezivillager/hacer/pull/772#issuecomment-6205856335"
+          }
+        ]
+      },
       {
         "number": 771,
         "title": "fix(ui): draw the toolbar's GitHub mark inline instead of lucide's Github (#769)",
@@ -3637,33 +3644,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/686#issuecomment-5982849130"
           }
         ]
-      },
-      {
-        "number": 684,
-        "title": "chore(harness): issue-facts checks package and path claims before dispatch (#394)",
-        "url": "https://github.com/mezivillager/hacer/pull/684",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:1"
-        ],
-        "headRefName": "chore/394-measured-facts-check",
-        "isDraft": false,
-        "createdAt": "2026-10-04T17:36:27Z",
-        "mergedAt": "2026-10-04T17:54:07Z",
-        "closes": [
-          394
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Sonnet 5.5",
-            "at": "2026-10-04T17:46:59Z",
-            "url": "https://github.com/mezivillager/hacer/pull/684#issuecomment-5982725411"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -3727,28 +3707,28 @@
         }
       },
       {
-        "number": 768,
-        "ref": "refs/heads/claim/768",
-        "sha": "a8caefa67773cc638200df3f400265081f3da2e3",
+        "number": 776,
+        "ref": "refs/heads/claim/776",
+        "sha": "34557154143ac8112f4d06fc2f7cbe97b0a0f24d",
         "state": "OPEN",
-        "title": "Release pipeline has no PR-time check: a dependency bump broke 20 releases unseen (#765)",
-        "url": "https://github.com/mezivillager/hacer/issues/768",
+        "title": "CompactToolbar: icon-only buttons have no accessible name (only the tooltip says what they do)",
+        "url": "https://github.com/mezivillager/hacer/issues/776",
         "labels": [
-          "project:harness",
+          "project:upkeep",
           "agent-ready",
           "in-progress",
-          "risk:1"
+          "risk:0"
         ],
         "onClosedIssue": false,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "build",
           "session": "2026-10-15 hacer-loop-reset",
-          "branch": "test/768-release-config",
+          "branch": "fix/776-toolbar-names",
           "handoff": "none",
           "author": "mezivillager",
-          "at": "2026-10-16T00:45:49Z",
-          "url": "https://github.com/mezivillager/hacer/issues/768#issuecomment-6205418933"
+          "at": "2026-10-16T01:23:50Z",
+          "url": "https://github.com/mezivillager/hacer/issues/776#issuecomment-6205881001"
         }
       }
     ],
@@ -5509,7 +5489,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-04",
-        "merges": 7
+        "merges": 6
       },
       {
         "date": "2026-10-14",
@@ -5521,20 +5501,20 @@
       },
       {
         "date": "2026-10-16",
-        "merges": 12
+        "merges": 13
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-02T01:14:47.762Z",
-      "merged": 71,
+      "since": "2026-10-02T01:27:57.463Z",
+      "merged": 70,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 2
       },
       "blockedOnce": {
         "count": 6,
-        "of": 56,
+        "of": 57,
         "prs": [
           700,
           725,
@@ -5546,16 +5526,14 @@
       },
       "coverage": {
         "code": {
-          "merged": 47,
-          "withVerdict": 47,
+          "merged": 48,
+          "withVerdict": 48,
           "without": []
         },
         "nonCode": {
-          "merged": 24,
+          "merged": 22,
           "withVerdict": 9,
           "without": [
-            658,
-            659,
             692,
             693,
             694,
@@ -8861,11 +8839,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "34557154143ac8112f4d06fc2f7cbe97b0a0f24d",
+        "sha": "8421e33aad7bdbf751e061c8e9327892cdbdc170",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38833986043/job/116758834949",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/38835166545/job/116762551218",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -8957,52 +8935,6 @@
         "line": null,
         "verdict": "FAIL",
         "fields": {},
-        "disagrees": false
-      },
-      {
-        "pr": 772,
-        "sha": "8d9644e9dc4f02539232612a1bac17298db26d6a",
-        "check": "pr-hygiene",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-16T00:52:59Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38831992757/job/116752621768",
-        "line": "HYGIENE: PASS reviewable=5 test=80 excluded=0 files=1 issue=#768 linked=fixes",
-        "verdict": "PASS",
-        "fields": {
-          "reviewable": 5,
-          "test": 80,
-          "excluded": 0,
-          "files": 1,
-          "issue": "#768",
-          "linked": "fixes"
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 772,
-        "sha": "8d9644e9dc4f02539232612a1bac17298db26d6a",
-        "check": "browser-qa",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-16T00:53:02Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38831992625/job/116752619754",
-        "line": "BROWSER-QA: skipped (no critical paths)",
-        "verdict": "SKIPPED",
-        "fields": {},
-        "disagrees": false
-      },
-      {
-        "pr": 772,
-        "sha": "8d9644e9dc4f02539232612a1bac17298db26d6a",
-        "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-16T00:56:17Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38831994603/job/116752626073",
-        "line": "LAYER-RATCHET: 69 known violations (37 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 69,
-          "new": 0
-        },
         "disagrees": false
       },
       {
