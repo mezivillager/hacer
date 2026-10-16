@@ -59,6 +59,17 @@ const CATEGORY_LABEL: Record<ChipCategory, string> = {
   'multi-way': 'Multi-way',
 }
 
+const BUTTON_LABEL = {
+  gates: 'Gates',
+  io: 'Circuit I/O',
+  axes: 'Show Axes',
+  deleteSelected: 'Delete Selected',
+  clearAll: 'Clear All',
+  theme: 'Theme',
+  github: 'GitHub',
+  settings: 'Settings',
+} as const
+
 const ioElements = [
   { id: 'input', label: 'Input', Icon: ArrowRightFromLine },
   { id: 'output', label: 'Output', Icon: CircleDot },
@@ -150,6 +161,8 @@ export function CompactToolbar() {
 
   const version = useAppReleaseVersion()
   const lowPowerEnabled = performanceMode === 'low-power'
+  const simulationLabel = simulationRunning ? 'Pause Simulation' : 'Run Simulation'
+  const propertiesLabel = propertiesPanelOpen ? 'Hide Properties' : 'Show Properties'
 
   return (
     <div
@@ -184,6 +197,7 @@ export function CompactToolbar() {
                   data-testid="toolbar-gates-trigger"
                   variant="ghost"
                   size="icon"
+                  aria-label={BUTTON_LABEL.gates}
                   className={cn('w-9 h-9 relative', gatesOpen && 'bg-sidebar-accent')}
                 >
                   <NandIcon className="w-5 h-5" />
@@ -191,7 +205,7 @@ export function CompactToolbar() {
                 </Button>
               </PopoverTrigger>
             </TooltipTrigger>
-            <TooltipContent side="right">Gates</TooltipContent>
+            <TooltipContent side="right">{BUTTON_LABEL.gates}</TooltipContent>
           </Tooltip>
           <PopoverContent
             data-testid="gates-popover"
@@ -249,6 +263,7 @@ export function CompactToolbar() {
                   data-testid="toolbar-io-trigger"
                   variant="ghost"
                   size="icon"
+                  aria-label={BUTTON_LABEL.io}
                   className={cn('w-9 h-9 relative', ioOpen && 'bg-sidebar-accent')}
                 >
                   <CircleDot className="w-4 h-4" />
@@ -256,7 +271,7 @@ export function CompactToolbar() {
                 </Button>
               </PopoverTrigger>
             </TooltipTrigger>
-            <TooltipContent side="right">Circuit I/O</TooltipContent>
+            <TooltipContent side="right">{BUTTON_LABEL.io}</TooltipContent>
           </Tooltip>
           <PopoverContent
             data-testid="io-popover"
@@ -316,15 +331,14 @@ export function CompactToolbar() {
               variant={simulationRunning ? 'default' : 'ghost'}
               size="icon"
               className="w-9 h-9"
+              aria-label={simulationLabel}
               aria-pressed={simulationRunning}
               onClick={() => circuitActions.toggleSimulation()}
             >
               {simulationRunning ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
             </Button>
           </TooltipTrigger>
-          <TooltipContent side="right">
-            {simulationRunning ? 'Pause Simulation' : 'Run Simulation'}
-          </TooltipContent>
+          <TooltipContent side="right">{simulationLabel}</TooltipContent>
         </Tooltip>
 
         <Separator className="my-1 w-6" />
@@ -336,6 +350,7 @@ export function CompactToolbar() {
               data-testid="toolbar-axes-toggle"
               variant={showAxes ? 'secondary' : 'ghost'}
               size="icon"
+              aria-label={BUTTON_LABEL.axes}
               className="w-9 h-9"
               onClick={() => circuitActions.toggleAxes()}
             >
@@ -344,7 +359,7 @@ export function CompactToolbar() {
           </TooltipTrigger>
           <TooltipContent side="right">
             <div className="flex items-center gap-2">
-              <span>Show Axes</span>
+              <span>{BUTTON_LABEL.axes}</span>
               <Switch checked={showAxes} className="scale-75" />
             </div>
           </TooltipContent>
@@ -359,6 +374,7 @@ export function CompactToolbar() {
               size="icon"
               className="w-9 h-9"
               disabled={!hasSelection}
+              aria-label={propertiesLabel}
               aria-pressed={propertiesPanelOpen}
               onClick={() => circuitActions.togglePropertiesPanel()}
             >
@@ -366,7 +382,7 @@ export function CompactToolbar() {
             </Button>
           </TooltipTrigger>
           <TooltipContent side="right">
-            {propertiesPanelOpen ? 'Hide Properties' : 'Show Properties'}
+            {propertiesLabel}
             <span className="text-muted-foreground ml-2">I</span>
           </TooltipContent>
         </Tooltip>
@@ -380,12 +396,13 @@ export function CompactToolbar() {
               size="icon"
               className="w-9 h-9 text-muted-foreground hover:text-destructive"
               disabled={!hasSelection}
+              aria-label={BUTTON_LABEL.deleteSelected}
               onClick={handleDelete}
             >
               <Trash2 className="w-4 h-4" />
             </Button>
           </TooltipTrigger>
-          <TooltipContent side="right">Delete Selected</TooltipContent>
+          <TooltipContent side="right">{BUTTON_LABEL.deleteSelected}</TooltipContent>
         </Tooltip>
 
         {/* Clear */}
@@ -397,12 +414,13 @@ export function CompactToolbar() {
               size="icon"
               className="w-9 h-9 text-muted-foreground hover:text-destructive"
               disabled={gatesCount === 0}
+              aria-label={BUTTON_LABEL.clearAll}
               onClick={() => circuitActions.clearCircuit()}
             >
               <RotateCcw className="w-4 h-4" />
             </Button>
           </TooltipTrigger>
-          <TooltipContent side="right">Clear All</TooltipContent>
+          <TooltipContent side="right">{BUTTON_LABEL.clearAll}</TooltipContent>
         </Tooltip>
       </div>
 
@@ -417,6 +435,7 @@ export function CompactToolbar() {
                   variant="ghost"
                   size="icon"
                   className="w-9 h-9"
+                  aria-label={BUTTON_LABEL.theme}
                 >
                   {theme === 'dark' ? (
                     <Moon className="w-4 h-4" />
@@ -428,7 +447,7 @@ export function CompactToolbar() {
                 </Button>
               </PopoverTrigger>
             </TooltipTrigger>
-            <TooltipContent side="right">Theme</TooltipContent>
+            <TooltipContent side="right">{BUTTON_LABEL.theme}</TooltipContent>
           </Tooltip>
           <PopoverContent side="right" align="end" className="w-36 p-1">
             <div className="flex flex-col gap-0.5">
@@ -466,13 +485,13 @@ export function CompactToolbar() {
                 href="https://github.com/mezivillager/hacer"
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="GitHub"
+                aria-label={BUTTON_LABEL.github}
               >
                 <GithubMark className="w-4 h-4" />
               </a>
             </Button>
           </TooltipTrigger>
-          <TooltipContent side="right">GitHub</TooltipContent>
+          <TooltipContent side="right">{BUTTON_LABEL.github}</TooltipContent>
         </Tooltip>
 
         <Popover>
@@ -484,12 +503,13 @@ export function CompactToolbar() {
                   variant={lowPowerEnabled ? 'secondary' : 'ghost'}
                   size="icon"
                   className="w-9 h-9"
+                  aria-label={BUTTON_LABEL.settings}
                 >
                   <Settings className="w-4 h-4" />
                 </Button>
               </PopoverTrigger>
             </TooltipTrigger>
-            <TooltipContent side="right">Settings</TooltipContent>
+            <TooltipContent side="right">{BUTTON_LABEL.settings}</TooltipContent>
           </Tooltip>
           <PopoverContent
             data-testid="settings-popover"
