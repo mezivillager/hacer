@@ -5,7 +5,9 @@
  * These nodes are essential for HDL-style circuits with chip-level I/O.
  */
 
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { notify } from '@/lib/notify'
+import { MAX_PIN_WIDTH } from '@/core/serialization'
 import { useCircuitStore } from '../../circuitStore'
 import type { Position } from '../../types'
 import { calculateWirePath } from '@/utils/wiringScheme/core'
@@ -680,6 +682,114 @@ describe('recalculateWiresForNode — bus endpoint (M3)', () => {
     const after = useCircuitStore.getState().wires[0].segments
     expect(after.length).toBeGreaterThan(0)
     expect(JSON.stringify(after)).not.toBe(before)
+  })
+})
+
+describe('node width limit (MAX_PIN_WIDTH)', () => {
+  const widths: { label: string; width: number }[] = [
+    { label: '0', width: 0 },
+    { label: '-1', width: -1 },
+    { label: '2.5', width: 2.5 },
+    { label: String(MAX_PIN_WIDTH + 1), width: MAX_PIN_WIDTH + 1 },
+    { label: 'NaN', width: NaN },
+    { label: 'Infinity', width: Infinity },
+    { label: '"4"', width: '4' as unknown as number },
+  ]
+
+  const expectWarningNaming = (width: number) => {
+    expect(notify.warning).toHaveBeenCalledTimes(1)
+    const message = vi.mocked(notify.warning).mock.calls[0][0]
+    expect(message).toContain(`width ${String(width)}`)
+    expect(message).toContain(String(MAX_PIN_WIDTH))
+  }
+
+  beforeEach(() => {
+    vi.spyOn(notify, 'warning').mockReturnValue('toast')
+    useCircuitStore.setState({
+      inputNodes: [],
+      outputNodes: [],
+      junctions: [],
+      wires: [],
+      gates: [],
+      busComponents: [],
+    })
+  })
+
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
+  describe.each([
+    { action: 'addInputNode', nodes: 'inputNodes' },
+    { action: 'addOutputNode', nodes: 'outputNodes' },
+  ] as const)('$action', ({ action, nodes }) => {
+    it.each(widths)('refuses width $label, adds nothing and warns', ({ width }) => {
+      const before = useCircuitStore.getState()[nodes]
+
+      useCircuitStore.getState()[action]('n', { x: 0, y: 0, z: 0 }, width)
+
+      expect(useCircuitStore.getState()[nodes]).toBe(before)
+      expectWarningNaming(width)
+    })
+
+    it('still adds at the smallest and the largest accepted widths', () => {
+      useCircuitStore.getState()[action]('a', { x: 0, y: 0, z: 0 }, 1)
+      useCircuitStore.getState()[action]('b', { x: 0, y: 0, z: 4 }, MAX_PIN_WIDTH)
+
+      expect(useCircuitStore.getState()[nodes].map((n) => n.width)).toEqual([1, MAX_PIN_WIDTH])
+      expect(notify.warning).not.toHaveBeenCalled()
+    })
+  })
+
+  describe.each([
+    { action: 'updateInputNodeWidth', add: 'addInputNode', nodes: 'inputNodes' },
+    { action: 'updateOutputNodeWidth', add: 'addOutputNode', nodes: 'outputNodes' },
+  ] as const)('$action', ({ action, add, nodes }) => {
+    const wiredNode = () => {
+      const store = useCircuitStore.getState()
+      const node = store[add]('n', { x: 0, y: 0, z: 0 }, 4)
+      const not = store.addGate('Not', { x: 4, y: 0, z: 0 })
+      if (add === 'addInputNode') {
+        store.addWire(
+          { type: 'input', entityId: node.id },
+          { type: 'gate', entityId: not.id, pinId: not.inputs[0].id },
+          [],
+        )
+      } else {
+        store.addWire(
+          { type: 'gate', entityId: not.id, pinId: not.outputs[0].id },
+          { type: 'output', entityId: node.id },
+          [],
+        )
+      }
+      return node
+    }
+
+    it.each(widths)('refuses width $label, changes nothing and warns', ({ width }) => {
+      const node = wiredNode()
+      const before = useCircuitStore.getState()
+
+      useCircuitStore.getState()[action](node.id, width)
+
+      const after = useCircuitStore.getState()
+      expect(after[nodes]).toBe(before[nodes])
+      expect(after.gates).toBe(before.gates)
+      expect(after.wires).toBe(before.wires)
+      expect(after[nodes][0].width).toBe(4)
+      expectWarningNaming(width)
+    })
+
+    it('still resizes to the smallest and the largest accepted widths', () => {
+      const node = wiredNode()
+
+      useCircuitStore.getState()[action](node.id, MAX_PIN_WIDTH)
+      expect(useCircuitStore.getState()[nodes][0].width).toBe(MAX_PIN_WIDTH)
+      expect(useCircuitStore.getState().gates[0].width).toBe(MAX_PIN_WIDTH)
+
+      useCircuitStore.getState()[action](node.id, 1)
+      expect(useCircuitStore.getState()[nodes][0].width).toBe(1)
+      expect(notify.warning).not.toHaveBeenCalled()
+    })
   })
 })
 
