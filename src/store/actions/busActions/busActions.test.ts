@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { notify } from '@/lib/notify'
+import { MAX_PIN_WIDTH } from '@/core/serialization'
 import { useCircuitStore } from '../../circuitStore'
 
 const getState = () => useCircuitStore.getState()
@@ -160,5 +161,36 @@ describe('busActions', () => {
     const after = getState().wires[0].segments
     expect(after.length).toBeGreaterThan(0) // Not orphaned
     expect(JSON.stringify(after)).not.toBe(before) // Actually re-routed
+  })
+
+  describe.each(['placeBusSplitter', 'placeBusJoiner'] as const)('%s width limit', (action) => {
+    const widths: { label: string; width: number }[] = [
+      { label: '0', width: 0 },
+      { label: '-1', width: -1 },
+      { label: '2.5', width: 2.5 },
+      { label: String(MAX_PIN_WIDTH + 1), width: MAX_PIN_WIDTH + 1 },
+      { label: 'NaN', width: NaN },
+      { label: 'Infinity', width: Infinity },
+      { label: '"4"', width: '4' as unknown as number },
+    ]
+
+    it.each(widths)('refuses width $label, leaves the store unchanged and warns', ({ width }) => {
+      const before = getState().busComponents
+
+      expect(getState()[action](width, { x: 0, y: 0, z: 0 })).toBeNull()
+
+      expect(getState().busComponents).toBe(before)
+      expect(notify.warning).toHaveBeenCalledTimes(1)
+      const message = vi.mocked(notify.warning).mock.calls[0][0]
+      expect(message).toContain(`width ${String(width)}`)
+      expect(message).toContain(String(MAX_PIN_WIDTH))
+    })
+
+    it('still places at the smallest and the largest accepted widths', () => {
+      expect(getState()[action](2, { x: 0, y: 0, z: 0 })?.width).toBe(2)
+      expect(getState()[action](MAX_PIN_WIDTH, { x: 4, y: 0, z: 0 })?.width).toBe(MAX_PIN_WIDTH)
+      expect(getState().busComponents).toHaveLength(2)
+      expect(notify.warning).not.toHaveBeenCalled()
+    })
   })
 })
