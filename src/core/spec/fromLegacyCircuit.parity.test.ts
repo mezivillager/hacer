@@ -442,6 +442,31 @@ function partCycle(saved: SerializedCircuit): boolean {
   })
 }
 
+/** Whether a bus input bit is driven by a part output or an IN, traced back through wires and bus components. */
+function driven(saved: SerializedCircuit, busId: string, pinId: string, bit: number): boolean {
+  const { document } = deserializeCircuit(saved)
+  if (document === null) throw new Error(`${saved.name} does not load`)
+  const seen = new Set<string>()
+  const stack: Array<[string, string, number]> = [[busId, pinId, bit]]
+  while (stack.length > 0) {
+    const [id, pin, b] = stack.pop() as [string, string, number]
+    if (seen.has(`${id}:${pin}:${b}`)) continue
+    seen.add(`${id}:${pin}:${b}`)
+    const width = document.busComponents.find((x) => x.id === id)?.inputs.find((p) => p.id === pin)?.width ?? 1
+    for (const { from, to, width: carried } of document.wires) {
+      if (to.type !== 'bus' || to.entityId !== id || to.pinId !== pin || b >= Math.min(carried ?? 1, width)) continue
+      const node = from.type === 'input' ? document.inputNodes.find((x) => x.id === from.entityId) : undefined
+      const out = from.type === 'gate' ? document.gates.find((g) => g.id === from.entityId)?.outputs.find((p) => p.id === from.pinId) : undefined
+      if ((node && b < node.width) || (out && b < (out.width ?? 1))) return true
+      const source = from.type === 'bus' ? document.busComponents.find((x) => x.id === from.entityId) : undefined
+      const at = source?.outputs.findIndex((p) => p.id === from.pinId) ?? -1
+      if (source?.kind === 'joiner' && at >= 0 && b < source.inputs.length) stack.push([source.id, source.inputs[b].id, 0])
+      if (source?.kind === 'splitter' && at >= 0 && b === 0) stack.push([source.id, 'in', at])
+    }
+  }
+  return false
+}
+
 /** Legacy's own reads and clamps, repeated to a fixed point instead of run in order: the value each bit carries when no part loops. */
 function relaxed(saved: SerializedCircuit, inputs: Vector): Record<string, number> {
   const { document } = deserializeCircuit(saved)
@@ -629,5 +654,15 @@ describe('legacy parity', () => {
     expect(failures).toEqual([])
     const valued = corpus.filter((saved) => !fromLegacyCircuit(saved).sidecar.notes.some((n) => REFUSALS.has(n.kind)))
     expect(valued.length).toBeGreaterThanOrEqual(singly.length)
+  })
+
+  it('every loops-back note in a seeded random corpus names a bit that no part output or IN drives', () => {
+    const rng = mulberry32(0x767)
+    const noted = Array.from({ length: 600 }, (_, n) => randomBusDocument(rng, n)).flatMap((saved) => fromLegacyCircuit(saved).sidecar.notes.flatMap((note) => {
+      const m = /(?:splitter|joiner) "([^"]+)" pin "([^"]+)", whose bit (\d+) only loops back to itself/.exec(note.detail)
+      return m ? [{ saved, bus: m[1], pin: m[2], bit: Number(m[3]) }] : []
+    }))
+    expect(noted.length).toBeGreaterThan(20)
+    expect(noted.filter((n) => driven(n.saved, n.bus, n.pin, n.bit)).map((n) => `${n.saved.name}: ${n.bus}.${n.pin}[${n.bit}]`)).toEqual([])
   })
 })
