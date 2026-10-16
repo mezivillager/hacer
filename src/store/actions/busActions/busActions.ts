@@ -1,4 +1,5 @@
 import { notify } from '@/lib/notify'
+import { MAX_PIN_WIDTH } from '@/core/serialization'
 import type {
   BusActions,
   BusComponent,
@@ -25,9 +26,13 @@ function generateBusId(kind: BusComponentKind): string {
   return `bus-${kind}-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`
 }
 
-/** Bus width must be an integer >= 2 (a 1-bit "bus" is just a wire). */
-function isValidBusWidth(width: number): boolean {
-  return Number.isInteger(width) && width >= 2
+/** A bus is 2 to `MAX_PIN_WIDTH` bits wide (a 1-bit "bus" is just a wire). Warns when it is not. */
+function acceptBusWidth(width: number): boolean {
+  if (Number.isInteger(width) && width >= 2 && width <= MAX_PIN_WIDTH) return true
+  notify.warning(
+    `Invalid bus width ${String(width)}: must be a whole number from 2 to ${String(MAX_PIN_WIDTH)}`,
+  )
+  return false
 }
 
 function createBusComponent(
@@ -50,10 +55,7 @@ function createBusComponent(
 
 export const createBusActions = (set: SetState, get: GetState): BusActions => ({
   placeBusSplitter: (width, position) => {
-    if (!isValidBusWidth(width)) {
-      notify.warning(`Invalid bus width ${width}: must be an integer >= 2`)
-      return null
-    }
+    if (!acceptBusWidth(width)) return null
     const component = createBusComponent('splitter', width, position)
     set((state) => {
       state.busComponents.push(component)
@@ -62,10 +64,7 @@ export const createBusActions = (set: SetState, get: GetState): BusActions => ({
   },
 
   placeBusJoiner: (width, position) => {
-    if (!isValidBusWidth(width)) {
-      notify.warning(`Invalid bus width ${width}: must be an integer >= 2`)
-      return null
-    }
+    if (!acceptBusWidth(width)) return null
     const component = createBusComponent('joiner', width, position)
     set((state) => {
       state.busComponents.push(component)

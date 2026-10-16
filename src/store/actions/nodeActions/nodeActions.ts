@@ -5,6 +5,8 @@
  * These nodes are essential for HDL-style circuits with chip-level I/O.
  */
 
+import { notify } from '@/lib/notify'
+import { MAX_PIN_WIDTH } from '@/core/serialization'
 import type {
   NodeActions,
   InputNode,
@@ -37,6 +39,15 @@ function generateNodeId(prefix: string): string {
   return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`
 }
 
+/** A node is 1 to `MAX_PIN_WIDTH` bits wide, as `deserializeCircuit` requires. Warns when it is not. */
+function acceptNodeWidth(width: number): boolean {
+  if (Number.isInteger(width) && width >= 1 && width <= MAX_PIN_WIDTH) return true
+  notify.warning(
+    `Invalid node width ${String(width)}: must be a whole number from 1 to ${String(MAX_PIN_WIDTH)}`,
+  )
+  return false
+}
+
 /**
  * Create node actions for managing circuit I/O nodes.
  *
@@ -55,6 +66,9 @@ export const createNodeActions = (set: SetState, get: GetState): NodeActions => 
       width,
     }
 
+    // The signature cannot refuse: the node is returned but never stored.
+    if (!acceptNodeWidth(width)) return node
+
     set((state) => {
       state.inputNodes.push(node)
     }, false, 'addInputNode')
@@ -71,6 +85,9 @@ export const createNodeActions = (set: SetState, get: GetState): NodeActions => 
       value: 0,
       width,
     }
+
+    // The signature cannot refuse: the node is returned but never stored.
+    if (!acceptNodeWidth(width)) return node
 
     set((state) => {
       state.outputNodes.push(node)
@@ -151,6 +168,7 @@ export const createNodeActions = (set: SetState, get: GetState): NodeActions => 
   },
 
   updateInputNodeWidth: (nodeId: string, width: number): void => {
+    if (!acceptNodeWidth(width)) return
     set((state) => {
       const node = state.inputNodes.find((n) => n.id === nodeId)
       if (!node) return
@@ -160,6 +178,7 @@ export const createNodeActions = (set: SetState, get: GetState): NodeActions => 
   },
 
   updateOutputNodeWidth: (nodeId: string, width: number): void => {
+    if (!acceptNodeWidth(width)) return
     set((state) => {
       const node = state.outputNodes.find((n) => n.id === nodeId)
       if (!node) return
