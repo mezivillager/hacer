@@ -61,6 +61,11 @@ needs `conventional-changelog-writer@9`, but `@semantic-release/release-notes-ge
 writer 8. Drop the extension once `release-notes-generator` 15 declares writer 9 and the preset
 itself.
 
+`scripts/release-config.test.mjs` runs on every PR through `pnpm run test:run`: it loads the two
+preset-loading plugins from the project and runs `analyzeCommits` and `generateNotes` with
+`.releaserc.json`'s options over a synthetic `fix` and `feat` commit, offline. A dependency change
+that breaks the release pipeline fails there instead of on `Release` after merge.
+
 ### `commitlint.config.js`
 
 Validates commit messages to ensure they follow the conventional commits format. This runs automatically in the `commit-msg` git hook.
