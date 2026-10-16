@@ -165,6 +165,16 @@ const LOOP_BESIDE_INPUT = circuit('LoopBesideInput', {
   ],
 })
 
+const CROSSED_LOOP = circuit('CrossedLoop', {
+  outputNodes: [node('oo', 'o')],
+  busComponents: [bus('join', 'joiner', 2), bus('split', 'splitter', 2)],
+  wires: [
+    wire('w1', busEnd('join', 'out'), busEnd('split', 'in'), 2), wire('w2', busEnd('split', 'out0'), busEnd('join', 'in0'), 1),
+    wire('w3', busEnd('split', 'out1'), busEnd('join', 'in0'), 1), wire('w4', busEnd('split', 'out0'), busEnd('join', 'in1'), 1),
+    wire('w5', busEnd('split', 'out1'), toOut('oo'), 1),
+  ],
+})
+
 /** `a` into a Not through `stages` junctions or joiner/splitter pairs, each stage fed twice by the one before. */
 function chain(kind: 'junction' | 'bus', stages: number): SerializedCircuit {
   const wires: SerializedWire[] = []
@@ -455,6 +465,12 @@ describe('fromLegacyCircuit', () => {
     expect(loopsBack(LOOP_BESIDE_INPUT)).toEqual([])
     expect(loopsBack({ ...LOOP_BESIDE_INPUT, wires: LOOP_BESIDE_INPUT.wires.filter((w) => w.id !== 'w3') })).toEqual([
       { kind: 'floating-source', pin: 'out', detail: expect.stringContaining('whose bit 0 only loops back to itself') },
+    ])
+  })
+
+  it('a bit whose every route loops back through other undriven bits keeps its loops-back note', () => {
+    expect(load(CROSSED_LOOP).sidecar.notes.filter((n) => n.kind === 'floating-source')).toEqual([
+      { kind: 'floating-source', pin: 'o', detail: 'Wire "w5" reads nothing at splitter "split" pin "in", whose bit 0 only loops back to itself, so OUT o is left undriven' },
     ])
   })
 })
