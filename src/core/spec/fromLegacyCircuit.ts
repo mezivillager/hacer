@@ -36,6 +36,7 @@ const isReal = (p: Piece): p is Real => p.source !== null
 const driverOf = (p: Real): Ref => narrowed(p.source.ref, p.source.width, p.offset, p.bits)
 const byId = (a: LegacyWire, b: LegacyWire): number => compare(a.id, b.id)
 const floating = (bits: number, lost?: string): Value => [{ at: 0, bits, offset: 0, source: null, ...(lost === undefined ? {} : { lost }) }]
+const distinct = (values: Value[]): Value[] => [...new Map(values.map((v) => [JSON.stringify(v), v])).values()]
 /** Bits `from…from+bits-1` of a value, moved down to bit 0. */
 const cut = (value: Value, from: number, bits: number): Value =>
   value.flatMap((p) => {
@@ -111,6 +112,21 @@ export function fromLegacyCircuit(saved: SerializedCircuit): LegacyImport {
   legacy.outputNodes.forEach((n, i) => (sidecar.hints['3d'][`out:${outs[i].name}`] = hint(n)))
 
   const whole = (source: Source, from: number, bits: number): Value[] => [cut([{ at: 0, bits: source.width, offset: 0, source }], from, bits)]
+  const known = new Map<string, Value[]>()
+  let loopsMet = 0
+  const loopBack = (value: Value): Value[] => {
+    loopsMet++
+    return [value]
+  }
+  /** A trace that met no loop reads the same on every path, so it runs once per key. */
+  const traced = (key: string, trace: () => Value[]): Value[] => {
+    const hit = known.get(key)
+    if (hit) return hit
+    const before = loopsMet
+    const values = distinct(trace())
+    if (loopsMet === before) known.set(key, values)
+    return values
+  }
   /** Bits `from…from+bits-1` of what `end` carries, in each value it can take. A loop is caught per bit, not per entity. */
   const resolve = (end: Endpoint, path: string[], from: number, bits: number): Value[] => {
     if (end.type === 'input') {
@@ -128,24 +144,32 @@ export function fromLegacyCircuit(saved: SerializedCircuit): LegacyImport {
     const out = bus?.outputs.findIndex((p) => p.id === end.pinId) ?? -1
     if (bus && out >= 0) return bus.kind === 'joiner' ? join(bus.inputs.slice(from, from + bits).map((p) => busBit(bus, p.id, 1, 0, path))) : from > 0 ? [[]] : busBit(bus, 'in', bus.width, out, path)
     const key = `${end.entityId}:${from}:${bits}`
-    const junction = end.type === 'junction' && !path.includes(key) ? legacy.junctions.find((j) => j.id === end.entityId) : undefined
+    const junction = end.type === 'junction' ? legacy.junctions.find((j) => j.id === end.entityId) : undefined
     if (!junction) return [floating(bits)]
-    const at = (e: Endpoint): boolean => e.type === 'junction' && e.entityId === junction.id
-    const feeds = legacy.wires.filter((w) => at(w.to))
-    const candidates = feeds.length > 0 ? feeds : legacy.wires.filter((w) => junction.wireIds.includes(w.id) && !at(w.from))
-    return candidates.length === 0 ? [floating(bits)] : candidates.flatMap((w) => resolve(w.from, [...path, key], from, bits))
+    if (path.includes(key)) return loopBack(floating(bits))
+    return traced(key, () => {
+      const at = (e: Endpoint): boolean => e.type === 'junction' && e.entityId === junction.id
+      const feeds = legacy.wires.filter((w) => at(w.to))
+      const candidates = (feeds.length > 0 ? feeds : legacy.wires.filter((w) => junction.wireIds.includes(w.id) && !at(w.from))).sort(byId)
+      return candidates.length === 0 ? [floating(bits)] : candidates.flatMap((w) => resolve(w.from, [...path, key], from, bits))
+    })
   }
   /** One bit of a bus input, as each wire into it reads: a wire carries the bits below `min(wire, pin)`, the rest read 0. */
   const busBit = (bus: LegacyBus, pinId: string, width: number, bit: number, path: string[]): Value[] => {
     const pin = `${bus.kind} "${bus.id}" pin "${pinId}"`
     const key = `${bus.id}:${pinId}:${bit}`
-    if (path.includes(key)) return [floating(1, `${pin}, whose bit ${bit} only loops back to itself`)]
-    const readings = legacy.wires
-      .filter((w) => w.to.type === 'bus' && w.to.entityId === bus.id && w.to.pinId === pinId)
-      .sort(byId)
-      .flatMap((w) => (bit < Math.min(w.width ?? 1, width) ? resolve(w.from, [...path, key], bit, 1) : [[]]).map((v) =>
-        v.length === 0 ? floating(1, pin) : v.map((p) => (p.source || p.lost ? p : { ...p, lost: `${w.from.type} "${w.from.entityId}"` }))))
-    return readings.length > 0 ? readings : [floating(1, pin)]
+    const self = `${pin}, whose bit ${bit} only loops back to itself`
+    if (path.includes(key)) return loopBack(floating(1, self))
+    return traced(key, () => {
+      const readings = legacy.wires
+        .filter((w) => w.to.type === 'bus' && w.to.entityId === bus.id && w.to.pinId === pinId)
+        .sort(byId)
+        .flatMap((w) => (bit < Math.min(w.width ?? 1, width) ? resolve(w.from, [...path, key], bit, 1) : [[]]).map((v) =>
+          v.length === 0 ? floating(1, pin) : v.map((p) => (p.source || p.lost ? p : { ...p, lost: `${w.from.type} "${w.from.entityId}"` }))))
+      if (readings.length === 0) return [floating(1, pin)]
+      const selfLoop = (v: Value): boolean => v.some((p) => p.lost === self)
+      return readings.every(selfLoop) ? readings : readings.map((v) => (selfLoop(v) ? floating(1, pin) : v))
+    })
   }
 
   const sinkKey = ({ type, entityId, pinId }: Endpoint): string | null => {
