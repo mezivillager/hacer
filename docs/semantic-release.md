@@ -54,6 +54,13 @@ Main configuration file that defines:
 - Changelog formatting
 - Git and GitHub release settings
 
+The `conventionalcommits` preset it names is pinned for the plugins in `package.json` under
+`pnpm.packageExtensions` (`^9.3.1`, #765). The plugins load the preset from their own directory
+first, which under pnpm resolves to whatever version other packages hoist. commitlint's 10.x preset
+needs `conventional-changelog-writer@9`, but `@semantic-release/release-notes-generator@14` ships
+writer 8. Drop the extension once `release-notes-generator` 15 declares writer 9 and the preset
+itself.
+
 ### `commitlint.config.js`
 
 Validates commit messages to ensure they follow the conventional commits format. This runs automatically in the `commit-msg` git hook.
