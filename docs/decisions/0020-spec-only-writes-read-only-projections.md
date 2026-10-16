@@ -2,7 +2,7 @@
 
 - **Status:** Accepted — the fresh-context adversarial review [#359](https://github.com/mezivillager/hacer/issues/359) required by #327 returned `sound with corrections`, and the second pass over the four post-review deltas returned `accept with corrections` (both on [#358](https://github.com/mezivillager/hacer/pull/358), 2026-09-23). Both sets of corrections are applied below — the second pass's seven under "What the second pass changed" — and no further review round is required. **Amended 2026-09-24** by the spike this ADR scheduled for 1.5/1.6 ([#372](https://github.com/mezivillager/hacer/issues/372)), which ran, found the mechanism 1.5 describes does not work, and replaced it — "What the spike changed". The status does **not** move: the spine, the review's acceptance and every decision stand, and correcting a mechanism is what a scheduled spike is for.
 - **Date:** 2026-09-23 · mechanism amended 2026-09-24 ([#372](https://github.com/mezivillager/hacer/issues/372)) · §7.1 and §9 amended 2026-09-29 ([#598](https://github.com/mezivillager/hacer/issues/598)) · §1.10 added 2026-10-15 ([#374](https://github.com/mezivillager/hacer/issues/374)) · §1.11 added 2026-10-15 ([#378](https://github.com/mezivillager/hacer/issues/378))
-- **Amended by:** R769, R817, R825, R826
+- **Amended by:** R769, R817, R825, R826, R836, R837
 - **Amends:** ADR-0008 §6, ADR-0009
 - **Supersedes:** ADR-0007
 - **Deciders:** Builder agent for [#327](https://github.com/mezivillager/hacer/issues/327), on the owner's directions of 2026-09-21 (quoted below) and the measurements of spikes [#328](https://github.com/mezivillager/hacer/issues/328) and [#210](https://github.com/mezivillager/hacer/issues/210); revised by a second fresh context against #359's review; mechanism amended by the builder agent for [#372](https://github.com/mezivillager/hacer/issues/372), on that spike's measurements and its own re-measurement against `origin/main`
@@ -435,8 +435,9 @@ alias-driven signal is carried — *provided `compileSpec` splits the binding*. 
 engine will not say so: `producersOf` is keyed by signal **name** while the edges are bit-keyed, so a
 read of a bit nothing produces compiles and evaluates 0 in silence (V3: `Any2(in=out)` over a mixed
 `out` gives `any=0` where the truth is 1). That is a live `compileHDL` defect, filed by the spike as
-[#431](https://github.com/mezivillager/hacer/issues/431) and outside this ADR; until it lands, the
-split is `compileSpec`'s to **test**, not to assume.
+[#431](https://github.com/mezivillager/hacer/issues/431) and outside this ADR. #746 closed #431 under
+R836 by refusing a read that overlaps no driven bit; V3's whole read overlaps the driven `out[1]`, so
+it still compiles and gives `any=0`. The split stays `compileSpec`'s to **test**, not to assume.
 
 **Alias cycles are type-expressible, so they are rejected rather than assumed away.** `driver: Ref`
 admits `kind: 'chip-out'`, so `wire x = y; wire y = x;` types. Nothing makes the substitution graph
@@ -480,7 +481,8 @@ unchanged, because the ref is an ordinary ref. *Amended by the #372 spike:* "no 
 survived, but the mechanism 1.6 inherits is the amended one — the per-bit binding rewrite plus the
 boundary write-back, not substitution alone — and the shape 1.6 has to be **tested** on is the mixed
 signal **read by a part**, where the read is split rather than renamed, and where nothing but
-`compileSpec` will notice a missed split until #431 lands.
+`compileSpec` notices a missed split: since #746 (R836) the engine refuses only a read that overlaps
+no driven bit, and V3's unsplit read overlaps one.
 
 **1.7 Inferred slices are recorded, not silent.** v1 `addWire` sets `width = min(src, dst)` and the
 evaluator clamps, so a 16-bit source into a 1-bit pin is silent today; HDL needs `a[0]`, and a 1-bit
@@ -1262,6 +1264,12 @@ sources on *disjoint* bits — whose parity §1.2 cites as measured (`PARITY: HO
 capability row 9 gates. A dissolved joiner is the case this test most needs to keep, not one to
 exempt. "On overlapping bit ranges" is the engine's own predicate and means the same thing.
 
+Where legacy reports a `cycle` only because its graph treats a bus component as one node, the
+import's bit-level verdict stands (R837): a loop counts when it closes in the part graph traced per
+bit through wires and bus components, with each part opaque, which is the reference's own granularity
+(`sortParts`, `../web-ide/simulator/src/chip/chip.ts:500-543`; `checkLoops`,
+`../web-ide/simulator/src/chip/builder.ts:292-318`).
+
 **Six preconditions of N.2 and N.3**, not parallel work — the draft listed two, and §11 already
 listed a third under "keep, newly blocking" without §10 naming it:
 [#355](https://github.com/mezivillager/hacer/issues/355) — `compileHDL` keeps only the last writer of
@@ -1345,7 +1353,8 @@ number above was measured either against a spike-local spec model or — for the
 rests on — against the real `compileHDL` fed HDL lowered by hand, never against the pass that will do
 the lowering. N.1's first obligation is to re-run these fixtures through the shipped one, and the
 split rule is the part most likely to be got wrong, because nothing in the engine reports a missed
-split until [#431](https://github.com/mezivillager/hacer/issues/431) lands.
+split: [#431](https://github.com/mezivillager/hacer/issues/431) closed with #746 (R836), which refuses
+only a read that overlaps no driven bit, and a missed split such as V3 overlaps one.
 
 One aesthetic question is still open and is honestly labelled: **whether the barycentre drawing reads
 well to a person.** The measurement says it crosses 2–3× less than the alternative; it does not say
