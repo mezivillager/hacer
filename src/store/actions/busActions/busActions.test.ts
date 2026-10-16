@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { notify } from '@/lib/notify'
-import { MAX_PIN_WIDTH } from '@/core/serialization'
+import { MAX_PIN_WIDTH } from '@/simulation'
 import { useCircuitStore } from '../../circuitStore'
 
 const getState = () => useCircuitStore.getState()

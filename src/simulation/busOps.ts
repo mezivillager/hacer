@@ -1,3 +1,6 @@
+/** The widest pin or bus: a signal value is held as 32 bits. */
+export const MAX_PIN_WIDTH = 32
+
 /**
  * Create a bitmask with `numBits` ones starting at bit 0.
  * maskForWidth(8) => 0xFF, maskForWidth(16) => 0xFFFF

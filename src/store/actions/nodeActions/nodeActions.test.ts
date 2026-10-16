@@ -7,7 +7,7 @@
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { notify } from '@/lib/notify'
-import { MAX_PIN_WIDTH } from '@/core/serialization'
+import { MAX_PIN_WIDTH } from '@/simulation'
 import { useCircuitStore } from '../../circuitStore'
 import type { Position } from '../../types'
 import { calculateWirePath } from '@/utils/wiringScheme/core'
