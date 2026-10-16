@@ -1,5 +1,5 @@
 import { getBuiltinChipRegistry, getUserChipRegistry } from '@/core/chips/appRegistry'
-import { createBusPins } from '@/simulation'
+import { createBusPins, MAX_PIN_WIDTH } from '@/simulation'
 import type { BusComponent, BusComponentKind, GateInstance, InputNode, JunctionNode, OutputNode, Pin, Wire } from '@/store/types'
 import type { WireSegment } from '@/utils/wiringScheme/types'
 import {
@@ -206,9 +206,7 @@ const asSaved = (value: unknown): string =>
     ? String(value)
     : (JSON.stringify(value) ?? String(value))
 
-/** The widest pin the app can create: the Properties Panel offers nodes 1 to 32 bits, and a signal
- *  value is held as 32 bits. */
-export const MAX_PIN_WIDTH = 32
+export { MAX_PIN_WIDTH }
 
 const isPositiveInteger = (width: unknown): width is number =>
   typeof width === 'number' && Number.isInteger(width) && width > 0

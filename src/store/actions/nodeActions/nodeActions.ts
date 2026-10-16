@@ -6,7 +6,7 @@
  */
 
 import { notify } from '@/lib/notify'
-import { MAX_PIN_WIDTH } from '@/core/serialization'
+import { MAX_PIN_WIDTH } from '@/simulation'
 import type {
   NodeActions,
   InputNode,

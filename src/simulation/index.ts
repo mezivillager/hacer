@@ -23,6 +23,6 @@
  *   - `signalDisplay` and `multiBitFormat` turn values into display text for the renderers, which
  *     import them directly. They are headless (#180), but presentation, not engine surface.
  */
-export { clampToWidth, maskForWidth, readSubBus, writeSubBus } from './busOps'
+export { clampToWidth, MAX_PIN_WIDTH, maskForWidth, readSubBus, writeSubBus } from './busOps'
 export type { BusPin } from './busPins'
 export { createBusPins } from './busPins'
