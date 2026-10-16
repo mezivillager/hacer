@@ -95,3 +95,13 @@ preset-loading plugins with `.releaserc.json`'s options runs on every PR through
 and catches #765's class whatever the trigger.
 Cost if wrong: the check runs on every PR rather than only on dependency changes, about 1–2 s of
 suite time.
+
+## R842 — #774's BLOCK is fixed this run only if a fresh verifier can pass it before the records PR merges
+Builds on: R834
+#774's first verifier proved the cache sound, along with order independence and the values. It
+blocked on one narrow defect: the loops-back note rule dropped true notes. It also gave a tested way
+to fix it. The builder had until 02:05Z to push the fix, and a fresh verifier until 02:20Z. A missed
+deadline or a second BLOCK leaves #774 open with a handoff comment for the next run. The records PR
+merges before 03:00Z either way.
+Cost if wrong: a builder round with nothing merged if the deadline is missed; #774 waits one run
+either way.
