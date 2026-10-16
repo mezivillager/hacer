@@ -168,8 +168,28 @@ export function fromLegacyCircuit(saved: SerializedCircuit): LegacyImport {
           v.length === 0 ? floating(1, pin) : v.map((p) => (p.source || p.lost ? p : { ...p, lost: `${w.from.type} "${w.from.entityId}"` }))))
       if (readings.length === 0) return [floating(1, pin)]
       const selfLoop = (v: Value): boolean => v.some((p) => p.lost === self)
-      return readings.every(selfLoop) ? readings : readings.map((v) => (selfLoop(v) ? floating(1, pin) : v))
+      return drivenBit(bus, pinId, width, bit, new Set()) ? readings.map((v) => (selfLoop(v) ? floating(1, pin) : v)) : readings
     })
+  }
+  /** Whether a part output or an IN reaches this bit of a bus input, through wires, junctions and bus components. */
+  const drivenBit = (bus: LegacyBus, pinId: string, width: number, bit: number, seen: Set<string>): boolean => {
+    const key = `${bus.id}:${pinId}:${bit}`
+    if (seen.has(key)) return false
+    seen.add(key)
+    return legacy.wires.some((w) => w.to.type === 'bus' && w.to.entityId === bus.id && w.to.pinId === pinId && bit < Math.min(w.width ?? 1, width) && driven(w.from, bit, seen))
+  }
+  const driven = (end: Endpoint, bit: number, seen: Set<string>): boolean => {
+    if (end.type === 'input') return legacy.inputNodes.some((n) => n.id === end.entityId && bit < n.width)
+    if (end.type === 'gate') return partOf.get(end.entityId)?.gate.outputs.some((p) => p.id === end.pinId && bit < (p.width ?? 1)) ?? false
+    const bus = end.type === 'bus' ? legacy.busComponents.find((b) => b.id === end.entityId) : undefined
+    const out = bus?.outputs.findIndex((p) => p.id === end.pinId) ?? -1
+    if (bus && out >= 0) return bus.kind === 'joiner' ? bit < bus.inputs.length && drivenBit(bus, bus.inputs[bit].id, 1, 0, seen) : bit === 0 && drivenBit(bus, 'in', bus.width, out, seen)
+    const junction = end.type === 'junction' ? legacy.junctions.find((j) => j.id === end.entityId) : undefined
+    if (!junction || seen.has(`${junction.id}:${bit}`)) return false
+    seen.add(`${junction.id}:${bit}`)
+    const at = (e: Endpoint): boolean => e.type === 'junction' && e.entityId === junction.id
+    const feeds = legacy.wires.filter((w) => at(w.to))
+    return (feeds.length > 0 ? feeds : legacy.wires.filter((w) => junction.wireIds.includes(w.id) && !at(w.from))).some((w) => driven(w.from, bit, seen))
   }
 
   const sinkKey = ({ type, entityId, pinId }: Endpoint): string | null => {
