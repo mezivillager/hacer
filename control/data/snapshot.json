@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-16T02:00:53.128Z",
+  "generatedAt": "2026-10-16T02:05:33.687Z",
   "head": {
-    "sha": "f445d0675ba078c6d465d19b6efcfc0600457874",
-    "date": "2026-10-16T04:59:51+03:00",
-    "subject": "fix(core): a bus bit's loop is renamed only when a part output or IN drives the bit (#767)"
+    "sha": "579ff8f44215420a43c941694ed448235d605d8e",
+    "date": "2026-10-16T05:04:22+03:00",
+    "subject": "docs(harness): the 2026-10-15 run's final state, and R842"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-16T02:00:53.128Z",
+      "fetchedAt": "2026-10-16T02:05:33.687Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-16T02:00:53.128Z",
+      "fetchedAt": "2026-10-16T02:05:33.687Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-16T02:00:53.128Z",
+      "fetchedAt": "2026-10-16T02:05:33.687Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-16T02:00:53.128Z",
+      "fetchedAt": "2026-10-16T02:05:33.687Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-16T02:00:53.128Z",
+      "fetchedAt": "2026-10-16T02:05:33.687Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-16T02:00:53.128Z",
+      "fetchedAt": "2026-10-16T02:05:33.687Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-16T02:00:53.128Z",
+      "fetchedAt": "2026-10-16T02:05:33.687Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-16T02:00:53.128Z",
+      "fetchedAt": "2026-10-16T02:05:33.687Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-16T02:00:53.128Z",
+      "fetchedAt": "2026-10-16T02:05:33.687Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-16T02:00:53.128Z",
+      "fetchedAt": "2026-10-16T02:05:33.687Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-16T02:00:53.128Z",
+      "fetchedAt": "2026-10-16T02:05:33.687Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-16T02:00:53.128Z",
+      "fetchedAt": "2026-10-16T02:05:33.687Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-16T02:00:53.128Z",
+      "fetchedAt": "2026-10-16T02:05:33.687Z",
       "status": "ok"
     }
   },
@@ -428,7 +428,6 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
-        775,
         514
       ]
     }
@@ -2007,22 +2006,6 @@
   "prs": {
     "open": [
       {
-        "number": 775,
-        "title": "docs(harness): close the 2026-10-15 hacer-loop-reset run",
-        "url": "https://github.com/mezivillager/hacer/pull/775",
-        "author": "mezivillager",
-        "labels": [
-          "project:harness",
-          "risk:0"
-        ],
-        "headRefName": "docs/2026-10-15-hacer-loop-reset-close",
-        "isDraft": false,
-        "createdAt": "2026-10-16T01:07:55Z",
-        "mergedAt": null,
-        "closes": [],
-        "verdicts": []
-      },
-      {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
         "url": "https://github.com/mezivillager/hacer/pull/514",
@@ -2078,11 +2061,28 @@
         ]
       },
       {
+        "number": 775,
+        "title": "docs(harness): close the 2026-10-15 hacer-loop-reset run",
+        "url": "https://github.com/mezivillager/hacer/pull/775",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/2026-10-15-hacer-loop-reset-close",
+        "isDraft": false,
+        "createdAt": "2026-10-16T01:07:55Z",
+        "mergedAt": "2026-10-16T02:04:23Z",
+        "closes": [],
+        "verdicts": []
+      },
+      {
         "number": 774,
         "title": "fix(core): fromLegacyCircuit sorts junction feeds and traces each loop-free key once (#767)",
         "url": "https://github.com/mezivillager/hacer/pull/774",
         "author": "mezivillager",
         "labels": [
+          "released",
           "risk:1",
           "project:foundation"
         ],
@@ -2303,6 +2303,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/760",
         "author": "app/dependabot",
         "labels": [
+          "released",
           "dependencies",
           "javascript"
         ],
@@ -3549,40 +3550,13 @@
             "url": "https://github.com/mezivillager/hacer/pull/690#issuecomment-5983026195"
           }
         ]
-      },
-      {
-        "number": 689,
-        "title": "chore(harness): doc-path baseline counts dead citations per doc, resolved against git (#685)",
-        "url": "https://github.com/mezivillager/hacer/pull/689",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:1"
-        ],
-        "headRefName": "chore/685-grandfather-per-citation",
-        "isDraft": false,
-        "createdAt": "2026-10-04T18:23:22Z",
-        "mergedAt": "2026-10-04T18:46:45Z",
-        "closes": [
-          685
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Sonnet 5.5",
-            "at": "2026-10-04T18:36:02Z",
-            "url": "https://github.com/mezivillager/hacer/pull/689#issuecomment-5983125933"
-          }
-        ]
       }
     ],
     "coverage": {
       "merged": 60,
-      "withVerdict": 46,
-      "withoutVerdict": 14,
-      "pass": 46,
+      "withVerdict": 45,
+      "withoutVerdict": 15,
+      "pass": 45,
       "block": 0
     }
   },
@@ -3805,6 +3779,14 @@
         "title": "Session record — 2026-10-14: the coordinator loop toward 50% weekly usage",
         "status": null,
         "lines": 176
+      },
+      {
+        "file": "docs/harness/sessions/2026-10-15.md",
+        "date": "2026-10-15",
+        "kind": "record",
+        "title": "Session record — 2026-10-15: the coordinator loop to the weekly reset",
+        "status": null,
+        "lines": 152
       }
     ]
   },
@@ -3909,9 +3891,9 @@
       {
         "id": "L013",
         "date": "2026-09-18",
-        "whatWentWrong": "The agents' `gh` token lacked the `workflow` scope, so they could not update or auto-merge any PR touching `.github/workflows/**` (dependabot #118/#131, and a cosmetic `ci.yml` hunk in #245)",
+        "whatWentWrong": "The agents' `gh` token lacked the `workflow` scope, so they could not update or auto-merge any PR touching `.github/workflows/**` (dependabot #118/#131, and a cosmetic `ci.yml` hunk in #245). It recurred on 2026-10-16: the refresh had lapsed (scopes `admin:public_key, gist, read:org, repo`), so the merge tool could not update dependabot #755 and #758 (exit 4), and #768's CI job became a suite test (R841)",
         "shouldHaveBeenCaughtBy": "a token-scope check at session start",
-        "mechanised": "yes — owner ran `gh auth refresh -s workflow`; agent PRs still avoid incidental workflow edits",
+        "mechanised": "partly — the owner ran `gh auth refresh -s workflow` after the first occurrence, and it lapsed; the refresh is the owner's again. Second occurrence, so the session-start scope check is due. Agent PRs still avoid incidental workflow edits",
         "decision": "—"
       },
       {
@@ -4357,9 +4339,9 @@
       {
         "id": "L069",
         "date": "2026-10-15",
-        "whatWentWrong": "Two parallel builders wrote their PR bodies to the same scratchpad file, pr-body.md, so #740 showed #741's body for about a minute before it was restored; both bodies were verified afterwards",
+        "whatWentWrong": "Two parallel builders wrote their PR bodies to the same scratchpad file, pr-body.md, so #740 showed #741's body for about a minute before it was restored; both bodies were verified afterwards. It recurred later on 2026-10-15: the #753 and #754 verifiers wrote their definition-of-done logs under the same `dod-*.log` names in the shared scratchpad",
         "shouldHaveBeenCaughtBy": "the dispatch brief: a scratch file that parallel agents write needs a name unique to the task",
-        "mechanised": "no — first occurrence; briefs since name a unique scratch file for a PR body",
+        "mechanised": "no — second occurrence, so it is due a mechanism. Dispatch briefs have named a per-task scratch folder since the recurrence; the committed briefs do not say it yet",
         "decision": "—"
       },
       {
@@ -4369,13 +4351,21 @@
         "shouldHaveBeenCaughtBy": "the dispatch: the tier is read from the verifier brief's engine clause, which names paths, not from the issue's risk label",
         "mechanised": "no — second occurrence, so it is due a mechanism: the tier computed from the changed paths at dispatch",
         "decision": "—"
+      },
+      {
+        "id": "L071",
+        "date": "2026-10-16",
+        "whatWentWrong": "A dependency bump broke the release pipeline, and 20 `Release` runs failed on `main` over about 20 hours before anyone looked. The previous run's commitlint bump (`28f6cbd1`) moved pnpm's hidden hoist, so both semantic-release plugins loaded a `conventionalcommits` preset that needs a newer changelog writer. The first failure was 2026-10-15T03:23Z; it was found at 23:41Z while triaging dependabot, fixed by #766 (pnpm `packageExtensions`), and v2.57.0 released at 00:13Z, the first release since 2026-10-04. L012's class: a broken release that nothing reported",
+        "shouldHaveBeenCaughtBy": "a check at PR time that runs the release plugins as the PR would ship them; a watch on `main`'s post-merge workflows, which nothing has",
+        "mechanised": "partly — #768 (PR #772): a suite test loads the two preset-loading plugins with `.releaserc.json`'s options on every PR (R841). Nothing watches `main`'s post-merge runs yet",
+        "decision": "R808"
       }
     ],
     "byMechanised": {
       "no": 11,
-      "yes": 53,
+      "yes": 52,
       "other": 1,
-      "partly": 5
+      "partly": 7
     }
   },
   "adrs": {
@@ -4768,9 +4758,14 @@
     },
     "releases": [
       {
+        "tag": "v2.58.4",
+        "publishedAt": "2026-10-16T02:02:42Z",
+        "isLatest": true
+      },
+      {
         "tag": "v2.58.3",
         "publishedAt": "2026-10-16T01:42:55Z",
-        "isLatest": true
+        "isLatest": false
       },
       {
         "tag": "v2.58.2",
@@ -5376,7 +5371,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-04",
-        "merges": 3
+        "merges": 2
       },
       {
         "date": "2026-10-14",
@@ -5388,16 +5383,16 @@
       },
       {
         "date": "2026-10-16",
-        "merges": 16
+        "merges": 17
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-02T02:00:53.128Z",
-      "merged": 70,
+      "since": "2026-10-02T02:05:33.687Z",
+      "merged": 71,
       "openToMergeHours": {
         "median": 0.4,
-        "p90": 2.4
+        "p90": 2
       },
       "blockedOnce": {
         "count": 7,
@@ -5419,7 +5414,7 @@
           "without": []
         },
         "nonCode": {
-          "merged": 21,
+          "merged": 22,
           "withVerdict": 7,
           "without": [
             692,
@@ -5435,7 +5430,8 @@
             760,
             761,
             762,
-            763
+            763,
+            775
           ]
         }
       }
@@ -8728,11 +8724,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "f445d0675ba078c6d465d19b6efcfc0600457874",
+        "sha": "579ff8f44215420a43c941694ed448235d605d8e",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38838108408/job/116771680415",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/38838525868/job/116772978538",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -8780,51 +8776,6 @@
         "verdict": "PASS",
         "fields": {
           "known": 71,
-          "new": 0
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 775,
-        "sha": "0d3da5ace6066e564fc045bd2ef022f8f8a8dfba",
-        "check": "pr-hygiene",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-16T01:08:12Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38833449563/job/116757165555",
-        "line": "HYGIENE: WARN reviewable=330 test=0 excluded=0 files=5 issue=docs-only",
-        "verdict": "WARN",
-        "fields": {
-          "reviewable": 330,
-          "test": 0,
-          "excluded": 0,
-          "files": 5,
-          "issue": "docs-only"
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 775,
-        "sha": "0d3da5ace6066e564fc045bd2ef022f8f8a8dfba",
-        "check": "browser-qa",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-16T01:08:11Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38833451662/job/116757170081",
-        "line": "BROWSER-QA: skipped (no critical paths)",
-        "verdict": "SKIPPED",
-        "fields": {},
-        "disagrees": false
-      },
-      {
-        "pr": 775,
-        "sha": "0d3da5ace6066e564fc045bd2ef022f8f8a8dfba",
-        "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-16T01:11:17Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38833450321/job/116757166765",
-        "line": "LAYER-RATCHET: 69 known violations (37 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 69,
           "new": 0
         },
         "disagrees": false
@@ -14025,6 +13976,120 @@
         "amends": null,
         "assumes": null,
         "costIfWrong": "one long review instead of two shorter ones."
+      },
+      {
+        "id": "R834",
+        "kind": "ruling",
+        "title": "the run ends at the weekly reset, 2026-10-16T03:00Z, and its records PR merges before it",
+        "source": "docs/decisions/rulings/2026-10-15-hacer-loop-reset.md:8",
+        "buildsOn": [
+          "R805",
+          "R741"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "if the owner meant \"use the new week too\", the run stops about a week early; if they"
+      },
+      {
+        "id": "R835",
+        "kind": "ruling",
+        "title": "the first pair is #377 PR 2 (Opus) and #749 (Sonnet); #377 PR 3 takes the first free slot",
+        "source": "docs/decisions/rulings/2026-10-15-hacer-loop-reset.md:17",
+        "buildsOn": [
+          "R782",
+          "R742"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "PR 3 starts about an hour later than it would have beside PR 2."
+      },
+      {
+        "id": "R836",
+        "kind": "ruling",
+        "title": "#746 is `agent-ready` and #431 folds into it; one PR closes both",
+        "source": "docs/decisions/rulings/2026-10-15-hacer-loop-reset.md:25",
+        "buildsOn": [
+          "R830"
+        ],
+        "amends": [
+          "ADR-0020"
+        ],
+        "assumes": null,
+        "costIfWrong": "if the owner wants a whole-signal read of a partially driven signal refused too, that"
+      },
+      {
+        "id": "R837",
+        "kind": "ruling",
+        "title": "where legacy reports a `cycle` only because its graph treats bus components as nodes, the import's bit-level verdict stands",
+        "source": "docs/decisions/rulings/2026-10-15-hacer-loop-reset.md:41",
+        "buildsOn": [
+          "R826",
+          "R828"
+        ],
+        "amends": [
+          "ADR-0020 §10"
+        ],
+        "assumes": null,
+        "costIfWrong": "a document legacy refused to evaluate is imported and evaluated. If the owner wants"
+      },
+      {
+        "id": "R838",
+        "kind": "ruling",
+        "title": "PR #764 (#746) gets no separate fidelity review; its Opus verifier compares against the reference",
+        "source": "docs/decisions/rulings/2026-10-15-hacer-loop-reset.md:54",
+        "buildsOn": [
+          "R836",
+          "ADR-0018"
+        ],
+        "amends": [
+          "R836"
+        ],
+        "assumes": null,
+        "costIfWrong": "a fidelity concern a dedicated reviewer would have raised is missed; the class is"
+      },
+      {
+        "id": "R839",
+        "kind": "ruling",
+        "title": "the release fix (#765, PR #766) merges before any dependabot PR; the nine dependabot PRs then merge one at a time, the two majors last",
+        "source": "docs/decisions/rulings/2026-10-15-hacer-loop-reset.md:64",
+        "buildsOn": [
+          "R808"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "a major bump passes CI and breaks something CI does not exercise. For #762 that is a"
+      },
+      {
+        "id": "R840",
+        "kind": "ruling",
+        "title": "#752's store actions import `MAX_PIN_WIDTH` from `@/simulation`, and the constant moves to `src/simulation/busOps.ts`",
+        "source": "docs/decisions/rulings/2026-10-15-hacer-loop-reset.md:76",
+        "buildsOn": "none",
+        "amends": "none",
+        "assumes": null,
+        "costIfWrong": "if the owner wants pin limits in a core types module instead, that is one move of a"
+      },
+      {
+        "id": "R841",
+        "kind": "ruling",
+        "title": "#768's release-pipeline check is a test in the existing suite, not a new CI job",
+        "source": "docs/decisions/rulings/2026-10-15-hacer-loop-reset.md:87",
+        "buildsOn": "none",
+        "amends": "none",
+        "assumes": null,
+        "costIfWrong": "the check runs on every PR rather than only on dependency changes, about 1–2 s of"
+      },
+      {
+        "id": "R842",
+        "kind": "ruling",
+        "title": "#774's BLOCK is fixed this run only if a fresh verifier can pass it before the records PR merges",
+        "source": "docs/decisions/rulings/2026-10-15-hacer-loop-reset.md:99",
+        "buildsOn": [
+          "R834"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "a builder round with nothing merged if the deadline is missed; #774 waits one run"
       }
     ],
     "edges": [
@@ -14081,6 +14146,19 @@
         "kind": "amends",
         "anchor": "§1, §10",
         "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:208"
+      },
+      {
+        "from": "R836",
+        "to": "ADR-0020",
+        "kind": "amends",
+        "source": "docs/decisions/0020-spec-only-writes-read-only-projections.md:5"
+      },
+      {
+        "from": "R837",
+        "to": "ADR-0020",
+        "kind": "amends",
+        "anchor": "§10",
+        "source": "docs/decisions/rulings/2026-10-15-hacer-loop-reset.md:43"
       },
       {
         "from": "ADR-0022",
@@ -15142,6 +15220,78 @@
         "source": "docs/decisions/rulings/2026-10-14-hacer-loop-50.md:294"
       },
       {
+        "from": "R834",
+        "to": "R805",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-15-hacer-loop-reset.md:9"
+      },
+      {
+        "from": "R834",
+        "to": "R741",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-15-hacer-loop-reset.md:9"
+      },
+      {
+        "from": "R835",
+        "to": "R782",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-15-hacer-loop-reset.md:18"
+      },
+      {
+        "from": "R835",
+        "to": "R742",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-15-hacer-loop-reset.md:18"
+      },
+      {
+        "from": "R836",
+        "to": "R830",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-15-hacer-loop-reset.md:26"
+      },
+      {
+        "from": "R837",
+        "to": "R826",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-15-hacer-loop-reset.md:42"
+      },
+      {
+        "from": "R837",
+        "to": "R828",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-15-hacer-loop-reset.md:42"
+      },
+      {
+        "from": "R838",
+        "to": "R836",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-15-hacer-loop-reset.md:55"
+      },
+      {
+        "from": "R838",
+        "to": "ADR-0018",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-15-hacer-loop-reset.md:55"
+      },
+      {
+        "from": "R838",
+        "to": "R836",
+        "kind": "amends",
+        "source": "docs/decisions/rulings/2026-10-15-hacer-loop-reset.md:56"
+      },
+      {
+        "from": "R839",
+        "to": "R808",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-15-hacer-loop-reset.md:65"
+      },
+      {
+        "from": "R842",
+        "to": "R834",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-15-hacer-loop-reset.md:100"
+      },
+      {
         "from": "L046",
         "to": "R310",
         "kind": "introduced-by",
@@ -15206,6 +15356,12 @@
         "to": "R801",
         "kind": "introduced-by",
         "source": "docs/harness/ledger.md:82"
+      },
+      {
+        "from": "L071",
+        "to": "R808",
+        "kind": "introduced-by",
+        "source": "docs/harness/ledger.md:86"
       }
     ],
     "artefacts": [
@@ -15390,7 +15546,8 @@
           "ADR-0019",
           "R69",
           "R804",
-          "R806"
+          "R806",
+          "R835"
         ]
       },
       {
@@ -15540,7 +15697,8 @@
           "ADR-0018",
           "R100",
           "R804",
-          "R806"
+          "R806",
+          "R835"
         ]
       },
       {
@@ -15772,7 +15930,8 @@
           "R350",
           "R353",
           "R369",
-          "R830"
+          "R830",
+          "R836"
         ]
       },
       {
@@ -15781,7 +15940,8 @@
         "citedBy": [
           "ADR-0020",
           "R503",
-          "R513"
+          "R513",
+          "R836"
         ]
       },
       {
@@ -15793,6 +15953,17 @@
           "R307",
           "R330",
           "R339"
+        ]
+      },
+      {
+        "id": "#746",
+        "kind": "github",
+        "citedBy": [
+          "ADR-0020",
+          "R830",
+          "R832",
+          "R836",
+          "R838"
         ]
       },
       {
@@ -15817,7 +15988,8 @@
           "R761",
           "R826",
           "R828",
-          "R831"
+          "R831",
+          "R835"
         ]
       },
       {
@@ -16633,7 +16805,8 @@
           "R744",
           "R796",
           "R804",
-          "R806"
+          "R806",
+          "R835"
         ]
       },
       {
@@ -18244,14 +18417,6 @@
         ]
       },
       {
-        "id": "#746",
-        "kind": "github",
-        "citedBy": [
-          "R830",
-          "R832"
-        ]
-      },
-      {
         "id": "#747",
         "kind": "github",
         "citedBy": [
@@ -18264,6 +18429,99 @@
         "kind": "github",
         "citedBy": [
           "R831"
+        ]
+      },
+      {
+        "id": "#749",
+        "kind": "github",
+        "citedBy": [
+          "R835"
+        ]
+      },
+      {
+        "id": "#753",
+        "kind": "github",
+        "citedBy": [
+          "R837"
+        ]
+      },
+      {
+        "id": "#764",
+        "kind": "github",
+        "citedBy": [
+          "R838"
+        ]
+      },
+      {
+        "id": "#765",
+        "kind": "github",
+        "citedBy": [
+          "R839",
+          "R841"
+        ]
+      },
+      {
+        "id": "#766",
+        "kind": "github",
+        "citedBy": [
+          "R839"
+        ]
+      },
+      {
+        "id": "#755",
+        "kind": "github",
+        "citedBy": [
+          "R839",
+          "R841"
+        ]
+      },
+      {
+        "id": "#763",
+        "kind": "github",
+        "citedBy": [
+          "R839"
+        ]
+      },
+      {
+        "id": "#760",
+        "kind": "github",
+        "citedBy": [
+          "R839"
+        ]
+      },
+      {
+        "id": "#762",
+        "kind": "github",
+        "citedBy": [
+          "R839"
+        ]
+      },
+      {
+        "id": "#752",
+        "kind": "github",
+        "citedBy": [
+          "R840"
+        ]
+      },
+      {
+        "id": "#768",
+        "kind": "github",
+        "citedBy": [
+          "R841"
+        ]
+      },
+      {
+        "id": "#758",
+        "kind": "github",
+        "citedBy": [
+          "R841"
+        ]
+      },
+      {
+        "id": "#774",
+        "kind": "github",
+        "citedBy": [
+          "R842"
         ]
       },
       {
@@ -18354,7 +18612,7 @@
         "id": "L013",
         "kind": "ledger-row",
         "date": "2026-09-18",
-        "title": "The agents' `gh` token lacked the `workflow` scope, so they could not update or auto-merge any PR touching `.github/workflows/**` (dependabot #118/#131, and a cosmetic `ci.yml` hunk in #245)",
+        "title": "The agents' `gh` token lacked the `workflow` scope, so they could not update or auto-merge any PR touching `.github/workflows/**` (dependabot #118/#131, and a cosmetic `ci.yml` hunk in #245). It recurred on 2026-10-16: the refresh had lapsed (scopes `admin:public_key, gist, read:org, repo`), so the merge tool could not update dependabot #755 and #758 (exit 4), and #768's CI job became a suite test (R841)",
         "source": "docs/harness/ledger.md:28"
       },
       {
@@ -18746,7 +19004,7 @@
         "id": "L069",
         "kind": "ledger-row",
         "date": "2026-10-15",
-        "title": "Two parallel builders wrote their PR bodies to the same scratchpad file, pr-body.md, so #740 showed #741's body for about a minute before it was restored; both bodies were verified afterwards",
+        "title": "Two parallel builders wrote their PR bodies to the same scratchpad file, pr-body.md, so #740 showed #741's body for about a minute before it was restored; both bodies were verified afterwards. It recurred later on 2026-10-15: the #753 and #754 verifiers wrote their definition-of-done logs under the same `dod-*.log` names in the shared scratchpad",
         "source": "docs/harness/ledger.md:84"
       },
       {
@@ -18755,6 +19013,13 @@
         "date": "2026-10-15",
         "title": "Twice in one run the coordinator dispatched a Sonnet verifier where the tier rule (`docs/harness/model-tiering.md` §2: any `src/core` or `src/simulation` change is Opus) and the verifier brief's engine clause give Opus. #739 was tests-only under `src/core/spec`, read as \"off the engine\", and merged on R824. #748 changes production code under `src/core/serialization` and was chosen by its `risk:1` label; an Opus second pass followed",
         "source": "docs/harness/ledger.md:85"
+      },
+      {
+        "id": "L071",
+        "kind": "ledger-row",
+        "date": "2026-10-16",
+        "title": "A dependency bump broke the release pipeline, and 20 `Release` runs failed on `main` over about 20 hours before anyone looked. The previous run's commitlint bump (`28f6cbd1`) moved pnpm's hidden hoist, so both semantic-release plugins loaded a `conventionalcommits` preset that needs a newer changelog writer. The first failure was 2026-10-15T03:23Z; it was found at 23:41Z while triaging dependabot, fixed by #766 (pnpm `packageExtensions`), and v2.57.0 released at 00:13Z, the first release since 2026-10-04. L012's class: a broken release that nothing reported",
+        "source": "docs/harness/ledger.md:86"
       }
     ]
   }
