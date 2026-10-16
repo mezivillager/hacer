@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-16T00:30:37.326Z",
+  "generatedAt": "2026-10-16T00:35:01.562Z",
   "head": {
-    "sha": "aca6865fa3543b76cfef55e37440ecdacf0075c6",
-    "date": "2026-10-16T03:29:28+03:00",
-    "subject": "chore(deps): bump github/codeql-action/upload-sarif"
+    "sha": "f43a4c48aab632cac5cb3301fcdbefb870eabb4b",
+    "date": "2026-10-16T03:34:13+03:00",
+    "subject": "fix(core): fromLegacyCircuit traces a bit through a bus component by its index (#377)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-16T00:30:37.326Z",
+      "fetchedAt": "2026-10-16T00:35:01.562Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-16T00:30:37.326Z",
+      "fetchedAt": "2026-10-16T00:35:01.562Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-16T00:30:37.326Z",
+      "fetchedAt": "2026-10-16T00:35:01.562Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-16T00:30:37.326Z",
+      "fetchedAt": "2026-10-16T00:35:01.562Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-16T00:30:37.326Z",
+      "fetchedAt": "2026-10-16T00:35:01.562Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-16T00:30:37.326Z",
+      "fetchedAt": "2026-10-16T00:35:01.562Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-16T00:30:37.326Z",
+      "fetchedAt": "2026-10-16T00:35:01.562Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-16T00:30:37.326Z",
+      "fetchedAt": "2026-10-16T00:35:01.562Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-16T00:30:37.326Z",
+      "fetchedAt": "2026-10-16T00:35:01.562Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-16T00:30:37.326Z",
+      "fetchedAt": "2026-10-16T00:35:01.562Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-16T00:30:37.326Z",
+      "fetchedAt": "2026-10-16T00:35:01.562Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-16T00:30:37.326Z",
+      "fetchedAt": "2026-10-16T00:35:01.562Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-16T00:30:37.326Z",
+      "fetchedAt": "2026-10-16T00:35:01.562Z",
       "status": "ok"
     }
   },
@@ -80,9 +80,9 @@
         "lane": "feature",
         "slug": "foundation",
         "epicNumber": 318,
-        "open": 27,
-        "ready": 1,
-        "inProgress": 2,
+        "open": 26,
+        "ready": 2,
+        "inProgress": 1,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 3,
@@ -93,8 +93,8 @@
         },
         "title": "Foundation audit: is the codebase structured for the autonomous loop? Measured audit, prioritized refactorings, fitness functions",
         "subIssues": {
-          "completed": 20,
-          "percentCompleted": 60,
+          "completed": 21,
+          "percentCompleted": 63,
           "total": 33
         }
       },
@@ -104,11 +104,11 @@
         "slug": "harness",
         "epicNumber": 138,
         "open": 15,
-        "ready": 2,
+        "ready": 3,
         "inProgress": 0,
         "needsHuman": 1,
         "staleClaims": [],
-        "agentReady": 2,
+        "agentReady": 3,
         "filedElsewhere": [
           151,
           339
@@ -221,13 +221,16 @@
         "slug": "spine",
         "epicNumber": 139,
         "open": 13,
-        "ready": 0,
+        "ready": 1,
         "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 1,
         "filedElsewhere": [],
-        "next": null,
+        "next": {
+          "number": 175,
+          "title": "P05-30: Splitter/joiner for bit-level access on placed chips — verify first, P05-12a may have delivered it"
+        },
         "title": "Epic: spine — nand2tetris alignment 0.5 → 0.7",
         "subIssues": {
           "completed": 3,
@@ -412,16 +415,31 @@
         "project": "harness"
       },
       {
+        "number": 767,
+        "title": "fromLegacyCircuit: junction feeds read in wire order, readings not deduplicated, one note overstates",
+        "project": "foundation"
+      },
+      {
+        "number": 175,
+        "title": "P05-30: Splitter/joiner for bit-level access on placed chips — verify first, P05-12a may have delivered it",
+        "project": "spine"
+      },
+      {
         "number": 269,
         "title": "Product role (usability & design): brief, hacer-product agent, a cloud UI-tour capture, and the first usability review — the agent finds polish itself",
+        "project": "harness"
+      },
+      {
+        "number": 768,
+        "title": "Release pipeline has no PR-time check: a dependency bump broke 20 releases unseen (#765)",
         "project": "harness"
       }
     ],
     "dormant": {
       "dormant": false,
       "agentPrs": [
+        771,
         770,
-        753,
         514
       ]
     }
@@ -461,6 +479,37 @@
         "reason": null
       },
       {
+        "number": 767,
+        "title": "fromLegacyCircuit: junction feeds read in wire order, readings not deduplicated, one note overstates",
+        "labels": [
+          "agent-ready",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 175,
+        "title": "P05-30: Splitter/joiner for bit-level access on placed chips — verify first, P05-12a may have delivered it",
+        "labels": [
+          "project:spine",
+          "agent-ready",
+          "risk:1",
+          "research"
+        ],
+        "blocking": [],
+        "project": "spine",
+        "rank": 7,
+        "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
+      {
         "number": 269,
         "title": "Product role (usability & design): brief, hacer-product agent, a cloud UI-tour capture, and the first usability review — the agent finds polish itself",
         "labels": [
@@ -472,6 +521,21 @@
         "blocking": [
           270
         ],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 768,
+        "title": "Release pipeline has no PR-time check: a dependency bump broke 20 releases unseen (#765)",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:1"
+        ],
+        "blocking": [],
         "project": "harness",
         "rank": 2,
         "lane": "process",
@@ -633,22 +697,6 @@
         "lane": "feature",
         "pickable": false,
         "reason": "unshaped"
-      },
-      {
-        "number": 175,
-        "title": "P05-30: Splitter/joiner for bit-level access on placed chips — verify first, P05-12a may have delivered it",
-        "labels": [
-          "project:spine",
-          "agent-ready",
-          "risk:1",
-          "research"
-        ],
-        "blocking": [],
-        "project": "spine",
-        "rank": 7,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "blocked:#377"
       },
       {
         "number": 176,
@@ -1261,24 +1309,6 @@
         "reason": "unshaped"
       },
       {
-        "number": 377,
-        "title": "N.2: fromLegacyCircuit — the one-way importer, with §10's structurally-traced parity as its acceptance test",
-        "labels": [
-          "agent-ready",
-          "in-progress",
-          "risk:2",
-          "project:foundation"
-        ],
-        "blocking": [
-          175
-        ],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 379,
         "title": "N.4: layout(doc, surface, { previous }) — pure, deterministic, synchronous; barycentre first, then hold what is placed",
         "labels": [
@@ -1889,34 +1919,6 @@
         "reason": "claimed"
       },
       {
-        "number": 767,
-        "title": "fromLegacyCircuit: junction feeds read in wire order, readings not deduplicated, one note overstates",
-        "labels": [
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "unshaped"
-      },
-      {
-        "number": 768,
-        "title": "Release pipeline has no PR-time check: a dependency bump broke 20 releases unseen (#765)",
-        "labels": [
-          "project:harness",
-          "risk:1"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": false,
-        "reason": "unshaped"
-      },
-      {
         "number": 769,
         "title": "lucide-react 1.x removed the Github brand icon: the toolbar's GitHub link needs its own (unblocks #760)",
         "labels": [
@@ -1936,11 +1938,11 @@
     "byProject": {
       "foundation": [
         338,
+        767,
         151,
         184,
         325,
         339,
-        377,
         379,
         380,
         381,
@@ -1960,12 +1962,12 @@
         722,
         728,
         742,
-        752,
-        767
+        752
       ],
       "harness": [
         257,
         269,
+        768,
         154,
         156,
         270,
@@ -1977,10 +1979,10 @@
         505,
         550,
         607,
-        677,
-        768
+        677
       ],
       "spine": [
+        175,
         165,
         167,
         169,
@@ -1989,7 +1991,6 @@
         172,
         173,
         174,
-        175,
         176,
         177,
         235,
@@ -2068,6 +2069,24 @@
   "prs": {
     "open": [
       {
+        "number": 771,
+        "title": "fix(ui): draw the toolbar's GitHub mark inline instead of lucide's Github (#769)",
+        "url": "https://github.com/mezivillager/hacer/pull/771",
+        "author": "mezivillager",
+        "labels": [
+          "project:upkeep",
+          "risk:0"
+        ],
+        "headRefName": "fix/769-github-icon",
+        "isDraft": false,
+        "createdAt": "2026-10-16T00:30:42Z",
+        "mergedAt": null,
+        "closes": [
+          769
+        ],
+        "verdicts": []
+      },
+      {
         "number": 770,
         "title": "fix(store): refuse bus and node widths outside 1 to MAX_PIN_WIDTH (#752)",
         "url": "https://github.com/mezivillager/hacer/pull/770",
@@ -2083,7 +2102,15 @@
         "closes": [
           752
         ],
-        "verdicts": []
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus 5.5",
+            "at": "2026-10-16T00:34:40Z",
+            "url": "https://github.com/mezivillager/hacer/pull/770#issuecomment-6205278347"
+          }
+        ]
       },
       {
         "number": 763,
@@ -2196,39 +2223,6 @@
         "mergedAt": null,
         "closes": [],
         "verdicts": []
-      },
-      {
-        "number": 753,
-        "title": "feat(core): fromLegacyCircuit dissolves splitters and joiners into slices (#377)",
-        "url": "https://github.com/mezivillager/hacer/pull/753",
-        "author": "mezivillager",
-        "labels": [
-          "risk:2",
-          "project:foundation"
-        ],
-        "headRefName": "feat/377b-bus-dissolve",
-        "isDraft": false,
-        "createdAt": "2026-10-15T22:42:32Z",
-        "mergedAt": null,
-        "closes": [
-          377
-        ],
-        "verdicts": [
-          {
-            "verdict": "BLOCK",
-            "round": 1,
-            "model": "Opus 5.5",
-            "at": "2026-10-15T23:08:08Z",
-            "url": "https://github.com/mezivillager/hacer/pull/753#issuecomment-6204155638"
-          },
-          {
-            "verdict": "PASS",
-            "round": 2,
-            "model": "Opus 5.5",
-            "at": "2026-10-15T23:56:35Z",
-            "url": "https://github.com/mezivillager/hacer/pull/753#issuecomment-6204776785"
-          }
-        ]
       },
       {
         "number": 514,
@@ -2367,6 +2361,39 @@
             "model": "Opus 5.5",
             "at": "2026-10-15T23:19:57Z",
             "url": "https://github.com/mezivillager/hacer/pull/754#issuecomment-6204310722"
+          }
+        ]
+      },
+      {
+        "number": 753,
+        "title": "feat(core): fromLegacyCircuit dissolves splitters and joiners into slices (#377)",
+        "url": "https://github.com/mezivillager/hacer/pull/753",
+        "author": "mezivillager",
+        "labels": [
+          "risk:2",
+          "project:foundation"
+        ],
+        "headRefName": "feat/377b-bus-dissolve",
+        "isDraft": false,
+        "createdAt": "2026-10-15T22:42:32Z",
+        "mergedAt": "2026-10-16T00:34:14Z",
+        "closes": [
+          377
+        ],
+        "verdicts": [
+          {
+            "verdict": "BLOCK",
+            "round": 1,
+            "model": "Opus 5.5",
+            "at": "2026-10-15T23:08:08Z",
+            "url": "https://github.com/mezivillager/hacer/pull/753#issuecomment-6204155638"
+          },
+          {
+            "verdict": "PASS",
+            "round": 2,
+            "model": "Opus 5.5",
+            "at": "2026-10-15T23:56:35Z",
+            "url": "https://github.com/mezivillager/hacer/pull/753#issuecomment-6204776785"
           }
         ]
       },
@@ -3803,33 +3830,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/674#issuecomment-5943968556"
           }
         ]
-      },
-      {
-        "number": 673,
-        "title": "fix(harness): agent frontmatter parses strictly",
-        "url": "https://github.com/mezivillager/hacer/pull/673",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:0"
-        ],
-        "headRefName": "fix/665-strict-agent-frontmatter",
-        "isDraft": false,
-        "createdAt": "2026-10-02T01:30:13Z",
-        "mergedAt": "2026-10-02T01:35:30Z",
-        "closes": [
-          665
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Sonnet 5.5",
-            "at": "2026-10-02T01:34:58Z",
-            "url": "https://github.com/mezivillager/hacer/pull/673#issuecomment-5943942999"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -3846,7 +3846,7 @@
         "number": 377,
         "ref": "refs/heads/claim/377",
         "sha": "61f43292d6bc51e14a755ae268f7cb1c239ba1dc",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "N.2: fromLegacyCircuit — the one-way importer, with §10's structurally-traced parity as its acceptance test",
         "url": "https://github.com/mezivillager/hacer/issues/377",
         "labels": [
@@ -3855,7 +3855,7 @@
           "risk:2",
           "project:foundation"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "PR 2: bus components dissolve into slices",
@@ -3943,7 +3943,7 @@
         }
       }
     ],
-    "onClosedIssues": 0
+    "onClosedIssues": 1
   },
   "cloudLane": {
     "items": [
@@ -5685,7 +5685,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-02",
-        "merges": 4
+        "merges": 3
       },
       {
         "date": "2026-10-04",
@@ -5701,26 +5701,27 @@
       },
       {
         "date": "2026-10-16",
-        "merges": 3
+        "merges": 4
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-02T00:30:37.326Z",
+      "since": "2026-10-02T00:35:01.562Z",
       "merged": 68,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 2
       },
       "blockedOnce": {
-        "count": 5,
+        "count": 6,
         "of": 55,
         "prs": [
           700,
           725,
           727,
           732,
-          743
+          743,
+          753
         ]
       },
       "coverage": {
@@ -8905,11 +8906,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "aca6865fa3543b76cfef55e37440ecdacf0075c6",
+        "sha": "f43a4c48aab632cac5cb3301fcdbefb870eabb4b",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38829768334/job/116745604089",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/38830223102/job/116747056102",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -8959,42 +8960,6 @@
           "known": 71,
           "new": 0
         },
-        "disagrees": false
-      },
-      {
-        "pr": 753,
-        "sha": "c037fed351cc8148ecc3ff88cc6c0ae6eacbdbd8",
-        "check": "pr-hygiene",
-        "conclusion": null,
-        "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38829858523/job/116745884396",
-        "line": null,
-        "verdict": null,
-        "fields": {},
-        "disagrees": false
-      },
-      {
-        "pr": 753,
-        "sha": "c037fed351cc8148ecc3ff88cc6c0ae6eacbdbd8",
-        "check": "browser-qa",
-        "conclusion": null,
-        "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38829860245/job/116745889087",
-        "line": null,
-        "verdict": null,
-        "fields": {},
-        "disagrees": false
-      },
-      {
-        "pr": 753,
-        "sha": "c037fed351cc8148ecc3ff88cc6c0ae6eacbdbd8",
-        "check": "ci",
-        "conclusion": null,
-        "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38829860201/job/116745888900",
-        "line": null,
-        "verdict": null,
-        "fields": {},
         "disagrees": false
       },
       {
@@ -9089,11 +9054,41 @@
       },
       {
         "pr": 759,
-        "sha": "2b0f0c149a51874e202b6dd40a0e3ca6e7904d63",
+        "sha": "c901436b10dcdde3454b993204e1eacd39d64a55",
         "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-16T00:34:35Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/38830235229/job/116747097943",
+        "line": "HYGIENE: PASS reviewable=8 test=0 excluded=0 files=3 issue=skipped",
+        "verdict": "PASS",
+        "fields": {
+          "reviewable": 8,
+          "test": 0,
+          "excluded": 0,
+          "files": 3,
+          "issue": "skipped"
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 759,
+        "sha": "c901436b10dcdde3454b993204e1eacd39d64a55",
+        "check": "browser-qa",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-16T00:34:35Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/38830237022/job/116747102652",
+        "line": "BROWSER-QA: skipped (no critical paths)",
+        "verdict": "SKIPPED",
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 759,
+        "sha": "c901436b10dcdde3454b993204e1eacd39d64a55",
+        "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/38829869170/job/116745918070",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/38830237041/job/116747102453",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -9320,6 +9315,52 @@
         "conclusion": "SUCCESS",
         "completedAt": "2026-10-16T00:27:56Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/38829323101/job/116744161439",
+        "line": "LAYER-RATCHET: 69 known violations (37 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 69,
+          "new": 0
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 771,
+        "sha": "5790e881f36e3b61c19a6612fb7dfff2e839f1ed",
+        "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-16T00:31:16Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/38829893958/job/116745999514",
+        "line": "HYGIENE: PASS reviewable=22 test=35 excluded=0 files=2 issue=#769 linked=fixes",
+        "verdict": "PASS",
+        "fields": {
+          "reviewable": 22,
+          "test": 35,
+          "excluded": 0,
+          "files": 2,
+          "issue": "#769",
+          "linked": "fixes"
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 771,
+        "sha": "5790e881f36e3b61c19a6612fb7dfff2e839f1ed",
+        "check": "browser-qa",
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/38829894074/job/116745997126",
+        "line": null,
+        "verdict": null,
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 771,
+        "sha": "5790e881f36e3b61c19a6612fb7dfff2e839f1ed",
+        "check": "ci",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-16T00:34:13Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/38829892966/job/116745994044",
         "line": "LAYER-RATCHET: 69 known violations (37 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
         "verdict": "PASS",
         "fields": {
