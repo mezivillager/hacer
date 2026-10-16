@@ -7,7 +7,6 @@ import {
   Trash2,
   RotateCcw,
   Settings,
-  Github,
   Grid3X3,
   CircleDot,
   ArrowRightFromLine,
@@ -26,6 +25,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui-kit/pop
 import { Separator } from '@/components/ui-kit/separator'
 import { Switch } from '@/components/ui-kit/switch'
 import { CHIP_ICON_MAP, CHIP_ICON_FALLBACK, NandIcon } from './icons/ChipIcons'
+import { GithubMark } from './icons/GithubMark'
 import { getBuiltinChipRegistry } from '@/core/chips/appRegistry'
 import { useCircuitStore, circuitActions } from '@/store/circuitStore'
 import { useAppReleaseVersion } from '@/hooks/useAppReleaseVersion'
@@ -466,8 +466,9 @@ export function CompactToolbar() {
                 href="https://github.com/mezivillager/hacer"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="GitHub"
               >
-                <Github className="w-4 h-4" />
+                <GithubMark className="w-4 h-4" />
               </a>
             </Button>
           </TooltipTrigger>
