@@ -359,3 +359,66 @@ The differential harness classes this case as a reference defect, not a HACER bu
 `pnpm exec vitest run --project node src/core/testing src/core/hdl`
 ## Blocked by
 —
+
+### FID-022 · The `nand2tetris` dialect prints one sliced buffer per alias run, not one `Or` per bit
+- **Date:** 2026-10-16 · **Target epic:** #140 core
+- **Status:** proposed
+- **Why:** since PR #753, IN bits that reach an OUT through buses are the commonest line in the export, and the per-bit desugar (`src/core/spec/printSpec.ts:39-48`) prints each bit as its own `Or`.
+  - C5's `wire out = a;` prints as four `Or` lines, and so does `bus-endpoints`. A byte swap into an OUT prints 16 lines where the hacer dialect has two `wire`s.
+  - Over the review's 3,759 valued exports, buffers are 6,336 of the 12,597 statements under `PARTS:`, against 4,075 `wire` lines in the hacer dialect, and 703 documents print more buffers than wires.
+  - One buffer per run would serve: `Or16(a[0..7]=x[8..15], b[0..7]=x[8..15], out[0..7]=y[0..7])` builds in the reference and in HACER, and both evaluate it correctly (6 of 6 vectors each).
+  - The values are sound; the text is not what a learner would write. #743's review named the shape and left it to #374's design. It belongs next to #722.
+- **Review note:** PR #753 issuecomment-6205099371, proposal 1
+
+**Draft issue body**
+## Goal
+The `nand2tetris` dialect lowers each alias run to one sliced buffer, so the export reads as HDL a learner would write.
+## Acceptance criteria
+- `printSpec(doc, { dialect: 'nand2tetris' })` prints one buffer per contiguous run of an alias, for example `Or16(a[0..7]=x[8..15], b[0..7]=x[8..15], out[0..7]=y[0..7])` for half of a byte swap into an OUT
+- Tests: C5, `bus-endpoints` and a byte swap print the run form, read back through `parseHDL` → `compileHDL`, and evaluate as before on every vector; the reference's verdict for the same three is recorded beside them
+## Verification command
+`pnpm exec vitest run --project node src/core/spec`
+## Blocked by
+—
+
+### FID-023 · Amend FID-019: pin the disjoint-bit export gap, and make the import's consumers compile before they print or save
+- **Date:** 2026-10-16 · **Target epic:** #140 core
+- **Status:** proposed
+- **Why:** PR #753's fidelity review confirmed both of its verifiers' export-gap nit on the reference, and widened it.
+  - ExportGap, a chip OUT fed on disjoint bits by two drivers, prints `Or(a=a, b=a, out=o[0]); Or(a=b, b=b, out=o[1]);`. The reference builds it and gives `o = 0, 2, 1, 3` for `(a, b)` = `00, 01, 10, 11`, and HACER's export path gives the same. Legacy gives `b<<1` or `a`, by wire order, and `compileSpec` refuses the document (`Net id "o[0]" names more than one net`).
+  - ExportGapParts, the same shape through two `Not`s, gives `o = 3` at `a = b = 0`, where legacy gives 2 or 1.
+  - The reference builds 340 of the review's 1,450 multi-driven imports. 324 also build through HACER's export path, and in 6 of them some vector's value is one that no wire order gives.
+  - All 324 carry the driverless twin that FID-019's predicate names (`src/core/spec/fromLegacyCircuit.ts:241-243`), so FID-019 closes the gap by construction; until it lands, only convention does. Not `sev:critical`: nothing outside the tests calls the importer.
+  - The convention is now posted where the importer's first consumers will read it: "an import that `compileSpec` refuses must be compiled before it is printed or saved", on #382 (issuecomment-6205116155) and #386 (issuecomment-6205116646).
+- **Review note:** PR #753 issuecomment-6205099371, proposal 2
+
+**Draft issue body**
+## Goal
+FID-019's guard covers PR #753's disjoint-bit case, and the importer's first consumers refuse what `compileSpec` refuses.
+## Acceptance criteria
+- FID-019's criteria gain one row: ExportGap is pinned beside `FloatingBesideInput`, and `printSpec` refuses it in both dialects, naming the net
+- #382 and #386 each carry, in their bodies, "an import is compiled with `compileSpec` before it is printed or saved, and its diagnostics are shown when it is refused"
+## Verification command
+`pnpm exec vitest run --project node src/core/spec`
+## Blocked by
+—
+
+### FID-024 · ADR-0020 §10 records R837's loop granularity and names where it overapproximates
+- **Date:** 2026-10-16 · **Target epic:** #140 core
+- **Status:** proposed
+- **Why:** the reference checks loops per part and per signal name. `sortParts` (`../web-ide/simulator/src/chip/chip.ts:500-543`) walks from a part to the names it writes, `partToOuts` and `insToPart` are keyed by pin name, and `checkLoops` (`builder.ts:292-318`) refuses a part that reads a name it writes.
+  - The import gives every read run of a producer its own name, so the reference's graph on the export is the bit graph through wires and buses, contracted per part: PR #753's `partCycle`. All 2,040 of the review's R837 documents build in the reference and agree on every vector, and all 1,214 real cycles are refused.
+  - A part that reads bits of its own output without a loop through its bits (SelfReadNot16, where `o = a` through a bitwise `Not16`) is refused by HACER, the reference and legacy alike. That is nand2tetris-sound and an overapproximation in the digital-design frame: Verilator 5.052's UNOPTFLAT and Yosys's `check -force-detailed-loop-check` analyse loops per bit.
+  - This run's records PR added the granularity sentence to ADR-0020 §10, citing R837. Approving keeps it and adds the overapproximation; declining removes the sentence.
+- **Review note:** PR #753 issuecomment-6205099371, proposal 3
+
+**Draft issue body**
+## Goal
+ADR-0020 §10 states the loop granularity N.2's parity uses and where it differs from a per-bit synthesis view.
+## Acceptance criteria
+- §10 says a loop counts when it closes in the part graph traced per bit through wires and bus components, with parts opaque, and that this is the reference's `sortParts`/`checkLoops` granularity (present since this run's records PR)
+- §10 names the overapproximation, with SelfReadNot16 as its example, and L-001 in `docs/development/observed-bugs.md` cites §10
+## Verification command
+`pnpm run lint:docs`
+## Blocked by
+—
