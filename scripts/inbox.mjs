@@ -1,61 +1,46 @@
 #!/usr/bin/env node
-// The proposal inboxes (fidelity, harness, product) from the shell, and the queue of inbox-panel reviews (#778).
-//
-//   node scripts/inbox.mjs list [--status <s>] [--json]   every entry: id, status, file:line, title
-//   node scripts/inbox.mjs status <id> [--not <s>]        the entry's status; with --not, exit 1 while it is still <s>
-//   node scripts/inbox.mjs set <id> <status>              rewrite that entry's Status line, within its file's grammar
-//   node scripts/inbox.mjs queue [--dry-run]              file one review issue per proposed entry that has none yet
-//
-// A review's method: docs/harness/inbox-panel-brief.md. A flag the command does not take is a usage error: exit 2.
+// The proposal inboxes from the shell, and the queue of inbox-panel reviews: docs/harness/inbox-panel-brief.md.
+// Rules live in inbox.logic.mjs. A flag the command does not take is a usage error: exit 2.
 
 import { execFileSync } from 'node:child_process'
 import { readFileSync, writeFileSync } from 'node:fs'
-import { homedir } from 'node:os'
 import path from 'node:path'
 import { parseArgs } from 'node:util'
 import * as inbox from './inbox.logic.mjs'
 
 const REPO = 'mezivillager/hacer'
 const ROOT = path.join(import.meta.dirname, '..')
-
+const USAGE = `usage: node scripts/inbox.mjs list [--status <s>] [--json]   every entry: id, status, file:line, title
+       node scripts/inbox.mjs status <id> [--not <s>]        exit 1 while the entry's status is still <s>
+       node scripts/inbox.mjs set <id> <status>              rewrite the entry's Status line, within its file's grammar
+       node scripts/inbox.mjs queue [--dry-run]              a review issue per proposed entry that has none yet`
 const COMMANDS = {
-  list: { options: { status: { type: 'string' }, json: { type: 'boolean' } }, operands: 0 },
-  status: { options: { not: { type: 'string' } }, operands: 1 },
-  set: { options: {}, operands: 2 },
-  queue: { options: { 'dry-run': { type: 'boolean' } }, operands: 0 },
+  list: [{ status: { type: 'string' }, json: { type: 'boolean' } }, 0],
+  status: [{ not: { type: 'string' } }, 1],
+  set: [{}, 2],
+  queue: [{ 'dry-run': { type: 'boolean' } }, 0],
 }
-const USAGE = `usage: node scripts/inbox.mjs list [--status <s>] [--json]
-       node scripts/inbox.mjs status <id> [--not <s>]
-       node scripts/inbox.mjs set <id> <status>
-       node scripts/inbox.mjs queue [--dry-run]`
 
 class UsageError extends Error {}
 
 function parseCommandLine([name, ...args]) {
-  const command = Object.hasOwn(COMMANDS, name ?? '') ? COMMANDS[name] : null
-  if (!command) throw new UsageError(name ? `unknown command '${name}'` : 'no command')
-  let parsed
+  if (!Object.hasOwn(COMMANDS, name ?? '')) throw new UsageError(name ? `unknown command '${name}'` : 'no command')
+  const [options, operands] = COMMANDS[name]
   try {
-    parsed = parseArgs({ args, options: command.options, allowPositionals: true })
+    const { values, positionals } = parseArgs({ args, options, allowPositionals: true })
+    if (positionals.length === operands) return { name, operands: positionals, flags: values }
   } catch (error) {
     throw new UsageError(error.message)
   }
-  if (parsed.positionals.length !== command.operands) {
-    throw new UsageError(`${name} takes ${command.operands || 'no'} operand${command.operands === 1 ? '' : 's'}`)
-  }
-  return { name, operands: parsed.positionals, flags: parsed.values }
+  throw new UsageError(`${name} takes ${operands || 'no'} operand${operands === 1 ? '' : 's'}`)
 }
 
-/** `gh` from PATH, else the release binary in ~/.local/bin; throws gh's message. */
 function gh(...args) {
-  for (const bin of ['gh', path.join(homedir(), '.local', 'bin', 'gh')]) {
-    try {
-      return execFileSync(bin, args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], maxBuffer: 64 * 1024 * 1024 })
-    } catch (error) {
-      if (error.code !== 'ENOENT') throw new Error(String(error.stderr ?? '').trim() || error.message)
-    }
+  try {
+    return execFileSync('gh', args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], maxBuffer: 64 * 1024 * 1024 })
+  } catch (error) {
+    throw new Error(String(error.stderr ?? '').trim() || error.message)
   }
-  throw new Error('gh CLI not found on PATH or in ~/.local/bin')
 }
 
 const readInbox = (box) => readFileSync(path.join(ROOT, box.file), 'utf8')
@@ -64,9 +49,8 @@ const readInboxes = () => inbox.INBOXES.map((box) => inbox.parseInbox(readInbox(
 const run = {
   list([], flags) {
     const entries = inbox.listEntries(readInboxes(), { status: flags.status })
-    const out = flags.json ? JSON.stringify(entries.map(({ id, title, status, file, line }) => ({ id, title, status, file, line })), null, 2)
-      : inbox.formatEntries(entries)
-    if (out) console.log(out)
+    const rows = entries.map(({ id, title, status, file, line }) => ({ id, title, status, file, line }))
+    if (entries.length > 0 || flags.json) console.log(flags.json ? JSON.stringify(rows, null, 2) : inbox.formatEntries(entries))
   },
   status([id], flags) {
     const { exitCode, stdout } = inbox.entryStatus(readInboxes(), id, { not: flags.not })
@@ -76,21 +60,19 @@ const run = {
   set([id, value]) {
     const box = inbox.INBOXES.find((candidate) => id.startsWith(`${candidate.prefix}-`))
     if (!box) throw new inbox.InboxError(`no inbox has an entry ${id}`)
-    const before = readInbox(box)
-    const after = inbox.setStatus(before, box, id, value)
-    writeFileSync(path.join(ROOT, box.file), after)
-    console.log(`${id}: ${inbox.entryStatus([inbox.parseInbox(before, box)], id).stdout} → ${value} (${box.file})`)
+    writeFileSync(path.join(ROOT, box.file), inbox.setStatus(readInbox(box), box, id, value))
+    console.log(`${id}: ${value} (${box.file})`)
   },
   queue([], flags) {
     const lines = inbox.queueReviews(readInboxes(), {
       dryRun: flags['dry-run'],
       listReviewIssues: () => JSON.parse(gh('issue', 'list', '-R', REPO, '--label', 'inbox-review', '--state', 'all',
         '--limit', String(inbox.REVIEW_LIST_LIMIT), '--json', 'number,title,state,body')),
-      fileIssue: (draft) => gh('issue', 'create', '-R', REPO, '--title', draft.title, '--body', draft.body,
-        ...draft.labels.flatMap((label) => ['--label', label])).trim(),
+      fileIssue: ({ title, body, labels }) =>
+        gh('issue', 'create', '-R', REPO, '--title', title, '--body', body, ...labels.flatMap((label) => ['--label', label])).trim(),
     })
     for (const line of lines) console.log(line)
-    console.error(`inbox: ${lines.length} review issue${lines.length === 1 ? '' : 's'} ${flags['dry-run'] ? 'to file (dry run)' : 'filed'}`)
+    console.error(`inbox: ${lines.length} review issue(s) ${flags['dry-run'] ? 'to file (dry run)' : 'filed'}`)
   },
 }
 

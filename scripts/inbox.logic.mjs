@@ -1,36 +1,29 @@
-// The three proposal inboxes as data, and the review issues the inbox panel decides them through (#778).
-// The method a review follows is docs/harness/inbox-panel-brief.md; inbox.mjs is the CLI over these rules.
+// The proposal inboxes as data, and the review issues the inbox panel decides them through (#778).
 
 export const INBOXES = [
   { prefix: 'FID', file: 'docs/harness/fidelity-inbox.md' },
   { prefix: 'HRN', file: 'docs/harness/harness-inbox.md' },
   { prefix: 'PRD', file: 'docs/harness/product-inbox.md' },
 ]
-
 export const REVIEW_LABELS = ['inbox-review', 'agent-ready', 'risk:0', 'project:upkeep']
-/** `gh issue list --limit` for the dedupe read; a list this long may be cut short, so queue refuses it. */
+/** `gh issue list --limit` for the dedupe read: a list this long may be cut short, so queue refuses it. */
 export const REVIEW_LIST_LIMIT = 1000
-const MARKER = 'Inbox-entry:'
 
 export class InboxError extends Error {}
 
 const STATUS_LINE = /^(- \*\*Status:\*\* )(.*?)(\r?)$/
 const OPENING_FENCE = /^ {0,3}(`{3,}|~{3,})/
 const CLOSING_FENCE = /^ {0,3}(`{3,}|~{3,})\s*$/
-
 const keywordOf = (status) => /^[a-z]+/.exec(status)?.[0] ?? ''
-const escapeRegExp = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
 /** A grammar form such as `declined (<reason>)` or `filed (#n)` as a whole-value pattern. */
 function formPattern(form) {
-  const source = form.split(/(<[^>]+>|#n)/).map((part) => {
-    if (part.startsWith('<')) return '[^\\r\\n]*\\S[^\\r\\n]*'
-    return part === '#n' ? '#[1-9]\\d*' : escapeRegExp(part)
-  })
-  return new RegExp(`^${source.join('')}$`)
+  const parts = form.split(/(<[^>]+>|#n)/).map((part) =>
+    part.startsWith('<') ? '[^\\r\\n]*\\S[^\\r\\n]*' : part === '#n' ? '#[1-9]\\d*' : part.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+  return new RegExp(`^${parts.join('')}$`)
 }
 
-/** Each line, with whether it sits inside a fenced block (an entry quoted as a template is not an entry). */
+/** Each line, and whether it sits in a fenced block: the template quoted under "Entry format" is not an entry. */
 function scanLines(text) {
   let fence = null
   return text.split('\n').map((raw, index) => {
@@ -48,28 +41,21 @@ export function parseInbox(text, inbox) {
   const template = formatAt === -1 ? undefined : lines.slice(formatAt).find((line) => line.inFence && STATUS_LINE.test(line.raw))
   if (!template) throw new InboxError(`${inbox.file}: no **Status:** line in the "Entry format" template`)
   const grammar = STATUS_LINE.exec(template.raw)[2].split(' | ').map((form) => form.trim())
-
   const heading = new RegExp(`^### (${inbox.prefix}-\\d+) · (.+?)\\r?$`)
   const entries = []
   let current = null
   for (const line of lines.filter((candidate) => !candidate.inFence)) {
     const match = heading.exec(line.raw)
-    if (match) {
-      current = { id: match[1], title: match[2], status: null, file: inbox.file, line: line.number, statusLine: null }
-      entries.push(current)
-    } else if (/^#{1,3} /.test(line.raw)) {
-      current = null
-    } else if (current && current.status === null && STATUS_LINE.test(line.raw)) {
-      current.status = STATUS_LINE.exec(line.raw)[2]
-      current.statusLine = line.number
+    if (match) entries.push(current = { id: match[1], title: match[2], status: null, file: inbox.file, line: line.number, statusLine: null })
+    else if (/^#{1,3} /.test(line.raw)) current = null
+    else if (current?.status === null && STATUS_LINE.test(line.raw)) {
+      Object.assign(current, { status: STATUS_LINE.exec(line.raw)[2], statusLine: line.number })
     }
   }
-  const seen = new Set()
-  for (const entry of entries) {
+  entries.forEach((entry, i) => {
     if (entry.status === null) throw new InboxError(`${inbox.file}:${entry.line}: ${entry.id} has no **Status:** line`)
-    if (seen.has(entry.id)) throw new InboxError(`${inbox.file}:${entry.line}: ${entry.id} is used twice`)
-    seen.add(entry.id)
-  }
+    if (entries.findIndex((other) => other.id === entry.id) !== i) throw new InboxError(`${inbox.file}:${entry.line}: ${entry.id} is used twice`)
+  })
   return { ...inbox, grammar, entries }
 }
 
@@ -82,79 +68,63 @@ export function listEntries(inboxes, { status } = {}) {
   return entries.filter((entry) => keywordOf(entry.status) === status)
 }
 
-export function formatEntries(entries) {
-  return entries.map((entry) => [entry.id, entry.status, `${entry.file}:${entry.line}`, entry.title].join('\t')).join('\n')
-}
-
-function findEntry(inboxes, id) {
-  for (const inbox of inboxes) {
-    const entry = inbox.entries.find((candidate) => candidate.id === id)
-    if (entry) return { inbox, entry }
-  }
-  throw new InboxError(`no inbox has an entry ${id}`)
-}
+export const formatEntries = (entries) =>
+  entries.map((entry) => [entry.id, entry.status, `${entry.file}:${entry.line}`, entry.title].join('\t')).join('\n')
 
 /** The entry's status; with `not`, exit code 1 while the status still starts with it. */
 export function entryStatus(inboxes, id, { not } = {}) {
-  const { inbox, entry } = findEntry(inboxes, id)
+  const inbox = inboxes.find((candidate) => candidate.entries.some((entry) => entry.id === id))
+  if (!inbox) throw new InboxError(`no inbox has an entry ${id}`)
   if (not !== undefined && !inbox.grammar.map(keywordOf).includes(not)) {
     throw new InboxError(`'${not}' is not a status in ${inbox.file}'s grammar: ${inbox.grammar.join(' | ')}`)
   }
-  return { exitCode: not !== undefined && keywordOf(entry.status) === not ? 1 : 0, stdout: entry.status }
+  const { status } = inbox.entries.find((entry) => entry.id === id)
+  return { exitCode: not !== undefined && keywordOf(status) === not ? 1 : 0, stdout: status }
 }
 
 /** `text` with only `id`'s `**Status:**` line rewritten to `value`, which must fit the file's own grammar. */
 export function setStatus(text, inbox, id, value) {
-  const parsed = parseInbox(text, inbox)
-  const entry = parsed.entries.find((candidate) => candidate.id === id)
+  const { grammar, entries } = parseInbox(text, inbox)
+  const entry = entries.find((candidate) => candidate.id === id)
   if (!entry) throw new InboxError(`${inbox.file} has no entry ${id}`)
-  if (!parsed.grammar.some((form) => formPattern(form).test(value))) {
-    throw new InboxError(`${JSON.stringify(value)} is outside ${inbox.file}'s status grammar: ${parsed.grammar.join(' | ')}`)
+  if (!grammar.some((form) => formPattern(form).test(value))) {
+    throw new InboxError(`${JSON.stringify(value)} is outside ${inbox.file}'s status grammar: ${grammar.join(' | ')}`)
   }
   const lines = text.split('\n')
-  const at = entry.statusLine - 1
-  lines[at] = lines[at].replace(STATUS_LINE, (_line, prefix, _old, cr) => `${prefix}${value}${cr}`)
+  lines[entry.statusLine - 1] = lines[entry.statusLine - 1].replace(STATUS_LINE, (_line, prefix, _old, cr) => `${prefix}${value}${cr}`)
   return lines.join('\n')
 }
 
 /** The entry ids that issues already review: each body line `Inbox-entry: <id>`. */
-export function reviewedIds(issues) {
-  const marker = new RegExp(`^${MARKER} *(\\S+?)\\s*$`, 'gm')
-  return new Set(issues.flatMap((issue) => [...String(issue.body ?? '').matchAll(marker)].map((match) => match[1])))
-}
+export const reviewedIds = (issues) =>
+  new Set(issues.flatMap((issue) => [...String(issue.body ?? '').matchAll(/^Inbox-entry: *(\S+?)\s*$/gm)].map((match) => match[1])))
 
 /** The review issue for one entry, in the agent-ready issue form (docs/harness/issue-form.md). */
 export function reviewIssue({ id, title, file }) {
-  const body = [
-    '## Goal',
-    `The inbox panel decides ${id} in \`${file}\`: approved, declined or deferred, by the method in ` +
-      '`docs/harness/inbox-panel-brief.md`. Nothing waits for the owner, who may override the status at any time.',
-    '',
-    '## Acceptance criteria',
-    '- One panel verdict comment on this issue, headed `## Inbox panel: APPROVED | DECLINED | DEFERRED`: one line per ' +
-      'reviewer\'s position, the reason, the findings it accepted, and `Verified on:`.',
-    `- The status is set with \`node scripts/inbox.mjs set ${id} <status>\`: \`filed (#n)\` once approved and filed, ` +
-      'otherwise the reason and this issue.',
-    '',
-    '## Verification command',
-    `\`node scripts/inbox.mjs status ${id} --not proposed\``,
-    '',
-    '## Scope',
-    'In: the review, the verdict and the status line. Out: building what the entry proposes, which an approval files ' +
-      'as its own issue.',
-    '',
-    '## Files likely touched',
-    `\`${file}\``,
-    '',
-    '## Risk',
-    '`risk:0`: one status line in an inbox.',
-    '',
-    '## Blocked by',
-    '—',
-    '',
-    `${MARKER} ${id}`,
-  ]
-  return { id, title: `Inbox review: ${id} · ${title}`, labels: [...REVIEW_LABELS], body: body.join('\n') }
+  const body = `## Goal
+The inbox panel decides ${id} in \`${file}\`: approved, declined or deferred, by the method in \`docs/harness/inbox-panel-brief.md\`. Nothing waits for the owner, who may override the status at any time.
+
+## Acceptance criteria
+- One panel verdict comment on this issue, headed \`## Inbox panel: APPROVED | DECLINED | DEFERRED\`: one line per reviewer's position, the reason, the findings it accepted, and \`Verified on:\`.
+- The status is set with \`node scripts/inbox.mjs set ${id} <status>\`: \`filed (#n)\` once approved and filed, otherwise the reason and this issue.
+
+## Verification command
+\`node scripts/inbox.mjs status ${id} --not proposed\`
+
+## Scope
+In: the review, the verdict and the status line. Out: building what the entry proposes, which an approval files as its own issue.
+
+## Files likely touched
+\`${file}\`
+
+## Risk
+\`risk:0\`: one status line in an inbox.
+
+## Blocked by
+—
+
+Inbox-entry: ${id}`
+  return { id, title: `Inbox review: ${id} · ${title}`, labels: [...REVIEW_LABELS], body }
 }
 
 /** Files a review issue for each proposed entry no issue reviews yet, open or closed; one line per issue. */
@@ -164,9 +134,8 @@ export function queueReviews(inboxes, { listReviewIssues, fileIssue, dryRun = fa
     throw new InboxError(`gh listed ${issues.length} review issues, its limit, so some may be missing; nothing filed`)
   }
   const reviewed = reviewedIds(issues)
-  const drafts = listEntries(inboxes, { status: 'proposed' }).filter((entry) => !reviewed.has(entry.id)).map(reviewIssue)
   const lines = []
-  for (const draft of drafts) {
+  for (const draft of listEntries(inboxes, { status: 'proposed' }).filter((entry) => !reviewed.has(entry.id)).map(reviewIssue)) {
     try {
       lines.push(dryRun ? `would file: ${draft.title}` : `filed ${fileIssue(draft)}: ${draft.title}`)
     } catch (error) {
