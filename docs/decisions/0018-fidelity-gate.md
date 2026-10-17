@@ -40,6 +40,12 @@ its own issue (#269), not here.
    or declines; only an approved entry is filed, by the coordinator or triage, labelled `fidelity`.
    The one exception is a defect in shipped behaviour, filed as a bug under the bot issue contract
    (executable repro, `bot-filed`, never `agent-ready` without the owner).
+   *Amended 2026-10-17 (#778): the inbox panel decides each `proposed` entry, not the owner.
+   `node scripts/inbox.mjs queue` files a review issue per entry, Opus and Grok review it through
+   the `multi-review` skill on the owner's machine, and a fresh-context panel decides `approved`,
+   `declined` or `deferred`. On approval the panel files the entry `agent-ready`, labelled
+   `fidelity` (`docs/harness/inbox-panel-brief.md`). There is no split verdict and nothing waits for
+   the owner, who may override any status.*
 5. **A change-triggered fidelity digest**, prompt at `docs/harness/routines/fidelity-digest.md`,
    re-checks the roadmap against current practice when a merged PR touches `docs/roadmap/**`,
    `docs/north-star.md`, `docs/decisions/**`, `src/core/**` or `src/simulation/**`. It stands down
@@ -54,7 +60,8 @@ its own issue (#269), not here.
 - One more fresh-context dispatch per spine/surfaces/horizon epic and per semantic PR; cheap next
   to a wrong engine design (the 0.6 clock model would have been built against the wrong edge).
 - The inbox adds a human step by design: the owner sees every proposed roadmap change once, in one
-  place, and nothing is filed without a decision.
+  place, and nothing is filed without a decision. *Amended 2026-10-17 (#778): the decision is the
+  inbox panel's; the owner still sees every proposal in one place, and may override any decision.*
 - Rejected: letting the role edit roadmap pages directly (the owner wants approval first); letting
   it file `agent-ready` issues (same); a second verifier pass instead of a domain review (the
   verifier checks the PR against the issue, not the issue against the domain).

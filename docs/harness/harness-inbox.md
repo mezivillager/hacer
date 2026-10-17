@@ -1,16 +1,18 @@
-# Harness inbox: proposals waiting for the owner
+# Harness inbox: proposals the inbox panel decides
 
 The retro role (`retro-brief.md`, agent `.claude/agents/hacer-retro.md`) never changes policy and
-never files an issue. It queues its proposals here and waits. An entry is one of two kinds:
+never files an issue. It queues its proposals here. An entry is one of two kinds:
 
-- **`mechanise`:** a recurring failure that has no mechanism yet. The coordinator files its draft
-  body as an `agent-ready` `project:harness` issue under the ledger's second-occurrence rule, unless
-  the owner declines it first.
-- **`policy`:** a change to a gate, a brief, the rotation, a tier, a budget or a cadence. Only the
-  owner approves one. **The owner approves by setting `status` to `approved`, or by saying "approve
-  HRN-00N"; declines by setting `declined` with a one-line reason.** Only an approved entry is acted
-  on, and the entry then records the issue or PR number. An approved policy that outlives a run is
-  recorded as an ADR or an amendment.
+- **`mechanise`:** a recurring failure that has no mechanism yet, with a draft `agent-ready`
+  `project:harness` issue body (the ledger's second-occurrence rule).
+- **`policy`:** a change to a gate, a brief, the rotation, a tier, a budget or a cadence.
+
+**The inbox panel decides each `proposed` entry of either kind (`inbox-panel-brief.md`):
+`node scripts/inbox.mjs queue` files a review issue for it, Opus and Grok review it, and the panel
+sets `approved`, `declined (<reason>)` or `deferred (<until>)`. The owner may override any status at
+any time, by editing it or by saying "approve HRN-00N".** Only an approved entry is acted on, and the
+entry then records the issue or PR number. An approved policy that outlives a run is recorded as an
+ADR or an amendment.
 
 Declined entries stay, so the same proposal is not made twice. Ids are sequential and never reused.
 
@@ -19,10 +21,10 @@ Declined entries stay, so the same proposal is not made twice. Ids are sequentia
 ```markdown
 ### HRN-NNN · <one-line proposal>
 - **Date:** YYYY-MM-DD · **Kind:** mechanise | policy · **Retro run:** <date in Runs>
-- **Status:** proposed | approved | declined (<reason>) | filed (#n)
+- **Status:** proposed | approved | declined (<reason>) | deferred (<until>) | filed (#n)
 - **Evidence:** <ledger ids, PRs, record sections; each number measured (with its command) or inferred>
 - **Cost if wrong:** <what is wasted or broken if this is the wrong call>
-- **Decides:** owner decides <for mechanise: the coordinator files it unless the owner declines>
+- **Decides:** the inbox panel (`inbox-panel-brief.md`); the owner may override
 
 **Draft issue body** (required for mechanise; optional for policy)
 ## Goal

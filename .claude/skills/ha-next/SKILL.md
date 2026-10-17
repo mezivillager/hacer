@@ -7,15 +7,20 @@ description: Use when Mezi asks "what can you do next?", "what's next to get thi
 
 The process is `docs/harness/README.md`; this skill only walks it. Read that page once per session.
 
-## 1. Orient (read-only, one screen)
+## 1. Orient (one screen)
 ```bash
 node -v                                   # must be 22
 gh pr list --state open --author @me      # dormant mode: ≥ 5 open agent PRs → no new PR work
+node scripts/inbox.mjs queue              # the one write: a review issue per new proposed inbox entry
 node scripts/backlog.mjs projects
 node scripts/backlog.mjs ready
 git ls-remote origin 'refs/heads/claim/*' # open claims (holder is in the issue's claim comment)
 ls docs/harness/sessions/*-handoff.md 2>/dev/null   # foreign / paused coordinator state
 ```
+`inbox.mjs queue` files an `inbox-review` issue for each `proposed` entry in the three inboxes that
+has none yet, open or closed, so it never files one twice; the inbox panel decides each
+(`docs/harness/inbox-panel-brief.md`), and the owner may override.
+
 Show the top pick with its *why* (portfolio row, why it is pickable, what it is blocked by if
 anything) and the next two. If nothing is pickable, say what would unblock the closest one
 (`needs-human`, a blocker, unshaped) and stop — that is the answer, not a failure.
@@ -61,6 +66,7 @@ goes stale 48 h after its latest claim comment while no open PR carries the issu
 `docs/harness/sessions/COORDINATOR-HANDOFF.md`.
 
 ## 3. Build — `ha-prompt-it`, tier Light unless the issue says otherwise
+An `inbox-review` issue is not built: follow `docs/harness/inbox-panel-brief.md` from its step 1.
 **Measured facts before dispatch:** run `node scripts/issue-facts.mjs <n>` on the issue, or `--file` on the brief, and fix every package or path it reports that the text says exists; every other fact the text asserts, such as a count, a date, a behaviour or an inference, gets a Measured-facts row naming the command that measured it, because no scanner can tell which sentence is a claim or which command proves it.
 Follow `docs/harness/implementer-brief.md` exactly: own worktree, red commit (tests + compiling
 stub), green commits, definition of done, PR with `Fixes #<n>`, labels. The issue body is the spec —
@@ -80,7 +86,7 @@ dispatching step 4, posted with the verdict heading and `Verified on: coordinato
 `src/simulation/**` (evaluator, HDL compiler, test engine, builtins, clocking), also dispatch a
 fresh-context `hacer-fidelity` agent with `docs/harness/fidelity-brief.md` and the PR number. Its
 comment is advisory unless it reports an oracle divergence (a `sev:critical` bug). Its proposals go
-to `docs/harness/fidelity-inbox.md` for the owner; it files no issues. After a qualifying merge,
+to `docs/harness/fidelity-inbox.md`, which the inbox panel decides; it files no issues. After a qualifying merge,
 dispatch `docs/harness/routines/fidelity-digest.md` once.
 
 ## 5. Merge on green + PASS
@@ -102,5 +108,6 @@ Shape the idea into issues in the form (`docs/harness/issue-form.md`): goal, acc
 `agent-ready` only if risk:0/1 and the criteria are unambiguous; otherwise `needs-human` with your
 recommended answer. Split anything over the budget before it is ready. An epic or ADR in `spine`,
 `surfaces` or `horizon` gets a fidelity verdict comment (`hacer-fidelity`, ADR-0018 §2) before
-sub-issues are shaped from it; an approved `docs/harness/fidelity-inbox.md` entry is filed here, labelled
-`fidelity`, by you — never by the fidelity agent.
+sub-issues are shaped from it. An approved `docs/harness/fidelity-inbox.md` entry is filed by the
+inbox panel, labelled `fidelity` — never by the fidelity agent; the owner may override any inbox
+status.

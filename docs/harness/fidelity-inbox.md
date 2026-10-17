@@ -1,11 +1,13 @@
-# Fidelity inbox — proposals waiting for the owner
+# Fidelity inbox — proposals the inbox panel decides
 
 The fidelity role (`fidelity-brief.md`, ADR-0018) never files an issue for a proposal. It queues
-the proposal here, in the issue form, and waits. **The owner approves by changing `status` to
-`approved` (or saying "approve FID-00N"); declines by setting `declined` with a one-line reason.**
-Only an approved entry is filed — by the coordinator or triage, never by the fidelity agent — as an
-issue labelled `fidelity` under the target epic, and the entry then records the issue number.
-Declined entries stay, so the same proposal is not made twice.
+the proposal here, in the issue form. **The inbox panel decides each `proposed` entry
+(`inbox-panel-brief.md`): `node scripts/inbox.mjs queue` files a review issue for it, Opus and Grok
+review it, and the panel sets `approved`, `declined (<reason>)` or `deferred (<until>)`. The owner
+may override any status at any time, by editing it or by saying "approve FID-00N".** Only an
+approved entry is filed — by the panel, never by the fidelity agent — as an issue labelled
+`fidelity` under the target epic, and the entry then records the issue number. Declined entries
+stay, so the same proposal is not made twice.
 
 ## Entry format
 

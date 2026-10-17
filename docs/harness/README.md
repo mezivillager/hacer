@@ -216,16 +216,18 @@ Direct importers are a proxy for blast radius, not the real edit set. A throwawa
 
 ## Standing roles
 
-Six fresh-context roles judge work; none of them builds it, and none decides strategy for the owner.
+Seven fresh-context roles judge work, and none of them builds it. Only the inbox panel decides for
+the owner, only on an inbox entry, and the owner may override it (#778).
 
 | Role | Judges | Brief | Writes |
 |---|---|---|---|
 | **verifier** (code) | a PR against its issue and the code | `verifier-brief.md` · agent `.claude/agents/hacer-verifier.md` | one verdict comment |
 | **QA** (browser) | a critical PR's changed flow, in a browser against the preview | `qa-brief.md` (#257, in flight) | one QA verdict |
-| **fidelity** (engineering truth) | an epic, ADR, spec or semantic PR against physics, digital logic and the domain's oracle | `fidelity-brief.md` · ADR-0018 · agent `.claude/agents/hacer-fidelity.md` | one verdict comment; proposals queued in `fidelity-inbox.md` for the owner's approval, never filed as issues |
-| **product** (usability & design) | the app's screens and flows, from the cloud UI tour (`.github/workflows/ui-tour.yml`) and the code, or one UI-facing PR or issue | `product-brief.md` · agent `.claude/agents/hacer-product.md` | at most five `project:polish` issues per review under #144, filed directly (owner, 2026-09-19); strategy proposals queued in `product-inbox.md` for the owner's approval |
+| **fidelity** (engineering truth) | an epic, ADR, spec or semantic PR against physics, digital logic and the domain's oracle | `fidelity-brief.md` · ADR-0018 · agent `.claude/agents/hacer-fidelity.md` | one verdict comment; proposals queued in `fidelity-inbox.md` for the inbox panel to decide, never filed as issues |
+| **product** (usability & design) | the app's screens and flows, from the cloud UI tour (`.github/workflows/ui-tour.yml`) and the code, or one UI-facing PR or issue | `product-brief.md` · agent `.claude/agents/hacer-product.md` | at most five `project:polish` issues per review under #144, filed directly (owner, 2026-09-19); strategy proposals queued in `product-inbox.md` for the inbox panel to decide |
 | **process** (the flow itself) | the autonomous flow — how the platform moves forward without the owner — at least every two weeks | `process-review-brief.md`, issued per cycle in `reviews/<date>/BRIEF.md` | one numbered review per reviewer in `reviews/<date>/reviews/`; the coordinator consolidates them in `SYNTHESIS.md` and files what survives |
-| **retro** (refinement) | a window of merged PRs: the ledger, the session records, the four numbers, verdicts, follow-ups, flake reruns and the three inboxes — after every 5 merges, or weekly once `main` has moved | `retro-brief.md` · agent `.claude/agents/hacer-retro.md` | mechanise drafts and policy proposals in `harness-inbox.md`, plus one run row; never an issue, never a policy edit |
+| **retro** (refinement) | a window of merged PRs: the ledger, the session records, the four numbers, verdicts, follow-ups, flake reruns and the three inboxes — after every 5 merges, or weekly once `main` has moved | `retro-brief.md` · agent `.claude/agents/hacer-retro.md` | mechanise drafts and policy proposals in `harness-inbox.md` for the inbox panel to decide, plus one run row; never an issue, never a policy edit |
+| **inbox panel** (decisions) | one `proposed` inbox entry, from an Opus (verify) and a Grok (read-only) review run by the `multi-review` skill on the owner's machine; the review issues come from `node scripts/inbox.mjs queue` | `inbox-panel-brief.md` | one verdict comment on the review issue; on approval, the entry's issue, filed `agent-ready`. The owner may override any status |
 
 ## How this process changes
 
@@ -236,13 +238,15 @@ Four paths, from the smallest to the largest. Why they are shaped this way:
    **second** time the same thing appears, it becomes a lint, test, hook or check. That rule is
    stated once, in the ledger's header.
 2. **The retro checks the rule fired.** The retro role (`retro-brief.md`) runs on its cadence. A
-   class seen twice with no mechanism becomes a *mechanise* draft in `harness-inbox.md`, which the
-   coordinator files as an `agent-ready` `project:harness` issue unless the owner declines it.
-3. **Policy changes go through the owner.** A finding that a gate, brief, rotation, tier, budget or
-   cadence is wrong becomes a *policy* entry in `harness-inbox.md`. The owner approves or declines
-   it. An approved change lands as a PR, and if it outlives the run it is recorded as an ADR or an
-   ADR amendment (`docs/decisions/`). A call that binds only one run is a ruling. No role and no
-   coordinator changes a standing knob on its own (L019).
+   class seen twice with no mechanism becomes a *mechanise* draft in `harness-inbox.md`. The inbox
+   panel decides it (`inbox-panel-brief.md`), and an approved draft is filed as an `agent-ready`
+   `project:harness` issue.
+3. **Policy changes go through the inbox panel.** A finding that a gate, brief, rotation, tier,
+   budget or cadence is wrong becomes a *policy* entry in `harness-inbox.md`. The inbox panel decides
+   it, and the owner may override the decision. An approved change lands as a PR, and if it
+   outlives the run it is recorded as an ADR or an ADR amendment (`docs/decisions/`). A call that
+   binds only one run is a ruling. No role and no coordinator changes a standing knob on its own
+   (L019).
 4. **Prune, quarterly and when the default model changes.** Pick one component: a brief section, a
    hook, a check, a skill or a rule. Delete it on a branch, and run the definition of done plus
    whatever replay or window exercises it. If nothing breaks, propose the deletion as a policy entry,
@@ -359,12 +363,13 @@ one section without warning, so they keep the default merge.
 - `implementer-brief.md` — the brief a builder agent receives for one issue.
 - `verifier-brief.md` — the brief a fresh-context verifier receives for one PR.
 - `fidelity-brief.md` — the brief the fidelity role receives for one epic, ADR, spec or semantic PR.
-- `fidelity-inbox.md` — proposals from fidelity reviews, waiting for the owner's approval.
+- `fidelity-inbox.md` — proposals from fidelity reviews, which the inbox panel decides.
 - `retro-brief.md` — the brief the retro role receives for one window of merged PRs: cadence, inputs and the command for each number, outputs.
-- `harness-inbox.md` — mechanise drafts and policy proposals from retro runs, and the run log; policy entries wait for the owner's approval.
+- `harness-inbox.md` — mechanise drafts and policy proposals from retro runs, which the inbox panel decides, and the run log.
 - `routines/fidelity-digest.md` — the change-triggered re-check of the roadmap (ADR-0018 §5).
 - `product-brief.md` — the brief the product role receives for a usability and design review.
-- `product-inbox.md` — product-strategy proposals from product reviews, waiting for the owner's approval.
+- `product-inbox.md` — product-strategy proposals from product reviews, which the inbox panel decides.
+- `inbox-panel-brief.md` — how one `proposed` inbox entry is decided: the review issue `node scripts/inbox.mjs queue` files, the Opus and Grok reviews, the panel's verdict, and the status `inbox.mjs set` writes; the owner may override.
 - `model-tiering.md` — which model tier each role gets, measured by replaying the verifier brief.
 - `cursor-lane.md` — what Cursor can carry: the local `cursor-agent` second opinion (verified read-only setup, trial, budget) and keep/skip verdicts for the rest.
 - `usage-rationing.md` — the Cursor lane's daily token ration, how a run is measured, and the dashboard reading the "Included" guard rests on (`cursor-usage.json`).
