@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-17T18:54:46.199Z",
+  "generatedAt": "2026-10-17T19:15:34.184Z",
   "head": {
     "sha": "54bb2d5dc312a92854a82a877d3c504178a3828c",
     "date": "2026-10-17T21:53:38+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-17T18:54:46.199Z",
+      "fetchedAt": "2026-10-17T19:15:34.184Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-17T18:54:46.199Z",
+      "fetchedAt": "2026-10-17T19:15:34.184Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-17T18:54:46.199Z",
+      "fetchedAt": "2026-10-17T19:15:34.184Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-17T18:54:46.199Z",
+      "fetchedAt": "2026-10-17T19:15:34.184Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-17T18:54:46.199Z",
+      "fetchedAt": "2026-10-17T19:15:34.184Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-17T18:54:46.199Z",
+      "fetchedAt": "2026-10-17T19:15:34.184Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-17T18:54:46.199Z",
+      "fetchedAt": "2026-10-17T19:15:34.184Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-17T18:54:46.199Z",
+      "fetchedAt": "2026-10-17T19:15:34.184Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-17T18:54:46.199Z",
+      "fetchedAt": "2026-10-17T19:15:34.184Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-17T18:54:46.199Z",
+      "fetchedAt": "2026-10-17T19:15:34.184Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-17T18:54:46.199Z",
+      "fetchedAt": "2026-10-17T19:15:34.184Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-17T18:54:46.199Z",
+      "fetchedAt": "2026-10-17T19:15:34.184Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-17T18:54:46.199Z",
+      "fetchedAt": "2026-10-17T19:15:34.184Z",
       "status": "ok"
     }
   },
@@ -306,15 +306,15 @@
         "slug": "upkeep",
         "epicNumber": 146,
         "open": 24,
-        "ready": 20,
-        "inProgress": 2,
+        "ready": 19,
+        "inProgress": 3,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 23,
         "filedElsewhere": [],
         "next": {
-          "number": 784,
-          "title": "Inbox review: FID-008 · An acceptance-parity corpus: each HDL shape carries the reference's verdict and is asserted against HACER's readers"
+          "number": 785,
+          "title": "Inbox review: FID-009 · Literals become sources: a constant driver kind for `true` and `false`"
         },
         "title": "Epic: upkeep — maintenance & documentation",
         "subIssues": {
@@ -416,11 +416,6 @@
         "number": 257,
         "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
         "project": "harness"
-      },
-      {
-        "number": 784,
-        "title": "Inbox review: FID-008 · An acceptance-parity corpus: each HDL shape carries the reference's verdict and is asserted against HACER's readers",
-        "project": "upkeep"
       },
       {
         "number": 785,
@@ -556,22 +551,6 @@
         "project": "harness",
         "rank": 2,
         "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 784,
-        "title": "Inbox review: FID-008 · An acceptance-parity corpus: each HDL shape carries the reference's verdict and is asserted against HACER's readers",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
         "pickable": true,
         "reason": null
       },
@@ -2288,6 +2267,23 @@
         "reason": "claimed"
       },
       {
+        "number": 784,
+        "title": "Inbox review: FID-008 · An acceptance-parity corpus: each HDL shape carries the reference's verdict and is asserted against HACER's readers",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 801,
         "title": "polish: an unsaved circuit is lost on reload — autosave is written every 2 s but never restored",
         "labels": [
@@ -2409,7 +2405,6 @@
         677
       ],
       "upkeep": [
-        784,
         785,
         786,
         787,
@@ -2432,7 +2427,8 @@
         229,
         256,
         782,
-        783
+        783,
+        784
       ],
       "spine": [
         165,
@@ -4164,6 +4160,32 @@
           "author": "mezivillager",
           "at": "2026-10-17T18:51:08Z",
           "url": "https://github.com/mezivillager/hacer/issues/783#issuecomment-6238938741"
+        }
+      },
+      {
+        "number": 784,
+        "ref": "refs/heads/claim/784",
+        "sha": "54bb2d5dc312a92854a82a877d3c504178a3828c",
+        "state": "OPEN",
+        "title": "Inbox review: FID-008 · An acceptance-parity corpus: each HDL shape carries the reference's verdict and is asserted against HACER's readers",
+        "url": "https://github.com/mezivillager/hacer/issues/784",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-to-20",
+          "branch": "chore/inbox-fid-008",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-17T18:56:25Z",
+          "url": "https://github.com/mezivillager/hacer/issues/784#issuecomment-6239027740"
         }
       }
     ],
@@ -5967,7 +5989,7 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-03T18:54:46.199Z",
+      "since": "2026-10-03T19:15:34.184Z",
       "merged": 73,
       "openToMergeHours": {
         "median": 0.3,
@@ -9459,12 +9481,15 @@
         "pr": null,
         "sha": "54bb2d5dc312a92854a82a877d3c504178a3828c",
         "check": "ci",
-        "conclusion": null,
-        "completedAt": null,
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-17T18:57:17Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/39060093675/job/117476094676",
-        "line": null,
-        "verdict": null,
-        "fields": {},
+        "line": "LAYER-RATCHET: 69 known violations (37 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 69,
+          "new": 0
+        },
         "disagrees": false
       },
       {
