@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-17T19:15:34.184Z",
+  "generatedAt": "2026-10-17T20:20:29.860Z",
   "head": {
     "sha": "54bb2d5dc312a92854a82a877d3c504178a3828c",
     "date": "2026-10-17T21:53:38+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-17T19:15:34.184Z",
+      "fetchedAt": "2026-10-17T20:20:29.860Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-17T19:15:34.184Z",
+      "fetchedAt": "2026-10-17T20:20:29.860Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-17T19:15:34.184Z",
+      "fetchedAt": "2026-10-17T20:20:29.860Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-17T19:15:34.184Z",
+      "fetchedAt": "2026-10-17T20:20:29.860Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-17T19:15:34.184Z",
+      "fetchedAt": "2026-10-17T20:20:29.860Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-17T19:15:34.184Z",
+      "fetchedAt": "2026-10-17T20:20:29.860Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-17T19:15:34.184Z",
+      "fetchedAt": "2026-10-17T20:20:29.860Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-17T19:15:34.184Z",
+      "fetchedAt": "2026-10-17T20:20:29.860Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-17T19:15:34.184Z",
+      "fetchedAt": "2026-10-17T20:20:29.860Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-17T19:15:34.184Z",
+      "fetchedAt": "2026-10-17T20:20:29.860Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-17T19:15:34.184Z",
+      "fetchedAt": "2026-10-17T20:20:29.860Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-17T19:15:34.184Z",
+      "fetchedAt": "2026-10-17T20:20:29.860Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-17T19:15:34.184Z",
+      "fetchedAt": "2026-10-17T20:20:29.860Z",
       "status": "ok"
     }
   },
@@ -80,12 +80,12 @@
         "lane": "feature",
         "slug": "foundation",
         "epicNumber": 318,
-        "open": 25,
-        "ready": 1,
+        "open": 27,
+        "ready": 3,
         "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 1,
+        "agentReady": 3,
         "filedElsewhere": [],
         "next": {
           "number": 338,
@@ -103,12 +103,12 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 13,
-        "ready": 1,
+        "open": 14,
+        "ready": 2,
         "inProgress": 0,
         "needsHuman": 1,
         "staleClaims": [],
-        "agentReady": 1,
+        "agentReady": 2,
         "filedElsewhere": [
           151,
           339
@@ -142,8 +142,8 @@
         "title": "Epic: surfaces — renderer surfaces: CLI/HDL · MCP · 2D",
         "subIssues": {
           "completed": 9,
-          "percentCompleted": 69,
-          "total": 13
+          "percentCompleted": 64,
+          "total": 14
         }
       },
       {
@@ -191,8 +191,8 @@
         "title": "Epic: core — headless core",
         "subIssues": {
           "completed": 13,
-          "percentCompleted": 86,
-          "total": 15
+          "percentCompleted": 76,
+          "total": 17
         }
       },
       {
@@ -200,14 +200,17 @@
         "lane": "aux",
         "slug": "verify",
         "epicNumber": 141,
-        "open": 8,
-        "ready": 0,
+        "open": 9,
+        "ready": 1,
         "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 2,
+        "agentReady": 3,
         "filedElsewhere": [],
-        "next": null,
+        "next": {
+          "number": 811,
+          "title": "An acceptance-parity corpus: each HDL shape carries the reference's verdict and is asserted against HACER's readers"
+        },
         "title": "Epic: verify — QA service",
         "subIssues": {
           "completed": 5,
@@ -306,15 +309,15 @@
         "slug": "upkeep",
         "epicNumber": 146,
         "open": 24,
-        "ready": 19,
-        "inProgress": 3,
+        "ready": 16,
+        "inProgress": 6,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 23,
         "filedElsewhere": [],
         "next": {
-          "number": 785,
-          "title": "Inbox review: FID-009 · Literals become sources: a constant driver kind for `true` and `false`"
+          "number": 788,
+          "title": "Inbox review: FID-015 · Learner-facing compile errors use the reference's words and carry the line"
         },
         "title": "Epic: upkeep — maintenance & documentation",
         "subIssues": {
@@ -418,19 +421,24 @@
         "project": "harness"
       },
       {
-        "number": 785,
-        "title": "Inbox review: FID-009 · Literals become sources: a constant driver kind for `true` and `false`",
-        "project": "upkeep"
+        "number": 813,
+        "title": "An unconnected part input's refusal names the reference's 0, and `bindUnconnectedInputs` binds such pins to `false`",
+        "project": "foundation"
       },
       {
-        "number": 786,
-        "title": "Inbox review: FID-011 · Name the unconnected-input divergence where the learner meets it, and offer to bind unwired inputs to `false`",
-        "project": "upkeep"
+        "number": 814,
+        "title": "Literals become sources: a constant driver kind for `true` and `false`, and the spec's first `migrate(1 → 2)`",
+        "project": "foundation"
       },
       {
-        "number": 787,
-        "title": "Inbox review: FID-014 · Name a part cycle at compile time once user HDL is registered at runtime",
-        "project": "upkeep"
+        "number": 811,
+        "title": "An acceptance-parity corpus: each HDL shape carries the reference's verdict and is asserted against HACER's readers",
+        "project": "verify"
+      },
+      {
+        "number": 812,
+        "title": "inbox.mjs reports an entry whose status is outside its file's grammar",
+        "project": "harness"
       },
       {
         "number": 788,
@@ -516,6 +524,7 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
+        815,
         514
       ]
     }
@@ -555,50 +564,65 @@
         "reason": null
       },
       {
-        "number": 785,
-        "title": "Inbox review: FID-009 · Literals become sources: a constant driver kind for `true` and `false`",
+        "number": 813,
+        "title": "An unconnected part input's refusal names the reference's 0, and `bindUnconnectedInputs` binds such pins to `false`",
         "labels": [
-          "project:upkeep",
           "agent-ready",
-          "risk:0",
-          "inbox-review"
+          "risk:1",
+          "fidelity",
+          "project:foundation"
         ],
         "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 814,
+        "title": "Literals become sources: a constant driver kind for `true` and `false`, and the spec's first `migrate(1 → 2)`",
+        "labels": [
+          "agent-ready",
+          "risk:2",
+          "fidelity",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 811,
+        "title": "An acceptance-parity corpus: each HDL shape carries the reference's verdict and is asserted against HACER's readers",
+        "labels": [
+          "project:verify",
+          "agent-ready",
+          "risk:1",
+          "fidelity"
+        ],
+        "blocking": [],
+        "project": "verify",
+        "rank": 6,
         "lane": "aux",
         "pickable": true,
         "reason": null
       },
       {
-        "number": 786,
-        "title": "Inbox review: FID-011 · Name the unconnected-input divergence where the learner meets it, and offer to bind unwired inputs to `false`",
+        "number": 812,
+        "title": "inbox.mjs reports an entry whose status is outside its file's grammar",
         "labels": [
-          "project:upkeep",
+          "project:harness",
           "agent-ready",
-          "risk:0",
-          "inbox-review"
+          "risk:1"
         ],
         "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 787,
-        "title": "Inbox review: FID-014 · Name a part cycle at compile time once user HDL is registered at runtime",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
         "pickable": true,
         "reason": null
       },
@@ -2284,6 +2308,57 @@
         "reason": "claimed"
       },
       {
+        "number": 785,
+        "title": "Inbox review: FID-009 · Literals become sources: a constant driver kind for `true` and `false`",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
+        "number": 786,
+        "title": "Inbox review: FID-011 · Name the unconnected-input divergence where the learner meets it, and offer to bind unwired inputs to `false`",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
+        "number": 787,
+        "title": "Inbox review: FID-014 · Name a part cycle at compile time once user HDL is registered at runtime",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 801,
         "title": "polish: an unsaved circuit is lost on reload — autosave is written every 2 s but never restored",
         "labels": [
@@ -2364,6 +2439,8 @@
     "byProject": {
       "foundation": [
         338,
+        813,
+        814,
         151,
         184,
         325,
@@ -2391,6 +2468,7 @@
       ],
       "harness": [
         257,
+        812,
         154,
         156,
         270,
@@ -2404,10 +2482,18 @@
         607,
         677
       ],
+      "verify": [
+        811,
+        194,
+        197,
+        198,
+        200,
+        201,
+        202,
+        203,
+        289
+      ],
       "upkeep": [
-        785,
-        786,
-        787,
         788,
         789,
         790,
@@ -2428,7 +2514,10 @@
         256,
         782,
         783,
-        784
+        784,
+        785,
+        786,
+        787
       ],
       "spine": [
         165,
@@ -2453,16 +2542,6 @@
         452,
         453,
         620
-      ],
-      "verify": [
-        194,
-        197,
-        198,
-        200,
-        201,
-        202,
-        203,
-        289
       ],
       "surfaces": [
         206,
@@ -2518,6 +2597,22 @@
   },
   "prs": {
     "open": [
+      {
+        "number": 815,
+        "title": "docs(harness): close the 2026-10-17 hacer-loop-to-20 run",
+        "url": "https://github.com/mezivillager/hacer/pull/815",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/2026-10-17-hacer-loop-to-20-close",
+        "isDraft": false,
+        "createdAt": "2026-10-17T20:11:07Z",
+        "mergedAt": null,
+        "closes": [],
+        "verdicts": []
+      },
       {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
@@ -4186,6 +4281,84 @@
           "author": "mezivillager",
           "at": "2026-10-17T18:56:25Z",
           "url": "https://github.com/mezivillager/hacer/issues/784#issuecomment-6239027740"
+        }
+      },
+      {
+        "number": 785,
+        "ref": "refs/heads/claim/785",
+        "sha": "54bb2d5dc312a92854a82a877d3c504178a3828c",
+        "state": "OPEN",
+        "title": "Inbox review: FID-009 · Literals become sources: a constant driver kind for `true` and `false`",
+        "url": "https://github.com/mezivillager/hacer/issues/785",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-to-20",
+          "branch": "chore/inbox-fid-009",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-17T19:19:37Z",
+          "url": "https://github.com/mezivillager/hacer/issues/785#issuecomment-6239422231"
+        }
+      },
+      {
+        "number": 786,
+        "ref": "refs/heads/claim/786",
+        "sha": "54bb2d5dc312a92854a82a877d3c504178a3828c",
+        "state": "OPEN",
+        "title": "Inbox review: FID-011 · Name the unconnected-input divergence where the learner meets it, and offer to bind unwired inputs to `false`",
+        "url": "https://github.com/mezivillager/hacer/issues/786",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-to-20",
+          "branch": "chore/inbox-fid-011",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-17T19:25:44Z",
+          "url": "https://github.com/mezivillager/hacer/issues/786#issuecomment-6239518513"
+        }
+      },
+      {
+        "number": 787,
+        "ref": "refs/heads/claim/787",
+        "sha": "54bb2d5dc312a92854a82a877d3c504178a3828c",
+        "state": "OPEN",
+        "title": "Inbox review: FID-014 · Name a part cycle at compile time once user HDL is registered at runtime",
+        "url": "https://github.com/mezivillager/hacer/issues/787",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-to-20",
+          "branch": "chore/inbox-fid-014",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-17T19:56:39Z",
+          "url": "https://github.com/mezivillager/hacer/issues/787#issuecomment-6240021786"
         }
       }
     ],
@@ -5989,7 +6162,7 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-03T19:15:34.184Z",
+      "since": "2026-10-03T20:20:29.860Z",
       "merged": 73,
       "openToMergeHours": {
         "median": 0.3,
@@ -9319,7 +9492,7 @@
       },
       {
         "date": "2026-10-17",
-        "at": "2026-10-17T18:48:26.232Z",
+        "at": "2026-10-17T19:15:34.184Z",
         "byProject": {
           "foundation": [
             338,
@@ -9348,9 +9521,22 @@
             742,
             773
           ],
+          "harness": [
+            257,
+            154,
+            156,
+            270,
+            435,
+            436,
+            454,
+            500,
+            504,
+            505,
+            550,
+            607,
+            677
+          ],
           "upkeep": [
-            783,
-            784,
             785,
             786,
             787,
@@ -9367,25 +9553,14 @@
             798,
             799,
             800,
+            807,
+            808,
+            809,
             229,
             256,
-            782
-          ],
-          "harness": [
-            257,
-            154,
-            156,
-            270,
-            435,
-            436,
-            454,
-            500,
-            504,
-            505,
-            550,
-            607,
-            677,
-            779
+            782,
+            783,
+            784
           ],
           "spine": [
             165,
@@ -9534,6 +9709,51 @@
         "verdict": "PASS",
         "fields": {
           "known": 71,
+          "new": 0
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 815,
+        "sha": "18a3023072cc72af73bed3298ad299a76169740f",
+        "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-17T20:11:19Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39065639694/job/117492597159",
+        "line": "HYGIENE: WARN reviewable=265 test=0 excluded=0 files=6 issue=docs-only",
+        "verdict": "WARN",
+        "fields": {
+          "reviewable": 265,
+          "test": 0,
+          "excluded": 0,
+          "files": 6,
+          "issue": "docs-only"
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 815,
+        "sha": "18a3023072cc72af73bed3298ad299a76169740f",
+        "check": "browser-qa",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-17T20:11:20Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39065640008/job/117492596941",
+        "line": "BROWSER-QA: skipped (no critical paths)",
+        "verdict": "SKIPPED",
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 815,
+        "sha": "18a3023072cc72af73bed3298ad299a76169740f",
+        "check": "ci",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-17T20:14:51Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39065638878/job/117492593424",
+        "line": "LAYER-RATCHET: 69 known violations (37 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 69,
           "new": 0
         },
         "disagrees": false
