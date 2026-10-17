@@ -1,0 +1,20 @@
+[
+  {
+    "body": "## Goal\nThe inbox panel decides FID-006.\n\n## Blocked by\n—\n\nInbox-entry: FID-006",
+    "number": 9001,
+    "state": "OPEN",
+    "title": "Inbox review: FID-006 · The public HDL reference lists the three accepted builtin forms and who accepts each"
+  },
+  {
+    "body": "## Goal\r\nThe inbox panel decides HRN-005.\r\n\r\n## Blocked by\r\n—\r\n\r\nInbox-entry: HRN-005\r\n",
+    "number": 9002,
+    "state": "CLOSED",
+    "title": "Inbox review: HRN-005 · Measure the four numbers or retire two of them: tokens and owner minutes have no source"
+  },
+  {
+    "body": "## Goal\nThe panel comment on #9001 quotes the line Inbox-entry: FID-007 from a draft; this issue is not a review.",
+    "number": 9003,
+    "state": "OPEN",
+    "title": "Inbox panel: a quoted marker"
+  }
+]
