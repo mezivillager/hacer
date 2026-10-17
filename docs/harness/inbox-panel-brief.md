@@ -31,9 +31,13 @@ retried at its next pick, and no decision is made on one model. Otherwise launch
 background:
 
 ```bash
-run-reviews --summary "<summary>" --worktree ../hacer-wt-inbox-<id> --base origin/main \
+run-reviews --summary-file <scratch>/summary-<id>.txt --worktree ../hacer-wt-inbox-<id> --base origin/main \
   --run-dir ~/.claude/runs/reviews/<YYYY-MM-DD>-inbox-<id>/ --models opus,grok --spec docs/north-star.md
 ```
+
+Write the summary file with the Write tool or a quoted heredoc (`<<'EOF'`): the template contains
+backticks, which an inline `--summary "…"` would hand to the shell. The run dir must not exist; a
+second round the same day adds `-2`.
 
 The summary is this template filled in, and nothing else; the launcher refuses one over 1,200
 characters, with a heading, a question mark or a steering phrase ("focus on", "please check", …):
@@ -66,7 +70,7 @@ own. The panel:
    - **Reason:** <why, and which position it found more reasonable>
    - **Findings accepted:** <one line each, or none>
 
-   Verified on: <origin/main SHA> · run dir <YYYY-MM-DD>-inbox-<id>
+   Verified on: panel Opus (<model id>); reviewers Opus (verify) and Grok (read-only) · origin/main <SHA> · run dir <YYYY-MM-DD>-inbox-<id>
    ```
 
 5. If approved, files the entry's draft issue, amended by the findings it accepted, with the

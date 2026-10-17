@@ -87,7 +87,7 @@ used, a verdict table with sources, current practice, proposals (as inbox ids), 
 ### Claims
 - <claim> — <verdict> — <source>
 ### Proposals queued
-- FID-00N — <one line>  (owner approval pending; nothing filed)
+- FID-00N — <one line>  (inbox panel pending; nothing filed)
 ### Could not verify
 - …
 ### Not covered
