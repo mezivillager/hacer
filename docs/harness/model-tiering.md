@@ -82,6 +82,8 @@ four rows above are struck through in the attribution column, and why §2's `ris
 | QA (browser) | Opus | the brief is still in flight (#257); no replay is possible until it exists | a QA replay once the brief lands |
 | product | Opus (pinned in `.claude/agents/hacer-product.md`) | judgment over screenshots and code; unmeasured | a replay against a past review's filed issues |
 | fidelity | Opus (pinned in `.claude/agents/hacer-fidelity.md`) | the highest-consequence verdict here, and Haiku's failure mode — a broken criterion marked satisfied, with a citation — is precisely what a fidelity verdict must never do | a replay on an artifact with a known unsound claim |
+| inbox panel reviewers | Opus (verify) and Grok (read-only), through the `multi-review` skill on the owner's machine | two model families on one approval commit (#778): Opus runs the code in a worktree of its own, Grok only reads; unmeasured | a review whose two reports both miss what an owner override later names |
+| inbox panel | Opus, fresh context | it decides inbox entries for the owner (#778), so it takes the tier of the other final judgments here; unmeasured | one owner override of a panel decision, or a filed approval its builder finds unsound |
 | triage — draft the issue | Sonnet | shaping prose into the issue form is mechanical | — |
 | triage — the `agent-ready` call | Opus | README's "queue up" row already needs judgment at `risk:2` | — |
 | docs gardening | Sonnet; Haiku only where a command's exit code *is* the verdict | Budgets already assigns gardening to Sonnet; Haiku did reproduce #245's negative test correctly | if a sweep's result is decidable by a script, mechanise it instead (the ledger's standing rule) |

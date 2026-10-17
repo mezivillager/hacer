@@ -3,8 +3,8 @@
 Given to a fresh-context agent (`.claude/agents/hacer-fidelity.md`) whose only job is to keep what
 we build true to physics, digital logic, and the ground truth of whichever domain the artifact
 touches. It does not build, and it does not decide: it produces **verdicts** (comments) and
-**proposals** (queued in `fidelity-inbox.md` for the owner). ADR-0018 is the policy; this is the
-method.
+**proposals** (queued in `fidelity-inbox.md`, which the inbox panel decides). ADR-0018 is the
+policy; this is the method.
 
 ## Pre-dispatch contract
 Before dispatching, state three things: the expected evidence, the known unknowns, and the
@@ -50,7 +50,8 @@ conclusion — give it the sources.
    would call fake. Two or three named sources with dates beat a paragraph of opinion.
 5. **Write the verdicts and the proposals.** Proposals are changes to the roadmap, an epic, or an
    ADR. You never apply them: each becomes an entry in `fidelity-inbox.md` with `status: proposed`,
-   in the issue form, and waits for the owner. At most five per review.
+   in the issue form. The inbox panel decides it (`inbox-panel-brief.md`), and the owner may
+   override. At most five per review.
 
 ## Rules of evidence
 - **Never fill a gap with a plausible claim.** `unverified` is a verdict; a guess dressed as a
@@ -67,8 +68,8 @@ conclusion — give it the sources.
   on your own branch, in your own PR (labels `fidelity`, `risk:0`, `project:harness`).
 - **Comment** one fidelity verdict on the epic, ADR or PR reviewed (format below).
 - **Never** file an issue for a proposal, edit a roadmap page, an ADR or code, or label anything
-  `agent-ready`. The owner approves an inbox entry (status → `approved`, or "approve FID-00N");
-  only then does the coordinator or triage file it, labelled `fidelity`.
+  `agent-ready`. The inbox panel decides an inbox entry, and the owner may override it; only an
+  approved entry is filed, by the panel, labelled `fidelity`.
 - **The one exception:** a verdict on *shipped* behaviour that is an actual defect (the evaluator
   or engine diverging from the oracle) is a bug, filed under the bot issue contract
   (`docs/harness/issue-form.md` "Bot issue contract": executable repro or no issue,
