@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-17T17:16:48.544Z",
+  "generatedAt": "2026-10-17T18:23:03.959Z",
   "head": {
     "sha": "579ff8f44215420a43c941694ed448235d605d8e",
     "date": "2026-10-16T05:04:22+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-17T17:16:48.544Z",
+      "fetchedAt": "2026-10-17T18:23:03.959Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-17T17:16:48.544Z",
+      "fetchedAt": "2026-10-17T18:23:03.959Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-17T17:16:48.544Z",
+      "fetchedAt": "2026-10-17T18:23:03.959Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-17T17:16:48.544Z",
+      "fetchedAt": "2026-10-17T18:23:03.959Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-17T17:16:48.544Z",
+      "fetchedAt": "2026-10-17T18:23:03.959Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-17T17:16:48.544Z",
+      "fetchedAt": "2026-10-17T18:23:03.959Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-17T17:16:48.544Z",
+      "fetchedAt": "2026-10-17T18:23:03.959Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-17T17:16:48.544Z",
+      "fetchedAt": "2026-10-17T18:23:03.959Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-17T17:16:48.544Z",
+      "fetchedAt": "2026-10-17T18:23:03.959Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-17T17:16:48.544Z",
+      "fetchedAt": "2026-10-17T18:23:03.959Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-17T17:16:48.544Z",
+      "fetchedAt": "2026-10-17T18:23:03.959Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-17T17:16:48.544Z",
+      "fetchedAt": "2026-10-17T18:23:03.959Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-17T17:16:48.544Z",
+      "fetchedAt": "2026-10-17T18:23:03.959Z",
       "status": "ok"
     }
   },
@@ -103,12 +103,12 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 14,
-        "ready": 2,
-        "inProgress": 0,
+        "open": 16,
+        "ready": 1,
+        "inProgress": 2,
         "needsHuman": 1,
         "staleClaims": [],
-        "agentReady": 2,
+        "agentReady": 4,
         "filedElsewhere": [
           151,
           339
@@ -220,21 +220,18 @@
         "lane": "feature",
         "slug": "spine",
         "epicNumber": 139,
-        "open": 13,
-        "ready": 1,
+        "open": 12,
+        "ready": 0,
         "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 1,
+        "agentReady": 0,
         "filedElsewhere": [],
-        "next": {
-          "number": 175,
-          "title": "P05-30: Splitter/joiner for bit-level access on placed chips — verify first, P05-12a may have delivered it"
-        },
+        "next": null,
         "title": "Epic: spine — nand2tetris alignment 0.5 → 0.7",
         "subIssues": {
-          "completed": 3,
-          "percentCompleted": 18,
+          "completed": 4,
+          "percentCompleted": 25,
           "total": 16
         }
       },
@@ -413,21 +410,12 @@
         "number": 257,
         "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
         "project": "harness"
-      },
-      {
-        "number": 175,
-        "title": "P05-30: Splitter/joiner for bit-level access on placed chips — verify first, P05-12a may have delivered it",
-        "project": "spine"
-      },
-      {
-        "number": 269,
-        "title": "Product role (usability & design): brief, hacer-product agent, a cloud UI-tour capture, and the first usability review — the agent finds polish itself",
-        "project": "harness"
       }
     ],
     "dormant": {
       "dormant": false,
       "agentPrs": [
+        780,
         514
       ]
     }
@@ -456,40 +444,6 @@
           "project:harness",
           "agent-ready",
           "risk:2"
-        ],
-        "blocking": [
-          270
-        ],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 175,
-        "title": "P05-30: Splitter/joiner for bit-level access on placed chips — verify first, P05-12a may have delivered it",
-        "labels": [
-          "project:spine",
-          "agent-ready",
-          "risk:1",
-          "research"
-        ],
-        "blocking": [],
-        "project": "spine",
-        "rank": 7,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 269,
-        "title": "Product role (usability & design): brief, hacer-product agent, a cloud UI-tour capture, and the first usability review — the agent finds polish itself",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:2",
-          "research"
         ],
         "blocking": [
           270
@@ -1147,6 +1101,25 @@
         "lane": "feature",
         "pickable": false,
         "reason": "on-request"
+      },
+      {
+        "number": 269,
+        "title": "Product role (usability & design): brief, hacer-product agent, a cloud UI-tour capture, and the first usability review — the agent finds polish itself",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:2",
+          "research"
+        ],
+        "blocking": [
+          270
+        ],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "claimed"
       },
       {
         "number": 270,
@@ -1873,6 +1846,39 @@
         "lane": "feature",
         "pickable": false,
         "reason": "unshaped"
+      },
+      {
+        "number": 778,
+        "title": "Inbox panel: proposed inbox entries become review tasks, decided by an Opus + Grok panel",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:1"
+        ],
+        "blocking": [
+          779
+        ],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
+        "number": 779,
+        "title": "Role agents and the rest of the harness docs say the inbox panel decides, not the owner",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:0"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "blocked:#778"
       }
     ],
     "byProject": {
@@ -1905,9 +1911,9 @@
       ],
       "harness": [
         257,
-        269,
         154,
         156,
+        269,
         270,
         435,
         436,
@@ -1917,10 +1923,11 @@
         505,
         550,
         607,
-        677
+        677,
+        778,
+        779
       ],
       "spine": [
-        175,
         165,
         167,
         169,
@@ -2005,6 +2012,33 @@
   },
   "prs": {
     "open": [
+      {
+        "number": 780,
+        "title": "chore(harness): inbox panel — proposed inbox entries become review tasks (#778)",
+        "url": "https://github.com/mezivillager/hacer/pull/780",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:1",
+          "size-override"
+        ],
+        "headRefName": "feat/778-inbox-panel",
+        "isDraft": false,
+        "createdAt": "2026-10-17T18:06:41Z",
+        "mergedAt": null,
+        "closes": [
+          778
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Claude Sonnet 5.5 (claude-sonnet-5-5)",
+            "at": "2026-10-17T18:19:02Z",
+            "url": "https://github.com/mezivillager/hacer/pull/780#issuecomment-6238455110"
+          }
+        ]
+      },
       {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
@@ -3563,6 +3597,32 @@
   "claims": {
     "items": [
       {
+        "number": 269,
+        "ref": "refs/heads/claim/269",
+        "sha": "579ff8f44215420a43c941694ed448235d605d8e",
+        "state": "OPEN",
+        "title": "Product role (usability & design): brief, hacer-product agent, a cloud UI-tour capture, and the first usability review — the agent finds polish itself",
+        "url": "https://github.com/mezivillager/hacer/issues/269",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:2",
+          "research"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-to-20",
+          "branch": "docs/269-product-review-1",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-17T18:14:39Z",
+          "url": "https://github.com/mezivillager/hacer/issues/269#issuecomment-6238389161"
+        }
+      },
+      {
         "number": 470,
         "ref": "refs/heads/claim/470",
         "sha": "a5c1dac037de6dd435ab88414e270482976df51c",
@@ -3585,6 +3645,31 @@
           "author": "mezivillager",
           "at": "2026-09-25T06:02:35Z",
           "url": "https://github.com/mezivillager/hacer/issues/470#issuecomment-5827635352"
+        }
+      },
+      {
+        "number": 778,
+        "ref": "refs/heads/claim/778",
+        "sha": "579ff8f44215420a43c941694ed448235d605d8e",
+        "state": "OPEN",
+        "title": "Inbox panel: proposed inbox entries become review tasks, decided by an Opus + Grok panel",
+        "url": "https://github.com/mezivillager/hacer/issues/778",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:1"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-to-20",
+          "branch": "feat/778-inbox-panel",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-17T17:28:55Z",
+          "url": "https://github.com/mezivillager/hacer/issues/778#issuecomment-6237631510"
         }
       }
     ],
@@ -5388,7 +5473,7 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-03T17:16:48.544Z",
+      "since": "2026-10-03T18:23:03.959Z",
       "merged": 70,
       "openToMergeHours": {
         "median": 0.4,
@@ -8718,7 +8803,7 @@
       },
       {
         "date": "2026-10-17",
-        "at": "2026-10-17T16:20:47.721Z",
+        "at": "2026-10-17T17:16:48.544Z",
         "byProject": {
           "foundation": [
             338,
@@ -8910,6 +8995,49 @@
           "known": 71,
           "new": 0
         },
+        "disagrees": false
+      },
+      {
+        "pr": 780,
+        "sha": "7fcd3f0d77e110b5e0b27a63f53b1cf7df21b8c3",
+        "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-17T18:20:40Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39057659377/job/117468847010",
+        "line": "HYGIENE: PASS reviewable=474 test=231 excluded=729 files=12 issue=#778 linked=fixes",
+        "verdict": "PASS",
+        "fields": {
+          "reviewable": 474,
+          "test": 231,
+          "excluded": 729,
+          "files": 12,
+          "issue": "#778",
+          "linked": "fixes"
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 780,
+        "sha": "7fcd3f0d77e110b5e0b27a63f53b1cf7df21b8c3",
+        "check": "browser-qa",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-17T18:20:42Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39057661520/job/117468852632",
+        "line": "BROWSER-QA: skipped (no critical paths)",
+        "verdict": "SKIPPED",
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 780,
+        "sha": "7fcd3f0d77e110b5e0b27a63f53b1cf7df21b8c3",
+        "check": "ci",
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39057661584/job/117468852881",
+        "line": null,
+        "verdict": null,
+        "fields": {},
         "disagrees": false
       }
     ]
