@@ -118,7 +118,7 @@ FID-002
 
 ### FID-006 · The public HDL reference lists the three accepted builtin forms and who accepts each
 - **Date:** 2026-10-02 · **Target epic:** #142 surfaces
-- **Status:** proposed
+- **Status:** filed (#263)
 - **Why:** after #643 HACER accepts `BUILTIN;`, `BUILTIN <Name>;` and `PARTS: BUILTIN <Name>;`. Each matches a different nand2tetris parser and no reference parser accepts all three: the web IDE grammar takes only `BUILTIN;` (`../web-ide/simulator/src/languages/grammars/hdl.ohm:13`); the book's Appendix A and the Java simulator take only `BUILTIN <Java class name>;` (HUJI copy of Appendix A, fetched 2026-10-02; `nand2tetris_simulator` `BuiltInGateClass.java:37-40`); the course files ship `PARTS: BUILTIN <Name>;` (`../web-ide/projects/src/project_01/00_nand.ts:13-14`), which neither parses. The superset is stated only in PR #643's body and a docstring (`src/core/hdl/parser.ts:409`) that calls it "the reference grammar's". A student or agent checking a file against HACER cannot tell which forms are portable.
 - **Review note:** docs/research/2026-10-fidelity-review-builtin-form.md
 
@@ -135,7 +135,7 @@ The HDL reference (#263) states each accepted builtin form, which nand2tetris to
 
 ### FID-007 · Phase 0.6 accepts `CLOCKED` after all three builtin forms
 - **Date:** 2026-10-02 · **Target epic:** #139 spine
-- **Status:** proposed
+- **Status:** filed (#177)
 - **Why:** every reference puts `CLOCKED` after the builtin: web IDE `ChipBody = InList? OutList? PartList ClockedList?` (`hdl.ohm:6`); Appendix A's `CHIP DFF { … BUILTIN DFF; CLOCKED in,out; }` (HUJI copy, fetched 2026-10-02); the course file `PARTS: BUILTIN DFF; CLOCKED in;` (`../web-ide/projects/src/project_03/00_dff.ts:14-16`). HACER fails `CLOCKED` after every builtin form today with `Expected '}' but got 'CLOCKED'` (the `expect('RBRACE')` at `src/core/hdl/parser.ts:349` at `761ead1`; reproduced by #643's verifier), which is Phase 0.5 scope. The Project 3 work under #177 has to cover all three, or the vendored `conformance/vectors/03/DFF.hdl` and the web IDE's `BUILTIN; CLOCKED in;` fail to parse.
 - **Review note:** docs/research/2026-10-fidelity-review-builtin-form.md
 
@@ -153,7 +153,7 @@ The HDL parser reads a `CLOCKED` pin list after `BUILTIN;`, `BUILTIN <Name>;` an
 
 ### FID-008 · An acceptance-parity corpus: each HDL shape carries the reference's verdict and is asserted against HACER's readers
 - **Date:** 2026-10-15 · **Target epic:** #140 core
-- **Status:** proposed
+- **Status:** filed (#811)
 - **Why:** HACER and the reference builder disagree on which HDL they accept, in both directions, and no test records which disagreements are intended. #725's review ran 26 shapes through the reference builder (`../web-ide/simulator/src/chip/builder.ts`), `compileHDL` and `parseSpec`. HACER accepts internal slice writes and reads and a part reading a chip OUT (`builder.ts:436, 477, 483` refuse them). It refuses an unconnected part input the reference reads as 0, and a slice followed by a whole binding the reference accepts. Later reviews added seeds:
   - #740's 31 shapes, including the `XOr` alias the reference accepts (an intended divergence) and which error comes first;
   - #732's identifier rows: `_` in a name, Unicode letters, and a buffer named like the exported chip;
@@ -174,7 +174,7 @@ One committed corpus says, for every HDL shape the fidelity reviews measured, wh
 
 ### FID-009 · Literals become sources: a constant driver kind for `true` and `false`
 - **Date:** 2026-10-15 · **Target epic:** #140 core
-- **Status:** proposed
+- **Status:** filed (#814)
 - **Why:** literals are driverless nets keyed `true`/`false` (ADR-0020 §1.10.9, `src/core/spec/parseSpec.ts`), while ADR-0020 §1 reserves `driver: null` for an unfinished circuit. Appendix A lists the constants among the *sources* of a part input. Every consumer of the document must special-case the two ids, and no type records that. §1.10.9 leaves the question open, and adopting it later is a v1 → v2 migration.
 - **Review note:** PR #725 issuecomment-6184961559
 
@@ -199,7 +199,7 @@ Filed as part of #378; the issue holds the criteria.
 
 ### FID-011 · Name the unconnected-input divergence where the learner meets it, and offer to bind unwired inputs to `false`
 - **Date:** 2026-10-15 · **Target epic:** #142 surfaces
-- **Status:** proposed
+- **Status:** filed (#813)
 - **Why:** the reference builds `Nand(a=a, out=out)` and reads `b` as 0. M. Armbrust's *HDL Survival Guide*, "Unconnected Pins" (mirror at phoenix.goucher.edu/~jillz/cs220/hdlSurvivalGuide.pdf, fetched 2026-10-15), says "The Hardware Simulator does not consider unconnected pins to be errors". `compileHDL` refuses it (`Part "Nand" input pin "b" is not connected`), and ADR-0020 §1.1 states that refusal as a fact, not a decision (#725's review).
   - #377's importer makes the divergence visible (R826 ruling 2). Before it, the canvas and the reference both read 0; after it, HACER alone refuses.
   - #743's review measured 161 of 700 generated documents refused only for unconnected inputs. 141 of them build in the reference, which equals legacy on all 1,684 of their vectors.

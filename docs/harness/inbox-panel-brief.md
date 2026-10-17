@@ -76,7 +76,9 @@ own. The panel:
 5. If approved, files the entry's draft issue, amended by the findings it accepted, with the
    entry's own labels and `agent-ready` at any risk, since its approval is the owner's (#778):
    `fidelity` and `--parent <target epic>` for FID, `project:harness` for HRN, the target epic's
-   `project:` label for PRD, and the draft's `risk:`.
+   `project:` label for PRD, and the draft's `risk:`. A FID issue takes the `project:` bucket its
+   work belongs to, never `core` (an enabler) or `surfaces` (outside the cycle), and the target
+   epic as `--parent` (R851).
 
 ## 4. The status
 
