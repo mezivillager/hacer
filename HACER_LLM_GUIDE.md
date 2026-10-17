@@ -1206,7 +1206,7 @@ Use Tailwind classes and CSS variables from `src/styles/globals.css`. Keep HACER
 | 3D helper | `src/components/canvas/` | PinConnector.tsx |
 | Circuit I/O node (3D) | `src/nodes/components/` | BusNode3D.tsx |
 | Bus component (splitter/joiner) | `src/nodes/` + `src/store/actions/busActions/` | BusComponent3D.tsx — separate entity, see ADR-0009 |
-| Node configuration | `src/nodes/config/nodeConfig.ts` | add node type |
+| Node configuration | `src/layout/nodeConfig.ts` | add node type |
 | Wire routing util | `src/utils/wiringScheme/` | new routing strategy |
 | Store action slice | `src/store/actions/<domain>/` | nodeActions.ts |
 | Shared types | `src/store/types.ts` (Phase 0–4) | new interface |
@@ -1342,7 +1342,7 @@ component; everything downstream of the definition is data-driven.
    and `circuitActions.addGate(chipName, position)`, whose pins are derived from the definition
    (`createGateInstance` in `src/store/actions/gateActions/gateActions.ts`); the 3D body is
    `src/components/scene/ChipBody3D.tsx`, sized by `computeChipLayout` in
-   `src/components/scene/chipBodyLayout.ts`; and `src/simulation/topologicalEval.ts` evaluates every
+   `src/layout/chipBodyLayout.ts`; and `src/simulation/topologicalEval.ts` evaluates every
    placed chip through `evaluateChipWithCtx` (`src/core/chips/evaluateChip.ts`) — builtin and HDL-compiled
    alike, including HDL chips composed of other chips. A `{ type: 'circuit' }` definition (a chip
    packaged from the canvas) still throws `not supported yet` there; that is a later ticket.

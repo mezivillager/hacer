@@ -33,7 +33,7 @@ Canonical recipe: `HACER_LLM_GUIDE.md` → *Adding a builtin chip*. A gate is a 
 1. `registerBuiltin(registry, name, inputs, outputs, evaluate)` in `src/core/chips/builtins/project01.ts` — pure, width-masked
 2. Red first: `.cmp` fixture in `src/core/testing/project1CmpFixtures.ts` + `CHIP_NAMES`/`PIN_SCHEMA` entry in `src/core/chips/builtins/project01.test.ts`
 3. Icon: `CHIP_ICON_MAP` entry in `src/components/ui/icons/ChipIcons.tsx` (fallback icon otherwise)
-4. Nothing else — toolbar, placement (`circuitActions.startPlacement(chipName)`), 3D body (`src/components/scene/ChipBody3D.tsx` + `src/components/scene/chipBodyLayout.ts`) and evaluation (`src/simulation/topologicalEval.ts` → `evaluateChipWithCtx`) are registry-driven
+4. Nothing else — toolbar, placement (`circuitActions.startPlacement(chipName)`), 3D body (`src/components/scene/ChipBody3D.tsx` + `src/layout/chipBodyLayout.ts`) and evaluation (`src/simulation/topologicalEval.ts` → `evaluateChipWithCtx`) are registry-driven
 
 ## Phase Tracking (check before implementing)
 
@@ -55,7 +55,7 @@ Always read `.cursorrules` → "Phase Tracking" section first.
 src/
 ├── components/          # React UI components
 │   ├── canvas/          # Three.js/R3F scene components
-│   ├── scene/           # ChipBody3D + chipBodyLayout — data-driven 3D body for any chip
+│   ├── scene/           # ChipBody3D — data-driven 3D body for any chip
 │   ├── ui/              # HACER shell components (toolbar, panels, icons/ChipIcons.tsx)
 │   └── ui-kit/          # shadcn/ui primitives
 ├── core/                # Pure logic, no React
@@ -64,10 +64,10 @@ src/
 │   ├── hdl/             # HACK HDL parser + compiler
 │   ├── serialization/   # save/load format
 │   └── testing/         # .tst/.cmp parsers, test engine, fixtures
+├── layout/              # chipBodyLayout, busBodyLayout, nodeConfig — layout math, no React or Three
 ├── gates/               # GateRenderer (dispatches to ChipBody3D), shared 3D primitives, handlers
 ├── nodes/               # Circuit I/O nodes, junctions, bus splitter/joiner
-│   ├── components/      # InputNode3D, OutputNode3D, JunctionNode3D
-│   └── config/          # nodeConfig.ts (node dimensions, pin positions)
+│   └── components/      # InputNode3D, OutputNode3D, JunctionNode3D
 ├── simulation/          # topologicalEval.ts (evaluates every placed chip), busLogic, busOps
 ├── store/               # Zustand state
 │   ├── circuitStore.ts  # Store definition + circuitActions export
@@ -84,7 +84,7 @@ src/
 
 ### Key Rule: React Fast Refresh
 TSX files export React components only; constants and helpers live in sibling `.ts` files
-(e.g. `src/components/scene/chipBodyLayout.ts` next to `src/components/scene/ChipBody3D.tsx`).
+(e.g. `src/components/canvas/labelGeometry.ts` next to `src/components/canvas/FloatingLabel.tsx`).
 
 ## Stack Rules
 

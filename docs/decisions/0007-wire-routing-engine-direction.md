@@ -40,4 +40,4 @@ The "huge chips" stopgap (space pins to `SECTION_SIZE`) is **rejected** — it t
 - [[0003-design-for-longevity]] — staged adoption of a more robust engine over an expedient stopgap.
 - Research: `docs/research/2026-06-21-wire-routing-industrial-approaches.md`
 - Bugs: `docs/development/observed-bugs.md` (B-003, B-004)
-- Key code: `src/components/scene/chipBodyLayout.ts`, `src/utils/wiringScheme/` (`pathfinding.ts`, `overlap.ts`, `segments.ts`, `types.ts`), `src/store/actions/nodeActions/nodeActions.ts`
+- Key code: `src/layout/chipBodyLayout.ts`, `src/utils/wiringScheme/` (`pathfinding.ts`, `overlap.ts`, `segments.ts`, `types.ts`), `src/store/actions/nodeActions/nodeActions.ts`

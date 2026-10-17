@@ -14,9 +14,9 @@ This document helps AI agents and developers understand the codebase structure a
 | **Using the engine from outside it (CLI, MCP, harness, renderer)** | `src/core/index.ts` + `src/simulation/index.ts` — the two entry points. Import from these, never past them: `.dependency-cruiser.cjs`'s `core-through-index` rule is a shrink-only ratchet, and `src/core/index.test.ts` proves the surface stays headless |
 | **Adding to the engine's public API** | Add the name to its module index (`src/core/chips/index.ts`, `src/core/hdl/index.ts`, `src/core/testing/index.ts`), then to `src/core/index.ts` and the list in `src/core/index.test.ts` — the test asserts an exact surface, so widening it is deliberate |
 | **Builtin chip definitions** | `src/core/chips/appRegistry.ts`, `src/core/chips/builtins/project01.ts` |
-| **3D chip body & icons** | `src/components/scene/ChipBody3D.tsx`, `src/components/scene/chipBodyLayout.ts`, `src/components/ui/icons/ChipIcons.tsx` |
+| **3D chip body & icons** | `src/components/scene/ChipBody3D.tsx`, `src/layout/chipBodyLayout.ts`, `src/components/ui/icons/ChipIcons.tsx` |
 | **Gate placement / renderer** | `src/gates/GateRenderer.tsx`, `src/gates/common/BaseGate.tsx`, `HACER_LLM_GUIDE.md` |
-| **Bus splitter/joiner components** | entity: `src/store/types.ts` (`BusComponent`), actions `src/store/actions/busActions/` + `src/store/actions/busPlacementActions/`; logic `src/simulation/busLogic.ts`; layout `src/components/scene/busBodyLayout.ts`; render `src/nodes/BusComponent3D.tsx`, `src/nodes/BusComponentRenderer.tsx`; see ADR-0009 |
+| **Bus splitter/joiner components** | entity: `src/store/types.ts` (`BusComponent`), actions `src/store/actions/busActions/` + `src/store/actions/busPlacementActions/`; logic `src/simulation/busLogic.ts`; layout `src/layout/busBodyLayout.ts`; render `src/nodes/BusComponent3D.tsx`, `src/nodes/BusComponentRenderer.tsx`; see ADR-0009 |
 | **Simulation / boolean logic** | `src/simulation/topologicalEval.ts` (evaluates placed chips through `src/core/chips/evaluateChip.ts`) · specs: `src/simulation/topologicalEval.test.ts`, per-chip truth tables in `src/core/chips/builtins/project01.test.ts` |
 | **R3F canvas / scene** | `src/components/canvas/` |
 | **Non-3D DOM shell / 3D⇄2D boundary** | `src/components/Shell.tsx` (`App = providers → <Shell scene={<CanvasArea/>} />`); the store is the contract |
@@ -72,8 +72,7 @@ src/
 │   │   ├── Scene/    # 3D scene components (Scene, renderConfig, SceneGrid, GroundPlane, PlacementPreview)
 │   │   ├── handlers/ # Canvas event handlers
 │   │   └── hooks/    # useThemeColor (CSS-var \u2192 THREE.Color resolver)
-│   ├── scene/        # ChipBody3D (generic 3D body for any registered chip), chipBodyLayout,
-│   │                 #   busBodyLayout — pin-layout math the renderers share
+│   ├── scene/        # ChipBody3D (generic 3D body for any registered chip)
 │   ├── ui/           # HACER shell components (CompactToolbar, RightActionBar,
 │   │   │             #   PropertiesPanel, HelpBar, KeyboardShortcutsModal,
 │   │   │             #   StatusBar, DemoOverlay, coming-soon helper, gate glyphs)
@@ -89,6 +88,8 @@ src/
 │   ├── hdl/          # HACK HDL parser + compiler, Project 1 HDL sources/fixtures
 │   ├── serialization/ # Circuit document save/load format (wired via persistenceActions)
 │   └── testing/      # .tst/.cmp parsers, test engine, implementation sources
+├── layout/           # Layout math, no React or Three: chipBodyLayout, busBodyLayout (the pin
+│                     #   geometry the renderers and the store share), nodeConfig (node sizes, pin positions)
 ├── lib/              # notify (Sonner-backed), utils (cn helper), demoTour, performanceModeStorage, chipCompletionStorage
 ├── styles/           # globals.css (Tailwind v4 + OKLch tokens + Geist fonts)
 ├── gates/            # Gate placement plumbing (per-chip components and icons live elsewhere — see core/chips/ and components/scene/)
@@ -98,8 +99,7 @@ src/
 │   └── types.ts      # Gate-renderer prop types
 ├── nodes/            # Circuit I/O nodes, junctions (HDL-level pins), and bus components
 │   ├── components/   # InputNode3D, OutputNode3D, JunctionNode3D
-│   ├── BusComponent3D.tsx / BusComponentRenderer.tsx  # bus components (ADR-0009)
-│   └── config/       # Node configuration (nodeConfig.ts)
+│   └── BusComponent3D.tsx / BusComponentRenderer.tsx  # bus components (ADR-0009)
 ├── simulation/       # Circuit simulation engine (pure logic)
 │                     #   index.ts — the other half of the engine's front door: bus operations.
 │                     #   topologicalEval/truthTable/busLogic walk the canvas document and are
@@ -225,7 +225,7 @@ Landed and shown in the tree above: `src/core/chips/` (registry, builtins, `eval
 `src/core/index.ts` + `src/simulation/index.ts` (the engine's entry points, #336),
 `src/core/hdl/` (parser + compiler), `src/core/testing/` (`.tst`/`.cmp` engine, fixtures in
 `src/core/testing/project1TstFixtures.ts` and `src/core/testing/project1CmpFixtures.ts`), `src/simulation/topologicalEval.ts`,
-`src/components/scene/ChipBody3D.tsx` + `src/components/scene/chipBodyLayout.ts`, `src/components/ui/icons/ChipIcons.tsx`,
+`src/components/scene/ChipBody3D.tsx` + `src/layout/chipBodyLayout.ts`, `src/components/ui/icons/ChipIcons.tsx`,
 `src/components/ui/TestResultsPanel.tsx`, `src/components/ui/PinoutPanel.tsx`, `src/components/ui/StatusBar.tsx`,
 `src/store/actions/persistenceActions/`, and the bus components under `src/nodes/`.
 Held-out oracle (#193): official Project 1 to 5 vectors in `conformance/vectors/01/` to
