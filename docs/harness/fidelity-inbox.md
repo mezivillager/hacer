@@ -241,7 +241,7 @@ Added to #722 during the run: rows 4–5, the #741 addendum and the empty-part r
 
 ### FID-014 · Name a part cycle at compile time once user HDL is registered at runtime
 - **Date:** 2026-10-15 · **Target epic:** #140 core
-- **Status:** proposed
+- **Status:** filed (#816)
 - **Why:** a chip that uses itself through another (`A` uses `B`, `B` uses `A`) compiles in HACER, then throws `max recursion depth 100 exceeded at chip "B"` at its first evaluation. The reference never settles: more than 40,000 file reads in 15 s before the probe was killed. A learner cannot reach it today, because `src/core/testing/testChip.ts` registers only the file's own chip over the builtins. It becomes reachable when #206 registers user HDL at runtime.
 - **Review note:** PR #740 issuecomment-6188266196
 
