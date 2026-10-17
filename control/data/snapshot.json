@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-17T18:24:50.105Z",
+  "generatedAt": "2026-10-17T18:48:26.232Z",
   "head": {
-    "sha": "3be09c20b20fe88270f6991f2f394ac4886c6579",
-    "date": "2026-10-17T21:24:17+03:00",
-    "subject": "docs(harness): panel summary via --summary-file, same-day run dir, models in Verified on"
+    "sha": "d555a1385ff3c6eb672e32b3bba843ef9aed0aea",
+    "date": "2026-10-17T21:47:54+03:00",
+    "subject": "docs(product): link review 1 to issues #801-#805 and queue PRD-001 to PRD-003 (#269)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-17T18:24:50.105Z",
+      "fetchedAt": "2026-10-17T18:48:26.232Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-17T18:24:50.105Z",
+      "fetchedAt": "2026-10-17T18:48:26.232Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-17T18:24:50.105Z",
+      "fetchedAt": "2026-10-17T18:48:26.232Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-17T18:24:50.105Z",
+      "fetchedAt": "2026-10-17T18:48:26.232Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-17T18:24:50.105Z",
+      "fetchedAt": "2026-10-17T18:48:26.232Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-17T18:24:50.105Z",
+      "fetchedAt": "2026-10-17T18:48:26.232Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-17T18:24:50.105Z",
+      "fetchedAt": "2026-10-17T18:48:26.232Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-17T18:24:50.105Z",
+      "fetchedAt": "2026-10-17T18:48:26.232Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-17T18:24:50.105Z",
+      "fetchedAt": "2026-10-17T18:48:26.232Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-17T18:24:50.105Z",
+      "fetchedAt": "2026-10-17T18:48:26.232Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-17T18:24:50.105Z",
+      "fetchedAt": "2026-10-17T18:48:26.232Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-17T18:24:50.105Z",
+      "fetchedAt": "2026-10-17T18:48:26.232Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-17T18:24:50.105Z",
+      "fetchedAt": "2026-10-17T18:48:26.232Z",
       "status": "ok"
     }
   },
@@ -103,12 +103,12 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 15,
-        "ready": 2,
+        "open": 14,
+        "ready": 1,
         "inProgress": 1,
         "needsHuman": 1,
         "staleClaims": [],
-        "agentReady": 3,
+        "agentReady": 2,
         "filedElsewhere": [
           151,
           339
@@ -119,8 +119,8 @@
         },
         "title": "Epic: harness — autonomous-run improvements & agent-readiness",
         "subIssues": {
-          "completed": 49,
-          "percentCompleted": 85,
+          "completed": 50,
+          "percentCompleted": 87,
           "total": 57
         }
       },
@@ -262,19 +262,22 @@
         "lane": "taste",
         "slug": "polish",
         "epicNumber": 144,
-        "open": 0,
+        "open": 5,
         "ready": 0,
         "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 0,
+        "agentReady": 5,
         "filedElsewhere": [],
-        "next": null,
+        "next": {
+          "number": 803,
+          "title": "polish: name the right bar's and help bar's icon buttons and the Tests selects; hide the closed drawer"
+        },
         "title": "Epic: polish — UI polish",
         "subIssues": {
           "completed": 1,
-          "percentCompleted": 100,
-          "total": 1
+          "percentCompleted": 16,
+          "total": 6
         }
       },
       {
@@ -302,14 +305,17 @@
         "lane": "aux",
         "slug": "upkeep",
         "epicNumber": 146,
-        "open": 2,
-        "ready": 0,
-        "inProgress": 0,
+        "open": 21,
+        "ready": 18,
+        "inProgress": 1,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 1,
+        "agentReady": 20,
         "filedElsewhere": [],
-        "next": null,
+        "next": {
+          "number": 783,
+          "title": "Inbox review: FID-007 · Phase 0.6 accepts `CLOCKED` after all three builtin forms"
+        },
         "title": "Epic: upkeep — maintenance & documentation",
         "subIssues": {
           "completed": 9,
@@ -407,14 +413,99 @@
         "project": "foundation"
       },
       {
+        "number": 783,
+        "title": "Inbox review: FID-007 · Phase 0.6 accepts `CLOCKED` after all three builtin forms",
+        "project": "upkeep"
+      },
+      {
         "number": 257,
         "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
         "project": "harness"
       },
       {
-        "number": 779,
-        "title": "Role agents and the rest of the harness docs say the inbox panel decides, not the owner",
-        "project": "harness"
+        "number": 784,
+        "title": "Inbox review: FID-008 · An acceptance-parity corpus: each HDL shape carries the reference's verdict and is asserted against HACER's readers",
+        "project": "upkeep"
+      },
+      {
+        "number": 785,
+        "title": "Inbox review: FID-009 · Literals become sources: a constant driver kind for `true` and `false`",
+        "project": "upkeep"
+      },
+      {
+        "number": 786,
+        "title": "Inbox review: FID-011 · Name the unconnected-input divergence where the learner meets it, and offer to bind unwired inputs to `false`",
+        "project": "upkeep"
+      },
+      {
+        "number": 787,
+        "title": "Inbox review: FID-014 · Name a part cycle at compile time once user HDL is registered at runtime",
+        "project": "upkeep"
+      },
+      {
+        "number": 788,
+        "title": "Inbox review: FID-015 · Learner-facing compile errors use the reference's words and carry the line",
+        "project": "upkeep"
+      },
+      {
+        "number": 789,
+        "title": "Inbox review: FID-018 · `compileSpec` refuses a spec whose registered part does not compile, naming the chain",
+        "project": "upkeep"
+      },
+      {
+        "number": 790,
+        "title": "Inbox review: FID-019 · `printSpec` refuses a document in which a driverless net shares its id with a driven net",
+        "project": "upkeep"
+      },
+      {
+        "number": 791,
+        "title": "Inbox review: FID-020 · #338 lists the narrow-first multi-driven OUT as an expected disagreement",
+        "project": "upkeep"
+      },
+      {
+        "number": 792,
+        "title": "Inbox review: FID-021 · A strict acceptance mode for the grading path",
+        "project": "upkeep"
+      },
+      {
+        "number": 793,
+        "title": "Inbox review: FID-022 · The `nand2tetris` dialect prints one sliced buffer per alias run, not one `Or` per bit",
+        "project": "upkeep"
+      },
+      {
+        "number": 794,
+        "title": "Inbox review: FID-023 · Amend FID-019: pin the disjoint-bit export gap, and make the import's consumers compile before they print or save",
+        "project": "upkeep"
+      },
+      {
+        "number": 795,
+        "title": "Inbox review: FID-024 · ADR-0020 §10 records R837's loop granularity and names where it overapproximates",
+        "project": "upkeep"
+      },
+      {
+        "number": 796,
+        "title": "Inbox review: HRN-005 · Measure the four numbers or retire two of them: tokens and owner minutes have no source",
+        "project": "upkeep"
+      },
+      {
+        "number": 797,
+        "title": "Inbox review: HRN-006 · Say who applies `overturned`, and apply it to the PASS whose defect a later PR fixed",
+        "project": "upkeep"
+      },
+      {
+        "number": 798,
+        "title": "Inbox review: HRN-007 · Align the concurrent-subagent cap with the owner's rulings: 4 in config, 2–3 in practice",
+        "project": "upkeep"
+      },
+      {
+        "number": 799,
+        "title": "Inbox review: HRN-008 · Register the `hacer-*` agent types where sessions start: the parent workspace",
+        "project": "upkeep"
+      },
+      {
+        "number": 800,
+        "title": "Inbox review: HRN-009 · Run the retro at each coordinator run's close, not every 5 merges",
+        "project": "upkeep"
       }
     ],
     "dormant": {
@@ -442,6 +533,22 @@
         "reason": null
       },
       {
+        "number": 783,
+        "title": "Inbox review: FID-007 · Phase 0.6 accepts `CLOCKED` after all three builtin forms",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
         "number": 257,
         "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
         "labels": [
@@ -459,17 +566,274 @@
         "reason": null
       },
       {
-        "number": 779,
-        "title": "Role agents and the rest of the harness docs say the inbox panel decides, not the owner",
+        "number": 784,
+        "title": "Inbox review: FID-008 · An acceptance-parity corpus: each HDL shape carries the reference's verdict and is asserted against HACER's readers",
         "labels": [
-          "project:harness",
+          "project:upkeep",
           "agent-ready",
-          "risk:0"
+          "risk:0",
+          "inbox-review"
         ],
         "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 785,
+        "title": "Inbox review: FID-009 · Literals become sources: a constant driver kind for `true` and `false`",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 786,
+        "title": "Inbox review: FID-011 · Name the unconnected-input divergence where the learner meets it, and offer to bind unwired inputs to `false`",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 787,
+        "title": "Inbox review: FID-014 · Name a part cycle at compile time once user HDL is registered at runtime",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 788,
+        "title": "Inbox review: FID-015 · Learner-facing compile errors use the reference's words and carry the line",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 789,
+        "title": "Inbox review: FID-018 · `compileSpec` refuses a spec whose registered part does not compile, naming the chain",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 790,
+        "title": "Inbox review: FID-019 · `printSpec` refuses a document in which a driverless net shares its id with a driven net",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 791,
+        "title": "Inbox review: FID-020 · #338 lists the narrow-first multi-driven OUT as an expected disagreement",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 792,
+        "title": "Inbox review: FID-021 · A strict acceptance mode for the grading path",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 793,
+        "title": "Inbox review: FID-022 · The `nand2tetris` dialect prints one sliced buffer per alias run, not one `Or` per bit",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 794,
+        "title": "Inbox review: FID-023 · Amend FID-019: pin the disjoint-bit export gap, and make the import's consumers compile before they print or save",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 795,
+        "title": "Inbox review: FID-024 · ADR-0020 §10 records R837's loop granularity and names where it overapproximates",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 796,
+        "title": "Inbox review: HRN-005 · Measure the four numbers or retire two of them: tokens and owner minutes have no source",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 797,
+        "title": "Inbox review: HRN-006 · Say who applies `overturned`, and apply it to the PASS whose defect a later PR fixed",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 798,
+        "title": "Inbox review: HRN-007 · Align the concurrent-subagent cap with the owner's rulings: 4 in config, 2–3 in practice",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 799,
+        "title": "Inbox review: HRN-008 · Register the `hacer-*` agent types where sessions start: the parent workspace",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 800,
+        "title": "Inbox review: HRN-009 · Run the retro at each coordinator run's close, not every 5 merges",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
         "pickable": true,
         "reason": null
       },
@@ -1120,25 +1484,6 @@
         "lane": "feature",
         "pickable": false,
         "reason": "on-request"
-      },
-      {
-        "number": 269,
-        "title": "Product role (usability & design): brief, hacer-product agent, a cloud UI-tour capture, and the first usability review — the agent finds polish itself",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:2",
-          "research"
-        ],
-        "blocking": [
-          270
-        ],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": false,
-        "reason": "claimed"
       },
       {
         "number": 270,
@@ -1865,6 +2210,116 @@
         "lane": "feature",
         "pickable": false,
         "reason": "unshaped"
+      },
+      {
+        "number": 779,
+        "title": "Role agents and the rest of the harness docs say the inbox panel decides, not the owner",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:0"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
+        "number": 782,
+        "title": "Inbox review: FID-006 · The public HDL reference lists the three accepted builtin forms and who accepts each",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
+        "number": 801,
+        "title": "polish: an unsaved circuit is lost on reload — autosave is written every 2 s but never restored",
+        "labels": [
+          "bug",
+          "project:polish",
+          "agent-ready",
+          "risk:2",
+          "sev:high"
+        ],
+        "blocking": [],
+        "project": "polish",
+        "rank": 9,
+        "lane": "taste",
+        "pickable": false,
+        "reason": "on-request"
+      },
+      {
+        "number": 802,
+        "title": "polish: Clear All, Library Delete and Save-over-a-name destroy work with no confirmation and no undo",
+        "labels": [
+          "project:polish",
+          "agent-ready",
+          "risk:2"
+        ],
+        "blocking": [],
+        "project": "polish",
+        "rank": 9,
+        "lane": "taste",
+        "pickable": false,
+        "reason": "on-request"
+      },
+      {
+        "number": 803,
+        "title": "polish: name the right bar's and help bar's icon buttons and the Tests selects; hide the closed drawer",
+        "labels": [
+          "project:polish",
+          "agent-ready",
+          "risk:0"
+        ],
+        "blocking": [],
+        "project": "polish",
+        "rank": 9,
+        "lane": "taste",
+        "pickable": true,
+        "reason": "on-request"
+      },
+      {
+        "number": 804,
+        "title": "polish: four text colours fail 4.5:1 — dark muted and error text, the Running pill, the test pass line",
+        "labels": [
+          "project:polish",
+          "agent-ready",
+          "risk:2"
+        ],
+        "blocking": [],
+        "project": "polish",
+        "rank": 9,
+        "lane": "taste",
+        "pickable": false,
+        "reason": "on-request"
+      },
+      {
+        "number": 805,
+        "title": "polish: Chip I/O input values don't look or read as toggles",
+        "labels": [
+          "project:polish",
+          "agent-ready",
+          "risk:2"
+        ],
+        "blocking": [],
+        "project": "polish",
+        "rank": 9,
+        "lane": "taste",
+        "pickable": false,
+        "reason": "on-request"
       }
     ],
     "byProject": {
@@ -1895,12 +2350,33 @@
         742,
         773
       ],
+      "upkeep": [
+        783,
+        784,
+        785,
+        786,
+        787,
+        788,
+        789,
+        790,
+        791,
+        792,
+        793,
+        794,
+        795,
+        796,
+        797,
+        798,
+        799,
+        800,
+        229,
+        256,
+        782
+      ],
       "harness": [
         257,
-        779,
         154,
         156,
-        269,
         270,
         435,
         436,
@@ -1910,7 +2386,8 @@
         505,
         550,
         607,
-        677
+        677,
+        779
       ],
       "spine": [
         165,
@@ -1959,10 +2436,6 @@
         219,
         284
       ],
-      "upkeep": [
-        229,
-        256
-      ],
       "horizon": [
         230,
         231,
@@ -1992,6 +2465,13 @@
       ],
       "unfiled": [
         572
+      ],
+      "polish": [
+        801,
+        802,
+        803,
+        804,
+        805
       ]
     }
   },
@@ -2025,6 +2505,32 @@
       }
     ],
     "merged": [
+      {
+        "number": 806,
+        "title": "docs(product): first usability review of the app, five polish issues and three inbox proposals",
+        "url": "https://github.com/mezivillager/hacer/pull/806",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/269-product-review-1",
+        "isDraft": false,
+        "createdAt": "2026-10-17T18:44:10Z",
+        "mergedAt": "2026-10-17T18:47:55Z",
+        "closes": [
+          269
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (Opus 5.5; the risk:0 docs-only exception, ha-next §4)",
+            "at": "2026-10-17T18:47:32Z",
+            "url": "https://github.com/mezivillager/hacer/pull/806#issuecomment-6238879314"
+          }
+        ]
+      },
       {
         "number": 780,
         "title": "chore(harness): inbox panel — proposed inbox entries become review tasks (#778)",
@@ -3517,31 +4023,6 @@
         "mergedAt": "2026-10-14T22:00:41Z",
         "closes": [],
         "verdicts": []
-      },
-      {
-        "number": 691,
-        "title": "docs(harness): session record for the 2026-10-04 run, rulings R796–R804",
-        "url": "https://github.com/mezivillager/hacer/pull/691",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:0"
-        ],
-        "headRefName": "docs/session-2026-10-04",
-        "isDraft": false,
-        "createdAt": "2026-10-04T18:49:43Z",
-        "mergedAt": "2026-10-04T18:52:08Z",
-        "closes": [],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "coordinator (risk:0 docs-only, #554)",
-            "at": "2026-10-04T18:50:01Z",
-            "url": "https://github.com/mezivillager/hacer/pull/691#issuecomment-5983241569"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -3558,7 +4039,7 @@
         "number": 269,
         "ref": "refs/heads/claim/269",
         "sha": "579ff8f44215420a43c941694ed448235d605d8e",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "Product role (usability & design): brief, hacer-product agent, a cloud UI-tour capture, and the first usability review — the agent finds polish itself",
         "url": "https://github.com/mezivillager/hacer/issues/269",
         "labels": [
@@ -3568,7 +4049,7 @@
           "risk:2",
           "research"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -3606,28 +4087,54 @@
         }
       },
       {
-        "number": 778,
-        "ref": "refs/heads/claim/778",
-        "sha": "579ff8f44215420a43c941694ed448235d605d8e",
-        "state": "CLOSED",
-        "title": "Inbox panel: proposed inbox entries become review tasks, decided by an Opus + Grok panel",
-        "url": "https://github.com/mezivillager/hacer/issues/778",
+        "number": 779,
+        "ref": "refs/heads/claim/779",
+        "sha": "3be09c20b20fe88270f6991f2f394ac4886c6579",
+        "state": "OPEN",
+        "title": "Role agents and the rest of the harness docs say the inbox panel decides, not the owner",
+        "url": "https://github.com/mezivillager/hacer/issues/779",
         "labels": [
           "project:harness",
           "agent-ready",
           "in-progress",
-          "risk:1"
+          "risk:0"
         ],
-        "onClosedIssue": true,
+        "onClosedIssue": false,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
           "session": "hacer-loop-to-20",
-          "branch": "feat/778-inbox-panel",
+          "branch": "docs/779-panel-wording",
           "handoff": "none",
           "author": "mezivillager",
-          "at": "2026-10-17T17:28:55Z",
-          "url": "https://github.com/mezivillager/hacer/issues/778#issuecomment-6237631510"
+          "at": "2026-10-17T18:45:48Z",
+          "url": "https://github.com/mezivillager/hacer/issues/779#issuecomment-6238850756"
+        }
+      },
+      {
+        "number": 782,
+        "ref": "refs/heads/claim/782",
+        "sha": "3be09c20b20fe88270f6991f2f394ac4886c6579",
+        "state": "OPEN",
+        "title": "Inbox review: FID-006 · The public HDL reference lists the three accepted builtin forms and who accepts each",
+        "url": "https://github.com/mezivillager/hacer/issues/782",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-to-20",
+          "branch": "chore/inbox-fid-006",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-17T18:28:09Z",
+          "url": "https://github.com/mezivillager/hacer/issues/782#issuecomment-6238564692"
         }
       }
     ],
@@ -5413,10 +5920,6 @@
     ],
     "mergesPerDay": [
       {
-        "date": "2026-10-04",
-        "merges": 1
-      },
-      {
         "date": "2026-10-14",
         "merges": 11
       },
@@ -5430,20 +5933,20 @@
       },
       {
         "date": "2026-10-17",
-        "merges": 1
+        "merges": 2
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-03T18:24:50.105Z",
-      "merged": 71,
+      "since": "2026-10-03T18:48:26.232Z",
+      "merged": 72,
       "openToMergeHours": {
         "median": 0.4,
         "p90": 2
       },
       "blockedOnce": {
         "count": 7,
-        "of": 56,
+        "of": 57,
         "prs": [
           700,
           725,
@@ -5461,8 +5964,8 @@
           "without": []
         },
         "nonCode": {
-          "merged": 21,
-          "withVerdict": 6,
+          "merged": 22,
+          "withVerdict": 7,
           "without": [
             692,
             693,
@@ -8765,7 +9268,7 @@
       },
       {
         "date": "2026-10-17",
-        "at": "2026-10-17T18:23:03.959Z",
+        "at": "2026-10-17T18:24:50.105Z",
         "byProject": {
           "foundation": [
             338,
@@ -8796,6 +9299,7 @@
           ],
           "harness": [
             257,
+            779,
             154,
             156,
             269,
@@ -8808,9 +9312,7 @@
             505,
             550,
             607,
-            677,
-            778,
-            779
+            677
           ],
           "spine": [
             165,
@@ -8901,11 +9403,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "3be09c20b20fe88270f6991f2f394ac4886c6579",
+        "sha": "d555a1385ff3c6eb672e32b3bba843ef9aed0aea",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39057935403/job/117469676629",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39059678708/job/117474881354",
         "line": null,
         "verdict": null,
         "fields": {},
