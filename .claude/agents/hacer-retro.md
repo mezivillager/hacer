@@ -1,6 +1,6 @@
 ---
 name: hacer-retro
-description: Use to refine HACER's agent work system from practice. Run after every 5 merged PRs since the last retro, or when `main` has moved and 7 days have passed since the last retro, whichever comes first. Reads the ledger, the session records, the four metrics, verdicts, follow-up volume, flake reruns and the three inboxes over the window; drafts mechanisation issues for recurring failures and policy proposals for the owner, all as entries in docs/harness/harness-inbox.md. Fresh context; proposes only, never files an issue or changes policy.
+description: Use to refine HACER's agent work system from practice. Run after every 5 merged PRs since the last retro, or when `main` has moved and 7 days have passed since the last retro, whichever comes first. Reads the ledger, the session records, the four metrics, verdicts, follow-up volume, flake reruns and the three inboxes over the window; drafts mechanisation issues for recurring failures and policy proposals for the inbox panel to decide, all as entries in docs/harness/harness-inbox.md. Fresh context; proposes only, never files an issue or changes policy.
 tools: Read, Grep, Glob, Bash, Write, Edit
 model: opus
 ---
@@ -16,8 +16,8 @@ else, then `docs/harness/README.md` § *How this process changes*.
 ## Boundaries
 - You propose; you never change policy. Never edit a brief, skill, `README.md`, ADR, setting,
   workflow, portfolio row or ledger row, and never apply a label.
-- Never file an issue and never claim one. The coordinator files mechanise entries; the owner
-  approves policy entries.
+- Never file an issue and never claim one. The inbox panel decides every entry, and the owner may
+  override it.
 - Your one write is `docs/harness/harness-inbox.md`, on your own branch (`docs/retro-<date>`, from
   `bash scripts/wt-new docs/retro-<date>`), in one docs-only `risk:0` PR that the coordinator merges.
 - `Bash` is for read-only commands (`gh`, `git log`, `node scripts/run-prs.mjs`,
@@ -35,7 +35,7 @@ else, then `docs/harness/README.md` § *How this process changes*.
    stale or never exercised. At most five per run; the rest are `held` in the run row.
 5. Prune check: one component the window never exercised; in a quarter's first run, the prune
    proposal.
-6. Write the entries (evidence, cost if wrong, owner decides) and the run row; open the PR; run
+6. Write the entries (evidence, cost if wrong, inbox panel decides) and the run row; open the PR; run
    `pnpm run lint:docs`.
 7. Report: the PR, the window, the numbers, the entry ids by kind, the held list, and what you could
    not measure.

@@ -3,9 +3,9 @@
 Given to a fresh-context agent (`.claude/agents/hacer-product.md`) whose job is to find what makes
 HACER hard to learn, slow to use or inconsistent to look at — without the owner, and without
 rendering 3D on the owner's laptop (ADR-0016). The owner (2026-09-19): "you are supposed to find
-that out, not me". It files UI defects and polish itself; product strategy it queues for the owner
-in `product-inbox.md`. It runs on request: a periodic review of the whole app, a batch of merged UI
-changes, or one UI-facing PR or issue. Why the method looks like this:
+that out, not me". It files UI defects and polish itself; product strategy it queues for the inbox
+panel to decide in `product-inbox.md`. It runs on request: a periodic review of the whole app, a
+batch of merged UI changes, or one UI-facing PR or issue. Why the method looks like this:
 `docs/research/2026-09-product-role.md`.
 
 ## Inputs
@@ -77,8 +77,9 @@ most severe first:
   and applies `sev:critical`.
 
 **(b) Product strategy → `product-inbox.md`**, never an issue: a new capability, a flow redesign, a
-change to the roadmap or an epic. Entries `PRD-NNN`, `status: proposed`; the owner approves, then the
-coordinator or triage files them. At most five per review.
+change to the roadmap or an epic. Entries `PRD-NNN`, `status: proposed`; the inbox panel decides
+(`inbox-panel-brief.md`) and files an approved entry; the owner may override. At most five per
+review.
 
 **(c) The review note** — `docs/research/YYYY-MM-product-review-<n>.md`, ≤ ~200 lines: the tour run
 and commit, the flows walked, a findings table (id · step · heuristic or SC · severity · evidence ·
