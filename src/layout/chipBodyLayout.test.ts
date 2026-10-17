@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { computeChipLayout } from './chipBodyLayout'
-import type { ChipDefinition } from '@/core/chips/types'
+import type { ChipDefinition } from '@/core'
 
 function defOf(
   name: string,

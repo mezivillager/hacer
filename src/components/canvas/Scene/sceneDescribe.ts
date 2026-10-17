@@ -1,7 +1,7 @@
 import { Vector3, type Camera } from 'three'
 import type { CircuitStore, InputNode, OutputNode, Pin, Position } from '@/store/types'
 import { HOP_HEIGHT, WIRE_HEIGHT, type WireSegment } from '@/utils/wiringScheme/types'
-import { calculateNodePinPosition } from '@/nodes/config'
+import { calculateNodePinPosition } from '@/layout'
 import { getSignalSourceValue } from '@/simulation/topologicalEval'
 import { deriveWire3DProps } from '../deriveWire3DProps'
 

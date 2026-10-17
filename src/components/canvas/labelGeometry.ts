@@ -11,7 +11,7 @@
  * (react-refresh/only-export-components).
  */
 export const LABEL_GEOMETRY = {
-  /** Input/output node body is 0.5×0.5×0.5 (see `nodes/config/nodeConfig.ts`). */
+  /** Input/output node body is 0.5×0.5×0.5 (see `layout/nodeConfig.ts`). */
   NODE: { fontSize: 0.18, offsetY: 0.45 },
   /** Gate body height ≈ 0.8 (see `gates/config/common.ts:COMMON_DIMENSIONS`). */
   GATE: { fontSize: 0.22, offsetY: 0.6 },

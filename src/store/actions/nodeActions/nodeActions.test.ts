@@ -11,7 +11,7 @@ import { MAX_PIN_WIDTH } from '@/simulation'
 import { useCircuitStore } from '../../circuitStore'
 import type { Position } from '../../types'
 import { calculateWirePath } from '@/utils/wiringScheme/core'
-import { calculateNodePinPosition } from '@/nodes/config'
+import { calculateNodePinPosition } from '@/layout'
 
 describe('Node Actions', () => {
   beforeEach(() => {

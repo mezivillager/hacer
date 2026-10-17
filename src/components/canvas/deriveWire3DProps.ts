@@ -1,6 +1,6 @@
 import type { CircuitStore, Wire, Position } from '@/store/types'
 import type { WirePath } from '@/utils/wiringScheme/types'
-import { calculateNodePinPosition } from '@/nodes/config'
+import { calculateNodePinPosition } from '@/layout'
 
 export interface DerivedWire3DProps {
   start: Position | null

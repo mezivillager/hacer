@@ -1,4 +1,4 @@
-import type { ChipDefinition, ChipPin } from '@/core/chips/types'
+import type { ChipDefinition, ChipPin } from '@/core'
 
 /**
  * Slot describing where a single pin should sit on the body and what it

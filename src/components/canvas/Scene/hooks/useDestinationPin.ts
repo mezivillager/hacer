@@ -1,6 +1,6 @@
 import { circuitActions, useCircuitStore } from '@/store/circuitStore'
 import type { DestinationType } from '@/utils/wiringScheme/types'
-import { calculateNodePinPosition } from '@/nodes/config/nodeConfig'
+import { calculateNodePinPosition } from '@/layout'
 
 export interface DestinationPinResult {
   destination: DestinationType

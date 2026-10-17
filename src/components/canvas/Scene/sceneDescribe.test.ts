@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { useCircuitStore } from '@/store/circuitStore'
 import { resetCircuitStore } from '@/test/r3f/seedCircuit'
-import { calculateNodePinPosition } from '@/nodes/config'
+import { calculateNodePinPosition } from '@/layout'
 import type { Position } from '@/store/types'
 import { generateHopArc } from '@/utils/wiringScheme/crossing'
 import { HOP_HEIGHT, HOP_RADIUS, WIRE_HEIGHT, type WireSegment } from '@/utils/wiringScheme/types'

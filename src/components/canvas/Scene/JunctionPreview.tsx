@@ -1,6 +1,6 @@
 import { useCircuitStore } from '@/store/circuitStore'
 import { semanticColors } from '@/theme'
-import { JUNCTION_CONFIG } from '@/nodes/config/nodeConfig'
+import { JUNCTION_CONFIG } from '@/layout'
 
 /**
  * JunctionPreview - Shows a preview when cursor is near a valid wire corner during junction placement.

@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { Vector3, Euler } from 'three'
 import { useCircuitStore } from '../../circuitStore'
-import { computeChipLayout } from '@/components/scene/chipBodyLayout'
+import { computeChipLayout } from '@/layout'
 import { getBuiltinChipRegistry } from '@/core/chips/appRegistry'
 import type { GateInstance, Position } from '../../types'
 

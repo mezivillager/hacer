@@ -13,7 +13,7 @@
 
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs'
 import { test, expect, type Page } from '@playwright/test'
-import { calculateNodePinPosition } from '@/nodes/config/nodeConfig'
+import { calculateNodePinPosition } from '@/layout'
 import { UI_SELECTORS } from '../selectors'
 import { selectIoViaToolbar, setThemeViaToolbar } from '../helpers/actions'
 

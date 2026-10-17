@@ -3,7 +3,7 @@ import type { ComponentProps } from 'react'
 import ReactThreeTestRenderer from '@react-three/test-renderer'
 import { Color, type Mesh, type MeshStandardMaterial } from 'three'
 import { OutputNode3D } from './OutputNode3D'
-import { NODE_COLORS, calculateNodePinPosition } from '../config'
+import { NODE_COLORS, calculateNodePinPosition } from '@/layout'
 import { colors } from '@/theme'
 import type { DragBinding } from '@/gates/types'
 

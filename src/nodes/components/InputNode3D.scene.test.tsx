@@ -3,7 +3,7 @@ import type { ComponentProps } from 'react'
 import ReactThreeTestRenderer from '@react-three/test-renderer'
 import type { Mesh, MeshStandardMaterial } from 'three'
 import { InputNode3D } from './InputNode3D'
-import { NODE_COLORS, calculateNodePinPosition } from '../config'
+import { NODE_COLORS, calculateNodePinPosition } from '@/layout'
 import type { DragBinding } from '@/gates/types'
 
 vi.mock('@/store/circuitStore', () => {

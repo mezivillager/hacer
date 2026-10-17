@@ -2,7 +2,7 @@ import { BaseGate } from '@/gates/common/BaseGate'
 import { useGateDrag } from '@/hooks/useGateDrag'
 import { circuitActions, useCircuitStore } from '@/store/circuitStore'
 import type { PinConfig } from '@/gates/types'
-import { computeChipLayout } from './chipBodyLayout'
+import { computeChipLayout } from '@/layout'
 import { getBuiltinChipRegistry, getUserChipRegistry } from '@/core/chips/appRegistry'
 import type { GateInstance } from '@/store/types'
 

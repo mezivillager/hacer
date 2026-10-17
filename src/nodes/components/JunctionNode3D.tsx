@@ -1,6 +1,6 @@
 // JunctionNode3D - Visual representation of a wire branch point
 import { colors, materials } from '@/theme'
-import { JUNCTION_CONFIG } from '../config'
+import { JUNCTION_CONFIG } from '@/layout'
 import type { Position } from '@/store/types'
 import { isSignalHigh } from '@/simulation/signalDisplay'
 

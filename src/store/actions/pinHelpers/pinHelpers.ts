@@ -1,7 +1,6 @@
 import { Vector3, Euler } from 'three'
 import type { PinHelpers, Position, CircuitStore, GateInstance, BusComponent } from '../../types'
-import { computeChipLayout } from '@/components/scene/chipBodyLayout'
-import { computeBusPinLayout } from '@/components/scene/busBodyLayout'
+import { computeChipLayout, computeBusPinLayout } from '@/layout'
 import { getBuiltinChipRegistry, getUserChipRegistry } from '@/core/chips/appRegistry'
 
 type GetState = () => CircuitStore

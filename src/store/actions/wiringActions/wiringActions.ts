@@ -3,7 +3,7 @@ import type { WiringActions, Position, CircuitStore, NodeType, WireEndpoint, Wir
 import type { WireSegment } from '@/utils/wiringScheme/types'
 import { resolveCrossings } from '@/utils/wiringScheme/crossing'
 import { getSegmentsUpToPosition } from '@/utils/wirePosition'
-import { calculateNodePinPosition } from '@/nodes/config/nodeConfig'
+import { calculateNodePinPosition } from '@/layout'
 import { calculateWirePath } from '@/utils/wiringScheme/core'
 import { collectWireSegments } from '@/utils/wiringScheme/segments'
 

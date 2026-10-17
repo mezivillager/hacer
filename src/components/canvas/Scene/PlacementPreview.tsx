@@ -1,7 +1,7 @@
 import { useCircuitStore } from '@/store/circuitStore'
 import { semanticColors } from '@/theme'
 import { worldToGrid, canPlaceGateAt } from '@/utils/grid'
-import { NODE_DIMENSIONS } from '@/nodes/config'
+import { NODE_DIMENSIONS } from '@/layout'
 
 /**
  * Placement preview - renders when placementMode or nodePlacementMode is active,

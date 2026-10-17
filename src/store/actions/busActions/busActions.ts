@@ -12,7 +12,7 @@ import { createBusPins } from '@/simulation'
 import { calculateWirePath } from '@/utils/wiringScheme/core'
 import { collectWireSegments, combineAdjacentSegments } from '@/utils/wiringScheme/segments'
 import { resolveCrossings } from '@/utils/wiringScheme/crossing'
-import { calculateNodePinPosition } from '@/nodes/config'
+import { calculateNodePinPosition } from '@/layout'
 import { preserveJunctions } from '../junctionUtils'
 
 type SetState = (

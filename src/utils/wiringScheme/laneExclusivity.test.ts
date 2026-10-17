@@ -21,7 +21,7 @@ import { Vector3, Euler } from 'three'
 import type { Position } from '@/store/types'
 import type { WireSegment } from './types'
 import { SECTION_SIZE } from './types'
-import { computeChipLayout } from '@/components/scene/chipBodyLayout'
+import { computeChipLayout } from '@/layout'
 import { getBuiltinChipRegistry } from '@/core/chips/appRegistry'
 import { calculateWirePath } from './core'
 

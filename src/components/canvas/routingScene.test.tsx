@@ -9,7 +9,7 @@ import {
   expectNoWireOverlaps,
 } from '@/test/r3f/wireGeometry'
 import { WIRE_HEIGHT } from '@/utils/wiringScheme/types'
-import { calculateNodePinPosition } from '@/nodes/config'
+import { calculateNodePinPosition } from '@/layout'
 
 const getState = () => useCircuitStore.getState()
 const TOL = 0.001

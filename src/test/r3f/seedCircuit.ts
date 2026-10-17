@@ -2,7 +2,7 @@ import { useCircuitStore } from '@/store/circuitStore'
 import { calculateWirePathFromConnection, calculateWirePath } from '@/utils/wiringScheme/core'
 import type { Wire } from '@/store/types'
 import type { WireSegment } from '@/utils/wiringScheme/types'
-import { calculateNodePinPosition } from '@/nodes/config'
+import { calculateNodePinPosition } from '@/layout'
 
 /** Reset the live store to an empty circuit between tests. */
 export function resetCircuitStore(): void {

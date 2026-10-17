@@ -2,7 +2,7 @@
 import { useState, useRef } from 'react'
 import { Group } from 'three'
 import { colors, materials } from '@/theme'
-import { NODE_DIMENSIONS, NODE_COLORS, OUTPUT_NODE_CONFIG, calculateNodePinPosition } from '../config'
+import { NODE_DIMENSIONS, NODE_COLORS, OUTPUT_NODE_CONFIG, calculateNodePinPosition } from '@/layout'
 import type { Position, Rotation } from '@/types/scene'
 import type { DragBinding } from '@/gates/types'
 import { formatSignalLabel, isSignalHigh } from '@/simulation/signalDisplay'
