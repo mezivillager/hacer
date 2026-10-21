@@ -424,3 +424,26 @@ ADR-0020 §10 states the loop granularity N.2's parity uses and where it differs
 `pnpm run lint:docs`
 ## Blocked by
 —
+
+### FID-025 · The not-connected refusal fires only for a pin no connection names, so a pin bound only out of range gets the reference's one refusal
+- **Date:** 2026-10-21 · **Target epic:** #140 core
+- **Status:** proposed
+- **Why:** PR #818 (#813, FID-011) makes `compileHDL`'s unconnected-input refusal say `the nand2tetris simulator reads it as 0; bind in=false to do the same`. That is true wherever no connection names the pin. The review ran 600 documents through the web IDE at `91ef428` and found 0 mismatches on 4,500 vectors. One case is different: a pin whose only bindings are out of range.
+  - `Not16(in[16]=a, out=o)` is refused by the reference once: `Line 1: Sub-bus index out of range (in has width 16)` (`../web-ide/simulator/src/chip/chip.ts:270-278`). The reference never treats `in` as unconnected.
+  - HACER also prints `input pin "in" is not connected: …; bind in=false to do the same`, because `coversAnyBit` counts only in-range bits (`src/core/hdl/compiler.ts:92-93, 290`). #367 pinned this cascade at `src/core/hdl/compiler.test.ts:618-627`, before the message made a claim about the reference.
+  - The advice fails there. With `in=false` added, the HDL path is still refused for range, and the spec path is refused as `p1 pin "in" is bound by both "a" and "false"`.
+  - `bindUnconnectedInputs` keys on net sinks by pin name, so it returns `bound: []`. The ADR's "binds every such pin" therefore does not hold for this pin, and the two functions disagree only on this edge.
+- **Review note:** docs/research/2026-10-fidelity-review-pr-818.md
+
+**Draft issue body**
+## Goal
+`compileHDL` and `bindUnconnectedInputs` agree on which part inputs are unconnected. The refusal that names the reference's 0 and advises `bind X=false` is printed only where the reference reads 0 and the advice works.
+## Acceptance criteria
+- `compileHDL` reports `Part "P" input pin "X" is not connected: …` only for an input pin that no connection names. A pin whose every binding is refused as out of range gets only that refusal.
+- `Not16(in[16]=a, out=o)` gives exactly `['Part "Not16" pin "in[16]" is out of range; "in" has width 16']`. That is one refusal, as the reference gives, and the expectation at `src/core/hdl/compiler.test.ts:618-627` changes to match. `And(a=a, out=out)` at `:631-640` is unchanged.
+- One test asserts that the pins `compileHDL` calls not connected equal `bindUnconnectedInputs(…).bound`. It covers #813's seeded unwired corpus (`src/core/spec/fromLegacyCircuit.parity.test.ts`) and `Not16(in[16]=a, out=o)`.
+- If the panel keeps the cascade instead, that pin's message is the bare `Part "Not16" input pin "in" is not connected`, with no claim about the reference and no advice.
+## Verification command
+`pnpm exec vitest run --project node src/core/hdl src/core/spec src/cli`
+## Blocked by
+#813 (PR #818). It edits the same strings as FID-015 (#820), so whichever lands second rebases.
