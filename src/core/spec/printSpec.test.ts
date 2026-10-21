@@ -104,10 +104,12 @@ describe('printSpec', () => {
       )
     })
 
-    it('is width-generic: one Or16 at 16 bits, and one Or per bit at any other width', () => {
-      expect(printSpec(passThrough(16), { dialect: 'nand2tetris' })).toContain('    Or16(a=a, b=a, out=out);\n}')
-      const four = printSpec(passThrough(4), { dialect: 'nand2tetris' })
-      expect(four).toContain(['    Or(a=a[0], b=a[0], out=out[0]);', '    Or(a=a[1], b=a[1], out=out[1]);', '    Or(a=a[2], b=a[2], out=out[2]);', '    Or(a=a[3], b=a[3], out=out[3]);'].join('\n'))
+    it('cuts an alias into 16-bit windows from its low bit: Or at one bit, Or16 at 2–16 with its pins from bit 0', () => {
+      const buffers = (width: number): string[] => printSpec(passThrough(width), { dialect: 'nand2tetris' }).split('\n').filter((l) => l.startsWith('    Or'))
+      expect(buffers(1)).toEqual(['    Or(a=a, b=a, out=out);'])
+      expect(buffers(4)).toEqual(['    Or16(a[0..3]=a, b[0..3]=a, out[0..3]=out);'])
+      expect(buffers(16)).toEqual(['    Or16(a=a, b=a, out=out);'])
+      expect(buffers(20)).toEqual(['    Or16(a=a[0..15], b=a[0..15], out=out[0..15]);', '    Or16(a[0..3]=a[16..19], b[0..3]=a[16..19], out[0..3]=out[16..19]);'])
     })
 
     it('prints plain HDL — no header, no wire statement, no sidecar — that parseHDL accepts', () => {

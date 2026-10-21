@@ -677,6 +677,25 @@ describe('legacy parity', () => {
     expect(exportFailures(g.document, vectors, g.vectors.map((v) => v.before))).toEqual([])
   })
 
+  it('C5: the nand2tetris export prints its 4-bit alias as one Or16 sliced from pin bit 0, and evaluates as evaluateCircuit does', () => {
+    const { doc } = fromLegacyCircuit(C5)
+    if (doc === null) throw new Error('C5 does not import')
+    expect(printSpec(doc, { dialect: 'nand2tetris' })).toBe('CHIP C5 {\n    IN a[4];\n    OUT out[4];\n\n    PARTS:\n    Or16(a[0..3]=a, b[0..3]=a, out[0..3]=out);\n}\n')
+    const vectors = every({ a: 4 })
+    expect(exportFailures(C5, vectors, vectors.map((v) => legacy(C5, v)))).toEqual([])
+  })
+
+  it('bus-endpoints: the nand2tetris export prints one buffer per alias, Or for bit3 and a sliced Or16 for joined[1..3]', () => {
+    const g = golden('bus-endpoints')
+    const { doc } = fromLegacyCircuit(g.document)
+    if (doc === null) throw new Error('bus-endpoints does not import')
+    expect(printSpec(doc, { dialect: 'nand2tetris' })).toBe(
+      'CHIP busEndpoints {\n    IN bus[4];\n    OUT joined[4], bit3;\n\n    PARTS:\n    Not(in=bus[0], out=joined[0]); // #p1\n' +
+        '    Or(a=bus[3], b=bus[3], out=bit3);\n    Or16(a[0..2]=bus[1..3], b[0..2]=bus[1..3], out[0..2]=joined[1..3]);\n}\n',
+    )
+    expect(exportFailures(g.document, g.vectors.map((v) => v.inputs), g.vectors.map((v) => v.before))).toEqual([])
+  })
+
   it.each(BUS)('%s: the import evaluates as evaluateCircuit does', (_name, saved, vectors) => {
     const expected = vectors.map((v) => legacy(saved, v))
     expect(parityFailures(saved, vectors, expected)).toEqual([])

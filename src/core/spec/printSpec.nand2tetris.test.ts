@@ -13,7 +13,7 @@ import { sliceWidth, splitNetId } from './netId'
 import { parseSpec } from './parseSpec'
 import { printSpec } from './printSpec'
 import { mulberry32, specPrograms } from './specPrograms'
-import type { CircuitSpec, Net, PartId, Ref } from './types'
+import type { CircuitSpec, Net, PartId, Port, Ref } from './types'
 
 /** Issue number, so a failure replays from this file alone: program k is `specProgram(mulberry32(SEED + k), ...)`. */
 const SEED = 0x168
@@ -82,7 +82,7 @@ describe('nand2tetris dialect', () => {
     expect(buffered).toBeGreaterThan(DOCUMENTS / 10)
   })
 
-  it.each([1, 4, 8, 16])('a pass-through evaluates out = in at width %i', (width) => {
+  it.each([1, 4, 8, 16, 17, 20, 32])('a pass-through evaluates out = in at width %i', (width) => {
     const bus = (name: string): string => (width > 1 ? `${name}[${width}]` : name)
     const doc = load(`CHIP Pass${width} {\n    IN ${bus('a')}, s;\n    OUT ${bus('out')}, ns;\n    PARTS:\n    wire out = a;\n    Not(in=s, out=ns); // #p1\n}\n`)
     const { text, chip } = exported(doc)
@@ -128,6 +128,65 @@ describe('nand2tetris dialect', () => {
     })
     expect(failures).toEqual([])
     expect(checked).toBeGreaterThan(DOCUMENTS / 10)
+  })
+})
+
+/** Every vector up to 6 input bits; above that all-zero, all-one and 12 seeded ones, as the reference panel ran them. */
+function vectorsFor(doc: CircuitSpec): Array<Record<string, number>> {
+  const of = (value: (p: Port) => number): Record<string, number> => Object.fromEntries(doc.ins.map((p) => [p.name, value(p)]))
+  const bits = doc.ins.reduce((n, p) => n + p.width, 0)
+  if (bits <= 6) {
+    return Array.from({ length: 2 ** bits }, (_, v) => {
+      let rest = v
+      return of((p) => {
+        const value = rest % 2 ** p.width
+        rest = Math.floor(rest / 2 ** p.width)
+        return value
+      })
+    })
+  }
+  const rng = mulberry32(SEED + bits)
+  return [of(() => 0), of((p) => 2 ** p.width - 1), ...Array.from({ length: 12 }, () => of((p) => Math.floor(rng() * 2 ** p.width)))]
+}
+
+/** What a document of aliases alone gives: each OUT bit copied from the IN bit its alias names. */
+function aliased(doc: CircuitSpec, inputs: Record<string, number>): Record<string, number> {
+  const outs = Object.fromEntries(doc.outs.map((p) => [p.name, 0]))
+  for (const net of doc.nets.filter(isPassThrough)) {
+    const { signal, slice } = splitNetId(net.id)
+    const width = slice ? sliceWidth(slice) : (doc.outs.find((p) => p.name === signal)?.width ?? 1)
+    const value = Math.floor(inputs[net.driver.pin] / 2 ** (net.driver.slice?.start ?? 0)) % 2 ** width
+    outs[signal] += value * 2 ** (slice?.start ?? 0)
+  }
+  return outs
+}
+
+const perBit = (width: number): string[] => Array.from({ length: width }, (_, i) => `Or(a=a[${i}], b=a[${i}], out=out[${i}]);`)
+
+describe('the nand2tetris dialect prints one buffer per 16-bit window of an alias', () => {
+  it.each([
+    ['wire out = a; at 17 bits', 'W', 'a[17]', 'out[17]', 'wire out = a;', ['Or16(a=a[0..15], b=a[0..15], out=out[0..15]);', 'Or(a=a[16], b=a[16], out=out[16]);']],
+    ['wire out = a; at 20 bits', 'W', 'a[20]', 'out[20]', 'wire out = a;', ['Or16(a=a[0..15], b=a[0..15], out=out[0..15]);', 'Or16(a[0..3]=a[16..19], b[0..3]=a[16..19], out[0..3]=out[16..19]);']],
+    ['wire out = a; at 32 bits', 'W', 'a[32]', 'out[32]', 'wire out = a;', ['Or16(a=a[0..15], b=a[0..15], out=out[0..15]);', 'Or16(a=a[16..31], b=a[16..31], out=out[16..31]);']],
+    ['a byte swap into an OUT', 'W', 'x[16]', 'y[16]', 'wire y[0..7] = x[8..15]; wire y[8..15] = x[0..7];', ['Or16(a[0..7]=x[8..15], b[0..7]=x[8..15], out[0..7]=y[0..7]);', 'Or16(a[0..7]=x[0..7], b[0..7]=x[0..7], out[0..7]=y[8..15]);']],
+    ['a 32-bit OUT split into two 16-bit aliases', 'W', 'a[32]', 'out[32]', 'wire out[0..15] = a[0..15]; wire out[16..31] = a[16..31];', ['Or16(a=a[0..15], b=a[0..15], out=out[0..15]);', 'Or16(a=a[16..31], b=a[16..31], out=out[16..31]);']],
+    ['a chip named Or16 at 4 bits, which keeps one Or per bit', 'Or16', 'a[4]', 'out[4]', 'wire out = a;', perBit(4)],
+    ['a chip named Or16 at 20 bits, which keeps one Or per bit', 'Or16', 'a[20]', 'out[20]', 'wire out = a;', perBit(20)],
+  ])('%s: the exact text, which compiles and evaluates every OUT', (_name, name, ins, outs, wires, lines) => {
+    const doc = load(`CHIP ${name} { IN ${ins}; OUT ${outs}; PARTS: ${wires} }`)
+    const { text, chip } = exported(doc)
+    expect(text).toBe(`CHIP ${name} {\n    IN ${ins};\n    OUT ${outs};\n\n    PARTS:\n${lines.map((l) => `    ${l}\n`).join('')}}\n`)
+
+    const registry = project1Registry()
+    const compiled = compileHDL(chip, registry)
+    expect(compiled.success ? [] : compiled.errors.map((e) => e.message)).toEqual([])
+    const def = hdlChipDefinition(chip, text)
+    const wrong = vectorsFor(doc).flatMap((inputs) => {
+      const got = evaluateChip(def, inputs, registry)
+      const want = aliased(doc, inputs)
+      return doc.outs.every((p) => got[p.name] === want[p.name]) ? [] : [`${JSON.stringify(inputs)} gave ${JSON.stringify(got)}, want ${JSON.stringify(want)}`]
+    })
+    expect(wrong).toEqual([])
   })
 })
 
