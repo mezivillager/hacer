@@ -266,7 +266,7 @@ export function fromLegacyCircuit(saved: SerializedCircuit): LegacyImport {
       for (const p of d.pieces) {
         const sink = narrowed(site.ref, site.width, p.at, p.bits)
         if (!isReal(p)) {
-          if (sink.kind === 'part-pin') netFor('false', null).sinks.push(sink)
+          if (sink.kind === 'part-pin') netFor('false', { kind: 'constant', value: false }).sinks.push(sink)
           floats.push({ wire: d.wire, piece: p, sink })
           continue
         }

@@ -4,10 +4,11 @@ import { subBusOutOfRange } from '../hdl/compiler'
 import { parseHDL } from '../hdl/parser'
 import { printPinRef } from '../hdl/printer'
 import type { HDLChip, HDLPart, HDLSlice } from '../hdl/types'
+import { migrate, READABLE_VERSIONS, type SpecV1 } from './migrate'
 import { sliceWidth, splitNetId } from './netId'
 import { normalizeSpec } from './normalizeSpec'
 import { emptySidecar, parseSidecar } from './sidecar'
-import { SPEC_SCHEMA_VERSION } from './types'
+import { LITERALS, SPEC_SCHEMA_VERSION } from './types'
 import type { CircuitSpec, Net, ParseSpecResult, Part, PartId, Ref, Sidecar, SpecDiagnostic } from './types'
 
 export interface ParseSpecOptions {
@@ -22,7 +23,6 @@ const TAG = new RegExp(`${spelled('hacer')}${IGNORABLE}[-\\u2010-\\u2015\\u2212\
 const CANONICAL_ID = /^p[1-9][0-9]*$/
 const HEADER = /\/\/[ \t]*hacer-spec[ \t]+(\S+)/y
 const SIDECAR_BLOCK = /\/\*[ \t]*hacer-sidecar\s([\s\S]*?)\*\/\s*$/
-const LITERALS = new Set(['true', 'false'])
 const COMMENT = /\/\*[\s\S]*?\*\/|\/\/[^\n]*/g
 const WIRE = /\bwire\s+([A-Za-z_]\w*)\s*(\[[^\]]*\])?\s*=\s*([A-Za-z_]\w*)\s*(\[[^\]]*\])?\s*;/g
 const SLICE = /^\[\s*(\d+)\s*(?:\.\.\s*(\d+)\s*)?\]$/
@@ -113,8 +113,8 @@ export function aliasCycles(nets: Net[], width: Map<string, number>): SpecDiagno
 const describeRef = (ref: Ref): string =>
   ref.kind === 'constant' ? String(ref.value) : ref.kind === 'part-pin' ? `${ref.partId}.${printPinRef(ref.pin, ref.slice)}` : printPinRef(ref.pin, ref.slice)
 
-/** The version lives in one canonical header first and one sidecar block last; any other tag is refused. */
-function readVersions(source: string): { sidecar: Sidecar } | { diagnostics: SpecDiagnostic[] } {
+/** The version lives in one canonical header first and one sidecar block last, which agree; any other tag is refused. */
+function readVersions(source: string): { sidecar: Sidecar | SpecV1['sidecar'] } | { diagnostics: SpecDiagnostic[] } {
   const refuse = (code: 'unknown-schema-version' | 'invalid-sidecar', message: string) => ({ diagnostics: [{ code, severity: 'error' as const, message }] })
   HEADER.lastIndex = Math.max(0, source.search(/\S/))
   const header = HEADER.exec(source)
@@ -130,8 +130,13 @@ function readVersions(source: string): { sidecar: Sidecar } | { diagnostics: Spe
     return refuse('invalid-sidecar', `"${tag[0]}" at ${where} is not a /* hacer-sidecar */ block opening its own line at the end of the file`)
   }
   if (block?.[1].includes('*/')) return refuse('invalid-sidecar', 'The sidecar JSON holds a raw */, which ends the comment early; write it as *\\/')
-  if (header && header[1] !== String(SPEC_SCHEMA_VERSION)) return refuse('unknown-schema-version', `Spec schemaVersion "${header[1]}" is not one this build reads (${SPEC_SCHEMA_VERSION})`)
-  return block ? parseSidecar(block[1]) : { sidecar: emptySidecar() }
+  const version = header?.[1]
+  if (version !== undefined && !READABLE_VERSIONS.some((v) => String(v) === version)) return refuse('unknown-schema-version', `Spec schemaVersion "${version}" is not one this build reads (${READABLE_VERSIONS.join(', ')})`)
+  const read = block ? parseSidecar(block[1]) : { sidecar: version === '1' ? { ...emptySidecar(), schemaVersion: 1 as const } : emptySidecar() }
+  if ('sidecar' in read && version !== undefined && String(read.sidecar.schemaVersion) !== version) {
+    return refuse('unknown-schema-version', `The header reads hacer-spec ${version} but the sidecar's schemaVersion is ${read.sidecar.schemaVersion}; a file is written at one version`)
+  }
+  return read
 }
 
 /** Keeps a marker p1..p(2^53 - 1) seen once; keys any other part by position, from a size-independent counter. */
@@ -191,7 +196,7 @@ export function doubleSourced(nets: Net[], unknownParts: Set<PartId>): SpecDiagn
 export function undriven(nets: Net[], unknownParts: Set<PartId>): SpecDiagnostic[] {
   const written = nets.filter((n) => n.driver !== null).map((n) => splitNetId(n.id))
   return nets
-    .filter((n) => n.driver === null && !LITERALS.has(n.id) && !n.sinks.some((s) => s.kind === 'part-pin' && unknownParts.has(s.partId)))
+    .filter((n) => n.driver === null && !n.sinks.some((s) => s.kind === 'part-pin' && unknownParts.has(s.partId)))
     .filter((n) => {
       const { signal, slice } = splitNetId(n.id)
       return !written.some((w) => w.signal === signal && overlap(w.slice, slice))
@@ -209,15 +214,21 @@ function lower(chip: HDLChip, wires: WireStatement[], chips: ChipRegistry, diagn
   const unknownParts = new Set<PartId>()
 
   const nets = new Map<string, Net>()
+  // A literal's net starts on its constant, so a part output bound to a literal is an ordinary second driver.
   const netOf = (id: string): Net => {
-    const net = nets.get(id) ?? { id, driver: null, sinks: [] }
+    const value = LITERALS.get(id)
+    const net = nets.get(id) ?? { id, driver: value === undefined ? null : { kind: 'constant', value }, sinks: [] }
     nets.set(id, net)
     return net
   }
   const drive = (id: string, ref: Ref, partId?: PartId): void => {
     const net = netOf(id)
-    if (net.driver === null) net.driver = ref
-    else diagnostics.push({ code: 'multiple-drivers', severity: 'error', netId: id, partId, message: `Signal "${id}" is driven by ${describeRef(net.driver)} and ${describeRef(ref)}; ${describeRef(ref)} is dropped` })
+    if (net.driver === null) {
+      net.driver = ref
+      return
+    }
+    const clash = net.driver.kind === 'constant' ? `${describeRef(ref)} is bound to ${id}, but a part output cannot drive a constant` : `Signal "${id}" is driven by ${describeRef(net.driver)} and ${describeRef(ref)}`
+    diagnostics.push({ code: 'multiple-drivers', severity: 'error', netId: id, partId, message: `${clash}; ${describeRef(ref)} is dropped` })
   }
 
   chip.parts.forEach((part, i) => {
@@ -231,8 +242,7 @@ function lower(chip: HDLChip, wires: WireStatement[], chips: ChipRegistry, diagn
       const id = printPinRef(conn.external, conn.externalSlice)
       const ref: Ref = { kind: 'part-pin', partId, pin: conn.internal, ...(conn.internalSlice && { slice: conn.internalSlice }) }
       if (def?.outputs.some((p) => p.name === conn.internal)) {
-        if (LITERALS.has(id)) diagnostics.push({ code: 'literal-output', severity: 'error', partId, message: `${describeRef(ref)} is bound to ${id}; a part output cannot drive a constant, so the binding is dropped` })
-        else drive(id, ref, partId)
+        drive(id, ref, partId)
         continue
       }
       if (def && !def.inputs.some((p) => p.name === conn.internal)) {
@@ -286,5 +296,7 @@ export function parseSpec(source: string, options: ParseSpecOptions = {}): Parse
   }
   const diagnostics: SpecDiagnostic[] = []
   const doc = lower(parsed.chip, wires, options.chips ?? getBuiltinChipRegistry(), diagnostics)
+  // v1 and v2 share their text, so a v1 file lowers as v2 does; the migration moves its versions.
+  if (sidecar.sidecar.schemaVersion === 1) return { ...migrate({ doc: { ...doc, schemaVersion: 1 }, sidecar: sidecar.sidecar }), diagnostics }
   return { doc, sidecar: sidecar.sidecar, diagnostics }
 }
