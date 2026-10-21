@@ -39,7 +39,10 @@ const isError = (d: SpecDiagnostic): boolean => d.severity === 'error'
 // parseSpec notes which driver its document dropped; a run is refused for the clash, not for the drop.
 const asRefusal = (d: SpecDiagnostic): SpecDiagnostic => (d.code === 'multiple-drivers' ? { ...d, message: d.message.replace(/; [^;]+ is dropped$/, '') } : d)
 
-/** §1.10.6 over nets: a wire targets a chip OUT from a chip IN or OUT of its width; only an IN's own net is fan-out. */
+/**
+ * §1.10.6 over nets: a wire targets a chip OUT from a chip IN or OUT of its width; only an IN's own net is fan-out.
+ * §1.10.9: a constant drives only the net its own literal names.
+ */
 function invalidWires(doc: CircuitSpec): SpecDiagnostic[] {
   const ports = { 'chip-in': new Map(doc.ins.map((p) => [p.name, p.width])), 'chip-out': new Map(doc.outs.map((p) => [p.name, p.width])) }
   const problem = (net: Net, driver: Extract<Ref, { kind: 'chip-in' | 'chip-out' }>): string | null => {
@@ -56,9 +59,11 @@ function invalidWires(doc: CircuitSpec): SpecDiagnostic[] {
   }
   return doc.nets.flatMap((net): SpecDiagnostic[] => {
     const { driver } = net
-    if (driver === null || driver.kind === 'part-pin' || driver.kind === 'constant') return []
-    const found = problem(net, driver)
-    return found === null ? [] : [{ code: 'invalid-wire', severity: 'error', netId: net.id, message: `wire ${net.id} = ${printPinRef(driver.pin, driver.slice)}: ${found}` }]
+    if (driver === null || driver.kind === 'part-pin') return []
+    const [source, found] = driver.kind === 'constant'
+      ? [String(driver.value), net.id === String(driver.value) ? null : 'a constant drives only the net its own literal names']
+      : [printPinRef(driver.pin, driver.slice), problem(net, driver)]
+    return found === null ? [] : [{ code: 'invalid-wire', severity: 'error', netId: net.id, message: `wire ${net.id} = ${source}: ${found}` }]
   })
 }
 

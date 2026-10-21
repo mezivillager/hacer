@@ -12,7 +12,7 @@ export interface BindUnconnectedInputsResult {
 }
 
 /**
- * Binds every input pin of a registered part that no net sinks at any bit to the driverless `false` net,
+ * Binds every input pin of a registered part that no net sinks at any bit to the net the constant false drives,
  * which is how the nand2tetris simulator reads it. `bound` lists those pins in part order, for a caller to show.
  */
 export function bindUnconnectedInputs(doc: CircuitSpec, registry: ChipRegistry): BindUnconnectedInputsResult {
@@ -22,8 +22,10 @@ export function bindUnconnectedInputs(doc: CircuitSpec, registry: ChipRegistry):
   )
   if (bound.length === 0) return { doc: { ...doc }, bound }
   const sinks: Ref[] = bound.map(({ partId, pin }) => ({ kind: 'part-pin', partId, pin }))
-  const at = doc.nets.findIndex((net) => net.id === 'false' && net.driver === null)
+  const at = doc.nets.findIndex((net) => net.driver?.kind === 'constant' && !net.driver.value)
   const nets: Net[] =
-    at < 0 ? [...doc.nets, { id: 'false', driver: null, sinks }] : doc.nets.map((net, i) => (i === at ? { ...net, sinks: [...net.sinks, ...sinks] } : net))
+    at < 0
+      ? [...doc.nets, { id: 'false', driver: { kind: 'constant', value: false }, sinks }]
+      : doc.nets.map((net, i) => (i === at ? { ...net, sinks: [...net.sinks, ...sinks] } : net))
   return { doc: { ...doc, nets }, bound }
 }

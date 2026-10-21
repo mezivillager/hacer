@@ -1,7 +1,7 @@
 import type { HDLSlice } from '../hdl/types'
 
 /** The spec format's version: read on every load, and moved only with a `migrate(n → n+1)`. */
-export const SPEC_SCHEMA_VERSION = 1
+export const SPEC_SCHEMA_VERSION = 2
 
 export type PartId = `p${number}`
 /** A part, or a chip I/O terminal named by its port. */
@@ -10,11 +10,17 @@ export type NodeId = PartId | `in:${string}` | `out:${string}`
 export interface Port { name: string; width: number }
 export interface Part { id: PartId; chip: string }
 
-/** One end of a net. `slice` is the pin's (or port's) own bits; the signal's are in the net id. */
+/**
+ * One end of a net. `slice` is the pin's (or port's) own bits; the signal's are in the net id.
+ * A `constant` is a literal's source: it has no pin, drives only the net its literal names, and is every bit of the pin it feeds.
+ */
 export type Ref =
   | { kind: 'part-pin'; partId: PartId; pin: string; slice?: HDLSlice }
   | { kind: 'chip-in' | 'chip-out'; pin: string; slice?: HDLSlice }
   | { kind: 'constant'; value: boolean }
+
+/** The two literals, by the net id each one's constant drives. */
+export const LITERALS: ReadonlyMap<string, boolean> = new Map([['true', true], ['false', false]])
 
 /** `id` is the sliced signal reference the net carries: `t`, `out[0]`, `t[3..7]`, or a literal. */
 export interface Net {
@@ -64,7 +70,7 @@ export interface Sidecar {
 export type SpecDiagnosticCode =
   | 'syntax' | 'unknown-schema-version' | 'invalid-sidecar' | 'builtin-chip' | 'unknown-chip'
   | 'unknown-pin' | 'multiple-drivers' | 'undriven' | 'duplicate-part-id' | 'invalid-part-id' | 'part-id-assigned'
-  | 'invalid-wire' | 'alias-cycle' | 'literal-output' | 'duplicate-net-id' | 'compile'
+  | 'invalid-wire' | 'alias-cycle' | 'duplicate-net-id' | 'compile'
 
 export interface SpecDiagnostic {
   code: SpecDiagnosticCode
