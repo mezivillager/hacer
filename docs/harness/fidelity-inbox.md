@@ -571,3 +571,32 @@ A combinational-cycle refusal carries the line of the part the reference blames,
 `pnpm exec vitest run --project node src/core/hdl src/core/testing`
 ## Blocked by
 #820 (PR #862), which adds the line and the prefix this extends.
+
+### FID-031 · Grading names the reference's first cause when an earlier part or wire has a per-part cause the check does not model
+- **Date:** 2026-10-22 · **Target epic:** #140 core
+- **Status:** proposed
+- **Why:** #840 (PR #869) refuses a chip-OUT read and a subscripted internal pin with the reference's sentence, and leaves a cause to `compileHDL` when the reference would stop on an unknown part, the chip as its own part, a looping wire, an unknown pin, or a write to a chip IN or a constant. It does not stop for the other per-part causes the reference raises while it wires a part (`../web-ide/simulator/src/chip/builder.ts:323-361`). Then a later part's chip-OUT read or subscript is named instead of the earlier cause. Measured at PR #869's head `23587532` against the web IDE at `91ef428` under tsx, 2026-10-22:
+  - `Not(in=a, in=b, out=o);` then `Not(in=o, out=p);`: the reference gives `Line 4: Cannot write to pin in multiple times` (`builder.ts:395`), and grading gives `Line 5: Cannot use output pin as input`.
+  - In one part, `And(a=a, a=b, b=o, out=p);`: the reference gives the double binding of `a`, and grading gives the chip-OUT read.
+  - An OUT written by two parts before a read of it: `Cannot write to pin o multiple times` (`:427`) against the chip-OUT read.
+  - An internal written twice before a subscript of it: `Internal pin t already defined` (`:451-454`) against the subscript.
+  - `Not(in=a[3], out=o);` with a one-bit `a`, and `Not(in[2]=a, out=o);`, each before a chip-OUT read: `Sub-bus index out of range` (`../web-ide/simulator/src/chip/chip.ts:277`) against the chip-OUT read.
+  - Both sides refuse every one of these, and `compileHDL` refuses each earlier cause alone (`bound by more than one connection`, `driven by more than one part`, `sub-bus index out of range`). Only the cause and the line a learner sees first differ. #840's goal is the reference's cause, and #820's is the web IDE's line.
+- **Review note:** docs/research/2026-10-fidelity-review-pr-869.md
+
+**Draft issue body**
+## Goal
+On the grading path, a shape with two refusable causes reports the cause the reference reports first. When the reference would stop earlier on a per-part cause that `compileHDL` also refuses, `gradingRefusal` stops there and leaves it to `compileHDL`, as it already does for an unknown pin.
+## Acceptance criteria
+- `gradingRefusal` returns null at the first wire, in part and wire order, where the reference raises one of these:
+  - a part pin, or a bit of it, bound twice;
+  - a chip OUT bit written twice;
+  - an internal pin written twice;
+  - a sub-bus index outside a chip pin's or a part pin's width.
+- Tests: the six shapes above give `compileHDL`'s refusal of the earlier cause on its line. Each of the six shapes with its first cause removed still gives the chip-OUT or subscript sentence.
+- A test shows that `compileHDL` refuses each deferred cause on its own, so deferring never accepts a shape the reference refuses.
+- The corpus `grading` cells are unchanged.
+## Verification command
+`pnpm exec vitest run --project node src/core/testing src/core/hdl`
+## Blocked by
+#840 (PR #869), which adds the check this extends.
