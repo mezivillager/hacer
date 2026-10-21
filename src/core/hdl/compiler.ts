@@ -163,28 +163,30 @@ function partNames(def: ChipDefinition): string[] {
   }
 }
 
-/** The chips on a cycle of definitions reachable from `start`, in order, or `null`; enters each definition once. */
-function registryCycle(start: ChipDefinition, registry: ChipRegistry, done: Set<ChipDefinition>): string[] | null {
-  const chain: Array<{ def: ChipDefinition; parts: string[]; next: number }> = []
-  const onChain = new Map<ChipDefinition, number>()
-  const enter = (def: ChipDefinition): void => {
-    onChain.set(def, chain.length)
-    chain.push({ def, parts: partNames(def), next: 0 })
+/** The chips on a cycle reachable from the part named `start`, in order, or `null`; keyed by name, so it ends even if `get` builds a new definition per call. */
+function registryCycle(start: string, registry: ChipRegistry, done: Set<string>): string[] | null {
+  const chain: Array<{ name: string; def: ChipDefinition; parts: string[]; next: number }> = []
+  const onChain = new Map<string, number>()
+  const enter = (name: string): void => {
+    const def = registry.get(name)
+    if (def === undefined) return
+    onChain.set(name, chain.length)
+    chain.push({ name, def, parts: partNames(def), next: 0 })
   }
   if (!done.has(start)) enter(start)
   while (chain.length > 0) {
     const link = chain[chain.length - 1]
     if (link.next === link.parts.length) {
       chain.pop()
-      onChain.delete(link.def)
-      done.add(link.def)
+      onChain.delete(link.name)
+      done.add(link.name)
       continue
     }
-    const def = registry.get(link.parts[link.next++])
-    if (def === undefined || done.has(def)) continue
-    const at = onChain.get(def)
-    if (at !== undefined) return chain.slice(at).map(({ def: onCycle }) => onCycle.name)
-    enter(def)
+    const name = link.parts[link.next++]
+    if (done.has(name)) continue
+    const at = onChain.get(name)
+    if (at !== undefined) return chain.slice(at).map(({ def }) => def.name)
+    enter(name)
   }
   return null
 }
@@ -222,9 +224,9 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
     resolved.push({ part, def })
   })
   if (errors.length) return { success: false, errors }
-  const walked = new Set<ChipDefinition>()
-  for (const { part, def } of resolved) {
-    const cycle = registryCycle(def, registry, walked)
+  const walked = new Set<string>()
+  for (const { part } of resolved) {
+    const cycle = registryCycle(part.name, registry, walked)
     if (cycle) return { success: false, errors: [{ message: usesItself(cycle, ast.name), partName: part.name }] }
   }
 
