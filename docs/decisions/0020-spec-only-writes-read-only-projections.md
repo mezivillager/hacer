@@ -721,11 +721,21 @@ and these rules are pinned by `src/core/spec/compileSpec.test.ts`,
      under a registry where `Foo` is `Or`, where the truth is `1`.
    - Keying the cache by registry instead would recompile on every tick, because the legacy
      evaluator builds a fresh registry view on each call.
-4. **Two engine refusals,** in `compileHDL`, so the `'hdl'` path and the spec path share them:
+4. **Three engine refusals,** in `compileHDL`, so the `'hdl'` path and the spec path share them:
    - a part output that writes a chip IN is refused, naming the part and the input. The reference
      says `Cannot write to input pin`.
    - a chip that names itself as a part is refused. The reference says
      `Cannot use chip X to implement itself`. Registration is what makes it reachable.
+   - a chip whose parts reach a cycle of resolved definitions through the registry is refused,
+     naming every chip on the cycle in order (`Chip "A" uses itself through "B"`); a one-chip cycle
+     below the compiled chip gets the self-reference message (#816).
+     - The walk follows what the registry's `get` returns, so the lookup order (#206) decides
+       whether a user `Not` that uses `And` beside a user `And` that uses `Not` is a cycle. It
+       enters each definition once, so
+       `compileSpec` still never throws (rule 2).
+     - Pinned by `compileHDL — a part cycle through the registry is refused (#816)` in
+       `src/core/hdl/compiler.test.ts` and the registry-cycle cases in
+       `src/core/spec/compileSpec.nesting.test.ts`.
 5. **Divergences from the reference, inherited rather than fixed.** The refusal of an unconnected
    part input is not among them: §1.1 decides it.
    - `IN` and `OUT` lists are required. That is the parser's rule. A document with no IN compiles at
