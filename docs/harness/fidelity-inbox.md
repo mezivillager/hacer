@@ -544,3 +544,30 @@ A literal on a part pin wider than 16 bits has one decided value, which is pinne
 `pnpm exec vitest run --project node src/core/spec src/core/hdl`
 ## Blocked by
 #814 (PR #853), which adds the §1.10.9 text this amends.
+
+### FID-030 · The combinational-cycle refusal carries a line, as the reference's `Looping wire` and `Circular pin dependency` do
+- **Date:** 2026-10-21 · **Target epic:** #140 core
+- **Status:** proposed
+- **Why:** #820 (PR #862) gives the cycle refusal no line, as an error no part caused, "as `createError` omits the line when there is no span". The reference has a span for both of its cycle refusals. Measured on the web IDE at `91ef428` under tsx; upstream `main` `6a81b5dd` has the same builder and chip sources (fetched 2026-10-21):
+  - `And(a=a, b=t, out=t);` on line 5 gives `Line 5: Looping wire t`, at the part's span (`../web-ide/simulator/src/chip/builder.ts:318`). It is the shape of PR #862's own no-line tests (`src/core/hdl/compiler.test.ts:1150`, `src/core/testing/engine.test.ts:178` at `9c457be0`).
+  - `Nand(a=a, b=y, out=x);` on line 5 and `Not(in=x, out=y);` on line 6 give `Line 6: Circular pin dependency`. The reference wires parts in source order and raises it at the wire that closes the loop (`../web-ide/simulator/src/chip/chip.ts:626, 687`).
+  - #811's corpus records both with `Line 1:` (`looping-wire`, `loop-across-parts` in `conformance/acceptance/hdl-shapes.json`). At PR #862's head, HACER gives both `Cyclic part dependency: … through …` with no line (`src/core/hdl/compiler.ts:449`). They are the only refusals in the corpus where the reference's message has a line and HACER's does not.
+  - #820's Goal: "Every compile error a test report shows gives the line the web IDE gives."
+- **Review note:** docs/research/2026-10-fidelity-review-pr-862.md
+
+**Draft issue body**
+## Goal
+A combinational-cycle refusal carries the line of the part the reference blames, in `HDLCompileError.line` and as the `Line N: ` prefix. With it, every compile refusal a test report shows has the web IDE's line for a part written on one line.
+## Acceptance criteria
+- The refusal takes the line of the first part, in source order, that closes a cycle with the parts before it. A part that reads a signal it also writes is that part (the reference's `Looping wire`).
+- The wording stays HACER's, `Cyclic part dependency: … through …`. Only the line and the prefix are added. A part with no source line, as a spec lowers it, still gets neither.
+- For a part written across several lines, the line is the line of the part's name. This is #820's known difference, unchanged.
+- Tests:
+  - the `looping-wire` shape with its part on line 5 gives line 5;
+  - a two-part cycle on lines 5 and 6 gives line 6;
+  - the no-line tests at `src/core/hdl/compiler.test.ts:1150` and `src/core/testing/engine.test.ts:178` keep only the refusals no part causes (builtin not found, not a builtin);
+  - `src/core/hdl/acceptanceParity.test.ts:140-141` take the `Line 1: ` prefix.
+## Verification command
+`pnpm exec vitest run --project node src/core/hdl src/core/testing`
+## Blocked by
+#820 (PR #862), which adds the line and the prefix this extends.
