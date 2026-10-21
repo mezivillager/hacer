@@ -59,6 +59,8 @@ export function parseInbox(text, inbox) {
   return { ...inbox, grammar, entries }
 }
 
+export const assertGrammar = (inboxes) => inboxes
+
 /** Every entry, or those whose status starts with `status` (`proposed`, `deferred`, …). */
 export function listEntries(inboxes, { status } = {}) {
   const entries = inboxes.flatMap((inbox) => inbox.entries)
