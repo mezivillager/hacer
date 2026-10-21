@@ -107,6 +107,12 @@ const FLOATING_BESIDE_INPUT = circuit('FloatingBesideInput', {
   outputNodes: [node('oo', 'out')],
   wires: [wire('w1', fromIn('ia'), toOut('oo')), wire('w2', ghost, toOut('oo'))],
 })
+const EXPORT_GAP = circuit('ExportGap', {
+  inputNodes: [node('ia', 'a'), node('ib', 'b')],
+  outputNodes: [node('oo', 'o', 2)],
+  busComponents: [bus('join', 'joiner', 2)],
+  wires: [wire('w1', fromIn('ia'), toOut('oo'), 1), wire('w2', fromIn('ib'), busEnd('join', 'in1'), 1), wire('w3', busEnd('join', 'out'), toOut('oo'), 2)],
+})
 const FLOATING_JUNCTION_BESIDE_PART = circuit('FloatingJunctionBesidePart', {
   inputNodes: [node('ia', 'a')],
   outputNodes: [node('oo', 'out')],
@@ -268,14 +274,24 @@ const ctx: EvalContext = { registry, depth: 0, maxDepth: DEFAULT_MAX_DEPTH, eval
 
 type Run = { outputs: Record<string, number> } | { refused: string[] }
 
+/** The nand2tetris export's text, or `printSpec`'s refusal to print the document. */
+function exported(doc: CircuitSpec): { text: string } | { refused: string[] } {
+  try {
+    return { text: printSpec(doc, { dialect: 'nand2tetris' }) }
+  } catch (e) {
+    return { refused: [e instanceof Error ? e.message : String(e)] }
+  }
+}
+
 /** The import evaluated through the export: `printSpec` → `parseHDL` → `compileHDL` → `evaluateChip`. */
 function viaExport(doc: CircuitSpec, inputs: Vector): Run {
-  const text = printSpec(doc, { dialect: 'nand2tetris' })
-  const parsed = parseHDL(text)
-  if (!parsed.success) throw new Error(`the export does not parse: ${parsed.errors.map((e) => e.message).join('; ')}\n${text}`)
+  const printed = exported(doc)
+  if ('refused' in printed) return printed
+  const parsed = parseHDL(printed.text)
+  if (!parsed.success) throw new Error(`the export does not parse: ${parsed.errors.map((e) => e.message).join('; ')}\n${printed.text}`)
   const compiled = compileHDL(parsed.chip, registry)
   if (!compiled.success) return { refused: compiled.errors.map((e) => e.message) }
-  return { outputs: evaluateChip(hdlChipDefinition(parsed.chip, text), inputs, registry) }
+  return { outputs: evaluateChip(hdlChipDefinition(parsed.chip, printed.text), inputs, registry) }
 }
 
 /** The import evaluated as a spec: no parse step precedes it, so `compileSpec` takes the document as built. */
@@ -338,7 +354,9 @@ function parityFailures(saved: SerializedCircuit, vectors: Vector[], expected: O
 function exportFailures(saved: SerializedCircuit, vectors: Vector[], expected: Outcome[]): string[] {
   const { doc, sidecar } = fromLegacyCircuit(saved)
   if (doc === null) return ['no document']
-  const parsed = parseHDL(printSpec(doc, { dialect: 'nand2tetris' }))
+  const printed = exported(doc)
+  if ('refused' in printed) return sidecar.notes.some((n) => REFUSALS.has(n.kind)) ? [] : [`the export is refused: ${printed.refused.join('; ')}`]
+  const parsed = parseHDL(printed.text)
   if (!parsed.success) return [`the export does not parse: ${parsed.errors.map((e) => e.message).join('; ')}`]
   const outs = new Set(doc.outs.map((p) => p.name))
   const ports = new Set([...doc.ins, ...doc.outs].map((p) => p.name))
@@ -613,10 +631,30 @@ describe('legacy parity', () => {
     expect(doc && viaCompileSpec(doc, { a: 1 })).toEqual({ refused: expect.arrayContaining(['Net id "out" names more than one net; a document holds one net per id']) })
   })
 
-  it('the nand2tetris export has no form for a driverless net on an OUT, so it prints the real driver alone', () => {
+  it('neither dialect has a form for a driverless net beside a real one on an OUT, so printSpec refuses it by name', () => {
     const { doc } = fromLegacyCircuit(FLOATING_BESIDE_INPUT)
-    expect(doc && printSpec(doc, { dialect: 'nand2tetris' })).toContain('    Or(a=a, b=a, out=out);\n}')
-    expect(doc && viaExport(doc, { a: 1 })).toEqual({ outputs: { out: 1 } })
+    if (doc === null) throw new Error('FloatingBesideInput does not import')
+    expect(() => printSpec(doc)).toThrow('net "out"')
+    expect(() => printSpec(doc, { dialect: 'nand2tetris' })).toThrow('net "out"')
+    expect(viaExport(doc, { a: 1 })).toEqual({ refused: [expect.stringContaining('net "out"')] })
+  })
+
+  it('ExportGap: an input and a joiner bit on one OUT bit keep a driverless o[0], which compileSpec and both dialects refuse', () => {
+    const { doc, sidecar } = fromLegacyCircuit(EXPORT_GAP)
+    if (doc === null) throw new Error('ExportGap does not import')
+    expect(doc.nets.map((n) => [n.id, n.driver])).toEqual([
+      ['o[0]', { kind: 'chip-in', pin: 'a' }],
+      ['o[1]', { kind: 'chip-in', pin: 'b' }],
+      ['o[0]', null],
+    ])
+    expect(sidecar.notes.map((n) => n.kind)).toContain('multiple-drivers')
+    expect(viaCompileSpec(doc, { a: 1, b: 0 })).toEqual({ refused: expect.arrayContaining(['Net id "o[0]" names more than one net; a document holds one net per id']) })
+    expect(() => printSpec(doc)).toThrow('net "o[0]"')
+    expect(() => printSpec(doc, { dialect: 'nand2tetris' })).toThrow('net "o[0]"')
+    const vectors = every({ a: 1, b: 1 })
+    const expected = vectors.map((v) => legacy(EXPORT_GAP, v))
+    expect(parityFailures(EXPORT_GAP, vectors, expected)).toEqual([])
+    expect(exportFailures(EXPORT_GAP, vectors, expected)).toEqual([])
   })
 
   it('the comparator fails an import with one wire dropped', () => {

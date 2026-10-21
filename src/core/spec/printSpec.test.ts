@@ -118,6 +118,37 @@ describe('printSpec', () => {
   })
 })
 
+describe('printSpec — a driverless net beside a driven net of the same id', () => {
+  const notInto = (out: Net[]): CircuitSpec => ({
+    ...passThrough(1),
+    parts: [{ id: 'p1', chip: 'Not' }],
+    nets: [{ id: 'a', driver: { kind: 'chip-in', pin: 'a' }, sinks: [{ kind: 'part-pin', partId: 'p1', pin: 'in' }] }, ...out],
+  })
+  const twinned = notInto([
+    { id: 'out', driver: { kind: 'part-pin', partId: 'p1', pin: 'out' }, sinks: [{ kind: 'chip-out', pin: 'out' }] },
+    { id: 'out', driver: null, sinks: [{ kind: 'chip-out', pin: 'out' }] },
+  ])
+
+  it.each([
+    ['hacer', {}],
+    ['nand2tetris', { dialect: 'nand2tetris' }],
+  ] as const)('the %s dialect throws an Error naming the net, whatever the nets\' order', (_dialect, options) => {
+    for (const doc of [twinned, shuffled(twinned)]) {
+      expect(() => printSpec(doc, options)).toThrow(Error)
+      expect(() => printSpec(doc, options)).toThrow('net "out"')
+    }
+  })
+
+  it("still prints a driverless net with no driven twin, ADR-0020 §1.1's unfinished circuit", () => {
+    const unfinished = notInto([
+      { id: 'q', driver: { kind: 'part-pin', partId: 'p1', pin: 'out' }, sinks: [] },
+      { id: 'out', driver: null, sinks: [{ kind: 'chip-out', pin: 'out' }] },
+    ])
+    expect(printSpec(unfinished)).toContain('    Not(in=a, out=q); // #p1\n}\n')
+    expect(printSpec(unfinished, { dialect: 'nand2tetris' })).toContain('    Not(in=a, out=q); // #p1\n}\n')
+  })
+})
+
 describe('printSpec — empty port lists', () => {
   it('prints no IN line for a chip with no inputs, as the reference grammar allows, rather than IN ;', () => {
     const text = printSpec({ ...passThrough(1), ins: [], nets: [] })
