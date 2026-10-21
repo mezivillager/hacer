@@ -24,7 +24,7 @@ interface Cells {
   compileHDL: readonly string[] | null | 'unparsed'
   parseSpec: { doc: boolean; errors: readonly string[] }
   compileSpec: readonly string[] | null
-  /** `hacer test`'s one error: its grading check's refusal, else compileHDL's errors joined as a report joins them. */
+  /** `hacer test`'s one error: its grading check's refusal, else the registry's, else compileHDL's errors joined as a report joins them. */
   grading: readonly [string] | null | 'unparsed'
 }
 
@@ -257,7 +257,7 @@ const EXPECTED: Record<string, Expected> = {
     compileHDL: ['Line 1: Part "Not" output "out" cannot write to chip input "a"'],
     parseSpec: { doc: true, errors: ['multiple-drivers'] },
     compileSpec: ['Chip input "a" is written by p1.out'],
-    grading: ['Invalid chip "C": Duplicate pin name: "a"'],
+    grading: ['Duplicate pin name: "a"'],
     diverges: { compileHDL: ['inherited', '#740'], compileSpec: ['inherited', '#740'], grading: ['inherited', '#868'] },
   },
   'stub-not': accepted,
@@ -547,13 +547,8 @@ const EXPECTED: Record<string, Expected> = {
 /** `hacer test` on the shape with a script that only loads and evaluates it, so nothing but a refusal can fail it. */
 function graded(chip: string, hdl: string): Cells['grading'] {
   const file = (extension: string, source: string) => ({ path: `${chip}.${extension}`, source })
-  try {
-    const { error } = testChip(file('hdl', hdl), file('tst', `load ${chip}.hdl,\neval,\n`), file('cmp', '|x|\n'))
-    return error === null ? null : [error]
-  } catch (e) {
-    // `hacer test` reports a throw as its error (#868).
-    return [e instanceof Error ? e.message : String(e)]
-  }
+  const { error } = testChip(file('hdl', hdl), file('tst', `load ${chip}.hdl,\neval,\n`), file('cmp', '|x|\n'))
+  return error === null ? null : [error]
 }
 
 function read(hdl: string): Cells {
