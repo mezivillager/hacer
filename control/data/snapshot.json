@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-21T20:43:13.479Z",
+  "generatedAt": "2026-10-21T20:50:57.593Z",
   "head": {
-    "sha": "43c3b1f58d35a1069a85a8df871d78540793129a",
-    "date": "2026-10-21T23:42:38+03:00",
-    "subject": "docs(harness): record where the subagent cap lives and the owner's working rule"
+    "sha": "0105dbd14abe7dd66fb556a073779ca926531af3",
+    "date": "2026-10-21T23:49:50+03:00",
+    "subject": "feat(spec): the nand2tetris dialect prints one sliced buffer per 16-bit window of an alias (#844)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T20:43:13.479Z",
+      "fetchedAt": "2026-10-21T20:50:57.593Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T20:43:13.479Z",
+      "fetchedAt": "2026-10-21T20:50:57.593Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T20:43:13.479Z",
+      "fetchedAt": "2026-10-21T20:50:57.593Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-21T20:43:13.479Z",
+      "fetchedAt": "2026-10-21T20:50:57.593Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-21T20:43:13.479Z",
+      "fetchedAt": "2026-10-21T20:50:57.593Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-21T20:43:13.479Z",
+      "fetchedAt": "2026-10-21T20:50:57.593Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-21T20:43:13.479Z",
+      "fetchedAt": "2026-10-21T20:50:57.593Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-21T20:43:13.479Z",
+      "fetchedAt": "2026-10-21T20:50:57.593Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-21T20:43:13.479Z",
+      "fetchedAt": "2026-10-21T20:50:57.593Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-21T20:43:13.479Z",
+      "fetchedAt": "2026-10-21T20:50:57.593Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-21T20:43:13.479Z",
+      "fetchedAt": "2026-10-21T20:50:57.593Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-21T20:43:13.479Z",
+      "fetchedAt": "2026-10-21T20:50:57.593Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-21T20:43:13.479Z",
+      "fetchedAt": "2026-10-21T20:50:57.593Z",
       "status": "ok"
     }
   },
@@ -82,10 +82,10 @@
         "epicNumber": 318,
         "open": 27,
         "ready": 1,
-        "inProgress": 2,
+        "inProgress": 1,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 3,
+        "agentReady": 2,
         "filedElsewhere": [],
         "next": {
           "number": 338,
@@ -190,8 +190,8 @@
         },
         "title": "Epic: core — headless core",
         "subIssues": {
-          "completed": 22,
-          "percentCompleted": 84,
+          "completed": 23,
+          "percentCompleted": 88,
           "total": 26
         }
       },
@@ -306,15 +306,15 @@
         "slug": "upkeep",
         "epicNumber": 146,
         "open": 32,
-        "ready": 19,
-        "inProgress": 11,
+        "ready": 18,
+        "inProgress": 12,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 31,
         "filedElsewhere": [],
         "next": {
-          "number": 799,
-          "title": "Inbox review: HRN-008 · Register the `hacer-*` agent types where sessions start: the parent workspace"
+          "number": 800,
+          "title": "Inbox review: HRN-009 · Run the retro at each coordinator run's close, not every 5 merges"
         },
         "title": "Epic: upkeep — maintenance & documentation",
         "subIssues": {
@@ -411,11 +411,6 @@
         "number": 338,
         "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
         "project": "foundation"
-      },
-      {
-        "number": 799,
-        "title": "Inbox review: HRN-008 · Register the `hacer-*` agent types where sessions start: the parent workspace",
-        "project": "upkeep"
       },
       {
         "number": 257,
@@ -521,7 +516,6 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
-        865,
         514
       ]
     }
@@ -540,22 +534,6 @@
         "project": "foundation",
         "rank": 1,
         "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 799,
-        "title": "Inbox review: HRN-008 · Register the `hacer-*` agent types where sessions start: the parent workspace",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
         "pickable": true,
         "reason": null
       },
@@ -2441,6 +2419,23 @@
         "reason": "claimed"
       },
       {
+        "number": 799,
+        "title": "Inbox review: HRN-008 · Register the `hacer-*` agent types where sessions start: the parent workspace",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 801,
         "title": "polish: an unsaved circuit is lost on reload — autosave is written every 2 s but never restored",
         "labels": [
@@ -2535,13 +2530,11 @@
         "reason": "claimed"
       },
       {
-        "number": 844,
-        "title": "The `nand2tetris` dialect prints one sliced buffer per 16 bits of an alias, not one `Or` per bit",
+        "number": 868,
+        "title": "`testChip` throws on a chip the registry refuses to register (`IN a; OUT a;`) instead of returning an error report",
         "labels": [
-          "agent-ready",
-          "in-progress",
+          "bug",
           "risk:1",
-          "fidelity",
           "project:foundation"
         ],
         "blocking": [],
@@ -2549,7 +2542,7 @@
         "rank": 1,
         "lane": "feature",
         "pickable": false,
-        "reason": "claimed"
+        "reason": "unshaped"
       }
     ],
     "byProject": {
@@ -2580,10 +2573,25 @@
         742,
         773,
         840,
-        844
+        868
+      ],
+      "harness": [
+        257,
+        861,
+        154,
+        156,
+        270,
+        435,
+        436,
+        454,
+        500,
+        504,
+        505,
+        550,
+        607,
+        677
       ],
       "upkeep": [
-        799,
         800,
         807,
         808,
@@ -2614,23 +2622,8 @@
         795,
         796,
         797,
-        798
-      ],
-      "harness": [
-        257,
-        861,
-        154,
-        156,
-        270,
-        435,
-        436,
-        454,
-        500,
-        504,
-        505,
-        550,
-        607,
-        677
+        798,
+        799
       ],
       "spine": [
         165,
@@ -2721,25 +2714,6 @@
   "prs": {
     "open": [
       {
-        "number": 865,
-        "title": "feat(spec): the nand2tetris dialect prints one sliced buffer per 16-bit window of an alias",
-        "url": "https://github.com/mezivillager/hacer/pull/865",
-        "author": "mezivillager",
-        "labels": [
-          "risk:1",
-          "fidelity",
-          "project:foundation"
-        ],
-        "headRefName": "feat/844-buffer-runs",
-        "isDraft": false,
-        "createdAt": "2026-10-21T20:32:41Z",
-        "mergedAt": null,
-        "closes": [
-          844
-        ],
-        "verdicts": []
-      },
-      {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
         "url": "https://github.com/mezivillager/hacer/pull/514",
@@ -2790,6 +2764,33 @@
             "model": "coordinator (claude-opus-5-5)",
             "at": "2026-10-21T20:34:50Z",
             "url": "https://github.com/mezivillager/hacer/pull/866#issuecomment-6325953869"
+          }
+        ]
+      },
+      {
+        "number": 865,
+        "title": "feat(spec): the nand2tetris dialect prints one sliced buffer per 16-bit window of an alias",
+        "url": "https://github.com/mezivillager/hacer/pull/865",
+        "author": "mezivillager",
+        "labels": [
+          "risk:1",
+          "fidelity",
+          "project:foundation"
+        ],
+        "headRefName": "feat/844-buffer-runs",
+        "isDraft": false,
+        "createdAt": "2026-10-21T20:32:41Z",
+        "mergedAt": "2026-10-21T20:49:51Z",
+        "closes": [
+          844
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus (claude-opus-5-5)",
+            "at": "2026-10-21T20:46:02Z",
+            "url": "https://github.com/mezivillager/hacer/pull/865#issuecomment-6326174994"
           }
         ]
       },
@@ -4287,33 +4288,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/731#issuecomment-6185340743"
           }
         ]
-      },
-      {
-        "number": 730,
-        "title": "test(scenarios): Project 1 chips as scenarios through core, cli and mcp",
-        "url": "https://github.com/mezivillager/hacer/pull/730",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:spine",
-          "risk:1"
-        ],
-        "headRefName": "test/166-project1-scenarios",
-        "isDraft": false,
-        "createdAt": "2026-10-15T04:59:15Z",
-        "mergedAt": "2026-10-15T05:07:24Z",
-        "closes": [
-          166
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Sonnet 5.5",
-            "at": "2026-10-15T05:06:47Z",
-            "url": "https://github.com/mezivillager/hacer/pull/730#issuecomment-6184874031"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4638,6 +4612,32 @@
         }
       },
       {
+        "number": 799,
+        "ref": "refs/heads/claim/799",
+        "sha": "43c3b1f58d35a1069a85a8df871d78540793129a",
+        "state": "OPEN",
+        "title": "Inbox review: HRN-008 · Register the `hacer-*` agent types where sessions start: the parent workspace",
+        "url": "https://github.com/mezivillager/hacer/issues/799",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-to-70",
+          "branch": "chore/inbox-hrn-008",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-21T20:48:07Z",
+          "url": "https://github.com/mezivillager/hacer/issues/799#issuecomment-6326214854"
+        }
+      },
+      {
         "number": 840,
         "ref": "refs/heads/claim/840",
         "sha": "f632948dd8acda9f890f77d5b8fe24f16e069d0a",
@@ -4662,60 +4662,9 @@
           "at": "2026-10-21T20:33:49Z",
           "url": "https://github.com/mezivillager/hacer/issues/840#issuecomment-6325934630"
         }
-      },
-      {
-        "number": 844,
-        "ref": "refs/heads/claim/844",
-        "sha": "5bf4285bd52a789a48af7f1193cb1db423864e84",
-        "state": "OPEN",
-        "title": "The `nand2tetris` dialect prints one sliced buffer per 16 bits of an alias, not one `Or` per bit",
-        "url": "https://github.com/mezivillager/hacer/issues/844",
-        "labels": [
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "fidelity",
-          "project:foundation"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-to-70",
-          "branch": "feat/844-buffer-runs",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-21T20:18:40Z",
-          "url": "https://github.com/mezivillager/hacer/issues/844#issuecomment-6325642209"
-        }
-      },
-      {
-        "number": 857,
-        "ref": "refs/heads/claim/857",
-        "sha": "3034bce89dee5dcac1aa4f3b06c1c2923e11479d",
-        "state": "CLOSED",
-        "title": "README § Budgets: the laptop's subagent cap is 3 in the workspace settings, 2 while the owner is awake; the committed 4 stays for cloud",
-        "url": "https://github.com/mezivillager/hacer/issues/857",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:0"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-to-70",
-          "branch": "docs/857-agent-limits",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-21T20:28:20Z",
-          "url": "https://github.com/mezivillager/hacer/issues/857#issuecomment-6325830013"
-        }
       }
     ],
-    "onClosedIssues": 1
+    "onClosedIssues": 0
   },
   "cloudLane": {
     "items": [
@@ -6562,7 +6511,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-15",
-        "merges": 18
+        "merges": 17
       },
       {
         "date": "2026-10-16",
@@ -6574,20 +6523,20 @@
       },
       {
         "date": "2026-10-21",
-        "merges": 21
+        "merges": 22
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-07T20:43:13.479Z",
-      "merged": 83,
+      "since": "2026-10-07T20:50:57.593Z",
+      "merged": 84,
       "openToMergeHours": {
         "median": 0.4,
         "p90": 1.9
       },
       "blockedOnce": {
         "count": 7,
-        "of": 68,
+        "of": 69,
         "prs": [
           700,
           725,
@@ -6600,8 +6549,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 54,
-          "withVerdict": 54,
+          "merged": 55,
+          "withVerdict": 55,
           "without": []
         },
         "nonCode": {
@@ -10537,7 +10486,7 @@
       },
       {
         "date": "2026-10-21",
-        "at": "2026-10-21T20:37:44.275Z",
+        "at": "2026-10-21T20:43:13.479Z",
         "byProject": {
           "foundation": [
             338,
@@ -10587,6 +10536,7 @@
             848,
             849,
             859,
+            867,
             229,
             256,
             788,
@@ -10615,8 +10565,7 @@
             505,
             550,
             607,
-            677,
-            857
+            677
           ],
           "spine": [
             165,
@@ -10710,11 +10659,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "43c3b1f58d35a1069a85a8df871d78540793129a",
+        "sha": "0105dbd14abe7dd66fb556a073779ca926531af3",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39672655696/job/119474277611",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39673691583/job/119477897556",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -10762,52 +10711,6 @@
         "verdict": "PASS",
         "fields": {
           "known": 71,
-          "new": 0
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 865,
-        "sha": "8a86c63b721edf88241345f9d806b35c423d8ec5",
-        "check": "pr-hygiene",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-21T20:32:55Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39671231087/job/119469338801",
-        "line": "HYGIENE: PASS reviewable=46 test=92 excluded=0 files=2 issue=#844 linked=fixes",
-        "verdict": "PASS",
-        "fields": {
-          "reviewable": 46,
-          "test": 92,
-          "excluded": 0,
-          "files": 2,
-          "issue": "#844",
-          "linked": "fixes"
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 865,
-        "sha": "8a86c63b721edf88241345f9d806b35c423d8ec5",
-        "check": "browser-qa",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-21T20:32:59Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39671231868/job/119469337801",
-        "line": "BROWSER-QA: skipped (no critical paths)",
-        "verdict": "SKIPPED",
-        "fields": {},
-        "disagrees": false
-      },
-      {
-        "pr": 865,
-        "sha": "8a86c63b721edf88241345f9d806b35c423d8ec5",
-        "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-21T20:36:23Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39671229927/job/119469329608",
-        "line": "LAYER-RATCHET: 69 known violations (37 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 69,
           "new": 0
         },
         "disagrees": false
@@ -18101,6 +18004,13 @@
       },
       {
         "id": "#814",
+        "kind": "github",
+        "citedBy": [
+          "ADR-0020"
+        ]
+      },
+      {
+        "id": "#844",
         "kind": "github",
         "citedBy": [
           "ADR-0020"
