@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-21T22:20:31.178Z",
+  "generatedAt": "2026-10-21T22:21:41.940Z",
   "head": {
-    "sha": "7c80ac1d7c479d05b66787975882f1dc00ea4efd",
-    "date": "2026-10-22T00:49:35+03:00",
-    "subject": "docs(harness): role files name their path base; retro fallback and README name the link (#871)"
+    "sha": "4b3336272cb23635d373fa66ef77790a5e9e42be",
+    "date": "2026-10-22T01:20:05+03:00",
+    "subject": "fix(testing): a chip the registry refuses is an error report naming the chip (#868)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T22:20:31.178Z",
+      "fetchedAt": "2026-10-21T22:21:41.940Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T22:20:31.178Z",
+      "fetchedAt": "2026-10-21T22:21:41.940Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T22:20:31.178Z",
+      "fetchedAt": "2026-10-21T22:21:41.940Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-21T22:20:31.178Z",
+      "fetchedAt": "2026-10-21T22:21:41.940Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-21T22:20:31.178Z",
+      "fetchedAt": "2026-10-21T22:21:41.940Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-21T22:20:31.178Z",
+      "fetchedAt": "2026-10-21T22:21:41.940Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-21T22:20:31.178Z",
+      "fetchedAt": "2026-10-21T22:21:41.940Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-21T22:20:31.178Z",
+      "fetchedAt": "2026-10-21T22:21:41.940Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-21T22:20:31.178Z",
+      "fetchedAt": "2026-10-21T22:21:41.940Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-21T22:20:31.178Z",
+      "fetchedAt": "2026-10-21T22:21:41.940Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-21T22:20:31.178Z",
+      "fetchedAt": "2026-10-21T22:21:41.940Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-21T22:20:31.178Z",
+      "fetchedAt": "2026-10-21T22:21:41.940Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-21T22:20:31.178Z",
+      "fetchedAt": "2026-10-21T22:21:41.940Z",
       "status": "ok"
     }
   },
@@ -4751,32 +4751,6 @@
         }
       },
       {
-        "number": 868,
-        "ref": "refs/heads/claim/868",
-        "sha": "0a3db8f50dd1b817c264c8a54dad6b3c83c7dfe2",
-        "state": "CLOSED",
-        "title": "`testChip` throws on a chip the registry refuses to register (`IN a; OUT a;`) instead of returning an error report",
-        "url": "https://github.com/mezivillager/hacer/issues/868",
-        "labels": [
-          "bug",
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:foundation"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-to-70",
-          "branch": "fix/868-testchip-report",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-21T21:37:32Z",
-          "url": "https://github.com/mezivillager/hacer/issues/868#issuecomment-6327113404"
-        }
-      },
-      {
         "number": 873,
         "ref": "refs/heads/claim/873",
         "sha": "4b3336272cb23635d373fa66ef77790a5e9e42be",
@@ -4802,7 +4776,7 @@
         }
       }
     ],
-    "onClosedIssues": 1
+    "onClosedIssues": 0
   },
   "cloudLane": {
     "items": [
@@ -6676,7 +6650,7 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-07T22:20:31.178Z",
+      "since": "2026-10-07T22:21:41.940Z",
       "merged": 88,
       "openToMergeHours": {
         "median": 0.4,
@@ -10634,7 +10608,7 @@
       },
       {
         "date": "2026-10-21",
-        "at": "2026-10-21T21:50:23.795Z",
+        "at": "2026-10-21T22:20:31.178Z",
         "byProject": {
           "foundation": [
             338,
@@ -10662,7 +10636,7 @@
             728,
             742,
             773,
-            868
+            878
           ],
           "upkeep": [
             808,
@@ -10701,7 +10675,6 @@
           ],
           "harness": [
             257,
-            873,
             154,
             156,
             270,
@@ -10715,7 +10688,8 @@
             607,
             677,
             861,
-            870
+            870,
+            873
           ],
           "spine": [
             165,
