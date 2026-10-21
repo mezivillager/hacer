@@ -320,12 +320,25 @@ Read it before dispatching a batch of agents — the meter does not move linearl
 ## What to measure (four numbers)
 
 Median reviewable lines per PR · the owner's minutes per merged PR · escaped defects, found after
-the gates passed (each adds a test at the layer that missed it) · **tokens per merged PR**, summed
-from the subagent usage reports of every agent that touched it. The conformance pass count is
-already a gate. The fourth was added by #255 —
-the first reading is ~1.4M subagent tokens for 8 verified PRs (~175k each) on the first execution
-run. `scripts/agent-orient` (#156) prints all four once it exists; until then the coordinator
-reports the number when it reports the run.
+the gates passed (each adds a test at the layer that missed it) · **tokens per merged PR**. The
+conformance pass count is already a gate. The fourth was added by #255.
+
+**Tokens per merged PR is one run average, not a per-PR count:** every subagent usage report in the
+run (builders, verifiers, fixers, reviewers, panels, retros, and attempts that never merged),
+divided by the run's merged PRs less dependabot. Unmerged attempts are in the numerator for the same
+reason as § *Measurement rules*: "Failed attempts stay in the denominator". The first reading is
+~1.4M subagent tokens for 8 verified PRs (~175k each) on the first execution run. A sum missing any
+dispatched agent's count is `unmeasured`, never a partial figure.
+
+**Owner minutes per merged PR stays `unmeasured`** until it has a source that agents do not share:
+agents post under the owner's GitHub account, so a comment from that account on a PR cannot be told
+from an agent's. The separate bot identity in § *Rules that are conventions, not controls (yet)* is
+that source. The retro reports the `needs-human` issues opened in its window as that count, never as
+minutes.
+
+`scripts/agent-orient` (#156) prints the measured numbers once it exists, not all four, because
+owner minutes has no source. Until then the coordinator reports tokens per merged PR when it
+reports the run.
 
 ## Multiple coordinators and paused claims
 
@@ -375,7 +388,7 @@ one section without warning, so they keep the default merge.
 - `usage-rationing.md` — the Cursor lane's daily token ration, how a run is measured, and the dashboard reading the "Included" guard rests on (`cursor-usage.json`).
 - `mission-control.md` — the snapshot `scripts/mission-control/collect.mjs --json` prints (schema v1): every section, where it comes from, and how a failed source is flagged rather than fatal — what Mission Control's site and the coordinator's orient step both read.
 - `../research/2026-09-18-agent-readiness/` — why the process looks like this.
-- `sessions/` — dated session records: the goal, the owner's rulings, what was built, the state at close, how to resume. **The one close record — no separate end-of-run file:** a run's close lives here, and lists the PRs the run merged, from `node scripts/run-prs.mjs --from <run start> --to <run end>`. Start with the latest one when picking the work back up.
+- `sessions/` — dated session records: the goal, the owner's rulings, what was built, the state at close, how to resume. **The one close record — no separate end-of-run file:** a run's close lives here, and lists the PRs the run merged, from `node scripts/run-prs.mjs --from <run start> --to <run end>`. Start with the latest one when picking the work back up. A close record's §2 carries one line: `Subagent tokens: <total> over <k> agents · <n> merged PRs less dependabot · <total ÷ n> per merged PR (run average)`, or `Subagent tokens: unmeasured (<why>)` when any dispatched agent's count is missing. A partial sum is never written as the figure.
 - `sessions/COORDINATOR-HANDOFF.md` — claim-comment fields, when to write a `*-handoff.md`, and how a second coordinator resumes or releases idle claims. Product “what’s next” still comes from `docs/portfolio.md` and Issues; handoffs carry **coordinator meta-state** only.
 - `process-review-brief.md` — the standing brief for the fortnightly process review; `reviews/` holds every cycle in one layout (`reviews/README.md`).
 - `cloud-queue.md` — standing Claude → Grok Bot queue for cloud-heavy work that nothing else waits on (verification, second opinions, differential runs, large install/build/test; R742). Local Claude enqueues; Grok Bot runs those rows when the owner triggers it; what it reports becomes a local follow-up. Not a second picker for ordinary local work.

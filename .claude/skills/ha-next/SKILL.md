@@ -101,7 +101,14 @@ extra ask. Prune the worktree when the PR is merged.
 ## 6. Retro — one line, every time
 Append to `docs/harness/ledger.md` if anything in the loop was wrong or slow (a stale doc, a hook
 that fought you, a flaky check). Second occurrence of the same thing → mechanise it (an issue under
-the `harness` epic). Then report: PR, evidence, follow-ups filed, ledger line.
+the `harness` epic). Then report: PR, evidence, follow-ups filed, ledger line, and the token counts
+the pick's agents reported (builder, verifier, fixers).
+
+Add those counts to the run's running total in its session-record draft
+(`docs/harness/sessions/<date>.md`, committed at close), so a compaction does not lose it. Every
+other dispatch in the run (inbox panels, retros, reviews) adds its count to the same total. A total
+missing any agent's count is written `unmeasured`; the line's form is in `docs/harness/README.md`
+§ Files, under the session records.
 
 ## "Queue up: …"
 Shape the idea into issues in the form (`docs/harness/issue-form.md`): goal, acceptance criteria as tests, verification command, scope, files, risk, blocked-by.
