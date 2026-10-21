@@ -67,6 +67,22 @@ function invalidWires(doc: CircuitSpec): SpecDiagnostic[] {
   })
 }
 
+/** §1: an OUT's net is the one named for it, and the lowering writes only a net's own id, so a chip-OUT sink elsewhere would be dropped. */
+function strayOutSinks(doc: CircuitSpec): SpecDiagnostic[] {
+  const outs = new Set(doc.outs.map((p) => p.name))
+  return doc.nets.flatMap((net) => {
+    const { signal, slice } = splitNetId(net.id)
+    return net.sinks.flatMap((sink): SpecDiagnostic[] => {
+      if (sink.kind !== 'chip-out') return []
+      const named = printPinRef(sink.pin, sink.slice)
+      const message = !outs.has(sink.pin) ? `Net "${net.id}" sinks "${named}", which is not a chip OUT`
+        : named === printPinRef(signal, slice) ? null
+          : `Net "${net.id}" sinks chip OUT "${named}": only the net named "${named}" carries it`
+      return message === null ? [] : [{ code: 'invalid-wire', severity: 'error', netId: net.id, message }]
+    })
+  })
+}
+
 function repeatedNetIds(nets: readonly Net[]): SpecDiagnostic[] {
   const seen = new Set<string>()
   const repeated = new Set<string>()
@@ -211,7 +227,7 @@ function compileDoc(doc: CircuitSpec, registry: ChipRegistry): CompileSpecResult
   const doubles = doubleSourced(doc.nets, unknownParts)
   const doubled = new Set(doubles.map((d) => d.netId))
   const repeated = repeatedNetIds(doc.nets).filter((d) => !doubled.has(d.netId))
-  const found = [...invalidWires(doc), ...repeated, ...doubles, ...aliasCycles(doc.nets, width), ...undriven(doc.nets, unknownParts)]
+  const found = [...invalidWires(doc), ...strayOutSinks(doc), ...repeated, ...doubles, ...aliasCycles(doc.nets, width), ...undriven(doc.nets, unknownParts)]
   if (found.length > 0) return { success: false, diagnostics: found }
 
   const aliases = aliasBits(doc)
