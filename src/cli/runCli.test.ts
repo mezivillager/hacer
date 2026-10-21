@@ -229,3 +229,36 @@ describe('runCli test — a slice past the end of a bus is refused, not graded (
     expect(out.stdout).toMatch(/^ERROR Or8Way: .*Part "Or" pin "b" is wired to "in\[8\]": sub-bus index out of range \("in" has width 8\)/)
   })
 })
+
+describe('runCli — grading refuses an Or8Way the official vectors pass but the reference does not build (#840)', () => {
+  const ORS = ['Or(a=in[0], b=in[1], out=t1);', 'Or(a=t1, b=in[2], out=t2);', 'Or(a=t2, b=in[3], out=t3);', 'Or(a=t3, b=in[4], out=t4);', 'Or(a=t4, b=in[5], out=t5);', 'Or(a=t5, b=in[6], out=t6);']
+  // The parts start on line 5.
+  const or8Way = (...parts: string[]): string => `CHIP Or8Way {\n  IN in[8];\n  OUT out;\n  PARTS:\n  ${parts.join('\n  ')}\n}`
+  const CORRECT = or8Way(...ORS, 'Or(a=t6, b=in[7], out=out);')
+  const READS_OUT = or8Way(...ORS, 'Or(a=t6, b=in[7], out=out);', 'Not(in=out, out=spare);')
+
+  it('passes the correct Or8Way, the control', () => {
+    expect(runCli(vectorArgs('Or8Way'), reader({ 'Or8Way.hdl': CORRECT }))).toEqual({ exitCode: 0, stdout: 'PASS Or8Way 5/5 rows\n', stderr: '' })
+  })
+
+  it.each([
+    ['a part reading the chip OUT', READS_OUT, 'Line 12: Cannot use output pin as input'],
+    [
+      'an internal pin written and read by subscript',
+      or8Way(...ORS, 'Or(a=t6, b=in[7], out=t[0]);', 'Or(a=t[0], b=false, out=out);'),
+      'Line 11: Internal pins (in this case: t) cannot be subscripted or indexed',
+    ],
+    [
+      'internal names with "_"',
+      CORRECT.replace(/\bt(\d)\b/g, 'o_$1'),
+      'Line 5: Name "o_1" contains "_": a name is a letter, then letters and digits',
+    ],
+  ])("refuses %s with the reference's cause", (_, hdl, error) => {
+    expect(runCli(vectorArgs('Or8Way'), reader({ 'Or8Way.hdl': hdl }))).toEqual({ exitCode: 1, stdout: `ERROR Or8Way: ${error}\n`, stderr: '' })
+  })
+
+  it('refuses it under run-tst as under test, before printing a row', () => {
+    const out = runCli(['run-tst', 'Or8Way.hdl', 'Or8Way.tst'], reader({ 'Or8Way.hdl': READS_OUT }))
+    expect(out).toEqual({ exitCode: 1, stdout: '', stderr: 'ERROR Or8Way: Line 12: Cannot use output pin as input\n' })
+  })
+})

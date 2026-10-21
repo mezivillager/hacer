@@ -12,7 +12,7 @@ const chipOf = (scenario: Scenario): ScenarioChip => {
 }
 
 describe('scenarioToHdl', () => {
-  it('writes the three-gate circuit as a NAND chip with its recorded vector', () => {
+  it('writes the three-gate circuit as a NAND chip with its recorded vector, a gate read downstream also driving an internal pin', () => {
     expect(scenarioToHdl(threeGateScenario)).toEqual({
       ok: true,
       chip: {
@@ -21,9 +21,9 @@ describe('scenarioToHdl', () => {
           'IN g0a, g0b, g1a, g1b;',
           'OUT g0out, g1out, g2out;',
           'PARTS:',
-          'Nand(a=g0a, b=g0b, out=g0out);',
-          'Nand(a=g1a, b=g1b, out=g1out);',
-          'Nand(a=g0out, b=g1out, out=g2out);',
+          'Nand(a=g0a, b=g0b, out=g0out, out=g0);',
+          'Nand(a=g1a, b=g1b, out=g1out, out=g1);',
+          'Nand(a=g0, b=g1, out=g2out);',
           '}',
         ].join('\n'),
         inputs: [
