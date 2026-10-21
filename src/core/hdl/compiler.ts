@@ -91,10 +91,6 @@ function claimBits(claimed: Map<string, BitRange[]>, key: string, first: number,
   return clash ? shared({ first, last }, clash) : null
 }
 
-/** Do any of these claims land on a pin `width` bits wide? Same overlap test, against the pin. */
-const coversAnyBit = (ranges: BitRange[] | undefined, width: number): boolean =>
-  (ranges ?? []).some((range) => overlaps(range, { first: 0, last: width - 1 }))
-
 /** A part's error in the reference's `createError` form, leading with the part's line when it has one. */
 function partError(part: HDLPart, message: string, pinName?: string): HDLCompileError {
   const error: HDLCompileError = { message: part.line === undefined ? message : `Line ${part.line}: ${message}`, partName: part.name }
@@ -350,15 +346,10 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
         w.push({ signal: conn.external, ...written })
       }
     }
-    // Every input pin must be wired — an unconnected input would be silently read as 0. Since
-    // #357 a pin may be bound in pieces, so this asks about bits, not about names: an unbound
-    // *bit* is no longer evidence of a mistake, because `Or8Way(in[0]=a, in[1]=b)` is legal HDL
-    // whose bits 2..7 read 0, and the reference simulator has no connectedness pass at all
-    // (../web-ide/simulator/src/chip/builder.ts checks assignment, never coverage). A pin no
-    // binding lands on anywhere is still a forgotten wire, so that stays an error.
-    // (Output pins may legally be left unconnected when a chip doesn't use them.)
+    // An input pin no connection names is a forgotten wire, the pins bindUnconnectedInputs binds (ADR-0020 §1.1).
+    // A pin named only out of range has its range refusal alone; bits no binding covers read 0 (R338).
     for (const p of def.inputs) {
-      if (!coversAnyBit(boundRanges.get(p.name), p.width)) {
+      if (!boundRanges.has(p.name)) {
         errors.push(partError(part, `Part "${part.name}" input pin "${p.name}" is not connected: the nand2tetris simulator reads it as 0; bind ${p.name}=false to do the same`, p.name))
       }
     }
