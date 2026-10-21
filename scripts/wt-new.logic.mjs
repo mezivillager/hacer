@@ -5,6 +5,8 @@
 // Node CLI for the two decidable steps this module owns: parsing the `<type>/<topic>` spec, and
 // judging the evidence gathered along the way into one verdict.
 
+import path from 'node:path'
+
 const SPEC_RE = /^([a-z][a-z0-9]*)\/([a-z0-9][a-z0-9._-]*)$/
 
 /**
@@ -100,7 +102,23 @@ export function formatFreshness(behind, ahead) {
     'Diff/rebase against origin/main, not a stale HEAD, before trusting a --numstat.'
 }
 
-/** Not implemented yet. */
-export function scratchFolder() {
-  throw new Error('not implemented')
+const trimTrailingSlashes = (dir) => dir.replace(/\/+$/, '')
+
+/**
+ * A linked worktree's own scratch folder, `<tmpDir>/hacer-scratch/<worktree id>`, keyed by the last
+ * segment of its git dir. Refuses the main checkout (git dir is the common dir) and any relative input.
+ * @returns {{ok: true, path: string} | {ok: false, reason: string}}
+ */
+export function scratchFolder(tmpDir, gitDir, commonDir) {
+  if (![tmpDir, gitDir, commonDir].every((dir) => typeof dir === 'string' && path.isAbsolute(dir))) {
+    return { ok: false, reason: 'the temp dir, the git dir and the common git dir must all be absolute paths' }
+  }
+  if (trimTrailingSlashes(gitDir) === trimTrailingSlashes(commonDir)) {
+    return { ok: false, reason: `${gitDir} is the main checkout's git dir — only a linked worktree gets a scratch folder` }
+  }
+  const id = path.basename(gitDir)
+  if (id === '' || id === '.' || id === '..') {
+    return { ok: false, reason: `${JSON.stringify(gitDir)} has no worktree id as its last segment` }
+  }
+  return { ok: true, path: path.join(tmpDir, 'hacer-scratch', id) }
 }

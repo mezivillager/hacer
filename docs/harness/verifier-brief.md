@@ -20,7 +20,7 @@ give it the sources.
 - When the coordinator ran `node scripts/second-opinion.mjs <pr>` (`cursor-lane.md` §1.6), its output — **advisory leads, read after your own pass**. A second-opinion BLOCK counts only once you reproduce it; add `Second opinion (<model>): <verdict>; confirmed <n>, rejected <n>` to the verdict.
 
 ## Method
-1. Worktree from the PR head: `git fetch origin && git worktree add ../hacer-wt-verify-<pr> origin/<branch>`, `rm -rf node_modules && pnpm install --frozen-lockfile`, Node 22.
+1. Worktree from the PR head: `git fetch origin && git worktree add ../hacer-wt-verify-<pr> origin/<branch> && node scripts/wt-new.mjs scratch ../hacer-wt-verify-<pr>`, `rm -rf node_modules && pnpm install --frozen-lockfile`, Node 22. Write your definition-of-done logs and your verdict body only in the folder `SCRATCH:` names, and post the verdict with `--body-file`, never inline. The folder is outside the worktree, so removing the worktree in step 8 leaves it.
 2. Run the issue's verification command and the definition of done (`docs/harness/implementer-brief.md`); record exit codes and counts.
 3. Read the PR's own CI logs, including `browser-qa`: `gh run list --branch <branch>`, then `gh run view <id> --log`. Cite the run id and what the log shows for each required job. A green summary is not evidence the specs ran. A skipped or empty job is "unproven".
 4. Read every changed file in full. For each acceptance criterion, cite the test (`file:line`) that proves it, or write "unproven".

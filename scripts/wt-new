@@ -9,6 +9,9 @@
 #   bash scripts/wt-new feat/157-wt-new "pnpm run test:run"
 #   bash scripts/wt-new --refresh          # run from inside an existing worktree — see below
 #
+# After `WT-NEW: ready` it prints `SCRATCH: <folder>`: the worktree's own scratch folder, made
+# empty, outside every work tree (docs/harness/implementer-brief.md says what goes there).
+#
 # `--refresh`: `origin/main` can move mid-task on a busy day (a builder had it move underneath a
 # long task and only noticed from phantom deletions in a `--numstat`). Fetches and reports how far
 # HEAD is from `origin/main`, read-only — it never rebases. Cheap enough to run before every
@@ -110,6 +113,11 @@ VERIFY_EXIT=0
 bash -c "$VERIFY_CMD" || VERIFY_EXIT=$?
 
 if ! node "$SCRIPT_DIR/wt-new.mjs" judge "$WT_PATH" "$VERIFY_EXIT"; then
+  echo "wt-new: clean up before retrying this topic: $CLEANUP" >&2
+  exit 1
+fi
+
+if ! node "$SCRIPT_DIR/wt-new.mjs" scratch "$WT_PATH"; then
   echo "wt-new: clean up before retrying this topic: $CLEANUP" >&2
   exit 1
 fi
