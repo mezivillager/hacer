@@ -595,3 +595,12 @@ export async function readClaimDrift(since, readSeeds, readLog) {
     return { drift: null, warning: `claim-drift: skipped — ${String(error?.message ?? error).split('\n')[0]}` }
   }
 }
+
+const notImplemented = () => {
+  throw new Error('not implemented')
+}
+export const lastRunsRow = notImplemented
+export const parseRunsRow = notImplemented
+export const addedFiles = notImplemented
+export const retroLine = notImplemented
+export const readRetroLine = notImplemented
