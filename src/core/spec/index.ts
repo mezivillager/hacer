@@ -13,6 +13,8 @@ export type {
   SpecDiagnostic,
 } from './types'
 export { SPEC_SCHEMA_VERSION } from './types'
+export type { BindUnconnectedInputsResult, BoundInput } from './bindUnconnectedInputs'
+export { bindUnconnectedInputs } from './bindUnconnectedInputs'
 export type { CompileSpecInput, CompileSpecResult } from './compileSpec'
 export { compileSpec } from './compileSpec'
 export type { ParseSpecOptions } from './parseSpec'
