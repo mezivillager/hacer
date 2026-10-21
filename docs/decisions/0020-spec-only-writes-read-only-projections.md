@@ -711,11 +711,31 @@ and these rules are pinned by `src/core/spec/compileSpec.test.ts`,
      copied from its root after the engine returns. Order does not matter, because a root is never an
      alias bit.
    - An engine refusal becomes a `compile` diagnostic carrying `compileHDL`'s message verbatim.
+   - Once the document passes, every definition its parts reach through the registry is compiled
+     on its own checks, at any depth: a `'circuit'` one through `compileSpec`'s, an `'hdl'` one
+     through `parseHDL` and `compileHDL`. A builtin ends a branch (#821).
+     - The walk is rule 4's, so it enters each definition once. The engine pass has already
+       refused any cycle the parts reach, so the walk never meets one.
+     - Each error of a definition that fails becomes one `compile` diagnostic,
+       `Outer › Mid › Inn: <message>`. The chain is flat: the part names from the compiled spec down
+       to the definition that failed, then that definition's own message, verbatim. It carries the
+       `partId` of the spec's part that begins the chain. A definition reached by more than one
+       path is named by its first, in part order.
+     - The reference refuses the parent at build time too, but replaces the inner error with
+       `Undefined chip name: Inn` (`../web-ide/simulator/src/chip/builder.ts:261-264`).
+     - `compileHDL` alone still checks only a chip's direct parts. An `'hdl'` chip over a broken
+       part is refused at its first evaluation, without a chain.
    - `compileSpec` never throws and never changes its input. A refusal belongs to the run panel; the
      document and its parse diagnostics are unchanged (§1.1).
 3. **The cache rule,** in `evaluateChip`, for `'hdl'` and `'circuit'` chips alike. A cached evaluator
-   is reused only while `ctx.registry` resolves each of its part names, and an `'hdl'` chip's
-   `BUILTIN` name, to the definition it was compiled against.
+   is reused only while `ctx.registry` resolves every name its compile looked up to the definition
+   that lookup returned. Those names are a chip's parts and an `'hdl'` chip's `BUILTIN` name, every
+   definition rule 4's walk enters, and, for a `'circuit'` chip, every name rule 2's part check reads
+   (#821).
+   - The compile runs against a view of `ctx.registry` that notes what each name first resolved to,
+     so the re-check covers what the compile read and nothing else. An `Outer` already evaluated
+     refuses with the same `Outer › Inn: …` a fresh `compileSpec` gives once `Foo` under `Inn` stops
+     compiling, and a grandchild that changes but still compiles changes `Outer`'s value.
    - `compileHDL` captures each part's definition when it compiles. A cache keyed by the definition
      alone returned the old part's value under a fresh registry: `Bar` = `Foo(a=a, out=out)` gave `0`
      under a registry where `Foo` is `Or`, where the truth is `1`.
