@@ -1,7 +1,7 @@
 /**
  * `hacer test`'s engine path, shared by every surface that tests a chip from its sources: the chip
- * under test is the `.hdl`'s own, never a builtin of the same name, and a failure reads as the
- * `.cmp` writes it.
+ * under test is the `.hdl`'s own, never a builtin of the same name, it is graded only if the
+ * reference would build it, and a failure reads as the `.cmp` writes it.
  */
 import { combineRegistries } from '../chips/combineRegistries'
 import { registerProject1Builtins } from '../chips/builtins/project01'
@@ -13,6 +13,7 @@ import type { HDLChip } from '../hdl/types'
 import { parseCmp } from './cmpParser'
 import { runTest } from './engine'
 import { formatColumnValue } from './formatColumnValue'
+import { gradingRefusal } from './gradingRefusal'
 import { parseTST } from './tstParser'
 import type { TSTOutputColumn, TSTScript } from './types'
 
@@ -89,20 +90,25 @@ function ownChip(ast: HDLChip, source: string, builtins: ChipRegistry): ChipDefi
   return { ...def, implementation: builtin.implementation }
 }
 
-type Parsed = { ast: HDLChip; chip: string; script: TSTScript }
+type Parsed = { ast: HDLChip; chip: string; script: TSTScript; builtins: ChipRegistry }
 
 const isReport = (value: object): value is TestReport => 'status' in value
 
+/** An `.hdl` the reference would not build is refused here, before compileHDL's own checks. */
 function parseSources(hdlFile: TestSource, tstFile: TestSource): Parsed | TestReport {
   const hdl = parseHDL(hdlFile.source)
   if (!hdl.success) return chipTestError(null, firstParseError(hdlFile, hdl.errors))
   const chip = hdl.chip.name
+  const builtins = createChipRegistry()
+  registerProject1Builtins(builtins)
+  const refusal = gradingRefusal(hdl.chip, builtins)
+  if (refusal !== null) return chipTestError(chip, refusal)
   const tst = parseTST(tstFile.source)
   if (!tst.success) return chipTestError(chip, firstParseError(tstFile, tst.errors))
-  return { ast: hdl.chip, chip, script: tst.script }
+  return { ast: hdl.chip, chip, script: tst.script, builtins }
 }
 
-function loadChip({ ast, chip, script }: Parsed, hdlFile: TestSource, tstFile: TestSource): ChipTest | TestReport {
+function loadChip({ ast, chip, script, builtins }: Parsed, hdlFile: TestSource, tstFile: TestSource): ChipTest | TestReport {
   // `load` swaps in whatever the registry holds under the name it gives, so a `.tst` naming
   // another chip would test that chip's builtin, not this file.
   for (const cmd of script.commands) {
@@ -111,8 +117,6 @@ function loadChip({ ast, chip, script }: Parsed, hdlFile: TestSource, tstFile: T
     }
   }
 
-  const builtins = createChipRegistry()
-  registerProject1Builtins(builtins)
   const own = ownChip(ast, hdlFile.source, builtins)
   if (typeof own === 'string') return chipTestError(chip, own)
   const ownRegistry = createChipRegistry()

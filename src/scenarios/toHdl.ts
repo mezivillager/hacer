@@ -1,6 +1,7 @@
 /**
  * A scenario as a NAND chip, shared by every driver: unwired inputs are chip inputs (toggled, else
- * 0), a wire is one shared signal, and each gate's output is a chip output. The recorded vector
+ * 0), and each gate's output is a chip output. A wired gate also drives an internal signal that the
+ * gates it feeds read, as the reference refuses a part reading a chip output. The recorded vector
  * becomes checks on those signals; `scenarioTest` writes it as the `.tst`/`.cmp` pair a surface runs.
  */
 import { outHeader, outRow } from '@/cli/outTable'
@@ -18,7 +19,7 @@ export interface ScenarioChip {
   /** In declaration order, each with the value the scenario drives it to. */
   inputs: Array<{ name: string; value: number }>
   outputs: string[]
-  /** The signals each gate's `a` and `b` read. */
+  /** The chip signals carrying what each gate's `a` and `b` read. */
   pins: Array<[string, string]>
   expected: ScenarioCheck[]
 }
@@ -26,6 +27,7 @@ export interface ScenarioChip {
 export type ScenarioChipResult = { ok: true; chip: ScenarioChip } | { ok: false; errors: string[] }
 
 const outName = (gate: number): string => `g${gate}out`
+const wireName = (gate: number): string => `g${gate}`
 const PINS = [['in-0', 'a'], ['in-1', 'b']] as const
 
 const isSimulation = (scenario: NandScenario | SimulationScenario): scenario is SimulationScenario =>
@@ -82,7 +84,11 @@ export function scenarioToHdl(scenario: Scenario): ScenarioChipResult {
   const expected = checksOf(scenario, outputs, pins, errors)
   if (errors.length > 0) return { ok: false, errors }
 
-  const parts = pins.map(([a, b], gate) => `Nand(a=${a}, b=${b}, out=${outName(gate)});`)
+  const copyOf = new Map(wires.map((wire) => [outName(wire.fromGate), wireName(wire.fromGate)]))
+  const parts = pins.map(([a, b], gate) => {
+    const copy = copyOf.has(outName(gate)) ? `, out=${wireName(gate)}` : ''
+    return `Nand(a=${copyOf.get(a) ?? a}, b=${copyOf.get(b) ?? b}, out=${outName(gate)}${copy});`
+  })
   const ins = inputs.map((input) => input.name).join(', ')
   const hdl = [`CHIP ${SCENARIO_CHIP} {`, `IN ${ins};`, `OUT ${outputs.join(', ')};`, 'PARTS:', ...parts, '}'].join('\n')
   return { ok: true, chip: { hdl, inputs, outputs, pins, expected } }
