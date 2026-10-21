@@ -4,7 +4,9 @@
 //   node scripts/backlog.mjs ready    [--json]   pickable tasks in pick order, then the rest with a reason, each with the
 //                                               merged PRs that cite it as `possibly-delivered`; to stderr, the
 //                                               dormant banner at 5 open agent PRs (#540), the slot the cycle resumes
-//                                               at, after the latest claim (#535), and what the claim history leaves a guess
+//                                               at, after the latest claim (#535), what the claim history leaves a guess,
+//                                               and `retro due: …` or `retro: …`, from origin/main's Runs row and
+//                                               session records and the merged PRs it already reads
 //   node scripts/backlog.mjs next     [--json]   the head of ready's pick order, with ready's stderr; exit 3 when
 //                                               nothing is pickable
 //   node scripts/backlog.mjs projects [--json]   one line per docs/portfolio.md row: counts + next pick, `over cap` past 12
@@ -30,6 +32,8 @@ const REPO = 'mezivillager/hacer'
 const ISSUE_FIELDS = 'number,title,labels,author,blockedBy,blocking,parent,subIssuesSummary'
 const ROOT = path.join(import.meta.dirname, '..')
 const PORTFOLIO_PATH = path.join(ROOT, 'docs', 'portfolio.md')
+const INBOX_PATH = 'docs/harness/harness-inbox.md'
+const SESSIONS_PATH = 'docs/harness/sessions/'
 
 const JSON_FLAG = { json: { type: 'boolean' } }
 const text = (...names) => Object.fromEntries(names.map((name) => [name, { type: 'string' }]))
@@ -98,6 +102,31 @@ function claimDriftOf(issue) {
     return git('log', `--since=${issue.createdAt}`, '--oneline', 'origin/main', '--', ...seeds)
   })
 }
+
+/** `fetch`'s value, or the error it threw, from its first call on: two readers, one call. */
+function once(fetch) {
+  let result
+  return () => {
+    if (!result) {
+      try {
+        result = { value: fetch() }
+      } catch (error) {
+        result = { error }
+      }
+    }
+    if ('error' in result) throw result.error
+    return result.value
+  }
+}
+
+/** What retroLine reads: the Runs row and the session records added, both from origin/main, and the merges' times. */
+const retroInputs = (fetchMergedPrs) => ({
+  row: backlog.lastRunsRow(git('show', `origin/main:${INBOX_PATH}`)),
+  records: backlog.addedFiles(git('log', 'origin/main', '--diff-filter=A', '--format=%x00%cI', '--name-only', '--', SESSIONS_PATH)),
+  mainSha: git('rev-parse', 'origin/main').trim(),
+  mergedAts: fetchMergedPrs().map((pr) => pr.mergedAt),
+  now: Date.now(),
+})
 
 /** A `claim/<n>` whose n is no issue makes GraphQL answer `data` beside `errors`, and gh exit 1: keep the data. */
 function graphql(query) {
@@ -175,9 +204,10 @@ async function view(name, slug, flags) {
   const pages = await backlog.readClaimHistory(fetchPage, issues, portfolioRows, allowlist) // the cycle resumes from them
   const history = backlog.claimHistory(pages, allowlist)
   const inputs = [issues, portfolioRows, allowlist, claims, history]
+  const fetchMergedPrs = once(() => ghJson('pr', 'list', '-R', REPO,
+    '--state', 'merged', '--limit', String(backlog.MERGED_PR_WINDOW), '--json', 'number,title,body,mergedAt'))
   const readyPlan = () => {
-    const { plan, warning } = backlog.readPossiblyDelivered(backlog.planReady(...inputs), () => ghJson('pr', 'list', '-R', REPO,
-      '--state', 'merged', '--limit', String(backlog.MERGED_PR_WINDOW), '--json', 'number,title,body,mergedAt'))
+    const { plan, warning } = backlog.readPossiblyDelivered(backlog.planReady(...inputs), fetchMergedPrs)
     if (warning) console.error(warning)
     return plan
   }
@@ -185,7 +215,8 @@ async function view(name, slug, flags) {
     const gap = backlog.historyGap(pages, issues, portfolioRows, allowlist)
     for (const line of [backlog.formatDormant(backlog.dormantMode(openPrs, allowlist)),
       backlog.formatResume(backlog.resumePoint(issues, portfolioRows, history, allowlist)),
-      gap && `cycle: claim history exhausted — ${gap}; the place above is a guess`]) if (line) console.error(line)
+      gap && `cycle: claim history exhausted — ${gap}; the place above is a guess`,
+      backlog.readRetroLine(() => retroInputs(fetchMergedPrs))]) if (line) console.error(line)
   }
   if (name === 'next') {
     const { exitCode, stdout, stderr } = backlog.reportNext(readyPlan(), flags)

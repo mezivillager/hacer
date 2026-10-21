@@ -16,14 +16,22 @@ the window say about policy?
 
 ## Cadence
 
-**Cadence:** Run after every 5 merged PRs since the last retro, or when `main` has moved and 7 days have passed since the last retro, whichever comes first.
+**Cadence:** Run at the first orient after a coordinator run's close record lands on `main`, or when `main` has moved and 7 days have passed since the last retro, whichever comes first.
 
-- **Where the last run is:** the last row of `harness-inbox.md` § Runs. Its `to` time and its `main`
-  SHA are where the next window starts.
-- **Is a run due?** `node scripts/run-prs.mjs --from <last to> --to <now>` counts the merges.
-  `git rev-parse origin/main` against the row's SHA says whether `main` moved.
-- **Who checks:** the coordinator, after each merge and at each run's close. The first run proposes
-  automating this check (HRN-009).
+- **Where the last run is:** the last row of `harness-inbox.md` § Runs, with its `to` time and its
+  `main` SHA. Whichever trigger fired, the window runs from that `to` to the retro's start. That
+  start becomes the new row's `to`, written as a full UTC timestamp with its year
+  (`YYYY-MM-DDTHH:MMZ`).
+- **Is a run due?** `node scripts/backlog.mjs ready` (or `next`) prints one line on stderr, read
+  from `origin/main`: `retro due: <n> merges since <to> (run closed: <record>)` once a dated
+  session record has landed after `to`, `(7 days)` once `main` has moved and 7 days have passed,
+  otherwise `retro: <n> merges since <to>`, or `retro: unread (<reason>)`.
+  `node scripts/run-prs.mjs --from <last to> --to <retro start>` still counts the window's merges
+  for the row.
+- **Who checks:** the coordinator, at orient. On `retro due:` it dispatches the retro
+  before its first claim, and the retro's token count joins the dispatching run's total
+  (`ha-next` §6). The retro reads the closed run's record from `main`, so the close record's token
+  line never waits on it.
 - **Dispatch:** `hacer-retro`, on Opus. `model-tiering.md` has no row for this role yet: its retro
   row covers the one-line ledger entry after each PR. From the parent workspace, `hacer-retro`
   resolves only through the owner's link (#870). In a session whose agent list has no `hacer-retro`,

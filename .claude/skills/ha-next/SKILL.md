@@ -30,6 +30,9 @@ issue's first claim comment, read from the most recently updated issues) and pri
 stderr — `cycle: slot 4 of 8 (foundation), after #537 · harness, …`. So claim a pick before calling
 `ready` again: the next top pick is then the next slot, not more of the same bucket (#535).
 
+A `retro due:` line from `ready` means dispatch the retro (`docs/harness/retro-brief.md` § Cadence)
+before the first claim; its token count joins this run's total (§6).
+
 Also surface **open claims** and any `docs/harness/sessions/*-handoff.md` files: read the latest
 claim comment on each claimed issue (format in §2). `ready` never offers a claimed issue: it prints
 `claimed`, or `stale-claim` under the 48 h rule in §2. A stale or `paused:…` claim is not an active

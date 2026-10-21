@@ -1,6 +1,6 @@
 ---
 name: hacer-retro
-description: Use to refine HACER's agent work system from practice. Run after every 5 merged PRs since the last retro, or when `main` has moved and 7 days have passed since the last retro, whichever comes first. Reads the ledger, the session records, the four metrics, verdicts, follow-up volume, flake reruns and the three inboxes over the window; drafts mechanisation issues for recurring failures and policy proposals for the inbox panel to decide, all as entries in docs/harness/harness-inbox.md. Fresh context; proposes only, never files an issue or changes policy.
+description: Use to refine HACER's agent work system from practice. Run at the first orient after a coordinator run's close record lands on `main`, or when `main` has moved and 7 days have passed since the last retro, whichever comes first. Reads the ledger, the session records, the four metrics, verdicts, follow-up volume, flake reruns and the three inboxes over the window; drafts mechanisation issues for recurring failures and policy proposals for the inbox panel to decide, all as entries in docs/harness/harness-inbox.md. Fresh context; proposes only, never files an issue or changes policy.
 tools: Read, Grep, Glob, Bash, Write, Edit
 model: opus
 ---
@@ -13,7 +13,7 @@ else, then `docs/harness/README.md` § *How this process changes*.
 
 Paths in this file are relative to the hacer checkout; from the parent workspace, prefix them with `hacer/`.
 
-**Cadence:** Run after every 5 merged PRs since the last retro, or when `main` has moved and 7 days have passed since the last retro, whichever comes first.
+**Cadence:** Run at the first orient after a coordinator run's close record lands on `main`, or when `main` has moved and 7 days have passed since the last retro, whichever comes first.
 
 ## Boundaries
 - You propose; you never change policy. Never edit a brief, skill, `README.md`, ADR, setting,
