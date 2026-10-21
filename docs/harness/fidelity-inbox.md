@@ -518,3 +518,29 @@ A registered definition is refused, with a message that names both sides, when i
 `pnpm exec vitest run --project node src/core/spec src/core/chips src/core/hdl`
 ## Blocked by
 #821 (PR #845): this extends its part check.
+
+### FID-029 · A literal on a part pin wider than 16 bits: decide all ones or the reference's 16, pin it, and record it
+- **Date:** 2026-10-21 · **Target epic:** #140 core
+- **Status:** proposed
+- **Why:** PR #853 (#814) writes "`true` is every bit of the pin it feeds" into ADR-0020 §1.10.9 and says the reference models the constants "the same way". Measured at `91ef428` and at the PR's head `876964a0`, they agree on every pin up to 16 bits, and differ above that.
+  - The reference's `TRUE_BUS` is a 16-bit `ConstantBus` holding `0xffff`, `super(name, 16 /* TODO: get high bit index */)` (`../web-ide/simulator/src/chip/chip.ts:180`, `:201`). A user chip `W32` with `IN a[32]`, bound `W32(a=true, …)`, reads `0x0000ffff`: low half 65535, high half 0.
+  - HACER reads all 32 bits as ones, through `compileSpec` and the HDL engine alike: `maskForWidth` (`src/simulation/busOps.ts:8-12`, `src/core/hdl/compiler.ts:458-459`).
+  - No vector reaches it (every official chip is at most 16 bits), no test pins it, and nothing records it. It predates #853. Not reachable by a learner today: the user registry is empty (#206). It becomes reachable with any wide user chip, the kind of custom architecture the North Star names.
+- **Review note:** docs/research/2026-10-fidelity-review-pr-853.md
+
+**Draft issue body**
+## Goal
+A literal on a part pin wider than 16 bits has one decided value, which is pinned by a test and recorded in ADR-0020 §1.10.9, with the reference's behaviour named beside it.
+## Acceptance criteria
+- ADR-0020 §1.10.9 states the value of `true` on a pin wider than 16 bits.
+  - It is either every bit (HACER today) or the low 16 (the reference).
+  - If HACER keeps every bit, the section names the reference's 16-bit `ConstantBus` (`chip.ts:180`) as an intended difference.
+- A test in `src/core` pins the decision through both readers:
+  - `W32(a=true, lo=lo, hi=hi)` over a registered `W32` with `IN a[32]` and outputs its two 16-bit halves;
+  - run through `compileSpec` and through `compileHDL`;
+  - asserting the decided `hi`.
+- A sliced 16-bit literal (`b[3..5]=true`) and `And16(b=true)` keep their present values, which equal the reference's.
+## Verification command
+`pnpm exec vitest run --project node src/core/spec src/core/hdl`
+## Blocked by
+#814 (PR #853), which adds the §1.10.9 text this amends.
