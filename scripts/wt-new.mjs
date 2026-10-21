@@ -7,11 +7,13 @@
 //   node scripts/wt-new.mjs judge <worktree-path> <verify-exit> prints the verdict; exit 1 unless everything passed
 //   node scripts/wt-new.mjs fetch-verdict <exit-code>           prints nothing on 0; the accurate reason otherwise
 //   node scripts/wt-new.mjs freshness <behind> <ahead>          prints the --refresh report line
+//   node scripts/wt-new.mjs scratch <worktree-path>             empties that worktree's scratch folder, prints "SCRATCH: <path>"; exit 1 on the main checkout
 
 import { execFileSync } from 'node:child_process'
-import { readdirSync } from 'node:fs'
+import { mkdirSync, readdirSync, rmSync } from 'node:fs'
+import { tmpdir } from 'node:os'
 import path from 'node:path'
-import { formatFreshness, hasBabelHelperSymlinks, isTreeClean, judge, judgeFetch, parseSpec } from './wt-new.logic.mjs'
+import { formatFreshness, hasBabelHelperSymlinks, isTreeClean, judge, judgeFetch, parseSpec, scratchFolder } from './wt-new.logic.mjs'
 
 const [command, ...args] = process.argv.slice(2)
 
@@ -33,6 +35,25 @@ if (command === 'fetch-verdict' && args.length === 1) {
 
 if (command === 'freshness' && args.length === 2) {
   console.log(formatFreshness(Number(args[0]), Number(args[1])))
+  process.exit(0)
+}
+
+if (command === 'scratch' && args.length === 1) {
+  const revParse = (...flags) =>
+    execFileSync('git', ['-C', args[0], 'rev-parse', ...flags], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim()
+  let folder
+  try {
+    folder = scratchFolder(tmpdir(), revParse('--absolute-git-dir'), revParse('--path-format=absolute', '--git-common-dir'))
+  } catch (error) {
+    folder = { ok: false, reason: `${args[0]} is not a git worktree (${String(error.stderr ?? error.message).trim()})` }
+  }
+  if (!folder.ok) {
+    console.error(`wt-new: ${folder.reason}`)
+    process.exit(1)
+  }
+  rmSync(folder.path, { recursive: true, force: true })
+  mkdirSync(folder.path, { recursive: true })
+  console.log(`SCRATCH: ${folder.path}`)
   process.exit(0)
 }
 
@@ -58,6 +79,6 @@ if (command === 'judge' && args.length === 2) {
 
 console.error(
   'usage: node scripts/wt-new.mjs parse <type>/<topic> | judge <worktree-path> <verify-exit-code> ' +
-  '| fetch-verdict <exit-code> | freshness <behind> <ahead>',
+  '| fetch-verdict <exit-code> | freshness <behind> <ahead> | scratch <worktree-path>',
 )
 process.exit(2)
