@@ -1056,4 +1056,20 @@ describe('compileHDL — a part cycle through the registry is refused (#816)', (
     expect(compile(NOT_FROM_AND, chips)).toEqual(refusal('Chip "Not" uses itself through "And"', 'And'))
     expect(compile(AND_FROM_NOT, chips)).toEqual(refusal('Chip "And" uses itself through "Not"', 'Not'))
   })
+
+  it('refuses A and B that use each other under a registry whose get builds a fresh definition per call', () => {
+    const sources = new Map([['A', uses('A', 'B')], ['B', uses('B', 'A')]])
+    const builtins = getBuiltinChipRegistry()
+    let calls = 0
+    const fresh: ChipRegistry = {
+      ...builtins,
+      get(name) {
+        if (++calls > 1000) throw new Error(`the walk did not end after ${calls - 1} get calls`)
+        const source = sources.get(name)
+        return source === undefined ? builtins.get(name) : hdlChipDefinition(parsed(source), source)
+      },
+    }
+    expect(compile(uses('A', 'B'), fresh)).toEqual(refusal('Chip "A" uses itself through "B"', 'B'))
+    expect(compile(uses('Top', 'A'), fresh)).toEqual(refusal('Chip "A" uses itself through "B"', 'A'))
+  })
 })
