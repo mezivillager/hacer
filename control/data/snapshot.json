@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-21T14:54:55.901Z",
+  "generatedAt": "2026-10-21T15:22:25.169Z",
   "head": {
     "sha": "204aa0b2a105aa7959860b91e2629431effc7b4c",
     "date": "2026-10-21T17:54:17+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T14:54:55.901Z",
+      "fetchedAt": "2026-10-21T15:22:25.169Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T14:54:55.901Z",
+      "fetchedAt": "2026-10-21T15:22:25.169Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T14:54:55.901Z",
+      "fetchedAt": "2026-10-21T15:22:25.169Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-21T14:54:55.901Z",
+      "fetchedAt": "2026-10-21T15:22:25.169Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-21T14:54:55.901Z",
+      "fetchedAt": "2026-10-21T15:22:25.169Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-21T14:54:55.901Z",
+      "fetchedAt": "2026-10-21T15:22:25.169Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-21T14:54:55.901Z",
+      "fetchedAt": "2026-10-21T15:22:25.169Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-21T14:54:55.901Z",
+      "fetchedAt": "2026-10-21T15:22:25.169Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-21T14:54:55.901Z",
+      "fetchedAt": "2026-10-21T15:22:25.169Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-21T14:54:55.901Z",
+      "fetchedAt": "2026-10-21T15:22:25.169Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-21T14:54:55.901Z",
+      "fetchedAt": "2026-10-21T15:22:25.169Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-21T14:54:55.901Z",
+      "fetchedAt": "2026-10-21T15:22:25.169Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-21T14:54:55.901Z",
+      "fetchedAt": "2026-10-21T15:22:25.169Z",
       "status": "ok"
     }
   },
@@ -80,12 +80,12 @@
         "lane": "feature",
         "slug": "foundation",
         "epicNumber": 318,
-        "open": 28,
-        "ready": 1,
-        "inProgress": 1,
+        "open": 29,
+        "ready": 2,
+        "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 4,
+        "agentReady": 5,
         "filedElsewhere": [],
         "next": {
           "number": 338,
@@ -141,8 +141,8 @@
         "next": null,
         "title": "Epic: surfaces — renderer surfaces: CLI/HDL · MCP · 2D",
         "subIssues": {
-          "completed": 9,
-          "percentCompleted": 64,
+          "completed": 10,
+          "percentCompleted": 71,
           "total": 14
         }
       },
@@ -191,8 +191,8 @@
         "title": "Epic: core — headless core",
         "subIssues": {
           "completed": 13,
-          "percentCompleted": 72,
-          "total": 18
+          "percentCompleted": 65,
+          "total": 20
         }
       },
       {
@@ -201,13 +201,16 @@
         "slug": "verify",
         "epicNumber": 141,
         "open": 9,
-        "ready": 0,
+        "ready": 1,
         "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 3,
         "filedElsewhere": [],
-        "next": null,
+        "next": {
+          "number": 811,
+          "title": "An acceptance-parity corpus: each HDL shape carries the reference's verdict and is asserted against HACER's readers"
+        },
         "title": "Epic: verify — QA service",
         "subIssues": {
           "completed": 5,
@@ -306,15 +309,15 @@
         "slug": "upkeep",
         "epicNumber": 146,
         "open": 18,
-        "ready": 14,
-        "inProgress": 2,
+        "ready": 12,
+        "inProgress": 4,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 17,
         "filedElsewhere": [],
         "next": {
-          "number": 790,
-          "title": "Inbox review: FID-019 · `printSpec` refuses a document in which a driverless net shares its id with a driven net"
+          "number": 792,
+          "title": "Inbox review: FID-021 · A strict acceptance mode for the grading path"
         },
         "title": "Epic: upkeep — maintenance & documentation",
         "subIssues": {
@@ -418,19 +421,19 @@
         "project": "harness"
       },
       {
-        "number": 790,
-        "title": "Inbox review: FID-019 · `printSpec` refuses a document in which a driverless net shares its id with a driven net",
-        "project": "upkeep"
+        "number": 816,
+        "title": "A part cycle through the registry is refused at compile time, naming its chips, and the walk never throws",
+        "project": "foundation"
+      },
+      {
+        "number": 811,
+        "title": "An acceptance-parity corpus: each HDL shape carries the reference's verdict and is asserted against HACER's readers",
+        "project": "verify"
       },
       {
         "number": 819,
         "title": "The inbox status grammar takes a note only after a finished status, and the CLI refusal has a test",
         "project": "harness"
-      },
-      {
-        "number": 791,
-        "title": "Inbox review: FID-020 · #338 lists the narrow-first multi-driven OUT as an expected disagreement",
-        "project": "upkeep"
       },
       {
         "number": 792,
@@ -496,7 +499,7 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
-        818,
+        822,
         514
       ]
     }
@@ -536,17 +539,40 @@
         "reason": null
       },
       {
-        "number": 790,
-        "title": "Inbox review: FID-019 · `printSpec` refuses a document in which a driverless net shares its id with a driven net",
+        "number": 816,
+        "title": "A part cycle through the registry is refused at compile time, naming its chips, and the walk never throws",
         "labels": [
-          "project:upkeep",
           "agent-ready",
-          "risk:0",
-          "inbox-review"
+          "risk:1",
+          "fidelity",
+          "project:foundation"
         ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
+        "blocking": [
+          821,
+          820,
+          814
+        ],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 811,
+        "title": "An acceptance-parity corpus: each HDL shape carries the reference's verdict and is asserted against HACER's readers",
+        "labels": [
+          "project:verify",
+          "agent-ready",
+          "risk:1",
+          "fidelity"
+        ],
+        "blocking": [
+          820,
+          814
+        ],
+        "project": "verify",
+        "rank": 6,
         "lane": "aux",
         "pickable": true,
         "reason": null
@@ -563,22 +589,6 @@
         "project": "harness",
         "rank": 2,
         "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 791,
-        "title": "Inbox review: FID-020 · #338 lists the narrow-first multi-driven OUT as an expected disagreement",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
         "pickable": true,
         "reason": null
       },
@@ -2183,6 +2193,40 @@
         "reason": "claimed"
       },
       {
+        "number": 790,
+        "title": "Inbox review: FID-019 · `printSpec` refuses a document in which a driverless net shares its id with a driven net",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
+        "number": 791,
+        "title": "Inbox review: FID-020 · #338 lists the narrow-first multi-driven OUT as an expected disagreement",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 801,
         "title": "polish: an unsaved circuit is lost on reload — autosave is written every 2 s but never restored",
         "labels": [
@@ -2260,44 +2304,6 @@
         "reason": "on-request"
       },
       {
-        "number": 811,
-        "title": "An acceptance-parity corpus: each HDL shape carries the reference's verdict and is asserted against HACER's readers",
-        "labels": [
-          "project:verify",
-          "agent-ready",
-          "risk:1",
-          "fidelity"
-        ],
-        "blocking": [
-          814
-        ],
-        "project": "verify",
-        "rank": 6,
-        "lane": "aux",
-        "pickable": false,
-        "reason": "blocked:#813"
-      },
-      {
-        "number": 813,
-        "title": "An unconnected part input's refusal names the reference's 0, and `bindUnconnectedInputs` binds such pins to `false`",
-        "labels": [
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "fidelity",
-          "project:foundation"
-        ],
-        "blocking": [
-          811,
-          816
-        ],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 814,
         "title": "Literals become sources: a constant driver kind for `true` and `false`, and the spec's first `migrate(1 → 2)`",
         "labels": [
@@ -2311,11 +2317,27 @@
         "rank": 1,
         "lane": "feature",
         "pickable": false,
+        "reason": "blocked:#821,#811,#816"
+      },
+      {
+        "number": 820,
+        "title": "Learner-facing compile errors use the reference's words and carry the line",
+        "labels": [
+          "agent-ready",
+          "risk:1",
+          "fidelity",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": false,
         "reason": "blocked:#811,#816"
       },
       {
-        "number": 816,
-        "title": "A part cycle through the registry is refused at compile time, naming its chips, and the walk never throws",
+        "number": 821,
+        "title": "`compileSpec` refuses a spec whose registered part does not compile, naming the chain",
         "labels": [
           "agent-ready",
           "risk:1",
@@ -2329,12 +2351,13 @@
         "rank": 1,
         "lane": "feature",
         "pickable": false,
-        "reason": "blocked:#813"
+        "reason": "blocked:#816"
       }
     ],
     "byProject": {
       "foundation": [
         338,
+        816,
         151,
         184,
         325,
@@ -2359,9 +2382,9 @@
         728,
         742,
         773,
-        813,
         814,
-        816
+        820,
+        821
       ],
       "harness": [
         257,
@@ -2379,9 +2402,18 @@
         607,
         677
       ],
+      "verify": [
+        811,
+        194,
+        197,
+        198,
+        200,
+        201,
+        202,
+        203,
+        289
+      ],
       "upkeep": [
-        790,
-        791,
         792,
         793,
         794,
@@ -2397,7 +2429,9 @@
         229,
         256,
         788,
-        789
+        789,
+        790,
+        791
       ],
       "spine": [
         165,
@@ -2422,17 +2456,6 @@
         452,
         453,
         620
-      ],
-      "verify": [
-        194,
-        197,
-        198,
-        200,
-        201,
-        202,
-        203,
-        289,
-        811
       ],
       "surfaces": [
         206,
@@ -2489,23 +2512,29 @@
   "prs": {
     "open": [
       {
-        "number": 818,
-        "title": "feat(spec): the unconnected-input refusal names the reference's 0, and bindUnconnectedInputs binds such pins to false",
-        "url": "https://github.com/mezivillager/hacer/pull/818",
+        "number": 822,
+        "title": "docs(fidelity): review of PR #818 — the unconnected-input refusal against the reference; FID-025",
+        "url": "https://github.com/mezivillager/hacer/pull/822",
         "author": "mezivillager",
         "labels": [
-          "risk:1",
-          "fidelity",
-          "project:foundation"
+          "project:harness",
+          "risk:0",
+          "fidelity"
         ],
-        "headRefName": "feat/813-unconnected-input-bind",
+        "headRefName": "docs/fidelity-review-818",
         "isDraft": false,
-        "createdAt": "2026-10-21T14:43:55Z",
+        "createdAt": "2026-10-21T15:15:42Z",
         "mergedAt": null,
-        "closes": [
-          813
-        ],
-        "verdicts": []
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (claude-opus-5-5)",
+            "at": "2026-10-21T15:17:42Z",
+            "url": "https://github.com/mezivillager/hacer/pull/822#issuecomment-6319535254"
+          }
+        ]
       },
       {
         "number": 514,
@@ -2535,6 +2564,33 @@
       }
     ],
     "merged": [
+      {
+        "number": 818,
+        "title": "feat(spec): the unconnected-input refusal names the reference's 0, and bindUnconnectedInputs binds such pins to false",
+        "url": "https://github.com/mezivillager/hacer/pull/818",
+        "author": "mezivillager",
+        "labels": [
+          "risk:1",
+          "fidelity",
+          "project:foundation"
+        ],
+        "headRefName": "feat/813-unconnected-input-bind",
+        "isDraft": false,
+        "createdAt": "2026-10-21T14:43:55Z",
+        "mergedAt": "2026-10-21T15:22:14Z",
+        "closes": [
+          813
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus (claude-opus-5-5)",
+            "at": "2026-10-21T14:56:06Z",
+            "url": "https://github.com/mezivillager/hacer/pull/818#issuecomment-6319088454"
+          }
+        ]
+      },
       {
         "number": 817,
         "title": "chore(harness): inbox.mjs refuses while a status is outside its file's grammar",
@@ -4061,30 +4117,13 @@
         "mergedAt": "2026-10-14T22:30:47Z",
         "closes": [],
         "verdicts": []
-      },
-      {
-        "number": 695,
-        "title": "chore(deps): bump @radix-ui/react-toggle from 1.1.10 to 1.1.19",
-        "url": "https://github.com/mezivillager/hacer/pull/695",
-        "author": "app/dependabot",
-        "labels": [
-          "released",
-          "dependencies",
-          "javascript"
-        ],
-        "headRefName": "dependabot/npm_and_yarn/radix-ui/react-toggle-1.1.19",
-        "isDraft": false,
-        "createdAt": "2026-10-08T23:15:56Z",
-        "mergedAt": "2026-10-14T22:27:20Z",
-        "closes": [],
-        "verdicts": []
       }
     ],
     "coverage": {
       "merged": 60,
-      "withVerdict": 48,
-      "withoutVerdict": 12,
-      "pass": 48,
+      "withVerdict": 49,
+      "withoutVerdict": 11,
+      "pass": 49,
       "block": 0
     }
   },
@@ -4168,35 +4207,62 @@
         }
       },
       {
-        "number": 812,
-        "ref": "refs/heads/claim/812",
-        "sha": "3a9e5266a5daa29ce0636176218877ac07862da7",
-        "state": "CLOSED",
-        "title": "inbox.mjs reports an entry whose status is outside its file's grammar",
-        "url": "https://github.com/mezivillager/hacer/issues/812",
+        "number": 790,
+        "ref": "refs/heads/claim/790",
+        "sha": "204aa0b2a105aa7959860b91e2629431effc7b4c",
+        "state": "OPEN",
+        "title": "Inbox review: FID-019 · `printSpec` refuses a document in which a driverless net shares its id with a driven net",
+        "url": "https://github.com/mezivillager/hacer/issues/790",
         "labels": [
-          "project:harness",
+          "project:upkeep",
           "agent-ready",
           "in-progress",
-          "risk:1"
+          "risk:0",
+          "inbox-review"
         ],
-        "onClosedIssue": true,
+        "onClosedIssue": false,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
           "session": "hacer-loop-to-70",
-          "branch": "chore/812-inbox-grammar",
+          "branch": "chore/inbox-fid-019",
           "handoff": "none",
           "author": "mezivillager",
-          "at": "2026-10-21T14:21:21Z",
-          "url": "https://github.com/mezivillager/hacer/issues/812#issuecomment-6318415282"
+          "at": "2026-10-21T14:57:56Z",
+          "url": "https://github.com/mezivillager/hacer/issues/790#issuecomment-6319133981"
+        }
+      },
+      {
+        "number": 791,
+        "ref": "refs/heads/claim/791",
+        "sha": "204aa0b2a105aa7959860b91e2629431effc7b4c",
+        "state": "OPEN",
+        "title": "Inbox review: FID-020 · #338 lists the narrow-first multi-driven OUT as an expected disagreement",
+        "url": "https://github.com/mezivillager/hacer/issues/791",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-to-70",
+          "branch": "chore/inbox-fid-020",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-21T15:12:55Z",
+          "url": "https://github.com/mezivillager/hacer/issues/791#issuecomment-6319434384"
         }
       },
       {
         "number": 813,
         "ref": "refs/heads/claim/813",
         "sha": "3a9e5266a5daa29ce0636176218877ac07862da7",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "An unconnected part input's refusal names the reference's 0, and `bindUnconnectedInputs` binds such pins to `false`",
         "url": "https://github.com/mezivillager/hacer/issues/813",
         "labels": [
@@ -4206,7 +4272,7 @@
           "fidelity",
           "project:foundation"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -6026,7 +6092,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-14",
-        "merges": 8
+        "merges": 7
       },
       {
         "date": "2026-10-15",
@@ -6042,20 +6108,20 @@
       },
       {
         "date": "2026-10-21",
-        "merges": 1
+        "merges": 2
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-07T14:54:55.901Z",
-      "merged": 63,
+      "since": "2026-10-07T15:22:25.169Z",
+      "merged": 64,
       "openToMergeHours": {
         "median": 0.4,
         "p90": 2.4
       },
       "blockedOnce": {
         "count": 7,
-        "of": 48,
+        "of": 49,
         "prs": [
           700,
           725,
@@ -6068,8 +6134,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 43,
-          "withVerdict": 43,
+          "merged": 44,
+          "withVerdict": 44,
           "without": []
         },
         "nonCode": {
@@ -10005,12 +10071,10 @@
       },
       {
         "date": "2026-10-21",
-        "at": "2026-10-21T14:24:13.847Z",
+        "at": "2026-10-21T14:54:55.901Z",
         "byProject": {
           "foundation": [
             338,
-            814,
-            816,
             151,
             184,
             325,
@@ -10035,10 +10099,13 @@
             728,
             742,
             773,
-            813
+            813,
+            814,
+            816
           ],
           "harness": [
             257,
+            819,
             154,
             156,
             270,
@@ -10050,22 +10117,9 @@
             505,
             550,
             607,
-            677,
-            812
-          ],
-          "verify": [
-            811,
-            194,
-            197,
-            198,
-            200,
-            201,
-            202,
-            203,
-            289
+            677
           ],
           "upkeep": [
-            789,
             790,
             791,
             792,
@@ -10082,7 +10136,8 @@
             809,
             229,
             256,
-            788
+            788,
+            789
           ],
           "spine": [
             165,
@@ -10107,6 +10162,17 @@
             452,
             453,
             620
+          ],
+          "verify": [
+            194,
+            197,
+            198,
+            200,
+            201,
+            202,
+            203,
+            289,
+            811
           ],
           "surfaces": [
             206,
@@ -10166,11 +10232,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "204aa0b2a105aa7959860b91e2629431effc7b4c",
+        "sha": "ff87c57549f3eb7063440f91af1926f8a6926dbe",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39620972054/job/119293919964",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39625027183/job/119307922693",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -10223,43 +10289,42 @@
         "disagrees": false
       },
       {
-        "pr": 818,
-        "sha": "de64ed929ec60516ae1bdf64c03d3fe8476f078f",
+        "pr": 822,
+        "sha": "20b3a96da153211076261cf40e6169894ba733c5",
         "check": "pr-hygiene",
         "conclusion": "SUCCESS",
-        "completedAt": "2026-10-21T14:44:13Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39619429276/job/119288583169",
-        "line": "HYGIENE: PASS reviewable=54 test=155 excluded=0 files=5 issue=#813 linked=fixes",
+        "completedAt": "2026-10-21T15:15:58Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39624035454/job/119304650908",
+        "line": "HYGIENE: PASS reviewable=155 test=0 excluded=0 files=2 issue=docs-only",
         "verdict": "PASS",
         "fields": {
-          "reviewable": 54,
-          "test": 155,
+          "reviewable": 155,
+          "test": 0,
           "excluded": 0,
-          "files": 5,
-          "issue": "#813",
-          "linked": "fixes"
+          "files": 2,
+          "issue": "docs-only"
         },
         "disagrees": false
       },
       {
-        "pr": 818,
-        "sha": "de64ed929ec60516ae1bdf64c03d3fe8476f078f",
+        "pr": 822,
+        "sha": "20b3a96da153211076261cf40e6169894ba733c5",
         "check": "browser-qa",
         "conclusion": "SUCCESS",
-        "completedAt": "2026-10-21T14:44:15Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39619429224/job/119288585233",
+        "completedAt": "2026-10-21T15:16:00Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39624035395/job/119304647826",
         "line": "BROWSER-QA: skipped (no critical paths)",
         "verdict": "SKIPPED",
         "fields": {},
         "disagrees": false
       },
       {
-        "pr": 818,
-        "sha": "de64ed929ec60516ae1bdf64c03d3fe8476f078f",
+        "pr": 822,
+        "sha": "20b3a96da153211076261cf40e6169894ba733c5",
         "check": "ci",
         "conclusion": "SUCCESS",
-        "completedAt": "2026-10-21T14:47:28Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39619426149/job/119288571265",
+        "completedAt": "2026-10-21T15:18:00Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39624029060/job/119304624820",
         "line": "LAYER-RATCHET: 69 known violations (37 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
         "verdict": "PASS",
         "fields": {
