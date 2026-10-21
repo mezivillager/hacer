@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-21T22:48:45.970Z",
+  "generatedAt": "2026-10-21T23:19:19.320Z",
   "head": {
     "sha": "478e4407b26cc3ec0eda3fc5794b0c083e8862c6",
     "date": "2026-10-22T01:47:52+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T22:48:45.970Z",
+      "fetchedAt": "2026-10-21T23:19:19.320Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T22:48:45.970Z",
+      "fetchedAt": "2026-10-21T23:19:19.320Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T22:48:45.970Z",
+      "fetchedAt": "2026-10-21T23:19:19.320Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-21T22:48:45.970Z",
+      "fetchedAt": "2026-10-21T23:19:19.320Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-21T22:48:45.970Z",
+      "fetchedAt": "2026-10-21T23:19:19.320Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-21T22:48:45.970Z",
+      "fetchedAt": "2026-10-21T23:19:19.320Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-21T22:48:45.970Z",
+      "fetchedAt": "2026-10-21T23:19:19.320Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-21T22:48:45.970Z",
+      "fetchedAt": "2026-10-21T23:19:19.320Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-21T22:48:45.970Z",
+      "fetchedAt": "2026-10-21T23:19:19.320Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-21T22:48:45.970Z",
+      "fetchedAt": "2026-10-21T23:19:19.320Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-21T22:48:45.970Z",
+      "fetchedAt": "2026-10-21T23:19:19.320Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-21T22:48:45.970Z",
+      "fetchedAt": "2026-10-21T23:19:19.320Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-21T22:48:45.970Z",
+      "fetchedAt": "2026-10-21T23:19:19.320Z",
       "status": "ok"
     }
   },
@@ -103,12 +103,12 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 14,
-        "ready": 1,
+        "open": 15,
+        "ready": 2,
         "inProgress": 0,
         "needsHuman": 2,
         "staleClaims": [],
-        "agentReady": 1,
+        "agentReady": 2,
         "filedElsewhere": [
           151,
           339
@@ -306,15 +306,15 @@
         "slug": "upkeep",
         "epicNumber": 146,
         "open": 33,
-        "ready": 15,
-        "inProgress": 16,
+        "ready": 12,
+        "inProgress": 19,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 32,
         "filedElsewhere": [],
         "next": {
-          "number": 827,
-          "title": "Inbox review: FID-025 · The not-connected refusal fires only for a pin no connection names, so a pin bound only out of range gets the reference's one refusal"
+          "number": 830,
+          "title": "Inbox review: HRN-012 · `merge-on-green` reports a missing `workflow` token scope before it touches a PR that changes `.github/workflows/`"
         },
         "title": "Epic: upkeep — maintenance & documentation",
         "subIssues": {
@@ -418,24 +418,14 @@
         "project": "harness"
       },
       {
-        "number": 827,
-        "title": "Inbox review: FID-025 · The not-connected refusal fires only for a pin no connection names, so a pin bound only out of range gets the reference's one refusal",
-        "project": "upkeep"
-      },
-      {
-        "number": 828,
-        "title": "Inbox review: HRN-010 · Each worktree gets its own scratch folder, printed when it is made, and PR bodies go through it",
-        "project": "upkeep"
-      },
-      {
-        "number": 829,
-        "title": "Inbox review: HRN-011 · `backlog.mjs tier <pr>` gives the verifier's tier from the PR's paths, and Mission Control lists a verdict given on a cheaper tier",
-        "project": "upkeep"
-      },
-      {
         "number": 830,
         "title": "Inbox review: HRN-012 · `merge-on-green` reports a missing `workflow` token scope before it touches a PR that changes `.github/workflows/`",
         "project": "upkeep"
+      },
+      {
+        "number": 881,
+        "title": "Each worktree gets its own scratch folder, printed when it is made, and PR bodies go through it",
+        "project": "harness"
       },
       {
         "number": 831,
@@ -535,54 +525,6 @@
         "reason": null
       },
       {
-        "number": 827,
-        "title": "Inbox review: FID-025 · The not-connected refusal fires only for a pin no connection names, so a pin bound only out of range gets the reference's one refusal",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 828,
-        "title": "Inbox review: HRN-010 · Each worktree gets its own scratch folder, printed when it is made, and PR bodies go through it",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 829,
-        "title": "Inbox review: HRN-011 · `backlog.mjs tier <pr>` gives the verifier's tier from the PR's paths, and Mission Control lists a verdict given on a cheaper tier",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": true,
-        "reason": null
-      },
-      {
         "number": 830,
         "title": "Inbox review: HRN-012 · `merge-on-green` reports a missing `workflow` token scope before it touches a PR that changes `.github/workflows/`",
         "labels": [
@@ -595,6 +537,21 @@
         "project": "upkeep",
         "rank": 11,
         "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 881,
+        "title": "Each worktree gets its own scratch folder, printed when it is made, and PR bodies go through it",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:2"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
         "pickable": true,
         "reason": null
       },
@@ -2504,6 +2461,57 @@
         "reason": "claimed"
       },
       {
+        "number": 827,
+        "title": "Inbox review: FID-025 · The not-connected refusal fires only for a pin no connection names, so a pin bound only out of range gets the reference's one refusal",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
+        "number": 828,
+        "title": "Inbox review: HRN-010 · Each worktree gets its own scratch folder, printed when it is made, and PR bodies go through it",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
+        "number": 829,
+        "title": "Inbox review: HRN-011 · `backlog.mjs tier <pr>` gives the verifier's tier from the PR's paths, and Mission Control lists a verdict given on a cheaper tier",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 870,
         "title": "Owner: link `ha/.claude/agents` to hacer's role files, so sessions started in the workspace register the `hacer-*` types",
         "labels": [
@@ -2579,6 +2587,7 @@
       ],
       "harness": [
         257,
+        881,
         154,
         156,
         270,
@@ -2594,9 +2603,6 @@
         870
       ],
       "upkeep": [
-        827,
-        828,
-        829,
         830,
         831,
         832,
@@ -2626,7 +2632,10 @@
         800,
         807,
         808,
-        809
+        809,
+        827,
+        828,
+        829
       ],
       "spine": [
         165,
@@ -4740,32 +4749,85 @@
         }
       },
       {
-        "number": 873,
-        "ref": "refs/heads/claim/873",
-        "sha": "4b3336272cb23635d373fa66ef77790a5e9e42be",
-        "state": "CLOSED",
-        "title": "Retro cadence: due after each run's close record lands or 7 days on, printed by `backlog.mjs ready` and `next`",
-        "url": "https://github.com/mezivillager/hacer/issues/873",
+        "number": 827,
+        "ref": "refs/heads/claim/827",
+        "sha": "478e4407b26cc3ec0eda3fc5794b0c083e8862c6",
+        "state": "OPEN",
+        "title": "Inbox review: FID-025 · The not-connected refusal fires only for a pin no connection names, so a pin bound only out of range gets the reference's one refusal",
+        "url": "https://github.com/mezivillager/hacer/issues/827",
         "labels": [
-          "project:harness",
+          "project:upkeep",
           "agent-ready",
           "in-progress",
-          "risk:1"
+          "risk:0",
+          "inbox-review"
         ],
-        "onClosedIssue": true,
+        "onClosedIssue": false,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
           "session": "hacer-loop-to-70",
-          "branch": "chore/873-retro-at-close",
+          "branch": "chore/inbox-fid-025",
           "handoff": "none",
           "author": "mezivillager",
-          "at": "2026-10-21T22:20:13Z",
-          "url": "https://github.com/mezivillager/hacer/issues/873#issuecomment-6327814161"
+          "at": "2026-10-21T22:55:45Z",
+          "url": "https://github.com/mezivillager/hacer/issues/827#issuecomment-6328385279"
+        }
+      },
+      {
+        "number": 828,
+        "ref": "refs/heads/claim/828",
+        "sha": "478e4407b26cc3ec0eda3fc5794b0c083e8862c6",
+        "state": "OPEN",
+        "title": "Inbox review: HRN-010 · Each worktree gets its own scratch folder, printed when it is made, and PR bodies go through it",
+        "url": "https://github.com/mezivillager/hacer/issues/828",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-to-70",
+          "branch": "chore/inbox-hrn-010",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-21T22:56:54Z",
+          "url": "https://github.com/mezivillager/hacer/issues/828#issuecomment-6328402651"
+        }
+      },
+      {
+        "number": 829,
+        "ref": "refs/heads/claim/829",
+        "sha": "478e4407b26cc3ec0eda3fc5794b0c083e8862c6",
+        "state": "OPEN",
+        "title": "Inbox review: HRN-011 · `backlog.mjs tier <pr>` gives the verifier's tier from the PR's paths, and Mission Control lists a verdict given on a cheaper tier",
+        "url": "https://github.com/mezivillager/hacer/issues/829",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-to-70",
+          "branch": "chore/inbox-hrn-011",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-21T23:18:14Z",
+          "url": "https://github.com/mezivillager/hacer/issues/829#issuecomment-6328717149"
         }
       }
     ],
-    "onClosedIssues": 1
+    "onClosedIssues": 0
   },
   "cloudLane": {
     "items": [
@@ -6644,7 +6706,7 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-07T22:48:45.970Z",
+      "since": "2026-10-07T23:19:19.320Z",
       "merged": 90,
       "openToMergeHours": {
         "median": 0.4,
@@ -10602,7 +10664,7 @@
       },
       {
         "date": "2026-10-21",
-        "at": "2026-10-21T22:35:57.747Z",
+        "at": "2026-10-21T22:48:45.970Z",
         "byProject": {
           "foundation": [
             338,
@@ -10646,8 +10708,7 @@
             550,
             607,
             677,
-            870,
-            873
+            870
           ],
           "upkeep": [
             827,
@@ -10779,12 +10840,15 @@
         "pr": null,
         "sha": "478e4407b26cc3ec0eda3fc5794b0c083e8862c6",
         "check": "ci",
-        "conclusion": null,
-        "completedAt": null,
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-21T22:50:24Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/39689071688/job/119530435168",
-        "line": null,
-        "verdict": null,
-        "fields": {},
+        "line": "LAYER-RATCHET: 69 known violations (37 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 69,
+          "new": 0
+        },
         "disagrees": false
       },
       {
