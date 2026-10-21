@@ -6,7 +6,7 @@
 import { combineRegistries } from '../chips/combineRegistries'
 import { registerProject1Builtins } from '../chips/builtins/project01'
 import { createChipRegistry, type ChipRegistry } from '../chips/registry'
-import { isBuiltinChip, type ChipDefinition } from '../chips/types'
+import { isBuiltinChip, validateChipDefinition, type ChipDefinition } from '../chips/types'
 import { hdlChipDefinition } from '../hdl/compiler'
 import { parseHDL } from '../hdl/parser'
 import type { HDLChip } from '../hdl/types'
@@ -119,6 +119,8 @@ function loadChip({ ast, chip, script, builtins }: Parsed, hdlFile: TestSource, 
 
   const own = ownChip(ast, hdlFile.source, builtins)
   if (typeof own === 'string') return chipTestError(chip, own)
+  const refused = validateChipDefinition(own)
+  if (refused.length > 0) return chipTestError(chip, refused.map((e) => e.message).join('; '))
   const ownRegistry = createChipRegistry()
   ownRegistry.register(own)
 
