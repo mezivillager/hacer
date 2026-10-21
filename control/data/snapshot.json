@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-21T18:08:52.253Z",
+  "generatedAt": "2026-10-21T18:22:04.834Z",
   "head": {
-    "sha": "88c226c6901b47aac15796130fa6a38f564f47f6",
-    "date": "2026-10-21T21:07:41+03:00",
-    "subject": "docs(fidelity): review of PR #845 (registered parts refused with their chain), FID-027, FID-028"
+    "sha": "af0f9399ef50feddac782896f0171551980772fd",
+    "date": "2026-10-21T21:21:21+03:00",
+    "subject": "docs(adr): ADR-0020 §10 records the reference's loop granularity and where it overapproximates"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T18:08:52.253Z",
+      "fetchedAt": "2026-10-21T18:22:04.834Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T18:08:52.253Z",
+      "fetchedAt": "2026-10-21T18:22:04.834Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T18:08:52.253Z",
+      "fetchedAt": "2026-10-21T18:22:04.834Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-21T18:08:52.253Z",
+      "fetchedAt": "2026-10-21T18:22:04.834Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-21T18:08:52.253Z",
+      "fetchedAt": "2026-10-21T18:22:04.834Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-21T18:08:52.253Z",
+      "fetchedAt": "2026-10-21T18:22:04.834Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-21T18:08:52.253Z",
+      "fetchedAt": "2026-10-21T18:22:04.834Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-21T18:08:52.253Z",
+      "fetchedAt": "2026-10-21T18:22:04.834Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-21T18:08:52.253Z",
+      "fetchedAt": "2026-10-21T18:22:04.834Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-21T18:08:52.253Z",
+      "fetchedAt": "2026-10-21T18:22:04.834Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-21T18:08:52.253Z",
+      "fetchedAt": "2026-10-21T18:22:04.834Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-21T18:08:52.253Z",
+      "fetchedAt": "2026-10-21T18:22:04.834Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-21T18:08:52.253Z",
+      "fetchedAt": "2026-10-21T18:22:04.834Z",
       "status": "ok"
     }
   },
@@ -80,12 +80,12 @@
         "lane": "feature",
         "slug": "foundation",
         "epicNumber": 318,
-        "open": 31,
+        "open": 30,
         "ready": 1,
-        "inProgress": 2,
+        "inProgress": 1,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 7,
+        "agentReady": 6,
         "filedElsewhere": [],
         "next": {
           "number": 338,
@@ -103,12 +103,12 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 13,
-        "ready": 1,
+        "open": 14,
+        "ready": 2,
         "inProgress": 0,
         "needsHuman": 1,
         "staleClaims": [],
-        "agentReady": 1,
+        "agentReady": 2,
         "filedElsewhere": [
           151,
           339
@@ -190,8 +190,8 @@
         },
         "title": "Epic: core — headless core",
         "subIssues": {
-          "completed": 17,
-          "percentCompleted": 68,
+          "completed": 18,
+          "percentCompleted": 72,
           "total": 25
         }
       },
@@ -305,16 +305,16 @@
         "lane": "aux",
         "slug": "upkeep",
         "epicNumber": 146,
-        "open": 29,
+        "open": 30,
         "ready": 18,
-        "inProgress": 9,
+        "inProgress": 10,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 28,
+        "agentReady": 29,
         "filedElsewhere": [],
         "next": {
-          "number": 797,
-          "title": "Inbox review: HRN-006 · Say who applies `overturned`, and apply it to the PASS whose defect a later PR fixed"
+          "number": 798,
+          "title": "Inbox review: HRN-007 · Align the concurrent-subagent cap with the owner's rulings: 4 in config, 2–3 in practice"
         },
         "title": "Epic: upkeep — maintenance & documentation",
         "subIssues": {
@@ -413,11 +413,6 @@
         "project": "foundation"
       },
       {
-        "number": 797,
-        "title": "Inbox review: HRN-006 · Say who applies `overturned`, and apply it to the PASS whose defect a later PR fixed",
-        "project": "upkeep"
-      },
-      {
         "number": 257,
         "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
         "project": "harness"
@@ -426,6 +421,11 @@
         "number": 798,
         "title": "Inbox review: HRN-007 · Align the concurrent-subagent cap with the owner's rulings: 4 in config, 2–3 in practice",
         "project": "upkeep"
+      },
+      {
+        "number": 850,
+        "title": "Tokens per merged PR in every session record; owner minutes stay unmeasured beside a needs-human count",
+        "project": "harness"
       },
       {
         "number": 799,
@@ -506,6 +506,11 @@
         "number": 848,
         "title": "Inbox review: FID-027 · Amend FID-026: since #821 the lookup order also decides whether `compileSpec` refuses, so its pinned test adds a broken part under a reference builtin name",
         "project": "upkeep"
+      },
+      {
+        "number": 849,
+        "title": "Inbox review: FID-028 · A registered definition must agree with its source: refuse one whose name or pins differ from its HDL's or its document's",
+        "project": "upkeep"
       }
     ],
     "dormant": {
@@ -529,22 +534,6 @@
         "project": "foundation",
         "rank": 1,
         "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 797,
-        "title": "Inbox review: HRN-006 · Say who applies `overturned`, and apply it to the PASS whose defect a later PR fixed",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
         "pickable": true,
         "reason": null
       },
@@ -582,6 +571,21 @@
         "reason": null
       },
       {
+        "number": 850,
+        "title": "Tokens per merged PR in every session record; owner minutes stay unmeasured beside a needs-human count",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:0"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
         "number": 799,
         "title": "Inbox review: HRN-008 · Register the `hacer-*` agent types where sessions start: the parent workspace",
         "labels": [
@@ -824,6 +828,22 @@
       {
         "number": 848,
         "title": "Inbox review: FID-027 · Amend FID-026: since #821 the lookup order also decides whether `compileSpec` refuses, so its pinned test adds a broken part under a reference builtin name",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 849,
+        "title": "Inbox review: FID-028 · A registered definition must agree with its source: refuse one whose name or pins differ from its HDL's or its document's",
         "labels": [
           "project:upkeep",
           "agent-ready",
@@ -2365,6 +2385,23 @@
         "reason": "claimed"
       },
       {
+        "number": 797,
+        "title": "Inbox review: HRN-006 · Say who applies `overturned`, and apply it to the PASS whose defect a later PR fixed",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 801,
         "title": "polish: an unsaved circuit is lost on reload — autosave is written every 2 s but never restored",
         "labels": [
@@ -2530,23 +2567,6 @@
         "lane": "feature",
         "pickable": false,
         "reason": "blocked:#823,#814"
-      },
-      {
-        "number": 846,
-        "title": "ADR-0020 §10 records R837's loop granularity and names where it overapproximates",
-        "labels": [
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "fidelity",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "claimed"
       }
     ],
     "byProject": {
@@ -2580,11 +2600,25 @@
         820,
         823,
         840,
-        844,
-        846
+        844
+      ],
+      "harness": [
+        257,
+        850,
+        154,
+        156,
+        270,
+        435,
+        436,
+        454,
+        500,
+        504,
+        505,
+        550,
+        607,
+        677
       ],
       "upkeep": [
-        797,
         798,
         799,
         800,
@@ -2602,6 +2636,7 @@
         835,
         839,
         848,
+        849,
         229,
         256,
         788,
@@ -2612,22 +2647,8 @@
         793,
         794,
         795,
-        796
-      ],
-      "harness": [
-        257,
-        154,
-        156,
-        270,
-        435,
-        436,
-        454,
-        500,
-        504,
-        505,
-        550,
-        607,
-        677
+        796,
+        797
       ],
       "spine": [
         165,
@@ -2745,6 +2766,33 @@
       }
     ],
     "merged": [
+      {
+        "number": 851,
+        "title": "docs(adr): ADR-0020 §10 records the reference's loop granularity and where it overapproximates",
+        "url": "https://github.com/mezivillager/hacer/pull/851",
+        "author": "mezivillager",
+        "labels": [
+          "risk:0",
+          "fidelity",
+          "project:foundation"
+        ],
+        "headRefName": "docs/846-adr-loop-granularity",
+        "isDraft": false,
+        "createdAt": "2026-10-21T18:17:11Z",
+        "mergedAt": "2026-10-21T18:21:22Z",
+        "closes": [
+          846
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (claude-opus-5-5)",
+            "at": "2026-10-21T18:18:00Z",
+            "url": "https://github.com/mezivillager/hacer/pull/851#issuecomment-6323274383"
+          }
+        ]
+      },
       {
         "number": 847,
         "title": "docs(fidelity): review of PR #845, the registered-part refusal and its chain; FID-027, FID-028",
@@ -4289,31 +4337,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/711#issuecomment-6182016248"
           }
         ]
-      },
-      {
-        "number": 710,
-        "title": "refactor(nodes): BusJoiner3D renders from props alone (#373, 5 of 6)",
-        "url": "https://github.com/mezivillager/hacer/pull/710",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:2",
-          "project:foundation"
-        ],
-        "headRefName": "refactor/373-busjoiner-props",
-        "isDraft": false,
-        "createdAt": "2026-10-15T00:35:21Z",
-        "mergedAt": "2026-10-15T00:54:08Z",
-        "closes": [],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Opus 5.5",
-            "at": "2026-10-15T00:49:36Z",
-            "url": "https://github.com/mezivillager/hacer/pull/710#issuecomment-6181794738"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4586,6 +4609,32 @@
         }
       },
       {
+        "number": 797,
+        "ref": "refs/heads/claim/797",
+        "sha": "88c226c6901b47aac15796130fa6a38f564f47f6",
+        "state": "OPEN",
+        "title": "Inbox review: HRN-006 · Say who applies `overturned`, and apply it to the PASS whose defect a later PR fixed",
+        "url": "https://github.com/mezivillager/hacer/issues/797",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-to-70",
+          "branch": "chore/inbox-hrn-006",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-21T18:18:17Z",
+          "url": "https://github.com/mezivillager/hacer/issues/797#issuecomment-6323279803"
+        }
+      },
+      {
         "number": 814,
         "ref": "refs/heads/claim/814",
         "sha": "cc288b57a50f69b7076173b24914a2f6707a8fc4",
@@ -4615,7 +4664,7 @@
         "number": 846,
         "ref": "refs/heads/claim/846",
         "sha": "cc288b57a50f69b7076173b24914a2f6707a8fc4",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "ADR-0020 §10 records R837's loop granularity and names where it overapproximates",
         "url": "https://github.com/mezivillager/hacer/issues/846",
         "labels": [
@@ -4625,7 +4674,7 @@
           "fidelity",
           "project:foundation"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -4638,7 +4687,7 @@
         }
       }
     ],
-    "onClosedIssues": 0
+    "onClosedIssues": 1
   },
   "cloudLane": {
     "items": [
@@ -6465,7 +6514,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-15",
-        "merges": 28
+        "merges": 27
       },
       {
         "date": "2026-10-16",
@@ -6477,20 +6526,20 @@
       },
       {
         "date": "2026-10-21",
-        "merges": 11
+        "merges": 12
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-07T18:08:52.253Z",
-      "merged": 73,
+      "since": "2026-10-07T18:22:04.834Z",
+      "merged": 74,
       "openToMergeHours": {
         "median": 0.4,
         "p90": 2
       },
       "blockedOnce": {
         "count": 7,
-        "of": 58,
+        "of": 59,
         "prs": [
           700,
           725,
@@ -6508,8 +6557,8 @@
           "without": []
         },
         "nonCode": {
-          "merged": 24,
-          "withVerdict": 9,
+          "merged": 25,
+          "withVerdict": 10,
           "without": [
             692,
             693,
@@ -10612,11 +10661,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "88c226c6901b47aac15796130fa6a38f564f47f6",
+        "sha": "af0f9399ef50feddac782896f0171551980772fd",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39649915285/job/119395225147",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39651972805/job/119402354270",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -18216,6 +18265,21 @@
         ]
       },
       {
+        "id": "#753",
+        "kind": "github",
+        "citedBy": [
+          "ADR-0020",
+          "R837"
+        ]
+      },
+      {
+        "id": "#795",
+        "kind": "github",
+        "citedBy": [
+          "ADR-0020"
+        ]
+      },
+      {
         "id": "#340",
         "kind": "github",
         "citedBy": [
@@ -20572,13 +20636,6 @@
         "kind": "github",
         "citedBy": [
           "R835"
-        ]
-      },
-      {
-        "id": "#753",
-        "kind": "github",
-        "citedBy": [
-          "R837"
         ]
       },
       {
