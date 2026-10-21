@@ -623,7 +623,7 @@ describe('compileHDL — a part input pin bit may be bound only once (#367)', ()
     if (!r.success) {
       expect(r.errors.map((e) => e.message)).toEqual([
         'Part "Not16" pin "in[16]" is out of range; "in" has width 16',
-        'Part "Not16" input pin "in" is not connected',
+        'Part "Not16" input pin "in" is not connected: the nand2tetris simulator reads it as 0; bind in=false to do the same',
       ])
     }
   })
@@ -633,7 +633,7 @@ describe('compileHDL — a part input pin bit may be bound only once (#367)', ()
     expect(r.success).toBe(false)
     if (!r.success) {
       const e = r.errors.find((x) => /is not connected/.test(x.message))
-      expect(e?.message).toBe('Part "And" input pin "b" is not connected')
+      expect(e?.message).toBe('Part "And" input pin "b" is not connected: the nand2tetris simulator reads it as 0; bind b=false to do the same')
       expect(e?.partName).toBe('And')
       expect(e?.pinName).toBe('b')
     }

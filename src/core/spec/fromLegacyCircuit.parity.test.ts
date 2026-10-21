@@ -9,6 +9,7 @@ import { compileHDL, hdlChipDefinition, type EvalContext } from '../hdl/compiler
 import { parseHDL } from '../hdl/parser'
 import { deserializeCircuit } from '../serialization/deserialize'
 import { CIRCUIT_FORMAT_VERSION, type SerializedCircuit, type SerializedWire } from '../serialization/types'
+import { bindUnconnectedInputs } from './bindUnconnectedInputs'
 import { compileSpec } from './compileSpec'
 import { fromLegacyCircuit } from './fromLegacyCircuit'
 import { splitNetId } from './netId'
@@ -403,6 +404,24 @@ function randomBusDocument(rng: Rng, n: number): SerializedCircuit {
   return circuit(`random${n}`, { inputNodes: ins, outputNodes: outs, gates, busComponents: buses, wires })
 }
 
+/** One-bit gates reading an IN or an earlier gate, so no loop forms; each input is left unwired with chance `unwired`. */
+function randomUnwiredDocument(rng: Rng, n: number, unwired: number): SerializedCircuit {
+  const pick = <T,>(list: readonly T[]): T => list[Math.floor(rng() * list.length)]
+  const ins = Array.from({ length: 1 + Math.floor(rng() * 3) }, (_, k) => node(`i${k}`, `in${k}`))
+  const sources = ins.map((x) => fromIn(x.id))
+  const gates: Array<ReturnType<typeof gate>> = []
+  const wires: SerializedWire[] = []
+  for (let k = 0; k < 1 + Math.floor(rng() * 5); k++) {
+    const [chip, arity] = pick([['Not', 1], ['And', 2], ['Or', 2], ['Nand', 2], ['Xor', 2], ['Mux', 3]] as const)
+    gates.push(gate(`g${k}`, chip))
+    for (let p = 0; p < arity; p++) if (rng() >= unwired) wires.push(wire(`w${wires.length + 1}`, pick(sources), pinIn(`g${k}`, p)))
+    sources.push(pinOut(`g${k}`))
+  }
+  const outs = Array.from({ length: 1 + Math.floor(rng() * 2) }, (_, k) => node(`o${k}`, `out${k}`))
+  for (const o of outs) wires.push(wire(`w${wires.length + 1}`, pick(sources), toOut(o.id)))
+  return circuit(`unwired${n}`, { inputNodes: ins, outputNodes: outs, gates, wires })
+}
+
 const bitKey = (end: Endpoint, bit: number): string => `${end.entityId}:${end.pinId ?? ''}:${bit}`
 
 /** Whether a part reads its own output, traced bit by bit through wires and bus components: the cycle the spec refuses. */
@@ -528,9 +547,25 @@ describe('legacy parity', () => {
 
   it('C6: an unwired gate input is refused by name, with an unconnected-input note', () => {
     const { doc, sidecar } = fromLegacyCircuit(C6)
-    expect(sidecar.notes).toEqual([{ kind: 'unconnected-input', partId: 'p1', pin: 'b', detail: expect.stringContaining('"b"') }])
-    expect(doc && viaExport(doc, { a: 1 })).toEqual({ refused: ['Part "Nand" input pin "b" is not connected'] })
-    expect(doc && viaCompileSpec(doc, { a: 1 })).toEqual({ refused: expect.arrayContaining(['Part "Nand" input pin "b" is not connected']) })
+    expect(sidecar.notes).toEqual([{
+      kind: 'unconnected-input',
+      partId: 'p1',
+      pin: 'b',
+      detail: 'p1.b input "b" has no wire: it read 0 on the canvas, it reads 0 in the nand2tetris simulator, and HACER\'s compile refuses it until it is bound',
+    }])
+    expect(doc && viaExport(doc, { a: 1 })).toEqual({ refused: ['Part "Nand" input pin "b" is not connected: the nand2tetris simulator reads it as 0; bind b=false to do the same'] })
+    expect(doc && viaCompileSpec(doc, { a: 1 })).toEqual({ refused: expect.arrayContaining(['Part "Nand" input pin "b" is not connected: the nand2tetris simulator reads it as 0; bind b=false to do the same']) })
+  })
+
+  it('C6 bound: bindUnconnectedInputs binds b to false, and the import then evaluates as evaluateCircuit does', () => {
+    const { doc } = fromLegacyCircuit(C6)
+    if (doc === null) throw new Error('C6 does not import')
+    const { doc: bound, bound: pins } = bindUnconnectedInputs(doc, registry)
+    expect(pins).toEqual([{ partId: 'p1', pin: 'b' }])
+    expect(BIT.map((v) => legacy(C6, v).outputs)).toEqual([{ out: 1 }, { out: 1 }])
+    expect(BIT.map((v) => viaCompileSpec(bound, v))).toEqual(BIT.map((v) => ({ outputs: legacy(C6, v).outputs })))
+    expect(printSpec(bound, { dialect: 'nand2tetris' })).toContain('    Nand(a=a, b=false, out=out); // #p1\n')
+    expect(BIT.map((v) => viaExport(bound, v))).toEqual([{ outputs: { out: 1 } }, { outputs: { out: 1 } }])
   })
 
   it('C8: two wires into one gate input keep both drivers, one multiple-drivers note names both, and the export is refused', () => {
@@ -654,6 +689,33 @@ describe('legacy parity', () => {
     expect(failures).toEqual([])
     const valued = corpus.filter((saved) => !fromLegacyCircuit(saved).sidecar.notes.some((n) => REFUSALS.has(n.kind)))
     expect(valued.length).toBeGreaterThanOrEqual(singly.length)
+  })
+
+  it('a seeded corpus with unwired gate inputs is refused until bindUnconnectedInputs binds them, then evaluates as evaluateCircuit does', () => {
+    const rng = mulberry32(0x813)
+    const corpus = Array.from({ length: 700 }, (_, n) => randomUnwiredDocument(rng, n, 0.2))
+    const unwired = corpus.flatMap((saved) => {
+      const { doc, sidecar } = fromLegacyCircuit(saved)
+      return doc && sidecar.notes.length > 0 && sidecar.notes.every((n) => n.kind === 'unconnected-input') ? [{ saved, doc, notes: sidecar.notes }] : []
+    })
+    let vectors = 0
+    const failures = unwired.flatMap(({ saved, doc, notes }) => {
+      const chipOf = new Map(doc.parts.map((p) => [p.id, p.chip]))
+      const refusals = notes.map((n) => `Part "${n.partId && chipOf.get(n.partId)}" input pin "${n.pin}" is not connected: the nand2tetris simulator reads it as 0; bind ${n.pin}=false to do the same`)
+      const before = viaCompileSpec(doc, {})
+      if (!('refused' in before) || JSON.stringify([...before.refused].sort()) !== JSON.stringify([...refusals].sort())) return [`${saved.name}: before the bind, ${JSON.stringify(before)}`]
+      const { doc: bound, bound: pins } = bindUnconnectedInputs(doc, registry)
+      if (JSON.stringify(pins) !== JSON.stringify(notes.map((n) => ({ partId: n.partId, pin: n.pin })))) return [`${saved.name}: bound ${JSON.stringify(pins)}`]
+      return every(Object.fromEntries(saved.inputNodes.map((x) => [x.name, x.width]))).flatMap((vector) => {
+        vectors++
+        const want = legacy(saved, vector)
+        const got = viaCompileSpec(bound, vector)
+        const same = want.result.status === 'ok' && 'outputs' in got && saved.outputNodes.every((o) => got.outputs[o.name] === want.outputs[o.name])
+        return same ? [] : [`${saved.name} ${JSON.stringify(vector)}: ${JSON.stringify(got)}, legacy ${JSON.stringify(want)}`]
+      })
+    })
+    expect(failures).toEqual([])
+    expect({ documents: unwired.length, pins: unwired.reduce((n, u) => n + u.notes.length, 0), vectors }).toEqual({ documents: 426, pins: 671, vectors: 2040 })
   })
 
   it('every loops-back note in a seeded random corpus names a bit that no part output or IN drives', () => {

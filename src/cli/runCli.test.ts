@@ -49,6 +49,11 @@ describe('runCli', () => {
     expect(out.stdout).toMatch(/^ERROR Xor\.hdl:\d+:\d+: /)
   })
 
+  it('refuses an unconnected part input, naming what the nand2tetris simulator reads and how to match it', () => {
+    const out = runCli(vectorArgs('And'), reader({ 'And.hdl': 'CHIP And {\n  IN a, b;\n  OUT out;\n  PARTS:\n  Nand(a=a, out=out);\n}' }))
+    expect(out).toEqual({ exitCode: 1, stdout: 'ERROR And: evaluateChip: chip "And" failed to compile: Part "Nand" input pin "b" is not connected: the nand2tetris simulator reads it as 0; bind b=false to do the same\n', stderr: '' })
+  })
+
   it('reports an unreadable file as an error, not a crash', () => {
     const out = runCli(['test', 'Missing.hdl', 'Xor.tst', 'Xor.cmp'], reader())
     expect(out.exitCode).toBe(1)
