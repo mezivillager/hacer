@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-21T18:27:10.950Z",
+  "generatedAt": "2026-10-21T18:47:36.615Z",
   "head": {
-    "sha": "af0f9399ef50feddac782896f0171551980772fd",
-    "date": "2026-10-21T21:21:21+03:00",
-    "subject": "docs(adr): ADR-0020 §10 records the reference's loop granularity and where it overapproximates"
+    "sha": "55c1a489136cd71399923680c49f9f34a197abad",
+    "date": "2026-10-21T21:46:34+03:00",
+    "subject": "docs(harness): report tokens per merged PR as a run average, owner minutes stay unmeasured"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T18:27:10.950Z",
+      "fetchedAt": "2026-10-21T18:47:36.615Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T18:27:10.950Z",
+      "fetchedAt": "2026-10-21T18:47:36.615Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T18:27:10.950Z",
+      "fetchedAt": "2026-10-21T18:47:36.615Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-21T18:27:10.950Z",
+      "fetchedAt": "2026-10-21T18:47:36.615Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-21T18:27:10.950Z",
+      "fetchedAt": "2026-10-21T18:47:36.615Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-21T18:27:10.950Z",
+      "fetchedAt": "2026-10-21T18:47:36.615Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-21T18:27:10.950Z",
+      "fetchedAt": "2026-10-21T18:47:36.615Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-21T18:27:10.950Z",
+      "fetchedAt": "2026-10-21T18:47:36.615Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-21T18:27:10.950Z",
+      "fetchedAt": "2026-10-21T18:47:36.615Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-21T18:27:10.950Z",
+      "fetchedAt": "2026-10-21T18:47:36.615Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-21T18:27:10.950Z",
+      "fetchedAt": "2026-10-21T18:47:36.615Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-21T18:27:10.950Z",
+      "fetchedAt": "2026-10-21T18:47:36.615Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-21T18:27:10.950Z",
+      "fetchedAt": "2026-10-21T18:47:36.615Z",
       "status": "ok"
     }
   },
@@ -306,15 +306,15 @@
         "slug": "upkeep",
         "epicNumber": 146,
         "open": 30,
-        "ready": 18,
-        "inProgress": 10,
+        "ready": 17,
+        "inProgress": 11,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 29,
         "filedElsewhere": [],
         "next": {
-          "number": 798,
-          "title": "Inbox review: HRN-007 · Align the concurrent-subagent cap with the owner's rulings: 4 in config, 2–3 in practice"
+          "number": 799,
+          "title": "Inbox review: HRN-008 · Register the `hacer-*` agent types where sessions start: the parent workspace"
         },
         "title": "Epic: upkeep — maintenance & documentation",
         "subIssues": {
@@ -418,19 +418,14 @@
         "project": "harness"
       },
       {
-        "number": 798,
-        "title": "Inbox review: HRN-007 · Align the concurrent-subagent cap with the owner's rulings: 4 in config, 2–3 in practice",
-        "project": "upkeep"
-      },
-      {
-        "number": 850,
-        "title": "Tokens per merged PR in every session record; owner minutes stay unmeasured beside a needs-human count",
-        "project": "harness"
-      },
-      {
         "number": 799,
         "title": "Inbox review: HRN-008 · Register the `hacer-*` agent types where sessions start: the parent workspace",
         "project": "upkeep"
+      },
+      {
+        "number": 852,
+        "title": "Define an overturned verdict once, and have the coordinator apply `overturned` from the retro's candidates",
+        "project": "harness"
       },
       {
         "number": 800,
@@ -516,6 +511,7 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
+        853,
         514
       ]
     }
@@ -555,37 +551,6 @@
         "reason": null
       },
       {
-        "number": 798,
-        "title": "Inbox review: HRN-007 · Align the concurrent-subagent cap with the owner's rulings: 4 in config, 2–3 in practice",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 850,
-        "title": "Tokens per merged PR in every session record; owner minutes stay unmeasured beside a needs-human count",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:0"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
         "number": 799,
         "title": "Inbox review: HRN-008 · Register the `hacer-*` agent types where sessions start: the parent workspace",
         "labels": [
@@ -598,6 +563,21 @@
         "project": "upkeep",
         "rank": 11,
         "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 852,
+        "title": "Define an overturned verdict once, and have the coordinator apply `overturned` from the retro's candidates",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:0"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
         "pickable": true,
         "reason": null
       },
@@ -2402,6 +2382,23 @@
         "reason": "claimed"
       },
       {
+        "number": 798,
+        "title": "Inbox review: HRN-007 · Align the concurrent-subagent cap with the owner's rulings: 4 in config, 2–3 in practice",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 801,
         "title": "polish: an unsaved circuit is lost on reload — autosave is written every 2 s but never restored",
         "labels": [
@@ -2604,7 +2601,7 @@
       ],
       "harness": [
         257,
-        850,
+        852,
         154,
         156,
         270,
@@ -2619,7 +2616,6 @@
         677
       ],
       "upkeep": [
-        798,
         799,
         800,
         807,
@@ -2648,7 +2644,8 @@
         794,
         795,
         796,
-        797
+        797,
+        798
       ],
       "spine": [
         165,
@@ -2739,6 +2736,25 @@
   "prs": {
     "open": [
       {
+        "number": 853,
+        "title": "feat(spec): literals are constant drivers, read through migrate(1 → 2)",
+        "url": "https://github.com/mezivillager/hacer/pull/853",
+        "author": "mezivillager",
+        "labels": [
+          "risk:2",
+          "fidelity",
+          "project:foundation"
+        ],
+        "headRefName": "feat/814-constant-driver",
+        "isDraft": false,
+        "createdAt": "2026-10-21T18:38:37Z",
+        "mergedAt": null,
+        "closes": [
+          814
+        ],
+        "verdicts": []
+      },
+      {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
         "url": "https://github.com/mezivillager/hacer/pull/514",
@@ -2766,6 +2782,32 @@
       }
     ],
     "merged": [
+      {
+        "number": 854,
+        "title": "docs(harness): report tokens per merged PR as a run average, owner minutes stay unmeasured",
+        "url": "https://github.com/mezivillager/hacer/pull/854",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/850-tokens-per-merge",
+        "isDraft": false,
+        "createdAt": "2026-10-21T18:42:28Z",
+        "mergedAt": "2026-10-21T18:46:35Z",
+        "closes": [
+          850
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (claude-opus-5-5)",
+            "at": "2026-10-21T18:44:01Z",
+            "url": "https://github.com/mezivillager/hacer/pull/854#issuecomment-6323785144"
+          }
+        ]
+      },
       {
         "number": 851,
         "title": "docs(adr): ADR-0020 §10 records the reference's loop granularity and where it overapproximates",
@@ -4310,33 +4352,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/712#issuecomment-6182183565"
           }
         ]
-      },
-      {
-        "number": 711,
-        "title": "chore(backlog): ready and next mark a task a merged PR links as possibly-delivered",
-        "url": "https://github.com/mezivillager/hacer/pull/711",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:1"
-        ],
-        "headRefName": "chore/702-possibly-delivered",
-        "isDraft": false,
-        "createdAt": "2026-10-15T00:55:03Z",
-        "mergedAt": "2026-10-15T01:14:57Z",
-        "closes": [
-          702
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Sonnet 5.5",
-            "at": "2026-10-15T01:07:22Z",
-            "url": "https://github.com/mezivillager/hacer/pull/711#issuecomment-6182016248"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4635,6 +4650,32 @@
         }
       },
       {
+        "number": 798,
+        "ref": "refs/heads/claim/798",
+        "sha": "af0f9399ef50feddac782896f0171551980772fd",
+        "state": "OPEN",
+        "title": "Inbox review: HRN-007 · Align the concurrent-subagent cap with the owner's rulings: 4 in config, 2–3 in practice",
+        "url": "https://github.com/mezivillager/hacer/issues/798",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-to-70",
+          "branch": "chore/inbox-hrn-007",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-21T18:44:24Z",
+          "url": "https://github.com/mezivillager/hacer/issues/798#issuecomment-6323792416"
+        }
+      },
+      {
         "number": 814,
         "ref": "refs/heads/claim/814",
         "sha": "cc288b57a50f69b7076173b24914a2f6707a8fc4",
@@ -4659,9 +4700,34 @@
           "at": "2026-10-21T18:05:13Z",
           "url": "https://github.com/mezivillager/hacer/issues/814#issuecomment-6323016813"
         }
+      },
+      {
+        "number": 850,
+        "ref": "refs/heads/claim/850",
+        "sha": "af0f9399ef50feddac782896f0171551980772fd",
+        "state": "CLOSED",
+        "title": "Tokens per merged PR in every session record; owner minutes stay unmeasured beside a needs-human count",
+        "url": "https://github.com/mezivillager/hacer/issues/850",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:0"
+        ],
+        "onClosedIssue": true,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-to-70",
+          "branch": "docs/850-tokens-per-merge",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-21T18:30:52Z",
+          "url": "https://github.com/mezivillager/hacer/issues/850#issuecomment-6323527360"
+        }
       }
     ],
-    "onClosedIssues": 0
+    "onClosedIssues": 1
   },
   "cloudLane": {
     "items": [
@@ -6488,7 +6554,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-15",
-        "merges": 27
+        "merges": 26
       },
       {
         "date": "2026-10-16",
@@ -6500,20 +6566,20 @@
       },
       {
         "date": "2026-10-21",
-        "merges": 12
+        "merges": 13
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-07T18:27:10.950Z",
-      "merged": 74,
+      "since": "2026-10-07T18:47:36.615Z",
+      "merged": 75,
       "openToMergeHours": {
         "median": 0.4,
         "p90": 2
       },
       "blockedOnce": {
         "count": 7,
-        "of": 59,
+        "of": 60,
         "prs": [
           700,
           725,
@@ -6531,8 +6597,8 @@
           "without": []
         },
         "nonCode": {
-          "merged": 25,
-          "withVerdict": 10,
+          "merged": 26,
+          "withVerdict": 11,
           "without": [
             692,
             693,
@@ -10463,7 +10529,7 @@
       },
       {
         "date": "2026-10-21",
-        "at": "2026-10-21T18:22:04.834Z",
+        "at": "2026-10-21T18:27:10.950Z",
         "byProject": {
           "foundation": [
             338,
@@ -10637,17 +10703,14 @@
     "items": [
       {
         "pr": null,
-        "sha": "af0f9399ef50feddac782896f0171551980772fd",
+        "sha": "55c1a489136cd71399923680c49f9f34a197abad",
         "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-21T18:23:43Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39651972805/job/119402354270",
-        "line": "LAYER-RATCHET: 69 known violations (37 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 69,
-          "new": 0
-        },
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39655761901/job/119415443336",
+        "line": null,
+        "verdict": null,
+        "fields": {},
         "disagrees": false
       },
       {
@@ -10692,6 +10755,52 @@
         "verdict": "PASS",
         "fields": {
           "known": 71,
+          "new": 0
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 853,
+        "sha": "876964a0b72ed1ce33d9705472c71a3413a094fc",
+        "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-21T18:38:55Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39654579208/job/119411347354",
+        "line": "HYGIENE: PASS reviewable=199 test=319 excluded=0 files=10 issue=#814 linked=fixes",
+        "verdict": "PASS",
+        "fields": {
+          "reviewable": 199,
+          "test": 319,
+          "excluded": 0,
+          "files": 10,
+          "issue": "#814",
+          "linked": "fixes"
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 853,
+        "sha": "876964a0b72ed1ce33d9705472c71a3413a094fc",
+        "check": "browser-qa",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-21T18:38:54Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39654579220/job/119411343787",
+        "line": "BROWSER-QA: skipped (no critical paths)",
+        "verdict": "SKIPPED",
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 853,
+        "sha": "876964a0b72ed1ce33d9705472c71a3413a094fc",
+        "check": "ci",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-21T18:41:08Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39654576524/job/119411334517",
+        "line": "LAYER-RATCHET: 69 known violations (37 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 69,
           "new": 0
         },
         "disagrees": false
