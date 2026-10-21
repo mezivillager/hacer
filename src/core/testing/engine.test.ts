@@ -3,13 +3,16 @@ import { runTest, stripExt } from './engine'
 import { parseTST } from './tstParser'
 import { parseCmp } from './cmpParser'
 import type { CmpFile } from './cmpParser'
-import { createChipRegistry, registerBuiltin } from '../chips/registry'
+import { createChipRegistry, registerBuiltin, type ChipRegistry } from '../chips/registry'
+import { combineRegistries } from '../chips/combineRegistries'
+import type { ChipDefinition } from '../chips/types'
 import { getBuiltinChipRegistry, resetAppRegistriesForTests } from '../chips/appRegistry'
 import { project1TstFixtures } from './project1TstFixtures'
 import { project1CmpFixtures } from './project1CmpFixtures'
 import { parseHDL } from '../hdl/parser'
 import { hdlChipDefinition } from '../hdl/compiler'
 import { project1HdlSources, project1DependencyOrder } from '../hdl/project1HdlSources'
+import { parseSpec } from '../spec/parseSpec'
 
 function script(src: string) {
   const r = parseTST(src)
@@ -124,6 +127,62 @@ describe('runTest — error paths', () => {
     const result = runTest(s, { registry: reg })
     expect(result.passed).toBe(false)
     expect(result.error).toMatch(/compile|Nope/i)
+  })
+})
+
+describe("runTest — a compile refusal reads as the reference's, without evaluateChip's wrapper (#820)", () => {
+  const INN = 'CHIP Inn {\n  IN x;\n  OUT y;\n  PARTS:\n  Nand(a=x, b=x, c=x, out=y);\n}'
+  const OUTER = 'CHIP Outer {\n  IN a;\n  OUT o;\n  PARTS:\n  Inn(x=a, y=o);\n}'
+  const hdl = (source: string): ChipDefinition => {
+    const ast = parseHDL(source)
+    if (!ast.success) throw new Error(`parse failed: ${source}`)
+    return hdlChipDefinition(ast.chip, source)
+  }
+  /** The user's chips ahead of the builtins, as `hacer test` looks them up. */
+  function ownFirst(...chips: ChipDefinition[]): ChipRegistry {
+    const user = createChipRegistry()
+    for (const chip of chips) user.register(chip)
+    return combineRegistries(user, getBuiltinChipRegistry())
+  }
+  const errorOf = (chip: string, pins: string, registry: ChipRegistry): string | null => runTest(script(`load ${chip}.hdl, output-list ${pins}; eval, output;`), { registry }).error
+
+  it("returns the chip under test's self-reference refusal as the reference words it, with its line", () => {
+    expect(errorOf('Not', 'in out', ownFirst(hdl('CHIP Not {\n  IN in;\n  OUT out;\n\n  PARTS:\n  Not(in=in, out=out);\n}')))).toBe('Line 6: Cannot use chip Not to implement itself')
+  })
+
+  it('joins two refusals, each with its own line', () => {
+    const two = 'CHIP C {\n  IN a;\n  OUT x, y;\n  PARTS:\n  Not(in=a[2], out=x);\n  Not(in=a[3], out=y);\n}'
+    expect(errorOf('C', 'a x y', ownFirst(hdl(two)))).toBe(
+      'Line 5: Part "Not" pin "in" is wired to "a[2]": sub-bus index out of range ("a" has width 1); Line 6: Part "Not" pin "in" is wired to "a[3]": sub-bus index out of range ("a" has width 1)',
+    )
+  })
+
+  it("names a failing part chip before its line, by the chain from the chip under test: an 'hdl' Outer over Inn", () => {
+    expect(errorOf('Outer', 'a o', ownFirst(hdl(INN), hdl(OUTER)))).toBe('Outer › Inn: Line 5: Part "Nand" has no pin "c"')
+  })
+
+  it("names it the same way for a 'circuit' Outer, whose compileSpec refuses the chain", () => {
+    const chips = ownFirst(hdl(INN))
+    const { doc } = parseSpec(OUTER, { chips })
+    if (doc === null) throw new Error('Outer did not parse')
+    const outer: ChipDefinition = { name: 'Outer', inputs: [{ name: 'a', width: 1 }], outputs: [{ name: 'o', width: 1 }], implementation: { type: 'circuit', spec: doc } }
+    expect(errorOf('Outer', 'a o', ownFirst(hdl(INN), outer))).toBe('Outer › Inn: Line 5: Part "Nand" has no pin "c"')
+  })
+
+  it('names a chip two parts down by the whole chain', () => {
+    const mid = 'CHIP Mid {\n  IN x;\n  OUT y;\n  PARTS:\n  Inn(x=x, y=y);\n}'
+    const top = 'CHIP Top {\n  IN a;\n  OUT o;\n  PARTS:\n  Mid(x=a, y=o);\n}'
+    expect(errorOf('Top', 'a o', ownFirst(hdl(INN), hdl(mid), hdl(top)))).toBe('Top › Mid › Inn: Line 5: Part "Nand" has no pin "c"')
+  })
+
+  it('gives a refusal no part caused no line', () => {
+    const loop = 'CHIP C {\n  IN a;\n  OUT o;\n  PARTS:\n  And(a=a, b=t, out=t);\n  Not(in=t, out=o);\n}'
+    expect(errorOf('C', 'a o', ownFirst(hdl(loop)))).toBe('Cyclic part dependency: parts cannot be topologically ordered (combinational cycle) through "t"')
+  })
+
+  it("keeps evaluateChip's prefix for a registered chip that does not parse", () => {
+    const broken: ChipDefinition = { name: 'Broken', inputs: [{ name: 'in', width: 1 }], outputs: [{ name: 'out', width: 1 }], implementation: { type: 'hdl', source: 'CHIP Broken { IN in; OUT out; PARTS: Nand(a=in b=in, out=out); }' } }
+    expect(errorOf('Broken', 'in out', ownFirst(broken))).toMatch(/^evaluateChip: chip "Broken" HDL failed to parse: /)
   })
 })
 

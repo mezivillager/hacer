@@ -11,6 +11,9 @@ function parseOrThrow(source: string): HDLChip {
   return result.chip
 }
 
+/** A part's line is where the text put it, not part of the tree, and a print lays the parts out anew. */
+const unplaced = (chip: HDLChip): HDLChip => ({ ...chip, parts: chip.parts.map((part) => ({ ...part, line: undefined })) })
+
 /** Print the AST, parse the print, and hand back the second AST for comparison. */
 function roundTrip(source: string): { printed: string; before: HDLChip; after: HDLChip } {
   const before = parseOrThrow(source)
@@ -51,7 +54,7 @@ describe('printHDL', () => {
   for (const [name, source] of Object.entries(CORPUS)) {
     it(`round-trips ${name} to the same tree`, () => {
       const { before, after } = roundTrip(source)
-      expect(after).toEqual(before)
+      expect(unplaced(after)).toEqual(unplaced(before))
     })
   }
 

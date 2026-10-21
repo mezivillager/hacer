@@ -21,6 +21,8 @@ export interface HDLCompileError {
   message: string
   partName?: string
   pinName?: string
+  /** The line of the part that caused it, which `message` also leads with as `Line N: `; absent when no part with a source line did. */
+  line?: number
 }
 
 export type HDLCompileResult =

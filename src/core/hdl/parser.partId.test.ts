@@ -18,8 +18,8 @@ describe('parseHDL part-id markers (ADR-0020 §1.9)', () => {
   it('leaves a part with no marker without an id, so plain HDL parses exactly as before', () => {
     const parts = partsOf(chip('    Nand(a=a, b=b, out=t);\n    Not(in=t, out=out);'))
     expect(parts).toEqual([
-      { name: 'Nand', connections: [{ internal: 'a', external: 'a' }, { internal: 'b', external: 'b' }, { internal: 'out', external: 't' }] },
-      { name: 'Not', connections: [{ internal: 'in', external: 't' }, { internal: 'out', external: 'out' }] },
+      { name: 'Nand', connections: [{ internal: 'a', external: 'a' }, { internal: 'b', external: 'b' }, { internal: 'out', external: 't' }], line: 5 },
+      { name: 'Not', connections: [{ internal: 'in', external: 't' }, { internal: 'out', external: 'out' }], line: 6 },
     ])
   })
 
@@ -35,6 +35,6 @@ describe('parseHDL part-id markers (ADR-0020 §1.9)', () => {
 
   it('treats a marker outside PARTS, or inside a block comment, as a comment', () => {
     const source = `// #p1\nCHIP X { // #p2\n    IN a; // #p3\n    OUT out;\n    PARTS:\n    /* // #p4 */ Not(in=a, out=out);\n}\n`
-    expect(partsOf(source)).toEqual([{ name: 'Not', connections: [{ internal: 'in', external: 'a' }, { internal: 'out', external: 'out' }] }])
+    expect(partsOf(source)).toEqual([{ name: 'Not', connections: [{ internal: 'in', external: 'a' }, { internal: 'out', external: 'out' }], line: 6 }])
   })
 })

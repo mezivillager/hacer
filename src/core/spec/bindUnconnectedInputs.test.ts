@@ -44,7 +44,7 @@ describe('bindUnconnectedInputs', () => {
     const both = parseHDL('CHIP N { IN x[8]; OUT o[16]; PARTS: Not16(in=false, in[0..7]=x, out=o); }')
     const compiled = both.success ? compileHDL(both.chip, chips) : null
     expect(compiled?.success === false && compiled.errors.map((e) => e.message)).toEqual([
-      'Part "Not16" pin "in" bit 0 is bound by more than one connection',
+      'Line 1: Part "Not16" pin "in" bit 0 is bound by more than one connection',
     ])
     expect(bindUnconnectedInputs(parsed('CHIP N { IN x[8]; OUT o[16]; PARTS: Not16(in[0..7]=x, out=o); }'), chips).bound).toEqual([])
   })
