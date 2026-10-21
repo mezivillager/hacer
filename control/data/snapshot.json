@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-21T18:48:22.127Z",
+  "generatedAt": "2026-10-21T19:08:11.776Z",
   "head": {
-    "sha": "55c1a489136cd71399923680c49f9f34a197abad",
-    "date": "2026-10-21T21:46:34+03:00",
-    "subject": "docs(harness): report tokens per merged PR as a run average, owner minutes stay unmeasured"
+    "sha": "af6bd90d4a74353eb50c0cc13dfeb653f737510b",
+    "date": "2026-10-21T22:07:09+03:00",
+    "subject": "docs(adr): ADR-0020 records literals as constant drivers and migrate(1 -> 2) (#814)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T18:48:22.127Z",
+      "fetchedAt": "2026-10-21T19:08:11.776Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T18:48:22.127Z",
+      "fetchedAt": "2026-10-21T19:08:11.776Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T18:48:22.127Z",
+      "fetchedAt": "2026-10-21T19:08:11.776Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-21T18:48:22.127Z",
+      "fetchedAt": "2026-10-21T19:08:11.776Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-21T18:48:22.127Z",
+      "fetchedAt": "2026-10-21T19:08:11.776Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-21T18:48:22.127Z",
+      "fetchedAt": "2026-10-21T19:08:11.776Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-21T18:48:22.127Z",
+      "fetchedAt": "2026-10-21T19:08:11.776Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-21T18:48:22.127Z",
+      "fetchedAt": "2026-10-21T19:08:11.776Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-21T18:48:22.127Z",
+      "fetchedAt": "2026-10-21T19:08:11.776Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-21T18:48:22.127Z",
+      "fetchedAt": "2026-10-21T19:08:11.776Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-21T18:48:22.127Z",
+      "fetchedAt": "2026-10-21T19:08:11.776Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-21T18:48:22.127Z",
+      "fetchedAt": "2026-10-21T19:08:11.776Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-21T18:48:22.127Z",
+      "fetchedAt": "2026-10-21T19:08:11.776Z",
       "status": "ok"
     }
   },
@@ -81,8 +81,8 @@
         "slug": "foundation",
         "epicNumber": 318,
         "open": 30,
-        "ready": 1,
-        "inProgress": 1,
+        "ready": 4,
+        "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 6,
@@ -103,12 +103,12 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 14,
+        "open": 15,
         "ready": 2,
-        "inProgress": 0,
+        "inProgress": 1,
         "needsHuman": 1,
         "staleClaims": [],
-        "agentReady": 2,
+        "agentReady": 3,
         "filedElsewhere": [
           151,
           339
@@ -190,9 +190,9 @@
         },
         "title": "Epic: core — headless core",
         "subIssues": {
-          "completed": 18,
-          "percentCompleted": 72,
-          "total": 25
+          "completed": 19,
+          "percentCompleted": 73,
+          "total": 26
         }
       },
       {
@@ -413,9 +413,9 @@
         "project": "foundation"
       },
       {
-        "number": 257,
-        "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
-        "project": "harness"
+        "number": 820,
+        "title": "Learner-facing compile errors use the reference's words and carry the line",
+        "project": "foundation"
       },
       {
         "number": 799,
@@ -423,14 +423,29 @@
         "project": "upkeep"
       },
       {
-        "number": 852,
-        "title": "Define an overturned verdict once, and have the coordinator apply `overturned` from the retro's candidates",
+        "number": 823,
+        "title": "`printSpec` refuses a document in which a driverless net shares its id with a driven net",
+        "project": "foundation"
+      },
+      {
+        "number": 257,
+        "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
         "project": "harness"
+      },
+      {
+        "number": 855,
+        "title": "compileSpec never drops a chip-OUT sink on a net named for something else",
+        "project": "foundation"
       },
       {
         "number": 800,
         "title": "Inbox review: HRN-009 · Run the retro at each coordinator run's close, not every 5 merges",
         "project": "upkeep"
+      },
+      {
+        "number": 857,
+        "title": "README § Budgets: the laptop's subagent cap is 3 in the workspace settings, 2 while the owner is awake; the committed 4 stays for cloud",
+        "project": "harness"
       },
       {
         "number": 807,
@@ -511,7 +526,7 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
-        853,
+        856,
         514
       ]
     }
@@ -527,6 +542,59 @@
           "project:foundation"
         ],
         "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 820,
+        "title": "Learner-facing compile errors use the reference's words and carry the line",
+        "labels": [
+          "agent-ready",
+          "risk:1",
+          "fidelity",
+          "project:foundation"
+        ],
+        "blocking": [
+          840
+        ],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 799,
+        "title": "Inbox review: HRN-008 · Register the `hacer-*` agent types where sessions start: the parent workspace",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 823,
+        "title": "`printSpec` refuses a document in which a driverless net shares its id with a driven net",
+        "labels": [
+          "agent-ready",
+          "risk:1",
+          "fidelity",
+          "project:foundation"
+        ],
+        "blocking": [
+          382,
+          844
+        ],
         "project": "foundation",
         "rank": 1,
         "lane": "feature",
@@ -551,33 +619,18 @@
         "reason": null
       },
       {
-        "number": 799,
-        "title": "Inbox review: HRN-008 · Register the `hacer-*` agent types where sessions start: the parent workspace",
+        "number": 855,
+        "title": "compileSpec never drops a chip-OUT sink on a net named for something else",
         "labels": [
-          "project:upkeep",
           "agent-ready",
-          "risk:0",
-          "inbox-review"
+          "risk:1",
+          "fidelity",
+          "project:foundation"
         ],
         "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 852,
-        "title": "Define an overturned verdict once, and have the coordinator apply `overturned` from the retro's candidates",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:0"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
         "pickable": true,
         "reason": null
       },
@@ -594,6 +647,21 @@
         "project": "upkeep",
         "rank": 11,
         "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 857,
+        "title": "README § Budgets: the laptop's subagent cap is 3 in the workspace settings, 2 while the owner is awake; the committed 4 stays for cloud",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:0"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
         "pickable": true,
         "reason": null
       },
@@ -2476,64 +2544,6 @@
         "reason": "on-request"
       },
       {
-        "number": 814,
-        "title": "Literals become sources: a constant driver kind for `true` and `false`, and the spec's first `migrate(1 → 2)`",
-        "labels": [
-          "agent-ready",
-          "in-progress",
-          "risk:2",
-          "fidelity",
-          "project:foundation"
-        ],
-        "blocking": [
-          820,
-          844,
-          823
-        ],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
-        "number": 820,
-        "title": "Learner-facing compile errors use the reference's words and carry the line",
-        "labels": [
-          "agent-ready",
-          "risk:1",
-          "fidelity",
-          "project:foundation"
-        ],
-        "blocking": [
-          840
-        ],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "blocked:#814"
-      },
-      {
-        "number": 823,
-        "title": "`printSpec` refuses a document in which a driverless net shares its id with a driven net",
-        "labels": [
-          "agent-ready",
-          "risk:1",
-          "fidelity",
-          "project:foundation"
-        ],
-        "blocking": [
-          382,
-          844
-        ],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "blocked:#814"
-      },
-      {
         "number": 840,
         "title": "A strict acceptance mode for the grading path: `hacer test` refuses internal subscripts, chip-OUT reads and `_` names as the reference does",
         "labels": [
@@ -2563,12 +2573,31 @@
         "rank": 1,
         "lane": "feature",
         "pickable": false,
-        "reason": "blocked:#823,#814"
+        "reason": "blocked:#823"
+      },
+      {
+        "number": 852,
+        "title": "Define an overturned verdict once, and have the coordinator apply `overturned` from the retro's candidates",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:0"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "claimed"
       }
     ],
     "byProject": {
       "foundation": [
         338,
+        820,
+        823,
+        855,
         151,
         184,
         325,
@@ -2593,27 +2622,8 @@
         728,
         742,
         773,
-        814,
-        820,
-        823,
         840,
         844
-      ],
-      "harness": [
-        257,
-        852,
-        154,
-        156,
-        270,
-        435,
-        436,
-        454,
-        500,
-        504,
-        505,
-        550,
-        607,
-        677
       ],
       "upkeep": [
         799,
@@ -2646,6 +2656,23 @@
         796,
         797,
         798
+      ],
+      "harness": [
+        257,
+        857,
+        154,
+        156,
+        270,
+        435,
+        436,
+        454,
+        500,
+        504,
+        505,
+        550,
+        607,
+        677,
+        852
       ],
       "spine": [
         165,
@@ -2736,23 +2763,29 @@
   "prs": {
     "open": [
       {
-        "number": 853,
-        "title": "feat(spec): literals are constant drivers, read through migrate(1 → 2)",
-        "url": "https://github.com/mezivillager/hacer/pull/853",
+        "number": 856,
+        "title": "docs(fidelity): review of PR #853 — literals as constant drivers, FID-029",
+        "url": "https://github.com/mezivillager/hacer/pull/856",
         "author": "mezivillager",
         "labels": [
-          "risk:2",
-          "fidelity",
-          "project:foundation"
+          "project:harness",
+          "risk:0",
+          "fidelity"
         ],
-        "headRefName": "feat/814-constant-driver",
+        "headRefName": "docs/fidelity-review-853",
         "isDraft": false,
-        "createdAt": "2026-10-21T18:38:37Z",
+        "createdAt": "2026-10-21T19:01:33Z",
         "mergedAt": null,
-        "closes": [
-          814
-        ],
-        "verdicts": []
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (claude-opus-5-5)",
+            "at": "2026-10-21T19:03:00Z",
+            "url": "https://github.com/mezivillager/hacer/pull/856#issuecomment-6324161577"
+          }
+        ]
       },
       {
         "number": 514,
@@ -2805,6 +2838,33 @@
             "model": "coordinator (claude-opus-5-5)",
             "at": "2026-10-21T18:44:01Z",
             "url": "https://github.com/mezivillager/hacer/pull/854#issuecomment-6323785144"
+          }
+        ]
+      },
+      {
+        "number": 853,
+        "title": "feat(spec): literals are constant drivers, read through migrate(1 → 2)",
+        "url": "https://github.com/mezivillager/hacer/pull/853",
+        "author": "mezivillager",
+        "labels": [
+          "risk:2",
+          "fidelity",
+          "project:foundation"
+        ],
+        "headRefName": "feat/814-constant-driver",
+        "isDraft": false,
+        "createdAt": "2026-10-21T18:38:37Z",
+        "mergedAt": "2026-10-21T19:07:10Z",
+        "closes": [
+          814
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus (claude-opus-5-5)",
+            "at": "2026-10-21T18:52:03Z",
+            "url": "https://github.com/mezivillager/hacer/pull/853#issuecomment-6323944946"
           }
         ]
       },
@@ -4325,33 +4385,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/716#issuecomment-6182479836"
           }
         ]
-      },
-      {
-        "number": 712,
-        "title": "refactor(canvas): Wire3D renders from props alone (#373, 6 of 6)",
-        "url": "https://github.com/mezivillager/hacer/pull/712",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:2",
-          "project:foundation"
-        ],
-        "headRefName": "refactor/373-wire3d-props",
-        "isDraft": false,
-        "createdAt": "2026-10-15T01:08:53Z",
-        "mergedAt": "2026-10-15T01:26:30Z",
-        "closes": [
-          373
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Opus 5.5",
-            "at": "2026-10-15T01:21:05Z",
-            "url": "https://github.com/mezivillager/hacer/pull/712#issuecomment-6182183565"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4676,29 +4709,28 @@
         }
       },
       {
-        "number": 814,
-        "ref": "refs/heads/claim/814",
-        "sha": "cc288b57a50f69b7076173b24914a2f6707a8fc4",
+        "number": 852,
+        "ref": "refs/heads/claim/852",
+        "sha": "55c1a489136cd71399923680c49f9f34a197abad",
         "state": "OPEN",
-        "title": "Literals become sources: a constant driver kind for `true` and `false`, and the spec's first `migrate(1 → 2)`",
-        "url": "https://github.com/mezivillager/hacer/issues/814",
+        "title": "Define an overturned verdict once, and have the coordinator apply `overturned` from the retro's candidates",
+        "url": "https://github.com/mezivillager/hacer/issues/852",
         "labels": [
+          "project:harness",
           "agent-ready",
           "in-progress",
-          "risk:2",
-          "fidelity",
-          "project:foundation"
+          "risk:0"
         ],
         "onClosedIssue": false,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
           "session": "hacer-loop-to-70",
-          "branch": "feat/814-constant-driver",
+          "branch": "docs/852-overturned-owner",
           "handoff": "none",
           "author": "mezivillager",
-          "at": "2026-10-21T18:05:13Z",
-          "url": "https://github.com/mezivillager/hacer/issues/814#issuecomment-6323016813"
+          "at": "2026-10-21T19:00:17Z",
+          "url": "https://github.com/mezivillager/hacer/issues/852#issuecomment-6324108407"
         }
       }
     ],
@@ -6529,7 +6561,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-15",
-        "merges": 26
+        "merges": 25
       },
       {
         "date": "2026-10-16",
@@ -6541,20 +6573,20 @@
       },
       {
         "date": "2026-10-21",
-        "merges": 13
+        "merges": 14
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-07T18:48:22.127Z",
-      "merged": 75,
+      "since": "2026-10-07T19:08:11.776Z",
+      "merged": 76,
       "openToMergeHours": {
         "median": 0.4,
         "p90": 2
       },
       "blockedOnce": {
         "count": 7,
-        "of": 60,
+        "of": 61,
         "prs": [
           700,
           725,
@@ -6567,8 +6599,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 49,
-          "withVerdict": 49,
+          "merged": 50,
+          "withVerdict": 50,
           "without": []
         },
         "nonCode": {
@@ -10504,7 +10536,7 @@
       },
       {
         "date": "2026-10-21",
-        "at": "2026-10-21T18:27:10.950Z",
+        "at": "2026-10-21T18:48:22.127Z",
         "byProject": {
           "foundation": [
             338,
@@ -10540,7 +10572,7 @@
           ],
           "harness": [
             257,
-            850,
+            852,
             154,
             156,
             270,
@@ -10555,7 +10587,6 @@
             677
           ],
           "upkeep": [
-            798,
             799,
             800,
             807,
@@ -10584,7 +10615,8 @@
             794,
             795,
             796,
-            797
+            797,
+            798
           ],
           "spine": [
             165,
@@ -10678,11 +10710,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "55c1a489136cd71399923680c49f9f34a197abad",
+        "sha": "af6bd90d4a74353eb50c0cc13dfeb653f737510b",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39655761901/job/119415443336",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39658811158/job/119426106714",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -10735,43 +10767,42 @@
         "disagrees": false
       },
       {
-        "pr": 853,
-        "sha": "876964a0b72ed1ce33d9705472c71a3413a094fc",
+        "pr": 856,
+        "sha": "091193ead2b599989d8b90de9703b2d253be879a",
         "check": "pr-hygiene",
         "conclusion": "SUCCESS",
-        "completedAt": "2026-10-21T18:38:55Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39654579208/job/119411347354",
-        "line": "HYGIENE: PASS reviewable=199 test=319 excluded=0 files=10 issue=#814 linked=fixes",
+        "completedAt": "2026-10-21T19:01:55Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39657991851/job/119423249556",
+        "line": "HYGIENE: PASS reviewable=98 test=0 excluded=0 files=2 issue=docs-only",
         "verdict": "PASS",
         "fields": {
-          "reviewable": 199,
-          "test": 319,
+          "reviewable": 98,
+          "test": 0,
           "excluded": 0,
-          "files": 10,
-          "issue": "#814",
-          "linked": "fixes"
+          "files": 2,
+          "issue": "docs-only"
         },
         "disagrees": false
       },
       {
-        "pr": 853,
-        "sha": "876964a0b72ed1ce33d9705472c71a3413a094fc",
+        "pr": 856,
+        "sha": "091193ead2b599989d8b90de9703b2d253be879a",
         "check": "browser-qa",
         "conclusion": "SUCCESS",
-        "completedAt": "2026-10-21T18:38:54Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39654579220/job/119411343787",
+        "completedAt": "2026-10-21T19:01:47Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39657991197/job/119423245067",
         "line": "BROWSER-QA: skipped (no critical paths)",
         "verdict": "SKIPPED",
         "fields": {},
         "disagrees": false
       },
       {
-        "pr": 853,
-        "sha": "876964a0b72ed1ce33d9705472c71a3413a094fc",
+        "pr": 856,
+        "sha": "091193ead2b599989d8b90de9703b2d253be879a",
         "check": "ci",
         "conclusion": "SUCCESS",
-        "completedAt": "2026-10-21T18:41:08Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39654576524/job/119411334517",
+        "completedAt": "2026-10-21T19:05:31Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39657988621/job/119423234869",
         "line": "LAYER-RATCHET: 69 known violations (37 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
         "verdict": "PASS",
         "fields": {
@@ -18068,6 +18099,13 @@
         ]
       },
       {
+        "id": "#814",
+        "kind": "github",
+        "citedBy": [
+          "ADR-0020"
+        ]
+      },
+      {
         "id": "#328",
         "kind": "github",
         "citedBy": [
@@ -18198,6 +18236,13 @@
           "R303",
           "R304",
           "R826"
+        ]
+      },
+      {
+        "id": "#785",
+        "kind": "github",
+        "citedBy": [
+          "ADR-0020"
         ]
       },
       {
