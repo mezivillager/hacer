@@ -318,6 +318,15 @@ describe('the agent definitions keep their load-bearing rules', () => {
       '.claude/agents/hacer-retro.md body',
     ])
   })
+
+  it('checks the definition of an overturned verdict against the verifier brief', () => {
+    expect(TWIN_SENTENCES.map((t) => [t.owner, t.anchor, ...t.twins.map((w) => `${w.file} ${w.part}`)])).toContainEqual([
+      'docs/harness/verifier-brief.md',
+      '**Overturned:** ',
+      'docs/harness/model-tiering.md body',
+      'docs/harness/retro-brief.md body',
+    ])
+  })
 })
 
 describe('the measured-facts rule (#394)', () => {
