@@ -3,10 +3,11 @@ import { parseHDL } from '../hdl/parser'
 import { emptySidecar } from './sidecar'
 import { parseSpec } from './parseSpec'
 import { printSpec } from './printSpec'
+import { SPEC_SCHEMA_VERSION } from './types'
 import type { CircuitSpec, Net } from './types'
 
 const AND: CircuitSpec = {
-  schemaVersion: 1,
+  schemaVersion: SPEC_SCHEMA_VERSION,
   name: 'And',
   ins: [
     { name: 'a', width: 1 },
@@ -26,7 +27,7 @@ const AND: CircuitSpec = {
 }
 
 const passThrough = (width: number): CircuitSpec => ({
-  schemaVersion: 1,
+  schemaVersion: SPEC_SCHEMA_VERSION,
   name: 'P',
   ins: [{ name: 'a', width }],
   outs: [{ name: 'out', width }],
@@ -43,7 +44,7 @@ describe('printSpec', () => {
   it("prints the header, the ports, and each part's bindings with its // #p<n> id", () => {
     expect(printSpec(AND)).toBe(
       [
-        '// hacer-spec 1',
+        '// hacer-spec 2',
         'CHIP And {',
         '    IN a, b;',
         '    OUT out;',

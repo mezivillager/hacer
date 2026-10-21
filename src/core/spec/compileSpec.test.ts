@@ -66,6 +66,15 @@ const TWO_CYCLE = doc('X', [port('a')], [port('x'), port('y')], [], [
   { id: 'y', driver: chipOut('x'), sinks: [chipOut('y')] },
 ])
 const SELF_CYCLE = doc('X', [port('a')], [port('x')], [], [{ id: 'x', driver: chipOut('x'), sinks: [chipOut('x')] }])
+const WIDE_TRUE = 'CHIP A { IN a[16]; OUT out[16]; PARTS: And16(a=a, b=true, out=out); }'
+const TRUE: Ref = { kind: 'constant', value: true }
+const FALSE: Ref = { kind: 'constant', value: false }
+const AND_WITH = (driver: Ref | null): CircuitSpec => doc('K', [port('a')], [port('out')], [{ id: 'p1', chip: 'And' }], [
+  { id: 'a', driver: chipIn('a'), sinks: [partPin('p1', 'a')] },
+  { id: 'true', driver, sinks: [partPin('p1', 'b')] },
+  { id: 'out', driver: partPin('p1', 'out'), sinks: [chipOut('out')] },
+])
+const CONSTANT_ON_OUT = doc('K', [port('a')], [port('out')], [], [{ id: 'out', driver: TRUE, sinks: [chipOut('out')] }])
 
 function documentOf(source: string): CircuitSpec {
   const { doc: parsed, diagnostics } = parseSpec(source)
@@ -127,6 +136,15 @@ describe('compileSpec — the §1.5 lowering', () => {
 
   it('a whole read of a mixed signal is split on the part\'s own pin', () => {
     for (const a of [0, 1]) expect(run(MIXED, { a })).toEqual({ out: ((1 - a) << 1) | a, y: a })
+  })
+
+  it('a wide literal reads all ones of its pin: And16(a=a, b=true) gives out = a', () => {
+    for (const a of [0, 1, 0x5555, 0xaaaa, 0x8000, 0xffff]) expect(run(WIDE_TRUE, { a })).toEqual({ out: a })
+  })
+
+  it('a constant driver built without a parse compiles on its own literal\'s net', () => {
+    const result = compileSpec({ doc: AND_WITH(TRUE), diagnostics: [] }, chips)
+    expect(result.success && [0, 1].map((a) => result.evaluate({ a }, ctx))).toEqual([{ out: 0 }, { out: 1 }])
   })
 
   it('a read straddling an alias boundary is split', () => {
@@ -194,6 +212,21 @@ describe('compileSpec — refusals (§1.1, §1.8)', () => {
     expect(refusal({ doc: SELF_CYCLE, diagnostics: [] })).toEqual([expect.objectContaining({ code: 'alias-cycle', members: ['x', 'x'] })])
   })
 
+  it('refuses a constant driver on any net but its own literal\'s, by name', () => {
+    expect(refusal({ doc: CONSTANT_ON_OUT, diagnostics: [] })).toEqual([
+      { code: 'invalid-wire', severity: 'error', netId: 'out', message: 'wire out = true: a constant drives only the net its own literal names' },
+    ])
+    expect(refusal({ doc: AND_WITH(FALSE), diagnostics: [] })).toEqual([
+      { code: 'invalid-wire', severity: 'error', netId: 'true', message: 'wire true = false: a constant drives only the net its own literal names' },
+    ])
+  })
+
+  it('refuses a true net with no driver, built without a parse, as undriven', () => {
+    expect(refusal({ doc: AND_WITH(null), diagnostics: [] })).toEqual([
+      { code: 'undriven', severity: 'error', netId: 'true', message: 'Signal "true" is read but nothing drives it' },
+    ])
+  })
+
   it('refuses a sliced read of bits nothing drives', () => {
     expect(refusal({ doc: documentOf(SLICED_UNDRIVEN), diagnostics: [] })).toEqual([expect.objectContaining({ code: 'undriven', severity: 'error', netId: 'out[0]' })])
   })
@@ -213,7 +246,7 @@ describe('compileSpec — refusals (§1.1, §1.8)', () => {
   })
 
   it('never throws, and leaves the document it was given unchanged', () => {
-    const sources = [passThrough(1), passThrough(16), OUT_TO_OUT, CHAIN, ONE_BIT, MIXED, STRADDLE, TWO_DRIVERS, C8, SLICED_UNDRIVEN, UNDRIVEN_ROOT, WIDTH, LOOP, NOT_HDL]
+    const sources = [passThrough(1), passThrough(16), OUT_TO_OUT, CHAIN, ONE_BIT, MIXED, STRADDLE, TWO_DRIVERS, C8, SLICED_UNDRIVEN, UNDRIVEN_ROOT, WIDTH, LOOP, NOT_HDL, WIDE_TRUE]
     for (const source of sources) {
       const parsed = parseSpec(source)
       const before = structuredClone(parsed)
@@ -222,7 +255,10 @@ describe('compileSpec — refusals (§1.1, §1.8)', () => {
       expect(parsed).toEqual(before)
       expect(parseSpec(source)).toEqual(before)
     }
-    const documents = [PART_AND_ALIAS, REPEATED_ID, REPEATED_READ, WRITES_IN, WRITES_INTERNAL, READS_NO_PORT, WIDTH_ALIAS, TWO_CYCLE, SELF_CYCLE, documentOf(C8), documentOf(SLICED_UNDRIVEN)]
+    const documents = [
+      PART_AND_ALIAS, REPEATED_ID, REPEATED_READ, WRITES_IN, WRITES_INTERNAL, READS_NO_PORT, WIDTH_ALIAS, TWO_CYCLE, SELF_CYCLE, documentOf(C8), documentOf(SLICED_UNDRIVEN),
+      CONSTANT_ON_OUT, AND_WITH(TRUE), AND_WITH(FALSE), AND_WITH(null),
+    ]
     for (const document of documents) {
       const input = deepFreeze({ doc: structuredClone(document), diagnostics: [] })
       expect(() => compileSpec(input, chips)).not.toThrow()

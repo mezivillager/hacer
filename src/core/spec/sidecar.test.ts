@@ -2,8 +2,14 @@ import { describe, expect, it } from 'vitest'
 import { emptySidecar, parseSidecar } from './sidecar'
 
 describe('the sidecar', () => {
-  it('starts at version 1 with both surfaces present and empty', () => {
-    expect(emptySidecar()).toEqual({ schemaVersion: 1, hints: { '3d': {}, '2d': {} }, meta: {}, tests: [], notes: [] })
+  it('starts at version 2 with both surfaces present and empty', () => {
+    expect(emptySidecar()).toEqual({ schemaVersion: 2, hints: { '3d': {}, '2d': {} }, meta: {}, tests: [], notes: [] })
+  })
+
+  it('reads a version 1 sidecar at its own version, for migrate(1 → 2) to move', () => {
+    expect(parseSidecar('{ "schemaVersion": 1, "hints": { "3d": {}, "2d": {} }, "meta": { "title": "And" }, "tests": [], "notes": [] }')).toEqual({
+      sidecar: { schemaVersion: 1, hints: { '3d': {}, '2d': {} }, meta: { title: 'And' }, tests: [], notes: [] },
+    })
   })
 
   it('reads back what it was written as', () => {
@@ -12,7 +18,7 @@ describe('the sidecar', () => {
   })
 
   it.each([
-    ['a version this build does not know', '{ "schemaVersion": 2, "hints": { "3d": {}, "2d": {} }, "meta": {}, "tests": [], "notes": [] }', 'unknown-schema-version'],
+    ['a version this build does not know', '{ "schemaVersion": 3, "hints": { "3d": {}, "2d": {} }, "meta": {}, "tests": [], "notes": [] }', 'unknown-schema-version'],
     ['no version at all', '{ "hints": { "3d": {}, "2d": {} }, "meta": {}, "tests": [], "notes": [] }', 'unknown-schema-version'],
     ['a missing surface', '{ "schemaVersion": 1, "hints": { "3d": {} }, "meta": {}, "tests": [], "notes": [] }', 'invalid-sidecar'],
     ['text that is not JSON', '{ schemaVersion: 1 }', 'invalid-sidecar'],

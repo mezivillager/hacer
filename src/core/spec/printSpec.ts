@@ -10,6 +10,8 @@ export interface PrintSpecOptions {
   sidecar?: Sidecar
 }
 
+type Alias = Net & { driver: Extract<Ref, { kind: 'chip-in' | 'chip-out' }> }
+
 interface Binding {
   pin: string
   slice?: HDLSlice
@@ -20,11 +22,11 @@ interface Binding {
 const INDENT = '    '
 const compare = (a: string, b: string): number => (a < b ? -1 : a > b ? 1 : 0)
 const printPort = (port: Port): string => (port.width > 1 ? `${port.name}[${port.width}]` : port.name)
-const printRef = (ref: Ref): string => printPinRef(ref.pin, ref.slice)
+const printRef = (ref: Ref): string => (ref.kind === 'constant' ? String(ref.value) : printPinRef(ref.pin, ref.slice))
 const bit = (slice: HDLSlice | undefined, i: number): HDLSlice => ({ start: (slice?.start ?? 0) + i, end: (slice?.start ?? 0) + i })
 
 /** Classified by driver kind (§1): any chip-out driver is an alias, a chip-in one only if renamed. */
-export function isAlias(net: Net): net is Net & { driver: Ref } {
+export function isAlias(net: Net): net is Alias {
   if (net.driver?.kind === 'chip-out') return true
   return net.driver?.kind === 'chip-in' && printRef(net.driver) !== net.id
 }
@@ -37,7 +39,7 @@ const byPin = (a: Binding, b: Binding): number =>
   compare(a.signal, b.signal)
 
 /** §1.5's export desugar, width-generic: `Or` at one bit, `Or16` at sixteen, one `Or` per bit otherwise. */
-function buffers(net: Net & { driver: Ref }, outs: Port[]): string[] {
+function buffers(net: Alias, outs: Port[]): string[] {
   const { signal, slice } = splitNetId(net.id)
   const width = slice ? sliceWidth(slice) : (outs.find((p) => p.name === signal)?.width ?? 1)
   if (width === 1 || width === 16) {

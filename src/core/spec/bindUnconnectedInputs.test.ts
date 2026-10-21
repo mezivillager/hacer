@@ -7,6 +7,7 @@ import { bindUnconnectedInputs, compileSpec, parseSpec, SPEC_SCHEMA_VERSION, typ
 
 const chips = getBuiltinChipRegistry()
 const sink = (partId: PartId, pin: string): Ref => ({ kind: 'part-pin', partId, pin })
+const FALSE: Ref = { kind: 'constant', value: false }
 const ctx: EvalContext = { registry: chips, depth: 0, maxDepth: DEFAULT_MAX_DEPTH, evalChip: evaluateChipWithCtx }
 
 function parsed(text: string): CircuitSpec {
@@ -28,7 +29,7 @@ describe('bindUnconnectedInputs', () => {
     })
     const result = bindUnconnectedInputs(doc, chips)
     expect(result.bound).toEqual([{ partId: 'p1', pin: 'in' }])
-    expect(result.doc.nets.filter((n) => n.id === 'false')).toEqual([{ id: 'false', driver: null, sinks: [sink('p1', 'in')] }])
+    expect(result.doc.nets.filter((n) => n.id === 'false')).toEqual([{ id: 'false', driver: FALSE, sinks: [sink('p1', 'in')] }])
     expect(run(result.doc, { a: 0 })).toEqual({ outputs: { o: 65535 } })
   })
 
@@ -57,7 +58,7 @@ describe('bindUnconnectedInputs', () => {
     expect(result.bound).toEqual([{ partId: 'p1', pin: 'b' }, { partId: 'p2', pin: 'b' }, { partId: 'p2', pin: 'sel' }])
     expect(result.doc.nets.filter((n) => n.id === 'false')).toEqual([{
       id: 'false',
-      driver: null,
+      driver: FALSE,
       sinks: [sink('p1', 'a'), sink('p1', 'b'), sink('p2', 'b'), sink('p2', 'sel')],
     }])
     expect(result.doc.nets.filter((n) => n.id !== 'false')).toEqual(doc.nets.filter((n) => n.id !== 'false'))

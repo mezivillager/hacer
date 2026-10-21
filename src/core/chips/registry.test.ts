@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { createChipRegistry, registerBuiltin } from './registry'
 import { validateChipDefinition, isBuiltinChip, isHDLChip, isCircuitChip } from './types'
 import type { ChipDefinition } from './types'
+import { SPEC_SCHEMA_VERSION } from '../spec/types'
 
 describe('ChipRegistry', () => {
   function makeNandChip(): ChipDefinition {
@@ -218,7 +219,7 @@ describe('type guards', () => {
   it('isCircuitChip returns true for circuit', () => {
     expect(isCircuitChip({
       name: 'And', inputs: [], outputs: [],
-      implementation: { type: 'circuit', spec: { schemaVersion: 1, name: 'And', ins: [], outs: [], parts: [], nets: [] } },
+      implementation: { type: 'circuit', spec: { schemaVersion: SPEC_SCHEMA_VERSION, name: 'And', ins: [], outs: [], parts: [], nets: [] } },
     })).toBe(true)
   })
 })

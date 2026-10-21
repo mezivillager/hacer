@@ -16,8 +16,8 @@ describe('the .spec format: where the version is read from', () => {
       ['after blank lines', '\n\n'],
       ['indented', '  '],
     ])('is read %s', (_where, lead) => {
-      expect(parseSpec(`${lead}// hacer-spec 1\n${BODY}`).doc?.schemaVersion).toBe(1)
-      expect(codes(`${lead}// hacer-spec 2\n${BODY}`)).toEqual(['unknown-schema-version'])
+      expect(parseSpec(`${lead}// hacer-spec 1\n${BODY}`).doc?.schemaVersion).toBe(2)
+      expect(codes(`${lead}// hacer-spec 3\n${BODY}`)).toEqual(['unknown-schema-version'])
     })
 
     it.each([
@@ -41,7 +41,7 @@ describe('the .spec format: where the version is read from', () => {
     })
 
     it('refuses an unknown sidecar version on one line, as it does across lines', () => {
-      expect(codes(`${BODY}/* hacer-sidecar ${sidecarJson(2)} */\n`)).toEqual(['unknown-schema-version'])
+      expect(codes(`${BODY}/* hacer-sidecar ${sidecarJson(3)} */\n`)).toEqual(['unknown-schema-version'])
     })
 
     it.each([
@@ -63,8 +63,8 @@ describe('the .spec format: a version tag is never read past', () => {
   const NBSP = '\u00A0'
 
   it('reads a header indented with any Unicode space, and refuses its unknown version', () => {
-    expect(parseSpec(`${NBSP}// hacer-spec 1\n${BODY}`).doc?.schemaVersion).toBe(1)
-    expect(codes(`${NBSP}// hacer-spec 2\n${BODY}`)).toEqual(['unknown-schema-version'])
+    expect(parseSpec(`${NBSP}// hacer-spec 1\n${BODY}`).doc?.schemaVersion).toBe(2)
+    expect(codes(`${NBSP}// hacer-spec 3\n${BODY}`)).toEqual(['unknown-schema-version'])
   })
 
   it.each([
@@ -99,7 +99,7 @@ describe('the .spec format: a version tag is never read past', () => {
 describe('the .spec format: what counts as a tag', () => {
   it('reads an ordinary comment whose word merely begins with the tag, like HACER-specific', () => {
     const result = parseSpec(`// hacer-spec 1\n${BODY}// HACER-specific: hacer-sidecars live at the end\n`)
-    expect(result.doc?.schemaVersion).toBe(1)
+    expect(result.doc?.schemaVersion).toBe(2)
     expect(result.diagnostics).toEqual([])
   })
 
