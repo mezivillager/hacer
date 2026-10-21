@@ -13,6 +13,7 @@ import {
   PICK_ROTATION,
   ROW_AGENT_READY_CAP,
   STALE_CLAIM_HOURS,
+  addedFiles,
   bucketOf,
   claimComment,
   claimDrift,
@@ -27,19 +28,23 @@ import {
   formatResume,
   formatTasks,
   historyGap,
+  lastRunsRow,
   latestClaim,
   parsePortfolio,
+  parseRunsRow,
   planReady,
   possiblyDelivered,
   readClaimDrift,
   readClaimHistory,
   readPossiblyDelivered,
+  readRetroLine,
   readClaims,
   releaseComment,
   releaseRefusal,
   reportNext,
   requirePortfolioRows,
   resumePoint,
+  retroLine,
   summarizeProjects,
   triageTasks,
 } from './backlog.logic.mjs'
@@ -1205,5 +1210,119 @@ describe('claim history past one window', () => {
     expect(capped).toHaveLength(CLAIM_HISTORY_PAGES)
     expect(historyGap(capped, issues, portfolioRows))
       .toBe(`no claim in the ${CLAIM_HISTORY_PAGES * CLAIM_HISTORY_WINDOW} most recently updated issues fixes the slot`)
+  })
+})
+
+// The two rows are copied from docs/harness/harness-inbox.md § Runs.
+describe('retro due', () => {
+  const FIRST_ROW = '| 2026-10-15 (first) | the three latest session records: 2026-09-29T09:00Z → 09-29T23:59Z, ' +
+    '2026-10-01T21:20Z → 10-02T03:00Z, 2026-10-04T16:50Z → 10-04T23:59Z | `1737e290` | 75 (65 + 10 dependabot) | ' +
+    'median reviewable 73 · 2 BLOCK · 0 overturned · 0 reruns | mechanise HRN-001–004 · policy HRN-005–009 | three, listed below |'
+  const ROW = "| 2026-10-21 | 2026-10-04T23:59Z → 2026-10-21T15:00Z, from the last row's `to`: 16.6 days, far past the cadence " +
+    '(below) | `204aa0b2` | 63 (49 + 14 dependabot) | median reviewable 66 · 9 BLOCK on 7 PRs · 0 overturned · 0 reruns | ' +
+    'mechanise HRN-010–014 · policy HRN-015–017 | eight, listed below |'
+  const TO = '2026-10-21T15:00Z'
+  const MOVED = '7c80ac1d'.padEnd(40, '0')
+  const DAY = 24 * 60 * 60 * 1000
+  const after = (ms) => new Date(Date.parse(TO) + ms).toISOString()
+  const merges = (count) => Array.from({ length: count }, (_, index) => after((index + 1) * 60_000))
+  const record = (path, at) => ({ path, at })
+  const line = (overrides = {}) =>
+    retroLine({ row: ROW, mergedAts: [], records: [], mainSha: MOVED, now: after(2 * DAY), ...overrides })
+  const closed = record('docs/harness/sessions/2026-10-22.md', '2026-10-22T06:00:00+03:00')
+
+  it('no close record and under 7 days is not due, at 5 or 12 merges', () => {
+    expect(line({ mergedAts: merges(5) })).toBe(`retro: 5 merges since ${TO}`)
+    expect(line({ mergedAts: merges(12), now: after(7 * DAY - 1) })).toBe(`retro: 12 merges since ${TO}`)
+  })
+
+  it('a dated record added after to is due, run closed', () => {
+    expect(line({ mergedAts: merges(3), records: [closed] }))
+      .toBe(`retro due: 3 merges since ${TO} (run closed: docs/harness/sessions/2026-10-22.md)`)
+    const before = record('docs/harness/sessions/2026-10-21.md', '2026-10-21T17:59:00+03:00')
+    expect(line({ records: [before] })).toBe(`retro: 0 merges since ${TO}`)
+    const later = record('docs/harness/sessions/2026-10-23.md', '2026-10-23T09:00:00Z')
+    expect(line({ records: [later, closed, before] })).toBe(`retro due: 0 merges since ${TO} ` +
+      '(run closed: docs/harness/sessions/2026-10-22.md, docs/harness/sessions/2026-10-23.md)')
+  })
+
+  it('a handoff or undated file added after to is not due', () => {
+    const files = ['docs/harness/sessions/2026-10-22-handoff.md', 'docs/harness/sessions/COORDINATOR-HANDOFF.md',
+      'docs/harness/sessions/cloud-queue-inbox.md', 'docs/harness/sessions/2026-10-22.txt', 'docs/harness/2026-10-22.md']
+    expect(line({ mergedAts: merges(4), records: files.map((path) => record(path, after(DAY))) })).toBe(`retro: 4 merges since ${TO}`)
+  })
+
+  it('7 days since to with main moved is due, 7 days', () => {
+    expect(line({ mergedAts: merges(2), now: after(7 * DAY) })).toBe(`retro due: 2 merges since ${TO} (7 days)`)
+    expect(line({ mergedAts: merges(2), now: Date.parse(TO) + 30 * DAY })).toBe(`retro due: 2 merges since ${TO} (7 days)`)
+  })
+
+  it("7 days since to with main at the row's SHA is not due", () => {
+    expect(line({ mainSha: '204aa0b2'.padEnd(40, 'f'), now: after(30 * DAY) })).toBe(`retro: 0 merges since ${TO}`)
+    expect(line({ mainSha: '204AA0B2', now: after(30 * DAY) })).toBe(`retro: 0 merges since ${TO}`)
+  })
+
+  it('a run closed names the trigger when 7 days have passed as well', () => {
+    expect(line({ records: [closed], now: after(9 * DAY) }))
+      .toBe(`retro due: 0 merges since ${TO} (run closed: docs/harness/sessions/2026-10-22.md)`)
+  })
+
+  it('merges at or before to are not counted', () => {
+    const mergedAts = ['2026-10-21T14:59:59Z', '2026-10-21T15:00:00Z', '2026-10-21T17:59:00+03:00', null]
+    expect(line({ mergedAts: [...mergedAts, '2026-10-21T18:00:01+03:00', '2026-10-22T00:00:00Z'] }))
+      .toBe(`retro: 2 merges since ${TO}`)
+    expect(line({ mergedAts: [...mergedAts, '2026-10-21T15:00:01Z'] })).toBe(`retro: 1 merge since ${TO}`)
+  })
+
+  it('a row copied from the 2026-10-21 Runs row reads to 2026-10-21T15:00Z and 204aa0b2', () => {
+    expect(parseRunsRow(ROW)).toEqual({ to: '2026-10-21T15:00Z', sha: '204aa0b2' })
+  })
+
+  it('a row whose to has no year reads unread', () => {
+    expect(parseRunsRow(FIRST_ROW).unread).toContain('10-04T23:59Z')
+    expect(line({ row: FIRST_ROW })).toBe("retro: unread (the last Runs row's `to` is 10-04T23:59Z, not YYYY-MM-DDTHH:MMZ)")
+    expect(line({ row: null })).toBe('retro: unread (harness-inbox.md § Runs has no row)')
+    expect(line({ row: '| 2026-10-21 | 2026-10-21T15:00Z | `204aa0b2` |' })).toBe('retro: unread (the last Runs row has no `from → to` window)')
+    expect(line({ row: ROW.replace('`204aa0b2`', 'unknown') })).toBe('retro: unread (the last Runs row has no `main` SHA)')
+  })
+
+  it('lastRunsRow reads the last row of the first table under ## Runs, and null without one', () => {
+    const inbox = ['# Harness inbox', '', '| Id | Status |', '|---|---|', '| HRN-001 | proposed |', '', '## Runs', '',
+      'One row per retro run.', '', '| Run | Window (`from` → `to`) | `main` at `to` |', '|---|---|---|', FIRST_ROW, ROW, '',
+      '### Second run: 2026-10-21', '', '| Number | Value | How |', '|---|---|---|', '| merged PRs | 63 | measured |', '', '## Entries'].join('\n')
+    expect(lastRunsRow(inbox)).toBe(ROW)
+    expect(lastRunsRow('## Runs\n\n| Run | Window | `main` at `to` |\n|---|---|---|\n\n## Entries')).toBeNull()
+    expect(lastRunsRow('# Harness inbox\n\n| Id | Status |\n|---|---|\n| HRN-001 | proposed |')).toBeNull()
+  })
+
+  it('addedFiles reads `git log --diff-filter=A --format=%x00%cI --name-only` as each path with its commit time', () => {
+    const log = '\0' + '2026-10-17T23:32:01+03:00\n\ndocs/harness/sessions/2026-10-17.md\n' +
+      '\0' + '2026-09-23T15:09:48+03:00\n\ndocs/harness/sessions/2026-09-23.md\ndocs/harness/sessions/cloud-queue-inbox.md\n'
+    expect(addedFiles(log)).toEqual([
+      { path: 'docs/harness/sessions/2026-10-17.md', at: '2026-10-17T23:32:01+03:00' },
+      { path: 'docs/harness/sessions/2026-09-23.md', at: '2026-09-23T15:09:48+03:00' },
+      { path: 'docs/harness/sessions/cloud-queue-inbox.md', at: '2026-09-23T15:09:48+03:00' },
+    ])
+    expect(addedFiles('')).toEqual([])
+  })
+
+  it('readRetroLine is the line over what it reads, and unread with the first line of a read that throws', () => {
+    expect(readRetroLine(() => ({ row: ROW, mergedAts: merges(1), records: [], mainSha: MOVED, now: after(DAY) })))
+      .toBe(`retro: 1 merge since ${TO}`)
+    expect(readRetroLine(() => {
+      throw new Error("fatal: invalid object name 'origin/main'.\nusage: git show")
+    })).toBe("retro: unread (fatal: invalid object name 'origin/main'.)")
+  })
+
+  it('ha-next §1 and the retro brief say `ready` prints the line and the retro goes before the first claim', () => {
+    const doc = (file) => readFileSync(path.join(import.meta.dirname, '..', file), 'utf8')
+    const skill = doc('.claude/skills/ha-next/SKILL.md')
+    const orient = skill.slice(skill.indexOf('## 1.'), skill.indexOf('## 2.'))
+    expect(orient).toMatch(/`retro due:`[\s\S]{0,200}before the first claim/)
+    const brief = doc('docs/harness/retro-brief.md')
+    const cadence = brief.slice(brief.indexOf('## Cadence'), brief.indexOf('## Inputs'))
+    expect(cadence).toContain('node scripts/backlog.mjs ready')
+    expect(cadence).toContain('before its first claim')
+    expect(cadence).not.toMatch(/every 5 merged PRs|HRN-009/)
   })
 })
