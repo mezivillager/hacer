@@ -471,3 +471,50 @@ Before user chips are registered at runtime, it is stated and pinned what a part
 `pnpm exec vitest run --project node src/core/chips src/core/hdl`
 ## Blocked by
 #206 (shaping). PR #826 must merge first; this entry adds tests next to the ones it adds.
+
+### FID-027 · Amend FID-026: since #821 the lookup order also decides whether `compileSpec` refuses, so its pinned test adds a broken part under a reference builtin name
+- **Date:** 2026-10-21 · **Target epic:** #140 core
+- **Status:** proposed
+- **Why:** PR #845 (#821) makes `compileSpec` compile every definition its parts reach, and refuse when one fails. It ends a branch at a definition of type `'builtin'`. The reference ends one at a builtin *name*, before reading any file (`../web-ide/simulator/src/chip/builder.ts:48`). So FID-026's split now decides refusals too, not only values and cycles.
+  - Measured at `91ef428`: a `FullAdder` file over two `HalfAdder` parts, beside a broken `HalfAdder` file (`Not(in=q, out=carry)`), is accepted with 0 reads. It uses the builtin `HalfAdder`, and 1+1+1 gives `sum=1 carry=1`.
+  - At PR #845's head `f8cbef0c`, `compileSpec` refuses the same `FullAdder` over that user `HalfAdder`: `FullAdder › HalfAdder: Signal "q" is read by part "Not" but no part produces it`. `main` `d0350825` accepts it at compile.
+  - The same happens inside HACER's own builtin names whenever the registry puts user chips first. Under `combineRegistries(user, builtins)`, an `Outer` over a broken user `Not` is refused as `Outer › Not: …`, and the reference builds it on its builtin `Not`. `combineRegistries(shadow, base)` is the shape that #821's cache test uses.
+  - Not reachable today: the user registry is empty (#206).
+- **Review note:** docs/research/2026-10-fidelity-review-pr-845.md
+
+**Draft issue body**
+## Goal
+FID-026's lookup rule is pinned for refusals as well as values. A learner's broken chip refuses a parent exactly where the chosen rule says that parent uses it.
+## Acceptance criteria
+- FID-026's pinned tests gain two shapes under the chosen rule:
+  - a `FullAdder` over a broken user `HalfAdder`;
+  - an `Outer` over a broken user `Not`, in the registry view that #206's runtime caller passes to `compileSpec`.
+- Each shape is either accepted on the builtin, as the reference does, or refused with the `›` chain.
+- If the rule refuses where the reference builds on its builtin, ADR-0020 §1.11 rule 2 lists that as an expected disagreement and names the rule.
+## Verification command
+`pnpm exec vitest run --project node src/core/spec src/core/chips`
+## Blocked by
+FID-026's decision, and #206 (shaping). #821 (PR #845) must merge first.
+
+### FID-028 · A registered definition must agree with its source: refuse one whose name or pins differ from its HDL's or its document's
+- **Date:** 2026-10-21 · **Target epic:** #140 core
+- **Status:** proposed
+- **Why:** PR #845 refuses a spec whose registered part does not compile. It checks the parent against the part's *declared* pins (`src/core/hdl/compiler.ts:247, 275-276, 350` at `f8cbef0c`), and the part's body against its *source*. Nothing checks that the two agree.
+  - Measured at head and on `main`: a hand-built `'hdl'` `Foo` declares `IN a` over the source `CHIP Foo { IN b; OUT out; PARTS: Not(in=b, out=out); }`. `Outer` = `Foo(a=a, out=o)` is accepted, and gives `o = 1` for `a` = 0 and for `a` = 1, because `b` is never driven.
+  - A registered `Foo` whose source says `CHIP Bar` is accepted too, and evaluates as `Bar`.
+  - The reference cannot hold either chip. Its pins are read from the source. A `Foo` file holding `CHIP Bar` is refused, `Line 1: Wrong chip name` (`../web-ide/simulator/src/chip/builder.ts:229-231`), so its parent gets `Undefined chip name: Foo`.
+  - The production builders take the name and pins from the source (`hdlChipDefinition`, `compiler.ts:31-38`, and `compileSpec`'s `chip`). Hand-built definitions do not: they are routine in tests (#821's own case in `src/core/chips/evaluateChip.test.ts`), and an agent can register one through the core API. Not reachable by a learner today (#206).
+- **Review note:** docs/research/2026-10-fidelity-review-pr-845.md
+
+**Draft issue body**
+## Goal
+A registered definition is refused, with a message that names both sides, when its name, inputs or outputs differ from those of the source it carries. The refusal comes from `compileSpec`'s part check and from `evaluateChip`, so no chip evaluates against pins its body does not have.
+## Acceptance criteria
+- An `'hdl'` definition is refused when its `name` differs from its source's `CHIP` name, or its `inputs` or `outputs` (names, order-free, and widths) differ from the source's `IN`/`OUT`. `compileSpec` refuses it through the part check, in rule 2's `›` chain form, and never throws. `evaluateChip` refuses it before it evaluates.
+- A `'circuit'` definition is first measured against its document's `name`, `ins` and `outs`, and gets the same refusal if it disagrees.
+- Tests: `Outer` over a `Foo` that declares `IN a` over `IN b` is refused. `Outer` over a `Foo` registered from a `CHIP Bar` source is refused. Every definition built by `hdlChipDefinition` or returned as `compileSpec`'s `chip` is unaffected, with the existing suites green.
+- ADR-0020 §1.11 rule 2 records the check, and cites the reference's `Wrong chip name`.
+## Verification command
+`pnpm exec vitest run --project node src/core/spec src/core/chips src/core/hdl`
+## Blocked by
+#821 (PR #845): this extends its part check.
