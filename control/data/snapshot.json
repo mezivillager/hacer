@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-21T18:04:28.039Z",
+  "generatedAt": "2026-10-21T18:08:52.253Z",
   "head": {
-    "sha": "cc288b57a50f69b7076173b24914a2f6707a8fc4",
-    "date": "2026-10-21T21:03:19+03:00",
-    "subject": "docs(adr): ADR-0020 §1.11 records the registered-part check and its cache re-check (#821)"
+    "sha": "88c226c6901b47aac15796130fa6a38f564f47f6",
+    "date": "2026-10-21T21:07:41+03:00",
+    "subject": "docs(fidelity): review of PR #845 (registered parts refused with their chain), FID-027, FID-028"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T18:04:28.039Z",
+      "fetchedAt": "2026-10-21T18:08:52.253Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T18:04:28.039Z",
+      "fetchedAt": "2026-10-21T18:08:52.253Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T18:04:28.039Z",
+      "fetchedAt": "2026-10-21T18:08:52.253Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-21T18:04:28.039Z",
+      "fetchedAt": "2026-10-21T18:08:52.253Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-21T18:04:28.039Z",
+      "fetchedAt": "2026-10-21T18:08:52.253Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-21T18:04:28.039Z",
+      "fetchedAt": "2026-10-21T18:08:52.253Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-21T18:04:28.039Z",
+      "fetchedAt": "2026-10-21T18:08:52.253Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-21T18:04:28.039Z",
+      "fetchedAt": "2026-10-21T18:08:52.253Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-21T18:04:28.039Z",
+      "fetchedAt": "2026-10-21T18:08:52.253Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-21T18:04:28.039Z",
+      "fetchedAt": "2026-10-21T18:08:52.253Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-21T18:04:28.039Z",
+      "fetchedAt": "2026-10-21T18:08:52.253Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-21T18:04:28.039Z",
+      "fetchedAt": "2026-10-21T18:08:52.253Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-21T18:04:28.039Z",
+      "fetchedAt": "2026-10-21T18:08:52.253Z",
       "status": "ok"
     }
   },
@@ -81,8 +81,8 @@
         "slug": "foundation",
         "epicNumber": 318,
         "open": 31,
-        "ready": 3,
-        "inProgress": 1,
+        "ready": 1,
+        "inProgress": 2,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 7,
@@ -305,12 +305,12 @@
         "lane": "aux",
         "slug": "upkeep",
         "epicNumber": 146,
-        "open": 28,
-        "ready": 17,
+        "open": 29,
+        "ready": 18,
         "inProgress": 9,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 27,
+        "agentReady": 28,
         "filedElsewhere": [],
         "next": {
           "number": 797,
@@ -408,18 +408,8 @@
     ],
     "next": [
       {
-        "number": 257,
-        "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
-        "project": "harness"
-      },
-      {
         "number": 338,
         "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
-        "project": "foundation"
-      },
-      {
-        "number": 814,
-        "title": "Literals become sources: a constant driver kind for `true` and `false`, and the spec's first `migrate(1 → 2)`",
         "project": "foundation"
       },
       {
@@ -428,9 +418,9 @@
         "project": "upkeep"
       },
       {
-        "number": 820,
-        "title": "Learner-facing compile errors use the reference's words and carry the line",
-        "project": "foundation"
+        "number": 257,
+        "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
+        "project": "harness"
       },
       {
         "number": 798,
@@ -511,18 +501,53 @@
         "number": 839,
         "title": "Inbox review: FID-026 · Builtins-first matches the reference only over HACER's builtin names: #206 states what a part named after one of the reference's other 27 builtins resolves to",
         "project": "upkeep"
+      },
+      {
+        "number": 848,
+        "title": "Inbox review: FID-027 · Amend FID-026: since #821 the lookup order also decides whether `compileSpec` refuses, so its pinned test adds a broken part under a reference builtin name",
+        "project": "upkeep"
       }
     ],
     "dormant": {
       "dormant": false,
       "agentPrs": [
-        847,
         514
       ]
     }
   },
   "tasks": {
     "items": [
+      {
+        "number": 338,
+        "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
+        "labels": [
+          "agent-ready",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 797,
+        "title": "Inbox review: HRN-006 · Say who applies `overturned`, and apply it to the PASS whose defect a later PR fixed",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
       {
         "number": 257,
         "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
@@ -541,74 +566,6 @@
         "reason": null
       },
       {
-        "number": 338,
-        "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
-        "labels": [
-          "agent-ready",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 814,
-        "title": "Literals become sources: a constant driver kind for `true` and `false`, and the spec's first `migrate(1 → 2)`",
-        "labels": [
-          "agent-ready",
-          "risk:2",
-          "fidelity",
-          "project:foundation"
-        ],
-        "blocking": [
-          844,
-          823
-        ],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 797,
-        "title": "Inbox review: HRN-006 · Say who applies `overturned`, and apply it to the PASS whose defect a later PR fixed",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 820,
-        "title": "Learner-facing compile errors use the reference's words and carry the line",
-        "labels": [
-          "agent-ready",
-          "risk:1",
-          "fidelity",
-          "project:foundation"
-        ],
-        "blocking": [
-          840
-        ],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
-      {
         "number": 798,
         "title": "Inbox review: HRN-007 · Align the concurrent-subagent cap with the owner's rulings: 4 in config, 2–3 in practice",
         "labels": [
@@ -851,6 +808,22 @@
       {
         "number": 839,
         "title": "Inbox review: FID-026 · Builtins-first matches the reference only over HACER's builtin names: #206 states what a part named after one of the reference's other 27 builtins resolves to",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 848,
+        "title": "Inbox review: FID-027 · Amend FID-026: since #821 the lookup order also decides whether `compileSpec` refuses, so its pinned test adds a broken part under a reference builtin name",
         "labels": [
           "project:upkeep",
           "agent-ready",
@@ -2469,6 +2442,45 @@
         "reason": "on-request"
       },
       {
+        "number": 814,
+        "title": "Literals become sources: a constant driver kind for `true` and `false`, and the spec's first `migrate(1 → 2)`",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:2",
+          "fidelity",
+          "project:foundation"
+        ],
+        "blocking": [
+          820,
+          844,
+          823
+        ],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
+        "number": 820,
+        "title": "Learner-facing compile errors use the reference's words and carry the line",
+        "labels": [
+          "agent-ready",
+          "risk:1",
+          "fidelity",
+          "project:foundation"
+        ],
+        "blocking": [
+          840
+        ],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "blocked:#814"
+      },
+      {
         "number": 823,
         "title": "`printSpec` refuses a document in which a driverless net shares its id with a driven net",
         "labels": [
@@ -2538,25 +2550,8 @@
       }
     ],
     "byProject": {
-      "harness": [
-        257,
-        154,
-        156,
-        270,
-        435,
-        436,
-        454,
-        500,
-        504,
-        505,
-        550,
-        607,
-        677
-      ],
       "foundation": [
         338,
-        814,
-        820,
         151,
         184,
         325,
@@ -2581,6 +2576,8 @@
         728,
         742,
         773,
+        814,
+        820,
         823,
         840,
         844,
@@ -2604,6 +2601,7 @@
         834,
         835,
         839,
+        848,
         229,
         256,
         788,
@@ -2615,6 +2613,21 @@
         794,
         795,
         796
+      ],
+      "harness": [
+        257,
+        154,
+        156,
+        270,
+        435,
+        436,
+        454,
+        500,
+        504,
+        505,
+        550,
+        607,
+        677
       ],
       "spine": [
         165,
@@ -2705,31 +2718,6 @@
   "prs": {
     "open": [
       {
-        "number": 847,
-        "title": "docs(fidelity): review of PR #845, the registered-part refusal and its chain; FID-027, FID-028",
-        "url": "https://github.com/mezivillager/hacer/pull/847",
-        "author": "mezivillager",
-        "labels": [
-          "project:harness",
-          "risk:0",
-          "fidelity"
-        ],
-        "headRefName": "docs/fidelity-review-845",
-        "isDraft": false,
-        "createdAt": "2026-10-21T18:01:22Z",
-        "mergedAt": null,
-        "closes": [],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "coordinator (claude-opus-5-5)",
-            "at": "2026-10-21T18:03:32Z",
-            "url": "https://github.com/mezivillager/hacer/pull/847#issuecomment-6322983509"
-          }
-        ]
-      },
-      {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
         "url": "https://github.com/mezivillager/hacer/pull/514",
@@ -2758,11 +2746,37 @@
     ],
     "merged": [
       {
+        "number": 847,
+        "title": "docs(fidelity): review of PR #845, the registered-part refusal and its chain; FID-027, FID-028",
+        "url": "https://github.com/mezivillager/hacer/pull/847",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0",
+          "fidelity"
+        ],
+        "headRefName": "docs/fidelity-review-845",
+        "isDraft": false,
+        "createdAt": "2026-10-21T18:01:22Z",
+        "mergedAt": "2026-10-21T18:07:42Z",
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (claude-opus-5-5)",
+            "at": "2026-10-21T18:03:32Z",
+            "url": "https://github.com/mezivillager/hacer/pull/847#issuecomment-6322983509"
+          }
+        ]
+      },
+      {
         "number": 845,
         "title": "feat(spec): compileSpec refuses a spec whose registered part does not compile, naming the chain",
         "url": "https://github.com/mezivillager/hacer/pull/845",
         "author": "mezivillager",
         "labels": [
+          "released",
           "risk:1",
           "fidelity",
           "project:foundation"
@@ -2818,6 +2832,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/842",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:1"
         ],
@@ -4299,33 +4314,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/710#issuecomment-6181794738"
           }
         ]
-      },
-      {
-        "number": 709,
-        "title": "chore(harness): merge-on-green ends with one MERGE-ON-GREEN outcome line (#705)",
-        "url": "https://github.com/mezivillager/hacer/pull/709",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:2"
-        ],
-        "headRefName": "chore/705-merge-outcome-line",
-        "isDraft": false,
-        "createdAt": "2026-10-15T00:11:41Z",
-        "mergedAt": "2026-10-15T00:37:26Z",
-        "closes": [
-          705
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Opus 5.5",
-            "at": "2026-10-15T00:28:10Z",
-            "url": "https://github.com/mezivillager/hacer/pull/709#issuecomment-6181526318"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4598,29 +4586,29 @@
         }
       },
       {
-        "number": 821,
-        "ref": "refs/heads/claim/821",
-        "sha": "a81dade67dcf735371e16f7f9b57953b6acc01e9",
-        "state": "CLOSED",
-        "title": "`compileSpec` refuses a spec whose registered part does not compile, naming the chain",
-        "url": "https://github.com/mezivillager/hacer/issues/821",
+        "number": 814,
+        "ref": "refs/heads/claim/814",
+        "sha": "cc288b57a50f69b7076173b24914a2f6707a8fc4",
+        "state": "OPEN",
+        "title": "Literals become sources: a constant driver kind for `true` and `false`, and the spec's first `migrate(1 → 2)`",
+        "url": "https://github.com/mezivillager/hacer/issues/814",
         "labels": [
           "agent-ready",
           "in-progress",
-          "risk:1",
+          "risk:2",
           "fidelity",
           "project:foundation"
         ],
-        "onClosedIssue": true,
+        "onClosedIssue": false,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
           "session": "hacer-loop-to-70",
-          "branch": "feat/821-compile-registered-parts",
+          "branch": "feat/814-constant-driver",
           "handoff": "none",
           "author": "mezivillager",
-          "at": "2026-10-21T17:04:59Z",
-          "url": "https://github.com/mezivillager/hacer/issues/821#issuecomment-6321808906"
+          "at": "2026-10-21T18:05:13Z",
+          "url": "https://github.com/mezivillager/hacer/issues/814#issuecomment-6323016813"
         }
       },
       {
@@ -4650,7 +4638,7 @@
         }
       }
     ],
-    "onClosedIssues": 1
+    "onClosedIssues": 0
   },
   "cloudLane": {
     "items": [
@@ -5844,9 +5832,14 @@
     },
     "releases": [
       {
+        "tag": "v2.61.0",
+        "publishedAt": "2026-10-21T18:07:02Z",
+        "isLatest": true
+      },
+      {
         "tag": "v2.60.1",
         "publishedAt": "2026-10-21T17:05:42Z",
-        "isLatest": true
+        "isLatest": false
       },
       {
         "tag": "v2.60.0",
@@ -6472,7 +6465,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-15",
-        "merges": 29
+        "merges": 28
       },
       {
         "date": "2026-10-16",
@@ -6484,20 +6477,20 @@
       },
       {
         "date": "2026-10-21",
-        "merges": 10
+        "merges": 11
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-07T18:04:28.039Z",
-      "merged": 72,
+      "since": "2026-10-07T18:08:52.253Z",
+      "merged": 73,
       "openToMergeHours": {
         "median": 0.4,
         "p90": 2
       },
       "blockedOnce": {
         "count": 7,
-        "of": 57,
+        "of": 58,
         "prs": [
           700,
           725,
@@ -6515,8 +6508,8 @@
           "without": []
         },
         "nonCode": {
-          "merged": 23,
-          "withVerdict": 8,
+          "merged": 24,
+          "withVerdict": 9,
           "without": [
             692,
             693,
@@ -10619,11 +10612,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "cc288b57a50f69b7076173b24914a2f6707a8fc4",
+        "sha": "88c226c6901b47aac15796130fa6a38f564f47f6",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39649267817/job/119392979453",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39649915285/job/119395225147",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -10673,48 +10666,6 @@
           "known": 71,
           "new": 0
         },
-        "disagrees": false
-      },
-      {
-        "pr": 847,
-        "sha": "0e769eeffcea6461a0bf2bf087e58429dc1ad7b3",
-        "check": "pr-hygiene",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-21T18:01:39Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39648983048/job/119391979251",
-        "line": "HYGIENE: PASS reviewable=152 test=0 excluded=0 files=2 issue=docs-only",
-        "verdict": "PASS",
-        "fields": {
-          "reviewable": 152,
-          "test": 0,
-          "excluded": 0,
-          "files": 2,
-          "issue": "docs-only"
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 847,
-        "sha": "0e769eeffcea6461a0bf2bf087e58429dc1ad7b3",
-        "check": "browser-qa",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-21T18:01:39Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39648982004/job/119391972220",
-        "line": "BROWSER-QA: skipped (no critical paths)",
-        "verdict": "SKIPPED",
-        "fields": {},
-        "disagrees": false
-      },
-      {
-        "pr": 847,
-        "sha": "0e769eeffcea6461a0bf2bf087e58429dc1ad7b3",
-        "check": "ci",
-        "conclusion": null,
-        "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39648980378/job/119391966409",
-        "line": null,
-        "verdict": null,
-        "fields": {},
         "disagrees": false
       }
     ]
