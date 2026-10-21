@@ -1,6 +1,8 @@
-import { readFileSync } from 'node:fs'
+import { spawnSync } from 'node:child_process'
+import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
 import path from 'node:path'
-import { describe, it, expect } from 'vitest'
+import { afterEach, describe, it, expect } from 'vitest'
 import {
   INBOXES,
   InboxError,
@@ -32,6 +34,7 @@ const liveText = (inbox) => readFileSync(path.join(ROOT, inbox.file), 'utf8')
 // a closed review of HRN-005 saved with the web editor's CRLF line endings, and an issue that quotes FID-007's
 // marker inside a sentence.
 const recordedIssues = JSON.parse(readFileSync(path.join(FIXTURES, 'gh-review-issues.json'), 'utf8'))
+const noteGrammarText = readFileSync(path.join(FIXTURES, 'note-grammar-inbox.md'), 'utf8')
 
 const stateOf = (status) => status.split(/[ (]/)[0]
 const proposedIds = (inboxes) => inboxes.flatMap((inbox) => inbox.entries).filter((entry) => entry.status === 'proposed').map((entry) => entry.id)
@@ -163,6 +166,8 @@ describe('status grammar', () => {
   const offGrammar = parseInbox(offGrammarText, PRD)
   const withOffGrammar = [recorded[0], recorded[1], offGrammar]
   const offGrammarReport = ['docs/harness/product-inbox.md:16: PRD-001', 'docs/harness/product-inbox.md:20: PRD-002', 'docs/harness/product-inbox.md:32: PRD-005']
+  const noteGrammar = parseInbox(noteGrammarText, PRD)
+  const noteGrammarReport = ['docs/harness/product-inbox.md:16: PRD-001', 'docs/harness/product-inbox.md:20: PRD-002']
   const withStatus = (text, line, status) => text.split('\n').map((raw, i) => (i === line - 1 ? `- **Status:** ${status}` : raw)).join('\n')
 
   /** The `file:line: id` of each entry the InboxError `run` throws reports, after its summary line; [] if it returns. */
@@ -207,6 +212,27 @@ describe('status grammar', () => {
     const repaired = setStatus(offGrammarText, PRD, 'PRD-001', 'proposed')
     expect(repaired.split('\n')[15]).toBe('- **Status:** proposed')
     expect(reported(() => assertGrammar([parseInbox(repaired, PRD)]))).toEqual(offGrammarReport.slice(1))
+  })
+
+  it('takes a note after filed, declined and deferred only: a note after proposed or approved is reported', () => {
+    expect(reported(() => assertGrammar([noteGrammar]))).toEqual(noteGrammarReport)
+  })
+
+  it('queue files no review while proposed or approved carries a note, dry run or not', () => {
+    const gh = { listReviewIssues: () => { throw new Error('queue asked gh') }, fileIssue: () => { throw new Error('queue filed an issue') } }
+    const withNote = [recorded[0], recorded[1], noteGrammar]
+    for (const dryRun of [true, false]) expect(reported(() => queueReviews(withNote, { ...gh, dryRun }))).toEqual(noteGrammarReport)
+  })
+
+  it('set refuses while proposed or approved carries a note; once repaired it writes the panel\'s statuses verbatim', () => {
+    expect(reported(() => setStatus(noteGrammarText, PRD, 'PRD-003', 'approved'))).toEqual(noteGrammarReport)
+    const repaired = setStatus(setStatus(noteGrammarText, PRD, 'PRD-001', 'proposed'), PRD, 'PRD-002', 'approved')
+    const declined = noteGrammar.entries.find((entry) => entry.id === 'PRD-005').status
+    expect(declined).toMatch(/^declined \(inbox panel, #791: .*, which .*; #338's .*\)$/)
+    for (const value of [declined, 'deferred (inbox panel, #9003: until the next retro)', 'filed (#9010)', 'approved', 'proposed']) {
+      const entries = listEntries([parseInbox(setStatus(repaired, PRD, 'PRD-003', value), PRD)])
+      expect(entries.find((entry) => entry.id === 'PRD-003').status).toBe(value)
+    }
   })
 
   it.each(['HRN', 'PRD'])('%s, as it is now: its grammar names deferred (<until>), and set writes one', (prefix) => {
@@ -294,5 +320,36 @@ describe('queue', () => {
     expect(draft.body).toMatch(/## Blocked by\n—\n/)
     expect(draft.body.split('\n').at(-1)).toBe('Inbox-entry: FID-006')
     expect([...reviewedIds([{ ...draft, number: 1, state: 'OPEN' }])]).toEqual(['FID-006'])
+  })
+})
+
+describe('inbox.mjs', () => {
+  const cleanup = []
+  afterEach(() => {
+    while (cleanup.length > 0) rmSync(cleanup.pop(), { recursive: true, force: true })
+  })
+
+  /** A checkout in miniature: the CLI, its logic, the recorded FID and HRN inboxes, and `productText` as the PRD inbox. */
+  function disposableCheckout(productText) {
+    const root = mkdtempSync(path.join(tmpdir(), 'inbox-'))
+    cleanup.push(root)
+    mkdirSync(path.join(root, 'scripts'))
+    mkdirSync(path.join(root, 'docs', 'harness'), { recursive: true })
+    for (const script of ['inbox.mjs', 'inbox.logic.mjs']) copyFileSync(path.join(import.meta.dirname, script), path.join(root, 'scripts', script))
+    for (const inbox of INBOXES) writeFileSync(path.join(root, inbox.file), inbox.prefix === 'PRD' ? productText : recordedText(inbox.prefix))
+    return root
+  }
+  const cli = (root, ...args) => spawnSync(process.execPath, [path.join(root, 'scripts', 'inbox.mjs'), ...args], { encoding: 'utf8' })
+
+  it('exits 1 on an inbox outside its grammar, naming each entry on stderr, and set leaves the file as it was', () => {
+    const root = disposableCheckout(noteGrammarText)
+    const list = cli(root, 'list')
+    expect([list.status, list.stdout]).toEqual([1, ''])
+    const [summary, ...lines] = list.stderr.trimEnd().split('\n')
+    expect(summary).toBe('inbox: 2 status line(s) outside their file\'s grammar; nothing done:')
+    expect(lines.map((line) => line.split(' ', 2).join(' '))).toEqual(['docs/harness/product-inbox.md:16: PRD-001', 'docs/harness/product-inbox.md:20: PRD-002'])
+    const set = cli(root, 'set', 'PRD-003', 'approved')
+    expect(set.status).toBe(1)
+    expect(readFileSync(path.join(root, inboxOf('PRD').file), 'utf8')).toBe(noteGrammarText)
   })
 })
