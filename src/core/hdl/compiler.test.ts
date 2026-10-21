@@ -3,10 +3,12 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import { createChipRegistry, registerBuiltin } from '../chips/registry'
 import type { ChipRegistry } from '../chips/registry'
 import { getBuiltinChipRegistry } from '../chips/appRegistry'
+import { combineRegistries } from '../chips/combineRegistries'
 import type { ChipDefinition } from '../chips/types'
 import { isBuiltinChip } from '../chips/types'
 import { parseHDL } from './parser'
-import { compileHDL, type EvalContext } from './compiler'
+import { compileHDL, hdlChipDefinition, type EvalContext, type HDLCompileResult } from './compiler'
+import type { HDLChip } from './types'
 
 // A minimal evalChip that only understands builtins (enough to test compileHDL in isolation).
 function builtinOnlyCtx(registry: ChipRegistry): EvalContext {
@@ -993,5 +995,65 @@ describe('compileHDL — a read must touch a bit some part drives (#746, #431)',
 
   it('accepts a read that runs past the driven bits once it overlaps one of them', () => {
     expect(evaluateHdl('CHIP C { IN a; OUT out[4]; PARTS: Not(in=a, out=t[0]); Not(in=a, out=t[1]); Not4(in=t[0..3], out=out); }', { a: 0 }, reg)).toEqual({ out: 0b1100 })
+  })
+})
+
+describe('compileHDL — a part cycle through the registry is refused (#816)', () => {
+  const uses = (name: string, part: string): string => `CHIP ${name} { IN a; OUT out; PARTS: ${part}(a=a, out=out); }`
+  const NOT_FROM_AND = 'CHIP Not { IN in; OUT out; PARTS: And(a=in, b=in, out=x); Nand(a=x, b=x, out=out); }'
+  const AND_FROM_NOT = 'CHIP And { IN a, b; OUT out; PARTS: Nand(a=a, b=b, out=x); Not(in=x, out=out); }'
+  const NOT_FROM_X = 'CHIP Not { IN in; OUT out; PARTS: X(a=in, out=out); }'
+  const X_FROM_NOT = 'CHIP X { IN a; OUT out; PARTS: Not(in=a, out=out); }'
+
+  function parsed(source: string): HDLChip {
+    const ast = parseHDL(source)
+    if (!ast.success) throw new Error(`parse failed: ${source}`)
+    return ast.chip
+  }
+  function userChips(...sources: string[]): ChipRegistry {
+    const user = createChipRegistry()
+    for (const source of sources) user.register(hdlChipDefinition(parsed(source), source))
+    return user
+  }
+  const builtinsFirst = (...sources: string[]): ChipRegistry => combineRegistries(getBuiltinChipRegistry(), userChips(...sources))
+  const ownFirst = (...sources: string[]): ChipRegistry => combineRegistries(userChips(...sources), getBuiltinChipRegistry())
+  const compile = (source: string, chips: ChipRegistry): HDLCompileResult => compileHDL(parsed(source), chips)
+  const refusal = (message: string, partName: string): HDLCompileResult => ({ success: false, errors: [{ message, partName }] })
+
+  it("refuses 'hdl' chips A and B that use each other, naming both", () => {
+    expect(compile(uses('A', 'B'), builtinsFirst(uses('A', 'B'), uses('B', 'A')))).toEqual(refusal('Chip "A" uses itself through "B"', 'B'))
+  })
+
+  it('refuses A → B → C → A, naming each chip on the cycle in order', () => {
+    const chips = builtinsFirst(uses('A', 'B'), uses('B', 'C'), uses('C', 'A'))
+    expect(compile(uses('A', 'B'), chips)).toEqual(refusal('Chip "A" uses itself through "B" → "C"', 'B'))
+  })
+
+  it('returns a refusal naming A and B for Top, whose part A and B use each other', () => {
+    expect(compile(uses('Top', 'A'), builtinsFirst(uses('A', 'B'), uses('B', 'A')))).toEqual(refusal('Chip "A" uses itself through "B"', 'A'))
+  })
+
+  it('refuses Top, whose part A uses itself, as A refusing itself', () => {
+    expect(compile(uses('Top', 'A'), builtinsFirst(uses('A', 'A')))).toEqual(refusal('Chip "A" cannot use itself as a part', 'A'))
+  })
+
+  it('builtins first, a Not.hdl that uses And beside an And.hdl that uses Not compiles, and Not evaluates to ¬in', () => {
+    const chips = builtinsFirst(NOT_FROM_AND, AND_FROM_NOT)
+    const not = compile(NOT_FROM_AND, chips)
+    if (!not.success) throw new Error(not.errors.map((e) => e.message).join('; '))
+    for (const value of [0, 1]) expect(not.evaluate({ in: value }, builtinOnlyCtx(chips))).toEqual({ out: 1 - value })
+    expect(compile(AND_FROM_NOT, chips).success).toBe(true)
+  })
+
+  it('builtins first, a user Not that uses X, where X uses Not, compiles', () => {
+    const chips = builtinsFirst(NOT_FROM_X, X_FROM_NOT)
+    expect(compile(NOT_FROM_X, chips).success).toBe(true)
+    expect(compile(X_FROM_NOT, chips).success).toBe(true)
+  })
+
+  it('own first, the Not.hdl and And.hdl that use each other are refused, naming Not and And', () => {
+    const chips = ownFirst(NOT_FROM_AND, AND_FROM_NOT)
+    expect(compile(NOT_FROM_AND, chips)).toEqual(refusal('Chip "Not" uses itself through "And"', 'And'))
+    expect(compile(AND_FROM_NOT, chips)).toEqual(refusal('Chip "And" uses itself through "Not"', 'Not'))
   })
 })
