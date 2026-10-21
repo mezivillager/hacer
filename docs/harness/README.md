@@ -229,6 +229,11 @@ the owner, only on an inbox entry, and the owner may override it (#778).
 | **retro** (refinement) | a window of merged PRs: the ledger, the session records, the four numbers, verdicts, follow-ups, flake reruns and the three inboxes — after every 5 merges, or weekly once `main` has moved | `retro-brief.md` · agent `.claude/agents/hacer-retro.md` | mechanise drafts and policy proposals in `harness-inbox.md` for the inbox panel to decide, plus one run row; never an issue, never a policy edit |
 | **inbox panel** (decisions) | one `proposed` inbox entry, from an Opus (verify) and a Grok (read-only) review run by the `multi-review` skill on the owner's machine; the review issues come from `node scripts/inbox.mjs queue` | `inbox-panel-brief.md` | one verdict comment on the review issue; on approval, the entry's issue, filed `agent-ready`. The owner may override any status |
 
+The `hacer-*` types register in a session started in the parent workspace only through the owner's
+link `../.claude/agents` → `.claude/agents`, set outside this repo (#870); the link serves the main
+checkout's working tree, and a session whose agent list has no `hacer-*` types uses the
+general-purpose fallback (`retro-brief.md` § *Cadence*).
+
 ## How this process changes
 
 Four paths, from the smallest to the largest. Why they are shaped this way:

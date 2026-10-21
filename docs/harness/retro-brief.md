@@ -25,9 +25,9 @@ the window say about policy?
 - **Who checks:** the coordinator, after each merge and at each run's close. The first run proposes
   automating this check (HRN-009).
 - **Dispatch:** `hacer-retro`, on Opus. `model-tiering.md` has no row for this role yet: its retro
-  row covers the one-line ledger entry after each PR. The agent type is not
-  registered when a session starts in the parent workspace. In that case hand a general-purpose
-  agent this line, with paths from the parent workspace:
+  row covers the one-line ledger entry after each PR. From the parent workspace, `hacer-retro`
+  resolves only through the owner's link (#870). In a session whose agent list has no `hacer-retro`,
+  hand a general-purpose agent this line, with paths from the parent workspace:
   "Read `hacer/.claude/agents/hacer-retro.md` and `hacer/docs/harness/retro-brief.md`, then do one retro run over `<from>`..`<to>`." <!-- allow-missing-path -->
 
 ## Inputs: what to read, and the command for each number

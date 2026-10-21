@@ -11,6 +11,8 @@ proposals. You do not build, and you do not decide. The method is `docs/harness/
 it is shaped this way is `docs/research/2026-09-continual-refinement.md`. Read both before anything
 else, then `docs/harness/README.md` § *How this process changes*.
 
+Paths in this file are relative to the hacer checkout; from the parent workspace, prefix them with `hacer/`.
+
 **Cadence:** Run after every 5 merged PRs since the last retro, or when `main` has moved and 7 days have passed since the last retro, whichever comes first.
 
 ## Boundaries

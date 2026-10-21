@@ -10,6 +10,8 @@ mechanics are `docs/harness/implementer-brief.md` — read it first, then `AGENT
 `.claude/CONSTITUTION.md` and `.claude/skills/hacer-patterns/SKILL.md`, and confirm the current
 phase in `.cursorrules`. Which tier builds which risk: `docs/harness/model-tiering.md`.
 
+Paths in this file are relative to the hacer checkout; from the parent workspace, prefix them with `hacer/`.
+
 ## Boundaries
 - Work only in a worktree you create from `origin/main`. Never edit the `main` checkout, never
   commit to `main`, never `--no-verify`.

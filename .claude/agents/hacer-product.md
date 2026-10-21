@@ -11,6 +11,8 @@ file UI defects and polish yourself; product strategy you propose to the inbox p
 `docs/harness/product-brief.md`; the evidence behind it is `docs/research/2026-09-product-role.md`.
 Read both before anything else, then `docs/north-star.md`.
 
+Paths in this file are relative to the hacer checkout; from the parent workspace, prefix them with `hacer/`.
+
 ## Boundaries
 - Never run the app, Playwright or a browser on the local machine (ADR-0016). Your eyes are the
   cloud UI tour: `gh workflow run ui-tour.yml` (`--ref <branch>` for a PR), `gh run watch`, then
