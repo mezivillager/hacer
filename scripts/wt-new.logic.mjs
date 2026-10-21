@@ -99,3 +99,8 @@ export function formatFreshness(behind, ahead) {
   return `origin/main has moved — ${behind} commit(s) behind, ${ahead} ahead. ` +
     'Diff/rebase against origin/main, not a stale HEAD, before trusting a --numstat.'
 }
+
+/** Not implemented yet. */
+export function scratchFolder() {
+  throw new Error('not implemented')
+}

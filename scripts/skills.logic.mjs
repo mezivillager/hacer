@@ -104,6 +104,12 @@ export function containsPhrases(text, phrases) {
 export const VERIFIER_TIER_SENTENCE =
   'a PR touching `src/core/` or `src/simulation/`, or labelled `risk:2`, is verified on **Opus**; every other PR, at `risk:0` or `risk:1`, on **Sonnet**.'
 
+/** Verifier rules stated verbatim in its brief and in its agent definition's body. */
+const VERIFIER_WORKTREE_SENTENCE =
+  'Worktree from the PR head: `git fetch origin && git worktree add ../hacer-wt-verify-<pr> origin/<branch> && node scripts/wt-new.mjs scratch ../hacer-wt-verify-<pr>`, `rm -rf node_modules && pnpm install --frozen-lockfile`, Node 22.'
+const VERIFIER_SCRATCH_SENTENCE =
+  'Write your definition-of-done logs and your verdict body only in the folder `SCRATCH:` names, and post the verdict with `--body-file`, never inline.'
+
 /**
  * The rules each harness brief exists to state. `present` must still be there; `absent`
  * was deliberately taken out and must not come back.
@@ -145,6 +151,15 @@ export const BRIEF_INVARIANTS = [
         phrases: ['pnpm run lint', 'pnpm run test:run', 'pnpm run build', 'pnpm run lint:docs', 'verification command'],
       },
       { id: 'stop-after-the-pr', phrases: ['do **not** keep watching CI'] },
+      // Parallel agents sharing one scratchpad overwrote each other's PR bodies and logs (L069).
+      { id: 'scratch-only-in-the-worktree-folder', phrases: ['Write every scratch file (PR bodies, logs) only in the folder `SCRATCH:` names.'] },
+      { id: 'body-file-never-inline', phrases: ['Pass every body you write with `--body-file`, never inline.'] },
+      {
+        id: 'fallback-worktree-makes-scratch',
+        phrases: [
+          'Falls back to `git fetch origin && git worktree add ../hacer-wt-<topic> -b <type>/<n>-<topic> origin/main && node scripts/wt-new.mjs scratch ../hacer-wt-<topic> && rm -rf node_modules && pnpm install --frozen-lockfile` only if the script itself is unavailable.',
+        ],
+      },
       // #485: twice a PR that finished only part of an issue closed it on merge (#396, #443) — GitHub
       // acts on a closing keyword alone. One phrase, so the rule is pinned as the whole sentence.
       { id: 'fixes-only-when-the-whole-issue-is-done', phrases: ['`Fixes` only when the whole issue is done; otherwise `Part of`'] },
@@ -207,6 +222,8 @@ export const BRIEF_INVARIANTS = [
       // The rule above says to name it; this pins that the fixed-format block a collector parses
       // actually carries the field, not only the prose above it.
       { id: 'verdict-format-shows-invalidates', phrases: ['**Invalidates:** <on BLOCK, the decision the finding invalidates, or `none`>'] },
+      { id: 'worktree-makes-scratch', phrases: [VERIFIER_WORKTREE_SENTENCE] },
+      { id: 'scratch-and-body-file', phrases: [VERIFIER_SCRATCH_SENTENCE] },
     ],
     absent: [
       { id: 'stryker-mutation-testing', phrases: ['Stryker'], why: 'ADR-0011 removed Stryker' },
@@ -293,6 +310,8 @@ export const AGENT_INVARIANTS = [
       { id: 'model-per-risk-tier', phrases: [VERIFIER_TIER_SENTENCE] },
       { id: 'verdict-names-its-model', phrases: ['**Name the model you ran on in every verdict**'] },
       { id: 'read-only', phrases: ["Never push to the PR's branch, never fix what you find, never merge"] },
+      { id: 'worktree-makes-scratch', phrases: [VERIFIER_WORKTREE_SENTENCE] },
+      { id: 'scratch-and-body-file', phrases: [VERIFIER_SCRATCH_SENTENCE] },
     ],
   },
   {
