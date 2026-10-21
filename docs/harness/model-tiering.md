@@ -111,9 +111,11 @@ verdict costs roughly a third of an Opus one: a similar token count at 40% of th
 Haiku was 89,198 for the pair — about a fifth of the price for a third of the tokens — and did not
 do the job. For scale, an Opus builder on a scripts-and-tests PR the same day used 191,755 tokens.
 
-**Tokens per merged PR** is now the fourth metric (`README.md`): sum the usage reports of every
-agent that touched the PR. These totals are whole-run self-reports and are not split into input,
-output and cache reads, so they are token-count ratios, not a measured bill.
+**Tokens per merged PR** is now the fourth metric (`README.md` § *What to measure*): one run average,
+not a per-PR count. The numerator is every subagent usage report in the run, unmerged attempts
+included, and the denominator is the run's merged PRs less dependabot. These totals are whole-run
+self-reports and are not split into input, output and cache reads, so they are token-count ratios,
+not a measured bill.
 
 ## 5. Limits, and what could not be verified
 

@@ -44,12 +44,14 @@ the window say about policy?
      `--paginate` the call returns the first 30 files only. The first run's script, which also
      counts verdicts, is in
      `docs/research/2026-09-continual-refinement/evidence/first-retro-run.md`.
-   - **Owner minutes per merged PR:** no source yet. Report `unmeasured` and give the countable
-     proxy: `needs-human` issues opened, plus the owner's comments on PRs in the window.
+   - **Owner minutes per merged PR:** no source yet. Report `unmeasured`, and give `needs-human`
+     issues opened in the window as that count, labelled as a count and not as minutes. The owner's
+     PR comments cannot be counted while agents post as the owner's account.
    - **Escaped defects:** issues opened in the window that fix a defect in an already-merged PR,
      found by reading the window's issues. No label marks them yet, so the count is `inferred`.
-   - **Tokens per merged PR:** the session record's figure. When the record has none, say
-     `unmeasured`, never `0`.
+   - **Tokens per merged PR:** the session record's figure, a run average. A record whose
+     `Subagent tokens:` line is `unmeasured`, or that has no such line, is reported `unmeasured`,
+     never `0`.
 4. **Verdicts:** BLOCKs, from the verdict headings on each PR (`## Verifier verdict: PASS | BLOCK`).
    Overturned verdicts come from `gh pr list --state all --label overturned --limit 200`, because
    the label goes on PRs (`verifier-brief.md`), and from any PASS whose defect a later PR fixed.
