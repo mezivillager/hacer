@@ -262,3 +262,14 @@ describe('runCli — grading refuses an Or8Way the official vectors pass but the
     expect(out).toEqual({ exitCode: 1, stdout: '', stderr: 'ERROR Or8Way: Line 12: Cannot use output pin as input\n' })
   })
 })
+
+describe('runCli — a chip the registry refuses to register is an error report, not a crash (#868)', () => {
+  const files = { 'C.hdl': 'CHIP C { IN a; OUT a; PARTS: Not(in=a, out=a); }', 'C.tst': 'load C.hdl,\neval,\n', 'C.cmp': '|a|\n' }
+
+  it("names the chip and the registry's reason under test, test --json and run-tst", () => {
+    expect(runCli(['test', 'C.hdl', 'C.tst', 'C.cmp'], reader(files))).toEqual({ exitCode: 1, stdout: 'ERROR C: Duplicate pin name: "a"\n', stderr: '' })
+    const json = runCli(['test', '--json', 'C.hdl', 'C.tst', 'C.cmp'], reader(files))
+    expect(JSON.parse(json.stdout)).toEqual({ status: 'error', chip: 'C', rows: null, failure: null, error: 'Duplicate pin name: "a"' })
+    expect(runCli(['run-tst', 'C.hdl', 'C.tst'], reader(files))).toEqual({ exitCode: 1, stdout: '', stderr: 'ERROR C: Duplicate pin name: "a"\n' })
+  })
+})
