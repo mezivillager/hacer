@@ -50,10 +50,10 @@ const wireStatement = (parseHDLErrors: string[], invalidWire?: string): Cells =>
 })
 
 const EXPECTED: Record<string, Expected> = {
-  'part-output-fan-out': { ...accepted, diverges: { compileHDL: ['open', '#999'] } },
+  'part-output-fan-out': accepted,
   'internal-slice-write': { ...accepted, diverges: { compileHDL: ['open', 'FID-021'], compileSpec: ['intended', '#355'] } },
   'internal-slice-read': { ...accepted, diverges: { compileHDL: ['open', 'FID-021'], compileSpec: ['intended', '#355'] } },
-  'part-reads-chip-out': { ...accepted, diverges: { compileSpec: ['inherited', 'ADR-0020 §1.11.5'] } },
+  'part-reads-chip-out': { ...accepted, diverges: { compileHDL: ['open', 'FID-021'], compileSpec: ['inherited', 'ADR-0020 §1.11.5'] } },
   'part-output-to-literal': {
     parseHDL: null,
     compileHDL: ['Part "Not" output "out" cannot connect to literal "true"'],
@@ -117,7 +117,7 @@ const EXPECTED: Record<string, Expected> = {
   },
   'literal-on-wide-pin': accepted,
   'unconnected-input': {
-    ...compileRefuses(['Part "Nand" input pin "b" is not connected']),
+    ...compileRefuses(['Part "Nand" input pin "b" is not connected: the nand2tetris simulator reads it as 0; bind b=false to do the same']),
     diverges: { compileHDL: ['intended', 'ADR-0020 §1.1'], compileSpec: ['intended', 'ADR-0020 §1.1'] },
   },
   'undefined-internal-read': {
