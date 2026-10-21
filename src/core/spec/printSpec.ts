@@ -55,8 +55,12 @@ function buffers(net: Alias, outs: Port[]): string[] {
 /**
  * Print a document as HDL-shaped text: each part's bindings raised from the nets, each part's id as a
  * trailing `// #p<n>`, pass-throughs as `wire`. The output depends on the parts' order, not the nets'.
+ * Throws, naming the net, when a driverless net shares its id with a driven one: neither dialect has a form for it.
  */
 export function printSpec(doc: CircuitSpec, options: PrintSpecOptions = {}): string {
+  const driven = new Set(doc.nets.flatMap((n) => (n.driver === null ? [] : [n.id])))
+  const twin = doc.nets.find((n) => n.driver === null && driven.has(n.id))
+  if (twin) throw new Error(`printSpec: net "${twin.id}" has no driver beside a driven net of the same id, and neither dialect has a form for it`)
   const plain = options.dialect === 'nand2tetris'
   const bindings = new Map<string, Binding[]>()
   for (const net of doc.nets) {
