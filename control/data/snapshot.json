@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-21T20:50:57.593Z",
+  "generatedAt": "2026-10-21T21:20:16.878Z",
   "head": {
     "sha": "0105dbd14abe7dd66fb556a073779ca926531af3",
     "date": "2026-10-21T23:49:50+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T20:50:57.593Z",
+      "fetchedAt": "2026-10-21T21:20:16.878Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T20:50:57.593Z",
+      "fetchedAt": "2026-10-21T21:20:16.878Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T20:50:57.593Z",
+      "fetchedAt": "2026-10-21T21:20:16.878Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-21T20:50:57.593Z",
+      "fetchedAt": "2026-10-21T21:20:16.878Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-21T20:50:57.593Z",
+      "fetchedAt": "2026-10-21T21:20:16.878Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-21T20:50:57.593Z",
+      "fetchedAt": "2026-10-21T21:20:16.878Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-21T20:50:57.593Z",
+      "fetchedAt": "2026-10-21T21:20:16.878Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-21T20:50:57.593Z",
+      "fetchedAt": "2026-10-21T21:20:16.878Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-21T20:50:57.593Z",
+      "fetchedAt": "2026-10-21T21:20:16.878Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-21T20:50:57.593Z",
+      "fetchedAt": "2026-10-21T21:20:16.878Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-21T20:50:57.593Z",
+      "fetchedAt": "2026-10-21T21:20:16.878Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-21T20:50:57.593Z",
+      "fetchedAt": "2026-10-21T21:20:16.878Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-21T20:50:57.593Z",
+      "fetchedAt": "2026-10-21T21:20:16.878Z",
       "status": "ok"
     }
   },
@@ -85,7 +85,7 @@
         "inProgress": 1,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 2,
+        "agentReady": 3,
         "filedElsewhere": [],
         "next": {
           "number": 338,
@@ -103,12 +103,12 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 14,
-        "ready": 2,
+        "open": 16,
+        "ready": 3,
         "inProgress": 0,
-        "needsHuman": 1,
+        "needsHuman": 2,
         "staleClaims": [],
-        "agentReady": 2,
+        "agentReady": 3,
         "filedElsewhere": [
           151,
           339
@@ -191,8 +191,8 @@
         "title": "Epic: core — headless core",
         "subIssues": {
           "completed": 23,
-          "percentCompleted": 88,
-          "total": 26
+          "percentCompleted": 85,
+          "total": 27
         }
       },
       {
@@ -306,15 +306,15 @@
         "slug": "upkeep",
         "epicNumber": 146,
         "open": 32,
-        "ready": 18,
-        "inProgress": 12,
+        "ready": 17,
+        "inProgress": 13,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 31,
         "filedElsewhere": [],
         "next": {
-          "number": 800,
-          "title": "Inbox review: HRN-009 · Run the retro at each coordinator run's close, not every 5 merges"
+          "number": 807,
+          "title": "Inbox review: PRD-001 · Decide what HACER is on a phone: a read-only viewer whose panels open as sheets, or desktop-only with a notice"
         },
         "title": "Epic: upkeep — maintenance & documentation",
         "subIssues": {
@@ -418,8 +418,8 @@
         "project": "harness"
       },
       {
-        "number": 800,
-        "title": "Inbox review: HRN-009 · Run the retro at each coordinator run's close, not every 5 merges",
+        "number": 807,
+        "title": "Inbox review: PRD-001 · Decide what HACER is on a phone: a read-only viewer whose panels open as sheets, or desktop-only with a notice",
         "project": "upkeep"
       },
       {
@@ -428,14 +428,14 @@
         "project": "harness"
       },
       {
-        "number": 807,
-        "title": "Inbox review: PRD-001 · Decide what HACER is on a phone: a read-only viewer whose panels open as sheets, or desktop-only with a notice",
-        "project": "upkeep"
-      },
-      {
         "number": 808,
         "title": "Inbox review: PRD-002 · First-run guidance for the declared app: teach spec → render → pins → test, and remember the dismissal",
         "project": "upkeep"
+      },
+      {
+        "number": 871,
+        "title": "Role files name the hacer checkout as their path base, and the retro fallback names the workspace link",
+        "project": "harness"
       },
       {
         "number": 809,
@@ -516,6 +516,7 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
+        869,
         514
       ]
     }
@@ -555,8 +556,8 @@
         "reason": null
       },
       {
-        "number": 800,
-        "title": "Inbox review: HRN-009 · Run the retro at each coordinator run's close, not every 5 merges",
+        "number": 807,
+        "title": "Inbox review: PRD-001 · Decide what HACER is on a phone: a read-only viewer whose panels open as sheets, or desktop-only with a notice",
         "labels": [
           "project:upkeep",
           "agent-ready",
@@ -586,8 +587,8 @@
         "reason": null
       },
       {
-        "number": 807,
-        "title": "Inbox review: PRD-001 · Decide what HACER is on a phone: a read-only viewer whose panels open as sheets, or desktop-only with a notice",
+        "number": 808,
+        "title": "Inbox review: PRD-002 · First-run guidance for the declared app: teach spec → render → pins → test, and remember the dismissal",
         "labels": [
           "project:upkeep",
           "agent-ready",
@@ -602,18 +603,17 @@
         "reason": null
       },
       {
-        "number": 808,
-        "title": "Inbox review: PRD-002 · First-run guidance for the declared app: teach spec → render → pins → test, and remember the dismissal",
+        "number": 871,
+        "title": "Role files name the hacer checkout as their path base, and the retro fallback names the workspace link",
         "labels": [
-          "project:upkeep",
+          "project:harness",
           "agent-ready",
-          "risk:0",
-          "inbox-review"
+          "risk:0"
         ],
         "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
         "pickable": true,
         "reason": null
       },
@@ -2436,6 +2436,23 @@
         "reason": "claimed"
       },
       {
+        "number": 800,
+        "title": "Inbox review: HRN-009 · Run the retro at each coordinator run's close, not every 5 merges",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 801,
         "title": "polish: an unsaved circuit is lost on reload — autosave is written every 2 s but never restored",
         "labels": [
@@ -2522,7 +2539,9 @@
           "fidelity",
           "project:foundation"
         ],
-        "blocking": [],
+        "blocking": [
+          868
+        ],
         "project": "foundation",
         "rank": 1,
         "lane": "feature",
@@ -2534,6 +2553,7 @@
         "title": "`testChip` throws on a chip the registry refuses to register (`IN a; OUT a;`) instead of returning an error report",
         "labels": [
           "bug",
+          "agent-ready",
           "risk:1",
           "project:foundation"
         ],
@@ -2542,7 +2562,21 @@
         "rank": 1,
         "lane": "feature",
         "pickable": false,
-        "reason": "unshaped"
+        "reason": "blocked:#840"
+      },
+      {
+        "number": 870,
+        "title": "Owner: link `ha/.claude/agents` to hacer's role files, so sessions started in the workspace register the `hacer-*` types",
+        "labels": [
+          "project:harness",
+          "needs-human"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "needs-human"
       }
     ],
     "byProject": {
@@ -2578,6 +2612,7 @@
       "harness": [
         257,
         861,
+        871,
         154,
         156,
         270,
@@ -2589,10 +2624,10 @@
         505,
         550,
         607,
-        677
+        677,
+        870
       ],
       "upkeep": [
-        800,
         807,
         808,
         809,
@@ -2623,7 +2658,8 @@
         796,
         797,
         798,
-        799
+        799,
+        800
       ],
       "spine": [
         165,
@@ -2714,6 +2750,33 @@
   "prs": {
     "open": [
       {
+        "number": 869,
+        "title": "feat(testing): hacer test grades only HDL the reference builds",
+        "url": "https://github.com/mezivillager/hacer/pull/869",
+        "author": "mezivillager",
+        "labels": [
+          "risk:1",
+          "fidelity",
+          "project:foundation"
+        ],
+        "headRefName": "feat/840-strict-grading",
+        "isDraft": false,
+        "createdAt": "2026-10-21T21:02:51Z",
+        "mergedAt": null,
+        "closes": [
+          840
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus (claude-opus-5-5)",
+            "at": "2026-10-21T21:15:25Z",
+            "url": "https://github.com/mezivillager/hacer/pull/869#issuecomment-6326720856"
+          }
+        ]
+      },
+      {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
         "url": "https://github.com/mezivillager/hacer/pull/514",
@@ -2747,6 +2810,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/866",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0"
         ],
@@ -2773,6 +2837,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/865",
         "author": "mezivillager",
         "labels": [
+          "released",
           "risk:1",
           "fidelity",
           "project:foundation"
@@ -2800,6 +2865,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/864",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0",
           "fidelity"
@@ -4638,6 +4704,32 @@
         }
       },
       {
+        "number": 800,
+        "ref": "refs/heads/claim/800",
+        "sha": "0105dbd14abe7dd66fb556a073779ca926531af3",
+        "state": "OPEN",
+        "title": "Inbox review: HRN-009 · Run the retro at each coordinator run's close, not every 5 merges",
+        "url": "https://github.com/mezivillager/hacer/issues/800",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-to-70",
+          "branch": "chore/inbox-hrn-009",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-21T21:18:04Z",
+          "url": "https://github.com/mezivillager/hacer/issues/800#issuecomment-6326768139"
+        }
+      },
+      {
         "number": 840,
         "ref": "refs/heads/claim/840",
         "sha": "f632948dd8acda9f890f77d5b8fe24f16e069d0a",
@@ -5858,9 +5950,14 @@
     },
     "releases": [
       {
+        "tag": "v2.65.0",
+        "publishedAt": "2026-10-21T20:53:43Z",
+        "isLatest": true
+      },
+      {
         "tag": "v2.64.0",
         "publishedAt": "2026-10-21T20:36:53Z",
-        "isLatest": true
+        "isLatest": false
       },
       {
         "tag": "v2.63.1",
@@ -6528,7 +6625,7 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-07T20:50:57.593Z",
+      "since": "2026-10-07T21:20:16.878Z",
       "merged": 84,
       "openToMergeHours": {
         "median": 0.4,
@@ -10661,12 +10758,15 @@
         "pr": null,
         "sha": "0105dbd14abe7dd66fb556a073779ca926531af3",
         "check": "ci",
-        "conclusion": null,
-        "completedAt": null,
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-21T20:53:25Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/39673691583/job/119477897556",
-        "line": null,
-        "verdict": null,
-        "fields": {},
+        "line": "LAYER-RATCHET: 69 known violations (37 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 69,
+          "new": 0
+        },
         "disagrees": false
       },
       {
@@ -10711,6 +10811,52 @@
         "verdict": "PASS",
         "fields": {
           "known": 71,
+          "new": 0
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 869,
+        "sha": "23587532d63e32268944c5233cb49304db26669d",
+        "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-21T21:03:07Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39675540349/job/119484303065",
+        "line": "HYGIENE: PASS reviewable=117 test=253 excluded=0 files=4 issue=#840 linked=fixes",
+        "verdict": "PASS",
+        "fields": {
+          "reviewable": 117,
+          "test": 253,
+          "excluded": 0,
+          "files": 4,
+          "issue": "#840",
+          "linked": "fixes"
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 869,
+        "sha": "23587532d63e32268944c5233cb49304db26669d",
+        "check": "browser-qa",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-21T21:03:10Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39675540620/job/119484301229",
+        "line": "BROWSER-QA: skipped (no critical paths)",
+        "verdict": "SKIPPED",
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 869,
+        "sha": "23587532d63e32268944c5233cb49304db26669d",
+        "check": "ci",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-21T21:06:30Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39675537689/job/119484291905",
+        "line": "LAYER-RATCHET: 69 known violations (37 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 69,
           "new": 0
         },
         "disagrees": false
