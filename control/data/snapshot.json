@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-21T22:35:57.747Z",
+  "generatedAt": "2026-10-21T22:48:45.970Z",
   "head": {
-    "sha": "104abc352ca0cde310c834d3dd3798bd60f98777",
-    "date": "2026-10-22T01:35:06+03:00",
-    "subject": "test(harness): give the collects and release-config tests room on a loaded laptop"
+    "sha": "478e4407b26cc3ec0eda3fc5794b0c083e8862c6",
+    "date": "2026-10-22T01:47:52+03:00",
+    "subject": "chore(harness): ready and next print whether a retro is due (#873)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T22:35:57.747Z",
+      "fetchedAt": "2026-10-21T22:48:45.970Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T22:35:57.747Z",
+      "fetchedAt": "2026-10-21T22:48:45.970Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T22:35:57.747Z",
+      "fetchedAt": "2026-10-21T22:48:45.970Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-21T22:35:57.747Z",
+      "fetchedAt": "2026-10-21T22:48:45.970Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-21T22:35:57.747Z",
+      "fetchedAt": "2026-10-21T22:48:45.970Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-21T22:35:57.747Z",
+      "fetchedAt": "2026-10-21T22:48:45.970Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-21T22:35:57.747Z",
+      "fetchedAt": "2026-10-21T22:48:45.970Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-21T22:35:57.747Z",
+      "fetchedAt": "2026-10-21T22:48:45.970Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-21T22:35:57.747Z",
+      "fetchedAt": "2026-10-21T22:48:45.970Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-21T22:35:57.747Z",
+      "fetchedAt": "2026-10-21T22:48:45.970Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-21T22:35:57.747Z",
+      "fetchedAt": "2026-10-21T22:48:45.970Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-21T22:35:57.747Z",
+      "fetchedAt": "2026-10-21T22:48:45.970Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-21T22:35:57.747Z",
+      "fetchedAt": "2026-10-21T22:48:45.970Z",
       "status": "ok"
     }
   },
@@ -103,12 +103,12 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 15,
+        "open": 14,
         "ready": 1,
-        "inProgress": 1,
+        "inProgress": 0,
         "needsHuman": 2,
         "staleClaims": [],
-        "agentReady": 2,
+        "agentReady": 1,
         "filedElsewhere": [
           151,
           339
@@ -2518,22 +2518,6 @@
         "reason": "needs-human"
       },
       {
-        "number": 873,
-        "title": "Retro cadence: due after each run's close record lands or 7 days on, printed by `backlog.mjs ready` and `next`",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:1"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 878,
         "title": "A pin width far beyond any evaluable bus passes the parser and the registry",
         "labels": [
@@ -2607,8 +2591,7 @@
         550,
         607,
         677,
-        870,
-        873
+        870
       ],
       "upkeep": [
         827,
@@ -2762,6 +2745,32 @@
       }
     ],
     "merged": [
+      {
+        "number": 880,
+        "title": "chore(harness): ready and next print whether a retro is due",
+        "url": "https://github.com/mezivillager/hacer/pull/880",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:1"
+        ],
+        "headRefName": "chore/873-retro-at-close",
+        "isDraft": false,
+        "createdAt": "2026-10-21T22:38:09Z",
+        "mergedAt": "2026-10-21T22:47:53Z",
+        "closes": [
+          873
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Sonnet (claude-sonnet-5-5)",
+            "at": "2026-10-21T22:47:22Z",
+            "url": "https://github.com/mezivillager/hacer/pull/880#issuecomment-6328248163"
+          }
+        ]
+      },
       {
         "number": 877,
         "title": "chore(harness): the collects and release-config tests survive a loaded local run",
@@ -4277,33 +4286,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/739#issuecomment-6186989498"
           }
         ]
-      },
-      {
-        "number": 738,
-        "title": "fix(store): completed chips survive when storage is unavailable (#736)",
-        "url": "https://github.com/mezivillager/hacer/pull/738",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:1",
-          "project:foundation"
-        ],
-        "headRefName": "fix/736-completion-without-storage",
-        "isDraft": false,
-        "createdAt": "2026-10-15T07:25:09Z",
-        "mergedAt": "2026-10-15T07:35:13Z",
-        "closes": [
-          736
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Sonnet 5.5",
-            "at": "2026-10-15T07:34:36Z",
-            "url": "https://github.com/mezivillager/hacer/pull/738#issuecomment-6186974557"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4758,35 +4740,10 @@
         }
       },
       {
-        "number": 861,
-        "ref": "refs/heads/claim/861",
-        "sha": "0a3db8f50dd1b817c264c8a54dad6b3c83c7dfe2",
-        "state": "CLOSED",
-        "title": "The mission-control vitest-collects CLI test survives a loaded local run",
-        "url": "https://github.com/mezivillager/hacer/issues/861",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:0"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-to-70",
-          "branch": "chore/861-collects-test-limit",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-21T21:49:32Z",
-          "url": "https://github.com/mezivillager/hacer/issues/861#issuecomment-6327316203"
-        }
-      },
-      {
         "number": 873,
         "ref": "refs/heads/claim/873",
         "sha": "4b3336272cb23635d373fa66ef77790a5e9e42be",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "Retro cadence: due after each run's close record lands or 7 days on, printed by `backlog.mjs ready` and `next`",
         "url": "https://github.com/mezivillager/hacer/issues/873",
         "labels": [
@@ -4795,7 +4752,7 @@
           "in-progress",
           "risk:1"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -6670,7 +6627,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-15",
-        "merges": 12
+        "merges": 11
       },
       {
         "date": "2026-10-16",
@@ -6682,20 +6639,20 @@
       },
       {
         "date": "2026-10-21",
-        "merges": 27
+        "merges": 28
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-07T22:35:57.747Z",
-      "merged": 89,
+      "since": "2026-10-07T22:48:45.970Z",
+      "merged": 90,
       "openToMergeHours": {
         "median": 0.4,
         "p90": 1.9
       },
       "blockedOnce": {
         "count": 7,
-        "of": 74,
+        "of": 75,
         "prs": [
           700,
           725,
@@ -6708,8 +6665,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 59,
-          "withVerdict": 59,
+          "merged": 60,
+          "withVerdict": 60,
           "without": []
         },
         "nonCode": {
@@ -10645,7 +10602,7 @@
       },
       {
         "date": "2026-10-21",
-        "at": "2026-10-21T22:20:31.178Z",
+        "at": "2026-10-21T22:35:57.747Z",
         "byProject": {
           "foundation": [
             338,
@@ -10675,9 +10632,24 @@
             773,
             878
           ],
+          "harness": [
+            257,
+            154,
+            156,
+            270,
+            435,
+            436,
+            454,
+            500,
+            504,
+            505,
+            550,
+            607,
+            677,
+            870,
+            873
+          ],
           "upkeep": [
-            808,
-            809,
             827,
             828,
             829,
@@ -10708,25 +10680,9 @@
             798,
             799,
             800,
-            807
-          ],
-          "harness": [
-            257,
-            154,
-            156,
-            270,
-            435,
-            436,
-            454,
-            500,
-            504,
-            505,
-            550,
-            607,
-            677,
-            861,
-            870,
-            873
+            807,
+            808,
+            809
           ],
           "spine": [
             165,
@@ -10810,7 +10766,8 @@
             802,
             803,
             804,
-            805
+            805,
+            879
           ]
         }
       }
@@ -10820,11 +10777,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "104abc352ca0cde310c834d3dd3798bd60f98777",
+        "sha": "478e4407b26cc3ec0eda3fc5794b0c083e8862c6",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39687553682/job/119525354490",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39689071688/job/119530435168",
         "line": null,
         "verdict": null,
         "fields": {},
