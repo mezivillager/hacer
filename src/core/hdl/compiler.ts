@@ -4,6 +4,7 @@ import type { ChipDefinition } from '../chips/types'
 import type { ChipRegistry } from '../chips/registry'
 import { isBuiltinChip } from '../chips/types'
 import { maskForWidth, readSubBus, writeSubBus } from '@/simulation/busOps'
+import { parseHDL } from './parser'
 import { printPinRef } from './printer'
 
 export interface EvalContext {
@@ -146,6 +147,55 @@ function cycleTrace(unplaced: Set<number>, adj: readonly number[][], edgeCarries
   return carried.filter((label, i) => label !== '' && carried.indexOf(label) === i).join(' → ')
 }
 
+const cannotUseItself = (chip: string): string => `Chip "${chip}" cannot use itself as a part`
+
+/** The names a definition's parts are looked up by; a builtin, or HDL that does not parse, has none. */
+function partNames(def: ChipDefinition): string[] {
+  switch (def.implementation.type) {
+    case 'builtin':
+      return []
+    case 'circuit':
+      return def.implementation.spec.parts.map((part) => part.chip)
+    case 'hdl': {
+      const parsed = parseHDL(def.implementation.source)
+      return parsed.success ? parsed.chip.parts.map((part) => part.name) : []
+    }
+  }
+}
+
+/** The chips on a cycle of definitions reachable from `start`, in order, or `null`; enters each definition once. */
+function registryCycle(start: ChipDefinition, registry: ChipRegistry, done: Set<ChipDefinition>): string[] | null {
+  const chain: Array<{ def: ChipDefinition; parts: string[]; next: number }> = []
+  const onChain = new Map<ChipDefinition, number>()
+  const enter = (def: ChipDefinition): void => {
+    onChain.set(def, chain.length)
+    chain.push({ def, parts: partNames(def), next: 0 })
+  }
+  if (!done.has(start)) enter(start)
+  while (chain.length > 0) {
+    const link = chain[chain.length - 1]
+    if (link.next === link.parts.length) {
+      chain.pop()
+      onChain.delete(link.def)
+      done.add(link.def)
+      continue
+    }
+    const def = registry.get(link.parts[link.next++])
+    if (def === undefined || done.has(def)) continue
+    const at = onChain.get(def)
+    if (at !== undefined) return chain.slice(at).map(({ def: onCycle }) => onCycle.name)
+    enter(def)
+  }
+  return null
+}
+
+/** A cycle read from the chip named `root` when it is on it, so a chip refused for its own cycle comes first. */
+function usesItself(cycle: string[], root: string): string {
+  const from = Math.max(cycle.indexOf(root), 0)
+  const [chip, ...through] = [...cycle.slice(from), ...cycle.slice(0, from)]
+  return through.length === 0 ? cannotUseItself(chip) : `Chip "${chip}" uses itself through ${through.map((name) => `"${name}"`).join(' → ')}`
+}
+
 export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResult {
   const errors: HDLCompileError[] = []
 
@@ -160,7 +210,7 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
 
   // 2. Resolve parts
   if (ast.parts.some((part) => part.name === ast.name)) {
-    return { success: false, errors: [{ message: `Chip "${ast.name}" cannot use itself as a part`, partName: ast.name }] }
+    return { success: false, errors: [{ message: cannotUseItself(ast.name), partName: ast.name }] }
   }
   const resolved: Array<{ part: HDLPart; def: ChipDefinition }> = []
   ast.parts.forEach((part) => {
@@ -172,6 +222,11 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
     resolved.push({ part, def })
   })
   if (errors.length) return { success: false, errors }
+  const walked = new Set<ChipDefinition>()
+  for (const { part, def } of resolved) {
+    const cycle = registryCycle(def, registry, walked)
+    if (cycle) return { success: false, errors: [{ message: usesItself(cycle, ast.name), partName: part.name }] }
+  }
 
   const chipInputNames = new Set(ast.inputs.map((p) => p.name))
 
