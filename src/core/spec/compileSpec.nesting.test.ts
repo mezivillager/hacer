@@ -74,21 +74,21 @@ describe('compileSpec — registration and nesting', () => {
   it('a spec that names itself as a part is refused by name', () => {
     const registry = register(withBuiltins(), P)
     const result = compileSpec(parseSpec(SELF, { chips: registry }), registry)
-    expect(result).toEqual({ success: false, diagnostics: [{ code: 'compile', severity: 'error', message: 'Chip "P" cannot use itself as a part' }] })
+    expect(result).toEqual({ success: false, diagnostics: [{ code: 'compile', severity: 'error', message: 'Cannot use chip P to implement itself' }] })
 
     const parsed = parseSpec(SELF, { chips: registry })
     if (parsed.doc === null) throw new Error('SELF did not parse')
     const fresh = withBuiltins()
     const self: ChipDefinition = { name: 'P', inputs: [{ name: 'a', width: 1 }], outputs: [{ name: 'out', width: 1 }], implementation: { type: 'circuit', spec: parsed.doc } }
     fresh.register(self)
-    expect(() => evaluateChip(self, { a: 1 }, fresh)).toThrow('Chip "P" cannot use itself as a part')
+    expect(() => evaluateChip(self, { a: 1 }, fresh)).toThrow('Cannot use chip P to implement itself')
   })
 })
 
 describe('compileSpec — a part cycle through the registry (#816)', () => {
   const A_FROM_B = 'CHIP A { IN a; OUT out; PARTS: B(a=a, out=out); }'
   const B_FROM_A = 'CHIP B { IN a; OUT out; PARTS: A(a=a, out=out); }'
-  const refused = { success: false, diagnostics: [{ code: 'compile', severity: 'error', message: 'Chip "A" uses itself through "B"' }] }
+  const refused = { success: false, diagnostics: [{ code: 'compile', severity: 'error', message: 'Cannot use chip A to implement itself through B' }] }
 
   it("refuses two 'circuit' chips that use each other, naming both", () => {
     const registry = withBuiltins()
@@ -149,7 +149,7 @@ describe('compileSpec — a registered part that does not compile refuses the sp
     registry.register({ name: 'Mid', ...XY, implementation: { type: 'hdl', source: MID } })
     registry.register({ name: 'Inn', ...XY, implementation: { type: 'hdl', source: INN } })
     const found = diagnostics(compiled('CHIP Outer { IN a; OUT o; PARTS: Mid(x=a, y=o); }', registry))
-    expect(found).toContainEqual(refusal('p1', 'Outer › Mid › Inn: Part "Foo" has no pin "a"'))
+    expect(found).toContainEqual(refusal('p1', 'Outer › Mid › Inn: Line 1: Part "Foo" has no pin "a"'))
     expect(found.every((d) => d.code === 'compile' && d.partId === 'p1' && d.message.startsWith('Outer › Mid › Inn: '))).toBe(true)
   })
 
@@ -184,7 +184,7 @@ describe('compileSpec — a registered part that does not compile refuses the sp
     const registry = withBuiltins()
     registry.register(specChip('CHIP A { IN a; OUT out; PARTS: B(a=a, out=out); }', register(withBuiltins(), 'CHIP B { IN a; OUT out; PARTS: wire out = a; }')))
     registry.register(uncompiled('CHIP B { IN a; OUT out; PARTS: A(a=a, out=out); }', registry))
-    const refused = { success: false, diagnostics: [{ code: 'compile', severity: 'error', message: 'Chip "A" uses itself through "B"' }] }
+    const refused = { success: false, diagnostics: [{ code: 'compile', severity: 'error', message: 'Cannot use chip A to implement itself through B' }] }
     expect(compiled('CHIP A { IN a; OUT out; PARTS: B(a=a, out=out); }', registry)).toEqual(refused)
     expect(compiled('CHIP Top { IN a; OUT out; PARTS: A(a=a, out=out); }', registry)).toEqual(refused)
   })

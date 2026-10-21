@@ -571,7 +571,7 @@ describe('legacy parity', () => {
       pin: 'b',
       detail: 'p1.b input "b" has no wire: it read 0 on the canvas, it reads 0 in the nand2tetris simulator, and HACER\'s compile refuses it until it is bound',
     }])
-    expect(doc && viaExport(doc, { a: 1 })).toEqual({ refused: ['Part "Nand" input pin "b" is not connected: the nand2tetris simulator reads it as 0; bind b=false to do the same'] })
+    expect(doc && viaExport(doc, { a: 1 })).toEqual({ refused: ['Line 6: Part "Nand" input pin "b" is not connected: the nand2tetris simulator reads it as 0; bind b=false to do the same'] })
     expect(doc && viaCompileSpec(doc, { a: 1 })).toEqual({ refused: expect.arrayContaining(['Part "Nand" input pin "b" is not connected: the nand2tetris simulator reads it as 0; bind b=false to do the same']) })
   })
 
@@ -593,7 +593,7 @@ describe('legacy parity', () => {
     expect(notes[0].detail).toContain('b (wire "w2")')
     expect(doc?.nets.filter((n) => n.sinks.some((s) => s.kind === 'part-pin' && s.pin === 'in')).map((n) => n.id).sort()).toEqual(['a', 'b'])
     expect(doc && webIdeRejected(doc)).toEqual([])
-    expect(doc && viaExport(doc, { a: 1, b: 0 })).toEqual({ refused: ['Part "Not" pin "in" bit 0 is bound by more than one connection'] })
+    expect(doc && viaExport(doc, { a: 1, b: 0 })).toEqual({ refused: ['Line 6: Part "Not" pin "in" bit 0 is bound by more than one connection'] })
     expect(doc && viaCompileSpec(doc, { a: 1, b: 0 })).toEqual({ refused: expect.arrayContaining(['p1 pin "in" is bound by both "a" and "b"']) })
   })
 
@@ -606,7 +606,7 @@ describe('legacy parity', () => {
       { kind: 'part-pin', partId: 'p2', pin: 'out' },
     ])
     expect(doc && webIdeRejected(doc)).toEqual([])
-    expect(doc && viaExport(doc, { a: 1, b: 0 })).toEqual({ refused: ['Signal "out" is driven by more than one part'] })
+    expect(doc && viaExport(doc, { a: 1, b: 0 })).toEqual({ refused: ['Line 7: Signal "out" is driven by more than one part'] })
     expect(doc && viaCompileSpec(doc, { a: 1, b: 0 })).toEqual({
       refused: expect.arrayContaining(['Signal "out" has bits driven by both p1.out (net "out") and p2.out (net "out")']),
     })
@@ -616,7 +616,7 @@ describe('legacy parity', () => {
     const { doc, sidecar } = fromLegacyCircuit(TWO_FEEDS)
     expect(sidecar.notes).toEqual([{ kind: 'multiple-drivers', partId: 'p1', pin: 'in', detail: expect.stringContaining('a (wire "w3")') }])
     expect(sidecar.notes[0].detail).toContain('b (wire "w3")')
-    expect(doc && viaExport(doc, { a: 1, b: 0 })).toEqual({ refused: ['Part "Not" pin "in" bit 0 is bound by more than one connection'] })
+    expect(doc && viaExport(doc, { a: 1, b: 0 })).toEqual({ refused: ['Line 6: Part "Not" pin "in" bit 0 is bound by more than one connection'] })
     expect(doc && viaCompileSpec(doc, { a: 1, b: 0 })).toEqual({ refused: expect.arrayContaining(['p1 pin "in" is bound by both "a" and "b"']) })
     expect(parityFailures(TWO_FEEDS, BIT, BIT.map((v) => legacy(TWO_FEEDS, v)))).toEqual([])
   })

@@ -530,7 +530,7 @@ describe('compileHDL — a part input pin bit may be bound only once (#367)', ()
     expect(r.success).toBe(false)
     if (!r.success) {
       const e = r.errors.find((x) => isDoubleBind(x.message))
-      expect(e?.message).toBe('Part "Not" pin "in" bit 0 is bound by more than one connection')
+      expect(e?.message).toBe('Line 1: Part "Not" pin "in" bit 0 is bound by more than one connection')
       expect(e?.partName).toBe('Not')
       expect(e?.pinName).toBe('in')
     }
@@ -567,7 +567,7 @@ describe('compileHDL — a part input pin bit may be bound only once (#367)', ()
     expect(r.success).toBe(false)
     if (!r.success) {
       const e = r.errors.find((x) => isDoubleBind(x.message))
-      expect(e?.message).toBe('Part "Not16" pin "in" bit 0 is bound by more than one connection')
+      expect(e?.message).toBe('Line 1: Part "Not16" pin "in" bit 0 is bound by more than one connection')
       expect(e?.partName).toBe('Not16')
       expect(e?.pinName).toBe('in')
     }
@@ -585,7 +585,7 @@ describe('compileHDL — a part input pin bit may be bound only once (#367)', ()
     expect(r.success).toBe(false)
     if (!r.success) {
       const e = r.errors.find((x) => isDoubleBind(x.message))
-      expect(e?.message).toBe('Part "Not16" pin "in" bit 2 is bound by more than one connection')
+      expect(e?.message).toBe('Line 1: Part "Not16" pin "in" bit 2 is bound by more than one connection')
     }
   })
 
@@ -624,8 +624,8 @@ describe('compileHDL — a part input pin bit may be bound only once (#367)', ()
     expect(r.success).toBe(false)
     if (!r.success) {
       expect(r.errors.map((e) => e.message)).toEqual([
-        'Part "Not16" pin "in[16]" is out of range; "in" has width 16',
-        'Part "Not16" input pin "in" is not connected: the nand2tetris simulator reads it as 0; bind in=false to do the same',
+        'Line 1: Part "Not16" pin "in[16]" is out of range; "in" has width 16',
+        'Line 1: Part "Not16" input pin "in" is not connected: the nand2tetris simulator reads it as 0; bind in=false to do the same',
       ])
     }
   })
@@ -635,7 +635,7 @@ describe('compileHDL — a part input pin bit may be bound only once (#367)', ()
     expect(r.success).toBe(false)
     if (!r.success) {
       const e = r.errors.find((x) => /is not connected/.test(x.message))
-      expect(e?.message).toBe('Part "And" input pin "b" is not connected: the nand2tetris simulator reads it as 0; bind b=false to do the same')
+      expect(e?.message).toBe('Line 1: Part "And" input pin "b" is not connected: the nand2tetris simulator reads it as 0; bind b=false to do the same')
       expect(e?.partName).toBe('And')
       expect(e?.pinName).toBe('b')
     }
@@ -758,20 +758,20 @@ describe('compileHDL — dependency edges follow bits, not signal names (#363)',
     expect(r.success).toBe(false)
     if (!r.success) {
       expect(r.errors.filter((e) => /driven by more than one part/.test(e.message))).toHaveLength(1)
-      expect(r.errors[0].message).toBe('Signal "t" bit 0 is driven by more than one part')
+      expect(r.errors[0].message).toBe('Line 1: Signal "t" bit 0 is driven by more than one part')
     }
   })
 
   it('names no bit when two parts drive a whole signal', () => {
     const r = compile('CHIP D { IN a[16]; OUT out[16]; PARTS: Not16(in=a, out=t); Not16(in=a, out=t); Not16(in=t, out=out); }')
     expect(r.success).toBe(false)
-    if (!r.success) expect(r.errors[0].message).toBe('Signal "t" is driven by more than one part')
+    if (!r.success) expect(r.errors[0].message).toBe('Line 1: Signal "t" is driven by more than one part')
   })
 
   it('still names the shared bit when a whole-signal write overlaps a slice write', () => {
     const r = compile('CHIP D { IN a[16]; OUT out[16]; PARTS: Not16(in=a, out=t); Not(in=a[0], out=t[3]); Not16(in=t, out=out); }')
     expect(r.success).toBe(false)
-    if (!r.success) expect(r.errors[0].message).toBe('Signal "t" bit 3 is driven by more than one part')
+    if (!r.success) expect(r.errors[0].message).toBe('Line 1: Signal "t" bit 3 is driven by more than one part')
   })
 
   it('reports a part input pin bit bound by three connections once, not twice', () => {
@@ -905,7 +905,7 @@ describe('compileHDL', () => {
     const r = compileHDL(ast.chip, getBuiltinChipRegistry())
     expect(r.success).toBe(false)
     if (r.success) return
-    expect(r.errors).toEqual([expect.objectContaining({ partName: 'Not', message: expect.stringMatching(/Chip "Not".*itself/) })])
+    expect(r.errors).toEqual([{ partName: 'Not', line: 1, message: 'Line 1: Cannot use chip Not to implement itself' }])
   })
 })
 
@@ -917,7 +917,7 @@ describe('compileHDL — a slice on the signal side must fit the signal (#371)',
     return r.success ? [] : r.errors
   }
   const outOfRange = (part: string, pin: string, ref: string, signal: string, width: number): unknown =>
-    expect.objectContaining({ partName: part, pinName: pin.replace(/\[.*$/, ''), message: `Part "${part}" pin "${pin}" is wired to "${ref}": sub-bus index out of range ("${signal}" has width ${width})` })
+    expect.objectContaining({ partName: part, pinName: pin.replace(/\[.*$/, ''), line: 1, message: `Line 1: Part "${part}" pin "${pin}" is wired to "${ref}": sub-bus index out of range ("${signal}" has width ${width})` })
 
   it('refuses a read past the end of a chip input', () => {
     expect(errorsOf('CHIP C { IN bus[16]; OUT o; PARTS: Not(in=bus[20], out=o); }')).toEqual([outOfRange('Not', 'in', 'bus[20]', 'bus', 16)])
@@ -943,7 +943,7 @@ describe('compileHDL — a slice on the signal side must fit the signal (#371)',
   })
 
   it('leaves a read of a signal no part writes to the dangling-signal error: its width is not known', () => {
-    expect(errorsOf('CHIP C { IN a; OUT o; PARTS: Not(in=x[5], out=o); }')).toEqual([expect.objectContaining({ message: 'Signal "x" is read by part "Not" but no part produces it' })])
+    expect(errorsOf('CHIP C { IN a; OUT o; PARTS: Not(in=x[5], out=o); }')).toEqual([expect.objectContaining({ message: 'Line 1: Signal "x" is read by part "Not" but no part produces it' })])
   })
 })
 
@@ -959,7 +959,7 @@ describe('compileHDL — a read must touch a bit some part drives (#746, #431)',
     return r.success ? [] : r.errors
   }
   const undriven = (part: string, bits: string): unknown =>
-    expect.objectContaining({ partName: part, message: `Signal "t"${bits} is read by part "${part}" but no part drives it` })
+    expect.objectContaining({ partName: part, line: 1, message: `Line 1: Signal "t"${bits} is read by part "${part}" but no part drives it` })
 
   it("refuses #746's read of t[2] when only t[0] and t[1] are driven", () => {
     expect(errorsOf('CHIP C { IN a, b; OUT o; PARTS: Not(in=a, out=t[0]); Not(in=b, out=t[1]); Not(in=t[2], out=o); }')).toEqual([undriven('Not', ' bit 2')])
@@ -1018,23 +1018,24 @@ describe('compileHDL — a part cycle through the registry is refused (#816)', (
   const builtinsFirst = (...sources: string[]): ChipRegistry => combineRegistries(getBuiltinChipRegistry(), userChips(...sources))
   const ownFirst = (...sources: string[]): ChipRegistry => combineRegistries(userChips(...sources), getBuiltinChipRegistry())
   const compile = (source: string, chips: ChipRegistry): HDLCompileResult => compileHDL(parsed(source), chips)
-  const refusal = (message: string, partName: string): HDLCompileResult => ({ success: false, errors: [{ message, partName }] })
+  // `uses` writes every part on line 1.
+  const refusal = (message: string, partName: string): HDLCompileResult => ({ success: false, errors: [{ message, partName, line: 1 }] })
 
   it("refuses 'hdl' chips A and B that use each other, naming both", () => {
-    expect(compile(uses('A', 'B'), builtinsFirst(uses('A', 'B'), uses('B', 'A')))).toEqual(refusal('Chip "A" uses itself through "B"', 'B'))
+    expect(compile(uses('A', 'B'), builtinsFirst(uses('A', 'B'), uses('B', 'A')))).toEqual(refusal('Line 1: Cannot use chip A to implement itself through B', 'B'))
   })
 
   it('refuses A → B → C → A, naming each chip on the cycle in order', () => {
     const chips = builtinsFirst(uses('A', 'B'), uses('B', 'C'), uses('C', 'A'))
-    expect(compile(uses('A', 'B'), chips)).toEqual(refusal('Chip "A" uses itself through "B" → "C"', 'B'))
+    expect(compile(uses('A', 'B'), chips)).toEqual(refusal('Line 1: Cannot use chip A to implement itself through B → C', 'B'))
   })
 
   it('returns a refusal naming A and B for Top, whose part A and B use each other', () => {
-    expect(compile(uses('Top', 'A'), builtinsFirst(uses('A', 'B'), uses('B', 'A')))).toEqual(refusal('Chip "A" uses itself through "B"', 'A'))
+    expect(compile(uses('Top', 'A'), builtinsFirst(uses('A', 'B'), uses('B', 'A')))).toEqual(refusal('Line 1: Cannot use chip A to implement itself through B', 'A'))
   })
 
   it('refuses Top, whose part A uses itself, as A refusing itself', () => {
-    expect(compile(uses('Top', 'A'), builtinsFirst(uses('A', 'A')))).toEqual(refusal('Chip "A" cannot use itself as a part', 'A'))
+    expect(compile(uses('Top', 'A'), builtinsFirst(uses('A', 'A')))).toEqual(refusal('Line 1: Cannot use chip A to implement itself', 'A'))
   })
 
   it('builtins first, a Not.hdl that uses And beside an And.hdl that uses Not compiles, and Not evaluates to ¬in', () => {
@@ -1053,8 +1054,8 @@ describe('compileHDL — a part cycle through the registry is refused (#816)', (
 
   it('own first, the Not.hdl and And.hdl that use each other are refused, naming Not and And', () => {
     const chips = ownFirst(NOT_FROM_AND, AND_FROM_NOT)
-    expect(compile(NOT_FROM_AND, chips)).toEqual(refusal('Chip "Not" uses itself through "And"', 'And'))
-    expect(compile(AND_FROM_NOT, chips)).toEqual(refusal('Chip "And" uses itself through "Not"', 'Not'))
+    expect(compile(NOT_FROM_AND, chips)).toEqual(refusal('Line 1: Cannot use chip Not to implement itself through And', 'And'))
+    expect(compile(AND_FROM_NOT, chips)).toEqual(refusal('Line 1: Cannot use chip And to implement itself through Not', 'Not'))
   })
 
   it('refuses A and B that use each other under a registry whose get builds a fresh definition per call', () => {
@@ -1069,7 +1070,96 @@ describe('compileHDL — a part cycle through the registry is refused (#816)', (
         return source === undefined ? builtins.get(name) : hdlChipDefinition(parsed(source), source)
       },
     }
-    expect(compile(uses('A', 'B'), fresh)).toEqual(refusal('Chip "A" uses itself through "B"', 'B'))
-    expect(compile(uses('Top', 'A'), fresh)).toEqual(refusal('Chip "A" uses itself through "B"', 'A'))
+    expect(compile(uses('A', 'B'), fresh)).toEqual(refusal('Line 1: Cannot use chip A to implement itself through B', 'B'))
+    expect(compile(uses('Top', 'A'), fresh)).toEqual(refusal('Line 1: Cannot use chip A to implement itself through B', 'A'))
+  })
+
+  it('gives the cycle refusal the line of the part that starts it (#820)', () => {
+    const top = 'CHIP Top {\n  IN a;\n  OUT out;\n  PARTS:\n  Not(in=a, out=x);\n  A(a=x, out=out);\n}'
+    expect(compile(top, builtinsFirst(uses('A', 'B'), uses('B', 'A')))).toEqual({
+      success: false,
+      errors: [{ message: 'Line 6: Cannot use chip A to implement itself through B', partName: 'A', line: 6 }],
+    })
+  })
+})
+
+describe("compileHDL — the reference's self-reference sentence, and the line of the part at fault (#820)", () => {
+  const chip = (ins: string, outs: string, parts: string): string => `CHIP C {\n  IN ${ins};\n  OUT ${outs};\n  PARTS:\n${parts}\n}`
+  function compile(source: string, registry: ChipRegistry = getBuiltinChipRegistry()): HDLCompileResult {
+    const ast = parseHDL(source)
+    if (!ast.success) throw new Error(`parse failed: ${source}`)
+    return compileHDL(ast.chip, registry)
+  }
+  const lines = (source: string): Array<[number | undefined, string]> => {
+    const r = compile(source)
+    return r.success ? [] : r.errors.map((e) => [e.line, e.message])
+  }
+
+  it('refuses a chip that names itself in the reference sentence, on the line of that part', () => {
+    expect(compile('CHIP Not {\n  IN in;\n  OUT out;\n\n  PARTS:\n  Not(in=in, out=out);\n}')).toEqual({
+      success: false,
+      errors: [{ message: 'Line 6: Cannot use chip Not to implement itself', partName: 'Not', line: 6 }],
+    })
+  })
+
+  it('takes the self-reference line from the part that names the chip, not from the first part', () => {
+    expect(lines('CHIP Not {\n  IN in;\n  OUT out;\n  PARTS:\n  Nand(a=in, b=in, out=x);\n  Not(in=x, out=out);\n}')).toEqual([[6, 'Line 6: Cannot use chip Not to implement itself']])
+  })
+
+  it('puts the line of a bad part off line 1 in the field and as the Line N: prefix, where the reference puts it', () => {
+    expect(compile(chip('a', 'out', '  Not(in=a[2], out=out);'))).toEqual({
+      success: false,
+      errors: [{ message: 'Line 5: Part "Not" pin "in" is wired to "a[2]": sub-bus index out of range ("a" has width 1)', partName: 'Not', pinName: 'in', line: 5 }],
+    })
+  })
+
+  it('gives two failing parts on different lines two messages, each with its own line; the reference stops at the first', () => {
+    expect(lines(chip('a', 'x, y', '  Not(in=a[2], out=x);\n  Not(in=a[3], out=y);'))).toEqual([
+      [5, 'Line 5: Part "Not" pin "in" is wired to "a[2]": sub-bus index out of range ("a" has width 1)'],
+      [6, 'Line 6: Part "Not" pin "in" is wired to "a[3]": sub-bus index out of range ("a" has width 1)'],
+    ])
+  })
+
+  it("gives a part written across several lines the line of its name, where the reference gives the pin's line 6", () => {
+    expect(lines(chip('a', 'out', '  Not(\n    in=a[2],\n    out=out);'))).toEqual([[5, 'Line 5: Part "Not" pin "in" is wired to "a[2]": sub-bus index out of range ("a" has width 1)']])
+  })
+
+  it.each([
+    ['an unknown part', chip('a', 'o', '  Foo(in=a, out=o);'), [[5, 'Line 5: Unknown chip-part: "Foo"']]],
+    ['a pin the part does not have', chip('x', 'y', '  Nand(a=x, b=x, c=x, out=y);'), [[5, 'Line 5: Part "Nand" has no pin "c"']]],
+    ['a part-pin slice past its pin, and the pin left unbound', chip('a', 'out[16]', '  Not16(in[16]=a, out=out);'), [
+      [5, 'Line 5: Part "Not16" pin "in[16]" is out of range; "in" has width 16'],
+      [5, 'Line 5: Part "Not16" input pin "in" is not connected: the nand2tetris simulator reads it as 0; bind in=false to do the same'],
+    ]],
+    ['a width mismatch', 'CHIP C {\n  IN a[16];\n  OUT o;\n\n  PARTS:\n  Not(in=a, out=o);\n}', [[6, 'Line 6: Part "Not" pin "in" width 1 != signal "a" width 16']]],
+    ['an input pin bound twice', chip('a, b', 'o', '  Not(in=a, in=b, out=o);'), [[5, 'Line 5: Part "Not" pin "in" bit 0 is bound by more than one connection']]],
+    ['an output bound to a literal', chip('a', 'out', '  Not(in=a, out=true);\n  And(a=a, b=true, out=out);'), [[5, 'Line 5: Part "Not" output "out" cannot connect to literal "true"']]],
+    ['an output written to a chip input', chip('a, b', 'out', '  Not(in=b, out=a);\n  Not(in=b, out=out);'), [[5, 'Line 5: Part "Not" output "out" cannot write to chip input "a"']]],
+    ['a second driver, on its own line', chip('a, b', 'o', '  Not(in=a, out=o);\n  Not(in=b, out=o);'), [[6, 'Line 6: Signal "o" is driven by more than one part']]],
+    ['an unconnected input pin', chip('a, b', 'out', '  Nand(a=a, out=out);'), [[5, 'Line 5: Part "Nand" input pin "b" is not connected: the nand2tetris simulator reads it as 0; bind b=false to do the same']]],
+    ['a read of a signal nothing produces', chip('a', 'o', '  Not(in=u, out=o);'), [[5, 'Line 5: Signal "u" is read by part "Not" but no part produces it']]],
+    ['a read of bits nothing drives, on the reading part', chip('a', 'o', '  Not(in=a, out=t[0]);\n  Not(in=t[1], out=o);'), [[6, 'Line 6: Signal "t" bit 1 is read by part "Not" but no part drives it']]],
+  ] as const)('gives %s the line of the part at fault', (_, source, expected) => {
+    expect(lines(source)).toEqual(expected)
+  })
+
+  it('reports a bit driven by parts on three lines once, on the line of the second', () => {
+    expect(lines(chip('a, b, c', 'o', '  Not(in=a, out=o);\n  Not(in=b, out=o);\n  Not(in=c, out=o);'))).toEqual([[6, 'Line 6: Signal "o" is driven by more than one part']])
+  })
+
+  it('gives an error no part caused no line and no prefix', () => {
+    expect(compile(chip('a', 'o', '  And(a=a, b=t, out=t);\n  Not(in=t, out=o);'))).toEqual({
+      success: false,
+      errors: [{ message: 'Cyclic part dependency: parts cannot be topologically ordered (combinational cycle) through "t"' }],
+    })
+    expect(compile(chip('a', 'out', '  BUILTIN Nope;'))).toEqual({ success: false, errors: [{ message: 'Builtin chip "Nope" not found in registry' }] })
+    const user = createChipRegistry()
+    user.register({ name: 'Foo', inputs: [{ name: 'a', width: 1 }], outputs: [{ name: 'out', width: 1 }], implementation: { type: 'hdl', source: 'CHIP Foo { IN a; OUT out; PARTS: Not(in=a, out=out); }' } })
+    expect(compile(chip('a', 'out', '  BUILTIN Foo;'), user)).toEqual({ success: false, errors: [{ message: 'Chip "Foo" is not a builtin' }] })
+  })
+
+  it('gives a part with no source line, as a spec lowers it, neither the field nor the prefix', () => {
+    const ast: HDLChip = { name: 'C', inputs: [{ name: 'a', width: 1 }], outputs: [{ name: 'o', width: 1 }], parts: [{ name: 'Foo', connections: [{ internal: 'in', external: 'a' }, { internal: 'out', external: 'o' }] }] }
+    expect(compileHDL(ast, getBuiltinChipRegistry())).toEqual({ success: false, errors: [{ message: 'Unknown chip-part: "Foo"', partName: 'Foo' }] })
   })
 })

@@ -34,6 +34,8 @@ export interface HDLPart {
   connections: HDLConnection[]
   /** From a trailing `// #p<n>` on the part's line (ADR-0020 §1.9); absent in plain HDL. */
   id?: string
+  /** The line of the part's name in its source; absent for a part with no source, such as one lowered from a spec. */
+  line?: number
 }
 
 /** Root AST for a single `CHIP Name { ... }` declaration. */

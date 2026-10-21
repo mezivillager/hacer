@@ -241,7 +241,7 @@ describe('compileSpec — refusals (§1.1, §1.8)', () => {
     for (const source of [WIDTH, LOOP]) {
       const messages = engineMessages(source)
       expect(messages).not.toEqual([])
-      expect(refusal(parseSpec(source))).toEqual(messages.map((message) => ({ code: 'compile', severity: 'error', message })))
+      expect(refusal(parseSpec(source))).toEqual(messages.map((message) => ({ code: 'compile', severity: 'error', message: message.replace(/^Line \d+: /, '') })))
     }
   })
 

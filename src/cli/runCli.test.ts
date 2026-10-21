@@ -51,7 +51,12 @@ describe('runCli', () => {
 
   it('refuses an unconnected part input, naming what the nand2tetris simulator reads and how to match it', () => {
     const out = runCli(vectorArgs('And'), reader({ 'And.hdl': 'CHIP And {\n  IN a, b;\n  OUT out;\n  PARTS:\n  Nand(a=a, out=out);\n}' }))
-    expect(out).toEqual({ exitCode: 1, stdout: 'ERROR And: evaluateChip: chip "And" failed to compile: Part "Nand" input pin "b" is not connected: the nand2tetris simulator reads it as 0; bind b=false to do the same\n', stderr: '' })
+    expect(out).toEqual({ exitCode: 1, stdout: 'ERROR And: Line 5: Part "Nand" input pin "b" is not connected: the nand2tetris simulator reads it as 0; bind b=false to do the same\n', stderr: '' })
+  })
+
+  it("refuses a chip that names itself with the reference's sentence and line", () => {
+    const out = runCli(vectorArgs('Not'), reader({ 'Not.hdl': 'CHIP Not {\n  IN in;\n  OUT out;\n\n  PARTS:\n  Not(in=in, out=out);\n}' }))
+    expect(out).toEqual({ exitCode: 1, stdout: 'ERROR Not: Line 6: Cannot use chip Not to implement itself\n', stderr: '' })
   })
 
   it('reports an unreadable file as an error, not a crash', () => {
