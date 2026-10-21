@@ -278,3 +278,34 @@ describe('compileSpec — an alias slice must fit its port (#371)', () => {
     expect(refusal(input)).toEqual([{ code: 'invalid-wire', severity: 'error', netId, message }])
   })
 })
+
+describe('compileSpec — a chip-OUT sink sits on the net named for it (#855)', () => {
+  const notInto = (id: string, sink: Ref, outs: Port[] = [port('out')]): CircuitSpec => doc('S', [port('a')], outs, [{ id: 'p1', chip: 'Not' }], [
+    { id: 'a', driver: chipIn('a'), sinks: [partPin('p1', 'in')] },
+    { id, driver: partPin('p1', 'out'), sinks: [sink] },
+  ])
+  const shapes: Array<[string, CircuitSpec, string, string]> = [
+    ['a constant\'s net', doc('K', [port('a')], [port('out')], [], [{ id: 'true', driver: TRUE, sinks: [chipOut('out')] }]), 'true', 'Net "true" sinks chip OUT "out": only the net named "out" carries it'],
+    ['a part-driven net named for another signal', notInto('t', chipOut('out')), 't', 'Net "t" sinks chip OUT "out": only the net named "out" carries it'],
+    ['a net named for other bits of the OUT', notInto('out[0]', chipOut('out', { start: 1, end: 1 }), [port('out', 2)]), 'out[0]', 'Net "out[0]" sinks chip OUT "out[1]": only the net named "out[1]" carries it'],
+    ['an alias named for another OUT', doc('A', [port('a')], [port('out'), port('y')], [], [{ id: 'out', driver: chipIn('a'), sinks: [chipOut('y')] }]), 'out', 'Net "out" sinks chip OUT "y": only the net named "y" carries it'],
+    ['an OUT sink that names no chip OUT', notInto('zz', chipOut('zz')), 'zz', 'Net "zz" sinks "zz", which is not a chip OUT'],
+  ]
+
+  it.each(shapes)('refuses %s by name, rather than reading the OUT as 0', (_, document, netId, message) => {
+    expect(refusal({ doc: document, diagnostics: [] })).toEqual([{ code: 'invalid-wire', severity: 'error', netId, message }])
+  })
+
+  it('never throws on them, and leaves each document unchanged', () => {
+    for (const [, document] of shapes) {
+      const input = deepFreeze({ doc: structuredClone(document), diagnostics: [] })
+      expect(() => compileSpec(input, chips)).not.toThrow()
+      expect(input.doc).toEqual(document)
+    }
+  })
+
+  it('a part-driven net named for its OUT still compiles: out = not a', () => {
+    const result = compileSpec({ doc: notInto('out', chipOut('out')), diagnostics: [] }, chips)
+    expect(result.success && [0, 1].map((a) => result.evaluate({ a }, ctx))).toEqual([{ out: 1 }, { out: 0 }])
+  })
+})
