@@ -447,3 +447,27 @@ ADR-0020 §10 states the loop granularity N.2's parity uses and where it differs
 `pnpm exec vitest run --project node src/core/hdl src/core/spec src/cli`
 ## Blocked by
 #813 (PR #818). It edits the same strings as FID-015 (#820), so whichever lands second rebases.
+
+### FID-026 · Builtins-first matches the reference only over HACER's builtin names: #206 states what a part named after one of the reference's other 27 builtins resolves to
+- **Date:** 2026-10-21 · **Target epic:** #140 core
+- **Status:** proposed
+- **Why:** PR #826 (#816) refuses a part cycle through the registry, and says that builtins-first (`src/simulation/topologicalEval.ts:314`) compiles the user `Not`/`And` pair "as the reference does". That holds for the pair. It does not hold in general.
+  - The web IDE resolves every name in its 43-name `REGISTRY` to the builtin before it reads any file (`../web-ide/simulator/src/chip/builder.ts:48`, `builtins/index.ts:68, 127`). Measured at `91ef428`: all 43 names resolve with 0 reads, even with a file of that name present. So in the reference a user chip is never a part under those names.
+  - HACER's builtins are the 16 Project 1 chips (`src/core/chips/appRegistry.ts:10`). The other 27 reference names resolve to user chips under builtins-first: `Add16 ALU ALUNoStat ARegister Bit Computer CPU DFF DRegister FullAdder HalfAdder Inc16 Keyboard Memory Nand16 PC RAM16K RAM4K RAM512 RAM64 RAM8 Register ROM32K Screen XOr Xor16 XOr16`.
+  - Measured: take a user `HalfAdder` that uses `FullAdder`, beside a user `FullAdder` that uses `HalfAdder`. The reference accepts it with its builtin `FullAdder`, and 1+1 gives `sum=0 carry=1`. HACER at PR #826's head refuses it with `Chip "HalfAdder" uses itself through "FullAdder"`. On `main` it compiled and threw the depth error.
+  - Not reachable today, because the user registry is empty (#206). Once user chips are registered, the same split decides values as well as cycles: a learner's wrong `HalfAdder` would feed a `FullAdder` that the reference builds on the builtin.
+  - The book's Appendix A §3 (HUJI copy, fetched 2026-10-21) gives the opposite order: "if <chip name>.hdl exists in the current directory then load it … else if … BuiltIn …". The book and the web IDE disagree, and no vector decides between them. ADR-0020 §1.11 rule 4 says only that "the lookup order (#206) decides".
+- **Review note:** docs/research/2026-10-fidelity-review-pr-826.md
+
+**Draft issue body**
+## Goal
+Before user chips are registered at runtime, it is stated and pinned what a part resolves to when its name is a builtin in the reference but not in HACER, and which lookup order (the book's or the web IDE's) the runtime registry follows.
+## Acceptance criteria
+- #206's shaped spec, or ADR-0020 §1.11 rule 4, names the order the runtime registry uses. It cites the book's own-first order (Appendix A §3) and the web IDE's builtins-first order (`builder.ts:48`). It states that builtins-first matches the reference only over HACER's builtin names.
+- For the 27 names that are builtins only in the reference, it picks one of three: refuse a user chip under such a name as a part, with a message that names the reference builtin; or resolve the name to the user chip and list that as an expected disagreement; or resolve it to a HACER builtin once one exists.
+- A test pins the user `HalfAdder`/`FullAdder` pair under the chosen rule.
+- A test lists the names that are builtins in the reference but not in HACER, from a committed copy of the 43 names. A phase 0.6 builtin then visibly moves the boundary.
+## Verification command
+`pnpm exec vitest run --project node src/core/chips src/core/hdl`
+## Blocked by
+#206 (shaping). PR #826 must merge first; this entry adds tests next to the ones it adds.
