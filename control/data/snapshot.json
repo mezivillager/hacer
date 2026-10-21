@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-21T20:20:05.624Z",
+  "generatedAt": "2026-10-21T20:21:55.717Z",
   "head": {
     "sha": "3034bce89dee5dcac1aa4f3b06c1c2923e11479d",
     "date": "2026-10-21T23:18:42+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T20:20:05.624Z",
+      "fetchedAt": "2026-10-21T20:21:55.717Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T20:20:05.624Z",
+      "fetchedAt": "2026-10-21T20:21:55.717Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T20:20:05.624Z",
+      "fetchedAt": "2026-10-21T20:21:55.717Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-21T20:20:05.624Z",
+      "fetchedAt": "2026-10-21T20:21:55.717Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-21T20:20:05.624Z",
+      "fetchedAt": "2026-10-21T20:21:55.717Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-21T20:20:05.624Z",
+      "fetchedAt": "2026-10-21T20:21:55.717Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-21T20:20:05.624Z",
+      "fetchedAt": "2026-10-21T20:21:55.717Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-21T20:20:05.624Z",
+      "fetchedAt": "2026-10-21T20:21:55.717Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-21T20:20:05.624Z",
+      "fetchedAt": "2026-10-21T20:21:55.717Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-21T20:20:05.624Z",
+      "fetchedAt": "2026-10-21T20:21:55.717Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-21T20:20:05.624Z",
+      "fetchedAt": "2026-10-21T20:21:55.717Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-21T20:20:05.624Z",
+      "fetchedAt": "2026-10-21T20:21:55.717Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-21T20:20:05.624Z",
+      "fetchedAt": "2026-10-21T20:21:55.717Z",
       "status": "ok"
     }
   },
@@ -2799,6 +2799,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/863",
         "author": "mezivillager",
         "labels": [
+          "released",
           "risk:1",
           "fidelity",
           "project:foundation"
@@ -5937,9 +5938,14 @@
     },
     "releases": [
       {
+        "tag": "v2.63.1",
+        "publishedAt": "2026-10-21T20:21:14Z",
+        "isLatest": true
+      },
+      {
         "tag": "v2.63.0",
         "publishedAt": "2026-10-21T19:50:53Z",
-        "isLatest": true
+        "isLatest": false
       },
       {
         "tag": "v2.62.0",
@@ -6597,7 +6603,7 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-07T20:20:05.624Z",
+      "since": "2026-10-07T20:21:55.717Z",
       "merged": 80,
       "openToMergeHours": {
         "median": 0.4,
