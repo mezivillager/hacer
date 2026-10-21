@@ -2,7 +2,8 @@
  * Paths an implementer must not quietly edit. #151's tamper flag is the full list
  * and the sticky comment; this module is the part #193 needs so the vendored
  * oracle is a protected path today, plus the legacy app's characterization
- * goldens (#331), which record behaviour that is deleted after they are taken.
+ * goldens (#331), which record behaviour that is deleted after they are taken,
+ * and the reference verdicts of the acceptance-parity corpus (#811).
  */
 /** Each protected glob with the reason it is protected, for the warning that names it. */
 export const PROTECTED_PATHS = [
@@ -15,6 +16,11 @@ export const PROTECTED_PATHS = [
     glob: '**/__snapshots__/characterization/**',
     reason: 'characterization golden: records legacy behaviour deleted after capture (#331)',
     matches: (path) => /(^|\/)__snapshots__\/characterization\//.test(path),
+  },
+  {
+    glob: 'conformance/acceptance/**',
+    reason: "reference verdicts: the web IDE's answer for each HDL shape; a reader's change edits src/core/hdl/acceptanceParity.test.ts instead (#811)",
+    matches: (path) => path.startsWith('conformance/acceptance/'),
   },
 ]
 
