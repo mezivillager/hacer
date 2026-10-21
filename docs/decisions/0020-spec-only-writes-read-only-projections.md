@@ -1,7 +1,7 @@
 # 0020. Spec-only writes, read-only projections
 
 - **Status:** Accepted — the fresh-context adversarial review [#359](https://github.com/mezivillager/hacer/issues/359) required by #327 returned `sound with corrections`, and the second pass over the four post-review deltas returned `accept with corrections` (both on [#358](https://github.com/mezivillager/hacer/pull/358), 2026-09-23). Both sets of corrections are applied below — the second pass's seven under "What the second pass changed" — and no further review round is required. **Amended 2026-09-24** by the spike this ADR scheduled for 1.5/1.6 ([#372](https://github.com/mezivillager/hacer/issues/372)), which ran, found the mechanism 1.5 describes does not work, and replaced it — "What the spike changed". The status does **not** move: the spine, the review's acceptance and every decision stand, and correcting a mechanism is what a scheduled spike is for.
-- **Date:** 2026-09-23 · mechanism amended 2026-09-24 ([#372](https://github.com/mezivillager/hacer/issues/372)) · §7.1 and §9 amended 2026-09-29 ([#598](https://github.com/mezivillager/hacer/issues/598)) · §1.10 added 2026-10-15 ([#374](https://github.com/mezivillager/hacer/issues/374)) · §1.11 added 2026-10-15 ([#378](https://github.com/mezivillager/hacer/issues/378)) · §1.1 and §1.11.5 amended 2026-10-21 ([#813](https://github.com/mezivillager/hacer/issues/813)) · §1, §1.10 and the migration policy amended 2026-10-21 ([#814](https://github.com/mezivillager/hacer/issues/814))
+- **Date:** 2026-09-23 · mechanism amended 2026-09-24 ([#372](https://github.com/mezivillager/hacer/issues/372)) · §7.1 and §9 amended 2026-09-29 ([#598](https://github.com/mezivillager/hacer/issues/598)) · §1.10 added 2026-10-15 ([#374](https://github.com/mezivillager/hacer/issues/374)) · §1.11 added 2026-10-15 ([#378](https://github.com/mezivillager/hacer/issues/378)) · §1.1 and §1.11.5 amended 2026-10-21 ([#813](https://github.com/mezivillager/hacer/issues/813)) · §1, §1.10 and the migration policy amended 2026-10-21 ([#814](https://github.com/mezivillager/hacer/issues/814)) · §1.10 item 10 amended 2026-10-21 ([#844](https://github.com/mezivillager/hacer/issues/844))
 - **Amended by:** R769, R817, R825, R826, R836, R837
 - **Amends:** ADR-0008 §6, ADR-0009
 - **Supersedes:** ADR-0007
@@ -684,9 +684,17 @@ are v1's. v2 keeps every one but 9, which it replaces (1.10.9). Each is pinned b
 10. **The canonical text and the export:**
     - `printSpec` prints each part's bindings inputs first, then outputs, each ordered by pin and then
       by slice, in the document's part order. An empty port list prints no `IN` or `OUT` line.
-    - The `nand2tetris` dialect lowers a pass-through to a buffer of the net's width:
-      `Or(a=x, b=x, out=y)` at one bit, `Or16` at sixteen, and one `Or` per bit at any other width.
-      The buffers come after every declared part, with no marker.
+    - The `nand2tetris` dialect lowers each pass-through net on its own, with no merging of adjacent
+      nets. *Amended 2026-10-21 ([#844](https://github.com/mezivillager/hacer/issues/844)):* the net
+      is cut into 16-bit windows from its low bit, and each window of `k` bits prints one buffer:
+      `Or(a=x, b=x, out=y)` at one bit, `Or16(a[0..k-1]=x, b[0..k-1]=x, out[0..k-1]=y)` from 2 to 15,
+      and `Or16(a=x, b=x, out=y)` at sixteen. The part's pins always start at bit 0. The driver's and
+      the net's own indices appear only on the signal side, whole when one window covers the net and
+      sliced otherwise, so a 4-bit `wire out = a;` prints `Or16(a[0..3]=a, …)` and a 32-bit one's
+      second window prints `Or16(a=a[16..31], …)`. One `Or16` sliced past bit 15 is refused by both
+      readers (`Sub-bus index out of range`), so no net, however wide, gets one. A chip named `Or16`
+      keeps one `Or` per bit at every width but 16, so the form never makes it use itself. No `Or4`
+      or `Or8` is added (§1.5). The buffers come after every declared part, with no marker.
 
 **The round trip §1.9 asked N.1 to re-measure has been measured on the shipped printer.** It covers
 the 15 Project 1 sources and 13 spec shapes:

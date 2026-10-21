@@ -5,7 +5,7 @@ import { SPEC_SCHEMA_VERSION } from './types'
 import type { CircuitSpec, Net, Port, Ref, Sidecar } from './types'
 
 export interface PrintSpecOptions {
-  /** `nand2tetris` prints plain HDL: pass-throughs become buffers, with no header and no sidecar. */
+  /** `nand2tetris` prints plain HDL: a pass-through becomes one buffer per 16-bit window, with no header and no sidecar. */
   dialect?: 'hacer' | 'nand2tetris'
   sidecar?: Sidecar
 }
@@ -23,7 +23,7 @@ const INDENT = '    '
 const compare = (a: string, b: string): number => (a < b ? -1 : a > b ? 1 : 0)
 const printPort = (port: Port): string => (port.width > 1 ? `${port.name}[${port.width}]` : port.name)
 const printRef = (ref: Ref): string => (ref.kind === 'constant' ? String(ref.value) : printPinRef(ref.pin, ref.slice))
-const bit = (slice: HDLSlice | undefined, i: number): HDLSlice => ({ start: (slice?.start ?? 0) + i, end: (slice?.start ?? 0) + i })
+const span = (slice: HDLSlice | undefined, from: number, width: number): HDLSlice => ({ start: (slice?.start ?? 0) + from, end: (slice?.start ?? 0) + from + width - 1 })
 
 /** Classified by driver kind (§1): any chip-out driver is an alias, a chip-in one only if renamed. */
 export function isAlias(net: Net): net is Alias {
@@ -38,18 +38,24 @@ const byPin = (a: Binding, b: Binding): number =>
   (a.slice?.start ?? -1) - (b.slice?.start ?? -1) ||
   compare(a.signal, b.signal)
 
-/** §1.5's export desugar, width-generic: `Or` at one bit, `Or16` at sixteen, one `Or` per bit otherwise. */
-function buffers(net: Alias, outs: Port[]): string[] {
+const WINDOW = 16
+
+/** §1.5's export desugar: one buffer per 16-bit window from the low bit, `Or` at one bit and `Or16` from pin bit 0 above it. */
+function buffers(net: Alias, outs: Port[], chip: string): string[] {
   const { signal, slice } = splitNetId(net.id)
   const width = slice ? sliceWidth(slice) : (outs.find((p) => p.name === signal)?.width ?? 1)
-  if (width === 1 || width === 16) {
-    const from = printRef(net.driver)
-    return [`${width === 1 ? 'Or' : 'Or16'}(a=${from}, b=${from}, out=${net.id});`]
+  const { pin, slice: from } = net.driver
+  const printWindow = (lo: number, k: number): string[] => {
+    // A chip named Or16 cannot use itself, so away from 16 bits it keeps one Or per bit.
+    if (k > 1 && chip === 'Or16' && width !== WINDOW) return Array.from({ length: k }, (_, i) => printWindow(lo + i, 1)).flat()
+    const whole = k === width
+    const x = whole ? printRef(net.driver) : printPinRef(pin, span(from, lo, k))
+    const y = whole ? net.id : printPinRef(signal, span(slice, lo, k))
+    if (k === 1) return [`Or(a=${x}, b=${x}, out=${y});`]
+    const pins = k === WINDOW ? '' : `[0..${k - 1}]`
+    return [`Or16(a${pins}=${x}, b${pins}=${x}, out${pins}=${y});`]
   }
-  return Array.from({ length: width }, (_, i) => {
-    const from = printPinRef(net.driver.pin, bit(net.driver.slice, i))
-    return `Or(a=${from}, b=${from}, out=${printPinRef(signal, bit(slice, i))});`
-  })
+  return Array.from({ length: Math.ceil(width / WINDOW) }, (_, w) => printWindow(w * WINDOW, Math.min(WINDOW, width - w * WINDOW))).flat()
 }
 
 /**
@@ -81,7 +87,7 @@ export function printSpec(doc: CircuitSpec, options: PrintSpecOptions = {}): str
     lines.push(`${INDENT}${part.chip}(${conns.join(', ')}); // #${part.id}`)
   }
   // Buffers are appended after every declared part, so the parts' ids keep their positions (§1.9).
-  for (const net of aliases) lines.push(...(plain ? buffers(net, doc.outs) : [`wire ${net.id} = ${printRef(net.driver)};`]).map((l) => INDENT + l))
+  for (const net of aliases) lines.push(...(plain ? buffers(net, doc.outs, doc.name) : [`wire ${net.id} = ${printRef(net.driver)};`]).map((l) => INDENT + l))
   lines.push('}')
 
   const text = `${lines.join('\n')}\n`
