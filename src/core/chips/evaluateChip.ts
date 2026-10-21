@@ -10,27 +10,43 @@ export const DEFAULT_MAX_DEPTH = 100
 
 interface CachedEvaluator {
   evaluate: CompiledEvaluator
-  resolvedParts: ReadonlyArray<readonly [string, ChipDefinition | undefined]>
+  lookedUp: ReadonlyArray<readonly [string, ChipDefinition | undefined]>
   checkedAgainst: ChipRegistry
   checkedAtVersion: number
 }
 
 // Keyed by definition, not registry, because callers build a fresh registry view per tick. The
-// parts are re-checked only when the registry object or its version differs from the last check.
+// lookups are re-checked only when the registry object or its version differs from the last check.
 const compiledCache = new WeakMap<ChipDefinition, CachedEvaluator>()
 
 const stillResolves = (cached: CachedEvaluator, registry: ChipRegistry): boolean =>
-  cached.resolvedParts.every(([name, def]) => registry.get(name) === def)
+  cached.lookedUp.every(([name, def]) => registry.get(name) === def)
 
-function compile(chip: ChipDefinition, registry: ChipRegistry): { evaluate: CompiledEvaluator; partNames: Set<string> } {
+/** `registry` as a view that notes what each name first resolved to. */
+function recording(registry: ChipRegistry): { view: ChipRegistry; lookedUp: Map<string, ChipDefinition | undefined> } {
+  const lookedUp = new Map<string, ChipDefinition | undefined>()
+  const get = (name: string): ChipDefinition | undefined => {
+    const def = registry.get(name)
+    if (!lookedUp.has(name)) lookedUp.set(name, def)
+    return def
+  }
+  const view: ChipRegistry = {
+    get,
+    has: (name) => get(name) !== undefined,
+    list: () => registry.list(),
+    version: () => registry.version(),
+    register: (def) => registry.register(def),
+  }
+  return { view, lookedUp }
+}
+
+function compile(chip: ChipDefinition, registry: ChipRegistry): CompiledEvaluator {
   const refuse = (messages: string[]): never => {
     throw new Error(`evaluateChip: chip "${chip.name}" failed to compile: ${messages.join('; ')}`)
   }
   if (isCircuitChip(chip)) {
-    const { spec } = chip.implementation
-    const result = compileSpec({ doc: spec, diagnostics: [] }, registry)
-    if (!result.success) return refuse(result.diagnostics.map((d) => d.message))
-    return { evaluate: result.evaluate, partNames: new Set(spec.parts.map((part) => part.chip)) }
+    const result = compileSpec({ doc: chip.implementation.spec, diagnostics: [] }, registry)
+    return result.success ? result.evaluate : refuse(result.diagnostics.map((d) => d.message))
   }
   if (chip.implementation.type !== 'hdl') {
     throw new Error(`evaluateChip: chip "${chip.name}" implementation type "${chip.implementation.type}" is not supported yet`)
@@ -40,10 +56,7 @@ function compile(chip: ChipDefinition, registry: ChipRegistry): { evaluate: Comp
     throw new Error(`evaluateChip: chip "${chip.name}" HDL failed to parse: ${parsed.errors.map((e) => e.message).join('; ')}`)
   }
   const result = compileHDL(parsed.chip, registry)
-  if (!result.success) return refuse(result.errors.map((e) => e.message))
-  const partNames = new Set(parsed.chip.parts.map((part) => part.name))
-  if (parsed.chip.builtin) partNames.add(parsed.chip.builtin)
-  return { evaluate: result.evaluate, partNames }
+  return result.success ? result.evaluate : refuse(result.errors.map((e) => e.message))
 }
 
 export function evaluateChip(
@@ -83,8 +96,8 @@ export function evaluateChipWithCtx(
     }
   }
   if (!cached) {
-    const { evaluate, partNames } = compile(chip, ctx.registry)
-    cached = { evaluate, resolvedParts: [...partNames].map((name) => [name, ctx.registry.get(name)] as const), checkedAgainst: ctx.registry, checkedAtVersion: version }
+    const { view, lookedUp } = recording(ctx.registry)
+    cached = { evaluate: compile(chip, view), lookedUp: [...lookedUp], checkedAgainst: ctx.registry, checkedAtVersion: version }
     compiledCache.set(chip, cached)
   }
   return cached.evaluate(inputs, ctx)
