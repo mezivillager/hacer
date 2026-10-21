@@ -1309,9 +1309,71 @@ exempt. "On overlapping bit ranges" is the engine's own predicate and means the 
 
 Where legacy reports a `cycle` only because its graph treats a bus component as one node, the
 import's bit-level verdict stands (R837): a loop counts when it closes in the part graph traced per
-bit through wires and bus components, with each part opaque, which is the reference's own granularity
-(`sortParts`, `../web-ide/simulator/src/chip/chip.ts:500-543`; `checkLoops`,
-`../web-ide/simulator/src/chip/builder.ts:292-318`).
+bit through wires and bus components, with each part opaque. That is N.2's rule, `partCycle` in
+`src/core/spec/fromLegacyCircuit.parity.test.ts:427-461`. It is not the reference's mechanism, which
+an earlier wording of this paragraph claimed; the two give the same verdict, for the reasons below.
+
+**What the reference does.** It finds loops per part and per signal name, and ignores slice bounds
+(`../web-ide` at `91ef428`, all under `../web-ide/simulator/src/`). `checkLoops`
+(`../web-ide/simulator/src/chip/builder.ts:292-321`) takes one part's wires and refuses a name bound
+to both an input pin and an output pin of that part (`Looping wire t`). It compares `rhs.pin`, the
+signal name; the parser keeps the slice bounds apart in `start` / `end`
+(`../web-ide/simulator/src/languages/hdl.ts:52-59`). `sortParts`
+(`../web-ide/simulator/src/chip/chip.ts:500-544`) orders the parts across each other
+(`Circular pin dependency`) through two maps: `partToOuts`, a `Map<Chip, Set<string>>` keyed by part
+and holding the names that part writes, and `insToPart`, a `Map<string, Set<Chip>>` keyed by name
+(`chip.ts:297-298`). A sub-bus keeps its bus's name (`super(bus.name)`, `chip.ts:102`, `:146`), so a
+slice and its whole bus are one node.
+
+**Why that gives N.2's verdict.** Within the language the reference accepts, a name is always one
+whole signal with one writer. It never subscripts an internal pin, on a read or a write ("Internal
+pins … cannot be subscripted or indexed", `validateInputSource` and `validateOutputWire`,
+`builder.ts:475` and `:416`), and it refuses a second writer ("Internal pin … already defined").
+Grouping the per-bit graph by name therefore loses nothing. The `nand2tetris` export gives every read
+run its own unsubscripted name, so on the export the reference's graph is the per-bit graph through
+wires and bus components, contracted per part: `partCycle`'s. PR #753's fidelity review
+([comment](https://github.com/mezivillager/hacer/pull/753#issuecomment-6205099371), 2026-10-16)
+measured it: all 2,040 R837 documents build in the reference and agree on every vector, and all 1,214
+real cycles are refused, 1,167 with `Looping wire` and 47 with `Circular pin dependency`.
+
+**`compileHDL` is per bit, and finer than the reference on HACER's own HDL.** It checks overlap per
+bit (`src/core/hdl/compiler.ts:395-414`), so it accepts a part that reads `t[0]` and writes `t[1]`
+(`src/core/hdl/compiler.test.ts:862-871`, `out = 65532`). That is a sliced internal signal, a shape
+the reference refuses: the analogous `Not16(in[0]=t[0], out[1]=t[1]); Not(in=a, out=t[0]);
+Not16(in=t, out=out);` fails there with `Looping wire t` (measured on #795).
+
+**Treating each part as opaque is the overapproximation.** A part that reads bits of its own output
+is refused even when the opened part has no loop. The source's own example:
+
+```
+CHIP SelfReadNot16 { IN a; OUT o; PARTS: Not16(in[0]=a, in[1]=t1, out[0]=t1, out[1]=o); }
+```
+
+`Not16` is bitwise: `out[1]` depends only on `in[1]`, so once the part is opened there is no loop,
+and `o = a` for every `a`. All three readers refuse it anyway: the reference with
+`Line 1: Looping wire t1`, `compileHDL` with `Cyclic part dependency: parts cannot be topologically
+ordered (combinational cycle) through "t1"`, and legacy with `cycle` (PR #753's review). Only opening
+the part removes the refusal, and refusing it is nand2tetris-sound, because the reference refuses it
+too. The same bits as two parts, `Not(in=a, out=t1); Not(in=t1, out=o);`, build in both readers with
+`o = a` for `a = 0, 1`. A real per-bit loop, `Not16(in=x, out=x)`, gets the same refusal from HACER,
+so only this pinned HDL shows the overapproximation.
+
+Synthesis tools take the per-bit view this check lacks. Verilator 5.052's UNOPTFLAT
+([Errors and Warnings](https://verilator.org/guide/latest/warnings.html), fetched 2026-10-21):
+"logic that isn’t truly circular as viewed by synthesis, which analyzes interconnection per bit, but
+is circular to the IEEE event model which analyzes per-signal". The warning comes from the per-signal
+view; the per-bit one is synthesis's. Yosys's `check -force-detailed-loop-check`
+([pass status](https://yosyshq.readthedocs.io/projects/yosys/en/latest/cmd/index_passes_status.html),
+"latest", fetched 2026-10-21, the page shows no version) uses "a detailed connectivity model for all
+internal cells" and disables "falling back to a simpler overapproximating model"; an opaque part is
+that simpler model. Neither tool was run here; both are cited for their documented behaviour.
+
+**"Parts opaque" holds for combinational pins only.** `sortParts` adds no edge at a part's clocked
+pin (`chip.ts:614`, `:675`), so a loop through one is legal there, while `checkLoops` has no clocked
+exemption: `DFF(in=t, out=t)` is refused with `Looping wire t`, while `DFF(in=u, out=v); Not(in=v,
+out=u)` is not refused. HACER has no clocked builtin today (`src/core/chips/builtins/`), so "parts
+opaque" is true of every HACER chip; the scope keeps it true after FID-002
+(`docs/harness/fidelity-inbox.md`) adds clocked pins.
 
 **Six preconditions of N.2 and N.3**, not parallel work — the draft listed two, and §11 already
 listed a third under "keep, newly blocking" without §10 naming it:
