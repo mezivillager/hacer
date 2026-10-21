@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-21T13:23:35.544Z",
+  "generatedAt": "2026-10-21T14:24:13.847Z",
   "head": {
     "sha": "3a9e5266a5daa29ce0636176218877ac07862da7",
     "date": "2026-10-17T23:32:01+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T13:23:35.544Z",
+      "fetchedAt": "2026-10-21T14:24:13.847Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T13:23:35.544Z",
+      "fetchedAt": "2026-10-21T14:24:13.847Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T13:23:35.544Z",
+      "fetchedAt": "2026-10-21T14:24:13.847Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-21T13:23:35.544Z",
+      "fetchedAt": "2026-10-21T14:24:13.847Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-21T13:23:35.544Z",
+      "fetchedAt": "2026-10-21T14:24:13.847Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-21T13:23:35.544Z",
+      "fetchedAt": "2026-10-21T14:24:13.847Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-21T13:23:35.544Z",
+      "fetchedAt": "2026-10-21T14:24:13.847Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-21T13:23:35.544Z",
+      "fetchedAt": "2026-10-21T14:24:13.847Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-21T13:23:35.544Z",
+      "fetchedAt": "2026-10-21T14:24:13.847Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-21T13:23:35.544Z",
+      "fetchedAt": "2026-10-21T14:24:13.847Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-21T13:23:35.544Z",
+      "fetchedAt": "2026-10-21T14:24:13.847Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-21T13:23:35.544Z",
+      "fetchedAt": "2026-10-21T14:24:13.847Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-21T13:23:35.544Z",
+      "fetchedAt": "2026-10-21T14:24:13.847Z",
       "status": "ok"
     }
   },
@@ -81,8 +81,8 @@
         "slug": "foundation",
         "epicNumber": 318,
         "open": 28,
-        "ready": 4,
-        "inProgress": 0,
+        "ready": 3,
+        "inProgress": 1,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 4,
@@ -104,8 +104,8 @@
         "slug": "harness",
         "epicNumber": 138,
         "open": 14,
-        "ready": 2,
-        "inProgress": 0,
+        "ready": 1,
+        "inProgress": 1,
         "needsHuman": 1,
         "staleClaims": [],
         "agentReady": 2,
@@ -309,15 +309,15 @@
         "slug": "upkeep",
         "epicNumber": 146,
         "open": 18,
-        "ready": 16,
-        "inProgress": 0,
+        "ready": 15,
+        "inProgress": 1,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 17,
         "filedElsewhere": [],
         "next": {
-          "number": 788,
-          "title": "Inbox review: FID-015 · Learner-facing compile errors use the reference's words and carry the line"
+          "number": 789,
+          "title": "Inbox review: FID-018 · `compileSpec` refuses a spec whose registered part does not compile, naming the chain"
         },
         "title": "Epic: upkeep — maintenance & documentation",
         "subIssues": {
@@ -421,19 +421,9 @@
         "project": "harness"
       },
       {
-        "number": 813,
-        "title": "An unconnected part input's refusal names the reference's 0, and `bindUnconnectedInputs` binds such pins to `false`",
-        "project": "foundation"
-      },
-      {
         "number": 814,
         "title": "Literals become sources: a constant driver kind for `true` and `false`, and the spec's first `migrate(1 → 2)`",
         "project": "foundation"
-      },
-      {
-        "number": 811,
-        "title": "An acceptance-parity corpus: each HDL shape carries the reference's verdict and is asserted against HACER's readers",
-        "project": "verify"
       },
       {
         "number": 816,
@@ -441,14 +431,9 @@
         "project": "foundation"
       },
       {
-        "number": 812,
-        "title": "inbox.mjs reports an entry whose status is outside its file's grammar",
-        "project": "harness"
-      },
-      {
-        "number": 788,
-        "title": "Inbox review: FID-015 · Learner-facing compile errors use the reference's words and carry the line",
-        "project": "upkeep"
+        "number": 811,
+        "title": "An acceptance-parity corpus: each HDL shape carries the reference's verdict and is asserted against HACER's readers",
+        "project": "verify"
       },
       {
         "number": 789,
@@ -568,11 +553,11 @@
         "reason": null
       },
       {
-        "number": 813,
-        "title": "An unconnected part input's refusal names the reference's 0, and `bindUnconnectedInputs` binds such pins to `false`",
+        "number": 814,
+        "title": "Literals become sources: a constant driver kind for `true` and `false`, and the spec's first `migrate(1 → 2)`",
         "labels": [
           "agent-ready",
-          "risk:1",
+          "risk:2",
           "fidelity",
           "project:foundation"
         ],
@@ -584,11 +569,11 @@
         "reason": null
       },
       {
-        "number": 814,
-        "title": "Literals become sources: a constant driver kind for `true` and `false`, and the spec's first `migrate(1 → 2)`",
+        "number": 816,
+        "title": "A part cycle through the registry is refused at compile time, naming its chips, and the walk never throws",
         "labels": [
           "agent-ready",
-          "risk:2",
+          "risk:1",
           "fidelity",
           "project:foundation"
         ],
@@ -611,53 +596,6 @@
         "blocking": [],
         "project": "verify",
         "rank": 6,
-        "lane": "aux",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 816,
-        "title": "A part cycle through the registry is refused at compile time, naming its chips, and the walk never throws",
-        "labels": [
-          "agent-ready",
-          "risk:1",
-          "fidelity",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 812,
-        "title": "inbox.mjs reports an entry whose status is outside its file's grammar",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:1"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 788,
-        "title": "Inbox review: FID-015 · Learner-facing compile errors use the reference's words and carry the line",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
         "lane": "aux",
         "pickable": true,
         "reason": null
@@ -2277,6 +2215,23 @@
         "reason": "unshaped"
       },
       {
+        "number": 788,
+        "title": "Inbox review: FID-015 · Learner-facing compile errors use the reference's words and carry the line",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 801,
         "title": "polish: an unsaved circuit is lost on reload — autosave is written every 2 s but never restored",
         "labels": [
@@ -2352,12 +2307,44 @@
         "lane": "taste",
         "pickable": false,
         "reason": "on-request"
+      },
+      {
+        "number": 812,
+        "title": "inbox.mjs reports an entry whose status is outside its file's grammar",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:1"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
+        "number": 813,
+        "title": "An unconnected part input's refusal names the reference's 0, and `bindUnconnectedInputs` binds such pins to `false`",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "fidelity",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "claimed"
       }
     ],
     "byProject": {
       "foundation": [
         338,
-        813,
         814,
         816,
         151,
@@ -2383,11 +2370,11 @@
         722,
         728,
         742,
-        773
+        773,
+        813
       ],
       "harness": [
         257,
-        812,
         154,
         156,
         270,
@@ -2399,7 +2386,8 @@
         505,
         550,
         607,
-        677
+        677,
+        812
       ],
       "verify": [
         811,
@@ -2413,7 +2401,6 @@
         289
       ],
       "upkeep": [
-        788,
         789,
         790,
         791,
@@ -2430,7 +2417,8 @@
         808,
         809,
         229,
-        256
+        256,
+        788
       ],
       "spine": [
         165,
@@ -4107,6 +4095,83 @@
           "author": "mezivillager",
           "at": "2026-09-25T06:02:35Z",
           "url": "https://github.com/mezivillager/hacer/issues/470#issuecomment-5827635352"
+        }
+      },
+      {
+        "number": 788,
+        "ref": "refs/heads/claim/788",
+        "sha": "3a9e5266a5daa29ce0636176218877ac07862da7",
+        "state": "OPEN",
+        "title": "Inbox review: FID-015 · Learner-facing compile errors use the reference's words and carry the line",
+        "url": "https://github.com/mezivillager/hacer/issues/788",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-to-70",
+          "branch": "chore/inbox-fid-015",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-21T14:21:37Z",
+          "url": "https://github.com/mezivillager/hacer/issues/788#issuecomment-6318421212"
+        }
+      },
+      {
+        "number": 812,
+        "ref": "refs/heads/claim/812",
+        "sha": "3a9e5266a5daa29ce0636176218877ac07862da7",
+        "state": "OPEN",
+        "title": "inbox.mjs reports an entry whose status is outside its file's grammar",
+        "url": "https://github.com/mezivillager/hacer/issues/812",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:1"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-to-70",
+          "branch": "chore/812-inbox-grammar",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-21T14:21:21Z",
+          "url": "https://github.com/mezivillager/hacer/issues/812#issuecomment-6318415282"
+        }
+      },
+      {
+        "number": 813,
+        "ref": "refs/heads/claim/813",
+        "sha": "3a9e5266a5daa29ce0636176218877ac07862da7",
+        "state": "OPEN",
+        "title": "An unconnected part input's refusal names the reference's 0, and `bindUnconnectedInputs` binds such pins to `false`",
+        "url": "https://github.com/mezivillager/hacer/issues/813",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "fidelity",
+          "project:foundation"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-to-70",
+          "branch": "feat/813-unconnected-input-bind",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-21T14:21:07Z",
+          "url": "https://github.com/mezivillager/hacer/issues/813#issuecomment-6318409971"
         }
       }
     ],
@@ -5934,7 +5999,7 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-07T13:23:35.544Z",
+      "since": "2026-10-07T14:24:13.847Z",
       "merged": 62,
       "openToMergeHours": {
         "median": 0.4,
@@ -9892,7 +9957,7 @@
       },
       {
         "date": "2026-10-21",
-        "at": "2026-10-21T12:32:22.000Z",
+        "at": "2026-10-21T13:23:35.544Z",
         "byProject": {
           "foundation": [
             338,
