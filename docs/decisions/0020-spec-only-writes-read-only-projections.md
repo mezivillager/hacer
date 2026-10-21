@@ -1,7 +1,7 @@
 # 0020. Spec-only writes, read-only projections
 
 - **Status:** Accepted — the fresh-context adversarial review [#359](https://github.com/mezivillager/hacer/issues/359) required by #327 returned `sound with corrections`, and the second pass over the four post-review deltas returned `accept with corrections` (both on [#358](https://github.com/mezivillager/hacer/pull/358), 2026-09-23). Both sets of corrections are applied below — the second pass's seven under "What the second pass changed" — and no further review round is required. **Amended 2026-09-24** by the spike this ADR scheduled for 1.5/1.6 ([#372](https://github.com/mezivillager/hacer/issues/372)), which ran, found the mechanism 1.5 describes does not work, and replaced it — "What the spike changed". The status does **not** move: the spine, the review's acceptance and every decision stand, and correcting a mechanism is what a scheduled spike is for.
-- **Date:** 2026-09-23 · mechanism amended 2026-09-24 ([#372](https://github.com/mezivillager/hacer/issues/372)) · §7.1 and §9 amended 2026-09-29 ([#598](https://github.com/mezivillager/hacer/issues/598)) · §1.10 added 2026-10-15 ([#374](https://github.com/mezivillager/hacer/issues/374)) · §1.11 added 2026-10-15 ([#378](https://github.com/mezivillager/hacer/issues/378)) · §1.1 and §1.11.5 amended 2026-10-21 ([#813](https://github.com/mezivillager/hacer/issues/813)) · §1, §1.10 and the migration policy amended 2026-10-21 ([#814](https://github.com/mezivillager/hacer/issues/814)) · §1.10 item 10 amended 2026-10-21 ([#844](https://github.com/mezivillager/hacer/issues/844))
+- **Date:** 2026-09-23 · mechanism amended 2026-09-24 ([#372](https://github.com/mezivillager/hacer/issues/372)) · §7.1 and §9 amended 2026-09-29 ([#598](https://github.com/mezivillager/hacer/issues/598)) · §1.10 added 2026-10-15 ([#374](https://github.com/mezivillager/hacer/issues/374)) · §1.11 added 2026-10-15 ([#378](https://github.com/mezivillager/hacer/issues/378)) · §1.1 and §1.11.5 amended 2026-10-21 ([#813](https://github.com/mezivillager/hacer/issues/813)) · §1, §1.10 and the migration policy amended 2026-10-21 ([#814](https://github.com/mezivillager/hacer/issues/814)) · §1.10 item 10 amended 2026-10-21 ([#844](https://github.com/mezivillager/hacer/issues/844)) · §1.11.5 amended again 2026-10-21 ([#840](https://github.com/mezivillager/hacer/issues/840))
 - **Amended by:** R769, R817, R825, R826, R836, R837
 - **Amends:** ADR-0008 §6, ADR-0009
 - **Supersedes:** ADR-0007
@@ -792,20 +792,29 @@ and these rules are pinned by `src/core/spec/compileSpec.test.ts`,
        `src/core/hdl/compiler.test.ts` and the registry-cycle cases in
        `src/core/spec/compileSpec.nesting.test.ts`.
 5. **Divergences from the reference, inherited rather than fixed.** The refusal of an unconnected
-   part input is not among them: §1.1 decides it.
+   part input is not among them: §1.1 decides it. The last bullet, a read of a chip OUT, is decided
+   too.
    - `IN` and `OUT` lists are required. That is the parser's rule. A document with no IN compiles at
      top level but cannot be registered (`validateChipDefinition`).
    - A bit nothing drives reads 0 in the engine, silently
      ([#431](https://github.com/mezivillager/hacer/issues/431)). `undriven` over the document
      catches its sliced shape, and the split is tested rather than assumed.
-   - **`compileSpec` relies on the engine accepting a part that reads a chip OUT.** A read of an
-     OUT→OUT alias binds its root, which can be an OUT bit, and a read such as
+   - **The engine and `compileSpec` accept a part that reads a chip OUT; the grading path refuses
+     it.** Decided 2026-10-21 ([#840](https://github.com/mezivillager/hacer/issues/840), FID-021). A
+     read of an OUT→OUT alias binds its root, which can be an OUT bit, and a read such as
      `Or(a=out[0], b=out[1], …)` names one directly. The reference refuses both
      (`Cannot use output pin as input`, `../web-ide/simulator/src/chip/builder.ts:477`), and Appendix A §5
-     lists only a chip IN, an internal pin and the constants as a part input's sources. If the
-     engine adopts that refusal, `compileSpec` must bind such a read to the OUT's driver instead.
-     The export's matching form, a second output binding on that driver, is
-     [#722](https://github.com/mezivillager/hacer/issues/722)'s.
+     lists only a chip IN, an internal pin and the constants as a part input's sources.
+     - `hacer test`, `hacer run-tst` and the MCP `hacer_hdl` tool grade only HDL the reference
+       builds. Before `compileHDL` runs, `src/core/testing/gradingRefusal.ts` refuses such a read with
+       that sentence, and a subscripted internal pin with the reference's
+       `Internal pins (in this case: <name>) cannot be subscripted or indexed`.
+     - `compileHDL`'s default, the engine and `compileSpec` keep accepting a chip-OUT read and a
+       subscripted internal pin, so `compileSpec` does not rebind such a read to the OUT's driver. The export's matching form, a
+       second output binding on that driver, stays
+       [#722](https://github.com/mezivillager/hacer/issues/722)'s.
+     - Pinned by `src/core/testing/gradingRefusal.test.ts` and the `grading` cells of
+       `src/core/hdl/acceptanceParity.test.ts`, whose `compileHDL` cells cite this bullet as intended.
 6. **Parity is measured on Project 1.** All 15 sources through `compileSpec` match the builtins and
    the `'hdl'` evaluation of the same source, on that test file's vectors. HACER ships no Project 2–3
    HDL to compare against; that parity comes with
