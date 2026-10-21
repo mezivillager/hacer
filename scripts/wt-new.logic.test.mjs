@@ -1,4 +1,8 @@
-import { describe, it, expect } from 'vitest'
+import { execFileSync, spawnSync } from 'node:child_process'
+import { existsSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import path from 'node:path'
+import { afterEach, describe, it, expect } from 'vitest'
 import {
   REQUIRED_BABEL_HELPERS,
   formatFreshness,
@@ -7,6 +11,7 @@ import {
   judge,
   judgeFetch,
   parseSpec,
+  scratchFolder,
 } from './wt-new.logic.mjs'
 
 describe('parseSpec', () => {
@@ -129,5 +134,111 @@ describe('formatFreshness', () => {
     const result = formatFreshness(4, 3)
     expect(result).toMatch(/4 commit\(s\) behind, 3 ahead/)
     expect(result).toMatch(/--numstat/)
+  })
+})
+
+describe('scratchFolder', () => {
+  const tmp = '/tmp/t'
+  const common = '/repo/.git'
+
+  it('gives two linked worktrees different folders, keyed by the last segment of each git dir', () => {
+    expect(scratchFolder(tmp, '/repo/.git/worktrees/hacer-wt-881-a', common)).toEqual({
+      ok: true, path: '/tmp/t/hacer-scratch/hacer-wt-881-a',
+    })
+    expect(scratchFolder(tmp, '/repo/.git/worktrees/hacer-wt-882-b', common)).toEqual({
+      ok: true, path: '/tmp/t/hacer-scratch/hacer-wt-882-b',
+    })
+  })
+
+  for (const gitDir of ['/repo/.git', '/repo/.git/']) {
+    it(`refuses the main checkout, whose git dir ${JSON.stringify(gitDir)} is the common dir`, () => {
+      const result = scratchFolder(tmp, gitDir, common)
+      expect(result).toEqual({ ok: false, reason: expect.stringMatching(/main checkout/) })
+    })
+  }
+
+  for (const gitDir of ['/', '/repo/.git/worktrees/.', '/repo/.git/worktrees/..']) {
+    it(`refuses the empty id of ${JSON.stringify(gitDir)}, never returning the temp dir or hacer-scratch`, () => {
+      expect(scratchFolder(tmp, gitDir, common)).toEqual({ ok: false, reason: expect.stringMatching(/id/) })
+    })
+  }
+
+  for (const [label, args] of [
+    ['temp dir', ['', '/repo/.git/worktrees/a', common]],
+    ['git dir', [tmp, '.git/worktrees/a', common]],
+    ['common dir', [tmp, '/repo/.git/worktrees/a', '.git']],
+  ]) {
+    it(`refuses a relative ${label}, which would resolve against the current directory`, () => {
+      expect(scratchFolder(...args)).toEqual({ ok: false, reason: expect.stringMatching(/absolute/) })
+    })
+  }
+})
+
+describe('wt-new.mjs scratch <worktree-path>', () => {
+  const CLI = path.join(import.meta.dirname, 'wt-new.mjs')
+  const roots = []
+  afterEach(() => {
+    while (roots.length > 0) rmSync(roots.pop(), { recursive: true, force: true })
+  })
+
+  function fixture() {
+    const root = mkdtempSync(path.join(tmpdir(), 'wt-new-scratch-'))
+    roots.push(root)
+    const repo = path.join(root, 'repo')
+    const git = (...args) =>
+      execFileSync('git', ['-c', 'core.hooksPath=/dev/null', '-c', 'commit.gpgsign=false', ...args], {
+        cwd: root, encoding: 'utf8', stdio: 'pipe',
+      })
+    git('init', '-q', repo)
+    git('-C', repo, '-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-q', '--allow-empty', '-m', 'init')
+    const tmp = path.join(root, 'tmp')
+    const addWorktree = (name) => {
+      git('-C', repo, 'worktree', 'add', '-q', '--detach', path.join(root, name))
+      return path.join(root, name)
+    }
+    const scratch = (target) =>
+      spawnSync(process.execPath, [CLI, 'scratch', target], { cwd: repo, env: { ...process.env, TMPDIR: tmp }, encoding: 'utf8' })
+    return { root, repo, tmp, git, addWorktree, scratch }
+  }
+
+  it('makes the worktree\'s folder empty and prints it, from the path given, not the current directory', () => {
+    const fx = fixture()
+    const run = fx.scratch(fx.addWorktree('wt-a'))
+    const folder = path.join(fx.tmp, 'hacer-scratch', 'wt-a')
+    expect(run.status).toBe(0)
+    expect(run.stdout).toBe(`SCRATCH: ${folder}\n`)
+    expect(readdirSync(folder)).toEqual([])
+  })
+
+  it('exits 1 on the main checkout and makes no folder', () => {
+    const fx = fixture()
+    const run = fx.scratch(fx.repo)
+    expect(run.status).toBe(1)
+    expect(run.stderr).toMatch(/main checkout/)
+    expect(run.stdout).toBe('')
+    expect(existsSync(path.join(fx.tmp, 'hacer-scratch'))).toBe(false)
+  })
+
+  it('exits 1 on a path that is not a git worktree and makes no folder', () => {
+    const fx = fixture()
+    const run = fx.scratch(path.join(fx.root, 'no-such-worktree'))
+    expect(run.status).toBe(1)
+    expect(run.stdout).toBe('')
+    expect(existsSync(path.join(fx.tmp, 'hacer-scratch'))).toBe(false)
+  })
+
+  it('empties a folder that an earlier worktree with the same id left behind', () => {
+    const fx = fixture()
+    const worktree = fx.addWorktree('wt-a')
+    const folder = path.join(fx.tmp, 'hacer-scratch', 'wt-a')
+    expect(fx.scratch(worktree).status).toBe(0)
+    writeFileSync(path.join(folder, 'pr-body.md'), 'the earlier worktree\'s PR body')
+    fx.git('-C', fx.repo, 'worktree', 'remove', worktree)
+    expect(existsSync(path.join(folder, 'pr-body.md'))).toBe(true)
+
+    fx.addWorktree('wt-a')
+    const run = fx.scratch(worktree)
+    expect(run.stdout).toBe(`SCRATCH: ${folder}\n`)
+    expect(readdirSync(folder)).toEqual([])
   })
 })
