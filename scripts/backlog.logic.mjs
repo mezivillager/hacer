@@ -596,11 +596,68 @@ export async function readClaimDrift(since, readSeeds, readLog) {
   }
 }
 
-const notImplemented = () => {
-  throw new Error('not implemented')
+// The retro line (docs/harness/retro-brief.md § Cadence): the last retro's row in harness-inbox.md § Runs, the session
+// records added since, and the merges since, as `ready` and `next` print it on stderr.
+
+const RETRO_DUE_DAYS = 7
+const DAY_MS = 24 * 60 * 60 * 1000
+const RUN_RECORD = /^docs\/harness\/sessions\/\d{4}-\d{2}-\d{2}\.md$/
+const UTC_MINUTE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2})?Z$/
+
+/** The last row of the first table under `## Runs`, or null when that table has no row. */
+export function lastRunsRow(inbox = '') {
+  const lines = inbox.split('\n')
+  const start = lines.findIndex((line) => /^## Runs\s*$/.test(line))
+  if (start < 0) return null
+  const section = lines.slice(start + 1)
+  const end = section.findIndex((line) => line.startsWith('## '))
+  const table = []
+  for (const line of end < 0 ? section : section.slice(0, end)) {
+    if (line.startsWith('|')) table.push(line)
+    else if (table.length > 0) break
+  }
+  return table.length > 2 ? table.at(-1) : null
 }
-export const lastRunsRow = notImplemented
-export const parseRunsRow = notImplemented
-export const addedFiles = notImplemented
-export const retroLine = notImplemented
-export const readRetroLine = notImplemented
+
+/** A Runs row's `to`, after the window cell's last `→`, and its `main` SHA; `{unread}` names what is missing. */
+export function parseRunsRow(row) {
+  if (!row) return { unread: 'harness-inbox.md § Runs has no row' }
+  const [, , window = '', main = ''] = row.split('|').map((cell) => cell.trim())
+  const to = [...window.matchAll(/→\s*([^\s,;)]+)/g)].at(-1)?.[1]
+  if (!to) return { unread: 'the last Runs row has no `from → to` window' }
+  if (!UTC_MINUTE.test(to) || Number.isNaN(Date.parse(to))) return { unread: `the last Runs row's \`to\` is ${to}, not YYYY-MM-DDTHH:MMZ` }
+  const sha = /^`?([0-9a-f]{7,40})`?$/i.exec(main)?.[1]
+  return sha ? { to, sha } : { unread: 'the last Runs row has no `main` SHA' }
+}
+
+/** `git log --diff-filter=A --format=%x00%cI --name-only` as `{path, at}`, each path with its commit's time. */
+export const addedFiles = (log = '') => log.split('\0').filter((chunk) => chunk.trim()).flatMap((chunk) => {
+  const [at, ...paths] = chunk.split('\n').map((line) => line.trim()).filter(Boolean)
+  return paths.map((path) => ({ path, at }))
+})
+
+/**
+ * `retro due: <n> merges since <to> (run closed: <records>)` once a dated session record was added after `to`, `(7 days)`
+ * once 7 days have passed and `mainSha` is not the row's, else `retro: <n> merges since <to>`; `retro: unread (<why>)`.
+ */
+export function retroLine({ row, mergedAts = [], records = [], mainSha = '', now }) {
+  const { to, sha, unread } = parseRunsRow(row)
+  if (unread) return `retro: unread (${unread})`
+  const toMs = Date.parse(to)
+  const since = `${plural(mergedAts.filter((at) => Date.parse(at) > toMs).length, 'merge')} since ${to}`
+  const closes = records.filter((record) => RUN_RECORD.test(record.path) && Date.parse(record.at) > toMs)
+    .sort((a, b) => Date.parse(a.at) - Date.parse(b.at)).map((record) => record.path)
+  if (closes.length > 0) return `retro due: ${since} (run closed: ${closes.join(', ')})`
+  const moved = !mainSha.toLowerCase().startsWith(sha.toLowerCase())
+  if (moved && new Date(now).getTime() - toMs >= RETRO_DUE_DAYS * DAY_MS) return `retro due: ${since} (${RETRO_DUE_DAYS} days)`
+  return `retro: ${since}`
+}
+
+/** retroLine over `read()`; a read that throws gives `retro: unread (<its first line>)`, never a throw. */
+export function readRetroLine(read) {
+  try {
+    return retroLine(read())
+  } catch (error) {
+    return `retro: unread (${String(error?.message ?? error).split('\n')[0]})`
+  }
+}
