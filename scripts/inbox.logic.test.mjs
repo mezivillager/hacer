@@ -6,6 +6,7 @@ import {
   InboxError,
   REVIEW_LABELS,
   REVIEW_LIST_LIMIT,
+  assertGrammar,
   entryStatus,
   formatEntries,
   listEntries,
@@ -153,6 +154,72 @@ describe('setStatus', () => {
     const crlf = recordedText('HRN').replaceAll('\n', '\r\n')
     const after = setStatus(crlf, inboxOf('HRN'), 'HRN-005', 'approved')
     expect(after).toBe(crlf.replace('- **Status:** proposed\r\n', '- **Status:** approved\r\n'))
+  })
+})
+
+describe('status grammar', () => {
+  const PRD = inboxOf('PRD')
+  const offGrammarText = readFileSync(path.join(FIXTURES, 'off-grammar-inbox.md'), 'utf8')
+  const offGrammar = parseInbox(offGrammarText, PRD)
+  const withOffGrammar = [recorded[0], recorded[1], offGrammar]
+  const offGrammarReport = ['docs/harness/product-inbox.md:16: PRD-001', 'docs/harness/product-inbox.md:20: PRD-002', 'docs/harness/product-inbox.md:32: PRD-005']
+  const withStatus = (text, line, status) => text.split('\n').map((raw, i) => (i === line - 1 ? `- **Status:** ${status}` : raw)).join('\n')
+
+  /** The `file:line: id` of each entry the InboxError `run` throws reports, after its summary line; [] if it returns. */
+  function reported(run) {
+    try {
+      run()
+    } catch (error) {
+      if (!(error instanceof InboxError)) throw error
+      return error.message.split('\n').slice(1).map((line) => line.split(' ', 2).join(' '))
+    }
+    return []
+  }
+
+  it('reports each entry whose status is outside its file\'s grammar, at its Status line: Proposed, approve, a note with no comma', () => {
+    expect(reported(() => assertGrammar([offGrammar]))).toEqual(offGrammarReport)
+  })
+
+  it('takes a form followed by a comma and a note, as filed entries carry "closed by PR #n"', () => {
+    expect(assertGrammar(recorded)).toBe(recorded)
+    expect(recorded[1].entries[0].status).toBe('filed (#702), closed by PR #711 on 2026-10-15')
+  })
+
+  it('reports the entries of every inbox in one error', () => {
+    const fidelity = parseInbox(withStatus(recordedText('FID'), 119, 'Approved'), inboxOf('FID'))
+    expect(reported(() => assertGrammar([fidelity, recorded[1], offGrammar])))
+      .toEqual(['docs/harness/fidelity-inbox.md:119: FID-006', ...offGrammarReport])
+  })
+
+  it('list and status refuse while an entry is outside its grammar', () => {
+    expect(reported(() => listEntries(withOffGrammar))).toEqual(offGrammarReport)
+    expect(reported(() => listEntries(withOffGrammar, { status: 'proposed' }))).toEqual(offGrammarReport)
+    expect(reported(() => entryStatus(withOffGrammar, 'FID-006', { not: 'proposed' }))).toEqual(offGrammarReport)
+  })
+
+  it('queue refuses, dry run or not, before it asks gh for the review issues', () => {
+    const gh = { listReviewIssues: () => { throw new Error('queue asked gh') }, fileIssue: () => { throw new Error('queue filed an issue') } }
+    for (const dryRun of [true, false]) expect(reported(() => queueReviews(withOffGrammar, { ...gh, dryRun }))).toEqual(offGrammarReport)
+  })
+
+  it('set refuses while another entry in the file is outside the grammar, and repairs one that is', () => {
+    expect(reported(() => setStatus(offGrammarText, PRD, 'PRD-003', 'approved'))).toEqual(offGrammarReport)
+    const repaired = setStatus(offGrammarText, PRD, 'PRD-001', 'proposed')
+    expect(repaired.split('\n')[15]).toBe('- **Status:** proposed')
+    expect(reported(() => assertGrammar([parseInbox(repaired, PRD)]))).toEqual(offGrammarReport.slice(1))
+  })
+
+  it.each(['HRN', 'PRD'])('%s, as it is now: its grammar names deferred (<until>), and set writes one', (prefix) => {
+    const inbox = inboxOf(prefix)
+    const text = liveText(inbox)
+    const { grammar, entries: [first] } = parseInbox(text, inbox)
+    expect(grammar).toContain('deferred (<until>)')
+    const value = 'deferred (inbox panel, #9003: until the next retro)'
+    expect(setStatus(text, inbox, first.id, value).split('\n')[first.statusLine - 1]).toBe(`- **Status:** ${value}`)
+  })
+
+  it('every inbox, as it is now, is inside its grammar', () => {
+    expect(reported(() => assertGrammar(INBOXES.map((inbox) => parseInbox(liveText(inbox), inbox))))).toEqual([])
   })
 })
 
