@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import corpusText from '../../../conformance/acceptance/hdl-shapes.json?raw'
 import { getBuiltinChipRegistry } from '../chips/appRegistry'
 import { DEFAULT_MAX_DEPTH, evaluateChipWithCtx } from '../chips/evaluateChip'
 import { compileHDL, type EvalContext } from '../hdl/compiler'
@@ -75,5 +76,33 @@ describe('bindUnconnectedInputs', () => {
       nets: [{ id: 'o', driver: { kind: 'part-pin', partId: 'p2', pin: 'out' }, sinks: [{ kind: 'chip-out', pin: 'o' }] }],
     }
     expect(bindUnconnectedInputs(doc, chips).bound).toEqual([{ partId: 'p2', pin: 'in' }])
+  })
+})
+
+describe('compileHDL and bindUnconnectedInputs agree on which part inputs are unconnected', () => {
+  const PIN_PAST_END = 'CHIP D { IN a; OUT out[16]; PARTS: Not16(in[16]=a, out=out); }'
+  const shapes = [...(JSON.parse(corpusText) as { shapes: Array<{ id: string; hdl: string }> }).shapes, { id: 'Not16(in[16]=a, out=out)', hdl: PIN_PAST_END }]
+
+  it('refuses a pin bound only past its end for range alone on the spec path, and binds none of its pins', () => {
+    expect(compileSpec(parseSpec(PIN_PAST_END), chips)).toMatchObject({
+      success: false,
+      diagnostics: [{ message: 'Part "Not16" pin "in[16]" is out of range; "in" has width 16' }],
+    })
+    expect(bindUnconnectedInputs(parsed(PIN_PAST_END), chips).bound).toEqual([])
+  })
+
+  it('names the same pins, part by part, for every corpus shape that parses on both paths and whose parts all resolve', () => {
+    const unconnected: Record<'compileHDL' | 'bindUnconnectedInputs', Record<string, string[]>> = { compileHDL: {}, bindUnconnectedInputs: {} }
+    for (const { id, hdl } of shapes) {
+      const ast = parseHDL(hdl)
+      const doc = parseSpec(hdl).doc
+      if (!ast.success || doc === null || ast.chip.parts.some((part) => chips.get(part.name) === undefined)) continue
+      const compiled = compileHDL(ast.chip, chips)
+      unconnected.compileHDL[id] = compiled.success ? [] : compiled.errors.filter((e) => / is not connected: /.test(e.message)).map((e) => `${e.partName}.${e.pinName}`)
+      const chipOf = new Map(doc.parts.map((part) => [part.id, part.chip]))
+      unconnected.bindUnconnectedInputs[id] = bindUnconnectedInputs(doc, chips).bound.map(({ partId, pin }) => `${chipOf.get(partId)}.${pin}`)
+    }
+    expect(Object.values(unconnected.bindUnconnectedInputs).some((pins) => pins.length > 0)).toBe(true)
+    expect(unconnected.compileHDL).toEqual(unconnected.bindUnconnectedInputs)
   })
 })

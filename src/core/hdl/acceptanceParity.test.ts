@@ -470,14 +470,8 @@ const EXPECTED: Record<string, Expected> = {
     diverges: { parseSpec: ['intended', 'ADR-0020 §1.10.6'] },
   },
   'both-sliced-external-past-end': compileRefuses(['Part "Not16" pin "in[0]" is wired to "a[8]": sub-bus index out of range ("a" has width 8)']),
-  'both-sliced-pin-past-end': {
-    ...compileRefuses(['Part "Not16" pin "in[16]" is out of range; "in" has width 16', 'Part "Not16" input pin "in" is not connected: the nand2tetris simulator reads it as 0; bind in=false to do the same']),
-    diverges: { compileHDL: ['open', 'FID-025'], compileSpec: ['open', 'FID-025'] },
-  },
-  'pin-slice-past-end-1-bit': {
-    ...compileRefuses(['Part "Not" pin "in[1]" is out of range; "in" has width 1', 'Part "Not" input pin "in" is not connected: the nand2tetris simulator reads it as 0; bind in=false to do the same']),
-    diverges: { compileHDL: ['open', 'FID-025'], compileSpec: ['open', 'FID-025'] },
-  },
+  'both-sliced-pin-past-end': compileRefuses(['Part "Not16" pin "in[16]" is out of range; "in" has width 16']),
+  'pin-slice-past-end-1-bit': compileRefuses(['Part "Not" pin "in[1]" is out of range; "in" has width 1']),
   'pin-slice-past-end-2-bit': compileRefuses(['Part "Mux4Way16" pin "sel[2]" is out of range; "sel" has width 2']),
   'pin-slice-past-end-output': compileRefuses(['Part "Not16" pin "out[16]" is out of range; "out" has width 16']),
   'one-bit-in-as-range': accepted,
