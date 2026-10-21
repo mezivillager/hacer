@@ -163,8 +163,11 @@ function partNames(def: ChipDefinition): string[] {
   }
 }
 
-/** The chips on a cycle reachable from the part named `start`, in order, or `null`; keyed by name, so it ends even if `get` builds a new definition per call. */
-function registryCycle(start: string, registry: ChipRegistry, done: Set<string>): string[] | null {
+/**
+ * The chips on a cycle reachable from the part named `start`, in order, or `null`; keyed by name, so it ends even if `get` builds a new definition per call.
+ * `visit` sees each definition the walk enters, once, with the part names that led to it from `start`.
+ */
+export function registryCycle(start: string, registry: ChipRegistry, done: Set<string>, visit?: (path: string[], def: ChipDefinition) => void): string[] | null {
   const chain: Array<{ name: string; def: ChipDefinition; parts: string[]; next: number }> = []
   const onChain = new Map<string, number>()
   const enter = (name: string): void => {
@@ -172,6 +175,7 @@ function registryCycle(start: string, registry: ChipRegistry, done: Set<string>)
     if (def === undefined) return
     onChain.set(name, chain.length)
     chain.push({ name, def, parts: partNames(def), next: 0 })
+    visit?.(chain.map((link) => link.name), def)
   }
   if (!done.has(start)) enter(start)
   while (chain.length > 0) {

@@ -1,6 +1,7 @@
 import type { ChipRegistry } from '../chips/registry'
 import type { ChipDefinition } from '../chips/types'
-import { compileHDL, subBusOutOfRange, type CompiledEvaluator } from '../hdl/compiler'
+import { compileHDL, registryCycle, subBusOutOfRange, type CompiledEvaluator } from '../hdl/compiler'
+import { parseHDL } from '../hdl/parser'
 import { printPinRef } from '../hdl/printer'
 import type { HDLChip, HDLConnection, HDLSlice } from '../hdl/types'
 import { readSubBus, writeSubBus } from '@/simulation/busOps'
@@ -155,14 +156,51 @@ function lower(doc: CircuitSpec, registry: ChipRegistry, aliases: AliasBits): HD
   }
 }
 
+/** A definition's refusal of its own, without compiling the definitions its parts name. */
+function ownRefusal(def: ChipDefinition, registry: ChipRegistry): string[] {
+  switch (def.implementation.type) {
+    case 'builtin':
+      return []
+    case 'circuit': {
+      const result = compileDoc(def.implementation.spec, registry)
+      return result.success ? [] : result.diagnostics.map((d) => d.message)
+    }
+    case 'hdl': {
+      const parsed = parseHDL(def.implementation.source)
+      if (!parsed.success) return parsed.errors.map((e) => e.message)
+      const result = compileHDL(parsed.chip, registry)
+      return result.success ? [] : result.errors.map((e) => e.message)
+    }
+  }
+}
+
+/** §1.11 rule 2: every definition the parts reach is compiled once, its refusal named by the first chain of parts that reaches it. */
+function partRefusals(doc: CircuitSpec, registry: ChipRegistry): SpecDiagnostic[] {
+  const done = new Set<string>()
+  const found: SpecDiagnostic[] = []
+  for (const part of doc.parts) {
+    registryCycle(part.chip, registry, done, (path, def) => {
+      const chain = [doc.name, ...path].join(' › ')
+      for (const message of ownRefusal(def, registry)) found.push({ code: 'compile', severity: 'error', partId: part.id, message: `${chain}: ${message}` })
+    })
+  }
+  return found
+}
+
 /**
  * A spec document, through its parse result, becomes an evaluator (ADR-0020 §1.5, §1.11).
- * Refuses on any parse error, then on §1.8's checks re-run over the document; never throws.
+ * Refuses on any parse error, on §1.8's checks re-run over the document, then on any part it reaches that does not compile; never throws.
  */
 export function compileSpec(parsed: CompileSpecInput, registry: ChipRegistry): CompileSpecResult {
   const { doc } = parsed
   if (doc === null || parsed.diagnostics.some(isError)) return { success: false, diagnostics: parsed.diagnostics.filter(isError).map(asRefusal) }
+  const compiled = compileDoc(doc, registry)
+  if (!compiled.success) return compiled
+  const refused = partRefusals(doc, registry)
+  return refused.length > 0 ? { success: false, diagnostics: refused } : compiled
+}
 
+function compileDoc(doc: CircuitSpec, registry: ChipRegistry): CompileSpecResult {
   const width = new Map([...doc.ins, ...doc.outs].map((p) => [p.name, p.width]))
   const unknownParts = new Set(doc.parts.filter((p) => !registry.has(p.chip)).map((p) => p.id))
   const doubles = doubleSourced(doc.nets, unknownParts)
