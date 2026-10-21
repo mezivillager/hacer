@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-21T15:54:25.568Z",
+  "generatedAt": "2026-10-21T16:21:23.126Z",
   "head": {
-    "sha": "723ece5ac3620a6db07a08ec05c084700cc556df",
-    "date": "2026-10-21T18:53:11+03:00",
-    "subject": "docs(harness): retro run 2026-10-21, HRN-010-017 proposed over 63 merges"
+    "sha": "247b69a43ef1d5b8e008119b4b7fc1355cb301a5",
+    "date": "2026-10-21T19:20:48+03:00",
+    "subject": "docs(adr): ADR-0020 §1.11 rule 4 records the registry-cycle refusal (#825)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T15:54:25.568Z",
+      "fetchedAt": "2026-10-21T16:21:23.126Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T15:54:25.568Z",
+      "fetchedAt": "2026-10-21T16:21:23.126Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T15:54:25.568Z",
+      "fetchedAt": "2026-10-21T16:21:23.126Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-21T15:54:25.568Z",
+      "fetchedAt": "2026-10-21T16:21:23.126Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-21T15:54:25.568Z",
+      "fetchedAt": "2026-10-21T16:21:23.126Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-21T15:54:25.568Z",
+      "fetchedAt": "2026-10-21T16:21:23.126Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-21T15:54:25.568Z",
+      "fetchedAt": "2026-10-21T16:21:23.126Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-21T15:54:25.568Z",
+      "fetchedAt": "2026-10-21T16:21:23.126Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-21T15:54:25.568Z",
+      "fetchedAt": "2026-10-21T16:21:23.126Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-21T15:54:25.568Z",
+      "fetchedAt": "2026-10-21T16:21:23.126Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-21T15:54:25.568Z",
+      "fetchedAt": "2026-10-21T16:21:23.126Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-21T15:54:25.568Z",
+      "fetchedAt": "2026-10-21T16:21:23.126Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-21T15:54:25.568Z",
+      "fetchedAt": "2026-10-21T16:21:23.126Z",
       "status": "ok"
     }
   },
@@ -80,9 +80,9 @@
         "lane": "feature",
         "slug": "foundation",
         "epicNumber": 318,
-        "open": 31,
-        "ready": 1,
-        "inProgress": 1,
+        "open": 30,
+        "ready": 2,
+        "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 6,
@@ -190,9 +190,9 @@
         },
         "title": "Epic: core — headless core",
         "subIssues": {
-          "completed": 13,
-          "percentCompleted": 61,
-          "total": 21
+          "completed": 14,
+          "percentCompleted": 63,
+          "total": 22
         }
       },
       {
@@ -305,16 +305,16 @@
         "lane": "aux",
         "slug": "upkeep",
         "epicNumber": 146,
-        "open": 19,
-        "ready": 12,
-        "inProgress": 5,
+        "open": 27,
+        "ready": 19,
+        "inProgress": 6,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 18,
+        "agentReady": 26,
         "filedElsewhere": [],
         "next": {
-          "number": 793,
-          "title": "Inbox review: FID-022 · The `nand2tetris` dialect prints one sliced buffer per alias run, not one `Or` per bit"
+          "number": 794,
+          "title": "Inbox review: FID-023 · Amend FID-019: pin the disjoint-bit export gap, and make the import's consumers compile before they print or save"
         },
         "title": "Epic: upkeep — maintenance & documentation",
         "subIssues": {
@@ -418,19 +418,19 @@
         "project": "harness"
       },
       {
-        "number": 793,
-        "title": "Inbox review: FID-022 · The `nand2tetris` dialect prints one sliced buffer per alias run, not one `Or` per bit",
+        "number": 836,
+        "title": "The registry-cycle walk terminates on a registry that returns a fresh definition per get",
+        "project": "foundation"
+      },
+      {
+        "number": 794,
+        "title": "Inbox review: FID-023 · Amend FID-019: pin the disjoint-bit export gap, and make the import's consumers compile before they print or save",
         "project": "upkeep"
       },
       {
         "number": 819,
         "title": "The inbox status grammar takes a note only after a finished status, and the CLI refusal has a test",
         "project": "harness"
-      },
-      {
-        "number": 794,
-        "title": "Inbox review: FID-023 · Amend FID-019: pin the disjoint-bit export gap, and make the import's consumers compile before they print or save",
-        "project": "upkeep"
       },
       {
         "number": 795,
@@ -481,12 +481,53 @@
         "number": 827,
         "title": "Inbox review: FID-025 · The not-connected refusal fires only for a pin no connection names, so a pin bound only out of range gets the reference's one refusal",
         "project": "upkeep"
+      },
+      {
+        "number": 828,
+        "title": "Inbox review: HRN-010 · Each worktree gets its own scratch folder, printed when it is made, and PR bodies go through it",
+        "project": "upkeep"
+      },
+      {
+        "number": 829,
+        "title": "Inbox review: HRN-011 · `backlog.mjs tier <pr>` gives the verifier's tier from the PR's paths, and Mission Control lists a verdict given on a cheaper tier",
+        "project": "upkeep"
+      },
+      {
+        "number": 830,
+        "title": "Inbox review: HRN-012 · `merge-on-green` reports a missing `workflow` token scope before it touches a PR that changes `.github/workflows/`",
+        "project": "upkeep"
+      },
+      {
+        "number": 831,
+        "title": "Inbox review: HRN-013 · `backlog.mjs next` prints each workflow failing on `main`, so a broken release is seen at the next pick",
+        "project": "upkeep"
+      },
+      {
+        "number": 832,
+        "title": "Inbox review: HRN-014 · `run-prs` says when its `--to` is still in the future, so a record's merge count can be reproduced",
+        "project": "upkeep"
+      },
+      {
+        "number": 833,
+        "title": "Inbox review: HRN-015 · Write the coordinator's `risk:2` `agent-ready` practice into the queue-up rule, or stop it (R816)",
+        "project": "upkeep"
+      },
+      {
+        "number": 834,
+        "title": "Inbox review: HRN-016 · The fortnightly process review has not run since 2026-09-26: print when it is due, and give it default reviewers",
+        "project": "upkeep"
+      },
+      {
+        "number": 835,
+        "title": "Inbox review: HRN-017 · Split a rerun query that hits the API's 1,000-run cap, as 2026-10-15 did",
+        "project": "upkeep"
       }
     ],
     "dormant": {
       "dormant": false,
       "agentPrs": [
-        826,
+        838,
+        837,
         514
       ]
     }
@@ -526,8 +567,27 @@
         "reason": null
       },
       {
-        "number": 793,
-        "title": "Inbox review: FID-022 · The `nand2tetris` dialect prints one sliced buffer per alias run, not one `Or` per bit",
+        "number": 836,
+        "title": "The registry-cycle walk terminates on a registry that returns a fresh definition per get",
+        "labels": [
+          "agent-ready",
+          "risk:1",
+          "fidelity",
+          "project:foundation"
+        ],
+        "blocking": [
+          820,
+          821
+        ],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 794,
+        "title": "Inbox review: FID-023 · Amend FID-019: pin the disjoint-bit export gap, and make the import's consumers compile before they print or save",
         "labels": [
           "project:upkeep",
           "agent-ready",
@@ -553,22 +613,6 @@
         "project": "harness",
         "rank": 2,
         "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 794,
-        "title": "Inbox review: FID-023 · Amend FID-019: pin the disjoint-bit export gap, and make the import's consumers compile before they print or save",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
         "pickable": true,
         "reason": null
       },
@@ -719,6 +763,134 @@
       {
         "number": 827,
         "title": "Inbox review: FID-025 · The not-connected refusal fires only for a pin no connection names, so a pin bound only out of range gets the reference's one refusal",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 828,
+        "title": "Inbox review: HRN-010 · Each worktree gets its own scratch folder, printed when it is made, and PR bodies go through it",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 829,
+        "title": "Inbox review: HRN-011 · `backlog.mjs tier <pr>` gives the verifier's tier from the PR's paths, and Mission Control lists a verdict given on a cheaper tier",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 830,
+        "title": "Inbox review: HRN-012 · `merge-on-green` reports a missing `workflow` token scope before it touches a PR that changes `.github/workflows/`",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 831,
+        "title": "Inbox review: HRN-013 · `backlog.mjs next` prints each workflow failing on `main`, so a broken release is seen at the next pick",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 832,
+        "title": "Inbox review: HRN-014 · `run-prs` says when its `--to` is still in the future, so a record's merge count can be reproduced",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 833,
+        "title": "Inbox review: HRN-015 · Write the coordinator's `risk:2` `agent-ready` practice into the queue-up rule, or stop it (R816)",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 834,
+        "title": "Inbox review: HRN-016 · The fortnightly process review has not run since 2026-09-26: print when it is due, and give it default reviewers",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 835,
+        "title": "Inbox review: HRN-017 · Split a rerun query that hits the API's 1,000-run cap, as 2026-10-15 did",
         "labels": [
           "project:upkeep",
           "agent-ready",
@@ -2192,6 +2364,23 @@
         "reason": "claimed"
       },
       {
+        "number": 793,
+        "title": "Inbox review: FID-022 · The `nand2tetris` dialect prints one sliced buffer per alias run, not one `Or` per bit",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 801,
         "title": "polish: an unsaved circuit is lost on reload — autosave is written every 2 s but never restored",
         "labels": [
@@ -2304,28 +2493,7 @@
         "rank": 1,
         "lane": "feature",
         "pickable": false,
-        "reason": "blocked:#821,#811,#816"
-      },
-      {
-        "number": 816,
-        "title": "A part cycle through the registry is refused at compile time, naming its chips, and the walk never throws",
-        "labels": [
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "fidelity",
-          "project:foundation"
-        ],
-        "blocking": [
-          821,
-          820,
-          814
-        ],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "claimed"
+        "reason": "blocked:#821,#811"
       },
       {
         "number": 820,
@@ -2341,7 +2509,7 @@
         "rank": 1,
         "lane": "feature",
         "pickable": false,
-        "reason": "blocked:#811,#816"
+        "reason": "blocked:#836,#811"
       },
       {
         "number": 821,
@@ -2359,7 +2527,7 @@
         "rank": 1,
         "lane": "feature",
         "pickable": false,
-        "reason": "blocked:#816"
+        "reason": "blocked:#836"
       },
       {
         "number": 823,
@@ -2376,26 +2544,12 @@
         "lane": "feature",
         "pickable": false,
         "reason": "blocked:#814"
-      },
-      {
-        "number": 825,
-        "title": "ADR-0020 §1.11 records the registry-cycle refusal as an engine refusal",
-        "labels": [
-          "documentation",
-          "risk:0",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "unshaped"
       }
     ],
     "byProject": {
       "foundation": [
         338,
+        836,
         151,
         184,
         325,
@@ -2421,11 +2575,9 @@
         742,
         773,
         814,
-        816,
         820,
         821,
-        823,
-        825
+        823
       ],
       "harness": [
         257,
@@ -2444,7 +2596,6 @@
         677
       ],
       "upkeep": [
-        793,
         794,
         795,
         796,
@@ -2456,13 +2607,22 @@
         808,
         809,
         827,
+        828,
+        829,
+        830,
+        831,
+        832,
+        833,
+        834,
+        835,
         229,
         256,
         788,
         789,
         790,
         791,
-        792
+        792,
+        793
       ],
       "spine": [
         165,
@@ -2554,22 +2714,46 @@
   "prs": {
     "open": [
       {
-        "number": 826,
-        "title": "feat(hdl): a part cycle through the registry is refused at compile time, naming its chips",
-        "url": "https://github.com/mezivillager/hacer/pull/826",
+        "number": 838,
+        "title": "docs(fidelity): review of PR #826, the registry-cycle refusal; FID-026 proposed",
+        "url": "https://github.com/mezivillager/hacer/pull/838",
         "author": "mezivillager",
         "labels": [
-          "risk:1",
-          "fidelity",
-          "project:foundation"
+          "project:harness",
+          "risk:0",
+          "fidelity"
         ],
-        "headRefName": "feat/816-registry-cycle",
+        "headRefName": "docs/fidelity-review-826",
         "isDraft": false,
-        "createdAt": "2026-10-21T15:45:42Z",
+        "createdAt": "2026-10-21T16:15:11Z",
+        "mergedAt": null,
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (claude-opus-5-5)",
+            "at": "2026-10-21T16:16:55Z",
+            "url": "https://github.com/mezivillager/hacer/pull/838#issuecomment-6320767184"
+          }
+        ]
+      },
+      {
+        "number": 837,
+        "title": "test(hdl): acceptance-parity corpus pins each reader against the web IDE's verdict on 177 HDL shapes",
+        "url": "https://github.com/mezivillager/hacer/pull/837",
+        "author": "mezivillager",
+        "labels": [
+          "project:verify",
+          "risk:1",
+          "fidelity"
+        ],
+        "headRefName": "test/811-acceptance-parity",
+        "isDraft": false,
+        "createdAt": "2026-10-21T16:05:31Z",
         "mergedAt": null,
         "closes": [
-          816,
-          825
+          811
         ],
         "verdicts": []
       },
@@ -2601,6 +2785,34 @@
       }
     ],
     "merged": [
+      {
+        "number": 826,
+        "title": "feat(hdl): a part cycle through the registry is refused at compile time, naming its chips",
+        "url": "https://github.com/mezivillager/hacer/pull/826",
+        "author": "mezivillager",
+        "labels": [
+          "risk:1",
+          "fidelity",
+          "project:foundation"
+        ],
+        "headRefName": "feat/816-registry-cycle",
+        "isDraft": false,
+        "createdAt": "2026-10-21T15:45:42Z",
+        "mergedAt": "2026-10-21T16:20:49Z",
+        "closes": [
+          816,
+          825
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus (claude-opus-5-5)",
+            "at": "2026-10-21T16:00:41Z",
+            "url": "https://github.com/mezivillager/hacer/pull/826#issuecomment-6320423980"
+          }
+        ]
+      },
       {
         "number": 824,
         "title": "docs(harness): retro run 2026-10-21, HRN-010–017 proposed over 63 merges",
@@ -4141,31 +4353,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/700#issuecomment-6180763634"
           }
         ]
-      },
-      {
-        "number": 698,
-        "title": "refactor(gates): BaseGate renders from props alone, no store or gesture state (#373, 1 of 6)",
-        "url": "https://github.com/mezivillager/hacer/pull/698",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:2",
-          "project:foundation"
-        ],
-        "headRefName": "refactor/373-basegate-props",
-        "isDraft": false,
-        "createdAt": "2026-10-14T22:23:21Z",
-        "mergedAt": "2026-10-14T22:48:10Z",
-        "closes": [],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Opus 5.5",
-            "at": "2026-10-14T22:39:18Z",
-            "url": "https://github.com/mezivillager/hacer/pull/698#issuecomment-6180089931"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4334,6 +4521,32 @@
         }
       },
       {
+        "number": 793,
+        "ref": "refs/heads/claim/793",
+        "sha": "723ece5ac3620a6db07a08ec05c084700cc556df",
+        "state": "OPEN",
+        "title": "Inbox review: FID-022 · The `nand2tetris` dialect prints one sliced buffer per alias run, not one `Or` per bit",
+        "url": "https://github.com/mezivillager/hacer/issues/793",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-to-70",
+          "branch": "chore/inbox-fid-022",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-21T16:15:44Z",
+          "url": "https://github.com/mezivillager/hacer/issues/793#issuecomment-6320740032"
+        }
+      },
+      {
         "number": 811,
         "ref": "refs/heads/claim/811",
         "sha": "ff87c57549f3eb7063440f91af1926f8a6926dbe",
@@ -4363,7 +4576,7 @@
         "number": 816,
         "ref": "refs/heads/claim/816",
         "sha": "ff87c57549f3eb7063440f91af1926f8a6926dbe",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "A part cycle through the registry is refused at compile time, naming its chips, and the walk never throws",
         "url": "https://github.com/mezivillager/hacer/issues/816",
         "labels": [
@@ -4373,7 +4586,7 @@
           "fidelity",
           "project:foundation"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -4386,7 +4599,7 @@
         }
       }
     ],
-    "onClosedIssues": 0
+    "onClosedIssues": 1
   },
   "cloudLane": {
     "items": [
@@ -6198,7 +6411,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-14",
-        "merges": 5
+        "merges": 4
       },
       {
         "date": "2026-10-15",
@@ -6214,20 +6427,20 @@
       },
       {
         "date": "2026-10-21",
-        "merges": 4
+        "merges": 5
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-07T15:54:25.568Z",
-      "merged": 66,
+      "since": "2026-10-07T16:21:23.126Z",
+      "merged": 67,
       "openToMergeHours": {
         "median": 0.4,
         "p90": 2.4
       },
       "blockedOnce": {
         "count": 7,
-        "of": 51,
+        "of": 52,
         "prs": [
           700,
           725,
@@ -6240,8 +6453,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 44,
-          "withVerdict": 44,
+          "merged": 45,
+          "withVerdict": 45,
           "without": []
         },
         "nonCode": {
@@ -10339,11 +10552,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "723ece5ac3620a6db07a08ec05c084700cc556df",
+        "sha": "247b69a43ef1d5b8e008119b4b7fc1355cb301a5",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39629730611/job/119324410970",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39633938877/job/119339240426",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -10396,43 +10609,88 @@
         "disagrees": false
       },
       {
-        "pr": 826,
-        "sha": "2a375768d04b6eef01125d53bd7a8fc30fd18b9c",
+        "pr": 837,
+        "sha": "37d8065460f470c98e34fdd4f055513863b56079",
         "check": "pr-hygiene",
         "conclusion": "SUCCESS",
-        "completedAt": "2026-10-21T15:48:13Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39628948751/job/119321566776",
-        "line": "HYGIENE: PASS reviewable=69 test=95 excluded=0 files=2 issue=#816,#825 linked=fixes",
+        "completedAt": "2026-10-21T16:05:50Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39631627784/job/119331062127",
+        "line": "HYGIENE: PASS reviewable=198 test=602 excluded=0 files=2 issue=#811 linked=fixes",
         "verdict": "PASS",
         "fields": {
-          "reviewable": 69,
-          "test": 95,
+          "reviewable": 198,
+          "test": 602,
           "excluded": 0,
           "files": 2,
-          "issue": "#816,#825",
+          "issue": "#811",
           "linked": "fixes"
         },
         "disagrees": false
       },
       {
-        "pr": 826,
-        "sha": "2a375768d04b6eef01125d53bd7a8fc30fd18b9c",
+        "pr": 837,
+        "sha": "37d8065460f470c98e34fdd4f055513863b56079",
         "check": "browser-qa",
         "conclusion": "SUCCESS",
-        "completedAt": "2026-10-21T15:48:16Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39628948179/job/119321563505",
+        "completedAt": "2026-10-21T16:05:51Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39631627161/job/119331056674",
         "line": "BROWSER-QA: skipped (no critical paths)",
         "verdict": "SKIPPED",
         "fields": {},
         "disagrees": false
       },
       {
-        "pr": 826,
-        "sha": "2a375768d04b6eef01125d53bd7a8fc30fd18b9c",
+        "pr": 837,
+        "sha": "37d8065460f470c98e34fdd4f055513863b56079",
         "check": "ci",
         "conclusion": "SUCCESS",
-        "completedAt": "2026-10-21T15:50:32Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39628921831/job/119321472615",
+        "completedAt": "2026-10-21T16:09:14Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39631624303/job/119331047158",
+        "line": "LAYER-RATCHET: 69 known violations (37 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 69,
+          "new": 0
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 838,
+        "sha": "8c7f5d1a7fda73774ba4813c1d3012c96600d736",
+        "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-21T16:15:27Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39633102348/job/119336254684",
+        "line": "HYGIENE: PASS reviewable=115 test=0 excluded=0 files=2 issue=docs-only",
+        "verdict": "PASS",
+        "fields": {
+          "reviewable": 115,
+          "test": 0,
+          "excluded": 0,
+          "files": 2,
+          "issue": "docs-only"
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 838,
+        "sha": "8c7f5d1a7fda73774ba4813c1d3012c96600d736",
+        "check": "browser-qa",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-21T16:15:27Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39633102556/job/119336254043",
+        "line": "BROWSER-QA: skipped (no critical paths)",
+        "verdict": "SKIPPED",
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 838,
+        "sha": "8c7f5d1a7fda73774ba4813c1d3012c96600d736",
+        "check": "ci",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-21T16:17:42Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39633100351/job/119336247159",
         "line": "LAYER-RATCHET: 69 known violations (37 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
         "verdict": "PASS",
         "fields": {
@@ -17879,6 +18137,21 @@
         ]
       },
       {
+        "id": "#816",
+        "kind": "github",
+        "citedBy": [
+          "ADR-0020"
+        ]
+      },
+      {
+        "id": "#206",
+        "kind": "github",
+        "citedBy": [
+          "ADR-0020",
+          "R763"
+        ]
+      },
+      {
         "id": "#722",
         "kind": "github",
         "citedBy": [
@@ -17892,14 +18165,6 @@
         "citedBy": [
           "ADR-0020",
           "R512"
-        ]
-      },
-      {
-        "id": "#206",
-        "kind": "github",
-        "citedBy": [
-          "ADR-0020",
-          "R763"
         ]
       },
       {
