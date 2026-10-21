@@ -6,6 +6,7 @@ import { evaluateChip } from './evaluateChip'
 import { getBuiltinChipRegistry } from './appRegistry'
 import { combineRegistries } from './combineRegistries'
 import * as compilerModule from '../hdl/compiler'
+import { compileSpec } from '../spec/compileSpec'
 import { parseSpec } from '../spec/parseSpec'
 
 const ONE_IN_ONE_OUT = { inputs: [{ name: 'a', width: 1 }], outputs: [{ name: 'out', width: 1 }] }
@@ -103,5 +104,27 @@ describe('evaluateChip', () => {
     expect(evaluateChip(chip, { a: 1 }, combineRegistries(registry))).toEqual({ out: 0 })
     expect(spy).toHaveBeenCalledTimes(1)
     spy.mockRestore()
+  })
+
+  it("refuses an evaluated 'circuit' Outer with a fresh compileSpec's chain once a part below its direct parts stops compiling (#821)", () => {
+    const spec = (source: string, chips: ChipRegistry) => {
+      const result = compileSpec(parseSpec(source, { chips }), chips)
+      if (!result.success) throw new Error(result.diagnostics.map((d) => d.message).join('; '))
+      return result.chip
+    }
+    const base = createChipRegistry()
+    for (const def of getBuiltinChipRegistry().list()) base.register(def)
+    base.register({ name: 'Foo', ...ONE_IN_ONE_OUT, implementation: { type: 'hdl', source: 'CHIP Foo { IN a; OUT out; PARTS: Not(in=a, out=out); }' } })
+    base.register(spec('CHIP Inn { IN x; OUT y; PARTS: Foo(a=x, out=y); }', base))
+    const outer = spec('CHIP Outer { IN a; OUT o; PARTS: Inn(x=a, y=o); }', base)
+    const shadow = createChipRegistry()
+    const view = combineRegistries(shadow, base)
+    expect(evaluateChip(outer, { a: 1 }, view)).toEqual({ o: 0 })
+    shadow.register({ name: 'Foo', inputs: [{ name: 'b', width: 1 }], outputs: [{ name: 'out', width: 1 }], implementation: { type: 'hdl', source: 'CHIP Foo { IN b; OUT out; PARTS: Not(in=b, out=out); }' } })
+    if (outer.implementation.type !== 'circuit') throw new Error('Outer is not a circuit chip')
+    const fresh = compileSpec({ doc: outer.implementation.spec, diagnostics: [] }, view)
+    const messages = fresh.success ? [] : fresh.diagnostics.map((d) => d.message)
+    expect(messages).toContain('Outer › Inn: Part "Foo" has no pin "a"')
+    expect(() => evaluateChip(outer, { a: 1 }, view)).toThrow(`evaluateChip: chip "Outer" failed to compile: ${messages.join('; ')}`)
   })
 })
