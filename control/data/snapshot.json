@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-21T21:38:10.968Z",
+  "generatedAt": "2026-10-21T21:50:23.795Z",
   "head": {
-    "sha": "0a3db8f50dd1b817c264c8a54dad6b3c83c7dfe2",
-    "date": "2026-10-22T00:37:06+03:00",
-    "subject": "docs(fidelity): review of PR #869, strict acceptance on the grading path"
+    "sha": "7c80ac1d7c479d05b66787975882f1dc00ea4efd",
+    "date": "2026-10-22T00:49:35+03:00",
+    "subject": "docs(harness): role files name their path base; retro fallback and README name the link (#871)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T21:38:10.968Z",
+      "fetchedAt": "2026-10-21T21:50:23.795Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T21:38:10.968Z",
+      "fetchedAt": "2026-10-21T21:50:23.795Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T21:38:10.968Z",
+      "fetchedAt": "2026-10-21T21:50:23.795Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-21T21:38:10.968Z",
+      "fetchedAt": "2026-10-21T21:50:23.795Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-21T21:38:10.968Z",
+      "fetchedAt": "2026-10-21T21:50:23.795Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-21T21:38:10.968Z",
+      "fetchedAt": "2026-10-21T21:50:23.795Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-21T21:38:10.968Z",
+      "fetchedAt": "2026-10-21T21:50:23.795Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-21T21:38:10.968Z",
+      "fetchedAt": "2026-10-21T21:50:23.795Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-21T21:38:10.968Z",
+      "fetchedAt": "2026-10-21T21:50:23.795Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-21T21:38:10.968Z",
+      "fetchedAt": "2026-10-21T21:50:23.795Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-21T21:38:10.968Z",
+      "fetchedAt": "2026-10-21T21:50:23.795Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-21T21:38:10.968Z",
+      "fetchedAt": "2026-10-21T21:50:23.795Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-21T21:38:10.968Z",
+      "fetchedAt": "2026-10-21T21:50:23.795Z",
       "status": "ok"
     }
   },
@@ -103,12 +103,12 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 17,
+        "open": 16,
         "ready": 2,
         "inProgress": 1,
         "needsHuman": 2,
         "staleClaims": [],
-        "agentReady": 4,
+        "agentReady": 3,
         "filedElsewhere": [
           151,
           339
@@ -305,16 +305,16 @@
         "lane": "aux",
         "slug": "upkeep",
         "epicNumber": 146,
-        "open": 32,
+        "open": 33,
         "ready": 17,
-        "inProgress": 13,
+        "inProgress": 14,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 31,
+        "agentReady": 32,
         "filedElsewhere": [],
         "next": {
-          "number": 807,
-          "title": "Inbox review: PRD-001 · Decide what HACER is on a phone: a read-only viewer whose panels open as sheets, or desktop-only with a notice"
+          "number": 808,
+          "title": "Inbox review: PRD-002 · First-run guidance for the declared app: teach spec → render → pins → test, and remember the dismissal"
         },
         "title": "Epic: upkeep — maintenance & documentation",
         "subIssues": {
@@ -413,8 +413,8 @@
         "project": "foundation"
       },
       {
-        "number": 807,
-        "title": "Inbox review: PRD-001 · Decide what HACER is on a phone: a read-only viewer whose panels open as sheets, or desktop-only with a notice",
+        "number": 808,
+        "title": "Inbox review: PRD-002 · First-run guidance for the declared app: teach spec → render → pins → test, and remember the dismissal",
         "project": "upkeep"
       },
       {
@@ -423,19 +423,14 @@
         "project": "harness"
       },
       {
-        "number": 808,
-        "title": "Inbox review: PRD-002 · First-run guidance for the declared app: teach spec → render → pins → test, and remember the dismissal",
-        "project": "upkeep"
-      },
-      {
-        "number": 861,
-        "title": "The mission-control vitest-collects CLI test survives a loaded local run",
-        "project": "harness"
-      },
-      {
         "number": 809,
         "title": "Inbox review: PRD-003 · Add the first review's product criteria to N.11's shell: every control named, one icon per job, destructive commands undoable, no placeholders",
         "project": "upkeep"
+      },
+      {
+        "number": 873,
+        "title": "Retro cadence: due after each run's close record lands or 7 days on, printed by `backlog.mjs ready` and `next`",
+        "project": "harness"
       },
       {
         "number": 827,
@@ -506,6 +501,11 @@
         "number": 867,
         "title": "Inbox review: FID-030 · The combinational-cycle refusal carries a line, as the reference's `Looping wire` and `Circular pin dependency` do",
         "project": "upkeep"
+      },
+      {
+        "number": 874,
+        "title": "Inbox review: FID-031 · Grading names the reference's first cause when an earlier part or wire has a per-part cause the check does not model",
+        "project": "upkeep"
       }
     ],
     "dormant": {
@@ -533,8 +533,8 @@
         "reason": null
       },
       {
-        "number": 807,
-        "title": "Inbox review: PRD-001 · Decide what HACER is on a phone: a read-only viewer whose panels open as sheets, or desktop-only with a notice",
+        "number": 808,
+        "title": "Inbox review: PRD-002 · First-run guidance for the declared app: teach spec → render → pins → test, and remember the dismissal",
         "labels": [
           "project:upkeep",
           "agent-ready",
@@ -566,37 +566,6 @@
         "reason": null
       },
       {
-        "number": 808,
-        "title": "Inbox review: PRD-002 · First-run guidance for the declared app: teach spec → render → pins → test, and remember the dismissal",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 861,
-        "title": "The mission-control vitest-collects CLI test survives a loaded local run",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:0"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
         "number": 809,
         "title": "Inbox review: PRD-003 · Add the first review's product criteria to N.11's shell: every control named, one icon per job, destructive commands undoable, no placeholders",
         "labels": [
@@ -609,6 +578,21 @@
         "project": "upkeep",
         "rank": 11,
         "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 873,
+        "title": "Retro cadence: due after each run's close record lands or 7 days on, printed by `backlog.mjs ready` and `next`",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:1"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
         "pickable": true,
         "reason": null
       },
@@ -823,6 +807,22 @@
       {
         "number": 867,
         "title": "Inbox review: FID-030 · The combinational-cycle refusal carries a line, as the reference's `Looping wire` and `Circular pin dependency` do",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 874,
+        "title": "Inbox review: FID-031 · Grading names the reference's first cause when an earlier part or wire has a per-part cause the check does not model",
         "labels": [
           "project:upkeep",
           "agent-ready",
@@ -2509,6 +2509,39 @@
         "reason": "on-request"
       },
       {
+        "number": 807,
+        "title": "Inbox review: PRD-001 · Decide what HACER is on a phone: a read-only viewer whose panels open as sheets, or desktop-only with a notice",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
+        "number": 861,
+        "title": "The mission-control vitest-collects CLI test survives a loaded local run",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:0"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 868,
         "title": "`testChip` throws on a chip the registry refuses to register (`IN a; OUT a;`) instead of returning an error report",
         "labels": [
@@ -2538,39 +2571,6 @@
         "lane": "process",
         "pickable": false,
         "reason": "needs-human"
-      },
-      {
-        "number": 871,
-        "title": "Role files name the hacer checkout as their path base, and the retro fallback names the workspace link",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:0"
-        ],
-        "blocking": [
-          873
-        ],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
-        "number": 873,
-        "title": "Retro cadence: due after each run's close record lands or 7 days on, printed by `backlog.mjs ready` and `next`",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:1"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": false,
-        "reason": "blocked:#871"
       }
     ],
     "byProject": {
@@ -2603,7 +2603,6 @@
         868
       ],
       "upkeep": [
-        807,
         808,
         809,
         827,
@@ -2620,6 +2619,7 @@
         849,
         859,
         867,
+        874,
         229,
         256,
         788,
@@ -2634,11 +2634,12 @@
         797,
         798,
         799,
-        800
+        800,
+        807
       ],
       "harness": [
         257,
-        861,
+        873,
         154,
         156,
         270,
@@ -2651,9 +2652,8 @@
         550,
         607,
         677,
-        870,
-        871,
-        873
+        861,
+        870
       ],
       "spine": [
         165,
@@ -2771,6 +2771,32 @@
       }
     ],
     "merged": [
+      {
+        "number": 875,
+        "title": "docs(harness): role files name their path base; retro fallback and README name the workspace link",
+        "url": "https://github.com/mezivillager/hacer/pull/875",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/871-role-path-base",
+        "isDraft": false,
+        "createdAt": "2026-10-21T21:39:07Z",
+        "mergedAt": "2026-10-21T21:49:36Z",
+        "closes": [
+          871
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Sonnet (claude-sonnet-5-5)",
+            "at": "2026-10-21T21:46:48Z",
+            "url": "https://github.com/mezivillager/hacer/pull/875#issuecomment-6327270038"
+          }
+        ]
+      },
       {
         "number": 872,
         "title": "docs(fidelity): review of PR #869, strict acceptance on the grading path",
@@ -4286,33 +4312,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/735#issuecomment-6186427427"
           }
         ]
-      },
-      {
-        "number": 733,
-        "title": "test(store): imported-document junction fixtures load through importCircuitJSON",
-        "url": "https://github.com/mezivillager/hacer/pull/733",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:1"
-        ],
-        "headRefName": "test/717-import-fixtures",
-        "isDraft": false,
-        "createdAt": "2026-10-15T06:19:48Z",
-        "mergedAt": "2026-10-15T06:32:10Z",
-        "closes": [
-          717
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Sonnet 5.5",
-            "at": "2026-10-15T06:31:34Z",
-            "url": "https://github.com/mezivillager/hacer/pull/733#issuecomment-6186014913"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4689,6 +4688,57 @@
         }
       },
       {
+        "number": 807,
+        "ref": "refs/heads/claim/807",
+        "sha": "0a3db8f50dd1b817c264c8a54dad6b3c83c7dfe2",
+        "state": "OPEN",
+        "title": "Inbox review: PRD-001 · Decide what HACER is on a phone: a read-only viewer whose panels open as sheets, or desktop-only with a notice",
+        "url": "https://github.com/mezivillager/hacer/issues/807",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-to-70",
+          "branch": "chore/inbox-prd-001",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-21T21:46:50Z",
+          "url": "https://github.com/mezivillager/hacer/issues/807#issuecomment-6327270805"
+        }
+      },
+      {
+        "number": 861,
+        "ref": "refs/heads/claim/861",
+        "sha": "0a3db8f50dd1b817c264c8a54dad6b3c83c7dfe2",
+        "state": "OPEN",
+        "title": "The mission-control vitest-collects CLI test survives a loaded local run",
+        "url": "https://github.com/mezivillager/hacer/issues/861",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:0"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-to-70",
+          "branch": "chore/861-collects-test-limit",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-21T21:49:32Z",
+          "url": "https://github.com/mezivillager/hacer/issues/861#issuecomment-6327316203"
+        }
+      },
+      {
         "number": 868,
         "ref": "refs/heads/claim/868",
         "sha": "0a3db8f50dd1b817c264c8a54dad6b3c83c7dfe2",
@@ -4718,7 +4768,7 @@
         "number": 871,
         "ref": "refs/heads/claim/871",
         "sha": "71013df338d7ba3c2196aa0a1898bbce00d3dbf2",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "Role files name the hacer checkout as their path base, and the retro fallback names the workspace link",
         "url": "https://github.com/mezivillager/hacer/issues/871",
         "labels": [
@@ -4727,7 +4777,7 @@
           "in-progress",
           "risk:0"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -4740,7 +4790,7 @@
         }
       }
     ],
-    "onClosedIssues": 0
+    "onClosedIssues": 1
   },
   "cloudLane": {
     "items": [
@@ -6597,7 +6647,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-15",
-        "merges": 15
+        "merges": 14
       },
       {
         "date": "2026-10-16",
@@ -6609,20 +6659,20 @@
       },
       {
         "date": "2026-10-21",
-        "merges": 24
+        "merges": 25
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-07T21:38:10.968Z",
-      "merged": 86,
+      "since": "2026-10-07T21:50:23.795Z",
+      "merged": 87,
       "openToMergeHours": {
         "median": 0.4,
         "p90": 1.9
       },
       "blockedOnce": {
         "count": 7,
-        "of": 71,
+        "of": 72,
         "prs": [
           700,
           725,
@@ -6635,8 +6685,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 56,
-          "withVerdict": 56,
+          "merged": 57,
+          "withVerdict": 57,
           "without": []
         },
         "nonCode": {
@@ -10746,11 +10796,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "0a3db8f50dd1b817c264c8a54dad6b3c83c7dfe2",
+        "sha": "7c80ac1d7c479d05b66787975882f1dc00ea4efd",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39680250674/job/119500552148",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39681869188/job/119506100641",
         "line": null,
         "verdict": null,
         "fields": {},
