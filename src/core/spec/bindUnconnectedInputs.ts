@@ -12,8 +12,8 @@ export interface BindUnconnectedInputsResult {
 }
 
 /**
- * Binds every input pin of a registered part that no net sinks at any bit to the net the constant false drives,
- * which is how the nand2tetris simulator reads it. `bound` lists those pins in part order, for a caller to show.
+ * Binds every input pin of a registered part that no net sink names (the pins compileHDL calls not connected) to the net
+ * the constant false drives, which is how the nand2tetris simulator reads it. `bound` lists those pins in part order, for a caller to show.
  */
 export function bindUnconnectedInputs(doc: CircuitSpec, registry: ChipRegistry): BindUnconnectedInputsResult {
   const sunk = new Set(doc.nets.flatMap((net) => net.sinks.flatMap((s) => (s.kind === 'part-pin' ? [`${s.partId}:${s.pin}`] : []))))

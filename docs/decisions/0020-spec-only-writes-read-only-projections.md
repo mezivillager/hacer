@@ -1,7 +1,7 @@
 # 0020. Spec-only writes, read-only projections
 
 - **Status:** Accepted — the fresh-context adversarial review [#359](https://github.com/mezivillager/hacer/issues/359) required by #327 returned `sound with corrections`, and the second pass over the four post-review deltas returned `accept with corrections` (both on [#358](https://github.com/mezivillager/hacer/pull/358), 2026-09-23). Both sets of corrections are applied below — the second pass's seven under "What the second pass changed" — and no further review round is required. **Amended 2026-09-24** by the spike this ADR scheduled for 1.5/1.6 ([#372](https://github.com/mezivillager/hacer/issues/372)), which ran, found the mechanism 1.5 describes does not work, and replaced it — "What the spike changed". The status does **not** move: the spine, the review's acceptance and every decision stand, and correcting a mechanism is what a scheduled spike is for.
-- **Date:** 2026-09-23 · mechanism amended 2026-09-24 ([#372](https://github.com/mezivillager/hacer/issues/372)) · §7.1 and §9 amended 2026-09-29 ([#598](https://github.com/mezivillager/hacer/issues/598)) · §1.10 added 2026-10-15 ([#374](https://github.com/mezivillager/hacer/issues/374)) · §1.11 added 2026-10-15 ([#378](https://github.com/mezivillager/hacer/issues/378)) · §1.1 and §1.11.5 amended 2026-10-21 ([#813](https://github.com/mezivillager/hacer/issues/813)) · §1, §1.10 and the migration policy amended 2026-10-21 ([#814](https://github.com/mezivillager/hacer/issues/814)) · §1.10 item 10 amended 2026-10-21 ([#844](https://github.com/mezivillager/hacer/issues/844)) · §1.11.5 amended again 2026-10-21 ([#840](https://github.com/mezivillager/hacer/issues/840))
+- **Date:** 2026-09-23 · mechanism amended 2026-09-24 ([#372](https://github.com/mezivillager/hacer/issues/372)) · §7.1 and §9 amended 2026-09-29 ([#598](https://github.com/mezivillager/hacer/issues/598)) · §1.10 added 2026-10-15 ([#374](https://github.com/mezivillager/hacer/issues/374)) · §1.11 added 2026-10-15 ([#378](https://github.com/mezivillager/hacer/issues/378)) · §1.1 and §1.11.5 amended 2026-10-21 ([#813](https://github.com/mezivillager/hacer/issues/813)) · §1, §1.10 and the migration policy amended 2026-10-21 ([#814](https://github.com/mezivillager/hacer/issues/814)) · §1.10 item 10 amended 2026-10-21 ([#844](https://github.com/mezivillager/hacer/issues/844)) · §1.11.5 amended again 2026-10-21 ([#840](https://github.com/mezivillager/hacer/issues/840)) · §1.1 amended again 2026-10-22 ([#882](https://github.com/mezivillager/hacer/issues/882))
 - **Amended by:** R769, R817, R825, R826, R836, R837
 - **Amends:** ADR-0008 §6, ADR-0009
 - **Supersedes:** ADR-0007
@@ -277,9 +277,12 @@ only to evaluate, and its failure is a state of the run panel, never of the draw
 C6 (`Nand(a=a); Nand();`) parses and the compile rejects, exactly as intended.
 
 *The unconnected-input refusal is a decision, not an inheritance (amended 2026-10-21,
-[#813](https://github.com/mezivillager/hacer/issues/813)).* A part input that no binding lands on, at
-any bit, is a forgotten wire, so `compileHDL` refuses it (`src/core/hdl/compiler.ts`). A pin bound in
-pieces is not evidence of one, and its unbound bits read 0 (R338).
+[#813](https://github.com/mezivillager/hacer/issues/813); 2026-10-22,
+[#882](https://github.com/mezivillager/hacer/issues/882)).* A part input pin that no connection names
+is a forgotten wire, so `compileHDL` refuses it (`src/core/hdl/compiler.ts`). A pin bound in pieces is
+not evidence of one, and its unbound bits read 0 (R338). A pin named only by out-of-range bindings,
+such as `Not16(in[16]=a, out=o)`, gets the range refusal alone, one per binding: it is not
+unconnected, and `bindUnconnectedInputs` does not bind it to `false`.
 - **Rejected: the reference's behaviour,** which accepts the pin and reads it as 0. The nand2tetris
   simulator has no connectedness pass, so there a forgotten wire evaluates silently.
 - **The refusal names the divergence:** `Part "Nand" input pin "b" is not connected: the nand2tetris
