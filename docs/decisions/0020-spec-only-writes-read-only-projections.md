@@ -1,7 +1,7 @@
 # 0020. Spec-only writes, read-only projections
 
 - **Status:** Accepted — the fresh-context adversarial review [#359](https://github.com/mezivillager/hacer/issues/359) required by #327 returned `sound with corrections`, and the second pass over the four post-review deltas returned `accept with corrections` (both on [#358](https://github.com/mezivillager/hacer/pull/358), 2026-09-23). Both sets of corrections are applied below — the second pass's seven under "What the second pass changed" — and no further review round is required. **Amended 2026-09-24** by the spike this ADR scheduled for 1.5/1.6 ([#372](https://github.com/mezivillager/hacer/issues/372)), which ran, found the mechanism 1.5 describes does not work, and replaced it — "What the spike changed". The status does **not** move: the spine, the review's acceptance and every decision stand, and correcting a mechanism is what a scheduled spike is for.
-- **Date:** 2026-09-23 · mechanism amended 2026-09-24 ([#372](https://github.com/mezivillager/hacer/issues/372)) · §7.1 and §9 amended 2026-09-29 ([#598](https://github.com/mezivillager/hacer/issues/598)) · §1.10 added 2026-10-15 ([#374](https://github.com/mezivillager/hacer/issues/374)) · §1.11 added 2026-10-15 ([#378](https://github.com/mezivillager/hacer/issues/378))
+- **Date:** 2026-09-23 · mechanism amended 2026-09-24 ([#372](https://github.com/mezivillager/hacer/issues/372)) · §7.1 and §9 amended 2026-09-29 ([#598](https://github.com/mezivillager/hacer/issues/598)) · §1.10 added 2026-10-15 ([#374](https://github.com/mezivillager/hacer/issues/374)) · §1.11 added 2026-10-15 ([#378](https://github.com/mezivillager/hacer/issues/378)) · §1.1 and §1.11.5 amended 2026-10-21 ([#813](https://github.com/mezivillager/hacer/issues/813))
 - **Amended by:** R769, R817, R825, R826, R836, R837
 - **Amends:** ADR-0008 §6, ADR-0009
 - **Supersedes:** ADR-0007
@@ -269,6 +269,19 @@ diagnostics; `describeScene` carries those diagnostics attached to the ids they 
 unfinished circuit renders *with its errors visible* rather than not at all. `compileSpec` is called
 only to evaluate, and its failure is a state of the run panel, never of the drawing. Measured: case
 C6 (`Nand(a=a); Nand();`) parses and the compile rejects, exactly as intended.
+
+*The unconnected-input refusal is a decision, not an inheritance (amended 2026-10-21,
+[#813](https://github.com/mezivillager/hacer/issues/813)).* A part input that no binding lands on, at
+any bit, is a forgotten wire, so `compileHDL` refuses it (`src/core/hdl/compiler.ts`). A pin bound in
+pieces is not evidence of one, and its unbound bits read 0 (R338).
+- **Rejected: the reference's behaviour,** which accepts the pin and reads it as 0. The nand2tetris
+  simulator has no connectedness pass, so there a forgotten wire evaluates silently.
+- **The refusal names the divergence:** `Part "Nand" input pin "b" is not connected: the nand2tetris
+  simulator reads it as 0; bind b=false to do the same`. The importer's `unconnected-input` note says
+  the same.
+- **The explicit way to get the reference's reading is `bindUnconnectedInputs`**
+  (`src/core/spec/bindUnconnectedInputs.ts`). It binds every such pin to `false` and returns the pins
+  it bound, so a caller shows them instead of hiding a forgotten wire.
 
 **1.2 Bus splitters and joiners dissolve into slices; `BusComponent` leaves the document.**
 ADR-0009 made them first-class entities with a `'bus'` wire endpoint. In the spec they are slice
@@ -713,8 +726,8 @@ and these rules are pinned by `src/core/spec/compileSpec.test.ts`,
      says `Cannot write to input pin`.
    - a chip that names itself as a part is refused. The reference says
      `Cannot use chip X to implement itself`. Registration is what makes it reachable.
-5. **Divergences from the reference, inherited rather than fixed:**
-   - An unconnected part input is refused, where the reference reads 0. That is §1.1's rule.
+5. **Divergences from the reference, inherited rather than fixed.** The refusal of an unconnected
+   part input is not among them: §1.1 decides it.
    - `IN` and `OUT` lists are required. That is the parser's rule. A document with no IN compiles at
      top level but cannot be registered (`validateChipDefinition`).
    - A bit nothing drives reads 0 in the engine, silently
