@@ -76,3 +76,24 @@ describe('compileSpec — registration and nesting', () => {
     expect(() => evaluateChip(self, { a: 1 }, fresh)).toThrow('Chip "P" cannot use itself as a part')
   })
 })
+
+describe('compileSpec — a part cycle through the registry (#816)', () => {
+  const A_FROM_B = 'CHIP A { IN a; OUT out; PARTS: B(a=a, out=out); }'
+  const B_FROM_A = 'CHIP B { IN a; OUT out; PARTS: A(a=a, out=out); }'
+  const refused = { success: false, diagnostics: [{ code: 'compile', severity: 'error', message: 'Chip "A" uses itself through "B"' }] }
+
+  it("refuses two 'circuit' chips that use each other, naming both", () => {
+    const registry = withBuiltins()
+    registry.register(specChip(A_FROM_B, register(withBuiltins(), 'CHIP B { IN a; OUT out; PARTS: wire out = a; }')))
+    register(registry, B_FROM_A)
+    expect(registry.get('B')?.implementation.type).toBe('circuit')
+    expect(compileSpec(parseSpec(A_FROM_B, { chips: registry }), registry)).toEqual(refused)
+  })
+
+  it("refuses a 'circuit' A whose 'hdl' part B uses A, naming both", () => {
+    const registry = withBuiltins()
+    registry.register({ name: 'B', inputs: [{ name: 'a', width: 1 }], outputs: [{ name: 'out', width: 1 }], implementation: { type: 'hdl', source: B_FROM_A } })
+    register(registry, A_FROM_B)
+    expect(compileSpec(parseSpec(A_FROM_B, { chips: registry }), registry)).toEqual(refused)
+  })
+})

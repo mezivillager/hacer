@@ -42,9 +42,13 @@ describe('evaluateChip', () => {
   })
 
   it('enforces the recursion depth guard', () => {
-    registry.register({ name: 'A', ...ONE_IN_ONE_OUT, implementation: { type: 'hdl', source: 'CHIP A { IN a; OUT out; PARTS: B(a=a, out=out); }' } })
-    registry.register({ name: 'B', ...ONE_IN_ONE_OUT, implementation: { type: 'hdl', source: 'CHIP B { IN a; OUT out; PARTS: A(a=a, out=out); }' } })
-    expect(() => evaluateChip(registry.get('A')!, { a: 1 }, registry, { maxDepth: 10 })).toThrow(/depth/i)
+    const LAST = 11
+    for (let i = 0; i <= LAST; i++) {
+      const part = i === LAST ? 'Nand(a=a, b=a, out=out);' : `C${i + 1}(a=a, out=out);`
+      registry.register({ name: `C${i}`, ...ONE_IN_ONE_OUT, implementation: { type: 'hdl', source: `CHIP C${i} { IN a; OUT out; PARTS: ${part} }` } })
+    }
+    expect(evaluateChip(registry.get('C0')!, { a: 1 }, registry, { maxDepth: LAST + 1 })).toEqual({ out: 0 })
+    expect(() => evaluateChip(registry.get('C0')!, { a: 1 }, registry, { maxDepth: 10 })).toThrow(/depth/i)
   })
 
   it('compiles an hdl chip once and reuses the cached evaluator', () => {
