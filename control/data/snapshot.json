@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-21T18:47:36.615Z",
+  "generatedAt": "2026-10-21T18:48:22.127Z",
   "head": {
     "sha": "55c1a489136cd71399923680c49f9f34a197abad",
     "date": "2026-10-21T21:46:34+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T18:47:36.615Z",
+      "fetchedAt": "2026-10-21T18:48:22.127Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T18:47:36.615Z",
+      "fetchedAt": "2026-10-21T18:48:22.127Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T18:47:36.615Z",
+      "fetchedAt": "2026-10-21T18:48:22.127Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-21T18:47:36.615Z",
+      "fetchedAt": "2026-10-21T18:48:22.127Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-21T18:47:36.615Z",
+      "fetchedAt": "2026-10-21T18:48:22.127Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-21T18:47:36.615Z",
+      "fetchedAt": "2026-10-21T18:48:22.127Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-21T18:47:36.615Z",
+      "fetchedAt": "2026-10-21T18:48:22.127Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-21T18:47:36.615Z",
+      "fetchedAt": "2026-10-21T18:48:22.127Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-21T18:47:36.615Z",
+      "fetchedAt": "2026-10-21T18:48:22.127Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-21T18:47:36.615Z",
+      "fetchedAt": "2026-10-21T18:48:22.127Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-21T18:47:36.615Z",
+      "fetchedAt": "2026-10-21T18:48:22.127Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-21T18:47:36.615Z",
+      "fetchedAt": "2026-10-21T18:48:22.127Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-21T18:47:36.615Z",
+      "fetchedAt": "2026-10-21T18:48:22.127Z",
       "status": "ok"
     }
   },
@@ -4700,34 +4700,9 @@
           "at": "2026-10-21T18:05:13Z",
           "url": "https://github.com/mezivillager/hacer/issues/814#issuecomment-6323016813"
         }
-      },
-      {
-        "number": 850,
-        "ref": "refs/heads/claim/850",
-        "sha": "af0f9399ef50feddac782896f0171551980772fd",
-        "state": "CLOSED",
-        "title": "Tokens per merged PR in every session record; owner minutes stay unmeasured beside a needs-human count",
-        "url": "https://github.com/mezivillager/hacer/issues/850",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:0"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-to-70",
-          "branch": "docs/850-tokens-per-merge",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-21T18:30:52Z",
-          "url": "https://github.com/mezivillager/hacer/issues/850#issuecomment-6323527360"
-        }
       }
     ],
-    "onClosedIssues": 1
+    "onClosedIssues": 0
   },
   "cloudLane": {
     "items": [
@@ -6571,7 +6546,7 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-07T18:47:36.615Z",
+      "since": "2026-10-07T18:48:22.127Z",
       "merged": 75,
       "openToMergeHours": {
         "median": 0.4,
