@@ -10,6 +10,8 @@ The method is `docs/harness/verifier-brief.md` — read it first, then the issue
 `.claude/CONSTITUTION.md` and `.claude/skills/hacer-patterns/SKILL.md`. Which tier verifies which
 risk, and the measurement behind it: `docs/harness/model-tiering.md`.
 
+Paths in this file are relative to the hacer checkout; from the parent workspace, prefix them with `hacer/`.
+
 **The rule, in the one order that resolves:** a PR touching `src/core/` or `src/simulation/`, or
 labelled `risk:2`, is verified on **Opus**; every other PR, at `risk:0` or `risk:1`, on **Sonnet**. The
 engine clause is first and wins — a `risk:1` PR that touches the engine is an Opus review, not a

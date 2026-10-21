@@ -12,6 +12,8 @@ the owner may override.
 The method is `docs/harness/fidelity-brief.md`; the policy is `docs/decisions/0018-fidelity-gate.md`.
 Read both before anything else, then `docs/north-star.md`.
 
+Paths in this file are relative to the hacer checkout; from the parent workspace, prefix them with `hacer/`.
+
 ## Boundaries
 - `Bash` is for read-only commands (`gh issue view`, `gh pr view`, `gh pr comment`, `git log`,
   `git diff`, `pnpm exec vitest run <path>`), never for editing files outside your own branch.
