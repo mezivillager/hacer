@@ -601,7 +601,7 @@ describe('compileHDL — a part input pin bit may be bound only once (#367)', ()
     expect(r.evaluate({ lo: 0x34, hi: 0x12 }, ctx)).toEqual({ out: ~0x1234 & 0xffff })
   })
 
-  // ── "not connected" asks about bits, not about names ─────────────────────────────────────────
+  // ── "not connected" asks whether any connection names the pin ────────────────────────────────
 
   it('accepts a partially bound input pin — the bits nothing binds read 0', () => {
     // Since #357 a pin may be bound in pieces, so an unbound *bit* is no longer evidence of a
@@ -616,18 +616,12 @@ describe('compileHDL — a part input pin bit may be bound only once (#367)', ()
     expect(r.evaluate({ lo: 0xff }, ctx)).toEqual({ out: 0xff00 })
   })
 
-  it('reports a pin whose only binding is out of range as both out of range and unbound', () => {
-    // A cascade, and both halves are true: `in[16]` names no bit of a 16-bit pin, so `in` really
-    // does end up with nothing bound. Pinned because the second message is new — before the
-    // coverage check, naming the pin at all was enough to satisfy the connectedness rule.
+  it('reports a pin whose only binding is out of range as out of range, and not as unconnected', () => {
+    // `in[16]` names the pin, so `bindUnconnectedInputs` binds nothing, and the advice `bind in=false`
+    // would only add a second binding beside it. The range is the one mistake, as the reference says.
     const r = compile('CHIP D { IN a; OUT out[16]; PARTS: Not16(in[16]=a, out=out); }')
     expect(r.success).toBe(false)
-    if (!r.success) {
-      expect(r.errors.map((e) => e.message)).toEqual([
-        'Line 1: Part "Not16" pin "in[16]" is out of range; "in" has width 16',
-        'Line 1: Part "Not16" input pin "in" is not connected: the nand2tetris simulator reads it as 0; bind in=false to do the same',
-      ])
-    }
+    if (!r.success) expect(r.errors.map((e) => e.message)).toEqual(['Line 1: Part "Not16" pin "in[16]" is out of range; "in" has width 16'])
   })
 
   it('still rejects an input pin with no bits bound at all', () => {
@@ -1127,10 +1121,7 @@ describe("compileHDL — the reference's self-reference sentence, and the line o
   it.each([
     ['an unknown part', chip('a', 'o', '  Foo(in=a, out=o);'), [[5, 'Line 5: Unknown chip-part: "Foo"']]],
     ['a pin the part does not have', chip('x', 'y', '  Nand(a=x, b=x, c=x, out=y);'), [[5, 'Line 5: Part "Nand" has no pin "c"']]],
-    ['a part-pin slice past its pin, and the pin left unbound', chip('a', 'out[16]', '  Not16(in[16]=a, out=out);'), [
-      [5, 'Line 5: Part "Not16" pin "in[16]" is out of range; "in" has width 16'],
-      [5, 'Line 5: Part "Not16" input pin "in" is not connected: the nand2tetris simulator reads it as 0; bind in=false to do the same'],
-    ]],
+    ['a part-pin slice past its pin', chip('a', 'out[16]', '  Not16(in[16]=a, out=out);'), [[5, 'Line 5: Part "Not16" pin "in[16]" is out of range; "in" has width 16']]],
     ['a width mismatch', 'CHIP C {\n  IN a[16];\n  OUT o;\n\n  PARTS:\n  Not(in=a, out=o);\n}', [[6, 'Line 6: Part "Not" pin "in" width 1 != signal "a" width 16']]],
     ['an input pin bound twice', chip('a, b', 'o', '  Not(in=a, in=b, out=o);'), [[5, 'Line 5: Part "Not" pin "in" bit 0 is bound by more than one connection']]],
     ['an output bound to a literal', chip('a', 'out', '  Not(in=a, out=true);\n  And(a=a, b=true, out=out);'), [[5, 'Line 5: Part "Not" output "out" cannot connect to literal "true"']]],
