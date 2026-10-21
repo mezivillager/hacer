@@ -3,6 +3,8 @@ import corpusText from '../../../conformance/acceptance/hdl-shapes.json?raw'
 import { getBuiltinChipRegistry } from '../chips/appRegistry'
 import { compileSpec } from '../spec/compileSpec'
 import { parseSpec } from '../spec/parseSpec'
+import { gradingRefusal } from '../testing/gradingRefusal'
+import { testChip } from '../testing/testChip'
 import { compileHDL } from './compiler'
 import { parseHDL } from './parser'
 
@@ -22,40 +24,47 @@ interface Cells {
   compileHDL: readonly string[] | null | 'unparsed'
   parseSpec: { doc: boolean; errors: readonly string[] }
   compileSpec: readonly string[] | null
+  /** `hacer test`'s one error: its grading check's refusal, else compileHDL's errors joined as a report joins them. */
+  grading: readonly [string] | null | 'unparsed'
 }
 
 type Reader = keyof Cells
 // intended: a decision keeps it. inherited: a record names it and nothing decides it. open: a record proposes to change it.
 type Kind = 'intended' | 'inherited' | 'open'
-type Expected = Cells & { diverges?: Partial<Record<Reader, readonly [Kind, string]>> }
+type Readings = Omit<Cells, 'grading'>
+// A shape with no grading cell is graded as compileHDL reads it, record included: the check found nothing.
+type Expected = Readings & { grading?: Cells['grading']; diverges?: Partial<Record<Reader, readonly [Kind, string]>> }
 
 const REFERENCE_SHA = '91ef4285'
 const RECORD = /^(ADR-\d{4} §\d+(\.\d+)*|R\d+|#\d+|FID-\d{3})$/
 const corpus = JSON.parse(corpusText) as { sha: string; shapes: Shape[] }
 const registry = getBuiltinChipRegistry()
 
-const accepted: Cells = { parseHDL: null, compileHDL: null, parseSpec: { doc: true, errors: [] }, compileSpec: null }
+const accepted: Readings = { parseHDL: null, compileHDL: null, parseSpec: { doc: true, errors: [] }, compileSpec: null }
 // Every shape is one line: compileHDL puts a part's refusal on line 1, and compileSpec, which lowers without lines, on none.
-const compileRefuses = (messages: string[]): Cells => ({ ...accepted, compileHDL: messages.map((message) => `Line 1: ${message}`), compileSpec: messages })
-const cycleRefuses = (messages: string[]): Cells => ({ ...accepted, compileHDL: messages, compileSpec: messages })
-const syntaxError = (messages: string[]): Cells => ({
+const compileRefuses = (messages: string[]): Readings => ({ ...accepted, compileHDL: messages.map((message) => `Line 1: ${message}`), compileSpec: messages })
+const cycleRefuses = (messages: string[]): Readings => ({ ...accepted, compileHDL: messages, compileSpec: messages })
+const syntaxError = (messages: string[]): Readings => ({
   parseHDL: messages,
   compileHDL: 'unparsed',
   parseSpec: { doc: false, errors: messages.map(() => 'syntax') },
   compileSpec: messages,
 })
-const wireStatement = (parseHDLErrors: string[], invalidWire?: string): Cells => ({
+const wireStatement = (parseHDLErrors: string[], invalidWire?: string): Readings => ({
   parseHDL: parseHDLErrors,
   compileHDL: 'unparsed',
   parseSpec: { doc: true, errors: invalidWire === undefined ? [] : ['invalid-wire'] },
   compileSpec: invalidWire === undefined ? null : [invalidWire],
 })
+const OUT_READ = ['Line 1: Cannot use output pin as input'] as const
+const internalPinRefused = (pin: string): readonly [string] => [`Line 1: Internal pins (in this case: ${pin}) cannot be subscripted or indexed`]
+const nameRefused = (name: string): readonly [string] => [`Name "${name}" contains "_": a name is a letter, then letters and digits`]
 
 const EXPECTED: Record<string, Expected> = {
   'part-output-fan-out': accepted,
-  'internal-slice-write': { ...accepted, diverges: { compileHDL: ['open', 'FID-021'], compileSpec: ['intended', '#355'] } },
-  'internal-slice-read': { ...accepted, diverges: { compileHDL: ['open', 'FID-021'], compileSpec: ['intended', '#355'] } },
-  'part-reads-chip-out': { ...accepted, diverges: { compileHDL: ['open', 'FID-021'], compileSpec: ['inherited', 'ADR-0020 §1.11.5'] } },
+  'internal-slice-write': { ...accepted, grading: internalPinRefused('t'), diverges: { compileHDL: ['intended', 'ADR-0020 §1.11.5'], compileSpec: ['intended', '#355'] } },
+  'internal-slice-read': { ...accepted, grading: internalPinRefused('t'), diverges: { compileHDL: ['intended', 'ADR-0020 §1.11.5'], compileSpec: ['intended', '#355'] } },
+  'part-reads-chip-out': { ...accepted, grading: OUT_READ, diverges: { compileHDL: ['intended', 'ADR-0020 §1.11.5'], compileSpec: ['inherited', 'ADR-0020 §1.11.5'] } },
   'part-output-to-literal': {
     parseHDL: null,
     compileHDL: ['Line 1: Part "Not" output "out" cannot connect to literal "true"'],
@@ -248,7 +257,8 @@ const EXPECTED: Record<string, Expected> = {
     compileHDL: ['Line 1: Part "Not" output "out" cannot write to chip input "a"'],
     parseSpec: { doc: true, errors: ['multiple-drivers'] },
     compileSpec: ['Chip input "a" is written by p1.out'],
-    diverges: { compileHDL: ['inherited', '#740'], compileSpec: ['inherited', '#740'] },
+    grading: ['Invalid chip "C": Duplicate pin name: "a"'],
+    diverges: { compileHDL: ['inherited', '#740'], compileSpec: ['inherited', '#740'], grading: ['inherited', '#868'] },
   },
   'stub-not': accepted,
   'stub-mux16': accepted,
@@ -264,10 +274,12 @@ const EXPECTED: Record<string, Expected> = {
   'empty-in-list': syntaxError(["Expected 'IDENT' but got ';'"]),
   'underscore-in-names': {
     ...accepted,
+    grading: nameRefused('My_Chip'),
     diverges: { parseHDL: ['inherited', '#722'], compileHDL: ['inherited', '#722'], parseSpec: ['inherited', '#722'], compileSpec: ['inherited', '#722'] },
   },
   'underscore-leading': {
     ...accepted,
+    grading: nameRefused('_a'),
     diverges: { parseHDL: ['inherited', '#722'], compileHDL: ['inherited', '#722'], parseSpec: ['inherited', '#722'], compileSpec: ['inherited', '#722'] },
   },
   'unicode-letters': {
@@ -471,41 +483,47 @@ const EXPECTED: Record<string, Expected> = {
   'one-bit-in-as-range': accepted,
   'one-bit-in-as-bit': accepted,
   'literal-on-sliced-pin': accepted,
-  'internal-whole-bit-15': { ...accepted, diverges: { compileHDL: ['open', 'FID-021'], compileSpec: ['intended', '#355'] } },
+  'internal-whole-bit-15': { ...accepted, grading: internalPinRefused('t'), diverges: { compileHDL: ['intended', 'ADR-0020 §1.11.5'], compileSpec: ['intended', '#355'] } },
   'internal-whole-bit-16': {
     ...compileRefuses(['Part "Not" pin "in" is wired to "t[16]": sub-bus index out of range ("t" has width 16)']),
-    diverges: { compileHDL: ['open', 'FID-021'], compileSpec: ['intended', '#355'] },
+    grading: internalPinRefused('t'),
+    diverges: { compileHDL: ['intended', 'ADR-0020 §1.11.5'], compileSpec: ['intended', '#355'] },
   },
-  'internal-nib-bit-3': { ...accepted, diverges: { compileHDL: ['open', 'FID-021'], compileSpec: ['intended', '#355'] } },
+  'internal-nib-bit-3': { ...accepted, grading: internalPinRefused('nib'), diverges: { compileHDL: ['intended', 'ADR-0020 §1.11.5'], compileSpec: ['intended', '#355'] } },
   'internal-nib-bit-4': {
     ...compileRefuses(['Part "Not" pin "in" is wired to "nib[4]": sub-bus index out of range ("nib" has width 4)']),
-    diverges: { compileHDL: ['open', 'FID-021'], compileSpec: ['intended', '#355'] },
+    grading: internalPinRefused('nib'),
+    diverges: { compileHDL: ['intended', 'ADR-0020 §1.11.5'], compileSpec: ['intended', '#355'] },
   },
-  'internal-nib-range-0-3': { ...accepted, diverges: { compileHDL: ['open', 'FID-021'], compileSpec: ['intended', '#355'] } },
+  'internal-nib-range-0-3': { ...accepted, grading: internalPinRefused('nib'), diverges: { compileHDL: ['intended', 'ADR-0020 §1.11.5'], compileSpec: ['intended', '#355'] } },
   'internal-nib-range-1-4': {
     ...compileRefuses(['Part "Not16" pin "in[0..3]" is wired to "nib[1..4]": sub-bus index out of range ("nib" has width 4)']),
-    diverges: { compileHDL: ['open', 'FID-021'], compileSpec: ['intended', '#355'] },
+    grading: internalPinRefused('nib'),
+    diverges: { compileHDL: ['intended', 'ADR-0020 §1.11.5'], compileSpec: ['intended', '#355'] },
   },
-  'internal-slice-only-bit-1': { ...accepted, diverges: { compileHDL: ['open', 'FID-021'], compileSpec: ['intended', '#355'] } },
+  'internal-slice-only-bit-1': { ...accepted, grading: internalPinRefused('t'), diverges: { compileHDL: ['intended', 'ADR-0020 §1.11.5'], compileSpec: ['intended', '#355'] } },
   'internal-slice-only-bit-2': {
     parseHDL: null,
     compileHDL: ['Line 1: Signal "t" bit 2 is read by part "Not" but no part drives it'],
     parseSpec: { doc: true, errors: ['undriven'] },
     compileSpec: ['Signal "t[2]" is read but nothing drives it'],
-    diverges: { compileHDL: ['open', 'FID-021'], compileSpec: ['intended', '#355'] },
+    grading: internalPinRefused('t'),
+    diverges: { compileHDL: ['intended', 'ADR-0020 §1.11.5'], compileSpec: ['intended', '#355'] },
   },
   'internal-slice-only-bit-5': {
     parseHDL: null,
     compileHDL: ['Line 1: Signal "t" bit 5 is read by part "Not" but no part drives it'],
     parseSpec: { doc: true, errors: ['undriven'] },
     compileSpec: ['Signal "t[5]" is read but nothing drives it'],
-    diverges: { compileHDL: ['open', 'FID-021'], compileSpec: ['intended', '#355'] },
+    grading: internalPinRefused('t'),
+    diverges: { compileHDL: ['intended', 'ADR-0020 §1.11.5'], compileSpec: ['intended', '#355'] },
   },
-  'internal-slices-read-whole': { ...accepted, diverges: { compileHDL: ['open', 'FID-021'], compileSpec: ['intended', '#355'] } },
-  'chip-out-read-bit': { ...accepted, diverges: { compileHDL: ['open', 'FID-021'], compileSpec: ['inherited', 'ADR-0020 §1.11.5'] } },
+  'internal-slices-read-whole': { ...accepted, grading: internalPinRefused('t'), diverges: { compileHDL: ['intended', 'ADR-0020 §1.11.5'], compileSpec: ['intended', '#355'] } },
+  'chip-out-read-bit': { ...accepted, grading: OUT_READ, diverges: { compileHDL: ['intended', 'ADR-0020 §1.11.5'], compileSpec: ['inherited', 'ADR-0020 §1.11.5'] } },
   'chip-out-read-past-end': {
     ...compileRefuses(['Part "Not" pin "in" is wired to "o[2]": sub-bus index out of range ("o" has width 2)']),
-    diverges: { compileHDL: ['open', 'FID-021'], compileSpec: ['inherited', 'ADR-0020 §1.11.5'] },
+    grading: OUT_READ,
+    diverges: { compileHDL: ['intended', 'ADR-0020 §1.11.5'], compileSpec: ['inherited', 'ADR-0020 §1.11.5'] },
   },
   'wire-from-chip-out': {
     ...wireStatement(["Expected '(' but got 'o2'", "Expected ')' but got ';'"]),
@@ -517,12 +535,25 @@ const EXPECTED: Record<string, Expected> = {
   },
   'or8way-control': accepted,
   'or8way-reads-in-8': compileRefuses(['Part "Or" pin "b" is wired to "in[8]": sub-bus index out of range ("in" has width 8)']),
-  'or8way-reads-chip-out': { ...accepted, diverges: { compileHDL: ['open', 'FID-021'], compileSpec: ['inherited', 'ADR-0020 §1.11.5'] } },
-  'or8way-internal-subscript': { ...accepted, diverges: { compileHDL: ['open', 'FID-021'], compileSpec: ['intended', '#355'] } },
+  'or8way-reads-chip-out': { ...accepted, grading: OUT_READ, diverges: { compileHDL: ['intended', 'ADR-0020 §1.11.5'], compileSpec: ['inherited', 'ADR-0020 §1.11.5'] } },
+  'or8way-internal-subscript': { ...accepted, grading: internalPinRefused('t'), diverges: { compileHDL: ['intended', 'ADR-0020 §1.11.5'], compileSpec: ['intended', '#355'] } },
   'or8way-reads-chip-out-past-end': {
     ...compileRefuses(['Part "Not" pin "in" is wired to "out[1]": sub-bus index out of range ("out" has width 1)']),
-    diverges: { compileHDL: ['open', 'FID-021'], compileSpec: ['inherited', 'ADR-0020 §1.11.5'] },
+    grading: OUT_READ,
+    diverges: { compileHDL: ['intended', 'ADR-0020 §1.11.5'], compileSpec: ['inherited', 'ADR-0020 §1.11.5'] },
   },
+}
+
+/** `hacer test` on the shape with a script that only loads and evaluates it, so nothing but a refusal can fail it. */
+function graded(chip: string, hdl: string): Cells['grading'] {
+  const file = (extension: string, source: string) => ({ path: `${chip}.${extension}`, source })
+  try {
+    const { error } = testChip(file('hdl', hdl), file('tst', `load ${chip}.hdl,\neval,\n`), file('cmp', '|x|\n'))
+    return error === null ? null : [error]
+  } catch (e) {
+    // `hacer test` reports a throw as its error (#868).
+    return [e instanceof Error ? e.message : String(e)]
+  }
 }
 
 function read(hdl: string): Cells {
@@ -535,10 +566,20 @@ function read(hdl: string): Cells {
     compileHDL: compiled === null ? 'unparsed' : compiled.success ? null : compiled.errors.map((e) => e.message),
     parseSpec: { doc: spec.doc !== null, errors: spec.diagnostics.filter((d) => d.severity === 'error').map((d) => d.code) },
     compileSpec: run.success ? null : run.diagnostics.map((d) => d.message),
+    grading: parsed.success ? graded(parsed.chip.name, hdl) : 'unparsed',
   }
 }
 
-const cellsOf = ({ parseHDL, compileHDL, parseSpec, compileSpec }: Expected): Cells => ({ parseHDL, compileHDL, parseSpec, compileSpec })
+const asGraded = (compiled: Cells['compileHDL']): Cells['grading'] => (compiled === null || compiled === 'unparsed' ? compiled : [compiled.join('; ')])
+const cellsOf = ({ parseHDL, compileHDL, parseSpec, compileSpec, grading }: Expected): Cells => ({
+  parseHDL,
+  compileHDL,
+  parseSpec,
+  compileSpec,
+  grading: grading === undefined ? asGraded(compileHDL) : grading,
+})
+const recordOf = (expected: Expected, reader: Reader): readonly [Kind, string] | undefined =>
+  expected.diverges?.[reader] ?? (reader === 'grading' && expected.grading === undefined ? expected.diverges?.compileHDL : undefined)
 
 /** Each reader against the reference at its own stage: the parsers against the grammar, the compilers against the builder. */
 const AGREES: Record<Reader, (cells: Cells, shape: Shape) => boolean> = {
@@ -546,6 +587,7 @@ const AGREES: Record<Reader, (cells: Cells, shape: Shape) => boolean> = {
   compileHDL: (cells, shape) => cells.compileHDL === 'unparsed' || (cells.compileHDL === null) === (shape.verdict === 'accept'),
   parseSpec: (cells, shape) => cells.parseSpec.doc === (shape.verdict !== 'grammar'),
   compileSpec: (cells, shape) => (cells.compileSpec === null) === (shape.verdict === 'accept'),
+  grading: (cells, shape) => cells.grading === 'unparsed' || (cells.grading === null) === (shape.verdict === 'accept'),
 }
 
 const refuses = (cells: Cells, reader: Reader): boolean =>
@@ -565,6 +607,25 @@ describe('conformance/acceptance/hdl-shapes.json', () => {
   it('has an expectation for every shape, and a shape for every expectation', () => {
     expect(Object.keys(EXPECTED).sort()).toEqual(corpus.shapes.map((s) => s.id).sort())
   })
+
+  it("has the grading check refuse a read of a chip OUT and an indexed internal pin in the reference's sentence, a \"_\" by the name rule, and nothing else", () => {
+    const builderCauses = [/^Line 1: Cannot use output pin as input$/, /^Line 1: Internal pins \(in this case: \w+\) cannot be subscripted or indexed$/]
+    const refused = { builder: 0, name: 0 }
+    for (const shape of corpus.shapes) {
+      const parsed = parseHDL(shape.hdl)
+      const refusal = parsed.success ? gradingRefusal(parsed.chip, registry) : null
+      if (builderCauses.some((cause) => cause.test(shape.message ?? ''))) {
+        refused.builder++
+        expect(refusal, shape.id).toBe(shape.message)
+      } else if (shape.verdict === 'grammar' && shape.hdl.includes('_')) {
+        refused.name++
+        expect(refusal, shape.id).toMatch(/contains "_": a name is a letter, then letters and digits$/)
+      } else {
+        expect(refusal, shape.id).toBeNull()
+      }
+    }
+    expect(refused).toEqual({ builder: 18, name: 2 })
+  })
 })
 
 describe.each(corpus.shapes)('$id', (shape) => {
@@ -575,11 +636,12 @@ describe.each(corpus.shapes)('$id', (shape) => {
   })
 
   it('names a kind and a record for every cell that diverges from the reference, and for no other', () => {
+    const cells = cellsOf(expected)
     for (const reader of Object.keys(AGREES) as Reader[]) {
-      const divergence = expected.diverges?.[reader]
-      if (!AGREES[reader](expected, shape)) expect(divergence, `${reader} differs from the reference's ${shape.verdict}`).toBeDefined()
+      const divergence = recordOf(expected, reader)
+      if (!AGREES[reader](cells, shape)) expect(divergence, `${reader} differs from the reference's ${shape.verdict}`).toBeDefined()
       // A refusal for a different cause than the reference's is the one agreeing cell that carries a record.
-      else if (divergence !== undefined) expect(refuses(expected, reader) && shape.verdict !== 'accept', `${reader} agrees, so its record is stale`).toBe(true)
+      else if (divergence !== undefined) expect(refuses(cells, reader) && shape.verdict !== 'accept', `${reader} agrees, so its record is stale`).toBe(true)
       if (divergence === undefined) continue
       expect(['intended', 'inherited', 'open']).toContain(divergence[0])
       expect(divergence[1]).toMatch(RECORD)
