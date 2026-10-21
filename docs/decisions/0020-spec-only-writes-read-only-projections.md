@@ -1,7 +1,7 @@
 # 0020. Spec-only writes, read-only projections
 
 - **Status:** Accepted — the fresh-context adversarial review [#359](https://github.com/mezivillager/hacer/issues/359) required by #327 returned `sound with corrections`, and the second pass over the four post-review deltas returned `accept with corrections` (both on [#358](https://github.com/mezivillager/hacer/pull/358), 2026-09-23). Both sets of corrections are applied below — the second pass's seven under "What the second pass changed" — and no further review round is required. **Amended 2026-09-24** by the spike this ADR scheduled for 1.5/1.6 ([#372](https://github.com/mezivillager/hacer/issues/372)), which ran, found the mechanism 1.5 describes does not work, and replaced it — "What the spike changed". The status does **not** move: the spine, the review's acceptance and every decision stand, and correcting a mechanism is what a scheduled spike is for.
-- **Date:** 2026-09-23 · mechanism amended 2026-09-24 ([#372](https://github.com/mezivillager/hacer/issues/372)) · §7.1 and §9 amended 2026-09-29 ([#598](https://github.com/mezivillager/hacer/issues/598)) · §1.10 added 2026-10-15 ([#374](https://github.com/mezivillager/hacer/issues/374)) · §1.11 added 2026-10-15 ([#378](https://github.com/mezivillager/hacer/issues/378)) · §1.1 and §1.11.5 amended 2026-10-21 ([#813](https://github.com/mezivillager/hacer/issues/813))
+- **Date:** 2026-09-23 · mechanism amended 2026-09-24 ([#372](https://github.com/mezivillager/hacer/issues/372)) · §7.1 and §9 amended 2026-09-29 ([#598](https://github.com/mezivillager/hacer/issues/598)) · §1.10 added 2026-10-15 ([#374](https://github.com/mezivillager/hacer/issues/374)) · §1.11 added 2026-10-15 ([#378](https://github.com/mezivillager/hacer/issues/378)) · §1.1 and §1.11.5 amended 2026-10-21 ([#813](https://github.com/mezivillager/hacer/issues/813)) · §1, §1.10 and the migration policy amended 2026-10-21 ([#814](https://github.com/mezivillager/hacer/issues/814))
 - **Amended by:** R769, R817, R825, R826, R836, R837
 - **Amends:** ADR-0008 §6, ADR-0009
 - **Supersedes:** ADR-0007
@@ -187,6 +187,7 @@ CircuitSpec  { schemaVersion, name, ins: Port[], outs: Port[],
                parts: Part[],          // { id, chip }          — what exists
                nets:  Net[] }          // { id, driver: Ref | null, sinks: Ref[] }  — how it is connected
 Ref          { kind: 'part-pin' | 'chip-in' | 'chip-out', partId?, pin, slice? }
+           | { kind: 'constant', value: boolean }   // v2: a literal's source, no pin, no slice (1.10.9)
 Sidecar      { schemaVersion,
                hints: { '3d': Record<NodeId, Hint>, '2d': Record<NodeId, Hint> },  // empty by default
                meta:  { title?, description?, tags? },
@@ -206,6 +207,8 @@ adopting the shape this ADR says it adopted. With an explicit net list:
   (1.5) — and capability row 5 already requires both of those ref kinds to exist;
 - a joiner bit driven by a chip input is the same net with a `slice` on the sink ref (1.6);
 - fan-out (row 7) is the sinks list, which is why there is no junction entity;
+- a **literal** is the net its `constant` drives, `true` or `false` (*amended 2026-10-21, [#814](https://github.com/mezivillager/hacer/issues/814)*:
+  the fourth `Ref` kind, at v2; 1.10.9);
 - an **unfinished** circuit is `driver: null` — a signal read by a part that nothing writes yet. That
   is exactly the shape `circuit-json` has no room for, and it is why its schema is rejected (1.1);
 - a **multi-driven** pin is two nets naming the same sink, which is representable, diagnosable and —
@@ -259,6 +262,9 @@ best-effort-parsed**; a forward migration is a pure function `migrate(n → n+1)
 real version-*n* document, and **no construct may be removed from a version without one**. Until the
 first real spec is saved anywhere, v1 is free to change and the version does not move; the first
 commit of a `.spec` fixture to this repository is the boundary, and N.1 is where it falls.
+*Amended 2026-10-21 ([#814](https://github.com/mezivillager/hacer/issues/814)):* the boundary fell with `PassThroughs.spec` (1.10), and the first
+migration is `migrate(1 → 2)` in `src/core/spec/migrate.ts`, which 1.10.9 describes. Its real v1
+documents are both files in `src/core/spec/fixtures/v1/`, `Literals.spec` among them.
 
 Seven things the canvas expresses today have no plain-HDL form. Each is decided here.
 
@@ -600,7 +606,8 @@ spike-local printer and a regex reader over its output, so the parser change is 
 **1.10 The spec file, as built. Amended 2026-10-15 ([#374](https://github.com/mezivillager/hacer/issues/374), R817).**
 §1 fixed the document's shape and its migration policy but not the file. The first committed
 fixture, `src/core/spec/fixtures/v1/PassThroughs.spec`, freezes the file as built, so these rules
-are v1's. Each is pinned by a test in `src/core/spec/`.
+are v1's. v2 keeps every one but 9, which it replaces (1.10.9). Each is pinned by a test in
+`src/core/spec/`.
 
 1. **One file, two parts.** The HDL-shaped text opens with a `// hacer-spec <version>` header. It may
    close with a `/* hacer-sidecar <json> */` block holding the sidecar, whose JSON carries the
@@ -609,7 +616,9 @@ are v1's. Each is pinned by a test in `src/core/spec/`.
    - The header must be the **first thing in the file**. Only a BOM or whitespace may come before
      it. Whitespace here means what JavaScript's `\s` matches: Unicode `White_Space` except U+0085
      (NEL), which the HDL reader rejects anyway. Its version is the first word after the tag, and
-     any word but `1` is refused as `unknown-schema-version`.
+     any word but `1` is refused as `unknown-schema-version`. *Amended 2026-10-21 ([#814](https://github.com/mezivillager/hacer/issues/814)):* `1` or
+     `2`; a v1 file reads through `migrate(1 → 2)`, and a header and a sidecar at different versions
+     are refused as `unknown-schema-version`, because a file is written at one version.
    - The sidecar block must be the **last thing in the file**. It opens its own line, and only
      whitespace may follow it. It may span one line or several, with LF or CRLF line ends.
    - Each appears **at most once**.
@@ -628,7 +637,8 @@ are v1's. Each is pinned by a test in `src/core/spec/`.
    accepts that file. That is the cost of never best-effort-parsing a version, and the message says
    that comments are included.
 4. **Plain `.hdl`, with no tag at all, reads as v1 text with an empty sidecar.** So reading official
-   HDL is unaffected (§1.5).
+   HDL is unaffected (§1.5). *Amended 2026-10-21 ([#814](https://github.com/mezivillager/hacer/issues/814)):*
+   it reads at the current version, now 2, because no text differs between the two.
 5. **A raw `*/` in the sidecar JSON is refused** (`invalid-sidecar`), because the HDL reader would end
    the comment there. `printSpec` writes it as `*\/`, which is the same JSON.
 6. **`wire` is lifted out before the HDL parser,** so `parseHDL` gains no statement. Its one addition
@@ -647,13 +657,30 @@ are v1's. Each is pinned by a test in `src/core/spec/`.
 8. **Pin directions come from a `ChipRegistry` option**, the Project 1 builtins by default.
    - An unknown chip is an `unknown-chip` error, and its bindings are kept as sinks.
    - Those bindings claim no bits in §1.8's check, and its outputs are not reported undriven.
-9. **Literals are driverless nets keyed `true` / `false`.**
-   - They are never reported undriven.
-   - They never take a driver: a part output bound to one is a `literal-output` error.
-   - **Open, not decided:** whether a literal should be a constant driver kind on `Ref`. That would
-     keep `driver: null` meaning only "unfinished" and make `out=true` an ordinary two-driver clash.
-     Until it is decided, §1's `Ref` union is unchanged, and adopting it later is a v1 → v2
-     migration.
+9. **Literals are constant drivers.** *Amended 2026-10-21 ([#814](https://github.com/mezivillager/hacer/issues/814)): adopted, as the inbox panel on
+   [#785](https://github.com/mezivillager/hacer/issues/785) ruled.* At v1 a literal was a driverless net keyed `true` / `false`, never reported
+   undriven, and a part output bound to one was a `literal-output` error.
+   - From v2, `Ref` has a fourth kind, `{ kind: 'constant'; value: boolean }`, with no pin and no
+     slice. `parseSpec` starts each literal's net on its constant, so `driver: null` means only
+     "unfinished" (1.1) and a net is classified by its driver's kind, never by its id (§1):
+     `undriven` has no id check.
+   - **The invariant:** a constant drives only the net its own literal names. `compileSpec` refuses
+     one on any other net, or a `true` net whose value is `false`, as `invalid-wire`, by name. Net ids
+     stay `true` and `false`, because `compileSpec` lowers sinks by net id, and `true` is every bit of
+     the pin it feeds, as the engine's `maskForWidth` reads it, not the integer 1.
+   - `out=true` is an ordinary second driver of net `true`: a `multiple-drivers` error from the
+     ordinary path, whose message names the literal and says a part output cannot drive a constant.
+     The net keeps its constant, and `literal-output` is gone. `wire out = true;` stays
+     `invalid-wire`.
+   - The importer's `false` net for a floating part input, and `bindUnconnectedInputs`', carry the
+     constant. The importer's repeated-id net beside an OUT's real drivers stays `driver: null`.
+   - The reference models the constants the same way, as source buses: `TRUE_BUS` and `FALSE_BUS`
+     (`../web-ide/simulator/src/chip/chip.ts:175-202`), and the `High` and `Low` chips (`:728-740`).
+   - **The v2 boundary.** The text does not change apart from the version, so a v1 file lowers as v2
+     does. `migrate(1 → 2)` is pure: it moves the header's and the sidecar's version to 2 and gives a
+     v1 document's driverless literal nets their constants. Each v1 fixture reads through it and
+     prints back with only its two version numbers moved, and `Literals.spec` evaluates as the HDL
+     engine reads its v1 text. Plain `.hdl` (rule 4) reads at the current version.
 10. **The canonical text and the export:**
     - `printSpec` prints each part's bindings inputs first, then outputs, each ordered by pin and then
       by slice, in the document's part order. An empty port list prints no `IN` or `OUT` line.
