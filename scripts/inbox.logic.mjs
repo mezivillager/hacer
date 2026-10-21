@@ -24,8 +24,11 @@ function formPattern(form, tail = '') {
   return new RegExp(`^${parts.join('')}${tail}$`)
 }
 
-// A status in a file may follow its form with `, <note>`, as in `filed (#378), closed by PR #740`; `set` writes the bare form.
-const fitsGrammar = (status, grammar) => grammar.some((form) => formPattern(form, `(?:, ${TEXT})?`).test(status))
+// A filed, declined or deferred status may follow its form with `, <note>`, as in `filed (#378), closed by PR #740`;
+// `set` writes the bare form.
+const TAKES_A_NOTE = new Set(['filed', 'declined', 'deferred'])
+const fitsGrammar = (status, grammar) =>
+  grammar.some((form) => formPattern(form, TAKES_A_NOTE.has(keywordOf(form)) ? `(?:, ${TEXT})?` : '').test(status))
 
 /** Each line, and whether it sits in a fenced block: the template quoted under "Entry format" is not an entry. */
 function scanLines(text) {
