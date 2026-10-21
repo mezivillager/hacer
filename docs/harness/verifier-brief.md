@@ -57,5 +57,17 @@ The heading `## Verifier verdict: PASS | BLOCK` and the `Verified on:` line are 
 _Independent fresh-context review; the verifier did not see the author's session._
 ```
 
-The owner tunes this brief by applying the `overturned` label to a PR whose verdict was wrong and
-saying why on the PR; the second overturn of the same kind changes this file.
+## Overturned verdicts
+**Overturned:** A verdict is overturned when it is a PASS whose ticked criterion, or whose `Blockers: none`, a later PR's fix or a later verifier pass shows was wrong, or a BLOCK whose finding a fresh verifier or a ruling rejects with no code change; it is not overturned when the defect lies in a path the verdict marked `unproven` or listed under `Not covered`, or when a later ruling changes the design or the issue's criteria.
+
+- **Who applies the label.** The retro reports candidates: an unlabelled PASS whose defect a later
+  PR fixed is a candidate, not an overturn. The coordinator classifies each against the definition
+  and applies `overturned` to the PR when it meets it. The owner may remove the label. The rule
+  covers verifier verdicts only: the fidelity and product briefs keep the owner as the applier.
+- **The label's comment.** When it applies the label, the coordinator posts one PR comment naming
+  the verdict's comment id, its `Verified on:` model, the later PR or pass that showed it wrong, the
+  case of the definition it meets, and `applied by the coordinator under verifier-brief.md`. Agents
+  post as the owner's account, so this comment is the only record of who applied the label.
+- **The label alone moves no tier.** What a labelled verdict counts for is `model-tiering.md` §2.
+
+The second overturn of the same kind changes this file.

@@ -78,7 +78,7 @@ four rows above are struck through in the attribution column, and why §2's `ris
 | builder, `risk:1`/`risk:2` | Opus | §1 replayed the verifier, not the builder; the owner's Budgets ruling (2026-09-19) already puts significant work on Opus | a Sonnet builder replay landing the same diff on a merged `risk:1` PR and passing a fresh Opus verifier |
 | builder, `risk:0` (docs, mechanical) | Sonnet | Sonnet ran the full definition of done unaided in both replays, and reproduced #245's own negative test | a Sonnet `risk:0` PR blocked for something a careful reading pass should have caught |
 | verifier, `risk:2`, or any `src/core` / `src/simulation` change | Opus | the engine is where a missed defect is least recoverable. #320 is a live `risk:2` Sonnet block with real defects — but it was dispatched against the policy in force, and a violation nobody caught is not a result anybody designed | three live `risk:2` pairs where a Sonnet verdict and a second pass agree, **each naming its model** (§1b). #320's fix did get a coordinator review (a PASS at 11:43:02Z), but that review names no model either — the same gap, one layer up — so it counts once both halves are attributable |
-| verifier, `risk:0` / `risk:1`, neither file under `src/core` nor `src/simulation` | **Sonnet** (owner's call, 2026-09-21) | §1's replay, plus §1a's live outings — of which **only #319 and #324 are inside this row**; #320 is `risk:2` and #312 is an engine change, so both argue *a fortiori* rather than directly | one `overturned` Sonnet verdict — a PASS whose defect a later pass finds, or a BLOCK that does not survive |
+| verifier, `risk:0` / `risk:1`, neither file under `src/core` nor `src/simulation` | **Sonnet** (owner's call, 2026-09-21) | §1's replay, plus §1a's live outings — of which **only #319 and #324 are inside this row**; #320 is `risk:2` and #312 is an engine change, so both argue *a fortiori* rather than directly | one `overturned` Sonnet verdict, as `verifier-brief.md` defines it. A verdict is overturned when it is a PASS whose ticked criterion, or whose `Blockers: none`, a later PR's fix or a later verifier pass shows was wrong, or a BLOCK whose finding a fresh verifier or a ruling rejects with no code change; it is not overturned when the defect lies in a path the verdict marked `unproven` or listed under `Not covered`, or when a later ruling changes the design or the issue's criteria. The label alone moves nothing; the paragraph below the table says what counts |
 | QA (browser) | Opus | the brief is still in flight (#257); no replay is possible until it exists | a QA replay once the brief lands |
 | product | Opus (pinned in `.claude/agents/hacer-product.md`) | judgment over screenshots and code; unmeasured | a replay against a past review's filed issues |
 | fidelity | Opus (pinned in `.claude/agents/hacer-fidelity.md`) | the highest-consequence verdict here, and Haiku's failure mode — a broken criterion marked satisfied, with a citation — is precisely what a fidelity verdict must never do | a replay on an artifact with a known unsound claim |
@@ -91,6 +91,14 @@ four rows above are struck through in the attribution column, and why §2's `ris
 | research | Opus | two of the first research drafts were wrong at Opus-class and only a fresh-context fact-check caught them (`ledger.md`, 2026-09-18) | — |
 
 Every tier keeps the fresh-context adversarial review; cheaper is never a reason to skip it.
+
+**What the `overturned` label counts for.** The coordinator applies it, from the retro's candidates
+and under the definition in the Sonnet verifier row (`verifier-brief.md`). The label alone moves no
+tier. Only a labelled verdict whose `Verified on:` names Sonnet, on a PR inside that row
+(`risk:0` or `risk:1`, no file under `src/core` or `src/simulation`), meets the row's condition. An
+Opus verdict, a coordinator verdict, and a Sonnet verdict on a PR outside the row do not. When the
+condition is met, the next retro files a policy entry to move the row, and the inbox panel decides
+it (`README.md` § *How this process changes*, item 3; L019).
 
 ## 3. Open and free models — the four lanes #255 asked about
 

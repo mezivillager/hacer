@@ -345,4 +345,13 @@ export const TWIN_SENTENCES = [
       { file: '.claude/agents/hacer-retro.md', part: 'body' },
     ],
   },
+  {
+    id: 'overturned-verdict',
+    owner: 'docs/harness/verifier-brief.md',
+    anchor: '**Overturned:** ',
+    twins: [
+      { file: 'docs/harness/model-tiering.md', part: 'body' },
+      { file: 'docs/harness/retro-brief.md', part: 'body' },
+    ],
+  },
 ]

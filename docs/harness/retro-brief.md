@@ -54,7 +54,10 @@ the window say about policy?
      never `0`.
 4. **Verdicts:** BLOCKs, from the verdict headings on each PR (`## Verifier verdict: PASS | BLOCK`).
    Overturned verdicts come from `gh pr list --state all --label overturned --limit 200`, because
-   the label goes on PRs (`verifier-brief.md`), and from any PASS whose defect a later PR fixed.
+   the label goes on PRs (`verifier-brief.md`). An unlabelled PASS whose defect a later PR fixed is
+   a **candidate**, not an overturn: list it and leave the label to the coordinator, who classifies
+   it under the definition in `verifier-brief.md`. A verdict is overturned when it is a PASS whose ticked criterion, or whose `Blockers: none`, a later PR's fix or a later verifier pass shows was wrong, or a BLOCK whose finding a fresh verifier or a ruling rejects with no code change; it is not overturned when the defect lies in a path the verdict marked `unproven` or listed under `Not covered`, or when a later ruling changes the design or the issue's criteria.
+   The run row's Numbers cell carries `<n> overturned (candidates: #a, #b)`, or `(candidates: none)`.
    `gh search issues` leaves PRs out, so it always reads 0 here.
 5. **Follow-up volume:**
    `gh issue list --state all --search "created:<from-day>..<to-day>" --limit 200`, with the share
