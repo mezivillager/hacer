@@ -41,10 +41,26 @@ describe('**/__snapshots__/characterization/**', () => {
   })
 })
 
+describe('conformance/acceptance/**', () => {
+  it('is a protected-path glob', () => {
+    expect(PROTECTED_GLOBS).toContain('conformance/acceptance/**')
+  })
+
+  it("matches the acceptance-parity corpus's reference verdicts", () => {
+    expect(isProtectedPath('conformance/acceptance/hdl-shapes.json')).toBe(true)
+  })
+
+  it("does not match the test that holds HACER's expectations, or a look-alike path", () => {
+    expect(isProtectedPath('src/core/hdl/acceptanceParity.test.ts')).toBe(false)
+    expect(isProtectedPath('conformance/acceptance.json')).toBe(false)
+  })
+})
+
 describe('protectedEntryFor', () => {
   it('gives each glob its own reason', () => {
     expect(protectedEntryFor('conformance/vectors/01/Xor.tst').reason).toContain('held-out oracle')
     expect(protectedEntryFor('a/__snapshots__/characterization/x.json').reason).toContain('characterization golden')
+    expect(protectedEntryFor('conformance/acceptance/hdl-shapes.json').reason).toContain('reference verdicts')
     expect(protectedEntryFor('src/a.ts')).toBeUndefined()
   })
 })
