@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-21T17:19:31.156Z",
+  "generatedAt": "2026-10-21T18:04:28.039Z",
   "head": {
-    "sha": "d03508254feb8d20471fe8c853eed89df85f378c",
-    "date": "2026-10-21T20:16:36+03:00",
-    "subject": "chore(harness): the inbox grammar takes a note only after filed, declined or deferred (#819)"
+    "sha": "cc288b57a50f69b7076173b24914a2f6707a8fc4",
+    "date": "2026-10-21T21:03:19+03:00",
+    "subject": "docs(adr): ADR-0020 §1.11 records the registered-part check and its cache re-check (#821)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T17:19:31.156Z",
+      "fetchedAt": "2026-10-21T18:04:28.039Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T17:19:31.156Z",
+      "fetchedAt": "2026-10-21T18:04:28.039Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T17:19:31.156Z",
+      "fetchedAt": "2026-10-21T18:04:28.039Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-21T17:19:31.156Z",
+      "fetchedAt": "2026-10-21T18:04:28.039Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-21T17:19:31.156Z",
+      "fetchedAt": "2026-10-21T18:04:28.039Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-21T17:19:31.156Z",
+      "fetchedAt": "2026-10-21T18:04:28.039Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-21T17:19:31.156Z",
+      "fetchedAt": "2026-10-21T18:04:28.039Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-21T17:19:31.156Z",
+      "fetchedAt": "2026-10-21T18:04:28.039Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-21T17:19:31.156Z",
+      "fetchedAt": "2026-10-21T18:04:28.039Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-21T17:19:31.156Z",
+      "fetchedAt": "2026-10-21T18:04:28.039Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-21T17:19:31.156Z",
+      "fetchedAt": "2026-10-21T18:04:28.039Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-21T17:19:31.156Z",
+      "fetchedAt": "2026-10-21T18:04:28.039Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-21T17:19:31.156Z",
+      "fetchedAt": "2026-10-21T18:04:28.039Z",
       "status": "ok"
     }
   },
@@ -81,7 +81,7 @@
         "slug": "foundation",
         "epicNumber": 318,
         "open": 31,
-        "ready": 1,
+        "ready": 3,
         "inProgress": 1,
         "needsHuman": 0,
         "staleClaims": [],
@@ -190,9 +190,9 @@
         },
         "title": "Epic: core — headless core",
         "subIssues": {
-          "completed": 16,
-          "percentCompleted": 66,
-          "total": 24
+          "completed": 17,
+          "percentCompleted": 68,
+          "total": 25
         }
       },
       {
@@ -306,15 +306,15 @@
         "slug": "upkeep",
         "epicNumber": 146,
         "open": 28,
-        "ready": 19,
-        "inProgress": 7,
+        "ready": 17,
+        "inProgress": 9,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 27,
         "filedElsewhere": [],
         "next": {
-          "number": 795,
-          "title": "Inbox review: FID-024 · ADR-0020 §10 records R837's loop granularity and names where it overapproximates"
+          "number": 797,
+          "title": "Inbox review: HRN-006 · Say who applies `overturned`, and apply it to the PASS whose defect a later PR fixed"
         },
         "title": "Epic: upkeep — maintenance & documentation",
         "subIssues": {
@@ -418,19 +418,19 @@
         "project": "foundation"
       },
       {
-        "number": 795,
-        "title": "Inbox review: FID-024 · ADR-0020 §10 records R837's loop granularity and names where it overapproximates",
-        "project": "upkeep"
-      },
-      {
-        "number": 796,
-        "title": "Inbox review: HRN-005 · Measure the four numbers or retire two of them: tokens and owner minutes have no source",
-        "project": "upkeep"
+        "number": 814,
+        "title": "Literals become sources: a constant driver kind for `true` and `false`, and the spec's first `migrate(1 → 2)`",
+        "project": "foundation"
       },
       {
         "number": 797,
         "title": "Inbox review: HRN-006 · Say who applies `overturned`, and apply it to the PASS whose defect a later PR fixed",
         "project": "upkeep"
+      },
+      {
+        "number": 820,
+        "title": "Learner-facing compile errors use the reference's words and carry the line",
+        "project": "foundation"
       },
       {
         "number": 798,
@@ -516,6 +516,7 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
+        847,
         514
       ]
     }
@@ -555,34 +556,21 @@
         "reason": null
       },
       {
-        "number": 795,
-        "title": "Inbox review: FID-024 · ADR-0020 §10 records R837's loop granularity and names where it overapproximates",
+        "number": 814,
+        "title": "Literals become sources: a constant driver kind for `true` and `false`, and the spec's first `migrate(1 → 2)`",
         "labels": [
-          "project:upkeep",
           "agent-ready",
-          "risk:0",
-          "inbox-review"
+          "risk:2",
+          "fidelity",
+          "project:foundation"
         ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 796,
-        "title": "Inbox review: HRN-005 · Measure the four numbers or retire two of them: tokens and owner minutes have no source",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "risk:0",
-          "inbox-review"
+        "blocking": [
+          844,
+          823
         ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
         "pickable": true,
         "reason": null
       },
@@ -599,6 +587,24 @@
         "project": "upkeep",
         "rank": 11,
         "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 820,
+        "title": "Learner-facing compile errors use the reference's words and carry the line",
+        "labels": [
+          "agent-ready",
+          "risk:1",
+          "fidelity",
+          "project:foundation"
+        ],
+        "blocking": [
+          840
+        ],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
         "pickable": true,
         "reason": null
       },
@@ -2352,6 +2358,40 @@
         "reason": "claimed"
       },
       {
+        "number": 795,
+        "title": "Inbox review: FID-024 · ADR-0020 §10 records R837's loop granularity and names where it overapproximates",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
+        "number": 796,
+        "title": "Inbox review: HRN-005 · Measure the four numbers or retire two of them: tokens and owner minutes have no source",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 801,
         "title": "polish: an unsaved circuit is lost on reload — autosave is written every 2 s but never restored",
         "labels": [
@@ -2429,63 +2469,6 @@
         "reason": "on-request"
       },
       {
-        "number": 814,
-        "title": "Literals become sources: a constant driver kind for `true` and `false`, and the spec's first `migrate(1 → 2)`",
-        "labels": [
-          "agent-ready",
-          "risk:2",
-          "fidelity",
-          "project:foundation"
-        ],
-        "blocking": [
-          844,
-          823
-        ],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "blocked:#821"
-      },
-      {
-        "number": 820,
-        "title": "Learner-facing compile errors use the reference's words and carry the line",
-        "labels": [
-          "agent-ready",
-          "risk:1",
-          "fidelity",
-          "project:foundation"
-        ],
-        "blocking": [
-          840
-        ],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "blocked:#821"
-      },
-      {
-        "number": 821,
-        "title": "`compileSpec` refuses a spec whose registered part does not compile, naming the chain",
-        "labels": [
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "fidelity",
-          "project:foundation"
-        ],
-        "blocking": [
-          820,
-          814
-        ],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 823,
         "title": "`printSpec` refuses a document in which a driverless net shares its id with a driven net",
         "labels": [
@@ -2495,6 +2478,7 @@
           "project:foundation"
         ],
         "blocking": [
+          382,
           844
         ],
         "project": "foundation",
@@ -2534,6 +2518,23 @@
         "lane": "feature",
         "pickable": false,
         "reason": "blocked:#823,#814"
+      },
+      {
+        "number": 846,
+        "title": "ADR-0020 §10 records R837's loop granularity and names where it overapproximates",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "fidelity",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "claimed"
       }
     ],
     "byProject": {
@@ -2554,6 +2555,8 @@
       ],
       "foundation": [
         338,
+        814,
+        820,
         151,
         184,
         325,
@@ -2578,16 +2581,12 @@
         728,
         742,
         773,
-        814,
-        820,
-        821,
         823,
         840,
-        844
+        844,
+        846
       ],
       "upkeep": [
-        795,
-        796,
         797,
         798,
         799,
@@ -2613,7 +2612,9 @@
         791,
         792,
         793,
-        794
+        794,
+        795,
+        796
       ],
       "spine": [
         165,
@@ -2704,6 +2705,31 @@
   "prs": {
     "open": [
       {
+        "number": 847,
+        "title": "docs(fidelity): review of PR #845, the registered-part refusal and its chain; FID-027, FID-028",
+        "url": "https://github.com/mezivillager/hacer/pull/847",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0",
+          "fidelity"
+        ],
+        "headRefName": "docs/fidelity-review-845",
+        "isDraft": false,
+        "createdAt": "2026-10-21T18:01:22Z",
+        "mergedAt": null,
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (claude-opus-5-5)",
+            "at": "2026-10-21T18:03:32Z",
+            "url": "https://github.com/mezivillager/hacer/pull/847#issuecomment-6322983509"
+          }
+        ]
+      },
+      {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
         "url": "https://github.com/mezivillager/hacer/pull/514",
@@ -2731,6 +2757,33 @@
       }
     ],
     "merged": [
+      {
+        "number": 845,
+        "title": "feat(spec): compileSpec refuses a spec whose registered part does not compile, naming the chain",
+        "url": "https://github.com/mezivillager/hacer/pull/845",
+        "author": "mezivillager",
+        "labels": [
+          "risk:1",
+          "fidelity",
+          "project:foundation"
+        ],
+        "headRefName": "feat/821-compile-registered-parts",
+        "isDraft": false,
+        "createdAt": "2026-10-21T17:29:58Z",
+        "mergedAt": "2026-10-21T18:03:20Z",
+        "closes": [
+          821
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus (claude-opus-5-5)",
+            "at": "2026-10-21T17:44:47Z",
+            "url": "https://github.com/mezivillager/hacer/pull/845#issuecomment-6322615057"
+          }
+        ]
+      },
       {
         "number": 843,
         "title": "fix(hdl): the registry-cycle walk keys on part names, so a fresh definition per get still ends",
@@ -4273,31 +4326,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/709#issuecomment-6181526318"
           }
         ]
-      },
-      {
-        "number": 708,
-        "title": "refactor(nodes): BusSplitter3D renders from props alone (#373, 4 of 6)",
-        "url": "https://github.com/mezivillager/hacer/pull/708",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:2",
-          "project:foundation"
-        ],
-        "headRefName": "refactor/373-bussplitter-props",
-        "isDraft": false,
-        "createdAt": "2026-10-15T00:01:50Z",
-        "mergedAt": "2026-10-15T00:21:22Z",
-        "closes": [],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Opus 5.5",
-            "at": "2026-10-15T00:19:58Z",
-            "url": "https://github.com/mezivillager/hacer/pull/708#issuecomment-6181423853"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4518,10 +4546,62 @@
         }
       },
       {
+        "number": 795,
+        "ref": "refs/heads/claim/795",
+        "sha": "d03508254feb8d20471fe8c853eed89df85f378c",
+        "state": "OPEN",
+        "title": "Inbox review: FID-024 · ADR-0020 §10 records R837's loop granularity and names where it overapproximates",
+        "url": "https://github.com/mezivillager/hacer/issues/795",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-to-70",
+          "branch": "chore/inbox-fid-024",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-21T17:20:17Z",
+          "url": "https://github.com/mezivillager/hacer/issues/795#issuecomment-6322124824"
+        }
+      },
+      {
+        "number": 796,
+        "ref": "refs/heads/claim/796",
+        "sha": "d03508254feb8d20471fe8c853eed89df85f378c",
+        "state": "OPEN",
+        "title": "Inbox review: HRN-005 · Measure the four numbers or retire two of them: tokens and owner minutes have no source",
+        "url": "https://github.com/mezivillager/hacer/issues/796",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-to-70",
+          "branch": "chore/inbox-hrn-005",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-21T17:51:35Z",
+          "url": "https://github.com/mezivillager/hacer/issues/796#issuecomment-6322748180"
+        }
+      },
+      {
         "number": 821,
         "ref": "refs/heads/claim/821",
         "sha": "a81dade67dcf735371e16f7f9b57953b6acc01e9",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "`compileSpec` refuses a spec whose registered part does not compile, naming the chain",
         "url": "https://github.com/mezivillager/hacer/issues/821",
         "labels": [
@@ -4531,7 +4611,7 @@
           "fidelity",
           "project:foundation"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -4542,9 +4622,35 @@
           "at": "2026-10-21T17:04:59Z",
           "url": "https://github.com/mezivillager/hacer/issues/821#issuecomment-6321808906"
         }
+      },
+      {
+        "number": 846,
+        "ref": "refs/heads/claim/846",
+        "sha": "cc288b57a50f69b7076173b24914a2f6707a8fc4",
+        "state": "OPEN",
+        "title": "ADR-0020 §10 records R837's loop granularity and names where it overapproximates",
+        "url": "https://github.com/mezivillager/hacer/issues/846",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "fidelity",
+          "project:foundation"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-to-70",
+          "branch": "docs/846-adr-loop-granularity",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-21T18:04:06Z",
+          "url": "https://github.com/mezivillager/hacer/issues/846#issuecomment-6322994788"
+        }
       }
     ],
-    "onClosedIssues": 0
+    "onClosedIssues": 1
   },
   "cloudLane": {
     "items": [
@@ -6366,7 +6472,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-15",
-        "merges": 30
+        "merges": 29
       },
       {
         "date": "2026-10-16",
@@ -6378,20 +6484,20 @@
       },
       {
         "date": "2026-10-21",
-        "merges": 9
+        "merges": 10
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-07T17:19:31.156Z",
-      "merged": 71,
+      "since": "2026-10-07T18:04:28.039Z",
+      "merged": 72,
       "openToMergeHours": {
         "median": 0.4,
         "p90": 2
       },
       "blockedOnce": {
         "count": 7,
-        "of": 56,
+        "of": 57,
         "prs": [
           700,
           725,
@@ -6404,8 +6510,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 48,
-          "withVerdict": 48,
+          "merged": 49,
+          "withVerdict": 49,
           "without": []
         },
         "nonCode": {
@@ -10341,7 +10447,7 @@
       },
       {
         "date": "2026-10-21",
-        "at": "2026-10-21T17:17:29.454Z",
+        "at": "2026-10-21T17:19:31.156Z",
         "byProject": {
           "harness": [
             257,
@@ -10513,11 +10619,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "d03508254feb8d20471fe8c853eed89df85f378c",
+        "sha": "cc288b57a50f69b7076173b24914a2f6707a8fc4",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39642355939/job/119368877154",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39649267817/job/119392979453",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -10567,6 +10673,48 @@
           "known": 71,
           "new": 0
         },
+        "disagrees": false
+      },
+      {
+        "pr": 847,
+        "sha": "0e769eeffcea6461a0bf2bf087e58429dc1ad7b3",
+        "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-21T18:01:39Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39648983048/job/119391979251",
+        "line": "HYGIENE: PASS reviewable=152 test=0 excluded=0 files=2 issue=docs-only",
+        "verdict": "PASS",
+        "fields": {
+          "reviewable": 152,
+          "test": 0,
+          "excluded": 0,
+          "files": 2,
+          "issue": "docs-only"
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 847,
+        "sha": "0e769eeffcea6461a0bf2bf087e58429dc1ad7b3",
+        "check": "browser-qa",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-21T18:01:39Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39648982004/job/119391972220",
+        "line": "BROWSER-QA: skipped (no critical paths)",
+        "verdict": "SKIPPED",
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 847,
+        "sha": "0e769eeffcea6461a0bf2bf087e58429dc1ad7b3",
+        "check": "ci",
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39648980378/job/119391966409",
+        "line": null,
+        "verdict": null,
+        "fields": {},
         "disagrees": false
       }
     ]
@@ -18004,6 +18152,13 @@
           "R831",
           "R835",
           "R845"
+        ]
+      },
+      {
+        "id": "#821",
+        "kind": "github",
+        "citedBy": [
+          "ADR-0020"
         ]
       },
       {
