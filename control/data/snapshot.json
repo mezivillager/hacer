@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-21T22:21:41.940Z",
+  "generatedAt": "2026-10-21T22:35:57.747Z",
   "head": {
-    "sha": "4b3336272cb23635d373fa66ef77790a5e9e42be",
-    "date": "2026-10-22T01:20:05+03:00",
-    "subject": "fix(testing): a chip the registry refuses is an error report naming the chip (#868)"
+    "sha": "104abc352ca0cde310c834d3dd3798bd60f98777",
+    "date": "2026-10-22T01:35:06+03:00",
+    "subject": "test(harness): give the collects and release-config tests room on a loaded laptop"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T22:21:41.940Z",
+      "fetchedAt": "2026-10-21T22:35:57.747Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T22:21:41.940Z",
+      "fetchedAt": "2026-10-21T22:35:57.747Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T22:21:41.940Z",
+      "fetchedAt": "2026-10-21T22:35:57.747Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-21T22:21:41.940Z",
+      "fetchedAt": "2026-10-21T22:35:57.747Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-21T22:21:41.940Z",
+      "fetchedAt": "2026-10-21T22:35:57.747Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-21T22:21:41.940Z",
+      "fetchedAt": "2026-10-21T22:35:57.747Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-21T22:21:41.940Z",
+      "fetchedAt": "2026-10-21T22:35:57.747Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-21T22:21:41.940Z",
+      "fetchedAt": "2026-10-21T22:35:57.747Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-21T22:21:41.940Z",
+      "fetchedAt": "2026-10-21T22:35:57.747Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-21T22:21:41.940Z",
+      "fetchedAt": "2026-10-21T22:35:57.747Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-21T22:21:41.940Z",
+      "fetchedAt": "2026-10-21T22:35:57.747Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-21T22:21:41.940Z",
+      "fetchedAt": "2026-10-21T22:35:57.747Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-21T22:21:41.940Z",
+      "fetchedAt": "2026-10-21T22:35:57.747Z",
       "status": "ok"
     }
   },
@@ -103,12 +103,12 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 16,
+        "open": 15,
         "ready": 1,
-        "inProgress": 2,
+        "inProgress": 1,
         "needsHuman": 2,
         "staleClaims": [],
-        "agentReady": 3,
+        "agentReady": 2,
         "filedElsewhere": [
           151,
           339
@@ -262,12 +262,12 @@
         "lane": "taste",
         "slug": "polish",
         "epicNumber": 144,
-        "open": 5,
+        "open": 6,
         "ready": 0,
         "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 5,
+        "agentReady": 6,
         "filedElsewhere": [],
         "next": {
           "number": 803,
@@ -276,8 +276,8 @@
         "title": "Epic: polish — UI polish",
         "subIssues": {
           "completed": 1,
-          "percentCompleted": 16,
-          "total": 6
+          "percentCompleted": 14,
+          "total": 7
         }
       },
       {
@@ -306,15 +306,15 @@
         "slug": "upkeep",
         "epicNumber": 146,
         "open": 33,
-        "ready": 17,
-        "inProgress": 14,
+        "ready": 15,
+        "inProgress": 16,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 32,
         "filedElsewhere": [],
         "next": {
-          "number": 808,
-          "title": "Inbox review: PRD-002 · First-run guidance for the declared app: teach spec → render → pins → test, and remember the dismissal"
+          "number": 827,
+          "title": "Inbox review: FID-025 · The not-connected refusal fires only for a pin no connection names, so a pin bound only out of range gets the reference's one refusal"
         },
         "title": "Epic: upkeep — maintenance & documentation",
         "subIssues": {
@@ -413,19 +413,9 @@
         "project": "foundation"
       },
       {
-        "number": 808,
-        "title": "Inbox review: PRD-002 · First-run guidance for the declared app: teach spec → render → pins → test, and remember the dismissal",
-        "project": "upkeep"
-      },
-      {
         "number": 257,
         "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
         "project": "harness"
-      },
-      {
-        "number": 809,
-        "title": "Inbox review: PRD-003 · Add the first review's product criteria to N.11's shell: every control named, one icon per job, destructive commands undoable, no placeholders",
-        "project": "upkeep"
       },
       {
         "number": 827,
@@ -506,7 +496,6 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
-        877,
         514
       ]
     }
@@ -529,22 +518,6 @@
         "reason": null
       },
       {
-        "number": 808,
-        "title": "Inbox review: PRD-002 · First-run guidance for the declared app: teach spec → render → pins → test, and remember the dismissal",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": true,
-        "reason": null
-      },
-      {
         "number": 257,
         "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
         "labels": [
@@ -558,22 +531,6 @@
         "project": "harness",
         "rank": 2,
         "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 809,
-        "title": "Inbox review: PRD-003 · Add the first review's product criteria to N.11's shell: every control named, one icon per job, destructive commands undoable, no placeholders",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
         "pickable": true,
         "reason": null
       },
@@ -2437,7 +2394,9 @@
           "agent-ready",
           "risk:2"
         ],
-        "blocking": [],
+        "blocking": [
+          879
+        ],
         "project": "polish",
         "rank": 9,
         "lane": "taste",
@@ -2452,7 +2411,9 @@
           "agent-ready",
           "risk:0"
         ],
-        "blocking": [],
+        "blocking": [
+          879
+        ],
         "project": "polish",
         "rank": 9,
         "lane": "taste",
@@ -2467,7 +2428,9 @@
           "agent-ready",
           "risk:2"
         ],
-        "blocking": [],
+        "blocking": [
+          879
+        ],
         "project": "polish",
         "rank": 9,
         "lane": "taste",
@@ -2507,18 +2470,36 @@
         "reason": "claimed"
       },
       {
-        "number": 861,
-        "title": "The mission-control vitest-collects CLI test survives a loaded local run",
+        "number": 808,
+        "title": "Inbox review: PRD-002 · First-run guidance for the declared app: teach spec → render → pins → test, and remember the dismissal",
         "labels": [
-          "project:harness",
+          "project:upkeep",
           "agent-ready",
           "in-progress",
-          "risk:0"
+          "risk:0",
+          "inbox-review"
         ],
         "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
+        "number": 809,
+        "title": "Inbox review: PRD-003 · Add the first review's product criteria to N.11's shell: every control named, one icon per job, destructive commands undoable, no placeholders",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
         "pickable": false,
         "reason": "claimed"
       },
@@ -2566,6 +2547,21 @@
         "lane": "feature",
         "pickable": false,
         "reason": "unshaped"
+      },
+      {
+        "number": 879,
+        "title": "polish: below 640 px HACER is a read-only viewer — panels open as full-width sheets, nothing clipped at 320 px",
+        "labels": [
+          "project:polish",
+          "agent-ready",
+          "risk:2"
+        ],
+        "blocking": [],
+        "project": "polish",
+        "rank": 9,
+        "lane": "taste",
+        "pickable": false,
+        "reason": "blocked:#804,#803,#802"
       }
     ],
     "byProject": {
@@ -2597,9 +2593,24 @@
         773,
         878
       ],
+      "harness": [
+        257,
+        154,
+        156,
+        270,
+        435,
+        436,
+        454,
+        500,
+        504,
+        505,
+        550,
+        607,
+        677,
+        870,
+        873
+      ],
       "upkeep": [
-        808,
-        809,
         827,
         828,
         829,
@@ -2630,25 +2641,9 @@
         798,
         799,
         800,
-        807
-      ],
-      "harness": [
-        257,
-        154,
-        156,
-        270,
-        435,
-        436,
-        454,
-        500,
-        504,
-        505,
-        550,
-        607,
-        677,
-        861,
-        870,
-        873
+        807,
+        808,
+        809
       ],
       "spine": [
         165,
@@ -2732,30 +2727,13 @@
         802,
         803,
         804,
-        805
+        805,
+        879
       ]
     }
   },
   "prs": {
     "open": [
-      {
-        "number": 877,
-        "title": "chore(harness): the collects and release-config tests survive a loaded local run",
-        "url": "https://github.com/mezivillager/hacer/pull/877",
-        "author": "mezivillager",
-        "labels": [
-          "project:harness",
-          "risk:0"
-        ],
-        "headRefName": "chore/861-collects-test-limit",
-        "isDraft": false,
-        "createdAt": "2026-10-21T22:08:57Z",
-        "mergedAt": null,
-        "closes": [
-          861
-        ],
-        "verdicts": []
-      },
       {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
@@ -2785,11 +2763,38 @@
     ],
     "merged": [
       {
+        "number": 877,
+        "title": "chore(harness): the collects and release-config tests survive a loaded local run",
+        "url": "https://github.com/mezivillager/hacer/pull/877",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "chore/861-collects-test-limit",
+        "isDraft": false,
+        "createdAt": "2026-10-21T22:08:57Z",
+        "mergedAt": "2026-10-21T22:35:07Z",
+        "closes": [
+          861
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Sonnet (claude-sonnet-5-5)",
+            "at": "2026-10-21T22:30:27Z",
+            "url": "https://github.com/mezivillager/hacer/pull/877#issuecomment-6327977968"
+          }
+        ]
+      },
+      {
         "number": 876,
         "title": "fix(testing): a chip the registry refuses is an error report naming the chip, not a throw",
         "url": "https://github.com/mezivillager/hacer/pull/876",
         "author": "mezivillager",
         "labels": [
+          "released",
           "risk:1",
           "project:foundation"
         ],
@@ -2816,6 +2821,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/875",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0"
         ],
@@ -2842,6 +2848,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/872",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0",
           "fidelity"
@@ -4297,33 +4304,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/738#issuecomment-6186974557"
           }
         ]
-      },
-      {
-        "number": 737,
-        "title": "fix(store): draw from a junction through the wire that feeds it",
-        "url": "https://github.com/mezivillager/hacer/pull/737",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:1",
-          "project:foundation"
-        ],
-        "headRefName": "fix/734-junction-redraw",
-        "isDraft": false,
-        "createdAt": "2026-10-15T07:06:55Z",
-        "mergedAt": "2026-10-15T07:21:43Z",
-        "closes": [
-          734
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Sonnet 5.5",
-            "at": "2026-10-15T07:17:12Z",
-            "url": "https://github.com/mezivillager/hacer/pull/737#issuecomment-6186697263"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4726,10 +4706,62 @@
         }
       },
       {
+        "number": 808,
+        "ref": "refs/heads/claim/808",
+        "sha": "4b3336272cb23635d373fa66ef77790a5e9e42be",
+        "state": "OPEN",
+        "title": "Inbox review: PRD-002 · First-run guidance for the declared app: teach spec → render → pins → test, and remember the dismissal",
+        "url": "https://github.com/mezivillager/hacer/issues/808",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-to-70",
+          "branch": "chore/inbox-prd-002",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-21T22:31:14Z",
+          "url": "https://github.com/mezivillager/hacer/issues/808#issuecomment-6327990723"
+        }
+      },
+      {
+        "number": 809,
+        "ref": "refs/heads/claim/809",
+        "sha": "4b3336272cb23635d373fa66ef77790a5e9e42be",
+        "state": "OPEN",
+        "title": "Inbox review: PRD-003 · Add the first review's product criteria to N.11's shell: every control named, one icon per job, destructive commands undoable, no placeholders",
+        "url": "https://github.com/mezivillager/hacer/issues/809",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-to-70",
+          "branch": "chore/inbox-prd-003",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-21T22:32:51Z",
+          "url": "https://github.com/mezivillager/hacer/issues/809#issuecomment-6328017413"
+        }
+      },
+      {
         "number": 861,
         "ref": "refs/heads/claim/861",
         "sha": "0a3db8f50dd1b817c264c8a54dad6b3c83c7dfe2",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "The mission-control vitest-collects CLI test survives a loaded local run",
         "url": "https://github.com/mezivillager/hacer/issues/861",
         "labels": [
@@ -4738,7 +4770,7 @@
           "in-progress",
           "risk:0"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -4776,7 +4808,7 @@
         }
       }
     ],
-    "onClosedIssues": 0
+    "onClosedIssues": 1
   },
   "cloudLane": {
     "items": [
@@ -5970,9 +6002,14 @@
     },
     "releases": [
       {
+        "tag": "v2.66.1",
+        "publishedAt": "2026-10-21T22:23:49Z",
+        "isLatest": true
+      },
+      {
         "tag": "v2.66.0",
         "publishedAt": "2026-10-21T21:35:24Z",
-        "isLatest": true
+        "isLatest": false
       },
       {
         "tag": "v2.65.0",
@@ -6633,7 +6670,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-15",
-        "merges": 13
+        "merges": 12
       },
       {
         "date": "2026-10-16",
@@ -6645,20 +6682,20 @@
       },
       {
         "date": "2026-10-21",
-        "merges": 26
+        "merges": 27
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-07T22:21:41.940Z",
-      "merged": 88,
+      "since": "2026-10-07T22:35:57.747Z",
+      "merged": 89,
       "openToMergeHours": {
         "median": 0.4,
         "p90": 1.9
       },
       "blockedOnce": {
         "count": 7,
-        "of": 73,
+        "of": 74,
         "prs": [
           700,
           725,
@@ -6671,8 +6708,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 58,
-          "withVerdict": 58,
+          "merged": 59,
+          "withVerdict": 59,
           "without": []
         },
         "nonCode": {
@@ -10783,11 +10820,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "4b3336272cb23635d373fa66ef77790a5e9e42be",
+        "sha": "104abc352ca0cde310c834d3dd3798bd60f98777",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39685729571/job/119519167999",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39687553682/job/119525354490",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -10835,52 +10872,6 @@
         "verdict": "PASS",
         "fields": {
           "known": 71,
-          "new": 0
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 877,
-        "sha": "3a44bd25969f766d51382c39affeac83f4a6e7fe",
-        "check": "pr-hygiene",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-21T22:09:11Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39684344470/job/119514484500",
-        "line": "HYGIENE: PASS reviewable=0 test=29 excluded=0 files=0 issue=#861 linked=fixes",
-        "verdict": "PASS",
-        "fields": {
-          "reviewable": 0,
-          "test": 29,
-          "excluded": 0,
-          "files": 0,
-          "issue": "#861",
-          "linked": "fixes"
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 877,
-        "sha": "3a44bd25969f766d51382c39affeac83f4a6e7fe",
-        "check": "browser-qa",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-21T22:09:11Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39684344123/job/119514481878",
-        "line": "BROWSER-QA: skipped (no critical paths)",
-        "verdict": "SKIPPED",
-        "fields": {},
-        "disagrees": false
-      },
-      {
-        "pr": 877,
-        "sha": "3a44bd25969f766d51382c39affeac83f4a6e7fe",
-        "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-21T22:11:11Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39684343756/job/119514480152",
-        "line": "LAYER-RATCHET: 69 known violations (37 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 69,
           "new": 0
         },
         "disagrees": false
