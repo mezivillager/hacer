@@ -2,6 +2,7 @@
 import { describe, it, expect } from 'vitest'
 import { createChipRegistry, registerBuiltin } from './registry'
 import { combineRegistries } from './combineRegistries'
+import { SPEC_SCHEMA_VERSION } from '../spec/types'
 
 describe('combineRegistries', () => {
   it('resolves get/has across registries in order', () => {
@@ -36,6 +37,6 @@ describe('combineRegistries', () => {
 
   it('is read-only (register throws)', () => {
     const c = combineRegistries(createChipRegistry())
-    expect(() => c.register({ name: 'X', inputs: [{ name: 'a', width: 1 }], outputs: [{ name: 'o', width: 1 }], implementation: { type: 'circuit', spec: { schemaVersion: 1, name: 'X', ins: [{ name: 'a', width: 1 }], outs: [{ name: 'o', width: 1 }], parts: [], nets: [] } } })).toThrow()
+    expect(() => c.register({ name: 'X', inputs: [{ name: 'a', width: 1 }], outputs: [{ name: 'o', width: 1 }], implementation: { type: 'circuit', spec: { schemaVersion: SPEC_SCHEMA_VERSION, name: 'X', ins: [{ name: 'a', width: 1 }], outs: [{ name: 'o', width: 1 }], parts: [], nets: [] } } })).toThrow()
   })
 })

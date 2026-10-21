@@ -56,7 +56,7 @@ function invalidWires(doc: CircuitSpec): SpecDiagnostic[] {
   }
   return doc.nets.flatMap((net): SpecDiagnostic[] => {
     const { driver } = net
-    if (driver === null || driver.kind === 'part-pin') return []
+    if (driver === null || driver.kind === 'part-pin' || driver.kind === 'constant') return []
     const found = problem(net, driver)
     return found === null ? [] : [{ code: 'invalid-wire', severity: 'error', netId: net.id, message: `wire ${net.id} = ${printPinRef(driver.pin, driver.slice)}: ${found}` }]
   })

@@ -57,8 +57,8 @@ const EXPECTED: Record<string, Expected> = {
   'part-output-to-literal': {
     parseHDL: null,
     compileHDL: ['Part "Not" output "out" cannot connect to literal "true"'],
-    parseSpec: { doc: true, errors: ['literal-output'] },
-    compileSpec: ['p1.out is bound to true; a part output cannot drive a constant, so the binding is dropped'],
+    parseSpec: { doc: true, errors: ['multiple-drivers'] },
+    compileSpec: ['p1.out is bound to true, but a part output cannot drive a constant'],
   },
   'one-part-writes-internal-twice': {
     parseHDL: null,

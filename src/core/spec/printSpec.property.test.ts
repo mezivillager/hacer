@@ -16,7 +16,7 @@ function load(source: string): { doc: CircuitSpec; diagnostics: SpecDiagnostic[]
 }
 
 const refKey = (ref: Ref | null): string =>
-  ref === null ? 'none' : `${ref.kind}:${ref.kind === 'part-pin' ? ref.partId : ''}:${printPinRef(ref.pin, ref.slice)}`
+  ref === null ? 'none' : ref.kind === 'constant' ? `constant:${ref.value}` : `${ref.kind}:${ref.kind === 'part-pin' ? ref.partId : ''}:${printPinRef(ref.pin, ref.slice)}`
 const sinkSet = (net: Net): string => [...new Set(net.sinks.map(refKey))].sort().join(' ')
 
 /** The first way `b` is not netlist-equal to `a`, or null when it is. */
@@ -50,7 +50,7 @@ function failing(programs: string[], check: (source: string) => string | null): 
 const programs = specPrograms(DOCUMENTS, SEED)
 
 describe('printSpec round trip', () => {
-  it('the generated documents cover 1- and 16-bit pins, part-pin slices, sliced reads, fan-out and pass-throughs', () => {
+  it('the generated documents cover 1- and 16-bit pins, part-pin slices, sliced reads, fan-out, pass-throughs and constants', () => {
     const docs = programs.map((p) => load(p).doc)
     const count = (has: (doc: CircuitSpec) => boolean): number => docs.filter(has).length
     const refs = (doc: CircuitSpec): Ref[] => doc.nets.flatMap((n) => [...(n.driver ? [n.driver] : []), ...n.sinks])
@@ -61,6 +61,7 @@ describe('printSpec round trip', () => {
       slicedRead: count((d) => d.nets.some((n) => n.driver?.kind === 'chip-in' && n.driver.slice !== undefined && n.sinks.some((s) => s.kind === 'part-pin'))),
       fanOut: count((d) => d.nets.some((n) => n.sinks.length > 1)),
       passThrough: count((d) => d.nets.some((n) => n.driver?.kind === 'chip-in' && n.sinks.some((s) => s.kind === 'chip-out'))),
+      constant: count((d) => d.nets.some((n) => n.driver?.kind === 'constant')),
     }
     expect(Object.entries(covered).filter(([, n]) => n < DOCUMENTS / 10)).toEqual([])
   })

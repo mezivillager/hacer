@@ -14,6 +14,7 @@ export interface Part { id: PartId; chip: string }
 export type Ref =
   | { kind: 'part-pin'; partId: PartId; pin: string; slice?: HDLSlice }
   | { kind: 'chip-in' | 'chip-out'; pin: string; slice?: HDLSlice }
+  | { kind: 'constant'; value: boolean }
 
 /** `id` is the sliced signal reference the net carries: `t`, `out[0]`, `t[3..7]`, or a literal. */
 export interface Net {

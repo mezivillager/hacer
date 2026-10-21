@@ -13,9 +13,10 @@ export interface LegacyImport {
 type LegacyWire = DeserializedCircuit['wires'][number]
 type LegacyBus = DeserializedCircuit['busComponents'][number]
 type Endpoint = LegacyWire['from']
+type PinRef = Exclude<Ref, { kind: 'constant' }>
 type SinkRef = Ref & { kind: 'part-pin' | 'chip-out' }
 /** `rank` orders a part output by part, then pin, so internal names never depend on wire order. */
-interface Source { ref: Ref; width: number; rank: number }
+interface Source { ref: PinRef; width: number; rank: number }
 /** Bits `at…` of a value: bits `offset…` of `source`, or 0s read at `lost` when there is no source. */
 interface Piece { at: number; bits: number; offset: number; source: Source | null; lost?: string }
 type Real = Piece & { source: Source }
@@ -28,12 +29,12 @@ const compare = (a: string, b: string): number => (a < b ? -1 : a > b ? 1 : 0)
 const partNumber = (note: ImportNote): number => (note.partId ? Number(note.partId.slice(1)) : Number.POSITIVE_INFINITY)
 const byNote = (a: ImportNote, b: ImportNote): number =>
   compare(a.kind, b.kind) || partNumber(a) - partNumber(b) || compare(a.pin ?? '', b.pin ?? '') || compare(a.detail, b.detail)
-const describe = (ref: Ref): string => (ref.kind === 'part-pin' ? `${ref.partId}.` : '') + printPinRef(ref.pin, ref.slice)
+const describe = (ref: PinRef): string => (ref.kind === 'part-pin' ? `${ref.partId}.` : '') + printPinRef(ref.pin, ref.slice)
 const where = (ref: SinkRef) => (ref.kind === 'part-pin' ? { partId: ref.partId, pin: ref.pin } : { pin: ref.pin })
-const narrowed = <R extends Ref>(ref: R, whole: number, start: number, bits: number): R =>
+const narrowed = <R extends PinRef>(ref: R, whole: number, start: number, bits: number): R =>
   start === 0 && bits >= whole ? ref : { ...ref, slice: { start, end: start + bits - 1 } }
 const isReal = (p: Piece): p is Real => p.source !== null
-const driverOf = (p: Real): Ref => narrowed(p.source.ref, p.source.width, p.offset, p.bits)
+const driverOf = (p: Real): PinRef => narrowed(p.source.ref, p.source.width, p.offset, p.bits)
 const byId = (a: LegacyWire, b: LegacyWire): number => compare(a.id, b.id)
 const floating = (bits: number, lost?: string): Value => [{ at: 0, bits, offset: 0, source: null, ...(lost === undefined ? {} : { lost }) }]
 const distinct = (values: Value[]): Value[] => [...new Map(values.map((v) => [JSON.stringify(v), v])).values()]

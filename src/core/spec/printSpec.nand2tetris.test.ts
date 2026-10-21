@@ -13,7 +13,7 @@ import { sliceWidth, splitNetId } from './netId'
 import { parseSpec } from './parseSpec'
 import { printSpec } from './printSpec'
 import { mulberry32, specPrograms } from './specPrograms'
-import type { CircuitSpec, Net, PartId } from './types'
+import type { CircuitSpec, Net, PartId, Ref } from './types'
 
 /** Issue number, so a failure replays from this file alone: program k is `specProgram(mulberry32(SEED + k), ...)`. */
 const SEED = 0x168
@@ -38,7 +38,8 @@ function project1Registry(): ChipRegistry {
   return registry
 }
 
-const isPassThrough = (net: Net): boolean => net.driver?.kind === 'chip-in' && net.sinks.some((s) => s.kind === 'chip-out')
+const isPassThrough = (net: Net): net is Net & { driver: Extract<Ref, { kind: 'chip-in' | 'chip-out' }> } =>
+  net.driver?.kind === 'chip-in' && net.sinks.some((s) => s.kind === 'chip-out')
 
 function bindingsOf(doc: CircuitSpec, partId: PartId): string {
   return doc.nets
@@ -116,8 +117,8 @@ describe('nand2tetris dialect', () => {
           const { signal, slice } = splitNetId(net.id)
           const width = slice ? sliceWidth(slice) : (doc.outs.find((p) => p.name === signal)?.width ?? 1)
           const bits = (value: number, start: number): number => Math.floor(value / 2 ** start) % 2 ** width
-          const from = net.driver?.pin ?? ''
-          if (bits(got[signal], slice?.start ?? 0) !== bits(inputs[from], net.driver?.slice?.start ?? 0)) {
+          const from = net.driver.pin
+          if (bits(got[signal], slice?.start ?? 0) !== bits(inputs[from], net.driver.slice?.start ?? 0)) {
             return [`${doc.name}: ${net.id} = ${from} broke for inputs ${JSON.stringify(inputs)}, got ${JSON.stringify(got)}\n${text}`]
           }
         }

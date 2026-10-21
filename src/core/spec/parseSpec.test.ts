@@ -62,9 +62,9 @@ describe('parseSpec', () => {
       expect(errors(diagnostics)).toEqual([])
     })
 
-    it('keeps a literal as a net of its own, which nothing has to drive', () => {
+    it('keeps a literal as a net of its own, driven by its constant', () => {
       const { doc, diagnostics } = parsed(chip('IN a; OUT out;', '    Nand(a=a, b=true, out=out); // #p1'))
-      expect(net(doc, 'true')).toEqual({ id: 'true', driver: null, sinks: [{ kind: 'part-pin', partId: 'p1', pin: 'b' }] })
+      expect(net(doc, 'true')).toEqual({ id: 'true', driver: { kind: 'constant', value: true }, sinks: [{ kind: 'part-pin', partId: 'p1', pin: 'b' }] })
       expect(errors(diagnostics)).toEqual([])
     })
   })
@@ -152,20 +152,36 @@ describe('parseSpec', () => {
   })
 
   describe('schemaVersion is read on every load (§1)', () => {
-    it('reads version 1 from the header', () => {
-      const { doc } = parsed(`// hacer-spec 1\n${chip('IN a; OUT out;', '    Not(in=a, out=out); // #p1')}`)
-      expect(doc.schemaVersion).toBe(1)
+    const sidecarAt = (version: number): string => `/* hacer-sidecar\n{ "schemaVersion": ${version}, "hints": { "3d": {}, "2d": {} }, "meta": {}, "tests": [], "notes": [] }\n*/\n`
+
+    it.each([
+      ['a version 2 header', '// hacer-spec 2\n', ''],
+      ['a version 1 header, through migrate(1 → 2)', '// hacer-spec 1\n', ''],
+      ['a version 1 header and sidecar, through migrate(1 → 2)', '// hacer-spec 1\n', sidecarAt(1)],
+      ['a version 1 sidecar with no header, through migrate(1 → 2)', '', sidecarAt(1)],
+    ])('reads %s as a version 2 document', (_what, header, sidecar) => {
+      const result = parseSpec(`${header}${chip('IN a; OUT out;', '    Not(in=a, out=out); // #p1')}${sidecar}`)
+      expect(result.diagnostics).toEqual([])
+      expect([result.doc?.schemaVersion, result.sidecar?.schemaVersion]).toEqual([2, 2])
     })
 
-    it.each(['2', '0', 'banana', ''])('refuses header version "%s" with unknown-schema-version, never best-effort', (version) => {
+    it.each([
+      ['a version 1 header beside a version 2 sidecar', '// hacer-spec 1\n', sidecarAt(2)],
+      ['a version 2 header beside a version 1 sidecar', '// hacer-spec 2\n', sidecarAt(1)],
+    ])('refuses %s: a file is at one version', (_what, header, sidecar) => {
+      const result = parseSpec(`${header}${chip('IN a; OUT out;', '    Not(in=a, out=out); // #p1')}${sidecar}`)
+      expect(result.doc).toBeNull()
+      expect(codes(result.diagnostics)).toEqual(['unknown-schema-version'])
+    })
+
+    it.each(['3', '0', 'banana', ''])('refuses header version "%s" with unknown-schema-version, never best-effort', (version) => {
       const result = parseSpec(`// hacer-spec ${version}\n${chip('IN a; OUT out;', '    Not(in=a, out=out); // #p1')}`)
       expect(result.doc).toBeNull()
       expect(result.diagnostics).toEqual([expect.objectContaining({ code: 'unknown-schema-version', severity: 'error' })])
     })
 
     it('refuses a document whose sidecar carries a version this build does not know', () => {
-      const sidecar = '{ "schemaVersion": 2, "hints": { "3d": {}, "2d": {} }, "meta": {}, "tests": [], "notes": [] }'
-      const result = parseSpec(`// hacer-spec 1\n${chip('IN a; OUT out;', '    Not(in=a, out=out); // #p1')}/* hacer-sidecar\n${sidecar}\n*/\n`)
+      const result = parseSpec(`${chip('IN a; OUT out;', '    Not(in=a, out=out); // #p1')}${sidecarAt(3)}`)
       expect(result.doc).toBeNull()
       expect(codes(result.diagnostics)).toEqual(['unknown-schema-version'])
     })
@@ -176,10 +192,10 @@ describe('parseSpec', () => {
       expect(codes(result.diagnostics)).toEqual(['invalid-sidecar'])
     })
 
-    it('reads official .hdl, which has no header and no sidecar, as v1 text with an empty sidecar', () => {
+    it('reads official .hdl, which has no header and no sidecar, as current text with an empty sidecar', () => {
       const result = parseSpec('CHIP And { IN a, b; OUT out; PARTS: Nand(a=a, b=b, out=n); Not(in=n, out=out); }')
-      expect(result.doc?.schemaVersion).toBe(1)
-      expect(result.sidecar).toEqual({ schemaVersion: 1, hints: { '3d': {}, '2d': {} }, meta: {}, tests: [], notes: [] })
+      expect(result.doc?.schemaVersion).toBe(2)
+      expect(result.sidecar).toEqual({ schemaVersion: 2, hints: { '3d': {}, '2d': {} }, meta: {}, tests: [], notes: [] })
     })
   })
 })

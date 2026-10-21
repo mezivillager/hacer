@@ -242,7 +242,7 @@ describe('fromLegacyCircuit', () => {
     const { doc } = load(PARTS)
     expect(doc.parts).toEqual([{ id: 'p1', chip: 'And' }, { id: 'p2', chip: 'Not16' }, { id: 'p3', chip: 'Nand' }])
     expect(printSpec(doc)).toBe([
-      '// hacer-spec 1',
+      '// hacer-spec 2',
       'CHIP Parts {',
       '    IN a, b, x[16];',
       '    OUT out, notX[16];',
@@ -328,6 +328,11 @@ describe('fromLegacyCircuit', () => {
     expect(fromOutput.sidecar.notes).toEqual([{ kind: 'floating-source', partId: 'p1', pin: 'in', detail: expect.stringContaining('"w1"') }])
   })
 
+  it('a floating part input reads the false net, which the constant false drives', () => {
+    const { doc } = load(golden('junction-floating'))
+    expect(doc.nets.filter((n) => n.id === 'false')).toEqual([{ id: 'false', driver: { kind: 'constant', value: false }, sinks: [{ kind: 'part-pin', partId: 'p1', pin: 'in' }] }])
+  })
+
   it('two wires from one source are one connection, with a duplicate-wire note', () => {
     const { doc, sidecar } = load(DUPLICATE)
     expect(sidecar.notes).toEqual([{ kind: 'duplicate-wire', partId: 'p1', pin: 'in', detail: expect.stringContaining('"w1", "w2"') }])
@@ -366,9 +371,10 @@ describe('fromLegacyCircuit', () => {
       const shapes = doc.nets.flatMap((net) => {
         const out = net.sinks.find((s) => s.kind === 'chip-out')
         const expected =
-          out ? printPinRef(out.pin, out.slice)
+          out?.kind === 'chip-out' ? printPinRef(out.pin, out.slice)
             : net.driver?.kind === 'chip-in' ? printPinRef(net.driver.pin, net.driver.slice)
-              : net.driver === null ? 'false' : splitNetId(net.id).signal
+              : net.driver?.kind === 'constant' ? String(net.driver.value)
+                : net.driver === null ? '(no driver)' : splitNetId(net.id).signal
         const named = /^[A-Za-z][A-Za-z0-9]*(\[\d+(\.\.\d+)?\])?$/.test(net.id)
         const internal = net.driver?.kind === 'part-pin' && !out ? !ports.has(net.id) : true
         return net.id === expected && named && internal ? [] : [`${saved.name}: net ${net.id} ${JSON.stringify(net)}`]

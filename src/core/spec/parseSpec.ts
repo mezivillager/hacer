@@ -110,7 +110,8 @@ export function aliasCycles(nets: Net[], width: Map<string, number>): SpecDiagno
   return [...found.values()].map((members) => ({ code: 'alias-cycle', severity: 'error', netId: members[0], members, message: `Alias cycle: ${members.join(' → ')}` }))
 }
 
-const describeRef = (ref: Ref): string => (ref.kind === 'part-pin' ? `${ref.partId}.${printPinRef(ref.pin, ref.slice)}` : printPinRef(ref.pin, ref.slice))
+const describeRef = (ref: Ref): string =>
+  ref.kind === 'constant' ? String(ref.value) : ref.kind === 'part-pin' ? `${ref.partId}.${printPinRef(ref.pin, ref.slice)}` : printPinRef(ref.pin, ref.slice)
 
 /** The version lives in one canonical header first and one sidecar block last; any other tag is refused. */
 function readVersions(source: string): { sidecar: Sidecar } | { diagnostics: SpecDiagnostic[] } {

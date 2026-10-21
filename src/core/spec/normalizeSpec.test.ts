@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import { normalizeSpec } from './normalizeSpec'
+import { SPEC_SCHEMA_VERSION } from './types'
 import type { CircuitSpec } from './types'
 
 const DOC: CircuitSpec = {
-  schemaVersion: 1,
+  schemaVersion: SPEC_SCHEMA_VERSION,
   name: 'X',
   ins: [{ name: 'a', width: 1 }],
   outs: [{ name: 'out', width: 1 }],
@@ -22,7 +23,7 @@ describe('normalizeSpec — the one normalisation clause (§1)', () => {
 
   it('changes nothing else', () => {
     const { nets, ...rest } = normalizeSpec(DOC)
-    expect(rest).toEqual({ schemaVersion: 1, name: 'X', ins: DOC.ins, outs: DOC.outs, parts: DOC.parts })
+    expect(rest).toEqual({ schemaVersion: SPEC_SCHEMA_VERSION, name: 'X', ins: DOC.ins, outs: DOC.outs, parts: DOC.parts })
     expect(nets).toEqual(DOC.nets.slice(1))
     expect(normalizeSpec(normalizeSpec(DOC))).toEqual(normalizeSpec(DOC))
   })
