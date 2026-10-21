@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-21T15:43:14.607Z",
+  "generatedAt": "2026-10-21T15:54:25.568Z",
   "head": {
-    "sha": "101d4df233118dac13e4db67a5f73700ef19af0b",
-    "date": "2026-10-21T18:42:08+03:00",
-    "subject": "docs(fidelity): review of PR #818's unconnected-input refusal against the reference; FID-025"
+    "sha": "723ece5ac3620a6db07a08ec05c084700cc556df",
+    "date": "2026-10-21T18:53:11+03:00",
+    "subject": "docs(harness): retro run 2026-10-21, HRN-010-017 proposed over 63 merges"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T15:43:14.607Z",
+      "fetchedAt": "2026-10-21T15:54:25.568Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T15:43:14.607Z",
+      "fetchedAt": "2026-10-21T15:54:25.568Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T15:43:14.607Z",
+      "fetchedAt": "2026-10-21T15:54:25.568Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-21T15:43:14.607Z",
+      "fetchedAt": "2026-10-21T15:54:25.568Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-21T15:43:14.607Z",
+      "fetchedAt": "2026-10-21T15:54:25.568Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-21T15:43:14.607Z",
+      "fetchedAt": "2026-10-21T15:54:25.568Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-21T15:43:14.607Z",
+      "fetchedAt": "2026-10-21T15:54:25.568Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-21T15:43:14.607Z",
+      "fetchedAt": "2026-10-21T15:54:25.568Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-21T15:43:14.607Z",
+      "fetchedAt": "2026-10-21T15:54:25.568Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-21T15:43:14.607Z",
+      "fetchedAt": "2026-10-21T15:54:25.568Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-21T15:43:14.607Z",
+      "fetchedAt": "2026-10-21T15:54:25.568Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-21T15:43:14.607Z",
+      "fetchedAt": "2026-10-21T15:54:25.568Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-21T15:43:14.607Z",
+      "fetchedAt": "2026-10-21T15:54:25.568Z",
       "status": "ok"
     }
   },
@@ -80,7 +80,7 @@
         "lane": "feature",
         "slug": "foundation",
         "epicNumber": 318,
-        "open": 30,
+        "open": 31,
         "ready": 1,
         "inProgress": 1,
         "needsHuman": 0,
@@ -305,12 +305,12 @@
         "lane": "aux",
         "slug": "upkeep",
         "epicNumber": 146,
-        "open": 18,
-        "ready": 11,
+        "open": 19,
+        "ready": 12,
         "inProgress": 5,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 17,
+        "agentReady": 18,
         "filedElsewhere": [],
         "next": {
           "number": 793,
@@ -476,12 +476,17 @@
         "number": 809,
         "title": "Inbox review: PRD-003 · Add the first review's product criteria to N.11's shell: every control named, one icon per job, destructive commands undoable, no placeholders",
         "project": "upkeep"
+      },
+      {
+        "number": 827,
+        "title": "Inbox review: FID-025 · The not-connected refusal fires only for a pin no connection names, so a pin bound only out of range gets the reference's one refusal",
+        "project": "upkeep"
       }
     ],
     "dormant": {
       "dormant": false,
       "agentPrs": [
-        824,
+        826,
         514
       ]
     }
@@ -698,6 +703,22 @@
       {
         "number": 809,
         "title": "Inbox review: PRD-003 · Add the first review's product criteria to N.11's shell: every control named, one icon per job, destructive commands undoable, no placeholders",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 827,
+        "title": "Inbox review: FID-025 · The not-connected refusal fires only for a pin no connection names, so a pin bound only out of range gets the reference's one refusal",
         "labels": [
           "project:upkeep",
           "agent-ready",
@@ -2355,6 +2376,21 @@
         "lane": "feature",
         "pickable": false,
         "reason": "blocked:#814"
+      },
+      {
+        "number": 825,
+        "title": "ADR-0020 §1.11 records the registry-cycle refusal as an engine refusal",
+        "labels": [
+          "documentation",
+          "risk:0",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "unshaped"
       }
     ],
     "byProject": {
@@ -2388,7 +2424,8 @@
         816,
         820,
         821,
-        823
+        823,
+        825
       ],
       "harness": [
         257,
@@ -2418,6 +2455,7 @@
         807,
         808,
         809,
+        827,
         229,
         256,
         788,
@@ -2516,28 +2554,24 @@
   "prs": {
     "open": [
       {
-        "number": 824,
-        "title": "docs(harness): retro run 2026-10-21, HRN-010–017 proposed over 63 merges",
-        "url": "https://github.com/mezivillager/hacer/pull/824",
+        "number": 826,
+        "title": "feat(hdl): a part cycle through the registry is refused at compile time, naming its chips",
+        "url": "https://github.com/mezivillager/hacer/pull/826",
         "author": "mezivillager",
         "labels": [
-          "project:harness",
-          "risk:0"
+          "risk:1",
+          "fidelity",
+          "project:foundation"
         ],
-        "headRefName": "docs/retro-2026-10-21",
+        "headRefName": "feat/816-registry-cycle",
         "isDraft": false,
-        "createdAt": "2026-10-21T15:29:30Z",
+        "createdAt": "2026-10-21T15:45:42Z",
         "mergedAt": null,
-        "closes": [],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "coordinator (claude-opus-5-5)",
-            "at": "2026-10-21T15:30:51Z",
-            "url": "https://github.com/mezivillager/hacer/pull/824#issuecomment-6319790156"
-          }
-        ]
+        "closes": [
+          816,
+          825
+        ],
+        "verdicts": []
       },
       {
         "number": 514,
@@ -2567,6 +2601,30 @@
       }
     ],
     "merged": [
+      {
+        "number": 824,
+        "title": "docs(harness): retro run 2026-10-21, HRN-010–017 proposed over 63 merges",
+        "url": "https://github.com/mezivillager/hacer/pull/824",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/retro-2026-10-21",
+        "isDraft": false,
+        "createdAt": "2026-10-21T15:29:30Z",
+        "mergedAt": "2026-10-21T15:53:12Z",
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (claude-opus-5-5)",
+            "at": "2026-10-21T15:30:51Z",
+            "url": "https://github.com/mezivillager/hacer/pull/824#issuecomment-6319790156"
+          }
+        ]
+      },
       {
         "number": 822,
         "title": "docs(fidelity): review of PR #818 — the unconnected-input refusal against the reference; FID-025",
@@ -4106,33 +4164,6 @@
             "model": "Opus 5.5",
             "at": "2026-10-14T22:39:18Z",
             "url": "https://github.com/mezivillager/hacer/pull/698#issuecomment-6180089931"
-          }
-        ]
-      },
-      {
-        "number": 697,
-        "title": "chore(lineage): lint:lineage fails; the unlinked count is a shrink-only baseline (DL-6)",
-        "url": "https://github.com/mezivillager/hacer/pull/697",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:2",
-          "project:lineage"
-        ],
-        "headRefName": "chore/471-lineage-fails",
-        "isDraft": false,
-        "createdAt": "2026-10-14T22:18:56Z",
-        "mergedAt": "2026-10-14T22:35:00Z",
-        "closes": [
-          471
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Opus 5.5",
-            "at": "2026-10-14T22:30:26Z",
-            "url": "https://github.com/mezivillager/hacer/pull/697#issuecomment-6179957426"
           }
         ]
       }
@@ -6167,7 +6198,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-14",
-        "merges": 6
+        "merges": 5
       },
       {
         "date": "2026-10-15",
@@ -6183,20 +6214,20 @@
       },
       {
         "date": "2026-10-21",
-        "merges": 3
+        "merges": 4
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-07T15:43:14.607Z",
-      "merged": 65,
+      "since": "2026-10-07T15:54:25.568Z",
+      "merged": 66,
       "openToMergeHours": {
         "median": 0.4,
         "p90": 2.4
       },
       "blockedOnce": {
         "count": 7,
-        "of": 50,
+        "of": 51,
         "prs": [
           700,
           725,
@@ -6214,8 +6245,8 @@
           "without": []
         },
         "nonCode": {
-          "merged": 21,
-          "withVerdict": 6,
+          "merged": 22,
+          "withVerdict": 7,
           "without": [
             692,
             693,
@@ -10308,11 +10339,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "101d4df233118dac13e4db67a5f73700ef19af0b",
+        "sha": "723ece5ac3620a6db07a08ec05c084700cc556df",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39628078214/job/119318581817",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39629730611/job/119324410970",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -10365,42 +10396,43 @@
         "disagrees": false
       },
       {
-        "pr": 824,
-        "sha": "90fd7ea5a8b7467a527ddb1b465c85ef92123173",
+        "pr": 826,
+        "sha": "2a375768d04b6eef01125d53bd7a8fc30fd18b9c",
         "check": "pr-hygiene",
         "conclusion": "SUCCESS",
-        "completedAt": "2026-10-21T15:29:46Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39626180803/job/119311929816",
-        "line": "HYGIENE: WARN reviewable=315 test=0 excluded=0 files=1 issue=docs-only",
-        "verdict": "WARN",
+        "completedAt": "2026-10-21T15:48:13Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39628948751/job/119321566776",
+        "line": "HYGIENE: PASS reviewable=69 test=95 excluded=0 files=2 issue=#816,#825 linked=fixes",
+        "verdict": "PASS",
         "fields": {
-          "reviewable": 315,
-          "test": 0,
+          "reviewable": 69,
+          "test": 95,
           "excluded": 0,
-          "files": 1,
-          "issue": "docs-only"
+          "files": 2,
+          "issue": "#816,#825",
+          "linked": "fixes"
         },
         "disagrees": false
       },
       {
-        "pr": 824,
-        "sha": "90fd7ea5a8b7467a527ddb1b465c85ef92123173",
+        "pr": 826,
+        "sha": "2a375768d04b6eef01125d53bd7a8fc30fd18b9c",
         "check": "browser-qa",
         "conclusion": "SUCCESS",
-        "completedAt": "2026-10-21T15:29:45Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39626180848/job/119311926438",
+        "completedAt": "2026-10-21T15:48:16Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39628948179/job/119321563505",
         "line": "BROWSER-QA: skipped (no critical paths)",
         "verdict": "SKIPPED",
         "fields": {},
         "disagrees": false
       },
       {
-        "pr": 824,
-        "sha": "90fd7ea5a8b7467a527ddb1b465c85ef92123173",
+        "pr": 826,
+        "sha": "2a375768d04b6eef01125d53bd7a8fc30fd18b9c",
         "check": "ci",
         "conclusion": "SUCCESS",
-        "completedAt": "2026-10-21T15:31:41Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39626178376/job/119311918474",
+        "completedAt": "2026-10-21T15:50:32Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39628921831/job/119321472615",
         "line": "LAYER-RATCHET: 69 known violations (37 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
         "verdict": "PASS",
         "fields": {
