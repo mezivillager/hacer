@@ -1,7 +1,7 @@
 // src/core/testing/engine.ts
 import type { ChipDefinition } from '../chips/types'
 import type { ChipRegistry } from '../chips/registry'
-import { evaluateChip } from '../chips/evaluateChip'
+import { ChipCompileError, evaluateChip } from '../chips/evaluateChip'
 import { parseHDL } from '../hdl/parser'
 import type { TSTScript } from './types'
 import type { CmpFile } from './cmpParser'
@@ -139,7 +139,7 @@ export function runTest(script: TSTScript, options: RunTestOptions): TestResult 
         try {
           lastOutputs = evaluateChip(activeChip, inputs, registry, maxDepth === undefined ? undefined : { maxDepth })
         } catch (e) {
-          return fail(e instanceof Error ? e.message : String(e))
+          return fail(e instanceof ChipCompileError ? e.refusals.join('; ') : e instanceof Error ? e.message : String(e))
         }
         break
       case 'output': {

@@ -8,6 +8,24 @@ import { compileSpec } from '../spec/compileSpec'
 
 export const DEFAULT_MAX_DEPTH = 100
 
+/** `chip`, or a part chip below it, does not compile; `refusals` name a part chip's by the chain from `chip`, as compileSpec does. */
+export class ChipCompileError extends Error {
+  readonly chip: string
+  readonly refusals: readonly string[]
+
+  constructor(chip: string, refusals: readonly string[]) {
+    super(`evaluateChip: chip "${chip}" failed to compile: ${refusals.join('; ')}`)
+    this.chip = chip
+    this.refusals = refusals
+  }
+
+  /** The same refusal, met evaluating `parent`, of which this chip is a part. */
+  reachedFrom(parent: string): ChipCompileError {
+    // A refusal already chained from this chip, by a deeper part or by compileSpec, extends the chain rather than nesting it.
+    return new ChipCompileError(parent, this.refusals.map((refusal) => (refusal.startsWith(`${this.chip} › `) ? `${parent} › ${refusal}` : `${parent} › ${this.chip}: ${refusal}`)))
+  }
+}
+
 interface CachedEvaluator {
   evaluate: CompiledEvaluator
   lookedUp: ReadonlyArray<readonly [string, ChipDefinition | undefined]>
@@ -42,7 +60,7 @@ function recording(registry: ChipRegistry): { view: ChipRegistry; lookedUp: Map<
 
 function compile(chip: ChipDefinition, registry: ChipRegistry): CompiledEvaluator {
   const refuse = (messages: string[]): never => {
-    throw new Error(`evaluateChip: chip "${chip.name}" failed to compile: ${messages.join('; ')}`)
+    throw new ChipCompileError(chip.name, messages)
   }
   if (isCircuitChip(chip)) {
     const result = compileSpec({ doc: chip.implementation.spec, diagnostics: [] }, registry)
@@ -100,5 +118,9 @@ export function evaluateChipWithCtx(
     cached = { evaluate: compile(chip, view), lookedUp: [...lookedUp], checkedAgainst: ctx.registry, checkedAtVersion: version }
     compiledCache.set(chip, cached)
   }
-  return cached.evaluate(inputs, ctx)
+  try {
+    return cached.evaluate(inputs, ctx)
+  } catch (error) {
+    throw error instanceof ChipCompileError ? error.reachedFrom(chip.name) : error
+  }
 }
