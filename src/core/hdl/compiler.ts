@@ -288,7 +288,7 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
     // (Output pins may legally be left unconnected when a chip doesn't use them.)
     for (const p of def.inputs) {
       if (!coversAnyBit(boundRanges.get(p.name), p.width)) {
-        errors.push({ message: `Part "${part.name}" input pin "${p.name}" is not connected`, partName: part.name, pinName: p.name })
+        errors.push({ message: `Part "${part.name}" input pin "${p.name}" is not connected: the nand2tetris simulator reads it as 0; bind ${p.name}=false to do the same`, partName: part.name, pinName: p.name })
       }
     }
     reads.push(r)

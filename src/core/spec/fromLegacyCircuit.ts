@@ -226,7 +226,7 @@ export function fromLegacyCircuit(saved: SerializedCircuit): LegacyImport {
     const label = describe(site.ref)
     const quoted = (ids: string[]): string => ids.map((id) => `"${id}"`).join(', ')
     if (site.ref.kind === 'part-pin' && site.wires.length === 0) {
-      note('unconnected-input', `${label} input "${site.ref.pin}" has no wire: it read 0 on the canvas, and the compile refuses it`, where(site.ref))
+      note('unconnected-input', `${label} input "${site.ref.pin}" has no wire: it read 0 on the canvas, it reads 0 in the nand2tetris simulator, and HACER's compile refuses it until it is bound`, where(site.ref))
     }
     if (found.length > 1) {
       const drivers = found.map(({ delivery: d, wires }) => `${reading(d.pieces, site.ref.pin)} (wire ${quoted(wires)})`)
