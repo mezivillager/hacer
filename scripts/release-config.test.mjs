@@ -57,7 +57,11 @@ const CASES = [
   },
 ]
 
-describe('release configuration loads and runs offline', () => {
+// The first call into each plugin imports its preset's module graph: about a second alone, past the
+// default 5s when the machine is loaded. A hung plugin still fails its own test at this limit.
+const PLUGIN_LOAD_LIMIT_MS = 30_000
+
+describe('release configuration loads and runs offline', { timeout: PLUGIN_LOAD_LIMIT_MS }, () => {
   describe.each(CASES)('$message', ({ message, subject, type, version, heading }) => {
     it(`analyzeCommits returns ${type}`, async () => {
       const { analyzeCommits } = await loadPlugin('@semantic-release/commit-analyzer')

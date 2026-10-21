@@ -1,6 +1,7 @@
-import { execFileSync } from 'node:child_process'
+import { execFile } from 'node:child_process'
 import { readdirSync } from 'node:fs'
 import path from 'node:path'
+import { promisify } from 'node:util'
 import { describe, expect, it } from 'vitest'
 
 // PR #512's verifier BLOCK: vite.config.ts's ALL_TESTS glob for mission-control/ was
@@ -18,6 +19,14 @@ import { describe, expect, it } from 'vitest'
 
 const ROOT = path.join(import.meta.dirname, '..', '..')
 const TEST_FILE = /\.(test|spec)\.[^/.]+$/
+const VITEST_BIN = path.join(ROOT, 'node_modules', 'vitest', 'vitest.mjs')
+const run = promisify(execFile)
+
+// `--filesOnly` lists what the config's globs match without importing any test file, so the child
+// takes seconds, not tens of seconds, on a loaded laptop. The child is killed at CHILD_LIMIT_MS so a
+// collection that never ends fails this one test with that message instead of stalling the whole run.
+const CHILD_LIMIT_MS = 60_000
+const TEST_LIMIT_MS = CHILD_LIMIT_MS + 15_000
 
 /** Every real test/spec file under a directory, repo-relative and forward-slashed — plain fs, no glob library:
  *  this must ask what is really on disk, not what a pattern says should be there. */
@@ -28,13 +37,15 @@ function testFilesUnder(dir) {
 }
 
 describe('vite.config.ts collects every mission-control test file', () => {
-  // Spawns a whole second Vitest process to resolve config and collect files — measured 6-21s depending on load,
-  // well past the default 5s per-test timeout; this is the one test in the suite genuinely slower than that.
-  it('every mission-control/**/*.test.* or *.spec.* file on disk is one `vitest list` actually reports', () => {
+  it('every mission-control/**/*.test.* or *.spec.* file on disk is one `vitest list` actually reports', async () => {
     const onDisk = testFilesUnder('mission-control')
     expect(onDisk.length).toBeGreaterThan(0) // otherwise the check below is vacuous, not green
 
-    const listed = execFileSync('pnpm', ['exec', 'vitest', 'list', 'mission-control'], { cwd: ROOT, encoding: 'utf8' })
+    const { stdout: listed } = await run(process.execPath, [VITEST_BIN, 'list', 'mission-control', '--filesOnly'], {
+      cwd: ROOT,
+      encoding: 'utf8',
+      timeout: CHILD_LIMIT_MS,
+    })
     for (const file of onDisk) expect(listed, `${file} was not collected by any vitest project`).toContain(file)
-  }, 45_000)
+  }, TEST_LIMIT_MS)
 })
