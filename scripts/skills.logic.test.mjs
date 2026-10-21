@@ -244,11 +244,12 @@ describe('checkTwinAgreement', () => {
   })
 })
 
+// The five prompt-it seats (prompt-reviewer, researcher, implementer, reviewer, data-lane) live in the owner's global ~/.claude/agents/, outside this repo.
+const agentFiles = readdirSync('.claude/agents')
+  .filter((name) => name.endsWith('.md'))
+  .map((name) => `.claude/agents/${name}`)
+
 describe('every agent frontmatter survives a strict YAML read', () => {
-  // The five prompt-it seats (prompt-reviewer, researcher, implementer, reviewer, data-lane) live in the owner's global ~/.claude/agents/, outside this repo.
-  const agentFiles = readdirSync('.claude/agents')
-    .filter((name) => name.endsWith('.md'))
-    .map((name) => `.claude/agents/${name}`)
   const frontmatterLines = (file) => /^---\n([\s\S]*?)\n---/.exec(readBrief(file))[1].split('\n')
 
   it.each(agentFiles)('%s has no " #" in a frontmatter value', (file) => {
@@ -262,6 +263,15 @@ describe('every agent frontmatter survives a strict YAML read', () => {
       const line = lines.find((l) => l.startsWith(`${key}:`))
       if (line) expect(fields[key]).toBe(line.slice(key.length + 1).trim())
     }
+  })
+})
+
+describe('every agent definition names its path base', () => {
+  const PATH_BASE_SENTENCE =
+    'Paths in this file are relative to the hacer checkout; from the parent workspace, prefix them with `hacer/`.'
+
+  it.each(agentFiles)('%s says its paths are relative to the hacer checkout', (file) => {
+    expect(containsPhrases(stripFrontmatter(readBrief(file)), [PATH_BASE_SENTENCE])).toBe(true)
   })
 })
 
