@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-21T17:17:29.454Z",
+  "generatedAt": "2026-10-21T17:19:31.156Z",
   "head": {
     "sha": "d03508254feb8d20471fe8c853eed89df85f378c",
     "date": "2026-10-21T20:16:36+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T17:17:29.454Z",
+      "fetchedAt": "2026-10-21T17:19:31.156Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T17:17:29.454Z",
+      "fetchedAt": "2026-10-21T17:19:31.156Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T17:17:29.454Z",
+      "fetchedAt": "2026-10-21T17:19:31.156Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-21T17:17:29.454Z",
+      "fetchedAt": "2026-10-21T17:19:31.156Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-21T17:17:29.454Z",
+      "fetchedAt": "2026-10-21T17:19:31.156Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-21T17:17:29.454Z",
+      "fetchedAt": "2026-10-21T17:19:31.156Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-21T17:17:29.454Z",
+      "fetchedAt": "2026-10-21T17:19:31.156Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-21T17:17:29.454Z",
+      "fetchedAt": "2026-10-21T17:19:31.156Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-21T17:17:29.454Z",
+      "fetchedAt": "2026-10-21T17:19:31.156Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-21T17:17:29.454Z",
+      "fetchedAt": "2026-10-21T17:19:31.156Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-21T17:17:29.454Z",
+      "fetchedAt": "2026-10-21T17:19:31.156Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-21T17:17:29.454Z",
+      "fetchedAt": "2026-10-21T17:19:31.156Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-21T17:17:29.454Z",
+      "fetchedAt": "2026-10-21T17:19:31.156Z",
       "status": "ok"
     }
   },
@@ -4518,31 +4518,6 @@
         }
       },
       {
-        "number": 819,
-        "ref": "refs/heads/claim/819",
-        "sha": "ea87683c491b92bfbfa7c0b7ec752a4733fd6532",
-        "state": "CLOSED",
-        "title": "The inbox status grammar takes a note only after a finished status, and the CLI refusal has a test",
-        "url": "https://github.com/mezivillager/hacer/issues/819",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:1"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-to-70",
-          "branch": "chore/819-inbox-note-grammar",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-21T16:30:12Z",
-          "url": "https://github.com/mezivillager/hacer/issues/819#issuecomment-6321058412"
-        }
-      },
-      {
         "number": 821,
         "ref": "refs/heads/claim/821",
         "sha": "a81dade67dcf735371e16f7f9b57953b6acc01e9",
@@ -4569,7 +4544,7 @@
         }
       }
     ],
-    "onClosedIssues": 1
+    "onClosedIssues": 0
   },
   "cloudLane": {
     "items": [
@@ -6408,7 +6383,7 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-07T17:17:29.454Z",
+      "since": "2026-10-07T17:19:31.156Z",
       "merged": 71,
       "openToMergeHours": {
         "median": 0.4,
@@ -10366,8 +10341,23 @@
       },
       {
         "date": "2026-10-21",
-        "at": "2026-10-21T16:39:39.403Z",
+        "at": "2026-10-21T17:17:29.454Z",
         "byProject": {
+          "harness": [
+            257,
+            154,
+            156,
+            270,
+            435,
+            436,
+            454,
+            500,
+            504,
+            505,
+            550,
+            607,
+            677
+          ],
           "foundation": [
             338,
             151,
@@ -10398,11 +10388,10 @@
             820,
             821,
             823,
-            836,
-            840
+            840,
+            844
           ],
           "upkeep": [
-            794,
             795,
             796,
             797,
@@ -10429,23 +10418,8 @@
             790,
             791,
             792,
-            793
-          ],
-          "harness": [
-            257,
-            154,
-            156,
-            270,
-            435,
-            436,
-            454,
-            500,
-            504,
-            505,
-            550,
-            607,
-            677,
-            819
+            793,
+            794
           ],
           "spine": [
             165,
