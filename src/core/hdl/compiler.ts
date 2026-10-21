@@ -95,15 +95,24 @@ function claimBits(claimed: Map<string, BitRange[]>, key: string, first: number,
 const coversAnyBit = (ranges: BitRange[] | undefined, width: number): boolean =>
   (ranges ?? []).some((range) => overlaps(range, { first: 0, last: width - 1 }))
 
+/** A part's error in the reference's `createError` form, leading with the part's line when it has one. */
+function partError(part: HDLPart, message: string, pinName?: string): HDLCompileError {
+  const error: HDLCompileError = { message: part.line === undefined ? message : `Line ${part.line}: ${message}`, partName: part.name }
+  if (part.line !== undefined) error.line = part.line
+  if (pinName !== undefined) error.pinName = pinName
+  return error
+}
+
 /**
  * Report a message once. N parts driving one bit is one mistake, not N−1 of them, and the second
  * copy of a message tells a reader nothing the first did not. Scoped by the `seen` set the caller
- * owns, so two parts that happen to share a name still report separately.
+ * owns, so two parts that happen to share a name still report separately. Keyed on the message
+ * before its line, which differs between the N parts.
  */
-function pushOnce(errors: HDLCompileError[], seen: Set<string>, error: HDLCompileError): void {
-  if (seen.has(error.message)) return
-  seen.add(error.message)
-  errors.push(error)
+function pushOnce(errors: HDLCompileError[], seen: Set<string>, part: HDLPart, message: string, pinName: string): void {
+  if (seen.has(message)) return
+  seen.add(message)
+  errors.push(partError(part, message, pinName))
 }
 
 /** A signal, and the bits of it that one connection reads or writes. */
@@ -149,7 +158,7 @@ function cycleTrace(unplaced: Set<number>, adj: readonly number[][], edgeCarries
   return carried.filter((label, i) => label !== '' && carried.indexOf(label) === i).join(' → ')
 }
 
-const cannotUseItself = (chip: string): string => `Chip "${chip}" cannot use itself as a part`
+const cannotUseItself = (chip: string): string => `Cannot use chip ${chip} to implement itself`
 
 /** The names a definition's parts are looked up by; a builtin, or HDL that does not parse, has none. */
 function partNames(def: ChipDefinition): string[] {
@@ -201,7 +210,7 @@ export function registryCycle(start: string, registry: ChipRegistry, done: Set<s
 function usesItself(cycle: string[], root: string): string {
   const from = Math.max(cycle.indexOf(root), 0)
   const [chip, ...through] = [...cycle.slice(from), ...cycle.slice(0, from)]
-  return through.length === 0 ? cannotUseItself(chip) : `Chip "${chip}" uses itself through ${through.map((name) => `"${name}"`).join(' → ')}`
+  return through.length === 0 ? cannotUseItself(chip) : `${cannotUseItself(chip)} through ${through.join(' → ')}`
 }
 
 export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResult {
@@ -217,14 +226,13 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
   }
 
   // 2. Resolve parts
-  if (ast.parts.some((part) => part.name === ast.name)) {
-    return { success: false, errors: [{ message: cannotUseItself(ast.name), partName: ast.name }] }
-  }
+  const itself = ast.parts.find((part) => part.name === ast.name)
+  if (itself) return { success: false, errors: [partError(itself, cannotUseItself(ast.name))] }
   const resolved: Array<{ part: HDLPart; def: ChipDefinition }> = []
   ast.parts.forEach((part) => {
     const def = registry.get(part.name)
     if (!def) {
-      errors.push({ message: `Unknown chip-part: "${part.name}"`, partName: part.name })
+      errors.push(partError(part, `Unknown chip-part: "${part.name}"`))
       return
     }
     resolved.push({ part, def })
@@ -233,7 +241,7 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
   const walked = new Set<string>()
   for (const { part } of resolved) {
     const cycle = registryCycle(part.name, registry, walked)
-    if (cycle) return { success: false, errors: [{ message: usesItself(cycle, ast.name), partName: part.name }] }
+    if (cycle) return { success: false, errors: [partError(part, usesItself(cycle, ast.name))] }
   }
 
   const chipInputNames = new Set(ast.inputs.map((p) => p.name))
@@ -277,15 +285,15 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
       const inPin = def.inputs.find((p) => p.name === conn.internal)
       const outPin = def.outputs.find((p) => p.name === conn.internal)
       if (!inPin && !outPin) {
-        errors.push({ message: `Part "${part.name}" has no pin "${conn.internal}"`, partName: part.name, pinName: conn.internal })
+        errors.push(partError(part, `Part "${part.name}" has no pin "${conn.internal}"`, conn.internal))
         continue
       }
       const pin = inPin ?? outPin
       const pastEnd = subBusOutOfRange(conn.external, conn.externalSlice, signalWidth.get(conn.external))
       if (pin && conn.internalSlice && conn.internalSlice.end >= pin.width) {
-        errors.push({ message: `Part "${part.name}" pin "${printPinRef(conn.internal, conn.internalSlice)}" is out of range; "${conn.internal}" has width ${pin.width}`, partName: part.name, pinName: conn.internal })
+        errors.push(partError(part, `Part "${part.name}" pin "${printPinRef(conn.internal, conn.internalSlice)}" is out of range; "${conn.internal}" has width ${pin.width}`, conn.internal))
       } else if (pin && pastEnd !== null) {
-        errors.push({ message: `Part "${part.name}" pin "${printPinRef(conn.internal, conn.internalSlice)}" is wired to "${printPinRef(conn.external, conn.externalSlice)}": ${pastEnd}`, partName: part.name, pinName: conn.internal })
+        errors.push(partError(part, `Part "${part.name}" pin "${printPinRef(conn.internal, conn.internalSlice)}" is wired to "${printPinRef(conn.external, conn.externalSlice)}": ${pastEnd}`, conn.internal))
       } else if (pin) {
         // The two sides are sized independently: the part's pin (sliced or whole) has to carry
         // exactly as many bits as the signal it is wired to (sliced, or whole when its width is
@@ -298,7 +306,7 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
             : signalWidth.get(conn.external)
         if (externalWidth !== undefined && externalWidth !== internalWidth) {
           const external = conn.externalSlice ? `slice "${printPinRef(conn.external, conn.externalSlice)}"` : `signal "${conn.external}"`
-          errors.push({ message: `Part "${part.name}" pin "${printPinRef(conn.internal, conn.internalSlice)}" width ${internalWidth} != ${external} width ${externalWidth}`, partName: part.name, pinName: conn.internal })
+          errors.push(partError(part, `Part "${part.name}" pin "${printPinRef(conn.internal, conn.internalSlice)}" width ${internalWidth} != ${external} width ${externalWidth}`, conn.internal))
         }
       }
       if (inPin) {
@@ -315,17 +323,17 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
         // waiting to be inferred.
         const boundClash = claimBits(boundRanges, inPin.name, conn.internalSlice?.start ?? 0, conn.internalSlice?.end ?? inPin.width - 1)
         if (boundClash !== null) {
-          pushOnce(errors, reportedBindingClash, { message: `Part "${part.name}" pin "${inPin.name}" bit ${boundClash.first} is bound by more than one connection`, partName: part.name, pinName: inPin.name })
+          pushOnce(errors, reportedBindingClash, part, `Part "${part.name}" pin "${inPin.name}" bit ${boundClash.first} is bound by more than one connection`, inPin.name)
         }
         if (LITERALS.has(conn.external)) continue
         if (!chipInputNames.has(conn.external)) r.push({ signal: conn.external, ...externalRange(conn) })
       } else {
         if (LITERALS.has(conn.external)) {
-          errors.push({ message: `Part "${part.name}" output "${conn.internal}" cannot connect to literal "${conn.external}"`, partName: part.name, pinName: conn.internal })
+          errors.push(partError(part, `Part "${part.name}" output "${conn.internal}" cannot connect to literal "${conn.external}"`, conn.internal))
           continue
         }
         if (chipInputNames.has(conn.external)) {
-          errors.push({ message: `Part "${part.name}" output "${conn.internal}" cannot write to chip input "${conn.external}"`, partName: part.name, pinName: conn.internal })
+          errors.push(partError(part, `Part "${part.name}" output "${conn.internal}" cannot write to chip input "${conn.external}"`, conn.internal))
           continue
         }
         // One bit, one driver. Two parts writing the same bit is a short circuit, not a value,
@@ -337,7 +345,7 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
           // The message names one bit, so it names the first shared one — and names none when the
           // overlap has no end, because two whole-signal writes clash at no particular bit.
           const at = drivenClash.last === WHOLE_SIGNAL ? drivenClash : { first: drivenClash.first, last: drivenClash.first }
-          pushOnce(errors, reportedDriverClash, { message: `Signal "${conn.external}"${describeBits(at)} is driven by more than one part`, partName: part.name, pinName: conn.internal })
+          pushOnce(errors, reportedDriverClash, part, `Signal "${conn.external}"${describeBits(at)} is driven by more than one part`, conn.internal)
         }
         w.push({ signal: conn.external, ...written })
       }
@@ -351,7 +359,7 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
     // (Output pins may legally be left unconnected when a chip doesn't use them.)
     for (const p of def.inputs) {
       if (!coversAnyBit(boundRanges.get(p.name), p.width)) {
-        errors.push({ message: `Part "${part.name}" input pin "${p.name}" is not connected: the nand2tetris simulator reads it as 0; bind ${p.name}=false to do the same`, partName: part.name, pinName: p.name })
+        errors.push(partError(part, `Part "${part.name}" input pin "${p.name}" is not connected: the nand2tetris simulator reads it as 0; bind ${p.name}=false to do the same`, p.name))
       }
     }
     reads.push(r)
@@ -380,7 +388,7 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
     const dangling = `${i}:${message}`
     if (reportedDangling.has(dangling)) return
     reportedDangling.add(dangling)
-    errors.push({ message, partName: resolved[i].part.name })
+    errors.push(partError(resolved[i].part, message))
   }
   reads.forEach((r, i) => {
     r.forEach((read) => {

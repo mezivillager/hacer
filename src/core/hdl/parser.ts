@@ -479,7 +479,7 @@ class Parser {
     this.expect('LPAREN')
     const connections = this.parseConnList()
     this.expect('RPAREN')
-    return { name: nameToken.value, connections }
+    return { name: nameToken.value, connections, line: nameToken.line }
   }
 
   private parseConnList(): HDLConnection[] {
