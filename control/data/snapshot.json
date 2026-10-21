@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-21T19:21:52.915Z",
+  "generatedAt": "2026-10-21T19:48:10.812Z",
   "head": {
-    "sha": "b18fa83da5deda30d7023b637218f1e8aa3d63fe",
-    "date": "2026-10-21T22:20:59+03:00",
-    "subject": "docs(harness): the coordinator applies overturned under one definition, and the label moves no tier"
+    "sha": "5bf4285bd52a789a48af7f1193cb1db423864e84",
+    "date": "2026-10-21T22:47:09+03:00",
+    "subject": "feat(spec): printSpec throws on a driverless net that shares its id with a driven one (#823)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T19:21:52.915Z",
+      "fetchedAt": "2026-10-21T19:48:10.812Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T19:21:52.915Z",
+      "fetchedAt": "2026-10-21T19:48:10.812Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T19:21:52.915Z",
+      "fetchedAt": "2026-10-21T19:48:10.812Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-21T19:21:52.915Z",
+      "fetchedAt": "2026-10-21T19:48:10.812Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-21T19:21:52.915Z",
+      "fetchedAt": "2026-10-21T19:48:10.812Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-21T19:21:52.915Z",
+      "fetchedAt": "2026-10-21T19:48:10.812Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-21T19:21:52.915Z",
+      "fetchedAt": "2026-10-21T19:48:10.812Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-21T19:21:52.915Z",
+      "fetchedAt": "2026-10-21T19:48:10.812Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-21T19:21:52.915Z",
+      "fetchedAt": "2026-10-21T19:48:10.812Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-21T19:21:52.915Z",
+      "fetchedAt": "2026-10-21T19:48:10.812Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-21T19:21:52.915Z",
+      "fetchedAt": "2026-10-21T19:48:10.812Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-21T19:21:52.915Z",
+      "fetchedAt": "2026-10-21T19:48:10.812Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-21T19:21:52.915Z",
+      "fetchedAt": "2026-10-21T19:48:10.812Z",
       "status": "ok"
     }
   },
@@ -80,12 +80,12 @@
         "lane": "feature",
         "slug": "foundation",
         "epicNumber": 318,
-        "open": 30,
+        "open": 29,
         "ready": 2,
         "inProgress": 2,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 6,
+        "agentReady": 5,
         "filedElsewhere": [],
         "next": {
           "number": 338,
@@ -103,12 +103,12 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 14,
-        "ready": 2,
+        "open": 15,
+        "ready": 3,
         "inProgress": 0,
         "needsHuman": 1,
         "staleClaims": [],
-        "agentReady": 2,
+        "agentReady": 3,
         "filedElsewhere": [
           151,
           339
@@ -190,8 +190,8 @@
         },
         "title": "Epic: core — headless core",
         "subIssues": {
-          "completed": 19,
-          "percentCompleted": 73,
+          "completed": 20,
+          "percentCompleted": 76,
           "total": 26
         }
       },
@@ -408,9 +408,9 @@
     ],
     "next": [
       {
-        "number": 799,
-        "title": "Inbox review: HRN-008 · Register the `hacer-*` agent types where sessions start: the parent workspace",
-        "project": "upkeep"
+        "number": 257,
+        "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
+        "project": "harness"
       },
       {
         "number": 338,
@@ -418,14 +418,19 @@
         "project": "foundation"
       },
       {
-        "number": 257,
-        "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
-        "project": "harness"
+        "number": 844,
+        "title": "The `nand2tetris` dialect prints one sliced buffer per 16 bits of an alias, not one `Or` per bit",
+        "project": "foundation"
       },
       {
-        "number": 855,
-        "title": "compileSpec never drops a chip-OUT sink on a net named for something else",
-        "project": "foundation"
+        "number": 799,
+        "title": "Inbox review: HRN-008 · Register the `hacer-*` agent types where sessions start: the parent workspace",
+        "project": "upkeep"
+      },
+      {
+        "number": 857,
+        "title": "README § Budgets: the laptop's subagent cap is 3 in the workspace settings, 2 while the owner is awake; the committed 4 stays for cloud",
+        "project": "harness"
       },
       {
         "number": 800,
@@ -433,8 +438,8 @@
         "project": "upkeep"
       },
       {
-        "number": 857,
-        "title": "README § Budgets: the laptop's subagent cap is 3 in the workspace settings, 2 while the owner is awake; the committed 4 stays for cloud",
+        "number": 861,
+        "title": "The mission-control vitest-collects CLI test survives a loaded local run",
         "project": "harness"
       },
       {
@@ -521,6 +526,7 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
+        862,
         514
       ]
     }
@@ -528,18 +534,19 @@
   "tasks": {
     "items": [
       {
-        "number": 799,
-        "title": "Inbox review: HRN-008 · Register the `hacer-*` agent types where sessions start: the parent workspace",
+        "number": 257,
+        "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
         "labels": [
-          "project:upkeep",
+          "project:harness",
           "agent-ready",
-          "risk:0",
-          "inbox-review"
+          "risk:2"
         ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
+        "blocking": [
+          270
+        ],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
         "pickable": true,
         "reason": null
       },
@@ -559,25 +566,8 @@
         "reason": null
       },
       {
-        "number": 257,
-        "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:2"
-        ],
-        "blocking": [
-          270
-        ],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 855,
-        "title": "compileSpec never drops a chip-OUT sink on a net named for something else",
+        "number": 844,
+        "title": "The `nand2tetris` dialect prints one sliced buffer per 16 bits of an alias, not one `Or` per bit",
         "labels": [
           "agent-ready",
           "risk:1",
@@ -588,6 +578,37 @@
         "project": "foundation",
         "rank": 1,
         "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 799,
+        "title": "Inbox review: HRN-008 · Register the `hacer-*` agent types where sessions start: the parent workspace",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 857,
+        "title": "README § Budgets: the laptop's subagent cap is 3 in the workspace settings, 2 while the owner is awake; the committed 4 stays for cloud",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:0"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
         "pickable": true,
         "reason": null
       },
@@ -608,8 +629,8 @@
         "reason": null
       },
       {
-        "number": 857,
-        "title": "README § Budgets: the laptop's subagent cap is 3 in the workspace settings, 2 while the owner is awake; the committed 4 stays for cloud",
+        "number": 861,
+        "title": "The mission-control vitest-collects CLI test survives a loaded local run",
         "labels": [
           "project:harness",
           "agent-ready",
@@ -2536,26 +2557,6 @@
         "reason": "claimed"
       },
       {
-        "number": 823,
-        "title": "`printSpec` refuses a document in which a driverless net shares its id with a driven net",
-        "labels": [
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "fidelity",
-          "project:foundation"
-        ],
-        "blocking": [
-          382,
-          844
-        ],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 840,
         "title": "A strict acceptance mode for the grading path: `hacer test` refuses internal subscripts, chip-OUT reads and `_` names as the reference does",
         "labels": [
@@ -2572,10 +2573,11 @@
         "reason": "blocked:#820"
       },
       {
-        "number": 844,
-        "title": "The `nand2tetris` dialect prints one sliced buffer per 16 bits of an alias, not one `Or` per bit",
+        "number": 855,
+        "title": "compileSpec never drops a chip-OUT sink on a net named for something else",
         "labels": [
           "agent-ready",
+          "in-progress",
           "risk:1",
           "fidelity",
           "project:foundation"
@@ -2585,10 +2587,58 @@
         "rank": 1,
         "lane": "feature",
         "pickable": false,
-        "reason": "blocked:#823"
+        "reason": "claimed"
       }
     ],
     "byProject": {
+      "harness": [
+        257,
+        857,
+        861,
+        154,
+        156,
+        270,
+        435,
+        436,
+        454,
+        500,
+        504,
+        505,
+        550,
+        607,
+        677
+      ],
+      "foundation": [
+        338,
+        844,
+        151,
+        184,
+        325,
+        339,
+        379,
+        380,
+        381,
+        382,
+        383,
+        384,
+        385,
+        386,
+        389,
+        395,
+        400,
+        462,
+        506,
+        599,
+        613,
+        719,
+        722,
+        728,
+        742,
+        773,
+        820,
+        840,
+        855
+      ],
       "upkeep": [
         799,
         800,
@@ -2621,54 +2671,6 @@
         796,
         797,
         798
-      ],
-      "foundation": [
-        338,
-        855,
-        151,
-        184,
-        325,
-        339,
-        379,
-        380,
-        381,
-        382,
-        383,
-        384,
-        385,
-        386,
-        389,
-        395,
-        400,
-        462,
-        506,
-        599,
-        613,
-        719,
-        722,
-        728,
-        742,
-        773,
-        820,
-        823,
-        840,
-        844
-      ],
-      "harness": [
-        257,
-        857,
-        154,
-        156,
-        270,
-        435,
-        436,
-        454,
-        500,
-        504,
-        505,
-        550,
-        607,
-        677
       ],
       "spine": [
         165,
@@ -2759,6 +2761,25 @@
   "prs": {
     "open": [
       {
+        "number": 862,
+        "title": "feat(hdl): compile errors use the reference's words and carry the part's line",
+        "url": "https://github.com/mezivillager/hacer/pull/862",
+        "author": "mezivillager",
+        "labels": [
+          "risk:1",
+          "fidelity",
+          "project:foundation"
+        ],
+        "headRefName": "feat/820-reference-compile-errors",
+        "isDraft": false,
+        "createdAt": "2026-10-21T19:47:37Z",
+        "mergedAt": null,
+        "closes": [
+          820
+        ],
+        "verdicts": []
+      },
+      {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
         "url": "https://github.com/mezivillager/hacer/pull/514",
@@ -2786,6 +2807,33 @@
       }
     ],
     "merged": [
+      {
+        "number": 860,
+        "title": "feat(spec): printSpec refuses a driverless net that shares its id with a driven net",
+        "url": "https://github.com/mezivillager/hacer/pull/860",
+        "author": "mezivillager",
+        "labels": [
+          "risk:1",
+          "fidelity",
+          "project:foundation"
+        ],
+        "headRefName": "feat/823-printspec-twin-guard",
+        "isDraft": false,
+        "createdAt": "2026-10-21T19:29:27Z",
+        "mergedAt": "2026-10-21T19:47:10Z",
+        "closes": [
+          823
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus (claude-opus-5-5)",
+            "at": "2026-10-21T19:46:08Z",
+            "url": "https://github.com/mezivillager/hacer/pull/860#issuecomment-6325013016"
+          }
+        ]
+      },
       {
         "number": 858,
         "title": "docs(harness): the coordinator applies overturned under one definition",
@@ -4331,33 +4379,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/721#issuecomment-6183225390"
           }
         ]
-      },
-      {
-        "number": 720,
-        "title": "refactor(nodes): mesh types from src/types/scene.ts, no store imports; Wire3D mode required",
-        "url": "https://github.com/mezivillager/hacer/pull/720",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:2",
-          "project:foundation"
-        ],
-        "headRefName": "refactor/715-neutral-scene-types",
-        "isDraft": false,
-        "createdAt": "2026-10-15T02:04:14Z",
-        "mergedAt": "2026-10-15T02:16:03Z",
-        "closes": [
-          715
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Opus 5.5",
-            "at": "2026-10-15T02:15:16Z",
-            "url": "https://github.com/mezivillager/hacer/pull/720#issuecomment-6182864234"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4711,7 +4732,7 @@
         "number": 823,
         "ref": "refs/heads/claim/823",
         "sha": "ddc0627beac60bfee294b3ef362287e369c77de4",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "`printSpec` refuses a document in which a driverless net shares its id with a driven net",
         "url": "https://github.com/mezivillager/hacer/issues/823",
         "labels": [
@@ -4721,7 +4742,7 @@
           "fidelity",
           "project:foundation"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -4734,27 +4755,29 @@
         }
       },
       {
-        "number": 852,
-        "ref": "refs/heads/claim/852",
-        "sha": "55c1a489136cd71399923680c49f9f34a197abad",
-        "state": "CLOSED",
-        "title": "Define an overturned verdict once, and have the coordinator apply `overturned` from the retro's candidates",
-        "url": "https://github.com/mezivillager/hacer/issues/852",
+        "number": 855,
+        "ref": "refs/heads/claim/855",
+        "sha": "5bf4285bd52a789a48af7f1193cb1db423864e84",
+        "state": "OPEN",
+        "title": "compileSpec never drops a chip-OUT sink on a net named for something else",
+        "url": "https://github.com/mezivillager/hacer/issues/855",
         "labels": [
-          "project:harness",
           "agent-ready",
-          "risk:0"
+          "in-progress",
+          "risk:1",
+          "fidelity",
+          "project:foundation"
         ],
-        "onClosedIssue": true,
+        "onClosedIssue": false,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
           "session": "hacer-loop-to-70",
-          "branch": "docs/852-overturned-owner",
+          "branch": "fix/855-out-sink-lowering",
           "handoff": "none",
           "author": "mezivillager",
-          "at": "2026-10-21T19:00:17Z",
-          "url": "https://github.com/mezivillager/hacer/issues/852#issuecomment-6324108407"
+          "at": "2026-10-21T19:47:15Z",
+          "url": "https://github.com/mezivillager/hacer/issues/855#issuecomment-6325034202"
         }
       }
     ],
@@ -6590,7 +6613,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-15",
-        "merges": 23
+        "merges": 22
       },
       {
         "date": "2026-10-16",
@@ -6602,20 +6625,20 @@
       },
       {
         "date": "2026-10-21",
-        "merges": 16
+        "merges": 17
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-07T19:21:52.915Z",
-      "merged": 78,
+      "since": "2026-10-07T19:48:10.812Z",
+      "merged": 79,
       "openToMergeHours": {
         "median": 0.4,
         "p90": 2
       },
       "blockedOnce": {
         "count": 7,
-        "of": 63,
+        "of": 64,
         "prs": [
           700,
           725,
@@ -6628,8 +6651,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 51,
-          "withVerdict": 51,
+          "merged": 52,
+          "withVerdict": 52,
           "without": []
         },
         "nonCode": {
@@ -10565,7 +10588,7 @@
       },
       {
         "date": "2026-10-21",
-        "at": "2026-10-21T19:19:25.122Z",
+        "at": "2026-10-21T19:21:52.915Z",
         "byProject": {
           "upkeep": [
             799,
@@ -10646,8 +10669,7 @@
             505,
             550,
             607,
-            677,
-            852
+            677
           ],
           "spine": [
             165,
@@ -10741,11 +10763,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "b18fa83da5deda30d7023b637218f1e8aa3d63fe",
+        "sha": "5bf4285bd52a789a48af7f1193cb1db423864e84",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39660852938/job/119433131975",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39664651847/job/119446352967",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -10795,6 +10817,49 @@
           "known": 71,
           "new": 0
         },
+        "disagrees": false
+      },
+      {
+        "pr": 862,
+        "sha": "9c457be0b6bf3c59cd8b89e59a6ec41226fce854",
+        "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-21T19:47:51Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39664722263/job/119446602070",
+        "line": "HYGIENE: PASS reviewable=88 test=299 excluded=0 files=5 issue=#820 linked=fixes",
+        "verdict": "PASS",
+        "fields": {
+          "reviewable": 88,
+          "test": 299,
+          "excluded": 0,
+          "files": 5,
+          "issue": "#820",
+          "linked": "fixes"
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 862,
+        "sha": "9c457be0b6bf3c59cd8b89e59a6ec41226fce854",
+        "check": "browser-qa",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-21T19:47:56Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39664722037/job/119446596180",
+        "line": "BROWSER-QA: skipped (no critical paths)",
+        "verdict": "SKIPPED",
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 862,
+        "sha": "9c457be0b6bf3c59cd8b89e59a6ec41226fce854",
+        "check": "ci",
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39664719780/job/119446589116",
+        "line": null,
+        "verdict": null,
+        "fields": {},
         "disagrees": false
       }
     ]
