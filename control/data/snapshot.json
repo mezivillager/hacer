@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-21T16:23:52.896Z",
+  "generatedAt": "2026-10-21T16:26:17.695Z",
   "head": {
-    "sha": "247b69a43ef1d5b8e008119b4b7fc1355cb301a5",
-    "date": "2026-10-21T19:20:48+03:00",
-    "subject": "docs(adr): ADR-0020 §1.11 rule 4 records the registry-cycle refusal (#825)"
+    "sha": "ea87683c491b92bfbfa7c0b7ec752a4733fd6532",
+    "date": "2026-10-21T19:25:37+03:00",
+    "subject": "docs(fidelity): review of PR #826, the registry-cycle refusal; FID-026 proposed"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T16:23:52.896Z",
+      "fetchedAt": "2026-10-21T16:26:17.695Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T16:23:52.896Z",
+      "fetchedAt": "2026-10-21T16:26:17.695Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-21T16:23:52.896Z",
+      "fetchedAt": "2026-10-21T16:26:17.695Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-21T16:23:52.896Z",
+      "fetchedAt": "2026-10-21T16:26:17.695Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-21T16:23:52.896Z",
+      "fetchedAt": "2026-10-21T16:26:17.695Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-21T16:23:52.896Z",
+      "fetchedAt": "2026-10-21T16:26:17.695Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-21T16:23:52.896Z",
+      "fetchedAt": "2026-10-21T16:26:17.695Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-21T16:23:52.896Z",
+      "fetchedAt": "2026-10-21T16:26:17.695Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-21T16:23:52.896Z",
+      "fetchedAt": "2026-10-21T16:26:17.695Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-21T16:23:52.896Z",
+      "fetchedAt": "2026-10-21T16:26:17.695Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-21T16:23:52.896Z",
+      "fetchedAt": "2026-10-21T16:26:17.695Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-21T16:23:52.896Z",
+      "fetchedAt": "2026-10-21T16:26:17.695Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-21T16:23:52.896Z",
+      "fetchedAt": "2026-10-21T16:26:17.695Z",
       "status": "ok"
     }
   },
@@ -526,7 +526,6 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
-        838,
         837,
         514
       ]
@@ -2714,31 +2713,6 @@
   "prs": {
     "open": [
       {
-        "number": 838,
-        "title": "docs(fidelity): review of PR #826, the registry-cycle refusal; FID-026 proposed",
-        "url": "https://github.com/mezivillager/hacer/pull/838",
-        "author": "mezivillager",
-        "labels": [
-          "project:harness",
-          "risk:0",
-          "fidelity"
-        ],
-        "headRefName": "docs/fidelity-review-826",
-        "isDraft": false,
-        "createdAt": "2026-10-21T16:15:11Z",
-        "mergedAt": null,
-        "closes": [],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "coordinator (claude-opus-5-5)",
-            "at": "2026-10-21T16:16:55Z",
-            "url": "https://github.com/mezivillager/hacer/pull/838#issuecomment-6320767184"
-          }
-        ]
-      },
-      {
         "number": 837,
         "title": "test(hdl): acceptance-parity corpus pins each reader against the web IDE's verdict on 177 HDL shapes",
         "url": "https://github.com/mezivillager/hacer/pull/837",
@@ -2786,11 +2760,37 @@
     ],
     "merged": [
       {
+        "number": 838,
+        "title": "docs(fidelity): review of PR #826, the registry-cycle refusal; FID-026 proposed",
+        "url": "https://github.com/mezivillager/hacer/pull/838",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0",
+          "fidelity"
+        ],
+        "headRefName": "docs/fidelity-review-826",
+        "isDraft": false,
+        "createdAt": "2026-10-21T16:15:11Z",
+        "mergedAt": "2026-10-21T16:25:38Z",
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (claude-opus-5-5)",
+            "at": "2026-10-21T16:16:55Z",
+            "url": "https://github.com/mezivillager/hacer/pull/838#issuecomment-6320767184"
+          }
+        ]
+      },
+      {
         "number": 826,
         "title": "feat(hdl): a part cycle through the registry is refused at compile time, naming its chips",
         "url": "https://github.com/mezivillager/hacer/pull/826",
         "author": "mezivillager",
         "labels": [
+          "released",
           "risk:1",
           "fidelity",
           "project:foundation"
@@ -2819,6 +2819,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/824",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0"
         ],
@@ -2843,6 +2844,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/822",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0",
           "fidelity"
@@ -4318,41 +4320,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/701#issuecomment-6180579575"
           }
         ]
-      },
-      {
-        "number": 700,
-        "title": "docs(harness): a standing retro role and harness inbox, with its first run",
-        "url": "https://github.com/mezivillager/hacer/pull/700",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:2",
-          "size-override"
-        ],
-        "headRefName": "docs/271-retro-role",
-        "isDraft": false,
-        "createdAt": "2026-10-14T22:58:39Z",
-        "mergedAt": "2026-10-14T23:29:50Z",
-        "closes": [
-          271
-        ],
-        "verdicts": [
-          {
-            "verdict": "BLOCK",
-            "round": 1,
-            "model": "Opus 5.5",
-            "at": "2026-10-14T23:12:32Z",
-            "url": "https://github.com/mezivillager/hacer/pull/700#issuecomment-6180546608"
-          },
-          {
-            "verdict": "PASS",
-            "round": 2,
-            "model": "Opus 5.5",
-            "at": "2026-10-14T23:29:09Z",
-            "url": "https://github.com/mezivillager/hacer/pull/700#issuecomment-6180763634"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -5767,9 +5734,14 @@
     },
     "releases": [
       {
+        "tag": "v2.60.0",
+        "publishedAt": "2026-10-21T16:24:35Z",
+        "isLatest": true
+      },
+      {
         "tag": "v2.59.0",
         "publishedAt": "2026-10-21T15:26:00Z",
-        "isLatest": true
+        "isLatest": false
       },
       {
         "tag": "v2.58.4",
@@ -6385,7 +6357,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-14",
-        "merges": 4
+        "merges": 3
       },
       {
         "date": "2026-10-15",
@@ -6401,20 +6373,20 @@
       },
       {
         "date": "2026-10-21",
-        "merges": 5
+        "merges": 6
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-07T16:23:52.896Z",
-      "merged": 67,
+      "since": "2026-10-07T16:26:17.695Z",
+      "merged": 68,
       "openToMergeHours": {
         "median": 0.4,
         "p90": 2.4
       },
       "blockedOnce": {
         "count": 7,
-        "of": 52,
+        "of": 53,
         "prs": [
           700,
           725,
@@ -6432,8 +6404,8 @@
           "without": []
         },
         "nonCode": {
-          "merged": 22,
-          "withVerdict": 7,
+          "merged": 23,
+          "withVerdict": 8,
           "without": [
             692,
             693,
@@ -10364,7 +10336,7 @@
       },
       {
         "date": "2026-10-21",
-        "at": "2026-10-21T16:21:23.126Z",
+        "at": "2026-10-21T16:23:52.896Z",
         "byProject": {
           "foundation": [
             338,
@@ -10536,11 +10508,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "247b69a43ef1d5b8e008119b4b7fc1355cb301a5",
+        "sha": "ea87683c491b92bfbfa7c0b7ec752a4733fd6532",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39633938877/job/119339240426",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39634671760/job/119341827876",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -10636,48 +10608,6 @@
           "known": 69,
           "new": 0
         },
-        "disagrees": false
-      },
-      {
-        "pr": 838,
-        "sha": "d89c928a554405dbc152e803e73dfdae4b844859",
-        "check": "pr-hygiene",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-21T16:22:26Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39634147892/job/119339995611",
-        "line": "HYGIENE: PASS reviewable=115 test=0 excluded=0 files=2 issue=docs-only",
-        "verdict": "PASS",
-        "fields": {
-          "reviewable": 115,
-          "test": 0,
-          "excluded": 0,
-          "files": 2,
-          "issue": "docs-only"
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 838,
-        "sha": "d89c928a554405dbc152e803e73dfdae4b844859",
-        "check": "browser-qa",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-21T16:22:31Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39634151321/job/119340008302",
-        "line": "BROWSER-QA: skipped (no critical paths)",
-        "verdict": "SKIPPED",
-        "fields": {},
-        "disagrees": false
-      },
-      {
-        "pr": 838,
-        "sha": "d89c928a554405dbc152e803e73dfdae4b844859",
-        "check": "ci",
-        "conclusion": null,
-        "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39634151313/job/119340008498",
-        "line": null,
-        "verdict": null,
-        "fields": {},
         "disagrees": false
       }
     ]
