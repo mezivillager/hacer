@@ -13,7 +13,7 @@ $ node scripts/run-prs.mjs --from 2026-10-21T14:30:00Z --to 2026-10-22T06:58:00Z
 $ grep -E '^## R[0-9]+ .*without a (separate )?fidelity review' docs/decisions/rulings/2026-10-21-hacer-loop-to-70.md | sed -E 's/^## (R[0-9]+) — PRs? (#[0-9]+)( \(#[0-9]+\) and (#[0-9]+))?.*/\1 \2 \4/' | paste -sd ',' -
   R860 #843 ,R862 #860 ,R863 #863 ,R864 #865 ,R867 #876 ,R869 #885 ,R871 #904 ,R872 #908 ,R873 #910 ,R874 #911 ,R876 #914 ,R877 #920 ,R879 #921 #922
 ## H6, H7 subagent tokens by role (the run directory, outside the repo)
-$ awk 'NR>1 && $NF ~ /^[0-9]+$/ {s[$1]+=$NF; n[$1]++; t+=$NF; c++} END {for (k in s) print k, n[k], s[k]; print "total", c, t}' ~/.claude/runs/2026-10-21-hacer-loop-to-70/tokens.md | sort
+$ awk 'NR>1 && $NF ~ /^[0-9]+$/ {s[$1]+=$NF; n[$1]++; t+=$NF; c++} END {for (k in s) print k, n[k], s[k]; print "total", c, t}' <run dir>/tokens.md | sort
   builder 41 6712961
   digest 1 194955
   fidelity 6 1192832

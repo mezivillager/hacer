@@ -198,7 +198,7 @@ Check at least five (standing brief §4.4). Each is one command or one source.
 - **Trace** (standing brief §4.2): needing more than one pass, #725 (four Opus verifiers) and #753
   (a BLOCK, then 48,000 documents); #837 → #841 (a squash GitHub refused); passing first time, #917
   and #843 (merged without a fidelity review, R860); an inbox chain, FID-030: #867 → #906 → #908; and
-  two at random. The whole run: 2026-10-21, from `~/.claude/runs/2026-10-21-hacer-loop-to-70/queue.json`
+  two at random. The whole run: 2026-10-21, from the coordinator's run queue (local, not committed)
   to `docs/harness/sessions/2026-10-21.md`. Quote nothing from the run directory that is not already
   in this repo.
 - **Your PR's budget.** `pr-hygiene` exempts only `docs/research/*/evidence/` from the 400 lines
