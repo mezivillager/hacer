@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-22T00:51:39.489Z",
+  "generatedAt": "2026-10-22T01:19:04.694Z",
   "head": {
-    "sha": "304c61c8559bbc96ed0236119a1d34df9a370fb1",
-    "date": "2026-10-22T03:48:23+03:00",
-    "subject": "chore(harness): merge-on-green names a missing workflow scope at the first refused update or merge"
+    "sha": "85061695b41dae8522d3e5e663a2c0ca8cd58c0b",
+    "date": "2026-10-22T04:18:06+03:00",
+    "subject": "chore(harness): backlog.mjs tier names the verifier's model from the PR's paths (#884)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T00:51:39.489Z",
+      "fetchedAt": "2026-10-22T01:19:04.694Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T00:51:39.489Z",
+      "fetchedAt": "2026-10-22T01:19:04.694Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T00:51:39.489Z",
+      "fetchedAt": "2026-10-22T01:19:04.694Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-22T00:51:39.489Z",
+      "fetchedAt": "2026-10-22T01:19:04.694Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-22T00:51:39.489Z",
+      "fetchedAt": "2026-10-22T01:19:04.694Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-22T00:51:39.489Z",
+      "fetchedAt": "2026-10-22T01:19:04.694Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-22T00:51:39.489Z",
+      "fetchedAt": "2026-10-22T01:19:04.694Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-22T00:51:39.489Z",
+      "fetchedAt": "2026-10-22T01:19:04.694Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-22T00:51:39.489Z",
+      "fetchedAt": "2026-10-22T01:19:04.694Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-22T00:51:39.489Z",
+      "fetchedAt": "2026-10-22T01:19:04.694Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-22T00:51:39.489Z",
+      "fetchedAt": "2026-10-22T01:19:04.694Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-22T00:51:39.489Z",
+      "fetchedAt": "2026-10-22T01:19:04.694Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-22T00:51:39.489Z",
+      "fetchedAt": "2026-10-22T01:19:04.694Z",
       "status": "ok"
     }
   },
@@ -103,12 +103,12 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 18,
-        "ready": 2,
+        "open": 19,
+        "ready": 3,
         "inProgress": 1,
         "needsHuman": 2,
         "staleClaims": [],
-        "agentReady": 4,
+        "agentReady": 5,
         "filedElsewhere": [
           151,
           339
@@ -306,15 +306,15 @@
         "slug": "upkeep",
         "epicNumber": 146,
         "open": 33,
-        "ready": 7,
-        "inProgress": 24,
+        "ready": 6,
+        "inProgress": 25,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 32,
         "filedElsewhere": [],
         "next": {
-          "number": 835,
-          "title": "Inbox review: HRN-017 · Split a rerun query that hits the API's 1,000-run cap, as 2026-10-15 did"
+          "number": 839,
+          "title": "Inbox review: FID-026 · Builtins-first matches the reference only over HACER's builtin names: #206 states what a part named after one of the reference's other 27 builtins resolves to"
         },
         "title": "Epic: upkeep — maintenance & documentation",
         "subIssues": {
@@ -418,24 +418,24 @@
         "project": "harness"
       },
       {
-        "number": 835,
-        "title": "Inbox review: HRN-017 · Split a rerun query that hits the API's 1,000-run cap, as 2026-10-15 did",
-        "project": "upkeep"
-      },
-      {
-        "number": 892,
-        "title": "`run-prs` says when its `--to` is still in the future, so a record's merge count can be reproduced",
-        "project": "harness"
-      },
-      {
         "number": 839,
         "title": "Inbox review: FID-026 · Builtins-first matches the reference only over HACER's builtin names: #206 states what a part named after one of the reference's other 27 builtins resolves to",
         "project": "upkeep"
       },
       {
+        "number": 888,
+        "title": "`backlog.mjs ready` and `next` print each workflow failing on `main`, so a broken release is seen at the next pick",
+        "project": "harness"
+      },
+      {
         "number": 848,
         "title": "Inbox review: FID-027 · Amend FID-026: since #821 the lookup order also decides whether `compileSpec` refuses, so its pinned test adds a broken part under a reference builtin name",
         "project": "upkeep"
+      },
+      {
+        "number": 893,
+        "title": "The queue-up rule names its `risk:2` exceptions: inbox-panel filings, and coordinator-filed slices of an owner-approved plan (HRN-015)",
+        "project": "harness"
       },
       {
         "number": 849,
@@ -461,6 +461,7 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
+        896,
         514
       ]
     }
@@ -500,37 +501,6 @@
         "reason": null
       },
       {
-        "number": 835,
-        "title": "Inbox review: HRN-017 · Split a rerun query that hits the API's 1,000-run cap, as 2026-10-15 did",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 892,
-        "title": "`run-prs` says when its `--to` is still in the future, so a record's merge count can be reproduced",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:1"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
         "number": 839,
         "title": "Inbox review: FID-026 · Builtins-first matches the reference only over HACER's builtin names: #206 states what a part named after one of the reference's other 27 builtins resolves to",
         "labels": [
@@ -547,6 +517,23 @@
         "reason": null
       },
       {
+        "number": 888,
+        "title": "`backlog.mjs ready` and `next` print each workflow failing on `main`, so a broken release is seen at the next pick",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:1"
+        ],
+        "blocking": [
+          895
+        ],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
         "number": 848,
         "title": "Inbox review: FID-027 · Amend FID-026: since #821 the lookup order also decides whether `compileSpec` refuses, so its pinned test adds a broken part under a reference builtin name",
         "labels": [
@@ -559,6 +546,21 @@
         "project": "upkeep",
         "rank": 11,
         "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 893,
+        "title": "The queue-up rule names its `risk:2` exceptions: inbox-panel filings, and coordinator-filed slices of an owner-approved plan (HRN-015)",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:2"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
         "pickable": true,
         "reason": null
       },
@@ -2492,6 +2494,23 @@
         "reason": "claimed"
       },
       {
+        "number": 835,
+        "title": "Inbox review: HRN-017 · Split a rerun query that hits the API's 1,000-run cap, as 2026-10-15 did",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 870,
         "title": "Owner: link `ha/.claude/agents` to hacer's role files, so sessions started in the workspace register the `hacer-*` types",
         "labels": [
@@ -2536,39 +2555,6 @@
         "reason": "blocked:#804,#803,#802"
       },
       {
-        "number": 884,
-        "title": "`backlog.mjs tier <pr>` gives the verifier's tier from the PR's paths, and Mission Control lists a verdict given on a cheaper tier",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:2"
-        ],
-        "blocking": [
-          888
-        ],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
-        "number": 888,
-        "title": "`backlog.mjs ready` and `next` print each workflow failing on `main`, so a broken release is seen at the next pick",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:1"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": false,
-        "reason": "blocked:#884"
-      },
-      {
         "number": 889,
         "title": "wt-new scratch makes its folders 0700 and refuses a hacer-scratch another user owns",
         "labels": [
@@ -2581,6 +2567,37 @@
         "lane": "process",
         "pickable": false,
         "reason": "unshaped"
+      },
+      {
+        "number": 892,
+        "title": "`run-prs` says when its `--to` is still in the future, so a record's merge count can be reproduced",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:1"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
+        "number": 895,
+        "title": "Process review cadence: due 14 days after the last finished cycle, printed by `backlog.mjs ready` and `next`, and the coordinator starts its reviewers",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:1"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "blocked:#888"
       }
     ],
     "byProject": {
@@ -2614,7 +2631,8 @@
       ],
       "harness": [
         257,
-        892,
+        888,
+        893,
         154,
         156,
         270,
@@ -2628,12 +2646,11 @@
         607,
         677,
         870,
-        884,
-        888,
-        889
+        889,
+        892,
+        895
       ],
       "upkeep": [
-        835,
         839,
         848,
         849,
@@ -2665,7 +2682,8 @@
         831,
         832,
         833,
-        834
+        834,
+        835
       ],
       "spine": [
         165,
@@ -2757,6 +2775,24 @@
   "prs": {
     "open": [
       {
+        "number": 896,
+        "title": "chore(harness): run-prs names the instant it counted to while its window is open",
+        "url": "https://github.com/mezivillager/hacer/pull/896",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:1"
+        ],
+        "headRefName": "chore/892-run-prs-window",
+        "isDraft": false,
+        "createdAt": "2026-10-22T01:16:03Z",
+        "mergedAt": null,
+        "closes": [
+          892
+        ],
+        "verdicts": []
+      },
+      {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
         "url": "https://github.com/mezivillager/hacer/pull/514",
@@ -2784,6 +2820,32 @@
       }
     ],
     "merged": [
+      {
+        "number": 894,
+        "title": "chore(harness): backlog.mjs tier names the verifier's model; Mission Control lists verdicts below it",
+        "url": "https://github.com/mezivillager/hacer/pull/894",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:2"
+        ],
+        "headRefName": "chore/884-verifier-tier",
+        "isDraft": false,
+        "createdAt": "2026-10-22T01:04:46Z",
+        "mergedAt": "2026-10-22T01:18:06Z",
+        "closes": [
+          884
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus (claude-opus-5-5)",
+            "at": "2026-10-22T01:17:15Z",
+            "url": "https://github.com/mezivillager/hacer/pull/894#issuecomment-6330310593"
+          }
+        ]
+      },
       {
         "number": 891,
         "title": "chore(harness): merge-on-green names a missing workflow scope at the first refused update or merge",
@@ -4298,33 +4360,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/747#issuecomment-6190087365"
           }
         ]
-      },
-      {
-        "number": 744,
-        "title": "feat(core): the 'circuit' chip type carries a spec and evaluates through compileSpec",
-        "url": "https://github.com/mezivillager/hacer/pull/744",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:2",
-          "project:foundation"
-        ],
-        "headRefName": "feat/378c-circuit-chip-type",
-        "isDraft": false,
-        "createdAt": "2026-10-15T09:24:29Z",
-        "mergedAt": "2026-10-15T10:00:26Z",
-        "closes": [
-          378
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Opus 5.5",
-            "at": "2026-10-15T09:48:11Z",
-            "url": "https://github.com/mezivillager/hacer/pull/744#issuecomment-6189249536"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4332,7 +4367,14 @@
       "withVerdict": 50,
       "withoutVerdict": 10,
       "pass": 50,
-      "block": 0
+      "block": 0,
+      "belowTier": [
+        {
+          "number": 748,
+          "because": "src/core/serialization/deserialize.test.ts",
+          "opusVerdict": true
+        }
+      ]
     }
   },
   "claims": {
@@ -4987,28 +5029,54 @@
         }
       },
       {
-        "number": 884,
-        "ref": "refs/heads/claim/884",
-        "sha": "e92853b4b16a08061f5c39d3cb87f0eeeb0ddeb4",
+        "number": 835,
+        "ref": "refs/heads/claim/835",
+        "sha": "304c61c8559bbc96ed0236119a1d34df9a370fb1",
         "state": "OPEN",
-        "title": "`backlog.mjs tier <pr>` gives the verifier's tier from the PR's paths, and Mission Control lists a verdict given on a cheaper tier",
-        "url": "https://github.com/mezivillager/hacer/issues/884",
+        "title": "Inbox review: HRN-017 · Split a rerun query that hits the API's 1,000-run cap, as 2026-10-15 did",
+        "url": "https://github.com/mezivillager/hacer/issues/835",
         "labels": [
-          "project:harness",
+          "project:upkeep",
           "agent-ready",
           "in-progress",
-          "risk:2"
+          "risk:0",
+          "inbox-review"
         ],
         "onClosedIssue": false,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
           "session": "hacer-loop-to-70",
-          "branch": "chore/884-verifier-tier",
+          "branch": "chore/inbox-hrn-017",
           "handoff": "none",
           "author": "mezivillager",
-          "at": "2026-10-22T00:45:35Z",
-          "url": "https://github.com/mezivillager/hacer/issues/884#issuecomment-6329895294"
+          "at": "2026-10-22T01:09:56Z",
+          "url": "https://github.com/mezivillager/hacer/issues/835#issuecomment-6330211319"
+        }
+      },
+      {
+        "number": 892,
+        "ref": "refs/heads/claim/892",
+        "sha": "304c61c8559bbc96ed0236119a1d34df9a370fb1",
+        "state": "OPEN",
+        "title": "`run-prs` says when its `--to` is still in the future, so a record's merge count can be reproduced",
+        "url": "https://github.com/mezivillager/hacer/issues/892",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:1"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-to-70",
+          "branch": "chore/892-run-prs-window",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-22T01:06:40Z",
+          "url": "https://github.com/mezivillager/hacer/issues/892#issuecomment-6330167476"
         }
       }
     ],
@@ -6879,7 +6947,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-15",
-        "merges": 7
+        "merges": 6
       },
       {
         "date": "2026-10-16",
@@ -6895,20 +6963,20 @@
       },
       {
         "date": "2026-10-22",
-        "merges": 4
+        "merges": 5
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-08T00:51:39.489Z",
-      "merged": 94,
+      "since": "2026-10-08T01:19:04.694Z",
+      "merged": 95,
       "openToMergeHours": {
-        "median": 0.4,
+        "median": 0.3,
         "p90": 1.9
       },
       "blockedOnce": {
         "count": 7,
-        "of": 79,
+        "of": 80,
         "prs": [
           700,
           725,
@@ -6921,8 +6989,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 64,
-          "withVerdict": 64,
+          "merged": 65,
+          "withVerdict": 65,
           "without": []
         },
         "nonCode": {
@@ -11029,7 +11097,7 @@
       },
       {
         "date": "2026-10-22",
-        "at": "2026-10-22T00:48:59.923Z",
+        "at": "2026-10-22T00:51:39.489Z",
         "byProject": {
           "foundation": [
             338,
@@ -11059,8 +11127,27 @@
             773,
             878
           ],
+          "harness": [
+            257,
+            892,
+            154,
+            156,
+            270,
+            435,
+            436,
+            454,
+            500,
+            504,
+            505,
+            550,
+            607,
+            677,
+            870,
+            884,
+            888,
+            889
+          ],
           "upkeep": [
-            834,
             835,
             839,
             848,
@@ -11092,27 +11179,8 @@
             830,
             831,
             832,
-            833
-          ],
-          "harness": [
-            257,
-            892,
-            154,
-            156,
-            270,
-            435,
-            436,
-            454,
-            500,
-            504,
-            505,
-            550,
-            607,
-            677,
-            870,
-            884,
-            888,
-            889
+            833,
+            834
           ],
           "spine": [
             165,
@@ -11207,17 +11275,14 @@
     "items": [
       {
         "pr": null,
-        "sha": "304c61c8559bbc96ed0236119a1d34df9a370fb1",
+        "sha": "85061695b41dae8522d3e5e663a2c0ca8cd58c0b",
         "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-22T00:51:23Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39701902981/job/119572865099",
-        "line": "LAYER-RATCHET: 69 known violations (37 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 69,
-          "new": 0
-        },
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39704884156/job/119582469058",
+        "line": null,
+        "verdict": null,
+        "fields": {},
         "disagrees": false
       },
       {
@@ -11262,6 +11327,52 @@
         "verdict": "PASS",
         "fields": {
           "known": 71,
+          "new": 0
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 896,
+        "sha": "94a7a2fbb65be72875e79b8ecfbf99ae0c5a3d32",
+        "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-22T01:16:23Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39704690010/job/119581838762",
+        "line": "HYGIENE: PASS reviewable=15 test=45 excluded=0 files=3 issue=#892 linked=fixes",
+        "verdict": "PASS",
+        "fields": {
+          "reviewable": 15,
+          "test": 45,
+          "excluded": 0,
+          "files": 3,
+          "issue": "#892",
+          "linked": "fixes"
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 896,
+        "sha": "94a7a2fbb65be72875e79b8ecfbf99ae0c5a3d32",
+        "check": "browser-qa",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-22T01:16:18Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39704689928/job/119581837244",
+        "line": "BROWSER-QA: skipped (no critical paths)",
+        "verdict": "SKIPPED",
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 896,
+        "sha": "94a7a2fbb65be72875e79b8ecfbf99ae0c5a3d32",
+        "check": "ci",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-22T01:18:48Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39704688372/job/119581832417",
+        "line": "LAYER-RATCHET: 69 known violations (37 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 69,
           "new": 0
         },
         "disagrees": false
