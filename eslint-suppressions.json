@@ -1,6 +1,191 @@
 {
+  "src/components/canvas/CanvasArea.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/canvas/Scene/hooks/useWirePreviewPath.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/canvas/Wire3D.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/ui/CircuitLibrary.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/ui/CompactToolbar.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/ui/HelpBar/index.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/ui/MultiBitInput.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/ui/PinoutPanel.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/ui/PropertiesPanel/index.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/ui/RightActionBar.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/components/ui/TestResultsPanel.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/core/chips/builtins/project01.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/core/hdl/compiler.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/core/hdl/parser.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/core/serialization/deserialize.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/core/spec/fromLegacyCircuit.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/core/spec/specPrograms.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/core/testing/engine.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/core/testing/tstParser.ts": {
+    "max-lines-per-function": {
+      "count": 2
+    }
+  },
+  "src/gates/common/BaseGate.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/hooks/useBusDrag.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/hooks/useGateDrag.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/hooks/useKeyboardShortcuts.ts": {
+    "max-lines-per-function": {
+      "count": 3
+    }
+  },
+  "src/hooks/useNodeDrag.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/nodes/BusComponent3D.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/nodes/components/InputNode3D.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/nodes/components/OutputNode3D.tsx": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/simulation/topologicalEval.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/store/actions/gateActions/gateActions.ts": {
+    "max-lines-per-function": {
+      "count": 2
+    }
+  },
+  "src/store/actions/junctionPlacementActions/junctionPlacementActions.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/store/actions/nodeActions/nodeActions.ts": {
+    "max-lines-per-function": {
+      "count": 2
+    }
+  },
+  "src/store/actions/nodePlacementActions/nodePlacementActions.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/store/actions/persistenceActions/persistenceActions.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/store/actions/placementActions/placementActions.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/store/actions/wireActions/wireActions.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/store/actions/wiringActions/wiringActions.ts": {
+    "max-lines-per-function": {
+      "count": 4
+    }
+  },
   "src/utils/wiringScheme/branching.ts": {
     "no-console": {
+      "count": 1
+    }
+  },
+  "src/utils/wiringScheme/crossing.ts": {
+    "max-lines-per-function": {
       "count": 1
     }
   },
@@ -9,7 +194,15 @@
       "count": 4
     }
   },
+  "src/utils/wiringScheme/lanes.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
   "src/utils/wiringScheme/pathfinding.ts": {
+    "max-lines-per-function": {
+      "count": 1
+    },
     "no-console": {
       "count": 1
     }

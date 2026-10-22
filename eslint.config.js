@@ -98,6 +98,14 @@ export default defineConfig([
       ],
     },
   },
+  // Today's long functions are recorded in eslint-suppressions.json and may only shrink.
+  {
+    files: ['src/**/*.{ts,tsx}'],
+    ignores: ['**/*.test.{ts,tsx}', '**/*.spec.{ts,tsx}', 'src/test/**'],
+    rules: {
+      'max-lines-per-function': ['error', { max: 80, skipBlankLines: true, skipComments: true }],
+    },
+  },
   // Test files - allow unsafe arguments for test mocks
   // Note: We use Vector3 in createMockThreeEvent, but still need type assertions for nativeEvent
   // since we can't create full native event objects in tests
