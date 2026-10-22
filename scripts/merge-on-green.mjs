@@ -11,7 +11,8 @@
 // Exit: 0 merged · 2 a required check failed · 3 timed out · 4 needs a person (reason printed) ·
 // 1 usage, or an unexpected error in the poll loop (on stderr). Every run ends with one
 // `MERGE-ON-GREEN: <outcome> pr=… head=… exit=<code>` line, an error included: the one to grep for
-// (merge-on-green.logic.mjs `outcome`). GH_BIN picks the gh binary (default: gh on PATH).
+// (merge-on-green.logic.mjs `outcome`). GH_BIN picks the gh binary (default: gh on PATH), and
+// MERGE_ON_GREEN_POLL_MS the wait between passes (default 20000).
 
 import { execFileSync } from 'node:child_process'
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
@@ -25,6 +26,7 @@ import {
   outcome,
   requiredContexts,
   stopOnRefusal,
+  tokenScopes,
   withRerunMarker,
 } from './merge-on-green.logic.mjs'
 
@@ -34,8 +36,8 @@ const [pr, repo = 'mezivillager/hacer', minutesArg = '30'] = args.filter((arg) =
 const minutes = Number(minutesArg)
 const isPr = /^\d+$/.test(pr ?? '')
 const GH = process.env.GH_BIN || 'gh'
-const POLL_MS = 20_000
-const PR_FIELDS = 'number,id,state,isDraft,mergeStateStatus,headRefOid,mergeCommit,baseRefName,autoMergeRequest,body'
+const POLL_MS = Number(process.env.MERGE_ON_GREEN_POLL_MS) || 20_000
+const PR_FIELDS = 'number,id,state,isDraft,mergeStateStatus,headRefOid,mergeCommit,baseRefName,autoMergeRequest,body,author'
 
 const say = (line) => console.log(`[${new Date().toISOString().slice(11, 19)}Z] ${line}`)
 const gh = (args) =>
@@ -125,6 +127,24 @@ function readMergeCommits() {
   }
 }
 
+/** The token's scopes, or null when they cannot be read. */
+function readScopes() {
+  try {
+    return tokenScopes(gh(['api', '-i', 'user']))
+  } catch {
+    return null
+  }
+}
+
+/** The PR's changed files across every page, or null when they cannot be read. */
+function readFiles() {
+  try {
+    return ghPages(`repos/${repo}/pulls/${pr}/files?per_page=100`, '[.[] | {filename, previous_filename}]')
+  } catch {
+    return null
+  }
+}
+
 /** Runs one gh command for an action; a failure is counted, so the logic can stop repeating it. */
 function attempt(kind, args) {
   try {
@@ -135,6 +155,10 @@ function attempt(kind, args) {
     history.lastError = failure(error)
     say(`${kind} refused: ${history.lastError}`)
     if (CANNOT_REBASE.test(history.lastError)) history.mergeCommits = readMergeCommits()
+    else if (kind === 'update-branch' || kind === 'merge') {
+      history.scopes = readScopes()
+      history.files = history.scopes ? readFiles() : null
+    }
   }
 }
 

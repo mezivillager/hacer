@@ -35,6 +35,10 @@ export const CANNOT_REBASE = /can(?:['’]|no)t be rebased/i
 /** The event whose runs check out `refs/pull/<n>/merge`; pull_request_target runs check out the base. */
 const MERGE_EVENT = 'pull_request'
 const MARKER = /\n*<!-- merge-on-green: edited to re-run the required checks on ([0-9a-f]{40}) at [^>]*-->/g
+const WORKFLOWS = '.github/workflows/'
+const DEPENDABOT = 'app/dependabot'
+/** The refused actions a missing `workflow` scope can explain, as a reason names them. */
+const REFUSED = Object.freeze({ 'update-branch': `the ${UPDATE_METHOD} update`, merge: 'the rebase merge' })
 
 export const EXIT = Object.freeze({ merged: 0, fail: 2, timeout: 3, 'give-up': 4, usage: 1, error: 1, 'dry-run': 0 })
 const OUTCOME = Object.freeze({
@@ -127,17 +131,44 @@ export const mergeCommits = (commits) =>
     .filter((commit) => asArray(commit?.parents).length > 1)
     .map((commit) => commit.sha)
 
-export function tokenScopes() {
-  throw new Error('not implemented')
+/** The token's scopes from `gh api -i user` output, or null when it names none (a fine-grained or App token). */
+export function tokenScopes(response) {
+  const header = /^x-oauth-scopes:(.*)$/im.exec(String(response ?? ''))
+  if (!header) return null
+  return header[1]
+    .split(',')
+    .map((scope) => scope.trim())
+    .filter(Boolean)
 }
 
-export function missingScope() {
-  throw new Error('not implemented')
+const workflowPaths = (files) =>
+  unique(asArray(files).flatMap((file) => [file?.filename, file?.previous_filename]))
+    .filter(isName)
+    .filter((name) => name.startsWith(WORKFLOWS))
+
+/**
+ * 'workflow' when the PR changes a path under .github/workflows/ and known scopes lack it, else null.
+ * Read only after a refusal: GitHub needs the scope only for workflow content no branch holds yet.
+ */
+export function missingScope(scopes, files) {
+  if (!Array.isArray(scopes) || scopes.includes('workflow')) return null
+  return workflowPaths(files).length > 0 ? 'workflow' : null
+}
+
+function scopeGiveUp(pr, kind, { scopes, files }, lastError) {
+  const dependabot =
+    pr.author?.login === DEPENDABOT
+      ? `; or a comment \`@dependabot rebase\` on #${pr.number}, which needs no owner: dependabot rebases its own branch (R60)`
+      : ''
+  return giveUp(
+    `GitHub refused ${REFUSED[kind]} of #${pr.number}: ${lastError}. #${pr.number} changes ${workflowPaths(files).join(', ')}, and the token lacks the \`workflow\` scope (it has ${scopes.join(', ') || 'none'}), which GitHub needs to write workflow files that no branch holds yet. The owner runs \`gh auth refresh -s workflow\`, then this tool again${dependabot}`,
+  )
 }
 
 /**
  * The give-up a refusal settles at once, or null while it may be retried: GitHub cannot rebase a
- * branch that carries a merge commit, and a REBASE update it refuses will not take on a retry.
+ * branch that carries a merge commit, a REBASE update it refuses will not take on a retry, and
+ * neither will an update or a merge of workflow files the token has no `workflow` scope for.
  */
 export function stopOnRefusal(pr, history = {}) {
   const refusals = history.refusals ?? {}
@@ -148,6 +179,10 @@ export function stopOnRefusal(pr, history = {}) {
     return giveUp(
       `GitHub cannot rebase #${pr.number} on ${pr.baseRefName}: the branch carries ${which}, and ${pr.baseRefName} requires linear history (${lastError}). Its builder drops the merge from the branch and pushes`,
     )
+  }
+  const refusedKind = Object.keys(REFUSED).find((kind) => (refusals[kind] ?? 0) > 0)
+  if (refusedKind && missingScope(history.scopes, history.files) === 'workflow') {
+    return scopeGiveUp(pr, refusedKind, history, lastError)
   }
   if ((refusals['update-branch'] ?? 0) > 0) {
     return giveUp(
@@ -164,14 +199,15 @@ const markedHeads = (body) => [...(body ?? '').matchAll(MARKER)].map((match) => 
 /**
  * The next action for one reading of a PR.
  * @param snapshot {pr, requiredContexts, checkRuns, workflowRuns}: `pr` is `gh pr view --json
- *   number,state,isDraft,mergeStateStatus,headRefOid,baseRefName,autoMergeRequest,body`;
+ *   number,state,isDraft,mergeStateStatus,headRefOid,baseRefName,autoMergeRequest,body,author`;
  *   `checkRuns` are {id, name, status, conclusion, suite}; `workflowRuns` are {id, name,
  *   workflow_id, event, status, conclusion, suite, attempt, created_at}, both for the head SHA;
  *   `basePushes` are the base ref's moves, {after, timestamp}.
  * @param history what this run of the tool already did: {reruns: run ids, edits: head SHAs,
  *   updates: heads it asked GitHub to update, refusals: {kind: count}, lastError, mergeCommits:
- *   the PR's merge commits, read after a can't-be-rebased refusal, settled: the `settle` head of
- *   the previous pass's action}.
+ *   the PR's merge commits, read after a can't-be-rebased refusal, scopes and files: the token's
+ *   scopes and the PR's {filename, previous_filename}, read after any other refused update or
+ *   merge, settled: the `settle` head of the previous pass's action}.
  *   A refusal is a gh command that failed.
  * @returns {{kind: 'merged'|'fail'|'give-up'|'merge'|'disable-auto'|'wait'|'rerun'|'update-branch'|'edit-body',
  *   reason: string, exit?: number, runId?: number, runs?: number[], settle?: string, method?: 'REBASE'}}
