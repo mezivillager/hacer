@@ -111,3 +111,48 @@ describe('formatConsole', () => {
     expect(formatConsole([])).toBe('0 PRs merged')
   })
 })
+
+describe('formatConsole with a window still open', () => {
+  const FROM = '2026-10-14T22:00:00Z'
+  const TO = '2026-10-15T23:59:00Z'
+  const NOW = Date.parse('2026-10-15T11:10:35.000Z')
+  const pr = (number, mergedAt) => ({ number, title: `t${number}`, mergedAt, labels: [] })
+  const several = [pr(740, '2026-10-14T23:00:00Z'), pr(745, '2026-10-15T03:00:00Z'), pr(748, '2026-10-15T09:00:00Z')]
+
+  it.each([
+    [0, '0 PRs merged by 2026-10-15T11:10:35.000Z (window open until 2026-10-15T23:59:00Z)'],
+    [1, '1 PR merged by 2026-10-15T11:10:35.000Z (window open until 2026-10-15T23:59:00Z)'],
+    [3, '3 PRs merged by 2026-10-15T11:10:35.000Z (window open until 2026-10-15T23:59:00Z)'],
+  ])('names the instant counted to when `to` is later than now, with %i PRs', (count, line) => {
+    expect(formatConsole(several.slice(0, count), { to: TO, now: NOW }).split('\n').at(-1)).toBe(line)
+  })
+
+  it('keeps the PR lines as they are', () => {
+    const lines = formatConsole(several, { to: TO, now: NOW }).split('\n')
+    expect(lines.slice(0, -1)).toEqual(formatConsole(several).split('\n').slice(0, -1))
+  })
+
+  it('prints the closed-window line when `to` equals now: the window is [from, to)', () => {
+    expect(formatConsole(several, { to: TO, now: Date.parse(TO) }).split('\n').at(-1)).toBe('3 PRs merged')
+  })
+
+  it('prints the closed-window line when `to` is in the past', () => {
+    expect(formatConsole(several, { to: TO, now: Date.parse('2026-10-22T04:00:00Z') }).split('\n').at(-1)).toBe(
+      '3 PRs merged',
+    )
+  })
+
+  it('prints the closed-window line when no `now` is given', () => {
+    expect(formatConsole(several, { to: TO }).split('\n').at(-1)).toBe('3 PRs merged')
+  })
+
+  it('prints an instant that, given back as `to`, counts the same PRs, one merged in the same second as now included', () => {
+    const now = Date.parse('2026-10-15T11:17:38.420Z')
+    const counted = mergedInWindow([...several, pr(750, '2026-10-15T11:17:38Z')], FROM, TO)
+    expect(counted.map((p) => p.number)).toEqual([740, 745, 748, 750])
+    const instant = formatConsole(counted, { to: TO, now }).split('\n').at(-1).match(/ merged by (\S+) /)?.[1]
+    expect(instant).toBe('2026-10-15T11:17:38.420Z')
+    const recountedLater = [...several, pr(750, '2026-10-15T11:17:38Z'), pr(751, '2026-10-15T22:33:07Z')]
+    expect(mergedInWindow(recountedLater, FROM, instant)).toEqual(counted)
+  })
+})
