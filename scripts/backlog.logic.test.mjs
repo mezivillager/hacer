@@ -15,6 +15,7 @@ import {
   PICK_ROTATION,
   ROW_AGENT_READY_CAP,
   STALE_CLAIM_HOURS,
+  WORKFLOW_RUNS,
   addedFiles,
   bucketOf,
   claimComment,
@@ -24,6 +25,7 @@ import {
   claimTaken,
   dormantMode,
   epicTree,
+  failingWorkflows,
   filePagesPaths,
   formatDormant,
   formatProjects,
@@ -34,6 +36,7 @@ import {
   historyGap,
   lastRunsRow,
   latestClaim,
+  mainLines,
   parsePortfolio,
   parseRunsRow,
   planReady,
@@ -43,6 +46,7 @@ import {
   readPossiblyDelivered,
   readRetroLine,
   readClaims,
+  readMainLines,
   releaseComment,
   releaseRefusal,
   reportNext,
@@ -52,6 +56,7 @@ import {
   summarizeProjects,
   triageTasks,
   verifierTier,
+  workflowsToRead,
 } from './backlog.logic.mjs'
 import { VERIFIER_TIER_SENTENCE } from './skills.logic.mjs'
 
@@ -110,6 +115,22 @@ const RECORDED_AT = '2026-09-25T00:30:00.000Z'
 const held = (number, overrides = {}) =>
   ({ number, claimedBy: 'claude-local', at: '2026-09-27T08:20:07Z', openPr: null, stale: false, ...overrides })
 const claimNote = (login, body, createdAt) => ({ author: { login }, body, createdAt, url: `https://example.test/${createdAt}` })
+
+const BACKLOG_SCRIPT = path.join(import.meta.dirname, 'backlog.mjs')
+/** backlog.mjs with only `bin` on PATH and no home: the only `gh` is `bin`'s, and there is no `git`. */
+const runBacklog = (bin, args, env = {}) => spawnSync(process.execPath, [BACKLOG_SCRIPT, ...args],
+  { encoding: 'utf8', env: { PATH: bin, HOME: '/nonexistent-backlog-test', ...env } })
+/** `test(bin)` with `script` as `bin/gh`, in a folder removed afterwards. */
+function withFakeGh(script, test) {
+  const bin = mkdtempSync(path.join(tmpdir(), 'backlog-gh-'))
+  try {
+    writeFileSync(path.join(bin, 'gh'), script)
+    chmodSync(path.join(bin, 'gh'), 0o755)
+    test(bin)
+  } finally {
+    rmSync(bin, { recursive: true, force: true })
+  }
+}
 
 describe('parsePortfolio', () => {
   it('reads every row of the live docs/portfolio.md in file order', () => {
@@ -1378,7 +1399,6 @@ describe('the verifier tier', () => {
   })
 
   describe('tier <pr>', () => {
-    const SCRIPT = path.join(import.meta.dirname, 'backlog.mjs')
     // PR 7's labels and its two pages, served only to a call that reads every page; anything else fails as gh does.
     const FAKE_GH = `#!/bin/sh
 case "$*" in
@@ -1390,18 +1410,7 @@ case "$*" in
   *) echo 'gh: Not Found (HTTP 404)' >&2; exit 1 ;;
 esac
 `
-    const run = (bin, ...args) => spawnSync(process.execPath, [SCRIPT, ...args],
-      { encoding: 'utf8', env: { PATH: bin, HOME: '/nonexistent-backlog-test' } })
-    const withFakeGh = (test) => {
-      const bin = mkdtempSync(path.join(tmpdir(), 'backlog-tier-'))
-      try {
-        writeFileSync(path.join(bin, 'gh'), FAKE_GH)
-        chmodSync(path.join(bin, 'gh'), 0o755)
-        test(bin)
-      } finally {
-        rmSync(bin, { recursive: true, force: true })
-      }
-    }
+    const run = (bin, ...args) => runBacklog(bin, args)
 
     it.each(['tier 0', 'tier abc', 'tier 1.5', 'tier -3', 'tier', 'tier 7 8', 'tier 7 --json', 'tier 7 --by me'])(
       'a PR that is not one positive integer, or a flag tier does not take, exits 2 with usage: %s', (command) => {
@@ -1411,14 +1420,14 @@ esac
       })
 
     it('prints the line from every page of the PR\'s files, a rename by its old name', () => {
-      withFakeGh((bin) => {
+      withFakeGh(FAKE_GH, (bin) => {
         const { status, stdout, stderr } = run(bin, 'tier', '7')
         expect({ status, stdout, stderr }).toEqual({ status: 0, stdout: 'VERIFIER-TIER: opus pr=7 because=src/core/a.ts\n', stderr: '' })
       })
     })
 
     it('a PR gh cannot read exits 1 with gh\'s message', () => {
-      withFakeGh((bin) => {
+      withFakeGh(FAKE_GH, (bin) => {
         const { status, stdout, stderr } = run(bin, 'tier', '8')
         expect({ status, stdout }).toEqual({ status: 1, stdout: '' })
         expect(stderr).toContain('gh: Not Found (HTTP 404)')
@@ -1426,7 +1435,181 @@ esac
     })
 
     it('is in the header comment', () => {
-      expect(readFileSync(SCRIPT, 'utf8')).toMatch(/^\/\/ +node scripts\/backlog\.mjs tier <pr>/m)
+      expect(readFileSync(BACKLOG_SCRIPT, 'utf8')).toMatch(/^\/\/ +node scripts\/backlog\.mjs tier <pr>/m)
+    })
+  })
+})
+
+// #888: each active workflow whose newest completed run on main failed (L012, L071: two broken releases went unseen).
+describe('main workflows', () => {
+  const T0 = Date.parse('2026-10-15T00:00:00Z')
+  const at = (minute) => new Date(T0 + minute * 60_000).toISOString().replace('.000Z', 'Z')
+  const id = (minute) => 38676014000 + minute
+  /** A run on main at `minute`, its id from the minute; one not completed has no conclusion, as gh prints it. */
+  const run = (workflowName, minute, conclusion, status = 'completed') => ({ databaseId: id(minute), workflowName,
+    name: workflowName, status, conclusion: status === 'completed' ? conclusion : '', createdAt: at(minute) })
+  const row = (workflow, minute, count, atLeast = false) => ({ workflow, count, since: at(minute), runId: id(minute), atLeast })
+
+  it('every workflow green gives no rows', () => {
+    const runs = [run('CI', 5, 'success'), run('CI', 3, 'failure'), run('Release', 4, 'success'), run('Release', 2, 'failure')]
+    expect(failingWorkflows(runs)).toEqual([])
+    expect(mainLines({ runs, latest: [] })).toEqual(['main: workflows green'])
+  })
+
+  it("a workflow whose latest runs failed in a row gives its count and the oldest failure's time and id", () => {
+    const runs = [run('Release', 3, 'failure'), run('Release', 5, 'failure'), run('Release', 1, 'success'),
+      run('Release', 4, 'timed_out'), run('Release', 2, 'success')]
+    expect(failingWorkflows(runs)).toEqual([row('Release', 3, 3)])
+  })
+
+  it('a success between two failures gives count 1 and the newer failure', () => {
+    expect(failingWorkflows([run('CI', 1, 'failure'), run('CI', 2, 'success'), run('CI', 3, 'failure')])).toEqual([row('CI', 3, 1)])
+  })
+
+  it('an in-progress newest run over an older failure reports that failure', () => {
+    const runs = [run('Release', 9, null, 'in_progress'), run('Release', 8, null, 'queued'), run('Release', 7, 'failure'),
+      run('Release', 6, 'success')]
+    expect(failingWorkflows(runs)).toEqual([row('Release', 7, 1)])
+  })
+
+  it('a cancelled newest run over two failures reads 2 in a row, and a cancelled run over a success is not failing', () => {
+    expect(failingWorkflows([run('Deploy', 9, 'cancelled'), run('Deploy', 8, 'failure'), run('Deploy', 7, 'failure'),
+      run('Deploy', 6, 'success')])).toEqual([row('Deploy', 7, 2)])
+    expect(failingWorkflows([run('Mission Control', 5, 'cancelled'), run('Mission Control', 4, 'success'),
+      run('Mission Control', 3, 'failure')])).toEqual([])
+  })
+
+  it('skipped, stale and action_required are looked past, startup_failure fails, and neutral ends a streak', () => {
+    const runs = [run('ui-tour', 9, 'skipped'), run('ui-tour', 8, 'stale'), run('ui-tour', 7, 'action_required'),
+      run('ui-tour', 6, 'startup_failure'), run('ui-tour', 5, 'cancelled'), run('ui-tour', 4, 'failure'),
+      run('ui-tour', 3, 'neutral'), run('ui-tour', 2, 'failure')]
+    expect(failingWorkflows(runs)).toEqual([row('ui-tour', 4, 2)])
+    expect(failingWorkflows([run('ui-tour', 1, 'neutral'), run('ui-tour', 0, 'failure')])).toEqual([])
+  })
+
+  it('a streak that fills every run read sets atLeast, a looked-past oldest run as well', () => {
+    const runs = Array.from({ length: WORKFLOW_RUNS }, (_, minute) => run('Release', minute, 'failure'))
+    expect(failingWorkflows(runs)).toEqual([row('Release', 0, WORKFLOW_RUNS, true)])
+    expect(failingWorkflows([run('CI', 2, 'failure'), run('CI', 1, 'failure'), run('CI', 0, 'cancelled')]))
+      .toEqual([row('CI', 1, 2, true)])
+  })
+
+  it('one failed Release run beside more than 100 newer successful runs of another workflow still reports Release', () => {
+    const ci = Array.from({ length: 101 }, (_, index) => run('CI', 100 + index, 'success'))
+    const workflows = [{ id: 241098938, name: 'CI' }, { id: 246018250, name: 'Release' }]
+    expect(workflowsToRead(workflows, [run('Release', 1, 'failure')])).toEqual([246018250])
+    expect(failingWorkflows([...ci, run('Release', 1, 'failure'), run('Release', 0, 'success')])).toEqual([row('Release', 1, 1)])
+  })
+
+  it('a run whose name differs from its workflowName is reported by workflowName', () => {
+    const codeql = (minute, conclusion) => ({ ...run('CodeQL', minute, conclusion), name: 'Push on main' })
+    expect(failingWorkflows([codeql(2, 'failure'), codeql(1, 'success')])).toEqual([row('CodeQL', 2, 1)])
+  })
+
+  it('reads only the active workflows with a failed run on main, never a removed one', () => {
+    const workflows = [{ id: 246018250, name: 'Release' }, { id: 241098938, name: 'CI' }, { id: 362189662, name: 'CodeQL' }]
+    const failed = [run('E2E UI Tests (Slow)', 4, 'failure'), run('CodeQL', 3, 'timed_out'), run('Release', 2, 'failure'),
+      run('Release', 1, 'failure')]
+    expect(workflowsToRead(workflows, failed)).toEqual([246018250, 362189662])
+    expect(workflowsToRead(workflows, [])).toEqual([])
+  })
+
+  it("no runs on main for any workflow reads unread, never green; main's newest run with none to read is green", () => {
+    expect(mainLines({ runs: [], latest: [] })).toEqual(['main: unread (no runs on main)'])
+    expect(mainLines({})).toEqual(['main: unread (no runs on main)'])
+    expect(mainLines({ runs: [], latest: [run('CodeQL', 1, null, 'in_progress')] })).toEqual(['main: workflows green'])
+  })
+
+  it('prints one line per failing workflow, and at least … since before when the streak fills the runs read', () => {
+    const runs = [run('Release', 3, 'failure'), run('Release', 2, 'failure'), run('Release', 1, 'success'),
+      run('CI', 12, 'failure'), run('CI', 11, 'failure'), run('CI', 10, 'failure')]
+    expect(mainLines({ runs, latest: [] })).toEqual([
+      `main: Release failing, 2 in a row since ${at(2)} (run ${id(2)})`,
+      `main: CI failing, at least 3 in a row since before ${at(10)} (run ${id(10)})`,
+    ])
+  })
+
+  it('readMainLines is the lines over what it reads, and unread with the first line of a read that throws', async () => {
+    await expect(readMainLines(async () => ({ runs: [run('CI', 1, 'success')], latest: [] }))).resolves.toEqual(['main: workflows green'])
+    await expect(readMainLines(async () => {
+      throw new Error('HTTP 502: Bad Gateway (https://api.github.com/repos/mezivillager/hacer/actions/runs)\nretry later')
+    })).resolves.toEqual(['main: unread (HTTP 502: Bad Gateway (https://api.github.com/repos/mezivillager/hacer/actions/runs))'])
+    await expect(readMainLines(() => {
+      throw new Error('gh CLI not found on PATH or in ~/.local/bin')
+    })).resolves.toEqual(['main: unread (gh CLI not found on PATH or in ~/.local/bin)'])
+  })
+
+  it('ha-next §1 says a `main: <workflow> failing` line means open that run, then fix it or file it, before the first claim', () => {
+    const skill = readFileSync(path.join(import.meta.dirname, '..', '.claude', 'skills', 'ha-next', 'SKILL.md'), 'utf8')
+    const orient = skill.slice(skill.indexOf('## 1.'), skill.indexOf('## 2.')).replace(/\s+/g, ' ')
+    expect(orient).toMatch(/`main: <workflow> failing`.{0,200}before the first claim, open that run.{0,60}then fix it or file it unless an open issue or PR already covers it/)
+  })
+
+  it('is in the header comment, under ready', () => {
+    const header = readFileSync(BACKLOG_SCRIPT, 'utf8').split('\nimport ')[0]
+    expect(header).toMatch(/node scripts\/backlog\.mjs ready[\s\S]*`main: <workflow> failing`[\s\S]*node scripts\/backlog\.mjs next/)
+  })
+
+  describe('in ready and next', () => {
+    const releaseRuns = [run('Release', 300, null, 'in_progress'), run('Release', 240, 'failure'),
+      run('Release', 230, 'cancelled'), { ...run('Release', 203, 'failure'), createdAt: '2026-10-15T03:23:27Z' },
+      run('Release', 200, 'success')]
+    const failed = [run('Release', 240, 'failure'), run('E2E UI Tests (Slow)', 100, 'failure')]
+    const RELEASE_LINE = `main: Release failing, 2 in a row since 2026-10-15T03:23:27Z (run ${id(203)})`
+    const EMPTY_HISTORY = { data: { repository: { issues: { pageInfo: { hasNextPage: false, endCursor: null }, nodes: [] } } } }
+    // Every read ready and next make, answered for one repo; a run list refused when FAKE_RUNS=refused, and a read of a
+    // workflow with no failure on main refused always.
+    const FAKE_GH = `#!/bin/sh
+case "$*" in
+  "issue list "*) printf '%s\\n' "$FAKE_ISSUES" ;;
+  *matching-refs*|"pr list "*) echo '[]' ;;
+  "api graphql "*) echo '${JSON.stringify(EMPTY_HISTORY)}' ;;
+  "workflow list "*) echo '[{"id":7,"name":"Release"},{"id":8,"name":"CI"}]' ;;
+  "run list "*)
+    [ "$FAKE_RUNS" = refused ] && { echo 'HTTP 502: Bad Gateway' >&2; exit 1; }
+    case "$*" in *"--branch main"*) ;; *) echo 'fake gh: a run list off main' >&2; exit 1 ;; esac
+    case "$*" in
+      *"--status failure"*) echo '${JSON.stringify(failed)}' ;;
+      *--status*) echo '[]' ;;
+      *"--workflow 7 "*) echo '${JSON.stringify(releaseRuns)}' ;;
+      *--workflow*) echo 'fake gh: read a workflow with no failure on main' >&2; exit 1 ;;
+      *) echo '${JSON.stringify([run('CI', 301, 'success')])}' ;;
+    esac ;;
+  *) echo "fake gh: unexpected $*" >&2; exit 1 ;;
+esac
+`
+    const PICKABLE = JSON.stringify([issue(1, { labels: ['agent-ready', 'project:spine'] })])
+    const mainOf = (stderr) => stderr.split('\n').filter((line) => line.startsWith('main: '))
+
+    it("next --json prints the pick's JSON and exits 0, and ready exits 0, each with the main line on stderr", () => {
+      withFakeGh(FAKE_GH, (bin) => {
+        const next = runBacklog(bin, ['next', '--json'], { FAKE_ISSUES: PICKABLE })
+        expect({ status: next.status, number: JSON.parse(next.stdout).number }).toEqual({ status: 0, number: 1 })
+        expect(mainOf(next.stderr)).toEqual([RELEASE_LINE])
+        const ready = runBacklog(bin, ['ready', '--json'], { FAKE_ISSUES: PICKABLE })
+        expect({ status: ready.status, numbers: numbers(JSON.parse(ready.stdout)) }).toEqual({ status: 0, numbers: [1] })
+        expect(mainOf(ready.stderr)).toEqual([RELEASE_LINE])
+      })
+    })
+
+    it(`next --json prints null and exits ${NOTHING_PICKABLE_EXIT} with nothing pickable, the main line on stderr`, () => {
+      withFakeGh(FAKE_GH, (bin) => {
+        const { status, stdout, stderr } = runBacklog(bin, ['next', '--json'], { FAKE_ISSUES: '[]' })
+        expect({ status, stdout }).toEqual({ status: NOTHING_PICKABLE_EXIT, stdout: 'null\n' })
+        expect(mainOf(stderr)).toEqual([RELEASE_LINE])
+      })
+    })
+
+    it("a run read gh refuses reads main unread and leaves next's stdout and exit status as they were", () => {
+      withFakeGh(FAKE_GH, (bin) => {
+        const env = { FAKE_RUNS: 'refused' }
+        const picked = runBacklog(bin, ['next', '--json'], { ...env, FAKE_ISSUES: PICKABLE })
+        expect({ status: picked.status, number: JSON.parse(picked.stdout).number }).toEqual({ status: 0, number: 1 })
+        expect(mainOf(picked.stderr)).toEqual(['main: unread (HTTP 502: Bad Gateway)'])
+        const none = runBacklog(bin, ['next', '--json'], { ...env, FAKE_ISSUES: '[]' })
+        expect({ status: none.status, stdout: none.stdout }).toEqual({ status: NOTHING_PICKABLE_EXIT, stdout: 'null\n' })
+        expect(mainOf(none.stderr)).toEqual(['main: unread (HTTP 502: Bad Gateway)'])
+      })
     })
   })
 })
