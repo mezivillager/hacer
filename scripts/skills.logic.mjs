@@ -274,7 +274,13 @@ export const BRIEF_INVARIANTS = [
   {
     file: '.claude/skills/ha-next/SKILL.md',
     present: [{ id: 'tier-at-dispatch', phrases: [VERIFIER_TIER_AT_DISPATCH_SENTENCE] }],
-    absent: [],
+    absent: [
+      {
+        id: 'queue-up-agent-ready-only-at-risk-0-1',
+        phrases: ['`agent-ready` only if risk:0/1 and the criteria are unambiguous; otherwise `needs-human`'],
+        why: 'ADR-0013 Decision 1, amended by #893: the queue-up rule has three `risk:2` exceptions',
+      },
+    ],
   },
 ]
 
@@ -388,5 +394,11 @@ export const TWIN_SENTENCES = [
       { file: 'docs/harness/model-tiering.md', part: 'body' },
       { file: 'docs/harness/retro-brief.md', part: 'body' },
     ],
+  },
+  {
+    id: 'queue-up-risk-2-plan-slices',
+    owner: 'docs/harness/README.md',
+    anchor: '**Plan slices at `risk:2`:** ',
+    twins: [{ file: '.claude/skills/ha-next/SKILL.md', part: 'body' }],
   },
 ]

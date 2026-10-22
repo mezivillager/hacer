@@ -360,3 +360,49 @@ describe('the measured-facts rule (#394)', () => {
     expect(checkTwinAgreement(readme(), anchor, [{ label: 'ha-next', text: readSkill('ha-next') }])).toEqual([])
   })
 })
+
+describe('the queue-up rule names its `risk:2` exceptions (#893)', () => {
+  const anchor = '**Plan slices at `risk:2`:** '
+  const readme = () => readBrief('docs/harness/README.md')
+  const readmeRow = () => readme().split('\n').find((line) => line.startsWith('| "queue up: …"'))
+  const haNextSection = () => readSkill('ha-next').split('## "Queue up: …"')[1]
+
+  it('pins the README\'s plan-slice sentence in ha-next as a twin', () => {
+    expect(TWIN_SENTENCES.map((t) => [t.owner, t.anchor, ...t.twins.map((w) => `${w.file} ${w.part}`)])).toContainEqual([
+      'docs/harness/README.md',
+      anchor,
+      '.claude/skills/ha-next/SKILL.md body',
+    ])
+  })
+
+  it('ha-next carries the README\'s sentence verbatim', () => {
+    expect(checkTwinAgreement(readme(), anchor, [{ label: 'ha-next', text: readSkill('ha-next') }])).toEqual([])
+  })
+
+  it.each([
+    ['the README row', readmeRow],
+    ['ha-next § "Queue up"', haNextSection],
+  ])('%s states the three exceptions and what none of them lifts', (_label, read) => {
+    expect(containsPhrases(read(), [
+      '`risk:2` means what',
+      'issue-form.md',
+      'Exactly three exceptions',
+      'any other `risk:2` issue stays `needs-human`',
+      '#269',
+      'R844',
+      anchor,
+      'No exception lifts',
+      'triaged from outside',
+      '`bot-filed`',
+      'mechanise',
+      'foundation gate',
+    ])).toBe(true)
+  })
+
+  it('keeps ha-next\'s risk:0/1-only sentence out', () => {
+    const haNext = BRIEF_INVARIANTS.find((i) => i.file === '.claude/skills/ha-next/SKILL.md')
+    expect(haNext.absent.map((rule) => rule.phrases)).toContainEqual([
+      '`agent-ready` only if risk:0/1 and the criteria are unambiguous; otherwise `needs-human`',
+    ])
+  })
+})
