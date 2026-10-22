@@ -14,6 +14,9 @@
 //                                               tasks a `project:` label files under the row from outside it
 //   node scripts/backlog.mjs claim <n> --by <id> [--session <id>] [--branch <b>] [--intent <i>] [--handoff <h>]
 //   node scripts/backlog.mjs release <n> --by <id> [--force-stale --reason <why>]
+//   node scripts/backlog.mjs tier <pr>           `VERIFIER-TIER: <opus|sonnet> pr=<n> because=<path|risk:2|none>`, from
+//                                               every page of the PR's REST files list (a rename by both names) and
+//                                               its labels: the model to dispatch its verifier on (#884)
 //
 // `claim` creates refs/heads/claim/<n> with GitHub's create-ref API, which refuses a ref that exists, then posts the
 // claim comment and labels the issue `in-progress`; `release` is the holder's, or anyone's with --force-stale once the
@@ -43,11 +46,13 @@ const COMMANDS = {
   tasks: { options: JSON_FLAG, operand: 'slug' },
   claim: { options: text('by', 'session', 'branch', 'intent', 'handoff'), operand: 'issue' },
   release: { options: { ...text('by', 'reason'), 'force-stale': { type: 'boolean' } }, operand: 'issue' },
+  tier: { options: {}, operand: 'pr' },
 }
 const USAGE = `usage: node scripts/backlog.mjs <ready|projects|next> [--json]
        node scripts/backlog.mjs tasks <slug> [--json]
        node scripts/backlog.mjs claim <n> --by <id> [--session <id>] [--branch <b>] [--intent <i>] [--handoff <h>]
-       node scripts/backlog.mjs release <n> --by <id> [--force-stale --reason <why>]`
+       node scripts/backlog.mjs release <n> --by <id> [--force-stale --reason <why>]
+       node scripts/backlog.mjs tier <pr>`
 
 class UsageError extends Error {}
 
@@ -70,6 +75,7 @@ function parseCommandLine([name, ...args]) {
     if (!/^[1-9]\d*$/.test(operand)) throw new UsageError(`'${operand}' is not an issue number`)
     if (!flags.by) throw new UsageError(`${name} needs --by <id>`)
   }
+  if (command.operand === 'pr' && !/^[1-9]\d*$/.test(operand)) throw new UsageError(`'${operand}' is not a PR number`)
   return { name, operand, flags }
 }
 
@@ -192,7 +198,14 @@ function allowlistFromEnv() {
   return logins.length > 0 ? logins : backlog.DEFAULT_ALLOWLIST
 }
 
-const ACTIONS = { claim, release }
+/** `gh pr view --json files` stops at 100 files and has no previous name for a rename, so the REST list is read, every page. */
+function tier(number) {
+  const labels = ghJson('api', `repos/${REPO}/pulls/${number}`, '--jq', '[.labels[].name]')
+  const pages = ghJson('api', '--paginate', '--slurp', `repos/${REPO}/pulls/${number}/files?per_page=100`)
+  return backlog.formatVerifierTier(number, backlog.verifierTier(backlog.filePagesPaths(pages), labels))
+}
+
+const ACTIONS = { claim, release, tier }
 
 /** The views that plan from the open issues, the claims and the claim history: ready, next, projects and tasks. */
 async function view(name, slug, flags) {

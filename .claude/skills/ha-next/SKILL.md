@@ -77,6 +77,7 @@ no `docs/specs/` file at Light tier. Delegating the build to a subagent is fine 
 the issue number); verifying it yourself is not — step 4 is always a *different* context.
 
 ## 4. Verify
+Run `node scripts/backlog.mjs tier <pr>`, then dispatch the verifier on the model its `VERIFIER-TIER:` line names.
 Dispatch a **fresh-context** agent with `docs/harness/verifier-brief.md` and the PR number. It posts
 one verdict comment. `BLOCK` → fix in the same branch, push, re-run the verifier — always a **fresh**
 one, never the coordinator, whatever tier the PR is. Nits → file the ones worth keeping as follow-up
