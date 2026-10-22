@@ -1,7 +1,7 @@
 # 0020. Spec-only writes, read-only projections
 
 - **Status:** Accepted — the fresh-context adversarial review [#359](https://github.com/mezivillager/hacer/issues/359) required by #327 returned `sound with corrections`, and the second pass over the four post-review deltas returned `accept with corrections` (both on [#358](https://github.com/mezivillager/hacer/pull/358), 2026-09-23). Both sets of corrections are applied below — the second pass's seven under "What the second pass changed" — and no further review round is required. **Amended 2026-09-24** by the spike this ADR scheduled for 1.5/1.6 ([#372](https://github.com/mezivillager/hacer/issues/372)), which ran, found the mechanism 1.5 describes does not work, and replaced it — "What the spike changed". The status does **not** move: the spine, the review's acceptance and every decision stand, and correcting a mechanism is what a scheduled spike is for.
-- **Date:** 2026-09-23 · mechanism amended 2026-09-24 ([#372](https://github.com/mezivillager/hacer/issues/372)) · §7.1 and §9 amended 2026-09-29 ([#598](https://github.com/mezivillager/hacer/issues/598)) · §1.10 added 2026-10-15 ([#374](https://github.com/mezivillager/hacer/issues/374)) · §1.11 added 2026-10-15 ([#378](https://github.com/mezivillager/hacer/issues/378)) · §1.1 and §1.11.5 amended 2026-10-21 ([#813](https://github.com/mezivillager/hacer/issues/813)) · §1.11 rule 4 amended 2026-10-21 ([#825](https://github.com/mezivillager/hacer/issues/825)) · §1, §1.10 and the migration policy amended 2026-10-21 ([#814](https://github.com/mezivillager/hacer/issues/814)) · §1.11 rule 1 amended 2026-10-21 ([#855](https://github.com/mezivillager/hacer/issues/855)) · §1.10 item 10 amended 2026-10-21 ([#844](https://github.com/mezivillager/hacer/issues/844)) · §1.11.5 amended again 2026-10-21 ([#840](https://github.com/mezivillager/hacer/issues/840)) · §1.1 amended again 2026-10-22 ([#882](https://github.com/mezivillager/hacer/issues/882)) · §1.11 rule 2 amended 2026-10-22 ([#903](https://github.com/mezivillager/hacer/issues/903)) · §1.10.9 and §1.10 item 10 amended 2026-10-22 ([#905](https://github.com/mezivillager/hacer/issues/905)) · §1.11 rules 2 and 5 amended 2026-10-22 ([#919](https://github.com/mezivillager/hacer/issues/919)) · §1.11 rule 2 amended 2026-10-22 ([#912](https://github.com/mezivillager/hacer/issues/912)) · §1.10 item 10 amended 2026-10-22 ([#916](https://github.com/mezivillager/hacer/issues/916))
+- **Date:** 2026-09-23 · mechanism amended 2026-09-24 ([#372](https://github.com/mezivillager/hacer/issues/372)) · §7.1 and §9 amended 2026-09-29 ([#598](https://github.com/mezivillager/hacer/issues/598)) · §1.10 added 2026-10-15 ([#374](https://github.com/mezivillager/hacer/issues/374)) · §1.11 added 2026-10-15 ([#378](https://github.com/mezivillager/hacer/issues/378)) · §1.1 and §1.11.5 amended 2026-10-21 ([#813](https://github.com/mezivillager/hacer/issues/813)) · §1.11 rule 4 amended 2026-10-21 ([#825](https://github.com/mezivillager/hacer/issues/825)) · §1, §1.10 and the migration policy amended 2026-10-21 ([#814](https://github.com/mezivillager/hacer/issues/814)) · §1.11 rule 1 amended 2026-10-21 ([#855](https://github.com/mezivillager/hacer/issues/855)) · §1.10 item 10 amended 2026-10-21 ([#844](https://github.com/mezivillager/hacer/issues/844)) · §1.11.5 amended again 2026-10-21 ([#840](https://github.com/mezivillager/hacer/issues/840)) · §1.1 amended again 2026-10-22 ([#882](https://github.com/mezivillager/hacer/issues/882)) · §1.11 rule 2 amended 2026-10-22 ([#903](https://github.com/mezivillager/hacer/issues/903)) · §1.10.9 and §1.10 item 10 amended 2026-10-22 ([#905](https://github.com/mezivillager/hacer/issues/905)) · §1.11 rules 2 and 5 amended 2026-10-22 ([#919](https://github.com/mezivillager/hacer/issues/919)) · §1.11 rule 2 amended 2026-10-22 ([#912](https://github.com/mezivillager/hacer/issues/912)) · §1.10 item 10 amended 2026-10-22 ([#916](https://github.com/mezivillager/hacer/issues/916)) · §1.11 rule 5 amended 2026-10-22 ([#878](https://github.com/mezivillager/hacer/issues/878))
 - **Amended by:** R769, R817, R825, R826, R836, R837
 - **Amends:** ADR-0008 §6, ADR-0009
 - **Supersedes:** ADR-0007
@@ -930,7 +930,7 @@ and these rules are pinned by `src/core/spec/compileSpec.test.ts`,
        in `src/core/spec/compileSpec.nesting.test.ts`. The 27 names are rule 5's.
 5. **Divergences from the reference, inherited rather than fixed.** The refusal of an unconnected
    part input is not among them: §1.1 decides it. The bullets on a read of a chip OUT, on the 27
-   names and on a `BUILTIN` body's pins are decided too.
+   names, on a `BUILTIN` body's pins and on a pin's width are decided too.
    - `IN` and `OUT` lists are required. That is the parser's rule. A document with no IN compiles at
      top level but cannot be registered (`validateChipDefinition`).
    - A bit nothing drives reads 0 in the engine, silently
@@ -985,6 +985,27 @@ and these rules are pinned by `src/core/spec/compileSpec.test.ts`,
        pins would ignore the file's own `IN` and `OUT`.
      - Every shipped primitive file declares its builtin's pins, `conformance/vectors/01/Nand.hdl`
        among them, so only a hand-edited primitive file is refused, by a message naming both sides.
+   - **A pin wider than `MAX_PIN_WIDTH` is refused; the web IDE reads a declared width modulo
+     65536.** Decided 2026-10-22 ([#878](https://github.com/mezivillager/hacer/issues/878), closing
+     [#453](https://github.com/mezivillager/hacer/issues/453)). A signal value is held as 32 bits, and
+     `MAX_PIN_WIDTH` (`src/simulation/busOps.ts`, R840) is the one limit: `deserializeCircuit` and the
+     node and bus actions already applied it. `parseHDL` refuses `IN a[33]` at the width's token with
+     `Pin "a" width 33 is wider than 32 bits, the widest bus HACER evaluates`, the width printed as
+     written, and `validateChipDefinition` refuses the same pin in a chip built in code.
+     - The web IDE has no limit. `int10` masks every decimal with `& 0xffff`
+       (`../web-ide/simulator/src/util/twos.ts:63-73` at `91ef428`), so `a[99999999999999999999]` and
+       `a[65536]` are width 0, `a[65537]` is width 1, `a[65552]` is width 16, and widths 17 to 65535
+       build. It evaluates only 32 bits too: with `IN a[33]`, bit 32 never reaches `Not(in=a[32])`.
+     - Accepting such a width evaluates another circuit than the file declares, silently: with
+       `IN a[33]`, `Not(in=a[32], out=out)` reads bit 0. The spec readers also walk every declared bit
+       (an OUT→OUT alias over a million-bit pin takes `parseSpec` 2.1 s and `compileSpec` 3.5 s), so a
+       20-digit width never returns. `parseSpec` stops at a `parseHDL` error, so the parser's refusal
+       protects both.
+     - Pinned by the #878 tests in `src/core/hdl/parser.test.ts` and `src/core/chips/registry.test.ts`,
+       and by the five `#878` shapes in `conformance/acceptance/hdl-shapes.json`. In
+       `src/core/hdl/acceptanceParity.test.ts`, the `parseHDL` and `parseSpec` cells of the four refused
+       shapes cite this bullet as intended, and so do the `compileSpec` cells of the three the web IDE
+       builds; `pin-width-32` agrees on every reader.
 6. **Parity is measured on Project 1.** All 15 sources through `compileSpec` match the builtins and
    the `'hdl'` evaluation of the same source, on that test file's vectors. HACER ships no Project 2–3
    HDL to compare against; that parity comes with
