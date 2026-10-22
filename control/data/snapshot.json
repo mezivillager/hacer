@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-22T04:45:29.036Z",
+  "generatedAt": "2026-10-22T05:02:35.906Z",
   "head": {
-    "sha": "9433292ad1494f35be26b749b6dc370022ecba6c",
-    "date": "2026-10-22T07:44:26+03:00",
-    "subject": "docs(adr): ADR-0020 §1.10.9 and item 10 record a wide true as every bit, windowed on export (#905)"
+    "sha": "74ee3461bf3af45aca3593a83ba175eccdfaf9e3",
+    "date": "2026-10-22T08:01:57+03:00",
+    "subject": "test(differential): green — HACER and web-ide agree on all 15 Project-1 chips"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T04:45:29.036Z",
+      "fetchedAt": "2026-10-22T05:02:35.906Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T04:45:29.036Z",
+      "fetchedAt": "2026-10-22T05:02:35.906Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T04:45:29.036Z",
+      "fetchedAt": "2026-10-22T05:02:35.906Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-22T04:45:29.036Z",
+      "fetchedAt": "2026-10-22T05:02:35.906Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-22T04:45:29.036Z",
+      "fetchedAt": "2026-10-22T05:02:35.906Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-22T04:45:29.036Z",
+      "fetchedAt": "2026-10-22T05:02:35.906Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-22T04:45:29.036Z",
+      "fetchedAt": "2026-10-22T05:02:35.906Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-22T04:45:29.036Z",
+      "fetchedAt": "2026-10-22T05:02:35.906Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-22T04:45:29.036Z",
+      "fetchedAt": "2026-10-22T05:02:35.906Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-22T04:45:29.036Z",
+      "fetchedAt": "2026-10-22T05:02:35.906Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-22T04:45:29.036Z",
+      "fetchedAt": "2026-10-22T05:02:35.906Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-22T04:45:29.036Z",
+      "fetchedAt": "2026-10-22T05:02:35.906Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-22T04:45:29.036Z",
+      "fetchedAt": "2026-10-22T05:02:35.906Z",
       "status": "ok"
     }
   },
@@ -82,16 +82,16 @@
         "epicNumber": 318,
         "open": 29,
         "ready": 0,
-        "inProgress": 1,
+        "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 1,
+        "agentReady": 0,
         "filedElsewhere": [],
         "next": null,
         "title": "Foundation audit: is the codebase structured for the autonomous loop? Measured audit, prioritized refactorings, fitness functions",
         "subIssues": {
-          "completed": 21,
-          "percentCompleted": 63,
+          "completed": 22,
+          "percentCompleted": 66,
           "total": 33
         }
       },
@@ -1169,22 +1169,6 @@
         "lane": "feature",
         "pickable": false,
         "reason": "unshaped"
-      },
-      {
-        "number": 338,
-        "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
-        "labels": [
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "claimed"
       },
       {
         "number": 339,
@@ -2553,6 +2537,20 @@
         "lane": "feature",
         "pickable": false,
         "reason": "unshaped"
+      },
+      {
+        "number": 918,
+        "title": "Differential harness: call the CLI's runTst and install the reference from its pinned lockfile",
+        "labels": [
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "unshaped"
       }
     ],
     "byProject": {
@@ -2577,7 +2575,6 @@
         151,
         184,
         325,
-        338,
         339,
         379,
         380,
@@ -2602,7 +2599,8 @@
         878,
         907,
         912,
-        916
+        916,
+        918
       ],
       "spine": [
         165,
@@ -2758,11 +2756,38 @@
     ],
     "merged": [
       {
+        "number": 917,
+        "title": "test(differential): HACER beside the reference simulator on Project 1's official .tst (#338)",
+        "url": "https://github.com/mezivillager/hacer/pull/917",
+        "author": "mezivillager",
+        "labels": [
+          "risk:1",
+          "project:foundation"
+        ],
+        "headRefName": "test/338-differential-harness",
+        "isDraft": false,
+        "createdAt": "2026-10-22T04:50:33Z",
+        "mergedAt": "2026-10-22T05:01:57Z",
+        "closes": [
+          338
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus (claude-opus-5-5)",
+            "at": "2026-10-22T05:00:55Z",
+            "url": "https://github.com/mezivillager/hacer/pull/917#issuecomment-6333125742"
+          }
+        ]
+      },
+      {
         "number": 914,
         "title": "fix(spec): a true wider than 16 bits is every bit, windowed on the nand2tetris export (#905)",
         "url": "https://github.com/mezivillager/hacer/pull/914",
         "author": "mezivillager",
         "labels": [
+          "released",
           "risk:1",
           "fidelity",
           "project:foundation"
@@ -2790,6 +2815,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/913",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0",
           "fidelity"
@@ -4316,30 +4342,13 @@
         "mergedAt": "2026-10-16T00:52:51Z",
         "closes": [],
         "verdicts": []
-      },
-      {
-        "number": 760,
-        "title": "chore(deps): bump lucide-react from 0.564.0 to 1.55.0",
-        "url": "https://github.com/mezivillager/hacer/pull/760",
-        "author": "app/dependabot",
-        "labels": [
-          "released",
-          "dependencies",
-          "javascript"
-        ],
-        "headRefName": "dependabot/npm_and_yarn/lucide-react-1.55.0",
-        "isDraft": false,
-        "createdAt": "2026-10-15T23:14:52Z",
-        "mergedAt": "2026-10-16T01:44:09Z",
-        "closes": [],
-        "verdicts": []
       }
     ],
     "coverage": {
       "merged": 60,
-      "withVerdict": 54,
-      "withoutVerdict": 6,
-      "pass": 54,
+      "withVerdict": 55,
+      "withoutVerdict": 5,
+      "pass": 55,
       "block": 0,
       "belowTier": []
     }
@@ -4350,7 +4359,7 @@
         "number": 338,
         "ref": "refs/heads/claim/338",
         "sha": "33ae5ec7b9ae01893281670f0125f446b294c527",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
         "url": "https://github.com/mezivillager/hacer/issues/338",
         "labels": [
@@ -4359,7 +4368,7 @@
           "risk:1",
           "project:foundation"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -5229,7 +5238,7 @@
         }
       }
     ],
-    "onClosedIssues": 0
+    "onClosedIssues": 1
   },
   "cloudLane": {
     "items": [
@@ -6423,9 +6432,14 @@
     },
     "releases": [
       {
+        "tag": "v2.66.5",
+        "publishedAt": "2026-10-22T04:46:59Z",
+        "isLatest": true
+      },
+      {
         "tag": "v2.66.4",
         "publishedAt": "2026-10-22T04:22:34Z",
-        "isLatest": true
+        "isLatest": false
       },
       {
         "tag": "v2.66.3",
@@ -7110,7 +7124,7 @@
       },
       {
         "date": "2026-10-16",
-        "merges": 11
+        "merges": 10
       },
       {
         "date": "2026-10-17",
@@ -7122,20 +7136,20 @@
       },
       {
         "date": "2026-10-22",
-        "merges": 16
+        "merges": 17
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-08T04:45:29.036Z",
-      "merged": 106,
+      "since": "2026-10-08T05:02:35.906Z",
+      "merged": 107,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 1.8
       },
       "blockedOnce": {
         "count": 7,
-        "of": 90,
+        "of": 91,
         "prs": [
           700,
           725,
@@ -7148,8 +7162,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 75,
-          "withVerdict": 75,
+          "merged": 76,
+          "withVerdict": 76,
           "without": []
         },
         "nonCode": {
@@ -11435,11 +11449,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "9433292ad1494f35be26b749b6dc370022ecba6c",
+        "sha": "74ee3461bf3af45aca3593a83ba175eccdfaf9e3",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39724057288/job/119643830505",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39725694974/job/119648943709",
         "line": null,
         "verdict": null,
         "fields": {},
