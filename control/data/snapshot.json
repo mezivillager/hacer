@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-22T22:00:26.130Z",
+  "generatedAt": "2026-10-22T22:19:37.945Z",
   "head": {
     "sha": "da520b6a7fc24643c4d5f2bbfa9a2e74c178c783",
     "date": "2026-10-23T00:59:28+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T22:00:26.130Z",
+      "fetchedAt": "2026-10-22T22:19:37.945Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T22:00:26.130Z",
+      "fetchedAt": "2026-10-22T22:19:37.945Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T22:00:26.130Z",
+      "fetchedAt": "2026-10-22T22:19:37.945Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-22T22:00:26.130Z",
+      "fetchedAt": "2026-10-22T22:19:37.945Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-22T22:00:26.130Z",
+      "fetchedAt": "2026-10-22T22:19:37.945Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-22T22:00:26.130Z",
+      "fetchedAt": "2026-10-22T22:19:37.945Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-22T22:00:26.130Z",
+      "fetchedAt": "2026-10-22T22:19:37.945Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-22T22:00:26.130Z",
+      "fetchedAt": "2026-10-22T22:19:37.945Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-22T22:00:26.130Z",
+      "fetchedAt": "2026-10-22T22:19:37.945Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-22T22:00:26.130Z",
+      "fetchedAt": "2026-10-22T22:19:37.945Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-22T22:00:26.130Z",
+      "fetchedAt": "2026-10-22T22:19:37.945Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-22T22:00:26.130Z",
+      "fetchedAt": "2026-10-22T22:19:37.945Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-22T22:00:26.130Z",
+      "fetchedAt": "2026-10-22T22:19:37.945Z",
       "status": "ok"
     }
   },
@@ -103,26 +103,26 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 30,
-        "ready": 11,
-        "inProgress": 3,
-        "needsHuman": 2,
+        "open": 33,
+        "ready": 10,
+        "inProgress": 5,
+        "needsHuman": 3,
         "staleClaims": [],
-        "agentReady": 16,
+        "agentReady": 18,
         "filedElsewhere": [
           151,
           941,
           942
         ],
         "next": {
-          "number": 974,
-          "title": "Judge review: JDG-008 · May #950 (Mission Control's conformance count, S3) be built as one PR though `mission-control/src/snapshot.ts` has 21 direct importers, one over the threshold?"
+          "number": 975,
+          "title": "Judge review: JDG-009 · Is #889 (`risk:2`, `wt-new scratch` made private on a shared Linux `/tmp`) made `agent-ready`, or declined as not relevant on a single-user macOS laptop?"
         },
         "title": "Epic: harness — autonomous-run improvements & agent-readiness",
         "subIssues": {
           "completed": 51,
-          "percentCompleted": 75,
-          "total": 68
+          "percentCompleted": 72,
+          "total": 70
         }
       },
       {
@@ -412,11 +412,6 @@
     ],
     "next": [
       {
-        "number": 974,
-        "title": "Judge review: JDG-008 · May #950 (Mission Control's conformance count, S3) be built as one PR though `mission-control/src/snapshot.ts` has 21 direct importers, one over the threshold?",
-        "project": "harness"
-      },
-      {
         "number": 975,
         "title": "Judge review: JDG-009 · Is #889 (`risk:2`, `wt-new scratch` made private on a shared Linux `/tmp`) made `agent-ready`, or declined as not relevant on a single-user macOS laptop?",
         "project": "harness"
@@ -427,13 +422,18 @@
         "project": "harness"
       },
       {
+        "number": 940,
+        "title": "N.4b: `layout(doc, surface, { previous, hints })`: hold what is placed, never move a hinted node",
+        "project": "foundation"
+      },
+      {
         "number": 982,
         "title": "Fidelity verdict on the spine epic #139 and the Phase 0.6 plan #177, ruling on Project 2's two slices before they are built",
         "project": "spine"
       },
       {
-        "number": 940,
-        "title": "N.4b: `layout(doc, surface, { previous, hints })`: hold what is placed, never move a hinted node",
+        "number": 941,
+        "title": "pr-hygiene: protect the differential harness, see a rename out of a protected path, and flag a PR that weakens a test (#151, foundation 1.6)",
         "project": "foundation"
       },
       {
@@ -442,19 +442,14 @@
         "project": "upkeep"
       },
       {
-        "number": 941,
-        "title": "pr-hygiene: protect the differential harness, see a rename out of a protected path, and flag a PR that weakens a test (#151, foundation 1.6)",
+        "number": 979,
+        "title": "fromLegacyCircuit: key driverCheck's seen set by JSON value, and restore cross-walk reuse on wide loop-free lattices",
         "project": "foundation"
       },
       {
         "number": 949,
         "title": "`ready` and `next` print `shape due:` for a foundation or spine slot with nothing pickable, and `ha-next` dispatches a shaper",
         "project": "harness"
-      },
-      {
-        "number": 979,
-        "title": "fromLegacyCircuit: key driverCheck's seen set by JSON value, and restore cross-walk reuse on wide loop-free lattices",
-        "project": "foundation"
       },
       {
         "number": 983,
@@ -507,8 +502,8 @@
         "project": "upkeep"
       },
       {
-        "number": 977,
-        "title": "The fidelity brief and the `bot-filed` label still say only the owner may make a `bot-filed` issue `agent-ready`; R889 also lets the judge",
+        "number": 978,
+        "title": "Inbox reviews batch HRN entries, at most five per review issue, while a policy entry that changes a correctness gate keeps its own panel",
         "project": "harness"
       },
       {
@@ -517,8 +512,8 @@
         "project": "upkeep"
       },
       {
-        "number": 978,
-        "title": "Inbox reviews batch HRN entries, at most five per review issue, while a policy entry that changes a correctness gate keeps its own panel",
+        "number": 980,
+        "title": "Cloud probe: one one-off routine measures clone, push, gh, backlog.mjs and the Playwright browser in a cloud session (JDG-003)",
         "project": "harness"
       },
       {
@@ -527,8 +522,8 @@
         "project": "upkeep"
       },
       {
-        "number": 980,
-        "title": "Cloud probe: one one-off routine measures clone, push, gh, backlog.mjs and the Playwright browser in a cloud session (JDG-003)",
+        "number": 992,
+        "title": "The queue-up rule's plan-slice exception counts a plan the inbox panel or the judge approved, linked by its decision comment (JDG-007)",
         "project": "harness"
       },
       {
@@ -560,28 +555,13 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
+        995,
         514
       ]
     }
   },
   "tasks": {
     "items": [
-      {
-        "number": 974,
-        "title": "Judge review: JDG-008 · May #950 (Mission Control's conformance count, S3) be built as one PR though `mission-control/src/snapshot.ts` has 21 direct importers, one over the threshold?",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:0",
-          "judge-review"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
       {
         "number": 975,
         "title": "Judge review: JDG-009 · Is #889 (`risk:2`, `wt-new scratch` made private on a shared Linux `/tmp`) made `agent-ready`, or declined as not relevant on a single-user macOS laptop?",
@@ -615,6 +595,21 @@
         "reason": null
       },
       {
+        "number": 940,
+        "title": "N.4b: `layout(doc, surface, { previous, hints })`: hold what is placed, never move a hinted node",
+        "labels": [
+          "agent-ready",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
+      {
         "number": 982,
         "title": "Fidelity verdict on the spine epic #139 and the Phase 0.6 plan #177, ruling on Project 2's two slices before they are built",
         "labels": [
@@ -635,14 +630,17 @@
         "reason": null
       },
       {
-        "number": 940,
-        "title": "N.4b: `layout(doc, surface, { previous, hints })`: hold what is placed, never move a hinted node",
+        "number": 941,
+        "title": "pr-hygiene: protect the differential harness, see a rename out of a protected path, and flag a PR that weakens a test (#151, foundation 1.6)",
         "labels": [
+          "project:harness",
           "agent-ready",
           "risk:1",
           "project:foundation"
         ],
-        "blocking": [],
+        "blocking": [
+          942
+        ],
         "project": "foundation",
         "rank": 1,
         "lane": "feature",
@@ -666,17 +664,14 @@
         "reason": null
       },
       {
-        "number": 941,
-        "title": "pr-hygiene: protect the differential harness, see a rename out of a protected path, and flag a PR that weakens a test (#151, foundation 1.6)",
+        "number": 979,
+        "title": "fromLegacyCircuit: key driverCheck's seen set by JSON value, and restore cross-walk reuse on wide loop-free lattices",
         "labels": [
-          "project:harness",
           "agent-ready",
           "risk:1",
           "project:foundation"
         ],
-        "blocking": [
-          942
-        ],
+        "blocking": [],
         "project": "foundation",
         "rank": 1,
         "lane": "feature",
@@ -695,21 +690,6 @@
         "project": "harness",
         "rank": 2,
         "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 979,
-        "title": "fromLegacyCircuit: key driverCheck's seen set by JSON value, and restore cross-walk reuse on wide loop-free lattices",
-        "labels": [
-          "agent-ready",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
         "pickable": true,
         "reason": null
       },
@@ -871,12 +851,12 @@
         "reason": null
       },
       {
-        "number": 977,
-        "title": "The fidelity brief and the `bot-filed` label still say only the owner may make a `bot-filed` issue `agent-ready`; R889 also lets the judge",
+        "number": 978,
+        "title": "Inbox reviews batch HRN entries, at most five per review issue, while a policy entry that changes a correctness gate keeps its own panel",
         "labels": [
           "project:harness",
           "agent-ready",
-          "risk:0"
+          "risk:1"
         ],
         "blocking": [],
         "project": "harness",
@@ -902,14 +882,17 @@
         "reason": null
       },
       {
-        "number": 978,
-        "title": "Inbox reviews batch HRN entries, at most five per review issue, while a policy entry that changes a correctness gate keeps its own panel",
+        "number": 980,
+        "title": "Cloud probe: one one-off routine measures clone, push, gh, backlog.mjs and the Playwright browser in a cloud session (JDG-003)",
         "labels": [
           "project:harness",
           "agent-ready",
-          "risk:1"
+          "risk:0"
         ],
-        "blocking": [],
+        "blocking": [
+          981,
+          257
+        ],
         "project": "harness",
         "rank": 2,
         "lane": "process",
@@ -933,17 +916,14 @@
         "reason": null
       },
       {
-        "number": 980,
-        "title": "Cloud probe: one one-off routine measures clone, push, gh, backlog.mjs and the Playwright browser in a cloud session (JDG-003)",
+        "number": 992,
+        "title": "The queue-up rule's plan-slice exception counts a plan the inbox panel or the judge approved, linked by its decision comment (JDG-007)",
         "labels": [
           "project:harness",
           "agent-ready",
-          "risk:0"
+          "risk:2"
         ],
-        "blocking": [
-          981,
-          257
-        ],
+        "blocking": [],
         "project": "harness",
         "rank": 2,
         "lane": "process",
@@ -2540,6 +2520,39 @@
         "reason": "claimed"
       },
       {
+        "number": 974,
+        "title": "Judge review: JDG-008 · May #950 (Mission Control's conformance count, S3) be built as one PR though `mission-control/src/snapshot.ts` has 21 direct importers, one over the threshold?",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "judge-review"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
+        "number": 977,
+        "title": "The fidelity brief and the `bot-filed` label still say only the owner may make a `bot-filed` issue `agent-ready`; R889 also lets the judge",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:0"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 981,
         "title": "Weekly cloud routine: one risk:0/risk:1 pick a week, fired before the weekly reset, so work merges without the owner (JDG-003)",
         "labels": [
@@ -2585,11 +2598,41 @@
         "lane": "feature",
         "pickable": false,
         "reason": "blocked:#984,#982"
+      },
+      {
+        "number": 993,
+        "title": "Owner: add `differential` to the required status checks of the `main-rules` ruleset (JDG-006)",
+        "labels": [
+          "project:harness",
+          "needs-human"
+        ],
+        "blocking": [
+          994
+        ],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "needs-human"
+      },
+      {
+        "number": 994,
+        "title": "In-repo half of JDG-006: `REQUIRED_CONTEXTS`, P-003, a `DIFFERENTIAL:` check line and the docs name `differential` as required",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:1"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "blocked:#993"
       }
     ],
     "byProject": {
       "harness": [
-        974,
         975,
         976,
         949,
@@ -2597,9 +2640,9 @@
         955,
         958,
         965,
-        977,
         978,
         980,
+        992,
         154,
         156,
         257,
@@ -2618,25 +2661,11 @@
         971,
         972,
         973,
-        981
-      ],
-      "spine": [
-        982,
-        983,
-        165,
-        167,
-        169,
-        170,
-        171,
-        172,
-        173,
-        174,
-        176,
-        177,
-        235,
-        236,
-        984,
-        985
+        974,
+        977,
+        981,
+        993,
+        994
       ],
       "foundation": [
         940,
@@ -2663,6 +2692,24 @@
         742,
         801,
         942
+      ],
+      "spine": [
+        982,
+        983,
+        165,
+        167,
+        169,
+        170,
+        171,
+        172,
+        173,
+        174,
+        176,
+        177,
+        235,
+        236,
+        984,
+        985
       ],
       "upkeep": [
         930,
@@ -2756,6 +2803,27 @@
   "prs": {
     "open": [
       {
+        "number": 995,
+        "title": "fix(store): restore the autosaved circuit on reload (#801)",
+        "url": "https://github.com/mezivillager/hacer/pull/995",
+        "author": "mezivillager",
+        "labels": [
+          "bug",
+          "project:bugs",
+          "risk:2",
+          "sev:high",
+          "project:foundation"
+        ],
+        "headRefName": "fix/801-autosave-restore",
+        "isDraft": false,
+        "createdAt": "2026-10-22T22:11:03Z",
+        "mergedAt": null,
+        "closes": [
+          801
+        ],
+        "verdicts": []
+      },
+      {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
         "url": "https://github.com/mezivillager/hacer/pull/514",
@@ -2789,6 +2857,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/988",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0"
         ],
@@ -2813,6 +2882,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/987",
         "author": "mezivillager",
         "labels": [
+          "released",
           "risk:1",
           "fidelity",
           "project:foundation"
@@ -2840,6 +2910,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/986",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0"
         ],
@@ -4503,6 +4574,57 @@
           "at": "2026-10-22T21:43:46Z",
           "url": "https://github.com/mezivillager/hacer/issues/973#issuecomment-6351978819"
         }
+      },
+      {
+        "number": 974,
+        "ref": "refs/heads/claim/974",
+        "sha": "da520b6a7fc24643c4d5f2bbfa9a2e74c178c783",
+        "state": "OPEN",
+        "title": "Judge review: JDG-008 · May #950 (Mission Control's conformance count, S3) be built as one PR though `mission-control/src/snapshot.ts` has 21 direct importers, one over the threshold?",
+        "url": "https://github.com/mezivillager/hacer/issues/974",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "judge-review"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "2026-10-22-hacer-loop-to-97",
+          "branch": "chore/judge-jdg-008",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-22T22:03:32Z",
+          "url": "https://github.com/mezivillager/hacer/issues/974#issuecomment-6352302825"
+        }
+      },
+      {
+        "number": 977,
+        "ref": "refs/heads/claim/977",
+        "sha": "da520b6a7fc24643c4d5f2bbfa9a2e74c178c783",
+        "state": "OPEN",
+        "title": "The fidelity brief and the `bot-filed` label still say only the owner may make a `bot-filed` issue `agent-ready`; R889 also lets the judge",
+        "url": "https://github.com/mezivillager/hacer/issues/977",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:0"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "2026-10-22-hacer-loop-to-97",
+          "branch": "docs/977-bot-filed-judge",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-22T22:16:15Z",
+          "url": "https://github.com/mezivillager/hacer/issues/977#issuecomment-6352508830"
+        }
       }
     ],
     "onClosedIssues": 0
@@ -5753,9 +5875,14 @@
     },
     "releases": [
       {
+        "tag": "v2.67.4",
+        "publishedAt": "2026-10-22T22:03:10Z",
+        "isLatest": true
+      },
+      {
         "tag": "v2.67.3",
         "publishedAt": "2026-10-22T14:36:49Z",
-        "isLatest": true
+        "isLatest": false
       },
       {
         "tag": "v2.67.2",
@@ -6485,7 +6612,7 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-08T22:00:26.130Z",
+      "since": "2026-10-08T22:19:37.945Z",
       "merged": 134,
       "openToMergeHours": {
         "median": 0.3,
@@ -10792,12 +10919,15 @@
         "pr": null,
         "sha": "da520b6a7fc24643c4d5f2bbfa9a2e74c178c783",
         "check": "ci",
-        "conclusion": null,
-        "completedAt": null,
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-22T22:02:13Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/39861565234/job/120113300265",
-        "line": null,
-        "verdict": null,
-        "fields": {},
+        "line": "LAYER-RATCHET: 68 known violations (36 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 68,
+          "new": 0
+        },
         "disagrees": false
       },
       {
@@ -10842,6 +10972,58 @@
         "verdict": "PASS",
         "fields": {
           "known": 71,
+          "new": 0
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 995,
+        "sha": "4eed8c52bf6b6ac24c6cde1b341f40925e51dc6d",
+        "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-22T22:11:20Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39863050082/job/120118306114",
+        "line": "HYGIENE: PASS reviewable=80 test=262 excluded=0 files=3 issue=#801 linked=fixes",
+        "verdict": "PASS",
+        "fields": {
+          "reviewable": 80,
+          "test": 262,
+          "excluded": 0,
+          "files": 3,
+          "issue": "#801",
+          "linked": "fixes"
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 995,
+        "sha": "4eed8c52bf6b6ac24c6cde1b341f40925e51dc6d",
+        "check": "browser-qa",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-22T22:13:51Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39863049298/job/120118303164",
+        "line": "BROWSER-QA: PASS suites=store passed=107 failed=0 flaky=0 skipped=0",
+        "verdict": "PASS",
+        "fields": {
+          "suites": "store",
+          "passed": 107,
+          "failed": 0,
+          "flaky": 0,
+          "skipped": 0
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 995,
+        "sha": "4eed8c52bf6b6ac24c6cde1b341f40925e51dc6d",
+        "check": "ci",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-22T22:14:32Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39863043224/job/120118280887",
+        "line": "LAYER-RATCHET: 68 known violations (36 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 68,
           "new": 0
         },
         "disagrees": false
