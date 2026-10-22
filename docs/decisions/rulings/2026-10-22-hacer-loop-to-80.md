@@ -118,3 +118,17 @@ did before: an internal wire (already #620) and the `time` column (Phase 0.6). T
 characterization golden only gains the new field.
 Cost if wrong: a bare-name shape the nine did not cover prints differently from the reference;
 HRN-023 (#935) is deciding whether such waivers belong in ADR-0018.
+
+## R887 — PR #957 (#878) merges without a separate fidelity review
+Builds on: R854
+Amends: R854
+Coordinator, 2026-10-22T11:05Z. Amends R854 for #957, as R886 did. It refuses an HDL pin wider than
+`MAX_PIN_WIDTH` (32), where the web IDE reads a declared width modulo 65536. That is a divergence the
+PR itself records in ADR-0020 §1.11 rule 5. The builder re-measured the five new corpus rows on the web
+IDE at `91ef428`, and the Opus verifier ran the whole acceptance corpus there: 182 of 182 rows agree on
+verdict and message. It also ran five shapes the PR does not record (`IN a[17]` whole and sliced,
+`a[65536]`, `a[65537]`, `OUT out[40]` writing `out[35]`): every difference is a refusal over 32 bits,
+apart from an older message difference on `a[17]` used whole. All 38 vendored `.hdl` files and the 15
+Project-1 sources read the same at base and head.
+Cost if wrong: an HDL file with a pin of 33 to 65535 bits that the web IDE accepts is refused by HACER
+with a message naming the pin and the limit; no value changes.
