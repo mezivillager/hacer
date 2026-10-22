@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-22T05:22:57.295Z",
+  "generatedAt": "2026-10-22T05:33:33.596Z",
   "head": {
-    "sha": "74ee3461bf3af45aca3593a83ba175eccdfaf9e3",
-    "date": "2026-10-22T08:01:57+03:00",
-    "subject": "test(differential): green — HACER and web-ide agree on all 15 Project-1 chips"
+    "sha": "7d86eb2ca1229427f1e4f2c547acea1ef877f063",
+    "date": "2026-10-22T08:32:29+03:00",
+    "subject": "docs(adr): ADR-0020 §1.11 rules 2 and 5 record that a BUILTIN body has its builtin's pins (#919)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T05:22:57.295Z",
+      "fetchedAt": "2026-10-22T05:33:33.596Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T05:22:57.295Z",
+      "fetchedAt": "2026-10-22T05:33:33.596Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T05:22:57.295Z",
+      "fetchedAt": "2026-10-22T05:33:33.596Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-22T05:22:57.295Z",
+      "fetchedAt": "2026-10-22T05:33:33.596Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-22T05:22:57.295Z",
+      "fetchedAt": "2026-10-22T05:33:33.596Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-22T05:22:57.295Z",
+      "fetchedAt": "2026-10-22T05:33:33.596Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-22T05:22:57.295Z",
+      "fetchedAt": "2026-10-22T05:33:33.596Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-22T05:22:57.295Z",
+      "fetchedAt": "2026-10-22T05:33:33.596Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-22T05:22:57.295Z",
+      "fetchedAt": "2026-10-22T05:33:33.596Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-22T05:22:57.295Z",
+      "fetchedAt": "2026-10-22T05:33:33.596Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-22T05:22:57.295Z",
+      "fetchedAt": "2026-10-22T05:33:33.596Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-22T05:22:57.295Z",
+      "fetchedAt": "2026-10-22T05:33:33.596Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-22T05:22:57.295Z",
+      "fetchedAt": "2026-10-22T05:33:33.596Z",
       "status": "ok"
     }
   },
@@ -80,12 +80,12 @@
         "lane": "feature",
         "slug": "foundation",
         "epicNumber": 318,
-        "open": 30,
+        "open": 29,
         "ready": 0,
-        "inProgress": 1,
+        "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 1,
+        "agentReady": 0,
         "filedElsewhere": [],
         "next": null,
         "title": "Foundation audit: is the codebase structured for the autonomous loop? Measured audit, prioritized refactorings, fitness functions",
@@ -187,8 +187,8 @@
         },
         "title": "Epic: core — headless core",
         "subIssues": {
-          "completed": 31,
-          "percentCompleted": 88,
+          "completed": 32,
+          "percentCompleted": 91,
           "total": 35
         }
       },
@@ -410,7 +410,6 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
-        920,
         514
       ]
     }
@@ -2552,23 +2551,6 @@
         "lane": "feature",
         "pickable": false,
         "reason": "unshaped"
-      },
-      {
-        "number": 919,
-        "title": "A `BUILTIN` body declares the builtin's own pins: refuse a source whose `IN` or `OUT` differ from the builtin it names, on the core path and in grading",
-        "labels": [
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "fidelity",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "claimed"
       }
     ],
     "byProject": {
@@ -2618,8 +2600,7 @@
         907,
         912,
         916,
-        918,
-        919
+        918
       ],
       "spine": [
         165,
@@ -2747,25 +2728,6 @@
   "prs": {
     "open": [
       {
-        "number": 920,
-        "title": "fix(core): refuse a BUILTIN body whose pins differ from the builtin it names (#919)",
-        "url": "https://github.com/mezivillager/hacer/pull/920",
-        "author": "mezivillager",
-        "labels": [
-          "risk:1",
-          "fidelity",
-          "project:foundation"
-        ],
-        "headRefName": "fix/919-builtin-pins",
-        "isDraft": false,
-        "createdAt": "2026-10-22T05:21:20Z",
-        "mergedAt": null,
-        "closes": [
-          919
-        ],
-        "verdicts": []
-      },
-      {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
         "url": "https://github.com/mezivillager/hacer/pull/514",
@@ -2793,6 +2755,33 @@
       }
     ],
     "merged": [
+      {
+        "number": 920,
+        "title": "fix(core): refuse a BUILTIN body whose pins differ from the builtin it names (#919)",
+        "url": "https://github.com/mezivillager/hacer/pull/920",
+        "author": "mezivillager",
+        "labels": [
+          "risk:1",
+          "fidelity",
+          "project:foundation"
+        ],
+        "headRefName": "fix/919-builtin-pins",
+        "isDraft": false,
+        "createdAt": "2026-10-22T05:21:20Z",
+        "mergedAt": "2026-10-22T05:32:30Z",
+        "closes": [
+          919
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus (claude-opus-5-5)",
+            "at": "2026-10-22T05:31:35Z",
+            "url": "https://github.com/mezivillager/hacer/pull/920#issuecomment-6333529993"
+          }
+        ]
+      },
       {
         "number": 917,
         "title": "test(differential): HACER beside the reference simulator on Project 1's official .tst (#338)",
@@ -4363,30 +4352,13 @@
         "mergedAt": "2026-10-16T01:01:05Z",
         "closes": [],
         "verdicts": []
-      },
-      {
-        "number": 761,
-        "title": "chore(deps-dev): bump @playwright/test from 1.60.0 to 1.64.0",
-        "url": "https://github.com/mezivillager/hacer/pull/761",
-        "author": "app/dependabot",
-        "labels": [
-          "released",
-          "dependencies",
-          "javascript"
-        ],
-        "headRefName": "dependabot/npm_and_yarn/playwright/test-1.64.0",
-        "isDraft": false,
-        "createdAt": "2026-10-15T23:15:16Z",
-        "mergedAt": "2026-10-16T00:52:51Z",
-        "closes": [],
-        "verdicts": []
       }
     ],
     "coverage": {
       "merged": 60,
-      "withVerdict": 55,
-      "withoutVerdict": 5,
-      "pass": 55,
+      "withVerdict": 56,
+      "withoutVerdict": 4,
+      "pass": 56,
       "block": 0,
       "belowTier": []
     }
@@ -5248,32 +5220,6 @@
           "author": "mezivillager",
           "at": "2026-10-22T04:34:14Z",
           "url": "https://github.com/mezivillager/hacer/issues/915#issuecomment-6332783770"
-        }
-      },
-      {
-        "number": 919,
-        "ref": "refs/heads/claim/919",
-        "sha": "74ee3461bf3af45aca3593a83ba175eccdfaf9e3",
-        "state": "OPEN",
-        "title": "A `BUILTIN` body declares the builtin's own pins: refuse a source whose `IN` or `OUT` differ from the builtin it names, on the core path and in grading",
-        "url": "https://github.com/mezivillager/hacer/issues/919",
-        "labels": [
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "fidelity",
-          "project:foundation"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-to-70",
-          "branch": "fix/919-builtin-pins",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-22T05:04:17Z",
-          "url": "https://github.com/mezivillager/hacer/issues/919#issuecomment-6333168802"
         }
       }
     ],
@@ -7163,7 +7109,7 @@
       },
       {
         "date": "2026-10-16",
-        "merges": 10
+        "merges": 9
       },
       {
         "date": "2026-10-17",
@@ -7175,20 +7121,20 @@
       },
       {
         "date": "2026-10-22",
-        "merges": 17
+        "merges": 18
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-08T05:22:57.295Z",
-      "merged": 107,
+      "since": "2026-10-08T05:33:33.596Z",
+      "merged": 108,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 1.8
       },
       "blockedOnce": {
         "count": 7,
-        "of": 91,
+        "of": 92,
         "prs": [
           700,
           725,
@@ -7201,8 +7147,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 76,
-          "withVerdict": 76,
+          "merged": 77,
+          "withVerdict": 77,
           "without": []
         },
         "nonCode": {
@@ -11310,7 +11256,7 @@
       },
       {
         "date": "2026-10-22",
-        "at": "2026-10-22T05:02:35.906Z",
+        "at": "2026-10-22T05:22:57.295Z",
         "byProject": {
           "harness": [
             257,
@@ -11358,7 +11304,8 @@
             907,
             912,
             916,
-            918
+            918,
+            919
           ],
           "spine": [
             165,
@@ -11489,17 +11436,14 @@
     "items": [
       {
         "pr": null,
-        "sha": "74ee3461bf3af45aca3593a83ba175eccdfaf9e3",
+        "sha": "7d86eb2ca1229427f1e4f2c547acea1ef877f063",
         "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-22T05:04:16Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39725694974/job/119648943709",
-        "line": "LAYER-RATCHET: 69 known violations (37 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 69,
-          "new": 0
-        },
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39728615356/job/119658230458",
+        "line": null,
+        "verdict": null,
+        "fields": {},
         "disagrees": false
       },
       {
@@ -11546,49 +11490,6 @@
           "known": 71,
           "new": 0
         },
-        "disagrees": false
-      },
-      {
-        "pr": 920,
-        "sha": "ee1c042648156c5d9b438c4d35aff0ad9a7d3aac",
-        "check": "pr-hygiene",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-22T05:21:36Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39727549355/job/119654841923",
-        "line": "HYGIENE: PASS reviewable=69 test=102 excluded=0 files=3 issue=#919 linked=fixes",
-        "verdict": "PASS",
-        "fields": {
-          "reviewable": 69,
-          "test": 102,
-          "excluded": 0,
-          "files": 3,
-          "issue": "#919",
-          "linked": "fixes"
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 920,
-        "sha": "ee1c042648156c5d9b438c4d35aff0ad9a7d3aac",
-        "check": "browser-qa",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-22T05:21:36Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39727549060/job/119654839993",
-        "line": "BROWSER-QA: skipped (no critical paths)",
-        "verdict": "SKIPPED",
-        "fields": {},
-        "disagrees": false
-      },
-      {
-        "pr": 920,
-        "sha": "ee1c042648156c5d9b438c4d35aff0ad9a7d3aac",
-        "check": "ci",
-        "conclusion": null,
-        "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39727546904/job/119654832676",
-        "line": null,
-        "verdict": null,
-        "fields": {},
         "disagrees": false
       }
     ]
@@ -18936,6 +18837,13 @@
         ]
       },
       {
+        "id": "#919",
+        "kind": "github",
+        "citedBy": [
+          "ADR-0020"
+        ]
+      },
+      {
         "id": "#328",
         "kind": "github",
         "citedBy": [
@@ -19133,6 +19041,13 @@
         "citedBy": [
           "ADR-0020",
           "R826"
+        ]
+      },
+      {
+        "id": "#915",
+        "kind": "github",
+        "citedBy": [
+          "ADR-0020"
         ]
       },
       {
