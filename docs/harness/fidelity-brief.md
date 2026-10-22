@@ -74,7 +74,7 @@ conclusion — give it the sources.
   or engine diverging from the oracle) is a bug, filed under the bot issue contract
   (`docs/harness/issue-form.md` "Bot issue contract": executable repro or no issue,
   fingerprint, `bot-filed`, `sev:critical` for oracle divergence, never `agent-ready` without the
-  owner).
+  owner or the judge, R889).
 
 ## Output — the review note and one comment per artifact
 The note: `docs/research/YYYY-MM-fidelity-review-<topic>.md`, ≤ ~250 lines: domain, ground truth
