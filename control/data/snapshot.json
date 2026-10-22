@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-22T09:55:34.715Z",
+  "generatedAt": "2026-10-22T10:00:00.567Z",
   "head": {
-    "sha": "cb234ff9490f7094e94b46ab5bd926af95883a9a",
-    "date": "2026-10-22T12:54:27+03:00",
-    "subject": "docs(harness): synthesis of process review cycle 2026-10-22"
+    "sha": "a562ebf9194153e0c209e2577caabcad65e7695e",
+    "date": "2026-10-22T12:59:09+03:00",
+    "subject": "docs(harness): state the function-length rule in the implementer brief"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T09:55:34.715Z",
+      "fetchedAt": "2026-10-22T10:00:00.567Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T09:55:34.715Z",
+      "fetchedAt": "2026-10-22T10:00:00.567Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T09:55:34.715Z",
+      "fetchedAt": "2026-10-22T10:00:00.567Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-22T09:55:34.715Z",
+      "fetchedAt": "2026-10-22T10:00:00.567Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-22T09:55:34.715Z",
+      "fetchedAt": "2026-10-22T10:00:00.567Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-22T09:55:34.715Z",
+      "fetchedAt": "2026-10-22T10:00:00.567Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-22T09:55:34.715Z",
+      "fetchedAt": "2026-10-22T10:00:00.567Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-22T09:55:34.715Z",
+      "fetchedAt": "2026-10-22T10:00:00.567Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-22T09:55:34.715Z",
+      "fetchedAt": "2026-10-22T10:00:00.567Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-22T09:55:34.715Z",
+      "fetchedAt": "2026-10-22T10:00:00.567Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-22T09:55:34.715Z",
+      "fetchedAt": "2026-10-22T10:00:00.567Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-22T09:55:34.715Z",
+      "fetchedAt": "2026-10-22T10:00:00.567Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-22T09:55:34.715Z",
+      "fetchedAt": "2026-10-22T10:00:00.567Z",
       "status": "ok"
     }
   },
@@ -80,12 +80,12 @@
         "lane": "feature",
         "slug": "foundation",
         "epicNumber": 318,
-        "open": 29,
+        "open": 28,
         "ready": 5,
-        "inProgress": 2,
+        "inProgress": 1,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 8,
+        "agentReady": 7,
         "filedElsewhere": [],
         "next": {
           "number": 599,
@@ -93,8 +93,8 @@
         },
         "title": "Foundation audit: is the codebase structured for the autonomous loop? Measured audit, prioritized refactorings, fitness functions",
         "subIssues": {
-          "completed": 22,
-          "percentCompleted": 62,
+          "completed": 23,
+          "percentCompleted": 65,
           "total": 35
         }
       },
@@ -111,7 +111,6 @@
         "agentReady": 3,
         "filedElsewhere": [
           151,
-          339,
           941,
           942
         ],
@@ -509,7 +508,6 @@
       "dormant": false,
       "agentPrs": [
         952,
-        948,
         514
       ]
     }
@@ -1557,23 +1555,6 @@
         "reason": "unshaped"
       },
       {
-        "number": 339,
-        "title": "Function length only shrinks: `max-lines-per-function` on `src/` production code, today's violations as ESLint bulk suppressions (foundation 1.5)",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 361,
         "title": "compileHDL never infers the width of a slice-assembled signal, so an unsliced read of one is not width-checked",
         "labels": [
@@ -2370,7 +2351,6 @@
         151,
         184,
         325,
-        339,
         379,
         380,
         381,
@@ -2536,33 +2516,6 @@
         "verdicts": []
       },
       {
-        "number": 948,
-        "title": "chore(lint): function length only shrinks — max-lines-per-function at 80 on src/",
-        "url": "https://github.com/mezivillager/hacer/pull/948",
-        "author": "mezivillager",
-        "labels": [
-          "project:harness",
-          "risk:1",
-          "project:foundation"
-        ],
-        "headRefName": "feat/339-function-length",
-        "isDraft": false,
-        "createdAt": "2026-10-22T09:38:49Z",
-        "mergedAt": null,
-        "closes": [
-          339
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Claude Sonnet 5.5 (claude-sonnet-5-5)",
-            "at": "2026-10-22T09:52:13Z",
-            "url": "https://github.com/mezivillager/hacer/pull/948#issuecomment-6337879651"
-          }
-        ]
-      },
-      {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
         "url": "https://github.com/mezivillager/hacer/pull/514",
@@ -2611,6 +2564,33 @@
             "model": "coordinator (risk:0 docs-only exception, ha-next §4)",
             "at": "2026-10-22T09:53:01Z",
             "url": "https://github.com/mezivillager/hacer/pull/953#issuecomment-6337894228"
+          }
+        ]
+      },
+      {
+        "number": 948,
+        "title": "chore(lint): function length only shrinks — max-lines-per-function at 80 on src/",
+        "url": "https://github.com/mezivillager/hacer/pull/948",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:1",
+          "project:foundation"
+        ],
+        "headRefName": "feat/339-function-length",
+        "isDraft": false,
+        "createdAt": "2026-10-22T09:38:49Z",
+        "mergedAt": "2026-10-22T09:59:10Z",
+        "closes": [
+          339
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Claude Sonnet 5.5 (claude-sonnet-5-5)",
+            "at": "2026-10-22T09:52:13Z",
+            "url": "https://github.com/mezivillager/hacer/pull/948#issuecomment-6337879651"
           }
         ]
       },
@@ -4134,33 +4114,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/815#issuecomment-6240525715"
           }
         ]
-      },
-      {
-        "number": 810,
-        "title": "docs(harness): role agents and briefs say the inbox panel decides (#779)",
-        "url": "https://github.com/mezivillager/hacer/pull/810",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:0"
-        ],
-        "headRefName": "docs/779-panel-wording",
-        "isDraft": false,
-        "createdAt": "2026-10-17T18:49:37Z",
-        "mergedAt": "2026-10-17T18:53:39Z",
-        "closes": [
-          779
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "coordinator (Opus 5.5; the risk:0 docs-only exception, ha-next §4)",
-            "at": "2026-10-17T18:50:24Z",
-            "url": "https://github.com/mezivillager/hacer/pull/810#issuecomment-6238926549"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4178,7 +4131,7 @@
         "number": 339,
         "ref": "refs/heads/claim/339",
         "sha": "68ded0de14ac8f836264ce48a14b57c2affff5d3",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "Function length only shrinks: `max-lines-per-function` on `src/` production code, today's violations as ESLint bulk suppressions (foundation 1.5)",
         "url": "https://github.com/mezivillager/hacer/issues/339",
         "labels": [
@@ -4188,7 +4141,7 @@
           "risk:1",
           "project:foundation"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -4277,7 +4230,7 @@
         }
       }
     ],
-    "onClosedIssues": 0
+    "onClosedIssues": 1
   },
   "cloudLane": {
     "items": [
@@ -6198,7 +6151,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-17",
-        "merges": 2
+        "merges": 1
       },
       {
         "date": "2026-10-21",
@@ -6206,20 +6159,20 @@
       },
       {
         "date": "2026-10-22",
-        "merges": 30
+        "merges": 31
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-08T09:55:34.715Z",
-      "merged": 120,
+      "since": "2026-10-08T10:00:00.567Z",
+      "merged": 121,
       "openToMergeHours": {
         "median": 0.3,
-        "p90": 1.6
+        "p90": 1.5
       },
       "blockedOnce": {
         "count": 7,
-        "of": 101,
+        "of": 102,
         "prs": [
           700,
           725,
@@ -6232,8 +6185,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 79,
-          "withVerdict": 79,
+          "merged": 80,
+          "withVerdict": 80,
           "without": []
         },
         "nonCode": {
@@ -10503,11 +10456,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "cb234ff9490f7094e94b46ab5bd926af95883a9a",
+        "sha": "a562ebf9194153e0c209e2577caabcad65e7695e",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39759034525/job/119758285045",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39759632288/job/119760302120",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -10557,42 +10510,6 @@
           "known": 71,
           "new": 0
         },
-        "disagrees": false
-      },
-      {
-        "pr": 948,
-        "sha": "b172b69b2e9f91a791593adebbce3daf1911bac4",
-        "check": "pr-hygiene",
-        "conclusion": null,
-        "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39759147190/job/119758658543",
-        "line": null,
-        "verdict": null,
-        "fields": {},
-        "disagrees": false
-      },
-      {
-        "pr": 948,
-        "sha": "b172b69b2e9f91a791593adebbce3daf1911bac4",
-        "check": "browser-qa",
-        "conclusion": null,
-        "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39759153095/job/119758675372",
-        "line": null,
-        "verdict": null,
-        "fields": {},
-        "disagrees": false
-      },
-      {
-        "pr": 948,
-        "sha": "b172b69b2e9f91a791593adebbce3daf1911bac4",
-        "check": "ci",
-        "conclusion": null,
-        "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39759153085/job/119758674969",
-        "line": null,
-        "verdict": null,
-        "fields": {},
         "disagrees": false
       },
       {
