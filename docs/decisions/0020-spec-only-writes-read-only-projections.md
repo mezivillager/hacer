@@ -1,7 +1,7 @@
 # 0020. Spec-only writes, read-only projections
 
 - **Status:** Accepted — the fresh-context adversarial review [#359](https://github.com/mezivillager/hacer/issues/359) required by #327 returned `sound with corrections`, and the second pass over the four post-review deltas returned `accept with corrections` (both on [#358](https://github.com/mezivillager/hacer/pull/358), 2026-09-23). Both sets of corrections are applied below — the second pass's seven under "What the second pass changed" — and no further review round is required. **Amended 2026-09-24** by the spike this ADR scheduled for 1.5/1.6 ([#372](https://github.com/mezivillager/hacer/issues/372)), which ran, found the mechanism 1.5 describes does not work, and replaced it — "What the spike changed". The status does **not** move: the spine, the review's acceptance and every decision stand, and correcting a mechanism is what a scheduled spike is for.
-- **Date:** 2026-09-23 · mechanism amended 2026-09-24 ([#372](https://github.com/mezivillager/hacer/issues/372)) · §7.1 and §9 amended 2026-09-29 ([#598](https://github.com/mezivillager/hacer/issues/598)) · §1.10 added 2026-10-15 ([#374](https://github.com/mezivillager/hacer/issues/374)) · §1.11 added 2026-10-15 ([#378](https://github.com/mezivillager/hacer/issues/378)) · §1.1 and §1.11.5 amended 2026-10-21 ([#813](https://github.com/mezivillager/hacer/issues/813)) · §1, §1.10 and the migration policy amended 2026-10-21 ([#814](https://github.com/mezivillager/hacer/issues/814)) · §1.10 item 10 amended 2026-10-21 ([#844](https://github.com/mezivillager/hacer/issues/844)) · §1.11.5 amended again 2026-10-21 ([#840](https://github.com/mezivillager/hacer/issues/840)) · §1.1 amended again 2026-10-22 ([#882](https://github.com/mezivillager/hacer/issues/882)) · §1.11 rule 2 amended 2026-10-22 ([#903](https://github.com/mezivillager/hacer/issues/903)) · §1.10.9 and §1.10 item 10 amended 2026-10-22 ([#905](https://github.com/mezivillager/hacer/issues/905))
+- **Date:** 2026-09-23 · mechanism amended 2026-09-24 ([#372](https://github.com/mezivillager/hacer/issues/372)) · §7.1 and §9 amended 2026-09-29 ([#598](https://github.com/mezivillager/hacer/issues/598)) · §1.10 added 2026-10-15 ([#374](https://github.com/mezivillager/hacer/issues/374)) · §1.11 added 2026-10-15 ([#378](https://github.com/mezivillager/hacer/issues/378)) · §1.1 and §1.11.5 amended 2026-10-21 ([#813](https://github.com/mezivillager/hacer/issues/813)) · §1, §1.10 and the migration policy amended 2026-10-21 ([#814](https://github.com/mezivillager/hacer/issues/814)) · §1.10 item 10 amended 2026-10-21 ([#844](https://github.com/mezivillager/hacer/issues/844)) · §1.11.5 amended again 2026-10-21 ([#840](https://github.com/mezivillager/hacer/issues/840)) · §1.1 amended again 2026-10-22 ([#882](https://github.com/mezivillager/hacer/issues/882)) · §1.11 rule 2 amended 2026-10-22 ([#903](https://github.com/mezivillager/hacer/issues/903)) · §1.10.9 and §1.10 item 10 amended 2026-10-22 ([#905](https://github.com/mezivillager/hacer/issues/905)) · §1.11 rules 2 and 5 amended 2026-10-22 ([#919](https://github.com/mezivillager/hacer/issues/919))
 - **Amended by:** R769, R817, R825, R826, R836, R837
 - **Amends:** ADR-0008 §6, ADR-0009
 - **Supersedes:** ADR-0007
@@ -794,9 +794,8 @@ and these rules are pinned by `src/core/spec/compileSpec.test.ts`,
      ([#903](https://github.com/mezivillager/hacer/issues/903), FID-028). Its `name`, `inputs` and
      `outputs` must equal its source's: an `'hdl'` source's `CHIP` name, `IN` and `OUT`, or a
      `'circuit'` document's `name`, `ins` and `outs`. Pins compare as name→width maps, so their
-     order does not matter. A builtin has no source and is not compared, and a `BUILTIN` body is
-     compared with its source only, not with the builtin's own pins, which the web IDE takes
-     (`../web-ide/simulator/src/chip/builder.ts:233-235`).
+     order does not matter. A builtin has no source and is not compared. A `BUILTIN` body is
+     compared with its source here, and with the builtin it names by the next bullet's check.
      - The part check compares each definition the walk enters before compiling it, and refuses in
        the chain above: `Outer › Foo: Foo declares IN a, but its source declares IN b`.
        `evaluateChip` compares a chip before compiling it and throws the same message as a
@@ -827,6 +826,29 @@ and these rules are pinned by `src/core/spec/compileSpec.test.ts`,
        looked up by.
      - Pinned by the #903 cases in `src/core/spec/compileSpec.nesting.test.ts` and
        `src/core/chips/evaluateChip.test.ts`.
+   - **A `BUILTIN` body declares the builtin's own pins**
+     ([#919](https://github.com/mezivillager/hacer/issues/919), FID-032). `BUILTIN Not;` names
+     `Not`, and a bare `BUILTIN;` names its own `CHIP`. The source's `IN` and `OUT` must equal that
+     builtin's, as name→width maps, or it is refused with one message per side that differs, IN
+     first: `Foo declares IN a, but builtin Not declares IN in`. The check runs after
+     `Builtin chip "X" not found in registry` and `Chip "X" is not a builtin`.
+     - On the core path it is `compileHDL`'s, in the `BUILTIN` passthrough that looks the builtin
+       up, so every caller shares it. `compileHDL` returns it. The part check returns it in the
+       chain, `Outer › Foo: Foo declares IN a, but builtin Not declares IN in`. `evaluateChip`
+       throws it as a `ChipCompileError`, on `Foo` alone and at an `'hdl'` parent's first
+       evaluation (`Outer › Foo: …`); that is the only channel that throws.
+     - On the grading path the `.hdl`'s own chip runs on the builtin directly and never reaches
+       `compileHDL`. So `loadChip` in `src/core/testing/testChip.ts`, which `hacer test`, the MCP
+       `hacer_hdl` tool and `hacer run-tst` share, runs the same check once
+       `validateChipDefinition` accepts the file, and returns an error report whose `error` joins
+       the messages with `; `. Under `hacer test` and `hacer_hdl`, R771's stand-in refusal
+       (`docs/decisions/rulings/2026-09-29-hacer-loop-60.md`) still comes first.
+     - Rule 3's cache rule gains no names: the check runs where the builtin is looked up, and an
+       `'hdl'` chip's `BUILTIN` name is already among the names it re-checks.
+     - The web IDE takes the builtin's pins instead; rule 5 records the divergence.
+     - Pinned by the #919 cases in `src/core/hdl/compiler.test.ts`,
+       `src/core/spec/compileSpec.nesting.test.ts`, `src/core/chips/evaluateChip.test.ts`,
+       `src/core/testing/testChip.test.ts` and `src/cli/runCli.test.ts`.
    - `compileSpec` never throws and never changes its input. A refusal belongs to the run panel; the
      document and its parse diagnostics are unchanged (§1.1).
 3. **The cache rule,** in `evaluateChip`, for `'hdl'` and `'circuit'` chips alike. A cached evaluator
@@ -887,8 +909,8 @@ and these rules are pinned by `src/core/spec/compileSpec.test.ts`,
        in `src/core/hdl/compiler.test.ts`, and by the `Outer` over a broken user `Not` case of #901
        in `src/core/spec/compileSpec.nesting.test.ts`. The 27 names are rule 5's.
 5. **Divergences from the reference, inherited rather than fixed.** The refusal of an unconnected
-   part input is not among them: §1.1 decides it. The bullets on a read of a chip OUT and on the 27
-   names are decided too.
+   part input is not among them: §1.1 decides it. The bullets on a read of a chip OUT, on the 27
+   names and on a `BUILTIN` body's pins are decided too.
    - `IN` and `OUT` lists are required. That is the parser's rule. A document with no IN compiles at
      top level but cannot be registered (`validateChipDefinition`).
    - A bit nothing drives reads 0 in the engine, silently
@@ -929,6 +951,20 @@ and these rules are pinned by `src/core/spec/compileSpec.test.ts`,
        at `91ef428` and fails once a HACER builtin lands under one of the 27, until the list moves.
      - `XOr` and `XOr16` are among the 27; their alias divergence stays FID-008's
        (`src/core/hdl/acceptanceParity.test.ts`).
+   - **A `BUILTIN` body whose `IN` or `OUT` differ from the builtin's is refused; the web IDE
+     ignores them.** Decided 2026-10-22 by the inbox panel's verdict on
+     [#915](https://github.com/mezivillager/hacer/issues/915), built by
+     [#919](https://github.com/mezivillager/hacer/issues/919) (rule 2). The web IDE builds a
+     `BUILTIN;` file as the builtin named by its `CHIP` name, on the builtin's pins, and ignores the
+     file's `IN` and `OUT` (`../web-ide/simulator/src/chip/builder.ts:233-235` at `91ef428`).
+     - `CHIP Nand { IN x, y; OUT out; BUILTIN; }` and `CHIP Nand { IN a[2], b; OUT out; BUILTIN; }`
+       build there with `a[1], b[1], out[1]` and pass the course's Nand vectors. HACER refuses both
+       on every path, for R771's and R773's reason
+       (`docs/decisions/rulings/2026-09-29-hacer-loop-60.md`): grading is stricter than the
+       reference wherever the reference silently ignores what a file says, and taking the builtin's
+       pins would ignore the file's own `IN` and `OUT`.
+     - Every shipped primitive file declares its builtin's pins, `conformance/vectors/01/Nand.hdl`
+       among them, so only a hand-edited primitive file is refused, by a message naming both sides.
 6. **Parity is measured on Project 1.** All 15 sources through `compileSpec` match the builtins and
    the `'hdl'` evaluation of the same source, on that test file's vectors. HACER ships no Project 2–3
    HDL to compare against; that parity comes with
