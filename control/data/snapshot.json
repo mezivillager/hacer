@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-22T06:45:54.695Z",
+  "generatedAt": "2026-10-22T06:55:22.076Z",
   "head": {
-    "sha": "c5cf87663cb837640fa8640d7d056f8877989c9e",
-    "date": "2026-10-22T09:44:50+03:00",
-    "subject": "docs(harness): session record of the 2026-10-21 run, and ADR-0020 wording"
+    "sha": "d2f58ea0d6eb3b8efba94252e0c8c8ba1bda35e6",
+    "date": "2026-10-22T09:49:17+03:00",
+    "subject": "docs(harness): inbox statuses and HRN-018 to HRN-020 from the 2026-10-21 run"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T06:45:54.695Z",
+      "fetchedAt": "2026-10-22T06:55:22.076Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T06:45:54.695Z",
+      "fetchedAt": "2026-10-22T06:55:22.076Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T06:45:54.695Z",
+      "fetchedAt": "2026-10-22T06:55:22.076Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-22T06:45:54.695Z",
+      "fetchedAt": "2026-10-22T06:55:22.076Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-22T06:45:54.695Z",
+      "fetchedAt": "2026-10-22T06:55:22.076Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-22T06:45:54.695Z",
+      "fetchedAt": "2026-10-22T06:55:22.076Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-22T06:45:54.695Z",
+      "fetchedAt": "2026-10-22T06:55:22.076Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-22T06:45:54.695Z",
+      "fetchedAt": "2026-10-22T06:55:22.076Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-22T06:45:54.695Z",
+      "fetchedAt": "2026-10-22T06:55:22.076Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-22T06:45:54.695Z",
+      "fetchedAt": "2026-10-22T06:55:22.076Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-22T06:45:54.695Z",
+      "fetchedAt": "2026-10-22T06:55:22.076Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-22T06:45:54.695Z",
+      "fetchedAt": "2026-10-22T06:55:22.076Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-22T06:45:54.695Z",
+      "fetchedAt": "2026-10-22T06:55:22.076Z",
       "status": "ok"
     }
   },
@@ -302,12 +302,12 @@
         "lane": "aux",
         "slug": "upkeep",
         "epicNumber": 146,
-        "open": 34,
+        "open": 14,
         "ready": 0,
-        "inProgress": 32,
+        "inProgress": 12,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 33,
+        "agentReady": 13,
         "filedElsewhere": [],
         "next": null,
         "title": "Epic: upkeep — maintenance & documentation",
@@ -410,7 +410,6 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
-        927,
         514
       ]
     }
@@ -1809,227 +1808,6 @@
         "reason": "unshaped"
       },
       {
-        "number": 788,
-        "title": "Inbox review: FID-015 · Learner-facing compile errors use the reference's words and carry the line",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
-        "number": 789,
-        "title": "Inbox review: FID-018 · `compileSpec` refuses a spec whose registered part does not compile, naming the chain",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
-        "number": 790,
-        "title": "Inbox review: FID-019 · `printSpec` refuses a document in which a driverless net shares its id with a driven net",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
-        "number": 791,
-        "title": "Inbox review: FID-020 · #338 lists the narrow-first multi-driven OUT as an expected disagreement",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
-        "number": 792,
-        "title": "Inbox review: FID-021 · A strict acceptance mode for the grading path",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
-        "number": 793,
-        "title": "Inbox review: FID-022 · The `nand2tetris` dialect prints one sliced buffer per alias run, not one `Or` per bit",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
-        "number": 794,
-        "title": "Inbox review: FID-023 · Amend FID-019: pin the disjoint-bit export gap, and make the import's consumers compile before they print or save",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
-        "number": 795,
-        "title": "Inbox review: FID-024 · ADR-0020 §10 records R837's loop granularity and names where it overapproximates",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
-        "number": 796,
-        "title": "Inbox review: HRN-005 · Measure the four numbers or retire two of them: tokens and owner minutes have no source",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
-        "number": 797,
-        "title": "Inbox review: HRN-006 · Say who applies `overturned`, and apply it to the PASS whose defect a later PR fixed",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
-        "number": 798,
-        "title": "Inbox review: HRN-007 · Align the concurrent-subagent cap with the owner's rulings: 4 in config, 2–3 in practice",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
-        "number": 799,
-        "title": "Inbox review: HRN-008 · Register the `hacer-*` agent types where sessions start: the parent workspace",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
-        "number": 800,
-        "title": "Inbox review: HRN-009 · Run the retro at each coordinator run's close, not every 5 merges",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 801,
         "title": "polish: an unsaved circuit is lost on reload — autosave is written every 2 s but never restored",
         "labels": [
@@ -2111,125 +1889,6 @@
         "lane": "taste",
         "pickable": false,
         "reason": "on-request"
-      },
-      {
-        "number": 807,
-        "title": "Inbox review: PRD-001 · Decide what HACER is on a phone: a read-only viewer whose panels open as sheets, or desktop-only with a notice",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
-        "number": 808,
-        "title": "Inbox review: PRD-002 · First-run guidance for the declared app: teach spec → render → pins → test, and remember the dismissal",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
-        "number": 809,
-        "title": "Inbox review: PRD-003 · Add the first review's product criteria to N.11's shell: every control named, one icon per job, destructive commands undoable, no placeholders",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
-        "number": 827,
-        "title": "Inbox review: FID-025 · The not-connected refusal fires only for a pin no connection names, so a pin bound only out of range gets the reference's one refusal",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
-        "number": 828,
-        "title": "Inbox review: HRN-010 · Each worktree gets its own scratch folder, printed when it is made, and PR bodies go through it",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
-        "number": 829,
-        "title": "Inbox review: HRN-011 · `backlog.mjs tier <pr>` gives the verifier's tier from the PR's paths, and Mission Control lists a verdict given on a cheaper tier",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
-        "number": 830,
-        "title": "Inbox review: HRN-012 · `merge-on-green` reports a missing `workflow` token scope before it touches a PR that changes `.github/workflows/`",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": false,
-        "reason": "claimed"
       },
       {
         "number": 831,
@@ -2607,26 +2266,6 @@
       "upkeep": [
         229,
         256,
-        788,
-        789,
-        790,
-        791,
-        792,
-        793,
-        794,
-        795,
-        796,
-        797,
-        798,
-        799,
-        800,
-        807,
-        808,
-        809,
-        827,
-        828,
-        829,
-        830,
         831,
         832,
         833,
@@ -2683,22 +2322,6 @@
   "prs": {
     "open": [
       {
-        "number": 927,
-        "title": "docs(harness): inbox statuses and HRN-018 to HRN-020 from the 2026-10-21 run",
-        "url": "https://github.com/mezivillager/hacer/pull/927",
-        "author": "mezivillager",
-        "labels": [
-          "project:harness",
-          "risk:0"
-        ],
-        "headRefName": "docs/2026-10-21-records-inboxes",
-        "isDraft": false,
-        "createdAt": "2026-10-22T06:37:13Z",
-        "mergedAt": null,
-        "closes": [],
-        "verdicts": []
-      },
-      {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
         "url": "https://github.com/mezivillager/hacer/pull/514",
@@ -2726,6 +2349,22 @@
       }
     ],
     "merged": [
+      {
+        "number": 927,
+        "title": "docs(harness): inbox statuses and HRN-018 to HRN-020 from the 2026-10-21 run",
+        "url": "https://github.com/mezivillager/hacer/pull/927",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/2026-10-21-records-inboxes",
+        "isDraft": false,
+        "createdAt": "2026-10-22T06:37:13Z",
+        "mergedAt": "2026-10-22T06:49:17Z",
+        "closes": [],
+        "verdicts": []
+      },
       {
         "number": 926,
         "title": "docs(harness): session record of the 2026-10-21 run, and ADR-0020 wording",
@@ -4296,40 +3935,13 @@
             "url": "https://github.com/mezivillager/hacer/pull/772#issuecomment-6205856335"
           }
         ]
-      },
-      {
-        "number": 771,
-        "title": "fix(ui): draw the toolbar's GitHub mark inline instead of lucide's Github (#769)",
-        "url": "https://github.com/mezivillager/hacer/pull/771",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:upkeep",
-          "risk:0"
-        ],
-        "headRefName": "fix/769-github-icon",
-        "isDraft": false,
-        "createdAt": "2026-10-16T00:30:42Z",
-        "mergedAt": "2026-10-16T00:56:40Z",
-        "closes": [
-          769
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Sonnet 5.5",
-            "at": "2026-10-16T00:43:41Z",
-            "url": "https://github.com/mezivillager/hacer/pull/771#issuecomment-6205390556"
-          }
-        ]
       }
     ],
     "coverage": {
       "merged": 60,
-      "withVerdict": 56,
-      "withoutVerdict": 4,
-      "pass": 56,
+      "withVerdict": 55,
+      "withoutVerdict": 5,
+      "pass": 55,
       "block": 0,
       "belowTier": []
     }
@@ -4362,530 +3974,10 @@
         }
       },
       {
-        "number": 788,
-        "ref": "refs/heads/claim/788",
-        "sha": "3a9e5266a5daa29ce0636176218877ac07862da7",
-        "state": "OPEN",
-        "title": "Inbox review: FID-015 · Learner-facing compile errors use the reference's words and carry the line",
-        "url": "https://github.com/mezivillager/hacer/issues/788",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-to-70",
-          "branch": "chore/inbox-fid-015",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-21T14:21:37Z",
-          "url": "https://github.com/mezivillager/hacer/issues/788#issuecomment-6318421212"
-        }
-      },
-      {
-        "number": 789,
-        "ref": "refs/heads/claim/789",
-        "sha": "3a9e5266a5daa29ce0636176218877ac07862da7",
-        "state": "OPEN",
-        "title": "Inbox review: FID-018 · `compileSpec` refuses a spec whose registered part does not compile, naming the chain",
-        "url": "https://github.com/mezivillager/hacer/issues/789",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-to-70",
-          "branch": "chore/inbox-fid-018",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-21T14:40:37Z",
-          "url": "https://github.com/mezivillager/hacer/issues/789#issuecomment-6318762292"
-        }
-      },
-      {
-        "number": 790,
-        "ref": "refs/heads/claim/790",
-        "sha": "204aa0b2a105aa7959860b91e2629431effc7b4c",
-        "state": "OPEN",
-        "title": "Inbox review: FID-019 · `printSpec` refuses a document in which a driverless net shares its id with a driven net",
-        "url": "https://github.com/mezivillager/hacer/issues/790",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-to-70",
-          "branch": "chore/inbox-fid-019",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-21T14:57:56Z",
-          "url": "https://github.com/mezivillager/hacer/issues/790#issuecomment-6319133981"
-        }
-      },
-      {
-        "number": 791,
-        "ref": "refs/heads/claim/791",
-        "sha": "204aa0b2a105aa7959860b91e2629431effc7b4c",
-        "state": "OPEN",
-        "title": "Inbox review: FID-020 · #338 lists the narrow-first multi-driven OUT as an expected disagreement",
-        "url": "https://github.com/mezivillager/hacer/issues/791",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-to-70",
-          "branch": "chore/inbox-fid-020",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-21T15:12:55Z",
-          "url": "https://github.com/mezivillager/hacer/issues/791#issuecomment-6319434384"
-        }
-      },
-      {
-        "number": 792,
-        "ref": "refs/heads/claim/792",
-        "sha": "ff87c57549f3eb7063440f91af1926f8a6926dbe",
-        "state": "OPEN",
-        "title": "Inbox review: FID-021 · A strict acceptance mode for the grading path",
-        "url": "https://github.com/mezivillager/hacer/issues/792",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-to-70",
-          "branch": "chore/inbox-fid-021",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-21T15:32:23Z",
-          "url": "https://github.com/mezivillager/hacer/issues/792#issuecomment-6319820569"
-        }
-      },
-      {
-        "number": 793,
-        "ref": "refs/heads/claim/793",
-        "sha": "723ece5ac3620a6db07a08ec05c084700cc556df",
-        "state": "OPEN",
-        "title": "Inbox review: FID-022 · The `nand2tetris` dialect prints one sliced buffer per alias run, not one `Or` per bit",
-        "url": "https://github.com/mezivillager/hacer/issues/793",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-to-70",
-          "branch": "chore/inbox-fid-022",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-21T16:15:44Z",
-          "url": "https://github.com/mezivillager/hacer/issues/793#issuecomment-6320740032"
-        }
-      },
-      {
-        "number": 794,
-        "ref": "refs/heads/claim/794",
-        "sha": "c625899b7c4e1a7f39ef6e733b4b8bb210a51385",
-        "state": "OPEN",
-        "title": "Inbox review: FID-023 · Amend FID-019: pin the disjoint-bit export gap, and make the import's consumers compile before they print or save",
-        "url": "https://github.com/mezivillager/hacer/issues/794",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-to-70",
-          "branch": "chore/inbox-fid-023",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-21T16:41:52Z",
-          "url": "https://github.com/mezivillager/hacer/issues/794#issuecomment-6321319216"
-        }
-      },
-      {
-        "number": 795,
-        "ref": "refs/heads/claim/795",
-        "sha": "d03508254feb8d20471fe8c853eed89df85f378c",
-        "state": "OPEN",
-        "title": "Inbox review: FID-024 · ADR-0020 §10 records R837's loop granularity and names where it overapproximates",
-        "url": "https://github.com/mezivillager/hacer/issues/795",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-to-70",
-          "branch": "chore/inbox-fid-024",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-21T17:20:17Z",
-          "url": "https://github.com/mezivillager/hacer/issues/795#issuecomment-6322124824"
-        }
-      },
-      {
-        "number": 796,
-        "ref": "refs/heads/claim/796",
-        "sha": "d03508254feb8d20471fe8c853eed89df85f378c",
-        "state": "OPEN",
-        "title": "Inbox review: HRN-005 · Measure the four numbers or retire two of them: tokens and owner minutes have no source",
-        "url": "https://github.com/mezivillager/hacer/issues/796",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-to-70",
-          "branch": "chore/inbox-hrn-005",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-21T17:51:35Z",
-          "url": "https://github.com/mezivillager/hacer/issues/796#issuecomment-6322748180"
-        }
-      },
-      {
-        "number": 797,
-        "ref": "refs/heads/claim/797",
-        "sha": "88c226c6901b47aac15796130fa6a38f564f47f6",
-        "state": "OPEN",
-        "title": "Inbox review: HRN-006 · Say who applies `overturned`, and apply it to the PASS whose defect a later PR fixed",
-        "url": "https://github.com/mezivillager/hacer/issues/797",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-to-70",
-          "branch": "chore/inbox-hrn-006",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-21T18:18:17Z",
-          "url": "https://github.com/mezivillager/hacer/issues/797#issuecomment-6323279803"
-        }
-      },
-      {
-        "number": 798,
-        "ref": "refs/heads/claim/798",
-        "sha": "af0f9399ef50feddac782896f0171551980772fd",
-        "state": "OPEN",
-        "title": "Inbox review: HRN-007 · Align the concurrent-subagent cap with the owner's rulings: 4 in config, 2–3 in practice",
-        "url": "https://github.com/mezivillager/hacer/issues/798",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-to-70",
-          "branch": "chore/inbox-hrn-007",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-21T18:44:24Z",
-          "url": "https://github.com/mezivillager/hacer/issues/798#issuecomment-6323792416"
-        }
-      },
-      {
-        "number": 799,
-        "ref": "refs/heads/claim/799",
-        "sha": "43c3b1f58d35a1069a85a8df871d78540793129a",
-        "state": "OPEN",
-        "title": "Inbox review: HRN-008 · Register the `hacer-*` agent types where sessions start: the parent workspace",
-        "url": "https://github.com/mezivillager/hacer/issues/799",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-to-70",
-          "branch": "chore/inbox-hrn-008",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-21T20:48:07Z",
-          "url": "https://github.com/mezivillager/hacer/issues/799#issuecomment-6326214854"
-        }
-      },
-      {
-        "number": 800,
-        "ref": "refs/heads/claim/800",
-        "sha": "0105dbd14abe7dd66fb556a073779ca926531af3",
-        "state": "OPEN",
-        "title": "Inbox review: HRN-009 · Run the retro at each coordinator run's close, not every 5 merges",
-        "url": "https://github.com/mezivillager/hacer/issues/800",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-to-70",
-          "branch": "chore/inbox-hrn-009",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-21T21:18:04Z",
-          "url": "https://github.com/mezivillager/hacer/issues/800#issuecomment-6326768139"
-        }
-      },
-      {
-        "number": 807,
-        "ref": "refs/heads/claim/807",
-        "sha": "0a3db8f50dd1b817c264c8a54dad6b3c83c7dfe2",
-        "state": "OPEN",
-        "title": "Inbox review: PRD-001 · Decide what HACER is on a phone: a read-only viewer whose panels open as sheets, or desktop-only with a notice",
-        "url": "https://github.com/mezivillager/hacer/issues/807",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-to-70",
-          "branch": "chore/inbox-prd-001",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-21T21:46:50Z",
-          "url": "https://github.com/mezivillager/hacer/issues/807#issuecomment-6327270805"
-        }
-      },
-      {
-        "number": 808,
-        "ref": "refs/heads/claim/808",
-        "sha": "4b3336272cb23635d373fa66ef77790a5e9e42be",
-        "state": "OPEN",
-        "title": "Inbox review: PRD-002 · First-run guidance for the declared app: teach spec → render → pins → test, and remember the dismissal",
-        "url": "https://github.com/mezivillager/hacer/issues/808",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-to-70",
-          "branch": "chore/inbox-prd-002",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-21T22:31:14Z",
-          "url": "https://github.com/mezivillager/hacer/issues/808#issuecomment-6327990723"
-        }
-      },
-      {
-        "number": 809,
-        "ref": "refs/heads/claim/809",
-        "sha": "4b3336272cb23635d373fa66ef77790a5e9e42be",
-        "state": "OPEN",
-        "title": "Inbox review: PRD-003 · Add the first review's product criteria to N.11's shell: every control named, one icon per job, destructive commands undoable, no placeholders",
-        "url": "https://github.com/mezivillager/hacer/issues/809",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-to-70",
-          "branch": "chore/inbox-prd-003",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-21T22:32:51Z",
-          "url": "https://github.com/mezivillager/hacer/issues/809#issuecomment-6328017413"
-        }
-      },
-      {
-        "number": 827,
-        "ref": "refs/heads/claim/827",
-        "sha": "478e4407b26cc3ec0eda3fc5794b0c083e8862c6",
-        "state": "OPEN",
-        "title": "Inbox review: FID-025 · The not-connected refusal fires only for a pin no connection names, so a pin bound only out of range gets the reference's one refusal",
-        "url": "https://github.com/mezivillager/hacer/issues/827",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-to-70",
-          "branch": "chore/inbox-fid-025",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-21T22:55:45Z",
-          "url": "https://github.com/mezivillager/hacer/issues/827#issuecomment-6328385279"
-        }
-      },
-      {
-        "number": 828,
-        "ref": "refs/heads/claim/828",
-        "sha": "478e4407b26cc3ec0eda3fc5794b0c083e8862c6",
-        "state": "OPEN",
-        "title": "Inbox review: HRN-010 · Each worktree gets its own scratch folder, printed when it is made, and PR bodies go through it",
-        "url": "https://github.com/mezivillager/hacer/issues/828",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-to-70",
-          "branch": "chore/inbox-hrn-010",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-21T22:56:54Z",
-          "url": "https://github.com/mezivillager/hacer/issues/828#issuecomment-6328402651"
-        }
-      },
-      {
-        "number": 829,
-        "ref": "refs/heads/claim/829",
-        "sha": "478e4407b26cc3ec0eda3fc5794b0c083e8862c6",
-        "state": "OPEN",
-        "title": "Inbox review: HRN-011 · `backlog.mjs tier <pr>` gives the verifier's tier from the PR's paths, and Mission Control lists a verdict given on a cheaper tier",
-        "url": "https://github.com/mezivillager/hacer/issues/829",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-to-70",
-          "branch": "chore/inbox-hrn-011",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-21T23:18:14Z",
-          "url": "https://github.com/mezivillager/hacer/issues/829#issuecomment-6328717149"
-        }
-      },
-      {
-        "number": 830,
-        "ref": "refs/heads/claim/830",
-        "sha": "478e4407b26cc3ec0eda3fc5794b0c083e8862c6",
-        "state": "OPEN",
-        "title": "Inbox review: HRN-012 · `merge-on-green` reports a missing `workflow` token scope before it touches a PR that changes `.github/workflows/`",
-        "url": "https://github.com/mezivillager/hacer/issues/830",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-to-70",
-          "branch": "chore/inbox-hrn-012",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-21T23:19:44Z",
-          "url": "https://github.com/mezivillager/hacer/issues/830#issuecomment-6328737655"
-        }
-      },
-      {
         "number": 831,
         "ref": "refs/heads/claim/831",
         "sha": "478e4407b26cc3ec0eda3fc5794b0c083e8862c6",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "Inbox review: HRN-013 · `backlog.mjs next` prints each workflow failing on `main`, so a broken release is seen at the next pick",
         "url": "https://github.com/mezivillager/hacer/issues/831",
         "labels": [
@@ -4895,7 +3987,7 @@
           "risk:0",
           "inbox-review"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -5194,7 +4286,7 @@
         }
       }
     ],
-    "onClosedIssues": 0
+    "onClosedIssues": 1
   },
   "cloudLane": {
     "items": [
@@ -7115,7 +6207,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-16",
-        "merges": 5
+        "merges": 4
       },
       {
         "date": "2026-10-17",
@@ -7127,13 +6219,13 @@
       },
       {
         "date": "2026-10-22",
-        "merges": 23
+        "merges": 24
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-08T06:45:54.695Z",
-      "merged": 113,
+      "since": "2026-10-08T06:55:22.076Z",
+      "merged": 114,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 1.6
@@ -7158,7 +6250,7 @@
           "without": []
         },
         "nonCode": {
-          "merged": 34,
+          "merged": 35,
           "withVerdict": 16,
           "without": [
             692,
@@ -7178,7 +6270,8 @@
             775,
             913,
             925,
-            926
+            926,
+            927
           ]
         }
       }
@@ -11440,14 +10533,17 @@
     "items": [
       {
         "pr": null,
-        "sha": "c5cf87663cb837640fa8640d7d056f8877989c9e",
+        "sha": "d2f58ea0d6eb3b8efba94252e0c8c8ba1bda35e6",
         "check": "ci",
-        "conclusion": null,
-        "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39735890039/job/119681346830",
-        "line": null,
-        "verdict": null,
-        "fields": {},
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-22T06:51:39Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39736360642/job/119682864791",
+        "line": "LAYER-RATCHET: 69 known violations (37 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 69,
+          "new": 0
+        },
         "disagrees": false
       },
       {
@@ -11492,51 +10588,6 @@
         "verdict": "PASS",
         "fields": {
           "known": 71,
-          "new": 0
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 927,
-        "sha": "1329f166e41355ce655bc6f1beb2274f2200a565",
-        "check": "pr-hygiene",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-22T06:37:38Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39735083497/job/119678773464",
-        "line": "HYGIENE: PASS reviewable=192 test=0 excluded=0 files=3 issue=docs-only",
-        "verdict": "PASS",
-        "fields": {
-          "reviewable": 192,
-          "test": 0,
-          "excluded": 0,
-          "files": 3,
-          "issue": "docs-only"
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 927,
-        "sha": "1329f166e41355ce655bc6f1beb2274f2200a565",
-        "check": "browser-qa",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-22T06:37:41Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39735083492/job/119678772342",
-        "line": "BROWSER-QA: skipped (no critical paths)",
-        "verdict": "SKIPPED",
-        "fields": {},
-        "disagrees": false
-      },
-      {
-        "pr": 927,
-        "sha": "1329f166e41355ce655bc6f1beb2274f2200a565",
-        "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-22T06:40:37Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39735081775/job/119678766363",
-        "line": "LAYER-RATCHET: 69 known violations (37 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 69,
           "new": 0
         },
         "disagrees": false
