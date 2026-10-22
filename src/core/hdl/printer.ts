@@ -13,7 +13,7 @@ export function printPinRef(name: string, slice?: HDLSlice): string {
   return slice.start === slice.end ? `${name}[${slice.start}]` : `${name}[${slice.start}..${slice.end}]`
 }
 
-function printPin(pin: HDLPin): string {
+export function printPin(pin: HDLPin): string {
   return pin.width > 1 ? `${pin.name}[${pin.width}]` : pin.name
 }
 

@@ -3,7 +3,7 @@ import type { ChipDefinition } from './types'
 import type { ChipRegistry } from './registry'
 import { isBuiltinChip, isCircuitChip } from './types'
 import { parseHDL } from '../hdl'
-import { compileHDL, type CompiledEvaluator, type EvalContext } from '../hdl/compiler'
+import { compileHDL, sourceDisagreements, type CompiledEvaluator, type EvalContext } from '../hdl/compiler'
 import { compileSpec } from '../spec/compileSpec'
 
 export const DEFAULT_MAX_DEPTH = 100
@@ -62,6 +62,8 @@ function compile(chip: ChipDefinition, registry: ChipRegistry): CompiledEvaluato
   const refuse = (messages: string[]): never => {
     throw new ChipCompileError(chip.name, messages)
   }
+  const disagrees = sourceDisagreements(chip)
+  if (disagrees.length > 0) refuse(disagrees)
   if (isCircuitChip(chip)) {
     const result = compileSpec({ doc: chip.implementation.spec, diagnostics: [] }, registry)
     return result.success ? result.evaluate : refuse(result.diagnostics.map((d) => d.message))
