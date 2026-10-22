@@ -71,10 +71,24 @@ the window say about policy?
    `gh issue list --state all --search "created:<from-day>..<to-day>" --limit 200`, with the share
    still open.
 6. **Flake reruns:** workflow runs whose `run_attempt > 1`, from
-   `gh api --paginate "repos/mezivillager/hacer/actions/runs?created=<day>&per_page=100" --jq '.workflow_runs[] | select(.run_attempt > 1) | .id'`.
-   Without `--paginate` the call returns only the first 100 runs. Query one day at a time, because
-   the API stops at 1,000 runs per query, and a busy day here has had 775. Add the local re-runs
-   the session records name.
+   `gh api --paginate "repos/mezivillager/hacer/actions/runs?created=<range>&per_page=100" --jq '"total \(.total_count)", (.workflow_runs[] | "\(.id) \(.run_attempt)")'`.
+   Without `--paginate` the call returns only the first 100 runs. Query one day at a time
+   (`<range>` is a day, or a slice of one), because the API stops at 1,000 runs per query:
+   2026-10-15 had 1,021 runs, 21 past the cap. Read the output so: the runs are the lines that are
+   not `total` lines, the reruns are the runs whose second field is above 1, and the query's true
+   count is its first `total` line (a cut-off query's last page prints `total 0`). Add the local
+   re-runs the session records name.
+   - **A cut-off query is split.** A query is cut off when it returns 1,000 runs, or fewer runs
+     than its first `total` line: discard its runs, and re-run the range in four UTC slices.
+     The slices are `<day>T00:00:00Z..<day>T05:59:59Z`, `<day>T06:00:00Z..<day>T11:59:59Z`,
+     `<day>T12:00:00Z..<day>T17:59:59Z` and `<day>T18:00:00Z..<day>T23:59:59Z`. The ranges are
+     closed, so a run at `T06:00:00Z` belongs only to the second.
+   - **The split recurses.** A slice that is itself cut off is split again, into its one-hour
+     slices and then into halves, down to one second. A count still cut off at one second is
+     reported `truncated`, never `measured`.
+   - **The run row records the split.** The Numbers cell names it in input 4's style, with each
+     slice's count in time order: `0 reruns (2026-10-15 split: 447 · 363 · 18 · 193)`. The day's
+     reruns are those of its final slices together.
 7. **The inboxes:** `fidelity-inbox.md`, `product-inbox.md` and `harness-inbox.md`, which the inbox
    panel decides (`inbox-panel-brief.md`) and the owner may override. List every entry
    `node scripts/inbox.mjs list --status proposed` prints that is more than 14 days past its date,
