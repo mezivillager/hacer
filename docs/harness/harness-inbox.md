@@ -119,8 +119,10 @@ and not proposed. The first quarterly prune, in the week of 2026-12-18, can star
 - **L073**, `run-reviews`' `source_changes`, is seen twice. Its launcher is the `multi-review` skill
   outside this repo, so no issue here can fix it.
 - **Times written from estimates:** the staged rulings ran up to nine hours ahead (2026-10-14 §3), and
-  the run files' start time was 17:37Z (2026-10-17 §3). This is two occurrences, but both were in
-  uncommitted coordinator files that no repo check reads.
+  the run files' start time was 17:37Z (2026-10-17 §3). The 2026-10-21 run added two: log times typed
+  as estimates and corrected within the hour, and the dates of R865–R868, staged a day ahead and
+  corrected in its records PR (2026-10-21 §3). This is four occurrences, but all were in uncommitted
+  coordinator files that no repo check reads.
 - **Backticks lost to the shell:** in #754's body (2026-10-15 §3), and in #780's inline `--summary`,
   which `--summary-file` now replaces (2026-10-17 §3). HRN-010 covers the builders' and verifiers'
   half and was built as #881 (PR #886): their PR bodies go through `--body-file`. The coordinator's
