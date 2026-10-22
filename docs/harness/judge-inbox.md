@@ -334,9 +334,10 @@ reused.
   - (A) The judge makes #889 `agent-ready`; one builder and a fresh verifier build it.
   - (B) Decline it as not relevant on a single-user macOS laptop; the entry stays so it is not asked twice.
 
-  The coordinator recommends (A), because its criteria are already in the form, it costs one small build
-  (about 311k tokens, inferred), and it holds on the Linux sessions a cloud routine would use. (B) is
-  reasonable: the measured facts above leave no exposed second user today.
+  The coordinator recommends deferring until a session that runs `wt-new` on a shared temp directory
+  exists (a cloud routine under JDG-003, or a workflow calling `wt-new`): today `os.tmpdir()` is a
+  per-user `drwx------` directory and no workflow calls `wt-new`, so (A) spends a build (about 311k
+  tokens, inferred) on an exposure nobody has yet. (A) is reasonable if JDG-003 brings cloud sessions.
 - **Cost of delay:** None measured: nobody else can read the folder on the laptop.
 - **Cost if wrong:** (A) spends about 311k tokens and a `risk:2` edit to a script that removes files, on a
   hardening nobody is exposed to; (B) leaves PR bodies and logs readable on a shared Linux `/tmp`, should
