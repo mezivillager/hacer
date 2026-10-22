@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-22T14:34:37.729Z",
+  "generatedAt": "2026-10-22T15:04:32.993Z",
   "head": {
-    "sha": "34e82b7acc530c4c9b6e660a0859ef6519e3aede",
-    "date": "2026-10-22T17:33:06+03:00",
-    "subject": "fix(core): fromLegacyCircuit matches ids by their JSON value (#773)"
+    "sha": "c62a4e71f8addd1a402a440027f03ee8b0fc30d2",
+    "date": "2026-10-22T18:03:50+03:00",
+    "subject": "docs(decisions): R895's time from the judge's comment"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T14:34:37.729Z",
+      "fetchedAt": "2026-10-22T15:04:32.993Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T14:34:37.729Z",
+      "fetchedAt": "2026-10-22T15:04:32.993Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T14:34:37.729Z",
+      "fetchedAt": "2026-10-22T15:04:32.993Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-22T14:34:37.729Z",
+      "fetchedAt": "2026-10-22T15:04:32.993Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-22T14:34:37.729Z",
+      "fetchedAt": "2026-10-22T15:04:32.993Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-22T14:34:37.729Z",
+      "fetchedAt": "2026-10-22T15:04:32.993Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-22T14:34:37.729Z",
+      "fetchedAt": "2026-10-22T15:04:32.993Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-22T14:34:37.729Z",
+      "fetchedAt": "2026-10-22T15:04:32.993Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-22T14:34:37.729Z",
+      "fetchedAt": "2026-10-22T15:04:32.993Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-22T14:34:37.729Z",
+      "fetchedAt": "2026-10-22T15:04:32.993Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-22T14:34:37.729Z",
+      "fetchedAt": "2026-10-22T15:04:32.993Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-22T14:34:37.729Z",
+      "fetchedAt": "2026-10-22T15:04:32.993Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-22T14:34:37.729Z",
+      "fetchedAt": "2026-10-22T15:04:32.993Z",
       "status": "ok"
     }
   },
@@ -103,12 +103,12 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 32,
+        "open": 34,
         "ready": 14,
         "inProgress": 4,
         "needsHuman": 2,
         "staleClaims": [],
-        "agentReady": 18,
+        "agentReady": 20,
         "filedElsewhere": [
           151,
           941,
@@ -121,8 +121,8 @@
         "title": "Epic: harness — autonomous-run improvements & agent-readiness",
         "subIssues": {
           "completed": 51,
-          "percentCompleted": 77,
-          "total": 66
+          "percentCompleted": 75,
+          "total": 68
         }
       },
       {
@@ -219,19 +219,22 @@
         "lane": "feature",
         "slug": "spine",
         "epicNumber": 139,
-        "open": 12,
-        "ready": 0,
+        "open": 16,
+        "ready": 2,
         "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 0,
+        "agentReady": 4,
         "filedElsewhere": [],
-        "next": null,
+        "next": {
+          "number": 982,
+          "title": "Fidelity verdict on the spine epic #139 and the Phase 0.6 plan #177, ruling on Project 2's two slices before they are built"
+        },
         "title": "Epic: spine — nand2tetris alignment 0.5 → 0.7",
         "subIssues": {
           "completed": 4,
-          "percentCompleted": 25,
-          "total": 16
+          "percentCompleted": 20,
+          "total": 20
         }
       },
       {
@@ -447,6 +450,11 @@
         "project": "foundation"
       },
       {
+        "number": 982,
+        "title": "Fidelity verdict on the spine epic #139 and the Phase 0.6 plan #177, ruling on Project 2's two slices before they are built",
+        "project": "spine"
+      },
+      {
         "number": 941,
         "title": "pr-hygiene: protect the differential harness, see a rename out of a protected path, and flag a PR that weakens a test (#151, foundation 1.6)",
         "project": "foundation"
@@ -462,23 +470,18 @@
         "project": "foundation"
       },
       {
-        "number": 257,
-        "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
-        "project": "harness"
-      },
-      {
-        "number": 933,
-        "title": "Inbox review: HRN-021 · `merge-on-green` refuses a PR that has no `## Verifier verdict: PASS` the collector can read",
-        "project": "upkeep"
-      },
-      {
         "number": 949,
         "title": "`ready` and `next` print `shape due:` for a foundation or spine slot with nothing pickable, and `ha-next` dispatches a shaper",
         "project": "harness"
       },
       {
-        "number": 934,
-        "title": "Inbox review: HRN-022 · A test that runs a child process synchronously names its own limits, so a loaded laptop stops failing it",
+        "number": 983,
+        "title": "Phase tracking names JDG-004's bounded exception: Phase 0.5 stays current, and Project 2 runs headless beside it",
+        "project": "spine"
+      },
+      {
+        "number": 933,
+        "title": "Inbox review: HRN-021 · `merge-on-green` refuses a PR that has no `## Verifier verdict: PASS` the collector can read",
         "project": "upkeep"
       },
       {
@@ -487,8 +490,8 @@
         "project": "harness"
       },
       {
-        "number": 935,
-        "title": "Inbox review: HRN-023 · ADR-0018's fidelity review before a core merge was waived 14 times by ruling in one run: write the waiver into the ADR, or stop waiving",
+        "number": 934,
+        "title": "Inbox review: HRN-022 · A test that runs a child process synchronously names its own limits, so a loaded laptop stops failing it",
         "project": "upkeep"
       },
       {
@@ -497,8 +500,8 @@
         "project": "harness"
       },
       {
-        "number": 936,
-        "title": "Inbox review: HRN-024 · A defect the verifier reproduces in the PR's own new lines passes as a nit: say when it blocks, and whether that PASS can be overturned",
+        "number": 935,
+        "title": "Inbox review: HRN-023 · ADR-0018's fidelity review before a core merge was waived 14 times by ruling in one run: write the waiver into the ADR, or stop waiving",
         "project": "upkeep"
       },
       {
@@ -507,8 +510,8 @@
         "project": "harness"
       },
       {
-        "number": 937,
-        "title": "Inbox review: HRN-025 · Four standing rules the 2026-10-21 run applied are not in the committed briefs: R865 and R868 contradict `inbox-panel-brief.md`, and L068 and L074 are in no brief",
+        "number": 936,
+        "title": "Inbox review: HRN-024 · A defect the verifier reproduces in the PR's own new lines passes as a nit: say when it blocks, and whether that PASS can be overturned",
         "project": "upkeep"
       },
       {
@@ -517,8 +520,8 @@
         "project": "harness"
       },
       {
-        "number": 938,
-        "title": "Inbox review: HRN-026 · README says dispatch stops while the meter will not read, and the 2026-10-21 run dispatched on estimates twice: restate the rule as practised, or follow it",
+        "number": 937,
+        "title": "Inbox review: HRN-025 · Four standing rules the 2026-10-21 run applied are not in the committed briefs: R865 and R868 contradict `inbox-panel-brief.md`, and L068 and L074 are in no brief",
         "project": "upkeep"
       },
       {
@@ -527,13 +530,23 @@
         "project": "harness"
       },
       {
-        "number": 939,
-        "title": "Inbox review: HRN-027 · Tokens per merged PR leave out every `run-reviews` session, which README's rule says makes the figure `unmeasured`: count them, or name them outside it",
+        "number": 938,
+        "title": "Inbox review: HRN-026 · README says dispatch stops while the meter will not read, and the 2026-10-21 run dispatched on estimates twice: restate the rule as practised, or follow it",
         "project": "upkeep"
       },
       {
         "number": 978,
         "title": "Inbox reviews batch HRN entries, at most five per review issue, while a policy entry that changes a correctness gate keeps its own panel",
+        "project": "harness"
+      },
+      {
+        "number": 939,
+        "title": "Inbox review: HRN-027 · Tokens per merged PR leave out every `run-reviews` session, which README's rule says makes the figure `unmeasured`: count them, or name them outside it",
+        "project": "upkeep"
+      },
+      {
+        "number": 980,
+        "title": "Cloud probe: one one-off routine measures clone, push, gh, backlog.mjs and the Playwright browser in a cloud session (JDG-003)",
         "project": "harness"
       },
       {
@@ -687,6 +700,26 @@
         "reason": null
       },
       {
+        "number": 982,
+        "title": "Fidelity verdict on the spine epic #139 and the Phase 0.6 plan #177, ruling on Project 2's two slices before they are built",
+        "labels": [
+          "project:spine",
+          "agent-ready",
+          "risk:0",
+          "research",
+          "fidelity"
+        ],
+        "blocking": [
+          985,
+          984
+        ],
+        "project": "spine",
+        "rank": 7,
+        "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
+      {
         "number": 941,
         "title": "pr-hygiene: protect the differential harness, see a rename out of a protected path, and flag a PR that weakens a test (#151, foundation 1.6)",
         "labels": [
@@ -736,39 +769,6 @@
         "reason": null
       },
       {
-        "number": 257,
-        "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:2"
-        ],
-        "blocking": [
-          270
-        ],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 933,
-        "title": "Inbox review: HRN-021 · `merge-on-green` refuses a PR that has no `## Verifier verdict: PASS` the collector can read",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": true,
-        "reason": null
-      },
-      {
         "number": 949,
         "title": "`ready` and `next` print `shape due:` for a foundation or spine slot with nothing pickable, and `ha-next` dispatches a shaper",
         "labels": [
@@ -784,8 +784,25 @@
         "reason": null
       },
       {
-        "number": 934,
-        "title": "Inbox review: HRN-022 · A test that runs a child process synchronously names its own limits, so a loaded laptop stops failing it",
+        "number": 983,
+        "title": "Phase tracking names JDG-004's bounded exception: Phase 0.5 stays current, and Project 2 runs headless beside it",
+        "labels": [
+          "project:spine",
+          "agent-ready",
+          "risk:0"
+        ],
+        "blocking": [
+          984
+        ],
+        "project": "spine",
+        "rank": 7,
+        "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 933,
+        "title": "Inbox review: HRN-021 · `merge-on-green` refuses a PR that has no `## Verifier verdict: PASS` the collector can read",
         "labels": [
           "project:upkeep",
           "agent-ready",
@@ -815,8 +832,8 @@
         "reason": null
       },
       {
-        "number": 935,
-        "title": "Inbox review: HRN-023 · ADR-0018's fidelity review before a core merge was waived 14 times by ruling in one run: write the waiver into the ADR, or stop waiving",
+        "number": 934,
+        "title": "Inbox review: HRN-022 · A test that runs a child process synchronously names its own limits, so a loaded laptop stops failing it",
         "labels": [
           "project:upkeep",
           "agent-ready",
@@ -846,8 +863,8 @@
         "reason": null
       },
       {
-        "number": 936,
-        "title": "Inbox review: HRN-024 · A defect the verifier reproduces in the PR's own new lines passes as a nit: say when it blocks, and whether that PASS can be overturned",
+        "number": 935,
+        "title": "Inbox review: HRN-023 · ADR-0018's fidelity review before a core merge was waived 14 times by ruling in one run: write the waiver into the ADR, or stop waiving",
         "labels": [
           "project:upkeep",
           "agent-ready",
@@ -877,8 +894,8 @@
         "reason": null
       },
       {
-        "number": 937,
-        "title": "Inbox review: HRN-025 · Four standing rules the 2026-10-21 run applied are not in the committed briefs: R865 and R868 contradict `inbox-panel-brief.md`, and L068 and L074 are in no brief",
+        "number": 936,
+        "title": "Inbox review: HRN-024 · A defect the verifier reproduces in the PR's own new lines passes as a nit: say when it blocks, and whether that PASS can be overturned",
         "labels": [
           "project:upkeep",
           "agent-ready",
@@ -908,8 +925,8 @@
         "reason": null
       },
       {
-        "number": 938,
-        "title": "Inbox review: HRN-026 · README says dispatch stops while the meter will not read, and the 2026-10-21 run dispatched on estimates twice: restate the rule as practised, or follow it",
+        "number": 937,
+        "title": "Inbox review: HRN-025 · Four standing rules the 2026-10-21 run applied are not in the committed briefs: R865 and R868 contradict `inbox-panel-brief.md`, and L068 and L074 are in no brief",
         "labels": [
           "project:upkeep",
           "agent-ready",
@@ -939,8 +956,8 @@
         "reason": null
       },
       {
-        "number": 939,
-        "title": "Inbox review: HRN-027 · Tokens per merged PR leave out every `run-reviews` session, which README's rule says makes the figure `unmeasured`: count them, or name them outside it",
+        "number": 938,
+        "title": "Inbox review: HRN-026 · README says dispatch stops while the meter will not read, and the 2026-10-21 run dispatched on estimates twice: restate the rule as practised, or follow it",
         "labels": [
           "project:upkeep",
           "agent-ready",
@@ -963,6 +980,40 @@
           "risk:1"
         ],
         "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 939,
+        "title": "Inbox review: HRN-027 · Tokens per merged PR leave out every `run-reviews` session, which README's rule says makes the figure `unmeasured`: count them, or name them outside it",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 980,
+        "title": "Cloud probe: one one-off routine measures clone, push, gh, backlog.mjs and the Playwright browser in a cloud session (JDG-003)",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:0"
+        ],
+        "blocking": [
+          981,
+          257
+        ],
         "project": "harness",
         "rank": 2,
         "lane": "process",
@@ -1553,6 +1604,23 @@
         "lane": "aux",
         "pickable": false,
         "reason": "foundation-gate"
+      },
+      {
+        "number": 257,
+        "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:2"
+        ],
+        "blocking": [
+          270
+        ],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "blocked:#980"
       },
       {
         "number": 261,
@@ -2507,6 +2575,53 @@
         "lane": "process",
         "pickable": false,
         "reason": "claimed"
+      },
+      {
+        "number": 981,
+        "title": "Weekly cloud routine: one risk:0/risk:1 pick a week, fired before the weekly reset, so work merges without the owner (JDG-003)",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:2"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "blocked:#980"
+      },
+      {
+        "number": 984,
+        "title": "Project 2, slice 1: HalfAdder, FullAdder and Add16 pass their official vectors headless, and the differential agrees with the web IDE",
+        "labels": [
+          "project:spine",
+          "agent-ready",
+          "risk:1"
+        ],
+        "blocking": [
+          985
+        ],
+        "project": "spine",
+        "rank": 7,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "blocked:#982,#983"
+      },
+      {
+        "number": 985,
+        "title": "Project 2, slice 2: Inc16 and ALU pass their official vectors, ALU-basic included, and the differential agrees on all six Project 2 scripts",
+        "labels": [
+          "project:spine",
+          "agent-ready",
+          "risk:1"
+        ],
+        "blocking": [],
+        "project": "spine",
+        "rank": 7,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "blocked:#984,#982"
       }
     ],
     "byProject": {
@@ -2517,7 +2632,6 @@
         974,
         975,
         976,
-        257,
         949,
         951,
         955,
@@ -2525,8 +2639,10 @@
         965,
         977,
         978,
+        980,
         154,
         156,
+        257,
         270,
         435,
         436,
@@ -2542,7 +2658,8 @@
         967,
         968,
         969,
-        970
+        970,
+        981
       ],
       "foundation": [
         907,
@@ -2570,6 +2687,24 @@
         742,
         942
       ],
+      "spine": [
+        982,
+        983,
+        165,
+        167,
+        169,
+        170,
+        171,
+        172,
+        173,
+        174,
+        176,
+        177,
+        235,
+        236,
+        984,
+        985
+      ],
       "upkeep": [
         930,
         933,
@@ -2583,20 +2718,6 @@
         946,
         229,
         256
-      ],
-      "spine": [
-        165,
-        167,
-        169,
-        170,
-        171,
-        172,
-        173,
-        174,
-        176,
-        177,
-        235,
-        236
       ],
       "core": [
         179,
@@ -2702,11 +2823,36 @@
     ],
     "merged": [
       {
+        "number": 986,
+        "title": "docs(harness): close records for the judge run and the loop to 90%",
+        "url": "https://github.com/mezivillager/hacer/pull/986",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/2026-10-22-close-2",
+        "isDraft": false,
+        "createdAt": "2026-10-22T14:53:07Z",
+        "mergedAt": "2026-10-22T15:03:51Z",
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (risk:0 docs-only exception, ha-next §4)",
+            "at": "2026-10-22T14:54:23Z",
+            "url": "https://github.com/mezivillager/hacer/pull/986#issuecomment-6343791760"
+          }
+        ]
+      },
+      {
         "number": 966,
         "title": "docs(harness): file the first ten judge inbox entries, JDG-001 to JDG-010",
         "url": "https://github.com/mezivillager/hacer/pull/966",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0"
         ],
@@ -2731,6 +2877,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/964",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:1"
         ],
@@ -2757,6 +2904,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/962",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0"
         ],
@@ -2781,6 +2929,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/961",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0"
         ],
@@ -2805,6 +2954,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/960",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0"
         ],
@@ -2829,6 +2979,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/959",
         "author": "mezivillager",
         "labels": [
+          "released",
           "risk:1",
           "project:foundation"
         ],
@@ -4251,34 +4402,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/847#issuecomment-6322983509"
           }
         ]
-      },
-      {
-        "number": 845,
-        "title": "feat(spec): compileSpec refuses a spec whose registered part does not compile, naming the chain",
-        "url": "https://github.com/mezivillager/hacer/pull/845",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:1",
-          "fidelity",
-          "project:foundation"
-        ],
-        "headRefName": "feat/821-compile-registered-parts",
-        "isDraft": false,
-        "createdAt": "2026-10-21T17:29:58Z",
-        "mergedAt": "2026-10-21T18:03:20Z",
-        "closes": [
-          821
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Opus (claude-opus-5-5)",
-            "at": "2026-10-21T17:44:47Z",
-            "url": "https://github.com/mezivillager/hacer/pull/845#issuecomment-6322615057"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4644,7 +4767,7 @@
         "kind": "record",
         "title": "Session record — 2026-10-22: the coordinator loop to 80% weekly usage, the second process review, and the foundation queue",
         "status": null,
-        "lines": 280
+        "lines": 463
       }
     ]
   },
@@ -5670,9 +5793,14 @@
     },
     "releases": [
       {
+        "tag": "v2.67.3",
+        "publishedAt": "2026-10-22T14:36:49Z",
+        "isLatest": true
+      },
+      {
         "tag": "v2.67.2",
         "publishedAt": "2026-10-22T11:02:47Z",
-        "isLatest": true
+        "isLatest": false
       },
       {
         "tag": "v2.67.1",
@@ -6388,24 +6516,24 @@
     "mergesPerDay": [
       {
         "date": "2026-10-21",
-        "merges": 19
+        "merges": 18
       },
       {
         "date": "2026-10-22",
-        "merges": 41
+        "merges": 42
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-08T14:34:37.729Z",
-      "merged": 131,
+      "since": "2026-10-08T15:04:32.993Z",
+      "merged": 132,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 1.5
       },
       "blockedOnce": {
         "count": 8,
-        "of": 112,
+        "of": 113,
         "prs": [
           700,
           725,
@@ -6424,8 +6552,8 @@
           "without": []
         },
         "nonCode": {
-          "merged": 45,
-          "withVerdict": 26,
+          "merged": 46,
+          "withVerdict": 27,
           "without": [
             692,
             693,
@@ -10700,11 +10828,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "34e82b7acc530c4c9b6e660a0859ef6519e3aede",
+        "sha": "c62a4e71f8addd1a402a440027f03ee8b0fc30d2",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39796634535/job/119885355262",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39801275771/job/119902313959",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -16696,6 +16824,80 @@
         "amends": null,
         "assumes": null,
         "costIfWrong": "#773's speed-up reaches `main` one run later; the open PR keeps its claim from going"
+      },
+      {
+        "id": "R890",
+        "kind": "ruling",
+        "title": "the run stops at weekly_all 90% or the 2026-10-23T03:00Z reset, whichever comes first; no new chain at 87% or above, and the records start at 88%",
+        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-90.md:9",
+        "buildsOn": [
+          "R880"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "the run stops a little early or late of the owner's line."
+      },
+      {
+        "id": "R891",
+        "kind": "ruling",
+        "title": "the weekly meter is read from Claude Code's own status-line capture, not the browser",
+        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-90.md:15",
+        "buildsOn": [
+          "R880"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "if `seven_day` is not the same meter as `weekly_all`, the stop line is read from the"
+      },
+      {
+        "id": "R892",
+        "kind": "ruling",
+        "title": "PR #959 traces id twins (`7` and `\"7\"`) as two entities, where `main` conflates them",
+        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-90.md:27",
+        "buildsOn": [
+          "R888"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "a document that names one junction or joiner `7` and another `\"7\"` imports differently"
+      },
+      {
+        "id": "R893",
+        "kind": "ruling",
+        "title": "HRN inbox entries are reviewed in batches; R844 amended for HRN",
+        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-90.md:44",
+        "buildsOn": [
+          "R844"
+        ],
+        "amends": [
+          "R844"
+        ],
+        "assumes": null,
+        "costIfWrong": "a batch thins each entry's review; any entry can be re-proposed and reviewed alone."
+      },
+      {
+        "id": "R894",
+        "kind": "ruling",
+        "title": "the loop gets a weekly cloud start, after a probe",
+        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-90.md:55",
+        "buildsOn": [
+          "R889"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "one routine fire a week spends usage the owner did not schedule himself; he disables it"
+      },
+      {
+        "id": "R895",
+        "kind": "ruling",
+        "title": "Project 2 is pulled forward headless, a bounded exception to the phase rule",
+        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-90.md:70",
+        "buildsOn": [
+          "R889"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "five Project 2 chips are graded headless before the foundation's phase C; nothing they"
       }
     ],
     "edges": [
@@ -18430,6 +18632,48 @@
         "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-80.md:138"
       },
       {
+        "from": "R890",
+        "to": "R880",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-90.md:10"
+      },
+      {
+        "from": "R891",
+        "to": "R880",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-90.md:16"
+      },
+      {
+        "from": "R892",
+        "to": "R888",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-90.md:28"
+      },
+      {
+        "from": "R893",
+        "to": "R844",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-90.md:45"
+      },
+      {
+        "from": "R893",
+        "to": "R844",
+        "kind": "amends",
+        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-90.md:46"
+      },
+      {
+        "from": "R894",
+        "to": "R889",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-90.md:56"
+      },
+      {
+        "from": "R895",
+        "to": "R889",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-90.md:71"
+      },
+      {
         "from": "L046",
         "to": "R310",
         "kind": "introduced-by",
@@ -18735,7 +18979,8 @@
           "R878",
           "R881",
           "R882",
-          "R885"
+          "R885",
+          "R894"
         ]
       },
       {
@@ -18894,7 +19139,8 @@
         "kind": "github",
         "citedBy": [
           "ADR-0018",
-          "R885"
+          "R885",
+          "R895"
         ]
       },
       {
@@ -19377,7 +19623,8 @@
         "kind": "github",
         "citedBy": [
           "ADR-0020",
-          "R512"
+          "R512",
+          "R895"
         ]
       },
       {
@@ -22345,7 +22592,92 @@
         "id": "#959",
         "kind": "github",
         "citedBy": [
-          "R888"
+          "R888",
+          "R892"
+        ]
+      },
+      {
+        "id": "#979",
+        "kind": "github",
+        "citedBy": [
+          "R892"
+        ]
+      },
+      {
+        "id": "#968",
+        "kind": "github",
+        "citedBy": [
+          "R893"
+        ]
+      },
+      {
+        "id": "#978",
+        "kind": "github",
+        "citedBy": [
+          "R893"
+        ]
+      },
+      {
+        "id": "#969",
+        "kind": "github",
+        "citedBy": [
+          "R894"
+        ]
+      },
+      {
+        "id": "#980",
+        "kind": "github",
+        "citedBy": [
+          "R894"
+        ]
+      },
+      {
+        "id": "#981",
+        "kind": "github",
+        "citedBy": [
+          "R894"
+        ]
+      },
+      {
+        "id": "#955",
+        "kind": "github",
+        "citedBy": [
+          "R894"
+        ]
+      },
+      {
+        "id": "#970",
+        "kind": "github",
+        "citedBy": [
+          "R895"
+        ]
+      },
+      {
+        "id": "#982",
+        "kind": "github",
+        "citedBy": [
+          "R895"
+        ]
+      },
+      {
+        "id": "#983",
+        "kind": "github",
+        "citedBy": [
+          "R895"
+        ]
+      },
+      {
+        "id": "#984",
+        "kind": "github",
+        "citedBy": [
+          "R895"
+        ]
+      },
+      {
+        "id": "#985",
+        "kind": "github",
+        "citedBy": [
+          "R895"
         ]
       },
       {
