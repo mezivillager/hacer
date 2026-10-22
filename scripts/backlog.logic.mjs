@@ -662,22 +662,53 @@ export function readRetroLine(read) {
   }
 }
 
-// main's workflows (#888): each active workflow's newest completed run on main, as `ready` and `next` print it on stderr.
+// main's workflows: each active workflow's newest completed run on main, as `ready` and `next` print it on stderr.
 
 export const FAILED_CONCLUSIONS = ['failure', 'timed_out', 'startup_failure']
+const STREAK_ENDS = ['success', 'neutral']
+/** The runs read of each workflow with a failed run on main. */
 export const WORKFLOW_RUNS = 30
 
-export const workflowsToRead = () => {
-  throw new Error('not implemented')
+/** The ids of the active workflows (`gh workflow list`) with a run among `failed`, each to be read on its own. */
+export function workflowsToRead(workflows = [], failed = []) {
+  const names = new Set(failed.map((run) => run.workflowName))
+  return workflows.filter((workflow) => names.has(workflow.name)).map((workflow) => workflow.id)
 }
 
-export const failingWorkflows = () => {
-  throw new Error('not implemented')
+/**
+ * One row per workflow among `runs` (each workflow's own runs on main) whose newest run not looked past failed: the failures
+ * in a row from there, the oldest of them as `since` and `runId`, and `atLeast` when no older run read ends the streak.
+ */
+export function failingWorkflows(runs = []) {
+  return Object.entries(Object.groupBy(runs, (run) => run.workflowName)).flatMap(([workflow, own]) => {
+    const read = own.filter((run) => run.status === 'completed' && [...FAILED_CONCLUSIONS, ...STREAK_ENDS].includes(run.conclusion))
+      .sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt))
+    const end = read.findIndex((run) => STREAK_ENDS.includes(run.conclusion))
+    const streak = end < 0 ? read : read.slice(0, end)
+    if (streak.length === 0) return []
+    const oldest = streak.at(-1)
+    return [{ workflow, count: streak.length, since: oldest.createdAt, runId: oldest.databaseId, atLeast: end < 0 }]
+  })
 }
 
-export const mainLines = () => []
+const failingLine = ({ workflow, count, since, runId, atLeast }) => `main: ${workflow} failing, ` +
+  `${atLeast ? `at least ${count} in a row since before` : `${count} in a row since`} ${since} (run ${runId})`
 
-export const readMainLines = async () => []
+/** `ready`'s `main:` lines over the workflows read (`runs`) and main's newest run (`latest`), which tells green from no runs. */
+export function mainLines({ runs = [], latest = [] }) {
+  if (runs.length === 0 && latest.length === 0) return ['main: unread (no runs on main)']
+  const rows = failingWorkflows(runs)
+  return rows.length > 0 ? rows.map(failingLine) : ['main: workflows green']
+}
+
+/** mainLines over `await read()`; a read that throws gives `main: unread (<its first line>)`, never a throw. */
+export async function readMainLines(read) {
+  try {
+    return mainLines(await read())
+  } catch (error) {
+    return [`main: unread (${String(error?.message ?? error).split('\n')[0]})`]
+  }
+}
 
 // The verifier's tier (docs/harness/verifier-brief.md, `**Model:**`), worked out from a PR's changed paths and labels.
 

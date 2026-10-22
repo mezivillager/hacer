@@ -33,6 +33,10 @@ stderr — `cycle: slot 4 of 8 (foundation), after #537 · harness, …`. So cla
 A `retro due:` line from `ready` means dispatch the retro (`docs/harness/retro-brief.md` § Cadence)
 before the first claim; its token count joins this run's total (§6).
 
+A `main: <workflow> failing` line from `ready` or `next` means that workflow's newest completed run
+on `main` failed: before the first claim, open that run (`gh run view <id>`), then fix it or file it
+unless an open issue or PR already covers it. `main: unread (…)` is not green.
+
 Also surface **open claims** and any `docs/harness/sessions/*-handoff.md` files: read the latest
 claim comment on each claimed issue (format in §2). `ready` never offers a claimed issue: it prints
 `claimed`, or `stale-claim` under the 48 h rule in §2. A stale or `paused:…` claim is not an active
