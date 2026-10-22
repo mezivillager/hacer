@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-22T20:21:52.305Z",
+  "generatedAt": "2026-10-22T21:20:24.865Z",
   "head": {
     "sha": "c62a4e71f8addd1a402a440027f03ee8b0fc30d2",
     "date": "2026-10-22T18:03:50+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T20:21:52.305Z",
+      "fetchedAt": "2026-10-22T21:20:24.865Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T20:21:52.305Z",
+      "fetchedAt": "2026-10-22T21:20:24.865Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T20:21:52.305Z",
+      "fetchedAt": "2026-10-22T21:20:24.865Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-22T20:21:52.305Z",
+      "fetchedAt": "2026-10-22T21:20:24.865Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-22T20:21:52.305Z",
+      "fetchedAt": "2026-10-22T21:20:24.865Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-22T20:21:52.305Z",
+      "fetchedAt": "2026-10-22T21:20:24.865Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-22T20:21:52.305Z",
+      "fetchedAt": "2026-10-22T21:20:24.865Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-22T20:21:52.305Z",
+      "fetchedAt": "2026-10-22T21:20:24.865Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-22T20:21:52.305Z",
+      "fetchedAt": "2026-10-22T21:20:24.865Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-22T20:21:52.305Z",
+      "fetchedAt": "2026-10-22T21:20:24.865Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-22T20:21:52.305Z",
+      "fetchedAt": "2026-10-22T21:20:24.865Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-22T20:21:52.305Z",
+      "fetchedAt": "2026-10-22T21:20:24.865Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-22T20:21:52.305Z",
+      "fetchedAt": "2026-10-22T21:20:24.865Z",
       "status": "ok"
     }
   },
@@ -81,15 +81,15 @@
         "slug": "foundation",
         "epicNumber": 318,
         "open": 24,
-        "ready": 4,
-        "inProgress": 0,
+        "ready": 3,
+        "inProgress": 1,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 4,
         "filedElsewhere": [],
         "next": {
-          "number": 907,
-          "title": "Grading passes a part that reads one bit of a chip OUT and writes another, which the web IDE refuses as a Looping wire"
+          "number": 940,
+          "title": "N.4b: `layout(doc, surface, { previous, hints })`: hold what is placed, never move a hinted node"
         },
         "title": "Foundation audit: is the codebase structured for the autonomous loop? Measured audit, prioritized refactorings, fitness functions",
         "subIssues": {
@@ -104,8 +104,8 @@
         "slug": "harness",
         "epicNumber": 138,
         "open": 30,
-        "ready": 14,
-        "inProgress": 0,
+        "ready": 13,
+        "inProgress": 1,
         "needsHuman": 2,
         "staleClaims": [],
         "agentReady": 16,
@@ -115,8 +115,8 @@
           942
         ],
         "next": {
-          "number": 971,
-          "title": "Judge review: JDG-005 · Is #801 (`sev:high`, an unsaved circuit is lost on reload) moved to `project:bugs` and pulled forward under `project:foundation`?"
+          "number": 972,
+          "title": "Judge review: JDG-006 · Is the `differential` CI job made a required check on `main`?"
         },
         "title": "Epic: harness — autonomous-run improvements & agent-readiness",
         "subIssues": {
@@ -410,11 +410,6 @@
     ],
     "next": [
       {
-        "number": 971,
-        "title": "Judge review: JDG-005 · Is #801 (`sev:high`, an unsaved circuit is lost on reload) moved to `project:bugs` and pulled forward under `project:foundation`?",
-        "project": "harness"
-      },
-      {
         "number": 972,
         "title": "Judge review: JDG-006 · Is the `differential` CI job made a required check on `main`?",
         "project": "harness"
@@ -438,11 +433,6 @@
         "number": 976,
         "title": "Judge review: JDG-010 · Is the tuned refactor-PR test rule (#942) adopted, so it becomes `agent-ready` when #941 lands?",
         "project": "harness"
-      },
-      {
-        "number": 907,
-        "title": "Grading passes a part that reads one bit of a chip OUT and writes another, which the web IDE refuses as a Looping wire",
-        "project": "foundation"
       },
       {
         "number": 940,
@@ -570,22 +560,6 @@
   "tasks": {
     "items": [
       {
-        "number": 971,
-        "title": "Judge review: JDG-005 · Is #801 (`sev:high`, an unsaved circuit is lost on reload) moved to `project:bugs` and pulled forward under `project:foundation`?",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:0",
-          "judge-review"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
         "number": 972,
         "title": "Judge review: JDG-006 · Is the `differential` CI job made a required check on `main`?",
         "labels": [
@@ -662,25 +636,6 @@
         "project": "harness",
         "rank": 2,
         "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 907,
-        "title": "Grading passes a part that reads one bit of a chip OUT and writes another, which the web IDE refuses as a Looping wire",
-        "labels": [
-          "bug",
-          "agent-ready",
-          "risk:1",
-          "sev:critical",
-          "bot-filed",
-          "fidelity",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
         "pickable": true,
         "reason": null
       },
@@ -2480,6 +2435,26 @@
         "reason": "unshaped"
       },
       {
+        "number": 907,
+        "title": "Grading passes a part that reads one bit of a chip OUT and writes another, which the web IDE refuses as a Looping wire",
+        "labels": [
+          "bug",
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "sev:critical",
+          "bot-filed",
+          "fidelity",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 942,
         "title": "pr-hygiene: a refactor PR may not take assertions out of an existing test (foundation 1.5, tuned on Phase 1's refactor PRs)",
         "labels": [
@@ -2507,6 +2482,23 @@
         "lane": "process",
         "pickable": false,
         "reason": "unshaped"
+      },
+      {
+        "number": 971,
+        "title": "Judge review: JDG-005 · Is #801 (`sev:high`, an unsaved circuit is lost on reload) moved to `project:bugs` and pulled forward under `project:foundation`?",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "judge-review"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "claimed"
       },
       {
         "number": 981,
@@ -2558,7 +2550,6 @@
     ],
     "byProject": {
       "harness": [
-        971,
         972,
         973,
         974,
@@ -2587,10 +2578,10 @@
         677,
         870,
         889,
+        971,
         981
       ],
       "foundation": [
-        907,
         940,
         941,
         979,
@@ -2613,6 +2604,7 @@
         722,
         728,
         742,
+        907,
         942
       ],
       "spine": [
@@ -4366,6 +4358,61 @@
           "author": "mezivillager",
           "at": "2026-09-25T06:02:35Z",
           "url": "https://github.com/mezivillager/hacer/issues/470#issuecomment-5827635352"
+        }
+      },
+      {
+        "number": 907,
+        "ref": "refs/heads/claim/907",
+        "sha": "c62a4e71f8addd1a402a440027f03ee8b0fc30d2",
+        "state": "OPEN",
+        "title": "Grading passes a part that reads one bit of a chip OUT and writes another, which the web IDE refuses as a Looping wire",
+        "url": "https://github.com/mezivillager/hacer/issues/907",
+        "labels": [
+          "bug",
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "sev:critical",
+          "bot-filed",
+          "fidelity",
+          "project:foundation"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "2026-10-22-hacer-loop-to-97",
+          "branch": "fix/907-looping-wire",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-22T21:16:38Z",
+          "url": "https://github.com/mezivillager/hacer/issues/907#issuecomment-6351501053"
+        }
+      },
+      {
+        "number": 971,
+        "ref": "refs/heads/claim/971",
+        "sha": "c62a4e71f8addd1a402a440027f03ee8b0fc30d2",
+        "state": "OPEN",
+        "title": "Judge review: JDG-005 · Is #801 (`sev:high`, an unsaved circuit is lost on reload) moved to `project:bugs` and pulled forward under `project:foundation`?",
+        "url": "https://github.com/mezivillager/hacer/issues/971",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "judge-review"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "2026-10-22-hacer-loop-to-97",
+          "branch": "chore/judge-jdg-005",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-22T21:16:55Z",
+          "url": "https://github.com/mezivillager/hacer/issues/971#issuecomment-6351506160"
         }
       }
     ],
@@ -6349,7 +6396,7 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-08T20:21:52.305Z",
+      "since": "2026-10-08T21:20:24.865Z",
       "merged": 132,
       "openToMergeHours": {
         "median": 0.3,
@@ -10483,7 +10530,7 @@
       },
       {
         "date": "2026-10-22",
-        "at": "2026-10-22T19:18:13.511Z",
+        "at": "2026-10-22T20:21:52.305Z",
         "byProject": {
           "harness": [
             971,
