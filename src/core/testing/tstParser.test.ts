@@ -75,8 +75,8 @@ describe('TST Parser', () => {
       })
     })
 
-    it('defaults format for plain names (no % specifier)', () => {
-      const result = parseTST('output-list a b out;')
+    it('a bare output-list name is recorded as taking its width from the chip, unlike an explicit %B1.1.1', () => {
+      const result = parseTST('output-list a b%B1.1.1;')
       expect(result.success).toBe(true)
       if (!result.success) return
 
@@ -86,13 +86,11 @@ describe('TST Parser', () => {
       expect(outputList?.type).toBe('output-list')
       if (outputList?.type !== 'output-list') return
 
-      expect(outputList.columns[0]).toEqual({
-        name: 'a',
-        format: 'B',
-        padLeft: 1,
-        width: 1,
-        padRight: 1,
-      })
+      expect(outputList.columns).toEqual([
+        { name: 'a', format: 'B', padLeft: 1, width: 1, padRight: 1, widthFromChip: true },
+        { name: 'b', format: 'B', padLeft: 1, width: 1, padRight: 1 },
+      ])
+      expect(outputList.columns[1].widthFromChip).toBeUndefined()
     })
 
     it('rejects malformed output-list format specifier', () => {

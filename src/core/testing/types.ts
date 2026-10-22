@@ -4,6 +4,8 @@ export interface TSTOutputColumn {
   padLeft: number
   width: number
   padRight: number
+  /** A bare name: the width is the chip pin's, and `width` holds 1 until the chip resolves it. */
+  widthFromChip?: boolean
 }
 
 export type TSTCommand =
