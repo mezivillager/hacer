@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-22T00:48:59.923Z",
+  "generatedAt": "2026-10-22T00:51:39.489Z",
   "head": {
     "sha": "304c61c8559bbc96ed0236119a1d34df9a370fb1",
     "date": "2026-10-22T03:48:23+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T00:48:59.923Z",
+      "fetchedAt": "2026-10-22T00:51:39.489Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T00:48:59.923Z",
+      "fetchedAt": "2026-10-22T00:51:39.489Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T00:48:59.923Z",
+      "fetchedAt": "2026-10-22T00:51:39.489Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-22T00:48:59.923Z",
+      "fetchedAt": "2026-10-22T00:51:39.489Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-22T00:48:59.923Z",
+      "fetchedAt": "2026-10-22T00:51:39.489Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-22T00:48:59.923Z",
+      "fetchedAt": "2026-10-22T00:51:39.489Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-22T00:48:59.923Z",
+      "fetchedAt": "2026-10-22T00:51:39.489Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-22T00:48:59.923Z",
+      "fetchedAt": "2026-10-22T00:51:39.489Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-22T00:48:59.923Z",
+      "fetchedAt": "2026-10-22T00:51:39.489Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-22T00:48:59.923Z",
+      "fetchedAt": "2026-10-22T00:51:39.489Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-22T00:48:59.923Z",
+      "fetchedAt": "2026-10-22T00:51:39.489Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-22T00:48:59.923Z",
+      "fetchedAt": "2026-10-22T00:51:39.489Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-22T00:48:59.923Z",
+      "fetchedAt": "2026-10-22T00:51:39.489Z",
       "status": "ok"
     }
   },
@@ -306,15 +306,15 @@
         "slug": "upkeep",
         "epicNumber": 146,
         "open": 33,
-        "ready": 8,
-        "inProgress": 23,
+        "ready": 7,
+        "inProgress": 24,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 32,
         "filedElsewhere": [],
         "next": {
-          "number": 834,
-          "title": "Inbox review: HRN-016 · The fortnightly process review has not run since 2026-09-26: print when it is due, and give it default reviewers"
+          "number": 835,
+          "title": "Inbox review: HRN-017 · Split a rerun query that hits the API's 1,000-run cap, as 2026-10-15 did"
         },
         "title": "Epic: upkeep — maintenance & documentation",
         "subIssues": {
@@ -413,11 +413,6 @@
         "project": "foundation"
       },
       {
-        "number": 834,
-        "title": "Inbox review: HRN-016 · The fortnightly process review has not run since 2026-09-26: print when it is due, and give it default reviewers",
-        "project": "upkeep"
-      },
-      {
         "number": 257,
         "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
         "project": "harness"
@@ -484,22 +479,6 @@
         "project": "foundation",
         "rank": 1,
         "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 834,
-        "title": "Inbox review: HRN-016 · The fortnightly process review has not run since 2026-09-26: print when it is due, and give it default reviewers",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
         "pickable": true,
         "reason": null
       },
@@ -2496,6 +2475,23 @@
         "reason": "claimed"
       },
       {
+        "number": 834,
+        "title": "Inbox review: HRN-016 · The fortnightly process review has not run since 2026-09-26: print when it is due, and give it default reviewers",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 870,
         "title": "Owner: link `ha/.claude/agents` to hacer's role files, so sessions started in the workspace register the `hacer-*` types",
         "labels": [
@@ -2616,8 +2612,27 @@
         773,
         878
       ],
+      "harness": [
+        257,
+        892,
+        154,
+        156,
+        270,
+        435,
+        436,
+        454,
+        500,
+        504,
+        505,
+        550,
+        607,
+        677,
+        870,
+        884,
+        888,
+        889
+      ],
       "upkeep": [
-        834,
         835,
         839,
         848,
@@ -2649,27 +2664,8 @@
         830,
         831,
         832,
-        833
-      ],
-      "harness": [
-        257,
-        892,
-        154,
-        156,
-        270,
-        435,
-        436,
-        454,
-        500,
-        504,
-        505,
-        550,
-        607,
-        677,
-        870,
-        884,
-        888,
-        889
+        833,
+        834
       ],
       "spine": [
         165,
@@ -4965,28 +4961,29 @@
         }
       },
       {
-        "number": 883,
-        "ref": "refs/heads/claim/883",
-        "sha": "0b6b77b01d1b307ed229dae10f8fa79b2ac9c9df",
-        "state": "CLOSED",
-        "title": "`merge-on-green` names a missing `workflow` token scope when GitHub refuses to update or merge a PR that changes `.github/workflows/`",
-        "url": "https://github.com/mezivillager/hacer/issues/883",
+        "number": 834,
+        "ref": "refs/heads/claim/834",
+        "sha": "304c61c8559bbc96ed0236119a1d34df9a370fb1",
+        "state": "OPEN",
+        "title": "Inbox review: HRN-016 · The fortnightly process review has not run since 2026-09-26: print when it is due, and give it default reviewers",
+        "url": "https://github.com/mezivillager/hacer/issues/834",
         "labels": [
-          "project:harness",
+          "project:upkeep",
           "agent-ready",
           "in-progress",
-          "risk:1"
+          "risk:0",
+          "inbox-review"
         ],
-        "onClosedIssue": true,
+        "onClosedIssue": false,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
           "session": "hacer-loop-to-70",
-          "branch": "chore/883-workflow-scope",
+          "branch": "chore/inbox-hrn-016",
           "handoff": "none",
           "author": "mezivillager",
-          "at": "2026-10-22T00:10:24Z",
-          "url": "https://github.com/mezivillager/hacer/issues/883#issuecomment-6329421395"
+          "at": "2026-10-22T00:49:10Z",
+          "url": "https://github.com/mezivillager/hacer/issues/834#issuecomment-6329941920"
         }
       },
       {
@@ -5015,7 +5012,7 @@
         }
       }
     ],
-    "onClosedIssues": 1
+    "onClosedIssues": 0
   },
   "cloudLane": {
     "items": [
@@ -6903,7 +6900,7 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-08T00:48:59.923Z",
+      "since": "2026-10-08T00:51:39.489Z",
       "merged": 94,
       "openToMergeHours": {
         "median": 0.4,
@@ -11032,7 +11029,7 @@
       },
       {
         "date": "2026-10-22",
-        "at": "2026-10-22T00:43:21.478Z",
+        "at": "2026-10-22T00:48:59.923Z",
         "byProject": {
           "foundation": [
             338,
@@ -11062,28 +11059,7 @@
             773,
             878
           ],
-          "harness": [
-            257,
-            884,
-            154,
-            156,
-            270,
-            435,
-            436,
-            454,
-            500,
-            504,
-            505,
-            550,
-            607,
-            677,
-            870,
-            883,
-            888,
-            889
-          ],
           "upkeep": [
-            833,
             834,
             835,
             839,
@@ -11115,7 +11091,28 @@
             829,
             830,
             831,
-            832
+            832,
+            833
+          ],
+          "harness": [
+            257,
+            892,
+            154,
+            156,
+            270,
+            435,
+            436,
+            454,
+            500,
+            504,
+            505,
+            550,
+            607,
+            677,
+            870,
+            884,
+            888,
+            889
           ],
           "spine": [
             165,
@@ -11212,12 +11209,15 @@
         "pr": null,
         "sha": "304c61c8559bbc96ed0236119a1d34df9a370fb1",
         "check": "ci",
-        "conclusion": null,
-        "completedAt": null,
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-22T00:51:23Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/39701902981/job/119572865099",
-        "line": null,
-        "verdict": null,
-        "fields": {},
+        "line": "LAYER-RATCHET: 69 known violations (37 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 69,
+          "new": 0
+        },
         "disagrees": false
       },
       {
