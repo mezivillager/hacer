@@ -1,0 +1,6 @@
+{
+  "_shape": "gh api -i user, built around the header lines the inbox panel (#830) measured on 2026-10-22: each line ends in \\r, and X-Oauth-Scopes comes after an empty X-Accepted-Oauth-Scopes line. The other headers and the body are placeholders. noHeader is a token that reports no scopes (fine-grained or App).",
+  "withWorkflow": "HTTP/2.0 200 OK\r\nContent-Type: application/json; charset=utf-8\r\nX-Accepted-Oauth-Scopes: \r\nX-Oauth-Scopes: admin:public_key, gist, read:org, repo, workflow\r\nX-Ratelimit-Limit: 5000\r\n\r\n{\"login\":\"octocat\"}",
+  "lapsed": "HTTP/2.0 200 OK\r\nContent-Type: application/json; charset=utf-8\r\nX-Accepted-Oauth-Scopes: \r\nX-Oauth-Scopes: admin:public_key, gist, read:org, repo\r\nX-Ratelimit-Limit: 5000\r\n\r\n{\"login\":\"octocat\"}",
+  "noHeader": "HTTP/2.0 200 OK\r\nContent-Type: application/json; charset=utf-8\r\nX-Accepted-Oauth-Scopes: \r\nX-Ratelimit-Limit: 5000\r\n\r\n{\"login\":\"octocat\"}"
+}

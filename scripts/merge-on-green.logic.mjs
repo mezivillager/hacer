@@ -127,6 +127,14 @@ export const mergeCommits = (commits) =>
     .filter((commit) => asArray(commit?.parents).length > 1)
     .map((commit) => commit.sha)
 
+export function tokenScopes() {
+  throw new Error('not implemented')
+}
+
+export function missingScope() {
+  throw new Error('not implemented')
+}
+
 /**
  * The give-up a refusal settles at once, or null while it may be retried: GitHub cannot rebase a
  * branch that carries a merge commit, and a REBASE update it refuses will not take on a retry.

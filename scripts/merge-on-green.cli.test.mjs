@@ -26,7 +26,11 @@ case "$1 $2" in
   "pr merge"|"api graphql")
     error="$STUB/$2-error.txt"
     if [ -f "$error" ]; then cat "$error" >&2; exit 1; fi
+    if [ "$2" = merge ] && [ -f "$STUB/after-merge.json" ]; then cp "$STUB/after-merge.json" "$STUB/pr.json"; fi
     exit 0 ;;
+  "api -i")
+    if [ -f "$STUB/user-error.txt" ]; then cat "$STUB/user-error.txt" >&2; exit 1; fi
+    if [ -f "$STUB/user.txt" ]; then cat "$STUB/user.txt"; exit 0; fi ;;
   "run rerun") exit 0 ;;
   "pr edit")
     while [ $# -gt 0 ]; do [ "$1" = "--body-file" ] && cp "$2" "$STUB/edited-body.md"; shift; done
@@ -38,6 +42,7 @@ case "$2" in
   *check-runs*) cat "$STUB/checks.json"; exit 0 ;;
   */activity*) cat "$STUB/pushes.json"; exit 0 ;;
   */pulls/*/commits*) cat "$STUB/commits.json"; exit 0 ;;
+  */pulls/*/files*) cat "$STUB/files.txt"; exit 0 ;;
   */jobs*) echo '[]'; exit 0 ;;
   *actions/runs*) cat "$STUB/runs.json"; exit 0 ;;
 esac
@@ -47,10 +52,11 @@ exit 1
 
 /**
  * Runs the tool once against a recorded state. `rules: false` makes the rulesets call fail too;
- * `refuse` maps `view`, `merge` or `graphql` to the stderr line gh prints when GitHub refuses that call;
- * `checks` replaces the head's check runs.
+ * `refuse` maps `view`, `merge`, `graphql` or `user` to the stderr line gh prints when GitHub refuses that call;
+ * `checks` replaces the head's check runs; `user` is what `gh api -i user` prints; `files` are the
+ * pages of the PR's files; `afterMerge` is the PR an accepted merge leaves.
  */
-function runTool(state, { rules = true, args = ['1'], pr = {}, refuse = {}, checks } = {}) {
+function runTool(state, { rules = true, args = ['1'], pr = {}, refuse = {}, checks, user, files = [[]], afterMerge, env = {} } = {}) {
   const stub = mkdtempSync(path.join(tmpdir(), 'merge-on-green-'))
   cleanup.push(stub)
   const fixture = JSON.parse(read(`${state}.json`))
@@ -59,6 +65,9 @@ function runTool(state, { rules = true, args = ['1'], pr = {}, refuse = {}, chec
   writeFileSync(path.join(stub, 'checks.json'), `${JSON.stringify(checks ?? fixture.checkRuns)}\n`)
   writeFileSync(path.join(stub, 'runs.json'), `${JSON.stringify(fixture.workflowRuns)}\n`)
   writeFileSync(path.join(stub, 'commits.json'), `${JSON.stringify(fixture.commits ?? [])}\n`)
+  writeFileSync(path.join(stub, 'files.txt'), files.map((page) => `${JSON.stringify(page)}\n`).join(''))
+  if (user) writeFileSync(path.join(stub, 'user.txt'), user)
+  if (afterMerge) writeFileSync(path.join(stub, 'after-merge.json'), JSON.stringify({ ...fixture.pr, ...pr, ...afterMerge }))
   for (const [call, line] of Object.entries(refuse)) writeFileSync(path.join(stub, `${call}-error.txt`), `${line}\n`)
   writeFileSync(path.join(stub, '404.json'), read('protection-404.json'))
   if (rules) writeFileSync(path.join(stub, 'rules.json'), read('rules-main.json'))
@@ -67,7 +76,7 @@ function runTool(state, { rules = true, args = ['1'], pr = {}, refuse = {}, chec
   chmodSync(gh, 0o755)
 
   const result = spawnSync(process.execPath, [SCRIPT, ...args], {
-    env: { ...process.env, GH_BIN: gh, STUB: stub },
+    env: { ...process.env, GH_BIN: gh, STUB: stub, ...env },
     encoding: 'utf8',
     timeout: SPAWN_TIMEOUT_MS - 2000,
   })
@@ -147,6 +156,63 @@ describe('merge-on-green.mjs (gh is a test double)', () => {
     expect(result.stdout).toMatch(/give-up: .*181b3c3/)
     expect(outcomeLine(result)).toBe('MERGE-ON-GREEN: needs-person pr=667 head=0c576d750981d0e01e6855ebff05b24afdf6a6f9 exit=4')
   }, SPAWN_TIMEOUT_MS)
+
+  describe('a refused update or merge of a workflow change, with the `workflow` scope missing', () => {
+    const scopes = JSON.parse(read('token-scopes.json'))
+    const workflowFile = [{ filename: '.github/workflows/ci.yml', previous_filename: null }]
+    const refusal = 'GraphQL: refusing to allow an OAuth App to create or update workflow `.github/workflows/ci.yml` without `workflow` scope'
+    const behind = { args: ['524', 'mezivillager/hacer', '5'], pr: { id: 'PR_524', autoMergeRequest: null } }
+    const head524 = '73d1536d07172f546f932f97b23d58e98fd45730'
+    const head645 = 'a75b5930bb8a8e9f6541ccacd957a919d96d2ab9'
+    const giveUpLine = (result) => result.stdout.split('\n').find((line) => line.includes('] give-up: ')) ?? ''
+
+    it('names the scope and the refresh at the first refused update, exit 4, without merging', () => {
+      const result = runTool('behind', { ...behind, refuse: { graphql: refusal }, user: scopes.lapsed, files: [workflowFile] })
+      expect(result.status).toBe(4)
+      expect(giveUpLine(result)).toContain('gh auth refresh -s workflow')
+      expect(giveUpLine(result)).toContain(refusal)
+      expect(result.calls.match(/^api graphql /gm)).toHaveLength(1)
+      expect(result.calls).not.toMatch(/^pr merge /m)
+      expect(result.calls).toMatch(/^api -i user$/m)
+      expect(result.calls).toMatch(/^api repos\/mezivillager\/hacer\/pulls\/524\/files\?per_page=100 --paginate /m)
+      expect(outcomeLine(result)).toBe(`MERGE-ON-GREEN: needs-person pr=524 head=${head524} exit=4`)
+    }, SPAWN_TIMEOUT_MS)
+
+    it('names them at the first refused merge, after one pr merge call, from any page of the files', () => {
+      const pages = [[{ filename: 'package.json', previous_filename: null }], workflowFile]
+      const result = runTool('fresh-green', { args: ['645', 'mezivillager/hacer', '5'], refuse: { merge: refusal }, user: scopes.lapsed, files: pages })
+      expect(result.status).toBe(4)
+      expect(result.calls.match(/^pr merge /gm)).toHaveLength(1)
+      expect(giveUpLine(result)).toContain('gh auth refresh -s workflow')
+      expect(outcomeLine(result)).toBe(`MERGE-ON-GREEN: needs-person pr=645 head=${head645} exit=4`)
+    }, SPAWN_TIMEOUT_MS)
+
+    it('reads neither the scopes nor the files when GitHub accepts the merge (#755, #758), exit 0', () => {
+      const merge = 'c'.repeat(40)
+      const result = runTool('fresh-green', {
+        args: ['645', 'mezivillager/hacer', '1'],
+        user: scopes.lapsed,
+        files: [workflowFile],
+        afterMerge: { state: 'MERGED', mergeCommit: { oid: merge } },
+        env: { MERGE_ON_GREEN_POLL_MS: '100' },
+      })
+      expect(result.status).toBe(0)
+      expect(result.calls.match(/^pr merge /gm)).toHaveLength(1)
+      expect(result.calls).not.toMatch(/^api -i user/m)
+      expect(result.calls).not.toMatch(/\/files/)
+      expect(outcomeLine(result)).toBe(`MERGE-ON-GREEN: merged pr=645 head=${head645} merge=${merge} exit=0`)
+    }, SPAWN_TIMEOUT_MS)
+
+    it('keeps today’s give-up reason when `gh api -i user` fails after a refusal, exit 4', () => {
+      const unreadable = 'HTTP 401: Bad credentials (https://api.github.com/user)'
+      const result = runTool('behind', { ...behind, refuse: { graphql: refusal, user: unreadable }, files: [workflowFile] })
+      expect(result.status).toBe(4)
+      expect(result.calls).toMatch(/^api -i user$/m)
+      expect(giveUpLine(result)).toMatch(/a fork or a protected head/)
+      expect(giveUpLine(result)).not.toContain('gh auth refresh')
+      expect(outcomeLine(result)).toBe(`MERGE-ON-GREEN: needs-person pr=524 head=${head524} exit=4`)
+    }, SPAWN_TIMEOUT_MS)
+  })
 
   it('needs a person when the PR cannot be read on the first pass, and names no head', () => {
     const missing = 'GraphQL: Could not resolve to a PullRequest with the number of 99999. (repository.pullRequest)'
