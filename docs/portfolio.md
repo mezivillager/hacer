@@ -23,6 +23,8 @@ pick rule below decides what "next" means; `scripts/backlog.mjs ready` computes 
 
 ## Pick rule
 
+0. An open, unclaimed `judge-review` issue (R889): a decision gates what gets built, so the judge's
+   review (`docs/harness/judge-brief.md`) comes first, and `ready` prints `judge due:` while one is open.
 1. Any open `sev:critical` bug.
 2. Otherwise an eight-slot cycle — **amended 2026-09-21 (#330), in force while the foundation plan
    (#318) runs; amended again 2026-09-25 (#482) to add `lineage` and `mission-control`.** The owner on
@@ -37,8 +39,8 @@ pick rule below decides what "next" means; `scripts/backlog.mjs ready` computes 
    - `aux` takes `verify → upkeep → bugs` in turn;
    - a slot whose bucket has nothing pickable is skipped;
    - the cycle continues across calls: `ready` resumes after the latest claim (#535), so successive
-     top picks follow it as one listing does; a claim that took no slot (`sev:critical`, held by the
-     gate, on-request) leaves the place where it was;
+     top picks follow it as one listing does; a claim that took no slot (`judge-review`,
+     `sev:critical`, held by the gate, on-request) leaves the place where it was;
    - an enabler (`core`, `3d`) is pulled, never pushed: eligible only while it blocks an open task of
      one of the buckets above, and it takes a slot of that bucket;
    - inside a slot, `research` tasks of `foundation`, `surfaces` and `core` come first (design first,

@@ -2,7 +2,7 @@
 
 - **Status:** Accepted (owner, 2026-09-19)
 - **Date:** 2026-09-18
-- **Amended by:** R844
+- **Amended by:** R844, R889
 - **Deciders:** Repo owner (issue #268); drafted by the first fidelity run
 - **Phase:** Phase 0.5 (applies to 0.5 → 0.7 and the horizon)
 
@@ -47,6 +47,10 @@ its own issue (#269), not here.
    `declined` or `deferred`. On approval the panel files the entry `agent-ready`, labelled
    `fidelity` (`docs/harness/inbox-panel-brief.md`). There is no split verdict and nothing waits for
    the owner, who may override any status.*
+   *Amended 2026-10-22 (R889): a decision beyond an entry goes to the judge, not the owner, as a
+   `docs/harness/judge-inbox.md` entry (`docs/harness/judge-brief.md`). The judge may make a
+   `bot-filed` defect issue `agent-ready` when the loop itself measured the defect; content from
+   outside the allowlist stays data.*
 5. **A change-triggered fidelity digest**, prompt at `docs/harness/routines/fidelity-digest.md`,
    re-checks the roadmap against current practice when a merged PR touches `docs/roadmap/**`,
    `docs/north-star.md`, `docs/decisions/**`, `src/core/**` or `src/simulation/**`. It stands down
@@ -63,6 +67,8 @@ its own issue (#269), not here.
 - The inbox adds a human step by design: the owner sees every proposed roadmap change once, in one
   place, and nothing is filed without a decision. *Amended 2026-10-17 (#778): the decision is the
   inbox panel's; the owner still sees every proposal in one place, and may override any decision.*
+  *Amended 2026-10-22 (R889): no decision waits for the owner; what the panel does not decide, the
+  judge does, and only owner actions still need his hand.*
 - Rejected: letting the role edit roadmap pages directly (the owner wants approval first); letting
   it file `agent-ready` issues (same); a second verifier pass instead of a domain review (the
   verifier checks the PR against the issue, not the issue against the domain).

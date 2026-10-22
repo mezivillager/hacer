@@ -7,7 +7,8 @@ For the coordinator, on one `inbox-review` issue. `node scripts/inbox.mjs queue`
 machine; a fresh-context Opus **panel** weighs the two reports and decides `approved`,
 `declined (<reason>)` or `deferred (<until>)`. Its decision stands in for the owner's (owner,
 2026-10-17, #778): there is no split verdict, nothing waits for the owner, and the owner may
-override any status at any time.
+override any status at any time. A question the panel finds is the owner's to decide, beyond the
+entry, goes to the judge as a `judge-inbox.md` entry (`judge-brief.md`, R889).
 
 `<n>` is the review issue, `<ID>` the entry (`FID-006`), `<id>` the same in lower case.
 

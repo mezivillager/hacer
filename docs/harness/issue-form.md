@@ -14,14 +14,19 @@ through `--blocked-by`. Issue types are not available on a user-owned repo, so k
 | Group | Values |
 |---|---|
 | project | `project:<slug>`, one per portfolio row in `docs/portfolio.md` |
-| state | `agent-ready` · `in-progress` · `needs-human` (absent = still being shaped; "blocked" is computed from `blockedBy`, not labelled) |
+| state | `agent-ready` · `in-progress` · `needs-human`, an owner action only (absent = still being shaped; "blocked" is computed from `blockedBy`, not labelled) |
 | risk | `risk:0` docs/tests/deps · `risk:1` pure logic under conformance · `risk:2` store/UI/architecture/harness |
 | kind | `bug` · `research` · `epic` (default = task); `idea`, `fidelity`, `lineage:correction` per `docs/portfolio.md` |
 | severity | `sev:critical` · `sev:high` (bugs only) |
-| misc | `bot-filed` · `overturned` · `critical` (browser QA, ADR-0016) · `size-override` (human-applied) |
+| misc | `bot-filed` · `overturned` · `critical` (browser QA, ADR-0016) · `size-override` (human-applied) · `inbox-review`, `judge-review` (review issues `node scripts/inbox.mjs queue` files) |
 
 Size is not a label; the `pr-hygiene` check measures it. The vocabulary's origin is
 `docs/decisions/0013-backlog-in-github-issues-and-portfolio.md` (Decision 1).
+
+**`needs-human` is for what only the owner's hand can do:** a ruleset or security setting, an
+account connection, a secret, his machine's configuration, and vouching for outside content. A
+decision that used to carry it, a question with a recommended answer, is a `judge-inbox.md` entry
+instead, and the judge decides it on the owner's behalf (`judge-brief.md`, R889).
 
 ## "Ready" is computed
 
@@ -33,7 +38,7 @@ portfolio row (`unshaped`) · an open `blockedBy` (`blocked:#n`). Otherwise the 
 - agents read issue bodies and comments only from allowlisted authors (`DEFAULT_ALLOWLIST`, `BACKLOG_ALLOWLIST`);
 - anything triaged from outside content is filed `needs-human`, never `agent-ready`;
 - review threads are resolved only when the reviewer is allowlisted;
-- `bot-filed` issues never become `agent-ready` without the owner.
+- `bot-filed` issues never become `agent-ready` without the owner, or the judge for a defect the loop itself measured (R889).
 
 Labels are applied by whoever holds the owner's identity, agents included, so these are conventions
 enforced by the skills and visible in the audit trail, not access controls.
@@ -60,4 +65,4 @@ estimate exceeds the PR budget is split into sub-issues before it is ready.
 
 Executable repro or no issue · fingerprint in an HTML comment, searched against open and closed ·
 at most 3 per run · at most 10 open `bot-filed` issues, overflow into one rolling issue · never
-`agent-ready` without the owner.
+`agent-ready` without the owner or the judge.
