@@ -5,7 +5,7 @@ import { compileHDL } from '../hdl/compiler'
 import { parseHDL } from '../hdl/parser'
 import { project1HdlSources } from '../hdl/project1HdlSources'
 import { gradingRefusal } from './gradingRefusal'
-import { testChip } from './testChip'
+import { testChip, type TestReport } from './testChip'
 
 const parts = createChipRegistry()
 registerProject1Builtins(parts)
@@ -60,6 +60,25 @@ describe('gradingRefusal', () => {
     ['a subscript of a pin nothing drives', chipC('IN a; OUT o;', 'Not(in=x[0], out=o);'), `Line 4: ${internalPin('x')}`],
   ])("refuses %s with the reference's sentence, after the part's line", (_, hdl, refusal) => {
     expect(refusalOf(hdl)).toBe(refusal)
+  })
+
+  it.each([
+    ['a chip OUT', chipC('IN a; OUT o[2];', 'Not(in=a, out=o[1]);', 'Not(in=o[1], out=o[0]);'), 'Line 5: Looping wire o'],
+    [
+      'an internal pin, ahead of its subscript',
+      chipC('IN a; OUT out[16];', 'Not16(in[0]=t[0], out[1]=t[1]);', 'Not(in=a, out=t[0]);', 'Not16(in=t, out=out);'),
+      'Line 4: Looping wire t',
+    ],
+  ])("refuses a part that reads and writes disjoint bits of one name with the reference's Looping wire: %s", (_, hdl, refusal) => {
+    expect(refusalOf(hdl)).toBe(refusal)
+  })
+
+  it('leaves a part whose read and written bits of one name meet at one bit to compileHDL, which refuses it', () => {
+    const hdl = chipC('IN a; OUT o[8];', 'Not16(in[0..3]=o[0..3], out[0..3]=o[3..6]);')
+    expect(refusalOf(hdl)).toBeNull()
+    const parsed = parseHDL(hdl)
+    if (!parsed.success) throw new Error(parsed.errors[0].message)
+    expect(compileHDL(parsed.chip, parts).success).toBe(false)
   })
 
   it.each([
@@ -149,6 +168,24 @@ describe('the grading path', () => {
     ['D5', chipC('IN a, b[16]; OUT o[16], p;', 'Not(in=a, out=o[0]);', 'Not16(in=b, out=o);', 'Not(in=o[1], out=p);'), `Line 6: ${OUT_READ}`],
   ])("keeps the reference's sentence and line for %s", (_, hdl, refusal) => {
     expect(graded(hdl, 'C')).toBe(refusal)
+  })
+
+  /** `IN` on line 2, `OUT` on line 3, `PARTS:` on line 4, so the first part is on line 5. */
+  function gradedLaidOut(out: string, partLines: readonly string[]): Pick<TestReport, 'status' | 'error'> {
+    const pin = out.split('[')[0]
+    const hdl = ['CHIP C {', '  IN a;', `  OUT ${out};`, '  PARTS:', ...partLines.map((line) => `  ${line}`), '}'].join('\n')
+    const tst = ['load C.hdl,', 'output-file C.out,', 'compare-to C.cmp,', `output-list a%B3.1.3 ${pin}%B1.2.1;`, 'set a 0, eval, output;', 'set a 1, eval, output;']
+    const cmp = [`|   a   |  ${pin}   |`, '|   0   |  10  |', '|   1   |  01  |']
+    const { status, error } = testChip({ path: 'C.hdl', source: hdl }, { path: 'C.tst', source: tst.join('\n') }, { path: 'C.cmp', source: cmp.join('\n') })
+    return { status, error }
+  }
+
+  it.each([
+    ['a part reading o[1] and writing o[0]', 'o[2]', ['Not(in=a, out=o[1]);', 'Not(in=o[1], out=o[0]);'], 'Line 6: Looping wire o'],
+    ['that part ahead of a cycle across parts', 'o[2]', ['Not(in=a, out=o[1]);', 'Not(in=o[1], out=o[0]);', 'Not(in=y, out=x);', 'Not(in=x, out=y);'], 'Line 6: Looping wire o'],
+    ['two parts looping through bits of an internal pin', 'out', ['Not(in=w[1], out=w[0]);', 'Not(in=w[0], out=w[1]);', 'And(a=w[0], b=w[1], out=out);'], 'Line 5: Looping wire w'],
+  ] as const)("gives the reference's Looping wire on the looping part's line for %s", (_, out, partLines, error) => {
+    expect(gradedLaidOut(out, partLines)).toEqual({ status: 'error', error })
   })
 })
 
