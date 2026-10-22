@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-22T11:21:24.290Z",
+  "generatedAt": "2026-10-22T11:29:32.119Z",
   "head": {
-    "sha": "98fd421e527c3b289b688d3f81971ad4f490a302",
-    "date": "2026-10-22T14:15:50+03:00",
-    "subject": "docs(adr): ADR-0020 §1.11 rule 5 records the web IDE's bit-0 read under IN a[33]"
+    "sha": "8bf3ea7bc2aea4563547d48ccfeeb1ee6774d9d0",
+    "date": "2026-10-22T14:28:14+03:00",
+    "subject": "docs(harness): session record of the 2026-10-22 run"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T11:21:24.290Z",
+      "fetchedAt": "2026-10-22T11:29:32.119Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T11:21:24.290Z",
+      "fetchedAt": "2026-10-22T11:29:32.119Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T11:21:24.290Z",
+      "fetchedAt": "2026-10-22T11:29:32.119Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-22T11:21:24.290Z",
+      "fetchedAt": "2026-10-22T11:29:32.119Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-22T11:21:24.290Z",
+      "fetchedAt": "2026-10-22T11:29:32.119Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-22T11:21:24.290Z",
+      "fetchedAt": "2026-10-22T11:29:32.119Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-22T11:21:24.290Z",
+      "fetchedAt": "2026-10-22T11:29:32.119Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-22T11:21:24.290Z",
+      "fetchedAt": "2026-10-22T11:29:32.119Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-22T11:21:24.290Z",
+      "fetchedAt": "2026-10-22T11:29:32.119Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-22T11:21:24.290Z",
+      "fetchedAt": "2026-10-22T11:29:32.119Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-22T11:21:24.290Z",
+      "fetchedAt": "2026-10-22T11:29:32.119Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-22T11:21:24.290Z",
+      "fetchedAt": "2026-10-22T11:29:32.119Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-22T11:21:24.290Z",
+      "fetchedAt": "2026-10-22T11:29:32.119Z",
       "status": "ok"
     }
   },
@@ -2451,6 +2451,30 @@
     ],
     "merged": [
       {
+        "number": 961,
+        "title": "docs(harness): session record of the 2026-10-22 run, and R888",
+        "url": "https://github.com/mezivillager/hacer/pull/961",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/2026-10-22-run-records",
+        "isDraft": false,
+        "createdAt": "2026-10-22T11:24:28Z",
+        "mergedAt": "2026-10-22T11:28:15Z",
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (risk:0 docs-only exception, ha-next §4)",
+            "at": "2026-10-22T11:25:33Z",
+            "url": "https://github.com/mezivillager/hacer/pull/961#issuecomment-6339575802"
+          }
+        ]
+      },
+      {
         "number": 960,
         "title": "docs(decisions): rulings R880-R887 of the 2026-10-22 run, with ledger rows and inbox statuses",
         "url": "https://github.com/mezivillager/hacer/pull/960",
@@ -4006,35 +4030,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/838#issuecomment-6320767184"
           }
         ]
-      },
-      {
-        "number": 826,
-        "title": "feat(hdl): a part cycle through the registry is refused at compile time, naming its chips",
-        "url": "https://github.com/mezivillager/hacer/pull/826",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:1",
-          "fidelity",
-          "project:foundation"
-        ],
-        "headRefName": "feat/816-registry-cycle",
-        "isDraft": false,
-        "createdAt": "2026-10-21T15:45:42Z",
-        "mergedAt": "2026-10-21T16:20:49Z",
-        "closes": [
-          816,
-          825
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Opus (claude-opus-5-5)",
-            "at": "2026-10-21T16:00:41Z",
-            "url": "https://github.com/mezivillager/hacer/pull/826#issuecomment-6320423980"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4314,6 +4309,14 @@
         "title": "Session record — 2026-10-21: the coordinator loop to 70% weekly usage, the core fidelity chain, and the inbox backlog",
         "status": null,
         "lines": 255
+      },
+      {
+        "file": "docs/harness/sessions/2026-10-22.md",
+        "date": "2026-10-22",
+        "kind": "record",
+        "title": "Session record — 2026-10-22: the coordinator loop to 80% weekly usage, the second process review, and the foundation queue",
+        "status": null,
+        "lines": 280
       }
     ]
   },
@@ -6057,24 +6060,24 @@
     "mergesPerDay": [
       {
         "date": "2026-10-21",
-        "merges": 24
+        "merges": 23
       },
       {
         "date": "2026-10-22",
-        "merges": 36
+        "merges": 37
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-08T11:21:24.290Z",
-      "merged": 126,
+      "since": "2026-10-08T11:29:32.119Z",
+      "merged": 127,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 1.5
       },
       "blockedOnce": {
         "count": 7,
-        "of": 107,
+        "of": 108,
         "prs": [
           700,
           725,
@@ -6092,8 +6095,8 @@
           "without": []
         },
         "nonCode": {
-          "merged": 42,
-          "withVerdict": 23,
+          "merged": 43,
+          "withVerdict": 24,
           "without": [
             692,
             693,
@@ -10199,7 +10202,7 @@
       },
       {
         "date": "2026-10-22",
-        "at": "2026-10-22T11:00:35.067Z",
+        "at": "2026-10-22T11:21:24.290Z",
         "byProject": {
           "harness": [
             257,
@@ -10260,9 +10263,7 @@
             945,
             946,
             229,
-            256,
-            928,
-            929
+            256
           ],
           "spine": [
             165,
@@ -10357,17 +10358,14 @@
     "items": [
       {
         "pr": null,
-        "sha": "98fd421e527c3b289b688d3f81971ad4f490a302",
+        "sha": "8bf3ea7bc2aea4563547d48ccfeeb1ee6774d9d0",
         "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-22T11:18:42Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39769266310/job/119792392504",
-        "line": "LAYER-RATCHET: 68 known violations (36 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 68,
-          "new": 0
-        },
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39770818806/job/119797592646",
+        "line": null,
+        "verdict": null,
+        "fields": {},
         "disagrees": false
       },
       {
@@ -16277,7 +16275,7 @@
         "id": "R880",
         "kind": "ruling",
         "title": "the run stops at weekly_all 80% or at the weekly reset (2026-10-23T03:00Z), whichever comes first; no new chain at 77% or above, and the records PR starts at 78%",
-        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-80.md:10",
+        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-80.md:11",
         "buildsOn": [
           "R852",
           "R741"
@@ -16290,7 +16288,7 @@
         "id": "R881",
         "kind": "ruling",
         "title": "#257 (browser QA agent) is passed over again; it goes to the owner's list",
-        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-80.md:19",
+        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-80.md:20",
         "buildsOn": [
           "R875"
         ],
@@ -16302,7 +16300,7 @@
         "id": "R882",
         "kind": "ruling",
         "title": "six foundation issues are shaped and labelled `agent-ready` under \"Queue up\", and three new ones are filed",
-        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-80.md:29",
+        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-80.md:30",
         "buildsOn": [
           "R878"
         ],
@@ -16314,7 +16312,7 @@
         "id": "R883",
         "kind": "ruling",
         "title": "the digest's engine-path value difference for a pin name shared by IN and OUT is queued as FID-034, not filed as a bug",
-        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-80.md:51",
+        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-80.md:52",
         "buildsOn": [
           "R854"
         ],
@@ -16326,7 +16324,7 @@
         "id": "R884",
         "kind": "ruling",
         "title": "the process reviewers' ceilings move earlier (reviewer 1 to 10:50Z, reviewer 2 to 11:10Z); the synthesis may fall to the next run",
-        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-80.md:61",
+        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-80.md:62",
         "buildsOn": [
           "R880"
         ],
@@ -16338,7 +16336,7 @@
         "id": "R885",
         "kind": "ruling",
         "title": "triage of process review cycle 2026-10-22 (reviews 1 and 2): what is carried, filed or put to the owner",
-        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-80.md:70",
+        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-80.md:71",
         "buildsOn": [
           "R844",
           "R881"
@@ -16351,7 +16349,7 @@
         "id": "R886",
         "kind": "ruling",
         "title": "PR #956 (#599) merges without a separate fidelity review",
-        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-80.md:108",
+        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-80.md:109",
         "buildsOn": [
           "R854"
         ],
@@ -16365,7 +16363,7 @@
         "id": "R887",
         "kind": "ruling",
         "title": "PR #957 (#878) merges without a separate fidelity review",
-        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-80.md:122",
+        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-80.md:123",
         "buildsOn": [
           "R854"
         ],
@@ -16374,6 +16372,18 @@
         ],
         "assumes": null,
         "costIfWrong": "an HDL file with a pin of 33 to 65535 bits that the web IDE accepts is refused by HACER"
+      },
+      {
+        "id": "R888",
+        "kind": "ruling",
+        "title": "PR #959 (#773) is left open with its BLOCK; the fix waits for the next run",
+        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-80.md:137",
+        "buildsOn": [
+          "R880"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "#773's speed-up reaches `main` one run later; the open PR keeps its claim from going"
       }
     ],
     "edges": [
@@ -18008,73 +18018,79 @@
         "from": "R880",
         "to": "R852",
         "kind": "builds-on",
-        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-80.md:11"
+        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-80.md:12"
       },
       {
         "from": "R880",
         "to": "R741",
         "kind": "builds-on",
-        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-80.md:11"
+        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-80.md:12"
       },
       {
         "from": "R881",
         "to": "R875",
         "kind": "builds-on",
-        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-80.md:20"
+        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-80.md:21"
       },
       {
         "from": "R882",
         "to": "R878",
         "kind": "builds-on",
-        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-80.md:30"
+        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-80.md:31"
       },
       {
         "from": "R883",
         "to": "R854",
         "kind": "builds-on",
-        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-80.md:52"
+        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-80.md:53"
       },
       {
         "from": "R884",
         "to": "R880",
         "kind": "builds-on",
-        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-80.md:62"
+        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-80.md:63"
       },
       {
         "from": "R885",
         "to": "R844",
         "kind": "builds-on",
-        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-80.md:71"
+        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-80.md:72"
       },
       {
         "from": "R885",
         "to": "R881",
         "kind": "builds-on",
-        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-80.md:71"
+        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-80.md:72"
       },
       {
         "from": "R886",
         "to": "R854",
         "kind": "builds-on",
-        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-80.md:109"
-      },
-      {
-        "from": "R886",
-        "to": "R854",
-        "kind": "amends",
         "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-80.md:110"
       },
       {
+        "from": "R886",
+        "to": "R854",
+        "kind": "amends",
+        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-80.md:111"
+      },
+      {
         "from": "R887",
         "to": "R854",
         "kind": "builds-on",
-        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-80.md:123"
+        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-80.md:124"
       },
       {
         "from": "R887",
         "to": "R854",
         "kind": "amends",
-        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-80.md:124"
+        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-80.md:125"
+      },
+      {
+        "from": "R888",
+        "to": "R880",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-22-hacer-loop-to-80.md:138"
       },
       {
         "from": "L046",
@@ -21870,7 +21886,8 @@
         "id": "#773",
         "kind": "github",
         "citedBy": [
-          "R882"
+          "R882",
+          "R888"
         ]
       },
       {
@@ -21985,6 +22002,13 @@
         "kind": "github",
         "citedBy": [
           "R887"
+        ]
+      },
+      {
+        "id": "#959",
+        "kind": "github",
+        "citedBy": [
+          "R888"
         ]
       },
       {
