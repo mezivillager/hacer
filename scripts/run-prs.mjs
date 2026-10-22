@@ -62,4 +62,4 @@ const candidates = JSON.parse(
 )
 
 const prs = mergedInWindow(candidates, values.from, values.to)
-console.log(values.json ? JSON.stringify(prs, null, 2) : formatConsole(prs))
+console.log(values.json ? JSON.stringify(prs, null, 2) : formatConsole(prs, { to: values.to, now: Date.now() }))
