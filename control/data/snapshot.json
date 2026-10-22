@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-22T14:23:40.434Z",
+  "generatedAt": "2026-10-22T14:34:37.729Z",
   "head": {
-    "sha": "dbda6133877420093fc40412bf5a5fdfc9bb2b6a",
-    "date": "2026-10-22T16:41:08+03:00",
-    "subject": "docs(harness): JDG-009 recommends deferring until a shared temp directory exists"
+    "sha": "34e82b7acc530c4c9b6e660a0859ef6519e3aede",
+    "date": "2026-10-22T17:33:06+03:00",
+    "subject": "fix(core): fromLegacyCircuit matches ids by their JSON value (#773)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T14:23:40.434Z",
+      "fetchedAt": "2026-10-22T14:34:37.729Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T14:23:40.434Z",
+      "fetchedAt": "2026-10-22T14:34:37.729Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T14:23:40.434Z",
+      "fetchedAt": "2026-10-22T14:34:37.729Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-22T14:23:40.434Z",
+      "fetchedAt": "2026-10-22T14:34:37.729Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-22T14:23:40.434Z",
+      "fetchedAt": "2026-10-22T14:34:37.729Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-22T14:23:40.434Z",
+      "fetchedAt": "2026-10-22T14:34:37.729Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-22T14:23:40.434Z",
+      "fetchedAt": "2026-10-22T14:34:37.729Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-22T14:23:40.434Z",
+      "fetchedAt": "2026-10-22T14:34:37.729Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-22T14:23:40.434Z",
+      "fetchedAt": "2026-10-22T14:34:37.729Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-22T14:23:40.434Z",
+      "fetchedAt": "2026-10-22T14:34:37.729Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-22T14:23:40.434Z",
+      "fetchedAt": "2026-10-22T14:34:37.729Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-22T14:23:40.434Z",
+      "fetchedAt": "2026-10-22T14:34:37.729Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-22T14:23:40.434Z",
+      "fetchedAt": "2026-10-22T14:34:37.729Z",
       "status": "ok"
     }
   },
@@ -81,8 +81,8 @@
         "slug": "foundation",
         "epicNumber": 318,
         "open": 24,
-        "ready": 3,
-        "inProgress": 1,
+        "ready": 4,
+        "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 4,
@@ -94,8 +94,8 @@
         "title": "Foundation audit: is the codebase structured for the autonomous loop? Measured audit, prioritized refactorings, fitness functions",
         "subIssues": {
           "completed": 24,
-          "percentCompleted": 68,
-          "total": 35
+          "percentCompleted": 66,
+          "total": 36
         }
       },
       {
@@ -457,6 +457,11 @@
         "project": "upkeep"
       },
       {
+        "number": 979,
+        "title": "fromLegacyCircuit: key driverCheck's seen set by JSON value, and restore cross-walk reuse on wide loop-free lattices",
+        "project": "foundation"
+      },
+      {
         "number": 257,
         "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
         "project": "harness"
@@ -545,7 +550,6 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
-        959,
         514
       ]
     }
@@ -713,6 +717,21 @@
         "project": "upkeep",
         "rank": 11,
         "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 979,
+        "title": "fromLegacyCircuit: key driverCheck's seen set by JSON value, and restore cross-walk reuse on wide loop-free lattices",
+        "labels": [
+          "agent-ready",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
         "pickable": true,
         "reason": null
       },
@@ -2267,22 +2286,6 @@
         "reason": "unshaped"
       },
       {
-        "number": 773,
-        "title": "fromLegacyCircuit: a two-feed chain whose trace meets a loop still traces 2^k paths",
-        "labels": [
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 801,
         "title": "polish: an unsaved circuit is lost on reload — autosave is written every 2 s but never restored",
         "labels": [
@@ -2545,6 +2548,7 @@
         907,
         940,
         941,
+        979,
         151,
         184,
         325,
@@ -2564,7 +2568,6 @@
         722,
         728,
         742,
-        773,
         942
       ],
       "upkeep": [
@@ -2670,32 +2673,6 @@
   },
   "prs": {
     "open": [
-      {
-        "number": 959,
-        "title": "fix(core): fromLegacyCircuit reads each key once per trace (#773)",
-        "url": "https://github.com/mezivillager/hacer/pull/959",
-        "author": "mezivillager",
-        "labels": [
-          "risk:1",
-          "project:foundation"
-        ],
-        "headRefName": "fix/773-importer-paths",
-        "isDraft": false,
-        "createdAt": "2026-10-22T10:57:16Z",
-        "mergedAt": null,
-        "closes": [
-          773
-        ],
-        "verdicts": [
-          {
-            "verdict": "BLOCK",
-            "round": 1,
-            "model": "Opus 5.5 (claude-opus-5-5)",
-            "at": "2026-10-22T11:19:17Z",
-            "url": "https://github.com/mezivillager/hacer/pull/959#issuecomment-6339464842"
-          }
-        ]
-      },
       {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
@@ -2843,6 +2820,39 @@
             "model": "coordinator (risk:0 docs-only exception, ha-next §4)",
             "at": "2026-10-22T11:14:50Z",
             "url": "https://github.com/mezivillager/hacer/pull/960#issuecomment-6339382518"
+          }
+        ]
+      },
+      {
+        "number": 959,
+        "title": "fix(core): fromLegacyCircuit reads each key once per trace (#773)",
+        "url": "https://github.com/mezivillager/hacer/pull/959",
+        "author": "mezivillager",
+        "labels": [
+          "risk:1",
+          "project:foundation"
+        ],
+        "headRefName": "fix/773-importer-paths",
+        "isDraft": false,
+        "createdAt": "2026-10-22T10:57:16Z",
+        "mergedAt": "2026-10-22T14:33:07Z",
+        "closes": [
+          773
+        ],
+        "verdicts": [
+          {
+            "verdict": "BLOCK",
+            "round": 1,
+            "model": "Opus 5.5 (claude-opus-5-5)",
+            "at": "2026-10-22T11:19:17Z",
+            "url": "https://github.com/mezivillager/hacer/pull/959#issuecomment-6339464842"
+          },
+          {
+            "verdict": "PASS",
+            "round": 2,
+            "model": "Opus 5.5 (claude-opus-5-5)",
+            "at": "2026-10-22T14:31:52Z",
+            "url": "https://github.com/mezivillager/hacer/pull/959#issuecomment-6343306427"
           }
         ]
       },
@@ -4269,34 +4279,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/845#issuecomment-6322615057"
           }
         ]
-      },
-      {
-        "number": 843,
-        "title": "fix(hdl): the registry-cycle walk keys on part names, so a fresh definition per get still ends",
-        "url": "https://github.com/mezivillager/hacer/pull/843",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:1",
-          "fidelity",
-          "project:foundation"
-        ],
-        "headRefName": "fix/836-walk-fresh-registry",
-        "isDraft": false,
-        "createdAt": "2026-10-21T16:42:18Z",
-        "mergedAt": "2026-10-21T17:02:05Z",
-        "closes": [
-          836
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Opus (claude-opus-5-5)",
-            "at": "2026-10-21T17:00:03Z",
-            "url": "https://github.com/mezivillager/hacer/pull/843#issuecomment-6321708141"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4333,31 +4315,6 @@
           "author": "mezivillager",
           "at": "2026-09-25T06:02:35Z",
           "url": "https://github.com/mezivillager/hacer/issues/470#issuecomment-5827635352"
-        }
-      },
-      {
-        "number": 773,
-        "ref": "refs/heads/claim/773",
-        "sha": "734138786f88772f7a8bd519b30f1b6a537bdb7a",
-        "state": "OPEN",
-        "title": "fromLegacyCircuit: a two-feed chain whose trace meets a loop still traces 2^k paths",
-        "url": "https://github.com/mezivillager/hacer/issues/773",
-        "labels": [
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:foundation"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-10-22-hacer-loop-to-90",
-          "branch": "fix/773-importer-paths",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-22T13:52:49Z",
-          "url": "https://github.com/mezivillager/hacer/issues/773#issuecomment-6342468365"
         }
       },
       {
@@ -6431,24 +6388,24 @@
     "mergesPerDay": [
       {
         "date": "2026-10-21",
-        "merges": 20
+        "merges": 19
       },
       {
         "date": "2026-10-22",
-        "merges": 40
+        "merges": 41
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-08T14:23:40.434Z",
-      "merged": 130,
+      "since": "2026-10-08T14:34:37.729Z",
+      "merged": 131,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 1.5
       },
       "blockedOnce": {
-        "count": 7,
-        "of": 111,
+        "count": 8,
+        "of": 112,
         "prs": [
           700,
           725,
@@ -6456,13 +6413,14 @@
           732,
           743,
           753,
-          774
+          774,
+          959
         ]
       },
       "coverage": {
         "code": {
-          "merged": 85,
-          "withVerdict": 85,
+          "merged": 86,
+          "withVerdict": 86,
           "without": []
         },
         "nonCode": {
@@ -10573,9 +10531,44 @@
       },
       {
         "date": "2026-10-22",
-        "at": "2026-10-22T13:25:39.105Z",
+        "at": "2026-10-22T14:23:40.434Z",
         "byProject": {
+          "harness": [
+            971,
+            972,
+            973,
+            974,
+            975,
+            976,
+            257,
+            949,
+            951,
+            955,
+            958,
+            965,
+            977,
+            978,
+            154,
+            156,
+            270,
+            435,
+            436,
+            454,
+            500,
+            504,
+            505,
+            550,
+            607,
+            677,
+            870,
+            889,
+            967,
+            968,
+            969,
+            970
+          ],
           "foundation": [
+            907,
             940,
             941,
             151,
@@ -10598,7 +10591,6 @@
             728,
             742,
             773,
-            907,
             942
           ],
           "upkeep": [
@@ -10614,28 +10606,6 @@
             946,
             229,
             256
-          ],
-          "harness": [
-            257,
-            949,
-            951,
-            955,
-            958,
-            965,
-            154,
-            156,
-            270,
-            435,
-            436,
-            454,
-            500,
-            504,
-            505,
-            550,
-            607,
-            677,
-            870,
-            889
           ],
           "spine": [
             165,
@@ -10730,17 +10700,14 @@
     "items": [
       {
         "pr": null,
-        "sha": "dbda6133877420093fc40412bf5a5fdfc9bb2b6a",
+        "sha": "34e82b7acc530c4c9b6e660a0859ef6519e3aede",
         "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-22T13:44:40Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39789031009/job/119859777553",
-        "line": "LAYER-RATCHET: 68 known violations (36 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 68,
-          "new": 0
-        },
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39796634535/job/119885355262",
+        "line": null,
+        "verdict": null,
+        "fields": {},
         "disagrees": false
       },
       {
@@ -10785,52 +10752,6 @@
         "verdict": "PASS",
         "fields": {
           "known": 71,
-          "new": 0
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 959,
-        "sha": "cd01a99af8139c5f26713ad0becbcfa71b63ffba",
-        "check": "pr-hygiene",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-22T14:09:30Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39793252657/job/119874253137",
-        "line": "HYGIENE: WARN reviewable=201 test=114 excluded=0 files=1 issue=#773 linked=fixes",
-        "verdict": "WARN",
-        "fields": {
-          "reviewable": 201,
-          "test": 114,
-          "excluded": 0,
-          "files": 1,
-          "issue": "#773",
-          "linked": "fixes"
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 959,
-        "sha": "cd01a99af8139c5f26713ad0becbcfa71b63ffba",
-        "check": "browser-qa",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-22T14:09:31Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39793251241/job/119874246024",
-        "line": "BROWSER-QA: skipped (no critical paths)",
-        "verdict": "SKIPPED",
-        "fields": {},
-        "disagrees": false
-      },
-      {
-        "pr": 959,
-        "sha": "cd01a99af8139c5f26713ad0becbcfa71b63ffba",
-        "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-22T14:11:55Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39793119788/job/119873823465",
-        "line": "LAYER-RATCHET: 68 known violations (36 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 68,
           "new": 0
         },
         "disagrees": false
