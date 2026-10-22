@@ -258,7 +258,7 @@ A part cycle through registered chips is refused at compile time, naming its pat
 
 ### FID-015 · Learner-facing compile errors use the reference's words and carry the line
 - **Date:** 2026-10-15 · **Target epic:** #140 core
-- **Status:** proposed
+- **Status:** filed (#820)
 - **Why:** HACER says `Chip "Not" cannot use itself as a part` where the reference says `Cannot use chip Not to implement itself`, so a learner searching for the reference's phrase finds nothing. Every compile error reaches a test report as `evaluateChip: chip "And" failed to compile: …` with no line, where the reference prints `Line N:`. #747's review found the new slice messages carry the reference's signal name and width (55 of 56 on the HDL path), with the same prefix and no line.
 - **Review note:** PR #740 issuecomment-6188266196; PR #747 issuecomment-6190213877
 
@@ -292,7 +292,7 @@ Filed as part of #371; the issue holds the criteria.
 
 ### FID-018 · `compileSpec` refuses a spec whose registered part does not compile, naming the chain
 - **Date:** 2026-10-15 · **Target epic:** #140 core
-- **Status:** proposed
+- **Status:** filed (#821)
 - **Why:** when a registered `Inn` stops compiling because its part `Foo` changed, `compileSpec(Outer)` still returns `success: true`. The refusal arrives only at the first evaluation or test run, as `evaluateChip: chip "Inn" failed to compile: …`, and does not name `Outer` or the part that led to `Inn`. The reference refuses `Outer` at build time (`Undefined chip name: Inn`, `builder.ts:262-264`), though it drops the inner error. HACER's message says more; only the timing diverges.
 - **Review note:** PR #744 issuecomment-6189447396
 
@@ -309,7 +309,7 @@ A spec whose registered part does not compile under the same registry is refused
 
 ### FID-019 · `printSpec` refuses a document in which a driverless net shares its id with a driven net
 - **Date:** 2026-10-15 · **Target epic:** #140 core
-- **Status:** proposed
+- **Status:** filed (#823)
 - **Why:** R826 ruling 1 repeats a net id on a chip OUT with two drivers. When one of them is a floating source (`FloatingBesideInput`), the nand2tetris dialect prints `Or(a=a, b=a, out=out);` and the hacer dialect `wire out = a;`. `parseSpec(printSpec(doc, { sidecar }))` then gives no diagnostic and compiles `out=a`; only the sidecar's note survives. `compileSpec` refuses the document itself (`Net id "out" names more than one net`). It is unreachable today, because `fromLegacyCircuit` has no caller outside tests. The guard belongs where both dialects are printed, before #382 saves documents or #386 exports them.
 - **Review note:** PR #743 issuecomment-6189952616, confirming the re-verifier's nit in issuecomment-6189654080
 
@@ -326,7 +326,7 @@ Neither dialect prints a document whose text would read back as a different circ
 
 ### FID-020 · #338 lists the narrow-first multi-driven OUT as an expected disagreement
 - **Date:** 2026-10-15 · **Target epic:** #140 core
-- **Status:** proposed
+- **Status:** declined (inbox panel, #791: already carried by #811's corpus, which pins both part orders as intended under R343; #338's official-vector run never meets the shape)
 - **Why:** the reference accepts `Not(in=a, out=out[0]); Not16(in=b, out=out);` and evaluates it in part order (`out=65535` for `a=0, b=0`), but refuses the parts the other way round. `checkMultipleAssignments` (`builder.ts:157-167`) never checks a whole write after a sliced one. This is R343's known order dependence, on the output side, reached through the importer. HACER refuses both orders, which is right, so #338's differential harness will report the case as a disagreement. The same review asked that R826 ruling 1 say "every HACER evaluator", and the rulings file says so.
 - **Review note:** PR #743 issuecomment-6189952616
 
@@ -343,7 +343,7 @@ The differential harness classes this case as a reference defect, not a HACER bu
 
 ### FID-021 · A strict acceptance mode for the grading path
 - **Date:** 2026-10-15 · **Target epic:** #140 core
-- **Status:** proposed
+- **Status:** filed (#840)
 - **Why:** after #747, `hacer test` refuses all 56 out-of-range slice shapes the reference refuses, but it still accepts 9 shapes the reference refuses for another reason: 7 subscripts of an internal signal (`Internal pins … cannot be subscripted or indexed`, `builder.ts:436, 483`) and 2 reads of a chip OUT (`Cannot use output pin as input`, `:477`).
   - End to end, an `Or8Way` with `Not(in=out, out=spare)` added, or with an internal `t[0]`, passes the official vectors 5/5 through `hacer test`, while the reference refuses to build it.
   - #722 only makes the export honest about these constructs, and FID-008 would only label them. Nothing decides what grading does with them.
@@ -364,7 +364,7 @@ The differential harness classes this case as a reference defect, not a HACER bu
 
 ### FID-022 · The `nand2tetris` dialect prints one sliced buffer per alias run, not one `Or` per bit
 - **Date:** 2026-10-16 · **Target epic:** #140 core
-- **Status:** proposed
+- **Status:** filed (#844)
 - **Why:** since PR #753, IN bits that reach an OUT through buses are the commonest line in the export, and the per-bit desugar (`src/core/spec/printSpec.ts:39-48`) prints each bit as its own `Or`.
   - C5's `wire out = a;` prints as four `Or` lines, and so does `bus-endpoints`. A byte swap into an OUT prints 16 lines where the hacer dialect has two `wire`s.
   - Over the review's 3,759 valued exports, buffers are 6,336 of the 12,597 statements under `PARTS:`, against 4,075 `wire` lines in the hacer dialect, and 703 documents print more buffers than wires.
@@ -385,7 +385,7 @@ The `nand2tetris` dialect lowers each alias run to one sliced buffer, so the exp
 
 ### FID-023 · Amend FID-019: pin the disjoint-bit export gap, and make the import's consumers compile before they print or save
 - **Date:** 2026-10-16 · **Target epic:** #140 core
-- **Status:** proposed
+- **Status:** filed (#823), criterion 1 landed with #860 (PR #911 issuecomment-6332719109)
 - **Why:** PR #753's fidelity review confirmed both of its verifiers' export-gap nit on the reference, and widened it.
   - ExportGap, a chip OUT fed on disjoint bits by two drivers, prints `Or(a=a, b=a, out=o[0]); Or(a=b, b=b, out=o[1]);`. The reference builds it and gives `o = 0, 2, 1, 3` for `(a, b)` = `00, 01, 10, 11`, and HACER's export path gives the same. Legacy gives `b<<1` or `a`, by wire order, and `compileSpec` refuses the document (`Net id "o[0]" names more than one net`).
   - ExportGapParts, the same shape through two `Not`s, gives `o = 3` at `a = b = 0`, where legacy gives 2 or 1.
@@ -407,7 +407,7 @@ FID-019's guard covers PR #753's disjoint-bit case, and the importer's first con
 
 ### FID-024 · ADR-0020 §10 records R837's loop granularity and names where it overapproximates
 - **Date:** 2026-10-16 · **Target epic:** #140 core
-- **Status:** proposed
+- **Status:** filed (#846)
 - **Why:** the reference checks loops per part and per signal name. `sortParts` (`../web-ide/simulator/src/chip/chip.ts:500-543`) walks from a part to the names it writes, `partToOuts` and `insToPart` are keyed by pin name, and `checkLoops` (`builder.ts:292-318`) refuses a part that reads a name it writes.
   - The import gives every read run of a producer its own name, so the reference's graph on the export is the bit graph through wires and buses, contracted per part: PR #753's `partCycle`. All 2,040 of the review's R837 documents build in the reference and agree on every vector, and all 1,214 real cycles are refused.
   - A part that reads bits of its own output without a loop through its bits (SelfReadNot16, where `o = a` through a bitwise `Not16`) is refused by HACER, the reference and legacy alike. That is nand2tetris-sound and an overapproximation in the digital-design frame: Verilator 5.052's UNOPTFLAT and Yosys's `check -force-detailed-loop-check` analyse loops per bit.
@@ -427,7 +427,7 @@ ADR-0020 §10 states the loop granularity N.2's parity uses and where it differs
 
 ### FID-025 · The not-connected refusal fires only for a pin no connection names, so a pin bound only out of range gets the reference's one refusal
 - **Date:** 2026-10-21 · **Target epic:** #140 core
-- **Status:** proposed
+- **Status:** filed (#882)
 - **Why:** PR #818 (#813, FID-011) makes `compileHDL`'s unconnected-input refusal say `the nand2tetris simulator reads it as 0; bind in=false to do the same`. That is true wherever no connection names the pin. The review ran 600 documents through the web IDE at `91ef428` and found 0 mismatches on 4,500 vectors. One case is different: a pin whose only bindings are out of range.
   - `Not16(in[16]=a, out=o)` is refused by the reference once: `Line 1: Sub-bus index out of range (in has width 16)` (`../web-ide/simulator/src/chip/chip.ts:270-278`). The reference never treats `in` as unconnected.
   - HACER also prints `input pin "in" is not connected: …; bind in=false to do the same`, because `coversAnyBit` counts only in-range bits (`src/core/hdl/compiler.ts:92-93, 290`). #367 pinned this cascade at `src/core/hdl/compiler.test.ts:618-627`, before the message made a claim about the reference.
@@ -450,7 +450,7 @@ ADR-0020 §10 states the loop granularity N.2's parity uses and where it differs
 
 ### FID-026 · Builtins-first matches the reference only over HACER's builtin names: #206 states what a part named after one of the reference's other 27 builtins resolves to
 - **Date:** 2026-10-21 · **Target epic:** #140 core
-- **Status:** proposed
+- **Status:** filed (#901)
 - **Why:** PR #826 (#816) refuses a part cycle through the registry, and says that builtins-first (`src/simulation/topologicalEval.ts:314`) compiles the user `Not`/`And` pair "as the reference does". That holds for the pair. It does not hold in general.
   - The web IDE resolves every name in its 43-name `REGISTRY` to the builtin before it reads any file (`../web-ide/simulator/src/chip/builder.ts:48`, `builtins/index.ts:68, 127`). Measured at `91ef428`: all 43 names resolve with 0 reads, even with a file of that name present. So in the reference a user chip is never a part under those names.
   - HACER's builtins are the 16 Project 1 chips (`src/core/chips/appRegistry.ts:10`). The other 27 reference names resolve to user chips under builtins-first: `Add16 ALU ALUNoStat ARegister Bit Computer CPU DFF DRegister FullAdder HalfAdder Inc16 Keyboard Memory Nand16 PC RAM16K RAM4K RAM512 RAM64 RAM8 Register ROM32K Screen XOr Xor16 XOr16`.
@@ -474,7 +474,7 @@ Before user chips are registered at runtime, it is stated and pinned what a part
 
 ### FID-027 · Amend FID-026: since #821 the lookup order also decides whether `compileSpec` refuses, so its pinned test adds a broken part under a reference builtin name
 - **Date:** 2026-10-21 · **Target epic:** #140 core
-- **Status:** proposed
+- **Status:** filed (#901)
 - **Why:** PR #845 (#821) makes `compileSpec` compile every definition its parts reach, and refuse when one fails. It ends a branch at a definition of type `'builtin'`. The reference ends one at a builtin *name*, before reading any file (`../web-ide/simulator/src/chip/builder.ts:48`). So FID-026's split now decides refusals too, not only values and cycles.
   - Measured at `91ef428`: a `FullAdder` file over two `HalfAdder` parts, beside a broken `HalfAdder` file (`Not(in=q, out=carry)`), is accepted with 0 reads. It uses the builtin `HalfAdder`, and 1+1+1 gives `sum=1 carry=1`.
   - At PR #845's head `f8cbef0c`, `compileSpec` refuses the same `FullAdder` over that user `HalfAdder`: `FullAdder › HalfAdder: Signal "q" is read by part "Not" but no part produces it`. `main` `d0350825` accepts it at compile.
@@ -498,7 +498,7 @@ FID-026's decision, and #206 (shaping). #821 (PR #845) must merge first.
 
 ### FID-028 · A registered definition must agree with its source: refuse one whose name or pins differ from its HDL's or its document's
 - **Date:** 2026-10-21 · **Target epic:** #140 core
-- **Status:** proposed
+- **Status:** filed (#903)
 - **Why:** PR #845 refuses a spec whose registered part does not compile. It checks the parent against the part's *declared* pins (`src/core/hdl/compiler.ts:247, 275-276, 350` at `f8cbef0c`), and the part's body against its *source*. Nothing checks that the two agree.
   - Measured at head and on `main`: a hand-built `'hdl'` `Foo` declares `IN a` over the source `CHIP Foo { IN b; OUT out; PARTS: Not(in=b, out=out); }`. `Outer` = `Foo(a=a, out=o)` is accepted, and gives `o = 1` for `a` = 0 and for `a` = 1, because `b` is never driven.
   - A registered `Foo` whose source says `CHIP Bar` is accepted too, and evaluates as `Bar`.
@@ -521,7 +521,7 @@ A registered definition is refused, with a message that names both sides, when i
 
 ### FID-029 · A literal on a part pin wider than 16 bits: decide all ones or the reference's 16, pin it, and record it
 - **Date:** 2026-10-21 · **Target epic:** #140 core
-- **Status:** proposed
+- **Status:** filed (#905)
 - **Why:** PR #853 (#814) writes "`true` is every bit of the pin it feeds" into ADR-0020 §1.10.9 and says the reference models the constants "the same way". Measured at `91ef428` and at the PR's head `876964a0`, they agree on every pin up to 16 bits, and differ above that.
   - The reference's `TRUE_BUS` is a 16-bit `ConstantBus` holding `0xffff`, `super(name, 16 /* TODO: get high bit index */)` (`../web-ide/simulator/src/chip/chip.ts:180`, `:201`). A user chip `W32` with `IN a[32]`, bound `W32(a=true, …)`, reads `0x0000ffff`: low half 65535, high half 0.
   - HACER reads all 32 bits as ones, through `compileSpec` and the HDL engine alike: `maskForWidth` (`src/simulation/busOps.ts:8-12`, `src/core/hdl/compiler.ts:458-459`).
@@ -547,7 +547,7 @@ A literal on a part pin wider than 16 bits has one decided value, which is pinne
 
 ### FID-030 · The combinational-cycle refusal carries a line, as the reference's `Looping wire` and `Circular pin dependency` do
 - **Date:** 2026-10-21 · **Target epic:** #140 core
-- **Status:** proposed
+- **Status:** filed (#906)
 - **Why:** #820 (PR #862) gives the cycle refusal no line, as an error no part caused, "as `createError` omits the line when there is no span". The reference has a span for both of its cycle refusals. Measured on the web IDE at `91ef428` under tsx; upstream `main` `6a81b5dd` has the same builder and chip sources (fetched 2026-10-21):
   - `And(a=a, b=t, out=t);` on line 5 gives `Line 5: Looping wire t`, at the part's span (`../web-ide/simulator/src/chip/builder.ts:318`). It is the shape of PR #862's own no-line tests (`src/core/hdl/compiler.test.ts:1150`, `src/core/testing/engine.test.ts:178` at `9c457be0`).
   - `Nand(a=a, b=y, out=x);` on line 5 and `Not(in=x, out=y);` on line 6 give `Line 6: Circular pin dependency`. The reference wires parts in source order and raises it at the wire that closes the loop (`../web-ide/simulator/src/chip/chip.ts:626, 687`).
@@ -574,7 +574,7 @@ A combinational-cycle refusal carries the line of the part the reference blames,
 
 ### FID-031 · Grading names the reference's first cause when an earlier part or wire has a per-part cause the check does not model
 - **Date:** 2026-10-22 · **Target epic:** #140 core
-- **Status:** proposed
+- **Status:** filed (#909)
 - **Why:** #840 (PR #869) refuses a chip-OUT read and a subscripted internal pin with the reference's sentence, and leaves a cause to `compileHDL` when the reference would stop on an unknown part, the chip as its own part, a looping wire, an unknown pin, or a write to a chip IN or a constant. It does not stop for the other per-part causes the reference raises while it wires a part (`../web-ide/simulator/src/chip/builder.ts:323-361`). Then a later part's chip-OUT read or subscript is named instead of the earlier cause. Measured at PR #869's head `23587532` against the web IDE at `91ef428` under tsx, 2026-10-22:
   - `Not(in=a, in=b, out=o);` then `Not(in=o, out=p);`: the reference gives `Line 4: Cannot write to pin in multiple times` (`builder.ts:395`), and grading gives `Line 5: Cannot use output pin as input`.
   - In one part, `And(a=a, a=b, b=o, out=p);`: the reference gives the double binding of `a`, and grading gives the chip-OUT read.
@@ -603,7 +603,7 @@ On the grading path, a shape with two refusable causes reports the cause the ref
 
 ### FID-032 · A `BUILTIN` body declares the builtin's own pins: refuse a source whose `IN` or `OUT` differ from the builtin it names
 - **Date:** 2026-10-22 · **Target epic:** #140 core
-- **Status:** proposed
+- **Status:** filed (#919)
 - **Why:** #903 (PR #910) refuses a definition whose name or pins differ from its source's, and leaves `BUILTIN` bodies out. ADR-0020 §1.11 rule 2 says such a body "is compared with its source only, not with the builtin's own pins, which the web IDE takes (`../web-ide/simulator/src/chip/builder.ts:233-235`)". The #849 panel sent that gap to a separate entry. Measured on `main` `33ae5ec7` with a throwaway vitest probe, and on the web IDE at `91ef428` under tsx, 2026-10-22:
   - `CHIP Foo { IN a; OUT out; BUILTIN Not; }`, built by `hdlChipDefinition` and registered, passes #910's check, because its declared pins are its source's. `Outer` = `Foo(a=a, out=o)` is accepted by `compileHDL` and by `compileSpec`, and gives `o = 1` for `a` = 0 and for `a` = 1. The passthrough hands the source's inputs to the builtin's `evaluate` (`src/core/hdl/compiler.ts:254-261`), and `Not` reads `in`, which nothing binds.
   - `CHIP Foo { IN a; OUT o; BUILTIN Nand; }` evaluates to `{ out: 1 }`, a pin `Foo` does not declare. `Outer` = `Foo(a=a, o=o)` is accepted on both paths and gives `o = 0` for both inputs.

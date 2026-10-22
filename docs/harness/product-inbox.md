@@ -32,7 +32,7 @@ Ids are sequential and never reused. An entry's draft body follows the agent-rea
 
 ### PRD-001 · Decide what HACER is on a phone: a read-only viewer whose panels open as sheets, or desktop-only with a notice
 - **Date:** 2026-10-17 · **Target epic:** #144 polish
-- **Status:** proposed
+- **Status:** filed (#879)
 - **Why:** The narrow-width findings come from tour run 39057245392.
   - At 390 px, an open drawer leaves an 18 px strip of canvas, and the "Loaded" toast covers the drawer header (24-phone-390-library).
   - At 320 px, the Library drawer cuts Save to its icon and Import to "Impo", and pushes Delete (x 322–350) and Close (x 335–363) out of the viewport (25-reflow-320). That fails WCAG 1.4.10.
@@ -54,7 +54,7 @@ Below 640 px, HACER is a usable read-only viewer. The canvas fills the screen, a
 
 ### PRD-002 · First-run guidance for the declared app: teach spec → render → pins → test, and remember the dismissal
 - **Date:** 2026-10-17 · **Target epic:** #318 foundation (N.11, #386)
-- **Status:** proposed
+- **Status:** deferred (inbox panel, #808: until a Phase C.1 default-switch issue is filed under #318)
 - **Why:** The Quick tour card comes back on every page load, because dismissing it lasts only in memory (`src/components/ui/DemoOverlay.tsx:11-12`). It plays a 318 × 183 px dark-theme recording of hand editing ("Place gates, connect pins, and run your circuit!", `src/components/ui/DemoOverlay.tsx:62-70`), which ADR-0020 retires at C.2. On a phone it covers the lower canvas (tour steps 01, 19, 23). The help bar teaches only mouse gestures and is cut off at every width (`src/components/ui/HelpBar/index.tsx:87-92`). These break H3, H8 and H10. Once N.11 makes the spec editor the main authoring surface, a first visit should teach that.
 - **Review note:** docs/research/2026-10-product-review-1.md (P11, P15)
 
@@ -71,7 +71,7 @@ A first visit shows how to declare a chip, see it rendered, drive its pins and r
 
 ### PRD-003 · Add the first review's product criteria to N.11's shell: every control named, one icon per job, destructive commands undoable, no placeholders
 - **Date:** 2026-10-17 · **Target epic:** #318 foundation (N.11, #386)
-- **Status:** proposed
+- **Status:** filed (#386)
 - **Why:** The legacy shell shows failure modes that N.11 should not rebuild, and #386's acceptance list names none of them:
   - one icon for two jobs: `Info` opens Properties (`src/components/ui/CompactToolbar.tsx:381`) and Circuit Info (`src/components/ui/RightActionBar.tsx:64`), both highlighted in tour step 12;
   - 14 placeholders (`src/components/ui/RightActionBar.tsx:132-180`, `src/components/ui/PropertiesPanel/index.tsx:166-286`);
