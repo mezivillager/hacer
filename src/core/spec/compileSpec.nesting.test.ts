@@ -1,9 +1,13 @@
 import { describe, expect, it, vi } from 'vitest'
 import { getBuiltinChipRegistry } from '../chips/appRegistry'
+import { combineRegistries } from '../chips/combineRegistries'
 import { evaluateChip } from '../chips/evaluateChip'
 import { createChipRegistry, type ChipRegistry } from '../chips/registry'
 import type { ChipDefinition } from '../chips/types'
 import * as compilerModule from '../hdl/compiler'
+import { compileHDL, hdlChipDefinition } from '../hdl/compiler'
+import { parseHDL } from '../hdl/parser'
+import type { HDLChip } from '../hdl/types'
 import { compileSpec, type CompileSpecResult } from './compileSpec'
 import { parseSpec } from './parseSpec'
 
@@ -187,5 +191,47 @@ describe('compileSpec — a registered part that does not compile refuses the sp
     const refused = { success: false, diagnostics: [{ code: 'compile', severity: 'error', message: 'Cannot use chip A to implement itself through B' }] }
     expect(compiled('CHIP A { IN a; OUT out; PARTS: B(a=a, out=out); }', registry)).toEqual(refused)
     expect(compiled('CHIP Top { IN a; OUT out; PARTS: A(a=a, out=out); }', registry)).toEqual(refused)
+  })
+
+  describe("over the builtins and a user registry of 'hdl' chips, builtins first (#901)", () => {
+    const HALF_BROKEN = 'CHIP HalfAdder { IN a, b; OUT sum, carry; PARTS: Not(in=q, out=carry); }'
+    const FULL = 'CHIP FullAdder { IN a, b, c; OUT sum, carry; PARTS: HalfAdder(a=a, b=b, sum=s1, carry=c1); HalfAdder(a=s1, b=c, sum=sum, carry=c2); Or(a=c1, b=c2, out=carry); }'
+    const NOT_BROKEN = 'CHIP Not { IN in; OUT out; PARTS: Nand(a=q, b=q, out=out); }'
+    const OUTER_NOT = 'CHIP Outer { IN a; OUT o; PARTS: Not(in=a, out=o); }'
+    function parsed(source: string): HDLChip {
+      const ast = parseHDL(source)
+      if (!ast.success) throw new Error(`parse failed: ${source}`)
+      return ast.chip
+    }
+    function user(...sources: string[]): ChipRegistry {
+      const registry = createChipRegistry()
+      for (const source of sources) registry.register(hdlChipDefinition(parsed(source), source))
+      return registry
+    }
+    const builtinsFirst = (...sources: string[]): ChipRegistry => combineRegistries(getBuiltinChipRegistry(), user(...sources))
+    const ownFirst = (...sources: string[]): ChipRegistry => combineRegistries(user(...sources), getBuiltinChipRegistry())
+
+    it("refuses a 'circuit' FullAdder over a broken user HalfAdder in both orders, where the web IDE builds it on its builtin HalfAdder with 0 reads and 1+1+1 gives sum=1 carry=1", () => {
+      const refused = { success: false, diagnostics: [refusal('p1', 'FullAdder › HalfAdder: Line 1: Signal "q" is read by part "Not" but no part produces it')] }
+      expect(compiled(FULL, builtinsFirst(HALF_BROKEN))).toEqual(refused)
+      expect(compiled(FULL, ownFirst(HALF_BROKEN))).toEqual(refused)
+    })
+
+    it("compiles an 'hdl' FullAdder over the same HalfAdder, and its first evaluateChip throws the refusal with its chain", () => {
+      const chips = builtinsFirst(HALF_BROKEN)
+      expect(compileHDL(parsed(FULL), chips).success).toBe(true)
+      expect(() => evaluateChip(hdlChipDefinition(parsed(FULL), FULL), { a: 1, b: 1, c: 1 }, chips)).toThrow(
+        expect.objectContaining({ message: 'evaluateChip: chip "FullAdder" failed to compile: FullAdder › HalfAdder: Line 1: Signal "q" is read by part "Not" but no part produces it' }),
+      )
+    })
+
+    it("accepts a 'circuit' Outer over a broken user Not on the builtin Not, as the web IDE does, and refuses it own first", () => {
+      const chips = builtinsFirst(NOT_BROKEN)
+      const result = compiled(OUTER_NOT, chips)
+      if (!result.success) throw new Error(result.diagnostics.map((d) => d.message).join('; '))
+      expect(evaluateChip(result.chip, { a: 1 }, chips)).toEqual({ o: 0 })
+      expect(evaluateChip(result.chip, { a: 0 }, chips)).toEqual({ o: 1 })
+      expect(compiled(OUTER_NOT, ownFirst(NOT_BROKEN))).toEqual({ success: false, diagnostics: [refusal('p1', 'Outer › Not: Line 1: Signal "q" is read by part "Nand" but no part produces it')] })
+    })
   })
 })

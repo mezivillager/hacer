@@ -1075,6 +1075,24 @@ describe('compileHDL — a part cycle through the registry is refused (#816)', (
       errors: [{ message: 'Line 6: Cannot use chip A to implement itself through B', partName: 'A', line: 6 }],
     })
   })
+
+  describe('a part named after a builtin only the web IDE has resolves to the user chip (#901)', () => {
+    const HALF_FROM_FULL = 'CHIP HalfAdder { IN a, b; OUT sum, carry; PARTS: FullAdder(a=a, b=b, c=false, sum=sum, carry=carry); }'
+    const FULL_FROM_HALF = 'CHIP FullAdder { IN a, b, c; OUT sum, carry; PARTS: HalfAdder(a=a, b=b, sum=sum, carry=carry); }'
+    const HALF_WRONG = 'CHIP HalfAdder { IN a, b; OUT sum, carry; PARTS: And(a=a, b=b, out=sum); Xor(a=a, b=b, out=carry); }'
+    const FULL = 'CHIP FullAdder { IN a, b, c; OUT sum, carry; PARTS: HalfAdder(a=a, b=b, sum=s1, carry=c1); HalfAdder(a=s1, b=c, sum=sum, carry=c2); Or(a=c1, b=c2, out=carry); }'
+
+    it('refuses a user HalfAdder over FullAdder beside a user FullAdder over HalfAdder, where the web IDE builds the HalfAdder on its builtin FullAdder with 0 reads and 1+1 gives sum=0 carry=1', () => {
+      expect(compile(HALF_FROM_FULL, builtinsFirst(HALF_FROM_FULL, FULL_FROM_HALF))).toEqual(refusal('Line 1: Cannot use chip HalfAdder to implement itself through FullAdder', 'FullAdder'))
+    })
+
+    it("evaluates a correct user FullAdder through a wrong user HalfAdder, 001 to sum=0 carry=1, where the web IDE's FullAdder.hdl uses its builtin HalfAdder and gives sum=1 carry=0", () => {
+      const chips = builtinsFirst(HALF_WRONG, FULL)
+      const full = compile(FULL, chips)
+      if (!full.success) throw new Error(full.errors.map((e) => e.message).join('; '))
+      expect(full.evaluate({ a: 0, b: 0, c: 1 }, builtinOnlyCtx(chips))).toEqual({ sum: 0, carry: 1 })
+    })
+  })
 })
 
 describe("compileHDL — the reference's self-reference sentence, and the line of the part at fault (#820)", () => {
