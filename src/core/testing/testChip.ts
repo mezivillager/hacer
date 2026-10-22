@@ -11,7 +11,7 @@ import { builtinDisagreements, hdlChipDefinition } from '../hdl/compiler'
 import { parseHDL } from '../hdl/parser'
 import type { HDLChip } from '../hdl/types'
 import { parseCmp } from './cmpParser'
-import { runTest } from './engine'
+import { resolveOutputColumns, runTest } from './engine'
 import { formatColumnValue } from './formatColumnValue'
 import { gradingRefusal } from './gradingRefusal'
 import { parseTST } from './tstParser'
@@ -32,7 +32,7 @@ export interface TestReport {
 /** A source file's text; `path` only names it in errors. */
 export type TestSource = { path: string; source: string }
 
-/** The `.hdl`'s own chip, the registry it runs in, and the parsed `.tst`. */
+/** The `.hdl`'s own chip, the registry it runs in, and the parsed `.tst`, its bare output-list names at their pins' widths. */
 export type ChipTest = { chip: string; script: TSTScript; own: ChipDefinition; registry: ChipRegistry }
 
 export const chipTestError = (chip: string | null, error: string): TestReport => ({
@@ -129,7 +129,7 @@ function loadChip({ ast, chip, script, builtins }: Parsed, hdlFile: TestSource, 
 
   // The file's chip first, so `load` never reaches the builtin of the same name; its parts
   // still resolve to the builtins.
-  return { chip, script, own, registry: combineRegistries(ownRegistry, builtins) }
+  return { chip, script: resolveOutputColumns(script, own), own, registry: combineRegistries(ownRegistry, builtins) }
 }
 
 /** The `.hdl`'s chip ready to run its `.tst` against, or the error report saying why not. */
@@ -150,12 +150,12 @@ export function testChip(hdlFile: TestSource, tstFile: TestSource, cmpFile: Test
   const loaded = loadChip(parsed, hdlFile, tstFile)
   if (isReport(loaded)) return loaded
 
-  const result = runTest(parsed.script, { registry: loaded.registry, chip: loaded.own, cmpData: cmp.file })
+  const result = runTest(loaded.script, { registry: loaded.registry, chip: loaded.own, cmpData: cmp.file })
   const rows = { passed: result.passedSteps, expected: cmp.file.rows.length }
   if (result.passed) return { status: 'pass', chip, rows, failure: null, error: null }
   if (result.firstFailure) {
     const { row, column, expected, actual } = result.firstFailure
-    const listed = listedColumn(parsed.script, row, column)
+    const listed = listedColumn(loaded.script, row, column)
     const failure = { row: row + 1, column, expected: asListed(listed, expected), actual: asListed(listed, actual) }
     return { status: 'fail', chip, rows, failure, error: null }
   }
