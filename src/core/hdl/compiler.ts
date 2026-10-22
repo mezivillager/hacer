@@ -91,10 +91,11 @@ function claimBits(claimed: Map<string, BitRange[]>, key: string, first: number,
   return clash ? shared({ first, last }, clash) : null
 }
 
-/** A part's error in the reference's `createError` form, leading with the part's line when it has one. */
+/** An error in the reference's `createError` form, leading with its line when it has one. */
+const atLine = (line: number | undefined, message: string): HDLCompileError => (line === undefined ? { message } : { message: `Line ${line}: ${message}`, line })
+
 function partError(part: HDLPart, message: string, pinName?: string): HDLCompileError {
-  const error: HDLCompileError = { message: part.line === undefined ? message : `Line ${part.line}: ${message}`, partName: part.name }
-  if (part.line !== undefined) error.line = part.line
+  const error: HDLCompileError = { ...atLine(part.line, message), partName: part.name }
   if (pinName !== undefined) error.pinName = pinName
   return error
 }
@@ -123,35 +124,34 @@ const externalRange = (conn: HDLConnection): BitRange => ({
 })
 
 /**
- * The signals and bits on one real cycle, as `"w" bit 0 → "w" bit 1`, for the error message.
+ * The first part, in source order, that closes a cycle with the parts before it, and the signals
+ * and bits on that cycle as `"w" bit 0 → "w" bit 1`, starting with what the part reads.
  *
- * Kahn leaves behind exactly the parts it could not place, and every one of those still has an
- * unplaced predecessor — so following any one predecessor from any of them must revisit a part,
- * and the walk between the two visits is a cycle. Returns `''` if the graph somehow offers no
- * predecessor, so a missing trace can never turn a rejection into a crash.
+ * The parts before it have no cycle, so every cycle among the parts up to it runs through it, and
+ * a breadth-first walk from it over those parts finds the shortest. `null` on an acyclic graph.
  */
-function cycleTrace(unplaced: Set<number>, adj: readonly number[][], edgeCarries: Map<string, string>): string {
-  const predecessor = new Map<number, number>()
-  adj.forEach((consumers, from) => {
-    if (!unplaced.has(from)) return
-    for (const to of consumers) if (unplaced.has(to) && !predecessor.has(to)) predecessor.set(to, from)
-  })
-  const walk: number[] = []
-  const visitedAt = new Map<number, number>()
-  const [start] = unplaced
-  if (start === undefined) return ''
-  let part = start
-  while (!visitedAt.has(part)) {
-    visitedAt.set(part, walk.length)
-    walk.push(part)
-    const previous = predecessor.get(part)
-    if (previous === undefined) return ''
-    part = previous
+function firstCycle(adj: readonly number[][], edgeCarries: Map<string, string>): { part: number; trace: string } | null {
+  for (let part = 0; part < adj.length; part++) {
+    const reachedFrom = new Map<number, number>()
+    const queue = [part]
+    for (let head = 0; head < queue.length; head++) {
+      const from = queue[head]
+      for (const to of adj[from]) {
+        if (to === part) {
+          const path = [from]
+          while (path[0] !== part) path.unshift(reachedFrom.get(path[0]) as number)
+          const loop = [from, ...path.slice(0, -1)]
+          const carried = loop.map((at, i) => edgeCarries.get(`${at}->${loop[(i + 1) % loop.length]}`) ?? '')
+          return { part, trace: carried.filter((label, i) => label !== '' && carried.indexOf(label) === i).join(' → ') }
+        }
+        if (to < part && !reachedFrom.has(to)) {
+          reachedFrom.set(to, from)
+          queue.push(to)
+        }
+      }
+    }
   }
-  // The walk runs backwards along the edges, so the loop it closed reads forwards reversed.
-  const loop = walk.slice(visitedAt.get(part)).reverse()
-  const carried = loop.map((from, i) => edgeCarries.get(`${from}->${loop[(i + 1) % loop.length]}`) ?? '')
-  return carried.filter((label, i) => label !== '' && carried.indexOf(label) === i).join(' → ')
+  return null
 }
 
 const cannotUseItself = (chip: string): string => `Cannot use chip ${chip} to implement itself`
@@ -431,14 +431,9 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
     }
   }
   if (order.length !== n) {
-    const placed = new Set(order)
-    const unplaced = new Set<number>()
-    for (let i = 0; i < n; i++) if (!placed.has(i)) unplaced.add(i)
-    const carried = cycleTrace(unplaced, adj, edgeCarries)
-    return {
-      success: false,
-      errors: [{ message: `Cyclic part dependency: parts cannot be topologically ordered (combinational cycle)${carried ? ` through ${carried}` : ''}` }],
-    }
+    const cycle = firstCycle(adj, edgeCarries)
+    const message = `Cyclic part dependency: parts cannot be topologically ordered (combinational cycle)${cycle?.trace ? ` through ${cycle.trace}` : ''}`
+    return { success: false, errors: [atLine(cycle === null ? undefined : resolved[cycle.part].part.line, message)] }
   }
   const orderedParts = order.map((i) => resolved[i])
 
