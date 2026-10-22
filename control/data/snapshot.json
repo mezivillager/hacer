@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-22T10:09:43.239Z",
+  "generatedAt": "2026-10-22T10:22:12.531Z",
   "head": {
-    "sha": "734138786f88772f7a8bd519b30f1b6a537bdb7a",
-    "date": "2026-10-22T13:08:43+03:00",
-    "subject": "feat(layout): layout(doc, surface, options), the first layered placement"
+    "sha": "520ba07a588e771584c69c60fb801524c3567f5b",
+    "date": "2026-10-22T13:21:17+03:00",
+    "subject": "refactor(ui): import formatColumnValue through @/core in TestResultsPanel"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T10:09:43.239Z",
+      "fetchedAt": "2026-10-22T10:22:12.531Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T10:09:43.239Z",
+      "fetchedAt": "2026-10-22T10:22:12.531Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T10:09:43.239Z",
+      "fetchedAt": "2026-10-22T10:22:12.531Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-22T10:09:43.239Z",
+      "fetchedAt": "2026-10-22T10:22:12.531Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-22T10:09:43.239Z",
+      "fetchedAt": "2026-10-22T10:22:12.531Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-22T10:09:43.239Z",
+      "fetchedAt": "2026-10-22T10:22:12.531Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-22T10:09:43.239Z",
+      "fetchedAt": "2026-10-22T10:22:12.531Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-22T10:09:43.239Z",
+      "fetchedAt": "2026-10-22T10:22:12.531Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-22T10:09:43.239Z",
+      "fetchedAt": "2026-10-22T10:22:12.531Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-22T10:09:43.239Z",
+      "fetchedAt": "2026-10-22T10:22:12.531Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-22T10:09:43.239Z",
+      "fetchedAt": "2026-10-22T10:22:12.531Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-22T10:09:43.239Z",
+      "fetchedAt": "2026-10-22T10:22:12.531Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-22T10:09:43.239Z",
+      "fetchedAt": "2026-10-22T10:22:12.531Z",
       "status": "ok"
     }
   },
@@ -80,16 +80,16 @@
         "lane": "feature",
         "slug": "foundation",
         "epicNumber": 318,
-        "open": 27,
-        "ready": 4,
+        "open": 26,
+        "ready": 3,
         "inProgress": 2,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 6,
+        "agentReady": 5,
         "filedElsewhere": [],
         "next": {
-          "number": 773,
-          "title": "fromLegacyCircuit: a two-feed chain whose trace meets a loop still traces 2^k paths"
+          "number": 878,
+          "title": "A pin width far beyond any evaluable bus passes the parser and the registry"
         },
         "title": "Foundation audit: is the codebase structured for the autonomous loop? Measured audit, prioritized refactorings, fitness functions",
         "subIssues": {
@@ -103,12 +103,12 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 17,
-        "ready": 3,
+        "open": 18,
+        "ready": 4,
         "inProgress": 0,
         "needsHuman": 2,
         "staleClaims": [],
-        "agentReady": 3,
+        "agentReady": 4,
         "filedElsewhere": [
           151,
           941,
@@ -121,8 +121,8 @@
         "title": "Epic: harness — autonomous-run improvements & agent-readiness",
         "subIssues": {
           "completed": 50,
-          "percentCompleted": 83,
-          "total": 60
+          "percentCompleted": 81,
+          "total": 61
         }
       },
       {
@@ -307,15 +307,15 @@
         "slug": "upkeep",
         "epicNumber": 146,
         "open": 14,
-        "ready": 11,
-        "inProgress": 1,
+        "ready": 10,
+        "inProgress": 2,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 13,
         "filedElsewhere": [],
         "next": {
-          "number": 929,
-          "title": "Inbox review: HRN-019 · `merge-on-green` rebase-merges a test-only PR whose red commit fails on purpose, against the implementer brief's one-commit rule"
+          "number": 930,
+          "title": "Inbox review: HRN-020 · A PR's `Decisions:` line takes only decision ids or a bare `none`, so the inbox ids and the prose builders write make `lineage parse --github` report it malformed"
         },
         "title": "Epic: upkeep — maintenance & documentation",
         "subIssues": {
@@ -409,16 +409,6 @@
     ],
     "next": [
       {
-        "number": 773,
-        "title": "fromLegacyCircuit: a two-feed chain whose trace meets a loop still traces 2^k paths",
-        "project": "foundation"
-      },
-      {
-        "number": 929,
-        "title": "Inbox review: HRN-019 · `merge-on-green` rebase-merges a test-only PR whose red commit fails on purpose, against the implementer brief's one-commit rule",
-        "project": "upkeep"
-      },
-      {
         "number": 878,
         "title": "A pin width far beyond any evaluable bus passes the parser and the registry",
         "project": "foundation"
@@ -464,6 +454,11 @@
         "project": "upkeep"
       },
       {
+        "number": 955,
+        "title": "One picking loop per repository at a time: the harness says so, and names what claims and blocked-by links do not guard (HRN-018)",
+        "project": "harness"
+      },
+      {
         "number": 935,
         "title": "Inbox review: HRN-023 · ADR-0018's fidelity review before a core merge was waived 14 times by ruling in one run: write the waiver into the ADR, or stop waiving",
         "project": "upkeep"
@@ -502,43 +497,13 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
+        956,
         514
       ]
     }
   },
   "tasks": {
     "items": [
-      {
-        "number": 773,
-        "title": "fromLegacyCircuit: a two-feed chain whose trace meets a loop still traces 2^k paths",
-        "labels": [
-          "agent-ready",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 929,
-        "title": "Inbox review: HRN-019 · `merge-on-green` rebase-merges a test-only PR whose red commit fails on purpose, against the implementer brief's one-commit rule",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": true,
-        "reason": null
-      },
       {
         "number": 878,
         "title": "A pin width far beyond any evaluable bus passes the parser and the registry",
@@ -680,6 +645,21 @@
         "project": "upkeep",
         "rank": 11,
         "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 955,
+        "title": "One picking loop per repository at a time: the harness says so, and names what claims and blocked-by links do not guard (HRN-018)",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:0"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
         "pickable": true,
         "reason": null
       },
@@ -2024,22 +2004,6 @@
         "reason": "unshaped"
       },
       {
-        "number": 613,
-        "title": "TestResultsPanel: import formatColumnValue through @/core and shrink the layer baseline",
-        "labels": [
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 620,
         "title": ".tst engine: an output-list column naming an internal HDL wire prints 0 instead of its value",
         "labels": [
@@ -2125,6 +2089,22 @@
         "lane": "feature",
         "pickable": false,
         "reason": "unshaped"
+      },
+      {
+        "number": 773,
+        "title": "fromLegacyCircuit: a two-feed chain whose trace meets a loop still traces 2^k paths",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "claimed"
       },
       {
         "number": 801,
@@ -2287,6 +2267,23 @@
         "reason": "claimed"
       },
       {
+        "number": 929,
+        "title": "Inbox review: HRN-019 · `merge-on-green` rebase-merges a test-only PR whose red commit fails on purpose, against the implementer brief's one-commit rule",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 942,
         "title": "pr-hygiene: a refactor PR may not take assertions out of an existing test (foundation 1.5, tuned on Phase 1's refactor PRs)",
         "labels": [
@@ -2318,7 +2315,6 @@
     ],
     "byProject": {
       "foundation": [
-        773,
         878,
         940,
         941,
@@ -2338,34 +2334,19 @@
         462,
         506,
         599,
-        613,
         719,
         722,
         728,
         742,
+        773,
         907,
         942
-      ],
-      "upkeep": [
-        929,
-        930,
-        933,
-        934,
-        935,
-        936,
-        937,
-        938,
-        939,
-        945,
-        946,
-        229,
-        256,
-        928
       ],
       "harness": [
         257,
         949,
         951,
+        955,
         154,
         156,
         270,
@@ -2380,6 +2361,22 @@
         677,
         870,
         889
+      ],
+      "upkeep": [
+        930,
+        933,
+        934,
+        935,
+        936,
+        937,
+        938,
+        939,
+        945,
+        946,
+        229,
+        256,
+        928,
+        929
       ],
       "spine": [
         165,
@@ -2472,6 +2469,25 @@
   "prs": {
     "open": [
       {
+        "number": 956,
+        "title": "fix(testing): size a bare output-list name at its pin's width",
+        "url": "https://github.com/mezivillager/hacer/pull/956",
+        "author": "mezivillager",
+        "labels": [
+          "project:surfaces",
+          "risk:1",
+          "project:foundation"
+        ],
+        "headRefName": "fix/599-bare-output-width",
+        "isDraft": false,
+        "createdAt": "2026-10-22T10:18:49Z",
+        "mergedAt": null,
+        "closes": [
+          599
+        ],
+        "verdicts": []
+      },
+      {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
         "url": "https://github.com/mezivillager/hacer/pull/514",
@@ -2500,11 +2516,38 @@
     ],
     "merged": [
       {
+        "number": 954,
+        "title": "refactor(ui): import formatColumnValue through @/core in TestResultsPanel",
+        "url": "https://github.com/mezivillager/hacer/pull/954",
+        "author": "mezivillager",
+        "labels": [
+          "risk:0",
+          "project:foundation"
+        ],
+        "headRefName": "refactor/613-format-through-core",
+        "isDraft": false,
+        "createdAt": "2026-10-22T10:13:06Z",
+        "mergedAt": "2026-10-22T10:21:17Z",
+        "closes": [
+          613
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Claude Sonnet 5.5 (claude-sonnet-5-5)",
+            "at": "2026-10-22T10:20:29Z",
+            "url": "https://github.com/mezivillager/hacer/pull/954#issuecomment-6338403140"
+          }
+        ]
+      },
+      {
         "number": 953,
         "title": "docs(harness): synthesis of process review cycle 2026-10-22",
         "url": "https://github.com/mezivillager/hacer/pull/953",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0"
         ],
@@ -2529,6 +2572,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/952",
         "author": "mezivillager",
         "labels": [
+          "released",
           "risk:1",
           "project:foundation"
         ],
@@ -2555,6 +2599,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/948",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:1",
           "project:foundation"
@@ -2582,6 +2627,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/947",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0"
         ],
@@ -2606,6 +2652,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/944",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0"
         ],
@@ -2630,6 +2677,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/943",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0",
           "fidelity"
@@ -2655,6 +2703,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/932",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0"
         ],
@@ -2679,6 +2728,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/931",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0"
         ],
@@ -2703,6 +2753,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/927",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0"
         ],
@@ -2719,6 +2770,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/926",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0"
         ],
@@ -2735,6 +2787,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/925",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0"
         ],
@@ -4044,33 +4097,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/818#issuecomment-6319088454"
           }
         ]
-      },
-      {
-        "number": 817,
-        "title": "chore(harness): inbox.mjs refuses while a status is outside its file's grammar",
-        "url": "https://github.com/mezivillager/hacer/pull/817",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:1"
-        ],
-        "headRefName": "chore/812-inbox-grammar",
-        "isDraft": false,
-        "createdAt": "2026-10-21T14:35:29Z",
-        "mergedAt": "2026-10-21T14:54:18Z",
-        "closes": [
-          812
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Sonnet (claude-sonnet-5-5)",
-            "at": "2026-10-21T14:44:11Z",
-            "url": "https://github.com/mezivillager/hacer/pull/817#issuecomment-6318840440"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4139,7 +4165,7 @@
         "number": 613,
         "ref": "refs/heads/claim/613",
         "sha": "a562ebf9194153e0c209e2577caabcad65e7695e",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "TestResultsPanel: import formatColumnValue through @/core and shrink the layer baseline",
         "url": "https://github.com/mezivillager/hacer/issues/613",
         "labels": [
@@ -4148,7 +4174,7 @@
           "risk:0",
           "project:foundation"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -4158,6 +4184,31 @@
           "author": "mezivillager",
           "at": "2026-10-22T10:05:43Z",
           "url": "https://github.com/mezivillager/hacer/issues/613#issuecomment-6338132167"
+        }
+      },
+      {
+        "number": 773,
+        "ref": "refs/heads/claim/773",
+        "sha": "734138786f88772f7a8bd519b30f1b6a537bdb7a",
+        "state": "OPEN",
+        "title": "fromLegacyCircuit: a two-feed chain whose trace meets a loop still traces 2^k paths",
+        "url": "https://github.com/mezivillager/hacer/issues/773",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:foundation"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "2026-10-22-hacer-loop-to-80",
+          "branch": "fix/773-importer-paths",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-22T10:17:10Z",
+          "url": "https://github.com/mezivillager/hacer/issues/773#issuecomment-6338342540"
         }
       },
       {
@@ -4185,9 +4236,35 @@
           "at": "2026-10-22T09:53:20Z",
           "url": "https://github.com/mezivillager/hacer/issues/928#issuecomment-6337900360"
         }
+      },
+      {
+        "number": 929,
+        "ref": "refs/heads/claim/929",
+        "sha": "520ba07a588e771584c69c60fb801524c3567f5b",
+        "state": "OPEN",
+        "title": "Inbox review: HRN-019 · `merge-on-green` rebase-merges a test-only PR whose red commit fails on purpose, against the implementer brief's one-commit rule",
+        "url": "https://github.com/mezivillager/hacer/issues/929",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "2026-10-22-hacer-loop-to-80",
+          "branch": "chore/inbox-hrn-019",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-22T10:21:41Z",
+          "url": "https://github.com/mezivillager/hacer/issues/929#issuecomment-6338424949"
+        }
       }
     ],
-    "onClosedIssues": 0
+    "onClosedIssues": 1
   },
   "cloudLane": {
     "items": [
@@ -5361,9 +5438,9 @@
   },
   "metrics": {
     "ratchet": {
-      "count": 69,
+      "count": 68,
       "byRule": {
-        "core-through-index": 41,
+        "core-through-index": 40,
         "engine-no-state": 9,
         "no-circular": 7,
         "src-no-e2e": 2,
@@ -5400,14 +5477,25 @@
           "date": "2026-10-15T10:09:21+03:00",
           "subject": "refactor(session): completed-chip tracking leaves the engine for src/lib (#182)",
           "count": 69
+        },
+        {
+          "sha": "520ba07a588e771584c69c60fb801524c3567f5b",
+          "date": "2026-10-22T13:21:17+03:00",
+          "subject": "refactor(ui): import formatColumnValue through @/core in TestResultsPanel",
+          "count": 68
         }
       ]
     },
     "releases": [
       {
+        "tag": "v2.67.0",
+        "publishedAt": "2026-10-22T10:12:20Z",
+        "isLatest": true
+      },
+      {
         "tag": "v2.66.8",
         "publishedAt": "2026-10-22T06:22:09Z",
-        "isLatest": true
+        "isLatest": false
       },
       {
         "tag": "v2.66.7",
@@ -6108,24 +6196,24 @@
     "mergesPerDay": [
       {
         "date": "2026-10-21",
-        "merges": 28
+        "merges": 27
       },
       {
         "date": "2026-10-22",
-        "merges": 32
+        "merges": 33
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-08T10:09:43.239Z",
-      "merged": 122,
+      "since": "2026-10-08T10:22:12.531Z",
+      "merged": 123,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 1.5
       },
       "blockedOnce": {
         "count": 7,
-        "of": 103,
+        "of": 104,
         "prs": [
           700,
           725,
@@ -6138,8 +6226,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 81,
-          "withVerdict": 81,
+          "merged": 82,
+          "withVerdict": 82,
           "without": []
         },
         "nonCode": {
@@ -10409,11 +10497,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "734138786f88772f7a8bd519b30f1b6a537bdb7a",
+        "sha": "520ba07a588e771584c69c60fb801524c3567f5b",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39760880080/job/119764444918",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39762469121/job/119769748294",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -10463,6 +10551,55 @@
           "known": 71,
           "new": 0
         },
+        "disagrees": false
+      },
+      {
+        "pr": 956,
+        "sha": "19246898a61ba0be78199f0d4261e3a6d94a1841",
+        "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-22T10:19:02Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39762162869/job/119768730397",
+        "line": "HYGIENE: WARN reviewable=25 test=53 excluded=6 files=4 issue=#599 linked=fixes",
+        "verdict": "WARN",
+        "fields": {
+          "reviewable": 25,
+          "test": 53,
+          "excluded": 6,
+          "files": 4,
+          "issue": "#599",
+          "linked": "fixes"
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 956,
+        "sha": "19246898a61ba0be78199f0d4261e3a6d94a1841",
+        "check": "browser-qa",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-22T10:21:13Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39762162893/job/119768728509",
+        "line": "BROWSER-QA: PASS suites=store passed=107 failed=0 flaky=0 skipped=0",
+        "verdict": "PASS",
+        "fields": {
+          "suites": "store",
+          "passed": 107,
+          "failed": 0,
+          "flaky": 0,
+          "skipped": 0
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 956,
+        "sha": "19246898a61ba0be78199f0d4261e3a6d94a1841",
+        "check": "ci",
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39762160890/job/119768721852",
+        "line": null,
+        "verdict": null,
+        "fields": {},
         "disagrees": false
       }
     ]
