@@ -52,7 +52,7 @@ setup, or alone with `node conformance/differential/reference.ts`) does this onc
 
 The pin is the commit `conformance/vectors/` was extracted from, so the vectors and the simulator
 come from one place. A cold run (fetch, install, build, test) took 37 s on the owner's laptop, and a
-cached run 7 s.
+cached run 5 s.
 
 ## Re-vendoring
 
