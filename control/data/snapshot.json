@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-22T06:55:22.076Z",
+  "generatedAt": "2026-10-22T07:28:30.057Z",
   "head": {
     "sha": "d2f58ea0d6eb3b8efba94252e0c8c8ba1bda35e6",
     "date": "2026-10-22T09:49:17+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T06:55:22.076Z",
+      "fetchedAt": "2026-10-22T07:28:30.057Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T06:55:22.076Z",
+      "fetchedAt": "2026-10-22T07:28:30.057Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T06:55:22.076Z",
+      "fetchedAt": "2026-10-22T07:28:30.057Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-22T06:55:22.076Z",
+      "fetchedAt": "2026-10-22T07:28:30.057Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-22T06:55:22.076Z",
+      "fetchedAt": "2026-10-22T07:28:30.057Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-22T06:55:22.076Z",
+      "fetchedAt": "2026-10-22T07:28:30.057Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-22T06:55:22.076Z",
+      "fetchedAt": "2026-10-22T07:28:30.057Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-22T06:55:22.076Z",
+      "fetchedAt": "2026-10-22T07:28:30.057Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-22T06:55:22.076Z",
+      "fetchedAt": "2026-10-22T07:28:30.057Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-22T06:55:22.076Z",
+      "fetchedAt": "2026-10-22T07:28:30.057Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-22T06:55:22.076Z",
+      "fetchedAt": "2026-10-22T07:28:30.057Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-22T06:55:22.076Z",
+      "fetchedAt": "2026-10-22T07:28:30.057Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-22T06:55:22.076Z",
+      "fetchedAt": "2026-10-22T07:28:30.057Z",
       "status": "ok"
     }
   },
@@ -302,12 +302,12 @@
         "lane": "aux",
         "slug": "upkeep",
         "epicNumber": 146,
-        "open": 14,
+        "open": 2,
         "ready": 0,
-        "inProgress": 12,
+        "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 13,
+        "agentReady": 1,
         "filedElsewhere": [],
         "next": null,
         "title": "Epic: upkeep — maintenance & documentation",
@@ -1891,176 +1891,6 @@
         "reason": "on-request"
       },
       {
-        "number": 831,
-        "title": "Inbox review: HRN-013 · `backlog.mjs next` prints each workflow failing on `main`, so a broken release is seen at the next pick",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
-        "number": 832,
-        "title": "Inbox review: HRN-014 · `run-prs` says when its `--to` is still in the future, so a record's merge count can be reproduced",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
-        "number": 833,
-        "title": "Inbox review: HRN-015 · Write the coordinator's `risk:2` `agent-ready` practice into the queue-up rule, or stop it (R816)",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
-        "number": 834,
-        "title": "Inbox review: HRN-016 · The fortnightly process review has not run since 2026-09-26: print when it is due, and give it default reviewers",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
-        "number": 835,
-        "title": "Inbox review: HRN-017 · Split a rerun query that hits the API's 1,000-run cap, as 2026-10-15 did",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
-        "number": 839,
-        "title": "Inbox review: FID-026 · Builtins-first matches the reference only over HACER's builtin names: #206 states what a part named after one of the reference's other 27 builtins resolves to",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
-        "number": 848,
-        "title": "Inbox review: FID-027 · Amend FID-026: since #821 the lookup order also decides whether `compileSpec` refuses, so its pinned test adds a broken part under a reference builtin name",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
-        "number": 849,
-        "title": "Inbox review: FID-028 · A registered definition must agree with its source: refuse one whose name or pins differ from its HDL's or its document's",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
-        "number": 859,
-        "title": "Inbox review: FID-029 · A literal on a part pin wider than 16 bits: decide all ones or the reference's 16, pin it, and record it",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
-        "number": 867,
-        "title": "Inbox review: FID-030 · The combinational-cycle refusal carries a line, as the reference's `Looping wire` and `Circular pin dependency` do",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 870,
         "title": "Owner: link `ha/.claude/agents` to hacer's role files, so sessions started in the workspace register the `hacer-*` types",
         "labels": [
@@ -2073,23 +1903,6 @@
         "lane": "process",
         "pickable": false,
         "reason": "needs-human"
-      },
-      {
-        "number": 874,
-        "title": "Inbox review: FID-031 · Grading names the reference's first cause when an earlier part or wire has a per-part cause the check does not model",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": false,
-        "reason": "claimed"
       },
       {
         "number": 878,
@@ -2151,23 +1964,6 @@
         "lane": "feature",
         "pickable": false,
         "reason": "unshaped"
-      },
-      {
-        "number": 915,
-        "title": "Inbox review: FID-032 · A `BUILTIN` body declares the builtin's own pins: refuse a source whose `IN` or `OUT` differ from the builtin it names",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": false,
-        "reason": "claimed"
       }
     ],
     "byProject": {
@@ -2265,19 +2061,7 @@
       ],
       "upkeep": [
         229,
-        256,
-        831,
-        832,
-        833,
-        834,
-        835,
-        839,
-        848,
-        849,
-        859,
-        867,
-        874,
-        915
+        256
       ],
       "horizon": [
         230,
@@ -3972,321 +3756,9 @@
           "at": "2026-09-25T06:02:35Z",
           "url": "https://github.com/mezivillager/hacer/issues/470#issuecomment-5827635352"
         }
-      },
-      {
-        "number": 831,
-        "ref": "refs/heads/claim/831",
-        "sha": "478e4407b26cc3ec0eda3fc5794b0c083e8862c6",
-        "state": "CLOSED",
-        "title": "Inbox review: HRN-013 · `backlog.mjs next` prints each workflow failing on `main`, so a broken release is seen at the next pick",
-        "url": "https://github.com/mezivillager/hacer/issues/831",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-to-70",
-          "branch": "chore/inbox-hrn-013",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-21T23:46:06Z",
-          "url": "https://github.com/mezivillager/hacer/issues/831#issuecomment-6329098366"
-        }
-      },
-      {
-        "number": 832,
-        "ref": "refs/heads/claim/832",
-        "sha": "e84182b70bc2b0c9ecd899658aa4048ba9f3b1b4",
-        "state": "OPEN",
-        "title": "Inbox review: HRN-014 · `run-prs` says when its `--to` is still in the future, so a record's merge count can be reproduced",
-        "url": "https://github.com/mezivillager/hacer/issues/832",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-to-70",
-          "branch": "chore/inbox-hrn-014",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-22T00:17:49Z",
-          "url": "https://github.com/mezivillager/hacer/issues/832#issuecomment-6329525843"
-        }
-      },
-      {
-        "number": 833,
-        "ref": "refs/heads/claim/833",
-        "sha": "e92853b4b16a08061f5c39d3cb87f0eeeb0ddeb4",
-        "state": "OPEN",
-        "title": "Inbox review: HRN-015 · Write the coordinator's `risk:2` `agent-ready` practice into the queue-up rule, or stop it (R816)",
-        "url": "https://github.com/mezivillager/hacer/issues/833",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-to-70",
-          "branch": "chore/inbox-hrn-015",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-22T00:43:21Z",
-          "url": "https://github.com/mezivillager/hacer/issues/833#issuecomment-6329865936"
-        }
-      },
-      {
-        "number": 834,
-        "ref": "refs/heads/claim/834",
-        "sha": "304c61c8559bbc96ed0236119a1d34df9a370fb1",
-        "state": "OPEN",
-        "title": "Inbox review: HRN-016 · The fortnightly process review has not run since 2026-09-26: print when it is due, and give it default reviewers",
-        "url": "https://github.com/mezivillager/hacer/issues/834",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-to-70",
-          "branch": "chore/inbox-hrn-016",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-22T00:49:10Z",
-          "url": "https://github.com/mezivillager/hacer/issues/834#issuecomment-6329941920"
-        }
-      },
-      {
-        "number": 835,
-        "ref": "refs/heads/claim/835",
-        "sha": "304c61c8559bbc96ed0236119a1d34df9a370fb1",
-        "state": "OPEN",
-        "title": "Inbox review: HRN-017 · Split a rerun query that hits the API's 1,000-run cap, as 2026-10-15 did",
-        "url": "https://github.com/mezivillager/hacer/issues/835",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-to-70",
-          "branch": "chore/inbox-hrn-017",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-22T01:09:56Z",
-          "url": "https://github.com/mezivillager/hacer/issues/835#issuecomment-6330211319"
-        }
-      },
-      {
-        "number": 839,
-        "ref": "refs/heads/claim/839",
-        "sha": "0c81e05e01ee1d89cc59ebb6e326cfc64f32fd13",
-        "state": "OPEN",
-        "title": "Inbox review: FID-026 · Builtins-first matches the reference only over HACER's builtin names: #206 states what a part named after one of the reference's other 27 builtins resolves to",
-        "url": "https://github.com/mezivillager/hacer/issues/839",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-to-70",
-          "branch": "chore/inbox-fid-026",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-22T01:44:10Z",
-          "url": "https://github.com/mezivillager/hacer/issues/839#issuecomment-6330659879"
-        }
-      },
-      {
-        "number": 848,
-        "ref": "refs/heads/claim/848",
-        "sha": "2cd3d37d795cd83a61f2141b9785acfcbf2144d4",
-        "state": "OPEN",
-        "title": "Inbox review: FID-027 · Amend FID-026: since #821 the lookup order also decides whether `compileSpec` refuses, so its pinned test adds a broken part under a reference builtin name",
-        "url": "https://github.com/mezivillager/hacer/issues/848",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-to-70",
-          "branch": "chore/inbox-fid-027",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-22T01:54:06Z",
-          "url": "https://github.com/mezivillager/hacer/issues/848#issuecomment-6330787506"
-        }
-      },
-      {
-        "number": 849,
-        "ref": "refs/heads/claim/849",
-        "sha": "bf96e39fc7748e6c09a17383aacc6a8612fb895c",
-        "state": "OPEN",
-        "title": "Inbox review: FID-028 · A registered definition must agree with its source: refuse one whose name or pins differ from its HDL's or its document's",
-        "url": "https://github.com/mezivillager/hacer/issues/849",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-to-70",
-          "branch": "chore/inbox-fid-028",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-22T02:14:57Z",
-          "url": "https://github.com/mezivillager/hacer/issues/849#issuecomment-6331053904"
-        }
-      },
-      {
-        "number": 859,
-        "ref": "refs/heads/claim/859",
-        "sha": "bf96e39fc7748e6c09a17383aacc6a8612fb895c",
-        "state": "OPEN",
-        "title": "Inbox review: FID-029 · A literal on a part pin wider than 16 bits: decide all ones or the reference's 16, pin it, and record it",
-        "url": "https://github.com/mezivillager/hacer/issues/859",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-to-70",
-          "branch": "chore/inbox-fid-029",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-22T02:34:13Z",
-          "url": "https://github.com/mezivillager/hacer/issues/859#issuecomment-6331289531"
-        }
-      },
-      {
-        "number": 867,
-        "ref": "refs/heads/claim/867",
-        "sha": "b9b7dbf74c1774c960b6344cf928c511947ea15d",
-        "state": "OPEN",
-        "title": "Inbox review: FID-030 · The combinational-cycle refusal carries a line, as the reference's `Looping wire` and `Circular pin dependency` do",
-        "url": "https://github.com/mezivillager/hacer/issues/867",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-to-70",
-          "branch": "chore/inbox-fid-030",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-22T02:45:43Z",
-          "url": "https://github.com/mezivillager/hacer/issues/867#issuecomment-6331430646"
-        }
-      },
-      {
-        "number": 874,
-        "ref": "refs/heads/claim/874",
-        "sha": "b9b7dbf74c1774c960b6344cf928c511947ea15d",
-        "state": "OPEN",
-        "title": "Inbox review: FID-031 · Grading names the reference's first cause when an earlier part or wire has a per-part cause the check does not model",
-        "url": "https://github.com/mezivillager/hacer/issues/874",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-to-70",
-          "branch": "chore/inbox-fid-031",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-22T03:12:10Z",
-          "url": "https://github.com/mezivillager/hacer/issues/874#issuecomment-6331755480"
-        }
-      },
-      {
-        "number": 915,
-        "ref": "refs/heads/claim/915",
-        "sha": "761590151c28b9968a994915f4432e14f2fffc6a",
-        "state": "OPEN",
-        "title": "Inbox review: FID-032 · A `BUILTIN` body declares the builtin's own pins: refuse a source whose `IN` or `OUT` differ from the builtin it names",
-        "url": "https://github.com/mezivillager/hacer/issues/915",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "hacer-loop-to-70",
-          "branch": "chore/inbox-fid-032",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-22T04:34:14Z",
-          "url": "https://github.com/mezivillager/hacer/issues/915#issuecomment-6332783770"
-        }
       }
     ],
-    "onClosedIssues": 1
+    "onClosedIssues": 0
   },
   "cloudLane": {
     "items": [
@@ -6224,7 +5696,7 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-08T06:55:22.076Z",
+      "since": "2026-10-08T07:28:30.057Z",
       "merged": 114,
       "openToMergeHours": {
         "median": 0.3,
