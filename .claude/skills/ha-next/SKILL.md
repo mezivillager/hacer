@@ -116,8 +116,28 @@ missing any agent's count is written `unmeasured`; the line's form is in `docs/h
 
 ## "Queue up: …"
 Shape the idea into issues in the form (`docs/harness/issue-form.md`): goal, acceptance criteria as tests, verification command, scope, files, risk, blocked-by.
-`agent-ready` only if risk:0/1 and the criteria are unambiguous; otherwise `needs-human` with your
-recommended answer. Split anything over the budget before it is ready. An epic or ADR in `spine`,
+`agent-ready` only if risk:0/1, the criteria are unambiguous, and the seeds are within the
+blast-radius threshold (`docs/harness/README.md` § *How wide is an issue?*); otherwise `needs-human`
+with your recommended answer. `risk:2` means what `docs/harness/issue-form.md` says it means.
+Exactly three exceptions make a `risk:2` issue `agent-ready`, each still with unambiguous criteria
+and seeds within the threshold; any other `risk:2` issue stays `needs-human`:
+1. Product-role polish issues, when the fix is concrete (owner's ruling on #269;
+   `docs/harness/product-brief.md`).
+2. An issue the inbox panel files on approval, at any risk, with no ruling in front of it (R844;
+   `docs/harness/inbox-panel-brief.md` §3 item 5).
+3. **Plan slices at `risk:2`:** the coordinator may file a `risk:2` issue `agent-ready` only when
+   all four hold: it is a slice of an owner-approved plan, or a follow-up filed from a review of a
+   PR in that plan's series and inside the plan's scope; its body links the owner's approval of that
+   plan; a ruling names the issue and the plan and makes the issue `agent-ready` (a ruling that only
+   reports a label applied against this rule does not count); and an Opus builder builds it and a
+   fresh Opus verifier checks it, with an ADR-0018 §2 fidelity review added when it changes
+   semantics under `src/core/**` or `src/simulation/**`.
+
+No exception lifts the `docs/harness/issue-form.md` security boundary (content triaged from
+outside, and `bot-filed` issues, stay `needs-human`), the `risk:0`/`risk:1` cap on retro mechanise
+drafts (`docs/harness/retro-brief.md` § Outputs), or the foundation gate (`docs/portfolio.md`).
+
+Split anything over the budget before it is ready. An epic or ADR in `spine`,
 `surfaces` or `horizon` gets a fidelity verdict comment (`hacer-fidelity`, ADR-0018 §2) before
 sub-issues are shaped from it. An approved `docs/harness/fidelity-inbox.md` entry is filed by the
 inbox panel, labelled `fidelity` — never by the fidelity agent; the owner may override any inbox

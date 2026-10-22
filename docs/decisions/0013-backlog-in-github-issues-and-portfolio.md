@@ -21,6 +21,17 @@ lets an agent answer "what can you do next?", pick it up, and get it merged with
    unblocked, and authored by an allowlisted identity. Labels: `project:*`, `agent-ready`,
    `in-progress`, `needs-human`, `risk:0/1/2`, `research`, `bug`, `sev:*`, `bot-filed`,
    `overturned`, `epic`.
+
+   *Amended 2026-10-22 (#893), from the inbox panel's approval of HRN-015 (#833), which settles the
+   question R816 left to the owner: triage labels an issue `agent-ready` at `risk:0`/`risk:1`, and at
+   `risk:2` in exactly three cases. They are product-role polish with a concrete fix (#269); an issue
+   the inbox panel files on approval, at any risk (R844); and a slice of an owner-approved plan, or a
+   follow-up from a review of a PR in its series inside its scope, that links that approval, that a
+   ruling names and makes `agent-ready`, and that an Opus builder builds and a fresh Opus verifier
+   checks, with an ADR-0018 §2 fidelity review when it changes semantics under `src/core/**` or
+   `src/simulation/**`. None of the three lifts the `docs/harness/issue-form.md` security boundary, the
+   `risk:0`/`risk:1` cap on retro mechanise drafts, or the foundation gate. The wording is the
+   queue-up row of `docs/harness/README.md` § *The five sentences it answers*, which `ha-next` carries.*
 2. *Amended 2026-09-18 (#259): the rotation below is superseded by the six-slot cycle `surfaces → harness → spine → aux → surfaces → harness` (`pubdocs` shares the `surfaces` slot, `aux` = `verify → upkeep → bugs`, `core`/`3d` pulled by any bucket, no foundation-first step) plus the hand-in-hand and design-first rules — `docs/portfolio.md` is authoritative.*
    *Amended again 2026-09-21 (#330), while the foundation plan (#318) runs: a `foundation` row, the cycle `foundation → foundation → harness → foundation → spine → aux`, `project:foundation` winning over any other `project:` label, and a gate that holds `risk:2` outside `foundation`/`harness` — `docs/research/2026-09-21-foundation-audit/REPORT.md` §7.*
    **Project order lives in `docs/portfolio.md`** (owner-owned, in git) with the pick rule:
