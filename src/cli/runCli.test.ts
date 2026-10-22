@@ -273,3 +273,25 @@ describe('runCli — a chip the registry refuses to register is an error report,
     expect(runCli(['run-tst', 'C.hdl', 'C.tst'], reader(files))).toEqual({ exitCode: 1, stdout: '', stderr: 'ERROR C: Duplicate pin name: "a"\n' })
   })
 })
+
+describe("runCli — a BUILTIN body declares the builtin's own pins (#919)", () => {
+  it("exits 1 under run-tst on a Foo declaring IN a over BUILTIN Not, naming both sides, where test keeps R771's refusal", () => {
+    const files = {
+      'Foo.hdl': 'CHIP Foo { IN a; OUT out; BUILTIN Not; }',
+      'Foo.tst': 'load Foo.hdl,\noutput-list a out;\n\nset a 0,\neval,\noutput;\n\nset a 1,\neval,\noutput;\n',
+      'Foo.cmp': '| a |out|\n| 0 | 1 |\n| 1 | 0 |\n',
+    }
+    expect(runCli(['run-tst', 'Foo.hdl', 'Foo.tst'], reader(files))).toEqual({ exitCode: 1, stdout: '', stderr: 'ERROR Foo: Foo declares IN a, but builtin Not declares IN in\n' })
+    const tested = runCli(['test', 'Foo.hdl', 'Foo.tst', 'Foo.cmp'], reader(files))
+    expect(tested.exitCode).toBe(1)
+    expect(tested.stdout).toMatch(/^ERROR Foo: BUILTIN Not in Foo: /)
+  })
+
+  it('exits 1 under run-tst on CHIP Nand { IN x, y; OUT out; BUILTIN; } with a .tst over x y out', () => {
+    const files = {
+      'Nand.hdl': 'CHIP Nand { IN x, y; OUT out; BUILTIN; }',
+      'Nand.tst': 'load Nand.hdl,\noutput-list x y out;\n\nset x 0,\nset y 0,\neval,\noutput;\n\nset x 1,\nset y 1,\neval,\noutput;\n',
+    }
+    expect(runCli(['run-tst', 'Nand.hdl', 'Nand.tst'], reader(files))).toEqual({ exitCode: 1, stdout: '', stderr: 'ERROR Nand: Nand declares IN x, y, but builtin Nand declares IN a, b\n' })
+  })
+})
