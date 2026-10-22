@@ -50,6 +50,7 @@
     "test:run": "vitest run",
     "test:node": "vitest run --project node",
     "test:coverage": "vitest run --coverage",
+    "test:differential": "tsc -p conformance/differential && vitest run --config conformance/differential/vitest.config.ts",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --grep @ui",
     "test:e2e:store": "playwright test --grep @store",

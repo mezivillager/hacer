@@ -17,4 +17,4 @@ export type {
   HDLCompileResult,
 } from './compiler'
 export { compileHDL, hdlChipDefinition } from './compiler'
-export { project1HdlSources } from './project1HdlSources'
+export { project1DependencyOrder, project1HdlSources } from './project1HdlSources'
