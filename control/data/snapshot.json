@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-22T10:00:00.567Z",
+  "generatedAt": "2026-10-22T10:09:43.239Z",
   "head": {
-    "sha": "a562ebf9194153e0c209e2577caabcad65e7695e",
-    "date": "2026-10-22T12:59:09+03:00",
-    "subject": "docs(harness): state the function-length rule in the implementer brief"
+    "sha": "734138786f88772f7a8bd519b30f1b6a537bdb7a",
+    "date": "2026-10-22T13:08:43+03:00",
+    "subject": "feat(layout): layout(doc, surface, options), the first layered placement"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T10:00:00.567Z",
+      "fetchedAt": "2026-10-22T10:09:43.239Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T10:00:00.567Z",
+      "fetchedAt": "2026-10-22T10:09:43.239Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T10:00:00.567Z",
+      "fetchedAt": "2026-10-22T10:09:43.239Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-22T10:00:00.567Z",
+      "fetchedAt": "2026-10-22T10:09:43.239Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-22T10:00:00.567Z",
+      "fetchedAt": "2026-10-22T10:09:43.239Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-22T10:00:00.567Z",
+      "fetchedAt": "2026-10-22T10:09:43.239Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-22T10:00:00.567Z",
+      "fetchedAt": "2026-10-22T10:09:43.239Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-22T10:00:00.567Z",
+      "fetchedAt": "2026-10-22T10:09:43.239Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-22T10:00:00.567Z",
+      "fetchedAt": "2026-10-22T10:09:43.239Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-22T10:00:00.567Z",
+      "fetchedAt": "2026-10-22T10:09:43.239Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-22T10:00:00.567Z",
+      "fetchedAt": "2026-10-22T10:09:43.239Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-22T10:00:00.567Z",
+      "fetchedAt": "2026-10-22T10:09:43.239Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-22T10:00:00.567Z",
+      "fetchedAt": "2026-10-22T10:09:43.239Z",
       "status": "ok"
     }
   },
@@ -80,21 +80,21 @@
         "lane": "feature",
         "slug": "foundation",
         "epicNumber": 318,
-        "open": 28,
-        "ready": 5,
-        "inProgress": 1,
+        "open": 27,
+        "ready": 4,
+        "inProgress": 2,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 7,
+        "agentReady": 6,
         "filedElsewhere": [],
         "next": {
-          "number": 599,
-          "title": "run-tst: a bare output-list name gets the pin's width, as the reference IDE gives it"
+          "number": 773,
+          "title": "fromLegacyCircuit: a two-feed chain whose trace meets a loop still traces 2^k paths"
         },
         "title": "Foundation audit: is the codebase structured for the autonomous loop? Measured audit, prioritized refactorings, fitness functions",
         "subIssues": {
-          "completed": 23,
-          "percentCompleted": 65,
+          "completed": 24,
+          "percentCompleted": 68,
           "total": 35
         }
       },
@@ -409,21 +409,6 @@
     ],
     "next": [
       {
-        "number": 599,
-        "title": "run-tst: a bare output-list name gets the pin's width, as the reference IDE gives it",
-        "project": "foundation"
-      },
-      {
-        "number": 257,
-        "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
-        "project": "harness"
-      },
-      {
-        "number": 613,
-        "title": "TestResultsPanel: import formatColumnValue through @/core and shrink the layer baseline",
-        "project": "foundation"
-      },
-      {
         "number": 773,
         "title": "fromLegacyCircuit: a two-feed chain whose trace meets a loop still traces 2^k paths",
         "project": "foundation"
@@ -439,9 +424,14 @@
         "project": "foundation"
       },
       {
-        "number": 949,
-        "title": "`ready` and `next` print `shape due:` for a foundation or spine slot with nothing pickable, and `ha-next` dispatches a shaper",
+        "number": 257,
+        "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
         "project": "harness"
+      },
+      {
+        "number": 940,
+        "title": "N.4b: `layout(doc, surface, { previous, hints })`: hold what is placed, never move a hinted node",
+        "project": "foundation"
       },
       {
         "number": 941,
@@ -454,14 +444,19 @@
         "project": "upkeep"
       },
       {
-        "number": 951,
-        "title": "`pr-hygiene` counts a review cycle's evidence toward the 400 lines, and the standing review brief still lists the cloud lane",
+        "number": 949,
+        "title": "`ready` and `next` print `shape due:` for a foundation or spine slot with nothing pickable, and `ha-next` dispatches a shaper",
         "project": "harness"
       },
       {
         "number": 933,
         "title": "Inbox review: HRN-021 · `merge-on-green` refuses a PR that has no `## Verifier verdict: PASS` the collector can read",
         "project": "upkeep"
+      },
+      {
+        "number": 951,
+        "title": "`pr-hygiene` counts a review cycle's evidence toward the 400 lines, and the standing review brief still lists the cloud lane",
+        "project": "harness"
       },
       {
         "number": 934,
@@ -507,61 +502,12 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
-        952,
         514
       ]
     }
   },
   "tasks": {
     "items": [
-      {
-        "number": 599,
-        "title": "run-tst: a bare output-list name gets the pin's width, as the reference IDE gives it",
-        "labels": [
-          "project:surfaces",
-          "agent-ready",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 257,
-        "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:2"
-        ],
-        "blocking": [
-          270
-        ],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 613,
-        "title": "TestResultsPanel: import formatColumnValue through @/core and shrink the layer baseline",
-        "labels": [
-          "agent-ready",
-          "risk:0",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
       {
         "number": 773,
         "title": "fromLegacyCircuit: a two-feed chain whose trace meets a loop still traces 2^k paths",
@@ -610,17 +556,34 @@
         "reason": null
       },
       {
-        "number": 949,
-        "title": "`ready` and `next` print `shape due:` for a foundation or spine slot with nothing pickable, and `ha-next` dispatches a shaper",
+        "number": 257,
+        "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
         "labels": [
           "project:harness",
           "agent-ready",
-          "risk:1"
+          "risk:2"
         ],
-        "blocking": [],
+        "blocking": [
+          270
+        ],
         "project": "harness",
         "rank": 2,
         "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 940,
+        "title": "N.4b: `layout(doc, surface, { previous, hints })`: hold what is placed, never move a hinted node",
+        "labels": [
+          "agent-ready",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
         "pickable": true,
         "reason": null
       },
@@ -659,8 +622,8 @@
         "reason": null
       },
       {
-        "number": 951,
-        "title": "`pr-hygiene` counts a review cycle's evidence toward the 400 lines, and the standing review brief still lists the cloud lane",
+        "number": 949,
+        "title": "`ready` and `next` print `shape due:` for a foundation or spine slot with nothing pickable, and `ha-next` dispatches a shaper",
         "labels": [
           "project:harness",
           "agent-ready",
@@ -686,6 +649,21 @@
         "project": "upkeep",
         "rank": 11,
         "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 951,
+        "title": "`pr-hygiene` counts a review cycle's evidence toward the 400 lines, and the standing review brief still lists the cloud lane",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:1"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
         "pickable": true,
         "reason": null
       },
@@ -1569,27 +1547,6 @@
         "reason": "unshaped"
       },
       {
-        "number": 379,
-        "title": "N.4a: `layout(doc, surface, options)`, the first layout: longest-path layers, barycentre order, `order: 'id'` on request, the four contract preconditions",
-        "labels": [
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [
-          940,
-          184,
-          197,
-          380
-        ],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 380,
         "title": "N.5: route — channel routing, total, with ADR-0008's assertions as properties",
         "labels": [
@@ -2036,6 +1993,23 @@
         "reason": "unshaped"
       },
       {
+        "number": 599,
+        "title": "run-tst: a bare output-list name gets the pin's width, as the reference IDE gives it",
+        "labels": [
+          "project:surfaces",
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 607,
         "title": "Harness: ledger.d/ one file per row, so GitHub's mergeability check stops flagging the ledger",
         "labels": [
@@ -2048,6 +2022,22 @@
         "lane": "process",
         "pickable": false,
         "reason": "unshaped"
+      },
+      {
+        "number": 613,
+        "title": "TestResultsPanel: import formatColumnValue through @/core and shrink the layer baseline",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "claimed"
       },
       {
         "number": 620,
@@ -2297,21 +2287,6 @@
         "reason": "claimed"
       },
       {
-        "number": 940,
-        "title": "N.4b: `layout(doc, surface, { previous, hints })`: hold what is placed, never move a hinted node",
-        "labels": [
-          "agent-ready",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "blocked:#379"
-      },
-      {
         "number": 942,
         "title": "pr-hygiene: a refactor PR may not take assertions out of an existing test (foundation 1.5, tuned on Phase 1's refactor PRs)",
         "labels": [
@@ -2343,15 +2318,13 @@
     ],
     "byProject": {
       "foundation": [
-        599,
-        613,
         773,
         878,
+        940,
         941,
         151,
         184,
         325,
-        379,
         380,
         381,
         382,
@@ -2364,13 +2337,30 @@
         400,
         462,
         506,
+        599,
+        613,
         719,
         722,
         728,
         742,
         907,
-        940,
         942
+      ],
+      "upkeep": [
+        929,
+        930,
+        933,
+        934,
+        935,
+        936,
+        937,
+        938,
+        939,
+        945,
+        946,
+        229,
+        256,
+        928
       ],
       "harness": [
         257,
@@ -2390,22 +2380,6 @@
         677,
         870,
         889
-      ],
-      "upkeep": [
-        929,
-        930,
-        933,
-        934,
-        935,
-        936,
-        937,
-        938,
-        939,
-        945,
-        946,
-        229,
-        256,
-        928
       ],
       "spine": [
         165,
@@ -2498,24 +2472,6 @@
   "prs": {
     "open": [
       {
-        "number": 952,
-        "title": "feat(layout): layout(doc, surface, options), the first layered placement (N.4a)",
-        "url": "https://github.com/mezivillager/hacer/pull/952",
-        "author": "mezivillager",
-        "labels": [
-          "risk:1",
-          "project:foundation"
-        ],
-        "headRefName": "feat/379-layout",
-        "isDraft": false,
-        "createdAt": "2026-10-22T09:48:48Z",
-        "mergedAt": null,
-        "closes": [
-          379
-        ],
-        "verdicts": []
-      },
-      {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
         "url": "https://github.com/mezivillager/hacer/pull/514",
@@ -2564,6 +2520,32 @@
             "model": "coordinator (risk:0 docs-only exception, ha-next §4)",
             "at": "2026-10-22T09:53:01Z",
             "url": "https://github.com/mezivillager/hacer/pull/953#issuecomment-6337894228"
+          }
+        ]
+      },
+      {
+        "number": 952,
+        "title": "feat(layout): layout(doc, surface, options), the first layered placement (N.4a)",
+        "url": "https://github.com/mezivillager/hacer/pull/952",
+        "author": "mezivillager",
+        "labels": [
+          "risk:1",
+          "project:foundation"
+        ],
+        "headRefName": "feat/379-layout",
+        "isDraft": false,
+        "createdAt": "2026-10-22T09:48:48Z",
+        "mergedAt": "2026-10-22T10:08:44Z",
+        "closes": [
+          379
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Claude Opus 5.5 (claude-opus-5-5)",
+            "at": "2026-10-22T10:04:00Z",
+            "url": "https://github.com/mezivillager/hacer/pull/952#issuecomment-6338098445"
           }
         ]
       },
@@ -4089,31 +4071,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/817#issuecomment-6318840440"
           }
         ]
-      },
-      {
-        "number": 815,
-        "title": "docs(harness): close the 2026-10-17 hacer-loop-to-20 run",
-        "url": "https://github.com/mezivillager/hacer/pull/815",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:0"
-        ],
-        "headRefName": "docs/2026-10-17-hacer-loop-to-20-close",
-        "isDraft": false,
-        "createdAt": "2026-10-17T20:11:07Z",
-        "mergedAt": "2026-10-17T20:32:02Z",
-        "closes": [],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "coordinator (Opus 5.5; the risk:0 docs-only exception, ha-next §4)",
-            "at": "2026-10-17T20:28:31Z",
-            "url": "https://github.com/mezivillager/hacer/pull/815#issuecomment-6240525715"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4127,57 +4084,6 @@
   },
   "claims": {
     "items": [
-      {
-        "number": 339,
-        "ref": "refs/heads/claim/339",
-        "sha": "68ded0de14ac8f836264ce48a14b57c2affff5d3",
-        "state": "CLOSED",
-        "title": "Function length only shrinks: `max-lines-per-function` on `src/` production code, today's violations as ESLint bulk suppressions (foundation 1.5)",
-        "url": "https://github.com/mezivillager/hacer/issues/339",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:foundation"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-10-22-hacer-loop-to-80",
-          "branch": "feat/339-function-length",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-22T09:25:25Z",
-          "url": "https://github.com/mezivillager/hacer/issues/339#issuecomment-6337387768"
-        }
-      },
-      {
-        "number": 379,
-        "ref": "refs/heads/claim/379",
-        "sha": "98dbb602dc5047b6d614866fe2879d4275f57b20",
-        "state": "OPEN",
-        "title": "N.4a: `layout(doc, surface, options)`, the first layout: longest-path layers, barycentre order, `order: 'id'` on request, the four contract preconditions",
-        "url": "https://github.com/mezivillager/hacer/issues/379",
-        "labels": [
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:foundation"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-10-22-hacer-loop-to-80",
-          "branch": "feat/379-layout",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-22T09:29:30Z",
-          "url": "https://github.com/mezivillager/hacer/issues/379#issuecomment-6337462879"
-        }
-      },
       {
         "number": 470,
         "ref": "refs/heads/claim/470",
@@ -4201,6 +4107,57 @@
           "author": "mezivillager",
           "at": "2026-09-25T06:02:35Z",
           "url": "https://github.com/mezivillager/hacer/issues/470#issuecomment-5827635352"
+        }
+      },
+      {
+        "number": 599,
+        "ref": "refs/heads/claim/599",
+        "sha": "a562ebf9194153e0c209e2577caabcad65e7695e",
+        "state": "OPEN",
+        "title": "run-tst: a bare output-list name gets the pin's width, as the reference IDE gives it",
+        "url": "https://github.com/mezivillager/hacer/issues/599",
+        "labels": [
+          "project:surfaces",
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:foundation"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "2026-10-22-hacer-loop-to-80",
+          "branch": "fix/599-bare-output-width",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-22T10:00:56Z",
+          "url": "https://github.com/mezivillager/hacer/issues/599#issuecomment-6338042045"
+        }
+      },
+      {
+        "number": 613,
+        "ref": "refs/heads/claim/613",
+        "sha": "a562ebf9194153e0c209e2577caabcad65e7695e",
+        "state": "OPEN",
+        "title": "TestResultsPanel: import formatColumnValue through @/core and shrink the layer baseline",
+        "url": "https://github.com/mezivillager/hacer/issues/613",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "project:foundation"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "2026-10-22-hacer-loop-to-80",
+          "branch": "refactor/613-format-through-core",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-22T10:05:43Z",
+          "url": "https://github.com/mezivillager/hacer/issues/613#issuecomment-6338132167"
         }
       },
       {
@@ -4230,7 +4187,7 @@
         }
       }
     ],
-    "onClosedIssues": 1
+    "onClosedIssues": 0
   },
   "cloudLane": {
     "items": [
@@ -6150,29 +6107,25 @@
     ],
     "mergesPerDay": [
       {
-        "date": "2026-10-17",
-        "merges": 1
-      },
-      {
         "date": "2026-10-21",
         "merges": 28
       },
       {
         "date": "2026-10-22",
-        "merges": 31
+        "merges": 32
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-08T10:00:00.567Z",
-      "merged": 121,
+      "since": "2026-10-08T10:09:43.239Z",
+      "merged": 122,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 1.5
       },
       "blockedOnce": {
         "count": 7,
-        "of": 102,
+        "of": 103,
         "prs": [
           700,
           725,
@@ -6185,8 +6138,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 80,
-          "withVerdict": 80,
+          "merged": 81,
+          "withVerdict": 81,
           "without": []
         },
         "nonCode": {
@@ -10456,11 +10409,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "a562ebf9194153e0c209e2577caabcad65e7695e",
+        "sha": "734138786f88772f7a8bd519b30f1b6a537bdb7a",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39759632288/job/119760302120",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39760880080/job/119764444918",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -10508,52 +10461,6 @@
         "verdict": "PASS",
         "fields": {
           "known": 71,
-          "new": 0
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 952,
-        "sha": "da3788958648eb6c3531a36d8b7a60557f03d073",
-        "check": "pr-hygiene",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-22T09:49:03Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39758310882/job/119755847901",
-        "line": "HYGIENE: WARN reviewable=234 test=196 excluded=282 files=5 issue=#379 linked=fixes",
-        "verdict": "WARN",
-        "fields": {
-          "reviewable": 234,
-          "test": 196,
-          "excluded": 282,
-          "files": 5,
-          "issue": "#379",
-          "linked": "fixes"
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 952,
-        "sha": "da3788958648eb6c3531a36d8b7a60557f03d073",
-        "check": "browser-qa",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-22T09:49:08Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39758309803/job/119755842756",
-        "line": "BROWSER-QA: skipped (no critical paths)",
-        "verdict": "SKIPPED",
-        "fields": {},
-        "disagrees": false
-      },
-      {
-        "pr": 952,
-        "sha": "da3788958648eb6c3531a36d8b7a60557f03d073",
-        "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-22T09:52:19Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39758308081/job/119755835907",
-        "line": "LAYER-RATCHET: 69 known violations (37 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 69,
           "new": 0
         },
         "disagrees": false
