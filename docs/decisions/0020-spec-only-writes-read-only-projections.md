@@ -1,7 +1,7 @@
 # 0020. Spec-only writes, read-only projections
 
 - **Status:** Accepted — the fresh-context adversarial review [#359](https://github.com/mezivillager/hacer/issues/359) required by #327 returned `sound with corrections`, and the second pass over the four post-review deltas returned `accept with corrections` (both on [#358](https://github.com/mezivillager/hacer/pull/358), 2026-09-23). Both sets of corrections are applied below — the second pass's seven under "What the second pass changed" — and no further review round is required. **Amended 2026-09-24** by the spike this ADR scheduled for 1.5/1.6 ([#372](https://github.com/mezivillager/hacer/issues/372)), which ran, found the mechanism 1.5 describes does not work, and replaced it — "What the spike changed". The status does **not** move: the spine, the review's acceptance and every decision stand, and correcting a mechanism is what a scheduled spike is for.
-- **Date:** 2026-09-23 · mechanism amended 2026-09-24 ([#372](https://github.com/mezivillager/hacer/issues/372)) · §7.1 and §9 amended 2026-09-29 ([#598](https://github.com/mezivillager/hacer/issues/598)) · §1.10 added 2026-10-15 ([#374](https://github.com/mezivillager/hacer/issues/374)) · §1.11 added 2026-10-15 ([#378](https://github.com/mezivillager/hacer/issues/378)) · §1.1 and §1.11.5 amended 2026-10-21 ([#813](https://github.com/mezivillager/hacer/issues/813)) · §1, §1.10 and the migration policy amended 2026-10-21 ([#814](https://github.com/mezivillager/hacer/issues/814)) · §1.10 item 10 amended 2026-10-21 ([#844](https://github.com/mezivillager/hacer/issues/844)) · §1.11.5 amended again 2026-10-21 ([#840](https://github.com/mezivillager/hacer/issues/840)) · §1.1 amended again 2026-10-22 ([#882](https://github.com/mezivillager/hacer/issues/882)) · §1.11 rule 2 amended 2026-10-22 ([#903](https://github.com/mezivillager/hacer/issues/903))
+- **Date:** 2026-09-23 · mechanism amended 2026-09-24 ([#372](https://github.com/mezivillager/hacer/issues/372)) · §7.1 and §9 amended 2026-09-29 ([#598](https://github.com/mezivillager/hacer/issues/598)) · §1.10 added 2026-10-15 ([#374](https://github.com/mezivillager/hacer/issues/374)) · §1.11 added 2026-10-15 ([#378](https://github.com/mezivillager/hacer/issues/378)) · §1.1 and §1.11.5 amended 2026-10-21 ([#813](https://github.com/mezivillager/hacer/issues/813)) · §1, §1.10 and the migration policy amended 2026-10-21 ([#814](https://github.com/mezivillager/hacer/issues/814)) · §1.10 item 10 amended 2026-10-21 ([#844](https://github.com/mezivillager/hacer/issues/844)) · §1.11.5 amended again 2026-10-21 ([#840](https://github.com/mezivillager/hacer/issues/840)) · §1.1 amended again 2026-10-22 ([#882](https://github.com/mezivillager/hacer/issues/882)) · §1.11 rule 2 amended 2026-10-22 ([#903](https://github.com/mezivillager/hacer/issues/903)) · §1.10.9 and §1.10 item 10 amended 2026-10-22 ([#905](https://github.com/mezivillager/hacer/issues/905))
 - **Amended by:** R769, R817, R825, R826, R836, R837
 - **Amends:** ADR-0008 §6, ADR-0009
 - **Supersedes:** ADR-0007
@@ -669,16 +669,31 @@ are v1's. v2 keeps every one but 9, which it replaces (1.10.9). Each is pinned b
      `undriven` has no id check.
    - **The invariant:** a constant drives only the net its own literal names. `compileSpec` refuses
      one on any other net, or a `true` net whose value is `false`, as `invalid-wire`, by name. Net ids
-     stay `true` and `false`, because `compileSpec` lowers sinks by net id, and `true` is every bit of
-     the pin it feeds, as the engine's `maskForWidth` reads it, not the integer 1.
+     stay `true` and `false`, because `compileSpec` lowers sinks by net id.
+   - **The value.** *Amended 2026-10-22 ([#905](https://github.com/mezivillager/hacer/issues/905), FID-029, as the inbox panel on
+     [#859](https://github.com/mezivillager/hacer/issues/859) decided):* `true` on a part input is every bit of the connection it feeds, the
+     whole pin or the slice, at any width up to 32, as the engine's `maskForWidth` reads it
+     (`src/simulation/busOps.ts`), not the integer 1. `false` is 0 on every bit. `compileSpec` lowers to
+     `compileHDL`, so both readers give it.
    - `out=true` is an ordinary second driver of net `true`: a `multiple-drivers` error from the
      ordinary path, whose message names the literal and says a part output cannot drive a constant.
      The net keeps its constant, and `literal-output` is gone. `wire out = true;` stays
      `invalid-wire`.
    - The importer's `false` net for a floating part input, and `bindUnconnectedInputs`', carry the
      constant. The importer's repeated-id net beside an OUT's real drivers stays `driver: null`.
-   - The reference models the constants the same way, as source buses: `TRUE_BUS` and `FALSE_BUS`
+   - The reference models the constants as source buses too: `TRUE_BUS` and `FALSE_BUS`
      (`../web-ide/simulator/src/chip/chip.ts:175-202`), and the `High` and `Low` chips (`:728-740`).
+     *Amended 2026-10-22 ([#905](https://github.com/mezivillager/hacer/issues/905)):* it agrees on any connection of 16 bits or fewer, wherever
+     the connection sits, and differs on a wider one. Its `ConstantBus` is 16 bits wide (`chip.ts:180`,
+     marked TODO) and is connected at the start of the connection (`chip.ts:120-124`, `:634-692`), so it
+     reads the connection's bits past its 16th as 0: `W32(a=true)` on a 32-bit pin gives a high half of
+     0 in the web IDE and of 65535 in HACER.
+     - **That is an intended difference.** It follows Appendix A, "Buses": the constants' "required
+       width is deduced implicitly from the context of the connection" (the HUJI early-draft copy).
+       The reference's 16 is a limit of a 16-bit simulator, which cannot widen an internal pin past 16
+       bits either (`chip.ts:50`), not a rule of the language.
+     - No official vector reaches it: the widest pin declared in `../web-ide/projects/src` is 16 bits.
+     - The export windows such a binding (rule 10), so the web IDE reads the same value from it.
    - **The v2 boundary.** The text does not change apart from the version, so a v1 file lowers as v2
      does. `migrate(1 → 2)` is pure: it moves the header's and the sidecar's version to 2 and gives a
      v1 document's driverless literal nets their constants. Each v1 fixture reads through it and
@@ -698,6 +713,15 @@ are v1's. v2 keeps every one but 9, which it replaces (1.10.9). Each is pinned b
       readers (`Sub-bus index out of range`), so no net, however wide, gets one. A chip named `Or16`
       keeps one `Or` per bit at every width but 16, so the form never makes it use itself. No `Or4`
       or `Or8` is added (§1.5). The buffers come after every declared part, with no marker.
+    - *Amended 2026-10-22 ([#905](https://github.com/mezivillager/hacer/issues/905)):* the `nand2tetris` dialect prints a `true` part-input
+      binding that feeds more than 16 bits as consecutive bindings of at most 16 bits each, cut from
+      the binding's low bit, so the web IDE reads every bit as well (rule 9, §1.5). `W32(a=true, …)`
+      prints `W32(a[0..15]=true, a[16..31]=true, …)`, and `W32(a[8..31]=true, …)` prints
+      `W32(a[8..23]=true, a[24..31]=true, …)`.
+      - An unsliced binding's width is its part pin's, read from `PrintSpecOptions.chips`. It defaults
+        to the Project 1 builtins, as `ParseSpecOptions.chips` does, so no Project 1 binding changes.
+      - A part whose chip that registry lacks prints as written, sliced bindings included. So do a
+        `true` of 16 bits or fewer, any `false`, and the `hacer` dialect.
 
 **The round trip §1.9 asked N.1 to re-measure has been measured on the shipped printer.** It covers
 the 15 Project 1 sources and 13 spec shapes:
