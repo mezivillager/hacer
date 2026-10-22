@@ -1,14 +1,15 @@
 import { describe, expect, it } from 'vitest'
 import { registerProject1Builtins } from '../chips/builtins/project01'
-import { evaluateChip } from '../chips/evaluateChip'
-import { createChipRegistry, type ChipRegistry } from '../chips/registry'
-import { compileHDL, hdlChipDefinition } from '../hdl/compiler'
+import { DEFAULT_MAX_DEPTH, evaluateChip, evaluateChipWithCtx } from '../chips/evaluateChip'
+import { createChipRegistry, registerBuiltin, type ChipRegistry } from '../chips/registry'
+import { compileHDL, hdlChipDefinition, type EvalContext } from '../hdl/compiler'
 import { parseHDL } from '../hdl/parser'
 import { project1DependencyOrder, project1HdlSources } from '../hdl/project1HdlSources'
 import type { HDLChip } from '../hdl/types'
 import { project1CmpFixtures } from '../testing/project1CmpFixtures'
 import { project1TstFixtures } from '../testing/project1TstFixtures'
 import { testChip } from '../testing/testChip'
+import { compileSpec } from './compileSpec'
 import { sliceWidth, splitNetId } from './netId'
 import { parseSpec } from './parseSpec'
 import { printSpec } from './printSpec'
@@ -200,5 +201,52 @@ describe('Project 1 through the spec printer', () => {
     )
     expect(report).toMatchObject({ status: 'pass', chip: name, failure: null, error: null })
     expect(report.rows?.expected).toBeGreaterThan(0)
+  })
+})
+
+const wide = project1Registry()
+registerBuiltin(wide, 'W32', [{ name: 'a', width: 32 }], [{ name: 'lo', width: 16 }, { name: 'hi', width: 16 }], ({ a = 0 }) => ({ lo: a & 0xffff, hi: a >>> 16 }))
+registerBuiltin(wide, 'W17', [{ name: 'a', width: 17 }], [{ name: 'lo', width: 16 }, { name: 'top', width: 1 }], ({ a = 0 }) => ({ lo: a & 0xffff, top: a >>> 16 }))
+const wideCtx: EvalContext = { registry: wide, depth: 0, maxDepth: DEFAULT_MAX_DEPTH, evalChip: evaluateChipWithCtx }
+const SHAPES: Record<string, { outs: string; bound: string }> = { W32: { outs: 'lo[16], hi[16]', bound: 'hi=hi, lo=lo' }, W17: { outs: 'lo[16], top', bound: 'lo=lo, top=top' } }
+const literalText = (chip: string, inputs: string): string => `CHIP T {\n    IN x;\n    OUT ${SHAPES[chip].outs};\n\n    PARTS:\n    ${chip}(${inputs}, ${SHAPES[chip].bound}); // #p1\n}\n`
+
+function wideDoc(chip: string, binding: string): CircuitSpec {
+  const { doc, diagnostics } = parseSpec(`CHIP T { IN x; OUT ${SHAPES[chip].outs}; PARTS: ${chip}(${binding}, ${SHAPES[chip].bound}); }`, { chips: wide })
+  const errors = diagnostics.filter((d) => d.severity === 'error')
+  if (doc === null || errors.length > 0) throw new Error(`refused: ${errors.map((d) => d.message).join('; ')}`)
+  return doc
+}
+
+const WINDOWED = [
+  { chip: 'W32', binding: 'a=true', windows: 'a[0..15]=true, a[16..31]=true', want: { lo: 65535, hi: 65535 } },
+  { chip: 'W32', binding: 'a[8..31]=true', windows: 'a[8..23]=true, a[24..31]=true', want: { lo: 65280, hi: 65535 } },
+  { chip: 'W17', binding: 'a=true', windows: 'a[0..15]=true, a[16]=true', want: { lo: 65535, top: 1 } },
+]
+
+describe('the nand2tetris dialect prints a true wider than 16 bits in 16-bit windows (§1.10.10)', () => {
+  it.each(WINDOWED)('$chip($binding) prints as $chip($windows)', ({ chip, binding, windows }) => {
+    expect(printSpec(wideDoc(chip, binding), { dialect: 'nand2tetris', chips: wide })).toBe(literalText(chip, windows))
+  })
+
+  it.each(WINDOWED)('$chip($binding): the exported text, re-read by compileHDL, gives the document\'s outputs', ({ chip, binding, want }) => {
+    const doc = wideDoc(chip, binding)
+    const viaDoc = compileSpec({ doc, diagnostics: [] }, wide)
+    const parsed = parseHDL(printSpec(doc, { dialect: 'nand2tetris', chips: wide }))
+    const viaExport = parsed.success ? compileHDL(parsed.chip, wide) : null
+    expect({
+      doc: viaDoc.success ? viaDoc.evaluate({ x: 0 }, wideCtx) : viaDoc.diagnostics,
+      exported: viaExport?.success ? viaExport.evaluate({ x: 0 }, wideCtx) : viaExport,
+    }).toEqual({ doc: want, exported: want })
+  })
+
+  it.each(['a[0..15]=true', 'a[16..31]=true', 'a[4..11]=true', 'a=false'])('W32(%s) prints unchanged', (binding) => {
+    expect(printSpec(wideDoc('W32', binding), { dialect: 'nand2tetris', chips: wide })).toBe(literalText('W32', binding))
+  })
+
+  it.each(['a=true', 'a[8..31]=true'])('W32(%s) prints as written in the hacer dialect, and in the export when the registry lacks W32', (binding) => {
+    const doc = wideDoc('W32', binding)
+    expect(printSpec(doc, { chips: wide })).toContain(`    W32(${binding}, hi=hi, lo=lo); // #p1\n`)
+    expect(printSpec(doc, { dialect: 'nand2tetris' })).toBe(literalText('W32', binding))
   })
 })
