@@ -995,7 +995,9 @@ and these rules are pinned by `src/core/spec/compileSpec.test.ts`,
      - The web IDE has no limit. `int10` masks every decimal with `& 0xffff`
        (`../web-ide/simulator/src/util/twos.ts:63-73` at `91ef428`), so `a[99999999999999999999]` and
        `a[65536]` are width 0, `a[65537]` is width 1, `a[65552]` is width 16, and widths 17 to 65535
-       build. It evaluates only 32 bits too: with `IN a[33]`, bit 32 never reaches `Not(in=a[32])`.
+       build. It evaluates only 32 bits too: with `IN a[33]`, bit 32 never reaches `Not(in=a[32])`,
+       which reads bit 0 (measured at `91ef428`: `a=1` gives `out=0` and `a=2` gives `out=1`), the
+       silent misread the next bullet describes.
      - Accepting such a width evaluates another circuit than the file declares, silently: with
        `IN a[33]`, `Not(in=a[32], out=out)` reads bit 0. The spec readers also walk every declared bit
        (an OUT→OUT alias over a million-bit pin takes `parseSpec` 2.1 s and `compileSpec` 3.5 s), so a
