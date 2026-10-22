@@ -5,7 +5,7 @@ go to a judge instead, built in #963.
 
 ## R889 — owner decisions go to a judge, never to the owner; Fable joins as a judge reviewer
 Builds on: R844
-Amends: R762, ADR-0018 §4
+Amends: R762, R714, ADR-0018 §4
 Owner, 2026-10-22T11:40Z; amends R762 for the judge's review seat, and extends R844 from inbox
 entries to every decision the loop used to label `needs-human` or list "for the owner". The owner:
 "Nothing should ever wait for me, when something comes up that is deemed too critical run

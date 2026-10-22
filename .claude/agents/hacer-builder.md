@@ -40,5 +40,7 @@ Paths in this file are relative to the hacer checkout; from the parent workspace
    verify — flag it rather than guessing.
 
 ## Blocked exit
-Ambiguous, impossible as written, or needs a harness change → label the issue `needs-human`, write
-the question **and your recommended answer** on it, release the claim, stop. That is a good outcome.
+Ambiguous, impossible as written, or needs a harness change → write the question **and your
+recommended answer** on the issue, remove `agent-ready`, release the claim, stop; the coordinator
+queues the question in `docs/harness/judge-inbox.md` for the judge (R889). Label it `needs-human`
+only when what it needs is an owner action (`docs/harness/issue-form.md`). That is a good outcome.
