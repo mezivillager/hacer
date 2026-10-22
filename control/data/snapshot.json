@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-22T22:19:37.945Z",
+  "generatedAt": "2026-10-22T22:26:01.887Z",
   "head": {
-    "sha": "da520b6a7fc24643c4d5f2bbfa9a2e74c178c783",
-    "date": "2026-10-23T00:59:28+03:00",
-    "subject": "docs(adr): ADR-0020 §1.11 rule 5 records grading's Looping wire on disjoint bits (#907)"
+    "sha": "100e399391361643f72f3ef066450e95b4836215",
+    "date": "2026-10-23T01:25:19+03:00",
+    "subject": "docs(harness): let the judge make a bot-filed issue agent-ready in the fidelity brief (R889)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T22:19:37.945Z",
+      "fetchedAt": "2026-10-22T22:26:01.887Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T22:19:37.945Z",
+      "fetchedAt": "2026-10-22T22:26:01.887Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T22:19:37.945Z",
+      "fetchedAt": "2026-10-22T22:26:01.887Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-22T22:19:37.945Z",
+      "fetchedAt": "2026-10-22T22:26:01.887Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-22T22:19:37.945Z",
+      "fetchedAt": "2026-10-22T22:26:01.887Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-22T22:19:37.945Z",
+      "fetchedAt": "2026-10-22T22:26:01.887Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-22T22:19:37.945Z",
+      "fetchedAt": "2026-10-22T22:26:01.887Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-22T22:19:37.945Z",
+      "fetchedAt": "2026-10-22T22:26:01.887Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-22T22:19:37.945Z",
+      "fetchedAt": "2026-10-22T22:26:01.887Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-22T22:19:37.945Z",
+      "fetchedAt": "2026-10-22T22:26:01.887Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-22T22:19:37.945Z",
+      "fetchedAt": "2026-10-22T22:26:01.887Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-22T22:19:37.945Z",
+      "fetchedAt": "2026-10-22T22:26:01.887Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-22T22:19:37.945Z",
+      "fetchedAt": "2026-10-22T22:26:01.887Z",
       "status": "ok"
     }
   },
@@ -103,12 +103,12 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 33,
+        "open": 32,
         "ready": 10,
-        "inProgress": 5,
+        "inProgress": 4,
         "needsHuman": 3,
         "staleClaims": [],
-        "agentReady": 18,
+        "agentReady": 17,
         "filedElsewhere": [
           151,
           941,
@@ -120,8 +120,8 @@
         },
         "title": "Epic: harness — autonomous-run improvements & agent-readiness",
         "subIssues": {
-          "completed": 51,
-          "percentCompleted": 72,
+          "completed": 52,
+          "percentCompleted": 74,
           "total": 70
         }
       },
@@ -376,15 +376,18 @@
         "slug": "mission-control",
         "epicNumber": 458,
         "open": 3,
-        "ready": 0,
+        "ready": 1,
         "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 0,
+        "agentReady": 1,
         "filedElsewhere": [
           156
         ],
-        "next": null,
+        "next": {
+          "number": 950,
+          "title": "Mission Control's `metrics.conformance` reports a pass count from the scenario suite instead of `runner: null`"
+        },
         "title": "Epic: mission-control — Mission Control: the platform's status, process and roadmap as one site",
         "subIssues": {
           "completed": 12,
@@ -425,6 +428,11 @@
         "number": 940,
         "title": "N.4b: `layout(doc, surface, { previous, hints })`: hold what is placed, never move a hinted node",
         "project": "foundation"
+      },
+      {
+        "number": 950,
+        "title": "Mission Control's `metrics.conformance` reports a pass count from the scenario suite instead of `runner: null`",
+        "project": "mission-control"
       },
       {
         "number": 982,
@@ -606,6 +614,21 @@
         "project": "foundation",
         "rank": 1,
         "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 950,
+        "title": "Mission Control's `metrics.conformance` reports a pass count from the scenario suite instead of `runner: null`",
+        "labels": [
+          "agent-ready",
+          "risk:1",
+          "project:mission-control"
+        ],
+        "blocking": [],
+        "project": "mission-control",
+        "rank": 14,
+        "lane": "process",
         "pickable": true,
         "reason": null
       },
@@ -2455,20 +2478,6 @@
         "reason": "unshaped"
       },
       {
-        "number": 950,
-        "title": "Mission Control's `metrics.conformance` reports a pass count from the scenario suite instead of `runner: null`",
-        "labels": [
-          "risk:1",
-          "project:mission-control"
-        ],
-        "blocking": [],
-        "project": "mission-control",
-        "rank": 14,
-        "lane": "process",
-        "pickable": false,
-        "reason": "unshaped"
-      },
-      {
         "number": 971,
         "title": "Judge review: JDG-005 · Is #801 (`sev:high`, an unsaved circuit is lost on reload) moved to `project:bugs` and pulled forward under `project:foundation`?",
         "labels": [
@@ -2528,22 +2537,6 @@
           "in-progress",
           "risk:0",
           "judge-review"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
-        "number": 977,
-        "title": "The fidelity brief and the `bot-filed` label still say only the owner may make a `bot-filed` issue `agent-ready`; R889 also lets the judge",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:0"
         ],
         "blocking": [],
         "project": "harness",
@@ -2662,7 +2655,6 @@
         972,
         973,
         974,
-        977,
         981,
         993,
         994
@@ -2692,6 +2684,11 @@
         742,
         801,
         942
+      ],
+      "mission-control": [
+        950,
+        509,
+        584
       ],
       "spine": [
         982,
@@ -2783,11 +2780,6 @@
         502,
         569
       ],
-      "mission-control": [
-        509,
-        584,
-        950
-      ],
       "unfiled": [
         572
       ],
@@ -2821,7 +2813,15 @@
         "closes": [
           801
         ],
-        "verdicts": []
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus (claude-opus-5-5)",
+            "at": "2026-10-22T22:23:52Z",
+            "url": "https://github.com/mezivillager/hacer/pull/995#issuecomment-6352629264"
+          }
+        ]
       },
       {
         "number": 514,
@@ -2851,6 +2851,32 @@
       }
     ],
     "merged": [
+      {
+        "number": 996,
+        "title": "docs(harness): let the judge make a bot-filed issue agent-ready in the fidelity brief (R889)",
+        "url": "https://github.com/mezivillager/hacer/pull/996",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/977-bot-filed-judge",
+        "isDraft": false,
+        "createdAt": "2026-10-22T22:22:03Z",
+        "mergedAt": "2026-10-22T22:25:19Z",
+        "closes": [
+          977
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (risk:0 docs-only exception, ha-next §4)",
+            "at": "2026-10-22T22:22:37Z",
+            "url": "https://github.com/mezivillager/hacer/pull/996#issuecomment-6352609431"
+          }
+        ]
+      },
       {
         "number": 988,
         "title": "docs(harness): retro run 2026-10-22 (second), HRN-028–030 proposed over 18 merges",
@@ -4403,34 +4429,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/854#issuecomment-6323785144"
           }
         ]
-      },
-      {
-        "number": 853,
-        "title": "feat(spec): literals are constant drivers, read through migrate(1 → 2)",
-        "url": "https://github.com/mezivillager/hacer/pull/853",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:2",
-          "fidelity",
-          "project:foundation"
-        ],
-        "headRefName": "feat/814-constant-driver",
-        "isDraft": false,
-        "createdAt": "2026-10-21T18:38:37Z",
-        "mergedAt": "2026-10-21T19:07:10Z",
-        "closes": [
-          814
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Opus (claude-opus-5-5)",
-            "at": "2026-10-21T18:52:03Z",
-            "url": "https://github.com/mezivillager/hacer/pull/853#issuecomment-6323944946"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4605,16 +4603,15 @@
         "number": 977,
         "ref": "refs/heads/claim/977",
         "sha": "da520b6a7fc24643c4d5f2bbfa9a2e74c178c783",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "The fidelity brief and the `bot-filed` label still say only the owner may make a `bot-filed` issue `agent-ready`; R889 also lets the judge",
         "url": "https://github.com/mezivillager/hacer/issues/977",
         "labels": [
           "project:harness",
           "agent-ready",
-          "in-progress",
           "risk:0"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -4627,7 +4624,7 @@
         }
       }
     ],
-    "onClosedIssues": 0
+    "onClosedIssues": 1
   },
   "cloudLane": {
     "items": [
@@ -6603,24 +6600,24 @@
     "mergesPerDay": [
       {
         "date": "2026-10-21",
-        "merges": 16
+        "merges": 15
       },
       {
         "date": "2026-10-22",
-        "merges": 44
+        "merges": 45
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-08T22:19:37.945Z",
-      "merged": 134,
+      "since": "2026-10-08T22:26:01.887Z",
+      "merged": 135,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 1.5
       },
       "blockedOnce": {
         "count": 8,
-        "of": 115,
+        "of": 116,
         "prs": [
           700,
           725,
@@ -6639,8 +6636,8 @@
           "without": []
         },
         "nonCode": {
-          "merged": 47,
-          "withVerdict": 28,
+          "merged": 48,
+          "withVerdict": 29,
           "without": [
             692,
             693,
@@ -10746,12 +10743,9 @@
       },
       {
         "date": "2026-10-22",
-        "at": "2026-10-22T21:20:24.865Z",
+        "at": "2026-10-22T22:19:37.945Z",
         "byProject": {
           "harness": [
-            972,
-            973,
-            974,
             975,
             976,
             949,
@@ -10759,9 +10753,9 @@
             955,
             958,
             965,
-            977,
             978,
             980,
+            992,
             154,
             156,
             257,
@@ -10778,7 +10772,13 @@
             870,
             889,
             971,
-            981
+            972,
+            973,
+            974,
+            977,
+            981,
+            993,
+            994
           ],
           "foundation": [
             940,
@@ -10803,7 +10803,7 @@
             722,
             728,
             742,
-            907,
+            801,
             942
           ],
           "spine": [
@@ -10835,6 +10835,9 @@
             939,
             945,
             946,
+            989,
+            990,
+            991,
             229,
             256
           ],
@@ -10902,7 +10905,6 @@
             572
           ],
           "polish": [
-            801,
             802,
             803,
             804,
@@ -10917,17 +10919,14 @@
     "items": [
       {
         "pr": null,
-        "sha": "da520b6a7fc24643c4d5f2bbfa9a2e74c178c783",
+        "sha": "100e399391361643f72f3ef066450e95b4836215",
         "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-22T22:02:13Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39861565234/job/120113300265",
-        "line": "LAYER-RATCHET: 68 known violations (36 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 68,
-          "new": 0
-        },
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39864836187/job/120124297493",
+        "line": null,
+        "verdict": null,
+        "fields": {},
         "disagrees": false
       },
       {
