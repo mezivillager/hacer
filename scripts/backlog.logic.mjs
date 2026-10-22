@@ -662,6 +662,23 @@ export function readRetroLine(read) {
   }
 }
 
+// main's workflows (#888): each active workflow's newest completed run on main, as `ready` and `next` print it on stderr.
+
+export const FAILED_CONCLUSIONS = ['failure', 'timed_out', 'startup_failure']
+export const WORKFLOW_RUNS = 30
+
+export const workflowsToRead = () => {
+  throw new Error('not implemented')
+}
+
+export const failingWorkflows = () => {
+  throw new Error('not implemented')
+}
+
+export const mainLines = () => []
+
+export const readMainLines = async () => []
+
 // The verifier's tier (docs/harness/verifier-brief.md, `**Model:**`), worked out from a PR's changed paths and labels.
 
 /** The engine directories VERIFIER_TIER_SENTENCE names: a PR touching one is verified on Opus, whatever its label. */
