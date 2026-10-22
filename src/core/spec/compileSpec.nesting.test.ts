@@ -280,6 +280,13 @@ describe('compileSpec — a registered part that does not compile refuses the sp
       expect(compiled('CHIP Outer { IN a; OUT o; PARTS: Foo(a=a, o2=o); }', registry)).toEqual(refusedAs('Outer › Foo: Foo declares OUT o2, but its source declares OUT out'))
     })
 
+    it('refuses a Foo declaring IN a, a[16] over source IN a[16], reached through a registry view that register never checked (#912)', () => {
+      const base = withBuiltins()
+      const foo = hdl('Foo', [pin('a'), pin('a', 16)], [pin('out')], 'CHIP Foo { IN a[16]; OUT out; PARTS: Not(in=a[0], out=out); }')
+      const view: ChipRegistry = { ...base, get: (name) => (name === 'Foo' ? foo : base.get(name)), has: (name) => name === 'Foo' || base.has(name) }
+      expect(compiled(OUTER_FOO, view)).toEqual(refusedAs('Outer › Foo: Foo declares IN a, a[16], but its source declares IN a[16]'))
+    })
+
     it("refuses Outer under a registry view that returns the 'hdl' Bar for Foo, where Outer looks Foo up: compileSpec's engine pass and compileHDL's part resolution", () => {
       const base = over(hdlChipDefinition(ast(BAR_NOT), BAR_NOT))
       const asBar = (name: string): string => (name === 'Foo' ? 'Bar' : name)
