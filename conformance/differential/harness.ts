@@ -1,8 +1,7 @@
 /** HACER's engine beside the reference simulator on one `.tst`. Dev-only: nothing under src/ imports it. */
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
-import { outTable } from '@/cli/outTable'
-import { loadChipTest, runTest } from '@/core'
+import { runCli } from '@/cli/runCli'
 
 export interface Disagreement {
   chip: string
@@ -64,13 +63,15 @@ export function describeVerdict(verdict: Verdict): string {
   }
 }
 
-/** `hacer run-tst`'s path: the `.hdl`'s own chip, the whole script run with nothing to stop it at a `.cmp` mismatch. */
+/** What `hacer run-tst <chip>.hdl <chip>.tst` prints: the shipped command's own `runCli`, reading the vector from memory. */
 function hacerOut({ chip, hdl, tst }: Vector): Out {
-  const loaded = loadChipTest({ path: `${chip}.hdl`, source: hdl }, { path: `${chip}.tst`, source: tst })
-  if ('status' in loaded) return { error: loaded.error ?? loaded.status }
-  const script = { commands: loaded.script.commands.filter((cmd) => cmd.type !== 'compare-to') }
-  const result = runTest(script, { registry: loaded.registry, chip: loaded.own })
-  return result.error === null ? { out: outTable(script, result.outputRows) } : { error: result.error }
+  const read = (file: string): string => {
+    if (file === `${chip}.hdl`) return hdl
+    if (file === `${chip}.tst`) return tst
+    throw new Error(`${file}: not part of this vector`)
+  }
+  const { exitCode, stdout, stderr } = runCli(['run-tst', `${chip}.hdl`, `${chip}.tst`], read)
+  return exitCode === 0 ? { out: stdout } : { error: stderr.trim() }
 }
 
 /** Both engines on one vector. A pass needs both: the same `.out` line for line, and the reference accepting it as the `.cmp`. */
