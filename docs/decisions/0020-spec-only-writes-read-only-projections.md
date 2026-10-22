@@ -1,7 +1,7 @@
 # 0020. Spec-only writes, read-only projections
 
 - **Status:** Accepted — the fresh-context adversarial review [#359](https://github.com/mezivillager/hacer/issues/359) required by #327 returned `sound with corrections`, and the second pass over the four post-review deltas returned `accept with corrections` (both on [#358](https://github.com/mezivillager/hacer/pull/358), 2026-09-23). Both sets of corrections are applied below — the second pass's seven under "What the second pass changed" — and no further review round is required. **Amended 2026-09-24** by the spike this ADR scheduled for 1.5/1.6 ([#372](https://github.com/mezivillager/hacer/issues/372)), which ran, found the mechanism 1.5 describes does not work, and replaced it — "What the spike changed". The status does **not** move: the spine, the review's acceptance and every decision stand, and correcting a mechanism is what a scheduled spike is for.
-- **Date:** 2026-09-23 · mechanism amended 2026-09-24 ([#372](https://github.com/mezivillager/hacer/issues/372)) · §7.1 and §9 amended 2026-09-29 ([#598](https://github.com/mezivillager/hacer/issues/598)) · §1.10 added 2026-10-15 ([#374](https://github.com/mezivillager/hacer/issues/374)) · §1.11 added 2026-10-15 ([#378](https://github.com/mezivillager/hacer/issues/378)) · §1.1 and §1.11.5 amended 2026-10-21 ([#813](https://github.com/mezivillager/hacer/issues/813)) · §1, §1.10 and the migration policy amended 2026-10-21 ([#814](https://github.com/mezivillager/hacer/issues/814)) · §1.10 item 10 amended 2026-10-21 ([#844](https://github.com/mezivillager/hacer/issues/844)) · §1.11.5 amended again 2026-10-21 ([#840](https://github.com/mezivillager/hacer/issues/840)) · §1.1 amended again 2026-10-22 ([#882](https://github.com/mezivillager/hacer/issues/882))
+- **Date:** 2026-09-23 · mechanism amended 2026-09-24 ([#372](https://github.com/mezivillager/hacer/issues/372)) · §7.1 and §9 amended 2026-09-29 ([#598](https://github.com/mezivillager/hacer/issues/598)) · §1.10 added 2026-10-15 ([#374](https://github.com/mezivillager/hacer/issues/374)) · §1.11 added 2026-10-15 ([#378](https://github.com/mezivillager/hacer/issues/378)) · §1.1 and §1.11.5 amended 2026-10-21 ([#813](https://github.com/mezivillager/hacer/issues/813)) · §1, §1.10 and the migration policy amended 2026-10-21 ([#814](https://github.com/mezivillager/hacer/issues/814)) · §1.10 item 10 amended 2026-10-21 ([#844](https://github.com/mezivillager/hacer/issues/844)) · §1.11.5 amended again 2026-10-21 ([#840](https://github.com/mezivillager/hacer/issues/840)) · §1.1 amended again 2026-10-22 ([#882](https://github.com/mezivillager/hacer/issues/882)) · §1.11 rule 2 amended 2026-10-22 ([#903](https://github.com/mezivillager/hacer/issues/903))
 - **Amended by:** R769, R817, R825, R826, R836, R837
 - **Amends:** ADR-0008 §6, ADR-0009
 - **Supersedes:** ADR-0007
@@ -766,6 +766,43 @@ and these rules are pinned by `src/core/spec/compileSpec.test.ts`,
        `evaluateChip: chip "FullAdder" failed to compile: FullAdder › HalfAdder: <message>`
        (`ChipCompileError.reachedFrom`, `src/core/chips/evaluateChip.ts:23`, `:124`), pinned by the
        `'hdl'` `FullAdder` case of #901 in `src/core/spec/compileSpec.nesting.test.ts`.
+   - **A definition agrees with its source**
+     ([#903](https://github.com/mezivillager/hacer/issues/903), FID-028). Its `name`, `inputs` and
+     `outputs` must equal its source's: an `'hdl'` source's `CHIP` name, `IN` and `OUT`, or a
+     `'circuit'` document's `name`, `ins` and `outs`. Pins compare as name→width maps, so their
+     order does not matter. A builtin has no source and is not compared, and a `BUILTIN` body is
+     compared with its source only, not with the builtin's own pins, which the web IDE takes
+     (`../web-ide/simulator/src/chip/builder.ts:233-235`).
+     - The part check compares each definition the walk enters before compiling it, and refuses in
+       the chain above: `Outer › Foo: Foo declares IN a, but its source declares IN b`.
+       `evaluateChip` compares a chip before compiling it and throws the same message as a
+       `ChipCompileError`, so an `'hdl'` parent's first evaluation throws `Outer › Foo: …`.
+     - `hdlChipDefinition` and `compileSpec`'s `chip` take their name and pins from the source, so
+       what they build always agrees. A hand-built definition, or one registered through the core
+       API, may not.
+     - **The name half** is the reference's `Wrong chip name`
+       (`../web-ide/simulator/src/chip/builder.ts:229-231` at `91ef428`), which compares the name a
+       chip was asked for with its `CHIP` name; the parent then gets `Undefined chip name: Foo`
+       (`:261-264`). HACER says `Wrong chip name: Foo holds CHIP Bar`.
+     - The name a definition was looked up by is compared where the lookup happens, in
+       `compileHDL`'s part resolution: a non-builtin definition returned for `Foo` under another
+       name is a part error. So a spec's own part is refused by the engine pass, as a `compile`
+       diagnostic with no chain, and a deeper one by the definition that looked it up,
+       `Outer › Inn: Line 1: Wrong chip name: Foo holds CHIP Bar`. The part check does not compare
+       that name again: each name its walk follows was looked up by a compile that has compared
+       it, so a second comparison would repeat the refusal under a second chain.
+     - **The pin half** does not cite `Wrong chip name`. The reference holds one pin list, read from
+       the source (`:219-225`), so a parent that binds `a` on a `Foo` whose source declares `IN b`
+       gets `Undefined pin name: a`. HACER's declared `inputs` and `outputs` are a second list, the
+       one parents are checked against, and this check keeps it equal to the first.
+     - The exception: a parent that binds a pin only the source declares, `Foo(b=a, out=o)` over a
+       `Foo` declaring `a`, is refused first, naming one side: by `parseSpec` as
+       `Foo has no pin "b"`, or for an `'hdl'` parent by `compileHDL` as
+       `Part "Foo" has no pin "b"`. The web IDE accepts that parent (`o` = ¬`a`).
+     - Rule 3's cache rule gains no names: the check reads only the definition and the name it was
+       looked up by.
+     - Pinned by the #903 cases in `src/core/spec/compileSpec.nesting.test.ts` and
+       `src/core/chips/evaluateChip.test.ts`.
    - `compileSpec` never throws and never changes its input. A refusal belongs to the run panel; the
      document and its parse diagnostics are unchanged (§1.1).
 3. **The cache rule,** in `evaluateChip`, for `'hdl'` and `'circuit'` chips alike. A cached evaluator
