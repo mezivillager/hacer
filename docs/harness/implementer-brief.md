@@ -41,4 +41,4 @@ A verification command names a behaviour, not an exact new file path — if the 
 - Do **not** merge, and do **not** keep watching CI after the PR is open — report and stop (a watcher costs tokens and adds nothing; the coordinator merges on green). Report: PR URL, reviewable line count (`git diff --numstat origin/main...HEAD`), test names added, and every open question — flag what you could not verify rather than guessing.
 
 ## Blocked exit
-If the issue is ambiguous, impossible as written, or needs a harness change: label it `needs-human`, write the question **and your recommended answer** on the issue, release the claim, and stop. That is a good outcome, not a failure.
+If the issue is ambiguous, impossible as written, or needs a harness change: write the question **and your recommended answer** on the issue, remove `agent-ready`, release the claim, and stop; the coordinator queues the question in `judge-inbox.md` for the judge (R889). Label it `needs-human` only when what it needs is an owner action (`issue-form.md`). That is a good outcome, not a failure.

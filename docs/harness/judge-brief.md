@@ -24,10 +24,11 @@ never pushed.
 
 ## 2. The reviews
 
-As `inbox-panel-brief.md` §2, on `../hacer-wt-judge-<id>`, with three changes: `--models fable,grok` in both the check and the
-launch (Fable verify, Grok read-only; R889 seats Fable here and in no other subagent role), the run
-dir named `<YYYY-MM-DD>-judge-<id>`, and this summary template, under the same rules (the Write tool
-or a quoted heredoc; at most 1,200 characters; no heading, question mark or steering phrase):
+As `inbox-panel-brief.md` §2, on `../hacer-wt-judge-<id>`, with three changes: `--models fable,grok`
+in both the check and the launch (Fable verify, Grok read-only; R889 seats Fable here and in no
+other subagent role), the run dir named `<YYYY-MM-DD>-judge-<id>`, and this summary template, under
+the same rules (the Write tool or a quoted heredoc; at most 1,200 characters; no heading, question
+mark or steering phrase):
 
 > `<ID>` in `docs/harness/judge-inbox.md` asks <the decision>. Its options are <A, B, …>, and it
 > rests on <the entry's Evidence line, with its sources>. The commit sets its status to approved,

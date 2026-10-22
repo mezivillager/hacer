@@ -17,9 +17,14 @@ node scripts/backlog.mjs ready
 git ls-remote origin 'refs/heads/claim/*' # open claims (holder is in the issue's claim comment)
 ls docs/harness/sessions/*-handoff.md 2>/dev/null   # foreign / paused coordinator state
 ```
-`inbox.mjs queue` files an `inbox-review` issue for each `proposed` entry in the three inboxes that
-has none yet, open or closed, so it never files one twice; the inbox panel decides each
-(`docs/harness/inbox-panel-brief.md`), and the owner may override.
+`inbox.mjs queue` files a review issue for each `proposed` entry in the four inboxes that has none
+yet, open or closed, so it never files one twice: `inbox-review` for the inbox panel
+(`docs/harness/inbox-panel-brief.md`), `judge-review` for a `docs/harness/judge-inbox.md` entry.
+The owner may override either.
+
+A `judge due:` line from `ready` means the top pick is a decision: run `docs/harness/judge-brief.md`
+on it (claim, approval commit, reviews in the background) before the first other claim. The loop
+goes on while its reviews run.
 
 Show the top pick with its *why* (portfolio row, why it is pickable, what it is blocked by if
 anything) and the next two. If nothing is pickable, say what would unblock the closest one
@@ -79,7 +84,8 @@ goes stale 48 h after its latest claim comment while no open PR carries the issu
 `docs/harness/sessions/COORDINATOR-HANDOFF.md`.
 
 ## 3. Build — `ha-prompt-it`, tier Light unless the issue says otherwise
-An `inbox-review` issue is not built: follow `docs/harness/inbox-panel-brief.md` from its step 1.
+An `inbox-review` issue is not built: follow `docs/harness/inbox-panel-brief.md` from its step 1;
+a `judge-review` issue, `docs/harness/judge-brief.md`.
 **Measured facts before dispatch:** run `node scripts/issue-facts.mjs <n>` on the issue, or `--file` on the brief, and fix every package or path it reports that the text says exists; every other fact the text asserts, such as a count, a date, a behaviour or an inference, gets a Measured-facts row naming the command that measured it, because no scanner can tell which sentence is a claim or which command proves it.
 Follow `docs/harness/implementer-brief.md` exactly: own worktree, red commit (tests + compiling
 stub), green commits, definition of done, PR with `Fixes #<n>`, labels. The issue body is the spec —
@@ -127,14 +133,16 @@ missing any agent's count is written `unmeasured`; the line's form is in `docs/h
 ## "Queue up: …"
 Shape the idea into issues in the form (`docs/harness/issue-form.md`): goal, acceptance criteria as tests, verification command, scope, files, risk, blocked-by.
 `agent-ready` only if risk:0/1, the criteria are unambiguous, and the seeds are within the
-blast-radius threshold (`docs/harness/README.md` § *How wide is an issue?*); otherwise `needs-human`
-with your recommended answer. `risk:2` means what `docs/harness/issue-form.md` says it means.
+blast-radius threshold (`docs/harness/README.md` § *How wide is an issue?*); otherwise the question,
+with your recommended answer, is a `docs/harness/judge-inbox.md` entry for the judge (R889).
+`needs-human` is for an owner action only. `risk:2` means what `docs/harness/issue-form.md` says it means.
 Exactly three exceptions make a `risk:2` issue `agent-ready`, each still with unambiguous criteria
-and seeds within the threshold; any other `risk:2` issue stays `needs-human`:
+and seeds within the threshold; any other `risk:2` issue goes to the judge:
 1. Product-role polish issues, when the fix is concrete (owner's ruling on #269;
    `docs/harness/product-brief.md`).
-2. An issue the inbox panel files on approval, at any risk, with no ruling in front of it (R844;
-   `docs/harness/inbox-panel-brief.md` §3 item 5).
+2. An issue the inbox panel files on approval, or the judge files or labels on its decision, at any
+   risk, with no ruling in front of it (R844, R889; `docs/harness/inbox-panel-brief.md` §3 item 5,
+   `docs/harness/judge-brief.md` §3 item 5).
 3. **Plan slices at `risk:2`:** the coordinator may file a `risk:2` issue `agent-ready` only when
    all four hold: it is a slice of an owner-approved plan, or a follow-up filed from a review of a
    PR in that plan's series and inside the plan's scope; its body links the owner's approval of that
@@ -144,7 +152,8 @@ and seeds within the threshold; any other `risk:2` issue stays `needs-human`:
    semantics under `src/core/**` or `src/simulation/**`.
 
 No exception lifts the `docs/harness/issue-form.md` security boundary (content triaged from
-outside, and `bot-filed` issues, stay `needs-human`), the `risk:0`/`risk:1` cap on retro mechanise
+outside stays `needs-human`, and a `bot-filed` issue becomes `agent-ready` only by the owner, or by
+the judge when the loop measured its defect), the `risk:0`/`risk:1` cap on retro mechanise
 drafts (`docs/harness/retro-brief.md` § Outputs), or the foundation gate (`docs/portfolio.md`).
 
 Split anything over the budget before it is ready. An epic or ADR in `spine`,
