@@ -110,6 +110,10 @@ const VERIFIER_WORKTREE_SENTENCE =
 const VERIFIER_SCRATCH_SENTENCE =
   'Write your definition-of-done logs and your verdict body only in the folder `SCRATCH:` names, and post the verdict with `--body-file`, never inline.'
 
+/** Builder rules stated verbatim in the implementer brief and in the builder agent's body. */
+const SCRATCH_ONLY_SENTENCE = 'Write every scratch file (PR bodies, logs) only in the folder `SCRATCH:` names.'
+const BODY_FILE_SENTENCE = 'Pass every body you write with `--body-file`, never inline.'
+
 /**
  * The rules each harness brief exists to state. `present` must still be there; `absent`
  * was deliberately taken out and must not come back.
@@ -152,8 +156,8 @@ export const BRIEF_INVARIANTS = [
       },
       { id: 'stop-after-the-pr', phrases: ['do **not** keep watching CI'] },
       // Parallel agents sharing one scratchpad overwrote each other's PR bodies and logs (L069).
-      { id: 'scratch-only-in-the-worktree-folder', phrases: ['Write every scratch file (PR bodies, logs) only in the folder `SCRATCH:` names.'] },
-      { id: 'body-file-never-inline', phrases: ['Pass every body you write with `--body-file`, never inline.'] },
+      { id: 'scratch-only-in-the-worktree-folder', phrases: [SCRATCH_ONLY_SENTENCE] },
+      { id: 'body-file-never-inline', phrases: [BODY_FILE_SENTENCE] },
       {
         id: 'fallback-worktree-makes-scratch',
         phrases: [
@@ -299,6 +303,8 @@ export const AGENT_INVARIANTS = [
     body: [
       { id: 'never-edit-main', phrases: ['Never edit the `main` checkout'] },
       { id: 'stop-after-the-pr', phrases: ['Stop when the PR is open: do not merge, and do not keep watching CI.'] },
+      { id: 'scratch-only-in-the-worktree-folder', phrases: [SCRATCH_ONLY_SENTENCE] },
+      { id: 'body-file-never-inline', phrases: [BODY_FILE_SENTENCE] },
     ],
   },
   {

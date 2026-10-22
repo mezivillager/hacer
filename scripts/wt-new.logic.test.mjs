@@ -1,5 +1,5 @@
 import { execFileSync, spawnSync } from 'node:child_process'
-import { existsSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
+import { existsSync, lstatSync, mkdirSync, mkdtempSync, readdirSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { afterEach, describe, it, expect } from 'vitest'
@@ -140,14 +140,19 @@ describe('formatFreshness', () => {
 describe('scratchFolder', () => {
   const tmp = '/tmp/t'
   const common = '/repo/.git'
+  const folderOf = (gitDir, commonDir = common) => scratchFolder(tmp, gitDir, commonDir).path
 
-  it('gives two linked worktrees different folders, keyed by the last segment of each git dir', () => {
-    expect(scratchFolder(tmp, '/repo/.git/worktrees/hacer-wt-881-a', common)).toEqual({
-      ok: true, path: '/tmp/t/hacer-scratch/hacer-wt-881-a',
-    })
-    expect(scratchFolder(tmp, '/repo/.git/worktrees/hacer-wt-882-b', common)).toEqual({
-      ok: true, path: '/tmp/t/hacer-scratch/hacer-wt-882-b',
-    })
+  it('gives two linked worktrees different folders, each named for its worktree id and a hash of the repository', () => {
+    expect(folderOf('/repo/.git/worktrees/hacer-wt-881-a')).toMatch(/^\/tmp\/t\/hacer-scratch\/hacer-wt-881-a-[0-9a-f]{8}$/)
+    expect(folderOf('/repo/.git/worktrees/hacer-wt-882-b')).toMatch(/^\/tmp\/t\/hacer-scratch\/hacer-wt-882-b-[0-9a-f]{8}$/)
+  })
+
+  it('gives worktrees with the same id in two clones two different folders', () => {
+    expect(folderOf('/clone-a/.git/worktrees/wt-x', '/clone-a/.git')).not.toBe(folderOf('/clone-b/.git/worktrees/wt-x', '/clone-b/.git'))
+  })
+
+  it('keys a worktree to the same folder whether or not its common dir ends in a slash', () => {
+    expect(folderOf('/repo/.git/worktrees/wt-x', '/repo/.git/')).toBe(folderOf('/repo/.git/worktrees/wt-x'))
   })
 
   for (const gitDir of ['/repo/.git', '/repo/.git/']) {
@@ -192,21 +197,24 @@ describe('wt-new.mjs scratch <worktree-path>', () => {
     git('init', '-q', repo)
     git('-C', repo, '-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-q', '--allow-empty', '-m', 'init')
     const tmp = path.join(root, 'tmp')
-    const addWorktree = (name) => {
-      git('-C', repo, 'worktree', 'add', '-q', '--detach', path.join(root, name))
-      return path.join(root, name)
+    const addWorktree = (name, { from = repo, parent = root } = {}) => {
+      git('-C', from, 'worktree', 'add', '-q', '--detach', path.join(parent, name))
+      return path.join(parent, name)
     }
-    const scratch = (target) =>
-      spawnSync(process.execPath, [CLI, 'scratch', target], { cwd: repo, env: { ...process.env, TMPDIR: tmp }, encoding: 'utf8' })
+    const scratch = (target, tmpDir = tmp) =>
+      spawnSync(process.execPath, [CLI, 'scratch', target], { cwd: repo, env: { ...process.env, TMPDIR: tmpDir }, encoding: 'utf8' })
     return { root, repo, tmp, git, addWorktree, scratch }
   }
+
+  const folderFrom = (run) => /^SCRATCH: (.+)\n$/.exec(run.stdout)?.[1]
 
   it('makes the worktree\'s folder empty and prints it, from the path given, not the current directory', () => {
     const fx = fixture()
     const run = fx.scratch(fx.addWorktree('wt-a'))
-    const folder = path.join(fx.tmp, 'hacer-scratch', 'wt-a')
+    const folder = folderFrom(run)
     expect(run.status).toBe(0)
-    expect(run.stdout).toBe(`SCRATCH: ${folder}\n`)
+    expect(path.dirname(folder)).toBe(path.join(fx.tmp, 'hacer-scratch'))
+    expect(path.basename(folder)).toMatch(/^wt-a-[0-9a-f]{8}$/)
     expect(readdirSync(folder)).toEqual([])
   })
 
@@ -230,8 +238,7 @@ describe('wt-new.mjs scratch <worktree-path>', () => {
   it('empties a folder that an earlier worktree with the same id left behind', () => {
     const fx = fixture()
     const worktree = fx.addWorktree('wt-a')
-    const folder = path.join(fx.tmp, 'hacer-scratch', 'wt-a')
-    expect(fx.scratch(worktree).status).toBe(0)
+    const folder = folderFrom(fx.scratch(worktree))
     writeFileSync(path.join(folder, 'pr-body.md'), 'the earlier worktree\'s PR body')
     fx.git('-C', fx.repo, 'worktree', 'remove', worktree)
     expect(existsSync(path.join(folder, 'pr-body.md'))).toBe(true)
@@ -240,5 +247,56 @@ describe('wt-new.mjs scratch <worktree-path>', () => {
     const run = fx.scratch(worktree)
     expect(run.stdout).toBe(`SCRATCH: ${folder}\n`)
     expect(readdirSync(folder)).toEqual([])
+  })
+
+  it('gives the worktrees named wt-x of two clones two folders, so one clone\'s scratch keeps the other\'s files', () => {
+    const fx = fixture()
+    const [inA, inB] = ['clone-a', 'clone-b'].map((name) => {
+      const clone = path.join(fx.root, name)
+      fx.git('clone', '-q', fx.repo, clone)
+      return fx.addWorktree('wt-x', { from: clone, parent: path.join(fx.root, `${name}-worktrees`) })
+    })
+    const folderA = folderFrom(fx.scratch(inA))
+    writeFileSync(path.join(folderA, 'pr-body.md'), 'clone A\'s PR body')
+
+    const folderB = folderFrom(fx.scratch(inB))
+    expect(folderB).not.toBe(folderA)
+    expect(readdirSync(folderA)).toEqual(['pr-body.md'])
+    expect(readdirSync(folderB)).toEqual([])
+  })
+
+  it('refuses with exit 1 and empties nothing when <tmp>/hacer-scratch is a symlink', () => {
+    const fx = fixture()
+    const worktree = fx.addWorktree('wt-a')
+    const id = path.basename(folderFrom(fx.scratch(worktree, path.join(fx.root, 'other-tmp'))))
+    const victim = path.join(fx.root, 'victim')
+    mkdirSync(path.join(victim, id), { recursive: true })
+    writeFileSync(path.join(victim, id, 'keep.txt'), 'not wt-new\'s')
+    mkdirSync(fx.tmp)
+    symlinkSync(victim, path.join(fx.tmp, 'hacer-scratch'))
+
+    const run = fx.scratch(worktree)
+    expect(run.status).toBe(1)
+    expect(run.stdout).toBe('')
+    expect(run.stderr).toMatch(/symlink/)
+    expect(readdirSync(path.join(victim, id))).toEqual(['keep.txt'])
+  })
+
+  it('refuses with exit 1 and empties nothing when the worktree\'s own folder is a symlink', () => {
+    const fx = fixture()
+    const worktree = fx.addWorktree('wt-a')
+    const folder = folderFrom(fx.scratch(worktree))
+    const victim = path.join(fx.root, 'victim')
+    mkdirSync(victim)
+    writeFileSync(path.join(victim, 'keep.txt'), 'not wt-new\'s')
+    rmSync(folder, { recursive: true })
+    symlinkSync(victim, folder)
+
+    const run = fx.scratch(worktree)
+    expect(run.status).toBe(1)
+    expect(run.stdout).toBe('')
+    expect(run.stderr).toMatch(/symlink/)
+    expect(lstatSync(folder).isSymbolicLink()).toBe(true)
+    expect(readdirSync(victim)).toEqual(['keep.txt'])
   })
 })
