@@ -12,7 +12,7 @@ export interface Part { id: PartId; chip: string }
 
 /**
  * One end of a net. `slice` is the pin's (or port's) own bits; the signal's are in the net id.
- * A `constant` is a literal's source: it has no pin, drives only the net its literal names, and is every bit of the pin it feeds.
+ * A `constant` is a literal's source: it has no pin, drives only the net its literal names, and is every bit of the connection it feeds.
  */
 export type Ref =
   | { kind: 'part-pin'; partId: PartId; pin: string; slice?: HDLSlice }
