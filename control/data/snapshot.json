@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-22T04:19:55.277Z",
+  "generatedAt": "2026-10-22T04:25:27.597Z",
   "head": {
     "sha": "33ae5ec7b9ae01893281670f0125f446b294c527",
     "date": "2026-10-22T07:18:55+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T04:19:55.277Z",
+      "fetchedAt": "2026-10-22T04:25:27.597Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T04:19:55.277Z",
+      "fetchedAt": "2026-10-22T04:25:27.597Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T04:19:55.277Z",
+      "fetchedAt": "2026-10-22T04:25:27.597Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-22T04:19:55.277Z",
+      "fetchedAt": "2026-10-22T04:25:27.597Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-22T04:19:55.277Z",
+      "fetchedAt": "2026-10-22T04:25:27.597Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-22T04:19:55.277Z",
+      "fetchedAt": "2026-10-22T04:25:27.597Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-22T04:19:55.277Z",
+      "fetchedAt": "2026-10-22T04:25:27.597Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-22T04:19:55.277Z",
+      "fetchedAt": "2026-10-22T04:25:27.597Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-22T04:19:55.277Z",
+      "fetchedAt": "2026-10-22T04:25:27.597Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-22T04:19:55.277Z",
+      "fetchedAt": "2026-10-22T04:25:27.597Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-22T04:19:55.277Z",
+      "fetchedAt": "2026-10-22T04:25:27.597Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-22T04:19:55.277Z",
+      "fetchedAt": "2026-10-22T04:25:27.597Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-22T04:19:55.277Z",
+      "fetchedAt": "2026-10-22T04:25:27.597Z",
       "status": "ok"
     }
   },
@@ -81,16 +81,13 @@
         "slug": "foundation",
         "epicNumber": 318,
         "open": 29,
-        "ready": 1,
-        "inProgress": 1,
+        "ready": 0,
+        "inProgress": 2,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 2,
         "filedElsewhere": [],
-        "next": {
-          "number": 338,
-          "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)"
-        },
+        "next": null,
         "title": "Foundation audit: is the codebase structured for the autonomous loop? Measured audit, prioritized refactorings, fitness functions",
         "subIssues": {
           "completed": 21,
@@ -408,11 +405,6 @@
         "number": 257,
         "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
         "project": "harness"
-      },
-      {
-        "number": 338,
-        "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
-        "project": "foundation"
       }
     ],
     "dormant": {
@@ -438,21 +430,6 @@
         "project": "harness",
         "rank": 2,
         "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 338,
-        "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
-        "labels": [
-          "agent-ready",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
         "pickable": true,
         "reason": null
       },
@@ -1192,6 +1169,22 @@
         "lane": "feature",
         "pickable": false,
         "reason": "unshaped"
+      },
+      {
+        "number": 338,
+        "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "claimed"
       },
       {
         "number": 339,
@@ -2566,10 +2559,10 @@
         889
       ],
       "foundation": [
-        338,
         151,
         184,
         325,
+        338,
         339,
         379,
         380,
@@ -2754,6 +2747,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/911",
         "author": "mezivillager",
         "labels": [
+          "released",
           "risk:1",
           "fidelity",
           "project:foundation"
@@ -4326,6 +4320,31 @@
   },
   "claims": {
     "items": [
+      {
+        "number": 338,
+        "ref": "refs/heads/claim/338",
+        "sha": "33ae5ec7b9ae01893281670f0125f446b294c527",
+        "state": "OPEN",
+        "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
+        "url": "https://github.com/mezivillager/hacer/issues/338",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:foundation"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-to-70",
+          "branch": "test/338-differential-harness",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-22T04:22:20Z",
+          "url": "https://github.com/mezivillager/hacer/issues/338#issuecomment-6332633162"
+        }
+      },
       {
         "number": 470,
         "ref": "refs/heads/claim/470",
@@ -6378,9 +6397,14 @@
     },
     "releases": [
       {
+        "tag": "v2.66.4",
+        "publishedAt": "2026-10-22T04:22:34Z",
+        "isLatest": true
+      },
+      {
         "tag": "v2.66.3",
         "publishedAt": "2026-10-22T04:12:47Z",
-        "isLatest": true
+        "isLatest": false
       },
       {
         "tag": "v2.66.2",
@@ -7077,7 +7101,7 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-08T04:19:55.277Z",
+      "since": "2026-10-08T04:25:27.597Z",
       "merged": 104,
       "openToMergeHours": {
         "median": 0.3,
@@ -11387,12 +11411,15 @@
         "pr": null,
         "sha": "33ae5ec7b9ae01893281670f0125f446b294c527",
         "check": "ci",
-        "conclusion": null,
-        "completedAt": null,
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-22T04:22:23Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/39721689558/job/119636370378",
-        "line": null,
-        "verdict": null,
-        "fields": {},
+        "line": "LAYER-RATCHET: 69 known violations (37 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 69,
+          "new": 0
+        },
         "disagrees": false
       },
       {
