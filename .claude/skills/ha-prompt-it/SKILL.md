@@ -327,11 +327,11 @@ milestone, rule and proceed, ledger every ruling, never stall.
 - **One review per milestone in Full; in Standard only when a trigger fires; never per task.** In Full,
   when a milestone's tasks are all green, dispatch ONE fresh reviewer (`subagent_type: reviewer`), handed the
   milestone's brief, the implementers' reports and the milestone diff as file paths,
-  returning both verdicts (spec compliance AND quality) over the whole milestone. Quality includes duplicated logic introduced by the milestone — across its lanes
-  and against code the repository already has; a duplication finding is fixed in
-  the milestone, never parked. It also includes the comment rule and the size check
-  (Standing rules), each under its own heading, from the `diff-size-report` output in
-  the reviewer's brief.
+  returning both verdicts (spec compliance AND quality) over the whole milestone. Quality includes
+  the whole-branch review's passes 3 to 9 (Phase 3's whole-branch bullet) over the milestone diff —
+  correctness and safety, reuse, simplification, efficiency, altitude, the comment rule and the size
+  check, each under its own heading, from the `diff-size-report` output in the reviewer's brief; a
+  duplication finding (pass 4's, or pass 5's copy-paste) is fixed in the milestone, never parked.
   Task completions still land with their hash in the ledger; they do not each
   buy a reviewer.
 
@@ -360,8 +360,8 @@ milestone, rule and proceed, ledger every ruling, never stall.
   Inside Phase 3 its brief is the milestone reviewer's brief for a harness ticket when a milestone
   review runs; a Standard harness ticket with no fired trigger meets the verifier only at the PR.
   When `docs/harness/verifier-brief.md` is the reviewer's brief, the coordinator appends the
-  `diff-size-report` output to its inputs and maps a size should-fix to a Blocker or a Nit by
-  ruling.
+  `diff-size-report` output and the milestone pass headings to its inputs and maps each pass's
+  should-fix to a Blocker or a Nit by ruling.
 - **A Standard run re-sizes when it changes class.** A contract revision after Gate 1 that
   introduces a new seam — and green work that needs one is such a revision — makes the run Full from
   the next milestone: the ledger records the re-size with its cost if wrong; every remaining
@@ -380,20 +380,86 @@ milestone, rule and proceed, ledger every ruling, never stall.
   finding in the PR body, and in the commit message until the squash (Phase 4), never
   a new comment block, and the delta-read runs `diff-size-report` on the fix diff
   (`--direct <old> <new>` across an amend).
-- **The whole-branch review is never skipped, in any tier:** one fresh reviewer (`subagent_type:
-  reviewer`) over the whole diff before the definition of done runs, pointed at the ledger's parked
-  findings (in Standard its brief lists each milestone no reviewer saw and the plan review's
-  findings ruled no-change or deferred, with the rulings).It checks the branch for duplicated logic as a named item; duplication is fixed
-before closing, never parked as a follow-up. The comment rule and the size check (Standing
-rules) are named items too, from `diff-size-report` over the whole branch; their should-fixes
-are fixed before closing. Its fix wave ends with the coordinator's delta-read.
+- **`/simplify` only on request, never as a stage.** The built-in skill's four cleanup agents are
+  passes 4 to 7 without the contract, and its session applies their edits itself: no verification
+  pass, no test run, no record outside the chat; with no upstream it diffs against `main`, and with
+  no `main` against `HEAD~1` alone. When Mezi asks for it, or accepts the coordinator's offer —
+  offered at the end of Phase 3 of a Light run whose diff exceeds trigger (iii)'s numbers — run it
+  on a clean, committed tree with the run's base as its argument,
+  `/simplify origin/<default>...HEAD`, before the whole-branch review, so the fresh eyes see its
+  result; the skill documents a PR number, a branch or a path as its target, so check the diff
+  command its Phase 0 ran (the session's own tool call) and discard a run that diffed anything
+  else. Like the integration run after a lane merge, this is an exception to the coordinator
+  running no suite and leaving fixes to the implementer, because the skill applies its edits in
+  the session: read its summary against the contract and the rulings; revert every edit that
+  touches a ruled item, a test file or a module outside Writes; land what is left as one
+  `refactor` commit; at the squash it folds into the commit of the code it simplifies when that is
+  one milestone's and stays its own commit otherwise; re-run the milestone suite to a file; and
+  ledger its skips and the reverts as rulings.
+- **The whole-branch review — one fresh reviewer, nine named passes, one report shape.** Never
+  skipped, in any tier; it runs before the definition of done, after `/simplify` when that was
+  asked for. Dispatch ONE `subagent_type: reviewer` with a six-slot brief: Read names the contract
+  (the spec), the rulings, the plan where the tier has one, the ledger's parked findings and
+  deferrals, and in Standard each milestone no reviewer saw and the plan review's findings ruled
+  no-change or deferred, with the rulings; Measured facts carry base and head, the
+  `diff-size-report <base> <head>` output, every red's recorded failing line and the result file
+  of the last full suite run before dispatch (after `/simplify` when it ran); Writes is the report
+  file the brief names, only; Tests is `none — read-only` (the suite runs to a file before the
+  review, never inside it). The reviewer reads the rulings before the diff, so a decision the
+  ledger records is reported as a decision, never as a defect: that is the one thing a reviewer
+  handed only a diff cannot tell from an accident (measured 2026-10-22: the built-in `/simplify`,
+  handed a merged branch's diff without its contract, reversed two ruled items with every test
+  green). It then takes the passes below in order, over `git diff <base>...HEAD` and the unchanged
+  lines around every hunk, and reports under one heading per pass, in this order, so a missing
+  heading is a visible gap:
+
+  1. **Contract** — each contract item and success criterion: met at `file:line` and proved by
+     which test, or not met; every deviation, and whether a ruling covers it; then the
+     declined-to-judge list — design choices outside the contract it chose not to grade, one line
+     each, for the coordinator to rule on.
+  2. **Proof** — every red's recorded failing line against the test as it stands; tests that
+     assert behaviour, not mocks; unchanged neighbouring lines the change made false; what the
+     suite's result file shows.
+  3. **Correctness and safety** — failure paths and what they log, return or persist (a secret,
+     PHI or PII in a log or an output is a blocker); data loss; concurrency; auth; a migration or
+     rollback; backward compatibility; and the named risk classes of Phase 3's trigger (ii).
+  4. **Reuse** — new code that re-implements what the repository already has (grep the shared and
+     utility modules and the files adjacent to the change), naming the existing helper to call
+     instead; and logic the branch wrote twice across its lanes.
+  5. **Simplification** — redundant or derivable state, copy-paste with slight variation, deep
+     nesting, dead code left behind; naming the simpler form that does the same job.
+  6. **Efficiency** — redundant computation or repeated I/O, independent operations run
+     sequentially, blocking work added to startup or a hot path, a long-lived object built from a
+     closure that keeps a large scope alive; naming the cheaper alternative, with the lines
+     compared, since this seat runs nothing.
+  7. **Altitude** — whether each change fixes the root cause at the right depth: a special case
+     layered on shared infrastructure is a sign the fix is not deep enough, so name the general
+     change, and name the ruling, if any, that chose the shallower one.
+  8. **Comment rule** (Standing rules).
+  9. **Size check** (Standing rules).
+
+  Every finding is blocker / should-fix / nit with its `file:line`, its evidence (a measurement
+  where one was possible, otherwise the lines compared) and the fix; a pass with no finding says
+  what it compared; the report ends with what could not be verified; the final message is the two
+  verdicts (contract and quality) and the counts per pass, in at most six lines, the report file
+  holding the rest. The coordinator rules on every finding, fix or no-change with the reason,
+  ledgered, and three dispositions follow from the passes themselves: a reuse, simplification or
+  efficiency fix that preserves behaviour carries no red test and is proved by the suite staying
+  green; an altitude finding whose general change alters behaviour the contract names is a
+  contract revision — the delta review, never a quiet rewrite; a finding whose fix lives in a
+  module outside the branch's Writes is a ledgered follow-up for the PR body unless Mezi widens
+  Writes for that fix — never fixed silently. Duplication (pass 4's findings and pass 5's
+  copy-paste) and the should-fixes of the comment rule and the size check are fixed before
+  closing, never parked; a duplication fix that needs a shared module widens Writes, ledgered as a
+  ruling. The fix wave ends with the coordinator's delta-read, as every fix round does — no
+  re-review agent.
 - **No parked agents, no coordinator-run suites.** An agent whose handback you
   have read is resumed or stopped in that same turn — an agent waiting on a
   `SendMessage` is dead wall time. The coordinator reads reports and diffs, not
   transcripts, and runs no suite itself: its context is the run's latency
-  multiplier. The one exception is the integration run after a lane merge
+  multiplier. The exceptions are the integration run after a lane merge
   (lane condition 4, below), which goes to a file — exit code checked, summary
-  line read, never through a pipe. Scripted checks (probes, smoke calls, comparators) belong to a data lane
+  line read, never through a pipe — and a `/simplify` run on request (Phase 3). Scripted checks (probes, smoke calls, comparators) belong to a data lane
   (`subagent_type: data-lane`) as well; a coordinator runs one only when it is a
   single command whose output goes to a file and only its summary line is read.
 
@@ -523,8 +589,9 @@ after (to a file, summary line). A pass that finds nothing says what it compared
 
 **Suite runs at integration** go to a file in the run folder: check the exit
 code, then read the summary line from the file — never the full output, never
-through a pipe. This is the one suite a coordinator runs itself; every other
-run belongs to a lane or a verification agent (`subagent_type: data-lane`).
+through a pipe. This and the suite after a `/simplify` run on request are the only suites a
+coordinator runs itself; every other run belongs to a lane or a verification agent
+(`subagent_type: data-lane`).
 
 Cap at **three or four implementer lanes**: the limit is how many lanes' evidence
 I can verify before the next wave lands. **Always parallel:** read-only fan-out
