@@ -175,12 +175,20 @@ const CROSSED_LOOP = circuit('CrossedLoop', {
   ],
 })
 
+interface ChainShape { feed?: 'input' | 'missing' | 'loop'; closed?: boolean }
+
 /** `a` into a Not through `stages` junctions or joiner/splitter pairs, each stage fed twice by the one before. */
-function chain(kind: 'junction' | 'bus', stages: number): SerializedCircuit {
+function chain(kind: 'junction' | 'bus', stages: number, { feed = 'input', closed = false }: ChainShape = {}): SerializedCircuit {
   const wires: SerializedWire[] = []
   const add = (from: Endpoint, to: Endpoint, width?: number): void => void wires.push(wire(`w${wires.length + 1}`, from, to, width))
   const busComponents: Array<ReturnType<typeof bus>> = []
-  let feeds = [fromIn('ia'), fromIn('ia')]
+  if (feed === 'loop') {
+    busComponents.push(bus('loopJoin', 'joiner', 2), bus('loopSplit', 'splitter', 2))
+    add(busEnd('loopJoin', 'out'), busEnd('loopSplit', 'in'), 2)
+    add(busEnd('loopSplit', 'out0'), busEnd('loopJoin', 'in0'), 1)
+  }
+  const first = { input: fromIn('ia'), missing: fromIn('ghost'), loop: busEnd('loopSplit', 'out0') }[feed]
+  let feeds = [first, first]
   for (let s = 0; s < stages; s++) {
     if (kind === 'junction') {
       for (const from of feeds) add(from, junctionEnd(`j${s}`))
@@ -192,12 +200,30 @@ function chain(kind: 'junction' | 'bus', stages: number): SerializedCircuit {
     add(busEnd(`join${s}`, 'out'), busEnd(`split${s}`, 'in'), 2)
     feeds = [busEnd(`split${s}`, 'out0'), busEnd(`split${s}`, 'out1')]
   }
+  if (closed && kind === 'junction') add(junctionEnd(`j${stages - 1}`), junctionEnd('j0'))
+  if (closed && kind === 'bus') add(busEnd(`split${stages - 1}`, 'out1'), busEnd('join0', 'in0'), 1)
   add(feeds[0], pinIn('g1', 0))
   add(pinOut('g1'), toOut('oo'))
   const junctions = kind === 'bus' ? [] : Array.from({ length: stages }, (_, s) => ({
     id: `j${s}`, position: ZERO, signalId: `signal-j${s}`, wireIds: wires.filter((w) => [w.from, w.to].some((e) => e.entityId === `j${s}`)).map((w) => w.id),
   }))
-  return circuit(`Chain${stages}`, { inputNodes: [node('ia', 'a')], outputNodes: [node('oo', 'out')], gates: [gate('g1', 'Not')], busComponents, wires, junctions })
+  const inputNodes = feed === 'loop' ? [] : [node('ia', 'a')]
+  return circuit(`Chain${stages}`, { inputNodes, outputNodes: [node('oo', 'out')], gates: [gate('g1', 'Not')], busComponents, wires, junctions })
+}
+
+/** IN a through `stages` splitter→joiner pairs, `width` bits wide, to OUT out. */
+function pipeline(stages: number, width: number): SerializedCircuit {
+  const wires: SerializedWire[] = []
+  const add = (from: Endpoint, to: Endpoint, bits: number): void => void wires.push(wire(`w${wires.length + 1}`, from, to, bits))
+  const busComponents = Array.from({ length: stages }, (_, s) => [bus(`split${s}`, 'splitter', width), bus(`join${s}`, 'joiner', width)]).flat()
+  let from = fromIn('ia')
+  for (let s = 0; s < stages; s++) {
+    add(from, busEnd(`split${s}`, 'in'), width)
+    for (let i = 0; i < width; i++) add(busEnd(`split${s}`, `out${i}`), busEnd(`join${s}`, `in${i}`), 1)
+    from = busEnd(`join${s}`, 'out')
+  }
+  add(from, toOut('oo'), width)
+  return circuit(`Pipeline${stages}`, { inputNodes: [node('ia', 'a', width)], outputNodes: [node('oo', 'out', width)], busComponents, wires })
 }
 
 const LOCAL = [WITH_NOR, PARTS, PLACED, NAMES, C7, OUTPUT_AS_SOURCE, FAN_OUT, DUPLICATE, C8b]
@@ -463,6 +489,38 @@ describe('fromLegacyCircuit', () => {
     const { doc } = load(saved)
     expect(performance.now() - started).toBeLessThan(100)
     expect(printSpec(doc)).toContain('    Not(in=a, out=out); // #p1\n}')
+  })
+
+  it.each(['junction', 'bus'] as const)('a chain of 20 two-feed %s stages closed into a loop imports in under 100 ms', (kind) => {
+    const saved = chain(kind, 20, { closed: true })
+    const started = performance.now()
+    const { doc } = load(saved)
+    expect(performance.now() - started).toBeLessThan(100)
+    expect(printSpec(doc)).toContain('    Not(in=a, in=false, out=out); // #p1\n}')
+  })
+
+  it.each(['junction', 'bus'] as const)('a chain of 20 two-feed %s stages fed from a missing input and closed imports in under 100 ms', (kind) => {
+    const saved = chain(kind, 20, { feed: 'missing', closed: true })
+    const started = performance.now()
+    const { doc } = load(saved)
+    expect(performance.now() - started).toBeLessThan(100)
+    expect(printSpec(doc)).toContain('    Not(in=false, out=out); // #p1\n}')
+  })
+
+  it.each(['junction', 'bus'] as const)('a chain of 20 two-feed %s stages fed by a bus-only loop imports in under 100 ms', (kind) => {
+    const saved = chain(kind, 20, { feed: 'loop' })
+    const started = performance.now()
+    const { doc } = load(saved)
+    expect(performance.now() - started).toBeLessThan(100)
+    expect(printSpec(doc)).toContain('    Not(in=false, out=out); // #p1\n}')
+  })
+
+  it('a 64-stage, 16-bit loop-free bus pipeline imports in under 100 ms', () => {
+    const saved = pipeline(64, 16)
+    const started = performance.now()
+    const { doc } = load(saved)
+    expect(performance.now() - started).toBeLessThan(100)
+    expect(printSpec(doc)).toContain('    wire out = a;\n}')
   })
 
   it('a bit is noted as looping back to itself only when it has no other driver', () => {
