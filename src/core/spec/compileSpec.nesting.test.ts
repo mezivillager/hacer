@@ -3,7 +3,7 @@ import { getBuiltinChipRegistry } from '../chips/appRegistry'
 import { combineRegistries } from '../chips/combineRegistries'
 import { evaluateChip } from '../chips/evaluateChip'
 import { createChipRegistry, type ChipRegistry } from '../chips/registry'
-import type { ChipDefinition } from '../chips/types'
+import type { ChipDefinition, ChipPin } from '../chips/types'
 import * as compilerModule from '../hdl/compiler'
 import { compileHDL, hdlChipDefinition } from '../hdl/compiler'
 import { parseHDL } from '../hdl/parser'
@@ -232,6 +232,68 @@ describe('compileSpec — a registered part that does not compile refuses the sp
       expect(evaluateChip(result.chip, { a: 1 }, chips)).toEqual({ o: 0 })
       expect(evaluateChip(result.chip, { a: 0 }, chips)).toEqual({ o: 1 })
       expect(compiled(OUTER_NOT, ownFirst(NOT_BROKEN))).toEqual({ success: false, diagnostics: [refusal('p1', 'Outer › Not: Line 1: Signal "q" is read by part "Nand" but no part produces it')] })
+    })
+  })
+
+  describe('a definition whose name or pins differ from its source, or from the name it was looked up by, is refused (#903)', () => {
+    const OUTER_FOO = 'CHIP Outer { IN a; OUT o; PARTS: Foo(a=a, out=o); }'
+    const BAR_NOT = 'CHIP Bar { IN a; OUT out; PARTS: Not(in=a, out=out); }'
+    const pin = (name: string, width = 1): ChipPin => ({ name, width })
+    const hdl = (name: string, inputs: ChipPin[], outputs: ChipPin[], source: string): ChipDefinition => ({ name, inputs, outputs, implementation: { type: 'hdl', source } })
+    const over = (def: ChipDefinition): ChipRegistry => {
+      const registry = withBuiltins()
+      registry.register(def)
+      return registry
+    }
+    const refusedAs = (message: string) => ({ success: false, diagnostics: [refusal('p1', message)] })
+    function ast(source: string): HDLChip {
+      const parsed = parseHDL(source)
+      if (!parsed.success) throw new Error(`parse failed: ${source}`)
+      return parsed.chip
+    }
+
+    it("refuses a 'circuit' Outer over an 'hdl' Foo declaring IN a over source IN b, naming both sides, without throwing", () => {
+      expect(compiled(OUTER_FOO, over(hdl('Foo', [pin('a')], [pin('out')], FOO_B)))).toEqual(refusedAs('Outer › Foo: Foo declares IN a, but its source declares IN b'))
+    })
+
+    it("refuses it over an 'hdl' Foo whose source is CHIP Bar, in the reference's words", () => {
+      expect(compiled(OUTER_FOO, over(hdl('Foo', [pin('a')], [pin('out')], BAR_NOT)))).toEqual(refusedAs('Outer › Foo: Wrong chip name: Foo holds CHIP Bar'))
+    })
+
+    it("refuses it over a 'circuit' Foo declaring a over a document whose ins are b", () => {
+      const foo = { ...uncompiled(FOO_B, withBuiltins()), inputs: [pin('a')] }
+      expect(compiled(OUTER_FOO, over(foo))).toEqual(refusedAs('Outer › Foo: Foo declares IN a, but its source declares IN b'))
+    })
+
+    it("refuses it over a 'circuit' Foo whose document is named Bar", () => {
+      const foo = { ...uncompiled(BAR_NOT, withBuiltins()), name: 'Foo' }
+      expect(compiled(OUTER_FOO, over(foo))).toEqual(refusedAs('Outer › Foo: Wrong chip name: Foo holds CHIP Bar'))
+    })
+
+    it('refuses a Foo declaring IN a[16] over source IN a: the widths differ', () => {
+      const registry = over(hdl('Foo', [pin('a', 16)], [pin('out')], FOO_NOT))
+      expect(compiled('CHIP Outer { IN a[16]; OUT o; PARTS: Foo(a=a, out=o); }', registry)).toEqual(refusedAs('Outer › Foo: Foo declares IN a[16], but its source declares IN a'))
+    })
+
+    it('refuses a Foo declaring OUT o2 over source OUT out', () => {
+      const registry = over(hdl('Foo', [pin('a')], [pin('o2')], FOO_NOT))
+      expect(compiled('CHIP Outer { IN a; OUT o; PARTS: Foo(a=a, o2=o); }', registry)).toEqual(refusedAs('Outer › Foo: Foo declares OUT o2, but its source declares OUT out'))
+    })
+
+    it("refuses Outer under a registry view that returns the 'hdl' Bar for Foo, where Outer looks Foo up: compileSpec's engine pass and compileHDL's part resolution", () => {
+      const base = over(hdlChipDefinition(ast(BAR_NOT), BAR_NOT))
+      const asBar = (name: string): string => (name === 'Foo' ? 'Bar' : name)
+      const view: ChipRegistry = { ...base, get: (name) => base.get(asBar(name)), has: (name) => base.has(asBar(name)) }
+      expect(compiled(OUTER_FOO, view)).toEqual({ success: false, diagnostics: [{ code: 'compile', severity: 'error', message: 'Wrong chip name: Foo holds CHIP Bar' }] })
+      expect(compileHDL(ast(OUTER_FOO), view)).toEqual({ success: false, errors: [{ message: 'Line 1: Wrong chip name: Foo holds CHIP Bar', partName: 'Foo', line: 1 }] })
+    })
+
+    it('accepts a Foo2 declaring IN b, a over source IN a, b: pins compare by name and width, in any order', () => {
+      const registry = over(hdl('Foo2', [pin('b'), pin('a')], [pin('out')], 'CHIP Foo2 { IN a, b; OUT out; PARTS: And(a=a, b=b, out=out); }'))
+      const result = compiled('CHIP Outer { IN a, b; OUT o; PARTS: Foo2(a=a, b=b, out=o); }', registry)
+      if (!result.success) throw new Error(result.diagnostics.map((d) => d.message).join('; '))
+      expect(evaluateChip(result.chip, { a: 1, b: 0 }, registry)).toEqual({ o: 0 })
+      expect(evaluateChip(result.chip, { a: 1, b: 1 }, registry)).toEqual({ o: 1 })
     })
   })
 })

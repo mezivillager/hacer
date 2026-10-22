@@ -2,12 +2,14 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { createChipRegistry, registerBuiltin } from './registry'
 import type { ChipRegistry } from './registry'
-import { evaluateChip } from './evaluateChip'
+import { ChipCompileError, evaluateChip } from './evaluateChip'
 import { getBuiltinChipRegistry } from './appRegistry'
 import { combineRegistries } from './combineRegistries'
 import * as compilerModule from '../hdl/compiler'
+import { parseHDL } from '../hdl/parser'
 import { compileSpec } from '../spec/compileSpec'
 import { parseSpec } from '../spec/parseSpec'
+import type { ChipDefinition } from './types'
 
 const ONE_IN_ONE_OUT = { inputs: [{ name: 'a', width: 1 }], outputs: [{ name: 'out', width: 1 }] }
 
@@ -126,5 +128,48 @@ describe('evaluateChip', () => {
     const messages = fresh.success ? [] : fresh.diagnostics.map((d) => d.message)
     expect(messages).toContain('Outer › Inn: Part "Foo" has no pin "a"')
     expect(() => evaluateChip(outer, { a: 1 }, view)).toThrow(`evaluateChip: chip "Outer" failed to compile: ${messages.join('; ')}`)
+  })
+
+  describe('a definition whose pins differ from its source is refused before it evaluates (#903)', () => {
+    const FOO_B = 'CHIP Foo { IN b; OUT out; PARTS: Not(in=b, out=out); }'
+    const refusal = 'Foo declares IN a, but its source declares IN b'
+    const hdlFoo: ChipDefinition = { name: 'Foo', ...ONE_IN_ONE_OUT, implementation: { type: 'hdl', source: FOO_B } }
+    const builtins = (): ChipRegistry => {
+      const chips = createChipRegistry()
+      for (const def of getBuiltinChipRegistry().list()) chips.register(def)
+      return chips
+    }
+    const thrownBy = (run: () => unknown): unknown => {
+      try {
+        run()
+      } catch (error) {
+        return error
+      }
+      return undefined
+    }
+
+    it("throws ChipCompileError on the first evaluation of an 'hdl' or a 'circuit' Foo declaring IN a over a source declaring IN b", () => {
+      const parsed = parseSpec(FOO_B, { chips: getBuiltinChipRegistry() })
+      if (parsed.doc === null) throw new Error(parsed.diagnostics.map((d) => d.message).join('; '))
+      const circuitFoo: ChipDefinition = { name: 'Foo', ...ONE_IN_ONE_OUT, implementation: { type: 'circuit', spec: parsed.doc } }
+      for (const foo of [hdlFoo, circuitFoo]) {
+        const error = thrownBy(() => evaluateChip(foo, { a: 0 }, getBuiltinChipRegistry()))
+        expect(error).toBeInstanceOf(ChipCompileError)
+        expect(error).toHaveProperty('message', `evaluateChip: chip "Foo" failed to compile: ${refusal}`)
+      }
+    })
+
+    it("compiles an 'hdl' Outer over that 'hdl' Foo, and its first evaluation throws the refusal chained from Outer", () => {
+      const source = 'CHIP Outer { IN a; OUT o; PARTS: Foo(a=a, out=o); }'
+      const ast = parseHDL(source)
+      if (!ast.success) throw new Error('Outer did not parse')
+      const chips = builtins()
+      chips.register(hdlFoo)
+      expect(compilerModule.compileHDL(ast.chip, chips).success).toBe(true)
+      const outer: ChipDefinition = compilerModule.hdlChipDefinition(ast.chip, source)
+      const error = thrownBy(() => evaluateChip(outer, { a: 0 }, chips))
+      expect(error).toBeInstanceOf(ChipCompileError)
+      expect(error).toHaveProperty('message', `evaluateChip: chip "Outer" failed to compile: Outer › Foo: ${refusal}`)
+    })
   })
 })
