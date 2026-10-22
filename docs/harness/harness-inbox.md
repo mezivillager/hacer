@@ -42,6 +42,7 @@ One row per retro run. The next run's window starts at the last row's `to` time.
 | 2026-10-15 (first) | the three latest session records: 2026-09-29T09:00Z → 09-29T23:59Z, 2026-10-01T21:20Z → 10-02T03:00Z, 2026-10-04T16:50Z → 10-04T23:59Z | `1737e290` | 75 (65 + 10 dependabot) | median reviewable 73 · 2 BLOCK · 0 overturned · 0 reruns | mechanise HRN-001–004 · policy HRN-005–009 | three, listed below |
 | 2026-10-21 | 2026-10-04T23:59Z → 2026-10-21T15:00Z, from the last row's `to`: 16.6 days, far past the cadence (below) | `204aa0b2` | 63 (49 + 14 dependabot) | median reviewable 66 · 9 BLOCK on 7 PRs · 0 overturned · 0 reruns | mechanise HRN-010–014 · policy HRN-015–017 | eight, listed below |
 | 2026-10-22 | 2026-10-21T15:00Z → 2026-10-22T08:37Z, from the last row's `to` to this run's start | `d2f58ea0` | 51 (48 + 3 records PRs; 0 dependabot) | median reviewable 69 · 0 BLOCK · 0 overturned (candidates: #826, #886, #910, #914, #917) · 0 reruns | mechanise HRN-021–022 · policy HRN-023–027 | six, listed below |
+| 2026-10-22, second | 2026-10-22T08:37Z → 2026-10-22T21:16Z, from the last row's `to` to this run's start | `c62a4e71` | 18 (7 code + 11 docs PRs; 0 dependabot) | median reviewable 217.5 (code 47, docs 295) · 1 BLOCK · 0 overturned (candidates: #959, #964) · 0 reruns | mechanise HRN-028 · policy HRN-029–030 | seven, listed below |
 
 ### First run: 2026-10-15
 
@@ -211,6 +212,95 @@ prune, in the week of 2026-12-18, can start from it.
 
 **Not measured:** owner minutes; the tokens of the 32 `run-reviews` launches; local re-run counts;
 this retro's own tokens, which join the next run's total.
+
+### Fourth run: 2026-10-22, second
+
+**Window.** `node scripts/backlog.mjs ready` printed `retro due: 18 merges since 2026-10-22T08:37Z
+(run closed: docs/harness/sessions/2026-10-22.md)` at 21:15Z. The window holds three runs, the loop
+to 80%, the judge run and the loop to 90%, and #962, which another session merged at 12:00Z. `to` is
+this run's start, from `date -u`. The line was due from #961's merge at 11:28Z, and two orients passed
+it (HRN-030).
+
+**Numbers.** Each is `measured` with its command, `inferred`, or `unmeasured`.
+
+| Number | Value | How |
+|---|---|---|
+| merged PRs | 18: 7 code PRs (#948, #952, #954, #956, #957, #959, #964) and 11 docs PRs; 0 dependabot | measured: `node scripts/run-prs.mjs --from 2026-10-22T08:37:45Z --to 2026-10-22T21:16:00Z` |
+| median reviewable lines | **217.5**: code PRs 47, docs PRs 295 (the last window: 69, with 3 records PRs among 51). Over 400: 0. The largest, #947 (392) and #944 (364), are process reviews whose evidence counts toward the 400 (S4, #951) | measured: the first run's script (`docs/research/2026-09-continual-refinement/evidence/first-retro-run.md`) over the paginated files of the 18 PRs |
+| verdicts | 18 of 18 open `## Verifier verdict:`. **1 BLOCK**: #959 (issuecomment-6339464842), fixed and passed by a fresh Opus verifier. 6 Opus verdicts on 5 PRs, 2 Sonnet (#948, #954), 11 coordinator reviews. #964 ran on Opus where `backlog.mjs tier` gave Sonnet, by the coordinator's choice | measured: verdict headings and `Verified on:` lines in each PR's comments, same script |
+| overturned | **0**: the label has never been applied. Candidates: #959's second PASS and #964's PASS, each naming a reproduced defect in the PR's own lines as a nit that a later issue carries, #979 and #965 (HRN-024, below) | measured: `gh pr list --state all --label overturned --limit 200` printed `[]` |
+| escaped defects | **1, inferred:** #977. #964 moved owner decisions to the judge, while `fidelity-brief.md`'s Permissions and the `bot-filed` label still said the owner alone. Its verifier's grep for owner routes did not reach that phrase; JDG-001's judge found it after the merge. Two more were known at merge, as verifier nits: #965 (from #964) and #979 (from #959) | inferred: reading the window's 41 issues |
+| tokens per merged PR | **402,501** for the 80% run (4,427,514 over 22 agents, 11 PRs) and **771,136** for the judge and 90% runs (2,313,408 over 10 agents, 3 PRs), as the record's two §2 report them. Under README § *What to measure* both are `unmeasured`: 12 `run-reviews` sessions, 4 for two inbox reviews and 8 for four judge reviews, report no count (HRN-027) | measured: 2026-10-22, both §2 |
+| owner minutes per merged PR | **unmeasured**. Proxy: 0 `needs-human` issues opened. Since R889 that label marks owner actions only; the decisions he would have made are the 10 JDG entries, 4 of them decided | measured: `gh issue list --state all --search "created:2026-10-22..2026-10-22 label:needs-human"` |
+| follow-up volume | 41 issues opened, 34 still open: 12 inbox reviews (10 open), 10 judge reviews (6 open) and 19 others (18 open) | measured: `gh issue list --state all --search "created:2026-10-22..2026-10-23" --limit 200`, filtered to the window's times |
+| flake reruns | **0** re-runs in 455 workflow runs, one query for the window, under the cap. The records name one local load failure: two 5 s timeouts in `scripts/backlog.logic.test.mjs` at a load of 32 in #959's re-verification, passing alone (issuecomment-6343306427). No local re-run count | measured: the brief's `actions/runs?created=<range>` query |
+| stalled reviews | **0**: the 16 `proposed` entries (HRN-020 to HRN-027, FID-033, FID-034, JDG-005 to JDG-010) are dated 2026-10-22 | measured: `node scripts/inbox.mjs list --status proposed` |
+| Mission Control `metrics.flow` | 14 days from 2026-10-08T21:21Z, 132 merges: open-to-merge median 0.3 h, p90 1.5 h; `blockedOnce` 8 of 113, #959 the new one; verdict coverage, code 86 of 86, non-code 27 of 46 (the same 19 without as last run). `belowTier` is empty | measured: `node scripts/mission-control/collect.mjs --json` |
+| premises | 5 hold, 1 expired, 1 unverifiable, 1 manual, as last run. P-006's manual check still names the browser endpoint that R891 replaced (HRN-029) | measured: `node scripts/lineage.mjs verify` |
+
+**Recurrences.**
+- L077 is reproduced: the pre-commit hook does not stop at a failing typecheck. Two builders reported
+  it (L077), so it is HRN-028.
+- HRN-024's class twice more: #959 → #979 and #964 → #965 (below).
+- A route to the owner left after R889 was found twice: by #964's verifier (`process-review-brief.md`,
+  #965) and by JDG-001's judge (`fidelity-brief.md` and the label, #977). Both have issues, so this is
+  a line here.
+- Policy: README § *Budgets* against four rulings the runs practised (HRN-029), and the retro trigger
+  with the due line passed at two orients (HRN-030).
+
+**For the entries under review.** This is evidence only; their text is unchanged.
+- **HRN-020 (#930):** `node scripts/lineage.mjs parse --github` still exits 1 at `c62a4e71`. Nine of
+  its `malformed` errors cite a `JDG-` id, on #907, #977 and #980–#985, which the judges filed or
+  rewrote; option (a) names `FID-`, `HRN-` and `PRD-` only.
+- **HRN-021 (#933):** no recurrence. All 18 PRs open with the brief's heading, the coordinator's 11
+  docs reviews included.
+- **HRN-022 (#934):** `scripts/backlog.logic.test.mjs` timed out again in #959's re-verification
+  ("ready and next print the line after the retro…" and "a tree read git refuses…"), its second time
+  after #908's.
+- **HRN-023 (#935):** R886 and R887 waived the review for both semantic core PRs of the window, #956
+  and #957, each on reference runs. The first section's resume step 6 now states the practice: "unless
+  a ruling says why not (R854)".
+- **HRN-024 (#936):** #959's re-verification (issuecomment-6343306427) passed with nit 1, `driverCheck`'s
+  keys contradicting the docstring the PR wrote, and nit 2, wide loop-free lattices three times slower
+  (393 against 137 ms at 20 stages); #979 carries both. #964's (issuecomment-6341494864) passed with
+  nit 2, reproduced through the CLI, and a test-11 half that does not discriminate; #965 carries both.
+  Under R893 this entry keeps its own panel, since it changes the verdict rule.
+- **HRN-025 (#937):** unchanged at `c62a4e71`: `inbox-panel-brief.md` still launches `--models
+  opus,grok` and files "`agent-ready` at any risk", and no brief names `PPID` or artificial load. R865's
+  owner-action form is in `judge-brief.md` §3 item 6, for the judge's decisions only.
+- **HRN-026 (#938):** R891 moved the read to the status-line capture. The 90% run's §1 lists eight
+  readings from it and no failure; both failures this entry cites were the browser's.
+- **HRN-027 (#939):** 12 more uncounted sessions (above). The 771,136 figure is 3 merges over 10
+  agents, four of them judges.
+
+**For the filed entries.**
+- **HRN-009 (#873):** the line fired at 11:28Z, and two orients passed it (HRN-030).
+- **HRN-016 (#895):** the process review ran in the window, 26 days after the last (2026-10-22 §2).
+- **HRN-018 (#955):** another session merged #962 during the judge run, with a coordinator review;
+  nothing collided. #955 is open.
+- **HRN-008 (#870):** this run was dispatched again as a general-purpose agent handed the role file.
+
+**Prune check:** the per-PR Cursor second opinion, a third window. Its audit log still has 14 rows,
+the last on 2026-09-21T09:52Z, and none for this window's 18 merges, 6 of them `risk:1` (measured).
+The first quarterly prune, in the week of 2026-12-18, can start from it.
+
+**Held** (found, but no entry this run):
+
+- **L073** twice more, on #928 and #929 (2026-10-22 §3): four occurrences. The launcher is outside
+  this repo. R889 now gives such a change a route, an owner action the coordinator files, and HRN-027's
+  option (b) needs the same launcher.
+- **Times written from estimates** again: the 80% run's log stamps and R886's time (2026-10-22 §3).
+  R882 and R883 are committed as "about" times. Each was corrected or marked before merge.
+- **An unmeasured premise** held #257 over in five runs: R881's "GitHub is not connected" came from a
+  2026-09-19 ruling and a skill note (2026-10-22, second §3). JDG-003's probe, #980, measures it.
+- **L076** (`inbox.mjs queue` on a stale checkout), once.
+- **`inbox.mjs set`** writes only the bare status form (second §3), once.
+- **A second `merge-on-green`** printed `needs-person` on a merged PR (2026-10-22 §3), once.
+- **P-001**, expired since 2026-09-22 with #569 open, as last run.
+
+**Not measured:** owner minutes; the 12 `run-reviews` sessions' tokens and the coordinator's own;
+whether `ready` printed `retro due:` at the judge and 90% runs' orients, computed from `main` and not
+read from a log; local re-run counts; this retro's own tokens.
 
 ## Queue
 
@@ -993,4 +1083,111 @@ A test that runs a child process has room on a loaded laptop, and a hung child c
 - **Cost if wrong:** with (a), the figure reads below the run's cost, by a share the count beside it
   flags but does not size. With (b), the number #850 made reportable goes back to `unmeasured` for
   every run with inbox reviews.
+- **Decides:** the inbox panel (`inbox-panel-brief.md`); the owner may override
+
+### HRN-028 · `.husky/pre-commit` stops at its first failing command, so a failing typecheck blocks the commit (L077)
+- **Date:** 2026-10-22 · **Kind:** mechanise · **Retro run:** 2026-10-22, second
+- **Status:** proposed
+- **Evidence:**
+  - L077: two builders reported that the pre-commit `pnpm run typecheck` did not block a commit,
+    #919's (around 05:22Z) and #773's (10:59Z). The row was left unproven because husky's generated
+    runner runs a hook with `sh -e`, and it asks this retro to reproduce it or retire it.
+  - Reproduced. `core.hooksPath` is `.husky` in the owner's checkout, and its worktrees share it
+    (`git config --show-origin core.hooksPath`), so git runs `.husky/pre-commit` itself. Husky's runner
+    lives one directory down and runs only when the hooks path names that directory.
+  - `.husky/pre-commit` has no shebang and no `set -e`. It runs four commands, `lint-staged`,
+    `pnpm run typecheck`, `./scripts/check-test-files.sh` and `node scripts/check-doc-paths.mjs
+    --staged`, and the shell git runs it with returns the last command's status.
+  - Measured with git 2.49.0 in a scratch repository: a hook with no shebang whose first command fails
+    and whose last succeeds lets `git commit` exit 0; with the failing command last, it exits 1.
+  - So only the doc-path check can stop a commit. CI's `ci` job still runs lint, so no type error
+    reaches `main`. What is lost is the first layer AGENTS.md names: a builder learns of a type error,
+    a lint-staged failure or a stray test file from its DoD run or from CI.
+  - No open issue covers it (searched `pre-commit` and `husky`; #541, closed by #562, removed husky's
+    deprecated lines from `.husky/commit-msg`, whose failing check exits 1 itself).
+- **Cost if wrong:** one line in a protected path. A commit that a lint-staged or test-file failure
+  used to let through now stops.
+- **Decides:** the inbox panel (`inbox-panel-brief.md`); the owner may override
+
+**Draft issue body** (`risk:1`; `.husky/**` is a protected path)
+## Goal
+A failing command in `.husky/pre-commit` stops the commit, whichever directory `core.hooksPath` names.
+## Acceptance criteria
+- `.husky/pre-commit` opens with `#!/usr/bin/env sh` and `set -e`, so git running the file directly
+  stops at the first failing command, as husky's runner already does.
+- A new `scripts/husky-hooks.test.mjs` runs the hook in a temporary directory with each command it calls stubbed: `pnpm` fails on `run typecheck`, and the stubs after it record that they ran. The hook exits non-zero and nothing after the typecheck runs, red first against today's hook. With every stub passing, it exits 0. <!-- allow-missing-path -->
+- L077's Mechanised cell names this PR.
+## Verification command
+`pnpm exec vitest run --project node --maxWorkers=3 scripts/husky-hooks.test.mjs` <!-- allow-missing-path -->
+## Blocked by
+—
+
+### HRN-029 · README § *Budgets* disagrees with four rulings the 2026-10-22 runs practised: the agent cap, what it counts, where the meter is read, and where a run stops
+- **Date:** 2026-10-22 · **Kind:** policy · **Retro run:** 2026-10-22, second
+- **Status:** proposed
+- **Evidence:**
+  - The cap. README's "Agents at once on the laptop" row gives 2 while the owner is awake and 3 only
+    after his going-to-bed message (R782), as #857 left it at 20:42Z on 2026-10-21. 67 minutes later
+    the owner said "you can raise the number of parallel agents to 3", and R866 made it three at once,
+    two while the 5-minute load average is above 12. Both sections of 2026-10-22 ran R866 with the
+    owner awake (§1, "Agents"), and their resume steps carry it (step 5, and step 4 of the second).
+  - What it counts. README's "What the cap counts" row counts the session's own subagents, not the
+    `run-reviews` reviewers. R861 counts a `run-reviews` launch as one of the slots and R866 keeps it;
+    both §1 lines say "three of {subagent, `run-reviews`}".
+  - The meter. README says the meters come from a JSON endpoint that needs a real browser session
+    (`usage-rationing.md`), and P-006's manual check names it. R891 reads `seven_day` from Claude
+    Code's status-line capture, with the browser as the fallback. The second section's §1 has eight
+    readings from it, none failed, and its resume step 3 carries it. No harness doc names the status
+    line (measured: `command grep -rn -i 'status.line'` over `docs/harness/*.md` and `ha-next`).
+  - The stop. README's "Subagent tokens per coordinator run" row stops at ~2M "unless the owner asked
+    for a longer run". The 2026-10-21 run used 18.7M and the 80% run 4.4M (each §2), both under the
+    owner's "until N%", which that exception allows; the judge and 90% runs used 2.3M together (second
+    §2). In none was ~2M the stop. Each stop was a margin restated by ruling per run, no new chain three
+    points below the owner's line and the records two below (R843, R852, R880, R890), which no
+    committed brief states (measured: `command grep -rln 'no new chain'` finds rulings and this inbox).
+  - HRN-025 (proposed) is the same class for four other rules. HRN-026 (proposed) is the
+    unreadable-meter rule, whose two failures were browser failures that R891 removes.
+- **Proposal:** the panel decides each of the four: adopt it into README § *Budgets*, with
+  `usage-rationing.md` and P-006's Verify cell for the meter, or let the ruling lapse. Adopted:
+  - **(i)** three agents at once, two while the 5-minute load average is above 12 (R866);
+  - **(ii)** a `run-reviews` launch is one of them (R861);
+  - **(iii)** the meter is the status-line capture's `seven_day`, and the browser endpoint only when
+    the capture is older than 5 minutes (R891);
+  - **(iv)** a run the owner gives a meter line stops there: no new chain from three points below it,
+    the records from two below; ~2M stays for a run with no line.
+- **Cost if wrong:** (i) runs the laptop hotter while the owner works, as R866's own cost says. (iii)
+  reads the wrong number if `seven_day` is not `weekly_all`, which R891 checked once. Left as it is, a
+  coordinator that reads README runs two agents, leaves `run-reviews` out of the count and needs a
+  browser, against the owner's word in R866.
+- **Decides:** the inbox panel (`inbox-panel-brief.md`); the owner may override
+
+### HRN-030 · A second close on one date appends to the dated record, which the retro trigger cannot see; and two orients passed a due retro
+- **Date:** 2026-10-22 · **Kind:** policy · **Retro run:** 2026-10-22, second
+- **Status:** proposed
+- **Evidence:**
+  - The trigger: `retroLine` in `scripts/backlog.logic.mjs` counts a close only when a file matching
+    `RUN_RECORD`, a date-named record under `docs/harness/sessions/`, is added after `to`;
+    `scripts/backlog.mjs` lists them with `git log --diff-filter=A`.
+  - 2026-10-22 closed twice. #961 added `docs/harness/sessions/2026-10-22.md` at 11:28Z, and #986
+    appended the judge and 90% runs' section to it (`e2877d5c`, `002a6784`). Computed with `retroLine`
+    over today's `main`: had a retro closed its window at 13:51Z, the line after #986 reads
+    `retro: 2 merges since 2026-10-22T13:51Z`, not due, until a new date's record lands or 7 days
+    pass. HRN-018's panel (#928) found the same blind spot for a `<date>-<run>.md` name.
+  - The due line went unread twice. From 11:28Z `ready` gives `retro due:` (computed the same way).
+    The judge run claimed #963 at 12:32Z and #967 at 13:42Z, and the 90% run claimed #968 at 13:51Z
+    (claim comments), with no retro dispatched. `ha-next` §1 dispatches the retro "before the first
+    claim", and a `judge due:` pick "before the first other claim". The first section's resume steps
+    put "Fix #959 first" (step 1) ahead of "The next run starts with the retro" (step 2).
+  - What it cost here: one retro over three runs and 18 merges instead of two (inferred). The blind
+    spot cost nothing only because the due retro was skipped.
+- **Proposal:**
+  - **(a)** `retroLine` counts a close as any commit after `to` that adds or changes a dated record
+    whose date is `to`'s date or later. `ha-next` §1 says the retro is dispatched before the first
+    claim, a judge review's included.
+  - **(b)** A second close on one date writes `sessions/<date>-2.md`, which `RUN_RECORD` accepts, and
+    README § *sessions* says so; §1's order as in (a).
+- **Cost if wrong:** with (a), a correction to the day's record after a retro starts another, about
+  300k subagent tokens (inferred from the last one). With (b), a second record name for readers and
+  the lineage parser. Left as it is, a same-date second close waits for the next date's record, and
+  the order between the two due lines stays the coordinator's call.
 - **Decides:** the inbox panel (`inbox-panel-brief.md`); the owner may override
