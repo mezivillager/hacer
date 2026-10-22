@@ -195,7 +195,8 @@ const wrongChipName = (source: string, names: readonly string[]): string | null 
 const widths = (pins: readonly ChipPin[]): Map<string, number> => new Map(pins.map((p) => [p.name, p.width]))
 const samePins = (a: readonly ChipPin[], b: readonly ChipPin[]): boolean => {
   const [x, y] = [widths(a), widths(b)]
-  return x.size === y.size && [...x].every(([name, width]) => y.get(name) === width)
+  const repeats = x.size < a.length || y.size < b.length
+  return !repeats && x.size === y.size && [...x].every(([name, width]) => y.get(name) === width)
 }
 
 type Pins = { inputs: readonly ChipPin[]; outputs: readonly ChipPin[] }
