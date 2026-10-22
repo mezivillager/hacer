@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-22T21:40:13.076Z",
+  "generatedAt": "2026-10-22T22:00:26.130Z",
   "head": {
-    "sha": "7fca96c6c020643e5462ec6b7458cb0fd0c03e9a",
-    "date": "2026-10-23T00:39:05+03:00",
-    "subject": "docs(harness): retro run 2026-10-22 (second), HRN-028–030 proposed over 18 merges"
+    "sha": "da520b6a7fc24643c4d5f2bbfa9a2e74c178c783",
+    "date": "2026-10-23T00:59:28+03:00",
+    "subject": "docs(adr): ADR-0020 §1.11 rule 5 records grading's Looping wire on disjoint bits (#907)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T21:40:13.076Z",
+      "fetchedAt": "2026-10-22T22:00:26.130Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T21:40:13.076Z",
+      "fetchedAt": "2026-10-22T22:00:26.130Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T21:40:13.076Z",
+      "fetchedAt": "2026-10-22T22:00:26.130Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-22T21:40:13.076Z",
+      "fetchedAt": "2026-10-22T22:00:26.130Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-22T21:40:13.076Z",
+      "fetchedAt": "2026-10-22T22:00:26.130Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-22T21:40:13.076Z",
+      "fetchedAt": "2026-10-22T22:00:26.130Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-22T21:40:13.076Z",
+      "fetchedAt": "2026-10-22T22:00:26.130Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-22T21:40:13.076Z",
+      "fetchedAt": "2026-10-22T22:00:26.130Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-22T21:40:13.076Z",
+      "fetchedAt": "2026-10-22T22:00:26.130Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-22T21:40:13.076Z",
+      "fetchedAt": "2026-10-22T22:00:26.130Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-22T21:40:13.076Z",
+      "fetchedAt": "2026-10-22T22:00:26.130Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-22T21:40:13.076Z",
+      "fetchedAt": "2026-10-22T22:00:26.130Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-22T21:40:13.076Z",
+      "fetchedAt": "2026-10-22T22:00:26.130Z",
       "status": "ok"
     }
   },
@@ -104,8 +104,8 @@
         "slug": "harness",
         "epicNumber": 138,
         "open": 30,
-        "ready": 12,
-        "inProgress": 2,
+        "ready": 11,
+        "inProgress": 3,
         "needsHuman": 2,
         "staleClaims": [],
         "agentReady": 16,
@@ -115,8 +115,8 @@
           942
         ],
         "next": {
-          "number": 973,
-          "title": "Judge review: JDG-007 · Does a plan approved by the panel or the judge count as \"owner-approved\" in the queue-up rule's third `risk:2` exception (#893)?"
+          "number": 974,
+          "title": "Judge review: JDG-008 · May #950 (Mission Control's conformance count, S3) be built as one PR though `mission-control/src/snapshot.ts` has 21 direct importers, one over the threshold?"
         },
         "title": "Epic: harness — autonomous-run improvements & agent-readiness",
         "subIssues": {
@@ -189,8 +189,8 @@
         },
         "title": "Epic: core — headless core",
         "subIssues": {
-          "completed": 32,
-          "percentCompleted": 91,
+          "completed": 33,
+          "percentCompleted": 94,
           "total": 35
         }
       },
@@ -264,12 +264,12 @@
         "lane": "taste",
         "slug": "polish",
         "epicNumber": 144,
-        "open": 6,
+        "open": 5,
         "ready": 0,
         "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 6,
+        "agentReady": 5,
         "filedElsewhere": [],
         "next": {
           "number": 803,
@@ -278,8 +278,8 @@
         "title": "Epic: polish — UI polish",
         "subIssues": {
           "completed": 1,
-          "percentCompleted": 14,
-          "total": 7
+          "percentCompleted": 16,
+          "total": 6
         }
       },
       {
@@ -293,13 +293,15 @@
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 0,
-        "filedElsewhere": [],
+        "filedElsewhere": [
+          801
+        ],
         "next": null,
         "title": "Epic: bugs",
         "subIssues": {
           "completed": 4,
-          "percentCompleted": 100,
-          "total": 4
+          "percentCompleted": 80,
+          "total": 5
         }
       },
       {
@@ -307,12 +309,12 @@
         "lane": "aux",
         "slug": "upkeep",
         "epicNumber": 146,
-        "open": 12,
-        "ready": 10,
+        "open": 15,
+        "ready": 13,
         "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 11,
+        "agentReady": 14,
         "filedElsewhere": [],
         "next": {
           "number": 930,
@@ -410,11 +412,6 @@
     ],
     "next": [
       {
-        "number": 973,
-        "title": "Judge review: JDG-007 · Does a plan approved by the panel or the judge count as \"owner-approved\" in the queue-up rule's third `risk:2` exception (#893)?",
-        "project": "harness"
-      },
-      {
         "number": 974,
         "title": "Judge review: JDG-008 · May #950 (Mission Control's conformance count, S3) be built as one PR though `mission-control/src/snapshot.ts` has 21 direct importers, one over the threshold?",
         "project": "harness"
@@ -430,18 +427,13 @@
         "project": "harness"
       },
       {
-        "number": 940,
-        "title": "N.4b: `layout(doc, surface, { previous, hints })`: hold what is placed, never move a hinted node",
-        "project": "foundation"
-      },
-      {
         "number": 982,
         "title": "Fidelity verdict on the spine epic #139 and the Phase 0.6 plan #177, ruling on Project 2's two slices before they are built",
         "project": "spine"
       },
       {
-        "number": 941,
-        "title": "pr-hygiene: protect the differential harness, see a rename out of a protected path, and flag a PR that weakens a test (#151, foundation 1.6)",
+        "number": 940,
+        "title": "N.4b: `layout(doc, surface, { previous, hints })`: hold what is placed, never move a hinted node",
         "project": "foundation"
       },
       {
@@ -450,14 +442,19 @@
         "project": "upkeep"
       },
       {
-        "number": 979,
-        "title": "fromLegacyCircuit: key driverCheck's seen set by JSON value, and restore cross-walk reuse on wide loop-free lattices",
+        "number": 941,
+        "title": "pr-hygiene: protect the differential harness, see a rename out of a protected path, and flag a PR that weakens a test (#151, foundation 1.6)",
         "project": "foundation"
       },
       {
         "number": 949,
         "title": "`ready` and `next` print `shape due:` for a foundation or spine slot with nothing pickable, and `ha-next` dispatches a shaper",
         "project": "harness"
+      },
+      {
+        "number": 979,
+        "title": "fromLegacyCircuit: key driverCheck's seen set by JSON value, and restore cross-walk reuse on wide loop-free lattices",
+        "project": "foundation"
       },
       {
         "number": 983,
@@ -543,34 +540,32 @@
         "number": 946,
         "title": "Inbox review: FID-034 · A chip that names a pin twice within `IN` or within `OUT` is refused on the spec and engine paths, as the web IDE refuses it, and a name shared by `IN` and `OUT` gets one decided reading",
         "project": "upkeep"
+      },
+      {
+        "number": 989,
+        "title": "Inbox review: HRN-028 · `.husky/pre-commit` stops at its first failing command, so a failing typecheck blocks the commit (L077)",
+        "project": "upkeep"
+      },
+      {
+        "number": 990,
+        "title": "Inbox review: HRN-029 · README § *Budgets* disagrees with four rulings the 2026-10-22 runs practised: the agent cap, what it counts, where the meter is read, and where a run stops",
+        "project": "upkeep"
+      },
+      {
+        "number": 991,
+        "title": "Inbox review: HRN-030 · A second close on one date appends to the dated record, which the retro trigger cannot see; and two orients passed a due retro",
+        "project": "upkeep"
       }
     ],
     "dormant": {
       "dormant": false,
       "agentPrs": [
-        987,
         514
       ]
     }
   },
   "tasks": {
     "items": [
-      {
-        "number": 973,
-        "title": "Judge review: JDG-007 · Does a plan approved by the panel or the judge count as \"owner-approved\" in the queue-up rule's third `risk:2` exception (#893)?",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:0",
-          "judge-review"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
       {
         "number": 974,
         "title": "Judge review: JDG-008 · May #950 (Mission Control's conformance count, S3) be built as one PR though `mission-control/src/snapshot.ts` has 21 direct importers, one over the threshold?",
@@ -620,21 +615,6 @@
         "reason": null
       },
       {
-        "number": 940,
-        "title": "N.4b: `layout(doc, surface, { previous, hints })`: hold what is placed, never move a hinted node",
-        "labels": [
-          "agent-ready",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
-      {
         "number": 982,
         "title": "Fidelity verdict on the spine epic #139 and the Phase 0.6 plan #177, ruling on Project 2's two slices before they are built",
         "labels": [
@@ -655,17 +635,14 @@
         "reason": null
       },
       {
-        "number": 941,
-        "title": "pr-hygiene: protect the differential harness, see a rename out of a protected path, and flag a PR that weakens a test (#151, foundation 1.6)",
+        "number": 940,
+        "title": "N.4b: `layout(doc, surface, { previous, hints })`: hold what is placed, never move a hinted node",
         "labels": [
-          "project:harness",
           "agent-ready",
           "risk:1",
           "project:foundation"
         ],
-        "blocking": [
-          942
-        ],
+        "blocking": [],
         "project": "foundation",
         "rank": 1,
         "lane": "feature",
@@ -689,14 +666,17 @@
         "reason": null
       },
       {
-        "number": 979,
-        "title": "fromLegacyCircuit: key driverCheck's seen set by JSON value, and restore cross-walk reuse on wide loop-free lattices",
+        "number": 941,
+        "title": "pr-hygiene: protect the differential harness, see a rename out of a protected path, and flag a PR that weakens a test (#151, foundation 1.6)",
         "labels": [
+          "project:harness",
           "agent-ready",
           "risk:1",
           "project:foundation"
         ],
-        "blocking": [],
+        "blocking": [
+          942
+        ],
         "project": "foundation",
         "rank": 1,
         "lane": "feature",
@@ -715,6 +695,21 @@
         "project": "harness",
         "rank": 2,
         "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 979,
+        "title": "fromLegacyCircuit: key driverCheck's seen set by JSON value, and restore cross-walk reuse on wide loop-free lattices",
+        "labels": [
+          "agent-ready",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
         "pickable": true,
         "reason": null
       },
@@ -974,6 +969,54 @@
       {
         "number": 946,
         "title": "Inbox review: FID-034 · A chip that names a pin twice within `IN` or within `OUT` is refused on the spec and engine paths, as the web IDE refuses it, and a name shared by `IN` and `OUT` gets one decided reading",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 989,
+        "title": "Inbox review: HRN-028 · `.husky/pre-commit` stops at its first failing command, so a failing typecheck blocks the commit (L077)",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 990,
+        "title": "Inbox review: HRN-029 · README § *Budgets* disagrees with four rulings the 2026-10-22 runs practised: the agent cap, what it counts, where the meter is read, and where a run stops",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 991,
+        "title": "Inbox review: HRN-030 · A second close on one date appends to the dated record, which the retro trigger cannot see; and two orients passed a due retro",
         "labels": [
           "project:upkeep",
           "agent-ready",
@@ -2290,20 +2333,22 @@
       },
       {
         "number": 801,
-        "title": "polish: an unsaved circuit is lost on reload — autosave is written every 2 s but never restored",
+        "title": "bug: an unsaved circuit is lost on reload — autosave is written but never read back",
         "labels": [
           "bug",
-          "project:polish",
+          "project:bugs",
           "agent-ready",
+          "in-progress",
           "risk:2",
-          "sev:high"
+          "sev:high",
+          "project:foundation"
         ],
         "blocking": [],
-        "project": "polish",
-        "rank": 9,
-        "lane": "taste",
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
         "pickable": false,
-        "reason": "on-request"
+        "reason": "claimed"
       },
       {
         "number": 802,
@@ -2415,26 +2460,6 @@
         "reason": "unshaped"
       },
       {
-        "number": 907,
-        "title": "Grading passes a part that reads one bit of a chip OUT and writes another, which the web IDE refuses as a Looping wire",
-        "labels": [
-          "bug",
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "sev:critical",
-          "bot-filed",
-          "fidelity",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 942,
         "title": "pr-hygiene: a refactor PR may not take assertions out of an existing test (foundation 1.5, tuned on Phase 1's refactor PRs)",
         "labels": [
@@ -2483,6 +2508,23 @@
       {
         "number": 972,
         "title": "Judge review: JDG-006 · Is the `differential` CI job made a required check on `main`?",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "judge-review"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
+        "number": 973,
+        "title": "Judge review: JDG-007 · Does a plan approved by the panel or the judge count as \"owner-approved\" in the queue-up rule's third `risk:2` exception (#893)?",
         "labels": [
           "project:harness",
           "agent-ready",
@@ -2547,7 +2589,6 @@
     ],
     "byProject": {
       "harness": [
-        973,
         974,
         975,
         976,
@@ -2576,7 +2617,26 @@
         889,
         971,
         972,
+        973,
         981
+      ],
+      "spine": [
+        982,
+        983,
+        165,
+        167,
+        169,
+        170,
+        171,
+        172,
+        173,
+        174,
+        176,
+        177,
+        235,
+        236,
+        984,
+        985
       ],
       "foundation": [
         940,
@@ -2601,26 +2661,8 @@
         722,
         728,
         742,
-        907,
+        801,
         942
-      ],
-      "spine": [
-        982,
-        983,
-        165,
-        167,
-        169,
-        170,
-        171,
-        172,
-        173,
-        174,
-        176,
-        177,
-        235,
-        236,
-        984,
-        985
       ],
       "upkeep": [
         930,
@@ -2633,6 +2675,9 @@
         939,
         945,
         946,
+        989,
+        990,
+        991,
         229,
         256
       ],
@@ -2700,7 +2745,6 @@
         572
       ],
       "polish": [
-        801,
         802,
         803,
         804,
@@ -2711,25 +2755,6 @@
   },
   "prs": {
     "open": [
-      {
-        "number": 987,
-        "title": "fix(testing): grading refuses a part looping on disjoint bits with Looping wire (#907)",
-        "url": "https://github.com/mezivillager/hacer/pull/987",
-        "author": "mezivillager",
-        "labels": [
-          "risk:1",
-          "fidelity",
-          "project:foundation"
-        ],
-        "headRefName": "fix/907-looping-wire",
-        "isDraft": false,
-        "createdAt": "2026-10-22T21:32:33Z",
-        "mergedAt": null,
-        "closes": [
-          907
-        ],
-        "verdicts": []
-      },
       {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
@@ -2779,6 +2804,33 @@
             "model": "coordinator (risk:0 docs-only exception, ha-next §4)",
             "at": "2026-10-22T21:36:48Z",
             "url": "https://github.com/mezivillager/hacer/pull/988#issuecomment-6351860138"
+          }
+        ]
+      },
+      {
+        "number": 987,
+        "title": "fix(testing): grading refuses a part looping on disjoint bits with Looping wire (#907)",
+        "url": "https://github.com/mezivillager/hacer/pull/987",
+        "author": "mezivillager",
+        "labels": [
+          "risk:1",
+          "fidelity",
+          "project:foundation"
+        ],
+        "headRefName": "fix/907-looping-wire",
+        "isDraft": false,
+        "createdAt": "2026-10-22T21:32:33Z",
+        "mergedAt": "2026-10-22T21:59:28Z",
+        "closes": [
+          907
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus (claude-opus-5-5)",
+            "at": "2026-10-22T21:45:34Z",
+            "url": "https://github.com/mezivillager/hacer/pull/987#issuecomment-6352009446"
           }
         ]
       },
@@ -4308,34 +4360,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/853#issuecomment-6323944946"
           }
         ]
-      },
-      {
-        "number": 851,
-        "title": "docs(adr): ADR-0020 §10 records the reference's loop granularity and where it overapproximates",
-        "url": "https://github.com/mezivillager/hacer/pull/851",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:0",
-          "fidelity",
-          "project:foundation"
-        ],
-        "headRefName": "docs/846-adr-loop-granularity",
-        "isDraft": false,
-        "createdAt": "2026-10-21T18:17:11Z",
-        "mergedAt": "2026-10-21T18:21:22Z",
-        "closes": [
-          846
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "coordinator (claude-opus-5-5)",
-            "at": "2026-10-21T18:18:00Z",
-            "url": "https://github.com/mezivillager/hacer/pull/851#issuecomment-6323274383"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4375,20 +4399,19 @@
         }
       },
       {
-        "number": 907,
-        "ref": "refs/heads/claim/907",
-        "sha": "c62a4e71f8addd1a402a440027f03ee8b0fc30d2",
+        "number": 801,
+        "ref": "refs/heads/claim/801",
+        "sha": "7fca96c6c020643e5462ec6b7458cb0fd0c03e9a",
         "state": "OPEN",
-        "title": "Grading passes a part that reads one bit of a chip OUT and writes another, which the web IDE refuses as a Looping wire",
-        "url": "https://github.com/mezivillager/hacer/issues/907",
+        "title": "bug: an unsaved circuit is lost on reload — autosave is written but never read back",
+        "url": "https://github.com/mezivillager/hacer/issues/801",
         "labels": [
           "bug",
+          "project:bugs",
           "agent-ready",
           "in-progress",
-          "risk:1",
-          "sev:critical",
-          "bot-filed",
-          "fidelity",
+          "risk:2",
+          "sev:high",
           "project:foundation"
         ],
         "onClosedIssue": false,
@@ -4396,11 +4419,11 @@
           "claimedBy": "claude-local",
           "intent": "building",
           "session": "2026-10-22-hacer-loop-to-97",
-          "branch": "fix/907-looping-wire",
+          "branch": "fix/801-autosave-restore",
           "handoff": "none",
           "author": "mezivillager",
-          "at": "2026-10-22T21:16:38Z",
-          "url": "https://github.com/mezivillager/hacer/issues/907#issuecomment-6351501053"
+          "at": "2026-10-22T21:46:37Z",
+          "url": "https://github.com/mezivillager/hacer/issues/801#issuecomment-6352027214"
         }
       },
       {
@@ -4453,6 +4476,32 @@
           "author": "mezivillager",
           "at": "2026-10-22T21:36:54Z",
           "url": "https://github.com/mezivillager/hacer/issues/972#issuecomment-6351861874"
+        }
+      },
+      {
+        "number": 973,
+        "ref": "refs/heads/claim/973",
+        "sha": "7fca96c6c020643e5462ec6b7458cb0fd0c03e9a",
+        "state": "OPEN",
+        "title": "Judge review: JDG-007 · Does a plan approved by the panel or the judge count as \"owner-approved\" in the queue-up rule's third `risk:2` exception (#893)?",
+        "url": "https://github.com/mezivillager/hacer/issues/973",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "judge-review"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "2026-10-22-hacer-loop-to-97",
+          "branch": "chore/judge-jdg-007",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-22T21:43:46Z",
+          "url": "https://github.com/mezivillager/hacer/issues/973#issuecomment-6351978819"
         }
       }
     ],
@@ -6427,24 +6476,24 @@
     "mergesPerDay": [
       {
         "date": "2026-10-21",
-        "merges": 17
+        "merges": 16
       },
       {
         "date": "2026-10-22",
-        "merges": 43
+        "merges": 44
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-08T21:40:13.076Z",
-      "merged": 133,
+      "since": "2026-10-08T22:00:26.130Z",
+      "merged": 134,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 1.5
       },
       "blockedOnce": {
         "count": 8,
-        "of": 114,
+        "of": 115,
         "prs": [
           700,
           725,
@@ -6458,8 +6507,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 86,
-          "withVerdict": 86,
+          "merged": 87,
+          "withVerdict": 87,
           "without": []
         },
         "nonCode": {
@@ -10741,11 +10790,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "7fca96c6c020643e5462ec6b7458cb0fd0c03e9a",
+        "sha": "da520b6a7fc24643c4d5f2bbfa9a2e74c178c783",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39858978737/job/120104439721",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39861565234/job/120113300265",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -10793,58 +10842,6 @@
         "verdict": "PASS",
         "fields": {
           "known": 71,
-          "new": 0
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 987,
-        "sha": "d43b8564bc560ed47bf5699d40ce8c5af26b6934",
-        "check": "pr-hygiene",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-22T21:32:49Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39858108497/job/120101476982",
-        "line": "HYGIENE: PASS reviewable=35 test=39 excluded=0 files=2 issue=#907 linked=fixes",
-        "verdict": "PASS",
-        "fields": {
-          "reviewable": 35,
-          "test": 39,
-          "excluded": 0,
-          "files": 2,
-          "issue": "#907",
-          "linked": "fixes"
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 987,
-        "sha": "d43b8564bc560ed47bf5699d40ce8c5af26b6934",
-        "check": "browser-qa",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-22T21:35:27Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39858108394/job/120101474396",
-        "line": "BROWSER-QA: PASS suites=store passed=107 failed=0 flaky=0 skipped=0",
-        "verdict": "PASS",
-        "fields": {
-          "suites": "store",
-          "passed": 107,
-          "failed": 0,
-          "flaky": 0,
-          "skipped": 0
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 987,
-        "sha": "d43b8564bc560ed47bf5699d40ce8c5af26b6934",
-        "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-22T21:35:44Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39858104607/job/120101462191",
-        "line": "LAYER-RATCHET: 68 known violations (36 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 68,
           "new": 0
         },
         "disagrees": false
@@ -19359,6 +19356,14 @@
         ]
       },
       {
+        "id": "#907",
+        "kind": "github",
+        "citedBy": [
+          "ADR-0020",
+          "R885"
+        ]
+      },
+      {
         "id": "#328",
         "kind": "github",
         "citedBy": [
@@ -22527,13 +22532,6 @@
       },
       {
         "id": "#951",
-        "kind": "github",
-        "citedBy": [
-          "R885"
-        ]
-      },
-      {
-        "id": "#907",
         "kind": "github",
         "citedBy": [
           "R885"
