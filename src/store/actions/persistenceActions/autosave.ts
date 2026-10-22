@@ -37,6 +37,12 @@ export function subscribeAutosave(): void {
   })
 }
 
+export type Announce = (show: () => void) => void
+
+export function restoreAutosave(_announce: Announce = (show) => show()): void {
+  throw new Error('not implemented')
+}
+
 export function isAutosaveSubscribed(): boolean {
   return unsubscribe !== null
 }
