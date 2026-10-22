@@ -30,7 +30,7 @@ reused.
 
 ### JDG-001 · May #907 (`sev:critical`, `bot-filed`) be made `agent-ready`, and may the judge so label any `bot-filed` bug the loop measured from its own code?
 - **Date:** 2026-10-22 · **Kind:** decision · **Raised by:** S9 in `docs/harness/reviews/2026-10-22/SYNTHESIS.md`; "For the owner" in `docs/harness/sessions/2026-10-22.md`; #907
-- **Status:** proposed
+- **Status:** filed (#907), option B: the judge alone labels a loop-measured bot-filed issue, as R889 wrote it; the wider rule declined; docs aligned by #977
 - **Evidence:**
   - #907 has been open since 2026-10-22T03:24Z with `bug`, `sev:critical`, `bot-filed`, `fidelity` and
     `project:foundation`. It has no `agent-ready`, no `risk:` label, no acceptance-criteria section and no
@@ -72,7 +72,7 @@ reused.
 
 ### JDG-002 · Keep an inbox panel per entry (R844), or one panel per run for HRN entries plus a cap on harness builds while product work is pickable?
 - **Date:** 2026-10-22 · **Kind:** decision · **Raised by:** S10 in `docs/harness/reviews/2026-10-22/SYNTHESIS.md`; "For the owner" in `docs/harness/sessions/2026-10-22.md`; R844
-- **Status:** proposed
+- **Status:** filed (#978)
 - **Evidence:**
   - The 2026-10-21 run decided 32 inbox entries while 31 arrived, and panels took 4.60M of 18.75M subagent
     tokens (24.5%), before the 64 `run-reviews` sessions that no figure counts (review 2 F3,
@@ -108,7 +108,7 @@ reused.
 
 ### JDG-003 · How does the loop start without the owner, and how does #257 get its cloud browser run: connect GitHub to his Claude account, a local scheduled start, or owner-started runs only?
 - **Date:** 2026-10-22 · **Kind:** decision · **Raised by:** S11 and S12 in `docs/harness/reviews/2026-10-22/SYNTHESIS.md`; R881; "For the owner" in `docs/harness/sessions/2026-10-22.md`
-- **Status:** proposed
+- **Status:** filed (#980), weekly routine #981; #257 blocked by #980's browser lines
 - **Evidence:**
   - No PR of any author merged from 2026-10-05 to 2026-10-14T21:59Z (`node scripts/run-prs.mjs --from
     2026-10-05T00:00:00Z --to 2026-10-14T21:59:00Z` prints `0 PRs merged`, re-run 2026-10-22).
