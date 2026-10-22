@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-22T09:27:49.583Z",
+  "generatedAt": "2026-10-22T09:32:25.452Z",
   "head": {
-    "sha": "98dbb602dc5047b6d614866fe2879d4275f57b20",
-    "date": "2026-10-22T12:27:08+03:00",
-    "subject": "docs(fidelity): FID-033 and FID-034 cite the digest comment"
+    "sha": "6fb8902310e5bb78fcaec91ff4ff52c119c09e41",
+    "date": "2026-10-22T12:31:16+03:00",
+    "subject": "docs(harness): process review 2 of cycle 2026-10-22"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T09:27:49.583Z",
+      "fetchedAt": "2026-10-22T09:32:25.452Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T09:27:49.583Z",
+      "fetchedAt": "2026-10-22T09:32:25.452Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T09:27:49.583Z",
+      "fetchedAt": "2026-10-22T09:32:25.452Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-22T09:27:49.583Z",
+      "fetchedAt": "2026-10-22T09:32:25.452Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-22T09:27:49.583Z",
+      "fetchedAt": "2026-10-22T09:32:25.452Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-22T09:27:49.583Z",
+      "fetchedAt": "2026-10-22T09:32:25.452Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-22T09:27:49.583Z",
+      "fetchedAt": "2026-10-22T09:32:25.452Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-22T09:27:49.583Z",
+      "fetchedAt": "2026-10-22T09:32:25.452Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-22T09:27:49.583Z",
+      "fetchedAt": "2026-10-22T09:32:25.452Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-22T09:27:49.583Z",
+      "fetchedAt": "2026-10-22T09:32:25.452Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-22T09:27:49.583Z",
+      "fetchedAt": "2026-10-22T09:32:25.452Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-22T09:27:49.583Z",
+      "fetchedAt": "2026-10-22T09:32:25.452Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-22T09:27:49.583Z",
+      "fetchedAt": "2026-10-22T09:32:25.452Z",
       "status": "ok"
     }
   },
@@ -81,15 +81,15 @@
         "slug": "foundation",
         "epicNumber": 318,
         "open": 29,
-        "ready": 6,
-        "inProgress": 1,
+        "ready": 5,
+        "inProgress": 2,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 8,
         "filedElsewhere": [],
         "next": {
-          "number": 379,
-          "title": "N.4a: `layout(doc, surface, options)`, the first layout: longest-path layers, barycentre order, `order: 'id'` on request, the four contract preconditions"
+          "number": 599,
+          "title": "run-tst: a bare output-list name gets the pin's width, as the reference IDE gives it"
         },
         "title": "Foundation audit: is the codebase structured for the autonomous loop? Measured audit, prioritized refactorings, fitness functions",
         "subIssues": {
@@ -307,12 +307,12 @@
         "lane": "aux",
         "slug": "upkeep",
         "epicNumber": 146,
-        "open": 12,
-        "ready": 10,
+        "open": 14,
+        "ready": 12,
         "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 11,
+        "agentReady": 13,
         "filedElsewhere": [],
         "next": {
           "number": 928,
@@ -410,11 +410,6 @@
     ],
     "next": [
       {
-        "number": 379,
-        "title": "N.4a: `layout(doc, surface, options)`, the first layout: longest-path layers, barycentre order, `order: 'id'` on request, the four contract preconditions",
-        "project": "foundation"
-      },
-      {
         "number": 928,
         "title": "Inbox review: HRN-018 · A second coordinator collides in four places that nothing guards: allow one only with guards, or say there is one",
         "project": "upkeep"
@@ -493,37 +488,28 @@
         "number": 939,
         "title": "Inbox review: HRN-027 · Tokens per merged PR leave out every `run-reviews` session, which README's rule says makes the figure `unmeasured`: count them, or name them outside it",
         "project": "upkeep"
+      },
+      {
+        "number": 945,
+        "title": "Inbox review: FID-033 · #722 gains an unsliced wide `true` on a part whose chip the export's registry lacks, and §1.10.9 says the web IDE reads 16 bits there",
+        "project": "upkeep"
+      },
+      {
+        "number": 946,
+        "title": "Inbox review: FID-034 · A chip that names a pin twice within `IN` or within `OUT` is refused on the spec and engine paths, as the web IDE refuses it, and a name shared by `IN` and `OUT` gets one decided reading",
+        "project": "upkeep"
       }
     ],
     "dormant": {
       "dormant": false,
       "agentPrs": [
+        947,
         514
       ]
     }
   },
   "tasks": {
     "items": [
-      {
-        "number": 379,
-        "title": "N.4a: `layout(doc, surface, options)`, the first layout: longest-path layers, barycentre order, `order: 'id'` on request, the four contract preconditions",
-        "labels": [
-          "agent-ready",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [
-          940,
-          184,
-          197,
-          380
-        ],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
       {
         "number": 928,
         "title": "Inbox review: HRN-018 · A second coordinator collides in four places that nothing guards: allow one only with guards, or say there is one",
@@ -768,6 +754,38 @@
       {
         "number": 939,
         "title": "Inbox review: HRN-027 · Tokens per merged PR leave out every `run-reviews` session, which README's rule says makes the figure `unmeasured`: count them, or name them outside it",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 945,
+        "title": "Inbox review: FID-033 · #722 gains an unsliced wide `true` on a part whose chip the export's registry lacks, and §1.10.9 says the web IDE reads 16 bits there",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 946,
+        "title": "Inbox review: FID-034 · A chip that names a pin twice within `IN` or within `OUT` is refused on the spec and engine paths, as the web IDE refuses it, and a name shared by `IN` and `OUT` gets one decided reading",
         "labels": [
           "project:upkeep",
           "agent-ready",
@@ -1550,6 +1568,27 @@
         "reason": "unshaped"
       },
       {
+        "number": 379,
+        "title": "N.4a: `layout(doc, surface, options)`, the first layout: longest-path layers, barycentre order, `order: 'id'` on request, the four contract preconditions",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [
+          940,
+          184,
+          197,
+          380
+        ],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 380,
         "title": "N.5: route — channel routing, total, with ADR-0008's assertions as properties",
         "labels": [
@@ -2271,8 +2310,23 @@
       }
     ],
     "byProject": {
+      "upkeep": [
+        928,
+        929,
+        930,
+        933,
+        934,
+        935,
+        936,
+        937,
+        938,
+        939,
+        945,
+        946,
+        229,
+        256
+      ],
       "foundation": [
-        379,
         599,
         613,
         773,
@@ -2282,6 +2336,7 @@
         184,
         325,
         339,
+        379,
         380,
         381,
         382,
@@ -2301,20 +2356,6 @@
         907,
         940,
         942
-      ],
-      "upkeep": [
-        928,
-        929,
-        930,
-        933,
-        934,
-        935,
-        936,
-        937,
-        938,
-        939,
-        229,
-        256
       ],
       "harness": [
         257,
@@ -2423,6 +2464,22 @@
   "prs": {
     "open": [
       {
+        "number": 947,
+        "title": "docs(harness): process review 1 of cycle 2026-10-22",
+        "url": "https://github.com/mezivillager/hacer/pull/947",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/process-review-2026-10-22-r1",
+        "isDraft": false,
+        "createdAt": "2026-10-22T09:30:31Z",
+        "mergedAt": null,
+        "closes": [],
+        "verdicts": []
+      },
+      {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
         "url": "https://github.com/mezivillager/hacer/pull/514",
@@ -2450,6 +2507,30 @@
       }
     ],
     "merged": [
+      {
+        "number": 944,
+        "title": "docs(harness): process review 2 of cycle 2026-10-22",
+        "url": "https://github.com/mezivillager/hacer/pull/944",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/process-review-2026-10-22-r2",
+        "isDraft": false,
+        "createdAt": "2026-10-22T09:27:41Z",
+        "mergedAt": "2026-10-22T09:31:17Z",
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (risk:0 docs-only exception, ha-next §4)",
+            "at": "2026-10-22T09:29:25Z",
+            "url": "https://github.com/mezivillager/hacer/pull/944#issuecomment-6337461100"
+          }
+        ]
+      },
       {
         "number": 943,
         "title": "docs(fidelity): FID-033 and FID-034 from the digest of #914, #920, #921 and #922",
@@ -4004,33 +4085,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/780#issuecomment-6238455110"
           }
         ]
-      },
-      {
-        "number": 777,
-        "title": "fix(ui): name every icon-only toolbar button from its tooltip text (#776)",
-        "url": "https://github.com/mezivillager/hacer/pull/777",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:upkeep",
-          "risk:0"
-        ],
-        "headRefName": "fix/776-toolbar-names",
-        "isDraft": false,
-        "createdAt": "2026-10-16T01:33:10Z",
-        "mergedAt": "2026-10-16T01:39:11Z",
-        "closes": [
-          776
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Sonnet 5.5",
-            "at": "2026-10-16T01:38:35Z",
-            "url": "https://github.com/mezivillager/hacer/pull/777#issuecomment-6206054825"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4068,6 +4122,31 @@
           "author": "mezivillager",
           "at": "2026-10-22T09:25:25Z",
           "url": "https://github.com/mezivillager/hacer/issues/339#issuecomment-6337387768"
+        }
+      },
+      {
+        "number": 379,
+        "ref": "refs/heads/claim/379",
+        "sha": "98dbb602dc5047b6d614866fe2879d4275f57b20",
+        "state": "OPEN",
+        "title": "N.4a: `layout(doc, surface, options)`, the first layout: longest-path layers, barycentre order, `order: 'id'` on request, the four contract preconditions",
+        "url": "https://github.com/mezivillager/hacer/issues/379",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:foundation"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "2026-10-22-hacer-loop-to-80",
+          "branch": "feat/379-layout",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-22T09:29:30Z",
+          "url": "https://github.com/mezivillager/hacer/issues/379#issuecomment-6337462879"
         }
       },
       {
@@ -6016,10 +6095,6 @@
     ],
     "mergesPerDay": [
       {
-        "date": "2026-10-16",
-        "merges": 1
-      },
-      {
         "date": "2026-10-17",
         "merges": 4
       },
@@ -6029,20 +6104,20 @@
       },
       {
         "date": "2026-10-22",
-        "merges": 27
+        "merges": 28
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-08T09:27:49.583Z",
-      "merged": 117,
+      "since": "2026-10-08T09:32:25.452Z",
+      "merged": 118,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 1.6
       },
       "blockedOnce": {
         "count": 7,
-        "of": 98,
+        "of": 99,
         "prs": [
           700,
           725,
@@ -6060,8 +6135,8 @@
           "without": []
         },
         "nonCode": {
-          "merged": 38,
-          "withVerdict": 19,
+          "merged": 39,
+          "withVerdict": 20,
           "without": [
             692,
             693,
@@ -10167,27 +10242,9 @@
       },
       {
         "date": "2026-10-22",
-        "at": "2026-10-22T09:25:18.593Z",
+        "at": "2026-10-22T09:27:49.583Z",
         "byProject": {
-          "harness": [
-            257,
-            154,
-            156,
-            270,
-            435,
-            436,
-            454,
-            500,
-            504,
-            505,
-            550,
-            607,
-            677,
-            870,
-            889
-          ],
           "foundation": [
-            339,
             379,
             599,
             613,
@@ -10197,6 +10254,7 @@
             151,
             184,
             325,
+            339,
             380,
             381,
             382,
@@ -10230,6 +10288,23 @@
             939,
             229,
             256
+          ],
+          "harness": [
+            257,
+            154,
+            156,
+            270,
+            435,
+            436,
+            454,
+            500,
+            504,
+            505,
+            550,
+            607,
+            677,
+            870,
+            889
           ],
           "spine": [
             165,
@@ -10324,11 +10399,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "98dbb602dc5047b6d614866fe2879d4275f57b20",
+        "sha": "6fb8902310e5bb78fcaec91ff4ff52c119c09e41",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39755527815/job/119746442072",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39756069158/job/119748265558",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -10378,6 +10453,48 @@
           "known": 71,
           "new": 0
         },
+        "disagrees": false
+      },
+      {
+        "pr": 947,
+        "sha": "5f9c9a77db5c3dc5ff5749226199d4f7fd454141",
+        "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-22T09:30:48Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39755971809/job/119747939836",
+        "line": "HYGIENE: WARN reviewable=392 test=0 excluded=0 files=2 issue=docs-only",
+        "verdict": "WARN",
+        "fields": {
+          "reviewable": 392,
+          "test": 0,
+          "excluded": 0,
+          "files": 2,
+          "issue": "docs-only"
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 947,
+        "sha": "5f9c9a77db5c3dc5ff5749226199d4f7fd454141",
+        "check": "browser-qa",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-22T09:30:46Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39755971264/job/119747935806",
+        "line": "BROWSER-QA: skipped (no critical paths)",
+        "verdict": "SKIPPED",
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 947,
+        "sha": "5f9c9a77db5c3dc5ff5749226199d4f7fd454141",
+        "check": "ci",
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39755968891/job/119747928601",
+        "line": null,
+        "verdict": null,
+        "fields": {},
         "disagrees": false
       }
     ]
