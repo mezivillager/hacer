@@ -81,7 +81,10 @@ function current(): boolean {
 
 /** The built reference's directory, fetched and built first unless its provenance already matches the pin. */
 export function ensureReference(log: (line: string) => void = () => {}): string {
-  if (current()) return referenceDir
+  if (current()) {
+    log(`reference: web-ide ${PIN.commit}, already built`)
+    return referenceDir
+  }
   log(`reference: cloning ${PIN.repository} at ${PIN.commit}`)
   checkout()
   log('reference: npm install (pinned versions)')
