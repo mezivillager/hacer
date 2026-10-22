@@ -6,6 +6,7 @@ export const INBOXES = [
   { prefix: 'PRD', file: 'docs/harness/product-inbox.md' },
 ]
 export const REVIEW_LABELS = ['inbox-review', 'agent-ready', 'risk:0', 'project:upkeep']
+export const JUDGE_LABELS = []
 /** `gh issue list --limit` for the dedupe read: a list this long may be cut short, so queue refuses it. */
 export const REVIEW_LIST_LIMIT = 1000
 

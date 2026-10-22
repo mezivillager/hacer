@@ -34,6 +34,7 @@ import {
   formatTasks,
   formatVerifierTier,
   historyGap,
+  judgeDueLine,
   lastRunsRow,
   latestClaim,
   mainLines,
@@ -1766,6 +1767,85 @@ esac
         const none = runBacklog(bin, ['next', '--json'], { ...env, FAKE_ISSUES: '[]' })
         expect({ status: none.status, stdout: none.stdout, review: reviewOf(none.stderr) })
           .toEqual({ status: NOTHING_PICKABLE_EXIT, stdout: 'null\n', review: UNREAD })
+      })
+    })
+  })
+})
+
+// R889 (#963): a decision gates what gets built, so an open judge-review issue is picked ahead of everything else.
+describe('judge due', () => {
+  const judgeReview = (number, overrides = {}) => issue(number, { labels: ['agent-ready', 'judge-review', 'risk:0', 'project:harness'], ...overrides })
+  const critical = (number) => issue(number, { labels: ['agent-ready', 'bug', 'sev:critical', 'project:bugs'] })
+
+  it('names every open judge-review issue by number, and nothing when there is none', () => {
+    const claimedOne = judgeReview(7, { labels: ['judge-review', 'in-progress', 'project:harness'] })
+    expect(judgeDueLine([open(1, 'foundation'), judgeReview(12), claimedOne])).toBe('judge due: 2 (#7, #12)')
+    expect(judgeDueLine([judgeReview(5)])).toBe('judge due: 1 (#5)')
+    expect(judgeDueLine([open(1, 'foundation'), critical(2)])).toBeNull()
+    expect(judgeDueLine([])).toBeNull()
+  })
+
+  it('puts a pickable judge-review issue first, ahead of sev:critical and the cycle', () => {
+    const issues = [open(1, 'foundation'), critical(2), judgeReview(3), open(4, 'harness'), judgeReview(9)]
+    const plan = planReady(issues, portfolioRows)
+    expect(picks(plan)).toEqual([3, 9, 2, 1, 4])
+    expect(reportNext(plan).stdout).toBe('#3 · harness · Task 3')
+  })
+
+  it('a judge pick takes no slot: the cycle resumes where it was', () => {
+    const issues = [open(11, 'foundation'), open(21, 'lineage'), open(31, 'harness'), open(51, 'spine')]
+    const after = (...history) => picks(planReady(issues, portfolioRows, DEFAULT_ALLOWLIST, [], history))
+    expect(after(open(1, 'harness'), judgeReview(8))).toEqual(after(open(1, 'harness')))
+    expect(resumePoint(issues, portfolioRows, [judgeReview(8)])).toEqual(resumePoint(issues, portfolioRows, []))
+  })
+
+  it('a claimed or blocked judge-review issue is not picked', () => {
+    const issues = [open(1, 'foundation'), judgeReview(3), judgeReview(5, { blockedBy: [{ number: 9, state: 'OPEN' }] })]
+    const plan = planReady(issues, portfolioRows, DEFAULT_ALLOWLIST, [held(3)])
+    expect(picks(plan)).toEqual([1])
+    expect([reasonOf(plan, 3), reasonOf(plan, 5)]).toEqual(['claimed', 'blocked:#9'])
+  })
+
+  it('docs/portfolio.md puts an open judge-review issue at step 0 of the pick rule, before sev:critical', () => {
+    const rule = livePortfolio.slice(livePortfolio.indexOf('## Pick rule'), livePortfolio.indexOf('## The foundation gate'))
+    expect(rule).toMatch(/^0\. An open, unclaimed `judge-review` issue/m)
+    expect(rule.indexOf('`judge-review`')).toBeLessThan(rule.indexOf('`sev:critical`'))
+  })
+
+  it('ha-next §1 says a judge due line means run the judge brief before the first other claim', () => {
+    const skill = readFileSync(path.join(import.meta.dirname, '..', '.claude', 'skills', 'ha-next', 'SKILL.md'), 'utf8')
+    const orient = skill.slice(skill.indexOf('## 1.'), skill.indexOf('## 2.')).replace(/\s+/g, ' ')
+    expect(orient).toMatch(/A `judge due:` line from `ready` means .{0,120}`docs\/harness\/judge-brief\.md`.{0,120}before the first other claim/)
+  })
+
+  it('the header comment of backlog.mjs lists judge due under ready', () => {
+    const header = readFileSync(BACKLOG_SCRIPT, 'utf8').split('\nimport ')[0]
+    expect(header).toMatch(/node scripts\/backlog\.mjs ready[\s\S]*`judge due: <n> \(#a, …\)`[\s\S]*node scripts\/backlog\.mjs next/)
+  })
+
+  describe('in ready and next', () => {
+    const EMPTY_HISTORY = { data: { repository: { issues: { pageInfo: { hasNextPage: false, endCursor: null }, nodes: [] } } } }
+    const FAKE_GH = `#!/bin/sh
+case "$*" in
+  "issue list "*) printf '%s\\n' "$FAKE_ISSUES" ;;
+  *matching-refs*|"pr list "*|"workflow list "*|"run list "*) echo '[]' ;;
+  "api graphql "*) echo '${JSON.stringify(EMPTY_HISTORY)}' ;;
+  *) echo "fake gh: unexpected $*" >&2; exit 1 ;;
+esac
+`
+    const judgeOf = (stderr) => stderr.split('\n').filter((line) => line.startsWith('judge due'))
+
+    it('ready and next print the judge due line on stderr, and next picks the judge review', () => {
+      withFakeGh(FAKE_GH, (bin) => {
+        const env = { FAKE_ISSUES: JSON.stringify([open(1, 'spine'), judgeReview(4)]) }
+        const next = runBacklog(bin, ['next', '--json'], env)
+        expect({ status: next.status, number: JSON.parse(next.stdout).number, judge: judgeOf(next.stderr) })
+          .toEqual({ status: 0, number: 4, judge: ['judge due: 1 (#4)'] })
+        const ready = runBacklog(bin, ['ready', '--json'], env)
+        expect({ status: ready.status, numbers: picks(JSON.parse(ready.stdout)), judge: judgeOf(ready.stderr) })
+          .toEqual({ status: 0, numbers: [4, 1], judge: ['judge due: 1 (#4)'] })
+        const none = runBacklog(bin, ['ready', '--json'], { FAKE_ISSUES: JSON.stringify([open(1, 'spine')]) })
+        expect({ status: none.status, judge: judgeOf(none.stderr) }).toEqual({ status: 0, judge: [] })
       })
     })
   })

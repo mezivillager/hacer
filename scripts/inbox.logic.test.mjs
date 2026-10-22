@@ -6,6 +6,7 @@ import { afterEach, describe, it, expect } from 'vitest'
 import {
   INBOXES,
   InboxError,
+  JUDGE_LABELS,
   REVIEW_LABELS,
   REVIEW_LIST_LIMIT,
   assertGrammar,
@@ -23,10 +24,11 @@ const ROOT = path.join(import.meta.dirname, '..')
 const FIXTURES = path.join(import.meta.dirname, 'fixtures', 'inbox')
 const inboxOf = (prefix) => INBOXES.find((inbox) => inbox.prefix === prefix)
 
-// scripts/fixtures/inbox/*-inbox.md are the three inboxes as origin/main held them at 579ff8f4 (2026-10-17), when
-// #778 measured their counts. The live files move with every review, so only the recordings carry exact counts.
+// scripts/fixtures/inbox/{fidelity,harness,product}-inbox.md are the three inboxes as origin/main held them at 579ff8f4
+// (2026-10-17), when #778 measured their counts. The live files move with every review, so only the recordings carry
+// exact counts. judge-inbox.md is composed: the live header with one entry in each of three statuses (#963).
 const recordedText = (prefix) => readFileSync(path.join(FIXTURES, path.basename(inboxOf(prefix).file)), 'utf8')
-const recorded = INBOXES.map((inbox) => parseInbox(recordedText(inbox.prefix), inbox))
+const recorded = ['FID', 'HRN', 'PRD'].map((prefix) => parseInbox(recordedText(prefix), inboxOf(prefix)))
 const liveText = (inbox) => readFileSync(path.join(ROOT, inbox.file), 'utf8')
 
 // gh-review-issues.json has the shape `gh issue list --label inbox-review --state all --json number,title,state,body`
@@ -323,6 +325,121 @@ describe('queue', () => {
   })
 })
 
+// R889: the judge inbox is read like the other three, and its review issues go to the judge (#963).
+describe('the judge inbox', () => {
+  const judgeInbox = () => inboxOf('JDG')
+  const judgeText = () => recordedText('JDG')
+  const judged = () => parseInbox(judgeText(), judgeInbox())
+  const JUDGE_GRAMMAR = ['proposed', 'approved', 'declined (<reason>)', 'deferred (<until>)', 'filed (#n)',
+    'decided (<decision>), owner action: <what>']
+  const DECIDED = 'decided (B: one repository secret, read only by ui-tour.yml), owner action: add the secret in Settings → Secrets'
+  const panelReview = JSON.parse(readFileSync(path.join(FIXTURES, 'review-FID-006.json'), 'utf8'))
+
+  it('reads judge-inbox.md as the fourth inbox, its grammar the harness inbox\'s plus the owner-action form', () => {
+    expect(INBOXES.map((inbox) => inbox.prefix)).toEqual(['FID', 'HRN', 'PRD', 'JDG'])
+    expect(judgeInbox()).toEqual({ prefix: 'JDG', file: 'docs/harness/judge-inbox.md' })
+    const { grammar, entries } = judged()
+    expect(grammar).toEqual(JUDGE_GRAMMAR)
+    expect(grammar.slice(0, -1)).toEqual(parseInbox(liveText(inboxOf('HRN')), inboxOf('HRN')).grammar)
+    expect(entries.map((entry) => [entry.id, entry.status, entry.file])).toEqual([
+      ['JDG-001', 'proposed', 'docs/harness/judge-inbox.md'],
+      ['JDG-002', DECIDED, 'docs/harness/judge-inbox.md'],
+      ['JDG-003', 'filed (#9020), judge #9021: option A', 'docs/harness/judge-inbox.md'],
+    ])
+  })
+
+  it('lists JDG entries beside the other three, and by status, decided among them', () => {
+    const all = [...recorded, judged()]
+    expect(listEntries(all)).toHaveLength(36)
+    expect(listEntries(all, { status: 'proposed' }).map((entry) => entry.id)).toEqual([...proposedIds(recorded), 'JDG-001'])
+    expect(listEntries(all, { status: 'decided' }).map((entry) => entry.id)).toEqual(['JDG-002'])
+    expect(() => listEntries(recorded, { status: 'decided' })).toThrow(InboxError)
+    expect(entryStatus(all, 'JDG-002', { not: 'proposed' })).toEqual({ exitCode: 0, stdout: DECIDED })
+    expect(entryStatus(all, 'JDG-001', { not: 'proposed' })).toEqual({ exitCode: 1, stdout: 'proposed' })
+  })
+
+  it('sets a JDG status to every form of its grammar, and refuses decided without its owner action', () => {
+    const text = judgeText()
+    const { statusLine } = judged().entries[0]
+    for (const value of ['approved', 'declined (judge, #9021: option B instead, since A needs a runner)',
+      'deferred (judge, #9021: until #142 exits)', 'filed (#9030)', 'decided (A: wait), owner action: connect GitHub to Claude', 'proposed']) {
+      expect(setStatus(text, judgeInbox(), 'JDG-001', value).split('\n')[statusLine - 1]).toBe(`- **Status:** ${value}`)
+    }
+    for (const value of ['decided (A)', 'decided (A), owner action: ', 'decided (A), owner action:', 'decided, owner action: x', 'owner action: x']) {
+      expect(() => setStatus(text, judgeInbox(), 'JDG-001', value), JSON.stringify(value)).toThrow(InboxError)
+    }
+    expect(() => setStatus(recordedText('HRN'), inboxOf('HRN'), 'HRN-005', 'decided (A), owner action: x')).toThrow(/grammar/)
+  })
+
+  it('queues a JDG review issue with the judge labels and title, and the other three with REVIEW_LABELS as before', () => {
+    const entry = judged().entries[0]
+    const draft = reviewIssue(entry)
+    expect(JUDGE_LABELS).toEqual(['judge-review', 'agent-ready', 'risk:0', 'project:harness'])
+    expect(draft).toMatchObject({ id: 'JDG-001', title: `Judge review: JDG-001 · ${entry.title}`, labels: JUDGE_LABELS })
+    const headings = draft.body.split('\n').filter((line) => line.startsWith('## '))
+    expect(headings).toEqual(['## Goal', '## Acceptance criteria', '## Verification command', '## Scope', '## Files likely touched', '## Risk', '## Blocked by'])
+    expect(draft.body).toContain('`docs/harness/judge-brief.md`')
+    expect(draft.body).toContain('## Judge: DECIDED <option> | DEFERRED (<checkable condition>)')
+    expect(draft.body).toContain('`node scripts/inbox.mjs set JDG-001 <status>`')
+    expect(draft.body).toContain('`decided (<decision>), owner action: <what>`')
+    expect(draft.body).toContain('`node scripts/inbox.mjs status JDG-001 --not proposed`')
+    expect(draft.body).toMatch(/## Files likely touched\n`docs\/harness\/judge-inbox\.md`\n/)
+    expect(draft.body).not.toMatch(/inbox-panel-brief|Inbox panel/)
+    expect(draft.body.split('\n').at(-1)).toBe('Inbox-entry: JDG-001')
+    const fidelity = recorded[0].entries.find((candidate) => candidate.id === 'FID-006')
+    expect(reviewIssue(fidelity)).toEqual(panelReview)
+    for (const other of recorded.flatMap((inbox) => inbox.entries).map(reviewIssue)) {
+      expect([other.labels, other.title.startsWith('Inbox review: ')]).toEqual([REVIEW_LABELS, true])
+    }
+  })
+
+  it('dedupes every entry against the inbox-review and judge-review issues together, each list read once', () => {
+    const asked = []
+    const filed = []
+    const lists = { 'inbox-review': recordedIssues, 'judge-review': [{ number: 9021, title: 't', state: 'CLOSED', body: 'Inbox-entry: JDG-001' }] }
+    const gh = {
+      listReviewIssues: (label) => {
+        asked.push(label)
+        return lists[label] ?? []
+      },
+      fileIssue: (draft) => {
+        filed.push(draft)
+        return `https://github.com/mezivillager/hacer/issues/${9100 + filed.length}`
+      },
+    }
+    const all = [...recorded, judged()]
+    expect(queueReviews(all, gh)).toHaveLength(17)
+    expect(asked).toEqual(['inbox-review', 'judge-review'])
+    expect(filed.map((draft) => draft.id)).not.toContain('JDG-001')
+
+    asked.length = 0
+    filed.length = 0
+    lists['judge-review'] = [{ number: 9022, title: 't', state: 'OPEN', body: 'Inbox-entry: FID-007' }]
+    const lines = queueReviews(all, gh)
+    expect(asked).toEqual(['inbox-review', 'judge-review'])
+    expect(filed.at(-1)).toMatchObject({ id: 'JDG-001', labels: JUDGE_LABELS })
+    expect(lines.at(-1)).toMatch(/^filed https:\/\/github\.com\/mezivillager\/hacer\/issues\/\d+: Judge review: JDG-001 · /)
+    expect(filed.slice(0, -1).map((draft) => draft.labels)).toEqual(Array(16).fill(REVIEW_LABELS))
+    expect(filed.map((draft) => draft.id)).not.toContain('FID-007')
+
+    asked.length = 0
+    queueReviews(recorded, { ...gh, dryRun: true })
+    expect(asked).toEqual(['inbox-review'])
+  })
+
+  it('refuses to dedupe against a judge-review list gh may have cut short', () => {
+    const full = Array.from({ length: REVIEW_LIST_LIMIT }, (_, i) => ({ number: i + 1, title: 't', state: 'CLOSED', body: '' }))
+    const gh = { listReviewIssues: (label) => (label === 'judge-review' ? full : []), fileIssue: () => 'x', dryRun: true }
+    expect(() => queueReviews([...recorded, judged()], gh)).toThrow(/judge-review/)
+  })
+
+  it('the live judge-inbox.md is inside its grammar', () => {
+    const live = parseInbox(liveText(judgeInbox()), judgeInbox())
+    expect(live.grammar).toEqual(JUDGE_GRAMMAR)
+    expect(assertGrammar([live])).toEqual([live])
+  })
+})
+
 describe('inbox.mjs', () => {
   const cleanup = []
   afterEach(() => {
@@ -351,5 +468,15 @@ describe('inbox.mjs', () => {
     const set = cli(root, 'set', 'PRD-003', 'approved')
     expect(set.status).toBe(1)
     expect(readFileSync(path.join(root, inboxOf('PRD').file), 'utf8')).toBe(noteGrammarText)
+  })
+
+  it('lists and sets a JDG entry in docs/harness/judge-inbox.md', () => {
+    const root = disposableCheckout(recordedText('PRD'))
+    const decided = cli(root, 'list', '--status', 'decided')
+    expect([decided.status, decided.stdout.split('\t').slice(0, 1)]).toEqual([0, ['JDG-002']])
+    const value = 'decided (A: wait), owner action: connect GitHub to Claude'
+    const set = cli(root, 'set', 'JDG-001', value)
+    expect([set.status, set.stdout]).toEqual([0, `JDG-001: ${value} (docs/harness/judge-inbox.md)\n`])
+    expect(cli(root, 'status', 'JDG-001', '--not', 'proposed')).toMatchObject({ status: 0, stdout: `${value}\n` })
   })
 })
