@@ -301,3 +301,43 @@ changed over 15 Project 1 sources and 400 generated documents in both dialects. 
 (every bit) was decided by the #859 panel.
 Cost if wrong: an export a reviewer would have windowed differently; the one known gap (a sliced
 wide `true` on a part the registry lacks) is filed as a follow-up.
+
+## R877 — PR #920 (#919) merges without a separate fidelity review
+Builds on: R854
+Amends: R854
+Coordinator, 2026-10-22T05:32Z. Amends R854 for #920, as R871-R876 did. It refuses a `BUILTIN` body
+whose pins differ from the builtin it names, and the grading path refuses where the web IDE takes
+the builtin's pins. That is the divergence the #915 panel decided, and it is recorded in ADR-0020
+§1.11 rule 5. The panel measured the web IDE at `91ef428` (`builder.ts:233-235`; `CHIP Nand { IN x,
+y; ... BUILTIN; }` builds there on `a, b, out`), and the fidelity digest measured it again. The Opus
+verifier confirmed that all 16 registry builtins still compile and evaluate as matching `BUILTIN;`
+files, and that `test:differential` agrees on all 20.
+Cost if wrong: a hand-edited primitive file that the web IDE accepts is refused by HACER's grading
+with a message naming both sides; no value changes.
+
+## R878 — with nothing else pickable at 64%, the coordinator queues up its own three `risk:1` follow-ups and builds them before the close
+Builds on: R852, R875
+Coordinator, 2026-10-22T05:35Z, under `ha-next`'s "Queue up" rule for `risk:0` and `risk:1`. After
+#920 merged, `backlog.mjs next` named only #257, which R875 passes over. The owner's instruction
+runs the loop to 70%, and usage read 64% at 05:34Z. The run's verifiers left three follow-ups: #912
+(`samePins` collapses a repeated pin name), #916 (a sliced wide `true` on an unknown chip exports as
+written) and #918 (the differential harness copies `runTst` and installs without a lockfile). Each
+is shaped in the issue form, with criteria as named tests, scope, files, and `blast-radius.mjs`
+under the threshold (7, 9 and 1 direct production importers). Each is labelled `agent-ready` and
+built and verified like any pick. R852's line stands: no new chain at 67% or above.
+Cost if wrong: three small fixes land without an owner's or panel's look before the build; each
+still gets a fresh verifier.
+
+## R879 — PRs #921 (#912) and #922 (#916) merge without a separate fidelity review
+Builds on: R854
+Amends: R854
+Coordinator, 2026-10-22T06:10Z. Amends R854 for #921 and #922, as R871-R877 did. #922 changes only
+what the `nand2tetris` export prints for a sliced wide `true` on an unknown chip. The builder and
+the Opus verifier each ran the web IDE at `91ef428` on the new export: `W32(a[8..31]=true)` reads lo
+65280, hi 65535, where it read hi 255 before. Over 232 documents in 5 option sets, no other print
+changed. #921 refuses a definition that repeats a pin name within IN or within OUT. The verifier
+found that no conformance `.hdl`, Project 1 source, fixture, one of the 177 hdl-shapes, or one of
+the 16 builtins repeats one. The web IDE's own reading of a source that declares a pin twice was not
+measured.
+Cost if wrong: an HDL file that declares a pin twice and that the web IDE accepts is refused by
+HACER, with a message naming both sides; the next fidelity digest can measure it.
