@@ -244,9 +244,15 @@ describe('the nand2tetris dialect prints a true wider than 16 bits in 16-bit win
     expect(printSpec(wideDoc('W32', binding), { dialect: 'nand2tetris', chips: wide })).toBe(literalText('W32', binding))
   })
 
-  it.each(['a=true', 'a[8..31]=true'])('W32(%s) prints as written in the hacer dialect, and in the export when the registry lacks W32', (binding) => {
-    const doc = wideDoc('W32', binding)
-    expect(printSpec(doc, { chips: wide })).toContain(`    W32(${binding}, hi=hi, lo=lo); // #p1\n`)
-    expect(printSpec(doc, { dialect: 'nand2tetris' })).toBe(literalText('W32', binding))
+  it.each(['a=true', 'a[8..31]=true'])('W32(%s) prints as written in the hacer dialect', (binding) => {
+    expect(printSpec(wideDoc('W32', binding), { chips: wide })).toContain(`    W32(${binding}, hi=hi, lo=lo); // #p1\n`)
+  })
+
+  it('W32(a=true) prints as written in the export when the registry lacks W32, which leaves its width unknown', () => {
+    expect(printSpec(wideDoc('W32', 'a=true'), { dialect: 'nand2tetris' })).toBe(literalText('W32', 'a=true'))
+  })
+
+  it('W32(a[8..31]=true) prints as W32(a[8..23]=true, a[24..31]=true) when the registry lacks W32, by its slice width', () => {
+    expect(printSpec(wideDoc('W32', 'a[8..31]=true'), { dialect: 'nand2tetris' })).toBe(literalText('W32', 'a[8..23]=true, a[24..31]=true'))
   })
 })
