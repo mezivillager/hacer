@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-22T15:05:40.576Z",
+  "generatedAt": "2026-10-22T15:23:37.006Z",
   "head": {
     "sha": "c62a4e71f8addd1a402a440027f03ee8b0fc30d2",
     "date": "2026-10-22T18:03:50+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T15:05:40.576Z",
+      "fetchedAt": "2026-10-22T15:23:37.006Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T15:05:40.576Z",
+      "fetchedAt": "2026-10-22T15:23:37.006Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T15:05:40.576Z",
+      "fetchedAt": "2026-10-22T15:23:37.006Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-22T15:05:40.576Z",
+      "fetchedAt": "2026-10-22T15:23:37.006Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-22T15:05:40.576Z",
+      "fetchedAt": "2026-10-22T15:23:37.006Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-22T15:05:40.576Z",
+      "fetchedAt": "2026-10-22T15:23:37.006Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-22T15:05:40.576Z",
+      "fetchedAt": "2026-10-22T15:23:37.006Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-22T15:05:40.576Z",
+      "fetchedAt": "2026-10-22T15:23:37.006Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-22T15:05:40.576Z",
+      "fetchedAt": "2026-10-22T15:23:37.006Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-22T15:05:40.576Z",
+      "fetchedAt": "2026-10-22T15:23:37.006Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-22T15:05:40.576Z",
+      "fetchedAt": "2026-10-22T15:23:37.006Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-22T15:05:40.576Z",
+      "fetchedAt": "2026-10-22T15:23:37.006Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-22T15:05:40.576Z",
+      "fetchedAt": "2026-10-22T15:23:37.006Z",
       "status": "ok"
     }
   },
@@ -103,12 +103,12 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 31,
+        "open": 30,
         "ready": 14,
-        "inProgress": 1,
+        "inProgress": 0,
         "needsHuman": 2,
         "staleClaims": [],
-        "agentReady": 17,
+        "agentReady": 16,
         "filedElsewhere": [
           151,
           941,
@@ -2509,23 +2509,6 @@
         "reason": "unshaped"
       },
       {
-        "number": 970,
-        "title": "Judge review: JDG-004 · Does the spine move before phase C: a fidelity verdict on epic #139 next run, then Project 2's first slice pulled forward under `project:foundation`?",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "judge-review"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 981,
         "title": "Weekly cloud routine: one risk:0/risk:1 pick a week, fired before the weekly reset, so work merges without the owner (JDG-003)",
         "labels": [
@@ -2604,7 +2587,6 @@
         677,
         870,
         889,
-        970,
         981
       ],
       "foundation": [
@@ -4385,35 +4367,9 @@
           "at": "2026-09-25T06:02:35Z",
           "url": "https://github.com/mezivillager/hacer/issues/470#issuecomment-5827635352"
         }
-      },
-      {
-        "number": 970,
-        "ref": "refs/heads/claim/970",
-        "sha": "dbda6133877420093fc40412bf5a5fdfc9bb2b6a",
-        "state": "CLOSED",
-        "title": "Judge review: JDG-004 · Does the spine move before phase C: a fidelity verdict on epic #139 next run, then Project 2's first slice pulled forward under `project:foundation`?",
-        "url": "https://github.com/mezivillager/hacer/issues/970",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "judge-review"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-10-22-hacer-loop-to-90",
-          "branch": "chore/judge-jdg-004",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-22T14:17:07Z",
-          "url": "https://github.com/mezivillager/hacer/issues/970#issuecomment-6342990650"
-        }
       }
     ],
-    "onClosedIssues": 1
+    "onClosedIssues": 0
   },
   "cloudLane": {
     "items": [
@@ -6393,7 +6349,7 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-08T15:05:40.576Z",
+      "since": "2026-10-08T15:23:37.006Z",
       "merged": 132,
       "openToMergeHours": {
         "median": 0.3,
@@ -10704,12 +10660,15 @@
         "pr": null,
         "sha": "c62a4e71f8addd1a402a440027f03ee8b0fc30d2",
         "check": "ci",
-        "conclusion": null,
-        "completedAt": null,
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-22T15:06:23Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/39801275771/job/119902313959",
-        "line": null,
-        "verdict": null,
-        "fields": {},
+        "line": "LAYER-RATCHET: 68 known violations (36 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 68,
+          "new": 0
+        },
         "disagrees": false
       },
       {
