@@ -95,8 +95,10 @@ export function undeclaredRules(baselineRows, forbidden) {
   return [...new Set(orphans)].map((rule) => ({ rule, rows: orphans.filter((name) => name === rule).length }))
 }
 
-/** Sum the per-file, per-rule counts in an `eslint-suppressions.json`. Unreadable is zero, never a
- *  throw: the guard prefers a false negative to blocking on its own bookkeeping. */
+const ENGINE_GLOBAL_RULES = ['no-console', 'no-restricted-globals']
+
+/** Sum the engine-global rules' counts in an `eslint-suppressions.json`; other rules share the file but
+ *  not the metric. Unreadable is zero, never a throw: the guard prefers a false negative to blocking. */
 export function countSuppressions(text) {
   let parsed
   try {
@@ -106,7 +108,7 @@ export function countSuppressions(text) {
   }
   if (!parsed || typeof parsed !== 'object') return 0
   return Object.values(parsed)
-    .flatMap((rules) => Object.values(rules ?? {}))
+    .flatMap((rules) => ENGINE_GLOBAL_RULES.map((rule) => rules?.[rule]))
     .reduce((total, entry) => total + (Number(entry?.count) || 0), 0)
 }
 
