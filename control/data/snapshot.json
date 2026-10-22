@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-22T09:38:24.620Z",
+  "generatedAt": "2026-10-22T09:55:34.715Z",
   "head": {
-    "sha": "0b84a6fab2e71c4a90163087e442da41030a00b4",
-    "date": "2026-10-22T12:37:32+03:00",
-    "subject": "docs(harness): process review 1 of cycle 2026-10-22"
+    "sha": "cb234ff9490f7094e94b46ab5bd926af95883a9a",
+    "date": "2026-10-22T12:54:27+03:00",
+    "subject": "docs(harness): synthesis of process review cycle 2026-10-22"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T09:38:24.620Z",
+      "fetchedAt": "2026-10-22T09:55:34.715Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T09:38:24.620Z",
+      "fetchedAt": "2026-10-22T09:55:34.715Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T09:38:24.620Z",
+      "fetchedAt": "2026-10-22T09:55:34.715Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-22T09:38:24.620Z",
+      "fetchedAt": "2026-10-22T09:55:34.715Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-22T09:38:24.620Z",
+      "fetchedAt": "2026-10-22T09:55:34.715Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-22T09:38:24.620Z",
+      "fetchedAt": "2026-10-22T09:55:34.715Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-22T09:38:24.620Z",
+      "fetchedAt": "2026-10-22T09:55:34.715Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-22T09:38:24.620Z",
+      "fetchedAt": "2026-10-22T09:55:34.715Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-22T09:38:24.620Z",
+      "fetchedAt": "2026-10-22T09:55:34.715Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-22T09:38:24.620Z",
+      "fetchedAt": "2026-10-22T09:55:34.715Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-22T09:38:24.620Z",
+      "fetchedAt": "2026-10-22T09:55:34.715Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-22T09:38:24.620Z",
+      "fetchedAt": "2026-10-22T09:55:34.715Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-22T09:38:24.620Z",
+      "fetchedAt": "2026-10-22T09:55:34.715Z",
       "status": "ok"
     }
   },
@@ -103,12 +103,12 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 15,
-        "ready": 1,
+        "open": 17,
+        "ready": 3,
         "inProgress": 0,
         "needsHuman": 2,
         "staleClaims": [],
-        "agentReady": 1,
+        "agentReady": 3,
         "filedElsewhere": [
           151,
           339,
@@ -122,8 +122,8 @@
         "title": "Epic: harness — autonomous-run improvements & agent-readiness",
         "subIssues": {
           "completed": 50,
-          "percentCompleted": 86,
-          "total": 58
+          "percentCompleted": 83,
+          "total": 60
         }
       },
       {
@@ -308,15 +308,15 @@
         "slug": "upkeep",
         "epicNumber": 146,
         "open": 14,
-        "ready": 12,
-        "inProgress": 0,
+        "ready": 11,
+        "inProgress": 1,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 13,
         "filedElsewhere": [],
         "next": {
-          "number": 928,
-          "title": "Inbox review: HRN-018 · A second coordinator collides in four places that nothing guards: allow one only with guards, or say there is one"
+          "number": 929,
+          "title": "Inbox review: HRN-019 · `merge-on-green` rebase-merges a test-only PR whose red commit fails on purpose, against the implementer brief's one-commit rule"
         },
         "title": "Epic: upkeep — maintenance & documentation",
         "subIssues": {
@@ -373,7 +373,7 @@
         "lane": "process",
         "slug": "mission-control",
         "epicNumber": 458,
-        "open": 2,
+        "open": 3,
         "ready": 0,
         "inProgress": 0,
         "needsHuman": 0,
@@ -386,8 +386,8 @@
         "title": "Epic: mission-control — Mission Control: the platform's status, process and roadmap as one site",
         "subIssues": {
           "completed": 12,
-          "percentCompleted": 100,
-          "total": 12
+          "percentCompleted": 92,
+          "total": 13
         }
       }
     ]
@@ -409,11 +409,6 @@
       "bugs"
     ],
     "next": [
-      {
-        "number": 928,
-        "title": "Inbox review: HRN-018 · A second coordinator collides in four places that nothing guards: allow one only with guards, or say there is one",
-        "project": "upkeep"
-      },
       {
         "number": 599,
         "title": "run-tst: a bare output-list name gets the pin's width, as the reference IDE gives it",
@@ -445,6 +440,11 @@
         "project": "foundation"
       },
       {
+        "number": 949,
+        "title": "`ready` and `next` print `shape due:` for a foundation or spine slot with nothing pickable, and `ha-next` dispatches a shaper",
+        "project": "harness"
+      },
+      {
         "number": 941,
         "title": "pr-hygiene: protect the differential harness, see a rename out of a protected path, and flag a PR that weakens a test (#151, foundation 1.6)",
         "project": "foundation"
@@ -453,6 +453,11 @@
         "number": 930,
         "title": "Inbox review: HRN-020 · A PR's `Decisions:` line takes only decision ids or a bare `none`, so the inbox ids and the prose builders write make `lineage parse --github` report it malformed",
         "project": "upkeep"
+      },
+      {
+        "number": 951,
+        "title": "`pr-hygiene` counts a review cycle's evidence toward the 400 lines, and the standing review brief still lists the cloud lane",
+        "project": "harness"
       },
       {
         "number": 933,
@@ -503,28 +508,14 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
+        952,
+        948,
         514
       ]
     }
   },
   "tasks": {
     "items": [
-      {
-        "number": 928,
-        "title": "Inbox review: HRN-018 · A second coordinator collides in four places that nothing guards: allow one only with guards, or say there is one",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": true,
-        "reason": null
-      },
       {
         "number": 599,
         "title": "run-tst: a bare output-list name gets the pin's width, as the reference IDE gives it",
@@ -621,6 +612,21 @@
         "reason": null
       },
       {
+        "number": 949,
+        "title": "`ready` and `next` print `shape due:` for a foundation or spine slot with nothing pickable, and `ha-next` dispatches a shaper",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:1"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
         "number": 941,
         "title": "pr-hygiene: protect the differential harness, see a rename out of a protected path, and flag a PR that weakens a test (#151, foundation 1.6)",
         "labels": [
@@ -651,6 +657,21 @@
         "project": "upkeep",
         "rank": 11,
         "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 951,
+        "title": "`pr-hygiene` counts a review cycle's evidence toward the 400 lines, and the standing review brief still lists the cloud lane",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:1"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
         "pickable": true,
         "reason": null
       },
@@ -2278,6 +2299,23 @@
         "reason": "unshaped"
       },
       {
+        "number": 928,
+        "title": "Inbox review: HRN-018 · A second coordinator collides in four places that nothing guards: allow one only with guards, or say there is one",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 940,
         "title": "N.4b: `layout(doc, surface, { previous, hints })`: hold what is placed, never move a hinted node",
         "labels": [
@@ -2306,25 +2344,23 @@
         "lane": "feature",
         "pickable": false,
         "reason": "unshaped"
+      },
+      {
+        "number": 950,
+        "title": "Mission Control's `metrics.conformance` reports a pass count from the scenario suite instead of `runner: null`",
+        "labels": [
+          "risk:1",
+          "project:mission-control"
+        ],
+        "blocking": [],
+        "project": "mission-control",
+        "rank": 14,
+        "lane": "process",
+        "pickable": false,
+        "reason": "unshaped"
       }
     ],
     "byProject": {
-      "upkeep": [
-        928,
-        929,
-        930,
-        933,
-        934,
-        935,
-        936,
-        937,
-        938,
-        939,
-        945,
-        946,
-        229,
-        256
-      ],
       "foundation": [
         599,
         613,
@@ -2358,6 +2394,8 @@
       ],
       "harness": [
         257,
+        949,
+        951,
         154,
         156,
         270,
@@ -2372,6 +2410,22 @@
         677,
         870,
         889
+      ],
+      "upkeep": [
+        929,
+        930,
+        933,
+        934,
+        935,
+        936,
+        937,
+        938,
+        939,
+        945,
+        946,
+        229,
+        256,
+        928
       ],
       "spine": [
         165,
@@ -2445,7 +2499,8 @@
       ],
       "mission-control": [
         509,
-        584
+        584,
+        950
       ],
       "unfiled": [
         572
@@ -2462,6 +2517,51 @@
   },
   "prs": {
     "open": [
+      {
+        "number": 952,
+        "title": "feat(layout): layout(doc, surface, options), the first layered placement (N.4a)",
+        "url": "https://github.com/mezivillager/hacer/pull/952",
+        "author": "mezivillager",
+        "labels": [
+          "risk:1",
+          "project:foundation"
+        ],
+        "headRefName": "feat/379-layout",
+        "isDraft": false,
+        "createdAt": "2026-10-22T09:48:48Z",
+        "mergedAt": null,
+        "closes": [
+          379
+        ],
+        "verdicts": []
+      },
+      {
+        "number": 948,
+        "title": "chore(lint): function length only shrinks — max-lines-per-function at 80 on src/",
+        "url": "https://github.com/mezivillager/hacer/pull/948",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:1",
+          "project:foundation"
+        ],
+        "headRefName": "feat/339-function-length",
+        "isDraft": false,
+        "createdAt": "2026-10-22T09:38:49Z",
+        "mergedAt": null,
+        "closes": [
+          339
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Claude Sonnet 5.5 (claude-sonnet-5-5)",
+            "at": "2026-10-22T09:52:13Z",
+            "url": "https://github.com/mezivillager/hacer/pull/948#issuecomment-6337879651"
+          }
+        ]
+      },
       {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
@@ -2490,6 +2590,30 @@
       }
     ],
     "merged": [
+      {
+        "number": 953,
+        "title": "docs(harness): synthesis of process review cycle 2026-10-22",
+        "url": "https://github.com/mezivillager/hacer/pull/953",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/process-review-2026-10-22-synthesis",
+        "isDraft": false,
+        "createdAt": "2026-10-22T09:50:49Z",
+        "mergedAt": "2026-10-22T09:54:28Z",
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (risk:0 docs-only exception, ha-next §4)",
+            "at": "2026-10-22T09:53:01Z",
+            "url": "https://github.com/mezivillager/hacer/pull/953#issuecomment-6337894228"
+          }
+        ]
+      },
       {
         "number": 947,
         "title": "docs(harness): process review 1 of cycle 2026-10-22",
@@ -4037,33 +4161,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/810#issuecomment-6238926549"
           }
         ]
-      },
-      {
-        "number": 806,
-        "title": "docs(product): first usability review of the app, five polish issues and three inbox proposals",
-        "url": "https://github.com/mezivillager/hacer/pull/806",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:0"
-        ],
-        "headRefName": "docs/269-product-review-1",
-        "isDraft": false,
-        "createdAt": "2026-10-17T18:44:10Z",
-        "mergedAt": "2026-10-17T18:47:55Z",
-        "closes": [
-          269
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "coordinator (Opus 5.5; the risk:0 docs-only exception, ha-next §4)",
-            "at": "2026-10-17T18:47:32Z",
-            "url": "https://github.com/mezivillager/hacer/pull/806#issuecomment-6238879314"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4151,6 +4248,32 @@
           "author": "mezivillager",
           "at": "2026-09-25T06:02:35Z",
           "url": "https://github.com/mezivillager/hacer/issues/470#issuecomment-5827635352"
+        }
+      },
+      {
+        "number": 928,
+        "ref": "refs/heads/claim/928",
+        "sha": "0b84a6fab2e71c4a90163087e442da41030a00b4",
+        "state": "OPEN",
+        "title": "Inbox review: HRN-018 · A second coordinator collides in four places that nothing guards: allow one only with guards, or say there is one",
+        "url": "https://github.com/mezivillager/hacer/issues/928",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "2026-10-22-hacer-loop-to-80",
+          "branch": "chore/inbox-hrn-018",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-22T09:53:20Z",
+          "url": "https://github.com/mezivillager/hacer/issues/928#issuecomment-6337900360"
         }
       }
     ],
@@ -6075,7 +6198,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-17",
-        "merges": 3
+        "merges": 2
       },
       {
         "date": "2026-10-21",
@@ -6083,20 +6206,20 @@
       },
       {
         "date": "2026-10-22",
-        "merges": 29
+        "merges": 30
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-08T09:38:24.620Z",
-      "merged": 119,
+      "since": "2026-10-08T09:55:34.715Z",
+      "merged": 120,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 1.6
       },
       "blockedOnce": {
         "count": 7,
-        "of": 100,
+        "of": 101,
         "prs": [
           700,
           725,
@@ -6114,8 +6237,8 @@
           "without": []
         },
         "nonCode": {
-          "merged": 40,
-          "withVerdict": 21,
+          "merged": 41,
+          "withVerdict": 22,
           "without": [
             692,
             693,
@@ -10221,10 +10344,25 @@
       },
       {
         "date": "2026-10-22",
-        "at": "2026-10-22T09:27:49.583Z",
+        "at": "2026-10-22T09:38:24.620Z",
         "byProject": {
+          "upkeep": [
+            928,
+            929,
+            930,
+            933,
+            934,
+            935,
+            936,
+            937,
+            938,
+            939,
+            945,
+            946,
+            229,
+            256
+          ],
           "foundation": [
-            379,
             599,
             613,
             773,
@@ -10234,6 +10372,7 @@
             184,
             325,
             339,
+            379,
             380,
             381,
             382,
@@ -10253,20 +10392,6 @@
             907,
             940,
             942
-          ],
-          "upkeep": [
-            928,
-            929,
-            930,
-            933,
-            934,
-            935,
-            936,
-            937,
-            938,
-            939,
-            229,
-            256
           ],
           "harness": [
             257,
@@ -10378,11 +10503,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "0b84a6fab2e71c4a90163087e442da41030a00b4",
+        "sha": "cb234ff9490f7094e94b46ab5bd926af95883a9a",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39756870877/job/119750972188",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39759034525/job/119758285045",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -10430,6 +10555,88 @@
         "verdict": "PASS",
         "fields": {
           "known": 71,
+          "new": 0
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 948,
+        "sha": "b172b69b2e9f91a791593adebbce3daf1911bac4",
+        "check": "pr-hygiene",
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39759147190/job/119758658543",
+        "line": null,
+        "verdict": null,
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 948,
+        "sha": "b172b69b2e9f91a791593adebbce3daf1911bac4",
+        "check": "browser-qa",
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39759153095/job/119758675372",
+        "line": null,
+        "verdict": null,
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 948,
+        "sha": "b172b69b2e9f91a791593adebbce3daf1911bac4",
+        "check": "ci",
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39759153085/job/119758674969",
+        "line": null,
+        "verdict": null,
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 952,
+        "sha": "da3788958648eb6c3531a36d8b7a60557f03d073",
+        "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-22T09:49:03Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39758310882/job/119755847901",
+        "line": "HYGIENE: WARN reviewable=234 test=196 excluded=282 files=5 issue=#379 linked=fixes",
+        "verdict": "WARN",
+        "fields": {
+          "reviewable": 234,
+          "test": 196,
+          "excluded": 282,
+          "files": 5,
+          "issue": "#379",
+          "linked": "fixes"
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 952,
+        "sha": "da3788958648eb6c3531a36d8b7a60557f03d073",
+        "check": "browser-qa",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-22T09:49:08Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39758309803/job/119755842756",
+        "line": "BROWSER-QA: skipped (no critical paths)",
+        "verdict": "SKIPPED",
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 952,
+        "sha": "da3788958648eb6c3531a36d8b7a60557f03d073",
+        "check": "ci",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-22T09:52:19Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39758308081/job/119755835907",
+        "line": "LAYER-RATCHET: 69 known violations (37 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 69,
           "new": 0
         },
         "disagrees": false
