@@ -22,7 +22,7 @@ const PIN = JSON.parse(readFileSync(path.join(HERE, 'reference.json'), 'utf-8'))
 
 export const referenceDir = path.resolve(HERE, '../../node_modules/.cache/hacer-differential', PIN.commit)
 const PROVENANCE = path.join(referenceDir, 'provenance.json')
-const BUILT = ['simulator/build/chip/builder.js', 'simulator/build/languages/tst.js', 'simulator/build/test/chiptst.js']
+export const BUILT = ['simulator/build/chip/builder.js', 'simulator/build/languages/tst.js', 'simulator/build/test/chiptst.js']
 
 const run = (cmd: string, args: string[]): string =>
   execFileSync(cmd, args, { cwd: referenceDir, encoding: 'utf-8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 300_000 })
@@ -73,9 +73,10 @@ function build(): number {
   return (output.match(/error TS\d+/g) ?? []).length
 }
 
-function current(): boolean {
-  if (!existsSync(PROVENANCE)) return false
-  const { pin } = JSON.parse(readFileSync(PROVENANCE, 'utf-8')) as Provenance
+export function current(dir: string = referenceDir): boolean {
+  const provenance = path.join(dir, 'provenance.json')
+  if (!existsSync(provenance)) return false
+  const { pin } = JSON.parse(readFileSync(provenance, 'utf-8')) as Provenance
   return JSON.stringify(pin) === JSON.stringify(PIN)
 }
 
