@@ -1,7 +1,7 @@
 # 0020. Spec-only writes, read-only projections
 
 - **Status:** Accepted — the fresh-context adversarial review [#359](https://github.com/mezivillager/hacer/issues/359) required by #327 returned `sound with corrections`, and the second pass over the four post-review deltas returned `accept with corrections` (both on [#358](https://github.com/mezivillager/hacer/pull/358), 2026-09-23). Both sets of corrections are applied below — the second pass's seven under "What the second pass changed" — and no further review round is required. **Amended 2026-09-24** by the spike this ADR scheduled for 1.5/1.6 ([#372](https://github.com/mezivillager/hacer/issues/372)), which ran, found the mechanism 1.5 describes does not work, and replaced it — "What the spike changed". The status does **not** move: the spine, the review's acceptance and every decision stand, and correcting a mechanism is what a scheduled spike is for.
-- **Date:** 2026-09-23 · mechanism amended 2026-09-24 ([#372](https://github.com/mezivillager/hacer/issues/372)) · §7.1 and §9 amended 2026-09-29 ([#598](https://github.com/mezivillager/hacer/issues/598)) · §1.10 added 2026-10-15 ([#374](https://github.com/mezivillager/hacer/issues/374)) · §1.11 added 2026-10-15 ([#378](https://github.com/mezivillager/hacer/issues/378)) · §1.1 and §1.11.5 amended 2026-10-21 ([#813](https://github.com/mezivillager/hacer/issues/813)) · §1, §1.10 and the migration policy amended 2026-10-21 ([#814](https://github.com/mezivillager/hacer/issues/814)) · §1.10 item 10 amended 2026-10-21 ([#844](https://github.com/mezivillager/hacer/issues/844)) · §1.11.5 amended again 2026-10-21 ([#840](https://github.com/mezivillager/hacer/issues/840)) · §1.1 amended again 2026-10-22 ([#882](https://github.com/mezivillager/hacer/issues/882)) · §1.11 rule 2 amended 2026-10-22 ([#903](https://github.com/mezivillager/hacer/issues/903)) · §1.10.9 and §1.10 item 10 amended 2026-10-22 ([#905](https://github.com/mezivillager/hacer/issues/905)) · §1.11 rules 2 and 5 amended 2026-10-22 ([#919](https://github.com/mezivillager/hacer/issues/919))
+- **Date:** 2026-09-23 · mechanism amended 2026-09-24 ([#372](https://github.com/mezivillager/hacer/issues/372)) · §7.1 and §9 amended 2026-09-29 ([#598](https://github.com/mezivillager/hacer/issues/598)) · §1.10 added 2026-10-15 ([#374](https://github.com/mezivillager/hacer/issues/374)) · §1.11 added 2026-10-15 ([#378](https://github.com/mezivillager/hacer/issues/378)) · §1.1 and §1.11.5 amended 2026-10-21 ([#813](https://github.com/mezivillager/hacer/issues/813)) · §1.11 rule 4 amended 2026-10-21 ([#825](https://github.com/mezivillager/hacer/issues/825)) · §1, §1.10 and the migration policy amended 2026-10-21 ([#814](https://github.com/mezivillager/hacer/issues/814)) · §1.11 rule 1 amended 2026-10-21 ([#855](https://github.com/mezivillager/hacer/issues/855)) · §1.10 item 10 amended 2026-10-21 ([#844](https://github.com/mezivillager/hacer/issues/844)) · §1.11.5 amended again 2026-10-21 ([#840](https://github.com/mezivillager/hacer/issues/840)) · §1.1 amended again 2026-10-22 ([#882](https://github.com/mezivillager/hacer/issues/882)) · §1.11 rule 2 amended 2026-10-22 ([#903](https://github.com/mezivillager/hacer/issues/903)) · §1.10.9 and §1.10 item 10 amended 2026-10-22 ([#905](https://github.com/mezivillager/hacer/issues/905)) · §1.11 rules 2 and 5 amended 2026-10-22 ([#919](https://github.com/mezivillager/hacer/issues/919)) · §1.11 rule 2 amended 2026-10-22 ([#912](https://github.com/mezivillager/hacer/issues/912)) · §1.10 item 10 amended 2026-10-22 ([#916](https://github.com/mezivillager/hacer/issues/916))
 - **Amended by:** R769, R817, R825, R826, R836, R837
 - **Amends:** ADR-0008 §6, ADR-0009
 - **Supersedes:** ADR-0007
@@ -291,6 +291,10 @@ unconnected, and `bindUnconnectedInputs` does not bind it to `false`.
 - **The explicit way to get the reference's reading is `bindUnconnectedInputs`**
   (`src/core/spec/bindUnconnectedInputs.ts`). It binds every such pin to `false` and returns the pins
   it bound, so a caller shows them instead of hiding a forgotten wire.
+- **The two agree only where `compileHDL` reaches the check.** A chip that names itself as a part,
+  or whose parts reach a cycle through the registry, stops `compileHDL` first, at
+  `Cannot use chip Nand to implement itself`, so `CHIP Nand { IN a, b; OUT out; PARTS: Nand(a=a, out=out); }`
+  reports only that, while `bindUnconnectedInputs` still binds `p1.b`.
 
 **1.2 Bus splitters and joiners dissolve into slices; `BusComponent` leaves the document.**
 ADR-0009 made them first-class entities with a `'bus'` wire endpoint. In the spec they are slice
@@ -711,8 +715,10 @@ are v1's. v2 keeps every one but 9, which it replaces (1.10.9). Each is pinned b
       sliced otherwise, so a 4-bit `wire out = a;` prints `Or16(a[0..3]=a, …)` and a 32-bit one's
       second window prints `Or16(a=a[16..31], …)`. One `Or16` sliced past bit 15 is refused by both
       readers (`Sub-bus index out of range`), so no net, however wide, gets one. A chip named `Or16`
-      keeps one `Or` per bit at every width but 16, so the form never makes it use itself. No `Or4`
-      or `Or8` is added (§1.5). The buffers come after every declared part, with no marker.
+      keeps one `Or` per bit at every width but 16, so the form never adds a self-reference. At
+      sixteen it still prints `Or16(a=a, b=a, out=out)`, as before, which stays
+      [#722](https://github.com/mezivillager/hacer/issues/722)'s. No `Or4` or `Or8` is added (§1.5).
+      The buffers come after every declared part, with no marker.
     - *Amended 2026-10-22 ([#905](https://github.com/mezivillager/hacer/issues/905)):* the `nand2tetris` dialect prints a `true` part-input
       binding that feeds more than 16 bits as consecutive bindings of at most 16 bits each, cut from
       the binding's low bit, so the web IDE reads every bit as well (rule 9, §1.5). `W32(a=true, …)`
@@ -720,8 +726,11 @@ are v1's. v2 keeps every one but 9, which it replaces (1.10.9). Each is pinned b
       `W32(a[8..23]=true, a[24..31]=true, …)`.
       - An unsliced binding's width is its part pin's, read from `PrintSpecOptions.chips`. It defaults
         to the Project 1 builtins, as `ParseSpecOptions.chips` does, so no Project 1 binding changes.
-      - A part whose chip that registry lacks prints as written, sliced bindings included. So do a
-        `true` of 16 bits or fewer, any `false`, and the `hacer` dialect.
+      - A part whose chip that registry lacks windows a sliced `true` by its slice width
+        ([#916](https://github.com/mezivillager/hacer/issues/916)), as for a known chip:
+        `W32(a[8..31]=true, …)` prints `W32(a[8..23]=true, a[24..31]=true, …)`. An unsliced `true`
+        there prints as written, because its width is unknown. So do a `true` of 16 bits or fewer,
+        any `false`, and the `hacer` dialect.
 
 **The round trip §1.9 asked N.1 to re-measure has been measured on the shipped printer.** It covers
 the 15 Project 1 sources and 13 spec shapes:
@@ -757,6 +766,13 @@ and these rules are pinned by `src/core/spec/compileSpec.test.ts`,
      chip OUT from a chip IN or OUT of the same width, and a `chip-in` driver must name an IN.
      `parseSpec` refuses all of these when it reads text (none got through in 56,882 parses); a
      document built by hand could carry one.
+   - It also refuses a `chip-out` sink on any net but the one named for that OUT, as `invalid-wire`
+     naming both ([#855](https://github.com/mezivillager/hacer/issues/855)). The lowering binds each
+     net by its own id, so such a sink would be dropped and the OUT would read 0: `compileSpec`
+     never drops a chip-OUT sink. `parseSpec` and the importer put an OUT's sink only on the net
+     named for it, so no text form is lost. Pinned by
+     `compileSpec — a chip-OUT sink sits on the net named for it (#855)` in
+     `src/core/spec/compileSpec.test.ts`.
 2. **The lowering is in memory.** The document becomes an `HDLChip` and goes to `compileHDL`. No
    text is printed and no part is injected (§1.5).
    - An alias is what `printSpec` prints as a `wire`, and the two share one test (`isAlias`): any
@@ -794,7 +810,10 @@ and these rules are pinned by `src/core/spec/compileSpec.test.ts`,
      ([#903](https://github.com/mezivillager/hacer/issues/903), FID-028). Its `name`, `inputs` and
      `outputs` must equal its source's: an `'hdl'` source's `CHIP` name, `IN` and `OUT`, or a
      `'circuit'` document's `name`, `ins` and `outs`. Pins compare as name→width maps, so their
-     order does not matter. A builtin has no source and is not compared. A `BUILTIN` body is
+     order does not matter, and a pin name repeated within `IN` or within `OUT` is refused
+     ([#912](https://github.com/mezivillager/hacer/issues/912)): the map would collapse it, so a `Foo`
+     whose inputs are `a` at 1 bit and `a` at 16 would agree with a source declaring `IN a[16]`.
+     A builtin has no source and is not compared. A `BUILTIN` body is
      compared with its source here, and with the builtin it names by the next bullet's check.
      - The part check compares each definition the walk enters before compiling it, and refuses in
        the chain above: `Outer › Foo: Foo declares IN a, but its source declares IN b`.
@@ -829,8 +848,9 @@ and these rules are pinned by `src/core/spec/compileSpec.test.ts`,
    - **A `BUILTIN` body declares the builtin's own pins**
      ([#919](https://github.com/mezivillager/hacer/issues/919), FID-032). `BUILTIN Not;` names
      `Not`, and a bare `BUILTIN;` names its own `CHIP`. The source's `IN` and `OUT` must equal that
-     builtin's, as name→width maps, or it is refused with one message per side that differs, IN
-     first: `Foo declares IN a, but builtin Not declares IN in`. The check runs after
+     builtin's, as name→width maps with a repeated name within a side refused as above, or it is
+     refused with one message per side that differs, IN first:
+     `Foo declares IN a, but builtin Not declares IN in`. The check runs after
      `Builtin chip "X" not found in registry` and `Chip "X" is not a builtin`.
      - On the core path it is `compileHDL`'s, in the `BUILTIN` passthrough that looks the builtin
        up, so every caller shares it. `compileHDL` returns it. The part check returns it in the
@@ -875,10 +895,10 @@ and these rules are pinned by `src/core/spec/compileSpec.test.ts`,
      #820); a one-chip cycle below the compiled chip gets the self-reference message (#816).
      - The walk follows what the registry's `get` returns, so the lookup order below decides
        whether a user `Not` that uses `And` beside a user `And` that uses `Not` is a cycle. It
-       enters each definition once, so
-       `compileSpec` still never throws (rule 2).
+       enters each definition once, so `compileSpec` still never throws (rule 2).
      - Pinned by `compileHDL — a part cycle through the registry is refused (#816)` in
-       `src/core/hdl/compiler.test.ts` and the registry-cycle cases in
+       `src/core/hdl/compiler.test.ts`, and by
+       `compileSpec — a part cycle through the registry (#816)` in
        `src/core/spec/compileSpec.nesting.test.ts`.
    - **The lookup order** ([#901](https://github.com/mezivillager/hacer/issues/901), FID-026): a
      part resolves to a HACER builtin first, then to a user chip.
@@ -1545,12 +1565,12 @@ CHIP SelfReadNot16 { IN a; OUT o; PARTS: Not16(in[0]=a, in[1]=t1, out[0]=t1, out
 
 `Not16` is bitwise: `out[1]` depends only on `in[1]`, so once the part is opened there is no loop,
 and `o = a` for every `a`. All three readers refuse it anyway: the reference with
-`Line 1: Looping wire t1`, `compileHDL` with `Cyclic part dependency: parts cannot be topologically
-ordered (combinational cycle) through "t1"`, and legacy with `cycle` (PR #753's review). Only opening
-the part removes the refusal, and refusing it is nand2tetris-sound, because the reference refuses it
-too. The same bits as two parts, `Not(in=a, out=t1); Not(in=t1, out=o);`, build in both readers with
-`o = a` for `a = 0, 1`. A real per-bit loop, `Not16(in=x, out=x)`, gets the same refusal from HACER,
-so only this pinned HDL shows the overapproximation.
+`Line 1: Looping wire t1`, `compileHDL` with `Line 1: Cyclic part dependency: parts cannot be
+topologically ordered (combinational cycle) through "t1"`, and legacy with `cycle` (PR #753's
+review). Only opening the part removes the refusal, and refusing it is nand2tetris-sound, because
+the reference refuses it too. The same bits as two parts, `Not(in=a, out=t1); Not(in=t1, out=o);`,
+build in both readers with `o = a` for `a = 0, 1`. A real per-bit loop, `Not16(in=x, out=x)`, gets
+the same refusal from HACER, so only this pinned HDL shows the overapproximation.
 
 Synthesis tools take the per-bit view this check lacks. Verilator 5.052's UNOPTFLAT
 ([Errors and Warnings](https://verilator.org/guide/latest/warnings.html), fetched 2026-10-21):
