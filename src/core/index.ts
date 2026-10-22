@@ -61,6 +61,7 @@ export { compileSpec, emptySidecar, normalizeSpec, parseSpec, printSpec, SPEC_SC
 
 // ── Layout: the spec document placed on a lattice, per surface (ADR-0020 §2) ─────────────────────────
 export type { LayoutOptions, Placements, Surface } from './layout'
+export { layout } from './layout'
 
 // ── The chip registry, and evaluation ───────────────────────────────────────────────────────────
 export type {
