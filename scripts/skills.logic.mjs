@@ -268,6 +268,12 @@ export const BRIEF_INVARIANTS = [
       { id: 'recurrence-names-both', phrases: ['**A recurrence names both occurrences**'] },
       { id: 'policy-entries-capped', phrases: ['**At most five policy entries per run:**'] },
       { id: 'prune-by-deletion', phrases: ['**Prune by deleting whole components, never by rewriting rules shorter.**'] },
+      {
+        id: 'split-capped-run-query',
+        phrases: [
+          'A query is cut off when it returns 1,000 runs, or fewer runs than its first `total` line: discard its runs, and re-run the range in four UTC slices.',
+        ],
+      },
     ],
     absent: [],
   },
