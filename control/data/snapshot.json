@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-22T07:28:30.057Z",
+  "generatedAt": "2026-10-22T08:31:14.554Z",
   "head": {
     "sha": "d2f58ea0d6eb3b8efba94252e0c8c8ba1bda35e6",
     "date": "2026-10-22T09:49:17+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T07:28:30.057Z",
+      "fetchedAt": "2026-10-22T08:31:14.554Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T07:28:30.057Z",
+      "fetchedAt": "2026-10-22T08:31:14.554Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T07:28:30.057Z",
+      "fetchedAt": "2026-10-22T08:31:14.554Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-22T07:28:30.057Z",
+      "fetchedAt": "2026-10-22T08:31:14.554Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-22T07:28:30.057Z",
+      "fetchedAt": "2026-10-22T08:31:14.554Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-22T07:28:30.057Z",
+      "fetchedAt": "2026-10-22T08:31:14.554Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-22T07:28:30.057Z",
+      "fetchedAt": "2026-10-22T08:31:14.554Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-22T07:28:30.057Z",
+      "fetchedAt": "2026-10-22T08:31:14.554Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-22T07:28:30.057Z",
+      "fetchedAt": "2026-10-22T08:31:14.554Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-22T07:28:30.057Z",
+      "fetchedAt": "2026-10-22T08:31:14.554Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-22T07:28:30.057Z",
+      "fetchedAt": "2026-10-22T08:31:14.554Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-22T07:28:30.057Z",
+      "fetchedAt": "2026-10-22T08:31:14.554Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-22T07:28:30.057Z",
+      "fetchedAt": "2026-10-22T08:31:14.554Z",
       "status": "ok"
     }
   },
@@ -5696,7 +5696,7 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-08T07:28:30.057Z",
+      "since": "2026-10-08T08:31:14.554Z",
       "merged": 114,
       "openToMergeHours": {
         "median": 0.3,
@@ -9829,7 +9829,7 @@
       },
       {
         "date": "2026-10-22",
-        "at": "2026-10-22T06:36:32.749Z",
+        "at": "2026-10-22T07:28:30.057Z",
         "byProject": {
           "harness": [
             257,
@@ -9925,39 +9925,7 @@
           ],
           "upkeep": [
             229,
-            256,
-            788,
-            789,
-            790,
-            791,
-            792,
-            793,
-            794,
-            795,
-            796,
-            797,
-            798,
-            799,
-            800,
-            807,
-            808,
-            809,
-            827,
-            828,
-            829,
-            830,
-            831,
-            832,
-            833,
-            834,
-            835,
-            839,
-            848,
-            849,
-            859,
-            867,
-            874,
-            915
+            256
           ],
           "horizon": [
             230,
