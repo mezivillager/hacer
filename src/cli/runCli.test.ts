@@ -165,6 +165,19 @@ describe('runCli run-tst', () => {
     })
   })
 
+  it("run-tst prints a bare bus column at the pin's width", () => {
+    const files = {
+      'Not16.hdl': project1HdlSources.Not16,
+      'Not16.tst': 'output-list in out;\nset in %B0000000000001111,\neval,\noutput;\n',
+    }
+    const out = runCli(['run-tst', 'Not16.hdl', 'Not16.tst'], reader(files))
+    expect(out).toEqual({
+      exitCode: 0,
+      stdout: '|        in        |       out        |\n| 0000000000001111 | 1111111111110000 |\n',
+      stderr: '',
+    })
+  })
+
   it('exits 1 with the rows so far and the error on stderr when the script fails to run', () => {
     const broken = 'CHIP Xor {\n  IN a, b;\n  OUT out;\n  PARTS:\n  Nope(a=a, out=out);\n}'
     const out = runCli(['run-tst', 'Xor.hdl', 'Xor.tst'], reader({ 'Xor.hdl': broken }))
