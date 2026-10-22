@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-22T12:33:09.088Z",
+  "generatedAt": "2026-10-22T13:07:58.329Z",
   "head": {
-    "sha": "1cd43634a21ae8ca53d1be0af1bd7118bec7c83c",
-    "date": "2026-10-22T15:00:28+03:00",
-    "subject": "docs(skills): ha-prompt-it — whole-branch review as nine named passes; /simplify on request"
+    "sha": "6bbf46a58021f86d9959a661995f54263d5ad2fe",
+    "date": "2026-10-22T16:07:20+03:00",
+    "subject": "docs(harness): builder blocked exit and the judge's model tier (R889, #963)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T12:33:09.088Z",
+      "fetchedAt": "2026-10-22T13:07:58.329Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T12:33:09.088Z",
+      "fetchedAt": "2026-10-22T13:07:58.329Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T12:33:09.088Z",
+      "fetchedAt": "2026-10-22T13:07:58.329Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-22T12:33:09.088Z",
+      "fetchedAt": "2026-10-22T13:07:58.329Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-22T12:33:09.088Z",
+      "fetchedAt": "2026-10-22T13:07:58.329Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-22T12:33:09.088Z",
+      "fetchedAt": "2026-10-22T13:07:58.329Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-22T12:33:09.088Z",
+      "fetchedAt": "2026-10-22T13:07:58.329Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-22T12:33:09.088Z",
+      "fetchedAt": "2026-10-22T13:07:58.329Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-22T12:33:09.088Z",
+      "fetchedAt": "2026-10-22T13:07:58.329Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-22T12:33:09.088Z",
+      "fetchedAt": "2026-10-22T13:07:58.329Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-22T12:33:09.088Z",
+      "fetchedAt": "2026-10-22T13:07:58.329Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-22T12:33:09.088Z",
+      "fetchedAt": "2026-10-22T13:07:58.329Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-22T12:33:09.088Z",
+      "fetchedAt": "2026-10-22T13:07:58.329Z",
       "status": "ok"
     }
   },
@@ -104,8 +104,8 @@
         "slug": "harness",
         "epicNumber": 138,
         "open": 20,
-        "ready": 5,
-        "inProgress": 1,
+        "ready": 6,
+        "inProgress": 0,
         "needsHuman": 2,
         "staleClaims": [],
         "agentReady": 6,
@@ -120,9 +120,9 @@
         },
         "title": "Epic: harness — autonomous-run improvements & agent-readiness",
         "subIssues": {
-          "completed": 50,
+          "completed": 51,
           "percentCompleted": 79,
-          "total": 63
+          "total": 64
         }
       },
       {
@@ -472,6 +472,11 @@
         "project": "upkeep"
       },
       {
+        "number": 965,
+        "title": "Judge routing: the process review asks for decisions for the judge, and three wording gaps from #964's verifier",
+        "project": "harness"
+      },
+      {
         "number": 938,
         "title": "Inbox review: HRN-026 · README says dispatch stops while the meter will not read, and the 2026-10-21 run dispatched on estimates twice: restate the rule as practised, or follow it",
         "project": "upkeep"
@@ -705,6 +710,21 @@
         "project": "upkeep",
         "rank": 11,
         "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 965,
+        "title": "Judge routing: the process review asks for decisions for the judge, and three wording gaps from #964's verifier",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:0"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
         "pickable": true,
         "reason": null
       },
@@ -2243,22 +2263,6 @@
         "lane": "process",
         "pickable": false,
         "reason": "unshaped"
-      },
-      {
-        "number": 963,
-        "title": "Judge inbox: decisions queued for a Fable + Grok review and an Opus judge, never for the owner (R889)",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:1"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": false,
-        "reason": "claimed"
       }
     ],
     "byProject": {
@@ -2308,6 +2312,7 @@
         951,
         955,
         958,
+        965,
         154,
         156,
         270,
@@ -2321,8 +2326,7 @@
         607,
         677,
         870,
-        889,
-        963
+        889
       ],
       "spine": [
         165,
@@ -2467,6 +2471,32 @@
       }
     ],
     "merged": [
+      {
+        "number": 964,
+        "title": "chore(harness): judge inbox — decisions go to a Fable + Grok review and an Opus judge, not the owner (R889)",
+        "url": "https://github.com/mezivillager/hacer/pull/964",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:1"
+        ],
+        "headRefName": "feat/963-judge",
+        "isDraft": false,
+        "createdAt": "2026-10-22T12:48:43Z",
+        "mergedAt": "2026-10-22T13:07:21Z",
+        "closes": [
+          963
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus (claude-opus-5-5)",
+            "at": "2026-10-22T13:06:17Z",
+            "url": "https://github.com/mezivillager/hacer/pull/964#issuecomment-6341494864"
+          }
+        ]
+      },
       {
         "number": 962,
         "title": "docs(skills): ha-prompt-it — whole-branch review as nine named passes; /simplify on request",
@@ -4017,34 +4047,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/842#issuecomment-6321941675"
           }
         ]
-      },
-      {
-        "number": 841,
-        "title": "test(hdl): an acceptance-parity corpus pins each HDL shape's reference verdict (#811)",
-        "url": "https://github.com/mezivillager/hacer/pull/841",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:verify",
-          "risk:1",
-          "fidelity"
-        ],
-        "headRefName": "test/811-acceptance-parity-one-commit",
-        "isDraft": false,
-        "createdAt": "2026-10-21T16:35:40Z",
-        "mergedAt": "2026-10-21T16:38:56Z",
-        "closes": [
-          811
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Opus (claude-opus-5-5) on #837; tree identity checked by the coordinator",
-            "at": "2026-10-21T16:35:53Z",
-            "url": "https://github.com/mezivillager/hacer/pull/841#issuecomment-6321185866"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4112,7 +4114,7 @@
         "number": 963,
         "ref": "refs/heads/claim/963",
         "sha": "1cd43634a21ae8ca53d1be0af1bd7118bec7c83c",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "Judge inbox: decisions queued for a Fable + Grok review and an Opus judge, never for the owner (R889)",
         "url": "https://github.com/mezivillager/hacer/issues/963",
         "labels": [
@@ -4121,7 +4123,7 @@
           "in-progress",
           "risk:1"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "hacer-builder",
           "intent": "building",
@@ -4134,7 +4136,7 @@
         }
       }
     ],
-    "onClosedIssues": 0
+    "onClosedIssues": 1
   },
   "cloudLane": {
     "items": [
@@ -6100,24 +6102,24 @@
     "mergesPerDay": [
       {
         "date": "2026-10-21",
-        "merges": 22
+        "merges": 21
       },
       {
         "date": "2026-10-22",
-        "merges": 38
+        "merges": 39
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-08T12:33:09.088Z",
-      "merged": 128,
+      "since": "2026-10-08T13:07:58.329Z",
+      "merged": 129,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 1.5
       },
       "blockedOnce": {
         "count": 7,
-        "of": 109,
+        "of": 110,
         "prs": [
           700,
           725,
@@ -6130,8 +6132,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 84,
-          "withVerdict": 84,
+          "merged": 85,
+          "withVerdict": 85,
           "without": []
         },
         "nonCode": {
@@ -10242,29 +10244,8 @@
       },
       {
         "date": "2026-10-22",
-        "at": "2026-10-22T11:21:24.290Z",
+        "at": "2026-10-22T12:33:09.088Z",
         "byProject": {
-          "harness": [
-            257,
-            949,
-            951,
-            955,
-            958,
-            154,
-            156,
-            270,
-            435,
-            436,
-            454,
-            500,
-            504,
-            505,
-            550,
-            607,
-            677,
-            870,
-            889
-          ],
           "foundation": [
             940,
             941,
@@ -10304,6 +10285,28 @@
             946,
             229,
             256
+          ],
+          "harness": [
+            257,
+            949,
+            951,
+            955,
+            958,
+            154,
+            156,
+            270,
+            435,
+            436,
+            454,
+            500,
+            504,
+            505,
+            550,
+            607,
+            677,
+            870,
+            889,
+            963
           ],
           "spine": [
             165,
@@ -10398,17 +10401,14 @@
     "items": [
       {
         "pr": null,
-        "sha": "1cd43634a21ae8ca53d1be0af1bd7118bec7c83c",
+        "sha": "6bbf46a58021f86d9959a661995f54263d5ad2fe",
         "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-22T12:04:03Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39774894713/job/119811244303",
-        "line": "LAYER-RATCHET: 68 known violations (36 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 68,
-          "new": 0
-        },
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39784098201/job/119842565428",
+        "line": null,
+        "verdict": null,
+        "fields": {},
         "disagrees": false
       },
       {
@@ -16315,6 +16315,22 @@
         "costIfWrong": "an HDL file that declares a pin twice and that the web IDE accepts is refused by"
       },
       {
+        "id": "R889",
+        "kind": "ruling",
+        "title": "owner decisions go to a judge, never to the owner; Fable joins as a judge reviewer",
+        "source": "docs/decisions/rulings/2026-10-22-hacer-judge.md:6",
+        "buildsOn": [
+          "R844"
+        ],
+        "amends": [
+          "R762",
+          "R714",
+          "ADR-0018 §4"
+        ],
+        "assumes": null,
+        "costIfWrong": "a decision the owner would have taken differently lands first; he overrides it with"
+      },
+      {
         "id": "R880",
         "kind": "ruling",
         "title": "the run stops at weekly_all 80% or at the weekly reset (2026-10-23T03:00Z), whichever comes first; no new chain at 77% or above, and the records PR starts at 78%",
@@ -16462,6 +16478,13 @@
         "kind": "amends",
         "anchor": "§4",
         "source": "docs/decisions/rulings/2026-10-17-hacer-loop-to-20.md:19"
+      },
+      {
+        "from": "R889",
+        "to": "ADR-0018",
+        "kind": "amends",
+        "anchor": "§4",
+        "source": "docs/decisions/rulings/2026-10-22-hacer-judge.md:8"
       },
       {
         "from": "R769",
@@ -18056,6 +18079,24 @@
         "to": "R854",
         "kind": "amends",
         "source": "docs/decisions/rulings/2026-10-21-hacer-loop-to-70.md:333"
+      },
+      {
+        "from": "R889",
+        "to": "R844",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-22-hacer-judge.md:7"
+      },
+      {
+        "from": "R889",
+        "to": "R762",
+        "kind": "amends",
+        "source": "docs/decisions/rulings/2026-10-22-hacer-judge.md:8"
+      },
+      {
+        "from": "R889",
+        "to": "R714",
+        "kind": "amends",
+        "source": "docs/decisions/rulings/2026-10-22-hacer-judge.md:8"
       },
       {
         "from": "R880",
