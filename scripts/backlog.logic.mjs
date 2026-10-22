@@ -662,16 +662,21 @@ export function readRetroLine(read) {
   }
 }
 
-export const ENGINE_PREFIXES = []
+// The verifier's tier (docs/harness/verifier-brief.md, `**Model:**`), worked out from a PR's changed paths and labels.
 
-export function verifierTier() {
-  throw new Error('not implemented')
+/** The engine directories VERIFIER_TIER_SENTENCE names: a PR touching one is verified on Opus, whatever its label. */
+export const ENGINE_PREFIXES = ['src/core/', 'src/simulation/']
+const OPUS_LABEL = 'risk:2'
+
+/** `{tier, because}`: `opus` because of the first engine path, in the order given, else because of `risk:2`; else `sonnet`, `none`. */
+export function verifierTier(paths = [], labels = []) {
+  const engine = paths.find((file) => ENGINE_PREFIXES.some((prefix) => file.startsWith(prefix)))
+  if (engine) return { tier: 'opus', because: engine }
+  return labels.includes(OPUS_LABEL) ? { tier: 'opus', because: OPUS_LABEL } : { tier: 'sonnet', because: 'none' }
 }
 
-export function filePagesPaths() {
-  throw new Error('not implemented')
-}
+/** The paths on every page of `GET /repos/{owner}/{repo}/pulls/{n}/files`: each `filename`, and a rename's `previous_filename`. */
+export const filePagesPaths = (pages = []) => pages.flat().flatMap((file) => [file.filename, file.previous_filename].filter(Boolean))
 
-export function formatVerifierTier() {
-  throw new Error('not implemented')
-}
+/** The line `backlog.mjs tier <pr>` prints. */
+export const formatVerifierTier = (pr, { tier, because }) => `VERIFIER-TIER: ${tier} pr=${pr} because=${because}`

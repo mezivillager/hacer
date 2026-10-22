@@ -5,7 +5,7 @@
 
 import {
   AUX_ROTATION, DEFAULT_ALLOWLIST, PICK_ROTATION, claimHistory, claimRefs, dormantMode, historyGap, latestClaim, parsePortfolio,
-  planReady, readClaims, summarizeProjects, tasksByProject,
+  planReady, readClaims, summarizeProjects, tasksByProject, verifierTier,
 } from '../backlog.logic.mjs'
 import { CHECK_LINES, readCheckRun } from '../check-lines.logic.mjs'
 import { parseSnapshotTime } from './prune.logic.mjs'
@@ -52,12 +52,25 @@ const prOf = (allowlist) => (pr) => ({
   closes: pr.closingIssuesReferences.map((issue) => issue.number), verdicts: verdictsOf(pr.comments, allowlist),
 })
 
+const namesOpus = (verdict) => /opus/i.test(verdict.model ?? '')
+
+/** A merged PR the tier rule puts on Opus with a verdict that does not name Opus. GraphQL lists at most 100 files, so a
+ *  shorter list than `changedFiles` that reads Sonnet is `files-truncated`, never tiered from part of it. */
+function belowTier({ files, changedFiles }, pr) {
+  if (pr.verdicts.every(namesOpus)) return []
+  const paths = (files ?? []).map((file) => file.path)
+  const { tier, because } = verifierTier(paths, pr.labels)
+  const listed = tier === 'opus' ? because : paths.length < (changedFiles ?? 0) ? 'files-truncated' : null
+  return listed ? [{ number: pr.number, because: listed, opusVerdict: pr.verdicts.some(namesOpus) }] : []
+}
+
 function buildPrs({ prsOpen = [], prsMerged = [] }, { allowlist }) {
   const [open, merged] = [prsOpen, prsMerged].map((prs) => prs.map(prOf(allowlist)))
   const count = (test) => merged.filter(test).length
   const withVerdict = count((pr) => pr.verdicts.length > 0)
   const latest = (verdict) => count((pr) => pr.verdicts.at(-1)?.verdict === verdict)
-  const coverage = { merged: merged.length, withVerdict, withoutVerdict: merged.length - withVerdict, pass: latest('PASS'), block: latest('BLOCK') }
+  const coverage = { merged: merged.length, withVerdict, withoutVerdict: merged.length - withVerdict, pass: latest('PASS'), block: latest('BLOCK'),
+    belowTier: prsMerged.flatMap((pr, index) => belowTier(pr, merged[index])) }
   return { open, merged, coverage }
 }
 
@@ -351,7 +364,8 @@ export const SCHEMA_V1 = {
   pickRule: { rotation: ['string'], auxRotation: ['string'], next: [{ number: 'number', title: 'string' }],
     dormant: { dormant: 'boolean', agentPrs: ['number'] } },
   tasks: { items: [{ number: 'number', title: 'string', pickable: 'boolean' }], byProject: 'object' },
-  prs: { open: [PR], merged: [PR], coverage: { merged: 'number', withVerdict: 'number', withoutVerdict: 'number', pass: 'number', block: 'number' } },
+  prs: { open: [PR], merged: [PR], coverage: { merged: 'number', withVerdict: 'number', withoutVerdict: 'number', pass: 'number', block: 'number',
+    belowTier: [{ number: 'number', because: 'string', opusVerdict: 'boolean' }] } },
   claims: { items: [{ number: 'number', sha: 'sha' }], onClosedIssues: 'number' },
   cloudLane: { items: [{ number: 'number?' }] },
   sessions: { items: [{ file: 'string', date: 'string', kind: 'string' }] },

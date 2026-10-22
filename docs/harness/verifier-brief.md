@@ -11,7 +11,8 @@ never takes that shortcut — it goes back to a fresh verifier, always, never th
 Before dispatching, state three things: the expected evidence, the known unknowns, and the
 **stopping condition** — when the review ends (every acceptance criterion answered, or a stated
 budget, whichever comes first). Do not lead an adversarial reviewer with the preferred conclusion —
-give it the sources.
+give it the sources. Run `node scripts/backlog.mjs tier <pr>`, then dispatch the verifier on the
+model its `VERIFIER-TIER:` line names.
 
 ## Inputs
 - The issue the PR closes (its acceptance criteria and verification command); the PR diff; `AGENTS.md`, `.claude/CONSTITUTION.md`, `.claude/skills/hacer-patterns/SKILL.md`.

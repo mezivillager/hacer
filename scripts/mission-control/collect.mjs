@@ -18,6 +18,8 @@ const REPO = process.env.GITHUB_REPOSITORY ?? 'mezivillager/hacer'
 const ROOT = path.join(import.meta.dirname, '..', '..')
 const ISSUE_FIELDS = 'number,title,labels,author,blockedBy,blocking,parent,subIssuesSummary,url'
 const PR_FIELDS = 'number,title,url,author,labels,headRefName,createdAt,mergedAt,isDraft,closingIssuesReferences,comments'
+/** The changed paths, for prs.coverage.belowTier only: GraphQL's first 100 files, and how many there are. */
+const MERGED_PR_FIELDS = `${PR_FIELDS},files,changedFiles`
 const exec = promisify(execFile)
 const OPTIONS = { cwd: ROOT, maxBuffer: 256 * 1024 * 1024 }
 const { values: flags } = parseArgs({ options: { json: { type: 'boolean' }, previous: { type: 'string' } } })
@@ -63,7 +65,7 @@ const file = (name) => [name, () => read(name)]
 const SOURCES = {
   issues: ['gh issue list --state open', () => list('issue', '--state', 'open', '--limit', '500', '--json', ISSUE_FIELDS)],
   prsOpen: ['gh pr list --state open', () => list('pr', '--state', 'open', '--limit', '100', '--json', PR_FIELDS)],
-  prsMerged: ['gh pr list --state merged --limit 60', () => list('pr', '--state', 'merged', '--limit', '60', '--json', PR_FIELDS)],
+  prsMerged: ['gh pr list --state merged --limit 60', () => list('pr', '--state', 'merged', '--limit', '60', '--json', MERGED_PR_FIELDS)],
   releases: ['gh release list', () => list('release', '--limit', '1000', '--json', 'tagName,publishedAt,isLatest')],
   checkRuns: ['gh api graphql (check runs)', () => gh('api', 'graphql', '-f', `query=${checksQuery(REPO)}`)],
   flowPrs: ['gh api graphql (flow)', () => readFlowPages((after) => gh('api', 'graphql', '-f', `query=${flowQuery(REPO, STARTED, after)}`))],

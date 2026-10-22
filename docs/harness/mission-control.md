@@ -39,7 +39,7 @@ Each section has `freshness.<section>` = `{ source, fetchedAt, status, error? }`
 | `portfolio` | `projects[]`, one per `docs/portfolio.md` row: `backlog.mjs projects`' counts, stale claims and next pick, the epic's `title` and `subIssues` (`total`, `completed`, `percentCompleted`) | portfolio + `gh issue list`; the claim refs, `gh api graphql` and `gh pr list --state open` optional, as `ready` reads claims; the claim history (`gh api graphql`, `claimHistoryQuery`) optional, as `ready` resumes the cycle from it (#535) |
 | `pickRule` | `rotation`, `auxRotation`, and `next[]` — `backlog.mjs ready`'s picks, in its order, the cycle resumed after the latest claim; `dormant`, as `ready`'s banner reads it | the same |
 | `tasks` | `items[]`, each open non-epic issue as `backlog.logic.mjs` triages it (`project`, `pickable`, `reason`); `byProject`, issue numbers per row, `unfiled` for none | the same |
-| `prs` | `open[]` and the last 60 `merged[]`, with `closes[]` and `verdicts[]` (`verdict`, `round`, `model`, `at`, `url`); `coverage`: merged, with and without a verdict, latest `PASS` / `BLOCK` | `gh pr list` |
+| `prs` | `open[]` and the last 60 `merged[]`, with `closes[]` and `verdicts[]` (`verdict`, `round`, `model`, `at`, `url`); `coverage`: merged, with and without a verdict, latest `PASS` / `BLOCK`, and `belowTier[]`, the merged PRs verified below the tier their paths give (see *Verdicts below the tier*) | `gh pr list`; the merged PRs' `files` and `changedFiles` too |
 | `claims` | `items[]` per `claim/<n>` ref: the issue's `state` and `labels`, its latest claim comment's fields (`claimedBy`, `intent`, `session`, `branch`, `handoff`); `onClosedIssue` marks a stale ref, `onClosedIssues` counts them | `git ls-remote`; `gh api graphql` optional |
 | `cloudLane` | `items[]`, the rows of `docs/harness/sessions/cloud-queue-inbox.md`'s table keyed by its header, plus the issue `number` | the inbox |
 | `sessions` | `items[]`, the dated files in `docs/harness/sessions/`: `date`, `kind` (`record` / `handoff`), `title`, `status`, `lines` | the files |
@@ -55,6 +55,20 @@ A verdict is a comment by an allowlisted author (`BACKLOG_ALLOWLIST`, as for `ba
 and a bold word allowed; any other shape counts as none, which is how drift from the brief shows. `round` is the
 heading's number, else the verdict's position on the PR; `model` is the `Verified on` field to its first ` · `, ` — `
 or full stop. Claim comments are read by their fields, from the same authors.
+
+## Verdicts below the tier
+
+`prs.coverage.belowTier` (#884) lists each PR in `prs.merged` that the tier rule (`verifierTier` in
+`scripts/backlog.logic.mjs`, as `node scripts/backlog.mjs tier <pr>` prints it) puts on Opus, and that carries a
+verdict whose `model` does not contain `opus`, in any case: a Sonnet, Grok or `coordinator` verdict counts, and so does
+one that names no model. `because` is the first engine path, or `risk:2`; `opusVerdict` says whether another verdict on
+the PR names Opus. The paths come from the merged-PR fetch's `files` and `changedFiles` and are not copied into
+`prs.merged[]`. Two limits of that list, which `tier` does not share since it reads the REST files list:
+
+- It stops at 100 files. A PR whose `files` are fewer than its `changedFiles`, whose listed paths give Sonnet, and that
+  carries a verdict not naming Opus is listed with `because: "files-truncated"`, not tiered from part of its list.
+- It has no previous name for a rename: GraphQL's `PullRequestChangedFile` has only `path`. A PR that only renames a
+  file out of `src/core/` or `src/simulation/` reads Sonnet here.
 
 ## Flow and conformance
 
@@ -86,7 +100,7 @@ Every field, by section. `?` marks one that can be `null`; `[]` an array.
 - **`portfolio.projects[]`** — `rank` · `lane` · `slug` · `epicNumber` · `open` · `ready` (the row's tasks `ready` picks: none with a reason, #540) · `inProgress` · `needsHuman` · `staleClaims[]` (issue numbers) · `agentReady` (open `agent-ready` issues; `projects` warns past 12) · `next`? {`number`, `title`}, the row's first *pickable* task, which `ready` may not pick (`on-request`, `not-pulled`): the pick itself is in `pickRule.next` · `title`? (the epic's) · `subIssues`? {`total`, `completed`, `percentCompleted`}
 - **`pickRule`** — `rotation[]` · `auxRotation[]` · `next[]` {`number`, `title`, `project`?}: `ready`'s picks, in its order · `dormant` {`dormant`, `agentPrs[]`}: dormant mode, `true` at 5 open PRs by the allowlist
 - **`tasks`** — `items[]` {`number`, `title`, `labels[]`, `blocking[]`, `project`?, `rank`?, `lane`?, `pickable`, `reason`?} in `ready`'s order: the picks (`reason: null`) first, then the rest by number with the reason `ready` prints (`claimed`, `stale-claim`, `author`, `in-progress`, `needs-human`, `unshaped`, `blocked:#n,…`, `foundation-gate`, `on-request`, `not-pulled`) · `byProject` {slug: issue numbers}
-- **`prs`** — `open[]` and `merged[]` {`number`, `title`, `url`, `author`?, `labels[]`, `headRefName`, `isDraft`, `createdAt`, `mergedAt`?, `closes[]`, `verdicts[]` {`verdict`, `round`, `model`?, `at`, `url`}} · `coverage` {`merged`, `withVerdict`, `withoutVerdict`, `pass`, `block`}
+- **`prs`** — `open[]` and `merged[]` {`number`, `title`, `url`, `author`?, `labels[]`, `headRefName`, `isDraft`, `createdAt`, `mergedAt`?, `closes[]`, `verdicts[]` {`verdict`, `round`, `model`?, `at`, `url`}} · `coverage` {`merged`, `withVerdict`, `withoutVerdict`, `pass`, `block`, `belowTier[]` {`number`, `because` (an engine path, `risk:2` or `files-truncated`), `opusVerdict`}}
 - **`claims`** — `items[]` {`number`, `ref`, `sha`, `state`?, `title`?, `url`?, `labels[]`?, `onClosedIssue`?, `claim`? {`claimedBy`?, `intent`?, `session`?, `branch`?, `handoff`?, `author`, `at`, `url`}}, where every `?` above is `null` without GraphQL · `onClosedIssues`
 - **`cloudLane.items[]`** — `number`? and one field per column of the inbox table, its header camelCased (today `issue`, `whyCloud`, `successCriteria`, `claimStatus`, `queuedBy`, `status`, `cloudAgentId`, `notes`)
 - **`sessions.items[]`** — `file` · `date` · `kind` (`record` | `handoff`) · `title`? · `status`? · `lines`
