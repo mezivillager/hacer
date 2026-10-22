@@ -662,6 +662,15 @@ export function readRetroLine(read) {
   }
 }
 
+// The process review line (docs/harness/reviews/README.md): the cycles under docs/harness/reviews/ on origin/main, as
+// `ready` and `next` print it on stderr after the retro and main lines.
+
+export const REVIEWS_PATH = 'docs/harness/reviews/'
+
+export const processReviewLine = () => 'not implemented'
+
+export const readProcessReviewLine = () => 'not implemented'
+
 // main's workflows: each active workflow's newest completed run on main, as `ready` and `next` print it on stderr.
 
 export const FAILED_CONCLUSIONS = ['failure', 'timed_out', 'startup_failure']
