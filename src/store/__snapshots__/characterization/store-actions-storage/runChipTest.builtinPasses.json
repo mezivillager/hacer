@@ -94,14 +94,16 @@
           "name": "in",
           "padLeft": 1,
           "padRight": 1,
-          "width": 1
+          "width": 1,
+          "widthFromChip": true
         },
         {
           "format": "B",
           "name": "out",
           "padLeft": 1,
           "padRight": 1,
-          "width": 1
+          "width": 1,
+          "widthFromChip": true
         }
       ],
       "testResult": {
