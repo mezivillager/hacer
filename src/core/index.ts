@@ -8,7 +8,7 @@
  *
  * Re-exports are named, never `export *`: each name here is a commitment the repo keeps, and a
  * wildcard would widen the public surface every time a sub-index grew. Exports come from the
- * module indexes (`./chips`, `./hdl`, `./spec`, `./testing`), so the front door never reaches past one either.
+ * module indexes (`./chips`, `./hdl`, `./layout`, `./spec`, `./testing`), so the front door never reaches past one either.
  *
  * Deliberately NOT exported, each for a reason:
  *   - `./serialization` — the canvas document's save format. `deserialize` imports the store, so
@@ -58,6 +58,9 @@ export type {
   SpecDiagnostic,
 } from './spec'
 export { compileSpec, emptySidecar, normalizeSpec, parseSpec, printSpec, SPEC_SCHEMA_VERSION } from './spec'
+
+// ── Layout: the spec document placed on a lattice, per surface (ADR-0020 §2) ─────────────────────────
+export type { LayoutOptions, Placements, Surface } from './layout'
 
 // ── The chip registry, and evaluation ───────────────────────────────────────────────────────────
 export type {
