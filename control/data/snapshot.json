@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-22T10:23:01.202Z",
+  "generatedAt": "2026-10-22T10:35:59.433Z",
   "head": {
-    "sha": "520ba07a588e771584c69c60fb801524c3567f5b",
-    "date": "2026-10-22T13:21:17+03:00",
-    "subject": "refactor(ui): import formatColumnValue through @/core in TestResultsPanel"
+    "sha": "a9fb1b11a6be555aed4c0d0063c9ab8728c8cc13",
+    "date": "2026-10-22T13:34:52+03:00",
+    "subject": "test(store): re-record runChipTest.builtinPasses with widthFromChip (#599)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T10:23:01.202Z",
+      "fetchedAt": "2026-10-22T10:35:59.433Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T10:23:01.202Z",
+      "fetchedAt": "2026-10-22T10:35:59.433Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T10:23:01.202Z",
+      "fetchedAt": "2026-10-22T10:35:59.433Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-22T10:23:01.202Z",
+      "fetchedAt": "2026-10-22T10:35:59.433Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-22T10:23:01.202Z",
+      "fetchedAt": "2026-10-22T10:35:59.433Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-22T10:23:01.202Z",
+      "fetchedAt": "2026-10-22T10:35:59.433Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-22T10:23:01.202Z",
+      "fetchedAt": "2026-10-22T10:35:59.433Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-22T10:23:01.202Z",
+      "fetchedAt": "2026-10-22T10:35:59.433Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-22T10:23:01.202Z",
+      "fetchedAt": "2026-10-22T10:35:59.433Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-22T10:23:01.202Z",
+      "fetchedAt": "2026-10-22T10:35:59.433Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-22T10:23:01.202Z",
+      "fetchedAt": "2026-10-22T10:35:59.433Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-22T10:23:01.202Z",
+      "fetchedAt": "2026-10-22T10:35:59.433Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-22T10:23:01.202Z",
+      "fetchedAt": "2026-10-22T10:35:59.433Z",
       "status": "ok"
     }
   },
@@ -80,16 +80,16 @@
         "lane": "feature",
         "slug": "foundation",
         "epicNumber": 318,
-        "open": 26,
-        "ready": 3,
+        "open": 25,
+        "ready": 2,
         "inProgress": 2,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 5,
+        "agentReady": 4,
         "filedElsewhere": [],
         "next": {
-          "number": 878,
-          "title": "A pin width far beyond any evaluable bus passes the parser and the registry"
+          "number": 940,
+          "title": "N.4b: `layout(doc, surface, { previous, hints })`: hold what is placed, never move a hinted node"
         },
         "title": "Foundation audit: is the codebase structured for the autonomous loop? Measured audit, prioritized refactorings, fitness functions",
         "subIssues": {
@@ -136,9 +136,7 @@
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 0,
-        "filedElsewhere": [
-          599
-        ],
+        "filedElsewhere": [],
         "next": null,
         "title": "Epic: surfaces — renderer surfaces: CLI/HDL · MCP · 2D",
         "subIssues": {
@@ -409,11 +407,6 @@
     ],
     "next": [
       {
-        "number": 878,
-        "title": "A pin width far beyond any evaluable bus passes the parser and the registry",
-        "project": "foundation"
-      },
-      {
         "number": 257,
         "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
         "project": "harness"
@@ -497,29 +490,12 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
-        956,
         514
       ]
     }
   },
   "tasks": {
     "items": [
-      {
-        "number": 878,
-        "title": "A pin width far beyond any evaluable bus passes the parser and the registry",
-        "labels": [
-          "bug",
-          "agent-ready",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
       {
         "number": 257,
         "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
@@ -1973,23 +1949,6 @@
         "reason": "unshaped"
       },
       {
-        "number": 599,
-        "title": "run-tst: a bare output-list name gets the pin's width, as the reference IDE gives it",
-        "labels": [
-          "project:surfaces",
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 607,
         "title": "Harness: ledger.d/ one file per row, so GitHub's mergeability check stops flagging the ledger",
         "labels": [
@@ -2204,6 +2163,23 @@
         "reason": "needs-human"
       },
       {
+        "number": 878,
+        "title": "A pin width far beyond any evaluable bus passes the parser and the registry",
+        "labels": [
+          "bug",
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 879,
         "title": "polish: below 640 px HACER is a read-only viewer — panels open as full-width sheets, nothing clipped at 320 px",
         "labels": [
@@ -2314,34 +2290,6 @@
       }
     ],
     "byProject": {
-      "foundation": [
-        878,
-        940,
-        941,
-        151,
-        184,
-        325,
-        380,
-        381,
-        382,
-        383,
-        384,
-        385,
-        386,
-        389,
-        395,
-        400,
-        462,
-        506,
-        599,
-        719,
-        722,
-        728,
-        742,
-        773,
-        907,
-        942
-      ],
       "harness": [
         257,
         949,
@@ -2361,6 +2309,33 @@
         677,
         870,
         889
+      ],
+      "foundation": [
+        940,
+        941,
+        151,
+        184,
+        325,
+        380,
+        381,
+        382,
+        383,
+        384,
+        385,
+        386,
+        389,
+        395,
+        400,
+        462,
+        506,
+        719,
+        722,
+        728,
+        742,
+        773,
+        878,
+        907,
+        942
       ],
       "upkeep": [
         930,
@@ -2469,25 +2444,6 @@
   "prs": {
     "open": [
       {
-        "number": 956,
-        "title": "fix(testing): size a bare output-list name at its pin's width",
-        "url": "https://github.com/mezivillager/hacer/pull/956",
-        "author": "mezivillager",
-        "labels": [
-          "project:surfaces",
-          "risk:1",
-          "project:foundation"
-        ],
-        "headRefName": "fix/599-bare-output-width",
-        "isDraft": false,
-        "createdAt": "2026-10-22T10:18:49Z",
-        "mergedAt": null,
-        "closes": [
-          599
-        ],
-        "verdicts": []
-      },
-      {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
         "url": "https://github.com/mezivillager/hacer/pull/514",
@@ -2515,6 +2471,33 @@
       }
     ],
     "merged": [
+      {
+        "number": 956,
+        "title": "fix(testing): size a bare output-list name at its pin's width",
+        "url": "https://github.com/mezivillager/hacer/pull/956",
+        "author": "mezivillager",
+        "labels": [
+          "project:surfaces",
+          "risk:1",
+          "project:foundation"
+        ],
+        "headRefName": "fix/599-bare-output-width",
+        "isDraft": false,
+        "createdAt": "2026-10-22T10:18:49Z",
+        "mergedAt": "2026-10-22T10:34:53Z",
+        "closes": [
+          599
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "claude-opus-5-5 (Opus 5.5)",
+            "at": "2026-10-22T10:30:32Z",
+            "url": "https://github.com/mezivillager/hacer/pull/956#issuecomment-6338585284"
+          }
+        ]
+      },
       {
         "number": 954,
         "title": "refactor(ui): import formatColumnValue through @/core in TestResultsPanel",
@@ -4069,34 +4052,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/822#issuecomment-6319535254"
           }
         ]
-      },
-      {
-        "number": 818,
-        "title": "feat(spec): the unconnected-input refusal names the reference's 0, and bindUnconnectedInputs binds such pins to false",
-        "url": "https://github.com/mezivillager/hacer/pull/818",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:1",
-          "fidelity",
-          "project:foundation"
-        ],
-        "headRefName": "feat/813-unconnected-input-bind",
-        "isDraft": false,
-        "createdAt": "2026-10-21T14:43:55Z",
-        "mergedAt": "2026-10-21T15:22:14Z",
-        "closes": [
-          813
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Opus (claude-opus-5-5)",
-            "at": "2026-10-21T14:56:06Z",
-            "url": "https://github.com/mezivillager/hacer/pull/818#issuecomment-6319088454"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4136,57 +4091,6 @@
         }
       },
       {
-        "number": 599,
-        "ref": "refs/heads/claim/599",
-        "sha": "a562ebf9194153e0c209e2577caabcad65e7695e",
-        "state": "OPEN",
-        "title": "run-tst: a bare output-list name gets the pin's width, as the reference IDE gives it",
-        "url": "https://github.com/mezivillager/hacer/issues/599",
-        "labels": [
-          "project:surfaces",
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:foundation"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-10-22-hacer-loop-to-80",
-          "branch": "fix/599-bare-output-width",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-22T10:00:56Z",
-          "url": "https://github.com/mezivillager/hacer/issues/599#issuecomment-6338042045"
-        }
-      },
-      {
-        "number": 613,
-        "ref": "refs/heads/claim/613",
-        "sha": "a562ebf9194153e0c209e2577caabcad65e7695e",
-        "state": "CLOSED",
-        "title": "TestResultsPanel: import formatColumnValue through @/core and shrink the layer baseline",
-        "url": "https://github.com/mezivillager/hacer/issues/613",
-        "labels": [
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "project:foundation"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-10-22-hacer-loop-to-80",
-          "branch": "refactor/613-format-through-core",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-22T10:05:43Z",
-          "url": "https://github.com/mezivillager/hacer/issues/613#issuecomment-6338132167"
-        }
-      },
-      {
         "number": 773,
         "ref": "refs/heads/claim/773",
         "sha": "734138786f88772f7a8bd519b30f1b6a537bdb7a",
@@ -4209,6 +4113,32 @@
           "author": "mezivillager",
           "at": "2026-10-22T10:17:10Z",
           "url": "https://github.com/mezivillager/hacer/issues/773#issuecomment-6338342540"
+        }
+      },
+      {
+        "number": 878,
+        "ref": "refs/heads/claim/878",
+        "sha": "520ba07a588e771584c69c60fb801524c3567f5b",
+        "state": "OPEN",
+        "title": "A pin width far beyond any evaluable bus passes the parser and the registry",
+        "url": "https://github.com/mezivillager/hacer/issues/878",
+        "labels": [
+          "bug",
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:foundation"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "2026-10-22-hacer-loop-to-80",
+          "branch": "fix/878-pin-width-limit",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-22T10:32:28Z",
+          "url": "https://github.com/mezivillager/hacer/issues/878#issuecomment-6338619462"
         }
       },
       {
@@ -4264,7 +4194,7 @@
         }
       }
     ],
-    "onClosedIssues": 1
+    "onClosedIssues": 0
   },
   "cloudLane": {
     "items": [
@@ -6196,24 +6126,24 @@
     "mergesPerDay": [
       {
         "date": "2026-10-21",
-        "merges": 27
+        "merges": 26
       },
       {
         "date": "2026-10-22",
-        "merges": 33
+        "merges": 34
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-08T10:23:01.202Z",
-      "merged": 123,
+      "since": "2026-10-08T10:35:59.433Z",
+      "merged": 124,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 1.5
       },
       "blockedOnce": {
         "count": 7,
-        "of": 104,
+        "of": 105,
         "prs": [
           700,
           725,
@@ -6226,8 +6156,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 82,
-          "withVerdict": 82,
+          "merged": 83,
+          "withVerdict": 83,
           "without": []
         },
         "nonCode": {
@@ -10338,35 +10268,15 @@
       },
       {
         "date": "2026-10-22",
-        "at": "2026-10-22T09:38:24.620Z",
+        "at": "2026-10-22T10:23:01.202Z",
         "byProject": {
-          "upkeep": [
-            928,
-            929,
-            930,
-            933,
-            934,
-            935,
-            936,
-            937,
-            938,
-            939,
-            945,
-            946,
-            229,
-            256
-          ],
           "foundation": [
-            599,
-            613,
-            773,
             878,
+            940,
             941,
             151,
             184,
             325,
-            339,
-            379,
             380,
             381,
             382,
@@ -10379,16 +10289,20 @@
             400,
             462,
             506,
+            599,
             719,
             722,
             728,
             742,
+            773,
             907,
-            940,
             942
           ],
           "harness": [
             257,
+            949,
+            951,
+            955,
             154,
             156,
             270,
@@ -10403,6 +10317,22 @@
             677,
             870,
             889
+          ],
+          "upkeep": [
+            930,
+            933,
+            934,
+            935,
+            936,
+            937,
+            938,
+            939,
+            945,
+            946,
+            229,
+            256,
+            928,
+            929
           ],
           "spine": [
             165,
@@ -10476,7 +10406,8 @@
           ],
           "mission-control": [
             509,
-            584
+            584,
+            950
           ],
           "unfiled": [
             572
@@ -10497,11 +10428,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "520ba07a588e771584c69c60fb801524c3567f5b",
+        "sha": "a9fb1b11a6be555aed4c0d0063c9ab8728c8cc13",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39762469121/job/119769748294",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39764172093/job/119775396169",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -10549,58 +10480,6 @@
         "verdict": "PASS",
         "fields": {
           "known": 71,
-          "new": 0
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 956,
-        "sha": "19246898a61ba0be78199f0d4261e3a6d94a1841",
-        "check": "pr-hygiene",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-22T10:19:02Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39762162869/job/119768730397",
-        "line": "HYGIENE: WARN reviewable=25 test=53 excluded=6 files=4 issue=#599 linked=fixes",
-        "verdict": "WARN",
-        "fields": {
-          "reviewable": 25,
-          "test": 53,
-          "excluded": 6,
-          "files": 4,
-          "issue": "#599",
-          "linked": "fixes"
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 956,
-        "sha": "19246898a61ba0be78199f0d4261e3a6d94a1841",
-        "check": "browser-qa",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-22T10:21:13Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39762162893/job/119768728509",
-        "line": "BROWSER-QA: PASS suites=store passed=107 failed=0 flaky=0 skipped=0",
-        "verdict": "PASS",
-        "fields": {
-          "suites": "store",
-          "passed": 107,
-          "failed": 0,
-          "flaky": 0,
-          "skipped": 0
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 956,
-        "sha": "19246898a61ba0be78199f0d4261e3a6d94a1841",
-        "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-22T10:22:21Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39762160890/job/119768721852",
-        "line": "LAYER-RATCHET: 69 known violations (37 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 69,
           "new": 0
         },
         "disagrees": false
