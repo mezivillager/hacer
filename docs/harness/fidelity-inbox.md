@@ -611,7 +611,7 @@ On the grading path, a shape with two refusable causes reports the cause the ref
   - The web IDE cannot hold either chip. Its grammar takes only `BUILTIN;` (`hdl.ohm:13`). A `BUILTIN` body returns the builtin named by the `CHIP` name, with the builtin's pins (`builder.ts:233-235`). `CHIP Nand { IN x, y; OUT out; BUILTIN; }` builds with `a[1], b[1], out[1]`, and so does `CHIP Nand { IN a[2], b; OUT out; BUILTIN; }`. `CHIP Foo { IN a; OUT out; BUILTIN; }` is refused (`Chip Foo not in builtin registry`), and a parent of it gets `Undefined chip name: Foo`.
   - On the grading path, R771 lets only a primitive be `BUILTIN`, and only as itself (`src/core/testing/testChip.ts:56-58`), so the stand-in is refused there. The file's own chip keeps the source's pins (`testChip.ts:85-90`). `CHIP Nand { IN x, y; OUT out; BUILTIN; }` against a test over `a`, `b` and `out` reports `output-list names pin "a", but chip Nand has no such pin`, where the web IDE runs the same test on its builtin's pins. `IN a[2], b` passes in both.
   - Not reachable by a learner on the core path today: the user registry is empty (#206). An agent can register such a definition through the core API now.
-- **Review note:** PR #911, the fidelity digest of 2026-10-22
+- **Review note:** PR #911 issuecomment-6332719109 (the fidelity digest of 2026-10-22)
 
 **Draft issue body**
 ## Goal
