@@ -650,7 +650,7 @@ A `run-prs` count whose window is still open says so.
 
 ### HRN-018 · A second coordinator collides in four places that nothing guards: allow one only with guards, or say there is one
 - **Date:** 2026-10-22 · **Kind:** policy · **Retro run:** none (filed at the close of the 2026-10-21 coordinator run)
-- **Status:** proposed
+- **Status:** filed (#955)
 - **Evidence:**
   - The owner asked on 2026-10-21 whether another session can run the loop beside the running one "to
     clear the queue faster" (R855). The run fixed one gap and left four.
@@ -692,7 +692,7 @@ A `run-prs` count whose window is still open says so.
 
 ### HRN-019 · `merge-on-green` rebase-merges a test-only PR whose red commit fails on purpose, against the implementer brief's one-commit rule
 - **Date:** 2026-10-22 · **Kind:** policy · **Retro run:** none (filed at the close of the 2026-10-21 coordinator run)
-- **Status:** proposed
+- **Status:** filed (#958)
 - **Evidence:**
   - `docs/harness/implementer-brief.md` (Test-only issues): the PR "lands as one `test(<scope>): …`
     commit with the red recorded in its message". #837 (#811) had four commits, and `a227f2b4` failed
