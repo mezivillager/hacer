@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-22T02:02:54.828Z",
+  "generatedAt": "2026-10-22T02:13:03.033Z",
   "head": {
-    "sha": "6f2a2f639828484c2baadf1609ed38c13d6f522b",
-    "date": "2026-10-22T05:01:58+03:00",
-    "subject": "chore(harness): ready and next print each active workflow failing on main"
+    "sha": "bf96e39fc7748e6c09a17383aacc6a8612fb895c",
+    "date": "2026-10-22T05:12:25+03:00",
+    "subject": "docs(harness): the retro splits a run query cut off at the API's 1,000-run cap"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T02:02:54.828Z",
+      "fetchedAt": "2026-10-22T02:13:03.033Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T02:02:54.828Z",
+      "fetchedAt": "2026-10-22T02:13:03.033Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T02:02:54.828Z",
+      "fetchedAt": "2026-10-22T02:13:03.033Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-22T02:02:54.828Z",
+      "fetchedAt": "2026-10-22T02:13:03.033Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-22T02:02:54.828Z",
+      "fetchedAt": "2026-10-22T02:13:03.033Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-22T02:02:54.828Z",
+      "fetchedAt": "2026-10-22T02:13:03.033Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-22T02:02:54.828Z",
+      "fetchedAt": "2026-10-22T02:13:03.033Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-22T02:02:54.828Z",
+      "fetchedAt": "2026-10-22T02:13:03.033Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-22T02:02:54.828Z",
+      "fetchedAt": "2026-10-22T02:13:03.033Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-22T02:02:54.828Z",
+      "fetchedAt": "2026-10-22T02:13:03.033Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-22T02:02:54.828Z",
+      "fetchedAt": "2026-10-22T02:13:03.033Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-22T02:02:54.828Z",
+      "fetchedAt": "2026-10-22T02:13:03.033Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-22T02:02:54.828Z",
+      "fetchedAt": "2026-10-22T02:13:03.033Z",
       "status": "ok"
     }
   },
@@ -103,12 +103,12 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 17,
-        "ready": 2,
+        "open": 16,
+        "ready": 1,
         "inProgress": 1,
         "needsHuman": 2,
         "staleClaims": [],
-        "agentReady": 3,
+        "agentReady": 2,
         "filedElsewhere": [
           151,
           339
@@ -428,11 +428,6 @@
         "project": "upkeep"
       },
       {
-        "number": 895,
-        "title": "Process review cadence: due 14 days after the last finished cycle, printed by `backlog.mjs ready` and `next`, and the coordinator starts its reviewers",
-        "project": "harness"
-      },
-      {
         "number": 867,
         "title": "Inbox review: FID-030 · The combinational-cycle refusal carries a line, as the reference's `Looping wire` and `Circular pin dependency` do",
         "project": "upkeep"
@@ -513,21 +508,6 @@
         "project": "upkeep",
         "rank": 11,
         "lane": "aux",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 895,
-        "title": "Process review cadence: due 14 days after the last finished cycle, printed by `backlog.mjs ready` and `next`, and the coordinator starts its reviewers",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:1"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
         "pickable": true,
         "reason": null
       },
@@ -2538,13 +2518,13 @@
         "reason": "unshaped"
       },
       {
-        "number": 898,
-        "title": "Retro input 6 prints each query's run count, and splits a query cut off at the API's 1,000-run cap",
+        "number": 895,
+        "title": "Process review cadence: due 14 days after the last finished cycle, printed by `backlog.mjs ready` and `next`, and the coordinator starts its reviewers",
         "labels": [
           "project:harness",
           "agent-ready",
           "in-progress",
-          "risk:0"
+          "risk:1"
         ],
         "blocking": [],
         "project": "harness",
@@ -2620,7 +2600,6 @@
       ],
       "harness": [
         257,
-        895,
         154,
         156,
         270,
@@ -2635,7 +2614,7 @@
         677,
         870,
         889,
-        898
+        895
       ],
       "spine": [
         165,
@@ -2754,6 +2733,32 @@
       }
     ],
     "merged": [
+      {
+        "number": 900,
+        "title": "docs(harness): the retro splits a run query cut off at the API's 1,000-run cap",
+        "url": "https://github.com/mezivillager/hacer/pull/900",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/898-rerun-query-split",
+        "isDraft": false,
+        "createdAt": "2026-10-22T02:02:59Z",
+        "mergedAt": "2026-10-22T02:12:26Z",
+        "closes": [
+          898
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Sonnet (claude-sonnet-5-5)",
+            "at": "2026-10-22T02:11:37Z",
+            "url": "https://github.com/mezivillager/hacer/pull/900#issuecomment-6331011643"
+          }
+        ]
+      },
       {
         "number": 899,
         "title": "chore(harness): ready and next print each active workflow failing on main",
@@ -4258,33 +4263,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/753#issuecomment-6204776785"
           }
         ]
-      },
-      {
-        "number": 751,
-        "title": "fix(core): skip bus components and nodes of a width the app cannot create",
-        "url": "https://github.com/mezivillager/hacer/pull/751",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:1",
-          "project:foundation"
-        ],
-        "headRefName": "fix/749-entity-widths",
-        "isDraft": false,
-        "createdAt": "2026-10-15T22:15:36Z",
-        "mergedAt": "2026-10-15T22:33:07Z",
-        "closes": [
-          749
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Opus 5.5",
-            "at": "2026-10-15T22:31:43Z",
-            "url": "https://github.com/mezivillager/hacer/pull/751#issuecomment-6203630090"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -5026,35 +5004,35 @@
         }
       },
       {
-        "number": 888,
-        "ref": "refs/heads/claim/888",
-        "sha": "85061695b41dae8522d3e5e663a2c0ca8cd58c0b",
-        "state": "CLOSED",
-        "title": "`backlog.mjs ready` and `next` print each workflow failing on `main`, so a broken release is seen at the next pick",
-        "url": "https://github.com/mezivillager/hacer/issues/888",
+        "number": 895,
+        "ref": "refs/heads/claim/895",
+        "sha": "6f2a2f639828484c2baadf1609ed38c13d6f522b",
+        "state": "OPEN",
+        "title": "Process review cadence: due 14 days after the last finished cycle, printed by `backlog.mjs ready` and `next`, and the coordinator starts its reviewers",
+        "url": "https://github.com/mezivillager/hacer/issues/895",
         "labels": [
           "project:harness",
           "agent-ready",
           "in-progress",
           "risk:1"
         ],
-        "onClosedIssue": true,
+        "onClosedIssue": false,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
           "session": "hacer-loop-to-70",
-          "branch": "chore/888-main-workflows",
+          "branch": "chore/895-process-review-due",
           "handoff": "none",
           "author": "mezivillager",
-          "at": "2026-10-22T01:19:23Z",
-          "url": "https://github.com/mezivillager/hacer/issues/888#issuecomment-6330338551"
+          "at": "2026-10-22T02:03:27Z",
+          "url": "https://github.com/mezivillager/hacer/issues/895#issuecomment-6330904798"
         }
       },
       {
         "number": 898,
         "ref": "refs/heads/claim/898",
         "sha": "2cd3d37d795cd83a61f2141b9785acfcbf2144d4",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "Retro input 6 prints each query's run count, and splits a query cut off at the API's 1,000-run cap",
         "url": "https://github.com/mezivillager/hacer/issues/898",
         "labels": [
@@ -5063,7 +5041,7 @@
           "in-progress",
           "risk:0"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -6943,7 +6921,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-15",
-        "merges": 3
+        "merges": 2
       },
       {
         "date": "2026-10-16",
@@ -6959,20 +6937,20 @@
       },
       {
         "date": "2026-10-22",
-        "merges": 8
+        "merges": 9
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-08T02:02:54.828Z",
-      "merged": 98,
+      "since": "2026-10-08T02:13:03.033Z",
+      "merged": 99,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 1.9
       },
       "blockedOnce": {
         "count": 7,
-        "of": 83,
+        "of": 84,
         "prs": [
           700,
           725,
@@ -6985,8 +6963,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 68,
-          "withVerdict": 68,
+          "merged": 69,
+          "withVerdict": 69,
           "without": []
         },
         "nonCode": {
@@ -11271,11 +11249,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "6f2a2f639828484c2baadf1609ed38c13d6f522b",
+        "sha": "bf96e39fc7748e6c09a17383aacc6a8612fb895c",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39709100626/job/119595900244",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39710093128/job/119599102542",
         "line": null,
         "verdict": null,
         "fields": {},
