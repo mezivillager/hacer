@@ -629,3 +629,69 @@ A definition whose source has a `BUILTIN` body declares the pins of the builtin 
 `pnpm exec vitest run --project node src/core/spec src/core/chips src/core/hdl src/core/testing`
 ## Blocked by
 —
+
+### FID-033 · #722 gains an unsliced wide `true` on a part whose chip the export's registry lacks, and §1.10.9 says the web IDE reads 16 bits there
+- **Date:** 2026-10-22 · **Target epic:** #140 core
+- **Status:** proposed
+- **Why:** #905 (PR #914) and #916 (PR #922) window a `true` that feeds more than 16 bits on the `nand2tetris` export, so the web IDE reads every bit, as HACER does. An unsliced binding takes its width from `PrintSpecOptions.chips` (`src/core/spec/printSpec.ts:67-68`). When that registry lacks the part's chip, the width is unknown and the binding prints as written. Measured 2026-10-22 on 15 bindings over three test chips: `W32` (`IN a[32]`), `W17` (`IN a[17]`) and `W2` (`IN a[32], b[20]`). `main`'s `printSpec` printed each one twice, once with a registry that holds the test chips and once with the default registry, giving 30 texts. Each text was read by the web IDE at the differential pin `52611ad` under tsx, with the test chips written as HDL.
+  - 27 texts read as HACER's `compileSpec` and `compileHDL` read the document.
+  - The 3 that differ are exactly the unsliced wide `true`s printed with the default registry. `W32(a=true)` reads hi 0, where HACER reads 65535. `W17(a=true)` reads top 0, where HACER reads 1. `W2(a=true, b=true)` reads ahi 0 and bhi 0, where HACER reads 65535 and 15. The reference's `true` is a 16-bit `ConstantBus` (`../web-ide/simulator/src/chip/chip.ts:180`).
+  - ADR-0020 §1.10 item 10 records that such a binding prints as written. §1.10.9 makes no exception: "The export windows such a binding (rule 10), so the web IDE reads the same value from it". Nothing records that the web IDE reads only 16 bits there, and no open issue tracks it (nit 1 of #922's verifier).
+  - It is not reachable today: `printSpec` has no caller outside tests, and the user registry is empty (#206). It becomes reachable once #386 exports a document whose part is a user chip and the caller passes no registry that holds that chip.
+- **Review note:** the fidelity digest comment on PR #922 (2026-10-22)
+
+**Draft issue body** (an addition to #722)
+## Goal
+The `nand2tetris` export never prints a `true` binding that the web IDE reads as fewer bits than HACER does. Where the export cannot size such a binding, it reports the binding, as #722 reports the constructs it cannot lower.
+## Acceptance criteria
+- In the `nand2tetris` dialect, an unsliced `true` part-input binding is reported as a named construct, with its part id and pin, when the part's chip is missing from `PrintSpecOptions.chips`. It is never printed as written. Its width is unknown there, so the report covers narrow pins too. Passing a registry that holds the chip is the caller's fix.
+- ADR-0020 §1.10.9's last bullet and §1.10 item 10 name the case and the report.
+- Tests:
+  - `W32(a=true)` exported with the default registry is reported;
+  - with a registry that holds `W32`, it windows as today;
+  - `W32(a[8..31]=true)` with the default registry still windows by its slice (#922);
+  - `a=false`, a sliced `true` of 16 bits or fewer, and the `hacer` dialect are unchanged.
+## Verification command
+`pnpm exec vitest run --project node src/core/spec`
+## Blocked by
+—
+
+### FID-034 · A chip that names a pin twice within `IN` or within `OUT` is refused on the spec and engine paths, as the web IDE refuses it, and a name shared by `IN` and `OUT` gets one decided reading
+- **Date:** 2026-10-22 · **Target epic:** #140 core
+- **Status:** proposed
+- **Why:** #912 (PR #921) refuses a *definition* that repeats a pin name within `IN` or within `OUT`, against its source or its builtin. R879 left the web IDE's own reading unmeasured. Measured 2026-10-22 on the web IDE at the differential pin `52611ad` under tsx (its builder, chip model and HDL grammar are identical at `91ef428`), and on `main` `d2f58ea0` with a tsx probe over `src/core`:
+  - **The web IDE refuses every file that repeats a name within `IN` or within `OUT`.**
+    - Five headers were measured: `IN a, a`, `IN a, a[16]`, `IN a, b, a`, `OUT out, out` and `OUT out, out[4]`. Each one throws `Pins already has a!` (or `out!`) while the builder constructs the chip (`../web-ide/simulator/src/chip/builder.ts:219-225`, then `../web-ide/simulator/src/chip/chip.ts:325` and `:333`, the assert at `:239`).
+    - The throw comes before any part is wired and before a `BUILTIN;` body is read, so `CHIP Not { IN in, in; OUT out; BUILTIN; }` throws too.
+    - It is an assertion, not a `CompilationError`, so it carries no line.
+  - **HACER refuses these on some paths only.**
+    - Grading and `register` refuse all five, as `Duplicate pin name: "a"` (`validateChipDefinition`).
+    - Since #921, `evaluateChip` refuses them too, but as `Foo declares IN a, a, but its source declares IN a, a`. The two lists are equal, so the message does not say what is wrong (nit 1 of #921's verifier).
+    - `parseSpec` reports no error on any of the five. `compileSpec` and `compileHDL` each compile four of them; the fifth fails on a width. `CHIP Foo { IN a, a; OUT out; PARTS: And(a=a, b=a, out=out); }` evaluates to `out = a` on both paths.
+    - The `nand2tetris` export would print the repeated name in the header, which the web IDE refuses.
+  - **A name shared by `IN` and `OUT` builds in the web IDE unless a part names it.**
+    - `CHIP Foo { IN a, b; OUT a, out; PARTS: Not(in=b, out=out); }` and `CHIP Foo { IN a; OUT a; PARTS: }` build, and `OUT a` reads 0.
+    - A part that names `a` gets `Looping wire a`, `Cannot write to input pin a` or `Cannot use output pin as input`.
+    - HACER's `compileHDL`, `compileSpec` and `evaluateChip` build both shapes and read `OUT a` as `IN a`: 1 when `a` is 1. Grading refuses both, as `Duplicate pin name: "a"`.
+  - Of these shapes, the acceptance corpus (`conformance/acceptance/hdl-shapes.json`) holds only the looping `in-and-out-same-name`. ADR-0020 records none of the others.
+  - No learner reaches this today: the spec path waits for the editor (#386) and the user registry (#206). `compileHDL` and `compileSpec` are public core API, so an agent reaches both now.
+- **Review note:** the fidelity digest comment on PR #922 (2026-10-22)
+
+**Draft issue body**
+## Goal
+A chip header that names a pin twice within `IN` or within `OUT` is refused on every path, as the web IDE refuses it, with one message that names the pin. A name shared by `IN` and `OUT` has one decided reading, which a test pins and ADR-0020 records.
+## Acceptance criteria
+- A repeated pin name within `IN` or within `OUT` is refused on every path:
+  - `parseSpec` reports it as an error that names the pin;
+  - `compileSpec` refuses it, so the export never prints it;
+  - `compileHDL` refuses it at the top level.
+- On every path the refusal names the repeated pin, in grading's words `Duplicate pin name: "a"`. That includes the source and builtin checks, which today say `Foo declares IN a, a, but its source declares IN a, a`.
+- The panel picks one reading for a name in both `IN` and `OUT`, and a test pins it:
+  - either it is refused on the engine and spec paths too, as grading refuses it, and ADR-0020 §1.11 rule 5 records HACER as stricter than the web IDE where no part names the pin;
+  - or the engine and spec paths read `OUT a` as the web IDE does: 0 when nothing writes it.
+- The corpus gains the five within-side shapes, the `BUILTIN;` shape and the two shared-name shapes, each with the web IDE's verdict (`build`, with the thrown message where the builder throws). `src/core/hdl/acceptanceParity.test.ts` asserts each reader against them.
+- ADR-0020 §1.11 rule 5's `BUILTIN` bullet adds an exception to "ignores the file's `IN` and `OUT`": the web IDE still refuses a name repeated within either list.
+## Verification command
+`pnpm exec vitest run --project node src/core/spec src/core/hdl src/core/chips src/core/testing`
+## Blocked by
+—
