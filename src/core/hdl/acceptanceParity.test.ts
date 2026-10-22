@@ -58,6 +58,8 @@ const wireStatement = (parseHDLErrors: string[], invalidWire?: string): Readings
 const OUT_READ = ['Line 1: Cannot use output pin as input'] as const
 const internalPinRefused = (pin: string): readonly [string] => [`Line 1: Internal pins (in this case: ${pin}) cannot be subscripted or indexed`]
 const nameRefused = (name: string): readonly [string] => [`Name "${name}" contains "_": a name is a letter, then letters and digits`]
+const tooWide = (pin: string, width: string): string => `Pin "${pin}" width ${width} is wider than 32 bits, the widest bus HACER evaluates`
+const WIDTH_LIMIT = ['intended', 'ADR-0020 §1.11.5'] as const
 
 const EXPECTED: Record<string, Expected> = {
   'part-output-fan-out': accepted,
@@ -534,6 +536,23 @@ const EXPECTED: Record<string, Expected> = {
     ...compileRefuses(['Part "Not" pin "in" is wired to "out[1]": sub-bus index out of range ("out" has width 1)']),
     grading: OUT_READ,
     diverges: { compileHDL: ['intended', 'ADR-0020 §1.11.5'], compileSpec: ['inherited', 'ADR-0020 §1.11.5'] },
+  },
+  'pin-width-32': accepted,
+  'pin-width-33': {
+    ...syntaxError([tooWide('a', '33')]),
+    diverges: { parseHDL: WIDTH_LIMIT, parseSpec: WIDTH_LIMIT, compileSpec: WIDTH_LIMIT },
+  },
+  'out-width-33': {
+    ...syntaxError([tooWide('out', '33')]),
+    diverges: { parseHDL: WIDTH_LIMIT, parseSpec: WIDTH_LIMIT, compileSpec: WIDTH_LIMIT },
+  },
+  'pin-width-wraps-to-zero': {
+    ...syntaxError([tooWide('a', '99999999999999999999')]),
+    diverges: { parseHDL: WIDTH_LIMIT, parseSpec: WIDTH_LIMIT },
+  },
+  'pin-width-wraps-to-sixteen': {
+    ...syntaxError([tooWide('a', '65552')]),
+    diverges: { parseHDL: WIDTH_LIMIT, parseSpec: WIDTH_LIMIT, compileSpec: WIDTH_LIMIT },
   },
 }
 

@@ -340,6 +340,20 @@ describe('HDL Parser', () => {
       expect(result.errors[0].message).toContain('pin width')
     })
 
+    it("refuses a pin wider than MAX_PIN_WIDTH at the width's line and column (#878)", () => {
+      expect(parseHDL('CHIP W {\n  IN a[33];\n  OUT out;\n  PARTS:\n}')).toEqual({
+        success: false,
+        errors: [{ line: 2, column: 8, message: 'Pin "a" width 33 is wider than 32 bits, the widest bus HACER evaluates' }],
+      })
+      expect(parseHDL('CHIP W {\n  IN a;\n  OUT out[99999999999999999999];\n  PARTS:\n}')).toEqual({
+        success: false,
+        errors: [
+          { line: 3, column: 11, message: 'Pin "out" width 99999999999999999999 is wider than 32 bits, the widest bus HACER evaluates' },
+        ],
+      })
+      expect(parseHDL('CHIP W { IN a[32]; OUT out; PARTS: }')).toMatchObject({ success: true, chip: { inputs: [{ name: 'a', width: 32 }] } })
+    })
+
     it("rejects BUILTIN without chip name", () => {
       const result = parseHDL(`CHIP X {
         IN a;

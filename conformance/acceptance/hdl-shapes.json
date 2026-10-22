@@ -6,7 +6,8 @@
     "#725": "issuecomment-6184961559: the 26-shape table, the tag scan and the part-id comments",
     "#740": "issuecomment-6188266196: the probe table and the re-measured rows; its two multi-file rows (A uses B uses A, Not.hdl beside And.hdl) need a registry of user chips and are not here",
     "#732": "issuecomment-6186263400: \"_\" and Unicode letters in names, a buffer named like its chip, the header lists, capitalised and wide literals",
-    "#747": "issuecomment-6190087365's probe families regenerated (widths 1, 2, 4, 8 and 16; bit and range reads and writes, both sides sliced, internal signals, chip-OUT reads, wire forms), and issuecomment-6190213877's end-to-end Or8Way table"
+    "#747": "issuecomment-6190087365's probe families regenerated (widths 1, 2, 4, 8 and 16; bit and range reads and writes, both sides sliced, internal signals, chip-OUT reads, wire forms), and issuecomment-6190213877's end-to-end Or8Way table",
+    "#878": "the issue body's measurement: widths 32 and 33 on an IN and an OUT, and a declared width read modulo 65536 (99999999999999999999 is width 0, 65552 is width 16)"
   },
   "shapes": [
     {"id": "part-output-fan-out", "source": "#725", "verdict": "accept", "message": null, "sha": "91ef4285", "hdl": "CHIP C { IN a; OUT o, p; PARTS: Not(in=a, out=o, out=t); Not(in=t, out=p); }"},
@@ -185,6 +186,11 @@
     {"id": "or8way-reads-in-8", "source": "#747", "verdict": "build", "message": "Line 1: Sub-bus index out of range (in has width 8)", "sha": "91ef4285", "hdl": "CHIP Or8Way { IN in[8]; OUT out; PARTS: Or(a=in[0], b=in[1], out=t1); Or(a=t1, b=in[2], out=t2); Or(a=t2, b=in[3], out=t3); Or(a=t3, b=in[4], out=t4); Or(a=t4, b=in[5], out=t5); Or(a=t5, b=in[6], out=t6); Or(a=t6, b=in[8], out=out); }"},
     {"id": "or8way-reads-chip-out", "source": "#747", "verdict": "build", "message": "Line 1: Cannot use output pin as input", "sha": "91ef4285", "hdl": "CHIP Or8Way { IN in[8]; OUT out; PARTS: Or(a=in[0], b=in[1], out=t1); Or(a=t1, b=in[2], out=t2); Or(a=t2, b=in[3], out=t3); Or(a=t3, b=in[4], out=t4); Or(a=t4, b=in[5], out=t5); Or(a=t5, b=in[6], out=t6); Or(a=t6, b=in[7], out=out); Not(in=out, out=spare); }"},
     {"id": "or8way-internal-subscript", "source": "#747", "verdict": "build", "message": "Line 1: Internal pins (in this case: t) cannot be subscripted or indexed", "sha": "91ef4285", "hdl": "CHIP Or8Way { IN in[8]; OUT out; PARTS: Or(a=in[0], b=in[1], out=t1); Or(a=t1, b=in[2], out=t2); Or(a=t2, b=in[3], out=t3); Or(a=t3, b=in[4], out=t4); Or(a=t4, b=in[5], out=t5); Or(a=t5, b=in[6], out=t6); Or(a=t6, b=in[7], out=t[0]); Or(a=t[0], b=false, out=out); }"},
-    {"id": "or8way-reads-chip-out-past-end", "source": "#747", "verdict": "build", "message": "Line 1: Cannot use output pin as input", "sha": "91ef4285", "hdl": "CHIP Or8Way { IN in[8]; OUT out; PARTS: Or(a=in[0], b=in[1], out=t1); Or(a=t1, b=in[2], out=t2); Or(a=t2, b=in[3], out=t3); Or(a=t3, b=in[4], out=t4); Or(a=t4, b=in[5], out=t5); Or(a=t5, b=in[6], out=t6); Or(a=t6, b=in[7], out=out); Not(in=out[1], out=spare); }"}
+    {"id": "or8way-reads-chip-out-past-end", "source": "#747", "verdict": "build", "message": "Line 1: Cannot use output pin as input", "sha": "91ef4285", "hdl": "CHIP Or8Way { IN in[8]; OUT out; PARTS: Or(a=in[0], b=in[1], out=t1); Or(a=t1, b=in[2], out=t2); Or(a=t2, b=in[3], out=t3); Or(a=t3, b=in[4], out=t4); Or(a=t4, b=in[5], out=t5); Or(a=t5, b=in[6], out=t6); Or(a=t6, b=in[7], out=out); Not(in=out[1], out=spare); }"},
+    {"id": "pin-width-32", "source": "#878", "verdict": "accept", "message": null, "sha": "91ef4285", "hdl": "CHIP W { IN a[32]; OUT out; PARTS: Not(in=a[31], out=out); }"},
+    {"id": "pin-width-33", "source": "#878", "verdict": "accept", "message": null, "sha": "91ef4285", "hdl": "CHIP W { IN a[33]; OUT out; PARTS: Not(in=a[32], out=out); }"},
+    {"id": "out-width-33", "source": "#878", "verdict": "accept", "message": null, "sha": "91ef4285", "hdl": "CHIP W { IN a; OUT out[33]; PARTS: Not(in=a, out=out[0]); }"},
+    {"id": "pin-width-wraps-to-zero", "source": "#878", "verdict": "build", "message": "Line 1: Sub-bus index out of range (a has width 0)", "sha": "91ef4285", "hdl": "CHIP W { IN a[99999999999999999999]; OUT out; PARTS: Not(in=a[0], out=out); }"},
+    {"id": "pin-width-wraps-to-sixteen", "source": "#878", "verdict": "accept", "message": null, "sha": "91ef4285", "hdl": "CHIP W { IN a[65552]; OUT out[16]; PARTS: Not16(in=a, out=out); }"}
   ]
 }
