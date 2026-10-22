@@ -35,11 +35,16 @@ export function mergedInWindow(prs, fromIso, toIso) {
     .sort((a, b) => (a.mergedAt < b.mergedAt ? -1 : a.mergedAt > b.mergedAt ? 1 : a.number - b.number))
 }
 
-/** `#n\t<mergedAt>\t<title>\t[label, …]`, oldest first, plus a trailing count line. */
-export function formatConsole(prs) {
+/**
+ * `#n\t<mergedAt>\t<title>\t[label, …]`, oldest first, plus a trailing count line. While `now` is
+ * before `to`, the count line names `now` as the instant counted to, the `--to` that reproduces it.
+ */
+export function formatConsole(prs, { to, now } = {}) {
   const lines = prs.map(
     (pr) => `#${pr.number}\t${pr.mergedAt}\t${pr.title}${pr.labels.length > 0 ? `\t[${pr.labels.join(', ')}]` : ''}`,
   )
-  lines.push(`${prs.length} PR${prs.length === 1 ? '' : 's'} merged`)
+  const count = `${prs.length} PR${prs.length === 1 ? '' : 's'} merged`
+  const open = now !== undefined && now < Date.parse(to)
+  lines.push(open ? `${count} by ${new Date(now).toISOString()} (window open until ${to})` : count)
   return lines.join('\n')
 }
