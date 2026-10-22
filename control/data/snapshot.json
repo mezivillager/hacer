@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-22T06:41:54.423Z",
+  "generatedAt": "2026-10-22T06:45:54.695Z",
   "head": {
-    "sha": "f901e893ec05ff529a18476aad506def2b6c0d4f",
-    "date": "2026-10-22T09:40:51+03:00",
-    "subject": "docs(decisions): rulings R852-R879 of the 2026-10-21 run"
+    "sha": "c5cf87663cb837640fa8640d7d056f8877989c9e",
+    "date": "2026-10-22T09:44:50+03:00",
+    "subject": "docs(harness): session record of the 2026-10-21 run, and ADR-0020 wording"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T06:41:54.423Z",
+      "fetchedAt": "2026-10-22T06:45:54.695Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T06:41:54.423Z",
+      "fetchedAt": "2026-10-22T06:45:54.695Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T06:41:54.423Z",
+      "fetchedAt": "2026-10-22T06:45:54.695Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-22T06:41:54.423Z",
+      "fetchedAt": "2026-10-22T06:45:54.695Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-22T06:41:54.423Z",
+      "fetchedAt": "2026-10-22T06:45:54.695Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-22T06:41:54.423Z",
+      "fetchedAt": "2026-10-22T06:45:54.695Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-22T06:41:54.423Z",
+      "fetchedAt": "2026-10-22T06:45:54.695Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-22T06:41:54.423Z",
+      "fetchedAt": "2026-10-22T06:45:54.695Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-22T06:41:54.423Z",
+      "fetchedAt": "2026-10-22T06:45:54.695Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-22T06:41:54.423Z",
+      "fetchedAt": "2026-10-22T06:45:54.695Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-22T06:41:54.423Z",
+      "fetchedAt": "2026-10-22T06:45:54.695Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-22T06:41:54.423Z",
+      "fetchedAt": "2026-10-22T06:45:54.695Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-22T06:41:54.423Z",
+      "fetchedAt": "2026-10-22T06:45:54.695Z",
       "status": "ok"
     }
   },
@@ -411,7 +411,6 @@
       "dormant": false,
       "agentPrs": [
         927,
-        926,
         514
       ]
     }
@@ -2700,22 +2699,6 @@
         "verdicts": []
       },
       {
-        "number": 926,
-        "title": "docs(harness): session record of the 2026-10-21 run, and ADR-0020 wording",
-        "url": "https://github.com/mezivillager/hacer/pull/926",
-        "author": "mezivillager",
-        "labels": [
-          "project:harness",
-          "risk:0"
-        ],
-        "headRefName": "docs/2026-10-21-records-session",
-        "isDraft": false,
-        "createdAt": "2026-10-22T06:37:02Z",
-        "mergedAt": null,
-        "closes": [],
-        "verdicts": []
-      },
-      {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
         "url": "https://github.com/mezivillager/hacer/pull/514",
@@ -2743,6 +2726,22 @@
       }
     ],
     "merged": [
+      {
+        "number": 926,
+        "title": "docs(harness): session record of the 2026-10-21 run, and ADR-0020 wording",
+        "url": "https://github.com/mezivillager/hacer/pull/926",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/2026-10-21-records-session",
+        "isDraft": false,
+        "createdAt": "2026-10-22T06:37:02Z",
+        "mergedAt": "2026-10-22T06:44:51Z",
+        "closes": [],
+        "verdicts": []
+      },
       {
         "number": 925,
         "title": "docs(decisions): rulings R852-R879 of the 2026-10-21 run",
@@ -4324,40 +4323,13 @@
             "url": "https://github.com/mezivillager/hacer/pull/771#issuecomment-6205390556"
           }
         ]
-      },
-      {
-        "number": 770,
-        "title": "fix(store): refuse bus and node widths outside 1 to MAX_PIN_WIDTH (#752)",
-        "url": "https://github.com/mezivillager/hacer/pull/770",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:1",
-          "project:foundation"
-        ],
-        "headRefName": "fix/752-store-width-limit",
-        "isDraft": false,
-        "createdAt": "2026-10-16T00:24:39Z",
-        "mergedAt": "2026-10-16T00:43:32Z",
-        "closes": [
-          752
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Opus 5.5",
-            "at": "2026-10-16T00:34:40Z",
-            "url": "https://github.com/mezivillager/hacer/pull/770#issuecomment-6205278347"
-          }
-        ]
       }
     ],
     "coverage": {
       "merged": 60,
-      "withVerdict": 57,
-      "withoutVerdict": 3,
-      "pass": 57,
+      "withVerdict": 56,
+      "withoutVerdict": 4,
+      "pass": 56,
       "block": 0,
       "belowTier": []
     }
@@ -5429,6 +5401,14 @@
         "title": "Session record — 2026-10-17: the coordinator loop to 20% weekly usage, and the inbox panel",
         "status": null,
         "lines": 134
+      },
+      {
+        "file": "docs/harness/sessions/2026-10-21.md",
+        "date": "2026-10-21",
+        "kind": "record",
+        "title": "Session record — 2026-10-21: the coordinator loop to 70% weekly usage, the core fidelity chain, and the inbox backlog",
+        "status": null,
+        "lines": 255
       }
     ]
   },
@@ -7135,7 +7115,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-16",
-        "merges": 6
+        "merges": 5
       },
       {
         "date": "2026-10-17",
@@ -7147,13 +7127,13 @@
       },
       {
         "date": "2026-10-22",
-        "merges": 22
+        "merges": 23
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-08T06:41:54.423Z",
-      "merged": 112,
+      "since": "2026-10-08T06:45:54.695Z",
+      "merged": 113,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 1.6
@@ -7178,7 +7158,7 @@
           "without": []
         },
         "nonCode": {
-          "merged": 33,
+          "merged": 34,
           "withVerdict": 16,
           "without": [
             692,
@@ -7197,7 +7177,8 @@
             763,
             775,
             913,
-            925
+            925,
+            926
           ]
         }
       }
@@ -11459,11 +11440,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "f901e893ec05ff529a18476aad506def2b6c0d4f",
+        "sha": "c5cf87663cb837640fa8640d7d056f8877989c9e",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39735466746/job/119679995179",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39735890039/job/119681346830",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -11511,51 +11492,6 @@
         "verdict": "PASS",
         "fields": {
           "known": 71,
-          "new": 0
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 926,
-        "sha": "f5f2a0ed85691f014bdbd5cb7546186e6bc5d76e",
-        "check": "pr-hygiene",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-22T06:37:16Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39735065852/job/119678716566",
-        "line": "HYGIENE: WARN reviewable=308 test=0 excluded=0 files=2 issue=docs-only",
-        "verdict": "WARN",
-        "fields": {
-          "reviewable": 308,
-          "test": 0,
-          "excluded": 0,
-          "files": 2,
-          "issue": "docs-only"
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 926,
-        "sha": "f5f2a0ed85691f014bdbd5cb7546186e6bc5d76e",
-        "check": "browser-qa",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-22T06:37:20Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39735065585/job/119678714680",
-        "line": "BROWSER-QA: skipped (no critical paths)",
-        "verdict": "SKIPPED",
-        "fields": {},
-        "disagrees": false
-      },
-      {
-        "pr": 926,
-        "sha": "f5f2a0ed85691f014bdbd5cb7546186e6bc5d76e",
-        "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-22T06:39:28Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39735063334/job/119678707157",
-        "line": "LAYER-RATCHET: 69 known violations (37 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 69,
           "new": 0
         },
         "disagrees": false
@@ -19656,6 +19592,14 @@
         ]
       },
       {
+        "id": "#825",
+        "kind": "github",
+        "citedBy": [
+          "ADR-0020",
+          "R857"
+        ]
+      },
+      {
         "id": "#814",
         "kind": "github",
         "citedBy": [
@@ -19664,6 +19608,14 @@
           "R854",
           "R855",
           "R857"
+        ]
+      },
+      {
+        "id": "#855",
+        "kind": "github",
+        "citedBy": [
+          "ADR-0020",
+          "R863"
         ]
       },
       {
@@ -19712,6 +19664,24 @@
         "citedBy": [
           "ADR-0020",
           "R877"
+        ]
+      },
+      {
+        "id": "#912",
+        "kind": "github",
+        "citedBy": [
+          "ADR-0020",
+          "R878",
+          "R879"
+        ]
+      },
+      {
+        "id": "#916",
+        "kind": "github",
+        "citedBy": [
+          "ADR-0020",
+          "R878",
+          "R879"
         ]
       },
       {
@@ -19863,6 +19833,14 @@
         ]
       },
       {
+        "id": "#722",
+        "kind": "github",
+        "citedBy": [
+          "ADR-0020",
+          "R826"
+        ]
+      },
+      {
         "id": "#377",
         "kind": "github",
         "citedBy": [
@@ -19913,14 +19891,6 @@
           "R854",
           "R855",
           "R857"
-        ]
-      },
-      {
-        "id": "#722",
-        "kind": "github",
-        "citedBy": [
-          "ADR-0020",
-          "R826"
         ]
       },
       {
@@ -22522,13 +22492,6 @@
         ]
       },
       {
-        "id": "#825",
-        "kind": "github",
-        "citedBy": [
-          "R857"
-        ]
-      },
-      {
         "id": "#826",
         "kind": "github",
         "citedBy": [
@@ -22591,13 +22554,6 @@
       },
       {
         "id": "#863",
-        "kind": "github",
-        "citedBy": [
-          "R863"
-        ]
-      },
-      {
-        "id": "#855",
         "kind": "github",
         "citedBy": [
           "R863"
@@ -22763,22 +22719,6 @@
         "citedBy": [
           "R877",
           "R878"
-        ]
-      },
-      {
-        "id": "#912",
-        "kind": "github",
-        "citedBy": [
-          "R878",
-          "R879"
-        ]
-      },
-      {
-        "id": "#916",
-        "kind": "github",
-        "citedBy": [
-          "R878",
-          "R879"
         ]
       },
       {
