@@ -1,3 +1,4 @@
+import { getBuiltinChipRegistry } from '../chips/appRegistry'
 import type { ChipRegistry } from '../chips/registry'
 import { printPinRef } from '../hdl/printer'
 import type { HDLSlice } from '../hdl/types'
@@ -6,7 +7,7 @@ import { SPEC_SCHEMA_VERSION } from './types'
 import type { CircuitSpec, Net, Port, Ref, Sidecar } from './types'
 
 export interface PrintSpecOptions {
-  /** `nand2tetris` prints plain HDL: a pass-through becomes one buffer per 16-bit window, with no header and no sidecar. */
+  /** `nand2tetris` prints plain HDL: a pass-through becomes one buffer per 16-bit window, and so does a wider `true` input's binding, with no header and no sidecar. */
   dialect?: 'hacer' | 'nand2tetris'
   sidecar?: Sidecar
   /** Where `nand2tetris` reads an unsliced part pin's width; the Project 1 builtins by default. */
@@ -61,6 +62,13 @@ function buffers(net: Alias, outs: Port[], chip: string): string[] {
   return Array.from({ length: Math.ceil(width / WINDOW) }, (_, w) => printWindow(w * WINDOW, Math.min(WINDOW, width - w * WINDOW))).flat()
 }
 
+/** §1.10.10: the reference's `true` is 16 bits wide, so a `true` input feeding more bits prints one binding per window from its low bit. */
+function trueWindows(b: Binding, pins: Port[] | undefined): Binding[] {
+  const bits = b.slice ? sliceWidth(b.slice) : pins?.find((p) => p.name === b.pin)?.width
+  if (b.output || b.signal !== 'true' || pins === undefined || bits === undefined || bits <= WINDOW) return [b]
+  return Array.from({ length: Math.ceil(bits / WINDOW) }, (_, w) => ({ ...b, slice: span(b.slice, w * WINDOW, Math.min(WINDOW, bits - w * WINDOW)) }))
+}
+
 /**
  * Print a document as HDL-shaped text: each part's bindings raised from the nets, each part's id as a
  * trailing `// #p<n>`, pass-throughs as `wire`. The output depends on the parts' order, not the nets'.
@@ -71,6 +79,7 @@ export function printSpec(doc: CircuitSpec, options: PrintSpecOptions = {}): str
   const twin = doc.nets.find((n) => n.driver === null && driven.has(n.id))
   if (twin) throw new Error(`printSpec: net "${twin.id}" has no driver beside a driven net of the same id, and neither dialect has a form for it`)
   const plain = options.dialect === 'nand2tetris'
+  const chips = plain ? (options.chips ?? getBuiltinChipRegistry()) : undefined
   const bindings = new Map<string, Binding[]>()
   for (const net of doc.nets) {
     for (const ref of [net.driver, ...net.sinks]) {
@@ -86,7 +95,8 @@ export function printSpec(doc: CircuitSpec, options: PrintSpecOptions = {}): str
   const ports = (keyword: string, list: Port[]): string[] => (list.length > 0 ? [`${INDENT}${keyword} ${list.map(printPort).join(', ')};`] : [])
   lines.push(`CHIP ${doc.name} {`, ...ports('IN', doc.ins), ...ports('OUT', doc.outs), '', `${INDENT}PARTS:`)
   for (const part of doc.parts) {
-    const conns = (bindings.get(part.id) ?? []).sort(byPin).map((b) => `${printPinRef(b.pin, b.slice)}=${b.signal}`)
+    const pins = chips?.get(part.chip)?.inputs
+    const conns = (bindings.get(part.id) ?? []).flatMap((b) => trueWindows(b, pins)).sort(byPin).map((b) => `${printPinRef(b.pin, b.slice)}=${b.signal}`)
     lines.push(`${INDENT}${part.chip}(${conns.join(', ')}); // #${part.id}`)
   }
   // Buffers are appended after every declared part, so the parts' ids keep their positions (§1.9).
