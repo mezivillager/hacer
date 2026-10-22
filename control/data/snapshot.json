@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-22T09:10:49.223Z",
+  "generatedAt": "2026-10-22T09:25:18.593Z",
   "head": {
     "sha": "68ded0de14ac8f836264ce48a14b57c2affff5d3",
     "date": "2026-10-22T12:09:47+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T09:10:49.223Z",
+      "fetchedAt": "2026-10-22T09:25:18.593Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T09:10:49.223Z",
+      "fetchedAt": "2026-10-22T09:25:18.593Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T09:10:49.223Z",
+      "fetchedAt": "2026-10-22T09:25:18.593Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-22T09:10:49.223Z",
+      "fetchedAt": "2026-10-22T09:25:18.593Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-22T09:10:49.223Z",
+      "fetchedAt": "2026-10-22T09:25:18.593Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-22T09:10:49.223Z",
+      "fetchedAt": "2026-10-22T09:25:18.593Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-22T09:10:49.223Z",
+      "fetchedAt": "2026-10-22T09:25:18.593Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-22T09:10:49.223Z",
+      "fetchedAt": "2026-10-22T09:25:18.593Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-22T09:10:49.223Z",
+      "fetchedAt": "2026-10-22T09:25:18.593Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-22T09:10:49.223Z",
+      "fetchedAt": "2026-10-22T09:25:18.593Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-22T09:10:49.223Z",
+      "fetchedAt": "2026-10-22T09:25:18.593Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-22T09:10:49.223Z",
+      "fetchedAt": "2026-10-22T09:25:18.593Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-22T09:10:49.223Z",
+      "fetchedAt": "2026-10-22T09:25:18.593Z",
       "status": "ok"
     }
   },
@@ -80,19 +80,22 @@
         "lane": "feature",
         "slug": "foundation",
         "epicNumber": 318,
-        "open": 26,
-        "ready": 0,
+        "open": 29,
+        "ready": 7,
         "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 0,
+        "agentReady": 8,
         "filedElsewhere": [],
-        "next": null,
+        "next": {
+          "number": 339,
+          "title": "Function length only shrinks: `max-lines-per-function` on `src/` production code, today's violations as ESLint bulk suppressions (foundation 1.5)"
+        },
         "title": "Foundation audit: is the codebase structured for the autonomous loop? Measured audit, prioritized refactorings, fitness functions",
         "subIssues": {
           "completed": 22,
-          "percentCompleted": 66,
-          "total": 33
+          "percentCompleted": 62,
+          "total": 35
         }
       },
       {
@@ -108,7 +111,9 @@
         "agentReady": 1,
         "filedElsewhere": [
           151,
-          339
+          339,
+          941,
+          942
         ],
         "next": {
           "number": 257,
@@ -117,8 +122,8 @@
         "title": "Epic: harness — autonomous-run improvements & agent-readiness",
         "subIssues": {
           "completed": 50,
-          "percentCompleted": 87,
-          "total": 57
+          "percentCompleted": 86,
+          "total": 58
         }
       },
       {
@@ -302,12 +307,12 @@
         "lane": "aux",
         "slug": "upkeep",
         "epicNumber": 146,
-        "open": 5,
-        "ready": 3,
+        "open": 12,
+        "ready": 10,
         "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 4,
+        "agentReady": 11,
         "filedElsewhere": [],
         "next": {
           "number": 928,
@@ -410,9 +415,34 @@
         "project": "harness"
       },
       {
+        "number": 339,
+        "title": "Function length only shrinks: `max-lines-per-function` on `src/` production code, today's violations as ESLint bulk suppressions (foundation 1.5)",
+        "project": "foundation"
+      },
+      {
+        "number": 379,
+        "title": "N.4a: `layout(doc, surface, options)`, the first layout: longest-path layers, barycentre order, `order: 'id'` on request, the four contract preconditions",
+        "project": "foundation"
+      },
+      {
         "number": 928,
         "title": "Inbox review: HRN-018 · A second coordinator collides in four places that nothing guards: allow one only with guards, or say there is one",
         "project": "upkeep"
+      },
+      {
+        "number": 599,
+        "title": "run-tst: a bare output-list name gets the pin's width, as the reference IDE gives it",
+        "project": "foundation"
+      },
+      {
+        "number": 613,
+        "title": "TestResultsPanel: import formatColumnValue through @/core and shrink the layer baseline",
+        "project": "foundation"
+      },
+      {
+        "number": 773,
+        "title": "fromLegacyCircuit: a two-feed chain whose trace meets a loop still traces 2^k paths",
+        "project": "foundation"
       },
       {
         "number": 929,
@@ -420,14 +450,60 @@
         "project": "upkeep"
       },
       {
+        "number": 878,
+        "title": "A pin width far beyond any evaluable bus passes the parser and the registry",
+        "project": "foundation"
+      },
+      {
+        "number": 941,
+        "title": "pr-hygiene: protect the differential harness, see a rename out of a protected path, and flag a PR that weakens a test (#151, foundation 1.6)",
+        "project": "foundation"
+      },
+      {
         "number": 930,
         "title": "Inbox review: HRN-020 · A PR's `Decisions:` line takes only decision ids or a bare `none`, so the inbox ids and the prose builders write make `lineage parse --github` report it malformed",
+        "project": "upkeep"
+      },
+      {
+        "number": 933,
+        "title": "Inbox review: HRN-021 · `merge-on-green` refuses a PR that has no `## Verifier verdict: PASS` the collector can read",
+        "project": "upkeep"
+      },
+      {
+        "number": 934,
+        "title": "Inbox review: HRN-022 · A test that runs a child process synchronously names its own limits, so a loaded laptop stops failing it",
+        "project": "upkeep"
+      },
+      {
+        "number": 935,
+        "title": "Inbox review: HRN-023 · ADR-0018's fidelity review before a core merge was waived 14 times by ruling in one run: write the waiver into the ADR, or stop waiving",
+        "project": "upkeep"
+      },
+      {
+        "number": 936,
+        "title": "Inbox review: HRN-024 · A defect the verifier reproduces in the PR's own new lines passes as a nit: say when it blocks, and whether that PASS can be overturned",
+        "project": "upkeep"
+      },
+      {
+        "number": 937,
+        "title": "Inbox review: HRN-025 · Four standing rules the 2026-10-21 run applied are not in the committed briefs: R865 and R868 contradict `inbox-panel-brief.md`, and L068 and L074 are in no brief",
+        "project": "upkeep"
+      },
+      {
+        "number": 938,
+        "title": "Inbox review: HRN-026 · README says dispatch stops while the meter will not read, and the 2026-10-21 run dispatched on estimates twice: restate the rule as practised, or follow it",
+        "project": "upkeep"
+      },
+      {
+        "number": 939,
+        "title": "Inbox review: HRN-027 · Tokens per merged PR leave out every `run-reviews` session, which README's rule says makes the figure `unmeasured`: count them, or name them outside it",
         "project": "upkeep"
       }
     ],
     "dormant": {
       "dormant": false,
       "agentPrs": [
+        943,
         514
       ]
     }
@@ -452,6 +528,42 @@
         "reason": null
       },
       {
+        "number": 339,
+        "title": "Function length only shrinks: `max-lines-per-function` on `src/` production code, today's violations as ESLint bulk suppressions (foundation 1.5)",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 379,
+        "title": "N.4a: `layout(doc, surface, options)`, the first layout: longest-path layers, barycentre order, `order: 'id'` on request, the four contract preconditions",
+        "labels": [
+          "agent-ready",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [
+          940,
+          184,
+          197,
+          380
+        ],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
+      {
         "number": 928,
         "title": "Inbox review: HRN-018 · A second coordinator collides in four places that nothing guards: allow one only with guards, or say there is one",
         "labels": [
@@ -464,6 +576,52 @@
         "project": "upkeep",
         "rank": 11,
         "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 599,
+        "title": "run-tst: a bare output-list name gets the pin's width, as the reference IDE gives it",
+        "labels": [
+          "project:surfaces",
+          "agent-ready",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 613,
+        "title": "TestResultsPanel: import formatColumnValue through @/core and shrink the layer baseline",
+        "labels": [
+          "agent-ready",
+          "risk:0",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 773,
+        "title": "fromLegacyCircuit: a two-feed chain whose trace meets a loop still traces 2^k paths",
+        "labels": [
+          "agent-ready",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
         "pickable": true,
         "reason": null
       },
@@ -484,8 +642,154 @@
         "reason": null
       },
       {
+        "number": 878,
+        "title": "A pin width far beyond any evaluable bus passes the parser and the registry",
+        "labels": [
+          "bug",
+          "agent-ready",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 941,
+        "title": "pr-hygiene: protect the differential harness, see a rename out of a protected path, and flag a PR that weakens a test (#151, foundation 1.6)",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [
+          942
+        ],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
+      {
         "number": 930,
         "title": "Inbox review: HRN-020 · A PR's `Decisions:` line takes only decision ids or a bare `none`, so the inbox ids and the prose builders write make `lineage parse --github` report it malformed",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 933,
+        "title": "Inbox review: HRN-021 · `merge-on-green` refuses a PR that has no `## Verifier verdict: PASS` the collector can read",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 934,
+        "title": "Inbox review: HRN-022 · A test that runs a child process synchronously names its own limits, so a loaded laptop stops failing it",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 935,
+        "title": "Inbox review: HRN-023 · ADR-0018's fidelity review before a core merge was waived 14 times by ruling in one run: write the waiver into the ADR, or stop waiving",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 936,
+        "title": "Inbox review: HRN-024 · A defect the verifier reproduces in the PR's own new lines passes as a nit: say when it blocks, and whether that PASS can be overturned",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 937,
+        "title": "Inbox review: HRN-025 · Four standing rules the 2026-10-21 run applied are not in the committed briefs: R865 and R868 contradict `inbox-panel-brief.md`, and L068 and L074 are in no brief",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 938,
+        "title": "Inbox review: HRN-026 · README says dispatch stops while the meter will not read, and the 2026-10-21 run dispatched on estimates twice: restate the rule as practised, or follow it",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 939,
+        "title": "Inbox review: HRN-027 · Tokens per merged PR leave out every `run-reviews` session, which README's rule says makes the figure `unmeasured`: count them, or name them outside it",
         "labels": [
           "project:upkeep",
           "agent-ready",
@@ -1237,21 +1541,6 @@
         "reason": "unshaped"
       },
       {
-        "number": 339,
-        "title": "After Phase 1: a refactor PR may not edit existing tests (pr-hygiene), and function length only shrinks (ESLint bulk suppressions) (foundation 1.5)",
-        "labels": [
-          "project:harness",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "unshaped"
-      },
-      {
         "number": 361,
         "title": "compileHDL never infers the width of a slice-assembled signal, so an unsliced read of one is not width-checked",
         "labels": [
@@ -1262,24 +1551,6 @@
         "project": "core",
         "rank": 5,
         "lane": "enabler",
-        "pickable": false,
-        "reason": "unshaped"
-      },
-      {
-        "number": 379,
-        "title": "N.4: layout(doc, surface, { previous }) — pure, deterministic, synchronous; barycentre first, then hold what is placed",
-        "labels": [
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [
-          184,
-          197,
-          380
-        ],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
         "pickable": false,
         "reason": "unshaped"
       },
@@ -1730,21 +2001,6 @@
         "reason": "unshaped"
       },
       {
-        "number": 599,
-        "title": "run-tst: a bare output-list name gets the pin's width, as the reference IDE gives it",
-        "labels": [
-          "project:surfaces",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "unshaped"
-      },
-      {
         "number": 607,
         "title": "Harness: ledger.d/ one file per row, so GitHub's mergeability check stops flagging the ledger",
         "labels": [
@@ -1755,20 +2011,6 @@
         "project": "harness",
         "rank": 2,
         "lane": "process",
-        "pickable": false,
-        "reason": "unshaped"
-      },
-      {
-        "number": 613,
-        "title": "TestResultsPanel: import formatColumnValue through @/core and shrink the layer baseline",
-        "labels": [
-          "risk:0",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
         "pickable": false,
         "reason": "unshaped"
       },
@@ -1850,20 +2092,6 @@
           "bug",
           "risk:2",
           "fidelity",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "unshaped"
-      },
-      {
-        "number": 773,
-        "title": "fromLegacyCircuit: a two-feed chain whose trace meets a loop still traces 2^k paths",
-        "labels": [
-          "risk:1",
           "project:foundation"
         ],
         "blocking": [],
@@ -1971,21 +2199,6 @@
         "reason": "needs-human"
       },
       {
-        "number": 878,
-        "title": "A pin width far beyond any evaluable bus passes the parser and the registry",
-        "labels": [
-          "bug",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "unshaped"
-      },
-      {
         "number": 879,
         "title": "polish: below 640 px HACER is a read-only viewer — panels open as full-width sheets, nothing clipped at 320 px",
         "labels": [
@@ -2030,6 +2243,36 @@
         "lane": "feature",
         "pickable": false,
         "reason": "unshaped"
+      },
+      {
+        "number": 940,
+        "title": "N.4b: `layout(doc, surface, { previous, hints })`: hold what is placed, never move a hinted node",
+        "labels": [
+          "agent-ready",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "blocked:#379"
+      },
+      {
+        "number": 942,
+        "title": "pr-hygiene: a refactor PR may not take assertions out of an existing test (foundation 1.5, tuned on Phase 1's refactor PRs)",
+        "labels": [
+          "project:harness",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "unshaped"
       }
     ],
     "byProject": {
@@ -2050,19 +2293,17 @@
         870,
         889
       ],
-      "upkeep": [
-        928,
-        929,
-        930,
-        229,
-        256
-      ],
       "foundation": [
+        339,
+        379,
+        599,
+        613,
+        773,
+        878,
+        941,
         151,
         184,
         325,
-        339,
-        379,
         380,
         381,
         382,
@@ -2075,15 +2316,27 @@
         400,
         462,
         506,
-        599,
-        613,
         719,
         722,
         728,
         742,
-        773,
-        878,
-        907
+        907,
+        940,
+        942
+      ],
+      "upkeep": [
+        928,
+        929,
+        930,
+        933,
+        934,
+        935,
+        936,
+        937,
+        938,
+        939,
+        229,
+        256
       ],
       "spine": [
         165,
@@ -2174,6 +2427,23 @@
   },
   "prs": {
     "open": [
+      {
+        "number": 943,
+        "title": "docs(fidelity): FID-033 and FID-034 from the digest of #914, #920, #921 and #922",
+        "url": "https://github.com/mezivillager/hacer/pull/943",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0",
+          "fidelity"
+        ],
+        "headRefName": "docs/fidelity-digest-2026-10-22-b",
+        "isDraft": false,
+        "createdAt": "2026-10-22T09:21:43Z",
+        "mergedAt": null,
+        "closes": [],
+        "verdicts": []
+      },
       {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
@@ -5752,7 +6022,7 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-08T09:10:49.223Z",
+      "since": "2026-10-08T09:25:18.593Z",
       "merged": 116,
       "openToMergeHours": {
         "median": 0.3,
@@ -10031,12 +10301,15 @@
         "pr": null,
         "sha": "68ded0de14ac8f836264ce48a14b57c2affff5d3",
         "check": "ci",
-        "conclusion": null,
-        "completedAt": null,
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-22T09:12:29Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/39753279011/job/119738865014",
-        "line": null,
-        "verdict": null,
-        "fields": {},
+        "line": "LAYER-RATCHET: 69 known violations (37 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 69,
+          "new": 0
+        },
         "disagrees": false
       },
       {
@@ -10083,6 +10356,48 @@
           "known": 71,
           "new": 0
         },
+        "disagrees": false
+      },
+      {
+        "pr": 943,
+        "sha": "8a54b49cdc2c7605873316f2a051ac96f16c727e",
+        "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-22T09:24:05Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39755101740/job/119745000542",
+        "line": "HYGIENE: PASS reviewable=66 test=0 excluded=0 files=1 issue=docs-only",
+        "verdict": "PASS",
+        "fields": {
+          "reviewable": 66,
+          "test": 0,
+          "excluded": 0,
+          "files": 1,
+          "issue": "docs-only"
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 943,
+        "sha": "8a54b49cdc2c7605873316f2a051ac96f16c727e",
+        "check": "browser-qa",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-22T09:24:06Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39755105709/job/119745011618",
+        "line": "BROWSER-QA: skipped (no critical paths)",
+        "verdict": "SKIPPED",
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 943,
+        "sha": "8a54b49cdc2c7605873316f2a051ac96f16c727e",
+        "check": "ci",
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39755106157/job/119745013099",
+        "line": null,
+        "verdict": null,
+        "fields": {},
         "disagrees": false
       }
     ]
