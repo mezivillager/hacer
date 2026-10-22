@@ -1,0 +1,41 @@
+# Raw output behind BRIEF.md §4, run 2026-10-22T08:56:17Z at origin/main d2f58ea0
+## H1 the inbox panel: statuses, and what wrote the inbox files since the panel began
+$ node scripts/inbox.mjs list --json | node -e 'const d=JSON.parse(require("fs").readFileSync(0,"utf8"));const m={};for(const e of d){const k=e.status.split(/[ (]/)[0];m[k]=(m[k]||0)+1}console.log(d.length,JSON.stringify(m))'
+  55 {"deferred":6,"filed":45,"declined":1,"proposed":3}
+$ git log --since=2026-10-17 --format='%s' -- docs/harness/*-inbox.md | cut -d: -f1 | sort | uniq -c
+     8 docs(fidelity)
+     5 docs(harness)
+     1 docs(product)
+## H2, H5 the last run: labels and the longest gap between merges
+$ node scripts/run-prs.mjs --from 2026-10-21T14:30:00Z --to 2026-10-22T06:58:00Z --json | node -e 'const p=JSON.parse(require("fs").readFileSync(0,"utf8"));const c={};for(const x of p)for(const l of x.labels.map(l=>l.name||l).filter(l=>/^project:|^fidelity$/.test(l)))c[l]=(c[l]||0)+1;const t=p.map(x=>x.mergedAt).sort();let g=[0];for(let i=1;i<t.length;i++){const m=(Date.parse(t[i])-Date.parse(t[i-1]))/6e4;if(m>g[0])g=[m,t[i-1],t[i]]}console.log(p.length,JSON.stringify(c),"max gap",g[0].toFixed(1),"min",g[1],"->",g[2])'
+  52 {"project:harness":28,"fidelity":27,"project:foundation":23,"project:verify":1} max gap 80.8 min 2026-10-21T22:47:53Z -> 2026-10-22T00:08:40Z
+## H4 rulings that merge a core PR without a per-PR fidelity review
+$ grep -E '^## R[0-9]+ .*without a (separate )?fidelity review' docs/decisions/rulings/2026-10-21-hacer-loop-to-70.md | sed -E 's/^## (R[0-9]+) — PRs? (#[0-9]+)( \(#[0-9]+\) and (#[0-9]+))?.*/\1 \2 \4/' | paste -sd ',' -
+  R860 #843 ,R862 #860 ,R863 #863 ,R864 #865 ,R867 #876 ,R869 #885 ,R871 #904 ,R872 #908 ,R873 #910 ,R874 #911 ,R876 #914 ,R877 #920 ,R879 #921 #922
+## H6, H7 subagent tokens by role (the run directory, outside the repo)
+$ awk 'NR>1 && $NF ~ /^[0-9]+$/ {s[$1]+=$NF; n[$1]++; t+=$NF; c++} END {for (k in s) print k, n[k], s[k]; print "total", c, t}' ~/.claude/runs/2026-10-21-hacer-loop-to-70/tokens.md | sort
+  builder 41 6712961
+  digest 1 194955
+  fidelity 6 1192832
+  panel 32 4597246
+  records-phase1 1 308330
+  records-phase2 1 55990
+  records-split 1 14061
+  retro 1 237489
+  total 121 18752619
+  verifier 37 5438755
+## H8 close-of-run records PRs since the last cycle: changed lines, size-override
+$ for n in 568 636 674 691 750 775 815 924; do gh pr view $n --json number,state,additions,deletions,labels --jq '"#\(.number) \(.state) \(.additions+.deletions) \([.labels[].name|select(.=="size-override")]|join(""))"'; done
+  #568 MERGED 138
+  #636 MERGED 169
+  #674 MERGED 249
+  #691 MERGED 149
+  #750 MERGED 709 size-override
+  #775 MERGED 345
+  #815 MERGED 266
+  #924 CLOSED 845
+## H9 meter failures named in the session records since the last cycle
+$ command grep -n -i -E 'usage API returned|reads failed|could not be read' docs/harness/sessions/2026-09-29.md docs/harness/sessions/2026-10-*.md | cut -c1-110
+  docs/harness/sessions/2026-09-29.md:61:  - claude.ai's usage API returned 500 for about 30 minutes (R774);
+  docs/harness/sessions/2026-10-21.md:54:  reads failed (20:49Z and 03:26Z: a permission prompt that timed out,
+  docs/harness/sessions/2026-10-21.md:193:- **The meter went dark at the end.** The usage page could not be read
