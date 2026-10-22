@@ -762,7 +762,10 @@ and these rules are pinned by `src/core/spec/compileSpec.test.ts`,
      - The reference refuses the parent at build time too, but replaces the inner error with
        `Undefined chip name: Inn` (`../web-ide/simulator/src/chip/builder.ts:261-264`).
      - `compileHDL` alone still checks only a chip's direct parts. An `'hdl'` chip over a broken
-       part is refused at its first evaluation, without a chain.
+       part is refused at its first evaluation. Since #820 the throw carries the same chain,
+       `evaluateChip: chip "FullAdder" failed to compile: FullAdder › HalfAdder: <message>`
+       (`ChipCompileError.reachedFrom`, `src/core/chips/evaluateChip.ts:23`, `:124`), pinned by the
+       `'hdl'` `FullAdder` case of #901 in `src/core/spec/compileSpec.nesting.test.ts`.
    - `compileSpec` never throws and never changes its input. A refusal belongs to the run panel; the
      document and its parse diagnostics are unchanged (§1.1).
 3. **The cache rule,** in `evaluateChip`, for `'hdl'` and `'circuit'` chips alike. A cached evaluator
@@ -785,18 +788,46 @@ and these rules are pinned by `src/core/spec/compileSpec.test.ts`,
    - a chip that names itself as a part is refused. The reference says
      `Cannot use chip X to implement itself`. Registration is what makes it reachable.
    - a chip whose parts reach a cycle of resolved definitions through the registry is refused,
-     naming every chip on the cycle in order (`Chip "A" uses itself through "B"`); a one-chip cycle
-     below the compiled chip gets the self-reference message (#816).
-     - The walk follows what the registry's `get` returns, so the lookup order (#206) decides
+     naming every chip on the cycle in order (`Cannot use chip A to implement itself through B`,
+     #820); a one-chip cycle below the compiled chip gets the self-reference message (#816).
+     - The walk follows what the registry's `get` returns, so the lookup order below decides
        whether a user `Not` that uses `And` beside a user `And` that uses `Not` is a cycle. It
        enters each definition once, so
        `compileSpec` still never throws (rule 2).
      - Pinned by `compileHDL — a part cycle through the registry is refused (#816)` in
        `src/core/hdl/compiler.test.ts` and the registry-cycle cases in
        `src/core/spec/compileSpec.nesting.test.ts`.
+   - **The lookup order** ([#901](https://github.com/mezivillager/hacer/issues/901), FID-026): a
+     part resolves to a HACER builtin first, then to a user chip.
+     - The engine builds that view at `src/simulation/topologicalEval.ts:314`,
+       `combineRegistries(getBuiltinChipRegistry(), getUserChipRegistry())`. The grading path builds
+       the `.hdl` file's own chip first and resolves its parts against the builtins
+       (`src/core/testing/testChip.ts:124-129`).
+     - The web IDE's order is builtins first (`../web-ide/simulator/src/chip/builder.ts:48` at
+       `91ef428`): all 43 `REGISTRY` names resolve to the builtin with 0 file reads, even beside a
+       file of that name.
+     - The book's order is own first. Appendix A §3, in the HUJI early-draft copy
+       (`https://www.cs.huji.ac.il/course/2002/nand2tet/docs/appendix_A.pdf`, a 2003 PDF, fetched
+       2026-10-21; the 2nd edition was not read): "if `<chip name>.hdl` exists in the current
+       directory then load it (and all its descendents) into the simulator else if
+       `<chip name>.hdl` exists in the simulator's BuiltIn chips directory then load it … else
+       issue an error message."
+     - HACER and the web IDE agree on HACER's 16 builtin names, where a part is the builtin, and on
+       a name that is a builtin in neither, where it is the user chip. They differ on the 27 names
+       that are builtins only in the web IDE: `Add16 ALU ALUNoStat ARegister Bit Computer CPU DFF
+       DRegister FullAdder HalfAdder Inc16 Keyboard Memory Nand16 PC RAM16K RAM4K RAM512 RAM64 RAM8
+       Register ROM32K Screen XOr Xor16 XOr16`. HACER gives the user chip, as the book's order
+       does, and the web IDE its builtin. No name is reserved or refused. When HACER registers a
+       builtin under one of them (Phase 0.6), that name resolves to the builtin, as in the web IDE,
+       and leaves the list.
+     - On the grading path a part under one of the 27 is `Unknown chip-part` until HACER has that
+       builtin, where the web IDE grades on its builtin.
+     - The order is pinned by the builtins-first and own-first `Not`/`And` cases of the #816 block
+       in `src/core/hdl/compiler.test.ts`, and by the `Outer` over a broken user `Not` case of #901
+       in `src/core/spec/compileSpec.nesting.test.ts`. The 27 names are rule 5's.
 5. **Divergences from the reference, inherited rather than fixed.** The refusal of an unconnected
-   part input is not among them: §1.1 decides it. The last bullet, a read of a chip OUT, is decided
-   too.
+   part input is not among them: §1.1 decides it. The bullets on a read of a chip OUT and on the 27
+   names are decided too.
    - `IN` and `OUT` lists are required. That is the parser's rule. A document with no IN compiles at
      top level but cannot be registered (`validateChipDefinition`).
    - A bit nothing drives reads 0 in the engine, silently
@@ -818,6 +849,25 @@ and these rules are pinned by `src/core/spec/compileSpec.test.ts`,
        [#722](https://github.com/mezivillager/hacer/issues/722)'s.
      - Pinned by `src/core/testing/gradingRefusal.test.ts` and the `grading` cells of
        `src/core/hdl/acceptanceParity.test.ts`, whose `compileHDL` cells cite this bullet as intended.
+   - **A part under one of the 27 names that are builtins only in the web IDE resolves to the user
+     chip** (rule 4, [#901](https://github.com/mezivillager/hacer/issues/901)), where the web IDE
+     uses its builtin. Inherited by choice: refusing a user chip under those names would reserve
+     generic names (`Bit`, `Register`, `Memory`, `CPU`) and refuse a learner's `FullAdder` file over
+     their own `HalfAdder` file, which the reference builds.
+     - A user `HalfAdder` over `FullAdder`, beside a user `FullAdder` over `HalfAdder`, is refused as
+       a cycle; the web IDE builds that `HalfAdder` on its builtin `FullAdder` with 0 reads. A
+       correct user `FullAdder` over a wrong user `HalfAdder` evaluates through it, where the web
+       IDE's `FullAdder` file uses its builtin `HalfAdder`.
+     - A broken user chip under one of those names refuses its parent, where the web IDE builds on
+       its builtin: a `'circuit'` `FullAdder` over a broken user `HalfAdder` is refused at compile
+       time, and an `'hdl'` one at its first evaluation, both as `FullAdder › HalfAdder: …`
+       (FID-027).
+     - Pinned by the #901 cases in the #816 block of `src/core/hdl/compiler.test.ts` and in the #821
+       block of `src/core/spec/compileSpec.nesting.test.ts`, and by
+       `src/core/chips/referenceBuiltins.test.ts`. That file keeps the web IDE's 43 builtin names
+       at `91ef428` and fails once a HACER builtin lands under one of the 27, until the list moves.
+     - `XOr` and `XOr16` are among the 27; their alias divergence stays FID-008's
+       (`src/core/hdl/acceptanceParity.test.ts`).
 6. **Parity is measured on Project 1.** All 15 sources through `compileSpec` match the builtins and
    the `'hdl'` evaluation of the same source, on that test file's vectors. HACER ships no Project 2–3
    HDL to compare against; that parity comes with
