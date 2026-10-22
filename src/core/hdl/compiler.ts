@@ -1,11 +1,11 @@
 // src/core/hdl/compiler.ts
 import type { HDLChip, HDLConnection, HDLPart, HDLSlice } from './types'
-import type { ChipDefinition } from '../chips/types'
+import type { ChipDefinition, ChipPin } from '../chips/types'
 import type { ChipRegistry } from '../chips/registry'
 import { isBuiltinChip } from '../chips/types'
 import { maskForWidth, readSubBus, writeSubBus } from '@/simulation/busOps'
 import { parseHDL } from './parser'
-import { printPinRef } from './printer'
+import { printPin, printPinRef } from './printer'
 
 export interface EvalContext {
   registry: ChipRegistry
@@ -170,6 +170,45 @@ function partNames(def: ChipDefinition): string[] {
   }
 }
 
+/** A definition's name and pins as its source states them; `null` for a builtin, or HDL that does not parse. */
+function sourceHeader(def: ChipDefinition): { name: string; inputs: readonly ChipPin[]; outputs: readonly ChipPin[] } | null {
+  switch (def.implementation.type) {
+    case 'builtin':
+      return null
+    case 'circuit': {
+      const { name, ins, outs } = def.implementation.spec
+      return { name, inputs: ins, outputs: outs }
+    }
+    case 'hdl': {
+      const parsed = parseHDL(def.implementation.source)
+      return parsed.success ? parsed.chip : null
+    }
+  }
+}
+
+/** The reference's `Wrong chip name`, naming the first of `names` that is not the source's CHIP name. */
+const wrongChipName = (source: string, names: readonly string[]): string | null => {
+  const holder = names.find((name) => name !== source)
+  return holder === undefined ? null : `Wrong chip name: ${holder} holds CHIP ${source}`
+}
+
+const widths = (pins: readonly ChipPin[]): Map<string, number> => new Map(pins.map((p) => [p.name, p.width]))
+const samePins = (a: readonly ChipPin[], b: readonly ChipPin[]): boolean => {
+  const [x, y] = [widths(a), widths(b)]
+  return x.size === y.size && [...x].every(([name, width]) => y.get(name) === width)
+}
+
+/** Where `def`'s name, `inputs` or `outputs` differ from its source's (ADR-0020 §1.11 rule 2); empty when they agree. */
+export function sourceDisagreements(def: ChipDefinition): string[] {
+  const source = sourceHeader(def)
+  if (source === null) return []
+  const sides = [['IN', def.inputs, source.inputs], ['OUT', def.outputs, source.outputs]] as const
+  const pins = sides.flatMap(([kind, declared, stated]) =>
+    samePins(declared, stated) ? [] : [`${def.name} declares ${kind} ${declared.map(printPin).join(', ')}, but its source declares ${kind} ${stated.map(printPin).join(', ')}`])
+  const name = wrongChipName(source.name, [def.name])
+  return name === null ? pins : [name, ...pins]
+}
+
 /**
  * The chips on a cycle reachable from the part named `start`, in order, or `null`; keyed by name, so it ends even if `get` builds a new definition per call.
  * `visit` sees each definition the walk enters, once, with the part names that led to it from `start`.
@@ -229,6 +268,11 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
     const def = registry.get(part.name)
     if (!def) {
       errors.push(partError(part, `Unknown chip-part: "${part.name}"`))
+      return
+    }
+    const misnamed = isBuiltinChip(def) || def.name === part.name ? null : wrongChipName(sourceHeader(def)?.name ?? def.name, [part.name, def.name])
+    if (misnamed !== null) {
+      errors.push(partError(part, misnamed))
       return
     }
     resolved.push({ part, def })

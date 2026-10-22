@@ -1,6 +1,6 @@
 import type { ChipRegistry } from '../chips/registry'
 import type { ChipDefinition } from '../chips/types'
-import { compileHDL, registryCycle, subBusOutOfRange, type CompiledEvaluator } from '../hdl/compiler'
+import { compileHDL, registryCycle, sourceDisagreements, subBusOutOfRange, type CompiledEvaluator } from '../hdl/compiler'
 import { parseHDL } from '../hdl/parser'
 import { printPinRef } from '../hdl/printer'
 import type { HDLChip, HDLConnection, HDLSlice } from '../hdl/types'
@@ -179,6 +179,8 @@ function lower(doc: CircuitSpec, registry: ChipRegistry, aliases: AliasBits): HD
 
 /** A definition's refusal of its own, without compiling the definitions its parts name. */
 function ownRefusal(def: ChipDefinition, registry: ChipRegistry): string[] {
+  const disagrees = sourceDisagreements(def)
+  if (disagrees.length > 0) return disagrees
   switch (def.implementation.type) {
     case 'builtin':
       return []
