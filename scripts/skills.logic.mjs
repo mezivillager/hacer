@@ -179,6 +179,13 @@ export const BRIEF_INVARIANTS = [
           'a `Decisions:` line (the decision ids this PR implements — `ADR-NNNN`, `R<n>` or `P-<n>`, comma-separated — or `none`',
         ],
       },
+      {
+        id: 'function-length-only-shrinks',
+        phrases: [
+          '**Function length:** a new function over 80 code lines in `src/` production code fails `pnpm run lint`; one already recorded in `eslint-suppressions.json` may only shrink, and `pnpm run lint:layers:shrink` drops its row once it is under (lint fails until it does).',
+          'Lint counts long functions per file, not their lines, so it cannot see a recorded one grow.',
+        ],
+      },
     ],
     absent: [
       { id: 'e2e-in-the-definition-of-done', phrases: ['test:e2e'], why: 'ADR-0012 took E2E out of the definition of done' },
