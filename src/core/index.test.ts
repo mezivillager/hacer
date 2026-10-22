@@ -16,9 +16,10 @@
 // could not have caught what it claimed to check. The closure walk fails on the import itself, and
 // the `contains` assertions below make a vacuous pass (an empty or unresolved graph) fail too.
 
-import { describe, expect, it } from 'vitest'
+import { describe, expect, expectTypeOf, it } from 'vitest'
 
 import * as coreSurface from './index'
+import type { LayoutOptions, Placements, Surface } from './index'
 import {
   compileHDL,
   createChipRegistry,
@@ -57,6 +58,7 @@ const CORE_EXPORTS = [
   'isBuiltinChip',
   'isCircuitChip',
   'isHDLChip',
+  'layout',
   'loadChipTest',
   'normalizeSpec',
   'parseCmp',
@@ -80,6 +82,12 @@ describe('the engine entry points', () => {
   it('exports exactly the documented public surface', () => {
     expect(Object.keys(coreSurface).sort()).toEqual([...CORE_EXPORTS].sort())
     expect(Object.keys(simulationSurface).sort()).toEqual([...SIMULATION_EXPORTS].sort())
+  })
+
+  it('exports the layout types', () => {
+    expectTypeOf<Placements['surface']>().toEqualTypeOf<Surface>()
+    expectTypeOf<Surface>().toEqualTypeOf<'3d' | '2d'>()
+    expectTypeOf<Placements['options']>().toEqualTypeOf<Required<LayoutOptions>>()
   })
 
   // ── (2) one chip, end to end, with no DOM ─────────────────────────────────────────────────────
@@ -267,6 +275,7 @@ describe('the engine entry points are headless', () => {
         'core/hdl/compiler.ts',
         'core/hdl/parser.ts',
         'core/hdl/printer.ts',
+        'core/layout/layout.ts',
         'core/spec/parseSpec.ts',
         'core/spec/printSpec.ts',
         'core/testing/cmpParser.ts',
