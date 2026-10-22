@@ -122,8 +122,9 @@ and not proposed. The first quarterly prune, in the week of 2026-12-18, can star
   the run files' start time was 17:37Z (2026-10-17 §3). This is two occurrences, but both were in
   uncommitted coordinator files that no repo check reads.
 - **Backticks lost to the shell:** in #754's body (2026-10-15 §3), and in #780's inline `--summary`,
-  which `--summary-file` now replaces (2026-10-17 §3). HRN-010's body-file criterion covers the PR
-  half.
+  which `--summary-file` now replaces (2026-10-17 §3). HRN-010 covers the builders' and verifiers'
+  half and was built as #881 (PR #886): their PR bodies go through `--body-file`. The coordinator's
+  own bodies (`ha-next`, `inbox-panel-brief.md` §2) stay held.
 - **L068** (orphaned vitest workers) and **L072** (a hold in a comment) have one occurrence each.
 - **#775** merged with no verdict, once.
 - **P-005 is unverifiable here**, once, and only on this machine.
@@ -249,7 +250,7 @@ A merge's outcome can be read from its log alone.
 
 ### HRN-005 · Measure the four numbers or retire two of them: tokens and owner minutes have no source
 - **Date:** 2026-10-15 · **Kind:** policy · **Retro run:** 2026-10-15
-- **Status:** proposed
+- **Status:** filed (#850)
 - **Evidence:**
   - `README.md` § *What to measure* says the coordinator reports tokens per merged PR "when it
     reports the run" until `scripts/agent-orient` (#156, open) exists. <!-- allow-missing-path -->
@@ -271,7 +272,7 @@ A merge's outcome can be read from its log alone.
 
 ### HRN-006 · Say who applies `overturned`, and apply it to the PASS whose defect a later PR fixed
 - **Date:** 2026-10-15 · **Kind:** policy · **Retro run:** 2026-10-15
-- **Status:** proposed
+- **Status:** filed (#852)
 - **Evidence:**
   - `model-tiering.md` §2 makes "one `overturned` Sonnet verdict" the condition for moving
     `risk:0`/`risk:1` verification off Sonnet. The label exists, but it has never been applied
@@ -287,7 +288,7 @@ A merge's outcome can be read from its log alone.
 
 ### HRN-007 · Align the concurrent-subagent cap with the owner's rulings: 4 in config, 2–3 in practice
 - **Date:** 2026-10-15 · **Kind:** policy · **Retro run:** 2026-10-15
-- **Status:** proposed
+- **Status:** filed (#857)
 - **Evidence:**
   - `.claude/settings.json` sets `CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS=4`, and `README.md`
     § *Budgets* says 4.
@@ -303,7 +304,7 @@ A merge's outcome can be read from its log alone.
 
 ### HRN-008 · Register the `hacer-*` agent types where sessions start: the parent workspace
 - **Date:** 2026-10-15 · **Kind:** policy · **Retro run:** 2026-10-15
-- **Status:** proposed
+- **Status:** filed (#871), with #870 as the owner's one `ln -s` (R865)
 - **Evidence:** 2026-10-02 §5: agent types under this repo's `.claude/agents/` are not registered
   when a session starts in the parent workspace, so the fidelity review of #643 ran as a general-purpose agent handed the
   file. 2026-09-29 §5 recorded the same root cause for `.mcp.json`. Both records call it "the
@@ -317,7 +318,7 @@ A merge's outcome can be read from its log alone.
 
 ### HRN-009 · Run the retro at each coordinator run's close, not every 5 merges
 - **Date:** 2026-10-15 · **Kind:** policy · **Retro run:** 2026-10-15
-- **Status:** proposed
+- **Status:** filed (#873)
 - **Evidence:** at the measured rate (36, 27 and 12 merges in the three runs), "every 5 merged PRs"
   means 7, 5 and 2 retros per run. Each run spends ~110–190k tokens on Opus, if it costs what one
   Opus verifier does (`model-tiering.md` §4); that is inferred, not measured. A recurrence inside a run is
@@ -331,7 +332,7 @@ A merge's outcome can be read from its log alone.
 
 ### HRN-010 · Each worktree gets its own scratch folder, printed when it is made, and PR bodies go through it
 - **Date:** 2026-10-21 · **Kind:** mechanise · **Retro run:** 2026-10-21
-- **Status:** proposed
+- **Status:** filed (#881)
 - **Evidence:**
   - L069 has two occurrences. In 2026-10-14 §3, #740 showed #741's body for about a minute, because
     both builders wrote one file name, pr-body.md, in the shared scratchpad. In 2026-10-15 §3, the #753 and #754
@@ -365,7 +366,7 @@ unique, and every brief says to use it.
 
 ### HRN-011 · `backlog.mjs tier <pr>` gives the verifier's tier from the PR's paths, and Mission Control lists a verdict given on a cheaper tier
 - **Date:** 2026-10-21 · **Kind:** mechanise · **Retro run:** 2026-10-21
-- **Status:** proposed
+- **Status:** filed (#884)
 - **Evidence:**
   - L070 has two occurrences in one run (2026-10-14 §3). #739 changed tests under `src/core/spec`,
     was verified on Sonnet, and merged on R824. #748 changed production code under
@@ -403,7 +404,7 @@ shows up after the merge.
 
 ### HRN-012 · `merge-on-green` reports a missing `workflow` token scope before it touches a PR that changes `.github/workflows/`
 - **Date:** 2026-10-21 · **Kind:** mechanise · **Retro run:** 2026-10-21
-- **Status:** proposed
+- **Status:** filed (#883)
 - **Evidence:**
   - L013 has two occurrences:
     - 2026-09-18: dependabot #118 and #131, and a `.github/workflows/ci.yml` hunk in #245.
@@ -436,7 +437,7 @@ update.
 
 ### HRN-013 · `backlog.mjs next` prints each workflow failing on `main`, so a broken release is seen at the next pick
 - **Date:** 2026-10-21 · **Kind:** mechanise · **Retro run:** 2026-10-21
-- **Status:** proposed
+- **Status:** filed (#888)
 - **Evidence:**
   - L012 (2026-09-18): five release runs failed before anyone looked.
   - L071 (2026-10-15 §3): 20 `Release` runs failed between 03:23Z and 23:41Z, about 20 hours across
@@ -473,7 +474,7 @@ Every pick shows a workflow that is failing on `main`.
 
 ### HRN-014 · `run-prs` says when its `--to` is still in the future, so a record's merge count can be reproduced
 - **Date:** 2026-10-21 · **Kind:** mechanise · **Retro run:** 2026-10-21
-- **Status:** proposed
+- **Status:** filed (#892)
 - **Evidence:**
   - 2026-10-14 §2 reports "37 PRs" from `--from 2026-10-14T22:00:00Z --to 2026-10-15T23:59:00Z`.
     The record merged at 2026-10-15T11:17Z (#750). The same command now prints 41, because it also
@@ -502,7 +503,7 @@ A `run-prs` count whose window is still open says so.
 
 ### HRN-015 · Write the coordinator's `risk:2` `agent-ready` practice into the queue-up rule, or stop it (R816)
 - **Date:** 2026-10-21 · **Kind:** policy · **Retro run:** 2026-10-21
-- **Status:** proposed
+- **Status:** filed (#893)
 - **Evidence:**
   - The rule: the queue-up row of `README.md` § *The five sentences it answers* gives `agent-ready`
     "only if risk:0/1". Its one exception is product-role polish.
@@ -533,7 +534,7 @@ A `run-prs` count whose window is still open says so.
 
 ### HRN-016 · The fortnightly process review has not run since 2026-09-26: print when it is due, and give it default reviewers
 - **Date:** 2026-10-21 · **Kind:** policy · **Retro run:** 2026-10-21
-- **Status:** proposed
+- **Status:** filed (#895)
 - **Evidence:**
   - `docs/harness/reviews/` holds one cycle, `2026-09-26`, whose
     `docs/harness/reviews/2026-09-26/SYNTHESIS.md` was added on 2026-09-27.
@@ -556,7 +557,7 @@ A `run-prs` count whose window is still open says so.
 
 ### HRN-017 · Split a rerun query that hits the API's 1,000-run cap, as 2026-10-15 did
 - **Date:** 2026-10-21 · **Kind:** policy · **Retro run:** 2026-10-21
-- **Status:** proposed
+- **Status:** filed (#898)
 - **Evidence:**
   - `retro-brief.md` input 6 queries one day at a time, "because the API stops at 1,000 runs per
     query, and a busy day here has had 775".
@@ -568,3 +569,120 @@ A `run-prs` count whose window is still open says so.
 - **Cost if wrong:** four more queries on a busy day. Left as it is, the busiest day's reruns go
   uncounted.
 - **Decides:** the inbox panel (`inbox-panel-brief.md`); the owner may override
+
+### HRN-018 · A second coordinator collides in four places that nothing guards: allow one only with guards, or say there is one
+- **Date:** 2026-10-22 · **Kind:** policy · **Retro run:** none (filed at the close of the 2026-10-21 coordinator run)
+- **Status:** proposed
+- **Evidence:**
+  - The owner asked on 2026-10-21 whether another session can run the loop beside the running one "to
+    clear the queue faster" (R855). The run fixed one gap and left four.
+  - What held. A claim is an exclusive `refs/heads/claim/<n>` ref, so two coordinators never claim one
+    issue. The core order lived only in the first coordinator's run files, so R855 wrote it as GitHub
+    blocked-by links, which `scripts/backlog.mjs` reads: #816 and #811 behind #813, #814 behind both, each link
+    clearing when its blocker closed. The run used the same links for #820 (behind #816, #811, #836, #821
+    and #814), #873 (behind #871), #884 (behind #881 and #887), #888 (behind #884), #895 (behind #888) and
+    #903 (behind #901).
+  - Ruling ids. `node scripts/lineage.mjs next-id` reads `docs/decisions/rulings/`, so two coordinators
+    both read the same next id. This run read R852 at its start and staged R852–R876 outside the repo
+    until its records PR. A second coordinator staging at the same time would use the same ids, and the
+    later records PR would renumber (R855's cost if wrong).
+  - The session record. `docs/harness/sessions/` holds one file per date (`README.md` § *sessions*), so
+    two closes on one date write one path.
+  - The agent cap. R866's three is per laptop, from the owner's "you can raise the number of parallel
+    agents to 3", and so is the heat; the caps count one coordinator's agents. On 2026-10-21 the load read
+    16.45 / 66.67 / 50.70 at 17:12Z with a `codex` process and headless Chromium shells that were not this
+    run's (R861). A second coordinator's agents add to that load unseen.
+  - `node scripts/inbox.mjs queue`. Its dedupe reads GitHub's search index, which lags. At 15:54Z it filed
+    #827–#835; a dry run seconds later still listed 2 to file, and one a minute later listed 0
+    (`docs/harness/sessions/2026-10-21.md` §3). Two coordinators running it within a minute can each file a review
+    for one entry.
+- **Proposal:**
+  - **(a)** One coordinator per repository at a time stays the rule. `ha-next` and the loop's README
+    section say so, and the owner's "another session" is answered with that sentence. Claims and blocked-by
+    links still guard a stray second session.
+  - **(b)** A second coordinator is allowed, with four guards, each a check or a rule:
+    - rulings are numbered at close only, from `next-id` at that moment, and a collision is a renumbering in
+      the later records PR (already R855's rule);
+    - the session record is `sessions/<date>-<run>.md` when a second run closes on the same date;
+    - the agent cap is read from the machine, not counted per coordinator: the 5-minute load average
+      above 12 means no third agent, whoever started the others (R866);
+    - `queue` re-reads after a minute, or the coordinator runs it alone, so one entry gets one review.
+- **Cost if wrong:** with (a), the queue clears at one coordinator's pace, as now. With (b), a
+  collision lands as a renumbering in a records PR, a duplicate review issue (closed by hand), or a hot
+  laptop; none reaches `main`, since every merge still goes through `merge-on-green`.
+- **Decides:** the inbox panel (`inbox-panel-brief.md`); the owner may override
+
+### HRN-019 · `merge-on-green` rebase-merges a test-only PR whose red commit fails on purpose, against the implementer brief's one-commit rule
+- **Date:** 2026-10-22 · **Kind:** policy · **Retro run:** none (filed at the close of the 2026-10-21 coordinator run)
+- **Status:** proposed
+- **Evidence:**
+  - `docs/harness/implementer-brief.md` (Test-only issues): the PR "lands as one `test(<scope>): …`
+    commit with the red recorded in its message". #837 (#811) had four commits, and `a227f2b4` failed
+    three tests on purpose, which is how the red was shown.
+  - `scripts/merge-on-green.mjs` always merges with `--rebase` (line 167), so it would have put
+    `a227f2b4` on `main`. The coordinator noticed at the verifier's nit and did not run the tool (R858).
+  - A squash is not available. R858 took the tool's freshness steps by hand and then ran
+    `gh pr merge --squash`; GitHub refused with "Squash merges are not allowed on this repository".
+    The ruleset allows rebase merges only, whatever the repository's own flag says (R859).
+  - What worked, by hand: R790's recipe. The squash of the rebased head `68faf6ba` onto its parent
+    gave tree `8d525080`, identical to the verified head's, so the branch was re-opened as #841 with
+    one commit and the PASS carried by tree identity (R859). #841 merged as one commit on `main`;
+    #837 closed unmerged.
+  - One occurrence. No other test-only PR in the window had a deliberate red commit.
+- **Proposal:**
+  - **(a)** `merge-on-green` refuses before it updates the branch, with its own exit code and a line
+    that names R790's recipe, when the PR's title starts `test(` and the PR holds more than one commit.
+    A builder then opens a test-only PR as one commit, as the brief says.
+  - **(b)** The tool does R859's steps itself: it squashes the rebased head onto its parent, checks the
+    tree equals the verified head's, opens the single-commit PR and closes the old one, and prints both
+    numbers. The verifier's PASS carries over only when the tree is identical.
+  - Not proposed: a `--squash` flag. It needs the ruleset to allow squash merges, which is the
+    owner's change, and the repository flag already says squash while GitHub refuses.
+- **Cost if wrong:** with (a), a test-only PR the builder shaped as several commits waits for a
+  re-open before it merges. With (b), the tool makes a branch and a PR on the coordinator's behalf, and
+  a wrong tree comparison would carry a PASS to a head nobody reviewed. Left as it is, the next
+  several-commit test-only PR can put a failing commit on `main` if the coordinator does not catch it.
+- **Decides:** the inbox panel (`inbox-panel-brief.md`); the owner may override
+
+### HRN-020 · A PR's `Decisions:` line takes only decision ids or a bare `none`, so the inbox ids and the prose builders write make `lineage parse --github` report it malformed
+- **Date:** 2026-10-22 · **Kind:** mechanise · **Retro run:** none (filed at the close of the 2026-10-21 coordinator run)
+- **Status:** proposed
+- **Evidence:**
+  - Measured at `origin/main` `74ee3461` on 2026-10-22, `node scripts/lineage.mjs parse --github`
+    exits 1 with 78 `malformed` errors on 28 PRs and issues, each "in Decisions is not a decision id (ADR-NNNN,
+    R<n> or P-<n>, optionally then §section)". `lint:lineage` does not pass `--github`, so CI is green.
+  - The inbox id. #902's line is `Decisions: HRN-016 (#834)`. A PR that implements a panel-approved
+    entry has no ruling id to cite, since R844 is the panel's rule and the approval is a comment
+    (`implementer-brief.md` asks for ids or `none`).
+  - `none` plus prose does not parse either: `refList` (`scripts/lineage.logic.mjs`) takes the whole
+    line as `none`, `unknown` or a comma-separated list of refs. #880's line, "none. This implements the
+    inbox panel's approval of HRN-009 on #800, which has no decision id.", is reported twice, and so are
+    #896, #858, #841, #837, #780, #718, #707 and #689. Of the 78 errors, 13 are on a line that opens with
+    `none`.
+  - Ranges and notes fail the same way: `R843–R851` (#815, #775, #750, #691) and an id followed by a
+    parenthetical (#735, #731, #726, #690).
+- **Proposal:**
+  - **(a)** `parseGithub` accepts an inbox id (`FID-`, `HRN-` or `PRD-` and digits, optionally followed
+    by `(#n)`) as an artefact the PR cites, and ends the value at the first sentence after `none`.
+  - **(b)** The parser stays strict. `implementer-brief.md` says the line holds ids or the bare word
+    `none` and nothing else, the PR's prose and any inbox id go in the body, and `pr-hygiene` warns when
+    the line would be malformed.
+- **Cost if wrong:** with (a), the parser takes a looser line, so a typo after `none` is no longer
+  caught. With (b), builders lose the place that names the panel's approval on the PR's lineage. Left
+  as it is, `parse --github` stays red and the 28 PRs' implements edges are partly missing.
+- **Decides:** the inbox panel (`inbox-panel-brief.md`); the owner may override
+
+**Draft issue body** (`risk:1`; for option (a), or for (b)'s check)
+## Goal
+`node scripts/lineage.mjs parse --github` exits 0 on the PRs this repository writes, and a builder
+knows what the `Decisions:` line may hold.
+## Acceptance criteria
+- Tests in `scripts/lineage.logic.test.mjs` for the chosen option: `Decisions: HRN-016 (#834)` and
+  `Decisions: none. <sentence>` are not `malformed` under (a); under (b), `pr-hygiene` reports both and
+  `implementer-brief.md` states the rule, pinned in `scripts/skills.logic.mjs`.
+- The 28 PRs and issues now reported are listed in the PR body with their outcome (fixed in the
+  parser, or left as history).
+## Verification command
+`pnpm exec vitest run scripts/lineage.logic.test.mjs scripts/skills.logic.test.mjs`
+## Blocked by
+—
