@@ -175,6 +175,24 @@ const CROSSED_LOOP = circuit('CrossedLoop', {
   ],
 })
 
+const seven = 7 as unknown as string
+const NUMBER_BESIDE_STRING_JUNCTION = circuit('NumberBesideStringJunction', {
+  inputNodes: [node('ia', 'a'), node('ib', 'b')],
+  outputNodes: [node('oo', 'out')],
+  gates: [gate('g1', 'Not')],
+  wires: [
+    wire('w0', fromIn('ib'), junctionEnd('7')), wire('w1', fromIn('ia'), junctionEnd(seven)),
+    wire('w2', junctionEnd('7'), pinIn('g1', 0)), wire('w3', pinOut('g1'), toOut('oo')),
+  ],
+  junctions: [{ id: '7', position: ZERO, signalId: 'signal-7', wireIds: ['w0', 'w2'] }],
+})
+const NUMBER_BESIDE_STRING_JOINER = circuit('NumberBesideStringJoiner', {
+  inputNodes: [node('ia', 'a'), node('ib', 'b')],
+  outputNodes: [node('oo', 'out', 2)],
+  busComponents: [bus('7', 'joiner', 2), bus(seven, 'joiner', 2)],
+  wires: [wire('w0', fromIn('ib'), busEnd('7', 'in0'), 1), wire('w1', fromIn('ia'), busEnd(seven, 'in0'), 1), wire('w2', busEnd('7', 'out'), toOut('oo'), 2)],
+})
+
 interface ChainShape { feed?: 'input' | 'missing' | 'loop'; closed?: boolean }
 
 /** `a` into a Not through `stages` junctions or joiner/splitter pairs, each stage fed twice by the one before. */
@@ -536,5 +554,14 @@ describe('fromLegacyCircuit', () => {
     expect(load(CROSSED_LOOP).sidecar.notes.filter((n) => n.kind === 'floating-source')).toEqual([
       { kind: 'floating-source', pin: 'o', detail: 'Wire "w5" reads nothing at splitter "split" pin "in", whose bit 0 only loops back to itself, so OUT o is left undriven' },
     ])
+  })
+
+  it.each([
+    ['junction', NUMBER_BESIDE_STRING_JUNCTION, '    Not(in=b, out=out); // #p1\n}', ['dangling-sink']],
+    ['joiner', NUMBER_BESIDE_STRING_JOINER, '    wire out[0] = b;\n}', ['bus-dissolved', 'bus-dissolved', 'floating-source', 'slice-inferred']],
+  ] as const)('a wire into the number 7 never reaches the %s whose id is the string "7"', (_, saved, line, notes) => {
+    const { doc, sidecar } = load(saved)
+    expect(printSpec(doc)).toContain(line)
+    expect(kinds(sidecar.notes)).toEqual(notes)
   })
 })
