@@ -95,20 +95,24 @@ function once(trace: Walk, key: string, loop: () => Value, read: () => Value[]):
 }
 
 interface Wiring { buses: Map<string, LegacyBus>; junctions: Map<string, LegacyJunction>; into: (bus: LegacyBus, pinId: string) => LegacyWire[]; feeds: (junction: LegacyJunction) => LegacyWire[] }
+/** Ids match by their JSON value, as deserializeCircuit keeps them: the number 7 and the string "7" are two entities. */
 function wiring(legacy: DeserializedCircuit): Wiring {
   const first = <T extends { id: string }>(items: T[]): Map<string, T> => new Map([...items].reverse().map((item) => [item.id, item]))
-  const wires = [...legacy.wires].sort(byId)
-  const ends = new Map<string, LegacyWire[]>()
-  for (const w of wires) {
-    const key = `${w.to.type}:${w.to.entityId}`
-    ends.set(key, [...(ends.get(key) ?? []), w])
+  const ends = new Map<string, Map<string, LegacyWire[]>>()
+  for (const w of legacy.wires) {
+    const owners = ends.get(w.to.type) ?? new Map<string, LegacyWire[]>()
+    owners.set(w.to.entityId, [...(owners.get(w.to.entityId) ?? []), w])
+    ends.set(w.to.type, owners)
   }
-  const fed = (junction: LegacyJunction): LegacyWire[] => ends.get(`junction:${junction.id}`) ?? []
+  const fed = (type: string, id: string): LegacyWire[] => ends.get(type)?.get(id) ?? []
   return {
     buses: first(legacy.busComponents),
     junctions: first(legacy.junctions),
-    into: (bus, pinId) => (ends.get(`bus:${bus.id}`) ?? []).filter((w) => w.to.pinId === pinId),
-    feeds: (junction) => (fed(junction).length > 0 ? fed(junction) : wires.filter((w) => junction.wireIds.includes(w.id) && !(w.from.type === 'junction' && w.from.entityId === junction.id))),
+    into: (bus, pinId) => fed('bus', bus.id).filter((w) => w.to.pinId === pinId).sort(byId),
+    feeds: (junction) => {
+      const feeds = fed('junction', junction.id)
+      return (feeds.length > 0 ? [...feeds] : legacy.wires.filter((w) => junction.wireIds.includes(w.id) && !(w.from.type === 'junction' && w.from.entityId === junction.id))).sort(byId)
+    },
   }
 }
 
@@ -133,7 +137,7 @@ function driverCheck(legacy: DeserializedCircuit, partOf: Parts, { buses, juncti
   }
   const known = new Map<string, boolean>()
   return (bus: LegacyBus, pinId: string, width: number, bit: number): boolean => {
-    const key = `${bus.id}:${pinId}:${bit}`
+    const key = JSON.stringify([bus.id, pinId, bit])
     if (!known.has(key)) known.set(key, drivenBit(bus, pinId, width, bit, new Set()))
     return known.get(key) === true
   }
@@ -162,7 +166,7 @@ function tracer(legacy: DeserializedCircuit, ins: Port[], partOf: Parts): (end: 
     if (bus && out >= 0) return bus.kind === 'joiner' ? joined(bus, trace, from, bits) : from > 0 ? [[]] : busBit(bus, 'in', bus.width, out, trace)
     const junction = end.type === 'junction' ? junctions.get(end.entityId) : undefined
     if (!junction) return [floating(bits)]
-    return once(trace, `${junction.id}:${from}:${bits}`, () => floating(bits), () => {
+    return once(trace, JSON.stringify([junction.id, from, bits]), () => floating(bits), () => {
       const candidates = feeds(junction)
       return candidates.length === 0 ? [floating(bits)] : candidates.flatMap((w) => resolve(w.from, trace, from, bits))
     })
@@ -176,7 +180,7 @@ function tracer(legacy: DeserializedCircuit, ins: Port[], partOf: Parts): (end: 
   const busBit = (bus: LegacyBus, pinId: string, width: number, bit: number, trace: Walk): Value[] => {
     const pin = `${bus.kind} "${bus.id}" pin "${pinId}"`
     const self = `${pin}, whose bit ${bit} only loops back to itself`
-    return once(trace, `${bus.id}:${pinId}:${bit}`, () => floating(1, self), () => {
+    return once(trace, JSON.stringify([bus.id, pinId, bit]), () => floating(1, self), () => {
       const wires = into(bus, pinId)
       if (wires.length === 0) return [floating(1, pin)]
       const readings = wires.flatMap((w) => (bit < Math.min(w.width ?? 1, width) ? resolve(w.from, trace, bit, 1) : [[]]).map((v) =>
