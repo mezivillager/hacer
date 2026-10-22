@@ -48,4 +48,4 @@ docs/harness/reviews/
 | Cycle | Reviews | Status |
 |---|---|---|
 | [2026-09-26](2026-09-26/README.md) | 3 | followed through 2026-09-27: S1–S20 carried by merged PRs; see `docs/harness/sessions/2026-09-27.md` §3 |
-| [2026-10-22](2026-10-22/README.md) | 0 | brief issued; reviewers not started |
+| [2026-10-22](2026-10-22/README.md) | 2 | synthesised 2026-10-22; follow-through in progress |
