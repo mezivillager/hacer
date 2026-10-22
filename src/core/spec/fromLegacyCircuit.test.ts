@@ -193,6 +193,20 @@ const NUMBER_BESIDE_STRING_JOINER = circuit('NumberBesideStringJoiner', {
   wires: [wire('w0', fromIn('ib'), busEnd('7', 'in0'), 1), wire('w1', fromIn('ia'), busEnd(seven, 'in0'), 1), wire('w2', busEnd('7', 'out'), toOut('oo'), 2)],
 })
 
+const TWIN_JUNCTIONS = circuit('TwinJunctions', {
+  inputNodes: [node('ib', 'b')],
+  outputNodes: [node('oo', 'out')],
+  gates: [gate('g1', 'Not')],
+  wires: [wire('w0', fromIn('ib'), junctionEnd('7')), wire('w1', junctionEnd('7'), junctionEnd(seven)), wire('w2', junctionEnd(seven), pinIn('g1', 0)), wire('w3', pinOut('g1'), toOut('oo'))],
+  junctions: [{ id: '7', position: ZERO, signalId: 'signal-7', wireIds: ['w0', 'w1'] }, { id: seven, position: ZERO, signalId: 'signal-seven', wireIds: ['w1', 'w2'] }],
+})
+const TWIN_JOINERS = circuit('TwinJoiners', {
+  inputNodes: [node('ib', 'b')],
+  outputNodes: [node('oo', 'out')],
+  busComponents: [bus('7', 'joiner', 2), bus(seven, 'joiner', 2)],
+  wires: [wire('w0', fromIn('ib'), busEnd('7', 'in0'), 1), wire('w1', busEnd('7', 'out'), busEnd(seven, 'in0'), 1), wire('w2', busEnd(seven, 'out'), toOut('oo'), 1)],
+})
+
 interface ChainShape { feed?: 'input' | 'missing' | 'loop'; closed?: boolean }
 
 /** `a` into a Not through `stages` junctions or joiner/splitter pairs, each stage fed twice by the one before. */
@@ -560,6 +574,15 @@ describe('fromLegacyCircuit', () => {
     ['junction', NUMBER_BESIDE_STRING_JUNCTION, '    Not(in=b, out=out); // #p1\n}', ['dangling-sink']],
     ['joiner', NUMBER_BESIDE_STRING_JOINER, '    wire out[0] = b;\n}', ['bus-dissolved', 'bus-dissolved', 'floating-source', 'slice-inferred']],
   ] as const)('a wire into the number 7 never reaches the %s whose id is the string "7"', (_, saved, line, notes) => {
+    const { doc, sidecar } = load(saved)
+    expect(printSpec(doc)).toContain(line)
+    expect(kinds(sidecar.notes)).toEqual(notes)
+  })
+
+  it.each([
+    ['junctions', TWIN_JUNCTIONS, '    Not(in=b, out=out); // #p1\n}', []],
+    ['joiners', TWIN_JOINERS, '    wire out = b;\n}', ['bus-dissolved', 'bus-dissolved']],
+  ] as const)('%s 7 and "7" are traced as two, so one reading the other is no loop', (_, saved, line, notes) => {
     const { doc, sidecar } = load(saved)
     expect(printSpec(doc)).toContain(line)
     expect(kinds(sidecar.notes)).toEqual(notes)
