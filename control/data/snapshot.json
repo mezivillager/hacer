@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-22T02:33:06.483Z",
+  "generatedAt": "2026-10-22T02:51:28.795Z",
   "head": {
-    "sha": "bf96e39fc7748e6c09a17383aacc6a8612fb895c",
-    "date": "2026-10-22T05:12:25+03:00",
-    "subject": "docs(harness): the retro splits a run query cut off at the API's 1,000-run cap"
+    "sha": "b9b7dbf74c1774c960b6344cf928c511947ea15d",
+    "date": "2026-10-22T05:45:35+03:00",
+    "subject": "chore(harness): ready and next say a process review is due; the coordinator starts it (#895)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T02:33:06.483Z",
+      "fetchedAt": "2026-10-22T02:51:28.795Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T02:33:06.483Z",
+      "fetchedAt": "2026-10-22T02:51:28.795Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T02:33:06.483Z",
+      "fetchedAt": "2026-10-22T02:51:28.795Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-22T02:33:06.483Z",
+      "fetchedAt": "2026-10-22T02:51:28.795Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-22T02:33:06.483Z",
+      "fetchedAt": "2026-10-22T02:51:28.795Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-22T02:33:06.483Z",
+      "fetchedAt": "2026-10-22T02:51:28.795Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-22T02:33:06.483Z",
+      "fetchedAt": "2026-10-22T02:51:28.795Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-22T02:33:06.483Z",
+      "fetchedAt": "2026-10-22T02:51:28.795Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-22T02:33:06.483Z",
+      "fetchedAt": "2026-10-22T02:51:28.795Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-22T02:33:06.483Z",
+      "fetchedAt": "2026-10-22T02:51:28.795Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-22T02:33:06.483Z",
+      "fetchedAt": "2026-10-22T02:51:28.795Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-22T02:33:06.483Z",
+      "fetchedAt": "2026-10-22T02:51:28.795Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-22T02:33:06.483Z",
+      "fetchedAt": "2026-10-22T02:51:28.795Z",
       "status": "ok"
     }
   },
@@ -80,12 +80,12 @@
         "lane": "feature",
         "slug": "foundation",
         "epicNumber": 318,
-        "open": 27,
-        "ready": 2,
-        "inProgress": 0,
+        "open": 28,
+        "ready": 1,
+        "inProgress": 1,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 2,
+        "agentReady": 3,
         "filedElsewhere": [],
         "next": {
           "number": 338,
@@ -103,12 +103,12 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 16,
+        "open": 15,
         "ready": 1,
-        "inProgress": 1,
+        "inProgress": 0,
         "needsHuman": 2,
         "staleClaims": [],
-        "agentReady": 2,
+        "agentReady": 1,
         "filedElsewhere": [
           151,
           339
@@ -191,8 +191,8 @@
         "title": "Epic: core — headless core",
         "subIssues": {
           "completed": 26,
-          "percentCompleted": 89,
-          "total": 29
+          "percentCompleted": 86,
+          "total": 30
         }
       },
       {
@@ -306,15 +306,15 @@
         "slug": "upkeep",
         "epicNumber": 146,
         "open": 33,
-        "ready": 3,
-        "inProgress": 28,
+        "ready": 1,
+        "inProgress": 30,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 32,
         "filedElsewhere": [],
         "next": {
-          "number": 859,
-          "title": "Inbox review: FID-029 · A literal on a part pin wider than 16 bits: decide all ones or the reference's 16, pin it, and record it"
+          "number": 874,
+          "title": "Inbox review: FID-031 · Grading names the reference's first cause when an earlier part or wire has a per-part cause the check does not model"
         },
         "title": "Epic: upkeep — maintenance & documentation",
         "subIssues": {
@@ -418,21 +418,6 @@
         "project": "harness"
       },
       {
-        "number": 901,
-        "title": "A part named after a builtin only the reference has resolves to the user chip: ADR-0020 §1.11 rule 4 names the lookup order, and tests pin the 27-name boundary",
-        "project": "foundation"
-      },
-      {
-        "number": 859,
-        "title": "Inbox review: FID-029 · A literal on a part pin wider than 16 bits: decide all ones or the reference's 16, pin it, and record it",
-        "project": "upkeep"
-      },
-      {
-        "number": 867,
-        "title": "Inbox review: FID-030 · The combinational-cycle refusal carries a line, as the reference's `Looping wire` and `Circular pin dependency` do",
-        "project": "upkeep"
-      },
-      {
         "number": 874,
         "title": "Inbox review: FID-031 · Grading names the reference's first cause when an earlier part or wire has a per-part cause the check does not model",
         "project": "upkeep"
@@ -441,7 +426,6 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
-        902,
         514
       ]
     }
@@ -477,56 +461,6 @@
         "project": "harness",
         "rank": 2,
         "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 901,
-        "title": "A part named after a builtin only the reference has resolves to the user chip: ADR-0020 §1.11 rule 4 names the lookup order, and tests pin the 27-name boundary",
-        "labels": [
-          "agent-ready",
-          "risk:1",
-          "fidelity",
-          "project:foundation"
-        ],
-        "blocking": [
-          206
-        ],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 859,
-        "title": "Inbox review: FID-029 · A literal on a part pin wider than 16 bits: decide all ones or the reference's 16, pin it, and record it",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 867,
-        "title": "Inbox review: FID-030 · The combinational-cycle refusal carries a line, as the reference's `Looping wire` and `Circular pin dependency` do",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
         "pickable": true,
         "reason": null
       },
@@ -2480,6 +2414,40 @@
         "reason": "claimed"
       },
       {
+        "number": 859,
+        "title": "Inbox review: FID-029 · A literal on a part pin wider than 16 bits: decide all ones or the reference's 16, pin it, and record it",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
+        "number": 867,
+        "title": "Inbox review: FID-030 · The combinational-cycle refusal carries a line, as the reference's `Looping wire` and `Circular pin dependency` do",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 870,
         "title": "Owner: link `ha/.claude/agents` to hacer's role files, so sessions started in the workspace register the `hacer-*` types",
         "labels": [
@@ -2538,26 +2506,45 @@
         "reason": "unshaped"
       },
       {
-        "number": 895,
-        "title": "Process review cadence: due 14 days after the last finished cycle, printed by `backlog.mjs ready` and `next`, and the coordinator starts its reviewers",
+        "number": 901,
+        "title": "A part named after a builtin only the reference has resolves to the user chip: ADR-0020 §1.11 rule 4 names the lookup order, and tests pin the 27-name boundary",
         "labels": [
-          "project:harness",
           "agent-ready",
           "in-progress",
-          "risk:1"
+          "risk:1",
+          "fidelity",
+          "project:foundation"
         ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
+        "blocking": [
+          903,
+          206
+        ],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
         "pickable": false,
         "reason": "claimed"
+      },
+      {
+        "number": 903,
+        "title": "A registered definition agrees with its source: refuse one whose name or pins differ from its HDL's or its document's, or from the name it was looked up by",
+        "labels": [
+          "agent-ready",
+          "risk:1",
+          "fidelity",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "blocked:#901"
       }
     ],
     "byProject": {
       "foundation": [
         338,
-        901,
         151,
         184,
         325,
@@ -2582,7 +2569,9 @@
         728,
         742,
         773,
-        878
+        878,
+        901,
+        903
       ],
       "harness": [
         257,
@@ -2599,12 +2588,9 @@
         607,
         677,
         870,
-        889,
-        895
+        889
       ],
       "upkeep": [
-        859,
-        867,
         874,
         229,
         256,
@@ -2635,7 +2621,9 @@
         835,
         839,
         848,
-        849
+        849,
+        859,
+        867
       ],
       "spine": [
         165,
@@ -2727,24 +2715,6 @@
   "prs": {
     "open": [
       {
-        "number": 902,
-        "title": "chore(harness): ready and next say a process review is due; the coordinator starts it",
-        "url": "https://github.com/mezivillager/hacer/pull/902",
-        "author": "mezivillager",
-        "labels": [
-          "project:harness",
-          "risk:1"
-        ],
-        "headRefName": "chore/895-process-review-due",
-        "isDraft": false,
-        "createdAt": "2026-10-22T02:29:28Z",
-        "mergedAt": null,
-        "closes": [
-          895
-        ],
-        "verdicts": []
-      },
-      {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
         "url": "https://github.com/mezivillager/hacer/pull/514",
@@ -2772,6 +2742,32 @@
       }
     ],
     "merged": [
+      {
+        "number": 902,
+        "title": "chore(harness): ready and next say a process review is due; the coordinator starts it",
+        "url": "https://github.com/mezivillager/hacer/pull/902",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:1"
+        ],
+        "headRefName": "chore/895-process-review-due",
+        "isDraft": false,
+        "createdAt": "2026-10-22T02:29:28Z",
+        "mergedAt": "2026-10-22T02:45:35Z",
+        "closes": [
+          895
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Sonnet (claude-sonnet-5-5)",
+            "at": "2026-10-22T02:44:50Z",
+            "url": "https://github.com/mezivillager/hacer/pull/902#issuecomment-6331419934"
+          }
+        ]
+      },
       {
         "number": 900,
         "title": "docs(harness): the retro splits a run query cut off at the API's 1,000-run cap",
@@ -4268,40 +4264,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/754#issuecomment-6204310722"
           }
         ]
-      },
-      {
-        "number": 753,
-        "title": "feat(core): fromLegacyCircuit dissolves splitters and joiners into slices (#377)",
-        "url": "https://github.com/mezivillager/hacer/pull/753",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:2",
-          "project:foundation"
-        ],
-        "headRefName": "feat/377b-bus-dissolve",
-        "isDraft": false,
-        "createdAt": "2026-10-15T22:42:32Z",
-        "mergedAt": "2026-10-16T00:34:14Z",
-        "closes": [
-          377
-        ],
-        "verdicts": [
-          {
-            "verdict": "BLOCK",
-            "round": 1,
-            "model": "Opus 5.5",
-            "at": "2026-10-15T23:08:08Z",
-            "url": "https://github.com/mezivillager/hacer/pull/753#issuecomment-6204155638"
-          },
-          {
-            "verdict": "PASS",
-            "round": 2,
-            "model": "Opus 5.5",
-            "at": "2026-10-15T23:56:35Z",
-            "url": "https://github.com/mezivillager/hacer/pull/753#issuecomment-6204776785"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -5069,28 +5031,81 @@
         }
       },
       {
-        "number": 895,
-        "ref": "refs/heads/claim/895",
-        "sha": "6f2a2f639828484c2baadf1609ed38c13d6f522b",
+        "number": 859,
+        "ref": "refs/heads/claim/859",
+        "sha": "bf96e39fc7748e6c09a17383aacc6a8612fb895c",
         "state": "OPEN",
-        "title": "Process review cadence: due 14 days after the last finished cycle, printed by `backlog.mjs ready` and `next`, and the coordinator starts its reviewers",
-        "url": "https://github.com/mezivillager/hacer/issues/895",
+        "title": "Inbox review: FID-029 · A literal on a part pin wider than 16 bits: decide all ones or the reference's 16, pin it, and record it",
+        "url": "https://github.com/mezivillager/hacer/issues/859",
         "labels": [
-          "project:harness",
+          "project:upkeep",
           "agent-ready",
           "in-progress",
-          "risk:1"
+          "risk:0",
+          "inbox-review"
         ],
         "onClosedIssue": false,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
           "session": "hacer-loop-to-70",
-          "branch": "chore/895-process-review-due",
+          "branch": "chore/inbox-fid-029",
           "handoff": "none",
           "author": "mezivillager",
-          "at": "2026-10-22T02:03:27Z",
-          "url": "https://github.com/mezivillager/hacer/issues/895#issuecomment-6330904798"
+          "at": "2026-10-22T02:34:13Z",
+          "url": "https://github.com/mezivillager/hacer/issues/859#issuecomment-6331289531"
+        }
+      },
+      {
+        "number": 867,
+        "ref": "refs/heads/claim/867",
+        "sha": "b9b7dbf74c1774c960b6344cf928c511947ea15d",
+        "state": "OPEN",
+        "title": "Inbox review: FID-030 · The combinational-cycle refusal carries a line, as the reference's `Looping wire` and `Circular pin dependency` do",
+        "url": "https://github.com/mezivillager/hacer/issues/867",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-to-70",
+          "branch": "chore/inbox-fid-030",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-22T02:45:43Z",
+          "url": "https://github.com/mezivillager/hacer/issues/867#issuecomment-6331430646"
+        }
+      },
+      {
+        "number": 901,
+        "ref": "refs/heads/claim/901",
+        "sha": "bf96e39fc7748e6c09a17383aacc6a8612fb895c",
+        "state": "OPEN",
+        "title": "A part named after a builtin only the reference has resolves to the user chip: ADR-0020 §1.11 rule 4 names the lookup order, and tests pin the 27-name boundary",
+        "url": "https://github.com/mezivillager/hacer/issues/901",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "fidelity",
+          "project:foundation"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-to-70",
+          "branch": "feat/901-lookup-order",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-22T02:44:00Z",
+          "url": "https://github.com/mezivillager/hacer/issues/901#issuecomment-6331409875"
         }
       }
     ],
@@ -6965,7 +6980,7 @@
       },
       {
         "date": "2026-10-16",
-        "merges": 17
+        "merges": 16
       },
       {
         "date": "2026-10-17",
@@ -6977,20 +6992,20 @@
       },
       {
         "date": "2026-10-22",
-        "merges": 9
+        "merges": 10
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-08T02:33:06.483Z",
-      "merged": 99,
+      "since": "2026-10-08T02:51:28.795Z",
+      "merged": 100,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 1.9
       },
       "blockedOnce": {
         "count": 7,
-        "of": 84,
+        "of": 85,
         "prs": [
           700,
           725,
@@ -7003,8 +7018,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 69,
-          "withVerdict": 69,
+          "merged": 70,
+          "withVerdict": 70,
           "without": []
         },
         "nonCode": {
@@ -11111,10 +11126,11 @@
       },
       {
         "date": "2026-10-22",
-        "at": "2026-10-22T02:13:03.033Z",
+        "at": "2026-10-22T02:33:06.483Z",
         "byProject": {
           "foundation": [
             338,
+            901,
             151,
             184,
             325,
@@ -11141,8 +11157,25 @@
             773,
             878
           ],
+          "harness": [
+            257,
+            154,
+            156,
+            270,
+            435,
+            436,
+            454,
+            500,
+            504,
+            505,
+            550,
+            607,
+            677,
+            870,
+            889,
+            895
+          ],
           "upkeep": [
-            849,
             859,
             867,
             874,
@@ -11174,25 +11207,8 @@
             834,
             835,
             839,
-            848
-          ],
-          "harness": [
-            257,
-            154,
-            156,
-            270,
-            435,
-            436,
-            454,
-            500,
-            504,
-            505,
-            550,
-            607,
-            677,
-            870,
-            889,
-            895
+            848,
+            849
           ],
           "spine": [
             165,
@@ -11287,17 +11303,14 @@
     "items": [
       {
         "pr": null,
-        "sha": "bf96e39fc7748e6c09a17383aacc6a8612fb895c",
+        "sha": "b9b7dbf74c1774c960b6344cf928c511947ea15d",
         "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-22T02:14:37Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39710093128/job/119599102542",
-        "line": "LAYER-RATCHET: 69 known violations (37 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 69,
-          "new": 0
-        },
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39713141588/job/119608928176",
+        "line": null,
+        "verdict": null,
+        "fields": {},
         "disagrees": false
       },
       {
@@ -11342,52 +11355,6 @@
         "verdict": "PASS",
         "fields": {
           "known": 71,
-          "new": 0
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 902,
-        "sha": "9b3d5271c144c90e351a2a3c8a0744d415355bc6",
-        "check": "pr-hygiene",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-22T02:29:46Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39711661139/job/119604172036",
-        "line": "HYGIENE: PASS reviewable=96 test=157 excluded=0 files=6 issue=#895 linked=fixes",
-        "verdict": "PASS",
-        "fields": {
-          "reviewable": 96,
-          "test": 157,
-          "excluded": 0,
-          "files": 6,
-          "issue": "#895",
-          "linked": "fixes"
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 902,
-        "sha": "9b3d5271c144c90e351a2a3c8a0744d415355bc6",
-        "check": "browser-qa",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-22T02:29:42Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39711660711/job/119604169122",
-        "line": "BROWSER-QA: skipped (no critical paths)",
-        "verdict": "SKIPPED",
-        "fields": {},
-        "disagrees": false
-      },
-      {
-        "pr": 902,
-        "sha": "9b3d5271c144c90e351a2a3c8a0744d415355bc6",
-        "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-22T02:32:18Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39711659112/job/119604163803",
-        "line": "LAYER-RATCHET: 69 known violations (37 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 69,
           "new": 0
         },
         "disagrees": false
