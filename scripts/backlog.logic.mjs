@@ -257,6 +257,8 @@ export function planReady(issues, portfolioRows, allowlist = DEFAULT_ALLOWLIST, 
   return [...critical, ...rotate(buckets, resumePoint(issues, portfolioRows, history, allowlist)), ...unpicked.sort(byNumber)]
 }
 
+export const judgeDueLine = () => null
+
 /** A row with more open `agent-ready` issues than this has outgrown shaping (reviews/2026-09-26 F12): `projects` warns. */
 export const ROW_AGENT_READY_CAP = 12
 

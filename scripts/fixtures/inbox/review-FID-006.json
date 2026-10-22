@@ -1,0 +1,11 @@
+{
+  "id": "FID-006",
+  "title": "Inbox review: FID-006 · The public HDL reference lists the three accepted builtin forms and who accepts each",
+  "labels": [
+    "inbox-review",
+    "agent-ready",
+    "risk:0",
+    "project:upkeep"
+  ],
+  "body": "## Goal\nThe inbox panel decides FID-006 in `docs/harness/fidelity-inbox.md`: approved, declined or deferred, by the method in `docs/harness/inbox-panel-brief.md`. Nothing waits for the owner, who may override the status at any time.\n\n## Acceptance criteria\n- One panel verdict comment on this issue, headed `## Inbox panel: APPROVED | DECLINED | DEFERRED`: one line per reviewer's position, the reason, the findings it accepted, and `Verified on:`.\n- The status is set with `node scripts/inbox.mjs set FID-006 <status>`: `filed (#n)` once approved and filed, otherwise the reason and this issue.\n\n## Verification command\n`node scripts/inbox.mjs status FID-006 --not proposed`\n\n## Scope\nIn: the review, the verdict and the status line. Out: building what the entry proposes, which an approval files as its own issue.\n\n## Files likely touched\n`docs/harness/fidelity-inbox.md`\n\n## Risk\n`risk:0`: one status line in an inbox.\n\n## Blocked by\n—\n\nInbox-entry: FID-006"
+}
